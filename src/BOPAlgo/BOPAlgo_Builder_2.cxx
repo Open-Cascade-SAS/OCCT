@@ -16,28 +16,30 @@
 // commercial license or contractual agreement.
 
 #include <BOPAlgo_Builder.ixx>
-
+//
 #include <NCollection_IncAllocator.hxx>
-
+//
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Compound.hxx>
-
+//
 #include <BRep_Tool.hxx>
 #include <BRep_Builder.hxx>
-
+//
 #include <TopExp_Explorer.hxx>
-
+//
 #include <BOPCol_ListOfShape.hxx>
 #include <BOPCol_ListOfInteger.hxx>
 #include <BOPCol_MapOfInteger.hxx>
 #include <BOPCol_DataMapOfIntegerListOfShape.hxx>
 #include <BOPCol_DataMapOfShapeShape.hxx>
-
+#include <BOPCol_NCVector.hxx>
+#include <BOPCol_TBB.hxx>
+//
 #include <BOPInt_Context.hxx>
-
+//
 #include <BOPDS_PaveBlock.hxx>
 #include <BOPDS_ShapeInfo.hxx>
 #include <BOPDS_DS.hxx>
@@ -47,7 +49,7 @@
 #include <BOPDS_Interf.hxx>
 #include <BOPDS_VectorOfCurve.hxx>
 #include <BOPDS_VectorOfPoint.hxx>
-
+//
 #include <BOPTools.hxx>
 #include <BOPTools_AlgoTools.hxx>
 #include <BOPTools_AlgoTools2D.hxx>
@@ -57,7 +59,7 @@
 #include <BOPTools_ListOfCoupleOfShape.hxx>
 #include <BOPTools_MapOfSet.hxx>
 #include <BOPTools_DataMapOfShapeSet.hxx>
-#include <BOPAlgo_Builder_2Cnt.hxx>
+
 
 static
   Standard_Boolean HasPaveBlocksOnIn(const BOPDS_FaceInfo& aFI1,
@@ -71,8 +73,190 @@ static
   void MakeBlocksCnx(const BOPCol_IndexedDataMapOfShapeListOfShape& aMILI,
                      BOPCol_DataMapOfIntegerListOfShape& aMBlocks,
                      Handle(NCollection_IncAllocator)& aAllocator);
-
-
+//
+typedef BOPCol_NCVector<TopoDS_Shape> BOPAlgo_VectorOfShape;
+//
+typedef BOPCol_NCVector<BOPAlgo_VectorOfShape> \
+  BOPAlgo_VectorOfVectorOfShape;
+//
+typedef NCollection_IndexedDataMap\
+  <BOPTools_Set, Standard_Integer, BOPTools_SetMapHasher> \
+    BOPAlgo_IndexedDataMapOfSetInteger;
+//
+//=======================================================================
+//class    : BOPAlgo_PairOfShapeBoolean
+//purpose  : 
+//=======================================================================
+class BOPAlgo_PairOfShapeBoolean {
+ public:
+  BOPAlgo_PairOfShapeBoolean()
+    : myFlag(Standard_False) {
+  }
+  //
+  TopoDS_Shape& Shape1() {
+    return myShape1;
+  }
+  //
+  TopoDS_Shape& Shape2() {
+    return myShape2;
+  }
+  //
+  Standard_Boolean& Flag() {
+    return myFlag;
+  }
+  //
+ protected: 
+  Standard_Boolean myFlag;
+  TopoDS_Shape myShape1;
+  TopoDS_Shape myShape2;
+};
+//
+typedef BOPCol_NCVector<BOPAlgo_PairOfShapeBoolean> \
+  BOPAlgo_VectorOfPairOfShapeBoolean;
+//
+//=======================================================================
+//function : BOPAlgo_BuilderSDFaceFunctor
+//purpose  : The class provides the interface and implementation 
+//           of the parallel computations
+//=======================================================================
+class BOPAlgo_BuilderSDFaceFunctor {
+ protected:
+  BOPAlgo_VectorOfPairOfShapeBoolean* myPVPSB;
+  
+ public:
+  //
+  BOPAlgo_BuilderSDFaceFunctor(BOPAlgo_VectorOfPairOfShapeBoolean& aVPSB)
+    : myPVPSB(&aVPSB){
+  }
+  //
+  void operator()( const flexible_range<Standard_Integer>& aBR ) const {
+    Standard_Boolean bFlag;
+    Standard_Integer i, iBeg, iEnd;
+    Handle(BOPInt_Context) aContext;
+    //
+    aContext=new BOPInt_Context;
+    //
+    BOPAlgo_VectorOfPairOfShapeBoolean& aVPSB=*myPVPSB;
+    //
+    iBeg=aBR.begin();
+    iEnd=aBR.end();
+    for(i=iBeg; i!=iEnd; ++i) {
+      BOPAlgo_PairOfShapeBoolean& aPSB=aVPSB(i);
+      const TopoDS_Face& aFj=(*(TopoDS_Face*)(&aPSB.Shape1()));
+      const TopoDS_Face& aFk=(*(TopoDS_Face*)(&aPSB.Shape2()));
+      bFlag=BOPTools_AlgoTools::AreFacesSameDomain(aFj, aFk, aContext);
+      if (bFlag) {
+        aPSB.Flag()=bFlag;
+      }
+    }
+  }
+};
+//
+//=======================================================================
+//function : BOPAlgo_BuilderSDFaceCnt
+//purpose  : The class provides the interface and implementation 
+//           of the parallel computations
+//=======================================================================
+class BOPAlgo_BuilderSDFaceCnt {
+ public:
+  //-------------------------------
+  // Perform
+  Standard_EXPORT static 
+    void Perform(const Standard_Boolean bRunParallel,
+                 BOPAlgo_VectorOfPairOfShapeBoolean& aVPSB) {
+      Standard_Integer aNbVPSB;
+      //
+      aNbVPSB=aVPSB.Extent();
+      BOPAlgo_BuilderSDFaceFunctor aBFF(aVPSB);
+      //
+      if (bRunParallel) {
+        flexible_for(flexible_range<Standard_Integer>(0,aNbVPSB), aBFF);
+      }
+      else {
+        aBFF.operator()(flexible_range<Standard_Integer>(0,aNbVPSB));
+      }
+    }
+};
+//=======================================================================
+// BuilderFace
+//
+typedef BOPCol_NCVector<BOPAlgo_BuilderFace> BOPAlgo_VectorOfBuilderFace;
+//
+typedef BOPCol_TBBFunctor 
+  <BOPAlgo_BuilderFace,
+  BOPAlgo_VectorOfBuilderFace> BOPAlgo_BuilderFaceFunctor;
+//
+typedef BOPCol_TBBCnt 
+  <BOPAlgo_BuilderFaceFunctor,
+  BOPAlgo_VectorOfBuilderFace> BOPAlgo_BuilderFaceCnt;
+//
+//=======================================================================
+//class    : BOPAlgo_VFI
+//purpose  : 
+//=======================================================================
+class BOPAlgo_VFI {
+ public:
+  BOPAlgo_VFI() 
+   : myFlag(-1) {
+  }
+  //
+  ~BOPAlgo_VFI(){
+  }
+  //
+  void SetVertex(const TopoDS_Vertex& aV) {
+    myV=aV;
+  }
+  //
+  TopoDS_Vertex& Vertex() {
+    return myV;
+  }
+  //
+  void SetFace(const TopoDS_Face& aF) {
+    myF=aF;
+  }
+  //
+  TopoDS_Face& Face() {
+    return myF;
+  }
+  //
+  Standard_Integer Flag()const {
+    return myFlag;
+  }
+  //
+  void SetContext(const Handle(BOPInt_Context)& aContext) {
+    myContext=aContext;
+  }
+  //
+  const Handle(BOPInt_Context)& Context()const {
+    return myContext;
+  }
+  //
+  void Perform() {
+    Standard_Real aT1, aT2;
+    //
+    myFlag=myContext->ComputeVF(myV, myF, aT1, aT2);
+  }
+  //
+ protected:
+  Standard_Integer myFlag;
+  TopoDS_Vertex myV;
+  TopoDS_Face myF;
+  Handle(BOPInt_Context) myContext;
+};
+//
+typedef BOPCol_NCVector<BOPAlgo_VFI> BOPAlgo_VectorOfVFI; 
+//
+typedef BOPCol_TBBContextFunctor 
+  <BOPAlgo_VFI,
+  BOPAlgo_VectorOfVFI,
+  Handle_BOPInt_Context, 
+  BOPInt_Context> BOPAlgo_VFIFunctor;
+//
+typedef BOPCol_TBBContextCnt 
+  <BOPAlgo_VFIFunctor,
+  BOPAlgo_VectorOfVFI,
+  Handle_BOPInt_Context> BOPAlgo_VFICnt;
+//
 //=======================================================================
 //function : FillImagesFaces
 //purpose  : 
@@ -493,11 +677,15 @@ void BOPAlgo_Builder::FillSameDomainFaces()
 //=======================================================================
 void BOPAlgo_Builder::FillImagesFaces1()
 {
-  Standard_Integer i, aNbS, iSense;
+  Standard_Integer i, aNbS, iSense, nVx, aNbVFI, iFlag;
   TopoDS_Face aFSD;
+  TopoDS_Vertex aVx;
+  BRep_Builder aBB;
   BOPCol_ListOfInteger aLIAV;
   BOPCol_ListOfShape aLFIm;
-  BOPCol_ListIteratorOfListOfShape aItLS;
+  BOPCol_ListIteratorOfListOfInteger aItV;
+  BOPCol_ListIteratorOfListOfShape aItLS, aItF;
+  BOPAlgo_VectorOfVFI aVVFI;
   //
   aNbS=myDS->NbSourceShapes();
   for (i=0; i<aNbS; ++i) {
@@ -511,7 +699,8 @@ void BOPAlgo_Builder::FillImagesFaces1()
     if (!mySplits.IsBound(aF)) {
       continue;
     }
-    //
+    // 
+    // 1.
     aLIAV.Clear();
     myDS->AloneVertices(i, aLIAV);
     aLFIm.Clear();
@@ -533,46 +722,49 @@ void BOPAlgo_Builder::FillImagesFaces1()
       }
     }
     //
-    FillInternalVertices(aLFIm, aLIAV);
+    //FillInternalVertices(aLFIm, aLIAV);
     //
     myImages.Bind(aF, aLFIm); 
     //
-    //fill myOrigins
+    // 2. fill myOrigins
     aItLS.Initialize(aLFIm);
     for (; aItLS.More(); aItLS.Next()) {
       const TopoDS_Face& aFSp=(*(TopoDS_Face*)(&aItLS.Value()));
       myOrigins.Bind(aFSp, aF);
     }
-  }// for (i=0; i<aNbS; ++i) {
-}
-//=======================================================================
-// function: FillInternalVertices
-// purpose: 
-//=======================================================================
-void BOPAlgo_Builder::FillInternalVertices(BOPCol_ListOfShape& aLFIm,
-                                           BOPCol_ListOfInteger& aLIAV)
-{
-  Standard_Integer nV, iFlag;
-  Standard_Real aU1, aU2;
-  TopoDS_Vertex aV;
-  BRep_Builder aBB;
-  BOPCol_ListIteratorOfListOfInteger aItV;
-  BOPCol_ListIteratorOfListOfShape aItF;
-  //
-  aItV.Initialize(aLIAV);
-  for (; aItV.More(); aItV.Next()) {
-    nV=aItV.Value();
-    aV=(*(TopoDS_Vertex*)(&myDS->Shape(nV)));
-    aV.Orientation(TopAbs_INTERNAL);
     //
-    aItF.Initialize(aLFIm);
-    for (; aItF.More(); aItF.Next()) {
-      TopoDS_Face& aF=(*(TopoDS_Face*)(&aItF.Value()));
-      iFlag=myContext->ComputeVF(aV, aF, aU1, aU2);
-      if (!iFlag) {
-        aBB.Add(aF, aV);
-        break;
+    // 3.
+    aItV.Initialize(aLIAV);
+    for (; aItV.More(); aItV.Next()) {
+      nVx=aItV.Value();
+      aVx=(*(TopoDS_Vertex*)(&myDS->Shape(nVx)));
+      aVx.Orientation(TopAbs_INTERNAL);
+      //
+      aItF.Initialize(aLFIm);
+      for (; aItF.More(); aItF.Next()) {
+        TopoDS_Face& aFy=(*(TopoDS_Face*)(&aItF.Value()));
+        //
+        BOPAlgo_VFI& aVFI=aVVFI.Append1();
+        aVFI.SetVertex(aVx);
+        aVFI.SetFace(aFy);
       }
+    }
+  }// for (i=0; i<aNbS; ++i) {
+  //
+  // 4. 
+  aNbVFI=aVVFI.Extent();
+  //================================================================
+  BOPAlgo_VFICnt::Perform(myRunParallel, aVVFI, myContext);
+  //================================================================
+  //
+  for (i=0; i < aNbVFI; ++i) {
+    BOPAlgo_VFI& aVFI=aVVFI(i);
+    //
+    iFlag=aVFI.Flag();
+    if (!iFlag) {
+      TopoDS_Vertex& aVx=aVFI.Vertex();
+      TopoDS_Face& aFy=aVFI.Face(); 
+      aBB.Add(aFy, aVx);
     }
   }
 }
@@ -657,7 +849,6 @@ void MakeBlocksCnx(const BOPCol_IndexedDataMapOfShapeListOfShape& aMILI,
   aMEC.Clear();
   aMVS.Clear();
 }
-
 //=======================================================================
 //function : FillMap
 //purpose  : 
@@ -722,6 +913,7 @@ Standard_Boolean HasPaveBlocksOnIn(const BOPDS_FaceInfo& aFI1,
   }
   return bRet;
 }
+
 /*
 //DEBf
     {

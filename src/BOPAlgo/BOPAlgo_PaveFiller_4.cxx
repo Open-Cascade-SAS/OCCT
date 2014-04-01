@@ -16,37 +16,133 @@
 // commercial license or contractual agreement.
 
 #include <BOPAlgo_PaveFiller.ixx>
-
+//
 #include <NCollection_IncAllocator.hxx>
-
+//
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Face.hxx>
 #include <BRep_Tool.hxx>
 #include <BRep_Builder.hxx>
 #include <BRepBndLib.hxx>
-
+//
 #include <BOPCol_MapOfInteger.hxx>
-
+#include <BOPCol_NCVector.hxx>
+#include <BOPCol_TBB.hxx>
+//
 #include <BOPInt_Context.hxx>
-
+//
 #include <BOPDS_Iterator.hxx>
 #include <BOPDS_VectorOfInterfVF.hxx>
 #include <BOPDS_Interf.hxx>
 #include <BOPDS_SubIterator.hxx>
 #include <BOPDS_MapOfPaveBlock.hxx>
 #include <BOPDS_FaceInfo.hxx>
-#include <BOPCol_MapOfInteger.hxx>
 
+//=======================================================================
+//class    : BOPAlgo_VertexFace
+//purpose  : 
+//=======================================================================
+class BOPAlgo_VertexFace {
+ public:
+  BOPAlgo_VertexFace()
+    : myIV(-1), myIF(-1), myIVx(-1), 
+    myFlag(-1), myT1(-1.),  myT2(-1.) {
+  }
+  //
+  ~BOPAlgo_VertexFace(){
+  }
+  //
+  void SetIndices(const Standard_Integer nV,
+                  const Standard_Integer nF,
+                  const Standard_Integer nVx) {
+    myIV=nV;
+    myIF=nF;
+    myIVx=nVx;
+  }
+  //
+  void Indices(Standard_Integer& nV,
+               Standard_Integer& nF,
+               Standard_Integer& nVx) const {
+    nV=myIV;
+    nF=myIF;
+    nVx=myIVx;
+  }
+  //
+  void SetVertex(const TopoDS_Vertex& aV) {
+    myV=aV;
+  }
+  //
+  const TopoDS_Vertex& Vertex()const {
+    return myV;
+  }
+  //
+  void SetFace(const TopoDS_Face& aF) {
+    myF=aF;
+  }
+  //
+  const TopoDS_Face& Face()const {
+    return myF;
+  }
+  //
+  Standard_Integer Flag()const {
+    return myFlag;
+  }
+  //
+  void Parameters(Standard_Real& aT1,
+                  Standard_Real& aT2)const {
+    aT1=myT1;
+    aT2=myT2;
+  }
+  //
+  void SetContext(const Handle(BOPInt_Context)& aContext) {
+    myContext=aContext;
+  }
+  //
+  const Handle(BOPInt_Context)& Context()const {
+    return myContext;
+  }
+  //
+  void Perform() {
+    myFlag=myContext->ComputeVF(myV, myF, myT1, myT2);
+  }
+  //
+ protected:
+  Standard_Integer myIV;
+  Standard_Integer myIF;
+  Standard_Integer myIVx;
+  Standard_Integer myFlag;
+  Standard_Real myT1;
+  Standard_Real myT2;
+  TopoDS_Vertex myV;
+  TopoDS_Face myF;
+  Handle(BOPInt_Context) myContext;
+};
+//=======================================================================
+typedef BOPCol_NCVector<BOPAlgo_VertexFace>
+  BOPAlgo_VectorOfVertexFace; 
+//
+typedef BOPCol_TBBContextFunctor 
+  <BOPAlgo_VertexFace,
+  BOPAlgo_VectorOfVertexFace,
+  Handle_BOPInt_Context, 
+  BOPInt_Context> BOPAlgo_VertexFaceFunctor;
+//
+typedef BOPCol_TBBContextCnt 
+  <BOPAlgo_VertexFaceFunctor,
+  BOPAlgo_VectorOfVertexFace,
+  Handle_BOPInt_Context> BOPAlgo_VertexFaceCnt;
+//
 //=======================================================================
 // function: PerformVF
 // purpose: 
 //=======================================================================
-  void BOPAlgo_PaveFiller::PerformVF()
+void BOPAlgo_PaveFiller::PerformVF()
 {
   Standard_Boolean bJustAdd;
-  Standard_Integer iSize, nV, nF, nVSD, iFlag, nVx, i;
+  Standard_Integer iSize, nV, nF, nVSD, iFlag, nVx, i, aNbVF, k;
   Standard_Real aT1, aT2, aTolF, aTolV;
   BRep_Builder aBB;
+  BOPAlgo_VectorOfVertexFace aVVF; 
   //
   myErrorStatus=0;
   //
@@ -83,34 +179,56 @@
         continue;
       }
       //
+      myDS->ChangeFaceInfo(nF);// !
+      //
       const TopoDS_Vertex& aV=(*(TopoDS_Vertex *)(&myDS->Shape(nVx))); 
       const TopoDS_Face& aF=(*(TopoDS_Face *)(&myDS->Shape(nF))); 
       //
+      BOPAlgo_VertexFace& aVertexFace=aVVF.Append1();
+      //
+      aVertexFace.SetIndices(nV, nF, nVx);
+      aVertexFace.SetVertex(aV);
+      aVertexFace.SetFace(aF);
+    }//for (; myIterator->More(); myIterator->Next()) {
+    //
+    aNbVF=aVVF.Extent();
+    //================================================================
+    BOPAlgo_VertexFaceCnt::Perform(myRunParallel, aVVF, myContext);
+    //================================================================
+    //
+    for (k=0; k < aNbVF; ++k) {
+      const BOPAlgo_VertexFace& aVertexFace=aVVF(k);
+      // 
+      iFlag=aVertexFace.Flag();
+      if (iFlag) {
+        continue;
+      }
+      //
+      aVertexFace.Indices(nV, nF, nVx);
+      aVertexFace.Parameters(aT1, aT2);
+      const TopoDS_Vertex& aV=aVertexFace.Vertex();
+      const TopoDS_Face& aF=aVertexFace.Face();
+      // 1
+      i=aVFs.Append()-1;
+      BOPDS_InterfVF& aVF=aVFs(i);
+      aVF.SetIndices(nVx, nF);
+      aVF.SetUV(aT1, aT2);
+      // 2
+      myDS->AddInterf(nVx, nF);
+      // 3
+      BOPDS_FaceInfo& aFI=myDS->ChangeFaceInfo(nF);
+      BOPCol_MapOfInteger& aMVIn=aFI.ChangeVerticesIn();
+      aMVIn.Add(nVx);
+      // 4
       aTolV = BRep_Tool::Tolerance(aV);
       aTolF = BRep_Tool::Tolerance(aF);
-      //
-      iFlag=myContext->ComputeVF(aV, aF, aT1, aT2);
-      if (!iFlag) {
-        // 1
-        i=aVFs.Append()-1;
-        BOPDS_InterfVF& aVF=aVFs(i);
-        aVF.SetIndices(nVx, nF);
-        aVF.SetUV(aT1, aT2);
-        // 2
-        myDS->AddInterf(nVx, nF);
-        //
-        BOPDS_FaceInfo& aFI=myDS->ChangeFaceInfo(nF);
-        BOPCol_MapOfInteger& aMVIn=aFI.ChangeVerticesIn();
-        aMVIn.Add(nVx);
-        //
-        if (aTolV < aTolF) {
-          aBB.UpdateVertex(aV, aTolF);
-          BOPDS_ShapeInfo& aSIV = myDS->ChangeShapeInfo(nVx);
-          Bnd_Box& aBoxV = aSIV.ChangeBox();
-          BRepBndLib::Add(aV, aBoxV);
-        }
+      if (aTolV < aTolF) {
+        aBB.UpdateVertex(aV, aTolF);
+        BOPDS_ShapeInfo& aSIV = myDS->ChangeShapeInfo(nVx);
+        Bnd_Box& aBoxV = aSIV.ChangeBox();
+        BRepBndLib::Add(aV, aBoxV);
       }
-    }// for (; myIterator->More(); myIterator->Next()) {
+    }//for (k=0; k < aNbVF; ++k) {
   }// if (iSize) {
   else {
     iSize=10;
@@ -121,21 +239,18 @@
   }
   //
   TreatVerticesEE();
-} 
-
-
+}
 //=======================================================================
 //function : TreatVerticesEE
 //purpose  : 
 //=======================================================================
-  void BOPAlgo_PaveFiller::TreatVerticesEE()
+void BOPAlgo_PaveFiller::TreatVerticesEE()
 {
   Standard_Integer i, aNbS, aNbEEs, nF, nV, iFlag;
   Standard_Real aT1, aT2;
   BOPCol_ListIteratorOfListOfInteger aItLI;
   Handle(NCollection_IncAllocator) aAllocator;
   //
-  //-----------------------------------------------------scope_1 f
   aAllocator=new NCollection_IncAllocator();
   BOPCol_ListOfInteger aLIV(aAllocator), aLIF(aAllocator);
   BOPCol_MapOfInteger aMI(100, aAllocator);
@@ -209,5 +324,4 @@
   }
   //
   aAllocator.Nullify();
-  //-----------------------------------------------------scope_1 t
 }

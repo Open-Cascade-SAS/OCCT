@@ -166,11 +166,6 @@ is
  
     FillImagesFaces1 (me:out) 
     is protected;   
-     
-    FillInternalVertices(me:out; 
-        theLF:out ListOfShape from BOPCol; 
-        theLIV:out ListOfInteger from BOPCol)  
-    is protected; 
     --	 
     -- solids
     --
