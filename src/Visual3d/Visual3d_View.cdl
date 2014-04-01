@@ -85,6 +85,8 @@ uses
     SequenceOfStructure     from Graphic3d,
     MapOfStructure          from Graphic3d,
 
+    ZLayerSettings          from Graphic3d,
+
     ContextView             from Visual3d,
     Layer                   from Visual3d,
     Light                   from Visual3d,
@@ -798,6 +800,13 @@ is
 	---Level: Internal
 	---Purpose: Changes the display priority of the structure <AStructure>.
 	---Category: Private methods
+
+
+        SetZLayerSettings ( me          : mutable;
+                            theLayerId  : Integer from Standard;
+                            theSettings : ZLayerSettings from Graphic3d )
+          is static private;
+        ---Purpose: Sets the settings for a single Z layer of specified view.
 
         AddZLayer ( me         : mutable;
                     theLayerId : Integer from Standard )

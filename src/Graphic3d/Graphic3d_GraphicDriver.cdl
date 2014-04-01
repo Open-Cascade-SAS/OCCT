@@ -53,6 +53,8 @@ uses
     PrintAlgo           from Aspect,
     DisplayConnection_Handle from Aspect,
 
+    ZLayerSettings      from Graphic3d,
+
     AspectLine3d        from Graphic3d,
     AspectMarker3d      from Graphic3d,
     AspectText3d        from Graphic3d,
@@ -944,6 +946,13 @@ is
         returns Integer from Standard is deferred;
         ---Purpose: Get Z layer ID of structure. If the structure doesn't
         -- exists in graphic driver, the method returns -1.
+
+    SetZLayerSettings( me          : mutable;
+                       theCView    : CView from Graphic3d;
+                       theLayerId  : Integer from Standard;
+                       theSettings : ZLayerSettings from Graphic3d)
+        is deferred;
+        ---Purpose:  Sets the settings for a single Z layer of specified view.
 
     -----------------------------
     -- Category: Internal methods

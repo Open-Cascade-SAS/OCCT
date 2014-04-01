@@ -305,6 +305,11 @@ public:
   //! graphic driver, the method returns -1. <br>
   Standard_EXPORT Standard_Integer GetZLayer(const Graphic3d_CStructure& theCStructure) const;
 
+  //! Sets the settings for a single Z layer of specified view.
+  Standard_EXPORT void SetZLayerSettings (const Graphic3d_CView& theCView,
+                                          const Standard_Integer theLayerId,
+                                          const Graphic3d_ZLayerSettings theSettings);
+
 public:
 
   //! @return the visualization options

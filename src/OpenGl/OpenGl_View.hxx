@@ -34,6 +34,7 @@
 #include <Graphic3d_CView.hxx>
 #include <Graphic3d_CGraduatedTrihedron.hxx>
 #include <Graphic3d_SequenceOfHClipPlane.hxx>
+#include <Graphic3d_ZLayerSettings.hxx>
 #include <Visual3d_TypeOfSurfaceDetail.hxx>
 
 #include <OpenGl_telem_view.hxx>
@@ -175,6 +176,10 @@ class OpenGl_View : public MMgt_TShared
   //! the structure will be displayed in default bottom-level layer.
   void ChangeZLayer (const OpenGl_Structure *theStructure,
                      const Standard_Integer  theNewLayerId);
+
+  //! Sets the settings for a single Z layer of specified view.
+  void SetZLayerSettings (const Standard_Integer theLayerId,
+                          const Graphic3d_ZLayerSettings theSettings);
 
   void CreateBackgroundTexture (const Standard_CString AFileName, const Aspect_FillMethod AFillStyle);
   void SetBackgroundTextureStyle (const Aspect_FillMethod FillStyle);

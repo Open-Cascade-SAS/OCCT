@@ -354,6 +354,27 @@ void V3d_Viewer::DelView( const Handle(V3d_View)& TheView ) {
 }
 
 //=======================================================================
+//function : SetZLayerSettings
+//purpose  :
+//=======================================================================
+
+void V3d_Viewer::SetZLayerSettings (const Standard_Integer theLayerId,
+                                    const Graphic3d_ZLayerSettings theSettings)
+{
+  MyViewer->SetZLayerSettings (theLayerId, theSettings);
+}
+
+//=======================================================================
+//function : ZLayerSettings
+//purpose  :
+//=======================================================================
+
+Graphic3d_ZLayerSettings V3d_Viewer::ZLayerSettings (const Standard_Integer theLayerId)
+{
+  return MyViewer->ZLayerSettings (theLayerId);
+}
+
+//=======================================================================
 //function : AddZLayer
 //purpose  :
 //=======================================================================

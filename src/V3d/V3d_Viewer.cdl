@@ -40,6 +40,7 @@ class Viewer from V3d inherits TShared from MMgt
 uses
 
         GraphicDriver from Graphic3d,
+        ZLayerSettings from Graphic3d,
         TypeOfUpdate from V3d,
         TypeOfVisualization from V3d,
         TypeOfShadingModel from V3d,
@@ -631,6 +632,17 @@ is
                         aPoint: Vertex from Graphic3d) is private;
         ---Purpose:
         -- Display grid echo at requested point in the view.
+
+        SetZLayerSettings ( me          : mutable;
+                            theLayerId  : Integer from Standard;
+                            theSettings : ZLayerSettings from Graphic3d )
+          is static;
+        ---Purpose: Sets the settings for a single Z layer.
+
+        ZLayerSettings ( me          : mutable;
+                         theLayerId  : Integer from Standard )
+          returns ZLayerSettings from Graphic3d is static;
+        ---Purpose: Returns the settings of a single Z layer.
 
         AddZLayer ( me : mutable;
                     theLayerId : in out Integer from Standard )

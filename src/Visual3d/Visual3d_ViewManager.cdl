@@ -41,6 +41,9 @@ uses
 	CView			from Graphic3d,
 	Vector                  from Graphic3d,
 
+	ZLayerSettings  from Graphic3d,
+	MapOfZLayerSettings from Visual3d,
+
 	ContextPick		from Visual3d,
 	Layer			from Visual3d,
 	PickDescriptor		from Visual3d,
@@ -290,6 +293,17 @@ is
            returns Integer from Standard is redefined static;
         ---Purpose: Get Z layer ID assigned for the structure.
 
+        SetZLayerSettings ( me          : mutable;
+                            theLayerId  : Integer from Standard;
+                            theSettings : ZLayerSettings from Graphic3d )
+          is redefined static;
+        ---Purpose: Sets the settings for a single Z layer for all managed views.
+
+        ZLayerSettings ( me          : mutable;
+                         theLayerId  : Integer from Standard )
+          returns ZLayerSettings from Graphic3d is redefined static;
+        ---Purpose: Returns the settings of a single Z layer.
+
         AddZLayer ( me : mutable;
                     theLayerId : in out Integer from Standard )
            returns Boolean from Standard is redefined static;
@@ -514,6 +528,8 @@ fields
         -- Z layer indexes
         myLayerIds                      :       MapOfInteger from TColStd;
         myLayerSeq                      :       SequenceOfInteger from TColStd;
+
+        myMapOfZLayerSettings : MapOfZLayerSettings from Visual3d;
 
 friends
 

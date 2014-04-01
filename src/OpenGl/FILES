@@ -108,6 +108,8 @@ OpenGl_LayerList.cxx
 OpenGl_LayerList.hxx
 OpenGl_IndexBuffer.hxx
 OpenGl_IndexBuffer.cxx
+OpenGl_Layer.cxx
+OpenGl_Layer.hxx
 OpenGl_TextureBufferArb.hxx
 OpenGl_TextureBufferArb.cxx
 OpenGl_Vec.hxx

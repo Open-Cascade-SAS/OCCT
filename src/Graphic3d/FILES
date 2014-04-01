@@ -61,6 +61,7 @@ Graphic3d_Vec2.hxx
 Graphic3d_Vec3.hxx
 Graphic3d_Vec4.hxx
 Graphic3d_Mat4.hxx
+Graphic3d_ZLayerSettings.hxx
 Graphic3d_Vertex.hxx
 Graphic3d_Vertex.cxx
 Graphic3d_MarkerImage.hxx

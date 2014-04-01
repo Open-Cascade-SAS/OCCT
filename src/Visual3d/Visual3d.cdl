@@ -297,6 +297,8 @@ is
     -- Category: Instantiated classes
     ---------------------------------
 
+    primitive MapOfZLayerSettings;
+
         imported NListOfLayerItem;
     
     class SequenceOfPickPath instantiates

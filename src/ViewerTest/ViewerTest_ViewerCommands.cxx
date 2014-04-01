@@ -3319,12 +3319,21 @@ static int VZLayer (Draw_Interpretor& di, Standard_Integer argc, const char** ar
   }
   else if (argc < 2)
   {
-    di << "Use: vzlayer " << argv[0];
-    di << " add/del/get [id]\n";
+    di << "Use: vzlayer ";
+    di << " add/del/get/settings/enable/disable [id]\n";
     di << " add - add new z layer to viewer and print its id\n";
     di << " del - del z layer by its id\n";
     di << " get - print sequence of z layers in increasing order of their overlay level\n";
-    di << "id - the layer identificator value defined when removing z layer\n";
+    di << " settings - print status of z layer settings\n";
+    di << " enable ([depth]test/[depth]write/[depth]clear/[depth]offset) \n    enables given setting for the z layer\n";
+    di << " enable (p[ositive]offset/n[egative]offset) \n    enables given setting for the z layer\n";
+    di << " disable ([depth]test/[depth]write/[depth]clear/[depth]offset) \n    disables given setting for the z layer\n";
+    di << "\nWhere id is the layer identificator\n";
+    di << "\nExamples:\n";
+    di << "   vzlayer add\n";
+    di << "   vzlayer enable poffset 1\n";
+    di << "   vzlayer disable depthtest 1\n";
+    di << "   vzlayer del 1\n";
     return 1;
   }
 
@@ -3376,9 +3385,123 @@ static int VZLayer (Draw_Interpretor& di, Standard_Integer argc, const char** ar
 
     di << "\n";
   }
+  else if (anOp == "settings")
+  {
+    if (argc < 3)
+    {
+      di << "Please also provide an id\n";
+      return 1;
+    }
+
+    Standard_Integer anId = Draw::Atoi (argv[2]);
+    Graphic3d_ZLayerSettings aSettings = aViewer->ZLayerSettings (anId);
+
+    di << "Depth test - " << (aSettings.IsSettingEnabled (Graphic3d_ZLayerDepthTest) ? "enabled" : "disabled") << "\n";
+    di << "Depth write - " << (aSettings.IsSettingEnabled (Graphic3d_ZLayerDepthWrite) ? "enabled" : "disabled") << "\n";
+    di << "Depth buffer clearing - " << (aSettings.IsSettingEnabled (Graphic3d_ZLayerDepthClear) ? "enabled" : "disabled") << "\n";
+    di << "Depth offset - " << (aSettings.IsSettingEnabled (Graphic3d_ZLayerDepthOffset) ? "enabled" : "disabled") << "\n";
+
+  }
+  else if (anOp == "enable")
+  {
+    if (argc < 3)
+    {
+      di << "Please also provide an option to enable\n";
+      return 1;
+    }
+
+    if (argc < 4)
+    {
+      di << "Please also provide a layer id\n";
+      return 1;
+    }
+
+    TCollection_AsciiString aSubOp = TCollection_AsciiString (argv[2]);
+    Standard_Integer anId = Draw::Atoi (argv[3]);
+    Graphic3d_ZLayerSettings aSettings = aViewer->ZLayerSettings (anId);
+
+    if (aSubOp == "depthtest" || aSubOp == "test")
+    {
+      aSettings.EnableSetting (Graphic3d_ZLayerDepthTest);
+    }
+    else if (aSubOp == "depthwrite" || aSubOp == "write")
+    {
+      aSettings.EnableSetting (Graphic3d_ZLayerDepthWrite);
+    }
+    else if (aSubOp == "depthclear" || aSubOp == "clear")
+    {
+      aSettings.EnableSetting (Graphic3d_ZLayerDepthClear);
+    }
+    else if (aSubOp == "depthoffset" || aSubOp == "offset")
+    {
+      if (argc < 6)
+      {
+        di << "Please also provide a factor and units values for depth offset\n";
+        di << "Format is: vzlayer enable offset [factor] [units] [layerId]\n";
+        return 1;
+      }
+
+      Standard_ShortReal aFactor = static_cast<Standard_ShortReal> (Draw::Atof (argv[3]));
+      Standard_ShortReal aUnits  = static_cast<Standard_ShortReal> (Draw::Atof (argv[4]));
+      anId = Draw::Atoi (argv[5]);
+      aSettings = aViewer->ZLayerSettings (anId);
+
+      aSettings.DepthOffsetFactor = aFactor;
+      aSettings.DepthOffsetUnits  = aUnits;
+
+      aSettings.EnableSetting (Graphic3d_ZLayerDepthOffset);
+    }
+    else if (aSubOp == "positiveoffset" || aSubOp == "poffset")
+    {
+      aSettings.SetDepthOffsetPositive();
+    }
+    else if (aSubOp == "negativeoffset" || aSubOp == "noffset")
+    {
+      aSettings.SetDepthOffsetNegative();
+    }
+
+    aViewer->SetZLayerSettings (anId, aSettings);
+  }
+  else if (anOp == "disable")
+  {
+    if (argc < 3)
+    {
+      di << "Please also provide an option to disable\n";
+      return 1;
+    }
+
+    if (argc < 4)
+    {
+      di << "Please also provide a layer id\n";
+      return 1;
+    }
+
+    TCollection_AsciiString aSubOp = TCollection_AsciiString (argv[2]);
+    Standard_Integer anId = Draw::Atoi (argv[3]);
+    Graphic3d_ZLayerSettings aSettings = aViewer->ZLayerSettings (anId);
+
+    if (aSubOp == "depthtest" || aSubOp == "test")
+    {
+      aSettings.DisableSetting (Graphic3d_ZLayerDepthTest);
+    }
+    else if (aSubOp == "depthwrite" || aSubOp == "write")
+    {
+      aSettings.DisableSetting (Graphic3d_ZLayerDepthWrite);
+    }
+    else if (aSubOp == "depthclear" || aSubOp == "clear")
+    {
+      aSettings.DisableSetting (Graphic3d_ZLayerDepthClear);
+    }
+    else if (aSubOp == "depthoffset" || aSubOp == "offset")
+    {
+      aSettings.DisableSetting (Graphic3d_ZLayerDepthOffset);
+    }
+
+    aViewer->SetZLayerSettings (anId, aSettings);
+  }
   else
   {
-    di << "Invalid operation, please use { add / del / get }\n";
+    di << "Invalid operation, please use { add / del / get / settings / enable / disable}\n";
     return 1;
   }
 
@@ -6118,7 +6241,20 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "vprintview : width height filename [algo=0] : Test print algorithm: algo = 0 - stretch, algo = 1 - tile",
     __FILE__,VPrintView,group);
   theCommands.Add("vzlayer",
-    "vzlayer : add/del/get [id] : Z layer operations in v3d viewer: add new z layer, delete z layer, get z layer ids",
+    "vzlayer add/del/get/settings/enable/disable [id]\n"
+    " add - add new z layer to viewer and print its id\n"
+    " del - del z layer by its id\n"
+    " get - print sequence of z layers in increasing order of their overlay level\n"
+    " settings - print status of z layer settings\n"
+    " enable ([depth]test/[depth]write/[depth]clear/[depth]offset) \n    enables given setting for the z layer\n"
+    " enable (p[ositive]offset/n[egative]offset) \n    enables given setting for the z layer\n"
+    " disable ([depth]test/[depth]write/[depth]clear/[depth]offset) \n    disables given setting for the z layer\n"
+    "\nWhere id is the layer identificator\n"
+    "\nExamples:\n"
+    "   vzlayer add\n"
+    "   vzlayer enable poffset 1\n"
+    "   vzlayer disable depthtest 1\n"
+    "   vzlayer del 1\n",
     __FILE__,VZLayer,group);
   theCommands.Add("voverlaytext",
     "voverlaytext : text x y [height] [font_name] [text_color: R G B] [display_type] [background_color: R G B]"

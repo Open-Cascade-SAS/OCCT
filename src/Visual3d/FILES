@@ -6,3 +6,4 @@ EXTERNLIB
 Visual3d_WOKSteps.edl 
 Visual3d_View_Print.cxx
 Visual3d_NListOfLayerItem.hxx
+Visual3d_MapOfZLayerSettings.hxx

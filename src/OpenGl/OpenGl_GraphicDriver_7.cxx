@@ -618,11 +618,23 @@ void OpenGl_GraphicDriver::AddZLayer (const Graphic3d_CView& theCView,
 //function : RemoveZLayer
 //purpose  :
 //=======================================================================
-
 void OpenGl_GraphicDriver::RemoveZLayer (const Graphic3d_CView& theCView,
                                          const Standard_Integer theLayerId)
 {
   const OpenGl_CView* aCView = (const OpenGl_CView *)theCView.ptrView;
   if (aCView)
     aCView->View->RemoveZLayer (theLayerId);
+}
+
+//=======================================================================
+//function : SetZLayerSettings
+//purpose  :
+//=======================================================================
+Standard_EXPORT void OpenGl_GraphicDriver::SetZLayerSettings (const Graphic3d_CView& theCView,
+                                                              const Standard_Integer theLayerId,
+                                                              const Graphic3d_ZLayerSettings theSettings)
+{
+  const OpenGl_CView* aCView = (const OpenGl_CView* )theCView.ptrView;
+  if (aCView)
+    aCView->View->SetZLayerSettings (theLayerId, theSettings);
 }
