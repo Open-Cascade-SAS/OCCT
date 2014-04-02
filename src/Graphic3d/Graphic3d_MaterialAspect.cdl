@@ -392,6 +392,12 @@ is
         --  Trigger: when <aRank> is < 1 or > NumberOfMaterials.
         ---Level: Public
 
+        MaterialFromName (myclass;
+                          theName : CString from Standard)
+        returns NameOfMaterial from Graphic3d;
+        ---Purpose:
+        -- Returns the material for specified name or Graphic3d_NOM_DEFAULT if name is unknown.
+
         ----------------------------
         -- Category: Private methods
         ----------------------------

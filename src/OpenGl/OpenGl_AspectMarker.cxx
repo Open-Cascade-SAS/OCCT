@@ -1462,13 +1462,13 @@ OpenGl_AspectMarker::OpenGl_AspectMarker()
 // =======================================================================
 void OpenGl_AspectMarker::SetAspect (const CALL_DEF_CONTEXTMARKER& theAspect)
 {
-  myColor.rgb[0] = (float )theAspect.Color.r;
-  myColor.rgb[1] = (float )theAspect.Color.g;
-  myColor.rgb[2] = (float )theAspect.Color.b;
-  myColor.rgb[3] = 1.0f;
-  myMarkerImage  = theAspect.MarkerImage;
-  myType         = theAspect.MarkerType;
-  myScale = myMarkerSize = theAspect.Scale;
+  myColor.rgb[0]  = (float )theAspect.Color.r;
+  myColor.rgb[1]  = (float )theAspect.Color.g;
+  myColor.rgb[2]  = (float )theAspect.Color.b;
+  myColor.rgb[3]  = 1.0f;
+  myMarkerImage   = theAspect.MarkerImage;
+  myType          = theAspect.MarkerType;
+  myScale         = theAspect.Scale;
   myShaderProgram = theAspect.ShaderProgram;
 
   // update sprite resource bindings
@@ -1476,13 +1476,11 @@ void OpenGl_AspectMarker::SetAspect (const CALL_DEF_CONTEXTMARKER& theAspect)
   TCollection_AsciiString aSpriteAKey = THE_EMPTY_KEY;
   myResources.SpriteKeys (myMarkerImage, myType, myScale, myColor, aSpriteKey, aSpriteAKey);
 
-  if (aSpriteKey.IsEmpty() || myResources.SpriteKey != aSpriteKey)
+  if (aSpriteKey.IsEmpty()  || myResources.SpriteKey  != aSpriteKey
+   || aSpriteAKey.IsEmpty() || myResources.SpriteAKey != aSpriteAKey)
   {
     myResources.ResetSpriteReadiness();
-  }
-  if (aSpriteAKey.IsEmpty() || myResources.SpriteAKey != aSpriteAKey)
-  {
-    myResources.ResetSpriteReadiness();
+    myMarkerSize = theAspect.Scale;
   }
 
   // update shader program resource bindings

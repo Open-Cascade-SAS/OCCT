@@ -900,6 +900,48 @@ Standard_CString Graphic3d_MaterialAspect::MaterialName(const Standard_Integer a
   return theMaterials[aRank-1].name;
 }
 
+Graphic3d_NameOfMaterial Graphic3d_MaterialAspect::MaterialFromName (const Standard_CString theName)
+{
+  TCollection_AsciiString aName (theName);
+  aName.LowerCase();
+  aName.Capitalize();
+  const Standard_Integer aNbMaterials = Graphic3d_MaterialAspect::NumberOfMaterials();
+  for (Standard_Integer aMatIter = 1; aMatIter <= aNbMaterials; ++aMatIter)
+  {
+    if (aName == Graphic3d_MaterialAspect::MaterialName (aMatIter))
+    {
+      return Graphic3d_NameOfMaterial(aMatIter - 1);
+    }
+  }
+
+  // parse aliases
+  if (aName == "Plastic")            // Plastified
+  {
+    return Graphic3d_NOM_PLASTIC;
+  }
+  else if (aName == "Shiny_plastic") // Shiny_plastified
+  {
+    return Graphic3d_NOM_SHINY_PLASTIC;
+  }
+  else if (aName == "Plaster")       // Plastered
+  {
+    return Graphic3d_NOM_PLASTER;
+  }
+  else if (aName == "Satin")         // Satined
+  {
+    return Graphic3d_NOM_SATIN;
+  }
+  else if (aName == "Neon_gnc")      // Ionized
+  {
+    return Graphic3d_NOM_NEON_GNC;
+  }
+  else if (aName == "Neon_phc") // Neon
+  {
+    return Graphic3d_NOM_NEON_PHC;
+  }
+  return Graphic3d_NOM_DEFAULT;
+}
+
 Graphic3d_TypeOfMaterial Graphic3d_MaterialAspect::MaterialType(const Standard_Integer aRank) {
 
   if( aRank < 1 || aRank > NumberOfMaterials() )

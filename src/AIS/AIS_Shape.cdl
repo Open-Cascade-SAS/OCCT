@@ -61,6 +61,7 @@ uses
     Projector             from Prs3d,
     PresentationManager3d from PrsMgr,
     Selection             from SelectMgr,
+    Drawer                from AIS,
     KindOfInteractive     from AIS,
     Transformation        from Geom,
     Drawer                from Prs3d,
@@ -298,7 +299,21 @@ uses
 		       	aBox : Box from Bnd;
 		       	aDrawer : Drawer from Prs3d) is protected;
     		
-    
+    setColor (me;
+              theDrawer : Drawer from AIS;
+              theColor  : Color  from Quantity)
+    is protected;
+
+    setWidth (me;
+              theDrawer : Drawer from AIS;
+              theWidth  : Real   from Standard)
+    is protected;
+
+    setTransparency (me;
+                     theDrawer : Drawer from AIS;
+                     theValue  : Real   from Standard)
+    is protected;
+
 fields
     myshape            : Shape   from TopoDS   is protected;
     myBB               : Box     from Bnd      is protected;

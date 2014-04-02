@@ -37,7 +37,7 @@
 #include <StdSelect_ShapeTypeFilter.hxx>
 #include <AIS.hxx>
 #include <AIS_Drawer.hxx>
-#include <AIS_InteractiveObject.hxx>
+#include <AIS_ColoredShape.hxx>
 #include <AIS_Trihedron.hxx>
 #include <AIS_Axis.hxx>
 #include <AIS_Relation.hxx>
@@ -103,38 +103,6 @@ Quantity_NameOfColor ViewerTest::GetColorFromName (const Standard_CString theNam
   }
 
   return DEFAULT_COLOR;
-}
-
-//=======================================================================
-//function : GetMaterialFromName
-//purpose  : get the Graphic3d_NameOfMaterial from a string
-//=======================================================================
-
-static Graphic3d_NameOfMaterial GetMaterialFromName( const char *name )
-{
-  Graphic3d_NameOfMaterial mat = DEFAULT_MATERIAL;
-
-  if      ( !strcasecmp(name,"BRASS" ) ) 	 mat = Graphic3d_NOM_BRASS;
-  else if ( !strcasecmp(name,"BRONZE" ) )        mat = Graphic3d_NOM_BRONZE;
-  else if ( !strcasecmp(name,"COPPER" ) ) 	 mat = Graphic3d_NOM_COPPER;
-  else if ( !strcasecmp(name,"GOLD" ) ) 	 mat = Graphic3d_NOM_GOLD;
-  else if ( !strcasecmp(name,"PEWTER" ) ) 	 mat = Graphic3d_NOM_PEWTER;
-  else if ( !strcasecmp(name,"SILVER" ) ) 	 mat = Graphic3d_NOM_SILVER;
-  else if ( !strcasecmp(name,"STEEL" ) ) 	 mat = Graphic3d_NOM_STEEL;
-  else if ( !strcasecmp(name,"METALIZED" ) ) 	 mat = Graphic3d_NOM_METALIZED;
-  else if ( !strcasecmp(name,"STONE" ) ) 	 mat = Graphic3d_NOM_STONE;
-  else if ( !strcasecmp(name,"CHROME" ) )	 mat = Graphic3d_NOM_CHROME;
-  else if ( !strcasecmp(name,"ALUMINIUM" ) )     mat = Graphic3d_NOM_ALUMINIUM;
-  else if ( !strcasecmp(name,"NEON_PHC" ) )	 mat = Graphic3d_NOM_NEON_PHC;
-  else if ( !strcasecmp(name,"NEON_GNC" ) )	 mat = Graphic3d_NOM_NEON_GNC;
-  else if ( !strcasecmp(name,"PLASTER" ) )	 mat = Graphic3d_NOM_PLASTER;
-  else if ( !strcasecmp(name,"SHINY_PLASTIC" ) ) mat = Graphic3d_NOM_SHINY_PLASTIC;
-  else if ( !strcasecmp(name,"SATIN" ) )	 mat = Graphic3d_NOM_SATIN;
-  else if ( !strcasecmp(name,"PLASTIC" ) )	 mat = Graphic3d_NOM_PLASTIC;
-  else if ( !strcasecmp(name,"OBSIDIAN" ) )	 mat = Graphic3d_NOM_OBSIDIAN;
-  else if ( !strcasecmp(name,"JADE" ) )	         mat = Graphic3d_NOM_JADE;
-
-  return mat;
 }
 
 //=======================================================================
@@ -1013,495 +981,742 @@ static int VSubInt(Draw_Interpretor& di, Standard_Integer argc, const char** arg
     else return 1;
   }
   return 0;
-
-}
-//==============================================================================
-//function : VColor2
-//Author   : ege
-//purpose  : change the color of a selected or named or displayed shape
-//Draw arg : vcolor2 [name] color
-//==============================================================================
-static int VColor2 (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
-{
-
-  Standard_Boolean    ThereIsCurrent;
-  Standard_Boolean    ThereIsArgument;
-  Standard_Boolean    IsBound = Standard_False ;
-
-  const Standard_Boolean HaveToSet=(strcasecmp( argv[0],"vsetcolor") == 0);
-  if (HaveToSet) {
-    if ( argc < 2 || argc > 3 ) { di << argv[0] << " syntax error: Give 2 or 3 arguments" << "\n"; return 1; }
-    ThereIsArgument = (argc != 2);
-  }
-  else {
-    if ( argc > 2 ) { di << argv[0] << " syntax error: Given too many arguments" << "\n"; return 1; }
-    ThereIsArgument = (argc == 2);
-  }
-
-  if ( !a3DView().IsNull() ) {
-    TCollection_AsciiString name;
-    if (ThereIsArgument) {
-      name = argv[1];
-      IsBound= GetMapOfAIS().IsBound2(name);
-    }
-    if (TheAISContext()->HasOpenedContext())
-      TheAISContext()->CloseLocalContext();
-
-    //  On set le Booleen There is current
-    if (TheAISContext() -> NbCurrents() > 0  ) {ThereIsCurrent =Standard_True; }
-    else ThereIsCurrent =Standard_False;
-
-    //=======================================================================
-    // Il y a un  argument
-    //=======================================================================
-    if ( ThereIsArgument && IsBound ) {
-      const Handle(Standard_Transient) anObj = GetMapOfAIS().Find2(name);
-      if (anObj->IsKind(STANDARD_TYPE(AIS_InteractiveObject))) {
-        Handle(AIS_InteractiveObject) ashape =
-          Handle(AIS_InteractiveObject)::DownCast (anObj);
-#ifdef DEB
-          if (HaveToSet)
-            di  << "HaveToSet "<< "1" <<" Color Given "<< argv[2] << " Color returned "<< ViewerTest::GetColorFromName(argv[2]) << "\n";
-          else
-            di  << "HaveToSet 0\n";
-#endif
-
-        if(HaveToSet)
-          TheAISContext()->SetColor(ashape,ViewerTest::GetColorFromName(argv[2]) );
-        else
-          TheAISContext()->UnsetColor(ashape);
-      } else if (anObj->IsKind(STANDARD_TYPE(NIS_InteractiveObject))) {
-        Handle(NIS_Triangulated) ashape =
-          Handle(NIS_Triangulated)::DownCast (anObj);
-        if (!ashape.IsNull())
-          ashape->SetColor (ViewerTest::GetColorFromName(argv[2]));
-      }
-    }
-
-
-    //=======================================================================
-    // Il n'y a pas d'arguments
-    // Mais un ou plusieurs objets on des current representation
-    //=======================================================================
-    if (ThereIsCurrent && !ThereIsArgument) {
-      for (TheAISContext() -> InitCurrent() ;
-           TheAISContext() -> MoreCurrent() ;
-           TheAISContext() ->NextCurrent() )
-      {
-        const Handle(AIS_InteractiveObject) ashape= TheAISContext()->Current();
-        if (ashape.IsNull())
-          continue;
-#ifdef DEB
-        if (HaveToSet)
-          di  << "HaveToSet "<< "1" <<" Color Given "<< argv[2] << " Color returned "<< ViewerTest::GetColorFromName(argv[2]) << "\n";
-        else
-          di  << "HaveToSet 0\n";
-#endif
-        if(HaveToSet)
-          TheAISContext()->SetColor(ashape,ViewerTest::GetColorFromName(argv[1]),Standard_False);
-        else
-          TheAISContext()->UnsetColor(ashape,Standard_False);
-      }
-
-      TheAISContext()->UpdateCurrentViewer();
-    }
-
-    //=======================================================================
-    // Il n'y a pas d'arguments(nom de shape) ET aucun objet courrant
-    // on impose a tous les objets du viewer la couleur passee
-    //=======================================================================
-    else if (!ThereIsCurrent && !ThereIsArgument){
-      ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName it(GetMapOfAIS());
-      while ( it.More() ) {
-        const Handle(AIS_InteractiveObject) ashape =
-          Handle(AIS_InteractiveObject)::DownCast(it.Key1());
-        if (!ashape.IsNull()) {
-          if(HaveToSet)
-            TheAISContext()->SetColor(ashape,ViewerTest::GetColorFromName(argv[1]),Standard_False);
-          else
-            TheAISContext()->UnsetColor(ashape,Standard_False);
-        }
-        it.Next();
-      }
-      TheAISContext()->UpdateCurrentViewer();
-    }
-  }
-  return 0;
 }
 
-//==============================================================================
-//function : VTransparency
-//Author   : ege
-//purpose  : change the transparency of a selected or named or displayed shape
-//Draw arg : vtransparency [name] TransparencyCoeficient
-//==============================================================================
-
-static int VTransparency  (Draw_Interpretor& di, Standard_Integer argc,
-                           const char** argv)
+//! Auxiliary class to iterate presentations from different collections.
+class ViewTest_PrsIter
 {
-  Standard_Boolean    ThereIsCurrent;
-  Standard_Boolean    ThereIsArgument;
-  Standard_Boolean    IsBound = Standard_False ;
+public:
 
-  const Standard_Boolean HaveToSet = (strcasecmp( argv[0],"vsettransparency") == 0);
-  if (HaveToSet) {
-    if ( argc < 2 || argc > 3 ) { di << argv[0] << " syntax error passez 1 ou 2 arguments" << "\n"; return 1; }
-    ThereIsArgument = (argc != 2);
-  }
-  else{
-    if ( argc > 2 ) { di << argv[0] << " syntax error: Passez au plus un argument" << "\n"; return 1; }
-    ThereIsArgument = (argc == 2);
+  //! Create and initialize iterator object.
+  ViewTest_PrsIter (const TCollection_AsciiString& theName)
+  : mySource (IterSource_All)
+  {
+    NCollection_Sequence<TCollection_AsciiString> aNames;
+    if (!theName.IsEmpty())
+    aNames.Append (theName);
+    Init (aNames);
   }
 
-  if ( !a3DView().IsNull() ) {
-    TCollection_AsciiString name;
-    if (ThereIsArgument) {
-      name = argv[1];
-      IsBound= GetMapOfAIS().IsBound2(name);
-    }
-    if (TheAISContext()->HasOpenedContext())
-      TheAISContext()->CloseLocalContext();
-
-    if (TheAISContext() -> NbCurrents() > 0  ) {ThereIsCurrent =Standard_True; }
-    else ThereIsCurrent = Standard_False;
-
-    //=======================================================================
-    // Il y a des arguments: un nom et une couleur
-    //=======================================================================
-    if ( ThereIsArgument && IsBound ) {
-      const Handle(Standard_Transient) anObj = GetMapOfAIS().Find2(name);
-      if (anObj->IsKind(STANDARD_TYPE(AIS_InteractiveObject))) {
-        const Handle(AIS_InteractiveObject) ashape =
-          Handle(AIS_InteractiveObject)::DownCast(anObj);
-        if(HaveToSet)
-          TheAISContext()->SetTransparency(ashape,Draw::Atof(argv[2]) );
-        else
-          TheAISContext()->UnsetTransparency(ashape);
-      } else if (anObj->IsKind(STANDARD_TYPE(NIS_InteractiveObject))) {
-        const Handle(NIS_InteractiveObject) ashape =
-          Handle(NIS_InteractiveObject)::DownCast(anObj);
-        if(HaveToSet)
-          ashape->SetTransparency(Draw::Atof(argv[2]) );
-        else
-          ashape->UnsetTransparency();
-      }
-    }
-    //=======================================================================
-    // Il n'y a pas d'arguments
-    // Mais un ou plusieurs objets on des current representation
-    //=======================================================================
-    if (ThereIsCurrent && !ThereIsArgument) {
-      for (TheAISContext() -> InitCurrent() ;
-           TheAISContext() -> MoreCurrent() ;
-           TheAISContext() ->NextCurrent() )
-      {
-        Handle(AIS_InteractiveObject) ashape =  TheAISContext() -> Current();
-        if(HaveToSet)
-          TheAISContext()->SetTransparency(ashape,Draw::Atof(argv[1]),Standard_False);
-        else
-          TheAISContext()->UnsetTransparency(ashape,Standard_False);
-      }
-
-      TheAISContext()->UpdateCurrentViewer();
-    }
-    //=======================================================================
-    // Il n'y a pas d'arguments ET aucun objet courrant
-    //=======================================================================
-    else if ( !ThereIsCurrent && !ThereIsArgument ) {
-      ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName
-        it(GetMapOfAIS());
-      while ( it.More() ) {
-        Handle(AIS_InteractiveObject) ashape =
-          Handle(AIS_InteractiveObject)::DownCast(it.Key1());
-        if (!ashape.IsNull()) {
-          if(HaveToSet)
-            TheAISContext()->SetTransparency(ashape,Draw::Atof(argv[1]),Standard_False);
-          else
-            TheAISContext()->UnsetTransparency(ashape,Standard_False);
-        }
-        it.Next();
-      }
-      TheAISContext()->UpdateCurrentViewer();
-    }
-  }
-  return 0;
-}
-
-
-//==============================================================================
-//function : VMaterial
-//Author   : ege
-//purpose  : change the Material of a selected or named or displayed shape
-//Draw arg : vmaterial  [Name] Material
-//==============================================================================
-static int VMaterial (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
-{
-
-  Standard_Boolean    ThereIsCurrent;
-  Standard_Boolean    ThereIsName;
-  Standard_Boolean    IsBound = Standard_False ;
-
-  const Standard_Boolean HaveToSet = (strcasecmp( argv[0],"vsetmaterial") == 0);
-  if (HaveToSet) {
-    if ( argc < 2 || argc > 3 ) { di << argv[0] << " syntax error passez 1 ou 2 arguments" << "\n"; return 1; }
-    ThereIsName = (argc != 2);
-  }
-  else {
-    if ( argc>2 ) { di << argv[0] << " syntax error passez au plus un argument" << "\n"; return 1; }
-    ThereIsName = (argc == 2);
+  //! Create and initialize iterator object.
+  ViewTest_PrsIter (const NCollection_Sequence<TCollection_AsciiString>& theNames)
+  : mySource (IterSource_All)
+  {
+    Init (theNames);
   }
 
-  if ( !a3DView().IsNull() ) {
-    TCollection_AsciiString name;
-    if (ThereIsName) {
-      name = argv[1];
-      IsBound= GetMapOfAIS().IsBound2(name);
+  //! Initialize the iterator.
+  void Init (const NCollection_Sequence<TCollection_AsciiString>& theNames)
+  {
+    Handle(AIS_InteractiveContext) aCtx = ViewerTest::GetAISContext();
+    mySeq = theNames;
+    mySelIter.Nullify();
+    myCurrent.Nullify();
+    myCurrentTrs.Nullify();
+    if (!mySeq.IsEmpty())
+    {
+      mySource = IterSource_List;
+      mySeqIter = NCollection_Sequence<TCollection_AsciiString>::Iterator (mySeq);
     }
-    if (TheAISContext()->HasOpenedContext())
-      TheAISContext()->CloseLocalContext();
-    if (TheAISContext() -> NbCurrents() > 0  )
-      ThereIsCurrent =Standard_True;
+    else if (aCtx->NbCurrents() > 0)
+    {
+      mySource  = IterSource_Selected;
+      mySelIter = aCtx;
+      mySelIter->InitCurrent();
+    }
     else
-      ThereIsCurrent =Standard_False;
-
-    //=======================================================================
-    // Ther is a name of shape and a material name
-    //=======================================================================
-    if ( ThereIsName && IsBound ) {
-      Handle(AIS_InteractiveObject) ashape =
-        Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2(name));
-      if (!ashape.IsNull()) {
-        if (HaveToSet)
-          TheAISContext()->SetMaterial(ashape,GetMaterialFromName(argv[2]));
-        else
-          TheAISContext()->UnsetMaterial(ashape);
-      }
+    {
+      mySource = IterSource_All;
+      myMapIter.Initialize (GetMapOfAIS());
     }
-    //=======================================================================
-    // Il n'y a pas de nom de shape
-    // Mais un ou plusieurs objets on des current representation
-    //=======================================================================
-    if (ThereIsCurrent && !ThereIsName) {
-      for (TheAISContext() -> InitCurrent() ;
-           TheAISContext() -> MoreCurrent() ;
-           TheAISContext() ->NextCurrent() )
+    initCurrent();
+  }
+
+  const TCollection_AsciiString& CurrentName() const
+  {
+    return myCurrentName;
+  }
+
+  const Handle(AIS_InteractiveObject)& Current() const
+  {
+    return myCurrent;
+  }
+
+  const Handle(Standard_Transient)& CurrentTrs() const
+  {
+    return myCurrentTrs;
+  }
+
+  //! @return true if iterator points to valid object within collection
+  Standard_Boolean More() const
+  {
+    switch (mySource)
+    {
+      case IterSource_All:      return myMapIter.More();
+      case IterSource_List:     return mySeqIter.More();
+      case IterSource_Selected: return mySelIter->MoreCurrent();
+    }
+    return Standard_False;
+  }
+
+  //! Go to the next item.
+  void Next()
+  {
+    myCurrentName.Clear();
+    myCurrentTrs.Nullify();
+    myCurrent.Nullify();
+    switch (mySource)
+    {
+      case IterSource_All:
       {
-        Handle(AIS_InteractiveObject) ashape = TheAISContext()->Current();
-        if (HaveToSet)
-          TheAISContext()->SetMaterial(ashape,GetMaterialFromName(argv[1]),Standard_False);
-        else
-          TheAISContext()->UnsetMaterial(ashape,Standard_False);
+        myMapIter.Next();
+        break;
       }
-      TheAISContext()->UpdateCurrentViewer();
-    }
-
-    //=======================================================================
-    // Il n'y a pas de noms de shape ET aucun objet courrant
-    // On impose a tous les objets du viewer le material passe en argument
-    //=======================================================================
-    else if (!ThereIsCurrent && !ThereIsName){
-      ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName
-        it(GetMapOfAIS());
-      while ( it.More() ) {
-        Handle(AIS_InteractiveObject) ashape =
-          Handle(AIS_InteractiveObject)::DownCast (it.Key1());
-        if (!ashape.IsNull()) {
-          if (HaveToSet)
-            TheAISContext()->SetMaterial(ashape,GetMaterialFromName(argv[1]),Standard_False);
-          else
-            TheAISContext()->UnsetMaterial(ashape,Standard_False);
-        }
-        it.Next();
-      }
-      TheAISContext()->UpdateCurrentViewer();
-    }
-  }
-  return 0;
-}
-
-
-
-//==============================================================================
-//function : VWidth
-//Author   : ege
-//purpose  : change the width of the edges of a selected or named or displayed shape
-//Draw arg : vwidth  [Name] WidthValue(1->10)
-//==============================================================================
-static int VWidth (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
-{
-
-  Standard_Boolean    ThereIsCurrent;
-  Standard_Boolean    ThereIsArgument;
-  Standard_Boolean    IsBound = Standard_False ;
-
-  const Standard_Boolean HaveToSet = (strcasecmp( argv[0],"vsetwidth") == 0);
-  if (HaveToSet) {
-    if ( argc < 2 || argc > 3 ) { di << argv[0] << " syntax error passez 1 ou 2 arguments" << "\n"; return 1; }
-    ThereIsArgument = (argc != 2);
-  }
-  else {
-    if ( argc>2 ) { di << argv[0] << " syntax error passez au plus 1  argument" << "\n"; return 1; }
-    ThereIsArgument = (argc == 2);
-  }
-  if ( !a3DView().IsNull() ) {
-    TCollection_AsciiString name;
-    if (ThereIsArgument) {
-      name = argv[1];
-      IsBound= GetMapOfAIS().IsBound2(name);
-    }
-    if (TheAISContext()->HasOpenedContext())
-      TheAISContext()->CloseLocalContext();
-
-    if (TheAISContext() -> NbCurrents() > 0  )
-      ThereIsCurrent =Standard_True;
-    else
-      ThereIsCurrent =Standard_False;
-
-    if ( ThereIsArgument && IsBound ) {
-      const Handle(Standard_Transient) anObj = GetMapOfAIS().Find2(name);
-      if (anObj->IsKind(STANDARD_TYPE(AIS_InteractiveObject))) {
-        const Handle(AIS_InteractiveObject) ashape =
-          Handle(AIS_InteractiveObject)::DownCast(GetMapOfAIS().Find2(name));
-        if (HaveToSet)
-          TheAISContext()->SetWidth ( ashape,Draw::Atof (argv[2]) );
-        else
-          TheAISContext()->UnsetWidth (ashape);
-      } else if (anObj->IsKind(STANDARD_TYPE(NIS_InteractiveObject))) {
-        const Handle(NIS_Triangulated) ashape =
-          Handle(NIS_Triangulated)::DownCast(GetMapOfAIS().Find2(name));
-        if (HaveToSet && !ashape.IsNull())
-          ashape->SetLineWidth ( Draw::Atof (argv[2]) );
-      }
-    }
-
-    //=======================================================================
-    // Il n'y a pas d'arguments
-    // Mais un ou plusieurs objets on des current representation
-    //=======================================================================
-    if (ThereIsCurrent && !ThereIsArgument) {
-      for (TheAISContext() -> InitCurrent() ;
-           TheAISContext() -> MoreCurrent() ;
-           TheAISContext() ->NextCurrent() )
+      case IterSource_List:
       {
-        Handle(AIS_InteractiveObject) ashape =  TheAISContext() -> Current();
-        if (HaveToSet)
-          TheAISContext()->SetWidth(ashape,Draw::Atof(argv[1]),Standard_False);
-        else
-          TheAISContext()->UnsetWidth(ashape,Standard_False);
+        mySeqIter.Next();
+        break;
       }
-      TheAISContext()->UpdateCurrentViewer();
+      case IterSource_Selected:
+      {
+        mySelIter->NextCurrent();
+        break;
+      }
     }
-    //=======================================================================
-    // Il n'y a pas d'arguments ET aucun objet courrant
-    //=======================================================================
-    else if (!ThereIsCurrent && !ThereIsArgument){
-     ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName
-       it(GetMapOfAIS());
-      while ( it.More() ) {
-        Handle(AIS_InteractiveObject) ashape =
-          Handle(AIS_InteractiveObject)::DownCast (it.Key1());
-        if (!ashape.IsNull()) {
-          if (HaveToSet)
-            TheAISContext()->SetWidth(ashape,Draw::Atof(argv[1]),Standard_False);
-          else
-            TheAISContext()->UnsetWidth(ashape,Standard_False);
-        }
-        it.Next();
-     }
-     TheAISContext()->UpdateCurrentViewer();
-   }
+    initCurrent();
   }
-  return 0;
-}
+
+private:
+
+  void initCurrent()
+  {
+    switch (mySource)
+    {
+      case IterSource_All:
+      {
+        if (myMapIter.More())
+        {
+          myCurrentName = myMapIter.Key2();
+          myCurrentTrs  = myMapIter.Key1();
+          myCurrent     = Handle(AIS_InteractiveObject)::DownCast (myCurrentTrs);
+        }
+        break;
+      }
+      case IterSource_List:
+      {
+        if (mySeqIter.More())
+        {
+          if (!GetMapOfAIS().IsBound2 (mySeqIter.Value()))
+          {
+            std::cout << "Error: object " << mySeqIter.Value() << " is not displayed!\n";
+            return;
+          }
+          myCurrentName = mySeqIter.Value();
+          myCurrentTrs  = GetMapOfAIS().Find2 (mySeqIter.Value());
+          myCurrent     = Handle(AIS_InteractiveObject)::DownCast (myCurrentTrs);
+        }
+        break;
+      }
+      case IterSource_Selected:
+      {
+        if (mySelIter->MoreCurrent())
+        {
+          myCurrentName = GetMapOfAIS().Find1 (mySelIter->Current());
+          myCurrent     = mySelIter->Current();
+        }
+        break;
+      }
+    }
+  }
+
+private:
+
+  enum IterSource
+  {
+    IterSource_All,
+    IterSource_List,
+    IterSource_Selected
+  };
+
+private:
+
+  Handle(AIS_InteractiveContext) mySelIter;    //!< iterator for current (selected) objects (IterSource_Selected)
+  ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName myMapIter; //!< iterator for map of all objects (IterSource_All)
+  NCollection_Sequence<TCollection_AsciiString>           mySeq;
+  NCollection_Sequence<TCollection_AsciiString>::Iterator mySeqIter;
+
+  TCollection_AsciiString        myCurrentName;//!< current item name
+  Handle(Standard_Transient)     myCurrentTrs; //!< current item (as transient object)
+  Handle(AIS_InteractiveObject)  myCurrent;    //!< current item
+
+  IterSource                     mySource;     //!< iterated collection
+
+};
 
 //==============================================================================
 //function : VInteriorStyle
 //purpose  : sets interior style of the a selected or named or displayed shape
-//Draw arg : vsetinteriorstyle [shape] style
 //==============================================================================
-static void SetInteriorStyle (const Handle(AIS_InteractiveObject)& theIAO,
-                              const Standard_Integer theStyle,
-                              Draw_Interpretor& di)
+static int VSetInteriorStyle (Draw_Interpretor& /*theDI*/,
+                              Standard_Integer  theArgNb,
+                              const char**      theArgVec)
 {
-  if (theStyle < Aspect_IS_EMPTY || theStyle > Aspect_IS_HIDDENLINE) {
-    di << "Style must be within a range [0 (Aspect_IS_EMPTY), " << Aspect_IS_HIDDENLINE <<
-      " (Aspect_IS_HIDDENLINE)]\n";
-    return;
-  }
-  const Handle(Prs3d_Drawer)& aDrawer = theIAO->Attributes();
-  Handle(Prs3d_ShadingAspect) aShadingAspect = aDrawer->ShadingAspect();
-  Handle(Graphic3d_AspectFillArea3d) aFillAspect = aShadingAspect->Aspect();
-  Aspect_InteriorStyle aStyle = (Aspect_InteriorStyle) (theStyle);
-  aFillAspect->SetInteriorStyle (aStyle);
-  TheAISContext()->RecomputePrsOnly (theIAO, Standard_False /*update*/, Standard_True /*all modes*/);
-}
-
-static int VInteriorStyle (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
-{
-  if (argc < 2 || argc > 3) {
-    di << argv[0] << " requires 2 or 3 arguments\n";
-    di << "Usage : " << argv[0] << " [shape] Style : Set interior style" << "\n";
-    di << "Style must match Aspect_InteriorStyle and be one of:\n";
-    di << "         0 = EMPTY, 1 = HOLLOW, 2 = HATCH, 3 = SOLID, 4 = HIDDENLINE\n";
+  const Handle(AIS_InteractiveContext)& aCtx = ViewerTest::GetAISContext();
+  if (aCtx.IsNull())
+  {
+    std::cerr << "Error: no active view!\n";
     return 1;
   }
 
-  Standard_Boolean    ThereIsCurrent;
-  Standard_Boolean    ThereIsArgument;
-  Standard_Boolean    IsBound = Standard_False ;
-
-  ThereIsArgument = (argc > 2);
-  if ( !a3DView().IsNull() ) {
-    TCollection_AsciiString name;
-    if (ThereIsArgument) {
-      name = argv[1];
-      IsBound= GetMapOfAIS().IsBound2(name);
-    }
-    if (TheAISContext()->HasOpenedContext())
-      TheAISContext()->CloseLocalContext();
-
-    if (TheAISContext() -> NbCurrents() > 0  )
-      ThereIsCurrent =Standard_True;
-    else
-      ThereIsCurrent =Standard_False;
-
-    if ( ThereIsArgument && IsBound ) {
-      const Handle(Standard_Transient) anObj = GetMapOfAIS().Find2(name);
-      if (anObj->IsKind(STANDARD_TYPE(AIS_InteractiveObject))) {
-        const Handle(AIS_InteractiveObject) ashape =
-          Handle(AIS_InteractiveObject)::DownCast(GetMapOfAIS().Find2(name));
-        SetInteriorStyle (ashape, Draw::Atoi (argv[2]), di);
-      }
-    }
-    //=======================================================================
-    // No arguments specified
-    // But there are one or more selected objects
-    //=======================================================================
-    if (ThereIsCurrent && !ThereIsArgument) {
-      for (TheAISContext() -> InitCurrent() ;
-           TheAISContext() -> MoreCurrent() ;
-           TheAISContext() ->NextCurrent() )
-      {
-        Handle(AIS_InteractiveObject) ashape =  TheAISContext() -> Current();
-        SetInteriorStyle (ashape, Draw::Atoi (argv[1]), di);
-      }
-    }
-    //=======================================================================
-    // No arguments specified and there are no selected objects
-    //=======================================================================
-    else if (!ThereIsCurrent && !ThereIsArgument){
-      ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName
-       it(GetMapOfAIS());
-      while ( it.More() ) {
-        Handle(AIS_InteractiveObject) ashape =
-          Handle(AIS_InteractiveObject)::DownCast (it.Key1());
-        if (!ashape.IsNull())
-          SetInteriorStyle (ashape, Draw::Atoi (argv[1]), di);
-        it.Next();
-      }
-    }
-    TheAISContext()->UpdateCurrentViewer();
+  Standard_Integer anArgIter = 1;
+  TCollection_AsciiString aName;
+  if (theArgNb - anArgIter == 2)
+  {
+    aName = theArgVec[anArgIter++];
   }
+  else if (theArgNb - anArgIter != 1)
+  {
+    std::cout << "Error: wrong number of arguments!\n";
+    return 1;
+  }
+  Standard_Integer        anInterStyle = Aspect_IS_SOLID;
+  TCollection_AsciiString aStyleArg (theArgVec[anArgIter++]);
+  aStyleArg.LowerCase();
+  if (aStyleArg == "empty")
+  {
+    anInterStyle = 0;
+  }
+  else if (aStyleArg == "hollow")
+  {
+    anInterStyle = 1;
+  }
+  else if (aStyleArg == "hatch")
+  {
+    anInterStyle = 2;
+  }
+  else if (aStyleArg == "solid")
+  {
+    anInterStyle = 3;
+  }
+  else if (aStyleArg == "hiddenline")
+  {
+    anInterStyle = 4;
+  }
+  else
+  {
+    anInterStyle = aStyleArg.IntegerValue();
+  }
+  if (anInterStyle < Aspect_IS_EMPTY
+   || anInterStyle > Aspect_IS_HIDDENLINE)
+  {
+    std::cout << "Error: style must be within a range [0 (Aspect_IS_EMPTY), "
+              << Aspect_IS_HIDDENLINE << " (Aspect_IS_HIDDENLINE)]\n";
+    return 1;
+  }
+
+  if (!aName.IsEmpty()
+   && !GetMapOfAIS().IsBound2 (aName))
+  {
+    std::cout << "Error: object " << aName << " is not displayed!\n";
+    return 1;
+  }
+
+  if (aCtx->HasOpenedContext())
+  {
+    aCtx->CloseLocalContext();
+  }
+  for (ViewTest_PrsIter anIter (aName); anIter.More(); anIter.Next())
+  {
+    const Handle(AIS_InteractiveObject)& anIO = anIter.Current();
+    if (!anIO.IsNull())
+    {
+      const Handle(Prs3d_Drawer)& aDrawer        = anIO->Attributes();
+      Handle(Prs3d_ShadingAspect) aShadingAspect = aDrawer->ShadingAspect();
+      Handle(Graphic3d_AspectFillArea3d) aFillAspect = aShadingAspect->Aspect();
+      aFillAspect->SetInteriorStyle ((Aspect_InteriorStyle )anInterStyle);
+      aCtx->RecomputePrsOnly (anIO, Standard_False, Standard_True);
+    }
+  }
+
+  // update the screen and redraw the view
+  TheAISContext()->UpdateCurrentViewer();
+  return 0;
+}
+
+//! Auxiliary structure for VAspects
+struct ViewerTest_AspectsChangeSet
+{
+  Standard_Integer         ToSetColor;
+  Quantity_Color           Color;
+
+  Standard_Integer         ToSetLineWidth;
+  Standard_Real            LineWidth;
+
+  Standard_Integer         ToSetTransparency;
+  Standard_Real            Transparency;
+
+  Standard_Integer         ToSetMaterial;
+  Graphic3d_NameOfMaterial Material;
+  TCollection_AsciiString  MatName;
+
+  NCollection_Sequence<TopoDS_Shape> SubShapes;
+
+  //! Empty constructor
+  ViewerTest_AspectsChangeSet()
+  : ToSetColor        (0),
+    Color             (DEFAULT_COLOR),
+    ToSetLineWidth    (0),
+    LineWidth         (1.0),
+    ToSetTransparency (0),
+    Transparency      (0.0),
+    ToSetMaterial     (0),
+    Material (Graphic3d_NOM_DEFAULT) {}
+
+  //! @return true if no changes have been requested
+  Standard_Boolean IsEmpty() const
+  {
+    return ToSetLineWidth    == 0
+        && ToSetTransparency == 0
+        && ToSetColor        == 0
+        && ToSetMaterial     == 0;
+  }
+
+  //! @return true if properties are valid
+  Standard_Boolean Validate (const Standard_Boolean theIsSubPart) const
+  {
+    Standard_Boolean isOk = Standard_True;
+    if (LineWidth <= 0.0
+     || LineWidth >  10.0)
+    {
+      std::cout << "Error: the width should be within [1; 10] range (specified " << LineWidth << ")\n";
+      isOk = Standard_False;
+    }
+    if (Transparency < 0.0
+     || Transparency > 1.0)
+    {
+      std::cout << "Error: the transparency should be within [0; 1] range (specified " << Transparency << ")\n";
+      isOk = Standard_False;
+    }
+    if (theIsSubPart
+     && ToSetTransparency)
+    {
+      std::cout << "Error: the transparency can not be defined for sub-part of object!\n";
+      isOk = Standard_False;
+    }
+    if (ToSetMaterial == 1
+     && Material == Graphic3d_NOM_DEFAULT)
+    {
+      std::cout << "Error: unknown material " << MatName << ".\n";
+      isOk = Standard_False;
+    }
+    return isOk;
+  }
+
+};
+
+//==============================================================================
+//function : VAspects
+//purpose  :
+//==============================================================================
+static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
+                                  Standard_Integer  theArgNb,
+                                  const char**      theArgVec)
+{
+  TCollection_AsciiString aCmdName (theArgVec[0]);
+  const Handle(AIS_InteractiveContext)& aCtx = ViewerTest::GetAISContext();
+  if (aCtx.IsNull())
+  {
+    std::cerr << "Error: no active view!\n";
+    return 1;
+  }
+
+  Standard_Integer      anArgIter = 1;
+  NCollection_Sequence<TCollection_AsciiString> aNames;
+  for (; anArgIter < theArgNb; ++anArgIter)
+  {
+    TCollection_AsciiString anArg = theArgVec[anArgIter];
+    if (!anArg.IsEmpty()
+      && anArg.Value (1) != '-')
+    {
+      aNames.Append (anArg);
+    }
+    else
+    {
+      break;
+    }
+  }
+
+  NCollection_Sequence<ViewerTest_AspectsChangeSet> aChanges;
+  aChanges.Append (ViewerTest_AspectsChangeSet());
+  ViewerTest_AspectsChangeSet* aChangeSet = &aChanges.ChangeLast();
+
+  // parse syntax of legacy commands
+  if (aCmdName == "vsetwidth")
+  {
+    if (aNames.IsEmpty()
+    || !aNames.Last().IsRealValue())
+    {
+      std::cout << "Error: not enough arguments!\n";
+      return 1;
+    }
+    aChangeSet->ToSetLineWidth = 1;
+    aChangeSet->LineWidth = aNames.Last().RealValue();
+    aNames.Remove (aNames.Length());
+  }
+  else if (aCmdName == "vunsetwidth")
+  {
+    aChangeSet->ToSetLineWidth = -1;
+  }
+  else if (aCmdName == "vsetcolor")
+  {
+    if (aNames.IsEmpty())
+    {
+      std::cout << "Error: not enough arguments!\n";
+      return 1;
+    }
+    aChangeSet->ToSetColor = 1;
+    aChangeSet->Color  = ViewerTest::GetColorFromName (aNames.Last().ToCString());
+    aNames.Remove (aNames.Length());
+  }
+  else if (aCmdName == "vunsetcolor")
+  {
+    aChangeSet->ToSetColor = -1;
+  }
+  else if (aCmdName == "vsettransparency")
+  {
+    if (aNames.IsEmpty()
+    || !aNames.Last().IsRealValue())
+    {
+      std::cout << "Error: not enough arguments!\n";
+      return 1;
+    }
+    aChangeSet->ToSetTransparency = 1;
+    aChangeSet->Transparency  = aNames.Last().RealValue();
+    aNames.Remove (aNames.Length());
+  }
+  else if (aCmdName == "vunsettransparency")
+  {
+    aChangeSet->ToSetTransparency = -1;
+  }
+  else if (aCmdName == "vsetmaterial")
+  {
+    if (aNames.IsEmpty())
+    {
+      std::cout << "Error: not enough arguments!\n";
+      return 1;
+    }
+    aChangeSet->ToSetMaterial = 1;
+    aChangeSet->MatName  = aNames.Last();
+    aChangeSet->Material = Graphic3d_MaterialAspect::MaterialFromName (aChangeSet->MatName.ToCString());
+    aNames.Remove (aNames.Length());
+  }
+  else if (aCmdName == "vunsetmaterial")
+  {
+    aChangeSet->ToSetMaterial = -1;
+  }
+  else if (anArgIter >= theArgNb)
+  {
+    std::cout << "Error: not enough arguments!\n";
+    return 1;
+  }
+
+  if (!aChangeSet->IsEmpty())
+  {
+    anArgIter = theArgNb;
+  }
+  for (; anArgIter < theArgNb; ++anArgIter)
+  {
+    TCollection_AsciiString anArg = theArgVec[anArgIter];
+    anArg.LowerCase();
+    if (anArg == "-setwidth"
+     || anArg == "-setlinewidth")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cout << "Error: wrong syntax at " << anArg << "\n";
+        return 1;
+      }
+      aChangeSet->ToSetLineWidth = 1;
+      aChangeSet->LineWidth = Draw::Atof (theArgVec[anArgIter]);
+    }
+    else if (anArg == "-unsetwidth"
+          || anArg == "-unsetlinewidth")
+    {
+      aChangeSet->ToSetLineWidth = -1;
+      aChangeSet->LineWidth = 1.0;
+    }
+    else if (anArg == "-settransp"
+          || anArg == "-settransparancy")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cout << "Error: wrong syntax at " << anArg << "\n";
+        return 1;
+      }
+      aChangeSet->ToSetTransparency = 1;
+      aChangeSet->Transparency = Draw::Atof (theArgVec[anArgIter]);
+      if (aChangeSet->Transparency >= 0.0
+       && aChangeSet->Transparency <= Precision::Confusion())
+      {
+        aChangeSet->ToSetTransparency = -1;
+        aChangeSet->Transparency = 0.0;
+      }
+    }
+    else if (anArg == "-setalpha")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cout << "Error: wrong syntax at " << anArg << "\n";
+        return 1;
+      }
+      aChangeSet->ToSetTransparency = 1;
+      aChangeSet->Transparency  = Draw::Atof (theArgVec[anArgIter]);
+      if (aChangeSet->Transparency < 0.0
+       || aChangeSet->Transparency > 1.0)
+      {
+        std::cout << "Error: the transparency should be within [0; 1] range (specified " << aChangeSet->Transparency << ")\n";
+        return 1;
+      }
+      aChangeSet->Transparency = 1.0 - aChangeSet->Transparency;
+      if (aChangeSet->Transparency >= 0.0
+       && aChangeSet->Transparency <= Precision::Confusion())
+      {
+        aChangeSet->ToSetTransparency = -1;
+        aChangeSet->Transparency = 0.0;
+      }
+    }
+    else if (anArg == "-unsettransp"
+          || anArg == "-unsettransparancy"
+          || anArg == "-unsetalpha"
+          || anArg == "-opaque")
+    {
+      aChangeSet->ToSetTransparency = -1;
+      aChangeSet->Transparency = 0.0;
+    }
+    else if (anArg == "-setcolor")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cout << "Error: wrong syntax at " << anArg << "\n";
+        return 1;
+      }
+      aChangeSet->ToSetColor = 1;
+      aChangeSet->Color = ViewerTest::GetColorFromName (theArgVec[anArgIter]);
+    }
+    else if (anArg == "-unsetcolor")
+    {
+      aChangeSet->ToSetColor = -1;
+      aChangeSet->Color = DEFAULT_COLOR;
+    }
+    else if (anArg == "-setmat"
+          || anArg == "-setmaterial")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cout << "Error: wrong syntax at " << anArg << "\n";
+        return 1;
+      }
+      aChangeSet->ToSetMaterial = 1;
+      aChangeSet->MatName  = theArgVec[anArgIter];
+      aChangeSet->Material = Graphic3d_MaterialAspect::MaterialFromName (aChangeSet->MatName.ToCString());
+    }
+    else if (anArg == "-unsetmat"
+          || anArg == "-unsetmaterial")
+    {
+      aChangeSet->ToSetMaterial = -1;
+      aChangeSet->Material = Graphic3d_NOM_DEFAULT;
+    }
+    else if (anArg == "-subshape"
+          || anArg == "-subshapes")
+    {
+      if (aNames.IsEmpty())
+      {
+        std::cout << "Error: main objects should specified explicitly when -subshapes is used!\n";
+        return 1;
+      }
+
+      aChanges.Append (ViewerTest_AspectsChangeSet());
+      aChangeSet = &aChanges.ChangeLast();
+
+      for (++anArgIter; anArgIter < theArgNb; ++anArgIter)
+      {
+        Standard_CString aSubShapeName = theArgVec[anArgIter];
+        if (*aSubShapeName == '-')
+        {
+          --anArgIter;
+          break;
+        }
+
+        TopoDS_Shape aSubShape = DBRep::Get (aSubShapeName);
+        if (aSubShape.IsNull())
+        {
+          std::cerr << "Error: shape " << aSubShapeName << " doesn't found!\n";
+          return 1;
+        }
+        aChangeSet->SubShapes.Append (aSubShape);
+      }
+
+      if (aChangeSet->SubShapes.IsEmpty())
+      {
+        std::cerr << "Error: empty list is specified after -subshapes!\n";
+        return 1;
+      }
+    }
+    else if (anArg == "-unset")
+    {
+      aChangeSet->ToSetLineWidth = -1;
+      aChangeSet->LineWidth = 1.0;
+      aChangeSet->ToSetTransparency = -1;
+      aChangeSet->Transparency = 0.0;
+      aChangeSet->ToSetColor = -1;
+      aChangeSet->Color = DEFAULT_COLOR;
+      aChangeSet->ToSetMaterial = -1;
+      aChangeSet->Material = Graphic3d_NOM_DEFAULT;
+    }
+    else
+    {
+      std::cout << "Error: wrong syntax at " << anArg << "\n";
+      return 1;
+    }
+  }
+
+  Standard_Boolean isFirst = Standard_True;
+  for (NCollection_Sequence<ViewerTest_AspectsChangeSet>::Iterator aChangesIter (aChanges);
+       aChangesIter.More(); aChangesIter.Next())
+  {
+    if (!aChangesIter.Value().Validate (!isFirst))
+    {
+      return 1;
+    }
+    isFirst = Standard_False;
+  }
+
+  if (aCtx->HasOpenedContext())
+  {
+    aCtx->CloseLocalContext();
+  }
+  for (ViewTest_PrsIter aPrsIter (aNames); aPrsIter.More(); aPrsIter.Next())
+  {
+    const TCollection_AsciiString& aName = aPrsIter.CurrentName();
+    Handle(AIS_InteractiveObject)  aPrs  = aPrsIter.Current();
+    Handle(AIS_ColoredShape) aColoredPrs;
+    Standard_Boolean toDisplay = Standard_False;
+    if (aChanges.Length() > 1)
+    {
+      Handle(AIS_Shape) aShapePrs = Handle(AIS_Shape)::DownCast (aPrs);
+      if (aShapePrs.IsNull())
+      {
+        std::cout << "Error: an object " << aName << " is not an AIS_Shape presentation!\n";
+        return 1;
+      }
+      aColoredPrs = Handle(AIS_ColoredShape)::DownCast (aShapePrs);
+      if (aColoredPrs.IsNull())
+      {
+        aColoredPrs = new AIS_ColoredShape (aShapePrs);
+        aCtx->Remove (aShapePrs, Standard_False);
+        GetMapOfAIS().UnBind2 (aName);
+        GetMapOfAIS().Bind (aColoredPrs, aName);
+        toDisplay = Standard_True;
+        aShapePrs = aColoredPrs;
+        aPrs      = aColoredPrs;
+      }
+    }
+
+    if (!aPrs.IsNull())
+    {
+      NCollection_Sequence<ViewerTest_AspectsChangeSet>::Iterator aChangesIter (aChanges);
+      aChangeSet = &aChangesIter.ChangeValue();
+      if (aChangeSet->ToSetMaterial == 1)
+      {
+        aCtx->SetMaterial (aPrs, aChangeSet->Material, Standard_False);
+      }
+      else if (aChangeSet->ToSetMaterial == -1)
+      {
+        aCtx->UnsetMaterial (aPrs, Standard_False);
+      }
+      if (aChangeSet->ToSetColor == 1)
+      {
+        aCtx->SetColor (aPrs, aChangeSet->Color, Standard_False);
+      }
+      else if (aChangeSet->ToSetColor == -1)
+      {
+        aCtx->UnsetColor (aPrs, Standard_False);
+      }
+      if (aChangeSet->ToSetTransparency == 1)
+      {
+        aCtx->SetTransparency (aPrs, aChangeSet->Transparency, Standard_False);
+      }
+      else if (aChangeSet->ToSetTransparency == -1)
+      {
+        aCtx->UnsetTransparency (aPrs, Standard_False);
+      }
+      if (aChangeSet->ToSetLineWidth == 1)
+      {
+        aCtx->SetWidth (aPrs, aChangeSet->LineWidth, Standard_False);
+      }
+      else if (aChangeSet->ToSetLineWidth == -1)
+      {
+        aCtx->UnsetWidth (aPrs, Standard_False);
+      }
+
+      for (aChangesIter.Next(); aChangesIter.More(); aChangesIter.Next())
+      {
+        aChangeSet = &aChangesIter.ChangeValue();
+        for (NCollection_Sequence<TopoDS_Shape>::Iterator aSubShapeIter (aChangeSet->SubShapes);
+             aSubShapeIter.More(); aSubShapeIter.Next())
+        {
+          const TopoDS_Shape& aSubShape = aSubShapeIter.Value();
+          if (aChangeSet->ToSetColor == 1)
+          {
+            aColoredPrs->SetCustomColor (aSubShape, aChangeSet->Color);
+          }
+          if (aChangeSet->ToSetLineWidth == 1)
+          {
+            aColoredPrs->SetCustomWidth (aSubShape, aChangeSet->LineWidth);
+          }
+          if (aChangeSet->ToSetColor     == -1
+           || aChangeSet->ToSetLineWidth == -1)
+          {
+            aColoredPrs->UnsetCustomAspects (aSubShape, Standard_True);
+          }
+        }
+      }
+      if (toDisplay)
+      {
+        aCtx->Display (aPrs, Standard_False);
+      }
+      else if (!aColoredPrs.IsNull())
+      {
+        aColoredPrs->Redisplay();
+      }
+    }
+    else
+    {
+      Handle(NIS_InteractiveObject) aNisObj = Handle(NIS_InteractiveObject)::DownCast (aPrsIter.CurrentTrs());
+      Handle(NIS_Triangulated)      aNisTri = Handle(NIS_Triangulated)::DownCast (aNisObj);
+      if (!aNisObj.IsNull())
+      {
+        if (aChangeSet->ToSetTransparency != 0)
+        {
+          aNisObj->SetTransparency (aChangeSet->Transparency);
+        }
+      }
+      if (!aNisTri.IsNull())
+      {
+        if (aChangeSet->ToSetColor != 0)
+        {
+          aNisTri->SetColor (aChangeSet->Color);
+        }
+        if (aChangeSet->ToSetLineWidth != 0)
+        {
+          aNisTri->SetLineWidth (aChangeSet->LineWidth);
+        }
+      }
+    }
+  }
+
+  // update the screen and redraw the view
+  TheAISContext()->UpdateCurrentViewer();
   return 0;
 }
 
@@ -3392,46 +3607,67 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
   theCommands.Add("vsub",      "vsub 0/1 (off/on) [obj]        : Subintensity(on/off) of selected objects",
 		  __FILE__,VSubInt,group);
 
+  theCommands.Add("vaspects",
+              "vaspects [name1 [name2 [...]]]"
+      "\n\t\t:          [-setcolor ColorName] [-unsetcolor]"
+      "\n\t\t:          [-setmaterial MatName] [-unsetmaterial]"
+      "\n\t\t:          [-settransparency Transp] [-unsettransparancy]"
+      "\n\t\t:          [-setwidth LineWidth] [-unsetwidth]"
+      "\n\t\t:          [-subshapes subname1 [subname2 [...]]]"
+      "\n\t\t: Manage presentation properties of all, selected or named objects."
+      "\n\t\t: When -subshapes is specified than following properties will be"
+      "\n\t\t: assigned to specified sub-shapes.",
+		  __FILE__,VAspects,group);
+
   theCommands.Add("vsetcolor",
-		  "vsetcolor [name] ColorName"
-      "\n\t\t: Sets color for all, selected or named objects.",
-		  __FILE__,VColor2,group);
+      "vsetcolor [name] ColorName"
+      "\n\t\t: Sets color for all, selected or named objects."
+      "\n\t\t: Alias for vaspects -setcolor [name] ColorName.",
+		  __FILE__,VAspects,group);
 
   theCommands.Add("vunsetcolor",
-		  "vunsetcolor [name]"
-      "\n\t\t: Resets color for all, selected or named objects.",
-		  __FILE__,VColor2,group);
+		  "vunsetcolor [-noupdate|-update] [name]"
+      "\n\t\t: Resets color for all, selected or named objects."
+      "\n\t\t: Alias for vaspects -unsetcolor [name].",
+		  __FILE__,VAspects,group);
 
   theCommands.Add("vsettransparency",
 		  "vsettransparency [name] Coefficient"
       "\n\t\t: Sets transparency for all, selected or named objects."
-      "\n\t\t: The Coefficient may be between 0.0 (opaque) and 1.0 (fully transparent).",
-		  __FILE__,VTransparency,group);
+      "\n\t\t: The Coefficient may be between 0.0 (opaque) and 1.0 (fully transparent)."
+      "\n\t\t: Alias for vaspects -settransp [name] Coefficient.",
+		  __FILE__,VAspects,group);
 
   theCommands.Add("vunsettransparency",
-		  "vunsettransparency [name]"
-      "\n\t\t: Resets transparency for all, selected or named objects.",
-		  __FILE__,VTransparency,group);
+		  "vunsettransparency [-noupdate|-update] [name]"
+      "\n\t\t: Resets transparency for all, selected or named objects."
+      "\n\t\t: Alias for vaspects -unsettransp [name].",
+		  __FILE__,VAspects,group);
 
   theCommands.Add("vsetmaterial",
-		  "vmaterial          : vmaterial  [name of shape] MaterialName",
-		  __FILE__,VMaterial,group);
+		  "vsetmaterial [name] MaterialName"
+      "\n\t\t: Alias for vaspects -setmaterial [name] MaterialName.",
+		  __FILE__,VAspects,group);
 
   theCommands.Add("vunsetmaterial",
-		  "vmaterial          : vmaterial  [name of shape]",
-		  __FILE__,VMaterial,group);
+		  "vunsetmaterial [name]"
+      "\n\t\t: Alias for vaspects -unsetmaterial [name].",
+		  __FILE__,VAspects,group);
 
   theCommands.Add("vsetwidth",
-		  "vsetwidth          : vwidth  [name of shape] width(0->10)",
-		  __FILE__,VWidth,group);
+		  "vsetwidth [name] width(0->10)"
+      "\n\t\t: Alias for vaspects -setwidth [name] width.",
+		  __FILE__,VAspects,group);
 
   theCommands.Add("vunsetwidth",
-		  "vunsetwidth          : vwidth  [name of shape]",
-		  __FILE__,VWidth,group);
+		  "vunsetwidth [name]"
+      "\n\t\t: Alias for vaspects -unsetwidth [name] width.",
+		  __FILE__,VAspects,group);
 
   theCommands.Add("vsetinteriorstyle",
-		  "vsetinteriorstyle    : vsetinteriorstyle [name of shape] style",
-		  __FILE__,VInteriorStyle,group);
+		  "vsetinteriorstyle [name] style"
+      "\n\t\t: Where style is: 0 = EMPTY, 1 = HOLLOW, 2 = HATCH, 3 = SOLID, 4 = HIDDENLINE.",
+		  __FILE__,VSetInteriorStyle,group);
 
   theCommands.Add("vardis",
 		  "vardis          : display activeareas",
