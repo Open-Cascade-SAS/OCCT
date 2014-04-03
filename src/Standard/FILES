@@ -57,8 +57,6 @@ Standard_Transient_proto.hxx
 Standard_TypeDef.hxx
 Standard_math.cxx
 Standard_math.hxx
-Standard_osd_ffi.c
-Standard_symlink.c
 Standard_values.h
 Standard_DefineHandle.hxx
 Standard_UUID.cxx
