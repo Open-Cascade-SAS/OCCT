@@ -28,6 +28,13 @@
 
 #include <Draw.hxx>
 #include <DrawTrSurf.hxx>
+
+#include <BRepBuilderAPI_Copy.hxx>
+
+#include <BOPCol_ListOfShape.hxx>
+
+#include <BOPDS_DS.hxx>
+
 #include <BOPAlgo_CheckerSI.hxx>
 #include <BOPDS_VectorOfInterfVV.hxx>
 #include <BOPDS_VectorOfInterfVE.hxx>
@@ -35,12 +42,13 @@
 #include <BOPDS_VectorOfInterfVF.hxx>
 #include <BOPDS_VectorOfInterfEF.hxx>
 #include <BOPDS_VectorOfInterfFF.hxx>
-#include <BOPDS_DS.hxx>
+#include <BOPDS_VectorOfInterfVZ.hxx>
+#include <BOPDS_VectorOfInterfEZ.hxx>
+#include <BOPDS_VectorOfInterfFZ.hxx>
+#include <BOPDS_VectorOfInterfZZ.hxx>
 
-#include <BOPCol_ListOfShape.hxx>
 #include <BOPAlgo_ArgumentAnalyzer.hxx>
 #include <BOPAlgo_CheckResult.hxx>
-#include <BRepBuilderAPI_Copy.hxx>
 
 static 
   Standard_Integer bopcheck (Draw_Interpretor&, Standard_Integer, const char** );
@@ -79,46 +87,61 @@ Standard_Integer bopcheck
   (Draw_Interpretor& di, Standard_Integer n,  const char** a )
 {
   if (n<2) {
-    di << " Use >bopcheck Shape [level of check: 0 - 5" << "\n";
+    di << " Use >bopcheck Shape [level of check: 0 - 9" << "\n";
     di << " The level of check defines "; 
-    di << " which interferferences will be checked:\n"; 
-    di << " 0 - only V/V;\n"; 
-    di << " 1 - V/V and V/E;\n";
-    di << " 2 - V/V, V/E and E/E;\n"; 
-    di << " 3 - V/V, V/E, E/E and V/F;\n"; 
-    di << " 4 - V/V, V/E, E/E, V/F and E/F;\n"; 
-    di << " 5 - all interferences, default value.\n"; 
+    di << " which interferences will be checked:\n";
+    di << " 0 - V/V only\n"; 
+    di << " 1 - V/V, V/E\n";
+    di << " 2 - V/V, V/E, E/E\n"; 
+    di << " 3 - V/V, V/E, E/E , V/F\n"; 
+    di << " 4 - V/V, V/E, E/E, V/F , E/F\n"; 
+    di << " 5 - V/V, V/E, E/E, V/F, E/F, F/F;\n";
+    di << " 6 - V/V, V/E, E/E, V/F, E/F, F/F, V/Z\n";
+    di << " 7 - V/V, V/E, E/E, V/F, E/F, F/F, E/Z\n";
+    di << " 8 - V/V, V/E, E/E, V/F, E/F, F/F, E/Z, F/Z\n";
+    di << " 9 - V/V, V/E, E/E, V/F, E/F, F/F, E/Z, F/Z, Z/Z\n";
+    di << " Default level is 9\n";
     return 1;
   }
-
-  TopoDS_Shape aS1 = DBRep::Get(a[1]);
-  if (aS1.IsNull()) {
+  //
+  TopoDS_Shape aS = DBRep::Get(a[1]);
+  if (aS.IsNull()) {
     di << "null shapes are not allowed here!";
     return 1;
   }
-  TopoDS_Shape aS = aS1;
   //
-  Standard_Integer iErr, aTypeInt, i, ind, j;
-  Standard_Integer nI1, nI2, theLevelOfCheck;
-  Standard_Boolean bSelfInt, bFFInt;
+  Standard_Integer theLevelOfCheck, aNbInterfTypes;
+  //
+  aNbInterfTypes=BOPDS_DS::NbInterfTypes();
+  //
+  theLevelOfCheck = (n==3) ? Draw::Atoi(a[2]) : aNbInterfTypes-1;
+  if (theLevelOfCheck > aNbInterfTypes-1) {
+    di << "Invalid level";
+    return 1;
+  }
+  //-------------------------------------------------------------------
   char buf[256];
-  char type[6][4] = {"V/V", "V/E", "E/E","V/F", "E/F", "F/F"};
-
-  theLevelOfCheck = (n==3) ? Draw::Atoi(a[2]) : 5;
-  if (theLevelOfCheck >= 0 && theLevelOfCheck < 5) {
+  char type[10][4] = {
+    "V/V", "V/E", "E/E","V/F", "E/F", "F/F", "V/Z", "E/Z", "F/Z", "Z/Z"
+  };
+  Standard_Integer iErr, aTypeInt, i, ind, j, nI1, nI2;
+  Standard_Boolean bSelfInt, bFFInt;
+  //
+  if (theLevelOfCheck >= 0 && theLevelOfCheck < aNbInterfTypes) {
     di << "Info:\nThe level of check is set to " 
       << type[theLevelOfCheck] << ", i.e. intersection(s)\n";
-    for (i=theLevelOfCheck+1; i<=5; ++i) {
+    for (i=theLevelOfCheck+1; i<aNbInterfTypes; ++i) {
       di << type[i];
-      if (i<5) {
+      if (i<aNbInterfTypes-1) {
         di << ", ";
       }
     }
     di << " will not be checked.\n\n";
   }
-  
+  //
   BOPAlgo_CheckerSI aChecker;
   BOPCol_ListOfShape anArgs;
+  //
   anArgs.Append(aS);
   aChecker.SetArguments(anArgs);
   aChecker.SetLevelOfCheck(theLevelOfCheck);
@@ -133,27 +156,67 @@ Standard_Integer bopcheck
   BOPDS_VectorOfInterfVF& aVFs=theDS->InterfVF();
   BOPDS_VectorOfInterfEF& aEFs=theDS->InterfEF();
   BOPDS_VectorOfInterfFF& aFFs=theDS->InterfFF();
+  BOPDS_VectorOfInterfVZ& aVZs=theDS->InterfVZ();
+  BOPDS_VectorOfInterfEZ& aEZs=theDS->InterfEZ();
+  BOPDS_VectorOfInterfFZ& aFZs=theDS->InterfFZ();
+  BOPDS_VectorOfInterfZZ& aZZs=theDS->InterfZZ();
   //
-  Standard_Integer aNb[6] ={
+  Standard_Integer aNb[] ={
     aVVs.Extent(), aVEs.Extent(), aEEs.Extent(), 
-    aVFs.Extent(), aEFs.Extent(), aFFs.Extent()
+    aVFs.Extent(), aEFs.Extent(), aFFs.Extent(),
+    aVZs.Extent(), aEZs.Extent(), aFZs.Extent(), 
+    aZZs.Extent(),
   };
   //
   bSelfInt = Standard_False;
   ind = 0;
-  for (aTypeInt = 0; aTypeInt < 6; ++aTypeInt) {
+  for (aTypeInt = 0; aTypeInt < aNbInterfTypes; ++aTypeInt) {
+    
     for (i = 0; i < aNb[aTypeInt]; ++i) {
-      BOPDS_Interf* aInt = 
-        (aTypeInt==0) ? (BOPDS_Interf*)(&aVVs(i)) : 
-          ((aTypeInt==1) ? (BOPDS_Interf*)(&aVEs(i)) :
-           ((aTypeInt==2) ? (BOPDS_Interf*)(&aEEs(i)) : 
-            ((aTypeInt==3) ? (BOPDS_Interf*)(&aVFs(i)) :
-             ((aTypeInt==4) ? (BOPDS_Interf*)(&aEFs(i)) : 
-              (BOPDS_Interf*)(&aFFs(i))))));
+      BOPDS_Interf* aInt=NULL;
+      //
+      switch(aTypeInt) {
+      case 0:
+        aInt=(BOPDS_Interf*)(&aVVs(i));
+        break;
+      case 1:
+        aInt=(BOPDS_Interf*)(&aVEs(i));
+        break;
+      case 2:
+        aInt=(BOPDS_Interf*)(&aEEs(i));
+        break;
+      case 3:
+        aInt=(BOPDS_Interf*)(&aVFs(i));
+        break;
+      case 4:
+        aInt=(BOPDS_Interf*)(&aEFs(i));
+        break;
+      case 5:
+        aInt=(BOPDS_Interf*)(&aFFs(i));
+        break;
+      case 6:
+        aInt=(BOPDS_Interf*)(&aVZs(i));
+        break;
+      case 7:
+        aInt=(BOPDS_Interf*)(&aEZs(i));
+        break;
+      case 8:
+        aInt=(BOPDS_Interf*)(&aFZs(i));
+        break;
+      case 9:
+        aInt=(BOPDS_Interf*)(&aZZs(i));
+        break;
+      default:
+        break;
+      }
       //
       nI1 = aInt->Index1();
       nI2 = aInt->Index2();
       if (nI1 == nI2) {
+        continue;
+      }
+      //
+      if(theDS->IsNewShape(nI1) || theDS->IsNewShape(nI2)) {
         continue;
       }
       //

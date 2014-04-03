@@ -125,7 +125,6 @@ void BOPAlgo_CheckerSI::Init()
 //=======================================================================
 void BOPAlgo_CheckerSI::Perform()
 {
-  
   try {
     OCC_CATCH_SIGNALS
     //
@@ -143,42 +142,46 @@ void BOPAlgo_CheckerSI::Perform()
     }
     //
     BOPAlgo_PaveFiller::Perform();
-    if (myErrorStatus) {
-      return; 
+    //
+    if (!myErrorStatus) {
+      PerformVZ();
     }
     //
-    PerformVZ();
-    if (myErrorStatus) {
-      return; 
-    }
-    //
-    PerformEZ();
-    if (myErrorStatus) {
-      return; 
+    if (!myErrorStatus) {
+      PerformEZ();
     } 
     //
-    PerformFZ();
-    if (myErrorStatus) {
-      return; 
+    if (!myErrorStatus) {
+      PerformFZ();
     }
     //
-    PerformZZ();
-    if (myErrorStatus) {
-      return; 
+    if (!myErrorStatus) {
+      PerformZZ();
+    }
+    // 
+    if (!myErrorStatus) {
+      PostTreat();
     }
     //
-    PostTreat();
-    if (myErrorStatus) {
-      return; 
+    if (myNonDestructive) {
+      Standard_Integer iErr;
+      //
+      iErr=myErrorStatus; 
+      //
+      PostTreatCopy();
+      if (!myErrorStatus) {
+        myErrorStatus=iErr;
+      }
     }
-    //
+  }
+  //
+  catch (Standard_Failure) {
     if (myNonDestructive) { 
       PostTreatCopy();
     }
-  }
-  catch (Standard_Failure) {
+    //
     myErrorStatus=11;
-  }  
+  }
 }
 
 //=======================================================================
@@ -202,6 +205,9 @@ void BOPAlgo_CheckerSI::PostTreat()
   for (i=0; i!=aNb; ++i) {
     const BOPDS_InterfVV& aVV=aVVs(i);
     aVV.Indices(n1, n2);
+    if (myDS->IsNewShape(n1) || myDS->IsNewShape(n2)) {
+      continue;
+    }
     aPK.SetIds(n1, n2);
     aMPK.Add(aPK);
   }
@@ -212,6 +218,9 @@ void BOPAlgo_CheckerSI::PostTreat()
   for (i=0; i!=aNb; ++i) {
     const BOPDS_InterfVE& aVE=aVEs(i);
     aVE.Indices(n1, n2);
+    if (myDS->IsNewShape(n1) || myDS->IsNewShape(n2)) {
+      continue;
+    }
     aPK.SetIds(n1, n2);
     aMPK.Add(aPK);
   }
@@ -222,6 +231,9 @@ void BOPAlgo_CheckerSI::PostTreat()
   for (i=0; i!=aNb; ++i) {
     const BOPDS_InterfEE& aEE=aEEs(i);
     aEE.Indices(n1, n2);
+    if (myDS->IsNewShape(n1) || myDS->IsNewShape(n2)) {
+      continue;
+    }
     aPK.SetIds(n1, n2);
     aMPK.Add(aPK);
   }
@@ -232,6 +244,9 @@ void BOPAlgo_CheckerSI::PostTreat()
   for (i=0; i!=aNb; ++i) {
     const BOPDS_InterfVF& aVF=aVFs(i);
     aVF.Indices(n1, n2);
+    if (myDS->IsNewShape(n1) || myDS->IsNewShape(n2)) {
+      continue;
+    }
     aPK.SetIds(n1, n2);
     aMPK.Add(aPK);
   }
@@ -245,6 +260,9 @@ void BOPAlgo_CheckerSI::PostTreat()
       continue;
     }
     aEF.Indices(n1, n2);
+    if (myDS->IsNewShape(n1) || myDS->IsNewShape(n2)) {
+      continue;
+    }
     aPK.SetIds(n1, n2);
     aMPK.Add(aPK);
   }
@@ -304,6 +322,9 @@ void BOPAlgo_CheckerSI::PostTreat()
     //
     const BOPDS_InterfVZ& aVZ=aVZs(i);
     aVZ.Indices(n1, n2);
+    if (myDS->IsNewShape(n1) || myDS->IsNewShape(n2)) {
+      continue;
+    }
     aPK.SetIds(n1, n2);
     aMPK.Add(aPK);
   }
