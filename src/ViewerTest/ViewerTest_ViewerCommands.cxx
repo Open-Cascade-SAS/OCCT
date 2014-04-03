@@ -193,7 +193,7 @@ int Y_Motion = 0;
 int X_ButtonPress = 0; // Last ButtonPress position
 int Y_ButtonPress = 0;
 Standard_Boolean IsDragged = Standard_False;
-Standard_Boolean DragFirst;
+Standard_Boolean DragFirst = Standard_False;
 
 //==============================================================================
 
@@ -1891,24 +1891,16 @@ static LRESULT WINAPI AdvViewerWindowProc( HWND hwnd,
       }
       break;
     case WM_LBUTTONUP:
-      IsDragged = Standard_False;
-      if( !DragFirst )
+      if (!DragFirst)
       {
         HDC hdc = GetDC( hwnd );
         SelectObject( hdc, GetStockObject( HOLLOW_BRUSH ) );
         SetROP2( hdc, R2_NOT );
         Rectangle( hdc, X_ButtonPress, Y_ButtonPress, X_Motion, Y_Motion );
         ReleaseDC( hwnd, hdc );
-
-        const Handle(ViewerTest_EventManager) EM =
-          ViewerTest::CurrentEventManager();
-        if ( fwKeys & MK_SHIFT )
-          EM->ShiftSelect( min( X_ButtonPress, X_Motion ), max( Y_ButtonPress, Y_Motion ),
-          max( X_ButtonPress, X_Motion ), min( Y_ButtonPress, Y_Motion ));
-        else
-          EM->Select( min( X_ButtonPress, X_Motion ), max( Y_ButtonPress, Y_Motion ),
-          max( X_ButtonPress, X_Motion ), min( Y_ButtonPress, Y_Motion ));
+        VT_ProcessButton1Release (fwKeys & MK_SHIFT);
       }
+      IsDragged = Standard_False;
       return ViewerWindowProc( hwnd, Msg, wParam, lParam );
 
     case WM_LBUTTONDOWN:

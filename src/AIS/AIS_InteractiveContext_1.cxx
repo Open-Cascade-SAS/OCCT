@@ -179,7 +179,9 @@ AIS_StatusOfDetection AIS_InteractiveContext::MoveTo (const Standard_Integer  th
     // does nothing if previously detected object is equal to the current one
     if (myMainSel->OnePicked()->Selectable() == myLastPicked)
     {
-      return AIS_SOD_OnlyOneDetected;
+      return myLastPicked->State() == 1
+           ? AIS_SOD_Selected
+           : AIS_SOD_OnlyOneDetected;
     }
  
     // Previously detected object is unhilighted if it is not selected or hilighted 
@@ -216,10 +218,9 @@ AIS_StatusOfDetection AIS_InteractiveContext::MoveTo (const Standard_Integer  th
         toUpdateViewer = Standard_True;
       }
 
-      if (myLastPicked->State() == 1)
-      {
-        aStatus = AIS_SOD_Selected;
-      }
+      aStatus = myLastPicked->State() == 1
+              ? AIS_SOD_Selected
+              : AIS_SOD_OnlyOneDetected;
     }
   }
   else 
@@ -243,6 +244,7 @@ AIS_StatusOfDetection AIS_InteractiveContext::MoveTo (const Standard_Integer  th
     }
 
     myLastinMain.Nullify();
+    myLastPicked.Nullify();
   }
 
   if (toUpdateViewer)
@@ -257,7 +259,6 @@ AIS_StatusOfDetection AIS_InteractiveContext::MoveTo (const Standard_Integer  th
     }
   }
 
-  myLastPicked.Nullify();
   mylastmoveview = theView;
   return aStatus;
 }

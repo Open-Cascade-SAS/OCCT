@@ -90,7 +90,9 @@ void ViewerTest_EventManager::Select (const Standard_Integer theXPMin,
                                       const Standard_Integer theYPMax)
 {
   #define IS_FULL_INCLUSION Standard_True
-  if (myView.IsNull())
+  if (myView.IsNull()
+   || Abs (theXPMax - theXPMin) < 2
+   || Abs (theYPMax - theYPMin) < 2)
   {
     return;
   }
@@ -117,7 +119,9 @@ void ViewerTest_EventManager::ShiftSelect (const Standard_Integer theXPMin,
                                            const Standard_Integer theXPMax,
                                            const Standard_Integer theYPMax)
 {
-  if (myView.IsNull())
+  if (myView.IsNull()
+   || Abs (theXPMax - theXPMin) < 2
+   || Abs (theYPMax - theYPMin) < 2)
   {
     return;
   }
