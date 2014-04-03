@@ -815,11 +815,7 @@ Standard_Boolean OpenGl_Workspace::UpdateRaytraceLightSources (const GLdouble th
   if (myRaytraceGeometry.Sources.size() != 0)
   {
     const GLfloat* aDataPtr = myRaytraceGeometry.Sources.front().Packed();
-
-    bool aResult = myRaytraceLightSrcTexture->Init (
-      myGlContext, 4, myRaytraceGeometry.Sources.size() * 2, aDataPtr);
-
-    if (!aResult)
+    if (!myRaytraceLightSrcTexture->Init (myGlContext, 4, GLsizei (myRaytraceGeometry.Sources.size() * 2), aDataPtr))
     {
 #ifdef RAY_TRACE_PRINT_INFO
       std::cout << "Error: Failed to upload light source buffer" << std::endl;
@@ -1477,19 +1473,15 @@ Standard_Boolean OpenGl_Workspace::UploadRaytraceData()
   const NCollection_Handle<BVH_Tree<Standard_ShortReal, 4> >& aBVH = myRaytraceGeometry.BVH();
 
   bool aResult = true;
-
   if (!aBVH->NodeInfoBuffer().empty())
   {
-    aResult &= mySceneNodeInfoTexture->Init (myGlContext, 4,
-      aBVH->NodeInfoBuffer().size(), reinterpret_cast<const GLuint*> (&aBVH->NodeInfoBuffer().front()));
-
-    aResult &= mySceneMinPointTexture->Init (myGlContext, 4,
-      aBVH->MinPointBuffer().size(), reinterpret_cast<const GLfloat*> (&aBVH->MinPointBuffer().front()));
-
-    aResult &= mySceneMaxPointTexture->Init (myGlContext, 4,
-      aBVH->MaxPointBuffer().size(), reinterpret_cast<const GLfloat*> (&aBVH->MaxPointBuffer().front()));
+    aResult &= mySceneNodeInfoTexture->Init (myGlContext, 4, GLsizei (aBVH->NodeInfoBuffer().size()),
+                                             reinterpret_cast<const GLuint*> (&aBVH->NodeInfoBuffer().front()));
+    aResult &= mySceneMinPointTexture->Init (myGlContext, 4, GLsizei (aBVH->MinPointBuffer().size()),
+                                             reinterpret_cast<const GLfloat*> (&aBVH->MinPointBuffer().front()));
+    aResult &= mySceneMaxPointTexture->Init (myGlContext, 4, GLsizei (aBVH->MaxPointBuffer().size()),
+                                             reinterpret_cast<const GLfloat*> (&aBVH->MaxPointBuffer().front()));
   }
-
   if (!aResult)
   {
 #ifdef RAY_TRACE_PRINT_INFO
@@ -1521,14 +1513,9 @@ Standard_Boolean OpenGl_Workspace::UploadRaytraceData()
 
   if (aTotalBVHNodesNb != 0)
   {
-    aResult &= myObjectNodeInfoTexture->Init (
-      myGlContext, 4, aTotalBVHNodesNb, static_cast<const GLuint*> (NULL));
-
-    aResult &= myObjectMinPointTexture->Init (
-      myGlContext, 4, aTotalBVHNodesNb, static_cast<const GLfloat*> (NULL));
-
-    aResult &= myObjectMaxPointTexture->Init (
-      myGlContext, 4, aTotalBVHNodesNb, static_cast<const GLfloat*> (NULL));
+    aResult &= myObjectNodeInfoTexture->Init (myGlContext, 4, GLsizei (aTotalBVHNodesNb), static_cast<const GLuint*>  (NULL));
+    aResult &= myObjectMinPointTexture->Init (myGlContext, 4, GLsizei (aTotalBVHNodesNb), static_cast<const GLfloat*> (NULL));
+    aResult &= myObjectMaxPointTexture->Init (myGlContext, 4, GLsizei (aTotalBVHNodesNb), static_cast<const GLfloat*> (NULL));
   }
 
   if (!aResult)
@@ -1541,17 +1528,13 @@ Standard_Boolean OpenGl_Workspace::UploadRaytraceData()
 
   if (aTotalElementsNb != 0)
   {
-    aResult &= myGeometryTriangTexture->Init (
-      myGlContext, 4, aTotalElementsNb, static_cast<const GLuint*> (NULL));
+    aResult &= myGeometryTriangTexture->Init (myGlContext, 4, GLsizei (aTotalElementsNb), static_cast<const GLuint*> (NULL));
   }
 
   if (aTotalVerticesNb != 0)
   {
-    aResult &= myGeometryVertexTexture->Init (
-      myGlContext, 4, aTotalVerticesNb, static_cast<const GLfloat*> (NULL));
-
-    aResult &= myGeometryNormalTexture->Init (
-      myGlContext, 4, aTotalVerticesNb, static_cast<const GLfloat*> (NULL));
+    aResult &= myGeometryVertexTexture->Init (myGlContext, 4, GLsizei (aTotalVerticesNb), static_cast<const GLfloat*> (NULL));
+    aResult &= myGeometryNormalTexture->Init (myGlContext, 4, GLsizei (aTotalVerticesNb), static_cast<const GLfloat*> (NULL));
   }
 
   if (!aResult)
@@ -1581,15 +1564,12 @@ Standard_Boolean OpenGl_Workspace::UploadRaytraceData()
 
     if (aBVHBuffserSize != 0)
     {
-      aResult &= myObjectNodeInfoTexture->SubData (myGlContext, aBVHOffset,
-        aBVHBuffserSize, reinterpret_cast<const GLuint*> (&aTriangleSet->BVH()->NodeInfoBuffer().front()));
-
-      aResult &= myObjectMinPointTexture->SubData (myGlContext, aBVHOffset,
-        aBVHBuffserSize, reinterpret_cast<const GLfloat*> (&aTriangleSet->BVH()->MinPointBuffer().front()));
-
-      aResult &= myObjectMaxPointTexture->SubData (myGlContext, aBVHOffset,
-        aBVHBuffserSize, reinterpret_cast<const GLfloat*> (&aTriangleSet->BVH()->MaxPointBuffer().front()));
-
+      aResult &= myObjectNodeInfoTexture->SubData (myGlContext, aBVHOffset, GLsizei (aBVHBuffserSize),
+                                                   reinterpret_cast<const GLuint*> (&aTriangleSet->BVH()->NodeInfoBuffer().front()));
+      aResult &= myObjectMinPointTexture->SubData (myGlContext, aBVHOffset, GLsizei (aBVHBuffserSize),
+                                                   reinterpret_cast<const GLfloat*> (&aTriangleSet->BVH()->MinPointBuffer().front()));
+      aResult &= myObjectMaxPointTexture->SubData (myGlContext, aBVHOffset, GLsizei (aBVHBuffserSize),
+                                                   reinterpret_cast<const GLfloat*> (&aTriangleSet->BVH()->MaxPointBuffer().front()));
       if (!aResult)
       {
 #ifdef RAY_TRACE_PRINT_INFO
@@ -1606,11 +1586,10 @@ Standard_Boolean OpenGl_Workspace::UploadRaytraceData()
 
     if (!aTriangleSet->Vertices.empty())
     {
-      aResult &= myGeometryNormalTexture->SubData (myGlContext, aVerticesOffset,
-        aTriangleSet->Normals.size(), reinterpret_cast<const GLfloat*> (&aTriangleSet->Normals.front()));
-
-      aResult &= myGeometryVertexTexture->SubData (myGlContext, aVerticesOffset,
-        aTriangleSet->Vertices.size(), reinterpret_cast<const GLfloat*> (&aTriangleSet->Vertices.front()));
+      aResult &= myGeometryNormalTexture->SubData (myGlContext, aVerticesOffset, GLsizei (aTriangleSet->Normals.size()),
+                                                   reinterpret_cast<const GLfloat*> (&aTriangleSet->Normals.front()));
+      aResult &= myGeometryVertexTexture->SubData (myGlContext, aVerticesOffset, GLsizei (aTriangleSet->Vertices.size()),
+                                                   reinterpret_cast<const GLfloat*> (&aTriangleSet->Vertices.front()));
     }
 
     const Standard_Integer anElementsOffset = myRaytraceGeometry.ElementsOffset (aNodeIdx);
@@ -1620,8 +1599,8 @@ Standard_Boolean OpenGl_Workspace::UploadRaytraceData()
 
     if (!aTriangleSet->Elements.empty())
     {
-      aResult &= myGeometryTriangTexture->SubData (myGlContext, anElementsOffset,
-        aTriangleSet->Elements.size(), reinterpret_cast<const GLuint*> (&aTriangleSet->Elements.front()));
+      aResult &= myGeometryTriangTexture->SubData (myGlContext, anElementsOffset, GLsizei (aTriangleSet->Elements.size()),
+                                                   reinterpret_cast<const GLuint*> (&aTriangleSet->Elements.front()));
     }
 
     if (!aResult)
@@ -1636,10 +1615,7 @@ Standard_Boolean OpenGl_Workspace::UploadRaytraceData()
   if (myRaytraceGeometry.Materials.size() != 0)
   {
     const GLfloat* aDataPtr = myRaytraceGeometry.Materials.front().Packed();
-
-    aResult &= myRaytraceMaterialTexture->Init (
-      myGlContext, 4, myRaytraceGeometry.Materials.size() * 7, aDataPtr);
-
+    aResult &= myRaytraceMaterialTexture->Init (myGlContext, 4, GLsizei (myRaytraceGeometry.Materials.size() * 7), aDataPtr);
     if (!aResult)
     {
 #ifdef RAY_TRACE_PRINT_INFO
