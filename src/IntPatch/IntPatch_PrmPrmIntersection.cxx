@@ -1317,8 +1317,102 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
   Periods[3] = (Surf2->IsVPeriodic())? Surf2->VPeriod() : 0.;
 
   IntSurf_ListIteratorOfListOfPntOn2S IterLOP1(LOfPnts);
+  if (Surf1->IsUClosed() || Surf1->IsVClosed() ||
+      Surf2->IsUClosed() || Surf2->IsVClosed())
+  {
+    Standard_Real TolPar = Precision::PConfusion();
+    IntSurf_ListOfPntOn2S AdditionalPnts;
+    Standard_Real NewU1, NewV1, NewU2, NewV2;
+    for(; IterLOP1.More(); IterLOP1.Next())
+    {
+      IntSurf_PntOn2S Pnt = IterLOP1.Value();
+      Pnt.Parameters(U1, V1, U2, V2);
+      IntSurf_PntOn2S NewPnt;
+      if (Surf1->IsUClosed())
+      {
+        if (Abs(U1 - Surf1->FirstUParameter()) <= TolPar)
+        {
+          NewU1 = Surf1->LastUParameter();
+          NewPnt.SetValue( NewU1, V1, U2, V2 );
+          AdditionalPnts.Append(NewPnt);
+        }
+        else if (Abs(U1 - Surf1->LastUParameter()) <= TolPar)
+        {
+          NewU1 = Surf1->FirstUParameter();
+          NewPnt.SetValue( NewU1, V1, U2, V2 );
+          AdditionalPnts.Append(NewPnt);
+        }
+      }
+      if (Surf1->IsVClosed())
+      {
+        if (Abs(V1 - Surf1->FirstVParameter()) <= TolPar)
+        {
+          NewV1 = Surf1->LastVParameter();
+          NewPnt.SetValue( U1, NewV1, U2, V2 );
+          AdditionalPnts.Append(NewPnt);
+        }
+        else if (Abs(V1 - Surf1->LastVParameter()) <= TolPar)
+        {
+          NewV1 = Surf1->FirstVParameter();
+          NewPnt.SetValue( U1, NewV1, U2, V2 );
+          AdditionalPnts.Append(NewPnt);
+        }
+      }
+      if (Surf2->IsUClosed())
+      {
+        if (Abs(U2 - Surf2->FirstUParameter()) <= TolPar)
+        {
+          NewU2 = Surf2->LastUParameter();
+          NewPnt.SetValue( U1, V1, NewU2, V2);
+          AdditionalPnts.Append(NewPnt);
+        }
+        else if (Abs(U2 - Surf2->LastUParameter()) <= TolPar)
+        {
+          NewU2 = Surf2->FirstUParameter();
+          NewPnt.SetValue( U1, V1, NewU2, V2);
+          AdditionalPnts.Append(NewPnt);
+        }
+      }
+      if (Surf2->IsVClosed())
+      {
+        if (Abs(V2 - Surf2->FirstVParameter()) <= TolPar)
+        {
+          NewV2 = Surf2->LastVParameter();
+          NewPnt.SetValue( U1, V1, U2, NewV2 );
+          AdditionalPnts.Append(NewPnt);
+        }
+        else if (Abs(V2 - Surf2->LastVParameter()) <= TolPar)
+        {
+          NewV2 = Surf2->FirstVParameter();
+          NewPnt.SetValue( U1, V1, U2, NewV2 );
+          AdditionalPnts.Append(NewPnt);
+        }
+      }
+    }
+    //Cut repeated points
+    for (IterLOP1.Initialize(LOfPnts); IterLOP1.More(); IterLOP1.Next())
+    {
+      IntSurf_PntOn2S aPnt = IterLOP1.Value();
+      aPnt.Parameters(U1, V1, U2, V2);
+      IntSurf_ListIteratorOfListOfPntOn2S iter2(AdditionalPnts);
+      while (iter2.More())
+      {
+        IntSurf_PntOn2S aNewPnt = iter2.Value();
+        aNewPnt.Parameters(NewU1, NewV1, NewU2, NewV2);
+        if (Abs(U1 - NewU1) <= TolPar &&
+            Abs(V1 - NewV1) <= TolPar &&
+            Abs(U2 - NewU2) <= TolPar &&
+            Abs(V2 - NewV2) <= TolPar)
+          AdditionalPnts.Remove(iter2);
+        else
+          iter2.Next();
+      }
+    }
 
-  for(; IterLOP1.More(); IterLOP1.Next()){
+    LOfPnts.Append(AdditionalPnts);
+  }
+
+  for(IterLOP1.Initialize(LOfPnts); IterLOP1.More(); IterLOP1.Next()){
     IntSurf_PntOn2S Pnt = IterLOP1.Value();
     Pnt.Parameters(U1, V1, U2, V2);
     if(U1>UmaxLig1) UmaxLig1=U1;
