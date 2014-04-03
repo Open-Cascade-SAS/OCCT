@@ -771,6 +771,7 @@ void OpenGl_Workspace::RedrawImmediate (const Graphic3d_CView& theCView,
      && isDoubleBuffer)
     {
       copyBackToFront();
+      glFlush();
     }
     else
     {
