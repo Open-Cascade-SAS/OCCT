@@ -33,12 +33,6 @@ is
     class ShapeAnalysis;
     	---Purpose: Contains commands to activate package ShapeAnalysis
 
-    class ShapeBuild;
-    	---Purpose: Contains commands to activate package ShapeBuild
-
-    class ShapeConstruct;
-    	---Purpose: Contains commands to activate package ShapeConstruct
-
     class ShapeCustom;
     	---Purpose: Contains commands to activate package ShapeCustom
 
@@ -56,11 +50,6 @@ is
     
     class ShapeProcessAPI;
     	---Purpose: Contains commands to activate package ShapeProcessAPI
-	
-    class ToVRML;
-    	---Purpose: A utility which writes a Shape to VRML format
-    	---Remark : It can be placed elsewhere, while it depends on
-    	--          only BRepMesh i.e. TOPOLOGY
 
     Init (theCommands: in out Interpretor from Draw);
     	---Purpose: Loads commands defined in SWDRAW

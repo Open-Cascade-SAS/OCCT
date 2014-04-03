@@ -80,7 +80,6 @@
 #include <XDEDRAW_Common.hxx>
 #include <XSDRAWIGES.hxx>
 #include <XSDRAWSTEP.hxx>
-#include <SWDRAW.hxx>
 #include <XSDRAW.hxx>
 #include <XCAFPrs.hxx>
 #include <ViewerTest.hxx>
@@ -1162,7 +1161,6 @@ void XDEDRAW::Factory(Draw_Interpretor& theDI)
 
   XSDRAWSTEP::InitCommands(theDI);
 
-  SWDRAW::Init(theDI);
   XSDRAW::LoadDraw(theDI);
 
   XDEDRAW::Init(theDI);

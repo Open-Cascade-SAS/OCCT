@@ -1,6 +1,5 @@
 set env(CSF_dataDefaults) [file dirname [info script]]/../data
 puts $env(CSF_dataDefaults)
-xtrace 3
 DT_ApplySeq result a data data1
 set b [explode a f]
 set b1 [explode result f]

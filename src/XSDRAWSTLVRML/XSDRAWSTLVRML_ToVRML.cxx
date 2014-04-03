@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <SWDRAW_ToVRML.ixx>
+#include <XSDRAWSTLVRML_ToVRML.ixx>
 
 #include <Standard_Stream.hxx>
 #include <BRepMesh_FastDiscret.hxx>
@@ -22,7 +22,7 @@
 
 #include <gp_Pnt.hxx> //ied_modif_for_compil_Nov-20-1998
 
-SWDRAW_ToVRML::SWDRAW_ToVRML  ()
+XSDRAWSTLVRML_ToVRML::XSDRAWSTLVRML_ToVRML  ()
 {
   myEmissiveColorRed   = 0.3;
   myEmissiveColorGreen = 0.3;
@@ -41,28 +41,28 @@ SWDRAW_ToVRML::SWDRAW_ToVRML  ()
   myDeflection  = 0.005;
 }
 
-Standard_Real&  SWDRAW_ToVRML::EmissiveColorRed  ()  {  return myEmissiveColorRed  ;  }
-Standard_Real&  SWDRAW_ToVRML::EmissiveColorGreen()  {  return myEmissiveColorGreen;  }
-Standard_Real&  SWDRAW_ToVRML::EmissiveColorBlue ()  {  return myEmissiveColorBlue ;  }
-Standard_Real&  SWDRAW_ToVRML::DiffuseColorRed   ()  {  return myDiffuseColorRed   ;  }
-Standard_Real&  SWDRAW_ToVRML::DiffuseColorGreen ()  {  return myDiffuseColorGreen ;  }
-Standard_Real&  SWDRAW_ToVRML::DiffuseColorBlue  ()  {  return myDiffuseColorBlue  ;  }
-Standard_Real&  SWDRAW_ToVRML::Transparency      ()  {  return myTransparency      ;  }
-Standard_Real&  SWDRAW_ToVRML::AmbientIntensity  ()  {  return myAmbientIntensity  ;  }
-Standard_Real&  SWDRAW_ToVRML::SpecularColorRed  ()  {  return mySpecularColorRed  ;  }
-Standard_Real&  SWDRAW_ToVRML::SpecularColorGreen()  {  return mySpecularColorGreen;  }
-Standard_Real&  SWDRAW_ToVRML::SpecularColorBlue ()  {  return mySpecularColorBlue ;  }
-Standard_Real&  SWDRAW_ToVRML::Shininess  ()         {  return myShininess  ;  }
-TCollection_AsciiString&  SWDRAW_ToVRML::Texture ()  {  return myTexture    ;  }
-Standard_Real&  SWDRAW_ToVRML::CreaseAngle()         {  return myCreaseAngle;  }
-Standard_Real&  SWDRAW_ToVRML::Deflection ()         {  return myDeflection ;  }
+Standard_Real&  XSDRAWSTLVRML_ToVRML::EmissiveColorRed  ()  {  return myEmissiveColorRed  ;  }
+Standard_Real&  XSDRAWSTLVRML_ToVRML::EmissiveColorGreen()  {  return myEmissiveColorGreen;  }
+Standard_Real&  XSDRAWSTLVRML_ToVRML::EmissiveColorBlue ()  {  return myEmissiveColorBlue ;  }
+Standard_Real&  XSDRAWSTLVRML_ToVRML::DiffuseColorRed   ()  {  return myDiffuseColorRed   ;  }
+Standard_Real&  XSDRAWSTLVRML_ToVRML::DiffuseColorGreen ()  {  return myDiffuseColorGreen ;  }
+Standard_Real&  XSDRAWSTLVRML_ToVRML::DiffuseColorBlue  ()  {  return myDiffuseColorBlue  ;  }
+Standard_Real&  XSDRAWSTLVRML_ToVRML::Transparency      ()  {  return myTransparency      ;  }
+Standard_Real&  XSDRAWSTLVRML_ToVRML::AmbientIntensity  ()  {  return myAmbientIntensity  ;  }
+Standard_Real&  XSDRAWSTLVRML_ToVRML::SpecularColorRed  ()  {  return mySpecularColorRed  ;  }
+Standard_Real&  XSDRAWSTLVRML_ToVRML::SpecularColorGreen()  {  return mySpecularColorGreen;  }
+Standard_Real&  XSDRAWSTLVRML_ToVRML::SpecularColorBlue ()  {  return mySpecularColorBlue ;  }
+Standard_Real&  XSDRAWSTLVRML_ToVRML::Shininess  ()         {  return myShininess  ;  }
+TCollection_AsciiString&  XSDRAWSTLVRML_ToVRML::Texture ()  {  return myTexture    ;  }
+Standard_Real&  XSDRAWSTLVRML_ToVRML::CreaseAngle()         {  return myCreaseAngle;  }
+Standard_Real&  XSDRAWSTLVRML_ToVRML::Deflection ()         {  return myDeflection ;  }
 
 //=======================================================================
 // function : ToVRML::Write
 // purpose  : conversion of a Shape into VRML format for 3d visualisation
 //=======================================================================
 
-Standard_Boolean  SWDRAW_ToVRML::Write
+Standard_Boolean  XSDRAWSTLVRML_ToVRML::Write
   (const TopoDS_Shape& aShape, const Standard_CString filename) const
 {
   filebuf thefile;

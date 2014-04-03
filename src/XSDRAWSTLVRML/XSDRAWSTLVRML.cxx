@@ -26,7 +26,6 @@
 #include <Quantity_HArray1OfColor.hxx>
 #include <StlAPI_Writer.hxx>
 #include <Draw_PluginMacro.hxx>
-#include <SWDRAW.hxx>
 #include <XSDRAW.hxx>
 #include <XSDRAWSTEP.hxx>
 #include <XSDRAWIGES.hxx>
@@ -70,6 +69,8 @@
 #include <VrmlData_DataMapOfShapeAppearance.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <Bnd_Box.hxx>
+
+#include <XSDRAWSTLVRML_ToVRML.hxx>
 
 // avoid warnings on 'extern "C"' functions returning C++ classes
 #ifdef WNT
@@ -979,6 +980,21 @@ static Standard_Integer mesh_edge_width( Draw_Interpretor& di,
   return 0;
 }
 
+//=======================================================================
+//function : tovrml
+//purpose  : 
+//=======================================================================
+
+static Standard_Integer tovrml(Draw_Interpretor& /*di*/, Standard_Integer n, const char** a)
+{
+  if (n < 3) return 1;
+  XSDRAWSTLVRML_ToVRML avrml;
+  TopoDS_Shape sh = DBRep::Get (a[1]);
+  const char* filename = a[2];
+  if (!avrml.Write (sh,filename)) return 1;
+  return 0;
+}
+
 //-----------------------------------------------------------------------------
 
 void  XSDRAWSTLVRML::InitCommands (Draw_Interpretor& theCommands)
@@ -987,6 +1003,7 @@ void  XSDRAWSTLVRML::InitCommands (Draw_Interpretor& theCommands)
   //XSDRAW::LoadDraw(theCommands);
 
   theCommands.Add ("writevrml", "shape file",__FILE__,writevrml,g);
+  theCommands.Add ("tovrml",    "shape file",__FILE__, tovrml, g);
   theCommands.Add ("writestl",  "shape file [ascii/binary (0/1) : 1 by default] [InParallel (0/1) : 0 by default]",__FILE__,writestl,g);
   theCommands.Add ("readstl",   "shape file",__FILE__,readstl,g);
   theCommands.Add ("loadvrml" , "shape file",__FILE__,loadvrml,g);
@@ -1019,7 +1036,6 @@ void XSDRAWSTLVRML::Factory(Draw_Interpretor& theDI)
   XSDRAWIGES::InitFromBRep(theDI);
   XSDRAWSTEP::InitCommands(theDI);
   XSDRAWSTLVRML::InitCommands(theDI);
-  SWDRAW::Init(theDI);
   XSDRAW::LoadDraw(theDI);
 #ifdef DEB
   theDI << "Draw Plugin : All TKXSDRAW commands are loaded" << "\n";

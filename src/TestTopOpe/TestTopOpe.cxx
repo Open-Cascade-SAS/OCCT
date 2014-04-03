@@ -24,6 +24,7 @@
 #include <Draw_Interpretor.hxx>
 #include <Draw_PluginMacro.hxx>
 #include <BOPTest.hxx>
+#include <SWDRAW.hxx>
 #ifdef WNT
 #pragma warning(4:4190)
 #endif
@@ -116,6 +117,8 @@ void TestTopOpe::Factory(Draw_Interpretor& theDI)
   TestTopOpe::AllCommands(theDI);
 
   BOPTest::Factory(theDI);
+
+  SWDRAW::Init (theDI);
 
 #ifdef DEB
       cout << "Draw Plugin : All topological operations kernel commands are loaded" << endl;

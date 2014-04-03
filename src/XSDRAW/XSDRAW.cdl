@@ -36,14 +36,6 @@ is
     --           
     --           Loaded by LoadDraw
 
-    class Shape;
-    ---Purpose : Gathers commands which only apply to shapes/geometry, and are
-    --           not concerned by XSTEP features for files
-    --           This set of functions just enriches the standard DRAW set,
-    --           with either useful but lacking basic functions, or complements
-    --           used in transfer operations, or specific control functions
-    --           Loaded by LoadDraw
-
     class Vars;
     ---Purpose : Takes variables to/from the DRAW session
 

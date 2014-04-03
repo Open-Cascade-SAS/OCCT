@@ -1,9 +1,5 @@
-if { [array get Draw_Groups "TOPOLOGY Check commands"] == "" } {
-    pload TOPTEST
-}
-if { [array get Draw_Groups "Shape Healing"] == "" } {
-    pload XSDRAW
-}
+pload TOPTEST
+
 # To prevent loops limit to 5 minutes
 cpulimit 300
 

@@ -23,7 +23,6 @@
 
 #include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
-#include <SWDRAW.hxx>
 #include <XSDRAW.hxx>
 #include <XDEDRAW.hxx>
 #include <XSDRAWIGES.hxx>

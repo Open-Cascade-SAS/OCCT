@@ -136,29 +136,6 @@ static IFSelect_ReturnStatus fun1
   return IFSelect_RetDone;
 }
 
-static IFSelect_ReturnStatus fun2
-  (const Handle(IFSelect_SessionPilot)& pilot)
-{
-//        ****    Trace File        ****
-  Standard_Integer argc = pilot->NbWords();
-
-  Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  const Standard_CString arg1 = pilot->Arg(1);
-  if (argc < 2) {
-//    sout<<" Trace : Level="<<Message_PrinterOStream::Default()->GetTraceLevel();
-  } else if (arg1[1] == '\0' && arg1[0] == '.') {
-    sout<<" Trace -> Standard Output"<<endl;
-//    Message_PrinterOStream::SetDefault();
-  } else if (arg1[1] == '\0' && (arg1[0] >= '0' && arg1[0] <= '9')) {
-    sout<<" Trace Level : "<<arg1<<endl;
-//    Message_PrinterOStream::Default()->SetTraceLevel((Message_TraceLevel)atoi(arg1));
-  } else {
-    sout<<" Trace -> Append File : "<<arg1<<endl;
-//    Message_PrinterOStream::SetDefault (Message_PrinterOStream::Default()->GetTraceLevel(),arg1,Standard_True);
-  }
-  return IFSelect_RetVoid;
-}
-
 static IFSelect_ReturnStatus fun3
   (const Handle(IFSelect_SessionPilot)& pilot)
 {
@@ -2485,7 +2462,6 @@ static int initactor = 0;
   IFSelect_Act::SetGroup("DE: General");
   IFSelect_Act::AddFunc("xstatus","Lists XSTEP Status : Version, System Name ...",funstatus);
   IFSelect_Act::AddFunc("handler","Toggle status catch Handler Error of the session",fun1);
-  IFSelect_Act::AddFunc("xtrace",". -> stdout or file:string or level:integer  -> File/Level Trace XSTEP",fun2);
   IFSelect_Act::AddFunc("xload","file:string  : Read File -> Load Model",fun3);
 // IFSelect_Act::AddFunc("load","file:string  : Read File -> Load Model",fun3);
   IFSelect_Act::AddFunc("xread","file:string  : Read File -> Load Model",fun3);

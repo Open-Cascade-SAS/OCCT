@@ -17,7 +17,6 @@
 #include <TColStd_HSequenceOfAsciiString.hxx>
 #include <IFSelect_Functions.hxx>
 #include <IFSelect_SessionPilot.hxx>
-#include <SWDRAW.hxx>
 //#include <XSDRAW_Shape.hxx>
 #include <XSDRAW_Vars.hxx>
 #include <XSControl_Functions.hxx>
@@ -95,9 +94,7 @@ static Standard_Integer XSTEPDRAWRUN (Draw_Interpretor& , Standard_Integer argc,
 void XSDRAW::LoadDraw (Draw_Interpretor& theCommands)
 {
   if (dejald) return;  dejald = 1;
-//  XSDRAW_Shape::InitCommands (theCommands);
-//  Pour tout faire d un coup : BRepTest & cie, SWDRAW & cie :
-  SWDRAW::Init (theCommands);
+//  Pour tout faire d un coup : BRepTest & cie:
   LoadSession();
 
   //skl: we make remove commands "x" and "exit" in order to this commands are
