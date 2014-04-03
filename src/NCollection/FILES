@@ -4,6 +4,8 @@ NCollection_BaseAllocator.hxx
 NCollection_BaseAllocator.cxx
 NCollection_IncAllocator.hxx
 NCollection_IncAllocator.cxx
+NCollection_AlignedAllocator.hxx
+NCollection_AlignedAllocator.cxx
 NCollection_HeapAllocator.hxx
 NCollection_HeapAllocator.cxx
 NCollection_StdAllocator.hxx

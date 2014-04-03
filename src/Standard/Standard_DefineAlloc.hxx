@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 #ifndef _Standard_DefineAlloc_HeaderFile
-# define _Standard_DefineAlloc_HeaderFile
+#define _Standard_DefineAlloc_HeaderFile
 
 // Macro to override new and delete operators for arrays.
 // Defined to empty for old SUN compiler
@@ -76,4 +76,17 @@ inline void* operator new(size_t,void* anAddress)
 #endif
 #endif
 
+//! @def STANDARD_ALIGNED(theAlignment, theType, theVar)
+//! Declare variable with memory alignment.
+//! @code
+//!   static const STANDARD_ALIGNED(8, char, THE_ARRAY)[] = {0xFF, 0xFE, 0xFA, 0xFB, 0xFF, 0x11, 0x22, 0x33};
+//! @endcode
+#if defined(_MSC_VER)
+  #define STANDARD_ALIGNED(theAlignment, theType, theVar) __declspec(align(theAlignment)) theType theVar
+#elif defined(__GNUC__)
+  #define STANDARD_ALIGNED(theAlignment, theType, theVar) theType __attribute__ ((aligned (theAlignment))) theVar
+#else
+  #define STANDARD_ALIGNED(theAlignment, theType, theVar) theType theVar
 #endif
+
+#endif // _Standard_DefineAlloc_HeaderFile

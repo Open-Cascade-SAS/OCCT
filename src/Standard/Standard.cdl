@@ -145,7 +145,21 @@ is
     ---Purpose:  Reallocates memory blocks 
     --           aStorage - previously allocated memory block 
     --           aNewSize - new size in bytes 
-     
+
+    AllocateAligned (theSize  : Size from Standard;
+                     theAlign : Size from Standard)
+    returns Address from Standard;
+    ---Purpose:  Allocates aligned memory blocks.
+    -- Should be used with CPU instructions which require specific alignment.
+    -- For example: SSE requires 16 bytes, AVX requires 32 bytes.
+    -- @param theSize  bytes to allocate
+    -- @param theAlign alignment in bytes
+
+    FreeAligned (thePtrAligned : Address from Standard);
+    ---Purpose:  Deallocates memory blocks
+    -- @param thePtrAligned the memory block previously allocated with AllocateAligned()
+    ---C++: alias "template <typename T> static inline void FreeAligned (T*& thePtrAligned) { FreeAligned ((void* )thePtrAligned); thePtrAligned = 0; }"
+
     Purge returns Integer from Standard; 
     ---Purpose:  Deallocates the storage retained on the free list 
     --           and clears the list. 

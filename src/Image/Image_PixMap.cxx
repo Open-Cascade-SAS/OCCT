@@ -14,43 +14,7 @@
 // commercial license or contractual agreement.
 
 #include <Image_PixMap.hxx>
-
-#ifdef _MSC_VER
-  #include <malloc.h>
-#elif (defined(__GNUC__) && __GNUC__ >= 4 && __GNUC_MINOR__ >= 1)
-  #include <mm_malloc.h>
-#else
-  extern "C" int posix_memalign (void** thePtr, size_t theAlign, size_t theBytesCount);
-#endif
-
-template<typename TypePtr>
-inline TypePtr MemAllocAligned (const Standard_Size& theBytesCount,
-                                const Standard_Size& theAlign = 16)
-{
-#if defined(_MSC_VER)
-  return (TypePtr )_aligned_malloc (theBytesCount, theAlign);
-#elif (defined(__GNUC__) && __GNUC__ >= 4 && __GNUC_MINOR__ >= 1)
-  return (TypePtr )     _mm_malloc (theBytesCount, theAlign);
-#else
-  void* aPtr;
-  if (posix_memalign (&aPtr, theAlign, theBytesCount))
-  {
-    aPtr = NULL;
-  }
-  return (TypePtr )aPtr;
-#endif
-}
-
-inline void MemFreeAligned (void* thePtrAligned)
-{
-#if defined(_MSC_VER)
-  _aligned_free (thePtrAligned);
-#elif (defined(__GNUC__) && __GNUC__ >= 4 && __GNUC_MINOR__ >= 1)
-  _mm_free (thePtrAligned);
-#else
-  free (thePtrAligned);
-#endif
-}
+#include <Standard.hxx>
 
 IMPLEMENT_STANDARD_HANDLE (Image_PixMap, Standard_Transient)
 IMPLEMENT_STANDARD_RTTIEXT(Image_PixMap, Standard_Transient)
@@ -171,7 +135,7 @@ bool Image_PixMap::InitTrash (Image_PixMap::ImgFormat thePixelFormat,
     // use argument only if it greater
     myData.mySizeRowBytes = theSizeRowBytes;
   }
-  myData.myDataPtr = MemAllocAligned<Standard_Byte*> (SizeBytes());
+  myData.myDataPtr = (Standard_Byte* )Standard::AllocateAligned (SizeBytes(), 16);
   myIsOwnPointer   = true;
   setTopDown();
   return myData.myDataPtr != NULL;
@@ -222,7 +186,7 @@ void Image_PixMap::Clear (Image_PixMap::ImgFormat thePixelFormat)
 {
   if (myIsOwnPointer && (myData.myDataPtr != NULL))
   {
-    MemFreeAligned (myData.myDataPtr);
+    Standard::FreeAligned (myData.myDataPtr);
   }
   myData.myDataPtr = myData.myTopRowPtr = NULL;
   myIsOwnPointer = true;
