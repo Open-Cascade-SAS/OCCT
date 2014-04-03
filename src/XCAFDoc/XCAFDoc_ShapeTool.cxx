@@ -172,13 +172,7 @@ static void SetLabelNameByShape(const TDF_Label L)
 //    if (Type == TopAbs_COMPOUND) Stream<<"ASSEMBLY";
 //    else 
     TopAbs::Print(S.ShapeType(), Stream);
-   
-#ifdef USE_STL_STREAM    
     TCollection_AsciiString aName (Stream.str().c_str());
-#else
-    Stream << ends;
-    TCollection_AsciiString aName (Stream.str());
-#endif    
     TDataStd_Name::Set(L, TCollection_ExtendedString(aName));
   }
 }

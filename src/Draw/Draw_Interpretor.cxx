@@ -250,12 +250,8 @@ static Standard_Integer CommandCmd
 
     // get the error message
     Standard_SStream ss;
-    ss << "** Exception ** " << E << ends ;
-#ifdef USE_STL_STREAM
+    ss << "** Exception ** " << E << ends;
     Tcl_SetResult(interp,(char*)(ss.str().c_str()),TCL_VOLATILE);
-#else
-    Tcl_SetResult(interp,(char*)(ss.str()),TCL_VOLATILE);
-#endif    
     code = TCL_ERROR;
   }
 
@@ -500,14 +496,7 @@ Draw_Interpretor& Draw_Interpretor::Append(const Standard_Real r)
 
 Draw_Interpretor& Draw_Interpretor::Append(const Standard_SStream& s)
 {
-#ifdef USE_STL_STREAM
   return Append (s.str().c_str());
-#else
-  // Note: use dirty tricks -- unavoidable with old streams 
-  TCollection_AsciiString aStr (((Standard_SStream&)AReason).str(), AReason.pcount());
-  ((Standard_SStream&)AReason).freeze (false);
-  return Append (aStr.ToCString());
-#endif
 }
 
 //=======================================================================

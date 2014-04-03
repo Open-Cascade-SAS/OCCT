@@ -12,29 +12,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// Purpose:   Defines Standard_SStream as typedef to C++ string stream.
-
 #ifndef _Standard_SStream_HeaderFile
 #define _Standard_SStream_HeaderFile
 
 #include <Standard_Stream.hxx>
+#include <sstream>
 
-#ifdef USE_STL_STREAM
+//! Defines Standard_SStream as typedef to C++ string stream.
+typedef std::stringstream Standard_SStream;
 
-  #include <sstream>
-
-  typedef std::stringstream Standard_SStream;
-
-#else /* USE_STL_STREAM */
-
-  #ifdef WNT
-    #include <strstrea.h>
-  #else
-    #include <strstream.h>
-  #endif
-
-  typedef strstream Standard_SStream;
-
-#endif /* USE_STL_STREAM */
-
-#endif
+#endif // _Standard_SStream_HeaderFile

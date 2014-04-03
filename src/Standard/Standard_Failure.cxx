@@ -135,14 +135,7 @@ void Standard_Failure::Reraise (const Standard_CString AString)
 
 void Standard_Failure::Reraise (const Standard_SStream& AReason) 
 {
-#ifdef USE_STL_STREAM
   SetMessageString(AReason.str().c_str());
-#else
-  // Note: use dirty tricks -- unavoidable with old streams 
-  ((Standard_SStream&)AReason) << ends;
-  SetMessageString(((Standard_SStream&)AReason).str());
-  ((Standard_SStream&)AReason).freeze (false);
-#endif
   Reraise();
 }
 

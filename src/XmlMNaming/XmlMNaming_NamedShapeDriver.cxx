@@ -345,11 +345,7 @@ void XmlMNaming_NamedShapeDriver::ReadShapeSection
     {
       if (aNode.getNodeType() == LDOM_Node::TEXT_NODE) {
         LDOMString aData = aNode.getNodeValue();
-	#ifdef USE_STL_STREAM
         std::stringstream aStream (std::string(aData.GetString()));
-	#else
-        istrstream aStream (Standard_CString(aData.GetString()));
-	#endif
         myShapeSet.Clear();
         myShapeSet.Read (aStream);
         break;

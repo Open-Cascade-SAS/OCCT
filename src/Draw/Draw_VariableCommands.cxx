@@ -22,12 +22,6 @@
 #include <Standard_Stream.hxx>
 #include <Standard_SStream.hxx>
 
-#if defined(HAVE_IOS) || defined(WNT)
-# include <ios>
-#elif defined(HAVE_IOS_H)
-# include <ios.h>
-#endif
-
 #include <Draw_Display.hxx>
 #include <Draw_Appli.hxx>
 #include <Draw_Number.hxx>
@@ -38,6 +32,8 @@
 #include <Draw_SequenceOfDrawable3D.hxx>
 #include <Draw_VMap.hxx>
 #include <Draw_ProgressIndicator.hxx>
+
+#include <ios>
 
 #ifdef WNT
 extern Draw_Viewer dout;
@@ -120,27 +116,16 @@ static Standard_Boolean numtest(const Handle(Draw_Drawable3D)& d)
   return d->IsInstance(STANDARD_TYPE(Draw_Number));
 }
 
-static void numsave(const Handle(Draw_Drawable3D)&d, ostream& OS)
+static void numsave (const Handle(Draw_Drawable3D)& theDrawable,
+                     ostream&                       theStream)
 {
-  Handle(Draw_Number) N = Handle(Draw_Number)::DownCast(d);
-#if (defined(HAVE_IOS) && !defined(__sgi) && !defined(IRIX)) || ( defined(WNT) && !defined(USE_OLD_STREAMS))
-  ios::fmtflags F = OS.flags();
-  OS.setf(ios::scientific);
-  OS.precision(15);
-  OS.width(30);
-#else
-  long form = OS.setf(ios::scientific);
-  int  prec = OS.precision(15);
-  int w = OS.width(30);
-#endif
-  OS << N->Value()<<"\n";                                                                                 
-  #if (defined(HAVE_IOS) && !defined(__sgi) && !defined(IRIX)) || (defined(WNT)&& !defined(USE_OLD_STREAMS))
-  OS.setf(F);
-#else
-  OS.setf(form);
-  OS.precision(prec);
-  OS.width(w);
-#endif
+  Handle(Draw_Number) aNum = Handle(Draw_Number)::DownCast (theDrawable);
+  ios::fmtflags aFlags = theStream.flags();
+  theStream.setf      (ios::scientific);
+  theStream.precision (15);
+  theStream.width     (30);
+  theStream << aNum->Value() << "\n";
+  theStream.setf      (aFlags);
 }
 
 static Handle(Draw_Drawable3D) numrestore (istream& is)

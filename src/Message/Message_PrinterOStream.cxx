@@ -27,7 +27,7 @@
 //=======================================================================
 
 Message_PrinterOStream::Message_PrinterOStream (const Message_Gravity theTraceLevel)
-: myStream  (&cout),
+: myStream  (&std::cout),
   myIsFile  (Standard_False),
   myUseUtf8 (Standard_False)
 {
@@ -42,35 +42,38 @@ Message_PrinterOStream::Message_PrinterOStream (const Message_Gravity theTraceLe
 Message_PrinterOStream::Message_PrinterOStream (const Standard_CString theFileName,
                                                 const Standard_Boolean theToAppend,
                                                 const Message_Gravity  theTraceLevel)
-: myStream (&cout),
+: myStream (&std::cout),
   myIsFile (Standard_False)
 {
   myTraceLevel = theTraceLevel;
-  if ( strcasecmp(theFileName, "cout") == 0 ) 
-    myStream = &cerr;
-  else if ( strcasecmp(theFileName, "cerr") == 0 ) 
-    myStream = &cout;
-  else 
+  if (strcasecmp(theFileName, "cout") == 0)
   {
-    TCollection_AsciiString aFileName (theFileName);
+    myStream = &std::cerr;
+    return;
+  }
+  else if (strcasecmp(theFileName, "cerr") == 0)
+  {
+    myStream = &std::cout;
+    return;
+  }
+
+  TCollection_AsciiString aFileName (theFileName);
 #ifdef _WIN32
-    aFileName.ChangeAll ('/', '\\');
+  aFileName.ChangeAll ('/', '\\');
 #endif
 
-    ofstream *ofile = new ofstream (aFileName.ToCString(),
-#ifdef USE_STL_STREAMS
-                                    (theToAppend ? (std::ios_base::app | std::ios_base::out) : std::ios_base::out ) );
-#else
-                                    (theToAppend ? ios::app : ios::out ) );
-#endif
-    if ( ofile ) {
-      myStream = (Standard_OStream*)ofile;
-      myIsFile = Standard_True;
-    }
-    else {
-      myStream = &cout;
-      cerr << "Error opening " << theFileName << endl << flush;
-    }
+  std::ofstream* aFile = new std::ofstream (aFileName.ToCString(),
+                                            (theToAppend ? (std::ios_base::app | std::ios_base::out) : std::ios_base::out));
+  if (aFile->is_open())
+  {
+    myStream = (Standard_OStream* )aFile;
+    myIsFile = Standard_True;
+  }
+  else
+  {
+    delete aFile;
+    myStream = &std::cout;
+    std::cerr << "Error opening " << theFileName << std::endl << std::flush;
   }
 }
 
@@ -88,7 +91,7 @@ void Message_PrinterOStream::Close ()
   ostr->flush();
   if ( myIsFile )
   {
-    ofstream* ofile = (ofstream*)ostr;
+    std::ofstream* ofile = (std::ofstream* )ostr;
     ofile->close();
     delete ofile;
     myIsFile = Standard_False;

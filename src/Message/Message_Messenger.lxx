@@ -123,14 +123,7 @@ inline const Handle(Message_Messenger)&
        operator << (const Handle(Message_Messenger)& theMessenger,
                     const Standard_SStream& theStream)
 {
-#ifdef USE_STL_STREAM
   theMessenger->Send (theStream.str().c_str(), Message_Info, Standard_False);
-#else
-  // Note: use dirty tricks -- unavoidable with old streams 
-  TCollection_AsciiString aStr (((Standard_SStream&)theStream).str(), theStream.pcount());
-  theMessenger->Send (aStr, Message_Info, Standard_False);
-  ((Standard_SStream&)theStream).freeze (false);
-#endif
   return theMessenger;
 }
 
