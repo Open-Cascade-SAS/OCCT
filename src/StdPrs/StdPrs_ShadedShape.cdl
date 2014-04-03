@@ -44,4 +44,9 @@ is
        theUVScale      : Pnt2d        from gp);
   ---Purpose: Shades <theShape> with texture coordinates.
 
+  Tessellate (myclass;
+              theShape  : Shape  from TopoDS;
+              theDrawer : Drawer from Prs3d);
+  ---Purpose: Validates triangulation within the shape and performs tessellation if necessary.
+
 end ShadedShape;

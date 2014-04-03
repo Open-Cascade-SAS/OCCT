@@ -362,6 +362,32 @@ void StdPrs_ShadedShape::Add (const Handle(Prs3d_Presentation)& thePresentation,
 }
 
 // =======================================================================
+// function : Tessellate
+// purpose  :
+// =======================================================================
+void StdPrs_ShadedShape::Tessellate (const TopoDS_Shape&          theShape,
+                                     const Handle (Prs3d_Drawer)& theDrawer)
+{
+  // Check if it is possible to avoid unnecessary recomputation
+  // of shape triangulation
+  Standard_Real aDeflection = GetDeflection (theShape, theDrawer);
+  if (BRepTools::Triangulation (theShape, aDeflection))
+  {
+    return;
+  }
+
+  // retrieve meshing tool from Factory
+  BRepTools::Clean (theShape);
+  Handle(BRepMesh_DiscretRoot) aMeshAlgo = BRepMesh_DiscretFactory::Get().Discret (theShape,
+                                                                                   aDeflection,
+                                                                                   theDrawer->HLRAngle());
+  if (!aMeshAlgo.IsNull())
+  {
+    aMeshAlgo->Perform();
+  }
+}
+
+// =======================================================================
 // function : Add
 // purpose  :
 // =======================================================================
@@ -411,22 +437,8 @@ void StdPrs_ShadedShape::Add (const Handle (Prs3d_Presentation)& thePresentation
       StdPrs_WFShape::Add (thePresentation, theShape, theDrawer);
     }
   }
-  Standard_Real aDeflection = GetDeflection (theShape, theDrawer);
 
-  // Check if it is possible to avoid unnecessary recomputation
-  // of shape triangulation
-  if (!BRepTools::Triangulation (theShape, aDeflection))
-  {
-    BRepTools::Clean (theShape);
-
-    // retrieve meshing tool from Factory
-    Handle(BRepMesh_DiscretRoot) aMeshAlgo = BRepMesh_DiscretFactory::Get().Discret (theShape,
-                                                                                     aDeflection,
-                                                                                     theDrawer->HLRAngle());
-    if (!aMeshAlgo.IsNull())
-      aMeshAlgo->Perform();
-  }
-
+  Tessellate (theShape, theDrawer);
   ShadeFromShape (theShape, thePresentation, theDrawer,
                   theHasTexels, theUVOrigin, theUVRepeat, theUVScale);
 

@@ -325,6 +325,7 @@ is
 
     class Triangulation;
 
+    imported ColoredShape;
     imported TexturedShape;
 
     class Drawer;
