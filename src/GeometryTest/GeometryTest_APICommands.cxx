@@ -320,7 +320,10 @@ static Standard_Integer surfapp(Draw_Interpretor& di, Standard_Integer n, const 
 
 static Standard_Integer extrema(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
-  if ( n<3) return 1;
+  if (n < 3)
+  {
+    return 1;
+  }
 
   Handle(Geom_Curve)   GC1, GC2;
   Handle(Geom_Surface) GS1, GS2;
@@ -330,7 +333,7 @@ static Standard_Integer extrema(Draw_Interpretor& di, Standard_Integer n, const 
   Standard_Boolean S1 = Standard_False;
   Standard_Boolean S2 = Standard_False;
 
-  Standard_Real U1f,U1l,U2f,U2l,V1f = 0.,V1l = 0.,V2f = 0.,V2l = 0.;
+  Standard_Real U1f, U1l, U2f, U2l, V1f = 0., V1l = 0., V2f = 0., V2l = 0.;
 
   GC1 = DrawTrSurf::GetCurve(a[1]);
   if ( GC1.IsNull()) {
@@ -360,134 +363,143 @@ static Standard_Integer extrema(Draw_Interpretor& di, Standard_Integer n, const 
     U2l = GC2->LastParameter();
   }
 
-  char name[100];
-  if ( C1 && C2)
+  NCollection_Vector<gp_Pnt> aPnts1, aPnts2;
+  NCollection_Vector<Standard_Real> aPrms[4];
+  if (C1 && C2)
+  {
+    GeomAPI_ExtremaCurveCurve Ex(GC1, GC2, U1f, U1l, U2f, U2l);
+    if (!Ex.Extrema().IsParallel())
     {
-    GeomAPI_ExtremaCurveCurve Ex(GC1,GC2,U1f,U1l,U2f,U2l);
-
-    if(!Ex.Extrema().IsParallel())
+      for (Standard_Integer aJ = 1; aJ <= Ex.NbExtrema(); ++aJ)
       {
-      const Standard_Integer aNExtr = Ex.NbExtrema();
-      if(aNExtr == 0)
-        {
-        di << "No solutions!\n";
-        }
-      else
-        {
-        for ( Standard_Integer i = 1; i <= aNExtr; i++)
-          {
-          gp_Pnt P1,P2;
-          Ex.Points(i,P1,P2);
-          Standard_Real U1,V1;
-          Ex.Parameters(i,U1,V1);
-          if (P1.Distance(P2) < 1.e-16)
-            {
-            di << "Extrema " << i << " is point : " << P1.X() << " " << P1.Y() << " " << P1.Z() << "\n";
-            continue;
-            }
+        gp_Pnt aP1, aP2;
+        Ex.Points(aJ, aP1, aP2);
+        aPnts1.Append(aP1);
+        aPnts2.Append(aP2);
 
-          Handle(Geom_Line) L = new Geom_Line(P1,gp_Vec(P1,P2));
-          Handle(Geom_TrimmedCurve) CT = 
-            new Geom_TrimmedCurve(L, 0., P1.Distance(P2));
-          Sprintf(name,"%s%d","ext_",i);
-          char* temp = name; // portage WNT
-          DrawTrSurf::Set(temp, CT);
-#ifdef DEB          
-          di << name << "(U=" << U1 << ";V=" << V1 << ")" << "\n";
-#else
-          di << name << " ";
-#endif
-          }
-        }
+        Standard_Real aU1, aU2;
+        Ex.Parameters(aJ, aU1, aU2);
+        aPrms[0].Append(aU1);
+        aPrms[2].Append(aU2);
       }
+    }
     else
-      {
+    {
       di << "Infinite number of extremas, distance = " << Ex.LowerDistance() << "\n";
-      }
     }
-  else if ( C1 & S2)
+  }
+  else if (C1 && S2)
+  {
+    GeomAPI_ExtremaCurveSurface Ex(GC1, GS2, U1f, U1l, U2f, U2l, V2f, V2l);
+    for (Standard_Integer aJ = 1; aJ <= Ex.NbExtrema(); ++aJ)
     {
-    GeomAPI_ExtremaCurveSurface Ex(GC1,GS2,U1f,U1l,U2f,U2l,V2f,V2l);
+      gp_Pnt aP1, aP2;
+      Ex.Points(aJ, aP1, aP2);
+      aPnts1.Append(aP1);
+      aPnts2.Append(aP2);
 
-    const Standard_Integer aNExtr = Ex.NbExtrema();
-    if(aNExtr == 0)
-      {
-      di << "No solutions!\n";
-      }
-    else
-      {
-      for ( Standard_Integer i = 1; i <= aNExtr; i++)
-        {
-        gp_Pnt P1,P2;
-        Ex.Points(i,P1,P2);
-        if (P1.Distance(P2) < 1.e-16) continue;
-        Handle(Geom_Line) L = new Geom_Line(P1,gp_Vec(P1,P2));
-        Handle(Geom_TrimmedCurve) CT = 
-          new Geom_TrimmedCurve(L, 0., P1.Distance(P2));
-        Sprintf(name,"%s%d","ext_",i);
-        char* temp = name; // portage WNT
-        DrawTrSurf::Set(temp, CT);
-        di << name << " ";
-        }
-      }
+      Standard_Real aU1, aU2, aV2;
+      Ex.Parameters(aJ, aU1, aU2, aV2);
+      aPrms[0].Append(aU1);
+      aPrms[2].Append(aU2);
+      aPrms[3].Append(aV2);
     }
-  else if ( S1 & C2)
+  }
+  else if (S1 && C2)
+  {
+    GeomAPI_ExtremaCurveSurface Ex(GC2, GS1, U2f, U2l, U1f, U1l, V1f, V1l);
+    for (Standard_Integer aJ = 1; aJ <= Ex.NbExtrema(); ++aJ)
     {
-    GeomAPI_ExtremaCurveSurface Ex(GC2,GS1,U2f,U2l,U1f,U1l,V1f,V1l);
+      gp_Pnt aP2, aP1;
+      Ex.Points(aJ, aP2, aP1);
+      aPnts1.Append(aP1);
+      aPnts2.Append(aP2);
 
-    const Standard_Integer aNExtr = Ex.NbExtrema();
-    if(aNExtr == 0)
-      {
-      di << "No solutions!\n";
-      }
-    else
-      {
-      for ( Standard_Integer i = 1; i <= aNExtr; i++)
-        {
-        gp_Pnt P1,P2;
-        Ex.Points(i,P1,P2);
-        if (P1.Distance(P2) < 1.e-16) continue;
-        Handle(Geom_Line) L = new Geom_Line(P1,gp_Vec(P1,P2));
-        Handle(Geom_TrimmedCurve) CT = 
-          new Geom_TrimmedCurve(L, 0., P1.Distance(P2));
-        Sprintf(name,"%s%d","ext_",i);
-        char* temp = name; // portage WNT
-        DrawTrSurf::Set(temp, CT);
-        di << name << " ";
-        }
-      }
+      Standard_Real aU1, aV1, aU2;
+      Ex.Parameters(aJ, aU2, aU1, aV1);
+      aPrms[0].Append(aU1);
+      aPrms[1].Append(aV1);
+      aPrms[2].Append(aU2);
     }
-  else if ( S1 & S2)
+  }
+  else if (S1 && S2)
+  {
+    GeomAPI_ExtremaSurfaceSurface Ex(
+      GS1, GS2, U1f, U1l, V1f, V1l, U2f, U2l, V2f, V2l);
+    for (Standard_Integer aJ = 1; aJ <= Ex.NbExtrema(); ++aJ)
     {
-    GeomAPI_ExtremaSurfaceSurface Ex(GS1,GS2,U1f,U1l,V1f,V1l,U2f,U2l,V2f,V2l);
+      gp_Pnt aP1, aP2;
+      Ex.Points(aJ, aP1, aP2);
+      aPnts1.Append(aP1);
+      aPnts2.Append(aP2);
 
-    const Standard_Integer aNExtr = Ex.NbExtrema();
-    if(aNExtr == 0)
-      {
-      di << "No solutions!\n";
-      }
-    else
-      {
-      for ( Standard_Integer i = 1; i <= aNExtr; i++)
-        {
-        gp_Pnt P1,P2;
-        Ex.Points(i,P1,P2);
-        if (P1.Distance(P2) < 1.e-16)
-          continue;
+      Standard_Real aU1, aV1, aU2, aV2;
+      Ex.Parameters(aJ, aU1, aV1, aU2, aV2);
+      aPrms[0].Append(aU1);
+      aPrms[1].Append(aV1);
+      aPrms[2].Append(aU2);
+      aPrms[3].Append(aV2);
+    }
+  }
 
-        Handle(Geom_Line) L = new Geom_Line(P1,gp_Vec(P1,P2));
-        Handle(Geom_TrimmedCurve) CT = 
-          new Geom_TrimmedCurve(L, 0., P1.Distance(P2));
-        Sprintf(name,"%s%d","ext_",i);
-        char* temp = name; // portage WNT
-        DrawTrSurf::Set(temp, CT);
-        di << name << " ";
-        }
+  char aName[100];
+  char* aName2 = aName; // portage WNT
+
+  // Output points.
+  const Standard_Integer aPntCount = aPnts1.Size();
+  if (aPntCount == 0)
+  {
+    di << "No solutions!\n";
+  }
+  for (Standard_Integer aJ = 1; aJ <= aPntCount; aJ++)
+  {
+    gp_Pnt aP1 = aPnts1(aJ - 1), aP2 = aPnts2(aJ - 1);
+
+    if (aP1.Distance(aP2) < 1.e-16)
+    {
+      di << "Extrema " << aJ << " is point : " <<
+        aP1.X() << " " << aP1.Y() << " " << aP1.Z() << "\n";
+      continue;
+    }
+
+    Handle(Geom_Line) aL = new Geom_Line(aP1, gp_Vec(aP1, aP2));
+    Handle(Geom_TrimmedCurve) aCT = 
+      new Geom_TrimmedCurve(aL, 0., aP1.Distance(aP2));
+    Sprintf(aName, "%s%d", "ext_", aJ);
+    DrawTrSurf::Set(aName2, aCT);
+    di << aName << " ";
+  }
+
+  if (n >= 4)
+  {
+    // Output points.
+    for (Standard_Integer aJ = 1; aJ <= aPntCount; aJ++)
+    {
+      gp_Pnt aP1 = aPnts1(aJ - 1), aP2 = aPnts2(aJ - 1);
+      Sprintf(aName, "%s%d%s", "ext_", aJ, "_2");
+      DrawTrSurf::Set(aName2, aP1);
+      di << aName << " ";
+      Sprintf(aName, "%s%d%s", "ext_", aJ, "_3");
+      DrawTrSurf::Set(aName2, aP2);
+      di << aName << " ";
+    }
+
+    // Output parameters.
+    for (Standard_Integer aJ = 0; aJ < 4; ++aJ)
+    {
+      for (Standard_Integer aPrmCount = aPrms[aJ].Size(), aK = 0;
+        aK < aPrmCount; ++aK)
+      {
+        Standard_Real aP = aPrms[aJ](aK);
+        Sprintf(aName, "%s%d%s%d", "prm_", aJ + 1, "_", aK + 1);
+        Draw::Set(aName2, aP);
+        di << aName << " ";
       }
     }
+  }
 
   return 0;
-  }
+}
 
 //=======================================================================
 //function : totalextcc
@@ -573,6 +585,6 @@ void GeometryTest::APICommands(Draw_Interpretor& theCommands)
        "grilapp result nbupoint nbvpoint X0 dX Y0 dY z11 z12 .. z1nu ....  ",
         __FILE__,grilapp);
 
-  theCommands.Add("extrema", "extrema curve/surface curve/surface",__FILE__,extrema);
+  theCommands.Add("extrema", "extrema curve/surface curve/surface [extended_output = 0|1]",__FILE__,extrema);
   theCommands.Add("totalextcc", "totalextcc curve curve",__FILE__,totalextcc);
 }

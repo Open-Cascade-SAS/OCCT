@@ -57,6 +57,7 @@
 #include <Draw_Appli.hxx>
 #include <DrawTrSurf.hxx>
 #include <DrawTrSurf_BSplineCurve2d.hxx>
+#include <DrawTrSurf_Point.hxx>
 
 #include <gp.hxx>
 #include <Precision.hxx>
@@ -78,12 +79,13 @@ Standard_IMPORT Draw_Viewer dout;
 
 static Standard_Integer vertex(Draw_Interpretor& , Standard_Integer n, const char** a)
 {
-  if (n < 4) return 1;
+  if (n < 3) return 1;
   if (n >= 5) {
     DBRep::Set(a[1],
       BRepBuilderAPI_MakeVertex(gp_Pnt(Draw::Atof(a[2]),Draw::Atof(a[3]),Draw::Atof(a[4]))));
   }
-  else {
+  else if (n == 4)
+  {
     TopoDS_Shape S = DBRep::Get(a[3]);
     if (S.IsNull()) return 0;
     if (S.ShapeType() != TopAbs_EDGE) return 0;
@@ -91,6 +93,12 @@ static Standard_Integer vertex(Draw_Interpretor& , Standard_Integer n, const cha
     gp_Pnt P;
     C.D0(Draw::Atof(a[2]),P);
     DBRep::Set(a[1], BRepBuilderAPI_MakeVertex(P));
+  }
+  else
+  {
+    Handle(DrawTrSurf_Point) aP =
+      Handle(DrawTrSurf_Point)::DownCast(Draw::Get(a[2]));
+    DBRep::Set(a[1], BRepBuilderAPI_MakeVertex(aP->Point()));
   }
   return 0;
 }
@@ -1772,7 +1780,7 @@ void  BRepTest::CurveCommands(Draw_Interpretor& theCommands)
   const char* g = "TOPOLOGY Curve topology commands";
 
   theCommands.Add("vertex",
-    "vertex name [x y z / p edge]",__FILE__,
+    "vertex name [x y z | p edge | poin]",__FILE__,
     vertex,g);
 
   theCommands.Add("etrim",
