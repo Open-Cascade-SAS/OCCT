@@ -48,7 +48,7 @@ void PrsMgr_PresentationManager::Display (const Handle(PrsMgr_PresentableObject)
     AddPresentation (thePrsObj, theMode);
   }
 
-  Handle(PrsMgr_Presentation3d) aPrs = CastPresentation (thePrsObj, theMode);
+  Handle(PrsMgr_Presentation) aPrs = Presentation (thePrsObj, theMode);
   if (aPrs->MustBeUpdated())
   {
     Update (thePrsObj, theMode);
@@ -114,7 +114,7 @@ void PrsMgr_PresentationManager::Highlight (const Handle(PrsMgr_PresentableObjec
     AddPresentation (thePrsObj, theMode);
   }
 
-  Handle(PrsMgr_Presentation3d) aPrs = CastPresentation (thePrsObj, theMode);
+  Handle(PrsMgr_Presentation) aPrs = Presentation (thePrsObj, theMode);
   if (aPrs->MustBeUpdated())
   {
     Update (thePrsObj, theMode);
@@ -349,7 +349,7 @@ Handle(PrsMgr_Presentation) PrsMgr_PresentationManager::Presentation (const Hand
 void PrsMgr_PresentationManager::AddPresentation (const Handle(PrsMgr_PresentableObject)& thePrsObj,
                                                   const Standard_Integer                  theMode)
 {
-  Handle(PrsMgr_Presentation) aPrs = new PrsMgr_Presentation3d (this, thePrsObj);
+  Handle(PrsMgr_Presentation) aPrs = new PrsMgr_Presentation (this, thePrsObj);
   thePrsObj->Presentations().Append (PrsMgr_ModedPresentation (aPrs, theMode));
   thePrsObj->Fill (this, aPrs, theMode);
 
@@ -434,7 +434,7 @@ void PrsMgr_PresentationManager::Connect (const Handle(PrsMgr_PresentableObject)
   {
     AddPresentation (theOtherObject, theOtherMode);
   }
-  CastPresentation (thePrsObject, theMode)->Connect (CastPresentation (theOtherObject, theMode));
+  Presentation (thePrsObject, theMode)->Connect (Presentation (theOtherObject, theMode));
 }
 
 // =======================================================================
@@ -445,7 +445,7 @@ void PrsMgr_PresentationManager::Transform (const Handle(PrsMgr_PresentableObjec
                                             const Handle(Geom_Transformation)&      theTransformation,
                                             const Standard_Integer                  theMode)
 {
-  CastPresentation (thePrsObj, theMode)->Transform (theTransformation);
+  Presentation (thePrsObj, theMode)->Transform (theTransformation);
 }
 
 // =======================================================================
@@ -458,7 +458,7 @@ void PrsMgr_PresentationManager::Place (const Handle(PrsMgr_PresentableObject)& 
                                         const Quantity_Length                   theZ,
                                         const Standard_Integer                  theMode)
 {
-  CastPresentation (thePrsObj, theMode)->Place (theX, theY, theZ);
+  Presentation (thePrsObj, theMode)->Place (theX, theY, theZ);
 }
 
 // =======================================================================
@@ -469,7 +469,7 @@ void PrsMgr_PresentationManager::Multiply (const Handle(PrsMgr_PresentableObject
                                            const Handle(Geom_Transformation)&      theTransformation,
                                            const Standard_Integer                  theMode)
 {
-  CastPresentation (thePrsObj, theMode)->Multiply (theTransformation);
+  Presentation (thePrsObj, theMode)->Multiply (theTransformation);
 }
 
 // =======================================================================
@@ -482,7 +482,7 @@ void PrsMgr_PresentationManager::Move (const Handle(PrsMgr_PresentableObject)& t
                                        const Quantity_Length                   theZ,
                                        const Standard_Integer                  theMode)
 {
-  CastPresentation (thePrsObj, theMode)->Move (theX, theY, theZ);
+  Presentation (thePrsObj, theMode)->Move (theX, theY, theZ);
 }
 
 // =======================================================================
@@ -498,7 +498,7 @@ void PrsMgr_PresentationManager::Color (const Handle(PrsMgr_PresentableObject)& 
     AddPresentation (thePrsObj, theMode);
   }
 
-  Handle(PrsMgr_Presentation3d) aPrs = CastPresentation (thePrsObj, theMode);
+  Handle(PrsMgr_Presentation) aPrs = Presentation (thePrsObj, theMode);
   if (aPrs->MustBeUpdated())
   {
     Update (thePrsObj, theMode);
@@ -531,7 +531,7 @@ void PrsMgr_PresentationManager::BoundBox (const Handle(PrsMgr_PresentableObject
   {
     Update (thePrsObject, theMode);
   }
-  CastPresentation (thePrsObject, theMode)->BoundBox();
+  Presentation (thePrsObject, theMode)->BoundBox();
 }
 
 // =======================================================================
@@ -559,16 +559,6 @@ void PrsMgr_PresentationManager::SetShadingAspect (const Handle(PrsMgr_Presentab
 {
   if (HasPresentation (thePrsObject, theMode))
   {
-    CastPresentation (thePrsObject, theMode)->SetShadingAspect (theShadingAspect);
+    Presentation (thePrsObject, theMode)->SetShadingAspect (theShadingAspect);
   }
-}
-
-// =======================================================================
-// function : CastPresentation
-// purpose  :
-// =======================================================================
-Handle(PrsMgr_Presentation3d) PrsMgr_PresentationManager::CastPresentation (const Handle(PrsMgr_PresentableObject)& thePrsObject,
-                                                                            const Standard_Integer                  theMode) const
-{
-  return Handle(PrsMgr_Presentation3d)::DownCast (Presentation (thePrsObject, theMode));
 }

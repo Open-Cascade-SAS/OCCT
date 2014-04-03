@@ -22,7 +22,7 @@
 #include <Geom_Transformation.hxx>
 
 #include <PrsMgr_ModedPresentation.hxx>
-#include <PrsMgr_Presentation3d.hxx>
+#include <PrsMgr_Presentation.hxx>
 #include <OSD_Timer.hxx>
 
 
@@ -84,18 +84,19 @@ Connect(const Handle(AIS_InteractiveObject)& anotherIobj,
 
 //=======================================================================
 //function : Disconnect
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 void AIS_ConnectedInteractive::Disconnect()
 {
-  for(Standard_Integer i =1;i<=myPresentations.Length();i++)
+  for(Standard_Integer aPrsIter = 1; aPrsIter <= myPresentations.Length(); ++aPrsIter)
+  {
+    const Handle(PrsMgr_Presentation)& aPrs = myPresentations (aPrsIter).Presentation();
+    if (!aPrs.IsNull())
     {
-      Handle(PrsMgr_Presentation3d) P = Handle(PrsMgr_Presentation3d)::DownCast(myPresentations(i).Presentation());
-      if(!P.IsNull()) {
-	P->Presentation()->DisconnectAll(Graphic3d_TOC_DESCENDANT);
-      }
+      aPrs->Presentation()->DisconnectAll (Graphic3d_TOC_DESCENDANT);
     }
+  }
 }
 //=======================================================================
 //function : Compute

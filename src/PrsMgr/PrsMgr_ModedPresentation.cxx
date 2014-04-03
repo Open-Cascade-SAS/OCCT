@@ -14,17 +14,23 @@
 
 #include <PrsMgr_ModedPresentation.ixx>
 
-PrsMgr_ModedPresentation::PrsMgr_ModedPresentation() {}
+PrsMgr_ModedPresentation::PrsMgr_ModedPresentation()
+: myMode (0) {}
 
-PrsMgr_ModedPresentation::PrsMgr_ModedPresentation(const Handle(PrsMgr_Presentation)& aPresentation, const Standard_Integer aMode): myPresentation(aPresentation), myMode(aMode) {
+PrsMgr_ModedPresentation::PrsMgr_ModedPresentation (const Handle(PrsMgr_Presentation)& thePrs,
+                                                    const Standard_Integer             theMode)
+: myPresentation (thePrs),
+  myMode (theMode)
+{
+  //
 }
 
-Handle(PrsMgr_Presentation) PrsMgr_ModedPresentation::Presentation () const {
-
+const Handle(PrsMgr_Presentation)& PrsMgr_ModedPresentation::Presentation() const
+{
   return myPresentation;
-
 }
 
-Standard_Integer PrsMgr_ModedPresentation::Mode () const {
+Standard_Integer PrsMgr_ModedPresentation::Mode() const
+{
   return myMode;
 }

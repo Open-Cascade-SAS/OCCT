@@ -291,14 +291,14 @@ fields
     myTransformPersistence  :  CTransPersStruct  from  Graphic3d;
 
 friends
-    class Presentation3d      from PrsMgr,
+    class Presentation        from PrsMgr,
     class PresentationManager from PrsMgr,
-    Compute from Presentation3d from PrsMgr(me : mutable; aProjector   : DataStructureManager from Graphic3d),
-    Compute from Presentation3d from PrsMgr(me : mutable; aProjector   : DataStructureManager from Graphic3d;
-                                                          aGivenStruct :  Structure from Graphic3d),
-    Compute from Presentation3d from PrsMgr(me : mutable; aProjector   : DataStructureManager from Graphic3d;
-                                                          TheTrsf   : Transformation from Geom),
-    Compute from Presentation3d from PrsMgr(me : mutable; aProjector   : DataStructureManager from Graphic3d;
-                                                          TheTrsf      : Transformation from Geom;
-                                                          aGivenStruct : Structure from Graphic3d)
+    Compute from Presentation from PrsMgr(me : mutable; aProjector   : DataStructureManager from Graphic3d),
+    Compute from Presentation from PrsMgr(me : mutable; aProjector   : DataStructureManager from Graphic3d;
+                                                        aGivenStruct :  Structure from Graphic3d),
+    Compute from Presentation from PrsMgr(me : mutable; aProjector   : DataStructureManager from Graphic3d;
+                                                        TheTrsf   : Transformation from Geom),
+    Compute from Presentation from PrsMgr(me : mutable; aProjector   : DataStructureManager from Graphic3d;
+                                                        TheTrsf      : Transformation from Geom;
+                                                        aGivenStruct : Structure from Graphic3d)
 end PresentableObject from PrsMgr;

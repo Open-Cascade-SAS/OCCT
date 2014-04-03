@@ -22,7 +22,7 @@
 #include <AIS_MultipleConnectedInteractive.ixx>
 
 #include <PrsMgr_ModedPresentation.hxx>
-#include <PrsMgr_Presentation3d.hxx>
+#include <PrsMgr_Presentation.hxx>
 
 static Standard_Boolean IsInSeq (const AIS_SequenceOfInteractive&      theSeq,
 				 const Handle(AIS_InteractiveObject)&  theItem) 
@@ -113,11 +113,12 @@ void AIS_MultipleConnectedInteractive::Disconnect(const Handle(AIS_InteractiveOb
 
 void AIS_MultipleConnectedInteractive::DisconnectAll ()
 {
-/*  for(Standard_Integer i =1;i<=myPresentations.Length();i++)
+/*  for (Standard_Integer aPrsIter = 1; aPrsIter <= myPresentations.Length(); ++aPrsIter)
     {
-      Handle(PrsMgr_Presentation3d) P = Handle(PrsMgr_Presentation3d)::DownCast(myPresentations(i).Presentation());
-      if(!P.IsNull()) {
-	P->Presentation()->DisconnectAll(Graphic3d_TOC_DESCENDANT);
+      const Handle(PrsMgr_Presentation)& aPrs = myPresentations (aPrsIter).Presentation();
+      if (!aPrs.IsNull())
+      {
+        aPrs->Presentation()->DisconnectAll (Graphic3d_TOC_DESCENDANT);
       }
     }*/
   myPreviousReferences = myReferences; // pour garder les poignees au chaud!!!!

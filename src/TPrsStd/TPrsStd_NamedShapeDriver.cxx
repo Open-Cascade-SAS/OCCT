@@ -28,8 +28,7 @@
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
 #include <PrsMgr_Presentation.hxx>
 #include <Prs3d_Presentation.hxx>
-#include <PrsMgr_Presentation3d.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
+#include <PrsMgr_PresentationManager.hxx>
 #include <Geom_Transformation.hxx>
 
 #undef OPTIM_UPDATE  // If this variable is defined there will be done

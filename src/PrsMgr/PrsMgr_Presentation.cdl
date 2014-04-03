@@ -14,90 +14,186 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
--- Modified by Rob : 20-feb-1997
--- Modified by Rob : 16-dec-1997 : kind of presentation
-
-deferred class Presentation from PrsMgr
-inherits TShared  from MMgt
+class Presentation from PrsMgr
+inherits TShared from MMgt
 
 uses 
 
-    PresentationManager from PrsMgr,
-    KindOfPrs from PrsMgr
+  PresentationManager from PrsMgr,
+  NameOfColor from Quantity,
+  Transformation from Geom,
+  Length from Quantity,
+  ShadingAspect from Prs3d,
+  TypeOfPresentation3d from PrsMgr,
+  DataStructureManager from Graphic3d,
+  Structure from Graphic3d,
+  PresentableObjectPointer from PrsMgr,PresentableObject from PrsMgr,
+  Prs from PrsMgr,
+  Projector from Prs3d,
+  Presentation from Prs3d
 
 is
 
-    Initialize(aPresentationManager: PresentationManager from PrsMgr)
-    is protected;
+  Create (thePresentationManager : PresentationManager from PrsMgr;
+          thePresentableObject   : PresentableObject   from PrsMgr)
+  returns mutable Presentation from PrsMgr
+  is private;
 
-    KindOfPresentation(me) returns KindOfPrs from PrsMgr is deferred;    
-    ---Purpose: 2D or 3D
-    
-    Display(me: mutable) is deferred private;
-    
-    Erase(me: mutable) is deferred private;
+  Destroy (me : mutable) is virtual;
+  ---Level: Public
+  ---Purpose: Destructor
+  ---C++:     alias ~
 
-    SetVisible (me: mutable; theValue: Boolean from Standard) is deferred private;
+  Display (me : mutable)
+  is virtual private;
 
-    Highlight(me: mutable) is deferred private;
-    
-    Unhighlight (me) is deferred private;
-    
-    IsHighlighted(me) returns Boolean from Standard
-    is deferred private;
+  Display (me : mutable;
+           theIsHighlight : Boolean from Standard)
+  is static private;
+  ---Purpose: Displays myStructure and sets myDisplayReason to theIsHighlight value if
+  -- myStructure was not displayed or was invisible
 
-    IsDisplayed(me) returns Boolean from Standard
-    is deferred private;
+  Erase (me : mutable)
+  is virtual private;
 
-    Destroy ( me : mutable )
-    is virtual; 
-    ---Level: Public    
-    ---Purpose: Destructor
-    ---C++:     alias ~
+  SetVisible (me       : mutable;
+              theValue : Boolean from Standard)
+  is virtual private;
 
-    DisplayPriority(me) returns Integer from Standard
-    is deferred private;
-    
-    SetDisplayPriority(me:mutable;aNewPrior:Integer from Standard)
-    is deferred private;
+  Highlight (me : mutable) is virtual private;
 
-    SetZLayer ( me : mutable;
-                theLayerId : Integer from Standard )
-      is deferred private;
-    ---Purpose: Set Z layer ID for the presentation
+  Unhighlight (me) is virtual private;
 
-    GetZLayer ( me )
-      returns Integer from Standard is deferred private;
-    ---Purpose: Get Z layer ID for the presentation
+  IsHighlighted (me) returns Boolean from Standard
+  is virtual private;
 
-    Clear(me: mutable) 
-    is deferred private;
-    
+  IsDisplayed (me) returns Boolean from Standard
+  is virtual private;
+
+  DisplayPriority(me) returns Integer from Standard
+  is virtual private;
+
+  SetDisplayPriority(me:mutable;aNewPrior:Integer from Standard)
+  is virtual private;
+
+  SetZLayer (me         : mutable;
+             theLayerId : Integer from Standard)
+  is virtual private;
+  ---Purpose: Set Z layer ID for the presentation
+
+  GetZLayer (me) returns Integer from Standard
+  is virtual private;
+  ---Purpose: Get Z layer ID for the presentation
+
+  Clear (me : mutable)
+  is virtual private;
+  ---Purpose: removes the whole content of the presentation.
+  --          Does not remove the other connected presentations.
+
+  Color (me       : mutable;
+         theColor : NameOfColor from Quantity)
+  is static private;
+
+  BoundBox (me)
+  is static private;
+
+---Category: references to other presentation.
+
+  Connect (me;
+           theOther : Presentation from PrsMgr)
+  is static private;
+
+---Category: Transformation methods.
+
+  Transform (me;
+             theTrsf : Transformation from Geom)
+  is static private;
+
+  Place (me;
+         theX, theY, theZ : Length from Quantity)
+  is static private;
+
+  Multiply (me;
+            theTrsf : Transformation from Geom)
+  is static private;
+
+  Move (me;
+        theX, theY, theZ : Length from Quantity)
+  is static private;
+
+---Category: Global Aspect methods
+
+  SetShadingAspect (me;
+                    theShadingAspect : ShadingAspect from Prs3d)
+  is static private;
+
+  Presentation (me) returns mutable Presentation from Prs3d
+  is static;
+  ---C++: inline
+  ---C++: return const&
+
+---Category: Computed Structures
+
+  Compute (me           : mutable;
+           theStructure : Structure from Graphic3d)
+  is static private;
+
+  Compute (me           : mutable;
+           theProjector : DataStructureManager from Graphic3d)
+  returns Structure from Graphic3d
+  is static private;
+
+  Compute (me           : mutable;
+           theProjector : DataStructureManager from Graphic3d;
+           theTrsf      : Transformation from Geom)
+  returns Structure from Graphic3d
+  is static private;
+
+  Compute (me             : mutable;
+           theProjector   : DataStructureManager from Graphic3d;
+           theGivenStruct : Structure from Graphic3d)
+  is static private;
+
+  Compute (me             : mutable;
+           theProjector   : DataStructureManager from Graphic3d;
+           theTrsf        : Transformation from Geom;
+           theGivenStruct : Structure from Graphic3d)
+  is static private;
+
 ---Category: Inquire Methods
---            
-    PresentationManager(me) returns mutable PresentationManager
-    ---Purpose: returns the PresentationManager in which the
-    --          presentation has been created.
-    is static;
-    ---C++: inline
-    ---C++: return const&
 
+  PresentationManager (me) returns mutable PresentationManager
+  ---Purpose: returns the PresentationManager in which the presentation has been created.
+  is static;
+  ---C++: inline
+  ---C++: return const&
+
+  Projector (myclass;
+             theProjector : DataStructureManager from Graphic3d)
+  returns Projector from Prs3d
+  is private;
 
 ---Category: Internal Methods
 
-    SetUpdateStatus(me:mutable; aStat : Boolean from Standard);
-    ---C++: inline
-    
-    MustBeUpdated(me) returns Boolean from Standard;
-    ---C++: inline
+  SetUpdateStatus (me      : mutable;
+                   theStat : Boolean from Standard);
+  ---C++: inline
 
+  MustBeUpdated (me) returns Boolean from Standard;
+  ---C++: inline
 
 fields
 
-    myPresentationManager: PresentationManager from PrsMgr is protected;
-    myMustBeUpdated      : Boolean from Standard is protected;
+  myPresentationManager : PresentationManager from PrsMgr;
+  myStructure           : Prs from PrsMgr;
+  myPresentableObject   : PresentableObjectPointer from PrsMgr;
+  myMustBeUpdated       : Boolean from Standard;
+  myDisplayReason       : Boolean from Standard;
 
 friends
-    class PresentationManager from PrsMgr
-        
+
+  class PresentationManager from PrsMgr,
+  class PresentableObject   from PrsMgr,
+  class Prs                 from PrsMgr
+
 end Presentation from PrsMgr;

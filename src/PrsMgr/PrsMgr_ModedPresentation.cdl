@@ -17,26 +17,27 @@
 class ModedPresentation from PrsMgr
 
 uses
-    Presentation from PrsMgr
+
+  Presentation from PrsMgr
 
 is
-    Create 
-    returns  ModedPresentation from PrsMgr;
-    
-    Create(aPresentation:Presentation from PrsMgr;
-           aMode: Integer from Standard) 
-    returns  ModedPresentation from PrsMgr;
-    
-    Presentation(me) returns Presentation from PrsMgr
-    is static;
 
-    Mode(me) returns Integer from Standard;
+  Create
+  returns  ModedPresentation from PrsMgr;
 
-    
+  Create (thePrs  : Presentation from PrsMgr;
+          theMode : Integer from Standard)
+  returns ModedPresentation from PrsMgr;
+
+  Presentation (me) returns Presentation from PrsMgr
+  is static;
+  ---C++: return const&
+
+  Mode (me) returns Integer from Standard;
+
 fields
 
     myPresentation: Presentation from PrsMgr;
     myMode: Integer from Standard;
-    
+
 end ModedPresentation from PrsMgr;
-    

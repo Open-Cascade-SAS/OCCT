@@ -23,15 +23,8 @@
 //			instead a restricted object NameOfColor. 
 //			Add SetCurrentFacingModel() method
 
-#define IMP020200	//GG Add SetTransformation() method
-
-#define IMP140200	//GG Add HasPresentation() and Presentation() methods
-//			     Add SetAspect() method.
-
 #define BUC60632	//GG 15/03/00 Add protection on SetDisplayMode()
 //			method, compute only authorized presentation.
-
-#define IMP220501	//GG CADPAK_V2 Update selection properly
 
 #define OCC708          //SAV unsetting transformation correctly
 
@@ -550,33 +543,31 @@ void AIS_InteractiveObject::SetInfiniteState(const Standard_Boolean aFlag)
       P->SetInfiniteState(myInfiniteState);}
 }
 
-#ifdef IMP020200
 //=======================================================================
 //function : SetTransformation
-//purpose  : 
+//purpose  :
 //=======================================================================
-void AIS_InteractiveObject::SetTransformation(const Handle(Geom_Transformation)& aTrsf, const Standard_Boolean postConcatenate, const Standard_Boolean updateSelection) {
+void AIS_InteractiveObject::SetTransformation (const Handle(Geom_Transformation)& theTrsf,
+                                               const Standard_Boolean             theToPostConcatenate,
+                                               const Standard_Boolean             theToUpdateSelection)
+{
+  if (GetContext().IsNull())
+  {
+    return;
+  }
 
-  if(!GetContext().IsNull()){
-    const PrsMgr_Presentations& prs = Presentations(); 
-    Handle(Prs3d_Presentation) P;
-    Standard_Integer mode;
-    myHasTransformation = Standard_True;
-    for( Standard_Integer i=1 ; i<=prs.Length() ; i++ ) {
-      mode = prs(i).Mode();
-      P = GetContext()->MainPrsMgr()->CastPresentation(this,mode)->Presentation();
-      if( postConcatenate ) P->Multiply(aTrsf);
-      else     	            P->Transform(aTrsf);
-      if( updateSelection ) {
-#ifdef IMP220501
-        myCTXPtr->ClearSelected(Standard_True);
-	myCTXPtr->RecomputeSelectionOnly(this);
-#else
-        if( HasSelection(mode) ) {
-          UpdateSelection(mode);      
-        }
-#endif
-      }
+  const PrsMgr_Presentations& aPrsList = Presentations();
+  myHasTransformation = Standard_True;
+  for (Standard_Integer aPrsIter = 1; aPrsIter <= aPrsList.Length(); ++aPrsIter)
+  {
+    const Standard_Integer aMode = aPrsList (aPrsIter).Mode();
+    Handle(Prs3d_Presentation) aPrs = GetContext()->MainPrsMgr()->Presentation (this, aMode)->Presentation();
+    theToPostConcatenate ? aPrs->Multiply  (theTrsf)
+                         : aPrs->Transform (theTrsf);
+    if (theToUpdateSelection)
+    {
+      myCTXPtr->ClearSelected (Standard_True);
+      myCTXPtr->RecomputeSelectionOnly (this);
     }
   }
 }
@@ -598,21 +589,22 @@ Handle(Geom_Transformation) trsf;
 
 //=======================================================================
 //function : Transformation
-//purpose  : 
+//purpose  :
 //=======================================================================
-Handle(Geom_Transformation) AIS_InteractiveObject::Transformation() {
-Handle(Geom_Transformation) trsf; 
-
-  if(!GetContext().IsNull() ) {
-    const PrsMgr_Presentations& prs = Presentations(); 
-    if( prs.Length() > 0 ) {
-      Handle(Prs3d_Presentation) P = 
-	  GetContext()->MainPrsMgr()->CastPresentation(this,1)->Presentation();
-      trsf = P->Transformation();
-    }
+Handle(Geom_Transformation) AIS_InteractiveObject::Transformation()
+{
+  if (GetContext().IsNull())
+  {
+    return Handle(Geom_Transformation)();
   }
 
-  return trsf;
+  const PrsMgr_Presentations& aPrsList = Presentations();
+  if (aPrsList.Length() > 0)
+  {
+    Handle(Prs3d_Presentation) aPrs = GetContext()->MainPrsMgr()->Presentation (this, 1)->Presentation();
+    return aPrs->Transformation();
+  }
+  return Handle(Geom_Transformation)();
 }
 
 //=======================================================================
@@ -623,36 +615,26 @@ Standard_Boolean AIS_InteractiveObject::HasTransformation() const {
 
   return myHasTransformation;
 }
-#endif
 
-#ifdef IMP140200
 //=======================================================================
 //function : HasPresentation
-//purpose  : 
+//purpose  :
 //=======================================================================
-Standard_Boolean AIS_InteractiveObject::HasPresentation() const {
-
-  if( !GetContext().IsNull() && 
-	GetContext()->MainPrsMgr()->HasPresentation(this,myDisplayMode) ) {
-    return Standard_True;
-  }
-
-  return Standard_False;
+Standard_Boolean AIS_InteractiveObject::HasPresentation() const
+{
+  return !GetContext().IsNull()
+       && GetContext()->MainPrsMgr()->HasPresentation (this, myDisplayMode);
 }
 
 //=======================================================================
 //function : Presentation
-//purpose  : 
+//purpose  :
 //=======================================================================
-Handle(Prs3d_Presentation) AIS_InteractiveObject::Presentation() const {
-Handle(Prs3d_Presentation) prs;
-
-  if( HasPresentation() ) {
-    prs = GetContext()->MainPrsMgr()->
-		CastPresentation(this,myDisplayMode)->Presentation();
-  }
-
-  return prs;
+Handle(Prs3d_Presentation) AIS_InteractiveObject::Presentation() const
+{
+  return HasPresentation()
+       ? GetContext()->MainPrsMgr()->Presentation (this, myDisplayMode)->Presentation()
+       : Handle(Prs3d_Presentation)();
 }
 
 //=======================================================================
@@ -698,9 +680,6 @@ void AIS_InteractiveObject::SetAspect(const Handle(Prs3d_BasicAspect)& anAspect,
     }
   }
 }
-#endif
-
-// OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
 
 //=======================================================================
 //function : SetPolygonOffsets 
@@ -716,12 +695,11 @@ void AIS_InteractiveObject::SetPolygonOffsets(const Standard_Integer    aMode,
   myDrawer->ShadingAspect()->Aspect()->SetPolygonOffsets( aMode, aFactor, aUnits );
 
   // Modify existing presentations 
-  Handle(Graphic3d_Structure) aStruct;
-  for( Standard_Integer i = 1, n = myPresentations.Length(); i <= n; i++ ) {
-    Handle(PrsMgr_Presentation3d) aPrs3d =
-      Handle(PrsMgr_Presentation3d)::DownCast( myPresentations(i).Presentation() );
+  for (Standard_Integer aPrsIter = 1, n = myPresentations.Length(); aPrsIter <= n; ++aPrsIter)
+  {
+    const Handle(PrsMgr_Presentation)& aPrs3d = myPresentations (aPrsIter).Presentation();
     if ( !aPrs3d.IsNull() ) {
-      aStruct = Handle(Graphic3d_Structure)::DownCast( aPrs3d->Presentation() );
+      const Handle(Graphic3d_Structure)& aStruct = aPrs3d->Presentation();
       if( !aStruct.IsNull() ) {
         aStruct->SetPrimitivesAspect( myDrawer->ShadingAspect()->Aspect() );
         // Workaround for issue 23115: Need to update also groups, because their
@@ -750,7 +728,6 @@ void AIS_InteractiveObject::SetPolygonOffsets(const Standard_Integer    aMode,
   }
 }
 
-
 //=======================================================================
 //function : HasPolygonOffsets 
 //purpose  : 
@@ -773,4 +750,3 @@ void AIS_InteractiveObject::PolygonOffsets(Standard_Integer&    aMode,
   if( HasPolygonOffsets() )
     myDrawer->ShadingAspect()->Aspect()->PolygonOffsets( aMode, aFactor, aUnits );
 }
-// OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets 

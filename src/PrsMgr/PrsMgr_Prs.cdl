@@ -25,12 +25,12 @@ uses
     Structure             from Graphic3d,
     DataStructureManager  from Graphic3d,
     TypeOfPresentation3d  from PrsMgr,
-    Presentation3dPointer from PrsMgr
+    PresentationPointer   from PrsMgr
     
 is
-    Create(aStructureManager     : StructureManager from Graphic3d; 
-    	   aPresentation         : Presentation3dPointer from PrsMgr; 
-           aTypeOfPresentation3d : TypeOfPresentation3d from PrsMgr)
+    Create (theStructManager        : StructureManager from Graphic3d;
+            thePresentation         : PresentationPointer from PrsMgr;
+            theTypeOfPresentation3d : TypeOfPresentation3d from PrsMgr)
     returns mutable Prs from PrsMgr;
 
     Compute (me: mutable)
@@ -74,5 +74,5 @@ is
     
 
 fields 
-    myPresentation3d: Presentation3dPointer from PrsMgr;
+    myPresentation3d: PresentationPointer from PrsMgr;
 end Prs from PrsMgr;

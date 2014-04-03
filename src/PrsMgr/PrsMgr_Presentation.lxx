@@ -14,11 +14,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-inline void PrsMgr_Presentation::SetUpdateStatus(const Standard_Boolean TheUpdateStatus)
-{myMustBeUpdated = TheUpdateStatus ;}
+inline void PrsMgr_Presentation::SetUpdateStatus (const Standard_Boolean theUpdateStatus)
+{
+  myMustBeUpdated = theUpdateStatus;
+}
 
-inline Standard_Boolean  PrsMgr_Presentation::MustBeUpdated() const 
-{return myMustBeUpdated;}
+inline Standard_Boolean PrsMgr_Presentation::MustBeUpdated() const
+{
+  return myMustBeUpdated;
+}
 
 inline const Handle(PrsMgr_PresentationManager)& PrsMgr_Presentation::PresentationManager() const 
-{return myPresentationManager;}
+{
+  return myPresentationManager;
+}
+
+inline const Handle(Prs3d_Presentation)& PrsMgr_Presentation::Presentation() const
+{
+  return myStructure;
+}

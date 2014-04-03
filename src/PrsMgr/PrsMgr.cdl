@@ -41,9 +41,6 @@ uses
  
 is
 
-    enumeration KindOfPrs is KOP_2D,KOP_3D
-    end KindOfPrs;
-
     enumeration TypeOfPresentation3d is TOP_AllView, TOP_ProjectorDependant
     end TypeOfPresentation3d;
     	---Purpose: To declare the type of presentation as follows
@@ -55,17 +52,17 @@ is
 
     class PresentationManager;
     alias PresentationManager3d is PresentationManager;
-    deferred class Presentation;
+    class Presentation;
+    alias Presentation3d is Presentation;
     deferred class PresentableObject;
 
     imported ListOfPresentations;
 
     class Prs;
-    class Presentation3d;
 
     class ModedPresentation;
     class Presentations  instantiates Sequence from TCollection
     	(ModedPresentation from PrsMgr);
-    pointer Presentation3dPointer to Presentation3d from PrsMgr;
+    pointer PresentationPointer to Presentation from PrsMgr;
     pointer PresentableObjectPointer to PresentableObject from PrsMgr;
 end PrsMgr;

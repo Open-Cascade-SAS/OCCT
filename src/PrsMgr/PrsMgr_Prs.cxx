@@ -13,18 +13,18 @@
 // commercial license or contractual agreement.
 
 #include <PrsMgr_Prs.ixx>
-#include <PrsMgr_Presentation3d.hxx>
+#include <PrsMgr_Presentation.hxx>
 #include <Precision.hxx>
 #include <gp_Trsf.hxx>
 #include <Geom_Transformation.hxx>
 
-PrsMgr_Prs::PrsMgr_Prs (const Handle(Graphic3d_StructureManager)& aStructureManager,
-			const PrsMgr_Presentation3dPointer& aPresentation3d, 
-			const PrsMgr_TypeOfPresentation3d aTypeOfPresentation)
-:Prs3d_Presentation(aStructureManager),myPresentation3d(aPresentation3d) 
+PrsMgr_Prs::PrsMgr_Prs (const Handle(Graphic3d_StructureManager)& theStructManager,
+                        const PrsMgr_PresentationPointer&         thePrs,
+                        const PrsMgr_TypeOfPresentation3d         theTypeOfPresentation)
+: Prs3d_Presentation (theStructManager),
+  myPresentation3d   (thePrs)
 {
-  
-  if (aTypeOfPresentation == PrsMgr_TOP_ProjectorDependant)
+  if (theTypeOfPresentation == PrsMgr_TOP_ProjectorDependant)
     SetVisual(Graphic3d_TOS_COMPUTED);
 }
 

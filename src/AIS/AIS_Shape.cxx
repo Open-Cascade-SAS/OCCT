@@ -523,8 +523,7 @@ void AIS_Shape::SetColor(const Quantity_Color &aCol)
   // fast shading modification...
   if(!GetContext().IsNull()){
     if( GetContext()->MainPrsMgr()->HasPresentation(this,1)){
-      Handle(Prs3d_Presentation) aPresentation = 
-        GetContext()->MainPrsMgr()->CastPresentation(this,1)->Presentation();
+      Handle(Prs3d_Presentation) aPresentation = GetContext()->MainPrsMgr()->Presentation (this, 1)->Presentation();
       Handle(Graphic3d_Group) aCurGroup = Prs3d_Root::CurrentGroup(aPresentation);
       Handle(Graphic3d_AspectFillArea3d) anAreaAspect = myDrawer->ShadingAspect()->Aspect();
       Handle(Graphic3d_AspectLine3d) aLineAspect = myDrawer->LineAspect()->Aspect();
@@ -602,8 +601,7 @@ void AIS_Shape::UnsetColor()
 
   if(!GetContext().IsNull()){
     if(GetContext()->MainPrsMgr()->HasPresentation(this,1)){
-      Handle(Prs3d_Presentation) aPresentation = 
-        GetContext()->MainPrsMgr()->CastPresentation(this,1)->Presentation();
+      Handle(Prs3d_Presentation) aPresentation = GetContext()->MainPrsMgr()->Presentation (this, 1)->Presentation();
       Handle(Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup(aPresentation);
 
       Handle(Graphic3d_AspectFillArea3d) anAreaAsp = myDrawer->Link()->ShadingAspect()->Aspect();
@@ -717,9 +715,9 @@ void AIS_Shape::SetMaterial(const Graphic3d_MaterialAspect& aMat)
   myDrawer->ShadingAspect()->SetTransparency(myTransparency,myCurrentFacingModel);
 
   if(!GetContext().IsNull()){
-    if(GetContext()->MainPrsMgr()->HasPresentation(this,1)){
-      Handle(Prs3d_Presentation) aPresentation = 
-        GetContext()->MainPrsMgr()->CastPresentation(this,1)->Presentation();
+    if(GetContext()->MainPrsMgr()->HasPresentation(this,1))
+    {
+      Handle(Prs3d_Presentation) aPresentation = GetContext()->MainPrsMgr()->Presentation (this, 1)->Presentation();
       Handle(Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup(aPresentation);
     
       Handle(Graphic3d_AspectFillArea3d) anAreaAsp = myDrawer->ShadingAspect()->Aspect();
@@ -761,8 +759,7 @@ void AIS_Shape::UnsetMaterial()
   hasOwnMaterial = Standard_False;
   if(!GetContext().IsNull()){
     if(GetContext()->MainPrsMgr()->HasPresentation(this,1)){
-      Handle(Prs3d_Presentation) aPresentation = 
-        GetContext()->MainPrsMgr()->CastPresentation(this,1)->Presentation();
+      Handle(Prs3d_Presentation) aPresentation = GetContext()->MainPrsMgr()->Presentation (this, 1)->Presentation();
       Handle(Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup(aPresentation);
       Handle(Graphic3d_AspectFillArea3d) anAreaAsp = myDrawer->ShadingAspect()->Aspect();
       aPresentation->SetPrimitivesAspect(anAreaAsp);
@@ -792,8 +789,7 @@ void AIS_Shape::SetTransparency(const Standard_Real AValue)
 
   if(!GetContext().IsNull()){
     if(GetContext()->MainPrsMgr()->HasPresentation(this,1)){
-      Handle(Prs3d_Presentation) aPresentation = 
-        GetContext()->MainPrsMgr()->CastPresentation(this,1)->Presentation();
+      Handle(Prs3d_Presentation) aPresentation = GetContext()->MainPrsMgr()->Presentation (this, 1)->Presentation();
       Handle(Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup(aPresentation);
       Handle(Graphic3d_AspectFillArea3d) anAreaAsp = myDrawer->ShadingAspect()->Aspect();
       aPresentation->SetPrimitivesAspect(anAreaAsp);
@@ -828,8 +824,7 @@ void AIS_Shape::UnsetTransparency()
 
   if(!GetContext().IsNull()){
     if(GetContext()->MainPrsMgr()->HasPresentation(this,1)){
-      Handle(Prs3d_Presentation) aPresentation = 
-        GetContext()->MainPrsMgr()->CastPresentation(this,1)->Presentation();
+      Handle(Prs3d_Presentation) aPresentation = GetContext()->MainPrsMgr()->Presentation (this, 1)->Presentation();
       Handle(Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup(aPresentation);
       Handle(Graphic3d_AspectFillArea3d) anAreaAsp = myDrawer->ShadingAspect()->Aspect();
       aPresentation->SetPrimitivesAspect(anAreaAsp);

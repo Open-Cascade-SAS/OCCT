@@ -31,7 +31,6 @@ uses
   Transformation      from Geom,
   NameOfMaterial      from Graphic3d,
   Presentation        from PrsMgr,
-  Presentation3d      from PrsMgr,
   View                from V3d,
   ShadingAspect       from Prs3d,
   Presentation        from Prs3d
@@ -249,12 +248,6 @@ is
                     theShadingAspect : ShadingAspect from Prs3d;
                     theMode          : Integer from Standard = 0)
   ---Purpose: this method will change the color and the aspect of the presentations containing shaded structures.
-  is static;
-
-  CastPresentation (me;
-                    thePrsObject : PresentableObject from PrsMgr;
-                    theMode      : Integer from Standard = 0)
-  returns mutable Presentation3d from PrsMgr
   is static;
 
 ---Category: Private & deferred methods.
