@@ -338,53 +338,59 @@ void BOPAlgo_ArgumentAnalyzer::TestSelfInterferences()
     BOPDS_VectorOfInterfFZ& aFZs=theDS->InterfFZ();
     BOPDS_VectorOfInterfZZ& aZZs=theDS->InterfZZ();
     //
-    const Standard_Integer aNbTypeInt=10;
-    Standard_Integer aTypeInt, i, nI1, nI2;
-    Standard_Integer aNb[aNbTypeInt] = {
+    Standard_Integer aNbTypeInt, aTypeInt, i, nI1, nI2;
+    Standard_Integer aNb[] = {
       aVVs.Extent(), aVEs.Extent(), aEEs.Extent(), 
       aVFs.Extent(), aEFs.Extent(), aFFs.Extent(),
-      aVZs.Extent(), aEZs.Extent(), aFZs.Extent(), aZZs.Extent()};
+      aVZs.Extent(), aEZs.Extent(), aFZs.Extent(), 
+      aZZs.Extent()
+    };
+    //
     BOPDS_Interf* aInt=NULL;
     //
+    aNbTypeInt=BOPDS_DS::NbInterfTypes();
     for (aTypeInt = 0; aTypeInt < aNbTypeInt; ++aTypeInt) {
       for (i = 0; i < aNb[aTypeInt]; ++i) {
-	switch(aTypeInt) {
-	  case 0:
-	    aInt=(BOPDS_Interf*)(&aVVs(i));
-	    break;
-	  case 1:
-	    aInt=(BOPDS_Interf*)(&aVEs(i));
-	    break;
-	  case 2:
-	    aInt=(BOPDS_Interf*)(&aEEs(i));
-	    break;
-	  case 3:
-	    aInt=(BOPDS_Interf*)(&aVFs(i));
-	    break;
-	  case 4:
-	    aInt=(BOPDS_Interf*)(&aEFs(i));
-	    break;
-	  case 5:
-	    aInt=(BOPDS_Interf*)(&aFFs(i));
-	    break;
-	  case 6:
-	    aInt=(BOPDS_Interf*)(&aVZs(i));
-	    break;
-	  case 7:
-	    aInt=(BOPDS_Interf*)(&aEZs(i));
-	    break;
-	  case 8:
-	    aInt=(BOPDS_Interf*)(&aFZs(i));
-	    break;
-	  case 9:
-	    aInt=(BOPDS_Interf*)(&aZZs(i));
-	    break;
-	  default:
-	    aInt=NULL;
-	}
+        switch(aTypeInt) {
+        case 0:
+          aInt=(BOPDS_Interf*)(&aVVs(i));
+          break;
+        case 1:
+          aInt=(BOPDS_Interf*)(&aVEs(i));
+          break;
+        case 2:
+          aInt=(BOPDS_Interf*)(&aEEs(i));
+          break;
+        case 3:
+          aInt=(BOPDS_Interf*)(&aVFs(i));
+          break;
+        case 4:
+          aInt=(BOPDS_Interf*)(&aEFs(i));
+          break;
+        case 5:
+          aInt=(BOPDS_Interf*)(&aFFs(i));
+          break;
+        case 6:
+          aInt=(BOPDS_Interf*)(&aVZs(i));
+          break;
+        case 7:
+          aInt=(BOPDS_Interf*)(&aEZs(i));
+          break;
+        case 8:
+          aInt=(BOPDS_Interf*)(&aFZs(i));
+          break;
+        case 9:
+          aInt=(BOPDS_Interf*)(&aZZs(i));
+          break;
+        default:
+          aInt=NULL;
+        }
         //
-	aInt->Indices(nI1, nI2);
+        aInt->Indices(nI1, nI2);
         if (nI1 == nI2) {
+          continue;
+        } 
+        if (theDS->IsNewShape(nI1) || theDS->IsNewShape(nI2)) {
           continue;
         }
         //
