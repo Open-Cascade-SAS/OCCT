@@ -3,7 +3,7 @@ puts "TODO CR23096 ALL: TPSTAT : Faulty"
 puts "TODO CR23096 ALL: STATSHAPE : Faulty" 
 puts "TODO CR23096 ALL: TOLERANCE : Faulty" 
 
-puts "TODO CR23096 Mandriva2010: Error : 3 differences with reference data found :" 
+puts "TODO CR23096 ALL: Error : 3 differences with reference data found :" 
 puts "TODO DEBUG_CR24543 ALL: Error: ShapeFix_ComposeShell::MakeFacesOnPatch: can't dispatch wires"
 
 set LinuxDiff 3
