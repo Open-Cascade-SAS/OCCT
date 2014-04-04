@@ -1771,12 +1771,11 @@ static Standard_Integer OCC24622 (Draw_Interpretor& /*theDi*/, Standard_Integer 
   else if (aTextureTypeArg == "2D")
   {
     anImage->InitTrash (Image_PixMap::ImgRGB, 8, 8);
-    Image_PixMapData<Image_ColorRGB>& anImageData = anImage->EditData<Image_ColorRGB>();
     for (Standard_Integer aRow = 0; aRow < 8; ++aRow)
     {
       for (Standard_Integer aCol = 0; aCol < 8; ++aCol)
       {
-        anImageData.ChangeValue (aRow, aCol) = aBitmap[aRow];
+        anImage->ChangeValue<Image_ColorRGB> (aRow, aCol) = aBitmap[aRow];
       }
     }
   }

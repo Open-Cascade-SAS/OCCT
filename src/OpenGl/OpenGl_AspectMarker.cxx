@@ -1710,8 +1710,6 @@ void OpenGl_AspectMarker::Resources::BuildSprites (const Handle(OpenGl_Workspace
           anImageA = new Image_PixMap();
           anImage ->InitZero (Image_PixMap::ImgBGRA, aSize, aSize);
           anImageA->InitZero (Image_PixMap::ImgGray, aSize, aSize);
-          Image_PixMapData<Image_ColorBGRA>& aDataBGRA = anImage->EditData<Image_ColorBGRA>();
-          Image_PixMapData<Standard_Byte>&   aDataGray = anImageA->EditData<Standard_Byte>();
 
           // we draw a set of circles
           Image_ColorBGRA aColor32;
@@ -1729,8 +1727,8 @@ void OpenGl_AspectMarker::Resources::BuildSprites (const Handle(OpenGl_Workspace
             const Handle(Graphic3d_MarkerImage) aMarker = GetTextureImage (Aspect_TOM_O, aScale);
             const Handle(Image_PixMap)& aCircle = aMarker->GetImage();
 
-            const Standard_Size aDiffX = (aDataBGRA.SizeX() - aCircle->SizeX()) / 2;
-            const Standard_Size aDiffY = (aDataBGRA.SizeY() - aCircle->SizeY()) / 2;
+            const Standard_Size aDiffX = (anImage->SizeX() - aCircle->SizeX()) / 2;
+            const Standard_Size aDiffY = (anImage->SizeY() - aCircle->SizeY()) / 2;
             for (Standard_Size aRow = 0; aRow < aCircle->SizeY(); ++aRow)
             {
               const Standard_Byte* aRowData = aCircle->Row (aRow);
@@ -1738,8 +1736,8 @@ void OpenGl_AspectMarker::Resources::BuildSprites (const Handle(OpenGl_Workspace
               {
                 if (aRowData[aCol] != 0)
                 {
-                  aDataBGRA.ChangeValue (aDiffX + aRow, aDiffY + aCol) = aColor32;
-                  aDataGray.ChangeValue (aDiffX + aRow, aDiffY + aCol) = 255;
+                  anImage ->ChangeValue<Image_ColorBGRA> (aDiffX + aRow, aDiffY + aCol) = aColor32;
+                  anImageA->ChangeValue<Standard_Byte>   (aDiffX + aRow, aDiffY + aCol) = 255;
                 }
               }
             }

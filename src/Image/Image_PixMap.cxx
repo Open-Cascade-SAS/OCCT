@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 #include <Image_PixMap.hxx>
-#include <Standard.hxx>
+#include <NCollection_AlignedAllocator.hxx>
 
 IMPLEMENT_STANDARD_HANDLE (Image_PixMap, Standard_Transient)
 IMPLEMENT_STANDARD_RTTIEXT(Image_PixMap, Standard_Transient)
@@ -24,13 +24,9 @@ IMPLEMENT_STANDARD_RTTIEXT(Image_PixMap, Standard_Transient)
 // purpose  :
 // =======================================================================
 Image_PixMap::Image_PixMap()
-: myImgFormat (Image_PixMap::ImgGray),
-  myIsOwnPointer (true)
+: myImgFormat (Image_PixMap::ImgGray)
 {
-  memset (&myData, 0, sizeof(myData));
-  myData.mySizeBPP   = 1;
-  myData.myTopToDown = Standard_Size(-1);
-  setFormat (Image_PixMap::ImgGray);
+  //
 }
 
 // =======================================================================
@@ -75,18 +71,7 @@ Standard_Size Image_PixMap::SizePixelBytes (const Image_PixMap::ImgFormat thePix
 // =======================================================================
 void Image_PixMap::setFormat (Image_PixMap::ImgFormat thePixelFormat)
 {
-  myImgFormat      = thePixelFormat;
-  myData.mySizeBPP = SizePixelBytes (myImgFormat);
-}
-
-// =======================================================================
-// function : setTopDown
-// purpose  :
-// =======================================================================
-void Image_PixMap::setTopDown()
-{
-  myData.myTopRowPtr = ((myData.myTopToDown == 1 || myData.myDataPtr == NULL)
-                     ? myData.myDataPtr : (myData.myDataPtr + myData.mySizeRowBytes * (myData.mySizeY - 1)));
+  myImgFormat = thePixelFormat;
 }
 
 // =======================================================================
@@ -99,17 +84,16 @@ bool Image_PixMap::InitWrapper (Image_PixMap::ImgFormat thePixelFormat,
                                 const Standard_Size     theSizeY,
                                 const Standard_Size     theSizeRowBytes)
 {
-  Clear (thePixelFormat);
+  Clear();
+  myImgFormat = thePixelFormat;
   if ((theSizeX == 0) || (theSizeY == 0) || (theDataPtr == NULL))
   {
     return false;
   }
-  myData.mySizeX        = theSizeX;
-  myData.mySizeY        = theSizeY;
-  myData.mySizeRowBytes = (theSizeRowBytes != 0) ? theSizeRowBytes : (theSizeX * myData.mySizeBPP);
-  myData.myDataPtr      = theDataPtr;
-  myIsOwnPointer = false;
-  setTopDown();
+
+  Handle(NCollection_BaseAllocator) anEmptyAlloc;
+  myData.Init (anEmptyAlloc, Image_PixMap::SizePixelBytes (thePixelFormat),
+               theSizeX, theSizeY, theSizeRowBytes, theDataPtr);
   return true;
 }
 
@@ -122,23 +106,19 @@ bool Image_PixMap::InitTrash (Image_PixMap::ImgFormat thePixelFormat,
                               const Standard_Size     theSizeY,
                               const Standard_Size     theSizeRowBytes)
 {
-  Clear (thePixelFormat);
+  Clear();
+  myImgFormat = thePixelFormat;
   if ((theSizeX == 0) || (theSizeY == 0))
   {
     return false;
   }
-  myData.mySizeX        = theSizeX;
-  myData.mySizeY        = theSizeY;
-  myData.mySizeRowBytes = myData.mySizeX * myData.mySizeBPP;
-  if (theSizeRowBytes > myData.mySizeRowBytes)
-  {
-    // use argument only if it greater
-    myData.mySizeRowBytes = theSizeRowBytes;
-  }
-  myData.myDataPtr = (Standard_Byte* )Standard::AllocateAligned (SizeBytes(), 16);
-  myIsOwnPointer   = true;
-  setTopDown();
-  return myData.myDataPtr != NULL;
+
+  // use argument only if it greater
+  const Standard_Size aSizeRowBytes = std::max (theSizeRowBytes, theSizeX * SizePixelBytes (thePixelFormat));
+  Handle(NCollection_BaseAllocator) anAlloc = new NCollection_AlignedAllocator (16);
+  myData.Init (anAlloc, Image_PixMap::SizePixelBytes (thePixelFormat),
+               theSizeX, theSizeY, aSizeRowBytes, NULL);
+  return !myData.IsEmpty();
 }
 
 // =======================================================================
@@ -155,7 +135,7 @@ bool Image_PixMap::InitZero (Image_PixMap::ImgFormat thePixelFormat,
   {
     return false;
   }
-  memset (myData.myDataPtr, (int )theValue, SizeBytes());
+  memset (myData.ChangeData(), (int )theValue, SizeBytes());
   return true;
 }
 
@@ -170,9 +150,9 @@ bool Image_PixMap::InitCopy (const Image_PixMap& theCopy)
     // self-copying disallowed
     return false;
   }
-  if (InitTrash (theCopy.myImgFormat, theCopy.myData.mySizeX, theCopy.myData.mySizeY, theCopy.myData.mySizeRowBytes))
+  if (InitTrash (theCopy.myImgFormat, theCopy.SizeX(), theCopy.SizeY(), theCopy.SizeRowBytes()))
   {
-    memcpy (myData.myDataPtr, theCopy.myData.myDataPtr, theCopy.SizeBytes());
+    memcpy (myData.ChangeData(), theCopy.myData.Data(), theCopy.SizeBytes());
     return true;
   }
   return false;
@@ -182,16 +162,11 @@ bool Image_PixMap::InitCopy (const Image_PixMap& theCopy)
 // function : Clear
 // purpose  :
 // =======================================================================
-void Image_PixMap::Clear (Image_PixMap::ImgFormat thePixelFormat)
+void Image_PixMap::Clear()
 {
-  if (myIsOwnPointer && (myData.myDataPtr != NULL))
-  {
-    Standard::FreeAligned (myData.myDataPtr);
-  }
-  myData.myDataPtr = myData.myTopRowPtr = NULL;
-  myIsOwnPointer = true;
-  myData.mySizeX = myData.mySizeY = myData.mySizeRowBytes = 0;
-  setFormat (thePixelFormat);
+  Handle(NCollection_BaseAllocator) anEmptyAlloc;
+  myData.Init (anEmptyAlloc, Image_PixMap::SizePixelBytes (myImgFormat),
+               0, 0, 0, NULL);
 }
 
 // =======================================================================
@@ -202,9 +177,9 @@ Quantity_Color Image_PixMap::PixelColor (const Standard_Integer theX,
                                          const Standard_Integer theY,
                                          Quantity_Parameter&    theAlpha) const
 {
-  if (IsEmpty() ||
-      theX < 0 || (Standard_Size )theX >= myData.mySizeX ||
-      theY < 0 || (Standard_Size )theY >= myData.mySizeY)
+  if (IsEmpty()
+   || theX < 0 || (Standard_Size )theX >= SizeX()
+   || theY < 0 || (Standard_Size )theY >= SizeY())
   {
     theAlpha = 0.0; // transparent
     return Quantity_Color (0.0, 0.0, 0.0, Quantity_TOC_RGB);

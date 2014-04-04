@@ -17,48 +17,74 @@
 #define _Image_PixMapData_H__
 
 #include <Image_Color.hxx>
+#include <NCollection_Buffer.hxx>
 
-//! POD template structure to access image buffer
-template<typename ColorType_t>
-struct Image_PixMapData
+//! Structure to manage image buffer.
+class Image_PixMapData : public NCollection_Buffer
 {
+public:
 
-  //! @return data pointer for low-level operations (copying entire buffer, parsing with extra tools etc.).
-  inline const ColorType_t* Data() const
+  //! Empty constructor.
+  Image_PixMapData()
+  : NCollection_Buffer (Handle(NCollection_BaseAllocator)()),
+    myTopRowPtr  (NULL),
+    SizeBPP      (0),
+    SizeX        (0),
+    SizeY        (0),
+    SizeRowBytes (0),
+    TopToDown    (Standard_Size(-1))
   {
-    return (const ColorType_t* )myDataPtr;
+    //
   }
 
-  //! @return data pointer for low-level operations (copying entire buffer, parsing with extra tools etc.).
-  inline ColorType_t* ChangeData()
+  //! Initializer.
+  void Init (const Handle(NCollection_BaseAllocator)& theAlloc,
+             const Standard_Size                      theSizeBPP,
+             const Standard_Size                      theSizeX,
+             const Standard_Size                      theSizeY,
+             const Standard_Size                      theSizeRowBytes,
+             Standard_Byte*                           theDataPtr)
   {
-    return (ColorType_t* )myDataPtr;
+    SetAllocator (theAlloc); // will free old data as well
+
+    myData       = theDataPtr;
+    myTopRowPtr  = NULL;
+    SizeBPP      = theSizeBPP;
+    SizeX        = theSizeX;
+    SizeY        = theSizeY;
+    SizeRowBytes = theSizeRowBytes != 0 ? theSizeRowBytes : (theSizeX * theSizeBPP);
+    mySize       = SizeRowBytes * SizeY;
+    if (myData == NULL)
+    {
+      Allocate (mySize);
+    }
+    SetTopDown (TopToDown == 1);
   }
 
   //! @return data pointer to requested row (first column).
-  inline const ColorType_t* Row (const Standard_Size theRow) const
+  inline const Standard_Byte* Row (const Standard_Size theRow) const
   {
-    return (ColorType_t* )(myTopRowPtr + mySizeRowBytes * theRow * myTopToDown);
+    return myTopRowPtr + SizeRowBytes * theRow * TopToDown;
   }
 
   //! @return data pointer to requested row (first column).
-  inline ColorType_t* ChangeRow (const Standard_Size theRow)
+  inline Standard_Byte* ChangeRow (const Standard_Size theRow)
   {
-    return (ColorType_t* )(myTopRowPtr + mySizeRowBytes * theRow * myTopToDown);
+    return myTopRowPtr + SizeRowBytes * theRow * TopToDown;
   }
 
   //! @return data pointer to requested position.
-  inline const ColorType_t& Value (const Standard_Size theRow,
-                                   const Standard_Size theCol) const
+  inline const Standard_Byte* Value (const Standard_Size theRow,
+                                     const Standard_Size theCol) const
   {
-    return *(const ColorType_t* )(myTopRowPtr + mySizeRowBytes * theRow * myTopToDown + mySizeBPP * theCol);
+    return myTopRowPtr + SizeRowBytes * theRow * TopToDown + SizeBPP * theCol;
   }
 
   //! @return data pointer to requested position.
-  inline ColorType_t& ChangeValue (const Standard_Size theRow,
-                                   const Standard_Size theCol)
+  inline Standard_Byte* ChangeValue (const Standard_Size theRow,
+                                     const Standard_Size theCol)
   {
-    return *(ColorType_t* )(myTopRowPtr + mySizeRowBytes * theRow * myTopToDown + mySizeBPP * theCol);
+    return myTopRowPtr + SizeRowBytes * theRow * TopToDown + SizeBPP * theCol;
   }
 
   //! Compute the maximal row alignment for current row size.
@@ -68,7 +94,7 @@ struct Image_PixMapData
     Standard_Size anAlignment = 2;
     for (; anAlignment <= 16; anAlignment <<= 1)
     {
-      if ((mySizeRowBytes % anAlignment) != 0 || (Standard_Size(myDataPtr) % anAlignment) != 0)
+      if ((SizeRowBytes % anAlignment) != 0 || (Standard_Size(myData) % anAlignment) != 0)
       {
         return (anAlignment >> 1);
       }
@@ -76,34 +102,30 @@ struct Image_PixMapData
     return anAlignment;
   }
 
-  //! @return bytes allocated for the whole image plane.
-  inline Standard_Size SizeBytes() const
+  //! Setup scanlines order in memory - top-down or bottom-up.
+  //! Drawers should explicitly specify this value if current state IsTopDown() was ignored!
+  //! @param theIsTopDown top-down flag
+  inline void SetTopDown (const bool theIsTopDown)
   {
-    return mySizeRowBytes * mySizeY;
+    TopToDown   = (theIsTopDown ? 1 : Standard_Size(-1));
+    myTopRowPtr = ((TopToDown == 1 || myData == NULL)
+                ? myData : (myData + SizeRowBytes * (SizeY - 1)));
   }
 
-  //! @return image width in pixels
-  inline Standard_Size SizeX() const
-  {
-    return mySizeX;
-  }
+protected:
 
-  //! @return image height in pixels
-  inline Standard_Size SizeY() const
-  {
-    return mySizeY;
-  }
+  Standard_Byte* myTopRowPtr;  //!< pointer to the topmost row (depending on scanlines order in memory)
 
 public:
 
-  Standard_Byte* myDataPtr;      //!< pointer to the data
-  Standard_Byte* myTopRowPtr;    //!< pointer to the topmost row (depending on scanlines order in memory)
-  Standard_Size  mySizeBPP;      //!< bytes per pixel
-  Standard_Size  mySizeX;        //!< width  in pixels
-  Standard_Size  mySizeY;        //!< height in pixels
-  Standard_Size  mySizeRowBytes; //!< number of bytes per line (in most cases equal to 3 * sizeX)
-  Standard_Size  myTopToDown;    //!< image scanlines direction in memory from Top to the Down
+  Standard_Size  SizeBPP;      //!< bytes per pixel
+  Standard_Size  SizeX;        //!< width  in pixels
+  Standard_Size  SizeY;        //!< height in pixels
+  Standard_Size  SizeRowBytes; //!< number of bytes per line (in most cases equal to 3 * sizeX)
+  Standard_Size  TopToDown;    //!< image scanlines direction in memory from Top to the Down
 
 };
+
+typedef NCollection_Handle<Image_PixMapData> Handle(Image_PixMapData);
 
 #endif // _Image_PixMapData_H__

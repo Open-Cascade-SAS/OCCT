@@ -695,11 +695,10 @@ Handle(Graphic3d_Texture2D) MeshVS_NodalColorPrsBuilder::CreateTexture() const
   }
 
   anImage->SetTopDown (false);
-  Image_PixMapData<Image_ColorRGBA>& aData = anImage->EditData<Image_ColorRGBA>();
   for (Standard_Size aCol = 0; aCol < Standard_Size(aColorsNb); ++aCol)
   {
     const Quantity_Color& aSrcColor = myTextureColorMap.Value (Standard_Integer(aCol) + 1);
-    Image_ColorRGBA& aColor = aData.ChangeValue (0, aCol);
+    Image_ColorRGBA& aColor = anImage->ChangeValue<Image_ColorRGBA> (0, aCol);
     aColor.r() = Standard_Byte(255.0 * aSrcColor.Red());
     aColor.g() = Standard_Byte(255.0 * aSrcColor.Green());
     aColor.b() = Standard_Byte(255.0 * aSrcColor.Blue());
@@ -719,7 +718,7 @@ Handle(Graphic3d_Texture2D) MeshVS_NodalColorPrsBuilder::CreateTexture() const
   // fill second row
   for (Standard_Size aCol = (Standard_Size )aColorsNb; aCol < anImage->SizeX(); ++aCol)
   {
-    aData.ChangeValue (0, aCol) = aLastColor;
+    anImage->ChangeValue<Image_ColorRGBA> (0, aCol) = aLastColor;
   }
 
   const Image_ColorRGBA anInvalidColor =
@@ -731,7 +730,7 @@ Handle(Graphic3d_Texture2D) MeshVS_NodalColorPrsBuilder::CreateTexture() const
   }};
   for (Standard_Size aCol = 0; aCol < anImage->SizeX(); ++aCol)
   {
-    aData.ChangeValue (1, aCol) = anInvalidColor;
+    anImage->ChangeValue<Image_ColorRGBA> (1, aCol) = anInvalidColor;
   }
 
   // create texture

@@ -62,37 +62,37 @@ public: // high-level API
   //! @return image width in pixels
   inline Standard_Size Width() const
   {
-    return myData.mySizeX;
+    return myData.SizeX;
   }
 
   //! @return image height in pixels
   inline Standard_Size Height() const
   {
-    return myData.mySizeY;
+    return myData.SizeY;
   }
 
   //! @return image width in pixels
   inline Standard_Size SizeX() const
   {
-    return myData.mySizeX;
+    return myData.SizeX;
   }
 
   //! @return image height in pixels
   inline Standard_Size SizeY() const
   {
-    return myData.mySizeY;
+    return myData.SizeY;
   }
 
   //! @return width / height.
   inline Standard_Real Ratio() const
   {
-    return (myData.mySizeY > 0) ? (Standard_Real(myData.mySizeX) / Standard_Real(myData.mySizeY)) : 1.0;
+    return (SizeY() > 0) ? (Standard_Real(SizeX()) / Standard_Real(SizeY())) : 1.0;
   }
 
   //! @return true if data is NULL.
   bool IsEmpty() const
   {
-    return myData.myDataPtr == NULL;
+    return myData.IsEmpty();
   }
 
   //! Empty constructor. Initialize the NULL image plane.
@@ -148,9 +148,9 @@ public: // high-level API
                                  const Standard_Byte theValue = 0);
 
   //! Method correctly deallocate internal buffer.
-  Standard_EXPORT virtual void Clear (ImgFormat thePixelFormat = ImgGray);
+  Standard_EXPORT virtual void Clear();
 
-public: // low-level API for batch-processing (pixels reading / comparison / modification)
+public: //! @name low-level API for batch-processing (pixels reading / comparison / modification)
 
   //! Returns TRUE if image data is stored from Top to the Down.
   //! By default Bottom Up order is used instead
@@ -163,7 +163,7 @@ public: // low-level API for batch-processing (pixels reading / comparison / mod
   //! @return true if image data is top-down
   inline bool IsTopDown() const
   {
-    return myData.myTopToDown == 1;
+    return myData.TopToDown == 1;
   }
 
   //! Setup scanlines order in memory - top-down or bottom-up.
@@ -171,27 +171,26 @@ public: // low-level API for batch-processing (pixels reading / comparison / mod
   //! @param theIsTopDown top-down flag
   inline void SetTopDown (const bool theIsTopDown)
   {
-    myData.myTopToDown = (theIsTopDown ? 1 : Standard_Size(-1));
-    setTopDown();
+    myData.SetTopDown (theIsTopDown);
   }
 
   //! Returns +1 if scanlines ordered in Top->Down order in memory and -1 otherwise.
   //! @return scanline increment for Top->Down iteration
   inline Standard_Size TopDownInc() const
   {
-    return myData.myTopToDown;
+    return myData.TopToDown;
   }
 
   //! @return data pointer for low-level operations (copying entire buffer, parsing with extra tools etc.).
   inline const Standard_Byte* Data() const
   {
-    return myData.myDataPtr;
+    return myData.Data();
   }
 
   //! @return data pointer for low-level operations (copying entire buffer, parsing with extra tools etc.).
   inline Standard_Byte* ChangeData()
   {
-    return myData.myDataPtr;
+    return myData.ChangeData();
   }
 
   //! @return data pointer to requested row (first column).
@@ -209,7 +208,7 @@ public: // low-level API for batch-processing (pixels reading / comparison / mod
   //! @return bytes reserved for one pixel (may include extra bytes for alignment).
   inline Standard_Size SizePixelBytes() const
   {
-    return myData.mySizeBPP;
+    return myData.SizeBPP;
   }
 
   //! @return bytes reserved for one pixel (may include extra bytes for alignment).
@@ -219,13 +218,13 @@ public: // low-level API for batch-processing (pixels reading / comparison / mod
   //! Could be larger than needed to store packed row (extra bytes for alignment etc.).
   inline Standard_Size SizeRowBytes() const
   {
-    return myData.mySizeRowBytes;
+    return myData.SizeRowBytes;
   }
 
   //! @return the extra bytes in the row.
   inline Standard_Size RowExtraBytes() const
   {
-    return myData.mySizeRowBytes - myData.mySizeX * myData.mySizeBPP;
+    return SizeRowBytes() - SizeX() * SizePixelBytes();
   }
 
   //! Compute the maximal row alignment for current row size.
@@ -235,31 +234,28 @@ public: // low-level API for batch-processing (pixels reading / comparison / mod
     return myData.MaxRowAligmentBytes();
   }
 
+  //! @return buffer size
   inline Standard_Size SizeBytes() const
   {
-    return myData.SizeBytes();
-  }
-
-  //! Access image buffer for write/read operations with specified color type.
-  template <typename ColorType_t>
-  inline Image_PixMapData<ColorType_t>& EditData()
-  {
-    return *(Image_PixMapData<ColorType_t>* )&myData;
-  }
-
-  //! Access image buffer for read operations with specified color type.
-  template <typename ColorType_t>
-  inline const Image_PixMapData<ColorType_t>& ReadData() const
-  {
-    return *(Image_PixMapData<ColorType_t>* )&myData;
+    return myData.Size();
   }
 
   //! Access image pixel with specified color type.
+  //! This method does not perform any type checks - use on own risk (check Format() before)!
   template <typename ColorType_t>
   inline const ColorType_t& Value (const Standard_Size theRow,
                                    const Standard_Size theCol) const
   {
-    return ((Image_PixMapData<ColorType_t>* )&myData)->Value (theRow, theCol);
+    return *reinterpret_cast<const ColorType_t*>(myData.Value (theRow, theCol));
+  }
+
+  //! Access image pixel with specified color type.
+  //! This method does not perform any type checks - use on own risk (check Format() before)!
+  template <typename ColorType_t>
+  inline ColorType_t& ChangeValue (const Standard_Size theRow,
+                                   const Standard_Size theCol)
+  {
+    return *reinterpret_cast<ColorType_t* >(myData.ChangeValue (theRow, theCol));
   }
 
 protected:
@@ -267,14 +263,10 @@ protected:
   //! Setup pixel format
   Standard_EXPORT void setFormat (ImgFormat thePixelFormat);
 
-  //! Auxiliary method to setup myTopRowPtr
-  Standard_EXPORT void setTopDown();
-
 protected:
 
-  Image_PixMapData<Standard_Byte> myData;
-  ImgFormat                       myImgFormat;    //!< pixel format
-  bool                            myIsOwnPointer; //!< if data was allocated by this class - flag is true
+  Image_PixMapData myData;      //!< data buffer
+  ImgFormat        myImgFormat; //!< pixel format
 
 private:
 

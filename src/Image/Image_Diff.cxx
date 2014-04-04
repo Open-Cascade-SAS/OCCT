@@ -23,22 +23,36 @@
 IMPLEMENT_STANDARD_HANDLE (Image_Diff, Standard_Transient)
 IMPLEMENT_STANDARD_RTTIEXT(Image_Diff, Standard_Transient)
 
+//! POD structure for packed RGB color value (3 bytes)
+struct Image_ColorXXX24
+{
+  Standard_Byte v[3];
+  typedef Standard_Byte ComponentType_t;         //!< Component type
+  static Standard_Integer Length() { return 3; } //!< Returns the number of components
+};
+
+inline Image_ColorXXX24 operator- (const Image_ColorXXX24& theA,
+                                   const Image_ColorXXX24& theB)
+{
+  return Image_ColorSub3 (theA, theB);
+}
+
 //! Dot squared for difference of two colors
-inline Standard_Integer dotSquared (const Image_ColorRGB& theColor)
+inline Standard_Integer dotSquared (const Image_ColorXXX24& theColor)
 {
   // explicitly convert to integer
-  const Standard_Integer r = theColor.r();
-  const Standard_Integer g = theColor.g();
-  const Standard_Integer b = theColor.b();
+  const Standard_Integer r = theColor.v[0];
+  const Standard_Integer g = theColor.v[1];
+  const Standard_Integer b = theColor.v[2];
   return r * r + g * g + b * b;
 }
 
 //! @return true if pixel is black
-inline bool isBlack (const Image_ColorRGB& theColor)
+inline bool isBlack (const Image_ColorXXX24& theColor)
 {
-  return theColor.r() == 0
-      && theColor.g() == 0
-      && theColor.b() == 0;
+  return theColor.v[0] == 0
+      && theColor.v[1] == 0
+      && theColor.v[2] == 0;
 }
 
 //! Converts a pixel position (row, column) to one integer value
@@ -78,15 +92,15 @@ namespace
                           theColCenter + Standard_Size(col_inc));
     }
 
-    inline bool isBlack (const Image_PixMapData<Image_ColorRGB>& theData,
+    inline bool isBlack (const Image_PixMap& theData,
                          const Standard_Size theRowCenter,
                          const Standard_Size theColCenter) const
     {
-      return ::isBlack (theData.Value (theRowCenter + Standard_Size(row_inc),
-                                       theColCenter + Standard_Size(col_inc)));
+      return ::isBlack (theData.Value<Image_ColorXXX24> (theRowCenter + Standard_Size(row_inc),
+                                                         theColCenter + Standard_Size(col_inc)));
     }
 
-    inline bool isValid (const Image_PixMapData<Image_ColorRGB>& theData,
+    inline bool isValid (const Image_PixMap& theData,
                          const Standard_Size theRowCenter,
                          const Standard_Size theColCenter) const
     {
@@ -173,19 +187,17 @@ Standard_Boolean Image_Diff::Init (const Handle(Image_PixMap)& theImageRef,
   if (theToBlackWhite)
   {
     // Convert the images to white/black
-    const Image_ColorRGB aWhite = {{255, 255, 255}};
-    Image_PixMapData<Image_ColorRGB>& aDataRef = myImageRef->EditData<Image_ColorRGB>();
-    Image_PixMapData<Image_ColorRGB>& aDataNew = myImageNew->EditData<Image_ColorRGB>();
-    for (Standard_Size aRow = 0; aRow < aDataRef.SizeY(); ++aRow)
+    const Image_ColorXXX24 aWhite = {{255, 255, 255}};
+    for (Standard_Size aRow = 0; aRow < myImageRef->SizeY(); ++aRow)
     {
-      for (Standard_Size aCol = 0; aCol < aDataRef.SizeY(); ++aCol)
+      for (Standard_Size aCol = 0; aCol < myImageRef->SizeX(); ++aCol)
       {
-        Image_ColorRGB& aPixel1 = aDataRef.ChangeValue (aRow, aCol);
-        Image_ColorRGB& aPixel2 = aDataNew.ChangeValue (aRow, aCol);
+        Image_ColorXXX24& aPixel1 = myImageRef->ChangeValue<Image_ColorXXX24> (aRow, aCol);
         if (!isBlack (aPixel1))
         {
           aPixel1 = aWhite;
         }
+        Image_ColorXXX24& aPixel2 = myImageNew->ChangeValue<Image_ColorXXX24> (aRow, aCol);
         if (!isBlack (aPixel2))
         {
           aPixel2 = aWhite;
@@ -270,21 +282,19 @@ Standard_Integer Image_Diff::Compare()
 
   // Tolerance of comparison operation for color
   // Maximum difference between colors (white - black) = 100%
-  Image_ColorRGB aDiff = {{255, 255, 255}};
+  Image_ColorXXX24 aDiff = {{255, 255, 255}};
   const Standard_Integer aMaxDiffColor  = dotSquared (aDiff);
   const Standard_Integer aDiffThreshold = Standard_Integer(Standard_Real(aMaxDiffColor) * myColorTolerance);
 
   // we don't care about RGB/BGR/RGBA/BGRA/RGB32/BGR32 differences
   // because we just compute summ of r g b components
-  const Image_PixMapData<Image_ColorRGB>& aDataRef = myImageRef->ReadData<Image_ColorRGB>();
-  const Image_PixMapData<Image_ColorRGB>& aDataNew = myImageNew->ReadData<Image_ColorRGB>();
 
   // compare colors of each pixel
   for (Standard_Size aRow = 0; aRow < myImageRef->SizeY(); ++aRow)
   {
     for (Standard_Size aCol = 0; aCol < myImageRef->SizeX(); ++aCol)
     {
-      aDiff = aDataNew.Value (aRow, aCol) - aDataRef.Value (aRow, aCol);
+      aDiff = myImageNew->Value<Image_ColorXXX24> (aRow, aCol) - myImageRef->Value<Image_ColorXXX24> (aRow, aCol);
       if (dotSquared (aDiff) > aDiffThreshold)
       {
         const Standard_Size aValue = pixel2Int (aRow, aCol);
@@ -326,8 +336,7 @@ Standard_Boolean Image_Diff::SaveDiffImage (Image_PixMap& theDiffImage) const
   }
 
   Standard_Size aRow, aCol;
-  const Image_ColorRGB aWhite = {{255, 255, 255}};
-  Image_PixMapData<Image_ColorRGB>& aDataOut = theDiffImage.EditData<Image_ColorRGB>();
+  const Image_ColorXXX24 aWhite = {{255, 255, 255}};
 
   // initialize black image for dump
   memset (theDiffImage.ChangeData(), 0, theDiffImage.SizeBytes());
@@ -342,7 +351,7 @@ Standard_Boolean Image_Diff::SaveDiffImage (Image_PixMap& theDiffImage) const
     {
       const Standard_Size aValue = myDiffPixels.Value (aPixelId);
       int2Pixel (aValue, aRow, aCol);
-      aDataOut.ChangeValue (aRow, aCol) = aWhite;
+      theDiffImage.ChangeValue<Image_ColorXXX24> (aRow, aCol) = aWhite;
     }
 
     return Standard_True;
@@ -361,7 +370,7 @@ Standard_Boolean Image_Diff::SaveDiffImage (Image_PixMap& theDiffImage) const
          aPixelIter.More(); aPixelIter.Next())
     {
       int2Pixel (aPixelIter.Key(), aRow, aCol);
-      aDataOut.ChangeValue (aRow, aCol) = aWhite;
+      theDiffImage.ChangeValue<Image_ColorXXX24> (aRow, aCol) = aWhite;
     }
   }
 
@@ -400,8 +409,6 @@ Standard_Integer Image_Diff::ignoreBorderEffect()
   {
     return 0;
   }
-
-  const Image_PixMapData<Image_ColorRGB>& aDataRef = myImageRef->ReadData<Image_ColorRGB>();
 
   // allocate groups of different pixels
   releaseGroupsOfDiffPixels();
@@ -475,7 +482,7 @@ Standard_Integer Image_Diff::ignoreBorderEffect()
       // check all neighbour pixels on presence in the group
       for (Standard_Size aNgbrIter = 0; aNgbrIter < NEIGHBOR_PIXELS_NB; ++aNgbrIter)
       {
-        if (NEIGHBOR_PIXELS[aNgbrIter].isValid (aDataRef, aRow1, aCol1)
+        if (NEIGHBOR_PIXELS[aNgbrIter].isValid (*myImageRef, aRow1, aCol1)
          && aGroup->Contains ((Standard_Integer)NEIGHBOR_PIXELS[aNgbrIter].pixel2Int (aRow1, aCol1)))
         {
           ++aNeighboursNb;
@@ -498,8 +505,8 @@ Standard_Integer Image_Diff::ignoreBorderEffect()
       aNeighboursNb = 0;
       for (Standard_Size aNgbrIter = 0; aNgbrIter < NEIGHBOR_PIXELS_NB; ++aNgbrIter)
       {
-        if ( NEIGHBOR_PIXELS[aNgbrIter].isValid (aDataRef, aRow1, aCol1)
-         && !NEIGHBOR_PIXELS[aNgbrIter].isBlack (aDataRef, aRow1, aCol1))
+        if ( NEIGHBOR_PIXELS[aNgbrIter].isValid (*myImageRef, aRow1, aCol1)
+         && !NEIGHBOR_PIXELS[aNgbrIter].isBlack (*myImageRef, aRow1, aCol1))
         {
           ++aNeighboursNb;
         }

@@ -61,7 +61,7 @@ public:
   Standard_EXPORT virtual bool InitCopy (const Image_PixMap& theCopy);
 
   //! Method correctly deallocate internal buffer.
-  Standard_EXPORT virtual void Clear (ImgFormat thePixelFormat = ImgGray);
+  Standard_EXPORT virtual void Clear();
 
   //! Performs gamma correction on image.
   //! theGamma - gamma value to use; a value of 1.0 leaves the image alone
