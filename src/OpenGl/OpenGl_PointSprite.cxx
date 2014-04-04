@@ -53,6 +53,9 @@ void OpenGl_PointSprite::Release (const OpenGl_Context* theGlCtx)
 {
   if (myBitmapList != 0)
   {
+    Standard_ASSERT_RETURN (theGlCtx != NULL,
+        "OpenGl_PointSprite destroyed without GL context! Possible GPU memory leakage...",);
+
     if (theGlCtx->IsValid())
     {
       glDeleteLists (myBitmapList, 1);
