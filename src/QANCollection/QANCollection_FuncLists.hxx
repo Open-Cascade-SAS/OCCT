@@ -70,40 +70,6 @@ void TestList (QANCollection_ListFunc&     theL)
   aL.Clear();
 }
 
-// ===================== Test methods of Queue type ===========================
-////////////////////////////////void TestQueue (QANCollection_Queue& theQ)
-void TestQueue (QANCollection_QueueFunc& theQ)
-{
-  // Length
-  Standard_Integer iLen=theQ.Length();
-  Standard_Integer i;
-
-  printf ("Info: testing Queue(%d)\n", iLen);
-  // Push, Pop, Front, ChangeFront
-  ItemType anItem;
-  ////////////////////////////////QANCollection_Queue aQ;
-  QANCollection_QueueFunc aQ;
-  for (i=0; i<4; i++)
-  {
-    Random (anItem);
-    aQ.Push (anItem);
-    Random(aQ.ChangeFront());
-    Random (anItem);
-    aQ.Push (anItem);
-    PrintItem(aQ.Front());
-    aQ.Pop();
-  }
-  // Copy constructor + operator=
-  ////////////////////////////////theQ = QANCollection_Queue(aQ);
-  theQ = QANCollection_QueueFunc(aQ);
-
-  // Assign
-  AssignCollection (theQ, aQ);
-
-  // Clear
-  aQ.Clear();
-}
-
 // ===================== Test methods of Stack type ===========================
 ////////////////////////////////void TestStack (QANCollection_Stack& theS)
 void TestStack (QANCollection_StackFunc& theS)

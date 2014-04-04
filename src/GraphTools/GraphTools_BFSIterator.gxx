@@ -16,7 +16,7 @@
 
 #include <Standard_NoMoreObject.hxx>
 #include <Standard_NoSuchObject.hxx>
-#include <TColStd_QueueOfInteger.hxx>
+#include <TColStd_ListOfInteger.hxx>
 
 //=======================================================================
 //function : GraphTools_BFSIterator
@@ -36,18 +36,18 @@ void GraphTools_BFSIterator::Perform
 { 
   Standard_Integer index;
   myVisited.Clear();
-  TColStd_QueueOfInteger myReady; 
+  TColStd_ListOfInteger myReady; 
  
   index = myVisited.Add(V);
-  myReady.Push(index);
+  myReady.Append(index);
   while (!myReady.IsEmpty()) {
-    Vertex w1 = myVisited (myReady.Front());
-    myReady.Pop();
+    Vertex w1 = myVisited (myReady.First());
+    myReady.RemoveFirst();
     for (VIterator it(G,w1); it.More(); it.Next()) {
       Vertex w2 = it.Value();
       if (!myVisited.Contains(w2)) {
 	index = myVisited.Add(w2); 
-	myReady.Push(index);
+	myReady.Append(index);
       }
     }
   }

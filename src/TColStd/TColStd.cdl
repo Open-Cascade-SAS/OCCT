@@ -180,14 +180,6 @@ class StackOfReal      instantiates Stack from TCollection(Real     );
 class StackOfTransient instantiates Stack from TCollection(Transient);
 
 --                    
---       Instantiations Queue (Integer,Real,Transient)
---       *********************************************
---       
-class QueueOfInteger   instantiates Queue from TCollection(Integer  );
-class QueueOfReal      instantiates Queue from TCollection(Real     );
-class QueueOfTransient instantiates Queue from TCollection(Transient);
-
---                    
 --       Instantiations MapHasher (Integer,Real, Transient, Persistent)
 --       **************************************************************
 --       

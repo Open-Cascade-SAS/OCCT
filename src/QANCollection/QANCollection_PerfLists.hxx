@@ -18,7 +18,6 @@
 
 #include <QANCollection_ListOfPnt.hxx>
 #include <QANCollection_SListOfPnt.hxx>
-#include <QANCollection_QueueOfPnt.hxx>
 #include <QANCollection_StackOfPnt.hxx>
 #include <TColgp_SequenceOfPnt.hxx>
 #include <TColStd_SetOfInteger.hxx>
@@ -94,90 +93,6 @@ void CompList (const Standard_Integer theRep,
   PERF_PRINT_ALL
 }
 
-// ===================== Test perform of Queue type ==========================
-void CompQueue (const Standard_Integer theRep,
-                const Standard_Integer theSize)
-{
-  Standard_Integer i,j;
-
-  ////////////////////////////////Perf_Meter aNPush ("NCollection_Queue pushing",0);
-  ////////////////////////////////Perf_Meter aTPush ("TCollection_Queue pushing",0);
-  ////////////////////////////////Perf_Meter aNPopp ("NCollection_Queue popping",0);
-  ////////////////////////////////Perf_Meter aTPopp ("TCollection_Queue popping",0);
-  ////////////////////////////////Perf_Meter aNOper ("NCollection_Queue operator=",0);
-  ////////////////////////////////Perf_Meter aTOper ("TCollection_Queue operator=",0);
-  ////////////////////////////////Perf_Meter aNClea ("NCollection_Queue clearing",0);
-  ////////////////////////////////Perf_Meter aTClea ("TCollection_Queue clearing",0);
-  ////////////////////////////////Perf_Meter aNAssi ("NCollection_Queue Assign",0);
-  for (i=0; i<theRep; i++)
-    {
-      ////////////////////////////////QANCollection_Queue a1, a2;
-      QANCollection_QueuePerf a1, a2;
-      ////////////////////////////////aNPush.Start();
-      PERF_START_METER("NCollection_Queue pushing")
-      for (j=1; j<=theSize; j++)
-        {
-          ItemType anItem;
-          Random(anItem);
-          a1.Push(anItem);
-        }
-      ////////////////////////////////aNPush.Stop();
-      PERF_STOP_METER("NCollection_Queue pushing")
-      ////////////////////////////////aNOper.Start();
-      PERF_START_METER("NCollection_Queue operator=")
-      a2 = a1;
-      ////////////////////////////////aNOper.Stop();
-      PERF_STOP_METER("NCollection_Queue operator=")
-      ////////////////////////////////aNAssi.Start();
-      PERF_START_METER("NCollection_Queue Assign")
-      a2.Assign(a1);
-      ////////////////////////////////aNAssi.Stop();
-      PERF_STOP_METER("NCollection_Queue Assign")
-      ////////////////////////////////aNPopp.Start();
-      PERF_START_METER("NCollection_Queue popping")
-      for (j=1; j<=theSize; j++)
-        a1.Pop();
-      ////////////////////////////////aNPopp.Stop();
-      PERF_STOP_METER("NCollection_Queue popping")
-      ////////////////////////////////aNClea.Start();
-      PERF_START_METER("NCollection_Queue clearing")
-      a2.Clear();
-      ////////////////////////////////aNClea.Stop();
-      PERF_STOP_METER("NCollection_Queue clearing")
-    }
-
-  for (i=0; i<theRep; i++)
-    {
-      QANCollection_QueueOfPnt a1, a2;
-      ////////////////////////////////aTPush.Start();
-      PERF_START_METER("TCollection_Queue pushing")
-      for (j=1; j<=theSize; j++)
-        {
-          ItemType anItem;
-          Random(anItem);
-          a1.Push(anItem);
-        }
-      ////////////////////////////////aTPush.Stop();
-      PERF_STOP_METER("TCollection_Queue pushing")
-      ////////////////////////////////aTOper.Start();
-      PERF_START_METER("TCollection_Queue operator=")
-      a2 = a1;
-      ////////////////////////////////aTOper.Stop();
-      PERF_STOP_METER("TCollection_Queue operator=")
-      ////////////////////////////////aTPopp.Start();
-      PERF_START_METER("TCollection_Queue popping")
-      for (j=1; j<=theSize; j++)
-        a1.Pop();
-      ////////////////////////////////aTPopp.Stop();
-      PERF_STOP_METER("TCollection_Queue popping")
-      ////////////////////////////////aTClea.Start();
-      PERF_START_METER("TCollection_Queue clearing")
-      a2.Clear();
-      ////////////////////////////////aTClea.Stop();
-      PERF_STOP_METER("TCollection_Queue clearing")
-    }
-  PERF_PRINT_ALL
-}
 
 // ===================== Test perform of Stack type ==========================
 void CompStack (const Standard_Integer theRep,

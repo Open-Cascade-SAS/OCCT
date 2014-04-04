@@ -25,7 +25,7 @@
 #include <NCollection_DataMap.hxx>
 #include <NCollection_Map.hxx>
 #include <NCollection_Handle.hxx>
-#include <NCollection_Queue.hxx>
+#include <NCollection_List.hxx>
 #include <Message.hxx>
 #include <OpenGl_Caps.hxx>
 #include <OpenGl_Resource.hxx>
@@ -463,12 +463,12 @@ private: // context info
   typedef NCollection_Handle<OpenGl_DelayReleaseMap> Handle(OpenGl_DelayReleaseMap);
   typedef NCollection_DataMap<TCollection_AsciiString, Handle(OpenGl_Resource)> OpenGl_ResourcesMap;
   typedef NCollection_Handle<OpenGl_ResourcesMap> Handle(OpenGl_ResourcesMap);
-  typedef NCollection_Queue<Handle(OpenGl_Resource)> OpenGl_ResourcesQueue;
-  typedef NCollection_Handle<OpenGl_ResourcesQueue> Handle(OpenGl_ResourcesQueue);
+  typedef NCollection_List<Handle(OpenGl_Resource)> OpenGl_ResourcesStack;
+  typedef NCollection_Handle<OpenGl_ResourcesStack> Handle(OpenGl_ResourcesStack);
 
   Handle(OpenGl_ResourcesMap)    mySharedResources; //!< shared resources with unique identification key
   Handle(OpenGl_DelayReleaseMap) myDelayed;         //!< shared resources for delayed release
-  Handle(OpenGl_ResourcesQueue)  myReleaseQueue;    //!< queue of resources for delayed clean up
+  Handle(OpenGl_ResourcesStack)  myUnusedResources; //!< stack of resources for delayed clean up
 
   OpenGl_Clipping myClippingState; //!< state of clip planes
 

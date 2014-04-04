@@ -208,21 +208,6 @@ static Standard_Integer QANColTestList(Draw_Interpretor& di, Standard_Integer ar
 }
 
 //=======================================================================
-//function : QANColTestQueue
-//purpose  : 
-//=======================================================================
-static Standard_Integer QANColTestQueue(Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
-{
-  if ( argc != 1) {
-    di << "Usage : " << argv[0] << "\n";
-    return 1;
-  }
-  QANCollection_QueueFunc aQueue;
-  TestQueue(aQueue);
-  return 0;
-}
-
-//=======================================================================
 //function : QANColTestStack
 //purpose  : 
 //=======================================================================
@@ -294,7 +279,6 @@ void QANCollection::Commands2(Draw_Interpretor& theCommands) {
   theCommands.Add("QANColTestIndexedMap",     "QANColTestIndexedMap",     __FILE__, QANColTestIndexedMap,     group);  
   theCommands.Add("QANColTestIndexedDataMap", "QANColTestIndexedDataMap", __FILE__, QANColTestIndexedDataMap, group);  
   theCommands.Add("QANColTestList",           "QANColTestList",           __FILE__, QANColTestList,           group);  
-  theCommands.Add("QANColTestQueue",          "QANColTestQueue",          __FILE__, QANColTestQueue,          group);  
   theCommands.Add("QANColTestStack",          "QANColTestStack",          __FILE__, QANColTestStack,          group);  
   theCommands.Add("QANColTestSet",            "QANColTestSet",            __FILE__, QANColTestSet,            group);  
   theCommands.Add("QANColTestSList",          "QANColTestSList",          __FILE__, QANColTestSList,          group);  

@@ -19,7 +19,7 @@
 #include <Standard_NoMoreObject.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_DomainError.hxx>
-#include <TColStd_QueueOfInteger.hxx>
+#include <TColStd_ListOfInteger.hxx>
 #include <GraphTools_TSNode.hxx>
 
 //=======================================================================
@@ -76,24 +76,24 @@ void GraphTools_TopologicalSortFromIterator::Perform
     indexcurrent++;
   }
   // current root vertices queue
-  TColStd_QueueOfInteger processQueue;
+  TColStd_ListOfInteger processQueue;
   Standard_Integer nbVertices = myVertices.Extent();
   for (i = 1 ; i <= nbVertices; i++) {
-    if (myVertices(i).NbRef() == 0) processQueue.Push(i);
+    if (myVertices(i).NbRef() == 0) processQueue.Append(i);
   }
   // acyclic processing
   while (!processQueue.IsEmpty()) {
-    indexcurrent = processQueue.Front();
+    indexcurrent = processQueue.First();
     mySort.Append(indexcurrent);
     nbadjacent = myVertices(indexcurrent).NbSuccessors();
     for (i = 1; i <= nbadjacent; i++) { 
       indexadjacent = myVertices(indexcurrent).GetSuccessor(i);
       myVertices(indexadjacent).DecreaseRef();
       if (myVertices(indexadjacent).NbRef() == 0) {
-	processQueue.Push (indexadjacent);
+	processQueue.Append(indexadjacent);
       }
     }
-    processQueue.Pop();
+    processQueue.RemoveFirst();
   }
   // cyclic processing
   myCycles = mySort.Length() + 1;

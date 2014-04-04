@@ -67,17 +67,14 @@ DEFINE_INDEXEDMAP(QANCollection_IndexedMapFunc,QANCollection_Key1BaseColFunc,Key
 DEFINE_INDEXEDDATAMAP(QANCollection_IDMapFunc,QANCollection_BaseColFunc,Key1Type,ItemType)
 
 #include <NCollection_DefineList.hxx>
-#include <NCollection_DefineQueue.hxx>
 #include <NCollection_DefineStack.hxx>
 #include <NCollection_DefineSet.hxx>
 #include <NCollection_DefineHSet.hxx>
 ////////////////////////////////DEFINE_LIST(QANCollection_List,QANCollection_BaseCol,ItemType)
-////////////////////////////////DEFINE_QUEUE(QANCollection_Queue,QANCollection_BaseCol,ItemType)
 ////////////////////////////////DEFINE_STACK(QANCollection_Stack,QANCollection_BaseCol,ItemType)
 ////////////////////////////////DEFINE_SET(QANCollection_Set,QANCollection_Key2BaseCol,Key2Type)
 ////////////////////////////////DEFINE_HSET(QANCollection_HSet,QANCollection_Set)
 DEFINE_LIST(QANCollection_ListFunc,QANCollection_BaseColFunc,ItemType)
-DEFINE_QUEUE(QANCollection_QueueFunc,QANCollection_BaseColFunc,ItemType)
 DEFINE_STACK(QANCollection_StackFunc,QANCollection_BaseColFunc,ItemType)
 DEFINE_SET(QANCollection_SetFunc,QANCollection_Key2BaseColFunc,Key2Type)
 DEFINE_HSET(QANCollection_HSetFunc,QANCollection_SetFunc)

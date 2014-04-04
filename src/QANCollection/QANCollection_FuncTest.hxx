@@ -34,7 +34,6 @@
 // Standard_EXPORT void TestInDaMap (QANCollection_IDMap&      theNM);
 #include <QANCollection_FuncMaps.hxx>
 // Standard_EXPORT void TestList    (QANCollection_List&       theLi);
-// Standard_EXPORT void TestQueue   (QANCollection_Queue&      theQ);
 // Standard_EXPORT void TestStack   (QANCollection_Stack&      theSt);
 // Standard_EXPORT void TestSet     (QANCollection_Set&        theSe);
 // Standard_EXPORT void TestSList   (QANCollection_SList&      theSL);

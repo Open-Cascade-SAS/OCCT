@@ -27,7 +27,6 @@ NCollection_Array1.hxx
 NCollection_HArray1.hxx
 NCollection_Array2.hxx
 NCollection_HArray2.hxx
-NCollection_Queue.hxx
 NCollection_Stack.hxx
 NCollection_List.hxx
 NCollection_SList.hxx
@@ -52,7 +51,6 @@ NCollection_DefineDataMap.hxx
 NCollection_DefineDoubleMap.hxx
 NCollection_DefineIndexedMap.hxx
 NCollection_DefineIndexedDataMap.hxx
-NCollection_DefineQueue.hxx
 NCollection_DefineSList.hxx
 NCollection_DefineSequence.hxx
 NCollection_DefineHSequence.hxx

@@ -96,7 +96,7 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   nvxMem (Standard_False),
   mySharedResources (new OpenGl_ResourcesMap()),
   myDelayed         (new OpenGl_DelayReleaseMap()),
-  myReleaseQueue    (new OpenGl_ResourcesQueue()),
+  myUnusedResources (new OpenGl_ResourcesStack()),
   myClippingState (),
   myGlLibHandle (NULL),
   myFuncs (new OpenGl_GlFunctions()),
@@ -300,7 +300,7 @@ void OpenGl_Context::Share (const Handle(OpenGl_Context)& theShareCtx)
   {
     mySharedResources = theShareCtx->mySharedResources;
     myDelayed         = theShareCtx->myDelayed;
-    myReleaseQueue    = theShareCtx->myReleaseQueue;
+    myUnusedResources = theShareCtx->myUnusedResources;
     myShaderManager   = theShareCtx->myShaderManager;
   }
 }
@@ -1869,7 +1869,7 @@ void OpenGl_Context::ReleaseResource (const TCollection_AsciiString& theKey,
 // =======================================================================
 void OpenGl_Context::DelayedRelease (Handle(OpenGl_Resource)& theResource)
 {
-  myReleaseQueue->Push (theResource);
+  myUnusedResources->Prepend (theResource);
   theResource.Nullify();
 }
 
@@ -1880,10 +1880,10 @@ void OpenGl_Context::DelayedRelease (Handle(OpenGl_Resource)& theResource)
 void OpenGl_Context::ReleaseDelayed()
 {
   // release queued elements
-  while (!myReleaseQueue->IsEmpty())
+  while (!myUnusedResources->IsEmpty())
   {
-    myReleaseQueue->Front()->Release (this);
-    myReleaseQueue->Pop();
+    myUnusedResources->First()->Release (this);
+    myUnusedResources->RemoveFirst();
   }
 
   // release delayed shared resources

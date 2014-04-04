@@ -98,20 +98,6 @@ static Standard_Integer QANColPerfList(Draw_Interpretor& di, Standard_Integer ar
 }
 
 //=======================================================================
-//function : QANColPerfQueue
-//purpose  : 
-//=======================================================================
-static Standard_Integer QANColPerfQueue(Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
-{
-  Standard_Integer Repeat, Size;
-  if ( CheckArguments(di, argc, argv, Repeat, Size) ) {
-    return 1;
-  }
-  CompQueue(Repeat,Size);
-  return 0;
-}
-
-//=======================================================================
 //function : QANColPerfStack
 //purpose  : 
 //=======================================================================
@@ -258,7 +244,6 @@ void QANCollection::Commands3(Draw_Interpretor& theCommands) {
   theCommands.Add("QANColPerfArray1",         "QANColPerfArray1 Repeat Size",         __FILE__, QANColPerfArray1,         group);  
   theCommands.Add("QANColPerfArray2",         "QANColPerfArray2 Repeat Size",         __FILE__, QANColPerfArray2,         group);  
   theCommands.Add("QANColPerfList",           "QANColPerfList Repeat Size",           __FILE__, QANColPerfList,           group);  
-  theCommands.Add("QANColPerfQueue",          "QANColPerfQueue Repeat Size",          __FILE__, QANColPerfQueue,          group);  
   theCommands.Add("QANColPerfStack",          "QANColPerfStack Repeat Size",          __FILE__, QANColPerfStack,          group);  
   theCommands.Add("QANColPerfSet",            "QANColPerfSet Repeat Size",            __FILE__, QANColPerfSet,            group);  
   theCommands.Add("QANColPerfSList",          "QANColPerfSList Repeat Size",          __FILE__, QANColPerfSList,          group);  
