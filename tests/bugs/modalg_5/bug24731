@@ -1,0 +1,26 @@
+puts "============"
+puts "OCC24731"
+puts "============"
+puts ""
+######################################################
+# Incomplete section of a surface by plane
+######################################################
+
+restore [locate_data_file bug24731_bot1.brep] b
+restore [locate_data_file bug24731_lim1.brep] l
+
+bsection result b l -n2d2
+
+set length 93.2392
+
+set nb_v_good 4
+set nb_e_good 3
+set nb_w_good 0
+set nb_f_good 0
+set nb_sh_good 0
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 8
+
+set 2dviewer 1
