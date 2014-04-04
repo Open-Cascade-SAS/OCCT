@@ -6,6 +6,10 @@ puts ""
 # Sample Draw scripts for demonstrating sweeping algorithm
 ##############################################################
 
+if { [regexp {Debug mode} [dversion]] } {
+   cpulimit 2000
+}
+
 # drill parameters (some terms taken from http://www.drill-bits.cn/drill-bits-quality.asp)
 dset R  4.    ;# outer radius
 dset D  2*R   ;# diameter
