@@ -171,7 +171,7 @@ class OpenGl_View : public MMgt_TShared
                const Aspect_CLayer2d&               theCOverLayer);
 
 
-  void DrawBackground (const Handle(OpenGl_Workspace)& theWorkspace);
+  void DrawBackground (OpenGl_Workspace& theWorkspace);
 
   //! Returns list of OpenGL Z-layers.
   const OpenGl_LayerList& LayerList() const { return myZLayers; }
@@ -194,10 +194,8 @@ class OpenGl_View : public MMgt_TShared
     return myImmediateList;
   }
 
-#ifdef HAVE_OPENCL
   //! Returns modification state for ray-tracing.
   Standard_Size ModificationState() const { return myModificationState; }
-#endif
 
 protected:
 
@@ -269,9 +267,7 @@ protected:
   StateInfo myLastViewMappingState;
   StateInfo myLastLightSourceState;
 
-#ifdef HAVE_OPENCL
   Standard_Size myModificationState;
-#endif
 
 public:
 

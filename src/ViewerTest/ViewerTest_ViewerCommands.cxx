@@ -6288,44 +6288,6 @@ static int VLight (Draw_Interpretor& theDi,
   return 0;
 }
 
-
-
-//==============================================================================
-//function : VClInfo
-//purpose  : Prints info about active OpenCL device
-//==============================================================================
-
-static Standard_Integer VClInfo (Draw_Interpretor& theDi,
-                                 Standard_Integer,
-                                 const char**)
-{
-  Handle(AIS_InteractiveContext) aContextAIS = ViewerTest::GetAISContext();
-  if (aContextAIS.IsNull())
-  {
-    std::cerr << "Call vinit before!\n";
-    return 1;
-  }
-
-  Handle(OpenGl_GraphicDriver) aDrv = Handle(OpenGl_GraphicDriver)::DownCast (aContextAIS->CurrentViewer()->Driver());
-  Graphic3d_CView* aCView = static_cast<Graphic3d_CView*> (ViewerTest::CurrentView()->View()->CView());
-  NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString> anInfo;
-  if (aDrv.IsNull()
-   || aCView == NULL
-   || !aDrv->GetOpenClDeviceInfo (*aCView, anInfo))
-  {
-    theDi << "OpenCL device info is unavailable!\n";
-    return 0;
-  }
-
-  theDi << "OpenCL device info:\n";
-  for (NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>::Iterator anIter (anInfo);
-       anIter.More(); anIter.Next())
-  {
-    theDi << anIter.Key() << ": \t" << anIter.Value() << "\n";
-  }
-  return 0;
-}
-
 //=======================================================================
 //function : VRaytrace
 //purpose  : Enables/disables OpenCL-based ray-tracing
@@ -6756,9 +6718,6 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
   theCommands.Add("vraytrace",
     "vraytrace 0|1",
     __FILE__,VRaytrace,group);
-  theCommands.Add("vclinfo",
-    "vclinfo",
-    __FILE__,VClInfo,group);
   theCommands.Add("vsetraytracemode",
     "vsetraytracemode [shad=0|1] [refl=0|1] [aa=0|1]",
     __FILE__,VSetRaytraceMode,group);

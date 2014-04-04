@@ -13,10 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifdef HAVE_CONFIG_H
-  #include <config.h>
-#endif
-
 #include <NCollection_Mat4.hxx>
 
 #include <OpenGl_Context.hxx>
@@ -97,9 +93,7 @@ OpenGl_View::OpenGl_View (const CALL_DEF_VIEWCONTEXT &AContext,
 
   myCurrLightSourceState = myStateCounter->Increment();
 
-#ifdef HAVE_OPENCL
   myModificationState = 1; // initial state
-#endif
 }
 
 /*----------------------------------------------------------------------*/
@@ -145,18 +139,14 @@ void OpenGl_View::SetTextureEnv (const Handle(OpenGl_Context)&       theCtx,
   if (!anImage.IsNull())
     myTextureEnv->Init (theCtx, *anImage.operator->(), theTexture->Type());
 
-#ifdef HAVE_OPENCL
   myModificationState++;
-#endif
 }
 
 void OpenGl_View::SetSurfaceDetail (const Visual3d_TypeOfSurfaceDetail theMode)
 {
   mySurfaceDetail = theMode;
 
-#ifdef HAVE_OPENCL
   myModificationState++;
-#endif
 }
 
 // =======================================================================

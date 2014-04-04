@@ -184,5 +184,7 @@ void BVH_SweepPlaneBuilder<T, N>::BuildNode (BVH_Set<T, N>*         theSet,
     {
       BVH_Builder<T, N>::myTasksQueue.Append (aChildIndex);
     }
+
+    BVH_Builder<T, N>::UpdateDepth (theBVH, theBVH->Level (aChildIndex));
   }
 }

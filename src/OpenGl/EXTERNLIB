@@ -6,7 +6,6 @@ CSF_objc
 CSF_Appkit
 CSF_IOKit
 CSF_OpenGlLibs
-CSF_OPENCL
 CSF_AviLibs
 CSF_FREETYPE
 CSF_GL2PS

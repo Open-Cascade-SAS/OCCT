@@ -23,7 +23,6 @@ vfit
 
 # activate ray-tracing
 vraytrace 1
-vclinfo
 
 set aModeNum 0
 for { set aAAMode 0 } { $aAAMode <= 1 } { incr aAAMode } {

@@ -128,6 +128,7 @@ const int MaxStateTypes = 6;
 //! Wrapper for OpenGL program object.
 class OpenGl_ShaderProgram : public OpenGl_Resource
 {
+  friend class OpenGl_Workspace;
 
 public:
 
@@ -259,6 +260,53 @@ public:
   Standard_EXPORT Standard_Boolean GetAttribute (const Handle(OpenGl_Context)& theCtx,
                                                  GLint                         theIndex,
                                                  OpenGl_Vec4&                  theValue) const;
+
+public:
+
+  //! Wrapper for glBindAttribLocation()
+  Standard_EXPORT Standard_Boolean SetAttributeName (const Handle(OpenGl_Context)& theCtx,
+                                                     GLint                         theIndex,
+                                                     const GLchar*                 theName);
+
+  //! Wrapper for glVertexAttrib1f()
+  Standard_EXPORT Standard_Boolean SetAttribute (const Handle(OpenGl_Context)& theCtx,
+                                                 const GLchar*                 theName,
+                                                 GLfloat                       theValue);
+
+  //! Wrapper for glVertexAttrib1f()
+  Standard_EXPORT Standard_Boolean SetAttribute (const Handle(OpenGl_Context)& theCtx,
+                                                 GLint                         theIndex,
+                                                 GLfloat                       theValue);
+
+  //! Wrapper for glVertexAttrib2fv()
+  Standard_EXPORT Standard_Boolean SetAttribute (const Handle(OpenGl_Context)& theCtx,
+                                                 const GLchar*                 theName,
+                                                 const OpenGl_Vec2&            theValue);
+
+  //! Wrapper for glVertexAttrib2fv()
+  Standard_EXPORT Standard_Boolean SetAttribute (const Handle(OpenGl_Context)& theCtx,
+                                                 GLint                         theIndex,
+                                                 const OpenGl_Vec2&            theValue);
+
+  //! Wrapper for glVertexAttrib3fv()
+  Standard_EXPORT Standard_Boolean SetAttribute (const Handle(OpenGl_Context)& theCtx,
+                                                 const GLchar*                 theName,
+                                                 const OpenGl_Vec3&            theValue);
+
+  //! Wrapper for glVertexAttrib3fv()
+  Standard_EXPORT Standard_Boolean SetAttribute (const Handle(OpenGl_Context)& theCtx,
+                                                 GLint                         theIndex,
+                                                 const OpenGl_Vec3&            theValue);
+
+  //! Wrapper for glVertexAttrib4fv()
+  Standard_EXPORT Standard_Boolean SetAttribute (const Handle(OpenGl_Context)& theCtx,
+                                                 const GLchar*                 theName,
+                                                 const OpenGl_Vec4&            theValue);
+
+  //! Wrapper for glVertexAttrib4fv()
+  Standard_EXPORT Standard_Boolean SetAttribute (const Handle(OpenGl_Context)& theCtx,
+                                                 GLint                         theIndex,
+                                                 const OpenGl_Vec4&            theValue);
 
 public:
 

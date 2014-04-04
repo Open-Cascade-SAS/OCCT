@@ -77,13 +77,9 @@ class OpenGl_LayerList
 
   //! Returns the set of OpenGL Z-layers.
   const OpenGl_SequenceOfLayers& Layers() const { return myLayers; }
-  
-#ifdef HAVE_OPENCL
 
   //! Returns structure modification state (for ray-tracing).
   Standard_Size ModificationState() const { return myModificationState; }
-
-#endif
 
  private:
   
@@ -98,9 +94,7 @@ class OpenGl_LayerList
   Standard_Integer        myNbPriorities;
   Standard_Integer        myNbStructures;
 
-#ifdef HAVE_OPENCL
   mutable Standard_Size   myModificationState;
-#endif
 
  public:
   DEFINE_STANDARD_ALLOC

@@ -157,13 +157,13 @@ static void bind_light (const OpenGl_Light& theLight,
 
 /*----------------------------------------------------------------------*/
 
-void OpenGl_View::DrawBackground (const Handle(OpenGl_Workspace)& theWorkspace)
+void OpenGl_View::DrawBackground (OpenGl_Workspace& theWorkspace)
 {
-  if ( (theWorkspace->NamedStatus & OPENGL_NS_WHITEBACK) == 0 &&
+  if ( (theWorkspace.NamedStatus & OPENGL_NS_WHITEBACK) == 0 &&
        ( myBgTexture.TexId != 0 || myBgGradient.type != Aspect_GFM_NONE ) )
   {
-    const Standard_Integer aViewWidth = theWorkspace->Width();
-    const Standard_Integer aViewHeight = theWorkspace->Height();
+    const Standard_Integer aViewWidth = theWorkspace.Width();
+    const Standard_Integer aViewHeight = theWorkspace.Height();
 
     glPushAttrib( GL_ENABLE_BIT | GL_TEXTURE_BIT );
 
@@ -319,7 +319,7 @@ void OpenGl_View::DrawBackground (const Handle(OpenGl_Workspace)& theWorkspace)
 
       glDisable( GL_BLEND ); //push GL_ENABLE_BIT
 
-      glColor3fv (theWorkspace->BackgroundColor().rgb);
+      glColor3fv (theWorkspace.BackgroundColor().rgb);
       glTexEnvi (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL); //push GL_TEXTURE_BIT
 
       // Note that texture is mapped using GL_REPEAT wrapping mode so integer part
@@ -340,11 +340,11 @@ void OpenGl_View::DrawBackground (const Handle(OpenGl_Workspace)& theWorkspace)
 
     glPopAttrib(); //GL_ENABLE_BIT | GL_TEXTURE_BIT
 
-    if (theWorkspace->UseZBuffer())
+    if (theWorkspace.UseZBuffer())
       glEnable (GL_DEPTH_TEST);
 
     /* GL_DITHER on/off pour le trace */
-    if (theWorkspace->Dither())
+    if (theWorkspace.Dither())
       glEnable (GL_DITHER);
     else
       glDisable (GL_DITHER);
@@ -439,7 +439,7 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
   // ====================================
 
   // Render background
-  DrawBackground (theWorkspace);
+  DrawBackground (*theWorkspace);
 
   // Switch off lighting by default
   glDisable(GL_LIGHTING);

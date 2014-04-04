@@ -16,12 +16,8 @@
 #ifndef _OpenGl_Workspace_Header
 #define _OpenGl_Workspace_Header
 
-#ifdef HAVE_OPENCL
-  #include <map>
-  #include <set>
-
-  #include <OpenGl_Cl.hxx>
-#endif
+#include <map>
+#include <set>
 
 #include <Handle_OpenGl_Workspace.hxx>
 #include <OpenGl_Window.hxx>
@@ -46,18 +42,21 @@
 
 #include <OpenGl_AspectFace.hxx>
 #include <OpenGl_Display.hxx>
+#include <OpenGl_FrameBuffer.hxx>
 #include <OpenGl_Matrix.hxx>
 #include <OpenGl_NamedStatus.hxx>
 #include <OpenGl_PrinterContext.hxx>
-#ifdef HAVE_OPENCL
-  #include <OpenGl_SceneGeometry.hxx>
-#endif
+#include <OpenGl_SceneGeometry.hxx>
 #include <OpenGl_TextParam.hxx>
 #include <OpenGl_RenderFilter.hxx>
 #include <OpenGl_Vec.hxx>
 
 #include <Handle_OpenGl_View.hxx>
 #include <Handle_OpenGl_Texture.hxx>
+
+#include <OpenGl_ShaderObject.hxx>
+#include <OpenGl_ShaderProgram.hxx>
+#include <OpenGl_TextureBufferArb.hxx>
 
 class OpenGl_AspectLine;
 class OpenGl_AspectMarker;
@@ -233,23 +232,118 @@ protected:
   void setTextureParams (Handle(OpenGl_Texture)&                theTexture,
                          const Handle(Graphic3d_TextureParams)& theParams);
 
-#ifdef HAVE_OPENCL
-
-public:
-
-  //! Returns information about OpenCL device used for computations.
-  Standard_Boolean GetOpenClDeviceInfo (
-    NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>& theInfo) const;
-
 protected:
 
-  //! Describes result of OpenCL initializing.
-  enum OpenClInitStatus
+  //! Result of OpenGL shaders initialization.
+  enum RaytraceInitStatus
   {
-    OpenGl_CLIS_NONE,
-    OpenGl_CLIS_INIT,
-    OpenGl_CLIS_FAIL
+    OpenGl_RT_NONE,
+    OpenGl_RT_INIT,
+    OpenGl_RT_FAIL
   };
+
+  //! Defines frequently used shader variables.
+  enum ShaderVariableIndex
+  {
+    OpenGl_RT_aPosition,
+
+    OpenGl_RT_uOriginLT,
+    OpenGl_RT_uOriginLB,
+    OpenGl_RT_uOriginRT,
+    OpenGl_RT_uOriginRB,
+
+    OpenGl_RT_uDirectLT,
+    OpenGl_RT_uDirectLB,
+    OpenGl_RT_uDirectRT,
+    OpenGl_RT_uDirectRB,
+    
+    OpenGl_RT_uSceneRad,
+    OpenGl_RT_uSceneEps,
+
+    OpenGl_RT_uLightAmbnt,
+    OpenGl_RT_uLightCount,
+
+    OpenGl_RT_uShadEnabled,
+    OpenGl_RT_uReflEnabled,
+    
+    OpenGl_RT_uInputTexture,
+
+    OpenGl_RT_uOffsetX,
+    OpenGl_RT_uOffsetY,
+    OpenGl_RT_uSamples,
+
+    OpenGl_RT_NbVariables // special field
+  };
+
+  //! Defines texture samplers.
+  enum ShaderSamplerNames
+  {
+    OpenGl_RT_SceneNodeInfoTexture = 0,
+    OpenGl_RT_SceneMinPointTexture = 1,
+    OpenGl_RT_SceneMaxPointTexture = 2,
+
+    OpenGl_RT_ObjectNodeInfoTexture = 3,
+    OpenGl_RT_ObjectMinPointTexture = 4,
+    OpenGl_RT_ObjectMaxPointTexture = 5,
+
+    OpenGl_RT_GeometryVertexTexture = 6,
+    OpenGl_RT_GeometryNormalTexture = 7,
+    OpenGl_RT_GeometryTriangTexture = 8,
+
+    OpenGl_RT_EnvironmentMapTexture = 9,
+
+    OpenGl_RT_RaytraceMaterialTexture = 10,
+    OpenGl_RT_RaytraceLightSrcTexture = 11,
+
+    OpenGl_RT_FSAAInputTexture = 12
+  };
+
+  //! Tool class for management of shader sources.
+  class ShaderSource
+  {
+  public:
+
+    //! Creates new uninitialized shader source.
+    ShaderSource()
+    {
+      //
+    }
+
+    //! Creates new shader source from specified file.
+    ShaderSource (const TCollection_AsciiString& theFileName)
+    {
+      Load (&theFileName, 1);
+    }
+
+  public:
+
+    //! Returns prefix to insert before the source.
+    const TCollection_AsciiString& Prefix() const
+    {
+      return myPrefix;
+    }
+
+    //! Sets prefix to insert before the source.
+    void SetPrefix (const TCollection_AsciiString& thePrefix)
+    {
+      myPrefix = thePrefix;
+    }
+
+    //! Returns shader source combined with prefix.
+    TCollection_AsciiString Source() const;
+
+    //! Loads shader source from specified files.
+    void Load (const TCollection_AsciiString* theFileNames, const Standard_Integer theCount);
+
+  private:
+
+    TCollection_AsciiString mySource; //!< Source string of the shader object
+    TCollection_AsciiString myPrefix; //!< Prefix to insert before the source
+
+  };
+
+  //! Default size of traversal stack.
+  static const Standard_Integer THE_DEFAULT_STACK_SIZE = 24;
 
 protected: //! @name methods related to ray-tracing
 
@@ -301,47 +395,53 @@ protected: //! @name methods related to ray-tracing
   Standard_Boolean AddRaytracePolygonArray (OpenGl_TriangleSet* theSet,
     const CALL_DEF_PARRAY* theArray, Standard_Integer theOffset, Standard_Integer theCount, Standard_Integer theMatID);
 
-  //! Initializes OpenCL resources.
-  Standard_Boolean InitOpenCL();
+  //! Loads and compiles shader object from specified source.
+  Handle(OpenGl_ShaderObject) LoadShader (const ShaderSource& theSource, GLenum theType);
 
-  //! Releases OpenCL resources.
-  void ReleaseOpenCL();
+  //! Performs safe exit when shaders initialization fails.
+  Standard_Boolean SafeFailBack (const TCollection_ExtendedString& theMessage);
 
-  //! Resizes OpenCL output image.
-  Standard_Boolean ResizeRaytraceOutputBuffer (const cl_int theSizeX, const cl_int theSizeY);
+  //! Initializes OpenGL/GLSL shader programs.
+  Standard_Boolean InitRaytraceResources();
 
-  //! Writes scene geometry to OpenCl device.
-  Standard_Boolean WriteRaytraceSceneToDevice();
+  //! Releases OpenGL/GLSL shader programs.
+  void ReleaseRaytraceResources();
 
-  //! Runs OpenCL ray-tracing kernels.
-  Standard_Boolean RunRaytraceOpenCLKernelsOld (const Graphic3d_CView& theCView,
-                                             const GLfloat theOrigins[16],
-                                             const GLfloat theDirects[16],
-                                             const int theSizeX,
-                                             const int theSizeY);
+  //! Uploads ray-trace data to the GPU.
+  Standard_Boolean UploadRaytraceData();
 
-  //! Launches OpenCL ray-tracing kernels.
-  Standard_Boolean RunRaytraceOpenCLKernels (const Graphic3d_CView&   theCView,
-                                             const Standard_ShortReal theOrigins[16],
-                                             const Standard_ShortReal theDirects[16],
-                                             const Standard_Integer   theSizeX,
-                                             const Standard_Integer   theSizeY);
+  //! Resizes OpenGL frame buffers.
+  Standard_Boolean ResizeRaytraceBuffers (const Standard_Integer theSizeX,
+                                          const Standard_Integer theSizeY);
 
-  //! Redraws the window using OpenCL ray tracing.
+  //! Generates viewing rays for corners of screen quad.
+  void UpdateCamera (const NCollection_Mat4<GLdouble>& theOrientation,
+                     const NCollection_Mat4<GLdouble>& theViewMapping,
+                     OpenGl_Vec3                       theOrigins[4],
+                     OpenGl_Vec3                       theDirects[4]);
+
+  //! Runs ray-tracing shader programs.
+  Standard_Boolean RunRaytraceShaders (const Graphic3d_CView& theCView,
+                                       const Standard_Integer theSizeX,
+                                       const Standard_Integer theSizeY,
+                                       const OpenGl_Vec3      theOrigins[4],
+                                       const OpenGl_Vec3      theDirects[4],
+                                       OpenGl_FrameBuffer*    theFrameBuffer);
+
+  //! Redraws the window using OpenGL/GLSL ray-tracing.
   Standard_Boolean Raytrace (const Graphic3d_CView& theCView,
-              const int theSizeX, const int theSizeY, const Tint theToSwap);
+                             const Standard_Integer theSizeX,
+                             const Standard_Integer theSizeY,
+                             const Standard_Boolean theToSwap,
+                             OpenGl_FrameBuffer*    theFrameBuffer);
 
 protected: //! @name fields related to ray-tracing
 
-  //! Result of OpenCL initialization.
-  OpenClInitStatus myComputeInitStatus;
-  //! Is ATI/AMD OpenCL platform used?
-  Standard_Boolean myIsAmdComputePlatform;
+  //! Result of shaders initialization.
+  RaytraceInitStatus myComputeInitStatus;
 
   //! Is geometry data valid?
   Standard_Boolean myIsRaytraceDataValid;
-  //! Is geometry data musty be updated?
-  Standard_Boolean myToUpdateRaytraceData;
 
   //! 3D scene geometry data for ray-tracing.
   OpenGl_RaytraceGeometry myRaytraceGeometry;
@@ -351,54 +451,57 @@ protected: //! @name fields related to ray-tracing
   //! Scene epsilon to prevent self-intersections.
   Standard_ShortReal myRaytraceSceneEpsilon;
 
-  //! OpenCL context.
-  cl_context myComputeContext;
-  //! OpenCL command queue.
-  cl_command_queue myComputeQueue;
-  //! OpenCL computing program.
-  cl_program myRaytraceProgram;
-  //! OpenCL ray-tracing render kernel.
-  cl_kernel myRaytraceRenderKernel;
-  //! OpenCL adaptive anti-aliasing kernel.
-  cl_kernel myRaytraceSmoothKernel;
+  //! Actual size of traversal stack in shader program.
+  Standard_Integer myTraversalStackSize;
 
-  //! OpenCL image to store environment map.
-  cl_mem myRaytraceEnvironment;
-  //! OpenCL image to store rendering result.
-  cl_mem myRaytraceOutputImage;
-  //! OpenCL image to store anti-aliasing result.
-  cl_mem myRaytraceOutputImageAA;
+  //! OpenGL/GLSL source of ray-tracing fragment shader.
+  ShaderSource myRaytraceShaderSource;
+  //! OpenGL/GLSL source of adaptive-AA fragment shader.
+  ShaderSource myPostFSAAShaderSource;
 
-  //! OpenGL texture to store rendering result.
-  Handle(OpenGl_Texture) myRaytraceOutputTexture;
-  //! OpenGL texture to store anti-aliasing result.
-  Handle(OpenGl_Texture) myRaytraceOutputTextureAA;
+  //! OpenGL/GLSL ray-tracing fragment shader.
+  Handle(OpenGl_ShaderObject) myRaytraceShader;
+  //! OpenGL/GLSL adaptive-AA fragment shader.
+  Handle(OpenGl_ShaderObject) myPostFSAAShader;
 
-  //! OpenCL buffer of material properties.
-  cl_mem myRaytraceMaterialBuffer;
-  //! OpenCL buffer of light source properties.
-  cl_mem myRaytraceLightSourceBuffer;
+  //! OpenGL/GLSL ray-tracing shader program.
+  Handle(OpenGl_ShaderProgram) myRaytraceProgram;
+  //! OpenGL/GLSL adaptive-AA shader program.
+  Handle(OpenGl_ShaderProgram) myPostFSAAProgram;
 
-  //! OpenCL buffer of vertex coords.
-  cl_mem myGeometryVertexBuffer;
-  //! OpenCL buffer of vertex normals.
-  cl_mem myGeometryNormalBuffer;
-  //! OpenCL buffer of triangle indices.
-  cl_mem myGeometryTriangBuffer;
+  //! Texture buffer of data records of high-level BVH nodes.
+  Handle(OpenGl_TextureBufferArb) mySceneNodeInfoTexture;
+  //! Texture buffer of minimum points of high-level BVH nodes.
+  Handle(OpenGl_TextureBufferArb) mySceneMinPointTexture;
+  //! Texture buffer of maximum points of high-level BVH nodes.
+  Handle(OpenGl_TextureBufferArb) mySceneMaxPointTexture;
 
-  //! OpenCL buffer of data records of high-level BVH nodes.
-  cl_mem mySceneNodeInfoBuffer;
-  //! OpenCL buffer of minimum points of high-level BVH nodes.
-  cl_mem mySceneMinPointBuffer;
-  //! OpenCL buffer of maximum points of high-level BVH nodes.
-  cl_mem mySceneMaxPointBuffer;
+  //! Texture buffer of data records of bottom-level BVH nodes.
+  Handle(OpenGl_TextureBufferArb) myObjectNodeInfoTexture;
+  //! Texture buffer of minimum points of bottom-level BVH nodes.
+  Handle(OpenGl_TextureBufferArb) myObjectMinPointTexture;
+  //! Texture buffer of maximum points of bottom-level BVH nodes.
+  Handle(OpenGl_TextureBufferArb) myObjectMaxPointTexture;
 
-  //! OpenCL buffer of data records of bottom-level BVH nodes.
-  cl_mem myObjectNodeInfoBuffer;
-  //! OpenCL buffer of minimum points of bottom-level BVH nodes.
-  cl_mem myObjectMinPointBuffer;
-  //! OpenCL buffer of maximum points of bottom-level BVH nodes.
-  cl_mem myObjectMaxPointBuffer;
+  //! Texture buffer of vertex coords.
+  Handle(OpenGl_TextureBufferArb) myGeometryVertexTexture;
+  //! Texture buffer of vertex normals.
+  Handle(OpenGl_TextureBufferArb) myGeometryNormalTexture;
+  //! Texture buffer of triangle indices.
+  Handle(OpenGl_TextureBufferArb) myGeometryTriangTexture;
+  
+  //! Texture buffer of material properties.
+  Handle(OpenGl_TextureBufferArb) myRaytraceMaterialTexture;
+  //! Texture buffer of light source properties.
+  Handle(OpenGl_TextureBufferArb) myRaytraceLightSrcTexture;
+
+  //! Vertex buffer (VBO) for drawing dummy quad.
+  OpenGl_VertexBuffer myRaytraceScreenQuad;
+
+  //! Framebuffer (FBO) to perform adaptive FSAA.
+  Handle(OpenGl_FrameBuffer) myRaytraceFBO1;
+  //! Framebuffer (FBO) to perform adaptive FSAA.
+  Handle(OpenGl_FrameBuffer) myRaytraceFBO2;
 
   //! State of OpenGL view.
   Standard_Size myViewModificationStatus;
@@ -408,7 +511,8 @@ protected: //! @name fields related to ray-tracing
   //! State of OpenGL structures reflected to ray-tracing.
   std::map<const OpenGl_Structure*, Standard_Size> myStructureStates;
 
-#endif // HAVE_OPENCL
+  //! Cached locations of frequently used uniform variables.
+  Standard_Integer myUniformLocations[2][OpenGl_RT_NbVariables];
 
 protected: //! @name protected fields
 

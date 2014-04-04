@@ -128,6 +128,45 @@ bool OpenGl_TextureBufferArb::Init (const Handle(OpenGl_Context)& theGlCtx,
 }
 
 // =======================================================================
+// function : Init
+// purpose  :
+// =======================================================================
+bool OpenGl_TextureBufferArb::Init (const Handle(OpenGl_Context)& theGlCtx,
+                                    const GLuint   theComponentsNb,
+                                    const GLsizei  theElemsNb,
+                                    const GLuint*  theData)
+{
+  if (theComponentsNb != 1
+   && theComponentsNb != 2
+   && theComponentsNb != 3
+   && theComponentsNb != 4)
+  {
+    // unsupported format
+    return false;
+  }
+  else if (!Create (theGlCtx)
+        || !OpenGl_VertexBuffer::Init (theGlCtx, theComponentsNb, theElemsNb, theData))
+  {
+    return false;
+  }
+
+  switch (theComponentsNb)
+  {
+    case 1: myTexFormat = GL_R32I;    break;
+    case 2: myTexFormat = GL_RG32I;   break;
+    case 3: myTexFormat = GL_RGB32I;  break;
+    case 4: myTexFormat = GL_RGBA32I; break;
+  }
+
+  Bind (theGlCtx);
+  BindTexture (theGlCtx);
+  theGlCtx->arbTBO->glTexBuffer (GetTarget(), myTexFormat, myBufferId);
+  UnbindTexture (theGlCtx);
+  Unbind (theGlCtx);
+  return true;
+}
+
+// =======================================================================
 // function : BindTexture
 // purpose  :
 // =======================================================================

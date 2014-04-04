@@ -140,10 +140,8 @@ OpenGl_ShaderStates.cxx
 Handle_OpenGl_ShaderObject.hxx
 Handle_OpenGl_ShaderProgram.hxx
 Handle_OpenGl_ShaderManager.hxx
-OpenGl_Cl.hxx
 OpenGl_SceneGeometry.hxx
 OpenGl_SceneGeometry.cxx
-OpenGl_RaytraceSource.cxx
 OpenGl_Workspace_Raytrace.cxx
 OpenGl_Flipper.hxx
 OpenGl_Flipper.cxx

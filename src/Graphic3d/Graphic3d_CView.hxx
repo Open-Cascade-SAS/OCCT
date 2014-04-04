@@ -100,7 +100,7 @@ public:
     WasRedrawnGL (0),
     IsRaytracing (0),
     IsShadowsEnabled (1),
-    IsReflectionsEnabled (1),
+    IsReflectionsEnabled (0),
     IsAntialiasingEnabled (0)
   {
 	  memset(&DefWindow,0,sizeof(DefWindow));

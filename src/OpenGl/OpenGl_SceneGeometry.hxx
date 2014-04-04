@@ -16,8 +16,6 @@
 #ifndef _OpenGl_SceneGeometry_Header
 #define _OpenGl_SceneGeometry_Header
 
-#ifdef HAVE_OPENCL
-
 #include <BVH_Geometry.hxx>
 #include <BVH_Triangulation.hxx>
 #include <NCollection_StdAllocator.hxx>
@@ -124,13 +122,13 @@ class OpenGl_TriangleSet : public BVH_Triangulation<Standard_ShortReal, 4>
 {
 public:
 
-  //! Array of vertex normals.
-  BVH_Array4f Normals;
+  BVH_Array4f Normals; //!< Array of vertex normals
 
 public:
 
   //! Creates new OpenGL element triangulation.
   OpenGl_TriangleSet()
+  : BVH_Triangulation<Standard_ShortReal, 4>()
   {
     //
   }
@@ -161,12 +159,15 @@ public:
     NCollection_StdAllocator<OpenGl_RaytraceMaterial> > Materials;
 
   //! Global ambient from all light sources.
-  BVH_Vec4f GlobalAmbient;
+  BVH_Vec4f Ambient;
 
 public:
 
   //! Creates uninitialized ray-tracing geometry.
   OpenGl_RaytraceGeometry()
+  : BVH_Geometry<Standard_ShortReal, 4>(),
+    myHighLevelTreeDepth (0),
+    myBottomLevelTreeDepth (0)
   {
     //
   }
@@ -204,7 +205,24 @@ public:
   //! If the node index is not valid the function returns NULL.
   //! @note Can be used after processing acceleration structure.
   OpenGl_TriangleSet* TriangleSet (Standard_Integer theNodeIdx);
+
+  //! Returns depth of high-level scene BVH from last build.
+  Standard_Integer HighLevelTreeDepth() const
+  {
+    return myHighLevelTreeDepth;
+  }
+
+  //! Returns maximum depth of bottom-level scene BVHs from last build.
+  Standard_Integer BottomLevelTreeDepth() const
+  {
+    return myBottomLevelTreeDepth;
+  }
+
+protected:
+
+  Standard_Integer myHighLevelTreeDepth;   //!< Depth of high-level scene BVH from last build
+  Standard_Integer myBottomLevelTreeDepth; //!< Maximum depth of bottom-level scene BVHs from last build
+
 };
 
-#endif
 #endif

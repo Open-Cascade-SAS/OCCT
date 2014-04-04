@@ -282,6 +282,10 @@ void BVH_BinnedBuilder<T, N, Bins>::BuildNode (BVH_Set<T, N>*         theSet,
                                  || theBVH->Level (aChildIndex) >= BVH_Builder<T, N>::myMaxTreeDepth;
 
     if (!isLeaf)
+    {
       BVH_Builder<T, N>::myTasksQueue.Append (aChildIndex);
+    }
+
+    BVH_Builder<T, N>::UpdateDepth (theBVH, theBVH->Level (aChildIndex));
   }
 }

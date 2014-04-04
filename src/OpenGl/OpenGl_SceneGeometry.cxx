@@ -13,12 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifdef HAVE_CONFIG_H
-  #include <config.h>
-#endif
-
-#ifdef HAVE_OPENCL
-
 #include <Standard_Assert.hxx>
 
 #ifdef HAVE_TBB
@@ -206,6 +200,8 @@ Standard_Boolean OpenGl_RaytraceGeometry::ProcessAcceleration()
     OpenGL_BVHParallelBuilder (this));
 #endif
 
+  myBottomLevelTreeDepth = 0;
+
   for (Standard_Integer anObjectIdx = 0; anObjectIdx < Size(); ++anObjectIdx)
   {
     OpenGl_TriangleSet* aTriangleSet = dynamic_cast<OpenGl_TriangleSet*> (
@@ -216,6 +212,8 @@ Standard_Boolean OpenGl_RaytraceGeometry::ProcessAcceleration()
 
     Standard_ASSERT_RETURN (!aTriangleSet->BVH().IsNull(),
       "Error! Failed to update bottom-level BVH of OpenGL element", Standard_False);
+
+    myBottomLevelTreeDepth = Max (myBottomLevelTreeDepth, aTriangleSet->BVH()->Depth());
   }
 
 #ifdef BVH_PRINT_INFO
@@ -241,6 +239,8 @@ Standard_Boolean OpenGl_RaytraceGeometry::ProcessAcceleration()
 
   Standard_ASSERT_RETURN (!aBVH.IsNull(),
     "Error! Failed to update high-level BVH of ray-tracing scene", Standard_False);
+
+  myHighLevelTreeDepth = aBVH->Depth();
 
   Standard_Integer aVerticesOffset = 0;
   Standard_Integer aElementsOffset = 0;
@@ -387,5 +387,3 @@ namespace OpenGl_Raytrace
     return Standard_False;
   }
 }
-
-#endif

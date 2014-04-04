@@ -308,10 +308,6 @@ public:
   Standard_EXPORT OpenGl_UserDrawCallback_t& UserDrawCallback();
 
 public:
-  
-  //! Returns information about OpenCL device used for computations.
-  Standard_EXPORT Standard_Boolean GetOpenClDeviceInfo (const Graphic3d_CView& theCView,
-                      NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>& theInfo);
 
   //! Method to retrieve valid GL context.
   //! Could return NULL-handle if no window created by this driver.

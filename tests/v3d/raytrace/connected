@@ -24,7 +24,6 @@ vdump $::imagedir/${::casename}_OFF.png
 
 # turn on ray tracing
 vraytrace 1
-vclinfo
 vdump $::imagedir/${::casename}_rt1.png
 
 vclear

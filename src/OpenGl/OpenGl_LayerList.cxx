@@ -13,10 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifdef HAVE_CONFIG_H
-  #include <config.h>
-#endif
-
 #include <OpenGl_GlCore11.hxx>
 
 #include <OpenGl_LayerList.hxx>
@@ -176,12 +172,10 @@ void OpenGl_LayerList::RemoveStructure (const OpenGl_Structure *theStructure,
   {
     myNbStructures--;
 
-#ifdef HAVE_OPENCL
     if (theStructure->IsRaytracable())
     {
       myModificationState++;
     }
-#endif
 
     return;
   }
@@ -199,12 +193,10 @@ void OpenGl_LayerList::RemoveStructure (const OpenGl_Structure *theStructure,
     {
       myNbStructures--;
 
-#ifdef HAVE_OPENCL
       if (theStructure->IsRaytracable())
       {
         myModificationState++;
       }
-#endif
 
       return;
     }

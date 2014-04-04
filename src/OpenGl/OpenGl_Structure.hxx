@@ -160,8 +160,6 @@ public:
   //! Returns OpenGL persistent translation.
   const TEL_TRANSFORM_PERSISTENCE* PersistentTranslation() const { return myTransPers; }
 
-#ifdef HAVE_OPENCL
-
   //! Returns structure modification state (for ray-tracing).
   Standard_Size ModificationState() const { return myModificationState; }
 
@@ -171,13 +169,9 @@ public:
   //! Is the structure ray-tracable (contains ray-tracable elements)?
   Standard_Boolean IsRaytracable() const { return myIsRaytracable; }
 
-#endif
-
 protected:
 
   Standard_EXPORT virtual ~OpenGl_Structure();
-
-#ifdef HAVE_OPENCL
 
   //! Registers ancestor connected structure (for updating ray-tracing state).
   void RegisterAncestorStructure (const OpenGl_Structure* theStructure) const;
@@ -197,8 +191,6 @@ protected:
   //! Sets ray-tracable status for structure and its parents.
   void SetRaytracableWithAncestorStructures() const;
 
-#endif
-
 protected:
 
   OpenGl_Matrix*             myTransformation;
@@ -216,11 +208,9 @@ protected:
 
   OpenGl_ListOfStructure           myConnected;
 
-#ifdef HAVE_OPENCL
   mutable OpenGl_ListOfStructure   myAncestorStructures;
   mutable Standard_Boolean         myIsRaytracable;
   mutable Standard_Size            myModificationState;
-#endif
 
 public:
 

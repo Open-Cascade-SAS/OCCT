@@ -54,6 +54,16 @@ protected:
                           BVH_Tree<T, N>*        theBVH,
                           const Standard_Integer theTask);
 
+  //! Updates depth of constructed BVH tree.
+  void UpdateDepth (BVH_Tree<T, N>*        theBVH,
+                    const Standard_Integer theLevel)
+  {
+    if (theLevel > theBVH->myDepth)
+    {
+      theBVH->myDepth = theLevel;
+    }
+  }
+
 protected:
 
   Standard_Integer                     myMaxTreeDepth; //!< Maximum depth of constructed BVH

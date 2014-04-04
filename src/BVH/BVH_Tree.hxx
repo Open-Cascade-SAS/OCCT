@@ -20,6 +20,8 @@
 
 #include <BVH_Box.hxx>
 
+template<class T, int N> class BVH_Builder;
+
 //! Stores parameters of bounding volume hierarchy (BVH).
 //! Bounding volume hierarchy (BVH) organizes geometric objects in
 //! the tree based on spatial relationships. Each node in the tree
@@ -31,11 +33,19 @@
 template<class T, int N>
 class BVH_Tree
 {
+  friend class BVH_Builder<T, N>;
+
 public:
 
   typedef typename BVH_Box<T, N>::BVH_VecNt BVH_VecNt;
 
 public:
+
+  //! Creates new empty BVH tree.
+  BVH_Tree() : myDepth (0)
+  {
+    //
+  }
 
   //! Returns minimum point of the given node.
   BVH_VecNt& MinPoint (const Standard_Integer theNodeIndex)
@@ -151,6 +161,12 @@ public:
     return BVHTools::ArrayOp<Standard_Integer, 4>::Size (myNodeInfoBuffer);
   }
 
+  //! Returns depth of BVH tree from last build.
+  Standard_Integer Depth() const
+  {
+    return myDepth;
+  }
+
 public:
 
   //! Removes all BVH nodes.
@@ -231,6 +247,9 @@ protected:
 
   //! Array of node data records.
   BVH_Array4i myNodeInfoBuffer;
+
+  //! Depth of constructed tree.
+  Standard_Integer myDepth;
 
 };
 

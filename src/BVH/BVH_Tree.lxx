@@ -20,6 +20,8 @@
 template<class T, int N>
 void BVH_Tree<T, N>::Clear()
 {
+  myDepth = 0;
+
   BVHTools::ArrayOp<T, N>::Clear (myMinPointBuffer);
   BVHTools::ArrayOp<T, N>::Clear (myMaxPointBuffer);
 

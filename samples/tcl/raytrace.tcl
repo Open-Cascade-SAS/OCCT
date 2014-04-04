@@ -30,10 +30,8 @@ vsetcolorbg 255 255 255
 vfit
 
 # set ray tracing
-if { [regexp {HAVE_OPENCL} [dversion]] } {
-    puts "Trying raytrace mode..."
-    if { ! [catch {vraytrace 1}] } {
-        vtextureenv on 1
-        vsetraytracemode shad=1 refl=1 aa=1
-    }
+puts "Trying raytrace mode..."
+if { ! [catch {vraytrace 1}] } {
+  vtextureenv on 1
+  vsetraytracemode shad=1 refl=1 aa=1
 }

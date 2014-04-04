@@ -13,10 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifdef HAVE_CONFIG_H
-  #include <config.h>
-#endif
-
 #include <OpenGl_CappingAlgo.hxx>
 #include <OpenGl_Context.hxx>
 #include <OpenGl_GlCore11.hxx>
@@ -145,13 +141,11 @@ OpenGl_Structure::OpenGl_Structure (const Handle(Graphic3d_StructureManager)& th
   myAspectText(NULL),
   myHighlightColor(NULL),
   myNamedStatus(0),
-  myZLayer(0)
+  myZLayer(0),
+  myIsRaytracable (Standard_False),
+  myModificationState (0)
 {
   UpdateNamedStatus();
-#if HAVE_OPENCL
-  myIsRaytracable = Standard_False;
-  myModificationState = 0;
-#endif
 }
 
 // =======================================================================
@@ -199,12 +193,10 @@ void OpenGl_Structure::UpdateTransformation()
 
   matcpy (myTransformation->mat, &Graphic3d_CStructure::Transformation[0][0]);
 
-#ifdef HAVE_OPENCL
   if (myIsRaytracable)
   {
     UpdateStateWithAncestorStructures();
   }
-#endif
 }
 
 // =======================================================================
@@ -247,12 +239,10 @@ void OpenGl_Structure::SetAspectFace (const CALL_DEF_CONTEXTFILLAREA& theAspect)
   }
   myAspectFace->SetAspect (theAspect);
 
-#ifdef HAVE_OPENCL
   if (myIsRaytracable)
   {
     UpdateStateWithAncestorStructures();
   }
-#endif
 }
 
 // =======================================================================
@@ -382,15 +372,11 @@ void OpenGl_Structure::UpdateNamedStatus()
   if (highlight) myNamedStatus |= OPENGL_NS_HIGHLIGHT;
   if (!visible)  myNamedStatus |= OPENGL_NS_HIDE;
 
-#ifdef HAVE_OPENCL
   if (myIsRaytracable)
   {
     UpdateStateWithAncestorStructures();
   }
-#endif
 }
-
-#ifdef HAVE_OPENCL
 
 // =======================================================================
 // function : RegisterAncestorStructure
@@ -494,8 +480,6 @@ void OpenGl_Structure::SetRaytracableWithAncestorStructures() const
   }
 }
 
-#endif
-
 // =======================================================================
 // function : Connect
 // purpose  :
@@ -506,7 +490,6 @@ void OpenGl_Structure::Connect (Graphic3d_CStructure& theStructure)
   Disconnect (theStructure);
   myConnected.Append (aStruct);
 
-#ifdef HAVE_OPENCL
   if (aStruct->IsRaytracable())
   {
     UpdateStateWithAncestorStructures();
@@ -514,7 +497,6 @@ void OpenGl_Structure::Connect (Graphic3d_CStructure& theStructure)
   }
 
   aStruct->RegisterAncestorStructure (this);
-#endif
 }
 
 // =======================================================================
@@ -531,7 +513,6 @@ void OpenGl_Structure::Disconnect (Graphic3d_CStructure& theStructure)
     {
       myConnected.Remove (anIter);
 
-#ifdef HAVE_OPENCL
       if (aStruct->IsRaytracable())
       {
         UpdateStateWithAncestorStructures();
@@ -539,7 +520,6 @@ void OpenGl_Structure::Disconnect (Graphic3d_CStructure& theStructure)
       }
 
       aStruct->UnregisterAncestorStructure (this);
-#endif
       return;
     }
   }
@@ -574,13 +554,11 @@ void OpenGl_Structure::RemoveGroup (const Handle(Graphic3d_Group)& theGroup)
     {
       theGroup->Clear (Standard_False);
 
-    #ifdef HAVE_OPENCL
       if (((OpenGl_Group* )theGroup.operator->())->IsRaytracable())
       {
         UpdateStateWithAncestorStructures();
         UpdateRaytracableWithAncestorStructures();
       }
-    #endif
 
       myGroups.Remove (aGroupIter);
       return;
@@ -603,29 +581,23 @@ void OpenGl_Structure::Clear()
 // =======================================================================
 void OpenGl_Structure::Clear (const Handle(OpenGl_Context)& theGlCtx)
 {
-#ifdef HAVE_OPENCL
   Standard_Boolean aRaytracableGroupDeleted (Standard_False);
-#endif
 
   // Release groups
   for (OpenGl_Structure::GroupIterator aGroupIter (myGroups); aGroupIter.More(); aGroupIter.Next())
   {
-  #ifdef HAVE_OPENCL
     aRaytracableGroupDeleted |= aGroupIter.Value()->IsRaytracable();
-  #endif
 
     // Delete objects
     aGroupIter.ChangeValue()->Release (theGlCtx);
   }
   myGroups.Clear();
 
-#ifdef HAVE_OPENCL
   if (aRaytracableGroupDeleted)
   {
     UpdateStateWithAncestorStructures();
     UpdateRaytracableWithAncestorStructures();
   }
-#endif
 }
 
 // =======================================================================
@@ -846,10 +818,8 @@ void OpenGl_Structure::Release (const Handle(OpenGl_Context)& theGlCtx)
   OpenGl_Element::Destroy (theGlCtx, myAspectText);
   clearHighlightColor (theGlCtx);
 
-#ifdef HAVE_OPENCL
   // Remove from connected list of ancestor
   UnregisterFromAncestorStructure();
-#endif
 }
 
 // =======================================================================

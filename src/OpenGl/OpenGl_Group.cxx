@@ -13,10 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifdef HAVE_CONFIG_H
-  #include <config.h>
-#endif
-
 #include <OpenGl_Group.hxx>
 
 #include <OpenGl_GraphicDriver.hxx>
@@ -118,7 +114,6 @@ void OpenGl_Group::UpdateAspectFace (const Standard_Boolean theIsGlobal)
     AddElement (anAspectFace);
   }
 
-#ifdef HAVE_OPENCL
   if (myIsRaytracable)
   {
     ++myModificationState;
@@ -128,7 +123,6 @@ void OpenGl_Group::UpdateAspectFace (const Standard_Boolean theIsGlobal)
       aStruct->UpdateStateWithAncestorStructures();
     }
   }
-#endif
 }
 
 // =======================================================================
@@ -300,7 +294,6 @@ void OpenGl_Group::AddElement (OpenGl_Element* theElem)
   (myLast? myLast->next : myFirst) = aNode;
   myLast = aNode;
 
-#ifdef HAVE_OPENCL
   if (OpenGl_Raytrace::IsRaytracedElement (aNode))
   {
     myModificationState++;
@@ -313,7 +306,6 @@ void OpenGl_Group::AddElement (OpenGl_Element* theElem)
       aStruct->SetRaytracableWithAncestorStructures();
     }
   }
-#endif
 }
 
 // =======================================================================

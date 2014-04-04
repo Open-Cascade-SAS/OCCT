@@ -374,17 +374,19 @@ Standard_Boolean OpenGl_ShaderProgram::Link (const Handle(OpenGl_Context)& theCt
     return Standard_False;
   }
 
-  theCtx->core20->glLinkProgram (myProgramID);
-
   GLint aStatus = GL_FALSE;
+  theCtx->core20->glLinkProgram (myProgramID);
   theCtx->core20->glGetProgramiv (myProgramID, GL_LINK_STATUS, &aStatus);
+  if (aStatus == GL_FALSE)
+  {
+    return Standard_False;
+  }
 
   for (GLint aVar = 0; aVar < OpenGl_OCCT_NUMBER_OF_STATE_VARIABLES; ++aVar)
   {
     myStateLocations[aVar] = GetUniformLocation (theCtx, PredefinedKeywords[aVar]);
   }
-
-  return aStatus != GL_FALSE;
+  return Standard_True;
 }
 
 // =======================================================================
@@ -641,6 +643,130 @@ Standard_Boolean OpenGl_ShaderProgram::GetAttribute (const Handle(OpenGl_Context
   }
 
   theCtx->core20->glGetVertexAttribfv (theIndex, GL_CURRENT_VERTEX_ATTRIB, theValue);
+  return Standard_True;
+}
+
+// =======================================================================
+// function : SetAttributeName
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_ShaderProgram::SetAttributeName (const Handle(OpenGl_Context)& theCtx,
+                                                         GLint                         theIndex,
+                                                         const GLchar*                 theName)
+{
+  theCtx->core20fwd->glBindAttribLocation (myProgramID, theIndex, theName);
+  return Standard_True;
+}
+  
+// =======================================================================
+// function : SetAttribute
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_ShaderProgram::SetAttribute (const Handle(OpenGl_Context)& theCtx,
+                                                     const GLchar*                 theName,
+                                                     GLfloat                       theValue)
+{
+  return SetAttribute (theCtx, GetAttributeLocation (theCtx, theName), theValue);
+}
+
+// =======================================================================
+// function : SetAttribute
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_ShaderProgram::SetAttribute (const Handle(OpenGl_Context)& theCtx,
+                                                     GLint                         theIndex,
+                                                     GLfloat                       theValue)
+{
+  if (myProgramID == NO_PROGRAM || theIndex == INVALID_LOCATION)
+  {
+    return Standard_False;
+  }
+
+  theCtx->core20fwd->glVertexAttrib1f (theIndex, theValue);
+  return Standard_True;
+}
+
+// =======================================================================
+// function : SetAttribute
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_ShaderProgram::SetAttribute (const Handle(OpenGl_Context)& theCtx,
+                                                     const GLchar*                 theName,
+                                                     const OpenGl_Vec2&            theValue)
+{
+  return SetAttribute (theCtx, GetAttributeLocation (theCtx, theName), theValue);
+}
+
+// =======================================================================
+// function : SetAttribute
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_ShaderProgram::SetAttribute (const Handle(OpenGl_Context)& theCtx,
+                                                     GLint                         theIndex,
+                                                     const OpenGl_Vec2&            theValue)
+{
+  if (myProgramID == NO_PROGRAM || theIndex == INVALID_LOCATION)
+  {
+    return Standard_False;
+  }
+
+  theCtx->core20fwd->glVertexAttrib2fv (theIndex, theValue);
+  return Standard_True;
+}
+
+// =======================================================================
+// function : SetAttribute
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_ShaderProgram::SetAttribute (const Handle(OpenGl_Context)& theCtx,
+                                                     const GLchar*                 theName,
+                                                     const OpenGl_Vec3&            theValue)
+{
+  return SetAttribute (theCtx, GetAttributeLocation (theCtx, theName), theValue);
+}
+
+// =======================================================================
+// function : SetAttribute
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_ShaderProgram::SetAttribute (const Handle(OpenGl_Context)& theCtx,
+                                                     GLint                         theIndex,
+                                                     const OpenGl_Vec3&            theValue)
+{
+  if (myProgramID == NO_PROGRAM || theIndex == INVALID_LOCATION)
+  {
+    return Standard_False;
+  }
+
+  theCtx->core20fwd->glVertexAttrib3fv (theIndex, theValue);
+  return Standard_True;
+}
+
+// =======================================================================
+// function : SetAttribute
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_ShaderProgram::SetAttribute (const Handle(OpenGl_Context)& theCtx,
+                                                     const GLchar*                 theName,
+                                                     const OpenGl_Vec4&            theValue)
+{
+  return SetAttribute (theCtx, GetAttributeLocation (theCtx, theName), theValue);
+}
+
+// =======================================================================
+// function : SetAttribute
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_ShaderProgram::SetAttribute (const Handle(OpenGl_Context)& theCtx,
+                                                     GLint                         theIndex,
+                                                     const OpenGl_Vec4&            theValue)
+{
+  if (myProgramID == NO_PROGRAM || theIndex == INVALID_LOCATION)
+  {
+    return Standard_False;
+  }
+
+  theCtx->core20fwd->glVertexAttrib4fv (theIndex, theValue);
   return Standard_True;
 }
 
@@ -1131,8 +1257,11 @@ void OpenGl_ShaderProgram::Release (const OpenGl_Context* theCtx)
 
   for (OpenGl_ShaderList::Iterator anIter (myShaderObjects); anIter.More(); anIter.Next())
   {
-    anIter.ChangeValue()->Release (theCtx);
-    anIter.ChangeValue().Nullify();
+    if (!anIter.Value().IsNull())
+    {
+      anIter.ChangeValue()->Release (theCtx);
+      anIter.ChangeValue().Nullify();
+    }
   }
 
   if (theCtx->core20 != NULL
