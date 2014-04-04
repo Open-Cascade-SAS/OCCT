@@ -92,8 +92,8 @@ template <class TypeSolver,
   ~BOPCol_TBBFunctor() {
   }
   //
-  void operator()( const flexible_range<Standard_Size>& aBR ) const{
-    Standard_Size i, iBeg, iEnd;
+  void operator()( const flexible_range<Standard_Integer>& aBR ) const{
+    Standard_Integer i, iBeg, iEnd;
     //
     TypeSolverVector& aV=*myPV;
     //
@@ -123,13 +123,13 @@ template <class TypeFunctor,
                         TypeSolverVector& aV) {
     //
     TypeFunctor aFunctor(aV);
-    Standard_Size aNb=aV.Extent();
+    Standard_Integer aNb=aV.Extent();
     //
     if (bRunParallel) {
-      flexible_for(flexible_range<Standard_Size>(0,aNb), aFunctor);
+      flexible_for(flexible_range<Standard_Integer>(0,aNb), aFunctor);
     }
     else {
-      aFunctor.operator()(flexible_range<Standard_Size>(0,aNb));
+      aFunctor.operator()(flexible_range<Standard_Integer>(0,aNb));
     }
   }
 };
@@ -159,8 +159,8 @@ template <class TypeSolver,
     myContext=aCtx;
   }
   //
-  void operator()( const flexible_range<Standard_Size>& aBR ) const{
-    Standard_Size i, iBeg, iEnd;
+  void operator()( const flexible_range<Standard_Integer>& aBR ) const{
+    Standard_Integer i, iBeg, iEnd;
     TypeContext aCtx;
     //
     if (myContext.IsNull()) {
@@ -205,14 +205,14 @@ template <class TypeFunctor,
                         TypeContext& aCtx) {
     //
     TypeFunctor aFunctor(aV);
-    Standard_Size aNb=aV.Extent();
+    Standard_Integer aNb=aV.Extent();
     //
     if (bRunParallel) {
-      flexible_for(flexible_range<Standard_Size>(0,aNb), aFunctor);
+      flexible_for(flexible_range<Standard_Integer>(0,aNb), aFunctor);
     }
     else {
       aFunctor.SetContext(aCtx);
-      aFunctor.operator()(flexible_range<Standard_Size>(0,aNb));
+      aFunctor.operator()(flexible_range<Standard_Integer>(0,aNb));
     }
   }
 };
