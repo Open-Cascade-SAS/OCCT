@@ -1,4 +1,4 @@
-﻿ Building 3rd-party libraries on MacOS X {#dev_guides__building_3rdparty_osx}
+﻿ Building 3rd-party libraries on MacOS X {#occt_dev_guides__building_3rdparty_osx}
 ==============================================
 @tableofcontents 
 

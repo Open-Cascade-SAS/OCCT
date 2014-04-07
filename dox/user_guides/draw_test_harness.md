@@ -1,4 +1,4 @@
-Draw Test Harness  {#user_guides__test_harness}
+Draw Test Harness  {#occt_user_guides__test_harness}
 ===============================
 
 @tableofcontents
@@ -74,7 +74,7 @@ Declaration of available plug-ins is done through the special resource file(s). 
 
 @subsubsection occt_draw_1_3_1 Launching DRAW Test Harness
 
-Test Harness executable *DRAWEXE* is located in the <i>$CASROOT/<platform>/bin</i> directory (where <platform> is Win for Windows and Linux for Linux operating systems). Prior to launching it is important to make sure that the environment is correctly set-up (usually this is done automatically after the installation process on Windows or after launching specific scripts on Linux).  
+Test Harness executable *DRAWEXE* is located in the <i>$CASROOT/\<platform\>/bin</i> directory (where \<platform\> is Win for Windows and Linux for Linux operating systems). Prior to launching it is important to make sure that the environment is correctly set-up (usually this is done automatically after the installation process on Windows or after launching specific scripts on Linux).  
 
 
 @subsubsection occt_draw_1_3_2 Plug-in resource file
@@ -2520,31 +2520,31 @@ Saves the active document in the file **docname** in the path **path**. Overwrit
 SaveAs D /myPath/myFile.std
 ~~~~~ 
 
-@subsection occt_draw_5_2	Basic commands
+@subsection occt_draw_5_2 Basic commands
 
-@subsubsection occt_draw_5_2_1	Label
+@subsubsection occt_draw_5_2_1 Label
 
-Syntax: 		
+Syntax:   
 
 ~~~~~
 Label docname entry
 ~~~~~
 
-Creates the label expressed by <i><entry></i> if it does not exist.
+Creates the label expressed by <i>\<entry\></i> if it does not exist.
 
 Example
 ~~~~~
 Label D 0:2
 ~~~~~
 
-@subsubsection occt_draw_5_2_2	NewChild
+@subsubsection occt_draw_5_2_2 NewChild
 
-Syntax: 		
+Syntax:   
 
 ~~~~~
 NewChild docname [taggerlabel = Root label]
 ~~~~~
-Finds (or creates) a *TagSource* attribute located at father label of <i><taggerlabel></i> and makes a new child label.
+Finds (or creates) a *TagSource* attribute located at father label of <i>\<taggerlabel\></i> and makes a new child label.
 
 Example
 ~~~~~
@@ -2556,9 +2556,9 @@ Label D 0:2
 NewChild D 0:2
 ~~~~~
 
-@subsubsection occt_draw_5_2_3	Children
+@subsubsection occt_draw_5_2_3 Children
 
-Syntax: 	
+Syntax:  
 ~~~~~
 Children docname label
 ~~~~~
@@ -2569,9 +2569,9 @@ Example
 Children D 0:2
 ~~~~~
 
-@subsubsection occt_draw_5_2_4	ForgetAll
+@subsubsection occt_draw_5_2_4 ForgetAll
 
-Syntax: 		
+Syntax:   
 ~~~~~
 ForgetAll docname label
 ~~~~~
@@ -5596,7 +5596,7 @@ Syntax:
 bsplineprof name [S face] [W WW] 
 ~~~~~
 
-* for an edge : <digitizes> ... <mouse button 2>
+* for an edge : \<digitizes\> ... <mouse button 2>
 * to end profile : <mouse button 3>
 
 Builds a profile in the XY plane from digitizes. By default the profile is closed and a face is built. 
@@ -6384,23 +6384,23 @@ bopargcheck shape1 [[shape2] [-F/O/C/T/S/U] [/R|F|T|V|E|I|P]] [#BF]
 **bopargcheck** checks the validity of argument(s) for boolean operations. 
 
 * Boolean Operation - (by default a section is made) : 
-	 * **F** (fuse) 
-	 * **O** (common) 
-	 * **C** (cut) 
-	 * **T** (cut21) 
-	 * **S** (section) 
-	 * **U** (unknown) 
+  * **F** (fuse) 
+  * **O** (common) 
+  * **C** (cut) 
+  * **T** (cut21) 
+  * **S** (section) 
+  * **U** (unknown) 
 * Test Options - (by default all options are enabled) : 
-	 * **R** (disable small edges (shrank range) test) 
-	 * **F** (disable faces verification test) 
-	 * **T** (disable tangent faces searching test) 
-	 * **V** (disable test possibility to merge vertices) 
-	 * **E** (disable test possibility to merge edges) 
-	 * **I** (disable self-interference test) 
-	 * **P** (disable shape type test) 
+  * **R** (disable small edges (shrank range) test) 
+  * **F** (disable faces verification test) 
+  * **T** (disable tangent faces searching test) 
+  * **V** (disable test possibility to merge vertices) 
+  * **E** (disable test possibility to merge edges) 
+  * **I** (disable self-interference test) 
+  * **P** (disable shape type test) 
 * Additional Test Options :
-	 * **B** (stop test on first faulty found) - by default it is off; 
-	 * **F** (full output for faulty shapes) - by default the output is made in a short format.
+  * **B** (stop test on first faulty found) - by default it is off; 
+  * **F** (full output for faulty shapes) - by default the output is made in a short format.
 
 **Note** that Boolean Operation and Test Options are used only for a couple of argument shapes, except for <b>I</b> and <b>P</b> options that are always used to test a couple of shapes as well as a single shape.
 
@@ -6925,9 +6925,9 @@ featdprism b f b_6 5 1 0
 featperformval dprism r 1 
 ==BRepFeat_MakeDPrism::Perform(Height) 
 BRepFeat_Form::GlobalPerform () 
-	Gluer 
-	still Gluer 
-	Gluer result 
+ Gluer 
+ still Gluer 
+ Gluer result 
 ~~~~~
 
 Let us  create a feature prism with circular direction :
@@ -6942,9 +6942,9 @@ featrevol b f b_6 1 0 1 0 1 0 1 0
 featperformval revol r 45 
 ==BRepFeat_MakeRevol::Perform(Angle) 
 BRepFeat_Form::GlobalPerform () 
-	Gluer 
-	still Gluer 
-	Gluer result 
+ Gluer 
+ still Gluer 
+ Gluer result 
 ~~~~~
 
 
@@ -7003,9 +7003,9 @@ Computes a draft angle surface from a wire. The surface is determined by the dra
   * The draft direction is determined by the argument -INTERNAL
   * The argument Ri/Ro deftermines wether the corner edges of the draft surfaces are angular or rounded.
   * Arguments that can be used to define the surface distance are:
-	  * length, a defined distance
-	  * shape, until the surface contacts a shape
-	  * surface, until the surface contacts a surface.
+   * length, a defined distance
+   * shape, until the surface contacts a shape
+   * surface, until the surface contacts a surface.
 
 **Note** that the original aim of adding a draft angle to a shape is to produce a shape which can be removed easily from a mould. The Examples below use larger angles than are used normally and the calculation results returned are not indicated.
 
@@ -7151,20 +7151,20 @@ igesread <file_name> <result_shape_name> [<selection>]
 Reads an IGES file to an OCCT shape. This command will interactively ask the user to select a set of entities to be converted. 
 
 
-| N	| Mode	| Description |
+| N | Mode | Description |
 | :-- | :-- | :---------- |
-| 0	| End	| finish conversion and exit igesbrep |
-| 1	| Visible roots	| convert only visible roots |
-| 2	| All roots	| convert all roots |
-| 3	| One entity | convert entity with number provided by the user |
-| 4	| Selection	| convert only entities contained in selection |
+| 0 | End | finish conversion and exit igesbrep |
+| 1 | Visible roots | convert only visible roots |
+| 2 | All roots | convert all roots |
+| 3 | One entity | convert entity with number provided by the user |
+| 4 | Selection | convert only entities contained in selection |
 
 
 After the selected set of entities is loaded the user will be asked how loaded entities should be converted into OCCT shapes (e.g., one shape per root or one shape for all the entities). It is also possible to save loaded shapes in files, and to cancel loading. 
 
 The second parameter of this command defines the name of the loaded shape. If several shapes are created, they will get indexed names. For instance, if the last parameter was *s*, they will be *s_1, ... s_N*. 
 
-<i><selection></i> specifies the scope of selected entities in the model, by default it is *xst-transferrable-roots*.  If we use symbol <i>*</i> as <i><selection></i> all roots will be translated. 
+<i>\<selection\></i> specifies the scope of selected entities in the model, by default it is *xst-transferrable-roots*.  If we use symbol <i>*</i> as <i>\<selection\></i> all roots will be translated. 
 
 See also the detailed description of <a href="user_guides__iges.html#occt_iges_2_3_4">Selecting IGES entities</a>.
 
@@ -7183,7 +7183,7 @@ tplosttrim [<IGES_type>]
 
 Sometimes the trimming contours of IGES faces (i.e., entity 141 for 143, 142 for 144) can be lost during translation due to fails. This command gives us a number of lost trims and the number of corresponding IGES entities. 
 It outputs the rank and numbers of faces that lost their trims and their numbers for each type (143, 144, 510) and their total number. If a face lost several of its trims it is output only once. 
-Optional parameter <i><IGES_type></i> can be *0TrimmedSurface, BoundedSurface* or *Face* to specify the only type of IGES faces. 
+Optional parameter <i>\<IGES_type\></i> can be *0TrimmedSurface, BoundedSurface* or *Face* to specify the only type of IGES faces. 
 
 **Example:**
 ~~~~~
@@ -7229,15 +7229,15 @@ This command will interactively ask the user to select a set of entities to be c
 
 | N | Mode | Description |
 | :---- | :---- | :---- |  
-| 0	| End	| Finish transfer and exit stepread | 
-| 1	| root with rank 1	| Transfer first root | 
-| 2	| root by its rank	| Transfer root specified by its rank | 
-| 3	| One entity	| Transfer entity with a number provided by the user | 
-| 4	| Selection	| Transfer only entities contained in selection | 
+| 0 | End | Finish transfer and exit stepread | 
+| 1 | root with rank 1 | Transfer first root | 
+| 2 | root by its rank | Transfer root specified by its rank | 
+| 3 | One entity | Transfer entity with a number provided by the user | 
+| 4 | Selection | Transfer only entities contained in selection | 
 
 After the selected set of entities is loaded the user will be asked how loaded entities should be converted into OCCT shapes. 
 The second parameter of this command defines the name of the loaded shape. If several shapes are created, they will get indexed names. For instance, if the last parameter was *s*, they will be *s_1, ... s_N*. 
-<i><selection></i> specifies the scope of selected entities in the model.  If we use symbol <i>*</i> as <i><selection></i> all roots will be translated. 
+<i>\<selection\></i> specifies the scope of selected entities in the model.  If we use symbol <i>*</i> as <i>\<selection\></i> all roots will be translated. 
 
 See also the detailed description of <a href="user_guides__step.html#occt_step_2_3_6">Selecting STEP entities</a>.
 
@@ -7262,7 +7262,7 @@ The following  modes are available :
     * *f* - *faceted_brep* 
     * *w* - *geometric_curve_set* 
     * *s* - *shell_based_surface_model* 
-	
+ 
 For further information see <a href="#user_guides__step.html#occt_step_6_5">Writing a STEP file</a>. 
 
 **Example:**
@@ -7289,10 +7289,10 @@ Calculates statistics on the entities in the model and outputs a count of entiti
 
 The optional selection argument, if specified, defines a subset of entities, which are to be taken into account. The first argument should be one of the currently defined counters. 
 
-| Counter	| Operation |
+| Counter | Operation |
 | :-------- | :-------- | 
-| xst-types	| Calculates how many entities of each OCCT type exist | 
-| step214-types	| Calculates how many entities of each STEP type exist |
+| xst-types | Calculates how many entities of each OCCT type exist | 
+| step214-types | Calculates how many entities of each STEP type exist |
 
 **Example:**
 ~~~~~
@@ -7315,14 +7315,14 @@ The information printed by this command depends on the symbol specified.
 data c 
 ~~~~~
 
-| Symbol	| Output |
+| Symbol | Output |
 | :------ | :------ |
-| g	| Prints the information contained in the header of the file |
-| c or f	| Prints messages generated during the loading of the STEP file (when the procedure of the integrity of the loaded data check is performed) and the resulting statistics (f works only with fail messages while c with both fail and warning messages) |
-| t	| The same as c or f, with a list of failed or warned entities |
+| g | Prints the information contained in the header of the file |
+| c or f | Prints messages generated during the loading of the STEP file (when the procedure of the integrity of the loaded data check is performed) and the resulting statistics (f works only with fail messages while c with both fail and warning messages) |
+| t | The same as c or f, with a list of failed or warned entities |
 | m or l | The same as t but also prints a status for each entity | 
 | e | Lists all entities of the model with their numbers, types, validity status etc. |
-| R	| The same as e but lists only root entities |
+| R | The same as e but lists only root entities |
 
 
 
@@ -7349,7 +7349,7 @@ entity <#(D)>_or_<num> <level_of_information>
 
 The content of an IGES or STEP entity can be obtained by using this command. 
 Entity can be determined by its number or label. 
-<i><level_of_information></i> has range [0-6]. You can get more information about this level using this command without parameters. 
+<i>\<level_of_information\></i> has range [0-6]. You can get more information about this level using this command without parameters. 
 
 **Example:**
 ~~~~~
@@ -7402,14 +7402,14 @@ fromshape a_1_23
 
 @subsubsection occt_draw_8_3_8  givecount
 
-Syntax:      
+Syntax:
 ~~~~~
 givecount <selection_name> [<selection_name>]
 ~~~~~
 
 
 Prints a number of loaded entities defined by the selection argument.
-Possible values of <selection_name> you can find in the “IGES FORMAT Users’s Guide”.
+Possible values of \<selection_name\> you can find in the “IGES FORMAT Users’s Guide”.
 
 **Example:**
 ~~~~~
@@ -7424,13 +7424,13 @@ givelist <selection_name>
 ~~~~~
 
 Prints a list of a subset of loaded entities defined by the selection argument: 
-| Selection |	Description |
-| :------- | :----------- |
-| xst-model-all	| all entities of the model |
-| xst-model-roots |	all roots |
-| xst-pointed |	(Interactively) pointed entities (not used in DRAW) |
-| xst-transferrable-all	| all transferable (recognized) entities |
-| xst-transferrable-roots	| Transferable roots | 
+| Selection | Description |
+| :-------- | :----------- |
+| xst-model-all | all entities of the model |
+| xst-model-roots | all roots |
+| xst-pointed | (Interactively) pointed entities (not used in DRAW) |
+| xst-transferrable-all | all transferable (recognized) entities |
+| xst-transferrable-roots | Transferable roots | 
 
 
 **Example:**
@@ -7441,16 +7441,16 @@ givelist xst-model-all
 
 @subsubsection occt_draw_8_3_10  listcount
 
-Syntax:     listcount <counter> [<selection> ...]
+Syntax:     listcount \<counter\> [\<selection\> ...]
 
 Prints a list of entities per each type matching the criteria defined by arguments. 
-Optional <i><selection></i> argument, if specified, defines a subset of entities, which are to be taken into account. Argument <i><counter></i>  should be one of the currently defined counters: 
+Optional <i>\<selection\></i> argument, if specified, defines a subset of entities, which are to be taken into account. Argument <i>\<counter\></i>  should be one of the currently defined counters: 
 
-| Counter |	Operation |
-| :----- | :------ |
-| xst-types	| Calculates how many entities of each OCCT type exist |
-| iges-types	| Calculates how many entities of each IGES type and form exist |
-| iges-levels	| Calculates how many entities lie in different IGES levels |
+| Counter     | Operation |
+| :-----      | :------   |
+| xst-types   | Calculates how many entities of each OCCT type exist |
+| iges-types  | Calculates how many entities of each IGES type and form exist |
+| iges-levels | Calculates how many entities lie in different IGES levels |
 
 **Example:**
 ~~~~~
@@ -7496,7 +7496,7 @@ param [<parameter>] [<value>]
 
 This command is used to manage translation parameters. 
 Command without arguments gives a full list of parameters with current values. 
-Command with <i><parameter></i> (without <i><value></i>) gives us the current value of this parameter and all possible values for it. Command with <i><value></i> sets this new value to <i><parameter></i>.
+Command with <i>\<parameter\></i> (without <i><value></i>) gives us the current value of this parameter and all possible values for it. Command with <i><value></i> sets this new value to <i>\<parameter\></i>.
 
 **Example:**
 
@@ -7565,19 +7565,19 @@ tpstat [*|?]<symbol> [<selection>]
 ~~~~~
 
 
-Provides all statistics on the last transfer, including a list of transferred entities with mapping from IGES or STEP to OCCT types, as well as fail and warning messages. The parameter <i><symbol></i> defines what information will be printed: 
+Provides all statistics on the last transfer, including a list of transferred entities with mapping from IGES or STEP to OCCT types, as well as fail and warning messages. The parameter <i>\<symbol\></i> defines what information will be printed: 
 
-* *g*	- General statistics (a list of results and messages)
-* *c*	- Count of all warning and fail messages
-* *C*	- List of all warning and fail messages
-* *f*	- Count of all fail messages
-* *F*	- List of all fail messages
-* *n*	- List of all transferred roots
-* *s*	- The same, with types of source entity and the type of result
-* *b*	- The same, with messages
-* *t*	- Count of roots for geometrical types
-* *r*	- Count of roots for topological types
-* *l*	- The same, with the type of the source entity
+* *g* - General statistics (a list of results and messages)
+* *c* - Count of all warning and fail messages
+* *C* - List of all warning and fail messages
+* *f* - Count of all fail messages
+* *F* - List of all fail messages
+* *n* - List of all transferred roots
+* *s* - The same, with types of source entity and the type of result
+* *b* - The same, with messages
+* *t* - Count of roots for geometrical types
+* *r* - Count of roots for topological types
+* *l* - The same, with the type of the source entity
 
 The sign \* before parameters *n, s, b, t, r* makes it work on all entities (not only on roots).
 
@@ -7807,7 +7807,7 @@ XWdump <document> <filename>
 ~~~~~
 
 Saves the contents of the viewer window as an image (XWD, png or BMP file). 
-<i><filename></i> must have a corresponding extention. 
+<i>\<filename\></i> must have a corresponding extention. 
 
 **Example:**
 ~~~~~
@@ -8331,7 +8331,7 @@ XSetLayer XSetLayer <document> {<shape>|<label>} <layer> [shape_in_one_layer {0|
 ~~~~~
  
 Sets a reference between a shape and a layer (adds a layer if it is necessary). 
-Parameter <i><shape_in_one_layer></i> shows whether a shape could be in a number of layers or only in one (0 by default). 
+Parameter <i>\<shape_in_one_layer\></i> shows whether a shape could be in a number of layers or only in one (0 by default). 
 
 **Example:**
 ~~~~~
@@ -8573,7 +8573,7 @@ Syntax:
 checkoverlapedges <edge1> <edge2> [<toler> <domaindist>]
 ~~~~~
 
-Checks the overlapping of two given edges. If the distance between two edges is less than the given value of tolerance then edges are overlapped. Parameter <domaindist> sets length of part of edges on which edges are overlapped. 
+Checks the overlapping of two given edges. If the distance between two edges is less than the given value of tolerance then edges are overlapped. Parameter \<domaindist\> sets length of part of edges on which edges are overlapped. 
 
 **Example:**
 ~~~~~
@@ -8609,7 +8609,7 @@ convtorevol <result> <shape>
 ~~~~~
 
 Converts all elementary surfaces of a given shape into surfaces of revolution. 
-Results are put into the shape, which is given as the <i><result></i> parameter. 
+Results are put into the shape, which is given as the <i>\<result\></i> parameter. 
 
 **Example:**
 ~~~~~
@@ -8667,7 +8667,7 @@ Syntax:
 fixsmalledges <result> <shape> [<toler> <mode> <maxangle>]
 ~~~~~
 
-Searches at least one small edge at a given shape. If such edges have been found, then small edges are merged with a given tolerance. If parameter <i><mode></i> is equal to *Standard_True* (can be given any values, except 2), then  small edges, which can not be merged, are removed, otherwise they are to be kept (*Standard_False* is used by default). Parameter <i><maxangle></i> sets a maximum possible angle for merging two adjacent edges, by default no limit angle is applied (-1). Results are put into the shape, which is given as parameter result. 
+Searches at least one small edge at a given shape. If such edges have been found, then small edges are merged with a given tolerance. If parameter <i>\<mode\></i> is equal to *Standard_True* (can be given any values, except 2), then  small edges, which can not be merged, are removed, otherwise they are to be kept (*Standard_False* is used by default). Parameter <i>\<maxangle\></i> sets a maximum possible angle for merging two adjacent edges, by default no limit angle is applied (-1). Results are put into the shape, which is given as parameter result. 
 
 **Example:**
 ~~~~~
@@ -8681,22 +8681,22 @@ Syntax:
 fixshape <result> <shape> [<preci> [<maxpreci>]] [{switches}]
 ~~~~~
 
-Performs fixes of all sub-shapes (such as *Solids*, *Shells*, *Faces*, *Wires* and *Edges*) of a given shape. Parameter <i><preci></i> sets a basic precision value, <i><maxpreci></i> sets the maximal allowed tolerance. Results are put into the shape, which is given as parameter result. <b>{switches}</b> allows to tune parameters of ShapeFix 
+Performs fixes of all sub-shapes (such as *Solids*, *Shells*, *Faces*, *Wires* and *Edges*) of a given shape. Parameter <i>\<preci\></i> sets a basic precision value, <i>\<maxpreci\></i> sets the maximal allowed tolerance. Results are put into the shape, which is given as parameter result. <b>{switches}</b> allows to tune parameters of ShapeFix 
 
 The following syntax is used: 
-* <i><symbol></i> may be
-	 * "-" to set parameter off, 
-	 * "+" to set on or  
-	 * "*" to set default 
-* <i><parameter></i> is identified by  letters: 
-	 * l - FixLackingMode 
-	 * o - FixOrientationMode 
-	 * h - FixShiftedMode 
-	 * m - FixMissingSeamMode 
-	 * d - FixDegeneratedMode 
-	 * s - FixSmallMode 
-	 * i - FixSelfIntersectionMode 
-	 * n - FixNotchedEdgesMode 
+* <i>\<symbol\></i> may be
+  * "-" to set parameter off, 
+  * "+" to set on or  
+  * "*" to set default 
+* <i>\<parameter\></i> is identified by  letters: 
+  * l - FixLackingMode 
+  * o - FixOrientationMode 
+  * h - FixShiftedMode 
+  * m - FixMissingSeamMode 
+  * d - FixDegeneratedMode 
+  * s - FixSmallMode 
+  * i - FixSelfIntersectionMode 
+  * n - FixNotchedEdgesMode 
 For enhanced message output, use switch '+?' 
 
 **Example:**
@@ -8728,7 +8728,7 @@ offset2dcurve <result> <curve> <offset>
 
 **offsetcurve** works with the curve in 3d space, **offset2dcurve** in 2d space. 
 
-Both commands are intended to create a new offset curve by copying the given curve to distance, given by parameter <i><offset></i>. Parameter <i><direction></i> defines direction of the offset curve. It is created as a point. For correct work of these commands the direction of normal of the offset curve must be perpendicular to the plane, the basis curve is located there. Results are put into the curve, which is given as parameter <i><result></i>.  
+Both commands are intended to create a new offset curve by copying the given curve to distance, given by parameter <i>\<offset\></i>. Parameter <i>\<direction\></i> defines direction of the offset curve. It is created as a point. For correct work of these commands the direction of normal of the offset curve must be perpendicular to the plane, the basis curve is located there. Results are put into the curve, which is given as parameter <i>\<result\></i>.  
 
 **Example:**
 ~~~~~
@@ -8777,7 +8777,7 @@ Syntax:
 scaleshape <result> <shape> <scale>
 ~~~~~
 
-Returns a new shape, which is the result of scaling of a given shape with a coefficient equal to the parameter <i><scale></i>. Tolerance is calculated for the  new shape as well.
+Returns a new shape, which is the result of scaling of a given shape with a coefficient equal to the parameter <i>\<scale\></i>. Tolerance is calculated for the  new shape as well.
 
 **Example:**
 ~~~~~
@@ -8806,7 +8806,7 @@ Syntax:
 splitface <result> <face> [u usplit1 usplit2...] [v vsplit1 vsplit2 ...]
 ~~~~~
 
-Splits a given face in parametric space and puts the result into the given parameter <i><result></i>. 
+Splits a given face in parametric space and puts the result into the given parameter <i>\<result\></i>. 
 Returns the status of split face. 
 
 **Example:**
@@ -8845,12 +8845,12 @@ statshape a
 
 @subsubsection occt_draw_9_1_19 tolerance
 
-Syntax:      
+Syntax:
 ~~~~~
 tolerance <shape> [<mode>:D v e f c] [<tolmin> <tolmax>:real]
 ~~~~~
 
-Returns tolerance (maximal, avg and minimal values)  of all given shapes and tolerance of their *Faces*, *Edges* and *Vertices*. If parameter <i><tolmin></i> or <i><tolmax></i> or both of them are given, then sub-shapes are returned as a result of analys of this shape, which satisfy the given tolerances. If a particular value of entity ((**D**)all shapes  (**v**) *vertices* (**e**) *edges* (**f**) *faces* (**c**) *combined* (*faces*)) is given as the second parameter then only this group will be analyzed for tolerance. 
+Returns tolerance (maximal, avg and minimal values)  of all given shapes and tolerance of their *Faces*, *Edges* and *Vertices*. If parameter <i>\<tolmin\></i> or <i>\<tolmax\></i> or both of them are given, then sub-shapes are returned as a result of analys of this shape, which satisfy the given tolerances. If a particular value of entity ((**D**)all shapes  (**v**) *vertices* (**e**) *edges* (**f**) *faces* (**c**) *combined* (*faces*)) is given as the second parameter then only this group will be analyzed for tolerance. 
 
 **Example:**
 ~~~~~
@@ -8971,7 +8971,7 @@ DT_SplitSurface <result> <Surface|GridSurf> <tol> <split(0|1)>
 Divides surface with C1 criterion and returns the result of splitting of a given surface into surface, which is given as parameter result. If the surface has been divided into segments, then each segment is put to an individual result.  This command can correct a given C0 surface at a knot with a given tolerance, if it is impossible, then the given surface is split at that knot. If the last parameter is 1, then 5 knots are added to the given surface, and its surface is split by segments, but this will be performed not for all parametric spaces. 
 
 **Example:** 
-~~~~~    
+~~~~~
 
 ~~~~~
 # split surface with name "su"
@@ -8989,7 +8989,7 @@ DT_SplitSurface res su 0.1 1
 
 @subsubsection occt_draw_9_2_8 DT_ToBspl
 
-Syntax:      
+Syntax:
 ~~~~~
 DT_ToBspl <result> <shape>
 ~~~~~

@@ -1,4 +1,4 @@
-Building with CMake {#dev_guides__building__cmake}
+Building with CMake {#occt_dev_guides__building_cmake}
 ===================
 
 @tableofcontents
@@ -10,10 +10,10 @@ required.
 
 If you are building OCCT from bare sources (as in Git repository), or do some 
 changes affecting CDL files, you need to use WOK to re-generate header files
-and build scripts / projects. See \ref dev_guides__building__wok for instructions.
+and build scripts / projects. See \ref occt_dev_guides__building_wok for instructions.
 
 Before building OCCT, you need to install required third-party libraries; see
-instructions for your platform in @ref dev_guides__building.
+instructions for your platform in @ref occt_dev_guides__building.
 
 ## Decide on location of build and install directories.
 

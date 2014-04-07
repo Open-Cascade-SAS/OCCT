@@ -1,4 +1,4 @@
-OCAF  {#user_guides__ocaf}
+OCAF  {#occt_user_guides__ocaf}
 ========================
 
 @tableofcontents
@@ -410,7 +410,7 @@ If you use a standard file format and you want your new attributes to be stored 
   1. If you place an attribute to a new package, it is desirable (although not mandatory) if your package name starts with letter "T" (transient), for example: attribute *TMyAttributePackage_MyAttribute* in the package *TMyAttributePackage*.
   2. Create a new package with name "P[package name]" (for example *PMyAttributePackage*) with class *PMyAttributePackage_MyAttribute* inside. The new class inherits the *PDF_Attribute* class and contains fields of attributes, which must be saved or retrieved ("P" - persistent).
   3. Create a new package with name "M[package name]" (for example *MMyAttributePackage*) with classes *MMyAttributePackage_MyAttributeRetrievalDriver* and *MMyAttributePackage_MyAttributeStorageDriver* inside. The new classes inherit *MDF_ARDriver* and *MDF_ASDriver* classes respectively and contain the translation functionality: from T... attribute to P... and vice versa (M - middle) (see the realization of the standard attributes).
-  4. M... package must contain *AddStorageDrivers(aDriverSeq : ASDriverHSequence* from MDF) and *AddRetrievalDrivers(aDriverSeq : ASDriverHSequence* from MDF) methods, which append to the given sequence *<aDriverSeq>* of drivers  a sequence of all new attribute drivers (see the previous point), which will be used for the attributes storage/retrieval. 
+  4. M... package must contain *AddStorageDrivers(aDriverSeq : ASDriverHSequence* from MDF) and *AddRetrievalDrivers(aDriverSeq : ASDriverHSequence* from MDF) methods, which append to the given sequence *\<aDriverSeq\>* of drivers  a sequence of all new attribute drivers (see the previous point), which will be used for the attributes storage/retrieval. 
   5 Use the standard schema (*StdSchema* unit) or create a new one to add your P-package and compile it. 
 
 If you use the XML format, do the following: 
@@ -529,7 +529,7 @@ doc = TDocStd_Document::Get(label);
 If in your document you use only standard attributes (from the packages TDF, TDataStd, TNaming, TFunction, TPrsStd and TDocStd), you just do the following steps: 
 
 * In your application class (which inherits class *TDocStd_Application*) implement two methods:
-	+ Formats (TColStd_SequenceOfExtendedString& theFormats), which append to a given sequence <theFormats> your document format string, for example, "NewDocumentFormat" – this string is also set in the document creation command 
+	+ Formats (TColStd_SequenceOfExtendedString& theFormats), which append to a given sequence \<theFormats\> your document format string, for example, "NewDocumentFormat" – this string is also set in the document creation command 
 	+ ResourcesName(), which returns a string with a name of resources file (this file contains a description about the extension of the document, storage/retrieval drivers GUIDs...), for example, "NewFormat" 
 * Create the resource file (with name, for example, "NewFormat") with the following strings:
 
@@ -1010,11 +1010,11 @@ The basic class XmlMDF_ADriver supports errors reporting via the method *WriteMe
 
 @subsection occt_ocaf_9_3 XML Document Structure
 
-Every XML Document has one root element, which may have attributes and contain other nodes. In OCAF XML Documents the root element is named "document" and has attribute "format" with the name of the OCAF Schema used to generate the file. The standard XML format is "XmlOcaf". The following elements are sub-elements of <document> and should be unique entries as its sub-elements, in a specific order. The order is:
+Every XML Document has one root element, which may have attributes and contain other nodes. In OCAF XML Documents the root element is named "document" and has attribute "format" with the name of the OCAF Schema used to generate the file. The standard XML format is "XmlOcaf". The following elements are sub-elements of \<document\> and should be unique entries as its sub-elements, in a specific order. The order is:
 * **Element info** - contains strings identifying the format version and other parameters of the OCAF XML document. Normally, data under the element is used by persistence algorithms to correctly retrieve and initialize an OCAF document. The data also includes a copyright string. 
-* **Element comments** - consists of an unlimited number of <comment> sub-elements containing necessary comment strings. 
+* **Element comments** - consists of an unlimited number of \<comment\> sub-elements containing necessary comment strings. 
 * **Element label** is the root label of the document data structure, with the XML attribute "tag" equal to 0. It contains all the OCAF data (labels, attributes) as tree of XML elements. Every sub-label is identified by a tag (positive integer) defining a unique key for all sub-labels of a label. Every label can contain any number of elements representing OCAF attributes (see OCAF Attributes Representation below).
-* **Element shapes** - contains geometrical and topological entities in BRep format. These entities being referenced by OCAF attributes written under the element <label>. This element is empty if there are no shapes in the document. It is only output if attribute driver XmlMNaming_NamedShapeDriver has been added to drivers table by the DocumentStorageDriver.
+* **Element shapes** - contains geometrical and topological entities in BRep format. These entities being referenced by OCAF attributes written under the element \<label\>. This element is empty if there are no shapes in the document. It is only output if attribute driver XmlMNaming_NamedShapeDriver has been added to drivers table by the DocumentStorageDriver.
 
 ### OCAF Attributes Representation 
 
@@ -1024,7 +1024,7 @@ XML types for OCAF attributes are declared with XML W3C Schema in a few XSD file
 
 ### Example of resulting XML file 
 
-The following example is a sample text from an XML file obtained by storing an OCAF document with two labels (0: and 0:2) and two attributes - TDataStd_Name (on label 0:) and TNaming_NamedShape (on label 0:2). The <shapes> section contents are replaced by an ellipsis. 
+The following example is a sample text from an XML file obtained by storing an OCAF document with two labels (0: and 0:2) and two attributes - TDataStd_Name (on label 0:) and TNaming_NamedShape (on label 0:2). The \<shapes\> section contents are replaced by an ellipsis. 
 
 ~~~~~
 <?xml version="1.0" encoding="UTF-8"?> 
@@ -1049,7 +1049,7 @@ xsi:schemaLocation="http://www.opencascade.org/OCAF/XML http://www.opencascade.o
 </TNaming_NamedShape> 
 </label> 
 </label> 
-<shapes> 
+\<shapes\> 
 ... 
 </shapes> 
 </document> 
@@ -1589,7 +1589,7 @@ MyPackage_Transformation::MyPackage_Transformation():myType(gp_Identity){
 
 @subsection occt_ocaf_11_3  Implementation of typical actions with standard OCAF attributes.
 
-There are four sample files provided in the directory 'OpenCasCade\ros\samples\ocafsamples'. They present typical actions with OCAF services (mainly for newcomers). 
+There are four sample files provided in the directory 'OpenCasCade/ros/samples/ocafsamples'. They present typical actions with OCAF services (mainly for newcomers). 
 The method *Sample()* of each file is not dedicated for execution 'as is', it is rather a set of logical actions using some OCAF services.
 
 ### TDataStd_Sample.cxx
@@ -1629,8 +1629,8 @@ This sample contains template for the following typical actions:
 - getting AIS_InteractiveContext from TPrsStd_AISViewer;
 - adding driver to the map of drivers;
 - getting driver from the map of drivers;
-- setting TNaming_NamedShape to <ShapeLabel>;
-- setting the new  TPrsStd_AISPresentation to <ShapeLabel>;
+- setting TNaming_NamedShape to \<ShapeLabel\>;
+- setting the new  TPrsStd_AISPresentation to \<ShapeLabel\>;
 - displaying;
 - erasing;
 - updating and displaying presentation of the attribute to be displayed;

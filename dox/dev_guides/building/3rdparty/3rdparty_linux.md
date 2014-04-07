@@ -1,4 +1,4 @@
-﻿ Building 3rd-party libraries on Linux {#dev_guides__building_3rdparty_linux}
+﻿ Building 3rd-party libraries on Linux {#occt_dev_guides__building_3rdparty_linux}
 =========
 
 @tableofcontents 

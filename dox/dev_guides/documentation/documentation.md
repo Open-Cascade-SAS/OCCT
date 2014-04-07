@@ -1,4 +1,4 @@
- Documentation System {#dev_guides__documentation}
+ Documentation System {#occt_dev_guides__documentation}
 ======================
 
 @tableofcontents
@@ -40,40 +40,52 @@ See \ref OCCT_DM_SECTION_A_9 for more details on inserting mathematical expressi
 
 @section OCCT_DM_SECTION_2_1 Documentation Generation
 
-Run *gendoc.bat* from OCCT directory to generate all documents defined in *FILES.txt*:
+Run command *gendoc* from command prompt (with OCCT directory as current one) to generate OCCT documentation.
+The synopsis is:
 
-*gendoc.bat* can be started with the following options:
+    gendoc \[-h\] {-refman|-overview} \[-html|-pdf|-chm\] \[-m=<list of modules>|-ug=<list of docs>\] \[-v\] \[-s=<search_mode>\] \[-mathjax=<path>\]
+	
+Here the options are:
 
-  * <i>-html</i>                : Generates HTML files (cannot be used with -pdf);
-  * <i>-pdf</i>                 : Generates PDF files (cannot be used with -html);
-  * <i>-m=\<modules_list\></i>  : Specifies the list of documents to generate. If it is not specified, all files mentioned in *FILES.txt* are processed;
-  * <i>-l=\<document_name\></i> : Specifies the output document title;
-  * <i>-mathjax=\<path\></i>    : Specifies the path to a non-default location of MathJAX;
-  * <i>-h</i>                   : Prints a help message;
-  * <i>-v</i>                   : Toggles the Verbose mode (info on all script actions is shown).
+* Choice of documentation to be generated:
+  * <i>-overview</i>: To generate Overview and User Guides (cannot be used with -refman)
+  * <i>-refman</i>: To generate class Reference Manual (cannot be used with -overview)
 
-If you run the command without arguments (like in the example above) it will generate HTML documentation for all documents defined in *FILES.txt*.
+* Choice of output format:
+  * <i>-html</i>: To generate HTML files (default, cannot be used with -pdf or -chm)
+  * <i>-pdf</i>: To generate PDF files (cannot be used with -refman, -html, or -chm)
+  * <i>-chm</i>: To generate CHM files (cannot be used with -html or -pdf)
+
+* Additional options:
+  * <i>-m=\<modules_list\></i>: List of OCCT modules (separated with comma), for generation of Reference Manual
+  * <i>-ug=\<docs_list\></i>: List of MarkDown documents (separated with comma), to use for generation of Overview / User Guides
+  * <i>-mathjax=\<path\></i>: To use local or alternative copy of MathJax
+  * <i>-s=\<search_mode\></i>: Specifies the Search mode of HTML documents; can be: none | local | server | external
+  * <i>-h</i>: Prints this help message
+  * <i>-v</i>: Enables more verbose output
 
 **Note**
 
-* In case of a PDF output the utility generates a separate PDF file for each document;
-* In case of an HTML output the utility generates a common Table of contents containing references to all documents.
+* In case of PDF output the utility generates a separate PDF file for each document;
+* In case of HTML output the utility generates a common Table of contents containing references to all documents.
+* In case of CHM output single CHM file is generated
+
+**Examples**
 
 To generate the output for a specific document specify the path to the corresponding MarkDown file (paths relative to *dox* sub-folder can be given), for instance:
 
 ~~~~
-    % gendoc.bat -html -m=dev_guides/documentation/documentation.md
+    > gendoc -overview -ug=dev_guides/documentation/documentation.md
 ~~~~
 
-Multiple files can be separated with commas:
+To generate Reference Manual for the whole Open CASCADE Technology library, run: 
 ~~~~
-    % gendoc.bat -html -m=MD_FILE_1,MD_FILE_2
+    > gendoc -refman
 ~~~~
 
-Use quotes to specify an article name with <i>-l</i> option, which helps to prevent incorrect interpretation of white spaces:
-
+To generate Reference Manual for Foundation Classes and Modeling Data modules only, with search option, run:
 ~~~~
-    % gendoc.bat -pdf -m=MD_FILE_1 -l="Label of MD_FILE_1 document"
+    > gendoc -refman -m=FoundationClasses,ModelingData,ModelingAlgorithms -s=local
 ~~~~
 
 @section  OCCT_DM_SECTION_3 Documentation Conventions

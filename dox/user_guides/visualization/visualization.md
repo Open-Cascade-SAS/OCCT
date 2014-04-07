@@ -1,4 +1,4 @@
-Visualization    {#user_guides__visualization}
+Visualization    {#occt_user_guides__visualization}
 ========================
 @tableofcontents 
 
@@ -1061,12 +1061,12 @@ For the presentation of planes and trihedra, the default  unit of length is mill
 
 @subsubsection occt_visu_3_5_2 Objects 
 
-*AIS_Shape* has three visualization modes :  
+*AIS_Shape* has three visualization modes :
   * mode 0 : Line (default mode) 
   * mode 1 : Shading (depending on the type of shape) 
   * mode 2 : Bounding Box 
 
-And at maximum seven selection modes, depending on the shape complexity:  
+And at maximum seven selection modes, depending on the shape complexity:
   * mode 0 : selection of the *AIS_Shape*; 
   * mode 1 : selection of the vertices; 
   * mode 2 : selection of the edges; 
@@ -1075,13 +1075,13 @@ And at maximum seven selection modes, depending on the shape complexity:
   * mode 5 : selection of the shells; 
   * mode 6 : selection of the constituent solids. 
 
-* *AIS_Triangulation* is a simple interactive object for displaying  triangular mesh contained in *Poly_Triangulation* container. 
-* *AIS_ConnectedInteractive* is an Interactive Object connecting to  another interactive object reference, and located elsewhere in the viewer makes  it possible not to calculate presentation and selection, but to deduce them  from your object reference.  
-* *AIS_ConnectedShape* is an object connected to interactive objects  having a shape; this class has the same decompositions as *AIS_Shape*. What’s  more, it allows a presentation of hidden parts, which are calculated  automatically from the shape of its reference.  
-* *AIS_MultipleConnectedInteractive* is an object connected to a list  of interactive objects (which can also be Connected objects. It does not  require memory hungry calculations of presentation) 
-* *AIS_MultipleConnectedShape* is an interactive Object connected to  a list of interactive objects having a Shape <i>(AIS_Shape, AIS_ConnectedShape,  AIS_MultipleConnectedShape)</i>. The presentation of hidden parts is calculated  automatically.  
-* *AIS_TexturedShape* is an Interactive Object that supports texture  mapping. It is constructed as a usual AIS_Shape, but has additional methods  that allow to map a texture on it. 
-* *MeshVS_Mesh* is an Interactive Object that represents meshes, it  has a data source that provides geometrical information (nodes, elements) and  can be built up from the source data with a custom presentation builder. 
+  * *AIS_Triangulation* is a simple interactive object for displaying  triangular mesh contained in *Poly_Triangulation* container. 
+  * *AIS_ConnectedInteractive* is an Interactive Object connecting to  another interactive object reference, and located elsewhere in the viewer makes  it possible not to calculate presentation and selection, but to deduce them  from your object reference.  
+  * *AIS_ConnectedShape* is an object connected to interactive objects  having a shape; this class has the same decompositions as *AIS_Shape*. What’s  more, it allows a presentation of hidden parts, which are calculated  automatically from the shape of its reference.  
+  * *AIS_MultipleConnectedInteractive* is an object connected to a list  of interactive objects (which can also be Connected objects. It does not  require memory hungry calculations of presentation) 
+  * *AIS_MultipleConnectedShape* is an interactive Object connected to  a list of interactive objects having a Shape <i>(AIS_Shape, AIS_ConnectedShape,  AIS_MultipleConnectedShape)</i>. The presentation of hidden parts is calculated  automatically.  
+  * *AIS_TexturedShape* is an Interactive Object that supports texture  mapping. It is constructed as a usual AIS_Shape, but has additional methods  that allow to map a texture on it. 
+  * *MeshVS_Mesh* is an Interactive Object that represents meshes, it  has a data source that provides geometrical information (nodes, elements) and  can be built up from the source data with a custom presentation builder. 
 
 @subsubsection occt_visu_3_5_3 Relations 
   * *AIS_ConcentricRelation* 

@@ -1,4 +1,4 @@
-Voxel Package {#occt_voxels_wp}
+Voxel Package {#occt_user_guides__voxels_wp}
 ========================
 
 @tableofcontents 
@@ -72,8 +72,8 @@ In these images a boundary representation is displayed to the  left.  In the cen
 ### Boolean operations 
 
 Fusion and cutting of two cubes of voxels are performed the class *Voxel_BooleanOperations*.   The cubes should have the same size and be split into voxels in the same way.
-* <i>::Fuse()</i> summarizes the values of the corresponding  voxels and limits the result by the upper limit (if succeeded).  
-* <i>::Cut()</i> subtracts the values of the corresponding  voxels and limits the result by zero.  
+* <i>\::Fuse()</i> summarizes the values of the corresponding  voxels and limits the result by the upper limit (if succeeded).  
+* <i>\::Cut()</i> subtracts the values of the corresponding  voxels and limits the result by zero.  
 
 ### Voxelization 
 

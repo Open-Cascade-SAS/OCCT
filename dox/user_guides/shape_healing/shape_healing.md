@@ -1,4 +1,4 @@
-Shape Healing  {#user_guides__shape_healing}
+Shape Healing  {#occt_user_guides__shape_healing}
 ===================
 
 @tableofcontents
@@ -1434,10 +1434,10 @@ Standard_Real maxdist = ConvSurf.Gap();
 ~~~~~
 
 @section occt_shg_5_ Auxiliary tools for repairing, analysis and upgrading
-. 
+
 @subsection occt_shg_5_1 Tool for rebuilding shapes
 
-*ShapeBuild_ReShape* rebuilds a shape by making pre-defined substitutions on some of its components. During the first phase, it records requests to replace or remove some individual shapes. For each shape, the last given request is recorded. Requests may be applied as *Oriented* (i.e. only to an item with the same orientation) or not (the orientation of the replacing shape corresponds to that of the original one). Then these requests may be applied to any shape, which may contain one or more of these individual shapes. 
+  Class *ShapeBuild_ReShape* rebuilds a shape by making pre-defined substitutions on some of its components. During the first phase, it records requests to replace or remove some individual shapes. For each shape, the last given request is recorded. Requests may be applied as *Oriented* (i.e. only to an item with the same orientation) or not (the orientation of the replacing shape corresponds to that of the original one). Then these requests may be applied to any shape, which may contain one or more of these individual shapes. 
 
 This tool has a flag for taking the location of shapes into account (for keeping the structure of assemblies) (*ModeConsiderLocation*). If this mode is equal to Standard_True, the shared shapes with locations will be kept. If this mode is equal to Standard_False, some different shapes will be produced from one shape with different locations after rebuilding. By default, this mode is equal to Standard_False. 
 

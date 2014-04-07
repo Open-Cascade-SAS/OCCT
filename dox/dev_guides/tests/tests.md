@@ -1,4 +1,4 @@
- Automated Testing System  {#dev_guides__tests}
+ Automated Testing System  {#occt_dev_guides__tests}
 ======================================
 
 @tableofcontents
@@ -11,7 +11,7 @@ Reading the Introduction is sufficient for OCCT developers to use the test syste
 
 @subsection testmanual_1_1 Basic Information
 
-OCCT automatic testing system is organized around DRAW Test Harness @ref user_guides__test_harness "DRAW Test Harness", a console application based on Tcl (a scripting language) interpreter extended by OCCT-related commands.
+OCCT automatic testing system is organized around DRAW Test Harness @ref occt_user_guides__test_harness "DRAW Test Harness", a console application based on Tcl (a scripting language) interpreter extended by OCCT-related commands.
 
 Standard OCCT tests are included with OCCT sources and are located in subdirectory *tests* of the OCCT root folder. Other test folders can be included in the test system, e.g. for testing applications based on OCCT.
 
@@ -631,12 +631,12 @@ testdiff dir1 dir2 [groupname [gridname]] [options...]
 Here *dir1* and *dir2* are directories containing logs of two test runs.
 
 Possible options are:
-* <i>-save <filename> </i> - saves the resulting log in a specified file (<i>$dir1/diff-$dir2.log</i> by default). HTML log is saved with the same name and extension .html;
+* <i>-save \<filename\> </i> - saves the resulting log in a specified file (<i>$dir1/diff-$dir2.log</i> by default). HTML log is saved with the same name and extension .html;
 * <i>-status {same|ok|all}</i> - allows filtering compared cases by their status:
 	* *same* - only cases with same status are compared (default);
 	* *ok*   - only cases with OK status in both logs are compared;
 	* *all*  - results are compared regardless of status;
-* <i>-verbose <level> </i> - defines the scope of output data:
+* <i>-verbose \<level\> </i> - defines the scope of output data:
 	* 1 - outputs only differences;
 	* 2 - additionally outputs the list of logs and directories present in one of directories only;
 	* 3 - (by default) additionally outputs progress messages;

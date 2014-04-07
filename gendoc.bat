@@ -10,5 +10,5 @@ if exist "%~dp0env.bat" (
   call "%~dp0env.bat"
 )
 
-tclsh.exe %~dp0dox/start.tcl  %*
+tclsh.exe %~dp0adm/start.tcl  %*
 SET "PATH=%OLD_PATH%"

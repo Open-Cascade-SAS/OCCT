@@ -1,4 +1,4 @@
-Building with MS Visual C++ {#dev_guides__building__msvc}
+Building with MS Visual C++ {#occt_dev_guides__building_msvc}
 ===========================
 
 This file describes steps to build OCCT libraries from complete source
@@ -6,10 +6,10 @@ archive on Windows with MS Visual C++.
 
 If you are building OCCT from bare sources (as in Git repository), or do some 
 changes affecting CDL files, you need to use WOK to re-generate header files
-and build scripts / projects. See \ref dev_guides__building__wok for instructions.
+and build scripts / projects. See \ref occt_dev_guides__building_wok for instructions.
 
 Before building OCCT, you need to install required third-party libraries; see
-paragraph 1 of \ref dev_guides__building for instructions.
+paragraph 1 of \ref occt_dev_guides__building for instructions.
 
 1. Edit file custom.bat to define environment: 
 

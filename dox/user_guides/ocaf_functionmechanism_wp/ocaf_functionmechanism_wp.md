@@ -1,4 +1,4 @@
-OCAF Function Mechanism  {#occt_ocaf_functionmechanism_wp}
+OCAF Function Mechanism  {#occt_user_guides__ocaf_functionmechanism_wp}
 ========================
 
 @tableofcontents
@@ -131,8 +131,8 @@ To automatically erase the nail from the viewer and the data  tree it is enough 
   The  only thing the Function Mechanism requires from its user 
   is the implementation  of pure virtual methods of *TFunction_Driver*:  
   
-  * <i>::Arguments()</i> – returns a list of arguments for the  function  
-  * <i>::Results()</i> – returns a list of results of the function  
+  * <i>\::Arguments()</i> – returns a list of arguments for the  function  
+  * <i>\::Results()</i> – returns a list of results of the function  
   
   These methods give the Function Mechanism the information on the location of arguments 
   and results of the function and allow building a  graph of functions. 
@@ -140,7 +140,7 @@ To automatically erase the nail from the viewer and the data  tree it is enough 
   
   The pure virtual method *TFunction_Driver::Execute()* calculating the function should be overridden.  
   
-  The method <i>::MustExecute()</i> calls the method <i>::Arguments()</i>  of the function driver 
+  The method <i>\::MustExecute()</i> calls the method <i>\::Arguments()</i>  of the function driver 
   and ideally this information (knowledge of modification  of arguments of the function) is enough
   to make a decision whether the function  should be executed or not. Therefore, this method usually shouldn’t be  overridden.  
 
@@ -150,10 +150,10 @@ To automatically erase the nail from the viewer and the data  tree it is enough 
   It means that it is possible to create a base class – function driver for the three functions, 
   and two descendent classes producing:  a cone or a cylinder.  
   
-  For the base function driver the methods <i>::Arguments()</i>  and <i>::Results()</i> will be overridden. 
-  Two descendent function drivers responsible for creation of a cone and a cylinder will override only the method  <i>::Execute()</i>. 
+  For the base function driver the methods <i>\::Arguments()</i>  and <i>\::Results()</i> will be overridden. 
+  Two descendent function drivers responsible for creation of a cone and a cylinder will override only the method  <i>\::Execute()</i>. 
   
-  The method <i>::Arguments()</i> of the function driver of the nail returns the results of the functions located under it in the tree of  leaves.   The method <i>::Execute()</i> just collects the  results of the functions and makes one shape – a nail. 
+  The method <i>\::Arguments()</i> of the function driver of the nail returns the results of the functions located under it in the tree of  leaves.   The method <i>\::Execute()</i> just collects the  results of the functions and makes one shape – a nail. 
   
   This way the data model using the Function Mechanism is  ready for usage.   Do not forget to introduce the function drivers for a function  driver table with the help of *TFunction_DriverTable* class.
 
@@ -205,7 +205,7 @@ To automatically erase the nail from the viewer and the data  tree it is enough 
 
 @section occt_ocaf_functionmechanism_wp_6 Appendix 2
 
-  This appendix gives an example of the code for a cylinder function driver.   In order to make the things clearer, the methods <i>::Arguments()</i>  and <i>::Results()</i>  from the base class are also mentioned.   
+  This appendix gives an example of the code for a cylinder function driver.   In order to make the things clearer, the methods <i>\::Arguments()</i>  and <i>\::Results()</i>  from the base class are also mentioned.   
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
 

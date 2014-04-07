@@ -1,11 +1,11 @@
-Using WOK {#dev_guides__building__wok}
+Using WOK {#occt_dev_guides__building_wok}
 =========
 
 @tableofcontents
 
-\ref dev_guides__wok "WOK" is a legacy build environment for Open CASCADE Technology. 
+\ref occt_dev_guides__wok "WOK" is a legacy build environment for Open CASCADE Technology. 
 It is required for generation of header files for classes defined with 
-@ref dev_guides__cdl "CDL" ("Cascade Definition Language"). 
+@ref occt_dev_guides__cdl "CDL" ("Cascade Definition Language"). 
 Also tools for generation of project files for other build systems, and OCCT 
 documentation, are integrated to WOK.
 

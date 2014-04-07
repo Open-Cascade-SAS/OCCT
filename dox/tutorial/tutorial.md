@@ -1,4 +1,4 @@
- Tutorial {#tutorial}
+ Tutorial {#occt__tutorial}
 =======
 
 @tableofcontents
@@ -52,7 +52,7 @@ This modeling requires four steps:
 
 To create the bottle's profile, you first create characteristic points with their coordinates as shown below in the (XOY) plane. These points will be the supports that define the geometry of the profile.
 
-@figure{/tutorial/images/tutorial_image003.svg}
+@figure{tutorial/images/tutorial_image003.svg}
 
 There are two classes to describe a 3D Cartesian point from its X, Y and Z coordinates in Open CASCADE Technology:
 

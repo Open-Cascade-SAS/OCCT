@@ -1,4 +1,4 @@
-Building with Xcode {#dev_guides__building__xcode}
+Building with Xcode {#occt_dev_guides__building_xcode}
 ===================
 
 This file describes steps to build OCCT libraries from complete source package
@@ -6,10 +6,10 @@ on Mac OS X with Xcode.
 
 If you are building OCCT from bare sources (as in Git repository), or do some 
 changes affecting CDL files, you need to use WOK to re-generate header files
-and build scripts / projects. See \ref dev_guides__building__wok for instructions.
+and build scripts / projects. See \ref occt_dev_guides__building_wok for instructions.
 
 Before building OCCT, you need to install required third-party libraries; see
-paragraph 1 of \ref dev_guides__building for details.
+paragraph 1 of \ref occt_dev_guides__building for details.
 
 1. Add paths to the mandatory 3rd-party products (Tcl/Tk and FreeType) 
    in file custom.sh located in \<OCCT_ROOT_DIR\>. For this:

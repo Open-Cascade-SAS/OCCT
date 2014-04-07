@@ -1,4 +1,4 @@
-OCAF White-Paper {#ocaf_wp}
+OCAF White-Paper {#occt_user_guides__ocaf_wp}
 ========================
  @tableofcontents 
  
@@ -83,7 +83,7 @@ OCAF uses other modules of Open CASCADE Technology — the Shape attribute is im
   * Ready-to-use  functions such as :
     * Undo-redo;  
     * Save and open application data.  
-	
+ 
   Finally, you  develop the application's graphical user interface using the toolkit of your  choice, for example:
   * KDE Qt or  GNOME GTK+ on Linux;
   * Microsoft  Foundation Classes (MFC) on Windows Motif on Sun;
@@ -126,7 +126,7 @@ OCAF uses other modules of Open CASCADE Technology — the Shape attribute is im
   In order to maintain the attachment of application data, the geometry must be  distinguished from other data.  
    
   In OCAF, the data are reference-key driven. It is a  uniform model in which reference-keys 
-  are the persistent identification of  data. All *accessible </b>*data, including the geometry, 
+  are the persistent identification of  data. All *accessible* data, including the geometry, 
   are implemented as attributes attached to reference-keys. 
   The geometry becomes the  value of the Shape attribute, just as a number is the value 
   of the Integer and  Real attributes and a string that of the Name attribute.  
@@ -245,7 +245,7 @@ OCAF uses other modules of Open CASCADE Technology — the Shape attribute is im
   the referencing and  referenced documents being saved in two separate files.  
  
   Lets look at the coffee machine application again. The  coffee pot can be placed in one document. 
-  The coffee machine document then  includes an *occurrence </b>*— a positioned copy — of the coffee pot. 
+  The coffee machine document then  includes an *occurrence* — a positioned copy — of the coffee pot. 
   This occurrence is defined by an XLink attribute (the external Link) 
   which references the coffee pot of the first document 
   (the XLink contains the relative path of the coffee pot document and the entry of the coffee pot data [0:1] ).  
@@ -282,13 +282,13 @@ OCAF uses other modules of Open CASCADE Technology — the Shape attribute is im
   During a transaction, attributes are copied before  their first modification. 
   If the transaction is validated, the copy is  destroyed. 
   If the transaction is abandoned, the attribute is restored to its initial value 
-  (when attributes are added or deleted, the operation is simply  reversed).  
- 
+  (when attributes are added or deleted, the operation is simply  reversed).
+
   Transactions are document-centered, that is, the application starts a transaction on a document. 
   So, modifying a referenced  document and updating one of its referencing documents requires 
-  two transactions, even if both operations are done in the same working session.  
+  two transactions, even if both operations are done in the same working session.
 
-@subsection 2.3 Persistent  Data Storage
+@subsection ocaf_wp_2_3 Persistent  Data Storage
 
   In OCAF, persistence, that is, the mechanism used to  save a document in a file, 
   is based on an explicit formal description of the  data saved.  
@@ -324,8 +324,8 @@ OCAF uses other modules of Open CASCADE Technology — the Shape attribute is im
   * To implement  the functions converting these persistent attribute to and from the application  data model.
   
 Applications using compound documents extensively (saving data in many files linked together) should implement data management services. As a matter of fact, it's out the scope of OCAF to provide functions such as:
-*	Version and configuration management of compound documents;
-*	Querying a referenced document for its referencing documents.
+* Version and configuration management of compound documents;
+* Querying a referenced document for its referencing documents.
 
 In order to ease the delegation of document management to a data management application, OCAF encapsulates the file management functions in a driver (the meta-data driver). You have to implement this driver for your application to communicate with the data management system of your choice.
 
