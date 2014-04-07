@@ -18,53 +18,53 @@
 
 #include <OSD_PerfMeter.h>
 
-//  This  class enables measuring  the CPU  time between  two points  of code
-//  execution,  regardless of the scope of these points of code.   A meter is
-//  identified by its name (string  of chars). So multiple objects in various
-//  places of  user code may  point to the  same meter.  The results  will be
-//  printed  on  stdout  upon  finish   of  the  program.   For  details  see
-//  OSD_PerfMeter.h
+//! This class enables measuring the CPU time between two points of code execution, regardless of the scope of these points of code.
+//! A meter is identified by its name (string). So multiple objects in various places of user code may point to the same meter.
+//! The results will be printed on stdout upon finish of the program.
+//! For details see OSD_PerfMeter.h
+class OSD_PerfMeter
+{
 
-class OSD_PerfMeter {
+public:
 
- public:
-  // ---------- PUBLIC METHODS ----------
+  //! Constructs a void meter (to further call Init and Start)
+  OSD_PerfMeter() : myIMeter(-1) {}
 
-  OSD_PerfMeter () : myIMeter(-1) {}
-  // constructs a void meter (to further call Init and Start)
-
-  OSD_PerfMeter (const char* meter, const unsigned autoStart = 1)
-    : myIMeter(perf_get_meter(meter,0,0)) {
-      if (myIMeter < 0) myIMeter = perf_init_meter(meter);
-      if (autoStart) Start();
-    }
-  // constructs and starts (if autoStart is true) the named meter
-
-  void Init (const char* meter) {
-    myIMeter = perf_get_meter(meter,0,0);
-    if (myIMeter < 0) myIMeter = perf_init_meter(meter);
+  //! Constructs and starts (if autoStart is true) the named meter
+  OSD_PerfMeter (const char* theMeter,
+                 const bool  theToAutoStart = true)
+  : myIMeter (perf_get_meter (theMeter, 0, 0))
+  {
+    if (myIMeter < 0) myIMeter = perf_init_meter (theMeter);
+    if (theToAutoStart) Start();
   }
-  // prepares the named meter
 
-  void Start    () const { perf_start_imeter(myIMeter); }
-  // starts the meter
+  //! Prepares the named meter
+  void Init (const char* theMeter)
+  {
+    myIMeter = perf_get_meter (theMeter, 0, 0);
+    if (myIMeter < 0) myIMeter = perf_init_meter (theMeter);
+  }
 
-  void Stop     () const { perf_stop_imeter(myIMeter); }
-  // stops the meter
+  //! Starts the meter
+  void Start() const { perf_start_imeter(myIMeter); }
 
-  void Tick     () const { perf_tick_imeter(myIMeter); }
-  // increments the counter w/o time measurement
+  //! Stops the meter
+  void Stop() const { perf_stop_imeter(myIMeter); }
 
-  void Flush    () const { perf_close_imeter(myIMeter); }
-  // outputs the meter data and resets it to initial state
+  //! Increments the counter w/o time measurement
+  void Tick() const { perf_tick_imeter(myIMeter); }
 
-  virtual ~OSD_PerfMeter () { if (myIMeter >= 0) Stop(); }
-  // assures stopping upon destruction
+  //! Outputs the meter data and resets it to initial state
+  void Flush() const { perf_close_imeter(myIMeter); }
 
- protected:
-  // ---------- PROTECTED FIELDS ----------
+  //! Assures stopping upon destruction
+  virtual ~OSD_PerfMeter() { if (myIMeter >= 0) Stop(); }
+
+protected:
 
   int myIMeter;
+
 };
 
-#endif
+#endif // OSD_PerfMeter_HeaderFile
