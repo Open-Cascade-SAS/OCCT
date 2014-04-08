@@ -16,8 +16,6 @@
 
 -- Updated      J.P. TIRAULT, M. MERCIEN Nov,25 1992
 --              Adding classes 
---               - Array1Descriptor
---               - Array2Descriptor
 --               - Array1
 --               - Array2
 -- Updated      R.LEQUETTE Jan 1993
@@ -46,13 +44,9 @@ is
 
     class HExtendedString;
     
-    deferred class Array1Descriptor;
-    
     generic class Array1;
 
     generic class HArray1;
-   
-    deferred class Array2Descriptor;
     
     generic class Array2;
     
