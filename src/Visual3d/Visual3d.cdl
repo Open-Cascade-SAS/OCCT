@@ -268,22 +268,20 @@ is
 
         imported NListOfLayerItem;
     
-    class SetOfLight instantiates
-            Set from TCollection (Light from Visual3d);
+    class SequenceOfLight instantiates
+            Sequence from TCollection (Light from Visual3d);
     ---Category: Instantiated classes
 
-    class HSetOfLight instantiates
-            HSet from TCollection
-            (Light from Visual3d, SetOfLight);
+    class HSequenceOfLight instantiates
+            HSequence from TCollection (Light from Visual3d, SequenceOfLight);
     ---Category: Instantiated classes
 
-    class SetOfView instantiates
-            Set from TCollection (View from Visual3d);
+    class SequenceOfView instantiates
+            Sequence from TCollection (View from Visual3d);
     ---Category: Instantiated classes
 
-    class HSetOfView instantiates
-            HSet from TCollection
-            (View from Visual3d, SetOfView);
+    class HSequenceOfView instantiates
+            HSequence from TCollection (View from Visual3d, SequenceOfView);
     ---Category: Instantiated classes
 
 end Visual3d;

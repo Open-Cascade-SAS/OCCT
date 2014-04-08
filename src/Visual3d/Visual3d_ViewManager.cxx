@@ -67,7 +67,6 @@
 #include <Graphic3d_MapOfStructure.hxx>
 #include <Graphic3d_MapIteratorOfMapOfStructure.hxx>
 
-#include <Visual3d_SetIteratorOfSetOfView.hxx>
 
 #if defined (_WIN32) || defined(__WIN32__)
 # include <WNT_Window.hxx>
@@ -82,7 +81,7 @@
 //-Global data definitions
 
 //	-- les vues definies
-//	MyDefinedView		:	SetOfView;
+//	MyDefinedView		:	SequenceOfView;
 
 //	-- le generateur d'identificateurs de vues
 //	MyViewGenId		: 	GenId;
@@ -142,28 +141,23 @@ void Visual3d_ViewManager::Remove () {
   MyDefinedView.Clear();
 }
 
-void Visual3d_ViewManager::ChangeDisplayPriority (const Handle(Graphic3d_Structure)& AStructure, const Standard_Integer OldPriority, const Standard_Integer NewPriority) {
+void Visual3d_ViewManager::ChangeDisplayPriority (const Handle(Graphic3d_Structure)& AStructure, const Standard_Integer OldPriority, const Standard_Integer NewPriority)
+{
 
 #ifdef TRACE
-	cout << "Visual3d_ViewManager::ChangeDisplayPriority ("
-	     << AStructure->Identification ()
-	     << ", " << OldPriority << ", " << NewPriority << ")\n";
-	cout << flush;
+  cout << "Visual3d_ViewManager::ChangeDisplayPriority ("
+    << AStructure->Identification ()
+    << ", " << OldPriority << ", " << NewPriority << ")\n";
+  cout << flush;
 #endif
 
-	//
-	// Change structure priority in all defined views
-	//
-	Visual3d_SetIteratorOfSetOfView MyIterator(MyDefinedView);
-
-	while (MyIterator.More ()) {
-		(MyIterator.Value ())->ChangeDisplayPriority
-			(AStructure, OldPriority, NewPriority);
-
-		// MyIterator.Next () is located on the next view
-		MyIterator.Next ();
-	}
-
+  //
+  // Change structure priority in all defined views
+  //
+  for(int i=1; i<=MyDefinedView.Length(); i++)
+  {
+    (MyDefinedView.Value(i))->ChangeDisplayPriority(AStructure, OldPriority, NewPriority);
+  }
 }
 
 void Visual3d_ViewManager::ReCompute (const Handle(Graphic3d_Structure)& AStructure) {
@@ -180,15 +174,10 @@ void Visual3d_ViewManager::ReCompute (const Handle(Graphic3d_Structure)& AStruct
   //
   // Recompute structure in all activated views
   //
-  Visual3d_SetIteratorOfSetOfView MyIterator(MyDefinedView);
-
-  while (MyIterator.More ()) {
-    (MyIterator.Value ())->ReCompute (AStructure);
-
-    // MyIterator.Next () is located on the next view
-    MyIterator.Next ();
+  for(int i=1; i<=MyDefinedView.Length(); i++)
+  {
+    (MyDefinedView.Value(i))->ReCompute(AStructure);
   }
-
 }
 
 void Visual3d_ViewManager::ReCompute (const Handle(Graphic3d_Structure)& AStructure,
@@ -213,106 +202,71 @@ void Visual3d_ViewManager::ReCompute (const Handle(Graphic3d_Structure)& AStruct
   //
   // Recompute structure in all activated views
   //
-  Visual3d_SetIteratorOfSetOfView MyIterator(MyDefinedView);
-
-  while (MyIterator.More ()) {
-    if ((MyIterator.Value ())->Identification () == ViewId)
+  for(int i=1; i<=MyDefinedView.Length(); i++)
+  {
+    if ((MyDefinedView.Value(i))->Identification () == ViewId)
+    {
       theView->ReCompute (AStructure);
-
-    // MyIterator.Next () is located on the next view
-    MyIterator.Next ();
+    }
   }
-
 }
 
-void Visual3d_ViewManager::Clear (const Handle(Graphic3d_Structure)& AStructure, const Standard_Boolean WithDestruction) {
-
-	Visual3d_SetIteratorOfSetOfView MyIterator(MyDefinedView);
-
-	while (MyIterator.More ()) {
-		(MyIterator.Value ())->Clear (AStructure, WithDestruction);
-
-		// MyIterator.Next ()  is located on the next view
-		MyIterator.Next ();
-	}
-
+void Visual3d_ViewManager::Clear (const Handle(Graphic3d_Structure)& AStructure, const Standard_Boolean WithDestruction)
+{
+  for(int i=1; i<=MyDefinedView.Length(); i++)
+  {
+    (MyDefinedView.Value(i))->Clear(AStructure, WithDestruction);
+  }
 }
 
-void Visual3d_ViewManager::Connect (const Handle(Graphic3d_Structure)& AMother, const Handle(Graphic3d_Structure)& ADaughter) {
-
-	Visual3d_SetIteratorOfSetOfView MyIterator(MyDefinedView);
-
-	while (MyIterator.More ()) {
-		(MyIterator.Value ())->Connect (AMother, ADaughter);
-
-		// MyIterator.Next ()  is located on the next view
-		MyIterator.Next ();
-	}
-
+void Visual3d_ViewManager::Connect (const Handle(Graphic3d_Structure)& AMother, const Handle(Graphic3d_Structure)& ADaughter)
+{
+  for(int i=1; i<=MyDefinedView.Length(); i++)
+  {
+    (MyDefinedView.Value(i))->Connect (AMother, ADaughter);
+  }
 }
 
-void Visual3d_ViewManager::Disconnect (const Handle(Graphic3d_Structure)& AMother, const Handle(Graphic3d_Structure)& ADaughter) {
-
-	Visual3d_SetIteratorOfSetOfView MyIterator(MyDefinedView);
-
-	while (MyIterator.More ()) {
-		(MyIterator.Value ())->Disconnect (AMother, ADaughter);
-
-		// MyIterator.Next ()  is located on the next view
-		MyIterator.Next ();
-	}
-
+void Visual3d_ViewManager::Disconnect (const Handle(Graphic3d_Structure)& AMother, const Handle(Graphic3d_Structure)& ADaughter)
+{
+  for(int i=1; i<=MyDefinedView.Length(); i++)
+  {
+    (MyDefinedView.Value(i))->Disconnect (AMother, ADaughter);
+  }
 }
 
-void Visual3d_ViewManager::Display (const Handle(Graphic3d_Structure)& AStructure) {
-
-
- // Even if physically the structure cannot
+void Visual3d_ViewManager::Display (const Handle(Graphic3d_Structure)& AStructure)
+{
+  // Even if physically the structure cannot
   // be displayed (pb of visualisation type)
   // it has status Displayed.
 
   MyDisplayedStructure.Add(AStructure);
-
-	//
-	// Display structure in all activated views
-	//
-	Visual3d_SetIteratorOfSetOfView MyIterator(MyDefinedView);
-
-	while (MyIterator.More ()) {
-		(MyIterator.Value ())->Display (AStructure);
-
-		// MyIterator.Next () is located on the next view
-		MyIterator.Next ();
-	}
-
+  
+  for(int i=1; i<=MyDefinedView.Length(); i++)
+  {
+    (MyDefinedView.Value(i))->Display(AStructure);
+  }
 }
 
-void Visual3d_ViewManager::Erase (const Handle(Graphic3d_Structure)& AStructure) {
-
-
-// Even if physically the structure cannot
+void Visual3d_ViewManager::Erase (const Handle(Graphic3d_Structure)& AStructure)
+{
+  // Even if physically the structure cannot
   // be displayed (pb of visualisation type)
   // it has status Displayed.
 
- MyDisplayedStructure.Remove(AStructure);
+  MyDisplayedStructure.Remove(AStructure);
 
+  //
+  // Erase structure in all defined views
+  //
+  for(int i=1; i<=MyDefinedView.Length(); i++)
+  {
+    (MyDefinedView.Value(i))->Erase (AStructure);
+  }
 
-
-	//
-	// Erase structure in all defined views
-	//
-	Visual3d_SetIteratorOfSetOfView MyIterator(MyDefinedView);
-
-	while (MyIterator.More ()) {
-		(MyIterator.Value ())->Erase (AStructure);
-
-		// MyIterator.Next () is located on the next view
-		MyIterator.Next ();
-	}
-
-	MyHighlightedStructure.Remove (AStructure);
-	MyPickStructure.Remove (AStructure);
-
+  MyHighlightedStructure.Remove (AStructure);
+  MyPickStructure.Remove (AStructure);
 }
 
 void Visual3d_ViewManager::Erase () {
@@ -326,35 +280,26 @@ void Visual3d_ViewManager::Erase () {
 
 }
 
-void Visual3d_ViewManager::Highlight (const Handle(Graphic3d_Structure)& AStructure, const Aspect_TypeOfHighlightMethod AMethod) {
-
+void Visual3d_ViewManager::Highlight (const Handle(Graphic3d_Structure)& AStructure, const Aspect_TypeOfHighlightMethod AMethod)
+{
   MyHighlightedStructure.Add(AStructure);
-
-	//
-	// Highlight in all activated views
-	//
-	Visual3d_SetIteratorOfSetOfView MyIterator(MyDefinedView);
-
-	while (MyIterator.More ()) {
-		(MyIterator.Value ())->Highlight (AStructure, AMethod);
-
-		// MyIterator.Next () is located on the next view
-		MyIterator.Next ();
-	}
-
+  
+  //
+  // Highlight in all activated views
+  //
+  
+  for(int i=1; i<=MyDefinedView.Length(); i++)
+  {
+    (MyDefinedView.Value(i))->Highlight (AStructure, AMethod);
+  }
 }
 
-void Visual3d_ViewManager::SetTransform (const Handle(Graphic3d_Structure)& AStructure, const TColStd_Array2OfReal& ATrsf) {
-
-	Visual3d_SetIteratorOfSetOfView MyIterator(MyDefinedView);
-
-	while (MyIterator.More ()) {
-		(MyIterator.Value ())->SetTransform (AStructure, ATrsf);
-
-		// MyIterator.Next () is located on the next view
-		MyIterator.Next ();
-	}
-
+void Visual3d_ViewManager::SetTransform (const Handle(Graphic3d_Structure)& AStructure, const TColStd_Array2OfReal& ATrsf)
+{
+  for(int i=1; i<=MyDefinedView.Length(); i++)
+  {
+    (MyDefinedView.Value(i))->SetTransform (AStructure, ATrsf);
+  }
 }
 
 void Visual3d_ViewManager::UnHighlight () {
@@ -369,29 +314,24 @@ void Visual3d_ViewManager::UnHighlight () {
 
 }
 
-void Visual3d_ViewManager::UnHighlight (const Handle(Graphic3d_Structure)& AStructure) {
-
+void Visual3d_ViewManager::UnHighlight (const Handle(Graphic3d_Structure)& AStructure)
+{
   MyHighlightedStructure.Remove(AStructure);
 
+  //
+  // UnHighlight in all activated views
+  //
 
-	//
-	// UnHighlight in all activated views
-	//
-	Visual3d_SetIteratorOfSetOfView MyIterator(MyDefinedView);
-
-	while (MyIterator.More ()) {
-		(MyIterator.Value ())->UnHighlight (AStructure);
-
-		// MyIterator.Next () is located on the next view
-		MyIterator.Next ();
-	}
-
+  for(int i=1; i<=MyDefinedView.Length(); i++)
+  {
+    (MyDefinedView.Value(i))->UnHighlight (AStructure);
+  }
 }
 
 void Visual3d_ViewManager::Redraw() const
 {
   // redraw all activated views
-  if (MyDefinedView.Extent() == 0)
+  if (MyDefinedView.Length() == 0)
   {
     return;
   }
@@ -401,13 +341,14 @@ void Visual3d_ViewManager::Redraw() const
     Standard_Integer aWidth = 0, aHeight = 0;
     Standard_Integer aWidthMax  = 0;
     Standard_Integer aHeightMax = 0;
-    for (Visual3d_SetIteratorOfSetOfView anIter (MyDefinedView);
-         anIter.More(); anIter.Next())
+
+    for(int i=1; i<=MyDefinedView.Length(); i++)
     {
-      anIter.Value()->Window()->Size (aWidth, aHeight);
+      MyDefinedView.Value(i)->Window()->Size (aWidth, aHeight);
       aWidthMax  = Max (aWidthMax,  aWidth);
       aHeightMax = Max (aHeightMax, aWidth);
     }
+
     if (!MyUnderLayer.IsNull())
     {
       MyUnderLayer->SetViewport (aWidthMax, aHeightMax);
@@ -418,11 +359,10 @@ void Visual3d_ViewManager::Redraw() const
     }
   }
 
-  for (Visual3d_SetIteratorOfSetOfView anIter (MyDefinedView);
-       anIter.More(); anIter.Next())
+  for(int i=1; i<=MyDefinedView.Length(); i++)
   {
-    anIter.Value()->Redraw (MyUnderLayer, MyOverLayer);
-	}
+    MyDefinedView.Value(i)->Redraw (MyUnderLayer, MyOverLayer);
+  }
 }
 
 void Visual3d_ViewManager::Update() const
@@ -432,101 +372,86 @@ void Visual3d_ViewManager::Update() const
 
 void Visual3d_ViewManager::RedrawImmediate() const
 {
-  if (MyDefinedView.Extent() == 0)
+  if (MyDefinedView.Length() == 0)
   {
     return;
   }
 
   // update all activated views
-  for (Visual3d_SetIteratorOfSetOfView anIter (MyDefinedView);
-       anIter.More(); anIter.Next())
+  for(int i=1; i<=MyDefinedView.Length(); i++)
   {
-    anIter.Value()->RedrawImmediate (MyUnderLayer, MyOverLayer);
+    MyDefinedView.Value(i)->RedrawImmediate (MyUnderLayer, MyOverLayer);
   }
 }
 
 void Visual3d_ViewManager::Invalidate() const
 {
-  if (MyDefinedView.Extent() == 0)
+  if (MyDefinedView.Length() == 0)
   {
     return;
   }
 
   // update all activated views
-  for (Visual3d_SetIteratorOfSetOfView anIter (MyDefinedView);
-       anIter.More(); anIter.Next())
+  for(int i=1; i<=MyDefinedView.Length(); i++)
   {
-    anIter.Value()->Invalidate();
+    MyDefinedView.Value(i)->Invalidate();
   }
 }
 
-Handle(Visual3d_HSetOfView) Visual3d_ViewManager::ActivatedView () const {
+Handle(Visual3d_HSequenceOfView) Visual3d_ViewManager::ActivatedView () const
+{
 
-Handle (Visual3d_HSetOfView) SG = new Visual3d_HSetOfView ();
+  Handle(Visual3d_HSequenceOfView) SG = new Visual3d_HSequenceOfView();
 
-Visual3d_SetIteratorOfSetOfView MyIterator(MyDefinedView);
+  for(int i=1; i<=MyDefinedView.Length(); i++)
+  {
+    if ((MyDefinedView.Value(i))->IsActive ())
+    {
+      SG->Append(MyDefinedView.Value(i));
+    }
+  }
 
-	while (MyIterator.More ()) {
-		if ((MyIterator.Value ())->IsActive ())
-			SG->Add (MyIterator.Value ());
-
-		// MyIterator.Next () is located on the next view
-		MyIterator.Next ();
-	}
-
-	return (SG);
-
+  return (SG);
 }
 
 #ifdef IMPLEMENTED
-Standard_Boolean Visual3d_ViewManager::ContainsComputedStructure () const {
+Standard_Boolean Visual3d_ViewManager::ContainsComputedStructure () const
+{
+  Standard_Boolean Result = Standard_False;
 
-Standard_Boolean Result = Standard_False;
+  //
+  // Check all activated views
+  //
+  for(int i=1; (!Result) && i<=MyDefinedView.Length(); i++)
+  {
+    if ((MyDefinedView.Value(i))->IsActive())
+    {
+      Result = (MyDefinedView.Value(i))->ContainsComputedStructure();
+    }
+  }
 
-	//
-	// Check all activated views
-	//
-	Visual3d_SetIteratorOfSetOfView MyIterator(MyDefinedView);
-
-	Standard_Integer i	= MyDefinedView.Extent ();
-
-	while ((! Result) && (MyIterator.More ())) {
-		if ((MyIterator.Value ())->IsActive ())
-			Result	=
-			(MyIterator.Value ())->ContainsComputedStructure ();
-
-		// MyIterator.Next () is located on the next view
-		MyIterator.Next ();
-	}
-
-	return Result;
+  return Result;
 }
 #endif
 
-Handle(Visual3d_HSetOfView) Visual3d_ViewManager::DefinedView () const {
+Handle(Visual3d_HSequenceOfView) Visual3d_ViewManager::DefinedView () const
+{
+  Handle (Visual3d_HSequenceOfView) SG = new Visual3d_HSequenceOfView();
 
-Handle (Visual3d_HSetOfView) SG = new Visual3d_HSetOfView ();
+  for(int i=1; i<=MyDefinedView.Length(); i++)
+  {
+    SG->Append(MyDefinedView.Value(i));
+  }
 
-Visual3d_SetIteratorOfSetOfView MyIterator(MyDefinedView);
-
-	while (MyIterator.More ()) {
-		SG->Add (MyIterator.Value ());
-
-		// MyIterator.Next () is located on the next view
-		MyIterator.Next ();
-	}
-
-	return (SG);
-
+  return (SG);
 }
 
-Standard_Boolean Visual3d_ViewManager::ViewExists (const Handle(Aspect_Window)& AWindow, Graphic3d_CView& TheCView) const {
+Standard_Boolean Visual3d_ViewManager::ViewExists (const Handle(Aspect_Window)& AWindow, Graphic3d_CView& TheCView) const
+{
+  Standard_Boolean Exist = Standard_False;
 
-Standard_Boolean Exist = Standard_False;
-
-	// Parse the list of views to find
-	// a view with the specified window
-	Visual3d_SetIteratorOfSetOfView MyIterator(MyDefinedView);
+  // Parse the list of views to find
+  // a view with the specified window
 
 #if defined(_WIN32) || defined(__WIN32__)
   const Handle(WNT_Window) THEWindow = Handle(WNT_Window)::DownCast (AWindow);
@@ -539,68 +464,60 @@ Standard_Boolean Exist = Standard_False;
   int TheSpecifiedWindowId = int (THEWindow->XWindow ());
 #endif
 
-	while ((! Exist) && (MyIterator.More ())) {
+  for(int i=1; (!Exist) && i<=MyDefinedView.Length(); i++)
+  {
+    if ( ((MyDefinedView.Value(i))->IsDefined ()) && ((MyDefinedView.Value(i))->IsActive ()) )
+    {
+      const Handle(Aspect_Window) AspectWindow = (MyDefinedView.Value(i))->Window();
 
-	   if ( ((MyIterator.Value ())->IsDefined ()) &&
-		((MyIterator.Value ())->IsActive ()) ) {
-
-const Handle(Aspect_Window) AspectWindow = (MyIterator.Value ())->Window ();
 #if defined(_WIN32) || defined(__WIN32__)
-   const Handle(WNT_Window) theWindow = Handle(WNT_Window)::DownCast (AspectWindow);
-   Aspect_Handle TheWindowIdOfView = theWindow->HWindow ();
+      const Handle(WNT_Window) theWindow = Handle(WNT_Window)::DownCast (AspectWindow);
+      Aspect_Handle TheWindowIdOfView = theWindow->HWindow ();
 #elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
-   const Handle(Cocoa_Window) theWindow = Handle(Cocoa_Window)::DownCast (AspectWindow);
-   NSView* TheWindowIdOfView = theWindow->HView();
+      const Handle(Cocoa_Window) theWindow = Handle(Cocoa_Window)::DownCast (AspectWindow);
+      NSView* TheWindowIdOfView = theWindow->HView();
 #else
-   const Handle(Xw_Window) theWindow = Handle(Xw_Window)::DownCast (AspectWindow);
-   int TheWindowIdOfView = int (theWindow->XWindow ());
+      const Handle(Xw_Window) theWindow = Handle(Xw_Window)::DownCast (AspectWindow);
+      int TheWindowIdOfView = int (theWindow->XWindow ());
 #endif  // WNT
-		// Comparaison on window IDs
-		if (TheWindowIdOfView == TheSpecifiedWindowId) {
-			Exist	= Standard_True;
-			TheCView	= *(Graphic3d_CView* )(MyIterator.Value())->CView();
-		}
-	   } /* if ((MyIterator.Value ())->IsDefined ()) */
+      // Comparaison on window IDs
+      if (TheWindowIdOfView == TheSpecifiedWindowId)
+      {
+        Exist = Standard_True;
+        TheCView = *(Graphic3d_CView* )(MyDefinedView.Value(i))->CView();
+      }
+    }
+  }
 
-	   // MyIterator.Next () is located on the next view
-	   MyIterator.Next ();
-	}
-
-	return (Exist);
-
+  return (Exist);
 }
 
-void Visual3d_ViewManager::Activate () {
-
-	//
-	// Activates all deactivated views
-	//
-	Visual3d_SetIteratorOfSetOfView MyIterator(MyDefinedView);
-
-	while (MyIterator.More ()) {
-		if (! (MyIterator.Value ())->IsActive ())
-			(MyIterator.Value ())->Activate ();
-
-		// MyIterator.Next () is located on the next view
-		MyIterator.Next ();
-	}
-
+void Visual3d_ViewManager::Activate ()
+{
+  //
+  // Activates all deactivated views
+  //
+  for(int i=1; i<=MyDefinedView.Length(); i++)
+  {
+    if (! (MyDefinedView.Value(i))->IsActive())
+    {
+      (MyDefinedView.Value(i))->Activate();
+    }
+  }
 }
 
-void Visual3d_ViewManager::Deactivate () {
-
-	//
-	// Deactivates all activated views
-	//
-	Visual3d_SetIteratorOfSetOfView MyIterator(MyDefinedView);
-
-	while (MyIterator.More ()) {
-		if ((MyIterator.Value ())->IsActive ())
-			(MyIterator.Value ())->Deactivate ();
-
-		// MyIterator.Next () is located on the next view
-		MyIterator.Next ();
-	}
+void Visual3d_ViewManager::Deactivate ()
+{
+  //
+  // Deactivates all activated views
+  //
+  for(int i=1; i<=MyDefinedView.Length(); i++)
+  {
+    if ((MyDefinedView.Value(i))->IsActive())
+    {
+      (MyDefinedView.Value(i))->Deactivate();
+    }
+  }
 
 }
 
@@ -625,82 +542,71 @@ Standard_Integer Visual3d_ViewManager::Identification () const {
 
 }
 
-Standard_Integer Visual3d_ViewManager::Identification (const Handle(Visual3d_View)& AView) {
-
-	MyDefinedView.Add (AView);
-	return (MyViewGenId.Next ());
-
+Standard_Integer Visual3d_ViewManager::Identification (const Handle(Visual3d_View)& AView)
+{
+  MyDefinedView.Append(AView);
+  return (MyViewGenId.Next ());
 }
 
 void Visual3d_ViewManager::UnIdentification (const Standard_Integer aViewId)
 {
-  Visual3d_SetIteratorOfSetOfView MyIterator(MyDefinedView);
-  while (MyIterator.More()) 
+  for(int i=1; i<=MyDefinedView.Length(); i++)
   {
-    if ((MyIterator.Value())->Identification () == aViewId)
+    if ((MyDefinedView.Value(i))->Identification() == aViewId)
     {
-      const Handle(Visual3d_View)& theView = MyIterator.Value();
       //remove the view from the list
-      MyDefinedView.Remove(theView);
+      MyDefinedView.Remove(i);
       break;
     }
-    // go to next
-    MyIterator.Next ();
   }
+
   MyViewGenId.Free(aViewId);
 }
 
-void Visual3d_ViewManager::SetTransparency (const Standard_Boolean AFlag) {
+void Visual3d_ViewManager::SetTransparency (const Standard_Boolean AFlag)
+{
+  if (MyTransparency && AFlag) return;
+  if (! MyTransparency && ! AFlag) return;
 
-	if (MyTransparency && AFlag) return;
-	if (! MyTransparency && ! AFlag) return;
+  for(int i=1; i<=MyDefinedView.Length(); i++)
+  {
+    (MyDefinedView.Value(i))->SetTransparency(AFlag);
+  }
 
-	Visual3d_SetIteratorOfSetOfView MyIterator(MyDefinedView);
-	while (MyIterator.More ()) {
-		(MyIterator.Value ())->SetTransparency (AFlag);
-		// MyIterator.Next () is located on the next view
-		MyIterator.Next ();
-	}
-
-	MyTransparency	= AFlag;
-
+  MyTransparency = AFlag;
 }
 
-Standard_Boolean Visual3d_ViewManager::Transparency () const {
-
-	return (MyTransparency);
-
+Standard_Boolean Visual3d_ViewManager::Transparency () const
+{
+  return (MyTransparency);
 }
 
-void Visual3d_ViewManager::SetZBufferAuto (const Standard_Boolean AFlag) {
+void Visual3d_ViewManager::SetZBufferAuto (const Standard_Boolean AFlag)
+{
+  if (MyZBufferAuto && AFlag) return;
+  if (! MyZBufferAuto && ! AFlag) return;
 
-	if (MyZBufferAuto && AFlag) return;
-	if (! MyZBufferAuto && ! AFlag) return;
-
-	// if pass from False to True :
-	// no problem, at the next view update, it
-	// will properly ask questions to answer (SetVisualisation)
-	// if pass from True to False :
-	// it is necessary to modify ZBufferActivity at each view so that
-	// zbuffer could be active only if required by context.
-	// In this case -1 is passed so that the view ask itself the question
-	// Note : 0 forces the desactivation, 1 forces the activation
-	if (! AFlag) {
-		Visual3d_SetIteratorOfSetOfView MyIterator(MyDefinedView);
-		while (MyIterator.More ()) {
-			(MyIterator.Value ())->SetZBufferActivity (-1);
-			// MyIterator.Next () is located on the next view
-			MyIterator.Next ();
-		}
-	}
-	MyZBufferAuto	= AFlag;
-
+  // if pass from False to True :
+  // no problem, at the next view update, it
+  // will properly ask questions to answer (SetVisualisation)
+  // if pass from True to False :
+  // it is necessary to modify ZBufferActivity at each view so that
+  // zbuffer could be active only if required by context.
+  // In this case -1 is passed so that the view ask itself the question
+  // Note : 0 forces the desactivation, 1 forces the activation
+  if (! AFlag)
+  {
+    for(int i=1; i<=MyDefinedView.Length(); i++)
+    {
+      (MyDefinedView.Value(i))->SetZBufferActivity(-1);
+    }
+  }
+  MyZBufferAuto = AFlag;
 }
 
-Standard_Boolean Visual3d_ViewManager::ZBufferAuto () const {
-
-	return (MyZBufferAuto);
-
+Standard_Boolean Visual3d_ViewManager::ZBufferAuto () const
+{
+  return (MyZBufferAuto);
 }
 
 void Visual3d_ViewManager::SetLayer (const Handle(Visual3d_Layer)& ALayer) {
@@ -756,9 +662,10 @@ void Visual3d_ViewManager::ChangeZLayer (const Handle(Graphic3d_Structure)& theS
   // change display layer for structure in all views
   if (MyDisplayedStructure.Contains (theStructure))
   {
-    Visual3d_SetIteratorOfSetOfView aViewIt(MyDefinedView);
-    for ( ; aViewIt.More (); aViewIt.Next ())
-      (aViewIt.Value ())->ChangeZLayer (theStructure, theLayerId);
+    for(int i=1; i<=MyDefinedView.Length(); i++)
+    {
+      (MyDefinedView.Value(i))->ChangeZLayer(theStructure, theLayerId);
+    }
   }
 
   // tell graphic driver to update the structure's display layer
@@ -783,10 +690,9 @@ void Visual3d_ViewManager::SetZLayerSettings (const Standard_Integer theLayerId,
                                               const Graphic3d_ZLayerSettings& theSettings)
 {
   // tell all managed views to set zlayer settings
-  Visual3d_SetIteratorOfSetOfView aViewIt (MyDefinedView);
-  for (; aViewIt.More (); aViewIt.Next ())
+  for(int i=1; i<=MyDefinedView.Length(); i++)
   {
-    (aViewIt.Value ())->SetZLayerSettings (theLayerId, theSettings);
+    (MyDefinedView.Value(i))->SetZLayerSettings (theLayerId, theSettings);
   }
 
   if (myMapOfZLayerSettings.IsBound (theLayerId))
@@ -838,9 +744,10 @@ Standard_Boolean Visual3d_ViewManager::AddZLayer (Standard_Integer& theLayerId)
   myMapOfZLayerSettings.Bind (theLayerId, Graphic3d_ZLayerSettings());
 
   // tell all managed views to remove display layers
-  Visual3d_SetIteratorOfSetOfView aViewIt(MyDefinedView);
-  for ( ; aViewIt.More (); aViewIt.Next ())
-    (aViewIt.Value ())->AddZLayer (theLayerId);
+  for(int i=1; i<=MyDefinedView.Length(); i++)
+  {
+    (MyDefinedView.Value(i))->AddZLayer(theLayerId);
+  }
 
   return Standard_True;
 }
@@ -856,9 +763,10 @@ Standard_Boolean Visual3d_ViewManager::RemoveZLayer (const Standard_Integer theL
     return Standard_False;
 
   // tell all managed views to remove display layers
-  Visual3d_SetIteratorOfSetOfView aViewIt (MyDefinedView);
-  for ( ; aViewIt.More (); aViewIt.Next ())
-    (aViewIt.Value ())->RemoveZLayer (theLayerId);
+  for(int i=1; i<=MyDefinedView.Length(); i++)
+  {
+    (MyDefinedView.Value(i))->RemoveZLayer (theLayerId);
+  }
 
   MyGraphicDriver->UnsetZLayer (theLayerId);
 
@@ -908,7 +816,16 @@ Aspect_GenId& Visual3d_ViewManager::getZLayerGenId ()
 
 void Visual3d_ViewManager::InstallZLayers(const Handle(Visual3d_View)& theView) const
 {
-  if (!MyDefinedView.Contains (theView))
+  Standard_Boolean isContainsView = Standard_False;
+  for(int i=1; i<=MyDefinedView.Length(); i++)
+  {
+    if(MyDefinedView.Value(i) == theView)
+    {
+      isContainsView = Standard_True;
+      break;
+    }
+  }
+  if (!isContainsView)
     return;
 
   // erase and insert layers iteratively to provide the same layer order as

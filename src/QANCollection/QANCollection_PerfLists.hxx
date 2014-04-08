@@ -18,7 +18,6 @@
 
 #include <QANCollection_ListOfPnt.hxx>
 #include <TColgp_SequenceOfPnt.hxx>
-#include <TColStd_SetOfInteger.hxx>
 
 // ===================== Test perform of List type ==========================
 void CompList (const Standard_Integer theRep,
@@ -92,98 +91,6 @@ void CompList (const Standard_Integer theRep,
 }
 
 
-// ===================== Test perform of Set type ==========================
-void CompSet (const Standard_Integer theRep,
-              const Standard_Integer theSize)
-{
-  Standard_Integer i,j;
-
-  ////////////////////////////////Perf_Meter aNPush ("NCollection_Set pushing",0);
-  ////////////////////////////////Perf_Meter aTPush ("TCollection_Set pushing",0);
-  ////////////////////////////////Perf_Meter aNFind ("NCollection_Set finding",0);
-  ////////////////////////////////Perf_Meter aTFind ("TCollection_Set finding",0);
-  ////////////////////////////////Perf_Meter aNOper ("NCollection_Set operator=",0);
-  ////////////////////////////////Perf_Meter aTOper ("TCollection_Set operator=",0);
-  ////////////////////////////////Perf_Meter aNClea ("NCollection_Set clearing",0);
-  ////////////////////////////////Perf_Meter aTClea ("TCollection_Set clearing",0);
-  ////////////////////////////////Perf_Meter aNAssi ("NCollection_Set Assign",0);
-  for (i=0; i<theRep; i++)
-    {
-      ////////////////////////////////QANCollection_Set a1, a2;
-      QANCollection_SetPerf a1, a2;
-      ////////////////////////////////aNPush.Start();
-      PERF_START_METER("NCollection_Set pushing")
-      for (j=1; j<=theSize; j++)
-        {
-          Key2Type anItem;
-          Random(anItem);
-          a1.Add(anItem);
-        }
-      ////////////////////////////////aNPush.Stop();
-      PERF_STOP_METER("NCollection_Set pushing")
-      ////////////////////////////////aNFind.Start();
-      PERF_START_METER("NCollection_Set finding")
-      for (j=1; j<=theSize; j++)
-        {
-          Key2Type anItem;
-          Random(anItem);
-          a1.Contains(anItem);
-        }
-      ////////////////////////////////aNFind.Stop();
-      PERF_STOP_METER("NCollection_Set finding")
-      ////////////////////////////////aNOper.Start();
-      PERF_START_METER("NCollection_Set operator=")
-      a2 = a1;
-      ////////////////////////////////aNOper.Stop();
-      PERF_STOP_METER("NCollection_Set operator=")
-      ////////////////////////////////aNAssi.Start();
-      PERF_START_METER("NCollection_Set Assign")
-      a2.Assign(a1);
-      ////////////////////////////////aNAssi.Stop();
-      PERF_STOP_METER("NCollection_Set Assign")
-      ////////////////////////////////aNClea.Start();
-      PERF_START_METER("NCollection_Set clearing")
-      a2.Clear();
-      ////////////////////////////////aNClea.Stop();
-      PERF_STOP_METER("NCollection_Set clearing")
-    }
-
-  for (i=0; i<theRep; i++)
-    {
-      TColStd_SetOfInteger a1, a2;
-      ////////////////////////////////aTPush.Start();
-      PERF_START_METER("TCollection_Set pushing")
-      for (j=1; j<=theSize; j++)
-        {
-          Key2Type anItem;
-          Random(anItem);
-          a1.Add(anItem);
-        }
-      ////////////////////////////////aTPush.Stop();
-      PERF_STOP_METER("TCollection_Set pushing")
-      ////////////////////////////////aTFind.Start();
-      PERF_START_METER("TCollection_Set finding")
-        for (j=1; j<=theSize; j++)
-          {
-            Key2Type anItem;
-            Random(anItem);
-            a1.Contains(anItem);
-          }
-      ////////////////////////////////aTFind.Stop();
-      PERF_STOP_METER("TCollection_Set finding")
-      ////////////////////////////////aTOper.Start();
-      PERF_START_METER("TCollection_Set operator=")
-      a2 = a1;
-      ////////////////////////////////aTOper.Stop();
-      PERF_STOP_METER("TCollection_Set operator=")
-      ////////////////////////////////aTClea.Start();
-      PERF_START_METER("TCollection_Set clearing")
-      a2.Clear();
-      ////////////////////////////////aTClea.Stop();
-      PERF_STOP_METER("TCollection_Set clearing")
-    }
-  PERF_PRINT_ALL
-}
 
 // ===================== Test perform of Sequence type ==========================
 void CompSequence (const Standard_Integer theRep,

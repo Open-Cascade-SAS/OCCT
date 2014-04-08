@@ -36,7 +36,7 @@ uses
 
     SequenceOfAddress    from TColStd,
     Light                from Visual3d,
-    HSetOfLight          from Visual3d,
+    HSequenceOfLight     from Visual3d,
     TypeOfModel          from Visual3d,
     TypeOfVisualization  from Visual3d,
     TypeOfSurfaceDetail  from Visual3d,
@@ -277,7 +277,7 @@ is
 	----------------------------
 
 	ActivatedLights ( me )
-		returns HSetOfLight from Visual3d
+		returns HSequenceOfLight from Visual3d
 		is static;
 	---Level: Internal
 	---Purpose: Returns the group of active light sources

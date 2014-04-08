@@ -15,6 +15,7 @@
 
 #include <Adaptor3d_CurveOnSurface.ixx>
 
+#include <Adaptor3d_HCurveOnSurface.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
 #include <gp_Ax22d.hxx>
@@ -30,22 +31,18 @@
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <Precision.hxx>
+#include <Standard_Assert.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_HSequenceOfReal.hxx>
 #include <Standard_NotImplemented.hxx>
-#include <Adaptor3d_HCurveOnSurface.hxx>
 #include <ElCLib.hxx>
 #include <ElSLib.hxx>
 #include <Adaptor3d_InterFunc.hxx>
 #include <math_FunctionRoots.hxx>
-#include <SortTools_StraightInsertionSortOfReal.hxx>
-#include <TCollection_CompareOfReal.hxx>
 #include <ElSLib.hxx>
-#include <TColStd_SetIteratorOfSetOfReal.hxx>
-#include <TColStd_SetOfReal.hxx>
-#include <TColStd_HSetOfReal.hxx>
 
 static gp_Pnt to3d(const gp_Pln& Pl, const gp_Pnt2d& P)
 {
@@ -782,6 +779,34 @@ GeomAbs_Shape Adaptor3d_CurveOnSurface::Continuity() const
   return ContC;
 }
 
+// Auxiliary: adds roots of equation to sorted sequence of parameters
+// along curve, keeping it sorted and avoiding repetitions (within tolerance Tol)
+static void AddIntervals (const Handle(TColStd_HSequenceOfReal)& theParameters, 
+                          const math_FunctionRoots& theRoots, Standard_Real theTol)
+{
+  if (! theRoots.IsDone() || theRoots.IsAllNull())
+    return;
+
+  Standard_Integer nsol = theRoots.NbSolutions();
+  for (Standard_Integer i = 1; i <= nsol; i++)
+  {
+    Standard_Real param = theRoots.Value(i);
+    if (param - theParameters->Value(1) < theTol) // skip param if equal to or less than theParameters(1)
+      continue;
+    for (Standard_Integer j=2; j <= theParameters->Length(); ++j)
+    {
+      Standard_Real aDelta = theParameters->Value(j) - param;
+      if (aDelta > theTol)
+      {
+        theParameters->InsertBefore (j, param);
+        break;
+      }
+      else if (aDelta >= -theTol) // param == theParameters(j) within Tol
+        break;
+    }
+  }
+}
+
 //=======================================================================
 //function : NbIntervals
 //purpose  : 
@@ -793,90 +818,63 @@ Standard_Integer Adaptor3d_CurveOnSurface::NbIntervals
   if(S == myIntCont && !myIntervals.IsNull())
     return myIntervals->Length()-1;
   
-  Standard_Integer nu,nv,nc,i;
+  Standard_Integer nu,nv,nc;
   nu=mySurface->NbUIntervals(S);
   nv=mySurface->NbVIntervals(S);
-  Handle(TColStd_HSetOfReal) tmpIntervals = new TColStd_HSetOfReal;
-  TColStd_SetIteratorOfSetOfReal It;
+
   TColStd_Array1OfReal TabU(1,nu+1);
   TColStd_Array1OfReal TabV(1,nv+1);
   Standard_Integer NbSample = 20;
   Standard_Real U,V,Tdeb,Tfin;
   Tdeb=myCurve->FirstParameter();
   Tfin=myCurve->LastParameter();
+
   nc=myCurve->NbIntervals(S);
   TColStd_Array1OfReal TabC(1,nc+1);
   myCurve->Intervals(TabC,S);
+
   Standard_Real Tol= Precision::PConfusion()/10;
-  for (i=1;i<=nc+1;i++)
-  {tmpIntervals->Add(TabC(i));}
+
+  // sorted sequence of parameters defining continuity intervals;
+  // started with own intervals of curve and completed by 
+  // additional points coming from surface discontinuities
+  myIntervals = new TColStd_HSequenceOfReal;
+  for (Standard_Integer i = 1; i <= nc + 1; i++)
+  {
+    myIntervals->Append(TabC(i));
+  }
  
-  Standard_Integer nbpoint=nc+1;
-  if (nu>1) 
-  { mySurface->UIntervals(TabU,S);
-    for(Standard_Integer iu = 2;iu <= nu; iu++) 
-     { U = TabU.Value(iu);
-       Adaptor3d_InterFunc Func(myCurve,U,1);
-       math_FunctionRoots Resol(Func,Tdeb,Tfin,NbSample,Tol,Tol,Tol,0.);
-       if (Resol.IsDone())
-       { if (!Resol.IsAllNull())
-         {   Standard_Integer  nsol=Resol.NbSolutions();
-             for ( i=1;i<=nsol;i++)
-             { Standard_Real param =Resol.Value(i);
-               { Standard_Boolean insere=Standard_True;
-                 for (It.Initialize(tmpIntervals->Set());It.More();It.Next())
-                 {  if (Abs(param- It.Value())<=Tol)
-                    insere=Standard_False;}
-                 if (insere)
-                  {nbpoint++;
-                   tmpIntervals->Add(param);}  
-               }
-            }
-	  }
-       }
-     } 
+  if (nu>1)
+  {
+    mySurface->UIntervals(TabU,S);
+    for(Standard_Integer iu = 2;iu <= nu; iu++)
+    {
+      U = TabU.Value(iu);
+      Adaptor3d_InterFunc Func(myCurve,U,1);
+      math_FunctionRoots Resol(Func,Tdeb,Tfin,NbSample,Tol,Tol,Tol,0.);
+      AddIntervals (myIntervals, Resol, Tol);
+    }
   }
-  if (nv>1) 
-
-  { mySurface->VIntervals(TabV,S);
-    for(Standard_Integer iv = 2;iv <= nv; iv++) 
-     { V = TabV.Value(iv);
-       Adaptor3d_InterFunc Func(myCurve,V,2);
-       math_FunctionRoots Resol(Func,Tdeb,Tfin,NbSample,Tol,Tol,Tol,0.);
-       if (Resol.IsDone())
-       { if (!Resol.IsAllNull())
-         {   Standard_Integer  nsol=Resol.NbSolutions();
-             for ( i=1;i<=nsol;i++)
-             { Standard_Real param =Resol.Value(i);
-               { Standard_Boolean insere=Standard_True;
-                 for (It.Initialize(tmpIntervals->Set());It.More();It.Next())
-                 {  if (Abs(param- It.Value())<=Tol)
-                    insere=Standard_False;}
-                 if (insere)
-                  {nbpoint++;
-                   tmpIntervals->Add(param);}  
-               }
-            }
-	  }
-       }
-     } 
+  if (nv>1)
+  {
+    mySurface->VIntervals(TabV,S);
+    for(Standard_Integer iv = 2;iv <= nv; iv++)
+    {
+      V = TabV.Value(iv);
+      Adaptor3d_InterFunc Func(myCurve,V,2);
+      math_FunctionRoots Resol(Func,Tdeb,Tfin,NbSample,Tol,Tol,Tol,0.);
+      AddIntervals (myIntervals, Resol, Tol);
+    }
   }
 
-  // for case intervals==1 and first point == last point SetOfReal
+  // for case intervals==1 and first point == last point SequenceOfReal
   // contains only one value, therefore it is necessary to add second
   // value into myIntervals which will be equal first value.
-  myIntervals = new TColStd_HArray1OfReal(1,nbpoint);
-  i=0;
-  for (It.Initialize(tmpIntervals->Set());It.More();It.Next())
-  { 
-    ++i;
-    myIntervals->SetValue(i,It.Value());
-  } 
-  if( i==1 )
-    myIntervals->SetValue(2,myIntervals->Value(1));
+  if (myIntervals->Length() == 1)
+    myIntervals->Append (myIntervals->Value(1));
 
   myIntCont = S;
-  return nbpoint-1;
+  return myIntervals->Length() - 1;
 }
 
 //=======================================================================
@@ -888,11 +886,10 @@ void Adaptor3d_CurveOnSurface::Intervals(TColStd_Array1OfReal& T,
 				       const GeomAbs_Shape S)  
 {
   NbIntervals(S);
+  Standard_ASSERT_RAISE (T.Length() == myIntervals->Length(), "Error: Wrong size of array buffer in call to Adaptor3d_CurveOnSurface::Intervals");
   for(Standard_Integer i=1; i<=myIntervals->Length(); i++) {
     T(i) = myIntervals->Value(i);
   }
-  TCollection_CompareOfReal comp;
-  SortTools_StraightInsertionSortOfReal::Sort(T,comp);
 }
 
 //=======================================================================

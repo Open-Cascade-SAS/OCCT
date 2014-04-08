@@ -28,7 +28,6 @@
 
 IMPLEMENT_HARRAY1(QANCollection_HArray1Perf)
 IMPLEMENT_HARRAY2(QANCollection_HArray2Perf)
-IMPLEMENT_HSET(QANCollection_HSetPerf)
 IMPLEMENT_HSEQUENCE(QANCollection_HSequencePerf)
 
 //=======================================================================
@@ -94,20 +93,6 @@ static Standard_Integer QANColPerfList(Draw_Interpretor& di, Standard_Integer ar
     return 1;
   }
   CompList(Repeat,Size);
-  return 0;
-}
-
-//=======================================================================
-//function : QANColPerfSet
-//purpose  : 
-//=======================================================================
-static Standard_Integer QANColPerfSet(Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
-{
-  Standard_Integer Repeat, Size;
-  if ( CheckArguments(di, argc, argv, Repeat, Size) ) {
-    return 1;
-  }
-  CompSet(Repeat,Size);
   return 0;
 }
 
@@ -216,7 +201,6 @@ void QANCollection::Commands3(Draw_Interpretor& theCommands) {
   theCommands.Add("QANColPerfArray1",         "QANColPerfArray1 Repeat Size",         __FILE__, QANColPerfArray1,         group);  
   theCommands.Add("QANColPerfArray2",         "QANColPerfArray2 Repeat Size",         __FILE__, QANColPerfArray2,         group);  
   theCommands.Add("QANColPerfList",           "QANColPerfList Repeat Size",           __FILE__, QANColPerfList,           group);  
-  theCommands.Add("QANColPerfSet",            "QANColPerfSet Repeat Size",            __FILE__, QANColPerfSet,            group);  
   theCommands.Add("QANColPerfSequence",       "QANColPerfSequence Repeat Size",       __FILE__, QANColPerfSequence,       group);  
   theCommands.Add("QANColPerfMap",            "QANColPerfMap Repeat Size",            __FILE__, QANColPerfMap,            group);  
   theCommands.Add("QANColPerfDataMap",        "QANColPerfDataMap Repeat Size",        __FILE__, QANColPerfDataMap,        group);  

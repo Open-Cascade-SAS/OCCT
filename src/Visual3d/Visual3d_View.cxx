@@ -134,11 +134,7 @@
 #include <Graphic3d_Vertex.hxx>
 
 #include <Visual3d_Light.hxx>
-#include <Visual3d_SetOfLight.hxx>
-#include <Visual3d_HSetOfLight.hxx>
-#include <Visual3d_HSetOfView.hxx>
-#include <Visual3d_SetIteratorOfSetOfLight.hxx>
-#include <Visual3d_SetIteratorOfSetOfView.hxx>
+#include <Visual3d_HSequenceOfView.hxx>
 
 #include <Graphic3d_TextureEnv.hxx>
 
@@ -1306,12 +1302,13 @@ Standard_Boolean Visual3d_View::DisplayImmediate (const Handle(Graphic3d_Structu
 
   if (theIsSingleView)
   {
-    Handle(Visual3d_HSetOfView) aViews = MyViewManager->DefinedView();
-    for (Visual3d_SetIteratorOfSetOfView aViewIter (aViews->Set()); aViewIter.More(); aViewIter.Next())
+    Handle(Visual3d_HSequenceOfView) aViews = MyViewManager->DefinedView();
+
+    for (int i=1;i<=aViews->Length();i++)
     {
-      if (aViewIter.Value().Access() != this)
+      if (aViews->Value(i).Access() != this)
       {
-        aViewIter.Value()->EraseImmediate (theStructure);
+        aViews->Value(i)->EraseImmediate (theStructure);
       }
     }
   }

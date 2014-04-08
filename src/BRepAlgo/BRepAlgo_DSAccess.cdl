@@ -27,7 +27,7 @@ uses
     Face           from TopoDS,
     Vertex         from TopoDS,
     ListOfInteger  from TColStd,  
-    SetOfInteger   from TColStd,
+    PackedMapOfInteger   from TColStd,
     MapOfInteger   from TColStd,
     ListOfShape    from TopTools,
     State          from TopAbs,
@@ -345,7 +345,7 @@ fields
     myEmptyListOfInteger : ListOfInteger from TColStd;
 
     myCompoundWireMap : DataMapOfShapeShape from TopTools; 
-    mySetOfKeepPoint  : SetOfInteger  from  TColStd;
+    mySetOfKeepPoint  : PackedMapOfInteger  from  TColStd;
     
 friends
     

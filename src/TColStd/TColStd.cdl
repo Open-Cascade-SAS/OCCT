@@ -143,25 +143,6 @@ class HSequenceOfTransient instantiates
     HSequence from TCollection             (Transient,
     	    	    	    	    	    SequenceOfTransient from TColStd);
 
-
-class SetOfInteger   instantiates 
-    Set from TCollection               (Integer);
-class SetOfReal      instantiates 
-    Set from TCollection               (Real); 
-class SetOfTransient instantiates 
-    Set from TCollection               (Transient);
-
-
-class HSetOfInteger   instantiates 
-    HSet from TCollection               (Integer,
-    	    	    	    	    	 SetOfInteger   from TColStd);
-class HSetOfReal      instantiates 
-    HSet from TCollection               (Real,
-    	    	    	    	    	 SetOfReal      from TColStd);
-class HSetOfTransient instantiates 
-    HSet from TCollection               (Transient,
-    	    	    	    	    	 SetOfTransient from TColStd);
-
 --                    
 --       Instantiations List (Integer,Real,Transient)
 --       ********************************************

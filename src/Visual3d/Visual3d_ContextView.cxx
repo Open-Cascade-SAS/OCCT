@@ -281,13 +281,13 @@ Standard_Integer indexL = 0;
 
 }
 
-Handle(Visual3d_HSetOfLight) Visual3d_ContextView::ActivatedLights () const {
+Handle(Visual3d_HSequenceOfLight) Visual3d_ContextView::ActivatedLights () const {
 
-Handle(Visual3d_HSetOfLight) SG = new Visual3d_HSetOfLight ();
+Handle(Visual3d_HSequenceOfLight) SG = new Visual3d_HSequenceOfLight();
 Standard_Integer Length	= MyLights.Length ();
 
 	for (Standard_Integer i=1; i<=Length; i++)
-		SG->Add ((Visual3d_Light *) (MyLights.Value (i)));
+		SG->Append((Visual3d_Light *) (MyLights.Value (i)));
 
 	return (SG);
 

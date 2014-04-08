@@ -91,7 +91,7 @@ uses
     ContextView             from Visual3d,
     Layer                   from Visual3d,
     Light                   from Visual3d,
-    SetOfLight              from Visual3d,
+    SequenceOfLight         from Visual3d,
     TypeOfAnswer            from Visual3d,
     ViewManager             from Visual3d,
     ViewManagerPtr          from Visual3d,

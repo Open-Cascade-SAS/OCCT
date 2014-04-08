@@ -46,8 +46,8 @@ uses
 
 	ContextPick		from Visual3d,
 	Layer			from Visual3d,
-	SetOfView		from Visual3d,
-	HSetOfView		from Visual3d,
+	SequenceOfView		from Visual3d,
+	HSequenceOfView		from Visual3d,
 	View			from Visual3d
 
 is
@@ -123,14 +123,14 @@ is
 	----------------------------
 
 	ActivatedView ( me )
-		returns HSetOfView from Visual3d
+		returns HSequenceOfView from Visual3d
 		is static;
 	---Level: Internal
 	---Purpose: Returns the group of views activated in the visualiser <me>.
 	---Category: Inquire methods
 
 	DefinedView ( me )
-		returns HSetOfView from Visual3d
+		returns HSequenceOfView from Visual3d
 		is static;
 	---Level: Internal
 	---Purpose: Returns the group of views defined in the visualiser <me>.
@@ -459,7 +459,7 @@ fields
 --			and a group of views.
 --
 	-- the defined views
- 	MyDefinedView			:	SetOfView from Visual3d;
+ 	MyDefinedView			:	SequenceOfView from Visual3d;
 
 	-- the layers
 	MyUnderLayer			:	Layer from Visual3d;

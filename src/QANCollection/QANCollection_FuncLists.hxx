@@ -70,58 +70,6 @@ void TestList (QANCollection_ListFunc&     theL)
   aL.Clear();
 }
 
-// ===================== Test methods of Set type =============================
-////////////////////////////////void TestSet (QANCollection_Set& theS)
-void TestSet (QANCollection_SetFunc& theS)
-{
-  // Extent
-  Standard_Integer iExt=theS.Extent();
-  Standard_Integer i;
-
-  printf ("Info: testing Set(%d)\n", iExt);
-  Key2Type anItem;
-  // Constructor, Add
-  ////////////////////////////////QANCollection_Set aSet1, aSet2, aSet;
-  QANCollection_SetFunc aSet1, aSet2, aSet;
-  for (i=1; i<=8; i++)
-  {
-    Random(anItem);
-    aSet1.Add(anItem);
-    if (i>4)
-      aSet2.Add(anItem);
-  }
-  for (i=1; i<=4; i++)
-  {
-    Random(anItem);
-    aSet2.Add(anItem);
-  }
-  if (!aSet2.Contains(anItem))
-    printf ("Error   : set sais it does not contain its item\n");
-  // operator=, Union, Difference, Intersection
-  aSet = aSet1;
-  printCollection(aSet2,"Set2");
-  aSet1.Union(aSet2);
-  printCollection(aSet1,"Union");
-  if (!aSet1.IsAProperSubset(aSet2))
-    printf ("Error   : not a proper subset?\n");
-  if (!aSet1.IsAProperSubset(aSet2))
-    printf ("Error   : not a subset?!\n");
-  aSet1.Intersection(aSet);
-  printCollection(aSet,"Intersection");
-  aSet1.Difference(aSet2);
-  printCollection(aSet1,"Difference");
-
-  // operator=
-  ////////////////////////////////Handle(QANCollection_HSet) aHS = new QANCollection_HSet(aSet);
-  Handle(QANCollection_HSetFunc) aHS = new QANCollection_HSetFunc(aSet);
-
-  // Assign
-  AssignCollection (aHS->ChangeSet(), theS);
-
-  // Clear
-  aSet.Clear();
-}
-
 // ===================== Test methods of Sequence type ========================
 ////////////////////////////////void TestSequence (QANCollection_Sequence& theS)
 void TestSequence (QANCollection_SequenceFunc& theS)

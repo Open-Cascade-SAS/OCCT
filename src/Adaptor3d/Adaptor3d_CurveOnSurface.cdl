@@ -40,10 +40,10 @@ uses
      HCurve               from Adaptor3d,
      HCurve2d             from Adaptor2d,
      HSurface             from Adaptor3d,
-     HArray1OfReal        from TColStd,
-     
-     Pnt2d                from gp, 
-     Vec2d                from gp      
+     HSequenceOfReal      from TColStd,
+     Pnt2d                from gp,
+     Vec2d                from gp
+
 raises NoSuchObject from Standard,
        DomainError  from Standard,
        OutOfRange   from Standard
@@ -315,7 +315,7 @@ fields
   myFirstSurf  :  HSurface  from  Adaptor3d; 
   myLastSurf   :  HSurface  from  Adaptor3d;  
   
-  myIntervals  : HArray1OfReal from TColStd;
+  myIntervals  : HSequenceOfReal from TColStd;
   myIntCont    : Shape from GeomAbs;
 
 end CurveOnSurface;

@@ -21,7 +21,6 @@
 -- Updated      R.LEQUETTE Jan 1993
 --              Adding of modifying classes 
 --               - Sequence, HSequence
---               - Set, HSet
 --               - List
 --               - BasicMap, BasicMapIterator
 --               - Map, DataMap, DoubleMap, IndexedMap, IndexedDataMap
@@ -62,12 +61,6 @@ is
      
     generic class HSequence;
 	---Purpose: An indexed double list handle by reference.
-
-    generic class Set, SetIterator, SetList;
-	---Purpose: A small set handled by value.
-
-    generic class HSet;
-	---Purpose: A small set handled by reference.
 
     generic class MapHasher;
 	---Purpose: A Tool to instantiate Maps. Providing HashCode and

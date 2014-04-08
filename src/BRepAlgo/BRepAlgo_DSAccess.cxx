@@ -21,7 +21,7 @@
 #include <TColStd_MapOfInteger.hxx>
 #include <TColStd_IndexedMapOfInteger.hxx>
 #include <TColStd_MapIteratorOfMapOfInteger.hxx>
-#include <TColStd_SetIteratorOfSetOfInteger.hxx>
+#include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
 
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
@@ -528,7 +528,7 @@ void BRepAlgo_DSAccess::ChangeEdgeSet
   TopoDS_Compound C;
   TopoDS_Edge E;
   B.MakeCompound(C);
-  TColStd_SetOfInteger RPoint; //The points to be controlled 
+  TColStd_PackedMapOfInteger RPoint; //The points to be controlled 
   
  TopOpeBRepDS_ListIteratorOfListOfInterference iter;
   TopExp_Explorer exp(Old, TopAbs_EDGE);

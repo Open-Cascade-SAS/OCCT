@@ -67,14 +67,8 @@ DEFINE_INDEXEDMAP(QANCollection_IndexedMapPerf,QANCollection_Key1BaseColPerf,Key
 DEFINE_INDEXEDDATAMAP(QANCollection_IDMapPerf,QANCollection_BaseColPerf,Key1Type,ItemType)
 
 #include <NCollection_DefineList.hxx>
-#include <NCollection_DefineSet.hxx>
-#include <NCollection_DefineHSet.hxx>
 ////////////////////////////////DEFINE_LIST(QANCollection_List,QANCollection_BaseCol,ItemType)
-////////////////////////////////DEFINE_SET(QANCollection_Set,QANCollection_Key2BaseCol,Key2Type)
-////////////////////////////////DEFINE_HSET(QANCollection_HSet,QANCollection_Set)
 DEFINE_LIST(QANCollection_ListPerf,QANCollection_BaseColPerf,ItemType)
-DEFINE_SET(QANCollection_SetPerf,QANCollection_Key2BaseColPerf,Key2Type)
-DEFINE_HSET(QANCollection_HSetPerf,QANCollection_SetPerf)
 
 #include <NCollection_DefineSequence.hxx>
 #include <NCollection_DefineHSequence.hxx>

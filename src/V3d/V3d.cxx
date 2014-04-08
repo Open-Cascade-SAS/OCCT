@@ -41,8 +41,6 @@
 #include <Graphic3d_Structure.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_AspectText3d.hxx>
-#include <Visual3d_HSetOfView.hxx>
-#include <Visual3d_SetIteratorOfSetOfView.hxx>
 #include <Visual3d_View.hxx>
 #include <Visual3d_ViewManager.hxx>
 
