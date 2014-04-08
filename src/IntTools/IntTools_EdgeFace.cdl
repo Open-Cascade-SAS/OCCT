@@ -15,11 +15,10 @@
 
 class EdgeFace from IntTools 
 
-	---Purpose: The  class  provides  Edge/Face  algorithm  to  determine 
-	---         common  parts  between edge and face in  3-d space. 
-	--          Common  parts can be :  Vertices  or Edges. 
-    	--- 
-	
+    ---Purpose: The  class  provides  Edge/Face  algorithm  to  determine 
+    ---         common  parts  between edge and face in  3-d space. 
+    --          Common  parts can be :  Vertices  or Edges. 
+ 
 uses   
     Pnt from gp,
     Edge  from  TopoDS, 
@@ -39,215 +38,234 @@ uses
 
 is
     Create   
-    	returns EdgeFace from IntTools;
-	---Purpose:
-	--- Empty Constructor
-	---
-	     
-    SetEdge         (me:out; anEdge:Edge from TopoDS);
-    	---Purpose:
-	--- Initializes algorithm by the edge anEdge
-	---
-     
-    SetTolE         (me:out; aTolEdge1:Real from Standard);
-    	---Purpose:
-	--- Initializes algorithm by edge tolerance
-	---
-
-    SetFace         (me:out; aFace:Face from TopoDS);
-    	---Purpose:
-	--- Initializes algorithm by the face aFace
-	---
-
-    SetTolF         (me:out; aTolFace:Real from Standard);
-    	---Purpose:
-	--- Initializes algorithm by face tolerance
-	---
-
-    SetDiscretize   (me:out; aDiscret:Integer from Standard);
-    	---Purpose:
-	--- Initializes algorithm by discretization value
-	---
-     
-    SetDeflection   (me:out; aDeflection:Real from Standard);
-    	---Purpose:
-	--- Initializes algorithm by deflection value
-	---
-     
-    SetEpsilonT     (me:out; anEpsT:Real from Standard);
-    	---Purpose: 
-    	--- Initializes algorithm by parameter tolerance
-	---
-     
-    SetEpsilonNull  (me:out; anEpsNull:Real from Standard);
-    	---Purpose:
-	--- Initializes algorithm by distance tolerance
-	---
+     returns EdgeFace from IntTools;
+    ---Purpose:
+    --- Empty Constructor
+    ---
       
-    SetRange        (me:out; aRange:Range from IntTools);
-    	---Purpose:
-	--- Sets boundaries for edge.
-	--- The algorithm processes edge inside these boundaries.
-	---
+    SetEdge (me:out;  
+            anEdge:Edge from TopoDS);
+    ---Purpose:
+    --- Initializes algorithm by the edge anEdge
+     
+    SetTolE (me:out;  
+            aTolEdge1:Real from Standard);
+    ---Purpose:
+    --- Initializes algorithm by edge tolerance
 
-    SetRange        (me:out; aFirst, aLast:Real from Standard);
-    	---Purpose:
-	--- Sets boundaries for edge.
-	--- The algorithm processes edge inside these boundaries.
-	---
+    SetFace(me:out;  
+            aFace:Face from TopoDS);
+    ---Purpose:
+    --- Initializes algorithm by the face aFace
+    
+    SetTolF (me:out;  
+            aTolFace:Real from Standard);
+    ---Purpose:
+    --- Initializes algorithm by face tolerance
+     
+    Edge (me)  
+        returns Edge from TopoDS; 
+    ---C++:  return const &
+     ---Purpose:
+    --- Returns edge 
+    
+    Face(me) 
+        returns Face from TopoDS; 
+    ---C++:  return const &
+    ---Purpose:
+    --- Returns face  
+    
+    TolE (me) 
+        returns Real from Standard;
+    ---Purpose:
+    --- Returns  tolerance of the edge
+    
+    TolF (me) 
+        returns Real from Standard;
+    ---Purpose:
+    --- Returns  tolerance of the face 
+ 
+    SetDiscretize (me:out;  
+            aDiscret:Integer from Standard);
+    ---Purpose:
+    --- Initializes algorithm by discretization value
+    
+    SetDeflection (me:out;  
+            aDeflection:Real from Standard);
+    ---Purpose:
+    --- Initializes algorithm by deflection value
+    
+    SetEpsilonT(me:out;  
+            anEpsT:Real from Standard);
+     ---Purpose: 
+     --- Initializes algorithm by parameter tolerance
+     
+    SetEpsilonNull (me:out;  
+            anEpsNull:Real from Standard);
+    ---Purpose:
+    --- Initializes algorithm by distance tolerance
+       
+    SetRange (me:out;  
+            aRange:Range from IntTools);
+    ---Purpose:
+    --- Sets boundaries for edge.
+    --- The algorithm processes edge inside these boundaries.
+
+    SetRange (me:out;  
+            aFirst, aLast:Real from Standard);
+    ---Purpose:
+    --- Sets boundaries for edge.
+    --- The algorithm processes edge inside these boundaries.
      
     SetContext (me: in out;  
-    	    theContext: Context from BOPInt);
-    	---Purpose:
-	--- Sets the intersecton context 
-	---
- 
+            theContext: Context from BOPInt);
+    ---Purpose:
+    --- Sets the intersecton context 
+   
     Context (me) 
-	returns  Context from BOPInt; 
-    ---C++:return const & 	
-    	---Purpose:
-	--- Gets the intersecton context 
-	---
- 
-    Perform         (me:out);
-    	---Purpose:
-	--- Launches the process
-	---
+        returns  Context from BOPInt; 
+    ---C++:return const &  
+    ---Purpose:
+    --- Gets the intersecton context 
+   
+    Perform (me:out);
+    ---Purpose:
+    --- Launches the process
      
-    IsDone     (me)   
-    	returns Boolean from Standard;
-	---Purpose:
-	--- Returns true if computation was done
-	--- successfully, otherwise returns false
-	---
-	 
-    ErrorStatus(me) 
-    	returns Integer from Standard;
-	---Purpose:
-	--- Returns code of completion
-	--- 0 - means successful completion
-	--- 1 - the process was not started
-	--- 2,3,4,5 - invalid source data for the algorithm
-	--- 6 - discretization failed
-	--- 7 - no projectable ranges found
-	--- 11 - distance computing error
-	---
-		 
-    CommonParts(me) 
-    	returns SequenceOfCommonPrts from IntTools;   
-    	---C++:  return  const&
-	---Purpose:
-	--- Returns results
-	---
-      
-    Range        (me) 
-    	returns Range from IntTools; 
-    	---C++:  return  const&
-	---Purpose:
-	--- Returns boundaries for edge
-	---
-
---    
-    IsEqDistance(myclass; 
-    	    	 aP:  Pnt from gp; 
-		 aS:  Surface from  BRepAdaptor; 
-		 aT:  Real from Standard; 
-		 aD:out Real from Standard)  
-	returns Boolean from Standard;
-    	---Purpose:
-	--- 
-	---
---
-
-    -----------------------------------------------------
-    --  Block  of  private methods of  the  algorithm  --
-    -----------------------------------------------------    
-
-    CheckData  (me:out)    	    is private;
-	    	 
-    Prepare    (me:out)    	    is private; 
-
-    IsProjectable         (me; t:Real from Standard)   
-    	returns  Boolean from Standard  
-    	is private; 
-     
-    FindProjectableRoot	  (me:out;   
-    	    	    	   t1,t2:Real from Standard; 
-    	    	    	   f1,f2:Integer from Standard; 
-    	    	    	   tRoot:out Real from Standard) 
-    	is private; 
-	 
-    DistanceFunction      (me:out;t:Real from Standard)   
-    	returns  Real from Standard   
-    	is private; 
-
-    DerivativeFunction    (me:out;t:Real from Standard)   
-    	returns  Real from Standard   
-    	is private;  
-	
-    PrepareArgsFuncArrays (me:out;t1,t2:Real from Standard)   
-    	is private; 
-	 
-
-    AddDerivativePoints   (me:out;  t,f:CArray1OfReal from IntTools)  
-     	is private; 
-
-
-    FindSimpleRoot        (me:out; IP:Integer  from  Standard; 
-    	    	    	   ta, tb, fA:Real from Standard) 
-	returns  Real from Standard   
-    	is  private;    
-	 
-    FindGoldRoot          (me:out;  ta, tb, coeff:Real from Standard) 
-	returns  Real from Standard   
-    	is  private;   
-
-    MakeType              (me:out; 
-    	    	    	   aCP: out CommonPrt from IntTools) 
-        returns  Integer from Standard   
-    	is  private; 
-	    	 
+    IsDone (me)   
+        returns Boolean from Standard;
+    ---Purpose:
+    --- Returns true if computation was done
+    --- successfully, otherwise returns false
     
-    IsIntersection        (me:out; ta,tb:Real from Standard)   
-    	is  private;  
-	 
-    FindDerivativeRoot    (me:out;t,f:CArray1OfReal from IntTools)   
-    	is  private;  
+    ErrorStatus(me) 
+     returns Integer from Standard;
+    ---Purpose:
+    --- Returns code of completion
+    --- 0 - means successful completion
+    --- 1 - the process was not started
+    --- 2,3,4,5 - invalid source data for the algorithm
+    --- 6 - discretization failed
+    --- 7 - no projectable ranges found
+    --- 11 - distance computing error
+ 
+    CommonParts (me) 
+        returns SequenceOfCommonPrts from IntTools;   
+    ---C++:  return  const&
+    ---Purpose:
+    --- Returns results
+      
+    Range (me) 
+        returns Range from IntTools; 
+    ---C++:  return  const&
+    ---Purpose:
+    --- Returns boundaries for edge
+ 
+    IsEqDistance(myclass; 
+            aP:  Pnt from gp; 
+            aS:  Surface from  BRepAdaptor; 
+            aT:  Real from Standard; 
+            aD:out Real from Standard)  
+        returns Boolean from Standard;
+    
+    -------------------------------------------------------
+    --  Block  of  protected methods of  the  algorithm  --
+    -------------------------------------------------------    
 
---
-    RemoveIdenticalRoots(me:out) 
-    	is private;   
-	 
-    CheckTouch (me: out; 
-	    	aCP: CommonPrt from IntTools; 
-		aTX:out Real from Standard) 
-	returns Boolean from Standard	
-    	is private; 
-	 
-    CheckTouchVertex (me:out; 
-	    	aCP: CommonPrt from IntTools; 
-		aTX:out Real from Standard) 
-	returns Boolean from Standard	
-    	is private; 
---
+    CheckData (me:out)          
+        is protected;
+       
+    Prepare (me:out)          
+        is protected; 
+
+    IsProjectable (me;  
+            t:Real from Standard)   
+        returns  Boolean from Standard  
+        is protected; 
+     
+    FindProjectableRoot (me:out;   
+            t1,t2:Real from Standard; 
+            f1,f2:Integer from Standard; 
+            tRoot:out Real from Standard) 
+        is protected; 
+  
+    DistanceFunction (me:out; 
+            t:Real from Standard)   
+        returns  Real from Standard   
+        is protected; 
+
+    DerivativeFunction (me:out; 
+            t:Real from Standard)   
+        returns  Real from Standard   
+        is protected;  
+ 
+    PrepareArgsFuncArrays (me:out; 
+            t1,t2:Real from Standard)   
+        is protected; 
+  
+
+    AddDerivativePoints(me:out;   
+            t,f:CArray1OfReal from IntTools)  
+        is protected; 
+
+
+    FindSimpleRoot (me:out;  
+            IP:Integer  from  Standard; 
+            ta, tb, fA:Real from Standard) 
+        returns  Real from Standard   
+        is  protected;    
+  
+    FindGoldRoot (me:out;   
+            ta, tb, coeff:Real from Standard) 
+        returns  Real from Standard   
+        is  protected;   
+
+    MakeType (me:out;  
+            aCP: out CommonPrt from IntTools) 
+            returns  Integer from Standard   
+        is  protected; 
+       
+    
+    IsIntersection (me:out;  
+            ta,tb:Real from Standard)   
+        is  protected;  
+  
+    FindDerivativeRoot(me:out; 
+            t,f:CArray1OfReal from IntTools)   
+        is  protected;  
+
+   RemoveIdenticalRoots(me:out) 
+        is protected;   
+  
+    CheckTouch (me: out;   
+            aCP: CommonPrt from IntTools; 
+            aTX:out Real from Standard) 
+        returns Boolean from Standard 
+        is protected; 
+  
+    CheckTouchVertex (me:out;  
+            aCP: CommonPrt from IntTools; 
+            aTX:out Real from Standard) 
+        returns Boolean from Standard 
+        is protected; 
 
 fields
 --        Data
     myEdge            :  Edge  from  TopoDS; 
     myFace            :  Face  from  TopoDS; 
     myTolE            :  Real  from  Standard; 
-    myTolF            :  Real  from  Standard; 	     
-	 
+    myTolF            :  Real  from  Standard;       
+  
     myDiscret         :  Integer from Standard;  
-         	     
-    myEpsT            :  Real from Standard;     	     
+               
+    myEpsT            :  Real from Standard;           
     myEpsNull         :  Real from Standard;  
     myDeflection      :  Real from Standard;   
 
 --   data  curves
     myC              :   Curve from BRepAdaptor;  
-    myTmin           :   Real  from Standard; 	
-    myTmax           :   Real  from Standard; 	 
+    myTmin           :   Real  from Standard;  
+    myTmax           :   Real  from Standard;   
     
     myS              :   Surface from  BRepAdaptor; 
 

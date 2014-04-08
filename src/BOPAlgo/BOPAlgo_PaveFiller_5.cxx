@@ -18,24 +18,31 @@
 #include <BOPAlgo_PaveFiller.ixx>
 
 #include <NCollection_IncAllocator.hxx>
-
+//
+#include <GeomAPI_ProjectPointOnSurf.hxx>
+//
 #include <Bnd_Box.hxx>
-
+//
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <BRep_Tool.hxx>
-
+#include <BRepBndLib.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <BRep_Builder.hxx>
+//
 #include <IntTools_EdgeFace.hxx>
 #include <IntTools_Range.hxx>
 #include <IntTools_SequenceOfCommonPrts.hxx>
 #include <IntTools_CommonPrt.hxx>
-#include <BOPTools_AlgoTools.hxx>
-
+//
 #include <BOPCol_MapOfInteger.hxx>
-
+#include <BOPCol_NCVector.hxx>
+#include <BOPCol_TBB.hxx>
+//
 #include <BOPInt_Context.hxx>
-
+#include <BOPInt_Tools.hxx>
+//
 #include <BOPDS_Interf.hxx>
 #include <BOPDS_Iterator.hxx>
 #include <BOPDS_PaveBlock.hxx>
@@ -43,44 +50,104 @@
 #include <BOPDS_DataMapOfPaveBlockListOfInteger.hxx>
 #include <BOPDS_CommonBlock.hxx>
 #include <BOPDS_Pave.hxx>
-
-#include <BOPTools_AlgoTools.hxx>
 #include <BOPDS_CoupleOfPaveBlocks.hxx>
-#include <BRepBndLib.hxx>
+//
+#include <BOPTools_AlgoTools.hxx>
+//
 #include <BOPAlgo_Tools.hxx>
-#include <BOPInt_Tools.hxx>
-#include <BRepAdaptor_Curve.hxx>
-#include <BRep_Builder.hxx>
-#include <GeomAPI_ProjectPointOnSurf.hxx>
 
-
+//=======================================================================
+//class    : BOPAlgo_EdgeFace
+//purpose  : 
+//=======================================================================
+class BOPAlgo_EdgeFace : public IntTools_EdgeFace {
+ public:
+  BOPAlgo_EdgeFace()
+    : IntTools_EdgeFace(), myIE(-1), myIF(-1) {
+  };
+  //
+  ~BOPAlgo_EdgeFace(){
+  };
+  //
+  void SetIndices(const Standard_Integer nE,
+                  const Standard_Integer nF) {
+    myIE=nE;
+    myIF=nF;
+  }
+  //
+  void Indices(Standard_Integer& nE,
+               Standard_Integer& nF) {
+    nE=myIE;
+    nF=myIF;
+  }
+  //
+  void SetNewSR(const IntTools_Range& aR){
+    myNewSR=aR;
+  }
+  //
+  IntTools_Range& NewSR(){
+    return myNewSR;
+  }
+  //
+  void SetPaveBlock(const Handle(BOPDS_PaveBlock)& aPB) {
+    myPB=aPB;
+  }
+  //
+  Handle(BOPDS_PaveBlock)& PaveBlock() {
+    return myPB;
+  }
+  //
+ protected:
+  Standard_Integer myIE;
+  Standard_Integer myIF;
+  IntTools_Range myNewSR;
+  Handle(BOPDS_PaveBlock) myPB;
+};
+//
+//=======================================================================
+typedef BOPCol_NCVector<BOPAlgo_EdgeFace> BOPAlgo_VectorOfEdgeFace; 
+//
+typedef BOPCol_TBBContextFunctor 
+  <BOPAlgo_EdgeFace,
+  BOPAlgo_VectorOfEdgeFace,
+  Handle_BOPInt_Context, 
+  BOPInt_Context> BOPAlgo_EdgeFaceFunctor;
+//
+typedef BOPCol_TBBContextCnt 
+  <BOPAlgo_EdgeFaceFunctor,
+  BOPAlgo_VectorOfEdgeFace,
+  Handle_BOPInt_Context> BOPAlgo_EdgeFaceCnt;
+//
 //=======================================================================
 //function : PerformEF
 //purpose  : 
 //=======================================================================
-  void BOPAlgo_PaveFiller::PerformEF()
+void BOPAlgo_PaveFiller::PerformEF()
 {
   Standard_Integer iSize;
   //
   myErrorStatus=0;
+  //
+  FillShrunkData(TopAbs_EDGE, TopAbs_FACE);
   //
   myIterator->Initialize(TopAbs_EDGE, TopAbs_FACE);
   iSize=myIterator->ExpectedLength();
   if (!iSize) {
     return; 
   }
-  //----------------------------------------------------------------------
+  //
   Standard_Boolean bJustAdd, bV[2];
   Standard_Integer nE, nF, aDiscretize, i, aNbCPrts, iX, nV[2];
+  Standard_Integer aNbEdgeFace, k;
   Standard_Real aTolE, aTolF, aTS1, aTS2, aT1, aT2, aDeflection;
   Handle(NCollection_IncAllocator) aAllocator;
   TopAbs_ShapeEnum aType;
   BOPDS_ListIteratorOfListOfPaveBlock aIt;
+  BOPAlgo_VectorOfEdgeFace aVEdgeFace; 
+  BRep_Builder aBB;
   //-----------------------------------------------------scope f
   //
-  BRep_Builder aBB;
-  //
-  aAllocator=new NCollection_IncAllocator();
+  ////aAllocator=new NCollection_IncAllocator();
   
   BOPCol_MapOfInteger aMIEFC(100, aAllocator);
   BOPDS_IndexedDataMapOfShapeCoupleOfPaveBlocks aMVCPB(100, aAllocator);
@@ -111,8 +178,6 @@
     //
     BOPDS_FaceInfo& aFI=myDS->ChangeFaceInfo(nF);
     const BOPDS_IndexedMapOfPaveBlock& aMPBF=aFI.PaveBlocksOn();
-    const BOPCol_MapOfInteger& aMIFOn=aFI.VerticesOn();
-    const BOPCol_MapOfInteger& aMIFIn=aFI.VerticesIn();
     //
     aTolE=BRep_Tool::Tolerance(aE);
     aTolF=BRep_Tool::Tolerance(aF);
@@ -128,10 +193,7 @@
       }
       //
       if (!aPB->HasShrunkData()) {
-        FillShrunkData(aPB);
-        if (myWarningStatus) {
-          continue;
-        }
+        continue;
       }
       //
       Bnd_Box aBBE;
@@ -141,8 +203,10 @@
         continue;
       }
       //
-      // -----------f
-      IntTools_EdgeFace aEdgeFace;
+      BOPAlgo_EdgeFace& aEdgeFace=aVEdgeFace.Append1();
+      //
+      aEdgeFace.SetIndices(nE, nF);
+      aEdgeFace.SetPaveBlock(aPB);
       //
       aEdgeFace.SetEdge (aE);
       aEdgeFace.SetFace (aF);
@@ -150,45 +214,69 @@
       aEdgeFace.SetTolF (aTolF);
       aEdgeFace.SetDiscretize (aDiscretize);
       aEdgeFace.SetDeflection (aDeflection);
-      aEdgeFace.SetContext(myContext);
       //
       IntTools_Range aSR(aTS1, aTS2);
       IntTools_Range anewSR=aSR;
       BOPTools_AlgoTools::CorrectRange(aE, aF, aSR, anewSR);
+      aEdgeFace.SetNewSR(anewSR);
       //
       aPB->Range(aT1, aT2);
       IntTools_Range aPBRange(aT1, aT2);
       aSR = aPBRange;
       BOPTools_AlgoTools::CorrectRange(aE, aF, aSR, aPBRange);
-      //
       aEdgeFace.SetRange (aPBRange);
       //
-      aEdgeFace.Perform();
-      if (!aEdgeFace.IsDone()) {
-        continue;
-      }
-      //
-      aPB->Indices(nV[0], nV[1]);
-      //
-      const IntTools_SequenceOfCommonPrts& aCPrts=aEdgeFace.CommonParts();
-      aNbCPrts=aCPrts.Length();
-      for (i=1; i<=aNbCPrts; ++i) {
-        const IntTools_CommonPrt& aCPart=aCPrts(i);
-        aType=aCPart.Type();
-        switch (aType) {
+    }//for (; aIt.More(); aIt.Next()) {
+  }//for (; myIterator->More(); myIterator->Next()) {
+  //
+  aNbEdgeFace=aVEdgeFace.Extent();
+  //=================================================================
+  BOPAlgo_EdgeFaceCnt::Perform(myRunParallel, aVEdgeFace, myContext);
+  //=================================================================
+  //
+  for (k=0; k < aNbEdgeFace; ++k) {
+    BOPAlgo_EdgeFace& aEdgeFace=aVEdgeFace(k);
+    if (!aEdgeFace.IsDone()) {
+      continue;
+    }
+    //~~~
+    aEdgeFace.Indices(nE, nF);
+    //
+    const TopoDS_Edge& aE=aEdgeFace.Edge();
+    const TopoDS_Face& aF=aEdgeFace.Face();
+    //
+    aTolE=aEdgeFace.TolE();
+    aTolF=aEdgeFace.TolF();
+    const IntTools_Range& anewSR=aEdgeFace.NewSR();
+    Handle(BOPDS_PaveBlock)& aPB=aEdgeFace.PaveBlock();
+    //
+    aPB->Range(aT1, aT2);
+    aPB->Indices(nV[0], nV[1]);
+    //
+    BOPDS_FaceInfo& aFI=myDS->ChangeFaceInfo(nF);
+    ////const BOPDS_IndexedMapOfPaveBlock& aMPBF=aFI.PaveBlocksOn();
+    const BOPCol_MapOfInteger& aMIFOn=aFI.VerticesOn();
+    const BOPCol_MapOfInteger& aMIFIn=aFI.VerticesIn();
+    //~~~
+    const IntTools_SequenceOfCommonPrts& aCPrts=aEdgeFace.CommonParts();
+    aNbCPrts=aCPrts.Length();
+    for (i=1; i<=aNbCPrts; ++i) {
+      const IntTools_CommonPrt& aCPart=aCPrts(i);
+      aType=aCPart.Type();
+      switch (aType) {
         case TopAbs_VERTEX:  {
           Standard_Boolean bIsOnPave[2];
           Standard_Integer j;
           Standard_Real aT, aTolToDecide; 
           TopoDS_Vertex aVnew;
-          
+          //
           BOPInt_Tools::VertexParameter(aCPart, aT);
           BOPTools_AlgoTools::MakeNewVertex(aE, aT, aF, aVnew);
           //
           const IntTools_Range& aR=aCPart.Range1();
           aTolToDecide=5.e-8;
           //
-          IntTools_Range aR1(aT1, anewSR.First()), aR2(anewSR.Last(), aT2);
+          IntTools_Range aR1(aT1,anewSR.First()),aR2(anewSR.Last(), aT2);
           //
           bIsOnPave[0]=BOPInt_Tools::IsInRange(aR1, aR, aTolToDecide); 
           bIsOnPave[1]=BOPInt_Tools::IsInRange(aR2, aR, aTolToDecide); 
@@ -213,7 +301,8 @@
             if (bIsOnPave[j]) {
               bV[j]=CheckFacePaves(nV[j], aMIFOn, aMIFIn);
               if (bV[j]) {
-                const TopoDS_Vertex& aV = (*(TopoDS_Vertex *)(&myDS->Shape(nV[j])));
+                const TopoDS_Vertex& aV=
+                  (*(TopoDS_Vertex *)(&myDS->Shape(nV[j])));
                 BOPTools_AlgoTools::UpdateVertex(aE, aT, aV);
                 BOPDS_ShapeInfo& aSIDS=myDS->ChangeShapeInfo(nV[j]);
                 Bnd_Box& aBoxDS=aSIDS.ChangeBox();
@@ -231,7 +320,9 @@
             }
             //
             const gp_Pnt& aPnew = BRep_Tool::Pnt(aVnew);
-            if (!myContext->IsValidPointForFace(aPnew, aF, aTolE+aTolF)) {
+            if (!myContext->IsValidPointForFace(aPnew, 
+                                                aF, 
+                                                aTolE+aTolF)) {
               continue;
             }
             //
@@ -283,11 +374,9 @@
           break; 
         default:
           break; 
-        }//switch (aType) {
-      }//for (i=1; i<=aNbCPrts; ++i) {
-      // -----------t
-    }//for (; aIt.More(); aIt.Next()) {
-  }//for (; myIterator->More(); myIterator->Next()) {
+      }//switch (aType) {
+    }//for (i=1; i<=aNbCPrts; ++i) {
+  }// for (k=0; k < aNbEdgeEdge; ++k) {
   // 
   //=========================================
   // post treatment
@@ -309,17 +398,15 @@
   aMIEFC.Clear();
   aMVCPB.Clear();
   aMPBLI.Clear();
-  aAllocator.Nullify();
-  //
-  
+  ////aAllocator.Nullify();
 }
 //=======================================================================
 //function : PerformVertices1
 //purpose  : 
 //=======================================================================
-  Standard_Integer BOPAlgo_PaveFiller::PerformVerticesEF
-    (BOPDS_IndexedDataMapOfShapeCoupleOfPaveBlocks& theMVCPB,
-     Handle(NCollection_BaseAllocator)& theAllocator)
+Standard_Integer BOPAlgo_PaveFiller::PerformVerticesEF
+  (BOPDS_IndexedDataMapOfShapeCoupleOfPaveBlocks& theMVCPB,
+   Handle(NCollection_BaseAllocator)& theAllocator)
 {
   Standard_Integer aNbV, iRet;
   //
@@ -452,9 +539,10 @@
 // function: CheckFacePaves
 // purpose: 
 //=======================================================================
-  Standard_Boolean BOPAlgo_PaveFiller::CheckFacePaves (const Standard_Integer nVx,
-                                                       const BOPCol_MapOfInteger& aMIFOn,
-                                                       const BOPCol_MapOfInteger& aMIFIn)
+Standard_Boolean BOPAlgo_PaveFiller::CheckFacePaves 
+  (const Standard_Integer nVx,
+   const BOPCol_MapOfInteger& aMIFOn,
+   const BOPCol_MapOfInteger& aMIFIn)
 {
   Standard_Boolean bRet;
   Standard_Integer nV;
@@ -485,8 +573,9 @@
 // function: CheckFacePaves
 // purpose: 
 //=======================================================================
-  Standard_Boolean BOPAlgo_PaveFiller::CheckFacePaves (const TopoDS_Vertex& aVnew,
-                                                       const BOPCol_MapOfInteger& aMIF)
+Standard_Boolean BOPAlgo_PaveFiller::CheckFacePaves 
+  (const TopoDS_Vertex& aVnew,
+   const BOPCol_MapOfInteger& aMIF)
 {
   Standard_Boolean bRet;
   Standard_Integer nV, iFlag;
@@ -510,8 +599,9 @@
 //function : ForceInterfVF
 //purpose  : 
 //=======================================================================
-Standard_Boolean BOPAlgo_PaveFiller::ForceInterfVF(const Standard_Integer nV, 
-                                                   const Standard_Integer nF)
+Standard_Boolean BOPAlgo_PaveFiller::ForceInterfVF
+  (const Standard_Integer nV, 
+   const Standard_Integer nF)
 {
   Standard_Boolean bRet;
   //
