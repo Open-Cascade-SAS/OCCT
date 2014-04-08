@@ -22,7 +22,6 @@
 #include <V3d_View.hxx>
 #include <ViewerTest.hxx>
 #include <ViewerTest_EventManager.hxx>
-#include <TColStd_StackOfInteger.hxx>
 #include <TColStd_ListOfInteger.hxx>
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
 #include <TColStd_HSequenceOfReal.hxx>

@@ -33,7 +33,7 @@ generic class SortedStrgCmptsFromIterator from GraphTools
     --           returned before an other which point to it.
 
 
-uses StackOfInteger from TColStd,
+uses ListOfInteger from TColStd,
      ListOfSequenceOfInteger from GraphTools,
      ListIteratorOfListOfSequenceOfInteger from GraphTools     
      
@@ -105,7 +105,7 @@ fields
     myVertices : SCMap from GraphTools;
 -- algorithm    
     myNowIndex : Integer from Standard;
-    myStack    : StackOfInteger from TColStd;
+    myStack    : ListOfInteger from TColStd;
 -- result    
     mySort     : ListOfSequenceOfInteger from GraphTools;
     myIterator : ListIteratorOfListOfSequenceOfInteger from GraphTools;

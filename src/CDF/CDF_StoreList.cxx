@@ -46,7 +46,7 @@ CDF_StoreList::CDF_StoreList(const Handle(CDM_Document)& aDocument) {
 void CDF_StoreList::Add(const Handle(CDM_Document)& aDocument) {
 
   if(!myItems.Contains(aDocument) && aDocument != myMainDocument) myItems.Add(aDocument);
-  myStack.Push(aDocument);
+  myStack.Prepend(aDocument);
   
   CDM_ReferenceIterator it(aDocument);
   for (;it.More();it.Next()) {
@@ -83,9 +83,9 @@ PCDM_StoreStatus CDF_StoreList::Store (Handle(CDM_MetaData)& aMetaData, TCollect
   {
     try {
       OCC_CATCH_SIGNALS
-      for (; !myStack.IsEmpty(); myStack.Pop()) {
+      for (; !myStack.IsEmpty(); myStack.RemoveFirst()) {
 
-        Handle(CDM_Document) theDocument = myStack.Top();
+        Handle(CDM_Document) theDocument = myStack.First();
         if( theDocument == myMainDocument || theDocument->IsModified()) {
 
           if(!PCDM::FindStorageDriver(theDocument)){

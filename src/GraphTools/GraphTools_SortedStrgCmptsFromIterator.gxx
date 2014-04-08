@@ -143,7 +143,7 @@ Standard_Integer GraphTools_SortedStrgCmptsFromIterator::Visit
   myNowIndex++; 
   myVertices(k) = myNowIndex;
   MIN = myNowIndex;
-  myStack.Push(k);
+  myStack.Prepend(k);
   Standard_Integer currentVisited;
   currentVisited = myVertices.FindFromIndex (k);
   Standard_Integer adjacentIndex;
@@ -165,10 +165,10 @@ Standard_Integer GraphTools_SortedStrgCmptsFromIterator::Visit
     TColStd_SequenceOfInteger& newSC = mySort.First();
     Standard_Boolean more;
     do {
-      newSC.Append(myStack.Top());
-      myVertices(myStack.Top()) = IntegerLast();
-      more = myStack.Top() != k;
-      myStack.Pop() ; 
+      newSC.Append(myStack.First());
+      myVertices(myStack.First()) = IntegerLast();
+      more = myStack.First() != k;
+      myStack.RemoveFirst() ; 
     }
     while (more);
   }

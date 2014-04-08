@@ -58,7 +58,7 @@ static Standard_Integer OpenTran (Draw_Interpretor& di,
   if (DDF::GetDF (a[1], DF)) {
     Handle(DDF_Transaction) tr = new DDF_Transaction(DF);
     di<<"Open transaction # "<<tr->Open()<<" # "<<DF->Transaction()<<"\n";
-    DDF_TStack.Push(tr);
+    DDF_TStack.Prepend(tr);
   }
   return 0;
 }
@@ -78,10 +78,10 @@ static Standard_Integer AbortTran (Draw_Interpretor& di,
   Handle(TDF_Data) DF;
   if (DDF::GetDF (a[1], DF)) {
     if (DF->Transaction () > 0) {
-      Handle(DDF_Transaction) tr = DDF_TStack.Top();
+      Handle(DDF_Transaction) tr = DDF_TStack.First();
       di<<"Abort transaction # "<<tr->Transaction()<<" # "<<DF->Transaction()<<"\n";
       tr->Abort();
-      DDF_TStack.Pop();
+      DDF_TStack.RemoveFirst();
     }
     else {
       di<<"DDF_BasicCommands::AbortTran - No more transaction to abort"<<"\n";
@@ -105,12 +105,12 @@ static Standard_Integer CommitTran (Draw_Interpretor& di,
   Handle(TDF_Data) DF;
   if (DDF::GetDF (a[1], DF)) {
     if (DF->Transaction () > 0) {
-      Handle(DDF_Transaction) tr = DDF_TStack.Top();
+      Handle(DDF_Transaction) tr = DDF_TStack.First();
       di<<"Commit transaction # "<<tr->Transaction()<<" # "<<DF->Transaction()<<"\n";
       Standard_Boolean withDelta = Standard_False;
       if (n > 2) withDelta = (Draw::Atoi(a[2]) != 0);
       DDF_LastDelta = tr->Commit(withDelta);
-      DDF_TStack.Pop();
+      DDF_TStack.RemoveFirst();
     }
     else {
       di<<"DDF_BasicCommands::CommitTran - No more transaction to commit"<<"\n";
@@ -135,8 +135,8 @@ static Standard_Integer CurrentTran (Draw_Interpretor& di,
   if (DDF::GetDF (a[1], DF)) {
     di<<"# "<<DF->Transaction()<<"\n";
     if (!DDF_TStack.IsEmpty())
-      if (DF->Transaction() != DDF_TStack.Top()->Transaction())
-	di<<"Transaction object said # "<<DDF_TStack.Top()->Transaction()<<"\n";
+      if (DF->Transaction() != DDF_TStack.First()->Transaction())
+	di<<"Transaction object said # "<<DDF_TStack.First()->Transaction()<<"\n";
   }
   return 0;
 

@@ -17,7 +17,6 @@
 #define QANCollection_PerfLists_HeaderFile
 
 #include <QANCollection_ListOfPnt.hxx>
-#include <QANCollection_StackOfPnt.hxx>
 #include <TColgp_SequenceOfPnt.hxx>
 #include <TColStd_SetOfInteger.hxx>
 
@@ -88,92 +87,6 @@ void CompList (const Standard_Integer theRep,
       a2.Clear();
       ////////////////////////////////aTClea.Stop();
       PERF_STOP_METER("TCollection_List clearing")
-    }
-  PERF_PRINT_ALL
-}
-
-
-// ===================== Test perform of Stack type ==========================
-void CompStack (const Standard_Integer theRep,
-                const Standard_Integer theSize)
-{
-  Standard_Integer i,j;
-
-  ////////////////////////////////Perf_Meter aNPush ("NCollection_Stack pushing",0);
-  ////////////////////////////////Perf_Meter aTPush ("TCollection_Stack pushing",0);
-  ////////////////////////////////Perf_Meter aNPopp ("NCollection_Stack popping",0);
-  ////////////////////////////////Perf_Meter aTPopp ("TCollection_Stack popping",0);
-  ////////////////////////////////Perf_Meter aNOper ("NCollection_Stack operator=",0);
-  ////////////////////////////////Perf_Meter aTOper ("TCollection_Stack operator=",0);
-  ////////////////////////////////Perf_Meter aNClea ("NCollection_Stack clearing",0);
-  ////////////////////////////////Perf_Meter aTClea ("TCollection_Stack clearing",0);
-  ////////////////////////////////Perf_Meter aNAssi ("NCollection_Stack Assign",0);
-  for (i=0; i<theRep; i++)
-    {
-      ////////////////////////////////QANCollection_Stack a1, a2;
-      QANCollection_StackPerf a1, a2;
-      ////////////////////////////////aNPush.Start();
-      PERF_START_METER("NCollection_Stack pushing")
-      for (j=1; j<=theSize; j++)
-        {
-          ItemType anItem;
-          Random(anItem);
-          a1.Push(anItem);
-        }
-      ////////////////////////////////aNPush.Stop();
-      PERF_STOP_METER("NCollection_Stack pushing")
-      ////////////////////////////////aNOper.Start();
-      PERF_START_METER("NCollection_Stack operator=")
-      a2 = a1;
-      ////////////////////////////////aNOper.Stop();
-      PERF_STOP_METER("NCollection_Stack operator=")
-      ////////////////////////////////aNAssi.Start();
-      PERF_START_METER("NCollection_Stack Assign")
-      a2.Assign(a1);
-      ////////////////////////////////aNAssi.Stop();
-      PERF_STOP_METER("NCollection_Stack Assign")
-      ////////////////////////////////aNPopp.Start();
-      PERF_START_METER("NCollection_Stack popping")
-      for (j=1; j<=theSize; j++)
-        a1.Pop();
-      ////////////////////////////////aNPopp.Stop();
-      PERF_STOP_METER("NCollection_Stack popping")
-      ////////////////////////////////aNClea.Start();
-      PERF_START_METER("NCollection_Stack clearing")
-      a2.Clear();
-      ////////////////////////////////aNClea.Stop();
-      PERF_STOP_METER("NCollection_Stack clearing")
-    }
-
-  for (i=0; i<theRep; i++)
-    {
-      QANCollection_StackOfPnt a1, a2;
-      ////////////////////////////////aTPush.Start();
-      PERF_START_METER("TCollection_Stack pushing")
-      for (j=1; j<=theSize; j++)
-        {
-          ItemType anItem;
-          Random(anItem);
-          a1.Push(anItem);
-        }
-      ////////////////////////////////aTPush.Stop();
-      PERF_STOP_METER("TCollection_Stack pushing")
-      ////////////////////////////////aTOper.Start();
-      PERF_START_METER("TCollection_Stack operator=")
-      a2 = a1;
-      ////////////////////////////////aTOper.Stop();
-      PERF_STOP_METER("TCollection_Stack operator=")
-      ////////////////////////////////aTPopp.Start();
-      PERF_START_METER("TCollection_Stack popping")
-      for (j=1; j<=theSize; j++)
-        a1.Pop();
-      ////////////////////////////////aTPopp.Stop();
-      PERF_STOP_METER("TCollection_Stack popping")
-      ////////////////////////////////aTClea.Start();
-      PERF_START_METER("TCollection_Stack clearing")
-      a2.Clear();
-      ////////////////////////////////aTClea.Stop();
-      PERF_STOP_METER("TCollection_Stack clearing")
     }
   PERF_PRINT_ALL
 }

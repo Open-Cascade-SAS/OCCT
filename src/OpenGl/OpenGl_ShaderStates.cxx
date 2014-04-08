@@ -43,7 +43,7 @@ Standard_Size OpenGl_StateInterface::Index() const
 // =======================================================================
 void OpenGl_StateInterface::Update()
 {
-  myStateStack.Push (myIndex);
+  myStateStack.Prepend (myIndex);
   myIndex = myNextIndex;
   ++myNextIndex;
 }
@@ -56,8 +56,8 @@ void OpenGl_StateInterface::Revert()
 {
   if (!myStateStack.IsEmpty())
   {
-    myIndex = myStateStack.Top();
-    myStateStack.Pop();
+    myIndex = myStateStack.First();
+    myStateStack.RemoveFirst();
   }
   else
   {

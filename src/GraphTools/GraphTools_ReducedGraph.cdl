@@ -69,7 +69,7 @@ generic class ReducedGraph from GraphTools
 uses  SC                   from GraphTools,
       SCList               from GraphTools,
       ListIteratorOfSCList from GraphTools,
-      StackOfInteger       from TColStd
+      ListOfInteger       from TColStd
 
 raises NoSuchObject from Standard,
        NoMoreObject from Standard,
@@ -233,7 +233,7 @@ fields
 -- algorithm    
     performed   : Boolean from Standard;
     myNowIndex  : Integer from Standard;
-    myStack     : StackOfInteger from TColStd;
+    myStack     : ListOfInteger from TColStd;
 -- result
     mySort      : SCList from GraphTools;
 

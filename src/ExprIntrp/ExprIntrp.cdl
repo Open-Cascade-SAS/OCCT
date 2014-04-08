@@ -43,17 +43,17 @@ is
     exception SyntaxError inherits Failure from Standard;
     
     private class StackOfGeneralExpression instantiates 
-    	Stack from TCollection (GeneralExpression from Expr);
+    	List from TCollection (GeneralExpression from Expr);
     
     private class StackOfGeneralRelation instantiates 
-    	Stack from TCollection (GeneralRelation from Expr);
+    	List from TCollection (GeneralRelation from Expr);
 
     private class StackOfGeneralFunction instantiates 
-    	Stack from TCollection (GeneralFunction from Expr);
+    	List from TCollection (GeneralFunction from Expr);
         
     
     private class StackOfNames instantiates 
-    	Stack from TCollection (AsciiString from TCollection);
+    	List from TCollection (AsciiString from TCollection);
 
     Parse(gen : Generator; str : AsciiString from TCollection)
     returns Boolean

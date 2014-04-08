@@ -23,7 +23,6 @@
 --               - Sequence, HSequence
 --               - Set, HSet
 --               - List
---               - Stack
 --               - BasicMap, BasicMapIterator
 --               - Map, DataMap, DoubleMap, IndexedMap, IndexedDataMap
 
@@ -51,9 +50,6 @@ is
     generic class Array2;
     
     generic class HArray2;
-    
-    generic class Stack, StackNode, StackIterator;
-	---Purpose: A stack handled by value.
    
     generic class List, ListNode, ListIterator;
 	---Purpose: A single list handled by value.

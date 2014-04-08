@@ -49,7 +49,7 @@ is
 	---Purpose: Encapsulates a Transaction from TDF.
 
     class TransactionStack
-    	instantiates Stack from TCollection (Transaction from DDF);
+    	instantiates List from TCollection (Transaction from DDF);
 
     -- ----------------------------------------------------------------------
     -- Package methods

@@ -118,7 +118,7 @@ void TDF_Data::Destroy()
 
 Standard_Integer TDF_Data::OpenTransaction() 
 {
-  myTimes.Push(myTime);
+  myTimes.Prepend(myTime);
   return ++myTransaction;
 }
 
@@ -148,7 +148,7 @@ Handle(TDF_Delta) TDF_Data::CommitTransaction
     --myTransaction;
     if (withDelta) {
       if (!delta->IsEmpty()) {
-        delta->Validity(myTimes.Top(),myTime);
+        delta->Validity(myTimes.First(),myTime);
 #ifdef DEB_DELTA
         if (myTransaction == 0) {
           cout<<"TDF_Data::Commit generated this delta in t=0:"<<endl;
@@ -163,7 +163,7 @@ Handle(TDF_Delta) TDF_Data::CommitTransaction
       }
 #endif
     }
-    myTimes.Pop();
+    myTimes.RemoveFirst();
   }
   TDF_Data_DebugModified("COMMIT");
   return delta;

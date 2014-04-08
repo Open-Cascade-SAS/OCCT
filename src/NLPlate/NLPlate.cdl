@@ -34,7 +34,7 @@ is
 --  
 
 -- utilities and internal Classes
-    class StackOfPlate instantiates Stack from TCollection  
+    class StackOfPlate instantiates List from TCollection  
                                        (Plate from Plate);   
     class SequenceOfHGPPConstraint instantiates Sequence from TCollection  
                                        (HGPPConstraint);   

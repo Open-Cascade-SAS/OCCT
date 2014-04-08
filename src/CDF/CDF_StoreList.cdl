@@ -21,7 +21,7 @@ uses
     StackOfDocument from CDM,
     MapOfDocument from CDM,
     MapIteratorOfMapOfDocument from CDM,
-    StackIteratorOfStackOfDocument from CDM,
+    ListIteratorOfStackOfDocument from CDM,
     MetaData from CDM,
     ExtendedString from TCollection,
     StoreStatus from PCDM

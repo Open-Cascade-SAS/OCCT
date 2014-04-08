@@ -24,35 +24,35 @@ ExprIntrp_Analysis::ExprIntrp_Analysis() {}
 
 void ExprIntrp_Analysis::Push(const Handle(Expr_GeneralExpression)& exp) 
 {
-  myGEStack.Push(exp);
+  myGEStack.Prepend(exp);
 }
 
 void ExprIntrp_Analysis::PushRelation(const Handle(Expr_GeneralRelation)& rel) 
 {
-  myGRStack.Push(rel);
+  myGRStack.Prepend(rel);
 }
 
 void ExprIntrp_Analysis::PushFunction(const Handle(Expr_GeneralFunction)& func)
 {
-  myGFStack.Push(func);
+  myGFStack.Prepend(func);
 }
 
 void ExprIntrp_Analysis::PushName(const TCollection_AsciiString& name) 
 {
-  myNameStack.Push(name);
+  myNameStack.Prepend(name);
 }
 
 void ExprIntrp_Analysis::PushValue(const Standard_Integer val) 
 {
-  myValueStack.Push(val);
+  myValueStack.Prepend(val);
 }
 
 Handle(Expr_GeneralExpression) ExprIntrp_Analysis::Pop()
 {
   Handle(Expr_GeneralExpression) res;
   if (!myGEStack.IsEmpty()) {
-    res = myGEStack.Top();
-    myGEStack.Pop();
+    res = myGEStack.First();
+    myGEStack.RemoveFirst();
   }
   return res;
 }
@@ -61,8 +61,8 @@ Handle(Expr_GeneralRelation) ExprIntrp_Analysis::PopRelation()
 {
   Handle(Expr_GeneralRelation) res;
   if (!myGRStack.IsEmpty()) {
-    res = myGRStack.Top();
-    myGRStack.Pop();
+    res = myGRStack.First();
+    myGRStack.RemoveFirst();
   }
   return res;
 }
@@ -71,8 +71,8 @@ Handle(Expr_GeneralFunction) ExprIntrp_Analysis::PopFunction()
 {
   Handle(Expr_GeneralFunction) res;
   if (!myGFStack.IsEmpty()) {
-    res = myGFStack.Top();
-    myGFStack.Pop();
+    res = myGFStack.First();
+    myGFStack.RemoveFirst();
   }
   return res;
 }
@@ -81,8 +81,8 @@ TCollection_AsciiString ExprIntrp_Analysis::PopName()
 {
   TCollection_AsciiString res;
   if (!myNameStack.IsEmpty()) {
-    res = myNameStack.Top();
-    myNameStack.Pop();
+    res = myNameStack.First();
+    myNameStack.RemoveFirst();
   }
   return res;
 }
@@ -91,8 +91,8 @@ Standard_Integer ExprIntrp_Analysis::PopValue()
 {
   Standard_Integer res =0;
   if (!myValueStack.IsEmpty()) {
-    res = myValueStack.Top();
-    myValueStack.Pop();
+    res = myValueStack.First();
+    myValueStack.RemoveFirst();
   }
   return res;
 }

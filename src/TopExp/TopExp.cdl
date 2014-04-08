@@ -38,9 +38,6 @@ uses
 
 is
 
-    private class StackOfIterator instantiates 
-    	Stack from TCollection (Iterator from TopoDS);
-
     pointer Stack to Iterator from TopoDS;
     
     class Explorer;

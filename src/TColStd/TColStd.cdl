@@ -172,14 +172,6 @@ class ListOfTransient   instantiates List from TCollection(Transient);
 class ListOfAsciiString instantiates List from TCollection(AsciiString from TCollection);
 
 --                    
---       Instantiations Stack (Integer,Real,Transient)
---       *********************************************
---       
-class StackOfInteger   instantiates Stack from TCollection(Integer  );
-class StackOfReal      instantiates Stack from TCollection(Real     );
-class StackOfTransient instantiates Stack from TCollection(Transient);
-
---                    
 --       Instantiations MapHasher (Integer,Real, Transient, Persistent)
 --       **************************************************************
 --       

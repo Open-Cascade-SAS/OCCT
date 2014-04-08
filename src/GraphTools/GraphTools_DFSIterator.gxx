@@ -16,7 +16,7 @@
 
 #include <Standard_NoMoreObject.hxx>
 #include <Standard_NoSuchObject.hxx>
-#include <TColStd_StackOfInteger.hxx>
+#include <TColStd_ListOfInteger.hxx>
 
 //=======================================================================
 //function : GraphTools_DFSIterator
@@ -36,18 +36,18 @@ void GraphTools_DFSIterator::Perform
 {  
   Standard_Integer index;
   myVisited.Clear();
-  TColStd_StackOfInteger myReady;
+  TColStd_ListOfInteger myReady;
  
   index = myVisited.Add(V);
-  myReady.Push(index);
+  myReady.Prepend(index);
   while (!myReady.IsEmpty()) {
-    Vertex w1 = myVisited (myReady.Top());
-    myReady.Pop();
+    Vertex w1 = myVisited (myReady.First());
+    myReady.RemoveFirst();
     for (VIterator it(G,w1); it.More(); it.Next()) {
       Vertex w2 = it.Value();      
       if (!myVisited.Contains(w2)) {
 	index = myVisited.Add(w2); 
-	myReady.Push(index);
+	myReady.Prepend(index);
       }
     }
   }

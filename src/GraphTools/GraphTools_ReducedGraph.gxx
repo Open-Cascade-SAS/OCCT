@@ -220,7 +220,7 @@ Standard_Integer GraphTools_ReducedGraph::Visit
   myNowIndex++; 
   myVertices(k).SetVisited(myNowIndex);
   MIN = myNowIndex;
-  myStack.Push(k);
+  myStack.Prepend(k);
   Standard_Integer currentVisited;
   currentVisited = myVertices(k).GetVisited();
   Standard_Integer adjacentIndex;
@@ -242,11 +242,11 @@ Standard_Integer GraphTools_ReducedGraph::Visit
     Handle(GraphTools_SC) SC = new GraphTools_SC();
     Standard_Boolean more;
     do {
-      SC->AddVertex(myStack.Top());
-      myVertices(myStack.Top()).SetVisited(IntegerLast());
-      myVertices(myStack.Top()).SetSC(SC);
-      more = myStack.Top() != k;
-      myStack.Pop() ; 
+      SC->AddVertex(myStack.First());
+      myVertices(myStack.First()).SetVisited(IntegerLast());
+      myVertices(myStack.First()).SetSC(SC);
+      more = myStack.First() != k;
+      myStack.RemoveFirst() ; 
     }
     while (more);
     mySort.Prepend(SC);  

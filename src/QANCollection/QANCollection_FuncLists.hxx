@@ -70,40 +70,6 @@ void TestList (QANCollection_ListFunc&     theL)
   aL.Clear();
 }
 
-// ===================== Test methods of Stack type ===========================
-////////////////////////////////void TestStack (QANCollection_Stack& theS)
-void TestStack (QANCollection_StackFunc& theS)
-{
-  // Depth
-  Standard_Integer iDep=theS.Depth();
-  Standard_Integer i;
-
-  printf ("Info: testing Stack(%d)\n", iDep);
-  // Push, Pop, Top, ChangeTop
-  ItemType anItem;
-  ////////////////////////////////QANCollection_Stack aS;
-  QANCollection_StackFunc aS;
-  for (i=0; i<4; i++)
-  {
-    Random (anItem);
-    aS.Push (anItem);
-    Random(aS.ChangeTop());
-    Random (anItem);
-    aS.Push (anItem);
-    PrintItem(aS.Top());
-    aS.Pop();
-  }
-  // Copy constructor + operator=
-  ////////////////////////////////theS = QANCollection_Stack(aS);
-  theS = QANCollection_StackFunc(aS);
-
-  // Assign
-  AssignCollection (theS, aS);
-
-  // Clear
-  aS.Clear();
-}
-
 // ===================== Test methods of Set type =============================
 ////////////////////////////////void TestSet (QANCollection_Set& theS)
 void TestSet (QANCollection_SetFunc& theS)

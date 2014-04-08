@@ -41,7 +41,7 @@ uses
     LabelNodePtr           from TDF,
     Delta                  from TDF,
     IDFilter               from TDF,
-    StackOfInteger         from TColStd,
+    ListOfInteger         from TColStd,
     HAllocator             from TDF
 
 raises
@@ -226,7 +226,7 @@ fields
     myNbTouchedAtt      : Integer               from Standard;
     myNotUndoMode       : Boolean               from Standard;
     myTime              : Integer               from Standard;
-    myTimes             : StackOfInteger        from TColStd;
+    myTimes             : ListOfInteger         from TColStd;
     myLabelNodeAllocator: HAllocator            from TDF;
     myAllowModification : Boolean               from Standard;
 
