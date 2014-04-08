@@ -24,7 +24,6 @@ uses
 is
     class  ListOfPnt   instantiates  List  from  TCollection    (Pnt  from  gp);
     class  StackOfPnt  instantiates  Stack from  TCollection    (Pnt  from  gp);
-    class  SListOfPnt  instantiates  SList from  TCollection    (Pnt  from  gp);
     class  DataMapOfRealPnt instantiates DataMap from TCollection  
                                         (Real from Standard, 
                                          Pnt from gp, 

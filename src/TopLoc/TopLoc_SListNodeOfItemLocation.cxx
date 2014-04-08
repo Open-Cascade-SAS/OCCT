@@ -12,18 +12,5 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-inline TCollection_SListNode::TCollection_SListNode(const Item& I, const TCollection_SList& T) 
-: myTail(T),myValue(I) 
-{
-}
-
-inline TCollection_SList& TCollection_SListNode::Tail() const
-{
-  return (TCollection_SList&)myTail;
-}
-
-inline Item& TCollection_SListNode::Value() const
-{
-  return (Item&)myValue;
-}
+#include <TopLoc_SListNodeOfItemLocation.ixx>
 

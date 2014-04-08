@@ -156,46 +156,6 @@ void TestSet (QANCollection_SetFunc& theS)
   aSet.Clear();
 }
 
-// ===================== Test methods of SList type ===========================
-////////////////////////////////void TestSList (QANCollection_SList&     theSL)
-void TestSList (QANCollection_SListFunc&     theSL)
-{
-  printf ("Info: testing SList\n");
-  ItemType anItem;
-  ////////////////////////////////QANCollection_SList aSL, aSL1;
-  QANCollection_SListFunc aSL, aSL1;
-
-  // Construct, Constructed, operator=, IsEmpty
-  Random(anItem);
-  aSL.Construct(anItem);
-  Random(anItem);
-  aSL1 = aSL.Constructed(anItem);
-  if (aSL.IsEmpty())
-    printf ("Error   : SList must not be empty\n");
-  printCollection(aSL1,"aSL1");
-  
-  Random(anItem);
-  aSL.Construct(anItem);
-  // SetTail
-  aSL.SetTail(aSL1);
-  printCollection(aSL,"aSL");
-
-  // ChangeValue
-  Random(aSL1.Tail().ChangeValue());
-  // ChangeTail, ToTail
-  Random(anItem);
-  theSL.Construct(anItem);
-  printCollection(theSL,"theSL");
-  theSL.ChangeTail() = aSL;
-  printCollection(theSL,"theSL");
-
-  // Assign
-  AssignCollection (aSL, theSL);
-
-  // Clear
-  aSL.Clear();
-}
-
 // ===================== Test methods of Sequence type ========================
 ////////////////////////////////void TestSequence (QANCollection_Sequence& theS)
 void TestSequence (QANCollection_SequenceFunc& theS)

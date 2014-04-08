@@ -36,7 +36,6 @@
 // Standard_EXPORT void TestList    (QANCollection_List&       theLi);
 // Standard_EXPORT void TestStack   (QANCollection_Stack&      theSt);
 // Standard_EXPORT void TestSet     (QANCollection_Set&        theSe);
-// Standard_EXPORT void TestSList   (QANCollection_SList&      theSL);
 // Standard_EXPORT void TestSequence(QANCollection_Sequence&   theSq);
 #include <QANCollection_FuncLists.hxx>
 

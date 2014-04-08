@@ -17,7 +17,6 @@
 #define QANCollection_PerfLists_HeaderFile
 
 #include <QANCollection_ListOfPnt.hxx>
-#include <QANCollection_SListOfPnt.hxx>
 #include <QANCollection_StackOfPnt.hxx>
 #include <TColgp_SequenceOfPnt.hxx>
 #include <TColStd_SetOfInteger.hxx>
@@ -269,78 +268,6 @@ void CompSet (const Standard_Integer theRep,
       a2.Clear();
       ////////////////////////////////aTClea.Stop();
       PERF_STOP_METER("TCollection_Set clearing")
-    }
-  PERF_PRINT_ALL
-}
-
-
-// ===================== Test perform of SList type ==========================
-void CompSList (const Standard_Integer theRep,
-                const Standard_Integer theSize)
-{
-  Standard_Integer i,j;
-
-  ////////////////////////////////Perf_Meter aNAppe ("NCollection_SList constructing",0);
-  ////////////////////////////////Perf_Meter aTAppe ("TCollection_SList constructing",0);
-  ////////////////////////////////Perf_Meter aNOper ("NCollection_SList operator=",0);
-  ////////////////////////////////Perf_Meter aTOper ("TCollection_SList operator=",0);
-  ////////////////////////////////Perf_Meter aNAssi ("NCollection_SList Assign",0);
-  ////////////////////////////////Perf_Meter aNClea ("NCollection_SList clearing",0);
-  ////////////////////////////////Perf_Meter aTClea ("TCollection_SList clearing",0);
-  for (i=0; i<theRep; i++)
-    {
-      ////////////////////////////////QANCollection_SList a1, a2;
-      QANCollection_SListPerf a1, a2;
-      ////////////////////////////////aNAppe.Start();
-      PERF_START_METER("NCollection_SList constructing")
-      for (j=1; j<=theSize; j++)
-      {
-        ItemType anItem;
-        Random(anItem);
-        a1.Construct(anItem);
-      }
-    ////////////////////////////////aNAppe.Stop();
-    PERF_STOP_METER("NCollection_SList constructing")
-    ////////////////////////////////aNOper.Start();
-    PERF_START_METER("NCollection_SList operator=")
-    a2 = a1;
-    ////////////////////////////////aNOper.Stop();
-    PERF_STOP_METER("NCollection_SList operator=")
-    ////////////////////////////////aNAssi.Start();
-    PERF_START_METER("NCollection_SList Assign")
-    a2.Assign(a1);
-    ////////////////////////////////aNAssi.Stop();
-    PERF_STOP_METER("NCollection_SList Assign")
-    ////////////////////////////////aNClea.Start();
-    PERF_START_METER("NCollection_SList clearing")
-    a2.Clear();
-    ////////////////////////////////aNClea.Stop();
-    PERF_STOP_METER("NCollection_SList clearing")
-  }
-
-  for (i=0; i<theRep; i++)
-    {
-      QANCollection_SListOfPnt a1, a2;
-      ////////////////////////////////aTAppe.Start();
-      PERF_START_METER("TCollection_SList constructing")
-      for (j=1; j<=theSize; j++)
-        {
-          ItemType anItem;
-          Random(anItem);
-          a1.Construct(anItem);
-        }
-      ////////////////////////////////aTAppe.Stop();
-      PERF_STOP_METER("TCollection_SList constructing")
-      ////////////////////////////////aTOper.Start();
-      PERF_START_METER("TCollection_SList operator=")
-      a2 = a1;
-      ////////////////////////////////aTOper.Stop();
-      PERF_STOP_METER("TCollection_SList operator=")
-      ////////////////////////////////aTClea.Start();
-      PERF_START_METER("TCollection_SList clearing")
-      a2.Clear();
-      ////////////////////////////////aTClea.Stop();
-      PERF_STOP_METER("TCollection_SList clearing")
     }
   PERF_PRINT_ALL
 }

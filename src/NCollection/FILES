@@ -29,7 +29,6 @@ NCollection_Array2.hxx
 NCollection_HArray2.hxx
 NCollection_Stack.hxx
 NCollection_List.hxx
-NCollection_SList.hxx
 NCollection_Set.hxx
 NCollection_HSet.hxx
 NCollection_Map.hxx
@@ -51,7 +50,6 @@ NCollection_DefineDataMap.hxx
 NCollection_DefineDoubleMap.hxx
 NCollection_DefineIndexedMap.hxx
 NCollection_DefineIndexedDataMap.hxx
-NCollection_DefineSList.hxx
 NCollection_DefineSequence.hxx
 NCollection_DefineHSequence.hxx
 NCollection_DefineSet.hxx

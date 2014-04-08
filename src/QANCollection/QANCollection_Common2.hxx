@@ -79,10 +79,6 @@ DEFINE_STACK(QANCollection_StackFunc,QANCollection_BaseColFunc,ItemType)
 DEFINE_SET(QANCollection_SetFunc,QANCollection_Key2BaseColFunc,Key2Type)
 DEFINE_HSET(QANCollection_HSetFunc,QANCollection_SetFunc)
 
-#include <NCollection_DefineSList.hxx>
-////////////////////////////////DEFINE_SLIST(QANCollection_SList,QANCollection_BaseCol,ItemType)
-DEFINE_SLIST(QANCollection_SListFunc,QANCollection_BaseColFunc,ItemType)
-
 #include <NCollection_DefineSequence.hxx>
 #include <NCollection_DefineHSequence.hxx>
 ////////////////////////////////DEFINE_SEQUENCE(QANCollection_Sequence,QANCollection_BaseCol,ItemType)

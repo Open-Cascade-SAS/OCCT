@@ -22,7 +22,7 @@
 --              Adding of modifying classes 
 --               - Sequence, HSequence
 --               - Set, HSet
---               - List, SList
+--               - List
 --               - Stack
 --               - BasicMap, BasicMapIterator
 --               - Map, DataMap, DoubleMap, IndexedMap, IndexedDataMap
@@ -57,9 +57,6 @@ is
    
     generic class List, ListNode, ListIterator;
 	---Purpose: A single list handled by value.
-
-    generic class SList,SListNode;
-	---Purpose: A LISP like sharable list.
 
     class BaseSequence;
     class SeqNode;

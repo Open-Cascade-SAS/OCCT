@@ -14,78 +14,59 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-generic class SList from TCollection (Item as any)
+private class SListOfItemLocation from TopLoc
 
-	---Purpose: An SList is a LISP like list of Items.
-	-- An SList is :
+	---Purpose: An SListOfItemLocation is a LISP like list of Items.
+	-- An SListOfItemLocation is :
 	--   . Empty.
-	--   . Or it has a Value and a  Tail  which is an other SList. 
+	--   . Or it has a Value and a  Tail  which is an other SListOfItemLocation. 
 	-- 
 	-- The Tail of an empty list is an empty list.
-	-- SList are  shared.  It  means   that they  can  be
+	-- SListOfItemLocation are  shared.  It  means   that they  can  be
 	-- modified through other lists.
-	-- SList may  be used  as Iterators. They  have Next,
+	-- SListOfItemLocation may  be used  as Iterators. They  have Next,
 	-- More, and value methods. To iterate on the content
 	-- of the list S just do.
 	-- 
-	-- SList Iterator;
+	-- SListOfItemLocation Iterator;
 	-- for (Iterator = S; Iterator.More(); Iterator.Next())
 	--   X = Iterator.Value();
 	-- 
-        --  Memory usage  is  automatically managed for  SLists
+        --  Memory usage  is  automatically managed for  SListOfItemLocations
 	--  (using reference counts).
       	---Example:
-	-- If S1 and S2 are SLists :
+	-- If S1 and S2 are SListOfItemLocations :
 	-- if S1.Value() is X.
 	-- 
 	-- And the following is done :
 	-- S2 = S1;
 	-- S2.SetValue(Y);
 	-- 
-	-- S1.Value() becomes also Y.   So SList must be used
+	-- S1.Value() becomes also Y.   So SListOfItemLocation must be used
 	-- with   care.  Mainly  the SetValue()    method  is
 	-- dangerous. 
 
+uses
+    SListNodeOfItemLocation from TopLoc,
+    ItemLocation            from TopLoc
+    
 raises
     NoSuchObject from Standard
-    
-    class SListNode from TCollection
-    inherits TShared from MMgt
-    is
-       Create(I : Item; aTail :  SList from TCollection) returns mutable SListNode from TCollection;
-       ---C++:inline
-
-       Count(me) returns Integer;
-       ---C++:inline
-       ---C++: return &
-       
-       Tail(me) returns SList from TCollection;
-       ---C++:inline
-       ---C++: return &
-       
-       Value(me) returns Item;
-       ---C++:inline
-       ---C++: return &
-
-    fields
-	myTail :  SList from TCollection;
-    	myValue : Item;
-    end;
 
 is
-    Create returns SList from TCollection;
+    Create returns SListOfItemLocation from TopLoc;
 	---Purpose: Creates an empty List.
 	
-    Create(anItem : Item; aTail : SList from TCollection)
-    returns SList from TCollection;
+    Create(anItem : ItemLocation from TopLoc; aTail : SListOfItemLocation from TopLoc)
+    returns SListOfItemLocation from TopLoc;
 	---Purpose: Creates a List with <anItem> as value  and <aTail> as tail.
 	
-    Create(Other : SList from TCollection)
-    returns SList from TCollection;
+    Create(Other : SListOfItemLocation from TopLoc)
+    returns SListOfItemLocation from TopLoc;
 	---Purpose: Creates a list from an other one. The lists  are shared. 
 	
-    Assign(me : in out; Other : SList from TCollection)
-    returns SList from TCollection
+    Assign(me : in out; Other : SListOfItemLocation from TopLoc)
+    returns SListOfItemLocation from TopLoc
         ---Level: Public
 	---Purpose: Sets  a list  from  an  other  one. The  lists are
 	-- shared. The list itself is returned.
@@ -104,7 +85,7 @@ is
 	---C++: alias ~
     is static;
 	
-    Value(me) returns any Item
+    Value(me) returns any ItemLocation from TopLoc
         ---Level: Public
 	---Purpose: Returns the current value of the list. An error is
 	-- raised  if the list is empty.
@@ -113,7 +94,7 @@ is
     	NoSuchObject from Standard
     is static;
     
-    ChangeValue(me : in out) returns any Item
+    ChangeValue(me : in out) returns any ItemLocation from TopLoc
         ---Level: Public
 	---Purpose: Returns the current value of the list. An error is
 	-- raised if the  list  is empty.   This value may be
@@ -125,7 +106,7 @@ is
     	NoSuchObject from Standard
     is static;
     
-    SetValue(me : in out; anItem : Item)
+    SetValue(me : in out; anItem : ItemLocation from TopLoc)
         ---Level: Public
 	---Purpose: Changes the current value in the list. An error is
 	-- raised if the list is empty.
@@ -133,14 +114,14 @@ is
     	NoSuchObject from Standard
     is static;
     
-    Tail(me) returns SList from TCollection
+    Tail(me) returns SListOfItemLocation from TopLoc
         ---Level: Public
 	---Purpose: Returns the current tail of  the list. On an empty
 	-- list the tail is the list itself.
 	---C++: return const &
     is static;
     
-    ChangeTail(me : in out) returns SList from TCollection
+    ChangeTail(me : in out) returns SListOfItemLocation from TopLoc
         ---Level: Public
 	---Purpose: Returns the current  tail of the list.   This tail
 	-- may be modified.  A method modifying the  tail can
@@ -149,20 +130,20 @@ is
 	---C++: return &
     is static;
     
-    SetTail(me : in out; aList : SList from TCollection)
+    SetTail(me : in out; aList : SListOfItemLocation from TopLoc)
         ---Level: Public
 	---Purpose: Changes the current tail  in the list. On an empty
 	-- list SetTail is Assign.
     is static;
     
-    Construct(me : in out; anItem : Item)  
+    Construct(me : in out; anItem : ItemLocation from TopLoc)  
         ---Level: Public
 	---Purpose: Replaces the list by a list with <anItem> as Value
 	-- and the  list <me> as  tail.
 	---C++: inline
     is static;
     
-    Constructed(me; anItem : Item) returns SList from TCollection
+    Constructed(me; anItem : ItemLocation from TopLoc) returns SListOfItemLocation from TopLoc
         ---Level: Public
 	---Purpose: Returns a new list  with  <anItem> as Value an the
 	-- list <me> as tail.
@@ -175,7 +156,7 @@ is
 	---C++: inline
     is static;
         
-    Initialize(me : in out; aList : SList from TCollection)
+    Initialize(me : in out; aList : SListOfItemLocation from TopLoc)
         ---Level: Public
 	---Purpose: Sets  the iterator  to iterate   on the content of
 	-- <aList>. This is Assign().
@@ -197,6 +178,6 @@ is
     is static;
     
 fields
-    myNode : SListNode from TCollection;
+    myNode : SListNodeOfItemLocation from TopLoc;
 
-end SList;
+end SListOfItemLocation;

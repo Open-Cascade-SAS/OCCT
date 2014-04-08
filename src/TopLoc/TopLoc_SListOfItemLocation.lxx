@@ -19,7 +19,7 @@
 //purpose  : 
 //=======================================================================
 
-inline Standard_Boolean TCollection_SList::IsEmpty() const
+inline Standard_Boolean TopLoc_SListOfItemLocation::IsEmpty() const
 {
   return myNode.IsNull();
 }
@@ -34,9 +34,9 @@ inline Standard_Boolean TCollection_SList::IsEmpty() const
 //purpose  : 
 //=======================================================================
 
-inline void TCollection_SList::Construct(const Item& anItem)
+inline void TopLoc_SListOfItemLocation::Construct(const TopLoc_ItemLocation& anItem)
 {
-  Assign(TCollection_SList(anItem,*this));
+  Assign(TopLoc_SListOfItemLocation(anItem,*this));
 }
 
 //=======================================================================
@@ -44,9 +44,9 @@ inline void TCollection_SList::Construct(const Item& anItem)
 //purpose  : 
 //=======================================================================
 
-inline TCollection_SList TCollection_SList::Constructed(const Item& anItem) const
+inline TopLoc_SListOfItemLocation TopLoc_SListOfItemLocation::Constructed(const TopLoc_ItemLocation& anItem) const
 {
-  return TCollection_SList(anItem,*this);
+  return TopLoc_SListOfItemLocation(anItem,*this);
 }
 
 //=======================================================================
@@ -54,7 +54,7 @@ inline TCollection_SList TCollection_SList::Constructed(const Item& anItem) cons
 //purpose  : 
 //=======================================================================
 
-inline void TCollection_SList::ToTail()
+inline void TopLoc_SListOfItemLocation::ToTail()
 {
   Assign(Tail());
 }
@@ -64,7 +64,7 @@ inline void TCollection_SList::ToTail()
 //purpose  : 
 //=======================================================================
 
-inline void TCollection_SList::Initialize(const TCollection_SList& aList)
+inline void TopLoc_SListOfItemLocation::Initialize(const TopLoc_SListOfItemLocation& aList)
 {
   Assign(aList);
 }
@@ -74,7 +74,7 @@ inline void TCollection_SList::Initialize(const TCollection_SList& aList)
 //purpose  : 
 //=======================================================================
 
-inline Standard_Boolean TCollection_SList::More() const
+inline Standard_Boolean TopLoc_SListOfItemLocation::More() const
 {
   return !IsEmpty();
 }
@@ -84,7 +84,7 @@ inline Standard_Boolean TCollection_SList::More() const
 //purpose  : 
 //=======================================================================
 
-inline void TCollection_SList::Next()
+inline void TopLoc_SListOfItemLocation::Next()
 {
   ToTail();
 }

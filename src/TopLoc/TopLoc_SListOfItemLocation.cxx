@@ -14,32 +14,34 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <TopLoc_SListOfItemLocation.ixx>
+
 #include <Standard_NoSuchObject.hxx>
 
 //=======================================================================
-//function : TCollection_SList
+//function : TopLoc_SListOfItemLocation
 //purpose  : 
 //=======================================================================
 
-TCollection_SList::TCollection_SList()
+TopLoc_SListOfItemLocation::TopLoc_SListOfItemLocation()
 {}
 
 //=======================================================================
-//function : TCollection_SList
+//function : TopLoc_SListOfItemLocation
 //purpose  : 
 //=======================================================================
 
-TCollection_SList::TCollection_SList(const Item& anItem,
-				     const TCollection_SList& aTail) : 
-       myNode(new TCollection_SListNode(anItem,aTail))
+TopLoc_SListOfItemLocation::TopLoc_SListOfItemLocation(const TopLoc_ItemLocation& anItem,
+				     const TopLoc_SListOfItemLocation& aTail) : 
+       myNode(new TopLoc_SListNodeOfItemLocation(anItem,aTail))
 {}
 
 //=======================================================================
-//function : TCollection_SList
+//function : TopLoc_SListOfItemLocation
 //purpose  : 
 //=======================================================================
 
-TCollection_SList::TCollection_SList(const TCollection_SList& Other) : 
+TopLoc_SListOfItemLocation::TopLoc_SListOfItemLocation(const TopLoc_SListOfItemLocation& Other) : 
        myNode(Other.myNode)
 {
 }
@@ -49,7 +51,7 @@ TCollection_SList::TCollection_SList(const TCollection_SList& Other) :
 //purpose  : 
 //=======================================================================
 
-TCollection_SList& TCollection_SList::Assign(const TCollection_SList& Other)
+TopLoc_SListOfItemLocation& TopLoc_SListOfItemLocation::Assign(const TopLoc_SListOfItemLocation& Other)
 {
   if (this == &Other) return *this;
   Clear();
@@ -63,7 +65,7 @@ TCollection_SList& TCollection_SList::Assign(const TCollection_SList& Other)
 //purpose  : 
 //=======================================================================
 
-void TCollection_SList::Clear()
+void TopLoc_SListOfItemLocation::Clear()
 {
   if (!myNode.IsNull()) {
     myNode.Nullify();
@@ -75,9 +77,9 @@ void TCollection_SList::Clear()
 //purpose  : 
 //=======================================================================
 
-const Item& TCollection_SList::Value() const
+const TopLoc_ItemLocation& TopLoc_SListOfItemLocation::Value() const
 {
-  Standard_NoSuchObject_Raise_if(myNode.IsNull(),"TCollection_SList::Value");
+  Standard_NoSuchObject_Raise_if(myNode.IsNull(),"TopLoc_SListOfItemLocation::Value");
   return myNode->Value();
 }
 
@@ -86,9 +88,9 @@ const Item& TCollection_SList::Value() const
 //purpose  : 
 //=======================================================================
 
-Item& TCollection_SList::ChangeValue()
+TopLoc_ItemLocation& TopLoc_SListOfItemLocation::ChangeValue()
 {
-  Standard_NoSuchObject_Raise_if(myNode.IsNull(),"TCollection_SList::Value");
+  Standard_NoSuchObject_Raise_if(myNode.IsNull(),"TopLoc_SListOfItemLocation::Value");
   return myNode->Value();
 }
 
@@ -97,9 +99,9 @@ Item& TCollection_SList::ChangeValue()
 //purpose  : 
 //=======================================================================
 
-void TCollection_SList::SetValue(const Item& anItem)
+void TopLoc_SListOfItemLocation::SetValue(const TopLoc_ItemLocation& anItem)
 {
-  Standard_NoSuchObject_Raise_if(myNode.IsNull(),"TCollection_SList::Value");
+  Standard_NoSuchObject_Raise_if(myNode.IsNull(),"TopLoc_SListOfItemLocation::Value");
   myNode->Value() = anItem;
 }
 
@@ -108,7 +110,7 @@ void TCollection_SList::SetValue(const Item& anItem)
 //purpose  : 
 //=======================================================================
 
-const TCollection_SList& TCollection_SList::Tail() const
+const TopLoc_SListOfItemLocation& TopLoc_SListOfItemLocation::Tail() const
 {
   if (!myNode.IsNull()) 
     return  myNode->Tail();
@@ -121,7 +123,7 @@ const TCollection_SList& TCollection_SList::Tail() const
 //purpose  : 
 //=======================================================================
 
-TCollection_SList& TCollection_SList::ChangeTail()
+TopLoc_SListOfItemLocation& TopLoc_SListOfItemLocation::ChangeTail()
 {
   if (!myNode.IsNull()) 
     return myNode->Tail();
@@ -134,7 +136,7 @@ TCollection_SList& TCollection_SList::ChangeTail()
 //purpose  : 
 //=======================================================================
 
-void TCollection_SList::SetTail(const TCollection_SList& aList)
+void TopLoc_SListOfItemLocation::SetTail(const TopLoc_SListOfItemLocation& aList)
 {
   if (!myNode.IsNull())
     myNode->Tail() = aList;

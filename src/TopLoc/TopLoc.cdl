@@ -42,9 +42,8 @@ is
 	---Purpose: Used to implement  the Location. A  Datum3D with a
 	--          power elevation.
 	
-    private class SListOfItemLocation instantiates 
-    	SList from TCollection(ItemLocation from TopLoc);
-	---Purpose: Used to implement the Location.
+    private class SListOfItemLocation;
+    private class SListNodeOfItemLocation;
     
     class Location;
 	---Purpose: A  Local Coordinate System.   A list of elementary
