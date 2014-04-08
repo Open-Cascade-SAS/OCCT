@@ -22,6 +22,7 @@ set (COMMON_SOURCE_FILES ${MFC_STANDARD_COMMON_SAMPLES_DIR}/AISDialogs.cpp
                          ${MFC_STANDARD_COMMON_SAMPLES_DIR}/OCC_BaseChildFrame.cpp
                          ${MFC_STANDARD_COMMON_SAMPLES_DIR}/OCC_BaseView.cpp
                          ${MFC_STANDARD_COMMON_SAMPLES_DIR}/OCC_MainFrame.cpp
+                         ${MFC_STANDARD_COMMON_SAMPLES_DIR}/OCC_StereoConfigDlg.cpp
                          ${MFC_STANDARD_COMMON_SAMPLES_DIR}/ParamsFacesPage.cpp
                          ${MFC_STANDARD_COMMON_SAMPLES_DIR}/ResultDialog.cpp
                          ${MFC_STANDARD_COMMON_SAMPLES_DIR}/User_Cylinder.cxx
@@ -80,6 +81,7 @@ set (COMMON_HEADER_FILES ${MFC_STANDARD_COMMON_SAMPLES_DIR}/AISDialogs.h
                          ${MFC_STANDARD_COMMON_SAMPLES_DIR}/OCC_BaseChildFrame.h
                          ${MFC_STANDARD_COMMON_SAMPLES_DIR}/OCC_BaseView.h
                          ${MFC_STANDARD_COMMON_SAMPLES_DIR}/OCC_MainFrame.h
+                         ${MFC_STANDARD_COMMON_SAMPLES_DIR}/OCC_StereoConfigDlg.h
                          ${MFC_STANDARD_COMMON_SAMPLES_DIR}/ParamsFacesPage.h
                          ${MFC_STANDARD_COMMON_SAMPLES_DIR}/ResultDialog.h
                          ${MFC_STANDARD_COMMON_SAMPLES_DIR}/User_Cylinder.hxx
