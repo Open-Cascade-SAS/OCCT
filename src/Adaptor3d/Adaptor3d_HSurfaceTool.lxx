@@ -72,7 +72,7 @@ inline void Adaptor3d_HSurfaceTool::VIntervals(const Handle(Adaptor3d_HSurface)&
   Surf->VIntervals(Tab,S);
 }
 
-inline Handle_Adaptor3d_HSurface Adaptor3d_HSurfaceTool::UTrim(const Handle(Adaptor3d_HSurface)& Surf,
+inline Handle(Adaptor3d_HSurface) Adaptor3d_HSurfaceTool::UTrim(const Handle(Adaptor3d_HSurface)& Surf,
                                                                const Standard_Real F,
                                                                const Standard_Real L,
                                                                const Standard_Real Tol)
@@ -80,7 +80,7 @@ inline Handle_Adaptor3d_HSurface Adaptor3d_HSurfaceTool::UTrim(const Handle(Adap
   return Surf->UTrim(F,L,Tol);
 }
 
-inline Handle_Adaptor3d_HSurface Adaptor3d_HSurfaceTool::VTrim(const Handle(Adaptor3d_HSurface)& Surf,
+inline Handle(Adaptor3d_HSurface) Adaptor3d_HSurfaceTool::VTrim(const Handle(Adaptor3d_HSurface)& Surf,
                                                                const Standard_Real F,
                                                                const Standard_Real L,
                                                                const Standard_Real Tol)

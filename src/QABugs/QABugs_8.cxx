@@ -96,9 +96,9 @@ static Standard_Integer  OCC204 (Draw_Interpretor& di, Standard_Integer argc, co
   BRepPrimAPI_MakeBox box2(gp_Pnt(120, 120 + deltaY, 120),  gp_Pnt(300, 300 + deltaY,300));
   BRepPrimAPI_MakeBox box3(gp_Pnt(320, 320 + deltaY, 320),  gp_Pnt(500, 500 + deltaY,500));
 
-  Handle_AIS_Shape ais1 = new AIS_Shape(box1.Shape());
-  Handle_AIS_Shape ais2 = new AIS_Shape(box2.Shape());
-  Handle_AIS_Shape ais3 = new AIS_Shape(box3.Shape());
+  Handle(AIS_Shape) ais1 = new AIS_Shape(box1.Shape());
+  Handle(AIS_Shape) ais2 = new AIS_Shape(box2.Shape());
+  Handle(AIS_Shape) ais3 = new AIS_Shape(box3.Shape());
 
   aContext->Display(ais1);
   aContext->Display(ais2);
@@ -116,7 +116,7 @@ static Standard_Integer  OCC204 (Draw_Interpretor& di, Standard_Integer argc, co
   while(aContext->MoreCurrent())
   {
     //printf("\n count is = %d",  count++);
-    Handle_AIS_InteractiveObject ais = aContext->Current();
+    Handle(AIS_InteractiveObject) ais = aContext->Current();
     aContext->Remove(ais, UpdateViewer);
     aContext->InitCurrent();
   }

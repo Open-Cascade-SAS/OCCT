@@ -105,7 +105,7 @@ template<class TheItemType> class NCollection_BaseCollection
   const Handle(NCollection_BaseAllocator)& IterAllocator(void) const
   { 
     if (myIterAllocator.IsNull())
-      (Handle_NCollection_BaseAllocator&) myIterAllocator =
+      (Handle(NCollection_BaseAllocator)&) myIterAllocator =
         new NCollection_IncAllocator(64);
     return myIterAllocator;
   }

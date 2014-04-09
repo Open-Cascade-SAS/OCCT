@@ -22,10 +22,10 @@ PMMgt_PManaged::PMMgt_PManaged()
 //============================================================================
 #ifndef CSFDB
 class _Oid_PMMgt_PManaged : public Oid_PMMgt_PManaged {
-    friend class Handle_PMMgt_PManaged;
+    friend class Handle(PMMgt_PManaged);
 };
 
-void Handle_PMMgt_PManaged::Delete()
+void Handle(PMMgt_PManaged)::Delete()
 {
 //  PMMgt_PManaged* aMng;
   _Oid_PMMgt_PManaged *aOid;

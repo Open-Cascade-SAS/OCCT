@@ -125,7 +125,7 @@ class Poly_CoherentTriPtr
    *   Allocator where the new pointer instance is created.
    */
   Standard_EXPORT void Append   (const Poly_CoherentTriangle *           pTri,
-                                 const Handle_NCollection_BaseAllocator& theA);
+                                 const Handle(NCollection_BaseAllocator)& theA);
 
   /**
    * Prepend a pointer to triangle into the list before the current instance.
@@ -135,7 +135,7 @@ class Poly_CoherentTriPtr
    *   Allocator where the new pointer instance is created.
    */
   Standard_EXPORT void Prepend  (const Poly_CoherentTriangle *           pTri,
-                                 const Handle_NCollection_BaseAllocator& theA);
+                                 const Handle(NCollection_BaseAllocator)& theA);
 
   /**
    * Remove a pointer to triangle from its list.
@@ -146,14 +146,14 @@ class Poly_CoherentTriPtr
    */
   Standard_EXPORT static void
                        Remove   (Poly_CoherentTriPtr *                   thePtr,
-                                 const Handle_NCollection_BaseAllocator& theA);
+                                 const Handle(NCollection_BaseAllocator)& theA);
 
   /**
    * Remove the list containing the given pointer to triangle.
    */
   Standard_EXPORT static void
                        RemoveList (Poly_CoherentTriPtr *                 thePtr,
-                                   const Handle_NCollection_BaseAllocator&);
+                                   const Handle(NCollection_BaseAllocator)&);
 
  protected:
   // ---------- PROTECTED METHODS ----------

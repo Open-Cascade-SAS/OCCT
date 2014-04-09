@@ -474,7 +474,7 @@ void BinLDrivers_DocumentStorageDriver::AddSection
 
 void BinLDrivers_DocumentStorageDriver::WriteSection
                                 (const TCollection_AsciiString& /*theName*/,
-                                 const Handle_CDM_Document&     /*theDocument*/,
+                                 const Handle(CDM_Document)&     /*theDocument*/,
                                  Standard_OStream&              /*theOS*/)
 {
   // empty; should be redefined in subclasses

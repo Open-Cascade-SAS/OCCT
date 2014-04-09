@@ -135,15 +135,15 @@ void AIS_ConnectedInteractive::Compute (const Handle(PrsMgr_PresentationManager3
   thePrs->ReCompute();
 }
 
-void AIS_ConnectedInteractive::Compute(const Handle_Prs3d_Projector& aProjector, const Handle_Geom_Transformation& aTransformation, const Handle_Prs3d_Presentation& aPresentation)
+void AIS_ConnectedInteractive::Compute(const Handle(Prs3d_Projector)& aProjector, const Handle(Geom_Transformation)& aTransformation, const Handle(Prs3d_Presentation)& aPresentation)
 {
-// Standard_NotImplemented::Raise("AIS_ConnectedInteractive::Compute(const Handle_Prs3d_Projector&, const Handle_Geom_Transformation&, const Handle_Prs3d_Presentation&)");
+// Standard_NotImplemented::Raise("AIS_ConnectedInteractive::Compute(const Handle(Prs3d_Projector)&, const Handle(Geom_Transformation)&, const Handle(Prs3d_Presentation)&)");
   PrsMgr_PresentableObject::Compute( aProjector , aTransformation , aPresentation ) ;
 }
 
-void AIS_ConnectedInteractive::Compute(const Handle_Prs3d_Projector& aProjector, const Handle_Prs3d_Presentation& aPresentation)
+void AIS_ConnectedInteractive::Compute(const Handle(Prs3d_Projector)& aProjector, const Handle(Prs3d_Presentation)& aPresentation)
 {
-// Standard_NotImplemented::Raise("AIS_ConnectedInteractive::Compute(const Handle_Prs3d_Projector&, const Handle_Prs3d_Presentation&)");
+// Standard_NotImplemented::Raise("AIS_ConnectedInteractive::Compute(const Handle(Prs3d_Projector)&, const Handle(Prs3d_Presentation)&)");
  PrsMgr_PresentableObject::Compute( aProjector , aPresentation ) ;
 }
 
@@ -196,8 +196,8 @@ void AIS_ConnectedInteractive::UpdateLocation(const Handle(SelectMgr_Selection)&
 // Standard_NotImplemented::Raise("AIS_ConnectedInteractive::UpdateLocation(const Handle(SelectMgr_Selection)& Sel)");
  SelectMgr_SelectableObject::UpdateLocation(Sel) ;
 }
-/*void AIS_ConnectedInteractive::UpdateLocation(const Handle_Prs3d_Presentation& aPresentation)
+/*void AIS_ConnectedInteractive::UpdateLocation(const Handle(Prs3d_Presentation)& aPresentation)
 {
-// Standard_NotImplemented::Raise("AIS_ConnectedInteractive::UpdateLocation(const Handle_Prs3d_Presentation&)");
+// Standard_NotImplemented::Raise("AIS_ConnectedInteractive::UpdateLocation(const Handle(Prs3d_Presentation)&)");
  SelectMgr_SelectableObject::UpdateLocation(aPresentation) ;
 }*/

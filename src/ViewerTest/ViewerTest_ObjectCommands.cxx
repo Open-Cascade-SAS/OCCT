@@ -1997,8 +1997,8 @@ TopoDS_Face FilledCircle::ComputeFace()
   return aFace;
 }
 
-void FilledCircle::Compute(const Handle_PrsMgr_PresentationManager3d &/*thePresentationManager*/, 
-                           const Handle_Prs3d_Presentation &thePresentation, 
+void FilledCircle::Compute(const Handle(PrsMgr_PresentationManager3d) &/*thePresentationManager*/, 
+                           const Handle(Prs3d_Presentation) &thePresentation, 
                            const Standard_Integer theMode) 
 {
   thePresentation->Clear();
@@ -2011,7 +2011,7 @@ void FilledCircle::Compute(const Handle_PrsMgr_PresentationManager3d &/*thePrese
   StdPrs_ShadedShape::Add(thePresentation, aFace, myDrawer);
 }
 
-void FilledCircle::ComputeSelection(const Handle_SelectMgr_Selection &theSelection, 
+void FilledCircle::ComputeSelection(const Handle(SelectMgr_Selection) &theSelection, 
                                     const Standard_Integer /*theMode*/)
 {
   Handle(SelectMgr_EntityOwner) anEntityOwner = new SelectMgr_EntityOwner(this);
@@ -2523,7 +2523,7 @@ void MyTextClass::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresent
 
   aPresentation->Clear();
 
-  Handle_Prs3d_TextAspect asp = myDrawer->TextAspect();
+  Handle(Prs3d_TextAspect) asp = myDrawer->TextAspect();
 
   asp->SetFont(aFont.ToCString());
   asp->SetColor(aColor);
@@ -4241,8 +4241,8 @@ SegmentObject::SegmentObject (const gp_Pnt& thePnt1, const gp_Pnt& thePnt2)
   myPoint2 = thePnt2;
 }
 
-void SegmentObject::Compute (const Handle_PrsMgr_PresentationManager3d &/*thePresentationManager*/,
-                             const Handle_Prs3d_Presentation &thePresentation,
+void SegmentObject::Compute (const Handle(PrsMgr_PresentationManager3d) &/*thePresentationManager*/,
+                             const Handle(Prs3d_Presentation) &thePresentation,
                              const Standard_Integer /*theMode*/)
 {
   thePresentation->Clear();
@@ -4254,7 +4254,7 @@ void SegmentObject::Compute (const Handle_PrsMgr_PresentationManager3d &/*thePre
   StdPrs_Curve::Add(thePresentation, aCurveAdaptor, myDrawer);
 }
 
-void SegmentObject::ComputeSelection (const Handle_SelectMgr_Selection &theSelection,
+void SegmentObject::ComputeSelection (const Handle(SelectMgr_Selection) &theSelection,
                                       const Standard_Integer /*theMode*/)
 {
   Handle(SelectMgr_EntityOwner) anOwner = new SelectMgr_EntityOwner(this);

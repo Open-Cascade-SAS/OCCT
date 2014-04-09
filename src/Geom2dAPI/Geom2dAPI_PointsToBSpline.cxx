@@ -460,7 +460,7 @@ void Geom2dAPI_PointsToBSpline::Init
 }
 
 //=======================================================================
-//function : Handle_Geom2d_BSplineCurve&
+//function : Handle(Geom2d_BSplineCurve)&
 //purpose  : 
 //=======================================================================
 

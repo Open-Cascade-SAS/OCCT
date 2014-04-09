@@ -71,7 +71,7 @@ Handle(Dynamic_Parameter) Materials_MaterialDefinition::Switch(
 					    Atof(value3),
 					    Quantity_TOC_RGB));
       objectparameter = new Dynamic_ObjectParameter(aname,pcolor);
-      parameter = *(Handle_Dynamic_Parameter*)&objectparameter;
+      parameter = *(Handle(Dynamic_Parameter)*)&objectparameter;
     }
 
   else

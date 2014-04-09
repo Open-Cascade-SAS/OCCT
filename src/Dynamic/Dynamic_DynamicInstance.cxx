@@ -166,7 +166,7 @@ void Dynamic_DynamicInstance::Execute(const Standard_CString amethod) const
       Handle(Dynamic_CompiledMethod) method_1 = Handle(Dynamic_CompiledMethod)::DownCast(method);
       typedef void (*function)(const Handle(Dynamic_DynamicInstance)&);
       
-//      ((function)((*(Handle_Dynamic_CompiledMethod*)&method)->Function().ToCString()))(me);
+//      ((function)((*(Handle(Dynamic_CompiledMethod)*)&method)->Function().ToCString()))(me);
       ((function)(method_1->Function().ToCString()))(me);
     }
   else
@@ -174,7 +174,7 @@ void Dynamic_DynamicInstance::Execute(const Standard_CString amethod) const
 /*      Standard_Integer argc = 2;
       char* argv[2];
       argv[0] = "source";
-      argv[1] = (*(Handle_Dynamic_InterpretedMethod*)&method)->Function();
+      argv[1] = (*(Handle(Dynamic_InterpretedMethod)*)&method)->Function();
       source(argc,argv);*/
     }
 }

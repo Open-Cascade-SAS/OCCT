@@ -34,10 +34,10 @@ inline   Standard_Integer PNaming_Name_1::Type() const
 inline   Standard_Integer PNaming_Name_1::ShapeType() const 
 {return myShapeType;}
 
-inline   Handle_PNaming_HArray1OfNamedShape PNaming_Name_1::Arguments() const
+inline   Handle(PNaming_HArray1OfNamedShape) PNaming_Name_1::Arguments() const
 {return myArgs;}
 
-inline   Handle_PNaming_NamedShape PNaming_Name_1::StopNamedShape() const
+inline   Handle(PNaming_NamedShape) PNaming_Name_1::StopNamedShape() const
 {return myStop;}
 
 inline   Standard_Integer PNaming_Name_1::Index() const

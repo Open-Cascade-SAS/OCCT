@@ -2488,7 +2488,7 @@ IFSelect_ReturnStatus IFSelect_WorkSession::SendAll
     }
   }
   else checks = thecopier->SendAll(filename,thegraph->Graph(),thelibrary,theprotocol);
-  Handle_Interface_Check aMainFail = checks.CCheck(0);
+  Handle(Interface_Check) aMainFail = checks.CCheck(0);
   if (!aMainFail.IsNull() && aMainFail->HasFailed ())
   {
     return IFSelect_RetStop;

@@ -245,13 +245,13 @@ typedef BOPCol_NCVector
 typedef BOPCol_TBBContextFunctor 
   <BOPAlgo_PVE,
   BOPAlgo_VectorOfPVE,
-  Handle_BOPInt_Context, 
+  Handle(BOPInt_Context), 
   BOPInt_Context> BOPAlgo_PVEFunctor;
 //
 typedef BOPCol_TBBContextCnt 
   <BOPAlgo_PVEFunctor,
   BOPAlgo_VectorOfPVE,
-  Handle_BOPInt_Context> BOPAlgo_PVECnt;
+  Handle(BOPInt_Context)> BOPAlgo_PVECnt;
 /////////////////////////////////////////////////////////////////////////
 //=======================================================================
 // function: PerformEE

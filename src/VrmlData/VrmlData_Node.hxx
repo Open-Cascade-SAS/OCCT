@@ -30,7 +30,7 @@ struct VrmlData_InBuffer;
 class VrmlData_Scene;
 class gp_XY;
 class gp_XYZ;
-class Handle_VrmlData_Node;
+class Handle(VrmlData_Node);
 class TCollection_AsciiString;
 
 /**
@@ -202,7 +202,7 @@ class VrmlData_Node : public Standard_Transient
 // Definition of HANDLE object using Standard_DefineHandle.hxx
 DEFINE_STANDARD_HANDLE (VrmlData_Node, Standard_Transient)
 
-Standard_EXPORT Standard_Integer HashCode(const Handle_VrmlData_Node& theNode,
+Standard_EXPORT Standard_Integer HashCode(const Handle(VrmlData_Node)& theNode,
                                           const Standard_Integer      theUpper);
 Standard_EXPORT Standard_Boolean IsEqual (const Handle(VrmlData_Node)& theOne,
                                           const Handle(VrmlData_Node)& theTwo);

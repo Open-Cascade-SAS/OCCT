@@ -32,6 +32,6 @@ DEFINE_BASECOLLECTION(NCollection_BaseCollAsciiString   ,
 DEFINE_BASECOLLECTION(NCollection_BaseCollExtendedString,
                       TCollection_ExtendedString)
 DEFINE_BASECOLLECTION(NCollection_BaseCollTransient     ,
-                      Handle_Standard_Transient)
+                      Handle(Standard_Transient))
 
 #endif

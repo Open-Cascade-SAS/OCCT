@@ -286,7 +286,7 @@ Handle(Select3D_SensitiveEntity) Select3D_SensitiveWire::GetLastDetected() const
 //purpose  :
 //=======================================================================
 
-void Select3D_SensitiveWire::Set(const Handle_SelectBasics_EntityOwner &TheOwnerId) 
+void Select3D_SensitiveWire::Set(const Handle(SelectBasics_EntityOwner) &TheOwnerId) 
 {
   Select3D_SensitiveEntity::Set(TheOwnerId);
 

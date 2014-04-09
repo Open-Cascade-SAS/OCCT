@@ -303,8 +303,8 @@ Handle(Graphic3d_Structure) Prs3d_Presentation::
 //purpose  : 
 //=======================================================================
 
-void Prs3d_Presentation::Compute(const Handle_Graphic3d_DataStructureManager& aDataStruct, 
-                                 Handle_Graphic3d_Structure& aStruct)
+void Prs3d_Presentation::Compute(const Handle(Graphic3d_DataStructureManager)& aDataStruct, 
+                                 Handle(Graphic3d_Structure)& aStruct)
 {
  Graphic3d_Structure::Compute(aDataStruct,aStruct );
 }
@@ -314,7 +314,7 @@ void Prs3d_Presentation::Compute(const Handle_Graphic3d_DataStructureManager& aD
 //purpose  : 
 //=======================================================================
 
-Handle_Graphic3d_Structure Prs3d_Presentation::Compute(const Handle_Graphic3d_DataStructureManager& aDataStruc, 
+Handle(Graphic3d_Structure) Prs3d_Presentation::Compute(const Handle(Graphic3d_DataStructureManager)& aDataStruc, 
                                                        const TColStd_Array2OfReal& anArray)
 {
  return Graphic3d_Structure::Compute(aDataStruc,anArray);
@@ -325,9 +325,9 @@ Handle_Graphic3d_Structure Prs3d_Presentation::Compute(const Handle_Graphic3d_Da
 //purpose  : 
 //=======================================================================
 
-void Prs3d_Presentation::Compute(const Handle_Graphic3d_DataStructureManager& aDataStruc,
+void Prs3d_Presentation::Compute(const Handle(Graphic3d_DataStructureManager)& aDataStruc,
                                  const TColStd_Array2OfReal& anArray,
-                                 Handle_Graphic3d_Structure& aStruc)
+                                 Handle(Graphic3d_Structure)& aStruc)
 {
  Graphic3d_Structure::Compute(aDataStruc,anArray,aStruc);
 }

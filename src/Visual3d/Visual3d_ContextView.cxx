@@ -319,7 +319,7 @@ void Visual3d_ContextView::SetTextureEnv(const Handle(Graphic3d_TextureEnv)& ATe
 }
 
 
-Handle_Graphic3d_TextureEnv Visual3d_ContextView::TextureEnv() const
+Handle(Graphic3d_TextureEnv) Visual3d_ContextView::TextureEnv() const
 {
   return MyTextureEnv;
 }

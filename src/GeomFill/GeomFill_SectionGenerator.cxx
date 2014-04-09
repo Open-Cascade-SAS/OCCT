@@ -43,7 +43,7 @@ GeomFill_SectionGenerator::GeomFill_SectionGenerator()
 //purpose  : 
 //=======================================================================
 
-void GeomFill_SectionGenerator::SetParam(const Handle_TColStd_HArray1OfReal & Params)
+void GeomFill_SectionGenerator::SetParam(const Handle(TColStd_HArray1OfReal) & Params)
 {
   Standard_Integer ii, L =  Params->Upper()-Params->Lower()+1;
   myParams = Params;

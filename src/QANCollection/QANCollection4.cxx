@@ -35,7 +35,7 @@ static Standard_Integer QANColStdAllocator1(Draw_Interpretor& di, Standard_Integ
   }
 
   //type definitions
-  typedef Handle_Standard_Transient elem_type;
+  typedef Handle(Standard_Transient) elem_type;
   typedef NCollection_StdAllocator<elem_type> allocator_type;
   Standard_STATIC_ASSERT (sizeof (allocator_type::value_type) == sizeof (elem_type));
   Standard_STATIC_ASSERT (sizeof (allocator_type::pointer) == sizeof (void*));

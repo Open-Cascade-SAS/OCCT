@@ -19,9 +19,9 @@
 #include <NIS_InteractiveObject.hxx>
 #include <Quantity_Color.hxx>
 
-class Handle_NIS_TriangulatedDrawer;
+class Handle(NIS_TriangulatedDrawer);
 class NCollection_BaseAllocator;
-class Handle_NCollection_BaseAllocator;
+class Handle(NCollection_BaseAllocator);
 class NIS_TriangulatedDrawer;
 
 /**
@@ -92,7 +92,7 @@ class NIS_Triangulated : public NIS_InteractiveObject
    */
   Standard_EXPORT NIS_Triangulated(const Standard_Integer nNodes = 0,
                                    const Standard_Boolean is2D = Standard_False,
-                                   const Handle_NCollection_BaseAllocator&
+                                   const Handle(NCollection_BaseAllocator)&
                                    theAlloc = 0L);
 
   /**
@@ -348,8 +348,8 @@ class NIS_Triangulated : public NIS_InteractiveObject
    *   passed NULL then the target should be created.
    */
   Standard_EXPORT virtual void
-                          Clone (const Handle_NCollection_BaseAllocator& theAll,
-                                 Handle_NIS_InteractiveObject& theDest) const;
+                          Clone (const Handle(NCollection_BaseAllocator)& theAll,
+                                 Handle(NIS_InteractiveObject)& theDest) const;
 
   /**
    * Intersect the InteractiveObject geometry with a line/ray.

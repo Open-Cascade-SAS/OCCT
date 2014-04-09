@@ -69,7 +69,7 @@ static Standard_Integer OCC895 (Draw_Interpretor& di, Standard_Integer argc, con
   gp_Circ circ1 = makeCirc1.Value();
   GC_MakeArcOfCircle makeArc1(circ1, 0, M_PI/2, Standard_True);
   if(!makeArc1.IsDone()) return 1;
-  Handle_Geom_TrimmedCurve arc1 = makeArc1.Value();
+  Handle(Geom_TrimmedCurve) arc1 = makeArc1.Value();
 
   // Create wire 1
   BRepBuilderAPI_MakeEdge makeEdge1(arc1, arc1->StartPoint(), arc1->EndPoint());
@@ -89,7 +89,7 @@ static Standard_Integer OCC895 (Draw_Interpretor& di, Standard_Integer argc, con
   gp_Circ circ2 = makeCirc2.Value();
   GC_MakeArcOfCircle makeArc2(circ2, 0, M_PI/2, Standard_True);
   if(!makeArc2.IsDone()) return 1;
-  Handle_Geom_TrimmedCurve arc2 = makeArc2.Value();
+  Handle(Geom_TrimmedCurve) arc2 = makeArc2.Value();
 
   // Create wire 2
   BRepBuilderAPI_MakeEdge makeEdge2(arc2, arc2->StartPoint(), arc2->EndPoint());

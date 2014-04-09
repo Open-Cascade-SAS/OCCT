@@ -28,7 +28,7 @@
 #include <Standard_Mutex.hxx>
 
 struct VrmlData_InBuffer;
-class Handle_VrmlData_WorldInfo;
+class Handle(VrmlData_WorldInfo);
 class VrmlData_DataMapOfShapeAppearance;
 
 /**
@@ -182,7 +182,7 @@ class VrmlData_Scene
   /**
    * Query the WorldInfo member.
    */
-  Standard_EXPORT const Handle_VrmlData_WorldInfo&
+  Standard_EXPORT const Handle(VrmlData_WorldInfo)&
                                 WorldInfo() const;
 
   /**
@@ -314,7 +314,7 @@ class VrmlData_Scene
    */
   Standard_EXPORT VrmlData_ErrorStatus
                                 WriteNode   (const char * thePrefix,
-                                             const Handle_VrmlData_Node&) const;
+                                             const Handle(VrmlData_Node)&) const;
 
   /**
    * Query if the current write operation is dummy, i.e., for the purpose of
@@ -371,8 +371,8 @@ class VrmlData_Scene
   VrmlData_ListOfNode                           myLstNodes; ///! top-level nodes
   VrmlData_ListOfNode                           myAllNodes; ///! all nodes
   VrmlData_ErrorStatus                          myStatus;
-  Handle_NCollection_IncAllocator               myAllocator;
-  Handle_VrmlData_WorldInfo                     myWorldInfo;
+  Handle(NCollection_IncAllocator)               myAllocator;
+  Handle(VrmlData_WorldInfo)                     myWorldInfo;
   VrmlData_MapOfNode                            myNamedNodes;
 
   // read from stream

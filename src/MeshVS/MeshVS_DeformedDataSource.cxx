@@ -215,7 +215,7 @@ void MeshVS_DeformedDataSource::SetNonDeformedDataSource( const Handle(MeshVS_Da
 // Function : GetNonDeformedDataSource
 // Purpose  :
 //================================================================
-Handle_MeshVS_DataSource MeshVS_DeformedDataSource::GetNonDeformedDataSource() const
+Handle(MeshVS_DataSource) MeshVS_DeformedDataSource::GetNonDeformedDataSource() const
 {
   return myNonDeformedDataSource;
 }

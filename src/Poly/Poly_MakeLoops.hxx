@@ -23,7 +23,7 @@
 #include <NCollection_BaseAllocator.hxx>
 #include <NCollection_List.hxx>
 
-class Handle_NCollection_IncAllocator;
+class Handle(NCollection_IncAllocator);
 
 /**
  * Make loops from a set of connected links. A link is represented by 
@@ -154,12 +154,12 @@ public:
   //! Constructor. If helper is NULL then the algorithm will
   //! probably return a wrong result
   Standard_EXPORT Poly_MakeLoops(const Helper* theHelper,
-                                 const Handle_NCollection_BaseAllocator& theAlloc = 0L);
+                                 const Handle(NCollection_BaseAllocator)& theAlloc = 0L);
 
   //! It is to reset the algorithm to the initial state.
   Standard_EXPORT void Reset
                    (const Helper* theHelper,
-                    const Handle_NCollection_BaseAllocator& theAlloc = 0L);
+                    const Handle(NCollection_BaseAllocator)& theAlloc = 0L);
 
   //! Adds a link to the set. theOrient defines which orientations of the link
   //! are allowed.
@@ -233,8 +233,8 @@ protected:
 
 private:
   int findContour(Standard_Integer theIndexS, NCollection_IndexedMap<Standard_Integer>& theContour,
-                  const Handle_NCollection_BaseAllocator& theTempAlloc,
-                  const Handle_NCollection_IncAllocator& theTempAlloc1) const;
+                  const Handle(NCollection_BaseAllocator)& theTempAlloc,
+                  const Handle(NCollection_IncAllocator)& theTempAlloc1) const;
   void acceptContour(const NCollection_IndexedMap<Standard_Integer>& theContour,
                      Standard_Integer theStartNumber);
   Standard_Integer getFirstNode(Standard_Integer theIndexS) const;
@@ -244,7 +244,7 @@ private:
 
   // FIELDS
   const Helper*                           myHelper;
-  Handle_NCollection_BaseAllocator        myAlloc;
+  Handle(NCollection_BaseAllocator)        myAlloc;
   NCollection_IndexedMap<Link>            myMapLink;
   NCollection_Sequence<Loop>              myLoops;
   HeapOfInteger                           myStartIndices;
@@ -300,7 +300,7 @@ public:
   //! Constructor. If helper is NULL then the algorithm will
   //! probably return a wrong result
   Standard_EXPORT Poly_MakeLoops3D(const Helper* theHelper,
-                                      const Handle_NCollection_BaseAllocator& theAlloc);
+                                      const Handle(NCollection_BaseAllocator)& theAlloc);
 
 protected:
   Standard_EXPORT virtual Standard_Integer chooseLeftWay
@@ -341,7 +341,7 @@ public:
   //! probably return a wrong result
   Standard_EXPORT Poly_MakeLoops2D(const Standard_Boolean theLeftWay,
                                       const Helper* theHelper,
-                                      const Handle_NCollection_BaseAllocator& theAlloc);
+                                      const Handle(NCollection_BaseAllocator)& theAlloc);
 
 protected:
   Standard_EXPORT virtual Standard_Integer chooseLeftWay

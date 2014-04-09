@@ -25,7 +25,7 @@
 #include <TObj_Common.hxx>
 #include <Handle_TObj_Object.hxx>
 
-DEFINE_BASECOLLECTION (TObj_CollectionOfObject,Handle_TObj_Object)
+DEFINE_BASECOLLECTION (TObj_CollectionOfObject,Handle(TObj_Object))
 
 DEFINE_SEQUENCE (TObj_SequenceOfObject,
                  TObj_CollectionOfObject,Handle(TObj_Object))

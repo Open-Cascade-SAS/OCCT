@@ -110,13 +110,13 @@ typedef BOPCol_NCVector<BOPAlgo_EdgeFace> BOPAlgo_VectorOfEdgeFace;
 typedef BOPCol_TBBContextFunctor 
   <BOPAlgo_EdgeFace,
   BOPAlgo_VectorOfEdgeFace,
-  Handle_BOPInt_Context, 
+  Handle(BOPInt_Context), 
   BOPInt_Context> BOPAlgo_EdgeFaceFunctor;
 //
 typedef BOPCol_TBBContextCnt 
   <BOPAlgo_EdgeFaceFunctor,
   BOPAlgo_VectorOfEdgeFace,
-  Handle_BOPInt_Context> BOPAlgo_EdgeFaceCnt;
+  Handle(BOPInt_Context)> BOPAlgo_EdgeFaceCnt;
 //
 //=======================================================================
 //function : PerformEF

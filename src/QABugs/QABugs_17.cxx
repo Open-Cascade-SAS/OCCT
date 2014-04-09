@@ -217,7 +217,7 @@ static Standard_Integer BUC60970 (Draw_Interpretor& di, Standard_Integer argc, c
 
   TopExp_Explorer spineWireExp(spineWire, TopAbs_EDGE); 
   Standard_Real first, last; 
-  Handle_Geom_Curve curl_ = BRep_Tool::Curve(TopoDS::Edge(spineWireExp.Current()), first, last); 
+  Handle(Geom_Curve) curl_ = BRep_Tool::Curve(TopoDS::Edge(spineWireExp.Current()), first, last); 
   gp_Pnt firstPnt; 
   gp_Vec tanVec; 
   curl_->D1(first, firstPnt, tanVec); 
@@ -391,9 +391,9 @@ static Standard_Integer  OCC138 (Draw_Interpretor& di, Standard_Integer /*argc*/
   BRepPrimAPI_MakeBox box2(gp_Pnt(120, 120, 120),  gp_Pnt(300, 300,300));
   BRepPrimAPI_MakeBox box3(gp_Pnt(320, 320, 320),  gp_Pnt(500, 500,500));
 
-  Handle_AIS_Shape ais1 = new AIS_Shape(box1.Shape());
-  Handle_AIS_Shape ais2 = new AIS_Shape(box2.Shape());
-  Handle_AIS_Shape ais3 = new AIS_Shape(box3.Shape());
+  Handle(AIS_Shape) ais1 = new AIS_Shape(box1.Shape());
+  Handle(AIS_Shape) ais2 = new AIS_Shape(box2.Shape());
+  Handle(AIS_Shape) ais3 = new AIS_Shape(box3.Shape());
 
   aContext->Display(ais1);
   aContext->Display(ais2);
@@ -411,7 +411,7 @@ static Standard_Integer  OCC138 (Draw_Interpretor& di, Standard_Integer /*argc*/
   while(aContext->MoreCurrent())
   {
     di << "\n count is = " << count++;
-    Handle_AIS_InteractiveObject ais = aContext->Current();
+    Handle(AIS_InteractiveObject) ais = aContext->Current();
     aContext->AddOrRemoveCurrentObject(ais);
     aContext->InitCurrent();
   }
@@ -450,7 +450,7 @@ static Standard_Integer BUC60821(Draw_Interpretor& di, Standard_Integer argc,con
 static int geom_get_2Dpt_from_3Dpt(const gp_Pnt& pnt3d, const gp_Pln& pln, gp_Pnt2d& pnt2d)
 { 
   int ret = 0; 
-  Handle_Geom_Plane gpln = new Geom_Plane(pln); 
+  Handle(Geom_Plane) gpln = new Geom_Plane(pln); 
   GeomAdaptor_Surface adsur(gpln); 
   Extrema_ExtPS extps(pnt3d, adsur, 0.001, 0.001); 
   if( extps.IsDone() ) 
@@ -471,14 +471,14 @@ static int geom_get_2Dpt_from_3Dpt(const gp_Pnt& pnt3d, const gp_Pln& pln, gp_Pn
 static Standard_Integer OCC353 (Draw_Interpretor& di, Standard_Integer , const char ** )
 {
   gp_Ax2 ax21( gp_Pnt(100,0,0), gp_Dir(0,0,1) );
-  Handle_Geom_Circle h_cir1 = new Geom_Circle( ax21, 25 );
+  Handle(Geom_Circle) h_cir1 = new Geom_Circle( ax21, 25 );
 
   gp_Ax2 ax22( gp_Pnt(-100,0,0), gp_Dir(0,0,1) );
-  Handle_Geom_Circle h_cir2 = new Geom_Circle( ax22, 25 );
+  Handle(Geom_Circle) h_cir2 = new Geom_Circle( ax22, 25 );
 
   gp_Pln refpln( gp_Pnt(0,0,0), gp_Dir(0,0,1) );
-  Handle_Geom2d_Curve cir2d1 = GeomAPI::To2d(h_cir1, refpln);
-  Handle_Geom2d_Curve cir2d2 = GeomAPI::To2d(h_cir2, refpln);
+  Handle(Geom2d_Curve) cir2d1 = GeomAPI::To2d(h_cir1, refpln);
+  Handle(Geom2d_Curve) cir2d2 = GeomAPI::To2d(h_cir2, refpln);
 
   Geom2dAdaptor_Curve adop1(cir2d1);
   Geom2dAdaptor_Curve adop2(cir2d2);
@@ -486,7 +486,7 @@ static Standard_Integer OCC353 (Draw_Interpretor& di, Standard_Integer , const c
   Geom2dGcc_QualifiedCurve qcur1(adop1, GccEnt_enclosing);
   Geom2dGcc_QualifiedCurve qcur2(adop2, GccEnt_enclosing);
 
-  Handle_Geom_CartesianPoint h_carpt = new Geom_CartesianPoint(0,175,0);
+  Handle(Geom_CartesianPoint) h_carpt = new Geom_CartesianPoint(0,175,0);
 
   gp_Pnt pt3d = h_carpt->Pnt();
   gp_Pnt2d pt2d;
@@ -500,7 +500,7 @@ static Standard_Integer OCC353 (Draw_Interpretor& di, Standard_Integer , const c
   st = "pt2d";
   DrawTrSurf::Set(st,pt2d);
 
-  Handle_Geom2d_CartesianPoint pt = new Geom2d_CartesianPoint(pt2d);
+  Handle(Geom2d_CartesianPoint) pt = new Geom2d_CartesianPoint(pt2d);
   Geom2dGcc_Circ2d3Tan sol( qcur1, qcur2, pt, 0.001, 0.0, 0.0);
 
   int res = 0;
@@ -606,7 +606,7 @@ static Standard_Integer  OCC232 (Draw_Interpretor& di, Standard_Integer /*argc*/
   builder.Add(comp, cs1);
   builder.Add(comp, cs2);
 
-  Handle_AIS_Shape ais = new AIS_Shape(comp);
+  Handle(AIS_Shape) ais = new AIS_Shape(comp);
   aContext->Display(ais);
 
   TopExp_Explorer exp(comp,  TopAbs_COMPSOLID);
@@ -638,9 +638,9 @@ static Standard_Integer  OCC138LC (Draw_Interpretor& di, Standard_Integer /*argc
   BRepPrimAPI_MakeBox box2(gp_Pnt(120, 120, 120),  gp_Pnt(300, 300,300));
   BRepPrimAPI_MakeBox box3(gp_Pnt(320, 320, 320),  gp_Pnt(500, 500,500));
 
-  Handle_AIS_Shape ais1 = new AIS_Shape(box1.Shape());
-  Handle_AIS_Shape ais2 = new AIS_Shape(box2.Shape());
-  Handle_AIS_Shape ais3 = new AIS_Shape(box3.Shape());
+  Handle(AIS_Shape) ais1 = new AIS_Shape(box1.Shape());
+  Handle(AIS_Shape) ais2 = new AIS_Shape(box2.Shape());
+  Handle(AIS_Shape) ais3 = new AIS_Shape(box3.Shape());
 
   aContext->Display(ais1);
   aContext->Display(ais2);
@@ -658,7 +658,7 @@ static Standard_Integer  OCC138LC (Draw_Interpretor& di, Standard_Integer /*argc
   while(aContext->MoreSelected())
   {
     di << "\n count is = %d" << count++;
-    Handle_AIS_InteractiveObject ais = aContext->SelectedInteractive();
+    Handle(AIS_InteractiveObject) ais = aContext->SelectedInteractive();
     aContext->AddOrRemoveSelected(ais);
     aContext->InitSelected();
   }
@@ -683,9 +683,9 @@ static Standard_Integer  OCC189 (Draw_Interpretor& di, Standard_Integer /*argc*/
   BRepPrimAPI_MakeBox box2(gp_Pnt(120, 120, 120),  gp_Pnt(300, 300, 300));
   BRepPrimAPI_MakeBox box3(gp_Pnt(320, 320, 320),  gp_Pnt(500, 500, 500));
 
-  Handle_AIS_Shape ais1 = new AIS_Shape(box1.Shape());
-  Handle_AIS_Shape ais2 = new AIS_Shape(box2.Shape());
-  Handle_AIS_Shape ais3 = new AIS_Shape(box3.Shape());
+  Handle(AIS_Shape) ais1 = new AIS_Shape(box1.Shape());
+  Handle(AIS_Shape) ais2 = new AIS_Shape(box2.Shape());
+  Handle(AIS_Shape) ais3 = new AIS_Shape(box3.Shape());
 
   aContext1->Display(ais1);
   aContext1->Display(ais2);
@@ -718,7 +718,7 @@ static Standard_Integer  OCC189 (Draw_Interpretor& di, Standard_Integer /*argc*/
   while(aContext1->MoreCurrent())
   {
     di << "\n count1 is = " << count1++;
-    Handle_AIS_InteractiveObject ais = aContext1->Current();
+    Handle(AIS_InteractiveObject) ais = aContext1->Current();
     aContext1->AddOrRemoveCurrentObject(ais);
     aContext1->InitCurrent();
   }
@@ -732,7 +732,7 @@ static Standard_Integer  OCC189 (Draw_Interpretor& di, Standard_Integer /*argc*/
   while(aContext2->MoreCurrent())
   {
     di << "\n count2 is = " << count2++;
-    Handle_AIS_InteractiveObject ais = aContext2->Current();
+    Handle(AIS_InteractiveObject) ais = aContext2->Current();
     aContext2->AddOrRemoveCurrentObject(ais);
     aContext2->InitCurrent();
   }
@@ -1458,7 +1458,7 @@ static Standard_Integer OCCN1 (Draw_Interpretor& di, Standard_Integer argc, cons
 
   BRepBuilderAPI_MakeFace face(twire);
   TopoDS_Face tface = face.Face();
-  ////////Handle_AIS_Shape face_ais = new AIS_Shape( tface );
+  ////////Handle(AIS_Shape) face_ais = new AIS_Shape( tface );
   ////////aContext->Display(face_ais);
 
   TopoDS_Solid box;
@@ -1568,14 +1568,14 @@ static Standard_Integer OCC2569 (Draw_Interpretor& di, Standard_Integer argc, co
   for(int i=1; i<=poles; i++) 
     arr.SetValue(i, gp_Pnt(i+10, i*2+20, i*3+45)); 
 
-  Handle_Geom_BezierCurve bez = new Geom_BezierCurve(arr); 
+  Handle(Geom_BezierCurve) bez = new Geom_BezierCurve(arr); 
   if(bez.IsNull()) {
     di << "\n The curve is not created.\n";
   } else {
     di << "\n Degree = " << bez->Degree() << "\n";   
   }
   TopoDS_Edge sh = BRepBuilderAPI_MakeEdge(bez).Edge(); 
-  Handle_AIS_Shape ais = new AIS_Shape(sh); 
+  Handle(AIS_Shape) ais = new AIS_Shape(sh); 
   aContext->Display(ais); 
   DrawTrSurf::Set(argv[2],bez);
   return 0;
@@ -1644,7 +1644,7 @@ static Standard_Integer OCC1642 (Draw_Interpretor& di, Standard_Integer argc, co
 
   }
 
-  Handle_ShapeFix_Wire sfw = new ShapeFix_Wire;
+  Handle(ShapeFix_Wire) sfw = new ShapeFix_Wire;
   sfw->Load(TopoDS::Wire(wire));
   sfw->SetFace(face);
   sfw->SetPrecision(Precision::Confusion());

@@ -92,7 +92,7 @@ class BRepExtrema_ExtCF
   TColStd_SequenceOfReal mySqDist;
   Extrema_SequenceOfPOnSurf myPointsOnS;
   Extrema_SequenceOfPOnCurv myPointsOnC;
-  Handle_BRepAdaptor_HSurface myHS;
+  Handle(BRepAdaptor_HSurface) myHS;
 };
 
 #endif

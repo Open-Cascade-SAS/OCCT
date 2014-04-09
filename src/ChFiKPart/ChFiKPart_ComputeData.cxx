@@ -92,8 +92,8 @@
  Standard_Boolean ChFiKPart_ComputeData::Compute
  (TopOpeBRepDS_DataStructure&    DStr, 
   Handle(ChFiDS_SurfData)&       Data, 
-  const Handle_Adaptor3d_HSurface& S1, 
-  const Handle_Adaptor3d_HSurface& S2, 
+  const Handle(Adaptor3d_HSurface)& S1, 
+  const Handle(Adaptor3d_HSurface)& S2, 
   const TopAbs_Orientation       Or1, 
   const TopAbs_Orientation       Or2, 
   const Handle(ChFiDS_Spine)&    Sp, 

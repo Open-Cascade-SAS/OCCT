@@ -147,7 +147,7 @@ Standard_Boolean  Interface_EntityCluster::IsLocalFull () const
 {
   // Solaris Forte C++ compiler insisted it couldn't cast this,
   // even though it seems to do so elsewhere
-  Handle_Standard_Transient tmp = Handle_Standard_Transient(theents[3]);
+  Handle(Standard_Transient) tmp = Handle(Standard_Transient)(theents[3]);
   return ( !tmp.IsNull() );
 }
 

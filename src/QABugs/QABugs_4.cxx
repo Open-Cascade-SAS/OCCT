@@ -41,15 +41,15 @@ static Standard_Integer BUC60738 (Draw_Interpretor& di, Standard_Integer /*argc*
   }
   
   TopoDS_Shape theSphere = BRepPrimAPI_MakeSphere(gp_Pnt(-40,0,0),20).Shape();
-  Handle_AIS_Shape theAISShape = new AIS_Shape(theSphere);
+  Handle(AIS_Shape) theAISShape = new AIS_Shape(theSphere);
 
   //display mode = Shading
   theAISShape->SetDisplayMode(1);
 
   //get the drawer
-  Handle_AIS_Drawer theDrawer = theAISShape->Attributes();
-  Handle_Prs3d_ShadingAspect theShadingAspect = theDrawer->ShadingAspect();
-  Handle_Graphic3d_AspectFillArea3d theAspectFillArea3d = theShadingAspect->Aspect();
+  Handle(AIS_Drawer) theDrawer = theAISShape->Attributes();
+  Handle(Prs3d_ShadingAspect) theShadingAspect = theDrawer->ShadingAspect();
+  Handle(Graphic3d_AspectFillArea3d) theAspectFillArea3d = theShadingAspect->Aspect();
 
   //allow to display the edges
   theAspectFillArea3d->SetEdgeOn();

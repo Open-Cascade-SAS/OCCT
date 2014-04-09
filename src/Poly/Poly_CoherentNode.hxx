@@ -116,14 +116,14 @@ class Poly_CoherentNode : public gp_XYZ
   /**
    * Reset the Node to void.
    */
-  Standard_EXPORT void  Clear   (const Handle_NCollection_BaseAllocator&);
+  Standard_EXPORT void  Clear   (const Handle(NCollection_BaseAllocator)&);
 
   /**
    * Connect a triangle to this Node.
    */
   Standard_EXPORT void  AddTriangle
                                 (const Poly_CoherentTriangle&            theTri,
-                                 const Handle_NCollection_BaseAllocator& theA);
+                                 const Handle(NCollection_BaseAllocator)& theA);
 
   /**
    * Disconnect a triangle from this Node.
@@ -131,7 +131,7 @@ class Poly_CoherentNode : public gp_XYZ
   Standard_EXPORT Standard_Boolean
                         RemoveTriangle
                                 (const Poly_CoherentTriangle&            theTri,
-                                 const Handle_NCollection_BaseAllocator& theA);
+                                 const Handle(NCollection_BaseAllocator)& theA);
 
   /**
    * Create an iterator of incident triangles.

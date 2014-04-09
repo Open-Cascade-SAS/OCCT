@@ -43,7 +43,7 @@ class NIS_TriangulatedDrawer : public NIS_Drawer
    * Copy the relevant information from another instance of Drawer.
    * raises exception if theOther has incompatible type (test IsKind).
    */
-  Standard_EXPORT virtual void Assign    (const Handle_NIS_Drawer& theOther);
+  Standard_EXPORT virtual void Assign    (const Handle(NIS_Drawer)& theOther);
 
   /**
    * Called before execution of Draw(), once per group of interactive objects.
@@ -60,7 +60,7 @@ class NIS_TriangulatedDrawer : public NIS_Drawer
   /**
    * Main function: display the given interactive object in the given view.
    */
-  Standard_EXPORT virtual void Draw      (const Handle_NIS_InteractiveObject&,
+  Standard_EXPORT virtual void Draw      (const Handle(NIS_InteractiveObject)&,
                                           const DrawType         theType,
                                           const NIS_DrawList&    theDrawList);
 
@@ -68,7 +68,7 @@ class NIS_TriangulatedDrawer : public NIS_Drawer
    * Matching two instances, for Map interface.
    */
   Standard_EXPORT virtual Standard_Boolean
-                                IsEqual  (const Handle_NIS_Drawer& theOth)const;
+                                IsEqual  (const Handle(NIS_Drawer)& theOth)const;
 
 protected:
   /**

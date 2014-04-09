@@ -477,7 +477,7 @@ Handle(Select3D_SensitiveEntity) Select3D_SensitiveCircle::GetConnected(const To
 //purpose  :
 //=======================================================================
 
-void Select3D_SensitiveCircle::Project(const Handle_Select3D_Projector &aProjector)
+void Select3D_SensitiveCircle::Project(const Handle(Select3D_Projector) &aProjector)
 {
   Select3D_SensitivePoly::Project(aProjector);
   gp_Pnt2d aCenter;

@@ -794,7 +794,7 @@ static void Indent(const Standard_Integer Offset) {
 //function : Init
 // purpose : 
 //=============================================================================
-void Bisector_BisecPC::Init (const Handle_Geom2d_Curve&    Curve, 
+void Bisector_BisecPC::Init (const Handle(Geom2d_Curve)&    Curve, 
 			     const gp_Pnt2d&               Point, 
 			     const Standard_Real           Sign, 
 			     const TColStd_SequenceOfReal& StartIntervals, 

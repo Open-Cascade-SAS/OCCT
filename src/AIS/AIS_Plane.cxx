@@ -296,7 +296,7 @@ void AIS_Plane::Compute(const Handle(PrsMgr_PresentationManager3d)& ,
   }
 }
 
-void AIS_Plane::Compute(const Handle_Prs3d_Projector& aProjector, const Handle_Geom_Transformation& aTransformation, const Handle_Prs3d_Presentation& aPresentation)
+void AIS_Plane::Compute(const Handle(Prs3d_Projector)& aProjector, const Handle(Geom_Transformation)& aTransformation, const Handle(Prs3d_Presentation)& aPresentation)
 {
   PrsMgr_PresentableObject::Compute(aProjector, aTransformation, aPresentation);
 }

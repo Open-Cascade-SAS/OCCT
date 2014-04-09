@@ -62,13 +62,13 @@ class NIS_View : public V3d_View
   /**
    * Attach the view to the window.
    */
-  Standard_EXPORT NIS_View (const Handle_V3d_Viewer&    theViewer,
-                            const Handle_Aspect_Window& theWindow = NULL);
+  Standard_EXPORT NIS_View (const Handle(V3d_Viewer)&    theViewer,
+                            const Handle(Aspect_Window)& theWindow = NULL);
 
   /**
    * Attach the view to the window.
    */
-  Standard_EXPORT void SetWindow(const Handle_Aspect_Window &theWindow);
+  Standard_EXPORT void SetWindow(const Handle(Aspect_Window) &theWindow);
 
   /**
    * Indicate whether to draw hilighted objects on top of all other ones
@@ -131,7 +131,7 @@ class NIS_View : public V3d_View
    * Unhilights the hilighted object if it coincides with the given
    * object instance.
    */
-  Standard_EXPORT void  DynamicUnhilight(const Handle_NIS_InteractiveObject&);
+  Standard_EXPORT void  DynamicUnhilight(const Handle(NIS_InteractiveObject)&);
 
   /**
    * Unhilights the currently hilighted object.
@@ -228,7 +228,7 @@ class NIS_View : public V3d_View
    *   the selected object picked by the minimal intersection distance among
    *   all contexts attached to this View.
    */
-  Standard_EXPORT Handle_NIS_InteractiveObject
+  Standard_EXPORT Handle(NIS_InteractiveObject)
                         Pick            (const Standard_Integer theX,
                                          const Standard_Integer theY);
 
@@ -247,7 +247,7 @@ class NIS_View : public V3d_View
    *   the selected object picked by the minimal intersection distance among
    *   all contexts attached to this View.
    */
-  Standard_EXPORT Handle_NIS_InteractiveObject
+  Standard_EXPORT Handle(NIS_InteractiveObject)
                         Pick            (const gp_Ax1&          theAxis,
                                          const Standard_Real    theOver,
                                          const Standard_Boolean isOnlySel);
@@ -285,7 +285,7 @@ class NIS_View : public V3d_View
   // ---------- PRIVATE FIELDS ----------
 
   NCollection_List<NIS_InteractiveContext *>       myContexts;
-  Handle_NIS_InteractiveObject                     myDynHilighted;
+  Handle(NIS_InteractiveObject)                     myDynHilighted;
   Standard_Boolean                                 myIsTopHilight      : 1;
   Standard_Boolean                                 myDoHilightSelected : 1;
   NCollection_Vector<NIS_InteractiveObject *>      myDetected;

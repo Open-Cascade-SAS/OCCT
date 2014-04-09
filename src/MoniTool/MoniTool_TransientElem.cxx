@@ -24,7 +24,7 @@ MoniTool_TransientElem::MoniTool_TransientElem (const Handle(Standard_Transient)
 {  SetHashCode ( TColStd_MapTransientHasher::HashCode (akey, IntegerLast() ) );  }
 
 
-    const Handle_Standard_Transient&  MoniTool_TransientElem::Value () const
+    const Handle(Standard_Transient)&  MoniTool_TransientElem::Value () const
       {  return theval;  }
 
     Standard_Boolean  MoniTool_TransientElem::Equates

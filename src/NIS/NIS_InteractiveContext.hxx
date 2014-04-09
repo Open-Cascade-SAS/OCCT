@@ -147,18 +147,18 @@ class NIS_InteractiveContext : public Standard_Transient
   /**
    * Associate this Context with the given View.
    */
-  Standard_EXPORT void AttachView (const Handle_NIS_View& theView);
+  Standard_EXPORT void AttachView (const Handle(NIS_View)& theView);
 
   /**
    * Stop the association of the Context with the given View.
    */
-  Standard_EXPORT void DetachView (const Handle_NIS_View& theView);
+  Standard_EXPORT void DetachView (const Handle(NIS_View)& theView);
   //@}
 
   /**
    * Query the InteractiveObject instance by its ID.
    */
-  Standard_EXPORT const Handle_NIS_InteractiveObject&
+  Standard_EXPORT const Handle(NIS_InteractiveObject)&
                        GetObject  (const Standard_Integer theID) const;
 
   /**
@@ -183,9 +183,9 @@ class NIS_InteractiveContext : public Standard_Transient
    * Access to Drawers, can be used for specific operations where it is not
    * desirale to iterate InteractiveObjects.
    */
-  inline NCollection_Map<Handle_NIS_Drawer>::Iterator
+  inline NCollection_Map<Handle(NIS_Drawer)>::Iterator
                         GetDrawers () const
-  { return NCollection_Map<Handle_NIS_Drawer>::Iterator(myDrawers); }
+  { return NCollection_Map<Handle(NIS_Drawer)>::Iterator(myDrawers); }
 
   // ================ BEGIN Mangement of Objects ================
   ///@name Management of Objects
@@ -210,8 +210,8 @@ class NIS_InteractiveContext : public Standard_Transient
    *   to False if you have to make a number of similar calls, then you would
    *   call UpdateViews() in the end.
    */
-  Standard_EXPORT void Display    (Handle_NIS_InteractiveObject& theObj,
-                                   const Handle_NIS_Drawer& theDrawer = NULL,
+  Standard_EXPORT void Display    (Handle(NIS_InteractiveObject)& theObj,
+                                   const Handle(NIS_Drawer)& theDrawer = NULL,
                                    const Standard_Boolean isUpdateViews
                                                         = Standard_True);
 
@@ -234,8 +234,8 @@ class NIS_InteractiveContext : public Standard_Transient
    *   to False if you have to make a number of similar calls, then you would
    *   call UpdateViews() in the end.
    */
-  Standard_EXPORT void DisplayOnTop (Handle_NIS_InteractiveObject& theObj,
-                                     const Handle_NIS_Drawer& theDrawer = NULL,
+  Standard_EXPORT void DisplayOnTop (Handle(NIS_InteractiveObject)& theObj,
+                                     const Handle(NIS_Drawer)& theDrawer = NULL,
                                      const Standard_Boolean isUpdateViews
                                                           = Standard_True);
 
@@ -249,7 +249,7 @@ class NIS_InteractiveContext : public Standard_Transient
    *   to False if you have to make a number of similar calls, then you would
    *   call UpdateViews() in the end.
    */   
-  Standard_EXPORT void Erase      (const Handle_NIS_InteractiveObject& theObj,
+  Standard_EXPORT void Erase      (const Handle(NIS_InteractiveObject)& theObj,
                                    const Standard_Boolean isUpdateViews
                                                         = Standard_True);
 
@@ -263,7 +263,7 @@ class NIS_InteractiveContext : public Standard_Transient
    *   to False if you have to make a number of similar calls, then you would
    *   call UpdateViews() in the end.
    */   
-  Standard_EXPORT void Remove     (const Handle_NIS_InteractiveObject& theObj,
+  Standard_EXPORT void Remove     (const Handle(NIS_InteractiveObject)& theObj,
                                    const Standard_Boolean isUpdateViews
                                                         = Standard_True);
 
@@ -319,14 +319,14 @@ class NIS_InteractiveContext : public Standard_Transient
    * Query the current selection filter. Use the method SetFilter to install it.
    * By default returns a NULL handle.
    */
-  inline const Handle_NIS_SelectFilter&
+  inline const Handle(NIS_SelectFilter)&
                         GetFilter   () const
   { return mySelectFilter; }
 
   /**
    * Install a selection filter.
    */
-  inline void           SetFilter   (const Handle_NIS_SelectFilter& theFilter)
+  inline void           SetFilter   (const Handle(NIS_SelectFilter)& theFilter)
   { mySelectFilter = theFilter; }
 
   /**
@@ -361,7 +361,7 @@ class NIS_InteractiveContext : public Standard_Transient
    *   True if the selection status has been changed, False if nothing changed
    */
   Standard_EXPORT Standard_Boolean
-                        ProcessSelection(const Handle_NIS_InteractiveObject& O,
+                        ProcessSelection(const Handle(NIS_InteractiveObject)& O,
                                          const Standard_Boolean     isMultiple
                                             = Standard_False);
 
@@ -389,7 +389,7 @@ class NIS_InteractiveContext : public Standard_Transient
    *   True if the selection status has been changed, False if noithing changed
    */
   Standard_EXPORT Standard_Boolean
-                        SetSelected (const Handle_NIS_InteractiveObject& theObj,
+                        SetSelected (const Handle(NIS_InteractiveObject)& theObj,
                                      const Standard_Boolean isSelected
                                                 = Standard_True);
 
@@ -410,7 +410,7 @@ class NIS_InteractiveContext : public Standard_Transient
    * Query if the given object is selected.
    */
   Standard_EXPORT Standard_Boolean
-                        IsSelected  (const Handle_NIS_InteractiveObject& theOb);
+                        IsSelected  (const Handle(NIS_InteractiveObject)& theOb);
 
   /**
    * Reset all previous selection.
@@ -467,7 +467,7 @@ class NIS_InteractiveContext : public Standard_Transient
 
   // ---------- PROTECTED METHODS ----------
 
-  Standard_EXPORT void redraw           (const Handle_NIS_View&     theView,
+  Standard_EXPORT void redraw           (const Handle(NIS_View)&     theView,
                                          const NIS_Drawer::DrawType theType);
 
   /**
@@ -487,7 +487,7 @@ class NIS_InteractiveContext : public Standard_Transient
    *   The ray distance of the intersection point between the ray and theSel. 
    */
   Standard_EXPORT Standard_Real
-                       selectObject     (Handle_NIS_InteractiveObject& theSel,
+                       selectObject     (Handle(NIS_InteractiveObject)& theSel,
                                          NCollection_List<DetectedEnt>& theDet,
                                          const gp_Ax1&                 theAxis,
                                          const Standard_Real           theOver,
@@ -546,20 +546,20 @@ class NIS_InteractiveContext : public Standard_Transient
                                  const Standard_Boolean        isFullyIn) const;
 
 private:
-  void  deselectObj             (const Handle_NIS_InteractiveObject&,
+  void  deselectObj             (const Handle(NIS_InteractiveObject)&,
                                  const Standard_Integer);
 
-  void  selectObj               (const Handle_NIS_InteractiveObject&,
+  void  selectObj               (const Handle(NIS_InteractiveObject)&,
                                  const Standard_Integer);
 
-  const Handle_NIS_Drawer&
-        drawerForDisplay        (const Handle_NIS_InteractiveObject&,
-                                 const Handle_NIS_Drawer&);
+  const Handle(NIS_Drawer)&
+        drawerForDisplay        (const Handle(NIS_InteractiveObject)&,
+                                 const Handle(NIS_Drawer)&);
 
-  void  objectForDisplay        (Handle_NIS_InteractiveObject&,
+  void  objectForDisplay        (Handle(NIS_InteractiveObject)&,
                                  const NIS_Drawer::DrawType);
 
-  Handle_NIS_Allocator
+  Handle(NIS_Allocator)
         compactObjects          ();
 
  private:
@@ -568,7 +568,7 @@ private:
   /**
    * Allocator for all data associated with objects.
    */
-  Handle_NIS_Allocator                              myAllocator;
+  Handle(NIS_Allocator)                              myAllocator;
 
   /**
    * The last added object ID.
@@ -577,19 +577,19 @@ private:
   /**
    * Container of InteractiveObject instances.
    */ 
-  NCollection_SparseArray <Handle_NIS_InteractiveObject>
+  NCollection_SparseArray <Handle(NIS_InteractiveObject)>
                                                     myObjects;
 
   /**
    * List of Views.
    */
-  NCollection_List   <Handle_NIS_View>              myViews;
+  NCollection_List   <Handle(NIS_View)>              myViews;
 
   /**
    * Container of Drawers. There should be one or more Drawers for each type of
    * contained InteractiveObject.
    */
-  NCollection_Map    <Handle_NIS_Drawer>            myDrawers;
+  NCollection_Map    <Handle(NIS_Drawer)>            myDrawers;
 
   /**
    * Three maps indicating the state of contained objects:
@@ -610,7 +610,7 @@ private:
   /**
    * Instance of selection filter used for interactive selections.
    */
-  Handle_NIS_SelectFilter                           mySelectFilter;
+  Handle(NIS_SelectFilter)                           mySelectFilter;
 
   /**
    * Current mode of selection.

@@ -29,7 +29,7 @@ template <class Type> class BOPCol_NCVector
 {
  public:
   BOPCol_NCVector(const Standard_Integer theIncrement=256,
-		  const Handle_NCollection_BaseAllocator& theAlloc = NULL) 
+		  const Handle(NCollection_BaseAllocator)& theAlloc = NULL) 
     : NCollection_Vector<Type>(theIncrement, theAlloc) {
   };
   //

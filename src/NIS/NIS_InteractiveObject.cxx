@@ -36,7 +36,7 @@ NIS_InteractiveObject::~NIS_InteractiveObject (  )
 //purpose  : 
 //=======================================================================
 
-const Handle_NIS_Drawer& NIS_InteractiveObject::SetDrawer
+const Handle(NIS_Drawer)& NIS_InteractiveObject::SetDrawer
                                         (const Handle(NIS_Drawer)& theDrawer,
                                          const Standard_Boolean    setUpdated)
 {
@@ -146,8 +146,8 @@ const Bnd_B3f& NIS_InteractiveObject::GetBox ()
 //purpose  : 
 //=======================================================================
 
-void NIS_InteractiveObject::Clone (const Handle_NCollection_BaseAllocator&,
-                                   Handle_NIS_InteractiveObject& theDest) const
+void NIS_InteractiveObject::Clone (const Handle(NCollection_BaseAllocator)&,
+                                   Handle(NIS_InteractiveObject)& theDest) const
 {
   if (theDest.IsNull() == Standard_False)
   {
@@ -171,8 +171,8 @@ void NIS_InteractiveObject::Clone (const Handle_NCollection_BaseAllocator&,
 //=======================================================================
 
 void NIS_InteractiveObject::CloneWithID
-                        (const Handle_NCollection_BaseAllocator& theAlloc,
-                         Handle_NIS_InteractiveObject&           theDest)
+                        (const Handle(NCollection_BaseAllocator)& theAlloc,
+                         Handle(NIS_InteractiveObject)&           theDest)
 {
   Clone(theAlloc, theDest);
   theDest->myID = myID;

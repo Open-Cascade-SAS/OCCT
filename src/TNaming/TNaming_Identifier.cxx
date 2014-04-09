@@ -253,7 +253,7 @@ TopoDS_Shape TNaming_Identifier::ShapeContext() const
 
 
 //=======================================================================
-//function : Handle_TNaming_NamedShape
+//function : Handle(TNaming_NamedShape)
 //purpose  : 
 //=======================================================================
 

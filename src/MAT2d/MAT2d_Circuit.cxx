@@ -109,7 +109,7 @@ void  MAT2d_Circuit::Perform
   // Detection Lignes ouvertes.
   //----------------------------
   for ( i = 1; i <= NbLines; i++) {    
-    Handle_Geom2d_TrimmedCurve Curve;
+    Handle(Geom2d_TrimmedCurve) Curve;
     Curve = Handle(Geom2d_TrimmedCurve)::DownCast(FigItem.Value(i).First());
     gp_Pnt2d P1 = Curve->StartPoint();  
     Curve = Handle(Geom2d_TrimmedCurve)::DownCast(FigItem.Value(i).Last());

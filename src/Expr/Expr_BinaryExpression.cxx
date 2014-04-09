@@ -74,7 +74,7 @@ const Handle(Expr_GeneralExpression)& Expr_BinaryExpression::SubExpression (cons
       Standard_OutOfRange::Raise();
     }
   }
- return *(  ( Handle_Expr_GeneralExpression* )NULL  );
+ return *(  ( Handle(Expr_GeneralExpression)* )NULL  );
 }
 
 Standard_Boolean Expr_BinaryExpression::ContainsUnknowns () const

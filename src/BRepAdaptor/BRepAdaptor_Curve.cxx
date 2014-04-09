@@ -283,10 +283,10 @@ Handle(Adaptor3d_HCurve) BRepAdaptor_Curve::Trim(const Standard_Real First,
   }
   else {
     Handle(Adaptor3d_HCurveOnSurface) sav = myConSurf;
-    *((Handle_Adaptor3d_HCurveOnSurface*) (void*) &myConSurf) = 
+    *((Handle(Adaptor3d_HCurveOnSurface)*) (void*) &myConSurf) = 
       Handle(Adaptor3d_HCurveOnSurface)::DownCast(myConSurf->Trim(First,Last,Tol));
     res->ChangeCurve() = *this;
-    *((Handle_Adaptor3d_HCurveOnSurface*) (void*) &myConSurf) = sav;
+    *((Handle(Adaptor3d_HCurveOnSurface)*) (void*) &myConSurf) = sav;
   }
   return res;
 }

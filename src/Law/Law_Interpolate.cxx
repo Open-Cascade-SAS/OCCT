@@ -626,7 +626,7 @@ void Law_Interpolate::PerformNonPeriodic()
 }
 
 //=======================================================================
-//function : Handle_Geom_BSplineCurve&
+//function : Handle(Geom_BSplineCurve)&
 //purpose  : 
 //=======================================================================
 

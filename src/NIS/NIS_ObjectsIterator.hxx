@@ -19,7 +19,7 @@
 #include <NCollection_SparseArray.hxx>
 #include <Handle_NIS_InteractiveObject.hxx>
 
-class Handle_NIS_InteractiveContext;
+class Handle(NIS_InteractiveContext);
 
 /**
  * Iterator of objects contained in a NIS_InteractiveContext instance. The
@@ -56,7 +56,7 @@ class NIS_ObjectsIterator
    * @param theCtx
    *   Interactive context that is to be iterated for all objects.
    */
-  inline NIS_ObjectsIterator    (const Handle_NIS_InteractiveContext& theCtx)
+  inline NIS_ObjectsIterator    (const Handle(NIS_InteractiveContext)& theCtx)
   { Initialize (theCtx); }
 
   /**
@@ -65,7 +65,7 @@ class NIS_ObjectsIterator
    *   Interactive context that is to be iterated for all objects.
    */
   Standard_EXPORT void          Initialize
-                                (const Handle_NIS_InteractiveContext& theCtx);
+                                (const Handle(NIS_InteractiveContext)& theCtx);
 
   /**
    * Query if the Iterator has an object (not yet finished the iteration
@@ -78,7 +78,7 @@ class NIS_ObjectsIterator
    * Returns the current object at the iteration pointer. If the iteration is
    * over (More() == False) this method returns NULL Handle.
    */
-  Standard_EXPORT const Handle_NIS_InteractiveObject&
+  Standard_EXPORT const Handle(NIS_InteractiveObject)&
                                 Value   () const;
 
   /**
@@ -89,7 +89,7 @@ class NIS_ObjectsIterator
  protected:
   // ---------- PROTECTED FIELDS ----------
 
-  NCollection_SparseArray <Handle_NIS_InteractiveObject>::ConstIterator myIter;
+  NCollection_SparseArray <Handle(NIS_InteractiveObject)>::ConstIterator myIter;
 
 };
 

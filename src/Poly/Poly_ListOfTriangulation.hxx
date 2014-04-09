@@ -23,6 +23,6 @@
  * List of Poly_Triangulation instances.
  */
 
-typedef NCollection_List<Handle_Poly_Triangulation> Poly_ListOfTriangulation;
+typedef NCollection_List<Handle(Poly_Triangulation)> Poly_ListOfTriangulation;
 
 #endif

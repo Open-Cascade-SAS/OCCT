@@ -29,7 +29,7 @@ static Standard_Integer doDebug = 0;
 //=======================================================================
 
 Poly_MakeLoops::Poly_MakeLoops(const Helper* theHelper,
-                                     const Handle_NCollection_BaseAllocator& theAlloc)
+                                     const Handle(NCollection_BaseAllocator)& theAlloc)
 : myHelper (theHelper),
   myAlloc (theAlloc),
   myMapLink (4000, myAlloc),
@@ -45,7 +45,7 @@ Poly_MakeLoops::Poly_MakeLoops(const Helper* theHelper,
 
 void Poly_MakeLoops::Reset
                    (const Helper* theHelper,
-                    const Handle_NCollection_BaseAllocator& theAlloc)
+                    const Handle(NCollection_BaseAllocator)& theAlloc)
 {
   myHelper = theHelper;
   myMapLink.Clear();
@@ -245,8 +245,8 @@ Standard_Integer Poly_MakeLoops::Perform()
 Standard_Integer Poly_MakeLoops::findContour
                    (Standard_Integer theIndexS,
                     NCollection_IndexedMap<Standard_Integer> &theContour,
-                    const Handle_NCollection_BaseAllocator& theTempAlloc,
-                    const Handle_NCollection_IncAllocator& theTempAlloc1) const
+                    const Handle(NCollection_BaseAllocator)& theTempAlloc,
+                    const Handle(NCollection_IncAllocator)& theTempAlloc1) const
 {
   theContour.Clear();
   Standard_Integer aStartIndex = 0;
@@ -579,7 +579,7 @@ void Poly_MakeLoops::GetHangingLinks(ListOfLink& theLinks) const
 //=======================================================================
 
 Poly_MakeLoops3D::Poly_MakeLoops3D(const Helper* theHelper,
-                                         const Handle_NCollection_BaseAllocator& theAlloc)
+                                         const Handle(NCollection_BaseAllocator)& theAlloc)
 : Poly_MakeLoops (theHelper, theAlloc)
 {
 }
@@ -651,7 +651,7 @@ Standard_Integer Poly_MakeLoops3D::chooseLeftWay
 
 Poly_MakeLoops2D::Poly_MakeLoops2D(const Standard_Boolean theLeftWay,
                                          const Helper* theHelper,
-                                         const Handle_NCollection_BaseAllocator& theAlloc)
+                                         const Handle(NCollection_BaseAllocator)& theAlloc)
 : Poly_MakeLoops (theHelper, theAlloc),
   myRightWay(!theLeftWay)
 {

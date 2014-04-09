@@ -95,7 +95,7 @@ void Bnd_BoundSortBox2d::Initialize(const Bnd_Box2d& CompleteBox,
 //purpose  : 
 //=======================================================================
 
-void  Bnd_BoundSortBox2d::Initialize(const Handle_Bnd_HArray1OfBox2d& SetOfBox)
+void  Bnd_BoundSortBox2d::Initialize(const Handle(Bnd_HArray1OfBox2d)& SetOfBox)
 {
   myBndComponents=SetOfBox;
   discrX=SetOfBox->Length();

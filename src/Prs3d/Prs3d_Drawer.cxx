@@ -548,7 +548,7 @@ void Prs3d_Drawer::SetFaceBoundaryAspect (const Handle(Prs3d_LineAspect)& theAsp
 // function : FaceBoundaryAspect
 // purpose  :
 // =======================================================================
-Handle_Prs3d_LineAspect Prs3d_Drawer::FaceBoundaryAspect ()
+Handle(Prs3d_LineAspect) Prs3d_Drawer::FaceBoundaryAspect ()
 {
   if (myFaceBoundaryAspect.IsNull ())
   {

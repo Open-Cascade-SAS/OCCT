@@ -23,10 +23,10 @@
 #include <Standard_Type.hxx>
 
 // The Initialization of the Standard_Persistent variables
-const Handle_Standard_Type& Standard_Persistent_Type_() 
+const Handle(Standard_Type)& Standard_Persistent_Type_() 
 {
-  static const Handle_Standard_Type _Ancestors[]={NULL};
-  static Handle_Standard_Type _aType 
+  static const Handle(Standard_Type) _Ancestors[]={NULL};
+  static Handle(Standard_Type) _aType 
     = new Standard_Type("Standard_Persistent",
 			sizeof(Standard_Persistent),
 			0,
@@ -42,9 +42,9 @@ const Handle_Standard_Type& Standard_Persistent_Type_()
 
 // The Method This 
 //
-Handle_Standard_Persistent Standard_Persistent::This() const
+Handle(Standard_Persistent) Standard_Persistent::This() const
 {
-  Handle_Standard_Persistent aHand(this);
+  Handle(Standard_Persistent) aHand(this);
 
   return aHand;
 }
@@ -108,7 +108,7 @@ Handle(Standard_Persistent)::~Handle(Standard_Persistent)()
  EndScope();
 }
 
-void Handle_Standard_Persistent::RaiseNullObject(const Standard_CString S) const
+void Handle(Standard_Persistent)::RaiseNullObject(const Standard_CString S) const
 { 
   Standard_NullObject::Raise(S);
 }

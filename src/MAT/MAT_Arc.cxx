@@ -199,7 +199,7 @@ void  MAT_Arc::SetFirstNode(const Handle(MAT_Node)& aNode)
 // function: SetSecondNode
 // purpose :
 //========================================================================
-void  MAT_Arc::SetSecondNode(const Handle_MAT_Node& aNode)
+void  MAT_Arc::SetSecondNode(const Handle(MAT_Node)& aNode)
 {
   secondNode = aNode;
 }

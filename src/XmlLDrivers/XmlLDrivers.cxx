@@ -86,7 +86,7 @@ TCollection_AsciiString XmlLDrivers::CreationDate ()
 //purpose  : 
 //=======================================================================
 Handle(XmlMDF_ADriverTable) XmlLDrivers::AttributeDrivers
-                (const Handle_CDM_MessageDriver& theMessageDriver)
+                (const Handle(CDM_MessageDriver)& theMessageDriver)
 {
   Handle(XmlMDF_ADriverTable) aTable = new XmlMDF_ADriverTable();
   //

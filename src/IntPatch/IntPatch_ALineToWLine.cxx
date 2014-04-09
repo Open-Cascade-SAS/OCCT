@@ -47,8 +47,8 @@ static
 		  const Standard_Real AngDef);
 
 static 
-  Standard_Boolean SameCurve(const Handle_Adaptor2d_HCurve2d& C1,
-			     const Handle_Adaptor2d_HCurve2d& C2);
+  Standard_Boolean SameCurve(const Handle(Adaptor2d_HCurve2d)& C1,
+			     const Handle(Adaptor2d_HCurve2d)& C2);
 
 static 
   void RecadreMemePeriode(Standard_Real& u1,
@@ -904,7 +904,7 @@ gp_Pnt DefineDU(const Handle(IntPatch_ALine)& aline,
 //function : SameCurve
 //purpose  : 
 //=======================================================================
-Standard_Boolean SameCurve(const Handle_Adaptor2d_HCurve2d& C1,const Handle_Adaptor2d_HCurve2d& C2) 
+Standard_Boolean SameCurve(const Handle(Adaptor2d_HCurve2d)& C1,const Handle(Adaptor2d_HCurve2d)& C2) 
 { 
   Standard_Real C1f = C1->FirstParameter();
   Standard_Real C2f = C2->FirstParameter();

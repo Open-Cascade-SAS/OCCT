@@ -737,7 +737,7 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
                       imax++;
 
                     if(imin<imax) { 
-                      Handle_IntSurf_LineOn2S PWLine = new IntSurf_LineOn2S();
+                      Handle(IntSurf_LineOn2S) PWLine = new IntSurf_LineOn2S();
                       for(i=imin;i<=imax;i++) 
                         PWLine->Add(PW.Line()->Value(i));
 
@@ -905,7 +905,7 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
                     imax++;
 
                   if(imin<imax) { 
-                    Handle_IntSurf_LineOn2S PWLine = new IntSurf_LineOn2S();
+                    Handle(IntSurf_LineOn2S) PWLine = new IntSurf_LineOn2S();
                     for(i=imin;i<=imax;i++)
                       PWLine->Add(PW.Line()->Value(i));
 
@@ -959,7 +959,7 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
 // function : NewLine
 // purpose  : 
 //==================================================================================
-Handle_IntPatch_Line IntPatch_PrmPrmIntersection::NewLine (const Handle(Adaptor3d_HSurface)&    Surf1,
+Handle(IntPatch_Line) IntPatch_PrmPrmIntersection::NewLine (const Handle(Adaptor3d_HSurface)&    Surf1,
                                                            const Handle(Adaptor3d_HSurface)&    Surf2,
                                                            const Standard_Integer NumLine,
                                                            const Standard_Integer Low,

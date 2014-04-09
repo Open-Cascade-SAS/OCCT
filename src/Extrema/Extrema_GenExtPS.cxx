@@ -369,7 +369,7 @@ inline static void fillParams(const TColStd_Array1OfReal& theKnots,
                               Standard_Integer theDegree,
                               Standard_Real theParMin,
                               Standard_Real theParMax,
-                              Handle_TColStd_HArray1OfReal& theParams,
+                              Handle(TColStd_HArray1OfReal)& theParams,
                               Standard_Integer theSample)
 {
   NCollection_Vector<Standard_Real> aParams;

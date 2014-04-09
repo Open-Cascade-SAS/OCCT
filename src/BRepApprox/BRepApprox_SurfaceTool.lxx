@@ -56,14 +56,14 @@ inline void  BRepApprox_SurfaceTool::VIntervals(const BRepAdaptor_Surface& Surf,
 }
 
 
-inline Handle_Adaptor3d_HSurface  BRepApprox_SurfaceTool::UTrim(const BRepAdaptor_Surface& Surf,
+inline Handle(Adaptor3d_HSurface)  BRepApprox_SurfaceTool::UTrim(const BRepAdaptor_Surface& Surf,
 								   const Standard_Real F,
 								   const Standard_Real L,
 								   const Standard_Real Tol) { 
   return Surf.UTrim(F,L,Tol);
 }
 
-inline Handle_Adaptor3d_HSurface BRepApprox_SurfaceTool::VTrim(const BRepAdaptor_Surface& Surf,
+inline Handle(Adaptor3d_HSurface) BRepApprox_SurfaceTool::VTrim(const BRepAdaptor_Surface& Surf,
 								  const Standard_Real F,
 								  const Standard_Real L,
 								  const Standard_Real Tol) { 

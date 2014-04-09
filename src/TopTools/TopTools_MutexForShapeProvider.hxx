@@ -54,7 +54,7 @@ private:
   TopTools_MutexForShapeProvider & operator = (const TopTools_MutexForShapeProvider &);
 
 
-  NCollection_DataMap<Handle_TopoDS_TShape, Standard_Mutex *> myMap;
+  NCollection_DataMap<Handle(TopoDS_TShape), Standard_Mutex *> myMap;
 
 };
 

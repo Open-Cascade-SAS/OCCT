@@ -56,14 +56,14 @@ inline void HLRBRep_SurfaceTool::VIntervals(const Standard_Address Surf,
 }
 
 
-inline Handle_Adaptor3d_HSurface HLRBRep_SurfaceTool::UTrim(const Standard_Address Surf,
+inline Handle(Adaptor3d_HSurface) HLRBRep_SurfaceTool::UTrim(const Standard_Address Surf,
 								   const Standard_Real F,
 								   const Standard_Real L,
 								   const Standard_Real Tol) { 
   return ((BRepAdaptor_Surface *)Surf)->UTrim(F,L,Tol);
 }
 
-inline Handle_Adaptor3d_HSurface HLRBRep_SurfaceTool::VTrim(const Standard_Address Surf,
+inline Handle(Adaptor3d_HSurface) HLRBRep_SurfaceTool::VTrim(const Standard_Address Surf,
 								   const Standard_Real F,
 								   const Standard_Real L,
 								   const Standard_Real Tol) { 

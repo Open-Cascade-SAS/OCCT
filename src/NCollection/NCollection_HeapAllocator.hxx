@@ -18,7 +18,7 @@
 
 #include <NCollection_BaseAllocator.hxx>
 
-class Handle_NCollection_HeapAllocator;
+class Handle(NCollection_HeapAllocator);
 
 /**
  * Allocator that uses the global dynamic heap (malloc / free). 
@@ -31,7 +31,7 @@ class NCollection_HeapAllocator : public NCollection_BaseAllocator
   Standard_EXPORT virtual void* Allocate (const Standard_Size theSize);
   Standard_EXPORT virtual void  Free     (void * anAddress);
 
-  Standard_EXPORT static const Handle_NCollection_HeapAllocator&
+  Standard_EXPORT static const Handle(NCollection_HeapAllocator)&
                                 GlobalHeapAllocator();
 
  protected:

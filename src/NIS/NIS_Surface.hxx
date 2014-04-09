@@ -21,7 +21,7 @@
 #include <gp_XYZ.hxx>
 
 class Quantity_Color;
-class Handle_Poly_Triangulation;
+class Handle(Poly_Triangulation);
 class TopoDS_Shape;
 
 /**
@@ -52,8 +52,8 @@ public:
   /**
    * Constructor
    */
-  Standard_EXPORT NIS_Surface(const Handle_Poly_Triangulation& theTri,
-                              const Handle_NCollection_BaseAllocator&
+  Standard_EXPORT NIS_Surface(const Handle(Poly_Triangulation)& theTri,
+                              const Handle(NCollection_BaseAllocator)&
                                                                 theAlloc =0L);
   /**
    * Constructor. Creates the presentation of all faces in 'theShape' object.
@@ -66,7 +66,7 @@ public:
    */
   Standard_EXPORT NIS_Surface(const TopoDS_Shape& theShape,
                               const Standard_Real theDeflection,
-                              const Handle_NCollection_BaseAllocator& theAl=0L);
+                              const Handle(NCollection_BaseAllocator)& theAl=0L);
 
   /**
    * Destructor
@@ -193,8 +193,8 @@ public:
    *   passed NULL then the target should be created.
    */
   Standard_EXPORT virtual void
-                          Clone (const Handle_NCollection_BaseAllocator& theAll,
-                                 Handle_NIS_InteractiveObject& theDest) const;
+                          Clone (const Handle(NCollection_BaseAllocator)& theAll,
+                                 Handle(NIS_InteractiveObject)& theDest) const;
 
   /**
    * Intersect the surface shading/wireframe geometry with a line/ray.
@@ -251,7 +251,7 @@ protected:
   /**
    * Allocator for method Clone().
    */
-  Standard_EXPORT NIS_Surface (const Handle_NCollection_BaseAllocator& theAl); 
+  Standard_EXPORT NIS_Surface (const Handle(NCollection_BaseAllocator)& theAl); 
 
   /**
    * Create a 3D bounding box of the object.
@@ -266,7 +266,7 @@ protected:
                                   gp_XYZ& theNormal) const;
 
 private:
-  Handle_NCollection_BaseAllocator myAlloc;
+  Handle(NCollection_BaseAllocator) myAlloc;
   //! Array of nodes in triangles
   Standard_ShortReal               * mypNodes;
   //! Array of normals (TriNodes)

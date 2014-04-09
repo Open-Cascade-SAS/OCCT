@@ -390,7 +390,7 @@ void AIS_Drawer::SetFaceBoundaryAspect (const Handle(Prs3d_LineAspect)& theAspec
 // function : FaceBoundaryAspect
 // purpose  :
 // =======================================================================
-Handle_Prs3d_LineAspect AIS_Drawer::FaceBoundaryAspect()
+Handle(Prs3d_LineAspect) AIS_Drawer::FaceBoundaryAspect()
 {
   if (!IsOwnFaceBoundaryAspect ())
   {

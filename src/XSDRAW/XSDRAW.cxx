@@ -255,7 +255,7 @@ void XSDRAW::LoadDraw (Draw_Interpretor& theCommands)
 
 //  FONCTION POUR LE DEBUG
 
-Standard_Integer XSDRAW_WHAT (const Handle_Standard_Transient& ent)
+Standard_Integer XSDRAW_WHAT (const Handle(Standard_Transient)& ent)
 {
   if (ent.IsNull()) { cout<<"(Null Handle)"<<endl; return 0; }
   Handle(Interface_InterfaceModel) model = XSDRAW::Model();

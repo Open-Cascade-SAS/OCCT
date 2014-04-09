@@ -23,7 +23,7 @@ typedef ooVArray(PHandle_PStandard_ArrayNode) DBC_DBVArray;
 
 #ifdef CSFDB
 #include <PStandard_ArrayNode.hxx>
-//typedef Handle_PStandard_ArrayNode* DBC_DBVArray;
+//typedef Handle(PStandard_ArrayNode)* DBC_DBVArray;
 typedef void* DBC_DBVArray;
 #endif
 

@@ -29,9 +29,9 @@
 #pragma warning (disable:4480)
 #endif
 
-class Handle_NIS_InteractiveObject;
-class Handle_NIS_View;
-class Handle_NIS_Drawer;
+class Handle(NIS_InteractiveObject);
+class Handle(NIS_View);
+class Handle(NIS_Drawer);
 class NIS_InteractiveContext;
 class NIS_View;
 template <class A> class NCollection_Vector;
@@ -153,7 +153,7 @@ class NIS_Drawer : public Standard_Transient
    * Copy the relevant information from another instance of Drawer.
    * raises exception if theOther has incompatible type (test IsKind).
    */
-  Standard_EXPORT virtual void  Assign  (const Handle_NIS_Drawer& theOther);
+  Standard_EXPORT virtual void  Assign  (const Handle(NIS_Drawer)& theOther);
 
   /**
    * Create a3D bounding box of drawn objects.
@@ -193,8 +193,8 @@ class NIS_Drawer : public Standard_Transient
    */
   Standard_EXPORT void          SetDynamicHilighted
                                    (const Standard_Boolean      isHilighted,
-                                    const Handle_NIS_InteractiveObject& theObj,
-                                    const Handle_NIS_View&      theView = 0L);
+                                    const Handle(NIS_InteractiveObject)& theObj,
+                                    const Handle(NIS_View)&      theView = 0L);
 
   /**
    * Hash value, for Map interface.
@@ -206,7 +206,7 @@ class NIS_Drawer : public Standard_Transient
    * Matching two instances, for Map interface.
    */
   Standard_EXPORT virtual Standard_Boolean
-                                IsEqual (const Handle_NIS_Drawer& theOth) const;
+                                IsEqual (const Handle(NIS_Drawer)& theOth) const;
 
   /**
    * Obtain the iterator of IDs of associated objects.
@@ -227,7 +227,7 @@ protected:
    * Called to add draw list IDs to ex-list Ids of view. These draw lists are
    * eventually released in the callback function, before anything is displayed
    */
-  Standard_EXPORT void UpdateExListId   (const Handle_NIS_View& theView) const;
+  Standard_EXPORT void UpdateExListId   (const Handle(NIS_View)& theView) const;
 
   // ---------- PROTECTED METHODS ----------
 
@@ -248,12 +248,12 @@ protected:
   /**
    * Main function: display the given interactive object in the given view.
    */
-  Standard_EXPORT virtual void  Draw    (const Handle_NIS_InteractiveObject&,
+  Standard_EXPORT virtual void  Draw    (const Handle(NIS_InteractiveObject)&,
                                          const DrawType         theType,
                                          const NIS_DrawList&    theDrawList)= 0;
 
   Standard_EXPORT virtual void  redraw  (const DrawType         theType,
-                                         const Handle_NIS_View& theView);
+                                         const Handle(NIS_View)& theView);
 
   Standard_EXPORT void  addObject       (const NIS_InteractiveObject * theObj,
                                          const Standard_Boolean isShareList,
@@ -263,7 +263,7 @@ protected:
                                          const Standard_Boolean        isUpVws);
 
   Standard_EXPORT virtual NIS_DrawList*
-                        createDefaultList (const Handle_NIS_View&) const;
+                        createDefaultList (const Handle(NIS_View)&) const;
 
  protected:
   //! Get the number of interactive objects in this drawer
@@ -317,7 +317,7 @@ DEFINE_STANDARD_HANDLE (NIS_Drawer, Standard_Transient)
 //purpose  : 
 //=======================================================================
 
-inline Standard_Integer HashCode (const Handle_NIS_Drawer& theDrawer,
+inline Standard_Integer HashCode (const Handle(NIS_Drawer)& theDrawer,
                                   const Standard_Integer   theN)
 { return theDrawer.IsNull() ? 0 : theDrawer->HashCode (theN); }
 
@@ -326,8 +326,8 @@ inline Standard_Integer HashCode (const Handle_NIS_Drawer& theDrawer,
 //purpose  : 
 //=======================================================================
 
-inline Standard_Boolean IsEqual  (const Handle_NIS_Drawer& theDrawer1,
-                                  const Handle_NIS_Drawer& theDrawer2)
+inline Standard_Boolean IsEqual  (const Handle(NIS_Drawer)& theDrawer1,
+                                  const Handle(NIS_Drawer)& theDrawer2)
 { return theDrawer1.IsNull()? Standard_False: theDrawer1->IsEqual(theDrawer2); }
 
 #ifdef WNT

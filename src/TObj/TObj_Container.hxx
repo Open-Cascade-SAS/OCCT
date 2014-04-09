@@ -42,7 +42,7 @@ DEFINE_DATAMAP (TObj_DataMapOfNameLabel, TObj_CollectionOfLabel,
 
 DEFINE_DATAMAP (TObj_DataMapOfObjectHSequenceOcafObjects,
                 TObj_CollectionOfHSeqOfObject,
-                Handle_TObj_Object,Handle_TObj_HSequenceOfObject)
+                Handle(TObj_Object),Handle(TObj_HSequenceOfObject))
 
 DEFINE_DATAMAP(TObj_DataMapOfStringPointer,TObj_CollectionOfPointer,
                TCollection_AsciiString,Standard_Address)

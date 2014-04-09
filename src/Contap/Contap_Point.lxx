@@ -94,7 +94,7 @@ inline Standard_Boolean Contap_Point::IsOnArc () const{
   return onarc;
 }
 
-inline const Handle_Adaptor2d_HCurve2d& Contap_Point::Arc () const {
+inline const Handle(Adaptor2d_HCurve2d)& Contap_Point::Arc () const {
 
   if (!onarc) {Standard_DomainError::Raise();}
   return arc;
@@ -122,7 +122,7 @@ inline Standard_Boolean Contap_Point::IsVertex () const {
   return isvtx;
 }
 
-inline const Handle_Adaptor3d_HVertex& Contap_Point::Vertex () const {
+inline const Handle(Adaptor3d_HVertex)& Contap_Point::Vertex () const {
 
   if (!isvtx) {Standard_DomainError::Raise();}
   return vtx;

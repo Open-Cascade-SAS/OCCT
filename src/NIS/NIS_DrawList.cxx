@@ -46,7 +46,7 @@ NIS_DrawList::NIS_DrawList ()
 //purpose  : Constructor
 //=======================================================================
 
-NIS_DrawList::NIS_DrawList (const Handle_NIS_View& theView)
+NIS_DrawList::NIS_DrawList (const Handle(NIS_View)& theView)
   : myView      (theView)
 {
 #ifdef ARRAY_LISTS
@@ -100,7 +100,7 @@ void NIS_DrawList::ClearListID (const Standard_Integer theType)
 //purpose  : Set myListID to 0.
 //=======================================================================
 
-void NIS_DrawList::ClearListID (const Handle_NIS_View& theView)
+void NIS_DrawList::ClearListID (const Handle(NIS_View)& theView)
 {
 #ifdef ARRAY_LISTS
   if (myListID > 0)
@@ -180,10 +180,10 @@ void NIS_DrawList::Call (const Standard_Integer theType)
 
 Standard_Boolean NIS_DrawList::SetDynHilighted
                                 (const Standard_Boolean              isHili,
-                                 const Handle_NIS_InteractiveObject& theObj)
+                                 const Handle(NIS_InteractiveObject)& theObj)
 {
   Standard_Boolean aResult (Standard_False);
-  NCollection_List<Handle_NIS_InteractiveObject>::Iterator anIt(myDynHilighted);
+  NCollection_List<Handle(NIS_InteractiveObject)>::Iterator anIt(myDynHilighted);
   for (; anIt.More(); anIt.Next())
     if (anIt.Value() == theObj)
       break;

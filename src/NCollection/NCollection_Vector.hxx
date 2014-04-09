@@ -108,7 +108,7 @@ public: //! @name public methods
 
   //! Constructor
   NCollection_Vector (const Standard_Integer theIncrement              = 256,
-                      const Handle_NCollection_BaseAllocator& theAlloc = NULL)
+                      const Handle(NCollection_BaseAllocator)& theAlloc = NULL)
   : NCollection_BaseCollection<TheItemType> (theAlloc),
     NCollection_BaseVector (NCollection_BaseCollection<TheItemType>::myAllocator, initMemBlocks, sizeof(TheItemType), theIncrement) {}
 

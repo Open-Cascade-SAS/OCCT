@@ -115,8 +115,8 @@ private:
   const char* mykeys[TESTTOPOPE_NKEYS];
   const char* myresnamdef;
   VarsTopo myVarsTopo;
-  Handle_TopOpeBRepDS_HDataStructure myHDS;
-  Handle_TopOpeBRepBuild_HBuilder myHB;
+  Handle(TopOpeBRepDS_HDataStructure) myHDS;
+  Handle(TopOpeBRepBuild_HBuilder) myHB;
   TCollection_AsciiString mynameS1,mynameS2;
   TopoDS_Shape myS1,myS2;
   TopAbs_ShapeEnum myS1type,myS2type;

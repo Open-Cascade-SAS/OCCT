@@ -63,8 +63,8 @@ Standard_Boolean  BRep_CurveOn2Surfaces::IsRegularity()const
 //=======================================================================
 
 Standard_Boolean  BRep_CurveOn2Surfaces::IsRegularity
-  (const Handle_Geom_Surface& S1, 
-   const Handle_Geom_Surface& S2, 
+  (const Handle(Geom_Surface)& S1, 
+   const Handle(Geom_Surface)& S2, 
    const TopLoc_Location& L1, 
    const TopLoc_Location& L2)const 
 {

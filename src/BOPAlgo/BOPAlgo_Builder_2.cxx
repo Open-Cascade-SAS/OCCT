@@ -249,13 +249,13 @@ typedef BOPCol_NCVector<BOPAlgo_VFI> BOPAlgo_VectorOfVFI;
 typedef BOPCol_TBBContextFunctor 
   <BOPAlgo_VFI,
   BOPAlgo_VectorOfVFI,
-  Handle_BOPInt_Context, 
+  Handle(BOPInt_Context), 
   BOPInt_Context> BOPAlgo_VFIFunctor;
 //
 typedef BOPCol_TBBContextCnt 
   <BOPAlgo_VFIFunctor,
   BOPAlgo_VectorOfVFI,
-  Handle_BOPInt_Context> BOPAlgo_VFICnt;
+  Handle(BOPInt_Context)> BOPAlgo_VFICnt;
 //
 //=======================================================================
 //function : FillImagesFaces

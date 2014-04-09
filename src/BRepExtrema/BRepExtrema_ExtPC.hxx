@@ -82,7 +82,7 @@ class BRepExtrema_ExtPC
  private:
 
   Extrema_ExtPC myExtPC;
-  Handle_BRepAdaptor_HCurve myHC;
+  Handle(BRepAdaptor_HCurve) myHC;
 };
 
 #endif

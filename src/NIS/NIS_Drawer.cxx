@@ -41,7 +41,7 @@ NIS_Drawer::~NIS_Drawer ()
 //purpose  : 
 //=======================================================================
 
-void NIS_Drawer::Assign (const Handle_NIS_Drawer& theOther)
+void NIS_Drawer::Assign (const Handle(NIS_Drawer)& theOther)
 {
   if (theOther->IsKind(DynamicType()) == Standard_False)
     Standard_TypeMismatch::Raise ("NIS_Drawer::Assign");
@@ -67,7 +67,7 @@ Standard_Integer NIS_Drawer::HashCode(const Standard_Integer theN) const
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean NIS_Drawer::IsEqual (const Handle_NIS_Drawer& theOther) const
+Standard_Boolean NIS_Drawer::IsEqual (const Handle(NIS_Drawer)& theOther) const
 {
   Standard_Boolean aResult (Standard_False);
   if (theOther.IsNull() == Standard_False)
@@ -105,7 +105,7 @@ void NIS_Drawer::AfterDraw (const DrawType, const NIS_DrawList&)
 //purpose  : 
 //=======================================================================
 
-void NIS_Drawer::UpdateExListId (const Handle_NIS_View& theView) const
+void NIS_Drawer::UpdateExListId (const Handle(NIS_View)& theView) const
 {
   if (theView.IsNull()) {
     if (myCtx) {
@@ -136,7 +136,7 @@ void NIS_Drawer::UpdateExListId (const Handle_NIS_View& theView) const
 //=======================================================================
 
 void NIS_Drawer::redraw (const DrawType           theType,
-                         const Handle_NIS_View&   theView)
+                         const Handle(NIS_View)&   theView)
 {
   if (myCtx &&
       myMapID.IsEmpty() == Standard_False &&
@@ -145,7 +145,7 @@ void NIS_Drawer::redraw (const DrawType           theType,
     NCollection_List<NIS_DrawList*>::Iterator anIter (myLists);
     for (; anIter.More(); anIter.Next()) {
       NIS_DrawList& aDrawList = * anIter.ChangeValue();
-      const Handle_NIS_View& aView = aDrawList.GetView();
+      const Handle(NIS_View)& aView = aDrawList.GetView();
       if (aView == theView || aView.IsNull()) {
         if (aDrawList.IsUpdated(theType)) {
           // Get the IDs of objects concerned
@@ -251,8 +251,8 @@ void NIS_Drawer::SetUpdated (const DrawType theType1,
 
 void NIS_Drawer::SetDynamicHilighted
                         (const Standard_Boolean              isHilighted,
-                         const Handle_NIS_InteractiveObject& theObj,
-                         const Handle_NIS_View&              theView)
+                         const Handle(NIS_InteractiveObject)& theObj,
+                         const Handle(NIS_View)&              theView)
 {
   if (myCtx && theObj.IsNull() == Standard_False) {
     NCollection_List<NIS_DrawList*>::Iterator anIter (myLists);
@@ -316,7 +316,7 @@ void NIS_Drawer::addObject (const NIS_InteractiveObject * theObj,
     if (isShareList)
       myLists.Append (createDefaultList(NULL));
     else {
-      NCollection_List<Handle_NIS_View>::Iterator anIter(GetContext()->myViews);
+      NCollection_List<Handle(NIS_View)>::Iterator anIter(GetContext()->myViews);
       for (; anIter.More(); anIter.Next())
         myLists.Append (createDefaultList(anIter.Value()));
     }
@@ -377,7 +377,7 @@ void NIS_Drawer::prepareList(const NIS_Drawer::DrawType         theType,
   // Dynamic hilighting is treated in a separate loop because the hilighted
   // instances are contained in the special list rather than in the Context
   if (theType == NIS_Drawer::Draw_DynHilighted) {
-    NCollection_List<Handle_NIS_InteractiveObject>::Iterator
+    NCollection_List<Handle(NIS_InteractiveObject)>::Iterator
       anIter (theDrawList.DynHilightedList());
     if (anIter.More()) {
       BeforeDraw (theType, theDrawList);
@@ -408,7 +408,7 @@ void NIS_Drawer::prepareList(const NIS_Drawer::DrawType         theType,
 //purpose  : 
 //=======================================================================
 NIS_DrawList* NIS_Drawer::createDefaultList
-                        (const Handle_NIS_View& theView) const
+                        (const Handle(NIS_View)& theView) const
 {
   return new NIS_DrawList(theView);
 }

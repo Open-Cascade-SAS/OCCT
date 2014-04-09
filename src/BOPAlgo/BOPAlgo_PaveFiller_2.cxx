@@ -116,13 +116,13 @@ typedef BOPCol_NCVector
 typedef BOPCol_TBBContextFunctor 
   <BOPAlgo_VertexEdge,
   BOPAlgo_VectorOfVertexEdge,
-  Handle_BOPInt_Context, 
+  Handle(BOPInt_Context), 
   BOPInt_Context> BOPAlgo_VertexEdgeFunctor;
 //
 typedef BOPCol_TBBContextCnt 
   <BOPAlgo_VertexEdgeFunctor,
   BOPAlgo_VectorOfVertexEdge,
-  Handle_BOPInt_Context> BOPAlgo_VertexEdgeCnt;
+  Handle(BOPInt_Context)> BOPAlgo_VertexEdgeCnt;
 //
 //=======================================================================
 // function: PerformVE
@@ -215,7 +215,7 @@ void BOPAlgo_PaveFiller::PerformVE()
       myDS->AddInterf(nV, nE);
       // 3
       BOPDS_ListOfPaveBlock& aLPB=myDS->ChangePaveBlocks(nE);
-      Handle(BOPDS_PaveBlock)& aPB=*((Handle_BOPDS_PaveBlock*)&aLPB.First());
+      Handle(BOPDS_PaveBlock)& aPB=*((Handle(BOPDS_PaveBlock)*)&aLPB.First());
       // 
       aPave.SetIndex(nVx);
       aPave.SetParameter(aT);

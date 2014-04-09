@@ -18,8 +18,8 @@
 
 #include <Standard_OutOfRange.hxx>
 
-#define tabPoint   (*(Handle_TColgp_HArray1OfPnt*)&ttabPoint)
-#define tabPoint2d (*(Handle_TColgp_HArray1OfPnt2d*)&ttabPoint2d)
+#define tabPoint   (*(Handle(TColgp_HArray1OfPnt)*)&ttabPoint)
+#define tabPoint2d (*(Handle(TColgp_HArray1OfPnt2d)*)&ttabPoint2d)
 
 AppParCurves_MultiPoint::AppParCurves_MultiPoint() {}
 

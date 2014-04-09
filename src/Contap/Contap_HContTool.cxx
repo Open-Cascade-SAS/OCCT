@@ -41,7 +41,7 @@ Standard_Integer Contap_HContTool::NbSamplesV
     break;
   case GeomAbs_BSplineSurface: 
     {
-      //-- Handle_Geom_BSplineSurface& HBS=S->BSpline();
+      //-- Handle(Geom_BSplineSurface)& HBS=S->BSpline();
       nbs = S->NbVKnots();
       nbs*= S->VDegree();
       if(nbs < 2) nbs=2;
@@ -88,7 +88,7 @@ Standard_Integer Contap_HContTool::NbSamplesU
     break;
   case GeomAbs_BSplineSurface: 
     {
-      //-- Handle_Geom_BSplineSurface& HBS=S->BSpline();
+      //-- Handle(Geom_BSplineSurface)& HBS=S->BSpline();
       nbs = S->NbUKnots();
       nbs*= S->UDegree();
       if(nbs < 2) nbs=2;
@@ -233,7 +233,7 @@ Standard_Integer Contap_HContTool::NbSamplesOnArc
     nbsOnC = A->NbPoles();
     break;
   case GeomAbs_BSplineCurve: { 
-    //-- Handle_Geom2d_BSplineCurve& BSC=A->BSpline();
+    //-- Handle(Geom2d_BSplineCurve)& BSC=A->BSpline();
     nbsOnC = 2 + A->NbKnots() * A->Degree();
     break;
                              }

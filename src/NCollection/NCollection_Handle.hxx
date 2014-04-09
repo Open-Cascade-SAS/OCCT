@@ -44,7 +44,7 @@ Standard_EXPORT const Handle(Standard_Type)& STANDARD_TYPE(NCollection_Handle);
 //! }
 
 template <class T>
-class NCollection_Handle : public Handle_Standard_Transient
+class NCollection_Handle : public Handle(Standard_Transient)
 {
  private:
 
@@ -73,7 +73,7 @@ class NCollection_Handle : public Handle_Standard_Transient
   //! Note that additional argument is used to avoid ambiguity with
   //! public constructor from pointer when Handle is intilialized by 0.
   NCollection_Handle (Ptr* thePtr, int) 
-    : Handle_Standard_Transient (thePtr) {}
+    : Handle(Standard_Transient) (thePtr) {}
   
  public:
 
@@ -84,7 +84,7 @@ class NCollection_Handle : public Handle_Standard_Transient
   
   //! Constructor of handle from pointer on newly allocated object
   NCollection_Handle (T* theObject) 
-    : Handle_Standard_Transient (theObject ? new Ptr (theObject) : 0) {}
+    : Handle(Standard_Transient) (theObject ? new Ptr (theObject) : 0) {}
   
   //! Cast handle to contained type
   T* operator -> () { return ((Ptr*)ControlAccess())->myPtr; }

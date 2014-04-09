@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT (NIS_SelectFilter, Standard_Transient)
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean NIS_SelectFilter::ActsOn (const Handle_Standard_Type&) const
+Standard_Boolean NIS_SelectFilter::ActsOn (const Handle(Standard_Type)&) const
 {
   return Standard_True;
 }

@@ -166,8 +166,8 @@ static Standard_Integer OCC24303(Draw_Interpretor& di, Standard_Integer n, const
   gp_Elips2d ellipse1 = gp_Elips2d( gp_Ax2d(p0,gp::DX2d()),majorRadius, minorRadius,true);
   gp_Elips2d ellipse2 = gp_Elips2d( gp_Ax2d(p1,gp::DX2d()),majorRadius, minorRadius,true);
 
-  Handle_Geom2d_Curve curve1 = new Geom2d_Ellipse(ellipse1);
-  Handle_Geom2d_Curve curve2 = new Geom2d_Ellipse(ellipse2);
+  Handle(Geom2d_Curve) curve1 = new Geom2d_Ellipse(ellipse1);
+  Handle(Geom2d_Curve) curve2 = new Geom2d_Ellipse(ellipse2);
   DrawTrSurf::Set("c1", curve1);
   DrawTrSurf::Set("c2", curve2);
   //Expected tangent

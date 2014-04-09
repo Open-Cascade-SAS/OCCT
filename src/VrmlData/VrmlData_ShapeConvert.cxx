@@ -330,10 +330,10 @@ void VrmlData_ShapeConvert::Convert (const Standard_Boolean theExtractFaces,
 //purpose  : 
 //=======================================================================
 
-Handle_VrmlData_Geometry VrmlData_ShapeConvert::triToIndexedFaceSet
-                                  (const Handle_Poly_Triangulation&  theTri,
+Handle(VrmlData_Geometry) VrmlData_ShapeConvert::triToIndexedFaceSet
+                                  (const Handle(Poly_Triangulation)&  theTri,
                                    const TopoDS_Face&                theFace,
-                                   const Handle_VrmlData_Coordinate& theCoord)
+                                   const Handle(VrmlData_Coordinate)& theCoord)
 {
   Standard_Integer i;
   const Standard_Integer nNodes         (theTri->NbNodes());
@@ -486,8 +486,8 @@ Handle_VrmlData_Geometry VrmlData_ShapeConvert::triToIndexedFaceSet
 //purpose  : single polygon3D => IndexedLineSet
 //=======================================================================
 
-Handle_VrmlData_Geometry VrmlData_ShapeConvert::polToIndexedLineSet
-                                        (const Handle_Poly_Polygon3D& thePol)
+Handle(VrmlData_Geometry) VrmlData_ShapeConvert::polToIndexedLineSet
+                                        (const Handle(Poly_Polygon3D)& thePol)
 {
   Standard_Integer i;
   const Standard_Integer    nNodes (thePol->NbNodes());

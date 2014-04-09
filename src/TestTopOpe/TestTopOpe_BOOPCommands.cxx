@@ -170,8 +170,8 @@ Standard_Integer TOPOC(Draw_Interpretor& interpretor,Standard_Integer na,const c
       else if (!strcmp(a[ia],"-AB")) outAB = Standard_True;
     }
     
-    Handle_TopOpeBRepBuild_HBuilder HB = PBOOP->HBuilder();
-    Handle_TopOpeBRepDS_HDataStructure HDS = HB->DataStructure();
+    Handle(TopOpeBRepBuild_HBuilder) HB = PBOOP->HBuilder();
+    Handle(TopOpeBRepDS_HDataStructure) HDS = HB->DataStructure();
     const TopOpeBRepDS_DataStructure& BDS = HDS->DS();
     const TopTools_ListOfShape& loe = HB->Section();
 

@@ -226,7 +226,7 @@ Standard_Boolean Dynamic_FuzzyClass::Value(const Standard_CString aparameter,
       parameter = parameternode->Object();
       if(parameter->Name() == aparameter)
 	{
-	  avalue = (*(Handle_Dynamic_BooleanParameter*)&parameter)->Value();
+	  avalue = (*(Handle(Dynamic_BooleanParameter)*)&parameter)->Value();
 	  return Standard_True;
 	}
       parameternode = parameternode->Next();
@@ -253,7 +253,7 @@ Standard_Boolean Dynamic_FuzzyClass::Value(const Standard_CString aparameter,
       parameter = parameternode->Object();
       if(parameter->Name() == aparameter)
 	{
-	  avalue = (*(Handle_Dynamic_IntegerParameter*)&parameter)->Value();
+	  avalue = (*(Handle(Dynamic_IntegerParameter)*)&parameter)->Value();
 	  return Standard_True;
 	}
       parameternode = parameternode->Next();
@@ -280,7 +280,7 @@ Standard_Boolean Dynamic_FuzzyClass::Value(const Standard_CString aparameter,
       parameter = parameternode->Object();
       if(parameter->Name() == aparameter)
 	{
-	  avalue = (*(Handle_Dynamic_RealParameter*)&parameter)->Value();
+	  avalue = (*(Handle(Dynamic_RealParameter)*)&parameter)->Value();
 	  return Standard_True;
 	}
       parameternode = parameternode->Next();
@@ -307,7 +307,7 @@ Standard_Boolean Dynamic_FuzzyClass::Value(const Standard_CString aparameter,
       parameter = parameternode->Object();
       if(parameter->Name() == aparameter)
 	{
-	  avalue = (*(Handle_Dynamic_StringParameter*)&parameter)->Value();
+	  avalue = (*(Handle(Dynamic_StringParameter)*)&parameter)->Value();
 	  return Standard_True;
 	}
       parameternode = parameternode->Next();
@@ -334,7 +334,7 @@ Standard_Boolean Dynamic_FuzzyClass::Value(const Standard_CString aparameter,
       parameter = parameternode->Object();
       if(parameter->Name() == aparameter)
 	{
-	  anobject = (*(Handle_Dynamic_ObjectParameter*)&parameter)->Value();
+	  anobject = (*(Handle(Dynamic_ObjectParameter)*)&parameter)->Value();
 	  return Standard_True;
 	}
       parameternode = parameternode->Next();

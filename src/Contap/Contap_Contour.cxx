@@ -1015,7 +1015,7 @@ void ComputeInternalPointsOnRstr
     return;
   }
 
-  const Handle_Adaptor2d_HCurve2d& thearc = Line.Arc();
+  const Handle(Adaptor2d_HCurve2d)& thearc = Line.Arc();
 
   const Handle(Adaptor3d_HSurface)& Surf = SFunc.Surface();
   Contap_TFunction TypeFunc(SFunc.FunctionType());

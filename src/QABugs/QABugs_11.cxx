@@ -2136,7 +2136,7 @@ TopoDS_Shape OCC1077_boolbl(BRepAlgoAPI_BooleanOperation& aBoolenaOperation,cons
   TopoDS_Shape ShapeCut = aBoolenaOperation.Shape();
 
 //#ifdef OCC40 
-//  Handle_TopOpeBRepBuild_HBuilder build = aBoolenaOperation.Builder();
+//  Handle(TopOpeBRepBuild_HBuilder) build = aBoolenaOperation.Builder();
 //#endif 
   TopTools_ListIteratorOfListOfShape its;
 
@@ -2202,7 +2202,7 @@ TopoDS_Shape OCC1077_Bug()
   TopoDS_Shape theCylinder3 = BRepPrimAPI_MakeCylinder(gp_Ax2(gp_Pnt(0, - 10, 0),
 							      gp_Dir(0, 1, 0)), 3, 20).Shape();
   TopoDS_Shape theTmp1 = OCC1077_cut_blend(theCommon,theCylinder1,0.7);
-  Handle_ShapeFix_Shape fixer = new ShapeFix_Shape(theTmp1);
+  Handle(ShapeFix_Shape) fixer = new ShapeFix_Shape(theTmp1);
   fixer->Perform();
   theTmp1 = fixer->Shape();
   TopoDS_Shape theTmp2 = OCC1077_cut_blend(theTmp1,theCylinder2,0.7);
@@ -2657,9 +2657,9 @@ static Standard_Integer OCC7141 (Draw_Interpretor& di, Standard_Integer argc, co
     nCount = Draw::Atoi(argv[1]);
     TCollection_AsciiString aFilePath = argv[2];
   STEPCAFControl_Writer writer;
-  Handle_TDocStd_Document document;
+  Handle(TDocStd_Document) document;
   document = new TDocStd_Document("Pace Test-StepExporter-");
-  Handle_XCAFDoc_ShapeTool shapeTool;
+  Handle(XCAFDoc_ShapeTool) shapeTool;
   shapeTool = XCAFDoc_DocumentTool::ShapeTool(document->Main());
   shapeTool->AddShape(AddTestStructure(nCount), Standard_True);
   STEPControl_StepModelType mode = STEPControl_AsIs;

@@ -58,16 +58,16 @@ void StdSelect_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*PM*/
     StdPrs_WFShape::Add(P,mysh,DRWR);
 }
 
-void StdSelect_Shape::Compute(const Handle_Prs3d_Projector& aProjector ,
-			      const Handle_Geom_Transformation& aGeomTrans, 
-			      const Handle_Prs3d_Presentation& aPresentation )
+void StdSelect_Shape::Compute(const Handle(Prs3d_Projector)& aProjector ,
+			      const Handle(Geom_Transformation)& aGeomTrans, 
+			      const Handle(Prs3d_Presentation)& aPresentation )
 {
   PrsMgr_PresentableObject::Compute(aProjector,aGeomTrans,aPresentation);
 }
 
 
-void StdSelect_Shape::Compute(const Handle_Prs3d_Projector& aProjector,
-			      const Handle_Prs3d_Presentation& aPresentation)
+void StdSelect_Shape::Compute(const Handle(Prs3d_Projector)& aProjector,
+			      const Handle(Prs3d_Presentation)& aPresentation)
 {
   PrsMgr_PresentableObject::Compute(aProjector,aPresentation);
 }

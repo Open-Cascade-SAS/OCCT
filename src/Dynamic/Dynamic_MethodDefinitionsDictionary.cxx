@@ -196,7 +196,7 @@ Standard_Boolean Dynamic_MethodDefinitionsDictionary::Definition(const Handle(Dy
   Handle(Dynamic_MethodDefinition) methoddefinition;
   if(adefinition->IsKind(STANDARD_TYPE(Dynamic_MethodDefinition)))
     {
-      methoddefinition = *(Handle_Dynamic_MethodDefinition*)&adefinition;
+      methoddefinition = *(Handle(Dynamic_MethodDefinition)*)&adefinition;
       thesequenceofmethoddefinitions->Append(methoddefinition);
       return Standard_True;
     }

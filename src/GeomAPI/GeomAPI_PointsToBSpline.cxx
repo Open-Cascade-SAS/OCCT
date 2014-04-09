@@ -339,7 +339,7 @@ void GeomAPI_PointsToBSpline::Init
 
 
 //=======================================================================
-//function : Handle_Geom_BSplineCurve&
+//function : Handle(Geom_BSplineCurve)&
 //purpose  : 
 //=======================================================================
 

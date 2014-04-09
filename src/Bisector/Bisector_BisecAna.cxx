@@ -776,7 +776,7 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve  ,
   Handle(Standard_Type) type = afirstcurve->DynamicType();
 
   if (type == STANDARD_TYPE(Geom2d_TrimmedCurve)) {
-    curve = (*(Handle_Geom2d_TrimmedCurve*)&afirstcurve)->BasisCurve();
+    curve = (*(Handle(Geom2d_TrimmedCurve)*)&afirstcurve)->BasisCurve();
   }
   else {
     curve = afirstcurve;

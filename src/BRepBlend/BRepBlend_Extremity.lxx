@@ -55,7 +55,7 @@ inline Standard_Boolean BRepBlend_Extremity::IsVertex() const
 }
 
 
-inline const Handle_Adaptor3d_HVertex& BRepBlend_Extremity::Vertex () const
+inline const Handle(Adaptor3d_HVertex)& BRepBlend_Extremity::Vertex () const
 {
   if (!isvtx) {Standard_DomainError::Raise();}
   return vtx;

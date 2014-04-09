@@ -26,7 +26,7 @@ class TDF_Attribute;
 class TDF_AttributeIterator;
 class TDF_ChildIterator;
 class TDF_Data;
-class Handle_TDF_Data;
+class Handle(TDF_Data);
 class TDF_Label;
 
 #define KEEP_LOCAL_ROOT

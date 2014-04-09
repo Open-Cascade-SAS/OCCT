@@ -147,7 +147,7 @@ Standard_Boolean verifD2(const TColgp_Array1OfVec& DP1,
 #endif
 
 // fonction d'evaluation des poles et des poids de mySurface pour D1 et D2
-static void ResultEval(const Handle_Geom_BSplineSurface& surf,
+static void ResultEval(const Handle(Geom_BSplineSurface)& surf,
                        const Standard_Real V,
                        const Standard_Integer deriv,
                        TColStd_Array1OfReal& Result)

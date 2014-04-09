@@ -203,14 +203,14 @@ void GeomPlate_CurveConstraint :: D2(const Standard_Real U,
 //---------------------------------------------------------
 // Fonction : SetG0Criterion
 //---------------------------------------------------------
-void GeomPlate_CurveConstraint :: SetG0Criterion(const Handle_Law_Function &G0Crit)
+void GeomPlate_CurveConstraint :: SetG0Criterion(const Handle(Law_Function) &G0Crit)
 { myG0Crit=G0Crit;
   myConstG0=Standard_False;
 }
 //---------------------------------------------------------
 // Fonction : SetG1Criterion
 //---------------------------------------------------------
-void GeomPlate_CurveConstraint :: SetG1Criterion(const Handle_Law_Function &G1Crit)
+void GeomPlate_CurveConstraint :: SetG1Criterion(const Handle(Law_Function) &G1Crit)
 { if (!my3dCurve.IsNull())
     Standard_Failure::Raise("GeomPlate_CurveConstraint.cxx : Curve must be on a Surface"); 
   myG1Crit=G1Crit;
@@ -219,7 +219,7 @@ void GeomPlate_CurveConstraint :: SetG1Criterion(const Handle_Law_Function &G1Cr
 //---------------------------------------------------------
 // Fonction : SetG2Criterion
 //---------------------------------------------------------
-void GeomPlate_CurveConstraint :: SetG2Criterion(const Handle_Law_Function &G2Crit)
+void GeomPlate_CurveConstraint :: SetG2Criterion(const Handle(Law_Function) &G2Crit)
 { if (!my3dCurve.IsNull())
     Standard_Failure::Raise("GeomPlate_CurveConstraint.cxx : Curve must be on a Surface"); 
   myG2Crit=G2Crit;

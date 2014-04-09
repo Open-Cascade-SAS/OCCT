@@ -124,13 +124,13 @@ typedef BOPCol_NCVector<BOPAlgo_VertexFace>
 typedef BOPCol_TBBContextFunctor 
   <BOPAlgo_VertexFace,
   BOPAlgo_VectorOfVertexFace,
-  Handle_BOPInt_Context, 
+  Handle(BOPInt_Context), 
   BOPInt_Context> BOPAlgo_VertexFaceFunctor;
 //
 typedef BOPCol_TBBContextCnt 
   <BOPAlgo_VertexFaceFunctor,
   BOPAlgo_VectorOfVertexFace,
-  Handle_BOPInt_Context> BOPAlgo_VertexFaceCnt;
+  Handle(BOPInt_Context)> BOPAlgo_VertexFaceCnt;
 //
 //=======================================================================
 // function: PerformVF

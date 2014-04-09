@@ -1068,7 +1068,7 @@ static Standard_Integer EllipsUniformAbscissa (Draw_Interpretor& di, Standard_In
     return 1;
   
   //test nbPoints for Geom_Ellipse
-  Handle_Geom_Ellipse ellip;
+  Handle(Geom_Ellipse) ellip;
 
 
   try

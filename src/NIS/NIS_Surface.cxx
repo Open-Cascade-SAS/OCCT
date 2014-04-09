@@ -45,8 +45,8 @@ IMPLEMENT_STANDARD_RTTIEXT(NIS_Surface, NIS_InteractiveObject)
 //purpose  : Compare two triangulations, for NCollection_Map interface.
 //=======================================================================
 
-inline Standard_Boolean IsEqual(const Handle_Poly_Triangulation& theT0,
-                                const Handle_Poly_Triangulation& theT1)
+inline Standard_Boolean IsEqual(const Handle(Poly_Triangulation)& theT0,
+                                const Handle(Poly_Triangulation)& theT1)
 {
   return (theT0 == theT1);
 }
@@ -56,7 +56,7 @@ inline Standard_Boolean IsEqual(const Handle_Poly_Triangulation& theT0,
 //purpose  : 
 //=======================================================================
 
-NIS_Surface::NIS_Surface(const Handle_NCollection_BaseAllocator& theAlloc)
+NIS_Surface::NIS_Surface(const Handle(NCollection_BaseAllocator)& theAlloc)
   : myAlloc      (theAlloc),
     mypNodes     (NULL),
     mypNormals   (NULL),
@@ -77,7 +77,7 @@ NIS_Surface::NIS_Surface(const Handle_NCollection_BaseAllocator& theAlloc)
 //=======================================================================
 
 NIS_Surface::NIS_Surface (const Handle(Poly_Triangulation)&       theTri,
-                          const Handle_NCollection_BaseAllocator& theAlloc)
+                          const Handle(NCollection_BaseAllocator)& theAlloc)
   : myAlloc      (theAlloc),
     mypNodes     (NULL),
     mypNormals   (NULL),
@@ -149,7 +149,7 @@ NIS_Surface::NIS_Surface (const Handle(Poly_Triangulation)&       theTri,
 
 NIS_Surface::NIS_Surface (const TopoDS_Shape&                     theShape,
                           const Standard_Real                     theDeflection,
-                          const Handle_NCollection_BaseAllocator& theAlloc)
+                          const Handle(NCollection_BaseAllocator)& theAlloc)
   : myAlloc       (theAlloc),
     mypNodes      (NULL),
     mypNormals    (NULL),
@@ -176,7 +176,7 @@ void NIS_Surface::Init (const TopoDS_Shape& theShape,
   TopLoc_Location  aLoc, aLocSurf;
 
   // Count the nodes and triangles in faces
-  NCollection_Map<Handle_Poly_Triangulation> mapTri;
+  NCollection_Map<Handle(Poly_Triangulation)> mapTri;
   TopExp_Explorer fexp (theShape, TopAbs_FACE);
   for (; fexp.More(); fexp.Next())
   {
@@ -505,8 +505,8 @@ NIS_Surface::DisplayMode NIS_Surface::GetDisplayMode () const
 //purpose  : 
 //=======================================================================
 
-void NIS_Surface::Clone (const Handle_NCollection_BaseAllocator& theAlloc,
-                         Handle_NIS_InteractiveObject&           theDest) const
+void NIS_Surface::Clone (const Handle(NCollection_BaseAllocator)& theAlloc,
+                         Handle(NIS_InteractiveObject)&           theDest) const
 {
   Handle(NIS_Surface) aNewObj;
   if (theDest.IsNull()) {

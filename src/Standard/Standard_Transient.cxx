@@ -28,9 +28,9 @@ IMPLEMENT_STANDARD_RTTI(Standard_Transient)
 
 // The Method This 
 //
-Handle_Standard_Transient Standard_Transient::This() const
+Handle(Standard_Transient) Standard_Transient::This() const
 {
-  return Handle_Standard_Transient(this);
+  return Handle(Standard_Transient)(this);
 }
 
 // Empty Destructor

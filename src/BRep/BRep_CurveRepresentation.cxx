@@ -125,7 +125,7 @@ Standard_Boolean  BRep_CurveRepresentation::IsPolygonOnTriangulation() const
 //=======================================================================
 
 Standard_Boolean  BRep_CurveRepresentation::IsPolygonOnTriangulation
-  (const Handle_Poly_Triangulation&, const TopLoc_Location&) const
+  (const Handle(Poly_Triangulation)&, const TopLoc_Location&) const
 {
   return Standard_False;
 }
@@ -168,7 +168,7 @@ Standard_Boolean  BRep_CurveRepresentation::IsPolygonOnSurface() const
 //=======================================================================
 
 Standard_Boolean  BRep_CurveRepresentation::IsPolygonOnSurface
-  (const Handle_Geom_Surface&, 
+  (const Handle(Geom_Surface)&, 
    const TopLoc_Location&) const
 {
   return Standard_False;

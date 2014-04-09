@@ -1198,7 +1198,7 @@ static Standard_Integer OCC24005 (Draw_Interpretor& theDI, Standard_Integer theN
     return 1;
   }
 
-  Handle_Geom_Plane plane(new Geom_Plane(
+  Handle(Geom_Plane) plane(new Geom_Plane(
                                   gp_Ax3( gp_Pnt(-72.948737453424499, 754.30437716359393, 259.52151854671678),
                                   gp_Dir(6.2471473085930200e-007, -0.99999999999980493, 0.00000000000000000),
                                   gp_Dir(0.99999999999980493, 6.2471473085930200e-007, 0.00000000000000000))));
@@ -1704,8 +1704,8 @@ static Standard_Integer OCC24533 (Draw_Interpretor& di, Standard_Integer n, cons
 {
   if (n != 1) return 1;
 
-  DoIsNull<Standard_Transient, Handle_Standard_Transient>(di);
-  DoIsNull<Standard_Persistent, Handle_Standard_Persistent>(di);
+  DoIsNull<Standard_Transient, Handle(Standard_Transient)>(di);
+  DoIsNull<Standard_Persistent, Handle(Standard_Persistent)>(di);
 
   return 0;
 }

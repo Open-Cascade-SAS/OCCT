@@ -410,7 +410,7 @@ ProjLib_ComputeApproxOnPolarSurface::ProjLib_ComputeApproxOnPolarSurface
 {
   myTolerance = tol3d; //OCC217
   //myTolerance = Max(tolerance,Precision::PApproximation());
-  const Handle_Adaptor2d_HCurve2d InitCurve2d ;
+  const Handle(Adaptor2d_HCurve2d) InitCurve2d ;
   myBSpline = Perform(InitCurve2d,Curve,S);  
 } 
 

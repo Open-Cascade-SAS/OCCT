@@ -65,7 +65,7 @@ void NIS_SurfaceDrawer::SetColor(const Quantity_Color &theColor)
 //purpose  :
 //=======================================================================
 
-void NIS_SurfaceDrawer::Assign (const Handle_NIS_Drawer& theOther)
+void NIS_SurfaceDrawer::Assign (const Handle(NIS_Drawer)& theOther)
 {
   if (theOther.IsNull() == Standard_False) {
     NIS_Drawer::Assign (theOther);
@@ -88,7 +88,7 @@ void NIS_SurfaceDrawer::Assign (const Handle_NIS_Drawer& theOther)
 //=======================================================================
 
 Standard_Boolean NIS_SurfaceDrawer::IsEqual
-                                (const Handle_NIS_Drawer& theOther)const
+                                (const Handle(NIS_Drawer)& theOther)const
 {
   static const Standard_Real       anEpsilon2 (1e-7);
   Standard_Boolean                 aResult (Standard_False);
@@ -124,7 +124,7 @@ Standard_Boolean NIS_SurfaceDrawer::IsEqual
 //=======================================================================
 
 void NIS_SurfaceDrawer::redraw  (const DrawType         theType,
-                                 const Handle_NIS_View& theView)
+                                 const Handle(NIS_View)& theView)
 {
   glMatrixMode( GL_MODELVIEW );
   glPushMatrix();
@@ -241,7 +241,7 @@ void NIS_SurfaceDrawer::AfterDraw (const DrawType      theType,
 //purpose  :
 //=======================================================================
 
-void NIS_SurfaceDrawer::Draw (const Handle_NIS_InteractiveObject& theObj,
+void NIS_SurfaceDrawer::Draw (const Handle(NIS_InteractiveObject)& theObj,
                               const DrawType                      theType,
                               const NIS_DrawList&)
 {

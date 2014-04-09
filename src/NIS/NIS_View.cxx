@@ -90,7 +90,7 @@ void NIS_View::RemoveContext (NIS_InteractiveContext * theCtx)
       break;
     }
 
-  NCollection_Map<Handle_NIS_Drawer>::Iterator anIterD (theCtx->GetDrawers ());
+  NCollection_Map<Handle(NIS_Drawer)>::Iterator anIterD (theCtx->GetDrawers ());
   for (; anIterD.More(); anIterD.Next()) {
     const Handle(NIS_Drawer)& aDrawer = anIterD.Value();
     if (aDrawer.IsNull() == Standard_False) {
@@ -140,7 +140,7 @@ Bnd_B3f NIS_View::GetBndBox() const
   Bnd_B3f aBox;
   NCollection_List<NIS_InteractiveContext *>::Iterator anIterC (myContexts);
   for (; anIterC.More(); anIterC.Next()) {
-    NCollection_Map<Handle_NIS_Drawer>::Iterator anIterD
+    NCollection_Map<Handle(NIS_Drawer)>::Iterator anIterD
       (anIterC.Value()->myDrawers);
     for (; anIterD.More(); anIterD.Next()) {
       const Handle(NIS_Drawer)& aDrawer = anIterD.Value();
@@ -366,7 +366,7 @@ void NIS_View::DynamicHilight  (const Standard_Integer theX,
 //purpose  :
 //=======================================================================
 
-void NIS_View::DynamicUnhilight(const Handle_NIS_InteractiveObject& theObj)
+void NIS_View::DynamicUnhilight(const Handle(NIS_InteractiveObject)& theObj)
 {
   if (theObj == myDynHilighted && theObj.IsNull() == Standard_False) {
     const Handle(NIS_View) aView (this);
@@ -532,7 +532,7 @@ void  NIS_View::Select (const NCollection_List<gp_XY> &thePolygon,
 //purpose  :
 //=======================================================================
 
-Handle_NIS_InteractiveObject NIS_View::Pick (const Standard_Integer theX,
+Handle(NIS_InteractiveObject) NIS_View::Pick (const Standard_Integer theX,
                                              const Standard_Integer theY)
 {
   // Find the ray passing through the clicked point in the view window.
@@ -554,7 +554,7 @@ Handle_NIS_InteractiveObject NIS_View::Pick (const Standard_Integer theX,
 //purpose  :
 //=======================================================================
 
-Handle_NIS_InteractiveObject NIS_View::Pick
+Handle(NIS_InteractiveObject) NIS_View::Pick
                                 (const gp_Ax1&          theAxis,
                                  const Standard_Real    theOver,
                                  const Standard_Boolean isOnlySelectable)

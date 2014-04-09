@@ -23,8 +23,8 @@
 
 struct OpenGl_CView
 {
-  Handle_OpenGl_Workspace WS;
-  Handle_OpenGl_View      View;
+  Handle(OpenGl_Workspace) WS;
+  Handle(OpenGl_View)      View;
   DEFINE_STANDARD_ALLOC
 };
 

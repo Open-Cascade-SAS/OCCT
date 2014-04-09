@@ -394,8 +394,8 @@ void GeomFill_ConstrainedFilling::Init(const Handle(GeomFill_Boundary)& B1,
       if(!CheckTgte(i)) {
 	Handle(Law_Function) fu1,fu2;
 	ptch->Func(fu1,fu2);
-	fu1 = Law::MixBnd(*((Handle_Law_Linear*) &fu1));
-	fu2 = Law::MixBnd(*((Handle_Law_Linear*) &fu2));
+	fu1 = Law::MixBnd(*((Handle(Law_Linear)*) &fu1));
+	fu2 = Law::MixBnd(*((Handle(Law_Linear)*) &fu2));
 	ptch->Func(fu1,fu2);
 	break;
       } 
@@ -475,8 +475,8 @@ void GeomFill_ConstrainedFilling::Init(const Handle(GeomFill_Boundary)& B1,
       if(!CheckTgte(i)) {
 	Handle(Law_Function) fu1,fu2;
 	ptch->Func(fu1,fu2);
-	Handle(Law_Function) ffu1 = Law::MixBnd(*((Handle_Law_Linear*) &fu1));
-	Handle(Law_Function) ffu2 = Law::MixBnd(*((Handle_Law_Linear*) &fu2));
+	Handle(Law_Function) ffu1 = Law::MixBnd(*((Handle(Law_Linear)*) &fu1));
+	Handle(Law_Function) ffu2 = Law::MixBnd(*((Handle(Law_Linear)*) &fu2));
 	ptch->SetFunc(ffu1,ffu2);
 	break;
       } 

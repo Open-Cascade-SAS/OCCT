@@ -96,7 +96,7 @@ static Standard_Boolean CheckParameters(const
 //=======================================================================		      
 static void  BuildParameters(const Standard_Boolean        PeriodicFlag,
 			     const TColgp_Array1OfPnt2d&     PointsArray,
-			     Handle_TColStd_HArray1OfReal& ParametersPtr) 
+			     Handle(TColStd_HArray1OfReal)& ParametersPtr) 
 {
   Standard_Integer ii,
   index ;
@@ -310,7 +310,7 @@ static void ScaleTangents(const TColgp_Array1OfPnt2d&      PointsArray,
 //=======================================================================
 
 Geom2dAPI_Interpolate::Geom2dAPI_Interpolate
-   (const Handle_TColgp_HArray1OfPnt2d& PointsPtr,
+   (const Handle(TColgp_HArray1OfPnt2d)& PointsPtr,
     const Standard_Boolean            PeriodicFlag,
     const Standard_Real               Tolerance) :
 myTolerance(Tolerance),
@@ -352,8 +352,8 @@ myTangentRequest(Standard_False)
 //=======================================================================
 
 Geom2dAPI_Interpolate::Geom2dAPI_Interpolate
-   (const Handle_TColgp_HArray1OfPnt2d&    PointsPtr,
-    const Handle_TColStd_HArray1OfReal&  ParametersPtr,
+   (const Handle(TColgp_HArray1OfPnt2d)&    PointsPtr,
+    const Handle(TColStd_HArray1OfReal)&  ParametersPtr,
     const Standard_Boolean               PeriodicFlag,
     const Standard_Real                  Tolerance) :
 myTolerance(Tolerance),
@@ -404,7 +404,7 @@ myTangentRequest(Standard_False)
 
 void Geom2dAPI_Interpolate::Load( 
    const TColgp_Array1OfVec2d&              Tangents,
-   const Handle_TColStd_HArray1OfBoolean& TangentFlagsPtr) 
+   const Handle(TColStd_HArray1OfBoolean)& TangentFlagsPtr) 
 
 {
  Standard_Boolean result ;
@@ -891,7 +891,7 @@ void Geom2dAPI_Interpolate::PerformNonPeriodic()
   }
 }
 //=======================================================================
-//function : Handle_Geom2d_BSplineCurve&
+//function : Handle(Geom2d_BSplineCurve)&
 //purpose  : 
 //=======================================================================
 

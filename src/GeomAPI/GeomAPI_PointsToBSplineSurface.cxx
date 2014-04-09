@@ -657,7 +657,7 @@ void GeomAPI_PointsToBSplineSurface::Init(const TColStd_Array2OfReal& ZPoints,
 
 
 //=======================================================================
-//function : Handle_Geom_BSplineSurface&
+//function : Handle(Geom_BSplineSurface)&
 //purpose  : 
 //=======================================================================
 

@@ -2526,7 +2526,7 @@ V3d_TypeOfSurfaceDetail V3d_View::SurfaceDetail() const
 //function : TextureEnv
 //purpose  :
 //=============================================================================
-Handle_Graphic3d_TextureEnv V3d_View::TextureEnv() const
+Handle(Graphic3d_TextureEnv) V3d_View::TextureEnv() const
 {
   Handle(Graphic3d_TextureEnv) SM = MyViewContext.TextureEnv() ;
   return SM ;

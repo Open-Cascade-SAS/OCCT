@@ -68,7 +68,7 @@ Handle(Standard_Transient) XmlDrivers::Factory(const Standard_GUID& theGUID)
 //purpose  : 
 //=======================================================================
 Handle(XmlMDF_ADriverTable) XmlDrivers::AttributeDrivers
-                (const Handle_CDM_MessageDriver& theMessageDriver)
+                (const Handle(CDM_MessageDriver)& theMessageDriver)
 {
   Handle(XmlMDF_ADriverTable) aTable = new XmlMDF_ADriverTable();
   //

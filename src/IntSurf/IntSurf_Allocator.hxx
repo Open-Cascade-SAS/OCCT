@@ -16,6 +16,6 @@
 
 #include <NCollection_BaseAllocator.hxx>
 
-typedef Handle_NCollection_BaseAllocator IntSurf_Allocator;
+typedef Handle(NCollection_BaseAllocator) IntSurf_Allocator;
 
 #endif

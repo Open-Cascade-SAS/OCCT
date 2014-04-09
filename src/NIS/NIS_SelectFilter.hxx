@@ -20,7 +20,7 @@
 #include <Standard_Transient.hxx>
 
 class NIS_InteractiveObject;
-class Handle_Standard_Type;
+class Handle(Standard_Type);
 
 /**
  * Interface for selection filters. It can be used in NIS_InteractiveContext by methods SetFilter and GetFilter.
@@ -55,7 +55,7 @@ class NIS_SelectFilter : public Standard_Transient
    *   objects are excluded from Selection before any checking.
    */ 
   Standard_EXPORT virtual Standard_Boolean
-        ActsOn  (const Handle_Standard_Type& theType)           const;
+        ActsOn  (const Handle(Standard_Type)& theType)           const;
 
 
  protected:

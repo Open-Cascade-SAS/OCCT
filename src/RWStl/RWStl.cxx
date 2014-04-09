@@ -282,7 +282,7 @@ Standard_Boolean RWStl::WriteAscii (const Handle(StlMesh_Mesh)& theMesh,
 //Warning  :
 //=======================================================================
 
-Handle_StlMesh_Mesh RWStl::ReadFile (const OSD_Path& thePath,
+Handle(StlMesh_Mesh) RWStl::ReadFile (const OSD_Path& thePath,
                                      const Handle(Message_ProgressIndicator)& theProgInd)
 {
   OSD_File file (thePath);
@@ -320,7 +320,7 @@ Handle_StlMesh_Mesh RWStl::ReadFile (const OSD_Path& thePath,
 //Warning  :
 //=======================================================================
 
-Handle_StlMesh_Mesh RWStl::ReadBinary (const OSD_Path& thePath,
+Handle(StlMesh_Mesh) RWStl::ReadBinary (const OSD_Path& thePath,
                                        const Handle(Message_ProgressIndicator)& /*theProgInd*/)
 {
   Standard_Integer NBFACET;
@@ -397,7 +397,7 @@ Handle_StlMesh_Mesh RWStl::ReadBinary (const OSD_Path& thePath,
 //Warning  :
 //=======================================================================
 
-Handle_StlMesh_Mesh RWStl::ReadAscii (const OSD_Path& thePath,
+Handle(StlMesh_Mesh) RWStl::ReadAscii (const OSD_Path& thePath,
                                       const Handle(Message_ProgressIndicator)& theProgInd)
 {
   TCollection_AsciiString filename;

@@ -61,7 +61,7 @@ NIS_TriangulatedDrawer::NIS_TriangulatedDrawer
 //purpose  :
 //=======================================================================
 
-void NIS_TriangulatedDrawer::Assign (const Handle_NIS_Drawer& theOther)
+void NIS_TriangulatedDrawer::Assign (const Handle(NIS_Drawer)& theOther)
 {
   if (theOther.IsNull() == Standard_False) {
     NIS_Drawer::Assign (theOther);
@@ -86,7 +86,7 @@ static const Standard_Integer nObjPerDrawer = 64;
 //=======================================================================
 
 Standard_Boolean NIS_TriangulatedDrawer::IsEqual
-                                (const Handle_NIS_Drawer& theOther)const
+                                (const Handle(NIS_Drawer)& theOther)const
 {
   static const Standard_Real anEpsilon2 (1e-7);
   Standard_Boolean aResult (Standard_False);
@@ -226,7 +226,7 @@ void NIS_TriangulatedDrawer::AfterDraw (const DrawType      theType,
 //purpose  :
 //=======================================================================
 
-void NIS_TriangulatedDrawer::Draw (const Handle_NIS_InteractiveObject& theObj,
+void NIS_TriangulatedDrawer::Draw (const Handle(NIS_InteractiveObject)& theObj,
                                    const DrawType                   /*theType*/,
                                    const NIS_DrawList&)
 {

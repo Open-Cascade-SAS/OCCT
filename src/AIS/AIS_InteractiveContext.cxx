@@ -2580,7 +2580,7 @@ Standard_Boolean AIS_InteractiveContext::IsoOnPlane() const
 //purpose  : 
 //=======================================================================
 
-void AIS_InteractiveContext::SetSelectionMode(const Handle_AIS_InteractiveObject&, const Standard_Integer )
+void AIS_InteractiveContext::SetSelectionMode(const Handle(AIS_InteractiveObject)&, const Standard_Integer )
 {
 }
 
@@ -2589,7 +2589,7 @@ void AIS_InteractiveContext::SetSelectionMode(const Handle_AIS_InteractiveObject
 //purpose  : 
 //=======================================================================
 
-void AIS_InteractiveContext::UnsetSelectionMode(const Handle_AIS_InteractiveObject&)
+void AIS_InteractiveContext::UnsetSelectionMode(const Handle(AIS_InteractiveObject)&)
 {
 }
 
@@ -2676,7 +2676,7 @@ Standard_Integer AIS_InteractiveContext::PixelTolerance() const {
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean AIS_InteractiveContext::IsInLocal(const Handle_AIS_InteractiveObject& anIObj,
+Standard_Boolean AIS_InteractiveContext::IsInLocal(const Handle(AIS_InteractiveObject)& anIObj,
                                                    Standard_Integer& TheIndex) const 
 {
   if(anIObj.IsNull()) return Standard_False;

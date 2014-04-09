@@ -33,7 +33,7 @@ IMPLEMENT_STANDARD_RTTIEXT (Poly_CoherentTriangulation, Standard_Transient)
 //=======================================================================
 
 Poly_CoherentTriangulation::Poly_CoherentTriangulation
-                        (const Handle_NCollection_BaseAllocator& theAlloc)
+                        (const Handle(NCollection_BaseAllocator)& theAlloc)
   : myAlloc (theAlloc.IsNull() ? NCollection_BaseAllocator::CommonBaseAllocator()
              : theAlloc),
     myDeflection (0.)
@@ -46,7 +46,7 @@ Poly_CoherentTriangulation::Poly_CoherentTriangulation
 
 Poly_CoherentTriangulation::Poly_CoherentTriangulation
                         (const Handle(Poly_Triangulation)& theTriangulation,
-                         const Handle_NCollection_BaseAllocator& theAlloc)
+                         const Handle(NCollection_BaseAllocator)& theAlloc)
   : myAlloc (theAlloc.IsNull() ? NCollection_BaseAllocator::CommonBaseAllocator()
              : theAlloc)
 {
@@ -114,7 +114,7 @@ Poly_CoherentTriangulation::~Poly_CoherentTriangulation ()
 //purpose  : 
 //=======================================================================
 
-Handle_Poly_Triangulation Poly_CoherentTriangulation::GetTriangulation() const
+Handle(Poly_Triangulation) Poly_CoherentTriangulation::GetTriangulation() const
 {
   Handle(Poly_Triangulation) aResult;
   const Standard_Integer nNodes = NNodes();
@@ -277,7 +277,7 @@ Standard_Boolean Poly_CoherentTriangulation::RemoveDegenerated
 //=======================================================================
 
 Poly_CoherentTriangulation::IteratorOfTriangle::IteratorOfTriangle
-                        (const Handle_Poly_CoherentTriangulation& theTri)
+                        (const Handle(Poly_CoherentTriangulation)& theTri)
 {
   if (!theTri.IsNull()) {
     Init(theTri->myTriangles);
@@ -312,7 +312,7 @@ void Poly_CoherentTriangulation::IteratorOfTriangle::Next()
 //=======================================================================
 
 Poly_CoherentTriangulation::IteratorOfNode::IteratorOfNode
-                        (const Handle_Poly_CoherentTriangulation& theTri)
+                        (const Handle(Poly_CoherentTriangulation)& theTri)
 {
   if (!theTri.IsNull()) {
     Init(theTri->myNodes);
@@ -345,7 +345,7 @@ void Poly_CoherentTriangulation::IteratorOfNode::Next()
 //=======================================================================
 
 Poly_CoherentTriangulation::IteratorOfLink::IteratorOfLink
-                        (const Handle_Poly_CoherentTriangulation& theTri)
+                        (const Handle(Poly_CoherentTriangulation)& theTri)
 {
   if (!theTri.IsNull()) {
     Init(theTri->myLinks);
@@ -731,7 +731,7 @@ void Poly_CoherentTriangulation::ClearLinks ()
 //=======================================================================
 
 Handle(Poly_CoherentTriangulation)  Poly_CoherentTriangulation::Clone
-       (const Handle_NCollection_BaseAllocator& theAlloc) const
+       (const Handle(NCollection_BaseAllocator)& theAlloc) const
 {
   Handle(Poly_CoherentTriangulation) newTri; 
 

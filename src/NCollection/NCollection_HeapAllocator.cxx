@@ -54,7 +54,7 @@ void NCollection_HeapAllocator::Free (void * anAddress)
 //purpose  : 
 //=======================================================================
 
-const Handle_NCollection_HeapAllocator&
+const Handle(NCollection_HeapAllocator)&
        NCollection_HeapAllocator::GlobalHeapAllocator()
 { 
   static Handle(NCollection_HeapAllocator) pAllocator;

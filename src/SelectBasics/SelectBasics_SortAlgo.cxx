@@ -34,7 +34,7 @@ SelectBasics_SortAlgo::SelectBasics_SortAlgo()
 SelectBasics_SortAlgo::SelectBasics_SortAlgo 
   (const Bnd_Box2d& ClippingRectangle,
    const Standard_Real sizeOfSensitiveArea, 
-   const Handle_Bnd_HArray1OfBox2d& theRectangles)
+   const Handle(Bnd_HArray1OfBox2d)& theRectangles)
 : clipRect(ClippingRectangle), sizeArea(sizeOfSensitiveArea)
 {
   sortedRect.Initialize(clipRect, theRectangles);
@@ -46,7 +46,7 @@ SelectBasics_SortAlgo::SelectBasics_SortAlgo
 //=======================================================================
 void SelectBasics_SortAlgo::Initialize(const Bnd_Box2d& ClippingRectangle, 
 				  const Standard_Real sizeOfSensitiveArea, 
-				  const Handle_Bnd_HArray1OfBox2d& theRectangles)
+				  const Handle(Bnd_HArray1OfBox2d)& theRectangles)
 {
   clipRect=ClippingRectangle;
   sizeArea=sizeOfSensitiveArea;

@@ -23,9 +23,9 @@
 
 class VrmlData_Scene;
 class TopoDS_Face;
-class Handle_Poly_Triangulation;
-class Handle_Poly_Polygon3D;
-class Handle_VrmlData_Coordinate;
+class Handle(Poly_Triangulation);
+class Handle(Poly_Polygon3D);
+class Handle(VrmlData_Coordinate);
 /**
  * Algorithm converting one shape or a set of shapes to VrmlData_Scene.
  */
@@ -87,17 +87,17 @@ class VrmlData_ShapeConvert
  protected:
   // ---------- PROTECTED METHODS ----------
 
-  Handle_VrmlData_Geometry triToIndexedFaceSet
-                                (const Handle_Poly_Triangulation&,
+  Handle(VrmlData_Geometry) triToIndexedFaceSet
+                                (const Handle(Poly_Triangulation)&,
                                  const TopoDS_Face&,
-                                 const Handle_VrmlData_Coordinate&);
+                                 const Handle(VrmlData_Coordinate)&);
 
-  Handle_VrmlData_Geometry polToIndexedLineSet
-                                (const Handle_Poly_Polygon3D&);
+  Handle(VrmlData_Geometry) polToIndexedLineSet
+                                (const Handle(Poly_Polygon3D)&);
 
-  Handle_VrmlData_Appearance defaultMaterialFace () const;
+  Handle(VrmlData_Appearance) defaultMaterialFace () const;
 
-  Handle_VrmlData_Appearance defaultMaterialEdge () const;
+  Handle(VrmlData_Appearance) defaultMaterialEdge () const;
 
  private:
   // ---------- PRIVATE FIELDS ----------

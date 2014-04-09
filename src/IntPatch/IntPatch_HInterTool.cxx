@@ -209,7 +209,7 @@ Standard_Integer IntPatch_HInterTool::NbSamplesOnArc (const Handle(Adaptor2d_HCu
     nbsOnC = A->NbPoles();
     break;
   case GeomAbs_BSplineCurve: { 
-    //-- Handle_Geom2d_BSplineCurve& BSC=A->BSpline();
+    //-- Handle(Geom2d_BSplineCurve)& BSC=A->BSpline();
     nbsOnC = 2 + A->NbKnots() * A->Degree();
     break;
   }

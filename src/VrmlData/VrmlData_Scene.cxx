@@ -185,7 +185,7 @@ void VrmlData_Scene::SetVrmlDir (const TCollection_ExtendedString& theDir)
 //purpose  : 
 //=======================================================================
 
-const Handle_VrmlData_WorldInfo& VrmlData_Scene::WorldInfo() const
+const Handle(VrmlData_WorldInfo)& VrmlData_Scene::WorldInfo() const
 {
   return myWorldInfo;
 }

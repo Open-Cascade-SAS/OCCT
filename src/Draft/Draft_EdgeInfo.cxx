@@ -154,7 +154,7 @@ Handle(Geom_Curve)& Draft_EdgeInfo::ChangeGeometry()
 }
 
 //=======================================================================
-//function : Handle_Geom2d_Curve&
+//function : Handle(Geom2d_Curve)&
 //purpose  : 
 //=======================================================================
 
@@ -165,7 +165,7 @@ const Handle(Geom2d_Curve)& Draft_EdgeInfo::FirstPC() const
 
 
 //=======================================================================
-//function : Handle_Geom2d_Curve&
+//function : Handle(Geom2d_Curve)&
 //purpose  : 
 //=======================================================================
 

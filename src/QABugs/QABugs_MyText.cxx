@@ -53,7 +53,7 @@ void QABugs_MyText::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPrese
                              const Standard_Integer /*aMode*/ ) 
 {
   aPresentation->Clear();
-  Handle_Prs3d_TextAspect asp = myDrawer->TextAspect();
+  Handle(Prs3d_TextAspect) asp = myDrawer->TextAspect();
 
   asp->SetFont(myNameOfFont);
   asp->SetColor(myNameOfColor);

@@ -25,7 +25,7 @@ void NIS_ObjectsIterator::Initialize
                         (const Handle(NIS_InteractiveContext)& theCtx)
 {
   if (theCtx.IsNull())
-    myIter = NCollection_SparseArray <Handle_NIS_InteractiveObject>::Iterator();
+    myIter = NCollection_SparseArray <Handle(NIS_InteractiveObject)>::Iterator();
   else
     for (myIter.Init (theCtx->myObjects); myIter.More(); myIter.Next())
       if (myIter.Value().IsNull() == Standard_False)

@@ -296,7 +296,7 @@ void TPrsStd_ConstraintTools::ComputeDistance (const Handle(TDataXtd_Constraint)
       GetGoodShape(shape3);
       const TopoDS_Edge& E = TopoDS::Edge(shape3);
       BRepAdaptor_Curve CURVE(E);
-      Handle_Geom_Geometry aGeomGeometry = CURVE.Curve().Curve()->Transformed(CURVE.Trsf()) ;
+      Handle(Geom_Geometry) aGeomGeometry = CURVE.Curve().Curve()->Transformed(CURVE.Trsf()) ;
       gp_Dir Dir = ((Handle(Geom_Line)&) aGeomGeometry)->Lin().Direction();
       gp_Dir xdir(aplane->Pln().Position().XDirection());
       if (Dir.IsParallel(xdir,Precision::Confusion()))
@@ -1787,7 +1787,7 @@ void TPrsStd_ConstraintTools::ComputeOffset (const Handle(TDataXtd_Constraint)& 
       if (CURVE.GetType() == GeomAbs_Line)  {
 	// Works only with line !!
 //#ifndef DEB
-        Handle_Geom_Geometry aGeomGeometry = CURVE.Curve().Curve()->Transformed(CURVE.Trsf()) ;
+        Handle(Geom_Geometry) aGeomGeometry = CURVE.Curve().Curve()->Transformed(CURVE.Trsf()) ;
         gp_Lin OLin = ((Handle(Geom_Line)&) aGeomGeometry)->Lin();
 //#else
 //	gp_Lin OLin = ((Handle(Geom_Line)&) CURVE.Curve().Curve()->Transformed(CURVE.Trsf()))->Lin();
@@ -1818,7 +1818,7 @@ void TPrsStd_ConstraintTools::ComputeOffset (const Handle(TDataXtd_Constraint)& 
       else
       if (CURVE.GetType() == GeomAbs_Circle)  {
 //#ifndef DEB
-        Handle_Geom_Geometry aGeomGeometry = CURVE.Curve().Curve()->Transformed(CURVE.Trsf()) ;
+        Handle(Geom_Geometry) aGeomGeometry = CURVE.Curve().Curve()->Transformed(CURVE.Trsf()) ;
         gp_Ax1 ax = ((Handle(Geom_Circle)&) aGeomGeometry)->Circ().Axis();
 //#else
 //	gp_Ax1 ax = ((Handle(Geom_Circle)&) CURVE.Curve().Curve()->Transformed(CURVE.Trsf()))->Circ().Axis();
@@ -1844,7 +1844,7 @@ void TPrsStd_ConstraintTools::ComputeOffset (const Handle(TDataXtd_Constraint)& 
       BRepBuilderAPI_MakeFace MkF (w1,Standard_True);
       if (MkF.IsDone())  {
 //#ifndef DEB
-        Handle_Geom_Surface aGeomSurface = BRep_Tool::Surface(MkF.Face());
+        Handle(Geom_Surface) aGeomSurface = BRep_Tool::Surface(MkF.Face());
         aplane = (Handle(Geom_Plane)&) aGeomSurface ;
 //#else
 //	aplane = ((Handle(Geom_Plane)&) BRep_Tool::Surface(MkF.Face()));

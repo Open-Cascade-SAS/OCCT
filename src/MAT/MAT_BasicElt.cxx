@@ -70,7 +70,7 @@ Standard_Integer  MAT_BasicElt::GeomIndex() const
 // function: SetStartArc
 // purpose :
 //========================================================================
-void  MAT_BasicElt::SetStartArc(const Handle_MAT_Arc& anArc)
+void  MAT_BasicElt::SetStartArc(const Handle(MAT_Arc)& anArc)
 {
   startLeftArc = anArc.operator->();
 }
@@ -80,7 +80,7 @@ void  MAT_BasicElt::SetStartArc(const Handle_MAT_Arc& anArc)
 // function: SetEndArc
 // purpose :
 //========================================================================
-void  MAT_BasicElt::SetEndArc(const Handle_MAT_Arc& anArc)
+void  MAT_BasicElt::SetEndArc(const Handle(MAT_Arc)& anArc)
 {
   endLeftArc = anArc.operator->();
 }

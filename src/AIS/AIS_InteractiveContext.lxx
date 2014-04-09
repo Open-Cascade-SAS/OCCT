@@ -76,7 +76,7 @@ inline const Handle(PrsMgr_PresentationManager3d)& AIS_InteractiveContext::MainP
 inline Standard_Boolean AIS_InteractiveContext::HasOpenedContext() const 
 {return myCurLocalIndex != 0;}
 
-inline Handle_AIS_LocalContext AIS_InteractiveContext::LocalContext() const
+inline Handle(AIS_LocalContext) AIS_InteractiveContext::LocalContext() const
 { return (myCurLocalIndex > 0) ? myLocalContexts(myCurLocalIndex) : NULL; }
 
 inline const TCollection_AsciiString& AIS_InteractiveContext::CurrentName() const 

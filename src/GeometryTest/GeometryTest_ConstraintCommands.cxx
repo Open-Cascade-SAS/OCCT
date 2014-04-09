@@ -596,7 +596,7 @@ static Standard_Integer interpol (Draw_Interpretor& di,Standard_Integer n, const
     char dimen[3];
     iFile >> dimen;
     if (!strcmp(dimen,"3d")) {
-      Handle_TColgp_HArray1OfPnt Point =
+      Handle(TColgp_HArray1OfPnt) Point =
         new TColgp_HArray1OfPnt(1, nbp);
       for (i = 1; i <= nbp; i++) {
         iFile >> x >> y >> z;
@@ -683,7 +683,7 @@ static Standard_Integer tanginterpol (Draw_Interpretor& di,
   if ( n <  num_parameters * 3 + num_read) {
     return 1 ;
   }
-  Handle_TColgp_HArray1OfPnt   PointsArrayPtr=
+  Handle(TColgp_HArray1OfPnt)   PointsArrayPtr=
     new TColgp_HArray1OfPnt(1,num_parameters) ;
 
   num_tangents = ((n - num_read) / 3)  - num_parameters ;
@@ -706,7 +706,7 @@ static Standard_Integer tanginterpol (Draw_Interpretor& di,
 
   if (num_tangents > 0) {
     TColgp_Array1OfVec TangentsArray(1,num_parameters) ;
-    Handle_TColStd_HArray1OfBoolean 
+    Handle(TColStd_HArray1OfBoolean) 
       TangentFlagsPtr =
       new TColStd_HArray1OfBoolean(1,num_parameters) ;
 

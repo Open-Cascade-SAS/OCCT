@@ -1306,7 +1306,7 @@ Standard_Boolean Visual3d_View::DisplayImmediate (const Handle(Graphic3d_Structu
 
   if (theIsSingleView)
   {
-    Handle_Visual3d_HSetOfView aViews = MyViewManager->DefinedView();
+    Handle(Visual3d_HSetOfView) aViews = MyViewManager->DefinedView();
     for (Visual3d_SetIteratorOfSetOfView aViewIter (aViews->Set()); aViewIter.More(); aViewIter.Next())
     {
       if (aViewIter.Value().Access() != this)

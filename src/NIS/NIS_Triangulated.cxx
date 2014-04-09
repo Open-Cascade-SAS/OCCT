@@ -682,8 +682,8 @@ void NIS_Triangulated::SetLineWidth (const Standard_Real    theWidth)
 //purpose  : 
 //=======================================================================
 
-void NIS_Triangulated::Clone (const Handle_NCollection_BaseAllocator& theAlloc,
-                              Handle_NIS_InteractiveObject& theDest) const
+void NIS_Triangulated::Clone (const Handle(NCollection_BaseAllocator)& theAlloc,
+                              Handle(NIS_InteractiveObject)& theDest) const
 {
   Handle(NIS_Triangulated) aNewObj;
   if (theDest.IsNull()) {

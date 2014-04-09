@@ -95,8 +95,8 @@
  * the virtual method Clone() should be correctly defined for every interactive
  * object subtype. Supposing that MyIOClass inherits MyBaseIOBase :
  * @code
- * void MyIOCalss::Clone (const Handle_NCollection_BaseAllocator& theAlloc,
- *                        Handle_NIS_InteractiveObject&           theDest) const
+ * void MyIOCalss::Clone (const Handle(NCollection_BaseAllocator)& theAlloc,
+ *                        Handle(NIS_InteractiveObject)&           theDest) const
  * {
  *   Handle(MyIOClass) aNewObj;
  *   if (theDest.IsNull()) {
@@ -170,15 +170,15 @@ class NIS_InteractiveObject : public Standard_Transient
    *   Reference to the finally stored or found Drawer instance inside
    *   the Context. 
    */
-  Standard_EXPORT const Handle_NIS_Drawer&
-                          SetDrawer     (const Handle_NIS_Drawer& theDrawer,
+  Standard_EXPORT const Handle(NIS_Drawer)&
+                          SetDrawer     (const Handle(NIS_Drawer)& theDrawer,
                                          const Standard_Boolean   setUpdated
                                          = Standard_True);
 
   /**
    * Query the current drawer.
    */
-  inline const Handle_NIS_Drawer&
+  inline const Handle(NIS_Drawer)&
                           GetDrawer     () const
   { return myDrawer; }
 
@@ -263,14 +263,14 @@ class NIS_InteractiveObject : public Standard_Transient
    *   <tt>[in-out]</tt> The target object where the data are copied.
    */
   Standard_EXPORT virtual void
-                          Clone (const Handle_NCollection_BaseAllocator& theAll,
-                                 Handle_NIS_InteractiveObject& theDest) const;
+                          Clone (const Handle(NCollection_BaseAllocator)& theAll,
+                                 Handle(NIS_InteractiveObject)& theDest) const;
 
   /**
    * The same as Clone() but also copies the ID.
    */
-  Standard_EXPORT void    CloneWithID (const Handle_NCollection_BaseAllocator&,
-                                       Handle_NIS_InteractiveObject&);
+  Standard_EXPORT void    CloneWithID (const Handle(NCollection_BaseAllocator)&,
+                                       Handle(NIS_InteractiveObject)&);
 
   /**
    * Intersect the InteractiveObject geometry with a line/ray.
@@ -379,7 +379,7 @@ class NIS_InteractiveObject : public Standard_Transient
  private:
   // ---------- PRIVATE FIELDS ----------
 
-  Handle_NIS_Drawer             myDrawer;
+  Handle(NIS_Drawer)             myDrawer;
   Standard_Integer              myID;
   NIS_Drawer::DrawType          myDrawType      : 3;
   NIS_Drawer::DrawType          myBaseType      : 3;

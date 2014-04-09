@@ -20,8 +20,8 @@
 #include <SelectMgr_SelectableObject.hxx>
 #include <SelectMgr_SequenceOfOwner.hxx>
 
-inline Standard_Boolean IsEqual (const Handle_SelectMgr_SelectableObject& theH1,
-				 const Handle_SelectMgr_SelectableObject& theH2)
+inline Standard_Boolean IsEqual (const Handle(SelectMgr_SelectableObject)& theH1,
+				 const Handle(SelectMgr_SelectableObject)& theH2)
 {
   return (theH1 == theH2);
 }

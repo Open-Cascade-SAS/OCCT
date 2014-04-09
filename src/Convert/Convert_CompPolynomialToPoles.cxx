@@ -43,10 +43,10 @@ Convert_CompPolynomialToPoles::Convert_CompPolynomialToPoles(
     const Standard_Integer                 Continuity, 
     const Standard_Integer                 Dimension, 
     const Standard_Integer                 MaxDegree, 
-    const Handle_TColStd_HArray1OfInteger& NumCoeffPerCurve, 
-    const Handle_TColStd_HArray1OfReal&    Coefficients,    
-    const Handle_TColStd_HArray2OfReal&    PolynomialIntervals, 
-    const Handle_TColStd_HArray1OfReal&    TrueIntervals)
+    const Handle(TColStd_HArray1OfInteger)& NumCoeffPerCurve, 
+    const Handle(TColStd_HArray1OfReal)&    Coefficients,    
+    const Handle(TColStd_HArray2OfReal)&    PolynomialIntervals, 
+    const Handle(TColStd_HArray1OfReal)&    TrueIntervals)
      : myDone(Standard_False) 
 {
  Standard_Integer ii, delta;
@@ -319,7 +319,7 @@ Standard_Integer Convert_CompPolynomialToPoles::NbPoles()  const
 //=======================================================================
 
 void Convert_CompPolynomialToPoles::Poles(
-			Handle_TColStd_HArray2OfReal& P) const 
+			Handle(TColStd_HArray2OfReal)& P) const 
  { if (myDone) {
    P = myPoles ; } 
  }
@@ -342,7 +342,7 @@ Standard_Integer Convert_CompPolynomialToPoles::NbKnots()  const
 //=======================================================================
 
 void Convert_CompPolynomialToPoles::Knots(
-			 Handle_TColStd_HArray1OfReal& K) const 
+			 Handle(TColStd_HArray1OfReal)& K) const 
  { if (myDone) {
    K = myKnots ; } 
  }
@@ -353,7 +353,7 @@ void Convert_CompPolynomialToPoles::Knots(
 //=======================================================================
 
 void Convert_CompPolynomialToPoles::Multiplicities(
-                      Handle_TColStd_HArray1OfInteger& M) const 
+                      Handle(TColStd_HArray1OfInteger)& M) const 
  { if (myDone) {
    M = myMults ; }
  }

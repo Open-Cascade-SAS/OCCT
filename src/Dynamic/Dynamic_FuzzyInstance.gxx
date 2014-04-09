@@ -78,7 +78,7 @@ Handle(Dynamic_FuzzyClass) Dynamic_FuzzyInstance::Definition() const
     }
   else
     {
-      definition  = *(Handle_Dynamic_FuzzyInstance*)&thedefinition;
+      definition  = *(Handle(Dynamic_FuzzyInstance)*)&thedefinition;
       return definition->Definition();
     }
 }

@@ -137,7 +137,7 @@ inline Standard_Integer ShapeAnalysis_FreeBoundData::NbNotches() const
 //purpose  : Returns sequence of notches on the contour
 //=======================================================================
 
-inline Handle_TopTools_HSequenceOfShape ShapeAnalysis_FreeBoundData::Notches() const
+inline Handle(TopTools_HSequenceOfShape) ShapeAnalysis_FreeBoundData::Notches() const
 {
   return myNotches;
 }

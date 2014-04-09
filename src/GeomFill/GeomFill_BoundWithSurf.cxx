@@ -175,7 +175,7 @@ void GeomFill_BoundWithSurf::Reparametrize(const Standard_Real First,
 						 HasDF,HasDL,DF,DL,
 						 Rev,30);
   myPar = new Law_BSpFunc();
-  (*((Handle_Law_BSpFunc*) &myPar))->SetCurve(curve);
+  (*((Handle(Law_BSpFunc)*) &myPar))->SetCurve(curve);
 }
 
 //=======================================================================

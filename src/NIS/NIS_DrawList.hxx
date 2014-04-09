@@ -49,7 +49,7 @@ class NIS_DrawList
   /**
    * Constructor
    */
-  Standard_EXPORT NIS_DrawList (const Handle_NIS_View& theView);
+  Standard_EXPORT NIS_DrawList (const Handle(NIS_View)& theView);
 
   /**
    * Destructor.
@@ -80,7 +80,7 @@ class NIS_DrawList
    * @return
    *   Previous value of myListID
    */
-  Standard_EXPORT void ClearListID        (const Handle_NIS_View& theView=NULL);
+  Standard_EXPORT void ClearListID        (const Handle(NIS_View)& theView=NULL);
 
   /**
    * This method is called to start recording a new list. It must be eventually
@@ -121,14 +121,14 @@ class NIS_DrawList
   /**
    * Query if the given list should be processed by Dynamic Hilighting.
    */
-  inline const NCollection_List<Handle_NIS_InteractiveObject>&
+  inline const NCollection_List<Handle(NIS_InteractiveObject)>&
                                 DynHilightedList() const
   { return myDynHilighted; }
   
   /**
    * Query the View.
    */
-  inline const Handle_NIS_View& GetView        () const
+  inline const Handle(NIS_View)& GetView        () const
   { return myView; }
 
   /**
@@ -136,7 +136,7 @@ class NIS_DrawList
    */
   Standard_EXPORT Standard_Boolean SetDynHilighted
                                 (const Standard_Boolean              isHilight,
-                                 const Handle_NIS_InteractiveObject& theObj);
+                                 const Handle(NIS_InteractiveObject)& theObj);
 
  protected:
   // ---------- PROTECTED METHODS ----------
@@ -156,14 +156,14 @@ class NIS_DrawList
  private:
   // ---------- PRIVATE FIELDS ----------
 
-  Handle_NIS_View                                myView;
+  Handle(NIS_View)                                myView;
 #ifdef ARRAY_LISTS
   Standard_Integer                               myListID;
 #else
   Standard_Integer                               myListID[5];
 #endif
   Standard_Boolean                               myIsUpdated[5];
-  NCollection_List<Handle_NIS_InteractiveObject> myDynHilighted;
+  NCollection_List<Handle(NIS_InteractiveObject)> myDynHilighted;
 };
 
 

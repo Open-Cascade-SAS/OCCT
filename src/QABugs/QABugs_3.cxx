@@ -575,7 +575,7 @@ static Standard_Integer BUC60729 (Draw_Interpretor& /*di*/,Standard_Integer /*ar
 
 
 //  Bnd_Box __emptyBox; // Box is void !
-//  Handle_Bnd_HArray1OfBox __aSetOfBox = new Bnd_HArray1OfBox( 1, siMaxNbrBox, __emptyBox ); 
+//  Handle(Bnd_HArray1OfBox) __aSetOfBox = new Bnd_HArray1OfBox( 1, siMaxNbrBox, __emptyBox ); 
 
   for (i=1,aExplorer.ReInit(); aExplorer.More(); aExplorer.Next(),i++ ) 
     { 
@@ -634,23 +634,23 @@ static Standard_Integer BUC60792(Draw_Interpretor& di, Standard_Integer /*argc*/
   gp_Pnt pt3d(0, 20, 150);
   gp_Ax2 anAx2(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0), gp_Dir(0, 0, 1));
   gp_Circ circ(anAx2, 50.0); 
-  Handle_Geom_Circle gcir = new Geom_Circle(circ); 
-  Handle_Geom_Plane pln = new Geom_Plane(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0))); 
-  Handle_Geom2d_Curve gcir1 = GeomAPI::To2d(gcir, pln->Pln()); 
+  Handle(Geom_Circle) gcir = new Geom_Circle(circ); 
+  Handle(Geom_Plane) pln = new Geom_Plane(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0))); 
+  Handle(Geom2d_Curve) gcir1 = GeomAPI::To2d(gcir, pln->Pln()); 
   TopoDS_Shape sh1 = BRepBuilderAPI_MakeEdge(gcir1, pln).Shape(); 
-  Handle_AIS_Shape ais1 = new AIS_Shape(sh1); 
+  Handle(AIS_Shape) ais1 = new AIS_Shape(sh1); 
   aContext->SetColor(ais1, Quantity_NOC_INDIANRED); 
   aContext->Display(ais1); 
   DBRep::Set("sh0",sh1);
   gp_Pnt2d thepoint; 
 //  local_get_2Dpointfrom3Dpoint(pt3d, pln->Pln(), thepoint); 
   thepoint = ProjLib::Project(pln->Pln(),pt3d);
-  Handle_Geom2d_CartesianPoint ThePoint = new Geom2d_CartesianPoint(thepoint); 
+  Handle(Geom2d_CartesianPoint) ThePoint = new Geom2d_CartesianPoint(thepoint); 
   Geom2dAdaptor_Curve acur1(gcir1) ; 
   Geom2dGcc_QualifiedCurve qcur1(acur1, GccEnt_outside) ; 
   Geom2dGcc_Circ2d2TanRad cirtanrad(qcur1, ThePoint, 200.0, 0.0001); 
   printf("\n No. of solutions = %d\n", cirtanrad.NbSolutions()); 
-  Handle_Geom2d_Circle gccc; 
+  Handle(Geom2d_Circle) gccc; 
   if( cirtanrad.NbSolutions() ) { 
     for( int i = 1; i<=cirtanrad.NbSolutions(); i++) { 
       gp_Circ2d ccc = cirtanrad.ThisSolution(i); 
@@ -659,7 +659,7 @@ static Standard_Integer BUC60792(Draw_Interpretor& di, Standard_Integer /*argc*/
       Standard_Character aStr[5];
       Sprintf(aStr,"sh%d",i);
       DBRep::Set(aStr,sh);
-      Handle_AIS_Shape ais = new AIS_Shape(sh); 
+      Handle(AIS_Shape) ais = new AIS_Shape(sh); 
       if( i ==1 ) 
 	aContext->SetColor(ais, Quantity_NOC_GREEN); 
       if( i == 2) 
@@ -714,7 +714,7 @@ static Standard_Integer BUC60811(Draw_Interpretor& di, Standard_Integer argc, co
   TopoDS_Shape FP1; 
   TopoDS_Solid solid; 
   Handle(AIS_Shape) ais1; 
-  Handle_AIS_Shape ais2; 
+  Handle(AIS_Shape) ais2; 
   Handle(Geom_BezierSurface) BZ1;
   TColgp_Array2OfPnt array1(1,3,1,3);
   array1.SetValue(1,1,gp_Pnt(0,100,0));
@@ -773,11 +773,11 @@ static Standard_Integer BUC60811(Draw_Interpretor& di, Standard_Integer argc, co
   DBRep::Set("FP",FP);
   
 //step 2. offseting the surface. 
-  Handle_Geom_OffsetSurface offsurf; 
+  Handle(Geom_OffsetSurface) offsurf; 
   offsurf = new Geom_OffsetSurface(BZ1, -100); 
   BRepBuilderAPI_MakeFace bzf2( offsurf, Precision::Confusion() ); 
   TopoDS_Face F2= bzf2.Face(); 
-  Handle_AIS_Shape ais22 = new AIS_Shape(F2); 
+  Handle(AIS_Shape) ais22 = new AIS_Shape(F2); 
   aContext->Display(ais22); 
   DBRep::Set("F2",F2);
   
@@ -811,12 +811,12 @@ static Standard_Integer BUC60811(Draw_Interpretor& di, Standard_Integer argc, co
     { 
       TopoDS_Edge e1 = TopoDS::Edge(Ex.Current()); 
       Standard_Real f = 0.0, l = 0.0; 
-      Handle_Geom_Curve newBSplin = BRep_Tool::Curve(e1, f, l);
+      Handle(Geom_Curve) newBSplin = BRep_Tool::Curve(e1, f, l);
       newBSplin = new Geom_TrimmedCurve(newBSplin, f, l); 
       Handle(Geom_Curve) projCurve = GeomProjLib::Project(newBSplin,offsurf); 
       myWire->Add((BRepBuilderAPI_MakeEdge(projCurve)).Edge()); 
     } 
-  Handle_AIS_Shape ais33 = new AIS_Shape( myWire->Wire() ); 
+  Handle(AIS_Shape) ais33 = new AIS_Shape( myWire->Wire() ); 
   aContext->Display(ais33);
 
   DBRep::Set("Wire",myWire->Wire());
@@ -1335,7 +1335,7 @@ static Standard_Integer BUC60841(Draw_Interpretor& di, Standard_Integer argc, co
   }
 
   DBRep::Set("fsh2",fsh2);
-  Handle_AIS_Shape aisp1 = new AIS_Shape(fsh2);
+  Handle(AIS_Shape) aisp1 = new AIS_Shape(fsh2);
 //  aContext->Display(aisp1);
   return 0;
 }

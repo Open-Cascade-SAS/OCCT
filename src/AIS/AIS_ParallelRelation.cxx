@@ -140,9 +140,9 @@ void AIS_ParallelRelation::Compute(const Handle(Prs3d_Projector)& aProjector,
   PrsMgr_PresentableObject::Compute( aProjector , aPresentation ) ;
 }
 
-void AIS_ParallelRelation::Compute(const Handle_Prs3d_Projector& aProjector, const Handle_Geom_Transformation& aTransformation, const Handle_Prs3d_Presentation& aPresentation)
+void AIS_ParallelRelation::Compute(const Handle(Prs3d_Projector)& aProjector, const Handle(Geom_Transformation)& aTransformation, const Handle(Prs3d_Presentation)& aPresentation)
 {
-// Standard_NotImplemented::Raise("AIS_ParallelRelation::Compute(const Handle_Prs3d_Projector&, const Handle_Geom_Transformation&, const Handle_Prs3d_Presentation&)");
+// Standard_NotImplemented::Raise("AIS_ParallelRelation::Compute(const Handle(Prs3d_Projector)&, const Handle(Geom_Transformation)&, const Handle(Prs3d_Presentation)&)");
   PrsMgr_PresentableObject::Compute( aProjector , aTransformation , aPresentation ) ;
 }
 

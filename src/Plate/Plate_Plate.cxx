@@ -1032,7 +1032,7 @@ gp_XYZ Plate_Plate::EvaluateDerivative(const gp_XY& point2d, const Standard_Inte
 // the polynomial part of the Plate function
 //=======================================================================
 
- void Plate_Plate::CoefPol(Handle_TColgp_HArray2OfXYZ& Coefs) const
+ void Plate_Plate::CoefPol(Handle(TColgp_HArray2OfXYZ)& Coefs) const
 {
   Coefs = new TColgp_HArray2OfXYZ(0,order-1,0,order-1,gp_XYZ(0.,0.,0.));
   Standard_Integer i = n_el;

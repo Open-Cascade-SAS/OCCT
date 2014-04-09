@@ -408,7 +408,7 @@ Standard_Real Units_UnitsSystem::ConvertUserSystemValueToSI
 void Units_UnitsSystem::Dump() const
 {
   Handle(Standard_Transient) transient = This();
-  Handle(Units_UnitsSystem) unitssystem = *(Handle_Units_UnitsSystem*)&transient;
+  Handle(Units_UnitsSystem) unitssystem = *(Handle(Units_UnitsSystem)*)&transient;
   Units_Explorer explorer(unitssystem);
   cout<<" UNITSSYSTEM : "<<endl;
   for(; explorer.MoreQuantity(); explorer.NextQuantity()) {

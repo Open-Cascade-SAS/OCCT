@@ -123,10 +123,10 @@ const gp_Pnt& IntPatch_CSFunction::Point() const { return p;}
 
 Standard_Real IntPatch_CSFunction::Root() const { return f;}
 
-const Handle_Adaptor3d_HSurface& IntPatch_CSFunction::AuxillarSurface() const { 
+const Handle(Adaptor3d_HSurface)& IntPatch_CSFunction::AuxillarSurface() const { 
   return SURFACE1;}
 
-const Handle_Adaptor2d_HCurve2d& IntPatch_CSFunction::AuxillarCurve() const { 
+const Handle(Adaptor2d_HCurve2d)& IntPatch_CSFunction::AuxillarCurve() const { 
   return CURVE;}
 
 #undef SURFACE1

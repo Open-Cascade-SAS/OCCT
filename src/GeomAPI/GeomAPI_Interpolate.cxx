@@ -96,7 +96,7 @@ static Standard_Boolean CheckParameters(const
 //=======================================================================		      
 static void  BuildParameters(const Standard_Boolean        PeriodicFlag,
 			     const TColgp_Array1OfPnt&     PointsArray,
-			     Handle_TColStd_HArray1OfReal& ParametersPtr) 
+			     Handle(TColStd_HArray1OfReal)& ParametersPtr) 
 {
   Standard_Integer ii,
   index ;
@@ -310,7 +310,7 @@ static void ScaleTangents(const TColgp_Array1OfPnt&      PointsArray,
 //=======================================================================
 
 GeomAPI_Interpolate::GeomAPI_Interpolate
-   (const Handle_TColgp_HArray1OfPnt& PointsPtr,
+   (const Handle(TColgp_HArray1OfPnt)& PointsPtr,
     const Standard_Boolean            PeriodicFlag,
     const Standard_Real               Tolerance) :
 myTolerance(Tolerance),
@@ -351,8 +351,8 @@ myTangentRequest(Standard_False)
 //=======================================================================
 
 GeomAPI_Interpolate::GeomAPI_Interpolate
-   (const Handle_TColgp_HArray1OfPnt&    PointsPtr,
-    const Handle_TColStd_HArray1OfReal&  ParametersPtr,
+   (const Handle(TColgp_HArray1OfPnt)&    PointsPtr,
+    const Handle(TColStd_HArray1OfReal)&  ParametersPtr,
     const Standard_Boolean               PeriodicFlag,
     const Standard_Real                  Tolerance) :
 myTolerance(Tolerance),
@@ -403,7 +403,7 @@ myTangentRequest(Standard_False)
 
 void GeomAPI_Interpolate::Load( 
    const TColgp_Array1OfVec&              Tangents,
-   const Handle_TColStd_HArray1OfBoolean& TangentFlagsPtr,
+   const Handle(TColStd_HArray1OfBoolean)& TangentFlagsPtr,
    const Standard_Boolean Scale ) 
 
 {
@@ -898,7 +898,7 @@ void GeomAPI_Interpolate::PerformNonPeriodic()
   }
 }
 //=======================================================================
-//function : Handle_Geom_BSplineCurve&
+//function : Handle(Geom_BSplineCurve)&
 //purpose  : 
 //=======================================================================
 

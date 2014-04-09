@@ -1081,14 +1081,14 @@ Standard_Boolean GeomPlate_BuildPlateSurface::IsDone() const
 //---------------------------------------------------------
 // fonction : Surface
 //---------------------------------------------------------
-Handle_GeomPlate_Surface GeomPlate_BuildPlateSurface::Surface() const
+Handle(GeomPlate_Surface) GeomPlate_BuildPlateSurface::Surface() const
 { return myGeomPlateSurface ;
 }
 
 //---------------------------------------------------------
 // fonction : SurfInit
 //---------------------------------------------------------
-Handle_Geom_Surface GeomPlate_BuildPlateSurface::SurfInit() const
+Handle(Geom_Surface) GeomPlate_BuildPlateSurface::SurfInit() const
 { return mySurfInit ;
 }
 
@@ -1096,7 +1096,7 @@ Handle_Geom_Surface GeomPlate_BuildPlateSurface::SurfInit() const
 //---------------------------------------------------------
 // fonction : Sense
 //---------------------------------------------------------
-Handle_TColStd_HArray1OfInteger GeomPlate_BuildPlateSurface::Sense() const
+Handle(TColStd_HArray1OfInteger) GeomPlate_BuildPlateSurface::Sense() const
 { Standard_Integer NTCurve = myLinCont->Length();
   Handle(TColStd_HArray1OfInteger) Sens = new TColStd_HArray1OfInteger(1,
 								       NTCurve);
@@ -1110,7 +1110,7 @@ Handle_TColStd_HArray1OfInteger GeomPlate_BuildPlateSurface::Sense() const
 //---------------------------------------------------------
 // fonction : Curve2d
 //---------------------------------------------------------
-Handle_TColGeom2d_HArray1OfCurve GeomPlate_BuildPlateSurface::Curves2d() const
+Handle(TColGeom2d_HArray1OfCurve) GeomPlate_BuildPlateSurface::Curves2d() const
 { Standard_Integer NTCurve = myLinCont->Length();
   Handle(TColGeom2d_HArray1OfCurve) C2dfin = 
     new TColGeom2d_HArray1OfCurve(1,NTCurve);
@@ -1125,8 +1125,8 @@ Handle_TColGeom2d_HArray1OfCurve GeomPlate_BuildPlateSurface::Curves2d() const
 //---------------------------------------------------------
 //fonction : Order
 //---------------------------------------------------------
-Handle_TColStd_HArray1OfInteger GeomPlate_BuildPlateSurface::Order() const
-{ Handle_TColStd_HArray1OfInteger result=
+Handle(TColStd_HArray1OfInteger) GeomPlate_BuildPlateSurface::Order() const
+{ Handle(TColStd_HArray1OfInteger) result=
     new TColStd_HArray1OfInteger(1,myLinCont->Length());
   for (Standard_Integer i=1;i<=myLinCont->Length();i++)
    result->SetValue(myInitOrder->Value(i),i);

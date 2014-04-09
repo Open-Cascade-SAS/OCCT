@@ -23,7 +23,7 @@
 IMPLEMENT_STANDARD_HANDLE  (NIS_InteractiveContext, Standard_Transient)
 IMPLEMENT_STANDARD_RTTIEXT (NIS_InteractiveContext, Standard_Transient)
 
-static void markAllDrawersUpdated   (const NCollection_Map<Handle_NIS_Drawer>&);
+static void markAllDrawersUpdated   (const NCollection_Map<Handle(NIS_Drawer)>&);
 
 //=======================================================================
 //function : NIS_InteractiveContext()
@@ -50,13 +50,13 @@ NIS_InteractiveContext::NIS_InteractiveContext ()
 NIS_InteractiveContext::~NIS_InteractiveContext ()
 {
   // Unregister this context in all referred views
-  NCollection_List<Handle_NIS_View>::Iterator anIterV (myViews);
+  NCollection_List<Handle(NIS_View)>::Iterator anIterV (myViews);
   for (; anIterV.More(); anIterV.Next())
     if (anIterV.Value().IsNull() == Standard_False)
       anIterV.Value()->RemoveContext(this);
 
 //   // Unregister this context in all referred drawers
-//   NCollection_Map<Handle_NIS_Drawer>::Iterator anIterD (myDrawers);
+//   NCollection_Map<Handle(NIS_Drawer)>::Iterator anIterD (myDrawers);
 //   for (; anIterD.More(); anIterD.Next())
 //     if (anIterD.Value().IsNull() == Standard_False)
 //       anIterD.Value()->myCtx = 0L;
@@ -68,17 +68,17 @@ NIS_InteractiveContext::~NIS_InteractiveContext ()
 //purpose  : 
 //=======================================================================
 
-void NIS_InteractiveContext::AttachView (const Handle_NIS_View& theView)
+void NIS_InteractiveContext::AttachView (const Handle(NIS_View)& theView)
 {
   if (theView.IsNull() == Standard_False) {
-    NCollection_List<Handle_NIS_View>::Iterator anIter (myViews);
+    NCollection_List<Handle(NIS_View)>::Iterator anIter (myViews);
     for (; anIter.More(); anIter.Next())
       if (anIter.Value() == theView)
         break;
     if (anIter.More() == Standard_False) {
       myViews.Append (theView);
       theView->AddContext (this);
-      NCollection_Map<Handle_NIS_Drawer>::Iterator anIterD (myDrawers);
+      NCollection_Map<Handle(NIS_Drawer)>::Iterator anIterD (myDrawers);
       for (; anIterD.More(); anIterD.Next()) {
         const Handle(NIS_Drawer)& aDrawer = anIterD.Value();
         if (aDrawer.IsNull() == Standard_False)
@@ -93,15 +93,15 @@ void NIS_InteractiveContext::AttachView (const Handle_NIS_View& theView)
 //purpose  : 
 //=======================================================================
 
-void NIS_InteractiveContext::DetachView (const Handle_NIS_View& theView)
+void NIS_InteractiveContext::DetachView (const Handle(NIS_View)& theView)
 {
   if (theView.IsNull() == Standard_False) {
-    NCollection_List<Handle_NIS_View>::Iterator anIter (myViews);
+    NCollection_List<Handle(NIS_View)>::Iterator anIter (myViews);
     for (; anIter.More(); anIter.Next())
       if (anIter.Value() == theView) {
         myViews.Remove(anIter);
         theView->RemoveContext(this);
-        NCollection_Map<Handle_NIS_Drawer>::Iterator anIterD (myDrawers);
+        NCollection_Map<Handle(NIS_Drawer)>::Iterator anIterD (myDrawers);
         for (; anIterD.More(); anIterD.Next()) {
           const Handle(NIS_Drawer)& aDrawer = anIterD.Value();
           if (aDrawer.IsNull() == Standard_False) {
@@ -124,12 +124,12 @@ void NIS_InteractiveContext::DetachView (const Handle_NIS_View& theView)
 //purpose  : 
 //=======================================================================
 
-const Handle_NIS_InteractiveObject& NIS_InteractiveContext::GetObject
+const Handle(NIS_InteractiveObject)& NIS_InteractiveContext::GetObject
                    (const Standard_Integer theID) const
 {
   if (!myObjects.IsBound(theID))
   {
-    static Handle_NIS_InteractiveObject aNull;
+    static Handle(NIS_InteractiveObject) aNull;
     return aNull;
   }
   return myObjects(theID);
@@ -143,7 +143,7 @@ const Handle_NIS_InteractiveObject& NIS_InteractiveContext::GetObject
 void NIS_InteractiveContext::redraw (const Handle(NIS_View)&    theView,
                                      const NIS_Drawer::DrawType theType)
 {
-  NCollection_Map <Handle_NIS_Drawer>::Iterator anIter (myDrawers);
+  NCollection_Map <Handle(NIS_Drawer)>::Iterator anIter (myDrawers);
   for (; anIter.More(); anIter.Next())
     if (anIter.Value().IsNull() == Standard_False)
       anIter.Value()->redraw (theType, theView);
@@ -157,7 +157,7 @@ void NIS_InteractiveContext::redraw (const Handle(NIS_View)&    theView,
 void NIS_InteractiveContext::GetBox (Bnd_B3f&         theBox,
                                      const NIS_View * theView) const
 {
-  NCollection_Map <Handle_NIS_Drawer>::Iterator anIterD (myDrawers);
+  NCollection_Map <Handle(NIS_Drawer)>::Iterator anIterD (myDrawers);
   for (; anIterD.More(); anIterD.Next())
     if (anIterD.Value().IsNull() == Standard_False)
       theBox.Add(anIterD.Value()->GetBox(theView));
@@ -169,8 +169,8 @@ void NIS_InteractiveContext::GetBox (Bnd_B3f&         theBox,
 //=======================================================================
 
 void NIS_InteractiveContext::Display
-                                (Handle_NIS_InteractiveObject& theObj,
-                                 const Handle_NIS_Drawer&      theDrawer,
+                                (Handle(NIS_InteractiveObject)& theObj,
+                                 const Handle(NIS_Drawer)&      theDrawer,
                                  const Standard_Boolean        isUpdateViews)
 {
   if (theObj.IsNull())
@@ -192,8 +192,8 @@ void NIS_InteractiveContext::Display
 //=======================================================================
 
 void NIS_InteractiveContext::DisplayOnTop
-                                (Handle_NIS_InteractiveObject& theObj,
-                                 const Handle_NIS_Drawer&      theDrawer,
+                                (Handle(NIS_InteractiveObject)& theObj,
+                                 const Handle(NIS_Drawer)&      theDrawer,
                                  const Standard_Boolean        isUpdateViews)
 {
   if (theObj.IsNull())
@@ -216,7 +216,7 @@ void NIS_InteractiveContext::DisplayOnTop
 //purpose  : 
 //=======================================================================
 
-void NIS_InteractiveContext::Erase (const Handle_NIS_InteractiveObject& theObj,
+void NIS_InteractiveContext::Erase (const Handle(NIS_InteractiveObject)& theObj,
                                     const Standard_Boolean isUpdateViews)
 {
   if (theObj->IsHidden() == Standard_False) {
@@ -225,7 +225,7 @@ void NIS_InteractiveContext::Erase (const Handle_NIS_InteractiveObject& theObj,
     if (aDrawer.IsNull() == Standard_False) {
       // Unhilight the erased object
       if (theObj->IsDynHilighted()) {
-        NCollection_List<Handle_NIS_View>::Iterator anIterV (myViews);
+        NCollection_List<Handle(NIS_View)>::Iterator anIterV (myViews);
         for (; anIterV.More(); anIterV.Next())
           if (anIterV.Value().IsNull() == Standard_False)
             anIterV.Value()->DynamicUnhilight (theObj);
@@ -242,7 +242,7 @@ void NIS_InteractiveContext::Erase (const Handle_NIS_InteractiveObject& theObj,
 //purpose  : 
 //=======================================================================
 
-void NIS_InteractiveContext::Remove (const Handle_NIS_InteractiveObject& theObj,
+void NIS_InteractiveContext::Remove (const Handle(NIS_InteractiveObject)& theObj,
                                      const Standard_Boolean isUpdateViews)
 {
   if (theObj.IsNull() == Standard_False) {
@@ -252,7 +252,7 @@ void NIS_InteractiveContext::Remove (const Handle_NIS_InteractiveObject& theObj,
     if (aDrawer->myCtx == this) {
       // Remove the hilighting if the object has been hilighted
       if (theObj->IsDynHilighted()) {
-        NCollection_List<Handle_NIS_View>::Iterator anIterV (myViews);
+        NCollection_List<Handle(NIS_View)>::Iterator anIterV (myViews);
         for (; anIterV.More(); anIterV.Next())
           if (anIterV.Value().IsNull() == Standard_False)
             anIterV.Value()->DynamicUnhilight (theObj);
@@ -278,7 +278,7 @@ void NIS_InteractiveContext::Remove (const Handle_NIS_InteractiveObject& theObj,
 void NIS_InteractiveContext::DisplayAll ()
 {
   // UnHide all objects in the Context
-  NCollection_SparseArray <Handle_NIS_InteractiveObject>::ConstIterator
+  NCollection_SparseArray <Handle(NIS_InteractiveObject)>::ConstIterator
     anIter(myObjects);
   for (; anIter.More(); anIter.Next()) {
     const Handle(NIS_InteractiveObject)& anObj = anIter.Value();
@@ -288,7 +288,7 @@ void NIS_InteractiveContext::DisplayAll ()
   }
 
   // Update status of objects in Drawers (particularly cancel dyn. hilighting)
-  NCollection_Map<Handle_NIS_Drawer>::Iterator anIterD (myDrawers);
+  NCollection_Map<Handle(NIS_Drawer)>::Iterator anIterD (myDrawers);
   for (; anIterD.More(); anIterD.Next()) {
     const Handle(NIS_Drawer)& aDrawer = anIterD.Value();
     if (aDrawer.IsNull() == Standard_False) {
@@ -308,7 +308,7 @@ void NIS_InteractiveContext::DisplayAll ()
 void NIS_InteractiveContext::EraseAll ()
 {
   // Hide all objects in the Context
-  NCollection_SparseArray <Handle_NIS_InteractiveObject>::ConstIterator
+  NCollection_SparseArray <Handle(NIS_InteractiveObject)>::ConstIterator
     anIter(myObjects);
   for (; anIter.More(); anIter.Next()) {
     const Handle(NIS_InteractiveObject)& anObj = anIter.Value();
@@ -316,7 +316,7 @@ void NIS_InteractiveContext::EraseAll ()
       if (anObj->IsHidden() == Standard_False)
         anObj->myIsHidden = Standard_True;
       if (anObj->IsDynHilighted()) {
-        NCollection_List<Handle_NIS_View>::Iterator anIterV (myViews);
+        NCollection_List<Handle(NIS_View)>::Iterator anIterV (myViews);
         for (; anIterV.More(); anIterV.Next())
           if (anIterV.Value().IsNull() == Standard_False)
             anIterV.Value()->DynamicUnhilight (anObj);
@@ -325,7 +325,7 @@ void NIS_InteractiveContext::EraseAll ()
   }
 
   // Update status of objects in Drawers (particularly cancel dyn. hilighting)
-  NCollection_Map<Handle_NIS_Drawer>::Iterator anIterD (myDrawers);
+  NCollection_Map<Handle(NIS_Drawer)>::Iterator anIterD (myDrawers);
   for (; anIterD.More(); anIterD.Next()) {
     const Handle(NIS_Drawer)& aDrawer = anIterD.Value();
     if (aDrawer.IsNull() == Standard_False) {
@@ -350,13 +350,13 @@ void NIS_InteractiveContext::EraseAll ()
 void NIS_InteractiveContext::RemoveAll ()
 {
   // Remove objects from the Context
-  NCollection_SparseArray <Handle_NIS_InteractiveObject>::Iterator
+  NCollection_SparseArray <Handle(NIS_InteractiveObject)>::Iterator
     anIter(myObjects);
   for (; anIter.More(); anIter.Next()) {
     Handle(NIS_InteractiveObject)& anObj = anIter.ChangeValue();
     if (anObj.IsNull() == Standard_False) {
       if (anObj->IsDynHilighted()) {
-        NCollection_List<Handle_NIS_View>::Iterator anIterV (myViews);
+        NCollection_List<Handle(NIS_View)>::Iterator anIterV (myViews);
         for (; anIterV.More(); anIterV.Next())
           if (anIterV.Value().IsNull() == Standard_False)
             anIterV.Value()->DynamicUnhilight (anObj);
@@ -368,7 +368,7 @@ void NIS_InteractiveContext::RemoveAll ()
   }
 
   // Mark all draw lists to be removed in the view callback
-  NCollection_Map<Handle_NIS_Drawer>::Iterator anIterD (myDrawers);
+  NCollection_Map<Handle(NIS_Drawer)>::Iterator anIterD (myDrawers);
   for (; anIterD.More(); anIterD.Next()) {
     const Handle(NIS_Drawer)& aDrawer = anIterD.Value();
     if (aDrawer.IsNull() == Standard_False) {
@@ -400,7 +400,7 @@ void NIS_InteractiveContext::RemoveAll ()
 
 void NIS_InteractiveContext::RebuildViews ()
 {
-  const Handle_NIS_Allocator aNewAlloc = compactObjects();
+  const Handle(NIS_Allocator) aNewAlloc = compactObjects();
 
   // Recalculate all DrawLists in all drawers
   markAllDrawersUpdated(myDrawers);
@@ -410,7 +410,7 @@ void NIS_InteractiveContext::RebuildViews ()
   if (aNewAlloc.IsNull() == Standard_False)
     myAllocator = aNewAlloc;
 
-  NCollection_List<Handle_NIS_View>::Iterator anIterV(myViews);
+  NCollection_List<Handle(NIS_View)>::Iterator anIterV(myViews);
   for (; anIterV.More(); anIterV.Next()) {
     const Handle(NIS_View)& aView = anIterV.Value();
     if (aView.IsNull() == Standard_False)
@@ -426,11 +426,11 @@ void NIS_InteractiveContext::RebuildViews ()
 
 void NIS_InteractiveContext::UpdateViews ()
 {
-  const Handle_NIS_Allocator aNewAlloc = compactObjects();
+  const Handle(NIS_Allocator) aNewAlloc = compactObjects();
   if (aNewAlloc.IsNull() == Standard_False)
     myAllocator = aNewAlloc;
 
-  NCollection_List<Handle_NIS_View>::Iterator anIterV(myViews);
+  NCollection_List<Handle(NIS_View)>::Iterator anIterV(myViews);
   for (; anIterV.More(); anIterV.Next()) {
     const Handle(NIS_View)& aView = anIterV.Value();
     if (aView.IsNull() == Standard_False)
@@ -444,7 +444,7 @@ void NIS_InteractiveContext::UpdateViews ()
 //=======================================================================
 
 Standard_Boolean NIS_InteractiveContext::SetSelected
-                        (const Handle_NIS_InteractiveObject& theObj,
+                        (const Handle(NIS_InteractiveObject)& theObj,
                          const Standard_Boolean              isSelected)
 {
   Standard_Boolean aResult (Standard_False);
@@ -473,7 +473,7 @@ Standard_Boolean NIS_InteractiveContext::SetSelected
 //=======================================================================
 
 Standard_Boolean NIS_InteractiveContext::ProcessSelection
-                        (const Handle_NIS_InteractiveObject& theObj,
+                        (const Handle(NIS_InteractiveObject)& theObj,
                          const Standard_Boolean              isMultiple)
 {
   Standard_Boolean aResult (Standard_False);
@@ -584,7 +584,7 @@ void NIS_InteractiveContext::ProcessSelection
 //=======================================================================
 
 Standard_Boolean NIS_InteractiveContext::IsSelected
-                                (const Handle_NIS_InteractiveObject& theObj)
+                                (const Handle(NIS_InteractiveObject)& theObj)
 {
   Standard_Boolean aResult (Standard_False);
   if (theObj.IsNull() == Standard_False) {
@@ -654,7 +654,7 @@ void NIS_InteractiveContext::SetSelected
 //=======================================================================
 
 Standard_Real NIS_InteractiveContext::selectObject
-                                (Handle_NIS_InteractiveObject&  theSel,
+                                (Handle(NIS_InteractiveObject)&  theSel,
                                  NCollection_List<DetectedEnt>& theDetected,
                                  const gp_Ax1&                  theAxis,
                                  const Standard_Real            theOver,
@@ -665,7 +665,7 @@ Standard_Real NIS_InteractiveContext::selectObject
   if (mySelectionMode != Mode_NoSelection || isOnlySel == Standard_False)
   {
     DetectedEnt anEnt;
-    NCollection_SparseArray <Handle_NIS_InteractiveObject>::ConstIterator
+    NCollection_SparseArray <Handle(NIS_InteractiveObject)>::ConstIterator
       anIter(myObjects);
     for (; anIter.More(); anIter.Next()) {
       const Handle(NIS_InteractiveObject)& anObj = anIter.Value();
@@ -747,7 +747,7 @@ Standard_Boolean NIS_InteractiveContext::selectObjects
 {
   Standard_Boolean aResult (Standard_False);
   if (mySelectionMode != Mode_NoSelection) {
-    NCollection_SparseArray <Handle_NIS_InteractiveObject>::ConstIterator
+    NCollection_SparseArray <Handle(NIS_InteractiveObject)>::ConstIterator
       anIter(myObjects);
     for (; anIter.More(); anIter.Next()) {
       const Handle(NIS_InteractiveObject)& anObj = anIter.Value();
@@ -789,7 +789,7 @@ Standard_Boolean NIS_InteractiveContext::selectObjects
   Standard_Boolean aResult (Standard_False);
 
   if (mySelectionMode != Mode_NoSelection) {
-    NCollection_SparseArray <Handle_NIS_InteractiveObject>::ConstIterator
+    NCollection_SparseArray <Handle(NIS_InteractiveObject)>::ConstIterator
       anIter(myObjects);
 
     for (; anIter.More(); anIter.Next()) {
@@ -892,9 +892,9 @@ void NIS_InteractiveContext::selectObj
 //purpose  : 
 //=======================================================================
 
-const Handle_NIS_Drawer& NIS_InteractiveContext::drawerForDisplay
-                                (const Handle_NIS_InteractiveObject& theObj,
-                                 const Handle_NIS_Drawer&            theDrawer)
+const Handle(NIS_Drawer)& NIS_InteractiveContext::drawerForDisplay
+                                (const Handle(NIS_InteractiveObject)& theObj,
+                                 const Handle(NIS_Drawer)&            theDrawer)
 {
   Handle(NIS_Drawer) aDrawer;
   if (theDrawer.IsNull() == Standard_False) {
@@ -917,7 +917,7 @@ const Handle_NIS_Drawer& NIS_InteractiveContext::drawerForDisplay
 //=======================================================================
 
 void NIS_InteractiveContext::objectForDisplay
-                                (Handle_NIS_InteractiveObject& theObj,
+                                (Handle(NIS_InteractiveObject)& theObj,
                                  const NIS_Drawer::DrawType    theDrawType)
 {
   if (theObj->ID() == 0) {
@@ -937,11 +937,11 @@ void NIS_InteractiveContext::objectForDisplay
 //purpose  : 
 //=======================================================================
 
-Handle_NIS_Allocator NIS_InteractiveContext::compactObjects()
+Handle(NIS_Allocator) NIS_InteractiveContext::compactObjects()
 {
   Handle(NIS_Allocator) aNewAlloc;
 
-  NCollection_List<Handle_NIS_View>::Iterator anIterV;
+  NCollection_List<Handle(NIS_View)>::Iterator anIterV;
   // Check if the memory used by objects has to be compacted.
   const Standard_Size nAllocated = myAllocator->NAllocated();
 
@@ -959,7 +959,7 @@ Handle_NIS_Allocator NIS_InteractiveContext::compactObjects()
       // Compact the memory: clone all objects to a new allocator, release
       // the old allocator instance.
       aNewAlloc = new NIS_Allocator;
-      NCollection_SparseArray<Handle_NIS_InteractiveObject>::Iterator
+      NCollection_SparseArray<Handle(NIS_InteractiveObject)>::Iterator
         anIter(myObjects);
       for (; anIter.More(); anIter.Next()) {
         if (anIter.Value().IsNull() == Standard_False) {
@@ -979,9 +979,9 @@ Handle_NIS_Allocator NIS_InteractiveContext::compactObjects()
 //purpose  : 
 //=======================================================================
 
-void markAllDrawersUpdated (const NCollection_Map<Handle_NIS_Drawer>& lstDrv)
+void markAllDrawersUpdated (const NCollection_Map<Handle(NIS_Drawer)>& lstDrv)
 {
-  NCollection_Map<Handle_NIS_Drawer>::Iterator anIterD (lstDrv);
+  NCollection_Map<Handle(NIS_Drawer)>::Iterator anIterD (lstDrv);
   for (; anIterD.More(); anIterD.Next()) {
     const Handle(NIS_Drawer)& aDrawer = anIterD.Value();
     if (aDrawer.IsNull() == Standard_False) {

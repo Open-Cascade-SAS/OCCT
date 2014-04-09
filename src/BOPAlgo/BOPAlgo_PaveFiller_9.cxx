@@ -78,13 +78,13 @@ typedef BOPCol_NCVector
 typedef BOPCol_TBBContextFunctor 
   <BOPAlgo_ShrunkRange,
   BOPAlgo_VectorOfShrunkRange,
-  Handle_BOPInt_Context, 
+  Handle(BOPInt_Context), 
   BOPInt_Context> BOPAlgo_ShrunkRangeFunctor;
 //
 typedef BOPCol_TBBContextCnt 
   <BOPAlgo_ShrunkRangeFunctor,
   BOPAlgo_VectorOfShrunkRange,
-  Handle_BOPInt_Context> BOPAlgo_ShrunkRangeCnt;
+  Handle(BOPInt_Context)> BOPAlgo_ShrunkRangeCnt;
 //
 //=======================================================================
 // function: FillShrunkData

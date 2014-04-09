@@ -42,7 +42,7 @@ Standard_Boolean AIS_AttributeFilter::IsOk(const Handle(SelectMgr_EntityOwner)& 
   Standard_Boolean okstat = Standard_True;
 
 //#ifndef DEB
-  Handle_SelectMgr_SelectableObject aSelectable = anObj->Selectable() ;
+  Handle(SelectMgr_SelectableObject) aSelectable = anObj->Selectable() ;
   if( hasC && ((Handle(AIS_InteractiveObject)&) aSelectable)->HasColor() )
 //#else
 //  if(hasC && ((Handle(AIS_InteractiveObject)&) anObj->Selectable())->HasColor())

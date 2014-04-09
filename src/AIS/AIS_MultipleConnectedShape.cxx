@@ -160,8 +160,8 @@ void AIS_MultipleConnectedShape::Compute(const Handle(Prs3d_Projector)& aProject
 //purpose  : 
 //=======================================================================
 
-void AIS_MultipleConnectedShape::Compute(const Handle_PrsMgr_PresentationManager3d& aPresentationManager3d,
-                                         const Handle_Prs3d_Presentation& aPresentation,
+void AIS_MultipleConnectedShape::Compute(const Handle(PrsMgr_PresentationManager3d)& aPresentationManager3d,
+                                         const Handle(Prs3d_Presentation)& aPresentation,
                                          const int anint)
 {
   AIS_MultipleConnectedInteractive::Compute( aPresentationManager3d , aPresentation , anint ) ;

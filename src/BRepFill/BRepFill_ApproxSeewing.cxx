@@ -202,7 +202,7 @@ Standard_Boolean BRepFill_ApproxSeewing::IsDone() const
 
 
 //=======================================================================
-//function : Handle_Geom_Curve&
+//function : Handle(Geom_Curve)&
 //purpose  : 
 //=======================================================================
 
@@ -215,7 +215,7 @@ const Handle(Geom_Curve)& BRepFill_ApproxSeewing::Curve() const
 
 
 //=======================================================================
-//function : Handle_Geom2d_Curve&
+//function : Handle(Geom2d_Curve)&
 //purpose  : 
 //=======================================================================
 
@@ -228,7 +228,7 @@ const Handle(Geom2d_Curve)& BRepFill_ApproxSeewing::CurveOnF1() const
 
 
 //=======================================================================
-//function : Handle_Geom2d_Curve&
+//function : Handle(Geom2d_Curve)&
 //purpose  : 
 //=======================================================================
 

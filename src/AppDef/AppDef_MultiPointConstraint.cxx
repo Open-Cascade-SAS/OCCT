@@ -24,10 +24,10 @@
 #include <TColgp_HArray1OfVec2d.hxx>
 
 
-#define tabTang (*(Handle_TColgp_HArray1OfVec*)&ttabTang)
-#define tabCurv (*(Handle_TColgp_HArray1OfVec*)&ttabCurv)
-#define tabTang2d (*(Handle_TColgp_HArray1OfVec2d*)&ttabTang2d)
-#define tabCurv2d (*(Handle_TColgp_HArray1OfVec2d*)&ttabCurv2d)
+#define tabTang (*(Handle(TColgp_HArray1OfVec)*)&ttabTang)
+#define tabCurv (*(Handle(TColgp_HArray1OfVec)*)&ttabCurv)
+#define tabTang2d (*(Handle(TColgp_HArray1OfVec2d)*)&ttabTang2d)
+#define tabCurv2d (*(Handle(TColgp_HArray1OfVec2d)*)&ttabCurv2d)
 
 
 

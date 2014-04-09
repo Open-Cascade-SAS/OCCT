@@ -22,7 +22,7 @@
 #include <Poly_CoherentLink.hxx>
 #include <NCollection_Vector.hxx>
 
-class Handle_Poly_CoherentTriangulation;
+class Handle(Poly_CoherentTriangulation);
 class Poly_CoherentTriangulation;
 template <class A> class NCollection_List;
 
@@ -108,7 +108,7 @@ class Poly_CoherentTriangulation : public Standard_Transient
   public:
     //! Constructor
     Standard_EXPORT IteratorOfTriangle
-                          (const Handle_Poly_CoherentTriangulation& theTri);
+                          (const Handle(Poly_CoherentTriangulation)& theTri);
     //! Make step
     Standard_EXPORT virtual void Next ();
   };
@@ -121,7 +121,7 @@ class Poly_CoherentTriangulation : public Standard_Transient
   public:
     //! Constructor
     Standard_EXPORT IteratorOfNode
-                        (const Handle_Poly_CoherentTriangulation& theTri);
+                        (const Handle(Poly_CoherentTriangulation)& theTri);
     //! Make step
     Standard_EXPORT virtual void Next ();
   };
@@ -134,7 +134,7 @@ class Poly_CoherentTriangulation : public Standard_Transient
   public:
     //! Constructor
     Standard_EXPORT IteratorOfLink
-                        (const Handle_Poly_CoherentTriangulation& theTri);
+                        (const Handle(Poly_CoherentTriangulation)& theTri);
     //! Make step
     Standard_EXPORT virtual void Next ();
   };
@@ -157,15 +157,15 @@ class Poly_CoherentTriangulation : public Standard_Transient
    * Empty constructor.
    */
   Standard_EXPORT Poly_CoherentTriangulation
-                (const Handle_NCollection_BaseAllocator& theAlloc = 0L);
+                (const Handle(NCollection_BaseAllocator)& theAlloc = 0L);
 
   /**
    * Constructor. It does not create Links, you should call ComputeLinks
    * following this constructor if you need these links.
    */
   Standard_EXPORT Poly_CoherentTriangulation
-                (const Handle_Poly_Triangulation&        theTriangulation,
-                 const Handle_NCollection_BaseAllocator& theAlloc = 0L);
+                (const Handle(Poly_Triangulation)&        theTriangulation,
+                 const Handle(NCollection_BaseAllocator)& theAlloc = 0L);
 
   /**
    * Destructor.
@@ -175,7 +175,7 @@ class Poly_CoherentTriangulation : public Standard_Transient
   /**
    * Create an instance of Poly_Triangulation from this object.
    */
-  Standard_EXPORT Handle_Poly_Triangulation
+  Standard_EXPORT Handle(Poly_Triangulation)
                                    GetTriangulation () const;
 
   /**
@@ -349,7 +349,7 @@ class Poly_CoherentTriangulation : public Standard_Transient
    * Query the allocator of elements, this allocator can be used for other
    * objects 
    */
-  inline const Handle_NCollection_BaseAllocator&
+  inline const Handle(NCollection_BaseAllocator)&
                                 Allocator       () const
   {
     return myAlloc;
@@ -357,8 +357,8 @@ class Poly_CoherentTriangulation : public Standard_Transient
   /**
    * Create a copy of this Triangulation, using the given allocator.
    */
-  Standard_EXPORT Handle_Poly_CoherentTriangulation  Clone
-                (const Handle_NCollection_BaseAllocator& theAlloc) const;
+  Standard_EXPORT Handle(Poly_CoherentTriangulation)  Clone
+                (const Handle(NCollection_BaseAllocator)& theAlloc) const;
 
   /**
    * Debugging output.
@@ -376,7 +376,7 @@ class Poly_CoherentTriangulation : public Standard_Transient
   NCollection_Vector<Poly_CoherentTriangle> myTriangles;
   NCollection_Vector<Poly_CoherentNode>     myNodes;
   NCollection_Vector<Poly_CoherentLink>     myLinks;
-  Handle_NCollection_BaseAllocator          myAlloc;
+  Handle(NCollection_BaseAllocator)          myAlloc;
   Standard_Real                             myDeflection;
 
  public:

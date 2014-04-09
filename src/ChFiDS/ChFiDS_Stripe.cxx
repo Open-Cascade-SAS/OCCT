@@ -86,7 +86,7 @@ void ChFiDS_Stripe::SetCurve(const Standard_Integer Index,
 
 
 //=======================================================================
-//function : Handle_Geom2d_Curve&
+//function : Handle(Geom2d_Curve)&
 //purpose  : 
 //=======================================================================
 

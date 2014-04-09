@@ -349,7 +349,7 @@ public:
 public:
 
   //! @return messenger instance
-  inline const Handle_Message_Messenger& Messenger() const
+  inline const Handle(Message_Messenger)& Messenger() const
   {
     return ::Message::DefaultMessenger();
   }

@@ -37,7 +37,7 @@ void Poly_CoherentTriPtr::Iterator::Next ()
 
 void Poly_CoherentTriPtr::Append
                         (const Poly_CoherentTriangle *           pTri,
-                         const Handle_NCollection_BaseAllocator& theAlloc)
+                         const Handle(NCollection_BaseAllocator)& theAlloc)
 {
   Handle(NCollection_BaseAllocator) anAlloc = theAlloc;
   if (theAlloc.IsNull())
@@ -56,7 +56,7 @@ void Poly_CoherentTriPtr::Append
 
 void Poly_CoherentTriPtr::Prepend
                         (const Poly_CoherentTriangle *           pTri,
-                         const Handle_NCollection_BaseAllocator& theAlloc)
+                         const Handle(NCollection_BaseAllocator)& theAlloc)
 {
   Handle(NCollection_BaseAllocator) anAlloc = theAlloc;
   if (theAlloc.IsNull())
@@ -75,7 +75,7 @@ void Poly_CoherentTriPtr::Prepend
 
 void Poly_CoherentTriPtr::Remove
                         (Poly_CoherentTriPtr *                   thePtr,
-                         const Handle_NCollection_BaseAllocator& theAlloc)
+                         const Handle(NCollection_BaseAllocator)& theAlloc)
 {
   Handle(NCollection_BaseAllocator) anAlloc = theAlloc;
   if (theAlloc.IsNull())
@@ -96,7 +96,7 @@ void Poly_CoherentTriPtr::Remove
 
 void Poly_CoherentTriPtr::RemoveList
                         (Poly_CoherentTriPtr *                   thePtr,
-                         const Handle_NCollection_BaseAllocator& theAlloc)
+                         const Handle(NCollection_BaseAllocator)& theAlloc)
 {
   Handle(NCollection_BaseAllocator) anAlloc = theAlloc;
   if (theAlloc.IsNull())

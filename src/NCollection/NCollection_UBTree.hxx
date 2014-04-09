@@ -449,7 +449,7 @@ class _HUBTREE : public _HPARENT                                        \
                                                                         \
   _HUBTREE () : myTree(new UBTree) {}                                   \
   /* Empty constructor */                                               \
-  _HUBTREE (const Handle_NCollection_BaseAllocator& theAlloc)           \
+  _HUBTREE (const Handle(NCollection_BaseAllocator)& theAlloc)           \
      : myTree(new UBTree(theAlloc)) {}                                  \
   /* Constructor */                                                     \
                                                                         \

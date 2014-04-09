@@ -167,7 +167,7 @@ Standard_Address  Standard_Type::Ancestors()const
 }
 
 //============================================================================
-Standard_Boolean  Standard_Type::SubType(const Handle_Standard_Type& anOther)const 
+Standard_Boolean  Standard_Type::SubType(const Handle(Standard_Type)& anOther)const 
 {
   // Among ancestors of the type of this, there is the type of anOther
   return anOther == this || 
