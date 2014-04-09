@@ -49,6 +49,9 @@ int yywrap()
 #include <stdlib.h>
 #include <io.h>
 
+// Avoid includion of unistd.h if parser is generated on Linux (flex 2.5.35)
+#define YY_NO_UNISTD_H
+
 // disable MSVC warnings in flex 2.89 code
 #pragma warning(disable:4131 4244 4273 4127)
 #endif
