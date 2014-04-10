@@ -758,30 +758,31 @@ void StdSelect_ViewerSelector3d::ComputeSensitivePrs(const Handle(SelectMgr_Sele
         //circle
         if (SubEnt->DynamicType()==STANDARD_TYPE(Select3D_SensitiveCircle))
         {
-          Handle(Select3D_SensitiveCircle) C = Handle(Select3D_SensitiveCircle)::DownCast(SubEnt);
-          Standard_Integer Lo, Up;
-          C->ArrayBounds (Lo, Up);
-          Standard_Integer II = Lo;
-          while (II <= Up - 2)
+          Handle(Select3D_SensitiveCircle) aCircle = Handle(Select3D_SensitiveCircle)::DownCast(SubEnt);
+          Standard_Integer aFrom, aTo;
+          aCircle->ArrayBounds (aFrom, aTo);
+          aTo -= 2;
+          for (Standard_Integer aPntIter = aFrom; aPntIter <= aTo; aPntIter += 2)
           {
-            gp_Pnt ThePts[3] =
+            gp_Pnt aPnts[3] =
             {
-              gp_Pnt (C->GetPoint3d (II).XYZ()),
-              gp_Pnt (C->GetPoint3d (++II).XYZ()),
-              gp_Pnt (C->GetPoint3d (++II).XYZ())
+              gp_Pnt (aCircle->GetPoint3d (aPntIter + 0).XYZ()),
+              gp_Pnt (aCircle->GetPoint3d (aPntIter + 1).XYZ()),
+              gp_Pnt (aCircle->GetPoint3d (aPntIter + 2).XYZ())
             };
 
             if (hasloc)
             {
-              for (Standard_Integer jj = 0; jj <= 2; jj++)
-                ThePts[jj].Transform (theloc.Transformation());
+              aPnts[0].Transform (theloc.Transformation());
+              aPnts[1].Transform (theloc.Transformation());
+              aPnts[2].Transform (theloc.Transformation());
             }
 
-            aSeqBnds.Append(4);
-            aSeqLines.Append(ThePts[0]);
-            aSeqLines.Append(ThePts[1]);
-            aSeqLines.Append(ThePts[2]);
-            aSeqLines.Append(ThePts[0]);
+            aSeqBnds.Append (4);
+            aSeqLines.Append (aPnts[0]);
+            aSeqLines.Append (aPnts[1]);
+            aSeqLines.Append (aPnts[2]);
+            aSeqLines.Append (aPnts[0]);
           }
         }
 
@@ -825,30 +826,31 @@ void StdSelect_ViewerSelector3d::ComputeSensitivePrs(const Handle(SelectMgr_Sele
     //=============
     else if (Ent->DynamicType()==STANDARD_TYPE(Select3D_SensitiveCircle))
     {
-      Handle(Select3D_SensitiveCircle) C = Handle(Select3D_SensitiveCircle)::DownCast(Ent);
-      Standard_Integer Lo, Up;
-      C->ArrayBounds (Lo, Up);
-      Standard_Integer II = Lo;
-      while (II <= Up - 2)
+      Handle(Select3D_SensitiveCircle) aCircle = Handle(Select3D_SensitiveCircle)::DownCast(Ent);
+      Standard_Integer aFrom, aTo;
+      aCircle->ArrayBounds (aFrom, aTo);
+      aTo -= 2;
+      for (Standard_Integer aPntIter = aFrom; aPntIter <= aTo; aPntIter += 2)
       {
-        gp_Pnt ThePts[3] =
+        gp_Pnt aPnts[3] =
         {
-          gp_Pnt (C->GetPoint3d (II).XYZ()),
-          gp_Pnt (C->GetPoint3d (++II).XYZ()),
-          gp_Pnt (C->GetPoint3d (++II).XYZ())
+          gp_Pnt (aCircle->GetPoint3d (aPntIter + 0).XYZ()),
+          gp_Pnt (aCircle->GetPoint3d (aPntIter + 1).XYZ()),
+          gp_Pnt (aCircle->GetPoint3d (aPntIter + 2).XYZ())
         };
 
         if (hasloc)
         {
-          for (Standard_Integer jj = 0; jj <= 2; jj++)
-            ThePts[jj].Transform (theloc.Transformation());
+          aPnts[0].Transform (theloc.Transformation());
+          aPnts[1].Transform (theloc.Transformation());
+          aPnts[2].Transform (theloc.Transformation());
         }
 
-        aSeqBnds.Append(4);
-        aSeqLines.Append(ThePts[0]);
-        aSeqLines.Append(ThePts[1]);
-        aSeqLines.Append(ThePts[2]);
-        aSeqLines.Append(ThePts[0]);
+        aSeqBnds.Append (4);
+        aSeqLines.Append (aPnts[0]);
+        aSeqLines.Append (aPnts[1]);
+        aSeqLines.Append (aPnts[2]);
+        aSeqLines.Append (aPnts[0]);
       }
     }
     //==============
