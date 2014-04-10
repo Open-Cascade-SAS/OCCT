@@ -11,3 +11,5 @@ if { [catch { OCC361 D }] } {
     puts "OCC361: Error"
 }
 
+Close D
+

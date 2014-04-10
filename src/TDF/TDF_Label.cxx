@@ -550,7 +550,12 @@ void TDF_Label::AddToNode (const TDF_LabelNodePtr& toNode,
 
   anAttribute->myTransaction = toNode->Data()->Transaction();  /// myData->Transaction();
   anAttribute->mySavedTransaction = 0;
+
+  //append to the end of the attribute list
   dummyAtt.Nullify();
+  for (TDF_AttributeIterator itr (toNode); itr.More(); itr.Next())
+    dummyAtt = itr.Value();
+
   toNode->AddAttribute(dummyAtt,anAttribute);
   toNode->AttributesModified(anAttribute->myTransaction != 0);
   //if (myData->NotUndoMode()) anAttribute->AfterAddition();  

@@ -2079,6 +2079,39 @@ static Standard_Integer OCC24565 (Draw_Interpretor& di, Standard_Integer argc, c
   return 0;
 }
 
+#include <AppStdL_Application.hxx>
+#include <TDocStd_Application.hxx>
+#include <TDataStd_Integer.hxx>
+#include <TDF_AttributeIterator.hxx>
+//=======================================================================
+//function : OCC24755
+//purpose  : 
+//=======================================================================
+static Standard_Integer OCC24755 (Draw_Interpretor& di, Standard_Integer n, const char** a)
+{
+  if (n != 1)
+  {
+    std::cout << "Usage : " << a[0] << "\n";
+    return 1;
+  }
+
+  Handle(TDocStd_Application) anApp = new AppStdL_Application;
+  Handle(TDocStd_Document) aDoc;
+  anApp->NewDocument ("MDTV-Standard", aDoc);
+  TDF_Label aLab = aDoc->Main();
+  TDataStd_Integer::Set (aLab, 0);
+  TDataStd_Name::Set (aLab, "test");
+
+  TDF_AttributeIterator i (aLab);
+  Handle(TDF_Attribute) anAttr = i.Value();
+  QCOMPARE (anAttr->IsKind (STANDARD_TYPE (TDataStd_Integer)), Standard_True);
+  i.Next();
+  anAttr = i.Value();
+  QCOMPARE (anAttr->IsKind (STANDARD_TYPE (TDataStd_Name)), Standard_True);
+
+  return 0;
+}
+
 void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -2118,5 +2151,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC24622", "OCC24622 texture={1D|2D}\n Tests sourcing of 1D/2D pixmaps for AIS_TexturedShape", __FILE__, OCC24622, group);
   theCommands.Add ("OCC24667", "OCC24667 result Wire_spine Profile [Mode [Approx]], no args to get help", __FILE__, OCC24667, group);
   theCommands.Add ("OCC24565", "OCC24565 FileNameIGS FileNameSTOR", __FILE__, OCC24565, group);
+  theCommands.Add ("OCC24755", "OCC24755", __FILE__, OCC24755, group);
   return;
 }

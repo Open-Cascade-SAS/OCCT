@@ -486,7 +486,7 @@ static Standard_Integer OCC361bug (Draw_Interpretor& di, Standard_Integer nb, co
   TopoDS_Shape aTBox = aBox.Shape();
   aTBox.Orientation(TopAbs_FORWARD);
 
-  TDF_Label aTestLabel = D->GetData()->Root();
+  TDF_Label aTestLabel = D->Main();
   
   TNaming_Builder aBuilder(aTestLabel);
   aBuilder.Generated(aTBox);

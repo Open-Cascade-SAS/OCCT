@@ -1051,15 +1051,8 @@ static Standard_Integer testDoc (Draw_Interpretor&,
 
   TPrsStd_AISViewer::Update(aLab);
   aContext->Display(aTriShape, Standard_True);
-  Handle(TDocStd_Owner) owner;
-  if (aD1->Main().Root().FindAttribute(TDocStd_Owner::GetID(), owner))
-  {
-    Handle_TDocStd_Document empty;
-    owner->SetDocument(empty);
-  }
-  aContext.Nullify();
+  aD1->BeforeClose();
   aD1->Close();
-  aD1.Nullify();
   return 0;
 }
 
