@@ -9,12 +9,12 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="744.09448819"
-   height="1052.3622047"
+   width="465.60214"
+   height="182.46281"
    id="svg2"
    version="1.1"
    inkscape:version="0.48.4 r9939"
-   sodipodi:docname="ocaf.svg">
+   sodipodi:docname="tutorial_image003.svg">
   <defs
      id="defs4">
     <clipPath
@@ -45,7 +45,7 @@
          height="22.583204"
          width="33.706238"
          y="12.49604"
-         x="316.59788" />
+         x="316.59787" />
     </clipPath>
     <clipPath
        id="clipEmfPath4"
@@ -55,7 +55,7 @@
          height="22.583204"
          width="33.856712"
          y="193.16167"
-         x="469.93116" />
+         x="469.93115" />
     </clipPath>
     <clipPath
        id="clipEmfPath5"
@@ -64,7 +64,7 @@
          id="rect3013"
          height="22.583204"
          width="33.856712"
-         y="97.258332"
+         y="97.258331"
          x="382.35513" />
     </clipPath>
     <clipPath
@@ -72,40 +72,40 @@
        clipPathUnits="userSpaceOnUse">
       <rect
          id="rect3132"
-         height="44.154422"
+         height="44.154423"
          width="125.37695"
          y="131.71234"
-         x="271.49972" />
+         x="271.49973" />
     </clipPath>
     <clipPath
        id="clipEmfPath2-7"
        clipPathUnits="userSpaceOnUse">
       <rect
          id="rect3135"
-         height="44.154422"
+         height="44.154423"
          width="125.37695"
          y="212.8123"
-         x="271.49972" />
+         x="271.49973" />
     </clipPath>
     <clipPath
        id="clipEmfPath3-4"
        clipPathUnits="userSpaceOnUse">
       <rect
          id="rect3138"
-         height="44.154422"
+         height="44.154423"
          width="107.3371"
          y="212.8123"
-         x="433.85835" />
+         x="433.85834" />
     </clipPath>
     <clipPath
        id="clipEmfPath4-0"
        clipPathUnits="userSpaceOnUse">
       <rect
          id="rect3141"
-         height="17.121102"
-         width="549.31338"
+         height="17.121101"
+         width="549.31335"
          y="293.91226"
-         x="0.90199242" />
+         x="0.90199244" />
     </clipPath>
     <clipPath
        id="clipEmfPath5-9"
@@ -113,8 +113,8 @@
       <rect
          id="rect3144"
          height="18.022213"
-         width="333.7372"
-         y="338.51723"
+         width="333.73721"
+         y="338.51724"
          x="72.61039" />
     </clipPath>
     <clipPath
@@ -123,8 +123,8 @@
       <rect
          id="rect3147"
          height="18.022213"
-         width="342.75712"
-         y="374.56166"
+         width="342.75711"
+         y="374.56165"
          x="72.61039" />
     </clipPath>
     <clipPath
@@ -166,16 +166,20 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1"
-     inkscape:cx="375"
-     inkscape:cy="845.71429"
+     inkscape:cx="362.08678"
+     inkscape:cy="-11.625728"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
-     inkscape:window-width="1065"
-     inkscape:window-height="932"
-     inkscape:window-x="113"
-     inkscape:window-y="14"
-     inkscape:window-maximized="0" />
+     inkscape:window-width="1920"
+     inkscape:window-height="1028"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     fit-margin-top="1"
+     fit-margin-left="1"
+     fit-margin-right="1"
+     fit-margin-bottom="1" />
   <metadata
      id="metadata7">
     <rdf:RDF>
@@ -184,14 +188,15 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
   <g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
-     id="layer1">
+     id="layer1"
+     transform="translate(-12.913221,-12.559351)">
     <g
        id="g2989" />
     <g

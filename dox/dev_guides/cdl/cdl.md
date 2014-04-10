@@ -1,4 +1,4 @@
- Component Definition Language (CDL)  {#dev_guides__cdl}
+ Component Definition Language (CDL)  {#occt_dev_guides__cdl}
 ==============================
 
 @tableofcontents

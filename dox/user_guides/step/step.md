@@ -1,4 +1,4 @@
-STEP processor  {#user_guides__step}
+STEP processor  {#occt_user_guides__step}
 ========================
 
 @tableofcontents
@@ -395,9 +395,9 @@ between two translation operations, if you do not, the results from the next tra
 * *TopoDS_Shape shape = reader.Shape(rank)* gets the result identified by its rank, where rank is an integer between 1 and NbShapes;
 * *TopoDS_Shape shape = reader.Shape()* gets the first result of translation; 
 * *TopoDS_Shape shape = reader.OneShape()* - gets all results in a single shape which is:
-		* a null shape if there are no results, 
-		* in case of a single result, a shape that is specific to that result, 
-		* a compound that lists the results if there are several results. 
+  * a null shape if there are no results, 
+  * in case of a single result, a shape that is specific to that result, 
+  * a compound that lists the results if there are several results. 
 
 <h5>Clearing the accumulation of results</h5>
 
@@ -448,8 +448,8 @@ Standard_Integer nbtrans = reader.TransferList (list);
 ~~~~~
 Standard_Integer i,nb = list->Length();
 for (i = 1; i <= nb; i ++) {
-	Handle(Standard_Transient) ent = list->Value(i);
-	Standard_Boolean OK = reader.TransferEntity (ent);
+ Handle(Standard_Transient) ent = list->Value(i);
+ Standard_Boolean OK = reader.TransferEntity (ent);
 }
 ~~~~~
 
@@ -498,100 +498,100 @@ Tables given in this paragraph show the mapping of STEP entities to OCCT objects
 @subsubsection occt_step_2_4_1 Assembly structure representation entities
 Not all entities defining the assembly structure in the STEP file are translated to OCCT shapes, but they are used to identify the relationships between assemblies and their components. Since the graph of ‘natural’ dependencies of entities based on direct references between them does not include the references from assemblies to their components, these dependencies are introduced in addition to the former ones. This is made basing on the analysis of the following entities describing the structure of the assembly. 
 
-| STEP entity type	| CASCADE shape	| Comments |
+| STEP entity type | CASCADE shape | Comments |
 | :--------------- | :-------------- | :------ |
-| product_definition	|  A *TopoDS_Compound* for assemblies, a CASCADE shape corresponding to the component type of  for components, |	Each assembly or component has its own *product_definition*. It is used as a starting point for translation when *read.step.product.mode* is ON. |
-| product_definition_shape	| | This entity provides a link between *product_definition* and corresponding *shape_definition_representation*,  or between *next_assembly_usage_occurence* and corresponding *context_dependent_shape_representation*. | 
+| product_definition |  A *TopoDS_Compound* for assemblies, a CASCADE shape corresponding to the component type of  for components, | Each assembly or component has its own *product_definition*. It is used as a starting point for translation when *read.step.product.mode* is ON. |
+| product_definition_shape | | This entity provides a link between *product_definition* and corresponding *shape_definition_representation*,  or between *next_assembly_usage_occurence* and corresponding *context_dependent_shape_representation*. | 
 | shape_definition_representation | A TopoDS_Compound for assemblies, a CASCADE shape corresponding to the component type for components. | Each assembly or component has its own *shape_definition_representation*. The graph of dependencies is modified in such a way that *shape_definition_representations* of all components of the assembly are referred by the *shape_definition_representation* of the assembly.  |
-| next_assembly_usage_occurence	| |	This entity defines a relationship between the assembly and its component. It is used to introduce (in the dependencies graph) the links between *shape_definition_representation* of the assembly and *shape_definition_representations* and *context_dependent_shape_representations* of all its components. |
-| mapped_item |	TopoDS_Shape	| This entity defines a mapping of the assembly component into the *shape_representation* of the assembly. The result of translation is a CASCADE shape translated from the component, to which transformation defined by the *mapped_item* is applied. |
+| next_assembly_usage_occurence | | This entity defines a relationship between the assembly and its component. It is used to introduce (in the dependencies graph) the links between *shape_definition_representation* of the assembly and *shape_definition_representations* and *context_dependent_shape_representations* of all its components. |
+| mapped_item | TopoDS_Shape | This entity defines a mapping of the assembly component into the *shape_representation* of the assembly. The result of translation is a CASCADE shape translated from the component, to which transformation defined by the *mapped_item* is applied. |
 | context_dependent_shape_representation | TopoDS_Shape | This entity is associated with the *next_assembly_usage_occurence* entity and defines a placement of the component in the assembly. The graph of dependencies is modified so that each context_dependent_shape_representation* is referred by shape_definition_representation of the corresponding assembly. |
-| shape_representation_relationship_with_transformation	| |	This entity is associated with *context_dependent_shape_representation* and defines a transformation necessary to apply to the component in order to locate it in its place in the assembly. |
-| item_defined_transformation	| | This entity defines a transformation operator used by *shape_representation_relationship_with_transformation* or *mapped_item* entity |
-| cartesian_transformation_operator	| |	This entity defines a transformation operator used by *shape_representation_relationship_with_transformation* or *mapped_item* entity |
+| shape_representation_relationship_with_transformation | | This entity is associated with *context_dependent_shape_representation* and defines a transformation necessary to apply to the component in order to locate it in its place in the assembly. |
+| item_defined_transformation | | This entity defines a transformation operator used by *shape_representation_relationship_with_transformation* or *mapped_item* entity |
+| cartesian_transformation_operator | | This entity defines a transformation operator used by *shape_representation_relationship_with_transformation* or *mapped_item* entity |
 
 @subsubsection occt_step_2_4_2 Models
-| STEP entity type | CASCADE shape	| Comments |
+| STEP entity type | CASCADE shape | Comments |
 | :-------------- | :----------- | :---------- |
-| Solid Models	| | |	
-| brep_with_voids	| TopoDS_Solid	| |
-| faceted_brep	| TopoDS_Solid	| |
-| manifold_solid_brep	| TopoDS_Solid	| |
-| Surface Models	| | |	
-| shell_based_surface_model	 | TopoDS_Compound | *shell_based_surface_model* is translated into one or more *TopoDS_Shell* grouped in a *TopoDS_Compound* |
-| geometric_set	| TopoDS_Compound	| *TopoDS_Compound* contains only *TopoDS_Faces*, *TopoDS_Wires*, *TopoDS_Edges* and/or *TopoDS_Vertices*.
-| Wireframe Models	| | |	
-| geometric_curve_set |	TopoDS_Compound	| *TopoDS_Compound* contains only *TopoDS_Wires*, *TopoDS_Edges* and/or *TopoDS_Vertices*.
+| Solid Models | | | 
+| brep_with_voids | TopoDS_Solid | |
+| faceted_brep | TopoDS_Solid | |
+| manifold_solid_brep | TopoDS_Solid | |
+| Surface Models | | | 
+| shell_based_surface_model  | TopoDS_Compound | *shell_based_surface_model* is translated into one or more *TopoDS_Shell* grouped in a *TopoDS_Compound* |
+| geometric_set | TopoDS_Compound | *TopoDS_Compound* contains only *TopoDS_Faces*, *TopoDS_Wires*, *TopoDS_Edges* and/or *TopoDS_Vertices*.
+| Wireframe Models | | | 
+| geometric_curve_set | TopoDS_Compound | *TopoDS_Compound* contains only *TopoDS_Wires*, *TopoDS_Edges* and/or *TopoDS_Vertices*.
 
 @subsubsection occt_step_2_4_3 Topological entities
 
-| Topology | STEP entity type | CASCADE shape	| Comments |
+| Topology | STEP entity type | CASCADE shape | Comments |
 | :------- | :--------- | :-------- | :----- |
-| Vertices	| vertex_point	| TopoDS_Vertex	| |
-| Edges	| oriented_edge	| TopoDS_Edge	| |
-| | edge_curve	| TopoDS_Edge	| |
-| Loops	| face_bound | TopoDS_Wire	| |
-| | face_outer_bound | TopoDS_Wire	| | 
-| | edge_loop | TopoDS_Wire	| |
-| | poly_loop | TopoDS_Wire	| Each segment of *poly_loop* is translated into *TopoDS_Edge* with support of *Geom_Line* |
+| Vertices | vertex_point | TopoDS_Vertex | |
+| Edges | oriented_edge | TopoDS_Edge | |
+| | edge_curve | TopoDS_Edge | |
+| Loops | face_bound | TopoDS_Wire | |
+| | face_outer_bound | TopoDS_Wire | | 
+| | edge_loop | TopoDS_Wire | |
+| | poly_loop | TopoDS_Wire | Each segment of *poly_loop* is translated into *TopoDS_Edge* with support of *Geom_Line* |
 | | vertex_loop | TopoDS_Wire | Resulting *TopoDS_Wire* contains only one degenerated *TopoDS_Edge* |
-| Faces	| face_surface	| TopoDS_Face | |
-| | advanced_face | TopoDS_Face	| |
+| Faces | face_surface | TopoDS_Face | |
+| | advanced_face | TopoDS_Face | |
 | Shells | connected_face_set | TopoDS_Shell | |
-| | oriented_closed_shell |	TopoDS_Shell | |
-| | closed_shell | TopoDS_Shell	| |
+| | oriented_closed_shell | TopoDS_Shell | |
+| | closed_shell | TopoDS_Shell | |
 | | open_shell | TopoDS_Shell | |
 
 @subsubsection occt_step_2_4_4 Geometrical entities
 3D STEP entities are translated into geometrical objects from the *Geom* package while 2D entities are translated into objects from the *Geom2d* package. 
-| Geometry | STEP entity type	| CASCADE object	| Comments |
+| Geometry | STEP entity type | CASCADE object | Comments |
 | :------ | :-------- | :------ | :-------- |
-| Points | cartesian_point	| Geom_CartesianPoint, Geom2d_CartesianPoint	| |
-| Directions | direction | Geom_Direction, Geom2d_Direction	| |
-| Vectors | vector | Geom_VectorWithMagnitude, Geom2d_VectorWithMagnitude | |	
-| Placements | axis1_placement | Geom_Axis1Placement | | 	
+| Points | cartesian_point | Geom_CartesianPoint, Geom2d_CartesianPoint | |
+| Directions | direction | Geom_Direction, Geom2d_Direction | |
+| Vectors | vector | Geom_VectorWithMagnitude, Geom2d_VectorWithMagnitude | | 
+| Placements | axis1_placement | Geom_Axis1Placement | |  
 | | axis2_placement_2d | Geom2d_AxisPlacement | |
-| | axis2_placement_3d |	Geom_Axis2Placement	| | 
-| Curves | circle	| Geom_Circle, Geom2d_Circle, Geom2d_BsplineCurve |	Circle is translated into *Geom2d_BSplineCurve* when it references the surface of revolution (spherical surface, conical surface, etc.) |
-| | ellipse	| Geom_Ellipse, Geom2d_Ellipse, Geom2d_BsplineCurve	| Ellipse is translated into *Geom2d_BSplineCurve* when it references the surface of revolution (spherical surface, conical surface, etc.) |
-| | hyperbola	| Geom_Hyperbola, Geom2d_Hyperbola | |	
-| | line |	Geom_Line, Geom2d_Line	| | 
-| | parabola | Geom_Parabola, Geom2d_Parabola | | 	
-| | pcurve	 | Geom2d_Curve	| Pcurve in edge | 
-| | curve_replica |	Geom_Curve or Geom2d_Curve	| Depending on the type of the base curve |
-| | offset_curve_3d	| Geom_OffsetCurve	| | 
-| | trimmed_curve	| Geom_TrimmedCurve	or Geom2d_BsplineCurve | Only trimmed_curves trimmed by parameters are translated. All *trimmed_curves* are converted to *Geom2d_BSplineCurve*. |
-| | b_spline_curve | Geom_BsplineCurve or Geom2d_BsplineCurve | | 	
-| | b_spline_curve_with_knots | Geom_BsplineCurve	or Geom2d_BsplineCurve	| |
-| | bezier_curve | Geom_BsplineCurve or Geom2d_BsplineCurve	| | 
-| | rational_b_spline_curve	| Geom_BsplineCurve	or 	Geom2d_BsplineCurve	| | 
-| | uniform_curve	| Geom_BsplineCurve	or Geom2d_BsplineCurve	| | 
-| | quasi_ uniform_curve | Geom_BsplineCurve or Geom2d_BsplineCurve	| |
-| | surface_curve	| TopoDS_Edge	| *surface_curve* defines geometrical support of an edge and its pcurves. |
-| | seam_curve	| TopoDS_Edge | The same as *surface_curve*  |
-| | composite_curve_segment	| TopoDS_Edge | as a segment of *composite_curve* |
-| | composite_curve	| TopoDS_Wire | | 	
-| | composite_curve_on_surface	| TopoDS_Wire | |	
-| | boundary_curve | 	TopoDS_Wire	| | 
-| Surfaces | b_spline_surface	| Geom_BsplineSurface	| |
-| |  b_spline_surface_with_knots	| Geom_BsplineSurface	| | 
-| | bezier_surface | Geom_BSplineSurface	| | 
-| | conical_surface	| Geom_ConicalSurface	| | 
-| | cylindrical_surface	| Geom_CylindricalSurface	 | |
-| | offset_surface | Geom_OffsetSurface	| |
-| | surface_replica	| Geom_Surface | Depending on the type of basis surface |
-| | plane | Geom_Plane	| |
-| | rational_b_spline_surface | Geom_BSplineSurface	| |
-| | rectangular_trimmed_surface	| Geom_RectangularTrimmedSurface	| | 
+| | axis2_placement_3d | Geom_Axis2Placement | | 
+| Curves | circle | Geom_Circle, Geom2d_Circle, Geom2d_BsplineCurve | Circle is translated into *Geom2d_BSplineCurve* when it references the surface of revolution (spherical surface, conical surface, etc.) |
+| | ellipse | Geom_Ellipse, Geom2d_Ellipse, Geom2d_BsplineCurve | Ellipse is translated into *Geom2d_BSplineCurve* when it references the surface of revolution (spherical surface, conical surface, etc.) |
+| | hyperbola | Geom_Hyperbola, Geom2d_Hyperbola | | 
+| | line | Geom_Line, Geom2d_Line | | 
+| | parabola | Geom_Parabola, Geom2d_Parabola | |  
+| | pcurve  | Geom2d_Curve | Pcurve in edge | 
+| | curve_replica | Geom_Curve or Geom2d_Curve | Depending on the type of the base curve |
+| | offset_curve_3d | Geom_OffsetCurve | | 
+| | trimmed_curve | Geom_TrimmedCurve or Geom2d_BsplineCurve | Only trimmed_curves trimmed by parameters are translated. All *trimmed_curves* are converted to *Geom2d_BSplineCurve*. |
+| | b_spline_curve | Geom_BsplineCurve or Geom2d_BsplineCurve | |  
+| | b_spline_curve_with_knots | Geom_BsplineCurve or Geom2d_BsplineCurve | |
+| | bezier_curve | Geom_BsplineCurve or Geom2d_BsplineCurve | | 
+| | rational_b_spline_curve | Geom_BsplineCurve or  Geom2d_BsplineCurve | | 
+| | uniform_curve | Geom_BsplineCurve or Geom2d_BsplineCurve | | 
+| | quasi_ uniform_curve | Geom_BsplineCurve or Geom2d_BsplineCurve | |
+| | surface_curve | TopoDS_Edge | *surface_curve* defines geometrical support of an edge and its pcurves. |
+| | seam_curve | TopoDS_Edge | The same as *surface_curve*  |
+| | composite_curve_segment | TopoDS_Edge | as a segment of *composite_curve* |
+| | composite_curve | TopoDS_Wire | |  
+| | composite_curve_on_surface | TopoDS_Wire | | 
+| | boundary_curve |  TopoDS_Wire | | 
+| Surfaces | b_spline_surface | Geom_BsplineSurface | |
+| |  b_spline_surface_with_knots | Geom_BsplineSurface | | 
+| | bezier_surface | Geom_BSplineSurface | | 
+| | conical_surface | Geom_ConicalSurface | | 
+| | cylindrical_surface | Geom_CylindricalSurface  | |
+| | offset_surface | Geom_OffsetSurface | |
+| | surface_replica | Geom_Surface | Depending on the type of basis surface |
+| | plane | Geom_Plane | |
+| | rational_b_spline_surface | Geom_BSplineSurface | |
+| | rectangular_trimmed_surface | Geom_RectangularTrimmedSurface | | 
 | | spherical_surface | Geom_SphericalSurface | |
-| | surface_of_linear_extrusion	| Geom_SurfaceOfLinearExtrusion	 | |
-| | surface_of_revolution | Geom_SurfaceOfRevolution	| |
-| | toroidal_surface | Geom_ToroidalSurface	| | 
-| | degenerate_toroidal_surface	| Geom_ToroidalSurface	| |
-| | uniform_surface | Geom_BSplineSurface	| |
-| | quasi_uniform_surface | Geom_BSplineSurface	| | 
-| | rectangular_composite_surface	| TopoDS_Compound | Contains *TopoDS_Faces* |
-| | curve_bounded_surface | TopoDS_Face	| |
+| | surface_of_linear_extrusion | Geom_SurfaceOfLinearExtrusion  | |
+| | surface_of_revolution | Geom_SurfaceOfRevolution | |
+| | toroidal_surface | Geom_ToroidalSurface | | 
+| | degenerate_toroidal_surface | Geom_ToroidalSurface | |
+| | uniform_surface | Geom_BSplineSurface | |
+| | quasi_uniform_surface | Geom_BSplineSurface | | 
+| | rectangular_composite_surface | TopoDS_Compound | Contains *TopoDS_Faces* |
+| | curve_bounded_surface | TopoDS_Face | |
 
 
 @subsection occt_step_2_5 Tolerance management
@@ -605,7 +605,7 @@ During the STEP = OCCT translation several parameters are used as tolerances and
 * User - defined variable *read.precision.val* is used instead of uncertainty from a STEP file when parameter *read.precision.mode* is 1 (User).
  
 <h4>2D (parametric) tolerances</h4>
-* Package method *Precision::PConfusion()* is a value of *0.01\*Precision::Confusion()*. It is used to compare parametric bounds of curves. 
+* Package method *Precision\::PConfusion()* is a value of *0.01\*Precision\::Confusion()*. It is used to compare parametric bounds of curves. 
 * Methods *UResolution* and *VResolution (tolerance3d)* of the class *GeomAdaptor_Surface* or *BRepAdaptor_Surface* - return tolerance in parametric space of a surface computed from 3d tolerance. When one tolerance value is to be used for both U and V parametric directions, the maximum or the minimum value of *UResolution* and *VResolution* is used. 
 * Methods *Resolution (tolerance3d)* of the class *GeomAdaptor_Curve* or *BRepAdaptor_Curve* return tolerance in parametric space of a curve computed from 3d tolerance. 
 
@@ -626,15 +626,15 @@ If the starting STEP entity is a geometric_curve_set all the edges and vertices 
 If the starting STEP entity is not a geometric_curve_set the sub-shapes of the resulting shape have the following tolerance: 
   * all the faces are constructed with *Precision::Confusion()*, 
   * edges are constructed with *Precision::Confusion()*. It can be modified later by: 
-		* *ShapeFix::SameParameter()* - the tolerance of edge shows real deviation of the 3D curve and pcurves. 
-		* *ShapeFix_Wire::FixSelfIntersection()* if a pcurve of a self-intersecting edge is modified. 
+  * *ShapeFix::SameParameter()* - the tolerance of edge shows real deviation of the 3D curve and pcurves. 
+  * *ShapeFix_Wire::FixSelfIntersection()* if a pcurve of a self-intersecting edge is modified. 
   * vertices are constructed with Precision::Confusion(). It can be modified later by: 
-		*StepToTopoDS_TranslateEdge* 
-		*ShapeFix::SameParameter()* 
-		*ShapeFix_Wire::FixSelfIntersection()*  
-		*ShapeFix_Wire::FixLacking()* 
-		*ShapeFix_Wire::Connected()*
-		
+  *StepToTopoDS_TranslateEdge* 
+  *ShapeFix::SameParameter()* 
+  *ShapeFix_Wire::FixSelfIntersection()*  
+  *ShapeFix_Wire::FixLacking()* 
+  *ShapeFix_Wire::Connected()*
+  
 So, the final tolerance of sub-shapes shows the real local geometry of shapes (distance between vertices of adjacent edges, deviation of a 3D curve of an edge and its parametric curves and so on) and may be less or greater than the basic value of tolerance in the STEP processor. 
 
 <h4>Translating into Geometry</h4>
@@ -874,16 +874,16 @@ An OCCT shape can be translated to STEP using one of the following models (shape
   
 The enumeration **TEPControl_StepModelType* is intended to define a particular transferring model. 
 The following values of enumeration are allowed: 
-* *STEPControl_AsIs*	Translator selects the resulting representation automatically, according to the type of CASCADE shape to translate it in its highest possible model;
-* *STEPControl_ManifoldSolidBrep*	resulting entity is manifold_solid_brep or brep_with_voids
-* *STEPControl_FacetedBrep*	resulting entity is *faceted_brep* or   *faceted_brep_and_brep_with_voids* Note that only planar-face shapes with linear edges can be written;
+* *STEPControl_AsIs* Translator selects the resulting representation automatically, according to the type of CASCADE shape to translate it in its highest possible model;
+* *STEPControl_ManifoldSolidBrep* resulting entity is manifold_solid_brep or brep_with_voids
+* *STEPControl_FacetedBrep* resulting entity is *faceted_brep* or   *faceted_brep_and_brep_with_voids* Note that only planar-face shapes with linear edges can be written;
 * *STEPControl_ShellBasedSurfaceModel* resulting entity is *shell_based_surface_model*;
-* *STEPControl_GeometricCurveSet*	resulting entity is *geometric_curve_set*;
+* *STEPControl_GeometricCurveSet* resulting entity is *geometric_curve_set*;
 
 The following list shows which shapes can be translated in which mode: 
-* *STEP214Control_AsIs*	- any OCCT shape
-* *STEP214Control_ManifoldSolidBrep* -	*TopoDS_Solid, TopoDS_Shell, TopoDS_Compound* (if it contains *TopoDS_Solids* and *TopoDS_Shells*.
-* *STEP214Control_FacetedBrep* -	*TopoDS_Solid* or *TopoDS_Compound* containing *TopoDS_Solids* if all its surfaces are *Geom_Planes* and all curves are *Geom_Lines*.
+* *STEP214Control_AsIs* - any OCCT shape
+* *STEP214Control_ManifoldSolidBrep* - *TopoDS_Solid, TopoDS_Shell, TopoDS_Compound* (if it contains *TopoDS_Solids* and *TopoDS_Shells*.
+* *STEP214Control_FacetedBrep* - *TopoDS_Solid* or *TopoDS_Compound* containing *TopoDS_Solids* if all its surfaces are *Geom_Planes* and all curves are *Geom_Lines*.
 * *STEP214Control_ShellBasedSurfaceModel* - *TopoDS_Solid, TopoDS_Shell, TopoDS_Face* and *TopoDS_Compound* (if it contains all mentioned shapes)
 * *STEP214Control_GeometricCurveSet* - any OCCT shape.
 
@@ -913,80 +913,80 @@ A set of STEP entities describing general product information is written to the 
 
 The table below describes STEP entities, which are created when the assembly structure and product information are written to the STEP file, and shows how many of these entities are created. Note that the appearance of some of these entities depends on the version of the schema (AP214, CD, DIS or IS, or AP203). 
 
-| CASCADE shape	| STEP entity | Comments | 
+| CASCADE shape | STEP entity | Comments | 
 | :--------- | :------ | :----- | 
 | | application_protocol_definition | One per STEP file, defines the application protocol used (depends on the schema version) | 
-| | application_context	| One per STEP file, defines the application generating the file (AP214 or AP203) | 
-| TopoDS_Compound | shape_representation  |	Empty *shape_representation* describing the assembly. The components of that assembly are written as subtypes of shape_representation and are included to the assembly using *next_assembly_usage_occurence* entities. | 
-| TopoDS_Shape	 | subtypes of shape_representation  | 	Depending on the shape type, see the tables below for mapping details  |
+| | application_context | One per STEP file, defines the application generating the file (AP214 or AP203) | 
+| TopoDS_Compound | shape_representation  | Empty *shape_representation* describing the assembly. The components of that assembly are written as subtypes of shape_representation and are included to the assembly using *next_assembly_usage_occurence* entities. | 
+| TopoDS_Shape  | subtypes of shape_representation  |  Depending on the shape type, see the tables below for mapping details  |
 |  | next_assembly_usage_occurence | Describes the instance of component in the assembly by referring corresponding *product_definitions*. If the same component is included in the assembly several times (for example, with different locations), several *next_assembly_usage_occurences* are created. |
-| | context_dependent_shape_representation	| Describes the placement of a component in the assembly. One *context_dependent_shape_representation* corresponds to each  *next_assembly_usage_occurence* entity. | 
-| | shape_representation_relationship_with_transformation |	Together with the *context_dependent_shape_representation* describes the location of a component in the assembly. | 
-| | item_defined_transformation	| Defines a transformation used for the location of a component in the assembly. Is referred by *shape_representation_relationship_with_transformation*.  |
-| | shape_definition_representation	| One per *shape_representation*. | 
-| | product_definition_shape	 | One per *shape_definition_representation* and *context_dependent_shape_representation* |
-| | product_definition	| Defines a product, one per *shape_definition_representation* |
-| | product_definition_formation  |	One per *product_definition*. All *product_definition_formations* in the STEP file have unique names. | 
-| |  Product	| One per *product_definition_formation*. All products in the STEP file have unique names. |
-| | product_type (CD) or product_related_product_category (DIS,IS)	| One per product | 
-| | Mechanical_context (CD) or product_context (DIS,IS)	| One per product.  | 
-| | product_definition_context	| One per *product_definition*.  |
+| | context_dependent_shape_representation | Describes the placement of a component in the assembly. One *context_dependent_shape_representation* corresponds to each  *next_assembly_usage_occurence* entity. | 
+| | shape_representation_relationship_with_transformation | Together with the *context_dependent_shape_representation* describes the location of a component in the assembly. | 
+| | item_defined_transformation | Defines a transformation used for the location of a component in the assembly. Is referred by *shape_representation_relationship_with_transformation*.  |
+| | shape_definition_representation | One per *shape_representation*. | 
+| | product_definition_shape  | One per *shape_definition_representation* and *context_dependent_shape_representation* |
+| | product_definition | Defines a product, one per *shape_definition_representation* |
+| | product_definition_formation  | One per *product_definition*. All *product_definition_formations* in the STEP file have unique names. | 
+| |  Product | One per *product_definition_formation*. All products in the STEP file have unique names. |
+| | product_type (CD) or product_related_product_category (DIS,IS) | One per product | 
+| | Mechanical_context (CD) or product_context (DIS,IS) | One per product.  | 
+| | product_definition_context | One per *product_definition*.  |
 
   
 @subsubsection occt_step_3_4_2 Topological shapes
 
-| CASCADE shape	| STEP entity	| Comments | 
+| CASCADE shape | STEP entity | Comments | 
 | :----- | :---- | :----- | 
-| TopoDS_Compound	| geometric_curve_set	| If the write mode is *STEP214Control_GeometricCurveSet* only 3D curves of the edges found in *TopoDS_Compound* and all its subshapes are translated |
-| | manifold_solid_brep	| If the write mode is *STEP214Control_AsIs* and *TopoDS_Compound* consists only of *TopoDS_Solids*. |
-| | shell_based_surface_model	| If the write mode is *STEP214Control_AsIs* and *TopoDS_Compound* consists of *TopoDS_Solids*, *TopoDS_Shells* and *TopoDS_Faces*.|
+| TopoDS_Compound | geometric_curve_set | If the write mode is *STEP214Control_GeometricCurveSet* only 3D curves of the edges found in *TopoDS_Compound* and all its subshapes are translated |
+| | manifold_solid_brep | If the write mode is *STEP214Control_AsIs* and *TopoDS_Compound* consists only of *TopoDS_Solids*. |
+| | shell_based_surface_model | If the write mode is *STEP214Control_AsIs* and *TopoDS_Compound* consists of *TopoDS_Solids*, *TopoDS_Shells* and *TopoDS_Faces*.|
 | | geometric_curve_set | If the write mode is *STEP214Control_AsIs* and *TopoDS_Compound* contains *TopoDS_Wires, TopoDS_Edges, TopoDS_Vertices*. If the write mode is not *STEP214Control_AsIs* or *STEP214Control_GeometricCurveSet*, *TopoDS_Solids, TopoDS_Shells* and *TopoDS_Faces* are translated according to this table. |
-| TopoDS_Solid	| manifold_solid_brep |	If the write mode is *STEP214Control_AsIs* or *STEP214Control_ManifoldSolidBrep* and CASCADE *TopoDS_Solid* has no voids. | 
-| | faceted_brep |	If the write mode is *STEP214Control_FacetedBrep*. |
-| | brep_with_voids	| If the write mode is *STEP214Control_AsIs* or *STEP214Control_ManifoldSolidBrep* and CASCADE *TopoDS_Solid* has voids. |
+| TopoDS_Solid | manifold_solid_brep | If the write mode is *STEP214Control_AsIs* or *STEP214Control_ManifoldSolidBrep* and CASCADE *TopoDS_Solid* has no voids. | 
+| | faceted_brep | If the write mode is *STEP214Control_FacetedBrep*. |
+| | brep_with_voids | If the write mode is *STEP214Control_AsIs* or *STEP214Control_ManifoldSolidBrep* and CASCADE *TopoDS_Solid* has voids. |
 | | shell_based_surface_model | If the write mode is *STEP214Control_ShellBasedSurfaceModel*. | 
-| | geometric_curve_set	| If the write mode is *STEP214Control_GeometricCurveSet*. Only 3D curves of the edges are translated. | 
+| | geometric_curve_set | If the write mode is *STEP214Control_GeometricCurveSet*. Only 3D curves of the edges are translated. | 
 | TopoDS_Shell in a TopoDS_Solid | closed_shell | If *TopoDS_Shell* is closed shell. | 
 | TopoDS_Shell | manifold_solid_brep | If the write mode is *STEP214Control_ManifoldSolidBrep*. |
 | | shell_based_surface_model | If the write mode is *STEP214Control_AsIs* or *STEP214Control_ShellBasedSurfaceModel*. | 
 | | geometric_curve_set | If the write mode is *STEP214Control_GeometricCurveSet*. Only 3D curves of the edges are translated. | 
-| TopoDS_Face	| advanced_face	| |
-| TopoDS_Wire in a TopoDS_Face |	face_bound	| The resulting *face_bound* contains *poly_loop* if write mode is *faceted_brep* or *edge_loop* if it is not. | 
-| TopoDS_Wire	| geometric_curve_set	| If the write mode is *STEP214Control_GeometricCurveSet*. Only 3D curves of the edges are translated. |
-| TopoDS_Edge |	oriented_edge	| |
-| TopoDS_Vertex	| vertex_point	| | 
+| TopoDS_Face | advanced_face | |
+| TopoDS_Wire in a TopoDS_Face | face_bound | The resulting *face_bound* contains *poly_loop* if write mode is *faceted_brep* or *edge_loop* if it is not. | 
+| TopoDS_Wire | geometric_curve_set | If the write mode is *STEP214Control_GeometricCurveSet*. Only 3D curves of the edges are translated. |
+| TopoDS_Edge | oriented_edge | |
+| TopoDS_Vertex | vertex_point | | 
 
 @subsubsection occt_step_3_4_3 Geometrical objects
-| Geometry | CASCADE object	| STEP entity	| Comments | 
+| Geometry | CASCADE object | STEP entity | Comments | 
 | :----- | :------ | :----- | :----- | 
-| Points | Geom_CartesianPoint, Geom2d_CartesianPoint	| 	cartesian_point	| |
-| | TColgp_Array1OfPnt, TColgp_Array1OfPnt2d	| polyline	 | | 
-| Placements | Geom_Axis1Plasement, Geom2d_AxisPlacement | axis1_placement	| | 
-| | Geom_Axis2Placement	| axis2_placement_3d	| | 
-| Directions | Geom_Direction, Geom2d_Direction	 | direction	| |
-| Vectors | Geom_Vector, Geom2d_Vector	| vector	| |
-| Curves | Geom_Circle	| circle	| |
-| | Geom2d_Circle	| circle, rational_b_spline_curve	| |
-| | Geom_Ellipse	| Ellipse	| |
-| | Geom2d_Ellipse	| Ellipse, rational_b_spline_curve	| |
-| | Geom_Hyperbola, Geom2d_Hyperbola |		Hyperbola	| |
-| | Geom_Parabola, Geom2d_Parabola	|	Parabola	| | 
-| | Geom_BSplineCurve	| b_spline_curve_with_knots	or rational_b_spline_curve | *rational_b_spline_curve* is produced if *Geom_BsplineCurve* is a rational BSpline |
-| |  Geom2d_BSplineCurve	| b_spline_curve_with_knots	or rational_b_spline_curve |	*rational_b_spline_curve* is produced if *Geom2d_BsplineCurve* is a rational BSpline |
-| | Geom_BezierCurve	| b_spline_curve_with_knots	| |
-| | Geom_Line	 or Geom2d_Line	|	Line | |
-| Surfaces	| Geom_Plane	| Plane	| |
-| | Geom_OffsetSurface	| offset_surface	| |
-| | Geom_ConicalSurface	| conical_surface	| | 
-| | Geom_CylindricalSurface	| cylindrical_surface	| | 
-| | Geom_OffsetSurface	| offset_surface	| | 
-| | Geom_RectangularTrimmedSurface	| rectangular_trimmed_surface	| | 
-| | Geom_SphericalSurface |  spherical_surface	| | 
-| | Geom_SurfaceOfLinear Extrusion	| surface_of_linear_extrusion	| | 
-| | Geom_SurfaceOf Revolution	| surface_of_revolution	| |
-| | Geom_ToroidalSurface	| toroidal_surface or degenerate_toroidal_surface | 	 *degenerate_toroidal_surface* is produced if the minor radius is greater then the major one |
-| | Geom_BezierSurface	| b_spline_surface_with_knots	| | 
-| | Geom_BsplineSurface	| b_spline_surface_with_knots or rational_b_spline_surface | 	*rational_b_spline_surface* is produced if *Geom_BSplineSurface* is a rational Bspline |
+| Points | Geom_CartesianPoint, Geom2d_CartesianPoint |  cartesian_point | |
+| | TColgp_Array1OfPnt, TColgp_Array1OfPnt2d | polyline  | | 
+| Placements | Geom_Axis1Plasement, Geom2d_AxisPlacement | axis1_placement | | 
+| | Geom_Axis2Placement | axis2_placement_3d | | 
+| Directions | Geom_Direction, Geom2d_Direction  | direction | |
+| Vectors | Geom_Vector, Geom2d_Vector | vector | |
+| Curves | Geom_Circle | circle | |
+| | Geom2d_Circle | circle, rational_b_spline_curve | |
+| | Geom_Ellipse | Ellipse | |
+| | Geom2d_Ellipse | Ellipse, rational_b_spline_curve | |
+| | Geom_Hyperbola, Geom2d_Hyperbola |  Hyperbola | |
+| | Geom_Parabola, Geom2d_Parabola | Parabola | | 
+| | Geom_BSplineCurve | b_spline_curve_with_knots or rational_b_spline_curve | *rational_b_spline_curve* is produced if *Geom_BsplineCurve* is a rational BSpline |
+| |  Geom2d_BSplineCurve | b_spline_curve_with_knots or rational_b_spline_curve | *rational_b_spline_curve* is produced if *Geom2d_BsplineCurve* is a rational BSpline |
+| | Geom_BezierCurve | b_spline_curve_with_knots | |
+| | Geom_Line  or Geom2d_Line | Line | |
+| Surfaces | Geom_Plane | Plane | |
+| | Geom_OffsetSurface | offset_surface | |
+| | Geom_ConicalSurface | conical_surface | | 
+| | Geom_CylindricalSurface | cylindrical_surface | | 
+| | Geom_OffsetSurface | offset_surface | | 
+| | Geom_RectangularTrimmedSurface | rectangular_trimmed_surface | | 
+| | Geom_SphericalSurface |  spherical_surface | | 
+| | Geom_SurfaceOfLinear Extrusion | surface_of_linear_extrusion | | 
+| | Geom_SurfaceOf Revolution | surface_of_revolution | |
+| | Geom_ToroidalSurface | toroidal_surface or degenerate_toroidal_surface |   *degenerate_toroidal_surface* is produced if the minor radius is greater then the major one |
+| | Geom_BezierSurface | b_spline_surface_with_knots | | 
+| | Geom_BsplineSurface | b_spline_surface_with_knots or rational_b_spline_surface |  *rational_b_spline_surface* is produced if *Geom_BSplineSurface* is a rational Bspline |
 
 
 @subsection occt_step_3_5 Tolerance management
@@ -1086,16 +1086,16 @@ Each field of a STEP entity should be represented by a corresponding field of th
 * Create the *RWStepxxx_RWNewEntity* class with a default constructor and methods *ReadStep()*, *WriteStep()* and if the entity references other entities, then method *Share()*. 
 * Update file *StepAP214_Protocol.cxx*. In the constructor *StepAP214_Protocol::StepAP214_Protocol()* add the new type to the map of registered types and associate the unique integer identifier with this type. 
 * Update file *RWStepAP214_ReadWriteModule.cxx*. The changes should be the following: 
-	* For simple types: 
-		  * Add a static object of class *TCollection_AsciiString* with name *Reco_NewEntity* and initialize it with a string containing the STEP type. 
-		  * In constructor *WStepAP214_ReadWriteModule::RWStepAP214_ReadWriteModule()* add this object onto the list with the unique integer identifier of the new entity type. 
-		  * In function *RWStepAP214_ReadWriteModule::StepType()* add a new C++ case operator for this identifier. 
-	* For complex types: 
-		  * In the method *RWStepAP214_ReadWriteModule::CaseStep()* add a code for recognition the new entity type returning its unique integer identifier. 
-		  * In the method *RWStepAP214_ReadWriteModule::IsComplex()* return True for this type. 
-		  * In the method *RWStepAP214_ReadWriteModule::ComplexType()* fill the list of subtypes composing this complex type. 
-	* For both simple and complex types: 
-		* In function *RWStepAP214_ReadWriteModule::ReadStep()* add a new C++ case operator for the new identifier and call the *RWStepxxx_RWNewEntity* class, method *ReadStep* to initialize the new class. 
+ * For simple types: 
+    * Add a static object of class *TCollection_AsciiString* with name *Reco_NewEntity* and initialize it with a string containing the STEP type. 
+    * In constructor *WStepAP214_ReadWriteModule::RWStepAP214_ReadWriteModule()* add this object onto the list with the unique integer identifier of the new entity type. 
+    * In function *RWStepAP214_ReadWriteModule::StepType()* add a new C++ case operator for this identifier. 
+ * For complex types: 
+    * In the method *RWStepAP214_ReadWriteModule::CaseStep()* add a code for recognition the new entity type returning its unique integer identifier. 
+    * In the method *RWStepAP214_ReadWriteModule::IsComplex()* return True for this type. 
+    * In the method *RWStepAP214_ReadWriteModule::ComplexType()* fill the list of subtypes composing this complex type. 
+ * For both simple and complex types: 
+  * In function *RWStepAP214_ReadWriteModule::ReadStep()* add a new C++ case operator for the new identifier and call the *RWStepxxx_RWNewEntity* class, method *ReadStep* to initialize the new class. 
 * Update file *RWStepAP214_GeneralModule.cxx*. Add new C++ case operators to functions *NewVoid()* and *FillSharedCase()*, and in the method *CategoryNumber()* add a line defining a category of the new type. 
 * Enhance the *STEPControl_ActorRead class* (methods *Recognize()* and *Transfer()*), or class(es) translating some entities, to translate the new entity into an OCCT shape. 
 
@@ -1143,13 +1143,13 @@ For a description of parameters used in reading a STEP file refer to <a href="#o
 
 For reading a STEP file, the following parameters are defined (see above, <a href="#occt_step_6_2">the command *param*</a>):
 
-| Description	| Name	| Values	| Meaning |
+| Description | Name | Values | Meaning |
 | :------------ | :---- | :------- | :------- |
-| Precision for input entities	| read.precision.mode	| 0 or 1	| If 0 (File), precision of the input STEP file will be used for the loaded shapes; If 1 (Session), the following parameter will be used as the precision value. | 
+| Precision for input entities | read.precision.mode | 0 or 1 | If 0 (File), precision of the input STEP file will be used for the loaded shapes; If 1 (Session), the following parameter will be used as the precision value. | 
 | | read.precision.val | real | Value of precision (used if the previous parameter is 1) | 
-| Surface curves	| read.surfacecurve.mode | 	0 or 3	 | Defines a preferable way of representing surface curves (2d or 3d representation). If 0, no preference. | 
-| Maximal tolerance	| read.maxprecision.mode | 0 or 1 | If 1, maximum tolerance is used as a rigid limit If 0, maximum tolerance is used as a limit but can be exceeded by some algorithms. | 
-| | read.maxprecision.val	| real | Value of maximum precision | 
+| Surface curves | read.surfacecurve.mode |  0 or 3  | Defines a preferable way of representing surface curves (2d or 3d representation). If 0, no preference. | 
+| Maximal tolerance | read.maxprecision.mode | 0 or 1 | If 1, maximum tolerance is used as a rigid limit If 0, maximum tolerance is used as a limit but can be exceeded by some algorithms. | 
+| | read.maxprecision.val | real | Value of maximum precision | 
 
 It is possible either only to load a STEP file into memory (i.e. fill the *InterfaceModel* with data from the file), or to read it (i.e. load and convert all entities to OCCT shapes). 
 Loading is done by the command 
@@ -1166,11 +1166,11 @@ The optional selection (see below for a description of selections) specifies a s
 
 | N | Mode | Description |
 | :---- | :---- | :---- |  
-| 0	| End	| Finish transfer and exit stepread | 
-| 1	| root with rank 1	| Transfer first root | 
-| 2	| root by its rank	| Transfer root specified by its rank | 
-| 3	| One entity	| Transfer entity with a number provided by the user | 
-| 4	| Selection	| Transfer only entities contained in selection | 
+| 0 | End | Finish transfer and exit stepread | 
+| 1 | root with rank 1 | Transfer first root | 
+| 2 | root by its rank | Transfer root specified by its rank | 
+| 3 | One entity | Transfer entity with a number provided by the user | 
+| 4 | Selection | Transfer only entities contained in selection | 
 
 * root is an entity in the STEP file which is not referenced by another entities 
 Second parameter of the stepread command defines the name of the loaded shape. 
@@ -1185,35 +1185,41 @@ To get the number of a STEP entity, corresponding to an OCCT shape, use the comm
 To clear the map of correspondences between STEP entities and OCCT shapes use the command *Draw:> tpclear*.
  
 @subsection occt_step_6_4 Analyzing the transferred data 
+
 The procedure of analysis of data import can be divided into two stages: 
    1.to check the file contents, 
    2.to estimate the translation results (conversion and validated ratios). 
-   
+
 @subsubsection occt_step_6_4_1 Checking file contents
+
 General statistics on the loaded data can be obtained by using the command 
-Draw:> data \<symbol\> 
+
+~~~~
+Draw:> data <symbol> 
+~~~~
+
 Information printed by this command depends on the symbol specified: 
 
-* *g*	- Prints the information contained in the header of the file;
-* *c* or *f*	- Prints messages generated during the loading of the STEP file (when the procedure of the integrity of the loaded data check is performed) and the resulting statistics (f works only with fails while c with both fail and warning messages) ;
-* *t*	- The same as *c* or *f*, with a list of failed or warned entities;
-* *m* or *l*	- The same as *t* but also prints a status for each entity;
-* *e* 	- Lists all entities of the model with their numbers, types, validity status etc.
-* *R*	- The same as e but lists only root entities
+* *g* - Prints the information contained in the header of the file;
+* *c* or *f* - Prints messages generated during the loading of the STEP file (when the procedure of the integrity of the loaded data check is performed) and the resulting statistics (f works only with fails while c with both fail and warning messages) ;
+* *t* - The same as *c* or *f*, with a list of failed or warned entities;
+* *m* or *l* - The same as *t* but also prints a status for each entity;
+* *e*  - Lists all entities of the model with their numbers, types, validity status etc.
+* *R* - The same as e but lists only root entities
 
 There is a set of special objects, which can be used to operate with a loaded model. They can be of the following types: 
-* Selection	Filters - allow selecting subsets of entities of the loaded model;
-* Counter	- calculates some statistics on the model data.
+* Selection Filters - allow selecting subsets of entities of the loaded model;
+* Counter - calculates some statistics on the model data.
 
 A list of these objects defined in the current session can be printed in DRAW by command *Draw:> listitems*. 
 
-Command *Draw:> givelist <selection_name>* prints a list of a subset of loaded entities defined by the <i><selection></i> argument: 
+Command *Draw:> givelist \<selection_name\>* prints a list of a subset of loaded entities defined by the <i>\<selection\></i> argument: 
 
-* *xst-model-all*	all entities of the model;
-* *xst-model-roots*	all roots;
-* *xst-pointed*	(Interactively) pointed entities (not used in DRAW);
-* *xst-transferrable-all*	all transferable (recognized) entities;
-* *xst-transferrable-roots*	Transferable roots.
+* *xst-model-all* all entities of the model;
+* *xst-model-roots* all roots;
+* *xst-pointed* (Interactively) pointed entities (not used in DRAW);
+* *xst-transferrable-all* all transferable (recognized) entities;
+* *xst-transferrable-roots* Transferable roots.
 
 The command *listtypes* gives a list of entity types, which were encountered in the last loaded file (with a number of STEP entities of each type). 
 
@@ -1221,19 +1227,19 @@ The list cannot be shown for all entities but for a subset of them. This subset 
  
 Two commands are used to calculate statistics on the entities in the model: 
 ~~~~~
-Draw:> count <counter> [\<selection\>] 
-Draw:> listcount <counter> [\<selection\>] 
+Draw:> count <counter> [<selection>] 
+Draw:> listcount <counter> [<selection>] 
 ~~~~~
 The former only prints a count of entities while the latter also gives a list of them. 
 
 The optional selection argument, if specified, defines a subset of entities, which are to be taken into account. The first argument should be one of the currently defined counters: 
-* *xst-types*	- calculates how many entities of each OCCT type exist
+* *xst-types* - calculates how many entities of each OCCT type exist
 * *step214-types* - calculates how many entities of each STEP type exist
 
 Entities in the STEP file are numbered in the succeeding order. An entity can be identified either by its number or by its label. Label is the letter \# followed by the rank. 
 * *Draw:> elab \#* outputs a label for an entity with a known number. 
 * *Draw:> enum \#* prints a number for the entity with a given label. 
-* *Draw:> entity \# <level_of_information>* outputs the contents of a STEP entity. 
+* *Draw:> entity \# \<level_of_information\>* outputs the contents of a STEP entity. 
 * *Draw: estat \#* outputs the list of entities referenced by a given entity and the list of entities referencing to it. 
 * *Draw: dumpassembly* prints a STEP assembly as a tree.
 
@@ -1242,19 +1248,19 @@ Information about product names, *next_assembly_usage_occurence, shape_definitio
 @subsubsection occt_step_6_4_2 Estimating the results of reading STEP
 All the following commands are available only after data is converted into OCCT shapes (i.e. after command 214read). 
 
-Command *Draw:> tpstat [*|?]\<symbol\> [\<selection\>]* is provided to get all statistics on the last transfer, including a list of transferred entities with mapping from STEP to OCCT types, as well as fail and warning messages. The parameter <i><symbol></i> defines what information will be printed: 
+Command *Draw:> tpstat [*|?]\<symbol\> [\<selection\>]* is provided to get all statistics on the last transfer, including a list of transferred entities with mapping from STEP to OCCT types, as well as fail and warning messages. The parameter <i>\<symbol\></i> defines what information will be printed: 
 
-* *g*	- General statistics (a list of results and messages)
-* *c*	- Count of all warning and fail messages
-* *C*	- List of all warning and fail messages
-* *f*	- Count of all fail messages
-* *F*	- List of all fail messages
-* *n*	- List of all transferred roots
-* *s*	- The same, with types of source entity and the type of result
-* *b*	- The same, with messages
-* *t*	- Count of roots for geometrical types
-* *r*	- Count of roots for topological types
-* *l*	- The same, with the type of the source entity
+* *g* - General statistics (a list of results and messages)
+* *c* - Count of all warning and fail messages
+* *C* - List of all warning and fail messages
+* *f* - Count of all fail messages
+* *F* - List of all fail messages
+* *n* - List of all transferred roots
+* *s* - The same, with types of source entity and the type of result
+* *b* - The same, with messages
+* *t* - Count of roots for geometrical types
+* *r* - Count of roots for topological types
+* *l* - The same, with the type of the source entity
 
 The sign \* before parameters *n, s, b, t, r* makes it work on all entities (not only on roots).
 
@@ -1273,11 +1279,11 @@ The number of faces is returned as a number of references. To obtain the number 
 To analyze the internal validity of the shape, use command *Draw:> checkbrep \<shape_name\> \<expurged_shape_name\>*. It checks shape geometry and topology for different cases of inconsistency, like self-intersecting wires or wrong orientation of trimming contours. If an error is found, it copies bad parts of the shape with the names <i>expurged_subshape_name _\#</i> and generates an appropriate message. If possible this command also tries to find STEP entities the OCCT shape was produced from. 
 
 <i>\<expurged_shape_name\></i> will contain the original shape without invalid subshapes. 
-To get information on tolerances of the shape use command <i>Draw:> tolerance \<shape_name\> [\<min\> [\<max\>] [<symbol>]] </i>. It outputs maximum, average and minimum values of tolerances for each kind of subshapes having tolerances and for the whole shape in general. 
+To get information on tolerances of the shape use command <i>Draw:> tolerance \<shape_name\> [\<min\> [\<max\>] [\<symbol\>]] </i>. It outputs maximum, average and minimum values of tolerances for each kind of subshapes having tolerances and for the whole shape in general. 
 
 When specifying min and max arguments this command saves shapes with tolerances in the range [min, max] with names shape_name_... and gives their total number. 
 
-<i><Symbol></i> is used for specifying the kind of sub-shapes to analyze: 
+<i>\<Symbol\></i> is used for specifying the kind of sub-shapes to analyze: 
 * *v* - for vertices, 
 * *e* - for edges, 
 * *f* - for faces, 
@@ -1286,16 +1292,16 @@ When specifying min and max arguments this command saves shapes with tolerances 
 @subsection occt_step_6_5 Writing a STEP file
 For writing shapes to a STEP file, the following parameters are defined (see above, <a href="#occt_step_6_2">the command *param*</a>):
 
-| Description	| Name	| Values	| Meaning | 
+| Description | Name | Values | Meaning | 
 | :------------ | :----- | :------ | :------- | 
-| Uncertainty for resulting entities | Write.precision.mode | -1, 0, 1 or 2	| If -1 the uncertainty value is set to the minimal tolerance of CASCADE subshapes. If 0 the uncertainty value is set to the average tolerance of CASCADE subshapes. If 1 the uncertainty value is set to the maximal tolerance of CASCADE subshapes. If 2 the uncertainty value is set to write.precision.val |
-| Value of uncertainty	| Write.precision.val |	real | Value of uncertainty (used if previous parameter is 2). | 
+| Uncertainty for resulting entities | Write.precision.mode | -1, 0, 1 or 2 | If -1 the uncertainty value is set to the minimal tolerance of CASCADE subshapes. If 0 the uncertainty value is set to the average tolerance of CASCADE subshapes. If 1 the uncertainty value is set to the maximal tolerance of CASCADE subshapes. If 2 the uncertainty value is set to write.precision.val |
+| Value of uncertainty | Write.precision.val | real | Value of uncertainty (used if previous parameter is 2). | 
 
 Several shapes can be written in one file. To start writing a new file, enter command *Draw:> newmodel*. 
 Actually, command *newmodel* will clear the *InterfaceModel* to empty it, and the next command will convert the specified shape to STEP entities and add them to the *InterfaceModel*: 
 
 ~~~~~
-Draw:> stepwrite <mode> \<shape_name\> [<file_name>] 
+Draw:> stepwrite <mode> <shape_name> [<file_name>] 
 ~~~~~
 
 The following  modes are available : 
@@ -1304,7 +1310,7 @@ The following  modes are available :
     * *f* - *faceted_brep* 
     * *w* - *geometric_curve_set* 
     * *s* - *shell_based_surface_model* 
-	
+ 
 After a successful translation, if file_name parameter is not specified, the procedure asks you whether to write a STEP model in the file or not: 
 ~~~~~
 execution status : 1 

@@ -1,4 +1,4 @@
-Workshop Organisation Kit  {#dev_guides__wok}
+Workshop Organisation Kit  {#occt_dev_guides__wok}
 =========================
 
 @tableofcontents
@@ -10,7 +10,7 @@ build system. This use is outdated, and WOK is to be removed in
 one of future releases of OCCT.
 
 Currently only small subset of WOK capabilities described in this document
-are actually necessary for building OCCT. See @ref dev_guides__building__wok
+are actually necessary for building OCCT. See @ref occt_dev_guides__building_wok
 for more practical guide.
 
 @section occt_wok_1_ Introduction Glossary
@@ -96,13 +96,14 @@ interface (i). No description of the source files is needed. There is a single s
 * jni (j). No description of the source files is needed. There is a single source file: *jni.cdl*. 
 * toolkit (t) The description is given by the file called PACKAGES which is stored in the unit’s src directory. FILES must also exist in this directory, and must include PACKAGES in its list of files. 
 * delivery (d) The description is given by two files stored in the unit’s src directory: FILES and a file called COMPONENTS. FILES must include COMPONENTS in its list of files. 
-* resource (r) A resource unit is used in a delivery. FILES contains a list of the unit’s files, one per line in the following format: *atype:::afilename*  Here, *filename* is the name of a file, which the compiler will look for in the src directory of the unit, and *atype* is a WOK type. To display a list of all available WOK types, use the command: *wokinfo -T*. 
+* resource (r) A resource unit is used in a delivery. FILES contains a list of the unit’s files, one per line in the following format: *atype\:\:\:afilename*  Here, *filename* is the name of a file, which the compiler will look for in the src directory of the unit, and *atype* is a WOK type. To display a list of all available WOK types, use the command: *wokinfo -T*. 
 
 #### Derived files
 
 Derived files created by compilation are automatically placed in the derived section of the development unit. These may be executable files or archives of compilation results. 
 
 @subsubsection occt_wok_2_1_3 Package
+
 A package is a development unit that defines a set of classes, which share a number of common features such as similar data structure or a set of complementary algorithmic services. Packages help to manage creation and the use of large hierarchies of software components.  
 To create a package, you write a .cdl file describing it in the src directory of the package development unit. The description includes classes and global methods, which comprise it. Each class is also described in a separate .cdl file. The package .cdl file also lists the packages used in the specification of its classes and methods. 
 C++ implementation files are also stored in the src subdirectory of the package development unit. These implementation files are: 
@@ -335,21 +336,21 @@ These roots are defined in the workbench definition file *MyWorkbench.edl* as th
 @subsubsection occt_wok_2_2_2  Directories
 Under each root, a hierarchy of directories allows to store various files. 
 * Under the Home root are found: 
-	*  *work*, the private workbench directory reserved for the developer 
-	*  *Adm*, the directory reserved for administration files. 
+  *  *work*, the private workbench directory reserved for the developer 
+  *  *Adm*, the directory reserved for administration files. 
 * Src contains: 
-	*  *src/MyUD*, the directory containing the source files of the development unit MyUD. 
+  *  *src/MyUD*, the directory containing the source files of the development unit MyUD. 
 * DBMS contains: 
-	*  *inc*, containing the public header files of the workbench UDs 
-	*  *drv/MyUD*, containing the private extracted files of MyUD 
-	*  *drv/MyUD/.adm*, containing the administration files dependent on the extraction profile 
-	*  *drv/MyUD/.tmp*, containing the temporary files dependent on the extraction profile. 
+  *  *inc*, containing the public header files of the workbench UDs 
+  *  *drv/MyUD*, containing the private extracted files of MyUD 
+  *  *drv/MyUD/.adm*, containing the administration files dependent on the extraction profile 
+  *  *drv/MyUD/.tmp*, containing the temporary files dependent on the extraction profile. 
 * DBMS_Station contains: 
-	* *<station>/lib* with all the libraries produced in the workbench
-	* *<station>/bin* with all the binaries produced in the workbench
-	* *<station>/MyUD* with all the station dependent files which are private to the development unit such as objects
-	* *<station>/MyUD/.adm* with all the station dependent administration files
-	* *<station>/MyUD/.tmp* with all the temporary files constructed in the development unit.
+  * *\<station\>/lib* with all the libraries produced in the workbench
+  * *\<station\>/bin* with all the binaries produced in the workbench
+  * *\<station\>/MyUD* with all the station dependent files which are private to the development unit such as objects
+  * *\<station\>/MyUD/.adm* with all the station dependent administration files
+  * *\<station\>/MyUD/.tmp* with all the temporary files constructed in the development unit.
 
   
 @image html /dev_guides/wok/images/wok_image011.png "Structure of the workbench Mywb"
@@ -441,7 +442,7 @@ If you don’t want to work in a workshop already present in the factory, you ca
 ~~~~~
 This creates the new workshop **MyWorkshop** in the current factory. To create the same workshop in a different factory use the syntax below: 
 ~~~~~
-> screate –d <MyFactory:MyWorkshp>
+> screate –d <MyFactory:MyWorkshop>
 ~~~~~
 
 When you create a new workshop, it is empty. 
@@ -537,8 +538,8 @@ You will need to use an editor to implement these methods in C++.
 
 To compile the package, use the command: 
 ~~~~~
-	> umake -o obj <MyPackage>
-~~~~~	
+  > umake -o obj <MyPackage>
+~~~~~  
 If you do not specify a package, the current development unit is compiled. 
 
 #### Sample Construction of a Package
@@ -546,20 +547,20 @@ If you do not specify a package, the current development unit is compiled.
 In the following example a workbench named **MyWb** is created as a child of an existing workbench **Topo**. MyWb is used for working on the package **MyPack**. Commands preceded by an asterisk below are used only once per session: 
 1. Create the MyWb workbench as a child of Topo. 
 ~~~~~
-	> wcreate MyWb -f Topo -d
+  > wcreate MyWb -f Topo -d
 ~~~~~
 2. Create MyPack in MyWb. 
 ~~~~~
-	> ucreate MyPack     
+  > ucreate MyPack     
 ~~~~~
 3. Move to the source directory of MyPack. 
 ~~~~~
-	> wokcd MyPack 
+  > wokcd MyPack 
 ~~~~~
 4. Edit the source files (MyPack.cdl etc.). You do this outside tcl, using the editor of your choice. 
 5. Start the extraction of MyPack. 
 ~~~~~
-	 >  umake -e xcpp 
+   >  umake -e xcpp 
 ~~~~~
 6. Generate the .cxx templates for MyPack: MyPack.cxx.template 
 ~~~~~
@@ -572,57 +573,57 @@ In the following example a workbench named **MyWb** is created as a child of an 
 #### Package Files
 
 * Primary Files for a Package 
-	+ <Package>.cdl 			Primary package file.
-	+ <Package>_<Class>.cdl 	Primary class file.
+  + \<Package\>.cdl       Primary package file.
+  + \<Package\>_\<Class\>.cdl   Primary class file.
 * C++ Files for a Package
-	+ <Package>.cxx 			Primary package source file.
-	+ <Package>_[1..9[0..9]*].cxx 	Secondary package source files.
-	+ <Package>.lxx 			Inline package methods source file.
-	+ <Package>.pxx 			Private instructions source file.
+  + \<Package\>.cxx       Primary package source file.
+  + \<Package\>_[1..9[0..9]*].cxx   Secondary package source files.
+  + \<Package\>.lxx       Inline package methods source file.
+  + \<Package\>.pxx       Private instructions source file.
 * C++ Files for a Class
-	+ <Package>_<Class>.cxx 	Primary class source file.
-	+ <Package>_<Class>_[1..9[0..9]*].cxx
+  + \<Package\>_\<Class\>.cxx   Primary class source file.
+  + \<Package\>_\<Class\>_[1..9[0..9]*].cxx
 * Secondary class source files.
-	+ <Package>_<Class>.gxx 	Generic class methods source file. This is an alternative to the .cxx file(s), you do not have both.
-	+ <Package>_<Class>.lxx 	Inline methods source file.
-	+ <Package>_<Class>.pxx 	Private instructions source file.
+  + \<Package\>_\<Class\>.gxx   Generic class methods source file. This is an alternative to the .cxx file(s), you do not have both.
+  + \<Package\>_\<Class\>.lxx   Inline methods source file.
+  + \<Package\>_\<Class\>.pxx   Private instructions source file.
 * Derived C++ Files for a Package
-	+ <Package>.hxx 			User header file.
-	+ <Package>.ixx 			User header file included in <Package>.cxx.
-	+ <Package>.jxx 			User header file included in <Package>_[1-9].cxx.
+  + \<Package\>.hxx       User header file.
+  + \<Package\>.ixx       User header file included in \<Package\>.cxx.
+  + \<Package\>.jxx       User header file included in \<Package\>_[1-9].cxx.
 * Derived C++ files for a class
-	+ <Package>_<Class>.hxx 	User header file.
-	+ <Package>_<Class>.ixx 	User header file included in <Package>_<Class>.cxx.
-	+ <Package>_<Class>.jxx 	User header file in <Package>_<Class>_[1..9[0..9]*].cxx.
-	+ Handle_<Package>_<Class>.hxx Persistent or Transient class header file.
-	+ <Package>_<Class>_0.cxx 	For instantiated classes.
+  + \<Package\>_\<Class\>.hxx   User header file.
+  + \<Package\>_\<Class\>.ixx   User header file included in \<Package\>_\<Class\>.cxx.
+  + \<Package\>_\<Class\>.jxx   User header file in \<Package\>_\<Class\>_[1..9[0..9]*].cxx.
+  + Handle_\<Package\>_\<Class\>.hxx Persistent or Transient class header file.
+  + \<Package\>_\<Class\>_0.cxx   For instantiated classes.
 
 Umake Steps for a Package 
 -------------------------
 The umake steps for development units of package type are explained below. 
-* *src* 			Processes the file *MyPackage.cdl* to generate a list of all the CDL files in the development unit. Processes FILES to list source files. 
-* *xcpp.fill* 	Compiles the internal data structure to prepare for subsequent extractions. 
-* *xcpp.src* 		Lists the source files (.cxx, .gxx, .lxx) deduced from the CDL files. 
-* *xcpp.header* 	Extracts header files for the classes in the development unit. 
+* *src*       Processes the file *MyPackage.cdl* to generate a list of all the CDL files in the development unit. Processes FILES to list source files. 
+* *xcpp.fill*   Compiles the internal data structure to prepare for subsequent extractions. 
+* *xcpp.src*     Lists the source files (.cxx, .gxx, .lxx) deduced from the CDL files. 
+* *xcpp.header*   Extracts header files for the classes in the development unit. 
 * *xcpp.template* Extracts a template for implementation of methods. (Hidden step.)
-* *obj.inc*    	Based on the list of source files generated by the src and xcpp.src steps, this step publishes the include files for the development unit so that other units can use them. 
-* *obj.cgen* 		Processes the source files to generate code. 
-* *obj.comp*  	Compiles each file that can be compiled. 
-* *obj.idep*    	Generates dependency information for the unit. This comprises: 
-	+ Includes performed by unit compilation (Unit.MakeState) 
-	+ Implementation dependencies in terms of the unit suppliers (Unit.ImplDep) 
-* *obj.lib*   	Generates the shared library for the development unit. 
+* *obj.inc*      Based on the list of source files generated by the src and xcpp.src steps, this step publishes the include files for the development unit so that other units can use them. 
+* *obj.cgen*     Processes the source files to generate code. 
+* *obj.comp*    Compiles each file that can be compiled. 
+* *obj.idep*      Generates dependency information for the unit. This comprises: 
+  + Includes performed by unit compilation (Unit.MakeState) 
+  + Implementation dependencies in terms of the unit suppliers (Unit.ImplDep) 
+* *obj.lib*     Generates the shared library for the development unit. 
 
 @subsubsection occt_wok_3_4_2  Creating a Nocdlpack
 If your executable requires the use of a nocdlpack, create a development unit of nocdlpack type and move to its structure using the commands below: 
 ~~~~~
-	> ucreate -n <MyNoCDLPack>
-	> wokcd <MyNoCDLPack> 
+  > ucreate -n <MyNoCDLPack>
+  > wokcd <MyNoCDLPack> 
 ~~~~~
 Use an editor to write *FILES*, which is a nomenclature file for a nocdlpack. This file must list all the C, C++, Fortran, lex, and yacc sourcs files (one per line). 
 Build the nocdlpack using the following command: 
 ~~~~~
-	> umake [<MyNoCDLPack>]
+  > umake [<MyNoCDLPack>]
 ~~~~~
 **Note** that a nocdlpack unit is not intended to perform tests. Use an executable unit instead.
 
@@ -648,14 +649,14 @@ In the following example a nocdlpack *MyNocdlpack*, is created. Commands precede
 #### Umake Steps for a Nocdlpack 
 
 The *umake* steps for development units of *nocdlpack* type are explained below. 
-* *src*  		Processes FILES to list source files. 
-* *obj.cgen* 	Processes the source files to generate code. 
-* *obj.inc* 	Based on the list of source files, this step publishes the header files for the unit so that other units can use them. 
-* *obj.comp* 	Compiles each file that can be compiled. 
-* *obj.idep* 	Generates dependency information for the unit. This comprises: 
-	+ Includes performed by unit compilation. (Unit.MakeState) 
-	+ Implementation dependencies in terms of the unit suppliers. (Unit.ImplDep) 
-* *obj.lib* 	Generates the shared library for the unit. 
+* *src*      Processes FILES to list source files. 
+* *obj.cgen*   Processes the source files to generate code. 
+* *obj.inc*   Based on the list of source files, this step publishes the header files for the unit so that other units can use them. 
+* *obj.comp*   Compiles each file that can be compiled. 
+* *obj.idep*   Generates dependency information for the unit. This comprises: 
+  + Includes performed by unit compilation. (Unit.MakeState) 
+  + Implementation dependencies in terms of the unit suppliers. (Unit.ImplDep) 
+* *obj.lib*   Generates the shared library for the unit. 
 
 @subsubsection occt_wok_3_3_3  Creating a Schema
 If the application, which you intend to build, stores data in a file, you need to define a schema for the persistent data types that are known. 
@@ -667,12 +668,12 @@ You create a schema and go to its root directory using the commands:
 ~~~~~ 
 Using the editor of your choice, write a .cdl file to define the schema. This schema file lists all the packages that contain persistent data types used in the implementation of your application. It has the following format: 
 ~~~~~
-	schema MySchema
-	is
+  schema MySchema
+  is
 class <MyClass> from <Package>;
-	end;
+  end;
 ~~~~~
-	
+  
 #### Building a Schema 
 
 Compile and check the coherence of the CDL specification for the schema: 
@@ -705,25 +706,25 @@ In the following example the schema *MySchema* is created. It contains all the s
 3. Edit the source file MySchema.cdl. You do this outside tcl, using the editor of your choice. 
 4. Derive implementation files. 
 ~~~~~
-	> umake -e xcpp.sch
+  > umake -e xcpp.sch
 ~~~~~
 5. Derive application schema files. 
 ~~~~~
-	> umake -o xcpp.ossg
+  > umake -o xcpp.ossg
 ~~~~~
 6. Compile the schema. 
 ~~~~~
-	> umake -o obj
+  > umake -o obj
 ~~~~~
 
 #### Schema Files
 
 * Primary Files for a Schema
-	+ *<Schema>.cdl* Primary schema file.
+  + *\<Schema\>.cdl* Primary schema file.
 * Derived C++ Files for a Schema
-	+ *<Schema>.hxx* User header files.
-	+ *<Schema>.cxx* Schema implementation files.
-	+ *<Sch_MyPack_MyClass>.cxx* Schema implementation files.
+  + *\<Schema\>.hxx* User header files.
+  + *\<Schema\>.cxx* Schema implementation files.
+  + *\<Sch_MyPack_MyClass\>.cxx* Schema implementation files.
 
 #### Umake Steps for a Schema 
 
@@ -744,21 +745,21 @@ To make an executable from one or more of the packages, which you have created, 
 Refer to the **CDL User’s Guide** for full details. A simple example is given below. 
 
 ~~~~~
-	executable <MyExec> // the executable unit
+  executable <MyExec> // the executable unit
 is
-	executable myexec // the binary file
+  executable myexec // the binary file
 uses
 Tcl_Lib as external
 is
-	myexec; // the C++ file
+  myexec; // the C++ file
 end;    // several binaries can be specified in one .cdl file.
 executable myex2
 is
-	myex2;
+  myex2;
 end;
-	end;
-~~~~~	
-	
+  end;
+~~~~~  
+  
 Write the C++ file(s). For the example above you write two files: *myexec.cxx* and *myex2.cxx*.
  
 #### Building the Executable 
@@ -770,29 +771,29 @@ To build the executable, use the command *umake*
 In the following example an executable, *MyExec*, is created in the workbench *MyWb*. Commands preceded by an asterisk below are used only once per session: 
 1. \*Create MyExec in MyWb. 
 ~~~~~
-	> ucreate -x MyExec
+  > ucreate -x MyExec
 ~~~~~
 2. Move to the source directory of *MyExec*. 
 ~~~~~
-	> wokcd MyExec
-~~~~~	
+  > wokcd MyExec
+~~~~~  
 3. Edit the cdl source file *MyExec.cdl*. You do this outside tcl, using the editor of your choice. 
 4. Edit the C++ files *AnExe.cxx*, etc. You do this outside tcl, using the editor of your choice. 
 5. Build MyExec. 
 ~~~~~
-	> umake
-~~~~~	
+  > umake
+~~~~~  
 6. Run the executable file. 
 ~~~~~
-	> wokcd -PLib
-		> MyExec
+  > wokcd -PLib
+    > MyExec
 ~~~~~
 
 #### Executable Files 
 
-| <Exec>.cdl |	primary executable file |
-| <AnExe>.cxx |		Source C++ file |
-| <AnExe>_[1-9].cxx |	Other source C++ files |
+| \<Exec\>.cdl        |  Primary executable file |
+| \<AnExe\>.cxx       |  Source C++ file         |
+| \<AnExe\>_[1-9].cxx |  Other source C++ files  |
 
 #### Umake Steps for an Executable
 
@@ -812,16 +813,16 @@ To test an executable, you create an executable development unit and move to its
 When you write the .cdl file for your test executable, specify the packages to test, for example: 
 ~~~~~
 executable MyTest // the executable unit 
-	is 
+  is 
 executable mytest1 // the binary file 
 is 
-	mytest1; //the C++ file 
+  mytest1; //the C++ file 
 end; // several binaries can be specified in one .cdl file. 
 executable mytest2 
 is 
-	mytest2; 
+  mytest2; 
 end; 
-	end; 
+  end; 
 ~~~~~
 Write the C++ test file(s), in the example, *mytest1.cxx* and *mytest2.cxx*. 
 #### Building the Executable 
@@ -879,8 +880,8 @@ source /adv_22/WOK/BAG/KERNEL-K1-2-WOK/adm/Kernel.csh
 
 You create and enter a toolkit development unit using the following commands: 
 ~~~~~
-	> ucreate -t <TKMyToolkit>
-	> wokcd <TKMyToolkit>
+  > ucreate -t <TKMyToolkit>
+  > wokcd <TKMyToolkit>
 ~~~~~
 
 #### Write the Nomenclature File for the Toolkit 
@@ -947,7 +948,7 @@ When executables are compiled, a TOOLKITS file is used to determine which toolki
 
 Toolkit substitution is performed as follows: 
 1. MyEngine uses A, B and C; 
-2. The toolkit TK provides	A and D; D uses E; 
+2. The toolkit TK provides  A and D; D uses E; 
 3. Compilation of *MyEngine* includes TK, B C and E.
  
 Here, for simplicity, assume that additional toolkits are not substituted for B, C and E. 
@@ -976,7 +977,7 @@ Note that keywords and default options are shown in bold.
 | **Engine** | MyEng **[CDL][DYNAMIC][SOURCES]** | 
 | **Schema** | MyShma **[CDL][LIBRARY][SOURCES][DOC]** |
 | **Toolkit** |MyTk **[LIBRARY][SOURCES]** |
-| **Get** | DevelopmentUnitName::Type:::File |
+| **Get** | DevelopmentUnitName::Type\:\:\:File |
 
 \* Without mention of the version 
 
@@ -1022,22 +1023,22 @@ The output of the umake process is a parcel
 #### Umake Steps for a Delivery Unit
 
 The umake steps for development units of type delivery are explained below. 
-* *src* 				Processes FILES to list source files. 
-* *base*     			Creates directories, defines the list of units, copies the parcels and the release notes. 
-* *get.list*       		Lists files to get (using Get, Resource). 
-* *get.copy* 			Copy the files listed by get.list. 
-* *cdl.list*   			Lists CDL files to copy. 
-* *cdl.copy*  			Copies the files listed by cdl.list. 
-* *source.list* 		Lists units from which sources are to be copied. 
-* *source.build*	   	Creates a file for sources (in the format: unit.type.Z). 
-* *inc.list*     	  	Lists includes to copy. 
-* *inc.copy*   			Copies files listed by inc.list. 
-* *lib.shared* 			Works out the inputs for building or copying shareable libraries. 
-* *lib.shared.build*	Copies or builds (depending on the platform) the shareable libraries. 
-* *lib.server.list*	 	Lists interface files to copy. 
-* *exec.list*   		Lists inputs for executable delivery. 
-* *exec.build*	 		Creates executable in the parcel. 
-* *files*  				Works out the list of files delivered in the parcel. 
+* *src*         Processes FILES to list source files. 
+* *base*           Creates directories, defines the list of units, copies the parcels and the release notes. 
+* *get.list*           Lists files to get (using Get, Resource). 
+* *get.copy*       Copy the files listed by get.list. 
+* *cdl.list*         Lists CDL files to copy. 
+* *cdl.copy*        Copies the files listed by cdl.list. 
+* *source.list*     Lists units from which sources are to be copied. 
+* *source.build*       Creates a file for sources (in the format: unit.type.Z). 
+* *inc.list*           Lists includes to copy. 
+* *inc.copy*         Copies files listed by inc.list. 
+* *lib.shared*       Works out the inputs for building or copying shareable libraries. 
+* *lib.shared.build*  Copies or builds (depending on the platform) the shareable libraries. 
+* *lib.server.list*     Lists interface files to copy. 
+* *exec.list*       Lists inputs for executable delivery. 
+* *exec.build*       Creates executable in the parcel. 
+* *files*          Works out the list of files delivered in the parcel. 
 
 @subsubsection occt_wok_3_8_2  Installing a Parcel
 You open the root workbench of the workshop where you want to install the parcel using the following command: 
@@ -1171,26 +1172,26 @@ In the following example a workbench, *MyWb*, is used for working on the jni, *M
 Primary jni file is *Jni.cdl*
 
 Derived Java files for a Jni are:
-* <Package>_<Class>.java - Java source file of the class to be wrapped. 
-* <Package>_<Class>.class - Compiled java source file. 
+* \<Package\>_\<Class\>.java - Java source file of the class to be wrapped. 
+* \<Package\>_\<Class\>.class - Compiled java source file. 
 
 Derived C++ files for a Jni are:
-* <Jni>_<Package>_<Class>_java.h	- Include file for the C++ implementation of JNI. 
-* <Jni>_<Package>_<Class>_java.cxx	- C++ implementation of JNI.
+* \<Jni\>_\<Package\>_\<Class\>_java.h  - Include file for the C++ implementation of JNI. 
+* \<Jni\>_\<Package\>_\<Class\>_java.cxx  - C++ implementation of JNI.
 
 ### Umake Steps for a Jni
 
 The umake steps for development units of type jni are explained below. 
-* *src*        	Processes MyJni.cdl to list the CDL files for the development unit. Processes the FILES file to list source files. 
+* *src*          Processes MyJni.cdl to list the CDL files for the development unit. Processes the FILES file to list source files. 
 * *xcpp.fill*     Compiles the internal data structure to prepare for subsequent extractions. 
-* *xcpp.client* 	Extracts the services declared in included interface unit(s) into Java and creates .java and \*_java.cxx files. 
-* *xcpp.javac* 	Compiles .java files into .class files. 
-* *xcpp.javah* 	Creates .h header files. 
+* *xcpp.client*   Extracts the services declared in included interface unit(s) into Java and creates .java and \*_java.cxx files. 
+* *xcpp.javac*   Compiles .java files into .class files. 
+* *xcpp.javah*   Creates .h header files. 
 * *obj.comp* Compiles generated C++ files. 
-* *obj.idep*   	Generates dependency information for the unit. 
-* *exec.libs* 	Computes full implementation dependency to prepare for linking. 
-* *exec.tks*   	Performs toolkit substitution. 
-* *exec.link*   	Generates the shared library for the development unit. 
+* *obj.idep*     Generates dependency information for the unit. 
+* *exec.libs*   Computes full implementation dependency to prepare for linking. 
+* *exec.tks*     Performs toolkit substitution. 
+* *exec.link*     Generates the shared library for the development unit. 
 
 @subsection occt_wok_3_11  More Advanced Use
 @subsubsection occt_wok_3_11_1  Default User Profile
@@ -1198,10 +1199,10 @@ There is a default user profile. If you wish to change this profile the command 
 
 An example profile is given below. 
 ~~~~~
-	Info : Profile in : WOK:k1dev:ref 
-	Info : Extractor : DFLT 
-	Info : Compile Mode : Optimized 
-	Info : Station Type : sil 
+  Info : Profile in : WOK:k1dev:ref 
+  Info : Extractor : DFLT 
+  Info : Compile Mode : Optimized 
+  Info : Station Type : sil 
 ~~~~~
 @subsubsection occt_wok_3_11_2  Changing Parcel Configuration
 Parcel configuration rarely needs changes. However, if you do need to modify the list of resources, you can do so by editing the admin parameter file of the factory. This file is found in the admin directory of the factory and is named after the workshop. It has the suffix .edl. Its full name has the following format: 
@@ -1286,7 +1287,7 @@ CommandName
 ~~~~~
 **Note** a few commands described in this chapter do not completely respect this syntax; for example, *create* and *rm*. 
 
-As a rule, where an _<EntityPath>_ is given as an argument it specifies which entity the command applies to. Where no _<EntityPath>_ is specified, the command applies to the nearest appropriate entity. The *create* and *rm* commands are notable exceptions: you **must** specify an entity path with these commands. 
+As a rule, where an _\<EntityPath\>_ is given as an argument it specifies which entity the command applies to. Where no _\<EntityPath\>_ is specified, the command applies to the nearest appropriate entity. The *create* and *rm* commands are notable exceptions: you **must** specify an entity path with these commands. 
 
 @subsection occt_wok_4_2  General Services
 General services are commands that apply to any entity manipulated by WOK. They are used for: 
@@ -1303,10 +1304,10 @@ wokcd -P <ParamSuffix> [<EntityPath>]
 
 Navigates between different WOK entities and changes the current working directory. Without any arguments wokcd lists the current position (the WOK equivalent of ‘pwd’). With an argument, wokcd moves to the specified location. 
 Options: 
-* _<EntityPath>_ 	Moves to the home directory of the entity specified by <EntityPath>, i.e. moves to the location given by the parameter: %wokcd <EntityPath>_Home.
-* _-P <ParamSuffix> [<EntityPath>]_ Moves to the <ParamSuffix> directory of the entity specified by <EntityPath>. i.e. moves to the location given by the parameter: %<EntityPath>_<ParamSuffix>. If no entity path is specified, this command moves to the <ParamSuffix> directory of the current entity.
+* _\<EntityPath\>_   Moves to the home directory of the entity specified by \<EntityPath\>, i.e. moves to the location given by the parameter: %wokcd \<EntityPath\>_Home.
+* _-P \<ParamSuffix\> [\<EntityPath\>]_ Moves to the \<ParamSuffix\> directory of the entity specified by \<EntityPath\>. i.e. moves to the location given by the parameter: %\<EntityPath\>_\<ParamSuffix\>. If no entity path is specified, this command moves to the \<ParamSuffix\> directory of the current entity.
 
-Possible values for <ParamSuffix> are: Home, Adm and Src.
+Possible values for \<ParamSuffix\> are: Home, Adm and Src.
 Use the following commands to change directories within a development unit: 
 * **wsrc** To access the source files. 
 * **winc** To access the include files. 
@@ -1345,9 +1346,9 @@ Closes and reopens all the entities.
 ~~~~~
 wokenv -f <ScriptFile> -t csh
 ~~~~~
-Creates the file <ScriptFile>. This file is a script, which configures a C shell to mirror the current WOK environment. See the <a href="#occt_wok_3_6">Test Environments</a> section for more details. 
+Creates the file \<ScriptFile\>. This file is a script, which configures a C shell to mirror the current WOK environment. See the <a href="#occt_wok_3_6">Test Environments</a> section for more details. 
 Options: 
-* -f <ScriptFile> - Specifies the name of the file to produce. 
+* -f \<ScriptFile\> - Specifies the name of the file to produce. 
 * -t csh - Produces a file for configuring a C shell. 
 * -s - Sets up environment variables for application launching. 
 Example
@@ -1361,7 +1362,7 @@ Generates the shell script *MyTestEnvScript* to configure a C shell so that it m
 wokinfo -<option> [<EntityPath>]
 wokinfo -<option> <argument> [<EntityPath>]
 ~~~~~
-Displays information about _<EntityPath>_. The information displayed is common to all the entities. If no _<EntityPath>_ is specified, information about the current entity is returned. 
+Displays information about _\<EntityPath\>_. The information displayed is common to all the entities. If no _\<EntityPath\>_ is specified, information about the current entity is returned. 
 This command can be used to find the path of a file. 
 Options: 
 * -t - Returns the type of entity (factory, warehouse, parcel, workbench, development unit). 
@@ -1375,10 +1376,10 @@ Options:
 * -W - Gets warehouse from path. 
 * -w - Gets workbench from path. 
 * -x - Tests if entity exists. 
-* -d <type> - Gets type definition. 
-* -a <type> - Gets type arguments. 
-* -p <type>:<filename> - Gets the path for a file, which is of the type type that depends on %File. In other words, the path for a file of this type depends on the file name, <filename>. 
-* -p <type> - Gets the path for a file, which is of the type <type> that is not %File dependent, for example EXTERNLIB. 
+* -d \<type\> - Gets type definition. 
+* -a \<type\> - Gets type arguments. 
+* -p \<type\>:\<filename\> - Gets the path for a file, which is of the type type that depends on %File. In other words, the path for a file of this type depends on the file name, \<filename\>. 
+* -p \<type\> - Gets the path for a file, which is of the type \<type\> that is not %File dependent, for example EXTERNLIB. 
 
 #### Examples
 
@@ -1398,9 +1399,9 @@ woklocate -P [<WorkbenchPath>]
 ~~~~~ 
 Using WorkbenchPath as the starting point, this command locates files associated with the development unit and specified by the argument argument. 
 Options are: 
-* -f <Unit:Type:File> - Locates a file and gives its ID. 
-* -p <Unit:Type:File> - Locates a file and gives its path. 
-* -u <Unit> - Locates a development unit. 
+* -f \<Unit:Type:File\> - Locates a file and gives its ID. 
+* -p \<Unit:Type:File\> - Locates a file and gives its path. 
+* -u \<Unit\> - Locates a development unit. 
 * -P - Displays all available WOK public types. 
 
 #### Example
@@ -1415,19 +1416,19 @@ Displays the location of the file, MyFile.
 wokparam -<option> [<EntityPath>]
 wokparam -<option> <argument> [<EntityPath>]
 ~~~~~
-Queries system parameters such as variables and templates. For more information about parameters refer to the appendix *Parameters and EDL Files* at the end of this User’s Guide. If an <EntityPath> is specified this indicates the entity to which the command applies. 
+Queries system parameters such as variables and templates. For more information about parameters refer to the appendix *Parameters and EDL Files* at the end of this User’s Guide. If an \<EntityPath\> is specified this indicates the entity to which the command applies. 
 Options: 
 * -L - Lists the directories used to search for the parameter files. 
 * -C - Displays the subclasses list. 
-* -a <TemplateName> - Gets arguments for the template TemplateName. 
-* -e <ParamName> - Evaluates the parameter ParamName. 
-* -F <ClassName> - Displays the files comprising the definition of the class *ClassName*. 
-* -l <Class> - Lists parameters concerning class (prefix) class. 
-* -S <FileName> - Finds the first file FileName in the list of directories cited afterwards. 
-* -t <Name> - Tests if the variable Name is set. 
-* -v <ParamName> - Displays the value of the parameter *ParamName*. 
-* -s <Name>=\<Value> Reserved for advanced use. Sets the variable *Name* to value *Value*. 
-* -u <Name> Reserved for advanced use. Unsets the variable Name. 
+* -a \<TemplateName\> - Gets arguments for the template TemplateName. 
+* -e \<ParamName\> - Evaluates the parameter ParamName. 
+* -F \<ClassName\> - Displays the files comprising the definition of the class *ClassName*. 
+* -l \<Class\> - Lists parameters concerning class (prefix) class. 
+* -S \<FileName\> - Finds the first file FileName in the list of directories cited afterwards. 
+* -t \<Name\> - Tests if the variable Name is set. 
+* -v \<ParamName\> - Displays the value of the parameter *ParamName*. 
+* -s \<Name\>=\<Value> Reserved for advanced use. Sets the variable *Name* to value *Value*. 
+* -u \<Name\> Reserved for advanced use. Unsets the variable Name. 
 
 #### Examples 
 
@@ -1502,7 +1503,7 @@ The following parameters are mandatory when a factory is created:
 Options: 
 * -P - Propose defaults. Returns a list of default values for the parameters necessary for the creation of the factory. No entity is created if this option is used. 
 * -d Use default. Uses default values to create the factory. 
-* -D<Suffix>=\<Value> - Defines parameter(s). Specifies the value to use for the given parameter(s) explicitly. This option can be used in conjunction with the –d option to take default values for all the mandatory parameters except the parameter(s) explicitly specified here. 
+* -D\<Suffix\>=\<Value\> - Defines parameter(s). Specifies the value to use for the given parameter(s) explicitly. This option can be used in conjunction with the –d option to take default values for all the mandatory parameters except the parameter(s) explicitly specified here. 
 
 #### Examples 
 
@@ -1563,10 +1564,10 @@ The commands you use to create and destroy the warehouses are reserved for the e
 @subsubsection occt_wok_4_4_1  Wcreate
 *Reserved for administrator’s use.* 
 ~~~~~
-Wcreate [-<option>] -D<Suffix>=<Value>* <WarehouseName>
-Wcreate -<option> [-D <Suffix>=<Value>]* <WarehouseName>
+Wcreate [-<option>] -D <Suffix>=<Value>* <WarehouseName>
+Wcreate -<option> [-D  <Suffix>=<Value>]* <WarehouseName>
 ~~~~~
-Creates a warehouse. The name of the warehouse to create is given by *<WarehouseName>*. You can also specify the factory that will contain the warehouse. 
+Creates a warehouse. The name of the warehouse to create is given by *\<WarehouseName\>*. You can also specify the factory that will contain the warehouse. 
 Once the creation is completed, a file containing the parameters of warehouse creation is in its turn created in the administration directory of the factory to which the warehouse belongs. 
 
 Parameters: 
@@ -1579,7 +1580,7 @@ The following parameters are mandatory when a warehouse is created:
 Options: 
 * -P - (Propose defaults.) Returns a list of default values for the parameters necessary for the creation of a warehouse. No entity is created if this option is used. 
 * -d - (Use defaults.) Uses default values to create the warehouse. 
-* -D <Suffix>=\<Value> (Define parameter.) Explicitly specifies the value to use for this parameter. This option can be used in conjunction with the –d option to take default values for all the mandatory parameters except the parameter(s) explicitly specified here. 
+* -D \<Suffix\>=\<Value\> (Define parameter.) Explicitly specifies the value to use for this parameter. This option can be used in conjunction with the –d option to take default values for all the mandatory parameters except the parameter(s) explicitly specified here. 
 
 #### Examples
 
@@ -1632,7 +1633,7 @@ The following parameters are mandatory when declaring parcels:
 * **Delivery** - Delivery name. 
 
 Options: 
-* -p <Parcel> Defines the name of the parcel to declare. This name must be given with the option. 
+* -p \<Parcel\> Defines the name of the parcel to declare. This name must be given with the option. 
 * -d Creates a parcel using defaults. 
 * -P Proposes defaults. 
 
@@ -1650,7 +1651,7 @@ A parcel is a receptacle for development units. You use it to group together the
 
 @subsubsection occt_wok_4_5_1  pinfo
 
-pinfo -<option> [<ParcelPath>] - displays details about the contents of the parcel. If *ParcelPath* is specified this determines the parcel to apply to. If no parcel path is specified the command applies to the nearest parcel. 
+pinfo -\<option\> [\<ParcelPath\>] - displays details about the contents of the parcel. If *ParcelPath* is specified this determines the parcel to apply to. If no parcel path is specified the command applies to the nearest parcel. 
 
 Options: 
 * -d - Displays the delivery contained in the parcel. 
@@ -1669,7 +1670,7 @@ Displays a list of units in the parcel MyParcel.
 ~~~~~
 pinstall <ParcelName> 
 ~~~~~
-Installs the parcel <ParcelName> in the current warehouse. The process of installing a parcel sets up various paths and variables to ensure that the application can locate necessary resources and so on. 
+Installs the parcel \<ParcelName\> in the current warehouse. The process of installing a parcel sets up various paths and variables to ensure that the application can locate necessary resources and so on. 
 The administrator must perform *pinstall* for each platform used. 
 
 #### Example
@@ -1691,7 +1692,7 @@ A workshop is a tree of workbenches using the same parcel configuration. There i
 screate [-<option>] {-D<Suffix>=<Value>}* <WorkshopName>
 screate -<option> <WorkshopName>
 ~~~~~
-Creates a workshop, <WorkshopName>. You can also specify the factory that contains this workshop. 
+Creates a workshop, \<WorkshopName\>. You can also specify the factory that contains this workshop. 
 Once the creation is completed, a file containing the parameters for the creation of the workshop is generated in the administration directory of the factory to which it belongs. 
 
 The following parameters are mandatory when creating a workshop: 
@@ -1705,7 +1706,7 @@ The following parameters are mandatory when creating a workshop:
 Options: 
 * -P (Propose defaults.) Returns a list of default values for the parameters necessary for the creation of a workshop. No entity is created if this option is used. 
 * -d (Use defaults.) Uses default values to create the workshop. 
-* -D <Suffix>=\<Value> (Define parameter.) Specifies the value to use for this parameter explicitly. This option can be used in conjunction with the –d option to accept default values for all the mandatory parameters except the parameter(s) explicitly specified here. 
+* -D \<Suffix\>=\<Value> (Define parameter.) Specifies the value to use for this parameter explicitly. This option can be used in conjunction with the –d option to accept default values for all the mandatory parameters except the parameter(s) explicitly specified here. 
 
 
 #### Examples
@@ -1744,7 +1745,7 @@ Displays a list of workbenches in the nearest workshop.
 ~~~~~
 srm WorkshopName 
 ~~~~~
-Deletes the workshop <WorkshopName> if it is empty. You must not be in the workshop you intend to destroy.
+Deletes the workshop \<WorkshopName\> if it is empty. You must not be in the workshop you intend to destroy.
 
 #### Example
 
@@ -1767,21 +1768,21 @@ wcreate -f <ParentWB> [-D <Suffix>=<Value>]* <WBName>
 wcreate -f <ParentWB> -P|d [-D <Suffix>=<Value>]* <WBName>
 wcreate -f <ParentWB> -P|d <WBName>
 ~~~~~
-Creates the workbench <WBName> as a child of the workbench <ParentWB>. The result of this creation is a directory structure. 
+Creates the workbench \<WBName\> as a child of the workbench \<ParentWB\>. The result of this creation is a directory structure. 
 Compared to the creation of other entities, creating a workbench requires an additional piece of information: you must specify the parent of the workbench to create. 
 Once the creation is completed, a file containing the parameters of the creation of this workbench is created in the administration directory of the workshop that contains it. 
 Parameters: 
 The following parameters are mandatory when creating a workbench: 
-* **Adm** 		Path name for administration directory. 
-* **Home** 		Path name for home directory. 
-* **Stations** 	List of supported stations. 
-* **DBMSystems** 	List of supported dbms. 
+* **Adm**     Path name for administration directory. 
+* **Home**     Path name for home directory. 
+* **Stations**   List of supported stations. 
+* **DBMSystems**   List of supported dbms. 
 
 Options: 
 * -f - Specifies the parent workbench. 
 * -P - (Propose defaults.) Returns a list of default values for the parameters necessary for the creation of the workbench. No entity is created if this option is used. 
 * -d - (Use defaults.) Uses default values to create the workbench. 
-* -D <Suffix>=\<Value> - (Define parameter.) Specifies the value to use for this parameter explicitly. This option can be used in conjunction with the –d option to take default values for all the mandatory parameters except the parameter(s) explicitly specified here. 
+* -D \<Suffix\>=\<Value\> - (Define parameter.) Specifies the value to use for this parameter explicitly. This option can be used in conjunction with the –d option to take default values for all the mandatory parameters except the parameter(s) explicitly specified here. 
 
 #### Example
 
@@ -1800,7 +1801,7 @@ Creates the workbench MyWorkbench using default values for all mandatory paramet
 w_info -option[Workbench] 
 w_info -option argument[Workbench] 
 ~~~~~
-The *w_info* command is the exception to the common command syntax. The form w_info is used instead of winfo because the latter already exists as a tcl/tk command and cannot be reused as a name by WOK. If <Workbench> is specified, this determines the workbench to apply to. If no <Workbench> is specified, the nearest workbench is used. 
+The *w_info* command is the exception to the common command syntax. The form w_info is used instead of winfo because the latter already exists as a tcl/tk command and cannot be reused as a name by WOK. If \<Workbench\> is specified, this determines the workbench to apply to. If no \<Workbench\> is specified, the nearest workbench is used. 
 
 Using the tcl winfo command by mistake generates an error message, but does not cause any damage. 
 
@@ -1810,7 +1811,7 @@ Options:
 * -f - Displays the parent workbench. 
 * -A - Lists all the ancestors of the workbench. 
 * -k - Lists visible toolkits. 
-* -S <arg> - Lists suppliers of the unit <arg> within the visibility of the workbench. 
+* -S \<arg\> - Lists suppliers of the unit \<arg\> within the visibility of the workbench. 
 * -S <execname:partname> - Lists the suppliers of the component executable partname within an executable development unit execname. 
 * -I <arg1, arg2 ... argN> - Lists the development units, sorted by order of implementation dependency. 
 
@@ -1836,9 +1837,9 @@ Deletes *MyWorkbench*, provided that it is empty and has no children.
 
 @subsubsection occt_wok_4_7_4  wmove
 *Reserved for advanced use* 
-wmove -f <NewParentWorkbench> <Workbench>
-Moves the <Workbench> (and its children), to a different parent *NewParentWorkbench* within the same workshop. 
-Option  -f <argument> specifies the new parent workbench. 
+wmove -f \<NewParentWorkbench\> \<Workbench\>
+Moves the \<Workbench\> (and its children), to a different parent *NewParentWorkbench* within the same workshop. 
+Option  -f \<argument\> specifies the new parent workbench. 
 
 #### Example
 
@@ -1854,16 +1855,16 @@ wprocess <WorkbenchName> <options>
 Allows automatic reconstruction of a workbench. 
 
 Options: 
-* -DGroups =Obj,Lib,Exec 		- Selects groups Obj, Lib and Exec. 
-* -DUnits = MyUd1,MyUd2,... 	- Selects the development units MyUd1, MyUd2 etc. 
-* -DXGroups =Src,Deliv 			- Excludes groups Obj and Deliv. 
-* -DXUnits=MyUd1,MyUd2,...	 	- Excludes units MyUd1, MyUd2 etc. 
-* -B <Profile> 					- Selects the extraction profile. 
-* -f 							- Forces all selected steps. 
-* -d | -o 		 				- Switches between debug and optimized modes. 
-* -P 							- Prints out the selected steps. 
-* -S 							- Silent mode (no print of the banner). 
-* -L 							- Logs output to MyUD_<step code>. Log in step administration directory. Valid group names are: Src, Xcpp, Obj, Dep, Lib, Exec, Deliv. 
+* -DGroups =Obj,Lib,Exec     - Selects groups Obj, Lib and Exec. 
+* -DUnits = MyUd1,MyUd2,...   - Selects the development units MyUd1, MyUd2 etc. 
+* -DXGroups =Src,Deliv       - Excludes groups Obj and Deliv. 
+* -DXUnits=MyUd1,MyUd2,...     - Excludes units MyUd1, MyUd2 etc. 
+* -B \<Profile\>           - Selects the extraction profile. 
+* -f               - Forces all selected steps. 
+* -d | -o              - Switches between debug and optimized modes. 
+* -P               - Prints out the selected steps. 
+* -S               - Silent mode (no print of the banner). 
+* -L               - Logs output to MyUD_<step code>. Log in step administration directory. Valid group names are: Src, Xcpp, Obj, Dep, Lib, Exec, Deliv. 
 
 #### Example
 
@@ -1885,7 +1886,7 @@ The development unit is the basic building block of development work in the WOK 
 ucreate [-<TypeCode>] <UnitName>
 ucreate -P 
 ~~~~~
-Creates a development unit named <UnitName> of type <TypeCode>. 
+Creates a development unit named \<UnitName\> of type \<TypeCode\>. 
 
 Once the creation is completed, a file containing the parameters of the creation of the development unit is generated in the administration directory of the workbench to which the development unit belongs. 
 
@@ -1898,7 +1899,7 @@ TypeCodes:
 * -x - Creates a development unit of type executable. 
 * -f - Creates a development unit of type frontal. 
 * -r - Creates a development unit of type resource. 
-* -P - Displays ucreate creation possibilities in format: <TypeCode> <TypeName>. 
+* -P - Displays ucreate creation possibilities in format: \<TypeCode\> \<TypeName\>.
 
 #### Examples
 
@@ -1914,7 +1915,7 @@ uinfo -t|c [<UnitPath>]
 uinfo -f|F|p [-<FilterOption> [<Type>]]* [<UnitPath>]
 ~~~~~
 
-Displays details about the development unit. Where no <UnitPath> is specified, details of the current unit are displayed. Filter options are available for use in conjunction with the options -f, -F, -p to filter the file list. Combinations of filter options can be used.
+Displays details about the development unit. Where no \<UnitPath\> is specified, details of the current unit are displayed. Filter options are available for use in conjunction with the options -f, -F, -p to filter the file list. Combinations of filter options can be used.
  
 Note that the uinfo command is based on the results of construction using umake. As a consequence, the list of files displayed by uinfo is only valid if the construction has completed normally. Similarly, the list of files derived from the CDL is only valid if the CDLs of the unit have been translated successfully. 
 
@@ -1925,7 +1926,7 @@ Options:
 * -F - Displays a list of file names associated with the unit, together with their respective types. Types of files include for example: *source*, *library*, *executable*, and *pubinclude*. To display a full list of file types, use the command *ucreate*. 
 * -p - Displays the full paths of the files associated with the unit. 
 Filter Options: 
-* -T - <Type> Displays files of type <Type> only. 
+* -T - \<Type\> Displays files of type \<Type\> only. 
 * -i - Displays only *independent* files, i.e. files that are not specific to a DBMS, for example sources. 
 * -s - Displays only station dependent files. 
 * -b - Displays only DBMS dependent files. 
@@ -1949,7 +1950,7 @@ Lists the names of the header files associated with the unit MyUnit which is in 
 ~~~~~
 urm <UnitPath> 
 ~~~~~
-Deletes the development unit <UnitPath> with its directory structure and its files, even if the unit is referenced by another one. 
+Deletes the development unit \<UnitPath\> with its directory structure and its files, even if the unit is referenced by another one. 
 
 #### Example
 ~~~~~ 
@@ -1976,12 +1977,12 @@ The following properties apply:
 Used without any arguments the *umake* command carries out all of the steps appropriate for the development unit to be constructed. Using keywords and arguments you can perform the build process step by step. 
 
 Options: 
-* -S 			- Displays the list of steps. 
-* -s <step> 	- Starts the build process at the step specified. 
-* -e <step> 	- Ends the build process at the step specified. 
-* -o <step> 	- Only executes the step specified. 
-* -t <target> 	- Specifies the target to build. 
-* -f			- Forces the build process, skipping the verification of dependencies. 
+* -S            - Displays the list of steps. 
+* -s \<step\>   - Starts the build process at the step specified. 
+* -e \<step\>   - Ends the build process at the step specified. 
+* -o \<step\>   - Only executes the step specified. 
+* -t \<target\> - Specifies the target to build. 
+* -f            - Forces the build process, skipping the verification of dependencies. 
 
 #### Example
 
@@ -2029,16 +2030,16 @@ For each class, we extract the prototypes of:
   *  Constructors 
 The extracted files are the following: 
   *  for an ordinary class C 
-	  +  C.cxx.template for the non-inline class methods. 
-	  +  C.lxx.template for the inline class methods. 
+    +  C.cxx.template for the non-inline class methods. 
+    +  C.lxx.template for the inline class methods. 
   *  for a generic class G 
-	  *  G.gxx.template for the non-inline class methods. 
-	  *  G.lxx.template for the inline class methods. 
+    *  G.gxx.template for the non-inline class methods. 
+    *  G.lxx.template for the inline class methods. 
   *  for a package method P 
-	  *  P.cxx.template for the non-inline package methods. 
-	  *  P.lxx.template for the inline package methods. 
-	  
-	  
+    *  P.cxx.template for the non-inline package methods. 
+    *  P.lxx.template for the inline package methods. 
+    
+    
 #### obj
 
 Specifying the target, *obj* compiles the object files for one or more files. The syntax for -obj.* is as follows: 
@@ -2069,7 +2070,7 @@ EXTERNLIB uses resources contained in Open CASCADE Technology prerequisites. To 
 
 The umake command does not generate actual dependencies. To avoid any cumbersome dependencies, for example, if you do not want the shareable library file for a package but the package enumeration only, use the INTERNLIB component listed in FILES, to get only the given dependencies. 
 
-In practice, the generated file, <myUD>.ImplDep, in the /drv/adm directory, is copied into INTERNLIB. INTERNLIB contains lines of enumerations, as below: 
+In practice, the generated file, \<myUD\>.ImplDep, in the /drv/adm directory, is copied into INTERNLIB. INTERNLIB contains lines of enumerations, as below: 
 ~~~~~
 Dependence 1 
 Dependence 2 
@@ -2082,17 +2083,17 @@ The example below illustrates how you can modify your WOK compiler options. Refe
 #--------------------------------- 
 #// First, ensure that we only execute this file once 
 \@ifnotdefined ( %Kernel_CMPLRS_EDL ) then 
-	\@set %Kernel_CMPLRS_EDL = **; 
+  \@set %Kernel_CMPLRS_EDL = **; 
 #// Then set C++ compilation options, based on workstation type: 
-	\@if( %Station == *sil* ) then 
+  \@if( %Station == *sil* ) then 
 \@set %ModeOpt =  * *; 
-	\@endif; 
-	\@if( %Station == *ao1* ) then 
+  \@endif; 
+  \@if( %Station == *ao1* ) then 
 \@set %ModeOpt = *-g *; 
-	\@endif; 
-	\@if( %Station == *hp* ) then 
+  \@endif; 
+  \@if( %Station == *hp* ) then 
 \@string %CMPLRS_C_Options +=  * -Aa -D_HPUX_SOURCE +e*; 
-	\@endif; 
+  \@endif; 
 \@endif; 
 ~~~~~
 
@@ -2109,14 +2110,14 @@ The following example defines a umake dependency tree and introduces two new ste
 -- File Name: DCube_WOKSteps.edl 
 
 \@ifnotdefined (%DCube_WOKSteps_EDL) then 
-	\@set %DCube_WOKSteps_EDL = **; 
-	\@string %WOKSteps_ObjGroup += *obj.libs obj.arx obj.objs *; 
+  \@set %DCube_WOKSteps_EDL = **; 
+  \@string %WOKSteps_ObjGroup += *obj.libs obj.arx obj.objs *; 
 ---\@set %WOKUmake_Steps =**src obj.inc(src) objc.cgen(src) obj.comp(src, obj.cgen) obj.libs(src) obj.arx(obj.libs) obj.objs(obj.arx) obj.lib(obj.comp, obj.objs) obj.idep(obj.comp,src)*; 
-	\@set %WOKSteps_obj_libs = *DCube_Libs(src)*; 
-	\@set %WOKSteps_obj_arx = *WOKStep_LibExtract(obj.libs)*; 
-	\@set %WOKSteps_obj_objs = *DCube_Objs(obj.arx)*; 
+  \@set %WOKSteps_obj_libs = *DCube_Libs(src)*; 
+  \@set %WOKSteps_obj_arx = *WOKStep_LibExtract(obj.libs)*; 
+  \@set %WOKSteps_obj_objs = *DCube_Objs(obj.arx)*; 
 \@set %WOKSteps_obj_lib = *WOKStep_DynamicLibrary(obj.comp, obj.objs)*; 
-	\@set %WOKSteps_toolkit_ListWith = *obj.comp obj.objs*; 
+  \@set %WOKSteps_toolkit_ListWith = *obj.comp obj.objs*; 
 \@endif; 
 ~~~~~
 
@@ -2150,9 +2151,9 @@ For each file, the status is indicated as follows:
 
 Options: 
 * -ref - Creates a report that is used to initialize a base of source files. This report is used with the *wintegre -ref* command. 
-* -ud <ud1>, <ud2>, ..., <udN> - Specifies the list of development units to prepare for integration. Separate the unit names with a comma. If no unit names are specified, all the units in the workbench are processed. 
-* -o <fileName> - Writes the integration report to the specified file. By default, the report is displayed (i.e. written to standard output). 
-* -wb <The name of target workbench> - Specifies the name of target workbench. It should be one of father workbenches with attached integration queue. 
+* -ud \<ud1\>, \<ud2\>, ..., \<udN\> - Specifies the list of development units to prepare for integration. Separate the unit names with a comma. If no unit names are specified, all the units in the workbench are processed. 
+* -o \<fileName\> - Writes the integration report to the specified file. By default, the report is displayed (i.e. written to standard output). 
+* -wb \<The name of target workbench\> - Specifies the name of target workbench. It should be one of father workbenches with attached integration queue. 
 
 @subsubsection occt_wok_4_9_2  wstore
 ~~~~~
@@ -2165,14 +2166,14 @@ wstore [<FileName>]
 This command manages the queue of pending reports. When a report is queued it is given a unique number also called a report-ID. 
 
 Options: 
-* <FileName> - Adds a report from the file FileName to the report queue. 
+* \<FileName\> - Adds a report from the file FileName to the report queue. 
 * -trig - Calls a tcl procedure after the report has been processed. This tcl procedure must be located in the admin directory of the workshop and the file must be named wstore_trigger.tcl. An example of a trigger can be found in the file <i>$env(WOK_LIBRARY)/wstore_trigger.example</i>. 
 * -ls - Lists pending reports, together with their owners and their IDs. This is a default option. If two files are found with the same name in the same development unit in two different reports the full path of each of these files is displayed. 
-* -cat <Report_ID> - Displays the contents of the report <i><Report_ID></i>. 
+* -cat \<Report_ID\> - Displays the contents of the report <i>\<Report_ID\></i>. 
 * -rm - Removes a report from the report queue. 
 * -f - Forces deletion. This option must be used with the -rm option when you delete a report that you do not own. 
 * -param - Lists queue parameters associated with the workbench. 
-* -create –wb <MasterWb> -queue <any/dir> -type SCCS - Creates an integration queue associated with MasterWb workbench, queue should be located at any/dir and specify SCCS type of database. 
+* -create –wb \<MasterWb\> -queue \<any/dir\> -type SCCS - Creates an integration queue associated with MasterWb workbench, queue should be located at any/dir and specify SCCS type of database. 
 
 Possible options for –create are: 
 * -queue - Specify the name of directory under which queue is created 
@@ -2200,10 +2201,10 @@ wintegre [<reportID>] –wb <MasterWb>
 Processes a report and removes it from the queue in the current workshop. 
 
 Parameters: 
-* <reportID> - Number indicating the rank of the report in the integration queue. Use the command *wstore –l* to get this number. 
+* \<reportID\> - Number indicating the rank of the report in the integration queue. Use the command *wstore –l* to get this number. 
 
 Options: 
-* -ref <BaseNumber> - Initializes the version of the elements in the repository. 
+* -ref \<BaseNumber\> - Initializes the version of the elements in the repository. 
 * -all - Processes all the reports in the integration queue. 
 * -wb - Specify the integration queue of which workbench should be used 
 * -norefcopy - Updates the repository but not the target workbench. 
@@ -2262,14 +2263,14 @@ Options:
 * -from p1 -to p2 - Extracts a portion of the journal file between index p1 and p2, with p1 and p2 integration numbers or marks. If p1 is not specified, reports are extracted from the beginning of the journal file. If p2 is not specified, reports are extracted up to the end of the journal file. 
 * -at p - Places a mark at index p, with p being an integration number. If p is not specified, the mark is placed at the end of the journal. 
 * -ls [-bydate] - Lists the marks. If -bydate is specified, the marks are listed in the order they were created. Otherwise, they are listed according to their place in the journal file. 
-* -rm <markname> - Removes the mark *markname*. 
+* -rm \<markname\> - Removes the mark *markname*. 
 * -admin - Displays the journal location, date and other information. 
 * -purge - Saves the journal file and creates a new empty one. 
 
 Additional options: 
-* -o file <name> - Redirects output in file. This option is ignored if -command is specified. 
-* -ws <shop> - Uses journal of shop instead of the current one. shop must belong to the current factory. 
-* -command <MyCommand> - Runs the command *Tcl MyComm* on the specified part of the journal. The syntax is the following: *proc MyComm { comments table args } { ...}*, where *comments* is a string containing all the comments on the integration between n1 and n2, and *table* is a table indexed with the names of the concerned *uds* (each element of the table is a list of UD files with definition of their status and version). Additional arguments may be passed using *userdata* with the argument *args* containing *mydata1, mydata2*. 
+* -o file \<name\> - Redirects output in file. This option is ignored if -command is specified. 
+* -ws \<shop\> - Uses journal of shop instead of the current one. shop must belong to the current factory. 
+* -command \<MyCommand\> - Runs the command *Tcl MyComm* on the specified part of the journal. The syntax is the following: *proc MyComm { comments table args } { ...}*, where *comments* is a string containing all the comments on the integration between n1 and n2, and *table* is a table indexed with the names of the concerned *uds* (each element of the table is a list of UD files with definition of their status and version). Additional arguments may be passed using *userdata* with the argument *args* containing *mydata1, mydata2*. 
 
 Wok provides a similar procedure *wnews:cpwb*, which allows to copy UDs from one workbench into another. 
 
@@ -2332,10 +2333,10 @@ wget [-f] –wb <MasterWb> [-ud <UnitName>] <SourceFile1>...<SourceFileN>
 The *wget* command allows importing source files into the workbench. The files are fetched from the SCCS database of the factory. This operation is known as a check-out operation. You can specify one or more files or a unit name. By default, the latest version of the files is fetched.
  
 Options: 
-* <SourceFile> - Fetches a copy of the specified file. 
-* -ud <UnitName> Fetches all the source files of the development unit you specified. 
+* \<SourceFile\> - Fetches a copy of the specified file. 
+* -ud \<UnitName\> Fetches all the source files of the development unit you specified. 
 * -f Forces existing files to be overwritten. 
-* -v <Version> Fetches <Version> of the file you specified. 
+* -v \<Version\> Fetches \<Version\> of the file you specified. 
 * -l Lists the files of the development unit that can be copied (i.e. that you can **get**). This is a default option. 
 
 #### Example
@@ -2383,7 +2384,7 @@ The following procedure explains how to set up the source management environment
 ~~~~~
 > wintegre –wb <workbench> < BaseNumber >
 ~~~~~
-Here <BaseNumber> is the first digit of the SCCS version numbers. 
+   Here \<BaseNumber\> is the first digit of the SCCS version numbers. 
 
 @subsubsection occt_wok_4_9_7  Integration Procedure
 
@@ -2397,7 +2398,8 @@ To integrate, proceed as follows:
 ~~~~~
 \> wstore –wb MasterWb MyReport
 ~~~~~
-By this step, all the files you have modified have been stored and the report has been queued. You can continue with modifying these files. 
+   By this step, all the files you have modified have been stored and the report has been queued. You can continue with modifying these files.
+
 4. Examine the state of the integration queue to get the ID of your report. 
 ~~~~~
 \> wstore –wb MasterWb -ls
@@ -2421,7 +2423,7 @@ Options:
 * -s Gets current workshop 
 * -w Gets current workbench 
 * -u Gets current development unit 
-* -t <entity_path> Gets the entity type 
+* -t \<entity_path\> Gets the entity type 
 * -E Reserved for internal use. Gets known Entity List 
 * -N Reserved for internal use. Gets known Entity Names 
 
@@ -2454,18 +2456,19 @@ The main menu bar contains three menus:
   *  **Help** to display the associated on-line help. 
 
 @subsubsection occt_wok_5_1_2  Application icons
+
 The four icons on the left are used to access applications: 
-  *  **wprepare**, allows preparing the integration queue being associated with a given workshop, 
+*  **wprepare**, allows preparing the integration queue being associated with a given workshop, 
 @image html /dev_guides/wok/images/wok_image016.png
 @image latex /dev_guides/wok/images/wok_image016.png
-  *  **umake**, gives access to all available umake options plus compilation options, 
+*  **umake**, gives access to all available umake options plus compilation options, 
 @image html /dev_guides/wok/images/wok_image017.png
 @image latex /dev_guides/wok/images/wok_image017.png
-  *  **CDL browser**, provides information on the class structure or translated classes, 
+*  **CDL browser**, provides information on the class structure or translated classes, 
 @image html /dev_guides/wok/images/wok_image018.png
 @image latex /dev_guides/wok/images/wok_image018.png
 
- *  **parameters**, allows displaying and editing all EDL files. 
+*  **parameters**, allows displaying and editing all EDL files. 
 @image html /dev_guides/wok/images/wok_image019.png
 @image latex /dev_guides/wok/images/wok_image019.png
 
@@ -2484,6 +2487,7 @@ Use the **go up** icon to navigate through the session and **wokcd** to update t
 The field **Location** gives the exact address of the item in the session. Use the arrow on the right to select already visited addresses. 
 
 @subsection occt_wok_5_2  Popup menus
+
 Two types of popup menus may be accessed according to the context. Just click MB3 to display the popup menu. 
 
 Click on an item in the left window to get the popup menu providing access to applications. 
@@ -2525,8 +2529,10 @@ List of Keys and their Bindings in cdl Mode
 |ESC-RET | cdl-raw-newline |
 
 @section occt_wok_7 Appendix B. Parameters and EDL Files
+
 @subsection occt_wok_7_1 EDL language
-@subsection occt_wok_7_1_1 Key Concepts
+
+@subsubsection occt_wok_7_1_1 Key Concepts
 
 EDL is a script-like programming language.
 
@@ -2542,7 +2548,7 @@ EDL is a script-like programming language.
 \@set 
 \@apply 
 ~~~~~
-* **Execution**  <i>@uses</i> is an execution operator.
+* **Execution**  <i>\@uses</i> is an execution operator.
 * **Input/Output** The following input/output operators are provided: 
 ~~~~~
 \@file 
@@ -2589,16 +2595,18 @@ is
 ~~~~~
 
 @subsubsection occt_wok_7_1_2  Syntax
+
 The following conventions are used in the explanations below: 
 
-| *<Variable>* 	| refers to a variable, for example: *%myvariable* |
-| *<Id>* 		| refers to an identifier, for example: *myidentifier* |
-| *“String”* 	| refers to a string of characters, for example: *“my string of characters”* |
-| *<Condition>* | refers to a condition, for example: *(%mytest == “ok”) || (%mytest == “good”)* |
-| *<Template>* 	| refers to the name of a template, for example: mytemplate. |
-|{} 	        | indicates possible repetition of what is within the curly brackets. |
+| *\<Variable\>*  | refers to a variable, for example: *%myvariable*                               |
+| *\<Id\>*        | refers to an identifier, for example: *myidentifier*                           |
+| *“String”*      | refers to a string of characters, for example: *“my string of characters”*     |
+| *\<Condition\>* | refers to a condition, for example: *(%mytest == “ok”) || (%mytest == “good”)* |
+| *\<Template\>*  | refers to the name of a template, for example: mytemplate.                     |
+|{}               | indicates possible repetition of what is within the curly brackets.            |
 
 @subsubsection occt_wok_7_1_3  EDL Actions
+
 \@string 
 --------
 ~~~~~
@@ -2612,15 +2620,14 @@ Concatenates the contents of the variables and strings on the right of the equal
 ~~~~~
 \@set <Variable> = “ String” ;
 ~~~~~
-Sets <Variable> to the value “String”
+Sets \<Variable\> to the value “String”
 
 \@apply
 ------ 
 ~~~~~
 \@apply <Variable> = <Template> ;
 ~~~~~
-Evaluates the template, <Template>, and sets <Variable> equal to this.
-
+Evaluates the template, \<Template\>, and sets \<Variable\> equal to this.
 
 \@uses
 -----
@@ -2628,7 +2635,7 @@ Evaluates the template, <Template>, and sets <Variable> equal to this.
 \@uses <Variable>;
 \@uses “ String”;
 ~~~~~
-Runs an EDL file. The name of this file is either contained in the variable <Variable> or is given as a string, <String>.
+Runs an EDL file. The name of this file is either contained in the variable \<Variable\> or is given as a string, \<String\>.
 
 \@file
 -----
@@ -2636,21 +2643,21 @@ Runs an EDL file. The name of this file is either contained in the variable <Var
 \@file <Id> <Variable> ;
 \@file <Id> “String” ;
 ~~~~~
-Opens a file and associates it with the identifier <Id>. This <Id> identifies the file until it is closed. The name of the file is given as a string <String>, or using a variable <Variable>.
+Opens a file and associates it with the identifier \<Id\>. This \<Id\> identifies the file until it is closed. The name of the file is given as a string \<String\>, or using a variable \<Variable\>.
 
 \@write
 ------
 ~~~~~
 \@write <Id> <Variable> ;
 ~~~~~
-Writes the contents of the variable out to a file indicated by the file <Id>. This <Id> is the identifier allocated to the file when is opened using \@file.
+Writes the contents of the variable out to a file indicated by the file \<Id\>. This \<Id\> is the identifier allocated to the file when is opened using \@file.
 
 \@close
 ------
 ~~~~~
 \@close <Id> ;
 ~~~~~
-Closes the file identified by <Id>. This <Id> is the identifier allocated to the file when is opened using \@file.
+Closes the file identified by \<Id\>. This \<Id\> is the identifier allocated to the file when is opened using \@file.
 
 \@cout
 -----
@@ -2668,7 +2675,7 @@ Concatenates the contents of the variables and strings and displays the result o
 \@else
 \@endif ;
 ~~~~~
-Checks for the existence of a file, the name of which is given in the string  ‘String”, or else contained in the variable <Variable>.
+Checks for the existence of a file, the name of which is given in the string  ‘String”, or else contained in the variable \<Variable\>.
 If the file exists, the instructions contained in the ‘then’ loop are executed up to the *\@endif*, (or an \@else if one is found before the \@endif ).
 If the files do not exist, the ‘else’ loop is executed (if one exists).
 
@@ -2681,7 +2688,7 @@ If the files do not exist, the ‘else’ loop is executed (if one exists).
 \@else
 \@endif ;
 ~~~~~
-Checks for the existence of a file, the name of which is given in the string ‘String”, or else contained in the variable <Variable>.
+Checks for the existence of a file, the name of which is given in the string ‘String”, or else contained in the variable \<Variable\>.
 If the file does not exist, the instructions contained in the ‘then’ loop are executed up to the \@endif, (or an \@else if one is found before the \@endif).
 If the file does exist, the ‘else’ loop is executed (if one exists).
 
@@ -2694,7 +2701,7 @@ If the file does exist, the ‘else’ loop is executed (if one exists).
 \@else
 \@endif ;
 ~~~~~
-Checks for the existence of a variable or template, the name of which is given by <Template>, or else contained in the variable <Variable>.
+Checks for the existence of a variable or template, the name of which is given by \<Template\>, or else contained in the variable \<Variable\>.
 If a variable or a template by this name exists the instructions contained in the ‘then’ loop are executed up to the \@endif, (or an \@else if one is found before the \@endif).
 If neither a variable nor a template exists, the ‘else’ loop is executed (if one exists).
 
@@ -2708,7 +2715,7 @@ If neither a variable nor a template exists, the ‘else’ loop is executed (if
 \@else
 \@endif ;
 ~~~~~
-Checks for the existence of a variable or template, the name of which is given by <Template>, or else contained in the variable <Variable>.
+Checks for the existence of a variable or template, the name of which is given by \<Template\>, or else contained in the variable \<Variable\>.
 If neither a variable nor a template by this name exists the instructions contained in the ‘then’ loop are executed up to the \@endif, (or an \@else if one is found before the \@endif).
 If a variable or a template does exist, the ‘else’ loop is executed (if one exists).
 
@@ -2729,10 +2736,10 @@ If the condition is false, the ‘else’ loop is executed (if one exists).
 ---------
 ~~~~~
 \@template <Template> (<Variable>, ... , <Variable>) is
-	$ text...
-	.
-	.
-	$ text...
+  $ text...
+  .
+  .
+  $ text...
 \@end;
 ~~~~~
 Creates a template, which is a definition that contains variables. The variables on which a template relies are given in parentheses, following the name of the template. These variables are used to evaluate the template, and are referred to as ‘variables of evaluation’. When a template is evaluated (see \@apply) the variables in its definition are replaced by the current values of the ‘variables of evaluation’.
@@ -2742,10 +2749,10 @@ A template is re-evaluated each time it is used.
 --------------
 ~~~~~
 \@addtotemplate <Template> is
-	$ text
-	.
-	.
-	$ text
+  $ text
+  .
+  .
+  $ text
 \@end;
 ~~~~~
 
@@ -2807,9 +2814,9 @@ Complex conditions take into account the results of other conditions. Complex co
 For example,
 ~~~~~
 \@if ((%a == “0” && %b == “1” && %c == “1”) || %d == “1” && ((%a == “1”) && %b == “1”)) then
-	\@cout “CONDITION TRUE”;
+  \@cout “CONDITION TRUE”;
 \@else
-	\@cout “CONDITION FALSE”;
+  \@cout “CONDITION FALSE”;
 \@endif;
 ~~~~~
 
@@ -2934,7 +2941,7 @@ To add a define for all C++ files compiled in the package *MyPackage*, *MyPackag
 
 #### How to use a code generator
 
-In this example, a C code generator is used, which takes the input <i><file>.mygen</i> and generates a <i><file>.c</i>. The step *obj.cgen* automatically recognizes all files with the extension mygen and uses the generator on these files. The resulting .c files are compiled by the step *obj.comp*. 
+In this example, a C code generator is used, which takes the input <i>\<file\>.mygen</i> and generates a <i>\<file\>.c</i>. The step *obj.cgen* automatically recognizes all files with the extension mygen and uses the generator on these files. The resulting .c files are compiled by the step *obj.comp*. 
 The file *MyUnit_CODEGEN.edl* is written in a nocdlpack development unit *MyUnit*. This file contains the following code: 
 
 ~~~~~
@@ -3025,24 +3032,24 @@ There are three advanced WOK commands available for writing umake steps in tcl:
 *msgprint [-i|-w|-e|-v|-V Class]* prints a message. The output is directed to a WOK internal process that is in charge of printing messages. 
 
 The following options are available:  
-| -i  | Prints an information message. |
-| -w  | Prints a warning message. |
-| -e  | Prints an error message. |
-| -v  | Prints a verbose message. |
-| -V<Class> | Prints a verbose message for class <Class>. |
-| -c  | Prints context of message, i.e. the procedure that called it. |
+| -i          | Prints an information message.                                |
+| -w          | Prints a warning message.                                     |
+| -e          | Prints an error message.                                      |
+| -v          | Prints a verbose message.                                     |
+| -V\<Class\> | Prints a verbose message for class \<Class\>.                 |
+| -c          | Prints context of message, i.e. the procedure that called it. |
 
 For example, 
 ~~~~~
-msgprint -e -c *CCLKernel_GetObjects::Execute* *Cannot locate object file :  * $file; 
+msgprint -e -c *CCLKernel_GetObjects\::Execute* *Cannot locate object file :  * $file; 
 ~~~~~
 Writes an error message, in format: 
 ~~~~~
-ERROR: CCLKernel_GetObjects::Execute - Cannot locate object file : MyFile 
+ERROR: CCLKernel_GetObjects\::Execute - Cannot locate object file : MyFile 
 ~~~~~
-*stepoutputadd <options> <OutputFileID> [<filepath>]* adds an output file to the outputs of the step. This file is treated by subsequent steps in the same way as all the other output files of the step. The following options are available:  
+*stepoutputadd \<options\> \<OutputFileID\> [\<filepath\>]* adds an output file to the outputs of the step. This file is treated by subsequent steps in the same way as all the other output files of the step. The following options are available:  
 
-| -p<path> |  Specifies the path where the file is located. |
+| -p\<path\> |  Specifies the path where the file is located. |
 | -L | Output can be located (default). |
 | -N | Not a WOK file. Cannot be located. |
 | -F | Physical file (i.e. resides on a disk somewhere). |
@@ -3050,7 +3057,7 @@ ERROR: CCLKernel_GetObjects::Execute - Cannot locate object file : MyFile
 | -X | File is not a member of the unit being built. Not a WOK file. Cannot be located. |
 | -P | File is produced by this umake step (i.e. WOK can delete it because it will be regenerated). |
 | -R | File is not produced by this umake step (i.e. WOK must not delete it because it can not be regenerated). 
-| -S<StepID> | Reserved for advanced use. Specifies stepID. |
+| -S\<StepID\> | Reserved for advanced use. Specifies stepID. |
 | -V | Reserved for advanced use. Virtual ‘file’ (i.e. an MSEntity). This option is used for passing keywords between steps for example. | 
 
 For example, 
@@ -3059,7 +3066,7 @@ stepoutputadd -X -R -N -F /usr/myfiles/res.o -p /usr/myfiles/res.o
 ~~~~~
 Adds the file */usr/myfiles/res.o* to the outputs of this step. Specifies that this file is not a WOK file, cannot be located automatically by WOK, and is not generated by this step. Here the full file path is used as the unique file identifier. This appears to be duplicated when it is also given as the physical location of the file. 
 
-*stepaddexecdepitem <options> <InputFileID> <OutputFileID>* adds a dependency between one file and another. Typically when introducing external object libraries the files are set to be dependent on the CDL file. We do this because the CDL file changes rarely, so the external files are not needlessly reprocessed, but they are always included in the final executable. The following options are available:  
+*stepaddexecdepitem \<options\> \<InputFileID\> \<OutputFileID\>* adds a dependency between one file and another. Typically when introducing external object libraries the files are set to be dependent on the CDL file. We do this because the CDL file changes rarely, so the external files are not needlessly reprocessed, but they are always included in the final executable. The following options are available:  
 
 | -d  | Adds a direct dependency (default). |
 | -i  | Adds an indirect dependency. |
@@ -3075,13 +3082,13 @@ States that the file *MyOutFile* depends directly on the file *MyInFile*.
 Each tcl umake step has the following components: 
 * *HandleInputFile* - a filter: for each input file this component decides whether or not to accept the file. 
 * *OutputDirTypeName* returns one of three strings, according to the dependency of the file: 
-	* *tmpfile* = the file is independent (i.e. dependent only on its source);
-	* *dbtmpdir* = the file is dependent on the database profile;
-	* *sttmpdir* = the file is dependent on the station profile. 
+  * *tmpfile* = the file is independent (i.e. dependent only on its source);
+  * *dbtmpdir* = the file is dependent on the database profile;
+  * *sttmpdir* = the file is dependent on the station profile. 
 * *AdmFileType* returns one of three strings, according to the dependency of the file: 
-	* *admfile* = the file is independent (i.e. dependent only on its source); 
-	* *Dbadmfile* = the file is dependent on the database profile; 
-	* *stadmfile* = the file is dependent on the station profile. 
+  * *admfile* = the file is independent (i.e. dependent only on its source); 
+  * *Dbadmfile* = the file is dependent on the database profile; 
+  * *stadmfile* = the file is dependent on the station profile. 
 
 *Execute* processes each input file that is out of date (i.e. has changed since it was last processed, or depends on a file that has changed since it was last processed). Typically this procedure takes the form of a *foreach* loop. Argument: a development unit to process and a list of one or more arguments. 
 
@@ -3092,72 +3099,72 @@ Each tcl umake step has the following components:
 ~~~~~
 # CCLKernel_GetObjects.tcl 
 proc CCLKernel_GetObjects::AdmFileType {} { 
-	return stadmfile; 
+  return stadmfile; 
 } 
 proc CCLKernel_GetObjects::OutputDirTypeName {} { 
-	return sttmpdir; 
+  return sttmpdir; 
 } 
 proc CCLKernel_GetObjects::HandleInputFile { ID } { 
-	scan $ID *%\[^:\]:%\[^:\]:%\[^:\]* unit type name 
-	return 1; 
-	switch [file extension $name] { 
+  scan $ID *%\[^:\]:%\[^:\]:%\[^:\]* unit type name 
+  return 1; 
+  switch [file extension $name] { 
 .cdl { 
-		return 1; 
-		} 
-	default { 
-		return 0; 
-		} 
-	} 
+    return 1; 
+    } 
+  default { 
+    return 0; 
+    } 
+  } 
 } 
-proc CCLKernel_GetObjects::Execute { unit args } { 
-	msgprint -i -c *CCLKernel_GetObjects::Execute* 
-	*Processing unit : $unit*; 
-	msgprint -i -c *CCLKernel_GetObjects::Execute* 
-	set failed 0; 
-	set inid [lindex $args 0] 
-	foreach file { Frontal_Ccal_Init_Request.o Frontal_Ccal_Send_Request.o \ 
+proc CCLKernel_GetObjects\::Execute { unit args } { 
+  msgprint -i -c *CCLKernel_GetObjects\::Execute* 
+  *Processing unit : $unit*; 
+  msgprint -i -c *CCLKernel_GetObjects\::Execute* 
+  set failed 0; 
+  set inid [lindex $args 0] 
+  foreach file { Frontal_Ccal_Init_Request.o Frontal_Ccal_Send_Request.o \ 
 Frontal_Ccal_sd.o Frontal_Get_Response.o Frontal_Ccal_Connect.o } { 
 set resid *Frontal:object:$file* 
 set path [woklocate -p $resid] 
 if { $path == ** } { 
-	msgprint -e -c *CCLKernel_GetObjects::Execute* 
+  msgprint -e -c *CCLKernel_GetObjects\::Execute* 
 *Cannot locate object file :  * $file; 
-	set failed 1; 
+  set failed 1; 
 } else { 
-	msgprint -i -c *CCLKernel_GetObjects::Execute* *Add 
+  msgprint -i -c *CCLKernel_GetObjects\::Execute* *Add 
 object $file at  * $path 
-	stepoutputadd -X -R -L -F $resid 
-	stepaddexecdepitem -d $inid $resid 
-	} 
+  stepoutputadd -X -R -L -F $resid 
+  stepaddexecdepitem -d $inid $resid 
+  } 
 } 
 if { [wokparam -e %Station] == *sun* } { 
-	set file *risc_return.o* 
-	set resid *CCLKernel:source:$file* 
-	set path [woklocate -p $resid] 
+  set file *risc_return.o* 
+  set resid *CCLKernel:source:$file* 
+  set path [woklocate -p $resid] 
 ## set path */adv_23/wb/kl/Kernel7/prod/EngineStarter/ 
 src/risc_return.o* 
-	msgprint -i -c *CCLKernel_GetObjects::Execute* *Add 
+  msgprint -i -c *CCLKernel_GetObjects\::Execute* *Add 
 object $file at  * $path 
-	stepoutputadd -X -R -N -F $path -p $path 
-	stepaddexecdepitem -d $inid $path 
+  stepoutputadd -X -R -N -F $path -p $path 
+  stepaddexecdepitem -d $inid $path 
 } 
 set home [wokparam -e %Ilog_Home] 
 if { $home == ** } { 
-	msprint -c *CCLKernel_GetObjects::Execute* -e *Cannot 
+  msprint -c *CCLKernel_GetObjects\::Execute* -e *Cannot 
 evaluate parameter : %Ilog_Home 
-	return 1; 
+  return 1; 
 } 
 foreach file { llstdio.o llfloat.o llfloat31.o cfix.o 
 lelisp.o getgloba.o cload.o } { 
-	set path *$home/o/$file* 
-	msgprint -i -c *CCLKernel_GetObjects::Execute* *Add 
+  set path *$home/o/$file* 
+  msgprint -i -c *CCLKernel_GetObjects\::Execute* *Add 
 object $file at  * $path 
-	stepoutputadd -X -R -N -F $path -p $path 
-	stepaddexecdepitem -d $inid $path 
+  stepoutputadd -X -R -N -F $path -p $path 
+  stepaddexecdepitem -d $inid $path 
 } 
 set file *lelisp31bin.o* 
 set path *$home/lelisp31bin.o* 
-msgprint -i -c *CCLKernel_GetObjects::Execute* *Add 
+msgprint -i -c *CCLKernel_GetObjects\::Execute* *Add 
 object $file at  * $path 
 stepoutputadd -X -R -N -F $path -p $path 
 stepaddexecdepitem -d $inid $path 
@@ -3169,43 +3176,43 @@ Sample 2
 --------
 # File Name: CCLKernel_core.tcl 
 proc CCLKernel_core::AdmFileType {} { 
-	return stadmfile; 
+  return stadmfile; 
 } 
 proc CCLKernel_core::OutputDirTypeName {} { 
-	return sttmpdir; 
+  return sttmpdir; 
 } 
 proc CCLKernel_core::HandleInputFile { ID } { 
-	scan $ID *%\[^:\]:%\[^:\]:%\[^:\]* unit type name 
-	switch $type { 
+  scan $ID *%\[^:\]:%\[^:\]:%\[^:\]* unit type name 
+  switch $type { 
 executable { 
-	return 1; 
+  return 1; 
 } 
-	} 
-	switch $name { 
+  } 
+  switch $name { 
 CCL_lelisp.ll { 
-	return 1; 
-	} 
+  return 1; 
+  } 
 } 
-	return 0; 
-	} 
-proc CCLKernel_core::Execute { unit args } { 
-	global WOK_GLOBALS env 
-msgprint -i -c *CCLKernel_core::Execute* *Processing unit : $unit*; 
-	msgprint -i -c *CCLKernel_core::Execute* 
-	set workbench [wokinfo -N $unit] 
-	set unitname [wokinfo -n $unit] 
-	set failed 0; 
-	set lispbin ** 
-	set lispfile ** 
-	set lispbinid ** 
-	set lispfileid ** 
-	foreach ID $args { 
+  return 0; 
+  } 
+proc CCLKernel_core\::Execute { unit args } { 
+  global WOK_GLOBALS env 
+msgprint -i -c *CCLKernel_core\::Execute* *Processing unit : $unit*; 
+  msgprint -i -c *CCLKernel_core\::Execute* 
+  set workbench [wokinfo -N $unit] 
+  set unitname [wokinfo -n $unit] 
+  set failed 0; 
+  set lispbin ** 
+  set lispfile ** 
+  set lispbinid ** 
+  set lispfileid ** 
+  foreach ID $args { 
 scan $ID *%\[^:\]:%\[^:\]:%\[^:\]* Unit type name 
 switch $type { 
-	executable { 
-		set lispbinid $ID 
-		set lispbin [stepinputinfo -p $ID] 
-	} 
+  executable { 
+    set lispbinid $ID 
+    set lispbin [stepinputinfo -p $ID] 
+  } 
 } 
 switch $name { 
 CCL_lelisp.ll { 
@@ -3219,25 +3226,25 @@ set lispfileid *CCLKernel:source:CCL_lelisp.ll*;
 set lispfile [woklocate -p $lispfileid $workbench] 
 } 
 if { $lispbin == **} { 
-msgprint -e -c *CCLKernel_core::Execute* *Cannot find lelispbin in input* 
+msgprint -e -c *CCLKernel_core\::Execute* *Cannot find lelispbin in input* 
 return 1; 
 } 
-msgprint -i -c *CCLKernel_core::Execute* *Using lelisp.bin at  * $lispbin 
-msgprint -i -c *CCLKernel_core::Execute* 
+msgprint -i -c *CCLKernel_core\::Execute* *Using lelisp.bin at  * $lispbin 
+msgprint -i -c *CCLKernel_core\::Execute* 
 set config *[wokparam -e %Ilog_Home]/config* 
 set tmpdir [wokinfo -p sttmpdir:. $unit] 
 set output [wokinfo -p executable:. $unit] 
 set lelisppointbin [wokinfo -p executable:lelisp.bin $unit] 
 unlink -nocomplain $lelisppointbin 
 link -sym $lispbin $lelisppointbin 
-msgprint -i -c *CCLKernel_core::Execute* *Setting Environment* 
+msgprint -i -c *CCLKernel_core\::Execute* *Setting Environment* 
 set WOK_GLOBALS(setenv_proc,tcl) 1 
 wokenv -s 
 set WOK_GLOBALS(setenv_proc,tcl) 0 
 set olddir [pwd] 
 cd [wokinfo -p source:. $unit] 
 set FrontSIZE *-stack 12 -code 1500 -heap 2048 -number 0 -vector 32 -string 50 -symbol 30 -float 0 -cons  * 
-msgprint -i -c *CCLKernel_core::Execute* *Exec : $config $tmpdir $lispbin $lispfile $output $FrontSIZE 8* 
+msgprint -i -c *CCLKernel_core\::Execute* *Exec : $config $tmpdir $lispbin $lispfile $output $FrontSIZE 8* 
 puts *exec /bin/env \\ 
 COREDIR=$output \\ 
 WBPACKAGE=[wokinfo -n $unit] ILOG_LICENSE_FILE=[wokparam -e %Ilog_LicenseFile] \\ 
@@ -3246,19 +3253,19 @@ EngineStarter.Hosts \\
 ILOG_LICENSE_FILE=[wokparam -e %Ilog_LicenseFile] \\ 
 \*FrontSIZE=$FrontSIZE\* \\ 
 $config $tmpdir $lispbin $lispfile $output $FrontSIZE 8* 
-msgprint -i -c *CCLKernel_core::Execute* [eval *exec /bin/env \\ 
-	COREDIR=$output \\ 
-	WBPACKAGE=[wokinfo -n $unit] \\ 
-	ILOG_LICENSE_FILE=[wokparam -e %Ilog_LicenseFile] \\ 
-	CSF_EngineStarterList=/usr/local/etc/ EngineStarter.Hosts \\ 
-	\*FrontSIZE=$FrontSIZE\* \\ 
+msgprint -i -c *CCLKernel_core\::Execute* [eval *exec /bin/env \\ 
+  COREDIR=$output \\ 
+  WBPACKAGE=[wokinfo -n $unit] \\ 
+  ILOG_LICENSE_FILE=[wokparam -e %Ilog_LicenseFile] \\ 
+  CSF_EngineStarterList=/usr/local/etc/ EngineStarter.Hosts \\ 
+  \*FrontSIZE=$FrontSIZE\* \\ 
 $config $tmpdir $lispbin $lispfile $output $FrontSIZE 8*] 
-	stepoutputadd -P $unitname:corelisp:$unitname.core 
-	stepaddexecdepitem -d $lispbinid 
+  stepoutputadd -P $unitname:corelisp:$unitname.core 
+  stepaddexecdepitem -d $lispbinid 
 $unitname:corelisp:$unitname.core 
-	stepaddexecdepitem -d $lispfileid 
+  stepaddexecdepitem -d $lispfileid 
 $unitname:corelisp:$unitname.core 
-	cd $olddir 
-	return 0; 
+  cd $olddir 
+  return 0; 
 }
 ~~~~~

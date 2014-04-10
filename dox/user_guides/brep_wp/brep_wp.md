@@ -1,4 +1,4 @@
- BRep Format {#occt_brep_format}
+ BRep Format {#occt_user_guides__brep_wp}
 ========================
 
 @tableofcontents 

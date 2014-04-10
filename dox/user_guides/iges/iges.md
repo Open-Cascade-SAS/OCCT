@@ -1,4 +1,4 @@
-IGES Support  {#user_guides__iges}
+IGES Support  {#occt_user_guides__iges}
 ==================
 
 @tableofcontents
@@ -356,7 +356,7 @@ for (i = 1; i  = nb; i ++) {
     Handle(Standard_Transient) ent = list-Value(i);  
     Standard_Boolean OK = reader.TransferEntity (ent);  
 } 
-~~~~~		  
+~~~~~    
 5.  Translate the whole file (all  entities or only visible entities) with:  
 ~~~~~
 Standard_Boolean  onlyvisible = Standard_True or Standard_False;  
@@ -407,25 +407,25 @@ If *failsonly* is  *IFSelect_FailOnly*, only fail messages will be output, if it
 
 @subsubsection occt_iges_2_4_1 Points
 
-| IGES entity type	| CASCADE shape  |	Comments |
+| IGES entity type | CASCADE shape  | Comments |
 | :---------------- | :------------- | --------- |
-| 116: Point	    | TopoDS_Vertex	 | |
+| 116: Point     | TopoDS_Vertex  | |
 
 @subsubsection occt_iges_2_4_2 Curves
 Curves, which form the 2D of face boundaries, are translated  as *Geom2D_Curves* (Geom2D circles, etc.). 
 
-| IGES entity type	| CASCADE shape	| Comments |
+| IGES entity type | CASCADE shape | Comments |
 | :---------------- | :------------ | :------- |
-| 100: Circular Arc |	TopoDS_Edge | The geometrical support is a *Geom_Circle* or a *Geom_TrimmedCurve* (if the arc is not closed). |
+| 100: Circular Arc | TopoDS_Edge | The geometrical support is a *Geom_Circle* or a *Geom_TrimmedCurve* (if the arc is not closed). |
 | 102: Composite Curve  | TopoDS_Wire | The resulting shape is always a *TopoDS_Wire* that is built from a set of *TopoDS_Edges*. Each *TopoDS_Edge* is connected to the preceding and to the following edge by a common *TopoDS_Vertex*. |
-| 104: Conic Arc |	TopoDS_Edge	| The geometric support depends on whether the IGES entity's form is 0 (*Geom_Circle*), 1 (*Geom_Ellipse*), 2 (*Geom_Hyperbola*), or 3 (*Geom_Parabola*). A *Geom_TrimmedCurve* is output if the arc is not closed. |
-| 106: Copious Data	| TopoDS_Edge or TopoDS_Wire | IGES entity Copious Data (type 106, forms 1-3) is translated just as the IGES entities Linear Path (106/11-13) and the Simple Closed Planar Curve (106/63). Vectors applying to forms other than 11,12 or 63 are ignored. The *Geom_BSplineCurve* (geometrical support) has C0 continuity. If the Copious Data has vectors (DataType = 3) they will be ignored. |
-| 110: Line	| TopoDS_Edge	| The supporting curve is a *Geom_TrimmedCurve* whose basis curve is a *Geom_Line*. |
-| 112: Parametric Spline Curve	| TopoDS_Edge or TopoDS_Wire	| The geometric support is a Geom_BsplineCurve. |
-| 126: BSpline Curve	| TopoDS_Edge or TopoDS_Wire	| |
-| 130: Offset Curve	| TopoDS_Edge or TopoDS_Wire |	The resulting shape is a *TopoDS_Edge* or a *TopoDS_Wire* (depending on the translation of the basis curve) whose geometrical support is a *Geom_OffsetCurve* built from a basis *Geom_Curve*. Limitation: The IGES Offset Type value must be 1. |
-| 141: Boundary	| TopoDS_Wire	| Same behavior as for the Curve On Surface (see below). The translation of a non-referenced Boundary IGES entity in a *BoundedSurface* IGES entity outputs a *TopoDS_Edge* or a *TopoDS_Wire* with a *Geom_Curve*. |
-| 142: Curve On Surface	| TopoDS_Wire	| Each *TopoDS_Edge* is defined by a 3D curve and by a 2D curve that references the surface. |
+| 104: Conic Arc | TopoDS_Edge | The geometric support depends on whether the IGES entity's form is 0 (*Geom_Circle*), 1 (*Geom_Ellipse*), 2 (*Geom_Hyperbola*), or 3 (*Geom_Parabola*). A *Geom_TrimmedCurve* is output if the arc is not closed. |
+| 106: Copious Data | TopoDS_Edge or TopoDS_Wire | IGES entity Copious Data (type 106, forms 1-3) is translated just as the IGES entities Linear Path (106/11-13) and the Simple Closed Planar Curve (106/63). Vectors applying to forms other than 11,12 or 63 are ignored. The *Geom_BSplineCurve* (geometrical support) has C0 continuity. If the Copious Data has vectors (DataType = 3) they will be ignored. |
+| 110: Line | TopoDS_Edge | The supporting curve is a *Geom_TrimmedCurve* whose basis curve is a *Geom_Line*. |
+| 112: Parametric Spline Curve | TopoDS_Edge or TopoDS_Wire | The geometric support is a Geom_BsplineCurve. |
+| 126: BSpline Curve | TopoDS_Edge or TopoDS_Wire | |
+| 130: Offset Curve | TopoDS_Edge or TopoDS_Wire | The resulting shape is a *TopoDS_Edge* or a *TopoDS_Wire* (depending on the translation of the basis curve) whose geometrical support is a *Geom_OffsetCurve* built from a basis *Geom_Curve*. Limitation: The IGES Offset Type value must be 1. |
+| 141: Boundary | TopoDS_Wire | Same behavior as for the Curve On Surface (see below). The translation of a non-referenced Boundary IGES entity in a *BoundedSurface* IGES entity outputs a *TopoDS_Edge* or a *TopoDS_Wire* with a *Geom_Curve*. |
+| 142: Curve On Surface | TopoDS_Wire | Each *TopoDS_Edge* is defined by a 3D curve and by a 2D curve that references the surface. |
 
 The type of OCCT shapes (either *TopDS_Edges* or  *TopoDS_Wires*) that result from the translation of IGES entities 106, 112 and  126 depends on the continuity of the curve in the IGES file and the value of  the *read.iges.bspline.continuity* translation parameter. 
 
@@ -433,52 +433,52 @@ The type of OCCT shapes (either *TopDS_Edges* or  *TopoDS_Wires*) that result fr
 Translation of a surface outputs either a *TopoDS_Face* or a  *TopoDS_Shell*.  
 If a *TopoDS_Face* is output, its geometrical support is a  *Geom_Surface* and its outer and inner boundaries (if it has any) are  *TopoDS_Wires*. 
 
-| IGES entity type	| CASCADE shape	| Comments |
+| IGES entity type | CASCADE shape | Comments |
 | :--------------  | :------------ | :--------- |
-| 108: Plane | 	TopoDS_Face | 	The geometrical support for the *TopoDS_Face* is a *Geom_Plane* and the orientation of its *TopoDS_Wire* depends on whether it is an outer *TopoDS_Wire* or whether it is a hole. |
-| 114: Parametric Spline Surface | TopoDS_Face |	The geometrical support of a *TopoDS_Face* is a *Geom_BSplineSurface*. |
-| 118: Ruled Surface | TopoDS_Face or TopoDS_Shell	| The translation of a Ruled Surface outputs a *TopoDS_Face* if the profile curves become *TopoDS_Edges*, or a *TopoDS_Shell* if the profile curves become *TopoDS_Wires*. Limitation: This translation cannot be completed when these two *TopoDS_Wires* are oriented in different directions.  |
+| 108: Plane |  TopoDS_Face |  The geometrical support for the *TopoDS_Face* is a *Geom_Plane* and the orientation of its *TopoDS_Wire* depends on whether it is an outer *TopoDS_Wire* or whether it is a hole. |
+| 114: Parametric Spline Surface | TopoDS_Face | The geometrical support of a *TopoDS_Face* is a *Geom_BSplineSurface*. |
+| 118: Ruled Surface | TopoDS_Face or TopoDS_Shell | The translation of a Ruled Surface outputs a *TopoDS_Face* if the profile curves become *TopoDS_Edges*, or a *TopoDS_Shell* if the profile curves become *TopoDS_Wires*. Limitation: This translation cannot be completed when these two *TopoDS_Wires* are oriented in different directions.  |
 | 120: Surface Of Revolution | TopoDS_Face or TopoDS_Shell | The translation of a Surface Of Revolution outputs: a *TopoDS_Face* if the generatrix becomes a *TopoDS_Edge*, a *TopoDS_Shell* if the generatrix becomes a *TopoDS_Wire*. The geometrical support may be: *Geom_CylindricalSurface, Geom_ConicalSurface, Geom_SphericalSurface, Geom_ToroidalSurface* or a *Geom_SurfaceOfRevolution* depending on the result of the CASCADE computation (based on the generatrix type). | 
-| 122: Tabulated Cylinder	| TopoDS_Face or TopoDS_Shell | The translation outputs a *TopoDS_Face* if the base becomes a *TopoDS_Edge* or a *TopoDS_Shell* if the base becomes a *TopoDS_Wire*. The geometrical support may be *Geom_Plane, Geom_Cylindrical Surface* or a *Geom_SurfaceOfLinearExtrusion* depending on the result of the CASCADE computation (based on the generatrix type). The *Geom_Surface* geometrical support is limited according to the generatrix. |
-| 128: BSpline Surface	| TopoDS_Face	| The geometrical support of the *TopoDS_Face* is a *Geom_BsplineSurface*. |
-| 140: Offset Surface	| TopoDS_Face | The translation of an Offset Surface outputs a *TopoDS_Face* whose geometrical support is a *Geom_OffsetSurface*. Limitations: For OCCT algorithms, the original surface must be C1-continuous so that the *Geom_OffsetSurface* can be created. If the basis surface is not C1-continuous, its translation outputs a *TopoDS_Shell* and only the first *TopoDS_Face* in the *TopoDS_Shell* is offset. |
-| 143: Bounded Surface	| TopoDS_Face or TopoDS_Shell	| If the basis surface outputs a *TopoDS_Shell* (that has more than one *TopoDS_Face*), the IGES boundaries are not translated. Limitations: If the bounding curves define holes, natural bounds are not created. If the orientation of the contours is wrong, it is not corrected. |
-| 144: Trimmed Surface	| TopoDS_Face or TopoDS_Shell | For the needs of interface processing, the basis surface must be a face. Shells are only processed if they are single-face. The contours (wires that are correctly oriented according to the definition of the IGES 142: Curve On Surface entity) are added to the face that is already created. If the orientation of the contours is wrong, it is corrected. |
-| 190: Plane Surface	| TopoDS_Face |	This type of IGES entity can only be used in BRep entities in place of an IGES 108 type entity. The geometrical support of the face is a *Geom_Plane*. | 
+| 122: Tabulated Cylinder | TopoDS_Face or TopoDS_Shell | The translation outputs a *TopoDS_Face* if the base becomes a *TopoDS_Edge* or a *TopoDS_Shell* if the base becomes a *TopoDS_Wire*. The geometrical support may be *Geom_Plane, Geom_Cylindrical Surface* or a *Geom_SurfaceOfLinearExtrusion* depending on the result of the CASCADE computation (based on the generatrix type). The *Geom_Surface* geometrical support is limited according to the generatrix. |
+| 128: BSpline Surface | TopoDS_Face | The geometrical support of the *TopoDS_Face* is a *Geom_BsplineSurface*. |
+| 140: Offset Surface | TopoDS_Face | The translation of an Offset Surface outputs a *TopoDS_Face* whose geometrical support is a *Geom_OffsetSurface*. Limitations: For OCCT algorithms, the original surface must be C1-continuous so that the *Geom_OffsetSurface* can be created. If the basis surface is not C1-continuous, its translation outputs a *TopoDS_Shell* and only the first *TopoDS_Face* in the *TopoDS_Shell* is offset. |
+| 143: Bounded Surface | TopoDS_Face or TopoDS_Shell | If the basis surface outputs a *TopoDS_Shell* (that has more than one *TopoDS_Face*), the IGES boundaries are not translated. Limitations: If the bounding curves define holes, natural bounds are not created. If the orientation of the contours is wrong, it is not corrected. |
+| 144: Trimmed Surface | TopoDS_Face or TopoDS_Shell | For the needs of interface processing, the basis surface must be a face. Shells are only processed if they are single-face. The contours (wires that are correctly oriented according to the definition of the IGES 142: Curve On Surface entity) are added to the face that is already created. If the orientation of the contours is wrong, it is corrected. |
+| 190: Plane Surface | TopoDS_Face | This type of IGES entity can only be used in BRep entities in place of an IGES 108 type entity. The geometrical support of the face is a *Geom_Plane*. | 
 
 
 @subsubsection occt_iges_2_4_4 Boundary Representation  Solid Entities
 
-| IGES entity type	| CASCADE shape	| Comments |
+| IGES entity type | CASCADE shape | Comments |
 | :---------------- | :------------ | :------- |
-| 186: ManifoldSolid	| TopoDS_Solid	| |
-| 514: Shell	| TopoDS_Shell	| |
-| 510: Face	| TopoDS_Face	| This is the lowest IGES entity in the BRep structure that can be specified as a starting point for translation. |
-| 508: Loop |	TopoDS_Wire	| | 
-| 504: Edge List	| | |
-| 502: Vertex List	| | | 
+| 186: ManifoldSolid | TopoDS_Solid | |
+| 514: Shell | TopoDS_Shell | |
+| 510: Face | TopoDS_Face | This is the lowest IGES entity in the BRep structure that can be specified as a starting point for translation. |
+| 508: Loop | TopoDS_Wire | | 
+| 504: Edge List | | |
+| 502: Vertex List | | | 
 
 
 @subsubsection occt_iges_2_4_5 Structure Entities
 
-| IGES entity type	| CASCADE shape	| Comments | 
+| IGES entity type | CASCADE shape | Comments | 
 | :---------------- | :------------ | :------- |
-| 402/1: Associativity Instance: Group with back pointers | 	TopoDS_Compound	| |
-| 402/7: Associativity Instance: Group without back pointers |	TopoDS_Compound	| |
+| 402/1: Associativity Instance: Group with back pointers |  TopoDS_Compound | |
+| 402/7: Associativity Instance: Group without back pointers | TopoDS_Compound | |
 | 402/9: Associativity Instance: Single Parent | TopoDS_Face | The translation of a *SingleParent* entity is only performed for 402 form 9 with entities 108/1 and 108/-1. The geometrical support for the *TopoDS_Face* is a *Geom_Plane* with boundaries: the parent plane defines the outer boundary; the child planes define the inner boundaries. |
 
 @subsubsection occt_iges_2_4_6 Subfigures
 
-| IGES entity type	| CASCADE shape	| Comments |
+| IGES entity type | CASCADE shape | Comments |
 | :---------------- | :------------ | :------- |
-| 308: Subfigure Definition	| TopoDS_Compound | This IGES entity is only translated when there are no Singular Subfigure Instance entities. |
-| 408: Singular Subfigure Instance	| TopoDS_Compound | This shape has the Subfigure Definition Compound as its origin and is positioned in space by its translation vector and its scale factor. |
+| 308: Subfigure Definition | TopoDS_Compound | This IGES entity is only translated when there are no Singular Subfigure Instance entities. |
+| 408: Singular Subfigure Instance | TopoDS_Compound | This shape has the Subfigure Definition Compound as its origin and is positioned in space by its translation vector and its scale factor. |
 
 @subsubsection occt_iges_2_4_7 Transformation Matrix  
 
-| IGES entity type	| CASCADE shape	| Comments |
+| IGES entity type | CASCADE shape | Comments |
 | :---------------  | :------------ | :------- |
-| 124: Transformation Matrix	| Geom_Transformation	| This entity is never translated alone. It must be included in the definition of another entity. |
+| 124: Transformation Matrix | Geom_Transformation | This entity is never translated alone. It must be included in the definition of another entity. |
 
 
 @subsection occt_iges_2_5 Messages
@@ -657,8 +657,8 @@ The result is an *IGESControl_Writer* object.
 The following parameters are used for the OCCT-to-IGES  translation. 
 
 * *write.iges.brep.mode:* allows choosing the  write mode:  
-	* "Faces" (0): OCCT *TopoDS_Faces* will be translated into IGES 144 (Trimmed Surface) entities, no B-Rep entities  will be written to the IGES file,  
-	* "BRep" (1): OCCT *TopoDS_Faces*  will be translated into IGES 510 (Face) entities, the IGES file will contain  B-Rep entities.  
+ * "Faces" (0): OCCT *TopoDS_Faces* will be translated into IGES 144 (Trimmed Surface) entities, no B-Rep entities  will be written to the IGES file,  
+ * "BRep" (1): OCCT *TopoDS_Faces*  will be translated into IGES 510 (Face) entities, the IGES file will contain  B-Rep entities.  
 Read this parameter  with:  
 ~~~~~
 Standard_Integer byvalue =  Interface_Static::IVal("write.iges.brep.mode"); 
@@ -670,28 +670,28 @@ Interface_Static::SetIVal  ("write.iges.brep.mode", 1);
 Default value is "Faces" (0).  
 * *write.convertsurface.mode* when writing to IGES in the BRep mode, this parameter indicates whether elementary surfaces (cylindrical, conical,  spherical,   and toroidal) are converted into corresponding IGES 5.3 entities (if  the value of a parameter value is On), or written as surfaces of revolution (by default). 
 * *write.iges.unit:* allows choosing the unit. The default unit for Open CASCADE Technology is "MM" (millimeter). You can  choose to write a file into any unit accepted by IGES.  
-	* Read this parameter  with *Standard_String byvalue =  Interface_Static::CVal("write.iges.unit")*; 
-	* Modify this parameter  with *Interface_Static::SetCVal ("write.iges.unit", "INCH");* 
+ * Read this parameter  with *Standard_String byvalue =  Interface_Static::CVal("write.iges.unit")*; 
+ * Modify this parameter  with *Interface_Static::SetCVal ("write.iges.unit", "INCH");* 
 * *write.iges.header.autor:* gives the name of the  author of the file.  The default value is the system name of the user.  
-	* Read this parameter  with  *Standard_String byvalue =  Interface_Static::CVal("write.iges.header.author")*; 
-	* Modify this value with  *Interface_Static::SetCVal  ("write.iges.header.author", "name")*; 
+ * Read this parameter  with  *Standard_String byvalue =  Interface_Static::CVal("write.iges.header.author")*; 
+ * Modify this value with  *Interface_Static::SetCVal  ("write.iges.header.author", "name")*; 
 * *write.iges.header.company:* gives the name of the  sending company.  The default value is  "" (empty).
-	* Read this parameter  with *Standard_String byvalue =  Interface_Static::CVal("write.iges.header.company");*
-	* Modify this value with *Interface_Static::SetCVal ("write.iges.header.company", "Open CASCADE");* 
+ * Read this parameter  with *Standard_String byvalue =  Interface_Static::CVal("write.iges.header.company");*
+ * Modify this value with *Interface_Static::SetCVal ("write.iges.header.company", "Open CASCADE");* 
 * *write.iges.header.product:* gives the name of the  sending product. The default value is  "CAS.CADE IGES processor Vx.x", where *x.x* means the current version of  Open CASCADE Technology.  
-	* Read this parameter  with *Standard_String byvalue =  Interface_Static::CVal("write.iges.header.product")*; 
-	* Modify this value with *Interface_Static::SetCVal  ("write.iges.header.product", "product name")*; 
+ * Read this parameter  with *Standard_String byvalue =  Interface_Static::CVal("write.iges.header.product")*; 
+ * Modify this value with *Interface_Static::SetCVal  ("write.iges.header.product", "product name")*; 
 * *write.iges.header.receiver:* - gives the name of the  receiving company.  The default value is  "" (empty).
-	* Read this parameter  with	*Standard_String byvalue =  Interface_Static::CVal("write.iges.header.receiver");* 
-	* Modify this value with *Interface_Static::SetCVal  ("write.iges.header.receiver", "reciever name");* 
+ * Read this parameter  with *Standard_String byvalue =  Interface_Static::CVal("write.iges.header.receiver");* 
+ * Modify this value with *Interface_Static::SetCVal  ("write.iges.header.receiver", "reciever name");* 
 * *write.precision.mode:* specifies the mode of  writing the resolution value into the IGES file.  
-	* "Least" (-1):       resolution value is  set to the minimum tolerance of all edges and all vertices in an OCCT shape.  
-	* "Average" (0):    resolution value is  set to average between the average tolerance of all edges and the average  tolerance of all vertices in an OCCT shape. This is the default value.  
-	* "Greatest" (1):   resolution value is  set to the maximum tolerance of all edges and all vertices in an OCCT shape.  
-	* "Session" (2):    resolution  value is that of the write.precision.val parameter.  
-	
-	* Read this parameter  with *Standard_Integer ic =  Interface_Static::IVal("write.precision.mode");* 
-	* Modify this parameter  with *if  (!Interface_Static\::SetIVal("write.precision.mode",1))  .. error .. *
+ * "Least" (-1):       resolution value is  set to the minimum tolerance of all edges and all vertices in an OCCT shape.  
+ * "Average" (0):    resolution value is  set to average between the average tolerance of all edges and the average  tolerance of all vertices in an OCCT shape. This is the default value.  
+ * "Greatest" (1):   resolution value is  set to the maximum tolerance of all edges and all vertices in an OCCT shape.  
+ * "Session" (2):    resolution  value is that of the write.precision.val parameter.  
+ 
+ * Read this parameter  with *Standard_Integer ic =  Interface_Static::IVal("write.precision.mode");* 
+ * Modify this parameter  with *if  (!Interface_Static\::SetIVal("write.precision.mode",1))  .. error .. *
 * *write.precision.val:* is the user precision value.  This parameter gives the resolution value for an IGES file when the  *write.precision.mode* parameter value is 1.  It is equal to 0.0001 by default, but can take any real positive (non null) value.  
 
 Read this parameter  with:  
@@ -744,60 +744,60 @@ Translated objects depend on the write mode that you chose.  If you chose the Fa
 
 @subsubsection occt_iges_3_4_1 Curves
 
-| CASCADE shape	| IGES entity type	| Comments |
+| CASCADE shape | IGES entity type | Comments |
 | :------------ | :---------------- | :------- | 
-| Geom_BsplineCurve	| 126: BSpline Curve	| |
-| Geom_BezierCurve	| 126: BSpline Curve	| |
-| Geom_TrimmedCurve	| All types of translatable IGES curves	| The type of entity output depends on the type of the basis curve. If the curve is not trimmed, limiting points will be defined by the CASCADE RealLast value. |
-| Geom_Circle	| 100: Circular Arc or 126: BSpline Curve	| A BSpline Curve is output if the *Geom_Circle* is closed |
-| Geom_Ellipse	| 104: Conic Arc or 126: BSpline Curve	| A Conic Arc has Form 1. A BSpline Curve is output if the *Geom_Ellipse* is closed. |
+| Geom_BsplineCurve | 126: BSpline Curve | |
+| Geom_BezierCurve | 126: BSpline Curve | |
+| Geom_TrimmedCurve | All types of translatable IGES curves | The type of entity output depends on the type of the basis curve. If the curve is not trimmed, limiting points will be defined by the CASCADE RealLast value. |
+| Geom_Circle | 100: Circular Arc or 126: BSpline Curve | A BSpline Curve is output if the *Geom_Circle* is closed |
+| Geom_Ellipse | 104: Conic Arc or 126: BSpline Curve | A Conic Arc has Form 1. A BSpline Curve is output if the *Geom_Ellipse* is closed. |
 | Geom_Hyperbola | 104: Conic Arc | Form 2 |
-| Geom_Parabola	| 104: Conic Arc | Form 3 | 
-| Geom_Line	| 110: Line	| |
-| Geom_OffsetCurve	| 130: Offset Curve	| |
+| Geom_Parabola | 104: Conic Arc | Form 3 | 
+| Geom_Line | 110: Line | |
+| Geom_OffsetCurve | 130: Offset Curve | |
 
 @subsubsection occt_iges_3_4_2 Surfaces
 
-| CASCADE shapes | IGES entity type	| Comments |
+| CASCADE shapes | IGES entity type | Comments |
 | :------------- | :--------------- | :------- |
 | Geom_BSplineSurface | 128: BSpline Surface | |
-| Geom_BezierSurface | 128: BSpline Surface	| |
+| Geom_BezierSurface | 128: BSpline Surface | |
 | Geom_RectangularTrimmedSurface | All types of translatable IGES surfaces. | The type of entity output depends on the type of the basis surface. If the surface is not trimmed and has infinite edges/sides, the coordinates of the sides in IGES will be limited to the CASCADE *RealLast* value. |
 | Geom_Plane | 128: BSpline Surface or 190: Plane Surface | A BSpline Surface (of degree 1 in U and V) is output if you are working in the face mode. A Plane Surface is output if you are working in the BRep mode. |
 | Geom_CylindricalSurface | 120: Surface Of Revolution | |
-| Geom_ConicalSurface | 120: Surface Of Revolution	| | 
-| Geom_SphericalSurface	| 120: Surface Of Revolution | |
-| Geom_ToroidalSurface | 120: Surface Of Revolution	| |
-| Geom_SurfaceOfLinearExtrusion	| 122: Tabulated Cylinder | |
-| Geom_SurfaceOfRevolution | 120: Surface Of Revolution	| |
+| Geom_ConicalSurface | 120: Surface Of Revolution | | 
+| Geom_SphericalSurface | 120: Surface Of Revolution | |
+| Geom_ToroidalSurface | 120: Surface Of Revolution | |
+| Geom_SurfaceOfLinearExtrusion | 122: Tabulated Cylinder | |
+| Geom_SurfaceOfRevolution | 120: Surface Of Revolution | |
 | Geom_OffsetSurface | 140: Offset Surface | |
 
 @subsubsection occt_iges_3_4_3 Topological entities - Translation in Face mode
 
-| CASCADE shapes | IGES entity type	| Comments |
+| CASCADE shapes | IGES entity type | Comments |
 | :------------- | :--------------- | :------- |
-| Single TopoDS_Vertex	| 116: 3D Point	| |
+| Single TopoDS_Vertex | 116: 3D Point | |
 | TopoDS_Vertex in a TopoDS_Edge | No equivalent | Not transferred. |
 | TopoDS_Edge | All types of translatable IGES curves | The output IGES curve will be the one that corresponds to the Open CASCADE Technology definition. |
-| Single TopoDS_Wire | 102: Composite Curve	| Each *TopoDS_Edge* in the *TopoDS_Wire* results in a curve. |
+| Single TopoDS_Wire | 102: Composite Curve | Each *TopoDS_Edge* in the *TopoDS_Wire* results in a curve. |
 | TopoDS_Wire in a TopoDS_Face | 142: Curve On Surface | Both curves (3D and pcurve) are transferred if they are defined and result in a simple curve or a composite curve depending on whether there is one or more edges in the wire.Note: if the basis surface is a plane (108), only the 3D curve is used. |
 | TopoDS_Face | 144: Trimmed Surface | |
-| TopoDS_Shell | 402: Form 1 Group or no equivalent	| Group is created only if *TopoDS_Shell* contains more than one *TopoDS_Face*. The IGES group contains Trimmed Surfaces. |
-| TopoDS_Solid	| 402: Form 1 Group or no equivalent | Group is created only if *TopoDS_Solid* contains more than one *TopoDS_Shell*. One IGES entity is created per *TopoDS_Shell*. |
-| TopoDS_CompSolid | 402: Form 1 Group or no equivalent	| Group is created only if *TopoDS_CompSolid* contains more than one *TopoDS_Solid*. One IGES entity is created per *TopoDS_Solid*. |
+| TopoDS_Shell | 402: Form 1 Group or no equivalent | Group is created only if *TopoDS_Shell* contains more than one *TopoDS_Face*. The IGES group contains Trimmed Surfaces. |
+| TopoDS_Solid | 402: Form 1 Group or no equivalent | Group is created only if *TopoDS_Solid* contains more than one *TopoDS_Shell*. One IGES entity is created per *TopoDS_Shell*. |
+| TopoDS_CompSolid | 402: Form 1 Group or no equivalent | Group is created only if *TopoDS_CompSolid* contains more than one *TopoDS_Solid*. One IGES entity is created per *TopoDS_Solid*. |
 | TopoDS_Compound | 402: Form 1 Group or no equivalent | Group is created only if *TopoDS_Compound* contains more than one item. One IGES entity is created per *TopoDS_Shape* in the *TopoDS_Compound*. If *TopoDS_Compound* is nested into another *TopoDS_Compound*, it is not mapped. |
 
 @subsubsection occt_iges_3_4_4 Topological entities - Translation in BRep mode
 
-| CASCADE shapes | IGES entity type	| Comments |
+| CASCADE shapes | IGES entity type | Comments |
 | :------------- | :--------------- | :------- |
-| Single TopoDS_Vertex	| No equivalent	| Not transferred. |
-| TopoDS_Vertex in a TopoDS_Edge | One item in a 502: *VertexList* | |	
-| TopoDS_Edge |	No equivalent | Not transferred as such. This entity serves as a part of a Loop entity. |
+| Single TopoDS_Vertex | No equivalent | Not transferred. |
+| TopoDS_Vertex in a TopoDS_Edge | One item in a 502: *VertexList* | | 
+| TopoDS_Edge | No equivalent | Not transferred as such. This entity serves as a part of a Loop entity. |
 | TopoDS_Edge in a TopoDS_Wire | One item in a 504: EdgeList | |
 | TopoDS_Wire | 508: Loop | |
-| TopoDS_Face | 510: Face |	If the geometrical support of the face is a plane, it will be translated as a 190 entity *PlaneSurface*. |
-| TopoDS_Shell | 514: Shell	| |
+| TopoDS_Face | 510: Face | If the geometrical support of the face is a plane, it will be translated as a 190 entity *PlaneSurface*. |
+| TopoDS_Shell | 514: Shell | |
 | TopoDS_Solid | 186: Manifold Solid | |
 | TopoDS_CompSolid | 402 Form1 Group or no equivalent | Group is created only if *TopoDS_Compound* contains more than one item. One IGES Manifold Solid is created for each *TopoDS_Solid* in the *TopoDS_CompSolid*. |
 | TopoDS_Compound | 402 Form1 Group or no equivalent | Group is created only if *TopoDS_Compound* contains more than one item. One IGES entity is created per *TopoDS_Shape* in the *TopoDS_Compound*. If *TopoDS_Compound* is nested into another *TopoDS_Compound* it is not mapped. | 
@@ -847,7 +847,11 @@ In the description of  commands, square brackets ([]) are used to indicate optio
 @subsection occt_iges_4_2 Setting interface  parameters
 
 A set of parameters for  importing and exporting IGES files is defined in the XSTEP resource file. In  XSTEPDRAW, these parameters can be viewed or changed using command  
+
+~~~~
 Draw> param [<parameter_name> [<value>]]  
+~~~~
+
 Command *param* with no  arguments gives a list of all parameters with their values. When argument  *parameter_name* is specified, information about this parameter is  printed (current value and short description).  
 
 The third argument is  used to set a new value of the given parameter. The result of the setting is  printed immediately.  
@@ -865,10 +869,10 @@ For a description of  parameters used in reading an IGES file refer to <a href="
 
 These parameters are set  by command *param* :  
 
-| Description	| Name	| Values |
+| Description | Name | Values |
 | :------------ | :---- | :----- |
-| Precision for input entities	| read.precision.mode |	0 or 1 |
-| |	read.precision.val	| real |
+| Precision for input entities | read.precision.mode | 0 or 1 |
+| | read.precision.val | real |
 | Continuity of B splines | read.iges.bspline.continuity | 0-2 |
 | Surface curves | read.surfacecurve.mode | 2, 3 or 0 |
 
@@ -888,19 +892,19 @@ Here a dot can be used instead of a filename if the file is  already loaded by *
 
 Command *igesbrep* will interactively ask the user to  select a set of entities to be converted: 
 
-| N	| Mode	| Description |
+| N | Mode | Description |
 | :-- | :-- | :---------- |
-| 0	| End	| finish conversion and exit igesbrep |
-| 1	| Visible roots	| convert only visible roots |
-| 2	| All roots	| convert all roots |
-| 3	| One entity | convert entity with number provided by the user |
-| 4	| Selection	| convert only entities contained in selection |
+| 0 | End | finish conversion and exit igesbrep |
+| 1 | Visible roots | convert only visible roots |
+| 2 | All roots | convert all roots |
+| 3 | One entity | convert entity with number provided by the user |
+| 4 | Selection | convert only entities contained in selection |
 
 After the selected set of entities is loaded the user will  be asked how loaded entities should be converted into OCCT shapes (e.g., one  shape per root or one shape for all the entities). It is also possible to save  loaded shapes in files, and to cancel loading. 
 
 The second parameter of the *igesbrep* command defines  the name of the loaded shape. If several shapes are created, they will get  indexed names. For instance, if the last parameter was ‘s’, they will be *s_1,  ... s_N. 
 
-*<selection>* specifies the scope of selected entities  in the model, it is *xst-transferrable-roots* by default. An asterisk “*” can be  specified instead of *iges-visible-transf-roots*. For possible values for  selection refer to <a href="#occt_iges_2_3_4">Selecting entities</a> section. 
+*\<selection\>* specifies the scope of selected entities  in the model, it is *xst-transferrable-roots* by default. An asterisk “*” can be  specified instead of *iges-visible-transf-roots*. For possible values for  selection refer to <a href="#occt_iges_2_3_4">Selecting entities</a> section. 
 
 
 Instead of *igesbrep* it is possible to use commands:
@@ -920,7 +924,7 @@ The following commands are available:
 
 * *Draw> tpent \# * - provides information on the result of translation of the given  IGES entity;
 * *Draw> tpdraw \#* - creates an OCCT shape corresponding to an IGES entity;
-* *Draw> fromshape <shape_name>* provides the number of an IGES entity corresponding to an OCCT  shape;
+* *Draw> fromshape \<shape_name\>* provides the number of an IGES entity corresponding to an OCCT  shape;
 * *Draw> tpclear* clears the map of correspondences between IGES entities  and OCCT shapes. 
 
 @subsection occt_iges_4_4  Analyzing the transferred data
@@ -937,28 +941,28 @@ Draw> data <symbol>
 ~~~~~
 The information printed by this command depends on the  symbol specified: 
 
-| Symbol	| Output |
+| Symbol | Output |
 | :-------- | :----- |
-| g	| Prints information contained in the header of the file (Start and Global sections) |
+| g | Prints information contained in the header of the file (Start and Global sections) |
 | c or f | Runs check procedure of the integrity of the loaded data and prints the resulting statistics (f works only with fails while c with both fail and warning messages) |
-| t	| The same as c or f, with a list of failed or warned entities |
+| t | The same as c or f, with a list of failed or warned entities |
 | m or l | The same as t but also prints a status for each entity |
 | e  | Lists all entities of the model with their numbers, types, status of validity etc. |
-| r	| The same as e but lists only root entities |
+| r | The same as e but lists only root entities |
 
 
 There is a set of special objects, which can be used to  operate with the loaded model. They can be of the following types: 
-| Special object type	| Operation |
+| Special object type | Operation |
 | :------------------ | :---------- |
-| Selection	Filters | allow selecting subsets of entities of the loaded model |
-| Counters	| Calculate statistics on the model data |
+| Selection Filters | allow selecting subsets of entities of the loaded model |
+| Counters | Calculate statistics on the model data |
 
 
 A list of these objects defined in the current session can  be printed in DRAW by command 
 ~~~~~
 Draw> listitems 
 ~~~~~
-In the following commands if several <i><selection></i>  arguments are specified the results of each following selection are applied to the results of the previous one. 
+In the following commands if several <i>\<selection\></i>  arguments are specified the results of each following selection are applied to the results of the previous one. 
 ~~~~~
 Draw> givelist <selection_name> [<selection_name>]
 ~~~~~
@@ -970,15 +974,15 @@ Draw> givecount <selection_name> [<selection_name>]
 prints a number of loaded entities defined by <i>selection</i> argument. 
 
 Three commands are used to calculate statistics on the entities in the model:
-* *Draw> count <counter> [<selection> ...]* - prints only a number of entities per each type matching the criteria defined by arguments.
-* *Draw> sumcount <counter> [<selection> ...]* - prints the total number of entities of all types matching the criteria defined by arguments and the largest number corresponding to one type.
-* *Draw> listcount <counter> [<selection> ...]* prints a list of entities per each type matching the criteria defined by arguments.
+* *Draw> count \<counter\> [\<selection\> ...]* - prints only a number of entities per each type matching the criteria defined by arguments.
+* *Draw> sumcount \<counter\> [\<selection\> ...]* - prints the total number of entities of all types matching the criteria defined by arguments and the largest number corresponding to one type.
+* *Draw> listcount \<counter\> [\<selection\> ...]* prints a list of entities per each type matching the criteria defined by arguments.
 
-Optional <i><selection></i> argument, if specified, defines a subset of entities, which are to be taken into account. Argument <i><counter></i> should be one of the currently defined counters:
+Optional <i>\<selection\></i> argument, if specified, defines a subset of entities, which are to be taken into account. Argument <i>\<counter\></i> should be one of the currently defined counters:
 
-| Counter	| Operation |
+| Counter | Operation |
 | :-------- | :-------- |
-| xst-types	| Calculates how much entities of each OCCT type exist |
+| xst-types | Calculates how much entities of each OCCT type exist |
 | iges-types | Calculates how much entities of each IGES type and form exist |
 | iges-levels | Calculates how much entities lie in different IGES levels |
 
@@ -992,7 +996,7 @@ Entities in the IGES file are numbered in the succeeding  order. An entity can b
 
 * *Draw> elab \#*  - provides  a label for an entity with a known number;
 * *Draw> enum \#* - prints a number for an entity with the given label; 
-* *Draw> entity \# <level_of_information>*  - gives the content of an IGES entity;
+* *Draw> entity \# \<level_of_information\>*  - gives the content of an IGES entity;
 * *Draw> estat \#* - provides the list of entities referenced by a given entity and the list of entities referencing to it.
 
 @subsubsection occt_iges_4_4_2 Estimating the results of reading IGES
@@ -1001,22 +1005,22 @@ All of the following commands are available only after the  data are converted i
 ~~~~~
 Draw> tpstat [*|?]<symbol> [<selection>]
 ~~~~~
-provides all statistics on the last transfer,  including the list of transferred entities with mapping from IGES to OCCT  types, as well as fail and warning messages. The parameter <i><symbol></i> defines  what information will be printed: 
-* G	- General statistics (list of results and messages)
-* C	- Count of all warning and fail messages
-* C	- List of all warning and fail messages
-* F	- Count of all fail messages
-* F	- List of all fail messages
-* N	- List of all transferred roots
-* S	- The same, with types of source entity and result type
-* B	- The same, with messages
-* T	- Count of roots for geometrical types
-* R	- Count of roots for topological types
-* l	- The same, with a type of the source entity
+provides all statistics on the last transfer,  including the list of transferred entities with mapping from IGES to OCCT  types, as well as fail and warning messages. The parameter <i>\<symbol\></i> defines  what information will be printed: 
+* G - General statistics (list of results and messages)
+* C - Count of all warning and fail messages
+* C - List of all warning and fail messages
+* F - Count of all fail messages
+* F - List of all fail messages
+* N - List of all transferred roots
+* S - The same, with types of source entity and result type
+* B - The same, with messages
+* T - Count of roots for geometrical types
+* R - Count of roots for topological types
+* l - The same, with a type of the source entity
 
 The sign ‘*’ before the parameters **n**, **s**, **b**,  **t**, **r** makes it work on all entities (not only on roots). The sign  ‘?’ before **n**, **s**, **b**, **t** limits the scope of  information to invalid entities. 
 
-Optional argument <i><selection></i> can limit the action of  the command with a selected subset of entities. 
+Optional argument <i>\<selection\></i> can limit the action of  the command with a selected subset of entities. 
 To get help, run this command without arguments. 
 
 For example, to get translation ratio on IGES faces, you can use. 
@@ -1028,11 +1032,11 @@ The second version of the same command is TPSTAT (not  capital spelling).
 Draw:> TPSTAT symbol 
 ~~~~~
 Symbol can be of the following values: 
-* g	-  General statistics (list of results and messages)
-* c	- Count of all warning and fail messages
-* C	- List of all warning and fail messages
-* r	- Count of resulting OCCT shapes per each type
-* s	- Mapping of IGES roots and resulting OCCT shapes
+* g -  General statistics (list of results and messages)
+* c - Count of all warning and fail messages
+* C - List of all warning and fail messages
+* r - Count of resulting OCCT shapes per each type
+* s - Mapping of IGES roots and resulting OCCT shapes
 
 Sometimes the trimming contours of IGES faces (i.e., entity  141 for 143, 142 for 144) can be lost during translation due to fails. 
 
@@ -1042,7 +1046,7 @@ Draw> tplosttrim [<IGES_type>]
 ~~~~~
 It outputs the rank and DE numbers of faces that  lost their trims and their numbers for each type (143, 144, 510) and their  total number. If a face lost several of its trims it is output only once. 
 
-Optional parameter <i><IGES_type></i> can be *TrimmedSurface,  BoundedSurface* or *Face* to specify the only type of IGES faces. 
+Optional parameter <i>\<IGES_type\></i> can be *TrimmedSurface,  BoundedSurface* or *Face* to specify the only type of IGES faces. 
 
 For example, to get untrimmed 144 entities, use command 
 ~~~~~ 
@@ -1062,7 +1066,7 @@ Draw> checkbrep <shape_name> <expurged_shape_name>
 ~~~~~
 It checks the geometry and topology of a shape for  different cases of inconsistency, like self-intersecting wires or wrong  orientation of trimming contours. If an error is found, it copies bad parts of  the shape with the names "expurged_subshape_name _#" and generates  an appropriate message. If possible, this command also tries to find IGES  entities the OCCT shape was produced from. 
 
-<i><expurged_shape_name></i> will contain the original shape  without invalid subshapes. 
+<i>\<expurged_shape_name\></i> will contain the original shape  without invalid subshapes. 
 
 To get information on tolerances of subshapes, use command 
 ~~~~~
@@ -1070,9 +1074,9 @@ Draw> tolerance <shape_name> [<min> [<max>] [<symbol>]]
 ~~~~~
 It outputs maximum, average and minimum values of  tolerances for each kind of subshapes having tolerances or it can output  tolerances of all subshapes of the whole shape. 
 
-When specifying <min> and <max> arguments this  command outputs shapes with names <i><shape_name>...</i> and their total number  with tolerances in the range [min, max]. 
+When specifying \<min\> and \<max\> arguments this  command outputs shapes with names <i>\<shape_name\>...</i> and their total number  with tolerances in the range [min, max]. 
 
-<i><Symbol></i> is used for specifying the kind of sub-shapes to analyze: 
+<i>\<Symbol\></i> is used for specifying the kind of sub-shapes to analyze: 
 * v - for vertices,
 * e - for edges,
 * f - for faces,
@@ -1082,13 +1086,13 @@ When specifying <min> and <max> arguments this  command outputs shapes with name
 
 Refer to <a href="#occt_iges_3_3_2">Setting the translation parameters</a> for a description of parameters used in reading an IGES file. The parameters are set by command *param*: 
 
-| Description	| Name	| Values |
+| Description | Name | Values |
 | :-----------  | :---- | :----- |
-| Author	| XSTEP.iges.header.author	| String |
-| Company	| XSTEP.iges.header.company	| String |
-| Receiver	| XSTEP.iges.header.receiver |	String |
-| Write mode for shapes	| XSTEP.iges.writebrep.mode	| 0/Faces or 1/BRep |
-| Measurement units	| XSTEP.iges.unit | 1-11 (or a string value) |
+| Author | XSTEP.iges.header.author | String |
+| Company | XSTEP.iges.header.company | String |
+| Receiver | XSTEP.iges.header.receiver | String |
+| Write mode for shapes | XSTEP.iges.writebrep.mode | 0/Faces or 1/BRep |
+| Measurement units | XSTEP.iges.unit | 1-11 (or a string value) |
 
 Several shapes can be written in one file. To start writing  a new file, enter command 
 ~~~~~

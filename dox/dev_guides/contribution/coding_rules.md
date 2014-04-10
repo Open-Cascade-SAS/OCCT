@@ -1,4 +1,4 @@
-Coding Rules {#dev_guides__coding_rules}
+Coding Rules {#occt_dev_guides__coding_rules}
 ======================================
 
 @tableofcontents
@@ -238,7 +238,7 @@ Prefer C++ style comments in C++ sources.
 
 ### Commenting out unused code
 
-Delete unused code instead of commenting it or using #define.
+Delete unused code instead of commenting it or using \#define.
 
 ### Indentation in sources [MANDATORY]
 
@@ -541,7 +541,7 @@ Use *private* fields if future extensions should be disabled.
 
 ### Constants and inlines over defines [MANDATORY]
 
-Use constant variables (const) and inline functions instead of defines (#define).
+Use constant variables (const) and inline functions instead of defines (\#define).
 
 ### Avoid explicit numerical values [MANDATORY]
 

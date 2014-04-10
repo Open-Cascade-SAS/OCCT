@@ -1,13 +1,11 @@
-Modeling Data {#user_guides__modeling_data}
+Modeling Data {#occt_user_guides__modeling_data}
 ========================
 
 @tableofcontents
 
-@section occt_modat_1 Introduction
+@section occt_modat_0 Introduction
 
 Modeling Data supplies data structures to represent 2D and 3D geometric models. This manual explains how to use Modeling Data. For advanced information on modeling data, see our offerings on our web site at <a href="http://www.opencascade.org/support/training/">www.opencascade.org/support/training/</a>     
-
-
 
 @section occt_modat_1 Geometry Utilities
 
@@ -102,7 +100,7 @@ The following low level services are provided:
 
   The class **MultiPointConstraint** allows defining a multiple point constraint and  computing the approximation of sets of points to several curves. 
 
-* Computation of an approximation of a Bezier curve from a set of points:  
+* Computation of an approximation of a Bezier curve from a set of points: 
 
   The class *Compute* allows making an approximation of a set of points to a Bezier curve 
 

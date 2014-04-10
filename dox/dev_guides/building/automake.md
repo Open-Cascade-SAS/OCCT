@@ -1,4 +1,4 @@
-Building with Automake {#dev_guides__building__automake}
+Building with Automake {#occt_dev_guides__building_automake}
 ======================
 
 This file describes steps to build OCCT libraries from complete source
@@ -6,10 +6,10 @@ archive on Linux with GNU build system (Autotools).
 
 If you are building OCCT from bare sources (as in Git repository), or do some 
 changes affecting CDL files, you need to use WOK to re-generate header files
-and build scripts / projects. See paragraph 1 \ref dev_guides__building__wok for instructions.
+and build scripts / projects. See paragraph 1 \ref occt_dev_guides__building_wok for instructions.
 
 Before building OCCT, you need to install required third-party libraries; see paragraph 1 of 
-\ref dev_guides__building for instructions.
+\ref occt_dev_guides__building for instructions.
 
 Note that during compilation by makefiles on some Linux OS on a station with 
 NVIDIA video card you may experience problems because the installation 

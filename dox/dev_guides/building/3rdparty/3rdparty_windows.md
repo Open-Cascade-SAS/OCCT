@@ -1,4 +1,4 @@
-﻿ Building 3rd-party libraries on Windows {#dev_guides__building_3rdparty_windows}
+﻿ Building 3rd-party libraries on Windows {#occt_dev_guides__building_3rdparty_windows}
 ==============================================
 @tableofcontents
 

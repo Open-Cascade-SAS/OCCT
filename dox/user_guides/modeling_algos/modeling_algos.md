@@ -1,4 +1,4 @@
-Modeling Algorithms  {#user_guides__modeling_algos}
+Modeling Algorithms  {#occt_user_guides__modeling_algos}
 =========================
 
 @tableofcontents

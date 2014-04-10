@@ -1,4 +1,4 @@
-Guide to installing and using Git for OCCT development {#dev_guides__git_guide}
+Guide to installing and using Git for OCCT development {#occt_dev_guides__git_guide}
 =================================
 
 @tableofcontents 
@@ -307,7 +307,7 @@ Click on that tab, then click **Add a public key**, and paste the text of the pu
     > git clone gitolite@git.dev.opencascade.org:occt <path>
 ~~~~~
 
-  where <i><path></i> is the path to the new folder which will be created for the repository.
+  where <i>\<path\></i> is the path to the new folder which will be created for the repository.
     
   * In TortoiseGit: create a new folder, open it and right-click in the Explorer window, then choose **Git Clone** in the context menu:
  
