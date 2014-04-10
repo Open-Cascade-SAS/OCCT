@@ -53,6 +53,8 @@
 // disable MSVC warnings in bison code
 #ifdef _MSC_VER
 #pragma warning(disable:4244 4131 4127 4702)
+#define YYMALLOC malloc
+#define YYFREE free
 #endif
 
 %}
