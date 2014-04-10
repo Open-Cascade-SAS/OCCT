@@ -269,42 +269,42 @@ Standard_Boolean BRepClass3d_SolidExplorer::PointInTheFace
           }
         }
       }
-	  
+          
       for(u=-du+(U1+U2)*0.5; u>U1; u-=du) {         //--  0  0    u decreases
-	for(v=-dv+(V1+V2)*0.5; v>V1; v-=dv) {       //--  X  0    v decreases
-	  if(++NbPntCalc>=IndexPoint) {
-	    if(TheIntersector.ClassifyUVPoint(gp_Pnt2d(u,v))==TopAbs_IN) { 
-	      u_=u; v_=v;
-	      surf->D1 (u, v, APoint_, theVecD1U, theVecD1V);
-	      IndexPoint = NbPntCalc;
-	      return(Standard_True);
-	    }
-	  }
-	}
+        for(v=-dv+(V1+V2)*0.5; v>V1; v-=dv) {       //--  X  0    v decreases
+          if(++NbPntCalc>=IndexPoint) {
+            if(TheIntersector.ClassifyUVPoint(gp_Pnt2d(u,v))==TopAbs_IN) { 
+              u_=u; v_=v;
+              surf->D1 (u, v, APoint_, theVecD1U, theVecD1V);
+              IndexPoint = NbPntCalc;
+              return(Standard_True);
+            }
+          }
+        }
       }
       for(u=-du+(U1+U2)*0.5; u>U1; u-=du) {         //--  X  0    u decreases
-	for(v=dv+(V1+V2)*0.5; v<V2; v+=dv) {        //--  0  0    v increases
-	  if(++NbPntCalc>=IndexPoint) { 
-	    if(TheIntersector.ClassifyUVPoint(gp_Pnt2d(u,v))==TopAbs_IN) { 
-	      u_=u; v_=v;
-	      surf->D1 (u, v, APoint_, theVecD1U, theVecD1V);
-	      IndexPoint = NbPntCalc;
-	      return(Standard_True);
-	    }
-	  }
-	}
+        for(v=dv+(V1+V2)*0.5; v<V2; v+=dv) {        //--  0  0    v increases
+          if(++NbPntCalc>=IndexPoint) { 
+            if(TheIntersector.ClassifyUVPoint(gp_Pnt2d(u,v))==TopAbs_IN) { 
+              u_=u; v_=v;
+              surf->D1 (u, v, APoint_, theVecD1U, theVecD1V);
+              IndexPoint = NbPntCalc;
+              return(Standard_True);
+            }
+          }
+        }
       }
       for(u=du+(U1+U2)*0.5; u<U2; u+=du) {         //--  0  0     u increases
-	for(v=-dv+(V1+V2)*0.5; v>V1; v-=dv) {      //--  0  X     v decreases
-	  if(++NbPntCalc>=IndexPoint) {
-	    if(TheIntersector.ClassifyUVPoint(gp_Pnt2d(u,v))==TopAbs_IN) { 
-	      u_=u; v_=v;
-	      surf->D1 (u, v, APoint_, theVecD1U, theVecD1V);
-	      IndexPoint = NbPntCalc;
-	      return(Standard_True);
-	    }
-	  }
-	}
+        for(v=-dv+(V1+V2)*0.5; v>V1; v-=dv) {      //--  0  X     v decreases
+          if(++NbPntCalc>=IndexPoint) {
+            if(TheIntersector.ClassifyUVPoint(gp_Pnt2d(u,v))==TopAbs_IN) { 
+              u_=u; v_=v;
+              surf->D1 (u, v, APoint_, theVecD1U, theVecD1V);
+              IndexPoint = NbPntCalc;
+              return(Standard_True);
+            }
+          }
+        }
       }
       //-- the remainder
       du = (U2-U1)/37.0;
@@ -313,26 +313,26 @@ Standard_Boolean BRepClass3d_SolidExplorer::PointInTheFace
       if(dv<1e-12) dv=1e-12;
       
       for(u=du+U1; u<U2; u+=du) { 
-	for(v=dv+V1; v<V2; v+=dv) {
-	  if(++NbPntCalc>=IndexPoint) {
-	    if(TheIntersector.ClassifyUVPoint(gp_Pnt2d(u,v))==TopAbs_IN) { 
-	      u_=u; v_=v;
-	      surf->D1 (u, v, APoint_, theVecD1U, theVecD1V);
-	      IndexPoint = NbPntCalc;
-	      return(Standard_True);
-	    }
-	  }
-	}
+        for(v=dv+V1; v<V2; v+=dv) {
+          if(++NbPntCalc>=IndexPoint) {
+            if(TheIntersector.ClassifyUVPoint(gp_Pnt2d(u,v))==TopAbs_IN) { 
+              u_=u; v_=v;
+              surf->D1 (u, v, APoint_, theVecD1U, theVecD1V);
+              IndexPoint = NbPntCalc;
+              return(Standard_True);
+            }
+          }
+        }
       }
       u=(U1+U2)*0.5;
       v=(V1+V2)*0.5;
       if(++NbPntCalc>=IndexPoint) {
-	if(TheIntersector.ClassifyUVPoint(gp_Pnt2d(u,v))==TopAbs_IN) { 
-	  u_=u; v_=v;
-	  surf->D1 (u, v, APoint_, theVecD1U, theVecD1V);
-	  IndexPoint = NbPntCalc;
-	  return(Standard_True);
-	}
+        if(TheIntersector.ClassifyUVPoint(gp_Pnt2d(u,v))==TopAbs_IN) { 
+          u_=u; v_=v;
+          surf->D1 (u, v, APoint_, theVecD1U, theVecD1V);
+          IndexPoint = NbPntCalc;
+          return(Standard_True);
+        }
       }
     }
     IndexPoint = NbPntCalc;
@@ -350,9 +350,9 @@ Standard_Boolean BRepClass3d_SolidExplorer::PointInTheFace
 //purpose  : Limit infinite parameters
 //=======================================================================
 static void LimitInfiniteUV (Standard_Real& U1,
-			     Standard_Real& V1,
-			     Standard_Real& U2,
-			     Standard_Real& V2)
+                             Standard_Real& V1,
+                             Standard_Real& U2,
+                             Standard_Real& V2)
 {
   Standard_Boolean
     infU1 = Precision::IsNegativeInfinite(U1),
@@ -370,9 +370,9 @@ static void LimitInfiniteUV (Standard_Real& U1,
 //purpose  : 
 //=======================================================================
 static Standard_Integer IsInfiniteUV (Standard_Real& U1, 
-				      Standard_Real& V1,
-				      Standard_Real& U2, 
-				      Standard_Real& V2) 
+                                      Standard_Real& V1,
+                                      Standard_Real& U2, 
+                                      Standard_Real& V2) 
 {
   Standard_Integer aVal = 0;
 
@@ -403,8 +403,8 @@ static Standard_Integer IsInfiniteUV (Standard_Real& U1,
 //           and so on. 
 //=======================================================================
 Standard_Integer BRepClass3d_SolidExplorer::OtherSegment(const gp_Pnt& P, 
-							 gp_Lin& L, 
-							 Standard_Real& _Par) 
+                                                         gp_Lin& L, 
+                                                         Standard_Real& _Par) 
 {
   const Standard_Real TolU = Precision::PConfusion();
   const Standard_Real TolV = TolU;
@@ -444,7 +444,7 @@ Standard_Integer BRepClass3d_SolidExplorer::OtherSegment(const gp_Pnt& P,
       //
       //avoid process faces from uncorrected shells
       if( Abs (U2 - U1) < 1.e-12 || Abs(V2 - V1) < 1.e-12) {
-	return 2;
+        return 2;
       }
       //
       Standard_Real svmyparam=myParamOnEdge;
@@ -456,60 +456,60 @@ Standard_Integer BRepClass3d_SolidExplorer::OtherSegment(const gp_Pnt& P,
       Extrema_ExtPS Ext(P, GA, TolU, TolV);
       //
       if (Ext.IsDone() && Ext.NbExt() > 0) {
-	Standard_Integer i, iNear,  iEnd;
-	Standard_Real  aUx, aVx, Dist2, Dist2Min;
-	Extrema_POnSurf aPx;
-	//
-	iNear = 1;
-	Dist2Min = Ext.SquareDistance(1);
-	iEnd = Ext.NbExt();
-	for (i = 2; i <= iEnd; i++) {
-	  aPx=Ext.Point(i);
-	  aPx.Parameter(aUx, aVx);
-	  if (aUx>=U1 && aUx<=U2 && aVx>=V1 && aVx<=V2) {
-	    Dist2 = Ext.SquareDistance(i);
-	    if (Dist2 < Dist2Min) {
-	      Dist2Min = Dist2; 
-	      iNear = i;
-	    }
-	  }
-	}
-	//
-	Standard_Real aDist2Tresh=1.e-24;
-	//
-	if (Dist2Min<aDist2Tresh) {
-	  if (anInfFlag) {
-	    return 1;
-	  } 
-	  else {
-	    BRepClass_FaceClassifier classifier2d;
-	    Standard_Real            aU;
-	    Standard_Real            aV;
+        Standard_Integer i, iNear,  iEnd;
+        Standard_Real  aUx, aVx, Dist2, Dist2Min;
+        Extrema_POnSurf aPx;
+        //
+        iNear = 1;
+        Dist2Min = Ext.SquareDistance(1);
+        iEnd = Ext.NbExt();
+        for (i = 2; i <= iEnd; i++) {
+          aPx=Ext.Point(i);
+          aPx.Parameter(aUx, aVx);
+          if (aUx>=U1 && aUx<=U2 && aVx>=V1 && aVx<=V2) {
+            Dist2 = Ext.SquareDistance(i);
+            if (Dist2 < Dist2Min) {
+              Dist2Min = Dist2; 
+              iNear = i;
+            }
+          }
+        }
+        //
+        Standard_Real aDist2Tresh=1.e-24;
+        //
+        if (Dist2Min<aDist2Tresh) {
+          if (anInfFlag) {
+            return 1;
+          } 
+          else {
+            BRepClass_FaceClassifier classifier2d;
+            Standard_Real            aU;
+            Standard_Real            aV;
 
-	    (Ext.Point(iNear)).Parameter(aU, aV);
+            (Ext.Point(iNear)).Parameter(aU, aV);
 
-	    gp_Pnt2d aPuv(aU, aV);
+            gp_Pnt2d aPuv(aU, aV);
 
-	    classifier2d.Perform(face,aPuv,Precision::PConfusion());
+            classifier2d.Perform(face,aPuv,Precision::PConfusion());
 
-	    TopAbs_State aState = classifier2d.State();
+            TopAbs_State aState = classifier2d.State();
 
-	    if (aState == TopAbs_IN || aState == TopAbs_ON) {
-	      return 1;
-	    }
-	    else {
-	      return 3; // skv - the point is on surface but outside face.
-	    }
-	  }
-	}
-	if (anInfFlag) {
-	  APoint = (Ext.Point(iNear)).Value();
-	  gp_Vec V(P,APoint);
-	  _Par = V.Magnitude(); 
-	  L = gp_Lin(P,V);
-	  ptfound=Standard_True;
-	  return 0;
-	}
+            if (aState == TopAbs_IN || aState == TopAbs_ON) {
+              return 1;
+            }
+            else {
+              return 3; // skv - the point is on surface but outside face.
+            }
+          }
+        }
+        if (anInfFlag) {
+          APoint = (Ext.Point(iNear)).Value();
+          gp_Vec V(P,APoint);
+          _Par = V.Magnitude(); 
+          L = gp_Lin(P,V);
+          ptfound=Standard_True;
+          return 0;
+        }
       }
       //The point is not ON the face or surface. The face is restricted.
       // find point in a face not too far from a projection of P on face
@@ -521,7 +521,9 @@ Standard_Integer BRepClass3d_SolidExplorer::OtherSegment(const gp_Pnt& P,
           ++NbPointsOK;
           gp_Vec V (P, APoint);
           Par = V.Magnitude();
-          if (Par > gp::Resolution())
+          if (Par > gp::Resolution() &&
+              aVecD1U.Magnitude() > gp::Resolution() &&
+              aVecD1V.Magnitude() > gp::Resolution())
           {
             gp_Vec Norm = aVecD1U.Crossed (aVecD1V);
             Standard_Real tt = Norm.Magnitude();
@@ -544,8 +546,8 @@ Standard_Integer BRepClass3d_SolidExplorer::OtherSegment(const gp_Pnt& P,
       while(IndexPoint<200 && NbPointsOK<16);
 
       myParamOnEdge=svmyparam;
-      if(maxscal>0.2) {		  
-	return 0;
+      if(maxscal>0.2) {                  
+        return 0;
       }
 
 
@@ -557,16 +559,16 @@ Standard_Integer BRepClass3d_SolidExplorer::OtherSegment(const gp_Pnt& P,
 
       Standard_Boolean encoreuneface = faceexplorer.More();
       if(ptfound==Standard_False && encoreuneface==Standard_False) { 
-	if(myParamOnEdge < 0.0001) { 
-	  //-- This case takes place when the point is on the solid
-	  //-- and this solid is reduced to a face 
-	  gp_Pnt PBidon(P.X()+1.0,P.Y(),P.Z());
-	  gp_Vec V(P,PBidon);
-	  Par= 1.0;
-	  _Par=Par;
-	  L  = gp_Lin(P,V);
-	  return 0;
-	}
+        if(myParamOnEdge < 0.0001) { 
+          //-- This case takes place when the point is on the solid
+          //-- and this solid is reduced to a face 
+          gp_Pnt PBidon(P.X()+1.0,P.Y(),P.Z());
+          gp_Vec V(P,PBidon);
+          Par= 1.0;
+          _Par=Par;
+          L  = gp_Lin(P,V);
+          return 0;
+        }
       }
     } //-- Exploration of the faces   
 
@@ -595,12 +597,12 @@ Standard_Integer BRepClass3d_SolidExplorer::OtherSegment(const gp_Pnt& P,
     else {
       myParamOnEdge*=0.5;  
       if(myParamOnEdge < 0.0001) { 
-	gp_Pnt PBidon(P.X()+1.0,P.Y(),P.Z());
-	gp_Vec V(P,PBidon);
-	Par= 1.0;
-	_Par=Par;
-	L  = gp_Lin(P,V);
-	return 0;
+        gp_Pnt PBidon(P.X()+1.0,P.Y(),P.Z());
+        gp_Vec V(P,PBidon);
+        Par= 1.0;
+        _Par=Par;
+        L  = gp_Lin(P,V);
+        return 0;
       }
     }
   } //-- for(;;) { ...  } 
@@ -911,8 +913,8 @@ Standard_Boolean BRepClass3d_SolidExplorer::RejectFace(const gp_Lin& ) const
 //           compute  intersections. 
 //=======================================================================
 Standard_Integer  BRepClass3d_SolidExplorer::Segment(const gp_Pnt& P, 
-						     gp_Lin& L, 
-						     Standard_Real& Par)  
+                                                     gp_Lin& L, 
+                                                     Standard_Real& Par)  
 {
   Standard_Integer bRetFlag;
   myFirstFace = 0;
@@ -946,9 +948,9 @@ const Bnd_Box& BRepClass3d_SolidExplorer::Box() const {
 //=======================================================================
 
 void BRepClass3d_SolidExplorer::DumpSegment(const gp_Pnt&,
-					    const gp_Lin&,
-					    const Standard_Real,
-					    const TopAbs_State) const
+                                            const gp_Lin&,
+                                            const Standard_Real,
+                                            const TopAbs_State) const
 {
 #ifdef DEB
  
