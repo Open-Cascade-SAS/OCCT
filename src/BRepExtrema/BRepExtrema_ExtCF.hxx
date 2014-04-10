@@ -39,12 +39,12 @@ class BRepExtrema_ExtCF
   {
   }
   //! It calculates all the distances. <br>
-  Standard_EXPORT BRepExtrema_ExtCF(const TopoDS_Edge& V,const TopoDS_Face& E);
+  Standard_EXPORT BRepExtrema_ExtCF(const TopoDS_Edge& E,const TopoDS_Face& F);
 
-  Standard_EXPORT void Initialize(const TopoDS_Face& E);
+  Standard_EXPORT void Initialize(const TopoDS_Edge& E, const TopoDS_Face& F);
   //! An exception is raised if the fields have not been initialized. <br>
   //! Be careful: this method uses the Face only for classify not for the fields. <br>
-  Standard_EXPORT void Perform(const TopoDS_Edge& V,const TopoDS_Face& F);
+  Standard_EXPORT void Perform(const TopoDS_Edge& E,const TopoDS_Face& F);
   //! True if the distances are found. <br>
   Standard_EXPORT Standard_Boolean IsDone() const
   {
