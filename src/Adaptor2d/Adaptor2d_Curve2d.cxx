@@ -373,5 +373,12 @@ Handle(Geom2d_BSplineCurve) Adaptor2d_Curve2d::BSpline() const
   return Handle(Geom2d_BSplineCurve)();
 }
 
-
+//=======================================================================
+//function : NbSamples
+//purpose  : 
+//=======================================================================
+Standard_Integer Adaptor2d_Curve2d::NbSamples() const
+{
+  return 20;  
+}
 

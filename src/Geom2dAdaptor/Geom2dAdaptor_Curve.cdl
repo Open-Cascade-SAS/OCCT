@@ -226,7 +226,7 @@ is
     	NoSuchObject from Standard
      is redefined static;     
           
-
+    NbSamples(me) returns Integer from Standard is redefined;
 
     Bezier(me) returns BezierCurve from Geom2d
     raises 
