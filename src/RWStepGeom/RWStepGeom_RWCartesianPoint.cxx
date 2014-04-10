@@ -52,8 +52,8 @@ void RWStepGeom_RWCartesianPoint::ReadStep
           if(nb2 > 3) {
             ach->AddWarning("More than 3 coordinates, ignored");
           }
-	  nbcoord = nb2;
-	  for (Standard_Integer i2 = 0; i2 < nb2; i2 ++) {
+	  nbcoord = Min (nb2, 3);
+	  for (Standard_Integer i2 = 0; i2 < nbcoord; i2 ++) {
 	    if (data->ReadReal (nsub2,i2+1,"coordinates",ach,aCoordinatesItem)) {
               XYZ[i2] = aCoordinatesItem;
             }
@@ -64,7 +64,7 @@ void RWStepGeom_RWCartesianPoint::ReadStep
 
 
 //	ent->Init(aName, aCoordinates);
-	if (nbcoord >= 3) ent->Init3D (aName, XYZ[0],XYZ[1],XYZ[2]);
+	if (nbcoord == 3) ent->Init3D (aName, XYZ[0],XYZ[1],XYZ[2]);
 	else              ent->Init2D (aName, XYZ[0],XYZ[1]);
 }
 
