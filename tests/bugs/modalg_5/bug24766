@@ -10,11 +10,6 @@ restore [locate_data_file bug24766_shell_for_points.brep] s1
 restore [locate_data_file bug24766_edge_to_line.brep] e1
 
 set dist_list [distmini d s1 e1]
-if { [llength ${dist_list}] != 2 } {
-   puts "Error: bad number of solutions"
-} else {
-   puts "OK: good number of solutions"
-}
 
 regexp {([-0-9.+eE]+)} [dump d_val] full dist
 

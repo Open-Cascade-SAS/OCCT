@@ -3,7 +3,7 @@ puts "TODO CR23096 ALL: CHECKSHAPE : Faulty"
 puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 puts "TODO CR23096 ALL: LAYERS : Faulty" 
-puts "TODO DEBUG_OCC24442 Debian60-64 Windows: Warning: Exception in Segment()"
+
 
 
 set filename CATIA01.igs

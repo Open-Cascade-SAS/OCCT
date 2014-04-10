@@ -10,15 +10,15 @@ pload QAcommands
 
 if { [regexp {Debug mode} [dversion]] } {
   if { [regexp {Windows} [dversion]] } {
-    set max_time 180
+    set max_time 250
   } else {
     set max_time 290
   }
 } else {
   if { [regexp {Windows} [dversion]] } {
-    set max_time 50
+    set max_time 70
   } else {
-    set max_time 80
+    set max_time 120
   }
 }
 
