@@ -14,20 +14,20 @@
 #ifndef _BRepExtrema_DistShapeShape_HeaderFile
 #define _BRepExtrema_DistShapeShape_HeaderFile
 
+#include <Bnd_SeqOfBox.hxx>
 #include <BRepExtrema_SeqOfSolution.hxx>
 #include <BRepExtrema_SolutionElem.hxx>
+#include <BRepExtrema_SupportType.hxx>
+#include <Extrema_ExtAlgo.hxx>
+#include <Extrema_ExtFlag.hxx>
+#include <gp_Pnt.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
-#include <Extrema_ExtFlag.hxx>
-#include <Extrema_ExtAlgo.hxx>
-#include <BRepExtrema_SupportType.hxx>
-#include <gp_Pnt.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_DefineAlloc.hxx>
 
 class TopoDS_Shape;
 class TopTools_IndexedMapOfShape;
-class Bnd_SeqOfBox;
 
 
 //! This class  provides tools to compute minimum distance <br>
@@ -156,8 +156,16 @@ private:
   TopTools_IndexedMapOfShape myMapE2;
   TopTools_IndexedMapOfShape myMapF1;
   TopTools_IndexedMapOfShape myMapF2;
+  Standard_Boolean myIsInitS1;
+  Standard_Boolean myIsInitS2;
   Extrema_ExtFlag myFlag;
   Extrema_ExtAlgo myAlgo;
+  Bnd_SeqOfBox myBV1;
+  Bnd_SeqOfBox myBV2;
+  Bnd_SeqOfBox myBE1;
+  Bnd_SeqOfBox myBE2;
+  Bnd_SeqOfBox myBF1;
+  Bnd_SeqOfBox myBF2;
 };
 
 #endif

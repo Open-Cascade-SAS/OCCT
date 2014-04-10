@@ -18,16 +18,12 @@
 
 #include <DBRep.hxx>
 #include <BRepTest.hxx>
-#include <gp_Pnt.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopoDS_Edge.hxx>
 #include <BRepExtrema_Poly.hxx>
 #include <BRepExtrema_DistShapeShape.hxx>
 #include <BRepLib_MakeEdge.hxx>
-#include <BRepLib_MakeEdge.hxx>
 #include <BRepLib_MakeVertex.hxx>
 #include <Draw.hxx>
-#include <Draw_Interpretor.hxx>
+
 //#ifdef WNT
 #include <stdio.h>
 //#endif
@@ -58,6 +54,7 @@ static Standard_Integer distance (Draw_Interpretor& di,
   DBRep::Set("distance",E);
   return 0;
 }
+
 static Standard_Integer distmini(Draw_Interpretor& di, Standard_Integer n, const char** a)
 { 
   Standard_Integer i1;
@@ -124,31 +121,25 @@ static Standard_Integer distmini(Draw_Interpretor& di, Standard_Integer n, const
 //purpose  : 
 //=======================================================================
 
-void  BRepTest::ExtremaCommands(Draw_Interpretor& theCommands)
+void BRepTest::ExtremaCommands (Draw_Interpretor& theCommands)
 {
-  static Standard_Boolean done = Standard_False;
-  if (done) return;
-  done = Standard_True;
+  static const char*      aGroup = "TOPOLOGY Extrema commands";
+  static Standard_Boolean isDone = Standard_False;
+  if (isDone)
+  {
+    return;
+  }
+  isDone = Standard_True;
 
-  const char* g = "TOPOLOGY Extrema commands";
+  theCommands.Add ("dist",
+                   "dist Shape1 Shape2",
+                   __FILE__,
+                   distance,
+                   aGroup);
 
-  theCommands.Add("dist","dist Shape1 Shape2"   ,__FILE__,distance,g);
-
-  
-  theCommands.Add("distmini",
-                  "distmini name Shape1 Shape2",
-		  __FILE__,
-		  distmini,g);
+  theCommands.Add ("distmini",
+                   "distmini name Shape1 Shape2",
+                   __FILE__,
+                   distmini,
+                   aGroup);
 }
-
-
-
-
-
-
-
-
-
-
-
-

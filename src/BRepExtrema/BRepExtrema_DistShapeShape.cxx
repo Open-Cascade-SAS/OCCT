@@ -35,82 +35,164 @@
 #include <BRepExtrema_UnCompatibleShape.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepClass3d_SolidClassifier.hxx>
+#include <NCollection_Comparator.hxx>
+#include <NCollection_QuickSort.hxx>
+#include <NCollection_Vector.hxx>
 #include <StdFail_NotDone.hxx>
 
-static void Decomposition(const TopoDS_Shape&         S,
-                          TopTools_IndexedMapOfShape& MapV,
-                          TopTools_IndexedMapOfShape& MapE,
-                          TopTools_IndexedMapOfShape& MapF)
+namespace
 {
-  MapV.Clear();
-  MapE.Clear();
-  MapF.Clear();
-  TopExp::MapShapes(S,TopAbs_VERTEX,MapV);
-  TopExp::MapShapes(S,TopAbs_EDGE,MapE);
-  TopExp::MapShapes(S,TopAbs_FACE,MapF);
-}
 
-static void BoxCalculation(const TopTools_IndexedMapOfShape& Map,
-                           Bnd_SeqOfBox&                     SBox)
-{ 
-  for (Standard_Integer i = 1; i <= Map.Extent(); i++)
+  static void Decomposition(const TopoDS_Shape&         S,
+                            TopTools_IndexedMapOfShape& MapV,
+                            TopTools_IndexedMapOfShape& MapE,
+                            TopTools_IndexedMapOfShape& MapF)
   {
-    Bnd_Box box;
-    BRepBndLib::Add(Map(i), box);
-    SBox.Append(box);
+    MapV.Clear();
+    MapE.Clear();
+    MapF.Clear();
+    TopExp::MapShapes(S,TopAbs_VERTEX,MapV);
+    TopExp::MapShapes(S,TopAbs_EDGE,MapE);
+    TopExp::MapShapes(S,TopAbs_FACE,MapF);
   }
+
+  static void BoxCalculation(const TopTools_IndexedMapOfShape& Map,
+                             Bnd_SeqOfBox&                     SBox)
+  {
+    for (Standard_Integer i = 1; i <= Map.Extent(); i++)
+    {
+      Bnd_Box box;
+      BRepBndLib::Add(Map(i), box);
+      SBox.Append(box);
+    }
+  }
+
+  inline Standard_Real DistanceInitiale(const TopoDS_Vertex V1,
+                                        const TopoDS_Vertex V2)
+  {
+    return (BRep_Tool::Pnt(V1).Distance(BRep_Tool::Pnt(V2)));
+  }
+
+  //! Pair of objects to check extrema.
+  struct BRepExtrema_CheckPair
+  {
+    Standard_Integer Index1;   //!< Index of the 1st sub-shape
+    Standard_Integer Index2;   //!< Index of the 2nd sub-shape
+    Standard_Real    Distance; //!< Distance between sub-shapes
+
+    //! Uninitialized constructor for collection.
+    BRepExtrema_CheckPair() {}
+
+    //! Creates new pair of sub-shapes.
+    BRepExtrema_CheckPair (Standard_Integer theIndex1,
+                           Standard_Integer theIndex2,
+                           Standard_Real    theDistance)
+    : Index1   (theIndex1),
+      Index2   (theIndex2),
+      Distance (theDistance) {}
+  };
 }
 
-inline Standard_Real DistanceInitiale(const TopoDS_Vertex V1,
-                                      const TopoDS_Vertex V2)
+template<>
+class NCollection_Comparator<BRepExtrema_CheckPair>
 {
-  return (BRep_Tool::Pnt(V1).Distance(BRep_Tool::Pnt(V2)));
-} 
+public:
+
+  Standard_Boolean IsLower (const BRepExtrema_CheckPair& theLeft, const BRepExtrema_CheckPair& theRight) const
+  {
+    return theLeft.Distance < theRight.Distance;
+  }
+
+  Standard_Boolean IsGreater (const BRepExtrema_CheckPair& theLeft, const BRepExtrema_CheckPair& theRight) const
+  {
+    return theLeft.Distance > theRight.Distance;
+  }
+
+  Standard_Boolean IsEqual (const BRepExtrema_CheckPair& theLeft, const BRepExtrema_CheckPair& theRight) const
+  {
+    return theLeft.Distance == theRight.Distance;
+  }
+
+  Standard_Boolean IsLowerEqual (const BRepExtrema_CheckPair& theLeft, const BRepExtrema_CheckPair& theRight) const
+  {
+    return theLeft.Distance <= theRight.Distance;
+  }
+
+  Standard_Boolean IsGreaterEqual (const BRepExtrema_CheckPair& theLeft, const BRepExtrema_CheckPair& theRight) const
+  {
+    return theLeft.Distance >= theRight.Distance;
+  }
+};
 
 //=======================================================================
 //function : DistanceMapMap
 //purpose  : 
 //=======================================================================
 
-void BRepExtrema_DistShapeShape::DistanceMapMap(const TopTools_IndexedMapOfShape& Map1,
-                                                const TopTools_IndexedMapOfShape& Map2,
-                                                const Bnd_SeqOfBox&               LBox1,
-                                                const Bnd_SeqOfBox&               LBox2)
+void BRepExtrema_DistShapeShape::DistanceMapMap (const TopTools_IndexedMapOfShape& theMap1,
+                                                 const TopTools_IndexedMapOfShape& theMap2,
+                                                 const Bnd_SeqOfBox&               theLBox1,
+                                                 const Bnd_SeqOfBox&               theLBox2)
 {
-  Standard_Integer i, j;
-  BRepExtrema_SeqOfSolution seq1, seq2;
-
-  const Standard_Integer n1 = Map1.Extent();
-  const Standard_Integer n2 = Map2.Extent();
-  for (i = 1; i <= n1; i++)
+  NCollection_Vector<BRepExtrema_CheckPair> aPairList;
+  const Standard_Integer aCount1 = theMap1.Extent();
+  const Standard_Integer aCount2 = theMap2.Extent();
+  for (Standard_Integer anIdx1 = 1; anIdx1 <= aCount1; ++anIdx1)
   {
-    const Bnd_Box &box1 = LBox1.Value(i);
-    const TopoDS_Shape &S1 = Map1(i);
-    for (j = 1; j <= n2; j++)
+    for (Standard_Integer anIdx2 = 1; anIdx2 <= aCount2; ++anIdx2)
     {
-      const Bnd_Box &box2= LBox2.Value(j);
-      const TopoDS_Shape &S2 = Map2(j);
+      const Standard_Real aDist = theLBox1.Value (anIdx1).Distance (theLBox2.Value (anIdx2));
+      if (aDist < myDistRef - myEps || fabs (aDist - myDistRef) < myEps)
+      {
+        aPairList.Append (BRepExtrema_CheckPair (anIdx1, anIdx2, aDist));
+      }
+    }
+  }
 
-      BRepExtrema_DistanceSS  dist(S1,S2,box1,box2,myDistRef,myEps);
-      if (dist.IsDone()) {
-        if(dist.DistValue() < (myDistRef-myEps))
+  NCollection_QuickSort<NCollection_Vector<BRepExtrema_CheckPair>, BRepExtrema_CheckPair>::Perform (aPairList, NCollection_Comparator<BRepExtrema_CheckPair>(),
+                                                                                                    aPairList.Lower(), aPairList.Upper());
+  for (NCollection_Vector<BRepExtrema_CheckPair>::Iterator aPairIter (aPairList);
+       aPairIter.More(); aPairIter.Next())
+  {
+    const BRepExtrema_CheckPair& aPair = aPairIter.Value();
+    if (aPair.Distance > myDistRef + myEps)
+    {
+      break; // early search termination
+    }
+
+    const Bnd_Box& aBox1 = theLBox1.Value (aPair.Index1);
+    const Bnd_Box& aBox2 = theLBox2.Value (aPair.Index2);
+
+    const TopoDS_Shape& aShape1 = theMap1 (aPair.Index1);
+    const TopoDS_Shape& aShape2 = theMap2 (aPair.Index2);
+
+    BRepExtrema_DistanceSS aDistTool (aShape1, aShape2, aBox1, aBox2, myDistRef, myEps);
+    if (aDistTool.IsDone())
+    {
+      if (aDistTool.DistValue() < myDistRef - myEps)
+      {
+        mySolutionsShape1.Clear();
+        mySolutionsShape2.Clear();
+
+        BRepExtrema_SeqOfSolution aSeq1 = aDistTool.Seq1Value();
+        BRepExtrema_SeqOfSolution aSeq2 = aDistTool.Seq2Value();
+
+        mySolutionsShape1.Append (aSeq1);
+        mySolutionsShape2.Append (aSeq2);
+
+        myDistRef = aDistTool.DistValue();
+      }
+      else if (fabs (aDistTool.DistValue() - myDistRef) < myEps)
+      {
+        BRepExtrema_SeqOfSolution aSeq1 = aDistTool.Seq1Value();
+        BRepExtrema_SeqOfSolution aSeq2 = aDistTool.Seq2Value();
+
+        mySolutionsShape1.Append (aSeq1);
+        mySolutionsShape2.Append (aSeq2);
+
+        if (myDistRef > aDistTool.DistValue())
         {
-          mySolutionsShape1.Clear();
-          mySolutionsShape2.Clear();
-          seq1= dist.Seq1Value();
-          seq2= dist.Seq2Value();
-          mySolutionsShape1.Append(seq1);
-          mySolutionsShape2.Append(seq2);
-          myDistRef=dist.DistValue();
-        }
-        else if(fabs(dist.DistValue()-myDistRef) < myEps)
-        {
-          seq1= dist.Seq1Value();
-          seq2= dist.Seq2Value();
-          mySolutionsShape1.Append(seq1);
-          mySolutionsShape2.Append(seq2);
-          if (myDistRef > dist.DistValue())
-            myDistRef=dist.DistValue();
+          myDistRef = aDistTool.DistValue();
         }
       }
     }
@@ -123,13 +205,16 @@ void BRepExtrema_DistShapeShape::DistanceMapMap(const TopTools_IndexedMapOfShape
 //=======================================================================
 
 BRepExtrema_DistShapeShape::BRepExtrema_DistShapeShape()
-: myDistRef(0.),
-  myIsDone(Standard_False),
-  myInnerSol(Standard_False),
-  myEps(Precision::Confusion()),
-  myFlag(Extrema_ExtFlag_MINMAX),
-  myAlgo(Extrema_ExtAlgo_Grad)
+: myDistRef (0.0),
+  myIsDone (Standard_False),
+  myInnerSol (Standard_False),
+  myEps (Precision::Confusion()),
+  myIsInitS1 (Standard_False),
+  myIsInitS2 (Standard_False),
+  myFlag (Extrema_ExtFlag_MINMAX),
+  myAlgo (Extrema_ExtAlgo_Grad)
 {
+  //
 }
 
 //=======================================================================
@@ -140,12 +225,14 @@ BRepExtrema_DistShapeShape::BRepExtrema_DistShapeShape(const TopoDS_Shape& Shape
                                                        const TopoDS_Shape& Shape2,
                                                        const Extrema_ExtFlag F,
                                                        const Extrema_ExtAlgo A)
-: myDistRef(0.),
-  myIsDone(Standard_False),
-  myInnerSol(Standard_False),
-  myEps(Precision::Confusion()),
-  myFlag(F),
-  myAlgo(A)
+: myDistRef (0.0),
+  myIsDone (Standard_False),
+  myInnerSol (Standard_False),
+  myEps (Precision::Confusion()),
+  myIsInitS1 (Standard_False),
+  myIsInitS2 (Standard_False),
+  myFlag (F),
+  myAlgo (A)
 {
   LoadS1(Shape1);
   LoadS2(Shape2);
@@ -162,12 +249,14 @@ BRepExtrema_DistShapeShape::BRepExtrema_DistShapeShape(const TopoDS_Shape& Shape
                                                        const Standard_Real theDeflection,
                                                        const Extrema_ExtFlag F,
                                                        const Extrema_ExtAlgo A)
-: myDistRef(0.),
-  myIsDone(Standard_False),
-  myInnerSol(Standard_False),
-  myEps(theDeflection),
-  myFlag(F),
-  myAlgo(A)
+: myDistRef (0.0),
+  myIsDone (Standard_False),
+  myInnerSol (Standard_False),
+  myEps (theDeflection),
+  myIsInitS1 (Standard_False),
+  myIsInitS2 (Standard_False),
+  myFlag (F),
+  myAlgo (A)
 {
   LoadS1(Shape1);
   LoadS2(Shape2);
@@ -179,10 +268,11 @@ BRepExtrema_DistShapeShape::BRepExtrema_DistShapeShape(const TopoDS_Shape& Shape
 //purpose  : 
 //=======================================================================
 
-void BRepExtrema_DistShapeShape::LoadS1(const TopoDS_Shape& Shape1)
+void BRepExtrema_DistShapeShape::LoadS1 (const TopoDS_Shape& Shape1)
 {
   myShape1 = Shape1;
-  Decomposition(Shape1, myMapV1, myMapE1, myMapF1);
+  myIsInitS1 = Standard_False;
+  Decomposition (Shape1, myMapV1, myMapE1, myMapF1);
 }
 
 //=======================================================================
@@ -190,10 +280,11 @@ void BRepExtrema_DistShapeShape::LoadS1(const TopoDS_Shape& Shape1)
 //purpose  : 
 //=======================================================================
 
-void BRepExtrema_DistShapeShape::LoadS2(const TopoDS_Shape& Shape2)
+void BRepExtrema_DistShapeShape::LoadS2 (const TopoDS_Shape& Shape2)
 {
   myShape2 = Shape2;
-  Decomposition(Shape2, myMapV2, myMapE2, myMapF2);
+  myIsInitS2 = Standard_False;
+  Decomposition (Shape2, myMapV2, myMapE2, myMapF2);
 }
 
 //=======================================================================
@@ -212,7 +303,6 @@ Standard_Boolean BRepExtrema_DistShapeShape::Perform()
     return Standard_False;
 
   TopoDS_Vertex V;
-  Bnd_SeqOfBox BV1, BV2, BE1, BE2, BF1, BF2;
   const Standard_Real tol = 0.001;
 
   // Treatment of solids
@@ -262,16 +352,35 @@ Standard_Boolean BRepExtrema_DistShapeShape::Perform()
       }
     }
   }
-  
+
   if (!myInnerSol)
   {
-    BoxCalculation(myMapV1,BV1);
-    BoxCalculation(myMapE1,BE1);
-    BoxCalculation(myMapF1,BF1);
-    BoxCalculation(myMapV2,BV2);
-    BoxCalculation(myMapE2,BE2);
-    BoxCalculation(myMapF2,BF2);
-    
+    if (!myIsInitS1) // rebuild cached data for 1st shape
+    {
+      myBV1.Clear();
+      myBE1.Clear();
+      myBF1.Clear();
+
+      BoxCalculation (myMapV1, myBV1);
+      BoxCalculation (myMapE1, myBE1);
+      BoxCalculation (myMapF1, myBF1);
+
+      myIsInitS1 = Standard_True;
+    }
+
+    if (!myIsInitS2) // rebuild cached data for 2nd shape
+    {
+      myBV2.Clear();
+      myBE2.Clear();
+      myBF2.Clear();
+
+      BoxCalculation (myMapV2, myBV2);
+      BoxCalculation (myMapE2, myBE2);
+      BoxCalculation (myMapF2, myBF2);
+
+      myIsInitS2 = Standard_True;
+    }
+
     if (myMapV1.Extent() && myMapV2.Extent())
     {
       TopoDS_Vertex V1 = TopoDS::Vertex(myMapV1(1));
@@ -281,17 +390,19 @@ Standard_Boolean BRepExtrema_DistShapeShape::Perform()
     else
       myDistRef= 1.e30; //szv:!!!
 
-    DistanceMapMap(myMapV1, myMapV2, BV1, BV2);
-    DistanceMapMap(myMapV1, myMapE2, BV1, BE2);
-    DistanceMapMap(myMapE1, myMapV2, BE1, BV2);
-    DistanceMapMap(myMapV1, myMapF2, BV1, BF2);
-    DistanceMapMap(myMapF1, myMapV2, BF1, BV2);
-    DistanceMapMap(myMapE1, myMapE2, BE1, BE2);
-    DistanceMapMap(myMapE1, myMapF2, BE1, BF2);
-    DistanceMapMap(myMapF1, myMapE2, BF1, BE2);
+    DistanceMapMap (myMapV1, myMapV2, myBV1, myBV2);
+    DistanceMapMap (myMapV1, myMapE2, myBV1, myBE2);
+    DistanceMapMap (myMapE1, myMapV2, myBE1, myBV2);
+    DistanceMapMap (myMapV1, myMapF2, myBV1, myBF2);
+    DistanceMapMap (myMapF1, myMapV2, myBF1, myBV2);
+    DistanceMapMap (myMapE1, myMapE2, myBE1, myBE2);
+    DistanceMapMap (myMapE1, myMapF2, myBE1, myBF2);
+    DistanceMapMap (myMapF1, myMapE2, myBF1, myBE2);
 
-    if( (fabs(myDistRef)) > myEps )
-      DistanceMapMap(myMapF1,myMapF2,BF1,BF2);
+    if (fabs (myDistRef) > myEps)
+    {
+      DistanceMapMap (myMapF1, myMapF2, myBF1, myBF2);
+    }
     
     //  Modified by Sergey KHROMOV - Tue Mar  6 11:55:03 2001 Begin
     Standard_Integer i = 1;
