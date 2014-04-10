@@ -26,58 +26,32 @@
 
 //============================================================
 Standard_Integer Geom2dInt_Geom2dCurveTool::NbSamples (const Adaptor2d_Curve2d& C,
-						 const Standard_Real U0,
-						 const Standard_Real U1) {
+  const Standard_Real U0,
+  const Standard_Real U1) 
+{
   GeomAbs_CurveType typC = C.GetType();
-  static Standard_Real nbsOther = 10.0;
-  Standard_Real nbs = nbsOther;
+  Standard_Integer nbs = C.NbSamples();
 
-  if(typC == GeomAbs_Line) 
-    nbs = 2;
-  else if(typC == GeomAbs_BezierCurve) 
-    nbs = 3 + C.NbPoles();
-  else if(typC == GeomAbs_BSplineCurve) { 
+  if(typC == GeomAbs_BSplineCurve) { 
     Standard_Real t=C.LastParameter()-C.FirstParameter();
     Standard_Real t1=U1-U0;
     if(t1<0.0) t1=-t1;
     nbs = C.NbKnots();
     nbs*= C.Degree();
-    nbs*= (t1/t);
+    Standard_Real anb = t1/t * nbs;
+    nbs = (Standard_Integer)anb;
     if(nbs < 4.0) nbs=4;
   }
-  //// modified by jgv, 20.02.02 for bug OCC165 ////
-  else if (typC == GeomAbs_OtherCurve)
-    nbs = 20;
-  //////////////////////////////////////////////////
 
   if(nbs>300)
     nbs = 300;
-  return((Standard_Integer)nbs);
+  return nbs;
+
 }
 //============================================================
 Standard_Integer Geom2dInt_Geom2dCurveTool::NbSamples (const Adaptor2d_Curve2d& C) { 
-  GeomAbs_CurveType typC = C.GetType();
-  static Standard_Real nbsOther = 10.0;
-  Standard_Real nbs = nbsOther;
-  
-  if(typC == GeomAbs_Line) 
-    nbs = 2;
-  else if(typC == GeomAbs_BezierCurve) 
-    nbs = 3 + C.NbPoles();
-  else if(typC == GeomAbs_BSplineCurve) { 
-    nbs = C.NbKnots();
-    nbs*= C.Degree();
-    if(nbs < 2.0) nbs=2;
-  }
-  //// modified by jgv, 20.02.02 for bug OCC165 ////
-  else if (typC == GeomAbs_OtherCurve)
-    nbs = 20;
-  //////////////////////////////////////////////////
-
-  if(nbs>300)
-    nbs = 300;
-  return((Standard_Integer)nbs);
-}
+    return C.NbSamples();
+ }
 
 
 
