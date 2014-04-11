@@ -19,7 +19,6 @@
 #include <Graphic3d_TextureEnv.hxx>
 #include <Graphic3d_Camera.hxx>
 
-#include <Standard_Type.hxx>
 #include <Graphic3d_CLight.hxx>
 #include <Graphic3d_SequenceOfHClipPlane.hxx>
 
@@ -148,7 +147,5 @@ public:
   int IsAntialiasingEnabled;
 
 };
-
-const Handle(Standard_Type)& TYPE(Graphic3d_CView);
 
 #endif // Graphic3d_CView_HeaderFile

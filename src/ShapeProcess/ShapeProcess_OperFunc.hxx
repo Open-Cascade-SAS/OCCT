@@ -16,11 +16,8 @@
 #ifndef ShapeProcess_OperFunc_HeaderFile
 #define ShapeProcess_OperFunc_HeaderFile
 
-#include <Standard_Type.hxx>
 #include <ShapeProcess_Context.hxx>
 
 typedef Standard_Boolean (*ShapeProcess_OperFunc) (const Handle(ShapeProcess_Context)& context);
-
-//Standard_EXPORT Handle(Standard_Type)& STANDARD_TYPE(ShapeProcess_OperFunc);
 
 #endif

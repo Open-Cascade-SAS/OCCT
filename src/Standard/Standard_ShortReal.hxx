@@ -23,10 +23,6 @@
 
 class Handle_Standard_Type;
 
-__Standard_API const Handle_Standard_Type& Standard_ShortReal_Type_();
-//class Standard_OStream;
-//void ShallowDump (const Standard_ShortReal, Standard_OStream& );
-
          //  *********************************** //
          //       Class methods                  //
          //                                      //
@@ -140,8 +136,6 @@ inline Standard_ShortReal     Min (const Standard_ShortReal Val1,
 //    - Hascode
 //    - IsEqual
 //    - IsSimilar
-//    - Shallowcopy
-//    - ShallowDump
 // ===============================================
 
 // ==================================
@@ -149,7 +143,6 @@ inline Standard_ShortReal     Min (const Standard_ShortReal Val1,
 // ==================================
 //....             Herited from Standard_Storable
 __Standard_API Standard_Integer HashCode (const Standard_ShortReal, const Standard_Integer);  
-__Standard_API Standard_ShortReal ShallowCopy (const Standard_ShortReal );  
 
 //-------------------------------------------------------------------
 // IsEqual : Returns Standard_True if two ShortReals are equal

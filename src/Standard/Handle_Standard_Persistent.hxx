@@ -92,8 +92,6 @@ class Handle(Standard_Persistent)
 
     Standard_EXPORT ~Handle(Standard_Persistent)();
 
-     Standard_EXPORT void  ShallowDump(Standard_OStream&) const;
-     
     bool operator==(const Handle(Standard_Persistent)& right) const
       {
        return entity == right.entity;

@@ -67,7 +67,6 @@
 #include <Graphic3d_MapOfStructure.hxx>
 #include <Graphic3d_MapIteratorOfMapOfStructure.hxx>
 
-#include <Visual3d_PickPath.hxx>
 #include <Visual3d_SetIteratorOfSetOfView.hxx>
 
 #if defined (_WIN32) || defined(__WIN32__)

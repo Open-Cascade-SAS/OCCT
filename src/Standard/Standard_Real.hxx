@@ -21,17 +21,11 @@
 #include <Standard_math.hxx>
 #include <Standard_TypeDef.hxx>
 
-class Handle_Standard_Type;
-
-__Standard_API const Handle_Standard_Type& Standard_Real_Type_();
-
 // ===============================================
 // Methods from Standard_Entity class which are redefined:  
 //    - Hascode
 //    - IsEqual
 //    - IsSimilar
-//    - Shallowcopy
-//    - ShallowDump
 // ===============================================
 
 // ==================================
@@ -39,7 +33,6 @@ __Standard_API const Handle_Standard_Type& Standard_Real_Type_();
 // ==================================
 //....             Herited from Standard_Storable
 __Standard_API Standard_Integer HashCode    (const Standard_Real, const Standard_Integer);  
-__Standard_API Standard_Real    ShallowCopy (const Standard_Real );  
 
 __Standard_API Standard_Real    ACos        (const Standard_Real );
 __Standard_API Standard_Real    ACosApprox  (const Standard_Real );
@@ -51,9 +44,6 @@ __Standard_API Standard_Real    ATanh       (const Standard_Real );
 __Standard_API Standard_Real    ACosh       (const Standard_Real );
 __Standard_API Standard_Real    Log         (const Standard_Real );
 __Standard_API Standard_Real    Sqrt        (const Standard_Real );
-
-//class  Standard_OStream;
-//void             ShallowDump(const Standard_Real, Standard_OStream& );
 
 //-------------------------------------------------------------------
 // RealSmall : Returns the smallest positive real

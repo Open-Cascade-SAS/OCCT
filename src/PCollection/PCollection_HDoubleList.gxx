@@ -50,63 +50,6 @@ Handle(PCollection_HDoubleList)
  return L;                        // C'est L qui est retourne.
 }
 
-
-// -----------------------------------------------------------------------
-// -                                                                     -
-// -                                                                     -
-// -                                                                     -
-// -----------------------------------------------------------------------
-Handle(Standard_Persistent) PCollection_HDoubleList::ShallowCopy() const
-{
-  
-  Handle(PCollection_HDoubleList) TheList,          // Traversal depth of <this>
-                                TheCopy,          // The list returned
-                                Pred,             // Backward pointer
-                                Succ,             // Forward pointer
-                                Last;             // Last cell
-
-  TheCopy = new PCollection_HDoubleList;            // Initialization of the list
-                                                  // that will be returned
-  Standard_Boolean FirstTime = Standard_True;                 
-
-  TheList = this;                                 // Start at the beginning
-  Pred = Succ = TheCopy;
-  
-  while ( ! TheList->IsEmpty() ) {                // Append each item at the
-    Succ = Succ->Construct(TheList->Value());     // end of the list
-    if ( FirstTime ){
-      FirstTime = Standard_False;
-      TheCopy   = Succ;
-    }
-    else{
-      Pred->ChangeForwardPointer(Succ);           // Make the link between 
-      Succ->ChangeBackPointer(Pred);              // Pred and Succ
-    }
-    Pred = Succ;
-    Succ = Succ->Tail();
-    TheList = TheList->Tail();                   
-  }
-  return TheCopy;                                // Returns the header
-}
-
-// -----------------------------------------------------------------------
-// -                                                                     -
-// -                                                                     -
-// -                                                                     -
-// -----------------------------------------------------------------------
-void PCollection_HDoubleList::ShallowDump(Standard_OStream& S) const
-{
-  Handle(PCollection_HDoubleList) TheList;
-  TheList = this;
-  S << "begin class HDoubleList " << endl;
-  while ( ! TheList->IsEmpty() ) {                
-    ::ShallowDump(TheList->Value(), S);
-    TheList = TheList->Tail();
-  }
-  S << "end of HDoubleList." << endl;
-}
-
-
 /* Anciens INLINE */
 
 

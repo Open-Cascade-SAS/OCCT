@@ -85,7 +85,7 @@ is
     Assign(me : out; uid : UUID from Standard);
     ---C++: alias operator =
 		    
-    ShallowDump(me; aStream : in out OStream from Standard) is redefined;
+    ShallowDump(me; aStream : in out OStream from Standard);
     ---Purpose: Display the GUID with the following format:
     --          
     --          "00000000-0000-0000-0000-000000000000"

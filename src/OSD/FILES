@@ -1,6 +1,5 @@
 EXTERNLIB
 OSD_CMPLRS.edl
-OSD_Function.cxx
 OSD_Function.hxx
 OSD_ErrorList.hxx
 OSD_WNT.cxx

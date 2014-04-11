@@ -374,8 +374,6 @@ static Standard_Integer DDataStd_GetUAttribute (Draw_Interpretor& di,
       di << "No UAttribute Attribute on label"   << "\n";
     }
     else {
-//      UA->ID().ShallowDump(cout);
-//      cout << endl; 
       char *aStrGUID = new char[37];
       UA->ID().ToCString(aStrGUID);
       di << aStrGUID;

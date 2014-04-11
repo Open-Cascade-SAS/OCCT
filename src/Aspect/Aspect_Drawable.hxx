@@ -27,14 +27,4 @@
  typedef unsigned long Aspect_Drawable;	/* Window or Pixmap under UNIX */
 #endif /* WNT */
 
-#if defined(__cplusplus) || defined(c_plusplus)
-/*==== Definition de Type ====================================================*/
-
-#include <Standard_Macro.hxx>
-class Handle(Standard_Type);
-const Handle(Standard_Type)& STANDARD_TYPE(Aspect_Drawable);
-
-/*============================================================================*/
-#endif
-
 #endif /* _Aspect_Drawable_HeaderFile */

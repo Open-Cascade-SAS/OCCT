@@ -17,7 +17,6 @@
 #include <InterfaceGraphic_Graphic3d.hxx>
 #include <InterfaceGraphic_Visual3d.hxx>
 #include <Graphic3d_Vec.hxx>
-#include <Standard_Type.hxx>
 
 //! Light definition
 struct Graphic3d_CLight

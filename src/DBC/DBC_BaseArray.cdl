@@ -52,15 +52,6 @@ is
 
     Unlock (me) is static;
     ---Purpose: unlocks the array <me> from memory
-		
-    ShallowDump (me; S: in out OStream)
-    --Purpose: Prints the contents at the first level of <me> on
-    --         the stream <s>. The Root version of ShallowDump prints
-    --         the name of the class <me> is an instance of, 
-    --         followed by its memory address.
-    ---C++:  function call
-      is redefined;
-
 
 fields
     mySize : Integer is protected;

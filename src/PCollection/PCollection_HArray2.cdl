@@ -121,18 +121,6 @@ is
     	    	-- Standard_OutOfRange if the index (Row,
     	    	-- Column) is not within the bounds of this array.
 
-    	ShallowCopy(me) 
-                returns mutable like me 
-                is redefined;
-                ---Purpose: Returns a new array containing a copy of the
-    	    	-- values (of the elements) in this array. 
-
-    	ShallowDump (me; s: in out OStream) 
-                is redefined;
-                ---Level: Advanced
-    	    	---C++: function call
-
-
     	Field (me) returns FieldOfHArray2 
                 is private;
                 ---Level: Internal

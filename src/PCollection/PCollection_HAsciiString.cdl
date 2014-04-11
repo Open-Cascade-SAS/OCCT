@@ -439,11 +439,6 @@ is
 	---Purpose: Returns the character of index Index of the string 
         ---Example: me = "abcd", Index = 2, Value returns 'b'.
 
-     	ShallowDump (me; s: in out OStream) 
-            	is redefined;
-                ---Level: Advanced
-    	    	---C++: function call
-
 	Assign(me : mutable ;TheData : VArrayOfCharacter) is private;
                 ---Level: Internal
 	    	---Purpose : Assigns the field of the current structure with

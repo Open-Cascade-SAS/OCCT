@@ -216,12 +216,6 @@ is
  Print (me ; astream : out OStream);
    ---Purpose: Displays <me> .
 
- ShallowCopy(me) returns mutable like me;
-      ---C++: function call  
-
- ShallowDump(me ; s: in out OStream); 
-   ---Level: Advanced
-
  IsSameState (me ; other : like me) returns Boolean;
    ---Level: Advanced
 

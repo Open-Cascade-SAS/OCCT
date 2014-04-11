@@ -18,24 +18,7 @@
 #include <Standard_TypeDef.hxx>
 #include <Standard_Stream.hxx>
 
-class Handle_Standard_Type;
-
-__Standard_API const Handle_Standard_Type& Standard_OStream_Type_();
-
-typedef ostream Standard_OStream;
-
-__Standard_API void ShallowDump(const Standard_Boolean, Standard_OStream& );
-__Standard_API void ShallowDump(const Standard_CString, Standard_OStream& );
-__Standard_API void ShallowDump(const Standard_Character, Standard_OStream& );
-__Standard_API void ShallowDump(const Standard_ExtCharacter, Standard_OStream& );
-__Standard_API void ShallowDump(const Standard_ExtString, Standard_OStream& );
-__Standard_API void ShallowDump(const Standard_Integer, Standard_OStream& );
-__Standard_API void ShallowDump(const Standard_Real, Standard_OStream& );
-__Standard_API void ShallowDump(const Standard_ShortReal, Standard_OStream& );
-class Handle(Standard_Transient);
-__Standard_API void ShallowDump(const Handle(Standard_Transient)&, Standard_OStream& );
-class Handle(Standard_Persistent);
-__Standard_API void ShallowDump(const Handle(Standard_Persistent)&, Standard_OStream& );
+typedef std::ostream Standard_OStream;
 
 #endif
 

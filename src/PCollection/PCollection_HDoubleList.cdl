@@ -111,17 +111,6 @@ is
                 ---Level: Public
 		---Purpose: Modification of the forward pointer
 
-    	ShallowCopy(me) 
-                returns mutable like me 
-                is redefined;
-                ---Level: Advanced
-	    	---C++: function call
-
-    	ShallowDump (me; s: in out OStream) 
-                is redefined;
-                ---Level: Advanced
-    	    	---C++: function call
-
     	Destroy(me : mutable);
 	---C++: alias ~
        

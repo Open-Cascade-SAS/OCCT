@@ -170,18 +170,6 @@ void TCollection_HSequence::Remove(const Standard_Integer From,
    mySequence.Remove(From,To);   
 }
 
-// ---------------------------------------------------------------------
-// ShallowCopy
-// ---------------------------------------------------------------------
-Handle(TCollection_HSequence) TCollection_HSequence::ShallowCopy() const
-{
-   Handle (TCollection_HSequence) TheCopy = new TCollection_HSequence();
-
-   Standard_Integer i;
-   for (i=1; i <= mySequence.Length(); i++) TheCopy->Append(mySequence(i));
-   return TheCopy;
-}
-
 // ----------------------------------------------------------------------------
 // IsSamestate
 // ----------------------------------------------------------------------------

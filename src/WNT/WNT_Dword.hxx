@@ -39,6 +39,4 @@
 
 typedef DWORD WNT_Dword;
 
-extern const Handle( Standard_Type )& STANDARD_TYPE( WNT_Dword );
-
 #endif  // __WNT_Dword_HeaderFile

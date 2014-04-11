@@ -59,13 +59,6 @@ uses
          
 is
 
-	ShallowCopy (me) returns mutable like me is deferred;
-	    ---Purpose: Returns a copy at the first level of <me>. 
-	    --          The objects  referenced are not copied. 
-	    --          Entities copied by ShallowCopy are equal.
-	    ---C++:  function call
-            ---Level: Advanced
-
     	Delete (me: mutable) is redefined;
 	    ---Purpose: Deletes this object.
 	    

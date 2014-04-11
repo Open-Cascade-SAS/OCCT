@@ -15,14 +15,6 @@
 #include <PMMgt_PManaged.ixx>
 #include <Standard_TypeMismatch.hxx>
 
-#ifdef TRACE
-#define  PRINT(X) cout X
-#define  SHALLOWDUMP(X) X.ShallowDump(cout)
-#else
-#define  PRINT(X) 
-#define  SHALLOWDUMP(X)
-#endif
-
 PMMgt_PManaged::PMMgt_PManaged()
 {
 }

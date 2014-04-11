@@ -20,7 +20,7 @@
 
 #include <Standard.hxx>
 
-#include <string>
+#include <cstring>
 #include <cstdlib>
 
 //! This template class represent constant UTF-* string.
@@ -240,7 +240,7 @@ private: //! @name low-level methods
                        const Standard_Byte*   theStrSrc,
                        const Standard_Integer theSizeBytes)
   {
-    ::memcpy (theStrDst, theStrSrc, (Standard_Size )theSizeBytes);
+    std::memcpy (theStrDst, theStrSrc, (Standard_Size )theSizeBytes);
   }
 
   //! Compare two Unicode strings per-byte.
@@ -250,7 +250,7 @@ private: //! @name low-level methods
                            const Standard_Integer theSizeBytes2)
   {
     return (theSizeBytes1 == theSizeBytes2)
-        && (::memcmp (theString1, theString2, (Standard_Size )theSizeBytes1) == 0);
+        && (std::memcmp (theString1, theString2, (Standard_Size )theSizeBytes1) == 0);
   }
 
 private: //! @name private fields

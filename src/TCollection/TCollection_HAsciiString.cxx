@@ -569,27 +569,6 @@ Standard_Character TCollection_HAsciiString::Value(const Standard_Integer where)
 }
 
 // ----------------------------------------------------------------------------
-// ShallowCopy
-// ----------------------------------------------------------------------------
-Handle(TCollection_HAsciiString) TCollection_HAsciiString::ShallowCopy() const
-{
-//   Handle(TCollection_HAsciiString) thecopy = new TCollection_HAsciiString;
-//   for (Standard_Integer i = 1 ; i <= Length() ; i++) 
-//          thecopy->Insert(i,Value(i));   
-//   return thecopy;
-   return new TCollection_HAsciiString(*this);
-}
-
-//---------------------------------------------------------------------
-// ShallowDump
-//---------------------------------------------------------------------
-void TCollection_HAsciiString::ShallowDump(Standard_OStream& S) const
-{
-  S << "begin class HAsciiString "<<endl;
-  myString.Print(S);
-}
-
-// ----------------------------------------------------------------------------
 // IsSameState
 // ----------------------------------------------------------------------------
 Standard_Boolean TCollection_HAsciiString::IsSameState

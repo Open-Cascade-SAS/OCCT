@@ -75,30 +75,6 @@ void PCollection_HArray1::~PCollection_HArray1 ()
 */
 
 
-
-// ----------------------------------------------------------------------
-//                      ShallowCopy
-// ----------------------------------------------------------------------
-
-Handle(Standard_Persistent) PCollection_HArray1::ShallowCopy() const
-{
-  PCollection_HArray1* TheCopy = new PCollection_HArray1(*this);
-//  PCollection_FieldOfHArray1 DataCopy (Data);
-//  TheCopy->Data = DataCopy;
-  return TheCopy;
-}
-
-// ----------------------------------------------------------------------
-//                      ShallowDump
-// ----------------------------------------------------------------------
-
-void PCollection_HArray1::ShallowDump(Standard_OStream& S) const
-{
-  ::ShallowDump(Data,S);
-}
-
-
-
 /* Anciens INLINE */
 
 // ----------------------------------------------------------------------

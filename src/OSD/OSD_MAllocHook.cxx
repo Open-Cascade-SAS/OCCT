@@ -25,6 +25,7 @@
 #include <set>
 #include <map>
 #include <cstdlib>
+#include <cstring>
 #include <iomanip>
 
 #ifndef SIZE_MAX

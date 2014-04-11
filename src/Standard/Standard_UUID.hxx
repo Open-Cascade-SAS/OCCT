@@ -30,9 +30,6 @@ typedef struct {
 
 typedef GUID Standard_UUID ;
 
-class Handle_Standard_Type;
-const Handle(Standard_Type) & TYPE(Standard_UUID);
-
 #endif
 
 

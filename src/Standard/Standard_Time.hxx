@@ -16,10 +16,6 @@
 
 #include <Standard_TypeDef.hxx>
 
-class Handle_Standard_Type;
-
-__Standard_API const Handle_Standard_Type& Standard_Time_Type_();
-
 // ===============================================
 // Methods from Standard_Entity class which are redefined:  
 //    - IsEqual

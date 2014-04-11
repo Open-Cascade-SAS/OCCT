@@ -46,7 +46,6 @@ uses
 
 	ContextPick		from Visual3d,
 	Layer			from Visual3d,
-	PickDescriptor		from Visual3d,
 	SetOfView		from Visual3d,
 	HSetOfView		from Visual3d,
 	View			from Visual3d
@@ -176,14 +175,6 @@ is
 	--	Within the pick aperture               --
 	--	Pickable as determined by the method   --
 	--	Graphic3d_Structure::SetPick           --
-	--                                             --
-	-- The PickDescriptor is :                     --
-	--	A list of PickPath.                    --
-	--                                             --
-	-- The PickPath is defined by :                --
-	--	A Structure Identification             --
-	--	A Pick Identification                  --
-	--	An Element Number.                     --
 	--                                             --
 	-- To insert a Pick Identification use the     --
 	-- method Graphic3d_Group::SetPickId           --

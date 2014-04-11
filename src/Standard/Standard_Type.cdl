@@ -165,18 +165,6 @@ is
    --   AncestorIterator.
    ---Level: Advanced
 
-   ShallowDump (me);
-   ---Purpose: 
-   --   Prints the Information about type. 
-   ---C++:  function call
-   ---Level: Advanced
-   
-   ShallowDump (me; S: in out OStream);
-   ---Purpose: 
-   --   Prints the Information about type. 
-   ---C++:  function call
-   ---Level: Advanced
-   
    Print (me; s: in out OStream);
    ---Purpose: 
    --   Prints on the stream <s> the name of Type.

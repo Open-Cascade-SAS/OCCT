@@ -18,10 +18,6 @@
 #include <Standard_Macro.hxx>
 #include <Standard_Stream.hxx>
 
-class Handle_Standard_Type;
-
-__Standard_API const Handle_Standard_Type& Standard_IStream_Type_();
-
-#define Standard_IStream istream
+typedef std::istream Standard_IStream;
 
 #endif

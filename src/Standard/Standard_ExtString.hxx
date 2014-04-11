@@ -24,19 +24,6 @@
 
 #include <Standard_TypeDef.hxx>
 
-class Handle_Standard_Type;
-
-__Standard_API const Handle_Standard_Type& Standard_ExtString_Type_();
-//class Standard_OStream;
-//void ShallowDump (const Standard_ExtString, Standard_OStream& );
-//============================================================================
-//==== ShallowCopy: Returns a CString
-//============================================================================
-inline Standard_ExtString ShallowCopy (const Standard_ExtString Value)
-{
-  return Value;
-}
-
 //============================================================================
 //==== HashCode : Returns a HashCode ExtString
 //============================================================================

@@ -19,7 +19,4 @@
 
 typedef ofstream* Aspect_FStream;
 
-#include <Standard_Type.hxx>
-const Handle(Standard_Type)& STANDARD_TYPE(Aspect_FStream);
-
 #endif

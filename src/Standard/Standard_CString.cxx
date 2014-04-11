@@ -28,23 +28,6 @@
 #include <stdarg.h>
 
 //============================================================================
-//====
-//============================================================================
-const Handle_Standard_Type& Standard_CString_Type_()
-{
-  static Handle_Standard_Type _aType =
-    new Standard_Type("Standard_CString",sizeof(Standard_CString),0,NULL);
-
-  return _aType;
-}
-
-//============================================================================
-//==== ShallowDump : Writes a CString value.
-//============================================================================
-Standard_EXPORT void ShallowDump (const Standard_CString Value, Standard_OStream& s)
-{ s << Value << " Standard_CString " << "\n"; }
-
-//============================================================================
 //==== HashCode of a CString
 //============================================================================
 Standard_Integer HashCode (const Standard_CString Value,

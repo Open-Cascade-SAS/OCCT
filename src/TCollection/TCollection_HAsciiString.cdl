@@ -571,14 +571,6 @@ is
    ---Level: Advanced
    ---Purpose: Returns the field myString.
  
- ShallowCopy(me) returns mutable like me;
-   ---Level: Advanced
-      ---C++: function call  
-
- ShallowDump(me ; s: in out OStream); 
-   ---Level: Avanced
-   ---C++: function call  
- 
  IsSameState (me ; other : like me) 
    ---Level: Advanced
       returns Boolean;

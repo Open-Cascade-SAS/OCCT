@@ -29,30 +29,6 @@
 #include <string.h>
 #include <cctype>
 
-class Handle_Standard_Type;
-
-__Standard_API const Handle_Standard_Type& Standard_Character_Type_();
-
-//class Standard_OStream;
-//void ShallowDump (const Standard_Character, Standard_OStream& );
-// =====================================
-// Method implemented in Standard_Character.cxx
-// =====================================
-__Standard_API Standard_Integer   HashCode(const Standard_Character, const Standard_Integer);
-
-// ===============================================
-// Methods from Standard_Entity class which are redefined:  
-//    - Hascode
-//    - IsEqual
-//    - IsSimilar
-//    - Shallowcopy
-//    - ShallowDump
-// ===============================================
-
-// ===============
-// inline methods 
-// ===============
-
 // ------------------------------------------------------------------
 // IsEqual : Returns Standard_True if two characters have the same value
 // ------------------------------------------------------------------
@@ -161,11 +137,5 @@ inline Standard_Character LowerCase(const Standard_Character me)
 // ==================================================================
 inline Standard_Character UpperCase(const Standard_Character me) 
 { return (Standard_Character)(unsigned char)std::toupper(me); }
-
-// ------------------------------------------------------------------
-// ShallowCopy : Make a copy of one Character
-// ------------------------------------------------------------------
-inline Standard_Character ShallowCopy (const Standard_Character me) 
-{ return me; }
 
 #endif

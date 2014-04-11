@@ -47,9 +47,6 @@
 #include <Visual3d_Light.hxx>
 #include <Visual3d_ViewManager.hxx>
 #include <Visual3d_ContextPick.hxx>
-#include <Visual3d_PickDescriptor.hxx>
-#include <Visual3d_HSequenceOfPickPath.hxx>
-#include <Visual3d_PickPath.hxx>
 #include <V3d_BadValue.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Ax1.hxx>

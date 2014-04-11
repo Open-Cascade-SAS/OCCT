@@ -51,11 +51,4 @@ typedef struct {
 
 } Graphic3d_CBitFields20;
 
-#if defined(__cplusplus) || defined(c_plusplus)
-/*==== Definition de Type ====================================================*/
-#include <Standard_Type.hxx> 
-const Handle(Standard_Type)&  STANDARD_TYPE(Graphic3d_CBitFields20);
-/*============================================================================*/
-
-#endif
 #endif /*Graphic3d_CBitFields20_HeaderFile*/

@@ -745,13 +745,3 @@ void PCollection_HAsciiString::Assign(const DBC_VArrayOfCharacter& TheField)
 {
    Data = TheField;
 }
-
-//------------------------------------------------------------------------
-//  ShallowDump
-//------------------------------------------------------------------------
-void PCollection_HAsciiString::ShallowDump(Standard_OStream& S) const
-{
-   S << "begin class HAsciiString " << endl;
-   ::ShallowDump(Data, S);
-   S << "end class HAsciiString" << endl;
-}

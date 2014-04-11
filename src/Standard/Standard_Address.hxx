@@ -12,34 +12,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//============================================================================
-//==== Titre: Standard_Address.hxx
-//==== Role : The headr file of primitve type "Address" from package "Standard"
-//==== 
-//==== Implementation:  This is a primitive type implementadef with typedef
-//====        typedef char* Address;
-//============================================================================
-
 #ifndef _Standard_Address_HeaderFile
 #define _Standard_Address_HeaderFile
 
-# include <string.h>
-//typedef void* Standard_Address;
-
 #include <Standard_Integer.hxx>
-
-class Handle_Standard_Type;
-
-__Standard_API const Handle_Standard_Type& Standard_Address_Type_();
-//class Standard_OStream;
-//void ShallowDump (const Standard_Address, Standard_OStream& );
-//============================================================================
-//==== ShallowCopy: Returns a CString
-//============================================================================
-inline Standard_Address ShallowCopy (const Standard_Address Value)
-{
-  return Value;
-}
 
 //============================================================================
 //==== HashCode : Returns a HashCode CString

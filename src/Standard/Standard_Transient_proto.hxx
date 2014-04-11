@@ -50,8 +50,6 @@ class Standard_Transient
     //! Memory deallocator for transient classes
     Standard_EXPORT virtual void Delete() const;
 
-    Standard_EXPORT virtual void ShallowDump(Standard_OStream& ) const;
-    
     //! Returns a type information object about this object.
     Standard_EXPORT virtual const Handle_Standard_Type& DynamicType() const;
 

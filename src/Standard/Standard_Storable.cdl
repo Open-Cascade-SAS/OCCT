@@ -49,13 +49,5 @@ is
 	    ---C++:  function call
             ---Level: Public
             
-	ShallowDump (me; S: in out OStream) is virtual;
-	    ---Purpose: Prints the contents at the first level of <me> on
-	    --         the stream <s>. The Root version of ShallowDump prints
-	    --         the name of the class <me> is instance of, followed by 
-	    --         its memory address.
-	    ---C++:  function call
-            ---Level: Public
-
 end Storable;
 

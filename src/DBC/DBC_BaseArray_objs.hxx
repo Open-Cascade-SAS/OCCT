@@ -33,8 +33,6 @@ class Standard_DimensionMismatch;
 #endif
 #endif
 
-Handle_Standard_Type& DBC_BaseArray_Type_();
-
 class Standard_EXPORT DBC_BaseArray :
   public os_virtual_behavior /* New */ {
 
@@ -49,20 +47,11 @@ DBC_BaseArray(const DBC_BaseArray& BaseArray);
   Standard_Integer Upper() const;
   Standard_Address Lock() const;
   void Unlock() const;
-virtual  void ShallowDump(Standard_OStream& S) const;
   void Destroy() ;
 ~DBC_BaseArray()
 {
   Destroy();
 }
-
-
-
-
-
- // Type management
- //
- friend Handle_Standard_Type& DBC_BaseArray_Type_();
 
 protected:
 
@@ -90,15 +79,5 @@ private:
 
 
 #include <DBC_BaseArray.lxx>
-
-
-
-// other Inline functions and methods (like "C++: function call" methods)
-//
-void ShallowDump(const DBC_BaseArray& me,Standard_OStream& S) {
- me.ShallowDump(S);
-}
-
-
 
 #endif

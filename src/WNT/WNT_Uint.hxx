@@ -39,6 +39,4 @@
 
 typedef UINT WNT_Uint;
 
-extern const Handle( Standard_Type )& STANDARD_TYPE( WNT_Uint );
-
 #endif  // __WNT_Uint_HeaderFile

@@ -29,25 +29,6 @@
 
 #include <string.h>
 
-class Handle_Standard_Type;
-
-__Standard_API const Handle_Standard_Type& Standard_ExtCharacter_Type_();
-//class Standard_OStream;
-//void ShallowDump (const Standard_ExtCharacter, Standard_OStream& );
-// =====================================
-// Method implemented in Standard_ExtCharacter.cxx
-// =====================================
-__Standard_API Standard_Integer HashCode(const Standard_ExtCharacter, const Standard_Integer);
-
-// ===============================================
-// Methods from Standard_Entity class which are redefined:  
-//    - Hascode
-//    - IsEqual
-//    - IsSimilar
-//    - Shallowcopy
-//    - ShallowDump
-// ===============================================
-
 // ===============
 // inline methods 
 // ===============
@@ -92,25 +73,4 @@ inline Standard_Boolean IsSimilar(const Standard_ExtCharacter One,
 				  const Standard_ExtCharacter Two)
 { return One == Two; }
 
-
-// ------------------------------------------------------------------
-// ShallowCopy : Make a copy of one Character
-// ------------------------------------------------------------------
-inline Standard_ExtCharacter ShallowCopy (const Standard_ExtCharacter me) 
-{ return me; }
-
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-

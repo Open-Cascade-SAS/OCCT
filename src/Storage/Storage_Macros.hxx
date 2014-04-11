@@ -68,7 +68,7 @@ Standard_EXPORT Handle(Storage_CallBack)  CallBackSelection(const TCollection_As
                                                 return cback; \
 					    }
 
-#define Storage_ADD_TYPES(schema,classe,callback) if (t == classe##_Type_()) { \
+#define Storage_ADD_TYPES(schema,classe,callback) if (t == STANDARD_TYPE(classe)) { \
 					            cback = new callback ; \
 					            BindType(theTypeName,cback); \
 					            cback->Add(p,this); \

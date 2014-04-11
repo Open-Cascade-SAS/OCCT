@@ -426,52 +426,6 @@ Item PCollection_HSequence::Last() const
   return LastItem->Value();
 }
 
-
-// ----------------------------------------------------
-// 
-//                              ShallowCopy
-// 
-// ----------------------------------------------------
-Handle(Standard_Persistent) PCollection_HSequence::ShallowCopy() const
-{
-   Handle (PCollection_HSequence)             TheCopy    ;
-   Handle (PCollection_SeqNode)              TheList    ;
-
-#ifndef OBJS
-   TheCopy = new PCollection_HSequence;
-#else
-   TheCopy = new (os_segment::of(this)) PCollection_HSequence;
-#endif
-   TheList = FirstItem;
-   for (Standard_Integer I = 1; I <= Size; I++) {
-     TheCopy->Append(TheList->Value());
-     TheList = TheList->Next();
-   }
-
-   return TheCopy;
-
-}
-
-// ----------------------------------------------------
-// 
-//                                ShallowDump 
-// ----------------------------------------------------
-void PCollection_HSequence::ShallowDump(Standard_OStream& S) const
-{
-   S << "begin class Sequence "<< endl;
-   S << "Size          : "<< Size << "element(s)." << endl;
-   Standard_Integer i = 1;
-   Handle(PCollection_SeqNode) cell = FirstItem;
-   while ( !cell.IsNull() ) {
-    S << "Index          : "<< i << endl;
-//    ::ShallowDump(cell->Value(),S);
-    cell = cell->Next();
-    ++i;
-  }
-  S << "end class Sequence" << endl;
-}
-
-
 // IsEmpty : Returns Standard_True if the sequence is empty (i.e. Size = 0)
 Standard_Boolean PCollection_HSequence::IsEmpty() const 
 {

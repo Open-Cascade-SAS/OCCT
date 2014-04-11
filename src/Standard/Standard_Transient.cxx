@@ -67,12 +67,6 @@ Standard_Boolean Standard_Transient::IsKind (const Standard_CString theTypeName)
   return DynamicType()->SubType ( theTypeName );
 }
 
-void Standard_Transient::ShallowDump(Standard_OStream& theStream) const
-{
-  theStream << "class " << DynamicType()->Name() << " at " << this << endl;
-}
-
-
 void Standard_Transient::Delete() const
 { 
   delete((Standard_Transient *)this); 

@@ -18,15 +18,6 @@
 #include <Standard_Stream.hxx>
 #include <Standard_OStream.hxx>
 
-const Handle_Standard_Type& Standard_ShortReal_Type_() 
-{
-  static Handle_Standard_Type _aType = 
-    new Standard_Type("Standard_ShortReal",sizeof(Standard_ShortReal),0,NULL);
-  
-  return _aType;
-}
-
-
 // ------------------------------------------------------------------
 // Hascode : Computes a hascoding value for a given ShortReal
 // ------------------------------------------------------------------
@@ -43,20 +34,4 @@ Standard_Integer HashCode(const Standard_ShortReal me, const Standard_Integer Up
     } U;
   U.R = me;
   return HashCode( U.I , Upper) ;
-  }
-
-// ------------------------------------------------------------------
-// ShallowCopy : Makes a copy of a ShortReal value
-// ------------------------------------------------------------------
-Standard_ShortReal ShallowCopy (const Standard_ShortReal me) 
-{
-  return me;
 }
-
-
-// ------------------------------------------------------------------
-// ShallowDump : Writes a ShortReal  value
-// ------------------------------------------------------------------
-Standard_EXPORT void              ShallowDump(const Standard_ShortReal Value, 
-					      Standard_OStream& s)
-{ s << Value << " Standard_ShortReal" << "\n"; }

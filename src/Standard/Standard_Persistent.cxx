@@ -49,32 +49,11 @@ Handle_Standard_Persistent Standard_Persistent::This() const
   return aHand;
 }
 
-// The Method ShallowCopy 
-//
-Handle_Standard_Persistent Standard_Persistent::ShallowCopy() const
-{
-  //the method must be redefined in the every subclass that is expected to use it
-  Standard_NotImplemented::Raise ("The ShallowCopy() method must be redefined in the subclass");
-  return This(); // for compilation only
-}
-
-// Empty Constructor
-//
-// Standard_Persistent::Standard_Persistent()
-// {
-// }
-
 // Empty Destructor
 //
 Standard_Persistent::~Standard_Persistent()
 {
 }
-
-// Constructor from a Standard_Persistent
-//
-// Standard_Persistent::Standard_Persistent(const Standard_Persistent& )
-// { 
-// }
 
 // Operator= with a Standard_Persistent
 //
@@ -105,13 +84,6 @@ Standard_Boolean Standard_Persistent::IsKind (const Handle(Standard_Type)& aType
   return DynamicType()->SubType ( aType );
 //  return  (aType == STANDARD_TYPE(Standard_Persistent));
 }
-
-void Standard_Persistent::ShallowDump(Standard_OStream& AStream) const
-{
-  Handle(Standard_Persistent) me = this;
-  ::ShallowDump(me, AStream);
-}
-
 
 void Standard_Persistent::Delete() const
  { 

@@ -149,7 +149,6 @@ is
     ---Purpose: Definition of the order of selection
     --      TOO_TOPFIRST    the root structure first
     --      TOO_BOTTOMFIRST the leaf structure first
-    --      Allows exploration of a PickPath in a PickDescriptor.
     ---Category: The enumerations
 
     enumeration TypeOfProjection is TOP_PERSPECTIVE,
@@ -228,19 +227,6 @@ is
     --      Only the number of active sources is limited.
     ---Category: The classes
 
-    class PickDescriptor;
-    ---Purpose: A PickDescriptor contains information on the picks.
-    --      It contains a certain number of PickPaths.
-    ---Category: The classes
-
-    class PickPath;
-    ---Purpose: A PickPath is a vector ( elem_num, pick_id, struct_id ).
-    --      It is one of the constituents of a PickDescriptor.
-    --      There are many Pickpaths in a PickDescriptor.
-    --      Each PickPath describes a structure or an sub-structure.
-    --      The pick-id is set by the SetPickId method from Group.
-    ---Category: The classes
-
     class View;
     ---Purpose: Creation and editing of a view in a 3D visualiser.
     --
@@ -282,15 +268,6 @@ is
 
         imported NListOfLayerItem;
     
-    class SequenceOfPickPath instantiates
-            Sequence from TCollection (PickPath from Visual3d);
-    ---Category: Instantiated classes
-
-    class HSequenceOfPickPath instantiates
-            HSequence from TCollection
-            (PickPath from Visual3d, SequenceOfPickPath);
-    ---Category: Instantiated classes
-
     class SetOfLight instantiates
             Set from TCollection (Light from Visual3d);
     ---Category: Instantiated classes

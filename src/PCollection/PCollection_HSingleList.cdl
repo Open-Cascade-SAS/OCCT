@@ -93,20 +93,6 @@ is
                 ---Level: Public
 		---Purpose: Modification of the node link.
 
-    	ShallowCopy(me) 
-                returns mutable like me 
-                is redefined;
-                ---Level: Advanced
-	    	---C++: function call
-
-
-    	ShallowDump (me; s: in out OStream) 
-                is redefined;
-                ---Level: Advanced
-    	    	---C++: function call
-
-
-
 fields 
            Data : 	Item;
            Next : 	HSingleList;

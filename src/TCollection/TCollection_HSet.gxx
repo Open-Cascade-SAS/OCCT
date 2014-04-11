@@ -66,18 +66,6 @@ Handle(TCollection_HSet) TCollection_HSet::Difference
 }
 
 //=======================================================================
-//function : ShallowCopy
-//purpose  : 
-//=======================================================================
-
-Handle(TCollection_HSet) TCollection_HSet::ShallowCopy() const
-{
-  Handle(TCollection_HSet) S = new TCollection_HSet();
-  S->ChangeSet() = mySet;
-  return S;
-}
-
-//=======================================================================
 //function : IsSameState
 //purpose  : 
 //=======================================================================

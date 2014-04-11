@@ -291,27 +291,6 @@ void TCollection_HExtendedString::Print(Standard_OStream& S) const
 }
 
 // ----------------------------------------------------------------------------
-// ShallowCopy
-// ----------------------------------------------------------------------------
-Handle(TCollection_HExtendedString) TCollection_HExtendedString::ShallowCopy() const
-{
-   Handle(TCollection_HExtendedString) thecopy = 
-                new TCollection_HExtendedString;
-   for (Standard_Integer i = 1 ; i <= Length() ; i++) 
-          thecopy->Insert(i,Value(i));
-   return thecopy;
-}
-
-//---------------------------------------------------------------------
-// ShallowDump
-//---------------------------------------------------------------------
-void TCollection_HExtendedString::ShallowDump(Standard_OStream& S) const
-{
-  S << "begin class HExtendedString "<<endl;
-  myString.Print(S);
-}
-
-// ----------------------------------------------------------------------------
 // Issamestate
 // ----------------------------------------------------------------------------
 Standard_Boolean TCollection_HExtendedString::IsSameState

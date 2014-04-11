@@ -24,12 +24,4 @@
 #include <InterfaceGraphic_Aspect.hxx>
 typedef CALL_DEF_LAYER Aspect_CLayer2d;
 
-#if defined(__cplusplus) || defined(c_plusplus)
-/*==== Definition de Type ====================================================*/
-
-#include <Standard_Type.hxx>
-const Handle(Standard_Type)& TYPE(Aspect_CLayer2d) ;
-/*============================================================================*/
-
-#endif
 #endif /*Aspect_CLayer2d_HeaderFile*/

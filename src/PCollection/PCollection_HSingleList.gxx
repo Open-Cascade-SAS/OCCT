@@ -59,68 +59,6 @@ Handle(PCollection_HSingleList)
  return L;
 }
 
-
-// -------------------------------------------------------------------------
-//                                                                         -
-// Shallowcopy : Redefinition of the shallowcopy dump                      -
-// -----------                                                             -
-
-//                                                                         -
-// -------------------------------------------------------------------------
-Handle(Standard_Persistent) PCollection_HSingleList::ShallowCopy() const
-{
-  Handle(PCollection_HSingleList) TheList,          // Traversal depth of <this>
-                                TheCopy,          // The list returned
-                                Pred,             // Backward pointer
-                                Succ;             // Forward pointer
-#ifndef OBJS
-  TheCopy = new PCollection_HSingleList;            // Initialization of the list
-#else
-  TheCopy = new (os_segment::of(this)) PCollection_HSingleList;            // Initialization of the list
-#endif
-                                                  // that will be returned
-  Standard_Boolean FirstTime = Standard_True;                 
-
-  TheList = this;                                 // Start at the beginning
-  Pred = Succ = TheCopy;
-  
-  while ( ! TheList->IsEmpty() ) {                // Append each item at the
-    Succ = Succ->Construct(TheList->Value());     // end of the list
-    if ( FirstTime ){
-      FirstTime = Standard_False;
-      TheCopy   = Succ;
-    }
-    else{
-      Pred->ChangeForwardPointer(Succ);           // Make the link between 
-    }                                             // Pred and Succ
-    Pred = Succ;
-    Succ = Succ->Tail();
-    TheList = TheList->Tail();                   
-  }
-  return TheCopy;                                 // Returns the header
-}
-
-// -------------------------------------------------------------------------
-//                                                                         -
-// ShallowDump Redefinition of the shallowdump method                      -
-// -----------                                                             -
-//                                                                         -
-// -------------------------------------------------------------------------
-void PCollection_HSingleList::ShallowDump(Standard_OStream& S) const
-{
-  Handle(PCollection_HSingleList) TheList;
-  TheList = this;
-  S << "begin class HSingleList " << endl;
-  while ( ! TheList->IsEmpty() ) {                
-    ::ShallowDump(TheList->Value(), S);
-    TheList = TheList->Tail();
-  }
-  S << "end class HSingleList" << endl;
-  
-}
-
-
-
 /* Anciens INLINE */
 
 Item PCollection_HSingleList::Value() const {

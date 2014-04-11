@@ -79,18 +79,6 @@ static PStandard_ArrayNode DBC_tmpItem;
 //   Last revision : January 1996 JMS/CLE
 //                   portage OBJY 3.8
 
-
-
-
-// --------------------------------------------------------------------
-//                                 ShallowDump
-// --------------------------------------------------------------------
-//void DBC_BaseArray::ShallowDump( Standard_OStream& S) const
-void DBC_BaseArray::ShallowDump( Standard_OStream& ) const
-{
-}
-
-
 // --------------------------------------------------------------------
 //                                  Constructor
 // --------------------------------------------------------------------

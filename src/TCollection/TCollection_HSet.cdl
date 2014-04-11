@@ -134,15 +134,6 @@ is
         -- The two sets cannot be identical.
 	---C++: inline
     is static;
-
-    ShallowCopy(me) returns mutable like me;
-	---Level: Advanced
-	---C++: function call
-
-    -- IsSameState (me; other: like me) returns Boolean;
-    -- Level: Advanced
-
-
     
     Set(me) returns TheSet
 	---Level: Advanced

@@ -41,6 +41,4 @@
 
 typedef WINDOW_DATA WNT_WindowData;
 
-extern const Handle( Standard_Type )& STANDARD_TYPE( WNT_WindowData );
-
 #endif  // __WNT_WindowData_HeaderFile

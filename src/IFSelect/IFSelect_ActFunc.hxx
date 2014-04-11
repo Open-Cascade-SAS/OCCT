@@ -16,12 +16,9 @@
 #ifndef _IFSelect_ActFunc_HeaderFile
 #define _IFSelect_ActFunc_HeaderFile
 
-#include <Standard_Type.hxx>
 #include <IFSelect_SessionPilot.hxx>
 #include <IFSelect_ReturnStatus.hxx>
 
 typedef IFSelect_ReturnStatus (*IFSelect_ActFunc) (const Handle(IFSelect_SessionPilot)&);
-
-Standard_EXPORT Handle(Standard_Type)& STANDARD_TYPE(IFSelect_ActFunc);
 
 #endif

@@ -34,10 +34,3 @@ Standard_Boolean Standard_Storable::IsSimilar(const Standard_Storable& ) const
 {
   return Standard_True;
 }
-
-//========================================================================
-void Standard_Storable::ShallowDump(Standard_OStream& ) const
-{
-//  ::ShallowDump((Standard_Address) this, STANDARD_TYPE(Standard_Storable), S);
-}
-

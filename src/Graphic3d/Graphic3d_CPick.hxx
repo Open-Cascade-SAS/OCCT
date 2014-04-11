@@ -25,12 +25,4 @@
 #include <InterfaceGraphic_Visual3d.hxx>
 typedef CALL_DEF_PICK Graphic3d_CPick;
 
-#if defined(__cplusplus) || defined(c_plusplus)
-/*==== Definition de Type ====================================================*/
-
-#include <Standard_Type.hxx>
-const Handle(Standard_Type)& TYPE(Graphic3d_CPick);
-/*============================================================================*/
-
-#endif
 #endif /*Graphic3d_CPick_HeaderFile*/

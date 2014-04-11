@@ -568,17 +568,6 @@ Standard_ExtCharacter PCollection_HExtendedString::Value
 }
 
 //------------------------------------------------------------------------
-//  ShallowDump
-//------------------------------------------------------------------------
-void PCollection_HExtendedString::ShallowDump(Standard_OStream& S) const
-{
-   S << "begin class HExtendedString " << endl;
-   ::ShallowDump(Data, S);
-   S << "end class HExtendedString" << endl;
-}
-
-
-//------------------------------------------------------------------------
 //  Assign
 //------------------------------------------------------------------------
 void PCollection_HExtendedString::Assign

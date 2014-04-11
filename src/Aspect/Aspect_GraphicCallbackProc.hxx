@@ -46,7 +46,4 @@ typedef int (*Aspect_GraphicCallbackProc) (Aspect_Drawable               theWind
                                            void*                         theUserData,
                                            Aspect_GraphicCallbackStruct* theCallData);
 
-class Handle(Standard_Type);
-const Handle(Standard_Type)& STANDARD_TYPE(Aspect_GraphicCallbackProc);
-
 #endif /* _Aspect_GraphicCallbackProc_HeaderFile */

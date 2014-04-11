@@ -386,8 +386,8 @@ Standard_OStream& TDF_Attribute::Dump(Standard_OStream& anOS) const
   Standard_PCharacter pStr;
   //
   pStr=toto;
-  ID().ToCString(pStr); anOS<<";\tID = "<<toto<<endl;
-  //ID().ShallowDump(anOS);anOS<<endl;
+  ID().ToCString(pStr);
+  anOS<<";\tID = "<<toto<<endl;
   return anOS;
 }
 

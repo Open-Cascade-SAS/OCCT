@@ -18,9 +18,6 @@
 
 #include <Standard_Stream.hxx>
 
-typedef ifstream* Aspect_IFStream;
-
-#include <Standard_Type.hxx>
-const Handle(Standard_Type)& STANDARD_TYPE(Aspect_IFStream);
+typedef std::ifstream* Aspect_IFStream;
 
 #endif

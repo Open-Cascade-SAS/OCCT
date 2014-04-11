@@ -21,16 +21,6 @@
 #ifndef _Aspect_Display_HeaderFile
 #define _Aspect_Display_HeaderFile
 
- typedef void*	       Aspect_Display;	/* Display* under UNIX */
-
-#if defined(__cplusplus) || defined(c_plusplus)
-/*==== Definition de Type ====================================================*/
-
-#include <Standard_Macro.hxx>
-class Handle(Standard_Type);
-const Handle(Standard_Type)& STANDARD_TYPE(Aspect_Display);
-
-/*============================================================================*/
-#endif
+typedef void* Aspect_Display; /* Display* under UNIX */
 
 #endif /* _Aspect_Display_HeaderFile */
