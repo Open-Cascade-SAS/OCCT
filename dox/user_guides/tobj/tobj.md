@@ -38,9 +38,9 @@ a limited number of objects at each level of the data structure (typically less 
 A greater number of objects causes performance problems due to list-based organization of OCAF documents. Therefore, other methods of storage, such as arrays, are advisable for data models or their sub-parts containing a great number of uniform objects. However, these methods 
 can be combined with the usage of *TObj* to represent the high-level structure of the model.
 
-@section occt_tobj_2 *TObj* Model
+@section occt_tobj_2 TObj Model
 
-@subsection occt_tobj_2_1 *TObj* Model structure
+@subsection occt_tobj_2_1 TObj Model structure
 
 In the *TObj* data model the data are separated from the interfaces that manage them.
 
@@ -384,7 +384,7 @@ of the indicated object after the retrieval of the model from file
 To copy the model between OCAF documents use the following methods: 
 
 ~~~~~{.cpp}
-    virtual Standard_Boolean Paste (Handle(*TObj_Model*) theModel, Handle(TDF_RelocationTable) theRelocTable = 0 ); 
+    virtual Standard_Boolean Paste (Handle(TObj_Model) theModel, Handle(TDF_RelocationTable) theRelocTable = 0 ); 
 ~~~~~
 
 Pastes the current model to the new model. The relocation table 
@@ -392,13 +392,13 @@ ensures correct copying of the sub-data shared by several parts of the model.
 It stores a map of processed original objects of relevant types in their copies. 
 
 ~~~~~{.cpp}
-    virtual Handle(*TObj_Model*) NewEmpty() = 0; 
+    virtual Handle(TObj_Model) NewEmpty() = 0; 
 ~~~~~
 
 Redefines a pure virtual method to create a new empty instance of the model. 
 
 ~~~~~{.cpp}
-    void CopyReferences ( const Handle(*TObj_Model*)& theTarget, const Handle(TDF_RelocationTable)& theRelocTable); 
+    void CopyReferences ( const Handle(TObj_Model)& theTarget, const Handle(TDF_RelocationTable)& theRelocTable); 
 ~~~~~
 
 Copies the references from the current model to the target model. 
@@ -452,8 +452,8 @@ The special type of attribute *TObj_TObject* is used for storing instances of ob
 in the OCAF tree. *TObj_TObject* is a simple container for the object of type *TObj_Object*. 
 All objects (interfaces) of the data model  inherit this class. 
 
-@image html /user_guides/tobj/images/tobj_image006.png "*TObj* object stored on OCAF label" 
-@image latex /user_guides/tobj/images/tobj_image006.png "*TObj* object stored on OCAF label"
+@image html /user_guides/tobj/images/tobj_image006.png "TObj object stored on OCAF label" 
+@image latex /user_guides/tobj/images/tobj_image006.png "TObj object stored on OCAF label"
 
 
 @subsection occt_tobj_3_2 Basic features
@@ -465,7 +465,7 @@ The *TObj_Object* class provides some basic features that can be inherited (or, 
   * Provides the ability to contain child objects, as it is actual for partition objects (methods *GetChildren*, *GetFatherObject*)
   * Organizes its data in the OCAF structure by separating the sub-labels of the main label intended for various kinds of data and providing tools to organize these data (see <a href="../../../../Documents%20and%20Settings/TEMP/obj-inher">below</a>). The kinds of data stored separately are: 
 	  * Child objects stored in the label returned by the method *GetChildLabel* 
-	  * References to other objects stored in the label returned by the method* GetReferenceLabel* 
+	  * References to other objects stored in the label returned by the method *GetReferenceLabel* 
 	  * Other data, both common to all objects and specific for each subtype of the model object, are stored in the label returned by the method *GetDataLabel* 
   * Provides unique names of all objects in the model (methods *GetDictionary*, *GetName*, *SetName*)
   * Provides unified means to maintain persistence (implemented in descendants with the help of macros *DECLARE_TOBJOCAF_PERSISTENCE* and *IMPLEMENT_TOBJOCAF_PERSISTENCE*)

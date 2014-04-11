@@ -66,7 +66,7 @@ exit
 
 @subsection occt_draw_1_3 Getting started
 
-Install Draw and launch Emacs. Get a command line in Emacs using *Esc x *and key in *woksh*. 
+Install Draw and launch Emacs. Get a command line in Emacs using *Esc x* and key in *woksh*. 
 
 All DRAW Test Harness can be activated in the common executable called **DRAWEXE**. They are grouped in toolkits and can be loaded at run-time thereby implementing dynamically loaded plug-ins. Thus, it is possible to work only with the required commands adding them dynamically without leaving the Test Harness session. 
 
@@ -320,12 +320,12 @@ dset x 10 y 15 z
 # no $ required for Draw commands 
 point p x y z 
 
-# *puts* prints a string 
+# "puts" prints a string 
 puts ;x = [dval x], cos(x/pi) = [dval cos(x/pi)]; 
 == x = 10, cos(x/pi) = -0.99913874099467914 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Note,** that in TCL, parentheses are not considered to be special characters. Do not forget to quote an expression if it contains spaces in order to avoid parsing different words. <i>(a + b)</i> is parsed as three words: <i>"(a + b)"</i> or <i>(a+b)</i> are correct.* 
+**Note,** that in TCL, parentheses are not considered to be special characters. Do not forget to quote an expression if it contains spaces in order to avoid parsing different words. <i>(a + b)</i> is parsed as three words: <i>"(a + b)"</i> or <i>(a+b)</i> are correct.
 
 
 @subsection occt_draw_2_4 lists

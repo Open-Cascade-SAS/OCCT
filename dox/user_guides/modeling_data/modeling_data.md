@@ -141,7 +141,7 @@ The class *MultiPoint* allows defining groups of 2D or 3D points making up a mul
 
 @subsection occt_modat_1_2 Direct Construction
 
-Direct Construction methods from *gce*, *GC* and *GCE2d* packages provide simplified algorithms to build elementary geometric entities such as lines, circles and curves. They complement the reference definitions provided by the *gp*, *Geom* and *Geom2d *packages. 
+Direct Construction methods from *gce*, *GC* and *GCE2d* packages provide simplified algorithms to build elementary geometric entities such as lines, circles and curves. They complement the reference definitions provided by the *gp*, *Geom* and *Geom2d* packages. 
 
 For example, to construct a circle from a point and a radius using the *gp* package, it is necessary to construct axis *Ax2d* before creating the circle. If *gce* package is used, and *Ox* is taken for the axis, it is possible to create a circle directly from a point and a radius. 
 
@@ -292,7 +292,7 @@ The algorithm is then constructed with this object:
   {
     Standard_Integer nbr = myAlgo.NbPoints() ; 
     Standard_Real param ; 
-     for ( Standard_Integer i = 1 ; i = nbr ; i++ ) 
+     for ( Standard_Integer i = 1 ; i <= nbr ; i++ ) 
     { 
       param = myAlgo.Parameter (i) ; 
       ...
@@ -607,9 +607,9 @@ The following example shows a routine receiving an argument of the *TopoDS_Shape
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
-  #include TopoDS_Vertex.hxx 
-  #include TopoDS_Edge.hxx 
-  #include TopoDS_Shape.hxx 
+  #include <TopoDS_Vertex.hxx> 
+  #include <TopoDS_Edge.hxx> 
+  #include <TopoDS_Shape.hxx> 
 
 
   void ProcessEdge(const TopoDS_Edge&); 
@@ -618,17 +618,17 @@ The following example shows a routine receiving an argument of the *TopoDS_Shape
     if (aShape.Shapetype() == TopAbs_VERTEX) { 
       TopoDS_Vertex V; 
       V = TopoDS::Vertex(aShape); // Also correct 
-      TopoDS_Vertex V2 = aShape;// Rejected by compiler 
+      TopoDS_Vertex V2 = aShape; // Rejected by the compiler 
       TopoDS_Vertex V3 = TopoDS::Vertex(aShape); // Correct 
     } 
     else if (aShape.ShapeType() == TopAbs_EDGE){ 
-      ProcessEdge(aShape) ;// This is rejected 
+      ProcessEdge(aShape) ; // This is rejected 
       ProcessEdge(TopoDS::Edge(aShape)) ; // Correct 
     } 
     else { 
-      cout *Neither a vertex nor an edge ?* ; 
+      cout <<"Neither a vertex nor an edge ?"; 
       ProcessEdge(TopoDS::Edge(aShape)) ; 
-      // OK for compiler but anexception will be raised at run-time 
+      // OK for compiler but an exception will be raised at run-time 
     }
   } 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -693,7 +693,7 @@ The Explorer presumes that objects contain only objects of an equal or inferior 
 
 The *MapShapes* method from *TopExp* package allows filling a Map. An exploration using the Explorer class can visit an object more than once if it is referenced more than once. For example, an edge of a solid is generally referenced by two faces. To process objects only once, they have to be placed in a Map. 
 
-**Example ** 
+**Example** 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
   void TopExp::MapShapes (const TopoDS_Shape& S, 
               const TopAbs_ShapeEnum T, 
@@ -751,7 +751,7 @@ The following steps are performed:
     } 
     //Draw the edges of theMap 
     Standard_Integer i; 
-    for (i=1;i=edgemap.Extent();i++) { 
+    for (i=1;i<=edgemap.Extent();i++) { 
       switch (faceCount(i)) { 
         case 0 : 
         DrawEdge(TopoDS::Edge(edgemap(i)),FreeEdgeColor); 
@@ -782,7 +782,7 @@ The following example counts the size of a data structure as a number of *TShape
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
-  #include TopoDS_Iterator.hxx 
+  #include <TopoDS_Iterator.hxx> 
   Standard_Integer Size(const TopoDS_Shape& aShape) 
   { 
     // This is a recursive method. 
@@ -802,8 +802,8 @@ Thus for a contour of four edges it should count 1 wire + 4 edges +4 vertices wi
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
-  #include TopoDS_Iterator.hxx 
-  #includeTopTools_MapOfShape.hxx 
+  #include <TopoDS_Iterator.hxx> 
+  #include <TopTools_MapOfShape.hxx> 
 
   void MapShapes(const TopoDS_Shape& aShape, 
   TopTools_MapOfShape& aMap)
@@ -835,11 +835,11 @@ The following example is more ambitious and writes a program which copies a data
 - The structure is copied using the auxiliary recursive function,which copies from the map to the array. 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
-  #include TopoDS_Shape.hxx 
-  #include TopoDS_Iterator.hxx 
-  #include TopTools_IndexedMapOfShape.hxx 
-  #include TopTools_Array1OfShape.hxx 
-  #include TopoDS_Location.hxx 
+  #include <TopoDS_Shape.hxx> 
+  #include <TopoDS_Iterator.hxx> 
+  #include <TopTools_IndexedMapOfShape.hxx> 
+  #include <TopTools_Array1OfShape.hxx> 
+  #include <TopoDS_Location.hxx> 
 
   TopoDS_Shape Copy(const TopoDS_Shape& aShape, 
   const TopoDS_Builder& aBuilder) 
@@ -855,7 +855,7 @@ The following example is more ambitious and writes a program which copies a data
     S.Location(Identity); 
     S.Orientation(TopAbs_FORWARD); 
     theMap.Add(S); 
-    for (i=1; i= theMap.Extent(); i++) { 
+    for (i=1; i<= theMap.Extent(); i++) { 
       for(It.Initialize(theMap(i)); It.More(); It.Next()) { 
         S=It.Value(); 
         S.Location(Identity); 

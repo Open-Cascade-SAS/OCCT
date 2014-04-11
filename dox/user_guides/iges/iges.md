@@ -317,8 +317,8 @@ faces =  Reader.GiveList(“xst-type(!=SurfaceOfRevolution)”);
   * *xst-model-roots* - selects all roots. 
   * *xst-transferrable-all* - selects all translatable entities. 
   * *xst-transferrable-roots* - selects all translatable roots (default). 
-  * *xst-sharing + selection* - selects all entities sharing at least one entity selected by  selection. 
-  * *xst-shared + selection* - selects all entities shared by at least one entity selected  by selection. 
+  * *xst-sharing + \<selection\>* - selects all entities sharing at least one entity selected by  \<selection\>. 
+  * *xst-shared + \<selection\>* - selects all entities shared by at least one entity selected  by \<selection\>. 
   * *iges-visible-roots* - selects all visible roots, whether translatable or not. 
   * *iges-visible-transf-roots* - selects all visible and translatable roots. 
   * *iges-blanked-roots* - selects all blank roots, whether translatable or not. 
@@ -326,7 +326,7 @@ faces =  Reader.GiveList(“xst-type(!=SurfaceOfRevolution)”);
   * *iges-status-independant* - selects entities whose IGES Subordinate Status = 0. 
   * *iges-bypass-group* Selects all root entities. If a root entity is a group  (402/7 or 402/9), the entities in the group are selected. 
   * *iges-bypass-subfigure* Selects all root entities. If a root entity is a subfigure  definition (308), the entities in the subfigure definition are selected. 
-  * * iges-bypass-group-subfigure* Selects all root entities. If a root entity is a group  (402/7 or 402/9) or a subfigure definition (308), the entities in the group and  in the subfigure definition are selected. 
+  * *iges-bypass-group-subfigure* Selects all root entities. If a root entity is a group  (402/7 or 402/9) or a subfigure definition (308), the entities in the group and  in the subfigure definition are selected. 
   * *iges-curves-3d* - selects 3D curves, whether they are roots or not (e.g. a 3D  curve on a surface). 
   * *iges-basic-geom* - selects 3D curves and untrimmed surfaces. 
   * *iges-faces* - selects face-supporting surfaces (trimmed or not). 
@@ -352,7 +352,7 @@ where *nbtrans* returns the number of items  in the list that produced a shape a
 4. Translate a list of entities,  entity by entity: 
 ~~~~~ 
 Standard_Integer i,nb =  list-Length();  
-for (i = 1; i  = nb; i ++) {  
+for (i = 1; i  <= nb; i ++) {  
     Handle(Standard_Transient) ent = list-Value(i);  
     Standard_Boolean OK = reader.TransferEntity (ent);  
 } 
@@ -373,7 +373,7 @@ returns the number of  shapes recorded in the result.
 ~~~~~
 TopoDS_Shape shape =  reader.Shape(num);, 
 ~~~~~
-returns the result *num,* where *num* is an integer between 1 and *NbShapes*.  
+returns the result *num*, where *num* is an integer between 1 and *NbShapes*.  
 ~~~~~
 TopoDS_Shape shape =  reader.Shape(); 
 ~~~~~
@@ -485,7 +485,7 @@ If a *TopoDS_Face* is output, its geometrical support is a  *Geom_Surface* and i
 Messages are displayed concerning the normal functioning of  the processor (transfer, loading, etc.).  
 You must declare an include file: 
 ~~~~~
-#includeInterface_DT.hxx 
+#include \<Interface_DT.hxx\> 
 ~~~~~
 
 You have the choice of the following options for messages: 
@@ -516,7 +516,7 @@ During the transfer of IGES to Open CASCADE Technology  several parameters are u
 * Resolution in the IGES  file is defined in the Global section of an IGES  file. It is used as a fundamental value of precision during the transfer. 
 * User-defined variable  *read.precision.val* can be used instead of resolution from the file when  parameter *read.precision.mode* is set to 1 ("User"). 
 * Field *EpsGeom*  of the  class *IGESToBRep_CurveAndSurface* is a basic precision for translating an IGES  object. It is set for each object of class *IGESToBRep_CurveAndSurface* and its  derived classes. It is initialized for the root of transfer either by value of  resolution from the file or by value of *read.precision.val*, depending on  the value of *read.precision.mode* parameter. It is returned by call to method  *IGESToBRep_CurvAndSurface::GetEpsGeom*.  As this value belongs to measurement units of the IGES  file, it is usually multiplied by the coefficient *UnitFactor* (returned by  method *IGESToBRep_CurvAndSurface::GetUnitFactor*) to convert it to Open CASCADE  Technology units. 
-* Field *MaxTol* of the class *IGESToBRep_CurveAndSurface* is used as the maximum tolerance for some  algorithms. Currently, it is computed as the maximum between 1 and  <i>GetEpsGeom*GetUnitFactor</i>. This field is returned by method  *IGESToBRep_CurvAndSurface::GetMaxTol*.
+* Field *MaxTol* of the class *IGESToBRep_CurveAndSurface* is used as the maximum tolerance for some  algorithms. Currently, it is computed as the maximum between 1 and  *GetEpsGeom* \* *GetUnitFactor*. This field is returned by method  *IGESToBRep_CurvAndSurface::GetMaxTol*.
  
 <h4>2D (parametric) tolerances</h4>
 
@@ -559,7 +559,7 @@ Use of precision parameters is reflected in the following  classes:
 
 IGES entities represented as topological shapes and  geometrical objects are translated into OCCT shapes by use of the classes *IGESToBRep_TopoCurve,  IGESToBRep_TopoSurface,  IGESToBRep_BRepEntity* and *ShapeFix_Wire*. 
 
-Class *IGESToBRep_BRepEntity* is intended for transferring  BRep entities (IGES version 5.1)  while the two former are used for translating geometry and topology defined in  IGES  5.1. Methods from *IGESToBRep_BRepEntity* call methods from  *IGESToBRep_TopoCurve* and *IGESToBRep_TopoSurface*, while those call methods from *IGESToBRep_BasicCurve* and *IGESToBRep_BasicSurface* to translate IGES  geometry into OCCT geometry. 
+Class *IGESToBRep_BRepEntity* is intended for transferring  BRep entities (IGES version is 5.1 or greater)  while the two former are used for translating geometry and topology defined in IGES versions prior to 5.1. Methods from *IGESToBRep_BRepEntity* call methods from  *IGESToBRep_TopoCurve* and *IGESToBRep_TopoSurface*, while those call methods from *IGESToBRep_BasicCurve* and *IGESToBRep_BasicSurface* to translate IGES  geometry into OCCT geometry. 
 
 Although the IGES file contains only one parameter for  tolerance in the Global Section, OCCT shapes are produced with different  tolerances. As a rule, updating the tolerance is fulfilled according to local  distances between shapes (distance between vertices of adjacent edges,  deviation of edge’s 3D curve and its parametric curve and so on) and may be  less or greater than precision in the file. 
 
@@ -567,7 +567,7 @@ The following classes show what default tolerances are used  when creating shape
 
 <h5>Class  IGESToBRep_TopoCurve</h5>
 
-All  methods are in charge of transferring curves  from IGES curve entities *(TransferCompositeCurve, Transfer2dCompositeCurve,  TransferCurveOnFace, TransferBoundaryOnFace, TransferOffsetCurve,  TransferTopoBasicCurve)* if an entity has transformation call to *IGESData_ToolLocation::ConvertLocation* with *Epsilon* value set to 10<sup>-4</sup>. 
+All  methods are in charge of transferring curves  from IGES curve entities <i>(TransferCompositeCurve, Transfer2dCompositeCurve,  TransferCurveOnFace, TransferBoundaryOnFace, TransferOffsetCurve,  TransferTopoBasicCurve)</i> if an entity has transformation call to *IGESData_ToolLocation::ConvertLocation* with *Epsilon* value set to 10<sup>-4</sup>. 
   * *IGESToBRep_TopoCurve::TransferPoint* - vertex is constructed from a Point entity with tolerance *EpsGeom*UnitFactor*. 
   * *IGESToBRep_TopoCurve::Transfer2dPoint* - vertex is constructed from a Point entity with tolerance *EpsCoeff*. 
   * *IGESToBRep_TopoCurve::TransferCompositeCurveGeneral* - obtains shapes (edges or wires) from other methods and adds  them into the resulting wire. Two adjacent edges of the wire can be connected  with tolerance up to *MaxTol*. 
@@ -618,7 +618,7 @@ nIgesFaces = myList-Length();
 nTransFaces = myIgesReader.TransferList(myList); 
 //translates MyList, 
 
-cout“IGES Faces: “nIgesFaces“   Transferred:”nTransFacesendl; 
+cout<<"IGES Faces: "<<nIgesFaces<<"   Transferred:"<<nTransFaces<<endl; 
 TopoDS_Shape sh = myIgesReader.OneShape(); 
 //and obtains the results in an OCCT shape. 
 } 
@@ -690,8 +690,8 @@ Default value is "Faces" (0).
  * "Greatest" (1):   resolution value is  set to the maximum tolerance of all edges and all vertices in an OCCT shape.  
  * "Session" (2):    resolution  value is that of the write.precision.val parameter.  
  
- * Read this parameter  with *Standard_Integer ic =  Interface_Static::IVal("write.precision.mode");* 
- * Modify this parameter  with *if  (!Interface_Static\::SetIVal("write.precision.mode",1))  .. error .. *
+ * Read this parameter  with <i>Standard_Integer ic =  Interface_Static::IVal("write.precision.mode");</i> 
+ * Modify this parameter  with <i>if  (!Interface_Static\::SetIVal("write.precision.mode",1))  .. error .. </i>
 * *write.precision.val:* is the user precision value.  This parameter gives the resolution value for an IGES file when the  *write.precision.mode* parameter value is 1.  It is equal to 0.0001 by default, but can take any real positive (non null) value.  
 
 Read this parameter  with:  
@@ -820,9 +820,9 @@ The highlighted classes are intended to translate geometry.
 @subsection occt_iges_3_7 Example
 
 ~~~~~{c++}
-#include IGESControl_Controller.hxx 
-#include IGESControl_Writer.hxx 
-#include TopoDS_Shape.hxx 
+#include <IGESControl_Controller.hxx> 
+#include <IGESControl_Writer.hxx> 
+#include <TopoDS_Shape.hxx> 
 Standard_Integer main() 
 { 
   IGESControl_Controller::Init(); 
@@ -902,9 +902,9 @@ Command *igesbrep* will interactively ask the user to  select a set of entities 
 
 After the selected set of entities is loaded the user will  be asked how loaded entities should be converted into OCCT shapes (e.g., one  shape per root or one shape for all the entities). It is also possible to save  loaded shapes in files, and to cancel loading. 
 
-The second parameter of the *igesbrep* command defines  the name of the loaded shape. If several shapes are created, they will get  indexed names. For instance, if the last parameter was ‘s’, they will be *s_1,  ... s_N. 
+The second parameter of the *igesbrep* command defines  the name of the loaded shape. If several shapes are created, they will get  indexed names. For instance, if the last parameter is ‘s’, they will be <i>s_1,  ... s_N.</i> 
 
-*\<selection\>* specifies the scope of selected entities  in the model, it is *xst-transferrable-roots* by default. An asterisk “*” can be  specified instead of *iges-visible-transf-roots*. For possible values for  selection refer to <a href="#occt_iges_2_3_4">Selecting entities</a> section. 
+<i>\<selection\></i> specifies the scope of selected entities  in the model, it is *xst-transferrable-roots* by default. An asterisk “*” can be  specified instead of *iges-visible-transf-roots*. For possible values of  *selection* refer to <a href="#occt_iges_2_3_4">Selecting entities</a> section. 
 
 
 Instead of *igesbrep* it is possible to use commands:
@@ -917,12 +917,12 @@ Draw> trimpcomp <file_name> <result_shape_name> <selection>
 ~~~~~
 which outputs the result of translation of all selected  entities into one shape (*TopoDS_Compound* for several entities). 
 
-An asterisk “*” can be specified instead of  selection, it means *xst-transferrable-roots*.
+An asterisk “*” can be specified instead of  *selection*, it means *xst-transferrable-roots*.
  
 During the IGES translation, a map of correspondence between  IGES entities and OCCT shapes is created. 
 The following commands are available:  
 
-* *Draw> tpent \# * - provides information on the result of translation of the given  IGES entity;
+* *Draw> tpent \#* - provides information on the result of translation of the given  IGES entity;
 * *Draw> tpdraw \#* - creates an OCCT shape corresponding to an IGES entity;
 * *Draw> fromshape \<shape_name\>* provides the number of an IGES entity corresponding to an OCCT  shape;
 * *Draw> tpclear* clears the map of correspondences between IGES entities  and OCCT shapes. 
@@ -1029,7 +1029,7 @@ Draw:> tpstat *l iges-faces
 ~~~~~
 The second version of the same command is TPSTAT (not  capital spelling). 
 ~~~~~
-Draw:> TPSTAT symbol 
+Draw:> TPSTAT <symbol> 
 ~~~~~
 Symbol can be of the following values: 
 * g -  General statistics (list of results and messages)
@@ -1074,7 +1074,7 @@ Draw> tolerance <shape_name> [<min> [<max>] [<symbol>]]
 ~~~~~
 It outputs maximum, average and minimum values of  tolerances for each kind of subshapes having tolerances or it can output  tolerances of all subshapes of the whole shape. 
 
-When specifying \<min\> and \<max\> arguments this  command outputs shapes with names <i>\<shape_name\>...</i> and their total number  with tolerances in the range [min, max]. 
+When specifying *min* and *max* arguments this  command outputs shapes with names <i>\<shape_name\>...</i> and their total number  with tolerances in the range <i>[min, max]</i>. 
 
 <i>\<Symbol\></i> is used for specifying the kind of sub-shapes to analyze: 
 * v - for vertices,

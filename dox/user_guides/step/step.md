@@ -505,7 +505,7 @@ Not all entities defining the assembly structure in the STEP file are translated
 | shape_definition_representation | A TopoDS_Compound for assemblies, a CASCADE shape corresponding to the component type for components. | Each assembly or component has its own *shape_definition_representation*. The graph of dependencies is modified in such a way that *shape_definition_representations* of all components of the assembly are referred by the *shape_definition_representation* of the assembly.  |
 | next_assembly_usage_occurence | | This entity defines a relationship between the assembly and its component. It is used to introduce (in the dependencies graph) the links between *shape_definition_representation* of the assembly and *shape_definition_representations* and *context_dependent_shape_representations* of all its components. |
 | mapped_item | TopoDS_Shape | This entity defines a mapping of the assembly component into the *shape_representation* of the assembly. The result of translation is a CASCADE shape translated from the component, to which transformation defined by the *mapped_item* is applied. |
-| context_dependent_shape_representation | TopoDS_Shape | This entity is associated with the *next_assembly_usage_occurence* entity and defines a placement of the component in the assembly. The graph of dependencies is modified so that each context_dependent_shape_representation* is referred by shape_definition_representation of the corresponding assembly. |
+| context_dependent_shape_representation | TopoDS_Shape | This entity is associated with the *next_assembly_usage_occurence* entity and defines a placement of the component in the assembly. The graph of dependencies is modified so that each *context_dependent_shape_representation* is referred by shape_definition_representation of the corresponding assembly. |
 | shape_representation_relationship_with_transformation | | This entity is associated with *context_dependent_shape_representation* and defines a transformation necessary to apply to the component in order to locate it in its place in the assembly. |
 | item_defined_transformation | | This entity defines a transformation operator used by *shape_representation_relationship_with_transformation* or *mapped_item* entity |
 | cartesian_transformation_operator | | This entity defines a transformation operator used by *shape_representation_relationship_with_transformation* or *mapped_item* entity |
@@ -597,7 +597,7 @@ Not all entities defining the assembly structure in the STEP file are translated
 @subsection occt_step_2_5 Tolerance management
 @subsubsection occt_step_2_5_1 Values used for tolerances during reading STEP 
 
-During the STEP = OCCT translation several parameters are used as tolerances and precisions for different algorithms. Some of them are computed from other tolerances using specific functions. 
+During the STEP to OCCT translation several parameters are used as tolerances and precisions for different algorithms. Some of them are computed from other tolerances using specific functions. 
 
 <h4>3D (spatial) tolerance</h4>
 * Package method *Precision::Confusion()* Value is 10-7. It is used as the minimal distance between points, which are considered to be distinct. 
@@ -690,9 +690,9 @@ The following diagram illustrates the structure of calls in reading STEP. The hi
   
 @subsection occt_step_2_7 Example
 ~~~~~
-#include STEPControl_Reader.hxx 
-#include TopoDS_Shape.hxx 
-#include BRepTools.hxx 
+#include <STEPControl_Reader.hxx> 
+#include <TopoDS_Shape.hxx> 
+#include <BRepTools.hxx> 
 
 Standard_Integer main() 
 { 
@@ -740,8 +740,8 @@ There are two families of OCCT objects that can be translated:
 @subsubsection occt_step_3_2_2 Writing assembly structures
 The shapes organized in a structure of nested compounds can be translated either as simple compound shapes, or into the assembly structure, depending on the parameter *write.step.assembly*, which is described below. 
 
-The assembly structure placed in the produced STEP file corresponds to the structure described in the ProSTEP Agreement Log (item 21) as the second alternative (assembly structure through representation_relationship / item_defined_transformation). To represent an assembly it uses entities of the representation_relationship_with_transformation type. Transformation operators used for locating assembly components are represented by item_defined_transformation entities. 
-If mode ;write.step.assembly; is set to the values ON or Auto then an OCC shape consisting of nested compounds will be written as an assembly, otherwise it will be written as separate solids. 
+The assembly structure placed in the produced STEP file corresponds to the structure described in the ProSTEP Agreement Log (item 21) as the second alternative (assembly structure through *representation_relationship* / *item_defined_transformation*). To represent an assembly it uses entities of the *representation_relationship_with_transformation* type. Transformation operators used for locating assembly components are represented by *item_defined_transformation* entities. 
+If mode *write.step.assembly* is set to the values *ON* or *Auto* then an OCC shape consisting of nested compounds will be written as an assembly, otherwise it will be written as separate solids. 
 
 Please see also <a href="#occt_step_3_4">Mapping OCCT shapes to STEP entities</a>
 
@@ -872,7 +872,7 @@ An OCCT shape can be translated to STEP using one of the following models (shape
   * shell_based_surface_model (manifold_surface_shape_representation) 
   * geometric_curve_set (geometrically_bounded_wireframe_shape_representation) 
   
-The enumeration **TEPControl_StepModelType* is intended to define a particular transferring model. 
+The enumeration *STEPControl_StepModelType* is intended to define a particular transferring model. 
 The following values of enumeration are allowed: 
 * *STEPControl_AsIs* Translator selects the resulting representation automatically, according to the type of CASCADE shape to translate it in its highest possible model;
 * *STEPControl_ManifoldSolidBrep* resulting entity is manifold_solid_brep or brep_with_voids
@@ -1013,11 +1013,11 @@ The highlighted classes are intended to translate geometry.
     
 @subsection occt_step_3_7 Example
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
-#include STEPControl.hxx 
-#include STEPControl_Writer.hxx 
-#include TopoDS_Shape.hxx 
-#include BRepTools.hxx 
-#include BRep_Builder.hxx 
+#include <STEPControl.hxx> 
+#include <STEPControl_Writer.hxx> 
+#include <TopoDS_Shape.hxx> 
+#include <BRepTools.hxx> 
+#include <BRep_Builder.hxx> 
 
 Standard_Integer main() 
 { 
@@ -1125,7 +1125,7 @@ A set of parameters for importing and exporting STEP data is defined in the XSTE
 ~~~~~
 Draw:> param [<parameter_name> [<value>]] 
 ~~~~~
-Command param with no arguments gives a list of all parameters with their values. When the argument *parameter_name* is specified, information about this parameter is printed (current value and short description). 
+Command *param* with no arguments gives a list of all parameters with their values. When the argument *parameter_name* is specified, information about this parameter is printed (current value and short description). 
 
 The third argument is used to set a new value of the given parameter. The result of the setting is printed immediately. 
 
@@ -1177,18 +1177,19 @@ Second parameter of the stepread command defines the name of the loaded shape.
 
 During the STEP translation, a map of correspondence between STEP entities and OCCT shapes is created. 
 
-To get information on the result of translation of a given STEP entity use the command *Draw:> tpent \#*. 
+To get information on the result of translation of a given STEP entity use the command @code Draw:> tpent #*.@endcode 
 
-To create an OCCT shape, corresponding to a STEP entity, use the command *Draw:> tpdraw \#*. 
-To get the number of a STEP entity, corresponding to an OCCT shape, use the command *Draw:> fromshape \<shape_name\>*. 
+To create an OCCT shape, corresponding to a STEP entity, use the command @code Draw:> tpdraw #*. @endcode 
 
-To clear the map of correspondences between STEP entities and OCCT shapes use the command *Draw:> tpclear*.
+To get the number of a STEP entity, corresponding to an OCCT shape, use the command @code Draw:> fromshape <shape_name>. @endcode 
+
+To clear the map of correspondences between STEP entities and OCCT shapes use the command @code Draw:> tpclear. @endcode
  
 @subsection occt_step_6_4 Analyzing the transferred data 
 
 The procedure of analysis of data import can be divided into two stages: 
-   1.to check the file contents, 
-   2.to estimate the translation results (conversion and validated ratios). 
+   1. to check the file contents, 
+   2. to estimate the translation results (conversion and validated ratios). 
 
 @subsubsection occt_step_6_4_1 Checking file contents
 
@@ -1211,9 +1212,9 @@ There is a set of special objects, which can be used to operate with a loaded mo
 * Selection Filters - allow selecting subsets of entities of the loaded model;
 * Counter - calculates some statistics on the model data.
 
-A list of these objects defined in the current session can be printed in DRAW by command *Draw:> listitems*. 
+A list of these objects defined in the current session can be printed in DRAW by command @code Draw:> listitems. @endcode 
 
-Command *Draw:> givelist \<selection_name\>* prints a list of a subset of loaded entities defined by the <i>\<selection\></i> argument: 
+Command @code Draw:> givelist <selection_name> @endcode prints a list of a subset of loaded entities defined by the <i>\<selection\></i> argument: 
 
 * *xst-model-all* all entities of the model;
 * *xst-model-roots* all roots;
@@ -1266,7 +1267,7 @@ The sign \* before parameters *n, s, b, t, r* makes it work on all entities (not
 
 The sign ? before *n, s, b, t* limits the scope of information to invalid entities. 
 
-Optional argument \<selection\> can limit the action of the command to the selection, not to all entities. 
+Optional argument <i>\<selection\></i> can limit the action of the command to the selection, not to all entities. 
 
 To get help, run this command without arguments. 
 

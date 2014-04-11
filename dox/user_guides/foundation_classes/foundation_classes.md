@@ -19,23 +19,23 @@ Root classes are the basic data types and classes on which all the  other classe
   * extended run-time type information (RTTI) mechanism facilitating  the creation of complex programs,
   * management of exceptions,
   * encapsulation of C++ streams.
-Root classes are mainly implemented in the **Standard** and  **MMgt** packages. 
+Root classes are mainly implemented in the *Standard* and  *MMgt* packages. 
 
 ### Strings
 Strings are classes that handle dynamically sized sequences  of characters based on both ASCII (normal 8-bit character type) and Unicode  (16-bit character type).  
 Strings may also be manipulated by handles, and consequently  be shared. 
-Strings are implemented in the **TCollection** package. 
+Strings are implemented in the *TCollection* package. 
 
 ### Collections
 Collections are the classes that handle dynamically sized  aggregates of data.  
 Collection classes are *generic*, that is, they define  a structure and algorithms allowing to hold a variety of objects which do not  necessarily inherit from a unique root class (similarly to C++ templates). When  you need to use a collection of a given type of object, you must *instantiate* it for this specific type of element. Once this declaration is compiled, all functions available on the generic collection are available on your *instantiated  class*. 
 
 Collections include a wide range of generic classes such as  run-time sized arrays, lists, stacks, queues, sets and hash maps. 
-Collections are implemented in the **TCollection** and **NCollection** packages. 
+Collections are implemented in the *TCollection* and *NCollection* packages. 
 
 ### Collections of Standard Objects
 
-The **TColStd** package provides frequently used  instantiations of generic classes from the **TCollection** package with  objects from the **Standard** package or strings from the **TCollection** package. 
+The *TColStd* package provides frequently used  instantiations of generic classes from the *TCollection* package with  objects from the *Standard* package or strings from the *TCollection* package. 
 
 ### Vectors and Matrices
 
@@ -240,32 +240,32 @@ The table below presents the equivalence existing between  C++ fundamental types
 
 **Reminder of the classes listed above:** 
 
-* Standard_Integer: fundamental type representing 32-bit integers yielding  negative, positive or null values. **Integer** is implemented as a **typedef** of the C++ **int** fundamental type. As such, the algebraic operations  +, -, *, / as well as the ordering and equivalence relations <, <=, ==, !=, >=, >  are defined on it. 
-* Standard_Real: fundamental type representing real numbers with finite  precision and finite size. **Real** is implemented as a **typedef** of  the C++ **double** (double precision) fundamental type. As such, the  algebraic operations +, -, *, /, unary- and the ordering and equivalence  relations <, <=, ==, !=, >=, >  are defined on reals. 
-* Standard_ShortReal: fundamental type representing real numbers with finite  precision and finite size. **ShortReal** is implemented as a **typedef** of  the C++ **float** (simple precision) fundamental type. As such, the  algebraic operations +, -, *, /, unary- and the ordering and equivalence  relations <, <=, ==, !=, >=, >  are defined on reals. 
-* Standard_Boolean: **Boolean** is a fundamental type representing logical  expressions. It has two values, false and true. **Boolean** is implemented  as a **typedef** of the C++ **unsigned int** fundamental type. As such,  the algebraic operations and, or, xor, not as well as equivalence relations ==,  != are defined on Booleans. 
-* Standard_Character: **Character** is a fundamental type representing the  normalized ASCII character set. It may be assigned the values of the 128 ASCII  characters. **Character** is implemented as a **typedef** of the C++ **char** fundamental type. As such, the ordering and equivalence relations <, <=, ==, !=, >=, >  are defined on characters using the order of the  ASCII chart (ex: A B). 
-* Standard_ExtCharacter: **ExtCharacter** is a fundamental type representing the  Unicode character set. It is a 16-bit character type. **ExtCharacter** is  implemented as a **typedef** of the C++ **short** fundamental type. As  such, the ordering and equivalence relations <, <=, ==, !=, >=, >   are defined on extended characters using the order of the UNICODE chart (ex:  A B). 
-* Standard_CString: **CString** is a fundamental type representing string  literals. A string literal is a sequence of ASCII (8 bits) characters enclosed  in double quotes. **CString** is implemented as a **typedef** of the C++ **char* ** fundamental type. 
-* Standard_Address  : **Address** is a fundamental type representing a generic  pointer. **Address** is implemented as a **typedef** of the C++ *void* fundamental  type. 
-* Standard_ExtString  : **ExtString** is a fundamental type representing string  literals as sequences of Unicode (16 bits) characters. **ExtString** is  implemented as a **typedef** of the C++ *short* fundamental type. 
+* **Standard_Integer** : fundamental type representing 32-bit integers yielding  negative, positive or null values. *Integer* is implemented as a *typedef* of the C++ *int* fundamental type. As such, the algebraic operations  +, -, *, / as well as the ordering and equivalence relations <, <=, ==, !=, >=, >  are defined on it. 
+* **Standard_Real** : fundamental type representing real numbers with finite  precision and finite size. **Real** is implemented as a *typedef* of  the C++ *double* (double precision) fundamental type. As such, the  algebraic operations +, -, *, /, unary- and the ordering and equivalence  relations <, <=, ==, !=, >=, >  are defined on reals. 
+* **Standard_ShortReal** : fundamental type representing real numbers with finite  precision and finite size. *ShortReal* is implemented as a *typedef* of  the C++ *float* (simple precision) fundamental type. As such, the  algebraic operations +, -, *, /, unary- and the ordering and equivalence  relations <, <=, ==, !=, >=, >  are defined on reals. 
+* **Standard_Boolean** : fundamental type representing logical  expressions. It has two values: *false* and *true*. *Boolean* is implemented  as a *typedef* of the C++ *unsigned int* fundamental type. As such,  the algebraic operations *and, or, xor* and *not* as well as equivalence relations == and != are defined on Booleans. 
+* **Standard_Character** : fundamental type representing the  normalized ASCII character set. It may be assigned the values of the 128 ASCII  characters. *Character* is implemented as a *typedef* of the C++ *char* fundamental type. As such, the ordering and equivalence relations <, <=, ==, !=, >=, >  are defined on characters using the order of the  ASCII chart (ex: A B). 
+* **Standard_ExtCharacter** : fundamental type representing the  Unicode character set. It is a 16-bit character type. *ExtCharacter* is  implemented as a *typedef* of the C++ *short* fundamental type. As  such, the ordering and equivalence relations <, <=, ==, !=, >=, >   are defined on extended characters using the order of the UNICODE chart (ex:  A B). 
+* **Standard_CString** : fundamental type representing string  literals. A string literal is a sequence of ASCII (8 bits) characters enclosed  in double quotes. *CString* is implemented as a *typedef* of the C++ *char* fundamental type. 
+* **Standard_Address** : fundamental type representing a generic  pointer. *Address* is implemented as a *typedef* of the C++ *void* fundamental  type. 
+* **Standard_ExtString** is a fundamental type representing string  literals as sequences of Unicode (16 bits) characters. *ExtString* is  implemented as a *typedef* of the C++ *short* fundamental type. 
 
 @subsubsection occt_fcug_2_1_2 Types manipulated by value
 There are three categories of types which are manipulated by  value: 
   * Primitive types
   * Enumerated types
-  * Types defined by classes not inheriting from Standard_Persistent  or Standard_Transient, whether directly or not.
+  * Types defined by classes not inheriting from *Standard_Persistent* or *Standard_Transient*, whether directly or not.
 Types which are manipulated by value behave in a more direct  fashion than those manipulated by handle and thus can be expected to perform  operations faster, but they cannot be stored independently in a file. 
 
 @image html /user_guides/foundation_classes/images/foundation_classes_image005.png   "Manipulation of a data type by value"
 @image latex /user_guides/foundation_classes/images/foundation_classes_image005.png   "Manipulation of a data type by value"
 
-Types that are known to the schema (i.e. they are either **primitives** or they inherit from **Storable**) and are manipulated by value, can be  stored inside a persistent object as part of the representation. Only in this  way can a “manipulated by value” object be stored in a file. 
+Types that are known to the schema (i.e. they are either **primitives** or they inherit from *Storable*) and are manipulated by value, can be  stored inside a persistent object as part of the representation. Only in this  way can a “manipulated by value” object be stored in a file. 
 
 @subsubsection occt_fcug_2_1_3 Types manipulated by reference (handle)
 There are two categories of types which are manipulated by  handle: 
-  * Types defined by classes inheriting from the **Persistent** class,  which are therefore storable in a file.
-  * Types defined by classes inheriting from the **Transient** class.
+  * Types defined by classes inheriting from the *Persistent* class,  which are therefore storable in a file.
+  * Types defined by classes inheriting from the *Transient* class.
   
 @image html /user_guides/foundation_classes/images/foundation_classes_image006.png   "Manipulation of a data type by reference"
 @image latex /user_guides/foundation_classes/images/foundation_classes_image006.png   "Manipulation of a data type by reference"
@@ -286,8 +286,8 @@ A handle may be compared with a C++ pointer. Several handles  can reference the 
 
 Transient and Persistent classes may be manipulated either  with handles or with values. Handles which reference non-persistent objects are  called non-storable handles; therefore, a persistent object cannot contain a  non-storable handle.  
 
-Organization of Classes
------------------------
+#### Organization of Classes
+
 Classes used with handles are persistent or transient. 
 
 Classes that inherit from *Standard_Transient*  are transient while classes that inherit from *Standard_Persistent*  are persistent. 
@@ -296,10 +296,10 @@ In this chapter we will discuss only transient classes and  relevant handles. Pe
 
 Class *Standard_Transient* is a root of a big hierarchy of OCCT  classes that are said to be operable by handles. It provides a reference  counter field, inherited by all its descendant classes, that is used by  associated *Handle()* classes to track a number of handles pointing to this  instance of the object. 
 
-For every class derived (directly or indirectly) from *Transient*, CDL extractor creates associated class *Handle()* whose name is the  same as the name of that class prefixed by *Handle_*. Open CASCADE Technology  provides pre-processor macro *Handle()* that produces a name of a *Handle()* class  for a given transient class name. 
+For every class derived (directly or indirectly) from *Transient*, CDL extractor creates associated class *Handle()* whose name is the  same as the name of that class prefixed by *Handle_*. Open CASCADE Technology  provides preprocessor macro *Handle()* that produces a name of a *Handle()* class  for a given transient class name. 
 
-Using a Handle
---------------
+#### Using a Handle
+
 
 A handle is characterized by the object it references. 
 
@@ -315,16 +315,16 @@ To initialize a handle, either a new object should be  created or the value of a
 
 @subsubsection occt_fcug_2_2_2 Type Management
 
-General
--------
+#### General
+
 
 Open CASCADE Technology provides a means to describe the hierarchy  of data types in a generic way, with a possibility to check the exact type of  the given object at run-time (similarly to C++ RTTI). For every class type  derived from *Standard_Transient*, CDL extractor creates a code instantiating single  instance of the class *Standard_Type* (type descriptor) that holds information on  that type: its name and list of ancestor types. 
 That instance (actually, a handle on it) is returned by the  virtual method *DynamicType()* of the class derived from *Standard_Transient*. The  other virtual method *IsKind()* provides a means to check whether a given object  has specified type or inherits it. 
 
 In order to refer to the type descriptor object for a given  class type, use macros *STANDARD_TYPE()* with argument being a name of the class. 
 
-Type Conformity
----------------
+#### Type Conformity
+
 The type used in the declaration of a handle is the static  type of the object, the type seen by the compiler. A handle can reference an  object instantiated from a subclass of its static type. Thus, the dynamic type  of an object (also called the actual type of an object) can be a descendant of  the type which appears in the handle declaration through which it is  manipulated. 
 
 Consider the persistent class *CartesianPoint*, a  sub-class of *Point*; the rule of type conformity can be illustrated as  follows: 
@@ -339,8 +339,8 @@ p1 = p2;  // OK,  the types are compatible
 
 The compiler sees p1 as a handle to *Point* though the  actual object referenced by *p1* is of the *CartesianPoint* type. 
 
-Explicit Type Conversion
-------------------------
+#### Explicit Type Conversion
+
 
 According to the rule of type conformity, it is always  possible to go up the class hierarchy through successive assignments of  handles. On the other hand, assignment does not authorize you to go down the  hierarchy. Consequently, an explicit type conversion of handles is required. 
 
@@ -432,8 +432,8 @@ else
 
 *NullObject* exception will be raised if  a field or a method of an object is accessed via a *Null* handle. 
 
-Invoking Class Methods
-----------------------
+#### Invoking Class Methods
+
 A class method is called like a static C++ function, i.e. it  is called by the name of the class of which it is a member, followed by the “::” operator and the name of the  method. 
 
 For example, we can find the maximum degree of a Bezier curve:
@@ -443,7 +443,7 @@ Standard_Integer  n;
 n = Geom_BezierCurve::MaxDegree();
 ~~~~~
 
-@subsubsection occt_fcug_2_2_5 Handle de-allocation
+@subsubsection occt_fcug_2_2_5 Handle deallocation
 Before you delete an object, you must ensure it is no longer  referenced. To reduce the programming load related to this management of object  life, the delete function in Open CASCADE Technology is secured by a **reference  counter** of classes manipulated by handle. A handle automatically deletes an object when it is no  longer referenced. Normally you never call the delete operator explicitly on  instances of subclasses of *Standard_Transient*. 
 
 When a new handle to the same object is created, the  reference counter is incremented. When the handle is destroyed, nullified, or  reassigned to another object, that counter is decremented. The object is  automatically deleted by the handle when reference counter becomes 0. 
@@ -471,8 +471,8 @@ Handle (TColStd_HSequenceOfInteger) H1 = new TColStd_HSequenceOfInteger;
 // Here, H1 has no reference and the referred TColStd_HSequenceOfInteger object is deleted. 
 ~~~~~
 
-Cycles
-------
+#### Cycles
+
 Cycles appear if two or more objects reference each other by  handles (stored as fields). In this condition automatic destruction will not  work. 
 
 Consider for example a graph, whose objects (primitives)  have to know the graph object to which they belong, i.e. a primitive must have  a reference to complete graph object. If both primitives and the graph are  manipulated by handle and they refer to each other by keeping a handle as a  field, the cycle appears.  
@@ -513,7 +513,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Appli_ExtSurface,Geom_Surface)
 
 
 @subsection occt_fcug_2_3 Memory  Management in Open CASCADE Technology
-In the course of a work session, geometric modeling  applications create and delete a considerable number of C++ objects allocated  in the dynamic memory (heap). In this context, performance of standard  functions for allocating and de-allocating memory may be not sufficient. For  this reason, Open CASCADE Technology employs a specialized memory manager  implemented in the Standard package. 
+In the course of a work session, geometric modeling  applications create and delete a considerable number of C++ objects allocated  in the dynamic memory (heap). In this context, performance of standard  functions for allocating and deallocating memory may be not sufficient. For  this reason, Open CASCADE Technology employs a specialized memory manager  implemented in the Standard package. 
 
 @subsubsection occt_fcug_2_3_1. Usage
 To use the Open CASCADE Technology memory manager to  allocate memory in a C code, just use method *Standard::Allocate()* instead of  *malloc()* and method *Standard::Free()* instead of *free()*. In addition, method *Standard::Reallocate()* is provided to replace C function *realloc()*. 
@@ -534,7 +534,7 @@ The configuration is defined by numeric values of the  following environment var
   * *MMGT_NBPAGES*: defines the size of memory chunks allocated for  small blocks in pages (operating-system dependent). Default is 1000.
   * *MMGT_THRESHOLD*: defines the maximal size of blocks that are  recycled internally instead of being returned to the heap. Default is 40000.
   * *MMGT_MMAP*: when set to 1 (default), large memory blocks are  allocated using memory mapping functions of the operating system; if set to 0,  they will be allocated in the C heap by *malloc()*.
-  * MMGT_REENTRANT: when set to 1 (default), all calls to the  optimized memory manager will be secured against possible simultaneous access  from different execution threads. This variable should be set in any  multithreaded application that uses an optimized memory manager (*MMGT_OPT=1*)  and has more than one thread potentially calling OCCT functions. If set to 0,  OCCT memory management and exception handling routines will skip the code protecting  from possible concurrency in multi-threaded environment. This can yield some  performance gain in some applications, but can lead to unpredictable results if  used in a multithreaded application.
+  * *MMGT_REENTRANT*: when set to 1 (default), all calls to the  optimized memory manager will be secured against possible simultaneous access  from different execution threads. This variable should be set in any  multithreaded application that uses an optimized memory manager (*MMGT_OPT=1*)  and has more than one thread potentially calling OCCT functions. If set to 0,  OCCT memory management and exception handling routines will skip the code protecting  from possible concurrency in multi-threaded environment. This can yield some  performance gain in some applications, but can lead to unpredictable results if  used in a multithreaded application.
   
 **Note** it is  recommended to use options *MMGT_OPT=2* and *MMGT_REENTRANT=1* for applications that use OCCT  memory manager from more than one thread, on multiprocessor hardware.
  
@@ -564,7 +564,7 @@ Note that these overheads may be greater or less than  overheads induced by the 
 
 As a general rule, it is advisable to allocate memory  through significant blocks. In this way, you can work with blocks of contiguous  data, and processing is facilitated for the memory page manager. 
 
-In multithreaded mode *(MMGT_REENTRANT=1)*, the OCCT memory  manager uses mutex to lock access to free lists, therefore it may have less  performance than non-optimized mode in situations when different threads often  make simultaneous calls to the memory manager. The reason is that modern  implementations of *malloc()* and *free()* employ several allocation arenas and  thus avoid delays waiting mutex release, which are possible in such situations. 
+In multithreaded mode <i>(MMGT_REENTRANT=1)</i>, the OCCT memory  manager uses mutex to lock access to free lists, therefore it may have less  performance than non-optimized mode in situations when different threads often  make simultaneous calls to the memory manager. The reason is that modern  implementations of *malloc()* and *free()* employ several allocation arenas and  thus avoid delays waiting mutex release, which are possible in such situations. 
 
 @subsection occt_fcug_2_4 Exception  Handling
 Exception handling provides a means of transferring control  from a given point in a program being executed to an **exception handler** associated  with another point previously executed. 
@@ -773,14 +773,14 @@ A plug-in is a component that can be loaded dynamically into  a client applicati
 A plug-in can be used to: 
   * implement the mechanism of a *driver*, i.e dynamically  changing a driver implementation according to the current transactions (for  example, retrieving a document stored in another version of an application),
   * restrict processing resources to the minimum required (for  example, it does not load any application services at run-time as long as the  user does not need them),
-  * facilitate development de-synchronization (an application can be  delivered with base functions while some advanced capabilities will be added as  plug-ins when they are available).
+  * facilitate modular development  (an application can be  delivered with base functions while some advanced capabilities will be added as  plug-ins when they are available).
   
 The plug-in is identified with the help of the global  universal identifier (GUID). The GUID includes lower case characters and cannot  end with a blank space. 
 
 Once it has been loaded, the call to the services provided  by the plug-in is direct (the client is implemented in the same language as the  plug-in). 
 
-C++ Plug-In  Implementation
----------------------------
+#### C++ Plug-In  Implementation
+
 The C++ plug-in implements a service as an object with  functions defined in an abstract class (this abstract class and its parent  classes with the GUID are the only information about the plug-in implemented in  the client application). The plug-in consists of a sharable library including a  method named Factory which  creates the C++ object (the client cannot instantiate this object because the  plug-in implementation is not visible). 
 Foundation classes provide in the package **Plugin** a  method named Load(), which enables the client to access the required service  through a library.  
 
@@ -840,8 +840,8 @@ FW-K4C/inc/BRep.ccl
 Then the *Load* method loads the library according to the rules of the operating system  of the host machine (for example, by using environment variables such as  *LD_LIBRARY_PATH* with Unix and *PATH* with Windows). After that it invokes the *Factory*  method to return the object which supports the required service.
 The client may then call the functions supported by this  object. 
 
-C++ Client Plug-In  Implementation
-----------------------------------
+#### C++ Client Plug-In  Implementation
+
 To invoke one of the services provided by the plug-in, you  may call the *Plugin::ServiceFactory* global function with the *Standard_GUID* of the requested service as follows: 
 
 ~~~~~
@@ -1107,9 +1107,9 @@ This is a map used to store keys with associated items. An entry of **DataMap** 
 The *DataMap* can be seen as an extended array where  the keys are the indexes.
  
 *DataMap* is a generic class which depends on three  parameters: 
-  * **Key** is the type of key for an entry in the map,
-  * **Item** is the type of element associated with a key in the  map,
-  * **Hasher*is the type of hasher on keys.
+  * *Key* is the type of key for an entry in the map,
+  * *Item* is the type of element associated with a key in the  map,
+  * *Hasher* is the type of hasher on keys.
   
 Use a *DataMapIterator* iterator to explore a *DataMap*  map. 
 
@@ -1148,9 +1148,9 @@ An entry of an *IndexedDataMap* is composed of both the  key, the item and the i
   * and of a map because data may also be accessed with a key.
 
 *IndexedDataMap* is a generic class which depends on  three parameters: 
-  * *Key* is the type of key for an entry in the map,
-  * *Item* is the type of element associated with a key in the  map,
-  * *Hasher* is the type of hasher on keys.
+	* *Key* is the type of key for an entry in the map,
+	* *Item* is the type of element associated with a key in the map,
+	* *Hasher* is the type of hasher on keys.
 
 ##### TCollection_IndexedMap
 
@@ -1226,7 +1226,7 @@ An iterator class is automatically instantiated from this  generic class at the 
 
 #### TCollection_StackIterator
 
-These are functions used for iterating the contents of a **Stack **data  structure. 
+These are functions used for iterating the contents of a **Stack** data  structure. 
 
 An iterator class is automatically instantiated from this  generic class at the time of instantiation of a *Stack* structure. 
 
@@ -1237,7 +1237,7 @@ The *TColStd* and *TShort* packages provide  frequently used instantiations of g
 
 @subsubsection occt_fcug_3_2_2 Description
 These instantiations are the following: 
-  * Unidimensional arrays: instantiations of the **TCollection_Array1* generic class with *Standard* Objects and *TCollection*strings.
+  * Unidimensional arrays: instantiations of the *TCollection_Array1* generic class with *Standard* Objects and *TCollection* strings.
   * Bidimensional arrays: instantiations of the *TCollection_Array2* generic class with *Standard* Objects.
   * Unidimensional arrays manipulated by handles: instantiations of  the *TCollection_HArray1* generic class with *Standard* Objects and *TCollection* strings.
   * Bidimensional arrays manipulated by handles: instantiations of  the *TCollection_HArray2* generic class with *Standard* Objects.
@@ -1535,9 +1535,9 @@ The common point between them is that it is possible to create any number of bot
 
 #### Heterogeneous Assign
 
-The semantics of the method Assign() has been changed in comparison to TCollection. In NCollection classes the method Assign() is virtual and it receives the object of the abstract BaseCollection class (see the previous section). Therefore this method can be used to assign any collection type to any other if only these collections are instantiated on the same ItemType. 
+The semantics of the method *Assign()* has been changed in comparison to *TCollection*. In *NCollection* classes the method *Assign()* is virtual and it receives the object of the abstract *BaseCollection* class (see the previous section). Therefore this method can be used to assign any collection type to any other if only these collections are instantiated on the same *ItemType*. 
 
-For example, conversion of Map into Array1 is performed like this:
+For example, conversion of *Map* into *Array1* is performed like this:
 
 ~~~~~
 #include <NCollection_Map.hxx>
@@ -1552,9 +1552,9 @@ anArr1Pnt.Assign (aMapPnt); // heterogeneous assignment
 ~~~~~
 
 There are some aspects to mention:
-* Unlike in TCollection, in NCollection the methods Assign and operator= do not coincide. The former is a virtual method defined in the BaseCollection class. The latter is always defined in instance classes as a non-virtual inline method and it corresponds exactly to the method Assign in TCollection classes. Therefore it is always profitable to use operator= instead of Assign wherever the types on both sides of assignment are known. 
-* If the method Assign copies to Array1or Array2 structure, it first checks if the size of the array is equal to the number of items in the copied collection object. If the sizes differ, an exception is thrown, as in TCollection_Array1.gxx. 
-* Copying to Map, IndexedMap, DataMap and IndexedDataMap can bring about a loss of data: when two or more copied data items have the same key value, only one item is copied and the others are discarded. It can lead to an error in the code like the following:
+* Unlike in *TCollection*, in *NCollection* the methods *Assign* and operator= do not coincide. The former is a virtual method defined in the *BaseCollection* class. The latter is always defined in instance classes as a non-virtual inline method and it corresponds exactly to the method *Assign* in *TCollection* classes. Therefore it is always profitable to use operator= instead of *Assign* wherever the types on both sides of assignment are known. 
+* If the method *Assign* copies to *Array1* or *Array2* structure, it first checks if the size of the array is equal to the number of items in the copied collection object. If the sizes differ, an exception is thrown, as in *TCollection_Array1.gxx*. 
+* Copying to *Map, IndexedMap, DataMap* and *IndexedDataMap* can bring about a loss of data: when two or more copied data items have the same key value, only one item is copied and the others are discarded. It can lead to an error in the code like the following:
 
 ~~~~~
 MyPackage_Array1OfPnt anArr1Pnt (1, 100); 
@@ -1564,22 +1564,22 @@ aMapPnt.Assign(anArr1Pnt);
 anArr1Pnt.Assign(aMapPnt);
 ~~~~~
 
-Objects of classes parameterised with two types (DoubleMap, DataMap and  IndexedDataMap) cannot be assigned. Their method Assign throws the exception Standard_TypeMismatch (because it is impossible to check if the passed BaseCollection parameter belongs to the same collection type).
+Objects of classes parameterised with two types (*DoubleMap, DataMap* and  *IndexedDataMap*) cannot be assigned. Their method *Assign* throws the exception *Standard_TypeMismatch* (because it is impossible to check if the passed *BaseCollection* parameter belongs to the same collection type).
 
 #### Allocator
 
-All constructors of NCollection classes receive the Allocator Object as the last parameter. This is an object of a type managed by Handle, inheriting NCollection_BaseAllocator, with the following (mandatory) methods redefined:
+All constructors of *NCollection* classes receive the *Allocator* Object as the last parameter. This is an object of a type managed by Handle, inheriting *NCollection_BaseAllocator*, with the following (mandatory) methods redefined:
 
 ~~~~~
 Standard_EXPORT virtual void* Allocate (const size_t size); 
 Standard_EXPORT virtual void Free (void * anAddress);
 ~~~~~
 
-It is used internally every time when the collection allocates memory for its item(s) and releases this memory. The default value of this parameter (empty Handle) designates the use of NCollection_BaseAllocator X where the functions Standard::Allocate and Standard::Free are called. Therefore if the user of NCollection does not specify any allocator as a parameter to the constructor of his collection, the memory management will be identical to the one in TCollection and other Open CASCADE Technology classes.
+It is used internally every time when the collection allocates memory for its item(s) and releases this memory. The default value of this parameter (empty *Handle*) designates the use of *NCollection_BaseAllocator* X where the functions *Standard::Allocate* and *Standard::Free* are called. Therefore if the user of *NCollection* does not specify any allocator as a parameter to the constructor of his collection, the memory management will be identical to the one in *TCollection* and other Open CASCADE Technology classes.
 
-Nevertheless, the it is possible to define a custom Allocator type to manage the memory in the most optimal or convenient way for his algorithms.
+Nevertheless, the it is possible to define a custom *Allocator* type to manage the memory in the most optimal or convenient way for his algorithms.
 
-As one possible choice, the class NCollection_IncAllocator is included. Unlike BaseAllocator, it owns all memory it allocates from the system. Memory is allocated in big blocks (about 20kB) and the allocator keeps track of the amount of occupied memory. The method Allocate just increments the pointer to non-occupied memory and returns its previous value. Memory is only released in the destructor of IncAllocator, the method Free is empty. If used efficiently, this Allocator can greatly improve the performance of OCCT collections.
+As one possible choice, the class *NCollection_IncAllocator* is included. Unlike *BaseAllocator*, it owns all memory it allocates from the system. Memory is allocated in big blocks (about 20kB) and the allocator keeps track of the amount of occupied memory. The method *Allocate* just increments the pointer to non-occupied memory and returns its previous value. Memory is only released in the destructor of *IncAllocator*, the method *Free* is empty. If used efficiently, this Allocator can greatly improve the performance of OCCT collections.
 
 
 
@@ -1598,7 +1598,7 @@ A variable-length sequence of ASCII characters (normal 8-bit  character type). I
 
 #### TCollection_ExtendedString
 
-A variable-length sequence of ;extended; (UNICODE)  characters (16-bit character type). It provides editing operations with  built-in memory management to make *ExtendedString* objects easier to use  than ordinary extended character arrays. 
+A variable-length sequence of "extended" (UNICODE)  characters (16-bit character type). It provides editing operations with  built-in memory management to make *ExtendedString* objects easier to use  than ordinary extended character arrays. 
 
 *ExtendedString* objects follow value  semantics;, that is, they are the actual strings, not handles to strings,  and are copied through assignment. You may use *HExtendedString* objects  to get handles to strings. 
 
@@ -1619,10 +1619,8 @@ A variable-length sequence of extended; (UNICODE)  characters (16-bit character 
 *HExtendedString* objects use an *ExtendedString* string  as a field. 
 
 @subsubsection occt_fcug_3_4_2 Conversion
-Resource_Unicode
-----------------
-Functions used to convert a non-ASCII *C string* given  in ANSI, EUC, GB or SJIS 
-format, to a Unicode string of extended characters, and vice  versa. 
+
+*Resource_Unicode* provides functions to convert a non-ASCII *C string* given  in ANSI, EUC, GB or SJIS format, to a Unicode string of extended characters, and vice  versa. 
 
 @subsection occt_fcug_3_5 Unit Conversion
 
@@ -1632,10 +1630,10 @@ The *UnitsAPI* global functions are used to convert a  value from any unit into 
   * the user’s **Current System**.
 The **SI System** is the standard international unit  system. It is indicated by *SI* in the signatures of the *UnitsAPI* functions. 
 
-The OCCT (former MDTV) System corresponds to the SI  international standard but the length unit and all its derivatives use the  millimetre instead of the meter.  
+The OCCT (former MDTV) System corresponds to the SI  international standard but the length unit and all its derivatives use the millimeter instead of the meter.  
 
 Both systems are proposed by Open CASCADE Technology; the SI  System is the standard option. By selecting one of these two systems, you  define your **Local System** through the *SetLocalSystem* function. The  **Local System** is indicated by *LS* in the signatures of the *UnitsAPI* functions. 
-The Local System units can be modified in the working  environment. You define your **Current System** by modifying its units  through the **SetCurrentUnit** function. The Current System is indicated by *Current* in the signatures of the **UnitsAPI** functions. 
+The Local System units can be modified in the working  environment. You define your **Current System** by modifying its units  through the *SetCurrentUnit* function. The Current System is indicated by *Current* in the signatures of the *UnitsAPI* functions. 
 A physical quantity is defined by a string (example:  LENGTH). 
 
 
@@ -1898,24 +1896,24 @@ It provides values to use in comparisons to test for real  number equalities.
   * Intersection precision is used by intersection algorithms.
   * Approximation precision is used by approximation algorithms.
   * Parametric precision gets a parametric space precision from a 3D  precision.
-  * *Infinite* returns a high number that can be considered to  be infinite. Use *-Infinite* for a high negative number. 
+  * *Infinite* returns a high number that can be considered to  be infinite. Use <i>-Infinite</i> for a high negative number. 
   
 @subsubsection occt_occt_fcug_4_7_2 Standard Precision values
 This package provides a set of real space precision values  for algorithms. The real space precisions are designed for precision to *0.1*  nanometers. The only unit available is the millimeter. 
-The parametric precisions are derived from the real  precisions by the *Parametric* function. This applies a scaling factor which  is the length of a tangent to the curve or the surface. You, the user, provide  this length. There is a default value for a curve with *[0,1]* parameter  space and a length less than 100 meters. 
+The parametric precisions are derived from the real  precisions by the *Parametric* function. This applies a scaling factor which  is the length of a tangent to the curve or the surface. You, the user, provide  this length. There is a default value for a curve with <i>[0,1]</i> parameter  space and a length less than 100 meters. 
 The geometric packages provide Parametric precisions for the  different types of curves. 
 The *Precision* package provides methods to test whether a  real number can be considered to be infinite. 
 
 #### Precision::Angular
 
-This method is used to compare two angles. Its current value is *Epsilon(2 *  PI) *i.e. the smallest number *x *such that *2*PI + x *is  different of *2* PI*. 
+This method is used to compare two angles. Its current value is *Epsilon(2 *  PI)* i.e. the smallest number *x* such that *2*PI + x* is  different of *2\*PI*. 
 
 It can be used to check confusion  of two angles as follows:
 _Abs(Angle1  - Angle2) < Precision::Angular()_ 
 
 It is also possible to check parallelism  of two vectors (_Vec_ from _gp_) as follows _V1.IsParallel(V2,Precision::Angular())_ 
 
-Note that *Precision::Angular()* can be used on both  dot and cross products because for small angles the *Sine* and the *Angle* are equivalent. So to test if two directions of type *gp\*_\*Dir* are  perpendicular, it is legal to use the following code: 
+Note that *Precision::Angular()* can be used on both  dot and cross products because for small angles the *Sine* and the *Angle* are equivalent. So to test if two directions of type *gp_Dir* are  perpendicular, it is legal to use the following code: 
 _Abs(D1 * D2) < Precision::Angular()_ 
 
 #### Precision::Confusion
