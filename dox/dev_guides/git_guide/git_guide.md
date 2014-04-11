@@ -121,7 +121,7 @@ The official repository contains:
   If you prefer to work with the English interface, remove or rename .msg localization file 
   in subdirectories *share/git-gui/lib/msgs* and *share/gitk/lib/msgs* of the Git installation directory.
   
-  Before the first commit to the OCCT repository, make sure that your User Name in the Git configuration file (file *.gitconfig* in the $HOME directory) is equal to your username on the OCCT development portal. 
+  Before the first commit to the OCCT repository, make sure that your User Name in the Git configuration file (file <i>.gitconfig</i> in the <i>$HOME</i> directory) is equal to your username on the OCCT development portal. 
 
 @subsubsection occt_gitguide_2_1_2 Installation and configuration of TortoiseGit
 
@@ -150,14 +150,14 @@ The official repository contains:
 
   * After the installation  select Start -> Programs -> TortoiseGit Settings to configure TortoiseGit.
   
-  Select Git->Config to add your user name and Email address to the local .gitconfig file
+  Select Git->Config to add your user name and Email address to the local <i>.gitconfig</i> file
   
   @image html OCCT_GitGuide_V2_image006.png
   @image latex OCCT_GitGuide_V2_image006.png
 
 @subsection occt_gitguide_2_2 Linux platform
 
-  We assume that Linux users have Git already installed and available in the PATH.
+  We assume that Linux users have Git already installed and available in the *PATH*.
   
   Make sure to configure Git so that the user name is equal to your username 
   on the OCCT development portal, and set SafeCrLf option to true:
@@ -190,7 +190,7 @@ The official repository contains:
   
   It is highly recommended to use the tools that come 
   with the chosen Git client for generation of SSH keys. 
-  Using incompatible tools (e.g. ssh-keygen.exe from Cygwin for code generation, 
+  Using incompatible tools (e.g. *ssh-keygen.exe* from Cygwin for code generation, 
   and TortoiseGit GUI with a default Putty client for connection to server) 
   may lead to authentication problems.
 
@@ -201,8 +201,8 @@ The official repository contains:
   Use this option if you have installed TortoiseGit (or other GUI Git client on Windows) 
   and have chosen “TortoisePLink” (or other Putty client) as SSH client during installation.
   
-  To generate the key with this client, run Puttygen (e.g. from Start menu -> TortoiseGit -> Puttygen), 
-  then click Generate and move mouse cursor over the blank area until the key is generated. 
+  To generate the key with this client, run **Puttygen** (e.g. from Start menu -> TortoiseGit -> Puttygen), 
+  then click **Generate** and move mouse cursor over the blank area until the key is generated. 
   
 @image html OCCT_GitGuide_V2_image007.png "Putty key generator"
 @image latex OCCT_GitGuide_V2_image007.png "Putty key generator"
@@ -221,7 +221,7 @@ The official repository contains:
   during installation of TortoiseGit (or other Windows tool).
   
   Make sure that you have *ssh* and *ssh-keygen* commands in the path. 
-  On Windows, you might need to start 'Git Bash' command prompt window provided by Git for Windows.
+  On Windows, you might need to start **Git Bash** command prompt window.
   
   Use the following command to generate SSH keys:
 ~~~~~  
@@ -230,14 +230,14 @@ The official repository contains:
 
   The last argument is an optional comment, which can be included with the public key and used to distinguish between different keys (if you have many).  The common practice is to put here your mail address or workstation name.
   
-  The command will ask you where to store the keys. It is recommended to accept the default path *$HOME/.ssh/id_rsa*. Just press Enter for that. You will be warned if a key is already present in the specified file; you can either overwrite it by the new one, or stop generation and use the old key.
+  The command will ask you where to store the keys. It is recommended to accept the default path <i>$HOME/.ssh/id_rsa</i>. Just press **Enter** for that. You will be warned if a key is already present in the specified file; you can either overwrite it by the new one, or stop generation and use the old key.
     
   If you want to be on the safe side, enter password to encrypt the private key. You will be asked to enter this password each time you use that key (e.g. access a remote Git repository), unless you use the tool that caches the key (like TortoiseGit). If you do not want to bother, enter an empty string.  
   
   On Windows, make sure to note the complete path to the generated files (the location of your $HOME might be not obvious). Two key files will be created in the specified location (by default in $HOME/.ssh/):
   
   * *id_rsa* - private key
-  * id_rsa.pub - public key
+  * *id_rsa.pub* - public key
   
   The content of the public key file (one text line) is the key to be added to the user account on the site (see below).
 
@@ -265,7 +265,7 @@ Click on that tab, then click **Add a public key**, and paste the text of the pu
   to update the configuration after the new key is added. 
   After that time, you can try accessing Git.
 
-@section occt_gitguide_4 WORK WITH REPOSITORY: DEVELOPER OPERATIONS
+@section occt_gitguide_4 Work with repository: developer operations
 
 @subsection occt_gitguide_4_1 General workflow
 
@@ -504,7 +504,7 @@ Rebasing is a good occasion to clean-up the history of commits in the branch. Co
   
 To rebase your branch into a single commit, you need to do the following:
   * Switch to your branch (e.g. “CR12345”)
-  * In TortoiseGit history log, select a branch to rebase on *(remotes/origin/master)* and in the context menu choose **Rebase “CR12345” onto this**.
+  * In TortoiseGit history log, select a branch to rebase on <i>(remotes/origin/master)</i> and in the context menu choose **Rebase “CR12345” onto this**.
   * In the **Rebase** dialog, check **Squash All**.  You can also change the order of commits and define for each commit whether it should be kept (**Pick**), edited, or just skipped.
   
 @image html OCCT_GitGuide_V2_image023.png

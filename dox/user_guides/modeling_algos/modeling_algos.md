@@ -617,7 +617,7 @@ For each algorithm, the tolerance (and angular tolerance if appropriate) is give
 
 @subsubsection occt_modalg_2_10_4 Geometric Algorithms
 
-*Geom2dGcc *package  offers algorithms, which produce 2d lines or circles with geometric  constraints. For arguments, it takes curves for which an approximate solution  is not requested. A tolerance value on the result is given as a starting  parameter. The following services are provided: 
+*Geom2dGcc* package  offers algorithms, which produce 2d lines or circles with geometric  constraints. For arguments, it takes curves for which an approximate solution  is not requested. A tolerance value on the result is given as a starting  parameter. The following services are provided: 
 
 #### Creation of a Circle
 
@@ -845,7 +845,7 @@ Handle(Geom2d_BezierCurve) C =
 Geom2dAPI_ProjectPointOnCurve Projector (P, C); 
 ~~~~~
 
-To restrict the search  for normals to a given domain *[U1,U2]*, use the following constructor: 
+To restrict the search  for normals to a given domain <i>[U1,U2]</i>, use the following constructor: 
 ~~~~~
 Geom2dAPI_ProjectPointOnCurve Projector (P, C, U1, U2); 
 ~~~~~

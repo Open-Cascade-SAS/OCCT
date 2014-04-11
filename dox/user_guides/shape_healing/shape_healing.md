@@ -93,7 +93,7 @@ sfs->Perform();
 ~~~~~
 4. Get the result:
 ~~~~~
-TopoDS_Shape aResult = sfs-Shape(); 
+TopoDS_Shape aResult = sfs->Shape(); 
 ~~~~~
 In some cases using  only *ShapeFix_Shape* can be insufficient. It is possible to use tools for merging and removing small edges and fixing gaps between 2D and 3D curves.
 5. Create *ShapeFix_Wireframe* tool and initialize it by shape:
@@ -111,17 +111,17 @@ sfs->SetMaxTolerance ( maxTol );
 See the description for *Prec* and *maxTol* above. 
 7. Merge and remove small edges:
 ~~~~~
-SFWF-DropSmallEdgesMode() = Standard_True; 
-SFWF-FixSmallEdges(); 
+SFWF->DropSmallEdgesMode() = Standard_True; 
+SFWF->FixSmallEdges(); 
 ~~~~~
 **Note:** Small edges are not removed with the default mode, but in many cases removing small edges is very useful for fixing a shape. 
 8. Fix gaps for 2D and 3D curves
 ~~~~~
-SFWF-FixWireGaps(); 
+SFWF->FixWireGaps(); 
 ~~~~~
 9. Get the result
 ~~~~~
-TopoDS_Shape Result = SFWF-Shape(); 
+TopoDS_Shape Result = SFWF->Shape(); 
 ~~~~~
 
 
@@ -147,19 +147,19 @@ Handle(ShapeFix_Face)  SFF= new ShapeFix_Face;
 
 // create tool for rebuilding a shape and initialize it by shape 
 Handle(ShapeBuild_ReShape) Context = new ShapeBuild_ReShape;  
-Context-Apply(Shape1); 
+Context->Apply(Shape1); 
 
 //set a tool for rebuilding a shape in the tool for fixing 
-SFF-SetContext(Context); 
+SFF->SetContext(Context); 
         
 //initialize the fixing tool by one face 
-SFF-Init(Face1); 
+SFF->Init(Face1); 
 
 //fix the set face 
-SFF-Perform(); 
+SFF->Perform(); 
         
 //get the result 
-TopoDS_Shape  NewShape = Context-Apply(Shape1); 
+TopoDS_Shape  NewShape = Context->Apply(Shape1); 
 //Resulting shape contains the fixed face. 
 ~~~~~
 
@@ -186,13 +186,12 @@ The following sequence of actions should be applied to perform fixes:
 	- with help of a special method *Shape(),Face(),Wire().Edge()*. 
 	- from the rebuilding tool by method *Apply* (for access to rebuilding tool use method *Context()*): 
 ~~~~~
-	TopoDS_Shape resultShape = fixtool-Context()-Apply(initialShape); 
+	TopoDS_Shape resultShape = fixtool->Context()->Apply(initialShape); 
 ~~~~~
 Modification fistory for the shape and its sub-shapes can be obtained from the tool for shape re-building (*ShapeBuild_ReShape*). 
 
 ~~~~~
-TopoDS_Shape modifsubshape = fixtool-Context() 
--Apply(initsubshape); 
+TopoDS_Shape modifsubshape = fixtool->Context() -> Apply(initsubshape); 
 ~~~~~
 
  
@@ -204,9 +203,9 @@ For example, it is possible to forbid performing fixes to remove small edges - *
 
 ~~~~~
 Handle(ShapeFix_Shape) Sfs = new ShapeFix_Shape(shape); 
-Sfs- FixWireTool ()-FixSmallMode () =0; 
-if(Sfs-Perform()) 
-	TopoDS_Shape resShape = Sfs-Shape(); 
+Sfs-> FixWireTool ()->FixSmallMode () =0; 
+if(Sfs->Perform()) 
+	TopoDS_Shape resShape = Sfs->Shape(); 
 ~~~~~
 
 
@@ -224,19 +223,19 @@ Handle(ShapeFix_Shape) sfs = new ShapeFix_Shape(face);
 sfs->SetPrecision(prec); 
 sfs->SetMaxTolerance(maxTol); 
 //set the value of flag for forcing the removal of 2D curves 
-sfs->FixWireTool()-FixRemovePCurveMode() =1; 
+sfs->FixWireTool()->FixRemovePCurveMode() =1; 
 //reform fixes 
 sfs->Perform(); 
 //getting the result 
 if(sfs->Status(ShapeExtend_DONE) ) { 
- cout << Shape was fixed << endl; 
+ cout << "Shape was fixed" << endl; 
  TopoDS_Shape resFace = sfs->Shape(); 
 } 
 else if(sfs->Status(ShapeExtend_FAIL)) { 
-cout<< Shape could not be fixed << endl; 
+cout<< "Shape could not be fixed" << endl; 
 } 
 else if(sfs->Status(ShapeExtent_OK)) { 
-cout<< Initial face is valid with specified precision =<< precendl; 
+cout<< "Initial face is valid with specified precision ="<< precendl; 
 } 
 ~~~~~
 
@@ -387,24 +386,20 @@ Standard_Real precision = 1e-04;
 ShapeFix_Wire sfw (wire, face, precision); 
 //Creates a tool and loads objects into it 
 sfw.FixReorder(); 
-//Orders edges in the wire so that each edge 
-//starts at the end of the one before it 
+//Orders edges in the wire so that each edge starts at the end of the one before it. 
 sfw.FixConnected(); 
 //Forces all adjacent edges to share 
 //the same vertex 
 Standard_Boolean LockVertex = Standard_True; 
-if (sfw.FixSmall (LockVertex, precision)) { 
-  //Removes all edges which are shorter than 
-  //the given precision and have the same vertex at both ends 
+	if (sfw.FixSmall (LockVertex, precision)) { 
+	//Removes all edges which are shorter than the given precision and have the same vertex at both ends. 
 } 
-if (sfw.FixSelfIntersection()) { 
-  //Fixes self-intersecting edges and intersecting 
-  //adjacent edges 
-  cout;Wire was slightly self-intersecting. Repaired;endl; 
+	if (sfw.FixSelfIntersection()) { 
+	//Fixes self-intersecting edges and intersecting adjacent edges. 
+	cout <<"Wire was slightly self-intersecting. Repaired"<<endl; 
 } 
-if ( sfw.FixLacking ( Standard_False ) ) { 
-  //Inserts edges to connect adjacent 
-  //non-continuous edges 
+	if ( sfw.FixLacking ( Standard_False ) ) { 
+	//Inserts edges to connect adjacent non-continuous edges. 
 } 
 TopoDS_Wire newwire = sfw.Wire(); 
 //Returns the corrected wire 
@@ -438,8 +433,7 @@ if (saw.CheckOrder()) {
 // their orientation is corrected
 if (saw.CheckSmall (precision)) {
   cout<<“Wire contains edge(s) shorter than “<<precision<<endl;
-  // An edge that is shorter than the given
-  // tolerance is found
+  // An edge that is shorter than the given tolerance is found.
   Standard_Boolean LockVertex = Standard_True;
   if (sfw.FixSmall (LockVertex, precision)) {
     cout<<“Edges shorter than “<<precision<<“ have been removed”
@@ -450,11 +444,10 @@ if (saw.CheckSmall (precision)) {
 if (saw.CheckSelfIntersection()) {
   cout<<“Wire has self-intersecting or intersecting
 adjacent edges”<<endl;
-  // Two intersecting adjacent edges are found
+  // Two intersecting adjacent edges are found.
   if (sfw.FixSelfIntersection()) {
     cout<<“Wire was slightly self-intersecting. Repaired”<<endl;
-    // The edges are cut at the intersection point so
-    // that they no longer intersect
+    // The edges are cut at the intersection point so that they no longer intersect.
   }
 }
 ~~~~~
@@ -504,7 +497,7 @@ As the result, the  edge tolerance has been increased.
 
 @subsubsection occt_shg_2_3_9 Repairing tool for the wireframe of a shape 
 
-Class *ShapeFix_Wireframe provides methods for geometrical fixing of gaps and merging small edges in a shape. This class performs the following operations: 
+Class *ShapeFix_Wireframe* provides methods for geometrical fixing of gaps and merging small edges in a shape. This class performs the following operations: 
   * fills gaps in the 2D and 3D wireframe of a shape. 
   * merges and removes small edges.
   
@@ -519,8 +512,7 @@ To perform fixes it is necessary to:
 ~~~~~
 //creation of a tool 
 Handle(ShapeFix_Wireframe) sfwf = new ShapeFix_Wireframe(shape); 
-//sets the working precision problems will be detected with and 
-//the maximum allowed tolerance 
+//sets the working precision problems will be detected with and the maximum allowed tolerance 
 sfwf->SetPrecision(prec); 
 sfwf->SetMaxTolerance(maxTol); 
 //fixing of gaps 
@@ -574,8 +566,7 @@ ShapeFix_ShapeTolerance Sft;
 Sft.SetTolerance(shape,toler); 
 //setting a specified tolerance for vertices only 
 Sft.SetTolerance(shape,toler,TopAbs_VERTEX); 
-//limiting the tolerance on the shape and its sub-shapes between minimum and 
-//maximum tolerances 
+//limiting the tolerance on the shape and its sub-shapes between minimum and maximum tolerances 
 Sft.LimitTolerance(shape,tolermin,tolermax); 
 ~~~~~
 
@@ -600,7 +591,7 @@ ShapeAnalysis_Edge sae;
 for(TopExp_Explorer Exp(face,TopAbs_EDGE);Exp.More();Exp.Next()) { 
   TopoDS_Edge edge = TopoDS::Edge (Exp.Current()); 
   if (!sae.HasCurve3d (edge)) { 
-    cout  *Edge has no 3D curve*  endl;  } 
+    cout  <<"Edge has no 3D curve"<<  endl;  } 
 } 
 ~~~~~
 
@@ -611,7 +602,7 @@ It is possible to check whether a face has an outer boundary with the help of me
 ~~~~~
 TopoDS_Face face … //analyzed face 
 if(!ShapeAnalysis::IsOuterBound(face)) { 
-cout*Face has not outer boundary**endl; 
+cout<<"Face has not outer boundary"<<endl; 
 } 
 ~~~~~
 
@@ -651,20 +642,18 @@ Standard_Real precision = 1e-04;
 ShapeAnalysis_Wire saw (wire, face, precision); 
 //Creates a tool and loads objects into it 
 if (saw.CheckOrder()) { 
-  cout*Some edges in the wire need to be reordered*endl; 
-  cout*Please ensure that all the edges are correctly 
-ordered before further analysis*endl; 
+  cout<<"Some edges in the wire need to be reordered"<<endl; 
+  cout<<"Please ensure that all the edges are correctly ordered before further analysis"<<endl; 
   return; 
 } 
 if (saw.CheckSmall (precision)) { 
-  cout*Wire contains edge(s) shorter than *precisionendl; 
+  cout<<"Wire contains edge(s) shorter than "<<precisionendl; 
 } 
 if (saw.CheckConnected()) { 
-  cout*Wire is disconnected*endl; 
+  cout<<"Wire is disconnected"<<endl; 
 } 
 if (saw.CheckSelfIntersection()) { 
-  cout*Wire has self-intersecting or intersecting 
-adjacent edges*  endl; 
+  cout<<"Wire has self-intersecting or intersecting adjacent edges"<<  endl; 
 } 
 ~~~~~
 
@@ -687,27 +676,26 @@ ShapeAnalysis_Edge sae;
 for(TopExp_Explorer Exp(face,TopAbs_EDGE);Exp.More();Exp.Next()) { 
   TopoDS_Edge edge = TopoDS::Edge (Exp.Current()); 
   if (!sae.HasCurve3d (edge)) { 
-    cout  *Edge has no 3D curve*  endl; 
+    cout << "Edge has no 3D curve" <<  endl; 
   } 
   Handle(Geom2d_Curve) pcurve; 
   Standard_Real cf, cl; 
   if (sae.PCurve (edge, face, pcurve, cf, cl, Standard_False)) { 
     //Returns the pcurve and its range on the given face 
-    cout*Pcurve range [*cf*, *cl*]* endl; 
+    cout<<"Pcurve range ["<<cf<<", "<<cl<<"]"<< endl; 
   } 
   Standard_Real maxdev; 
   if (sae.CheckSameParameter (edge, maxdev)) { 
-    //Checks the consistency of all the curves 
-    //in the edge 
-    cout*Incorrect SameParameter flag*endl; 
+    //Checks the consistency of all the curves in the edge 
+    cout<<"Incorrect SameParameter flag"<<endl; 
   } 
-  cout*Maximum deviation *maxdev*, tolerance* 
-             BRep_Tool::Tolerance(edge)endl; 
+  cout<<"Maximum deviation "<<maxdev<<", tolerance" 
+             <<BRep_Tool::Tolerance(edge)<<endl; 
 } 
 //checks the overlapping of two edges 
 if(sae.CheckOverlapping(edge1,edge2,prec,dist)) { 
- cout*Edges are overlapped with tolerance = *precendl; 
- cout*Domain of overlapping =*distendl; 
+	 cout<<"Edges are overlapped with tolerance = "<<prec<<endl; 
+	 cout<<"Domain of overlapping ="<<dist<<endl; 
 } 
 ~~~~~
 
@@ -731,7 +719,7 @@ saf.CheckStripFace(face,E1,E2,prec))
 NumSmallfaces++; 
 } 
 if(numSmallfaces) 
- cout*Number of small faces in the shape =* numSmallfaces endl; 
+ cout<<"Number of small faces in the shape ="<< numSmallfaces <<endl; 
 ~~~~~ 
  
 @subsubsection occt_shg_3_1_5 Analysis of shell validity and closure 
@@ -769,15 +757,14 @@ The analysis of tolerance functionality is the following:
 TopoDS_Shape shape = ...; 
 ShapeAnalysis_ShapeTolerance sast; 
 Standard_Real AverageOnShape = sast.Tolerance (shape, 0); 
-cout*Average tolerance of the shape is *AverageOnShapeendl; 
+cout<<"Average tolerance of the shape is "<<AverageOnShape<<endl; 
 Standard_Real MinOnEdge = sast.Tolerance (shape,-1,TopAbs_EDGE); 
-cout*Minimum tolerance of the edges is *MinOnEdgeendl; 
+cout<<"Minimum tolerance of the edges is "<<MinOnEdge<<endl; 
 Standard_Real MaxOnVertex = sast.Tolerance (shape,1,TopAbs_VERTEX); 
-cout*Maximum tolerance of the vertices is *MaxOnVertexendl; 
+cout<<"Maximum tolerance of the vertices is "<<MaxOnVertex<<endl; 
 Standard_Real MaxAllowed = 0.1; 
-if (MaxOnVertex  MaxAllowed) { 
-  cout*Maximum tolerance of the vertices exceeds 
-                   maximum allowed*endl; 
+if (MaxOnVertex > MaxAllowed) { 
+  cout<<"Maximum tolerance of the vertices exceeds maximum allowed"<<endl; 
 } 
 ~~~~~
 
@@ -923,8 +910,7 @@ if(ShapeDivideCont.Status(ShapeExtend_DONE)
  TopoDS_Shape result = ShapeDivideCont.GetResult(); 
 //get the history of modifications made to faces 
 for(TopExp_Explorer aExp(initShape,TopAbs_FACE); aExp.More(0; aExp.Next()) { 
-  TopoDS_Shape modifShape = ShapeDivideCont.GetContext()- 
-Apply(aExp.Current()); 
+  TopoDS_Shape modifShape = ShapeDivideCont.GetContext()-> Apply(aExp.Current()); 
 } 
 ~~~~~
 
@@ -938,30 +924,25 @@ To change the value of criterion of shape splitting it is necessary to create a 
 Let us split a shape according to a specified criterion. 
 
 ~~~~~
-//creation of new tools for geometry splitting by a specified //criterion. 
-Handle(MyTools_SplitSurfaceTool) MySplitSurfaceTool = 
-new MyTools_SplitSurfaceTool; 
-Handle(MyTools_SplitCurve3DTool) MySplitCurve3Dtool = 
-new MyTools_SplitCurve3DTool; 
-Handle(MyTools_SplitCurve2DTool) MySplitCurve2Dtool = 
-new MyTools_SplitCurve2DTool; 
+//creation of new tools for geometry splitting by a specified criterion. 
+Handle(MyTools_SplitSurfaceTool) MySplitSurfaceTool = new MyTools_SplitSurfaceTool; 
+Handle(MyTools_SplitCurve3DTool) MySplitCurve3Dtool = new MyTools_SplitCurve3DTool; 
+Handle(MyTools_SplitCurve2DTool) MySplitCurve2Dtool = new MyTools_SplitCurve2DTool; 
 
-//creation of a tool for splitting the shape and initialization of //that tool by shape. 
+//creation of a tool for splitting the shape and initialization of that tool by shape. 
 TopoDS_Shape initShape 
 MyTools_ShapeDivideTool ShapeDivide (initShape); 
 
-//setting of work precision for splitting and maximum allowed //tolerance. 
+//setting of work precision for splitting and maximum allowed tolerance. 
 ShapeDivide.SetPrecision(prec); 
 ShapeDivide.SetMaxTolerance(MaxTol); 
 
-//setting of new splitting geometry tools in the shape splitting //tools 
-Handle(ShapeUpgrade_FaceDivide) FaceDivide = 
-ShapeDivide-GetSplitFaceTool(); 
-Handle(ShapeUpgrade_WireDivide) WireDivide = 
-FaceDivide-GetWireDivideTool(); 
-FaceDivide-SetSplitSurfaceTool(MySplitSurfaceTool); 
-WireDivide-SetSplitCurve3dTool(MySplitCurve3DTool); 
-WireDivide-SetSplitCurve2dTool(MySplitCurve2DTool); 
+//setting of new splitting geometry tools in the shape splitting tools 
+Handle(ShapeUpgrade_FaceDivide) FaceDivide = ShapeDivide->GetSplitFaceTool(); 
+Handle(ShapeUpgrade_WireDivide) WireDivide = FaceDivide->GetWireDivideTool(); 
+FaceDivide->SetSplitSurfaceTool(MySplitSurfaceTool); 
+WireDivide->SetSplitCurve3dTool(MySplitCurve3DTool); 
+WireDivide->SetSplitCurve2dTool(MySplitCurve2DTool); 
 
 //setting of the value criterion. 
  ShapeDivide.SetValCriterion(val); 
@@ -974,8 +955,7 @@ TopoDS_Shape splitShape = ShapeDivide.GetResult();
 
 //getting the history of modifications of faces 
 for(TopExp_Explorer aExp(initShape,TopAbs_FACE); aExp.More(0; aExp.Next()) { 
-TopoDS_Shape modifShape = ShapeDivide.GetContext()- 
-Apply(aExp.Current()); 
+TopoDS_Shape modifShape = ShapeDivide.GetContext()-> Apply(aExp.Current()); 
 } 
 ~~~~~
 
@@ -1027,6 +1007,7 @@ This tool provides access to the tool for dividing and splitting 3D and 2D curve
 * *GetSplitCurve2dTool*. 
 
 @subsubsection occt_shg_4_2_5 General tools for geometry splitting
+
 There are three general tools for geometry splitting. 
   * General tool for surface splitting.(*ShapeUpgrade_SplitSurface*)
   * General tool for splitting 3D curves.(*ShapeUpgrade_SplitCurve3d*)
@@ -1052,11 +1033,11 @@ Header file for the tool for surface splitting by continuity:
 class ShapeUpgrade_SplitSurfaceContinuity : public ShapeUpgrade_SplitSurface { 
 Standard_EXPORT ShapeUpgrade_SplitSurfaceContinuity(); 
 
-//methods to set the criterion and the tolerance into the splitting //tool 
+//methods to set the criterion and the tolerance into the splitting tool 
 Standard_EXPORT   void SetCriterion(const GeomAbs_Shape Criterion) ; 
 Standard_EXPORT   void SetTolerance(const Standard_Real Tol) ; 
 
-//re-definition of method Compute 
+//redefinition of method Compute 
 Standard_EXPORT virtual void Compute(const Standard_Boolean Segment) ; 
 Standard_EXPORT ~ShapeUpgrade_SplitSurfaceContinuity(); 
 private: 
@@ -1080,12 +1061,12 @@ sdc.SetPCurveCriterion (GeomAbs_C2); // for Curves 2D
 sdc.SetSurfaceCriterion (GeomAbs_C2); // for Surfaces 
 sdc.Perform (); 
 TopoDS_Shape bshape = sdc.Result(); 
-.. to also get the correspondances before/after 
+//.. to also get the correspondances before/after 
 Handle(ShapeBuild_ReShape) ctx = sdc.Context(); 
-.. on a given shape 
+//.. on a given shape 
 if (ctx.IsRecorded (sh)) { 
   TopoDS_Shape newsh = ctx->Value (sh); 
-// if there are several results, they are re-recorded inside a Compound 
+// if there are several results, they are recorded inside a Compound.
 // .. process as needed 
 } 
 ~~~~~
@@ -1126,7 +1107,7 @@ Let us attempt to produce a conversion of planes to Bezier surfaces.
 //Creation and initialization of a tool. 
 ShapeUpgrade_ShapeConvertToBezier SCB (Shape); 
 //setting tolerances 
-….. 
+...
 //setting mode for conversion of planes 
 SCB.SetSurfaceConversion (Standard_True); 
 SCB.SetPlaneMode(Standard_True); 
@@ -1149,7 +1130,7 @@ tool.SetMaxTolerance(maxTol);
 Standard_Integer NbSplitPoints = …; 
 tool.SetNbSplitPoints(num); 
 if ( ! tool.Perform() && tool.Status (ShapeExtend_FAIL) ) { 
-  cout;Splitting of closed faces failed;endl; 
+  cout<<"Splitting of closed faces failed"<<endl; 
   . . . 
 } 
 TopoDS_Shape aResult = tool.Result(); 
@@ -1217,7 +1198,7 @@ ShapeCustom::DirectFaces
 	static TopoDS_Shape DirectFaces(const TopoDS_Shape& S); 
 ~~~~~ 
 
-This method provides conversion of indirect elementary surfaces (elementary surfaces with left-handed coordinate systems) in the shape into direct ones. New 2d curves (recomputed for converted surfaces) are added to the same edges being shared by both the resulting shape and the original shape S. 
+This method provides conversion of indirect elementary surfaces (elementary surfaces with left-handed coordinate systems) in the shape into direct ones. New 2d curves (recomputed for converted surfaces) are added to the same edges being shared by both the resulting shape and the original shape *S*. 
 
 @subsubsection occt_shg_4_4_2 Shape Scaling 
 
@@ -1249,7 +1230,7 @@ ShapeCustom::BsplineRestriction
 		
 It returns a new shape with all surfaces, curves and 2D curves of BSpline/Bezier type or based on them, converted with a degree less than *MaxDegree* or with a number of spans less then *NbMaxSegment* depending on the priority parameter *Degree*. If this parameter is equal to True then *Degree* will be increased to the value *GmaxDegree*, otherwise *NbMaxSegments* will be increased to the value *GmaxSegments*. *GmaxDegree* and *GMaxSegments* are the maximum possible degree and the number of spans correspondingly. These values will be used in cases when an approximation with specified parameters is impossible and either *GmaxDegree* or *GMaxSegments* is selected depending on the priority. 
 
-Note that if approximation is impossible with *GMaxDegree*, even then the number of spans can exceed the specified *GMaxSegment*. Rational specifies whether Rational BSpline/Bezier should be converted into polynomial B-Spline. 
+Note that if approximation is impossible with *GMaxDegree*, even then the number of spans can exceed the specified *GMaxSegment*. *Rational* specifies whether Rational BSpline/Bezier should be converted into polynomial B-Spline. 
 
 Also note that the continuity of surfaces in the resulting shape can be less than the given value. 
 
@@ -1257,10 +1238,10 @@ Also note that the continuity of surfaces in the resulting shape can be less tha
 
 To convert other types of curves and surfaces to BSpline with required parameters it is necessary to use flags from class ShapeCustom_RestrictionParameters, which is just a container of flags. 
 The following flags define whether a specified-type geometry has been converted to BSpline with the required parameters: 
-* *ConvertPlane,  * 
-* *ConvertBezierSurf,   * 
-* *ConvertRevolutionSurf* 
-* *ConvertExtrusionSurf,.* 
+* *ConvertPlane,* 
+* *ConvertBezierSurf,* 
+* *ConvertRevolutionSurf,* 
+* *ConvertExtrusionSurf,* 
 * *ConvertOffsetSurf,* 
 * *ConvertCurve3d,* - for conversion of all types of 3D curves. 
 * *ConvertOffsetCurv3d,* - for conversion of offset 3D curves. 
@@ -1375,36 +1356,36 @@ After the processing six internal wires with contour area less than the specifie
 The example of method application is also given below:
 
 ~~~~~
-//Initialisation of the class by shape. 
+//Initialization of the class by shape. 
 Handle(ShapeUpgrade_RemoveInternalWires) aTool = new ShapeUpgrade_RemoveInternalWires(inputShape); 
 //setting parameters 
-aTool-MinArea() = aMinArea; 
-aTool-RemoveFaceMode() = aModeRemoveFaces; 
+aTool->MinArea() = aMinArea; 
+aTool->RemoveFaceMode() = aModeRemoveFaces; 
  
 //when method Perform is carried out on separate shapes. 
-aTool-Perform(aSeqShapes); 
+aTool->Perform(aSeqShapes); 
  
 //when method Perform is carried out on whole shape. 
-aTool-Perform(); 
+aTool->Perform(); 
 //check status set after method Perform 
-if(aTool-Status(ShapeExtend_FAIL) { 
-  cout*Operation failed* ;;\n;; 
+if(aTool->Status(ShapeExtend_FAIL) { 
+  cout<<"Operation failed"<< <<"\n"; 
    return; 
 } 
 
-if(aTool-Status(ShapeExtend_DONE1)) { 
-    const TopTools_SequenceOfShape& aRemovedWires =aTool-RemovedWires(); 
-     coutaRemovedWires.Length(); internal wires were removed;;\n;; 
+if(aTool->Status(ShapeExtend_DONE1)) { 
+    const TopTools_SequenceOfShape& aRemovedWires =aTool->RemovedWires(); 
+     cout<<aRemovedWires.Length()<<" internal wires were removed"<<"\n"; 
     
   } 
 
-  if(aTool-Status(ShapeExtend_DONE2)) { 
-    const TopTools_SequenceOfShape& aRemovedFaces =aTool-RemovedFaces(); 
-     coutaRemovedFaces.Length(); small faces were removed;;\n;; 
+  if(aTool->Status(ShapeExtend_DONE2)) { 
+    const TopTools_SequenceOfShape& aRemovedFaces =aTool->RemovedFaces(); 
+     cout<<aRemovedFaces.Length()<<" small faces were removed"<<"\n"; 
     
   }   
     //getting result shape 
-  TopoDS_Shape res = aTool-GetResult(); 
+  TopoDS_Shape res = aTool->GetResult(); 
 ~~~~~
 
 @subsubsection occt_shg_4_4_8 Conversion of surfaces 
@@ -1457,45 +1438,44 @@ TopoDS_Shape initialShape…
 //creation of a rebuilding tool 
 Handle(ShapeBuild_ReShape) Context = new ShapeBuild_ReShape. 
 
-//next step is optional. It can be used for keeping 
-//the assembly structure. 
-Context- ModeConsiderLocation = Standard_True; 
+//next step is optional. It can be used for keeping the assembly structure. 
+Context-> ModeConsiderLocation = Standard_True; 
 
 //initialization of this tool by the initial shape 
-Context-Apply(initialShape); 
+Context->Apply(initialShape); 
 … 
-//getting the intermediate result for replacing subshape1 with  
-//the modified subshape1. 
-TopoDS_Shape tempshape1 = Context-Apply(subshape1); 
+//getting the intermediate result for replacing subshape1 with the modified subshape1. 
+TopoDS_Shape tempshape1 = Context->Apply(subshape1); 
 
-//replacing the intermediate shape obtained from subshape1 with the //newsubshape1. 
-Context-Replace(tempsubshape1,newsubshape1); 
+//replacing the intermediate shape obtained from subshape1 with the newsubshape1. 
+Context->Replace(tempsubshape1,newsubshape1); 
 … 
 //for removing the subshape 
-TopoDS_Shape tempshape2 = Context-Apply(subshape2); 
-Context-Remove(tempsubshape2); 
+TopoDS_Shape tempshape2 = Context->Apply(subshape2); 
+Context->Remove(tempsubshape2); 
 
 //getting the result and the history of modification 
-TopoDS_Shape resultShape = Context-Apply(initialShape); 
+TopoDS_Shape resultShape = Context->Apply(initialShape); 
 
-//getting the resulting subshape from the subshape1 of the initial //shape. 
-TopoDS_Shape result_subshape1 = Context-Apply(subshape1); 
+//getting the resulting subshape from the subshape1 of the initial shape. 
+TopoDS_Shape result_subshape1 = Context->Apply(subshape1); 
 ~~~~~
 
 @subsection occt_shg_5_2 Status definition
 
-*ShapExtend_Status* is used to report the status after executing some methods that can either fail, do something, or do nothing. The status is a set of flags DONEi, FAILi, any combination of them can be set at the same time. For exploring the status, enumeration is used. 
+*ShapExtend_Status* is used to report the status after executing some methods that can either fail, do something, or do nothing. The status is a set of flags *DONEi* and *FAILi*. Any combination of them can be set at the same time. For exploring the status, enumeration is used. 
 
 The values have the following meaning: 
+
 | Value | Meaning |
 | :----- | :----------------- |
-|*OK,*     |  Nothing is done, everything OK |
-|*DONE1,*  |  Something was done, case 1 |
-|*DONE8*,  |  Something was done, case 8 |
-|*DONE*,   |  Something was done (any of DONE#) |
-|*FAIL1*,  |  The method failed, case 1 |
-|*FAIL8*,  |  The method failed, case 8 |
-|*FAIL*    |  The method failed (any of FAIL# occurred) |
+| *OK,*     |  Nothing is done, everything OK |
+| *DONE1,*  |  Something was done, case 1 |
+| *DONE8*,  |  Something was done, case 8 |
+| *DONE*,   |  Something was done (any of DONE#) |
+| *FAIL1*,  |  The method failed, case 1 |
+| *FAIL8*,  |  The method failed, case 8 |
+| *FAIL*    |  The method failed (any of FAIL# occurred) |
 
 
 @subsection occt_shg_5_3 Tool representing a wire 
@@ -1538,12 +1518,11 @@ Handle(ShapeExtend_MsgRegistrator) MessageReg = new ShapeExtend_MsgRegistrator;
 //attaches messages to an object (shape or entity) 
 Message_Msg msg.. 
 TopoDS_Shape Shape1… 
-MessageReg-Send(Shape1,msg,Message_WARNING); 
+MessageReg->Send(Shape1,msg,Message_WARNING); 
 Handle(Standard_Transient) ent .. 
-MessageReg-Send(ent,msg,Message_WARNING); 
+MessageReg->Send(ent,msg,Message_WARNING); 
 //gets messages attached to shape 
-const ShapeExtend_DataMapOfShapeListOfMsg& msgmap = 
-MessageReg-MapShape(); 
+const ShapeExtend_DataMapOfShapeListOfMsg& msgmap = MessageReg->MapShape(); 
 if (msgmap.IsBound (Shape1)) { 
  const Message_ListOfMsg &msglist = msgmap.Find (Shape1); 
  for (Message_ListIteratorOfListOfMsg iter (msglist); 
@@ -1592,9 +1571,12 @@ IGESBRep_Reader.cxx
   }
 ~~~~~
 
-The result of *DumpTimer()* after translation of a file is as follows: 
-* TIMER: *IGES_LoadFile* Elapsed: 1.0 sec CPU User:   0.9 sec CPU Sys: 0.0 sec hits: 1	
-* TIMER: *IGESToBRep_Transfer* Elapsed: 14.5 sec CPU User:   4.4 sec CPU Sys: 0.1 sec hits: 1311 
+The result of *DumpTimer()* after file translation is as follows: 
+
+| TIMER | Elapsed | CPU User | CPU Sys | Hits |
+| :--- | :---- | :----- | :---- | :---- |
+| *IGES_LoadFile* | 1.0 sec |  0.9 sec | 0.0 sec | 1 |	
+| *IGESToBRep_Transfer* | 14.5 sec | 4.4 sec | 0.1 sec | 1311 |
 
 
 @section occt_shg_6 Shape Processing
@@ -1613,8 +1595,7 @@ Standard_Real Prec = …,
 Standard_Real MaxTol = …; 
 TopoDS_Shape aResult; 
 Handle(Standard_Transient) info; 
-TopoDS_Shape aResult = XSAlgo::AlgoContainer()-ProcessShape(aShape, 
-	Prec, MaxTol., *Name of ResourceFile*, *NameSequence*, info ); 
+TopoDS_Shape aResult = XSAlgo::AlgoContainer()->ProcessShape(aShape, Prec, MaxTol., "Name of ResourceFile", "NameSequence", info ); 
 ~~~~~
 
 Let us create a custom sequence of operations: 
@@ -1640,8 +1621,7 @@ where *myfunction* is a function which implements the operation.
 static Standard_Boolean myfunction (const 
 			Handle(ShapeProcess_Context)& context) 
 { 
-	Handle(ShapeProcess_ShapeContext) ctx = 
-			Handle(ShapeProcess_ShapeContext)::DownCast(context); 
+	Handle(ShapeProcess_ShapeContext) ctx = Handle(ShapeProcess_ShapeContext)::DownCast(context); 
   if(ctx.IsNull()) return Standard_False; 
   TopoDS_Shape aShape = ctx->Result(); 
   //receive our parameter: 
@@ -1660,7 +1640,7 @@ For example: input of the following string:
 ~~~~~
 NameSequence.exec.op:    MyOper1,MyOper3 
 ~~~~~
-means that the corresponding functions from *ShapeProcess_OperLibrary* will be performed with the original shape *(aShape)* using parameters defined for *MyOper1* and *MyOper3* in the resource file. 
+means that the corresponding functions from *ShapeProcess_OperLibrary* will be performed with the original shape *aShape* using parameters defined for *MyOper1* and *MyOper3* in the resource file. 
 
 It is necessary to note that these operations will be performed step by step and the result obtained after performing the first operation will be used as the initial shape for the second operation. 
 
@@ -1864,8 +1844,9 @@ Class *Message_MsgFile* allows defining messages by loading a custom message fil
 The message file is an ASCII file, which defines a set of messages. Each line of the file must have a length of less than 255 characters.  
 All lines in the file starting with the exclamation sign (perhaps preceded by spaces and/or tabs) are considered as comments and are ignored. 
 A message file may contain several messages. Each message is identified by its key (string). 
-Each line in the file starting with the *dot* character (perhaps preceded by spaces and/or tabs) defines the key. The key is a string starting with a symbol placed after the dot and ending with the symbol preceding the ending of the newline character *\n*. 
-All the lines in the file after the key and before the next keyword (and which are not comments) define the message for that key. If the message consists of several lines, the message string will contain newline symbols *\n* between each line (but not at the end). 
+Each line in the file starting with the *dot* character (perhaps preceded by spaces and/or tabs) defines the key. The key is a string starting with a symbol placed after the dot and ending with the symbol preceding the ending of the newline character <i>\\n.</i> 
+All lines in the file after the key and before the next keyword (and which are not comments) define the message for that key. If the message consists of several lines, the message string will contain newline symbols <i>\\n</i> between each line (but not at the end). 
+
 The following example illustrates the structure of a message file: 
 
 ~~~~~
@@ -1878,7 +1859,7 @@ Your message string goes here
 ! 
 !... 
 ! 
-!End of message file 
+!End of the message file 
 ~~~~~
 
 ### Loading the message file
@@ -1894,9 +1875,9 @@ Message_MsgFile::LoadFile (MsgFilePath);
 The class *Message_Msg* allows using the message file loaded as a template. This class provides a tool for preparing the message, filling it with parameters, storing and outputting to the default trace file. 
 A message is created from a key: this key identifies the message to be created in the message file. The text of the message is taken from the loaded message file (class *Message_MsgFile* is used). 
 The text of the message can contain places for parameters, which are to be filled by the proper values when the message is prepared. These parameters can be of the following types: 
-* string - coded in the text as *%s*, 
-* integer - coded in the text as *%d*, 
-* real - coded in the text as *%f*. 
+* string - coded in the text as \%s, 
+* integer - coded in the text as \%d, 
+* real - coded in the text as \%f. 
 The parameter fields are filled by the message text by calling the corresponding methods *AddInteger, AddReal* and *AddString*. Both the original text of the message and the input text with substituted parameters are stored in the object. The prepared and filled message can be output to the default trace file. The text of the message (either original or filled) can be also obtained. 
 ~~~~~
 Message_Msg msg01 (;SampleKeyword;); 
@@ -1908,14 +1889,14 @@ msg1.AddString (;SampleFile;);
 
 @subsection occt_shg_7_4 Tool for managing trace files
 
-Class *Message_TraceFile* is intended to manage the trace file (or stream) for outputting messages and the current trace level. Trace level is an integer number, which is used when messages are sent. Generally, 0 means minimum,  0 various levels. If the current trace level is lower than the level of the message it is not output to the trace file. The trace level is to be managed and used by the users. 
+Class *Message_TraceFile* is intended to manage the trace file (or stream) for outputting messages and the current trace level. Trace level is an integer number, which is used when messages are sent. Generally, 0 means minimum, \> 0 various levels. If the current trace level is lower than the level of the message it is not output to the trace file. The trace level is to be managed and used by the users. 
 There are two ways of using trace files: 
 * define an object of *Message_TraceFile*, with its own definition (file name or cout, trace level), and use it where it is defined, 
 * use the default trace file (file name or cout, trace level), usable from anywhere. 
 Use the constructor method to define the target file and the level of the messages as in the example below: 
 ~~~~~
 Message_TraceFile myTF 
-	(tracelevel, *tracefile.log*, Standard_False); 
+	(tracelevel, "tracefile.log", Standard_False); 
 ~~~~~
 The parameters are as follows:	
 * *tracelevel* is a Standard_Integer and modifies the level of messages. It has the following values and semantics: 

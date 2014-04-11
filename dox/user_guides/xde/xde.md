@@ -16,8 +16,8 @@ The Extended Data Exchange (XDE) component requires Advanced Shape Healing for o
 
 @subsubsection occt_xde_1_1_2 Environment variables
 To use XDE you have to set the environment variables properly. Make sure that two important environment variables are set as follows: 
-  * *CSF_PluginDefaults* points to sources of *\%CASROOT%/src/XCAFResources ($CASROOT/src/XCAFResources)*.
-  * *CSF_XCAFDefaults* points to sources of *\%CASROOT%/src/XCAFResources ($CASROOT/src/XCAFResources)*.
+  * *CSF_PluginDefaults* points to sources of  <i>\%CASROOT%/src/XCAFResources ($CASROOT/src/XCAFResources)</i>.
+  * *CSF_XCAFDefaults* points to sources of <i>\%CASROOT%/src/XCAFResources ($CASROOT/src/XCAFResources)</i>.
 @subsubsection occt_xde_1_1_3 Basic terms
 For better understanding of XDE, certain key terms are defined: 
 * **Shape** - a standalone shape, which does not belong to the assembly structure.
@@ -64,27 +64,28 @@ Validation properties are geometric characteristics of Shapes (volume, centroid,
 
 Advanced Data Exchange supports both reading and writing of validation properties, and provides a tool to check them. 
 
-	@image html /user_guides/xde/images/xde_image005.png "Validation Property Descriptions" 
-    @image latex /user_guides/xde/images/xde_image005.png "Validation Property Descriptions" 
+@image html /user_guides/xde/images/xde_image005.png "Validation Property Descriptions" 
+@image latex /user_guides/xde/images/xde_image005.png "Validation Property Descriptions" 
 
 
 
 Check logs contain deviations of computed values from the values stored in a STEP file. A typical example appears as follows: 
 
-Label	Area defect	Volume defect	dX	dY	DZ	Name
-0:1:1:1	 312.6 (0%)	-181.7 (0%)	0.00	0.00	0.00	"S1"
-0:1:1:2	 -4.6 (0%)	-191.2 (0%)	-0.00	0.00	-0.00	"MAINBODY"
-0:1:1:3	 -2.3 (0%)	-52.5 (0%)	-0.00	0.00	0.00	"MAIN_BODY_BACK"
-0:1:1:4	 -2.3 (0%)	-51.6 (0%)	0.00	0.00	-0.00	"MAIN_BODY_FRONT"
-0:1:1:5	 2.0 (0%)	10.0 (0%)	-0.00	0.00	-0.00	"HEAD"
-0:1:1:6	 0.4 (0%)	0.0 (0%)	0.00	-0.00	-0.00	"HEAD_FRONT"
-0:1:1:7	 0.4 (0%)	0.0 (0%)	0.00	-0.00	-0.00	"HEAD_BACK"
-0:1:1:8	 -320.6 (0%)	10.9 (0%)	-0.00	0.00	0.00	"TAIL"
-0:1:1:9	 0.0 (0%)	0.0 (0%)	-0.00	-0.00	0.00	"TAIL_MIDDLE"
-0:1:1:10	-186.2 (0%)	4.8 (0%)	-0.00	0.00	-0.00	"TAIL_TURBINE"
-0:1:1:11	0.3 (0%)	-0.0 (0%)	-0.00	-0.00	0.00	"FOOT"
-0:1:1:12	0.0 (0%)	-0.0 (0%)	0.00	-0.00	-0.00	"FOOT_FRONT"
-0:1:1:13	0.0 (0%)	0.0 (0%)	-0.00	0.00	0.00	"FOOT_BACK"
+| Label	| Area defect	| Volume defect	| dX	| dY	| DZ	| Name |
+| :---- | :----- | :----- | :----- | :---- | :---- | :---- |
+| 0:1:1:1 | 312.6 (0%) | -181.7 (0%) | 0.00 | 0.00 | 0.00	| "S1" |
+| 0:1:1:2 |  -4.6 (0%) | -191.2 (0%)	| -0.00	 | 0.00	| -0.00 | "MAINBODY" |
+| 0:1:1:3 | -2.3 (0%) | -52.5 (0%)	| -0.00	| 0.00	| 0.00 | "MAIN_BODY_BACK" |
+| 0:1:1:4 | -2.3 (0%) | -51.6 (0%) | 0.00 |	0.00 | -0.00 | "MAIN_BODY_FRONT" |
+| 0:1:1:5 | 2.0 (0%) | 10.0 (0%) | -0.00 |	0.00 |	-0.00 |	"HEAD" |
+| 0:1:1:6 | 0.4 (0%) | 0.0 (0%) |	0.00	| -0.00	| -0.00	| "HEAD_FRONT" |
+| 0:1:1:7 |  0.4 (0%) |	0.0 (0%) | 0.00 | -0.00 | -0.00	| "HEAD_BACK" |
+| 0:1:1:8 | -320.6 (0%)	| 10.9 (0%)	| -0.00 | 0.00 | 0.00 |	"TAIL" |
+| 0:1:1:9 | 0.0 (0%) | 0.0 (0%) | -0.00	| -0.00 | 0.00 | "TAIL_MIDDLE" |
+| 0:1:1:10 | -186.2 (0%) | 	4.8 (0%) | 	-0.00 |	0.00 | -0.00 | "TAIL_TURBINE" |
+| 0:1:1:11 | 0.3 (0%) |	-0.0 (0%) |	-0.00 | -0.00 |	0.00 |	"FOOT" |
+| 0:1:1:12	| 0.0 (0%) | -0.0 (0%) | 0.00 |	-0.00 | -0.00 |"FOOT_FRONT" |
+| 0:1:1:13 | 0.0 (0%) |	0.0 (0%) | -0.00 | 0.00	| 0.00 | "FOOT_BACK" |
 
 
 In our example, it can be seen that no errors were detected for either area, volume or positioning data. 
@@ -93,9 +94,9 @@ In our example, it can be seen that no errors were detected for either area, vol
 XDE supports reading and writing the names of shapes to and from IGES and STEP file formats. This functionality can be switched off if you do not need this type of data, thereby reducing the size of the document. 
 @subsubsection occt_xde_1_1_9 Colors and Layers
 XDE can read and write colors and layers assigned to shapes or their subparts (down to the level of faces and edges) to and from both IGES and STEP formats. Three types of colors are defined in the enumeration *XCAFDoc_ColorType*: 
-  * generic color *(XCAFDoc_ColorGen)*
-  * surface color *(XCAFDoc_ColorSurf)*
-  * curve color *(XCAFDoc_ColorCurv)*
+  * generic color <i>(XCAFDoc_ColorGen)</i>
+  * surface color <i>(XCAFDoc_ColorSurf)</i>
+  * curve color <i>(XCAFDoc_ColorCurv)</i>
 
 	@image html /user_guides/xde/images/xde_image006.png "Colors and Layers" 
     @image latex /user_guides/xde/images/xde_image006.png "Colors and Layers" 
@@ -112,6 +113,7 @@ As explained in the last chapter, XDE uses *TDocStd_Documents* as a starting poi
   * Querying and managing shapes
   * Attaching properties to shapes
 The Document used by XDE usually starts as a TDocStd_Document. 
+
 @subsubsection occt_xde_2_1_1 General Check
 Before working with shapes, properties, and other types of information, the global organization of an XDE Document can be queried or completed to determine if an existing Document is actually structured for use with XDE. 
 
@@ -122,33 +124,32 @@ if ( XCAFDoc_DocumentTool::IsXCAFDocument (doc) ) { .. yes .. }
 ~~~~~
 If the Document is suitable for XDE, you can perform operations and queries explained in this guide. However, if a Document is not fully structured for XDE, it must be initialized. 
 
-@subsubsection occt_xde_2_1_2 Getting an Application or an Initialized Document
+@subsubsection occt_xde_2_1_2 Get an Application or an Initialized Document
 If you want to retrieve an existing application or an existing document (known to be correctly structured for XDE), use: 
 ~~~~~
 Handle(TDocStd_Document) aDoc; 
-Handle(XCAFApp_Application) anApp = 
-XCAFApp_Application::GetApplication(); 
+Handle(XCAFApp_Application) anApp = XCAFApp_Application::GetApplication(); 
 anApp->NewDocument(;MDTV-XCAF;,aDoc); 
 ~~~~~
 @subsection occt_xde_2_2 Shapes and Assemblies
-@subsubsection occt_xde_2_2_1 Initializing an XDE Document (Shapes)
+
+@subsubsection occt_xde_2_2_1 Initialize an XDE Document (Shapes)
 An XDE Document begins with a *TDocStd_Document*. Assuming you have a *TDocStd_Document* already created, you can ensure that it is correctly structured for XDE by initializing the XDE structure as follows: 
 ~~~~~
 Handle(TDocStd_Document) doc... 
 Handle (XCAFDoc_ShapeTool) myAssembly = 
-XCAFDoc_DocumentTool::ShapeTool (Doc-Main()); 
+XCAFDoc_DocumentTool::ShapeTool (Doc->Main()); 
 TDF_Label aLabel = myAssembly->NewShape() 
 ~~~~~
 **Note** that the method *XCAFDoc_DocumentTool::ShapeTool* returns the *XCAFDoc_ShapeTool*. The first time this method is used, it creates the *XCAFDoc_ShapeTool*. In our example, a handle is used for the *TDocStd_Document*.
 
-@subsubsection occt_xde_2_2_2 Getting a Node considered as an Assembly
+@subsubsection occt_xde_2_2_2 Get a Node considered as an Assembly
 To get a node considered as an Assembly from an XDE structure, you can use the Label of the node. Assuming that you have a properly initialized *TDocStd_Document*, use: 
 ~~~~~
 Handle(TDocStd_Document) doc... 
-Handle(XCAFDoc_ShapeTool) myAssembly = 
-XCAFDoc_DocumentTool::ShapeTool (aLabel); 
+Handle(XCAFDoc_ShapeTool) myAssembly = XCAFDoc_DocumentTool::ShapeTool (aLabel); 
 ~~~~~
-In the previous example, you can also get the Main Item of an XDE document, which records the root shape representation (as a Compound if it is an Assembly) by using *ShapeTool(Doc-Main())* instead of *ShapeTool(aLabel)*. 
+In the previous example, you can also get the Main Item of an XDE document, which records the root shape representation (as a Compound if it is an Assembly) by using *ShapeTool(Doc->Main())* instead of *ShapeTool(aLabel)*. 
 
 You can then query or edit this Assembly node, the Main Item or another one (*myAssembly* in our examples). 
 
@@ -159,7 +160,7 @@ Some actions in this chapter affect the content of the document, considered as a
 
 To update the representations, use: 
 ~~~~~
-myAssembly-UpdateAssembly(aLabel); 
+myAssembly->UpdateAssembly(aLabel); 
 ~~~~~
 Since this call is always used by the editing functions, you need not apply it for such functions. However, you will need this call if special edits, not using XCAF functions, are used on the document. 
 
@@ -180,7 +181,7 @@ To break down a Compound in the assembly structure, use:
 Standard_Boolean makeAssembly; 
 // True to interpret a Compound as an Assembly, 
 // False to take it as a whole 
-aLabel = myAssembly-AddShape(aShape, makeAssembly); 
+aLabel = myAssembly->AddShape(aShape, makeAssembly); 
 ~~~~~
 Each node of the assembly therefore refers to its sub-shapes. 
 
@@ -193,7 +194,7 @@ Standard_CString LabelString ...;
 // identifies the Label (form ;0:i:j...;) 
 TDF_Label aLabel...; 
 // A label must be present 
-myAssembly-SetShape(aLabel, aShape); 
+myAssembly->SetShape(aLabel, aShape); 
 ~~~~~
 
 @subsubsection occt_xde_2_2_6 Getting a Shape from a Label
@@ -231,7 +232,7 @@ Various other queries can be made from a Label within the Main Item of XDE:
 
 To determine if a Shape is recorded (or not), use: 
 ~~~~~
-if ( myAssembly-IsShape(aLabel) ) { .. yes .. } 
+if ( myAssembly->IsShape(aLabel) ) { .. yes .. } 
 ~~~~~
 
 To determine if the shape is top-level, i.e. was added by the *AddShape* method, use: 
@@ -242,12 +243,12 @@ if ( myAssembly->IsTopLevel(aLabel) ) { .. yes .. }
 To get a list of top-level shapes added by the *AddShape* method, use: 
 ~~~~~
 TDF_LabelSequence frshapes; 
-myAssembly-GetShapes(frshapes); 
+myAssembly->GetShapes(frshapes); 
 ~~~~~
 
 To get all free shapes at once if the list above has only one item, use: 
 ~~~~~
-TopoDS_Shape result = myAssembly-GetShape(frshapes.Value(1)); 
+TopoDS_Shape result = myAssembly->GetShape(frshapes.Value(1)); 
 ~~~~~
 
 If there is more than one item, you must create and fill a compound, use: 
@@ -266,7 +267,7 @@ In our example, the result is the compound C.
 To determine if a shape is a free shape (no reference or super-assembly), use: 
 
 ~~~~~
-if ( myAssembly-IsFree(aLabel) ) { .. yes .. } 
+if ( myAssembly->IsFree(aLabel) ) { .. yes .. } 
 ~~~~~
 
 To get a list of Free Shapes (roots), use: 
@@ -279,25 +280,24 @@ myAssembly->GetFreeShapes(frshapes);
 To get the shapes, which use a given shape as a component, use: 
 ~~~~~
 TDF_LabelSequence users; 
-Standard_Integer nbusers = myAssembly-GetUsers(aLabel,users); 
+Standard_Integer nbusers = myAssembly->GetUsers(aLabel,users); 
 ~~~~~
 The count of users is contained with *nbusers*. It contains 0 if there are no users. 
 
 #### Assembly and Components
 To determine if a label is attached to the main part or to a sub-part (component), use: 
 ~~~~~
-if (myAssembly-IsComponent(aLabel)) { .. yes .. } 
+if (myAssembly->IsComponent(aLabel)) { .. yes .. } 
 ~~~~~
 To determine whether a label is a node of a (sub-) assembly or a simple shape, use: 
 ~~~~~
-if ( myAssembly-IsAssembly(aLabel) ) { .. yes .. } 
+if ( myAssembly->IsAssembly(aLabel) ) { .. yes .. } 
 ~~~~~
 
 If the label is a node of a (sub-) assembly, you can get the count of components, use: 
 ~~~~~
 Standard_Boolean subchilds = Standard_False; //default 
-Standard_Integer nbc = myAssembly-NbComponents (aLabel 
-[,subchilds]); 
+Standard_Integer nbc = myAssembly->NbComponents (aLabel [,subchilds]); 
 ~~~~~
 
 If *subchilds* is True, commands also consider sub-levels. By default, only level one is checked. 
@@ -306,7 +306,7 @@ To get component Labels themselves, use:
 ~~~~~
 Standard_Boolean subchilds = Standard_False; //default 
 TDF_LabelSequence comps; 
-Standard_Boolean isassembly = myAssembly-GetComponents 
+Standard_Boolean isassembly = myAssembly->GetComponents 
 (aLabel,comps[,subchilds]); 
 ~~~~~
 @subsubsection occt_xde_2_2_9 Instances and References for Components
@@ -316,15 +316,15 @@ if ( myAssembly->IsSimpleShape(aLabel) ) { .. yes .. }
 ~~~~~
 To determine if a label is a located reference to another one, use: 
 ~~~~~
-if ( myAssembly-IsReference(aLabel) ) { .. yes .. } 
+if ( myAssembly->IsReference(aLabel) ) { .. yes .. } 
 ~~~~~
 If the label is a located reference, you can get the location, use: 
 ~~~~~
-TopLoc_Location loc = myAssembly-GetLocation (aLabel); 
+TopLoc_Location loc = myAssembly->GetLocation (aLabel); 
 ~~~~~
 To get the label of a referenced original shape (also tests if it is a reference), use: 
 ~~~~~
-Standard_Boolean isref = myAssembly-GetReferredShape 
+Standard_Boolean isref = myAssembly->GetReferredShape 
 (aLabel, refLabel); 
 ~~~~~
 
@@ -335,7 +335,7 @@ In addition to the previously described *AddShape* and *SetShape*, several shape
 
 To remove a Shape, and all its sub-labels, use: 
 ~~~~~
-Standard_Boolean remsh = myAssembly-RemoveShape(aLabel); 
+Standard_Boolean remsh = myAssembly->RemoveShape(aLabel); 
 // remsh is returned True if done 
 ~~~~~
 This operation will fail if the shape is neither free nor top level.
@@ -368,7 +368,7 @@ TDF_Label subLabel = myAssembly->AddSubShape (aLabel, subShape);
 To find the Label attached to a given sub-shape, use: 
 ~~~~~
 TDF_Label subLabel; // new label to be computed 
-if ( myAssembly- FindSubShape (aLabel, subShape, subLabel)) { .. yes .. } 
+if ( myAssembly-> FindSubShape (aLabel, subShape, subLabel)) { .. yes .. } 
 ~~~~~
 If the sub-shape is found (yes), *subLabel* is filled by the correct value. 
 
@@ -491,7 +491,7 @@ These definitions are common to various exchange formats, at least for STEP and 
 To query, edit, or initialize a Document to handle Colors of XCAF, use: 
 ~~~~~
 Handle(XCAFDoc_ColorTool) myColors = 
-XCAFDoc_DocumentTool::ColorTool(Doc-Main ()); 
+XCAFDoc_DocumentTool::ColorTool(Doc->Main ()); 
 ~~~~~
 This call can be used at any time. The first time it is used, a relevant structure is added to the document. This definition is used for all the following color calls and will not be repeated for these. 
 
@@ -509,7 +509,7 @@ XCAFDoc_ColorType ctype ..;
 // XCAFDoc_ColorGen : all types of geometries 
 // XCAFDoc_ColorSurf : surfaces only 
 // XCAFDoc_ColorCurv : curves only 
-myColors-SetColor ( aLabel, Col, ctype ); 
+myColors->SetColor ( aLabel, Col, ctype ); 
 ~~~~~
 Alternately, the Shape can be designated directly, without using its label, use: 
 ~~~~~
@@ -582,7 +582,7 @@ TDF_Label ColLabel = myColors-FindColor (Col);
 if ( !ColLabel.IsNull() ) { .. found .. } 
 ~~~~~
 
-@subsubsection occt_xde_2_64 Editing Colors
+@subsubsection occt_xde_2_6_4 Editing Colors
 Besides adding colors, the following attribute edits can be made: 
 
 To unset a Color on a Shape, use: 

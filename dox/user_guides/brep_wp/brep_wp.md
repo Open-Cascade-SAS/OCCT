@@ -468,7 +468,7 @@ The example record is interpreted as a B-spline curve  with a rational flag *r*=
 **Example**  
 
 @verbatim
-    8  4 -5  
+    8  -4 5  
     1 1 2 3 1 0 0   
 @endverbatim
  
@@ -1023,7 +1023,7 @@ The example record is interpreted as an offset surface  with a distance *d*=-2 
 
 @verbatim
     1 3 0 0 -1   
-@verbatim
+@endverbatim
  
 **BNF-like Definition**
 
@@ -1077,7 +1077,7 @@ The example record is interpreted as a circle which  has a center *P*=(1,2).  Th
 
 @verbatim
     3 1 2 1 0 -0 1 4 3  
-@verbatim
+@endverbatim
  
 **BNF-like Definition**
 
@@ -1567,7 +1567,7 @@ Geometric sense of curve *C* described above is determined by the direction  of
  
 @section occt_brep_format_5 Shapes
  
-An example of section shapes and a whole  *.brep file are given in chapter 7 "Appendix".  
+An example of section shapes and a whole  *.brep file are given in chapter 7 @ref occt_brep_format_6 "Appendix".  
  
  
 **BNF-like Definition**

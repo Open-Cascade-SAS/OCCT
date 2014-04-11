@@ -126,7 +126,7 @@ OCAF uses other modules of Open CASCADE Technology — the Shape attribute is im
   In order to maintain the attachment of application data, the geometry must be  distinguished from other data.  
    
   In OCAF, the data are reference-key driven. It is a  uniform model in which reference-keys 
-  are the persistent identification of  data. All *accessible* data, including the geometry, 
+  are the persistent identification of  data. All **accessible** data, including the geometry, 
   are implemented as attributes attached to reference-keys. 
   The geometry becomes the  value of the Shape attribute, just as a number is the value 
   of the Integer and  Real attributes and a string that of the Name attribute.  

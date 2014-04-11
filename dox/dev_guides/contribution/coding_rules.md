@@ -163,7 +163,7 @@ Standard_Integer myCounter; // This is preferred
 ### Names of global variables
 
 It is strongly recommended to avoid defining any global variables.
-However, as soon as a global variable is necessary, its name should be prefixed by the name of a class or a package where it is defined followed with *_my*.
+However, as soon as a global variable is necessary, its name should be prefixed by the name of a class or a package where it is defined followed with <i>_my</i>.
 
 See the following examples:
 

@@ -58,7 +58,7 @@ return ;# this is to avoid an echo of the last command above in cout
 Note that variable *CSF_TestDataPath* is set to default value at DRAW start, pointing at the folder <i>$CASROOT/data</i>. 
 In this example, subdirectory <i>d:/occt/test-data</i> is added to this path. Similar code could be used on Linux and Mac OS X except that on non-Windows platforms colon ‘:’ should be used as path separator instead of semicolon ‘;’.
 
-All tests are run from DRAW command prompt (run *draw.tcl* or *draw.sh *to start it).
+All tests are run from DRAW command prompt (run *draw.tcl* or *draw.sh* to start it).
 
 @subsubsection testmanual_1_3_2 Running Tests
 
@@ -270,9 +270,9 @@ Example:
     if { [isdraw result] } {
         checkshape result
     } else {
-        puts *Error: The result shape can not be built*
+        puts "Error: The result shape can not be built"
     }
-    puts *TEST COMPLETED*
+    puts "TEST COMPLETED"
 ~~~~~
 
 @subsubsection testmanual_2_2_5 File "parse.rules"
@@ -602,7 +602,7 @@ Note that on older versions of OCCT the tests are run in compatibility mode and 
 
 You can extend the test system by adding your own tests. For that it is necessary to add paths to the directory where these tests are located, and one or more additional data directories, to the environment variables *CSF_TestScriptsPath* and *CSF_TestDataPath*. The recommended way for doing this is using DRAW configuration file *DrawAppliInit* located in the directory which is current by the moment of DRAW start-up.
 
-Use Tcl command *_path_separator* to insert a platform-dependent separator to the path list.
+Use Tcl command <i>_path_separator</i> to insert a platform-dependent separator to the path list.
 
 For example:
 ~~~~~
@@ -825,7 +825,7 @@ DRAW module: XSDRAW
 
 @subsubsection testmanual_5_1_11 mesh
 
-This group allows testing shape tessellation (*BRepMesh)) and shading.
+This group allows testing shape tessellation (*BRepMesh*) and shading.
 
 DRAW modules: MODELING (package *MeshTest*), VISUALIZATION (package *ViewerTest*)
 

@@ -302,7 +302,7 @@ void DumpChildren(const TDF_Label& aLabel)
   TCollection_AsciiString es; 
   for (it.Initialize(aLabel,Standard_True); it.More(); it.Next()){ 
     TDF_Tool::Entry(it.Value(),es); 
-    cout  =  as.ToCString()  =  endl; 
+    cout  <<  as.ToCString()  <<  endl; 
   } 
 } 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -410,7 +410,7 @@ If you use a standard file format and you want your new attributes to be stored 
   1. If you place an attribute to a new package, it is desirable (although not mandatory) if your package name starts with letter "T" (transient), for example: attribute *TMyAttributePackage_MyAttribute* in the package *TMyAttributePackage*.
   2. Create a new package with name "P[package name]" (for example *PMyAttributePackage*) with class *PMyAttributePackage_MyAttribute* inside. The new class inherits the *PDF_Attribute* class and contains fields of attributes, which must be saved or retrieved ("P" - persistent).
   3. Create a new package with name "M[package name]" (for example *MMyAttributePackage*) with classes *MMyAttributePackage_MyAttributeRetrievalDriver* and *MMyAttributePackage_MyAttributeStorageDriver* inside. The new classes inherit *MDF_ARDriver* and *MDF_ASDriver* classes respectively and contain the translation functionality: from T... attribute to P... and vice versa (M - middle) (see the realization of the standard attributes).
-  4. M... package must contain *AddStorageDrivers(aDriverSeq : ASDriverHSequence* from MDF) and *AddRetrievalDrivers(aDriverSeq : ASDriverHSequence* from MDF) methods, which append to the given sequence *\<aDriverSeq\>* of drivers  a sequence of all new attribute drivers (see the previous point), which will be used for the attributes storage/retrieval. 
+  4. M... package must contain *AddStorageDrivers(aDriverSeq : ASDriverHSequence* from MDF) and *AddRetrievalDrivers(aDriverSeq : ASDriverHSequence* from MDF) methods, which append to the given sequence  of drivers *aDriverSeq*, which is a sequence of all new attribute drivers (see the previous point) used for the storage/retrieval of attributes. 
   5 Use the standard schema (*StdSchema* unit) or create a new one to add your P-package and compile it. 
 
 If you use the XML format, do the following: 
@@ -519,17 +519,17 @@ TDF_Label label = doc->Main();
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 @subsubsection occt_ocaf_4_3_2 Retrieving the document from a label in its framework
 
-To retrieve the document from a label in its data framework, you use TDocStd_Document::Get as in the example below. The argument *label *passed to this method is an instantiation of TDF_Label. 
+To retrieve the document from a label in its data framework, you use *TDocStd_Document::Get* as in the example below. The argument *label* passed to this method is an instantiation of *TDF_Label*. 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
 doc = TDocStd_Document::Get(label); 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 @subsubsection occt_ocaf_4_3_3 Saving the document
 
-If in your document you use only standard attributes (from the packages TDF, TDataStd, TNaming, TFunction, TPrsStd and TDocStd), you just do the following steps: 
+If in your document you use only standard attributes (from the packages *TDF, TDataStd, TNaming, TFunction, TPrsStd* and *TDocStd*), you just do the following steps: 
 
 * In your application class (which inherits class *TDocStd_Application*) implement two methods:
-	+ Formats (TColStd_SequenceOfExtendedString& theFormats), which append to a given sequence \<theFormats\> your document format string, for example, "NewDocumentFormat" – this string is also set in the document creation command 
+	+ Formats (TColStd_SequenceOfExtendedString& theFormats), which append to a given sequence <i>\<theFormats\></i> your document format string, for example, "NewDocumentFormat" – this string is also set in the document creation command 
 	+ ResourcesName(), which returns a string with a name of resources file (this file contains a description about the extension of the document, storage/retrieval drivers GUIDs...), for example, "NewFormat" 
 * Create the resource file (with name, for example, "NewFormat") with the following strings:
 
@@ -990,23 +990,23 @@ The table of drivers is created by by methods *XmlDrivers_DocumentStorageDriver:
 and *XmlDrivers_DocumentRetrievalDriver::AttributeDrivers()*. 
 
 Then the persistent document is written into a file (or read from a file). 
-In standard persistence Storage and FSD packages contain classes for writing/reading the persistent document into a file. In XML persistence LDOMParser and LDOM_XmlWriter are used instead.
+In standard persistence Storage and FSD packages contain classes for writing/reading the persistent document into a file. In XML persistence *LDOMParser* and *LDOM_XmlWriter* are used instead.
 
-Usually, the library containing document storage and retrieval drivers is loaded at run time by a plugin mechanism. To support this in XML Persistence, there is a plugin XmlPlugin and a Factory()method in the XmlDrivers package. This method compares passed GUIDs with known GUIDs and returns the corresponding driver or generates an exception if the GUID is unknown. 
+Usually, the library containing document storage and retrieval drivers is loaded at run time by a plugin mechanism. To support this in XML Persistence, there is a plugin *XmlPlugin* and a *Factory()* method in the *XmlDrivers* package. This method compares passed GUIDs with known GUIDs and returns the corresponding driver or generates an exception if the GUID is unknown. 
 
 The application defines which GUID is needed for document storage or retrieval and in which library it should be found. This depends on document format and application resources. Resources for XML Persistence and also for standard persistence are found in the StdResource unit. They are written for the XmlOcaf document format. 
 
 @subsection occt_ocaf_9_2 Attribute Drivers
 
-There is one attribute driver for XML persistence for each transient attribute from a set of standard OCAF attributes, with the exception of attribute types, which are never stored (pure transient). Standard OCAF attributes are collected in six packages, and their drivers also follow this distribution. Driver for attribute T*_* is called XmlM*_*. Conversion between transient and persistent form of attribute is performed by two methods Paste() of attribute driver. 
+There is one attribute driver for XML persistence for each transient attribute from a set of standard OCAF attributes, with the exception of attribute types, which are never stored (pure transient). Standard OCAF attributes are collected in six packages, and their drivers also follow this distribution. Driver for attribute <i>T*_*</i> is called <i>XmlM*_*</i>. Conversion between transient and persistent form of attribute is performed by two methods *Paste()* of attribute driver. 
 
 *XmlMDF_ADriver* is the root class for all attribute drivers.
 
-At the beginning of storage/retrieval process, one instance of each attribute driver is created and appended to driver table implemented as XmlMDF_ADriverTable.  During OCAF Data storage, attribute drivers are retrieved from the driver table by the type of attribute. In the retrieval step, a data map is created linking names of DOM_Elements and attribute drivers, and then attribute drivers are sought in this map by DOM_Element qualified tag names. 
+At the beginning of storage/retrieval process, one instance of each attribute driver is created and appended to driver table implemented as *XmlMDF_ADriverTable*.  During OCAF Data storage, attribute drivers are retrieved from the driver table by the type of attribute. In the retrieval step, a data map is created linking names of *DOM_Elements* and attribute drivers, and then attribute drivers are sought in this map by *DOM_Element* qualified tag names. 
 
-Every transient attribute is saved as a DOM_Element (root element of OCAF attribute) with attributes and possibly sub-nodes. The name of the root element can be defined in the attribute driver as a string passed to the base class constructor. The default is the attribute type name. Similarly, namespace prefixes for each attribute can be set. There is no default value, but it is possible to pass NULL or an empty string to store attributes without namespace prefixes. 
+Every transient attribute is saved as a *DOM_Element* (root element of OCAF attribute) with attributes and possibly sub-nodes. The name of the root element can be defined in the attribute driver as a string passed to the base class constructor. The default is the attribute type name. Similarly, namespace prefixes for each attribute can be set. There is no default value, but it is possible to pass NULL or an empty string to store attributes without namespace prefixes. 
 
-The basic class XmlMDF_ADriver supports errors reporting via the method *WriteMessage(const TCollection_ExtendedString&)*. It sends a message string to its message driver which is initialized in the constructor with a Handle(CDM_MessageDriver) passed from the application by Document Storage/Retrieval Driver. 
+The basic class *XmlMDF_ADriver* supports errors reporting via the method *WriteMessage(const TCollection_ExtendedString&)*. It sends a message string to its message driver which is initialized in the constructor with a *Handle(CDM_MessageDriver)* passed from the application by Document Storage/Retrieval Driver. 
 
 @subsection occt_ocaf_9_3 XML Document Structure
 
@@ -1014,7 +1014,7 @@ Every XML Document has one root element, which may have attributes and contain o
 * **Element info** - contains strings identifying the format version and other parameters of the OCAF XML document. Normally, data under the element is used by persistence algorithms to correctly retrieve and initialize an OCAF document. The data also includes a copyright string. 
 * **Element comments** - consists of an unlimited number of \<comment\> sub-elements containing necessary comment strings. 
 * **Element label** is the root label of the document data structure, with the XML attribute "tag" equal to 0. It contains all the OCAF data (labels, attributes) as tree of XML elements. Every sub-label is identified by a tag (positive integer) defining a unique key for all sub-labels of a label. Every label can contain any number of elements representing OCAF attributes (see OCAF Attributes Representation below).
-* **Element shapes** - contains geometrical and topological entities in BRep format. These entities being referenced by OCAF attributes written under the element \<label\>. This element is empty if there are no shapes in the document. It is only output if attribute driver XmlMNaming_NamedShapeDriver has been added to drivers table by the DocumentStorageDriver.
+* **Element shapes** - contains geometrical and topological entities in BRep format. These entities being referenced by OCAF attributes written under the element \<label\>. This element is empty if there are no shapes in the document. It is only output if attribute driver *XmlMNaming_NamedShapeDriver* has been added to drivers table by the *DocumentStorageDriver*.
 
 ### OCAF Attributes Representation 
 
@@ -1024,9 +1024,9 @@ XML types for OCAF attributes are declared with XML W3C Schema in a few XSD file
 
 ### Example of resulting XML file 
 
-The following example is a sample text from an XML file obtained by storing an OCAF document with two labels (0: and 0:2) and two attributes - TDataStd_Name (on label 0:) and TNaming_NamedShape (on label 0:2). The \<shapes\> section contents are replaced by an ellipsis. 
+The following example is a sample text from an XML file obtained by storing an OCAF document with two labels (0: and 0:2) and two attributes - *TDataStd_Name* (on label 0:) and *TNaming_NamedShape* (on label 0:2). The \<shapes\> section contents are replaced by an ellipsis. 
 
-~~~~~
+~~~~
 <?xml version="1.0" encoding="UTF-8"?> 
 <document format="XmlOcaf" xmlns="http://www.opencascade.org/OCAF/XML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="http://www.opencascade.org/OCAF/XML http://www.opencascade.org/OCAF/XML/XmlOcaf.xsd">
@@ -1054,7 +1054,7 @@ xsi:schemaLocation="http://www.opencascade.org/OCAF/XML http://www.opencascade.o
 </shapes> 
 </document> 
 
-~~~~~
+~~~~
 
 @subsection occt_ocaf_9_4 XML Schema
 
@@ -1072,9 +1072,9 @@ The Schema definitions are not used by OCAF XML Persistence algorithms when savi
 
 ### Management of Namespaces 
 
-Both the XML format and the XML OCAF persistence code are extensible in the sense that every new development can reuse everything that has been created in previous projects. For the XML format, this extensibility is supported by assigning names of XML objects (elements) to different XML Namespaces. Hence, XML elements defined in different projects (in different persistence libraries) can easily be combined into the same XML documents. An example is the XCAF XML persistence built as an extension to the Standard OCAF XML persistence [File XmlXcaf.xsd]. For the correct management of Namespaces it is necessary to: 
+Both the XML format and the XML OCAF persistence code are extensible in the sense that every new development can reuse everything that has been created in previous projects. For the XML format, this extensibility is supported by assigning names of XML objects (elements) to different XML Namespaces. Hence, XML elements defined in different projects (in different persistence libraries) can easily be combined into the same XML documents. An example is the XCAF XML persistence built as an extension to the Standard OCAF XML persistence <i>[File XmlXcaf.xsd]</i>. For the correct management of Namespaces it is necessary to: 
 * Define *targetNamespace* in the new XSD file describing the format. 
-* Declare (in XSD files) all elements and types in the targetNamespace to appear without a namespace prefix; all other elements and types use the appropriate prefix (such as "ocaf:"). 
+* Declare (in *XSD* files) all elements and types in the targetNamespace to appear without a namespace prefix; all other elements and types use the appropriate prefix (such as "ocaf:"). 
 * Add (in the new *DocumentStorageDriver*) the *targetNamespace* accompanied with its prefix, using method *XmlDrivers_DocumentStorageDriver::AddNamespace*. The same is done for all namespaces objects which are used by the new persistence, with the exception of the "ocaf" namespace. 
 * Pass (in every OCAF attribute driver) the namespace prefix of the *targetNamespace* to the constructor of *XmlMDF_ADriver*. 
   
@@ -1107,7 +1107,6 @@ Both the XML format and the XML OCAF persistence code are extensible in the sens
 To store these references properly, a label must also contain an external link attribute. 
 * **Father** - a label, from which other labels have been created. The other labels are, by definition, the children of this label. 
 * **Framework** - a group of co-operating classes which enable a design to be re-used for a given category of problem. The framework guides the architecture of the application by breaking it up into abstract  classes, each of which has different responsibilities and collaborates in a predefined way. Application developer creates a specialized framework by: 
-
   * defining new classes which inherit from these abstract classes
   * composing framework class instances
   * implementing the services required by the framework.
