@@ -53,6 +53,7 @@
 #include <Geom_Surface.hxx>
 #include <BOPCol_IndexedMapOfShape.hxx>
 #include <BOPTools.hxx>
+#include <BRepClass_FaceClassifier.hxx>
 
 
 static 
@@ -348,6 +349,42 @@ static
     //xt
   }
   //
+  {
+    //check the point with classifier
+    Standard_Real u,v;
+    u = u2 + du;
+    v = v2 + dv;
+    if (aBAS.IsUPeriodic()) {
+      aUPeriod = aBAS.UPeriod(); 
+      if ((UMax - UMin - 2*aDelta) > aUPeriod) {
+        if ((u > (UMin + aDelta + aUPeriod)) ||
+            (u < (UMax - aDelta - aUPeriod))) {
+          BRepClass_FaceClassifier aClassifier;
+          aClassifier.Perform(aF, gp_Pnt2d(u, v), aDelta);
+          TopAbs_State Status = aClassifier.State();
+          if (Status == TopAbs_OUT) {
+            du += (u > (UMin + aDelta + aUPeriod)) ? -aUPeriod : aUPeriod;
+          }
+        }
+      }
+    }
+    //
+    u = u2 + du;
+    if (aBAS.IsVPeriodic()) {
+      Standard_Real aVPeriod = aBAS.VPeriod(); 
+      if ((VMax - VMin - 2*aDelta) > aVPeriod) {
+        if ((v > (VMin + aDelta + aVPeriod)) ||
+            (v < (VMax - aDelta - aVPeriod))) {
+          BRepClass_FaceClassifier aClassifier;
+          aClassifier.Perform(aF, gp_Pnt2d(u, v), aDelta);
+          TopAbs_State Status = aClassifier.State();
+          if (Status == TopAbs_OUT) {
+            dv += (v > (VMin + aDelta + aVPeriod)) ? -aVPeriod : aVPeriod;
+          }
+        }
+      }
+    }
+  }
   // Translation if necessary
   Handle(Geom2d_Curve) aC2Dx=aC2D;
 
