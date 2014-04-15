@@ -1101,15 +1101,10 @@ Standard_Boolean BOPDS_DS::IsCommonBlock
 //function : CommonBlock
 //purpose  : 
 //=======================================================================
-const Handle(BOPDS_CommonBlock)& BOPDS_DS::CommonBlock
+Handle(BOPDS_CommonBlock) BOPDS_DS::CommonBlock
     (const Handle(BOPDS_PaveBlock)& thePB) const
 {
-  Handle(BOPDS_CommonBlock) aNullCB;
-  //
-  const Handle(BOPDS_CommonBlock)& aCB = 
-    IsCommonBlock(thePB) ? myMapPBCB.Find(thePB) : aNullCB;
-  //
-  return aCB;
+  return (IsCommonBlock(thePB) ? myMapPBCB.Find(thePB) : NULL);
 }
 
 //=======================================================================
