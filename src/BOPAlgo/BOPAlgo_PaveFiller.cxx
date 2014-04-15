@@ -145,6 +145,7 @@ void BOPAlgo_PaveFiller::Init()
   //
   // 2.myIterator 
   myIterator=new BOPDS_Iterator(myAllocator);
+  myIterator->SetRunParallel(myRunParallel);
   myIterator->SetDS(myDS);
   myIterator->Prepare();
   //

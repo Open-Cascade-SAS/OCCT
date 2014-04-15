@@ -17,13 +17,13 @@
 
 class Iterator from BOPDS 
      
-	---Purpose:  
-    	-- The class BOPDS_Iterator is  
-    	--  1.to compute intersections between BRep sub-shapes  
-    	--    of arguments of an operation (see the class BOPDS_DS)
-	--    in terms of theirs bounding boxes           
-    	--  2.provides interface to iterare the pairs of  
-	--    intersected sub-shapes of given type     	  
+ ---Purpose:  
+     -- The class BOPDS_Iterator is  
+     --  1.to compute intersections between BRep sub-shapes  
+     --    of arguments of an operation (see the class BOPDS_DS)
+ --    in terms of theirs bounding boxes           
+     --  2.provides interface to iterare the pairs of  
+ --    intersected sub-shapes of given type        
 
 uses  
     BaseAllocator from BOPCol,
@@ -35,89 +35,99 @@ uses
     ListIteratorOfListOfPassKeyBoolean from BOPDS, 
     VectorOfListOfPassKeyBoolean from BOPDS
 
---raises
 
 is 
     Create   
-    	returns Iterator from BOPDS;
+     returns Iterator from BOPDS;
     ---C++: alias "Standard_EXPORT virtual ~BOPDS_Iterator();" 
-    	---Purpose:  
-    	--- Empty contructor  
-    	---   
-	
+     ---Purpose:  
+     --- Empty contructor  
+     ---   
+ 
     Create (theAllocator: BaseAllocator from BOPCol)  
-    	returns Iterator from BOPDS; 
-	---Purpose:  
-    	---  Contructor    
-    	---  theAllocator - the allocator to manage the memory     
-    	---  
-	
+     returns Iterator from BOPDS; 
+    ---Purpose:  
+     ---  Contructor    
+     ---  theAllocator - the allocator to manage the memory     
+     ---  
+ 
     SetDS(me:out; 
-    	    pDS:PDS from BOPDS); 
-     	---Purpose: 
-	--- Modifier 
-	--- Sets the data structure <pDS> to process 
-	 
+         pDS:PDS from BOPDS); 
+      ---Purpose: 
+    --- Modifier 
+    --- Sets the data structure <pDS> to process 
+  
     DS(me) 
       returns DS from BOPDS; 
     ---C++:return const & 
-    	---Purpose: 
-	--- Selector 
-	--- Returns the data structure 
+     ---Purpose: 
+    --- Selector 
+    --- Returns the data structure 
  
     Initialize(me: out;  
-    	    theType1: ShapeEnum from TopAbs;
-    	    theType2: ShapeEnum from TopAbs); 
-	---Purpose: 
-	--- Initializes the  iterator 
-	--- theType1 - the first type of shape           	 
-	--- theType2 - the second type of shape           	 
+         theType1: ShapeEnum from TopAbs;
+         theType2: ShapeEnum from TopAbs); 
+    ---Purpose: 
+    --- Initializes the  iterator 
+    --- theType1 - the first type of shape             
+    --- theType2 - the second type of shape             
 
     More(me)  
-    	returns Boolean from Standard; 
-  	---Purpose: 
-	--- Returns  true if still there are pairs 
+     returns Boolean from Standard; 
+    ---Purpose: 
+    --- Returns  true if still there are pairs 
         --  of intersected shapes 
 
     Next(me:out); 
-     	---Purpose: 
-	--- Moves iterations ahead 
+      ---Purpose: 
+    --- Moves iterations ahead 
 
     Value(me;  
-    	    theIndex1:out Integer from Standard;
-    	    theIndex2:out Integer from Standard;
-    	    theWithSubShape: out Boolean from Standard); 
-	---Purpose: 
-	--- Returns indices (DS) of intersected shapes 
-	--- theIndex1 - the index of the first shape  
-	--- theIndex2 - the index of the second shape 
-	--- theWithSubShape - flag. True if the sub-shapes of 
-	---  shapes are intersected 
-	 
+         theIndex1:out Integer from Standard;
+         theIndex2:out Integer from Standard;
+         theWithSubShape: out Boolean from Standard); 
+    ---Purpose: 
+    --- Returns indices (DS) of intersected shapes 
+    --- theIndex1 - the index of the first shape  
+    --- theIndex2 - the index of the second shape 
+    --- theWithSubShape - flag. True if the sub-shapes of 
+    ---  shapes are intersected 
+  
     Prepare(me:out) 
-    	is virtual;  
-	---Purpose: 
-	--- Perform the intersection algorithm and prepare  
-    	--- the results to be used       
+     is virtual;  
+    ---Purpose: 
+    --- Perform the intersection algorithm and prepare  
+     --- the results to be used       
       
     ExpectedLength(me) 
-    	returns Integer from Standard;  
-	---Purpose:  
-	--- Returns the number of intersections founded 
-	 
+     returns Integer from Standard;  
+    ---Purpose:  
+    --- Returns the number of intersections founded 
+  
     BlockLength(me) 
-    	returns Integer from Standard; 
-    	---Purpose:  
-	--- Returns the block length 
+     returns Integer from Standard; 
+     ---Purpose:  
+    --- Returns the block length 
     
     Intersect(me:out) 
-    	is virtual protected; 
-
+     is virtual protected; 
+ 
+    SetRunParallel(me:out; 
+         theFlag:Boolean from Standard); 
+    ---Purpose: Set the flag of parallel processing 
+    -- if <theFlag> is true  the parallel processing is switched on   
+    -- if <theFlag> is false the parallel processing is switched off   
+    --      
+    RunParallel(me) 
+     returns Boolean from Standard; 
+    ---Purpose: Returns the flag of parallel processing  
+ 
 fields  
     myAllocator:  BaseAllocator from BOPCol is protected;
     myLength   :  Integer from Standard is protected;
     myDS       :  PDS from BOPDS is protected;  
     myLists    :  VectorOfListOfPassKeyBoolean from BOPDS is protected;  
-    myIterator :  ListIteratorOfListOfPassKeyBoolean from BOPDS is protected; 
-
+    myIterator :  ListIteratorOfListOfPassKeyBoolean from BOPDS is protected;  
+    myRunParallel : Boolean from Standard is protected; 
+    
 end Iterator;

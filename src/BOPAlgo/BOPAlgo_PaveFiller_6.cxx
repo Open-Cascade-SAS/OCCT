@@ -62,6 +62,8 @@
 #include <BOPCol_ListOfInteger.hxx>
 #include <BOPCol_IndexedMapOfInteger.hxx>
 #include <BOPCol_DataMapOfIntegerReal.hxx>
+#include <BOPCol_NCVector.hxx>
+#include <BOPCol_TBB.hxx>
 
 #include <BOPInt_Context.hxx>
 #include <BOPInt_Tools.hxx>
@@ -94,6 +96,78 @@ static void ToleranceFF(const BRepAdaptor_Surface& aBAS1,
                         const BRepAdaptor_Surface& aBAS2,
                         Standard_Real& aTolFF);
 
+/////////////////////////////////////////////////////////////////////////
+//=======================================================================
+//class    : BOPAlgo_FaceFace
+//purpose  : 
+//=======================================================================
+class BOPAlgo_FaceFace : public IntTools_FaceFace {
+ public:
+  BOPAlgo_FaceFace() 
+   : IntTools_FaceFace(),  myIF1(-1), myIF2(-1), myTolFF(1.e-7) {
+  }
+  //
+  ~BOPAlgo_FaceFace() {
+  }
+  //
+  void SetIndices(const Standard_Integer nF1,
+                  const Standard_Integer nF2) {
+    myIF1=nF1;
+    myIF2=nF2;
+  }
+  //
+  void Indices(Standard_Integer& nF1,
+               Standard_Integer& nF2) const {
+    nF1=myIF1;
+    nF2=myIF2;
+  }
+  //
+  void SetFaces(const TopoDS_Face& aF1,
+                const TopoDS_Face& aF2) {
+    myF1=aF1;
+    myF2=aF2;
+  }
+  //
+  const TopoDS_Face& Face1()const {
+    return myF1;
+  }
+  //
+  const TopoDS_Face& Face2()const {
+    return myF2;
+  }
+  //
+  void SetTolFF(const Standard_Real aTolFF) {
+    myTolFF=aTolFF;
+  }
+  //
+  Standard_Real TolFF() const{
+    return myTolFF;
+  }
+  //
+  void Perform() {
+    IntTools_FaceFace::Perform(myF1, myF2);
+  }
+  //
+ protected:
+  Standard_Integer myIF1;
+  Standard_Integer myIF2;
+  Standard_Real myTolFF;
+  TopoDS_Face myF1;
+  TopoDS_Face myF2;
+};
+//
+//=======================================================================
+typedef BOPCol_NCVector
+  <BOPAlgo_FaceFace> BOPAlgo_VectorOfFaceFace; 
+//
+typedef BOPCol_TBBFunctor 
+  <BOPAlgo_FaceFace,
+  BOPAlgo_VectorOfFaceFace> BOPAlgo_FaceFaceFunctor;
+//
+typedef BOPCol_TBBCnt 
+  <BOPAlgo_FaceFaceFunctor,
+  BOPAlgo_VectorOfFaceFace> BOPAlgo_FaceFaceCnt;
+/////////////////////////////////////////////////////////////////////////
 //=======================================================================
 //function : PerformFF
 //purpose  : 
@@ -114,9 +188,11 @@ void BOPAlgo_PaveFiller::PerformFF()
   Standard_Boolean bJustAdd, bApp, bCompC2D1, bCompC2D2, bIsDone;
   Standard_Boolean bToSplit, bTangentFaces;
   Standard_Integer nF1, nF2, aNbCurves, aNbPoints, iX, i, iP, iC, aNbLP;
+  Standard_Integer aNbFaceFace, k;
   Standard_Real aApproxTol, aTolR3D, aTolR2D, aTolFF;
   BRepAdaptor_Surface aBAS1, aBAS2;
   BOPCol_MapOfInteger aMI;
+  BOPAlgo_VectorOfFaceFace aVFaceFace;
   //
   BOPDS_VectorOfInterfFF& aFFs=myDS->InterfFF();
   aFFs.SetStartSize(iSize);
@@ -165,7 +241,13 @@ void BOPAlgo_PaveFiller::PerformFF()
       }
     }
     //
-    IntTools_FaceFace aFaceFace;
+    ToleranceFF(aBAS1, aBAS2, aTolFF); 
+    //
+    BOPAlgo_FaceFace& aFaceFace=aVFaceFace.Append1();
+    //
+    aFaceFace.SetIndices(nF1, nF2);
+    aFaceFace.SetFaces(aF1, aF2);
+    aFaceFace.SetTolFF(aTolFF);
     //
     IntSurf_ListOfPntOn2S aListOfPnts;
     GetEFPnts(nF1, nF2, aListOfPnts);
@@ -173,18 +255,28 @@ void BOPAlgo_PaveFiller::PerformFF()
     if (aNbLP) {
       aFaceFace.SetList(aListOfPnts);
     }
-
+    //
     aFaceFace.SetParameters(bApp, bCompC2D1, bCompC2D2, aApproxTol);
     //
-    aFaceFace.Perform(aF1, aF2);
+    //aFaceFace.Perform(aF1, aF2);
+  }//for (; myIterator->More(); myIterator->Next()) {
+  //
+  aNbFaceFace=aVFaceFace.Extent();
+  //======================================================
+  BOPAlgo_FaceFaceCnt::Perform(myRunParallel, aVFaceFace);
+  //======================================================
+  //
+  for (k=0; k < aNbFaceFace; ++k) {
+    BOPAlgo_FaceFace& aFaceFace=aVFaceFace(k);
+    //
+    aFaceFace.Indices(nF1, nF2);
+    aTolFF=aFaceFace.TolFF();
     //
     bIsDone=aFaceFace.IsDone();
     if (bIsDone) {
       aTolR3D=aFaceFace.TolReached3d();
       aTolR2D=aFaceFace.TolReached2d();
       bTangentFaces=aFaceFace.TangentFaces();
-      //
-      ToleranceFF(aBAS1, aBAS2, aTolFF);
       //
       if (aTolR3D < aTolFF){
         aTolR3D=aTolFF;
@@ -250,7 +342,7 @@ void BOPAlgo_PaveFiller::PerformFF()
       aNbPoints=0;
       aFF.Init(aNbCurves, aNbPoints);
     }
-  }// for (; myIterator->More(); myIterator->Next()) {
+  }// for (k=0; k < aNbFaceFace; ++k) {
 }
 //=======================================================================
 //function : MakeBlocks
