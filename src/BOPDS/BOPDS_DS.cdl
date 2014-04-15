@@ -283,7 +283,6 @@ is
     CommonBlock(me; 
                 thePB:PaveBlock from BOPDS)
         returns CommonBlock from BOPDS;     
-    ---C++: return const & 
     ---Purpose: 
     --- Selector  
     --- Returns the common block  
