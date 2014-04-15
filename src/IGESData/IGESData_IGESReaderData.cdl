@@ -29,7 +29,7 @@ uses Integer, Boolean, CString,  HAsciiString, HSequenceOfHAsciiString,
 
 is
 
-    Create (nbe,nbp : Integer) returns mutable IGESReaderData;
+    Create (nbe,nbp : Integer) returns IGESReaderData;
     ---Purpose : creates IGESReaderData correctly dimensionned (for arrays)
     --           <nbe> count of entities, that is, half nb of directory lines
     --           <nbp> : count of parameters

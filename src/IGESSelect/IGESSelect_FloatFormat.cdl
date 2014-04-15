@@ -26,7 +26,7 @@ uses CString, AsciiString from TCollection,
 
 is
 
-    Create returns mutable FloatFormat;
+    Create returns FloatFormat;
     ---Purpose : Creates a new FloatFormat, with standard options :
     --           ZeroSuppress, Main Format = %E,
     --           Format between 0.001 and 1000. = %f

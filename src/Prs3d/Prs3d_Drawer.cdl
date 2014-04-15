@@ -46,7 +46,7 @@ uses
     Ax2 from gp
 
 is
-    Create returns mutable Drawer from Prs3d;
+    Create returns Drawer from Prs3d;
 
 ---Category: deviation definition.
 -- 
@@ -170,7 +170,7 @@ is
 -- 
 -- Attributes for the U Isoparametric lines of patches.
 --    
-    UIsoAspect (me:mutable) returns mutable IsoAspect from Prs3d
+    UIsoAspect (me:mutable) returns IsoAspect from Prs3d
     	---Purpose: Defines the attributes which are used when drawing an 
     	--          U isoparametric curve of a face. Defines the number
     	--          of U isoparametric curves to be drawn for a single face.
@@ -195,7 +195,7 @@ is
 -- Attributes for the V Isoparametric line of patches.
 
 
-    VIsoAspect (me:mutable) returns mutable IsoAspect from Prs3d
+    VIsoAspect (me:mutable) returns IsoAspect from Prs3d
     	---Purpose: Defines the attributes which are used when drawing an 
     	--          V isoparametric curve of a face. Defines the number
     	--          of V isoparametric curves to be drawn for a single face.
@@ -216,7 +216,7 @@ is
     is virtual;
     	---Purpose: Sets the appearance of V isoparameters - anAspect.
 
-    FreeBoundaryAspect (me:mutable) returns mutable LineAspect from Prs3d
+    FreeBoundaryAspect (me:mutable) returns LineAspect from Prs3d
     	---Purpose:  Stores the values for presentation of free boundaries,
     	-- in other words, boundaries which are not shared.
 	--          The LineAspect for the  free boundaries can be edited.
@@ -245,7 +245,7 @@ is
 
 -- Attributes for the wires
 
-    WireAspect (me:mutable) returns mutable LineAspect from Prs3d
+    WireAspect (me:mutable) returns LineAspect from Prs3d
     	---Purpose: Returns wire aspect settings.
     	--          The LineAspect for the wire can be edited.
     	--          The default values are:
@@ -273,7 +273,7 @@ is
 
 -- Attributes for the unfree boundaries
 
-    UnFreeBoundaryAspect (me:mutable) returns mutable LineAspect from Prs3d
+    UnFreeBoundaryAspect (me:mutable) returns LineAspect from Prs3d
     	---Purpose: Returns settings for shared boundary line aspects.
     	--          The LineAspect for the unfree boundaries can be edited.
     	--          The default values are:
@@ -303,7 +303,7 @@ is
 --  Attributes for the lines.
 -- 
 
-    LineAspect(me:mutable) returns mutable LineAspect from Prs3d
+    LineAspect(me:mutable) returns LineAspect from Prs3d
     	---Purpose:   Returns settings for line aspects.
     	-- These settings can be edited. The default values are:       
     	--          Color: Quantity_NOC_YELLOW
@@ -320,7 +320,7 @@ is
     is virtual;
     	--- Purpose: Sets the parameter anAspect for display attributes of lines.
 
-    TextAspect(me:mutable) returns mutable TextAspect from Prs3d
+    TextAspect(me:mutable) returns TextAspect from Prs3d
     	--- Purpose: Returns settings for text aspect.
     	-- These settings can be edited. The default value is:
     	-- -   Color: Quantity_NOC_YELLOW
@@ -342,7 +342,7 @@ is
     	-- parameter OnOff to true or false.
     is virtual;
     
-    ArrowAspect(me:mutable) returns mutable ArrowAspect from Prs3d 
+    ArrowAspect(me:mutable) returns ArrowAspect from Prs3d 
     is virtual;
     	---Purpose: Returns the attributes for display of arrows.    
     
@@ -350,7 +350,7 @@ is
     is virtual ;
     	---Purpose: Sets the parameter anAspect for display attributes of arrows.
         
-    PointAspect(me:mutable) returns mutable PointAspect from Prs3d
+    PointAspect(me:mutable) returns PointAspect from Prs3d
     	---Purpose: Returns the point aspect setting. The default values are
     	--        Color: Quantity_NOC_YELLOW
     	--          Type of marker: Aspect_TOM_PLUS
@@ -362,7 +362,7 @@ is
     is virtual;
     	--- Purpose: Sets the parameter anAspect for display attributes of points
         
-    ShadingAspect (me:mutable) returns mutable ShadingAspect from Prs3d
+    ShadingAspect (me:mutable) returns ShadingAspect from Prs3d
    is virtual;
     	---Purpose: Returns settings for shading aspects.
     	-- These settings can be edited. The default values are:
@@ -406,7 +406,7 @@ is
     	---Purpose:  Disables the DrawHiddenLine function.
     is virtual;
 
-    HiddenLineAspect(me:mutable) returns mutable LineAspect from Prs3d
+    HiddenLineAspect(me:mutable) returns LineAspect from Prs3d
     	---Purpose: Returns settings for hidden line aspects.
     	-- These settings can be edited. The default values are:
     	--          Color: Quantity_NOC_YELLOW
@@ -419,7 +419,7 @@ is
     	---Purpose: Sets the parameter anAspect for the display of
     	-- hidden lines in hidden line removal mode.   
     
-    SeenLineAspect(me:mutable) returns mutable LineAspect from Prs3d
+    SeenLineAspect(me:mutable) returns LineAspect from Prs3d
 	---Purpose: Returns settings for seen line aspects.
     	-- These settings can be edited. The default values are:
 	--          Color: Quantity_NOC_YELLOW
@@ -432,7 +432,7 @@ is
     	--- Purpose: Sets the parameter anAspect for the display of seen
     	-- lines in hidden line removal mode.
 
-    PlaneAspect(me:mutable) returns mutable PlaneAspect from Prs3d
+    PlaneAspect(me:mutable) returns PlaneAspect from Prs3d
     is virtual;
     	---Purpose: Returns settings for the appearance of planes.
     
@@ -440,7 +440,7 @@ is
     is virtual;
     	---Purpose: Sets the parameter anAspect for the display of planes.
 
-    VectorAspect(me:mutable) returns mutable LineAspect from Prs3d
+    VectorAspect(me:mutable) returns LineAspect from Prs3d
     	---Purpose: Returns settings for the appearance of vectors.
     	-- These settings can be edited. The default values are:
     	--          Color: Quantity_NOC_SKYBLUE
@@ -456,7 +456,7 @@ is
 --  Attributes for the presentation of a Datum.
 --  
 
-    DatumAspect(me:mutable) returns mutable DatumAspect from Prs3d
+    DatumAspect(me:mutable) returns DatumAspect from Prs3d
     	---Purpose: Returns settings for the appearance of datums.
     	-- These settings can be edited. The default values for
     	-- the three axes are:
@@ -469,7 +469,7 @@ is
     is virtual;
     	---Purpose: Sets the modality anAspect for the display of datums.
 
-    DimensionAspect(me:mutable) returns mutable DimensionAspect from Prs3d is virtual;
+    DimensionAspect(me:mutable) returns DimensionAspect from Prs3d is virtual;
     ---Purpose: Returns settings for the appearance of dimensions.
 
     SetDimensionAspect(me:mutable; theAspect: DimensionAspect from Prs3d) is virtual;
@@ -503,7 +503,7 @@ is
     ---Purpose: Returns angle units in which dimension presentation is displayed.
     ---C++: return const &
 
-    SectionAspect (me : mutable) returns mutable LineAspect from Prs3d is virtual;
+    SectionAspect (me : mutable) returns LineAspect from Prs3d is virtual;
     ---Purpose: The LineAspect for the wire can be edited.
     --          The default values are:
     --          Color: Quantity_NOC_ORANGE
@@ -531,7 +531,7 @@ is
         ---Purpose: Sets line aspect for face boundaries.
         -- theAspect is the line aspect that determines the look of the face boundaries.
 
-    FaceBoundaryAspect (me : mutable) returns mutable LineAspect from Prs3d
+    FaceBoundaryAspect (me : mutable) returns LineAspect from Prs3d
     is virtual;
         ---Purpose: Returns line aspect of face boundaries.
 

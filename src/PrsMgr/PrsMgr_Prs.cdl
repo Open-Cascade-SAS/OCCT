@@ -31,7 +31,7 @@ is
     Create (theStructManager        : StructureManager from Graphic3d;
             thePresentation         : PresentationPointer from PrsMgr;
             theTypeOfPresentation3d : TypeOfPresentation3d from PrsMgr)
-    returns mutable Prs from PrsMgr;
+    returns Prs from PrsMgr;
 
     Compute (me: mutable)
     is redefined static;

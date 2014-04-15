@@ -26,23 +26,23 @@ uses
 	DateTimeRole from StepBasic
 is
 
-	Create returns mutable AppliedDateAndTimeAssignment;
+	Create returns AppliedDateAndTimeAssignment;
 	---Purpose: Returns a AppliedDateAndTimeAssignment
 
 
 	Init (me : mutable;
-	      aAssignedDateAndTime : mutable DateAndTime from StepBasic;
-	      aRole : mutable DateTimeRole from StepBasic) is redefined;
+	      aAssignedDateAndTime : DateAndTime from StepBasic;
+	      aRole : DateTimeRole from StepBasic) is redefined;
 
 	Init (me : mutable;
-	      aAssignedDateAndTime : mutable DateAndTime from StepBasic;
-	      aRole : mutable DateTimeRole from StepBasic;
-	      aItems : mutable HArray1OfDateAndTimeItem from StepAP214) is virtual;
+	      aAssignedDateAndTime : DateAndTime from StepBasic;
+	      aRole : DateTimeRole from StepBasic;
+	      aItems : HArray1OfDateAndTimeItem from StepAP214) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetItems(me : mutable; aItems : mutable HArray1OfDateAndTimeItem);
-	Items (me) returns mutable HArray1OfDateAndTimeItem;
+	SetItems(me : mutable; aItems : HArray1OfDateAndTimeItem);
+	Items (me) returns HArray1OfDateAndTimeItem;
 	ItemsValue (me; num : Integer) returns DateAndTimeItem;
 	NbItems (me) returns Integer;
 

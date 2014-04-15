@@ -33,7 +33,7 @@ raises
 	 
 is 
     Create(FirstIndexes  :  Array1OfInteger)   
-    returns  mutable  ProfileMatrix  from  FEmTool; 
+    returns  ProfileMatrix  from  FEmTool; 
 
     Init(me:  mutable;  Value  :  Real); 
      

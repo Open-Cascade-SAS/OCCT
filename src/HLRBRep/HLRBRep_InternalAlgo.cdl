@@ -32,10 +32,10 @@ raises
     OutOfRange   from Standard
     
 is
-    Create returns mutable InternalAlgo from HLRBRep;
+    Create returns InternalAlgo from HLRBRep;
     
     Create(A : InternalAlgo from HLRBRep)
-    returns mutable InternalAlgo from HLRBRep;
+    returns InternalAlgo from HLRBRep;
     
     Projector(me: mutable; P : Projector from HLRAlgo)
 	---Purpose: set the projector.

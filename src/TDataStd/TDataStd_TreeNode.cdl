@@ -69,7 +69,7 @@ is
     ---Purpose: Instance methods: 
     --          ================ 
      
-    Create returns mutable TreeNode from TDataStd;
+    Create returns TreeNode from TDataStd;
     
 
     Append (me : mutable; Child : TreeNode from TDataStd)    
@@ -245,12 +245,12 @@ is
     Restore (me: mutable; with : Attribute from TDF) 
     is virtual;
 
-    Paste (me; into : mutable Attribute from TDF;
-	       RT   : mutable RelocationTable from TDF) 
+    Paste (me; into : Attribute from TDF;
+	       RT   : RelocationTable from TDF) 
     is virtual;    
 
     NewEmpty(me)
-    returns mutable Attribute from TDF
+    returns Attribute from TDF
     is redefined;
 	
     References(me;

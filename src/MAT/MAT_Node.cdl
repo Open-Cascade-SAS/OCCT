@@ -33,7 +33,7 @@ is
     Create (GeomIndex     : Integer;
             LinkedArc     : Arc from MAT;
     	    Distance      : Real)
-    returns mutable Node from MAT;
+    returns Node from MAT;
     
     GeomIndex (me)
 	---Purpose: Returns the index associated of the geometric 

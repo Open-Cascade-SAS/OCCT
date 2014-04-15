@@ -24,23 +24,23 @@ uses
 	ApplicationContext from StepBasic
 is
 
-	Create returns mutable ProductDefinitionContext;
+	Create returns ProductDefinitionContext;
 	---Purpose: Returns a ProductDefinitionContext
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aFrameOfReference : mutable ApplicationContext from StepBasic) is redefined;
+	      aName : HAsciiString from TCollection;
+	      aFrameOfReference : ApplicationContext from StepBasic) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aFrameOfReference : mutable ApplicationContext from StepBasic;
-	      aLifeCycleStage : mutable HAsciiString from TCollection) is virtual;
+	      aName : HAsciiString from TCollection;
+	      aFrameOfReference : ApplicationContext from StepBasic;
+	      aLifeCycleStage : HAsciiString from TCollection) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetLifeCycleStage(me : mutable; aLifeCycleStage : mutable HAsciiString);
-	LifeCycleStage (me) returns mutable HAsciiString;
+	SetLifeCycleStage(me : mutable; aLifeCycleStage : HAsciiString);
+	LifeCycleStage (me) returns HAsciiString;
 
 fields
 

@@ -32,7 +32,7 @@ is
 	   Support      : Integer;
 	   GeometryType : Kind from TopOpeBRepDS;
 	   Geometry     : Integer)
-    returns mutable SolidSurfaceInterference from TopOpeBRepDS;
+    returns SolidSurfaceInterference from TopOpeBRepDS;
 
     Dump(me; OS : in out OStream from Standard) returns OStream
     is redefined;

@@ -39,7 +39,7 @@ uses
 is
 
   Create ( theNonDeformDS : DataSource from MeshVS;
-           theMagnify     : Real ) returns mutable DeformedDataSource from MeshVS;
+           theMagnify     : Real ) returns DeformedDataSource from MeshVS;
 	---Purpose:  Constructor
         -- theNonDeformDS is canonical non-deformed data source, by which we are able to calculate
         --   deformed mesh geometry

@@ -38,14 +38,14 @@ uses
 
 is
     Create(aCircle : Circle from Geom) 
-    returns mutable Circle from AIS;
+    returns Circle from AIS;
     	---Purpose: Initializes this algorithm for constructing AIS circle
     	-- datums initializes the circle aCircle
     Create(theCircle : Circle from Geom;
            theUStart : Real from Standard;
            theUEnd   : Real from Standard;
            theIsFilledCircleSens : Boolean from Standard = Standard_False) 
-    returns mutable Circle from AIS;
+    returns Circle from AIS;
     ---Purpose: Initializes this algorithm for constructing AIS circle datums.    
     -- Initializes the circle theCircle, the arc
     --   starting point theUStart, the arc ending point theUEnd,
@@ -53,19 +53,19 @@ is
 
     Compute(me            : mutable;
     	    aPresentationManager: PresentationManager3d from PrsMgr;
-    	    aPresentation : mutable Presentation from Prs3d;
+    	    aPresentation : Presentation from Prs3d;
     	    aMode         : Integer from Standard = 0) 
     is redefined static  private;
     
     Compute(me:mutable;
     	        aProjector: Projector from Prs3d;
-                aPresentation: mutable Presentation from Prs3d)
+                aPresentation: Presentation from Prs3d)
     is redefined static private;     
 
     Compute(me            : mutable;
             aProjector    : Projector from Prs3d;
             aTrsf         : Transformation from Geom;
-            aPresentation : mutable Presentation from Prs3d)
+            aPresentation : Presentation from Prs3d)
     is redefined;
 	 ---Purpose: computes the presentation according to a point of view
     	 --          given by <aProjector>.
@@ -78,7 +78,7 @@ is
 -- Methods from SelectableObject
 
     ComputeSelection(me         : mutable;
-    	    	     aSelection : mutable Selection from SelectMgr;
+    	    	     aSelection : Selection from SelectMgr;
     	    	     aMode      : Integer from Standard)is private;
 
  
@@ -143,19 +143,19 @@ is
     -- then the whole circle will be detectable, otherwise only the boundary of the circle.
 
     ComputeCircle(me: mutable;
-                  aPresentation : mutable Presentation from Prs3d)
+                  aPresentation : Presentation from Prs3d)
     is private;
      
     ComputeArc(me: mutable;
-               aPresentation : mutable Presentation from Prs3d)
+               aPresentation : Presentation from Prs3d)
     is private;
 
     ComputeCircleSelection(me: mutable;
-                           aSelection : mutable Selection from SelectMgr)
+                           aSelection : Selection from SelectMgr)
     is private;
      
     ComputeArcSelection(me: mutable;
-                        aSelection : mutable Selection from SelectMgr)
+                        aSelection : Selection from SelectMgr)
     is private;
 
 fields

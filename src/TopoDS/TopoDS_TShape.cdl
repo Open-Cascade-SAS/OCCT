@@ -134,7 +134,7 @@ is
 	--          VERTEX, EDGE, WIRE, FACE, ....
     is deferred;
     
-    EmptyCopy(me) returns mutable TShape from TopoDS
+    EmptyCopy(me) returns TShape from TopoDS
 	---Purpose: Returns a copy  of the  TShape  with no sub-shapes.
     is deferred;
     

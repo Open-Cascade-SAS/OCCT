@@ -29,7 +29,7 @@ is
 	Create returns RWBezierCurve;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable BezierCurve from StepGeom);
+	              ach : in out Check; ent : BezierCurve from StepGeom);
 
 	WriteStep (me; SW : in out StepWriter; ent : BezierCurve from StepGeom);
 

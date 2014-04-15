@@ -26,24 +26,24 @@ uses
     Presentation          from Prs3d
 
 is
-    Create(Sh:Shape from TopoDS) returns mutable Shape from StdSelect;
+    Create(Sh:Shape from TopoDS) returns Shape from StdSelect;
     
     Compute(me:mutable;
     	        aPresentationManager: PresentationManager3d from PrsMgr;
-                aPresentation: mutable Presentation from Prs3d;
+                aPresentation: Presentation from Prs3d;
                 aMode: Integer from Standard = 0)
     is redefined static;
     
     Compute(me:mutable;
     	        aProjector: Projector from Prs3d;
-                aPresentation: mutable Presentation from Prs3d)
+                aPresentation: Presentation from Prs3d)
     is redefined static private;     
 
 
     Compute(me            : mutable;
     	    aProjector    : Projector from Prs3d;
     	    aTrsf         : Transformation from Geom;
-	    aPresentation : mutable Presentation from Prs3d)
+	    aPresentation : Presentation from Prs3d)
     is redefined;
     	---Purpose: computes the presentation according to a point of view
     	--          given by <aProjector>. 

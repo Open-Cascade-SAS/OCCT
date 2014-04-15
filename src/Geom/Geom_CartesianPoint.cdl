@@ -30,11 +30,11 @@ uses Ax1       from gp,
 
 is
 
-  Create (P : Pnt)   returns mutable CartesianPoint;
+  Create (P : Pnt)   returns CartesianPoint;
         ---Purpose : Returns a transient copy of P.
 
 
-  Create (X, Y, Z : Real)   returns mutable CartesianPoint;
+  Create (X, Y, Z : Real)   returns CartesianPoint;
 
     	---Purpose: Constructs a point defined by its three Cartesian coordinates X, Y and Z.
 
@@ -85,7 +85,7 @@ is
   Transform (me : mutable; T : Trsf);
     	---Purpose: Applies the transformation T to this point.
 
-  Copy (me)  returns mutable like me;
+  Copy (me)  returns like me;
     	---Purpose:  Creates a new object which is a copy of this point.
 
 fields

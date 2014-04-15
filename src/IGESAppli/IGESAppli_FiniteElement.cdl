@@ -31,7 +31,7 @@ raises OutOfRange
 
 is
 
-        Create returns mutable FiniteElement;
+        Create returns FiniteElement;
 
         -- Specific Methods pertaining to the class
 

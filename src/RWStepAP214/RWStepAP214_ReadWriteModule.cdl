@@ -27,7 +27,7 @@ uses Transient,
 
 is
 
-	Create returns mutable ReadWriteModule from RWStepAP214;
+	Create returns ReadWriteModule from RWStepAP214;
 
 	CaseStep (me; atype : AsciiString from TCollection) returns Integer;
 	---Purpose : associates a positive Case Number to each type of StepAP214 entity,
@@ -50,7 +50,7 @@ is
             returns Boolean  is redefined;
 
 	ReadStep (me; CN : Integer; data : StepReaderData; num : Integer;
-	            ach : in out Check; ent : mutable Transient);
+	            ach : in out Check; ent : Transient);
 
 	WriteStep (me; CN : Integer; SW : in out StepWriter; ent : Transient);
 

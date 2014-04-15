@@ -28,7 +28,7 @@ uses
     
 is
 
-    Create returns mutable Hctxee2d from TopOpeBRep;
+    Create returns Hctxee2d from TopOpeBRep;
     SetEdges(me:mutable;E1,E2:Edge;BAS1,BAS2:Surface from BRepAdaptor);
     Edge(me;I:Integer) returns Shape;---C++ : return const &
     Curve(me;I:Integer) returns Curve from Geom2dAdaptor; ---C++ : return const &

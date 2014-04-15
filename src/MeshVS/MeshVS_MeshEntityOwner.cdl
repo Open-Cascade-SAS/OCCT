@@ -42,7 +42,7 @@ is
            MeshEntity  : Address;
            Type        : EntityType from MeshVS;
            Priority    : Integer = 0;
-           IsGroup     : Boolean = Standard_False ) returns mutable MeshEntityOwner from MeshVS;
+           IsGroup     : Boolean = Standard_False ) returns MeshEntityOwner from MeshVS;
 
   Owner            ( me ) returns Address;
 	---Purpose: Returns an address of element or node data structure

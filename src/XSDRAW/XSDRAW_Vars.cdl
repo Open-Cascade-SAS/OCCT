@@ -25,7 +25,7 @@ uses CString, Transient,
 
 is
 
-    Create returns mutable Vars from XSDRAW;
+    Create returns Vars from XSDRAW;
 
     Set (me : mutable; name : CString; val : Transient)  is redefined;
 

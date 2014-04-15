@@ -32,12 +32,12 @@ is
     Create( P : Pnt from gp; 
     	    Shape : MarkerShape from Draw;
 	    Col   : Color from Draw) 
-    returns mutable Point from DrawTrSurf;
+    returns Point from DrawTrSurf;
     
     Create( P : Pnt2d from gp; 
     	    Shape : MarkerShape from Draw;
 	    Col   : Color from Draw) 
-    returns mutable Point from DrawTrSurf;
+    returns Point from DrawTrSurf;
     
     DrawOn (me; dis : in out Display from Draw);
      
@@ -69,7 +69,7 @@ is
   Shape(me) returns MarkerShape from Draw
   is  static;
      
-  Copy(me) returns mutable Drawable3D from Draw
+  Copy(me) returns Drawable3D from Draw
 	---Purpose: For variable copy.
   is redefined;
   

@@ -24,7 +24,7 @@ uses
     Interpretor from Draw
 
 is
-    Create (V : Real) returns mutable Number from Draw;
+    Create (V : Real) returns Number from Draw;
 
     Value(me) returns Real
     is static;
@@ -35,7 +35,7 @@ is
     DrawOn(me; dis : in out Display);
 	---Purpose: Does nothhing,
     
-    Copy(me) returns mutable Drawable3D from Draw
+    Copy(me) returns Drawable3D from Draw
 	---Purpose: For variable copy.
     is redefined;
 	

@@ -23,6 +23,6 @@ class Plane from PDataXtd inherits Attribute from PDF
 
 is
 
-    Create returns mutable Plane from PDataXtd;
+    Create returns Plane from PDataXtd;
 
 end Plane;

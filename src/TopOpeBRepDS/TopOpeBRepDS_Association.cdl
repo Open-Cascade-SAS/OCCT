@@ -25,7 +25,7 @@ uses
 
 is
 
-    Create returns mutable Association from TopOpeBRepDS;
+    Create returns Association from TopOpeBRepDS;
     
     Associate  (me : mutable; I,K : Interference from TopOpeBRepDS) 
     is static;

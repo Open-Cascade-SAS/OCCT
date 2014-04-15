@@ -36,7 +36,7 @@ is
      TextColor : Color from Draw;
      ScaleX : Real from Standard = 1.0;
      ScaleY : Real from Standard = 1.0)
-    returns mutable DrawableMesure from TestTopOpeDraw;
+    returns DrawableMesure from TestTopOpeDraw;
 
     SetScale(me : mutable; ScaleX : Real from Standard;
     	    	    	   ScaleY : Real from Standard);

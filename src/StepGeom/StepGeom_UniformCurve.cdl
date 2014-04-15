@@ -27,7 +27,7 @@ uses
 	Logical from StepData
 is
 
-	Create returns mutable UniformCurve;
+	Create returns UniformCurve;
 	---Purpose: Returns a UniformCurve
 
 

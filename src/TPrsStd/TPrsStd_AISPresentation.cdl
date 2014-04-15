@@ -70,7 +70,7 @@ is
     ---Category: Presentation attribute implementation
     --          ======================================
     
-    Create returns mutable AISPresentation from TPrsStd;
+    Create returns AISPresentation from TPrsStd;
     
     SetDisplayed(me : mutable; B : Boolean from Standard);
     
@@ -179,14 +179,14 @@ is
     ---C++: return const &
 
     NewEmpty(me)
-    returns mutable Attribute from TDF;    
+    returns Attribute from TDF;    
  
     Restore(me: mutable; with : Attribute from TDF);
 
-    Paste (me; into : mutable Attribute from TDF;
-	       RT   : mutable RelocationTable from TDF);     
+    Paste (me; into : Attribute from TDF;
+	       RT   : RelocationTable from TDF);     
 
-    BackupCopy(me) returns mutable Attribute from TDF is redefined;
+    BackupCopy(me) returns Attribute from TDF is redefined;
     
     ---Category: Callbacks for viewer updating
     --           =============================

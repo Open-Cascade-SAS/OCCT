@@ -24,15 +24,15 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable Conic;
+	Create returns Conic;
 	---Purpose: Returns a Conic
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection) is redefined;
+	      aName : HAsciiString from TCollection) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
+	      aName : HAsciiString from TCollection;
 	      aPosition : Axis2Placement from StepGeom) is virtual;
 
 	-- Specific Methods for Field Data Access --

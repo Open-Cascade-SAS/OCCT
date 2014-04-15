@@ -26,13 +26,13 @@ uses
 is
 
     Create (theMessageDriver:MessageDriver from CDM)
-    returns mutable ByteArrayDriver from XmlMDataStd;
+    returns ByteArrayDriver from XmlMDataStd;
 
     NewEmpty (me)
-    returns mutable Attribute from TDF;
+    returns Attribute from TDF;
 
     Paste(me; Source     : Persistent from XmlObjMgt;
-              Target     : mutable Attribute from TDF;
+              Target     : Attribute from TDF;
               RelocTable : out RRelocationTable from XmlObjMgt)
     returns Boolean from Standard;
 

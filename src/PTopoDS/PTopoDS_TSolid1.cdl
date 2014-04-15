@@ -22,7 +22,7 @@ uses
     ShapeEnum from TopAbs
 
 is
-    Create returns mutable TSolid1 from PTopoDS;
+    Create returns TSolid1 from PTopoDS;
 	---Purpose: The new  TSolid1  has no  boundary  and covers  the
 	--          whole 3D space.
     	---Level: Internal 

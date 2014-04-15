@@ -24,24 +24,24 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable CurveReplica;
+	Create returns CurveReplica;
 	---Purpose: Returns a CurveReplica
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection) is redefined;
+	      aName : HAsciiString from TCollection) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aParentCurve : mutable Curve from StepGeom;
-	      aTransformation : mutable CartesianTransformationOperator from StepGeom) is virtual;
+	      aName : HAsciiString from TCollection;
+	      aParentCurve : Curve from StepGeom;
+	      aTransformation : CartesianTransformationOperator from StepGeom) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetParentCurve(me : mutable; aParentCurve : mutable Curve);
-	ParentCurve (me) returns mutable Curve;
-	SetTransformation(me : mutable; aTransformation : mutable CartesianTransformationOperator);
-	Transformation (me) returns mutable CartesianTransformationOperator;
+	SetParentCurve(me : mutable; aParentCurve : Curve);
+	ParentCurve (me) returns Curve;
+	SetTransformation(me : mutable; aTransformation : CartesianTransformationOperator);
+	Transformation (me) returns CartesianTransformationOperator;
 
 fields
 

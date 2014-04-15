@@ -25,7 +25,7 @@ uses
      MakeSphere  from BRepPrimAPI, 
      Shape       from TopoDS
 is
-    Create returns mutable SphereDriver from DNaming;
+    Create returns SphereDriver from DNaming;
     ---Purpose: Constructor
 
     ---Purpose: validation

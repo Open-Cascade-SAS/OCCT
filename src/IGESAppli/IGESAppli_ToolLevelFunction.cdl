@@ -31,7 +31,7 @@ is
     ---Purpose : Returns a ToolLevelFunction, ready to work
 
 
-    ReadOwnParams (me; ent : mutable LevelFunction;
+    ReadOwnParams (me; ent : LevelFunction;
     	    	   IR : IGESReaderData; PR : in out ParamReader)
     	raises DomainError  is static;
     ---Purpose : Reads own parameters from file. <PR> gives access to them,
@@ -47,7 +47,7 @@ is
     ---Purpose : Lists the Entities shared by a LevelFunction <ent>, from
     --           its specific (own) parameters
 
-    OwnCorrect (me; ent : mutable LevelFunction) returns Boolean  is static;
+    OwnCorrect (me; ent : LevelFunction) returns Boolean  is static;
     ---Purpose : Sets automatic unambiguous Correction on a LevelFunction
     --           (NbPropertyValues forced to 2)
 
@@ -59,7 +59,7 @@ is
     ---Purpose : Performs Specific Semantic Check
 
 
-    OwnCopy    (me; entfrom : LevelFunction; entto : mutable LevelFunction;
+    OwnCopy    (me; entfrom : LevelFunction; entto : LevelFunction;
     	        TC : in out CopyTool)  is static;
     ---Purpose : Copies Specific Parameters
 

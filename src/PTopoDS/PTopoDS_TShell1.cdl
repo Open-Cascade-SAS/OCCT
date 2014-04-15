@@ -22,7 +22,7 @@ uses
     ShapeEnum from TopAbs
 
 is
-    Create returns mutable TShell1 from PTopoDS;
+    Create returns TShell1 from PTopoDS;
     	---Level: Internal 
     	
     ShapeType(me) returns ShapeEnum from TopAbs;

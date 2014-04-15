@@ -31,7 +31,7 @@ is
     ---Purpose : Returns a ToolPipingFlow, ready to work
 
 
-    ReadOwnParams (me; ent : mutable PipingFlow;
+    ReadOwnParams (me; ent : PipingFlow;
     	    	   IR : IGESReaderData; PR : in out ParamReader)
     	raises DomainError  is static;
     ---Purpose : Reads own parameters from file. <PR> gives access to them,
@@ -47,7 +47,7 @@ is
     ---Purpose : Lists the Entities shared by a PipingFlow <ent>, from
     --           its specific (own) parameters
 
-    OwnCorrect (me; ent : mutable PipingFlow) returns Boolean  is static;
+    OwnCorrect (me; ent : PipingFlow) returns Boolean  is static;
     ---Purpose : Sets automatic unambiguous Correction on a PipingFlow
     --           (NbContextFlags forced to 1)
 
@@ -59,7 +59,7 @@ is
     ---Purpose : Performs Specific Semantic Check
 
 
-    OwnCopy    (me; entfrom : PipingFlow; entto : mutable PipingFlow;
+    OwnCopy    (me; entfrom : PipingFlow; entto : PipingFlow;
     	        TC : in out CopyTool)  is static;
     ---Purpose : Copies Specific Parameters
 

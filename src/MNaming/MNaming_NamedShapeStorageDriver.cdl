@@ -28,7 +28,7 @@ is
 
 
     Create(theMessageDriver : MessageDriver from CDM) -- Version 0
-    returns mutable NamedShapeStorageDriver from MNaming;
+    returns NamedShapeStorageDriver from MNaming;
 
     VersionNumber(me) returns Integer from Standard;
 	---Purpose: Returns the version number from which the driver
@@ -38,12 +38,12 @@ is
 	---Purpose: Returns the type: NamedShape from PNaming.
 
     NewEmpty (me)
-    returns mutable Attribute from PDF;
+    returns Attribute from PDF;
 
 
     Paste(me;
     	  Source     :         Attribute        from TDF;
-    	  Target     : mutable Attribute        from PDF;
+    	  Target     : Attribute        from PDF;
     	  RelocTable :         SRelocationTable from MDF);
 	  
 	  

@@ -29,7 +29,7 @@ is
 	Create returns RWPcurve;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable Pcurve from StepGeom);
+	              ach : in out Check; ent : Pcurve from StepGeom);
 
 	WriteStep (me; SW : in out StepWriter; ent : Pcurve from StepGeom);
 

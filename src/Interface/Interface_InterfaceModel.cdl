@@ -122,7 +122,7 @@ is
     --         the  Model if it contains it.   Else returns  0.  For a
     --         ReportEntity, looks at Concerned Entity.
 
-    Value (me; num : Integer) returns mutable Transient    raises OutOfRange;
+    Value (me; num : Integer) returns Transient    raises OutOfRange;
     ---Purpose : Returns an Entity identified by its number in the Model
     --           Each sub-class of InterfaceModel can define its own method
     --           Entity to return its specific class of Entity (e.g. for VDA,
@@ -171,7 +171,7 @@ is
     --           The ReportEntity is defined before call to method AddEntity.
 
     ReportEntity (me; num : Integer; semantic : Boolean = Standard_False)
-    	returns mutable ReportEntity
+    	returns ReportEntity
     ---Purpose : Returns a ReportEntity identified by its number in the Model,
     --           or a Null Handle If <num> does not identify a ReportEntity.
     --           
@@ -199,7 +199,7 @@ is
     	raises OutOfRange;
     --           Error if <num> is out of range
 
-    SetReportEntity (me : mutable; num : Integer; rep : mutable ReportEntity)
+    SetReportEntity (me : mutable; num : Integer; rep : ReportEntity)
     	returns Boolean
     ---Purpose : Sets or Replaces a ReportEntity for the Entity <num>. Returns
     --           True if Report is replaced, False if it has been replaced
@@ -208,7 +208,7 @@ is
     --           Error if <num> is out of range, or if concerned Entity is
     --           not equal to Value(num)
 
-    AddReportEntity (me : mutable; rep : mutable ReportEntity;
+    AddReportEntity (me : mutable; rep : ReportEntity;
     	    	     semantic : Boolean = Standard_False) returns Boolean;
     ---Purpose : Adds a ReportEntity as such. Returns False if the concerned
     --           entity is not recorded in the Model
@@ -248,7 +248,7 @@ is
     --           can be less efficient. <nbent> is the expected count of
     --           Entities to store
 
-    AddEntity (me : mutable; anentity : mutable Transient)
+    AddEntity (me : mutable; anentity : Transient)
     ---Purpose : Internal method for adding an Entity. Used by file reading
     --           (defined by each Interface) and Transfer tools. It adds the
     --           entity required to be added, not its refs : see AddWithRefs.
@@ -259,7 +259,7 @@ is
     	raises InterfaceMismatch  is virtual;
     --           Error if anentity already recorded
 
-    AddWithRefs (me : mutable; anent : mutable Transient; proto : Protocol;
+    AddWithRefs (me : mutable; anent : Transient; proto : Protocol;
     	    	 level : Integer = 0; listall : Boolean = Standard_False);
     ---Purpose : Adds to the Model, an Entity with all its References, as they
     --           are defined by General Services FillShared and ListImplied.
@@ -273,18 +273,18 @@ is
     --           If <listall> is True, all items are analysed (this allows to
     --           ensure the consistency of an adding made by steps)
 
-    AddWithRefs (me : mutable; anent : mutable Transient;
+    AddWithRefs (me : mutable; anent : Transient;
     	    	 level : Integer = 0; listall : Boolean = Standard_False)
     ---Purpose : Same as above, but works with the Protocol of the Model
     	raises InterfaceMismatch;
     --           Error if no Protocol is defined in the Model
 
-    AddWithRefs (me : mutable; anent : mutable Transient; lib : GeneralLib;
+    AddWithRefs (me : mutable; anent : Transient; lib : GeneralLib;
     	    	 level : Integer = 0; listall : Boolean = Standard_False);
     ---Purpose : Same as above, but works with an already created GeneralLib
 
 
-    ReplaceEntity (me : mutable; nument : Integer; anent : mutable Transient);
+    ReplaceEntity (me : mutable; nument : Integer; anent : Transient);
     ---Purpose : Replace Entity with Number=nument on other entity - "anent"
 
     ReverseOrders (me : mutable; after : Integer = 0);
@@ -314,7 +314,7 @@ is
     ---Purpose : Gets header (data specific of a defined Interface) from
     --           another InterfaceModel; called from TransferCopy
 
-    NewEmptyModel (me) returns mutable InterfaceModel  is deferred;
+    NewEmptyModel (me) returns InterfaceModel  is deferred;
     ---Purpose : Returns a New Empty Model, same type as <me> (whatever its
     --           Type); called to Copy parts a Model into other ones, then
     --           followed by a call to GetFromAnother (Header) then filling
@@ -420,10 +420,10 @@ is
     HasTemplate (myclass; name : CString) returns Boolean;
     ---Purpose : Returns true if a template is attached to a given name
 
-    Template (myclass; name : CString) returns mutable InterfaceModel;
+    Template (myclass; name : CString) returns InterfaceModel;
     ---Purpose : Returns the template model attached to a name, or a Null Handle
 
-    SetTemplate (myclass; name : CString; model : mutable InterfaceModel)
+    SetTemplate (myclass; name : CString; model : InterfaceModel)
     	returns Boolean;
     ---Purpose : Records a new template model with a name. If the name was
     --           already recorded, the corresponding template is replaced by

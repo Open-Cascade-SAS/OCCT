@@ -36,10 +36,10 @@ raises TransferFailure
 
 is
 
-    Create returns mutable BinderOfShape;
+    Create returns BinderOfShape;
     ---Purpose : normal standard constructor, creates an empty BinderOfShape
 
-    Create (res : any Shape from TopoDS) returns mutable BinderOfShape;
+    Create (res : any Shape from TopoDS) returns BinderOfShape;
     ---Purpose : constructor which in the same time defines the result
 
 --    IsMultiple (me) returns Boolean;

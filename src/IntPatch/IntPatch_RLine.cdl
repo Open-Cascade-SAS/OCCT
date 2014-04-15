@@ -43,7 +43,7 @@ is
 	---Purpose: Creates a restriction as an intersection line
 	--          when the transitions are In or Out.
     
-    	returns mutable RLine from IntPatch;
+    	returns RLine from IntPatch;
 
 
     Create(Tang: Boolean from Standard;
@@ -52,7 +52,7 @@ is
 	---Purpose: Creates a restriction as an intersection line
 	--          when the transitions are Touch.
     
-    	returns mutable RLine from IntPatch;
+    	returns RLine from IntPatch;
 
 
     Create(Tang: Boolean from Standard)
@@ -60,7 +60,7 @@ is
 	---Purpose: Creates a restriction as an intersection line
 	--          when the transitions are Undecided.
     
-    	returns mutable RLine from IntPatch;
+    	returns RLine from IntPatch;
 
 
     AddVertex(me: mutable; Pnt: Point from IntPatch)

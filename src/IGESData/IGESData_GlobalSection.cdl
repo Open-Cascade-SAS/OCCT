@@ -145,7 +145,7 @@ is
 
     NewDateString (myclass; year,month,day,hour,minut,second : Integer;
     	    	   mode : Integer = -1)
-    	returns mutable HAsciiString from TCollection;
+    	returns HAsciiString from TCollection;
     ---Purpose : Returns a string built from year,
     --           month, day, hour, minute and second values. The form of the
     --           resulting string is defined as follows:
@@ -161,7 +161,7 @@ is
 
     NewDateString (myclass; date : HAsciiString from TCollection;
     	    	   mode : Integer = 1)
-    	returns mutable HAsciiString from TCollection;
+    	returns HAsciiString from TCollection;
     ---Purpose : Converts the string given in the
     --           form YYMMDD.HHNNSS or YYYYMMDD.HHNNSS to either
     --           YYMMDD.HHNNSS, YYYYMMDD.HHNNSS or YYYY-MM-DD:HH-NN-SS.

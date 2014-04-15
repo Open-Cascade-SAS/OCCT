@@ -21,9 +21,9 @@ uses
     PackedMapOfInteger from TColStd 
  
 is 
-    Create( NbBuckets: Integer from Standard = 1 ) returns mutable HPackedMapOfInteger from TColStd;    
+    Create( NbBuckets: Integer from Standard = 1 ) returns HPackedMapOfInteger from TColStd;    
      
-    Create( theOther:  PackedMapOfInteger from TColStd ) returns mutable HPackedMapOfInteger from TColStd; 
+    Create( theOther:  PackedMapOfInteger from TColStd ) returns HPackedMapOfInteger from TColStd; 
      
     Map( me ) returns PackedMapOfInteger from TColStd 
 	---C++: return const &

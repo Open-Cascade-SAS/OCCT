@@ -24,13 +24,13 @@ uses AsciiString from TCollection,
  
 is
 
-    Create (UV : Boolean) returns mutable RemoveCurves;
+    Create (UV : Boolean) returns RemoveCurves;
     ---Purpose : Creates a RemoveCurves from Faces (141/142/143/144)
     --           UV True  : Removes UV Curves (pcurves)
     --           UV False : Removes 3D Curves
 
     Performing (me; ctx : in out ContextModif;
-                target  : mutable IGESModel;
+                target  : IGESModel;
                 TC      : in out CopyTool);
     ---Purpose : Specific action : Removes the Curves
  

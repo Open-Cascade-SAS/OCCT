@@ -24,7 +24,7 @@ uses
 	NamedUnit from StepBasic
 is
 
-	Create returns mutable LengthMeasureWithUnit;
+	Create returns LengthMeasureWithUnit;
 	---Purpose: Returns a LengthMeasureWithUnit
 
 

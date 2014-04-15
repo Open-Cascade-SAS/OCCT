@@ -32,7 +32,7 @@ is
                XOrigin: Length from Quantity = 0;
 	       anYOrigin: Length from Quantity = 0;
                aRotationAngle: PlaneAngle from Quantity = 0)
-    returns mutable CircularGrid from Aspect;
+    returns CircularGrid from Aspect;
     ---Purpose: creates a new grid. By default this grid is not
     --          active.
     

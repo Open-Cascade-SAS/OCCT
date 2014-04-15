@@ -29,13 +29,13 @@ is
 
     Create
     
-    	returns mutable HVertex from Adaptor3d;
+    	returns HVertex from Adaptor3d;
 
 
     Create(P: Pnt2d from gp; Ori: Orientation from TopAbs;
            Resolution: Real from Standard)
 
-    	returns mutable HVertex from Adaptor3d;
+    	returns HVertex from Adaptor3d;
 
 
     Value(me: mutable)
@@ -64,7 +64,7 @@ is
     is virtual;
 
 
-    IsSame(me: mutable; Other: mutable like me)
+    IsSame(me: mutable; Other: like me)
     
     	returns Boolean from Standard
     is virtual;

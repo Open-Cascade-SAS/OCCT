@@ -34,13 +34,13 @@ uses
 
 is
  
-    Create  returns  mutable  AsciiText from Vrml;
+    Create  returns  AsciiText from Vrml;
 
     Create ( aString        : HArray1OfAsciiString   from  TColStd;
     	     aSpacing       : Real    from  Standard;
     	     aJustification : AsciiTextJustification;
 	     aWidth         : Real    from  Standard ) 
-        returns mutable AsciiText from Vrml;
+        returns AsciiText from Vrml;
  
     SetString ( me :  mutable; aString  : HArray1OfAsciiString   from  TColStd );
     String ( me )  returns HArray1OfAsciiString  from  TColStd;

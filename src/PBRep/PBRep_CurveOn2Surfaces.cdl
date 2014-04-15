@@ -31,7 +31,7 @@ is
     Create(S1 , S2  : Surface  from PGeom;
 	   L1 , L2  : Location from PTopLoc;
 	   C        : Shape    from GeomAbs)
-    returns mutable CurveOn2Surfaces from PBRep;
+    returns CurveOn2Surfaces from PBRep;
 
     Surface(me) returns any Surface from PGeom
     is static;

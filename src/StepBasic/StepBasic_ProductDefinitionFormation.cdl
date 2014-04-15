@@ -24,22 +24,22 @@ uses
 	Product from StepBasic
 is
 
-	Create returns mutable ProductDefinitionFormation;
+	Create returns ProductDefinitionFormation;
 	---Purpose: Returns a ProductDefinitionFormation
 
 	Init (me : mutable;
-	      aId : mutable HAsciiString from TCollection;
-	      aDescription : mutable HAsciiString from TCollection;
-	      aOfProduct : mutable Product from StepBasic) is virtual;
+	      aId : HAsciiString from TCollection;
+	      aDescription : HAsciiString from TCollection;
+	      aOfProduct : Product from StepBasic) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetId(me : mutable; aId : mutable HAsciiString);
-	Id (me) returns mutable HAsciiString;
-	SetDescription(me : mutable; aDescription : mutable HAsciiString);
-	Description (me) returns mutable HAsciiString;
-	SetOfProduct(me : mutable; aOfProduct : mutable Product);
-	OfProduct (me) returns mutable Product;
+	SetId(me : mutable; aId : HAsciiString);
+	Id (me) returns HAsciiString;
+	SetDescription(me : mutable; aDescription : HAsciiString);
+	Description (me) returns HAsciiString;
+	SetOfProduct(me : mutable; aOfProduct : Product);
+	OfProduct (me) returns Product;
 
 fields
 

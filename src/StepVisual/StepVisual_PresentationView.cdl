@@ -25,7 +25,7 @@ uses
 	RepresentationContext from StepRepr
 is
 
-	Create returns mutable PresentationView;
+	Create returns PresentationView;
 	---Purpose: Returns a PresentationView
 
 

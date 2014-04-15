@@ -394,10 +394,10 @@ is
     Restore (me: mutable; with : Attribute from TDF);
 
     NewEmpty (me)
-    returns mutable Attribute from TDF;
+    returns Attribute from TDF;
 
-    Paste (me; into : mutable Attribute from TDF;
-	       RT   : mutable RelocationTable from TDF);    
+    Paste (me; into : Attribute from TDF;
+	       RT   : RelocationTable from TDF);    
 
     IsExternRef (myclass; L: Label from TDF) returns Boolean;
     	---Purpose: Returns True if the label is a label of external references, i.e.

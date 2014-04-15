@@ -41,7 +41,7 @@ uses
 is
     Create
     	---Purpose: Constructs an empty framework to display shading.
-    returns mutable ShadingAspect from Prs3d;
+    returns ShadingAspect from Prs3d;
     
     SetColor (me: mutable; aColor: Color from Quantity;
 				   aModel: TypeOfFacingModel from Aspect = Aspect_TOFM_BOTH_SIDE)

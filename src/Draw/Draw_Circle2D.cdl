@@ -26,7 +26,7 @@ uses
 is
 
     Create(C : Circ2d from gp; A1,A2 : Real; col : Color)
-    returns mutable Circle2D;
+    returns Circle2D;
     
     DrawOn(me; dis : in out Display);
 

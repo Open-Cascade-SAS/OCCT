@@ -23,7 +23,7 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable PreDefinedCurveFont;
+	Create returns PreDefinedCurveFont;
 	---Purpose: Returns a PreDefinedCurveFont
 
 

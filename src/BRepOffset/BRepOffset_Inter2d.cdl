@@ -30,7 +30,7 @@ uses
     Real                from Standard
 
 is
-    Compute(myclass ; AsDes    : mutable AsDes      from BRepAlgo;
+    Compute(myclass ; AsDes    : AsDes      from BRepAlgo;
     	    	      F        :         Face       from TopoDS;
        	    	      NewEdges :         IndexedMapOfShape from TopTools;
 		      Tol      :         Real       from Standard);
@@ -47,7 +47,7 @@ is
     	    	   OFI   : in out   Offset              from BRepOffset;
 		   MES   : in out   DataMapOfShapeShape from TopTools;  
 		   Build :          DataMapOfShapeShape from TopTools;  
-		   AsDes : mutable  AsDes               from BRepAlgo; 
+		   AsDes :  AsDes               from BRepAlgo; 
     	    	   Offset:          Real                from Standard;
     	    	   Tol   :          Real                from Standard);
     --  Modified by skv - Fri Dec 26 16:53:16 2003 OCC4455 End

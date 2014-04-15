@@ -25,7 +25,7 @@ uses CString, AsciiString from TCollection,
 
 is
 
-    Create (name : CString) returns mutable ESDescr;
+    Create (name : CString) returns ESDescr;
     ---Purpose : Creates an ESDescr with a type name
 
     SetNbFields (me : mutable; nb : Integer);
@@ -84,7 +84,7 @@ is
     IsComplex  (me) returns Boolean;
     ---Purpose : Returns False
 
-    NewEntity  (me) returns mutable Described;
+    NewEntity  (me) returns Described;
     ---Purpose : Creates a described entity (i.e. a simple one)
 
 fields

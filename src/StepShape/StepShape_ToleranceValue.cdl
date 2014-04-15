@@ -24,7 +24,7 @@ uses
 
 is
 
-    Create returns mutable ToleranceValue;
+    Create returns ToleranceValue;
 
     Init (me : mutable; lower_bound, upper_bound : MeasureWithUnit from StepBasic);
 

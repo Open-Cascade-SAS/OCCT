@@ -34,7 +34,7 @@ raises NoSuchUnit from Units,NoSuchType from Units
 
 is
 
-    Create returns mutable UnitsSystem from Units;
+    Create returns UnitsSystem from Units;
     
     ---Level: Public 
     
@@ -42,7 +42,7 @@ is
     --          S.I. units system.
 
     Create(aName: CString from Standard;Verbose: Boolean from Standard = Standard_False)
-    returns mutable UnitsSystem from Units;
+    returns UnitsSystem from Units;
 
     ---Level: Public 
 

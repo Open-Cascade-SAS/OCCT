@@ -29,14 +29,14 @@ raises
 
 is
 
-    Create returns mutable HCurve from Geom2dAdaptor;
+    Create returns HCurve from Geom2dAdaptor;
     
-    Create( AS : Curve from Geom2dAdaptor) returns mutable HCurve from Geom2dAdaptor;
+    Create( AS : Curve from Geom2dAdaptor) returns HCurve from Geom2dAdaptor;
 
-    Create( S : Curve from Geom2d) returns mutable HCurve from Geom2dAdaptor;
+    Create( S : Curve from Geom2d) returns HCurve from Geom2dAdaptor;
     
     Create( S : Curve from Geom2d; UFirst,ULast : Real) 
-    returns  mutable HCurve from Geom2dAdaptor
+    returns HCurve from Geom2dAdaptor
     raises ConstructionError from Standard;
     	---Purpose: ConstructionError is raised if UFirst>ULast or VFirst>VLast
 

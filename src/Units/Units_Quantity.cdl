@@ -48,7 +48,7 @@ is
     --          is the physical dimensions, and <aunitssequence> which
     --          describes all the units known for this quantity.
     
-    returns mutable Quantity from Units;
+    returns Quantity from Units;
     
     Name(me) returns AsciiString from TCollection
     

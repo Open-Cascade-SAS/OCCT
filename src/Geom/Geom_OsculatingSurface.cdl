@@ -68,7 +68,7 @@ is
     BuildOsculatingSurface (me ; Param : Real;  
                                  UKnot,VKnot : Integer;
                                  BS : BSplineSurface from Geom ;
-                                 L : out mutable  BSplineSurface from Geom) 
+                                 L : out  BSplineSurface from Geom) 
     	---Purpose: returns False if the osculating surface can't be built
     	--          
       returns Boolean  from  Standard

@@ -46,13 +46,13 @@ is
 -- STEP model and sets ColorMode, LayerMode, NameMode and
 -- PropsMode to Standard_True.
         
-    Create (WS : mutable WorkSession from XSControl;
+    Create (WS : WorkSession from XSControl;
     	    	 scratch : Boolean = Standard_True) returns Writer;
     	---Purpose: Creates a reader tool and attaches it to an already existing Session
     	--          Clears the session if it was not yet set for STEP
 	--          Clears the internal data structures
 
-    Init (me: in out; WS : mutable WorkSession from XSControl;
+    Init (me: in out; WS : WorkSession from XSControl;
     	              scratch : Boolean = Standard_True);
     	---Purpose: Clears the internal data structures and attaches to a new session
     	--          Clears the session if it was not yet set for STEP

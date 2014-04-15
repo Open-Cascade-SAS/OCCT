@@ -137,7 +137,7 @@ is
     is deferred;
 	 
     Sect(me; IC, IS : Integer from Standard)
-    returns mutable SecHArray1 from ChFiDS
+    returns SecHArray1 from ChFiDS
     is deferred;
 
 end LocalOperation;

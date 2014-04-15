@@ -29,7 +29,7 @@ is
 	Create returns RWEdge;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable Edge from StepShape);
+	              ach : in out Check; ent : Edge from StepShape);
 
 	WriteStep (me; SW : in out StepWriter; ent : Edge from StepShape);
 

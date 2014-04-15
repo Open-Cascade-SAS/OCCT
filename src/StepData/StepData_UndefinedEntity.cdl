@@ -28,27 +28,27 @@ uses AsciiString from TCollection, HAsciiString from TCollection,
 
 is
 
-    Create returns mutable UndefinedEntity;
+    Create returns UndefinedEntity;
     ---Purpose : creates an Unknown entity
 
-    Create (issub : Boolean) returns mutable UndefinedEntity;
+    Create (issub : Boolean) returns UndefinedEntity;
     ---Purpose : Creates a SubList of an Unknown entity : it is an Unknown
     --           Entity with no Type, but flagged as "SUB" if issub is True
 
-    UndefinedContent (me) returns mutable UndefinedContent;
+    UndefinedContent (me) returns UndefinedContent;
     ---Purpose : Returns the UndefinedContent which brings the Parameters
 
 
     IsSub (me) returns Boolean;
     ---Purpose : Returns True if an Unndefined Entity is SubPart of another one
 
-    Super (me) returns mutable UndefinedEntity;
+    Super (me) returns UndefinedEntity;
     ---Purpose : Returns the "super-entity" of a sub-part
 
     IsComplex (me) returns Boolean;
     ---Purpose : Returns True if <me> defines a Multiple Type Entity (see ANDOR)
 
-    Next (me) returns mutable UndefinedEntity;
+    Next (me) returns UndefinedEntity;
     ---Purpose : For a Multiple Type Entity, returns the Next "Componant"
     --           For more than two Types, iterative definition (Next->Next...)
     --           Returns a Null Handle for the end of the List

@@ -34,7 +34,7 @@ uses
 is
 
     Create (aType: ShapeEnum from TopAbs)
-    returns mutable ShapeTypeFilter from StdSelect;
+    returns ShapeTypeFilter from StdSelect;
     	---Purpose: Constructs a filter object defined by the shape type aType.
     
     IsOk (me;anobj : EntityOwner from SelectMgr) 

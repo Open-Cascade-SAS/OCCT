@@ -26,31 +26,31 @@ uses
 	CartesianPoint from StepGeom
 is
 
-	Create returns mutable Axis2Placement3d;
+	Create returns Axis2Placement3d;
 	---Purpose: Returns a Axis2Placement3d
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aLocation : mutable CartesianPoint from StepGeom) is redefined;
+	      aName : HAsciiString from TCollection;
+	      aLocation : CartesianPoint from StepGeom) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aLocation : mutable CartesianPoint from StepGeom;
+	      aName : HAsciiString from TCollection;
+	      aLocation : CartesianPoint from StepGeom;
 	      hasAaxis : Boolean from Standard;
-	      aAxis : mutable Direction from StepGeom;
+	      aAxis : Direction from StepGeom;
 	      hasArefDirection : Boolean from Standard;
-	      aRefDirection : mutable Direction from StepGeom) is virtual;
+	      aRefDirection : Direction from StepGeom) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetAxis(me : mutable; aAxis : mutable Direction);
+	SetAxis(me : mutable; aAxis : Direction);
 	UnSetAxis (me:mutable);
-	Axis (me) returns mutable Direction;
+	Axis (me) returns Direction;
 	HasAxis (me) returns Boolean;
-	SetRefDirection(me : mutable; aRefDirection : mutable Direction);
+	SetRefDirection(me : mutable; aRefDirection : Direction);
 	UnSetRefDirection (me:mutable);
-	RefDirection (me) returns mutable Direction;
+	RefDirection (me) returns Direction;
 	HasRefDirection (me) returns Boolean;
 
 fields

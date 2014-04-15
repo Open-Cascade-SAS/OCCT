@@ -24,13 +24,13 @@ uses
 
 is
     Create (theMsgDriver:MessageDriver from CDM)
-    returns mutable MaterialDriver from BinMXCAFDoc;
+    returns MaterialDriver from BinMXCAFDoc;
 
-    NewEmpty (me)  returns mutable Attribute from TDF
+    NewEmpty (me)  returns Attribute from TDF
     is redefined;
 
     Paste(me; theSource     : Persistent from BinObjMgt;
-              theTarget     : mutable Attribute from TDF;
+              theTarget     : Attribute from TDF;
               theRelocTable : out RRelocationTable from BinObjMgt)
     returns Boolean from Standard is redefined;
 

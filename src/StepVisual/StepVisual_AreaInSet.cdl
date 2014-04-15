@@ -24,19 +24,19 @@ uses
 	PresentationSet from StepVisual
 is
 
-	Create returns mutable AreaInSet;
+	Create returns AreaInSet;
 	---Purpose: Returns a AreaInSet
 
 	Init (me : mutable;
-	      aArea : mutable PresentationArea from StepVisual;
-	      aInSet : mutable PresentationSet from StepVisual) is virtual;
+	      aArea : PresentationArea from StepVisual;
+	      aInSet : PresentationSet from StepVisual) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetArea(me : mutable; aArea : mutable PresentationArea);
-	Area (me) returns mutable PresentationArea;
-	SetInSet(me : mutable; aInSet : mutable PresentationSet);
-	InSet (me) returns mutable PresentationSet;
+	SetArea(me : mutable; aArea : PresentationArea);
+	Area (me) returns PresentationArea;
+	SetInSet(me : mutable; aInSet : PresentationSet);
+	InSet (me) returns PresentationSet;
 
 fields
 

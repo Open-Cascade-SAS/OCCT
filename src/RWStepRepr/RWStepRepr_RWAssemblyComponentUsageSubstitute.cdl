@@ -29,7 +29,7 @@ is
 	Create returns RWAssemblyComponentUsageSubstitute;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable AssemblyComponentUsageSubstitute from StepRepr);
+	              ach : in out Check; ent : AssemblyComponentUsageSubstitute from StepRepr);
 
 	WriteStep (me; SW : in out StepWriter; ent : AssemblyComponentUsageSubstitute from StepRepr);
 

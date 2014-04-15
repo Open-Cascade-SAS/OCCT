@@ -22,7 +22,7 @@ uses MinimalVariation from FairCurve
 
 is
    Create(TheMVC : Address)
-   returns mutable MinimalVariation from DrawFairCurve;
+   returns MinimalVariation from DrawFairCurve;
    
    SetCurvature(me: mutable; Side : Integer; Rho : Real);
    SetPhysicalRatio(me: mutable; Ratio : Real);

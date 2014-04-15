@@ -24,7 +24,7 @@ uses
 	NamedUnit from StepBasic
 is
 
-	Create returns mutable RatioMeasureWithUnit;
+	Create returns RatioMeasureWithUnit;
 	---Purpose: Returns a RatioMeasureWithUnit
 
 

@@ -21,6 +21,6 @@ uses
 
 is
 
-    Create returns mutable PromissoryUsageOccurrence;
+    Create returns PromissoryUsageOccurrence;
 
 end PromissoryUsageOccurrence;

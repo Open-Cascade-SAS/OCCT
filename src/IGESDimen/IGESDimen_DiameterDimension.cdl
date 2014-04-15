@@ -31,7 +31,7 @@ uses
 
 is
 
-        Create returns mutable DiameterDimension;
+        Create returns DiameterDimension;
 
         -- Specific Methods pertaining to the class
 

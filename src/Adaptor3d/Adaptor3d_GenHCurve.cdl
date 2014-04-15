@@ -36,13 +36,13 @@ is
 
     Create
 	---Purpose: Creates an empty GenHCurve.
-    	returns mutable GenHCurve from Adaptor3d; 
+    	returns GenHCurve from Adaptor3d; 
     
 
     Create(C: TheCurve)
     
 	---Purpose: Creates a GenHCurve from a Curve
-    	returns mutable GenHCurve from Adaptor3d; 
+    	returns GenHCurve from Adaptor3d; 
 
 
     Set(me: mutable; C: TheCurve)

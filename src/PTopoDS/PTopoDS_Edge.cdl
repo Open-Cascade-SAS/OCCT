@@ -17,7 +17,7 @@
 class Edge from PTopoDS inherits HShape from PTopoDS
 
 is
-    Create returns mutable Edge from PTopoDS;
+    Create returns Edge from PTopoDS;
 	---Level: Internal 
 
 end Edge;

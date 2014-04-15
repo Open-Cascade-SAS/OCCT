@@ -26,7 +26,7 @@ uses Circ2d from gp,
 
 is
 
-Create(Circ : Circ2d) returns mutable BCirc;
+Create(Circ : Circ2d) returns BCirc;
     	---Purpose: Constructs a bisecting curve whose geometry is the 2D circle Circ.
     
 Circle(me) returns Circ2d from gp

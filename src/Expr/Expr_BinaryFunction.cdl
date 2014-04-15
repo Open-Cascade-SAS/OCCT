@@ -37,7 +37,7 @@ is
     Create(func : GeneralFunction; exp1,exp2 : GeneralExpression)
     ---Purpose: Creates <me> as <func> (<exp1>,<exp2>).
     --          Raises exception if <func> is not binary.
-    returns mutable BinaryFunction
+    returns BinaryFunction
     raises InvalidFunction;
 
     Function(me)
@@ -52,7 +52,7 @@ is
 
     Copy(me)
     ---Purpose: Returns a copy of <me> having the same unknowns and functions.
-    returns mutable like me;
+    returns like me;
     
     IsIdentical(me; Other : GeneralExpression)
     ---Purpose: Tests if <me> and <Other> define the same expression.

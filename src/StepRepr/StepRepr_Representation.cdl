@@ -26,24 +26,24 @@ uses
 	RepresentationItem from StepRepr
 is
 
-	Create returns mutable Representation;
+	Create returns Representation;
 	---Purpose: Returns a Representation
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aItems : mutable HArray1OfRepresentationItem from StepRepr;
-	      aContextOfItems : mutable RepresentationContext from StepRepr) is virtual;
+	      aName : HAsciiString from TCollection;
+	      aItems : HArray1OfRepresentationItem from StepRepr;
+	      aContextOfItems : RepresentationContext from StepRepr) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetName(me : mutable; aName : mutable HAsciiString);
-	Name (me) returns mutable HAsciiString;
-	SetItems(me : mutable; aItems : mutable HArray1OfRepresentationItem);
-	Items (me) returns mutable HArray1OfRepresentationItem;
-	ItemsValue (me; num : Integer) returns mutable RepresentationItem;
+	SetName(me : mutable; aName : HAsciiString);
+	Name (me) returns HAsciiString;
+	SetItems(me : mutable; aItems : HArray1OfRepresentationItem);
+	Items (me) returns HArray1OfRepresentationItem;
+	ItemsValue (me; num : Integer) returns RepresentationItem;
 	NbItems (me) returns Integer;
-	SetContextOfItems(me : mutable; aContextOfItems : mutable RepresentationContext);
-	ContextOfItems (me) returns mutable RepresentationContext;
+	SetContextOfItems(me : mutable; aContextOfItems : RepresentationContext);
+	ContextOfItems (me) returns RepresentationContext;
 
 fields
 

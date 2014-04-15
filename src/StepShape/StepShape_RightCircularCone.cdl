@@ -25,24 +25,24 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable RightCircularCone;
+	Create returns RightCircularCone;
 	---Purpose: Returns a RightCircularCone
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection) is redefined;
+	      aName : HAsciiString from TCollection) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aPosition : mutable Axis1Placement from StepGeom;
+	      aName : HAsciiString from TCollection;
+	      aPosition : Axis1Placement from StepGeom;
 	      aHeight : Real from Standard;
 	      aRadius : Real from Standard;
 	      aSemiAngle : Real from Standard) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetPosition(me : mutable; aPosition : mutable Axis1Placement);
-	Position (me) returns mutable Axis1Placement;
+	SetPosition(me : mutable; aPosition : Axis1Placement);
+	Position (me) returns Axis1Placement;
 	SetHeight(me : mutable; aHeight : Real);
 	Height (me) returns Real;
 	SetRadius(me : mutable; aRadius : Real);

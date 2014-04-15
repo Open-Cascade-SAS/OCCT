@@ -29,7 +29,7 @@ uses  Integer  -- no one specific type
 
 is
 
-        Create returns mutable SolidInstance;
+        Create returns SolidInstance;
 
         -- Specific Methods pertaining to the class
 

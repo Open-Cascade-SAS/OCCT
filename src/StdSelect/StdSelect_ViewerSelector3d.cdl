@@ -38,13 +38,13 @@ uses
 
 is
 
-    Create  returns mutable ViewerSelector3d from StdSelect;
+    Create  returns ViewerSelector3d from StdSelect;
     ---Purpose: Constructs an empty 3D selector object.
 
-    Create (theProj : Projector from Select3D) returns mutable ViewerSelector3d from StdSelect;
+    Create (theProj : Projector from Select3D) returns ViewerSelector3d from StdSelect;
     ---Purpose: Constructs a 3D selector object defined by the projector <theProj>.
 
-    Convert (me : mutable; theSel : mutable Selection from SelectMgr)
+    Convert (me : mutable; theSel : Selection from SelectMgr)
     is redefined static;
         ---Level: Public 
         ---Purpose: Processes the projection of the sensitive  primitives

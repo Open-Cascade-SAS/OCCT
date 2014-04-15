@@ -29,7 +29,7 @@ is
 	Create returns RWUniformCurve;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable UniformCurve from StepGeom);
+	              ach : in out Check; ent : UniformCurve from StepGeom);
 
 	WriteStep (me; SW : in out StepWriter; ent : UniformCurve from StepGeom);
 

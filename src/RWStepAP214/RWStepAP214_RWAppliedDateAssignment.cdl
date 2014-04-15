@@ -30,7 +30,7 @@ is
     	Create returns RWAppliedDateAssignment;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable AppliedDateAssignment from StepAP214);
+	              ach : in out Check; ent : AppliedDateAssignment from StepAP214);
 
 	WriteStep (me; SW : in out StepWriter; ent : AppliedDateAssignment from StepAP214);
 

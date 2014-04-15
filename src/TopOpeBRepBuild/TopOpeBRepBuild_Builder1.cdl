@@ -57,7 +57,7 @@ is
     ---Purpose: Removes all splits and merges already performed.
     -- Does NOT clear the handled DS  (except  ShapeWithStatesMaps).
  
-    Perform (me:in out;HDS:mutable HDataStructure  from  TopOpeBRepDS )  is  redefined; 
+    Perform (me:in out;HDS: HDataStructure  from  TopOpeBRepDS )  is  redefined; 
      
     Perform(me:  out;  HDS  :  HDataStructure  from  TopOpeBRepDS; 
     	    S1  :  Shape  from  TopoDS; 

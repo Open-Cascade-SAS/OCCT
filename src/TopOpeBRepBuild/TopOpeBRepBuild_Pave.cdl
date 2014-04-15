@@ -25,7 +25,7 @@ uses
     Kind  from  TopOpeBRepDS
 is
 
-    Create(V : Shape from TopoDS; P : Real; bound : Boolean) returns mutable Pave;
+    Create(V : Shape from TopoDS; P : Real; bound : Boolean) returns Pave;
     ---Purpose: V = vertex, P = parameter of vertex <V>
     --          bound = True if <V> is an old vertex
     --          bound = False if <V> is a new vertex

@@ -29,7 +29,7 @@ is
 	Create returns RWCartesianTransformationOperator3d;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable CartesianTransformationOperator3d from StepGeom);
+	              ach : in out Check; ent : CartesianTransformationOperator3d from StepGeom);
 
 	WriteStep (me; SW : in out StepWriter; ent : CartesianTransformationOperator3d from StepGeom);
 

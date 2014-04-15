@@ -28,7 +28,7 @@ is
 	Create returns RWCurveStyleFontPattern;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable CurveStyleFontPattern from StepVisual);
+	              ach : in out Check; ent : CurveStyleFontPattern from StepVisual);
 
 	WriteStep (me; SW : in out StepWriter; ent : CurveStyleFontPattern from StepVisual);
 

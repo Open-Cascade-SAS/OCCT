@@ -207,7 +207,7 @@ is
     	-- Returns true if the display mode aMode is accepted
     	-- for the Interactive Objects in the relation.
     	-- ComputeProjPresentation(me;
-    	-- 	    	    	    aPres    : mutable Presentation from Prs3d;
+    	-- 	    	    	    aPres    : Presentation from Prs3d;
 	--		    Curve1   : Curve                from Geom;
 	--		    Curve2   : Curve                from Geom;
 	--		    FirstP1  : Pnt                  from gp;
@@ -221,7 +221,7 @@ is
     --is protected;
     
     ComputeProjEdgePresentation(me;
-    	    	  		aPres    : mutable Presentation from Prs3d; 
+    	    	  		aPres    : Presentation from Prs3d; 
 			   	anEdge   : Edge                 from TopoDS;
 			    	ProjCurve: Curve                from Geom;
 			    	FirstP   : Pnt                  from gp;
@@ -238,7 +238,7 @@ is
     	-- type - aProjTOL and aCallTOL -   and width of line, aWidth.
         
     ComputeProjVertexPresentation(me;
-    	    	  		  aPres    : mutable Presentation from Prs3d; 
+    	    	  		  aPres    : Presentation from Prs3d; 
 			   	  aVertex  : Vertex               from TopoDS;
 			    	  ProjPoint: Pnt                  from gp;
        			    	  aColor   : NameOfColor          from Quantity = Quantity_NOC_PURPLE;

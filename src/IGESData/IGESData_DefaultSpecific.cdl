@@ -23,7 +23,7 @@ uses IGESEntity, IGESDumper,
 
 is
 
-    Create returns mutable DefaultSpecific;
+    Create returns DefaultSpecific;
     ---Purpose : Creates a DefaultSpecific and puts it into SpecificLib
 
     OwnDump (me; CN : Integer; ent : IGESEntity;

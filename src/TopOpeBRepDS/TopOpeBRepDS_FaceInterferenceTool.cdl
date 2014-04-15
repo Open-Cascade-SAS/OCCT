@@ -65,7 +65,7 @@ is
     GetEdgePntPar(me ; P : out Pnt from gp; par : out Real);
     IsEdgePntParDef(me) returns Boolean;
 
-    Transition(me; I : mutable Interference from TopOpeBRepDS)
+    Transition(me; I : Interference from TopOpeBRepDS)
     is static;
     
 fields

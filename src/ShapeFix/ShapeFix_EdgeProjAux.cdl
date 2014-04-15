@@ -28,10 +28,10 @@ uses
     
 is
 
-    Create returns mutable EdgeProjAux from ShapeFix;
+    Create returns EdgeProjAux from ShapeFix;
 
     Create (F: Face from TopoDS; E: Edge from TopoDS)
-    returns mutable EdgeProjAux from ShapeFix;
+    returns EdgeProjAux from ShapeFix;
     
     Init (me: mutable; F: Face from TopoDS; E: Edge from TopoDS);
 

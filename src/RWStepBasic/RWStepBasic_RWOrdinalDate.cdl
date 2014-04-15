@@ -28,7 +28,7 @@ is
 	Create returns RWOrdinalDate;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable OrdinalDate from StepBasic);
+	              ach : in out Check; ent : OrdinalDate from StepBasic);
 
 	WriteStep (me; SW : in out StepWriter; ent : OrdinalDate from StepBasic);
 

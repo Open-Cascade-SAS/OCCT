@@ -29,7 +29,7 @@ is
 	Create returns RWSecurityClassification;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable SecurityClassification from StepBasic);
+	              ach : in out Check; ent : SecurityClassification from StepBasic);
 
 	WriteStep (me; SW : in out StepWriter; ent : SecurityClassification from StepBasic);
 

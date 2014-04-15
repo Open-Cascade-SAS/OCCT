@@ -20,14 +20,14 @@ uses
     ShapeEnum from TopAbs
 
 is
-    Create returns mutable TFace from TopoDS;
+    Create returns TFace from TopoDS;
     ---C++: inline
     ---Purpose: Creates an empty TFace.
     	
     ShapeType(me) returns ShapeEnum from TopAbs;
     ---Purpose: returns FACE.
 
-    EmptyCopy(me) returns mutable TShape from TopoDS is virtual;
+    EmptyCopy(me) returns TShape from TopoDS is virtual;
     ---Purpose: Returns an empty TFace.
 
 end TFace;

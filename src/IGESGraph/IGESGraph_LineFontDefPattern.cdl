@@ -34,7 +34,7 @@ raises OutOfRange
 
 is
 
-        Create returns mutable LineFontDefPattern;
+        Create returns LineFontDefPattern;
 
         -- Specific Methods pertaining to class
 

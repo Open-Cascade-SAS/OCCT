@@ -34,7 +34,7 @@ is
     ---Purpose : Recognizes a ShapeMapper
 
     Transfer  (me : mutable; start : Finder from Transfer;
-    	       FP : mutable FinderProcess)  returns Binder  is redefined;
+    	       FP : FinderProcess)  returns Binder  is redefined;
     ---Purpose : Transfers Shape to IGES Entities
     --         
     --           ModeTrans may be : 0 -> groups of Faces

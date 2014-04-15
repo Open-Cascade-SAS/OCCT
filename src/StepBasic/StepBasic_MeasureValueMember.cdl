@@ -27,7 +27,7 @@ uses CString
 
 is
 
-    Create returns mutable MeasureValueMember;
+    Create returns MeasureValueMember;
     -- starts as case null (no name)
 
     HasName (me) returns Boolean  is redefined;

@@ -24,21 +24,21 @@ uses
 	Boolean from Standard
 is
 
-	Create returns mutable ProductCategory;
+	Create returns ProductCategory;
 	---Purpose: Returns a ProductCategory
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
+	      aName : HAsciiString from TCollection;
 	      hasAdescription : Boolean from Standard;
-	      aDescription : mutable HAsciiString from TCollection) is virtual;
+	      aDescription : HAsciiString from TCollection) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetName(me : mutable; aName : mutable HAsciiString);
-	Name (me) returns mutable HAsciiString;
-	SetDescription(me : mutable; aDescription : mutable HAsciiString);
+	SetName(me : mutable; aName : HAsciiString);
+	Name (me) returns HAsciiString;
+	SetDescription(me : mutable; aDescription : HAsciiString);
 	UnSetDescription (me:mutable);
-	Description (me) returns mutable HAsciiString;
+	Description (me) returns HAsciiString;
 	HasDescription (me) returns Boolean;
 
 fields

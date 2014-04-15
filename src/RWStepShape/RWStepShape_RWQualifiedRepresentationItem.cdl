@@ -29,7 +29,7 @@ is
 	Create returns RWQualifiedRepresentationItem;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable QualifiedRepresentationItem from StepShape);
+	              ach : in out Check; ent : QualifiedRepresentationItem from StepShape);
 
 	WriteStep (me; SW : in out StepWriter; ent : QualifiedRepresentationItem from StepShape);
 

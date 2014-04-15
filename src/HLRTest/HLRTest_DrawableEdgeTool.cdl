@@ -33,7 +33,7 @@ is
            Rg1Line : Boolean from Standard;
            RgNLine : Boolean from Standard;
            ViewId  : Integer from Standard)
-    returns mutable DrawableEdgeTool from HLRTest;
+    returns DrawableEdgeTool from HLRTest;
     
     DrawOn(me; D : in out Display from Draw);
     

@@ -31,7 +31,7 @@ is
     ---Purpose : Returns a ToolReferenceDesignator, ready to work
 
 
-    ReadOwnParams (me; ent : mutable ReferenceDesignator;
+    ReadOwnParams (me; ent : ReferenceDesignator;
     	    	   IR : IGESReaderData; PR : in out ParamReader)
     	raises DomainError  is static;
     ---Purpose : Reads own parameters from file. <PR> gives access to them,
@@ -47,7 +47,7 @@ is
     ---Purpose : Lists the Entities shared by a ReferenceDesignator <ent>, from
     --           its specific (own) parameters
 
-    OwnCorrect (me; ent : mutable ReferenceDesignator) returns Boolean  is static;
+    OwnCorrect (me; ent : ReferenceDesignator) returns Boolean  is static;
     ---Purpose : Sets automatic unambiguous Correction on a ReferenceDesignator
     --           (NbPropertyValues forced to 1, Level cleared if Subordinate != 0)
 
@@ -59,7 +59,7 @@ is
     ---Purpose : Performs Specific Semantic Check
 
 
-    OwnCopy    (me; entfrom : ReferenceDesignator; entto : mutable ReferenceDesignator;
+    OwnCopy    (me; entfrom : ReferenceDesignator; entto : ReferenceDesignator;
     	        TC : in out CopyTool)  is static;
     ---Purpose : Copies Specific Parameters
 

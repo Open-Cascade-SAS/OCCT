@@ -31,7 +31,7 @@ is
     ---Purpose : Returns a ToolIntercharacterSpacing, ready to work
 
 
-    ReadOwnParams (me; ent : mutable IntercharacterSpacing;
+    ReadOwnParams (me; ent : IntercharacterSpacing;
     	    	   IR : IGESReaderData; PR : in out ParamReader)
     	raises DomainError  is static;
     ---Purpose : Reads own parameters from file. <PR> gives access to them,
@@ -47,7 +47,7 @@ is
     ---Purpose : Lists the Entities shared by a IntercharacterSpacing <ent>, from
     --           its specific (own) parameters
 
-    OwnCorrect (me; ent : mutable IntercharacterSpacing) returns Boolean  is static;
+    OwnCorrect (me; ent : IntercharacterSpacing) returns Boolean  is static;
     ---Purpose : Sets automatic unambiguous Correction on a IntercharacterSpacing
     --           (NbPropertyValues forced to 1)
 
@@ -59,7 +59,7 @@ is
     ---Purpose : Performs Specific Semantic Check
 
 
-    OwnCopy    (me; entfrom : IntercharacterSpacing; entto : mutable IntercharacterSpacing;
+    OwnCopy    (me; entfrom : IntercharacterSpacing; entto : IntercharacterSpacing;
     	        TC : in out CopyTool)  is static;
     ---Purpose : Copies Specific Parameters
 

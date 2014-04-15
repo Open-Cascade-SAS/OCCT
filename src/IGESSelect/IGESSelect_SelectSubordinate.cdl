@@ -32,7 +32,7 @@ uses AsciiString from TCollection, Transient, InterfaceModel
  
 is
  
-    Create (status : Integer) returns mutable SelectSubordinate;
+    Create (status : Integer) returns SelectSubordinate;
     ---Purpose : Creates a SelectSubordinate with a status to be sorted
 
     Status (me) returns Integer;

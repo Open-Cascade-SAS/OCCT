@@ -29,11 +29,11 @@ uses
 is
 
     Create (C : Curve from Geom2d; CColor : Color from Draw)
-    returns mutable DrawableC2D from TestTopOpeDraw;
+    returns DrawableC2D from TestTopOpeDraw;
 
     Create (C : Curve from Geom2d; CColor : Color from Draw;
     	    Text : CString; TextColor : Color from Draw)
-    returns mutable DrawableC2D from TestTopOpeDraw;
+    returns DrawableC2D from TestTopOpeDraw;
 
     Create (C : Curve from Geom2d; CColor : Color from Draw;
     	    Text : CString; TextColor : Color from Draw;
@@ -42,7 +42,7 @@ is
             DispCurvRadius : Boolean = Standard_False;
 	    RadiusMax : Real = 1.0e3;
 	    RatioOfRadius : Real = 0.1)
-    returns mutable DrawableC2D from TestTopOpeDraw;
+    returns DrawableC2D from TestTopOpeDraw;
 
     Pnt2d(me) returns Pnt2d from gp is virtual;
     

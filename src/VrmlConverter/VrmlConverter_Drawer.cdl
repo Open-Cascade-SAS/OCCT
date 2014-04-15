@@ -31,7 +31,7 @@ uses
     Length from Quantity
 
 is
-    Create returns mutable Drawer from VrmlConverter;
+    Create returns Drawer from VrmlConverter;
 
 ---Category: deviation definition.
 -- 
@@ -125,7 +125,7 @@ is
 -- 
 -- Attributes for the U Isoparametric lines of patches.
 --    
-    UIsoAspect (me: mutable) returns mutable IsoAspect from VrmlConverter
+    UIsoAspect (me: mutable) returns IsoAspect from VrmlConverter
     ---Purpose: Defines the attributes which are used when drawing an 
     --          U isoparametric curve of a face. Defines the number
     --          of U isoparametric curves to be drawn for a single face.
@@ -142,7 +142,7 @@ is
 -- Attributes for the V Isoparametric line of patches.
 
 
-    VIsoAspect (me: mutable) returns mutable IsoAspect from VrmlConverter
+    VIsoAspect (me: mutable) returns IsoAspect from VrmlConverter
     ---Purpose: Defines the attributes which are used when drawing an 
     --          V isoparametric curve of a face. Defines the number
     --          of V isoparametric curves to be drawn for a single face.
@@ -158,7 +158,7 @@ is
 
 -- Attributes for the free boundaries
 
-    FreeBoundaryAspect (me: mutable) returns mutable LineAspect from VrmlConverter
+    FreeBoundaryAspect (me: mutable) returns LineAspect from VrmlConverter
     ---Purpose: 
     --          The default values are the same default values from Vrml package.
     --          These attributes are used by the following algorithms:
@@ -182,7 +182,7 @@ is
 
 -- Attributes for the wires
 
-    WireAspect (me: mutable) returns mutable LineAspect from VrmlConverter
+    WireAspect (me: mutable) returns LineAspect from VrmlConverter
     ---Purpose: 
     --          The default values are the same default values from Vrml package.
     --          These attributes are used by the following algorithms:
@@ -206,7 +206,7 @@ is
 
 -- Attributes for the unfree boundaries
 
-    UnFreeBoundaryAspect (me: mutable) returns mutable LineAspect from VrmlConverter
+    UnFreeBoundaryAspect (me: mutable) returns LineAspect from VrmlConverter
     ---Purpose: 
     --          The default values are the same default values from Vrml package.
     --          These attributes are used by the following algorithms:
@@ -231,7 +231,7 @@ is
 --  Attributes for the lines.
 -- 
 
-    LineAspect(me: mutable) returns mutable LineAspect from VrmlConverter
+    LineAspect(me: mutable) returns LineAspect from VrmlConverter
     ---Purpose: 
     --          The default values are the same default values from Vrml package.
     is static;
@@ -242,7 +242,7 @@ is
 --
 --  Attributes for the points
 -- 
-    PointAspect(me: mutable) returns mutable PointAspect from VrmlConverter
+    PointAspect(me: mutable) returns PointAspect from VrmlConverter
     --          The default values are the same default values from Vrml package.
     --          These attributes are used by the following algorithms:
     --          VrmlConverter_WFShape 
@@ -255,7 +255,7 @@ is
 
 --  Attributes for the faces:
 --  
-    ShadingAspect (me: mutable) returns mutable ShadingAspect from VrmlConverter
+    ShadingAspect (me: mutable) returns ShadingAspect from VrmlConverter
     ---Purpose: 
     --          The default values are the same default values from Vrml package.
     is static;
@@ -282,7 +282,7 @@ is
     ---Purpose: sets DrawHiddenLine  =  Standard_False  -  the hidden lines are not drawn.
     is static;
 
-    HiddenLineAspect(me: mutable) returns mutable LineAspect from VrmlConverter
+    HiddenLineAspect(me: mutable) returns LineAspect from VrmlConverter
     ---Purpose: returns LineAspect  for  the hidden lines.
     --          The default values are the same default values from Vrml package.
     is static;
@@ -291,7 +291,7 @@ is
     ---Purpose: sets LineAspect  for  the hidden lines.
     is static;
     
-    SeenLineAspect(me: mutable) returns mutable LineAspect from VrmlConverter
+    SeenLineAspect(me: mutable) returns LineAspect from VrmlConverter
     ---Purpose: returns LineAspect  for  the seen lines.
     --          The default values are the same default values from Vrml package.
     is static;

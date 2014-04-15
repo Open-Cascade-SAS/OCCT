@@ -40,7 +40,7 @@ raises InterfaceError
 
 is
 
-    Create returns mutable IGESModel;
+    Create returns IGESModel;
 
     ClearHeader (me : mutable);
     	---Purpose : Erases all data specific to IGES file Header (Start + Global)
@@ -65,7 +65,7 @@ is
     ClearStartSection (me : mutable)  is static;
     	---Purpose : Clears the IGES file Start Section
 
-    SetStartSection (me : mutable; list : mutable HSequenceOfHAsciiString;
+    SetStartSection (me : mutable; list : HSequenceOfHAsciiString;
     	    	     copy : Boolean = Standard_True)  is static;
     	---Purpose : Sets a new Start section from a list of strings.
     	-- If copy is false, the Start section will be shared. Any
@@ -110,7 +110,7 @@ is
     GetFromAnother (me : mutable; other : InterfaceModel);
     	---Purpose : gets Header (GlobalSection) from another Model
 
-    NewEmptyModel (me) returns mutable InterfaceModel;
+    NewEmptyModel (me) returns InterfaceModel;
     	---Purpose : Returns a New Empty Model, same type as <me> i.e. IGESModel
 
     VerifyCheck (me; ach : in out Check)  is redefined;

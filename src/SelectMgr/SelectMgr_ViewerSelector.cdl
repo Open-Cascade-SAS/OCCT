@@ -83,7 +83,7 @@ is
 
 
 
-    Convert (me:mutable;aSelection : mutable Selection from SelectMgr) is virtual;
+    Convert (me:mutable;aSelection : Selection from SelectMgr) is virtual;
     	---Level: Public 
     	---Purpose: to be redefined if conversion is necessary for SensitiveEntities...
 	    

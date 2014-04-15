@@ -76,12 +76,12 @@ is
     	--    List of Transients (HSequence or HArray1)    --
 
     TraValue  (me; list : Transient; num : Integer)
-    	returns mutable Transient;
+    	returns Transient;
     --  allowed : HSequenceOfTransient    -> Transient,
     --            HSequenceOfHAsciiString -> HAsciiString
     --  out of range gives Null Handle
-    NewSeqTra (me) returns mutable HSequenceOfTransient;    -- empty new
-    AppendTra (me; seqval : mutable HSequenceOfTransient;
+    NewSeqTra (me) returns HSequenceOfTransient;    -- empty new
+    AppendTra (me; seqval : HSequenceOfTransient;
     			traval : Transient);
 
     	--    Dates
@@ -94,14 +94,14 @@ is
 
     ToCString (me; strval : HAsciiString) returns CString;
     ToCString (me; strval :  AsciiString) returns CString;
-    ToHString (me; strcon : CString) returns mutable HAsciiString;
+    ToHString (me; strcon : CString) returns HAsciiString;
     ToAString (me; strcon : CString) returns AsciiString;
 
     	--    Extended    --
 
     ToEString (me; strval : HExtendedString) returns ExtString;
     ToEString (me; strval :  ExtendedString) returns ExtString;
-    ToHString (me; strcon : ExtString) returns mutable HExtendedString;
+    ToHString (me; strcon : ExtString) returns HExtendedString;
     ToXString (me; strcon : ExtString) returns ExtendedString;
 
     	--    Ascii <-> Extended    --
@@ -118,11 +118,11 @@ is
     --  conversions Ascii<->Extended are done if required
     --  out of range gives empty string
 
-    NewSeqCStr (me) returns mutable HSequenceOfHAsciiString;      -- empty
-    AppendCStr (me; seqval : mutable HSequenceOfHAsciiString;
+    NewSeqCStr (me) returns HSequenceOfHAsciiString;      -- empty
+    AppendCStr (me; seqval : HSequenceOfHAsciiString;
     	    	    	 strval : CString);
-    NewSeqEStr (me) returns mutable HSequenceOfHExtendedString;   -- empty
-    AppendEStr (me; seqval : mutable HSequenceOfHExtendedString;
+    NewSeqEStr (me) returns HSequenceOfHExtendedString;   -- empty
+    AppendEStr (me; seqval : HSequenceOfHExtendedString;
     	    	    	 strval : ExtString);
 
     	--    --    Shapes    --    --
@@ -177,14 +177,14 @@ is
     ShapeValue  (me; seqv : HSequenceOfShape from TopTools; num : Integer)
     	returns Shape from TopoDS;
     --  out of range gives Null Handle
-    NewSeqShape (me) returns mutable HSequenceOfShape;    -- empty new
-    AppendShape (me; seqv  : mutable HSequenceOfShape;
+    NewSeqShape (me) returns HSequenceOfShape;    -- empty new
+    AppendShape (me; seqv  : HSequenceOfShape;
     	    	    	  shape : Shape from TopoDS);
 
     	--    Shape <-> Transient    --
 
     ShapeBinder (me; shape : Shape from TopoDS; hs : Boolean = Standard_True)
-    	returns mutable Transient;
+    	returns Transient;
     ---Purpose : Creates a Transient Object from a Shape : it is either a Binder
     --           (used by functions which require a Transient but can process
     --           a Shape, such as viewing functions) or a HShape (according to hs)
@@ -200,11 +200,11 @@ is
     --  list : HSequence of Transient,(H)Ascii/ExtendedString,Shape,Integer
 
     SeqToArr  (me; seq : Transient; first : Integer = 1)
-    	returns mutable Transient   raises TypeMismatch;
+    	returns Transient   raises TypeMismatch;
     --   <first> gives the lower index of produced array
     --   empty sequence gives a null handle
     ArrToSeq  (me; arr : Transient)
-    	returns mutable Transient   raises TypeMismatch;
+    	returns Transient   raises TypeMismatch;
     -- allowed combinations :
     --    HSequenceOfTransient       <-> HArray1OfTransient
     --    HSequenceOfHAsciiString    <-> HArray1OfHAsciiString (from Interface)

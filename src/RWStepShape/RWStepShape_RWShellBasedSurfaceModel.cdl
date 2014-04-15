@@ -29,7 +29,7 @@ is
 	Create returns RWShellBasedSurfaceModel;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable ShellBasedSurfaceModel from StepShape);
+	              ach : in out Check; ent : ShellBasedSurfaceModel from StepShape);
 
 	WriteStep (me; SW : in out StepWriter; ent : ShellBasedSurfaceModel from StepShape);
 

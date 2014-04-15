@@ -30,7 +30,7 @@ uses
 
 is
 
-        Create returns mutable Block;
+        Create returns Block;
 
         -- Specific Methods pertaining to the class
 

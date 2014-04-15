@@ -29,7 +29,7 @@ is
 	Create returns RWAutoDesignDocumentReference;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable AutoDesignDocumentReference from StepAP214);
+	              ach : in out Check; ent : AutoDesignDocumentReference from StepAP214);
 
 	WriteStep (me; SW : in out StepWriter; ent : AutoDesignDocumentReference from StepAP214);
 

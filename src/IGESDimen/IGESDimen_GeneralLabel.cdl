@@ -30,7 +30,7 @@ raises OutOfRange
 
 is
 
-        Create returns mutable GeneralLabel;
+        Create returns GeneralLabel;
 
         -- Specific Methods pertaining to the class
 

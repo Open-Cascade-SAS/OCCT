@@ -27,7 +27,7 @@ is
 
     Create(F: Face from TopoDS)
     
-    	returns mutable Face from BRepCheck;
+    	returns Face from BRepCheck;
 
 
     InContext(me: mutable; ContextShape: Shape from TopoDS);

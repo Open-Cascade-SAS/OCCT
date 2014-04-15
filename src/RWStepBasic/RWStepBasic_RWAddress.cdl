@@ -28,7 +28,7 @@ is
 	Create returns RWAddress;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable Address from StepBasic);
+	              ach : in out Check; ent : Address from StepBasic);
 
 	WriteStep (me; SW : in out StepWriter; ent : Address from StepBasic);
 

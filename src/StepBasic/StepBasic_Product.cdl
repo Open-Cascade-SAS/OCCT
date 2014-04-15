@@ -25,26 +25,26 @@ uses
 	ProductContext from StepBasic
 is
 
-	Create returns mutable Product;
+	Create returns Product;
 	---Purpose: Returns a Product
 
 	Init (me : mutable;
-	      aId : mutable HAsciiString from TCollection;
-	      aName : mutable HAsciiString from TCollection;
-	      aDescription : mutable HAsciiString from TCollection;
-	      aFrameOfReference : mutable HArray1OfProductContext from StepBasic) is virtual;
+	      aId : HAsciiString from TCollection;
+	      aName : HAsciiString from TCollection;
+	      aDescription : HAsciiString from TCollection;
+	      aFrameOfReference : HArray1OfProductContext from StepBasic) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetId(me : mutable; aId : mutable HAsciiString);
-	Id (me) returns mutable HAsciiString;
-	SetName(me : mutable; aName : mutable HAsciiString);
-	Name (me) returns mutable HAsciiString;
-	SetDescription(me : mutable; aDescription : mutable HAsciiString);
-	Description (me) returns mutable HAsciiString;
-	SetFrameOfReference(me : mutable; aFrameOfReference : mutable HArray1OfProductContext);
-	FrameOfReference (me) returns mutable HArray1OfProductContext;
-	FrameOfReferenceValue (me; num : Integer) returns mutable ProductContext;
+	SetId(me : mutable; aId : HAsciiString);
+	Id (me) returns HAsciiString;
+	SetName(me : mutable; aName : HAsciiString);
+	Name (me) returns HAsciiString;
+	SetDescription(me : mutable; aDescription : HAsciiString);
+	Description (me) returns HAsciiString;
+	SetFrameOfReference(me : mutable; aFrameOfReference : HArray1OfProductContext);
+	FrameOfReference (me) returns HArray1OfProductContext;
+	FrameOfReferenceValue (me; num : Integer) returns ProductContext;
 	NbFrameOfReference (me) returns Integer;
 
 fields

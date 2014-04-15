@@ -43,7 +43,7 @@ is
 	 ---Purpose:  Constructs a display object for 3D chamfers.
     	 -- This object is defined by the shape aFShape, the
     	 -- dimension aVal and the text aText.
-    returns mutable Chamf3dDimension from AIS;
+    returns Chamf3dDimension from AIS;
 
     Create (aFShape     : Shape          from TopoDS;
 	    aVal        : Real           from Standard;
@@ -56,7 +56,7 @@ is
     	 -- dimension aVal, the text aText, the point of origin of
     	 -- the chamfer aPosition, the type of arrow aSymbolPrs
     	 -- with the size anArrowSize.
-    returns mutable Chamf3dDimension from AIS;
+    returns Chamf3dDimension from AIS;
 
     KindOfDimension(me) 
 	 ---Purpose: Indicates that we are concerned with a 3d length.
@@ -73,19 +73,19 @@ is
     
     Compute(me            : mutable;
   	    aPresentationManager: PresentationManager3d from PrsMgr;
-    	    aPresentation : mutable Presentation from Prs3d;
+    	    aPresentation : Presentation from Prs3d;
     	    aMode         : Integer from Standard= 0) 
     is redefined static private;
     
     Compute(me:mutable;
     	        aProjector: Projector from Prs3d;
-                aPresentation: mutable Presentation from Prs3d)
+                aPresentation: Presentation from Prs3d)
     is redefined static private;     
 
     Compute(me            : mutable;
     	    aProjector    : Projector from Prs3d;
     	    aTrsf         : Transformation from Geom;
-	    aPresentation : mutable Presentation from Prs3d)
+	    aPresentation : Presentation from Prs3d)
     is redefined;
 	 ---Purpose: computes the presentation according to a point of view
 	 --          given by <aProjector>. 
@@ -96,7 +96,7 @@ is
    	 --           to the object to display before computation  !!!
 
     ComputeSelection(me         : mutable;
-    	    	     aSelection : mutable Selection from SelectMgr;
+    	    	     aSelection : Selection from SelectMgr;
     	    	     aMode      : Integer from Standard)
     is redefined private;
     

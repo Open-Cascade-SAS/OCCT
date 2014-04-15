@@ -25,23 +25,23 @@ uses
 	Logical from StepData
 is
 
-	Create returns mutable ShapeAspect;
+	Create returns ShapeAspect;
 	---Purpose: Returns a ShapeAspect
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aDescription : mutable HAsciiString from TCollection;
-	      aOfShape : mutable ProductDefinitionShape from StepRepr;
+	      aName : HAsciiString from TCollection;
+	      aDescription : HAsciiString from TCollection;
+	      aOfShape : ProductDefinitionShape from StepRepr;
 	      aProductDefinitional : Logical from StepData) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetName(me : mutable; aName : mutable HAsciiString);
-	Name (me) returns mutable HAsciiString;
-	SetDescription(me : mutable; aDescription : mutable HAsciiString);
-	Description (me) returns mutable HAsciiString;
-	SetOfShape(me : mutable; aOfShape : mutable ProductDefinitionShape);
-	OfShape (me) returns mutable ProductDefinitionShape;
+	SetName(me : mutable; aName : HAsciiString);
+	Name (me) returns HAsciiString;
+	SetDescription(me : mutable; aDescription : HAsciiString);
+	Description (me) returns HAsciiString;
+	SetOfShape(me : mutable; aOfShape : ProductDefinitionShape);
+	OfShape (me) returns ProductDefinitionShape;
 	SetProductDefinitional(me : mutable; aProductDefinitional : Logical);
 	ProductDefinitional (me) returns Logical;
 

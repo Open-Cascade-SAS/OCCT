@@ -53,7 +53,7 @@ raises
 
 is
 
-	Initialize( VM : mutable Viewer )  ;
+	Initialize( VM : Viewer )  ;
 
         --------------------------------------------------------
         ---Category: Methods to modify the attributes of the Light
@@ -126,7 +126,7 @@ is
         --          on the sphere of center "Center" and radius "Radius".
         --          VX,VY,VZ is the project vector of view.
 
-        Light ( me ) returns mutable Light from Visual3d is static private ;
+        Light ( me ) returns Light from Visual3d is static private ;
 	---Level: Internal
         ---Purpose: Returns the Light of the associated Visual3d.
 

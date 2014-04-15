@@ -29,7 +29,7 @@ is
 	Create returns RWDocumentRelationship;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable DocumentRelationship from StepBasic);
+	              ach : in out Check; ent : DocumentRelationship from StepBasic);
 
 	WriteStep (me; SW : in out StepWriter; ent : DocumentRelationship from StepBasic);
 

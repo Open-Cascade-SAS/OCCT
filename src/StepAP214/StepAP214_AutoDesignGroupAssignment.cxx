@@ -17,13 +17,6 @@
 StepAP214_AutoDesignGroupAssignment::StepAP214_AutoDesignGroupAssignment ()  {}
 
 void StepAP214_AutoDesignGroupAssignment::Init(
-	const Handle(StepBasic_Group)& aAssignedGroup)
-{
-
-	StepBasic_GroupAssignment::Init(aAssignedGroup);
-}
-
-void StepAP214_AutoDesignGroupAssignment::Init(
 	const Handle(StepBasic_Group)& aAssignedGroup,
 	const Handle(StepAP214_HArray1OfAutoDesignGroupedItem)& aItems)
 {

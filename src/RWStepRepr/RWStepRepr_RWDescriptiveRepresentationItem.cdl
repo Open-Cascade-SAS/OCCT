@@ -28,7 +28,7 @@ is
 	Create returns RWDescriptiveRepresentationItem;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable DescriptiveRepresentationItem from StepRepr);
+	              ach : in out Check; ent : DescriptiveRepresentationItem from StepRepr);
 
 	WriteStep (me; SW : in out StepWriter; ent : DescriptiveRepresentationItem from StepRepr);
 

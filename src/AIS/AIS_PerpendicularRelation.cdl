@@ -39,7 +39,7 @@ is
     	-- aPlane is the plane of reference to show and test the
     	-- perpendicular relation between two shapes, at least
     	-- one of which has a revolved surface.
-    returns mutable PerpendicularRelation from AIS;
+    returns PerpendicularRelation from AIS;
 
     Create (aFShape     : Shape          from TopoDS;
     	    aSShape     : Shape          from TopoDS)
@@ -47,25 +47,25 @@ is
     	-- perpendicularity on shapes.
     	-- This object is defined by a first shape aFShape and a
     	-- second shape aSShape.
-    returns mutable PerpendicularRelation from AIS;
+    returns PerpendicularRelation from AIS;
 
 -- -- Methods from PresentableObject
 
     Compute(me            : mutable;
     	    aPresentationManager: PresentationManager3d from PrsMgr;
-    	    aPresentation : mutable Presentation from Prs3d;
+    	    aPresentation : Presentation from Prs3d;
     	    aMode         : Integer from Standard= 0) 
     is redefined static private;
     
     Compute(me:mutable;
     	        aProjector: Projector from Prs3d;
-                aPresentation: mutable Presentation from Prs3d)
+                aPresentation: Presentation from Prs3d)
     is redefined static private;     
 
     Compute(me            : mutable;
     	    aProjector    : Projector from Prs3d;
     	    aTrsf         : Transformation from Geom;
-	    aPresentation : mutable Presentation from Prs3d)
+	    aPresentation : Presentation from Prs3d)
     is redefined;
     	---Purpose: computes the presentation according to a point of view
     	--          given by <aProjector>. 
@@ -78,7 +78,7 @@ is
 -- Methods from SelectableObject
 
     ComputeSelection(me         : mutable;
-    	    	     aSelection : mutable Selection from SelectMgr;
+    	    	     aSelection : Selection from SelectMgr;
     	    	     aMode      : Integer from Standard)is private;
 
 
@@ -87,11 +87,11 @@ is
 --
 
     ComputeTwoFacesPerpendicular(me: mutable;
-    	    	    	         aPresentation : mutable Presentation from Prs3d)
+    	    	    	         aPresentation : Presentation from Prs3d)
     is private;
     
     ComputeTwoEdgesPerpendicular(me: mutable;
-    	    	    	         aPresentation : mutable Presentation from Prs3d)
+    	    	    	         aPresentation : Presentation from Prs3d)
     is private;
     
 

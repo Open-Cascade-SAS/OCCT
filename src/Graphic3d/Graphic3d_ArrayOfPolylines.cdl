@@ -23,7 +23,7 @@ is
                 maxEdges: Integer from Standard = 0;
                 hasVColors: Boolean from Standard = Standard_False;
                 hasBColors: Boolean from Standard = Standard_False)
-	returns mutable ArrayOfPolylines from Graphic3d;
+	returns ArrayOfPolylines from Graphic3d;
         ---Purpose: Creates an array of polylines,
         -- a polyline can be filled as:
         -- 1) creating a single polyline defined with his vertexs.

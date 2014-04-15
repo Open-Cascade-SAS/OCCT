@@ -44,7 +44,7 @@ is
     	   aTriangulation: Triangulation from Poly;
     	   aLoc          : Location from TopLoc;
     	   InteriorFlag  : Boolean from Standard = Standard_True)
-    returns mutable SensitiveTriangulation from Select3D;
+    returns SensitiveTriangulation from Select3D;
 
     	---Purpose: Constructs a sensitive triangulation object defined by
     	-- the owner OwnerId, the triangulation aTriangulation,
@@ -56,7 +56,7 @@ is
 	   thefreeedges  : HArray1OfInteger from TColStd;
     	   theCDG        : Pnt from gp;
     	   InteriorFlag  : Boolean from Standard)
-    returns mutable SensitiveTriangulation from Select3D;
+    returns SensitiveTriangulation from Select3D;
 	---Purpose: Constructs a sensitive triangulation object defined by
     	-- the owner OwnerId, the triangulation aTriangulation,
     	-- the location aLoc, the array of free edges

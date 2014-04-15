@@ -27,7 +27,7 @@ is
     Create(P : Real;
     	   C : Curve    from Geom;
 	   L : Location from TopLoc)
-    returns mutable PointOnCurve from BRep;
+    returns PointOnCurve from BRep;
     
     
     IsPointOnCurve(me)          returns Boolean

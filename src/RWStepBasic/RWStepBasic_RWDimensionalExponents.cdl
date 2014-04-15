@@ -28,7 +28,7 @@ is
 	Create returns RWDimensionalExponents;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable DimensionalExponents from StepBasic);
+	              ach : in out Check; ent : DimensionalExponents from StepBasic);
 
 	WriteStep (me; SW : in out StepWriter; ent : DimensionalExponents from StepBasic);
 

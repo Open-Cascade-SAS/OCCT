@@ -72,7 +72,7 @@ raises
 
 is
     MakeShape(me; S : out     Shape  from TopoDS;
-                  T : mutable TShape from TopoDS)
+                  T : TShape from TopoDS)
     ---Purpose: The basic method to make  a Shape, used by all the
     --          Make methods.
     is static protected;

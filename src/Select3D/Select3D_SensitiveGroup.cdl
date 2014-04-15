@@ -42,7 +42,7 @@ is
 
     Create (OwnerId      : EntityOwner from SelectBasics;
     	    MatchAll     : Boolean from Standard = Standard_True)
-    returns mutable SensitiveGroup from Select3D;
+    returns SensitiveGroup from Select3D;
     	---Purpose: Constructs an empty sensitive group object.
     	-- This is a set of sensitive 3D entities. The sensitive
     	-- entities will be defined using the function Add to fill
@@ -51,7 +51,7 @@ is
     Create(OwnerId       : EntityOwner from SelectBasics;
     	   TheList       : in out ListOfSensitive from Select3D;
     	   MatchAll      : Boolean from Standard = Standard_True)
-    returns mutable SensitiveGroup from Select3D;
+    returns SensitiveGroup from Select3D;
     	---Purpose: Constructs a sensitive group object defined by the list
     	-- TheList and the entity owner OwnerId. If MatchAll is false, nothing is done.
 

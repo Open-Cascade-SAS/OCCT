@@ -28,7 +28,7 @@ is
 	Create returns RWSiUnitAndLengthUnit;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable SiUnitAndLengthUnit from StepBasic);
+	              ach : in out Check; ent : SiUnitAndLengthUnit from StepBasic);
 
 	WriteStep (me; SW : in out StepWriter; ent : SiUnitAndLengthUnit from StepBasic);
 

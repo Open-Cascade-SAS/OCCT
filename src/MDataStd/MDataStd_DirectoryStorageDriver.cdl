@@ -27,7 +27,7 @@ uses SRelocationTable from MDF,
 is
 
     Create (theMessageDriver : MessageDriver from CDM) 
-    returns mutable DirectoryStorageDriver from MDataStd;
+    returns DirectoryStorageDriver from MDataStd;
 
 
     VersionNumber(me) returns Integer from Standard;
@@ -37,12 +37,12 @@ is
     SourceType(me) returns Type from Standard;
 	---Purpose: Returns the type: Integer from TDataStd.
 
-    NewEmpty (me) returns mutable Attribute from PDF;
+    NewEmpty (me) returns Attribute from PDF;
 
 
     Paste(me;
     	  Source     :         Attribute from TDF;
-    	  Target     : mutable Attribute from PDF;
+    	  Target     : Attribute from PDF;
     	  RelocTable : SRelocationTable from MDF);
 
 

@@ -46,7 +46,7 @@ is
 
     Create (name : CString;
     	    type : ParamType from Interface = Interface_ParamText;
-	    init : CString = "")  returns mutable TypedValue;
+	    init : CString = "")  returns TypedValue;
     ---Purpose : Creates a TypedValue, with a name
     --           
     --           type gives the type of the parameter, default is free text

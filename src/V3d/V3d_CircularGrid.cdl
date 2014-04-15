@@ -30,7 +30,7 @@ is
 	Create ( aViewer	: ViewerPointer from V3d;
 		 aColor		: Color from Quantity;
 		 aTenthColor	: Color from Quantity )
-	returns mutable CircularGrid from V3d;
+	returns CircularGrid from V3d;
 
 	SetColors ( me	: mutable;
 		    aColor	: Color from Quantity;

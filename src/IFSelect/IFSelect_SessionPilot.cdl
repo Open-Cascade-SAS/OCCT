@@ -58,25 +58,25 @@ uses CString, OStream, Transient, AsciiString from TCollection,
 
 is
 
-    Create (prompt : CString = "") returns mutable SessionPilot;
+    Create (prompt : CString = "") returns SessionPilot;
     ---Purpose : Creates an empty SessionPilot, with a prompt which will be
     --           displayed on querying commands. If not precised (""), this
     --           prompt is set to "Test-XSTEP>"
 
-    Session (me) returns mutable WorkSession;
+    Session (me) returns WorkSession;
     ---Purpose : Returns the WorkSession which is worked on
 
-    Library (me) returns mutable WorkLibrary;
+    Library (me) returns WorkLibrary;
     ---Purpose : Returns the WorKlibrary (Null if not set). WorkLibrary is used
     --           to Read and Write Files, according to the Norm
 
     RecordMode (me) returns Boolean;
     ---Purpose : Returns the Record Mode for Commands. Default is False.
 
-    SetSession (me : mutable; WS : mutable WorkSession);
+    SetSession (me : mutable; WS : WorkSession);
     ---Purpose : Sets a WorkSession to be worked on
 
-    SetLibrary (me : mutable; WL : mutable WorkLibrary);
+    SetLibrary (me : mutable; WL : WorkLibrary);
     ---Purpose : Sets a WorkLibrary
 
     SetRecordMode (me : mutable; mode : Boolean);
@@ -167,7 +167,7 @@ is
     ---Purpose : Sets the Command then tries to execute it. Return value :
     --           same as for Perform
 
-    ExecuteCounter (me : mutable; counter : mutable SignCounter;
+    ExecuteCounter (me : mutable; counter : SignCounter;
     	    	    numword : Integer; mode : PrintCount = IFSelect_CountByItem)
     	returns ReturnStatus;
     ---Purpose : Executes a Counter in a general way
@@ -183,7 +183,7 @@ is
     --           else, considers it as ENtityLabel (preferably case sensitive)
     --           in case of failure, returns 0
 
-    Do   (me : mutable; number : Integer; session : mutable SessionPilot)
+    Do   (me : mutable; number : Integer; session : SessionPilot)
     	returns ReturnStatus;
     ---Purpose : Processes specific commands, which are :
     --           x or exit for end of session

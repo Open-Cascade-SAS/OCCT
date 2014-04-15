@@ -25,7 +25,7 @@ uses OStream, Transient,
 
 is
 
-    Create returns mutable DefaultGeneral;
+    Create returns DefaultGeneral;
     ---Purpose : Creates a DefaultGeneral and puts it into GeneralLib,
     --           bound with a Protocol from IGESData
 
@@ -45,12 +45,12 @@ is
     --           Here, does nothing (no constraint to check)
 
 
-    NewVoid (me; CN : Integer; entto : out mutable Transient)
+    NewVoid (me; CN : Integer; entto : out Transient)
     	returns Boolean;
     ---Purpose : Specific creation of a new void entity (UndefinedEntity only)
 
     OwnCopyCase (me; CN : Integer;
-    	         entfrom : IGESEntity; entto : mutable IGESEntity;
+    	         entfrom : IGESEntity; entto : IGESEntity;
     	         TC : in out CopyTool);
     ---Purpose : Copies parameters which are specific of each Type of Entity
 

@@ -26,7 +26,7 @@ uses Lin2d  from gp,
 
 is
 
-Create(Line : Lin2d) returns mutable BLine;
+Create(Line : Lin2d) returns BLine;
     	---Purpose: Constructs a bisecting line whose geometry is the 2D line Line.
     
 Line(me) returns Lin2d from gp

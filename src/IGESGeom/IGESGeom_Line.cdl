@@ -34,7 +34,7 @@ uses
 
 is
 
-        Create returns mutable Line;
+        Create returns Line;
 
         -- Specific Methods pertaining to the class
 

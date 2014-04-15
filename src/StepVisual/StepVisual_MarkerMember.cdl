@@ -23,7 +23,7 @@ uses CString, MarkerType from StepVisual
 
 is
 
-    Create returns mutable MarkerMember;
+    Create returns MarkerMember;
 
     HasName (me) returns Boolean  is redefined;
     -- returns True

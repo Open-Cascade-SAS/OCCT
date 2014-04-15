@@ -27,7 +27,7 @@ uses
 
 is
 
-    Create returns mutable SelectGSCurves;
+    Create returns SelectGSCurves;
     
     Explore(me; level: Integer; ent: Transient; G: Graph;
     	    	explored: in out EntityIterator)

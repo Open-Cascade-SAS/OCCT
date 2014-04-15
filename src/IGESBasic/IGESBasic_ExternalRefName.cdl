@@ -27,7 +27,7 @@ uses
 
 is
 
-        Create returns mutable ExternalRefName;
+        Create returns ExternalRefName;
 
         -- Specific Methods pertaining to the class
 

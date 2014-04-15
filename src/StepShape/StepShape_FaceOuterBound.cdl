@@ -25,7 +25,7 @@ uses
 	Boolean from Standard
 is
 
-	Create returns mutable FaceOuterBound;
+	Create returns FaceOuterBound;
 	---Purpose: Returns a FaceOuterBound
 
 

@@ -24,7 +24,7 @@ uses
 is
 
     Create
-    returns mutable NamedShapeDriver from TPrsStd;
+    returns NamedShapeDriver from TPrsStd;
 ---Purpose: Constructs an empty named shape driver.
     Update (me : mutable ;
            aLabel      : Label from TDF;

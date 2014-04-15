@@ -31,7 +31,7 @@ is
     ---Purpose : Returns a ToolConicArc, ready to work
 
 
-    ReadOwnParams (me; ent : mutable ConicArc;
+    ReadOwnParams (me; ent : ConicArc;
     	    	   IR : IGESReaderData; PR : in out ParamReader)
     	raises DomainError  is static;
     ---Purpose : Reads own parameters from file. <PR> gives access to them,
@@ -47,7 +47,7 @@ is
     ---Purpose : Lists the Entities shared by a ConicArc <ent>, from
     --           its specific (own) parameters
 
-    OwnCorrect (me; ent : mutable ConicArc) returns Boolean  is static;
+    OwnCorrect (me; ent : ConicArc) returns Boolean  is static;
     ---Purpose : Sets automatic unambiguous Correction on a ConicArc
     --           (FormNumber recomputed according case Ellips-Parab-Hyperb)
 
@@ -59,7 +59,7 @@ is
     ---Purpose : Performs Specific Semantic Check
 
 
-    OwnCopy    (me; entfrom : ConicArc; entto : mutable ConicArc;
+    OwnCopy    (me; entfrom : ConicArc; entto : ConicArc;
     	        TC : in out CopyTool)  is static;
     ---Purpose : Copies Specific Parameters
 

@@ -27,7 +27,7 @@ uses
 
 is
 
-    Create returns mutable EdgeDivide from ShapeUpgrade;
+    Create returns EdgeDivide from ShapeUpgrade;
     	---Purpose: Empty constructor
     
     Clear (me: mutable);

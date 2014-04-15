@@ -74,7 +74,7 @@ is
                 inshape   : Boolean from Standard=Standard_False;
                 relative  : Boolean from Standard=Standard_False;
                 shapetrigu: Boolean from Standard=Standard_False)
-          returns mutable FastDiscret from BRepMesh;
+          returns FastDiscret from BRepMesh;
 
 
         Create (defle     : Real    from Standard;
@@ -97,7 +97,7 @@ is
            --          
            --          if   <inshape>   is   True, the      calculated
            --          triangulation will be stored in the shape.
-            returns mutable FastDiscret from BRepMesh;
+            returns FastDiscret from BRepMesh;
 
 
         Perform (me: mutable; shape: Shape from TopoDS) is static;

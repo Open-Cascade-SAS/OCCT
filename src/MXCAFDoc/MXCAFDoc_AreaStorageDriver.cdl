@@ -25,9 +25,9 @@ uses
 is
 
 --    Create 
---    returns mutable AreaStorageDriver from MXCAFDoc;
+--    returns AreaStorageDriver from MXCAFDoc;
     Create (theMsgDriver : MessageDriver from CDM)
-    returns mutable AreaStorageDriver from MXCAFDoc;
+    returns AreaStorageDriver from MXCAFDoc;
 
     VersionNumber(me) returns Integer from Standard;
 	---Purpose: Returns the version number from which the driver
@@ -36,11 +36,11 @@ is
     SourceType(me) returns Type from Standard;
 	---Purpose: Returns the type: XCAFDoc_Area.
 
-    NewEmpty (me) returns mutable Attribute from PDF;
+    NewEmpty (me) returns Attribute from PDF;
 
     Paste(me;
     	  Source     :         Attribute from TDF;
-    	  Target     : mutable Attribute from PDF;
+    	  Target     : Attribute from PDF;
     	  RelocTable : SRelocationTable from MDF);
 
 end AreaStorageDriver;

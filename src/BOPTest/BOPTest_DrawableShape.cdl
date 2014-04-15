@@ -40,13 +40,13 @@ is
     	    Text      : CString from Standard; 
     	    TextColor : Color from Draw
     	    )
-    	returns mutable DrawableShape from BOPTest;
+    	returns DrawableShape from BOPTest;
 
     Create (S         : Shape from TopoDS;
     	    Text      : CString from Standard; 
     	    TextColor : Color from Draw
     	    )
-    	returns mutable DrawableShape from BOPTest; 
+    	returns DrawableShape from BOPTest; 
 	
     Pnt(me) returns Pnt from gp  is private;
   

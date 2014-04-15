@@ -39,13 +39,13 @@ is
     Create
     
 	---Purpose: Creates an empty GenHSurface.
-    	returns mutable GenHSurface from Adaptor3d; 
+    	returns GenHSurface from Adaptor3d; 
     
 
     Create(S: TheSurface)
     
 	---Purpose: Creates a GenHSurface from a Surface.
-    	returns mutable GenHSurface from Adaptor3d; 
+    	returns GenHSurface from Adaptor3d; 
 
 
     Set(me: mutable; S: TheSurface)

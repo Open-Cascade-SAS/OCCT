@@ -37,7 +37,7 @@ raises NoSuchObject,MultiplyDefined from Standard,TypeMismatch from Standard
 is
     
     Create(aName: CString from Standard)
-    returns mutable Selection from AIS;
+    returns Selection from AIS;
     ---Purpose: creates a new selection and make it current in the session.
     --          the selection will be accessible later through its name
     --          to make it again current.
@@ -72,7 +72,7 @@ is
 
     Selection(myclass; aName: CString from Standard) 
     ---Purpose: 
-    returns mutable Selection from AIS;
+    returns Selection from AIS;
 
     SetCurrentSelection(myclass; aName: CString from Standard)
     ---Purpose: 
@@ -81,7 +81,7 @@ is
 
     CurrentSelection(myclass)
     ---Purpose: 
-    returns mutable Selection from AIS;
+    returns Selection from AIS;
     
     ClearCurrentSelection(myclass);
     ---Purpose: Clears selection.

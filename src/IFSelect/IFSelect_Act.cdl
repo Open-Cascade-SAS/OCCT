@@ -42,11 +42,11 @@ raises DomainError
 
 is
 
-    Create (name, help : CString; func : ActFunc) returns mutable Act;
+    Create (name, help : CString; func : ActFunc) returns Act;
     ---Purpose : Creates an Act with a name, help and a function
     --           mode (Add or AddSet) is given when recording
 
-    Do   (me : mutable; number : Integer; pilot : mutable SessionPilot)
+    Do   (me : mutable; number : Integer; pilot : SessionPilot)
     	returns ReturnStatus;
     ---Purpose : Execution of Command Line. remark that <number> is senseless
     --           because each Act brings one and only one function

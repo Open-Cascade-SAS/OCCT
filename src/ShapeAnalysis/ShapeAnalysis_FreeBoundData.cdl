@@ -44,11 +44,11 @@ uses
 
 is
     
-    Create returns mutable FreeBoundData from ShapeAnalysis;
+    Create returns FreeBoundData from ShapeAnalysis;
     	---Purpose: Empty constructor
      
     Create (freebound: Wire from TopoDS)
-    returns mutable FreeBoundData from ShapeAnalysis;
+    returns FreeBoundData from ShapeAnalysis;
     	---Purpose: Creates object with contour given in the form of TopoDS_Wire
 
     Clear (me: mutable);

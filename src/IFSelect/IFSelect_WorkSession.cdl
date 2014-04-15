@@ -45,7 +45,7 @@ is
 
 	-- --    General Management    -- --
 
-    Create returns mutable WorkSession;
+    Create returns WorkSession;
     ---Purpose : Creates a Work Session
     --           It provides default, empty ShareOut and ModelCopier, which can
     --           be replaced (if required, should be done just after creation).
@@ -56,11 +56,11 @@ is
     ErrorHandle (me) returns Boolean;
     ---Purpose : Returns the Error Handler status
 
-    ShareOut (me) returns mutable ShareOut;
+    ShareOut (me) returns ShareOut;
     ---Purpose : Returns the ShareOut defined at creation time
     ---C++ : return const &
 
-    SetShareOut (me : mutable; shareout : mutable ShareOut);
+    SetShareOut (me : mutable; shareout : ShareOut);
     ---Purpose : Sets a new ShareOut. Fills Items which its content
     --  Warning : data from the former ShareOut are lost
     
@@ -258,7 +258,7 @@ is
     --           greater to the count of known Items, because some can have
     --           been removed
 
-    Item (me; id : Integer) returns mutable Transient;
+    Item (me; id : Integer) returns Transient;
     ---Purpose : Returns an Item, given its Ident. Returns a Null Handle if
     --           no Item corresponds to this Ident.
 
@@ -266,12 +266,12 @@ is
     ---Purpose : Returns the Ident attached to an Item in the WorkSession, or
     --           Zero if it is unknown
 
-    NamedItem (me; name : CString) returns mutable Transient;
+    NamedItem (me; name : CString) returns Transient;
     ---Purpose : Returns the Item which corresponds to a Variable, given its
     --           Name (whatever the type of this Item).
     --           Returns a Null Handle if this Name is not recorded
 
-    NamedItem (me; name : HAsciiString from TCollection) returns mutable Transient;
+    NamedItem (me; name : HAsciiString from TCollection) returns Transient;
     ---Purpose : Same as above, but <name> is given through a Handle
     --           Especially Usefull with methods SelectionNames, etc...
 
@@ -286,7 +286,7 @@ is
     --           WorkSession. If <item> is Null or not recorded, returns an
     --           empty string.
 
-    AddItem (me : mutable; item : mutable Transient;
+    AddItem (me : mutable; item : Transient;
     	 active : Boolean = Standard_True)  returns Integer;
     ---Purpose : Adds an Item and returns its attached Ident. Does nothing
     --           if <item> is already recorded (and returns its attached Ident)
@@ -294,7 +294,7 @@ is
     --           Remark : the determined Ident is used if <item> is a Dispatch,
     --           to fill the ShareOut
 
-    AddNamedItem (me : mutable; name : CString; item : mutable Transient;
+    AddNamedItem (me : mutable; name : CString; item : Transient;
     	active : Boolean = Standard_True)  returns Integer;
     ---Purpose : Adds an Item with an attached Name. If the Name is already
     --           known in the WorkSession, the older item losts it
@@ -304,7 +304,7 @@ is
     --           method tries to attached a Name to it
     --           <active> if True commands call to SetActive (see below)
 
-    SetActive (me : mutable; item : mutable Transient; mode : Boolean)
+    SetActive (me : mutable; item : Transient; mode : Boolean)
     	returns Boolean;
     ---Purpose : Following the type of <item> :
     --           - Dispatch : Adds or Removes it in the ShareOut & FileNaming
@@ -379,14 +379,14 @@ is
 	-- They are Integer (IntParam) and Text (HAsciiString from TCollection)
 
     NewParamFromStatic (me : mutable; statname : CString; name : CString = "")
-    	returns mutable Transient;
+    	returns Transient;
     ---Purpose : Creates a parameter as being bound to a Static
     --           If the Static is Integer, this creates an IntParam bound to
     --           it by its name. Else this creates a String which is the value
     --           of the Static.
     --           Returns a null handle if <statname> is unknown as a Static
 
-    IntParam (me; id : Integer) returns mutable IntParam;
+    IntParam (me; id : Integer) returns IntParam;
     ---Purpose : Returns an IntParam, given its Ident in the Session
     --           Null result if <id> is not suitable for an IntParam
     --           (undefined, or defined for another kind of variable)
@@ -394,18 +394,18 @@ is
     IntValue (me; it : IntParam) returns Integer;
     ---Purpose : Returns Integer Value of an IntParam
 
-    NewIntParam (me : mutable; name : CString = "") returns mutable IntParam;
+    NewIntParam (me : mutable; name : CString = "") returns IntParam;
     ---Purpose : Creates a new IntParam. A Name can be set (Optional)
     --           Returns the created IntParam, or a Null Handle in case of
     --           Failure (see AddItem/AddNamedItem)
 
-    SetIntValue (me : mutable; it : mutable IntParam; val : Integer)
+    SetIntValue (me : mutable; it : IntParam; val : Integer)
     	returns Boolean;
     ---Purpose : Changes the Integer Value of an IntParam
     --           Returns True if Done, False if <it> is not in the WorkSession
 
 
-    TextParam (me; id : Integer) returns mutable HAsciiString from TCollection;
+    TextParam (me; id : Integer) returns HAsciiString from TCollection;
     ---Purpose : Returns a TextParam, given its Ident in the Session
     --           Null result if <id> is not suitable for a TextParam
     --           (undefined, or defined for another kind of variable)
@@ -416,19 +416,19 @@ is
     --           or an empty string if <it> is not in the WorkSession
 
     NewTextParam (me : mutable; name : CString = "")
-    	 returns mutable HAsciiString from TCollection;
+    	 returns HAsciiString from TCollection;
     ---Purpose : Creates a new (empty) TextParam. A Name can be set (Optional)
     --           Returns the created TextParam (as an HAsciiString), or a Null
     --           Handle in case of Failure (see AddItem/AddNamedItem)
 
-    SetTextValue (me : mutable; par : mutable HAsciiString from TCollection;
+    SetTextValue (me : mutable; par : HAsciiString from TCollection;
     	    	  val : CString)  returns Boolean;
     ---Purpose : Changes the Text Value of a TextParam (an HAsciiString)
     --           Returns True if Done, False if <it> is not in the WorkSession
 
 	-- --    List of Signatures    -- --
 
-    Signature (me; id : Integer) returns mutable Signature;
+    Signature (me; id : Integer) returns Signature;
     ---Purpose : Returns a Signature, given its Ident in the Session
     --           Null result if <id> is not suitable for a Signature
     --           (undefined, or defined for another kind of variable)
@@ -440,7 +440,7 @@ is
 
 	-- --    List of Selections    -- --
 
-    Selection (me; id : Integer) returns mutable Selection;
+    Selection (me; id : Integer) returns Selection;
     ---Purpose : Returns a Selection, given its Ident in the Session
     --           Null result if <id> is not suitable for a Selection
     --           (undefined, or defined for another kind of variable)
@@ -478,8 +478,8 @@ is
     --           and all the chain of deductions is applied
 
 
-    SetItemSelection (me : mutable; item : mutable Transient;
-    	    	    	   sel : mutable Selection)  returns Boolean;
+    SetItemSelection (me : mutable; item : Transient;
+    	    	    	   sel : Selection)  returns Boolean;
     ---Purpose : Sets a Selection as input for an item, according its type :
     --           if <item> is a Dispatch : as Final Selection
     --           if <item> is a GeneralModifier (i.e. any kind of Modifier) :
@@ -488,12 +488,12 @@ is
     --           Returns False if <item> is not of a suitable type, or
     --             <item> or <sel> is not in the WorkSession
 
-    ResetItemSelection (me : mutable; item : mutable Transient) returns Boolean;
+    ResetItemSelection (me : mutable; item : Transient) returns Boolean;
     ---Purpose : Resets input Selection which was set by SetItemSelection
     --           Same conditions as for SetItemSelection
     --           Returns True if done, False if <item> is not in the WorkSession
 
-    ItemSelection (me; item : Transient) returns mutable Selection;
+    ItemSelection (me; item : Transient) returns Selection;
     ---Purpose : Returns the Selection of a Dispatch or a GeneralModifier.
     --           Returns a Null Handle if none is defined or <item> not good type
 
@@ -503,7 +503,7 @@ is
 	-- - it is cleared by ClearData (1 or 4)
 	-- - when it is defined by a Selection, it can be recomputed
 
-    SignCounter (me; id : Integer) returns mutable SignCounter;
+    SignCounter (me; id : Integer) returns SignCounter;
     ---Purpose : Returns a SignCounter from its ident in the Session
     --           Null result if <id> is not suitable for a SignCounter
     --           (undefined, or defined for another kind of variable)
@@ -535,7 +535,7 @@ is
     --           if <only> disp is True, tha's all. Else, clears also the lists
     --           of Modifiers recorded by the ShareOut
 
-    Dispatch (me; id : Integer) returns mutable Dispatch;
+    Dispatch (me; id : Integer) returns Dispatch;
     ---Purpose : Returns a Dispatch, given its Ident in the Session
     --           Null result if <id> is not suitable for a Dispatch
     --           (undefined, or defined for another kind of variable)
@@ -557,10 +557,10 @@ is
     	--   Modifier, i.e. for GeneralModifier (also applies to IFAdapt kinds
     	--   of Modifiers, which apply during the Copy operation itself)
 
-    ModelCopier (me) returns mutable ModelCopier;
+    ModelCopier (me) returns ModelCopier;
     ---Purpose : Gives access to the complete ModelCopier
 
-    SetModelCopier (me : mutable; copier : mutable ModelCopier);
+    SetModelCopier (me : mutable; copier : ModelCopier);
     ---Purpose : Sets a new ModelCopier. Fills Items which its content
     ---Warning : all data recorded in the former ModelCopier are lost
     --           (thus, Final Modifiers become inactive)
@@ -579,12 +579,12 @@ is
     --           (which takes into account the Changes to Modifier Ranks)
 
     GeneralModifier (me; id : Integer)
-    	returns mutable GeneralModifier;
+    	returns GeneralModifier;
     ---Purpose : Returns a Modifier, given its Ident in the Session
     --           Null result if <id> is not suitable for a Modifier
     --           (undefined, or defined for another kind of variable)
 
-    ModelModifier (me; id : Integer) returns mutable Modifier;
+    ModelModifier (me; id : Integer) returns Modifier;
     ---Purpose : Returns a Model Modifier, given its Ident in the Session,
     --           i.e. typed as a Modifier (not simply a GeneralModifier)
     --           Null result if <id> is not suitable for a Modifier
@@ -609,26 +609,26 @@ is
     ---Purpose : Removes all the Modifiers active in the ModelCopier : they
     --           become inactive and they are removed from the Session
 
-    SetAppliedModifier (me : mutable; modif : mutable GeneralModifier;
-    	    	        item : mutable Transient) returns Boolean;
+    SetAppliedModifier (me : mutable; modif : GeneralModifier;
+    	    	        item : Transient) returns Boolean;
     ---Purpose : Sets a GeneralModifier to be applied to an item :
     --           - item = ShareOut : applies for final sending (all dispatches)
     --           - item is a Dispatch : applies for this dispatch only
     --           Returns True if done, False if <modif> or <item> not in <me>
 
-    ResetAppliedModifier (me : mutable; modif : mutable GeneralModifier)
+    ResetAppliedModifier (me : mutable; modif : GeneralModifier)
     	returns Boolean;
     ---Purpose : Resets a GeneralModifier to be applied
     --           Returns True if done, False if <modif> was not applied
 
-    UsesAppliedModifier (me; modif : GeneralModifier) returns mutable Transient;
+    UsesAppliedModifier (me; modif : GeneralModifier) returns Transient;
     ---Purpose : Returns the item on which a GeneralModifier is applied :
     --           the ShareOut, or a given Dispatch
     --           Returns a Null Handle if <modif> is not applied
 
     	-- --    Transformation (without sending)    -- --
 
-    Transformer (me; id : Integer) returns mutable Transformer;
+    Transformer (me; id : Integer) returns Transformer;
     ---Purpose : Returns a Transformer, given its Ident in the Session
     --           Null result if <id> is not suitable for a Transformer
     --           (undefined, or defined for another kind of variable)
@@ -682,7 +682,7 @@ is
     --           If the selection is a null handle, the whole model is taken
 
     NewTransformStandard (me : mutable; copy : Boolean; name : CString = "")
-    	 returns mutable Transformer;
+    	 returns Transformer;
     ---Purpose : Creates and returns a TransformStandard, empty, with its
     --           Copy Option (True = Copy, False = On the Spot) and an
     --           optional name.
@@ -752,7 +752,7 @@ is
     NbFiles   (me) returns Integer;
     ---Purpose : Returns the count of produced Models
 
-    FileModel (me; num : Integer) returns mutable InterfaceModel;
+    FileModel (me; num : Integer) returns InterfaceModel;
     ---Purpose : Returns a Model, given its rank in the Evaluation List
 
     FileName  (me; num : Integer) returns AsciiString from TCollection;
@@ -882,7 +882,7 @@ is
     --           SelectDeduct / SelectExtract kind, two for SelectControl kind,
     --           variable for a SelectCombine (Union/Intersection), zero else
 
-    Source (me; sel : Selection; num : Integer = 1) returns mutable Selection;
+    Source (me; sel : Selection; num : Integer = 1) returns Selection;
     ---Purpose : Returns the <num>th Input Selection of a Selection
     --           (see NbSources).
     --           Returns a Null Handle if <sel> is not in the WorkSession or if
@@ -892,12 +892,12 @@ is
     IsReversedSelectExtract (me; sel : Selection) returns Boolean;
     ---Purpose : Returns True if <sel> a Reversed SelectExtract, False else
 
-    ToggleSelectExtract (me : mutable; sel : mutable Selection) returns Boolean;
+    ToggleSelectExtract (me : mutable; sel : Selection) returns Boolean;
     ---Purpose : Toggles the Sense (Direct <-> Reversed) of a SelectExtract
     --           Returns True if Done, False if <sel> is not a SelectExtract or
     --           is not in the WorkSession
 
-    SetInputSelection (me : mutable; sel, input : mutable Selection)
+    SetInputSelection (me : mutable; sel, input : Selection)
     	returns Boolean;
     ---Purpose : Sets an Input Selection (as <input>) to a SelectExtract or
     --           a SelectDeduct (as <sel>).
@@ -905,14 +905,14 @@ is
     --           SelectExtract nor a SelectDeduct, or not in the WorkSession
 
 
-    SetControl (me : mutable; sel, sc : mutable Selection;
+    SetControl (me : mutable; sel, sc : Selection;
        	        formain : Boolean = Standard_True) returns Boolean;
     ---Purpose : Sets an Input Selection, Main if <formain> is True, Second else
     --           (as <sc>) to a SelectControl (as <sel>). Returns True if Done,
     --           False if <sel> is not a SelectControl, or <sc> or <sel> is not
     --           in the WorkSession
 
-    CombineAdd  (me : mutable; selcomb, seladd : mutable Selection;
+    CombineAdd  (me : mutable; selcomb, seladd : Selection;
     	    	 atnum : Integer = 0)  returns Integer;
     ---Purpose : Adds an input selection to a SelectCombine (Union or Inters.).
     --           Returns new count of inputs for this SelectCombine if Done or
@@ -921,18 +921,18 @@ is
     --           By default, adding is done at the end of the list
     --           Else, it is an insertion to rank <atnum> (usefull for Un-ReDo)
 
-    CombineRemove (me : mutable; selcomb, selrem : mutable Selection)
+    CombineRemove (me : mutable; selcomb, selrem : Selection)
     	returns Boolean;
     ---Purpose : Removes an input selection from a SelectCombine (Union or
     --           Intersection). Returns True if done, False if <selcomb> is not
     --           kind of SelectCombine or <selrem> is not source of <selcomb>
 
     NewSelectPointed (me : mutable; list : HSequenceOfTransient; name : CString)
-    	returns mutable Selection;
+    	returns Selection;
     ---Purpose : Creates a new Selection, of type SelectPointed, its content
     --           starts with <list>. A name must be given (can be empty)
 
-    SetSelectPointed (me; sel : mutable Selection; list : HSequenceOfTransient;
+    SetSelectPointed (me; sel : Selection; list : HSequenceOfTransient;
     	    	      mode : Integer) returns Boolean;
     ---Purpose : Changes the content of a Selection of type SelectPointed
     --           According <mode> : 0  set <list> as new content (clear former)

@@ -78,7 +78,7 @@ is
 
 
     Create 
-    returns mutable Naming from TNaming; 
+    returns Naming from TNaming; 
 
     IsDefined (me) returns Boolean from Standard;
 	    
@@ -109,12 +109,12 @@ is
     --          ===================================
 
     NewEmpty (me)
-    returns mutable Attribute from TDF;
+    returns Attribute from TDF;
 
     Restore (me: mutable; With : Attribute from TDF);
 
-    Paste (me; Into : mutable Attribute from TDF;
-	       RT   : mutable RelocationTable from TDF);    
+    Paste (me; Into : Attribute from TDF;
+	       RT   : RelocationTable from TDF);    
 	
     References (me; aDataSet : DataSet from TDF)
     is redefined virtual;

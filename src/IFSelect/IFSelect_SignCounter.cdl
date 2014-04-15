@@ -43,7 +43,7 @@ uses CString, Transient, MapOfTransient, HAsciiString from TCollection,
 is
 
     Create (withmap  : Boolean = Standard_True;
-    	    withlist : Boolean = Standard_False) returns mutable SignCounter;
+    	    withlist : Boolean = Standard_False) returns SignCounter;
     ---Purpose : Creates a SignCounter, without proper Signature
     --           If <withmap> is True (default), added entities are counted
     --           only if they are not yet recorded in the map
@@ -52,13 +52,13 @@ is
     --           <withlist> is transmitted to SignatureList (option to list
     --           entities, not only to count them).
 
-    Create (matcher  : mutable Signature;
+    Create (matcher  : Signature;
     	    withmap  : Boolean = Standard_True;
-    	    withlist : Boolean = Standard_False)  returns mutable SignCounter;
+    	    withlist : Boolean = Standard_False)  returns SignCounter;
     ---Purpose : Creates a SignCounter, with a predefined Signature
     --           Other arguments as for Create without Signature.
 
-    Signature (me) returns mutable Signature;
+    Signature (me) returns Signature;
     ---Purpose : Returns the Signature used to count entities. It can be null.
 
     SetMap  (me : mutable; withmap  : Boolean);

@@ -83,7 +83,7 @@ is
     Found(me) returns Boolean
     is static;
     
-    Surface(me) returns mutable Surface from Geom
+    Surface(me) returns Surface from Geom
     is static;
     
     Tolerance(me) returns Real

@@ -29,7 +29,7 @@ is
 	Create returns RWPointStyle;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable PointStyle from StepVisual);
+	              ach : in out Check; ent : PointStyle from StepVisual);
 
 	WriteStep (me; SW : in out StepWriter; ent : PointStyle from StepVisual);
 

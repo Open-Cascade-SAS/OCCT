@@ -273,7 +273,7 @@ is
     ---Purpose : gives how many Associativities have a given type
 
     TypedAssociativity (me; atype : Type)
-    	returns mutable IGESEntity    raises InterfaceError;
+    	returns IGESEntity    raises InterfaceError;
     ---Purpose : returns the Associativity of a given Type (if only one exists)
     --           Error if none or more than one
 
@@ -290,10 +290,10 @@ is
     ClearAssociativities (me : mutable) is private;
     ---Purpose : Removes all associativities in once
 
-    Associate (me ; ent : mutable IGESEntity);
+    Associate (me ; ent : IGESEntity);
     ---Purpose : Sets "me" in the Associativity list of another Entity
 
-    Dissociate (me ; ent : mutable IGESEntity);
+    Dissociate (me ; ent : IGESEntity);
     ---Purpose : Resets "me" from the Associativity list of another Entity
 
 
@@ -312,7 +312,7 @@ is
     ---Purpose : gives how many Properties have a given type
 
     TypedProperty (me; atype : Type; anum : Integer = 0)
-    	returns mutable IGESEntity    raises InterfaceError;
+    	returns IGESEntity    raises InterfaceError;
     ---Purpose : returns the Property of a given Type 
     --           Error if none or more than one
 

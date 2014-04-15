@@ -33,18 +33,18 @@ raises OutOfRange, NullObject
 
 is
 
-    Create returns mutable EntityCluster;
+    Create returns EntityCluster;
     ---Purpose : Creates an empty, non-chained, EntityCluster
 
-    Create (ent : any Transient)  returns mutable EntityCluster;
+    Create (ent : any Transient)  returns EntityCluster;
     ---Purpose : Creates a non-chained EntityCluster, filled with one Entity
 
-    Create (ec : mutable EntityCluster)  returns mutable EntityCluster;
+    Create (ec : EntityCluster)  returns EntityCluster;
     ---Purpose : Creates an empty EntityCluster, chained with another one
     --           (that is, put BEFORE this other one in the list)
 
-    Create (ant : any Transient; ec : mutable EntityCluster)
-    	returns mutable EntityCluster;
+    Create (ant : any Transient; ec : EntityCluster)
+    	returns EntityCluster;
     ---Purpose : Creates an EntityCluster, filled with a first Entity, and
     --           chained to another EntityCluster (BEFORE it, as above)
 
@@ -102,7 +102,7 @@ is
     HasNext (me) returns Boolean  is static private;
     ---Purpose : Returns True if a Cluster has a Next
 
-    Next (me) returns mutable EntityCluster  is static private;
+    Next (me) returns EntityCluster  is static private;
     ---Purpose : Returns Next Cluster in the chain
 
 fields

@@ -26,12 +26,12 @@ uses Ax2d from gp
 is
 
 
-    Create returns mutable AxisPlacement from PGeom2d;
+    Create returns AxisPlacement from PGeom2d;
 	---Purpose: Initializes the field(s) with default value(s).
 	---Level: Internal 
 
 
-    Create(aAxis: Ax2d from gp) returns mutable AxisPlacement from PGeom2d;
+    Create(aAxis: Ax2d from gp) returns AxisPlacement from PGeom2d;
 	---Purpose: Initializes the field axis with <aAxis>.
 	---Level: Internal 
 

@@ -25,7 +25,7 @@ uses CheckIterator, InterfaceModel, SignText from MoniTool
 
 is
 
-    Create (withlist : Boolean = Standard_False) returns mutable CheckCounter;
+    Create (withlist : Boolean = Standard_False) returns CheckCounter;
     ---Purpose : Creates a CheckCounter, empty ready to work
 
     SetSignature (me : mutable; sign : SignText);

@@ -83,7 +83,7 @@ is
     --           Default returns always False, can be redefined
 
     Dispatch (me; CN : Integer;
-    	      entfrom : Transient; entto : out mutable Transient;
+    	      entfrom : Transient; entto : out Transient;
     	      TC : in out CopyTool)  returns Boolean  is virtual;
     ---Purpose : Dispatches an entity
     --           Returns True if it works by copy, False if it just duplicates
@@ -106,21 +106,21 @@ is
     --           copying, then returns False. Can be redefined
 
 
-    NewVoid (me; CN : Integer; entto : out mutable Transient)
+    NewVoid (me; CN : Integer; entto : out Transient)
     	returns Boolean  is deferred;
     ---Purpose : Creates a new void entity <entto> according to a Case Number
     --           This entity remains to be filled, by reading from a file or
     --           by copying from another entity of same type (see CopyCase)
 
     CopyCase (me; CN : Integer;
-    	      entfrom : Transient; entto : mutable Transient;
+    	      entfrom : Transient; entto : Transient;
     	      TC : in out CopyTool)  is deferred;
     ---Purpose : Specific Copy ("Deep") from <entfrom> to <entto> (same type)
     --           by using a CopyTool which provides its working Map.
     --           Use method Transferred from CopyTool to work
 
     NewCopiedCase (me; CN : Integer;
-    	    	   entfrom : Transient; entto : out mutable Transient;
+    	    	   entfrom : Transient; entto : out Transient;
     	    	   TC : in out CopyTool)  returns Boolean  is virtual;
     ---Purpose : Specific operator (create+copy) defaulted to do nothing.
     --           It can be redefined : When it is not possible to work in two
@@ -131,7 +131,7 @@ is
     --           Returns True if it has produced something, false else
 
     RenewImpliedCase (me; CN : Integer;
-    	         entfrom : Transient; entto : mutable Transient;
+    	         entfrom : Transient; entto : Transient;
     	         TC : CopyTool)  is virtual;
     ---Purpose : Specific Copying of Implied References
     --           A Default is provided which does nothing (must current case !)
@@ -139,7 +139,7 @@ is
     --           Use method Search from CopyTool to work
 
     WhenDeleteCase (me; CN : Integer;
-    	    	ent : mutable Transient; dispatched : Boolean)  is virtual;
+    	    	ent : Transient; dispatched : Boolean)  is virtual;
     ---Purpose : Prepares an entity to be deleted. What does it mean :
     --           Basically, any class of entity may define its own destructor
     --           By default, it does nothing but calling destructors on fields

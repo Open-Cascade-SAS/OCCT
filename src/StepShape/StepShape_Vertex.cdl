@@ -23,7 +23,7 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable Vertex;
+	Create returns Vertex;
 	---Purpose: Returns a Vertex
 
 

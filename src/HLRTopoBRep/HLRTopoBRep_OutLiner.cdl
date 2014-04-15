@@ -25,14 +25,14 @@ uses
     MapOfShapeTool from BRepTopAdaptor
 is
     Create
-    returns mutable OutLiner from HLRTopoBRep;
+    returns OutLiner from HLRTopoBRep;
 
     Create (OriSh : Shape from TopoDS)
-    returns mutable OutLiner from HLRTopoBRep;
+    returns OutLiner from HLRTopoBRep;
 
     Create (OriS : Shape from TopoDS;
             OutS : Shape from TopoDS)
-    returns mutable OutLiner from HLRTopoBRep;
+    returns OutLiner from HLRTopoBRep;
 
     OriginalShape(me : mutable; OriS : Shape from TopoDS)
     	---C++: inline

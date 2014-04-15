@@ -23,7 +23,7 @@ uses
 	NamedUnit from StepBasic
 is
 
-	Create returns mutable MassMeasureWithUnit;
+	Create returns MassMeasureWithUnit;
 	---Purpose: Returns a MassMeasureWithUnit
 
 

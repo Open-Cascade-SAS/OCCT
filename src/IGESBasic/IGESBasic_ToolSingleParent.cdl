@@ -31,7 +31,7 @@ is
     ---Purpose : Returns a ToolSingleParent, ready to work
 
 
-    ReadOwnParams (me; ent : mutable SingleParent;
+    ReadOwnParams (me; ent : SingleParent;
     	    	   IR : IGESReaderData; PR : in out ParamReader)
     	raises DomainError  is static;
     ---Purpose : Reads own parameters from file. <PR> gives access to them,
@@ -47,7 +47,7 @@ is
     ---Purpose : Lists the Entities shared by a SingleParent <ent>, from
     --           its specific (own) parameters
 
-    OwnCorrect (me; ent : mutable SingleParent) returns Boolean  is static;
+    OwnCorrect (me; ent : SingleParent) returns Boolean  is static;
     ---Purpose : Sets automatic unambiguous Correction on a SingleParent
     --           (NbParents forced to 1)
 
@@ -59,7 +59,7 @@ is
     ---Purpose : Performs Specific Semantic Check
 
 
-    OwnCopy    (me; entfrom : SingleParent; entto : mutable SingleParent;
+    OwnCopy    (me; entfrom : SingleParent; entto : SingleParent;
     	        TC : in out CopyTool)  is static;
     ---Purpose : Copies Specific Parameters
 

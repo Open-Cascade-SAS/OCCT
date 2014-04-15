@@ -31,51 +31,51 @@ uses
 	Logical from StepData
 is
 
-	Create returns mutable BSplineSurfaceWithKnots;
+	Create returns BSplineSurfaceWithKnots;
 	---Purpose: Returns a BSplineSurfaceWithKnots
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
+	      aName : HAsciiString from TCollection;
 	      aUDegree : Integer from Standard;
 	      aVDegree : Integer from Standard;
-	      aControlPointsList : mutable HArray2OfCartesianPoint from StepGeom;
+	      aControlPointsList : HArray2OfCartesianPoint from StepGeom;
 	      aSurfaceForm : BSplineSurfaceForm from StepGeom;
 	      aUClosed : Logical from StepData;
 	      aVClosed : Logical from StepData;
 	      aSelfIntersect : Logical from StepData) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
+	      aName : HAsciiString from TCollection;
 	      aUDegree : Integer from Standard;
 	      aVDegree : Integer from Standard;
-	      aControlPointsList : mutable HArray2OfCartesianPoint from StepGeom;
+	      aControlPointsList : HArray2OfCartesianPoint from StepGeom;
 	      aSurfaceForm : BSplineSurfaceForm from StepGeom;
 	      aUClosed : Logical from StepData;
 	      aVClosed : Logical from StepData;
 	      aSelfIntersect : Logical from StepData;
-	      aUMultiplicities : mutable HArray1OfInteger from TColStd;
-	      aVMultiplicities : mutable HArray1OfInteger from TColStd;
-	      aUKnots : mutable HArray1OfReal from TColStd;
-	      aVKnots : mutable HArray1OfReal from TColStd;
+	      aUMultiplicities : HArray1OfInteger from TColStd;
+	      aVMultiplicities : HArray1OfInteger from TColStd;
+	      aUKnots : HArray1OfReal from TColStd;
+	      aVKnots : HArray1OfReal from TColStd;
 	      aKnotSpec : KnotType from StepGeom) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetUMultiplicities(me : mutable; aUMultiplicities : mutable HArray1OfInteger);
-	UMultiplicities (me) returns mutable HArray1OfInteger;
+	SetUMultiplicities(me : mutable; aUMultiplicities : HArray1OfInteger);
+	UMultiplicities (me) returns HArray1OfInteger;
 	UMultiplicitiesValue (me; num : Integer) returns Integer;
 	NbUMultiplicities (me) returns Integer;
-	SetVMultiplicities(me : mutable; aVMultiplicities : mutable HArray1OfInteger);
-	VMultiplicities (me) returns mutable HArray1OfInteger;
+	SetVMultiplicities(me : mutable; aVMultiplicities : HArray1OfInteger);
+	VMultiplicities (me) returns HArray1OfInteger;
 	VMultiplicitiesValue (me; num : Integer) returns Integer;
 	NbVMultiplicities (me) returns Integer;
-	SetUKnots(me : mutable; aUKnots : mutable HArray1OfReal);
-	UKnots (me) returns mutable HArray1OfReal;
+	SetUKnots(me : mutable; aUKnots : HArray1OfReal);
+	UKnots (me) returns HArray1OfReal;
 	UKnotsValue (me; num : Integer) returns Real;
 	NbUKnots (me) returns Integer;
-	SetVKnots(me : mutable; aVKnots : mutable HArray1OfReal);
-	VKnots (me) returns mutable HArray1OfReal;
+	SetVKnots(me : mutable; aVKnots : HArray1OfReal);
+	VKnots (me) returns HArray1OfReal;
 	VKnotsValue (me; num : Integer) returns Real;
 	NbVKnots (me) returns Integer;
 	SetKnotSpec(me : mutable; aKnotSpec : KnotType);

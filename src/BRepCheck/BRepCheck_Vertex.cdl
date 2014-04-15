@@ -25,7 +25,7 @@ is
 
     Create(V: Vertex from TopoDS)
     
-    	returns mutable Vertex from BRepCheck;
+    	returns Vertex from BRepCheck;
 
 
     InContext(me: mutable; ContextShape: Shape from TopoDS);

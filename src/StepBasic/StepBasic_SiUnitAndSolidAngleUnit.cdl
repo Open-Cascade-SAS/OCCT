@@ -27,10 +27,10 @@ uses
 
 is
 
-    Create returns mutable SiUnitAndSolidAngleUnit;
+    Create returns SiUnitAndSolidAngleUnit;
 	---Purpose: Returns a SiUnitAndSolidAngleUnit
 
-    Init (me: mutable; aDimensions: mutable DimensionalExponents from StepBasic)
+    Init (me: mutable; aDimensions: DimensionalExponents from StepBasic)
     is redefined;
 
     Init (me: mutable; hasAprefix: Boolean from Standard;
@@ -39,9 +39,9 @@ is
 
     -- Specific Methods for Field Data Access --
 
-    SetSolidAngleUnit(me: mutable; aSolidAngleUnit: mutable SolidAngleUnit);
+    SetSolidAngleUnit(me: mutable; aSolidAngleUnit: SolidAngleUnit);
     
-    SolidAngleUnit (me) returns mutable SolidAngleUnit;
+    SolidAngleUnit (me) returns SolidAngleUnit;
 
 fields
 

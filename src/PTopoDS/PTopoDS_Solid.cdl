@@ -17,7 +17,7 @@
 class Solid from PTopoDS inherits HShape from PTopoDS
 
 is
-    Create returns mutable Solid from PTopoDS;
+    Create returns Solid from PTopoDS;
     ---Level: Internal 
 
 end Solid;

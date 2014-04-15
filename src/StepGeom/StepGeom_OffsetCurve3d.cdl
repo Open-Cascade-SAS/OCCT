@@ -26,30 +26,30 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable OffsetCurve3d;
+	Create returns OffsetCurve3d;
 	---Purpose: Returns a OffsetCurve3d
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection) is redefined;
+	      aName : HAsciiString from TCollection) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aBasisCurve : mutable Curve from StepGeom;
+	      aName : HAsciiString from TCollection;
+	      aBasisCurve : Curve from StepGeom;
 	      aDistance : Real from Standard;
 	      aSelfIntersect : Logical from StepData;
-	      aRefDirection : mutable Direction from StepGeom) is virtual;
+	      aRefDirection : Direction from StepGeom) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetBasisCurve(me : mutable; aBasisCurve : mutable Curve);
-	BasisCurve (me) returns mutable Curve;
+	SetBasisCurve(me : mutable; aBasisCurve : Curve);
+	BasisCurve (me) returns Curve;
 	SetDistance(me : mutable; aDistance : Real);
 	Distance (me) returns Real;
 	SetSelfIntersect(me : mutable; aSelfIntersect : Logical);
 	SelfIntersect (me) returns Logical;
-	SetRefDirection(me : mutable; aRefDirection : mutable Direction);
-	RefDirection (me) returns mutable Direction;
+	SetRefDirection(me : mutable; aRefDirection : Direction);
+	RefDirection (me) returns Direction;
 
 fields
 

@@ -28,7 +28,7 @@ uses
 
 is
 
-    Create returns mutable UndefinedTypeHandler from GeomTools;
+    Create returns UndefinedTypeHandler from GeomTools;
     
     -- Curve
     

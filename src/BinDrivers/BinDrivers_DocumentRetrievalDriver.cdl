@@ -25,7 +25,7 @@ uses
 is
     -- ===== Public methods =====
 
-    Create returns mutable DocumentRetrievalDriver from BinDrivers;
+    Create returns DocumentRetrievalDriver from BinDrivers;
 	---Purpose: Constructor
 
     AttributeDrivers  (me : mutable; theMsgDriver: MessageDriver from CDM)

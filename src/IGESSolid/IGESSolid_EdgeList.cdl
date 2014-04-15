@@ -31,7 +31,7 @@ raises DimensionMismatch, OutOfRange
 
 is
 
-        Create returns mutable EdgeList;
+        Create returns EdgeList;
 
         -- Specific Methods pertaining to the class
 

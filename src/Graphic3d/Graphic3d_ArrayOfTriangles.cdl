@@ -23,7 +23,7 @@ is
                 hasVNormals: Boolean from Standard = Standard_False;
                 hasVColors: Boolean from Standard = Standard_False;
                 hasTexels: Boolean from Standard = Standard_False)
-	returns mutable ArrayOfTriangles from Graphic3d;
+	returns ArrayOfTriangles from Graphic3d;
         ---Purpose: Creates an array of triangles,
         -- a triangle can be filled as:
         -- 1) creating a set of triangles defined with his vertexs.

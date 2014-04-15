@@ -28,7 +28,7 @@ uses
 
 is
 
-    Create returns mutable SplitSurfaceContinuity from ShapeUpgrade; 
+    Create returns SplitSurfaceContinuity from ShapeUpgrade; 
         ---Purpose: Empty constructor.
 	
     SetCriterion (me: mutable; Criterion: Shape from GeomAbs);

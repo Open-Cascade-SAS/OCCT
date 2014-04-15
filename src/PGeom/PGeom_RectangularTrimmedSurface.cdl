@@ -27,7 +27,7 @@ uses Surface  from PGeom
 is
 
 
-   Create returns mutable RectangularTrimmedSurface from PGeom;
+   Create returns RectangularTrimmedSurface from PGeom;
 	---Purpose: Creates a RectangularTrimmedSurface with default values.
     	---Level: Internal 
 
@@ -38,7 +38,7 @@ is
     	    aLastU      : Real from Standard;
     	    aFirstV     : Real from Standard;
     	    aLastV      : Real from Standard)
-	    returns mutable RectangularTrimmedSurface from PGeom;
+	    returns RectangularTrimmedSurface from PGeom;
 	---Purpose: Creates a RectangularTrimmedSurface with these values.
     	---Level: Internal 
 

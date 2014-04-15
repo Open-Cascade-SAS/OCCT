@@ -23,7 +23,7 @@ uses AsciiString from TCollection, Graph, SubPartsIterator
 
 is
 
-    Create returns mutable DispGlobal;
+    Create returns DispGlobal;
     ---Purpose : Creates a DispGlobal
 
     Label (me) returns AsciiString from TCollection;

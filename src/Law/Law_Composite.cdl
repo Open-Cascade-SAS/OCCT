@@ -35,13 +35,13 @@ raises OutOfRange from Standard
  
 is
 
-    Create returns mutable Composite from Law;
+    Create returns Composite from Law;
     ---Purpose: Construct an empty Law
     
     Create (First, Last : Real; 
     	    Tol :Real)
 	---Purpose: Construct an empty, trimed Law
-    returns mutable Composite from Law;   
+    returns Composite from Law;   
     
     Continuity(me) returns Shape from GeomAbs
     is redefined static;
@@ -94,7 +94,7 @@ is
 
     ChangeElementaryLaw(me: mutable; W : Real from Standard)
     ---C++: return &
-    returns mutable Function from Law
+    returns Function from Law
     ---Purpose: Returns the elementary  function of the composite used
     --          to compute at parameter W.
     is static;

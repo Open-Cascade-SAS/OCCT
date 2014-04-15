@@ -34,7 +34,7 @@ is
 	    aType: TypeOfLine from Aspect;
     	    aWidth: Real from Standard;
           aNumber: Integer from Standard)    
-	    returns mutable IsoAspect from Prs3d;
+	    returns IsoAspect from Prs3d;
     	---Purpose: Constructs a framework to define display attributes of isoparameters.
     	-- These include:
     	-- -   the color attribute aColor
@@ -46,7 +46,7 @@ is
 	    aType: TypeOfLine from Aspect;
     	    aWidth: Real from Standard;
           aNumber: Integer from Standard)	    
-	    returns mutable IsoAspect from Prs3d;
+	    returns IsoAspect from Prs3d;
 	    
 
     SetNumber (me: mutable; aNumber: Integer from Standard) 

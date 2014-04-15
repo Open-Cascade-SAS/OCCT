@@ -37,7 +37,7 @@ is
     	   S        : Surface  from PGeom;
 	   L        : Location from PTopLoc;
 	   C        : Shape    from GeomAbs)
-    returns mutable CurveOnClosedSurface from PBRep;
+    returns CurveOnClosedSurface from PBRep;
     	---Purpose: CF is curve first parameter
     	--          CL is curve last parameter
     	--          The two curves are SameParameter.

@@ -27,13 +27,13 @@ uses CString, AsciiString from TCollection,
 
 is
 
-    Create (rootlast : Boolean = Standard_True) returns mutable ModifReorder;
+    Create (rootlast : Boolean = Standard_True) returns ModifReorder;
     ---Purpose : Creates a ModifReorder. It may change the graph (it does !)
     --           If <rootlast> is True (D), roots are set at the end of packets
     --           Else, they are set at beginning (as done by AddWithRefs)
 
     Perform (me; ctx  : in out ContextModif;
-    	     target   : mutable InterfaceModel;
+    	     target   : InterfaceModel;
     	     protocol : Protocol from Interface;
     	     TC       : in out CopyTool);
     ---Purpose : Acts by computing orders (by method All from ShareTool) then

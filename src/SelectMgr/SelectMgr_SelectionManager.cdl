@@ -41,7 +41,7 @@ uses
 is
 
     
-    Create  returns mutable SelectionManager from SelectMgr;
+    Create  returns SelectionManager from SelectMgr;
     	--- Purpose: Constructs an empty selection manager object.   
 
     ---Category: Management of the view selectors

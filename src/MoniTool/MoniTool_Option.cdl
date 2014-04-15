@@ -42,16 +42,16 @@ uses CString, Transient, Type from Standard,
 
 is
 
-    Create (atype : Type; aname : CString) returns mutable Option;
+    Create (atype : Type; aname : CString) returns Option;
     ---Purpose : Creates an Option from scratch, with a Type and a Name
 
-    Create (aval : TypedValue; aname : CString = "") returns mutable Option;
+    Create (aval : TypedValue; aname : CString = "") returns Option;
     ---Purpose : Creates an Option for a TypedValue (for basic, non-cdl-typed,
     --           value : integer, real, string ...)
     --           If <name> is not given, the name of the TypedValue is taken
     --           Remark that Type is then enforced to TCollection_HAsciiString
 
-    Create (other : Option; aname : CString = "") returns mutable Option;
+    Create (other : Option; aname : CString = "") returns Option;
     ---Purpose : Creates an Option from another one, the name can be redefined
     --           The Type remains the same. The list of Items, too, it can also
     --           be later duplicated by call to Duplicate

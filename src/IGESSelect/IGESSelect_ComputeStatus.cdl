@@ -29,12 +29,12 @@ uses AsciiString from TCollection,
 
 is
 
-    Create returns mutable ComputeStatus;
+    Create returns ComputeStatus;
     ---Purpose : Creates an ComputeStatus, which uses the system Date
 
 
     Performing (me; ctx : in out ContextModif;
-    	        target  : mutable IGESModel;
+    	        target  : IGESModel;
                 TC      : in out CopyTool);
     ---Purpose : Specific action : it first evaluates the required values for
     --           Subordinate Status and Use Flag (in Directory Part of each

@@ -27,7 +27,7 @@ uses
 
 is
 
-        Create returns mutable LevelFunction;
+        Create returns LevelFunction;
 
         -- Specific Methods pertaining to the class
 

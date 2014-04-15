@@ -27,7 +27,7 @@ uses Transient,
 
 is
 
-	Create returns mutable GeneralModule from RWHeaderSection;
+	Create returns GeneralModule from RWHeaderSection;
 	---Purpose : Creates a GeneralModule
 
 	FillSharedCase (me; CN : Integer; ent : Transient;
@@ -39,12 +39,12 @@ is
 	CheckCase (me; CN : Integer; ent : Transient; shares : ShareTool; ach : in out Check);
 	---Purpose : Specific Checking of an Entity <ent>
 
-	CopyCase (me; CN : Integer; entfrom : Transient; entto : mutable Transient; TC : in out CopyTool);
+	CopyCase (me; CN : Integer; entfrom : Transient; entto : Transient; TC : in out CopyTool);
 	---Purpose : Specific Copy ("Deep") from <entfrom> to <entto> (same type)
 	--           by using a CopyTool which provides its working Map.
 	--           Use method Transferred from CopyTool to work
 
 
-	NewVoid (me; CN : Integer; ent : out mutable Transient) returns Boolean;
+	NewVoid (me; CN : Integer; ent : out Transient) returns Boolean;
 
 end GeneralModule;

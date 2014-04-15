@@ -29,7 +29,7 @@ is
 	Create returns RWQuasiUniformSurfaceAndRationalBSplineSurface;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable QuasiUniformSurfaceAndRationalBSplineSurface from StepGeom);
+	              ach : in out Check; ent : QuasiUniformSurfaceAndRationalBSplineSurface from StepGeom);
 
 	WriteStep (me; SW : in out StepWriter; ent : QuasiUniformSurfaceAndRationalBSplineSurface from StepGeom);
 

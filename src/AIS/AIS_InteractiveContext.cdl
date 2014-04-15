@@ -142,7 +142,7 @@ uses
 is
 
     Create(MainViewer:Viewer from V3d) 
-    returns mutable InteractiveContext from  AIS;
+    returns InteractiveContext from  AIS;
     	---Purpose:
     	-- Constructs the interactive context object defined by
     	-- the principal viewer MainViewer.    
@@ -1026,7 +1026,7 @@ is
     --          of myDefaultDrawer ;
     --          anAngle is in radian ; ( 1 deg < angle in deg < 20 deg)
     
-    HiddenLineAspect(me) returns mutable LineAspect from Prs3d
+    HiddenLineAspect(me) returns LineAspect from Prs3d
     ---Purpose: Initializes hidden line aspect in the default drawing tool, or Drawer.
 -- The default values are:
     --          Color: Quantity_NOC_YELLOW

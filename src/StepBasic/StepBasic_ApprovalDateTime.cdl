@@ -24,7 +24,7 @@ uses
 
 is
 
-    Create returns mutable ApprovalDateTime;
+    Create returns ApprovalDateTime;
 
     Init (me : mutable;
     	  aDateTime : DateTimeSelect;

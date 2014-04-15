@@ -27,7 +27,7 @@ uses
 is
 
     Create (Arr : IntPackedMap     from TDataStd)
-    	returns mutable DeltaOnModificationOfIntPackedMap from TDataStd;
+    	returns DeltaOnModificationOfIntPackedMap from TDataStd;
 	---Purpose: Initializes a TDF_DeltaOnModification.
 
     Apply (me : mutable)

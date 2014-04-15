@@ -23,19 +23,19 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable FunctionallyDefinedTransformation;
+	Create returns FunctionallyDefinedTransformation;
 	---Purpose: Returns a FunctionallyDefinedTransformation
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aDescription : mutable HAsciiString from TCollection) is virtual;
+	      aName : HAsciiString from TCollection;
+	      aDescription : HAsciiString from TCollection) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetName(me : mutable; aName : mutable HAsciiString);
-	Name (me) returns mutable HAsciiString;
-	SetDescription(me : mutable; aDescription : mutable HAsciiString);
-	Description (me) returns mutable HAsciiString;
+	SetName(me : mutable; aName : HAsciiString);
+	Name (me) returns HAsciiString;
+	SetDescription(me : mutable; aDescription : HAsciiString);
+	Description (me) returns HAsciiString;
 
 fields
 

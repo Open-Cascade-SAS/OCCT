@@ -23,16 +23,16 @@ uses
 	CurveStyle from StepVisual
 is
 
-	Create returns mutable SurfaceStyleSegmentationCurve;
+	Create returns SurfaceStyleSegmentationCurve;
 	---Purpose: Returns a SurfaceStyleSegmentationCurve
 
 	Init (me : mutable;
-	      aStyleOfSegmentationCurve : mutable CurveStyle from StepVisual) is virtual;
+	      aStyleOfSegmentationCurve : CurveStyle from StepVisual) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetStyleOfSegmentationCurve(me : mutable; aStyleOfSegmentationCurve : mutable CurveStyle);
-	StyleOfSegmentationCurve (me) returns mutable CurveStyle;
+	SetStyleOfSegmentationCurve(me : mutable; aStyleOfSegmentationCurve : CurveStyle);
+	StyleOfSegmentationCurve (me) returns CurveStyle;
 
 fields
 

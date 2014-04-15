@@ -22,7 +22,7 @@ uses
 
 is
 
-    Create returns mutable LimitsAndFits;
+    Create returns LimitsAndFits;
 
     Init (me : mutable; form_variance, zone_variance, grade, source :
     	    	        HAsciiString from TCollection);

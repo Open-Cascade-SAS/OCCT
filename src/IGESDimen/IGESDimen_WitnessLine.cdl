@@ -33,7 +33,7 @@ raises OutOfRange
 
 is
 
-        Create returns mutable WitnessLine;
+        Create returns WitnessLine;
 
         -- Specific Methods pertaining to the class
 

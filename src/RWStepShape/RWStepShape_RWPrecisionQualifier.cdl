@@ -28,7 +28,7 @@ is
 	Create returns RWPrecisionQualifier;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable PrecisionQualifier from StepShape);
+	              ach : in out Check; ent : PrecisionQualifier from StepShape);
 
 	WriteStep (me; SW : in out StepWriter; ent : PrecisionQualifier from StepShape);
 

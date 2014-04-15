@@ -30,7 +30,7 @@ is
 	Create returns RWRationalBSplineSurface;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable RationalBSplineSurface from StepGeom);
+	              ach : in out Check; ent : RationalBSplineSurface from StepGeom);
 
 	WriteStep (me; SW : in out StepWriter; ent : RationalBSplineSurface from StepGeom);
 

@@ -24,19 +24,19 @@ uses
 	Real from Standard
 is
 
-	Create returns mutable BoxDomain;
+	Create returns BoxDomain;
 	---Purpose: Returns a BoxDomain
 
 	Init (me : mutable;
-	      aCorner : mutable CartesianPoint from StepGeom;
+	      aCorner : CartesianPoint from StepGeom;
 	      aXlength : Real from Standard;
 	      aYlength : Real from Standard;
 	      aZlength : Real from Standard) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetCorner(me : mutable; aCorner : mutable CartesianPoint);
-	Corner (me) returns mutable CartesianPoint;
+	SetCorner(me : mutable; aCorner : CartesianPoint);
+	Corner (me) returns CartesianPoint;
 	SetXlength(me : mutable; aXlength : Real);
 	Xlength (me) returns Real;
 	SetYlength(me : mutable; aYlength : Real);

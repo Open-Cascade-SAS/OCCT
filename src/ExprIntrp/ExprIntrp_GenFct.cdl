@@ -30,7 +30,7 @@ is
 
     Create
     ---Level: Internal 
-    returns mutable GenFct is private;
+    returns GenFct is private;
 
     Create( myclass ) returns GenFct;
         

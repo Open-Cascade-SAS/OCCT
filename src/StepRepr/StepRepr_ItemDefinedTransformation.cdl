@@ -24,7 +24,7 @@ uses
 
 is
 
-    Create returns mutable ItemDefinedTransformation;
+    Create returns ItemDefinedTransformation;
 
     Init (me : mutable;
     	  aName : HAsciiString from TCollection;

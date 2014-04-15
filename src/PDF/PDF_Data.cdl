@@ -35,10 +35,10 @@ uses
 is
 
     Create
-    	returns mutable Data from PDF;
+    	returns Data from PDF;
 
     Create(aVersionNumber : Integer from Standard)
-    	returns mutable Data from PDF;
+    	returns Data from PDF;
 
     VersionNumber(me)
     	returns Integer from Standard;

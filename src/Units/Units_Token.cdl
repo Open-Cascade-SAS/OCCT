@@ -30,7 +30,7 @@ uses
 
 is
 
-    Create returns mutable Token from Units;
+    Create returns Token from Units;
     
     ---Level: Internal 
     
@@ -43,7 +43,7 @@ is
     ---Purpose: Creates  and returns  a token.   <aword>  is  a string
     --          containing the available word.
     
-    returns mutable Token from Units;
+    returns Token from Units;
     
     Create(atoken : Token from Units)
     
@@ -52,7 +52,7 @@ is
     ---Purpose: Creates and returns a  token.  <atoken> is  copied  in
     --          the returned token.
     
-    returns mutable Token from Units;
+    returns Token from Units;
     
     Create(aword , amean : CString)
     
@@ -62,7 +62,7 @@ is
     --          containing the  available word and  <amean>  gives the
     --          signification of the token.
     
-    returns mutable Token from Units;
+    returns Token from Units;
     
     Create(aword , amean : CString ; avalue : Real)
     
@@ -73,7 +73,7 @@ is
     --          signification of the token and <avalue> is the numeric
     --          value of the dimension.
     
-    returns mutable Token from Units;
+    returns Token from Units;
     
     Create(aword , amean : CString ; avalue : Real ; adimension : Dimensions from Units)
     
@@ -85,9 +85,9 @@ is
     --          value  of the dimension,  and <adimensions>   is   the
     --          dimension of the given word <aword>.
     
-    returns mutable Token from Units;
+    returns Token from Units;
     
-    Creates(me) returns mutable Token from Units
+    Creates(me) returns Token from Units
 
     ---Level: Internal 
     
@@ -164,7 +164,7 @@ is
     
     is static;
 
-    Dimensions(me) returns mutable Dimensions from Units
+    Dimensions(me) returns Dimensions from Units
     
     ---Level: Internal 
     
@@ -196,7 +196,7 @@ is
     
     is static;
 
-    Add(me ; aninteger : Integer) returns mutable Token from Units
+    Add(me ; aninteger : Integer) returns Token from Units
     
     ---Level: Internal 
     
@@ -206,7 +206,7 @@ is
     
     is static;
     
-    Add(me ; atoken : Token from Units) returns mutable Token from Units
+    Add(me ; atoken : Token from Units) returns Token from Units
     
     ---Level: Internal 
     
@@ -218,7 +218,7 @@ is
     
     is static;
     
-    Subtract(me ; atoken : Token from Units) returns mutable Token from Units
+    Subtract(me ; atoken : Token from Units) returns Token from Units
     
     ---Level: Internal 
     
@@ -230,7 +230,7 @@ is
     
     is static;
     
-    Multiply(me ; atoken : Token from Units) returns mutable Token from Units
+    Multiply(me ; atoken : Token from Units) returns Token from Units
     
     ---Level: Internal 
     
@@ -251,7 +251,7 @@ is
     
     returns Real is virtual;
     
-    Divide(me ; atoken : Token from Units) returns mutable Token from Units
+    Divide(me ; atoken : Token from Units) returns Token from Units
     
     ---Level: Internal 
     
@@ -272,7 +272,7 @@ is
     
     returns Real is virtual;
     
-    Power(me ; atoken : Token from Units) returns mutable Token from Units
+    Power(me ; atoken : Token from Units) returns Token from Units
     
     ---Level: Internal 
     
@@ -284,7 +284,7 @@ is
     
     is static;
     
-    Power(me ; anexponent : Real) returns mutable Token from Units
+    Power(me ; anexponent : Real) returns Token from Units
     
     ---Level: Internal 
     

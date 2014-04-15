@@ -24,12 +24,12 @@ uses
 
 is
 
-    Create returns mutable ConversionBasedUnitAndAreaUnit from StepBasic;
+    Create returns ConversionBasedUnitAndAreaUnit from StepBasic;
     	---Purpose: Returns a ConversionBasedUnitAndAreaUnit
     
-    SetAreaUnit(me: mutable; anAreaUnit: mutable AreaUnit from StepBasic);
+    SetAreaUnit(me: mutable; anAreaUnit: AreaUnit from StepBasic);
     
-    AreaUnit(me) returns mutable AreaUnit from StepBasic;
+    AreaUnit(me) returns AreaUnit from StepBasic;
     
 fields
 

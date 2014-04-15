@@ -26,7 +26,7 @@ uses Protocol from Interface
 
 is
 
-    Create returns mutable FileProtocol;
+    Create returns FileProtocol;
     ---Purpose : Returns an empty FileProtocol
 
     Add (me : mutable; protocol : Protocol from IGESData);

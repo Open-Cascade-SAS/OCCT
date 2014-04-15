@@ -30,7 +30,7 @@ is
 	Create returns RWBSplineSurfaceWithKnots;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable BSplineSurfaceWithKnots from StepGeom);
+	              ach : in out Check; ent : BSplineSurfaceWithKnots from StepGeom);
 
 	WriteStep (me; SW : in out StepWriter; ent : BSplineSurfaceWithKnots from StepGeom);
 

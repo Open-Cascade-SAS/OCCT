@@ -40,11 +40,11 @@ uses  GeneralModifier, SequenceOfGeneralModifier,
 
 is
 
-    Create (nbmax,nbent : Integer) returns mutable AppliedModifiers;
+    Create (nbmax,nbent : Integer) returns AppliedModifiers;
     ---Purpose : Creates an AppliedModifiers, ready to record up to <nbmax>
     --           modifiers, on a model of <nbent> entities
 
-    AddModif (me : mutable; modif : mutable GeneralModifier) returns Boolean;
+    AddModif (me : mutable; modif : GeneralModifier) returns Boolean;
     ---Purpose : Records a modifier. By default, it is to apply on all a
     --           produced file. Further calls to AddNum will restrict this.
     --           Returns True if done, False if too many modifiers are already
@@ -61,7 +61,7 @@ is
     ---Purpose : Returns the count of recorded modifiers
 
     Item (me : mutable; num : Integer;
-    	  modif : out mutable GeneralModifier; entcount : out Integer)
+    	  modif : out GeneralModifier; entcount : out Integer)
 	    returns Boolean;
     ---Purpose : Returns the description for applied modifier n0 <num> :
     --           the modifier itself, and the count of entities to be applied

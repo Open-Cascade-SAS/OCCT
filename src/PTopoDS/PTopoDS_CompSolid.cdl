@@ -17,7 +17,7 @@
 class CompSolid from PTopoDS inherits HShape from PTopoDS
 
 is
-    Create returns mutable CompSolid from PTopoDS;
+    Create returns CompSolid from PTopoDS;
 	---Level: Internal 
 
 end CompSolid;

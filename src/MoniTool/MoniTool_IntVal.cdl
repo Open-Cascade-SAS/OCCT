@@ -22,7 +22,7 @@ uses Integer
 
 is
 
-    Create (val : Integer = 0) returns mutable IntVal;
+    Create (val : Integer = 0) returns IntVal;
 
     Value (me) returns Integer;
 

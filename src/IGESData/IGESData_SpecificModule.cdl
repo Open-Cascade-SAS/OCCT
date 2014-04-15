@@ -33,7 +33,7 @@ is
     --           See class IGESDumper for the rules to follow for <own> and
     --           <attached> level
 
-    OwnCorrect (me; CN : Integer; ent : mutable IGESEntity)
+    OwnCorrect (me; CN : Integer; ent : IGESEntity)
     	returns Boolean  is virtual;
     ---Purpose : Specific Automatic Correction on own Parameters of an Entity.
     --           It works by setting in accordance redundant data, if there are

@@ -31,12 +31,12 @@ is
 
     Create
     
-    	returns mutable GluedShape from LocOpe;
+    	returns GluedShape from LocOpe;
 
 
     Create(S: Shape from TopoDS)
     
-    	returns mutable GluedShape from LocOpe;
+    	returns GluedShape from LocOpe;
     
 
     Init(me: mutable; S: Shape from TopoDS)

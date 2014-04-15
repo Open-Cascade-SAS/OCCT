@@ -29,7 +29,7 @@ is
 	Create returns RWPolyLoop;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable PolyLoop from StepShape);
+	              ach : in out Check; ent : PolyLoop from StepShape);
 
 	WriteStep (me; SW : in out StepWriter; ent : PolyLoop from StepShape);
 

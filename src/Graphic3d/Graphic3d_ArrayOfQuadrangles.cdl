@@ -32,7 +32,7 @@ is
                 hasVNormals: Boolean from Standard = Standard_False;
                 hasVColors: Boolean from Standard = Standard_False;
                 hasTexels: Boolean from Standard = Standard_False)
-	returns mutable ArrayOfQuadrangles from Graphic3d;
+	returns ArrayOfQuadrangles from Graphic3d;
         ---Purpose: Creates an array of quadrangles,
 	-- a quadrangle can be filled as:
 	-- 1) creating a set of quadrangles defined with his vertexs.

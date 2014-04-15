@@ -90,7 +90,7 @@ is
       
 
     Patch (me : in out; UIndex, VIndex : Integer)
-    returns mutable BezierSurface
+    returns BezierSurface
         --- Purpose : Constructs and returns the Bezier surface of indices
     	-- (UIndex, VIndex) to the patch grid computed on the
     	-- BSpline surface analyzed by this algorithm.

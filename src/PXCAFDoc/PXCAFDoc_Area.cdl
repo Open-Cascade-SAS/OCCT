@@ -20,10 +20,10 @@ uses
     Real from Standard
 
 is
-    Create returns mutable Area from PXCAFDoc;
+    Create returns Area from PXCAFDoc;
 
     Create (Value     : Real from Standard)
-    returns mutable Area from PXCAFDoc;
+    returns Area from PXCAFDoc;
     
     Get (me) returns Real from Standard;
 

@@ -25,23 +25,23 @@ uses
 	HArray1OfTextOrCharacter from StepVisual
 is
 
-	Create returns mutable CompositeTextWithExtent;
+	Create returns CompositeTextWithExtent;
 	---Purpose: Returns a CompositeTextWithExtent
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aCollectedText : mutable HArray1OfTextOrCharacter from StepVisual) is redefined;
+	      aName : HAsciiString from TCollection;
+	      aCollectedText : HArray1OfTextOrCharacter from StepVisual) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aCollectedText : mutable HArray1OfTextOrCharacter from StepVisual;
-	      aExtent : mutable PlanarExtent from StepVisual) is virtual;
+	      aName : HAsciiString from TCollection;
+	      aCollectedText : HArray1OfTextOrCharacter from StepVisual;
+	      aExtent : PlanarExtent from StepVisual) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetExtent(me : mutable; aExtent : mutable PlanarExtent);
-	Extent (me) returns mutable PlanarExtent;
+	SetExtent(me : mutable; aExtent : PlanarExtent);
+	Extent (me) returns PlanarExtent;
 
 fields
 

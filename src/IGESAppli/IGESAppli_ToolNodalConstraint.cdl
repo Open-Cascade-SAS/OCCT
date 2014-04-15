@@ -31,7 +31,7 @@ is
     ---Purpose : Returns a ToolNodalConstraint, ready to work
 
 
-    ReadOwnParams (me; ent : mutable NodalConstraint;
+    ReadOwnParams (me; ent : NodalConstraint;
     	    	   IR : IGESReaderData; PR : in out ParamReader)
     	raises DomainError  is static;
     ---Purpose : Reads own parameters from file. <PR> gives access to them,
@@ -55,7 +55,7 @@ is
     ---Purpose : Performs Specific Semantic Check
 
 
-    OwnCopy    (me; entfrom : NodalConstraint; entto : mutable NodalConstraint;
+    OwnCopy    (me; entfrom : NodalConstraint; entto : NodalConstraint;
     	        TC : in out CopyTool)  is static;
     ---Purpose : Copies Specific Parameters
 

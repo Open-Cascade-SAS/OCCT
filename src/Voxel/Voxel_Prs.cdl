@@ -32,7 +32,7 @@ is
 
     Create
     ---Purpose: An empty constructor.
-    returns mutable Prs from Voxel;
+    returns Prs from Voxel;
 
 
     ---Category: Set Voxels
@@ -102,13 +102,13 @@ is
 
     Compute(me : mutable;
     	    thePresentationManager : PresentationManager3d from PrsMgr;
-    	    thePresentation : mutable Presentation from Prs3d;
+    	    thePresentation : Presentation from Prs3d;
     	    theMode         : Integer from Standard = 0) 
     is redefined 
     protected;
 
     ComputeSelection(me : mutable;
-    	    	     theSelection : mutable Selection from SelectMgr;
+    	    	     theSelection : Selection from SelectMgr;
     	    	     theMode      : Integer from Standard)
     is private;
 

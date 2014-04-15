@@ -26,23 +26,23 @@ uses
 	DateRole from StepBasic
 is
 
-	Create returns mutable AutoDesignActualDateAssignment;
+	Create returns AutoDesignActualDateAssignment;
 	---Purpose: Returns a AutoDesignActualDateAssignment
 
 
 	Init (me : mutable;
-	      aAssignedDate : mutable Date from StepBasic;
-	      aRole : mutable DateRole from StepBasic) is redefined;
+	      aAssignedDate : Date from StepBasic;
+	      aRole : DateRole from StepBasic) is redefined;
 
 	Init (me : mutable;
-	      aAssignedDate : mutable Date from StepBasic;
-	      aRole : mutable DateRole from StepBasic;
-	      aItems : mutable HArray1OfAutoDesignDatedItem from StepAP214) is virtual;
+	      aAssignedDate : Date from StepBasic;
+	      aRole : DateRole from StepBasic;
+	      aItems : HArray1OfAutoDesignDatedItem from StepAP214) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetItems(me : mutable; aItems : mutable HArray1OfAutoDesignDatedItem);
-	Items (me) returns mutable HArray1OfAutoDesignDatedItem;
+	SetItems(me : mutable; aItems : HArray1OfAutoDesignDatedItem);
+	Items (me) returns HArray1OfAutoDesignDatedItem;
 	ItemsValue (me; num : Integer) returns AutoDesignDatedItem;
 	NbItems (me) returns Integer;
 

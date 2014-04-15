@@ -27,11 +27,11 @@ raises InterfaceError
 
 is
 
-    Create (model : InterfaceModel; TP : mutable TransientProcess)
-    	returns mutable DispatchControl;
+    Create (model : InterfaceModel; TP : TransientProcess)
+    	returns DispatchControl;
     ---Purpose : Creates the DispatchControl, ready for use
 
-    TransientProcess (me) returns mutable TransientProcess;
+    TransientProcess (me) returns TransientProcess;
     ---Purpose : Returns the content of the DispatchControl : it can be used
     --           for a direct call, if the basic methods do not suffice
     ---C++ : return const &
@@ -45,12 +45,12 @@ is
     Clear (me : mutable);
     ---Purpose : Clears the List of Copied Results
 
-    Bind (me : mutable; ent : Transient; res : mutable Transient)
+    Bind (me : mutable; ent : Transient; res : Transient)
     ---Purpose : Binds a (Transient) Result to a (Transient) Starting Entity
     	raises InterfaceError;
     --           Error if <ent> is already bound
 
-    Search (me; ent : Transient; res : out mutable Transient)
+    Search (me; ent : Transient; res : out Transient)
     	returns Boolean;
     ---Purpose : Searches for the Result bound to a Starting Entity
     --           If Found, returns True and fills <res>

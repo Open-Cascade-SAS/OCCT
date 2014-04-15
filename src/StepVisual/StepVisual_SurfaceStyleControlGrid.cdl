@@ -23,16 +23,16 @@ uses
 	CurveStyle from StepVisual
 is
 
-	Create returns mutable SurfaceStyleControlGrid;
+	Create returns SurfaceStyleControlGrid;
 	---Purpose: Returns a SurfaceStyleControlGrid
 
 	Init (me : mutable;
-	      aStyleOfControlGrid : mutable CurveStyle from StepVisual) is virtual;
+	      aStyleOfControlGrid : CurveStyle from StepVisual) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetStyleOfControlGrid(me : mutable; aStyleOfControlGrid : mutable CurveStyle);
-	StyleOfControlGrid (me) returns mutable CurveStyle;
+	SetStyleOfControlGrid(me : mutable; aStyleOfControlGrid : CurveStyle);
+	StyleOfControlGrid (me) returns CurveStyle;
 
 fields
 

@@ -31,7 +31,7 @@ raises OutOfRange
 
 is
 
-        Create returns mutable VertexList;
+        Create returns VertexList;
 
         -- Specific Methods pertaining to the class
 

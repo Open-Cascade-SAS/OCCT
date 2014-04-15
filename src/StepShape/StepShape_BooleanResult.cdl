@@ -25,15 +25,15 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable BooleanResult;
+	Create returns BooleanResult;
 	---Purpose: Returns a BooleanResult
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection) is redefined;
+	      aName : HAsciiString from TCollection) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
+	      aName : HAsciiString from TCollection;
 	      aOperator : BooleanOperator from StepShape;
 	      aFirstOperand : BooleanOperand from StepShape;
 	      aSecondOperand : BooleanOperand from StepShape) is virtual;

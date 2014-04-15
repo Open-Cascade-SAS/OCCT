@@ -23,7 +23,7 @@ uses
 is
 
     Create 
-    returns mutable ByteArray_1 from PDataStd;
+    returns ByteArray_1 from PDataStd;
 
     Set (me : mutable;
     	 values : HArray1OfInteger from PColStd);

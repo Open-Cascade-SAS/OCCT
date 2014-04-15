@@ -28,7 +28,7 @@ is
     	   First, Last : Real from Standard;
            Tol3d       : Real from Standard;
     	   Tolang      : Real from Standard)
-    returns mutable DegeneratedBound from GeomFill;
+    returns DegeneratedBound from GeomFill;
 
     Value(me; 
           U : Real from Standard) 

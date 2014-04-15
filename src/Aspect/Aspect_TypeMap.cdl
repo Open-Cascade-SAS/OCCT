@@ -31,7 +31,7 @@ raises
 	BadAccess 	from Aspect
 
 is
-	Create returns mutable TypeMap from Aspect;
+	Create returns TypeMap from Aspect;
 
         AddEntry (me : mutable; AnEntry : TypeMapEntry from Aspect)
 	---Level: Public

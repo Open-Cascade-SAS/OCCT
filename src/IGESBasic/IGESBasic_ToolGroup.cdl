@@ -31,7 +31,7 @@ is
     ---Purpose : Returns a ToolGroup, ready to work
 
 
-    ReadOwnParams (me; ent : mutable Group;
+    ReadOwnParams (me; ent : Group;
     	    	   IR : IGESReaderData; PR : in out ParamReader)
     	raises DomainError  is static;
     ---Purpose : Reads own parameters from file. <PR> gives access to them,
@@ -47,7 +47,7 @@ is
     ---Purpose : Lists the Entities shared by a Group <ent>, from
     --           its specific (own) parameters
 
-    OwnCorrect (me; ent : mutable Group) returns Boolean  is static;
+    OwnCorrect (me; ent : Group) returns Boolean  is static;
     ---Purpose : Sets automatic unambiguous Correction on a Group
     --           (Null Elements are removed from list)
 
@@ -59,7 +59,7 @@ is
     ---Purpose : Performs Specific Semantic Check
 
 
-    OwnCopy    (me; entfrom : Group; entto : mutable Group;
+    OwnCopy    (me; entfrom : Group; entto : Group;
     	        TC : in out CopyTool)  is static;
     ---Purpose : Copies Specific Parameters
 

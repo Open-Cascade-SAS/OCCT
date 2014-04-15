@@ -33,7 +33,7 @@ uses
 
 is
 
-    Create returns mutable Lexicon from Units;
+    Create returns Lexicon from Units;
     
     ---Level: Internal 
     

@@ -22,7 +22,7 @@ uses
 is
 
     Create 
-    returns mutable BooleanArray from PDataStd;
+    returns BooleanArray from PDataStd;
 
     SetLower (me : mutable;
     	      lower : Integer from Standard);

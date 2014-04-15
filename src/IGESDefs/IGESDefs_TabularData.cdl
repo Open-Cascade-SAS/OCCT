@@ -31,7 +31,7 @@ raises DimensionMismatch, OutOfRange
 
 is
 
-        Create returns mutable TabularData;
+        Create returns TabularData;
 
         -- Specific methods for the entity
 

@@ -26,9 +26,9 @@ uses
 is
 
 --    Create  -- Version 0
---    returns mutable CentroidStorageDriver from MXCAFDoc;
+--    returns CentroidStorageDriver from MXCAFDoc;
     Create (theMsgDriver : MessageDriver from CDM)
-    returns mutable CentroidStorageDriver from MXCAFDoc;
+    returns CentroidStorageDriver from MXCAFDoc;
 
 
     VersionNumber(me) returns Integer from Standard;
@@ -38,11 +38,11 @@ is
     SourceType(me) returns Type from Standard;
 	---Purpose: Returns the type: XCAFDoc_Centroid.
 
-    NewEmpty (me) returns mutable Attribute from PDF;
+    NewEmpty (me) returns Attribute from PDF;
 
     Paste(me;
     	  Source     :         Attribute from TDF;
-    	  Target     : mutable Attribute from PDF;
+    	  Target     : Attribute from PDF;
     	  RelocTable : SRelocationTable from MDF);
 
 end CentroidStorageDriver;

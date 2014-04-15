@@ -29,7 +29,7 @@ is
 	Create returns RWCompositeCurveOnSurface;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable CompositeCurveOnSurface from StepGeom);
+	              ach : in out Check; ent : CompositeCurveOnSurface from StepGeom);
 
 	WriteStep (me; SW : in out StepWriter; ent : CompositeCurveOnSurface from StepGeom);
 

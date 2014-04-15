@@ -29,7 +29,7 @@ is
 	Create returns RWClosedShell;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable ClosedShell from StepShape);
+	              ach : in out Check; ent : ClosedShell from StepShape);
 
 	WriteStep (me; SW : in out StepWriter; ent : ClosedShell from StepShape);
 

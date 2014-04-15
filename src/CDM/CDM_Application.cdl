@@ -27,7 +27,7 @@ uses Document           from CDM,
 is
 
     Retrieve(me: mutable; aMetaData: MetaData from CDM; UseStorageConfiguration: Boolean from Standard)
-    returns mutable Document from CDM
+    returns Document from CDM
     is deferred private;
 
 

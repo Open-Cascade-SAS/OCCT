@@ -31,7 +31,7 @@ uses
 
 is
 
-        Create returns mutable TabulatedCylinder;
+        Create returns TabulatedCylinder;
 
         -- Specific Methods pertaining to the class
 

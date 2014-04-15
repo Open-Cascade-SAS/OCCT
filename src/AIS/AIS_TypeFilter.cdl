@@ -46,7 +46,7 @@ uses
 
 is
     Create(aGivenKind      : KindOfInteractive from AIS)
-    returns mutable TypeFilter from AIS;
+    returns TypeFilter from AIS;
     	---Purpose: Initializes filter for type, aGivenKind.
     IsOk (me;anobj : EntityOwner from SelectMgr)
     returns Boolean from Standard is redefined virtual;

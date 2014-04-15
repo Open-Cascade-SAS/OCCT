@@ -26,10 +26,10 @@ uses
 
 is
     Create(P : Pnt from gp; T : MarkerShape from Draw; C : Color from Draw; 
-    	ISize : Integer = 5) returns mutable Marker3D from Draw;
+    	ISize : Integer = 5) returns Marker3D from Draw;
 	
     Create(P : Pnt from gp; T : MarkerShape from Draw; C : Color from Draw; 
-    	RSize : Real) returns mutable Marker3D from Draw;
+    	RSize : Real) returns Marker3D from Draw;
 
     ChangePos(me : mutable) returns Pnt from gp;
     ---C++: return &

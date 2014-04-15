@@ -31,7 +31,7 @@ is
 
 
     Create
-    returns mutable DocumentRetrievalDriver from MDocStd;    
+    returns DocumentRetrievalDriver from MDocStd;    
 
     Paste (me : mutable; PDOC   : Document from PDocStd;
                          TDOC   : Document from TDocStd;
@@ -40,7 +40,7 @@ is
     ---Purpose: deferred methods of RetrievalDriver from PCDM
     --          =============================================
 
-    Make (me : mutable; aPCDM: Document from PCDM; aCDM : mutable Document from CDM); 
+    Make (me : mutable; aPCDM: Document from PCDM; aCDM : Document from CDM); 
 
     ---Purpose: virtual methods (may be redefined by specialized application)
     --          =============================================================

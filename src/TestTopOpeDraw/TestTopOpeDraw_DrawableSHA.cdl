@@ -41,7 +41,7 @@ is
     	    Text      : CString from Standard; 
     	    TextColor : Color from Draw;
     	    DisplayGeometry : Boolean from Standard = Standard_False)
-    returns mutable DrawableSHA from TestTopOpeDraw;
+    returns DrawableSHA from TestTopOpeDraw;
 
     SetDisplayGeometry(me : mutable; b : Boolean from Standard) is static;
 

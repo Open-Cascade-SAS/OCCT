@@ -38,7 +38,7 @@ raises DimensionMismatch, OutOfRange
 
 is
 
-        Create returns mutable LabelDisplay;
+        Create returns LabelDisplay;
 
         -- Specific Methods pertaining to the class
 

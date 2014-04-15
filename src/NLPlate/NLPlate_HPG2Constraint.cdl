@@ -23,7 +23,7 @@ uses
      D2  from  Plate
      
 is
-    Create(UV : XY; D1T : D1 from Plate; D2T : D2 from Plate) returns mutable HPG2Constraint;
+    Create(UV : XY; D1T : D1 from Plate; D2T : D2 from Plate) returns HPG2Constraint;
     -- create a G2 Constraint
     -- 
 

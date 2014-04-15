@@ -64,7 +64,7 @@ is
     is deferred;
     
     MakeVertex(me; 
-    	       S  : mutable HShape from PTopoDS) 
+    	       S  : HShape from PTopoDS) 
 	---Level: Internal 
     raises
     	TypeMismatch from Standard
@@ -78,7 +78,7 @@ is
     is deferred;
     
     MakeEdge(me; 
-    	     S  : mutable HShape from PTopoDS) 
+    	     S  : HShape from PTopoDS) 
 	---Level: Internal 
     raises
     	TypeMismatch from Standard
@@ -92,7 +92,7 @@ is
     is deferred;
     
     MakeWire(me; 
-    	     S  : mutable HShape from PTopoDS) 
+    	     S  : HShape from PTopoDS) 
 	---Level: Internal 
     raises
     	TypeMismatch from Standard
@@ -106,7 +106,7 @@ is
     is deferred;
     
     MakeFace(me; 
-    	     S  : mutable HShape from PTopoDS) 
+    	     S  : HShape from PTopoDS) 
 	---Level: Internal 
     raises
     	TypeMismatch from Standard
@@ -120,7 +120,7 @@ is
     is deferred;
     
     MakeShell(me; 
-    	      S  : mutable HShape from PTopoDS) 
+    	      S  : HShape from PTopoDS) 
 	---Level: Internal 
     raises
     	TypeMismatch from Standard
@@ -134,7 +134,7 @@ is
     is deferred;
     
     MakeSolid(me; 
-    	      S  : mutable HShape from PTopoDS) 
+    	      S  : HShape from PTopoDS) 
 	---Level: Internal 
     raises
     	TypeMismatch from Standard
@@ -148,7 +148,7 @@ is
     is deferred;
     
     MakeCompSolid(me; 
-    	    	  S  : mutable HShape from PTopoDS) 
+    	    	  S  : HShape from PTopoDS) 
 	---Level: Internal 
     raises
     	TypeMismatch from Standard
@@ -162,7 +162,7 @@ is
     is deferred;
     
     MakeCompound(me; 
-    	    	 S  : mutable HShape from PTopoDS) 
+    	    	 S  : HShape from PTopoDS) 
 	---Level: Internal 
     raises
     	TypeMismatch from Standard
@@ -179,7 +179,7 @@ is
     
     UpdateShape(me;
     	        S1 :         Shape  from TopoDS;
-		S2 : mutable HShape from PTopoDS)
+		S2 : HShape from PTopoDS)
 	---Purpose: Basic update method
 	---Level: Internal 
     is static;
@@ -193,7 +193,7 @@ is
     
     UpdateVertex(me;
     	         S1 :         Shape                  from TopoDS;
-		 S2 : mutable HShape                 from PTopoDS;
+		 S2 : HShape                 from PTopoDS;
     	    	 M  : in out  TransientPersistentMap from PTColStd)
 	---Level: Internal 
     is virtual;
@@ -207,7 +207,7 @@ is
     
     UpdateEdge(me;
     	       S1 :         Shape                  from TopoDS;
-	       S2 : mutable HShape                 from PTopoDS;
+	       S2 : HShape                 from PTopoDS;
     	       M  : in out  TransientPersistentMap from PTColStd)
 	---Level: Internal 
     is virtual;
@@ -221,7 +221,7 @@ is
     
     UpdateWire(me;
     	       S1 :         Shape  from TopoDS;
-	       S2 : mutable HShape from PTopoDS)
+	       S2 : HShape from PTopoDS)
 	---Level: Internal 
     is virtual;
     
@@ -233,7 +233,7 @@ is
     
     UpdateFace(me;
     	       S1 :         Shape                  from TopoDS;
-	       S2 : mutable HShape                 from PTopoDS;
+	       S2 : HShape                 from PTopoDS;
     	       M  : in out  TransientPersistentMap from PTColStd)
 	---Level: Internal 
     is virtual;
@@ -247,7 +247,7 @@ is
     
     UpdateShell(me;
     	        S1 :         Shape  from TopoDS;
-	        S2 : mutable HShape from PTopoDS)
+	        S2 : HShape from PTopoDS)
 	---Level: Internal 
     is virtual;
     
@@ -259,7 +259,7 @@ is
     
     UpdateSolid(me;
     	        S1 :         Shape  from TopoDS;
-	        S2 : mutable HShape from PTopoDS)
+	        S2 : HShape from PTopoDS)
 	---Level: Internal 
     is virtual;
     
@@ -271,7 +271,7 @@ is
     
     UpdateCompSolid(me;
     	            S1 :         Shape  from TopoDS;
-	            S2 : mutable HShape from PTopoDS)
+	            S2 : HShape from PTopoDS)
 	---Level: Internal 
     is virtual;
     
@@ -283,7 +283,7 @@ is
     
     UpdateCompound(me;
     	           S1 :         Shape  from TopoDS;
-	           S2 : mutable HShape from PTopoDS)
+	           S2 : HShape from PTopoDS)
 	---Level: Internal 
     is virtual;
     

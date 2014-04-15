@@ -26,7 +26,7 @@ uses
      Trsf             from gp
 
 is
-    Create returns mutable TransformationDriver from DNaming;
+    Create returns TransformationDriver from DNaming;
     ---Purpose: Constructor
 
     ---Purpose: validation

@@ -25,7 +25,7 @@ uses
 	RepresentationContext from StepRepr
 is
 
-	Create returns mutable CsgShapeRepresentation;
+	Create returns CsgShapeRepresentation;
 	---Purpose: Returns a CsgShapeRepresentation
 
 

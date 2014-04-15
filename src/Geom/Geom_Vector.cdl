@@ -38,7 +38,7 @@ is
         ---Purpose : Reverses the vector <me>.
 
 
-  Reversed (me) returns mutable like me
+  Reversed (me) returns like me
         ---Purpose : 
         --  Returns a copy of <me> reversed.
      is static;
@@ -111,7 +111,7 @@ is
      is deferred;
      
 
-  Crossed (me; Other : Vector)  returns mutable like me
+  Crossed (me; Other : Vector)  returns like me
         ---Purpose :
         --  Computes the cross product between <me> and <Other>.
         --  A new direction is returned.
@@ -134,7 +134,7 @@ is
      is deferred;
      
 
-  CrossCrossed (me; V1, V2 : Vector)   returns mutable like me
+  CrossCrossed (me; V1, V2 : Vector)   returns like me
         ---Purpose :
         --  Computes the triple vector product <me> ^(V1 ^ V2).
      raises ConstructionError

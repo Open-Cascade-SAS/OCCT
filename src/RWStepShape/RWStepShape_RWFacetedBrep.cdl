@@ -29,7 +29,7 @@ is
 	Create returns RWFacetedBrep;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable FacetedBrep from StepShape);
+	              ach : in out Check; ent : FacetedBrep from StepShape);
 
 	WriteStep (me; SW : in out StepWriter; ent : FacetedBrep from StepShape);
 

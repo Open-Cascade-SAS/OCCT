@@ -24,7 +24,7 @@ uses
     EntityIterator,
     Graph
 is
-    Create returns mutable SelectAssembly from STEPSelections;
+    Create returns SelectAssembly from STEPSelections;
     
     Explore (me; level : Integer; ent : Transient; G : Graph;
     	     explored : in out EntityIterator)

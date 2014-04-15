@@ -29,7 +29,7 @@ is
 	Create returns RWOffsetCurve3d;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable OffsetCurve3d from StepGeom);
+	              ach : in out Check; ent : OffsetCurve3d from StepGeom);
 
 	WriteStep (me; SW : in out StepWriter; ent : OffsetCurve3d from StepGeom);
 

@@ -25,22 +25,22 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable PointOnCurve;
+	Create returns PointOnCurve;
 	---Purpose: Returns a PointOnCurve
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection) is redefined;
+	      aName : HAsciiString from TCollection) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aBasisCurve : mutable Curve from StepGeom;
+	      aName : HAsciiString from TCollection;
+	      aBasisCurve : Curve from StepGeom;
 	      aPointParameter : Real from Standard) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetBasisCurve(me : mutable; aBasisCurve : mutable Curve);
-	BasisCurve (me) returns mutable Curve;
+	SetBasisCurve(me : mutable; aBasisCurve : Curve);
+	BasisCurve (me) returns Curve;
 	SetPointParameter(me : mutable; aPointParameter : Real);
 	PointParameter (me) returns Real;
 

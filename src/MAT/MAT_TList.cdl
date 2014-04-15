@@ -41,11 +41,11 @@ inherits
 
 is
 
-    Create returns mutable TListNode from MAT;
+    Create returns TListNode from MAT;
 
     ---C++: inline
     
-    Create(anitem : Item) returns mutable TListNode from MAT;
+    Create(anitem : Item) returns TListNode from MAT;
 
     ---C++: inline
     
@@ -56,13 +56,13 @@ is
     
     is static;
     
-    Next(me) returns mutable TListNode from MAT
+    Next(me) returns TListNode from MAT
     
     ---C++: inline
 
     is static;
     
-    Previous(me) returns mutable TListNode from MAT
+    Previous(me) returns TListNode from MAT
     
     ---C++: inline
 
@@ -74,13 +74,13 @@ is
 
     is static;
     
-    Next(me : mutable ; atlistnode : mutable TListNode from MAT)
+    Next(me : mutable ; atlistnode : TListNode from MAT)
     
     ---C++: inline
 
     is static;
     
-    Previous(me : mutable ; atlistnode : mutable TListNode from MAT)
+    Previous(me : mutable ; atlistnode : TListNode from MAT)
     
     ---C++: inline
 
@@ -100,7 +100,7 @@ end TListNode;
 
 is
 
-    Create returns mutable TList from MAT;
+    Create returns TList from MAT;
     
     First(me : mutable)
     

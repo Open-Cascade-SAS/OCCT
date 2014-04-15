@@ -26,23 +26,23 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable CompositeCurve;
+	Create returns CompositeCurve;
 	---Purpose: Returns a CompositeCurve
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection) is redefined;
+	      aName : HAsciiString from TCollection) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aSegments : mutable HArray1OfCompositeCurveSegment from StepGeom;
+	      aName : HAsciiString from TCollection;
+	      aSegments : HArray1OfCompositeCurveSegment from StepGeom;
 	      aSelfIntersect : Logical from StepData) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetSegments(me : mutable; aSegments : mutable HArray1OfCompositeCurveSegment);
-	Segments (me) returns mutable HArray1OfCompositeCurveSegment;
-	SegmentsValue (me; num : Integer) returns mutable CompositeCurveSegment;
+	SetSegments(me : mutable; aSegments : HArray1OfCompositeCurveSegment);
+	Segments (me) returns HArray1OfCompositeCurveSegment;
+	SegmentsValue (me; num : Integer) returns CompositeCurveSegment;
 	NbSegments (me) returns Integer;
 	SetSelfIntersect(me : mutable; aSelfIntersect : Logical);
 	SelfIntersect (me) returns Logical;

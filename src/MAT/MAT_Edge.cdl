@@ -31,7 +31,7 @@ uses
 
 is
 
-    Create returns mutable Edge from MAT;
+    Create returns Edge from MAT;
     
     EdgeNumber(me : mutable ; anumber : Integer)
 

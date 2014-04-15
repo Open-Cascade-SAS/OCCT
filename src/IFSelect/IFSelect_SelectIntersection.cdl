@@ -23,7 +23,7 @@ uses AsciiString from TCollection, EntityIterator, Graph
 
 is
 
-    Create returns mutable SelectIntersection;
+    Create returns SelectIntersection;
     ---Purpose : Creates an empty SelectIntersection
 
     RootResult (me; G : Graph) returns EntityIterator;

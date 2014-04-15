@@ -31,7 +31,7 @@ is
     ---Purpose : Returns a ToolNewDimensionedGeometry, ready to work
 
 
-    ReadOwnParams (me; ent : mutable NewDimensionedGeometry;
+    ReadOwnParams (me; ent : NewDimensionedGeometry;
     	    	   IR : IGESReaderData; PR : in out ParamReader)
     	raises DomainError  is static;
     ---Purpose : Reads own parameters from file. <PR> gives access to them,
@@ -47,7 +47,7 @@ is
     ---Purpose : Lists the Entities shared by a NewDimensionedGeometry <ent>, from
     --           its specific (own) parameters
 
-    OwnCorrect (me; ent : mutable NewDimensionedGeometry) returns Boolean  is static;
+    OwnCorrect (me; ent : NewDimensionedGeometry) returns Boolean  is static;
     ---Purpose : Sets automatic unambiguous Correction on a NewDimensionedGeometry
     --           (NbDimensions forced to 1, Transf Nullified in D.E.)
 
@@ -59,7 +59,7 @@ is
     ---Purpose : Performs Specific Semantic Check
 
 
-    OwnCopy    (me; entfrom : NewDimensionedGeometry; entto : mutable NewDimensionedGeometry;
+    OwnCopy    (me; entfrom : NewDimensionedGeometry; entto : NewDimensionedGeometry;
     	        TC : in out CopyTool)  is static;
     ---Purpose : Copies Specific Parameters
 

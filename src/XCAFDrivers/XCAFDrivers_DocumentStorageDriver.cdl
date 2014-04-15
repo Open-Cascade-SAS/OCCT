@@ -23,7 +23,7 @@ uses
     MessageDriver from CDM
 
 is
-    Create returns mutable DocumentStorageDriver from XCAFDrivers;
+    Create returns DocumentStorageDriver from XCAFDrivers;
 
     AttributeDrivers(me : mutable; theMessageDriver : MessageDriver from CDM)
     returns ASDriverTable from MDF

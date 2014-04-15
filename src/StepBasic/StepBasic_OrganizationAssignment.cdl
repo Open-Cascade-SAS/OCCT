@@ -25,15 +25,15 @@ uses
 is
 
 	Init (me : mutable;
-	      aAssignedOrganization : mutable Organization from StepBasic;
-	      aRole : mutable OrganizationRole from StepBasic) is virtual;
+	      aAssignedOrganization : Organization from StepBasic;
+	      aRole : OrganizationRole from StepBasic) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetAssignedOrganization(me : mutable; aAssignedOrganization : mutable Organization);
-	AssignedOrganization (me) returns mutable Organization;
-	SetRole(me : mutable; aRole : mutable OrganizationRole);
-	Role (me) returns mutable OrganizationRole;
+	SetAssignedOrganization(me : mutable; aAssignedOrganization : Organization);
+	AssignedOrganization (me) returns Organization;
+	SetRole(me : mutable; aRole : OrganizationRole);
+	Role (me) returns OrganizationRole;
 
 fields
 

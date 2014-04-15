@@ -24,7 +24,7 @@ uses
 	NamedUnit from StepBasic
 is
 
-	Create returns mutable PlaneAngleMeasureWithUnit;
+	Create returns PlaneAngleMeasureWithUnit;
 	---Purpose: Returns a PlaneAngleMeasureWithUnit
 
 

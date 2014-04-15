@@ -30,14 +30,14 @@ is
     returns DrawDocument from DDocStd;
 
     Create (Doc : Document from TDocStd)
-    returns mutable DrawDocument from DDocStd;
+    returns DrawDocument from DDocStd;
 
     GetDocument(me) returns Document from TDocStd;
 
     DrawOn (me; dis : in out Display from Draw);
     
     Copy (me) 
-    returns mutable Drawable3D from Draw
+    returns Drawable3D from Draw
     is redefined;
 	
     Dump (me; S : in out OStream) 

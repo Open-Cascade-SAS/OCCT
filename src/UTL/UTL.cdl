@@ -24,7 +24,7 @@ is
     OpenFile(aFile: in out BaseDriver from Storage; aName: ExtendedString from TCollection; aMode : OpenMode from Storage)
     returns Error from Storage;
     
-    AddToUserInfo(aData: mutable Data from Storage; anInfo: ExtendedString from TCollection);
+    AddToUserInfo(aData: Data from Storage; anInfo: ExtendedString from TCollection);
     
     Path(aFileName: ExtendedString from TCollection) returns Path from OSD;
 

@@ -28,7 +28,7 @@ is
 	Create returns RWFileSchema;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable FileSchema from HeaderSection);
+	              ach : in out Check; ent : FileSchema from HeaderSection);
 
 	WriteStep (me; SW : in out StepWriter; ent : FileSchema from HeaderSection);
 

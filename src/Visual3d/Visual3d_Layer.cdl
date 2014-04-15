@@ -54,7 +54,7 @@ is
     Create (AViewer : ViewManager from Visual3d;
         AType   : TypeOfLayer from Aspect = Aspect_TOL_OVERLAY;
         AFlag   : Boolean from Standard = Standard_False)
-        returns mutable Layer from Visual3d;
+        returns Layer from Visual3d;
     ---Level: Public
     ---Purpose: Creates a layer with the type <Atype>.
     --      if <AFlag> == Standard_True then the layer is

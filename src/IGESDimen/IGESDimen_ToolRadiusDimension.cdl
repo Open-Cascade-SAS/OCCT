@@ -31,7 +31,7 @@ is
     ---Purpose : Returns a ToolRadiusDimension, ready to work
 
 
-    ReadOwnParams (me; ent : mutable RadiusDimension;
+    ReadOwnParams (me; ent : RadiusDimension;
     	    	   IR : IGESReaderData; PR : in out ParamReader)
     	raises DomainError  is static;
     ---Purpose : Reads own parameters from file. <PR> gives access to them,
@@ -55,7 +55,7 @@ is
     ---Purpose : Performs Specific Semantic Check
 
 
-    OwnCopy    (me; entfrom : RadiusDimension; entto : mutable RadiusDimension;
+    OwnCopy    (me; entfrom : RadiusDimension; entto : RadiusDimension;
     	        TC : in out CopyTool)  is static;
     ---Purpose : Copies Specific Parameters
 

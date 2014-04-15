@@ -43,7 +43,7 @@ is
     
 
     Create (aTypeOfPresentation3d: TypeOfPresentation3d from PrsMgr = PrsMgr_TOP_AllView) 
-    returns  mutable  MultipleConnectedInteractive  from  AIS;
+    returns  MultipleConnectedInteractive  from  AIS;
     ---Purpose: Initializes the Interactive Object with multiple
     -- presentation connections. If aTypeOfPresentation3d
     -- does not have the affectation PrsMgr_TOP_AllView,
@@ -79,7 +79,7 @@ is
     
     Compute(me:mutable;
             aPresentationManager :         PresentationManager3d from PrsMgr;
-            aPresentation        : mutable Presentation          from Prs3d;
+            aPresentation        : Presentation          from Prs3d;
             aMode                :         Integer               from Standard = 0)
     ---Level: Internal 
     ---Purpose: this method is redefined virtual;
@@ -93,7 +93,7 @@ is
     Compute(me            : mutable;
     	    aProjector    : Projector from Prs3d;
     	    aTrsf         : Transformation from Geom;
-	    aPresentation : mutable Presentation from Prs3d)
+	    aPresentation : Presentation from Prs3d)
     is redefined;
     ---Purpose: computes the presentation according to a point of view
     --          given by <aProjector>. 
@@ -105,10 +105,10 @@ is
 
     Compute(me:mutable;
     	        aProjector: Projector from Prs3d;
-                aPresentation: mutable Presentation from Prs3d)
+                aPresentation: Presentation from Prs3d)
     is redefined ;     
 
-    ComputeSelection(me:mutable; aSelection :mutable Selection from SelectMgr;
+    ComputeSelection(me:mutable; aSelection : Selection from SelectMgr;
                                  aMode      :        Integer   from Standard)
     is redefined virtual private;
 

@@ -28,7 +28,7 @@ is
 	Create returns RWApprovalStatus;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable ApprovalStatus from StepBasic);
+	              ach : in out Check; ent : ApprovalStatus from StepBasic);
 
 	WriteStep (me; SW : in out StepWriter; ent : ApprovalStatus from StepBasic);
 

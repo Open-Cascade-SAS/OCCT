@@ -24,23 +24,23 @@ uses
 	ApplicationContext from StepBasic
 is
 
-	Create returns mutable ProductContext;
+	Create returns ProductContext;
 	---Purpose: Returns a ProductContext
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aFrameOfReference : mutable ApplicationContext from StepBasic) is redefined;
+	      aName : HAsciiString from TCollection;
+	      aFrameOfReference : ApplicationContext from StepBasic) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aFrameOfReference : mutable ApplicationContext from StepBasic;
-	      aDisciplineType : mutable HAsciiString from TCollection) is virtual;
+	      aName : HAsciiString from TCollection;
+	      aFrameOfReference : ApplicationContext from StepBasic;
+	      aDisciplineType : HAsciiString from TCollection) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetDisciplineType(me : mutable; aDisciplineType : mutable HAsciiString);
-	DisciplineType (me) returns mutable HAsciiString;
+	SetDisciplineType(me : mutable; aDisciplineType : HAsciiString);
+	DisciplineType (me) returns HAsciiString;
 
 fields
 

@@ -92,7 +92,7 @@ raises
     
 is
     Create
-    returns mutable PolyAlgo from HLRBRep;
+    returns PolyAlgo from HLRBRep;
     	---Purpose: Constructs an empty framework for the
     	-- calculation of the visible and hidden lines of a shape in a projection.
     	-- Use the functions:
@@ -103,10 +103,10 @@ is
     	-- The shape or shapes to be visualized must have already been triangulated.
         
     Create(A : PolyAlgo from HLRBRep)
-    returns mutable PolyAlgo from HLRBRep;
+    returns PolyAlgo from HLRBRep;
 
     Create(S : Shape from TopoDS)
-    returns mutable PolyAlgo from HLRBRep;
+    returns PolyAlgo from HLRBRep;
     
     NbShapes(me) returns Integer from Standard
 	---C++: inline

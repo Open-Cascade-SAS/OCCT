@@ -36,7 +36,7 @@ raises OutOfRange
 
 is
 
-        Create returns mutable TrimmedSurface;
+        Create returns TrimmedSurface;
 
         -- Specific Methods pertaining to the class
 

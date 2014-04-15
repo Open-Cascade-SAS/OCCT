@@ -25,7 +25,7 @@ uses CString, Logical
 
 is
 
-    Create returns mutable SelectReal;
+    Create returns SelectReal;
 
     Kind (me) returns Integer  is redefined;
     --  fixed kind : Real

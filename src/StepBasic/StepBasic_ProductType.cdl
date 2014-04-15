@@ -25,7 +25,7 @@ uses
 	HArray1OfProduct from StepBasic
 is
 
-	Create returns mutable ProductType;
+	Create returns ProductType;
 	---Purpose: Returns a ProductType
 
 

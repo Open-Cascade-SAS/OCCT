@@ -228,7 +228,7 @@ is
         ---Purpose: Determines the orientation vector corresponding
         --          to the predefined orientation type.
 
-        ArrowOfRadius ( garrow   : mutable Group from Graphic3d;
+        ArrowOfRadius ( garrow   : Group from Graphic3d;
                         X0,Y0,Z0 : Coordinate;
                         DX,DY,DZ : Parameter;
                         Alpha    : PlaneAngle from Quantity;
@@ -240,7 +240,7 @@ is
         --          Alpha    : Angle of arrow.
         --          Lng      : Length of arrow.
 
-        CircleInPlane ( gcircle  : mutable Group from Graphic3d;
+        CircleInPlane ( gcircle  : Group from Graphic3d;
                         X0,Y0,Z0 : Coordinate;
                         VX,VY,VZ : Parameter;
                         Radius   : Parameter ) is protected;

@@ -51,7 +51,7 @@ raises
 is
 
 	Create
-		returns mutable Light from Visual3d;
+		returns Light from Visual3d;
 	---Level: Public
 	---Purpose: Creates a light from default values.
 	--	    Light sources are created in a visualiser
@@ -61,7 +61,7 @@ is
 	--	    Color	= WHITE
 
 	Create ( Color		: Color from Quantity )
-		returns mutable Light from Visual3d;
+		returns Light from Visual3d;
 	---Level: Public
 	---Purpose: Creates an AMBIENT light source.
 	--	    Light sources are created in a visualiser
@@ -70,7 +70,7 @@ is
 	Create ( Color		: Color from Quantity;
 		 Direction	: Vector from Graphic3d; 
     	    	 Headlight      : Boolean  from  Standard  =  Standard_False )
-		returns mutable Light from Visual3d
+		returns Light from Visual3d
 	---Level: Public
 	---Purpose: Creates a DIRECTIONAL light source.
 	--	    Light sources are created in a visualiser
@@ -81,7 +81,7 @@ is
 	Create ( Color		: Color from Quantity;
 		 Position	: Vertex from Graphic3d;
 		 Fact1, Fact2	: Real from Standard )
-		returns mutable Light from Visual3d
+		returns Light from Visual3d
 	---Level: Public
 	---Purpose: Creates a POSITIONAL light source.
 	--	    Light sources are created in a visualiser
@@ -98,7 +98,7 @@ is
 		 Concentration	: Real from Standard;
 		 Fact1, Fact2	: Real from Standard;
 		 AngleCone	: Real from Standard )
-		returns mutable Light from Visual3d
+		returns Light from Visual3d
 	---Level: Public
 	---Purpose: Creates a SPOT light source.
 	--	    Light sources are created in a visualiser

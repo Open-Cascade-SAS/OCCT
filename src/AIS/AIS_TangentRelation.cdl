@@ -34,7 +34,7 @@ is
 	    aPlane      : Plane          from Geom;
     	    anExternRef : Integer        from Standard = 0)
 	    ---Purpose:  TwoFacesTangent or TwoEdgesTangent relation
-    returns mutable TangentRelation from AIS;
+    returns TangentRelation from AIS;
     	---Purpose: Constructs an object to display tangency constraints.
     	-- This object is defined by the first shape aFShape, the
     	-- second shape aSShape, the plane aPlane and the index anExternRef.
@@ -61,19 +61,19 @@ is
 
     Compute(me            : mutable;
     	    aPresentationManager: PresentationManager3d from PrsMgr;
-    	    aPresentation : mutable Presentation from Prs3d;
+    	    aPresentation : Presentation from Prs3d;
     	    aMode         : Integer from Standard= 0) 
     is redefined static private;
     
     Compute(me:mutable;
     	        aProjector: Projector from Prs3d;
-                aPresentation: mutable Presentation from Prs3d)
+                aPresentation: Presentation from Prs3d)
     is redefined static private;
 
     Compute(me            : mutable;
     	    aProjector    : Projector from Prs3d;
     	    aTrsf         : Transformation from Geom;
-	    aPresentation : mutable Presentation from Prs3d)
+	    aPresentation : Presentation from Prs3d)
     is redefined;
     	---Purpose: computes the presentation according to a point of view
     	--          given by <aProjector>. 
@@ -86,7 +86,7 @@ is
 -- Methods from SelectableObject
 
     ComputeSelection(me         : mutable;
-    	    	     aSelection : mutable Selection from SelectMgr;
+    	    	     aSelection : Selection from SelectMgr;
     	    	     aMode      : Integer from Standard)is private;
 
 
@@ -95,11 +95,11 @@ is
 --
 
     ComputeTwoFacesTangent(me: mutable;
-    	    	    	   aPresentation : mutable Presentation from Prs3d)
+    	    	    	   aPresentation : Presentation from Prs3d)
     is private;
     
     ComputeTwoEdgesTangent(me: mutable;
-    	    	    	   aPresentation : mutable Presentation from Prs3d)
+    	    	    	   aPresentation : Presentation from Prs3d)
     is private;
     
 

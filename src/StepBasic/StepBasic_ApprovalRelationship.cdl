@@ -24,25 +24,25 @@ uses
 	Approval from StepBasic
 is
 
-	Create returns mutable ApprovalRelationship;
+	Create returns ApprovalRelationship;
 	---Purpose: Returns a ApprovalRelationship
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aDescription : mutable HAsciiString from TCollection;
-	      aRelatingApproval : mutable Approval from StepBasic;
-	      aRelatedApproval : mutable Approval from StepBasic) is virtual;
+	      aName : HAsciiString from TCollection;
+	      aDescription : HAsciiString from TCollection;
+	      aRelatingApproval : Approval from StepBasic;
+	      aRelatedApproval : Approval from StepBasic) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetName(me : mutable; aName : mutable HAsciiString);
-	Name (me) returns mutable HAsciiString;
-	SetDescription(me : mutable; aDescription : mutable HAsciiString);
-	Description (me) returns mutable HAsciiString;
-	SetRelatingApproval(me : mutable; aRelatingApproval : mutable Approval);
-	RelatingApproval (me) returns mutable Approval;
-	SetRelatedApproval(me : mutable; aRelatedApproval : mutable Approval);
-	RelatedApproval (me) returns mutable Approval;
+	SetName(me : mutable; aName : HAsciiString);
+	Name (me) returns HAsciiString;
+	SetDescription(me : mutable; aDescription : HAsciiString);
+	Description (me) returns HAsciiString;
+	SetRelatingApproval(me : mutable; aRelatingApproval : Approval);
+	RelatingApproval (me) returns Approval;
+	SetRelatedApproval(me : mutable; aRelatedApproval : Approval);
+	RelatedApproval (me) returns Approval;
 
 fields
 

@@ -25,7 +25,7 @@ uses
 	RepresentationItem from StepRepr
 is
 
-	Create returns mutable AnnotationText;
+	Create returns AnnotationText;
 	---Purpose: Returns a AnnotationText
 
 

@@ -21,7 +21,7 @@ uses
 
 is
 
-    Create returns mutable Effectivity;
+    Create returns Effectivity;
 
     Init (me : mutable; aid : HAsciiString);
 

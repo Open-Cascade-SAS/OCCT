@@ -26,18 +26,18 @@ uses
 	Integer                       from Standard
 is
 
-	Create returns mutable SurfaceStyleParameterLine;
+	Create returns SurfaceStyleParameterLine;
 	---Purpose: Returns a SurfaceStyleParameterLine
 
 	Init (me : mutable;
-	      aStyleOfParameterLines : mutable CurveStyle from StepVisual;
+	      aStyleOfParameterLines : CurveStyle from StepVisual;
 	      aDirectionCounts : HArray1OfDirectionCountSelect from StepVisual) 
     	is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetStyleOfParameterLines(me : mutable; aStyleOfParameterLines : mutable CurveStyle);
-	StyleOfParameterLines (me) returns mutable CurveStyle;
+	SetStyleOfParameterLines(me : mutable; aStyleOfParameterLines : CurveStyle);
+	StyleOfParameterLines (me) returns CurveStyle;
 	SetDirectionCounts(me : mutable; aDirectionCounts : HArray1OfDirectionCountSelect from StepVisual);
 	DirectionCounts (me) returns HArray1OfDirectionCountSelect from StepVisual;
 	DirectionCountsValue (me; num : Integer) returns DirectionCountSelect from StepVisual;

@@ -24,7 +24,7 @@ uses
 	Representation from StepRepr
 is
 
-	Create returns mutable CameraUsage;
+	Create returns CameraUsage;
 	---Purpose: Returns a CameraUsage
 
 

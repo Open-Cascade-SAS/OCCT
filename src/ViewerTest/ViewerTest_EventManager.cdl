@@ -26,7 +26,7 @@ is
 
     Create (aView: View from V3d;
             aCtx :InteractiveContext from AIS)
-    returns mutable EventManager from ViewerTest;
+    returns EventManager from ViewerTest;
     
     MoveTo (me:mutable;
             xpix, ypix  : Integer from Standard) is virtual;

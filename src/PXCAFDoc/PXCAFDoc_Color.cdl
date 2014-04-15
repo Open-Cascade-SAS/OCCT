@@ -21,9 +21,9 @@ uses
     Color from Quantity
 
 is
-    Create returns mutable Color from PXCAFDoc;
+    Create returns Color from PXCAFDoc;
     
-    Create (Loc: Color from Quantity) returns mutable Color from PXCAFDoc;
+    Create (Loc: Color from Quantity) returns Color from PXCAFDoc;
     
     Set (me: mutable; Loc: Color from Quantity);
     

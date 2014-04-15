@@ -25,17 +25,17 @@ uses
 
 is
     Create(theMessageDriver : MessageDriver from CDM)
-    returns mutable NamedDataRetrievalDriver from MDataStd;
+    returns NamedDataRetrievalDriver from MDataStd;
 
     VersionNumber(me) returns Integer from Standard;
 
     SourceType(me) returns Type from Standard;
 
-    NewEmpty (me) returns mutable Attribute from TDF;
+    NewEmpty (me) returns Attribute from TDF;
 
     Paste(me;
     	  Source     :         Attribute from PDF;
-    	  Target     : mutable Attribute from TDF;
+    	  Target     : Attribute from TDF;
     	  RelocTable : RRelocationTable from MDF);
 
 end NamedDataRetrievalDriver;

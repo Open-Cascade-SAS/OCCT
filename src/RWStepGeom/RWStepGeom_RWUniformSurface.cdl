@@ -29,7 +29,7 @@ is
 	Create returns RWUniformSurface;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable UniformSurface from StepGeom);
+	              ach : in out Check; ent : UniformSurface from StepGeom);
 
 	WriteStep (me; SW : in out StepWriter; ent : UniformSurface from StepGeom);
 

@@ -44,19 +44,19 @@ raises BadValue from V3d
 
 is
 
-    	Create ( VM : mutable Viewer ; 
+    	Create ( VM : Viewer ; 
 		 Direction : TypeOfOrientation = V3d_XposYposZpos;
 		 Color : NameOfColor = Quantity_NOC_WHITE; 
     	    	 Headlight : Boolean  from  Standard  =  Standard_False)
-				returns mutable DirectionalLight ;
+				returns DirectionalLight ;
         ---Level: Public
       	---Purpose : Creates a directional light source in the viewer.
 
-    	Create ( VM : mutable Viewer ; Xt,Yt,Zt : Coordinate;
+    	Create ( VM : Viewer ; Xt,Yt,Zt : Coordinate;
 	         Xp,Yp,Zp : Coordinate;
 		 Color : NameOfColor = Quantity_NOC_WHITE;
     	    	 Headlight : Boolean  from  Standard  =  Standard_False)
-		       returns mutable DirectionalLight;
+		       returns DirectionalLight;
 	---Level: Public
 	---Purpose: Creates a directional light source in the viewer.
 	--          Xt,Yt,Zt : Coordinate of light source Target.
@@ -125,7 +125,7 @@ is
         ---Category: Private or Protected methods
         -----------------------------------------
         
-        Symbol ( me ; gsymbol : mutable Group from Graphic3d ;
+        Symbol ( me ; gsymbol : Group from Graphic3d ;
                       aView   : View from V3d ) is redefined static private;
     	---Level: Internal
 	---Purpose: Defines the representation of the directional light source.

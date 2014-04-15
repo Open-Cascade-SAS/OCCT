@@ -48,7 +48,7 @@ is
 
 
     TranslateMappedItem (me : in out; mapit : MappedItem from StepRepr;
-    	    	    	 TP : mutable TransientProcess from Transfer)
+    	    	    	 TP : TransientProcess from Transfer)
     	returns Shape;
     ---Purpose : Translates a MappedItem. More precisely
     --           A MappedItem has a MappingSource and a MappingTarget

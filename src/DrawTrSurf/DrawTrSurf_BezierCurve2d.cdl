@@ -36,13 +36,13 @@ is
         --- Purpose :
         --  creates a drawable Bezier curve from a Bezier curve of 
         --  package Geom2d.
-     returns mutable BezierCurve2d from DrawTrSurf;
+     returns BezierCurve2d from DrawTrSurf;
 
 
   Create (C : BezierCurve from Geom2d;
           CurvColor, PolesColor : Color from Draw;
           ShowPoles : Boolean; Discret : Integer)
-     returns mutable BezierCurve2d from DrawTrSurf;
+     returns BezierCurve2d from DrawTrSurf;
 
 
   DrawOn (me; dis : in out Display from Draw)
@@ -76,7 +76,7 @@ is
         ---C++: inline
      is static;
     
-  Copy(me) returns mutable Drawable3D from Draw
+  Copy(me) returns Drawable3D from Draw
 	---Purpose: For variable copy.
   is redefined;
   

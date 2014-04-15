@@ -23,7 +23,7 @@ uses
 			    
 is
     Create
-    returns mutable Naming from PNaming;
+    returns Naming from PNaming;
     
     SetName(me : mutable ; aName : Name from PNaming);
 

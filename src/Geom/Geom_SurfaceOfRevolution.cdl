@@ -76,7 +76,7 @@ raises ConstructionError   from Standard,
 is
 
 
-  Create (C : Curve; A1 : Ax1)   returns mutable SurfaceOfRevolution;
+  Create (C : Curve; A1 : Ax1)   returns SurfaceOfRevolution;
         ---Purpose :
         --  C : is the meridian  or the referenced curve.
         --  A1 is the axis of revolution. 
@@ -263,13 +263,13 @@ is
     	--   surface of revolution is periodic.
 
 
-  UIso (me; U : Real)   returns mutable Curve;
+  UIso (me; U : Real)   returns Curve;
     	---Purpose :  Computes the U isoparametric curve of this surface
     	-- of revolution. It is the curve obtained by rotating the
     	-- meridian through an angle U about the axis of revolution.
 
 
-  VIso (me; V : Real)  returns mutable Curve;
+  VIso (me; V : Real)  returns Curve;
     	---Purpose :  Computes the U isoparametric curve of this surface
     	-- of revolution. It is the curve obtained by rotating the
     	-- meridian through an angle U about the axis of revolution.
@@ -349,7 +349,7 @@ is
 
   Transform (me : mutable; T : Trsf);
     	---Purpose: Applies the transformation T to this surface of revolution.
-   Copy (me)  returns mutable like me;
+   Copy (me)  returns like me;
     	---Purpose: Creates a new object which is a copy of this surface of revolution.
 fields
 

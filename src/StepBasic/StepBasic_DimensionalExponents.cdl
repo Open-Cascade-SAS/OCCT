@@ -23,7 +23,7 @@ uses
 	Real from Standard
 is
 
-	Create returns mutable DimensionalExponents;
+	Create returns DimensionalExponents;
 	---Purpose: Returns a DimensionalExponents
 
 	Init (me : mutable;

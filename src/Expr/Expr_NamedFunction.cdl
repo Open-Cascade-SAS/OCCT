@@ -40,7 +40,7 @@ is
     --          <name> defined by the expression <exp>.
     ---Level : Advanced
     
-    returns mutable NamedFunction;
+    returns NamedFunction;
 
     SetName(me : mutable; newname : AsciiString)
     ---Purpose: Sets the name <newname> to <me>.
@@ -76,7 +76,7 @@ is
 		 
     Copy(me)
     ---Purpose: Returns a copy of <me> with the same form.
-    returns mutable like me;
+    returns like me;
 
     Derivative(me; var : NamedUnknown)
     ---Purpose: Returns Derivative of <me> for variable <var>.

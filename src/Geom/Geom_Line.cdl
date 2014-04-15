@@ -46,18 +46,18 @@ is
 
 
 
-  Create (A1 : Ax1)   returns mutable Line;
+  Create (A1 : Ax1)   returns Line;
         ---Purpose :
         --  Creates a line located in 3D space with the axis placement A1.
         --  The Location of A1 is the origin of the line. 
 
 
-  Create (L : Lin)  returns mutable Line;
+  Create (L : Lin)  returns Line;
         ---Purpose :
         --  Creates a line from a non transient line from package gp.
 
 
-  Create (P : Pnt; V : Dir)    returns mutable Line;
+  Create (P : Pnt; V : Dir)    returns Line;
         ---Purpose :
     	-- Constructs a line passing through point P and parallel to vector V
     	--   (P and V are, respectively, the origin and the unit
@@ -199,7 +199,7 @@ is
      is redefined;  
 
 
-  Copy (me)  returns mutable like me;
+  Copy (me)  returns like me;
     	---Purpose: Creates a new object which is a copy of this line.
 
 

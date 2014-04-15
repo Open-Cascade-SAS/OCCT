@@ -20,7 +20,7 @@ inherits TShared from MMgt
 
 is
 
-	Create returns mutable Colour;
+	Create returns Colour;
 	---Purpose: Returns a Colour
 
 

@@ -90,7 +90,7 @@ is
 	    	
     Paste (me; 
     	   into : in out  Name from TNaming; 
-    	   RT   : mutable RelocationTable from TDF);
+    	   RT   : RelocationTable from TDF);
     	    	
 fields
 

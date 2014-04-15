@@ -29,7 +29,7 @@ is
 	Create returns RWOrientedEdge;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable OrientedEdge from StepShape);
+	              ach : in out Check; ent : OrientedEdge from StepShape);
 
 	WriteStep (me; SW : in out StepWriter; ent : OrientedEdge from StepShape);
 

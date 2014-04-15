@@ -26,12 +26,12 @@ uses
 
 is
     Create (theMessageDriver : MessageDriver from CDM)
-        returns mutable TagSourceDriver from BinMDF;
+        returns TagSourceDriver from BinMDF;
 
-    NewEmpty (me)  returns mutable Attribute from TDF;
+    NewEmpty (me)  returns Attribute from TDF;
 
     Paste(me; Source     : Persistent from BinObjMgt;
-              Target     : mutable Attribute from TDF;
+              Target     : Attribute from TDF;
               RelocTable : out RRelocationTable from BinObjMgt)
         returns Boolean from Standard;
 

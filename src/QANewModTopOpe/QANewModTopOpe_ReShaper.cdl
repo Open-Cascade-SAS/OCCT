@@ -26,17 +26,17 @@ is
  
     Create(TheInitialShape  :  Shape from TopoDS) 
      
-    returns  mutable  ReShaper; 
+    returns  ReShaper; 
      
     Create(TheInitialShape  :  Shape from TopoDS;   
     	   TheMap  :  MapOfShape  from  TopTools) 
      
-    returns  mutable  ReShaper; 
+    returns  ReShaper; 
      
     Create(TheInitialShape  :  Shape from TopoDS;   
            TheShapeToBeRemoved  : HSequenceOfShape  from  TopTools) 
      
-    returns  mutable  ReShaper; 
+    returns  ReShaper; 
      
     Remove(me  :  mutable;  TheS  :  Shape from TopoDS); 
      

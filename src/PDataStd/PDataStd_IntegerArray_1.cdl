@@ -21,7 +21,7 @@ uses HArray1OfInteger from PColStd
      
 is
 
-    Create returns mutable IntegerArray_1 from PDataStd;
+    Create returns IntegerArray_1 from PDataStd;
 
     Init(me : mutable; lower, upper : Integer from Standard);
 

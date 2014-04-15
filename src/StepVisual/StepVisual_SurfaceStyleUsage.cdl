@@ -24,19 +24,19 @@ uses
 	SurfaceSideStyle from StepVisual
 is
 
-	Create returns mutable SurfaceStyleUsage;
+	Create returns SurfaceStyleUsage;
 	---Purpose: Returns a SurfaceStyleUsage
 
 	Init (me : mutable;
 	      aSide : SurfaceSide from StepVisual;
-	      aStyle : mutable SurfaceSideStyle from StepVisual) is virtual;
+	      aStyle : SurfaceSideStyle from StepVisual) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
 	SetSide(me : mutable; aSide : SurfaceSide);
 	Side (me) returns SurfaceSide;
-	SetStyle(me : mutable; aStyle : mutable SurfaceSideStyle);
-	Style (me) returns mutable SurfaceSideStyle;
+	SetStyle(me : mutable; aStyle : SurfaceSideStyle);
+	Style (me) returns SurfaceSideStyle;
 
 fields
 

@@ -24,17 +24,17 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable FileSchema;
+	Create returns FileSchema;
 	---Purpose: Returns a FileSchema
 
 	Init (me : mutable;
-	      aSchemaIdentifiers : mutable HArray1OfHAsciiString from Interface);
+	      aSchemaIdentifiers : HArray1OfHAsciiString from Interface);
 
 	-- Specific Methods for Field Data Access --
 
-	SetSchemaIdentifiers(me : mutable; aSchemaIdentifiers : mutable HArray1OfHAsciiString);
-	SchemaIdentifiers (me) returns mutable HArray1OfHAsciiString;
-	SchemaIdentifiersValue (me; num : Integer) returns mutable HAsciiString;
+	SetSchemaIdentifiers(me : mutable; aSchemaIdentifiers : HArray1OfHAsciiString);
+	SchemaIdentifiers (me) returns HArray1OfHAsciiString;
+	SchemaIdentifiersValue (me; num : Integer) returns HAsciiString;
 	NbSchemaIdentifiers (me) returns Integer;
 
 fields

@@ -28,7 +28,7 @@ is
 	Create returns RWDraughtingPreDefinedColour;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable DraughtingPreDefinedColour from StepVisual);
+	              ach : in out Check; ent : DraughtingPreDefinedColour from StepVisual);
 
 	WriteStep (me; SW : in out StepWriter; ent : DraughtingPreDefinedColour from StepVisual);
 

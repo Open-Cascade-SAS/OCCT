@@ -23,16 +23,16 @@ uses
 	Colour from StepVisual
 is
 
-	Create returns mutable TextStyleForDefinedFont;
+	Create returns TextStyleForDefinedFont;
 	---Purpose: Returns a TextStyleForDefinedFont
 
 	Init (me : mutable;
-	      aTextColour : mutable Colour from StepVisual) is virtual;
+	      aTextColour : Colour from StepVisual) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetTextColour(me : mutable; aTextColour : mutable Colour);
-	TextColour (me) returns mutable Colour;
+	SetTextColour(me : mutable; aTextColour : Colour);
+	TextColour (me) returns Colour;
 
 fields
 

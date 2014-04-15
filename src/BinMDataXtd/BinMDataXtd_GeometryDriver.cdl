@@ -28,12 +28,12 @@ uses
 
 is
     Create (theMessageDriver:MessageDriver from CDM)
-        returns mutable GeometryDriver from BinMDataXtd;
+        returns GeometryDriver from BinMDataXtd;
 
-    NewEmpty (me)  returns mutable Attribute from TDF;
+    NewEmpty (me)  returns Attribute from TDF;
 
     Paste(me; Source     : Persistent from BinObjMgt;
-              Target     : mutable Attribute from TDF;
+              Target     : Attribute from TDF;
               RelocTable : out RRelocationTable from BinObjMgt)
         returns Boolean from Standard;
 

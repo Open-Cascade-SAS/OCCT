@@ -25,7 +25,7 @@ uses
 is
     -- ===== Public methods =====
 
-    Create returns mutable DocumentStorageDriver from BinDrivers;
+    Create returns DocumentStorageDriver from BinDrivers;
 	---Purpose: Constructor
 
 

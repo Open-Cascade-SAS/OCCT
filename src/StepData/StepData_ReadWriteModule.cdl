@@ -91,12 +91,12 @@ is
     --           The default returns False. To be redefined as required.
 
     Read (me; CN : Integer; data : FileReaderData; num : Integer;
-    	ach : in out Check; ent : mutable Transient)
+    	ach : in out Check; ent : Transient)
     	raises DomainError;
     ---Purpose : General Read Function, calls ReadStep
 
     ReadStep (me; CN : Integer; data : StepReaderData; num : Integer;
-    	ach : in out Check; ent : mutable Transient)
+    	ach : in out Check; ent : Transient)
     	raises DomainError  is deferred;
     ---Purpose : Specific Read Function. Works with StepReaderData
 

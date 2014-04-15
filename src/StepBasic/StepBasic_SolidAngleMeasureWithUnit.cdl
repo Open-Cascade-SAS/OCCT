@@ -24,7 +24,7 @@ uses
 	NamedUnit from StepBasic
 is
 
-	Create returns mutable SolidAngleMeasureWithUnit;
+	Create returns SolidAngleMeasureWithUnit;
 	---Purpose: Returns a SolidAngleMeasureWithUnit
 
 

@@ -29,7 +29,7 @@ is
 	Create returns RWShapeRepresentationRelationshipWithTransformation;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable ShapeRepresentationRelationshipWithTransformation from StepRepr);
+	              ach : in out Check; ent : ShapeRepresentationRelationshipWithTransformation from StepRepr);
 
 	WriteStep (me; SW : in out StepWriter; ent : ShapeRepresentationRelationshipWithTransformation from StepRepr);
 

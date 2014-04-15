@@ -38,7 +38,7 @@ raises DomainError    from Standard,
        RangeError     from Standard
 
 is
-    Create returns mutable BisecAna;
+    Create returns BisecAna;
     
     Perform(me        : mutable                                ;
             Cu1       : Curve   from Geom2d                    ;
@@ -143,7 +143,7 @@ is
         --- Purpose : Raised if N < 0. 
     is static;
     
-    Copy (me)  returns mutable like me   
+    Copy (me)  returns like me   
     is static;    
         
     Transform (me : mutable; T : Trsf2d) 

@@ -73,7 +73,7 @@ is
 			    Ufin  : Real    from Standard;
 			    Vdeb  : Real    from Standard;
 			    Vfin  : Real    from Standard)
-    returns mutable IGESEntity from IGESData;
+    returns IGESEntity from IGESData;
     	---Purpose: Transfert  a  GeometryEntity which  answer True  to  the
     	--          member : BRepToIGES::IsGeomSurface(Geometry).  If this
     	--          Entity could not be converted, this member returns a NullEntity.
@@ -85,7 +85,7 @@ is
 			    Ufin  : Real           from Standard;
 			    Vdeb  : Real           from Standard;
 			    Vfin  : Real           from Standard)
-    returns mutable IGESEntity from IGESData;
+    returns IGESEntity from IGESData;
 
 
     TransferSurface        (me    : in out;
@@ -94,7 +94,7 @@ is
 			    Ufin  : Real           from Standard;
 			    Vdeb  : Real           from Standard;
 			    Vfin  : Real           from Standard)
-    returns mutable IGESEntity from IGESData;
+    returns IGESEntity from IGESData;
 
     TransferSurface        (me    : in out;
                             start : BezierSurface from Geom;
@@ -102,7 +102,7 @@ is
 			    Ufin  : Real          from Standard;
 			    Vdeb  : Real          from Standard;
 			    Vfin  : Real          from Standard)
-    returns mutable IGESEntity from IGESData;
+    returns IGESEntity from IGESData;
 
     TransferSurface        (me    : in out;
                             start : RectangularTrimmedSurface from Geom;
@@ -110,7 +110,7 @@ is
 			    Ufin  : Real                      from Standard;
 			    Vdeb  : Real                      from Standard;
 			    Vfin  : Real                      from Standard)
-    returns mutable IGESEntity from IGESData;
+    returns IGESEntity from IGESData;
 
 
     TransferSurface        (me    : in out;
@@ -119,7 +119,7 @@ is
 		            Ufin  : Real              from Standard;
 		            Vdeb  : Real              from Standard;
 		            Vfin  : Real              from Standard)
-    returns mutable IGESEntity from IGESData;
+    returns IGESEntity from IGESData;
 
 
     TransferSurface        (me    : in out;
@@ -128,7 +128,7 @@ is
           		    Ufin  : Real  from Standard;
 		            Vdeb  : Real  from Standard;
 		            Vfin  : Real  from Standard)
-    returns mutable IGESEntity from IGESData;
+    returns IGESEntity from IGESData;
     
 
     TransferSurface        (me    : in out;
@@ -137,7 +137,7 @@ is
 		            Ufin  : Real               from Standard;
 		            Vdeb  : Real               from Standard;
 		            Vfin  : Real               from Standard)
-    returns mutable IGESEntity from IGESData;
+    returns IGESEntity from IGESData;
 
 
     TransferSurface        (me    : in out;
@@ -146,7 +146,7 @@ is
 			    Ufin  : Real           from Standard;
 			    Vdeb  : Real           from Standard;
 			    Vfin  : Real           from Standard)
-    returns mutable IGESEntity from IGESData;
+    returns IGESEntity from IGESData;
 
 
     TransferSurface        (me    : in out;
@@ -155,7 +155,7 @@ is
 		            Ufin  : Real             from Standard;
 		            Vdeb  : Real             from Standard;
 		            Vfin  : Real             from Standard)
-    returns mutable IGESEntity from IGESData;
+    returns IGESEntity from IGESData;
 
 
     TransferSurface        (me    : in out;
@@ -164,7 +164,7 @@ is
 			    Ufin  : Real            from Standard;
 		            Vdeb  : Real            from Standard;
 		            Vfin  : Real            from Standard)
-    returns mutable IGESEntity from IGESData;
+    returns IGESEntity from IGESData;
 
 
     TransferSurface        (me    : in out;
@@ -173,7 +173,7 @@ is
 			    Ufin  : Real         from Standard;
 			    Vdeb  : Real         from Standard;
 			    Vfin  : Real         from Standard)
-    returns mutable IGESEntity from IGESData;
+    returns IGESEntity from IGESData;
 
 
     TransferSurface        (me    : in out;
@@ -182,7 +182,7 @@ is
 	   	    	    Ufin  : Real                     from Standard;
 	         	    Vdeb  : Real                     from Standard;
 		            Vfin  : Real                     from Standard)
-    returns mutable IGESEntity from IGESData;
+    returns IGESEntity from IGESData;
 
 
     TransferSurface        (me    : in out;
@@ -191,7 +191,7 @@ is
 			    Ufin  : Real                from Standard;
 			    Vdeb  : Real                from Standard;
 			    Vfin  : Real                from Standard)
-    returns mutable IGESEntity from IGESData;
+    returns IGESEntity from IGESData;
 
 
     TransferSurface        (me    : in out;
@@ -200,7 +200,7 @@ is
 			    Ufin  : Real          from Standard;
 			    Vdeb  : Real          from Standard;
 			    Vfin  : Real          from Standard)
-    returns mutable IGESEntity from IGESData;
+    returns IGESEntity from IGESData;
 
 
     -- Methods for translating sufraces in BRep IGES
@@ -212,7 +212,7 @@ is
           		    Ufin  : Real  from Standard;
 		            Vdeb  : Real  from Standard;
 		            Vfin  : Real  from Standard)
-    returns mutable IGESEntity from IGESData;
+    returns IGESEntity from IGESData;
 
 
     TransferCylindricalSurface(me   : in out;
@@ -221,7 +221,7 @@ is
           		       Ufin : Real  from Standard;
 		               Vdeb : Real  from Standard;
 		               Vfin : Real  from Standard)
-    returns mutable IGESEntity from IGESData;
+    returns IGESEntity from IGESData;
     
     
     TransferConicalSurface(me   : in out;
@@ -230,7 +230,7 @@ is
           		   Ufin : Real  from Standard;
 		           Vdeb : Real  from Standard;
 		           Vfin : Real  from Standard)
-    returns mutable IGESEntity from IGESData;
+    returns IGESEntity from IGESData;
     
     
     TransferSphericalSurface(me   : in out;
@@ -239,7 +239,7 @@ is
           		     Ufin : Real  from Standard;
 		             Vdeb : Real  from Standard;
 		             Vfin : Real  from Standard)
-    returns mutable IGESEntity from IGESData;
+    returns IGESEntity from IGESData;
     
     
     TransferToroidalSurface(me   : in out;
@@ -248,7 +248,7 @@ is
           		    Ufin : Real  from Standard;
 		            Vdeb : Real  from Standard;
 		            Vfin : Real  from Standard)
-    returns mutable IGESEntity from IGESData;
+    returns IGESEntity from IGESData;
 
     -- Methods for setting and obtaining fields.
     

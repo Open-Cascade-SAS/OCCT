@@ -29,7 +29,7 @@ is
 	Create returns RWHyperbola;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable Hyperbola from StepGeom);
+	              ach : in out Check; ent : Hyperbola from StepGeom);
 
 	WriteStep (me; SW : in out StepWriter; ent : Hyperbola from StepGeom);
 

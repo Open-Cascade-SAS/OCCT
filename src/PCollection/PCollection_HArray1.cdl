@@ -37,14 +37,14 @@ raises
 is
 
 
-	Create (Low, Up: Integer from Standard) returns mutable HArray1
+	Create (Low, Up: Integer from Standard) returns HArray1
 		raises RangeError from Standard;
 		---Purpose: Creates an array of lower bound <Low> and 
                 -- upper bound <Up>. Range error is raised 
                 -- when <Up> is less than <Low>.
 
 	Create (Low, Up: Integer from Standard ; V : Item) 
-                returns mutable HArray1
+                returns HArray1
 		raises RangeError from Standard;
 		---Purpose: Creates an array of lower bound <Low> and 
                 -- upper bound <Up>. Range error is raised 

@@ -17,7 +17,7 @@
 class Shell from PTopoDS inherits HShape from PTopoDS
 
 is
-    Create returns mutable Shell from PTopoDS;
+    Create returns Shell from PTopoDS;
     ---Level: Internal 
 
 end Shell;

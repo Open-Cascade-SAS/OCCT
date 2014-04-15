@@ -26,24 +26,24 @@ uses
 	CurveBoundedSurface from StepGeom
 is
 
-	Create returns mutable ExtrudedAreaSolid;
+	Create returns ExtrudedAreaSolid;
 	---Purpose: Returns a ExtrudedAreaSolid
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aSweptArea : mutable CurveBoundedSurface from StepGeom) is redefined;
+	      aName : HAsciiString from TCollection;
+	      aSweptArea : CurveBoundedSurface from StepGeom) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aSweptArea : mutable CurveBoundedSurface from StepGeom;
-	      aExtrudedDirection : mutable Direction from StepGeom;
+	      aName : HAsciiString from TCollection;
+	      aSweptArea : CurveBoundedSurface from StepGeom;
+	      aExtrudedDirection : Direction from StepGeom;
 	      aDepth : Real from Standard) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetExtrudedDirection(me : mutable; aExtrudedDirection : mutable Direction);
-	ExtrudedDirection (me) returns mutable Direction;
+	SetExtrudedDirection(me : mutable; aExtrudedDirection : Direction);
+	ExtrudedDirection (me) returns Direction;
 	SetDepth(me : mutable; aDepth : Real);
 	Depth (me) returns Real;
 

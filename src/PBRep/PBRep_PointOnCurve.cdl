@@ -24,7 +24,7 @@ is
     Create(P : Real;
     	   C : Curve    from PGeom;
 	   L : Location from PTopLoc)
-    returns mutable PointOnCurve from PBRep;
+    returns PointOnCurve from PBRep;
     	---Level: Internal 
     
 

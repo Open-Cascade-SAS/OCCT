@@ -31,7 +31,7 @@ is
     ---Purpose : Returns a ToolPWBDrilledHole, ready to work
 
 
-    ReadOwnParams (me; ent : mutable PWBDrilledHole;
+    ReadOwnParams (me; ent : PWBDrilledHole;
     	    	   IR : IGESReaderData; PR : in out ParamReader)
     	raises DomainError  is static;
     ---Purpose : Reads own parameters from file. <PR> gives access to them,
@@ -47,7 +47,7 @@ is
     ---Purpose : Lists the Entities shared by a PWBDrilledHole <ent>, from
     --           its specific (own) parameters
 
-    OwnCorrect (me; ent : mutable PWBDrilledHole) returns Boolean  is static;
+    OwnCorrect (me; ent : PWBDrilledHole) returns Boolean  is static;
     ---Purpose : Sets automatic unambiguous Correction on a PWBDrilledHole
     --           (NbPropertyValues forced to 3)
 
@@ -59,7 +59,7 @@ is
     ---Purpose : Performs Specific Semantic Check
 
 
-    OwnCopy    (me; entfrom : PWBDrilledHole; entto : mutable PWBDrilledHole;
+    OwnCopy    (me; entfrom : PWBDrilledHole; entto : PWBDrilledHole;
     	        TC : in out CopyTool)  is static;
     ---Purpose : Copies Specific Parameters
 

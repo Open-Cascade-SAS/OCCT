@@ -29,7 +29,7 @@ uses AsciiString from TCollection, EntityIterator, Graph, SubPartsIterator,
 
 is
 
-    Create returns mutable DispPerSingleView;
+    Create returns DispPerSingleView;
     ---Purpose : Creates a DispPerSingleView
 
     Label (me) returns AsciiString from TCollection;

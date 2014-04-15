@@ -23,7 +23,7 @@ uses
 	DimensionalExponents from StepBasic
 is
 
-	Create returns mutable PlaneAngleUnit;
+	Create returns PlaneAngleUnit;
 	---Purpose: Returns a PlaneAngleUnit
 
 

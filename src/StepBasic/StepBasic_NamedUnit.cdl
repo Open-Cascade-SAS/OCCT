@@ -28,18 +28,18 @@ uses
 	DimensionalExponents from StepBasic
 is
 
-	Create returns mutable NamedUnit;
+	Create returns NamedUnit;
 	---Purpose: Returns a NamedUnit
 
 	Init (me : mutable;
-	      aDimensions : mutable DimensionalExponents from StepBasic) is virtual;
+	      aDimensions : DimensionalExponents from StepBasic) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetDimensions(me : mutable; aDimensions : mutable DimensionalExponents) 
+	SetDimensions(me : mutable; aDimensions : DimensionalExponents) 
     	is virtual;
 
-	Dimensions (me) returns mutable DimensionalExponents
+	Dimensions (me) returns DimensionalExponents
     	is virtual;
 
 fields

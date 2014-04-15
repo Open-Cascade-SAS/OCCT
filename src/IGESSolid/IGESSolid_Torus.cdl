@@ -29,7 +29,7 @@ uses
 
 is
 
-        Create returns mutable Torus;
+        Create returns Torus;
 
         -- Specific Methods pertaining to the class
 

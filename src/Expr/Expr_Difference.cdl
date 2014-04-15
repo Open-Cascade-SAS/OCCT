@@ -32,7 +32,7 @@ is
 
     Create(exp1,exp2 : GeneralExpression)
     ---Purpose: Creates the difference <exp1> - <exp2>.
-    returns mutable Difference;
+    returns Difference;
 
     ShallowSimplified(me) 
     ---Purpose: Returns a GeneralExpression after a simplification 
@@ -42,7 +42,7 @@ is
 
     Copy(me)
     ---Purpose: Returns a copy of <me> having the same unknowns and functions.
-    returns mutable like me;
+    returns like me;
     
     IsIdentical(me; Other : GeneralExpression)
     ---Purpose: Tests if <me> and <Other> define the same expression.

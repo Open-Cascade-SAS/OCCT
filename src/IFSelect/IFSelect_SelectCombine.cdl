@@ -32,7 +32,7 @@ is
     NbInputs (me) returns Integer;
     ---Purpose : Returns the count of Input Selections
 
-    Input (me; num : Integer) returns mutable Selection;
+    Input (me; num : Integer) returns Selection;
     ---Purpose : Returns an Input Selection, given its rank in the list
 
     InputRank (me; sel : Selection) returns Integer;
@@ -42,7 +42,7 @@ is
     --           - == 0  if <sel> is not an input for <me>
     --           - >  0  if <sel> is an input for <me>
 
-    Add (me : mutable; sel : mutable Selection; atnum : Integer = 0);
+    Add (me : mutable; sel : Selection; atnum : Integer = 0);
     ---Purpose : Adds a Selection to the filling list
     --           By default, adds it to the end of the list
     --           A Positive rank less then NbInputs gives an insertion rank

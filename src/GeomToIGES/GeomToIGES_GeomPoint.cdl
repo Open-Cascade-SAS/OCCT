@@ -41,13 +41,13 @@ is
 
     TransferPoint            (me    : in out;
                               start : Point from Geom)
-    	 returns mutable Point from IGESGeom;
+    	 returns Point from IGESGeom;
     ---Purpose :  Transfert  a  Point from Geom to IGES. If this
     --            Entity could not be converted, this member returns a NullEntity.
 
     TransferPoint            (me    : in out;
                               start : CartesianPoint from Geom)
-    	 returns mutable Point from IGESGeom;
+    	 returns Point from IGESGeom;
     ---Purpose :  Transfert  a  CartesianPoint from Geom to IGES. If this
     --            Entity could not be converted, this member returns a NullEntity.
 

@@ -50,7 +50,7 @@ is
     Create (OwnerId      : EntityOwner from SelectBasics;
             TheCurve     : Curve from Geom;
             MaxPoints    : Integer = 17)
-     returns mutable SensitiveCurve;
+     returns SensitiveCurve;
         ---Level: Public 
         ---Purpose: Constructs a sensitive curve object defined by the
         -- owner OwnerId, the curve TheCurve, and the
@@ -58,14 +58,14 @@ is
 
     Create (OwnerId      : EntityOwner from SelectBasics;
             ThePoints    : HArray1OfPnt from TColgp)
-     returns mutable SensitiveCurve;
+     returns SensitiveCurve;
         ---Level: Public 
         ---Purpose: Constructs a sensitive curve object defined by the
         -- owner OwnerId and the set of points ThePoints.
         
     Create (OwnerId      : EntityOwner from SelectBasics;
             ThePoints    : Array1OfPnt from TColgp)
-     returns mutable SensitiveCurve;
+     returns SensitiveCurve;
         ---Level: Public 
         ---Purpose: Creation of Sensitive Curve from Points.
         --          Warning : This Method should disappear in the next version...

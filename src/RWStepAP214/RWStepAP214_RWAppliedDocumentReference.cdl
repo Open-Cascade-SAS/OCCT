@@ -30,7 +30,7 @@ is
     	Create returns RWAppliedDocumentReference;
     
     	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable AppliedDocumentReference from StepAP214);
+	              ach : in out Check; ent : AppliedDocumentReference from StepAP214);
 
 	WriteStep (me; SW : in out StepWriter; ent : AppliedDocumentReference from StepAP214);
 

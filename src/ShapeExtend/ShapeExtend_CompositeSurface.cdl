@@ -64,17 +64,17 @@ uses
 
 is 
  
-    Create returns mutable CompositeSurface from ShapeExtend; 
+    Create returns CompositeSurface from ShapeExtend; 
     	---Purpose: Empty constructor.
     
     Create (GridSurf: HArray2OfSurface from TColGeom; 
             param   : Parametrisation from ShapeExtend = ShapeExtend_Natural) 
-    returns mutable CompositeSurface from ShapeExtend; 
+    returns CompositeSurface from ShapeExtend; 
     	---Purpose: Initializes by a grid of surfaces (calls Init()).
     
     Create (GridSurf: HArray2OfSurface from TColGeom; 
             UJoints, VJoints : Array1OfReal from TColStd) 
-    returns mutable CompositeSurface from ShapeExtend; 
+    returns CompositeSurface from ShapeExtend; 
     	---Purpose: Initializes by a grid of surfaces (calls Init()).
     
     Init (me: mutable; GridSurf: HArray2OfSurface from TColGeom; 
@@ -222,7 +222,7 @@ is
     Transform (me : mutable; T : Trsf) is redefined;
         ---Purpose: Applies transformation to all the patches
 
-    Copy (me) returns mutable like me is redefined;
+    Copy (me) returns like me is redefined;
         ---Purpose: Returns a copy of the surface
     
     UReverse (me : mutable) is redefined;
@@ -254,10 +254,10 @@ is
     IsVPeriodic (me) returns Boolean is redefined;
         ---Purpose: Returns False
 
-    UIso (me; U : Real) returns mutable Curve is redefined;
+    UIso (me; U : Real) returns Curve is redefined;
         ---Purpose: NOT IMPLEMENTED (returns Null curve)
 
-    VIso (me; V : Real) returns mutable Curve is redefined;
+    VIso (me; V : Real) returns Curve is redefined;
         ---Purpose: NOT IMPLEMENTED (returns Null curve)
 
 

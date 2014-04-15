@@ -30,7 +30,7 @@ uses
 
 is
 
-    Create returns mutable Connexion from MAT2d;
+    Create returns Connexion from MAT2d;
     
     Create(LineA        : Integer;
 	   LineB        : Integer;
@@ -41,7 +41,7 @@ is
            ParameterOnB : Real;
            PointA       : Pnt2d from gp;
            PointB       : Pnt2d from gp)
-    returns mutable Connexion from MAT2d;	    	   
+    returns Connexion from MAT2d;	    	   
 
     IndexFirstLine(me) returns Integer
     	---Purpose:  Returns the Index on the first line.
@@ -110,7 +110,7 @@ is
        ---Purpose: Returns the reverse connexion of <me>.
        --          the firstpoint  is the secondpoint.
        --          the secondpoint is the firstpoint.
-    returns mutable Connexion from MAT2d
+    returns Connexion from MAT2d
     is static;
     
     IsAfter(me ; aConnexion : Connexion from MAT2d ; aSense : Real)

@@ -25,25 +25,25 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable OrientedEdge;
+	Create returns OrientedEdge;
 	---Purpose: Returns a OrientedEdge
 	
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aEdgeElement : mutable Edge from StepShape;
+	      aName : HAsciiString from TCollection;
+	      aEdgeElement : Edge from StepShape;
 	      aOrientation : Boolean from Standard) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetEdgeElement(me : mutable; aEdgeElement : mutable Edge);
-	EdgeElement (me) returns mutable Edge;
+	SetEdgeElement(me : mutable; aEdgeElement : Edge);
+	EdgeElement (me) returns Edge;
 	SetOrientation(me : mutable; aOrientation : Boolean);
 	Orientation (me) returns Boolean;
-	SetEdgeStart(me : mutable; aEdgeStart : mutable Vertex) is redefined;
-	EdgeStart (me) returns mutable Vertex is redefined;
-	SetEdgeEnd(me : mutable; aEdgeEnd : mutable Vertex) is redefined;
-	EdgeEnd (me) returns mutable Vertex is redefined;
+	SetEdgeStart(me : mutable; aEdgeStart : Vertex) is redefined;
+	EdgeStart (me) returns Vertex is redefined;
+	SetEdgeEnd(me : mutable; aEdgeEnd : Vertex) is redefined;
+	EdgeEnd (me) returns Vertex is redefined;
 
 fields
 

@@ -27,7 +27,7 @@ uses
 	PreDefinedItem from StepVisual
 is
 
-	Create returns mutable PreDefinedColour;
+	Create returns PreDefinedColour;
 	---Purpose: Returns a PreDefinedColour
 
     	SetPreDefinedItem (me: mutable; item: PreDefinedItem from StepVisual);

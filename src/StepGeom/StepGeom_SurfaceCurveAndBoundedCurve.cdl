@@ -26,10 +26,10 @@ uses
 
 is
 
-    Create returns mutable SurfaceCurveAndBoundedCurve;
+    Create returns SurfaceCurveAndBoundedCurve;
 	---Purpose: creates empty object
 
-    BoundedCurve (me: mutable) returns mutable BoundedCurve from StepGeom;
+    BoundedCurve (me: mutable) returns BoundedCurve from StepGeom;
         ---Purpose: returns field BoundedCurve
 	---C++: return &
 

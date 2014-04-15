@@ -37,7 +37,7 @@ raises DimensionMismatch, OutOfRange
 
 is
 
-        Create returns mutable Drawing;
+        Create returns Drawing;
 
         -- Specific Methods pertaining to the class
 

@@ -27,13 +27,13 @@ raises DomainError
 
 is
 
-    Create returns mutable ReadWriteModule from IGESDimen;
+    Create returns ReadWriteModule from IGESDimen;
     ---Purpose : Creates a ReadWriteModule & puts it into ReaderLib & WriterLib
 
     CaseIGES (me; typenum, formnum : Integer) returns Integer;
     ---Purpose : Defines Case Numbers for Entities of IGESDimen
 
-    ReadOwnParams (me; CN : Integer; ent : mutable IGESEntity;
+    ReadOwnParams (me; CN : Integer; ent : IGESEntity;
     	    	   IR : IGESReaderData; PR : in out ParamReader)
     	raises DomainError;
     ---Purpose : Reads own parameters from file for an Entity of IGESDimen

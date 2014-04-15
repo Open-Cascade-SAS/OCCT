@@ -27,7 +27,7 @@ uses AsciiString from TCollection, InterfaceModel, Graph, EntityIterator
 
 is
 
-    Create (flagname : CString) returns mutable SelectFlag;
+    Create (flagname : CString) returns SelectFlag;
     ---Purpose : Creates a Select Flag, to query a flag designated by its name
 
     FlagName (me) returns CString;

@@ -24,11 +24,11 @@ uses AsciiString from TCollection,
 
 is
 
-    Create returns mutable AddGroup;
+    Create returns AddGroup;
     ---Purpose : Creates an AddGroup
 
     Performing (me; ctx : in out ContextModif;
-    	        target  : mutable IGESModel;
+    	        target  : IGESModel;
                 TC      : in out CopyTool);
     ---Purpose : Specific action : Adds a new group
 

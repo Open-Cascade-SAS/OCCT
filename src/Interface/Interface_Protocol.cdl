@@ -90,14 +90,14 @@ is
 
     	-- --    General Services (defined at Norm level)    -- --
 
-    NewModel (me) returns mutable InterfaceModel  is deferred;
+    NewModel (me) returns InterfaceModel  is deferred;
     ---Purpose : Creates an empty Model of the considered Norm
 
     IsSuitableModel (me; model : InterfaceModel)  returns Boolean  is deferred;
     ---Purpose : Returns True if <model> is a Model of the considered Norm
 
 
-    UnknownEntity (me) returns mutable Transient  is deferred;
+    UnknownEntity (me) returns Transient  is deferred;
     ---Purpose : Creates a new Unknown Entity for the considered Norm
 
     IsUnknownEntity (me; ent : Transient) returns Boolean  is deferred;

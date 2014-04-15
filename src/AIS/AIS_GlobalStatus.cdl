@@ -31,14 +31,14 @@ uses
 
 is
 
-    Create returns mutable GlobalStatus from AIS;
+    Create returns GlobalStatus from AIS;
 
     Create (aStat             : DisplayStatus from AIS;
     	    aDispMode,aSelMode: Integer from Standard;
 	    ishilighted       : Boolean from Standard=Standard_False;
 	    TheHiCol          : NameOfColor from Quantity = Quantity_NOC_WHITE;
 	    aLayerIndex       : Integer from Standard = 0)
-	    returns mutable GlobalStatus from AIS;
+	    returns GlobalStatus from AIS;
 
 		    ---Category: Modifications.
 

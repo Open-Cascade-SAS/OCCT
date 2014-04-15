@@ -25,24 +25,24 @@ uses
 	FaceSurface from StepShape 
 
 is
-    	Create returns mutable RevolvedFaceSolid;
+    	Create returns RevolvedFaceSolid;
 	---Purpose: Returns a RevolvedFaceSolid
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aSweptArea : mutable FaceSurface from StepShape) is redefined ;
+	      aName : HAsciiString from TCollection;
+	      aSweptArea : FaceSurface from StepShape) is redefined ;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aSweptArea : mutable FaceSurface from StepShape;
-	      aAxis : mutable Axis1Placement from StepGeom;
+	      aName : HAsciiString from TCollection;
+	      aSweptArea : FaceSurface from StepShape;
+	      aAxis : Axis1Placement from StepGeom;
 	      aAngle : Real from Standard);
 
 	-- Specific Methods for Field Data Access --
 
-	SetAxis(me : mutable; aAxis : mutable Axis1Placement);
-	Axis (me) returns mutable Axis1Placement;
+	SetAxis(me : mutable; aAxis : Axis1Placement);
+	Axis (me) returns Axis1Placement;
 	SetAngle(me : mutable; aAngle : Real);
 	Angle (me) returns Real;
 

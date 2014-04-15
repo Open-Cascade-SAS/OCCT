@@ -36,10 +36,10 @@ raises InterfaceError
 
 is
 
-    SetInput (me : mutable; sel : mutable Selection);
+    SetInput (me : mutable; sel : Selection);
     ---Purpose : Defines or Changes the Input Selection
 
-    Input (me) returns mutable Selection;
+    Input (me) returns Selection;
     ---Purpose : Returns the Input Selection
 
     HasInput (me) returns Boolean;

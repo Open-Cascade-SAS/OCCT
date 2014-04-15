@@ -31,7 +31,7 @@ uses
 
 is
 
-        Create returns mutable Plane;
+        Create returns Plane;
 
         -- Specific Methods pertaining to the class
 

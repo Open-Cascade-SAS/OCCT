@@ -25,7 +25,7 @@ uses  Integer, Real  -- no one specific type
 
 is
 
-        Create returns mutable LineWidening;
+        Create returns LineWidening;
 
         -- Specific Methods pertaining to the class
 

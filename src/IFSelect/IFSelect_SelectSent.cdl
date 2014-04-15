@@ -30,7 +30,7 @@ uses AsciiString from TCollection, InterfaceModel, Graph, EntityIterator
 is
 
     Create (sentcount : Integer = 1; atleast : Boolean = Standard_True)
-    	returns mutable SelectSent;
+    	returns SelectSent;
     ---Purpose : Creates a SelectSent :
     --           sentcount = 0 -> remaining (non-sent) entities
     --           sentcount = 1, atleast = True (D) -> sent (at least once)

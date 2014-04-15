@@ -46,7 +46,7 @@ is
     Create (OwnerId      : EntityOwner from SelectBasics;
     	    FirstP,LastP : Pnt from gp;
     	    MaxRect      : Integer = 1)
-     returns mutable SensitiveSegment;
+     returns SensitiveSegment;
 	---Purpose: Constructs the sensitive segment object defined by
     	-- the owner OwnerId, the points FirstP, LastP and the
     	-- maximum number of sensitive bounding boxes MaxRect.     

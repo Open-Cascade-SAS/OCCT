@@ -20,14 +20,14 @@ uses
     ShapeEnum from TopAbs
 
 is
-    Create returns mutable TCompSolid from TopoDS;
+    Create returns TCompSolid from TopoDS;
     ---C++: inline
     ---Purpose: Creates an empty TCompSolid.
 
     ShapeType(me) returns ShapeEnum from TopAbs;
     ---Purpose: returns COMPSOLID
 
-    EmptyCopy(me) returns mutable TShape from TopoDS;
+    EmptyCopy(me) returns TShape from TopoDS;
     ---Purpose: Returns an empty TCompSolid.
 
 end TCompSolid;

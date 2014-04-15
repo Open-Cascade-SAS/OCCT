@@ -60,13 +60,13 @@ is
 
 
 
-  Create (Prb : Parab2d)   returns mutable Parabola;
+  Create (Prb : Parab2d)   returns Parabola;
         --- Purpose : Creates a parabola from a non persistent one.
 
 
   Create (MirrorAxis : Ax2d; Focal : Real;
           Sense: Boolean from Standard = Standard_True)   
-  returns mutable Parabola
+  returns Parabola
 	--- Purpose :
 	--  Creates a parabola with its "MirrorAxis" and it's focal 
 	--  length "Focal".
@@ -77,7 +77,7 @@ is
      raises ConstructionError;
 	--- Purpose : Raised if Focal < 0.0
 
-  Create (Axis : Ax22d; Focal : Real)   returns mutable Parabola
+  Create (Axis : Ax22d; Focal : Real)   returns Parabola
 	--- Purpose :
 	--  Creates a parabola with its Axis and it's focal 
 	--  length "Focal".
@@ -89,7 +89,7 @@ is
 	--- Purpose : Raised if Focal < 0.0
 
 
-  Create (D : Ax2d; F : Pnt2d)  returns mutable Parabola;
+  Create (D : Ax2d; F : Pnt2d)  returns Parabola;
         --- Purpose :
         --  D is the directrix of the parabola and F the focus point.
         --  The symmetry axis "XAxis" of the parabola is normal to the
@@ -222,7 +222,7 @@ is
      is redefined static;  
 
 
-  Copy (me)  returns mutable like me
+  Copy (me)  returns like me
   is redefined static;
     	---Purpose: Creates a new object, which is a copy of this parabola.     
 fields

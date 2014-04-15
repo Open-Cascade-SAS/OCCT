@@ -29,14 +29,14 @@ uses AsciiString from TCollection, Transient, InterfaceModel, IntParam
 
 is
 
-    Create returns mutable SelectLevelNumber;
+    Create returns SelectLevelNumber;
     ---Purpose : Creates a SelectLevelNumber, with no Level criterium : see
     --           SetLevelNumber. Empty, this selection filters nothing.
 
-    SetLevelNumber (me : mutable; levnum : mutable IntParam);
+    SetLevelNumber (me : mutable; levnum : IntParam);
     ---Purpose : Sets a Parameter as Level criterium
 
-    LevelNumber (me) returns mutable IntParam;
+    LevelNumber (me) returns IntParam;
     ---Purpose : Returns the Level criterium. NullHandle if not yet set
     --           (interpreted as Level = 0 : no level number attached)
 

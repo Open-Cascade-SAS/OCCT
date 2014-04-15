@@ -27,7 +27,7 @@ uses
 is
 
     Create (Arr : ByteArray     from TDataStd)
-    	returns mutable DeltaOnModificationOfByteArray from TDataStd;
+    	returns DeltaOnModificationOfByteArray from TDataStd;
 	---Purpose: Initializes a TDF_DeltaOnModification.
 
     Apply (me : mutable)

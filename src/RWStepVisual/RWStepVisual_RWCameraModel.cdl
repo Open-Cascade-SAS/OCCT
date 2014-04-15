@@ -28,7 +28,7 @@ is
 	Create returns RWCameraModel;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable CameraModel from StepVisual);
+	              ach : in out Check; ent : CameraModel from StepVisual);
 
 	WriteStep (me; SW : in out StepWriter; ent : CameraModel from StepVisual);
 

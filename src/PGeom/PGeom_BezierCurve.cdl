@@ -26,7 +26,7 @@ uses  HArray1OfReal from PColStd,
 is 
 
 
-  Create returns mutable BezierCurve from PGeom;
+  Create returns BezierCurve from PGeom;
         ---Purpose : Creates a non rational  Bezier curve with default
         --         values.
     	---Level: Internal 
@@ -34,7 +34,7 @@ is
   Create(aPoles    : HArray1OfPnt;
          aWeights  : HArray1OfReal;
 	 aRational : Boolean from Standard)
-     returns mutable BezierCurve from PGeom;
+     returns BezierCurve from PGeom;
         ---Purpose : Creates a non rational Bezier curve with a set of
         --         poles aCurvePoles and a set of weights aPoleWeight.
     	---Level: Internal 

@@ -24,7 +24,7 @@ uses
 is
 
     Create
-    returns mutable ConstraintDriver from TPrsStd;
+    returns ConstraintDriver from TPrsStd;
 ---Purpose: Constructs an empty constraint driver.
     Update (me : mutable ;
            aLabel      : Label from TDF;

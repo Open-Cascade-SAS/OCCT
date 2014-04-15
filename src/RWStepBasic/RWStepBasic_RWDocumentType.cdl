@@ -29,7 +29,7 @@ is
 	Create returns RWDocumentType;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable DocumentType from StepBasic);
+	              ach : in out Check; ent : DocumentType from StepBasic);
 
 	WriteStep (me; SW : in out StepWriter; ent : DocumentType from StepBasic);
 

@@ -29,7 +29,7 @@ is
 	Create returns RWOpenShell;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable OpenShell from StepShape);
+	              ach : in out Check; ent : OpenShell from StepShape);
 
 	WriteStep (me; SW : in out StepWriter; ent : OpenShell from StepShape);
 

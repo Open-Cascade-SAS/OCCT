@@ -33,7 +33,7 @@ raises OutOfRange
 
 is
 
-        Create returns mutable GeneralSymbol;
+        Create returns GeneralSymbol;
 
         -- Specific Methods pertaining to the class
 

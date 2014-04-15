@@ -29,7 +29,7 @@ raises OutOfRange
 
 is
 
-        Create returns mutable Face;
+        Create returns Face;
 
             -- Specific Methods pertaining to the class
 

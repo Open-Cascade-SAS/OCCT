@@ -91,10 +91,10 @@ is
     --             Execute ("command args %s args..",var)  [var is a CString]
     --           Returns the same value as returned by call from DRAW
 
-    Pilot   returns mutable SessionPilot from IFSelect;
+    Pilot   returns SessionPilot from IFSelect;
     ---Purpose : Returns the SessionPilot (can be used for direct call)
 
-    Session returns mutable WorkSession from XSControl;
+    Session returns WorkSession from XSControl;
     ---Purpose : Returns the WorkSession defined in AddDraw (through Pilot)
     --           It is from XSControl, it brings functionnalities for Transfers
 
@@ -116,10 +116,10 @@ is
     Protocol  returns Protocol from Interface;
     ---Purpose : Returns the actually defined Protocol
 
-    Model returns mutable InterfaceModel from Interface;
+    Model returns InterfaceModel from Interface;
     ---Purpose : Returns the Model of the Session (it is Session()->Model() )
 
-    SetModel (model : mutable InterfaceModel from Interface; file : CString = "");
+    SetModel (model : InterfaceModel from Interface; file : CString = "");
     ---Purpose : Sets a Model in session (it is Session()->SetModel(model) )
     --           If <file> is defined, SetLoadedFile is also done
 
@@ -136,7 +136,7 @@ is
     ---Purpose : Returns the number of an entity in the Model (StartingNumber)
     --           0 if <ent> unknown in the model, or null
 
-    SetTransferProcess (TP : mutable Transient);
+    SetTransferProcess (TP : Transient);
     ---Purpose : Sets a TransferProcess in order to analyse it (see Activator)
     --           It can be either a FinderProcess or a TransientProcess, in
     --           that case a new TransferReader is created on it
@@ -199,7 +199,7 @@ is
     --           Else, the root part of <resfile> is considered, if defined
     --           Else, <def> is taken
 
-    MoreShapes (list : in out mutable HSequenceOfShape from TopTools;
+    MoreShapes (list : in out HSequenceOfShape from TopTools;
     	    	name : CString) returns Integer;
     ---Purpose : Analyses a name as designating Shapes from DRAW variables or
     --           XSTEP transfer (last Transfer on Reading). <name> can be :

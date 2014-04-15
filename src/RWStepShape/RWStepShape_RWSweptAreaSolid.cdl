@@ -29,7 +29,7 @@ is
 	Create returns RWSweptAreaSolid;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable SweptAreaSolid from StepShape);
+	              ach : in out Check; ent : SweptAreaSolid from StepShape);
 
 	WriteStep (me; SW : in out StepWriter; ent : SweptAreaSolid from StepShape);
 

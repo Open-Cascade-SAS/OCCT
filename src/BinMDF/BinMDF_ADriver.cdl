@@ -31,7 +31,7 @@ is
                 theName     : CString from Standard = NULL);
 
     NewEmpty    (me)
-        returns mutable Attribute from TDF
+        returns Attribute from TDF
         is deferred;
         ---Purpose: Creates a new attribute from TDF.
 
@@ -49,7 +49,7 @@ is
         ---Purpose: Returns the type name of the attribute object
 
     Paste       (me; aSource     : Persistent from BinObjMgt;
-                     aTarget     : mutable Attribute from TDF;
+                     aTarget     : Attribute from TDF;
                      aRelocTable : out RRelocationTable from BinObjMgt)
         returns Boolean from Standard is deferred;
         ---Purpose: Translate the contents of <aSource> and put it

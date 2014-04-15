@@ -29,7 +29,7 @@ is
 	Create returns RWItemDefinedTransformation;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable ItemDefinedTransformation from StepRepr);
+	              ach : in out Check; ent : ItemDefinedTransformation from StepRepr);
 
 	WriteStep (me; SW : in out StepWriter; ent : ItemDefinedTransformation from StepRepr);
 

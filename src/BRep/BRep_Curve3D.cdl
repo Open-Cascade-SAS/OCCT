@@ -28,7 +28,7 @@ is
 
     Create(C : Curve    from Geom;
     	   L : Location from TopLoc) 
-    returns mutable Curve3D from BRep;
+    returns Curve3D from BRep;
 
     D0(me; U : Real; P : out Pnt from gp);
 	---Purpose: Computes the point at parameter U.
@@ -44,7 +44,7 @@ is
     Curve3D(me : mutable; C : Curve from Geom)
     is redefined;
 	
-    Copy(me) returns mutable CurveRepresentation from BRep;
+    Copy(me) returns CurveRepresentation from BRep;
 	---Purpose: Return a copy of this representation.
 
 fields

@@ -28,7 +28,7 @@ is
 	Create returns RWBoundedCurve;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable BoundedCurve from StepGeom);
+	              ach : in out Check; ent : BoundedCurve from StepGeom);
 
 	WriteStep (me; SW : in out StepWriter; ent : BoundedCurve from StepGeom);
 

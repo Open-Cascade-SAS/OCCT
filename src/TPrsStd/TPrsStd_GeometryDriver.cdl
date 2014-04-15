@@ -25,7 +25,7 @@ uses
 is
 
     Create
-    returns mutable GeometryDriver from TPrsStd;
+    returns GeometryDriver from TPrsStd;
 ---Purpose: Constructs an empty geometry driver.    
     Update (me : mutable ;
            aLabel      : Label from TDF;

@@ -34,7 +34,7 @@ uses
     RestrictionParameters from ShapeCustom
     
 is
-    Create  returns  mutable BSplineRestriction from ShapeCustom;  
+    Create  returns BSplineRestriction from ShapeCustom;  
     	---Purpose: Empty constructor.
     
     
@@ -45,7 +45,7 @@ is
            aContinuity3d, aContinuity2d: Shape from GeomAbs ;  
     	   aMaxDegree, aNbMaxSeg       : Integer; 
     	   Degree, Rational            : Boolean)
-    returns  mutable BSplineRestriction from ShapeCustom;
+    returns BSplineRestriction from ShapeCustom;
         ---Purpose: Initializes with specified parameters of aproximation.
     
     Create(anApproxSurfaceFlag, anApproxCurve3dFlag, anApproxCurve2dFlag: Boolean from Standard;
@@ -54,7 +54,7 @@ is
     	   aMaxDegree, aNbMaxSeg                                        : Integer; 
     	   Degree, Rational                                             : Boolean;
 	   aModes                                       : RestrictionParameters from ShapeCustom)
-    returns  mutable BSplineRestriction from ShapeCustom;  
+    returns BSplineRestriction from ShapeCustom;  
     	---Purpose: Initializes with specified parameters of aproximation.
     
     NewSurface(me: mutable; F       :     Face     from TopoDS;

@@ -29,7 +29,7 @@ is
 	Create returns RWLengthUnit;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable LengthUnit from StepBasic);
+	              ach : in out Check; ent : LengthUnit from StepBasic);
 
 	WriteStep (me; SW : in out StepWriter; ent : LengthUnit from StepBasic);
 

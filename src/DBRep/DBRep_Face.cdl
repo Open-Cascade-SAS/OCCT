@@ -27,7 +27,7 @@ is
     Create (F : Face from TopoDS; 
     	    N : Integer;
     	    C : Color from Draw)
-    returns mutable Face from DBRep;
+    returns Face from DBRep;
 	---Purpose: N is the number of iso intervals.
     
     Face(me) returns Face from TopoDS

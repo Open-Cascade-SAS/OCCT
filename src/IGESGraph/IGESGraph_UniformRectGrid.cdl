@@ -30,7 +30,7 @@ uses
 
 is
 
-        Create returns mutable UniformRectGrid;
+        Create returns UniformRectGrid;
 
         -- Specific Methods pertaining to the class
 

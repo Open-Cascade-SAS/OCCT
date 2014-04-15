@@ -23,7 +23,7 @@ uses AsciiString from TCollection, InterfaceModel
 
 is
 
-    Create returns mutable SelectUnknownEntities;
+    Create returns SelectUnknownEntities;
     ---Purpose : Creates a SelectUnknownEntities
 
     Sort (me; rank : Integer; ent : Transient; model : InterfaceModel)

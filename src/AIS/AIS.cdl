@@ -682,8 +682,8 @@ is
     ---Purpose:  computes  length  of  ellipse  arc  in  parametric  units   
      
     
-    ComputeProjEdgePresentation(aPres    : mutable Presentation from Prs3d; 
-    	    	    	    	aDrawer  : mutable Drawer       from AIS;        
+    ComputeProjEdgePresentation(aPres    : Presentation from Prs3d; 
+    	    	    	    	aDrawer  : Drawer       from AIS;        
 			   	anEdge   : Edge                 from TopoDS;
 			    	ProjCurve: Curve                from Geom;
 			    	FirstP   : Pnt                  from gp;
@@ -693,8 +693,8 @@ is
     	    	    	    	aProjTOL : TypeOfLine           from Aspect   = Aspect_TOL_DASH;
 			    	aCallTOL : TypeOfLine           from Aspect   = Aspect_TOL_DOT);
     
-    ComputeProjVertexPresentation(aPres    : mutable Presentation from Prs3d; 
-             	    	    	  aDrawer  : mutable Drawer       from AIS;        
+    ComputeProjVertexPresentation(aPres    : Presentation from Prs3d; 
+             	    	    	  aDrawer  : Drawer       from AIS;        
 			   	  aVertex  : Vertex               from TopoDS;
 			    	  ProjPoint: Pnt                  from gp;
        			    	  aColor   : NameOfColor          from Quantity = Quantity_NOC_PURPLE;

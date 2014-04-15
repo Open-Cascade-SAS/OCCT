@@ -101,7 +101,7 @@ deferred class Group from Graphic3d inherits TShared
     
     is
         Initialize (theStructure : Structure from Graphic3d)
-            returns mutable Group from Graphic3d;
+            returns Group from Graphic3d;
         ---Level: Public
         ---Purpose: Creates a group in the structure <AStructure>.
     
@@ -482,7 +482,7 @@ deferred class Group from Graphic3d inherits TShared
         ---Category: Inquire methods
     
         Structure ( me )
-            returns mutable Structure from Graphic3d
+            returns Structure from Graphic3d
             is static;
         ---Level: Public
         ---Purpose: Returns the structure containing the group <me>.

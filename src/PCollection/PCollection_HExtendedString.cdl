@@ -33,17 +33,17 @@ is
 		
 
 	Create(S : ExtendedString from TCollection) 
-            returns mutable HExtendedString from PCollection;
+            returns HExtendedString from PCollection;
 		---Purpose: Creation and initialization with the string S from
 		-- TCollection.
 
 	Create(C : ExtCharacter from Standard)
-            returns mutable HExtendedString from PCollection;
+            returns HExtendedString from PCollection;
 		---Purpose: Creation and initialisation with the character C
 
 	Create(S : HExtendedString from PCollection;
     	       FromIndex, ToIndex : Integer from Standard) 
-	    returns mutable HExtendedString from PCollection
+	    returns HExtendedString from PCollection
 	    raises NegativeValue from Standard;
                 ---Purpose: Creation of a sub-string of the string S
                 -- the sub-string starts at the index Fromindex and ends
@@ -51,11 +51,11 @@ is
                 -- Raises an exception if ToIndex is less than FromIndex 
 
         Create( astring : CString)
-            returns mutable HExtendedString from PCollection;
+            returns HExtendedString from PCollection;
         ---Purpose: Creation by converting a CString to an extended string. 
 	
         Create(S : HAsciiString from PCollection)
-            returns mutable HExtendedString from PCollection;
+            returns HExtendedString from PCollection;
 	---Purpose: Creation by converting a normal Ascii string to an extended string. 
 	
 	Append(me : mutable; S : HExtendedString from PCollection);
@@ -255,7 +255,7 @@ is
 	Split(me : mutable; Index  : Integer) 
 	---Level: Public
         ---Purpose: Splits a string of characters into two sub-strings.
-	returns mutable HExtendedString from PCollection
+	returns HExtendedString from PCollection
 	raises OutOfRange from Standard;
 
 	SubString(me; FromIndex, ToIndex : Integer) 
@@ -264,7 +264,7 @@ is
         -- The sub-string starts to the index FromIndex and ends
         -- to the index ToIndex.
         -- Raises an exception if ToIndex or FromIndex is out of bounds.
-	returns mutable HExtendedString from PCollection
+	returns HExtendedString from PCollection
 	raises OutOfRange from Standard;
 
 	UsefullLength(me) returns Integer

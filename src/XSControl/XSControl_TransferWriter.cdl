@@ -31,14 +31,14 @@ uses Transient,
 
 is
 
-    Create  returns mutable TransferWriter;
+    Create  returns TransferWriter;
     ---Purpose : Creates a TransferWriter, empty, ready to run
     --           with an empty FinderProcess (but no controller, etc)
 
-    FinderProcess (me) returns mutable FinderProcess;
+    FinderProcess (me) returns FinderProcess;
     ---Purpose : Returns the FinderProcess itself
 
-    SetFinderProcess (me : mutable; FP : mutable FinderProcess);
+    SetFinderProcess (me : mutable; FP : FinderProcess);
     ---Purpose : Sets a new FinderProcess and forgets the former one
 
     Controller (me) returns Controller;
@@ -73,7 +73,7 @@ is
     --           Asks the Controller (RecognizeWriteTransient)
     --           If <obj> is a HShape, calls RecognizeShape
 
-    TransferWriteTransient (me : mutable; model : mutable InterfaceModel;
+    TransferWriteTransient (me : mutable; model : InterfaceModel;
     	 obj : Transient)
         returns ReturnStatus;
     ---Purpose : Transfers a Transient object (from an application) to a model
@@ -86,7 +86,7 @@ is
     ---Purpose : Tells if a Shape is valid for a transfer to a model
     --           Asks the Controller (RecognizeWriteShape)
 
-    TransferWriteShape (me : mutable; model : mutable InterfaceModel;
+    TransferWriteShape (me : mutable; model : InterfaceModel;
     	 shape : Shape from TopoDS)
         returns ReturnStatus;
     ---Purpose : Transfers a Shape from CasCade to a model of current norm,

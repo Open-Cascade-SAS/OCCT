@@ -30,7 +30,7 @@ uses
     
 is
     Create
-    returns mutable PolyAlgo from HLRAlgo;
+    returns PolyAlgo from HLRAlgo;
     
     Init(me : mutable; HShell : HArray1OfTransient from TColStd)
     is static;

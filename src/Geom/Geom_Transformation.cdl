@@ -67,11 +67,11 @@ raises ConstructionError from Standard,
 is
 
 
-  Create   returns mutable Transformation;
+  Create   returns Transformation;
         ---Purpose : Creates an identity transformation.
 
 
-  Create (T : Trsf)  returns mutable Transformation;
+  Create (T : Trsf)  returns Transformation;
         ---Purpose :  Creates a transient copy of T.
 
 
@@ -194,7 +194,7 @@ is
         --  package gp.
 
 
-  Inverted (me)    returns mutable Transformation
+  Inverted (me)    returns Transformation
      raises ConstructionError;
         ---Purpose :
         --  Raised if the the transformation is singular. This means that 
@@ -206,7 +206,7 @@ is
 
 
 	
-  Multiplied (me; Other : Transformation)  returns mutable Transformation;
+  Multiplied (me; Other : Transformation)  returns Transformation;
         ---Purpose :
         --  Computes the transformation composed with Other and <me>.
         --  <me> * Other.
@@ -251,7 +251,7 @@ is
 
 
 
-  Copy (me)  returns mutable Transformation;
+  Copy (me)  returns Transformation;
     	---Purpose: Creates a new object which is a copy of this transformation.    
 fields
 

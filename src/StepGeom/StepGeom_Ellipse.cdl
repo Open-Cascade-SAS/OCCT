@@ -25,16 +25,16 @@ uses
 	Axis2Placement from StepGeom
 is
 
-	Create returns mutable Ellipse;
+	Create returns Ellipse;
 	---Purpose: Returns a Ellipse
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
+	      aName : HAsciiString from TCollection;
 	      aPosition : Axis2Placement from StepGeom) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
+	      aName : HAsciiString from TCollection;
 	      aPosition : Axis2Placement from StepGeom;
 	      aSemiAxis1 : Real from Standard;
 	      aSemiAxis2 : Real from Standard) is virtual;

@@ -42,7 +42,7 @@ is
 	    size    : Real;               -- size for infinite isos
 	    nbisos  : Integer;            -- # of isos on each face
 	    discret : Integer)            -- # of points on curves
-    returns mutable DrawableShape from DBRep
+    returns DrawableShape from DBRep
     raises DomainError;
     
     Set (me : mutable; C: Shape from TopoDS)
@@ -118,7 +118,7 @@ is
     
     DisplayHiddenLines(me : mutable; dis : in out Display from Draw);
 
-    Copy(me) returns mutable Drawable3D from Draw
+    Copy(me) returns Drawable3D from Draw
 	---Purpose: For variable copy.
     is redefined;
 	

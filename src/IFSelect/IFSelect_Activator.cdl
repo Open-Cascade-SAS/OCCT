@@ -95,7 +95,7 @@ is
 
 
     Select (myclass; command : CString;
-    	number : out Integer; actor : out mutable Activator)
+    	number : out Integer; actor : out Activator)
 	    returns Boolean;
     ---Purpose : Selects, for a Command given by its title, an actor with its
     --           command number. Returns True if found, False else
@@ -115,7 +115,7 @@ is
     Initialize;
     ---Purpose : Sets the default values
 
-    Do   (me : mutable; number : Integer; pilot : mutable SessionPilot)
+    Do   (me : mutable; number : Integer; pilot : SessionPilot)
     	returns ReturnStatus  is deferred;
     ---Purpose : Tries to execute a Command Line. <number> is the number of the
     --           command for this Activator. It Must forecast to record the

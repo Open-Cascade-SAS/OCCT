@@ -30,7 +30,7 @@ is
 	Create returns RWToroidalSurface;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable ToroidalSurface from StepGeom);
+	              ach : in out Check; ent : ToroidalSurface from StepGeom);
 
 	WriteStep (me; SW : in out StepWriter; ent : ToroidalSurface from StepGeom);
 

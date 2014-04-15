@@ -33,7 +33,7 @@ raises OutOfRange
 
 is
 
-        Create returns mutable CenterLine;
+        Create returns CenterLine;
 
         -- Specific Methods pertaining to the class
 

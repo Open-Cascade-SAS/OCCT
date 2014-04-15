@@ -29,7 +29,7 @@ is
 	   HilightMode   : Integer from Standard = 0;
     	   SubIntensity  : Boolean from Standard = 0;
     	   TheHiCol      : NameOfColor from Quantity = Quantity_NOC_WHITE)
-     returns mutable LocalStatus from AIS;
+     returns LocalStatus from AIS;
     
 
 

@@ -27,7 +27,7 @@ raises InterfaceError
 
 is
 
-    Create returns mutable SelectFromDrawing;
+    Create returns SelectFromDrawing;
     ---Purpose : Creates a SelectFromDrawing
 
     RootResult (me; G : Graph) returns EntityIterator  raises InterfaceError;

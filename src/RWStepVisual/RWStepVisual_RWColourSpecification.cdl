@@ -28,7 +28,7 @@ is
 	Create returns RWColourSpecification;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable ColourSpecification from StepVisual);
+	              ach : in out Check; ent : ColourSpecification from StepVisual);
 
 	WriteStep (me; SW : in out StepWriter; ent : ColourSpecification from StepVisual);
 

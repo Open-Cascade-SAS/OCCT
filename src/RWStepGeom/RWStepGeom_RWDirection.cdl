@@ -29,7 +29,7 @@ is
 	Create returns RWDirection;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable Direction from StepGeom);
+	              ach : in out Check; ent : Direction from StepGeom);
 
 	WriteStep (me; SW : in out StepWriter; ent : Direction from StepGeom);
 

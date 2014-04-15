@@ -29,7 +29,7 @@ is
 	Create returns RWCsgShapeRepresentation;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable CsgShapeRepresentation from StepShape);
+	              ach : in out Check; ent : CsgShapeRepresentation from StepShape);
 
 	WriteStep (me; SW : in out StepWriter; ent : CsgShapeRepresentation from StepShape);
 

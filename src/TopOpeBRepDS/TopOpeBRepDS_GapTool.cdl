@@ -30,10 +30,10 @@ uses
     DataMapOfInterferenceShape         from TopOpeBRepDS
 is
     
-    Create returns mutable GapTool from TopOpeBRepDS;    
+    Create returns GapTool from TopOpeBRepDS;    
 
     Create (HDS : HDataStructure from TopOpeBRepDS)
-    returns mutable GapTool from TopOpeBRepDS;
+    returns GapTool from TopOpeBRepDS;
     
     Init   (me : mutable; HDS : HDataStructure from TopOpeBRepDS);
     
@@ -74,11 +74,11 @@ is
 
     ---Modification 
     --              
-    SetPoint (me : mutable; I          : mutable Interference from TopOpeBRepDS;
+    SetPoint (me : mutable; I          : Interference from TopOpeBRepDS;
     	    	            IndexPoint :         Integer      from Standard);
     
     SetParameterOnEdge (me : mutable; 
-    	    	    	I  : mutable Interference from TopOpeBRepDS;
+    	    	    	I  : Interference from TopOpeBRepDS;
     	    	    	E  :         Shape        from TopoDS;
 			U  :         Real         from Standard)
     is static;			    

@@ -17,7 +17,7 @@
 class Face from PTopoDS inherits HShape from PTopoDS
 
 is
-    Create returns mutable Face from PTopoDS;
+    Create returns Face from PTopoDS;
 	---Level: Internal 
 
 end Face;

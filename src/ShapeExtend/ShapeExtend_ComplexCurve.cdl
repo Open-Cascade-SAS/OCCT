@@ -29,7 +29,7 @@ uses
 
 is
 
-    Initialize returns mutable ComplexCurve from ShapeExtend;
+    Initialize returns ComplexCurve from ShapeExtend;
     	---Purpose:
 
     NbCurves (me) returns Integer is deferred;

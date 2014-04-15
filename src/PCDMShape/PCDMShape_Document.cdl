@@ -26,10 +26,10 @@ uses
     Location      from PTopLoc
     
 is
-    Create returns mutable Document from PCDMShape;
+    Create returns Document from PCDMShape;
     ---Level: Internal 
 
-    Create(T : Shape1 from PTopoDS) returns mutable Document from PCDMShape;
+    Create(T : Shape1 from PTopoDS) returns Document from PCDMShape;
     ---Level: Internal 
 
     Shape(me) returns Shape1 from PTopoDS

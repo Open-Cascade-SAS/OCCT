@@ -44,7 +44,7 @@ uses
     FixSmallCurves from ShapeUpgrade
 is
 
-    Create returns mutable WireDivide from ShapeUpgrade;
+    Create returns WireDivide from ShapeUpgrade;
     	---Purpose: Empty constructor
 	
     Init (me: mutable; W: Wire from TopoDS; F: Face from TopoDS);

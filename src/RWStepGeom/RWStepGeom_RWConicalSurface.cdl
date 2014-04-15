@@ -29,7 +29,7 @@ is
 	Create returns RWConicalSurface;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable ConicalSurface from StepGeom);
+	              ach : in out Check; ent : ConicalSurface from StepGeom);
 
 	WriteStep (me; SW : in out StepWriter; ent : ConicalSurface from StepGeom);
 

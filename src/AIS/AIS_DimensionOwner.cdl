@@ -41,7 +41,7 @@ is
     Create (theSelObject  : SelectableObject;
             theSelMode    : DimensionSelectionMode from AIS;
             thePriority   : Integer from Standard = 0)
-    returns mutable DimensionOwner from AIS;
+    returns DimensionOwner from AIS;
       ---Purpose:
       -- Initializes the dimension owner, theSO, and attributes it
       -- the priority, thePriority.

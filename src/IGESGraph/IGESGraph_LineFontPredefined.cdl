@@ -28,7 +28,7 @@ uses  Integer  -- no one specific type
 
 is
 
-        Create returns mutable LineFontPredefined;
+        Create returns LineFontPredefined;
 
         -- Specific Methods pertaining to the class
 

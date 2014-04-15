@@ -30,7 +30,7 @@ is
 	Create returns RWEdgeLoop;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable EdgeLoop from StepShape);
+	              ach : in out Check; ent : EdgeLoop from StepShape);
 
 	WriteStep (me; SW : in out StepWriter; ent : EdgeLoop from StepShape);
 

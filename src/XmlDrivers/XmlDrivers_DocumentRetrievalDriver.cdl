@@ -23,7 +23,7 @@ uses
     MessageDriver               from CDM
 
 is
-    Create returns mutable DocumentRetrievalDriver from XmlDrivers;
+    Create returns DocumentRetrievalDriver from XmlDrivers;
     -- Constructor
 
     AttributeDrivers	(me : mutable; theMsgDriver: MessageDriver from CDM)

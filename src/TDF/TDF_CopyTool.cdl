@@ -79,14 +79,14 @@ is
 
     Copy(myclass;
     	 aSourceDataSet   : DataSet from TDF;
-	 aRelocationTable : mutable RelocationTable from TDF);
+	 aRelocationTable : RelocationTable from TDF);
 	---Purpose:  Copy   <aSourceDataSet> with using  and  updating
 	--           <aRelocationTable>. This  method ignores   target
 	--          attributes privilege over source ones.
 
     Copy(myclass;
     	 aSourceDataSet   : DataSet from TDF;
-	 aRelocationTable : mutable RelocationTable from TDF;
+	 aRelocationTable : RelocationTable from TDF;
     	 aPrivilegeFilter : IDFilter from TDF);
 	---Purpose:    Copy  <aSourceDataSet>  using      and updating
 	--          <aRelocationTable>. Use <aPrivilegeFilter> to give
@@ -99,7 +99,7 @@ is
 
     Copy(myclass;
     	 aSourceDataSet   : DataSet from TDF;
-	 aRelocationTable : mutable RelocationTable from TDF;
+	 aRelocationTable : RelocationTable from TDF;
     	 aPrivilegeFilter : IDFilter from TDF;
     	 aRefFilter       : IDFilter from TDF;
     	 setSelfContained : Boolean from Standard);

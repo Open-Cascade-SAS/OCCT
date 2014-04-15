@@ -31,7 +31,7 @@ is
     ---Purpose : Returns a ToolSolidAssembly, ready to work
 
 
-    ReadOwnParams (me; ent : mutable SolidAssembly;
+    ReadOwnParams (me; ent : SolidAssembly;
     	    	   IR : IGESReaderData; PR : in out ParamReader)
     	raises DomainError  is static;
     ---Purpose : Reads own parameters from file. <PR> gives access to them,
@@ -55,7 +55,7 @@ is
     ---Purpose : Performs Specific Semantic Check
 
 
-    OwnCopy    (me; entfrom : SolidAssembly; entto : mutable SolidAssembly;
+    OwnCopy    (me; entfrom : SolidAssembly; entto : SolidAssembly;
     	        TC : in out CopyTool)  is static;
     ---Purpose : Copies Specific Parameters
 

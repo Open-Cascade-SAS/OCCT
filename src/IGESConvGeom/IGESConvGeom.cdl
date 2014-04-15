@@ -33,7 +33,7 @@ is
     SplineCurveFromIGES
     	(igesent : SplineCurve from IGESGeom;
 	 epscoef, epsgeom : Real;
-	 result  : out mutable BSplineCurve from Geom)
+	 result  : out BSplineCurve from Geom)
     returns Integer;
     ---Purpose : Converts a SplineCurve from IGES to a BSplineCurve from CasCade
     --           <epscoef> gives tolerance to consider coefficient to be nul
@@ -49,7 +49,7 @@ is
     --           - 5  less than one segment (no result produced)
 
     IncreaseCurveContinuity
-    	(curve      : mutable BSplineCurve from Geom;
+    	(curve      : BSplineCurve from Geom;
 	 epsgeom    : Real;
 	 continuity : Integer = 2)  returns Integer;
     ---Purpose : Tries to increase curve continuity with tolerance <epsgeom>
@@ -60,14 +60,14 @@ is
     --           all the knots can be passed to C2, all knots which can be are.
     
     IncreaseCurveContinuity
-    	(curve      : mutable BSplineCurve from Geom2d;
+    	(curve      : BSplineCurve from Geom2d;
 	 epsgeom    : Real;
 	 continuity : Integer = 2)  returns Integer;
 
     SplineSurfaceFromIGES
     	(igesent : SplineSurface from IGESGeom;
 	 epscoef, epsgeom : Real;
-	 result  : out mutable BSplineSurface from Geom)
+	 result  : out BSplineSurface from Geom)
     returns Integer;
     ---Purpose : Converts a SplineSurface from IGES to a BSplineSurface from CasCade
     --           <epscoef> gives tolerance to consider coefficient to be nul
@@ -83,7 +83,7 @@ is
     --           - 5  less than one segment in U or V (no result produced)
 
     IncreaseSurfaceContinuity
-    	(surface      : mutable BSplineSurface from Geom;
+    	(surface      : BSplineSurface from Geom;
 	 epsgeom    : Real;
 	 continuity : Integer = 2)  returns Integer;
     ---Purpose : Tries to increase Surface continuity with tolerance <epsgeom>

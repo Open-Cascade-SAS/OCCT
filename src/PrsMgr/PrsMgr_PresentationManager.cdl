@@ -42,12 +42,12 @@ raises
 is
 
   Create (theStructureManager : StructureManager from Graphic3d)
-  returns mutable PresentationManager from PrsMgr;
+  returns PresentationManager from PrsMgr;
   ---Purpose:
   -- Creates a framework to manage displays and graphic entities with the 3D view theStructureManager.
 
   Display (me           : mutable;
-           thePrsObject : mutable PresentableObject from PrsMgr;
+           thePrsObject : PresentableObject from PrsMgr;
            theMode      : Integer from Standard = 0)
   ---Purpose: Displays the presentation of the object in the given Presentation manager with the given mode.
   --          The mode should be enumerated by the object which inherits PresentableObject.
@@ -75,7 +75,7 @@ is
   ---Purpose: Sets the visibility of presentable object.
 
   Highlight (me           : mutable;
-             thePrsObject : mutable PresentableObject from PrsMgr;
+             thePrsObject : PresentableObject from PrsMgr;
              theMode      : Integer from Standard = 0)
   ---Purpose: Highlights the presentation of the presentable object
   -- thePrsObject in this framework with the display mode theMode.
@@ -165,7 +165,7 @@ is
 ---Category: Hilighting methods.
 
   Color (me           : mutable;
-         thePrsObject : mutable PresentableObject from PrsMgr;
+         thePrsObject : PresentableObject from PrsMgr;
          theColor     : NameOfColor from Quantity = Quantity_NOC_YELLOW;
          theMode      : Integer from Standard = 0)
   ---Purpose: Highlights the graphic object thePrsObject in the color theColor.
@@ -174,7 +174,7 @@ is
   is static;
 
   BoundBox (me           : mutable;
-            thePrsObject : mutable PresentableObject from PrsMgr;
+            thePrsObject : PresentableObject from PrsMgr;
             theMode      : Integer from Standard = 0)
   ---Purpose: highlights the boundbox of the presentation
   is static;
@@ -183,7 +183,7 @@ is
 
   Connect (me             : mutable;
            thePrsObject   : PresentableObject from PrsMgr;
-           theOtherObject : mutable PresentableObject from PrsMgr;
+           theOtherObject : PresentableObject from PrsMgr;
            theMode        : Integer from Standard = 0;
            theOtherMode   : Integer from Standard = 0)
   is static;
@@ -229,7 +229,7 @@ is
   -- thePrsObject has the display mode aMode; this has the default value of 0, that is, the wireframe display mode.
   is static;
 
-  StructureManager (me) returns mutable StructureManager from Graphic3d
+  StructureManager (me) returns StructureManager from Graphic3d
   is static;
   ---C++: inline
   ---C++: return const&
@@ -263,7 +263,7 @@ is
   Presentation (me;
                 thePrsObject : PresentableObject from PrsMgr;
                 theMode      : Integer from Standard = 0)
-  returns mutable Presentation from PrsMgr
+  returns Presentation from PrsMgr
   raises NoSuchObject from Standard
   is static;
   ---Purpose: Returns the presentation Presentation of the presentable object thePrsObject in this framework. thePrsObject has the display mode theMode.

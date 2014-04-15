@@ -47,13 +47,13 @@ is
   ---- 
 
   GetTopolTool(me: in out) 
-     returns mutable TopolTool from BRepTopAdaptor;
+     returns TopolTool from BRepTopAdaptor;
      
   SetTopolTool(me: in out ; 
                TT: TopolTool from BRepTopAdaptor);
 	
   GetSurface(me: in out)
-    returns mutable HSurface from Adaptor3d;
+    returns HSurface from Adaptor3d;
     
 	
   ---

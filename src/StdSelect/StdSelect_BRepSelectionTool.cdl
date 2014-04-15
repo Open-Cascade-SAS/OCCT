@@ -64,7 +64,7 @@ uses
 is
     
     Load(myclass;
-    	 aSelection        : mutable Selection from SelectMgr;
+    	 aSelection        : Selection from SelectMgr;
     	 aShape            : Shape             from TopoDS;
 	 aType             : ShapeEnum         from TopAbs;
      theDeflection : Real from Standard;
@@ -90,7 +90,7 @@ is
 
 
     Load(myclass;
-    	 aSelection : mutable Selection from SelectMgr;
+    	 aSelection : Selection from SelectMgr;
     	 Origin     : SelectableObject  from SelectMgr;
     	 aShape     : Shape             from TopoDS;
 	 aType      : ShapeEnum         from TopAbs;
@@ -106,7 +106,7 @@ is
 
 
    -- Load(myclass;
-    --	 aSelection : mutable Selection from SelectMgr;
+    --	 aSelection : Selection from SelectMgr;
     --	 Users      : SequenceOfAddress from SelectBasics;
     --	 aShape     : Shape             from TopoDS;
     -- aType      : ShapeEnum         from TopAbs;
@@ -135,7 +135,7 @@ is
     ComputeSensitive(myclass;
     	    	     aShape     : Shape     from TopoDS;
 		     anOwner    : BRepOwner from StdSelect;
-		     aSelection : mutable Selection from SelectMgr;
+		     aSelection : Selection from SelectMgr;
 		     theDeflection : Real from Standard;
 		     theDeviationAngle : Real from Standard;
     	    	     NbPOnEdge  : Integer;
@@ -155,7 +155,7 @@ is
     GetEdgeSensitive(myclass;
     	    	     aShape     : Shape     from TopoDS;
 		     anOwner    : BRepOwner from StdSelect;
-		     aSelection : mutable Selection from SelectMgr;
+		     aSelection : Selection from SelectMgr;
 		     theDeflection : Real from Standard;
 		     theDeflectionAngle : Real from Standard;
     	    	     NbPOnEdge  : Integer;

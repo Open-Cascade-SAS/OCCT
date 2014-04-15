@@ -22,7 +22,7 @@ uses
     ShapeEnum from TopAbs
 
 is
-    Create returns mutable TCompSolid1 from PTopoDS;
+    Create returns TCompSolid1 from PTopoDS;
 	---Purpose: The new  TCompSolid11 is empty.
     ---Level: Internal 
     	

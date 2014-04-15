@@ -32,7 +32,7 @@ raises OutOfRange
 
 is
 
-        Create returns mutable CopiousData;
+        Create returns CopiousData;
 
         -- Specific Methods pertaining to the class
 

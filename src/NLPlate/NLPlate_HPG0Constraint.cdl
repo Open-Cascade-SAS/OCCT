@@ -22,7 +22,7 @@ uses
      XYZ from gp
      
 is
-    Create(UV : XY; Value : XYZ) returns mutable HPG0Constraint;
+    Create(UV : XY; Value : XYZ) returns HPG0Constraint;
     -- create a G0 Constraint
     -- 
 

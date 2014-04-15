@@ -28,10 +28,10 @@ uses
     
 is
 
-    Create returns mutable SiUnitAndLengthUnit;
+    Create returns SiUnitAndLengthUnit;
 	---Purpose: Returns a SiUnitAndLengthUnit
 
-    Init (me: mutable; aDimensions: mutable DimensionalExponents from StepBasic)
+    Init (me: mutable; aDimensions: DimensionalExponents from StepBasic)
     is redefined;
 
     Init (me: mutable; hasAprefix: Boolean from Standard;
@@ -40,9 +40,9 @@ is
 
     -- Specific Methods for Field Data Access --
 
-    SetLengthUnit(me: mutable; aLengthUnit: mutable LengthUnit);
+    SetLengthUnit(me: mutable; aLengthUnit: LengthUnit);
     
-    LengthUnit (me) returns mutable LengthUnit;
+    LengthUnit (me) returns LengthUnit;
 
 fields
 

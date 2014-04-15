@@ -38,14 +38,14 @@ uses
 is
 
     Create  (aDF : Data from TDF)
-    returns mutable Browser from DDF;
+    returns Browser from DDF;
     
     
     DrawOn (me; dis : in out Display);
     
     
     Copy (me) 
-    returns mutable Drawable3D from Draw
+    returns Drawable3D from Draw
     is redefined;
 
     Dump (me; S : in out OStream) 

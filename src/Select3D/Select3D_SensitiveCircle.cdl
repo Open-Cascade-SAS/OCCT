@@ -49,7 +49,7 @@ is
             TheCircle    : Circle from Geom;
             FilledCircle : Boolean = Standard_False;
             NbOfPoints   : Integer = 6)
-     returns mutable SensitiveCircle;
+     returns SensitiveCircle;
         ---Level: Public 
         ---Purpose: Constructs the sensitive circle object defined by the
         -- owner OwnerId, the circle Circle, the Boolean
@@ -61,7 +61,7 @@ is
             u2           : Real;
             FilledCircle : Boolean = Standard_False;
             NbOfPoints   : Integer = 6)
-     returns mutable SensitiveCircle;
+     returns SensitiveCircle;
         ---Level: Public 
         ---Purpose: Constructs the sensitive arc object defined by the
         -- owner OwnerId, the circle Circle, the parameters u1
@@ -71,7 +71,7 @@ is
     Create(OwnerId  : EntityOwner from SelectBasics;
            apolyg3d : HArray1OfPnt   from TColgp;
        FilledCircle : Boolean from Standard = Standard_False)
-    returns mutable SensitiveCircle;
+    returns SensitiveCircle;
         ---Level: Internal 
         ---Purpose: Constructs the sensitive circle object defined by the
         -- owner OwnerId, the array of triangles apolyg3d, and the Boolean FilledCircle.
@@ -83,7 +83,7 @@ is
     Create(OwnerId  : EntityOwner from SelectBasics;
            apolyg3d : Array1OfPnt   from TColgp;
        FilledCircle : Boolean from Standard = Standard_False)
-    returns mutable SensitiveCircle;
+    returns SensitiveCircle;
         ---Purpose: Constructs the sensitive circle object defined by the
         -- owner OwnerId, the array of points apolyg3d, and the Boolean FilledCircle. 
         -- If the length of apolyg3d is more then 1, the first point of apolyg3d 

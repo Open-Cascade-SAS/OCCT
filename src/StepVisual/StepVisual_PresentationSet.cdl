@@ -20,7 +20,7 @@ inherits TShared from MMgt
 
 is
 
-	Create returns mutable PresentationSet;
+	Create returns PresentationSet;
 	---Purpose: Returns a PresentationSet
 
 

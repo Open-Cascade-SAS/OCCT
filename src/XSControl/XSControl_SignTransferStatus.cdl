@@ -35,11 +35,11 @@ uses CString, Transient, InterfaceModel,
 
 is
 
-    Create returns mutable SignTransferStatus;
+    Create returns SignTransferStatus;
     ---Purpose : Creates a SignTransferStatus, not initialised
     --           it gives nothing (empty string)
 
-    Create (TR : TransferReader) returns mutable SignTransferStatus;
+    Create (TR : TransferReader) returns SignTransferStatus;
     ---Purpose : Creates a SignTransferStatus, which will work on the current
     --           TransientProcess brought by the TransferReader (its MapReader)
 

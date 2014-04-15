@@ -29,7 +29,7 @@ is
 	Create returns RWUniformCurveAndRationalBSplineCurve;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable UniformCurveAndRationalBSplineCurve from StepGeom);
+	              ach : in out Check; ent : UniformCurveAndRationalBSplineCurve from StepGeom);
 
 	WriteStep (me; SW : in out StepWriter; ent : UniformCurveAndRationalBSplineCurve from StepGeom);
 

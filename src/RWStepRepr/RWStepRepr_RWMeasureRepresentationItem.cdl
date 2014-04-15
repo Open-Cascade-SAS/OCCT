@@ -29,7 +29,7 @@ is
     Create returns RWMeasureRepresentationItem;
 
     ReadStep (me; data : StepReaderData; num : Integer;
-	          ach : in out Check; ent : mutable MeasureRepresentationItem from StepRepr);
+	          ach : in out Check; ent : MeasureRepresentationItem from StepRepr);
 
     WriteStep (me; SW : in out StepWriter; ent : MeasureRepresentationItem from StepRepr);
 

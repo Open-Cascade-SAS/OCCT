@@ -23,7 +23,7 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable BoundedSurface;
+	Create returns BoundedSurface;
 	---Purpose: Returns a BoundedSurface
 
 

@@ -62,7 +62,7 @@ is
     --          ============     
 
     Create
-    returns mutable Axis from TDataXtd;  
+    returns Axis from TDataXtd;  
 
     ---Category: TDF_Attribute methods
     --           =====================
@@ -74,10 +74,10 @@ is
     Restore(me: mutable; with : Attribute from TDF);
 
     NewEmpty(me)
-    returns mutable Attribute from TDF;
+    returns Attribute from TDF;
 
-    Paste (me; into : mutable Attribute from TDF;
-	       RT   : mutable RelocationTable from TDF);  
+    Paste (me; into : Attribute from TDF;
+	       RT   : RelocationTable from TDF);  
 
     Dump(me; anOS : in out OStream from Standard)
     	returns OStream from Standard

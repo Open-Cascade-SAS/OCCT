@@ -28,7 +28,7 @@ is
 	Create returns RWCoordinatedUniversalTimeOffset;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable CoordinatedUniversalTimeOffset from StepBasic);
+	              ach : in out Check; ent : CoordinatedUniversalTimeOffset from StepBasic);
 
 	WriteStep (me; SW : in out StepWriter; ent : CoordinatedUniversalTimeOffset from StepBasic);
 

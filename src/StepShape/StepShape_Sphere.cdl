@@ -25,24 +25,24 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable Sphere;
+	Create returns Sphere;
 	---Purpose: Returns a Sphere
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection) is redefined;
+	      aName : HAsciiString from TCollection) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
+	      aName : HAsciiString from TCollection;
 	      aRadius : Real from Standard;
-	      aCentre : mutable Point from StepGeom) is virtual;
+	      aCentre : Point from StepGeom) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
 	SetRadius(me : mutable; aRadius : Real);
 	Radius (me) returns Real;
-	SetCentre(me : mutable; aCentre : mutable Point);
-	Centre (me) returns mutable Point;
+	SetCentre(me : mutable; aCentre : Point);
+	Centre (me) returns Point;
 
 fields
 

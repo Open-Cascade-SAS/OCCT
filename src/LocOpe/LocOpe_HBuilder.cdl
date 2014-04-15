@@ -27,7 +27,7 @@ is
     Create(BT: BuildTool from TopOpeBRepDS)
     
 	---C++: inline
-    	returns mutable HBuilder from LocOpe;
+    	returns HBuilder from LocOpe;
     
 
     Classify(me)

@@ -37,7 +37,7 @@ uses
 is
 
   Create
-  returns mutable AspectMarker3d from Graphic3d;
+  returns AspectMarker3d from Graphic3d;
   ---Level: Public
   ---Purpose: Creates a context table for marker primitives
   --          defined with the following default values:
@@ -49,19 +49,19 @@ is
   Create (theType             : TypeOfMarker from Aspect;
           theColor            : Color from Quantity;
           theScale            : Real from Standard)
-  returns mutable AspectMarker3d from Graphic3d;
+  returns AspectMarker3d from Graphic3d;
 
   Create (theColor            : Color from Quantity;
           theWidth            : Integer from Standard;
           theHeight           : Integer from Standard;
           theTextureBitmap    : HArray1OfByte from TColStd)
-  returns mutable AspectMarker3d from Graphic3d;
+  returns AspectMarker3d from Graphic3d;
   ---Level: Public
   ---Purpose: Creates a context table for marker primitives
   --          defined with the specified values.
 
   Create (theTextureImage     : PixMap_Handle from Image)
-  returns mutable AspectMarker3d from Graphic3d;
+  returns AspectMarker3d from Graphic3d;
   ---Level: Public
   ---Purpose: Creates a context table for marker primitives
   --          defined with the specified values.

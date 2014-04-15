@@ -26,7 +26,7 @@ raises TransferFailure
 
 is
 
-    Create returns mutable SimpleBinderOfTransient;
+    Create returns SimpleBinderOfTransient;
     ---Purpose : Creates an empty SimpleBinderOfTransient
 
 --    IsMultiple (me) returns Boolean;

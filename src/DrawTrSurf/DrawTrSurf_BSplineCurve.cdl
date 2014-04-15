@@ -37,7 +37,7 @@ is
         --- Purpose :
         --  creates a drawable BSpline curve from a BSpline curve of 
         --  package Geom.
-     returns mutable BSplineCurve from DrawTrSurf;
+     returns BSplineCurve from DrawTrSurf;
 
 
 
@@ -49,7 +49,7 @@ is
         --- Purpose :
         --  creates a drawable BSpline curve from a BSpline curve of 
         --  package Geom.
-     returns mutable BSplineCurve from DrawTrSurf;
+     returns BSplineCurve from DrawTrSurf;
 
 
   DrawOn (me; dis : in out Display from Draw)
@@ -129,7 +129,7 @@ is
         ---C++: inline
      is static;
     
-  Copy(me) returns mutable Drawable3D from Draw
+  Copy(me) returns Drawable3D from Draw
 	---Purpose: For variable copy.
   is redefined;	
     

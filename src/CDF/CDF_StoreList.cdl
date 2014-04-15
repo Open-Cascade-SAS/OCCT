@@ -29,7 +29,7 @@ raises NoSuchObject from Standard
 is
 
     Create(aDocument: Document from CDM)
-    returns mutable StoreList from CDF;
+    returns StoreList from CDF;
     
     IsConsistent(me) returns Boolean from Standard;
 

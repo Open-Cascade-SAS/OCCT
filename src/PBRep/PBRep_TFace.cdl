@@ -32,7 +32,7 @@ uses
     
 is
 
-    Create returns mutable TFace from PBRep;
+    Create returns TFace from PBRep;
 	---Purpose: Creates an empty TFace.
     	---Level: Internal 
 	

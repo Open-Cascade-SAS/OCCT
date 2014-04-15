@@ -28,7 +28,7 @@ uses
   Box2d         from Bnd
 
 is
-   Create   ( OwnerId : EntityOwner from SelectBasics ) returns mutable DummySensitiveEntity from MeshVS;
+   Create   ( OwnerId : EntityOwner from SelectBasics ) returns DummySensitiveEntity from MeshVS;
 
    Areas    ( me: mutable;
               aresult: in out ListOfBox2d from SelectBasics ) is redefined;

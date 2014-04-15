@@ -36,14 +36,14 @@ is
     ---Purpose : Specific Checking of an Entity <ent>
 
     CopyCase (me; casenum : Integer;
-    	      entfrom : Transient; entto : mutable Transient;
+    	      entfrom : Transient; entto : Transient;
     	      TC : in out CopyTool)  is deferred;
     ---Purpose : Specific Copy ("Deep") from <entfrom> to <entto> (same type)
     --           by using a TransferControl which provides its working Map.
     --           Use method Transferred from TransferControl to work
 
 --    ImpliedCase (me; casenum : Integer;
---    	         entfrom : Transient; entto : mutable Transient;
+--    	         entfrom : Transient; entto : Transient;
 --    	         TC : CopyTool);
     ---Purpose : Specific Copying of Implied References
     --           A Default is provided which does nothing (must current case !)

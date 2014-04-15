@@ -27,7 +27,7 @@ is
     Create(D : Datum3D from PTopLoc; 
     	   P : Integer from Standard;
 	   N : Location from PTopLoc) 
-    returns mutable ItemLocation from  PTopLoc;
+    returns ItemLocation from  PTopLoc;
 	---Level: Internal 
     
     Datum3D(me) returns Datum3D from PTopLoc

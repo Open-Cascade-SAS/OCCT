@@ -54,7 +54,7 @@ is
             DS       : DataSource from MeshVS = 0;
             Id       : Integer = -1;
             Priority : BuilderPriority from MeshVS = MeshVS_BP_NodalColor )
-     returns mutable NodalColorPrsBuilder from MeshVS;
+     returns NodalColorPrsBuilder from MeshVS;
 
   Build   ( me; Prs      : Presentation from Prs3d;
             IDs          : PackedMapOfInteger;

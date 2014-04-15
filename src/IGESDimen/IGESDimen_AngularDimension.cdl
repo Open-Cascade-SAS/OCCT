@@ -32,7 +32,7 @@ uses
 
 is
 
-        Create returns mutable AngularDimension;
+        Create returns AngularDimension;
 
         -- Specific Methods pertaining to the class
 

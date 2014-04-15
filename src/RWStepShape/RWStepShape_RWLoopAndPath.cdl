@@ -29,7 +29,7 @@ is
 	Create returns RWLoopAndPath;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable LoopAndPath from StepShape);
+	              ach : in out Check; ent : LoopAndPath from StepShape);
 
 	WriteStep (me; SW : in out StepWriter; ent : LoopAndPath from StepShape);
 

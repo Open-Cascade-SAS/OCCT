@@ -35,7 +35,7 @@ uses AsciiString from TCollection,
 
 is
 
-    Create (tryC2 : Boolean) returns mutable SplineToBSpline;
+    Create (tryC2 : Boolean) returns SplineToBSpline;
     ---Purpose : Creates a Transformer SplineToBSpline. If <tryC2> is True,
     --           it will in addition try to upgrade continuity up to C2.
 
@@ -44,11 +44,11 @@ is
 
     Perform (me : mutable; G : Graph; protocol : Protocol from Interface;
     	     checks : in out CheckIterator;
-    	     newmod : out mutable InterfaceModel)  returns Boolean;
+    	     newmod : out InterfaceModel)  returns Boolean;
     ---Purpose : Performs the transformation, if there is at least one Spline
     --           Curve (112) or Surface (126). Does nothing if there is none.
 
-    Updated (me; entfrom : Transient; entto : out mutable Transient)
+    Updated (me; entfrom : Transient; entto : out Transient)
     	returns Boolean;
     ---Purpose : Returns the transformed entities.
     --           If original data contained no Spline Curve or Surface,

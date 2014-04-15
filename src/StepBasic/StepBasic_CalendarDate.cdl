@@ -23,7 +23,7 @@ uses
 	Integer from Standard
 is
 
-	Create returns mutable CalendarDate;
+	Create returns CalendarDate;
 	---Purpose: Returns a CalendarDate
 
 

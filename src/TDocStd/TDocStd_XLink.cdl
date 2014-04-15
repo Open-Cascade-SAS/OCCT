@@ -43,13 +43,13 @@ is
     -- Class methods ---------------------------------------------------------
 
     Set (myclass; atLabel : Label from TDF)
-    returns mutable XLink from TDocStd;
+    returns XLink from TDocStd;
 	---Purpose: Sets an empty external reference, at the label aLabel.
 
     -- -----------------------------------------------------------------------
 
     Create
-    returns mutable XLink from TDocStd;
+    returns XLink from TDocStd;
     ---Purpose: Initializes fields.
     
     Update (me : mutable)
@@ -138,7 +138,7 @@ is
     -- Modification & Transaction use methods.
     -- --------------------------------------
 
-    BackupCopy(me) returns mutable Attribute from TDF
+    BackupCopy(me) returns Attribute from TDF
     	is redefined static;
 	---Purpose: Returns a null handle. Raise allways for ,it is
 	--          nonsense to use this method.
@@ -153,13 +153,13 @@ is
     -- ----------------
 
     NewEmpty(me)
-    	returns mutable Attribute from TDF
+    	returns Attribute from TDF
     	is redefined static;
 	---Purpose: Returns a null handle.
 
     Paste(me;
-    	  intoAttribute    : mutable Attribute from TDF;
-	  aRelocationTable : mutable RelocationTable from TDF)
+    	  intoAttribute    : Attribute from TDF;
+	  aRelocationTable : RelocationTable from TDF)
     	is redefined static;
 	---Purpose: Does nothing.
 

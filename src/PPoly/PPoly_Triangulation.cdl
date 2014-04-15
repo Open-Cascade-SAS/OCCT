@@ -47,14 +47,14 @@ is
     Create(Defl:       Real              from Standard;
     	   Nodes:      HArray1OfPnt      from PColgp;
     	   Triangles:  HArray1OfTriangle from PPoly)
-    returns mutable Triangulation from PPoly;
+    returns Triangulation from PPoly;
     	---Purpose: Defaults with allocation of Nodes and Triangles.
 
     Create(Defl:       Real              from Standard;
     	   Nodes:      HArray1OfPnt      from PColgp;
     	   UVNodes:    HArray1OfPnt2d    from PColgp;
     	   Triangles:  HArray1OfTriangle from PPoly)
-    returns mutable Triangulation from PPoly;
+    returns Triangulation from PPoly;
     	---Purpose: Defaults with allocation of Nodes and Triangles.
 
     Deflection(me) returns Real;

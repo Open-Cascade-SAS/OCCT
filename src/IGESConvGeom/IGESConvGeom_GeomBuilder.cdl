@@ -23,7 +23,7 @@ class GeomBuilder  from IGESConvGeom
     --           make a CopiousData from a list of points/vectors
 
 uses XY from gp, XYZ from gp, Trsf, Ax1, Ax2, Ax3,
-     HSequenceOfXYZ, HArray1OfXY, HArray1OfXYZ,
+     HSequenceOfXYZ,
      TransformationMatrix, CopiousData
 
 raises DomainError
@@ -55,7 +55,7 @@ is
     ---Purpose : Returns a point given its rank (if added as XY, Z will be 0)
 
     MakeCopiousData (me; datatype : Integer; polyline : Boolean = Standard_False)
-    	returns mutable CopiousData
+    	returns CopiousData
     ---Purpose : Makes a CopiousData with the list of recorded Points/Vectors
     --           according to <datatype>, which must be 1,2 or 3
     --           If <polyline> is given True, the CopiousData is coded as a
@@ -64,13 +64,6 @@ is
     --           <datatype> = 1 or 2 : Vectors are ignored
     	raises DomainError;
     --           Error if : <datatype> is not 1,2 or 3; or NbPoints is 0
-
-    MakeXY  (me) returns mutable HArray1OfXY  is static;
-    ---Purpose : Returns the list of points as a HArray1OfXY. Z are ignored.
-
-    MakeXYZ (me) returns mutable HArray1OfXYZ  is static;
-    ---Purpose : Returns the list of points as a HArray1OfXYZ
-
 
     Position (me) returns Trsf from gp  is static;
     ---Purpose : Returns the Position in which the method EvalXYZ will
@@ -110,7 +103,7 @@ is
     --           Z will be regarded as a Z Displacement (can be ignored)
 
     MakeTransformation (me; unit : Real = 1)
-    	returns mutable TransformationMatrix  is static;
+    	returns TransformationMatrix  is static;
     ---Purpose : Returns the IGES Transformation which corresponds to the
     --           Position. Even if it is an Identity : IsIdentity should be
     --           tested first.

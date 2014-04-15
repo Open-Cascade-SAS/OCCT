@@ -23,6 +23,6 @@ class Point from PDataXtd inherits Attribute from PDF
 
 is
 
-    Create returns mutable Point from PDataXtd;
+    Create returns Point from PDataXtd;
 
 end Point;

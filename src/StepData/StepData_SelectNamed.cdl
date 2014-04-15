@@ -24,7 +24,7 @@ uses CString, Logical, AsciiString from TCollection,  Field from StepData
 
 is
 
-    Create  returns mutable SelectNamed;
+    Create  returns SelectNamed;
 
     HasName (me) returns Boolean  is redefined;
 

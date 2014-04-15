@@ -29,7 +29,7 @@ is
 	Create returns RWCurveStyleFont;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable CurveStyleFont from StepVisual);
+	              ach : in out Check; ent : CurveStyleFont from StepVisual);
 
 	WriteStep (me; SW : in out StepWriter; ent : CurveStyleFont from StepVisual);
 

@@ -28,7 +28,7 @@ uses
 
 is
 
-        Create returns mutable SingularSubfigure;
+        Create returns SingularSubfigure;
 
         -- Specific Methods pertaining to the class
 

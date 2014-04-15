@@ -24,7 +24,7 @@ uses
 	HArray1OfFace from StepShape
 is
 
-	Create returns mutable OpenShell;
+	Create returns OpenShell;
 	---Purpose: Returns a OpenShell
 
 

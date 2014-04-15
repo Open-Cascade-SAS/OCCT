@@ -31,7 +31,7 @@ is
     ---Purpose : Returns a ToolLevelToPWBLayerMap, ready to work
 
 
-    ReadOwnParams (me; ent : mutable LevelToPWBLayerMap;
+    ReadOwnParams (me; ent : LevelToPWBLayerMap;
     	    	   IR : IGESReaderData; PR : in out ParamReader)
     	raises DomainError  is static;
     ---Purpose : Reads own parameters from file. <PR> gives access to them,
@@ -55,7 +55,7 @@ is
     ---Purpose : Performs Specific Semantic Check
 
 
-    OwnCopy    (me; entfrom : LevelToPWBLayerMap; entto : mutable LevelToPWBLayerMap;
+    OwnCopy    (me; entfrom : LevelToPWBLayerMap; entto : LevelToPWBLayerMap;
     	        TC : in out CopyTool)  is static;
     ---Purpose : Copies Specific Parameters
 

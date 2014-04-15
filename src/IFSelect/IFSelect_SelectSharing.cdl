@@ -25,7 +25,7 @@ uses AsciiString from TCollection, EntityIterator, Graph
 
 is
 
-    Create returns mutable SelectSharing;
+    Create returns SelectSharing;
     ---Purpose : Creates a SelectSharing;
 
     RootResult (me; G : Graph) returns EntityIterator;

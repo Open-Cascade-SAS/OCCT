@@ -30,7 +30,7 @@ is
     	Create returns RWRevolvedFaceSolid;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable RevolvedFaceSolid from StepShape);
+	              ach : in out Check; ent : RevolvedFaceSolid from StepShape);
 
 	WriteStep (me; SW : in out StepWriter; ent : RevolvedFaceSolid from StepShape);
 

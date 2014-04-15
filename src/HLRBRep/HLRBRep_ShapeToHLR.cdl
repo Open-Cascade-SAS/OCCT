@@ -40,7 +40,7 @@ is
 		   
     ExploreFace(myclass;
                 S      :         OutLiner          from HLRTopoBRep;
-                DS     : mutable Data              from HLRBRep;
+                DS     : Data              from HLRBRep;
 	        FM     :         IndexedMapOfShape from TopTools;
 	        EM     :         IndexedMapOfShape from TopTools;
 		i      : in out  Integer           from Standard;
@@ -50,7 +50,7 @@ is
 
     ExploreShape(myclass;
                  S    :         OutLiner          from HLRTopoBRep;
-                 DS   : mutable Data              from HLRBRep;
+                 DS   : Data              from HLRBRep;
 		 FM   :         IndexedMapOfShape from TopTools; 
 		 EM   :         IndexedMapOfShape from TopTools) 
     is private;

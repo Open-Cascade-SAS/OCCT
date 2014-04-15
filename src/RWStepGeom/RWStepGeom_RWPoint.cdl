@@ -28,7 +28,7 @@ is
 	Create returns RWPoint;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable Point from StepGeom);
+	              ach : in out Check; ent : Point from StepGeom);
 
 	WriteStep (me; SW : in out StepWriter; ent : Point from StepGeom);
 

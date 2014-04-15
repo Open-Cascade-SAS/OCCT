@@ -25,7 +25,7 @@ uses AsciiString from TCollection, Transient, InterfaceModel
 
 is
 
-    Create returns mutable SelectVisibleStatus;
+    Create returns SelectVisibleStatus;
     ---Purpose : Creates a SelectVisibleStatus
 
     Sort (me; rank : Integer; ent : Transient; model : InterfaceModel)

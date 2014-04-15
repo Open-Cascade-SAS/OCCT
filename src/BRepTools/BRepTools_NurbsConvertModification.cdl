@@ -37,7 +37,7 @@ uses Face     from TopoDS,
 
 is
 
-    Create returns mutable NurbsConvertModification from BRepTools; 
+    Create returns NurbsConvertModification from BRepTools; 
     
 
 

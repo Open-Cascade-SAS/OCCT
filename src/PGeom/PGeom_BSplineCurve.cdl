@@ -28,7 +28,7 @@ uses  HArray1OfInteger from PColStd,
 is
 
 
-  Create returns mutable BSplineCurve from PGeom;
+  Create returns BSplineCurve from PGeom;
 	---Purpose: Creates a BSplineCurve with default values.
     	---Level: Internal 
 
@@ -41,7 +41,7 @@ is
     	    aWeights        : HArray1OfReal from PColStd;
     	    aKnots          : HArray1OfReal from PColStd;
     	    aMultiplicities : HArray1OfInteger from PColStd)
-     returns mutable BSplineCurve from PGeom;
+     returns BSplineCurve from PGeom;
 	---Purpose: Creates a BSplineCurve with these field values.
     	---Level: Internal 
 

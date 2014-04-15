@@ -49,7 +49,7 @@ is
 	---Purpose: Returns the GUID for named shapes.
 	---C++: return const &
 
-    Create returns mutable NamedShape from TNaming;
+    Create returns NamedShape from TNaming;
  
  
     IsEmpty (me) 
@@ -82,7 +82,7 @@ is
 	---C++: inline         
 	---C++: return const &
 
-    BackupCopy(me) returns mutable Attribute from TDF
+    BackupCopy(me) returns Attribute from TDF
     is redefined;
 	---Purpose: Copies  the attribute  contents into  a  new other
 	--          attribute. It is used by Backup().
@@ -117,14 +117,14 @@ is
     -- ----------------
 
     NewEmpty(me)
-    	returns mutable Attribute from TDF
+    	returns Attribute from TDF
     	is redefined;
 	---Purpose: Returns an new empty attribute from the good end
 	--          type. It is used by the copy algorithm.
 
     Paste(me;
-    	  intoAttribute    : mutable Attribute from TDF;
-	  aRelocTationable : mutable RelocationTable from TDF)
+    	  intoAttribute    : Attribute from TDF;
+	  aRelocTationable : RelocationTable from TDF)
 	is redefined;
 	---Purpose: This method is different from the "Copy" one,
 	--          because it is used when copying an attribute from

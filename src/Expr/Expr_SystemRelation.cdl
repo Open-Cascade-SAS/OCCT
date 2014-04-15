@@ -30,7 +30,7 @@ is
     Create(relation : GeneralRelation)
     ---Purpose: Creates a system with one relation
     ---Level : Advanced
-    returns mutable SystemRelation;
+    returns SystemRelation;
 
     Add(me : mutable; relation : GeneralRelation)
     ---Purpose: Appends <relation> in the list of components of <me>. 
@@ -72,7 +72,7 @@ is
     ---Purpose: Returns a GeneralRelation after replacement of
     --          NamedUnknowns by an associated expression, and after
     --          values computation.
-    returns mutable GeneralRelation
+    returns GeneralRelation
     raises NumericError;
     
     Simplify(me : mutable)
@@ -82,7 +82,7 @@ is
 
     Copy(me)
     ---Purpose: Returns a copy of <me> having the same unknowns and functions.
-    returns mutable like me;
+    returns like me;
     
     Contains(me; exp : GeneralExpression)
     ---Purpose: Tests if <me> contains <exp>.

@@ -26,7 +26,7 @@ uses
 is
 
     Create
-    returns mutable IsoAspect from VrmlConverter;
+    returns IsoAspect from VrmlConverter;
 
     ---Purpose: create a default IsoAspect. 
     --  Default value: myNumber  - 10.
@@ -34,7 +34,7 @@ is
     Create  (aMaterial: Material from Vrml; 
     	    	 OnOff: Boolean from Standard;
                aNumber: Integer from Standard)
-    returns mutable IsoAspect from VrmlConverter;
+    returns IsoAspect from VrmlConverter;
 	    
 
     SetNumber (me: mutable; aNumber: Integer from Standard) 

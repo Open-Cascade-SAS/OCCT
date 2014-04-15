@@ -28,7 +28,7 @@ uses CString, AsciiString from TCollection,
 
 is
 
-    Create returns mutable FreeFormEntity;
+    Create returns FreeFormEntity;
     ---Purpose : Creates a FreeFormEntity, with no field, no type
 
     SetStepType (me : mutable; typenam : CString);
@@ -61,7 +61,7 @@ is
     ---Purpose : Returns the list of types (one type for a simple entity),
     --           as is (non reordered)
 
-    Reorder (myclass; ent : in out mutable FreeFormEntity) returns Boolean;
+    Reorder (myclass; ent : in out FreeFormEntity) returns Boolean;
     ---Purpose : Reorders a Complex entity if required, i.e. if member types
     --           are not in alphabetic order
     --           Returns False if nothing done (order was OK or simple entity),

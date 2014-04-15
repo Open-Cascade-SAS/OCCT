@@ -34,7 +34,7 @@ uses
 
 is
 
-        Create returns mutable CircularArc;
+        Create returns CircularArc;
 
         -- Specific Methods pertaining to the class
 

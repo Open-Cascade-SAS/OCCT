@@ -22,7 +22,7 @@ uses
 
 is
 
-    Create returns mutable TypeQualifier;
+    Create returns TypeQualifier;
 
     Init (me : mutable; name : HAsciiString from TCollection);
 

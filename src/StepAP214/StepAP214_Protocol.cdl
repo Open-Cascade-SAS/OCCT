@@ -22,7 +22,7 @@ uses Protocol from Interface,
      CString from Standard
 
 is
-	Create returns mutable Protocol from StepAP214;
+	Create returns Protocol from StepAP214;
 	TypeNumber (me; atype : any Type) returns Integer is redefined;
 	---Purpose :Returns a Case Number for each of the StepAP214 Entities
 	SchemaName(me) returns CString from Standard is redefined;

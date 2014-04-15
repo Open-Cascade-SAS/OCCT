@@ -29,7 +29,7 @@ is
 	Create returns RWRectangularCompositeSurface;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable RectangularCompositeSurface from StepGeom);
+	              ach : in out Check; ent : RectangularCompositeSurface from StepGeom);
 
 	WriteStep (me; SW : in out StepWriter; ent : RectangularCompositeSurface from StepGeom);
 

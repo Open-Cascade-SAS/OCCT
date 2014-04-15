@@ -59,7 +59,7 @@ is
     -- 	 <S> and <Ancestor> have identical types, 
     -- 	 <S> and <Ancestor> orientations are DIFFERENT.
     -- 
-    returns mutable ShapeShapeInterference from TopOpeBRepDS; 
+    returns ShapeShapeInterference from TopOpeBRepDS; 
 	    
     
     Config(me) returns Config from TopOpeBRepDS

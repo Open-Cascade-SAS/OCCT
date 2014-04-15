@@ -31,20 +31,20 @@ is
 
 
 	Create(S : CString) 
-            returns mutable HAsciiString from PCollection;
+            returns HAsciiString from PCollection;
 	---Purpose: Creation and initialization with the string S.
 
 	Create(S : AsciiString from TCollection) 
-            returns mutable HAsciiString from PCollection;
+            returns HAsciiString from PCollection;
 	---Purpose: Creation and initialization with the string S from TCollection.
 
 	Create(C : Character from Standard)
-            returns mutable HAsciiString from PCollection;
+            returns HAsciiString from PCollection;
 	---Purpose: Creation and initialization with the character C.
 
 	Create(S : HAsciiString from PCollection;
     	       FromIndex, ToIndex : Integer from Standard) 
-	    returns mutable HAsciiString from PCollection
+	    returns HAsciiString from PCollection
 	    raises NegativeValue from Standard;
         ---Purpose: Creation of a sub-string of the string S.
         -- The sub-string starts at the index FromIndex and ends
@@ -58,19 +58,19 @@ is
         -- "cdef"
 
         Create(S : HExtendedString from PCollection)
-            returns mutable HAsciiString from PCollection
+            returns HAsciiString from PCollection
 	    raises OutOfRange from Standard;
 	---Purpose: Creation by converting an extended string to a normal
 	-- string. Raises OutOfRange if the String is not in the "Ascii range".
 	  
 	Create(R : Real from Standard ; F : CString = "%f") 
-            returns mutable HAsciiString from PCollection;
+            returns HAsciiString from PCollection;
 	---Purpose: Creation and initialization by converting the real 
 	-- value into a string. 
 	-- F describes a format using "C" conventions.
 
 	Create(I : Integer from Standard ; F : CString = "%d")
-            returns mutable HAsciiString from PCollection;
+            returns HAsciiString from PCollection;
 	---Purpose: Creation and initialization by converting the Integer
 	-- value into a string.
 	-- F describes a format using "C" conventions.
@@ -394,7 +394,7 @@ is
 	Split(me : mutable; Index  : Integer) 
         ---Level: Public
         ---Purpose: Splits a string of characters into two sub-strings.
-	returns mutable HAsciiString from PCollection
+	returns HAsciiString from PCollection
 	raises OutOfRange from Standard;
 
 	SubString(me; FromIndex, ToIndex : Integer) 
@@ -409,11 +409,11 @@ is
         --   me = "abcdefg"
         -- returns
         --   "cdef"
-	returns mutable HAsciiString from PCollection
+	returns HAsciiString from PCollection
 	raises OutOfRange from Standard;
 
         Token (me ; separators : CString=" \t" ; whichone : Integer=1) 
-                 returns mutable HAsciiString from PCollection;
+                 returns HAsciiString from PCollection;
         ---Level: Public
         ---Purpose: Extracts <aString> token from <me>.
         -- The token extracted is the indice number <num>.

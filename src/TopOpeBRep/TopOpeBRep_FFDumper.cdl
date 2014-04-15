@@ -29,7 +29,7 @@ uses
     
 is 
 
-    Create(PFF:PFacesFiller) returns mutable FFDumper from  TopOpeBRep; 
+    Create(PFF:PFacesFiller) returns FFDumper from  TopOpeBRep; 
     Init(me:mutable;PFF:PFacesFiller); 
     DumpLine(me:mutable;I:Integer);
     DumpLine(me:mutable;L:LineInter);

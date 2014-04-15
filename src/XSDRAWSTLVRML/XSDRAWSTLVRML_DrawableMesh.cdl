@@ -21,7 +21,7 @@ uses
   Mesh    from MeshVS
 
 is
-    Create ( aMesh : Mesh from MeshVS ) returns mutable DrawableMesh from XSDRAWSTLVRML;
+    Create ( aMesh : Mesh from MeshVS ) returns DrawableMesh from XSDRAWSTLVRML;
     DrawOn(me; dis : in out Display) is redefined virtual;
 
     GetMesh( me ) returns Mesh;

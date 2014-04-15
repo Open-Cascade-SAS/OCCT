@@ -27,7 +27,7 @@ uses
 	Logical from StepData
 is
 
-	Create returns mutable BezierSurface;
+	Create returns BezierSurface;
 	---Purpose: Returns a BezierSurface
 
 

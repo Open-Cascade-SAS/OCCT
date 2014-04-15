@@ -24,7 +24,7 @@ uses Face    from TopoDS,
 is
 
     Create (cylinder : Face from TopoDS)
-    returns mutable Radius from DrawDim;
+    returns Radius from DrawDim;
     
     Cylinder (me) returns Face from TopoDS;
     ---C++: return const&

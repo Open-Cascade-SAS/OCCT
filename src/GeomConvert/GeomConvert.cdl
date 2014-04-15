@@ -109,7 +109,7 @@ is
   SplitBSplineCurve (C               : BSplineCurve from Geom; 
                      FromK1, ToK2    : Integer;
                      SameOrientation : Boolean = Standard_True)
-     returns mutable BSplineCurve from Geom
+     returns BSplineCurve from Geom
          --- Purpose : 
          --  This method computes the arc of B-spline curve between the two 
          --  knots FromK1 and ToK2.  If C is periodic the arc has the same
@@ -133,7 +133,7 @@ is
                      FromU1, ToU2        : Real;
                      ParametricTolerance : Real;
                      SameOrientation     : Boolean = Standard_True)
-     returns mutable BSplineCurve from Geom
+     returns BSplineCurve from Geom
         --- Purpose :
         --  This function computes the segment of B-spline curve between the 
         --  parametric values FromU1, ToU2.
@@ -158,7 +158,7 @@ is
                        FromUK1, ToUK2, FromVK1, ToVK2 : Integer; 
                        SameUOrientation : Boolean = Standard_True;
                        SameVOrientation : Boolean = Standard_True)
-     returns mutable BSplineSurface from Geom
+     returns BSplineSurface from Geom
         --- Purpose : 
         --  Computes the B-spline surface patche between the knots values
         --  FromUK1, ToUK2, FromVK1, ToVK2.
@@ -182,7 +182,7 @@ is
                        FromK1, ToK2    : Integer;
                        USplit          : Boolean;
                        SameOrientation : Boolean = Standard_True)
-     returns mutable BSplineSurface from Geom
+     returns BSplineSurface from Geom
         --- Purpose : 
         --  This method splits a B-spline surface patche between the
         --  knots values FromK1, ToK2 in one direction.
@@ -204,7 +204,7 @@ is
                        ParametricTolerance        : Real;
                        SameUOrientation           : Boolean = Standard_True;
                        SameVOrientation           : Boolean = Standard_True)
-     returns mutable BSplineSurface from Geom
+     returns BSplineSurface from Geom
         --- Purpose :
         --  This method computes the B-spline surface patche between the
         --  parametric values FromU1, ToU2, FromV1, ToV2.
@@ -233,7 +233,7 @@ is
                        USplit               : Boolean; 
                        ParametricTolerance  : Real;
                        SameOrientation      : Boolean = Standard_True)
-     returns mutable BSplineSurface from Geom
+     returns BSplineSurface from Geom
         --- Purpose : 
         --  This method splits the B-spline surface S in one direction
         --  between the parametric values FromParam1, ToParam2.
@@ -258,7 +258,7 @@ is
   CurveToBSplineCurve (C                : Curve from Geom ;
     	    	       Parameterisation : ParameterisationType from Convert 
     	    	       =  Convert_TgtThetaOver2)
-     returns mutable BSplineCurve from Geom
+     returns BSplineCurve from Geom
         --- Purpose : This function converts a non infinite curve from
         --  Geom into a  B-spline curve.  C must be   an ellipse or  a
         --  circle  or a trimmed conic  or a trimmed  line or a Bezier
@@ -328,7 +328,7 @@ is
       	    ConstructionError;
 	
   SurfaceToBSplineSurface (S : Surface from Geom)
-     returns mutable BSplineSurface from Geom
+     returns BSplineSurface from Geom
         --- Purpose : 
         --  This algorithm converts a non infinite surface from Geom
         --  into a B-spline surface.

@@ -30,7 +30,7 @@ is
     	Create returns RWAppliedPresentedItem;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable AppliedPresentedItem from StepAP214);
+	              ach : in out Check; ent : AppliedPresentedItem from StepAP214);
 
 	WriteStep (me; SW : in out StepWriter; ent : AppliedPresentedItem from StepAP214);
 

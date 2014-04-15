@@ -25,7 +25,7 @@ uses CString, Transient, InterfaceModel
 
 is
 
-    Create (nopk : Boolean = Standard_False) returns mutable SignType;
+    Create (nopk : Boolean = Standard_False) returns SignType;
     ---Purpose : Returns a SignType
     --           <nopk> false (D) : complete dynamic type (name = Dynamic Type)
     --           <nopk> true : class type without pk (name = Class Type)

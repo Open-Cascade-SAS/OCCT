@@ -23,7 +23,7 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable GeometricRepresentationItem;
+	Create returns GeometricRepresentationItem;
 	---Purpose: Returns a GeometricRepresentationItem
 
 

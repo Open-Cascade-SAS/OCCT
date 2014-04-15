@@ -29,7 +29,7 @@ is
 	Create returns RWSurfaceCurve;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable SurfaceCurve from StepGeom);
+	              ach : in out Check; ent : SurfaceCurve from StepGeom);
 
 	WriteStep (me; SW : in out StepWriter; ent : SurfaceCurve from StepGeom);
 

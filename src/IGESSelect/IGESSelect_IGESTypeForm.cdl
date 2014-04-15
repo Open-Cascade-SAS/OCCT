@@ -26,7 +26,7 @@ uses CString, Transient, InterfaceModel
 
 is
 
-    Create (withform : Boolean = Standard_True) returns mutable IGESTypeForm;
+    Create (withform : Boolean = Standard_True) returns IGESTypeForm;
     ---Purpose : Creates a Signature for IGES Type & Form Numbers
     --           If <withform> is False, for IGES Type Number only
 

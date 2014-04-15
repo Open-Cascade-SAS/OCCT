@@ -69,7 +69,7 @@ uses
  is
 
     Create(shap: Shape from TopoDS) 
-    returns mutable Shape from AIS;
+    returns Shape from AIS;
     	---Purpose: Initializes construction of the shape shap from wires,
     	-- edges and vertices.
         
@@ -172,25 +172,25 @@ uses
 
     Compute(me                   : mutable;
             aPresentationManager : PresentationManager3d from PrsMgr;
-            aPresentation        : mutable Presentation from Prs3d;
+            aPresentation        : Presentation from Prs3d;
     	    aMode                : Integer from Standard = 0) 
     is redefined virtual protected;
 
     Compute(me                   : mutable;
     	    aProjector           : Projector from Prs3d;
-            aPresentation        : mutable Presentation from Prs3d)
+            aPresentation        : Presentation from Prs3d)
     is redefined virtual protected;
 
     Compute(me                   : mutable;
     	    aProjector           : Projector from Prs3d;
 	    aTrsf                : Transformation from Geom;
-	    aPresentation        : mutable Presentation from Prs3d)
+	    aPresentation        : Presentation from Prs3d)
     is redefined virtual protected;
     
 
 
     ComputeSelection(me          : mutable;
-    	    	     aSelection  : mutable Selection from SelectMgr;
+    	    	     aSelection  : Selection from SelectMgr;
     	    	     aMode       : Integer from Standard)
     is redefined virtual protected; 
 				
@@ -288,7 +288,7 @@ uses
 
     Compute(me                   : mutable;
     	    aProjector           : Projector from Prs3d;
-            aPresentation        : mutable Presentation from Prs3d;
+            aPresentation        : Presentation from Prs3d;
     	    ashape               : Shape from TopoDS) is static private;
 
     GetDeflection(myclass; aShape  : Shape from TopoDS;

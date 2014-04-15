@@ -34,7 +34,7 @@ raises InterfaceError
 
 is
 
-    Create returns mutable StepType;
+    Create returns StepType;
     ---Purpose : Creates a Signature for Step Type. Protocol is undefined here,
     --           hence no Signature may yet be produced. The StepType signature
     --           requires a Protocol before working

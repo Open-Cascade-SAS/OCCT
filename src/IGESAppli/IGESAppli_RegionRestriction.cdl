@@ -25,7 +25,7 @@ uses  Integer  -- no one specific type
 
 is
 
-        Create returns mutable RegionRestriction;
+        Create returns RegionRestriction;
 
         -- Specific Methods pertaining to the class
 

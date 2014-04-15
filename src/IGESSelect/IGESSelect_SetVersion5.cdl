@@ -27,12 +27,12 @@ uses AsciiString from TCollection,
 
 is
 
-    Create returns mutable SetVersion5;
+    Create returns SetVersion5;
     ---Purpose : Creates an SetVersion5, which uses the system Date for Last
     --           Change Date
 
     Performing (me; ctx : in out ContextModif;
-    	        target  : mutable IGESModel;
+    	        target  : IGESModel;
                 TC      : in out CopyTool);
     ---Purpose : Specific action : only <target> is used : IGES Version (coded)
     --           is upgraded to 5.1 if it is older, and it this case the new

@@ -32,7 +32,7 @@ raises OutOfRange
 
 is
 
-        Create returns mutable FlagNote;
+        Create returns FlagNote;
 
         -- Specific Methods pertaining to the class
 

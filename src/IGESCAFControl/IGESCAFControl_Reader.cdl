@@ -45,7 +45,7 @@ is
     	---Purpose: Creates a reader with an empty
     	--          IGES model and sets ColorMode, LayerMode and NameMode to Standard_True.
 
-    Create (WS : mutable WorkSession from XSControl;
+    Create (WS : WorkSession from XSControl;
     	    	 scratch : Boolean = Standard_True) returns Reader;
     	---Purpose: Creates a reader tool and attaches it to an already existing Session
     	-- 	    Clears the session if it was not yet set for IGES

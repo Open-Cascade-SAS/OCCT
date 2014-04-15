@@ -23,7 +23,7 @@ uses
 
 is
 
-    Create returns mutable Function from PFunction;
+    Create returns Function from PFunction;
         
     SetDriverGUID(me : mutable; driverGUID : GUID from Standard);
 

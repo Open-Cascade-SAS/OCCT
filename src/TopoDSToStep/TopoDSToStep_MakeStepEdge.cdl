@@ -35,13 +35,13 @@ is
     
     Create(E  : Edge from TopoDS;
   	   T  : in out Tool from TopoDSToStep;
-	   FP : mutable FinderProcess from Transfer)
+	   FP : FinderProcess from Transfer)
          returns MakeStepEdge;
     
     Init(me : in out;
     	 E  : Edge from TopoDS;
      	 T  : in out Tool from TopoDSToStep;
-         FP : mutable FinderProcess from Transfer);
+         FP : FinderProcess from Transfer);
 
 	    
     Value (me) returns TopologicalRepresentationItem from StepShape

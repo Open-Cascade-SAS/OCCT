@@ -24,7 +24,7 @@ is
     Create(P1,P2 : Real;
     	   S : Surface from Geom;
 	   L : Location from TopLoc)
-    returns mutable PointOnSurface from BRep;
+    returns PointOnSurface from BRep;
     
     
     IsPointOnSurface(me)        returns Boolean

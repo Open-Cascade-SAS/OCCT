@@ -34,7 +34,7 @@ uses
 
 is
 
-    Create returns mutable SweptToElementary from ShapeCustom;
+    Create returns SweptToElementary from ShapeCustom;
 
     NewSurface(me: mutable; F  :     Face     from TopoDS;
                             S  : out Surface  from Geom;

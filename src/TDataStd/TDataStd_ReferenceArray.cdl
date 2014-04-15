@@ -91,7 +91,7 @@ is
     --           =========================
     
     Create
-    returns mutable ReferenceArray from TDataStd; 
+    returns ReferenceArray from TDataStd; 
 
     ID (me)
     ---C++: return const & 
@@ -100,10 +100,10 @@ is
     Restore (me: mutable; With : Attribute from TDF);
 
     NewEmpty (me)
-    returns mutable Attribute from TDF;
+    returns Attribute from TDF;
 
-    Paste (me; Into : mutable Attribute from TDF;
-	       RT   : mutable RelocationTable from TDF);    
+    Paste (me; Into : Attribute from TDF;
+	       RT   : RelocationTable from TDF);    
 
     References (me; DS : DataSet from TDF) 
     is redefined;

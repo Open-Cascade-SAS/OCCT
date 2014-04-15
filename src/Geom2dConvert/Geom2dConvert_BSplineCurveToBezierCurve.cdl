@@ -75,7 +75,7 @@ is
     raises DomainError;
    
         
-    Arc (me : in out; Index : Integer)    returns mutable BezierCurve
+    Arc (me : in out; Index : Integer)    returns BezierCurve
         --- Purpose :Constructs and returns the Bezier curve of index
     	-- Index to the table of adjacent Bezier arcs
     	-- computed by this algorithm.

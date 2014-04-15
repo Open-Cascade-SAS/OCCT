@@ -28,7 +28,7 @@ uses Curve from PGeom2d
 is
     
 
-  Create returns mutable OffsetCurve from PGeom2d;
+  Create returns OffsetCurve from PGeom2d;
     ---Purpose: Creates an OffsetCurve with default values.
 	---Level: Internal 
 
@@ -36,7 +36,7 @@ is
   Create (
     	    aBasisCurve : Curve from PGeom2d;
     	    aOffsetValue : Real from Standard)
-     returns mutable OffsetCurve from PGeom2d;
+     returns OffsetCurve from PGeom2d;
         ---Purpose : <aBasisCurve> is  the basis curve, <aOffsetValue>
         --         is the distance between <me> and the basis curve at
         --         any point.    <aOffsetDirection>  defines the fixed

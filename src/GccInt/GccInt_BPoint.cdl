@@ -25,7 +25,7 @@ uses Pnt2d from gp,
 
 is
 
-Create(Point : Pnt2d) returns mutable BPoint;
+Create(Point : Pnt2d) returns BPoint;
     ---Purpose: Constructs a bisecting object whose geometry is the 2D point Point.
     
 Point(me) returns Pnt2d from gp

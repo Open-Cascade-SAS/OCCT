@@ -24,7 +24,7 @@ uses
 is
 
     Create
-    returns mutable PlaneDriver from TPrsStd;
+    returns PlaneDriver from TPrsStd;
 ---Purpose: Constructs an empty plane driver.
     Update (me : mutable ;
            aLabel      : Label from TDF;

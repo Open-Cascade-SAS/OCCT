@@ -37,7 +37,7 @@ is
     Initialize;
     ---Purpose : Assumes that no result has yet been recognized
 
-    Evaluate (me : mutable; akey : TheKey; res : out mutable TheResul)
+    Evaluate (me : mutable; akey : TheKey; res : out TheResul)
     	returns Boolean;
     ---Purpose : Evaluates if recognition has a result, returns it if yes
     --           In case of success, Returns True and puts result in "res"
@@ -45,17 +45,17 @@ is
     --           Works by calling deferred method Eval, and in case of failure,
     --           looks for Added Recognizers to work
 
-    Result (me) returns mutable TheResul  raises NoSuchObject;
+    Result (me) returns TheResul  raises NoSuchObject;
     ---Purpose : Returns result of last recognition (call of Evaluate)
 
-    Add (me : mutable; reco : mutable Recognizer);
+    Add (me : mutable; reco : Recognizer);
     ---Purpose : Adds a new Recognizer to the Compound, at the end
     --           Several calls to Add work by adding in the order of calls :
     --           Hence, when Eval has failed to recognize, Evaluate will call
     --	         Evaluate from the first added Recognizer if there is one,
     --	         and to the second if there is still no result, and so on
 
-    SetOK (me : mutable; aresult : mutable TheResul) is protected;
+    SetOK (me : mutable; aresult : TheResul) is protected;
     ---Purpose : Records the result of the recognition. Called by specific
     --           method Eval to record a result : after calling it, Eval has
     --           finished and can return

@@ -29,7 +29,7 @@ is
 
 
     Create (theMessageDriver : MessageDriver from CDM) -- Version 0
-    returns mutable PlaneRetrievalDriver from MDataXtd;
+    returns PlaneRetrievalDriver from MDataXtd;
     
 
     VersionNumber(me) returns Integer from Standard;
@@ -39,12 +39,12 @@ is
     SourceType(me) returns Type from Standard;
 	---Purpose: Returns the type: Plane from PDataXtd.
 
-    NewEmpty (me)  returns mutable Attribute from TDF;
+    NewEmpty (me)  returns Attribute from TDF;
 
 
     Paste(me;
     	  Source     :         Attribute from PDF;
-    	  Target     : mutable Attribute from TDF;
+    	  Target     : Attribute from TDF;
     	  RelocTable : RRelocationTable  from MDF);
 
 end PlaneRetrievalDriver;

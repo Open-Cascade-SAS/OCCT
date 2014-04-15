@@ -31,7 +31,7 @@ is
     ---Purpose : Returns a ToolTextDisplayTemplate, ready to work
 
 
-    ReadOwnParams (me; ent : mutable TextDisplayTemplate;
+    ReadOwnParams (me; ent : TextDisplayTemplate;
     	    	   IR : IGESReaderData; PR : in out ParamReader)
     	raises DomainError  is static;
     ---Purpose : Reads own parameters from file. <PR> gives access to them,
@@ -55,7 +55,7 @@ is
     ---Purpose : Performs Specific Semantic Check
 
 
-    OwnCopy    (me; entfrom : TextDisplayTemplate; entto : mutable TextDisplayTemplate;
+    OwnCopy    (me; entfrom : TextDisplayTemplate; entto : TextDisplayTemplate;
     	        TC : in out CopyTool)  is static;
     ---Purpose : Copies Specific Parameters
 

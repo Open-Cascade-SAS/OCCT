@@ -26,16 +26,16 @@ uses
 	AutoDesignPresentedItemSelect from StepAP214
 is
 
-	Create returns mutable AutoDesignPresentedItem;
+	Create returns AutoDesignPresentedItem;
 	---Purpose: Returns a AutoDesignPresentedItem
 
 	Init (me : mutable;
-	      aItems : mutable HArray1OfAutoDesignPresentedItemSelect from StepAP214) is virtual;
+	      aItems : HArray1OfAutoDesignPresentedItemSelect from StepAP214) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetItems(me : mutable; aItems : mutable HArray1OfAutoDesignPresentedItemSelect);
-	Items (me) returns mutable HArray1OfAutoDesignPresentedItemSelect;
+	SetItems(me : mutable; aItems : HArray1OfAutoDesignPresentedItemSelect);
+	Items (me) returns HArray1OfAutoDesignPresentedItemSelect;
 	ItemsValue (me; num : Integer) returns AutoDesignPresentedItemSelect;
 	NbItems (me) returns Integer;
 

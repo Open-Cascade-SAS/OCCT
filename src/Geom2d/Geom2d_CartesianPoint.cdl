@@ -30,11 +30,11 @@ uses Ax2d       from gp,
 
 is
 
-  Create (P : Pnt2d)   returns mutable CartesianPoint;
+  Create (P : Pnt2d)   returns CartesianPoint;
         --- Purpose : Returns a persistent copy of P.
 
 
-  Create (X, Y : Real)   returns mutable CartesianPoint;
+  Create (X, Y : Real)   returns CartesianPoint;
 
 
 
@@ -78,7 +78,7 @@ is
 
 
 
-  Copy (me)  returns mutable like me;
+  Copy (me)  returns like me;
      
 fields
 

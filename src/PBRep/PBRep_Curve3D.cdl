@@ -29,7 +29,7 @@ is
     	   CF : Real     from Standard;
 	   CL : Real     from Standard;
     	   L  : Location from PTopLoc) 
-    returns mutable Curve3D from PBRep;
+    returns Curve3D from PBRep;
     	---Purpose : CF is curve first param
     	--           CL is curve last param
     	--           As far as they can't be computed from a Persistent Curve

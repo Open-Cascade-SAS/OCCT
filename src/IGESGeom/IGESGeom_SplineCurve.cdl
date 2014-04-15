@@ -37,7 +37,7 @@ raises DimensionMismatch, OutOfRange
 
 is
 
-        Create returns mutable SplineCurve;
+        Create returns SplineCurve;
 
         -- Specific Methods pertaining to the class
 

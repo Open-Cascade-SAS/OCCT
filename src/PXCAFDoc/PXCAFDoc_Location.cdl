@@ -21,9 +21,9 @@ uses
 --    Location from TopLoc,
     Location from PTopLoc
 is
-    Create returns mutable Location from PXCAFDoc;
+    Create returns Location from PXCAFDoc;
     
-    Create (Loc: Location from PTopLoc) returns mutable Location from PXCAFDoc;
+    Create (Loc: Location from PTopLoc) returns Location from PXCAFDoc;
     
     Set (me: mutable; Loc: Location from PTopLoc);
     

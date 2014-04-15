@@ -65,7 +65,7 @@ is
     ---Purpose : Creates a Reader from scratch, with a norm name which
     --           identifies a Controller
 
-    Create (WS : mutable WorkSession from XSControl;
+    Create (WS : WorkSession from XSControl;
     	    	 scratch : Boolean = Standard_True) returns Reader;
     ---Purpose : Creates a Reader from an already existing Session, with a
     --           Controller already set
@@ -77,7 +77,7 @@ is
     ---Purpose : Sets a specific norm to <me>
     --           Returns True if done, False if <norm> is not available
 
-    SetWS (me : in out; WS : mutable WorkSession from XSControl;
+    SetWS (me : in out; WS : WorkSession from XSControl;
     	    	 scratch : Boolean = Standard_True);
     ---Purpose : Sets a specific session to <me>
 

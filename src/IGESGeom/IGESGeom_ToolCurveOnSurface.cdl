@@ -31,7 +31,7 @@ is
     ---Purpose : Returns a ToolCurveOnSurface, ready to work
 
 
-    ReadOwnParams (me; ent : mutable CurveOnSurface;
+    ReadOwnParams (me; ent : CurveOnSurface;
     	    	   IR : IGESReaderData; PR : in out ParamReader)
     	raises DomainError  is static;
     ---Purpose : Reads own parameters from file. <PR> gives access to them,
@@ -47,7 +47,7 @@ is
     ---Purpose : Lists the Entities shared by a CurveOnSurface <ent>, from
     --           its specific (own) parameters
 
-    OwnCorrect (me; ent : mutable CurveOnSurface) returns Boolean  is static;
+    OwnCorrect (me; ent : CurveOnSurface) returns Boolean  is static;
     ---Purpose : Sets automatic unambiguous Correction on a CurveOnSurface
     --           (its CurveUV must have UseFlag at 5)
 
@@ -59,7 +59,7 @@ is
     ---Purpose : Performs Specific Semantic Check
 
 
-    OwnCopy    (me; entfrom : CurveOnSurface; entto : mutable CurveOnSurface;
+    OwnCopy    (me; entfrom : CurveOnSurface; entto : CurveOnSurface;
     	        TC : in out CopyTool)  is static;
     ---Purpose : Copies Specific Parameters
 

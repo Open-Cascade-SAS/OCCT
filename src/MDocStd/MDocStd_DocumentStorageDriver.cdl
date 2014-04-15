@@ -33,7 +33,7 @@ is
 
 
     Create
-    returns mutable  DocumentStorageDriver from MDocStd;
+    returns  DocumentStorageDriver from MDocStd;
     
     CreateDocument (me: mutable) returns Document from PCDM
     ---Purpose: returns an empty PDocStd_Document. may be redefined;

@@ -17,7 +17,7 @@
 class Wire from PTopoDS inherits HShape from PTopoDS
 
 is
-    Create returns mutable Wire from PTopoDS;
+    Create returns Wire from PTopoDS;
     	---Level: Internal 
 
 end Wire;

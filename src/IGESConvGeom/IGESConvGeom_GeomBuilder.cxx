@@ -89,35 +89,6 @@ static Standard_Real epsa = 1.E-10;
   return res;
 }
 
-    Handle(TColgp_HArray1OfXY)   IGESConvGeom_GeomBuilder::MakeXY  () const
-{
-  Handle(TColgp_HArray1OfXY) res;
-  Standard_Integer num, nb = theXYZ->Length();
-  if (nb == 0) return res;
-  res = new TColgp_HArray1OfXY (1,nb);
-  for (num = 1; num <= nb; num ++) {
-    const gp_XYZ& pnt = theXYZ->Value(num);
-    res->SetValue (num , gp_XY (pnt.X(),pnt.Y()) );
-  }
-  return res;
-}
-
-    Handle(TColgp_HArray1OfXYZ)  IGESConvGeom_GeomBuilder::MakeXYZ () const
-{
-  Handle(TColgp_HArray1OfXYZ) res;
-/*
-  Standard_Integer num, nb = theXYZ->Length();
-  if (nb == 0) return res;
-  res = new TColgp_HArray1OfXYZ (1,nb);
-  for (num = 1; num <= nb; num ++) {
-    res->SetValue (num , theXYZ->Value(num) );
-  }
-*/
-  SeqToArray(theXYZ,res,TColgp_HArray1OfXYZ);
-  return res;
-}
-
-
     gp_Trsf  IGESConvGeom_GeomBuilder::Position () const
       {  return thepos;  }
 

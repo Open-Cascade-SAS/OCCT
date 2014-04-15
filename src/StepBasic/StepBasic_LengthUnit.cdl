@@ -23,7 +23,7 @@ uses
 	DimensionalExponents from StepBasic
 is
 
-	Create returns mutable LengthUnit;
+	Create returns LengthUnit;
 	---Purpose: Returns a LengthUnit
 
 

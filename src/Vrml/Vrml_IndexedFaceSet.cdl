@@ -41,9 +41,9 @@ is
     	     aMaterialIndex     : HArray1OfInteger from TColStd;
 	     aNormalIndex       : HArray1OfInteger from TColStd;
 	     aTextureCoordIndex : HArray1OfInteger from TColStd )
-        returns mutable IndexedFaceSet from Vrml;
+        returns IndexedFaceSet from Vrml;
 
-    Create  returns mutable IndexedFaceSet from Vrml; 
+    Create  returns IndexedFaceSet from Vrml; 
     
     SetCoordIndex ( me : mutable; aCoordIndex : HArray1OfInteger from TColStd );
     CoordIndex ( me )  returns HArray1OfInteger from TColStd;

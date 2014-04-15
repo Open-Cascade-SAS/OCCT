@@ -31,7 +31,7 @@ raises InterfaceError
 
 is
 
-    Create (level : Integer = 0) returns mutable SelectBypassGroup;
+    Create (level : Integer = 0) returns SelectBypassGroup;
     ---Purpose : Creates a SelectBypassGroup, by default all level
     --           (level = 1 explores at first level)
 

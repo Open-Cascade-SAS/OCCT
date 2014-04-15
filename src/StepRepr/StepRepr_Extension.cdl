@@ -22,6 +22,6 @@ uses
 
 is
 
-    Create returns mutable Extension;
+    Create returns Extension;
 
 end Extension;

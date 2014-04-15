@@ -70,7 +70,7 @@ is
    ---Purpose:
    --   The constructor for a imported type.
    ---Level: Advanced
-   returns mutable Type;
+   returns Type;
 
    Create(aName           : CString;
 	  aSize		  : Integer;
@@ -79,7 +79,7 @@ is
    ---Purpose:
    --   The constructor for a primitive.
    ---Level: Advanced
-   returns mutable Type;
+   returns Type;
 
    Create(aName           : CString;
 	  aSize		  : Integer;
@@ -90,7 +90,7 @@ is
    ---Purpose:
    --   The constructor for an enumeration.
    ---Level: Advanced
-   returns mutable Type;
+   returns Type;
 
    Create(aName           : CString;
 	  aSize		  : Integer;
@@ -100,7 +100,7 @@ is
    ---Purpose:
    --   The constructor for a class.
    ---Level: Advanced
-   returns mutable Type;
+   returns Type;
 
    ---------------------------------------------------------------------
    ---Category: Comparison between types

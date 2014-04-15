@@ -29,7 +29,7 @@ is
 	Create returns RWDerivedUnit;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable DerivedUnit from StepBasic);
+	              ach : in out Check; ent : DerivedUnit from StepBasic);
 
 	WriteStep (me; SW : in out StepWriter; ent : DerivedUnit from StepBasic);
 

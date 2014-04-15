@@ -27,7 +27,7 @@ is
 
     Create
     
-    	returns mutable Linear from Law;
+    	returns Linear from Law;
     	---Purpose: Constructs an empty linear evolution law.
 
     Set(me: mutable; Pdeb,Valdeb,Pfin,Valfin: Real from Standard)

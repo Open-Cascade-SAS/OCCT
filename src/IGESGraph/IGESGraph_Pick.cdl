@@ -28,7 +28,7 @@ uses  Integer  -- no one specific type
 
 is
 
-        Create returns mutable Pick;
+        Create returns Pick;
 
         -- Specific Methods pertaining to the class
 

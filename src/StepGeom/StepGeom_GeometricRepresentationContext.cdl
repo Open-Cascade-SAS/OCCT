@@ -24,17 +24,17 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable GeometricRepresentationContext;
+	Create returns GeometricRepresentationContext;
 	---Purpose: Returns a GeometricRepresentationContext
 
 
 	Init (me : mutable;
-	      aContextIdentifier : mutable HAsciiString from TCollection;
-	      aContextType : mutable HAsciiString from TCollection) is redefined;
+	      aContextIdentifier : HAsciiString from TCollection;
+	      aContextType : HAsciiString from TCollection) is redefined;
 
 	Init (me : mutable;
-	      aContextIdentifier : mutable HAsciiString from TCollection;
-	      aContextType : mutable HAsciiString from TCollection;
+	      aContextIdentifier : HAsciiString from TCollection;
+	      aContextType : HAsciiString from TCollection;
 	      aCoordinateSpaceDimension : Integer from Standard) is virtual;
 
 	-- Specific Methods for Field Data Access --

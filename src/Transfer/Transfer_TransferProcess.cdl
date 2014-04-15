@@ -192,7 +192,7 @@ raises InterfaceError, TransferFailure
 
     	is
 
-    	    Create returns mutable Actor;
+    	    Create returns Actor;
 
     	    Recognize (me : mutable; start : TheStart)
     	    	returns Boolean is virtual;
@@ -209,8 +209,8 @@ raises InterfaceError, TransferFailure
 	    --           The provided default returns True, can be redefined
 
 	    Transferring (me : mutable;
-    	    	      start : TheStart; TP : mutable TransferProcess)
-	        	returns mutable Binder
+    	    	      start : TheStart; TP : TransferProcess)
+	        	returns Binder
 	    ---Purpose : Specific action of Transfer. The Result is stored in
 	    --           the returned Binder, or a Null Handle for "No result"
 	    --           (Default defined as doing nothing; should be deffered)
@@ -221,11 +221,11 @@ raises InterfaceError, TransferFailure
 	    --           exception can be raised
 
 	    TransientResult  (me; res : any Transient)
-	        	returns mutable SimpleBinderOfTransient;
+	        	returns SimpleBinderOfTransient;
 	    ---Purpose : Prepares and Returns a Binder for a Transient Result
 	    --           Returns a Null Handle if <res> is itself Null
 
-	    NullResult (me) returns mutable Binder;
+	    NullResult (me) returns Binder;
 	    ---Purpose : Returns a Binder for No Result, i.e. a Null Handle
 
 
@@ -239,14 +239,14 @@ raises InterfaceError, TransferFailure
     	    IsLast (me) returns Boolean;
 	    ---Purpose : Returns the Last status (see SetLast).
 
-	    SetNext (me : mutable; next : mutable Actor);
+	    SetNext (me : mutable; next : Actor);
 	    ---Purpose : Defines a Next Actor : it can then be asked to work if
 	    --           <me> produces no result for a given type of Object.
 	    --           If Next is already set and is not "Last", calls
 	    --           SetNext on it. If Next defined and "Last", the new
 	    --           actor is added before it in the list
 
-	    Next (me) returns mutable Actor;
+	    Next (me) returns Actor;
 	    ---Purpose : Returns the Actor defined as Next, or a Null Handle
 
     	fields
@@ -260,14 +260,14 @@ raises InterfaceError, TransferFailure
 
 is
 
-    Create (nb : Integer = 10000) returns mutable TransferProcess from Transfer;
+    Create (nb : Integer = 10000) returns TransferProcess from Transfer;
     ---Purpose : Sets TransferProcess at initial state. Gives an Initial size
     --           (indicative) for the Map when known (default is 10000).
     --           Sets default trace file as a printer and default trace level
     --           (see Message_TraceFile).
 
     Create (printer: Messenger from Message; nb: Integer = 10000)
-    returns mutable TransferProcess from Transfer;
+    returns TransferProcess from Transfer;
     ---Purpose : Sets TransferProcess at initial state. Gives an Initial size
     --           (indicative) for the Map when known (default is 10000).
     --           Sets a specified printer.
@@ -286,12 +286,12 @@ is
     ---Purpose : Resizes the Map as required (if a new reliable value has been
     --           determined). Acts only if <nb> is greater than actual NbMapped
 
-    SetActor (me : mutable; actor : mutable Actor);
+    SetActor (me : mutable; actor : Actor);
     ---Purpose : Defines an Actor, which is used for automatic Transfer
     --           If already defined, the new Actor is cumulated
     --           (see SetNext from Actor)
 
-    Actor (me) returns mutable Actor;
+    Actor (me) returns Actor;
     ---Purpose : Returns the defined Actor. Returns a Null Handle if
     --           not set.
 
@@ -299,7 +299,7 @@ is
     	--  This access works on : Binder (default), or Handle Result
     	--   (Transient,Finder) as privileged kinds of Result
 
-    Find (me; start : TheStart) returns mutable Binder;
+    Find (me; start : TheStart) returns Binder;
     ---Purpose : Returns the Binder which is linked with a starting Object
     --           It can either bring a Result (Transfer done) or none (for a
     --           pre-binding).
@@ -320,13 +320,13 @@ is
     --           Considers a category number, by default 0
 
     FindAndMask (me : mutable; start : TheStart)
-    	returns mutable Binder  is private;
+    	returns Binder  is private;
     ---Purpose : Same as Find but stores the last access to the map, for a
     --           faster access on next calls (as Bind does too)
     --           Considers a category number, by default 0
     --  C++ : return const &
 
-    Bind (me : mutable; start : TheStart; binder : mutable Binder)
+    Bind (me : mutable; start : TheStart; binder : Binder)
     ---Purpose : Creates a Link a starting Object with a Binder. This Binder
     --           can either bring a Result (effective Binding) or none (it can
     --           be set later : pre-binding).
@@ -335,7 +335,7 @@ is
     --           Error if a Binder with a Result set is already linked with
     --           this Object (Binder with StatusResult not Initial)
 
-    Rebind (me : mutable; start : TheStart; binder : mutable Binder)
+    Rebind (me : mutable; start : TheStart; binder : Binder)
     ---Purpose : Changes the Binder linked with a starting Object for its
     --           unitary transfer. This it can be useful when the exact form
     --           of the result is known once the transfer is widely engaged.
@@ -356,7 +356,7 @@ is
     --           Error if : - the Result is known as Already Used
 
     FindElseBind (me : mutable; start : TheStart)
-    	returns mutable Binder;
+    	returns Binder;
     ---Purpose : Returns a Binder for a starting entity, as follows :
     --           Tries to Find the already bound one
     --           If none found, creates a VoidBinder and Binds it
@@ -489,7 +489,7 @@ is
     --           Error if a UNIQUE result is already bound (if a Multiple
     --           Result is, nothing is done)
 
-    AddMultiple (me : mutable; start : TheStart; res : mutable Transient)
+    AddMultiple (me : mutable; start : TheStart; res : Transient)
     ---Purpose : Adds an item to a list of results bound to a starting object.
     --           Considers a category number, by default 0, for all results
     	raises TransferFailure;
@@ -497,7 +497,7 @@ is
     --           to <start> (none at all, or for a unique result)
 
     FindTypedTransient (me; start : TheStart; atype : Type from Standard;
-    	    	    	val : out mutable Transient)  returns Boolean;
+    	    	    	val : out Transient)  returns Boolean;
     ---Purpose : Searches for a transient result attached to a starting object,
     --           according to its type, by criterium IsKind(atype)
     --           
@@ -511,7 +511,7 @@ is
     --           immediately used, well initialised
 
     GetTypedTransient (me; binder : Binder; atype : Type from Standard;
-    	    	       val : out mutable Transient)  returns Boolean;
+    	    	       val : out Transient)  returns Boolean;
     ---Purpose : Searches for a transient result recorded in a Binder, whatever
     --           this Binder is recorded or not in <me>
     --           
@@ -534,7 +534,7 @@ is
     MapIndex (me; start : TheStart) returns Integer;
     ---Purpose : Returns the Index value bound to a Starting Object, 0 if none
 
-    MapItem (me; num : Integer) returns mutable Binder;
+    MapItem (me; num : Integer) returns Binder;
     ---Purpose : Returns the Binder bound to an Index
     --           Considers a category number, by default 0
 
@@ -563,7 +563,7 @@ is
     ---Purpose : Returns a Root Entity given its number in the list (1-NbRoots)
     ---C++ : return const &
 
-    RootItem (me; num : Integer) returns mutable Binder;
+    RootItem (me; num : Integer) returns Binder;
     ---Purpose : Returns the Binder bound with a Root Entity given its number
     --           Considers a category number, by default 0
 
@@ -586,7 +586,7 @@ is
     ---Purpose : Tells if <start> has been recognized as good candidate for
     --           Transfer. i.e. queries the Actor and its Nexts
 
-    Transferring (me : mutable; start : TheStart)  returns mutable Binder
+    Transferring (me : mutable; start : TheStart)  returns Binder
     ---Purpose : Performs the Transfer of a Starting Object, by calling
     --           the method TransferProduct (see below).
     --           Mapping and Roots are managed : nothing is done if a Result is
@@ -599,7 +599,7 @@ is
     --           the method SetErrorHandle for more details
     --  C++ : return const &
 
-    TransferProduct (me : mutable; start : TheStart)  returns mutable Binder
+    TransferProduct (me : mutable; start : TheStart)  returns Binder
     ---Purpose : Internal action of Transfer, called by Transferring, with or
     --           without ErrorHandle. It invokes the Actor to work (set by
     --           SetActor), and tries its Nexts if no result is produced,

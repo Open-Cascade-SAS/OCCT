@@ -49,7 +49,7 @@ is
     --          ===================
     
     Create 
-    returns mutable IntPackedMap from TDataStd;
+    returns IntPackedMap from TDataStd;
     -- Constructor    
     
     ChangeMap (me : mutable; theMap : HPackedMapOfInteger from TColStd)
@@ -116,11 +116,11 @@ is
     --  Restores the backuped content from <with> into this one. 
     
     NewEmpty (me)
-    returns mutable Attribute from TDF;
+    returns Attribute from TDF;
     -- Returns an new empty AsciiString attribute. 
     
-    Paste (me; into : mutable Attribute from TDF;
-	       RT   : mutable RelocationTable from TDF);    
+    Paste (me; into : Attribute from TDF;
+	       RT   : RelocationTable from TDF);    
     -- This method is used when copying an attribute from a source structure 
     -- into a target structure. 
     

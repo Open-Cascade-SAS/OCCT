@@ -58,8 +58,8 @@ is
     ---Purpose : Initialize a BitMap from another one
 
     Internals (me; nbitems , nbwords, nbflags : out Integer;
-    	       flags : out mutable HArray1OfInteger;
-    	       names : out mutable HSequenceOfAsciiString);
+    	       flags : out HArray1OfInteger;
+    	       names : out HSequenceOfAsciiString);
     ---Purpose : Returns internal values, used for copying
     --           Flags values start at false
 

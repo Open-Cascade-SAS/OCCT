@@ -62,7 +62,7 @@ is
     	    aSourceDataSet   : DataSet from TDF;
     	    aTargetDataSet   : DataSet from TDF;
     	    aFilter          : IDFilter from TDF;
-	    aRelocationTable : mutable RelocationTable from TDF);
+	    aRelocationTable : RelocationTable from TDF);
 	---Purpose: Compares <aSourceDataSet> with <aTargetDataSet>,
 	--          updating <aRelocationTable> with labels and
 	--          attributes found in both sets.
@@ -71,7 +71,7 @@ is
     	    	  aRefDataSet      : DataSet from TDF;
 		  aRelocationTable : RelocationTable from TDF;
     	          aFilter          : IDFilter from TDF;
-    	    	  aDiffDataSet     : mutable DataSet from TDF;
+    	    	  aDiffDataSet     : DataSet from TDF;
     	    	  anOption         : Integer from Standard = 2)
     	returns Boolean from Standard;
 	---Purpose: Finds from <aRefDataSet> all the keys not bound
@@ -89,7 +89,7 @@ is
     	    	  aRefDataSet      : DataSet from TDF;
 		  aRelocationTable : RelocationTable from TDF;
     	          aFilter          : IDFilter from TDF;
-    	    	  aDiffDataSet     : mutable DataSet from TDF;
+    	    	  aDiffDataSet     : DataSet from TDF;
     	    	  anOption         : Integer from Standard = 2)
     	returns Boolean from Standard;
 	---Purpose: Substracts from <aRefDataSet> all the items bound
@@ -127,7 +127,7 @@ is
     	    aSourceDataSet   : DataSet from TDF;
     	    aTargetDataSet   : DataSet from TDF;
     	    aFilter          : IDFilter from TDF;
-	    aRelocationTable : mutable RelocationTable from TDF)
+	    aRelocationTable : RelocationTable from TDF)
     	is private;
 	---Purpose: Internal comparison method used by Compare(...).
 
@@ -136,7 +136,7 @@ is
     	    aRefDataSet      : DataSet from TDF;
 	    aRelocationTable : RelocationTable from TDF;
     	    aFilter          : IDFilter from TDF;
-    	    aDiffDataSet     : mutable DataSet from TDF;
+    	    aDiffDataSet     : DataSet from TDF;
     	    anOption         : Integer from Standard;
     	    theSource        : Boolean from Standard)
     	returns Boolean from Standard

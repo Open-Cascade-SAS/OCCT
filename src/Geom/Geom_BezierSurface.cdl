@@ -112,7 +112,7 @@ raises ConstructionError from Standard,
 is
 
  Create (SurfacePoles : Array2OfPnt from TColgp)
-    returns mutable BezierSurface
+    returns BezierSurface
         ---Purpose :
         --  Creates a non-rational Bezier surface with a set of poles.
         --  Control points representation :
@@ -133,7 +133,7 @@ is
 
   Create (SurfacePoles : Array2OfPnt  from TColgp;
     	  PoleWeights  : Array2OfReal from TColStd)
-     returns mutable BezierSurface
+     returns BezierSurface
         ---Purpose
         --  Creates a rational Bezier surface with a set of poles and a
         --  set of weights.
@@ -571,7 +571,7 @@ is
         --  NbUPoles - 1
 
 
-  UIso (me; U : Real)  returns mutable Curve;
+  UIso (me; U : Real)  returns Curve;
         ---Purpose :
         --  Computes the U isoparametric curve. For a Bezier surface the
         --  UIso curve is a Bezier curve.
@@ -583,7 +583,7 @@ is
         --  NbVPoles - 1
 
 
-  VIso (me; V : Real)  returns mutable Curve;
+  VIso (me; V : Real)  returns Curve;
         ---Purpose :
         --  Computes the V isoparametric curve. For a Bezier surface the
         --  VIso  curve is a Bezier curve.
@@ -667,7 +667,7 @@ is
   Create (SurfacePoles, SurfaceCoefficients : HArray2OfPnt  from TColgp;
           PoleWeights, CoefficientWeights   : HArray2OfReal from TColStd;
 	  IsURational, IsVRational          : Boolean)
-     returns mutable BezierSurface
+     returns BezierSurface
      is private;
 
 
@@ -687,7 +687,7 @@ is
       	--          ====> |f (u1,v1) - f (u0,v0)| < Tolerance3D
 
   
-  Copy (me)  returns mutable like me;
+  Copy (me)  returns like me;
     	---Purpose: Creates a new object which is a copy of this Bezier surface.
 
   Init (me : mutable; Poles   :  HArray2OfPnt  from TColgp;

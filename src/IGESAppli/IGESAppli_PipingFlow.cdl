@@ -34,7 +34,7 @@ raises OutOfRange
 
 is
 
-        Create returns mutable PipingFlow;
+        Create returns PipingFlow;
 
         -- Specific Methods pertaining to the class
 

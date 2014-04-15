@@ -29,7 +29,7 @@ is
 	Create returns RWProductContext;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable ProductContext from StepBasic);
+	              ach : in out Check; ent : ProductContext from StepBasic);
 
 	WriteStep (me; SW : in out StepWriter; ent : ProductContext from StepBasic);
 

@@ -29,7 +29,7 @@ is
 	Create returns RWUniformSurfaceAndRationalBSplineSurface;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable UniformSurfaceAndRationalBSplineSurface from StepGeom);
+	              ach : in out Check; ent : UniformSurfaceAndRationalBSplineSurface from StepGeom);
 
 	WriteStep (me; SW : in out StepWriter; ent : UniformSurfaceAndRationalBSplineSurface from StepGeom);
 

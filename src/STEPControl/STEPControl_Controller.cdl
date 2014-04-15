@@ -33,16 +33,16 @@ uses
 
 is
 
-    Create returns mutable Controller from STEPControl;
+    Create returns Controller from STEPControl;
     ---Purpose : Initializes the use of STEP Norm (the first time) and
     --           returns a Controller
 
-    NewModel     (me) returns mutable InterfaceModel from Interface;
+    NewModel     (me) returns InterfaceModel from Interface;
     ---Purpose : Creates a new empty Model ready to receive data of the Norm.
     --           It is taken from STEP Template Model
 
     ActorRead  (me; model : InterfaceModel)
-                 returns mutable ActorOfTransientProcess from Transfer;
+                 returns ActorOfTransientProcess from Transfer;
     ---Purpose : Returns a new Actor for Read attached to the pair (norm,appli)
     --           It is a PmsToTopoDSAct_Actor
 
@@ -50,8 +50,8 @@ is
     Customise (me: mutable; WS : in out WorkSession from XSControl) is redefined;
     
     TransferWriteShape (me; shape : Shape from TopoDS;
-    	    	    	FP        : mutable FinderProcess  from Transfer;
-    	    	        model     : mutable InterfaceModel from Interface;
+    	    	    	FP        : FinderProcess  from Transfer;
+    	    	        model     : InterfaceModel from Interface;
 			modetrans : Integer = 0)  returns ReturnStatus
       is redefined;
     ---Purpose : Takes one Shape and transfers it to the InterfaceModel

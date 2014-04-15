@@ -27,7 +27,7 @@ uses  Integer, Real, Boolean  -- no one specific type
 
 is
 
-        Create returns mutable DimensionTolerance;
+        Create returns DimensionTolerance;
 
         -- Specific Methods pertaining to the class
 

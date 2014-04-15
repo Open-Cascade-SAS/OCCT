@@ -25,25 +25,25 @@ uses
 	RepresentationItem from StepRepr
 is
 
-	Create returns mutable OverRidingStyledItem;
+	Create returns OverRidingStyledItem;
 	---Purpose: Returns a OverRidingStyledItem
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aStyles : mutable HArray1OfPresentationStyleAssignment from StepVisual;
-	      aItem : mutable RepresentationItem from StepRepr) is redefined;
+	      aName : HAsciiString from TCollection;
+	      aStyles : HArray1OfPresentationStyleAssignment from StepVisual;
+	      aItem : RepresentationItem from StepRepr) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aStyles : mutable HArray1OfPresentationStyleAssignment from StepVisual;
-	      aItem : mutable RepresentationItem from StepRepr;
-	      aOverRiddenStyle : mutable StyledItem from StepVisual) is virtual;
+	      aName : HAsciiString from TCollection;
+	      aStyles : HArray1OfPresentationStyleAssignment from StepVisual;
+	      aItem : RepresentationItem from StepRepr;
+	      aOverRiddenStyle : StyledItem from StepVisual) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetOverRiddenStyle(me : mutable; aOverRiddenStyle : mutable StyledItem);
-	OverRiddenStyle (me) returns mutable StyledItem;
+	SetOverRiddenStyle(me : mutable; aOverRiddenStyle : StyledItem);
+	OverRiddenStyle (me) returns StyledItem;
 
 fields
 

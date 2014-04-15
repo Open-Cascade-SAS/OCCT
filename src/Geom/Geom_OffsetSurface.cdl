@@ -68,7 +68,7 @@ is
 
 
 
-  Create (S : Surface from Geom; Offset : Real)   returns mutable OffsetSurface
+  Create (S : Surface from Geom; Offset : Real)   returns OffsetSurface
         ---Purpose : Constructs a surface offset from the basis surface
     	-- S, where Offset is the distance between the offset
     	-- surface and the basis surface at any point.
@@ -232,10 +232,10 @@ is
 	---Purpose: raises if the surface is not vperiodic.
   is redefined;
 
-  UIso (me; U : Real)  returns mutable Curve;
+  UIso (me; U : Real)  returns Curve;
         ---Purpose : Computes the U isoparametric curve.
 
-  VIso (me; V : Real)  returns mutable Curve;
+  VIso (me; V : Real)  returns Curve;
         ---Purpose : Computes the V isoparametric curve.
 
 
@@ -457,10 +457,10 @@ is
 	--          This methods calls the basis surface method.
      is redefined;  
 
-  Copy (me)  returns mutable like me;
+  Copy (me)  returns like me;
     	---Purpose: Creates a new object which is a copy of this offset surface.  
     
-  Surface (me) returns mutable Surface from Geom;
+  Surface (me) returns Surface from Geom;
       	---Purpose: returns an  equivalent surface of the offset surface
       	--          when  the basis surface   is a canonic  surface or a
       	--          rectangular  limited surface on canonic surface or if

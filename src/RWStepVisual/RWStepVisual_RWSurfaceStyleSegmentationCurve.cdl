@@ -29,7 +29,7 @@ is
 	Create returns RWSurfaceStyleSegmentationCurve;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable SurfaceStyleSegmentationCurve from StepVisual);
+	              ach : in out Check; ent : SurfaceStyleSegmentationCurve from StepVisual);
 
 	WriteStep (me; SW : in out StepWriter; ent : SurfaceStyleSegmentationCurve from StepVisual);
 

@@ -29,7 +29,7 @@ is
 	Create returns RWUncertaintyMeasureWithUnit;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable UncertaintyMeasureWithUnit from StepBasic);
+	              ach : in out Check; ent : UncertaintyMeasureWithUnit from StepBasic);
 
 	WriteStep (me; SW : in out StepWriter; ent : UncertaintyMeasureWithUnit from StepBasic);
 

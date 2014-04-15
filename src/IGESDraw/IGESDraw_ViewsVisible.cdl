@@ -33,7 +33,7 @@ raises OutOfRange
 
 is
 
-        Create returns mutable ViewsVisible;
+        Create returns ViewsVisible;
 
         -- Specific Methods pertaining to the class
 

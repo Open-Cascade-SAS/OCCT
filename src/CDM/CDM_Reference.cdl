@@ -21,11 +21,11 @@ uses Document from CDM, DocumentPointer from CDM, Application from CDM, MetaData
 is
 
     Create(aFromDocument: Document from CDM; aToDocument: Document from CDM; aReferenceIdentifier: Integer from Standard; aToDocumentVersion: Integer from Standard)
-    returns mutable Reference from CDM
+    returns Reference from CDM
     is private;
 
     Create(aFromDocument: Document from CDM; aMetaData: MetaData from CDM; aReferenceIdentifier: Integer from Standard; anApplication: Application from CDM; aToDocumentVersion: Integer from Standard; UseStorageConfiguration: Boolean from Standard)
-    returns mutable Reference from CDM
+    returns Reference from CDM
     is private;
     
 

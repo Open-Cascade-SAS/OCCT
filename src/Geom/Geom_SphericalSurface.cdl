@@ -69,7 +69,7 @@ raises ConstructionError from Standard,
 
 is
 
-  Create (A3 : Ax3; Radius : Real)   returns mutable SphericalSurface
+  Create (A3 : Ax3; Radius : Real)   returns SphericalSurface
         --- Purpose :
         --  A3 is the local coordinate system of the surface.
         --  At the creation the parametrization of the surface is defined
@@ -87,7 +87,7 @@ is
         --- Purpose : Raised if Radius < 0.0.
 
 
-  Create (S : Sphere)   returns mutable SphericalSurface;
+  Create (S : Sphere)   returns SphericalSurface;
         --- Purpose :
         --  Creates a SphericalSurface from a non persistent Sphere from 
         --  package gp.
@@ -168,7 +168,7 @@ is
         --- Purpose : Returns False.
 
 
-  UIso (me; U : Real)   returns mutable Curve;
+  UIso (me; U : Real)   returns Curve;
         --- Purpose : Computes the U isoparametric curve.
         --  The U isoparametric curves of the surface are defined by the 
         --  section of the spherical surface with plane obtained by rotation
@@ -178,7 +178,7 @@ is
         -- Warnings : The radius of this circle can be zero.
 
 
-  VIso (me; V : Real)  returns mutable Curve;
+  VIso (me; V : Real)  returns Curve;
         --- Purpose : Computes the V isoparametric curve.
         --  The V isoparametric curves of the surface  are defined by 
         --  the section of the spherical surface with plane parallel to the
@@ -230,7 +230,7 @@ is
 
   Transform (me : mutable; T : Trsf) ;
     	---Purpose: Applies the transformation T to this sphere.
-  Copy (me)  returns mutable like me;
+  Copy (me)  returns like me;
     	---Purpose: Creates a new object which is a copy of this sphere.
 fields 
 

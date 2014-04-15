@@ -27,7 +27,7 @@ uses
 
 is
 
-        Create returns mutable DimensionUnits;
+        Create returns DimensionUnits;
 
         -- Specific Methods pertaining to the class
 

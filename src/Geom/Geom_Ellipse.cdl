@@ -64,11 +64,11 @@ raises ConstructionError from Standard,
 
 is
 
-  Create (E : Elips)  returns mutable Ellipse;
+  Create (E : Elips)  returns Ellipse;
         ---Purpose : Constructs an ellipse by conversion of the gp_Elips ellipse E.
 
   Create (A2 : Ax2; MajorRadius, MinorRadius : Real)
-     returns mutable Ellipse
+     returns Ellipse
 	---Purpose : Constructs an ellipse
     	--	defined by its major and minor radii, MajorRadius
     	--   and MinorRadius, where A2 locates the ellipse
@@ -247,7 +247,7 @@ is
 
     	---Purpose: Applies the transformation T to this ellipse.
 
-  Copy (me)  returns mutable like me is redefined static;
+  Copy (me)  returns like me is redefined static;
      
     	---Purpose: Creates a new object which is a copy of this ellipse.
 

@@ -23,16 +23,16 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable ApprovalRole;
+	Create returns ApprovalRole;
 	---Purpose: Returns a ApprovalRole
 
 	Init (me : mutable;
-	      aRole : mutable HAsciiString from TCollection) is virtual;
+	      aRole : HAsciiString from TCollection) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetRole(me : mutable; aRole : mutable HAsciiString);
-	Role (me) returns mutable HAsciiString;
+	SetRole(me : mutable; aRole : HAsciiString);
+	Role (me) returns HAsciiString;
 
 fields
 

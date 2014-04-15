@@ -27,7 +27,7 @@ raises InterfaceError
 
 is
 
-    Create returns mutable SelectFromSingleView;
+    Create returns SelectFromSingleView;
     ---Purpose : Creates a SelectFromSingleView
 
     RootResult (me; G : Graph) returns EntityIterator  raises InterfaceError;

@@ -30,7 +30,7 @@ uses
 
 is
 
-        Create returns mutable OffsetCurve;
+        Create returns OffsetCurve;
 
         -- Specific Methods pertaining to the class
 

@@ -31,7 +31,7 @@ is
     	   L: Location  from TopLoc) 
     	---Purpose:
 
-    returns mutable Polygon3D from BRep;
+    returns Polygon3D from BRep;
     
     
     IsPolygon3D(me) returns Boolean
@@ -47,7 +47,7 @@ is
     	DomainError from Standard
     is redefined;
 
-    Copy(me) returns mutable CurveRepresentation from BRep;
+    Copy(me) returns CurveRepresentation from BRep;
 	---Purpose: Return a copy of this representation.
 
 

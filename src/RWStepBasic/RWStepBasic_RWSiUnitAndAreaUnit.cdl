@@ -30,7 +30,7 @@ is
     Create returns  RWSiUnitAndAreaUnit from RWStepBasic;
     
     ReadStep (me; data: StepReaderData; num: Integer;
-	          ach : in out Check;   ent: mutable SiUnitAndAreaUnit from StepBasic);
+	          ach : in out Check;   ent: SiUnitAndAreaUnit from StepBasic);
     
     WriteStep (me; SW : in out StepWriter; ent: SiUnitAndAreaUnit from StepBasic);
 

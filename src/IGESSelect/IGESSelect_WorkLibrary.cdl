@@ -26,12 +26,12 @@ uses CString, Transient,
 is
 
     Create (modefnes : Boolean = Standard_False)
-    	returns mutable WorkLibrary from IGESSelect;
+    	returns WorkLibrary from IGESSelect;
     ---Purpose : Creates a IGES WorkLibrary
     --           If <modefnes> is given as True, it will work for FNES
 
     ReadFile (me; name : CString;
-    	      model    : out mutable InterfaceModel;
+    	      model    : out InterfaceModel;
     	      protocol : Protocol from Interface)
     	  returns Integer;
     ---Purpose : Reads a IGES File and returns a IGES Model (into <mod>),

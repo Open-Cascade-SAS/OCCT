@@ -52,7 +52,7 @@ is
        
     
   Create ( Surfinit : Surface from  Geom; Surfinter :  Plate  from  Plate)   
-  returns  mutable  Surface  from  GeomPlate ;
+  returns  Surface  from  GeomPlate ;
   
   UReverse (me : mutable)
         ---Purpose :
@@ -198,11 +198,11 @@ is
 	---Purpose: raises if the surface is not vperiodic.
     is redefined;
 
-  UIso (me; U : Real)  returns  mutable Curve
+  UIso (me; U : Real)  returns Curve
         ---Purpose : Computes the U isoparametric curve.
      	;
 
-  VIso (me; V : Real)  returns mutable Curve
+  VIso (me; V : Real)  returns Curve
         ---Purpose : Computes the V isoparametric curve.
     ;
 
@@ -283,7 +283,7 @@ is
         ---Purpose : Raised if Nu + Nv < 1 or Nu < 0 or Nv < 0.
     ;  
 
-  Copy (me)  returns mutable like me; 
+  Copy (me)  returns like me; 
 
   Transform (me : mutable; T : Trsf) ;
         ---Purpose :

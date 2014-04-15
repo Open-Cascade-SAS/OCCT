@@ -28,13 +28,13 @@ uses  Ax2 from gp
 is
 
 
-  Create returns mutable Parabola from PGeom;
+  Create returns Parabola from PGeom;
         ---Purpose : Creates a parabola with default values.
     	---Level: Internal 
 
 
   Create (aPosition : Ax2 from gp; aFocalLength : Real)
-    returns mutable Parabola from PGeom;
+    returns Parabola from PGeom;
 	---Purpose : Creates a Parabola with <aPosition> and <aFocalLength>
 	--         as field values.
     	---Level: Internal 

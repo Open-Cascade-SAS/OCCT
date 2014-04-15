@@ -30,7 +30,7 @@ uses
 is
 
     Create
-    returns mutable OrFilter from SelectMgr;
+    returns OrFilter from SelectMgr;
     	---Purpose: Constructs an empty or selection filter.
     IsOk(me; anobj : EntityOwner from SelectMgr)
     returns Boolean from Standard ;

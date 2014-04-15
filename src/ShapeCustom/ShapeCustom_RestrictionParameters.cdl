@@ -21,7 +21,7 @@ class RestrictionParameters from ShapeCustom inherits TShared from MMgt
 
 is
 
-    Create returns mutable RestrictionParameters from ShapeCustom;
+    Create returns RestrictionParameters from ShapeCustom;
     	---Purpose: Sets default parameters.
     
     ---Methods for modifying fields.

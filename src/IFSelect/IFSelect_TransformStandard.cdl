@@ -50,7 +50,7 @@ uses AsciiString from TCollection,
 
 is
 
-    Create returns mutable TransformStandard;
+    Create returns TransformStandard;
     ---Purpose : Creates a TransformStandard, option StandardCopy, no Modifier
 
     	--  Description  --
@@ -76,13 +76,13 @@ is
     NbModifiers (me) returns Integer;
     ---Purpose : Returns the count of recorded Modifiers
 
-    Modifier (me; num : Integer) returns mutable Modifier;
+    Modifier (me; num : Integer) returns Modifier;
     ---Purpose : Returns a Modifier given its rank in the list
 
     ModifierRank (me; modif : Modifier) returns Integer;
     ---Purpose : Returns the rank of a Modifier in the list, 0 if unknown
 
-    AddModifier (me : mutable; modif : mutable Modifier; atnum : Integer = 0)
+    AddModifier (me : mutable; modif : Modifier; atnum : Integer = 0)
     	returns Boolean;
     ---Purpose : Adds a Modifier to the list :
     --           - <atnum> = 0 (default) : at the end of the list
@@ -101,29 +101,29 @@ is
 
     Perform (me : mutable; G : Graph; protocol : Protocol from Interface;
              checks : in out CheckIterator;
-    	     newmod : out mutable InterfaceModel)  returns Boolean;
+    	     newmod : out InterfaceModel)  returns Boolean;
     ---Purpose : Performs the Standard Transformation, by calling Copy then
     --           ApplyModifiers (which can return an error status)
 
     Copy         (me; G : Graph; TC : in out CopyTool;
-    	    	  newmod : out mutable InterfaceModel);
+    	    	  newmod : out InterfaceModel);
     ---Purpose : This the first operation. It calls StandardCopy or OnTheSpot
     --           according the option
 
     StandardCopy (me; G : Graph; TC : in out CopyTool;
-    	    	  newmod : out mutable InterfaceModel);
+    	    	  newmod : out InterfaceModel);
     ---Purpose : This is the standard action of Copy : its takes into account
     --           only the remaining entities (noted by Graph Status positive)
     --           and their proper dependances of course. Produces a new model.
 
     OnTheSpot    (me; G : Graph; TC : in out CopyTool;
-    	    	  newmod : out mutable InterfaceModel);
+    	    	  newmod : out InterfaceModel);
     ---Purpose : This is the OnTheSpot action : each entity is bound with ...
     --           itself. The produced model is the same as the starting one.
 
     ApplyModifiers (me;  G : Graph;  protocol : Protocol from Interface;
     	    	    TC : in out CopyTool; checks : in out CheckIterator;
-    	    	    newmod : out mutable InterfaceModel) returns Boolean;
+    	    	    newmod : out InterfaceModel) returns Boolean;
     ---Purpose : Applies the modifiers sequencially.
     --           For each one, prepares required data (if a Selection is
     --           associated as a filter).
@@ -132,7 +132,7 @@ is
     --           If a Modifier causes an error (check "HasFailed"),
     --           ApplyModifier stops : the following Modifiers are ignored
 
-    Updated (me; entfrom : Transient; entto : out mutable Transient)
+    Updated (me; entfrom : Transient; entto : out Transient)
     	returns Boolean;
     ---Purpose : This methods allows to know what happened to a starting
     --           entity after the last Perform. It reads result from the map

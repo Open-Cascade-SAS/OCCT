@@ -22,7 +22,7 @@ uses
      ExtendedString from TCollection,
      MakeBox     from BRepPrimAPI
 is
-    Create returns mutable BoxDriver from DNaming;
+    Create returns BoxDriver from DNaming;
     ---Purpose: Constructor
 
     ---Purpose: validation

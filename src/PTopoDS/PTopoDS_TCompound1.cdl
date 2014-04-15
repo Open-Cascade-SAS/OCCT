@@ -22,7 +22,7 @@ uses
     ShapeEnum from TopAbs
 
 is
-    Create returns mutable TCompound1 from PTopoDS;
+    Create returns TCompound1 from PTopoDS;
 	---Purpose: the new TCompound1 is empty.
     ---Level: Internal 
     	

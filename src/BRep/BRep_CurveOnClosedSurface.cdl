@@ -34,7 +34,7 @@ is
     	   S        : Surface  from Geom;
 	   L        : Location from TopLoc;
 	   C        : Shape    from GeomAbs)
-    returns mutable CurveOnClosedSurface from BRep;
+    returns CurveOnClosedSurface from BRep;
 
     SetUVPoints2(me : mutable; P1, P2 : Pnt2d from gp)
 	---C++: inline
@@ -84,7 +84,7 @@ is
     PCurve2(me : mutable; C : Curve from Geom2d)
     is redefined;
 
-    Copy(me) returns mutable CurveRepresentation from BRep
+    Copy(me) returns CurveRepresentation from BRep
 	---Purpose: Return a copy of this representation.
     is redefined;
 

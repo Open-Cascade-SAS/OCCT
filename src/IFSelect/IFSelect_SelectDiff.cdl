@@ -23,7 +23,7 @@ uses AsciiString from TCollection, EntityIterator, Graph
 
 is
 
-    Create returns mutable SelectDiff;
+    Create returns SelectDiff;
     ---Purpose : Creates an empty SelectDiff
 
 

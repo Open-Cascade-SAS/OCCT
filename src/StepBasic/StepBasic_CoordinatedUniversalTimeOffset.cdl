@@ -25,7 +25,7 @@ uses
 	Boolean from Standard
 is
 
-	Create returns mutable CoordinatedUniversalTimeOffset;
+	Create returns CoordinatedUniversalTimeOffset;
 	---Purpose: Returns a CoordinatedUniversalTimeOffset
 
 	Init (me : mutable;

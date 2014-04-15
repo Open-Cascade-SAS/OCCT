@@ -26,7 +26,7 @@ uses Pnt2d from gp,
 is
 
     Create(p1,p2 : Pnt2d; col : Color)
-    returns mutable Segment2D;
+    returns Segment2D;
     
     DrawOn(me; dis : in out Display);
     

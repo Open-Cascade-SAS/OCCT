@@ -41,7 +41,7 @@ raises TransferFailure, OutOfRange
 
 is
 
-    Create returns mutable MultipleBinder;
+    Create returns MultipleBinder;
     ---Purpose : normal standard constructor, creates an empty MultipleBinder
 
     IsMultiple (me) returns Boolean  is redefined;
@@ -56,13 +56,13 @@ is
     --           Here, returns "(list)"
 
 
-    AddResult (me : mutable; res : mutable Transient);
+    AddResult (me : mutable; res : Transient);
     ---Purpose : Adds a new Item to the Multiple Result
 
     NbResults (me) returns Integer;
     ---Purpose : Returns the actual count of recorded (Transient) results
 
-    ResultValue (me; num : Integer) returns mutable Transient
+    ResultValue (me; num : Integer) returns Transient
     ---Purpose : Returns the value of the recorded result n0 <num>
     	raises OutOfRange;
     --           Error if <num> is out of range
@@ -72,7 +72,7 @@ is
     --           Item). Else, returns a Null Handle
 
     SetMultipleResult (me : mutable;
-    	    	       mulres : mutable HSequenceOfTransient from TColStd)
+    	    	       mulres : HSequenceOfTransient from TColStd)
     	raises TransferFailure;
     ---Purpose : Defines a Binding with a Multiple Result, given as a Sequence
     --           Error if a Unique Result has yet been defined

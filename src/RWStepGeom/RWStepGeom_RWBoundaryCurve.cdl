@@ -29,7 +29,7 @@ is
 	Create returns RWBoundaryCurve;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable BoundaryCurve from StepGeom);
+	              ach : in out Check; ent : BoundaryCurve from StepGeom);
 
 	WriteStep (me; SW : in out StepWriter; ent : BoundaryCurve from StepGeom);
 

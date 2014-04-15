@@ -26,7 +26,7 @@ uses CString, Transient, InterfaceModel
 
 is
 
-    Create returns mutable SignValidity;
+    Create returns SignValidity;
     ---Purpose : Returns a SignValidity
 
     CVal  (myclass; ent : any Transient; model : InterfaceModel) returns CString;

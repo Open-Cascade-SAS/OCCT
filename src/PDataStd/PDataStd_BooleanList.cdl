@@ -22,7 +22,7 @@ uses
 is
 
     Create 
-    returns mutable BooleanList from PDataStd;
+    returns BooleanList from PDataStd;
 
     Init (me : mutable; 
     	  lower, upper : Integer from Standard);

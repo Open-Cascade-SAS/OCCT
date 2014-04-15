@@ -22,7 +22,7 @@ uses Transient, AsciiString from TCollection
 
 is
 
-    Create returns mutable SignLabel;
+    Create returns SignLabel;
 
     Name (me) returns CString;
     ---Purpose : Returns "Entity Label"

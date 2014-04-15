@@ -26,11 +26,11 @@ uses Pnt2d from gp,
 is
 
     Create(p : Pnt2d; T : CString; col : Color)
-    returns mutable Text2D from Draw;
+    returns Text2D from Draw;
     
     Create(p : Pnt2d; T : CString; col : Color;
     	   moveX : Integer; moveY : Integer)
-    returns mutable Text2D from Draw;
+    returns Text2D from Draw;
     
     SetPnt2d(me : mutable; p : Pnt2d);
 

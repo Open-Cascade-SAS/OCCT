@@ -262,7 +262,7 @@ is
     GetLaw(me     : in out; 
     	   IC     : Integer from Standard;
     	   E      : Edge from TopoDS)
-    returns mutable Function from Law; 
+    returns Function from Law; 
 
     SetLaw(me     : in out; 
     	   IC     : Integer from Standard;
@@ -472,7 +472,7 @@ is
     returns Integer from Standard;
 	 
     Sect(me; IC, IS : Integer from Standard)
-    returns mutable SecHArray1 from ChFiDS;
+    returns SecHArray1 from ChFiDS;
 
 
     -------------------------------------

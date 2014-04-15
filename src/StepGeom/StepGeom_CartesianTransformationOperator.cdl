@@ -30,35 +30,35 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable CartesianTransformationOperator;
+	Create returns CartesianTransformationOperator;
 	---Purpose: Returns a CartesianTransformationOperator
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection) is redefined;
+	      aName : HAsciiString from TCollection) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
+	      aName : HAsciiString from TCollection;
 	      hasAaxis1 : Boolean from Standard;
-	      aAxis1 : mutable Direction from StepGeom;
+	      aAxis1 : Direction from StepGeom;
 	      hasAaxis2 : Boolean from Standard;
-	      aAxis2 : mutable Direction from StepGeom;
-	      aLocalOrigin : mutable CartesianPoint from StepGeom;
+	      aAxis2 : Direction from StepGeom;
+	      aLocalOrigin : CartesianPoint from StepGeom;
 	      hasAscale : Boolean from Standard;
 	      aScale : Real from Standard) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetAxis1(me : mutable; aAxis1 : mutable Direction);
+	SetAxis1(me : mutable; aAxis1 : Direction);
 	UnSetAxis1 (me:mutable);
-	Axis1 (me) returns mutable Direction;
+	Axis1 (me) returns Direction;
 	HasAxis1 (me) returns Boolean;
-	SetAxis2(me : mutable; aAxis2 : mutable Direction);
+	SetAxis2(me : mutable; aAxis2 : Direction);
 	UnSetAxis2 (me:mutable);
-	Axis2 (me) returns mutable Direction;
+	Axis2 (me) returns Direction;
 	HasAxis2 (me) returns Boolean;
-	SetLocalOrigin(me : mutable; aLocalOrigin : mutable CartesianPoint);
-	LocalOrigin (me) returns mutable CartesianPoint;
+	SetLocalOrigin(me : mutable; aLocalOrigin : CartesianPoint);
+	LocalOrigin (me) returns CartesianPoint;
 	SetScale(me : mutable; aScale : Real);
 	UnSetScale (me:mutable);
 	Scale (me) returns Real;

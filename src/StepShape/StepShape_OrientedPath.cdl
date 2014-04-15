@@ -27,28 +27,28 @@ uses
 	EdgeLoop from StepShape
 is
 
-	Create returns mutable OrientedPath;
+	Create returns OrientedPath;
 	---Purpose: Returns a OrientedPath
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aEdgeList : mutable HArray1OfOrientedEdge from StepShape) is redefined;
+	      aName : HAsciiString from TCollection;
+	      aEdgeList : HArray1OfOrientedEdge from StepShape) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aPathElement : mutable EdgeLoop from StepShape;
+	      aName : HAsciiString from TCollection;
+	      aPathElement : EdgeLoop from StepShape;
 	      aOrientation : Boolean from Standard) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetPathElement(me : mutable; aPathElement : mutable EdgeLoop);
-	PathElement (me) returns mutable EdgeLoop;
+	SetPathElement(me : mutable; aPathElement : EdgeLoop);
+	PathElement (me) returns EdgeLoop;
 	SetOrientation(me : mutable; aOrientation : Boolean);
 	Orientation (me) returns Boolean;
-	SetEdgeList(me : mutable; aEdgeList : mutable HArray1OfOrientedEdge) is redefined;
-	EdgeList (me) returns mutable HArray1OfOrientedEdge is redefined;
-	EdgeListValue (me; num : Integer) returns mutable OrientedEdge is redefined;
+	SetEdgeList(me : mutable; aEdgeList : HArray1OfOrientedEdge) is redefined;
+	EdgeList (me) returns HArray1OfOrientedEdge is redefined;
+	EdgeListValue (me; num : Integer) returns OrientedEdge is redefined;
 	NbEdgeList (me) returns Integer is redefined;
 
 fields

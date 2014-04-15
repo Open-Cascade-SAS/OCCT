@@ -49,7 +49,7 @@ raises InterfaceError, OutOfRange
 
 is
 
-    Create returns mutable ShareOut;
+    Create returns ShareOut;
     ---Purpose : Creates an empty ShareOut
 
     Clear (me : mutable; onlydisp : Boolean);
@@ -88,13 +88,13 @@ is
     ---Purpose : Returns the Rank of a Dispatch, given its Value (Handle).
     --           Returns 0 if the Dispatch is unknown in the ShareOut
 
-    Dispatch (me; num : Integer) returns mutable Dispatch
+    Dispatch (me; num : Integer) returns Dispatch
     ---Purpose : Returns a Dispatch, given its rank in the list
     	raises OutOfRange;
     --           Error if <num> is out of range
     ---C++ : return const &
 
-    AddDispatch (me : mutable; disp : mutable Dispatch)
+    AddDispatch (me : mutable; disp : Dispatch)
     ---Purpose : Adds a Dispatch to the list
     	raises InterfaceError;
     --           Error if the Dispatch is attached to a ShareOut other than "me"
@@ -106,7 +106,7 @@ is
 
     	-- --    Modifiers to be applied    -- --
 
-    AddModifier (me : mutable; modifier : mutable GeneralModifier;
+    AddModifier (me : mutable; modifier : GeneralModifier;
     	    	atnum : Integer);
     ---Purpose : Sets a Modifier to be applied on all Dispatches to be run
     --           If <modifier> is a ModelModifier, adds it to the list of
@@ -116,7 +116,7 @@ is
     --           into a Model : its criteria are checked and if they are OK,
     --           the method Perform of this Modifier is run.
 
-    AddModifier (me : mutable; modifier : mutable GeneralModifier;
+    AddModifier (me : mutable; modifier : GeneralModifier;
     	    	 dispnum : Integer; atnum : Integer);
     ---Purpose : Sets a Modifier to be applied on the Dispatch <dispnum>
     --           If <modifier> is a ModelModifier, adds it to the list of
@@ -130,7 +130,7 @@ is
     --             for a Dispatch
 
 
-    AddModif    (me : mutable;  modifier : mutable GeneralModifier;
+    AddModif    (me : mutable;  modifier : GeneralModifier;
     	    	 formodel : Boolean; atnum : Integer = 0);
     ---Purpose : Adds a Modifier to the list of Modifiers : Model Modifiers if
     --           <formodel> is True, File Modifiers else (internal).
@@ -140,11 +140,11 @@ is
     --           Model Modifiers if <formodel> is True, File Modifiers else
 
     GeneralModifier (me; formodel : Boolean; num : Integer)
-    	returns mutable GeneralModifier;
+    	returns GeneralModifier;
     ---Purpose : Returns a Modifier of the list, given its rank :
     --           Model Modifiers if <formodel> is True, File Modifiers else
 
-    ModelModifier (me; num : Integer) returns mutable Modifier;
+    ModelModifier (me; num : Integer) returns Modifier;
     ---Purpose : Returns a Modifier of the list of Model Modifiers, duely casted
 
     ModifierRank (me; modifier : GeneralModifier) returns Integer;
@@ -167,7 +167,7 @@ is
 
     	-- --    Names for produced Files   -- --
 
-    SetRootName (me : mutable; num : Integer; name : mutable HAsciiString)
+    SetRootName (me : mutable; num : Integer; name : HAsciiString)
     	returns Boolean;
     ---Purpose : Attaches a Root Name to a Dispatch given its rank, as an
     --           HAsciiString (standard form). A Null Handle resets this name.
@@ -178,7 +178,7 @@ is
     ---Purpose : Returns True if the Dispatch of rank <num> has an attached
     --           Root Name. False else, or if num is out of range
 
-    RootName (me; num : Integer) returns mutable HAsciiString from TCollection;
+    RootName (me; num : Integer) returns HAsciiString from TCollection;
     ---Purpose : Returns the Root bound to a Dispatch, given its rank
     --           Returns a Null Handle if not defined
 

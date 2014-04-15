@@ -35,13 +35,13 @@ is
     
     Create (V : Vertex from TopoDS;
     	    T : in out Tool from TopoDSToStep;
-	   FP : mutable FinderProcess from Transfer)
+	   FP : FinderProcess from Transfer)
          returns MakeStepVertex;
     
     Init(me : in out;
      	 V  : Vertex from TopoDS;
      	 T  : in out Tool from TopoDSToStep;
-         FP : mutable FinderProcess from Transfer);
+         FP : FinderProcess from Transfer);
 
 	    
     Value (me) returns TopologicalRepresentationItem from StepShape

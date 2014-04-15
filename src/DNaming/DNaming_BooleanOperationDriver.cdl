@@ -24,7 +24,7 @@ uses
      BooleanOperation from BRepAlgoAPI
 
 is
-    Create returns mutable BooleanOperationDriver from DNaming;
+    Create returns BooleanOperationDriver from DNaming;
     ---Purpose: Constructor
 
     ---Purpose: validation

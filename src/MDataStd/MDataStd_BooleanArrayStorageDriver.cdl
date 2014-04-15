@@ -25,7 +25,7 @@ uses
 is
 
     Create(theMessageDriver : MessageDriver from CDM)
-    returns mutable BooleanArrayStorageDriver from MDataStd;
+    returns BooleanArrayStorageDriver from MDataStd;
 
     VersionNumber(me) 
     returns Integer from Standard;
@@ -34,11 +34,11 @@ is
     returns Type from Standard;
 
     NewEmpty (me) 
-    returns mutable Attribute from PDF;
+    returns Attribute from PDF;
 
     Paste(me;
     	  Source     :         Attribute from TDF;
-    	  Target     : mutable Attribute from PDF;
+    	  Target     : Attribute from PDF;
     	  RelocTable : SRelocationTable from MDF);
 
 end BooleanArrayStorageDriver;

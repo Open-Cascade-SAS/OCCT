@@ -27,7 +27,7 @@ uses
     
 is
     Create
-    returns mutable BadEdgeFilter from AIS;
+    returns BadEdgeFilter from AIS;
     	--- Purpose: Constructs an empty filter object for bad edges.   
     ActsOn( me; aType : ShapeEnum from TopAbs )
     returns Boolean from Standard

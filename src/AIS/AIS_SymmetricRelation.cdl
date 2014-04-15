@@ -37,7 +37,7 @@ is
     	   FirstShape  : Shape from TopoDS;
     	   SecondShape : Shape from TopoDS;
 	   aPlane      : Plane from Geom)
-    returns mutable SymmetricRelation from AIS;
+    returns SymmetricRelation from AIS;
     	--- Purpose: Constructs an object to display constraints of symmetricity.
     	-- This object is defined by a tool aSymmTool, a first
     	-- shape FirstShape, a second shape SecondShape, and a plane aPlane.
@@ -70,19 +70,19 @@ is
 
     Compute(me            : mutable;
   	    aPresentationManager: PresentationManager3d from PrsMgr;
-    	    aPresentation : mutable Presentation from Prs3d;
+    	    aPresentation : Presentation from Prs3d;
     	    aMode         : Integer from Standard= 0) 
     is redefined static private;
     
     Compute(me:mutable;
     	        aProjector: Projector from Prs3d;
-                aPresentation: mutable Presentation from Prs3d)
+                aPresentation: Presentation from Prs3d)
     is redefined static private;     
 
     Compute(me            : mutable;
     	    aProjector    : Projector from Prs3d;
     	    aTrsf         : Transformation from Geom;
-	    aPresentation : mutable Presentation from Prs3d)
+	    aPresentation : Presentation from Prs3d)
     is redefined;
     	---Purpose: computes the presentation according to a point of view
     	--          given by <aProjector>. 
@@ -95,20 +95,20 @@ is
 --     SymmetricRelation Methods from SelectableObject
 
     ComputeSelection(me         : mutable;
-    	    	     aSelection : mutable Selection from SelectMgr;
+    	    	     aSelection : Selection from SelectMgr;
     	    	     aMode      : Integer from Standard)is private;
 
 --
 --     Computation private methods
 --
 
-    ComputeTwoFacesSymmetric(me: mutable; aprs : mutable Presentation from Prs3d)
+    ComputeTwoFacesSymmetric(me: mutable; aprs : Presentation from Prs3d)
     is private;
     
-    ComputeTwoEdgesSymmetric(me: mutable; aprs : mutable Presentation from Prs3d)
+    ComputeTwoEdgesSymmetric(me: mutable; aprs : Presentation from Prs3d)
     is private;
     
-    ComputeTwoVerticesSymmetric(me: mutable; aprs : mutable Presentation from Prs3d)
+    ComputeTwoVerticesSymmetric(me: mutable; aprs : Presentation from Prs3d)
     is private;
     
     

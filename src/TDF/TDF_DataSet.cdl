@@ -40,7 +40,7 @@ uses
 is
 
     Create
-    	returns mutable DataSet from TDF;
+    	returns DataSet from TDF;
 	---Purpose: Creates an  empty   DataSet  object.
 
     Clear(me : mutable);

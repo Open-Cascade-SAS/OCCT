@@ -20,11 +20,11 @@ class AsciiString from PDataStd inherits Attribute from PDF
 uses  HAsciiString from PCollection
 
 is
-    Create returns mutable  AsciiString from  PDataStd;
+    Create returns  AsciiString from  PDataStd;
     
     
     Create (V : HAsciiString from PCollection) 
-    returns mutable  AsciiString from PDataStd;
+    returns  AsciiString from PDataStd;
     
     
     Get (me) returns HAsciiString from PCollection;

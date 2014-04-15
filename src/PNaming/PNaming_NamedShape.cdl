@@ -28,7 +28,7 @@ uses
 is
 
 
-    Create returns mutable NamedShape from PNaming;
+    Create returns NamedShape from PNaming;
 	---Purpose: Creates a mutable NamedShape from PNaming.
 
     

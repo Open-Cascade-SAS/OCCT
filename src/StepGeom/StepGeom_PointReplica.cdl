@@ -24,24 +24,24 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable PointReplica;
+	Create returns PointReplica;
 	---Purpose: Returns a PointReplica
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection) is redefined;
+	      aName : HAsciiString from TCollection) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aParentPt : mutable Point from StepGeom;
-	      aTransformation : mutable CartesianTransformationOperator from StepGeom) is virtual;
+	      aName : HAsciiString from TCollection;
+	      aParentPt : Point from StepGeom;
+	      aTransformation : CartesianTransformationOperator from StepGeom) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetParentPt(me : mutable; aParentPt : mutable Point);
-	ParentPt (me) returns mutable Point;
-	SetTransformation(me : mutable; aTransformation : mutable CartesianTransformationOperator);
-	Transformation (me) returns mutable CartesianTransformationOperator;
+	SetParentPt(me : mutable; aParentPt : Point);
+	ParentPt (me) returns Point;
+	SetTransformation(me : mutable; aTransformation : CartesianTransformationOperator);
+	Transformation (me) returns CartesianTransformationOperator;
 
 fields
 

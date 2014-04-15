@@ -19,6 +19,6 @@ class Directory from PDataStd inherits Attribute from PDF
 	---Purpose: 
 is
 
-    Create returns mutable Directory from  PDataStd;
+    Create returns Directory from  PDataStd;
 
 end Directory;

@@ -23,7 +23,7 @@ uses AsciiString from TCollection, EntityIterator, Graph
 
 is
 
-    Create returns mutable SelectUnion;
+    Create returns SelectUnion;
     ---Purpose : Creates an empty SelectUnion
 
     RootResult (me; G : Graph) returns EntityIterator;

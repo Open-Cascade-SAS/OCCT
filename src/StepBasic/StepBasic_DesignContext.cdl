@@ -24,6 +24,6 @@ uses Integer
 
 is
 
-    Create returns mutable DesignContext;
+    Create returns DesignContext;
 
 end DesignContext;

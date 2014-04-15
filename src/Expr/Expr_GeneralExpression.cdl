@@ -69,7 +69,7 @@ is
     ---Purpose: Returns a copy of <me> having the same unknowns and 
     --          functions. 
     ---Level: Advanced 
-    returns mutable like me
+    returns like me
     is deferred;
     
     ContainsUnknowns(me) 

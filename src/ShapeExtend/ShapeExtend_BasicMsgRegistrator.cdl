@@ -33,7 +33,7 @@ uses
      
 is
 
-    Create returns mutable BasicMsgRegistrator from ShapeExtend;
+    Create returns BasicMsgRegistrator from ShapeExtend;
     	---Purpose: Empty constructor.
 
     Send (me: mutable; object : Transient;

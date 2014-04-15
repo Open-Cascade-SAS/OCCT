@@ -26,7 +26,7 @@ raises OutOfRange from Standard
 
 is
 
-    Create returns mutable Constant from Law;
+    Create returns Constant from Law;
     
     
 

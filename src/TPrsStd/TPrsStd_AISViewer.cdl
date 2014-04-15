@@ -72,7 +72,7 @@ is
     --          =================
 
     Create
-    returns mutable AISViewer from TPrsStd; 
+    returns AISViewer from TPrsStd; 
     
     Update (me);
 ---Purpose: Updates the viewer at the label access.
@@ -94,10 +94,10 @@ is
     Restore(me: mutable; with : Attribute from TDF);
     
     NewEmpty(me)
-    returns mutable Attribute from TDF;
+    returns Attribute from TDF;
     
-    Paste (me; into : mutable Attribute from TDF;
-	       RT   : mutable RelocationTable from TDF); 
+    Paste (me; into : Attribute from TDF;
+	       RT   : RelocationTable from TDF); 
 	       
 fields
 

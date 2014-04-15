@@ -34,7 +34,7 @@ is
 	---Purpose: Returs True if the pick is outside the box
     is virtual;
     
-    Copy(me) returns mutable Drawable3D from Draw
+    Copy(me) returns Drawable3D from Draw
     is virtual;
 	---Purpose: For variable copy.
 	

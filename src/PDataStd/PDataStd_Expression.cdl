@@ -21,10 +21,10 @@ uses HExtendedString  from PCollection,
 
 is
 
-    Create returns mutable Expression from  PDataStd;
+    Create returns Expression from  PDataStd;
     
     Create (name : HExtendedString from PCollection) 
-    returns mutable Expression from PDataStd;
+    returns Expression from PDataStd;
     
     GetName (me) returns HExtendedString from PCollection;
     

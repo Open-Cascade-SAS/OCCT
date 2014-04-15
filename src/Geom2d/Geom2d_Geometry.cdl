@@ -102,28 +102,28 @@ is
 
 
 
-  Mirrored (me; P : Pnt2d)            returns mutable like me
+  Mirrored (me; P : Pnt2d)            returns like me
   is static;
 
-  Mirrored (me; A : Ax2d)             returns mutable like me
+  Mirrored (me; A : Ax2d)             returns like me
   is static;
 
-  Rotated (me; P : Pnt2d; Ang : Real)  returns mutable like me
+  Rotated (me; P : Pnt2d; Ang : Real)  returns like me
   is static;
 
-  Scaled (me; P : Pnt2d; S : Real)     returns mutable like me
+  Scaled (me; P : Pnt2d; S : Real)     returns like me
   is static;
 
-  Transformed (me; T : Trsf2d)        returns mutable like me
+  Transformed (me; T : Trsf2d)        returns like me
   is static;
 
-  Translated (me; V : Vec2d)          returns mutable like me
+  Translated (me; V : Vec2d)          returns like me
   is static;
 
-  Translated (me; P1, P2 : Pnt2d)     returns mutable like me
+  Translated (me; P1, P2 : Pnt2d)     returns like me
   is static;
 
-  Copy (me)  returns mutable like me is deferred;
+  Copy (me)  returns like me is deferred;
   
      
 end;

@@ -110,7 +110,7 @@ is
     	    -- assert(p->IsKind(tt));   
     	is static;
 	    
-	This (me) returns mutable Persistent
+	This (me) returns Persistent
 	    ---Purpose:  Returns a handle on the object. 
     	    -- This method is useful only in constructors of persistent 
     	    -- objects when you need a handle on the object being constructed. 

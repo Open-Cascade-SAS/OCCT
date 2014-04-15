@@ -24,12 +24,12 @@ uses
 is
 
 	Init (me : mutable;
-	      aAssignedApproval : mutable Approval from StepBasic) is virtual;
+	      aAssignedApproval : Approval from StepBasic) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetAssignedApproval(me : mutable; aAssignedApproval : mutable Approval);
-	AssignedApproval (me) returns mutable Approval;
+	SetAssignedApproval(me : mutable; aAssignedApproval : Approval);
+	AssignedApproval (me) returns Approval;
 
 fields
 

@@ -33,7 +33,7 @@ uses
     Length from Quantity
     
 is
-    Create returns mutable TextAspect from Prs3d;  
+    Create returns TextAspect from Prs3d;  
         --- Purpose: Constructs an empty framework for defining display attributes of text.   
 
     SetColor(me: mutable; aColor:  Color  from  Quantity);

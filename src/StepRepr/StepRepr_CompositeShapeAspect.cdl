@@ -22,6 +22,6 @@ uses
 
 is
 
-    Create returns mutable CompositeShapeAspect;
+    Create returns CompositeShapeAspect;
 
 end CompositeShapeAspect;

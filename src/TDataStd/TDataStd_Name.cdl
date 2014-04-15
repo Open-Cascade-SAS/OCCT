@@ -119,7 +119,7 @@ is
     --          ============
     
     Create 
-    returns mutable Name from TDataStd;
+    returns Name from TDataStd;
     
 
     --Father (me; father : in out Name from TDataStd)
@@ -160,10 +160,10 @@ is
     Restore (me: mutable; with : Attribute from TDF);
 
     NewEmpty (me)
-    returns mutable Attribute from TDF;
+    returns Attribute from TDF;
 
-    Paste (me; into : mutable Attribute from TDF;
-	       RT   : mutable RelocationTable from TDF);    
+    Paste (me; into : Attribute from TDF;
+	       RT   : RelocationTable from TDF);    
 
     Dump(me; anOS : in out OStream from Standard)
     	returns OStream from Standard

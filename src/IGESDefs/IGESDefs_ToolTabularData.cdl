@@ -31,7 +31,7 @@ is
     ---Purpose : Returns a ToolTabularData, ready to work
 
 
-    ReadOwnParams (me; ent : mutable TabularData;
+    ReadOwnParams (me; ent : TabularData;
     	    	   IR : IGESReaderData; PR : in out ParamReader)
     	raises DomainError  is static;
     ---Purpose : Reads own parameters from file. <PR> gives access to them,
@@ -55,7 +55,7 @@ is
     ---Purpose : Performs Specific Semantic Check
 
 
-    OwnCopy    (me; entfrom : TabularData; entto : mutable TabularData;
+    OwnCopy    (me; entfrom : TabularData; entto : TabularData;
     	        TC : in out CopyTool)  is static;
     ---Purpose : Copies Specific Parameters
 

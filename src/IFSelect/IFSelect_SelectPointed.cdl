@@ -31,7 +31,7 @@ raises InterfaceError
 
 is
 
-    Create returns mutable SelectPointed;
+    Create returns SelectPointed;
     ---Purpose : Creates a SelectPointed
 
     Clear (me : mutable);

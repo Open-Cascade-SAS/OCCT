@@ -27,13 +27,13 @@ uses
 raises DomainError from Standard
 
 is
-    Create returns mutable TopolTool from IntTools;
+    Create returns TopolTool from IntTools;
     	---Purpose:
 	--- Empty constructor
 	---
 
     Create(theSurface: HSurface from Adaptor3d)
-    	returns mutable TopolTool from IntTools;
+    	returns TopolTool from IntTools;
 	---Purpose:
 	--- Initializes me by surface
 	---

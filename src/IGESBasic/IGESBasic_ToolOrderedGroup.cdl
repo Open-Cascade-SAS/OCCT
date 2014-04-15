@@ -31,7 +31,7 @@ is
     ---Purpose : Returns a ToolOrderedGroup, ready to work
 
 
-    ReadOwnParams (me; ent : mutable OrderedGroup;
+    ReadOwnParams (me; ent : OrderedGroup;
     	    	   IR : IGESReaderData; PR : in out ParamReader)
     	raises DomainError  is static;
     ---Purpose : Reads own parameters from file. <PR> gives access to them,
@@ -47,7 +47,7 @@ is
     ---Purpose : Lists the Entities shared by a OrderedGroup <ent>, from
     --           its specific (own) parameters
 
-    OwnCorrect (me; ent : mutable OrderedGroup) returns Boolean  is static;
+    OwnCorrect (me; ent : OrderedGroup) returns Boolean  is static;
     ---Purpose : Sets automatic unambiguous Correction on an OrderedGroup
     --           (Null Elements are removed from list)
 
@@ -59,7 +59,7 @@ is
     ---Purpose : Performs Specific Semantic Check
 
 
-    OwnCopy    (me; entfrom : OrderedGroup; entto : mutable OrderedGroup;
+    OwnCopy    (me; entfrom : OrderedGroup; entto : OrderedGroup;
     	        TC : in out CopyTool)  is static;
     ---Purpose : Copies Specific Parameters
 

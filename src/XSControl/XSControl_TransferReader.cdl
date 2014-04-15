@@ -44,20 +44,20 @@ uses CString, AsciiString, Transient,
 
 is
 
-    Create returns mutable TransferReader;
+    Create returns TransferReader;
     ---Purpose : Creates a TransferReader, empty
 
     	--    General Management    --
 
-    SetController (me : mutable; control : mutable Controller from XSControl);
+    SetController (me : mutable; control : Controller from XSControl);
     ---Purpose : Sets a Controller. It is required to generate the Actor.
     --           Elsewhere, the Actor must be provided directly
 
-    SetActor (me : mutable; actor : mutable ActorOfTransientProcess);
+    SetActor (me : mutable; actor : ActorOfTransientProcess);
     ---Purpose : Sets the Actor directly : this value will be used if the
     --           Controller is not set
 
-    Actor    (me : mutable) returns mutable ActorOfTransientProcess;
+    Actor    (me : mutable) returns ActorOfTransientProcess;
     ---Purpose : Returns the Actor, determined by the Controller, or if this
     --           one is unknown, directly set.
     --           Once it has been defined, it can then be edited.
@@ -100,12 +100,12 @@ is
     --           +1 final results
     --           +2 working data (model, context, transfer process)
 
-    TransientProcess (me) returns mutable TransientProcess;
+    TransientProcess (me) returns TransientProcess;
     ---Purpose : Returns the currently used TransientProcess
     --           It is computed from the model by TransferReadRoots, or by
     --           BeginTransferRead
 
-    SetTransientProcess (me : mutable; TP : mutable TransientProcess);
+    SetTransientProcess (me : mutable; TP : TransientProcess);
     ---Purpose : Forces the TransientProcess
     --           Remark : it also changes the Model and the Actor, from those
     --           recorded in the new TransientProcess
@@ -164,7 +164,7 @@ is
     ---Purpose : Returns the final result recorded for a NUMBER of entity
     --           (internal use). Null if out of range
 
-    TransientResult   (me; ent : Transient) returns mutable Transient;
+    TransientResult   (me; ent : Transient) returns Transient;
     ---Purpose : Returns the resulting object as a Transient
     --           Null Handle if no result or result not transient
 

@@ -59,7 +59,7 @@ is
     --           else, data are not copied, only the header object is
     Initialize(me : in out;nbe : Integer);
     ---Purpose :Initialize IntList by number of entities.
-    Internals (me; nbrefs : out Integer; ents, refs : out mutable HArray1OfInteger);
+    Internals (me; nbrefs : out Integer; ents, refs : out HArray1OfInteger);
     ---Purpose : Returns internal values, used for copying
 
     NbEntities (me) returns Integer;

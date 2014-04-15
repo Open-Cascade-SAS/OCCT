@@ -23,7 +23,7 @@ uses
     
 is
 
-    Create returns mutable AlgoContainer from IGESToBRep;
+    Create returns AlgoContainer from IGESToBRep;
     	---Purpose: Empty constructor
 	
     SetToolContainer (me: mutable; TC: ToolContainer from IGESToBRep);

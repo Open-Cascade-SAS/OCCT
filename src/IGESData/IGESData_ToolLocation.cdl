@@ -46,7 +46,7 @@ raises DomainError
 is
 
     Create (amodel : IGESModel; protocol : Protocol from IGESData)
-    	returns mutable ToolLocation;
+    	returns ToolLocation;
     ---Purpose : Creates a ToolLocation on a given Model, filled with the help
     --           of a Protocol (which allows to known Entities referenced by
     --           other ones)

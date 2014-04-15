@@ -28,27 +28,27 @@ uses
 	StyledItem from StepVisual
 is
 
-	Create returns mutable ContextDependentOverRidingStyledItem;
+	Create returns ContextDependentOverRidingStyledItem;
 	---Purpose: Returns a ContextDependentOverRidingStyledItem
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aStyles : mutable HArray1OfPresentationStyleAssignment from StepVisual;
-	      aItem : mutable RepresentationItem from StepRepr;
-	      aOverRiddenStyle : mutable StyledItem from StepVisual) is redefined;
+	      aName : HAsciiString from TCollection;
+	      aStyles : HArray1OfPresentationStyleAssignment from StepVisual;
+	      aItem : RepresentationItem from StepRepr;
+	      aOverRiddenStyle : StyledItem from StepVisual) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aStyles : mutable HArray1OfPresentationStyleAssignment from StepVisual;
-	      aItem : mutable RepresentationItem from StepRepr;
-	      aOverRiddenStyle : mutable StyledItem from StepVisual;
-	      aStyleContext : mutable HArray1OfStyleContextSelect from StepVisual) is virtual;
+	      aName : HAsciiString from TCollection;
+	      aStyles : HArray1OfPresentationStyleAssignment from StepVisual;
+	      aItem : RepresentationItem from StepRepr;
+	      aOverRiddenStyle : StyledItem from StepVisual;
+	      aStyleContext : HArray1OfStyleContextSelect from StepVisual) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetStyleContext(me : mutable; aStyleContext : mutable HArray1OfStyleContextSelect);
-	StyleContext (me) returns mutable HArray1OfStyleContextSelect;
+	SetStyleContext(me : mutable; aStyleContext : HArray1OfStyleContextSelect);
+	StyleContext (me) returns HArray1OfStyleContextSelect;
 	StyleContextValue (me; num : Integer) returns StyleContextSelect;
 	NbStyleContext (me) returns Integer;
 

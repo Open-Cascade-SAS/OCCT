@@ -29,7 +29,7 @@ is
 
     Create(Nodes: HArray1OfPnt2d from PColgp;
     	   Defl : Real from Standard) 
-    returns mutable Polygon2D from PPoly;
+    returns Polygon2D from PPoly;
     	---Purpose: Defaults with allocation of nodes.
     
     Deflection(me) returns Real;

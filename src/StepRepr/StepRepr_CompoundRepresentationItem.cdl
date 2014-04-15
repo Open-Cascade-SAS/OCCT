@@ -27,7 +27,7 @@ is
     Create returns CompoundRepresentationItem;
 
     Init (me : mutable;
-             aName : mutable HAsciiString from TCollection;
+             aName : HAsciiString from TCollection;
 	     item_element : HArray1OfRepresentationItem from StepRepr);
 
     ItemElement (me) returns HArray1OfRepresentationItem from StepRepr;

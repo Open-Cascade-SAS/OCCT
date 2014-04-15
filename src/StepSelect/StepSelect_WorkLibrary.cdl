@@ -28,7 +28,7 @@ uses CString, Transient,
 is
 
     Create (copymode : Boolean = Standard_True)
-    	 returns mutable WorkLibrary from StepSelect;
+    	 returns WorkLibrary from StepSelect;
     ---Purpose : Creates a STEP WorkLibrary
     --           <copymode> precises whether Copy is implemented or not
 
@@ -39,7 +39,7 @@ is
     --           2 : prints labels onky
 
     ReadFile (me; name : CString;
-    	      model    : out mutable InterfaceModel;
+    	      model    : out InterfaceModel;
     	      protocol : Protocol from Interface)
     	  returns Integer;
     ---Purpose : Reads a STEP File and returns a STEP Model (into <mod>),
@@ -53,7 +53,7 @@ is
 
     CopyModel (me;
     	       original : InterfaceModel;
-	       newmodel : mutable InterfaceModel;
+	       newmodel : InterfaceModel;
 	       list     : EntityIterator;
 	       TC       : in out CopyTool)
 	returns Boolean  is redefined;

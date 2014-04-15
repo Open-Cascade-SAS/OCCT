@@ -25,7 +25,7 @@ uses Surface from PGeom
 is
 
 
-  Create returns mutable OffsetSurface from PGeom;
+  Create returns OffsetSurface from PGeom;
     ---Purpose: Creates an OffsetSurface with default values.
     	---Level: Internal 
 
@@ -33,7 +33,7 @@ is
   Create (
     	    aBasisSurface : Surface from PGeom;
     	    aOffsetValue : Real from Standard)
-     returns mutable OffsetSurface from PGeom;
+     returns OffsetSurface from PGeom;
         ---Purpose :  <aBasisSurface>    is  the   basis      surface,
         --         <aOffsetValue> is the distance between <me> and the
         --         basis  surface at any  point.    <aOffsetDirection>

@@ -23,10 +23,10 @@ uses CString, SessionPilot, ReturnStatus
 
 is
 
-    Create returns mutable Activator from IGESSelect;
+    Create returns Activator from IGESSelect;
 
 
-    Do   (me : mutable; number : Integer; pilot : mutable SessionPilot)
+    Do   (me : mutable; number : Integer; pilot : SessionPilot)
     	returns ReturnStatus;
     ---Purpose : Executes a Command Line for IGESSelect
 

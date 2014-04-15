@@ -49,7 +49,7 @@ is
     	is static ;
 
 
-    LoadIsos (me; Face : mutable Face from DBRep)
+    LoadIsos (me; Face : Face from DBRep)
 
     	---Purpose: Loading of the isoparametric curves in the
     	--          Data Structure of a drawable face.

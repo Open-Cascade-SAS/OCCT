@@ -32,12 +32,12 @@ uses
 
 is 
     Create 
-    returns mutable PaveBlock from BOPDS; 
+    returns PaveBlock from BOPDS; 
     ---Purpose:  
     --- Empty contructor  
     --- 
     Create (theAllocator: BaseAllocator from BOPCol) 
-    returns mutable PaveBlock from BOPDS; 
+    returns PaveBlock from BOPDS; 
     ---Purpose:  
     ---  Contructor    
     ---  <theAllocator> - the allocator to manage the memory     

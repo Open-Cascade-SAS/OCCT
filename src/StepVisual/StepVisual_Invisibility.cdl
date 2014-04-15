@@ -24,16 +24,16 @@ uses
 	InvisibleItem from StepVisual
 is
 
-	Create returns mutable Invisibility;
+	Create returns Invisibility;
 	---Purpose: Returns a Invisibility
 
 	Init (me : mutable;
-	      aInvisibleItems : mutable HArray1OfInvisibleItem from StepVisual) is virtual;
+	      aInvisibleItems : HArray1OfInvisibleItem from StepVisual) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetInvisibleItems(me : mutable; aInvisibleItems : mutable HArray1OfInvisibleItem);
-	InvisibleItems (me) returns mutable HArray1OfInvisibleItem;
+	SetInvisibleItems(me : mutable; aInvisibleItems : HArray1OfInvisibleItem);
+	InvisibleItems (me) returns HArray1OfInvisibleItem;
 	InvisibleItemsValue (me; num : Integer) returns InvisibleItem;
 	NbInvisibleItems (me) returns Integer;
 

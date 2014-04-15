@@ -170,7 +170,7 @@ is
           UDegree, VDegree             : Integer;
     	  UPeriodic                    : Boolean = Standard_False;
     	  VPeriodic                    : Boolean = Standard_False)
-     returns mutable BSplineSurface
+     returns BSplineSurface
      
     	---Purpose : Creates  a non-rational b-spline surface (weights
         --         default value is 1.).
@@ -203,7 +203,7 @@ is
           UDegree, VDegree             : Integer;
     	  UPeriodic                    : Boolean = Standard_False;
     	  VPeriodic                    : Boolean = Standard_False)
-     returns mutable BSplineSurface
+     returns BSplineSurface
      
         ---Purpose : Creates  a non-rational b-spline surface (weights
         --         default value is 1.).
@@ -1317,26 +1317,26 @@ is
 
 
 
-  UIso (me; U : Real) returns mutable Curve;
+  UIso (me; U : Real) returns Curve;
         ---Purpose :
         --  Computes the U isoparametric curve. 
         --  A B-spline curve is returned.
 
 
-  VIso (me; V : Real)  returns mutable Curve;
+  VIso (me; V : Real)  returns Curve;
         ---Purpose :
         --  Computes the V isoparametric curve. 
         --  A B-spline curve is returned.
 
 
-  UIso (me; U : Real; CheckRational : Boolean) returns mutable Curve;
+  UIso (me; U : Real; CheckRational : Boolean) returns Curve;
         ---Purpose :
         --  Computes the U isoparametric curve.  
 	--  If CheckRational=False, no try to make it non-rational.
         --  A B-spline curve is returned.
 
 
-  VIso (me; V : Real; CheckRational : Boolean) returns mutable Curve;
+  VIso (me; V : Real; CheckRational : Boolean) returns Curve;
         ---Purpose :
         --  Computes the V isoparametric curve. 
 	--  If CheckRational=False, no try to make it non-rational.
@@ -1374,7 +1374,7 @@ is
       	--          ====> |f (u1,v1) - f (u0,v0)| < Tolerance3D
   ;
   
-  Copy (me)  returns mutable like me;
+  Copy (me)  returns like me;
 
     	---Purpose: Creates a new object which is a copy of this BSpline surface.
 

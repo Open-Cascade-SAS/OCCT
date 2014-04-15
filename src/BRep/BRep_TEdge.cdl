@@ -36,7 +36,7 @@ uses
     ListOfCurveRepresentation from BRep
 
 is
-    Create returns mutable TEdge from BRep;
+    Create returns TEdge from BRep;
 	---Purpose: Creates an empty TEdge.
 	
     Tolerance(me) returns Real
@@ -82,7 +82,7 @@ is
 	---C++: inline
     is static;
     
-    EmptyCopy(me) returns mutable TShape from TopoDS;
+    EmptyCopy(me) returns TShape from TopoDS;
 	---Purpose: Returns a copy  of the  TShape  with no sub-shapes.
     
 fields

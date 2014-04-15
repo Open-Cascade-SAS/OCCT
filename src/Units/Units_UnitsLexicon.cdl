@@ -32,7 +32,7 @@ uses
 
 is
 
-    Create returns mutable UnitsLexicon from Units;
+    Create returns UnitsLexicon from Units;
     
     ---Level: Internal 
     

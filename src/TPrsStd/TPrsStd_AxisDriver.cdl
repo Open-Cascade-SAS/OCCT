@@ -24,7 +24,7 @@ uses
 is
 
     Create
-    returns mutable AxisDriver from TPrsStd;
+    returns AxisDriver from TPrsStd;
 ---Purpose: Constructs an empty axis driver.
     
     Update (me : mutable ;

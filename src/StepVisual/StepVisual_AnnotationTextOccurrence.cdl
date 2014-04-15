@@ -25,7 +25,7 @@ uses
 
 is
 
-	Create returns mutable AnnotationTextOccurrence;
+	Create returns AnnotationTextOccurrence;
 	---Purpose: Returns a AnnotationTextOccurrence
 
 

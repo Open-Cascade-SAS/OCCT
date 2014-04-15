@@ -32,7 +32,7 @@ is
 	   CL : Real     from Standard;
     	   S  : Surface  from PGeom; 
     	   L  : Location from PTopLoc)
-    returns mutable CurveOnSurface from PBRep;
+    returns CurveOnSurface from PBRep;
     	---Purpose: CF is curve first parameter
     	--          CL is curve last parameter
     	--          As far as they can't be computed from a Persistent Curve

@@ -49,7 +49,7 @@ is
 
     Create 
     ---Purpose: Constructor (empty).
-    returns mutable GraphNode from TFunction;
+    returns GraphNode from TFunction;
 
 
     AddPrevious (me : mutable;
@@ -129,12 +129,12 @@ is
     Restore (me: mutable; with : Attribute from TDF) 
     is virtual;
 
-    Paste (me; into : mutable Attribute from TDF;
-	       RT   : mutable RelocationTable from TDF) 
+    Paste (me; into : Attribute from TDF;
+	       RT   : RelocationTable from TDF) 
     is virtual;    
 
     NewEmpty (me)
-    returns mutable Attribute from TDF
+    returns Attribute from TDF
     is redefined;
 	
     References (me;

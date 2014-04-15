@@ -63,49 +63,49 @@ is
 
     TransferBasicSurface   (me    : in out;
     	    	    	    start : IGESEntity from IGESData)
-    returns mutable Surface from Geom;
+    returns Surface from Geom;
     	---Purpose: Returns Surface  from Geom if the last transfer has
     	--          succeded.
      
     TransferPlaneSurface   (me    : in out;
 			    start : PlaneSurface from IGESSolid)
-    returns mutable Plane from Geom;
+    returns Plane from Geom;
     	---Purpose: Returns Plane from Geom if the transfer has
      	--          succeded.
     
     TransferRigthCylindricalSurface(me   : in out;
     	    	    	    	    start: CylindricalSurface from IGESSolid)
-    returns mutable CylindricalSurface from Geom;
+    returns CylindricalSurface from Geom;
     	---Purpose: Returns CylindricalSurface from Geom if the transfer has
      	--          succeded.
     
     TransferRigthConicalSurface    (me   : in out;
     	    	    	    	    start: ConicalSurface from IGESSolid)
-    returns mutable ConicalSurface from Geom;
+    returns ConicalSurface from Geom;
     	---Purpose: Returns ConicalSurface from Geom if the transfer has
      	--          succeded.
     
     TransferSphericalSurface(me   : in out;
     	    	    	    start: SphericalSurface from IGESSolid)
-    returns mutable SphericalSurface from Geom;
+    returns SphericalSurface from Geom;
     	---Purpose: Returns SphericalSurface from Geom if the transfer has
      	--          succeded.
 	
     TransferToroidalSurface (me   : in out;
     	    	    	     start: ToroidalSurface from IGESSolid)
-    returns mutable ToroidalSurface from Geom;
+    returns ToroidalSurface from Geom;
     	---Purpose: Returns SphericalSurface from Geom if the transfer has
      	--          succeded.
     
     TransferSplineSurface   (me   : in out; 
     	    	    	     start: SplineSurface from IGESGeom)
-    returns mutable BSplineSurface from Geom;
+    returns BSplineSurface from Geom;
     	---Purpose: Returns BSplineSurface  from Geom if the transfer has
      	--          succeded.
 
     TransferBSplineSurface  (me   : in out; 
     	    	    	     start: BSplineSurface from IGESGeom)
-    returns mutable BSplineSurface from Geom;
+    returns BSplineSurface from Geom;
     	---Purpose: Returns BSplineSurface  from Geom if the transfer has
     	--          succeded.
 

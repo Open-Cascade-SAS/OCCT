@@ -29,11 +29,11 @@ uses
 is 
 
     Create (S : Surface from Geom; IsoColor : Color from Draw)
-    returns mutable DrawableSUR from TestTopOpeDraw;
+    returns DrawableSUR from TestTopOpeDraw;
 
     Create (S : Surface from Geom; IsoColor : Color from Draw;
     	    Text : CString from Standard; TextColor : Color from Draw)
-    returns mutable DrawableSUR from TestTopOpeDraw;
+    returns DrawableSUR from TestTopOpeDraw;
 
     Create (S : Surface from Geom; IsoColor : Color from Draw;
             BoundColor,NormalColor : Color from Draw;
@@ -41,7 +41,7 @@ is
 	    Nu,Nv : Integer;
     	    Discret : Integer; Deflection : Real; DrawMode : Integer;
     	    DispOrigin : Boolean from Standard = Standard_True)
-    returns mutable DrawableSUR from TestTopOpeDraw;
+    returns DrawableSUR from TestTopOpeDraw;
 
     Pnt(me) returns Pnt from gp
     is static;

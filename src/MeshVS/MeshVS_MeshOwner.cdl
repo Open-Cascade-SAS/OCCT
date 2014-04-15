@@ -33,7 +33,7 @@ is
 
   Create ( theSelObj      : SOPtr from SelectMgr;  
     	   theDS          : DataSource from MeshVS; 
-           thePriority    : Integer = 0 ) returns mutable MeshOwner from MeshVS;  
+           thePriority    : Integer = 0 ) returns MeshOwner from MeshVS;  
  
   GetDataSource( me ) returns DataSource from MeshVS; 
     	---C++: return const & 

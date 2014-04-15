@@ -25,14 +25,14 @@ uses Ax22d from gp
 is
 
 
-  Create returns mutable Hyperbola from PGeom2d;
+  Create returns Hyperbola from PGeom2d;
         ---Purpose :Creates an Hyperbola with default values.
 	---Level: Internal 
 
 
   Create (aPosition : Ax22d from gp;
     	  aMajorRadius, aMinorRadius : Real from Standard)
-     returns mutable Hyperbola from PGeom2d;
+     returns Hyperbola from PGeom2d;
 	---Purpose :  Creates an   Hyperbola    with      <aPosition>,
 	--         <aMajorRadius> and  <aMinorRadius> as field values.
 	--         The major  radius of the hyperbola is  on the XAxis

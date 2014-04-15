@@ -23,7 +23,7 @@ uses
 	DimensionalExponents from StepBasic
 is
 
-	Create returns mutable SolidAngleUnit;
+	Create returns SolidAngleUnit;
 	---Purpose: Returns a SolidAngleUnit
 
 

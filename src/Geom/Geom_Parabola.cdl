@@ -65,11 +65,11 @@ raises ConstructionError from Standard,
 is
 
 
-  Create (Prb : Parab)   returns mutable Parabola;
+  Create (Prb : Parab)   returns Parabola;
         ---Purpose : Creates a parabola from a non transient one.
 
 
-  Create (A2 : Ax2; Focal : Real)   returns mutable Parabola
+  Create (A2 : Ax2; Focal : Real)   returns Parabola
 	---Purpose :
 	--  Creates a parabola with its local coordinate system "A2"
 	--  and it's focal length "Focal".
@@ -81,7 +81,7 @@ is
 	---Purpose : Raised if Focal < 0.0
 
 
-  Create (D : Ax1; F : Pnt)  returns mutable Parabola;
+  Create (D : Ax1; F : Pnt)  returns Parabola;
         ---Purpose :
         --  D is the directrix of the parabola and F the focus point.
         --  The symmetry axis (XAxis) of the parabola is normal to the
@@ -240,7 +240,7 @@ is
      is redefined static;  
 
 
-  Copy (me)  returns mutable like me
+  Copy (me)  returns like me
    is redefined static;
     	---Purpose: Creates a new object which is a copy of this parabola.
 fields

@@ -28,10 +28,10 @@ raises TypeMismatch, OutOfRange
 
 is
 
-    Create returns mutable TransientListBinder;
+    Create returns TransientListBinder;
 
-    Create (list : mutable HSequenceOfTransient from TColStd)
-    	 returns mutable TransientListBinder;
+    Create (list : HSequenceOfTransient from TColStd)
+    	 returns TransientListBinder;
 
     IsMultiple (me) returns Boolean  is redefined;
     -- returns True if more than one result

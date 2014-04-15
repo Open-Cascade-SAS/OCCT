@@ -29,7 +29,7 @@ is
 	Create returns RWSweptSurface;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable SweptSurface from StepGeom);
+	              ach : in out Check; ent : SweptSurface from StepGeom);
 
 	WriteStep (me; SW : in out StepWriter; ent : SweptSurface from StepGeom);
 

@@ -18,6 +18,6 @@ class Tick from PDataStd inherits Attribute from PDF
 is
 
     Create 
-    returns mutable Tick from  PDataStd;
+    returns Tick from  PDataStd;
 
 end Tick;

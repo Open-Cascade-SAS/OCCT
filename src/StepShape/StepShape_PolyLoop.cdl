@@ -28,22 +28,22 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable PolyLoop;
+	Create returns PolyLoop;
 	---Purpose: Returns a PolyLoop
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection) is redefined;
+	      aName : HAsciiString from TCollection) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aPolygon : mutable HArray1OfCartesianPoint from StepGeom) is virtual;
+	      aName : HAsciiString from TCollection;
+	      aPolygon : HArray1OfCartesianPoint from StepGeom) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetPolygon(me : mutable; aPolygon : mutable HArray1OfCartesianPoint);
-	Polygon (me) returns mutable HArray1OfCartesianPoint;
-	PolygonValue (me; num : Integer) returns mutable CartesianPoint;
+	SetPolygon(me : mutable; aPolygon : HArray1OfCartesianPoint);
+	Polygon (me) returns HArray1OfCartesianPoint;
+	PolygonValue (me; num : Integer) returns CartesianPoint;
 	NbPolygon (me) returns Integer;
 
 fields

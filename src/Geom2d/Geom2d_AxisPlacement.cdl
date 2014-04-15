@@ -40,17 +40,17 @@ uses Ax2d   from gp,
 
 is
 
-  Create (A : Ax2d)  returns mutable AxisPlacement;
+  Create (A : Ax2d)  returns AxisPlacement;
         --- Purpose : Constructs an axis by conversion of the gp_Ax2d axis A.
 
 
-  Create (P : Pnt2d; V : Dir2d)  returns mutable AxisPlacement;
+  Create (P : Pnt2d; V : Dir2d)  returns AxisPlacement;
 	--- Purpose : Constructs an axis from a given origin P and unit vector V.
        
 
   Reverse (me : mutable);
 
-  Reversed (me)  returns mutable AxisPlacement  is static;
+  Reversed (me)  returns AxisPlacement  is static;
     	---Purpose: Reverses the unit vector of this axis.
     	-- Note:
     	-- - Reverse assigns the result to this axis, while
@@ -99,7 +99,7 @@ is
     	---Purpose: Applies the transformation T to this axis.
 
 
-  Copy (me)  returns mutable like me;
+  Copy (me)  returns like me;
   
     	---Purpose: Creates a new object which is a copy of this axis.     
 fields

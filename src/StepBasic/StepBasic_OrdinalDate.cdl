@@ -23,7 +23,7 @@ uses
 	Integer from Standard
 is
 
-	Create returns mutable OrdinalDate;
+	Create returns OrdinalDate;
 	---Purpose: Returns a OrdinalDate
 
 

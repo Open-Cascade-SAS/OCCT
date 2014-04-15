@@ -28,7 +28,7 @@ is
 	Create returns RWPreDefinedItem;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable PreDefinedItem from StepVisual);
+	              ach : in out Check; ent : PreDefinedItem from StepVisual);
 
 	WriteStep (me; SW : in out StepWriter; ent : PreDefinedItem from StepVisual);
 

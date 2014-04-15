@@ -29,7 +29,7 @@ is
 	Create returns RWTextStyleForDefinedFont;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable TextStyleForDefinedFont from StepVisual);
+	              ach : in out Check; ent : TextStyleForDefinedFont from StepVisual);
 
 	WriteStep (me; SW : in out StepWriter; ent : TextStyleForDefinedFont from StepVisual);
 

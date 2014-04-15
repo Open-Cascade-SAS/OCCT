@@ -25,15 +25,15 @@ uses
 is
 
 	Init (me : mutable;
-	      aAssignedDate : mutable Date from StepBasic;
-	      aRole : mutable DateRole from StepBasic) is virtual;
+	      aAssignedDate : Date from StepBasic;
+	      aRole : DateRole from StepBasic) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetAssignedDate(me : mutable; aAssignedDate : mutable Date);
-	AssignedDate (me) returns mutable Date;
-	SetRole(me : mutable; aRole : mutable DateRole);
-	Role (me) returns mutable DateRole;
+	SetAssignedDate(me : mutable; aAssignedDate : Date);
+	AssignedDate (me) returns Date;
+	SetRole(me : mutable; aRole : DateRole);
+	Role (me) returns DateRole;
 
 fields
 

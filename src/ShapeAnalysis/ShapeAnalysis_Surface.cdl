@@ -55,7 +55,7 @@ uses
     Array1OfPnt2d from TColgp
 
 is
-    Create (S : Surface from Geom) returns mutable Surface from ShapeAnalysis;
+    Create (S : Surface from Geom) returns Surface from ShapeAnalysis;
     	---Purpose: Creates an analyzer object on the basis of existing surface
 
     Init (me : mutable; S: Surface from Geom);

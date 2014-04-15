@@ -32,13 +32,13 @@ raises ConstructionError from Standard
 is
 
 
-  Create (X, Y :Real)  returns mutable Direction
+  Create (X, Y :Real)  returns Direction
         --- Purpose : Creates a unit vector with it 2 cartesian coordinates.
      raises ConstructionError;
         --- Purpose : 
         --  Raised if Sqrt( X*X + Y*Y) <= Resolution from gp.
 
-  Create (V : Dir2d) returns mutable Direction;
+  Create (V : Dir2d) returns Direction;
         --- Purpose : Creates a persistent copy of <me>.
 
 
@@ -97,7 +97,7 @@ is
     	---Purpose: Applies the transformation T to this unit vector, then normalizes it.
 
 
-  Copy (me)  returns mutable like me;
+  Copy (me)  returns like me;
     	---Purpose: Creates a new object which is a copy of this unit vector.     
 end;
 

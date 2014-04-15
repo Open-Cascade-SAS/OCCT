@@ -29,7 +29,7 @@ is
 	Create returns RWDocumentUsageConstraint;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable DocumentUsageConstraint from StepBasic);
+	              ach : in out Check; ent : DocumentUsageConstraint from StepBasic);
 
 	WriteStep (me; SW : in out StepWriter; ent : DocumentUsageConstraint from StepBasic);
 

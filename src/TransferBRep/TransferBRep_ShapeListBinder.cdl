@@ -32,10 +32,10 @@ raises TypeMismatch, OutOfRange
 
 is
 
-    Create returns mutable ShapeListBinder;
+    Create returns ShapeListBinder;
 
-    Create (list : mutable HSequenceOfShape from TopTools)
-    	 returns mutable ShapeListBinder;
+    Create (list : HSequenceOfShape from TopTools)
+    	 returns ShapeListBinder;
 
     IsMultiple (me) returns Boolean  is redefined;
     -- returns True if more than one result

@@ -30,10 +30,10 @@ uses
  
 is
 
-    Create returns mutable MeasureRepresentationItemAndQualifiedRepresentationItem;
+    Create returns MeasureRepresentationItemAndQualifiedRepresentationItem;
 
     Init (me : mutable;
-          aName : mutable HAsciiString from TCollection;
+          aName : HAsciiString from TCollection;
           aValueComponent : MeasureValueMember from StepBasic;
           aUnitComponent : Unit from StepBasic;
     	  qualifiers : HArray1OfValueQualifier from StepShape);

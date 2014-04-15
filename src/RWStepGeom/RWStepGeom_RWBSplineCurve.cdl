@@ -29,7 +29,7 @@ is
 	Create returns RWBSplineCurve;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable BSplineCurve from StepGeom);
+	              ach : in out Check; ent : BSplineCurve from StepGeom);
 
 	WriteStep (me; SW : in out StepWriter; ent : BSplineCurve from StepGeom);
 

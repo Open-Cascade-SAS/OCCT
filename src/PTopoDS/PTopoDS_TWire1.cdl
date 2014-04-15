@@ -24,7 +24,7 @@ uses
     ShapeEnum from TopAbs
 
 is
-    Create returns mutable TWire1;
+    Create returns TWire1;
     	---Level: Internal 
 
     ShapeType(me) returns ShapeEnum from TopAbs;

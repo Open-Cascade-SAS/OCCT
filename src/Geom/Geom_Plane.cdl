@@ -62,7 +62,7 @@ is
 
 
 
-  Create (A3 : Ax3)    returns mutable Plane;
+  Create (A3 : Ax3)    returns Plane;
         ---Purpose :
         --  Creates a plane located in 3D space with an axis placement
         --  three axis.  The "ZDirection" of "A3" is the direction normal
@@ -72,18 +72,18 @@ is
         --  curves.
 
 
-  Create (Pl : Pln)  returns mutable Plane;
+  Create (Pl : Pln)  returns Plane;
         ---Purpose :
         --  Creates a plane from a non transient plane from package gp.
 
 
-  Create (P : Pnt; V : Dir)    returns mutable Plane;
+  Create (P : Pnt; V : Dir)    returns Plane;
         ---Purpose :
         --  P is the "Location" point or origin of the plane.
         --  V is the direction normal to the plane.
 
 
-  Create (A, B, C ,D : Real)   returns mutable Plane
+  Create (A, B, C ,D : Real)   returns Plane
         ---Purpose :
         --  Creates a plane from its cartesian equation :
         --  Ax + By + Cz + D = 0.0
@@ -185,13 +185,13 @@ is
         ---Purpose : return False.
 
 
-  UIso (me; U : Real)   returns mutable Curve;
+  UIso (me; U : Real)   returns Curve;
         ---Purpose :
         --  Computes the U isoparametric curve.
         --  This is a Line parallel to the YAxis of the plane.
 
 
-  VIso (me; V : Real)   returns mutable Curve;
+  VIso (me; V : Real)   returns Curve;
         ---Purpose :
         --  Computes the V isoparametric curve.
         --  This is a Line parallel to the XAxis of the plane.
@@ -238,7 +238,7 @@ is
 
     	---Purpose: Applies the transformation T to this plane.
         
-  Copy (me)  returns mutable like me;
+  Copy (me)  returns like me;
 
     	---Purpose: Creates a new object which is a copy of this plane.
 end;

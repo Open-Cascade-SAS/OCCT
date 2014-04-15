@@ -24,7 +24,7 @@ uses
 
 is
 
-    Create returns mutable Interpol from Law;
+    Create returns Interpol from Law;
     	---Purpose: Constructs an empty interpolative evolution law.
     	-- The function Set is used to define the law.
     Set(me        : mutable; 

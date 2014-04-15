@@ -20,14 +20,14 @@ uses
     Real          from Standard,
     HAsciiString  from PCollection
 is
-    Create returns mutable Material from PXCAFDoc;
+    Create returns Material from PXCAFDoc;
 
     Create (theName       : HAsciiString from PCollection;
     	    theDescr      : HAsciiString from PCollection;
 	    theDensity    : Real         from Standard;
     	    theDensName   : HAsciiString from PCollection;
     	    theDensValType: HAsciiString from PCollection)
-    returns mutable Material from PXCAFDoc;
+    returns Material from PXCAFDoc;
     
     GetName (me) returns HAsciiString from PCollection;
 

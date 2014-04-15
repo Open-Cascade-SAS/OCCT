@@ -24,16 +24,16 @@ uses
 
 
 is
-    	Create returns mutable AppliedPresentedItem;
+    	Create returns AppliedPresentedItem;
 	---Purpose: Returns a AutoDesignPresentedItem
 
 	Init (me : mutable;
-	      aItems : mutable HArray1OfPresentedItemSelect from StepAP214) is virtual;
+	      aItems : HArray1OfPresentedItemSelect from StepAP214) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetItems(me : mutable; aItems : mutable HArray1OfPresentedItemSelect);
-	Items (me) returns mutable HArray1OfPresentedItemSelect;
+	SetItems(me : mutable; aItems : HArray1OfPresentedItemSelect);
+	Items (me) returns HArray1OfPresentedItemSelect;
 	ItemsValue (me; num : Integer) returns PresentedItemSelect;
 	NbItems (me) returns Integer;
 

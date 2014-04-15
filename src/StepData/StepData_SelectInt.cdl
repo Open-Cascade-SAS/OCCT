@@ -25,7 +25,7 @@ uses CString, Logical
 
 is
 
-    Create returns mutable SelectInt;
+    Create returns SelectInt;
 
     Kind (me) returns Integer  is redefined;
     --  possible kind for Int : integer boolean logical enum(without text)

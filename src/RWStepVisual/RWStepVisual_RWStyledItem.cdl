@@ -29,7 +29,7 @@ is
 	Create returns RWStyledItem;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable StyledItem from StepVisual);
+	              ach : in out Check; ent : StyledItem from StepVisual);
 
 	WriteStep (me; SW : in out StepWriter; ent : StyledItem from StepVisual);
 

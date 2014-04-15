@@ -22,21 +22,21 @@ uses
 
 is
 
-    Create returns mutable ReprItemAndLengthMeasureWithUnit;
+    Create returns ReprItemAndLengthMeasureWithUnit;
     
-    Init(me: mutable; aMWU: mutable MeasureWithUnit; aRI : RepresentationItem);
+    Init(me: mutable; aMWU: MeasureWithUnit; aRI : RepresentationItem);
 
-    SetLengthMeasureWithUnit(me: mutable; aLMWU: mutable LengthMeasureWithUnit);
+    SetLengthMeasureWithUnit(me: mutable; aLMWU: LengthMeasureWithUnit);
     
-    GetLengthMeasureWithUnit(me) returns mutable LengthMeasureWithUnit;
+    GetLengthMeasureWithUnit(me) returns LengthMeasureWithUnit;
 
-    GetMeasureRepresentationItem(me) returns mutable MeasureRepresentationItem;
+    GetMeasureRepresentationItem(me) returns MeasureRepresentationItem;
 
-    SetMeasureWithUnit(me: mutable; aMWU: mutable MeasureWithUnit);
+    SetMeasureWithUnit(me: mutable; aMWU: MeasureWithUnit);
     
-    GetMeasureWithUnit(me) returns mutable MeasureWithUnit;
+    GetMeasureWithUnit(me) returns MeasureWithUnit;
 
-    GetRepresentationItem(me) returns mutable RepresentationItem;
+    GetRepresentationItem(me) returns RepresentationItem;
 
 fields
 

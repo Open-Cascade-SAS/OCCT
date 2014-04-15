@@ -21,7 +21,7 @@ class S from Law inherits BSpFunc from Law
 is
 
     Create
-    returns mutable S from Law;
+    returns S from Law;
 
     	---Purpose: Constructs an empty "S" evolution law.
     Set(me: mutable; Pdeb,Valdeb,Pfin,Valfin: Real from Standard)

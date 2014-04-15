@@ -27,20 +27,20 @@ uses
 
 is
 
-    Create returns mutable ReadWriter_1 from PCDM;
+    Create returns ReadWriter_1 from PCDM;
    
     Version(me) returns AsciiString from TCollection;
     ---Purpose: returns PCDM_ReadWriter_1.
    
-    WriteReferenceCounter(me; aData: mutable Data from Storage; aDocument: Document from CDM);
+    WriteReferenceCounter(me; aData: Data from Storage; aDocument: Document from CDM);
 
-    WriteReferences(me; aData: mutable Data from Storage; aDocument: Document from CDM; theReferencerFileName: ExtendedString from TCollection);
-
-    
-    WriteExtensions(me; aData: mutable Data from Storage; aDocument: Document from CDM);
+    WriteReferences(me; aData: Data from Storage; aDocument: Document from CDM; theReferencerFileName: ExtendedString from TCollection);
 
     
-    WriteVersion(me; aData: mutable Data from Storage; aDocument: Document from CDM);
+    WriteExtensions(me; aData: Data from Storage; aDocument: Document from CDM);
+
+    
+    WriteVersion(me; aData: Data from Storage; aDocument: Document from CDM);
 
     
     ReadReferenceCounter(me; aFileName: ExtendedString from TCollection; theMsgDriver: MessageDriver from CDM)

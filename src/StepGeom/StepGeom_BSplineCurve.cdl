@@ -33,17 +33,17 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable BSplineCurve;
+	Create returns BSplineCurve;
 	---Purpose: Returns a BSplineCurve
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection) is redefined;
+	      aName : HAsciiString from TCollection) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
+	      aName : HAsciiString from TCollection;
 	      aDegree : Integer from Standard;
-	      aControlPointsList : mutable HArray1OfCartesianPoint from StepGeom;
+	      aControlPointsList : HArray1OfCartesianPoint from StepGeom;
 	      aCurveForm : BSplineCurveForm from StepGeom;
 	      aClosedCurve : Logical from StepData;
 	      aSelfIntersect : Logical from StepData) is virtual;
@@ -52,9 +52,9 @@ is
 
 	SetDegree(me : mutable; aDegree : Integer);
 	Degree (me) returns Integer;
-	SetControlPointsList(me : mutable; aControlPointsList : mutable HArray1OfCartesianPoint);
-	ControlPointsList (me) returns mutable HArray1OfCartesianPoint;
-	ControlPointsListValue (me; num : Integer) returns mutable CartesianPoint;
+	SetControlPointsList(me : mutable; aControlPointsList : HArray1OfCartesianPoint);
+	ControlPointsList (me) returns HArray1OfCartesianPoint;
+	ControlPointsListValue (me; num : Integer) returns CartesianPoint;
 	NbControlPointsList (me) returns Integer;
 	SetCurveForm(me : mutable; aCurveForm : BSplineCurveForm);
 	CurveForm (me) returns BSplineCurveForm;

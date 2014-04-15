@@ -34,7 +34,7 @@ is
 
     Create(S: Shape from TopoDS)
 
-    	returns mutable WiresOnShape from LocOpe;
+    	returns WiresOnShape from LocOpe;
 
 
     Init(me: mutable; S: Shape from TopoDS)

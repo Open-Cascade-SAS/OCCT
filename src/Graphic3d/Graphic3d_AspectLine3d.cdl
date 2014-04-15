@@ -31,7 +31,7 @@ uses
 is
 
 	Create
-		returns mutable AspectLine3d from Graphic3d;
+		returns AspectLine3d from Graphic3d;
 	---Level: Public
 	---Purpose: Creates a context table for line primitives
 	--	    defined with the following default values:
@@ -43,7 +43,7 @@ is
 	Create ( AColor	: Color from Quantity;
 		 AType	: TypeOfLine from Aspect;
 		 AWidth	: Real from Standard )
-		returns mutable AspectLine3d from Graphic3d;
+		returns AspectLine3d from Graphic3d;
 	---Level: Public
 	---Purpose: Creates a context table for line primitives
 	--	    defined with the specified values.

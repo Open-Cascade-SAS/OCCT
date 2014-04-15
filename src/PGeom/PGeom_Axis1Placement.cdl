@@ -25,11 +25,11 @@ uses Ax1 from gp
 is
 
 
-  Create returns mutable Axis1Placement from PGeom;
+  Create returns Axis1Placement from PGeom;
         --- Purpose : Creates an Axis1Placement with Ax1 default value.
     	---Level: Internal 
 
-  Create (aAxis : Ax1 from gp) returns mutable Axis1Placement from PGeom;
+  Create (aAxis : Ax1 from gp) returns Axis1Placement from PGeom;
         --- Purpose : Creates an Axis1Placement with <aAxis>.
     	---Level: Internal 
 

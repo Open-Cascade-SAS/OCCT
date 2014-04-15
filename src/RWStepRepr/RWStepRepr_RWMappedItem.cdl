@@ -29,7 +29,7 @@ is
 	Create returns RWMappedItem;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable MappedItem from StepRepr);
+	              ach : in out Check; ent : MappedItem from StepRepr);
 
 	WriteStep (me; SW : in out StepWriter; ent : MappedItem from StepRepr);
 

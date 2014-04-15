@@ -42,7 +42,7 @@ raises BadValue from V3d
 
 is
 
-	Initialize( VM : mutable Viewer )  ;
+	Initialize( VM : Viewer )  ;
 
         --------------------------------------------------------
         ---Category: Methods to modify the Attributes of the Light
@@ -130,7 +130,7 @@ is
         ---Category: Private or Protected methods
         -----------------------------------------
 
-        Symbol ( me ; gsymbol : mutable Group from Graphic3d ;
+        Symbol ( me ; gsymbol : Group from Graphic3d ;
                       aView   : View from V3d ) is deferred private;
 	---Level: Internal
 	---Purpose: Defines representation of the light source.

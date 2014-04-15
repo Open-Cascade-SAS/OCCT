@@ -65,12 +65,12 @@ is
     Model (me) returns InterfaceModel;
     ---Purpose : Returns the Model on which the CopyTool works
 
-    SetControl (me : in out; othermap : mutable CopyControl);
+    SetControl (me : in out; othermap : CopyControl);
     ---Purpose : Changes the Map of Result for another one. This allows to work
     --           with a more sophisticated Mapping Control than the Standard
     --           one which is CopyMap (e.g. TransferProcess from Transfer)
 
-    Control (me) returns mutable CopyControl;
+    Control (me) returns CopyControl;
     ---Purpose : Returns the object used for Control
 
     	--  --    Basic Operations    -- --
@@ -78,7 +78,7 @@ is
     Clear (me : in out)  is virtual;
     ---Purpose : Clears Transfer List. Gets Ready to begin another Transfer
 
-    NewVoid (me : in out; entfrom : Transient; entto : out mutable Transient)
+    NewVoid (me : in out; entfrom : Transient; entto : out Transient)
     	returns Boolean  is virtual protected;
     ---Purpose : Creates a new void instance (just created) of the same class
     --           as <entfrom>. Uses the general service GeneralModule:NewVoid
@@ -88,7 +88,7 @@ is
     --           
     --           No mapping is managed by this method
 
-    Copy (me : in out; entfrom : Transient; entto : out mutable Transient;
+    Copy (me : in out; entfrom : Transient; entto : out Transient;
     	  mapped : Boolean; errstat : Boolean)
     	returns Boolean  is virtual;
     ---Purpose : Creates the CounterPart of an Entity (by ShallowCopy), Binds
@@ -111,11 +111,11 @@ is
     --           It basically makes a Deep Copy without changing the Types.
     --           It can be redefined for special uses.
 
-    Implied (me : in out; entfrom : Transient; entto : mutable Transient)
+    Implied (me : in out; entfrom : Transient; entto : Transient)
     	is virtual private;
     ---Purpose : Renews the Implied References of one already Copied Entity
 
-    Transferred (me : in out; ent : Transient) returns mutable Transient
+    Transferred (me : in out; ent : Transient) returns Transient
     ---Purpose : Transfers one Entity, if not yet bound to a result
     --           Remark : For an Entity which is reported in the Starting Model,
     --           the ReportEntity will also be copied with its Content if it
@@ -125,7 +125,7 @@ is
     --           This method can raise any kind of Interface exception.
     --           Especially if <ent> is not contained in Starting Model.
 
-    Bind (me : in out; ent : Transient; res : mutable Transient)
+    Bind (me : in out; ent : Transient; res : Transient)
     ---Purpose : Defines a Result for the Transfer of a Starting object.
     --           Used by method Transferred (which performs a normal Copy),
     --           but can also be called to enforce a result : in the latter
@@ -134,7 +134,7 @@ is
     	raises InterfaceError;
     --           Error if a Result is already bound with this Starting Object
 
-    Search (me; ent : Transient; res : out mutable Transient)
+    Search (me; ent : Transient; res : out Transient)
     	returns Boolean;
     ---Purpose : Search for the result of a Starting Object (i.e. an Entity)
     --           Returns True  if a  Result is Bound (and fills "result")
@@ -147,7 +147,7 @@ is
     --           distinghished. ClearLastFlags is also called by Clear.
 
     LastCopiedAfter (me; numfrom : Integer;
-    	ent : out Transient; res : out mutable Transient)  returns Integer;
+    	ent : out Transient; res : out Transient)  returns Integer;
     ---Purpose : Returns an copied Entity and its Result which were operated
     --           after last call to ClearLastFlags. It returns the first
     --           "Last Copied Entity" which Number follows <numfrom>, Zero if
@@ -174,7 +174,7 @@ is
     --           Remark : this concerns only some specific references, such as
     --           "back pointers".
 
-    FillModel (me : in out; bmodel : mutable InterfaceModel)
+    FillModel (me : in out; bmodel : InterfaceModel)
     	raises InterfaceError;
     ---Purpose : Fills a Model with the result of the transfer (TransferList)
     --           Commands copy of Header too, and calls RenewImpliedRefs

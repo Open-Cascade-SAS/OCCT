@@ -21,7 +21,7 @@ uses
     ItemLocation        from TopLoc
     
 is
-   Create(I : ItemLocation from TopLoc; aTail :  SListOfItemLocation from TopLoc) returns mutable SListNodeOfItemLocation from TopLoc;
+   Create(I : ItemLocation from TopLoc; aTail :  SListOfItemLocation from TopLoc) returns SListNodeOfItemLocation from TopLoc;
    ---C++:inline
 
    Count(me) returns Integer;

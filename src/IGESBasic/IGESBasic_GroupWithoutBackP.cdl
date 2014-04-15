@@ -31,7 +31,7 @@ raises OutOfRange
 
 is
 
-        Create returns mutable GroupWithoutBackP;
+        Create returns GroupWithoutBackP;
 
         -- Specific Methods pertaining to the class : see Group
 

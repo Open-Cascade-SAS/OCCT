@@ -31,9 +31,9 @@ is
 
     Get (myclass)
     ---Purpose: Returns the driver table. If a driver does not exist, creates it.
-    returns mutable DriverTable from TFunction;
+    returns DriverTable from TFunction;
 
-    Create returns mutable DriverTable from TFunction; 
+    Create returns DriverTable from TFunction; 
     ---Purpose: Default constructor
 
     AddDriver(me : mutable; guid   : GUID    from Standard;

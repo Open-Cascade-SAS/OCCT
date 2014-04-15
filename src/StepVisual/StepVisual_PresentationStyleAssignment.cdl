@@ -24,16 +24,16 @@ uses
 	PresentationStyleSelect from StepVisual
 is
 
-	Create returns mutable PresentationStyleAssignment;
+	Create returns PresentationStyleAssignment;
 	---Purpose: Returns a PresentationStyleAssignment
 
 	Init (me : mutable;
-	      aStyles : mutable HArray1OfPresentationStyleSelect from StepVisual) is virtual;
+	      aStyles : HArray1OfPresentationStyleSelect from StepVisual) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetStyles(me : mutable; aStyles : mutable HArray1OfPresentationStyleSelect);
-	Styles (me) returns mutable HArray1OfPresentationStyleSelect;
+	SetStyles(me : mutable; aStyles : HArray1OfPresentationStyleSelect);
+	Styles (me) returns HArray1OfPresentationStyleSelect;
 	StylesValue (me; num : Integer) returns PresentationStyleSelect;
 	NbStyles (me) returns Integer;
 

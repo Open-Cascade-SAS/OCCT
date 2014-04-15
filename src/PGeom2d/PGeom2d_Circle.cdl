@@ -25,13 +25,13 @@ uses Ax22d from gp
 is
 
 
-  Create returns mutable Circle from PGeom2d;
+  Create returns Circle from PGeom2d;
 	---Purpose : Creates a circle with default values.
 	---Level: Internal 
 
 
   Create (aPosition : Ax22d from gp; aRadius : Real from Standard)
-    returns mutable Circle from PGeom2d;
+    returns Circle from PGeom2d;
         ---Purpose : Creates a Circle with <aPosition> and <aRadius> as field
         --         values.
 	---Level: Internal 

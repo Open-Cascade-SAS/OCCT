@@ -40,7 +40,7 @@ raises InterfaceError
 
 is
 
-    SetRootName (me : mutable; name : mutable HAsciiString);
+    SetRootName (me : mutable; name : HAsciiString);
     ---Purpose : Sets a Root Name as an HAsciiString
     --           To reset it, give a Null Handle (then, a ShareOut will have
     --           to define the Default Root Name)
@@ -55,10 +55,10 @@ is
     ---C++ : return const &
 
 
-    SetFinalSelection (me : mutable; sel : mutable Selection);
+    SetFinalSelection (me : mutable; sel : Selection);
     ---Purpose : Stores (or Changes) the Final Selection for a Dispatch
 
-    FinalSelection (me) returns mutable Selection;
+    FinalSelection (me) returns Selection;
     ---Purpose : Returns the Final Selection of a Dispatch
     -- we 'd like : C++ : return const &
 

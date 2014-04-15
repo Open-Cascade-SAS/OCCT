@@ -34,7 +34,7 @@ raises OutOfRange
 
 is
 
-        Create returns mutable PWBArtworkStackup;
+        Create returns PWBArtworkStackup;
 
         -- Specific Methods pertaining to the class
 

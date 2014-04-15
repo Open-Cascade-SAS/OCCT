@@ -31,7 +31,7 @@ is
     ---Purpose : Returns a ToolLineFontDefPattern, ready to work
 
 
-    ReadOwnParams (me; ent : mutable LineFontDefPattern;
+    ReadOwnParams (me; ent : LineFontDefPattern;
     	    	   IR : IGESReaderData; PR : in out ParamReader)
     	raises DomainError  is static;
     ---Purpose : Reads own parameters from file. <PR> gives access to them,
@@ -55,7 +55,7 @@ is
     ---Purpose : Performs Specific Semantic Check
 
 
-    OwnCopy    (me; entfrom : LineFontDefPattern; entto : mutable LineFontDefPattern;
+    OwnCopy    (me; entfrom : LineFontDefPattern; entto : LineFontDefPattern;
     	        TC : in out CopyTool)  is static;
     ---Purpose : Copies Specific Parameters
 

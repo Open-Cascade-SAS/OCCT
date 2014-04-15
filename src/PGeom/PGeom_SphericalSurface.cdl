@@ -26,14 +26,14 @@ uses Ax3      from gp
 is
 
 
-  Create returns mutable SphericalSurface from PGeom;
+  Create returns SphericalSurface from PGeom;
 	---Purpose: Creates a SphericalSurface with default values.
     	---Level: Internal 
 
 
   Create (aPosition : Ax3 from gp;
     	  aRadius    : Real from Standard)
-     returns mutable SphericalSurface from PGeom;
+     returns SphericalSurface from PGeom;
 	---Purpose: Creates a SphericalSurface with these values.
     	---Level: Internal 
 

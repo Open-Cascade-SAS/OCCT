@@ -114,13 +114,13 @@ is
 
     SetCurve(me : in out; C : Curve from Geom);
 
-    Previous(me) returns mutable SurfData from ChFiDS;
+    Previous(me) returns SurfData from ChFiDS;
     ---C++: return const &
 
     ChangePrevious(me : in out) returns any SurfData from ChFiDS;
     ---C++: return &
 
-    Next(me) returns mutable SurfData from ChFiDS;
+    Next(me) returns SurfData from ChFiDS;
     ---C++: return const &
 
     ChangeNext(me : in out) returns any SurfData from ChFiDS;

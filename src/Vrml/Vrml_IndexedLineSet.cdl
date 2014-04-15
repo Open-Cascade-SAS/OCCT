@@ -39,9 +39,9 @@ is
     	     aMaterialIndex     : HArray1OfInteger from TColStd;
 	     aNormalIndex       : HArray1OfInteger from TColStd;
 	     aTextureCoordIndex : HArray1OfInteger from TColStd )
-        returns mutable IndexedLineSet from Vrml; 
+        returns IndexedLineSet from Vrml; 
 	
-    Create  returns mutable IndexedLineSet from Vrml; 
+    Create  returns IndexedLineSet from Vrml; 
     
     SetCoordIndex ( me : mutable; aCoordIndex : HArray1OfInteger from TColStd );
     CoordIndex ( me )  returns HArray1OfInteger from TColStd;

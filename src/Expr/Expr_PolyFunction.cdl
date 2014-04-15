@@ -37,7 +37,7 @@ is
 
     Create(func : GeneralFunction;exps : Array1OfGeneralExpression)
     ---Purpose: Creates <me> as <func>(<exps_1>,<exps_2>,...,<exps_n>)
-    returns mutable PolyFunction;
+    returns PolyFunction;
 
     Function(me)
     ---Purpose: Returns the function defining <me>.
@@ -51,7 +51,7 @@ is
 
     Copy(me)
     ---Purpose: Returns a copy of <me> having the same unknowns and functions.
-    returns mutable like me;
+    returns like me;
     
     IsIdentical(me; Other : GeneralExpression)
     ---Purpose: Tests if <me> and <Other> define the same expression.

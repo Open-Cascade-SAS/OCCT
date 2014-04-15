@@ -31,7 +31,7 @@ is
     ---Purpose : Returns a ToolAssocGroupType, ready to work
 
 
-    ReadOwnParams (me; ent : mutable AssocGroupType;
+    ReadOwnParams (me; ent : AssocGroupType;
     	    	   IR : IGESReaderData; PR : in out ParamReader)
     	raises DomainError  is static;
     ---Purpose : Reads own parameters from file. <PR> gives access to them,
@@ -47,7 +47,7 @@ is
     ---Purpose : Lists the Entities shared by a AssocGroupType <ent>, from
     --           its specific (own) parameters
 
-    OwnCorrect (me; ent : mutable AssocGroupType) returns Boolean  is static;
+    OwnCorrect (me; ent : AssocGroupType) returns Boolean  is static;
     ---Purpose : Sets automatic unambiguous Correction on a AssocGroupType
     --           (NbData forced to 2)
 
@@ -59,7 +59,7 @@ is
     ---Purpose : Performs Specific Semantic Check
 
 
-    OwnCopy    (me; entfrom : AssocGroupType; entto : mutable AssocGroupType;
+    OwnCopy    (me; entfrom : AssocGroupType; entto : AssocGroupType;
     	        TC : in out CopyTool)  is static;
     ---Purpose : Copies Specific Parameters
 

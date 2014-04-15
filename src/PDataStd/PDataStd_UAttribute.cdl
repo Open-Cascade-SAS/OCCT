@@ -22,7 +22,7 @@ uses HExtendedString from PCollection
      
 is
 
-    Create returns mutable UAttribute from PDataStd;
+    Create returns UAttribute from PDataStd;
 
     SetID(me: mutable; guid: HExtendedString from PCollection );
     

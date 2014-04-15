@@ -29,7 +29,7 @@ uses Type, CString, SequenceOfTransient,
 
 is
 
-    Create returns mutable FileProtocol;
+    Create returns FileProtocol;
     ---Purpose : Creates an empty FileProtocol
 
     Add (me : mutable; protocol : Protocol from StepData);

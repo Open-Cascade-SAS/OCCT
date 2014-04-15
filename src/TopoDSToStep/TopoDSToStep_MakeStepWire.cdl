@@ -35,13 +35,13 @@ is
     
     Create (W : Wire from TopoDS;
     	    T : in out Tool from TopoDSToStep;
-	   FP : mutable FinderProcess from Transfer)
+	   FP : FinderProcess from Transfer)
          returns MakeStepWire;
     
     Init(me : in out;
 	 W  : Wire from TopoDS;
          T  : in out Tool from TopoDSToStep;
-	 FP : mutable FinderProcess from Transfer);
+	 FP : FinderProcess from Transfer);
 
 	    
     Value (me) returns TopologicalRepresentationItem from StepShape

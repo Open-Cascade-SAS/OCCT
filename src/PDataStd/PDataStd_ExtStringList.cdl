@@ -23,7 +23,7 @@ uses
 is
 
     Create 
-    returns mutable ExtStringList from PDataStd;
+    returns ExtStringList from PDataStd;
 
     Init (me : mutable; 
     	  lower, upper : Integer from Standard);

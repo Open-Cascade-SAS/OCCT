@@ -33,7 +33,7 @@ is
     ---Purpose: this method is called by the framework before the read method.
     
     Read(me: mutable; aFileName: ExtendedString from TCollection; 
-                      aNewDocument: mutable Document from CDM;
+                      aNewDocument: Document from CDM;
 		      anApplication: Application from CDM)
     raises DriverError from PCDM
     is deferred;

@@ -21,7 +21,7 @@ is
                 maxVertexs: Integer from Standard;
 		maxEdges: Integer from Standard = 0;
                 hasVColors: Boolean from Standard = Standard_False)
-	returns mutable ArrayOfSegments from Graphic3d;
+	returns ArrayOfSegments from Graphic3d;
         ---Purpose: Creates an array of segments,
 	-- a segment can be filled as:
 	-- 1) creating a set of segments defined with his vertexs.

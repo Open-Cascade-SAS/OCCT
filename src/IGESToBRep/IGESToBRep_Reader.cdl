@@ -44,7 +44,7 @@ is
     Model (me) returns IGESModel;
     ---Purpose : Returns the Model to be worked on.
 
-    SetTransientProcess (me : in out; TP : mutable TransientProcess);
+    SetTransientProcess (me : in out; TP : TransientProcess);
     ---Purpose : Allows to set an already defined TransientProcess
     --           (to be called after LoadFile or SetModel)
 

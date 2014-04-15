@@ -51,12 +51,12 @@ uses
 
 is
 
-    Create returns mutable WireData from ShapeExtend;
+    Create returns WireData from ShapeExtend;
     	---Purpose: Empty constructor, creates empty wire with no edges
 
     Create (wire: Wire from TopoDS; chained: Boolean = Standard_True ;
             theManifoldMode :Boolean = Standard_True)
-    returns mutable WireData from ShapeExtend;
+    returns WireData from ShapeExtend;
     	---Purpose: Constructor initializing the data from TopoDS_Wire. Calls Init(wire,chained).
 
     Init (me: mutable; other: WireData from ShapeExtend);

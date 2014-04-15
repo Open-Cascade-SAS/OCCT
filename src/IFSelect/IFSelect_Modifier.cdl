@@ -32,7 +32,7 @@ is
     --           <maychangegraph>
 
     Perform (me; ctx  : in out ContextModif;
-    	     target   : mutable InterfaceModel;
+    	     target   : InterfaceModel;
     	     protocol : Protocol from Interface;
     	     TC       : in out CopyTool) is deferred;
     ---Purpose : This deferred method defines the action specific to each class

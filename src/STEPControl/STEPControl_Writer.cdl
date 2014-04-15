@@ -35,7 +35,7 @@ is
     Create returns Writer;
     ---Purpose : Creates a Writer from scratch
 
-    Create (WS : mutable WorkSession from XSControl;
+    Create (WS : WorkSession from XSControl;
     	    	 scratch : Boolean = Standard_True) returns Writer;
     ---Purpose : Creates a Writer from an already existing Session
     --           If <scratch> is True (D), clears already recorded data
@@ -48,7 +48,7 @@ is
     UnsetTolerance (me : in out);
     ---Purpose : Unsets the tolerance formerly forced by SetTolerance
 
-    SetWS (me : in out; WS : mutable WorkSession from XSControl;
+    SetWS (me : in out; WS : WorkSession from XSControl;
     	    	 scratch : Boolean = Standard_True);
     ---Purpose : Sets a specific session to <me>
 

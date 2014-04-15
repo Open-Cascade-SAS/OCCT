@@ -38,7 +38,7 @@ is
     	returns BasicEditor;
     ---Purpose : Creates a Basic Editor for IGES Data, ready to run
 
-    Model  (me) returns mutable IGESModel;
+    Model  (me) returns IGESModel;
     ---Purpose : Returns the designated model
 
     SetUnitFlag  (me : in out; flag : Integer) returns Boolean;
@@ -71,7 +71,7 @@ is
     --           can have required values according the way they are referenced
     --           (see definitions of Logical use, Physical use, etc...)
 
-    AutoCorrect (me : in out; ent : mutable IGESEntity) returns Boolean;
+    AutoCorrect (me : in out; ent : IGESEntity) returns Boolean;
     ---Purpose : Performs auto-correction on an IGESEntity
     --           Returns True if something has changed, False if nothing done.
     --           

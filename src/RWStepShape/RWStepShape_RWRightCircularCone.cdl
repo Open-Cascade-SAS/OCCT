@@ -29,7 +29,7 @@ is
 	Create returns RWRightCircularCone;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable RightCircularCone from StepShape);
+	              ach : in out Check; ent : RightCircularCone from StepShape);
 
 	WriteStep (me; SW : in out StepWriter; ent : RightCircularCone from StepShape);
 

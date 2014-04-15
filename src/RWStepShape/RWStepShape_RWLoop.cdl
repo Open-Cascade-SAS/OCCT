@@ -28,7 +28,7 @@ is
 	Create returns RWLoop;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable Loop from StepShape);
+	              ach : in out Check; ent : Loop from StepShape);
 
 	WriteStep (me; SW : in out StepWriter; ent : Loop from StepShape);
 

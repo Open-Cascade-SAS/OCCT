@@ -28,7 +28,7 @@ is
 	Create returns RWLimitsAndFits;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable LimitsAndFits from StepShape);
+	              ach : in out Check; ent : LimitsAndFits from StepShape);
 
 	WriteStep (me; SW : in out StepWriter; ent : LimitsAndFits from StepShape);
 

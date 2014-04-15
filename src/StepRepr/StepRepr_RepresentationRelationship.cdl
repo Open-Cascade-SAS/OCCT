@@ -24,25 +24,25 @@ uses
 	Representation from StepRepr
 is
 
-	Create returns mutable RepresentationRelationship;
+	Create returns RepresentationRelationship;
 	---Purpose: Returns a RepresentationRelationship
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aDescription : mutable HAsciiString from TCollection;
-	      aRep1 : mutable Representation from StepRepr;
-	      aRep2 : mutable Representation from StepRepr) is virtual;
+	      aName : HAsciiString from TCollection;
+	      aDescription : HAsciiString from TCollection;
+	      aRep1 : Representation from StepRepr;
+	      aRep2 : Representation from StepRepr) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetName(me : mutable; aName : mutable HAsciiString);
-	Name (me) returns mutable HAsciiString;
-	SetDescription(me : mutable; aDescription : mutable HAsciiString);
-	Description (me) returns mutable HAsciiString;
-	SetRep1(me : mutable; aRep1 : mutable Representation);
-	Rep1 (me) returns mutable Representation;
-	SetRep2(me : mutable; aRep2 : mutable Representation);
-	Rep2 (me) returns mutable Representation;
+	SetName(me : mutable; aName : HAsciiString);
+	Name (me) returns HAsciiString;
+	SetDescription(me : mutable; aDescription : HAsciiString);
+	Description (me) returns HAsciiString;
+	SetRep1(me : mutable; aRep1 : Representation);
+	Rep1 (me) returns Representation;
+	SetRep2(me : mutable; aRep2 : Representation);
+	Rep2 (me) returns Representation;
 
 fields
 

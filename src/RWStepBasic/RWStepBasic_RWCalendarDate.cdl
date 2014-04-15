@@ -28,7 +28,7 @@ is
 	Create returns RWCalendarDate;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable CalendarDate from StepBasic);
+	              ach : in out Check; ent : CalendarDate from StepBasic);
 
 	WriteStep (me; SW : in out StepWriter; ent : CalendarDate from StepBasic);
 

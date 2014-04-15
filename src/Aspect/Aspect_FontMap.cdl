@@ -32,7 +32,7 @@ raises
 
 is
 
-	Create returns mutable FontMap from Aspect;
+	Create returns FontMap from Aspect;
 
         AddEntry (me : mutable; AnEntry : FontMapEntry from Aspect)
 	---Level: Public

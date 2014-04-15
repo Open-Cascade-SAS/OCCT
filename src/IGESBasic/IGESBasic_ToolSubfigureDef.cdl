@@ -31,7 +31,7 @@ is
     ---Purpose : Returns a ToolSubfigureDef, ready to work
 
 
-    ReadOwnParams (me; ent : mutable SubfigureDef;
+    ReadOwnParams (me; ent : SubfigureDef;
     	    	   IR : IGESReaderData; PR : in out ParamReader)
     	raises DomainError  is static;
     ---Purpose : Reads own parameters from file. <PR> gives access to them,
@@ -55,7 +55,7 @@ is
     ---Purpose : Performs Specific Semantic Check
 
 
-    OwnCopy    (me; entfrom : SubfigureDef; entto : mutable SubfigureDef;
+    OwnCopy    (me; entfrom : SubfigureDef; entto : SubfigureDef;
     	        TC : in out CopyTool)  is static;
     ---Purpose : Copies Specific Parameters
 

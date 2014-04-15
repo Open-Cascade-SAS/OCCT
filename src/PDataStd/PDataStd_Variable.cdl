@@ -22,11 +22,11 @@ class Variable from PDataStd inherits Attribute from PDF
 uses HAsciiString from PCollection
 is
 
-    Create returns mutable Variable from PDataStd;
+    Create returns Variable from PDataStd;
 
     
     Create (constant : Boolean from Standard)
-    returns mutable Variable from PDataStd;
+    returns Variable from PDataStd;
     
     Constant (me : mutable; status : Boolean from Standard);    
     Constant (me)

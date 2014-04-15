@@ -27,7 +27,7 @@ uses
     
 is
 
-    Create returns mutable SelectFaces;
+    Create returns SelectFaces;
     
     Explore (me; level : Integer; ent : Transient; G : Graph;
     	     explored : in out EntityIterator)

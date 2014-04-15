@@ -26,13 +26,13 @@ uses AsciiString from TCollection, EntityIterator, Graph, IntParam
 
 is
 
-    Create  returns mutable SelectEntityNumber;
+    Create  returns SelectEntityNumber;
     ---Purpose : Creates a SelectEntityNumber, initially with no specified Number
 
-    SetNumber (me : mutable; num : mutable IntParam);
+    SetNumber (me : mutable; num : IntParam);
     ---Purpose : Sets Entity Number to be taken (initially, none is set : 0)
 
-    Number (me) returns mutable IntParam;
+    Number (me) returns IntParam;
     ---Purpose : Returns specified Number (as a Parameter)
 
     RootResult (me; G : Graph) returns EntityIterator;

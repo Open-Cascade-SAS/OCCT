@@ -28,11 +28,11 @@ uses
     MeasureValueMember from StepBasic
     
 is
-    Create returns mutable MeasureRepresentationItem;
+    Create returns MeasureRepresentationItem;
         ---Purpose: Creates empty object
     
     Init (me : mutable;
-	  aName : mutable HAsciiString from TCollection;
+	  aName : HAsciiString from TCollection;
 	  aValueComponent : MeasureValueMember from StepBasic;
 	  aUnitComponent : Unit from StepBasic);
         ---Purpose: Init all fields

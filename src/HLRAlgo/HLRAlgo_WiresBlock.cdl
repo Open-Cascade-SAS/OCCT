@@ -33,7 +33,7 @@ uses
 is
     Create(NbWires : Integer from Standard)
 	---Purpose: Create a Block of Blocks.
-    returns mutable WiresBlock from HLRAlgo;
+    returns WiresBlock from HLRAlgo;
 
     NbWires(me) returns Integer from Standard
     is static;

@@ -48,11 +48,11 @@ is
     ---Purpose : Returns a Vertex, given its rank
     ---C++ : return const &
 
-    VertexList (me) returns mutable VertexList;
+    VertexList (me) returns VertexList;
     ---Purpose : Returns the VertexList. It can be referenced, but it remains
     --           empty until call to EndShell or EndSolid
 
-    AddEdge (me : in out; curve : mutable IGESEntity; vstart, vend : Integer)
+    AddEdge (me : in out; curve : IGESEntity; vstart, vend : Integer)
     ---Purpose : Adds an Edge (3D) to the EdgeList, defined by a Curve and
     --           two number of Vertex, for start and end
     	raises DomainError  is static;
@@ -61,11 +61,11 @@ is
     NbEdges (me) returns Integer  is static;
     ---Purpose : Returns the count of recorded Edges (3D)
 
-    Edge (me; num : Integer; curve : out mutable IGESEntity;
+    Edge (me; num : Integer; curve : out IGESEntity;
     	      vstart, vend : out Integer)  is static;
     ---Purpose : Returns the definition of an Edge (3D) given its rank
 
-    EdgeList (me) returns mutable EdgeList;
+    EdgeList (me) returns EdgeList;
     ---Purpose : Returns the EdgeList. It can be referenced, but it remains
     --           empty until call to EndShell or EndSolid
 
@@ -95,7 +95,7 @@ is
     --             <edgetype> or <orientation> has not admitted value,
     --             or if no current Loop is defined
 
-    AddCurveUV (me : in out; curve : mutable IGESEntity; iso : Integer)
+    AddCurveUV (me : in out; curve : IGESEntity; iso : Integer)
     ---Purpose : Adds a Parametric Curve (UV) to the current Edge(UV)
     	raises DomainError  is static;
     --           Error if curve is Null or not of an admitted type, or if
@@ -110,7 +110,7 @@ is
     --  Warning : EndLoop should not be called directly but through
     --           SetOuter or AddInner, which work on the current Face
 
-    MakeFace (me : in out; surface : mutable IGESEntity)
+    MakeFace (me : in out; surface : IGESEntity)
     ---Purpose : Begins the definition of a new Face, on a surface
     --           All Loops defined by MakeLoop will be added in it, according
     --           the closing call : SetOuter for the Outer Loop (by default,
@@ -156,11 +156,11 @@ is
     ---Purpose : Closes the whole definition as that of a ManifoldSolid
     --           Its call is exclusive from that of EndSimpleShell
 
-    Shell (me) returns mutable Shell  is static;
+    Shell (me) returns Shell  is static;
     ---Purpose : Returns the current Shell. The current Shell is created empty
     --           by MakeShell and filled by EndShell
 
-    Solid (me) returns mutable ManifoldSolid  is static;
+    Solid (me) returns ManifoldSolid  is static;
     ---Purpose : Returns the current ManifoldSolid. It is created empty by
     --           Create and filled by EndSolid
 

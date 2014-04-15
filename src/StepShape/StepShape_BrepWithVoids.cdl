@@ -26,24 +26,24 @@ uses
 	ClosedShell from StepShape
 is
 
-	Create returns mutable BrepWithVoids;
+	Create returns BrepWithVoids;
 	---Purpose: Returns a BrepWithVoids
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aOuter : mutable ClosedShell from StepShape) is redefined;
+	      aName : HAsciiString from TCollection;
+	      aOuter : ClosedShell from StepShape) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aOuter : mutable ClosedShell from StepShape;
-	      aVoids : mutable HArray1OfOrientedClosedShell from StepShape) is virtual;
+	      aName : HAsciiString from TCollection;
+	      aOuter : ClosedShell from StepShape;
+	      aVoids : HArray1OfOrientedClosedShell from StepShape) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetVoids(me : mutable; aVoids : mutable HArray1OfOrientedClosedShell);
-	Voids (me) returns mutable HArray1OfOrientedClosedShell;
-	VoidsValue (me; num : Integer) returns mutable OrientedClosedShell;
+	SetVoids(me : mutable; aVoids : HArray1OfOrientedClosedShell);
+	Voids (me) returns HArray1OfOrientedClosedShell;
+	VoidsValue (me; num : Integer) returns OrientedClosedShell;
 	NbVoids (me) returns Integer;
 
 fields

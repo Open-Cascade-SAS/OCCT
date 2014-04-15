@@ -37,7 +37,7 @@ uses
     Pnt      from gp
 
 is
-    Create (T: Trsf from gp) returns mutable TrsfModification from ShapeCustom;
+    Create (T: Trsf from gp) returns TrsfModification from ShapeCustom;
     	---Purpose: Empty constructor
     
     NewSurface (me: mutable; F       :     Face     from TopoDS;

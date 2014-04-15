@@ -25,22 +25,22 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable Vector;
+	Create returns Vector;
 	---Purpose: Returns a Vector
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection) is redefined;
+	      aName : HAsciiString from TCollection) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aOrientation : mutable Direction from StepGeom;
+	      aName : HAsciiString from TCollection;
+	      aOrientation : Direction from StepGeom;
 	      aMagnitude : Real from Standard) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetOrientation(me : mutable; aOrientation : mutable Direction);
-	Orientation (me) returns mutable Direction;
+	SetOrientation(me : mutable; aOrientation : Direction);
+	Orientation (me) returns Direction;
 	SetMagnitude(me : mutable; aMagnitude : Real);
 	Magnitude (me) returns Real;
 

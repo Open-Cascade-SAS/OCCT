@@ -31,7 +31,7 @@ is
 
     Create
     
-    	returns mutable Line from BRepBlend;
+    	returns Line from BRepBlend;
 
 
 

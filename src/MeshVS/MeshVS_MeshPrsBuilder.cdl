@@ -47,7 +47,7 @@ is
             Flags    : DisplayModeFlags from MeshVS = MeshVS_DMF_OCCMask;
             DS       : DataSource from MeshVS = 0;
             Id       : Integer = -1;
-            Priority : BuilderPriority from MeshVS = MeshVS_BP_Mesh ) returns mutable MeshPrsBuilder from MeshVS;
+            Priority : BuilderPriority from MeshVS = MeshVS_BP_Mesh ) returns MeshPrsBuilder from MeshVS;
 	---Purpose: Creates builder with certain display mode flags, data source, ID and priority
 
   Build   ( me; Prs     : Presentation from Prs3d;

@@ -24,21 +24,21 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable ManifoldSolidBrep;
+	Create returns ManifoldSolidBrep;
 	---Purpose: Returns a ManifoldSolidBrep
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection) is redefined;
+	      aName : HAsciiString from TCollection) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aOuter : mutable ClosedShell from StepShape) is virtual;
+	      aName : HAsciiString from TCollection;
+	      aOuter : ClosedShell from StepShape) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetOuter(me : mutable; aOuter : mutable ClosedShell);
-	Outer (me) returns mutable ClosedShell;
+	SetOuter(me : mutable; aOuter : ClosedShell);
+	Outer (me) returns ClosedShell;
 
 fields
 

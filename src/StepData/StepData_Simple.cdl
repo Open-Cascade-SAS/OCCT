@@ -28,7 +28,7 @@ raises InterfaceMismatch
 
 is
 
-    Create (descr : ESDescr) returns mutable Simple;
+    Create (descr : ESDescr) returns Simple;
     ---Purpose : Creates a Simple Entity
 
     ESDescr (me) returns ESDescr;
@@ -48,7 +48,7 @@ is
     --           For a Simple Entity : own type or super type
     --           For a Complex Entity : one of the members
 
-    As (me; steptype : CString) returns mutable Simple;
+    As (me; steptype : CString) returns Simple;
     ---Purpose : Returns a Simple Entity which matches with a Type in <me> :
     --           For a Simple Entity : me if it matches, else a null handle
     --           For a Complex Entity : the member which matches, else null

@@ -33,25 +33,25 @@ is
 
     Create (P : Pnt from gp; PColor : Color from Draw;
     	    moveX : Real = 0.0; moveY : Real = 0.0)
-    returns mutable DrawableP3D from TestTopOpeDraw;
+    returns DrawableP3D from TestTopOpeDraw;
 
     Create (P : Pnt from gp; PColor : Color from Draw;
     	    Text : CString; TextColor : Color from Draw;
     	    moveX : Real = 0.0; moveY : Real = 0.0)
-    returns mutable DrawableP3D from TestTopOpeDraw;
+    returns DrawableP3D from TestTopOpeDraw;
 
     Create (P : Pnt from gp; T : MarkerShape from Draw; PColor : Color from Draw;
     	    Text : CString from Standard; TextColor : Color from Draw;
 	    Size : Integer from Standard = 2;
     	    moveX : Real = 0.0; moveY : Real = 0.0)
-    returns mutable DrawableP3D from TestTopOpeDraw;
+    returns DrawableP3D from TestTopOpeDraw;
 
     Create (P : Pnt from gp; T : MarkerShape from Draw; 
     	    PColor : Color from Draw;
     	    Text : CString from Standard; TextColor : Color from Draw;
     	    Tol : Real from Standard;
     	    moveX : Real = 0.0; moveY : Real = 0.0)
-    returns mutable DrawableP3D from TestTopOpeDraw;
+    returns DrawableP3D from TestTopOpeDraw;
 
     ChangePnt(me : mutable; P : Pnt);
     

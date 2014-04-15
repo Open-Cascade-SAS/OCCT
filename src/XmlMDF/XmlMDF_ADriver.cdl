@@ -38,7 +38,7 @@ is
         --          is available.
 
     NewEmpty    (me)
-        returns mutable Attribute from TDF
+        returns Attribute from TDF
         is deferred;
         ---Purpose: Creates a new attribute from TDF.
 
@@ -53,7 +53,7 @@ is
         ---Purpose: Returns the full XML tag name (including NS prefix)
 
     Paste       (me; aSource     : Persistent from XmlObjMgt;
-                     aTarget     : mutable Attribute from TDF;
+                     aTarget     : Attribute from TDF;
                      aRelocTable : out RRelocationTable from XmlObjMgt)
         returns Boolean from Standard
         is deferred;

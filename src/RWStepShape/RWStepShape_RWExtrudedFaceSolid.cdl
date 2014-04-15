@@ -29,7 +29,7 @@ is
 	Create returns RWExtrudedFaceSolid;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable ExtrudedFaceSolid from StepShape);
+	              ach : in out Check; ent : ExtrudedFaceSolid from StepShape);
 
 	WriteStep (me; SW : in out StepWriter; ent : ExtrudedFaceSolid from StepShape);
 

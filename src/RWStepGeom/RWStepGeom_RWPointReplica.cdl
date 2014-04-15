@@ -29,7 +29,7 @@ is
 	Create returns RWPointReplica;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable PointReplica from StepGeom);
+	              ach : in out Check; ent : PointReplica from StepGeom);
 
 	WriteStep (me; SW : in out StepWriter; ent : PointReplica from StepGeom);
 

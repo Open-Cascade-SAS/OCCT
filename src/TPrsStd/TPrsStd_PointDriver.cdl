@@ -24,7 +24,7 @@ uses
 is
 
     Create
-    returns mutable PointDriver from TPrsStd;
+    returns PointDriver from TPrsStd;
 ---Purpose: Constructs an empty point driver.
     Update (me : mutable ;
            aLabel      : Label from TDF;

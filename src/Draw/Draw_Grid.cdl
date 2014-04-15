@@ -25,7 +25,7 @@ is
      
     	---Purpose: Creates a grid.
 
-	returns mutable Grid from Draw ;
+	returns Grid from Draw ;
 
 
     Steps (me : mutable; StepX, StepY, StepZ : Real from Standard)

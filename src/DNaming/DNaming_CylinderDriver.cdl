@@ -25,7 +25,7 @@ uses
      MakeCylinder     from BRepPrimAPI
 
 is
-    Create returns mutable CylinderDriver from DNaming;
+    Create returns CylinderDriver from DNaming;
     ---Purpose: Constructor
 
     ---Purpose: validation

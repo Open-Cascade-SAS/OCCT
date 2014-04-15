@@ -32,7 +32,7 @@ uses Transient, HSequenceOfTransient,
 
 is
 
-    Create returns mutable ViewSorter;
+    Create returns ViewSorter;
     ---Purpose : Creates a ViewSorter, empty. SetModel remains to be called
 
     SetModel (me : mutable; model : IGESModel);

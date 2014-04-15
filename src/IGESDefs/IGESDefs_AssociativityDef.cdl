@@ -31,7 +31,7 @@ raises DimensionMismatch, OutOfRange
 
 is
 
-        Create returns mutable AssociativityDef;
+        Create returns AssociativityDef;
 
         -- Specific methods for the entity
 

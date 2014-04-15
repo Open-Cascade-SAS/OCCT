@@ -31,7 +31,7 @@ is
     ---Purpose : Returns a ToolName, ready to work
 
 
-    ReadOwnParams (me; ent : mutable Name;
+    ReadOwnParams (me; ent : Name;
     	    	   IR : IGESReaderData; PR : in out ParamReader)
     	raises DomainError  is static;
     ---Purpose : Reads own parameters from file. <PR> gives access to them,
@@ -47,7 +47,7 @@ is
     ---Purpose : Lists the Entities shared by a Name <ent>, from
     --           its specific (own) parameters
 
-    OwnCorrect (me; ent : mutable Name) returns Boolean  is static;
+    OwnCorrect (me; ent : Name) returns Boolean  is static;
     ---Purpose : Sets automatic unambiguous Correction on a Name
     --           (NbPropertyValues forced to 1)
 
@@ -59,7 +59,7 @@ is
     ---Purpose : Performs Specific Semantic Check
 
 
-    OwnCopy    (me; entfrom : Name; entto : mutable Name;
+    OwnCopy    (me; entfrom : Name; entto : Name;
     	        TC : in out CopyTool)  is static;
     ---Purpose : Copies Specific Parameters
 

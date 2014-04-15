@@ -25,7 +25,7 @@ uses HSequenceOfAsciiString from TColStd,
      
 raises NoSuchObject from Standard
 is
-    Create returns mutable TypeData from Storage;
+    Create returns TypeData from Storage;
     
     NumberOfTypes(me) returns Integer from Standard;
     

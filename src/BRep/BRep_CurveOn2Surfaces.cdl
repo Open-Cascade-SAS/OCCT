@@ -33,7 +33,7 @@ is
     Create(S1 , S2  : Surface  from Geom;
 	   L1 , L2  : Location from TopLoc;
 	   C        : Shape    from GeomAbs)
-    returns mutable CurveOn2Surfaces from BRep;
+    returns CurveOn2Surfaces from BRep;
 
     IsRegularity(me) returns Boolean
 	---Purpose: Returns True.
@@ -67,7 +67,7 @@ is
     Continuity(me : mutable; C : Shape from GeomAbs)
     is redefined;
     
-    Copy(me) returns mutable CurveRepresentation from BRep;
+    Copy(me) returns CurveRepresentation from BRep;
 	---Purpose: Return a copy of this representation.
 
 fields

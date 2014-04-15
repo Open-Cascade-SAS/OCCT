@@ -24,15 +24,15 @@ uses
 	HArray1OfPresentationStyleSelect from StepVisual
 is
 
-	Create returns mutable PresentationStyleByContext;
+	Create returns PresentationStyleByContext;
 	---Purpose: Returns a PresentationStyleByContext
 
 
 	Init (me : mutable;
-	      aStyles : mutable HArray1OfPresentationStyleSelect from StepVisual) is redefined;
+	      aStyles : HArray1OfPresentationStyleSelect from StepVisual) is redefined;
 
 	Init (me : mutable;
-	      aStyles : mutable HArray1OfPresentationStyleSelect from StepVisual;
+	      aStyles : HArray1OfPresentationStyleSelect from StepVisual;
 	      aStyleContext : StyleContextSelect from StepVisual) is virtual;
 
 	-- Specific Methods for Field Data Access --

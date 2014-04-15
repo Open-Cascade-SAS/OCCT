@@ -25,7 +25,7 @@ uses InterfaceModel from Interface,
 
 is
 
-    Create (nb : Integer = 10000) returns mutable FinderProcess;
+    Create (nb : Integer = 10000) returns FinderProcess;
     ---Purpose : Sets FinderProcess at initial state, with an initial size
 
     SetModel (me : mutable; model : InterfaceModel);

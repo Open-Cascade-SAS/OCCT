@@ -31,7 +31,7 @@ is
     ---Purpose : Returns a ToolSegmentedViewsVisible, ready to work
 
 
-    ReadOwnParams (me; ent : mutable SegmentedViewsVisible;
+    ReadOwnParams (me; ent : SegmentedViewsVisible;
     	    	   IR : IGESReaderData; PR : in out ParamReader)
     	raises DomainError  is static;
     ---Purpose : Reads own parameters from file. <PR> gives access to them,
@@ -55,7 +55,7 @@ is
     ---Purpose : Performs Specific Semantic Check
 
 
-    OwnCopy    (me; entfrom : SegmentedViewsVisible; entto : mutable SegmentedViewsVisible;
+    OwnCopy    (me; entfrom : SegmentedViewsVisible; entto : SegmentedViewsVisible;
     	        TC : in out CopyTool)  is static;
     ---Purpose : Copies Specific Parameters
 

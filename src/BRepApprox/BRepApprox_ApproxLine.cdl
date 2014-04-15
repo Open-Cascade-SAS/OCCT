@@ -28,10 +28,10 @@ is
     Create(CurveXYZ: BSplineCurve from Geom;
       	   CurveUV1: BSplineCurve from Geom2d;
     	   CurveUV2: BSplineCurve from Geom2d)
-    returns mutable ApproxLine from BRepApprox;
+    returns ApproxLine from BRepApprox;
 
     Create(lin: LineOn2S from IntSurf; Tang: Boolean from Standard)
-    returns mutable ApproxLine from BRepApprox;
+    returns ApproxLine from BRepApprox;
 	 
     NbPnts(me) 
     returns Integer from Standard

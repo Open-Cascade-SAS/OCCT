@@ -32,11 +32,11 @@ is
     Create (plane  : Face from TopoDS;
             point1 : Shape from TopoDS;
             point2 : Shape from TopoDS)
-    returns mutable PlanarDistance from DrawDim;
+    returns PlanarDistance from DrawDim;
     
     Create (geom1 : Shape from TopoDS;
             geom2 : Shape from TopoDS)
-    returns mutable PlanarDistance from DrawDim; 
+    returns PlanarDistance from DrawDim; 
     
     DrawOn(me; dis : in out Display);
 

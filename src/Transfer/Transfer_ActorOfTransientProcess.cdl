@@ -22,19 +22,19 @@ uses Transient, TransientProcess, ProcessForTransient, Binder
 
 is
 
-    Create  returns mutable ActorOfTransientProcess;
+    Create  returns ActorOfTransientProcess;
 
-    Transferring (me : mutable; start : Transient; TP : mutable ProcessForTransient)
-        returns mutable Binder  is redefined;
+    Transferring (me : mutable; start : Transient; TP : ProcessForTransient)
+        returns Binder  is redefined;
     -- calls the one below
 
-    Transfer (me : mutable; start : Transient; TP : mutable TransientProcess)
-        returns mutable Binder  is virtual;
+    Transfer (me : mutable; start : Transient; TP : TransientProcess)
+        returns Binder  is virtual;
     -- default calls TransferTransient i.e. does nothing, to be redefined
 
     TransferTransient (me : mutable; start : Transient;
-    	    	       TP : mutable TransientProcess)
-	returns mutable Transient  is virtual;
+    	    	       TP : TransientProcess)
+	returns Transient  is virtual;
     -- default does nothing, can be redefined
     -- usefull when a result is Transient, simpler to define than Transfer with
     -- a Binder

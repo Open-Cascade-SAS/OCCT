@@ -52,7 +52,7 @@ is
     returns Document from TDocStd;
 
     Create (astorageformat : ExtendedString from TCollection)
-    returns mutable Document from TDocStd;
+    returns Document from TDocStd;
     	---Purpose: Constructs a document object defined by the
     	-- string astorageformat.
              

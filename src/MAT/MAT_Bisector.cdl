@@ -33,7 +33,7 @@ is
 
     ---Purpose:
 
-    returns mutable Bisector from MAT;
+    returns Bisector from MAT;
     
     AddBisector(me ; abisector : any Bisector from MAT)
     

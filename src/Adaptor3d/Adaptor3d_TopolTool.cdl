@@ -44,12 +44,12 @@ is
 
     Create
     
-    	returns mutable TopolTool from Adaptor3d;
+    	returns TopolTool from Adaptor3d;
 
 
     Create(Surface: HSurface from Adaptor3d)
     
-    	returns mutable TopolTool from Adaptor3d;
+    	returns TopolTool from Adaptor3d;
 
 
     Initialize(me: mutable)
@@ -79,7 +79,7 @@ is
 
     Value(me: mutable)
     
-    	returns mutable HCurve2d from Adaptor2d
+    	returns HCurve2d from Adaptor2d
         raises DomainError from Standard
     is virtual;
 	
@@ -103,7 +103,7 @@ is
 
     Vertex(me: mutable)
     
-    	returns mutable HVertex from Adaptor3d
+    	returns HVertex from Adaptor3d
 	raises DomainError from Standard
     is virtual;
 

@@ -36,7 +36,7 @@ uses
 
 is
 
-        Create returns mutable ConicArc;
+        Create returns ConicArc;
 
         -- Specific Methods pertaining to the class
 

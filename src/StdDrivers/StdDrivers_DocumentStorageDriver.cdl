@@ -29,7 +29,7 @@ uses Document from CDM,
 is
 
     Create
-    returns mutable DocumentStorageDriver from StdDrivers;
+    returns DocumentStorageDriver from StdDrivers;
     
     Make(me : mutable; aDocument :     Document from CDM;
                        Documents : out SequenceOfDocument from PCDM)

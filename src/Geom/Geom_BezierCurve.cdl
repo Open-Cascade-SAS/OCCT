@@ -90,7 +90,7 @@ raises ConstructionError from Standard,
 is 
 
   Create (CurvePoles : Array1OfPnt from TColgp)
-    returns mutable BezierCurve
+    returns BezierCurve
         ---Purpose :  Creates a non rational Bezier curve with a set of poles 
         --         CurvePoles.  The weights are defaulted to all being 1.
     	--         Raises ConstructionError if the number of poles is greater than MaxDegree + 1
@@ -101,7 +101,7 @@ is
 
   Create (CurvePoles : Array1OfPnt from TColgp;
     	  PoleWeights : Array1OfReal from TColStd) 
-     returns mutable BezierCurve
+     returns BezierCurve
         ---Purpose :  Creates a rational Bezier curve with the set of poles
         --  CurvePoles and the set of weights  PoleWeights .
         --  If all the weights are identical the curve is considered 
@@ -379,7 +379,7 @@ is
     	-- UTolerance ensures that:
     	-- |t1-t0| < UTolerance ===> |f(t1)-f(t0)| < Tolerance3D
 
-  Copy (me)  returns mutable like me;
+  Copy (me)  returns like me;
     	---Purpose: Creates a new object which is a copy of this Bezier curve.
 
   Init (me : mutable; Poles   :  HArray1OfPnt  from TColgp;

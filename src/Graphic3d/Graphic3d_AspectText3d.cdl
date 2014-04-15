@@ -46,7 +46,7 @@ raises
 is
 
     Create
-        returns mutable AspectText3d from Graphic3d;
+        returns AspectText3d from Graphic3d;
     ---Level: Public
     ---Purpose: Creates a context table for text primitives
     --      defined with the following default values:
@@ -64,7 +64,7 @@ is
              ASpace             : Real from Standard;
              AStyle             : TypeOfStyleText from Aspect = Aspect_TOST_NORMAL;
              ADisplayType       : TypeOfDisplayText from Aspect = Aspect_TODT_NORMAL )
-        returns mutable AspectText3d from Graphic3d
+        returns AspectText3d from Graphic3d
     ---Level: Public
     ---Purpose: Creates a context table for text primitives
     --      defined with the specified values.

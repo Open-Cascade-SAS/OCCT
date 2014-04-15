@@ -29,7 +29,7 @@ is
 	Create returns RWProductDefinitionWithAssociatedDocuments;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable ProductDefinitionWithAssociatedDocuments from StepBasic);
+	              ach : in out Check; ent : ProductDefinitionWithAssociatedDocuments from StepBasic);
 
 	WriteStep (me; SW : in out StepWriter; ent : ProductDefinitionWithAssociatedDocuments from StepBasic);
 

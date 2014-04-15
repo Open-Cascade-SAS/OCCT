@@ -28,7 +28,7 @@ is
 	Create returns RWDraughtingPreDefinedCurveFont;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable DraughtingPreDefinedCurveFont from StepVisual);
+	              ach : in out Check; ent : DraughtingPreDefinedCurveFont from StepVisual);
 
 	WriteStep (me; SW : in out StepWriter; ent : DraughtingPreDefinedCurveFont from StepVisual);
 

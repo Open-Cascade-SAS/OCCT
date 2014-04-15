@@ -34,7 +34,7 @@ uses CString, Transient, DictionaryOfTransient,
 
 is
 
-    Create returns mutable WorkSession from XSControl;
+    Create returns WorkSession from XSControl;
 
     ClearData (me : mutable; mode : Integer) is redefined;
     ---Purpose : In addition to basic ClearData, clears Transfer and Management
@@ -63,7 +63,7 @@ is
     --           
     --           For more infos on Profile, query the Profile of the Controller
 
-    SetController (me : mutable; ctl : mutable Controller);
+    SetController (me : mutable; ctl : Controller);
     ---Purpose : Selects a Norm defined by its Controller itself
 
     AdaptNorm  (me : mutable) is virtual;
@@ -76,7 +76,7 @@ is
     --           By default, returns the complete name of the norm
     --           If <rsc> is True, returns the short name used for resource
 
-    NormAdaptor (me) returns mutable Controller;
+    NormAdaptor (me) returns Controller;
     ---Purpose : Returns the norm controller itself
 
     	--  Context used for Transfer : it is a DictionaryOfTransient (no control here)
@@ -112,23 +112,23 @@ is
     --           4 begins a new transfer (by BeginTransfer)
     --           5 recreates TransferReader then begins a new transfer
 
-    SetTransferReader (me : mutable; TR : mutable TransferReader);
+    SetTransferReader (me : mutable; TR : TransferReader);
     ---Purpose : Sets a Transfer Reader, which manages transfers on reading
 
-    TransferReader (me) returns mutable TransferReader;
+    TransferReader (me) returns TransferReader;
     ---Purpose : Returns the Transfer Reader, Null if not set
 
-    MapReader      (me) returns mutable TransientProcess;
+    MapReader      (me) returns TransientProcess;
     ---Purpose : Returns the TransientProcess(internal data for TransferReader)
 
-    SetMapReader   (me : mutable; TP : mutable TransientProcess) returns Boolean;
+    SetMapReader   (me : mutable; TP : TransientProcess) returns Boolean;
     ---Purpose : Changes the Map Reader, i.e. considers that the new one
     --           defines the relevant read results (forgets the former ones)
     --           Returns True when done, False in case of bad definition, i.e.
     --           if Model from TP differs from that of Session
 
     Result (me; ent : Transient; mode : Integer)
-    	 returns mutable Transient;
+    	 returns Transient;
     ---Purpose : Returns the result attached to a starting entity
     --           If <mode> = 0, returns Final Result
     --           If <mode> = 1, considers Last Result
@@ -173,18 +173,18 @@ is
     	--  Management of Transfer (Write)  --
     	--  It is actually oriented to shapes
 
-    NewModel (me : mutable) returns mutable InterfaceModel from Interface;
+    NewModel (me : mutable) returns InterfaceModel from Interface;
     ---Purpose : produces and returns a new Model well conditionned
     --           It is produced by the Norm Controller
     --           It can be Null (if this function is not implemented)
 
-    TransferWriter (me) returns mutable TransferWriter;
+    TransferWriter (me) returns TransferWriter;
     ---Purpose : Returns the Transfer Reader, Null if not set
 
-    MapWriter      (me) returns mutable FinderProcess;
+    MapWriter      (me) returns FinderProcess;
     ---Purpose : Returns the FinderProcess (internal data for TransferWriter)
 
-    SetMapWriter   (me : mutable; FP : mutable FinderProcess) returns Boolean;
+    SetMapWriter   (me : mutable; FP : FinderProcess) returns Boolean;
     ---Purpose : Changes the Map Reader, i.e. considers that the new one
     --           defines the relevant read results (forgets the former ones)
     --           Returns True when done, False if <FP> is Null

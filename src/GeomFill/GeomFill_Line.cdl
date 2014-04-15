@@ -23,10 +23,10 @@ inherits TShared from MMgt
 
 is
 
-    Create returns mutable Line from GeomFill;
+    Create returns Line from GeomFill;
 
     Create(NbPoints : Integer from Standard)
-    returns mutable Line from GeomFill;
+    returns Line from GeomFill;
 
     NbPoints(me)
     returns Integer from Standard

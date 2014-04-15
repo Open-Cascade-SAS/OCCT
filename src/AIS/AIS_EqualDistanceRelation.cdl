@@ -51,7 +51,7 @@ is
     	-- aShape3, aShape4 and the plane aPlane.
     	-- The distance is the length of a projection from the
     	-- shape to the plane.
-    returns mutable EqualDistanceRelation from AIS;
+    returns EqualDistanceRelation from AIS;
 
     SetShape3( me: mutable; aShape : Shape from TopoDS )
     is static;
@@ -87,19 +87,19 @@ is
 
     Compute( me            : mutable;
   	     aPresentationManager: PresentationManager3d from PrsMgr;
-    	     aPresentation : mutable Presentation from Prs3d;
+    	     aPresentation : Presentation from Prs3d;
     	     aMode         : Integer from Standard= 0 ) 
     is redefined static private;
     
     Compute( me            : mutable;
     	     aProjector    : Projector from Prs3d;
-             aPresentation : mutable Presentation from Prs3d )
+             aPresentation : Presentation from Prs3d )
     is redefined static private;
     
     Compute(me            : mutable;
     	    aProjector    : Projector from Prs3d;
     	    aTrsf         : Transformation from Geom;
-	    aPresentation : mutable Presentation from Prs3d)
+	    aPresentation : Presentation from Prs3d)
     is redefined;
     	---Purpose: Computes the presentation according to a point of view
     	--          given by <aProjector>. 
@@ -112,12 +112,12 @@ is
 -- Methods from SelectableObject
 
     ComputeSelection( me         : mutable;
-    	    	      aSelection : mutable Selection from SelectMgr;
+    	    	      aSelection : Selection from SelectMgr;
     	    	      aMode      : Integer from Standard)
     is private;
 -- ota -- begin
     ComputeTwoEdgesLength (myclass;
-    	    	    	   aPresentation : mutable Presentation   from Prs3d; 
+    	    	    	   aPresentation : Presentation   from Prs3d; 
 			   aDrawer       :         Drawer         from AIS; 
 			   ArrowSize     :         Real           from Standard;
 			   FirstEdge     :         Edge           from TopoDS;
@@ -137,7 +137,7 @@ is
 			   --          are the returned extreme points of the interval.
 			            
     ComputeTwoVerticesLength(myclass; 
-    	    	    	     aPresentation : mutable Presentation   from Prs3d;
+    	    	    	     aPresentation : Presentation   from Prs3d;
 			     aDrawer       :         Drawer         from AIS; 
 			     ArrowSize     :         Real           from Standard;
 			     FirstVertex   :         Vertex         from TopoDS;
@@ -157,7 +157,7 @@ is
     --          SecondAttach are the returned extreme points of the interval.
 			            
     ComputeOneEdgeOneVertexLength(myclass; 
-    	    	    	          aPresentation : mutable Presentation   from Prs3d;
+    	    	    	          aPresentation : Presentation   from Prs3d;
 			          aDrawer       :         Drawer         from AIS; 
 			          ArrowSize     :         Real           from Standard;
 			          FirstShape    :         Shape          from TopoDS;

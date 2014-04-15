@@ -27,7 +27,7 @@ uses CString, Transient, AsciiString, InterfaceModel
 
 is
 
-    Create (countmode : Boolean) returns mutable SignLevelNumber;
+    Create (countmode : Boolean) returns SignLevelNumber;
     ---Purpose : Creates a SignLevelNumber
     --           <countmode> True : values are naturally displayed
     --           <countmode> False: values are separated by slashes

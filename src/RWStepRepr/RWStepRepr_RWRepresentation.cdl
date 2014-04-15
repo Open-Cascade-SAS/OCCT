@@ -29,7 +29,7 @@ is
 	Create returns RWRepresentation;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable Representation from StepRepr);
+	              ach : in out Check; ent : Representation from StepRepr);
 
 	WriteStep (me; SW : in out StepWriter; ent : Representation from StepRepr);
 

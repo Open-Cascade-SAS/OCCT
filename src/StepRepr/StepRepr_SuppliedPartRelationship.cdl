@@ -22,6 +22,6 @@ uses
 
 is
 
-    Create returns mutable SuppliedPartRelationship;
+    Create returns SuppliedPartRelationship;
 
 end SuppliedPartRelationship;

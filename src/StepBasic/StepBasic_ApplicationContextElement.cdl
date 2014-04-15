@@ -24,19 +24,19 @@ uses
 	ApplicationContext from StepBasic
 is
 
-	Create returns mutable ApplicationContextElement;
+	Create returns ApplicationContextElement;
 	---Purpose: Returns a ApplicationContextElement
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aFrameOfReference : mutable ApplicationContext from StepBasic) is virtual;
+	      aName : HAsciiString from TCollection;
+	      aFrameOfReference : ApplicationContext from StepBasic) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetName(me : mutable; aName : mutable HAsciiString);
-	Name (me) returns mutable HAsciiString;
-	SetFrameOfReference(me : mutable; aFrameOfReference : mutable ApplicationContext);
-	FrameOfReference (me) returns mutable ApplicationContext;
+	SetName(me : mutable; aName : HAsciiString);
+	Name (me) returns HAsciiString;
+	SetFrameOfReference(me : mutable; aFrameOfReference : ApplicationContext);
+	FrameOfReference (me) returns ApplicationContext;
 
 fields
 

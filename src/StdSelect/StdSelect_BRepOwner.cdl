@@ -37,13 +37,13 @@ is
 
 
     Create(aPriority:Integer from Standard)
-    returns mutable BRepOwner from StdSelect;
+    returns BRepOwner from StdSelect;
     	---Purpose: Constructs an owner specification framework defined
     	-- by the priority aPriority.
     Create (aShape    : Shape from TopoDS;
     	    aPriority : Integer = 0;
     	    ComesFromDecomposition:Boolean from Standard = Standard_False)
-    returns mutable BRepOwner;
+    returns BRepOwner;
     	---Purpose: Constructs an owner specification framework defined
     	-- by the shape aShape and the priority aPriority.
     	-- aShape and aPriority are stored in this framework. If
@@ -54,7 +54,7 @@ is
     	    theOrigin : SelectableObject from SelectMgr;
     	    aPriority : Integer = 0;
 	    FromDecomposition:Boolean from Standard = Standard_False)
-    returns mutable BRepOwner;
+    returns BRepOwner;
     	---Purpose: Constructs an owner specification framework defined
     	-- by the shape aShape, the selectable object theOrigin
     	-- and the priority aPriority.

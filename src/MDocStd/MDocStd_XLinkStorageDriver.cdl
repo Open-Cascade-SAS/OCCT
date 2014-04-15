@@ -36,7 +36,7 @@ uses
 is
 
     Create(theMessageDriver : MessageDriver from CDM) -- Version 0
-    returns mutable XLinkStorageDriver from MDocStd;
+    returns XLinkStorageDriver from MDocStd;
 
     VersionNumber(me) returns Integer from Standard;
 	---Purpose: Returns the version number from which the driver
@@ -46,12 +46,12 @@ is
 	---Purpose: Returns the type: XLink from TXLink.
 
     NewEmpty (me)
-    returns mutable Attribute from PDF;
+    returns Attribute from PDF;
 
 
     Paste(me;
     	  aSource     :         Attribute        from TDF;
-    	  aTarget     : mutable Attribute        from PDF;
+    	  aTarget     : Attribute        from PDF;
     	  aRelocTable :         SRelocationTable from MDF);
 	  
 	  

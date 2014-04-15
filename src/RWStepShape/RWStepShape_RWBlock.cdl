@@ -29,7 +29,7 @@ is
 	Create returns RWBlock;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable Block from StepShape);
+	              ach : in out Check; ent : Block from StepShape);
 
 	WriteStep (me; SW : in out StepWriter; ent : Block from StepShape);
 

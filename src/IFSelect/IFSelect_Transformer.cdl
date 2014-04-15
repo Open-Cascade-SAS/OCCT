@@ -36,7 +36,7 @@ is
 
     Perform (me : mutable; G : Graph; protocol : Protocol from Interface;
     	     checks : in out CheckIterator;
-    	     newmod : out mutable InterfaceModel)  returns Boolean  is deferred;
+    	     newmod : out InterfaceModel)  returns Boolean  is deferred;
     ---Purpose : Performs a Transformation (defined by each sub-class) :
     --         <G> gives the input data (especially the starting model) and
     --           can be used for queries (by Selections, etc...)
@@ -72,7 +72,7 @@ is
     --           The provided default keeps the starting Protocol. This method
     --           should be redefined as required by the effect of Perform.
 
-    Updated (me; entfrom : Transient; entto : out mutable Transient)
+    Updated (me; entfrom : Transient; entto : out Transient)
     	returns Boolean  is deferred;
     ---Purpose : This method allows to know what happened to a starting
     --           entity after the last Perform. If <entfrom> (from starting

@@ -26,7 +26,7 @@ uses Elips2d from gp,
 
 is
 
-Create(Ellipse : Elips2d) returns mutable BElips;
+Create(Ellipse : Elips2d) returns BElips;
     	---Purpose:
     	-- Constructs a bisecting curve whose geometry is the 2D ellipse Ellipse.
     

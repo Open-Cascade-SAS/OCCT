@@ -32,11 +32,11 @@ uses AsciiString from TCollection,
 
 is
 
-    Create returns mutable RebuildDrawings;
+    Create returns RebuildDrawings;
     ---Purpose : Creates an RebuildDrawings, which uses the system Date
 
     Performing (me; ctx : in out ContextModif;
-    	        target  : mutable IGESModel;
+    	        target  : IGESModel;
                 TC      : in out CopyTool);
     ---Purpose : Specific action : Rebuilds the original Drawings
 

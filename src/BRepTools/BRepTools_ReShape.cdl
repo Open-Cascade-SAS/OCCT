@@ -36,7 +36,7 @@ uses
 
 is
 
-    Create returns mutable ReShape from BRepTools;
+    Create returns ReShape from BRepTools;
     	---Purpose: Returns an empty Reshape
 
     Clear (me: mutable);

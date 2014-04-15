@@ -48,7 +48,7 @@ class Window from WNT inherits Window from Aspect
             theParent       : Handle        from Aspect = 0;
             theMenu         : Handle        from Aspect = 0;
             theClientStruct : Address       from Standard = 0)
-     returns mutable Window from WNT
+     returns Window from WNT
      ---Level:   Public
      ---Purpose: Creates a Window defined by his position and size
      --	    in pixles from the Parent Window.
@@ -60,7 +60,7 @@ class Window from WNT inherits Window from Aspect
      aHandle    : Handle        from Aspect;
      aBackColor : NameOfColor   from Quantity = Quantity_NOC_MATRAGRAY
     )
-     returns mutable Window from WNT;
+     returns Window from WNT;
      	---Level:   Public
      	---Purpose: Creates a Window based on the existing window handle.
         --          This handle equals ( aPart1 << 16 ) + aPart2.
@@ -70,7 +70,7 @@ class Window from WNT inherits Window from Aspect
      aPart2     : Integer       from Standard;
      aBackColor : NameOfColor   from Quantity = Quantity_NOC_MATRAGRAY
     )
-     returns mutable Window from WNT;
+     returns Window from WNT;
      	---Level:   Public
      	---Purpose: Creates a Window based on the existing window <aHandle>.
 

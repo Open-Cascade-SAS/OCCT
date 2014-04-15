@@ -28,7 +28,7 @@ uses
     TypeADriverMap     from XmlMDF
 
 is
-    Create returns mutable ADriverTable from XmlMDF;
+    Create returns ADriverTable from XmlMDF;
         ---Purpose: Creates a mutable ADriverTable from XmlMDF.
 
     AddDriver(me : mutable; anHDriver : ADriver from XmlMDF);

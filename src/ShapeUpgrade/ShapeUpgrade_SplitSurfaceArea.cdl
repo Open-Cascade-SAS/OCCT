@@ -21,7 +21,7 @@ class SplitSurfaceArea from ShapeUpgrade inherits SplitSurface from ShapeUpgrade
 
 
 is
-    Create returns mutable SplitSurfaceArea from ShapeUpgrade; 
+    Create returns SplitSurfaceArea from ShapeUpgrade; 
     	---Purpose: Empty constructor.
     
     NbParts(me: mutable) returns Integer;

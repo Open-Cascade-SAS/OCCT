@@ -36,7 +36,7 @@ raises DimensionMismatch, OutOfRange
 
 is
 
-        Create returns mutable SegmentedViewsVisible;
+        Create returns SegmentedViewsVisible;
 
         -- Specific Methods pertaining to the class
 

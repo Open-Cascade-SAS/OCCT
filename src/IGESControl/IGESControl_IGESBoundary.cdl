@@ -29,10 +29,10 @@ uses
 
 is
 
-    Create returns mutable IGESBoundary from IGESControl;
+    Create returns IGESBoundary from IGESControl;
     	---Purpose: Creates an object and calls inherited constuctor.
 
-    Create (CS: CurveAndSurface from IGESToBRep) returns mutable IGESBoundary from IGESControl;
+    Create (CS: CurveAndSurface from IGESToBRep) returns IGESBoundary from IGESControl;
     	---Purpose: Creates an object and calls inherited constuctor.
 	
     Check (me: mutable; result, checkclosure, okCurve3d, okCurve2d: Boolean) is redefined;

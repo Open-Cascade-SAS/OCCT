@@ -33,7 +33,7 @@ uses
 
 is
 
-        Create returns mutable ConnectPoint;
+        Create returns ConnectPoint;
 
         -- Specific Methods pertaining to the class
 

@@ -78,7 +78,7 @@ raises ConstructionError from Standard,
 is
 
   Create (A3 : Ax3; MajorRadius, MinorRadius : Real)
-     returns mutable ToroidalSurface
+     returns ToroidalSurface
         ---Purpose :
         --  A3 is the local coordinate system of the surface.
         --  The orientation of increasing V parametric value is defined 
@@ -94,7 +94,7 @@ is
         --  Raised if MinorRadius < 0.0 or if MajorRadius < 0.0
 
 
-  Create (T : Torus)  returns mutable ToroidalSurface;
+  Create (T : Torus)  returns ToroidalSurface;
         ---Purpose :
         --  Creates a ToroidalSurface from a non transient Torus from 
         --  package gp.
@@ -195,7 +195,7 @@ is
         ---Purpose : Returns True.
 
 
-  UIso (me; U : Real)   returns mutable Curve;
+  UIso (me; U : Real)   returns Curve;
         ---Purpose : Computes the U isoparametric curve.
         --  
         --  For a toroidal surface the UIso curve is a circle.
@@ -206,7 +206,7 @@ is
         --  MinorRadius = 0.0
 
 
-  VIso (me; V : Real)   returns mutable Curve;
+  VIso (me; V : Real)   returns Curve;
         ---Purpose : Computes the V isoparametric curve.
         --  
         --  For a ToroidalSurface the VIso curve is a circle.
@@ -262,7 +262,7 @@ is
     	---Purpose: Applies the transformation T to this torus.
 
 
-  Copy (me)  returns mutable like me;
+  Copy (me)  returns like me;
     	---Purpose: Creates a new object which is a copy of this torus.
 fields
 

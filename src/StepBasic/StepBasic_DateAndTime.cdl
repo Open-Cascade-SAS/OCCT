@@ -24,19 +24,19 @@ uses
 	LocalTime from StepBasic
 is
 
-	Create returns mutable DateAndTime;
+	Create returns DateAndTime;
 	---Purpose: Returns a DateAndTime
 
 	Init (me : mutable;
-	      aDateComponent : mutable Date from StepBasic;
-	      aTimeComponent : mutable LocalTime from StepBasic) is virtual;
+	      aDateComponent : Date from StepBasic;
+	      aTimeComponent : LocalTime from StepBasic) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetDateComponent(me : mutable; aDateComponent : mutable Date);
-	DateComponent (me) returns mutable Date;
-	SetTimeComponent(me : mutable; aTimeComponent : mutable LocalTime);
-	TimeComponent (me) returns mutable LocalTime;
+	SetDateComponent(me : mutable; aDateComponent : Date);
+	DateComponent (me) returns Date;
+	SetTimeComponent(me : mutable; aTimeComponent : LocalTime);
+	TimeComponent (me) returns LocalTime;
 
 fields
 

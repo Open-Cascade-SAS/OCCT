@@ -31,7 +31,7 @@ is
     ---Purpose : Returns a ToolMacroDef, ready to work
 
 
-    ReadOwnParams (me; ent : mutable MacroDef;
+    ReadOwnParams (me; ent : MacroDef;
     	    	   IR : IGESReaderData; PR : in out ParamReader)
     	raises DomainError  is static;
     ---Purpose : Reads own parameters from file. <PR> gives access to them,
@@ -55,7 +55,7 @@ is
     ---Purpose : Performs Specific Semantic Check
 
 
-    OwnCopy    (me; entfrom : MacroDef; entto : mutable MacroDef;
+    OwnCopy    (me; entfrom : MacroDef; entto : MacroDef;
     	        TC : in out CopyTool)  is static;
     ---Purpose : Copies Specific Parameters
 

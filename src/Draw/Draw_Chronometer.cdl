@@ -26,7 +26,7 @@ uses
 
 is
 
-    Create returns mutable Chronometer from Draw;
+    Create returns Chronometer from Draw;
     
     
     Timer(me : mutable) returns Timer from OSD
@@ -36,7 +36,7 @@ is
     DrawOn(me; dis : in out Display);
 	---Purpose: Does nothhing,
     
-    Copy(me) returns mutable Drawable3D from Draw
+    Copy(me) returns Drawable3D from Draw
 	---Purpose: For variable copy.
     is redefined;
 	

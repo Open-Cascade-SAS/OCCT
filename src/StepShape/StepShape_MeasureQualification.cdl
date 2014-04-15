@@ -25,7 +25,7 @@ uses
 
 is
 
-    Create returns mutable MeasureQualification;
+    Create returns MeasureQualification;
 
     Init (me : mutable; name : HAsciiString from TCollection;
     	    description : HAsciiString from TCollection;

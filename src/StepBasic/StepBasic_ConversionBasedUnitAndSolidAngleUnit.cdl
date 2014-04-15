@@ -27,21 +27,21 @@ uses
     
 is
 
-    Create returns mutable ConversionBasedUnitAndSolidAngleUnit;
+    Create returns ConversionBasedUnitAndSolidAngleUnit;
 	---Purpose: Returns a ConversionBasedUnitAndSolidAngleUnit
 
-    Init (me: mutable; aDimensions: mutable DimensionalExponents from StepBasic)
+    Init (me: mutable; aDimensions: DimensionalExponents from StepBasic)
     is redefined;
 
-    Init (me: mutable; aDimensions: mutable DimensionalExponents from StepBasic;
-		       aName      : mutable HAsciiString from TCollection;
-		       aConversionFactor: mutable MeasureWithUnit from StepBasic)is redefined;
+    Init (me: mutable; aDimensions: DimensionalExponents from StepBasic;
+		       aName      : HAsciiString from TCollection;
+		       aConversionFactor: MeasureWithUnit from StepBasic)is redefined;
 
     -- Specific Methods for Field Data Access --
 
-    SetSolidAngleUnit(me: mutable; aSolidAngleUnit: mutable SolidAngleUnit);
+    SetSolidAngleUnit(me: mutable; aSolidAngleUnit: SolidAngleUnit);
     
-    SolidAngleUnit (me) returns mutable SolidAngleUnit;
+    SolidAngleUnit (me) returns SolidAngleUnit;
 
 
 fields

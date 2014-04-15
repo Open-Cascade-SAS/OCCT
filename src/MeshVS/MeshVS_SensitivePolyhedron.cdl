@@ -36,7 +36,7 @@ uses
 is
     Create( Owner : EntityOwner from SelectBasics;
             Nodes : Array1OfPnt from TColgp;
-            Topo  : HArray1OfSequenceOfInteger from MeshVS ) returns mutable SensitivePolyhedron from MeshVS;
+            Topo  : HArray1OfSequenceOfInteger from MeshVS ) returns SensitivePolyhedron from MeshVS;
 
     Project( me:mutable; aProjector: Projector from Select3D ) is redefined;
 

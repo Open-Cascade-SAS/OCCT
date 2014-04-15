@@ -34,7 +34,7 @@ uses
 
 is
 
-        Create returns mutable OffsetSurface;
+        Create returns OffsetSurface;
 
         -- Specific Methods pertaining to the class
 

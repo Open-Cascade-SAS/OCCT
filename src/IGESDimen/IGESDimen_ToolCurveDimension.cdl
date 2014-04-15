@@ -31,7 +31,7 @@ is
     ---Purpose : Returns a ToolCurveDimension, ready to work
 
 
-    ReadOwnParams (me; ent : mutable CurveDimension;
+    ReadOwnParams (me; ent : CurveDimension;
     	    	   IR : IGESReaderData; PR : in out ParamReader)
     	raises DomainError  is static;
     ---Purpose : Reads own parameters from file. <PR> gives access to them,
@@ -55,7 +55,7 @@ is
     ---Purpose : Performs Specific Semantic Check
 
 
-    OwnCopy    (me; entfrom : CurveDimension; entto : mutable CurveDimension;
+    OwnCopy    (me; entfrom : CurveDimension; entto : CurveDimension;
     	        TC : in out CopyTool)  is static;
     ---Purpose : Copies Specific Parameters
 

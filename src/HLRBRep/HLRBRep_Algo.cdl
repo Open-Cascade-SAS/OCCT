@@ -53,7 +53,7 @@ uses
     Shape   from TopoDS
 
 is
-    Create returns mutable Algo from HLRBRep;
+    Create returns Algo from HLRBRep;
     	---Purpose: Constructs an empty framework for the
     	-- calculation of visible and hidden lines of a shape in a projection.
     	-- Use the function:
@@ -62,7 +62,7 @@ is
     	-- -   Update to compute the outlines of the shape, and
     	-- -   Hide to compute the visible and hidden lines of the shape.
     
-    Create(A : Algo from HLRBRep) returns mutable Algo from HLRBRep;
+    Create(A : Algo from HLRBRep) returns Algo from HLRBRep;
 
     Add(me : mutable; S     : Shape   from TopoDS;
     	    	      SData : TShared from MMgt;

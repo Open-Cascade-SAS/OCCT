@@ -29,7 +29,7 @@ uses
     EdgeStatus       from HLRAlgo
 
 is
-    Create returns mutable PolyData from HLRAlgo;
+    Create returns PolyData from HLRAlgo;
 
     HNodes(me : mutable; HNodes : HArray1OfXYZ from TColgp)
     is static;

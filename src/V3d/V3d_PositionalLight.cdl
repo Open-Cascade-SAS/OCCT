@@ -51,11 +51,11 @@ raises BadValue from V3d
 
 is
 
-    	Create ( VM : mutable Viewer ; X,Y,Z : Coordinate ;
+    	Create ( VM : Viewer ; X,Y,Z : Coordinate ;
 		 Color : NameOfColor = Quantity_NOC_WHITE ;
 		 Attenuation1 : Coefficient = 1.0 ; 
                  Attenuation2 : Coefficient = 0.0 ) 
-				returns mutable PositionalLight 
+				returns PositionalLight 
         ---Level: Public
        	---Purpose: Creates an isolated light source X,Y,Z in the viewer.
     	--          It is also defined by the color Color and
@@ -71,12 +71,12 @@ is
 	---Purpose:  Warning!  raises BadValue from V3d
 	--          if one of the attenuation coefficients is not between 0 et 1.
 
-    	Create ( VM : mutable Viewer ; Xt,Yt,Zt : Coordinate;
+    	Create ( VM : Viewer ; Xt,Yt,Zt : Coordinate;
 	         Xp,Yp,Zp : Coordinate;
 		 Color : NameOfColor = Quantity_NOC_WHITE ;
 		 Attenuation1 : Coefficient = 1.0 ; 
                  Attenuation2 : Coefficient = 0.0 ) 
-		       returns mutable PositionalLight 
+		       returns PositionalLight 
 	---Level: Public
 	---Purpose: Creates a light source of the Positional type 
 	--          in the viewer.
@@ -144,7 +144,7 @@ is
         ---Category: Private or Protected methods
         -----------------------------------------
 
-        Symbol ( me ; gsymbol : mutable Group from Graphic3d ;
+        Symbol ( me ; gsymbol : Group from Graphic3d ;
                       aView   : View from V3d ) is redefined static private;
 	---Level: Internal
 	---Purpose: Defined the representation of the positional light source.

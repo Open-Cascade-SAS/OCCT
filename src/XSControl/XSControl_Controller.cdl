@@ -75,7 +75,7 @@ is
     ---Purpose : Records <me> in a general dictionary under a name
     --           Error if <name> already used for another one
 
-    Recorded (myclass; name : CString) returns mutable Controller;
+    Recorded (myclass; name : CString) returns Controller;
     ---Purpose : Returns the Controller attached to a given name
     --           Returns a Null Handle if <name> is unknown
 
@@ -138,17 +138,17 @@ is
     ---Purpose : Returns the WorkLibrary attached to the Norm. Remark that it
     --           has to be in phase with the Protocol  (read from field)
 
-    NewModel      (me) returns mutable InterfaceModel from Interface  is deferred;
+    NewModel      (me) returns InterfaceModel from Interface  is deferred;
     ---Purpose : Creates a new empty Model ready to receive data of the Norm
     --           Used to write data from Imagine to an interface file
 
     ActorRead     (me; model : InterfaceModel)
-                 returns mutable ActorOfTransientProcess from Transfer  is deferred;
+                 returns ActorOfTransientProcess from Transfer  is deferred;
     ---Purpose : Returns the Actor for Read attached to the pair (norm,appli)
     --           It can be adapted for data of the input Model, as required
     --           Can be read from field then adapted with Model as required
 
-    ActorWrite    (me) returns mutable ActorOfFinderProcess from Transfer
+    ActorWrite    (me) returns ActorOfFinderProcess from Transfer
     	is virtual;
     ---Purpose : Returns the Actor for Write attached to the pair (norm,appli)
     --           Read from field. Can be redefined
@@ -202,8 +202,8 @@ is
     --           TransientMapper). Can be redefined
 
     TransferWriteTransient (me; obj : Transient;
-                        FP        : mutable FinderProcess  from Transfer;
-                        model     : mutable InterfaceModel from Interface;
+                        FP        : FinderProcess  from Transfer;
+                        model     : InterfaceModel from Interface;
                         modetrans : Integer = 0)
     	returns ReturnStatus  is virtual;
     ---Purpose : Takes one Transient Object and transfers it to an
@@ -223,8 +223,8 @@ is
     --           Asks the ActorWrite (through a ShapeMapper)
 
     TransferWriteShape (me; shape : Shape from TopoDS;
-                        FP        : mutable FinderProcess  from Transfer;
-                        model     : mutable InterfaceModel from Interface;
+                        FP        : FinderProcess  from Transfer;
+                        model     : InterfaceModel from Interface;
                         modetrans : Integer = 0)
     	returns ReturnStatus  is virtual;
     ---Purpose : Takes one Shape and transfers it to an
@@ -242,7 +242,7 @@ is
     	--  - ResolveCluster performs the resolution, its result consists in
     	--    having all data gathered in one final model
 
-    ClusterContext (me; WS : WorkSession) returns mutable Transient is virtual;
+    ClusterContext (me; WS : WorkSession) returns Transient is virtual;
     ---Purpose : Prepares and returns a context to resolve a cluster
     --           All data to be used are detained by the WorkSession
     --           The definition of this context is free and proper to each case
@@ -254,7 +254,7 @@ is
     --           If no cluster has to be resolved, should return a null handle
     --           This is the default case, which can be redefined
 
-    ResolveCluster (me; WS : mutable WorkSession; context : mutable Transient)
+    ResolveCluster (me; WS : WorkSession; context : Transient)
     	returns CheckIterator  is virtual;
     ---Purpose : Performs the resolution itself, from the starting data and
     --           the cluster context

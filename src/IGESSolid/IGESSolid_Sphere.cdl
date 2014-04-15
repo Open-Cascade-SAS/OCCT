@@ -27,7 +27,7 @@ uses
 
 is
 
-        Create returns mutable Sphere;
+        Create returns Sphere;
 
         -- Specific Methods pertaining to the class
 

@@ -21,14 +21,14 @@ uses
     TypeOfPresentation3d from PrsMgr
 is
     
-    Create(aTypeOfPresentation3d: TypeOfPresentation3d from PrsMgr = PrsMgr_TOP_AllView) returns mutable PresentableObject from QABugs;
+    Create(aTypeOfPresentation3d: TypeOfPresentation3d from PrsMgr = PrsMgr_TOP_AllView) returns PresentableObject from QABugs;
     
-    ComputeSelection(me:mutable; aSelection :mutable Selection from SelectMgr;
+    ComputeSelection(me:mutable; aSelection : Selection from SelectMgr;
                                  aMode      : Integer) is redefined virtual protected;
 
     Compute(me:mutable;
     	    aPresentationManager: PresentationManager3d from PrsMgr;
-            aPresentation: mutable Presentation from Prs3d;
+            aPresentation: Presentation from Prs3d;
             aMode: Integer from Standard = 0)
     is redefined virtual protected;
 	    

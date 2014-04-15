@@ -24,7 +24,7 @@ uses
 	ClosedShell from StepShape
 is
 
-	Create returns mutable FacetedBrep;
+	Create returns FacetedBrep;
 	---Purpose: Returns a FacetedBrep
 
 

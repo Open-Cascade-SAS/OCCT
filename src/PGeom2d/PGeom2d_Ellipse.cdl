@@ -25,14 +25,14 @@ uses Ax22d from gp
 is
 
 
-  Create returns mutable Ellipse from PGeom2d;
+  Create returns Ellipse from PGeom2d;
         ---Purpose : Creates an ellipse with default values.
 	---Level: Internal 
 
 
   Create (aPosition : Ax22d from gp;
     	    aMajorRadius, aMinorRadius : Real from Standard)
-     returns mutable Ellipse from PGeom2d;
+     returns Ellipse from PGeom2d;
 	---Purpose :      Creates   an Ellipse      with  <aPosition>,
 	--         <aMajorRadius> and <aMinorRadius> as  field values.
 	--         The major radius of  the ellipse is  on the "XAxis"

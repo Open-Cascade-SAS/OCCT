@@ -25,24 +25,24 @@ uses Finder, FinderProcess, ProcessForFinder, Binder
 
 is
 
-    Create  returns mutable ActorOfFinderProcess;
+    Create  returns ActorOfFinderProcess;
 
     ModeTrans (me : mutable) returns Integer;
     ---Purpose : Returns the Transfer Mode, modifiable
     ---C++ : return &
 
-    Transferring (me : mutable; start : Finder; TP : mutable ProcessForFinder)
-        returns mutable Binder  is redefined;
+    Transferring (me : mutable; start : Finder; TP : ProcessForFinder)
+        returns Binder  is redefined;
     -- calls the one below
 
-    Transfer (me : mutable; start : Finder; TP : mutable FinderProcess)
-        returns mutable Binder  is virtual;
+    Transfer (me : mutable; start : Finder; TP : FinderProcess)
+        returns Binder  is virtual;
     -- default calls TransferTransient if <start> is a TransientMapper,
     -- i.e. does nothing, to be redefined
 
     TransferTransient (me : mutable; start : Transient;
-    	    	       TP : mutable FinderProcess)
-	returns mutable Transient  is virtual;
+    	    	       TP : FinderProcess)
+	returns Transient  is virtual;
     -- default does nothing, can be redefined
     -- usefull when a result is Transient, simpler to define than Transfer with
     -- a Finder

@@ -31,7 +31,7 @@ is
     ---Purpose : Returns a ToolCylindricalSurface, ready to work
 
 
-    ReadOwnParams (me; ent : mutable CylindricalSurface;
+    ReadOwnParams (me; ent : CylindricalSurface;
     	    	   IR : IGESReaderData; PR : in out ParamReader)
     	raises DomainError  is static;
     ---Purpose : Reads own parameters from file. <PR> gives access to them,
@@ -55,7 +55,7 @@ is
     ---Purpose : Performs Specific Semantic Check
 
 
-    OwnCopy    (me; entfrom : CylindricalSurface; entto : mutable CylindricalSurface;
+    OwnCopy    (me; entfrom : CylindricalSurface; entto : CylindricalSurface;
     	        TC : in out CopyTool)  is static;
     ---Purpose : Copies Specific Parameters
 

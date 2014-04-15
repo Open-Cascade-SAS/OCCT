@@ -110,7 +110,7 @@ is
     ---Category: Methodes of TDF_Attribute
     --           =========================
     Create    
-    returns mutable ByteArray from TDataStd; 
+    returns ByteArray from TDataStd; 
     
     ID (me)
     ---C++: return const & 
@@ -120,10 +120,10 @@ is
     	     with : Attribute from TDF);
 
     NewEmpty (me)
-    returns mutable Attribute from TDF;
+    returns Attribute from TDF;
 
-    Paste (me; into : mutable Attribute from TDF;
-	       RT   : mutable RelocationTable from TDF);    
+    Paste (me; into : Attribute from TDF;
+	       RT   : RelocationTable from TDF);    
     
     Dump (me; 
     	  OS : in out OStream from Standard)

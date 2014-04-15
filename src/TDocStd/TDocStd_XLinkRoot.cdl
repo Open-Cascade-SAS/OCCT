@@ -64,7 +64,7 @@ is
     -- --------------
 
     Create
-    	returns mutable XLinkRoot from TDocStd
+    	returns XLinkRoot from TDocStd
     	is private;
 	---Purpose: Initializes fields.
 
@@ -77,7 +77,7 @@ is
 	--          
 	---C++: return const &             	
   
-    BackupCopy(me) returns mutable Attribute from TDF
+    BackupCopy(me) returns Attribute from TDF
     	is redefined static;
 	---Purpose: Returns a null handle.
 
@@ -105,13 +105,13 @@ is
     -- ----------------
 
     NewEmpty(me)
-    	returns mutable Attribute from TDF
+    	returns Attribute from TDF
     	is redefined static;
 	---Purpose: Returns a null handle.
 
     Paste(me;
-    	  intoAttribute    : mutable Attribute from TDF;
-	  aRelocationTable : mutable RelocationTable from TDF)
+    	  intoAttribute    : Attribute from TDF;
+	  aRelocationTable : RelocationTable from TDF)
     	is redefined static;
 	---Purpose: Does nothing.
 

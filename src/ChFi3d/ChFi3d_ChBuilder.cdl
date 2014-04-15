@@ -179,9 +179,9 @@ is
     	returns Integer from Standard;		 
 
     	Sect(me; IC, IS : Integer from Standard)
-    	returns mutable SecHArray1 from ChFiDS;
+    	returns SecHArray1 from ChFiDS;
     
-        SimulKPart(me; SD : mutable SurfData from ChFiDS)
+        SimulKPart(me; SD : SurfData from ChFiDS)
         is protected; 
 
         SimulSurf(me              : in out; 

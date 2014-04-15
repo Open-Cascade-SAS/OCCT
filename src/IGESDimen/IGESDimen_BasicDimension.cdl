@@ -28,7 +28,7 @@ uses
 
 is
 
-        Create returns mutable BasicDimension;
+        Create returns BasicDimension;
 
             -- --specific-- --
 

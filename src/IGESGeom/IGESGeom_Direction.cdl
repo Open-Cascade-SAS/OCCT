@@ -30,7 +30,7 @@ uses
 
 is
 
-        Create returns mutable Direction;
+        Create returns Direction;
 
         -- Specific Methods pertaining to the class
 

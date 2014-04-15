@@ -42,7 +42,7 @@ uses
 is
 
     Create(theSelfRelocation : Boolean from Standard = Standard_False) 
-    returns mutable RelocationTable from MDF;
+    returns RelocationTable from MDF;
 	---Purpose: Creates a relocation table. 
 	--          <theSelfRelocation> status says that the relocation table allows self relocation.
 
@@ -65,7 +65,7 @@ is
 
     HasRelocation(me : mutable;
     	    	  aSourceAttribute :                TheSourceType;
-    	    	  aTargetAttribute : in out mutable TheTargetType)
+    	    	  aTargetAttribute : in out TheTargetType)
 	returns Boolean from Standard;
 	---Purpose: Finds the relocation value of <aSourceAttribute>
 	--          and returns it into <aTargetAttribute>.
@@ -84,7 +84,7 @@ is
 
     HasOtherRelocation(me : mutable;
     	    	       aSource :                TheOtherSourceType;
-    	    	       aTarget : in out mutable TheOtherTargetType)
+    	    	       aTarget : in out TheOtherTargetType)
 	returns Boolean from Standard;
 	---Purpose: Finds the relocation value of <aSource>
 	--          and returns it into <aTarget>.

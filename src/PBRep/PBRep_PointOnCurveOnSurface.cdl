@@ -28,7 +28,7 @@ is
     	   C : Curve from PGeom2d;
 	   S : Surface from PGeom;
 	   L : Location from PTopLoc)
-    returns mutable PointOnCurveOnSurface from PBRep;
+    returns PointOnCurveOnSurface from PBRep;
     	---Level: Internal 
     
     PCurve(me) returns Curve from PGeom2d

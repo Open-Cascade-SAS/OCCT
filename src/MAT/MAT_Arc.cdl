@@ -41,7 +41,7 @@ is
              FirstElement    : BasicElt from MAT;
              SecondElement   : BasicElt from MAT )
     	--- Purpose :
-    returns mutable Arc;
+    returns Arc;
 
     Index (me) 
     	--- Purpose : Returns the index of <me> in Graph.theArcs.
@@ -66,12 +66,12 @@ is
     
     FirstNode (me)  
         --- Purpose : Returns one Node extremity of <me>.
-    returns mutable Node from MAT
+    returns Node from MAT
     is static;
     
     SecondNode (me) 
   	--- Purpose : Returns the other Node extremity of <me>.   
-    returns mutable Node from MAT
+    returns Node from MAT
     is static;    
     
     TheOtherNode (me ; aNode : Node) 

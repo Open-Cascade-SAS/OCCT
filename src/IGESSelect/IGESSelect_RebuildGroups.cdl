@@ -32,11 +32,11 @@ uses AsciiString from TCollection,
 
 is
 
-    Create returns mutable RebuildGroups;
+    Create returns RebuildGroups;
     ---Purpose : Creates an RebuildGroups, which uses the system Date
 
     Performing (me; ctx : in out ContextModif;
-    	        target  : mutable IGESModel;
+    	        target  : IGESModel;
                 TC      : in out CopyTool);
     ---Purpose : Specific action : Rebuilds the original groups
 

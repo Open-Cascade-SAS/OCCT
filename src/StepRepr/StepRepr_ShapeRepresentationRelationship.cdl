@@ -21,6 +21,6 @@ uses
 
 is
 
-    Create returns mutable ShapeRepresentationRelationship;
+    Create returns ShapeRepresentationRelationship;
 
 end ShapeRepresentationRelationship;

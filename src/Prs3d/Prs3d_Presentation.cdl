@@ -45,12 +45,12 @@ is
           theToInit        : Boolean          from Standard = Standard_True)
   ---Purpose: Constructs a presentation object
   -- if <Init> is false, no color initialization is done.
-  returns mutable Presentation from Prs3d;
+  returns Presentation from Prs3d;
 
   Create (theStructManager : StructureManager from Graphic3d;
           thePrs           : Presentation     from Prs3d)
   ---Purpose: Constructs a presentation object.
-  returns mutable Presentation from Prs3d;
+  returns Presentation from Prs3d;
 
     Compute(me : mutable; aProjector: DataStructureManager from Graphic3d)
     returns Structure from Graphic3d
@@ -112,7 +112,7 @@ is
     SetPickable(me: mutable) is static;
     SetUnPickable(me: mutable) is static;
 
-    CurrentGroup(me) returns mutable Group from Graphic3d is static private;
+    CurrentGroup(me) returns Group from Graphic3d is static private;
 
 friends
 

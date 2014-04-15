@@ -18,6 +18,6 @@ class CameraImage3dWithScale  from StepVisual    inherits CameraImage  from Step
 
 is
 
-    Create returns mutable CameraImage3dWithScale;
+    Create returns CameraImage3dWithScale;
 
 end CameraImage3dWithScale;

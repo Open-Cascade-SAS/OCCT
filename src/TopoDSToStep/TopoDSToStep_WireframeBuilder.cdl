@@ -43,13 +43,13 @@ is
     
     Create(S  : Shape from TopoDS;
     	   T  : in out Tool from TopoDSToStep;
-	   FP : mutable FinderProcess from Transfer)
+	   FP : FinderProcess from Transfer)
     	returns WireframeBuilder from TopoDSToStep;
     
     Init(me : in out;
     	 S  : Shape from TopoDS;
     	 T  : in out Tool from TopoDSToStep;
-	 FP : mutable FinderProcess from Transfer);
+	 FP : FinderProcess from Transfer);
     
 --  -----------------------------------------------------------    
 --  Get the Result

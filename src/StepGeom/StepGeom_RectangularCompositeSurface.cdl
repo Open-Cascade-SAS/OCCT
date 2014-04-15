@@ -25,22 +25,22 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable RectangularCompositeSurface;
+	Create returns RectangularCompositeSurface;
 	---Purpose: Returns a RectangularCompositeSurface
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection) is redefined;
+	      aName : HAsciiString from TCollection) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aSegments : mutable HArray2OfSurfacePatch from StepGeom) is virtual;
+	      aName : HAsciiString from TCollection;
+	      aSegments : HArray2OfSurfacePatch from StepGeom) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetSegments(me : mutable; aSegments : mutable HArray2OfSurfacePatch);
-	Segments (me) returns mutable HArray2OfSurfacePatch;
-	SegmentsValue (me; num1 : Integer;  num2 : Integer) returns mutable SurfacePatch;
+	SetSegments(me : mutable; aSegments : HArray2OfSurfacePatch);
+	Segments (me) returns HArray2OfSurfacePatch;
+	SegmentsValue (me; num1 : Integer;  num2 : Integer) returns SurfacePatch;
 	NbSegmentsI (me) returns Integer;
 	NbSegmentsJ (me) returns Integer;
 

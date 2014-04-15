@@ -25,16 +25,16 @@ uses
 	Axis2Placement from StepGeom
 is
 
-	Create returns mutable Parabola;
+	Create returns Parabola;
 	---Purpose: Returns a Parabola
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
+	      aName : HAsciiString from TCollection;
 	      aPosition : Axis2Placement from StepGeom) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
+	      aName : HAsciiString from TCollection;
 	      aPosition : Axis2Placement from StepGeom;
 	      aFocalDist : Real from Standard) is virtual;
 

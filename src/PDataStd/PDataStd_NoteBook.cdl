@@ -19,6 +19,6 @@ class NoteBook from PDataStd inherits Attribute from PDF
 	---Purpose: 
 is
 
-    Create returns mutable NoteBook from  PDataStd;
+    Create returns NoteBook from  PDataStd;
 
 end NoteBook;

@@ -36,7 +36,7 @@ is
 
 
   Create (S : BSplineSurface from Geom)
-     returns mutable BSplineSurface from DrawTrSurf;
+     returns BSplineSurface from DrawTrSurf;
         --- Purpose : default drawing mode.
         --  The isoparametric curves corresponding to the knots values are 
         --  drawn.
@@ -51,7 +51,7 @@ is
           KnotsShape : MarkerShape from Draw; KnotsSize : Integer;
           ShowPoles, ShowKnots : Boolean; Discret : Integer; Deflection : Real;
           DrawMode : Integer)
-     returns mutable BSplineSurface from DrawTrSurf;
+     returns BSplineSurface from DrawTrSurf;
         --- Purpose :
         --  The isoparametric curves corresponding to the knots values are 
         --  drawn.
@@ -64,7 +64,7 @@ is
           KnotsShape : MarkerShape from Draw; KnotsSize : Integer;
           ShowPoles, ShowKnots : Boolean; Discret : Integer; Deflection : Real;
           DrawMode : Integer)
-     returns mutable BSplineSurface from DrawTrSurf;
+     returns BSplineSurface from DrawTrSurf;
 	--- Purpose : Parametric equidistant iso curves are drawn.
 
 
@@ -147,7 +147,7 @@ is
         ---C++: inline
      is static;
     
-  Copy(me) returns mutable Drawable3D from Draw
+  Copy(me) returns Drawable3D from Draw
 	---Purpose: For variable copy.
   is redefined;
 	

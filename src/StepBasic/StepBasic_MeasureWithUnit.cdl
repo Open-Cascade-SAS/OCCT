@@ -24,7 +24,7 @@ uses
 	Unit from StepBasic
 is
 
-	Create returns mutable MeasureWithUnit;
+	Create returns MeasureWithUnit;
 	---Purpose: Returns a MeasureWithUnit
 
 	Init (me : mutable;

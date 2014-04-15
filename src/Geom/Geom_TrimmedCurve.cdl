@@ -47,7 +47,7 @@ is
 
 
   Create (C : Curve; U1, U2 : Real; Sense : Boolean = Standard_True)
-     returns mutable TrimmedCurve
+     returns TrimmedCurve
         ---Purpose : Constructs a trimmed curve from the basis curve C
     	-- which is limited between parameter values U1 and U2.
     	-- Note: - U1 can be greater or less than U2; in both cases,
@@ -284,7 +284,7 @@ is
 	--          This methods calls the basis curve method.
      is redefined;  
 
-  Copy (me)  returns mutable like me;
+  Copy (me)  returns like me;
     	---Purpose: Creates a new object which is a copy of this trimmed curve.
     
 fields

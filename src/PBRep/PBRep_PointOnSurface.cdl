@@ -25,7 +25,7 @@ is
     Create(P1,P2 : Real;
     	   S : Surface from PGeom;
 	   L : Location from PTopLoc)
-    returns mutable PointOnSurface from PBRep;
+    returns PointOnSurface from PBRep;
     	---Level: Internal 
     
     Parameter2(me) returns Real

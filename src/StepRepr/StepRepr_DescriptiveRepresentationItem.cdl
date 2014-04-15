@@ -23,21 +23,21 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable DescriptiveRepresentationItem;
+	Create returns DescriptiveRepresentationItem;
 	---Purpose: Returns a DescriptiveRepresentationItem
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection) is redefined;
+	      aName : HAsciiString from TCollection) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aDescription : mutable HAsciiString from TCollection) is virtual;
+	      aName : HAsciiString from TCollection;
+	      aDescription : HAsciiString from TCollection) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetDescription(me : mutable; aDescription : mutable HAsciiString);
-	Description (me) returns mutable HAsciiString;
+	SetDescription(me : mutable; aDescription : HAsciiString);
+	Description (me) returns HAsciiString;
 
 fields
 

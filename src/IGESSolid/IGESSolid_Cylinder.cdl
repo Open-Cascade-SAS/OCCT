@@ -28,7 +28,7 @@ uses
 
 is
 
-        Create returns mutable Cylinder;
+        Create returns Cylinder;
 
         -- Specific Methods pertaining to the class
 

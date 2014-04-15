@@ -28,12 +28,12 @@ is
  
     Create
     ---Purpose: create a default ShadingAspect.
-    returns mutable ShadingAspect from VrmlConverter;
+    returns ShadingAspect from VrmlConverter;
  
     SetFrontMaterial(me: mutable; aMaterial: Material from Vrml)
     is static;
  
-    FrontMaterial(me) returns mutable Material from Vrml 
+    FrontMaterial(me) returns Material from Vrml 
     is  static; 
     
 --    SetBackMaterial(me: mutable; aMaterial: Material from Vrml)

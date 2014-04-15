@@ -24,24 +24,24 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable SolidReplica;
+	Create returns SolidReplica;
 	---Purpose: Returns a SolidReplica
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection) is redefined;
+	      aName : HAsciiString from TCollection) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aParentSolid : mutable SolidModel from StepShape;
-	      aTransformation : mutable CartesianTransformationOperator3d from StepGeom) is virtual;
+	      aName : HAsciiString from TCollection;
+	      aParentSolid : SolidModel from StepShape;
+	      aTransformation : CartesianTransformationOperator3d from StepGeom) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetParentSolid(me : mutable; aParentSolid : mutable SolidModel);
-	ParentSolid (me) returns mutable SolidModel;
-	SetTransformation(me : mutable; aTransformation : mutable CartesianTransformationOperator3d);
-	Transformation (me) returns mutable CartesianTransformationOperator3d;
+	SetParentSolid(me : mutable; aParentSolid : SolidModel);
+	ParentSolid (me) returns SolidModel;
+	SetTransformation(me : mutable; aTransformation : CartesianTransformationOperator3d);
+	Transformation (me) returns CartesianTransformationOperator3d;
 
 fields
 

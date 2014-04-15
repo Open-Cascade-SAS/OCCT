@@ -29,7 +29,7 @@ uses
 
 is
     Create (theCopyright: ExtendedString from TCollection)
-    	returns mutable DocumentStorageDriver from XmlLDrivers;
+    	returns DocumentStorageDriver from XmlLDrivers;
     -- Constructor
 
     SchemaName(me) returns ExtendedString from TCollection is redefined virtual;

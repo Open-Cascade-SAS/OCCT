@@ -29,7 +29,7 @@ is
 	Create returns RWCsgSolid;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable CsgSolid from StepShape);
+	              ach : in out Check; ent : CsgSolid from StepShape);
 
 	WriteStep (me; SW : in out StepWriter; ent : CsgSolid from StepShape);
 

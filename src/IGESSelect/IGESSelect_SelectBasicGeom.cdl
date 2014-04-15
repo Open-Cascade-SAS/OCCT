@@ -35,7 +35,7 @@ uses AsciiString from TCollection, Transient, EntityIterator, Graph,
 
 is
 
-    Create (mode : Integer) returns mutable SelectBasicGeom;
+    Create (mode : Integer) returns SelectBasicGeom;
     ---Purpose : Creates a SelectBasicGeom, which allways works recursively
     --           mode = -1 : Returns Surfaces (without trimming)
     --           mode = +1 : Returns Curves 3D (free or bound of surface)

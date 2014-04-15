@@ -25,25 +25,25 @@ uses
 	ProductDefinitionContext from StepBasic
 is
 
-	Create returns mutable ProductDefinition;
+	Create returns ProductDefinition;
 	---Purpose: Returns a ProductDefinition
 
 	Init (me : mutable;
-	      aId : mutable HAsciiString from TCollection;
-	      aDescription : mutable HAsciiString from TCollection;
-	      aFormation : mutable ProductDefinitionFormation from StepBasic;
-	      aFrameOfReference : mutable ProductDefinitionContext from StepBasic) is virtual;
+	      aId : HAsciiString from TCollection;
+	      aDescription : HAsciiString from TCollection;
+	      aFormation : ProductDefinitionFormation from StepBasic;
+	      aFrameOfReference : ProductDefinitionContext from StepBasic) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetId(me : mutable; aId : mutable HAsciiString);
-	Id (me) returns mutable HAsciiString;
-	SetDescription(me : mutable; aDescription : mutable HAsciiString);
-	Description (me) returns mutable HAsciiString;
-	SetFormation(me : mutable; aFormation : mutable ProductDefinitionFormation);
-	Formation (me) returns mutable ProductDefinitionFormation;
-	SetFrameOfReference(me : mutable; aFrameOfReference : mutable ProductDefinitionContext);
-	FrameOfReference (me) returns mutable ProductDefinitionContext;
+	SetId(me : mutable; aId : HAsciiString);
+	Id (me) returns HAsciiString;
+	SetDescription(me : mutable; aDescription : HAsciiString);
+	Description (me) returns HAsciiString;
+	SetFormation(me : mutable; aFormation : ProductDefinitionFormation);
+	Formation (me) returns ProductDefinitionFormation;
+	SetFrameOfReference(me : mutable; aFrameOfReference : ProductDefinitionContext);
+	FrameOfReference (me) returns ProductDefinitionContext;
 
 fields
 

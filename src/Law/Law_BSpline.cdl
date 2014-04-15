@@ -95,7 +95,7 @@ is
             Degree         : Integer;
     	    Periodic       : Boolean = Standard_False)
 	  
-    returns mutable BSpline from Law
+    returns BSpline from Law
 
     ---Purpose :  Creates a  non-rational B_spline curve   on  the
     --         basis <Knots, Multiplicities> of degree <Degree>.
@@ -135,7 +135,7 @@ is
             Degree         : Integer;
     	    Periodic       : Boolean = Standard_False)
 	  
-    returns mutable BSpline from Law
+    returns BSpline from Law
 
     ---Purpose : Creates  a rational B_spline  curve  on the basis
     --         <Knots, Multiplicities> of degree <Degree>.
@@ -732,7 +732,7 @@ is
     --           |f(t1) - f(t0)| < Tolerance3D
     
 
-    Copy (me)  returns mutable like me;
+    Copy (me)  returns like me;
 
 
     UpdateKnots(me : mutable)

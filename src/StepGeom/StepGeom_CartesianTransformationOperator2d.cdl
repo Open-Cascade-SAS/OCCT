@@ -24,6 +24,6 @@ uses Boolean
 
 is
 
-    Create returns mutable CartesianTransformationOperator2d from StepGeom;
+    Create returns CartesianTransformationOperator2d from StepGeom;
 
 end CartesianTransformationOperator2d;

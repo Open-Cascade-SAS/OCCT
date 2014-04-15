@@ -115,38 +115,38 @@ is
   --  itself. A copy of the object is returned.
 
 
-  Mirrored (me; P : Pnt)              returns mutable like me 
+  Mirrored (me; P : Pnt)              returns like me 
      is static;
 
 
-  Mirrored (me; A1 : Ax1)             returns mutable like me 
+  Mirrored (me; A1 : Ax1)             returns like me 
      is static;
 
 
-  Mirrored (me; A2 : Ax2)             returns mutable like me 
+  Mirrored (me; A2 : Ax2)             returns like me 
       is static;
 
 
-  Rotated (me; A1 : Ax1; Ang : Real)  returns mutable like me 
+  Rotated (me; A1 : Ax1; Ang : Real)  returns like me 
      is static;
 
 
-  Scaled (me; P : Pnt; S : Real)      returns mutable like me 
+  Scaled (me; P : Pnt; S : Real)      returns like me 
      is static;
 
 
-  Transformed (me; T : Trsf)          returns mutable like me
+  Transformed (me; T : Trsf)          returns like me
      is static;
 
 
-  Translated (me; V : Vec)            returns mutable like me
+  Translated (me; V : Vec)            returns like me
      is static;
 
 
-  Translated (me; P1, P2 : Pnt)       returns mutable like me
+  Translated (me; P1, P2 : Pnt)       returns like me
      is static;
 
-  Copy (me)  returns mutable like me                      is deferred;
+  Copy (me)  returns like me                      is deferred;
     	---Purpose: Creates a new object which is a copy of this geometric object.   
 
 

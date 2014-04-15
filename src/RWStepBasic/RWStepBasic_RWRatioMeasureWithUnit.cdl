@@ -29,7 +29,7 @@ is
 	Create returns RWRatioMeasureWithUnit;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable RatioMeasureWithUnit from StepBasic);
+	              ach : in out Check; ent : RatioMeasureWithUnit from StepBasic);
 
 	WriteStep (me; SW : in out StepWriter; ent : RatioMeasureWithUnit from StepBasic);
 

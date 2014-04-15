@@ -29,7 +29,7 @@ is
 	Create returns RWAutoDesignOrganizationAssignment;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable AutoDesignOrganizationAssignment from StepAP214);
+	              ach : in out Check; ent : AutoDesignOrganizationAssignment from StepAP214);
 
 	WriteStep (me; SW : in out StepWriter; ent : AutoDesignOrganizationAssignment from StepAP214);
 

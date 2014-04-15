@@ -31,7 +31,7 @@ is
     Create(P: PolygonOnTriangulation from Poly;
     	   T: Triangulation          from Poly;
 	   L: Location               from TopLoc)
-    returns mutable PolygonOnTriangulation from BRep;
+    returns PolygonOnTriangulation from BRep;
 
 
     IsPolygonOnTriangulation(me) returns Boolean
@@ -57,7 +57,7 @@ is
     is redefined;
 
     
-    Copy(me) returns mutable CurveRepresentation from BRep is virtual;
+    Copy(me) returns CurveRepresentation from BRep is virtual;
 	---Purpose: Return a copy of this representation.
 
 

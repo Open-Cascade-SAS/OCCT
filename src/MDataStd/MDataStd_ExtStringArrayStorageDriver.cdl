@@ -24,7 +24,7 @@ uses SRelocationTable from MDF,
 is
 
     Create(theMessageDriver : MessageDriver from CDM)  -- Version 0
-    returns mutable ExtStringArrayStorageDriver from MDataStd;
+    returns ExtStringArrayStorageDriver from MDataStd;
 
 
     VersionNumber(me) returns Integer from Standard;
@@ -34,12 +34,12 @@ is
     SourceType(me) returns Type from Standard;
 	---Purpose: Returns the type: ExtStringArray from TDataStd.
 
-    NewEmpty (me) returns mutable Attribute from PDF;
+    NewEmpty (me) returns Attribute from PDF;
 
 
     Paste(me;
     	  Source     :         Attribute from TDF;
-    	  Target     : mutable Attribute from PDF;
+    	  Target     : Attribute from PDF;
     	  RelocTable : SRelocationTable from MDF);
 
 

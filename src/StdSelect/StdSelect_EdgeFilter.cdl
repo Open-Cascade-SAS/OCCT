@@ -29,7 +29,7 @@ uses
     ShapeEnum from TopAbs
 is
     Create (Edge: TypeOfEdge from StdSelect)
-    returns mutable EdgeFilter from StdSelect;
+    returns EdgeFilter from StdSelect;
     	---Purpose: Constructs an edge filter object defined by the type of edge Edge.   
     SetType(me:mutable;aNewType : TypeOfEdge from StdSelect);  
     	---Purpose: Sets the type of edge aNewType. aNewType is to be highlighted in selection.    

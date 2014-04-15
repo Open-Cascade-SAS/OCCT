@@ -85,7 +85,7 @@ is
                   DFirst, DLast : Real    from Standard;
                   Rev           : Boolean from Standard;
     	    	  NbPoints      : Integer from Standard)
-    returns mutable BSpline from Law;
+    returns BSpline from Law;
     ---Purpose: Computes a 1 d curve to  reparametrize a curve. Its an
     --          interpolation of NbPoints  points calculated  at quasi
     --          constant abscissa.
@@ -93,7 +93,7 @@ is
     Scale(First, Last   : Real    from Standard;
           HasF, HasL    : Boolean from Standard;
           VFirst, VLast : Real    from Standard)
-    returns mutable BSpline from Law;
+    returns BSpline from Law;
     ---Purpose: Computes a 1  d curve to  scale  a field of  tangency.
     --          Value is 1. for t = (First+Last)/2 .
     --          If HasFirst value for t = First is VFirst (null derivative). 
@@ -110,7 +110,7 @@ is
     ScaleCub(First, Last   : Real    from Standard;
              HasF, HasL    : Boolean from Standard;
              VFirst, VLast : Real    from Standard)
-    returns mutable BSpline from Law;
+    returns BSpline from Law;
 
 end Law;
 

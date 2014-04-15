@@ -21,12 +21,12 @@ class HShape from TopoDS inherits TShared from MMgt
 uses Shape from TopoDS
 
 is
-    Create returns mutable HShape from TopoDS;
+    Create returns HShape from TopoDS;
     ---C++: inline
     ---Purpose: Constructs an empty shape object
 
     Create (aShape : Shape from TopoDS)
-    returns mutable HShape from TopoDS;
+    returns HShape from TopoDS;
     ---C++: inline
     ---Purpose: Constructs a shape object defined by the shape aShape.
 

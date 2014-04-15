@@ -35,7 +35,7 @@ raises NoSuchObject from Standard,  DriverError from PCDM
 is
 
     Read(me: mutable; aFileName: ExtendedString from TCollection; 
-                      aNewDocument: mutable Document from CDM;
+                      aNewDocument: Document from CDM;
 		      anApplication: Application from CDM)
     raises DriverError from PCDM
     ---Purpose:  Warning -  raises DriverError if an error occurs during inside the
@@ -48,7 +48,7 @@ is
     --          transient document.
     --          
 
-    Make(me : mutable; aPCDM: Document from PCDM; aNewDocument: mutable Document from CDM)
+    Make(me : mutable; aPCDM: Document from PCDM; aNewDocument: Document from CDM)
     raises DriverError from PCDM
     is deferred;
 

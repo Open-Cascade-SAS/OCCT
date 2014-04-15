@@ -30,7 +30,7 @@ uses
 is
 
     Create 
-    returns mutable NamedData from PDataStd;
+    returns NamedData from PDataStd;
 
     Init (me : mutable; theDimension:  HArray2OfInteger  from TColStd);
     ---Purpose: 6 pairs of (lower, upper) <theDimension> should be  initialized

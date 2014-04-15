@@ -28,7 +28,7 @@ is
 
     Create(exp1 : GeneralExpression ; exp2 : GeneralExpression)
     ---Purpose: Creates the relation <exp1> # <exp2>.
-    returns mutable Different;
+    returns Different;
 
     IsSatisfied(me)
     returns Boolean;
@@ -37,7 +37,7 @@ is
     ---Purpose: Returns a GeneralRelation after replacement of
     --          NamedUnknowns by an associated expression, and after
     --          values computation.
-    returns mutable GeneralRelation
+    returns GeneralRelation
     raises NumericError;
     
     Simplify(me : mutable)
@@ -48,7 +48,7 @@ is
     Copy(me)
     ---Purpose: Returns a copy of <me> having the same unknowns and 
     --          functions. 
-    returns mutable like me;
+    returns like me;
     
     String(me)
     ---Purpose: returns a string representing <me> in a readable way.

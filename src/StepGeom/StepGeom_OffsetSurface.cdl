@@ -25,23 +25,23 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable OffsetSurface;
+	Create returns OffsetSurface;
 	---Purpose: Returns a OffsetSurface
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection) is redefined;
+	      aName : HAsciiString from TCollection) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aBasisSurface : mutable Surface from StepGeom;
+	      aName : HAsciiString from TCollection;
+	      aBasisSurface : Surface from StepGeom;
 	      aDistance : Real from Standard;
 	      aSelfIntersect : Logical from StepData) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetBasisSurface(me : mutable; aBasisSurface : mutable Surface);
-	BasisSurface (me) returns mutable Surface;
+	SetBasisSurface(me : mutable; aBasisSurface : Surface);
+	BasisSurface (me) returns Surface;
 	SetDistance(me : mutable; aDistance : Real);
 	Distance (me) returns Real;
 	SetSelfIntersect(me : mutable; aSelfIntersect : Logical);

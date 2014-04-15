@@ -35,34 +35,34 @@ uses FinderProcess, TransientProcess, Binder, Finder, StepModel from StepData,
 
 is
 
-    Create  returns mutable ActorWrite from STEPControl;
+    Create  returns ActorWrite from STEPControl;
 
     Recognize (me : mutable; start : Finder) returns Boolean  is redefined;
 
-    Transfer (me : mutable; start : Finder; FP : mutable FinderProcess)
-    	returns mutable Binder is redefined;
+    Transfer (me : mutable; start : Finder; FP : FinderProcess)
+    	returns Binder is redefined;
     -- enchains : TransferShape , MakeProductData , and manages mode
     --   "simple" or in Assembly
 
     TransferSubShape (me : mutable; start : Finder;
                      SDR : ShapeDefinitionRepresentation from StepShape;
                      AX1 : out Axis2Placement3d from StepGeom;
-                      FP : mutable FinderProcess;
+                      FP : FinderProcess;
               shapeGroup : HSequenceOfShape from TopTools = NULL;
               isManifold : Boolean = Standard_True)
-    	returns mutable Binder;
+    	returns Binder;
 
     TransferShape (me : mutable; start : Finder;
                   SDR : ShapeDefinitionRepresentation from StepShape;
-    	    	       FP : mutable FinderProcess;
+    	    	       FP : FinderProcess;
 		       shapeGroup : HSequenceOfShape from TopTools = NULL;
 		       isManifold : Boolean = Standard_True)		      
-    	returns mutable Binder;
+    	returns Binder;
 
     TransferCompound (me : mutable; start : Finder;
 	              SDR : ShapeDefinitionRepresentation from StepShape;
-    	    	      FP : mutable FinderProcess)
-    	returns mutable Binder;
+    	    	      FP : FinderProcess)
+    	returns Binder;
 
 --    InitProductData  (me: mutable) returns Part from STEPConstruct;
 
@@ -71,7 +71,7 @@ is
 --    	SDRTool : Part from STEPConstruct;
 --	model   : StepModel from StepData;
 --        addPRPC : Boolean)
---    	    returns mutable Binder;
+--    	    returns Binder;
 
 
     SetMode (me : mutable; M : StepModelType from STEPControl);	
@@ -97,7 +97,7 @@ is
 	
     getNMSSRForGroup (me; 
                       shapeGroup : HSequenceOfShape from TopTools;
-                      FP : mutable FinderProcess;
+                      FP : FinderProcess;
                       isNMSSRCreated : in out Boolean)
     returns NonManifoldSurfaceShapeRepresentation from StepShape
     is private;

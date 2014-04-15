@@ -33,14 +33,14 @@ uses
 is
 
     Create(T : Triangulation from Poly)
-    returns mutable Triangulation2D from DrawTrSurf;
+    returns Triangulation2D from DrawTrSurf;
     
     Triangulation(me)
     returns Triangulation from Poly;
     
     DrawOn(me; dis : in out Display);
     
-    Copy(me) returns mutable Drawable3D from Draw
+    Copy(me) returns Drawable3D from Draw
     is redefined;
 	---Purpose: For variable copy.
 	

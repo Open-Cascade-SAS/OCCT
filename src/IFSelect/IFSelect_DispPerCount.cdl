@@ -27,13 +27,13 @@ raises InterfaceError
 
 is
 
-    Create returns mutable DispPerCount;
+    Create returns DispPerCount;
     ---Purpose : Creates a DispPerCount with no Count (default value 1)
 
-    Count (me) returns mutable IntParam;
+    Count (me) returns IntParam;
     ---Purpose : Returns the Count Parameter used for splitting
 
-    SetCount (me : mutable; count : mutable IntParam);
+    SetCount (me : mutable; count : IntParam);
     ---Purpose : Sets a new Parameter for Count
 
     CountValue (me) returns Integer;

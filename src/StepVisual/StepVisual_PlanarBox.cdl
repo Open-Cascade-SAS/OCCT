@@ -25,17 +25,17 @@ uses
 	Real from Standard
 is
 
-	Create returns mutable PlanarBox;
+	Create returns PlanarBox;
 	---Purpose: Returns a PlanarBox
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
+	      aName : HAsciiString from TCollection;
 	      aSizeInX : Real from Standard;
 	      aSizeInY : Real from Standard) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
+	      aName : HAsciiString from TCollection;
 	      aSizeInX : Real from Standard;
 	      aSizeInY : Real from Standard;
 	      aPlacement : Axis2Placement from StepGeom) is virtual;

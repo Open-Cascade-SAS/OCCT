@@ -38,7 +38,7 @@ raises DimensionMismatch, OutOfRange, NullObject
 
 is
 
-        Create returns mutable AttributeDef;
+        Create returns AttributeDef;
 
         -- Specific methods for the entity
 

@@ -37,7 +37,7 @@ is
 
     Create (OwnerId : EntityOwner from SelectBasics;
     	    Point   : Pnt from gp)
-    returns mutable SensitivePoint;
+    returns SensitivePoint;
     	---Purpose: Constructs a sensitive point object defined by the
     	-- owner OwnerId and the point Point. 
 

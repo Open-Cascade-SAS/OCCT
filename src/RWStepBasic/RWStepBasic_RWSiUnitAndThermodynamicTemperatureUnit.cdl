@@ -27,7 +27,7 @@ is
 	Create returns RWSiUnitAndThermodynamicTemperatureUnit;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable SiUnitAndThermodynamicTemperatureUnit from StepBasic);
+	              ach : in out Check; ent : SiUnitAndThermodynamicTemperatureUnit from StepBasic);
 
 	WriteStep (me; SW : in out StepWriter; ent : SiUnitAndThermodynamicTemperatureUnit from StepBasic);
 

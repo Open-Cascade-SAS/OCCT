@@ -29,7 +29,7 @@ is
 	Create returns RWAutoDesignSecurityClassificationAssignment;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable AutoDesignSecurityClassificationAssignment from StepAP214);
+	              ach : in out Check; ent : AutoDesignSecurityClassificationAssignment from StepAP214);
 
 	WriteStep (me; SW : in out StepWriter; ent : AutoDesignSecurityClassificationAssignment from StepAP214);
 

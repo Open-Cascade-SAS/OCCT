@@ -52,7 +52,7 @@ uses
 is
 
         Create
-                returns mutable AspectFillArea3d from Graphic3d;
+                returns AspectFillArea3d from Graphic3d;
         ---Level: Public
         ---Purpose: Creates a context table for fill area primitives
         --          defined with the following default values:
@@ -79,7 +79,7 @@ is
                  EdgeWidth      : Real from Standard;
                  FrontMaterial  : MaterialAspect from Graphic3d;
                  BackMaterial   : MaterialAspect from Graphic3d )
-                returns mutable AspectFillArea3d from Graphic3d;
+                returns AspectFillArea3d from Graphic3d;
 
         ---Level: Public
         ---Purpose: Creates a context table for fill area primitives

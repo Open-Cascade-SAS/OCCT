@@ -25,13 +25,13 @@ uses
 	Curve from StepGeom
 is
 
-	Create returns mutable CompositeCurveSegment;
+	Create returns CompositeCurveSegment;
 	---Purpose: Returns a CompositeCurveSegment
 
 	Init (me : mutable;
 	      aTransition : TransitionCode from StepGeom;
 	      aSameSense : Boolean from Standard;
-	      aParentCurve : mutable Curve from StepGeom) is virtual;
+	      aParentCurve : Curve from StepGeom) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
@@ -39,8 +39,8 @@ is
 	Transition (me) returns TransitionCode;
 	SetSameSense(me : mutable; aSameSense : Boolean);
 	SameSense (me) returns Boolean;
-	SetParentCurve(me : mutable; aParentCurve : mutable Curve);
-	ParentCurve (me) returns mutable Curve;
+	SetParentCurve(me : mutable; aParentCurve : Curve);
+	ParentCurve (me) returns Curve;
 
 fields
 

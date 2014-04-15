@@ -26,7 +26,7 @@ uses
 is
 
     Create(theMessageDriver : MessageDriver from CDM)  
-    returns mutable RealArrayRetrievalDriver_1 from MDataStd;
+    returns RealArrayRetrievalDriver_1 from MDataStd;
 
 
     VersionNumber(me) returns Integer from Standard;
@@ -36,12 +36,12 @@ is
     SourceType(me) returns Type from Standard;
 	---Purpose: Returns the type: RealArray from PDataStd.
 
-    NewEmpty (me) returns mutable Attribute from TDF;
+    NewEmpty (me) returns Attribute from TDF;
 
 
     Paste(me;
     	  Source     :         Attribute from PDF;
-    	  Target     : mutable Attribute from TDF;
+    	  Target     : Attribute from TDF;
     	  RelocTable : RRelocationTable from MDF);
 
 

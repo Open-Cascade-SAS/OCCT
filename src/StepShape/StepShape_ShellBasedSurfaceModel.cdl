@@ -25,21 +25,21 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable ShellBasedSurfaceModel;
+	Create returns ShellBasedSurfaceModel;
 	---Purpose: Returns a ShellBasedSurfaceModel
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection) is redefined;
+	      aName : HAsciiString from TCollection) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aSbsmBoundary : mutable HArray1OfShell from StepShape) is virtual;
+	      aName : HAsciiString from TCollection;
+	      aSbsmBoundary : HArray1OfShell from StepShape) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetSbsmBoundary(me : mutable; aSbsmBoundary : mutable HArray1OfShell);
-	SbsmBoundary (me) returns mutable HArray1OfShell;
+	SetSbsmBoundary(me : mutable; aSbsmBoundary : HArray1OfShell);
+	SbsmBoundary (me) returns HArray1OfShell;
 	SbsmBoundaryValue (me; num : Integer) returns Shell;
 	NbSbsmBoundary (me) returns Integer;
 

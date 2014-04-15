@@ -35,7 +35,7 @@ uses
 
 is
 
-    Create returns mutable ConvertToRevolution from ShapeCustom;
+    Create returns ConvertToRevolution from ShapeCustom;
 
     NewSurface(me: mutable; F  :     Face     from TopoDS;
                             S  : out Surface  from Geom;

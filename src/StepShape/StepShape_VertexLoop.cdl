@@ -24,21 +24,21 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable VertexLoop;
+	Create returns VertexLoop;
 	---Purpose: Returns a VertexLoop
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection) is redefined;
+	      aName : HAsciiString from TCollection) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aLoopVertex : mutable Vertex from StepShape) is virtual;
+	      aName : HAsciiString from TCollection;
+	      aLoopVertex : Vertex from StepShape) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetLoopVertex(me : mutable; aLoopVertex : mutable Vertex);
-	LoopVertex (me) returns mutable Vertex;
+	SetLoopVertex(me : mutable; aLoopVertex : Vertex);
+	LoopVertex (me) returns Vertex;
 
 fields
 

@@ -54,7 +54,7 @@ is
 
         Create (theAngle      : Real    from Standard;
                 theWithShare  : Boolean from Standard=Standard_True)
-          returns mutable FastDiscretFace from BRepMesh;
+          returns FastDiscretFace from BRepMesh;
 
 
 

@@ -68,7 +68,7 @@ is
     Create returns Reader;
     ---Purpose : Creates a reader object with an empty STEP model.
 
-    Create (WS : mutable WorkSession from XSControl;
+    Create (WS : WorkSession from XSControl;
     	    	 scratch : Boolean = Standard_True) returns Reader;
     ---Purpose : Creates a Reader for STEP from an already existing Session
     --           Clears the session if it was not yet set for STEP

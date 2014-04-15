@@ -24,21 +24,21 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable SweptAreaSolid;
+	Create returns SweptAreaSolid;
 	---Purpose: Returns a SweptAreaSolid
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection) is redefined;
+	      aName : HAsciiString from TCollection) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aSweptArea : mutable CurveBoundedSurface from StepGeom) is virtual;
+	      aName : HAsciiString from TCollection;
+	      aSweptArea : CurveBoundedSurface from StepGeom) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetSweptArea(me : mutable; aSweptArea : mutable CurveBoundedSurface);
-	SweptArea (me) returns mutable CurveBoundedSurface;
+	SetSweptArea(me : mutable; aSweptArea : CurveBoundedSurface);
+	SweptArea (me) returns CurveBoundedSurface;
 
 fields
 

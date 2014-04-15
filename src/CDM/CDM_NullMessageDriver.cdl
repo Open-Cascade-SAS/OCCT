@@ -17,7 +17,7 @@
 class NullMessageDriver from CDM inherits MessageDriver from CDM
 
 is
-    Create returns mutable NullMessageDriver from CDM;
+    Create returns NullMessageDriver from CDM;
     
     
     Write(me: mutable; aString: ExtString from Standard);

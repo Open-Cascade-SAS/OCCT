@@ -33,12 +33,12 @@ is
     ---Purpose : Clears List of Copy Results. Gets Ready to begin another Copy
     --           Process.
 
-    Bind (me : mutable; ent : Transient; res : mutable Transient)
+    Bind (me : mutable; ent : Transient; res : Transient)
     ---Purpose : Bind a Result to a Starting Entity identified by its Number
     	raises InterfaceError  is deferred;
     --           Error if <num> is already bound or is out of range
 
-    Search (me; ent : Transient; res : out mutable Transient)
+    Search (me; ent : Transient; res : out Transient)
     	returns Boolean  is deferred;
     ---Purpose : Searches for the Result bound to a Startingf Entity identified
     --           by its Number.

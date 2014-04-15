@@ -31,7 +31,7 @@ uses Transient, Type,
 
 is
 
-    Create (nb : Integer = 10000) returns mutable TransientProcess;
+    Create (nb : Integer = 10000) returns TransientProcess;
     ---Purpose : Sets TransientProcess at initial state, with an initial size
 
     SetModel (me : mutable; model : InterfaceModel);

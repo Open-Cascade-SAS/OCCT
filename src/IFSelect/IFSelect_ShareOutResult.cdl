@@ -30,11 +30,11 @@ raises NoSuchObject, InterfaceError
 
 is
 
-    Create (sho : mutable ShareOut; mod : InterfaceModel) returns ShareOutResult;
+    Create (sho : ShareOut; mod : InterfaceModel) returns ShareOutResult;
     ---Purpose : Creates a ShareOutResult from a ShareOut, to work on a Model
     --           (without any more precision; uses Active Protocol)
 
-    Create (sho : mutable ShareOut; G : Graph) returns ShareOutResult;
+    Create (sho : ShareOut; G : Graph) returns ShareOutResult;
     ---Purpose : Creates a ShareOutResult from a ShareOut, to work on a Graph
     --           already computed, which defines the Input Model and can
     --           specialize some Entities
@@ -50,7 +50,7 @@ is
     --           a Graph. As if it was a ShareOut with only one Dispatch
     --           Allows to compute the effect of a single Dispatch
 
-    ShareOut (me) returns mutable ShareOut;
+    ShareOut (me) returns ShareOut;
     ---Purpose : Returns the ShareOut used to create the ShareOutResult
     --           if creation from a Dispatch, returns a Null Handle
 

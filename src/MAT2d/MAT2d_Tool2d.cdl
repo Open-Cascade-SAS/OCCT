@@ -90,11 +90,11 @@ is
     	--            <theGeomVecs>
     returns Integer is static;
     
-    CreateBisector(me : in out ; abisector : mutable Bisector from MAT)
+    CreateBisector(me : in out ; abisector : Bisector from MAT)
 	--- Purpose : Creates the geometric bisector defined by <abisector>.
     is static;
     
-    TrimBisector(me : in out ; abisector : mutable Bisector from MAT)   
+    TrimBisector(me : in out ; abisector : Bisector from MAT)   
 	--- Purpose : Trims the geometric bisector by the <firstparameter>
 	--            of <abisector>.
 	--            If the parameter is out of the bisector, Return FALSE.
@@ -102,7 +102,7 @@ is
     returns Boolean is static;
     
     TrimBisector(me        : in out ; 
-    	    	 abisector : mutable Bisector from MAT ;
+    	    	 abisector : Bisector from MAT ;
                  apoint    : Integer)
         --- Purpose : Trims the geometric bisector by the point of index
         --            <apoint> in <theGeomPnts>.
@@ -111,8 +111,8 @@ is
     returns Boolean is static;
 
     IntersectBisector(me          : in out ;
-                      bisectorone : mutable Bisector from MAT ;
-                      bisectortwo : mutable Bisector from MAT ;
+                      bisectorone : Bisector from MAT ;
+                      bisectortwo : Bisector from MAT ;
                       intpnt      : in out Integer)
         --- Purpose  : Computes  the point  of  intersection between  the
         --             bisectors defined  by  <bisectorone>  and  

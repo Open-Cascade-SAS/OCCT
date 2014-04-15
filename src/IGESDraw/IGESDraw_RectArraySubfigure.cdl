@@ -33,7 +33,7 @@ raises OutOfRange
 
 is
 
-        Create returns mutable RectArraySubfigure;
+        Create returns RectArraySubfigure;
 
         -- Specific Methods pertaining to the class
 

@@ -22,7 +22,7 @@ uses Messenger from Message, IGESEntity, IGESDumper
 
 is
 
-    Create returns mutable SpecificModule from IGESSolid;
+    Create returns SpecificModule from IGESSolid;
     ---Purpose : Creates a SpecificModule from IGESSolid & puts it into SpecificLib
 
     OwnDump (me; CN : Integer; ent : IGESEntity;

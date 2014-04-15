@@ -26,19 +26,19 @@ uses
 	Curve from StepGeom
 is
 
-	Create returns mutable ReparametrisedCompositeCurveSegment;
+	Create returns ReparametrisedCompositeCurveSegment;
 	---Purpose: Returns a ReparametrisedCompositeCurveSegment
 
 
 	Init (me : mutable;
 	      aTransition : TransitionCode from StepGeom;
 	      aSameSense : Boolean from Standard;
-	      aParentCurve : mutable Curve from StepGeom) is redefined;
+	      aParentCurve : Curve from StepGeom) is redefined;
 
 	Init (me : mutable;
 	      aTransition : TransitionCode from StepGeom;
 	      aSameSense : Boolean from Standard;
-	      aParentCurve : mutable Curve from StepGeom;
+	      aParentCurve : Curve from StepGeom;
 	      aParamLength : Real from Standard) is virtual;
 
 	-- Specific Methods for Field Data Access --

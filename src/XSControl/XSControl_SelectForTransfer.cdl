@@ -35,11 +35,11 @@ uses AsciiString from TCollection, InterfaceModel,
 
 is
 
-    Create returns mutable SelectForTransfer;
+    Create returns SelectForTransfer;
     ---Purpose : Creates a SelectForTransfer, non initialised
     --           it sorts nothing, unless an Actor has been defined
 
-    Create (TR : TransferReader) returns mutable SelectForTransfer;
+    Create (TR : TransferReader) returns SelectForTransfer;
     ---Purpose : Creates a SelectForTransfer, which will work with the
     --           currently defined Actor brought by the TransferReader
 
@@ -47,7 +47,7 @@ is
     ---Purpose : Sets a TransferReader to sort entities : it brings the Actor,
     --           which may change, while the TransferReader does not
 
-    SetActor (me : mutable; act : mutable ActorOfTransientProcess);
+    SetActor (me : mutable; act : ActorOfTransientProcess);
     ---Purpose : Sets a precise actor to sort entities
     --           This definition oversedes the creation with a TransferReader
 

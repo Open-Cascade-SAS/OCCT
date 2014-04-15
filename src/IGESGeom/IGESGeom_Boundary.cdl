@@ -31,7 +31,7 @@ raises DimensionMismatch, OutOfRange
 
 is
 
-        Create returns mutable Boundary;
+        Create returns Boundary;
 
         -- Specific Methods pertaining to the class
 
@@ -101,7 +101,7 @@ is
         -- a model space curve referred to by the Index
         -- raises exception if Index <= 0 or Index > NbModelSpaceCurves()
 
-        ParameterCurve (me; Index, Num: Integer) returns mutable IGESEntity
+        ParameterCurve (me; Index, Num: Integer) returns IGESEntity
         raises OutOfRange;
     	---Purpose : returns an individual parameter curve
         -- raises exception if Index or Num is out of range

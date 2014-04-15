@@ -26,7 +26,7 @@ uses
      
 is
     Create(UV : XY; Value : XYZ; D1T : D1 from Plate; 
-     D2T : D2 from Plate;  D3T : D3 from Plate) returns mutable HPG0G3Constraint;
+     D2T : D2 from Plate;  D3T : D3 from Plate) returns HPG0G3Constraint;
     -- create a G0+G3 Constraint
     -- 
 

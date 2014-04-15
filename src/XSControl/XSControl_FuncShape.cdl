@@ -36,7 +36,7 @@ is
     ---Purpose : Defines and loads all functions which work on shapes for XSControl (as ActFunc)
 
     MoreShapes (myclass; session : WorkSession from XSControl;
-    	    	list : in out mutable HSequenceOfShape from TopTools;
+    	    	list : in out HSequenceOfShape from TopTools;
                 name : CString) returns Integer;
     ---Purpose : Analyses a name as designating Shapes from a Vars or from
     --           XSTEP transfer (last Transfer on Reading). <name> can be :

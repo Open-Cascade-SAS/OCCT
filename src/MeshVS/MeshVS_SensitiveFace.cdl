@@ -37,7 +37,7 @@ is
   Create ( theOwner    : EntityOwner from SelectBasics;
            thePoints   : Array1OfPnt from TColgp;
            theSensType : TypeOfSensitivity from Select3D = Select3D_TOS_INTERIOR )
-    returns mutable SensitiveFace from MeshVS;
+    returns SensitiveFace from MeshVS;
 
   Project( me: mutable; aProjector : Projector from Select3D ) is redefined;
 

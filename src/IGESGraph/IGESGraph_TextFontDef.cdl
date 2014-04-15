@@ -33,7 +33,7 @@ raises DimensionMismatch, OutOfRange
 
 is
 
-        Create returns mutable TextFontDef;
+        Create returns TextFontDef;
 
         -- specific for the entity
 

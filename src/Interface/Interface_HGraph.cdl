@@ -26,28 +26,28 @@ raises DomainError
 
 is
 
-    Create (agraph : Graph) returns mutable HGraph;
+    Create (agraph : Graph) returns HGraph;
     ---Purpose : Creates an HGraph directly from a Graph.
     --           Remark that the starting Graph is duplicated
     
     Create (amodel : InterfaceModel; lib : GeneralLib;
-     theModeStats : Boolean = Standard_True) returns mutable HGraph;
+     theModeStats : Boolean = Standard_True) returns HGraph;
     ---Purpose : Creates an HGraph with a Graph created from <amodel> and <lib>
 
     Create (amodel : InterfaceModel; protocol : Protocol from Interface;
      theModeStats : Boolean = Standard_True)
-    	returns mutable HGraph;
+    	returns HGraph;
     ---Purpose : Creates an HGraph with a graph itself created from <amodel>
     --           and <protocol>
 
     Create (amodel : InterfaceModel; gtool : GTool from Interface;
      theModeStats : Boolean = Standard_True)
-    	returns mutable HGraph;
+    	returns HGraph;
     ---Purpose : Creates an HGraph with a graph itself created from <amodel>
     --           and <protocol>
 
     Create (amodel : InterfaceModel;
-     theModeStats : Boolean = Standard_True) returns mutable HGraph
+     theModeStats : Boolean = Standard_True) returns HGraph
     ---Purpose : Same a above, but works with the GTool in the model
     	raises DomainError;
     --           Error if no Active Protocol is defined

@@ -24,7 +24,7 @@ uses OStream, Transient ,
 
 is
 
-    Create returns mutable DefaultGeneral;
+    Create returns DefaultGeneral;
     ---Purpose : Creates a Default General Module
 
     	--  Reconduction because limitation cdl  --
@@ -38,12 +38,12 @@ is
     	       ach : in out Check);
     ---Purpose : Specific Checking of an Entity <ent>
 
-    NewVoid (me; CN : Integer; entto : out mutable Transient)
+    NewVoid (me; CN : Integer; entto : out Transient)
     	returns Boolean;
     ---Purpose : Specific creation of a new void entity
 
     CopyCase (me; casenum : Integer;
-    	      entfrom : Transient; entto : mutable Transient;
+    	      entfrom : Transient; entto : Transient;
     	      TC : in out CopyTool);
     ---Purpose : Specific Copy ("Deep") from <entfrom> to <entto> (same type)
     --           by using a CopyTool which provides its working Map.

@@ -37,7 +37,7 @@ uses CString, ParamType from Interface, Logical from StepData
 
 is
 
-    Create returns mutable SelectMember;
+    Create returns SelectMember;
     --  this constructor is useless, the class is empty
 
     HasName (me) returns Boolean  is virtual;

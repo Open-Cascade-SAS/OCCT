@@ -29,7 +29,7 @@ raises NoSuchObject
 
 is
 
-    Create returns mutable StepModel;
+    Create returns StepModel;
     ---Purpose: Creates an empty STEP model with an empty header.
     
     Entity (me; num : Integer) returns Transient;
@@ -39,7 +39,7 @@ is
     GetFromAnother (me : mutable; other : InterfaceModel);
     ---Purpose : gets header from another Model (uses Header Protocol)
 
-    NewEmptyModel (me) returns mutable InterfaceModel;
+    NewEmptyModel (me) returns InterfaceModel;
     ---Purpose : Returns a New Empty Model, same type as <me>, i.e. StepModel
 
     	-- --   Header management   -- --
@@ -50,7 +50,7 @@ is
     HasHeaderEntity(me; atype : any Type) returns Boolean;
     ---Purpose : says if a Header entity has a specifed type
 
-    HeaderEntity (me; atype : any Type) returns mutable Transient
+    HeaderEntity (me; atype : any Type) returns Transient
     ---Purpose : Returns Header entity with specified type, if there is
     	raises NoSuchObject;
     --           Error if no Header Entity matches <atype>
@@ -58,7 +58,7 @@ is
     ClearHeader (me : mutable);
     ---Purpose : Clears the Header
 
-    AddHeaderEntity (me : mutable; ent : mutable Transient);
+    AddHeaderEntity (me : mutable; ent : Transient);
     ---Purpose : Adds an Entity to the Header
 
     VerifyCheck (me; ach : in out Check) is redefined;

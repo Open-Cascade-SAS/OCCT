@@ -60,7 +60,7 @@ is
     ---Purpose: Instance methods: 
     --          ================ 
      
-    Create returns mutable Function from TFunction;
+    Create returns Function from TFunction;
 
     GetDriverGUID (me) 
     	---Purpose: Returns the GUID for this function's driver.
@@ -99,12 +99,12 @@ is
     Restore (me: mutable; with : Attribute from TDF) 
     is virtual;
 
-    Paste (me; into : mutable Attribute from TDF;
-	       RT   : mutable RelocationTable from TDF) 
+    Paste (me; into : Attribute from TDF;
+	       RT   : RelocationTable from TDF) 
     is virtual;    
 
     NewEmpty(me)
-    returns mutable Attribute from TDF
+    returns Attribute from TDF
     is redefined;
 	
     References(me;

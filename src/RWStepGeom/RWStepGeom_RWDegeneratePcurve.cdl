@@ -29,7 +29,7 @@ is
 	Create returns RWDegeneratePcurve;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable DegeneratePcurve from StepGeom);
+	              ach : in out Check; ent : DegeneratePcurve from StepGeom);
 
 	WriteStep (me; SW : in out StepWriter; ent : DegeneratePcurve from StepGeom);
 

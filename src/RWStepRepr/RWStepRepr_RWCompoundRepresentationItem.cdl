@@ -29,7 +29,7 @@ is
 	Create returns RWCompoundRepresentationItem;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable CompoundRepresentationItem from StepRepr);
+	              ach : in out Check; ent : CompoundRepresentationItem from StepRepr);
 
 	WriteStep (me; SW : in out StepWriter; ent : CompoundRepresentationItem from StepRepr);
 

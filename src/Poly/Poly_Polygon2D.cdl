@@ -31,7 +31,7 @@ raises NullObject from Standard
 is
 
     Create(Nodes: Array1OfPnt2d from TColgp) 
-    returns mutable Polygon2D from Poly;
+    returns Polygon2D from Poly;
     	---Purpose: Constructs a 2D polygon defined by the table of points, <Nodes>.
     
     Deflection(me) returns Real;

@@ -26,12 +26,12 @@ uses Vec2d from gp
 is
 
 
-  Create returns mutable VectorWithMagnitude;
+  Create returns VectorWithMagnitude;
         ---Purpose : Creates a VectorWithMagnitude with default values.
 	---Level: Advanced 
 
 
-  Create (aVec : Vec2d from gp) returns mutable VectorWithMagnitude;
+  Create (aVec : Vec2d from gp) returns VectorWithMagnitude;
         ---Purpose : Creates a VectorWithMagnitude with <aVec>.
 	---Level: Advanced 
 

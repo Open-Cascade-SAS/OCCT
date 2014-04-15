@@ -24,19 +24,19 @@ uses
 	PlanarBox from StepVisual
 is
 
-	Create returns mutable PresentationSize;
+	Create returns PresentationSize;
 	---Purpose: Returns a PresentationSize
 
 	Init (me : mutable;
 	      aUnit : PresentationSizeAssignmentSelect from StepVisual;
-	      aSize : mutable PlanarBox from StepVisual) is virtual;
+	      aSize : PlanarBox from StepVisual) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
 	SetUnit(me : mutable; aUnit : PresentationSizeAssignmentSelect);
 	Unit (me) returns PresentationSizeAssignmentSelect;
-	SetSize(me : mutable; aSize : mutable PlanarBox);
-	Size (me) returns mutable PlanarBox;
+	SetSize(me : mutable; aSize : PlanarBox);
+	Size (me) returns PlanarBox;
 
 fields
 

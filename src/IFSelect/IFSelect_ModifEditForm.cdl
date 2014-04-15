@@ -24,14 +24,14 @@ uses CString, AsciiString from TCollection,
 
 is
 
-    Create (editform : EditForm) returns mutable ModifEditForm;
+    Create (editform : EditForm) returns ModifEditForm;
     ---Purpose : Creates a ModifEditForm. It may not change the graph
 
     EditForm (me) returns EditForm;
     ---Purpose : Returns the EditForm
 
     Perform (me; ctx  : in out ContextModif;
-    	     target   : mutable InterfaceModel;
+    	     target   : InterfaceModel;
     	     protocol : Protocol from Interface;
     	     TC       : in out CopyTool);
     ---Purpose : Acts by applying an EditForm to entities, selected or all model

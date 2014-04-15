@@ -40,7 +40,7 @@ raises OutOfRange
 
 is
 
-        Create returns mutable SectionedArea;
+        Create returns SectionedArea;
 
             -- --specific-- --
         Init(me          : mutable;

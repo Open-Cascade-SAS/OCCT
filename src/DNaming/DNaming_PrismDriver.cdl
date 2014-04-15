@@ -24,7 +24,7 @@ uses
      MakePrism   from BRepPrimAPI, 
      Shape       from TopoDS
 is
-    Create returns mutable PrismDriver from DNaming;
+    Create returns PrismDriver from DNaming;
     ---Purpose: Constructor
 
     ---Purpose: validation

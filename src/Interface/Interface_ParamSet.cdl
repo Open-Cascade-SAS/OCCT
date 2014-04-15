@@ -25,7 +25,7 @@ raises OutOfRange
 
 is
 
-    Create (nres : Integer; nst : Integer = 1)  returns mutable ParamSet;
+    Create (nres : Integer; nst : Integer = 1)  returns ParamSet;
     ---Purpose : Creates an empty ParamSet, beginning at number "nst" and of
     --           initial reservation "nres" : the "nres" first parameters
     --           which follow "ndeb" (included) will be put in an Array

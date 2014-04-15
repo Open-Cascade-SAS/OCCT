@@ -50,19 +50,19 @@ is
 
     Create (aTypeOfPresentation : TypeOfPresentation3d from PrsMgr 
     	    	    	    	  =PrsMgr_TOP_ProjectorDependant) 
-    returns mutable  ConnectedShape  from  AIS;
+    returns  ConnectedShape  from  AIS;
     	---Purpose: Initializes the type of 3d presentation aTypeOfPresentation
         
     Create (aInteractiveShape   : Shape from AIS;
     	    aTypeOfPresentation : TypeOfPresentation3d from PrsMgr 
     	    	    	    	  =PrsMgr_TOP_ProjectorDependant)  
-    returns  mutable  ConnectedShape  from  AIS;
+    returns  ConnectedShape  from  AIS;
     	---Purpose: Initializes the entity aInteractiveShape and the type of 3d presentation aTypeOfPresentation.
 
     Create(aConnectedShape     : ConnectedShape from AIS;
      	   aTypeOfPresentation : TypeOfPresentation3d from PrsMgr 
     	    	    	    	=PrsMgr_TOP_ProjectorDependant)  
-    returns  mutable  ConnectedShape  from  AIS;
+    returns  ConnectedShape  from  AIS;
     	---Purpose: Initializes the entity aConnectedShape and the type of 3d presentation aTypeOfPresentation.
     
     ---Category:  Redefined methods...
@@ -98,16 +98,16 @@ is
 
     Compute(me:mutable;
     	        aProjector   :         Projector    from Prs3d;
-                aPresentation: mutable Presentation from Prs3d)
+                aPresentation: Presentation from Prs3d)
     is redefined virtual private;
  
     Compute(me                   : mutable;
     	    aProjector           : Projector from Prs3d;
 	    aTrsf                : Transformation from Geom;
-	    aPresentation        : mutable Presentation from Prs3d)
+	    aPresentation        : Presentation from Prs3d)
     is redefined virtual private;
 
-    ComputeSelection(me:mutable; aSelection :mutable Selection from SelectMgr;
+    ComputeSelection(me:mutable; aSelection : Selection from SelectMgr;
                                  aMode      :        Integer   from Standard)
     is redefined virtual private;
     	---Purpose: Generates sensitive entities by copying 
@@ -127,7 +127,7 @@ is
     
     Compute(me:mutable;
     	        aProjector   :         Projector    from Prs3d;
-                aPresentation: mutable Presentation from Prs3d;
+                aPresentation: Presentation from Prs3d;
     	    	aShape       :         Shape from TopoDS)
     is  private;
 

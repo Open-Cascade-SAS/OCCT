@@ -23,8 +23,8 @@ uses
     TransferReader from XSControl
    
 is
-    Create returns mutable SelectForTransfer;
-    Create (TR : TransferReader from XSControl) returns mutable SelectForTransfer;
+    Create returns SelectForTransfer;
+    Create (TR : TransferReader from XSControl) returns SelectForTransfer;
     RootResult(me; G : Graph) returns EntityIterator is redefined;
     
 

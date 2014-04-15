@@ -62,14 +62,14 @@ raises ConstructionError from Standard,
 is
 
 
-  Create (E : Elips2d)  returns mutable Ellipse;
+  Create (E : Elips2d)  returns Ellipse;
         --- Purpose :
         --  Creates an ellipse by conversion of the gp_Elips2d ellipse E.
 
 
   Create (MajorAxis : Ax2d; MajorRadius, MinorRadius : Real;
           Sense: Boolean from Standard = Standard_True)
-     returns mutable Ellipse
+     returns Ellipse
     	--- Purpose :  Creates an ellipse defined by its major and minor radii,
     	--   MajorRadius and MinorRadius, and positioned
     	--   in the plane by its major axis MajorAxis; the
@@ -89,7 +89,7 @@ is
 
 
   Create (Axis : Ax22d; MajorRadius, MinorRadius : Real)
-     returns mutable Ellipse
+     returns Ellipse
     	--- Purpose : Creates an ellipse defined by its major and minor radii,
     	--   MajorRadius and MinorRadius, where the
     	--   coordinate system Axis locates the ellipse and
@@ -270,7 +270,7 @@ is
 
     	---Purpose: Applies the transformation T to this ellipse.
 
-  Copy (me)  returns mutable like me
+  Copy (me)  returns like me
      is redefined static;
     	---Purpose: Creates a new object which is a copy of this ellipse.     
 fields

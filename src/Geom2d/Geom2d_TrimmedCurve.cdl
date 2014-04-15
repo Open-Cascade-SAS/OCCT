@@ -44,7 +44,7 @@ raises ConstructionError   from Standard,
 is
 
   Create (C : Curve; U1, U2 : Real; Sense : Boolean = Standard_True)
-     returns mutable TrimmedCurve
+     returns TrimmedCurve
         --- Purpose :
         --  Creates a trimmed curve from the basis curve C limited between 
         --  U1 and U2.
@@ -280,7 +280,7 @@ is
 
 
 
-  Copy (me)  returns mutable like me;
+  Copy (me)  returns like me;
 ---Purpose:
 -- Creates a new object, which is a copy of this trimmed curve. 
     

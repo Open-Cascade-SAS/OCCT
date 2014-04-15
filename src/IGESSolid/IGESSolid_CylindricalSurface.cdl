@@ -27,7 +27,7 @@ uses
 
 is
 
-        Create returns mutable CylindricalSurface;
+        Create returns CylindricalSurface;
 
         -- Specific Methods pertaining to the class
 

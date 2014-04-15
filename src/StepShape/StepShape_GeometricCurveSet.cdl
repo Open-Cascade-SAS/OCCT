@@ -24,7 +24,7 @@ uses
 	HArray1OfGeometricSetSelect from StepShape
 is
 
-	Create returns mutable GeometricCurveSet;
+	Create returns GeometricCurveSet;
 	---Purpose: Returns a GeometricCurveSet
 
 

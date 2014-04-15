@@ -45,7 +45,7 @@ uses
 
 is
 
-  Create ( theIsAllowOverlapped : Boolean = Standard_False ) returns mutable Mesh;
+  Create ( theIsAllowOverlapped : Boolean = Standard_False ) returns Mesh;
 	---Purpose: Constructor.
         -- theIsAllowOverlapped is Standard_True, if it is allowed to draw edges overlapped with beams
         --   Its value is stored in drawer

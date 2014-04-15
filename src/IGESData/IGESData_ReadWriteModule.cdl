@@ -57,11 +57,11 @@ is
     --           Read, etc ...
 
     Read (me; CN : Integer; data : FileReaderData; num : Integer;
-    	ach : in out Check; ent : mutable Transient)
+    	ach : in out Check; ent : Transient)
     	raises DomainError;
     ---Purpose : General Read Function. See IGESReaderTool for more info
 
-    ReadOwnParams (me; CN : Integer; ent : mutable IGESEntity;
+    ReadOwnParams (me; CN : Integer; ent : IGESEntity;
     	    	   IR : IGESReaderData; PR : in out ParamReader)
     	raises DomainError  is deferred;
     ---Purpose : Reads own parameters from file for an Entity; <PR> gives

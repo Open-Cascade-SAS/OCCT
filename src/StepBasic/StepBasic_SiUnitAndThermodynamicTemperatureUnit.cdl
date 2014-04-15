@@ -26,10 +26,10 @@ uses
 
 is
 
-    Create returns mutable SiUnitAndThermodynamicTemperatureUnit;
+    Create returns SiUnitAndThermodynamicTemperatureUnit;
 	---Purpose: Returns a SiUnitAndThermodynamicTemperatureUnit
 
-    Init (me: mutable; aDimensions: mutable DimensionalExponents from StepBasic)
+    Init (me: mutable; aDimensions: DimensionalExponents from StepBasic)
     is redefined;
 
     Init (me: mutable; hasAprefix: Boolean from Standard;
@@ -38,9 +38,9 @@ is
 
     -- Specific Methods for Field Data Access --
 
-    SetThermodynamicTemperatureUnit(me: mutable; aThermodynamicTemperatureUnit: mutable ThermodynamicTemperatureUnit);
+    SetThermodynamicTemperatureUnit(me: mutable; aThermodynamicTemperatureUnit: ThermodynamicTemperatureUnit);
     
-    ThermodynamicTemperatureUnit (me) returns mutable ThermodynamicTemperatureUnit;
+    ThermodynamicTemperatureUnit (me) returns ThermodynamicTemperatureUnit;
 
 fields
 

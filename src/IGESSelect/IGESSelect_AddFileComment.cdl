@@ -26,7 +26,7 @@ uses CString, AsciiString from TCollection,
 
 is
 
-    Create returns mutable AddFileComment;
+    Create returns AddFileComment;
     ---Purpose : Creates a new emoty AddFileComment. Use AddLine to complete it
 
     Clear (me : mutable);

@@ -34,22 +34,22 @@ raises InterfaceError
 is
 
     Create (amodel : InterfaceModel; lib : GeneralLib)
-    	 returns mutable ActorDispatch;
+    	 returns ActorDispatch;
     ---Purpose : Creates an ActorDispatch from a Model. Works with a General
     --           Service Library, given as an Argument
     --           This causes TransferDispatch and its TransientProcess to be
     --           created, with default actor <me>
 
     Create (amodel : InterfaceModel; protocol : Protocol from Interface)
-    	returns mutable ActorDispatch;
+    	returns ActorDispatch;
     ---Purpose : Same as above, but Library is defined through a Protocol
 
-    Create (amodel : InterfaceModel) returns mutable ActorDispatch
+    Create (amodel : InterfaceModel) returns ActorDispatch
     ---Purpose : Same as above, but works with the Active Protocol
     	raises InterfaceError;
     --           Error if no Active Protocol is defined
 
-    AddActor (me : mutable; actor : mutable ActorOfTransientProcess from Transfer);
+    AddActor (me : mutable; actor : ActorOfTransientProcess from Transfer);
     ---Purpose : Utility which adds an actor to the default <me> (it calls
     --           SetActor from the TransientProcess)
 
@@ -60,8 +60,8 @@ is
     ---C++ : return &
 
 
-    Transfer (me : mutable; start : Transient; TP : mutable TransientProcess)
-    	returns mutable Binder  is redefined;
+    Transfer (me : mutable; start : Transient; TP : TransientProcess)
+    	returns Binder  is redefined;
     ---Purpose : Specific action : it calls the method Transfer from CopyTool
     --           i.e. the general service Copy, then returns the Binder
     --           produced by the TransientProcess

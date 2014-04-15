@@ -46,7 +46,7 @@ is
 	---Purpose: Creates a Line as intersection line
 	--          when the transitions are In or Out.
     
-    	returns mutable GLine from IntPatch;
+    	returns GLine from IntPatch;
 
 
     Create(L: Lin from gp; Tang: Boolean from Standard;
@@ -55,7 +55,7 @@ is
 	---Purpose: Creates a Line as intersection line
 	--          when the transitions are Touch.
     
-    	returns mutable GLine from IntPatch;
+    	returns GLine from IntPatch;
 
 
     Create(L: Lin from gp; Tang: Boolean from Standard)
@@ -63,7 +63,7 @@ is
 	---Purpose: Creates a Line as intersection line
 	--          when the transitions are Undecided.
     
-    	returns mutable GLine from IntPatch;
+    	returns GLine from IntPatch;
 
 
     Create(C: Circ from gp; Tang: Boolean from Standard;
@@ -72,7 +72,7 @@ is
 	---Purpose: Creates a circle as intersection line
 	--          when the transitions are In or Out.
     
-    	returns mutable GLine from IntPatch;
+    	returns GLine from IntPatch;
 
 
     Create(C: Circ from gp; Tang: Boolean from Standard;
@@ -81,7 +81,7 @@ is
 	---Purpose: Creates a circle as intersection line
 	--          when the transitions are Touch.
     
-    	returns mutable GLine from IntPatch;
+    	returns GLine from IntPatch;
 
 
     Create(C: Circ from gp; Tang: Boolean from Standard)
@@ -89,7 +89,7 @@ is
 	---Purpose: Creates a circle as intersection line
 	--          when the transitions are Undecided.
     
-    	returns mutable GLine from IntPatch;
+    	returns GLine from IntPatch;
 
 
     Create(E: Elips from gp; Tang: Boolean from Standard;
@@ -98,7 +98,7 @@ is
 	---Purpose: Creates an ellipse as intersection line
 	--          when the transitions are In or Out.
     
-    	returns mutable GLine from IntPatch;
+    	returns GLine from IntPatch;
 
 
     Create(E: Elips from gp; Tang: Boolean from Standard;
@@ -107,7 +107,7 @@ is
 	---Purpose: Creates an ellispe as intersection line
 	--          when the transitions are Touch.
     
-    	returns mutable GLine from IntPatch;
+    	returns GLine from IntPatch;
 
 
     Create(E: Elips from gp; Tang: Boolean from Standard)
@@ -115,7 +115,7 @@ is
 	---Purpose: Creates an ellipse as intersection line
 	--          when the transitions are Undecided.
     
-    	returns mutable GLine from IntPatch;
+    	returns GLine from IntPatch;
 
 
     Create(P: Parab from gp; Tang: Boolean from Standard;
@@ -124,7 +124,7 @@ is
 	---Purpose: Creates a parabola as intersection line
 	--          when the transitions are In or Out.
     
-    	returns mutable GLine from IntPatch;
+    	returns GLine from IntPatch;
 
 
     Create(P: Parab from gp; Tang: Boolean from Standard;
@@ -133,7 +133,7 @@ is
 	---Purpose: Creates a parabola as intersection line
 	--          when the transitions are Touch.
     
-    	returns mutable GLine from IntPatch;
+    	returns GLine from IntPatch;
 
 
     Create(P: Parab from gp; Tang: Boolean from Standard)
@@ -141,7 +141,7 @@ is
 	---Purpose: Creates a parabola as intersection line 
 	--          when the transitions are Undecided.
     
-    	returns mutable GLine from IntPatch;
+    	returns GLine from IntPatch;
 
 
     Create(H: Hypr from gp; Tang: Boolean from Standard;
@@ -150,7 +150,7 @@ is
 	---Purpose: Creates an hyperbola as intersection line
 	--          when the transitions are In or Out.
     
-    	returns mutable GLine from IntPatch;
+    	returns GLine from IntPatch;
 
 
     Create(H: Hypr from gp; Tang: Boolean from Standard;
@@ -159,7 +159,7 @@ is
 	---Purpose: Creates an hyperbola as intersection line
 	--          when the transitions are Touch.
     
-    	returns mutable GLine from IntPatch;
+    	returns GLine from IntPatch;
 
 
     Create(H: Hypr from gp; Tang: Boolean from Standard)
@@ -167,7 +167,7 @@ is
 	---Purpose: Creates an hyperbola as  intersection line
 	--          when the transitions are Undecided.
     
-    	returns mutable GLine from IntPatch;
+    	returns GLine from IntPatch;
 
 
     AddVertex(me: mutable; Pnt: Point from IntPatch)

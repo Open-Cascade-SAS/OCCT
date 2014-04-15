@@ -44,11 +44,11 @@ uses AsciiString from TCollection,
 
 is
 
-    Create returns mutable AutoCorrect;
+    Create returns AutoCorrect;
     ---Purpose : Creates an AutoCorrect.
 
     Performing (me; ctx : in out ContextModif;
-    	        target  : mutable IGESModel;
+    	        target  : IGESModel;
                 TC      : in out CopyTool);
     ---Purpose : Specific action : corrects entities when it is absolutely
     --           obvious, i.e. non equivoque (by DirChecker and specific

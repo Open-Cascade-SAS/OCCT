@@ -40,7 +40,7 @@ uses
     
 is
 
-    Create returns mutable HDataStructure from TopOpeBRepDS;
+    Create returns HDataStructure from TopOpeBRepDS;
     
     AddAncestors(me : mutable; S : Shape from TopoDS);
     

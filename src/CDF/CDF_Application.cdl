@@ -38,7 +38,7 @@ is
     Initialize;
     
     Load(myclass; aGUID:GUID from Standard)
-    returns  mutable Application from CDF;
+    returns Application from CDF;
     ---Purpose: plugs an application.
     
 
@@ -185,11 +185,11 @@ is
     
 ---Category: private methods
     Retrieve(me: mutable; aMetaData: MetaData from CDM; UseStorageConfiguration: Boolean from Standard)
-    returns mutable Document from CDM
+    returns Document from CDM
     is private;
 
     Retrieve(me: mutable; aMetaData: MetaData from CDM; UseStorageConfiguration: Boolean from Standard; IsComponent: Boolean from Standard)
-    returns mutable Document from CDM
+    returns Document from CDM
     is private;
 
     DocumentVersion(me: mutable; theMetaData: MetaData from CDM)

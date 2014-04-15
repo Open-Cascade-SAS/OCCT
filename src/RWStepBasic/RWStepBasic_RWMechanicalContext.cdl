@@ -29,7 +29,7 @@ is
 	Create returns RWMechanicalContext;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable MechanicalContext from StepBasic);
+	              ach : in out Check; ent : MechanicalContext from StepBasic);
 
 	WriteStep (me; SW : in out StepWriter; ent : MechanicalContext from StepBasic);
 

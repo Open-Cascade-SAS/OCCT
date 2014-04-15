@@ -23,7 +23,7 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable Point;
+	Create returns Point;
 	---Purpose: Returns a Point
 
 

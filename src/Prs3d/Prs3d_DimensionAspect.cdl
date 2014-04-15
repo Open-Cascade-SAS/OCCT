@@ -32,16 +32,16 @@ uses
     AsciiString from TCollection
 is
 
-    Create returns mutable DimensionAspect from Prs3d;
+    Create returns DimensionAspect from Prs3d;
       --- Purpose: Constructs an empty framework to define the display of dimensions.  
 
-    LineAspect(me) returns mutable LineAspect from Prs3d;
+    LineAspect(me) returns LineAspect from Prs3d;
       ---Purpose: Returns the settings for the display of lines used in presentation of dimensions.    
 
     SetLineAspect(me: mutable; theAspect: LineAspect from Prs3d);
       ---Purpose: Sets the display attributes of lines used in presentation of dimensions.
 
-    TextAspect(me) returns mutable TextAspect from Prs3d is static;
+    TextAspect(me) returns TextAspect from Prs3d is static;
       --- Purpose: Returns the settings for the display of text used in presentation of dimensions.   
 
     SetTextAspect(me:mutable; theAspect: TextAspect from Prs3d) is static; 
@@ -91,7 +91,7 @@ is
     TextHorizontalPosition (me) returns DimensionTextHorizontalPosition from Prs3d;
       --- Purpose: Gets horizontal text alignment for text label.
 
-    ArrowAspect(me) returns mutable ArrowAspect from Prs3d is static;
+    ArrowAspect(me) returns ArrowAspect from Prs3d is static;
      --- Purpose: Returns the settings for displaying arrows.   
 
     SetArrowAspect(me: mutable; theAspect: ArrowAspect from Prs3d) is static;

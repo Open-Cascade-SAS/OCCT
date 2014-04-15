@@ -41,13 +41,13 @@ raises
 
 is 
     Create(C:  HCurve from Adaptor3d; Tol: Real) 
-    returns  mutable  CurvlinFunc;
+    returns  CurvlinFunc;
     
     Create(C2D:  HCurve2d from Adaptor2d;  S:  HSurface from Adaptor3d; Tol: Real) 
-    returns  mutable  CurvlinFunc;
+    returns  CurvlinFunc;
      
     Create(C2D1,  C2D2:  HCurve2d from Adaptor2d;  S1,  S2:  HSurface from Adaptor3d; Tol: Real)
-    returns  mutable  CurvlinFunc; 
+    returns  CurvlinFunc; 
      
     SetTol(me:  mutable;  Tol: Real) 
     ---Purpose Update the tolerance to used            

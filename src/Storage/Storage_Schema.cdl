@@ -85,7 +85,7 @@ is
         ---Purpose: returns the schema's name
 
     Write(me; s : in out BaseDriver from Storage; 
-              aData : mutable Data from Storage);
+              aData : Data from Storage);
         ---Purpose: Writes the data aggregated in aData into the
     	-- container defined by the driver s. The storage
     	-- operation is performed according to the data
@@ -94,7 +94,7 @@ is
     	-- to be stored together.
 
     Read(me; s : in out BaseDriver from Storage) 
-        returns mutable Data from Storage;
+        returns Data from Storage;
         ---Purpose:  Returns the data read from the container defined
     	-- by the driver s. The retrieval operation is
     	-- performed according to the data schema with
@@ -104,20 +104,20 @@ is
     	-- the root objects from the container.
 
     ReadHeaderSection(me; s : in out BaseDriver from Storage)
-        returns mutable HeaderData from Storage;
+        returns HeaderData from Storage;
         ---Purpose: read the header part of the stream
         --  Arguments:
         --   s: driver to read
 
     ReadTypeSection(me; s : in out BaseDriver from Storage) 
-        returns mutable TypeData from Storage;
+        returns TypeData from Storage;
         ---Purpose: fill the TypeData with the  names of the type used
         --          in a stream
         --  Arguments:
         --   s: driver to read
 
     ReadRootSection(me; s : in out BaseDriver from Storage) 
-        returns mutable RootData from Storage;
+        returns RootData from Storage;
         ---Purpose: read root part of the file
         --  Arguments:
         --   s: driver to read
@@ -275,24 +275,24 @@ is
         ---Level: Internal
 
     IReadHeaderSection(me; s : in out BaseDriver from Storage;
-                           iData : mutable HeaderData from Storage) returns Boolean 
+                           iData : HeaderData from Storage) returns Boolean 
         raises StreamFormatError is private;
         ---Level: Internal
 
     IReadTypeSection(me; s : in out BaseDriver from Storage;
-                         tData : mutable TypeData from Storage) returns Boolean
+                         tData : TypeData from Storage) returns Boolean
         raises StreamFormatError is private;
         ---Level: Internal
 
     IReadRootSection(me; s : in out BaseDriver from Storage; 
-                         rData : mutable RootData from Storage) returns Boolean
+                         rData : RootData from Storage) returns Boolean
         raises StreamFormatError is private;
         ---Level: Internal
 
-    ISetCurrentData(myclass; dData : mutable Data from Storage) is private;
+    ISetCurrentData(myclass; dData : Data from Storage) is private;
         ---Level: Internal
 
-    ICurrentData(myclass) returns mutable Data from Storage is private;
+    ICurrentData(myclass) returns Data from Storage is private;
         ---Level: Internal
         ---C++: return &
 

@@ -50,7 +50,7 @@ raises
     
 is
 
-    Create returns mutable Data from TDF;
+    Create returns Data from TDF;
         ---Purpose: A new and empty Data structure.
     
     -- -----------------------------------------------------------------------

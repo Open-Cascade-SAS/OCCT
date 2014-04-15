@@ -24,7 +24,7 @@ uses
 
 is 
 
-    Create returns mutable FaceAttribute from BRepMesh;
+    Create returns FaceAttribute from BRepMesh;
 
     GetDefFace(me:mutable) returns Real;
        ---C++: return &

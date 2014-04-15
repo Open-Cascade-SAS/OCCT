@@ -29,7 +29,7 @@ is
 	Create returns RWPlanarBox;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable PlanarBox from StepVisual);
+	              ach : in out Check; ent : PlanarBox from StepVisual);
 
 	WriteStep (me; SW : in out StepWriter; ent : PlanarBox from StepVisual);
 

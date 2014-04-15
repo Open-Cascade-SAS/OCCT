@@ -64,7 +64,7 @@ raises RangeError          from Standard,
 
 is
 
-  Create (C : Curve; V : Dir)   returns mutable SurfaceOfLinearExtrusion;
+  Create (C : Curve; V : Dir)   returns SurfaceOfLinearExtrusion;
         --- Purpose :
         --  V is the direction of extrusion.
         --  C is the extruded curve.
@@ -165,14 +165,14 @@ is
         --- Purpose : IsVPeriodic always returns false.
 
 
-  UIso (me; U : Real)  returns mutable Curve;
+  UIso (me; U : Real)  returns Curve;
         --- Purpose : Computes the U isoparametric curve of this surface
         -- of linear extrusion. This is the line parallel to the
         -- direction of extrusion, passing through the point of
         -- parameter U of the basis curve.
 
 
-  VIso (me; V : Real)   returns mutable Curve;
+  VIso (me; V : Real)   returns Curve;
         --- Purpose : Computes the V isoparametric curve of this surface
         -- of linear extrusion. This curve is obtained by
         -- translating the extruded curve in the direction of
@@ -295,7 +295,7 @@ is
   
 
 
-  Copy (me)  returns mutable like me;
+  Copy (me)  returns like me;
         ---Purpose: Creates a new object which is a copy of this surface of linear extrusion.
     
 end;  

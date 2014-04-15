@@ -28,7 +28,7 @@ is
 	Create returns RWPresentationSet;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable PresentationSet from StepVisual);
+	              ach : in out Check; ent : PresentationSet from StepVisual);
 
 	WriteStep (me; SW : in out StepWriter; ent : PresentationSet from StepVisual);
 

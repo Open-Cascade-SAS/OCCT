@@ -25,22 +25,22 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable CameraModelD2;
+	Create returns CameraModelD2;
 	---Purpose: Returns a CameraModelD2
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection) is redefined;
+	      aName : HAsciiString from TCollection) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aViewWindow : mutable PlanarBox from StepVisual;
+	      aName : HAsciiString from TCollection;
+	      aViewWindow : PlanarBox from StepVisual;
 	      aViewWindowClipping : Boolean from Standard) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetViewWindow(me : mutable; aViewWindow : mutable PlanarBox);
-	ViewWindow (me) returns mutable PlanarBox;
+	SetViewWindow(me : mutable; aViewWindow : PlanarBox);
+	ViewWindow (me) returns PlanarBox;
 	SetViewWindowClipping(me : mutable; aViewWindowClipping : Boolean);
 	ViewWindowClipping (me) returns Boolean;
 

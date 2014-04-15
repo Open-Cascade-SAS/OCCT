@@ -30,15 +30,15 @@ raises ConstructionError from Standard
 is
 
 
-  Create (V : Vec2d) returns mutable VectorWithMagnitude;
+  Create (V : Vec2d) returns VectorWithMagnitude;
         --- Purpose : Creates a persistent copy of V.
 
 
-  Create (X, Y : Real)   returns mutable VectorWithMagnitude;
+  Create (X, Y : Real)   returns VectorWithMagnitude;
         --- Purpose : Creates a vector with two cartesian coordinates. 
 
 
-  Create (P1, P2 : Pnt2d)   returns mutable VectorWithMagnitude;
+  Create (P1, P2 : Pnt2d)   returns VectorWithMagnitude;
         --- Purpose :
         --  Creates a vector from the point P1 to the point P2.
         --  The magnitude of the vector is the distance between P1 and P2
@@ -75,7 +75,7 @@ is
         ---C++: alias operator +=
 
 
-  Added (me; Other : Vector)  returns mutable VectorWithMagnitude
+  Added (me; Other : Vector)  returns VectorWithMagnitude
         --- Purpose :
         --  Adds the vector Other to <me>.
         ---C++: alias operator +
@@ -94,14 +94,14 @@ is
         ---C++: alias operator /=
 
 
-  Divided (me; Scalar : Real)  returns mutable VectorWithMagnitude
+  Divided (me; Scalar : Real)  returns VectorWithMagnitude
         --- Purpose :
         --  Divides <me> by a scalar. A new vector is returned.
         ---C++: alias operator /
      is static;
 
 
-  Multiplied (me; Scalar : Real)  returns mutable VectorWithMagnitude
+  Multiplied (me; Scalar : Real)  returns VectorWithMagnitude
         --- Purpose :
         --  Computes the product of the vector <me> by a scalar.
         --  A new vector is returned.
@@ -125,7 +125,7 @@ is
         --  Resolution from package gp.
 
 
-  Normalized (me)  returns mutable VectorWithMagnitude
+  Normalized (me)  returns VectorWithMagnitude
         --- Purpose : Returns a copy of <me> Normalized.
      raises ConstructionError
         --- Purpose :
@@ -139,7 +139,7 @@ is
         ---C++: alias operator -=
 
 
-  Subtracted (me; Other : Vector)  returns mutable VectorWithMagnitude
+  Subtracted (me; Other : Vector)  returns VectorWithMagnitude
         --- Purpose :
         --  Subtracts the vector Other to <me>. A new vector is returned.
         ---C++: alias operator -
@@ -151,7 +151,7 @@ is
     	---Purpose: Applies the transformation T to this vector.
 
 
-  Copy (me)  returns mutable like me;
+  Copy (me)  returns like me;
     	--- Purpose: Creates a new object which is a copy of this vector.    
 end;
 

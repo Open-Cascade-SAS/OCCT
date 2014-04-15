@@ -25,7 +25,7 @@ uses HData from ChFiDS,
 
 is
 
-    Create returns mutable Stripe from ChFiDS;
+    Create returns Stripe from ChFiDS;
     
     
     Reset(me : mutable) is static;

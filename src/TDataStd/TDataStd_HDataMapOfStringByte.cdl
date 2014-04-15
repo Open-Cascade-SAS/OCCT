@@ -23,10 +23,10 @@ uses
     
 is
     Create( NbBuckets: Integer from Standard = 1 )  
-    returns mutable HDataMapOfStringByte from TDataStd;    
+    returns HDataMapOfStringByte from TDataStd;    
      
     Create( theOther:  DataMapOfStringByte from TDataStd)  
-    returns mutable HDataMapOfStringByte from TDataStd;
+    returns HDataMapOfStringByte from TDataStd;
      
     Map( me ) returns DataMapOfStringByte from TDataStd
 	---C++: return const &

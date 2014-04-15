@@ -44,7 +44,7 @@ is
     --           Returns True when done, False if this attribute did not exist
 
     GetAttribute (me; name : CString; type : Type from Standard;
-    	    	  val : out mutable Transient)  returns Boolean;
+    	    	  val : out Transient)  returns Boolean;
     ---Purpose : Returns an attribute from its name, filtered by a type
     --           If no attribute has this name, or if it is not kind of this
     --           type, <val> is Null and returned value is False

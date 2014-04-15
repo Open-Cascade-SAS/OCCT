@@ -26,25 +26,25 @@ uses
 	CartesianPoint from StepGeom
 is
 
-	Create returns mutable Axis1Placement;
+	Create returns Axis1Placement;
 	---Purpose: Returns a Axis1Placement
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aLocation : mutable CartesianPoint from StepGeom) is redefined;
+	      aName : HAsciiString from TCollection;
+	      aLocation : CartesianPoint from StepGeom) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aLocation : mutable CartesianPoint from StepGeom;
+	      aName : HAsciiString from TCollection;
+	      aLocation : CartesianPoint from StepGeom;
 	      hasAaxis : Boolean from Standard;
-	      aAxis : mutable Direction from StepGeom) is virtual;
+	      aAxis : Direction from StepGeom) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetAxis(me : mutable; aAxis : mutable Direction);
+	SetAxis(me : mutable; aAxis : Direction);
 	UnSetAxis (me:mutable);
-	Axis (me) returns mutable Direction;
+	Axis (me) returns Direction;
 	HasAxis (me) returns Boolean;
 
 fields

@@ -25,7 +25,7 @@ uses Ax3      from gp
 is
 
 
-  Create returns mutable ConicalSurface from PGeom;
+  Create returns ConicalSurface from PGeom;
 	---Purpose: Creates a ConicalSurface with default values.
     	---Level: Internal 
 
@@ -33,7 +33,7 @@ is
   Create (aPosition  : Ax3 from gp;
     	  aRadius    : Real from Standard;
     	  aSemiAngle : Real from Standard)
-     returns mutable ConicalSurface from PGeom;
+     returns ConicalSurface from PGeom;
 	---Purpose: Creates a ConicalSurface with these values.
     	---Level: Internal 
 

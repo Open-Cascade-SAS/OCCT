@@ -24,7 +24,7 @@ uses
      D2  from  Plate
      
 is
-    Create(UV : XY; Value : XYZ; D1T : D1 from Plate; D2T : D2 from Plate) returns mutable HPG0G2Constraint;
+    Create(UV : XY; Value : XYZ; D1T : D1 from Plate; D2T : D2 from Plate) returns HPG0G2Constraint;
     -- create a G0+G2 Constraint
     -- 
 

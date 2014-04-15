@@ -24,16 +24,16 @@ uses
     
 is
 
-    Create returns mutable PlaneAspect from Prs3d;
+    Create returns PlaneAspect from Prs3d;
     	---Purpose: Constructs an empty framework for the display of planes.    
-    EdgesAspect(me) returns mutable LineAspect from Prs3d;
+    EdgesAspect(me) returns LineAspect from Prs3d;
     
     	---Purpose: Returns the attributes of displayed edges involved in the presentation of planes.    
     
-    IsoAspect(me) returns mutable LineAspect from Prs3d;
+    IsoAspect(me) returns LineAspect from Prs3d;
     	---Purpose: Returns the attributes of displayed isoparameters involved in the presentation of planes.
         
-    ArrowAspect(me) returns mutable LineAspect from Prs3d;
+    ArrowAspect(me) returns LineAspect from Prs3d;
     	---Purpose: Returns the settings for displaying an arrow.    
     SetArrowsLength(me:mutable; L : Length from Quantity);
     

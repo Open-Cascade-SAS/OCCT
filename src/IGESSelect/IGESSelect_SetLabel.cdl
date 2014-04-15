@@ -33,7 +33,7 @@ is
     --           Mode : see Purpose of the class
 
     Performing (me; ctx : in out ContextModif;
-                target  : mutable IGESModel;
+                target  : IGESModel;
                 TC      : in out CopyTool);
     ---Purpose : Specific action : Sets or Clears the Label
 

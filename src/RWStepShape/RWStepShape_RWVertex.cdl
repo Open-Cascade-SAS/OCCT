@@ -28,7 +28,7 @@ is
 	Create returns RWVertex;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable Vertex from StepShape);
+	              ach : in out Check; ent : Vertex from StepShape);
 
 	WriteStep (me; SW : in out StepWriter; ent : Vertex from StepShape);
 

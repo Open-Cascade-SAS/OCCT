@@ -19,12 +19,12 @@ class Datum from PXCAFDoc inherits  Attribute from PDF
 uses
     HAsciiString  from PCollection
 is
-    Create returns mutable Datum from PXCAFDoc;
+    Create returns Datum from PXCAFDoc;
 
     Create (theName : HAsciiString from PCollection;
     	    theDescr: HAsciiString from PCollection;
             theId   : HAsciiString from PCollection)
-    returns mutable Datum from PXCAFDoc;
+    returns Datum from PXCAFDoc;
     
     GetName (me) returns HAsciiString from PCollection;
 

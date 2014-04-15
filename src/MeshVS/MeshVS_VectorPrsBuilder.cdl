@@ -53,7 +53,7 @@ is
            DS           : DataSource from MeshVS = 0;
            Id           : Integer = -1;
            Priority     : BuilderPriority from MeshVS = MeshVS_BP_Vector;
-           IsSimplePrs  : Boolean = Standard_False ) returns mutable VectorPrsBuilder from MeshVS;
+           IsSimplePrs  : Boolean = Standard_False ) returns VectorPrsBuilder from MeshVS;
 
   Build   ( me; Prs        : Presentation from Prs3d;
             IDs            : PackedMapOfInteger;

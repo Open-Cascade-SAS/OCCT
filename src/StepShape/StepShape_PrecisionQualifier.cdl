@@ -22,7 +22,7 @@ uses
 
 is
 
-    Create returns mutable PrecisionQualifier;
+    Create returns PrecisionQualifier;
 
     Init (me : mutable; precision_value : Integer);
 

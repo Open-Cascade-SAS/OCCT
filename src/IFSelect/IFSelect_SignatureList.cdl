@@ -35,7 +35,7 @@ uses CString, HSequenceOfTransient,
 
 is
 
-    Create (withlist : Boolean = Standard_False) returns mutable SignatureList;
+    Create (withlist : Boolean = Standard_False) returns SignatureList;
     ---Purpose : Creates a SignatureList. If <withlist> is True, entities will
     --           be not only counted per signature, but also listed.
 

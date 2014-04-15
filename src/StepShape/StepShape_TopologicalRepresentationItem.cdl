@@ -28,7 +28,7 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable TopologicalRepresentationItem;
+	Create returns TopologicalRepresentationItem;
 	---Purpose: Returns a TopologicalRepresentationItem
 
 

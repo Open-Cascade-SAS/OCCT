@@ -53,7 +53,7 @@ uses
 is
 
 	Create ( theDriver: GraphicDriver from Graphic3d)
-		returns mutable ViewManager from Visual3d;
+		returns ViewManager from Visual3d;
 	---Level: Public
 	---Purpose: Creates a 3D visualizer.
 	--  Currently creating of more than 100 viewer instances 

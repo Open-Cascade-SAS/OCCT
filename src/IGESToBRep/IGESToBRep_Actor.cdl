@@ -27,7 +27,7 @@ uses TransientProcess, Binder, InterfaceModel from Interface
 
 is
 
-    Create  returns mutable Actor from IGESToBRep;
+    Create  returns Actor from IGESToBRep;
 
     SetModel (me : mutable; model : InterfaceModel from Interface);
     
@@ -41,8 +41,8 @@ is
 
     Recognize (me : mutable; start : Transient) returns Boolean  is redefined;
 
-    Transfer (me : mutable; start : Transient; TP : mutable TransientProcess)
-    	returns mutable Binder  is redefined;
+    Transfer (me : mutable; start : Transient; TP : TransientProcess)
+    	returns Binder  is redefined;
 
     UsedTolerance (me) returns Real;
     ---Purpose : Returns the tolerance which was actually used, either from

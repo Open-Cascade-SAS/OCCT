@@ -25,24 +25,24 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable Pcurve;
+	Create returns Pcurve;
 	---Purpose: Returns a Pcurve
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection) is redefined;
+	      aName : HAsciiString from TCollection) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aBasisSurface : mutable Surface from StepGeom;
-	      aReferenceToCurve : mutable DefinitionalRepresentation from StepRepr) is virtual;
+	      aName : HAsciiString from TCollection;
+	      aBasisSurface : Surface from StepGeom;
+	      aReferenceToCurve : DefinitionalRepresentation from StepRepr) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetBasisSurface(me : mutable; aBasisSurface : mutable Surface);
-	BasisSurface (me) returns mutable Surface;
-	SetReferenceToCurve(me : mutable; aReferenceToCurve : mutable DefinitionalRepresentation);
-	ReferenceToCurve (me) returns mutable DefinitionalRepresentation;
+	SetBasisSurface(me : mutable; aBasisSurface : Surface);
+	BasisSurface (me) returns Surface;
+	SetReferenceToCurve(me : mutable; aReferenceToCurve : DefinitionalRepresentation);
+	ReferenceToCurve (me) returns DefinitionalRepresentation;
 
 fields
 

@@ -34,19 +34,19 @@ uses
 
 is
 
-    Create returns mutable AttributeFilter from AIS;
+    Create returns AttributeFilter from AIS;
     	---Purpose:
     	-- Constructs an empty attribute filter object.
     	-- This filter object determines whether selectable
     	-- interactive objects have a non-null owner.   
     
     Create (aCol: NameOfColor from Quantity)
-    returns mutable AttributeFilter from AIS;
+    returns AttributeFilter from AIS;
     	---Purpose:
     	-- Constructs an attribute filter object defined by the
     	-- color attribute aCol.    
     Create (aWidth : Real from Standard)
-    returns mutable AttributeFilter from AIS;
+    returns AttributeFilter from AIS;
     	---Purpose:
     	-- Constructs an attribute filter object defined by the line
     	-- width attribute aWidth.

@@ -23,7 +23,7 @@ uses
 
 is
 
-    Create returns mutable MapContainer from Transfer;
+    Create returns MapContainer from Transfer;
      
     SetMapObjects(me : mutable; theMapObjects : in out DataMapOfTransientTransient from TColStd);
     	---Purposes:Set map already translated geometry objects.

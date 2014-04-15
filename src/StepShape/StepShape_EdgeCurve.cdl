@@ -29,26 +29,26 @@ uses
 	Vertex from StepShape
 is
 
-	Create returns mutable EdgeCurve;
+	Create returns EdgeCurve;
 	---Purpose: Returns a EdgeCurve
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aEdgeStart : mutable Vertex from StepShape;
-	      aEdgeEnd : mutable Vertex from StepShape) is redefined;
+	      aName : HAsciiString from TCollection;
+	      aEdgeStart : Vertex from StepShape;
+	      aEdgeEnd : Vertex from StepShape) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aEdgeStart : mutable Vertex from StepShape;
-	      aEdgeEnd : mutable Vertex from StepShape;
-	      aEdgeGeometry : mutable Curve from StepGeom;
+	      aName : HAsciiString from TCollection;
+	      aEdgeStart : Vertex from StepShape;
+	      aEdgeEnd : Vertex from StepShape;
+	      aEdgeGeometry : Curve from StepGeom;
 	      aSameSense : Boolean from Standard) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetEdgeGeometry(me : mutable; aEdgeGeometry : mutable Curve);
-	EdgeGeometry (me) returns mutable Curve;
+	SetEdgeGeometry(me : mutable; aEdgeGeometry : Curve);
+	EdgeGeometry (me) returns Curve;
 	SetSameSense(me : mutable; aSameSense : Boolean);
 	SameSense (me) returns Boolean;
 

@@ -33,11 +33,11 @@ raises NotDone from StdFail
 is 
 
 Create ( S  : Shell from TopoDS;
-         FP : mutable FinderProcess from Transfer)
+         FP : FinderProcess from Transfer)
         returns MakeFacetedBrep;
 
 Create ( S  : Solid from TopoDS;
-         FP : mutable FinderProcess from Transfer)
+         FP : FinderProcess from Transfer)
         returns MakeFacetedBrep;
 
 Value (me) returns FacetedBrep from StepShape

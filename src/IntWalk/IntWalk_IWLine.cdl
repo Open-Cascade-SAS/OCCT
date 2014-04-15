@@ -51,7 +51,7 @@ is
 
     Create (theAllocator: Allocator from IntSurf = 0)
     
-    	returns mutable IWLine;
+    	returns IWLine;
 
 
     Reverse(me : mutable)
@@ -154,7 +154,7 @@ is
     
 	---Purpose: Returns the LineOn2S contained in the walking line.
     
-    	returns mutable LineOn2S from IntSurf
+    	returns LineOn2S from IntSurf
 	---C++: return const&
     	---C++: inline
 	

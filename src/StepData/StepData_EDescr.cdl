@@ -30,7 +30,7 @@ is
     IsComplex  (me) returns Boolean  is deferred;
     ---Purpose : Tells if a EDescr is complex (ECDescr) or simple (ESDescr)
 
-    NewEntity  (me) returns mutable Described  is deferred;
+    NewEntity  (me) returns Described  is deferred;
     ---Purpose : Creates a described entity (i.e. a simple one)
 
 end EDescr;

@@ -29,7 +29,7 @@ is
 	Create returns RWToleranceValue;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable ToleranceValue from StepShape);
+	              ach : in out Check; ent : ToleranceValue from StepShape);
 
 	WriteStep (me; SW : in out StepWriter; ent : ToleranceValue from StepShape);
 

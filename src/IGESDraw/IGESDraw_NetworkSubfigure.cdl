@@ -35,7 +35,7 @@ raises OutOfRange
 
 is
 
-        Create returns mutable NetworkSubfigure;
+        Create returns NetworkSubfigure;
 
         -- specific for the entity
 

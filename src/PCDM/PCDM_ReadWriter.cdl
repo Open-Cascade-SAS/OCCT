@@ -34,18 +34,18 @@ is
     is deferred;
     ---Purpose: returns PCDM_ReadWriter_1.
     
-    WriteReferenceCounter(me; aData: mutable Data from Storage; aDocument: Document from CDM)
+    WriteReferenceCounter(me; aData: Data from Storage; aDocument: Document from CDM)
     is deferred;
     
-    WriteReferences(me; aData: mutable Data from Storage; aDocument: Document from CDM; theReferencerFileName: ExtendedString from TCollection)
-    is deferred;
-
-    
-    WriteExtensions(me; aData: mutable Data from Storage; aDocument: Document from CDM)
+    WriteReferences(me; aData: Data from Storage; aDocument: Document from CDM; theReferencerFileName: ExtendedString from TCollection)
     is deferred;
 
     
-    WriteVersion(me; aData: mutable Data from Storage; aDocument: Document from CDM)
+    WriteExtensions(me; aData: Data from Storage; aDocument: Document from CDM)
+    is deferred;
+
+    
+    WriteVersion(me; aData: Data from Storage; aDocument: Document from CDM)
     is deferred;
 
     
@@ -78,7 +78,7 @@ is
     returns ReadWriter from PCDM;
     
 
-    WriteFileFormat(myclass; aData: mutable Data from Storage; aDocument: Document from CDM);
+    WriteFileFormat(myclass; aData: Data from Storage; aDocument: Document from CDM);
     
     FileFormat(myclass; aFileName: ExtendedString from TCollection)
     returns ExtendedString from TCollection;

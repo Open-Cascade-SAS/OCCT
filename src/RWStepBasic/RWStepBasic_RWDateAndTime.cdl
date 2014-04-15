@@ -29,7 +29,7 @@ is
 	Create returns RWDateAndTime;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable DateAndTime from StepBasic);
+	              ach : in out Check; ent : DateAndTime from StepBasic);
 
 	WriteStep (me; SW : in out StepWriter; ent : DateAndTime from StepBasic);
 

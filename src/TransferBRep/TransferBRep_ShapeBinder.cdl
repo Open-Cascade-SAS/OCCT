@@ -28,10 +28,10 @@ raises TypeMismatch from Standard
 
 is
 
-    Create returns mutable ShapeBinder;
+    Create returns ShapeBinder;
     ---Purpose : Creates an empty ShapeBinder
 
-    Create (res : Shape) returns mutable ShapeBinder;
+    Create (res : Shape) returns ShapeBinder;
     ---Purpose : Creates a ShapeBinder with a result
 
     ShapeType (me) returns ShapeEnum;

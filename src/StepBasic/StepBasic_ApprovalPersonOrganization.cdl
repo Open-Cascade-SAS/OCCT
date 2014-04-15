@@ -25,22 +25,22 @@ uses
 	ApprovalRole from StepBasic
 is
 
-	Create returns mutable ApprovalPersonOrganization;
+	Create returns ApprovalPersonOrganization;
 	---Purpose: Returns a ApprovalPersonOrganization
 
 	Init (me : mutable;
 	      aPersonOrganization : PersonOrganizationSelect from StepBasic;
-	      aAuthorizedApproval : mutable Approval from StepBasic;
-	      aRole : mutable ApprovalRole from StepBasic) is virtual;
+	      aAuthorizedApproval : Approval from StepBasic;
+	      aRole : ApprovalRole from StepBasic) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
 	SetPersonOrganization(me : mutable; aPersonOrganization : PersonOrganizationSelect);
 	PersonOrganization (me) returns PersonOrganizationSelect;
-	SetAuthorizedApproval(me : mutable; aAuthorizedApproval : mutable Approval);
-	AuthorizedApproval (me) returns mutable Approval;
-	SetRole(me : mutable; aRole : mutable ApprovalRole);
-	Role (me) returns mutable ApprovalRole;
+	SetAuthorizedApproval(me : mutable; aAuthorizedApproval : Approval);
+	AuthorizedApproval (me) returns Approval;
+	SetRole(me : mutable; aRole : ApprovalRole);
+	Role (me) returns ApprovalRole;
 
 fields
 

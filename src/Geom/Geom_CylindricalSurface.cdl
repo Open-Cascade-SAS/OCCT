@@ -56,7 +56,7 @@ raises ConstructionError from Standard,
 
 is
 
-  Create (A3 : Ax3; Radius : Real)    returns mutable CylindricalSurface
+  Create (A3 : Ax3; Radius : Real)    returns CylindricalSurface
         ---Purpose :
         --  A3 defines the local coordinate system of the cylindrical surface.
         --  The "ZDirection" of A3 defines the direction of the surface's
@@ -72,7 +72,7 @@ is
 
 
 
-  Create (C : Cylinder)  returns mutable CylindricalSurface;
+  Create (C : Cylinder)  returns CylindricalSurface;
         ---Purpose :
         --  Creates a CylindricalSurface from a non transient Cylinder
         --  from package gp.
@@ -168,14 +168,14 @@ is
         ---Purpose : Returns False.
 
 
-  UIso (me; U : Real)  returns mutable Curve;
+  UIso (me; U : Real)  returns Curve;
         ---Purpose :
         --  The UIso curve is a Line. The location point of this line is
         --  on the placement plane (XAxis, YAxis) of the surface.
         --  This line is parallel to the axis of symmetry of the surface.
 
 
-  VIso (me; V : Real)   returns mutable Curve;
+  VIso (me; V : Real)   returns Curve;
         ---Purpose :
         --  The VIso curve is a circle. The start point of this circle 
         --  (U = 0) is defined with the "XAxis" of the surface.
@@ -222,7 +222,7 @@ is
 
   Transform (me : mutable; T : Trsf);
     	---Purpose:  Applies the transformation T to this cylinder.
-  Copy (me)  returns mutable like me;
+  Copy (me)  returns like me;
     	---Purpose:  Creates a new object which is a copy of this cylinder.
 fields
 

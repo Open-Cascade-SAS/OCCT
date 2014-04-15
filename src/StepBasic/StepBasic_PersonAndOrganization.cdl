@@ -24,19 +24,19 @@ uses
 	Organization from StepBasic
 is
 
-	Create returns mutable PersonAndOrganization;
+	Create returns PersonAndOrganization;
 	---Purpose: Returns a PersonAndOrganization
 
 	Init (me : mutable;
-	      aThePerson : mutable Person from StepBasic;
-	      aTheOrganization : mutable Organization from StepBasic) is virtual;
+	      aThePerson : Person from StepBasic;
+	      aTheOrganization : Organization from StepBasic) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetThePerson(me : mutable; aThePerson : mutable Person);
-	ThePerson (me) returns mutable Person;
-	SetTheOrganization(me : mutable; aTheOrganization : mutable Organization);
-	TheOrganization (me) returns mutable Organization;
+	SetThePerson(me : mutable; aThePerson : Person);
+	ThePerson (me) returns Person;
+	SetTheOrganization(me : mutable; aTheOrganization : Organization);
+	TheOrganization (me) returns Organization;
 
 fields
 

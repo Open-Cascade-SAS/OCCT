@@ -105,13 +105,13 @@ raises NoSuchObject
 
     is
     
-    	Create returns mutable StackItem;
+    	Create returns StackItem;
 	---Purpose : Creates a StackItem with no Previous one
     
-    	Create (previous : mutable StackItem) returns mutable StackItem;
+    	Create (previous : StackItem) returns StackItem;
 	---Purpose : Creates a StackItem with a Previous one
 
-    	Previous (me) returns mutable StackItem  is static;
+    	Previous (me) returns StackItem  is static;
 	---Purpose : Returns the Previous Item (is Null if no Previous defined)
 
     	Value (me) returns Dictionary  is static;
@@ -136,7 +136,7 @@ is
     	    	-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
     	-- (methods having a String argument are duplicated String-CString)
 
-    Create returns mutable Dictionary;
+    Create returns Dictionary;
     ---Purpose : Creates a Dictionary cell.
     --           A Dictionary is always created then handled by its first cell
     --           After creating a Dictionary, user can call methods HasItem,
@@ -246,7 +246,7 @@ is
     Clear (me : mutable)  is static;
     ---Purpose : Clears all the Dictionary : all recorded Items are removed
 
-    Copy (me) returns mutable Dictionary  is static;
+    Copy (me) returns Dictionary  is static;
     ---Purpose : Copies the Dictionary as a Tree, without Copying the Items
 
     	-- --    Internal methods    -- --
@@ -254,33 +254,33 @@ is
     HasSub (me) returns Boolean  is static private;
     ---Purpose : Returns True if this cell has a subcell
 
-    Sub (me) returns mutable Dictionary  is static private;
+    Sub (me) returns Dictionary  is static private;
     ---Purpose : Returns subcell
 
     HasNext (me) returns Boolean  is static private;    
     ---Purpose : Returns True if this cell has a next cell
 
-    Next (me) returns mutable Dictionary  is static private;
+    Next (me) returns Dictionary  is static private;
     ---Purpose : Returns next cell
     
-    SetSub  (me : mutable; acell : mutable Dictionary)  is static private;
+    SetSub  (me : mutable; acell : Dictionary)  is static private;
     ---Purpose : Defines subcell
 
-    SetNext (me : mutable; acell : mutable Dictionary)  is static private;
+    SetNext (me : mutable; acell : Dictionary)  is static private;
     ---Purpose : Defines next cell
 
     SearchCell (me; name : CString; lmax : Size;
     	        car : Character; level : Size;
-    	    	acell : out mutable Dictionary; reslev : out Size;
+    	    	acell : out Dictionary; reslev : out Size;
     	        stat : out Integer)  is static private;
     ---Purpose : Internal method used to get an entry from a given name
 
     NewCell (me : mutable; name : CString; namlen : Size;
-    	     acell : in out mutable Dictionary; reslev : Size; stat : Integer)
+    	     acell : in out Dictionary; reslev : Size; stat : Integer)
 	     is static private;
     ---Purpose : Internal method used to create a new entry for a name
 
-    Complete (me; acell : out mutable Dictionary) returns Boolean  is static;
+    Complete (me; acell : out Dictionary) returns Boolean  is static;
     ---Purpose : Internal routine used for completion (returns True if success)
 
     HasIt (me) returns Boolean  is static private;

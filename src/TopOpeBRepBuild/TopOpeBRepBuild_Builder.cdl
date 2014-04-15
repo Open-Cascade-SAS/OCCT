@@ -88,11 +88,11 @@ is
     BuildTool(me) returns BuildTool from TopOpeBRepDS;
     ---C++: return const &
 
-    Perform (me:in out;HDS:mutable HDataStructure)  is  virtual;
+    Perform (me:in out;HDS: HDataStructure)  is  virtual;
     ---Purpose: Stores the data structure <HDS>,  
     -- Create shapes from the new geometries.
     --modified by NIZHNY-MZV  Thu Nov  4 13:20:25 1999
-    Perform (me:in out;HDS:mutable HDataStructure;S1,S2:Shape)  is  virtual;
+    Perform (me:in out;HDS: HDataStructure;S1,S2:Shape)  is  virtual;
     ---Purpose: Stores the data structure <HDS>,  
     -- Create shapes from the new geometries,
     -- Evaluates if an operation performed on shapes S1,S2 
@@ -201,11 +201,11 @@ is
     Section(me:in out) returns ListOfShape;
     ---C++: return const &
 
-    BuildVertices (me:in out;DS:mutable HDataStructure);
+    BuildVertices (me:in out;DS: HDataStructure);
     ---Purpose: update the DS by creating new geometries.
     --          create vertices on DS points.
 
-    BuildEdges (me:in out;DS:mutable HDataStructure);
+    BuildEdges (me:in out;DS: HDataStructure);
     ---Purpose: update the DS by creating new geometries.
     --          create shapes from the new geometries.
 
@@ -221,15 +221,15 @@ is
     -- private
     -------
 
-    BuildEdges (me:in out;iC:Integer;DS:mutable HDataStructure) is protected;
+    BuildEdges (me:in out;iC:Integer;DS: HDataStructure) is protected;
     ---Purpose: update the DS by creating new geometries.
     --          create edges on the new curve <Icurv>.
 
-    BuildFaces (me:in out;iS:Integer;DS:mutable HDataStructure) is protected;
+    BuildFaces (me:in out;iS:Integer;DS: HDataStructure) is protected;
     ---Purpose: update the DS by creating new geometries.
     --          create faces on the new surface <ISurf>.
     
-    BuildFaces (me:in out;DS:mutable HDataStructure) is protected;
+    BuildFaces (me:in out;DS: HDataStructure) is protected;
     ---Purpose: update the DS by creating new geometries.
     --          create shapes from the new geometries.
     

@@ -29,7 +29,7 @@ is
     Create(Alg    : PolyAlgo from HLRBRep;
            ViewId : Integer  from Standard;
            Debug  : Boolean  from Standard = Standard_False)
-    returns mutable DrawablePolyEdgeTool from HLRTest;
+    returns DrawablePolyEdgeTool from HLRTest;
     
     Show(me : mutable)
     	---C++: inline

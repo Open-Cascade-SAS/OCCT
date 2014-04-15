@@ -48,7 +48,7 @@ is
     --          NamedUnknowns by an associated expression, and after
     --          values computation.
     ---Level: Advanced 
-    returns mutable GeneralRelation
+    returns GeneralRelation
     raises NumericError
     is deferred;
 
@@ -63,7 +63,7 @@ is
     ---Purpose: Returns a copy of <me> having the same unknowns and 
     --          functions.
     ---Level: Advanced 
-    returns mutable like me
+    returns like me
     is deferred;
     
     NbOfSubRelations(me)

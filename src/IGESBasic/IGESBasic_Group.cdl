@@ -40,7 +40,7 @@ raises OutOfRange
 
 is
 
-        Create returns mutable Group;
+        Create returns Group;
 
     	Create (nb : Integer) returns Group;
 	---Purpose : Creates a Group with a predefined count of items

@@ -63,7 +63,7 @@ uses TypeData from Storage,
      SequenceOfExtendedString from TColStd
 is
 
-    Create returns mutable Data from Storage;
+    Create returns Data from Storage;
     	---Purpose:
     	-- Creates an empty set of data.
     	-- You explicitly create a Storage_Data object
@@ -160,11 +160,11 @@ is
     	--   number of roots stored in the read container.
     	--   Use the Roots function to get these roots in a sequence.
     
-    AddRoot(me; anObject : mutable Persistent from Standard);
+    AddRoot(me; anObject : Persistent from Standard);
     	---Purpose: add a persistent root to write. the name of the root 
     	--          is a driver reference number.
 
-    AddRoot(me; aName : AsciiString from TCollection; anObject : mutable Persistent from Standard);
+    AddRoot(me; aName : AsciiString from TCollection; anObject : Persistent from Standard);
     	---Purpose: Adds the root anObject to this set of data.
     	-- The name of the root is aName if given; if not, it
     	-- will be a reference number assigned by the driver
@@ -188,7 +188,7 @@ is
     	--   contains the roots stored in the container read.
     	-- -   An empty sequence is returned if there is no root in this set of data.
 
-    Find(me; aName : AsciiString from TCollection) returns mutable Root from Storage;
+    Find(me; aName : AsciiString from TCollection) returns Root from Storage;
     	---Purpose: Gives the root object whose name is aName in
     	-- this set of data. The returned object is a
     	-- Storage_Root object, from which the object it
@@ -217,10 +217,10 @@ is
 
     -- PRIVATE
 
-    HeaderData(me) returns mutable HeaderData from Storage is private;
-    RootData(me) returns mutable RootData from Storage is private;
-    TypeData(me) returns mutable TypeData from Storage is private;
-    InternalData(me) returns mutable InternalData from Storage is private;
+    HeaderData(me) returns HeaderData from Storage is private;
+    RootData(me) returns RootData from Storage is private;
+    TypeData(me) returns TypeData from Storage is private;
+    InternalData(me) returns InternalData from Storage is private;
     Clear(me) is private;
     SetErrorStatus(me : mutable; anError : Error from Storage) is private;    
     SetErrorStatusExtension(me : mutable; anErrorExt : AsciiString from TCollection) is private;    

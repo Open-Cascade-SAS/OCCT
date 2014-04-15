@@ -28,7 +28,7 @@ is
 	Create returns RWOrganization;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable Organization from StepBasic);
+	              ach : in out Check; ent : Organization from StepBasic);
 
 	WriteStep (me; SW : in out StepWriter; ent : Organization from StepBasic);
 

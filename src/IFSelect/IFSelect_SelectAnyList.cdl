@@ -61,22 +61,22 @@ is
     --           If <ent> has not required type, returned value must be Zero
 
 
-    SetRange (me : mutable; rankfrom, rankto : mutable IntParam);
+    SetRange (me : mutable; rankfrom, rankto : IntParam);
     ---Purpose : Sets a Range for numbers, with a lower and a upper limits
 
-    SetOne  (me : mutable; rank : mutable IntParam);
+    SetOne  (me : mutable; rank : IntParam);
     ---Purpose : Sets a unique number (only one Entity will be sorted as True)
 
-    SetFrom (me : mutable; rankfrom : mutable IntParam);
+    SetFrom (me : mutable; rankfrom : IntParam);
     ---Purpose : Sets a Lower limit but no upper limit
 
-    SetUntil (me : mutable; rankto : mutable IntParam);
+    SetUntil (me : mutable; rankto : IntParam);
     ---Purpose : Sets an Upper limit but no lower limit (equivalent to lower 1)
 
     HasLower (me) returns Boolean;
     ---Purpose : Returns True if a Lower limit is defined
 
-    Lower (me) returns mutable IntParam;
+    Lower (me) returns IntParam;
     ---Purpose : Returns Lower limit (if there is; else, value is senseless)
 
     LowerValue (me) returns Integer;
@@ -85,7 +85,7 @@ is
     HasUpper (me) returns Boolean;
     ---Purpose : Returns True if a Lower limit is defined
 
-    Upper (me) returns mutable IntParam;
+    Upper (me) returns IntParam;
     ---Purpose : Returns Upper limit (if there is; else, value is senseless)
 
     UpperValue (me) returns Integer;

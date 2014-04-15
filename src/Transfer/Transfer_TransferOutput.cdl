@@ -33,11 +33,11 @@ raises NoSuchObject, TransferFailure
 
 is
 
-    Create (actor : mutable ActorOfTransientProcess; amodel : InterfaceModel)
+    Create (actor : ActorOfTransientProcess; amodel : InterfaceModel)
     	returns TransferOutput;
     ---Purpose : Creates a TransferOutput ready to use, with a TransientProcess
 
-    Create (proc : mutable TransientProcess; amodel : InterfaceModel)
+    Create (proc : TransientProcess; amodel : InterfaceModel)
     	returns TransferOutput;
     ---Purpose : Creates a TransferOutput from an already existing
     --           TransientProcess, and a Model
@@ -52,7 +52,7 @@ is
     Model (me) returns InterfaceModel;
     ---Purpose : Returns the Starting Model
 
-    TransientProcess (me) returns mutable TransientProcess;
+    TransientProcess (me) returns TransientProcess;
     ---Purpose : Returns the TransientProcess used to work
 
     Transfer (me : in out; obj : Transient)
@@ -94,7 +94,7 @@ is
 
     ModelForStatus (me; protocol : Protocol;
     	normal : Boolean; roots : Boolean = Standard_True)
-	returns mutable InterfaceModel;
+	returns InterfaceModel;
     ---Purpose : Fills a Model with the list determined by ListForStatus
     --           This model starts from scratch (made by NewEmptyModel from the
     --           current Model), then is filled by AddWithRefs

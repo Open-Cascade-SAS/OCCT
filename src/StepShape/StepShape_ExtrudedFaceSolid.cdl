@@ -26,24 +26,24 @@ uses
 
 is
 
-	Create returns mutable ExtrudedFaceSolid;
+	Create returns ExtrudedFaceSolid;
 	---Purpose: Returns a ExtrudedFaceSolid
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aSweptArea : mutable FaceSurface from StepShape) is redefined;
+	      aName : HAsciiString from TCollection;
+	      aSweptArea : FaceSurface from StepShape) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aSweptArea : mutable FaceSurface from StepShape;
-	      aExtrudedDirection : mutable Direction from StepGeom;
+	      aName : HAsciiString from TCollection;
+	      aSweptArea : FaceSurface from StepShape;
+	      aExtrudedDirection : Direction from StepGeom;
 	      aDepth : Real from Standard) ;
 
 	-- Specific Methods for Field Data Access --
 
-	SetExtrudedDirection(me : mutable; aExtrudedDirection : mutable Direction);
-	ExtrudedDirection (me) returns mutable Direction;
+	SetExtrudedDirection(me : mutable; aExtrudedDirection : Direction);
+	ExtrudedDirection (me) returns Direction;
 	SetDepth(me : mutable; aDepth : Real);
 	Depth (me) returns Real;
 

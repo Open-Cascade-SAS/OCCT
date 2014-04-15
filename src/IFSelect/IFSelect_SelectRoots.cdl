@@ -24,7 +24,7 @@ uses AsciiString from TCollection, InterfaceModel, EntityIterator, Graph
 
 is
 
-    Create returns mutable SelectRoots;
+    Create returns SelectRoots;
     ---Purpose : Creates a SelectRoots
 
     RootResult (me; G : Graph) returns EntityIterator  is redefined;

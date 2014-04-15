@@ -87,7 +87,7 @@ is
 	------------------------
 
   Create (theManager : StructureManager from Graphic3d)
-  returns mutable Structure from Graphic3d;
+  returns Structure from Graphic3d;
   ---Level: Public
   ---Purpose: Creates a graphic object in the manager theManager.
   -- It will appear in all the views of the visualiser.
@@ -96,7 +96,7 @@ is
 
   Create (theManager : StructureManager from Graphic3d;
           thePrs     : Structure        from Graphic3d)
-  returns mutable Structure from Graphic3d;
+  returns Structure from Graphic3d;
   ---Level: Public
   ---Purpose: Creates a shadow link to existing graphic object.
 

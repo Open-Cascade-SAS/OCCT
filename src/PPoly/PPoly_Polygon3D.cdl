@@ -30,13 +30,13 @@ is
 
     Create(Nodes: HArray1OfPnt from PColgp;
     	   Defl : Real from Standard) 
-    returns mutable Polygon3D from PPoly;
+    returns Polygon3D from PPoly;
     	---Purpose: Defaults with allocation of nodes.
 
     Create(Nodes      : HArray1OfPnt  from PColgp;
            Parameters : HArray1OfReal from PColStd;
     	   Defl       : Real          from Standard) 
-    returns mutable Polygon3D from PPoly;
+    returns Polygon3D from PPoly;
     	---Purpose: Defaults with allocation of nodes + Parameters
     
 

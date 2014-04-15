@@ -29,7 +29,7 @@ is
 	Create returns RWAutoDesignNominalDateAssignment;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable AutoDesignNominalDateAssignment from StepAP214);
+	              ach : in out Check; ent : AutoDesignNominalDateAssignment from StepAP214);
 
 	WriteStep (me; SW : in out StepWriter; ent : AutoDesignNominalDateAssignment from StepAP214);
 

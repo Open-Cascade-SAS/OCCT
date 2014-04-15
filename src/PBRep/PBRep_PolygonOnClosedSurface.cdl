@@ -32,7 +32,7 @@ is
     	   P2: Polygon2D from PPoly;
     	   S:  Surface   from PGeom;
 	   L:  Location  from PTopLoc)
-    returns mutable PolygonOnClosedSurface from PBRep;
+    returns PolygonOnClosedSurface from PBRep;
     
     IsPolygonOnClosedSurface(me) returns Boolean
     	---Purpose: returns True.

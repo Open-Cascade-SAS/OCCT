@@ -28,7 +28,7 @@ is
 	Create returns RWCurve;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable Curve from StepGeom);
+	              ach : in out Check; ent : Curve from StepGeom);
 
 	WriteStep (me; SW : in out StepWriter; ent : Curve from StepGeom);
 

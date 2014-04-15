@@ -54,7 +54,7 @@ uses
 
 is
 
-    Create returns mutable DriverTable from MDF;
+    Create returns DriverTable from MDF;
 	---Purpose: Creates a mutable DriverTable from MDF.
 
     SetDriver(me : mutable;

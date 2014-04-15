@@ -58,10 +58,10 @@ is
     Restore (me: mutable; with : Attribute from TDF);
 
     NewEmpty (me)
-    returns mutable Attribute from TDF;
+    returns Attribute from TDF;
 
-    Paste (me; into : mutable Attribute from TDF;
-	       RT   : mutable RelocationTable from TDF);    
+    Paste (me; into : Attribute from TDF;
+	       RT   : RelocationTable from TDF);    
 
     GetMap (me) returns IndexedMapOfShape from TopTools;
     ---C++: return const & 

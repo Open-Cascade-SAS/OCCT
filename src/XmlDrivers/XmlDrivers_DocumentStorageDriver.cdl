@@ -23,7 +23,7 @@ uses
 
 is
     Create (theCopyright: ExtendedString from TCollection)
-    	returns mutable DocumentStorageDriver from XmlDrivers;
+    	returns DocumentStorageDriver from XmlDrivers;
     -- Constructor
 
     AttributeDrivers  (me : mutable; theMsgDriver: MessageDriver from CDM)

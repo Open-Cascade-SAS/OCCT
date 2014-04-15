@@ -47,7 +47,7 @@ is
     	-- - 0: Faces (default)
     	-- - 1: BRep.
 
-    Create (model : mutable IGESModel; modecr : Integer = 0) returns Writer;
+    Create (model : IGESModel; modecr : Integer = 0) returns Writer;
     	---Purpose : Creates a writer object with the
     	-- prepared IGES model model in write mode.
     	-- modecr defines the write mode and may be:
@@ -57,8 +57,8 @@ is
     Model (me) returns IGESModel;
     	---Purpose : Returns the IGES model to be written in output.
 
-    TransferProcess    (me) returns mutable FinderProcess;
-    SetTransferProcess (me : in out; TP : mutable FinderProcess);
+    TransferProcess    (me) returns FinderProcess;
+    SetTransferProcess (me : in out; TP : FinderProcess);
     	---Purpose : Returns/Sets the TransferProcess : it contains final results
     	--           and if some, check messages
 

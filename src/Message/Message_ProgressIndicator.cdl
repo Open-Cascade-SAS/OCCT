@@ -69,7 +69,7 @@ is
 
     ---Scope: Initialisations
     
-    Initialize returns mutable ProgressIndicator from Message;
+    Initialize returns ProgressIndicator from Message;
     	---Purpose: Constructor, just calls own Reset() (not yet redefined)
 
     Reset (me: mutable) is virtual;

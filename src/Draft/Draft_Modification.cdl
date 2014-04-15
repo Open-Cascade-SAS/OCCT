@@ -52,7 +52,7 @@ is
 
     Create(S: Shape from TopoDS)
     
-    	returns mutable Modification from Draft;
+    	returns Modification from Draft;
 
 
     Clear(me: mutable)
@@ -301,7 +301,7 @@ is
 			  NeutralPlane: Pln         from gp; 
                           Flag        : Boolean     from Standard = Standard_True)
 
-	returns mutable Curve from Geom
+	returns Curve from Geom
 	is static private;
 
 
@@ -311,7 +311,7 @@ is
                             Angle       : Real        from Standard; 
 			    NeutralPlane: Pln         from gp)
 
-	returns mutable Surface from Geom
+	returns Surface from Geom
 	is static private;
 
 

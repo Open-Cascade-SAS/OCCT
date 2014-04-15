@@ -28,19 +28,19 @@ raises
     NoSuchObject from Standard,MultiplyDefined from Standard
 
 is
-    Create  returns mutable Session from CDF
+    Create  returns Session from CDF
     raises MultiplyDefined from Standard;
 
     Exists(myclass)
 --- Purpose: returns true if a session has been created.
     returns Boolean from Standard;
     
-    CurrentSession(myclass) returns mutable Session from CDF;
+    CurrentSession(myclass) returns Session from CDF;
     ---Purpose: returns the only one instance of Session 
     --          that has been created.
 
     
-    Directory(me) returns mutable Directory from CDF;
+    Directory(me) returns Directory from CDF;
     ---Purpose: returns the directory of the session;
     ---Level: Public 
 
@@ -48,7 +48,7 @@ is
 ---Category: current application management
     HasCurrentApplication(me) returns Boolean from Standard;
     
-    CurrentApplication(me) returns mutable Application from CDF
+    CurrentApplication(me) returns Application from CDF
     raises NoSuchObject from Standard;
     
     SetCurrentApplication(me: mutable; anApplication: Application from CDF);

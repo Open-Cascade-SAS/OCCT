@@ -24,7 +24,7 @@ uses
 
 is
     Create(aStructureManager: StructureManager from Graphic3d)
-    returns mutable Prs;
+    returns Prs;
 
     Manager(me) returns any StructureManager from Graphic3d;
     	---C++: inline

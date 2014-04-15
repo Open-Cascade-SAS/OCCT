@@ -23,16 +23,16 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable ApprovalStatus;
+	Create returns ApprovalStatus;
 	---Purpose: Returns a ApprovalStatus
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection) is virtual;
+	      aName : HAsciiString from TCollection) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetName(me : mutable; aName : mutable HAsciiString);
-	Name (me) returns mutable HAsciiString;
+	SetName(me : mutable; aName : HAsciiString);
+	Name (me) returns HAsciiString;
 
 fields
 

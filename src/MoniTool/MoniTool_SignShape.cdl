@@ -23,7 +23,7 @@ uses CString, Transient, AsciiString
 
 is
 
-    Create returns mutable SignShape;
+    Create returns SignShape;
 
     Name (me) returns CString;
     ---Purpose : Returns "SHAPE"

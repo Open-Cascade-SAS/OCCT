@@ -37,14 +37,14 @@ is
         --- Purpose :
         --  creates a drawable BSpline curve from a BSpline curve of 
         --  package Geom2d.
-     returns mutable BSplineCurve2d from DrawTrSurf;
+     returns BSplineCurve2d from DrawTrSurf;
 
 
   Create (C : BSplineCurve from Geom2d;
           CurvColor, PolesColor, KnotsColor : Color from Draw;
           KnotsShape : MarkerShape from Draw; KnotsSize : Integer;
           ShowPoles, ShowKnots : Boolean; Discret : Integer)
-     returns mutable BSplineCurve2d from DrawTrSurf;
+     returns BSplineCurve2d from DrawTrSurf;
 
 
   DrawOn (me; dis : in out Display from Draw)
@@ -99,7 +99,7 @@ is
         ---C++: inline
      is static;
     
-  Copy(me) returns mutable Drawable3D from Draw
+  Copy(me) returns Drawable3D from Draw
 	---Purpose: For variable copy.
   is redefined;
   

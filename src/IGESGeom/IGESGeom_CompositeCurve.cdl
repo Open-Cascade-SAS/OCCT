@@ -30,7 +30,7 @@ raises OutOfRange
 
 is
 
-        Create returns mutable CompositeCurve;
+        Create returns CompositeCurve;
 
         -- Specific Methods pertaining to the class
 

@@ -31,7 +31,7 @@ is
     ---Purpose : Returns a ToolCircArraySubfigure, ready to work
 
 
-    ReadOwnParams (me; ent : mutable CircArraySubfigure;
+    ReadOwnParams (me; ent : CircArraySubfigure;
     	    	   IR : IGESReaderData; PR : in out ParamReader)
     	raises DomainError  is static;
     ---Purpose : Reads own parameters from file. <PR> gives access to them,
@@ -55,7 +55,7 @@ is
     ---Purpose : Performs Specific Semantic Check
 
 
-    OwnCopy    (me; entfrom : CircArraySubfigure; entto : mutable CircArraySubfigure;
+    OwnCopy    (me; entfrom : CircArraySubfigure; entto : CircArraySubfigure;
     	        TC : in out CopyTool)  is static;
     ---Purpose : Copies Specific Parameters
 

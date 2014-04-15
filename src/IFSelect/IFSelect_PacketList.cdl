@@ -32,7 +32,7 @@ raises InterfaceError
 
 is
 
-    Create (model : InterfaceModel) returns mutable PacketList;
+    Create (model : InterfaceModel) returns PacketList;
     ---Purpose : Creates a PackList, empty, ready to receive entities from a
     --           given Model
 

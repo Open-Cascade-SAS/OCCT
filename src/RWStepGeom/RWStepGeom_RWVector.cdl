@@ -30,7 +30,7 @@ is
 	Create returns RWVector;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable Vector from StepGeom);
+	              ach : in out Check; ent : Vector from StepGeom);
 
 	WriteStep (me; SW : in out StepWriter; ent : Vector from StepGeom);
 

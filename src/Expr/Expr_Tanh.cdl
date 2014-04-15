@@ -31,7 +31,7 @@ is
 
     Create(exp : GeneralExpression)
     ---Purpose: Creates the hyperbolic tangent of <exp>.
-    returns mutable Tanh;
+    returns Tanh;
 
     ShallowSimplified(me) 
     ---Purpose: Returns a GeneralExpression after a simplification 
@@ -41,7 +41,7 @@ is
 
     Copy(me)
     ---Purpose: Returns a copy of <me> having the same unknowns and functions.
-    returns mutable like me;
+    returns like me;
     
     IsIdentical(me; Other : GeneralExpression)
     ---Purpose: Tests if <me> and <Other> define the same expression.

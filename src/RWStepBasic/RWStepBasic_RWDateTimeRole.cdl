@@ -28,7 +28,7 @@ is
 	Create returns RWDateTimeRole;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable DateTimeRole from StepBasic);
+	              ach : in out Check; ent : DateTimeRole from StepBasic);
 
 	WriteStep (me; SW : in out StepWriter; ent : DateTimeRole from StepBasic);
 

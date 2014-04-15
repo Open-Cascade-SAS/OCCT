@@ -64,7 +64,7 @@ is
                      start : Curve from Geom2d;
 		     Udeb  : Real  from Standard;
 		     Ufin  : Real  from Standard)
-    	 returns mutable IGESEntity from IGESData;
+    	 returns IGESEntity from IGESData;
     ---Purpose :  Transfert  an Entity from Geom2d to IGES. If this
     --            Entity could not be converted, this member returns a NullEntity.
 

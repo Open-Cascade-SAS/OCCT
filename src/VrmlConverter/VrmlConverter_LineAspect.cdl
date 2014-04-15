@@ -26,19 +26,19 @@ uses
 is
 
     Create
-    returns mutable LineAspect from VrmlConverter;
+    returns LineAspect from VrmlConverter;
 
     ---Purpose: create a default LineAspect. 
     --  Default value: HasMaterial  =  False  - a  line  hasn't  own  material (color) 
 
     Create  (aMaterial: Material from Vrml; 
     	    	 OnOff: Boolean from Standard)
-    returns mutable LineAspect from VrmlConverter;
+    returns LineAspect from VrmlConverter;
  
     SetMaterial(me: mutable; aMaterial: Material from Vrml)
     is static;
  
-    Material(me) returns mutable Material from Vrml 
+    Material(me) returns Material from Vrml 
     is  static; 
 
     SetHasMaterial(me: mutable; OnOff: Boolean from Standard)
@@ -51,7 +51,7 @@ is
     ---Purpose: returns True if the  materials is  writing into OStream.
     is static;
  
---    Copy (me)  returns mutable like me;
+--    Copy (me)  returns like me;
     
 fields
      

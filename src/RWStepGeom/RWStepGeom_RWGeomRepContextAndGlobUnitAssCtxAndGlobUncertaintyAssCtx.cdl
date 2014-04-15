@@ -33,7 +33,7 @@ is
    	      data : StepReaderData; 
     	      num : Integer;
               ach : in out Check; 
-    	      ent : mutable GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx from StepGeom);
+    	      ent : GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx from StepGeom);
 
     WriteStep (me; SW : in out StepWriter; 
        	       ent : GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx from StepGeom);

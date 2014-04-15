@@ -29,7 +29,7 @@ is
 	Create returns RWTrimmedCurve;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable TrimmedCurve from StepGeom);
+	              ach : in out Check; ent : TrimmedCurve from StepGeom);
 
 	WriteStep (me; SW : in out StepWriter; ent : TrimmedCurve from StepGeom);
 

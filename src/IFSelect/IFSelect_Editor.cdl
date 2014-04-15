@@ -129,7 +129,7 @@ is
     --           Default returns a Null Handle, because many Editors have
     --           no list to edit. To be redefined as required
 
-    Load  (me; form : mutable EditForm; ent : Transient; model : InterfaceModel)
+    Load  (me; form : EditForm; ent : Transient; model : InterfaceModel)
     	returns Boolean  is deferred;
     ---Purpose : Loads original values from some data, to an EditForm
     --           Remark: <ent> may be Null, this means all <model> is concerned
@@ -137,7 +137,7 @@ is
     --           And both <ent> and <model> may be Null, for a full static
     --           editor
 
-    Update (me; form : mutable EditForm; num : Integer;
+    Update (me; form : EditForm; num : Integer;
     	    newval : HAsciiString; enforce : Boolean)
     	returns Boolean  is virtual;
     ---Purpose : Updates the EditForm when a parameter is modified
@@ -150,7 +150,7 @@ is
     --           If a parameter commands the value of other ones, when it is
     --           modified, it is necessary to touch them by Touch from EditForm
 
-    UpdateList (me; form : mutable EditForm; num : Integer;
+    UpdateList (me; form : EditForm; num : Integer;
     	    newlist : HSequenceOfHAsciiString; enforce : Boolean)
     	returns Boolean  is virtual;
     ---Purpose : Acts as Update, but when the value is a list

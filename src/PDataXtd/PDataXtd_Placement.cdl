@@ -24,7 +24,7 @@ class Placement from PDataXtd inherits Attribute from PDF
     
 is
 
-    Create returns mutable Placement from  PDataXtd;
+    Create returns Placement from  PDataXtd;
     
 
 end Placement;

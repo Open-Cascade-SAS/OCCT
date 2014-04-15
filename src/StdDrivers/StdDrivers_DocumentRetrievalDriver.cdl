@@ -25,7 +25,7 @@ uses
 is
 
     Create
-    returns mutable DocumentRetrievalDriver from StdDrivers;
+    returns DocumentRetrievalDriver from StdDrivers;
 
     AttributeDrivers(me : mutable; theMessageDriver : MessageDriver from CDM) 
     returns ARDriverTable from MDF

@@ -26,7 +26,7 @@ uses
 	PreferredSurfaceCurveRepresentation from StepGeom
 is
 
-	Create returns mutable IntersectionCurve;
+	Create returns IntersectionCurve;
 	---Purpose: Returns a IntersectionCurve
 
 

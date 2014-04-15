@@ -49,7 +49,7 @@ is
 
     	--  Building a Protocol  --
 
-    Build (me : in out; protocol : mutable FileProtocol);
+    Build (me : in out; protocol : FileProtocol);
     ---Purpose : Fills a FileProtocol with the list of Protocols attached to
     --           the list of Schema Names. It can remain empty ...
 

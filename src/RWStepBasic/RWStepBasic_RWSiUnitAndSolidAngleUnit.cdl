@@ -28,7 +28,7 @@ is
 	Create returns RWSiUnitAndSolidAngleUnit;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable SiUnitAndSolidAngleUnit from StepBasic);
+	              ach : in out Check; ent : SiUnitAndSolidAngleUnit from StepBasic);
 
 	WriteStep (me; SW : in out StepWriter; ent : SiUnitAndSolidAngleUnit from StepBasic);
 

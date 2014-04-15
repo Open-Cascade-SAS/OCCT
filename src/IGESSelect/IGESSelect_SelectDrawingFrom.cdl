@@ -26,7 +26,7 @@ raises InterfaceError
 
 is
 
-    Create returns mutable SelectDrawingFrom;
+    Create returns SelectDrawingFrom;
     ---Purpose : Creates a SelectDrawingFrom
 
     HasUniqueResult (me) returns Boolean  is redefined protected;

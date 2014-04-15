@@ -35,7 +35,7 @@ uses Face     from TopoDS,
      
 is
 
-    Create (T : Trsf from gp) returns mutable TrsfModification from BRepTools; 
+    Create (T : Trsf from gp) returns TrsfModification from BRepTools; 
     
     Trsf(me: mutable)
 	---Purpose: Provides access to the gp_Trsf associated with this

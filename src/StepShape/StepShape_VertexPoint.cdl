@@ -27,21 +27,21 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable VertexPoint;
+	Create returns VertexPoint;
 	---Purpose: Returns a VertexPoint
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection) is redefined;
+	      aName : HAsciiString from TCollection) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aVertexGeometry : mutable Point from StepGeom) is virtual;
+	      aName : HAsciiString from TCollection;
+	      aVertexGeometry : Point from StepGeom) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetVertexGeometry(me : mutable; aVertexGeometry : mutable Point);
-	VertexGeometry (me) returns mutable Point;
+	SetVertexGeometry(me : mutable; aVertexGeometry : Point);
+	VertexGeometry (me) returns Point;
 
 fields
 

@@ -31,7 +31,7 @@ is
     ---Purpose : Returns a ToolUniformRectGrid, ready to work
 
 
-    ReadOwnParams (me; ent : mutable UniformRectGrid;
+    ReadOwnParams (me; ent : UniformRectGrid;
     	    	   IR : IGESReaderData; PR : in out ParamReader)
     	raises DomainError  is static;
     ---Purpose : Reads own parameters from file. <PR> gives access to them,
@@ -47,7 +47,7 @@ is
     ---Purpose : Lists the Entities shared by a UniformRectGrid <ent>, from
     --           its specific (own) parameters
 
-    OwnCorrect (me; ent : mutable UniformRectGrid) returns Boolean  is static;
+    OwnCorrect (me; ent : UniformRectGrid) returns Boolean  is static;
     ---Purpose : Sets automatic unambiguous Correction on a UniformRectGrid
     --           (NbPropertyValues forced to 9)
 
@@ -59,7 +59,7 @@ is
     ---Purpose : Performs Specific Semantic Check
 
 
-    OwnCopy    (me; entfrom : UniformRectGrid; entto : mutable UniformRectGrid;
+    OwnCopy    (me; entfrom : UniformRectGrid; entto : UniformRectGrid;
     	        TC : in out CopyTool)  is static;
     ---Purpose : Copies Specific Parameters
 

@@ -25,14 +25,14 @@ raises InterfaceError
 
 is
 
-    Create returns mutable DispPerSignature;
+    Create returns DispPerSignature;
     ---Purpose : Creates a DispPerSignature with no SignCounter (by default,
     --           produces only one packet)
 
-    SignCounter (me) returns mutable SignCounter;
+    SignCounter (me) returns SignCounter;
     ---Purpose : Returns the SignCounter used for splitting
 
-    SetSignCounter (me : mutable; sign : mutable SignCounter);
+    SetSignCounter (me : mutable; sign : SignCounter);
     ---Purpose : Sets a SignCounter for sort
     --           Remark : it is set to record lists of entities, not only counts
 

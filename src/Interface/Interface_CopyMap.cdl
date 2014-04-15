@@ -27,7 +27,7 @@ raises InterfaceError
 
 is
 
-    Create (amodel : InterfaceModel) returns mutable CopyMap;
+    Create (amodel : InterfaceModel) returns CopyMap;
     ---Purpose : Creates a CopyMap adapted to work from a Model
 
     Clear (me : mutable);
@@ -36,13 +36,13 @@ is
     Model (me) returns InterfaceModel  is static;
     ---Purpose : Returns the InterfaceModel used at Creation time
 
-    Bind (me : mutable; ent : Transient; res : mutable Transient)
+    Bind (me : mutable; ent : Transient; res : Transient)
     ---Purpose : Binds a Starting Entity identified by its Number <num> in the
     --           Starting Model, to a Result of Transfer <res>
     	raises InterfaceError;
     --           Error if <num> is already bound to a result, or is out of range
 
-    Search (me; ent : Transient; res : out mutable Transient)
+    Search (me; ent : Transient; res : out Transient)
     	returns Boolean;
     ---Purpose : Search for the result of a Starting Object (i.e. an Entity,
     --           identified by its Number <num> in the Starting Model)

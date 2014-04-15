@@ -31,7 +31,7 @@ is
     ---Purpose : Returns a ToolDrilledHole, ready to work
 
 
-    ReadOwnParams (me; ent : mutable DrilledHole;
+    ReadOwnParams (me; ent : DrilledHole;
     	    	   IR : IGESReaderData; PR : in out ParamReader)
     	raises DomainError  is static;
     ---Purpose : Reads own parameters from file. <PR> gives access to them,
@@ -47,7 +47,7 @@ is
     ---Purpose : Lists the Entities shared by a DrilledHole <ent>, from
     --           its specific (own) parameters
 
-    OwnCorrect (me; ent : mutable DrilledHole) returns Boolean  is static;
+    OwnCorrect (me; ent : DrilledHole) returns Boolean  is static;
     ---Purpose : Sets automatic unambiguous Correction on a DrilledHole
     --           (NbPropertyValues forced to 5, Level cleared if Subordinate != 0)
 
@@ -59,7 +59,7 @@ is
     ---Purpose : Performs Specific Semantic Check
 
 
-    OwnCopy    (me; entfrom : DrilledHole; entto : mutable DrilledHole;
+    OwnCopy    (me; entfrom : DrilledHole; entto : DrilledHole;
     	        TC : in out CopyTool)  is static;
     ---Purpose : Copies Specific Parameters
 

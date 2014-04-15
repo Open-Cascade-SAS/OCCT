@@ -25,11 +25,11 @@ uses
 
 is
     
-    Create returns mutable AssemblyComponent from STEPSelections;
+    Create returns AssemblyComponent from STEPSelections;
     
     Create (sdr : ShapeDefinitionRepresentation from StepShape;
     	    list: HSequenceOfAssemblyLink from STEPSelections)
-    returns mutable AssemblyComponent from STEPSelections;
+    returns AssemblyComponent from STEPSelections;
     
     --Methods for getting and obtaining fields
     

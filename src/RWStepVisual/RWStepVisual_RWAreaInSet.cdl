@@ -29,7 +29,7 @@ is
 	Create returns RWAreaInSet;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable AreaInSet from StepVisual);
+	              ach : in out Check; ent : AreaInSet from StepVisual);
 
 	WriteStep (me; SW : in out StepWriter; ent : AreaInSet from StepVisual);
 

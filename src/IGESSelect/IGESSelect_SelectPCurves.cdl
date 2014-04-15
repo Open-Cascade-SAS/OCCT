@@ -24,7 +24,7 @@ uses AsciiString from TCollection, Transient, EntityIterator, Graph
 
 is
 
-    Create (basic : Boolean) returns mutable SelectPCurves;
+    Create (basic : Boolean) returns SelectPCurves;
     ---Purpose : Creates a SelectPCurves
     --           basic True  : lists all the components of pcurves
     --           basic False : lists the uppest level definitions

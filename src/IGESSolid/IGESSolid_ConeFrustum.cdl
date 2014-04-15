@@ -32,7 +32,7 @@ uses
 
 is
 
-        Create returns mutable ConeFrustum;
+        Create returns ConeFrustum;
 
         -- Specific Methods pertaining to the class
 

@@ -28,13 +28,13 @@ uses
 
 is
 
-    Create returns mutable RepresentationRelationshipWithTransformation;
+    Create returns RepresentationRelationshipWithTransformation;
 
     Init (me : mutable;
-              aName : mutable HAsciiString from TCollection;
-              aDescription : mutable HAsciiString from TCollection;
-              aRep1 : mutable Representation from StepRepr;
-              aRep2 : mutable Representation from StepRepr;
+              aName : HAsciiString from TCollection;
+              aDescription : HAsciiString from TCollection;
+              aRep1 : Representation from StepRepr;
+              aRep2 : Representation from StepRepr;
 	      aTransf : Transformation);
 
     TransformationOperator (me) returns Transformation;

@@ -18,7 +18,7 @@ class MechanicalContext from StepBasic inherits ProductContext from StepBasic
 
 is
 
-	Create returns mutable MechanicalContext;
+	Create returns MechanicalContext;
 	---Purpose: Returns a MechanicalContext
 
 end MechanicalContext;

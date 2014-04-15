@@ -29,7 +29,7 @@ is
 	Create returns RWGlobalUnitAssignedContext;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable GlobalUnitAssignedContext from StepRepr);
+	              ach : in out Check; ent : GlobalUnitAssignedContext from StepRepr);
 
 	WriteStep (me; SW : in out StepWriter; ent : GlobalUnitAssignedContext from StepRepr);
 

@@ -359,19 +359,19 @@ is
         -- Category: Inquire methods
         ----------------------------
 
-	ColorMap(me) returns mutable ColorMap from Aspect 
+	ColorMap(me) returns ColorMap from Aspect 
         raises UndefinedMap from Aspect is static;
 
-	TypeMap(me) returns  mutable TypeMap from Aspect 
+	TypeMap(me) returns TypeMap from Aspect 
         raises UndefinedMap from Aspect is static;
 
-	WidthMap(me) returns mutable WidthMap from Aspect 
+	WidthMap(me) returns WidthMap from Aspect 
         raises UndefinedMap from Aspect is static;
 
-	FontMap(me) returns  mutable FontMap from Aspect
+	FontMap(me) returns FontMap from Aspect
         raises UndefinedMap from Aspect is static;
 
-	MarkMap(me) returns  mutable MarkMap from Aspect
+	MarkMap(me) returns MarkMap from Aspect
         raises UndefinedMap from Aspect is static;
 
         WorkSpace ( me ; Width,Heigth : out Length from Quantity ) 

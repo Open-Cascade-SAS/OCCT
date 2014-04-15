@@ -26,9 +26,9 @@ uses
 is
 
 --    Create  -- Version 0
---    returns mutable LocationStorageDriver from MXCAFDoc;
+--    returns LocationStorageDriver from MXCAFDoc;
     Create (theMsgDriver : MessageDriver from CDM)
-    returns mutable LocationStorageDriver from MXCAFDoc;
+    returns LocationStorageDriver from MXCAFDoc;
 
 
     VersionNumber(me) returns Integer from Standard;
@@ -38,12 +38,12 @@ is
     SourceType(me) returns Type from Standard;
 	---Purpose: Returns the type: XCAFDoc_Location.
 
-    NewEmpty (me) returns mutable Attribute from PDF;
+    NewEmpty (me) returns Attribute from PDF;
 
 
     Paste(me;
     	  Source     :         Attribute from TDF;
-    	  Target     : mutable Attribute from PDF;
+    	  Target     : Attribute from PDF;
     	  RelocTable : SRelocationTable from MDF);
 
 

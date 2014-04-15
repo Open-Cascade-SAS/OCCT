@@ -26,7 +26,7 @@ uses
     
 is
 
-    Create returns mutable GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol;
+    Create returns GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol;
     
     Init (me: mutable; aName: HAsciiString from TCollection;
     		       aDescription: HAsciiString from TCollection;
@@ -38,15 +38,15 @@ is
 
     SetGeometricToleranceWithDatumReference(me: mutable; aGTWDR : GeometricToleranceWithDatumReference);
     
-    GetGeometricToleranceWithDatumReference(me) returns mutable GeometricToleranceWithDatumReference;
+    GetGeometricToleranceWithDatumReference(me) returns GeometricToleranceWithDatumReference;
     
     SetModifiedGeometricTolerance(me: mutable; aMGT : ModifiedGeometricTolerance);
     
-    GetModifiedGeometricTolerance(me) returns mutable ModifiedGeometricTolerance;
+    GetModifiedGeometricTolerance(me) returns ModifiedGeometricTolerance;
     
     SetPositionTolerance(me: mutable; aPT : PositionTolerance);
     
-    GetPositionTolerance(me) returns mutable PositionTolerance;
+    GetPositionTolerance(me) returns PositionTolerance;
     
 fields
 

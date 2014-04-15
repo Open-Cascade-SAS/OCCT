@@ -38,7 +38,7 @@ uses CString, AsciiString, HSequenceOfTransient from TColStd,
 
 is
 
-    Create returns mutable ResultFromModel;
+    Create returns ResultFromModel;
     ---Purpose : Creates a ResultFromModel, empty
 
     SetModel (me : mutable; model : InterfaceModel);
@@ -71,7 +71,7 @@ is
     --             and MainResult but only the result (Binder)
     --           mode = 11 : also clears MainResult (status and names remain)
 
-    FillBack (me; TP : mutable TransientProcess);
+    FillBack (me; TP : TransientProcess);
     ---Purpose : Fills back a TransientProcess from the structured set of
     --           binders. Also sets the Model.
 

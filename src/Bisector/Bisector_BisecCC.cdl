@@ -38,7 +38,7 @@ raises DomainError    from Standard,
        RangeError     from Standard
 is
     
-    Create returns mutable BisecCC;
+    Create returns BisecCC;
 
     Create  (Cu1     : Curve from Geom2d;
     	     Cu2     : Curve from Geom2d;
@@ -58,7 +58,7 @@ is
     	--          between the points of the bisector and <Cu> is smaller
     	--          than <DistMax>.
     	--          
-    returns mutable BisecCC from Bisector;	     
+    returns BisecCC from Bisector;	     
 
     Perform (me      : mutable          ;
              Cu1     : Curve from Geom2d;
@@ -101,13 +101,13 @@ is
         --- Purpose : Raised if N < 0. 
     is static;
     
-    ChangeGuide (me) returns mutable like me
+    ChangeGuide (me) returns like me
     	---Purpose: The parameter  on <me> is linked to  the parameter
     	--          on the first curve. This method creates the same bisector
     	--          where the curves are inversed.
     is static;
 
-    Copy (me)  returns mutable like me   
+    Copy (me)  returns like me   
     is static;
     
     Transform (me : mutable; T : Trsf2d) 

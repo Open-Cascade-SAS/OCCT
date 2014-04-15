@@ -26,7 +26,7 @@ uses
     Status         from  ShapeExtend
 is 
  
-    Create returns mutable SplitCurve from ShapeUpgrade;
+    Create returns SplitCurve from ShapeUpgrade;
     	---Purpose: Empty constructor.
 
     Init (me: mutable; First, Last: Real);

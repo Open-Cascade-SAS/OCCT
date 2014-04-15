@@ -36,7 +36,7 @@ uses
 is
     -- ===== Public methods =====
 
-    Create returns mutable DocumentStorageDriver from BinLDrivers;
+    Create returns DocumentStorageDriver from BinLDrivers;
         ---Purpose: Constructor
 
     SchemaName(me) returns ExtendedString from TCollection is redefined virtual;

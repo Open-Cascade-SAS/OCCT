@@ -34,9 +34,9 @@ uses
 
 is
 
-    Create  returns  mutable FilSpine from ChFiDS;
+    Create  returns FilSpine from ChFiDS;
 
-    Create(Tol : Real from Standard) returns  mutable FilSpine from ChFiDS;
+    Create(Tol : Real from Standard) returns FilSpine from ChFiDS;
 
     Reset(me : mutable; AllData : Boolean from Standard = Standard_False)
     is redefined;
@@ -110,7 +110,7 @@ is
     --          all along the edge E.
 
     ComputeLaw(me : mutable; Els : HElSpine from ChFiDS) 
-    returns mutable Composite from Law
+    returns Composite from Law
     is private;
     
     AppendElSpine(me : mutable; Els : HElSpine from ChFiDS) 
@@ -120,12 +120,12 @@ is
     is private;
     
     Law(me; Els : HElSpine from ChFiDS) 
-    returns mutable Composite from Law
+    returns Composite from Law
     is static;
     
     ChangeLaw(me : mutable; E : Edge from TopoDS) 
     ---C++: return &
-    returns mutable Function from Law
+    returns Function from Law
     ---Purpose: returns the elementary law 
     is static;
 

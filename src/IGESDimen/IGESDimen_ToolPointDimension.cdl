@@ -31,7 +31,7 @@ is
     ---Purpose : Returns a ToolPointDimension, ready to work
 
 
-    ReadOwnParams (me; ent : mutable PointDimension;
+    ReadOwnParams (me; ent : PointDimension;
     	    	   IR : IGESReaderData; PR : in out ParamReader)
     	raises DomainError  is static;
     ---Purpose : Reads own parameters from file. <PR> gives access to them,
@@ -55,7 +55,7 @@ is
     ---Purpose : Performs Specific Semantic Check
 
 
-    OwnCopy    (me; entfrom : PointDimension; entto : mutable PointDimension;
+    OwnCopy    (me; entfrom : PointDimension; entto : PointDimension;
     	        TC : in out CopyTool)  is static;
     ---Purpose : Copies Specific Parameters
 

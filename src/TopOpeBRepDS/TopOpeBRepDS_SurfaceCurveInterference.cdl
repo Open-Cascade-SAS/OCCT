@@ -28,7 +28,7 @@ uses
     
 is
 
-    Create returns mutable SurfaceCurveInterference from TopOpeBRepDS;
+    Create returns SurfaceCurveInterference from TopOpeBRepDS;
 
     Create(Transition   : Transition from TopOpeBRepDS;
 	   SupportType  : Kind from TopOpeBRepDS;
@@ -36,10 +36,10 @@ is
 	   GeometryType : Kind from TopOpeBRepDS;
 	   Geometry     : Integer;
     	   PC : Curve from Geom2d) 
-    returns mutable SurfaceCurveInterference from TopOpeBRepDS; 
+    returns SurfaceCurveInterference from TopOpeBRepDS; 
 
     Create(I : Interference from TopOpeBRepDS)
-    returns mutable SurfaceCurveInterference from TopOpeBRepDS; 
+    returns SurfaceCurveInterference from TopOpeBRepDS; 
 	    
     PCurve(me) returns any Curve from Geom2d is static;
 	---C++: return const &

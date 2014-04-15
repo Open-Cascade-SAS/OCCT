@@ -131,8 +131,8 @@ is
 	--	The associated window.              --
 	----------------------------------------------
 
-	Create ( AManager	: mutable ViewManager from Visual3d )
-		returns mutable View from Visual3d;
+	Create ( AManager	: ViewManager from Visual3d )
+		returns View from Visual3d;
 	---Level: Public
 	---Purpose: Creates a view in the viewer <AManager> with a default
 	--	    orientation and a default mapping.

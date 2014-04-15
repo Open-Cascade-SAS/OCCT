@@ -25,7 +25,7 @@ uses
 	RepresentationContext from StepRepr
 is
 
-	Create returns mutable Template;
+	Create returns Template;
 	---Purpose: Returns a Template
 
 

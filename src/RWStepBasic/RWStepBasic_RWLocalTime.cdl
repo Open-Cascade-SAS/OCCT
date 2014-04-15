@@ -29,7 +29,7 @@ is
 	Create returns RWLocalTime;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable LocalTime from StepBasic);
+	              ach : in out Check; ent : LocalTime from StepBasic);
 
 	WriteStep (me; SW : in out StepWriter; ent : LocalTime from StepBasic);
 

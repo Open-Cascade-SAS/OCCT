@@ -28,7 +28,7 @@ uses
 
 is
 
-        Create returns mutable PartNumber;
+        Create returns PartNumber;
 
         -- Specific Methods pertaining to the class
 

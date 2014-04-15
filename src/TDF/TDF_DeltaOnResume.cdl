@@ -35,7 +35,7 @@ uses
 is
 
     Create(anAtt : Attribute from TDF)
-    	returns mutable DeltaOnResume from TDF;
+    	returns DeltaOnResume from TDF;
 	---Purpose: Creates a TDF_DeltaOnResume.
 
     Apply (me : mutable)

@@ -33,7 +33,7 @@ is
 	   GT : Kind from TopOpeBRepDS;
 	   G  : Integer from Standard;
 	   P  : Real from Standard) 
-    returns mutable CurvePointInterference from TopOpeBRepDS; 
+    returns CurvePointInterference from TopOpeBRepDS; 
 	    
     Parameter(me) returns Real from Standard
     is static;

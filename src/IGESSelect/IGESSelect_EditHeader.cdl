@@ -35,7 +35,7 @@ is
     Load (me; form : EditForm; ent : Transient; model : InterfaceModel)
     	returns Boolean;
 
-    Update (me; form : mutable EditForm; num : Integer;
+    Update (me; form : EditForm; num : Integer;
     	    newval : HAsciiString; enforce : Boolean)
     	returns Boolean  is redefined;
 	-- for dynamically computed values

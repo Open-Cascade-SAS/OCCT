@@ -42,11 +42,11 @@ raises
     NoSuchObject from Standard
 is
 
-    Create (aPriority: Integer = 0) returns mutable EntityOwner from SelectMgr;
+    Create (aPriority: Integer = 0) returns EntityOwner from SelectMgr;
 	--- Purpose: Initializes the selection priority aPriority.  
     Create (aSO      : SelectableObject;
             aPriority : Integer=0)
-    returns mutable EntityOwner from SelectMgr;
+    returns EntityOwner from SelectMgr;
     	---Purpose: Constructs a framework with the selectable object
     	-- anSO being attributed the selection priority aPriority.
 	

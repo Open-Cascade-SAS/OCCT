@@ -26,7 +26,7 @@ uses CString, Type
 
 is
 
-    Create returns mutable VoidBinder;
+    Create returns VoidBinder;
 
 --    IsMultiple (me) returns Boolean;
     ---Purpose : a VoidBinder is not Multiple (Remark : it is not Simple too)

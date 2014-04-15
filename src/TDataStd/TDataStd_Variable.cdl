@@ -60,7 +60,7 @@ is
     --          ============
 
     Create
-    returns mutable Variable from TDataStd;
+    returns Variable from TDataStd;
 
     Name (me : mutable; string : ExtendedString from TCollection);
     ---Purpose:  set or change the name  of the variable, in myUnknown
@@ -141,10 +141,10 @@ is
     Restore (me: mutable; With : Attribute from TDF);
 
     NewEmpty(me)
-    returns mutable Attribute from TDF;
+    returns Attribute from TDF;
 
-    Paste (me; Into : mutable Attribute from TDF;
-	       RT   : mutable RelocationTable from TDF);    
+    Paste (me; Into : Attribute from TDF;
+	       RT   : RelocationTable from TDF);    
   
     References (me; DS : DataSet from TDF)
     ---Purpose: to export reference to the associated Name attribute.

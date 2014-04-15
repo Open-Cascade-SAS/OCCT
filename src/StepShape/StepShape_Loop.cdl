@@ -23,7 +23,7 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable Loop;
+	Create returns Loop;
 	---Purpose: Returns a Loop
 
 

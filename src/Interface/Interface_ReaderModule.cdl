@@ -38,7 +38,7 @@ is
     --           Case Number. If Recognition fails, must return 0
 
     Read (me; casenum : Integer; data : FileReaderData; num : Integer;
-    	  ach : in out Check; ent : mutable Transient)
+    	  ach : in out Check; ent : Transient)
     ---Purpose : Performs the effective loading from <data>, record <num>,
     --           to the Entity <ent> formerly created
     --           In case of Error or Warning, fills <ach> with messages
@@ -48,7 +48,7 @@ is
     --           them and fill the Check
 
     NewRead (me; casenum : Integer; data : FileReaderData; num : Integer;
-    	  ach : in out Check; ent : out mutable Transient) returns Boolean
+    	  ach : in out Check; ent : out Transient) returns Boolean
     ---Purpose : Specific operator (create+read) defaulted to do nothing.
     --           It can be redefined when it is not possible to work in two
     --           steps (NewVoid then Read). This occurs when no default

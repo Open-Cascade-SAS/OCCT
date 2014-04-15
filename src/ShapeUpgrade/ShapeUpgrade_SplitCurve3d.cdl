@@ -24,7 +24,7 @@ uses
    
 is 
  
-    Create returns mutable SplitCurve3d from ShapeUpgrade;
+    Create returns SplitCurve3d from ShapeUpgrade;
     	---Purpose: Empty constructor.
 
     Init (me: mutable; C: Curve from  Geom);

@@ -23,7 +23,7 @@ uses CString, Transient, InterfaceModel
 
 is
 
-    Create returns mutable SignCategory;
+    Create returns SignCategory;
     ---Purpose : Returns a SignCategory
 
     Value (me; ent : any Transient; model : InterfaceModel) returns CString;

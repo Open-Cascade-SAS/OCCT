@@ -30,7 +30,7 @@ is
     Create(P: PolygonOnTriangulation from PPoly;
     	   T: Triangulation          from PPoly;
 	   L: Location               from PTopLoc)
-    returns mutable PolygonOnTriangulation from PBRep;
+    returns PolygonOnTriangulation from PBRep;
     
     
     IsPolygonOnTriangulation(me) returns Boolean

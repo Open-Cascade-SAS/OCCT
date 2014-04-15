@@ -70,7 +70,7 @@ is
 	    --          Note that multiple inheritance is not supported by OCCT RTTI mechanism.
 	    ---Level: Advanced
 	    
-	This (me) returns mutable Transient
+	This (me) returns Transient
 	    ---Purpose: Returns a Handle which references this object.
 	    ---Warning: Must never be called to objects created in stack.
 	    ---Level: Advanced

@@ -32,7 +32,7 @@ uses
     CurveRepresentation       from PBRep
 
 is
-    Create returns mutable TEdge1 from PBRep;
+    Create returns TEdge1 from PBRep;
 	---Purpose: Creates an empty TEdge1.
     	---Level: Internal 
 

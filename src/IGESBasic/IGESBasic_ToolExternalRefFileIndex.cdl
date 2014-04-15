@@ -31,7 +31,7 @@ is
     ---Purpose : Returns a ToolExternalRefFileIndex, ready to work
 
 
-    ReadOwnParams (me; ent : mutable ExternalRefFileIndex;
+    ReadOwnParams (me; ent : ExternalRefFileIndex;
     	    	   IR : IGESReaderData; PR : in out ParamReader)
     	raises DomainError  is static;
     ---Purpose : Reads own parameters from file. <PR> gives access to them,
@@ -55,7 +55,7 @@ is
     ---Purpose : Performs Specific Semantic Check
 
 
-    OwnCopy    (me; entfrom : ExternalRefFileIndex; entto : mutable ExternalRefFileIndex;
+    OwnCopy    (me; entfrom : ExternalRefFileIndex; entto : ExternalRefFileIndex;
     	        TC : in out CopyTool)  is static;
     ---Purpose : Copies Specific Parameters
 

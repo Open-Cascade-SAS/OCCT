@@ -35,7 +35,7 @@ uses
     Location from TopLoc
 is
 
-    Create returns mutable ConvertToBSpline from ShapeCustom;
+    Create returns ConvertToBSpline from ShapeCustom;
     
     SetExtrusionMode(me: mutable; extrMode: Boolean);
     	---Purpose: Sets mode for convertion of Surfaces of Linear

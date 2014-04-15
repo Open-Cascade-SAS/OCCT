@@ -24,7 +24,7 @@ uses
      ExtendedString   from TCollection
 
 is
-    Create returns mutable SelectionDriver from DNaming;
+    Create returns SelectionDriver from DNaming;
     ---Purpose: Constructor
 
     ---Purpose: validation

@@ -33,7 +33,7 @@ uses AsciiString from TCollection,
 
 is
 
-    Create returns mutable ChangeLevelList;
+    Create returns ChangeLevelList;
     ---Purpose : Creates a ChangeLevelList, not yet defined
     --           (see SetOldNumber and SetNewNumber)
 
@@ -42,11 +42,11 @@ is
     --           which have a LevelList which contains the value are processed.
     --           Else, all entities attached to a LevelList are.
 
-    OldNumber (me) returns mutable IntParam;
+    OldNumber (me) returns IntParam;
     ---Purpose : Returns the parameter for OldNumber. If not defined (Null
     --           Handle), it will be interpreted as "all level lists"
 
-    SetOldNumber (me : mutable; param : mutable IntParam);
+    SetOldNumber (me : mutable; param : IntParam);
     ---Purpose : Sets a parameter for OldNumber
 
     HasNewNumber (me) returns Boolean;
@@ -54,16 +54,16 @@ is
     --           value for Level Number. Else, the first value of the LevelList
     --           is used as new Level Number.
 
-    NewNumber (me) returns mutable IntParam;
+    NewNumber (me) returns IntParam;
     ---Purpose : Returns the parameter for NewNumber. If not defined (Null
     --           Handle), it will be interpreted as "new value 0"
 
-    SetNewNumber (me : mutable; param : mutable IntParam);
+    SetNewNumber (me : mutable; param : IntParam);
     ---Purpose : Sets a parameter for NewNumber
 
 
     Performing (me; ctx : in out ContextModif;
-    	        target  : mutable IGESModel;
+    	        target  : IGESModel;
                 TC      : in out CopyTool);
     ---Purpose : Specific action : considers selected target entities :
     --           If OldNumber is not defined, all entities attached to a

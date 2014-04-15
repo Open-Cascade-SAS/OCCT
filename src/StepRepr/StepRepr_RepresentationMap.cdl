@@ -24,19 +24,19 @@ uses
 	Representation from StepRepr
 is
 
-	Create returns mutable RepresentationMap;
+	Create returns RepresentationMap;
 	---Purpose: Returns a RepresentationMap
 
 	Init (me : mutable;
-	      aMappingOrigin : mutable RepresentationItem from StepRepr;
-	      aMappedRepresentation : mutable Representation from StepRepr) is virtual;
+	      aMappingOrigin : RepresentationItem from StepRepr;
+	      aMappedRepresentation : Representation from StepRepr) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetMappingOrigin(me : mutable; aMappingOrigin : mutable RepresentationItem);
-	MappingOrigin (me) returns mutable RepresentationItem;
-	SetMappedRepresentation(me : mutable; aMappedRepresentation : mutable Representation);
-	MappedRepresentation (me) returns mutable Representation;
+	SetMappingOrigin(me : mutable; aMappingOrigin : RepresentationItem);
+	MappingOrigin (me) returns RepresentationItem;
+	SetMappedRepresentation(me : mutable; aMappedRepresentation : Representation);
+	MappedRepresentation (me) returns Representation;
 
 fields
 

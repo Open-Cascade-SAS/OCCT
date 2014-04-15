@@ -84,12 +84,12 @@ raises ConstructionError from Standard,
 
 is
 
- Create (H : Hypr)   returns mutable Hyperbola;
+ Create (H : Hypr)   returns Hyperbola;
         ---Purpose : Constructs a hyperbola by conversion of the gp_Hypr hyperbola H.
        
 
   Create (A2 : Ax2; MajorRadius, MinorRadius : Real)
-     returns mutable Hyperbola
+     returns Hyperbola
     	---Purpose : Constructs a hyperbola defined by its major and
     	-- minor radii, MajorRadius and MinorRadius, where A2 locates the
     	--   hyperbola and defines its orientation in 3D space such that:
@@ -306,7 +306,7 @@ is
     	---Purpose: Applies the transformation T to this hyperbola.
 
 
-  Copy (me)  returns mutable like me is redefined static;
+  Copy (me)  returns like me is redefined static;
 
     	---Purpose: Creates a new object which is a copy of this hyperbola.
 fields

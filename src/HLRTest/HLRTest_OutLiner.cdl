@@ -26,7 +26,7 @@ uses
 
 is
     Create(S : Shape from TopoDS)
-    returns mutable OutLiner from HLRTest; 
+    returns OutLiner from HLRTest; 
     
     OutLiner(me) returns OutLiner from HLRTopoBRep;
 	---C++: inline
@@ -34,7 +34,7 @@ is
     DrawOn(me; dis : in out Display from Draw);
 	---Purpose: Does nothhing,
     
-    Copy(me) returns mutable Drawable3D from Draw
+    Copy(me) returns Drawable3D from Draw
 	---Purpose: For variable copy.
     is redefined;
 	

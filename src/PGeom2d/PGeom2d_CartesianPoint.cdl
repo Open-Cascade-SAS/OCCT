@@ -26,12 +26,12 @@ uses Pnt2d from gp
 is
 
 
-  Create returns mutable CartesianPoint from PGeom2d;
+  Create returns CartesianPoint from PGeom2d;
         ---Purpose : Returns a CartesianPoint with default values..
 	---Level: Internal 
 
 
-  Create (aPnt2d : Pnt2d from gp) returns mutable CartesianPoint from PGeom2d;
+  Create (aPnt2d : Pnt2d from gp) returns CartesianPoint from PGeom2d;
         ---Purpose : Returns a CartesianPoint built with <aPnt2d>.
 	---Level: Internal 
 

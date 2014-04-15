@@ -29,7 +29,7 @@ is
 	Create returns RWPresentationView;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable PresentationView from StepVisual);
+	              ach : in out Check; ent : PresentationView from StepVisual);
 
 	WriteStep (me; SW : in out StepWriter; ent : PresentationView from StepVisual);
 

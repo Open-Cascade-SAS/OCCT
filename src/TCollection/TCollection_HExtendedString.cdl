@@ -39,45 +39,45 @@ raises
     NegativeValue from Standard
 is
 
- Create returns mutable HExtendedString from TCollection;
+ Create returns HExtendedString from TCollection;
    ---Purpose: Initializes a HExtendedString to an empty ExtendedString.
 
  Create ( message : CString ) 
-         returns mutable HExtendedString from TCollection
+         returns HExtendedString from TCollection
    ---Purpose: Initializes a HExtendedString with a CString.
    raises NullObject from Standard;
 
  Create ( message : ExtString ) 
-         returns mutable HExtendedString from TCollection
+         returns HExtendedString from TCollection
    ---Purpose: Initializes a HExtendedString with an ExtString.
    raises NullObject from Standard;
 
  Create ( aChar : ExtCharacter) 
-         returns mutable HExtendedString from TCollection;
+         returns HExtendedString from TCollection;
    ---Purpose: Initializes a HExtendedString with a single character.
 
  Create ( length : Integer; filler : ExtCharacter)
-         returns mutable HExtendedString from TCollection;
+         returns HExtendedString from TCollection;
    ---Purpose: Initializes a HExtendedString with <length> space allocated.
    -- and filled with <filler>.This is usefull for buffers.
 
  Create ( aString : ExtendedString from TCollection) 
-         returns mutable HExtendedString from TCollection;
+         returns HExtendedString from TCollection;
    ---Purpose: Initializes a HExtendedString with a HExtendedString.
 
  Create ( aString : HAsciiString from TCollection) 
-         returns mutable HExtendedString from TCollection;
+         returns HExtendedString from TCollection;
    ---Purpose: Initializes a HExtendedString with an HAsciiString.
 
  Create ( aString : HExtendedString from TCollection) 
-         returns mutable HExtendedString from TCollection;
+         returns HExtendedString from TCollection;
    ---Purpose: Initializes a HExtendedString with a HExtendedString.
 
  AssignCat (me : mutable ; other : HExtendedString from TCollection); 
    ---Purpose: Appends <other>  to me.
 
  Cat (me ; other : HExtendedString from TCollection) 
-        returns mutable HExtendedString from TCollection;
+        returns HExtendedString from TCollection;
    ---Level: Public
    ---Purpose: Returns a string appending <other>  to me.
 
@@ -151,7 +151,7 @@ is
    raises OutOfRange from Standard;
 
  Split(me : mutable; where : Integer) 
- returns mutable HExtendedString from TCollection
+ returns HExtendedString from TCollection
    ---Purpose: Splits a ExtendedString into two sub-strings.
    -- Example: 
    --   aString contains "abcdefg"
@@ -176,7 +176,7 @@ is
    ---C++: return const
 
  Token (me ; separators : ExtString; whichone : Integer=1) 
- returns mutable HExtendedString from TCollection
+ returns HExtendedString from TCollection
    ---Level: Public
    ---Purpose: Extracts <whichone> token from <me>.
    -- By default, the <separators> is set to space and tabulation.

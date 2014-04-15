@@ -41,7 +41,7 @@ is
     ---Purpose : Required to initialise fields
 
     ReadFile (me; name : CString;
-    	      model    : out mutable InterfaceModel;
+    	      model    : out InterfaceModel;
     	      protocol : Protocol from Interface)
 	      returns Integer  is deferred;
     ---Purpose : Gives the way to Read a File and transfer it to a Model
@@ -75,7 +75,7 @@ is
 
     CopyModel (me;
     	       original : InterfaceModel;
-	       newmodel : mutable InterfaceModel;
+	       newmodel : InterfaceModel;
 	       list     : EntityIterator;
 	       TC       : in out CopyTool)
 	returns Boolean  is virtual;

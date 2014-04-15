@@ -44,7 +44,7 @@ raises OutOfRange
 
 is
 
-        Create returns mutable PerspectiveView;
+        Create returns PerspectiveView;
 
         -- Specific Methods pertaining to the class
 

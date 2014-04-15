@@ -32,7 +32,7 @@ uses AsciiString from TCollection, HAsciiString from TCollection,
 
 is
 
-    Create (numpar : Integer) returns mutable SetGlobalParameter;
+    Create (numpar : Integer) returns SetGlobalParameter;
     ---Purpose : Creates an SetGlobalParameter, to be applied on Global
     --           Parameter <numpar>
 
@@ -40,15 +40,15 @@ is
     ---Purpose : Returns the global parameter number to which this modifiers
     --           applies
 
-    SetValue (me : mutable; text : mutable HAsciiString);
+    SetValue (me : mutable; text : HAsciiString);
     ---Purpose : Sets a Text Parameter for the new value
 
-    Value (me) returns mutable HAsciiString;
+    Value (me) returns HAsciiString;
     ---Purpose : Returns the value to set to the global parameter (Text Param)
 
 
     Performing (me; ctx : in out ContextModif;
-    	        target  : mutable IGESModel;
+    	        target  : IGESModel;
                 TC      : in out CopyTool);
     ---Purpose : Specific action : only <target> is used : the form of the new
     --           value is checked regarding the parameter number (given at

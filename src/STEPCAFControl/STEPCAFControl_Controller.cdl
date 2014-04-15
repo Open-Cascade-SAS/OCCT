@@ -25,7 +25,7 @@ uses
 
 is
 
-    Create returns mutable Controller;
+    Create returns Controller;
     ---Purpose : Initializes the use of STEP Norm (the first time)
 
     Init (myclass) returns Boolean;

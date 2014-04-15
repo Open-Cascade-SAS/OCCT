@@ -51,12 +51,12 @@ uses
 
 is
  
-    Create returns mutable SFImage from Vrml; 
+    Create returns SFImage from Vrml; 
 
     Create ( aWidth, aHeight : Integer         from Standard; 
              aNumber         : SFImageNumber   from Vrml; 
     	     anArray         : HArray1OfInteger from TColStd)
-        returns  mutable SFImage from Vrml; 
+        returns SFImage from Vrml; 
 
     SetWidth ( me : mutable; aWidth : Integer from Standard );
     Width ( me )  returns Integer from Standard;

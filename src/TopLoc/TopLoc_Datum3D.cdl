@@ -29,10 +29,10 @@ raises
     ConstructionError from Standard
     
 is
-    Create returns mutable Datum3D;
+    Create returns Datum3D;
     	---Purpose: Constructs a default Datum3D.
 
-    Create(T : Trsf from gp) returns mutable Datum3D from TopLoc
+    Create(T : Trsf from gp) returns Datum3D from TopLoc
 	---Purpose: Constructs a Datum3D form a Trsf from gp. An error is
 	--          raised if the Trsf is not a rigid transformation.
     raises 

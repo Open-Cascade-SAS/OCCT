@@ -43,7 +43,7 @@ is
           DispOrigin : Boolean from Standard = Standard_True)
         --- Purpose :
         --  creates a drawable curve from a curve of package Geom2d.
-     returns mutable Curve2d from DrawTrSurf;
+     returns Curve2d from DrawTrSurf;
 
 
   Create (C : Curve from Geom2d; aColor : Color from Draw; Discret :Integer;
@@ -51,7 +51,7 @@ is
           DispCurvRadius : Boolean  = Standard_False;
           RadiusMax : Real = 1.0e3;
 	  RatioOfRadius : Real = 0.1)
-     returns mutable Curve2d from DrawTrSurf;
+     returns Curve2d from DrawTrSurf;
 
 
   DrawOn (me; dis : in out Display from Draw);
@@ -95,7 +95,7 @@ is
      is static;     
      
  
-  Copy(me) returns mutable Drawable3D from Draw
+  Copy(me) returns Drawable3D from Draw
 	---Purpose: For variable copy.
   is redefined;
 	

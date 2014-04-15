@@ -28,7 +28,7 @@ uses Curve from PGeom
 is
 
 
-  Create returns mutable TrimmedCurve from PGeom;
+  Create returns TrimmedCurve from PGeom;
 	---Purpose: Creates a TrimmedCurve with default values.
     	---Level: Internal 
 
@@ -36,7 +36,7 @@ is
   Create (
     	aBasisCurve: Curve from PGeom;
     	aFirstU, aLastU: Real from Standard)
-     returns mutable TrimmedCurve from PGeom;
+     returns TrimmedCurve from PGeom;
         ---Purpose : Creates a TrimmedCurve with these field values.
     	---Level: Internal 
 

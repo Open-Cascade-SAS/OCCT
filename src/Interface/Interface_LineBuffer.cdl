@@ -84,10 +84,10 @@ is
     ---Purpose : Fills a AsciiString <str> with the Content of the Line Buffer,
     --           then Clears the LineBuffer
 
-    Move (me : in out; str : mutable HAsciiString from TCollection)  is static;
+    Move (me : in out; str : HAsciiString from TCollection)  is static;
     ---Purpose : Same as above, but <str> is known through a Handle
 
-    Moved (me : in out) returns mutable HAsciiString from TCollection;
+    Moved (me : in out) returns HAsciiString from TCollection;
     ---Purpose : Same as above, but generates the HAsciiString
 
 

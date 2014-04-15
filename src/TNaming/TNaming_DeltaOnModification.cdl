@@ -31,7 +31,7 @@ uses
 is
 
     Create (NS : NamedShape from TNaming)
-    	returns mutable DeltaOnModification from TNaming;
+    	returns DeltaOnModification from TNaming;
 	---Purpose: Initializes a TDF_DeltaOnModification.
 
     Apply (me : mutable)

@@ -31,7 +31,7 @@ is
                aFirstAngle: PlaneAngle from Quantity = 0;
                aSecondAngle: PlaneAngle from Quantity = 0;
                aRotationAngle: PlaneAngle from Quantity = 0)
-    returns mutable RectangularGrid from Aspect
+    returns RectangularGrid from Aspect
     ---Purpose: creates a new grid. By default this grid is not
     --          active.
     --          The first angle is given relatively to the horizontal.

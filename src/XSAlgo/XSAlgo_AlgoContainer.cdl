@@ -35,7 +35,7 @@ uses
     
 is
 
-    Create returns mutable AlgoContainer from XSAlgo;
+    Create returns AlgoContainer from XSAlgo;
     	---Purpose: Empty constructor
 	
     SetToolContainer (me: mutable; TC: ToolContainer from XSAlgo);

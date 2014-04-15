@@ -30,7 +30,7 @@ uses
 
 is
     Create(nbNod, nbTri : Integer from Standard)
-    returns mutable PolyInternalData from HLRAlgo;
+    returns PolyInternalData from HLRAlgo;
     
     UpdateLinks(me    : mutable;
                 TData : out Address from Standard;

@@ -29,7 +29,7 @@ is
 	Create returns RWPlane;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable Plane from StepGeom);
+	              ach : in out Check; ent : Plane from StepGeom);
 
 	WriteStep (me; SW : in out StepWriter; ent : Plane from StepGeom);
 

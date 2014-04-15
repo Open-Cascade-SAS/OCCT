@@ -142,7 +142,7 @@ is
   
   
     Create
-    returns mutable Geometry from TDataXtd;  
+    returns Geometry from TDataXtd;  
     	---Purpose: This and the next methods are used to  retrieve  underlying geometry of  the
 	--           NamedShape, even   if  noone Geometry   Attribute  is
     	--          associated  .  if not  found or not compliant geometry return False.
@@ -166,10 +166,10 @@ is
     Restore(me: mutable; with : Attribute from TDF);
 
     NewEmpty(me)
-    returns mutable Attribute from TDF;
+    returns Attribute from TDF;
 
-    Paste (me; into : mutable Attribute from TDF;
-	       RT   : mutable RelocationTable from TDF);  
+    Paste (me; into : Attribute from TDF;
+	       RT   : RelocationTable from TDF);  
 
     Dump(me; anOS : in out OStream from Standard)
     	returns OStream from Standard

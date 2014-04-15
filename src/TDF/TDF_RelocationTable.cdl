@@ -54,7 +54,7 @@ is
 
     Create(selfRelocate : Boolean from Standard = Standard_False)
 --    Create(selfRelocate : Boolean from Standard = Standard_False;afterRelocate :Boolean from Standard = Standard_False)     
-    	returns mutable RelocationTable from TDF;
+    	returns RelocationTable from TDF;
 	---Purpose: Creates an relocation table. <selfRelocate> says
 	--          if a value without explicit relocation is its own
 	--          relocation.
@@ -120,7 +120,7 @@ is
 
     HasRelocation(me;
     	     	  aSourceAttribute :               Attribute from TDF;
-    	     	  aTargetAttribute : in out mutable Attribute from TDF)
+    	     	  aTargetAttribute : in out Attribute from TDF)
 	returns Boolean from Standard;
 	---Purpose: Finds the relocation value of <aSourceAttribute>
 	--          and returns it into <aTargetAttribute>.
@@ -141,7 +141,7 @@ is
     HasTransientRelocation
     	(me;
     	 aSourceTransient :                Transient from Standard;
-    	 aTargetTransient : in out mutable Transient from Standard)
+    	 aTargetTransient : in out Transient from Standard)
 	returns Boolean from Standard;
 	---Purpose: Finds the relocation value of <aSourceTransient>
 	--          and returns it into <aTargetTransient>.

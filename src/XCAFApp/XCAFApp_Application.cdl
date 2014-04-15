@@ -23,7 +23,7 @@ uses
 
 is
 
-    Create returns mutable Application from XCAFApp is protected;
+    Create returns Application from XCAFApp is protected;
 
 
     ---Purpose: methods from CDF_Application

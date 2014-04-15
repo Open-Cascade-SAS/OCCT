@@ -31,7 +31,7 @@ is
     ---Purpose : Returns a ToolFlowLineSpec, ready to work
 
 
-    ReadOwnParams (me; ent : mutable FlowLineSpec;
+    ReadOwnParams (me; ent : FlowLineSpec;
     	    	   IR : IGESReaderData; PR : in out ParamReader)
     	raises DomainError  is static;
     ---Purpose : Reads own parameters from file. <PR> gives access to them,
@@ -55,7 +55,7 @@ is
     ---Purpose : Performs Specific Semantic Check
 
 
-    OwnCopy    (me; entfrom : FlowLineSpec; entto : mutable FlowLineSpec;
+    OwnCopy    (me; entfrom : FlowLineSpec; entto : FlowLineSpec;
     	        TC : in out CopyTool)  is static;
     ---Purpose : Copies Specific Parameters
 

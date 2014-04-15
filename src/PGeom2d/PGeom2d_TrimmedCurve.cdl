@@ -28,7 +28,7 @@ uses Curve from PGeom2d
 is
 
 
-  Create returns mutable TrimmedCurve from PGeom2d;
+  Create returns TrimmedCurve from PGeom2d;
 	---Purpose: Creates a TrimmedCurve with default values.
 	---Level: Advanced 
 
@@ -36,7 +36,7 @@ is
   Create (
     	aBasisCurve: Curve from PGeom2d;
     	aFirstU, aLastU: Real from Standard)
-     returns mutable TrimmedCurve from PGeom2d;
+     returns TrimmedCurve from PGeom2d;
         ---Purpose : Creates a TrimmedCurve with these field values.
 	---Level: Advanced 
 

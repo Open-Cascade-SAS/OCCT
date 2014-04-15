@@ -30,7 +30,7 @@ raises OutOfRange
 
 is
 
-        Create returns mutable LinearDimension;
+        Create returns LinearDimension;
 
         -- Specific Methods pertaining to the class
 

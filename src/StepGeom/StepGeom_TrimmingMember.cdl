@@ -23,7 +23,7 @@ uses CString
 
 is
 
-    Create returns mutable TrimmingMember;
+    Create returns TrimmingMember;
 
     HasName (me) returns Boolean  is redefined;
     -- returns True

@@ -52,7 +52,7 @@ is
 
     Initialize(aTypeOfPresentation3d: TypeOfPresentation3d from PrsMgr = PrsMgr_TOP_AllView);
 
-    ComputeSelection(me:mutable; aSelection :mutable Selection from SelectMgr;
+    ComputeSelection(me:mutable; aSelection : Selection from SelectMgr;
                                  aMode      : Integer) is deferred private;
         ---Purpose: Recovers and calculates any sensitive primitive,
     	-- aSelection, available in Shape mode, specified by
@@ -81,7 +81,7 @@ is
         --          the <amode>th selection mode.   
 
 
-    AddSelection(me:mutable ;aSelection:mutable Selection from SelectMgr;
+    AddSelection(me:mutable ;aSelection: Selection from SelectMgr;
                              aMode : Integer) 
     is static;
         ---Purpose: Adds the selection aSelection with the selection mode

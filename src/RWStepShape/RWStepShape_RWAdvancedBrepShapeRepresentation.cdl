@@ -29,7 +29,7 @@ is
 	Create returns RWAdvancedBrepShapeRepresentation;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable AdvancedBrepShapeRepresentation from StepShape);
+	              ach : in out Check; ent : AdvancedBrepShapeRepresentation from StepShape);
 
 	WriteStep (me; SW : in out StepWriter; ent : AdvancedBrepShapeRepresentation from StepShape);
 

@@ -28,7 +28,7 @@ uses
 
 is
 
-        Create returns mutable PlaneSurface;
+        Create returns PlaneSurface;
 
         -- Specific Methods pertaining to the class
 

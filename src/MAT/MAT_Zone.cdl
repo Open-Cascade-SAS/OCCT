@@ -35,11 +35,11 @@ uses
     Node           from MAT
 is
 
-    Create returns mutable Zone from MAT;
+    Create returns Zone from MAT;
     
     Create(aBasicElt : BasicElt from MAT)
         --- Purpose: Compute the frontier of the Zone of proximity.
-    returns mutable Zone from MAT;
+    returns Zone from MAT;
     	
     Perform(me : mutable ; aBasicElt : BasicElt from MAT)
         --- Purpose: Compute the frontier of the Zone of proximity.

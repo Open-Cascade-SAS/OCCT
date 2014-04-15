@@ -36,7 +36,7 @@ is
         --  The boundaries are yellow, the isoparametric curves are blues.
         --  For the discretisation 50 points are computed in each parametric
         --  direction.
-     returns mutable Surface from DrawTrSurf;
+     returns Surface from DrawTrSurf;
 
 
 
@@ -46,7 +46,7 @@ is
           Discret : Integer;
           Deflection : Real;
           DrawMode  : Integer)
-     returns mutable Surface from DrawTrSurf;
+     returns Surface from DrawTrSurf;
 
 
   BoundsColor (me) returns Color from Draw
@@ -96,7 +96,7 @@ is
   ShowIsos (me : mutable; Nu, Nv : Integer) is virtual;
         --- Purpose : change the number of isoparametric curves to be drawn.
 
-  Copy(me) returns mutable Drawable3D from Draw
+  Copy(me) returns Drawable3D from Draw
 	---Purpose: For variable copy.
   is redefined;
   

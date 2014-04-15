@@ -34,10 +34,10 @@ inherits TShared from MMgt
 uses AsciiString from TCollection
 
 is
-    Create returns mutable Root from Storage;
+    Create returns Root from Storage;
 
     Create(aName    : AsciiString from TCollection;
-    	   anObject : Persistent  from Standard) returns mutable Root from Storage;
+    	   anObject : Persistent  from Standard) returns Root from Storage;
 
     SetName(me : mutable; aName    : AsciiString from TCollection);
     Name(me) returns AsciiString from TCollection;
@@ -58,7 +58,7 @@ is
     	-- into the container.    
     
     SetObject(me : mutable; anObject : Persistent  from Standard);
-    Object(me) returns mutable Persistent  from Standard;
+    Object(me) returns Persistent  from Standard;
     	---Purpose:
     	-- Returns the persistent object encapsulated by this root.    
     Type(me) returns AsciiString from TCollection;

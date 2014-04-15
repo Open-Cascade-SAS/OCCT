@@ -25,7 +25,7 @@ is
     Create( Xdir,Ydir,Zdir: Real from Standard;
             Xloc,Yloc,Zloc: Length from Quantity;
     	    anOffset: Length from Quantity)
-    returns mutable PlaneSet from Prs3d;
+    returns PlaneSet from Prs3d;
 
     SetDirection(me: mutable; X,Y,Z: Real from Standard);
     SetLocation(me: mutable; X,Y,Z: Length from Quantity);

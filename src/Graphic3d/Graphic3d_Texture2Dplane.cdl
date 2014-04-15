@@ -30,13 +30,13 @@ uses
 
 is
 
-  Create (theFileName : AsciiString from TCollection) returns mutable Texture2Dplane from Graphic3d;
+  Create (theFileName : AsciiString from TCollection) returns Texture2Dplane from Graphic3d;
   ---Purpose: Creates a texture from a file
 
-  Create (theNOT : NameOfTexture2D from Graphic3d) returns mutable Texture2Dplane from Graphic3d;
+  Create (theNOT : NameOfTexture2D from Graphic3d) returns Texture2Dplane from Graphic3d;
   ---Purpose: Creates a texture from a predefined texture name set.
 
-  Create (thePixMap : PixMap_Handle from Image) returns mutable Texture2Dplane from Graphic3d;
+  Create (thePixMap : PixMap_Handle from Image) returns Texture2Dplane from Graphic3d;
   ---Purpose: Creates a texture from the pixmap.
 
   SetPlaneS (me : mutable; A, B, C, D : ShortReal from Standard);

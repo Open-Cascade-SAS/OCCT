@@ -34,7 +34,7 @@ raises
 
 is
 	Create
-	returns mutable WidthMap from Aspect;
+	returns WidthMap from Aspect;
 	---Level: Public
         ---Purpose: Creates a width map.
 

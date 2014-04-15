@@ -23,7 +23,7 @@ uses
 
 is
 
-    Create returns mutable DerivedUnitElement;
+    Create returns DerivedUnitElement;
 
     Init (me : mutable; aUnit : NamedUnit from StepBasic; aExponent : Real);
 

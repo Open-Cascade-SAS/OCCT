@@ -26,26 +26,26 @@ uses
 	Boolean from Standard
 is
 
-	Create returns mutable ProductRelatedProductCategory;
+	Create returns ProductRelatedProductCategory;
 	---Purpose: Returns a ProductRelatedProductCategory
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
+	      aName : HAsciiString from TCollection;
 	      hasAdescription : Boolean from Standard;
-	      aDescription : mutable HAsciiString from TCollection) is redefined;
+	      aDescription : HAsciiString from TCollection) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
+	      aName : HAsciiString from TCollection;
 	      hasAdescription : Boolean from Standard;
-	      aDescription : mutable HAsciiString from TCollection;
-	      aProducts : mutable HArray1OfProduct from StepBasic) is virtual;
+	      aDescription : HAsciiString from TCollection;
+	      aProducts : HArray1OfProduct from StepBasic) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetProducts(me : mutable; aProducts : mutable HArray1OfProduct);
-	Products (me) returns mutable HArray1OfProduct;
-	ProductsValue (me; num : Integer) returns mutable Product;
+	SetProducts(me : mutable; aProducts : HArray1OfProduct);
+	Products (me) returns HArray1OfProduct;
+	ProductsValue (me; num : Integer) returns Product;
 	NbProducts (me) returns Integer;
 
 fields

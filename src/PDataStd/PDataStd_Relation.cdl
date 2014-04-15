@@ -21,10 +21,10 @@ uses HExtendedString  from PCollection,
 
 is
 
-    Create returns mutable Relation from  PDataStd;
+    Create returns Relation from  PDataStd;
     
     Create (name : HExtendedString from PCollection) 
-    returns mutable Relation from PDataStd;
+    returns Relation from PDataStd;
     
     GetName (me) returns HExtendedString from PCollection;
     

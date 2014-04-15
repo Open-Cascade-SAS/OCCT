@@ -29,7 +29,7 @@ uses
 
 is
 
-        Create returns mutable Node;
+        Create returns Node;
 
         -- Specific Methods pertaining to the class
 

@@ -47,7 +47,7 @@ raises  RangeError from Standard,
 is
     
     Create (Low, Up: Integer from Standard) 
-    returns mutable  HArray1 from TCollection
+    returns  HArray1 from TCollection
     	---Purpose: Creates an array  of lower  bound  <Low> and upper
     	-- bound  <Up>. Range  error is  raised when  <Up> is less than <Low>.
     raises 
@@ -56,7 +56,7 @@ is
 	---C++: inline
 	
     Create (Low, Up: Integer from Standard; V : ItemHArray1) 
-    returns mutable  HArray1 from TCollection
+    returns  HArray1 from TCollection
     	---Purpose: Creates an array  of lower  bound  <Low> and upper
     	-- bound  <Up>. Range  error is  raised when  <Up> is less than <Low>.
     raises 

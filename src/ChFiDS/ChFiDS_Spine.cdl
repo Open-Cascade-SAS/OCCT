@@ -67,9 +67,9 @@ is
 -- methodes de construction.
 ----------------------------
 
-    Create  returns mutable Spine from ChFiDS;
+    Create  returns Spine from ChFiDS;
 
-    Create(Tol : Real from Standard) returns mutable Spine from ChFiDS;
+    Create(Tol : Real from Standard) returns Spine from ChFiDS;
 
     SetEdges(me : mutable; E : Edge from TopoDS) is static;
     ---Purpose: store edges composing the guideline
@@ -103,15 +103,15 @@ is
     is virtual;
     
     ElSpine(me; IE : Integer from Standard) 
-    returns mutable HElSpine from  ChFiDS
+    returns HElSpine from  ChFiDS
     is static;
 
     ElSpine(me; E : Edge from TopoDS) 
-    returns mutable HElSpine from  ChFiDS
+    returns HElSpine from  ChFiDS
     is static;
 
     ElSpine(me; W : Real from Standard) 
-    returns mutable HElSpine from  ChFiDS
+    returns HElSpine from  ChFiDS
     is static;
 
     ChangeElSpines(me : mutable) 

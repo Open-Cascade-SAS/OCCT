@@ -28,7 +28,7 @@ is
 	Create returns RWGeometricRepresentationContext;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable GeometricRepresentationContext from StepGeom);
+	              ach : in out Check; ent : GeometricRepresentationContext from StepGeom);
 
 	WriteStep (me; SW : in out StepWriter; ent : GeometricRepresentationContext from StepGeom);
 

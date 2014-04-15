@@ -43,7 +43,7 @@ is
 
     Create (name : CString;
     	    type : ValueType from MoniTool = MoniTool_ValueText;
-	    init : CString = "")  returns mutable TypedValue;
+	    init : CString = "")  returns TypedValue;
     ---Purpose : Creates a TypedValue, with a name
     --           
     --           type gives the type of the parameter, default is free text
@@ -54,7 +54,7 @@ is
     --           init gives an initial value. If it is not given, the
     --           TypedValue begins as "not set", its value is empty
 
-    Create (other : TypedValue) returns mutable TypedValue;
+    Create (other : TypedValue) returns TypedValue;
     ---Purpose : Creates a TypedValue from another one, by duplication
 
     Internals (me; interp :  out ValueInterpret; satisf : out ValueSatisfies;
@@ -215,7 +215,7 @@ is
     CStringValue (me) returns CString;
     ---Purpose : Returns the value, as a cstring. Empty if not set.
 
-    HStringValue (me) returns mutable HAsciiString;
+    HStringValue (me) returns HAsciiString;
     ---Purpose : Returns the value, as a Handle (can then be shared)
     --           Null if not defined
 
@@ -246,7 +246,7 @@ is
     --             does not satisfy the specification
     --           Can be redefined to be managed (in a subclass)
 
-    SetHStringValue (me : mutable; hval : mutable HAsciiString)
+    SetHStringValue (me : mutable; hval : HAsciiString)
     ---Purpose : Forces a new Handle for the Value
     --           It can be empty, else (if Type is not free Text), it must
     --           satisfy the specification.

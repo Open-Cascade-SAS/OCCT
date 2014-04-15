@@ -29,7 +29,7 @@ is
 	Create returns RWBoxDomain;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable BoxDomain from StepShape);
+	              ach : in out Check; ent : BoxDomain from StepShape);
 
 	WriteStep (me; SW : in out StepWriter; ent : BoxDomain from StepShape);
 

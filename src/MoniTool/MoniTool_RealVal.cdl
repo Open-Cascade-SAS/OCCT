@@ -22,7 +22,7 @@ uses Real
 
 is
 
-    Create (val : Real = 0.0) returns mutable RealVal;
+    Create (val : Real = 0.0) returns RealVal;
 
     Value (me) returns Real;
 

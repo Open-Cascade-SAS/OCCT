@@ -34,14 +34,14 @@ raises
 is
 
 	Create (R1, R2, C1, C2: Integer from Standard) 
-               returns mutable HArray2 from PCollection
+               returns HArray2 from PCollection
 		raises RangeError from Standard;
 		---Purpose: Creates an array of lower bound <R1><C1> and 
                 -- upper bound <R2><C2>. Range Error is raised 
                 -- when <R2> is less than <R1> or <C2> is less than <C1>.
 
 	Create (R1, R2, C1, C2: Integer from Standard ; V : Item) 
-                returns mutable HArray2 from PCollection
+                returns HArray2 from PCollection
 		  raises RangeError from Standard;
 		---Purpose: Creates an array of lower bound <R1><C1> and 
                 -- upper bound <R2><C2>. RangeError is raised 

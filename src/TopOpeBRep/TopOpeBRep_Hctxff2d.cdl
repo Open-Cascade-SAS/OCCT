@@ -26,7 +26,7 @@ uses
 
 is
 
-    Create returns mutable Hctxff2d from TopOpeBRep;
+    Create returns Hctxff2d from TopOpeBRep;
     SetFaces(me:mutable; F1,F2:Face);
     SetHSurfaces(me:mutable; S1,S2:HSurface from BRepAdaptor);
     SetHSurfacesPrivate(me:mutable) is private;

@@ -29,7 +29,7 @@ is
 	Create returns RWRectangularTrimmedSurface;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable RectangularTrimmedSurface from StepGeom);
+	              ach : in out Check; ent : RectangularTrimmedSurface from StepGeom);
 
 	WriteStep (me; SW : in out StepWriter; ent : RectangularTrimmedSurface from StepGeom);
 

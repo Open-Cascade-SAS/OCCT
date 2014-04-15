@@ -23,7 +23,7 @@ uses
 	Integer from Standard
 is
 
-	Create returns mutable Date;
+	Create returns Date;
 	---Purpose: Returns a Date
 
 	Init (me : mutable;

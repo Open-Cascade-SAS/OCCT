@@ -22,7 +22,7 @@ uses
 is
 
     Create 
-    returns mutable IntegerList from PDataStd;
+    returns IntegerList from PDataStd;
 
     Init (me : mutable; 
     	  lower, upper : Integer from Standard);

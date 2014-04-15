@@ -22,7 +22,7 @@ uses HArray1OfReal from PColStd
      
 is
 
-    Create returns mutable RealArray_1 from PDataStd;
+    Create returns RealArray_1 from PDataStd;
 
     Init(me : mutable; lower, upper : Integer from Standard);
 

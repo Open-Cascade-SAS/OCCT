@@ -37,7 +37,7 @@ raises InterfaceError
 
 is
 
-    Create (level : Integer = 0) returns mutable SelectBypassSubfigure;
+    Create (level : Integer = 0) returns SelectBypassSubfigure;
     ---Purpose : Creates a SelectBypassSubfigure, by default all level
     --           (level = 1 explores at first level)
 

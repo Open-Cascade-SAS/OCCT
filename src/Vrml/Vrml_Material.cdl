@@ -38,9 +38,9 @@ is
 	       aEmissiveColor  :  HArray1OfColor  from   Quantity; 
 	       aShininess      :  HArray1OfReal   from   TColStd; 
 	       aTransparency   :  HArray1OfReal   from   TColStd ) 
-	  returns mutable Material from Vrml; 
+	  returns Material from Vrml; 
 
-    Create  returns mutable Material from Vrml;
+    Create  returns Material from Vrml;
 
     SetAmbientColor  ( me : mutable; aAmbientColor   :  HArray1OfColor  from  Quantity );
     AmbientColor  ( me )  returns  HArray1OfColor  from  Quantity;

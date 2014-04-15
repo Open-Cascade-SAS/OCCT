@@ -22,7 +22,7 @@ uses
    HAsciiString        from PCollection
 
 is
-    Create returns mutable Name_1 from PNaming;
+    Create returns Name_1 from PNaming;
     
     Type      (me : mutable; T : Integer from Standard);
     ---C++: inline

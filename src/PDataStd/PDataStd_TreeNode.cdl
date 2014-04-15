@@ -23,7 +23,7 @@ uses
 
 is
 
-    Create returns mutable TreeNode from PDataStd;
+    Create returns TreeNode from PDataStd;
         
     First(me) returns TreeNode from PDataStd;
 	 

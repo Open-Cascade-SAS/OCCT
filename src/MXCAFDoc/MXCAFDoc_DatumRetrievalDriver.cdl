@@ -24,7 +24,7 @@ uses
 
 is
     Create (theMsgDriver : MessageDriver from CDM)
-    returns mutable DatumRetrievalDriver from MXCAFDoc;
+    returns DatumRetrievalDriver from MXCAFDoc;
 	---Purpose: Returns mutable DatumRetrievalDriver from MXCAFDoc;
 
     VersionNumber(me) returns Integer from Standard;
@@ -34,11 +34,11 @@ is
     SourceType(me) returns Type from Standard;
     ---Purpose: Returns the type: XCAFDoc_Datum
 
-    NewEmpty (me)  returns mutable Attribute from TDF;
+    NewEmpty (me)  returns Attribute from TDF;
 
     Paste(me;
     	  Source     :         Attribute from PDF;
-    	  Target     : mutable Attribute from TDF;
+    	  Target     : Attribute from TDF;
     	  RelocTable : RRelocationTable from MDF);
 
 end DatumRetrievalDriver from MXCAFDoc;

@@ -35,25 +35,25 @@ is
 	    ---Purpose: Creates equal relation of two arc's radiuses.
 	    --          If one of edges is not in the given plane,
     	    --	        the presentation method projects it onto the plane.
-    returns mutable EqualRadiusRelation from AIS;
+    returns EqualRadiusRelation from AIS;
    
 -- Methods from PresentableObject
 
     Compute( me            : mutable;
   	     aPresentationManager: PresentationManager3d from PrsMgr;
-    	     aPresentation : mutable Presentation from Prs3d;
+    	     aPresentation : Presentation from Prs3d;
     	     aMode         : Integer from Standard= 0 ) 
     is redefined static private;
     
     Compute( me            : mutable;
     	     aProjector    : Projector from Prs3d;
-             aPresentation : mutable Presentation from Prs3d )
+             aPresentation : Presentation from Prs3d )
     is redefined static private;
     
     Compute(me            : mutable;
     	    aProjector    : Projector from Prs3d;
     	    aTrsf         : Transformation from Geom;
-	    aPresentation : mutable Presentation from Prs3d)
+	    aPresentation : Presentation from Prs3d)
     is redefined;
     	---Purpose: computes the presentation according to a point of view
     	--          given by <aProjector>. 
@@ -66,7 +66,7 @@ is
 -- Methods from SelectableObject
 
     ComputeSelection( me         : mutable;
-    	    	      aSelection : mutable Selection from SelectMgr;
+    	    	      aSelection : Selection from SelectMgr;
     	    	      aMode      : Integer from Standard)
     is private;
     

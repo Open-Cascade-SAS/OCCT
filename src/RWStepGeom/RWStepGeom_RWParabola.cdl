@@ -29,7 +29,7 @@ is
 	Create returns RWParabola;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable Parabola from StepGeom);
+	              ach : in out Check; ent : Parabola from StepGeom);
 
 	WriteStep (me; SW : in out StepWriter; ent : Parabola from StepGeom);
 

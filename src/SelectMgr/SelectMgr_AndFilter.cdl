@@ -28,7 +28,7 @@ uses
 is
 
     Create
-    returns mutable AndFilter from SelectMgr;
+    returns AndFilter from SelectMgr;
     	--- Purpose: Constructs an empty selection filter object for two or
     	-- more types of entity.   
     

@@ -57,7 +57,7 @@ class WClass from WNT inherits TShared from MMgt
      anIcon        : Handle    from Aspect = 0;
      aMenuName     : CString   from Standard = 0
     )
-     returns mutable WClass from WNT
+     returns WClass from WNT
     	---Level:   Public
     	---Purpose: Creates a Windows NT window class and registers it.
     	---Trigger: Raises if class registration failed.

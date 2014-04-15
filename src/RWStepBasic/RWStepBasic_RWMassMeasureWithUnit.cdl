@@ -29,7 +29,7 @@ is
     Create returns RWMassMeasureWithUnit;
 
     ReadStep (me; data : StepReaderData; num : Integer;
-	          ach : in out Check; ent : mutable MassMeasureWithUnit from StepBasic);
+	          ach : in out Check; ent : MassMeasureWithUnit from StepBasic);
 
     WriteStep (me; SW : in out StepWriter; ent : MassMeasureWithUnit from StepBasic);
 

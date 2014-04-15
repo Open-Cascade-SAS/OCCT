@@ -29,7 +29,7 @@ uses Dir      from gp,
 is
     
 
-  Create returns mutable OffsetCurve from PGeom;
+  Create returns OffsetCurve from PGeom;
     ---Purpose: Creates an OffsetCurve with default values.
     	---Level: Internal 
 
@@ -38,7 +38,7 @@ is
     	    aBasisCurve : Curve from PGeom;
     	    aOffsetValue : Real from Standard;
     	    aOffsetDirection : Dir from gp)
-     returns mutable OffsetCurve from PGeom;
+     returns OffsetCurve from PGeom;
         ---Purpose : <aBasisCurve> is  the basis curve, <aOffsetValue>
         --         is the distance between <me> and the basis curve at
         --         any point.    <aOffsetDirection>  defines the fixed

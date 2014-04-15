@@ -22,7 +22,7 @@ uses
 
 is
 
-    Create returns mutable ProductDefinitionEffectivity;
+    Create returns ProductDefinitionEffectivity;
 
     Init (me : mutable;
     	  aId : HAsciiString;

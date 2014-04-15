@@ -45,7 +45,7 @@ is
     --          unit,  and  <avalue> is the  value in relation to  the
     --          International System of Units.
     
-    returns mutable Unit from Units;
+    returns Unit from Units;
     
     Create(aname , asymbol : CString)
     
@@ -55,7 +55,7 @@ is
     --          the  unit, <asymbol> is the  usual abbreviation of the
     --          unit.
     
-    returns mutable Unit from Units;
+    returns Unit from Units;
     
     Create(aname : CString)
     
@@ -64,7 +64,7 @@ is
     ---Purpose: Creates  and returns a  unit.  <aname> is  the name of
     --          the  unit.
     
-    returns mutable Unit from Units;
+    returns Unit from Units;
     
     Name(me) returns AsciiString from TCollection
     
@@ -135,7 +135,7 @@ is
     
     is static;
     
-    Token(me) returns mutable Token from Units
+    Token(me) returns Token from Units
     
     ---Level: Internal 
     

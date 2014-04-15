@@ -67,7 +67,7 @@ is
     	---Purpose: Returns true if a plane containing the edges of the
     	-- shape is found and built. Use the function Plane to consult the result.   
     Plane(me)
-    returns mutable Plane from Geom;
+    returns Plane from Geom;
     	---Purpose: Returns the plane containing the edges of the shape.
     	-- Warning
     	-- Use the function Found to verify that the plane is built. If

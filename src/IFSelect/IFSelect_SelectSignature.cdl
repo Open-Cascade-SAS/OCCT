@@ -40,7 +40,7 @@ is
     Create (matcher : Signature;
     	signtext : CString;
     	exact : Boolean = Standard_True)
-    	returns mutable SelectSignature;
+    	returns SelectSignature;
     ---Purpose : Creates a SelectSignature with its Signature and its Text to
     --           Match.
     --           <exact> if True requires exact match,
@@ -50,23 +50,23 @@ is
     Create (matcher : Signature;
     	    signtext : AsciiString from TCollection;
     	    exact : Boolean = Standard_True)
-    	returns mutable SelectSignature;
+    	returns SelectSignature;
     ---Purpose : As above with an AsciiString
 
     Create (matcher : SignCounter;
     	signtext : CString;
     	exact : Boolean = Standard_True)
-    	returns mutable SelectSignature;
+    	returns SelectSignature;
     ---Purpose : Creates a SelectSignature with a Counter, more precisely a
     --           SelectSignature. Which is used here to just give a Signature
     --           Value (by SignOnly Mode)
     --           Matching is the default provided by the class Signature
 
-    Signature (me) returns mutable Signature;
+    Signature (me) returns Signature;
     ---Purpose : Returns the used Signature, then it is possible to access it,
     --           modify it as required. Can be null, hence see Counter
 
-    Counter   (me) returns mutable SignCounter;
+    Counter   (me) returns SignCounter;
     ---Purpose : Returns the used SignCounter. Can be used as alternative for
     --           Signature
 

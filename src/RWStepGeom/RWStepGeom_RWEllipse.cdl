@@ -30,7 +30,7 @@ is
 	Create returns RWEllipse;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable Ellipse from StepGeom);
+	              ach : in out Check; ent : Ellipse from StepGeom);
 
 	WriteStep (me; SW : in out StepWriter; ent : Ellipse from StepGeom);
 

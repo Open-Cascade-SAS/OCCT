@@ -33,7 +33,7 @@ is
 
     Create(val : Real)
     ---Level: Advanced
-    returns mutable NumericValue;
+    returns NumericValue;
 
     GetValue(me)
     ---Level: Advanced
@@ -69,7 +69,7 @@ is
 
     Copy(me)
     ---Purpose: Returns a copy of <me> having the same unknowns and functions.
-    returns mutable like me;
+    returns like me;
     
     ContainsUnknowns(me) 
     ---Purpose: Tests if <me> contains NamedUnknown.

@@ -79,7 +79,7 @@ is
     
     Compute(me:mutable;
                 aPresentationManager: PresentationManager3d from PrsMgr;
-                aPresentation: mutable Presentation from Prs3d;
+                aPresentation: Presentation from Prs3d;
                 aMode: Integer from Standard = 0)
     	---Purpose: Calculates the 3D view aPresentation and its
     	-- updates. The latter are managed by aPresentationManager.
@@ -90,7 +90,7 @@ is
     
     Compute(me            : mutable;
             aProjector    : Projector from Prs3d;
-            aPresentation  : mutable Presentation from Prs3d)
+            aPresentation  : Presentation from Prs3d)
     	---Purpose: Calculates the 3D view aPresentation and its
     	-- updates. The latter are managed by
     	-- aPresentationManager. Each of the views in the
@@ -107,7 +107,7 @@ is
     Compute(me            : mutable;
             aProjector    : Projector from Prs3d;
             aTrsf         : Transformation from Geom;
-            aPresentation : mutable Presentation from Prs3d)
+            aPresentation : Presentation from Prs3d)
     is virtual protected;
     	---Purpose: Calculates the 3D view aPresentation and its
     	-- updates. The latter are managed by
@@ -136,7 +136,7 @@ is
     
     Fill(me: mutable; 
                 aPresentationManager: PresentationManager from PrsMgr;
-                aPresentation: mutable Presentation from PrsMgr;
+                aPresentation: Presentation from PrsMgr;
                 aMode: Integer from Standard = 0)
     -- 22-03-04 OCC4895 SAN High-level interface for controlling polygon offsets
     is virtual protected;
@@ -230,7 +230,7 @@ is
 
    UpdateLocation(me:mutable) is virtual;
     
-   UpdateLocation(me:mutable;P : mutable Presentation from Prs3d) is virtual;
+   UpdateLocation(me:mutable;P : Presentation from Prs3d) is virtual;
     
    SetZLayer ( me         : mutable;
                thePrsMgr  : PresentationManager from PrsMgr;

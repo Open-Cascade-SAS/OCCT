@@ -84,13 +84,13 @@ raises ConstructionError from Standard,
 
 is
 
-  Create (H : Hypr2d)   returns mutable Hyperbola;
+  Create (H : Hypr2d)   returns Hyperbola;
         --- Purpose : Creates  an Hyperbola from a non persistent one from package gp
 
 
   Create (MajorAxis : Ax2d; MajorRadius, MinorRadius : Real;
           Sense: Boolean from Standard = Standard_True)
-     returns mutable Hyperbola
+     returns Hyperbola
 	--- Purpose :
 	--  MajorAxis is the "XAxis" of the hyperbola.
 	--  The YAxis is in the direct sense if "Sense" is True;
@@ -100,7 +100,7 @@ is
 	--- Purpose : Raised if MajorRadius < 0.0 or if MinorRadius < 0.0
 
   Create (Axis : Ax22d; MajorRadius, MinorRadius : Real)
-     returns mutable Hyperbola
+     returns Hyperbola
 	--- Purpose :
 	--  The XDirection of "Axis" is the "XAxis" of the hyperbola and 
 	--  the YDirection of "Axis" is the "YAxis".
@@ -323,7 +323,7 @@ is
 
     	---Purpose: Applies the transformation T to this hyperbola.
 
-  Copy (me)  returns mutable like me is redefined static;
+  Copy (me)  returns like me is redefined static;
     	---Purpose: Creates a new object which is a copy of this hyperbola.
         
 fields

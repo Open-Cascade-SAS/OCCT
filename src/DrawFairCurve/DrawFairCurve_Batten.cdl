@@ -24,7 +24,7 @@ uses Batten from FairCurve,
 
 is
    Create(TheBatten : Address)
-   returns mutable Batten from DrawFairCurve;
+   returns Batten from DrawFairCurve;
    Compute(me:mutable);
    SetPoint(me: mutable; Side : Integer; Point : Pnt2d);
    SetAngle(me: mutable; Side : Integer; Angle : Real);

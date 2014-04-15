@@ -30,7 +30,7 @@ is
     Create(P: Polygon2D from PPoly;
     	   S: Surface   from PGeom;
 	   L: Location  from PTopLoc)
-    returns mutable PolygonOnSurface from PBRep;
+    returns PolygonOnSurface from PBRep;
 
 
     IsPolygonOnSurface(me)  returns Boolean

@@ -42,7 +42,7 @@ is
 
     TransferVector   (me    : in out;
                       start : Vector from Geom)
-    	 returns mutable Direction from IGESGeom;
+    	 returns Direction from IGESGeom;
     ---Purpose :  Transfert  a  GeometryEntity which  answer True  to  the
     --            member : BRepToIGES::IsGeomVector(Geometry).  If this
     --            Entity could not be converted, this member returns a NullEntity.
@@ -50,12 +50,12 @@ is
 
     TransferVector   (me    : in out;
                       start : VectorWithMagnitude from Geom)
-    	 returns mutable Direction from IGESGeom;
+    	 returns Direction from IGESGeom;
 
 
     TransferVector   (me    : in out;
                       start : Direction from Geom)
-    	 returns mutable Direction from IGESGeom;
+    	 returns Direction from IGESGeom;
 
 
 end GeomVector;

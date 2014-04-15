@@ -29,7 +29,7 @@ is
 	Create returns RWPointOnCurve;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable PointOnCurve from StepGeom);
+	              ach : in out Check; ent : PointOnCurve from StepGeom);
 
 	WriteStep (me; SW : in out StepWriter; ent : PointOnCurve from StepGeom);
 

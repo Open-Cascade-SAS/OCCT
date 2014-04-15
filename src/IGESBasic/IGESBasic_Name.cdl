@@ -26,7 +26,7 @@ uses
 
 is
 
-        Create returns mutable Name;
+        Create returns Name;
 
         -- Specific Methods pertaining to the class
 

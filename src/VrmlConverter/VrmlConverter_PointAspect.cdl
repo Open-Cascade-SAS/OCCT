@@ -26,19 +26,19 @@ uses
 is
 
     Create
-    returns mutable PointAspect from VrmlConverter;
+    returns PointAspect from VrmlConverter;
 
     ---Purpose: create a default PointAspect. 
     --  Default value: HasMaterial  =  False  - a  line  hasn't  own  material (color) 
 
     Create  (aMaterial: Material from Vrml; 
     	    	 OnOff: Boolean from Standard)
-    returns mutable PointAspect from VrmlConverter;
+    returns PointAspect from VrmlConverter;
  
     SetMaterial(me: mutable; aMaterial: Material from Vrml)
     is static;
  
-    Material(me) returns mutable Material from Vrml 
+    Material(me) returns Material from Vrml 
     is  static; 
 
     SetHasMaterial(me: mutable; OnOff: Boolean from Standard)

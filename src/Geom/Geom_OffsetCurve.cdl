@@ -85,7 +85,7 @@ is
 
 
   Create (C : Curve from Geom; Offset : Real;  V : Dir)
-     returns mutable OffsetCurve
+     returns OffsetCurve
         ---Purpose :
         --  C is the basis curve, Offset is the distance between <me> and
         --  the basis curve at any point. V defines the fixed reference 
@@ -345,7 +345,7 @@ is
 
 	     
 
-  Copy (me)  returns mutable like me;
+  Copy (me)  returns like me;
     	---Purpose: Creates a new object which is a copy of this offset curve.
 
 fields

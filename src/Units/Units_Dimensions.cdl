@@ -57,7 +57,7 @@ is
     --          quantity and  the 2  secondary  fundamental  units  of
     --          physical quantity.
 	   
-    returns mutable Dimensions from Units;
+    returns Dimensions from Units;
 
     Mass(me) returns Real
     
@@ -173,7 +173,7 @@ is
     --          the   result   of the  multiplication    of  <me>  and
     --          <adimensions>.
     
-    returns mutable Dimensions from Units is static;
+    returns Dimensions from Units is static;
     
     Divide(me ; adimensions : Dimensions from Units)
     
@@ -184,9 +184,9 @@ is
     ---Purpose: Creates and returns a new  Dimensions object which  is
     --          the result of the division of <me> by <adimensions>.
     
-    returns mutable Dimensions from Units is static;
+    returns Dimensions from Units is static;
     
-    Power(me ; anexponent : Real) returns mutable Dimensions from Units
+    Power(me ; anexponent : Real) returns Dimensions from Units
     
     ---Level: Internal 
 

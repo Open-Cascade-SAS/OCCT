@@ -33,7 +33,7 @@ raises DimensionMismatch, OutOfRange
 
 is
 
-        Create returns mutable LevelToPWBLayerMap;
+        Create returns LevelToPWBLayerMap;
 
         -- Specific Methods pertaining to the class
 

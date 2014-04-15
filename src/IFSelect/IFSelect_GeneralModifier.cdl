@@ -80,7 +80,7 @@ is
     --           If Dispatch(me) is Null, returns True. Else, checks <disp>
 
 
-    SetSelection (me : mutable; sel : mutable Selection);
+    SetSelection (me : mutable; sel : Selection);
     ---Purpose : Sets a Selection : a Model is treated if it contains one or
     --           more Entities designated by the Selection
 
@@ -90,7 +90,7 @@ is
     HasSelection (me) returns Boolean;
     ---Purpose : Returns True if a Selection is set as an additionnal criterium
 
-    Selection (me) returns mutable Selection;
+    Selection (me) returns Selection;
     ---Purpose : Returns the Selection, or a Null Handle if not set
 
 

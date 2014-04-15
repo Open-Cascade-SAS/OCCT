@@ -24,12 +24,12 @@ uses
 
 is
 
-    Create returns mutable ConversionBasedUnitAndVolumeUnit from StepBasic;
+    Create returns ConversionBasedUnitAndVolumeUnit from StepBasic;
     	---Purpose: Returns a ConversionBasedUnitAndVolumeUnit
     
-    SetVolumeUnit(me: mutable; aVolumeUnit: mutable VolumeUnit from StepBasic);
+    SetVolumeUnit(me: mutable; aVolumeUnit: VolumeUnit from StepBasic);
     
-    VolumeUnit(me) returns mutable VolumeUnit from StepBasic;
+    VolumeUnit(me) returns VolumeUnit from StepBasic;
     
 fields
 

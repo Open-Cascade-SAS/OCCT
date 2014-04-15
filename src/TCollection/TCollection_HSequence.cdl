@@ -45,7 +45,7 @@ raises
     OutOfRange from Standard
     
 is 
-	Create returns mutable HSequence from TCollection;
+	Create returns HSequence from TCollection;
 		---Purpose: Constructs an empty sequence.
     	    	-- Use:
     	    	-- -   the function Append or Prepend to add an item or
@@ -185,7 +185,7 @@ is
 
 
 	Split(me : mutable; anIndex : Integer) 
-    	returns mutable HSequence 
+    	returns HSequence 
         raises OutOfRange from Standard
 		---Purpose: Keeps in <me> the items 1 to <anIndex>-1 and
 		-- returns the items <anIndex> to the end.
@@ -271,7 +271,7 @@ is
 	    ---C++: return &
 	    ---C++: inline
   
-        ShallowCopy(me) returns mutable like me;
+        ShallowCopy(me) returns like me;
             ---Purpose: function call  
 	    ---C++: function call 
 

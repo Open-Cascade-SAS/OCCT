@@ -32,11 +32,11 @@ is
 
     Create(exps : SequenceOfGeneralExpression)
     ---Purpose: Creates the product of all members of sequence <exps>
-    returns mutable Product;
+    returns Product;
 
     Create(exp1,exp2 : GeneralExpression)
     ---Purpose: Creates the product of <exp1> and <exp2>.
-    returns mutable Product;
+    returns Product;
 
     ShallowSimplified(me) 
     ---Purpose: Returns a GeneralExpression after a simplification 
@@ -46,7 +46,7 @@ is
 
     Copy(me)
     ---Purpose: Returns a copy of <me> having the same unknowns and functions.
-    returns mutable like me;
+    returns like me;
     
     IsIdentical(me; Other : GeneralExpression)
     ---Purpose: Tests if <me> and <Other> define the same expression.

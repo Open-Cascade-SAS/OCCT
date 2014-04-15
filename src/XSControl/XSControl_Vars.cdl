@@ -34,7 +34,7 @@ uses CString, Transient, DictionaryOfTransient,
 
 is
 
-    Create returns mutable Vars;
+    Create returns Vars;
 
     Set (me : mutable; name : CString; val : Transient)  is virtual;
 

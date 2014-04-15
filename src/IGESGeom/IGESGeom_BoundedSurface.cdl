@@ -31,7 +31,7 @@ raises OutOfRange
 
 is
 
-        Create returns mutable BoundedSurface;
+        Create returns BoundedSurface;
 
         -- Specific Methods pertaining to the class
 

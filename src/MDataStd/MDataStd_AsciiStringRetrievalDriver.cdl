@@ -25,7 +25,7 @@ uses
      
 is    
     Create(theMessageDriver : MessageDriver from CDM)  -- Version 0
-    returns mutable AsciiStringRetrievalDriver from MDataStd;
+    returns AsciiStringRetrievalDriver from MDataStd;
     
 
     VersionNumber(me) returns Integer from Standard;
@@ -35,12 +35,12 @@ is
     SourceType(me) returns Type from Standard;
 	---Purpose: Returns the type: AsciiString from PDataStd.
 
-    NewEmpty (me)  returns mutable Attribute from TDF;
+    NewEmpty (me)  returns Attribute from TDF;
 
 
     Paste(me;
     	  Source     :         Attribute from PDF;
-    	  Target     : mutable Attribute from TDF;
+    	  Target     : Attribute from TDF;
     	  RelocTable : RRelocationTable  from MDF);
 
 

@@ -33,7 +33,7 @@ is
 
     Create(W: Wire from TopoDS)
 
-        returns mutable Wire from BRepCheck;
+        returns Wire from BRepCheck;
 
 
     InContext(me: mutable; ContextShape: Shape from TopoDS);

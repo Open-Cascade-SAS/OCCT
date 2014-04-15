@@ -40,7 +40,7 @@ uses
 is
     Create(NbEdges : Integer)
 	---Purpose: Create a Block of Edges for a wire.
-    returns mutable EdgesBlock from HLRAlgo;
+    returns EdgesBlock from HLRAlgo;
     
     NbEdges(me) returns Integer from Standard
     	---C++: inline

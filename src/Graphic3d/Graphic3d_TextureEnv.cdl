@@ -31,10 +31,10 @@ raises
 
 is
 
-  Create (theFileName : AsciiString from TCollection) returns  mutable TextureEnv from Graphic3d;
+  Create (theFileName : AsciiString from TCollection) returns TextureEnv from Graphic3d;
   ---Purpose: Creates an environment texture from a file.
 
-  Create (theName : NameOfTextureEnv from Graphic3d) returns mutable TextureEnv from Graphic3d;
+  Create (theName : NameOfTextureEnv from Graphic3d) returns TextureEnv from Graphic3d;
   ---Purpose: Creates an environment texture from a predefined texture name set.
 
   Name (me) returns NameOfTextureEnv from Graphic3d;

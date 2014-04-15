@@ -23,6 +23,6 @@ class Shape from PDataXtd inherits Attribute from PDF
 	---Purpose: 
 is
 
-    Create returns mutable Shape from  PDataXtd;
+    Create returns Shape from  PDataXtd;
 
 end Shape;

@@ -23,6 +23,6 @@ class Axis from PDataXtd inherits Attribute from PDF
 
 is
 
-    Create returns mutable Axis from  PDataXtd;
+    Create returns Axis from  PDataXtd;
     
 end Axis;

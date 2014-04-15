@@ -71,7 +71,7 @@ is
     --           SendItem, SendText, and if necessary, WorkSession.
 
     ReadOwn  (me; file : in out SessionFile;
-    	    type : AsciiString from TCollection; item : out mutable Transient)
+    	    type : AsciiString from TCollection; item : out Transient)
     	returns Boolean  is deferred;
     ---Purpose : Recognizes a Type (given as <type>) then Creates an Item of
     --           this Type with the Own Parameter, as required.

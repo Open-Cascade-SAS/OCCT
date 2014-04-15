@@ -25,19 +25,19 @@ uses
 	FillStyleSelect from StepVisual
 is
 
-	Create returns mutable FillAreaStyle;
+	Create returns FillAreaStyle;
 	---Purpose: Returns a FillAreaStyle
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aFillStyles : mutable HArray1OfFillStyleSelect from StepVisual) is virtual;
+	      aName : HAsciiString from TCollection;
+	      aFillStyles : HArray1OfFillStyleSelect from StepVisual) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetName(me : mutable; aName : mutable HAsciiString);
-	Name (me) returns mutable HAsciiString;
-	SetFillStyles(me : mutable; aFillStyles : mutable HArray1OfFillStyleSelect);
-	FillStyles (me) returns mutable HArray1OfFillStyleSelect;
+	SetName(me : mutable; aName : HAsciiString);
+	Name (me) returns HAsciiString;
+	SetFillStyles(me : mutable; aFillStyles : HArray1OfFillStyleSelect);
+	FillStyles (me) returns HArray1OfFillStyleSelect;
 	FillStylesValue (me; num : Integer) returns FillStyleSelect;
 	NbFillStyles (me) returns Integer;
 

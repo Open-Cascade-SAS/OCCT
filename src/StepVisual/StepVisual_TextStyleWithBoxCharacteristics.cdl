@@ -26,17 +26,17 @@ uses
 	TextStyleForDefinedFont from StepVisual
 is
 
-	Create returns mutable TextStyleWithBoxCharacteristics;
+	Create returns TextStyleWithBoxCharacteristics;
 	---Purpose: Returns a TextStyleWithBoxCharacteristics
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aCharacterAppearance : mutable TextStyleForDefinedFont from StepVisual) is redefined;
+	      aName : HAsciiString from TCollection;
+	      aCharacterAppearance : TextStyleForDefinedFont from StepVisual) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aCharacterAppearance : mutable TextStyleForDefinedFont from StepVisual;
+	      aName : HAsciiString from TCollection;
+	      aCharacterAppearance : TextStyleForDefinedFont from StepVisual;
 	      aCharacteristics : HArray1OfBoxCharacteristicSelect) is virtual;
 
 	-- Specific Methods for Field Data Access --

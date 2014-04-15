@@ -29,7 +29,7 @@ is
 	Create returns RWContextDependentOverRidingStyledItem;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable ContextDependentOverRidingStyledItem from StepVisual);
+	              ach : in out Check; ent : ContextDependentOverRidingStyledItem from StepVisual);
 
 	WriteStep (me; SW : in out StepWriter; ent : ContextDependentOverRidingStyledItem from StepVisual);
 

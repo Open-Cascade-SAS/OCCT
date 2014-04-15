@@ -42,7 +42,7 @@ class DataStructureOfDelaun from BRepMesh inherits TShared from MMgt
                 --          presumed  number of nodes  in this mesh.   The
                 --          Mesh   data  structure will   be automatically
                 --          redimensioned if necessary.
-                returns mutable DataStructureOfDelaun from BRepMesh ;
+                returns DataStructureOfDelaun from BRepMesh ;
 
               AddNode    (me      : mutable ;
                           theNode : Vertex from BRepMesh) 

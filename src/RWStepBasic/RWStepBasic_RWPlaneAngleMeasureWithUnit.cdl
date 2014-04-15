@@ -29,7 +29,7 @@ is
 	Create returns RWPlaneAngleMeasureWithUnit;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable PlaneAngleMeasureWithUnit from StepBasic);
+	              ach : in out Check; ent : PlaneAngleMeasureWithUnit from StepBasic);
 
 	WriteStep (me; SW : in out StepWriter; ent : PlaneAngleMeasureWithUnit from StepBasic);
 

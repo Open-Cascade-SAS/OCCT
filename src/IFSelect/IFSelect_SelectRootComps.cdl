@@ -30,7 +30,7 @@ uses AsciiString from TCollection, InterfaceModel, EntityIterator, Graph
 
 is
 
-    Create returns mutable SelectRootComps;
+    Create returns SelectRootComps;
     ---Purpose : Creates a SelectRootComps
 
     RootResult (me; G : Graph) returns EntityIterator  is redefined;

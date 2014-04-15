@@ -25,16 +25,16 @@ uses
 	Axis2Placement from StepGeom
 is
 
-	Create returns mutable Circle;
+	Create returns Circle;
 	---Purpose: Returns a Circle
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
+	      aName : HAsciiString from TCollection;
 	      aPosition : Axis2Placement from StepGeom) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
+	      aName : HAsciiString from TCollection;
 	      aPosition : Axis2Placement from StepGeom;
 	      aRadius : Real from Standard) is virtual;
 

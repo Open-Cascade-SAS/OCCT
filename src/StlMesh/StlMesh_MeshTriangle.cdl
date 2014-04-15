@@ -26,11 +26,11 @@ raises
 
 is
 
-    Create  returns mutable MeshTriangle;
+    Create  returns MeshTriangle;
     	---Purpose: empty constructor
 
 
-    Create (V1, V2, V3 : Integer; Xn, Yn, Zn : Real)  returns mutable MeshTriangle
+    Create (V1, V2, V3 : Integer; Xn, Yn, Zn : Real)  returns MeshTriangle
         ---Purpose: create a triangle defined with the indexes of its three vertices 
         --          and its orientation
     raises NegativeValue;

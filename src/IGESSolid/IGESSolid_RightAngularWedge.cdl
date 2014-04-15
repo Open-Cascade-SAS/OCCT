@@ -29,7 +29,7 @@ uses
 
 is
 
-        Create returns mutable RightAngularWedge;
+        Create returns RightAngularWedge;
 
         Init (me         : mutable;
               aSize      : XYZ;

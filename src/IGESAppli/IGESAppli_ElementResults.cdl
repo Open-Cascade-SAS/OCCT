@@ -35,7 +35,7 @@ raises DimensionMismatch, OutOfRange
 
 is
 
-        Create returns mutable ElementResults;
+        Create returns ElementResults;
 
         -- Specific Methods pertaining to the class
 

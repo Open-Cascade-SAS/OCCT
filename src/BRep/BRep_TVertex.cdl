@@ -27,7 +27,7 @@ uses
     ListOfPointRepresentation from BRep
 
 is
-    Create returns mutable TVertex from BRep;
+    Create returns TVertex from BRep;
 
     Tolerance(me) returns Real
 	---C++: inline
@@ -63,7 +63,7 @@ is
 	---C++: return &
     is static;
     
-    EmptyCopy(me) returns mutable TShape from TopoDS;
+    EmptyCopy(me) returns TShape from TopoDS;
 	---Purpose: Returns a copy  of the  TShape  with no sub-shapes.
     
 fields

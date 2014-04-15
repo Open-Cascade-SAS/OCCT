@@ -23,7 +23,7 @@ uses
    HArray1OfNamedShape from PNaming
 
 is
-    Create returns mutable Name from PNaming;
+    Create returns Name from PNaming;
     
     Type      (me : mutable; T : Integer from Standard);
     ---C++: inline

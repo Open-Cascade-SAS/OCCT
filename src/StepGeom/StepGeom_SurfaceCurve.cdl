@@ -26,25 +26,25 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable SurfaceCurve;
+	Create returns SurfaceCurve;
 	---Purpose: Returns a SurfaceCurve
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection) is redefined;
+	      aName : HAsciiString from TCollection) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aCurve3d : mutable Curve from StepGeom;
-	      aAssociatedGeometry : mutable HArray1OfPcurveOrSurface from StepGeom;
+	      aName : HAsciiString from TCollection;
+	      aCurve3d : Curve from StepGeom;
+	      aAssociatedGeometry : HArray1OfPcurveOrSurface from StepGeom;
 	      aMasterRepresentation : PreferredSurfaceCurveRepresentation from StepGeom) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetCurve3d(me : mutable; aCurve3d : mutable Curve);
-	Curve3d (me) returns mutable Curve;
-	SetAssociatedGeometry(me : mutable; aAssociatedGeometry : mutable HArray1OfPcurveOrSurface);
-	AssociatedGeometry (me) returns mutable HArray1OfPcurveOrSurface;
+	SetCurve3d(me : mutable; aCurve3d : Curve);
+	Curve3d (me) returns Curve;
+	SetAssociatedGeometry(me : mutable; aAssociatedGeometry : HArray1OfPcurveOrSurface);
+	AssociatedGeometry (me) returns HArray1OfPcurveOrSurface;
 	AssociatedGeometryValue (me; num : Integer) returns PcurveOrSurface;
 	NbAssociatedGeometry (me) returns Integer;
 	SetMasterRepresentation(me : mutable; aMasterRepresentation : PreferredSurfaceCurveRepresentation);

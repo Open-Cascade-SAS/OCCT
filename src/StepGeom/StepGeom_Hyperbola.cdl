@@ -25,16 +25,16 @@ uses
 	Axis2Placement from StepGeom
 is
 
-	Create returns mutable Hyperbola;
+	Create returns Hyperbola;
 	---Purpose: Returns a Hyperbola
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
+	      aName : HAsciiString from TCollection;
 	      aPosition : Axis2Placement from StepGeom) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
+	      aName : HAsciiString from TCollection;
 	      aPosition : Axis2Placement from StepGeom;
 	      aSemiAxis : Real from Standard;
 	      aSemiImagAxis : Real from Standard) is virtual;

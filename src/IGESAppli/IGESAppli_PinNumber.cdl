@@ -28,7 +28,7 @@ uses
 
 is
 
-        Create returns mutable PinNumber;
+        Create returns PinNumber;
 
         -- Specific Methods pertaining to the class
 

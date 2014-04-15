@@ -34,7 +34,7 @@ raises DimensionMismatch, OutOfRange
 
 is
 
-        Create returns mutable NodalResults;
+        Create returns NodalResults;
 
         -- Specific Methods pertaining to the class
 

@@ -32,31 +32,31 @@ uses
 
 is
 
-	Create returns mutable GeometricRepresentationContextAndParametricRepresentationContext;
+	Create returns GeometricRepresentationContextAndParametricRepresentationContext;
 	---Purpose: empty constructor
 
 
 	Init (me : mutable;
-	      aContextIdentifier : mutable HAsciiString from TCollection;
-	      aContextType : mutable HAsciiString from TCollection) is redefined;
+	      aContextIdentifier : HAsciiString from TCollection;
+	      aContextType : HAsciiString from TCollection) is redefined;
 
 	Init (me : mutable;
-	      aContextIdentifier : mutable HAsciiString from TCollection;
-	      aContextType : mutable HAsciiString from TCollection;
-	      aGeometricRepresentationContext : mutable GeometricRepresentationContext from StepGeom;
-	      aParametricRepresentationContext : mutable ParametricRepresentationContext from StepRepr) is virtual;
+	      aContextIdentifier : HAsciiString from TCollection;
+	      aContextType : HAsciiString from TCollection;
+	      aGeometricRepresentationContext : GeometricRepresentationContext from StepGeom;
+	      aParametricRepresentationContext : ParametricRepresentationContext from StepRepr) is virtual;
 
 	Init (me : mutable;
-	      aContextIdentifier : mutable HAsciiString from TCollection;
-	      aContextType : mutable HAsciiString from TCollection;
+	      aContextIdentifier : HAsciiString from TCollection;
+	      aContextType : HAsciiString from TCollection;
 	      aCoordinateSpaceDimension : Integer from Standard) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetGeometricRepresentationContext(me : mutable; aGeometricRepresentationContext : mutable GeometricRepresentationContext);
-	GeometricRepresentationContext (me) returns mutable GeometricRepresentationContext;
-	SetParametricRepresentationContext(me : mutable; aParametricRepresentationContext : mutable ParametricRepresentationContext);
-	ParametricRepresentationContext (me) returns mutable ParametricRepresentationContext;
+	SetGeometricRepresentationContext(me : mutable; aGeometricRepresentationContext : GeometricRepresentationContext);
+	GeometricRepresentationContext (me) returns GeometricRepresentationContext;
+	SetParametricRepresentationContext(me : mutable; aParametricRepresentationContext : ParametricRepresentationContext);
+	ParametricRepresentationContext (me) returns ParametricRepresentationContext;
 
 	-- Specific Methods for ANDOR Field Data Access --
 

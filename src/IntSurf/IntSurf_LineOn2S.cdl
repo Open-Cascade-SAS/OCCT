@@ -31,7 +31,7 @@ is
 
     Create (theAllocator: Allocator from IntSurf = 0)
     
-    	returns mutable LineOn2S from IntSurf;
+    	returns LineOn2S from IntSurf;
 	
 
     Add(me: mutable; P: PntOn2S from IntSurf)
@@ -83,7 +83,7 @@ is
 	---Purpose: Keeps in <me> the points 1 to Index-1, and returns
 	--          the items Index to the end.
 
-    	returns mutable LineOn2S from IntSurf
+    	returns LineOn2S from IntSurf
 
     	raises OutOfRange from Standard
 	--- The exception OutOfRange is raised when Index <= 0 or

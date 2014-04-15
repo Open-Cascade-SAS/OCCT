@@ -21,6 +21,6 @@ class VolumeUnit from StepBasic inherits NamedUnit from StepBasic
 
 is
 
-   Create returns mutable VolumeUnit from StepBasic;
+   Create returns VolumeUnit from StepBasic;
 
 end VolumeUnit;

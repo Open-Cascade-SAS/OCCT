@@ -227,7 +227,7 @@ is
     --           case of Error on Writing. <file> gives the name of the File
     --           to be produced (this avoids to export the class SessionFile).
 
-    RestoreSession (WS : mutable WorkSession; file : CString) returns Boolean;
+    RestoreSession (WS : WorkSession; file : CString) returns Boolean;
     ---Purpose : Restore the state of a WorkSession from IFSelect, by using a
     --           SessionFile from IFSelect. Returns True if Done, False in
     --           case of Error on Writing. <file> gives the name of the File

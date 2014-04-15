@@ -30,7 +30,7 @@ raises OutOfRange
 
 is
 
-        Create returns mutable OrderedGroupWithoutBackP;
+        Create returns OrderedGroupWithoutBackP;
 
         -- Specific Methods pertaining to the class : see Group
 

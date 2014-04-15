@@ -31,7 +31,7 @@ uses CString, AsciiString from TCollection
 
 is
 
-    Create returns mutable DescrProtocol;
+    Create returns DescrProtocol;
 
     SetSchemaName (me : mutable; name : CString);
     ---Purpose : Defines a specific Schema Name for this Protocol

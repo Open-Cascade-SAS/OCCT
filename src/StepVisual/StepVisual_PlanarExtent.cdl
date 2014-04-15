@@ -24,15 +24,15 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable PlanarExtent;
+	Create returns PlanarExtent;
 	---Purpose: Returns a PlanarExtent
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection) is redefined;
+	      aName : HAsciiString from TCollection) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
+	      aName : HAsciiString from TCollection;
 	      aSizeInX : Real from Standard;
 	      aSizeInY : Real from Standard) is virtual;
 

@@ -37,7 +37,7 @@ raises DimensionMismatch, OutOfRange
 
 is
 
-        Create returns mutable DrawingWithRotation;
+        Create returns DrawingWithRotation;
 
         -- Specific Methods pertaining to the class
 

@@ -22,21 +22,21 @@ uses
     	FaceSurface from StepShape
 
 is
-    	Create returns mutable SweptFaceSolid;
+    	Create returns SweptFaceSolid;
 	---Purpose: Returns a SweptFaceSolid
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection) is redefined;
+	      aName : HAsciiString from TCollection) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aSweptArea : mutable FaceSurface from StepShape) is virtual;
+	      aName : HAsciiString from TCollection;
+	      aSweptArea : FaceSurface from StepShape) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetSweptFace(me : mutable; aSweptArea : mutable FaceSurface from StepShape) is virtual;
-	SweptFace (me) returns mutable FaceSurface from StepShape is virtual;
+	SetSweptFace(me : mutable; aSweptArea : FaceSurface from StepShape) is virtual;
+	SweptFace (me) returns FaceSurface from StepShape is virtual;
 
     	
 fields

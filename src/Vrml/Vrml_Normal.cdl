@@ -30,9 +30,9 @@ uses
 is
  
     Create  (  aVector :  HArray1OfVec  from  TColgp  ) 
-      returns  mutable Normal from Vrml;
+      returns Normal from Vrml;
 
-    Create  returns  mutable  Normal  from  Vrml; 
+    Create  returns  Normal  from  Vrml; 
     
     SetVector ( me  :  mutable;  aVector : HArray1OfVec  from  TColgp );
     Vector ( me )  returns  HArray1OfVec  from  TColgp;

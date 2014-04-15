@@ -25,17 +25,17 @@ uses
 
 is
 
-    Create returns mutable MaterialDesignation;
+    Create returns MaterialDesignation;
 
     Init (me : mutable;
-    	  aName : mutable HAsciiString from TCollection;
+    	  aName : HAsciiString from TCollection;
 	  aOfDefinition : CharacterizedDefinition);
 
 
 	-- Specific Methods for Field Data Access --
 
-	SetName(me : mutable; aName : mutable HAsciiString);
-	Name (me) returns mutable HAsciiString;
+	SetName(me : mutable; aName : HAsciiString);
+	Name (me) returns HAsciiString;
     	SetOfDefinition (me : mutable; aOfDefinition : CharacterizedDefinition);
 	OfDefinition (me) returns CharacterizedDefinition;
 

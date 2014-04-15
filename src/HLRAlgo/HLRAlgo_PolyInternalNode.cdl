@@ -21,7 +21,7 @@ uses
     Integer from Standard
     
 is
-    Create returns mutable PolyInternalNode from HLRAlgo; 
+    Create returns PolyInternalNode from HLRAlgo; 
     	---C++: inline
     
     Indices(me) returns Address from Standard

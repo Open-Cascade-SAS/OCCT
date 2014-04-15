@@ -26,13 +26,13 @@ uses
 
 is
     Create (aMessageDriver: MessageDriver from CDM)
-        returns mutable NamingDriver from XmlMNaming;
+        returns NamingDriver from XmlMNaming;
 
     NewEmpty (me)
-    returns mutable Attribute from TDF;
+    returns Attribute from TDF;
 
     Paste(me; theSource     : Persistent from XmlObjMgt;
-              theTarget     : mutable Attribute from TDF;
+              theTarget     : Attribute from TDF;
               theRelocTable : out RRelocationTable from XmlObjMgt)
         returns Boolean from Standard;
 

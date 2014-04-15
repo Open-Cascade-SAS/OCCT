@@ -37,7 +37,7 @@ raises
 
 is
 
-    Create  returns mutable Mesh;
+    Create  returns Mesh;
     	---Purpose: Creates an empty mesh.
 
 

@@ -54,7 +54,7 @@ is
 
     Create (family, name : CString;
     	    type : ParamType from Interface = Interface_ParamText;
-	    init : CString = "")  returns mutable Static
+	    init : CString = "")  returns Static
     ---Purpose : Creates and records a Static, with a family and a name
     --           family can report to a name of ressource or to a system or
     --           internal definition. The name must be unique.
@@ -70,7 +70,7 @@ is
     --           Error if <name> is already recorded, or <type> not supported
     --           See also class method Init
 
-    Create (family, name : CString; other : Static) returns mutable Static;
+    Create (family, name : CString; other : Static) returns Static;
     ---Purpose : Creates a new Static with same definition as another one
     --           (value is copied, except for Entity : it remains null)
 
@@ -127,7 +127,7 @@ is
     --           '=' for same definition as, <init> gives the initial Static
     --           Returns False if <type> does not match this list
 
-    Static (myclass; name : CString) returns mutable Static;
+    Static (myclass; name : CString) returns Static;
     ---Purpose : Returns a Static from its name. Null Handle if not present
 
     IsPresent (myclass; name : CString) returns Boolean;

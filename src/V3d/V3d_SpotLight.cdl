@@ -45,14 +45,14 @@ raises BadValue from V3d
 
 is
 
-    	Create ( VM : mutable Viewer ; X,Y,Z : Coordinate ;
+    	Create ( VM : Viewer ; X,Y,Z : Coordinate ;
 		 Direction : TypeOfOrientation = V3d_XnegYnegZpos ;
 		 Color : NameOfColor = Quantity_NOC_WHITE ; 
 		 Attenuation1 : Coefficient = 1.0 ; 
                  Attenuation2 : Coefficient = 0.0 ; 
 		 Concentration : Coefficient = 1.0 ;
 		 Angle : PlaneAngle = 0.523599 )
-				returns mutable SpotLight
+				returns SpotLight
         ---Level: Public
 	---Purpose: Creates a light source of the Spot type in the viewer.
         --          The attenuation factor F which determines
@@ -70,14 +70,14 @@ is
 	--	If one of the coefficients is not between 0 and 1 .
 	--	If the lighting angle is <= 0 ou > PI .
 	
-    	Create ( VM : mutable Viewer ; Xt,Yt,Zt : Coordinate;
+    	Create ( VM : Viewer ; Xt,Yt,Zt : Coordinate;
 	         Xp,Yp,Zp : Coordinate;
 		 Color : NameOfColor = Quantity_NOC_WHITE ;
 		 Attenuation1 : Coefficient = 1.0 ; 
                  Attenuation2 : Coefficient = 0.0 ; 
 		 Concentration : Coefficient = 1.0 ;
 		 Angle : PlaneAngle = 0.523599 )		 
-		       returns mutable SpotLight
+		       returns SpotLight
 	---Level: Public
 	---Purpose: Creates a light source of the Spot type in the viewer.
 	--          Xt,Yt,Zt : Coordinate of light source Target.
@@ -169,7 +169,7 @@ is
         ---Category: Private or Protected methods
         -----------------------------------------
 
-        Symbol ( me ; gsymbol : mutable Group from Graphic3d ;
+        Symbol ( me ; gsymbol : Group from Graphic3d ;
                       aView   : View from V3d ) is redefined static private;
 	---Level: Internal
 	---Purpose: Defines the representation of the spot light source.

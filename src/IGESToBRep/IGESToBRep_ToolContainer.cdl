@@ -23,7 +23,7 @@ uses
     
 is
 
-    Create returns mutable ToolContainer from IGESToBRep;
+    Create returns ToolContainer from IGESToBRep;
     	---Purpose: Empty constructor
 	
     IGESBoundary (me) returns IGESBoundary from IGESToBRep is virtual;

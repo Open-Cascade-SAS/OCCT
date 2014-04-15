@@ -40,13 +40,13 @@ raises NullObject from Standard
 is
 
     Create(Nodes: Array1OfInteger from TColStd)
-    returns mutable PolygonOnTriangulation from Poly;
+    returns PolygonOnTriangulation from Poly;
     	---Purpose: Constructs a 3D polygon on the triangulation of a shape,
     	-- defined by the table of nodes, <Nodes>.
     
     Create(Nodes     : Array1OfInteger from TColStd;
            Parameters: Array1OfReal    from TColStd) 
-    returns mutable PolygonOnTriangulation from Poly;
+    returns PolygonOnTriangulation from Poly;
     	---Purpose:
     	-- Constructs a 3D polygon on the triangulation of a shape, defined by:
     	--  -   the table of nodes, Nodes, and the table of parameters, <Parameters>.  

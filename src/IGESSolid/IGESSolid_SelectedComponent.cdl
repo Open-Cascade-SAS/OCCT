@@ -29,7 +29,7 @@ uses
 
 is
 
-        Create returns mutable SelectedComponent;
+        Create returns SelectedComponent;
 
         -- Specific Methods pertaining to the class
 

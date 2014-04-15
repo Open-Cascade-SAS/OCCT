@@ -42,7 +42,7 @@ is
 
     TransferShell (me    : in out;
                    start : Shape from TopoDS)
-    	returns mutable IGESEntity from IGESData;
+    	returns IGESEntity from IGESData;
     ---Purpose :  Transfert an Shape entity from TopoDS to IGES
     --            This entity must be a Face or a Shell.
     --            If this Entity could not be converted, this member returns a NullEntity.
@@ -50,14 +50,14 @@ is
 
     TransferShell (me    : in out;
                    start : Shell from TopoDS)
-    	returns mutable IGESEntity from IGESData;
+    	returns IGESEntity from IGESData;
     ---Purpose :  Transfert an Shell entity from TopoDS to IGES
     --            If this Entity could not be converted, this member returns a NullEntity.
 
 
     TransferFace (me    : in out;
                   start : Face from TopoDS)
-    	returns mutable IGESEntity from IGESData;
+    	returns IGESEntity from IGESData;
     ---Purpose :  Transfert a Face entity from TopoDS to IGES
     --            If this Entity could not be converted, this member returns a NullEntity.
 

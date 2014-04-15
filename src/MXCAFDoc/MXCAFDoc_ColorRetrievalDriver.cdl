@@ -25,9 +25,9 @@ uses
 
 is
 --    Create -- Version 0
---    returns mutable ColorRetrievalDriver from MXCAFDoc;
+--    returns ColorRetrievalDriver from MXCAFDoc;
     Create (theMsgDriver : MessageDriver from CDM)
-    returns mutable ColorRetrievalDriver from MXCAFDoc;
+    returns ColorRetrievalDriver from MXCAFDoc;
     
     VersionNumber(me) returns Integer from Standard;
     ---Purpose: Returns the version number from which the driver
@@ -36,11 +36,11 @@ is
     SourceType(me) returns Type from Standard;
     ---Purpose: Returns the type: XCAFDoc_Color
 
-    NewEmpty (me)  returns mutable Attribute from TDF;
+    NewEmpty (me)  returns Attribute from TDF;
 
     Paste(me;
     	  Source     :         Attribute from PDF;
-    	  Target     : mutable Attribute from TDF;
+    	  Target     : Attribute from TDF;
     	  RelocTable : RRelocationTable from MDF);
 
 end ColorRetrievalDriver;

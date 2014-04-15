@@ -30,7 +30,7 @@ raises DimensionMismatch, OutOfRange
 
 is
 
-        Create returns mutable UnitsData;
+        Create returns UnitsData;
 
         -- Specific methods for the entity
 

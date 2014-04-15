@@ -29,7 +29,7 @@ is
 	Create returns RWApplicationContextElement;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable ApplicationContextElement from StepBasic);
+	              ach : in out Check; ent : ApplicationContextElement from StepBasic);
 
 	WriteStep (me; SW : in out StepWriter; ent : ApplicationContextElement from StepBasic);
 

@@ -29,7 +29,7 @@ is
 	Create returns RWCylindricalSurface;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable CylindricalSurface from StepGeom);
+	              ach : in out Check; ent : CylindricalSurface from StepGeom);
 
 	WriteStep (me; SW : in out StepWriter; ent : CylindricalSurface from StepGeom);
 

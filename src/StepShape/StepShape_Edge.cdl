@@ -24,27 +24,27 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable Edge;
+	Create returns Edge;
 	---Purpose: Returns a Edge
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection) is redefined;
+	      aName : HAsciiString from TCollection) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aEdgeStart : mutable Vertex from StepShape;
-	      aEdgeEnd : mutable Vertex from StepShape) is virtual;
+	      aName : HAsciiString from TCollection;
+	      aEdgeStart : Vertex from StepShape;
+	      aEdgeEnd : Vertex from StepShape) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetEdgeStart(me : mutable; aEdgeStart : mutable Vertex)
+	SetEdgeStart(me : mutable; aEdgeStart : Vertex)
     	is virtual;
-	EdgeStart (me) returns mutable Vertex
+	EdgeStart (me) returns Vertex
     	is virtual;
-	SetEdgeEnd(me : mutable; aEdgeEnd : mutable Vertex)
+	SetEdgeEnd(me : mutable; aEdgeEnd : Vertex)
     	is virtual;
-	EdgeEnd (me) returns mutable Vertex
+	EdgeEnd (me) returns Vertex
     	is virtual;
 
 fields

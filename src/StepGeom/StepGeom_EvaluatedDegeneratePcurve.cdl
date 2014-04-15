@@ -26,25 +26,25 @@ uses
 	DefinitionalRepresentation from StepRepr
 is
 
-	Create returns mutable EvaluatedDegeneratePcurve;
+	Create returns EvaluatedDegeneratePcurve;
 	---Purpose: Returns a EvaluatedDegeneratePcurve
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aBasisSurface : mutable Surface from StepGeom;
-	      aReferenceToCurve : mutable DefinitionalRepresentation from StepRepr) is redefined;
+	      aName : HAsciiString from TCollection;
+	      aBasisSurface : Surface from StepGeom;
+	      aReferenceToCurve : DefinitionalRepresentation from StepRepr) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aBasisSurface : mutable Surface from StepGeom;
-	      aReferenceToCurve : mutable DefinitionalRepresentation from StepRepr;
-	      aEquivalentPoint : mutable CartesianPoint from StepGeom) is virtual;
+	      aName : HAsciiString from TCollection;
+	      aBasisSurface : Surface from StepGeom;
+	      aReferenceToCurve : DefinitionalRepresentation from StepRepr;
+	      aEquivalentPoint : CartesianPoint from StepGeom) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetEquivalentPoint(me : mutable; aEquivalentPoint : mutable CartesianPoint);
-	EquivalentPoint (me) returns mutable CartesianPoint;
+	SetEquivalentPoint(me : mutable; aEquivalentPoint : CartesianPoint);
+	EquivalentPoint (me) returns CartesianPoint;
 
 fields
 

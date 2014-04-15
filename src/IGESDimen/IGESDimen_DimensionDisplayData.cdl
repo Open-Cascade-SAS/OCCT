@@ -32,7 +32,7 @@ raises DimensionMismatch, OutOfRange
 
 is
 
-        Create returns mutable DimensionDisplayData;
+        Create returns DimensionDisplayData;
 
             -- --specific-- --
 

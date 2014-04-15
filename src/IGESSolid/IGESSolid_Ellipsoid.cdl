@@ -32,7 +32,7 @@ uses
 
 is
 
-        Create returns mutable Ellipsoid;
+        Create returns Ellipsoid;
 
         -- Specific Methods pertaining to the class
 

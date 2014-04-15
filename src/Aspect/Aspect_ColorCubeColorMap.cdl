@@ -35,7 +35,7 @@ is
 	Create( base_pixel, redmax,   redmult,
 			    greenmax, greenmult,
 			    bluemax,  bluemult : in Integer from Standard )
-	returns mutable ColorCubeColorMap from Aspect
+	returns ColorCubeColorMap from Aspect
 	raises RangeError from Standard ;
 	---Level: Public
 	---Purpose : Create a ColorCube ColorMap.

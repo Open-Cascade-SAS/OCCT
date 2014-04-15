@@ -27,7 +27,7 @@ is
 	Create returns RWReprItemAndLengthMeasureWithUnit;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable ReprItemAndLengthMeasureWithUnit from StepRepr);
+	              ach : in out Check; ent : ReprItemAndLengthMeasureWithUnit from StepRepr);
 
 	WriteStep (me; SW : in out StepWriter; ent : ReprItemAndLengthMeasureWithUnit from StepRepr);
 

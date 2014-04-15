@@ -29,7 +29,7 @@ is
 	Create returns RWAxis2Placement2d;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable Axis2Placement2d from StepGeom);
+	              ach : in out Check; ent : Axis2Placement2d from StepGeom);
 
 	WriteStep (me; SW : in out StepWriter; ent : Axis2Placement2d from StepGeom);
 

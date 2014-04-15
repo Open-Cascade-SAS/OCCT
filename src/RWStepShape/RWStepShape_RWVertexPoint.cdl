@@ -29,7 +29,7 @@ is
 	Create returns RWVertexPoint;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable VertexPoint from StepShape);
+	              ach : in out Check; ent : VertexPoint from StepShape);
 
 	WriteStep (me; SW : in out StepWriter; ent : VertexPoint from StepShape);
 

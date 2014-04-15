@@ -25,7 +25,7 @@ uses
 is
 
     Create (theMessageDriver : MessageDriver from CDM) 
-    returns mutable TickStorageDriver from MDataStd;
+    returns TickStorageDriver from MDataStd;
 
     VersionNumber(me) 
     returns Integer from Standard;
@@ -35,11 +35,11 @@ is
     ---Purpose: Returns the type Tick from TDataStd.
 
     NewEmpty(me) 
-    returns mutable Attribute from PDF;
+    returns Attribute from PDF;
 
     Paste(me;
     	  Source     :         Attribute from TDF;
-    	  Target     : mutable Attribute from PDF;
+    	  Target     : Attribute from PDF;
     	  RelocTable : SRelocationTable from MDF);
 
 end TickStorageDriver;

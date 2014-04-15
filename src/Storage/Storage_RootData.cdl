@@ -29,7 +29,7 @@ raises NoSuchObject from Standard
 
 is
 
-    Create returns mutable RootData from Storage;
+    Create returns RootData from Storage;
     
     NumberOfRoots(me) returns Integer from Standard;
     ---Purpose: returns the number of roots.
@@ -38,9 +38,9 @@ is
     ---Purpose: add a root to <me>. If a root with same name is present, it
     --          will be replaced by <aRoot>.
     
-    Roots(me) returns mutable HSeqOfRoot from Storage;
+    Roots(me) returns HSeqOfRoot from Storage;
     
-    Find(me; aName : AsciiString from TCollection) returns mutable Root from Storage;
+    Find(me; aName : AsciiString from TCollection) returns Root from Storage;
     ---Purpose: find a root with name <aName>.
     
     IsRoot(me; aName : AsciiString from TCollection) returns Boolean from Standard;
@@ -56,7 +56,7 @@ is
     
     -- PRIVATE
 
-    UpdateRoot(me : mutable; aName : AsciiString from TCollection; aPers : mutable Persistent from Standard) 
+    UpdateRoot(me : mutable; aName : AsciiString from TCollection; aPers : Persistent from Standard) 
     raises NoSuchObject
     is private;
 

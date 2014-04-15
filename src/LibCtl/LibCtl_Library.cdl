@@ -49,7 +49,7 @@ raises NoSuchObject
 
     is
     
-    	Create returns mutable GlobalNode;
+    	Create returns GlobalNode;
 	---Purpose : Creates an empty GlobalNode, with no Next
 
     	Add (me : mutable; amodule : TheModule; aprotocol : TheProtocol)
@@ -88,7 +88,7 @@ raises NoSuchObject
 
     is
 
-    	Create returns mutable Node;
+    	Create returns Node;
 	---Purpose : Creates an empty Node, with no Next
 
     	AddNode (me : mutable; anode : any GlobalNode)  is static;
@@ -103,7 +103,7 @@ raises NoSuchObject
 	---Purpose : Returns the Protocol designated by a precise Node
     	---C++ : return const &
 
-    	Next (me) returns mutable Node  is static;
+    	Next (me) returns Node  is static;
 	---Purpose : Returns the Next Node. If none was defined, returned value
 	--           is a Null Handle
     	---C++ : return const &

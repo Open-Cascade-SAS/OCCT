@@ -23,19 +23,19 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable RepresentationContext;
+	Create returns RepresentationContext;
 	---Purpose: Returns a RepresentationContext
 
 	Init (me : mutable;
-	      aContextIdentifier : mutable HAsciiString from TCollection;
-	      aContextType : mutable HAsciiString from TCollection) is virtual;
+	      aContextIdentifier : HAsciiString from TCollection;
+	      aContextType : HAsciiString from TCollection) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetContextIdentifier(me : mutable; aContextIdentifier : mutable HAsciiString);
-	ContextIdentifier (me) returns mutable HAsciiString;
-	SetContextType(me : mutable; aContextType : mutable HAsciiString);
-	ContextType (me) returns mutable HAsciiString;
+	SetContextIdentifier(me : mutable; aContextIdentifier : HAsciiString);
+	ContextIdentifier (me) returns HAsciiString;
+	SetContextType(me : mutable; aContextType : HAsciiString);
+	ContextType (me) returns HAsciiString;
 
 fields
 

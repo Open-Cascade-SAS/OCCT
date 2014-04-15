@@ -24,7 +24,7 @@ uses
 	Axis2Placement3d from StepGeom
 is
 
-	Create returns mutable Plane;
+	Create returns Plane;
 	---Purpose: Returns a Plane
 
 

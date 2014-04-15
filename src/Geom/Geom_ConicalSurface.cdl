@@ -65,7 +65,7 @@ raises ConstructionError from Standard,
 is
 
   Create (A3 : Ax3; Ang : Real; Radius : Real) 
-     returns mutable ConicalSurface
+     returns ConicalSurface
         ---Purpose :
         --  A3 defines the local coordinate system of the conical surface.
         --  Ang is the conical surface semi-angle ]0, PI/2[.
@@ -84,7 +84,7 @@ is
         --  Ang >= PI/2 - Resolution
 
 
-  Create (C : Cone)   returns mutable ConicalSurface;
+  Create (C : Cone)   returns ConicalSurface;
         ---Purpose :
         --  Creates a ConicalSurface from a non transient Cone from 
         --  package gp.
@@ -233,14 +233,14 @@ is
         ---Purpose : Returns False.
 
 
-  UIso (me; U : Real)  returns mutable Curve;
+  UIso (me; U : Real)  returns Curve;
         ---Purpose : Builds the U isoparametric line of this cone. The
     	--  origin of this line is on the reference plane of this
     	--  cone (i.e. the plane defined by the origin, "X Direction"
     	--  and "Y Direction" of the local coordinate system of this cone).
         
 
-  VIso (me; V : Real)   returns mutable Curve;
+  VIso (me; V : Real)   returns Curve;
         ---Purpose : Builds the V isoparametric circle of this cone. It is the
     	-- circle on this cone, located in the plane of Z
     	-- coordinate V*cos(Semi-Angle) in the local coordinate system of this
@@ -297,7 +297,7 @@ is
 
   Transform (me : mutable; T : Trsf);
     	---Purpose: Applies the transformation T to this cone.
-  Copy (me)  returns mutable like me;
+  Copy (me)  returns like me;
 
     	---Purpose: Creates a new object which is a copy of this cone.
 fields

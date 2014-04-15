@@ -22,7 +22,7 @@ uses
 
 
 is
-    Create returns mutable  IntPackedMap_1 from  PDataStd;
+    Create returns  IntPackedMap_1 from  PDataStd;
 
     Init (me : mutable; theLow,  theUp:  Integer  from Standard);
     ---Purpose: Inits the internal container

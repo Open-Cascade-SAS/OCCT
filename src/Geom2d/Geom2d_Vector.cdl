@@ -36,7 +36,7 @@ is
         --- Purpose : Reverses the vector <me>.
 
 
-  Reversed (me) returns mutable like me
+  Reversed (me) returns like me
         --- Purpose : Returns a copy of <me> reversed.
      is static;
 

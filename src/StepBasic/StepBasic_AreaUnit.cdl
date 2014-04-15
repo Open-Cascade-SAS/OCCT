@@ -20,6 +20,6 @@ class AreaUnit from StepBasic inherits NamedUnit from StepBasic
 
 is
     
-    Create returns mutable AreaUnit from StepBasic;
+    Create returns AreaUnit from StepBasic;
     
 end AreaUnit;

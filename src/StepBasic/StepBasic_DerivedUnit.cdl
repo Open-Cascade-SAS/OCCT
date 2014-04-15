@@ -24,7 +24,7 @@ uses
 
 is
 
-    Create returns mutable DerivedUnit;
+    Create returns DerivedUnit;
 
     Init (me : mutable; elements : HArray1OfDerivedUnitElement from StepBasic);
 

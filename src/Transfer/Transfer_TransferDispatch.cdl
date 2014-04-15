@@ -52,11 +52,11 @@ is
     	raises InterfaceError;
     --           Error if no Active Protocol is defined
 
-    TransientProcess (me) returns mutable TransientProcess;
+    TransientProcess (me) returns TransientProcess;
     ---Purpose : Returns the content of Control Object, as a TransientProcess
 
 
-    Copy (me : in out; entfrom : Transient; entto : out mutable Transient;
+    Copy (me : in out; entfrom : Transient; entto : out Transient;
     	  mapped : Boolean; errstat : Boolean)
     	returns Boolean is  redefined;
     ---Purpose : Copies an Entity by calling the method Transferring from the

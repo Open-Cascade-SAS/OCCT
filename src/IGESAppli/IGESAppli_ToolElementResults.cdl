@@ -31,7 +31,7 @@ is
     ---Purpose : Returns a ToolElementResults, ready to work
 
 
-    ReadOwnParams (me; ent : mutable ElementResults;
+    ReadOwnParams (me; ent : ElementResults;
     	    	   IR : IGESReaderData; PR : in out ParamReader)
     	raises DomainError  is static;
     ---Purpose : Reads own parameters from file. <PR> gives access to them,
@@ -55,7 +55,7 @@ is
     ---Purpose : Performs Specific Semantic Check
 
 
-    OwnCopy    (me; entfrom : ElementResults; entto : mutable ElementResults;
+    OwnCopy    (me; entfrom : ElementResults; entto : ElementResults;
     	        TC : in out CopyTool)  is static;
     ---Purpose : Copies Specific Parameters
 

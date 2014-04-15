@@ -27,7 +27,7 @@ uses CString, Transient, AsciiString, InterfaceModel,
 
 is
 
-    Create (name : CString) returns mutable SignMultiple;
+    Create (name : CString) returns SignMultiple;
     ---Purpose : Creates an empty SignMultiple with a Name
     --           This name should take expected tabulations into account
 

@@ -39,11 +39,11 @@ uses
     HArray1OfReal from TColStd
 
 is
-    Create returns mutable TransferParameters from ShapeAnalysis;
+    Create returns TransferParameters from ShapeAnalysis;
     	---Purpose: Creates empty tool with myShift = 0 and myScale = 1
     
     Create(E : Edge from TopoDS; F : Face from TopoDS) 
-    returns mutable TransferParameters from ShapeAnalysis;
+    returns TransferParameters from ShapeAnalysis;
     	---Purpose: Creates a tool and initializes it with edge and face
     
     Init(me :  mutable;E : Edge from TopoDS; F : Face from TopoDS ) is virtual;

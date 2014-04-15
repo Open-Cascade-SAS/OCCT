@@ -22,12 +22,12 @@ uses Real from Standard
 
 is
 
-    Create returns mutable Real from PDataStd;
+    Create returns Real from PDataStd;
 
     
     Create (Value     : Real from Standard;
             Dimension : Integer from Standard)
-    returns mutable Real from PDataStd;
+    returns Real from PDataStd;
     
     Get (me) returns Real from Standard;
 

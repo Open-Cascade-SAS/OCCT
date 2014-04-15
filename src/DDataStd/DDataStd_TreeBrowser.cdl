@@ -35,12 +35,12 @@ uses
 is
 
     Create  (root : Label from TDF)
-    returns mutable TreeBrowser from DDataStd;
+    returns TreeBrowser from DDataStd;
     
     DrawOn (me; dis : in out Display);
     
     Copy (me) 
-    returns mutable Drawable3D from Draw
+    returns Drawable3D from Draw
     is redefined;
 
     Dump (me; S : in out OStream) 

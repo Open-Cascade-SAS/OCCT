@@ -25,16 +25,16 @@ uses
 
 is
 
-    Create returns mutable SiUnitAndAreaUnit from StepBasic;
+    Create returns SiUnitAndAreaUnit from StepBasic;
     	---Purpose: Returns a SiUnitAndAreaUnit
     
-    SetAreaUnit(me: mutable; anAreaUnit: mutable AreaUnit from StepBasic);
+    SetAreaUnit(me: mutable; anAreaUnit: AreaUnit from StepBasic);
     
-    AreaUnit(me) returns mutable AreaUnit from StepBasic;
+    AreaUnit(me) returns AreaUnit from StepBasic;
     
-    SetDimensions(me : mutable; aDimensions : mutable DimensionalExponents) is redefined;
+    SetDimensions(me : mutable; aDimensions : DimensionalExponents) is redefined;
     
-    Dimensions(me) returns mutable DimensionalExponents is redefined;
+    Dimensions(me) returns DimensionalExponents is redefined;
     
 fields
 

@@ -36,7 +36,7 @@ is
 
   Create ( theOwner              : EntityOwner from SelectBasics;
            theFirstP, theLastP   : Pnt from gp;
-           theMaxRect            : Integer = 1 ) returns mutable SensitiveSegment from MeshVS;
+           theMaxRect            : Integer = 1 ) returns SensitiveSegment from MeshVS;
 
   Project( me: mutable; aProjector : Projector from Select3D ) is redefined;
 

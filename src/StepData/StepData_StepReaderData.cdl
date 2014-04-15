@@ -36,7 +36,7 @@ is
 
     	-- --   File data storing and access (specific)   -- --
 
-    Create (nbheader,nbtotal,nbpar : Integer) returns mutable StepReaderData;
+    Create (nbheader,nbtotal,nbpar : Integer) returns StepReaderData;
     ---Purpose : creates StepReaderData correctly dimensionned (necessary at
     --           creation time, because it contains arrays)
     --           nbheader is nb of records for Header, nbtotal for Header+Data
@@ -143,7 +143,7 @@ is
     --           Else the kind to be recorded in the field
 
     ReadMember (me; num, nump : Integer; mess : CString; ach : in out Check;
-    	    	val : in out mutable SelectMember)  returns Boolean;
+    	    	val : in out SelectMember)  returns Boolean;
     ---Purpose : Reads parameter <nump> of record <num> into a SelectMember,
     --           self-sufficient (no Description needed)
     --           If <val> is already created, it will be filled, as possible
@@ -170,7 +170,7 @@ is
     ---Purpose : reads a list of fields controlled by an ESDescr
 
     ReadAny    (me; num, nump : Integer; mess : CString; ach : in out Check;
-    	    	descr : PDescr; val : in out mutable Transient) returns Boolean;
+    	    	descr : PDescr; val : in out Transient) returns Boolean;
     ---Purpose : Reads parameter <nump> of record <num> into a Transient Value
     --           according to the type of the parameter :
     --           Named for Integer,Boolean,Logical,Enum,Real : SelectNamed
@@ -208,7 +208,7 @@ is
     --           Return value and Check managed as by ReadXY (demands a Real)
 
     ReadEntity  (me; num, nump : Integer; mess : CString; ach : in out Check;
-    	    	 atype : Type; ent : out mutable Transient)
+    	    	 atype : Type; ent : out Transient)
     	returns Boolean  is static;
     ---Purpose : Reads parameter <nump> of record <num> as a single Entity.
     --           Return value and Check managed as by ReadReal (demands a
@@ -241,7 +241,7 @@ is
     --           Logical enum, i.e. text ".T.", ".F.", or ".U.")
 
     ReadString  (me; num, nump : Integer; mess : CString; ach : in out Check;
-    	    	 val : out mutable HAsciiString from TCollection)
+    	    	 val : out HAsciiString from TCollection)
     	    	     returns Boolean  is static;
     ---Purpose : reads parameter <nump> of record <num> as a String (text
     --           between quotes, quotes are removed by the Read operation)

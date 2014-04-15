@@ -29,7 +29,7 @@ is
 	Create returns RWSurfaceOfRevolution;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable SurfaceOfRevolution from StepGeom);
+	              ach : in out Check; ent : SurfaceOfRevolution from StepGeom);
 
 	WriteStep (me; SW : in out StepWriter; ent : SurfaceOfRevolution from StepGeom);
 

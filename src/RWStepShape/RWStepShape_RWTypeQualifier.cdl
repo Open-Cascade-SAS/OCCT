@@ -28,7 +28,7 @@ is
 	Create returns RWTypeQualifier;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable TypeQualifier from StepShape);
+	              ach : in out Check; ent : TypeQualifier from StepShape);
 
 	WriteStep (me; SW : in out StepWriter; ent : TypeQualifier from StepShape);
 

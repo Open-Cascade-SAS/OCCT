@@ -28,7 +28,7 @@ uses
 
 is
 
-        Create returns mutable NominalSize;
+        Create returns NominalSize;
 
         -- Specific Methods pertaining to the class
 

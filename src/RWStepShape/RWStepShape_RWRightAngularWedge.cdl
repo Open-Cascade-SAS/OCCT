@@ -29,7 +29,7 @@ is
 	Create returns RWRightAngularWedge;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable RightAngularWedge from StepShape);
+	              ach : in out Check; ent : RightAngularWedge from StepShape);
 
 	WriteStep (me; SW : in out StepWriter; ent : RightAngularWedge from StepShape);
 

@@ -23,7 +23,7 @@ uses
 is
 
     Create 
-    returns mutable ReferenceArray from PDataStd;
+    returns ReferenceArray from PDataStd;
 
     Init (me : mutable; 
     	  lower, upper : Integer from Standard);

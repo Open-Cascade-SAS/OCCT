@@ -22,7 +22,7 @@ class SplitSurfaceAngle from ShapeUpgrade inherits SplitSurface from ShapeUpgrad
 
 is
 
-    Create (MaxAngle: Real)  returns mutable SplitSurfaceAngle from ShapeUpgrade;
+    Create (MaxAngle: Real)  returns SplitSurfaceAngle from ShapeUpgrade;
     	---Purpose: Empty constructor.
     
     SetMaxAngle (me: mutable; MaxAngle: Real);

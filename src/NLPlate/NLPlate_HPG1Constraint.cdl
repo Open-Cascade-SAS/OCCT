@@ -22,7 +22,7 @@ uses
      D1  from  Plate
      
 is
-    Create(UV : XY; D1T : D1 from Plate) returns mutable HPG1Constraint;
+    Create(UV : XY; D1T : D1 from Plate) returns HPG1Constraint;
     -- create a G1 Constraint
     -- 
 

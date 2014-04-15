@@ -28,10 +28,10 @@ is
 
     Create (plane  : Face  from TopoDS;
             circle : Shape from TopoDS)
-    returns mutable PlanarDiameter from DrawDim;    
+    returns PlanarDiameter from DrawDim;    
 
     Create (circle : Shape from TopoDS)
-    returns mutable PlanarDiameter from DrawDim;
+    returns PlanarDiameter from DrawDim;
     
     DrawOn(me; dis : in out Display);
     

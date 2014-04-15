@@ -27,21 +27,21 @@ uses
     
 is
 
-    Create returns mutable ConversionBasedUnitAndLengthUnit;
+    Create returns ConversionBasedUnitAndLengthUnit;
 	---Purpose: Returns a ConversionBasedUnitAndLengthUnit
 
-    Init (me: mutable; aDimensions: mutable DimensionalExponents from StepBasic)
+    Init (me: mutable; aDimensions: DimensionalExponents from StepBasic)
     is redefined;
 
-    Init (me: mutable; aDimensions: mutable DimensionalExponents from StepBasic;
-	               aName      : mutable HAsciiString from TCollection;
-	               aConversionFactor: mutable MeasureWithUnit from StepBasic) is redefined;
+    Init (me: mutable; aDimensions: DimensionalExponents from StepBasic;
+	               aName      : HAsciiString from TCollection;
+	               aConversionFactor: MeasureWithUnit from StepBasic) is redefined;
 
     -- Specific Methods for Field Data Access --
 
-    SetLengthUnit(me: mutable; aLengthUnit: mutable LengthUnit);
+    SetLengthUnit(me: mutable; aLengthUnit: LengthUnit);
     
-    LengthUnit (me) returns mutable LengthUnit;
+    LengthUnit (me) returns LengthUnit;
 
     -- Specific Methods for ANDOR Field Data Access --
 

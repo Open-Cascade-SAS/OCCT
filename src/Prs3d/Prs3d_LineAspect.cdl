@@ -42,7 +42,7 @@ is
     Create (aColor: NameOfColor from Quantity;
 	    aType: TypeOfLine from Aspect;
     	    aWidth: Real from Standard)
-	    returns mutable LineAspect from Prs3d;
+	    returns LineAspect from Prs3d;
     	---Purpose: Constructs a framework for line aspect defined by
     	-- -   the color aColor
     	-- -   the type of line aType and
@@ -52,7 +52,7 @@ is
     Create (aColor: Color from Quantity;
 	    aType: TypeOfLine from Aspect;
     	    aWidth: Real from Standard)
-	    returns mutable LineAspect from Prs3d;
+	    returns LineAspect from Prs3d;
 	    
     SetColor (me: mutable; aColor: Color from Quantity) is static;
 

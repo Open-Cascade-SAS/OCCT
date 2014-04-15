@@ -27,7 +27,7 @@ uses  Integer  -- no one specific type
 
 is
 
-        Create returns mutable HighLight;
+        Create returns HighLight;
 
         -- Specific Methods pertaining to the class
 

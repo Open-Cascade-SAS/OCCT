@@ -28,10 +28,10 @@ uses Integer          from Standard,
     
 is
 
-    Create returns mutable Geometry from  PDataXtd;
+    Create returns Geometry from  PDataXtd;
     
     Create (Type : Integer from Standard)
-    returns mutable Geometry from PDataXtd;
+    returns Geometry from PDataXtd;
     
     GetType (me) returns Integer from Standard;
     

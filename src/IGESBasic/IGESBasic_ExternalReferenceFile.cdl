@@ -29,7 +29,7 @@ raises OutOfRange
 
 is
 
-        Create returns mutable ExternalReferenceFile;
+        Create returns ExternalReferenceFile;
 
         -- Specific Methods pertaining to the class
 

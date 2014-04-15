@@ -44,18 +44,18 @@ uses Check, Transient
 
 is
 
-    Create (unknown : mutable Transient) returns mutable ReportEntity;
+    Create (unknown : Transient) returns ReportEntity;
     ---Purpose : Creates a ReportEntity for an Unknown Entity : Check is empty,
     --           and Concerned equates Content (i.e. the Unknown Entity)
 
-    Create (acheck : Check; concerned : mutable Transient)
-    	returns mutable ReportEntity;
+    Create (acheck : Check; concerned : Transient)
+    	returns ReportEntity;
     ---Purpose : Creates a ReportEntity with its features :
     --           - <acheck> is the Check to be memorised
     --           - <concerned> is the Entity to which the Check is bound
     --           Later, a Content can be set : it is required for an Error
 
-    SetContent (me : mutable; content : mutable Transient);
+    SetContent (me : mutable; content : Transient);
     ---Purpose : Sets a Content : it brings non interpreted data which belong
     --           to the Concerned Entity. It can be empty then loaded later.
     --           Remark that for an Unknown Entity, Content is set by Create.
@@ -68,7 +68,7 @@ is
     ---Purpose : Returns the stored Check in order to change it
     ---C++ : return &
 
-    Concerned (me) returns mutable Transient;
+    Concerned (me) returns Transient;
     ---Purpose : Returns the stored Concerned Entity. It equates the Content
     --           in the case of an Unknown Entity
 
@@ -80,7 +80,7 @@ is
     --           (i.e. redefines content) : used when Concerned could not be
     --           loaded
 
-    Content (me) returns mutable Transient;
+    Content (me) returns Transient;
     ---Purpose : Returns the stored Content, or a Null Handle
     --           Remark that it must be an "Unknown Entity" suitable for
     --           the norm of the containing Model

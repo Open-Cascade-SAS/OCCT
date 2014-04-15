@@ -46,7 +46,7 @@ raises
 is
     
     Create (R1, R2, C1, C2: Integer from Standard) 
-    returns  mutable HArray2 from TCollection
+    returns HArray2 from TCollection
     	---Purpose: Creates an array of lower bound <R1><C1> and upper
     	-- bound <R2><C2>.   Range    from Standard error  is
     	-- raised when <R2> is less than <R1> or <C2> is less than <C1>.
@@ -57,7 +57,7 @@ is
 
 
     Create (R1, R2, C1, C2: Integer from Standard; V : ItemHArray2) 
-    returns  mutable HArray2 from TCollection
+    returns HArray2 from TCollection
     	---Purpose: Creates an array of lower bound <R1><C1> and upper
     	-- bound <R2><C2>.   Range    from Standard error  is
     	-- raised when <R2> is less than <R1> or <C2> is less than <C1>.

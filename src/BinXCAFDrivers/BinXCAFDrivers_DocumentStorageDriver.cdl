@@ -20,7 +20,7 @@ uses
     ADriverTable     from BinMDF
 is
 
-    Create returns mutable DocumentStorageDriver from BinXCAFDrivers;
+    Create returns DocumentStorageDriver from BinXCAFDrivers;
 	---Purpose: Constructor
 
 

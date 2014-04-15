@@ -35,7 +35,7 @@ uses
 
 is
 
-    Create returns mutable MsgRegistrator from ShapeExtend;
+    Create returns MsgRegistrator from ShapeExtend;
     	---Purpose: Creates an object.
 	
     

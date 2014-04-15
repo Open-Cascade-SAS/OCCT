@@ -28,9 +28,9 @@ uses
 
 is
     Create ( aPoint : HArray1OfVec  from  TColgp )
-    	returns mutable Coordinate3 from Vrml; 
+    	returns Coordinate3 from Vrml; 
      
-    Create  returns mutable Coordinate3 from Vrml;
+    Create  returns Coordinate3 from Vrml;
     
     SetPoint ( me  :  mutable; aPoint : HArray1OfVec  from  TColgp );
     Point ( me )  returns  HArray1OfVec  from  TColgp; 

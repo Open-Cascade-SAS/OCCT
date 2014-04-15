@@ -34,7 +34,7 @@ raises DimensionMismatch, OutOfRange
 
 is
 
-        Create returns mutable Shell;
+        Create returns Shell;
 
         -- Specific Methods pertaining to the class
 

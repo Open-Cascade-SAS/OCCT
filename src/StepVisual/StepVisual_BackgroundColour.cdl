@@ -23,7 +23,7 @@ uses
 	AreaOrView from StepVisual
 is
 
-	Create returns mutable BackgroundColour;
+	Create returns BackgroundColour;
 	---Purpose: Returns a BackgroundColour
 
 	Init (me : mutable;

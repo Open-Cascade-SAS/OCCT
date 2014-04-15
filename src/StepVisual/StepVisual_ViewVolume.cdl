@@ -27,26 +27,26 @@ uses
 	PlanarBox from StepVisual
 is
 
-	Create returns mutable ViewVolume;
+	Create returns ViewVolume;
 	---Purpose: Returns a ViewVolume
 
 	Init (me : mutable;
 	      aProjectionType : CentralOrParallel from StepVisual;
-	      aProjectionPoint : mutable CartesianPoint from StepGeom;
+	      aProjectionPoint : CartesianPoint from StepGeom;
 	      aViewPlaneDistance : Real from Standard;
 	      aFrontPlaneDistance : Real from Standard;
 	      aFrontPlaneClipping : Boolean from Standard;
 	      aBackPlaneDistance : Real from Standard;
 	      aBackPlaneClipping : Boolean from Standard;
 	      aViewVolumeSidesClipping : Boolean from Standard;
-	      aViewWindow : mutable PlanarBox from StepVisual) is virtual;
+	      aViewWindow : PlanarBox from StepVisual) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
 	SetProjectionType(me : mutable; aProjectionType : CentralOrParallel);
 	ProjectionType (me) returns CentralOrParallel;
-	SetProjectionPoint(me : mutable; aProjectionPoint : mutable CartesianPoint);
-	ProjectionPoint (me) returns mutable CartesianPoint;
+	SetProjectionPoint(me : mutable; aProjectionPoint : CartesianPoint);
+	ProjectionPoint (me) returns CartesianPoint;
 	SetViewPlaneDistance(me : mutable; aViewPlaneDistance : Real);
 	ViewPlaneDistance (me) returns Real;
 	SetFrontPlaneDistance(me : mutable; aFrontPlaneDistance : Real);
@@ -59,8 +59,8 @@ is
 	BackPlaneClipping (me) returns Boolean;
 	SetViewVolumeSidesClipping(me : mutable; aViewVolumeSidesClipping : Boolean);
 	ViewVolumeSidesClipping (me) returns Boolean;
-	SetViewWindow(me : mutable; aViewWindow : mutable PlanarBox);
-	ViewWindow (me) returns mutable PlanarBox;
+	SetViewWindow(me : mutable; aViewWindow : PlanarBox);
+	ViewWindow (me) returns PlanarBox;
 
 fields
 

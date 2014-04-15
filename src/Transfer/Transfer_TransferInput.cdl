@@ -39,7 +39,7 @@ is
 
 
     FillModel (me; proc   : TransientProcess;
-    	    	   amodel : mutable InterfaceModel)
+    	    	   amodel : InterfaceModel)
     ---Purpose : Fills an InterfaceModel with the Complete Result of a Transfer
     --           stored in a TransientProcess (Starting Objects are Transient)
     --           The complete result is exactly added to the model
@@ -47,7 +47,7 @@ is
     --           Error if one of the Resulting Objects is defined not Transient
 
     FillModel (me; proc   : TransientProcess;
-    	    	   amodel : mutable InterfaceModel;
+    	    	   amodel : InterfaceModel;
 		   proto  : Protocol from Interface;
 		   roots  : Boolean = Standard_True)
     ---Purpose : Fills an InterfaceModel with results of the Transfer recorded
@@ -60,7 +60,7 @@ is
 
 
     FillModel (me; proc   : FinderProcess;
-    	    	   amodel : mutable InterfaceModel)
+    	    	   amodel : InterfaceModel)
     ---Purpose : Fills an InterfaceModel with the Complete Result of a Transfer
     --           stored in a TransientProcess (Starting Objects are Transient)
     --           The complete result is exactly added to the model
@@ -68,7 +68,7 @@ is
     --           Error if one of the Resulting Objects is defined not Transient
 
     FillModel (me; proc   : FinderProcess;
-    	    	   amodel : mutable InterfaceModel;
+    	    	   amodel : InterfaceModel;
 		   proto  : Protocol from Interface;
 		   roots  : Boolean = Standard_True)
     ---Purpose : Fills an InterfaceModel with results of the Transfer recorded

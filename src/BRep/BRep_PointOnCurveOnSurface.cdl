@@ -28,7 +28,7 @@ is
     	   C : Curve from Geom2d;
 	   S : Surface from Geom;
 	   L : Location from TopLoc)
-    returns mutable PointOnCurveOnSurface from BRep;
+    returns PointOnCurveOnSurface from BRep;
     
     IsPointOnCurveOnSurface(me) returns Boolean
 	---Purpose: Returns True

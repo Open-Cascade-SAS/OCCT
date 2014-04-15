@@ -25,16 +25,16 @@ uses OStream, Check, UndefinedContent, CopyTool,
 
 is
 
-    Create returns mutable UndefinedEntity;
+    Create returns UndefinedEntity;
     ---Purpose : creates an unknown entity
 
-    UndefinedContent (me) returns mutable UndefinedContent;
+    UndefinedContent (me) returns UndefinedContent;
     ---Purpose : Returns own data as an UndefinedContent
 
-    ChangeableContent (me : mutable) returns mutable UndefinedContent;
+    ChangeableContent (me : mutable) returns UndefinedContent;
     ---Purpose : Returns own data as an UndefinedContent, in order to touch it
 
-    SetNewContent (me : mutable; cont : mutable UndefinedContent);
+    SetNewContent (me : mutable; cont : UndefinedContent);
     ---Purpose : Redefines a completely new UndefinedContent
     --           Used by a Copy which begins by ShallowCopy, for instance
 

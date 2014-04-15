@@ -39,7 +39,7 @@ raises DimensionMismatch, OutOfRange
 
 is
 
-        Create returns mutable ViewsVisibleWithAttr;
+        Create returns ViewsVisibleWithAttr;
 
         -- Specific Methods pertaining to the class
 

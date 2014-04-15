@@ -25,21 +25,21 @@ uses
 
 
 is
-    	Create returns mutable AppliedSecurityClassificationAssignment;
+    	Create returns AppliedSecurityClassificationAssignment;
 	---Purpose: Returns a AppliedSecurityClassificationAssignment
 
 
 	Init (me : mutable;
-	      aAssignedSecurityClassification : mutable SecurityClassification from StepBasic) is redefined;
+	      aAssignedSecurityClassification : SecurityClassification from StepBasic) is redefined;
 
 	Init (me : mutable;
-	      aAssignedSecurityClassification : mutable SecurityClassification from StepBasic;
-	      aItems : mutable HArray1OfSecurityClassificationItem from StepAP214) is virtual;
+	      aAssignedSecurityClassification : SecurityClassification from StepBasic;
+	      aItems : HArray1OfSecurityClassificationItem from StepAP214) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetItems(me : mutable; aItems : mutable HArray1OfSecurityClassificationItem from StepAP214);
-	Items (me) returns mutable HArray1OfSecurityClassificationItem from StepAP214;
+	SetItems(me : mutable; aItems : HArray1OfSecurityClassificationItem from StepAP214);
+	Items (me) returns HArray1OfSecurityClassificationItem from StepAP214;
 	ItemsValue (me; num : Integer) returns SecurityClassificationItem;
 	---C++: return const &
 	NbItems (me) returns Integer;

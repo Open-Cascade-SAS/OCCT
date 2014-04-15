@@ -28,7 +28,7 @@ is
 	Create returns RWCartesianPoint;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable CartesianPoint from StepGeom);
+	              ach : in out Check; ent : CartesianPoint from StepGeom);
 
 	WriteStep (me; SW : in out StepWriter; ent : CartesianPoint from StepGeom);
 

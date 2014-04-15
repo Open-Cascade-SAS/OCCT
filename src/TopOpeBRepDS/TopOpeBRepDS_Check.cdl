@@ -38,7 +38,7 @@ is
     Create returns Check from TopOpeBRepDS;
 
     Create(HDS : HDataStructure from TopOpeBRepDS) 
-    returns mutable Check from TopOpeBRepDS;
+    returns Check from TopOpeBRepDS;
     	
 -- Check Integrity of DS
 

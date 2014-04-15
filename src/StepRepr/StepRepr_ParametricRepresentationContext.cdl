@@ -23,7 +23,7 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable ParametricRepresentationContext;
+	Create returns ParametricRepresentationContext;
 	---Purpose: Returns a ParametricRepresentationContext
 
 

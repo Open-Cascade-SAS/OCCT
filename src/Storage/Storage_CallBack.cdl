@@ -22,12 +22,12 @@ uses Schema from Storage,
      BaseDriver from Storage
      
 is
-   New(me) returns mutable Persistent is deferred;
+   New(me) returns Persistent is deferred;
    
    Add(me; aPers : Persistent from Standard; aSchema : Schema from Storage) is deferred;
    
    Write(me; aPers : Persistent from Standard; aDriver : in out BaseDriver from Storage; aSchema : Schema from Storage) is deferred;
    
-   Read(me; aPers : mutable Persistent from Standard; aDriver : in out BaseDriver from Storage; aSchema : Schema from Storage) is deferred;
+   Read(me; aPers : Persistent from Standard; aDriver : in out BaseDriver from Storage; aSchema : Schema from Storage) is deferred;
    
 end;

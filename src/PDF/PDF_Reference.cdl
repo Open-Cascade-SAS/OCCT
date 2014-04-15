@@ -19,11 +19,11 @@ uses HAsciiString from PCollection
 
 is
 
-    Create returns mutable Reference from  PDF;
+    Create returns Reference from  PDF;
     
     
     Create (V : HAsciiString from PCollection) 
-    returns mutable Reference from PDF;
+    returns Reference from PDF;
     
     
     ReferencedLabel (me) returns HAsciiString from PCollection;

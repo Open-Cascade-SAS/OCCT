@@ -19,7 +19,7 @@ class AlgoContainer from IGESControl inherits AlgoContainer from IGESToBRep
 
 is
 
-    Create returns mutable AlgoContainer from IGESControl;
+    Create returns AlgoContainer from IGESControl;
     	---Purpose: Empty constructor
 
 end AlgoContainer;

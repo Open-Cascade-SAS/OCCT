@@ -30,17 +30,17 @@ raises NullObject from Standard
 
 is
 
-    Create returns mutable PolygonOnTriangulation from PPoly;
+    Create returns PolygonOnTriangulation from PPoly;
     
     Create(Nodes : HArray1OfInteger from PColStd;
     	   Defl  : Real             from Standard)
-    returns mutable PolygonOnTriangulation from PPoly;
+    returns PolygonOnTriangulation from PPoly;
     	---Purpose: Defaults with allocation of nodes.
     
     Create(Nodes      : HArray1OfInteger from PColStd;
        	   Defl       : Real             from Standard;
            Parameters : HArray1OfReal    from PColStd) 
-    returns mutable PolygonOnTriangulation from PPoly;
+    returns PolygonOnTriangulation from PPoly;
     	---Purpose: Defaults with allocation of nodes.
     
     Deflection(me) returns Real;

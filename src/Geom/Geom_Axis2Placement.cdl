@@ -55,11 +55,11 @@ raises ConstructionError from Standard
 is
 
 
-  Create (A2 : Ax2)  returns mutable Axis2Placement;
+  Create (A2 : Ax2)  returns Axis2Placement;
         ---Purpose : Returns a transient copy of A2.
 
 
-  Create (P : Pnt; N, Vx : Dir)   returns mutable Axis2Placement
+  Create (P : Pnt; N, Vx : Dir)   returns Axis2Placement
 	---Purpose :
         --  P is the origin of the axis placement, N is the main
         --  direction of the axis placement and Vx is the "XDirection".
@@ -139,11 +139,11 @@ is
 
 
 
-  Copy (me)  returns mutable like me;
+  Copy (me)  returns like me;
     	---Purpose: Creates a new object which is a copy of this coordinate system.
 
 
-  Create (P : Pnt; Vz, Vx, Vy : Dir)   returns mutable Axis2Placement
+  Create (P : Pnt; Vz, Vx, Vy : Dir)   returns Axis2Placement
      is private;
 
 

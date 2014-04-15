@@ -25,10 +25,10 @@ uses
 
 is
 
-    Create returns mutable QualifiedRepresentationItem;
+    Create returns QualifiedRepresentationItem;
 
     Init (me : mutable;
-             aName : mutable HAsciiString from TCollection;
+             aName : HAsciiString from TCollection;
 	     qualifiers : HArray1OfValueQualifier from StepShape);
 
     Qualifiers (me) returns HArray1OfValueQualifier from StepShape;

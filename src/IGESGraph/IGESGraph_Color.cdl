@@ -31,7 +31,7 @@ uses
 
 is
 
-        Create returns mutable Color;
+        Create returns Color;
 
         -- Specific Methods pertaining to class
 

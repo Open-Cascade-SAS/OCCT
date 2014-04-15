@@ -41,13 +41,13 @@ is
 
     Transfer2dPoint            (me    : in out;
                                 start : Point from Geom2d)
-    	 returns mutable Point from IGESGeom;
+    	 returns Point from IGESGeom;
     ---Purpose :  Transfert  a  Point from Geom to IGES. If this
     --            Entity could not be converted, this member returns a NullEntity.
 
     Transfer2dPoint            (me    : in out;
                                 start : CartesianPoint from Geom2d)
-    	 returns mutable Point from IGESGeom;
+    	 returns Point from IGESGeom;
     ---Purpose :  Transfert  a  CartesianPoint from Geom to IGES. If this
     --            Entity could not be converted, this member returns a NullEntity.
 

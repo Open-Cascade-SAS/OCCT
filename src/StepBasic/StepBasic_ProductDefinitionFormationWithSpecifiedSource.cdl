@@ -25,19 +25,19 @@ uses
 	Product from StepBasic
 is
 
-	Create returns mutable ProductDefinitionFormationWithSpecifiedSource;
+	Create returns ProductDefinitionFormationWithSpecifiedSource;
 	---Purpose: Returns a ProductDefinitionFormationWithSpecifiedSource
 
 
 	Init (me : mutable;
-	      aId : mutable HAsciiString from TCollection;
-	      aDescription : mutable HAsciiString from TCollection;
-	      aOfProduct : mutable Product from StepBasic) is redefined;
+	      aId : HAsciiString from TCollection;
+	      aDescription : HAsciiString from TCollection;
+	      aOfProduct : Product from StepBasic) is redefined;
 
 	Init (me : mutable;
-	      aId : mutable HAsciiString from TCollection;
-	      aDescription : mutable HAsciiString from TCollection;
-	      aOfProduct : mutable Product from StepBasic;
+	      aId : HAsciiString from TCollection;
+	      aDescription : HAsciiString from TCollection;
+	      aOfProduct : Product from StepBasic;
 	      aMakeOrBuy : Source from StepBasic) is virtual;
 
 	-- Specific Methods for Field Data Access --

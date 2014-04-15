@@ -32,11 +32,11 @@ uses Boolean    from Standard,
 
 is
 
-    Get (myclass) returns mutable DriverTable from TPrsStd;
+    Get (myclass) returns DriverTable from TPrsStd;
     ---Purpose: Returns the static table.
     --          If it does not exist, creates it and fills it with standard drivers.
 
-    Create returns mutable DriverTable from TPrsStd;
+    Create returns DriverTable from TPrsStd;
     ---Purpose: Default constructor
 
     InitStandardDrivers (me : mutable);

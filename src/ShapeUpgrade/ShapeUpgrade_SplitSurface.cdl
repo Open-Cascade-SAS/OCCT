@@ -28,7 +28,7 @@ uses
 
 is 
  
-    Create returns mutable SplitSurface from ShapeUpgrade; 
+    Create returns SplitSurface from ShapeUpgrade; 
     	---Purpose: Empty constructor.
     
     Init (me: mutable; S: Surface from Geom);  

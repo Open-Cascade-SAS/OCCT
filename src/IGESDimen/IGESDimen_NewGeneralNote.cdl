@@ -35,7 +35,7 @@ raises DimensionMismatch, OutOfRange
 
 is
 
-        Create returns mutable NewGeneralNote;
+        Create returns NewGeneralNote;
 
         -- Specific Methods pertaining to the class
 

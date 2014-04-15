@@ -47,7 +47,7 @@ uses
     
 is
 
-    Create returns mutable TFace from BRep;
+    Create returns TFace from BRep;
 	---Purpose: Creates an empty TFace.
 	
     Surface(me) returns any Surface from Geom;
@@ -83,7 +83,7 @@ is
     NaturalRestriction(me : mutable; N : Boolean);
 	---C++: inline
     
-    EmptyCopy(me) returns mutable TShape from TopoDS
+    EmptyCopy(me) returns TShape from TopoDS
 	---Purpose: Returns a copy  of the  TShape  with no sub-shapes.
 	--          The new Face has no triangulation.
     is redefined;

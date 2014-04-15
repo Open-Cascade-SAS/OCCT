@@ -31,13 +31,13 @@ raises
     InvalidAngle from Prs3d
     
 is
-    Create returns mutable ArrowAspect from Prs3d;
+    Create returns ArrowAspect from Prs3d;
     	---Purpose: Constructs an empty framework for displaying arrows
     	-- in representations of lengths. The lengths displayed
     	-- are either on their own or in chamfers, fillets,
     	-- diameters and radii.    
     Create (anAngle: PlaneAngle from Quantity; aLength: Length from Quantity)
-    returns mutable ArrowAspect from Prs3d;
+    returns ArrowAspect from Prs3d;
     	--- Purpose: Constructs a framework to display an arrow with a
     	-- shaft of the length aLength and having a head with
     	-- sides at the angle anAngle from each other.   

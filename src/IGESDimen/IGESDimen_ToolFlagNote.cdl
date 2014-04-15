@@ -31,7 +31,7 @@ is
     ---Purpose : Returns a ToolFlagNote, ready to work
 
 
-    ReadOwnParams (me; ent : mutable FlagNote;
+    ReadOwnParams (me; ent : FlagNote;
     	    	   IR : IGESReaderData; PR : in out ParamReader)
     	raises DomainError  is static;
     ---Purpose : Reads own parameters from file. <PR> gives access to them,
@@ -55,7 +55,7 @@ is
     ---Purpose : Performs Specific Semantic Check
 
 
-    OwnCopy    (me; entfrom : FlagNote; entto : mutable FlagNote;
+    OwnCopy    (me; entfrom : FlagNote; entto : FlagNote;
     	        TC : in out CopyTool)  is static;
     ---Purpose : Copies Specific Parameters
 

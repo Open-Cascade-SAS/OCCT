@@ -28,11 +28,11 @@ is
     Create (plane : Face  from TopoDS;
             line1 : Shape from TopoDS; 
             line2 : Shape from TopoDS)
-    returns mutable PlanarAngle from DrawDim;    
+    returns PlanarAngle from DrawDim;    
 
     Create (line1 : Shape from TopoDS; 
             line2 : Shape from TopoDS)
-    returns mutable PlanarAngle from DrawDim;
+    returns PlanarAngle from DrawDim;
     
     Sector (me : mutable; inverted, reversed : Boolean from Standard);
     

@@ -23,7 +23,7 @@ uses
 	Real from Standard
 is
 
-	Create returns mutable CurveStyleFontPattern;
+	Create returns CurveStyleFontPattern;
 	---Purpose: Returns a CurveStyleFontPattern
 
 	Init (me : mutable;

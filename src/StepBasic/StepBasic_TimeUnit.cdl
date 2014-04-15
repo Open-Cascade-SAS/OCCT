@@ -23,7 +23,7 @@ uses
 	DimensionalExponents from StepBasic
 is
 
-	Create returns mutable TimeUnit;
+	Create returns TimeUnit;
 	---Purpose: Returns a TimeUnit
 
 

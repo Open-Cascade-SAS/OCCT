@@ -33,15 +33,15 @@ raises NotDone from StdFail
 is 
 
 Create ( F  : Face from TopoDS;
-         FP : mutable FinderProcess from Transfer)
+         FP : FinderProcess from Transfer)
         returns MakeShellBasedSurfaceModel;
 
 Create ( S           : Shell from TopoDS;
-         FP          : mutable FinderProcess from Transfer)
+         FP          : FinderProcess from Transfer)
         returns MakeShellBasedSurfaceModel;
 
 Create ( S  : Solid from TopoDS;
-         FP : mutable FinderProcess from Transfer)
+         FP : FinderProcess from Transfer)
         returns MakeShellBasedSurfaceModel;
 
 Value (me) returns ShellBasedSurfaceModel from StepShape

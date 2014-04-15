@@ -29,17 +29,17 @@ raises
 
 is
 
-    Create returns mutable HCurve from GeomAdaptor;
+    Create returns HCurve from GeomAdaptor;
     	---C++: inline
     
-    Create( AS : Curve from GeomAdaptor) returns mutable HCurve from GeomAdaptor;
+    Create( AS : Curve from GeomAdaptor) returns HCurve from GeomAdaptor;
     	---C++: inline
 
-    Create( S : Curve from Geom) returns mutable HCurve from GeomAdaptor;
+    Create( S : Curve from Geom) returns HCurve from GeomAdaptor;
     	---C++: inline
     
     Create( S : Curve from Geom; UFirst,ULast : Real) 
-    returns  mutable HCurve from GeomAdaptor
+    returns HCurve from GeomAdaptor
     	---Purpose: ConstructionError is raised if UFirst>ULast or VFirst>VLast
     	---C++: inline
     raises ConstructionError from Standard;

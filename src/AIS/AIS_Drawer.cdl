@@ -64,7 +64,7 @@ uses
     Ax2 from gp
 
 is
-    Create returns mutable Drawer from AIS;
+    Create returns Drawer from AIS;
     	 ---Purpose:
     	 -- Constructs an empty attribute management framework.   
     TypeOfDeflection(me) returns TypeOfDeflection from Aspect
@@ -247,7 +247,7 @@ is
 -- 
 -- Attributes for the U Isoparametric lines of patches.
 --    
-    UIsoAspect (me:mutable) returns mutable IsoAspect from Prs3d
+    UIsoAspect (me:mutable) returns IsoAspect from Prs3d
 	 ---Purpose: Defines the attributes which are used when drawing an 
 	 --          U isoparametric curve of a face. Defines the number
 	 --          of U isoparametric curves to be drawn for a single face.
@@ -268,7 +268,7 @@ is
 -- Attributes for the V Isoparametric line of patches.
 
 
-    VIsoAspect (me:mutable) returns mutable IsoAspect from Prs3d
+    VIsoAspect (me:mutable) returns IsoAspect from Prs3d
 	 ---Purpose: Defines the attributes which are used when drawing an 
 	 --          V isoparametric curve of a face. Defines the number
 	 --          of V isoparametric curves to be drawn for a single face.
@@ -286,7 +286,7 @@ is
 
 -- Attributes for the free boundaries
 
-    FreeBoundaryAspect (me:mutable) returns mutable LineAspect from Prs3d
+    FreeBoundaryAspect (me:mutable) returns LineAspect from Prs3d
 	 ---Purpose: Returns a link with
     	 -- Prs3d_Drawer_FreeBoundaryAspect. Stores the
     	 -- values for presentation of free boundaries, in other
@@ -305,7 +305,7 @@ is
 
 -- Attributes for the wires
 
-    WireAspect (me:mutable) returns mutable LineAspect from Prs3d
+    WireAspect (me:mutable) returns LineAspect from Prs3d
 	 ---Purpose: Returns a link with Prs3d_Drawer_WireAspect.
     	 -- This method provides wire aspect settings.
     	 -- The LineAspect for wires can be edited. The default values are:
@@ -336,7 +336,7 @@ is
 
 -- Attributes for the unfree boundaries
 
-    UnFreeBoundaryAspect (me:mutable) returns mutable LineAspect from Prs3d
+    UnFreeBoundaryAspect (me:mutable) returns LineAspect from Prs3d
     	 ---Purpose: Returns a link with
     	 -- Prs3d_Drawer_UnFreeBoundaryAspect, which
     	 -- provides settings for shared boundary line aspects.
@@ -360,7 +360,7 @@ is
 --  Attributes for the lines.
 -- 
 
-    LineAspect(me:mutable) returns mutable LineAspect from Prs3d
+    LineAspect(me:mutable) returns LineAspect from Prs3d
     	---Purpose:  Returns a link with Prs3d_Drawer_LineAspect,
     	-- which provides settings for line aspects. These
     	-- settings can be edited. The default values are:         
@@ -379,7 +379,7 @@ is
     HasTextAspect(me) returns Boolean from Standard
     is static;      
     	---C++: inline     
-    TextAspect(me:mutable) returns mutable TextAspect from Prs3d
+    TextAspect(me:mutable) returns TextAspect from Prs3d
     --          
     --          Color: Quantity_NOC_YELLOW
     is redefined static;    			    
@@ -389,14 +389,14 @@ is
     	-- each line is enabled. The default setting is False.
     is redefined static;
     
-    ArrowAspect(me:mutable) returns mutable ArrowAspect from Prs3d 
+    ArrowAspect(me:mutable) returns ArrowAspect from Prs3d 
     is redefined static;
     
     
 -- -- 
 --  Attributes for the points
 -- 
-    PointAspect(me:mutable) returns mutable PointAspect from Prs3d
+    PointAspect(me:mutable) returns PointAspect from Prs3d
     	---Purpose:  Returns the point aspect setting. The default values
     	-- are:        Color: Quantity_NOC_YELLOW
 	--          Type of marker: Aspect_TOM_PLUS
@@ -413,7 +413,7 @@ is
     
 --  Attributes for the faces:
 --  
-    ShadingAspect (me:mutable) returns mutable ShadingAspect from Prs3d
+    ShadingAspect (me:mutable) returns ShadingAspect from Prs3d
     	---Purpose:
     	-- Returns a link with Prs3d_Drawer_ShadingAspect,
     	-- which provides settings for shading aspects.
@@ -443,7 +443,7 @@ is
 	--          By default the hidden lines are not drawn.
     is redefined static;
     
-    HiddenLineAspect(me:mutable) returns mutable LineAspect from Prs3d
+    HiddenLineAspect(me:mutable) returns LineAspect from Prs3d
 	---Purpose: Returns a link with
     	-- Prs3d_Drawer_HiddenLineAspect, which provides
     	-- settings for hidden line aspects.
@@ -454,7 +454,7 @@ is
     is redefined static;
 
     
-    SeenLineAspect(me:mutable) returns mutable LineAspect from Prs3d
+    SeenLineAspect(me:mutable) returns LineAspect from Prs3d
     	---Purpose: Returns a link with
     	-- Prs3d_Drawer_SeenLineAspect, which provides
     	-- settings for seen line aspects.
@@ -468,14 +468,14 @@ is
     HasPlaneAspect(me) returns Boolean from Standard;
     	---C++: inline
 
-    PlaneAspect(me:mutable) returns mutable PlaneAspect from Prs3d
+    PlaneAspect(me:mutable) returns PlaneAspect from Prs3d
     is redefined static;
     	---Purpose:
     	-- Returns a link with Prs3d_Drawer_PlaneAspect.
     	-- This method provides settings for the appearance of planes.
 
 
-    VectorAspect(me:mutable) returns mutable LineAspect from Prs3d
+    VectorAspect(me:mutable) returns LineAspect from Prs3d
     	---Purpose: Returns a link with Prs3d_Drawer_VectorAspect,
     	-- which provides settings for the appearance of vectors.
     	-- These settings can be edited. The default values are:
@@ -504,7 +504,7 @@ is
         -- visualization instead of the one set in link.
         -- theAspect is the line aspect that determines the look of the face boundaries.
 
-    FaceBoundaryAspect (me : mutable) returns mutable LineAspect from Prs3d
+    FaceBoundaryAspect (me : mutable) returns LineAspect from Prs3d
     is redefined static;
         ---Purpose: Returns line aspect of face boundaries.
 
@@ -526,7 +526,7 @@ is
     HasDatumAspect(me) returns Boolean from Standard;
     	---C++: inline 
 
-    DatumAspect(me:mutable) returns mutable DatumAspect from Prs3d
+    DatumAspect(me:mutable) returns DatumAspect from Prs3d
     	---Purpose: Returns a link with Prs3d_Drawer_DatumAspect,
     	-- which provides settings for the appearance of datums.
     	-- These settings can be edited. The default values for
@@ -539,7 +539,7 @@ is
 --  Attributes for the presentation of a dimensions.
 --  
 
-    DimensionAspect (me : mutable) returns mutable DimensionAspect from Prs3d is redefined static;
+    DimensionAspect (me : mutable) returns DimensionAspect from Prs3d is redefined static;
     ---Purpose: Returns a link with Prs3d_Drawer_DimensionAspect,
     -- which provides settings for the appearance of dimensions.
 
@@ -577,7 +577,7 @@ is
 
 -- Attributes for the sections
 
-    SectionAspect (me:mutable) returns mutable LineAspect from Prs3d
+    SectionAspect (me:mutable) returns LineAspect from Prs3d
     	---Purpose: Returns a link with Prs3d_Drawer_SectionAspect,
     	-- which provides settings for wires which highlight sections.
     	-- The LineAspect for the wire can be edited.

@@ -24,38 +24,38 @@ uses
 	HArray1OfHAsciiString from Interface
 is
 
-	Create returns mutable FileName;
+	Create returns FileName;
 	---Purpose: Returns a FileName
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aTimeStamp : mutable HAsciiString from TCollection;
-	      aAuthor : mutable HArray1OfHAsciiString from Interface;
-	      aOrganization : mutable HArray1OfHAsciiString from Interface;
-	      aPreprocessorVersion : mutable HAsciiString from TCollection;
-	      aOriginatingSystem : mutable HAsciiString from TCollection;
-	      aAuthorisation : mutable HAsciiString from TCollection);
+	      aName : HAsciiString from TCollection;
+	      aTimeStamp : HAsciiString from TCollection;
+	      aAuthor : HArray1OfHAsciiString from Interface;
+	      aOrganization : HArray1OfHAsciiString from Interface;
+	      aPreprocessorVersion : HAsciiString from TCollection;
+	      aOriginatingSystem : HAsciiString from TCollection;
+	      aAuthorisation : HAsciiString from TCollection);
 
 	-- Specific Methods for Field Data Access --
 
-	SetName(me : mutable; aName : mutable HAsciiString);
-	Name (me) returns mutable HAsciiString;
-	SetTimeStamp(me : mutable; aTimeStamp : mutable HAsciiString);
-	TimeStamp (me) returns mutable HAsciiString;
-	SetAuthor(me : mutable; aAuthor : mutable HArray1OfHAsciiString);
-	Author (me) returns mutable HArray1OfHAsciiString;
-	AuthorValue (me; num : Integer) returns mutable HAsciiString;
+	SetName(me : mutable; aName : HAsciiString);
+	Name (me) returns HAsciiString;
+	SetTimeStamp(me : mutable; aTimeStamp : HAsciiString);
+	TimeStamp (me) returns HAsciiString;
+	SetAuthor(me : mutable; aAuthor : HArray1OfHAsciiString);
+	Author (me) returns HArray1OfHAsciiString;
+	AuthorValue (me; num : Integer) returns HAsciiString;
 	NbAuthor (me) returns Integer;
-	SetOrganization(me : mutable; aOrganization : mutable HArray1OfHAsciiString);
-	Organization (me) returns mutable HArray1OfHAsciiString;
-	OrganizationValue (me; num : Integer) returns mutable HAsciiString;
+	SetOrganization(me : mutable; aOrganization : HArray1OfHAsciiString);
+	Organization (me) returns HArray1OfHAsciiString;
+	OrganizationValue (me; num : Integer) returns HAsciiString;
 	NbOrganization (me) returns Integer;
-	SetPreprocessorVersion(me : mutable; aPreprocessorVersion : mutable HAsciiString);
-	PreprocessorVersion (me) returns mutable HAsciiString;
-	SetOriginatingSystem(me : mutable; aOriginatingSystem : mutable HAsciiString);
-	OriginatingSystem (me) returns mutable HAsciiString;
-	SetAuthorisation(me : mutable; aAuthorisation : mutable HAsciiString);
-	Authorisation (me) returns mutable HAsciiString;
+	SetPreprocessorVersion(me : mutable; aPreprocessorVersion : HAsciiString);
+	PreprocessorVersion (me) returns HAsciiString;
+	SetOriginatingSystem(me : mutable; aOriginatingSystem : HAsciiString);
+	OriginatingSystem (me) returns HAsciiString;
+	SetAuthorisation(me : mutable; aAuthorisation : HAsciiString);
+	Authorisation (me) returns HAsciiString;
 
 fields
 

@@ -24,7 +24,7 @@ uses Transient, AsciiString from TCollection, SessionFile
 
 is
 
-    Create returns mutable Dumper;
+    Create returns Dumper;
     ---Purpose : Creates a Dumper and puts it into the Library of Dumper
 
     WriteOwn (me; file : in out SessionFile; item : Transient) returns Boolean;
@@ -32,7 +32,7 @@ is
     --           Returns True if <item> has been processed, False else
 
     ReadOwn  (me; file : in out SessionFile;
-    	    type : AsciiString from TCollection; item : out mutable Transient)
+    	    type : AsciiString from TCollection; item : out Transient)
     	returns Boolean;
     ---Purpose : Recognizes and Read Own Parameters for Types of package
     --           IGESSelect. Returns True if done and <item> created, False else

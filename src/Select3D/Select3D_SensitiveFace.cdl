@@ -44,7 +44,7 @@ is
     Create (OwnerId      : EntityOwner from SelectBasics;
             ThePoints    : Array1OfPnt from TColgp;
             Sensitivity  : TypeOfSensitivity = Select3D_TOS_INTERIOR)
-     returns mutable SensitiveFace;
+     returns SensitiveFace;
         ---Level: Public 
         ---Purpose: Constructs a sensitive face object defined by the
         -- owner OwnerId, the array of points ThePoints, and
@@ -54,7 +54,7 @@ is
     Create (OwnerId      : EntityOwner from SelectBasics;
             ThePoints    : HArray1OfPnt from TColgp;
             Sensitivity  : TypeOfSensitivity = Select3D_TOS_INTERIOR)
-     returns mutable SensitiveFace;
+     returns SensitiveFace;
         ---Level: Public 
         ---Purpose: Constructs a sensitive face object defined by the
         -- owner OwnerId, the array of points ThePoints, and

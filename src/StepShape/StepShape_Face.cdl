@@ -25,24 +25,24 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable Face;
+	Create returns Face;
 	---Purpose: Returns a Face
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection) is redefined;
+	      aName : HAsciiString from TCollection) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aBounds : mutable HArray1OfFaceBound from StepShape) is virtual;
+	      aName : HAsciiString from TCollection;
+	      aBounds : HArray1OfFaceBound from StepShape) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetBounds(me : mutable; aBounds : mutable HArray1OfFaceBound)
+	SetBounds(me : mutable; aBounds : HArray1OfFaceBound)
     	is virtual;
-	Bounds (me) returns mutable HArray1OfFaceBound
+	Bounds (me) returns HArray1OfFaceBound
     	is virtual;
-	BoundsValue (me; num : Integer) returns mutable FaceBound
+	BoundsValue (me; num : Integer) returns FaceBound
     	is virtual;
 	NbBounds (me) returns Integer
     	is virtual;

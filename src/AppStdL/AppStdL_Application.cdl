@@ -21,7 +21,7 @@ uses MessageDriver            from CDM,
 
 is
    
-    Create returns mutable Application from AppStdL; 
+    Create returns Application from AppStdL; 
 
     MessageDriver(me: mutable)
         returns MessageDriver from CDM

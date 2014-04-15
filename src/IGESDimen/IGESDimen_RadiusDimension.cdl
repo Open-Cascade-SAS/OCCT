@@ -34,7 +34,7 @@ uses
 
 is
 
-        Create returns mutable RadiusDimension;
+        Create returns RadiusDimension;
 
             -- --specific-- --
         Init(me           : mutable;

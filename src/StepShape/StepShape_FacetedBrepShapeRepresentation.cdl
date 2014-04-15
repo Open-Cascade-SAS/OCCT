@@ -25,7 +25,7 @@ uses
 	RepresentationContext from StepRepr
 is
 
-	Create returns mutable FacetedBrepShapeRepresentation;
+	Create returns FacetedBrepShapeRepresentation;
 	---Purpose: Returns a FacetedBrepShapeRepresentation
 
 

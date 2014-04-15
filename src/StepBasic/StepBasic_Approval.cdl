@@ -24,19 +24,19 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable Approval;
+	Create returns Approval;
 	---Purpose: Returns a Approval
 
 	Init (me : mutable;
-	      aStatus : mutable ApprovalStatus from StepBasic;
-	      aLevel : mutable HAsciiString from TCollection) is virtual;
+	      aStatus : ApprovalStatus from StepBasic;
+	      aLevel : HAsciiString from TCollection) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetStatus(me : mutable; aStatus : mutable ApprovalStatus);
-	Status (me) returns mutable ApprovalStatus;
-	SetLevel(me : mutable; aLevel : mutable HAsciiString);
-	Level (me) returns mutable HAsciiString;
+	SetStatus(me : mutable; aStatus : ApprovalStatus);
+	Status (me) returns ApprovalStatus;
+	SetLevel(me : mutable; aLevel : HAsciiString);
+	Level (me) returns HAsciiString;
 
 fields
 

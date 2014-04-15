@@ -30,7 +30,7 @@ uses
 
 is
 
-        Create returns mutable SphericalSurface;
+        Create returns SphericalSurface;
 
         -- Specific Methods pertaining to the class
 

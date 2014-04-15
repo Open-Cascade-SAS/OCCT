@@ -32,12 +32,12 @@ uses Trsf2d from gp
 is
 
 
-  Create returns mutable Transformation from PGeom2d;
+  Create returns Transformation from PGeom2d;
         ---Purpose : Creates a transformation with default values.
 	---Level: Internal 
 
 
-  Create (aTrsf : Trsf2d from gp) returns mutable Transformation from PGeom2d;
+  Create (aTrsf : Trsf2d from gp) returns Transformation from PGeom2d;
         ---Purpose :  Creates a transformation with <aTrsf>.
 	---Level: Internal 
 

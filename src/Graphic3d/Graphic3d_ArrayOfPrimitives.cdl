@@ -59,7 +59,7 @@ is
                 hasVColors: Boolean from Standard;
                 hasBColors: Boolean from Standard;
                 hasTexels: Boolean from Standard)
-    returns mutable ArrayOfPrimitives from Graphic3d
+    returns ArrayOfPrimitives from Graphic3d
         raises  InitialisationError from Graphic3d;
     ---Purpose:  Warning
     -- You must use a coherent set of AddVertex() methods according to the

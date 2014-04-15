@@ -31,7 +31,7 @@ is
     ---Purpose : Returns a ToolUnitsData, ready to work
 
 
-    ReadOwnParams (me; ent : mutable UnitsData;
+    ReadOwnParams (me; ent : UnitsData;
     	    	   IR : IGESReaderData; PR : in out ParamReader)
     	raises DomainError  is static;
     ---Purpose : Reads own parameters from file. <PR> gives access to them,
@@ -55,7 +55,7 @@ is
     ---Purpose : Performs Specific Semantic Check
 
 
-    OwnCopy    (me; entfrom : UnitsData; entto : mutable UnitsData;
+    OwnCopy    (me; entfrom : UnitsData; entto : UnitsData;
     	        TC : in out CopyTool)  is static;
     ---Purpose : Copies Specific Parameters
 

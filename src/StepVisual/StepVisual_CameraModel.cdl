@@ -23,7 +23,7 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable CameraModel;
+	Create returns CameraModel;
 	---Purpose: Returns a CameraModel
 
 

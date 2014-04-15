@@ -33,7 +33,7 @@ is
 
     Create(name : AsciiString; value : Real)
     ---Purpose: Creates a constant value of name <name> and value <value>.
-    returns mutable NamedConstant;
+    returns NamedConstant;
 
     GetValue(me)
     ---C++: inline
@@ -67,7 +67,7 @@ is
 
     Copy(me)
     ---Purpose: Returns a copy of <me> having the same unknowns and functions.
-    returns mutable like me;
+    returns like me;
     
     ContainsUnknowns(me) 
     ---Purpose: Tests if <me> contains NamedUnknown.

@@ -26,7 +26,7 @@ uses Array1OfTransient
 
 is
 
-    Create (low, up : Integer) returns mutable JaggedArray;
+    Create (low, up : Integer) returns JaggedArray;
 
     Lower  (me) returns Integer;
     Upper  (me) returns Integer;

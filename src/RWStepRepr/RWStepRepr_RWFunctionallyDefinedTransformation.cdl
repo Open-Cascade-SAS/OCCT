@@ -28,7 +28,7 @@ is
 	Create returns RWFunctionallyDefinedTransformation;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable FunctionallyDefinedTransformation from StepRepr);
+	              ach : in out Check; ent : FunctionallyDefinedTransformation from StepRepr);
 
 	WriteStep (me; SW : in out StepWriter; ent : FunctionallyDefinedTransformation from StepRepr);
 

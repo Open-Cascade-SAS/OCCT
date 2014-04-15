@@ -29,7 +29,7 @@ is
 	Create returns RWSurfaceStyleUsage;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable SurfaceStyleUsage from StepVisual);
+	              ach : in out Check; ent : SurfaceStyleUsage from StepVisual);
 
 	WriteStep (me; SW : in out StepWriter; ent : SurfaceStyleUsage from StepVisual);
 

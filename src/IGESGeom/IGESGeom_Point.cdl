@@ -26,7 +26,7 @@ uses
         XYZ          from gp
 is
 
-        Create returns mutable Point;
+        Create returns Point;
 
         -- Specific Methods pertaining to the class
 

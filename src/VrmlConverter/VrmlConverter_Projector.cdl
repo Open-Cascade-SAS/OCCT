@@ -45,7 +45,7 @@ is
 	     XUp, YUp, ZUp: Length from Quantity;                          -- High Point Direction
 	     Camera:  TypeOfCamera from VrmlConverter  = VrmlConverter_NoCamera;
    	     Light:   TypeOfLight from VrmlConverter   = VrmlConverter_NoLight ) 
-    returns mutable Projector from VrmlConverter; 
+    returns Projector from VrmlConverter; 
     
 
     SetCamera ( me: mutable; aCamera : TypeOfCamera from VrmlConverter );

@@ -29,15 +29,15 @@ raises ConstructionError from Standard
 
 is
 
-  Create (V : Vec) returns mutable VectorWithMagnitude;
+  Create (V : Vec) returns VectorWithMagnitude;
         ---Purpose : Creates a transient copy of V.
 
 
-  Create (X, Y, Z : Real)   returns mutable VectorWithMagnitude;
+  Create (X, Y, Z : Real)   returns VectorWithMagnitude;
         ---Purpose : Creates a vector with three cartesian coordinates. 
 
 
-  Create (P1, P2 : Pnt)   returns mutable VectorWithMagnitude;
+  Create (P1, P2 : Pnt)   returns VectorWithMagnitude;
         ---Purpose :
         --  Creates a vector from the point P1 to the point P2.
         --  The magnitude of the vector is the distance between P1 and P2
@@ -77,7 +77,7 @@ is
         --  Adds the Vector Other to <me>.
 
 
-  Added (me; Other : Vector)  returns mutable VectorWithMagnitude
+  Added (me; Other : Vector)  returns VectorWithMagnitude
         ---Purpose :
         --  Adds the vector Other to <me>.
 
@@ -90,7 +90,7 @@ is
         --  <me> ^ Other.
 
 
-  Crossed (me; Other : Vector)  returns mutable like me
+  Crossed (me; Other : Vector)  returns like me
         ---Purpose :
         --  Computes the cross product  between <me> and Other 
         --  <me> ^ Other. A new vector is returned.
@@ -102,7 +102,7 @@ is
         --  Computes the triple vector product  <me> ^ (V1 ^ V2).
 
 
-  CrossCrossed (me; V1, V2 : Vector)   returns mutable like me
+  CrossCrossed (me; V1, V2 : Vector)   returns like me
         ---Purpose :
         --  Computes the triple vector product  <me> ^ (V1 ^ V2).
         --  A new vector is returned.
@@ -113,13 +113,13 @@ is
         ---Purpose : Divides <me> by a scalar.
 
 
-  Divided (me; Scalar : Real)  returns mutable VectorWithMagnitude
+  Divided (me; Scalar : Real)  returns VectorWithMagnitude
         ---Purpose :
         --  Divides <me> by a scalar. A new vector is returned.
      is static;
 
 
-  Multiplied (me; Scalar : Real)  returns mutable VectorWithMagnitude
+  Multiplied (me; Scalar : Real)  returns VectorWithMagnitude
         ---Purpose :
         --  Computes the product of the vector <me> by a scalar.
         --  A new vector is returned.
@@ -139,7 +139,7 @@ is
         --  Resolution from package gp.
 
 
-  Normalized (me)  returns mutable VectorWithMagnitude
+  Normalized (me)  returns VectorWithMagnitude
         ---Purpose : Returns a copy of <me> Normalized.
      raises ConstructionError
         ---Purpose :
@@ -152,7 +152,7 @@ is
         ---Purpose : Subtracts the Vector Other to <me>.
 
 
-  Subtracted (me; Other : Vector)  returns mutable VectorWithMagnitude
+  Subtracted (me; Other : Vector)  returns VectorWithMagnitude
         ---Purpose :
         --  Subtracts the vector Other to <me>. A new vector is returned.
 
@@ -165,7 +165,7 @@ is
     	---Purpose: Applies the transformation T to this vector.
 
 
-  Copy (me)  returns mutable like me;
+  Copy (me)  returns like me;
     	---Purpose: Creates a new object which is a copy of this vector.
 
 end;

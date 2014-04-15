@@ -134,7 +134,7 @@ is
     --           This allows to do a check on an Entity not yet completely
     --           filled but of which Type and Form Number have been already set
 
-    Correct (me; ent : mutable IGESEntity) returns Boolean  is static;
+    Correct (me; ent : IGESEntity) returns Boolean  is static;
     ---Purpose : Corrects the Directory Entry of an IGES Entity as far as it is
     --           possible according recorded criteria without any ambiguity :
     --           - if a numeric Status is required a given value, this value is

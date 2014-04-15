@@ -59,7 +59,7 @@ is
   Create (S : Surface from Geom; 
           U1, U2, V1, V2 : Real; 
           USense, VSense : Boolean =  Standard_True)
-     returns mutable RectangularTrimmedSurface
+     returns RectangularTrimmedSurface
         ---Purpose :
         --  The U parametric direction of the surface is oriented from U1
         --  to U2. The V parametric direction of the surface is oriented 
@@ -85,7 +85,7 @@ is
           Param1, Param2 : Real; 
           UTrim          : Boolean;
           Sense          : Boolean = Standard_True)
-     returns mutable RectangularTrimmedSurface
+     returns RectangularTrimmedSurface
         ---Purpose :
         --  The basis surface S is only trim in one parametric direction.
         --  If UTrim = True the surface is trimmed in the U parametric 
@@ -266,11 +266,11 @@ is
         ---Purpose : value and derivatives
 
 
-  UIso (me; U : Real)  returns mutable Curve;
+  UIso (me; U : Real)  returns Curve;
         ---Purpose : computes the U isoparametric curve.
 
 
-  VIso (me; V : Real)   returns mutable Curve;
+  VIso (me; V : Real)   returns Curve;
         ---Purpose : Computes the V isoparametric curve.
 
 
@@ -360,7 +360,7 @@ is
 	--          This methods calls the basis surface method.
      is redefined;  
 
-  Copy (me)  returns mutable like me;
+  Copy (me)  returns like me;
     	---Purpose: Creates a new object which is a copy of this patch.
 fields
 

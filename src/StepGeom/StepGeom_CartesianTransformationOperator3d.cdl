@@ -27,37 +27,37 @@ uses
 	Real from Standard
 is
 
-	Create returns mutable CartesianTransformationOperator3d;
+	Create returns CartesianTransformationOperator3d;
 	---Purpose: Returns a CartesianTransformationOperator3d
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
+	      aName : HAsciiString from TCollection;
 	      hasAaxis1 : Boolean from Standard;
-	      aAxis1 : mutable Direction from StepGeom;
+	      aAxis1 : Direction from StepGeom;
 	      hasAaxis2 : Boolean from Standard;
-	      aAxis2 : mutable Direction from StepGeom;
-	      aLocalOrigin : mutable CartesianPoint from StepGeom;
+	      aAxis2 : Direction from StepGeom;
+	      aLocalOrigin : CartesianPoint from StepGeom;
 	      hasAscale : Boolean from Standard;
 	      aScale : Real from Standard) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
+	      aName : HAsciiString from TCollection;
 	      hasAaxis1 : Boolean from Standard;
-	      aAxis1 : mutable Direction from StepGeom;
+	      aAxis1 : Direction from StepGeom;
 	      hasAaxis2 : Boolean from Standard;
-	      aAxis2 : mutable Direction from StepGeom;
-	      aLocalOrigin : mutable CartesianPoint from StepGeom;
+	      aAxis2 : Direction from StepGeom;
+	      aLocalOrigin : CartesianPoint from StepGeom;
 	      hasAscale : Boolean from Standard;
 	      aScale : Real from Standard;
 	      hasAaxis3 : Boolean from Standard;
-	      aAxis3 : mutable Direction from StepGeom) is virtual;
+	      aAxis3 : Direction from StepGeom) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetAxis3(me : mutable; aAxis3 : mutable Direction);
+	SetAxis3(me : mutable; aAxis3 : Direction);
 	UnSetAxis3 (me:mutable);
-	Axis3 (me) returns mutable Direction;
+	Axis3 (me) returns Direction;
 	HasAxis3 (me) returns Boolean;
 
 fields

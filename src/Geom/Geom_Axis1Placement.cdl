@@ -40,11 +40,11 @@ uses Ax1      from gp,
 is
 
 
-  Create (A1 : Ax1)   returns mutable Axis1Placement;
+  Create (A1 : Ax1)   returns Axis1Placement;
         ---Purpose : Returns a transient copy of A1.
 
 
-  Create (P : Pnt; V : Dir)   returns mutable Axis1Placement;
+  Create (P : Pnt; V : Dir)   returns Axis1Placement;
         ---Purpose :
         --  P is the origin of the axis placement and V is the direction
         --  of the axis placement.
@@ -56,7 +56,7 @@ is
   Reverse (me : mutable);
         ---Purpose : Reverses the direction of the axis placement.
 
-  Reversed (me)  returns mutable Axis1Placement
+  Reversed (me)  returns Axis1Placement
         ---Purpose :  Returns a copy of <me> reversed.
      is static;
      
@@ -67,7 +67,7 @@ is
   Transform (me : mutable; T : Trsf);
     	---Purpose: Applies the transformation T to this axis.
 
-  Copy (me)  returns mutable like me;
+  Copy (me)  returns like me;
 
     	---Purpose: Creates a new object, which is a copy of this axis.
   

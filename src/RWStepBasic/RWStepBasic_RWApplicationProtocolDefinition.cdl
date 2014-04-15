@@ -29,7 +29,7 @@ is
 	Create returns RWApplicationProtocolDefinition;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable ApplicationProtocolDefinition from StepBasic);
+	              ach : in out Check; ent : ApplicationProtocolDefinition from StepBasic);
 
 	WriteStep (me; SW : in out StepWriter; ent : ApplicationProtocolDefinition from StepBasic);
 

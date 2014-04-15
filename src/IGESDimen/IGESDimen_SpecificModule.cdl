@@ -23,14 +23,14 @@ uses Messenger from Message, IGESEntity, IGESDumper
 
 is
 
-    Create returns mutable SpecificModule from IGESDimen;
+    Create returns SpecificModule from IGESDimen;
     ---Purpose : Creates a SpecificModule from IGESDimen & puts it into SpecificLib
 
     OwnDump (me; CN : Integer; ent : IGESEntity;
     	      dumper : IGESDumper;  S : Messenger from Message; own : Integer);
     ---Purpose : Specific Dump (own parameters) for IGESDimen
 
-    OwnCorrect (me; CN : Integer; ent : mutable IGESEntity)
+    OwnCorrect (me; CN : Integer; ent : IGESEntity)
     	returns Boolean  is redefined;
     ---Purpose : Performs non-ambiguous Corrections on Entities which support
     --           them (BasicDimension,CenterLine,DimensionDisplayData,

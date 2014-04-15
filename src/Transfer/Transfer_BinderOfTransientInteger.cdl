@@ -27,7 +27,7 @@ uses Integer
 
 is
 
-    Create returns mutable BinderOfTransientInteger;
+    Create returns BinderOfTransientInteger;
     ---Purpose : Creates an empty BinderOfTransientInteger; Default value for
     --           the integer part is zero
 

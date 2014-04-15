@@ -25,7 +25,7 @@ uses Pnt from gp,
 is
 
     Create(p1,p2 : Pnt; col : Color)
-    returns mutable Segment3D;
+    returns Segment3D;
     
     DrawOn(me; dis : in out Display);
     

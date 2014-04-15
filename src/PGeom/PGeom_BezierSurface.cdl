@@ -29,7 +29,7 @@ uses HArray2OfReal from PColStd,
 is
 
 
-  Create returns mutable BezierSurface from PGeom;
+  Create returns BezierSurface from PGeom;
 	---Purpose: Creates a BezierSurface with default values.
     	---Level: Internal 
 
@@ -38,7 +38,7 @@ is
     	  aVRational : Boolean from Standard;
     	  aPoles     : HArray2OfPnt from PColgp;
     	  aWeights   : HArray2OfReal from PColStd)
-     returns mutable BezierSurface from PGeom;
+     returns BezierSurface from PGeom;
 	---Purpose: Creates a BezierSurface with these values.
     	---Level: Internal 
 

@@ -23,11 +23,11 @@ uses Integer from Standard
 is
 
 
-    Create returns mutable Integer from PDataStd;
+    Create returns Integer from PDataStd;
 
 
     Create (V : Integer from Standard)
-    returns mutable Integer from PDataStd;
+    returns Integer from PDataStd;
     
     
     Get (me) returns Integer from Standard;

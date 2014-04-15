@@ -31,7 +31,7 @@ is
     
     Create (anInteger : Integer) 
     	--- Purpose : Constructor, <anInteger> is the <index> of <me>.
-    returns mutable BasicElt from MAT;
+    returns BasicElt from MAT;
 
     StartArc(me)  
     	--- Purpose : Return <startArcLeft> or <startArcRight> corresponding

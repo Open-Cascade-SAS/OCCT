@@ -19,7 +19,7 @@ class ArrayNode from PStandard
 inherits Persistent from Standard
 
 is
-    Create returns mutable ArrayNode from PStandard;
+    Create returns ArrayNode from PStandard;
     ---Purpose: Creates an empty ArrayNode.
 
 end ArrayNode;

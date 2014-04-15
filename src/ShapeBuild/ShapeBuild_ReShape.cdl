@@ -36,7 +36,7 @@ uses
 
 is
 
-    Create returns mutable ReShape from ShapeBuild;
+    Create returns ReShape from ShapeBuild;
     	---Purpose: Returns an empty Reshape
 
     Apply (me: mutable; shape: Shape from TopoDS; until: ShapeEnum from TopAbs; buildmode: Integer)

@@ -48,12 +48,12 @@ uses
 is
 
     Closure(myclass;
-    	aDataSet : mutable DataSet from TDF);
+    	aDataSet : DataSet from TDF);
 	---Purpose: Builds the transitive closure of label and
 	--          attribute sets into <aDataSet>.
 
     Closure(myclass;
-    	aDataSet : mutable DataSet from TDF;
+    	aDataSet : DataSet from TDF;
     	aFilter  : IDFilter from TDF;
     	aMode    : ClosureMode from TDF);
 	---Purpose: Builds the transitive closure of label and

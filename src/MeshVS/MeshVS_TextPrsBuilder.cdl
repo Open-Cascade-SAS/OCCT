@@ -44,7 +44,7 @@ is
             Flags    : DisplayModeFlags from MeshVS = MeshVS_DMF_TextDataPrs;
             DS       : DataSource from MeshVS = 0;
             Id       : Integer = -1;
-            Priority : BuilderPriority from MeshVS = MeshVS_BP_Text ) returns mutable TextPrsBuilder from MeshVS;
+            Priority : BuilderPriority from MeshVS = MeshVS_BP_Text ) returns TextPrsBuilder from MeshVS;
 
   Build   ( me; Prs        : Presentation from Prs3d;
             IDs            : PackedMapOfInteger;

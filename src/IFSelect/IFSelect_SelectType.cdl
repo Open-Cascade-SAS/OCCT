@@ -23,10 +23,10 @@ uses Type, AsciiString from TCollection, Transient
 
 is
 
-    Create returns mutable SelectType;
+    Create returns SelectType;
     ---Purpose : Creates a SelectType. Default is no filter
 
-    Create (atype : Type) returns mutable SelectType;
+    Create (atype : Type) returns SelectType;
     ---Purpose : Creates a SelectType for a given Type
 
     SetType (me : mutable; atype : Type);

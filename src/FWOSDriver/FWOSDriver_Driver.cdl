@@ -21,7 +21,7 @@ uses
     ExtendedString from TCollection
 is
     Create
-    returns mutable Driver from FWOSDriver;
+    returns Driver from FWOSDriver;
     ---Purpose: initializes the MetaDatadriver with its specific name.
 
 

@@ -29,7 +29,7 @@ is
 	Create returns RWMechanicalDesignGeometricPresentationRepresentation;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable MechanicalDesignGeometricPresentationRepresentation from StepVisual);
+	              ach : in out Check; ent : MechanicalDesignGeometricPresentationRepresentation from StepVisual);
 
 	WriteStep (me; SW : in out StepWriter; ent : MechanicalDesignGeometricPresentationRepresentation from StepVisual);
 

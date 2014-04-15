@@ -29,7 +29,7 @@ is
 	Create returns RWFillAreaStyle;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable FillAreaStyle from StepVisual);
+	              ach : in out Check; ent : FillAreaStyle from StepVisual);
 
 	WriteStep (me; SW : in out StepWriter; ent : FillAreaStyle from StepVisual);
 

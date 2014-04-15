@@ -30,10 +30,10 @@ raises OutOfRange from Standard
 
 is
 
-    Create returns mutable BSpFunc from Law;
+    Create returns BSpFunc from Law;
     
     Create(C  : BSpline from Law; First, Last: Real) 
-    returns mutable BSpFunc from Law;
+    returns BSpFunc from Law;
     
     Continuity(me) returns Shape from GeomAbs
     is redefined static;
@@ -75,7 +75,7 @@ is
     
     Bounds(me: mutable; PFirst,PLast: out Real from Standard);
     
-    Curve(me) returns mutable BSpline from Law;
+    Curve(me) returns BSpline from Law;
 
     SetCurve(me : mutable; 
              C  : BSpline from Law);

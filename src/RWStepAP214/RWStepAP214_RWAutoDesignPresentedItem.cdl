@@ -29,7 +29,7 @@ is
 	Create returns RWAutoDesignPresentedItem;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable AutoDesignPresentedItem from StepAP214);
+	              ach : in out Check; ent : AutoDesignPresentedItem from StepAP214);
 
 	WriteStep (me; SW : in out StepWriter; ent : AutoDesignPresentedItem from StepAP214);
 

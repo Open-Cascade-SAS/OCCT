@@ -28,7 +28,7 @@ uses  Integer, Real  -- no one specific type
 
 is
 
-        Create returns mutable DrawingSize;
+        Create returns DrawingSize;
 
         -- Specific Methods pertaining to the class
 

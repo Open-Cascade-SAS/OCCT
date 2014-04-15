@@ -34,51 +34,51 @@ uses
 	Real from Standard
 is
 
-	Create returns mutable BezierCurveAndRationalBSplineCurve;
+	Create returns BezierCurveAndRationalBSplineCurve;
 	---Purpose: Returns a BezierCurveAndRationalBSplineCurve
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
+	      aName : HAsciiString from TCollection;
 	      aDegree : Integer from Standard;
-	      aControlPointsList : mutable HArray1OfCartesianPoint from StepGeom;
+	      aControlPointsList : HArray1OfCartesianPoint from StepGeom;
 	      aCurveForm : BSplineCurveForm from StepGeom;
 	      aClosedCurve : Logical from StepData;
 	      aSelfIntersect : Logical from StepData) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
+	      aName : HAsciiString from TCollection;
 	      aDegree : Integer from Standard;
-	      aControlPointsList : mutable HArray1OfCartesianPoint from StepGeom;
+	      aControlPointsList : HArray1OfCartesianPoint from StepGeom;
 	      aCurveForm : BSplineCurveForm from StepGeom;
 	      aClosedCurve : Logical from StepData;
 	      aSelfIntersect : Logical from StepData;
-	      aBezierCurve : mutable BezierCurve from StepGeom;
-	      aRationalBSplineCurve : mutable RationalBSplineCurve from StepGeom) is virtual;
+	      aBezierCurve : BezierCurve from StepGeom;
+	      aRationalBSplineCurve : RationalBSplineCurve from StepGeom) is virtual;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
+	      aName : HAsciiString from TCollection;
 	      aDegree : Integer from Standard;
-	      aControlPointsList : mutable HArray1OfCartesianPoint from StepGeom;
+	      aControlPointsList : HArray1OfCartesianPoint from StepGeom;
 	      aCurveForm : BSplineCurveForm from StepGeom;
 	      aClosedCurve : Logical from StepData;
 	      aSelfIntersect : Logical from StepData;
-	      aWeightsData : mutable HArray1OfReal from TColStd) is virtual;
+	      aWeightsData : HArray1OfReal from TColStd) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetBezierCurve(me : mutable; aBezierCurve : mutable BezierCurve);
-	BezierCurve (me) returns mutable BezierCurve;
-	SetRationalBSplineCurve(me : mutable; aRationalBSplineCurve : mutable RationalBSplineCurve);
-	RationalBSplineCurve (me) returns mutable RationalBSplineCurve;
+	SetBezierCurve(me : mutable; aBezierCurve : BezierCurve);
+	BezierCurve (me) returns BezierCurve;
+	SetRationalBSplineCurve(me : mutable; aRationalBSplineCurve : RationalBSplineCurve);
+	RationalBSplineCurve (me) returns RationalBSplineCurve;
 
 	-- Specific Methods for ANDOR Field Data Access --
 
 
 	-- Specific Methods for ANDOR Field Data Access --
 
-	SetWeightsData(me : mutable; aWeightsData : mutable HArray1OfReal);
-	WeightsData (me) returns mutable HArray1OfReal;
+	SetWeightsData(me : mutable; aWeightsData : HArray1OfReal);
+	WeightsData (me) returns HArray1OfReal;
 	WeightsDataValue (me; num : Integer) returns Real;
 	NbWeightsData (me) returns Integer;
 

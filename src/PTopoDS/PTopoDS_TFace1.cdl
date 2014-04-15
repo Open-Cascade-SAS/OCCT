@@ -22,7 +22,7 @@ uses
     ShapeEnum from TopAbs
 
 is
-    Create returns mutable TFace1 from PTopoDS;
+    Create returns TFace1 from PTopoDS;
 	---Purpose: the new TFace1 covers the whole 2D space.
     ---Level: Internal 
     	

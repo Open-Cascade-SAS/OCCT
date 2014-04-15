@@ -99,7 +99,7 @@ is
     	-- redefined (for example, on a line).
      is virtual;  
 
-  Reversed (me)  returns mutable like me 
+  Reversed (me)  returns like me 
         --- Purpose : Creates a reversed duplicate Changes the orientation of this curve. The first and
     	-- last parameters are not changed, but the parametric
     	-- direction of the curve is reversed.

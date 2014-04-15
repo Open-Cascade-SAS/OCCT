@@ -29,7 +29,7 @@ is
 	Create returns RWSolidAngleMeasureWithUnit;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable SolidAngleMeasureWithUnit from StepBasic);
+	              ach : in out Check; ent : SolidAngleMeasureWithUnit from StepBasic);
 
 	WriteStep (me; SW : in out StepWriter; ent : SolidAngleMeasureWithUnit from StepBasic);
 

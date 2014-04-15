@@ -31,10 +31,10 @@ uses Transient,
 
 is
 
-    Create  returns mutable GTool;
+    Create  returns GTool;
     ---Purpose : Creates an empty, not set, GTool
 
-    Create (proto : Protocol; nbent : Integer = 0)  returns mutable GTool;
+    Create (proto : Protocol; nbent : Integer = 0)  returns GTool;
     ---Purpose : Creates a GTool from a Protocol
     --           Optional starting count of entities
 
@@ -76,7 +76,7 @@ is
     --           its Module and Case Number
 
     Select (me : mutable; ent : Transient;
-    	    gmod : out mutable GeneralModule;
+    	    gmod : out GeneralModule;
     	    CN   : out Integer;
     	    enforce : Boolean = Standard_False)  returns Boolean;
     ---Purpose : Selects for an entity, its Module and Case Number

@@ -140,7 +140,7 @@ is
           Degree         : Integer;
     	  Periodic       : Boolean = Standard_False)
 	  
-  returns mutable BSplineCurve from Geom
+  returns BSplineCurve from Geom
 
         ---Purpose :  Creates a  non-rational B_spline curve   on  the
         --         basis <Knots, Multiplicities> of degree <Degree>.
@@ -181,7 +181,7 @@ is
     	  Periodic       : Boolean = Standard_False; 
 	  CheckRational  : Boolean = Standard_True)
 	  
-  returns mutable BSplineCurve from Geom
+  returns BSplineCurve from Geom
 
         ---Purpose : Creates  a rational B_spline  curve  on the basis
         --         <Knots, Multiplicities> of degree <Degree>.
@@ -971,7 +971,7 @@ is
 	--           |f(t1) - f(t0)| < Tolerance3D
   ;
 
-  Copy (me)  returns mutable like me;
+  Copy (me)  returns like me;
     	---Purpose: Creates a new object which is a copy of this BSpline curve.
     
   InvalidateCache(me : mutable)

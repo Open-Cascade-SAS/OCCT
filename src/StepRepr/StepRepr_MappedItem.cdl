@@ -24,24 +24,24 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable MappedItem;
+	Create returns MappedItem;
 	---Purpose: Returns a MappedItem
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection) is redefined;
+	      aName : HAsciiString from TCollection) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aMappingSource : mutable RepresentationMap from StepRepr;
-	      aMappingTarget : mutable RepresentationItem from StepRepr) is virtual;
+	      aName : HAsciiString from TCollection;
+	      aMappingSource : RepresentationMap from StepRepr;
+	      aMappingTarget : RepresentationItem from StepRepr) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetMappingSource(me : mutable; aMappingSource : mutable RepresentationMap);
-	MappingSource (me) returns mutable RepresentationMap;
-	SetMappingTarget(me : mutable; aMappingTarget : mutable RepresentationItem);
-	MappingTarget (me) returns mutable RepresentationItem;
+	SetMappingSource(me : mutable; aMappingSource : RepresentationMap);
+	MappingSource (me) returns RepresentationMap;
+	SetMappingTarget(me : mutable; aMappingTarget : RepresentationItem);
+	MappingTarget (me) returns RepresentationItem;
 
 fields
 

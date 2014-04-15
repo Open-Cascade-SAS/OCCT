@@ -23,7 +23,7 @@ uses HExtendedString          from PCollection,
      
 is
 
-    Create returns mutable ExtStringArray from PDataStd;
+    Create returns ExtStringArray from PDataStd;
 
     Init(me : mutable; lower, upper : Integer from Standard);
 

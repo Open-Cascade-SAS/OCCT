@@ -59,13 +59,13 @@ raises ConstructionError from Standard,
 is
 
 
-  Create (C : Circ2d)   returns mutable Circle;
+  Create (C : Circ2d)   returns Circle;
 	--- Purpose :  Constructs a circle by conversion of the gp_Circ2d circle C.
 
 
   Create (A : Ax2d; Radius : Real;
           Sense: Boolean from Standard = Standard_True)  
-  returns mutable Circle
+  returns Circle
         --- Purpose : Constructs a circle of radius Radius, whose center is the origin of axis
     	--   A; A is the "X Axis" of the local coordinate system
     	--   of the circle; this coordinate system is direct if
@@ -75,7 +75,7 @@ is
      raises ConstructionError;
 
 
-  Create (A : Ax22d; Radius : Real)  returns mutable Circle
+  Create (A : Ax22d; Radius : Real)  returns Circle
         --- Purpose : Constructs a circle
 	-- of radius Radius, where the coordinate system A
     	--   locates the circle and defines its orientation in the plane such that:
@@ -168,7 +168,7 @@ is
 ---Purpose: Applies the transformation T to this circle.
 
        
-  Copy (me)  returns mutable like me
+  Copy (me)  returns like me
      is redefined static;
 ---Purpose: Creates a new object which is a copy of this circle.
     

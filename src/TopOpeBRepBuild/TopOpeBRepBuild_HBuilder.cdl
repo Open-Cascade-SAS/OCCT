@@ -46,18 +46,18 @@ raises
 
 is
     
-    Create (BT : BuildTool from TopOpeBRepDS) returns mutable HBuilder;
+    Create (BT : BuildTool from TopOpeBRepDS) returns HBuilder;
 
     BuildTool(me) returns BuildTool from TopOpeBRepDS;
     ---C++: return const &
 
-    Perform (me : mutable; HDS : mutable HDataStructure from TopOpeBRepDS)
+    Perform (me : mutable; HDS : HDataStructure from TopOpeBRepDS)
     is static;
     ---Purpose: 
     -- Stores the data structure <HDS>,  
     -- Create shapes from the new geometries described in <HDS>.
 
-    Perform (me : mutable; HDS : mutable HDataStructure from TopOpeBRepDS; 
+    Perform (me : mutable; HDS : HDataStructure from TopOpeBRepDS; 
     	     	    	   S1,S2 : Shape from TopoDS)
     is static;
     ---Purpose: 

@@ -36,10 +36,10 @@ is
     CheckCase (me; CN : Integer; ent : Transient; shares : ShareTool;
     	ach : in out Check);
 
-    CopyCase (me; CN : Integer; entfrom : Transient; entto : mutable Transient;
+    CopyCase (me; CN : Integer; entfrom : Transient; entto : Transient;
     	TC : in out CopyTool);
 
-    NewVoid (me; CN : Integer; ent : out mutable Transient) returns Boolean;
+    NewVoid (me; CN : Integer; ent : out Transient) returns Boolean;
 
 fields
 

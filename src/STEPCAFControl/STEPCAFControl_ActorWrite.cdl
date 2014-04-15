@@ -24,7 +24,7 @@ uses
 
 is
 
-    Create returns mutable ActorWrite;
+    Create returns ActorWrite;
 
     IsAssembly (me; S: in out Shape from TopoDS) returns Boolean is redefined;
     	---Purpose: Check whether shape S is assembly

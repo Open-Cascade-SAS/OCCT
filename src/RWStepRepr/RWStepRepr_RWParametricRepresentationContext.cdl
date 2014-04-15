@@ -28,7 +28,7 @@ is
 	Create returns RWParametricRepresentationContext;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable ParametricRepresentationContext from StepRepr);
+	              ach : in out Check; ent : ParametricRepresentationContext from StepRepr);
 
 	WriteStep (me; SW : in out StepWriter; ent : ParametricRepresentationContext from StepRepr);
 

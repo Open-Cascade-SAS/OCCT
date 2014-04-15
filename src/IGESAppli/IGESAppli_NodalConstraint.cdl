@@ -33,7 +33,7 @@ raises OutOfRange
 
 is
 
-        Create returns mutable NodalConstraint;
+        Create returns NodalConstraint;
 
         -- Specific Methods pertaining to the class
 

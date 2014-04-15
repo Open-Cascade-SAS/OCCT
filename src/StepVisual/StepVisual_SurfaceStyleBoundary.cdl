@@ -23,16 +23,16 @@ uses
 	CurveStyle from StepVisual
 is
 
-	Create returns mutable SurfaceStyleBoundary;
+	Create returns SurfaceStyleBoundary;
 	---Purpose: Returns a SurfaceStyleBoundary
 
 	Init (me : mutable;
-	      aStyleOfBoundary : mutable CurveStyle from StepVisual) is virtual;
+	      aStyleOfBoundary : CurveStyle from StepVisual) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetStyleOfBoundary(me : mutable; aStyleOfBoundary : mutable CurveStyle);
-	StyleOfBoundary (me) returns mutable CurveStyle;
+	SetStyleOfBoundary(me : mutable; aStyleOfBoundary : CurveStyle);
+	StyleOfBoundary (me) returns CurveStyle;
 
 fields
 

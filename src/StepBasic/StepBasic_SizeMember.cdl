@@ -23,7 +23,7 @@ uses CString
 
 is
 
-    Create returns mutable SizeMember;
+    Create returns SizeMember;
 
     HasName (me) returns Boolean  is redefined;
     -- returns True

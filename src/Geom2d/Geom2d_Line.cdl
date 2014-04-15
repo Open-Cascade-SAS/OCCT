@@ -48,18 +48,18 @@ raises RangeError  from Standard
 
 is
 
-  Create (A : Ax2d)   returns mutable Line;
+  Create (A : Ax2d)   returns Line;
         --- Purpose :
         --  Creates a line located in 2D space with the axis placement A.
         --  The Location of A is the origin of the line. 
 
 
-  Create (L : Lin2d)  returns mutable Line;
+  Create (L : Lin2d)  returns Line;
         --- Purpose :
         --  Creates a line by conversion of the gp_Lin2d line L.
 
 
-  Create (P : Pnt2d; V : Dir2d)    returns mutable Line;
+  Create (P : Pnt2d; V : Dir2d)    returns Line;
         --- Purpose : Constructs a line passing through point P and parallel to
     	--   vector V (P and V are, respectively, the origin
     	--   and the unit vector of the positioning axis of the line).
@@ -195,7 +195,7 @@ is
 
 
 
-  Copy (me)  returns mutable like me;
+  Copy (me)  returns like me;
     	---Purpose: Creates a new object, which is a copy of this line. 
     
 fields

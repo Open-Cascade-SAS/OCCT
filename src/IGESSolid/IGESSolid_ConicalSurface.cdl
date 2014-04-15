@@ -30,7 +30,7 @@ uses
 
 is
 
-        Create returns mutable ConicalSurface;
+        Create returns ConicalSurface;
 
         -- Specific Methods pertaining to the class
 

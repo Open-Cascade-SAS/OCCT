@@ -35,7 +35,7 @@ raises OutOfRange, InterfaceError
 
 is
 
-    Create returns mutable FreeFormatEntity;
+    Create returns FreeFormatEntity;
     ---Purpose : Creates a completely empty FreeFormatEntity
 
     SetTypeNumber (me : mutable; typenum : Integer);
@@ -56,7 +56,7 @@ is
     ---Purpose : Gives count of recorded parameters
 
     ParamData (me; num : Integer; ptype : out ParamType;
-    	    	   ent : out mutable IGESEntity;
+    	    	   ent : out IGESEntity;
                    val : out HAsciiString from TCollection)
     	     	       returns Boolean;
     ---Purpose : Returns data of a Parameter : its type, and the entity if it
@@ -71,7 +71,7 @@ is
     ---Purpose : Returns True if a Parameter is recorded as an entity
     --           Error if num is not between 1 and NbParams
 
-    ParamEntity (me; num : Integer) returns mutable IGESEntity
+    ParamEntity (me; num : Integer) returns IGESEntity
         raises InterfaceError, OutOfRange;
     ---Purpose : Returns Entity corresponding to a Param, given its rank
     --           Error if out of range or if Param num does not designate
@@ -100,7 +100,7 @@ is
     ---Purpose : Adds a literal Parameter to the list (builds an HAsciiString)
 
     AddEntity (me : mutable; ptype : ParamType;
-    	       ent : mutable IGESEntity; negative : Boolean = Standard_False);
+    	       ent : IGESEntity; negative : Boolean = Standard_False);
     ---Purpose : Adds a Parameter which references an Entity. If the Entity is
     --           Null, the added parameter will define a "Null Pointer" (0)
     --           If <negative> is given True, this will command Sending to File

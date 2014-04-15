@@ -29,7 +29,7 @@ is
 	Create returns RWGeometricallyBoundedSurfaceShapeRepresentation;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable GeometricallyBoundedSurfaceShapeRepresentation from StepShape);
+	              ach : in out Check; ent : GeometricallyBoundedSurfaceShapeRepresentation from StepShape);
 
 	WriteStep (me; SW : in out StepWriter; ent : GeometricallyBoundedSurfaceShapeRepresentation from StepShape);
 

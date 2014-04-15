@@ -31,7 +31,7 @@ is
     ---Purpose : Returns a ToolFlash, ready to work
 
 
-    ReadOwnParams (me; ent : mutable Flash;
+    ReadOwnParams (me; ent : Flash;
     	    	   IR : IGESReaderData; PR : in out ParamReader)
     	raises DomainError  is static;
     ---Purpose : Reads own parameters from file. <PR> gives access to them,
@@ -47,7 +47,7 @@ is
     ---Purpose : Lists the Entities shared by a Flash <ent>, from
     --           its specific (own) parameters
 
-    OwnCorrect (me; ent : mutable Flash) returns Boolean  is static;
+    OwnCorrect (me; ent : Flash) returns Boolean  is static;
     ---Purpose : Sets automatic unambiguous Correction on a Flash
     --           (LineFont in Directory Entry forced to Rank = 1)
 
@@ -59,7 +59,7 @@ is
     ---Purpose : Performs Specific Semantic Check
 
 
-    OwnCopy    (me; entfrom : Flash; entto : mutable Flash;
+    OwnCopy    (me; entfrom : Flash; entto : Flash;
     	        TC : in out CopyTool)  is static;
     ---Purpose : Copies Specific Parameters
 

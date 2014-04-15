@@ -54,9 +54,9 @@ is
     --          and <adimensions> is  the dimension of the given  word
     --          <aword>.
     
-    returns mutable ShiftedToken from Units;
+    returns ShiftedToken from Units;
     
-    Creates(me) returns mutable Token from Units
+    Creates(me) returns Token from Units
     
     ---Level: Internal 
     

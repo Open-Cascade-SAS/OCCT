@@ -29,13 +29,13 @@ uses
 
 is
 
-  Create (theFileName : AsciiString from TCollection) returns mutable Texture1Dmanual from Graphic3d;
+  Create (theFileName : AsciiString from TCollection) returns Texture1Dmanual from Graphic3d;
   ---Purpose: Creates a texture from the file FileName.
 
-  Create (theNOT : NameOfTexture1D from Graphic3d) returns mutable Texture1Dmanual from Graphic3d;
+  Create (theNOT : NameOfTexture1D from Graphic3d) returns Texture1Dmanual from Graphic3d;
   ---Purpose: Create a texture from a predefined texture name set.
 
-  Create (thePixMap : PixMap_Handle from Image) returns mutable Texture1Dmanual from Graphic3d;
+  Create (thePixMap : PixMap_Handle from Image) returns Texture1Dmanual from Graphic3d;
   ---Purpose: Creates a texture from the pixmap.
 
 end Texture1Dmanual;

@@ -22,7 +22,7 @@ uses
 
 is
 
-    Create returns mutable DocumentRelationship;
+    Create returns DocumentRelationship;
 
     Init (me : mutable;
     	    aName : HAsciiString;

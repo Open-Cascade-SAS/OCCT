@@ -34,24 +34,24 @@ uses
 is
 
     Create (modefnes : Boolean = Standard_False)
-    	returns mutable Controller from IGESControl;
+    	returns Controller from IGESControl;
     ---Purpose : Initializes the use of IGES Norm (the first time) and returns
     --           a Controller for IGES-5.1
     --           If <modefnes> is True, sets it to internal FNES format
 
-    NewModel     (me) returns mutable InterfaceModel from Interface;
+    NewModel     (me) returns InterfaceModel from Interface;
     ---Purpose : Creates a new empty Model ready to receive data of the Norm.
     --           It is taken from IGES Template Model
 
     ActorRead    (me; model : InterfaceModel)
-                 returns mutable ActorOfTransientProcess from Transfer;
+                 returns ActorOfTransientProcess from Transfer;
     ---Purpose : Returns the Actor for Read attached to the pair (norm,appli)
     --           It is an Actor from IGESToBRep, adapted from an IGESModel :
     --           Unit, tolerances
 
     TransferWriteShape (me; shape : Shape from TopoDS;
-    	    	    	FP        : mutable FinderProcess  from Transfer;
-    	    	        model     : mutable InterfaceModel from Interface;
+    	    	    	FP        : FinderProcess  from Transfer;
+    	    	        model     : InterfaceModel from Interface;
 			modetrans : Integer = 0)
       returns ReturnStatus  is redefined;
     ---Purpose : Takes one Shape and transfers it to the InterfaceModel

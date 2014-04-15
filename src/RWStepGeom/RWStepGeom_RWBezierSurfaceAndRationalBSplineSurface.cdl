@@ -29,7 +29,7 @@ is
 	Create returns RWBezierSurfaceAndRationalBSplineSurface;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable BezierSurfaceAndRationalBSplineSurface from StepGeom);
+	              ach : in out Check; ent : BezierSurfaceAndRationalBSplineSurface from StepGeom);
 
 	WriteStep (me; SW : in out StepWriter; ent : BezierSurfaceAndRationalBSplineSurface from StepGeom);
 

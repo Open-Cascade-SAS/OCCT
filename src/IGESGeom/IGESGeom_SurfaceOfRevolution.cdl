@@ -34,7 +34,7 @@ uses
 
 is
 
-        Create returns mutable SurfaceOfRevolution;
+        Create returns SurfaceOfRevolution;
 
         -- Specific Methods pertaining to the class
 

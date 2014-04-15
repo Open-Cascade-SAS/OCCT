@@ -26,7 +26,7 @@ uses
      Shape            from TopoDS
 
 is
-    Create returns mutable FilletDriver from DNaming;
+    Create returns FilletDriver from DNaming;
     ---Purpose: Constructor
 
     ---Purpose: validation

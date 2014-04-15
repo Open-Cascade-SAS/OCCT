@@ -25,17 +25,17 @@ uses
 	Axis2Placement3d from StepGeom
 is
 
-	Create returns mutable CylindricalSurface;
+	Create returns CylindricalSurface;
 	---Purpose: Returns a CylindricalSurface
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aPosition : mutable Axis2Placement3d from StepGeom) is redefined;
+	      aName : HAsciiString from TCollection;
+	      aPosition : Axis2Placement3d from StepGeom) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aPosition : mutable Axis2Placement3d from StepGeom;
+	      aName : HAsciiString from TCollection;
+	      aPosition : Axis2Placement3d from StepGeom;
 	      aRadius : Real from Standard) is virtual;
 
 	-- Specific Methods for Field Data Access --

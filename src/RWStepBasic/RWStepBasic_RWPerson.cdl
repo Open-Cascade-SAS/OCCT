@@ -28,7 +28,7 @@ is
 	Create returns RWPerson;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable Person from StepBasic);
+	              ach : in out Check; ent : Person from StepBasic);
 
 	WriteStep (me; SW : in out StepWriter; ent : Person from StepBasic);
 

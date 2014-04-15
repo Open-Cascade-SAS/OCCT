@@ -50,7 +50,7 @@ class MakeHeader from APIHeaderSection
        ---Purpose : Returns True if all data have been defined (see also
        --           HasFn, HasFs, HasFd)
 
-       Apply (me; model : mutable StepModel);
+       Apply (me; model : StepModel);
        ---Purpose : Creates an empty header for a new
        --           STEP model and allows the header fields to be completed.
 
@@ -117,8 +117,7 @@ class MakeHeader from APIHeaderSection
        FsValue (me) returns FileSchema from HeaderSection;
        ---Purpose: Returns the file_schema entity. Returns an empty entity if the file_schema entity is not initialized.
 
-       SetSchemaIdentifiers(me : in out; aSchemaIdentifiers : 
-    	    	    	    	 mutable HArray1OfHAsciiString);
+       SetSchemaIdentifiers(me : in out; aSchemaIdentifiers : HArray1OfHAsciiString);
        SetSchemaIdentifiersValue(me : in out; num : Integer;
     	    	       aSchemaIdentifier : HAsciiString);
        SchemaIdentifiers (me) returns HArray1OfHAsciiString;

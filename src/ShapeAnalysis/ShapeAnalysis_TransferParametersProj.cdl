@@ -33,11 +33,11 @@ uses
     Vertex from TopoDS
 is
 
-    Create returns mutable TransferParametersProj from ShapeAnalysis;
+    Create returns TransferParametersProj from ShapeAnalysis;
     	---Purpose: Creats empty constructor. 
     
     Create(E: Edge from TopoDS; F: Face from TopoDS) 
-    returns mutable TransferParametersProj from ShapeAnalysis;
+    returns TransferParametersProj from ShapeAnalysis;
     	---Purpose:
     
     Init(me: mutable; E: Edge from TopoDS; F: Face from TopoDS ) is redefined;

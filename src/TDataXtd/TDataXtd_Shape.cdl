@@ -61,7 +61,7 @@ is
     --          ============
 
     Create
-    returns mutable Shape from TDataXtd;
+    returns Shape from TDataXtd;
 
     
     ---Category: methodes de TDF_Attribute
@@ -75,10 +75,10 @@ is
     Restore (me: mutable; with : Attribute from TDF);
 
     NewEmpty (me)
-    returns mutable Attribute from TDF;
+    returns Attribute from TDF;
 
-    Paste (me; into : mutable Attribute from TDF;
-	       RT   : mutable RelocationTable from TDF);       
+    Paste (me; into : Attribute from TDF;
+	       RT   : RelocationTable from TDF);       
 
     References (me; DS : DataSet from TDF) is redefined;   
 

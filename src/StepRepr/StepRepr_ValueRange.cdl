@@ -22,6 +22,6 @@ uses
 
 is
 
-    Create returns mutable ValueRange;
+    Create returns ValueRange;
 
 end ValueRange;

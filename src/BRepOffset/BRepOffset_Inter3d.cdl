@@ -35,7 +35,7 @@ uses
     State                     from TopAbs	
 
 is
-    Create(AsDes : mutable AsDes from BRepAlgo;
+    Create(AsDes : AsDes from BRepAlgo;
            Side  : State         from TopAbs;
     	   Tol   : Real          from Standard);
     

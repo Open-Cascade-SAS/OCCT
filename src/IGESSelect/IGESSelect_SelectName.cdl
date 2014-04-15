@@ -27,7 +27,7 @@ uses AsciiString from TCollection, HAsciiString from TCollection,
 
 is
 
-    Create returns mutable SelectName;
+    Create returns SelectName;
     ---Purpose : Creates an empty SelectName : every entity is considered
     --           good (no filter active)
 

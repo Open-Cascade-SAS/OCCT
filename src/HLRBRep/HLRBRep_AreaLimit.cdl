@@ -34,7 +34,7 @@ Create(V            : Intersection from HLRAlgo;
        StateAfter   : State        from TopAbs;
        EdgeBefore   : State        from TopAbs;
        EdgeAfter    : State        from TopAbs)
-returns mutable AreaLimit from HLRBRep;
+returns AreaLimit from HLRBRep;
     ---Purpose: The previous and next field are set to NULL.
     
 StateBefore(me : mutable; St : State from TopAbs)
@@ -77,10 +77,10 @@ is static;
 EdgeAfter(me) returns State from TopAbs
 is static;
 
-Previous(me) returns mutable AreaLimit from HLRBRep
+Previous(me) returns AreaLimit from HLRBRep
 is static;
 
-Next(me) returns mutable AreaLimit from HLRBRep
+Next(me) returns AreaLimit from HLRBRep
 is static;
 	
 Clear(me : mutable)

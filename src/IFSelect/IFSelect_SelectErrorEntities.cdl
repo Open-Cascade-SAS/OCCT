@@ -25,7 +25,7 @@ uses AsciiString from TCollection, InterfaceModel
 
 is
 
-    Create returns mutable SelectErrorEntities;
+    Create returns SelectErrorEntities;
     ---Purpose : Creates a SelectErrorEntities
 
     Sort (me; rank : Integer; ent : Transient; model : InterfaceModel)

@@ -26,24 +26,24 @@ uses
 	CurveBoundedSurface from StepGeom
 is
 
-	Create returns mutable RevolvedAreaSolid;
+	Create returns RevolvedAreaSolid;
 	---Purpose: Returns a RevolvedAreaSolid
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aSweptArea : mutable CurveBoundedSurface from StepGeom) is redefined;
+	      aName : HAsciiString from TCollection;
+	      aSweptArea : CurveBoundedSurface from StepGeom) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aSweptArea : mutable CurveBoundedSurface from StepGeom;
-	      aAxis : mutable Axis1Placement from StepGeom;
+	      aName : HAsciiString from TCollection;
+	      aSweptArea : CurveBoundedSurface from StepGeom;
+	      aAxis : Axis1Placement from StepGeom;
 	      aAngle : Real from Standard) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetAxis(me : mutable; aAxis : mutable Axis1Placement);
-	Axis (me) returns mutable Axis1Placement;
+	SetAxis(me : mutable; aAxis : Axis1Placement);
+	Axis (me) returns Axis1Placement;
 	SetAngle(me : mutable; aAngle : Real);
 	Angle (me) returns Real;
 

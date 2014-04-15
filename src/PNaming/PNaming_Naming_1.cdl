@@ -21,7 +21,7 @@ uses
 			    
 is
     Create
-    returns mutable Naming_1 from PNaming;
+    returns Naming_1 from PNaming;
     
     SetName(me : mutable ; aName : Name_1 from PNaming);
 

@@ -26,7 +26,7 @@ uses
 
 is
     Create( aShape : Shape from TopoDS )
-    returns mutable C0RegularityFilter from AIS;
+    returns C0RegularityFilter from AIS;
     
     ActsOn( me; aType : ShapeEnum from TopAbs )
     returns Boolean from Standard

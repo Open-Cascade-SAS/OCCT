@@ -29,7 +29,7 @@ uses Dir         from gp,
 is
 
 
-  Create returns mutable SurfaceOfLinearExtrusion from PGeom;
+  Create returns SurfaceOfLinearExtrusion from PGeom;
 	---Purpose: Creates a SurfaceOfLinearExtrusion with default values.
     	---Level: Internal 
 
@@ -37,7 +37,7 @@ is
   Create (
     	    aBasisCurve : Curve from PGeom;
     	    aDirection  : Dir from gp)
-     returns mutable SurfaceOfLinearExtrusion from PGeom;
+     returns SurfaceOfLinearExtrusion from PGeom;
 	---Purpose: Creates a SurfaceOfLinearExtrusion with these values.
     	---Level: Internal 
 

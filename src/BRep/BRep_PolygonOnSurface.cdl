@@ -35,7 +35,7 @@ is
     Create(P: Polygon2D from Poly;
     	   S: Surface   from Geom;
 	   L: Location  from TopLoc)
-    returns mutable PolygonOnSurface from BRep;
+    returns PolygonOnSurface from BRep;
 
 
     IsPolygonOnSurface(me)          returns Boolean
@@ -64,7 +64,7 @@ is
     is redefined;
 
 
-    Copy(me) returns mutable CurveRepresentation from BRep
+    Copy(me) returns CurveRepresentation from BRep
 	---Purpose: Return a copy of this representation.
     is redefined;
 

@@ -42,7 +42,7 @@ raises OutOfRange
 
 is
 
-        Create returns mutable NetworkSubfigureDef;
+        Create returns NetworkSubfigureDef;
 
         -- Specific Methods pertaining to the class
 

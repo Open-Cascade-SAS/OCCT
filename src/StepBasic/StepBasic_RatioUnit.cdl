@@ -23,7 +23,7 @@ uses
 	DimensionalExponents from StepBasic
 is
 
-	Create returns mutable RatioUnit;
+	Create returns RatioUnit;
 	---Purpose: Returns a RatioUnit
 
 

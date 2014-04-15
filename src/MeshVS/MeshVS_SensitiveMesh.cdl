@@ -32,7 +32,7 @@ is
 
   Create ( theOwner    : EntityOwner from SelectBasics; 
            theMode     : Integer = 0 )
-    returns mutable SensitiveMesh from MeshVS; 
+    returns SensitiveMesh from MeshVS; 
       
   GetMode( me ) returns Integer from Standard;     
      

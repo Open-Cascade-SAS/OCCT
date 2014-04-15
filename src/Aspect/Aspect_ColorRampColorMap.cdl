@@ -35,7 +35,7 @@ raises
 is
 	Create( basepixel,dimension  : in Integer from Standard ;
 		color  		     : in Color from Quantity )
-		returns mutable ColorRampColorMap from Aspect
+		returns ColorRampColorMap from Aspect
 		raises RangeError from Standard ;
 	---Level: Public
 	---Purpose : Create a Color Ramp Colormap starting from Black at
@@ -43,7 +43,7 @@ is
 
 	Create( basepixel,dimension  : in Integer     from Standard ;
 		colorName  	     : in NameOfColor from Quantity )
-		returns mutable ColorRampColorMap from Aspect
+		returns ColorRampColorMap from Aspect
 		raises RangeError from Standard ;
 	---Level: Public
 	---Purpose : Create a Color Ramp Colormap starting from Black at

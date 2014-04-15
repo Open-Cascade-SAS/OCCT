@@ -30,7 +30,7 @@ raises OutOfRange
 
 is
 
-        Create returns mutable DimensionedGeometry;
+        Create returns DimensionedGeometry;
 
             -- --specific-- --
 

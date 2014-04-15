@@ -24,7 +24,7 @@ uses AsciiString from TCollection
 
 is
 
-    Create returns mutable HeaderRecognizer ;
+    Create returns HeaderRecognizer ;
 
     Eval (me : mutable ; key : AsciiString from TCollection)  is protected;
     ---Purpose: Recognizes data types of Header STEP Standard

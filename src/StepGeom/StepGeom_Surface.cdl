@@ -23,7 +23,7 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable Surface;
+	Create returns Surface;
 	---Purpose: Returns a Surface
 
 

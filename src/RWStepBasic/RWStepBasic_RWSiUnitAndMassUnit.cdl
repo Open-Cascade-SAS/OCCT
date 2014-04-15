@@ -27,7 +27,7 @@ is
 	Create returns RWSiUnitAndMassUnit;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable SiUnitAndMassUnit from StepBasic);
+	              ach : in out Check; ent : SiUnitAndMassUnit from StepBasic);
 
 	WriteStep (me; SW : in out StepWriter; ent : SiUnitAndMassUnit from StepBasic);
 

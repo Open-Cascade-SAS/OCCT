@@ -44,7 +44,7 @@ uses
 is
     Create(aComponent : Plane from Geom;
     	   aCurrentMode : Boolean from Standard = Standard_False) 
-    returns mutable Plane from AIS;
+    returns Plane from AIS;
     	---Purpose: initializes the plane aComponent. If
     	--   the mode aCurrentMode equals true, the drawing
     	--   tool, "Drawer" is not initialized.  
@@ -52,7 +52,7 @@ is
     Create(aComponent : Plane from Geom;
     	   aCenter    : Pnt   from gp;
     	   aCurrentMode : Boolean from Standard = Standard_False) 
-    returns mutable Plane from AIS;
+    returns Plane from AIS;
     	--- Purpose:   initializes the plane aComponent and
     	--   the point aCenter. If the mode aCurrentMode
     	--   equals true, the drawing tool, "Drawer" is not
@@ -64,7 +64,7 @@ is
 	   aPmin      : Pnt   from gp;
 	   aPmax      : Pnt   from gp;
     	   aCurrentMode : Boolean from Standard = Standard_False) 
-    returns mutable Plane from AIS;
+    returns Plane from AIS;
     	---Purpose:   initializes the plane aComponent, the
     	--   point aCenter, and the minimum and maximum
     	--   points, aPmin and aPmax. If the mode
@@ -73,7 +73,7 @@ is
     Create(aComponent : Axis2Placement from Geom;
     	   aPlaneType : TypeOfPlane from AIS;
     	   aCurrentMode : Boolean from Standard = Standard_False) 
-    returns mutable Plane from AIS;
+    returns Plane from AIS;
 
 
     ---Category: Size Modifications...
@@ -197,19 +197,19 @@ is
 
     Compute(me            : mutable;
     	    aPresentationManager: PresentationManager3d from PrsMgr;
-    	    aPresentation : mutable Presentation from Prs3d;
+    	    aPresentation : Presentation from Prs3d;
     	    aMode         : Integer from Standard = 0) 
     is redefined virtual private;
 
     Compute(me:mutable;
     	        aProjector: Projector from Prs3d;
-                aPresentation: mutable Presentation from Prs3d)
+                aPresentation: Presentation from Prs3d)
     is redefined virtual private;
 
     Compute(me            : mutable;
             aProjector    : Projector from Prs3d;
             aTrsf         : Transformation from Geom;
-            aPresentation : mutable Presentation from Prs3d)
+            aPresentation : Presentation from Prs3d)
     is redefined;
     ---Purpose: computes the presentation according to a point of view
     --          given by <aProjector>.
@@ -222,7 +222,7 @@ is
 -- Methods from SelectableObject
 
     ComputeSelection (me           : mutable;
-                      theSelection : mutable Selection from SelectMgr;
+                      theSelection : Selection from SelectMgr;
                       theMode      : Integer from Standard) is redefined virtual;
 
 -- Methods from InteractiveObject

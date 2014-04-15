@@ -43,20 +43,20 @@ is
     Initialize returns FileReaderTool  from Interface;
     ---Purpose: Constructor; sets default fields
 
-    SetData (me : in out; reader : mutable FileReaderData;
+    SetData (me : in out; reader : FileReaderData;
     	     protocol : Protocol from Interface);
     ---Purpose : Sets Data to a FileReaderData. Works with a Protocol
 
     Protocol (me) returns Protocol from Interface;
     ---Purpose : Returns the Protocol given at creation time
 
-    Data (me) returns mutable FileReaderData;
+    Data (me) returns FileReaderData;
     ---Purpose : Returns the FileReaderData which is used to work
 
-    SetModel (me : in out; amodel : mutable InterfaceModel);
+    SetModel (me : in out; amodel : InterfaceModel);
     ---Purpose : Stores a Model. Used when the Model has been loaded
 
-    Model (me) returns mutable InterfaceModel;
+    Model (me) returns InterfaceModel;
     ---Purpose : Returns the stored Model
 
     	-- --   setting empty entities before loading model   -- --
@@ -99,7 +99,7 @@ is
     --           type of FileReaderTool
 
     Recognize (me : in out; num : Integer;
-    	       ach : in out Check; ent : out mutable Transient)
+    	       ach : in out Check; ent : out Transient)
     	returns Boolean  is deferred;
     ---Purpose : Recognizes a record, given its number. Specific to each
     --           Interface; called by SetEntities. It can call the basic method
@@ -114,7 +114,7 @@ is
 
     RecognizeByLib (me; num : Integer;
     	    	    glib : in out GeneralLib; rlib : in out ReaderLib;
-		    ach : in out Check; ent : out mutable Transient)
+		    ach : in out Check; ent : out Transient)
     	 returns Boolean;
     ---Purpose : Recognizes a record with the help of Libraries. Can be used
     --           to implement the method Recognize.
@@ -126,7 +126,7 @@ is
     --           <ent> is the result
     --           Returns False if recognition has failed, True else
 
-    UnknownEntity (me) returns mutable Transient;
+    UnknownEntity (me) returns Transient;
     ---Purpose : Provides an unknown entity, specific to the Interface
     --           called by SetEntities when Recognize has failed (Unknown alone)
     --           or by LoadModel when an Entity has caused a Fail on reading
@@ -135,10 +135,10 @@ is
 
     	-- --   loading entities into the model   -- --
 
-    NewModel (me) returns mutable InterfaceModel;
+    NewModel (me) returns InterfaceModel;
     ---Purpose : Creates an empty Model of the norm. Uses Protocol to do it
 
-    LoadModel (me : in out; amodel : mutable InterfaceModel)
+    LoadModel (me : in out; amodel : InterfaceModel)
     	raises DomainError;
     ---Purpose : Reads and fills Entities from the FileReaderData set by
     --           SetData to an InterfaceModel.
@@ -150,19 +150,19 @@ is
     --           operation, unless Error Handling is set.
     --           This method can also be redefined if judged necessary.
 
-    LoadedEntity (me : in out; num : Integer) returns mutable Transient;
+    LoadedEntity (me : in out; num : Integer) returns Transient;
     ---Purpose : Reads, Fills and Returns one Entity read from a Record of the
     --           FileReaderData. This Method manages also case of Fail or
     --           Warning, by producing a ReportEntyty plus , for a Fail, a
     --           literal Content (as an UnknownEntity). Performs also Trace
 
-    BeginRead (me : in out; amodel : mutable InterfaceModel) is deferred;
+    BeginRead (me : in out; amodel : InterfaceModel) is deferred;
     ---Purpose : Fills model's header; each Interface defines for its Model its
     --           own file header; this method fills it from FileReaderTool.+
     --           It is called by AnalyseFile from InterfaceModel
 
     AnalyseRecord (me : in out;
-        num : Integer; anent : mutable Transient; acheck : in out Check)
+        num : Integer; anent : Transient; acheck : in out Check)
     	returns Boolean  is deferred;
     ---Purpose : Fills an Entity, given record no; specific to each Interface,
     --           called by AnalyseFile from InterfaceModel (which manages its
@@ -180,7 +180,7 @@ is
     Destroy (me: in out) is virtual;
     ---C++ : alias "Standard_EXPORT virtual ~Interface_FileReaderTool() { Destroy(); }"
 
-    EndRead (me : in out; amodel : mutable InterfaceModel)  is virtual;
+    EndRead (me : in out; amodel : InterfaceModel)  is virtual;
     ---Purpose : Ends file reading after reading all the entities
     --           default is doing nothing; redefinable as necessary
     

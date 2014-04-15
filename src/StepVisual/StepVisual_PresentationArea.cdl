@@ -25,7 +25,7 @@ uses
 	RepresentationContext from StepRepr
 is
 
-	Create returns mutable PresentationArea;
+	Create returns PresentationArea;
 	---Purpose: Returns a PresentationArea
 
 

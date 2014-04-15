@@ -29,7 +29,7 @@ is
 	Create returns RWPolyline;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable Polyline from StepGeom);
+	              ach : in out Check; ent : Polyline from StepGeom);
 
 	WriteStep (me; SW : in out StepWriter; ent : Polyline from StepGeom);
 

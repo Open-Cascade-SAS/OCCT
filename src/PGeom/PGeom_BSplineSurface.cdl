@@ -31,7 +31,7 @@ uses  HArray1OfInteger from PColStd,
 
 is
   
-  Create returns mutable BSplineSurface from PGeom;
+  Create returns BSplineSurface from PGeom;
 	---Purpose: Creates a BSplineSurface with default values.
     	---Level: Internal 
 
@@ -49,7 +49,7 @@ is
     	    aVKnots    : HArray1OfReal from PColStd;
     	    aUMultiplicities    : HArray1OfInteger from PColStd;
     	    aVMultiplicities    : HArray1OfInteger from PColStd)
-    returns mutable BSplineSurface from PGeom;
+    returns BSplineSurface from PGeom;
 	---Purpose: Creates a BSplineSurface with these values.
 
 

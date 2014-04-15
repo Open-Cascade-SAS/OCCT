@@ -31,7 +31,7 @@ is
     Create
     ---Purpose: Creates an empty generator
     ---Level: Advanced 
-    returns mutable GenExp is private;
+    returns GenExp is private;
 
     Create( myclass ) returns GenExp;
     

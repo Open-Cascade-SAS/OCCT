@@ -30,7 +30,7 @@ uses
     TypeIdMap from BinMDF
 
 is
-    Create returns mutable ADriverTable from BinMDF;
+    Create returns ADriverTable from BinMDF;
         ---Purpose: Constructor
 
     AddDriver(me : mutable; theDriver : ADriver from BinMDF);

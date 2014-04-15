@@ -132,7 +132,7 @@ raises DomainError from Standard
 is
 
     Initialize
-    	returns mutable Attribute from TDF;
+    	returns Attribute from TDF;
 	---Purpose: Initializes fields.
 
     ---Category: Information access.
@@ -347,7 +347,7 @@ is
 	--          
 	---C++: inline
 
-    BackupCopy(me) returns mutable Attribute from TDF
+    BackupCopy(me) returns Attribute from TDF
     	is virtual;
 	---Purpose: Copies  the attribute  contents into  a  new other
 	--          attribute. It is used by Backup().
@@ -403,14 +403,14 @@ is
     --           ==============================================================
 
     NewEmpty(me)
-    	returns mutable Attribute from TDF
+    	returns Attribute from TDF
     	is deferred;
 	---Purpose: Returns an new empty attribute from the good end
 	--          type. It is used by the copy algorithm.
 
     Paste(me;
-    	  intoAttribute    : mutable Attribute from TDF;
-	  aRelocationTable : mutable RelocationTable from TDF)
+    	  intoAttribute    : Attribute from TDF;
+	  aRelocationTable : RelocationTable from TDF)
 	is deferred;
 	---Purpose: This method is different from the "Copy" one,
 	--          because it is used when copying an attribute from

@@ -35,7 +35,7 @@ raises OutOfRange
 
 is
 
-        Create returns mutable View;
+        Create returns View;
 
         -- Specific Methods pertaining to the class
 

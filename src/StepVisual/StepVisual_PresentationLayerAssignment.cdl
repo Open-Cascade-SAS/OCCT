@@ -25,22 +25,22 @@ uses
 	LayeredItem from StepVisual
 is
 
-	Create returns mutable PresentationLayerAssignment;
+	Create returns PresentationLayerAssignment;
 	---Purpose: Returns a PresentationLayerAssignment
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aDescription : mutable HAsciiString from TCollection;
-	      aAssignedItems : mutable HArray1OfLayeredItem from StepVisual) is virtual;
+	      aName : HAsciiString from TCollection;
+	      aDescription : HAsciiString from TCollection;
+	      aAssignedItems : HArray1OfLayeredItem from StepVisual) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetName(me : mutable; aName : mutable HAsciiString);
-	Name (me) returns mutable HAsciiString;
-	SetDescription(me : mutable; aDescription : mutable HAsciiString);
-	Description (me) returns mutable HAsciiString;
-	SetAssignedItems(me : mutable; aAssignedItems : mutable HArray1OfLayeredItem);
-	AssignedItems (me) returns mutable HArray1OfLayeredItem;
+	SetName(me : mutable; aName : HAsciiString);
+	Name (me) returns HAsciiString;
+	SetDescription(me : mutable; aDescription : HAsciiString);
+	Description (me) returns HAsciiString;
+	SetAssignedItems(me : mutable; aAssignedItems : HArray1OfLayeredItem);
+	AssignedItems (me) returns HArray1OfLayeredItem;
 	AssignedItemsValue (me; num : Integer) returns LayeredItem;
 	NbAssignedItems (me) returns Integer;
 

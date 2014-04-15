@@ -26,25 +26,25 @@ uses
 	Colour from StepVisual
 is
 
-	Create returns mutable PointStyle;
+	Create returns PointStyle;
 	---Purpose: Returns a PointStyle
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
+	      aName : HAsciiString from TCollection;
 	      aMarker : MarkerSelect from StepVisual;
 	      aMarkerSize : SizeSelect from StepBasic;
-	      aMarkerColour : mutable Colour from StepVisual) is virtual;
+	      aMarkerColour : Colour from StepVisual) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetName(me : mutable; aName : mutable HAsciiString);
-	Name (me) returns mutable HAsciiString;
+	SetName(me : mutable; aName : HAsciiString);
+	Name (me) returns HAsciiString;
 	SetMarker(me : mutable; aMarker : MarkerSelect);
 	Marker (me) returns MarkerSelect;
 	SetMarkerSize(me : mutable; aMarkerSize : SizeSelect);
 	MarkerSize (me) returns SizeSelect;
-	SetMarkerColour(me : mutable; aMarkerColour : mutable Colour);
-	MarkerColour (me) returns mutable Colour;
+	SetMarkerColour(me : mutable; aMarkerColour : Colour);
+	MarkerColour (me) returns Colour;
 
 fields
 

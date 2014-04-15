@@ -203,7 +203,7 @@ is
     	GetLaw(me         : in out; 
     	       IC         : Integer from Standard;
     	       E          : Edge from TopoDS)
-	returns mutable Function from Law
+	returns Function from Law
 	 ---Purpose: Returns the rule of  elementary  evolution of  the
 	 --          part to  variable vector framing E, returns a
 	 --          rule zero if E is flagged as edge constant.
@@ -228,9 +228,9 @@ is
     	returns Integer from Standard;
 		 
     	Sect(me; IC, IS : Integer from Standard)
-    	returns mutable SecHArray1 from ChFiDS;
+    	returns SecHArray1 from ChFiDS;
 
-        SimulKPart(me; SD : mutable SurfData from ChFiDS)
+        SimulKPart(me; SD : SurfData from ChFiDS)
         is protected; 
     
         SimulSurf(me              : in out; 

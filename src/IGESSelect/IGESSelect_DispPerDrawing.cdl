@@ -28,7 +28,7 @@ uses AsciiString from TCollection, EntityIterator, Graph, SubPartsIterator,
 
 is
 
-    Create returns mutable DispPerDrawing;
+    Create returns DispPerDrawing;
     ---Purpose : Creates a DispPerDrawing
 
     Label (me) returns AsciiString from TCollection;

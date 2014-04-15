@@ -22,7 +22,7 @@ uses
 
 is
 
-    Create returns mutable AssemblyComponentUsageSubstitute;
+    Create returns AssemblyComponentUsageSubstitute;
 
     Init (me : mutable;
     	  aName : HAsciiString;

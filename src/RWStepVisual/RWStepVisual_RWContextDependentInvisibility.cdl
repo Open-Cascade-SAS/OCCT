@@ -29,7 +29,7 @@ is
 	Create returns RWContextDependentInvisibility;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable ContextDependentInvisibility from StepVisual);
+	              ach : in out Check; ent : ContextDependentInvisibility from StepVisual);
 
 	WriteStep (me; SW : in out StepWriter; ent : ContextDependentInvisibility from StepVisual);
 

@@ -23,7 +23,7 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable Curve;
+	Create returns Curve;
 	---Purpose: Returns a Curve
 
 

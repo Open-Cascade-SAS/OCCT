@@ -29,7 +29,7 @@ is
 	Create returns RWOffsetSurface;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable OffsetSurface from StepGeom);
+	              ach : in out Check; ent : OffsetSurface from StepGeom);
 
 	WriteStep (me; SW : in out StepWriter; ent : OffsetSurface from StepGeom);
 

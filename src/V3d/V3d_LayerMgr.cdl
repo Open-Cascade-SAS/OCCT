@@ -34,21 +34,21 @@ is
     ---Category: Public
 
     Create (aView : View from V3d)
-    returns mutable LayerMgr from V3d;
+    returns LayerMgr from V3d;
     
     Overlay (me)
-    returns mutable Layer from Visual3d;
+    returns Layer from Visual3d;
     ---C++: return const &
     ---C++: inline
 
     View (me)
-    returns mutable View from V3d;
+    returns View from V3d;
     ---C++: inline
 
     ColorScaleDisplay (me : mutable);
     ColorScaleErase (me : mutable);
     ColorScaleIsDisplayed (me) returns Boolean from Standard;
-    ColorScale (me) returns mutable ColorScale from Aspect;
+    ColorScale (me) returns ColorScale from Aspect;
 
     Compute (me : mutable);
     ---Purpose: Recompute layer with objects

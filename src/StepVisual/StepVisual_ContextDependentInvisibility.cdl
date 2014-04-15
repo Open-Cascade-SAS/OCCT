@@ -24,15 +24,15 @@ uses
 	HArray1OfInvisibleItem from StepVisual
 is
 
-	Create returns mutable ContextDependentInvisibility;
+	Create returns ContextDependentInvisibility;
 	---Purpose: Returns a ContextDependentInvisibility
 
 
 	Init (me : mutable;
-	      aInvisibleItems : mutable HArray1OfInvisibleItem from StepVisual) is redefined;
+	      aInvisibleItems : HArray1OfInvisibleItem from StepVisual) is redefined;
 
 	Init (me : mutable;
-	      aInvisibleItems : mutable HArray1OfInvisibleItem from StepVisual;
+	      aInvisibleItems : HArray1OfInvisibleItem from StepVisual;
 	      aPresentationContext : InvisibilityContext from StepVisual) is virtual;
 
 	-- Specific Methods for Field Data Access --

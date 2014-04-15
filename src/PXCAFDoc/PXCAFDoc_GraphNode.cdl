@@ -23,7 +23,7 @@ uses
     GraphNodeSequence from PXCAFDoc
 
 is
-    Create returns mutable GraphNode from PXCAFDoc;
+    Create returns GraphNode from PXCAFDoc;
     
     SetFather (me : mutable;F : GraphNode from PXCAFDoc)
     returns Integer from Standard;

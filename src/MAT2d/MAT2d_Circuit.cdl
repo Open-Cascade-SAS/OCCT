@@ -40,7 +40,7 @@ uses
 
 is
 
-    Create returns mutable Circuit from MAT2d;
+    Create returns Circuit from MAT2d;
 
 ---Category:  Computation
 
@@ -75,7 +75,7 @@ is
     DoubleLine(me ; 
                Line       : in out  SequenceOfGeometry;
                Connexions : in out  SequenceOfConnexion from MAT2d; 
-	       Father     : mutable Connexion from MAT2d;
+	       Father     : Connexion from MAT2d;
 	       Side       : Real)
     is static private;
     

@@ -20,14 +20,14 @@ uses
     ShapeEnum from TopAbs
 
 is
-    Create returns mutable TSolid from TopoDS;
+    Create returns TSolid from TopoDS;
     ---C++: inline
     ---Purpose: Creates an empty TSolid.
 
     ShapeType(me) returns ShapeEnum from TopAbs;
     ---Purpose: returns SOLID.
 
-    EmptyCopy(me) returns mutable TShape from TopoDS;
+    EmptyCopy(me) returns TShape from TopoDS;
 	---Purpose: Returns an empty TSolid.
 
 end TSolid;

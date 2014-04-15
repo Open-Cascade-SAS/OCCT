@@ -28,7 +28,7 @@ is
 	Create returns RWFileDescription;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable FileDescription from HeaderSection);
+	              ach : in out Check; ent : FileDescription from HeaderSection);
 
 	WriteStep (me; SW : in out StepWriter; ent : FileDescription from HeaderSection);
 

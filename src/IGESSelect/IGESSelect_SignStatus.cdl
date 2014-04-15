@@ -35,7 +35,7 @@ uses CString, Transient, AsciiString, InterfaceModel
 
 is
 
-    Create returns mutable SignStatus;
+    Create returns SignStatus;
 
     Value   (me; ent : any Transient; model : InterfaceModel) returns CString;
     ---Purpose : Returns the value (see above)

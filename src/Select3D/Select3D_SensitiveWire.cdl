@@ -38,7 +38,7 @@ is
 
     Create (OwnerId      : EntityOwner from SelectBasics;
     	    MaxRect      : Integer = 1)
-     returns mutable SensitiveWire;
+     returns SensitiveWire;
     	---Purpose: Constructs a sensitive wire object defined by the
     	-- owner OwnerId, and the maximum number of
     	-- sensitive rectangles MaxRect.

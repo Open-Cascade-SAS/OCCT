@@ -30,7 +30,7 @@ is
     	Create returns RWAppliedSecurityClassificationAssignment;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable AppliedSecurityClassificationAssignment from StepAP214);
+	              ach : in out Check; ent : AppliedSecurityClassificationAssignment from StepAP214);
 
 	WriteStep (me; SW : in out StepWriter; ent : AppliedSecurityClassificationAssignment from StepAP214);
 

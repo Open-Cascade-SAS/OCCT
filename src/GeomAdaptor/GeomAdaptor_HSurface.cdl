@@ -29,19 +29,19 @@ raises
 
 is
 
-    Create returns mutable HSurface from GeomAdaptor;
+    Create returns HSurface from GeomAdaptor;
     	---C++: inline
     
-    Create( AS : Surface from GeomAdaptor) returns mutable HSurface from GeomAdaptor;
+    Create( AS : Surface from GeomAdaptor) returns HSurface from GeomAdaptor;
     	---C++: inline
 
-    Create( S : Surface from Geom) returns mutable HSurface from GeomAdaptor;
+    Create( S : Surface from Geom) returns HSurface from GeomAdaptor;
     	---C++: inline
     
     Create( S : Surface from Geom; UFirst,ULast,VFirst,VLast : Real; 
     	    TolU  :  Real  =  0.0; 
             TolV  :  Real  =  0.0) 
-    returns  mutable HSurface from GeomAdaptor
+    returns HSurface from GeomAdaptor
     raises ConstructionError from Standard;
     	---Purpose: ConstructionError is raised if UFirst>ULast or VFirst>VLast
     	---C++: inline

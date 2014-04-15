@@ -33,7 +33,7 @@ uses BasicElt                  from MAT,
 
 is
 
-    Create returns mutable Graph from MAT;
+    Create returns Graph from MAT;
         --- Purpose : Empty constructor.
   
 ---Category: Computation
@@ -123,8 +123,8 @@ is
     is static;					    
 
     FusionOfArcs (me        : mutable;
-                  Arc1      : mutable Arc from MAT;
-		  Arc2      : mutable Arc from MAT)
+                  Arc1      : Arc from MAT;
+		  Arc2      : Arc from MAT)
 	---Purpose: Merge two Arcs.  the second node of <Arc2> becomes
 	--          the  first node  of <Arc1>.  Update  of the  first
 	--          node and the neighbours of <Arc1>.
@@ -142,7 +142,7 @@ is
     is static;
 
     ChangeBasicElt(me : mutable ; Index : Integer)	
-    returns mutable BasicElt from MAT
+    returns BasicElt from MAT
     is static;
     
     UpDateNodes(me : mutable ; Index : in out Integer)

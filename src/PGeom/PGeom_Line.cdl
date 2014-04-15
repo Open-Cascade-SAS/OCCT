@@ -26,12 +26,12 @@ uses Ax1 from gp
 is
 
 
-  Create returns mutable Line;
+  Create returns Line;
         ---Purpose : Creates a line with default values.
     	---Level: Internal 
 
 
-  Create (aPosition : Ax1 from gp)   returns mutable Line;
+  Create (aPosition : Ax1 from gp)   returns Line;
         ---Purpose : Creates   a  line  located    in  3D space   with
         --         <aPosition>.  The Location   of <aPosition> is  the
         --         origin of the line.

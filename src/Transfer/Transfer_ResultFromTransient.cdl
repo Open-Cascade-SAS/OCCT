@@ -30,7 +30,7 @@ uses Transient, HSequenceOfTransient, IndexedMapOfTransient,
 
 is
 
-    Create returns mutable ResultFromTransient;
+    Create returns ResultFromTransient;
     ---Purpose : Creates a ResultFromTransient, empty
 
     SetStart  (me : mutable; start  : any Transient);
@@ -59,13 +59,13 @@ is
     ClearSubs (me : mutable);
     ---Purpose : Clears the list of (immediate) sub-results
 
-    AddSubResult (me : mutable; sub : mutable ResultFromTransient);
+    AddSubResult (me : mutable; sub : ResultFromTransient);
     ---Purpose : Adds a sub-result
 
     NbSubResults (me) returns Integer;
     ---Purpose : Returns the count of recorded sub-results
 
-    SubResult    (me; num : Integer) returns mutable ResultFromTransient;
+    SubResult    (me; num : Integer) returns ResultFromTransient;
     ---Purpose : Returns a sub-result, given its rank
 
     ResultFromKey (me; key : Transient) returns ResultFromTransient;
@@ -89,7 +89,7 @@ is
     --           the list of sub-scoped binders, which is now recorded as
     --           sub-results
 
-    FillBack (me; TP : mutable TransientProcess);
+    FillBack (me; TP : TransientProcess);
     ---Purpose : Fills back a TransientProcess with definition of a
     --           ResultFromTransient, respectfully to its structuration in
     --           scopes

@@ -43,7 +43,7 @@ is
 	---Purpose: Creates a WLine as an intersection when the 
 	--          transitions are In or Out.
     
-    	returns mutable WLine from IntPatch;
+    	returns WLine from IntPatch;
 
 
     Create(Line: LineOn2S from IntSurf; Tang: Boolean from Standard;
@@ -52,7 +52,7 @@ is
 	---Purpose: Creates a WLine as an intersection when the 
 	--          transitions are Touch.
     
-    	returns mutable WLine from IntPatch;
+    	returns WLine from IntPatch;
 
 
     Create(Line: LineOn2S from IntSurf; Tang: Boolean from Standard)
@@ -60,7 +60,7 @@ is
 	---Purpose: Creates a WLine as an intersection when the 
 	--          transitions are Undecided.
     
-    	returns mutable WLine from IntPatch;
+    	returns WLine from IntPatch;
 
 
     AddVertex(me: mutable; Pnt: Point from IntPatch)

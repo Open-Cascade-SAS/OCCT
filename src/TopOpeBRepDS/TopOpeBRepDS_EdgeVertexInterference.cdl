@@ -36,7 +36,7 @@ is
     	   C  : Config from TopOpeBRepDS;
 	   P  : Real from Standard)
 	   
-    returns mutable EdgeVertexInterference from TopOpeBRepDS; 
+    returns EdgeVertexInterference from TopOpeBRepDS; 
 
     	---Purpose: Create an interference of VERTEX <G> on a crossed EDGE E.
     	--  
@@ -70,7 +70,7 @@ is
     	--  interference is stored in the list of interfs of the edge.
     	--  
 
-    returns mutable EdgeVertexInterference from TopOpeBRepDS; 
+    returns EdgeVertexInterference from TopOpeBRepDS; 
 	    
     Parameter(me) returns Real from Standard
     is static;

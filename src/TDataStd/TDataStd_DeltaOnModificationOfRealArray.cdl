@@ -28,7 +28,7 @@ uses
 is
 
     Create (Arr : RealArray     from TDataStd)
-    	returns mutable DeltaOnModificationOfRealArray from TDataStd;
+    	returns DeltaOnModificationOfRealArray from TDataStd;
 	---Purpose: Initializes a TDF_DeltaOnModification.
 
     Apply (me : mutable)

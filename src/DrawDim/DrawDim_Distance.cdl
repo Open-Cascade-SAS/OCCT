@@ -24,10 +24,10 @@ uses Face    from TopoDS,
 is
 
     Create (plane1 : Face from TopoDS; plane2 : Face from TopoDS)
-    returns mutable Distance from DrawDim;
+    returns Distance from DrawDim;
 
     Create (plane1 : Face from TopoDS)
-    returns mutable Distance from DrawDim;
+    returns Distance from DrawDim;
     
     Plane1 (me) returns Face from TopoDS;
 	---C++: return const&

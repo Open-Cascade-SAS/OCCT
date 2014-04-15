@@ -31,7 +31,7 @@ is
     ---Purpose : Returns a ToolHierarchy, ready to work
 
 
-    ReadOwnParams (me; ent : mutable Hierarchy;
+    ReadOwnParams (me; ent : Hierarchy;
     	    	   IR : IGESReaderData; PR : in out ParamReader)
     	raises DomainError  is static;
     ---Purpose : Reads own parameters from file. <PR> gives access to them,
@@ -47,7 +47,7 @@ is
     ---Purpose : Lists the Entities shared by a Hierarchy <ent>, from
     --           its specific (own) parameters
 
-    OwnCorrect (me; ent : mutable Hierarchy) returns Boolean  is static;
+    OwnCorrect (me; ent : Hierarchy) returns Boolean  is static;
     ---Purpose : Sets automatic unambiguous Correction on a Hierarchy
     --           (NbPropertyValues forced to 6)
 
@@ -59,7 +59,7 @@ is
     ---Purpose : Performs Specific Semantic Check
 
 
-    OwnCopy    (me; entfrom : Hierarchy; entto : mutable Hierarchy;
+    OwnCopy    (me; entfrom : Hierarchy; entto : Hierarchy;
     	        TC : in out CopyTool)  is static;
     ---Purpose : Copies Specific Parameters
 

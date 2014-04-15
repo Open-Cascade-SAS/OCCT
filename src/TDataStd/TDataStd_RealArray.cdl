@@ -98,7 +98,7 @@ is
     ---Category: methodes of TDF_Attribute
     --           =========================
     Create    
-    returns mutable RealArray from TDataStd; 
+    returns RealArray from TDataStd; 
     
     ID (me)
     	---C++: return const & 
@@ -107,10 +107,10 @@ is
     Restore (me: mutable; With : Attribute from TDF);
 
     NewEmpty (me)
-    returns mutable Attribute from TDF;
+    returns Attribute from TDF;
 
-    Paste (me; Into : mutable Attribute from TDF;
-	       RT   : mutable RelocationTable from TDF);    
+    Paste (me; Into : Attribute from TDF;
+	       RT   : RelocationTable from TDF);    
     ---Purpose: Note. Uses inside ChangeArray() method 
     
     Dump(me; anOS : in out OStream from Standard)

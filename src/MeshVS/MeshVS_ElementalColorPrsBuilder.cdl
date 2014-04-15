@@ -43,7 +43,7 @@ is
             DS       : DataSource from MeshVS = 0;
             Id       : Integer = -1;
             Priority : BuilderPriority from MeshVS = MeshVS_BP_ElemColor )
-    returns mutable ElementalColorPrsBuilder from MeshVS;
+    returns ElementalColorPrsBuilder from MeshVS;
 	---Purpose: Constructor
 
   Build   ( me; Prs      : Presentation from Prs3d;

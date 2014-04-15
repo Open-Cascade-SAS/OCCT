@@ -23,16 +23,16 @@ uses
 	CurveStyle from StepVisual
 is
 
-	Create returns mutable SurfaceStyleSilhouette;
+	Create returns SurfaceStyleSilhouette;
 	---Purpose: Returns a SurfaceStyleSilhouette
 
 	Init (me : mutable;
-	      aStyleOfSilhouette : mutable CurveStyle from StepVisual) is virtual;
+	      aStyleOfSilhouette : CurveStyle from StepVisual) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetStyleOfSilhouette(me : mutable; aStyleOfSilhouette : mutable CurveStyle);
-	StyleOfSilhouette (me) returns mutable CurveStyle;
+	SetStyleOfSilhouette(me : mutable; aStyleOfSilhouette : CurveStyle);
+	StyleOfSilhouette (me) returns CurveStyle;
 
 fields
 

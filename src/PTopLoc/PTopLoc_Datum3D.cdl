@@ -29,7 +29,7 @@ raises
     ConstructionError from Standard
 
 is
-    Create(T : Trsf from gp) returns mutable Datum3D from PTopLoc
+    Create(T : Trsf from gp) returns Datum3D from PTopLoc
 	---Purpose: Creates a   local coordinate  system    with   the
 	--          transformation.  An   error   is raised  if    the
 	--          transformation is not rigid.

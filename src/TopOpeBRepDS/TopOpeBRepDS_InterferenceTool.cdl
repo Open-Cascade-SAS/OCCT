@@ -74,7 +74,7 @@ is
     Parameter(myclass; CPI : Interference from TopOpeBRepDS)
     returns Real from Standard;
 
-    Parameter(myclass; CPI : mutable Interference from TopOpeBRepDS; 
+    Parameter(myclass; CPI : Interference from TopOpeBRepDS; 
                        Par : Real from Standard);
     
 end InterferenceTool from TopOpeBRepDS;

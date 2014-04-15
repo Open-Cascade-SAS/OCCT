@@ -28,7 +28,7 @@ is
 
     Create(S: Shell from TopoDS)
     
-    	returns mutable Shell from BRepCheck;
+    	returns Shell from BRepCheck;
 
 
     InContext(me: mutable; ContextShape: Shape from TopoDS);

@@ -38,9 +38,9 @@ uses
 
 is
 
-    	Create ( VM : mutable Viewer ;
+    	Create ( VM : Viewer ;
 		 Color : NameOfColor = Quantity_NOC_WHITE ) 
-				returns mutable AmbientLight;
+				returns AmbientLight;
 	---Purpose: Constructs an ambient light source in the viewer VM.
     	-- The default Color of this light source is WHITE.
 

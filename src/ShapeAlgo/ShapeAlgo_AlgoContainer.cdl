@@ -40,7 +40,7 @@ uses
 
 is
 
-    Create returns mutable AlgoContainer from ShapeAlgo;
+    Create returns AlgoContainer from ShapeAlgo;
     	---Purpose: Empty constructor
 
     SetToolContainer (me: mutable; TC: ToolContainer from ShapeAlgo);

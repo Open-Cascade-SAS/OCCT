@@ -25,7 +25,7 @@ uses
 	RepresentationContext from StepRepr
 is
 
-	Create returns mutable AdvancedBrepShapeRepresentation;
+	Create returns AdvancedBrepShapeRepresentation;
 	---Purpose: Returns a AdvancedBrepShapeRepresentation
 
 

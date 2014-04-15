@@ -32,12 +32,12 @@ raises
 
 is
 
-    Create  returns mutable MeshDomain;
+    Create  returns MeshDomain;
     	---Purpose: The mesh deflection is defaulted to Confusion from 
     	--          package Precision.
 
 
-    Create (Deflection : Real)  returns mutable MeshDomain
+    Create (Deflection : Real)  returns MeshDomain
     raises NegativeValue,
     	---Purpose: Raised if the deflection is lower than zero
     	   NullValue;

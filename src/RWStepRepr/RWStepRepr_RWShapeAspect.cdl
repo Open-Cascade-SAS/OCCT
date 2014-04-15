@@ -29,7 +29,7 @@ is
 	Create returns RWShapeAspect;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable ShapeAspect from StepRepr);
+	              ach : in out Check; ent : ShapeAspect from StepRepr);
 
 	WriteStep (me; SW : in out StepWriter; ent : ShapeAspect from StepRepr);
 

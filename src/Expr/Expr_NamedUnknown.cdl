@@ -36,7 +36,7 @@ raises NotAssigned from Expr,
 is
 
     Create(name : AsciiString)
-    returns mutable NamedUnknown;
+    returns NamedUnknown;
 
     IsAssigned(me)
     ---Purpose: Tests if an expression is assigned to <me>.
@@ -94,7 +94,7 @@ is
 
     Copy(me)
     ---Purpose: Returns a copy of <me> having the same unknowns and functions.
-    returns mutable like me;
+    returns like me;
     
     ContainsUnknowns(me) 
     ---Purpose: Tests if <me> contains NamedUnknown.

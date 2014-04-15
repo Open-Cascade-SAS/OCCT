@@ -33,10 +33,10 @@ uses
 
 is
 
-    Create returns mutable IGESBoundary from IGESToBRep;
+    Create returns IGESBoundary from IGESToBRep;
     	---Purpose: Empty constructor
 
-    Create (CS: CurveAndSurface from IGESToBRep) returns mutable IGESBoundary from IGESToBRep;
+    Create (CS: CurveAndSurface from IGESToBRep) returns IGESBoundary from IGESToBRep;
     	---Purpose: Empty constructor
 	
     Init (me: mutable; CS            : CurveAndSurface from IGESToBRep;

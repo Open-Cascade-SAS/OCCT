@@ -25,7 +25,7 @@ uses
     
 is
     
-    Create returns mutable HBoxTool from TopOpeBRepTool;
+    Create returns HBoxTool from TopOpeBRepTool;
     Clear(me:mutable);
     AddBoxes(me:mutable;S:Shape;TS:ShapeEnum;TA:ShapeEnum=TopAbs_SHAPE);
     AddBox(me:mutable;S:Shape);

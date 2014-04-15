@@ -29,7 +29,7 @@ is
 	Create returns RWAdvancedFace;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable AdvancedFace from StepShape);
+	              ach : in out Check; ent : AdvancedFace from StepShape);
 
 	WriteStep (me; SW : in out StepWriter; ent : AdvancedFace from StepShape);
 

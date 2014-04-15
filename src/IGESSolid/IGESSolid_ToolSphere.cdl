@@ -31,7 +31,7 @@ is
     ---Purpose : Returns a ToolSphere, ready to work
 
 
-    ReadOwnParams (me; ent : mutable Sphere;
+    ReadOwnParams (me; ent : Sphere;
     	    	   IR : IGESReaderData; PR : in out ParamReader)
     	raises DomainError  is static;
     ---Purpose : Reads own parameters from file. <PR> gives access to them,
@@ -55,7 +55,7 @@ is
     ---Purpose : Performs Specific Semantic Check
 
 
-    OwnCopy    (me; entfrom : Sphere; entto : mutable Sphere;
+    OwnCopy    (me; entfrom : Sphere; entto : Sphere;
     	        TC : in out CopyTool)  is static;
     ---Purpose : Copies Specific Parameters
 

@@ -31,37 +31,37 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable FacetedBrepAndBrepWithVoids;
+	Create returns FacetedBrepAndBrepWithVoids;
 	---Purpose: Returns a FacetedBrepAndBrepWithVoids
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aOuter : mutable ClosedShell from StepShape) is redefined;
+	      aName : HAsciiString from TCollection;
+	      aOuter : ClosedShell from StepShape) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aOuter : mutable ClosedShell from StepShape;
-	      aFacetedBrep : mutable FacetedBrep from StepShape;
-	      aBrepWithVoids : mutable BrepWithVoids from StepShape);
+	      aName : HAsciiString from TCollection;
+	      aOuter : ClosedShell from StepShape;
+	      aFacetedBrep : FacetedBrep from StepShape;
+	      aBrepWithVoids : BrepWithVoids from StepShape);
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aOuter : mutable ClosedShell from StepShape;
-	      aVoids : mutable HArray1OfOrientedClosedShell from StepShape);
+	      aName : HAsciiString from TCollection;
+	      aOuter : ClosedShell from StepShape;
+	      aVoids : HArray1OfOrientedClosedShell from StepShape);
 
 	-- Specific Methods for Field Data Access --
 
-	SetFacetedBrep(me : mutable; aFacetedBrep : mutable FacetedBrep);
-	FacetedBrep (me) returns mutable FacetedBrep;
-	SetBrepWithVoids(me : mutable; aBrepWithVoids : mutable BrepWithVoids);
-	BrepWithVoids (me) returns mutable BrepWithVoids;
+	SetFacetedBrep(me : mutable; aFacetedBrep : FacetedBrep);
+	FacetedBrep (me) returns FacetedBrep;
+	SetBrepWithVoids(me : mutable; aBrepWithVoids : BrepWithVoids);
+	BrepWithVoids (me) returns BrepWithVoids;
 
 	-- Specific Methods for ANDOR Field Data Access --
 
-	SetVoids(me : mutable; aVoids : mutable HArray1OfOrientedClosedShell);
-	Voids (me) returns mutable HArray1OfOrientedClosedShell;
-	VoidsValue (me; num : Integer) returns mutable OrientedClosedShell;
+	SetVoids(me : mutable; aVoids : HArray1OfOrientedClosedShell);
+	Voids (me) returns HArray1OfOrientedClosedShell;
+	VoidsValue (me; num : Integer) returns OrientedClosedShell;
 	NbVoids (me) returns Integer;
 
 	-- Specific Methods for ANDOR Field Data Access --

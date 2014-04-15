@@ -31,7 +31,7 @@ is
     ---Purpose : Returns a ToolDrawingWithRotation, ready to work
 
 
-    ReadOwnParams (me; ent : mutable DrawingWithRotation;
+    ReadOwnParams (me; ent : DrawingWithRotation;
     	    	   IR : IGESReaderData; PR : in out ParamReader)
     	raises DomainError  is static;
     ---Purpose : Reads own parameters from file. <PR> gives access to them,
@@ -47,7 +47,7 @@ is
     ---Purpose : Lists the Entities shared by a DrawingWithRotation <ent>, from
     --           its specific (own) parameters
 
-    OwnCorrect (me; ent : mutable DrawingWithRotation) returns Boolean  is static;
+    OwnCorrect (me; ent : DrawingWithRotation) returns Boolean  is static;
     ---Purpose : Sets automatic unambiguous Correction on a DrawingWithRotation
     --           (Null Views are removed from list)
 
@@ -59,7 +59,7 @@ is
     ---Purpose : Performs Specific Semantic Check
 
 
-    OwnCopy    (me; entfrom : DrawingWithRotation; entto : mutable DrawingWithRotation;
+    OwnCopy    (me; entfrom : DrawingWithRotation; entto : DrawingWithRotation;
     	        TC : in out CopyTool)  is static;
     ---Purpose : Copies Specific Parameters
 

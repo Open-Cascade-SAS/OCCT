@@ -29,7 +29,7 @@ is
 	Create returns RWConversionBasedUnitAndLengthUnit;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable ConversionBasedUnitAndLengthUnit from StepBasic);
+	              ach : in out Check; ent : ConversionBasedUnitAndLengthUnit from StepBasic);
 
 	WriteStep (me; SW : in out StepWriter; ent : ConversionBasedUnitAndLengthUnit from StepBasic);
 

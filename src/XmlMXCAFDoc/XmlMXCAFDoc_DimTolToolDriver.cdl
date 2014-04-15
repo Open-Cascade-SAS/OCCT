@@ -26,14 +26,14 @@ uses
 
 is
     Create (theMsgDriver:MessageDriver from CDM)
-    returns mutable DimTolToolDriver from XmlMXCAFDoc;
+    returns DimTolToolDriver from XmlMXCAFDoc;
 
     NewEmpty (me)  
-    returns mutable Attribute from TDF
+    returns Attribute from TDF
     is redefined;
 
     Paste(me; theSource     : Persistent from XmlObjMgt;
-              theTarget     : mutable Attribute from TDF;
+              theTarget     : Attribute from TDF;
               theRelocTable : out RRelocationTable from XmlObjMgt)
     returns Boolean from Standard
     is redefined;

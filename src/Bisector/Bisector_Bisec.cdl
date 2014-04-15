@@ -112,7 +112,7 @@ is
     	 ---C++: return const & 
     is static;
     
-    ChangeValue (me : in out) returns mutable TrimmedCurve from Geom2d
+    ChangeValue (me : in out) returns TrimmedCurve from Geom2d
    	 --- Purpose : Returns the Curve of <me>.  
    	 --  
     	 ---C++: return const & 

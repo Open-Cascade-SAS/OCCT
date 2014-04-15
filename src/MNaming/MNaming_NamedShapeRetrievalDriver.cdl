@@ -29,7 +29,7 @@ is
 
 
     Create(theMessageDriver : MessageDriver from CDM) -- Version 0
-    returns mutable NamedShapeRetrievalDriver from MNaming;
+    returns NamedShapeRetrievalDriver from MNaming;
 
     VersionNumber(me) returns Integer from Standard;
 	---Purpose: Returns the version number from which the driver
@@ -39,12 +39,12 @@ is
 	---Purpose: Returns the type NamedShape from PNaming.
 
     NewEmpty (me)
-    returns mutable Attribute from TDF;
+    returns Attribute from TDF;
 
 
     Paste(me;
     	  Source     :          Attribute        from PDF;
-    	  Target     : mutable  Attribute        from TDF;
+    	  Target     :  Attribute        from TDF;
     	  RelocTable :          RRelocationTable from MDF);
 
 

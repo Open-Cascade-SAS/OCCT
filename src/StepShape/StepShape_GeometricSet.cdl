@@ -25,21 +25,21 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable GeometricSet;
+	Create returns GeometricSet;
 	---Purpose: Returns a GeometricSet
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection) is redefined;
+	      aName : HAsciiString from TCollection) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aElements : mutable HArray1OfGeometricSetSelect from StepShape) is virtual;
+	      aName : HAsciiString from TCollection;
+	      aElements : HArray1OfGeometricSetSelect from StepShape) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetElements(me : mutable; aElements : mutable HArray1OfGeometricSetSelect);
-	Elements (me) returns mutable HArray1OfGeometricSetSelect;
+	SetElements(me : mutable; aElements : HArray1OfGeometricSetSelect);
+	Elements (me) returns HArray1OfGeometricSetSelect;
 	ElementsValue (me; num : Integer) returns GeometricSetSelect;
 	NbElements (me) returns Integer;
 

@@ -22,7 +22,7 @@ class AISPresentation from PPrsStd
 uses    HExtendedString from PCollection
 is
 
-    Create returns mutable AISPresentation from PPrsStd;
+    Create returns AISPresentation from PPrsStd;
 	
     IsDisplayed(me) returns Boolean from Standard;
     SetDisplayed(me : mutable; B : Boolean from Standard);

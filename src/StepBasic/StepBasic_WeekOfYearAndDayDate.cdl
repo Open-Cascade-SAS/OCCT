@@ -24,7 +24,7 @@ uses
 	Boolean from Standard
 is
 
-	Create returns mutable WeekOfYearAndDayDate;
+	Create returns WeekOfYearAndDayDate;
 	---Purpose: Returns a WeekOfYearAndDayDate
 
 

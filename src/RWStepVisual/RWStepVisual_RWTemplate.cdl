@@ -29,7 +29,7 @@ is
 	Create returns RWTemplate;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable Template from StepVisual);
+	              ach : in out Check; ent : Template from StepVisual);
 
 	WriteStep (me; SW : in out StepWriter; ent : Template from StepVisual);
 

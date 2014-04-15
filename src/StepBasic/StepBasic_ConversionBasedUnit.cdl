@@ -25,24 +25,24 @@ uses
 	DimensionalExponents from StepBasic
 is
 
-	Create returns mutable ConversionBasedUnit;
+	Create returns ConversionBasedUnit;
 	---Purpose: Returns a ConversionBasedUnit
 
 
 	Init (me : mutable;
-	      aDimensions : mutable DimensionalExponents from StepBasic) is redefined;
+	      aDimensions : DimensionalExponents from StepBasic) is redefined;
 
 	Init (me : mutable;
-	      aDimensions : mutable DimensionalExponents from StepBasic;
-	      aName : mutable HAsciiString from TCollection;
-	      aConversionFactor : mutable MeasureWithUnit from StepBasic) is virtual;
+	      aDimensions : DimensionalExponents from StepBasic;
+	      aName : HAsciiString from TCollection;
+	      aConversionFactor : MeasureWithUnit from StepBasic) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetName(me : mutable; aName : mutable HAsciiString);
-	Name (me) returns mutable HAsciiString;
-	SetConversionFactor(me : mutable; aConversionFactor : mutable MeasureWithUnit);
-	ConversionFactor (me) returns mutable MeasureWithUnit;
+	SetName(me : mutable; aName : HAsciiString);
+	Name (me) returns HAsciiString;
+	SetConversionFactor(me : mutable; aConversionFactor : MeasureWithUnit);
+	ConversionFactor (me) returns MeasureWithUnit;
 
 fields
 

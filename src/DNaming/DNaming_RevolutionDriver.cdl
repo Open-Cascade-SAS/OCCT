@@ -24,7 +24,7 @@ uses
      MakeRevol   from BRepPrimAPI, 
      Shape       from TopoDS
 is
-    Create returns mutable RevolutionDriver from DNaming;
+    Create returns RevolutionDriver from DNaming;
     ---Purpose: Constructor
 
     ---Purpose: validation

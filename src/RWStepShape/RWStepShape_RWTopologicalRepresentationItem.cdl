@@ -28,7 +28,7 @@ is
 	Create returns RWTopologicalRepresentationItem;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable TopologicalRepresentationItem from StepShape);
+	              ach : in out Check; ent : TopologicalRepresentationItem from StepShape);
 
 	WriteStep (me; SW : in out StepWriter; ent : TopologicalRepresentationItem from StepShape);
 

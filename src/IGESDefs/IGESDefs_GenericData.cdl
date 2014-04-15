@@ -38,7 +38,7 @@ raises DimensionMismatch, OutOfRange, NullObject
 
 is
 
-        Create returns mutable GenericData;
+        Create returns GenericData;
 
         -- Specific Methods pertaining to the class
 

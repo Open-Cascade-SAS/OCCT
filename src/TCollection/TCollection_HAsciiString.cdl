@@ -36,44 +36,44 @@ raises
     NegativeValue
 is
 
- Create returns mutable HAsciiString from TCollection;
+ Create returns HAsciiString from TCollection;
    ---Purpose: Initializes a HAsciiString to an empty AsciiString.
 
  Create ( message : CString ) 
-         returns mutable HAsciiString from TCollection
+         returns HAsciiString from TCollection
    ---Purpose: Initializes a HAsciiString with a CString.
    raises NullObject;
 
  Create ( aChar : Character) 
-         returns mutable HAsciiString from TCollection;
+         returns HAsciiString from TCollection;
    ---Purpose: Initializes a HAsciiString with a single character.
 
  Create ( length : Integer; filler : Character)
-         returns mutable HAsciiString from TCollection;
+         returns HAsciiString from TCollection;
    ---Purpose: Initializes a HAsciiString with <length> space allocated.
    -- and filled with <filler>.This is useful for buffers.
 
  Create ( value : Integer ) 
-         returns mutable HAsciiString from TCollection
+         returns HAsciiString from TCollection
    ---Purpose: Initializes a HAsciiString with an integer value
    raises NullObject;
 
  Create ( value : Real ) 
-         returns mutable HAsciiString from TCollection
+         returns HAsciiString from TCollection
    ---Purpose: Initializes a HAsciiString with a real value
    raises NullObject;
 
  Create ( aString : AsciiString from TCollection) 
-         returns mutable HAsciiString from TCollection;
+         returns HAsciiString from TCollection;
    ---Purpose: Initializes a HAsciiString with a HAsciiString.
 
  Create ( aString : HAsciiString from TCollection) 
-         returns mutable HAsciiString from TCollection;
+         returns HAsciiString from TCollection;
    ---Purpose: Initializes a HAsciiString with a HAsciiString.
 
  Create ( aString : HExtendedString from TCollection;
           replaceNonAscii: Character from Standard) 
-         returns mutable HAsciiString from TCollection
+         returns HAsciiString from TCollection
          raises OutOfRange from Standard;
    ---Purpose: Initializes a HAsciiString with a HAsciiString.
    --          If replaceNonAscii is non-null charecter, it will be used 
@@ -104,7 +104,7 @@ is
    --   me = "Hello "
 
  Cat (me ; other : CString) 
-        returns mutable HAsciiString from TCollection;
+        returns HAsciiString from TCollection;
    ---Level: Public
    ---Purpose:  Creates a new string by concatenation of this
    -- ASCII string and the other ASCII string.
@@ -120,7 +120,7 @@ is
    -- This rule is applicable to AssignCat (operator +=) too.
 
  Cat (me ; other : HAsciiString from TCollection) 
-        returns mutable HAsciiString from TCollection;
+        returns HAsciiString from TCollection;
    ---Level: Public
    ---Purpose: Creates a new string by concatenation of this
    -- ASCII string and the other ASCII string.
@@ -488,7 +488,7 @@ is
    raises OutOfRange from Standard;
 
  Split(me : mutable; where : Integer) 
- returns mutable HAsciiString from TCollection
+ returns HAsciiString from TCollection
    ---Level: Public
    ---Purpose: Splits a HAsciiString into two sub-strings.
    --  Example: 
@@ -510,7 +510,7 @@ is
  --   me = "abcdefg"
  -- returns
  --   "cdef"
- returns mutable HAsciiString from TCollection
+ returns HAsciiString from TCollection
  raises OutOfRange from Standard;
 
  ToCString(me) returns CString;
@@ -521,7 +521,7 @@ is
    ---C++: inline
 
  Token (me ; separators : CString=" \t" ; whichone : Integer=1) 
- returns mutable HAsciiString from TCollection
+ returns HAsciiString from TCollection
    ---Level: Public
    ---Purpose: Extracts <whichone> token from <me>.
    -- By default, the <separators> is set to space and tabulation.

@@ -40,14 +40,14 @@ uses
 is
     
     Create(ExclusionFlagOn:Boolean from Standard = Standard_True)
-    returns mutable ExclusionFilter from AIS;
+    returns ExclusionFilter from AIS;
     	---Purpose: Constructs an empty exclusion filter object defined by
     	-- the flag setting ExclusionFlagOn.
     	-- By default, the flag is set to true.
     
     Create(TypeToExclude : KindOfInteractive from AIS;
 	   ExclusionFlagOn : Boolean from Standard = Standard_True)
-    returns  mutable ExclusionFilter from AIS;
+    returns ExclusionFilter from AIS;
     	---Purpose: All the AIS objects of <TypeToExclude>
     	--          Will be rejected by the IsOk Method.
     
@@ -55,7 +55,7 @@ is
     Create(TypeToExclude : KindOfInteractive from AIS;
     	   SignatureInType :Integer from Standard ;
 	   ExclusionFlagOn : Boolean from Standard = Standard_True)
-    returns  mutable ExclusionFilter from AIS;
+    returns ExclusionFilter from AIS;
     	---Purpose: Constructs an exclusion filter object defined by the
     	-- enumeration value TypeToExclude, the signature
     	-- SignatureInType, and the flag setting ExclusionFlagOn.

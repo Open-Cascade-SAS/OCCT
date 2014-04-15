@@ -88,7 +88,7 @@ is
         
     
     Create 
-    returns mutable DocumentTool from XCAFDoc;
+    returns DocumentTool from XCAFDoc;
 
     Init(me);
     ---Purpose: to be called when reading this attribute from file
@@ -103,10 +103,10 @@ is
     Restore (me: mutable; with : Attribute from TDF);
 
     NewEmpty (me)
-    returns mutable Attribute from TDF;
+    returns Attribute from TDF;
 
-    Paste (me; into : mutable Attribute from TDF;
-	       RT   : mutable RelocationTable from TDF);    
+    Paste (me; into : Attribute from TDF;
+	       RT   : RelocationTable from TDF);    
     
     Destroy (me: mutable) is virtual;
     ---C++    : alias ~

@@ -30,7 +30,7 @@ uses
 
 is
 
-        Create returns mutable ToroidalSurface;
+        Create returns ToroidalSurface;
 
         -- Specific Methods pertaining to the class
 

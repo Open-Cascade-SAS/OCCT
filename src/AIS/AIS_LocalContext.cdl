@@ -81,7 +81,7 @@ uses
 
 is
 
-    Create returns mutable LocalContext from AIS;
+    Create returns LocalContext from AIS;
     
 
     Create (aCtx                : InteractiveContext from AIS;
@@ -90,7 +90,7 @@ is
             AcceptStandardModes : Boolean from Standard=Standard_True;
             AcceptErase         : Boolean from Standard= Standard_False;
             UseBothViewers      : Boolean from Standard= Standard_False)
-            returns mutable LocalContext from AIS;
+            returns LocalContext from AIS;
     ---Purpose: Constructor By Default, the  displayed objects are 
     --          automatically loaded.
 

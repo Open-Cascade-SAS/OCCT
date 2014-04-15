@@ -28,7 +28,7 @@ uses
 
 is
 
-    Create returns mutable ConvertSurfaceToBezierBasis from ShapeUpgrade;
+    Create returns ConvertSurfaceToBezierBasis from ShapeUpgrade;
     	---Purpose: Empty constructor.
     
     Build (me: mutable; Segment: Boolean) is redefined;

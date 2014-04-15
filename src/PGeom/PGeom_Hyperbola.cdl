@@ -25,14 +25,14 @@ uses Ax2 from gp
 is
 
 
-  Create returns mutable Hyperbola from PGeom;
+  Create returns Hyperbola from PGeom;
         ---Purpose :Creates an Hyperbola with default values.
     	---Level: Internal 
 
 
   Create (aPosition : Ax2 from gp;
     	  aMajorRadius, aMinorRadius : Real from Standard)
-     returns mutable Hyperbola from PGeom;
+     returns Hyperbola from PGeom;
 	---Purpose :  Creates an   Hyperbola    with      <aPosition>,
 	--         <aMajorRadius> and  <aMinorRadius> as field values.
 	--         The major  radius of the hyperbola is  on the XAxis

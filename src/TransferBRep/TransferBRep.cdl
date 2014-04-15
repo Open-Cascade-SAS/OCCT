@@ -58,7 +58,7 @@ is
     --           Transfer of an entity. I.E. in the binder bound to that Entity
     --           If no result or result not a single Shape, returns a Null Shape
 
-    SetShapeResult (TP : mutable TransientProcess from Transfer; ent : Transient;
+    SetShapeResult (TP : TransientProcess from Transfer; ent : Transient;
     	    	    result : Shape from TopoDS);
     ---Purpose : Sets a Shape as a result for a starting entity <ent>
     --           (reverse of ShapeResult)

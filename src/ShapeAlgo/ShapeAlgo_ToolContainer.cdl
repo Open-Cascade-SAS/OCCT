@@ -24,7 +24,7 @@ uses
     
 is
 
-    Create returns mutable ToolContainer from ShapeAlgo;
+    Create returns ToolContainer from ShapeAlgo;
     	---Purpose: Empty constructor
 	
     FixShape (me) returns Shape from ShapeFix is virtual;

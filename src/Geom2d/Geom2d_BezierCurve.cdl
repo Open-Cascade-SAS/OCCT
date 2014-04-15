@@ -93,7 +93,7 @@ is
 
 
 
-  Create (CurvePoles : Array1OfPnt2d from TColgp) returns mutable BezierCurve
+  Create (CurvePoles : Array1OfPnt2d from TColgp) returns BezierCurve
         --- Purpose :
         --  Creates a non rational Bezier curve with a set of poles :
         --  CurvePoles.  The weights are defaulted to all being 1. 
@@ -104,7 +104,7 @@ is
 
   Create (CurvePoles  : Array1OfPnt2d from TColgp;
     	  PoleWeights : Array1OfReal from TColStd) 
-     returns mutable BezierCurve
+     returns BezierCurve
         --- Purpose :
         --  Creates a rational Bezier curve with the set of poles
         --  CurvePoles and the set of weights  PoleWeights .
@@ -361,7 +361,7 @@ is
 	--           | t1 - t0| < Utolerance ===> 
 	--           |f(t1) - f(t0)| < ToleranceUV
 
-  Copy (me)  returns mutable like me;
+  Copy (me)  returns like me;
     	---Purpose: Creates a new object which is a copy of this Bezier curve.     
 
   Init (me : mutable; Poles   :  HArray1OfPnt2d  from TColgp;

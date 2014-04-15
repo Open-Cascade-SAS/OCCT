@@ -28,7 +28,7 @@ uses
 
 is
 
-        Create returns mutable ReferenceDesignator;
+        Create returns ReferenceDesignator;
 
         -- Specific Methods pertaining to the class
 

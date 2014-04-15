@@ -30,7 +30,7 @@ uses
 
 is
 
-        Create returns mutable SolidOfRevolution;
+        Create returns SolidOfRevolution;
 
         -- Specific Methods pertaining to the class
 

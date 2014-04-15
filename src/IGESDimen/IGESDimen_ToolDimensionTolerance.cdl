@@ -31,7 +31,7 @@ is
     ---Purpose : Returns a ToolDimensionTolerance, ready to work
 
 
-    ReadOwnParams (me; ent : mutable DimensionTolerance;
+    ReadOwnParams (me; ent : DimensionTolerance;
     	    	   IR : IGESReaderData; PR : in out ParamReader)
     	raises DomainError  is static;
     ---Purpose : Reads own parameters from file. <PR> gives access to them,
@@ -47,7 +47,7 @@ is
     ---Purpose : Lists the Entities shared by a DimensionTolerance <ent>, from
     --           its specific (own) parameters
 
-    OwnCorrect (me; ent : mutable DimensionTolerance) returns Boolean  is static;
+    OwnCorrect (me; ent : DimensionTolerance) returns Boolean  is static;
     ---Purpose : Sets automatic unambiguous Correction on a DimensionTolerance
     --           (NbPropertyValues forced to 8)
 
@@ -59,7 +59,7 @@ is
     ---Purpose : Performs Specific Semantic Check
 
 
-    OwnCopy    (me; entfrom : DimensionTolerance; entto : mutable DimensionTolerance;
+    OwnCopy    (me; entfrom : DimensionTolerance; entto : DimensionTolerance;
     	        TC : in out CopyTool)  is static;
     ---Purpose : Copies Specific Parameters
 

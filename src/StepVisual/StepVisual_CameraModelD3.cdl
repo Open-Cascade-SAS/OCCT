@@ -25,24 +25,24 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable CameraModelD3;
+	Create returns CameraModelD3;
 	---Purpose: Returns a CameraModelD3
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection) is redefined;
+	      aName : HAsciiString from TCollection) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aViewReferenceSystem : mutable Axis2Placement3d from StepGeom;
-	      aPerspectiveOfVolume : mutable ViewVolume from StepVisual) is virtual;
+	      aName : HAsciiString from TCollection;
+	      aViewReferenceSystem : Axis2Placement3d from StepGeom;
+	      aPerspectiveOfVolume : ViewVolume from StepVisual) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetViewReferenceSystem(me : mutable; aViewReferenceSystem : mutable Axis2Placement3d);
-	ViewReferenceSystem (me) returns mutable Axis2Placement3d;
-	SetPerspectiveOfVolume(me : mutable; aPerspectiveOfVolume : mutable ViewVolume);
-	PerspectiveOfVolume (me) returns mutable ViewVolume;
+	SetViewReferenceSystem(me : mutable; aViewReferenceSystem : Axis2Placement3d);
+	ViewReferenceSystem (me) returns Axis2Placement3d;
+	SetPerspectiveOfVolume(me : mutable; aPerspectiveOfVolume : ViewVolume);
+	PerspectiveOfVolume (me) returns ViewVolume;
 
 fields
 

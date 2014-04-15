@@ -145,10 +145,10 @@ raises
 
 is
 
-        Create ( VM : mutable Viewer; Type : TypeOfView from V3d = V3d_ORTHOGRAPHIC );
+        Create ( VM : Viewer; Type : TypeOfView from V3d = V3d_ORTHOGRAPHIC );
         ---Purpose: Initializes the view.
 
-        Create (theVM : mutable Viewer; theView : View from V3d);
+        Create (theVM : Viewer; theView : View from V3d);
         ---Purpose: Initializes the view by copying.
 
         --------------------------------------------------------
@@ -1218,10 +1218,10 @@ is
         ---Purpose : Go to the next active Light
         --           (if there is not, ActiveLight will raise an exception)
 
-        ActiveLight(me) returns mutable Light from V3d;
+        ActiveLight(me) returns Light from V3d;
         ---Level: Advanced
 
-        Viewer ( me ) returns mutable Viewer from V3d;
+        Viewer ( me ) returns Viewer from V3d;
         ---Level: Advanced
         ---Purpose: Returns the viewer in which the view has been created.
 
@@ -1229,7 +1229,7 @@ is
         ---Level: Public
         ---Purpose: Returns True if MyView is associated with a window .
 
-        Window ( me ) returns mutable Window from Aspect
+        Window ( me ) returns Window from Aspect
         ---Level: Public
         ---Purpose: Returns the Aspect Window associated with the view.
                 raises BadValue from V3d;
@@ -1334,7 +1334,7 @@ is
         Focale( me ) returns Length;
         ---Purpose: Returns the View Plane Distance for Perspective Views
 
-        View ( me) returns mutable View from Visual3d is static ;
+        View ( me) returns View from Visual3d is static ;
         ---Level: Advanced
         ---Purpose: Returns the associated Visual3d view.
 

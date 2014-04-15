@@ -23,16 +23,16 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable ApplicationContext;
+	Create returns ApplicationContext;
 	---Purpose: Returns a ApplicationContext
 
 	Init (me : mutable;
-	      aApplication : mutable HAsciiString from TCollection) is virtual;
+	      aApplication : HAsciiString from TCollection) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetApplication(me : mutable; aApplication : mutable HAsciiString);
-	Application (me) returns mutable HAsciiString;
+	SetApplication(me : mutable; aApplication : HAsciiString);
+	Application (me) returns HAsciiString;
 
 fields
 

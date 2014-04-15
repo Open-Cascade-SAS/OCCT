@@ -70,7 +70,7 @@ is
   SplitBSplineCurve (C               : BSplineCurve from Geom2d; 
                      FromK1, ToK2    : Integer;
                      SameOrientation : Boolean = Standard_True)
-     returns mutable BSplineCurve from Geom2d
+     returns BSplineCurve from Geom2d
         --- Purpose : 
         --  This method computes the arc of B-spline curve between the two 
         --  knots FromK1 and ToK2.  If C is periodic the arc has the same
@@ -97,7 +97,7 @@ is
                      FromU1, ToU2        : Real;
                      ParametricTolerance : Real;
                      SameOrientation     : Boolean = Standard_True)
-     returns mutable BSplineCurve from Geom2d
+     returns BSplineCurve from Geom2d
         --- Purpose :
         --  This function computes the segment of B-spline curve between the 
         --  parametric values FromU1, ToU2.
@@ -121,7 +121,7 @@ is
   CurveToBSplineCurve (C : Curve from Geom2d ;
     	    	       Parameterisation : ParameterisationType from Convert 
     	    	    	= Convert_TgtThetaOver2)
-     returns mutable BSplineCurve from Geom2d
+     returns BSplineCurve from Geom2d
         --- Purpose : This function converts a non infinite curve from
         --   Geom into a  B-spline curve.  C must  be  an ellipse or a
         --   circle or a trimmed conic  or a trimmed  line or a Bezier

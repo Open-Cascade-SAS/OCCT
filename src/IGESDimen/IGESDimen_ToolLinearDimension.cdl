@@ -31,7 +31,7 @@ is
     ---Purpose : Returns a ToolLinearDimension, ready to work
 
 
-    ReadOwnParams (me; ent : mutable LinearDimension;
+    ReadOwnParams (me; ent : LinearDimension;
     	    	   IR : IGESReaderData; PR : in out ParamReader)
     	raises DomainError  is static;
     ---Purpose : Reads own parameters from file. <PR> gives access to them,
@@ -55,7 +55,7 @@ is
     ---Purpose : Performs Specific Semantic Check
 
 
-    OwnCopy    (me; entfrom : LinearDimension; entto : mutable LinearDimension;
+    OwnCopy    (me; entfrom : LinearDimension; entto : LinearDimension;
     	        TC : in out CopyTool)  is static;
     ---Purpose : Copies Specific Parameters
 

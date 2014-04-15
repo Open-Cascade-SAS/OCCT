@@ -29,7 +29,7 @@ is
 	Create returns RWSurfaceStyleBoundary;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable SurfaceStyleBoundary from StepVisual);
+	              ach : in out Check; ent : SurfaceStyleBoundary from StepVisual);
 
 	WriteStep (me; SW : in out StepWriter; ent : SurfaceStyleBoundary from StepVisual);
 

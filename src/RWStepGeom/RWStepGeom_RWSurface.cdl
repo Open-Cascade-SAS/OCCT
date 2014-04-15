@@ -28,7 +28,7 @@ is
 	Create returns RWSurface;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable Surface from StepGeom);
+	              ach : in out Check; ent : Surface from StepGeom);
 
 	WriteStep (me; SW : in out StepWriter; ent : Surface from StepGeom);
 

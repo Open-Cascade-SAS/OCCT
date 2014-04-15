@@ -31,7 +31,7 @@ is
     ---Purpose : Returns a ToolTrimmedSurface, ready to work
 
 
-    ReadOwnParams (me; ent : mutable TrimmedSurface;
+    ReadOwnParams (me; ent : TrimmedSurface;
     	    	   IR : IGESReaderData; PR : in out ParamReader)
     	raises DomainError  is static;
     ---Purpose : Reads own parameters from file. <PR> gives access to them,
@@ -55,7 +55,7 @@ is
     ---Purpose : Performs Specific Semantic Check
 
 
-    OwnCopy    (me; entfrom : TrimmedSurface; entto : mutable TrimmedSurface;
+    OwnCopy    (me; entfrom : TrimmedSurface; entto : TrimmedSurface;
     	        TC : in out CopyTool)  is static;
     ---Purpose : Copies Specific Parameters
 

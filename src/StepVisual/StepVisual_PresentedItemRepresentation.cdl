@@ -24,7 +24,7 @@ uses
 
 is
 
-    Create returns mutable PresentedItemRepresentation;
+    Create returns PresentedItemRepresentation;
 
     Init (me : mutable;
     	  aPresentation : PresentationRepresentationSelect from StepVisual;

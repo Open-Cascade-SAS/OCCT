@@ -44,7 +44,7 @@ is
     Create (OwnerId      : EntityOwner from SelectBasics;
             P1,P2,P3     : Pnt from gp;
             Sensitivity  : TypeOfSensitivity = Select3D_TOS_INTERIOR)
-     returns mutable SensitiveTriangle;
+     returns SensitiveTriangle;
     ---Level: Public 
         ---Purpose: Constructs a sensitive triangle object defined by the
         -- owner OwnerId, the points P1, P2, P3, and the type of sensitivity Sensitivity. 

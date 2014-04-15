@@ -37,7 +37,7 @@ raises
 is
 
 	Create
-		returns mutable GenericColorMap from Aspect;
+		returns GenericColorMap from Aspect;
 	---Level: Public
 	---Purpose: Creates a generic ColorMap .
 

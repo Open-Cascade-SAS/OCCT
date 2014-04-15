@@ -30,7 +30,7 @@ raises NotDone from StdFail
 is 
 
 Create ( SH : Shape from TopoDS;
-         FP : mutable FinderProcess from Transfer)
+         FP : FinderProcess from Transfer)
         returns MakeGeometricCurveSet;
 
 Value (me) returns GeometricCurveSet from StepShape

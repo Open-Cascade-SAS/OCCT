@@ -22,14 +22,14 @@ uses
     Length from Quantity    
 is
 
-    Create returns mutable DatumAspect from Prs3d;
+    Create returns DatumAspect from Prs3d;
     	---Purpose: An empty framework to define the display of datums.
       
-    FirstAxisAspect(me) returns mutable LineAspect from Prs3d;
+    FirstAxisAspect(me) returns LineAspect from Prs3d;
     	---Purpose: Returns the attributes for display of the first axis.    
-    SecondAxisAspect(me) returns mutable LineAspect from Prs3d;
+    SecondAxisAspect(me) returns LineAspect from Prs3d;
     	---Purpose: Returns the attributes for display of the second axis.    
-    ThirdAxisAspect(me) returns mutable LineAspect from Prs3d;
+    ThirdAxisAspect(me) returns LineAspect from Prs3d;
     	---Purpose: Returns the attributes for display of the third axis.    
     SetDrawFirstAndSecondAxis(me:mutable ; draw: Boolean from Standard);
     	---Purpose: Sets the DrawFirstAndSecondAxis attributes to active.    

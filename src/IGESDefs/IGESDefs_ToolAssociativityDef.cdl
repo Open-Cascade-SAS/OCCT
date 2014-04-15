@@ -31,7 +31,7 @@ is
     ---Purpose : Returns a ToolAssociativityDef, ready to work
 
 
-    ReadOwnParams (me; ent : mutable AssociativityDef;
+    ReadOwnParams (me; ent : AssociativityDef;
     	    	   IR : IGESReaderData; PR : in out ParamReader)
     	raises DomainError  is static;
     ---Purpose : Reads own parameters from file. <PR> gives access to them,
@@ -55,7 +55,7 @@ is
     ---Purpose : Performs Specific Semantic Check
 
 
-    OwnCopy    (me; entfrom : AssociativityDef; entto : mutable AssociativityDef;
+    OwnCopy    (me; entfrom : AssociativityDef; entto : AssociativityDef;
     	        TC : in out CopyTool)  is static;
     ---Purpose : Copies Specific Parameters
 

@@ -34,7 +34,7 @@ uses  SelectionIterator
 
 is
 
-    MainInput    (me) returns mutable Selection;
+    MainInput    (me) returns Selection;
     ---Purpose : Returns the Main Input Selection
 
     HasSecondInput (me) returns Boolean;
@@ -42,13 +42,13 @@ is
     --           Thus, Result can be computed differently if there is a
     --           Control Input or if there is none
 
-    SecondInput (me) returns mutable Selection;
+    SecondInput (me) returns Selection;
     ---Purpose : Returns the Control Input Selection, or a Null Handle
 
-    SetMainInput    (me : mutable; sel : mutable Selection);
+    SetMainInput    (me : mutable; sel : Selection);
     ---Purpose : Sets a Selection to be the Main Input
 
-    SetSecondInput (me : mutable; sel : mutable Selection);
+    SetSecondInput (me : mutable; sel : Selection);
     ---Purpose : Sets a Selection to be the Control Input
 
 

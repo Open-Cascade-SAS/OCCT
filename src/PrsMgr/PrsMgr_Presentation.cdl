@@ -36,7 +36,7 @@ is
 
   Create (thePresentationManager : PresentationManager from PrsMgr;
           thePresentableObject   : PresentableObject   from PrsMgr)
-  returns mutable Presentation from PrsMgr
+  returns Presentation from PrsMgr
   is private;
 
   Destroy (me : mutable) is virtual;
@@ -126,7 +126,7 @@ is
                     theShadingAspect : ShadingAspect from Prs3d)
   is static private;
 
-  Presentation (me) returns mutable Presentation from Prs3d
+  Presentation (me) returns Presentation from Prs3d
   is static;
   ---C++: inline
   ---C++: return const&
@@ -161,7 +161,7 @@ is
 
 ---Category: Inquire Methods
 
-  PresentationManager (me) returns mutable PresentationManager
+  PresentationManager (me) returns PresentationManager
   ---Purpose: returns the PresentationManager in which the presentation has been created.
   is static;
   ---C++: inline

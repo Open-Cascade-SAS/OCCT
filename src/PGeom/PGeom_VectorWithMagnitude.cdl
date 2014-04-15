@@ -26,12 +26,12 @@ uses Vec from gp
 is
 
 
-  Create returns mutable VectorWithMagnitude;
+  Create returns VectorWithMagnitude;
         ---Purpose : Creates a VectorWithMagnitude with default values.
     	---Level: Internal 
 
 
-  Create (aVec : Vec) returns mutable VectorWithMagnitude;
+  Create (aVec : Vec) returns VectorWithMagnitude;
         ---Purpose : Creates a VectorWithMagnitude with <aVec>.
     	---Level: Internal 
 

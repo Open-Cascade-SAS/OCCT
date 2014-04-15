@@ -25,26 +25,26 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable StyledItem;
+	Create returns StyledItem;
 	---Purpose: Returns a StyledItem
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection) is redefined;
+	      aName : HAsciiString from TCollection) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aStyles : mutable HArray1OfPresentationStyleAssignment from StepVisual;
-	      aItem : mutable RepresentationItem from StepRepr) is virtual;
+	      aName : HAsciiString from TCollection;
+	      aStyles : HArray1OfPresentationStyleAssignment from StepVisual;
+	      aItem : RepresentationItem from StepRepr) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetStyles(me : mutable; aStyles : mutable HArray1OfPresentationStyleAssignment);
-	Styles (me) returns mutable HArray1OfPresentationStyleAssignment;
-	StylesValue (me; num : Integer) returns mutable PresentationStyleAssignment;
+	SetStyles(me : mutable; aStyles : HArray1OfPresentationStyleAssignment);
+	Styles (me) returns HArray1OfPresentationStyleAssignment;
+	StylesValue (me; num : Integer) returns PresentationStyleAssignment;
 	NbStyles (me) returns Integer;
-	SetItem(me : mutable; aItem : mutable RepresentationItem);
-	Item (me) returns mutable RepresentationItem;
+	SetItem(me : mutable; aItem : RepresentationItem);
+	Item (me) returns RepresentationItem;
 
 fields
 

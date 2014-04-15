@@ -112,7 +112,7 @@ is
     --           otherwise zero (according criterium IsParamEntity)
 
     ParamEntity (me : in out; IR : IGESReaderData; num : Integer)
-    	returns mutable IGESEntity
+    	returns IGESEntity
     ---Purpose : directly returns entity referenced by a parameter
     	raises InterfaceError;
     --           Error if <num> cannot be regarded as an Entity reference
@@ -269,12 +269,12 @@ is
     ReadEntity  (me : in out; IR : IGESReaderData;  
     	    	    	      PC : ParamCursor;  
     	    	    	      aStatus: in out Status from IGESData; 
-    	    	    	      val : out mutable IGESEntity;  
+    	    	    	      val : out IGESEntity;  
     	    	    	      canbenul : Boolean = Standard_False) 
     returns Boolean;
 
     ReadEntity  (me : in out; IR : IGESReaderData; PC : ParamCursor; mess : CString;
-    	val : out mutable IGESEntity; canbenul : Boolean = Standard_False)  returns Boolean;
+    	val : out IGESEntity; canbenul : Boolean = Standard_False)  returns Boolean;
     ---Purpose : Reads an IGES entity from parameter "num"
     --           An Entity is known by its reference, which has the form of an
     --           odd Integer Value (a number in the Directory)
@@ -290,14 +290,14 @@ is
     	    	    	      PC : ParamCursor;  
 	        	      aStatus: in out Status from IGESData; 
             	    	      type : Type from Standard; 
-    	    	    	      val : out mutable IGESEntity; 
+    	    	    	      val : out IGESEntity; 
     	    	    	      canbenul : Boolean = Standard_False)  returns Boolean;
 
     ReadEntity  (me : in out; IR : IGESReaderData;  
                               PC : ParamCursor; 
     	    	    	      mess : CString;
     	                      type : Type from Standard; 
-                              val : out mutable IGESEntity;
+                              val : out IGESEntity;
         canbenul : Boolean = Standard_False)  returns Boolean;
     ---Purpose : Works as ReadEntity without Type, but in addition checks the
     --           Type of the Entity, which must be "kind of" a given <type>

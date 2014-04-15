@@ -33,12 +33,12 @@ raises NullObject from Standard
 is
 
     Create(Nodes: Array1OfPnt from TColgp) 
-    returns mutable Polygon3D from Poly;
+    returns Polygon3D from Poly;
     	---Purpose: onstructs a 3D polygon defined by the table of points, Nodes.
     
     Create(Nodes:      Array1OfPnt  from TColgp;
            Parameters: Array1OfReal from TColStd) 
-    returns mutable Polygon3D from Poly;
+    returns Polygon3D from Poly;
     	---Purpose: Constructs a 3D polygon defined by
     	-- the table of points, Nodes, and the parallel table of
     	--  parameters, Parameters, where each value of the table

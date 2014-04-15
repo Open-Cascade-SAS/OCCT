@@ -27,7 +27,7 @@ is
 
     Create(E: Edge from TopoDS)
     
-    	returns mutable Edge from BRepCheck;
+    	returns Edge from BRepCheck;
 
 
     InContext(me: mutable; ContextShape: Shape from TopoDS);

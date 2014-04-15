@@ -47,7 +47,7 @@ is
 	F : Shape from TopoDS;
         I : Interference from TopOpeBRepDS);
 
-    Transition(me; I : mutable Interference from TopOpeBRepDS)
+    Transition(me; I : Interference from TopOpeBRepDS)
     is static;
 
 fields

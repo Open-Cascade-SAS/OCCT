@@ -30,7 +30,7 @@ is
     Create returns RWSiUnitAndVolumeUnit from RWStepBasic;
     
     ReadStep (me; data: StepReaderData; num: Integer;
-	          ach : in out Check;   ent: mutable SiUnitAndVolumeUnit from StepBasic);
+	          ach : in out Check;   ent: SiUnitAndVolumeUnit from StepBasic);
     
     WriteStep (me; SW : in out StepWriter; ent: SiUnitAndVolumeUnit from StepBasic);
     

@@ -22,7 +22,7 @@ uses BucketOfPersistent from Storage,
      HPArray from Storage,
      MapOfCallBack from Storage         
 is
-    Create returns mutable InternalData from Storage;
+    Create returns InternalData from Storage;
     
     Clear(me : mutable);
     

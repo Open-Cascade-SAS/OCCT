@@ -19,7 +19,7 @@ class DriverFactory from FWOSDriver inherits MetaDataDriverFactory from CDF
 uses MetaDataDriver from CDF, ExtendedString from TCollection
 
 is
-    Create returns mutable DriverFactory from FWOSDriver;
+    Create returns DriverFactory from FWOSDriver;
     
     Build(me)
     returns MetaDataDriver from CDF;

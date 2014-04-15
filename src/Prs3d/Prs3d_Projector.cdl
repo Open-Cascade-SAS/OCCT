@@ -27,7 +27,7 @@ uses
 is
 
     Create(Pr: Projector from HLRAlgo)
-    returns mutable Projector from Prs3d;
+    returns Projector from Prs3d;
 
 
     Create ( Pers: Boolean from Standard;
@@ -35,7 +35,7 @@ is
 	     DX, DY, DZ: Length from Quantity;       -- Projection Vector
 	     XAt, YAt , ZAt: Length from Quantity;   -- View Point
 	     XUp, YUp, ZUp: Length from Quantity)    -- High Point Direction
-    returns mutable Projector from Prs3d;
+    returns Projector from Prs3d;
     	--- Purpose: Constructs a projector framework from the following parameters
     	-- -   Pers is true if the view is a perspective view and
     	--   false if it is an axonometric one;

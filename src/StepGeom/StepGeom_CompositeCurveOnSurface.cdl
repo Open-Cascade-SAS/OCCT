@@ -25,7 +25,7 @@ uses
 	Logical from StepData
 is
 
-	Create returns mutable CompositeCurveOnSurface;
+	Create returns CompositeCurveOnSurface;
 	---Purpose: Returns a CompositeCurveOnSurface
 
 

@@ -26,7 +26,7 @@ uses Integer, Boolean,  Transient,
 
 is
 
-    Create (reader : mutable IGESReaderData; protocol : Protocol from IGESData)
+    Create (reader : IGESReaderData; protocol : Protocol from IGESData)
     	returns IGESReaderTool;
     ---Purpose : creates IGESReaderTool to work with an IGESReaderData and an
     --           IGES Protocol.
@@ -34,47 +34,47 @@ is
 
     	-- --   General   -- --
 
-    Prepare (me : in out; reco : mutable FileRecognizer);
+    Prepare (me : in out; reco : FileRecognizer);
     ---Purpose : binds empty entities to records, works with the Protocol
     --           (from IGESData) stored and later used
     --           RQ : Actually, sets DNum into IGES Entities
     --           Also loads the list of parameters for ParamReader
 
     Recognize (me : in out; num : Integer;
-    	       ach : in out Check; ent : out mutable Transient)
+    	       ach : in out Check; ent : out Transient)
     	returns Boolean;
     ---Purpose : recognizes records by asking Protocol (on data of DirType)
 
     	--    Loading the IGESModel    --
 
-    BeginRead (me : in out; amodel : mutable InterfaceModel);
+    BeginRead (me : in out; amodel : InterfaceModel);
     ---Purpose : fills model's header, that is, its GlobalSection
 
     AnalyseRecord (me : in out;
-    	num : Integer; anent : mutable Transient; acheck : in out Check)
+    	num : Integer; anent : Transient; acheck : in out Check)
 	    returns Boolean;
     ---Purpose : fills an entity, given record no; works by calling ReadDirPart
     --           then ReadParams (with help of a ParamReader), then if required
     --           ReadProps and ReadAssocs, from IGESEntity
     --           Returns True if no fail has been recorded
 
-    EndRead (me : in out; amodel : mutable InterfaceModel) is redefined;
+    EndRead (me : in out; amodel : InterfaceModel) is redefined;
     ---Purpose : after reading entities, true line weights can be computed
 
     	--    For each IGESEntity    --
 
-    ReadDir       (me; ent : mutable IGESEntity; IR : IGESReaderData;
+    ReadDir       (me; ent : IGESEntity; IR : IGESReaderData;
     	           DP : DirPart; ach : in out Check);
     ---Purpose : Reads directory part componants from file; DP is the litteral
     --           directory part, IR detains entities referenced by DP
 
-    ReadOwnParams (me; ent : mutable IGESEntity;
+    ReadOwnParams (me; ent : IGESEntity;
     	    	   IR : IGESReaderData; PR : in out ParamReader);
     ---Purpose : Performs Reading of own Parameters for each IGESEntity
     --           Works with the ReaderLib loaded with ReadWriteModules for IGES
     --           In case of failure, tries UndefinedEntity from IGES
 
-    ReadProps     (me; ent : mutable IGESEntity; IR : IGESReaderData;
+    ReadProps     (me; ent : IGESEntity; IR : IGESReaderData;
     	    	   PR : in out ParamReader);
     ---Purpose : Reads Property List, if there is (if not, does nothing)
     --           criterium is : current parameter of PR remains inside params
@@ -83,7 +83,7 @@ is
     --           gives the length of the list; else, a Fail is produced (into
     --           Check of PR) and reading process is stopped
 
-    ReadAssocs    (me; ent : mutable IGESEntity; IR : IGESReaderData;
+    ReadAssocs    (me; ent : IGESEntity; IR : IGESReaderData;
     	    	   PR : in out ParamReader);
     ---Purpose : Reads Associativity List, if there is (if not, does nothing)
     --           criterium is : current parameter of PR remains inside params

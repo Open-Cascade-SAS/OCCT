@@ -32,7 +32,7 @@ uses
 is
 
     Create
-    returns mutable PatternStd from PDataXtd;
+    returns PatternStd from PDataXtd;
     
     --- Category: Set and Get methods
 

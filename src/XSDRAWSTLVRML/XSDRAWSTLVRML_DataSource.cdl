@@ -36,7 +36,7 @@ uses
 
 is
 
-  Create ( aMesh : Mesh from StlMesh ) returns mutable DataSource from XSDRAWSTLVRML;
+  Create ( aMesh : Mesh from StlMesh ) returns DataSource from XSDRAWSTLVRML;
 	---Purpose: Constructor
 
   GetGeom ( me; ID     : Integer;

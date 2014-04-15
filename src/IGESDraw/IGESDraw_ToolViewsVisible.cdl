@@ -31,7 +31,7 @@ is
     ---Purpose : Returns a ToolViewsVisible, ready to work
 
 
-    ReadOwnParams (me; ent : mutable ViewsVisible;
+    ReadOwnParams (me; ent : ViewsVisible;
     	    	   IR : IGESReaderData; PR : in out ParamReader)
     	raises DomainError  is static;
     ---Purpose : Reads own parameters from file. <PR> gives access to them,
@@ -61,12 +61,12 @@ is
     ---Purpose : Performs Specific Semantic Check
 
 
-    OwnCopy    (me; entfrom : ViewsVisible; entto : mutable ViewsVisible;
+    OwnCopy    (me; entfrom : ViewsVisible; entto : ViewsVisible;
     	        TC : in out CopyTool)  is static;
     ---Purpose : Copies Specific Parameters shared not implied, i.e. all but
     --           the Displayed Entities
 
-    OwnRenew   (me; entfrom : ViewsVisible; entto : mutable ViewsVisible;
+    OwnRenew   (me; entfrom : ViewsVisible; entto : ViewsVisible;
     	        TC : CopyTool)  is static;
     ---Purpose : Copies Specific implied Parameters : the Displayed Entities
     --           which have already been copied
@@ -81,7 +81,7 @@ is
         is static;
     ---Purpose : Dump of Specific Parameters
 
-    OwnCorrect (me; ent : mutable ViewsVisible) returns Boolean is static;
+    OwnCorrect (me; ent : ViewsVisible) returns Boolean is static;
     ---Purpose : Sets automatic unambiguous Correction on a ViewsVisible
     --           (all displayed entities must refer to <ent> in directory part,
     --           else the list is cleared)

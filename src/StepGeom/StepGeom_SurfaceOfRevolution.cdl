@@ -25,23 +25,23 @@ uses
 	Curve from StepGeom
 is
 
-	Create returns mutable SurfaceOfRevolution;
+	Create returns SurfaceOfRevolution;
 	---Purpose: Returns a SurfaceOfRevolution
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aSweptCurve : mutable Curve from StepGeom) is redefined;
+	      aName : HAsciiString from TCollection;
+	      aSweptCurve : Curve from StepGeom) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aSweptCurve : mutable Curve from StepGeom;
-	      aAxisPosition : mutable Axis1Placement from StepGeom) is virtual;
+	      aName : HAsciiString from TCollection;
+	      aSweptCurve : Curve from StepGeom;
+	      aAxisPosition : Axis1Placement from StepGeom) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetAxisPosition(me : mutable; aAxisPosition : mutable Axis1Placement);
-	AxisPosition (me) returns mutable Axis1Placement;
+	SetAxisPosition(me : mutable; aAxisPosition : Axis1Placement);
+	AxisPosition (me) returns Axis1Placement;
 
 fields
 

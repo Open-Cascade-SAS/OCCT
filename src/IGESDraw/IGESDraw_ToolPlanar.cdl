@@ -31,7 +31,7 @@ is
     ---Purpose : Returns a ToolPlanar, ready to work
 
 
-    ReadOwnParams (me; ent : mutable Planar;
+    ReadOwnParams (me; ent : Planar;
     	    	   IR : IGESReaderData; PR : in out ParamReader)
     	raises DomainError  is static;
     ---Purpose : Reads own parameters from file. <PR> gives access to them,
@@ -47,7 +47,7 @@ is
     ---Purpose : Lists the Entities shared by a Planar <ent>, from
     --           its specific (own) parameters
 
-    OwnCorrect (me; ent : mutable Planar) returns Boolean  is static;
+    OwnCorrect (me; ent : Planar) returns Boolean  is static;
     ---Purpose : Sets automatic unambiguous Correction on a Planar
     --           (NbMatrices forced to 1)
 
@@ -59,7 +59,7 @@ is
     ---Purpose : Performs Specific Semantic Check
 
 
-    OwnCopy    (me; entfrom : Planar; entto : mutable Planar;
+    OwnCopy    (me; entfrom : Planar; entto : Planar;
     	        TC : in out CopyTool)  is static;
     ---Purpose : Copies Specific Parameters
 

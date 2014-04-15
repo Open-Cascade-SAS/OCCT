@@ -45,7 +45,7 @@ is
     --           <maychangegraph>
 
     Perform (me; ctx  : in out ContextModif;
-    	     target   : mutable InterfaceModel;
+    	     target   : InterfaceModel;
     	     protocol : Protocol from Interface;
     	     TC       : in out CopyTool);
     ---Purpose : The inherited Perform does the required cast (and refuses to
@@ -53,7 +53,7 @@ is
     --           Performing
 
     PerformProtocol (me; ctx : in out ContextModif;
-    	     target : mutable Model;
+    	     target : Model;
     	     proto  : Proto;
     	     TC     : in out CopyTool)  is virtual;
     ---Purpose : Specific Perform with Protocol. It is defined to let the
@@ -62,7 +62,7 @@ is
     --           requires Protocol.
 
     Performing (me; ctx : in out ContextModif;
-    	     target : mutable Model;
+    	     target : Model;
     	     TC     : in out CopyTool)  is deferred;
     ---Purpose : Specific Perform, without Protocol. If Performing with
     --           Protocol is redefined, Performing without Protocol must

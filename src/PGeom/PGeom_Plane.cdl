@@ -26,13 +26,13 @@ uses Ax3      from gp
 is
 
 
-  Create returns mutable Plane from PGeom;
+  Create returns Plane from PGeom;
 	---Purpose: Create a plane with default values.
     	---Level: Internal 
 
 
   Create (aPosition : Ax3 from gp)
-    	returns mutable Plane from PGeom;
+    	returns Plane from PGeom;
 	---Purpose: Creates a Plane with these field values.
     	---Level: Internal 
 

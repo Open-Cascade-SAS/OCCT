@@ -33,11 +33,11 @@ raises NotDone from StdFail
 is 
 
 Create ( S  : Shell from TopoDS;
-         FP : mutable FinderProcess from Transfer)
+         FP : FinderProcess from Transfer)
        returns MakeManifoldSolidBrep;
 
 Create ( S  : Solid from TopoDS;
-         FP : mutable FinderProcess from Transfer)
+         FP : FinderProcess from Transfer)
        returns MakeManifoldSolidBrep;
 
 Value (me) returns ManifoldSolidBrep from StepShape

@@ -28,7 +28,7 @@ is
 	Create returns RWRepresentationContext;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable RepresentationContext from StepRepr);
+	              ach : in out Check; ent : RepresentationContext from StepRepr);
 
 	WriteStep (me; SW : in out StepWriter; ent : RepresentationContext from StepRepr);
 

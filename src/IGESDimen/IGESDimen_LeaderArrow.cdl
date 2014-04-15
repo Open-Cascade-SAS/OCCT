@@ -34,7 +34,7 @@ raises OutOfRange
 
 is
 
-        Create returns mutable LeaderArrow;
+        Create returns LeaderArrow;
 
         -- Specific Methods pertaining to the class
 

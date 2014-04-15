@@ -254,7 +254,7 @@ is
 
     --- Simulation
     
-    SimulKPart(me; SD : mutable SurfData from ChFiDS)
+    SimulKPart(me; SD : SurfData from ChFiDS)
     is deferred protected; 
     
     SimulSurf(me              : in out; 

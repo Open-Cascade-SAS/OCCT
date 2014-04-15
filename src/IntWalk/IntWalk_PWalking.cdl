@@ -165,7 +165,7 @@ is
 
     Line(me)
     
-    	returns mutable LineOn2S from IntSurf
+    	returns LineOn2S from IntSurf
 	---C++: inline
 	---C++: return const&
 	

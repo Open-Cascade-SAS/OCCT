@@ -39,7 +39,7 @@ raises DomainError    from Standard,
        RangeError        from Standard
 is
     
-    Create returns mutable BisecPC;
+    Create returns BisecPC;
 
     Create  (Cu      : Curve from Geom2d;
 	     P       : Pnt2d from gp    ;
@@ -54,7 +54,7 @@ is
     	--          between the points of the bisector and <Cu> is smaller
     	--          than <DistMax>.
     	--          
-    returns mutable BisecPC from Bisector;	
+    returns BisecPC from Bisector;	
     
     Create  (Cu      : Curve from Geom2d;
 	     P       : Pnt2d from gp    ;
@@ -69,7 +69,7 @@ is
     	--  Warning: the bisector is supposed all over defined between
     	--          <UMin> and <UMax>. 
 
-    returns mutable BisecPC from Bisector;
+    returns BisecPC from Bisector;
     
     Perform (me      : mutable          ;
     	     Cu      : Curve from Geom2d;
@@ -111,7 +111,7 @@ is
 	--          the point of parameter U on <me>.
     is static;
     
-    Copy (me)  returns mutable like me   
+    Copy (me)  returns like me   
     is static;
     
     Transform (me : mutable; T : Trsf2d) 

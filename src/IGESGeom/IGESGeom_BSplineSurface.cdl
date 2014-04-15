@@ -33,7 +33,7 @@ raises   DimensionMismatch, OutOfRange
 
 is
 
-        Create returns mutable BSplineSurface;
+        Create returns BSplineSurface;
 
         -- Specific Methods pertaining to the class
 

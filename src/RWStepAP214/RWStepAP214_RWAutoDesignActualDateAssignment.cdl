@@ -29,7 +29,7 @@ is
 	Create returns RWAutoDesignActualDateAssignment;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable AutoDesignActualDateAssignment from StepAP214);
+	              ach : in out Check; ent : AutoDesignActualDateAssignment from StepAP214);
 
 	WriteStep (me; SW : in out StepWriter; ent : AutoDesignActualDateAssignment from StepAP214);
 

@@ -25,7 +25,7 @@ uses
 	RepresentationItem from StepRepr
 is
 
-	Create returns mutable TemplateInstance;
+	Create returns TemplateInstance;
 	---Purpose: Returns a TemplateInstance
 
 

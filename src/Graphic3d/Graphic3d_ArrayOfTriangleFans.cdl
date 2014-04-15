@@ -24,7 +24,7 @@ is
                 hasVColors: Boolean from Standard = Standard_False;
                 hasFColors: Boolean from Standard = Standard_False;
                 hasTexels: Boolean from Standard = Standard_False)
-	returns mutable ArrayOfTriangleFans from Graphic3d;
+	returns ArrayOfTriangleFans from Graphic3d;
         ---Purpose: Creates an array of triangle fans,
         -- a polygon can be filled as:
         -- 1) creating a single fan defined with his vertexs.

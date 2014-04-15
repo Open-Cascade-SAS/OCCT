@@ -33,7 +33,7 @@ is
 
     Create (withmap  : Boolean = Standard_True;
     	    withlist : Boolean = Standard_False)
-    	 returns mutable CounterOfLevelNumber;
+    	 returns CounterOfLevelNumber;
     ---Purpose : Creates a CounterOfLevelNumber, clear, ready to work
     --           <withmap> and <withlist> are transmitted to SignCounter
 

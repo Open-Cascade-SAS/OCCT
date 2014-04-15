@@ -28,31 +28,31 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable TrimmedCurve;
+	Create returns TrimmedCurve;
 	---Purpose: Returns a TrimmedCurve
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection) is redefined;
+	      aName : HAsciiString from TCollection) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aBasisCurve : mutable Curve from StepGeom;
-	      aTrim1 : mutable HArray1OfTrimmingSelect from StepGeom;
-	      aTrim2 : mutable HArray1OfTrimmingSelect from StepGeom;
+	      aName : HAsciiString from TCollection;
+	      aBasisCurve : Curve from StepGeom;
+	      aTrim1 : HArray1OfTrimmingSelect from StepGeom;
+	      aTrim2 : HArray1OfTrimmingSelect from StepGeom;
 	      aSenseAgreement : Boolean from Standard;
 	      aMasterRepresentation : TrimmingPreference from StepGeom) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetBasisCurve(me : mutable; aBasisCurve : mutable Curve);
-	BasisCurve (me) returns mutable Curve;
-	SetTrim1(me : mutable; aTrim1 : mutable HArray1OfTrimmingSelect);
-	Trim1 (me) returns mutable HArray1OfTrimmingSelect;
+	SetBasisCurve(me : mutable; aBasisCurve : Curve);
+	BasisCurve (me) returns Curve;
+	SetTrim1(me : mutable; aTrim1 : HArray1OfTrimmingSelect);
+	Trim1 (me) returns HArray1OfTrimmingSelect;
 	Trim1Value (me; num : Integer) returns TrimmingSelect;
 	NbTrim1 (me) returns Integer;
-	SetTrim2(me : mutable; aTrim2 : mutable HArray1OfTrimmingSelect);
-	Trim2 (me) returns mutable HArray1OfTrimmingSelect;
+	SetTrim2(me : mutable; aTrim2 : HArray1OfTrimmingSelect);
+	Trim2 (me) returns HArray1OfTrimmingSelect;
 	Trim2Value (me; num : Integer) returns TrimmingSelect;
 	NbTrim2 (me) returns Integer;
 	SetSenseAgreement(me : mutable; aSenseAgreement : Boolean);

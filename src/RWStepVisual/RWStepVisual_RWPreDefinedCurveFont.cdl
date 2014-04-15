@@ -28,7 +28,7 @@ is
 	Create returns RWPreDefinedCurveFont;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable PreDefinedCurveFont from StepVisual);
+	              ach : in out Check; ent : PreDefinedCurveFont from StepVisual);
 
 	WriteStep (me; SW : in out StepWriter; ent : PreDefinedCurveFont from StepVisual);
 

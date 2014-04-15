@@ -63,7 +63,7 @@ uses AsciiString from TCollection,
 
 is
 
-    Create returns mutable ModelCopier;
+    Create returns ModelCopier;
     ---Purpose : Creates an empty ModelCopier
 
     SetShareOut (me : mutable; sho : ShareOut);
@@ -94,7 +94,7 @@ is
     --           Returns True if Done, False else : if <num> is out of range
 
     SetAppliedModifiers (me : mutable; num : Integer;
-    	applied : mutable AppliedModifiers) returns Boolean;
+    	applied : AppliedModifiers) returns Boolean;
     ---Purpose : Sets a list of File Modifiers to be applied on a file
 
     ClearAppliedModifiers (me : mutable; num : Integer) returns Boolean;
@@ -161,8 +161,8 @@ is
 		     filename : AsciiString from TCollection;
 		     dispnum, numod : Integer;
 		     TC       : in out CopyTool;
-		     newmod   : out mutable InterfaceModel;
-		     applied  : out mutable AppliedModifiers;
+		     newmod   : out InterfaceModel;
+		     applied  : out AppliedModifiers;
 		     checks   : out CheckIterator)
 	is protected;
     ---Purpose : Performs the Copy of a unitary Packet
@@ -200,7 +200,7 @@ is
     CopiedRemaining (me : mutable; G    : Graph;
 		     WL : WorkLibrary;
     	      	     TC : in out CopyTool;
-		     newmod   : out mutable InterfaceModel);
+		     newmod   : out InterfaceModel);
     ---Purpose : Produces a Model copied from the Remaining List as <newmod>
     --           <newmod> is a Null Handle if this list is empty
     --           <WL> performs the copy by using <TC>
@@ -228,17 +228,17 @@ is
     ---Purpose : Returns the File Name for a file given its rank
     --           It is empty after a call to ClearFile on same <num>
 
-    FileModel (me; num : Integer) returns mutable InterfaceModel;
+    FileModel (me; num : Integer) returns InterfaceModel;
     ---Purpose : Returns the content of a file before sending, under the form
     --           of an InterfaceModel, given its rank
 
-    AppliedModifiers (me; num : Integer) returns mutable AppliedModifiers;
+    AppliedModifiers (me; num : Integer) returns AppliedModifiers;
     ---Purpose : Returns the list of File Modifiers to be applied on a file
     --           when it will be sent, as computed by CopiedModel :
     --           If it is a null handle, no File Modifier has to be applied.
 
 
-    BeginSentFiles (me : mutable; sho : mutable ShareOut; record : Boolean);
+    BeginSentFiles (me : mutable; sho : ShareOut; record : Boolean);
     ---Purpose : Begins a sequence of recording the really sent files
     --           <sho> : the default file numbering is cleared
     --           If <record> is False, clears the list and stops recording

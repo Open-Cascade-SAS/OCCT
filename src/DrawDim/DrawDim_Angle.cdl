@@ -25,7 +25,7 @@ is
 
     Create (plane1 : Face from TopoDS; 
             plane2 : Face from TopoDS)
-    returns mutable Angle from DrawDim;
+    returns Angle from DrawDim;
     
     Plane1 (me) returns Face from TopoDS;
 	---C++: return const&

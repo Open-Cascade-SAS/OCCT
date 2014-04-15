@@ -23,7 +23,7 @@ uses AsciiString from TCollection, EntityIterator, Graph
 
 is
 
-    Create returns mutable SelectShared;
+    Create returns SelectShared;
     ---Purpose : Creates a SelectShared;
 
     RootResult (me; G : Graph) returns EntityIterator;

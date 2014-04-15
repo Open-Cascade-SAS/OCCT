@@ -29,11 +29,11 @@ uses AsciiString from TCollection,
 
 is
 
-    Create returns mutable UpdateLastChange;
+    Create returns UpdateLastChange;
     ---Purpose : Creates an UpdateLastChange, which uses the system Date
 
     Performing (me; ctx : in out ContextModif;
-    	        target  : mutable IGESModel;
+    	        target  : IGESModel;
                 TC      : in out CopyTool);
     ---Purpose : Specific action : only <target> is used : the system Date
     --           is set to Global Section Item n0 25. Also sets IGES Version

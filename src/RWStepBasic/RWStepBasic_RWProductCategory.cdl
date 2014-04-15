@@ -28,7 +28,7 @@ is
 	Create returns RWProductCategory;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable ProductCategory from StepBasic);
+	              ach : in out Check; ent : ProductCategory from StepBasic);
 
 	WriteStep (me; SW : in out StepWriter; ent : ProductCategory from StepBasic);
 

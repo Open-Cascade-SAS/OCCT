@@ -31,7 +31,7 @@ is
     Create(Curve  : HCurve from Adaptor3d;
            Tol3d  : Real from Standard;
     	   Tolang : Real from Standard)
-    returns mutable SimpleBound from GeomFill;
+    returns SimpleBound from GeomFill;
 
     	--- Purpose:
     	-- Constructs the boundary object defined by the 3d curve.

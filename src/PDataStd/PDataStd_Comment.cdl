@@ -20,11 +20,11 @@ uses HExtendedString from PCollection
 
 is
 
-    Create returns mutable Comment from  PDataStd;
+    Create returns Comment from  PDataStd;
     
     
     Create (V : HExtendedString from PCollection) 
-    returns mutable Comment from PDataStd;
+    returns Comment from PDataStd;
     
     
     Get (me) returns HExtendedString from PCollection;

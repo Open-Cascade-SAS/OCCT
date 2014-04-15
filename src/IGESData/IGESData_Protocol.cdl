@@ -24,7 +24,7 @@ uses OStream, Type, InterfaceModel, Check
 
 is
 
-    Create returns mutable Protocol from IGESData;
+    Create returns Protocol from IGESData;
 
     NbResources (me) returns Integer;
     ---Purpose : Gives the count of Resource Protocol. Here, none
@@ -38,13 +38,13 @@ is
 
     	-- --    General Services (defined at Norm level)    -- --
 
-    NewModel (me) returns mutable InterfaceModel;
+    NewModel (me) returns InterfaceModel;
     ---Purpose : Creates an empty Model for IGES Norm
 
     IsSuitableModel (me; model : InterfaceModel) returns Boolean;
     ---Purpose : Returns True if <model> is a Model of IGES Norm
 
-    UnknownEntity (me) returns mutable Transient;
+    UnknownEntity (me) returns Transient;
     ---Purpose : Creates a new Unknown Entity for IGES (UndefinedEntity)
 
     IsUnknownEntity (me; ent : Transient) returns Boolean;

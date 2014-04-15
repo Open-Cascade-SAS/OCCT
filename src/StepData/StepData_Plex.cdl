@@ -30,7 +30,7 @@ raises InterfaceMismatch
 
 is
 
-    Create (descr : ECDescr) returns mutable Plex;
+    Create (descr : ECDescr) returns Plex;
     ---Purpose : Creates a Plex (empty). The complete creation is made by the
     --           ECDescr itself, by calling Add
 
@@ -51,7 +51,7 @@ is
     --           For a Simple Entity : own type or super type
     --           For a Complex Entity : one of the members
 
-    As (me; steptype : CString) returns mutable Simple;
+    As (me; steptype : CString) returns Simple;
     ---Purpose : Returns a Simple Entity which matches with a Type in <me> :
     --           For a Simple Entity : me if it matches, else a null handle
     --           For a Complex Entity : the member which matches, else null

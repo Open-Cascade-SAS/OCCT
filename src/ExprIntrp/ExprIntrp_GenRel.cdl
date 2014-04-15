@@ -29,7 +29,7 @@ is
     Create
     ---Purpose: Creates an empty generator
     ---Level: Advanced
-    returns mutable GenRel is private;
+    returns GenRel is private;
 
     Create( myclass ) returns GenRel;
     
@@ -49,7 +49,7 @@ is
     ---Purpose: Returns relation generated. Raises an exception if 
     --          IsDone answers false.
     ---Level: Advanced 
-    returns mutable GeneralRelation
+    returns GeneralRelation
     raises NoSuchObject
     is static;
     

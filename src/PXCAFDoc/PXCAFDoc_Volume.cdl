@@ -19,10 +19,10 @@ class Volume from PXCAFDoc inherits Attribute from PDF
 uses 
     Real from Standard
 is
-    Create returns mutable Volume from PXCAFDoc;
+    Create returns Volume from PXCAFDoc;
 
     Create (Value     : Real from Standard)
-    returns mutable Volume from PXCAFDoc;
+    returns Volume from PXCAFDoc;
     
     Get (me) returns Real from Standard;
 

@@ -25,7 +25,7 @@ uses
     Graph
 is
     
-    Create returns mutable SelectInstances;
+    Create returns SelectInstances;
 
     RootResult(me; G : Graph) returns EntityIterator;
 

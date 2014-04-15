@@ -22,7 +22,7 @@ uses MetaData from CDM,
     MessageDriver from  CDM
 is
     Create (theMessageDriver : MessageDriver from  CDM)
-    returns mutable ReferenceIterator from PCDM;
+    returns ReferenceIterator from PCDM;
     ---Purpose:  Warning! The constructor does not initialization.
 
 

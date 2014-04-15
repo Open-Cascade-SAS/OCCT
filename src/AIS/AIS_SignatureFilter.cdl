@@ -55,7 +55,7 @@ is
 
     Create(aGivenKind      : KindOfInteractive from AIS;
            aGivenSignature : Integer from Standard)
-    returns mutable SignatureFilter from AIS;
+    returns SignatureFilter from AIS;
     	--- Purpose: Initializes the signature filter, adding the signature
     	-- specification, aGivenSignature, to that for type,
     	-- aGivenKind, in AIS_TypeFilter.

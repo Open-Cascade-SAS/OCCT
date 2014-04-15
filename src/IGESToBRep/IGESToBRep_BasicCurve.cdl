@@ -74,7 +74,7 @@ is
 
     TransferBasicCurve     (me    : in out; 
     	    	    	    start : IGESEntity from IGESData)
-    	returns mutable Curve from Geom;
+    	returns Curve from Geom;
     ---Purpose :  Transfert  a  IGESEntity which  answer True  to  the
     --         member : IGESToBRep::IsBasicCurve(IGESEntity).  If this
     --         Entity could not be converted, this member returns a NullEntity.
@@ -82,7 +82,7 @@ is
            
     Transfer2dBasicCurve   (me    : in out; 
     	    	    	    start : IGESEntity from IGESData) 
-    	returns mutable Curve from Geom2d;
+    	returns Curve from Geom2d;
     ---Purpose :  Transfert  a  IGESEntity which  answer True  to  the
     --         member : IGESToBRep::IsBasicCurve(IGESEntity).
     --         The IGESEntity must be a curve UV and its associed TRSF must
@@ -91,55 +91,55 @@ is
 	
     TransferBSplineCurve   (me    : in out;
     	    	    	    start : BSplineCurve from IGESGeom)
-    	returns mutable Curve from Geom;
+    	returns Curve from Geom;
 	
     Transfer2dBSplineCurve (me    : in out; 
     	    	    	    start : BSplineCurve from IGESGeom)
-    	returns mutable Curve from Geom2d;
+    	returns Curve from Geom2d;
 	
     TransferCircularArc    (me    : in out; 
     	    	    	    start : CircularArc from IGESGeom)
-    	returns mutable Curve from Geom;
+    	returns Curve from Geom;
 	
     Transfer2dCircularArc  (me    : in out; 
     	    	    	    start : CircularArc from IGESGeom)
-    	returns mutable Curve from Geom2d;
+    	returns Curve from Geom2d;
 	
     TransferConicArc       (me    : in out; 
     	    	    	    start : ConicArc from IGESGeom)
-    	returns mutable Curve from Geom;
+    	returns Curve from Geom;
 	
     Transfer2dConicArc     (me    : in out; 
     	    	    	    start : ConicArc from IGESGeom)
-    	returns mutable Curve from Geom2d;
+    	returns Curve from Geom2d;
 
     TransferCopiousData    (me    : in out; 
     	    	    	    start : CopiousData from IGESGeom)
-    	returns mutable BSplineCurve from Geom;
+    	returns BSplineCurve from Geom;
 	
     Transfer2dCopiousData  (me    : in out; 
     	    	    	    start : CopiousData from IGESGeom)
-    	returns mutable BSplineCurve from Geom2d;
+    	returns BSplineCurve from Geom2d;
 
     TransferLine           (me    : in out; 
     	    	    	    start : Line from IGESGeom)
-    	returns mutable Curve from Geom;
+    	returns Curve from Geom;
 	
     Transfer2dLine         (me    : in out; 
     	    	    	    start : Line from IGESGeom)
-    	returns mutable Curve from Geom2d;
+    	returns Curve from Geom2d;
 
     TransferSplineCurve    (me    : in out; 
     	    	    	    start : SplineCurve from IGESGeom)
-       	returns mutable BSplineCurve from Geom;
+       	returns BSplineCurve from Geom;
 	
     Transfer2dSplineCurve  (me    : in out; 
     	    	    	    start : SplineCurve from IGESGeom)
-    	returns mutable BSplineCurve from Geom2d;
+    	returns BSplineCurve from Geom2d;
 
     TransferTransformation (me    : in out;
     	    	    	    start : TransformationMatrix from IGESGeom)
-    	returns mutable Transformation from Geom;
+    	returns Transformation from Geom;
 	
 	
 end BasicCurve;

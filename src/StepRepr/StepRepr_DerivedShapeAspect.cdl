@@ -22,6 +22,6 @@ uses
 
 is
 
-    Create returns mutable DerivedShapeAspect;
+    Create returns DerivedShapeAspect;
 
 end DerivedShapeAspect;

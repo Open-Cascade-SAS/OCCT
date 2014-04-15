@@ -29,7 +29,7 @@ is
 	Create returns RWHalfSpaceSolid;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable HalfSpaceSolid from StepShape);
+	              ach : in out Check; ent : HalfSpaceSolid from StepShape);
 
 	WriteStep (me; SW : in out StepWriter; ent : HalfSpaceSolid from StepShape);
 

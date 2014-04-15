@@ -19,7 +19,7 @@ uses
     HArray1OfBoolean from TColStd,
     AsciiString from TCollection
 is
-    Create returns mutable Marker;
+    Create returns Marker;
     Reset(me:mutable);
     Set(me:mutable;i:Integer;b:Boolean);
     Set(me:mutable;b:Boolean;n:Integer;a:Address);

@@ -29,7 +29,7 @@ is
 	Create returns RWViewVolume;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable ViewVolume from StepVisual);
+	              ach : in out Check; ent : ViewVolume from StepVisual);
 
 	WriteStep (me; SW : in out StepWriter; ent : ViewVolume from StepVisual);
 

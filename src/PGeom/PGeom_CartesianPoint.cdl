@@ -26,12 +26,12 @@ uses Pnt from gp
 is
 
 
-  Create returns mutable CartesianPoint from PGeom;
+  Create returns CartesianPoint from PGeom;
         ---Purpose : Returns a CartesianPoint with default values..
     	---Level: Internal 
 
 
-  Create (aPnt : Pnt from gp) returns mutable CartesianPoint from PGeom;
+  Create (aPnt : Pnt from gp) returns CartesianPoint from PGeom;
         ---Purpose : Returns a CartesianPoint built with <aPnt>.
     	---Level: Internal 
 

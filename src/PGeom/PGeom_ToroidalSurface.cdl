@@ -27,7 +27,7 @@ is
 
 
 
-  Create returns mutable ToroidalSurface from PGeom;
+  Create returns ToroidalSurface from PGeom;
 	---Purpose: Creates a ToroidalSurface with default values.
     	---Level: Internal 
 
@@ -35,7 +35,7 @@ is
   Create (aPosition : Ax3 from gp;
     	  aMajorRadius: Real from Standard;
     	  aMinorRadius: Real from Standard)
-     returns mutable ToroidalSurface from PGeom;
+     returns ToroidalSurface from PGeom;
 	---Purpose: Creates a ToroidalSurface with these values.
     	---Level: Internal 
 

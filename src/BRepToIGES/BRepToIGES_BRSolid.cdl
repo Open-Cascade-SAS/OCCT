@@ -43,7 +43,7 @@ is
 
     TransferSolid (me    : in out;
                    start : Shape from TopoDS)
-    	 returns mutable IGESEntity from IGESData;
+    	 returns IGESEntity from IGESData;
     ---Purpose :  Transfert a Shape entity from TopoDS to IGES 
     --            this entity must be a Solid or a CompSolid or a Compound. 
     --            If this Entity could not be converted, this member returns a NullEntity.
@@ -51,21 +51,21 @@ is
 
     TransferSolid (me    : in out;
                    start : Solid from TopoDS)
-    	 returns mutable IGESEntity from IGESData;
+    	 returns IGESEntity from IGESData;
     ---Purpose :  Transfert a Solid entity from TopoDS to IGES
     --            If this Entity could not be converted, this member returns a NullEntity.
 
 
     TransferCompSolid (me    : in out;
                        start : CompSolid from TopoDS)
-    	 returns mutable IGESEntity from IGESData;
+    	 returns IGESEntity from IGESData;
     ---Purpose :  Transfert an CompSolid entity from TopoDS to IGES
     --            If this Entity could not be converted, this member returns a NullEntity.
 
 
     TransferCompound (me    : in out;
                       start : Compound from TopoDS)
-    	 returns mutable IGESEntity from IGESData;
+    	 returns IGESEntity from IGESData;
     ---Purpose :  Transfert a Compound entity from TopoDS to IGES
     --            If this Entity could not be converted, this member returns a NullEntity.
 

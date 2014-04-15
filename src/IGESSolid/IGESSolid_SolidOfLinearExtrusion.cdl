@@ -28,7 +28,7 @@ uses
 
 is
 
-        Create returns mutable SolidOfLinearExtrusion;
+        Create returns SolidOfLinearExtrusion;
 
         -- Specific Methods pertaining to the class
 

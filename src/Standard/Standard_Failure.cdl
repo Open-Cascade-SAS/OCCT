@@ -33,13 +33,13 @@ raises
     
 is
 
-    Create returns mutable Failure;
+    Create returns Failure;
     	---Purpose: 
     	--   Creates a status object of type "Failure".
     	---Level: Advanced
 	---C++: alias "Standard_EXPORT Standard_Failure (const Standard_Failure& f);"
 
-    Create (aString: CString) returns mutable Failure;
+    Create (aString: CString) returns Failure;
     	---Purpose: 
     	--   Creates a status object of type "Failure".
         ---Level: Advanced
@@ -87,7 +87,7 @@ is
     	--          at run-time.
         ---Level: Advanced
     
-    NewInstance(myclass; aMessage: CString) returns mutable Failure;
+    NewInstance(myclass; aMessage: CString) returns Failure;
    	---Purpose: Used to construct an instance of the exception object
 	--          as a handle. Shall be used to protect against possible
 	--          construction of exception object in C stack -- that is 
@@ -102,7 +102,7 @@ is
         --          converted to C++ exception.
         ---Level: Advanced, not for regular use
     
-    Caught (myclass) returns mutable Failure raises NoSuchObject;
+    Caught (myclass) returns Failure raises NoSuchObject;
     	---Purpose: Returns the last caught exception. 
 	--          Needed when exceptions are emulated by C longjumps,
         --          in other cases is also provided for compatibility.

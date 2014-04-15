@@ -38,7 +38,7 @@ is
 	---Purpose:  Constructs an object to display parallel constraints.
     	-- This object is defined by the first shape aFShape and
     	-- the second shape aSShape and the plane aPlane.
-    returns mutable ParallelRelation from AIS;
+    returns ParallelRelation from AIS;
 
     Create (aFShape     : Shape          from TopoDS;
     	    aSShape     : Shape          from TopoDS;
@@ -51,7 +51,7 @@ is
     	-- the second shape aSShape the plane aPlane, the
     	-- position aPosition, the type of arrow, aSymbolPrs and
     	-- its size anArrowSize.
-    returns mutable ParallelRelation from AIS;
+    returns ParallelRelation from AIS;
 
     IsMovable(me) returns Boolean from Standard 
     	---Purpose: Returns true if the parallelism is movable.  
@@ -62,19 +62,19 @@ is
 
     Compute(me            : mutable;
   	    aPresentationManager: PresentationManager3d from PrsMgr;
-    	    aPresentation : mutable Presentation from Prs3d;
+    	    aPresentation : Presentation from Prs3d;
     	    aMode         : Integer from Standard= 0) 
     is redefined static private;
     
     Compute(me:mutable;
     	        aProjector: Projector from Prs3d;
-                aPresentation: mutable Presentation from Prs3d)
+                aPresentation: Presentation from Prs3d)
     is redefined static private;     
 
     Compute(me            : mutable;
     	    aProjector    : Projector from Prs3d;
     	    aTrsf         : Transformation from Geom;
-	    aPresentation : mutable Presentation from Prs3d)
+	    aPresentation : Presentation from Prs3d)
     is redefined;
     	---Purpose: computes the presentation according to a point of view
     	--          given by <aProjector>. 
@@ -87,7 +87,7 @@ is
 -- Methods from SelectableObject
 
     ComputeSelection(me         : mutable;
-    	    	     aSelection : mutable Selection from SelectMgr;
+    	    	     aSelection : Selection from SelectMgr;
     	    	     aMode      : Integer from Standard)is private;
 
 
@@ -97,11 +97,11 @@ is
 --
 
     ComputeTwoFacesParallel(me: mutable;
-    	    	    	    aPresentation : mutable Presentation from Prs3d)
+    	    	    	    aPresentation : Presentation from Prs3d)
     is private;
     
     ComputeTwoEdgesParallel(me: mutable;
-    	    	    	    aPresentation : mutable Presentation from Prs3d)
+    	    	    	    aPresentation : Presentation from Prs3d)
     is private;
     
 

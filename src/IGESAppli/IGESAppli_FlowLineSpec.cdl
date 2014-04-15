@@ -30,7 +30,7 @@ raises OutOfRange
 
 is
 
-        Create returns mutable FlowLineSpec;
+        Create returns FlowLineSpec;
 
         -- Specific Methods pertaining to the class
 

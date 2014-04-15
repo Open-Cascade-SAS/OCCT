@@ -27,7 +27,7 @@ raises InterfaceError
 
 is
 
-    Create returns mutable SelectSingleViewFrom;
+    Create returns SelectSingleViewFrom;
     ---Purpose : Creates a SelectSingleViewFrom
 
     HasUniqueResult (me) returns Boolean  is redefined protected;

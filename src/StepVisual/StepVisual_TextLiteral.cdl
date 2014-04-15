@@ -26,29 +26,29 @@ uses
 	FontSelect from StepVisual
 is
 
-	Create returns mutable TextLiteral;
+	Create returns TextLiteral;
 	---Purpose: Returns a TextLiteral
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection) is redefined;
+	      aName : HAsciiString from TCollection) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aLiteral : mutable HAsciiString from TCollection;
+	      aName : HAsciiString from TCollection;
+	      aLiteral : HAsciiString from TCollection;
 	      aPlacement : Axis2Placement from StepGeom;
-	      aAlignment : mutable HAsciiString from TCollection;
+	      aAlignment : HAsciiString from TCollection;
 	      aPath : TextPath from StepVisual;
 	      aFont : FontSelect from StepVisual) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetLiteral(me : mutable; aLiteral : mutable HAsciiString);
-	Literal (me) returns mutable HAsciiString;
+	SetLiteral(me : mutable; aLiteral : HAsciiString);
+	Literal (me) returns HAsciiString;
 	SetPlacement(me : mutable; aPlacement : Axis2Placement);
 	Placement (me) returns Axis2Placement;
-	SetAlignment(me : mutable; aAlignment : mutable HAsciiString);
-	Alignment (me) returns mutable HAsciiString;
+	SetAlignment(me : mutable; aAlignment : HAsciiString);
+	Alignment (me) returns HAsciiString;
 	SetPath(me : mutable; aPath : TextPath);
 	Path (me) returns TextPath;
 	SetFont(me : mutable; aFont : FontSelect);

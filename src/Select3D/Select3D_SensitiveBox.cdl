@@ -37,13 +37,13 @@ is
 
     Create (OwnerId      : EntityOwner from SelectBasics;
     	    BoundingBox  : Box from Bnd)
-    returns mutable SensitiveBox;
+    returns SensitiveBox;
 	---Purpose: Constructs a sensitive box object defined by the
     	-- owner OwnerId, and the bounding box BoundingBox.
     Create (OwnerId         : EntityOwner from SelectBasics;
     	    XMin,YMin,ZMin,
     	    XMax,YMax,ZMax  : Real)
-    returns mutable SensitiveBox;
+    returns SensitiveBox;
 	---	Purpose: Constructs a sensitive box object defined by the
     	-- owner OwnerId, and the coordinates Xmin, YMin, ZMin, XMax, YMax, ZMax.
     	-- Xmin, YMin and ZMin define the minimum point in

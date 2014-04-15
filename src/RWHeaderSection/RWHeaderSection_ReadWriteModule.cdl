@@ -27,7 +27,7 @@ uses Transient,
 
 is
 
-	Create returns mutable ReadWriteModule from RWHeaderSection;
+	Create returns ReadWriteModule from RWHeaderSection;
 
 	CaseStep (me; atype : AsciiString from TCollection) returns Integer;
 	---Purpose : associates a positive Case Number to each type of HeaderSection entity,
@@ -46,7 +46,7 @@ is
 	---C++ : return const &
 
 	ReadStep (me; CN : Integer; data : StepReaderData; num : Integer;
-	            ach : in out Check; ent : mutable Transient);
+	            ach : in out Check; ent : Transient);
 
 	WriteStep (me; CN : Integer; SW : in out StepWriter; ent : Transient);
 

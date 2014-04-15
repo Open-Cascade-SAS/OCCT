@@ -29,7 +29,7 @@ is
 	Create returns RWNamedUnit;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable NamedUnit from StepBasic);
+	              ach : in out Check; ent : NamedUnit from StepBasic);
 
 	WriteStep (me; SW : in out StepWriter; ent : NamedUnit from StepBasic);
 

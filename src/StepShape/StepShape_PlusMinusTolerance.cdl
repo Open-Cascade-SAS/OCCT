@@ -23,7 +23,7 @@ uses
 
 is
 
-    Create returns mutable PlusMinusTolerance;
+    Create returns PlusMinusTolerance;
 
     Init (me : mutable;
     	    range : ToleranceMethodDefinition from StepShape;

@@ -37,7 +37,7 @@ is
 
     Initialize (OwnerId      : EntityOwner from SelectBasics;
             ThePoints    : Array1OfPnt from TColgp)
-     returns mutable SensitivePoly;
+     returns SensitivePoly;
         ---Level: Public 
         ---Purpose: Constructs a sensitive face object defined by the
         -- owner OwnerId, the array of points ThePoints, and
@@ -46,7 +46,7 @@ is
 
     Initialize (OwnerId      : EntityOwner from SelectBasics;
             ThePoints    : HArray1OfPnt from TColgp)
-     returns mutable SensitivePoly;
+     returns SensitivePoly;
         ---Level: Public 
         ---Purpose: Constructs a sensitive face object defined by the
         -- owner OwnerId, the array of points ThePoints, and
@@ -55,7 +55,7 @@ is
 
     Initialize(OwnerId      : EntityOwner from SelectBasics;
             NbOfPoints   : Integer = 6)
-     returns mutable SensitivePoly;
+     returns SensitivePoly;
         ---Level: Public 
         ---Purpose: Constructs the sensitive circle object defined by the
         -- owner OwnerId, the circle Circle, the Boolean

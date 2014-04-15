@@ -33,7 +33,7 @@ uses CString
 
 is
 
-    Create (akey : any TheKey) returns mutable Mapper;
+    Create (akey : any TheKey) returns Mapper;
     ---Purpose : Creates a Mapper with a Value. This Value can then not be
     --           changed. It is used by the Hasher to compute the HashCode,
     --           which will then be stored for an immediate reading.

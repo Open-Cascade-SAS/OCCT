@@ -33,7 +33,7 @@ uses
 is
 
     Create (aTypeOfFace: TypeOfFace from StdSelect)
-    returns mutable FaceFilter from StdSelect;
+    returns FaceFilter from StdSelect;
     	---Purpose: Constructs a face filter object defined by the type of face aTypeOfFace.    
     SetType(me:mutable;aNewType : TypeOfFace from StdSelect);  
     	--- Purpose: Sets the type of face aNewType. aNewType is to be highlighted in selection.   

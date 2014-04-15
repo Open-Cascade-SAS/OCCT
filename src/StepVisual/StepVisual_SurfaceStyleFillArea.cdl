@@ -23,16 +23,16 @@ uses
 	FillAreaStyle from StepVisual
 is
 
-	Create returns mutable SurfaceStyleFillArea;
+	Create returns SurfaceStyleFillArea;
 	---Purpose: Returns a SurfaceStyleFillArea
 
 	Init (me : mutable;
-	      aFillArea : mutable FillAreaStyle from StepVisual) is virtual;
+	      aFillArea : FillAreaStyle from StepVisual) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetFillArea(me : mutable; aFillArea : mutable FillAreaStyle);
-	FillArea (me) returns mutable FillAreaStyle;
+	SetFillArea(me : mutable; aFillArea : FillAreaStyle);
+	FillArea (me) returns FillAreaStyle;
 
 fields
 

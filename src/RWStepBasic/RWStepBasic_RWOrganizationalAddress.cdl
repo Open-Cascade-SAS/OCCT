@@ -29,7 +29,7 @@ is
 	Create returns RWOrganizationalAddress;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable OrganizationalAddress from StepBasic);
+	              ach : in out Check; ent : OrganizationalAddress from StepBasic);
 
 	WriteStep (me; SW : in out StepWriter; ent : OrganizationalAddress from StepBasic);
 

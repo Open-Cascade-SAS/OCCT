@@ -29,7 +29,7 @@ is
 	Create returns RWSeamCurve;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable SeamCurve from StepGeom);
+	              ach : in out Check; ent : SeamCurve from StepGeom);
 
 	WriteStep (me; SW : in out StepWriter; ent : SeamCurve from StepGeom);
 

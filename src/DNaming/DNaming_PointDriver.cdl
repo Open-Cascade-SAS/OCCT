@@ -23,7 +23,7 @@ uses
      Function         from TFunction
 
 is
-    Create returns mutable PointDriver from DNaming;
+    Create returns PointDriver from DNaming;
     ---Purpose: Constructor
 
     ---Purpose: validation

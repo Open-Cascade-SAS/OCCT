@@ -31,7 +31,7 @@ is
     ---Purpose : Returns a ToolSurfaceOfRevolution, ready to work
 
 
-    ReadOwnParams (me; ent : mutable SurfaceOfRevolution;
+    ReadOwnParams (me; ent : SurfaceOfRevolution;
     	    	   IR : IGESReaderData; PR : in out ParamReader)
     	raises DomainError  is static;
     ---Purpose : Reads own parameters from file. <PR> gives access to them,
@@ -55,7 +55,7 @@ is
     ---Purpose : Performs Specific Semantic Check
 
 
-    OwnCopy    (me; entfrom : SurfaceOfRevolution; entto : mutable SurfaceOfRevolution;
+    OwnCopy    (me; entfrom : SurfaceOfRevolution; entto : SurfaceOfRevolution;
     	        TC : in out CopyTool)  is static;
     ---Purpose : Copies Specific Parameters
 

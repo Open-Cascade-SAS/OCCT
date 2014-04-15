@@ -38,8 +38,8 @@ raises NegativeValue, OutOfRange , DimensionMismatch, NullObject
       inherits ArrayNode from PStandard
       is
       
-      	Create returns mutable VArrayNode from DBC;
-	Create(aValue : Item)  returns mutable VArrayNode from DBC;
+      	Create returns VArrayNode from DBC;
+	Create(aValue : Item)  returns VArrayNode from DBC;
 	
 	SetValue(me : mutable; aValue : Item);
 	Value(me) returns Address from Standard;

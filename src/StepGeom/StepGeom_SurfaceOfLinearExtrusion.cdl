@@ -25,23 +25,23 @@ uses
 	Curve from StepGeom
 is
 
-	Create returns mutable SurfaceOfLinearExtrusion;
+	Create returns SurfaceOfLinearExtrusion;
 	---Purpose: Returns a SurfaceOfLinearExtrusion
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aSweptCurve : mutable Curve from StepGeom) is redefined;
+	      aName : HAsciiString from TCollection;
+	      aSweptCurve : Curve from StepGeom) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aSweptCurve : mutable Curve from StepGeom;
-	      aExtrusionAxis : mutable Vector from StepGeom) is virtual;
+	      aName : HAsciiString from TCollection;
+	      aSweptCurve : Curve from StepGeom;
+	      aExtrusionAxis : Vector from StepGeom) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetExtrusionAxis(me : mutable; aExtrusionAxis : mutable Vector);
-	ExtrusionAxis (me) returns mutable Vector;
+	SetExtrusionAxis(me : mutable; aExtrusionAxis : Vector);
+	ExtrusionAxis (me) returns Vector;
 
 fields
 

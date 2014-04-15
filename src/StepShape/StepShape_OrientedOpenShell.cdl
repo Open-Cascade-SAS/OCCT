@@ -26,28 +26,28 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable OrientedOpenShell;
+	Create returns OrientedOpenShell;
 	---Purpose: Returns a OrientedOpenShell
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aCfsFaces : mutable HArray1OfFace from StepShape) is redefined;
+	      aName : HAsciiString from TCollection;
+	      aCfsFaces : HArray1OfFace from StepShape) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aOpenShellElement : mutable OpenShell from StepShape;
+	      aName : HAsciiString from TCollection;
+	      aOpenShellElement : OpenShell from StepShape;
 	      aOrientation : Boolean from Standard) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetOpenShellElement(me : mutable; aOpenShellElement : mutable OpenShell);
-	OpenShellElement (me) returns mutable OpenShell;
+	SetOpenShellElement(me : mutable; aOpenShellElement : OpenShell);
+	OpenShellElement (me) returns OpenShell;
 	SetOrientation(me : mutable; aOrientation : Boolean);
 	Orientation (me) returns Boolean;
-	SetCfsFaces(me : mutable; aCfsFaces : mutable HArray1OfFace) is redefined;
-	CfsFaces (me) returns mutable HArray1OfFace is redefined;
-	CfsFacesValue (me; num : Integer) returns mutable Face is redefined;
+	SetCfsFaces(me : mutable; aCfsFaces : HArray1OfFace) is redefined;
+	CfsFaces (me) returns HArray1OfFace is redefined;
+	CfsFacesValue (me; num : Integer) returns Face is redefined;
 	NbCfsFaces (me) returns Integer is redefined;
 
 fields

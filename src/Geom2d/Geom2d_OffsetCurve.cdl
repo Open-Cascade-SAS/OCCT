@@ -77,7 +77,7 @@ raises ConstructionError   from Standard,
 is
 
 
-  Create (C : Curve from Geom2d; Offset : Real)   returns mutable OffsetCurve
+  Create (C : Curve from Geom2d; Offset : Real)   returns OffsetCurve
         --- Purpose : Constructs a curve offset from the basis curve C,
     	-- where Offset is the distance between the offset
     	-- curve and the basis curve at any point.
@@ -328,7 +328,7 @@ is
 
 
 
-  Copy (me)  returns mutable like me;
+  Copy (me)  returns like me;
     	---Purpose: Creates a new object, which is a copy of this offset curve.     
 fields
 

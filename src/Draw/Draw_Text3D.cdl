@@ -26,11 +26,11 @@ uses Pnt from gp,
 is
 
     Create(p : Pnt; T : CString; col : Color)
-    returns mutable Text3D from Draw;
+    returns Text3D from Draw;
     
     Create(p : Pnt; T : CString; col : Color;
     	   moveX : Real; moveY : Real)
-    returns mutable Text3D from Draw;
+    returns Text3D from Draw;
 
     SetPnt(me : mutable; p : Pnt);
    

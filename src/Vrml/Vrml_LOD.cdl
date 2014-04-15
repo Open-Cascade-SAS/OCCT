@@ -45,11 +45,11 @@ uses
 
 is
  
-    Create  returns mutable LOD from Vrml; 
+    Create  returns LOD from Vrml; 
  
     Create  ( aRange  :  HArray1OfReal from TColStd; 
     	      aCenter :  Vec          from  gp ) 
-         returns mutable LOD from Vrml; 
+         returns LOD from Vrml; 
 	 
     SetRange ( me : mutable;  aRange  : HArray1OfReal from TColStd ); 
     Range ( me )  returns  HArray1OfReal from TColStd; 

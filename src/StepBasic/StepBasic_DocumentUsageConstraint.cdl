@@ -22,7 +22,7 @@ uses
 
 is
 
-    Create returns mutable DocumentUsageConstraint;
+    Create returns DocumentUsageConstraint;
 
     Init (me : mutable;
     	  aSource : Document;

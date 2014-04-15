@@ -29,7 +29,7 @@ is
 	Create returns RWProductDefinitionFormationWithSpecifiedSource;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable ProductDefinitionFormationWithSpecifiedSource from StepBasic);
+	              ach : in out Check; ent : ProductDefinitionFormationWithSpecifiedSource from StepBasic);
 
 	WriteStep (me; SW : in out StepWriter; ent : ProductDefinitionFormationWithSpecifiedSource from StepBasic);
 

@@ -45,7 +45,7 @@ is
     --           =====================
 
     Create
-    returns mutable ReferenceList from TDataStd; 
+    returns ReferenceList from TDataStd; 
 
     IsEmpty (me)
     returns Boolean from Standard;
@@ -101,10 +101,10 @@ is
     Restore (me: mutable; With : Attribute from TDF);
 
     NewEmpty (me)
-    returns mutable Attribute from TDF;
+    returns Attribute from TDF;
 
-    Paste (me; Into : mutable Attribute from TDF;
-	       RT   : mutable RelocationTable from TDF);    
+    Paste (me; Into : Attribute from TDF;
+	       RT   : RelocationTable from TDF);    
 
     References (me; DS : DataSet from TDF) 
     is redefined;

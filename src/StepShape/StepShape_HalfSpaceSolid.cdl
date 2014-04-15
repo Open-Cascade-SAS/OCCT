@@ -25,22 +25,22 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable HalfSpaceSolid;
+	Create returns HalfSpaceSolid;
 	---Purpose: Returns a HalfSpaceSolid
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection) is redefined;
+	      aName : HAsciiString from TCollection) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aBaseSurface : mutable Surface from StepGeom;
+	      aName : HAsciiString from TCollection;
+	      aBaseSurface : Surface from StepGeom;
 	      aAgreementFlag : Boolean from Standard) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetBaseSurface(me : mutable; aBaseSurface : mutable Surface);
-	BaseSurface (me) returns mutable Surface;
+	SetBaseSurface(me : mutable; aBaseSurface : Surface);
+	BaseSurface (me) returns Surface;
 	SetAgreementFlag(me : mutable; aAgreementFlag : Boolean);
 	AgreementFlag (me) returns Boolean;
 

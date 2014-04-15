@@ -26,7 +26,7 @@ uses Hypr2d from gp,
 
 is
 
-Create(Hyper : Hypr2d from gp) returns mutable BHyper;
+Create(Hyper : Hypr2d from gp) returns BHyper;
     	---Purpose:
     	-- Constructs a bisecting curve whose geometry is the 2D hyperbola Hyper.
         

@@ -24,7 +24,7 @@ uses
 is
 
     Create (NS : NamedShape from TNaming)
-    	returns mutable DeltaOnRemoval from TNaming;
+    	returns DeltaOnRemoval from TNaming;
 	---Purpose: Initializes a TDF_DeltaOnModification.
 
     Apply (me : mutable)

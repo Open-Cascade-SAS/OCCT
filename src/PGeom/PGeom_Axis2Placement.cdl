@@ -27,13 +27,13 @@ uses Ax1      from gp,
 is
 
 
-  Create returns mutable Axis2Placement from PGeom;
+  Create returns Axis2Placement from PGeom;
         ---Purpose : Returns an Axis2Placement with default values.
     	---Level: Internal 
 
 
   Create (aAxis : Ax1 from gp; aXDirection: Dir from gp)
-    returns mutable Axis2Placement from PGeom;
+    returns Axis2Placement from PGeom;
         ---Purpose : Creates an Axis2Placement with <A2>.
     	---Level: Internal 
 

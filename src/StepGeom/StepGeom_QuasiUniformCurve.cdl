@@ -27,7 +27,7 @@ uses
 	Logical from StepData
 is
 
-	Create returns mutable QuasiUniformCurve;
+	Create returns QuasiUniformCurve;
 	---Purpose: Returns a QuasiUniformCurve
 
 

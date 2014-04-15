@@ -27,7 +27,7 @@ raises
     ConstructionError from Standard 
 
 is
-    Create returns mutable AsDes from BRepAlgo;
+    Create returns AsDes from BRepAlgo;
 	---Purpose: Creates an empty AsDes.
     
     Clear(me : mutable);

@@ -35,7 +35,7 @@ is
 ---Category: class constructor
 
      Create(aName: CString from Standard;Verbose: Boolean from Standard = Standard_False)
-     returns mutable Manager from Resource;
+     returns Manager from Resource;
      ---Purpose: Create a Resource manager.
      --          Attempts to find the two following files:
      --          $CSF_`aName`Defaults/aName
@@ -92,7 +92,7 @@ is
     	    aDefaultsDirectory: in out AsciiString from TCollection;
     	    anUserDefaultsDirectory: in out AsciiString from TCollection;
     	    Verbose: Boolean from Standard = Standard_False)
-     returns mutable Manager from Resource;
+     returns Manager from Resource;
 
      Save(me)
      returns Boolean from Standard;

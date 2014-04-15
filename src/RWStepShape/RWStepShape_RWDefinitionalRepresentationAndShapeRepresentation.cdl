@@ -28,7 +28,7 @@ is
 	Create returns RWDefinitionalRepresentationAndShapeRepresentation;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable DefinitionalRepresentationAndShapeRepresentation from StepShape);
+	              ach : in out Check; ent : DefinitionalRepresentationAndShapeRepresentation from StepShape);
 
 	WriteStep (me; SW : in out StepWriter; ent : DefinitionalRepresentationAndShapeRepresentation from StepShape);
 

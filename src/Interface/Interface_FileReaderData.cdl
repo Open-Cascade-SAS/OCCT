@@ -139,7 +139,7 @@ is
     --           (sublists are not objects, but internal descriptions)
 
     ParamEntity (me; num, nump : Integer)
-    	returns mutable Transient  raises NoSuchObject  is static;
+    	returns Transient  raises NoSuchObject  is static;
     ---Purpose : Returns the StepEntity referenced by a parameter
     --           Error if none
     ---C++ : return const &
@@ -161,11 +161,11 @@ is
 
     	-- --   binding empty entities before loading model   -- --
 
-    BoundEntity (me; num : Integer) returns mutable Transient;
+    BoundEntity (me; num : Integer) returns Transient;
     ---Purpose : Returns the entity bound to a record, set by SetEntities
     ---C++ : return const &
 
-    BindEntity (me : mutable; num : Integer; ent : mutable Transient);
+    BindEntity (me : mutable; num : Integer; ent : Transient);
     ---Purpose : Binds an entity to a record
 
     SetErrorLoad (me : mutable; val : Boolean);

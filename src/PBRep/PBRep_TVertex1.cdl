@@ -26,7 +26,7 @@ uses
     PointRepresentation from PBRep
 
 is
-    Create returns mutable TVertex1 from PBRep;
+    Create returns TVertex1 from PBRep;
     	---Level: Internal 
 
     

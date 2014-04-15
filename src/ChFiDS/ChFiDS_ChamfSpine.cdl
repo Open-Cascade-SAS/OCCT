@@ -22,8 +22,8 @@ uses
   ChamfMethod from ChFiDS           
  
 is
-    Create  returns  mutable ChamfSpine from ChFiDS;
-    Create (Tol : Real from Standard) returns  mutable ChamfSpine from ChFiDS;
+    Create  returns ChamfSpine from ChFiDS;
+    Create (Tol : Real from Standard) returns ChamfSpine from ChFiDS;
     
     SetDist (me : mutable; Dis : Real from Standard) is static;
 

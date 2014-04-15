@@ -40,18 +40,18 @@ is
    Create ( aType: TypeOfMarker from Aspect;
            aColor: Color from Quantity;
 	     aScale: Real from Standard)
-	     returns mutable PointAspect from Prs3d;
+	     returns PointAspect from Prs3d;
 
     Create ( aType: TypeOfMarker from Aspect;  
            aColor: NameOfColor from Quantity;
 	     aScale: Real from Standard)
-	     returns mutable PointAspect from Prs3d;
+	     returns PointAspect from Prs3d;
 
     Create ( AColor	    : Color from Quantity;
 	     AWidth         : Integer from Standard;
 	     AHeight        : Integer from Standard;
 	     ATexture       : HArray1OfByte from TColStd)
-             returns mutable PointAspect from Prs3d;
+             returns PointAspect from Prs3d;
     	---Purpose: defines only the urer defined marker point.
 
 	     

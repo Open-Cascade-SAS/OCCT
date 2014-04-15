@@ -31,7 +31,7 @@ raises OutOfRange
 
 is
 
-        Create returns mutable DefinitionLevel;
+        Create returns DefinitionLevel;
 
         -- Specific Methods pertaining to the class
 

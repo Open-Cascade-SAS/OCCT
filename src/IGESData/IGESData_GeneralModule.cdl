@@ -75,12 +75,12 @@ is
     ---Purpose : Specific answer to the question "is Copy properly implemented"
     --           For IGES, answer is always True
 
-    NewVoid (me; CN : Integer; entto : out mutable Transient)
+    NewVoid (me; CN : Integer; entto : out Transient)
     	returns Boolean  is deferred;
     ---Purpose : Specific creation of a new void entity
 
     CopyCase (me; CN : Integer;
-    	      entfrom : Transient; entto : mutable Transient;
+    	      entfrom : Transient; entto : Transient;
     	      TC : in out CopyTool);
     ---Purpose : Copy ("Deep") from <entfrom> to <entto> (same type)
     --           by using a CopyTool which provides its working Map.
@@ -88,33 +88,33 @@ is
     --           Properties) and call OwnCopyCase
 
     OwnCopyCase (me; CN : Integer;
-    	         entfrom : IGESEntity; entto : mutable IGESEntity;
+    	         entfrom : IGESEntity; entto : IGESEntity;
     	         TC : in out CopyTool)  is deferred;
     ---Purpose : Copies parameters which are specific of each Type of Entity
 
     RenewImpliedCase (me; CN : Integer;
-    	         entfrom : Transient; entto : mutable Transient;
+    	         entfrom : Transient; entto : Transient;
     	         TC : CopyTool)  is redefined;
     ---Purpose : Renewing of Implied References.
     --           For IGESEntities, Copies general data(List of Associativities)
     --           and calls OwnRenewCase
 
     OwnRenewCase     (me; CN : Integer;
-    	              entfrom : IGESEntity; entto : mutable IGESEntity;
+    	              entfrom : IGESEntity; entto : IGESEntity;
     	              TC : CopyTool)  is virtual;
     ---Purpose : Renews parameters which are specific of each Type of Entity :
     --           the provided default does nothing, but this method may be
     --           redefined as required
 
     WhenDeleteCase (me; CN : Integer;
-    	    	ent : mutable Transient; dispatched : Boolean)  is redefined;
+    	    	ent : Transient; dispatched : Boolean)  is redefined;
     ---Purpose : Prepares an IGES Entity for delete : works on directory part
     --           then calls OwnDeleteCase
     --           While dispatch requires to copy the entities, <dispatched> is
     --           ignored, entities are cleared in any case
 
     OwnDeleteCase (me; CN : Integer;
-    	    	ent : mutable IGESEntity)  is virtual;
+    	    	ent : IGESEntity)  is virtual;
     ---Purpose : Specific preparation for delete, acts on own parameters
     --           Default does nothing, to be redefined as required
 

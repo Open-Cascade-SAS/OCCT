@@ -26,12 +26,12 @@ uses
 
 is
     Create (theMessageDriver:MessageDriver from CDM)
-        returns mutable ColorDriver from XmlMXCAFDoc;
+        returns ColorDriver from XmlMXCAFDoc;
 
-    NewEmpty (me)  returns mutable Attribute from TDF;
+    NewEmpty (me)  returns Attribute from TDF;
 
     Paste(me; Source     : Persistent from XmlObjMgt;
-              Target     : mutable Attribute from TDF;
+              Target     : Attribute from TDF;
               RelocTable : out RRelocationTable from XmlObjMgt)
         returns Boolean from Standard;
 

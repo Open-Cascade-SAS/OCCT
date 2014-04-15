@@ -33,10 +33,10 @@ uses
     HArray1OfVec2d  from TColgp 
 
 is
-    Create returns  mutable TextureCoordinate2 from Vrml; 
+    Create returns TextureCoordinate2 from Vrml; 
 
     Create  ( aPoint  :  HArray1OfVec2d   from  TColgp ) 
-    	returns  mutable TextureCoordinate2 from Vrml; 
+    	returns TextureCoordinate2 from Vrml; 
 	  
     SetPoint ( me : mutable;  aPoint : HArray1OfVec2d   from  TColgp );
     Point ( me )  returns  HArray1OfVec2d   from  TColgp;

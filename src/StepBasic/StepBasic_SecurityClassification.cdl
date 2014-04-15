@@ -24,22 +24,22 @@ uses
 	SecurityClassificationLevel from StepBasic
 is
 
-	Create returns mutable SecurityClassification;
+	Create returns SecurityClassification;
 	---Purpose: Returns a SecurityClassification
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aPurpose : mutable HAsciiString from TCollection;
-	      aSecurityLevel : mutable SecurityClassificationLevel from StepBasic) is virtual;
+	      aName : HAsciiString from TCollection;
+	      aPurpose : HAsciiString from TCollection;
+	      aSecurityLevel : SecurityClassificationLevel from StepBasic) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetName(me : mutable; aName : mutable HAsciiString);
-	Name (me) returns mutable HAsciiString;
-	SetPurpose(me : mutable; aPurpose : mutable HAsciiString);
-	Purpose (me) returns mutable HAsciiString;
-	SetSecurityLevel(me : mutable; aSecurityLevel : mutable SecurityClassificationLevel);
-	SecurityLevel (me) returns mutable SecurityClassificationLevel;
+	SetName(me : mutable; aName : HAsciiString);
+	Name (me) returns HAsciiString;
+	SetPurpose(me : mutable; aPurpose : HAsciiString);
+	Purpose (me) returns HAsciiString;
+	SetSecurityLevel(me : mutable; aSecurityLevel : SecurityClassificationLevel);
+	SecurityLevel (me) returns SecurityClassificationLevel;
 
 fields
 

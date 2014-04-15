@@ -35,7 +35,7 @@ uses Integer, CString, AsciiString
 
 is
  
-    Create returns mutable IntParam;
+    Create returns IntParam;
     ---Purpose : Creates an IntParam. Initial value is set to zer
 
     SetStaticName (me : mutable; statname : CString);

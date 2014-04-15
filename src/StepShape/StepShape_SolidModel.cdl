@@ -23,7 +23,7 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable SolidModel;
+	Create returns SolidModel;
 	---Purpose: Returns a SolidModel
 
 

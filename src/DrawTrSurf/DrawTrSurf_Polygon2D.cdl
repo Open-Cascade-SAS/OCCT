@@ -29,7 +29,7 @@ uses Polygon2D   from Poly,
 is
 
     Create(P: Polygon2D from Poly)
-    returns mutable Polygon2D from DrawTrSurf;
+    returns Polygon2D from DrawTrSurf;
     
     Polygon2D(me) returns Polygon2D from Poly;
     
@@ -39,7 +39,7 @@ is
     
     DrawOn(me; dis: in out Display);
     
-    Copy(me) returns mutable Drawable3D from Draw
+    Copy(me) returns Drawable3D from Draw
     is redefined;
 	---Purpose: For variable copy.
 

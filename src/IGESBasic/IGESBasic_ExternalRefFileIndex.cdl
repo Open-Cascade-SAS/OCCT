@@ -32,7 +32,7 @@ raises DimensionMismatch, OutOfRange
 
 is
 
-        Create returns mutable ExternalRefFileIndex;
+        Create returns ExternalRefFileIndex;
 
         -- Specific Methods pertaining to the class
 

@@ -22,7 +22,7 @@ uses Type, Protocol from Interface
 
 is
 
-    Create returns mutable Protocol from IGESAppli;
+    Create returns Protocol from IGESAppli;
 
     NbResources (me) returns Integer  is redefined;
     ---Purpose : Gives the count of direct Resource Protocol. Here, two

@@ -41,7 +41,7 @@ uses
     Location      from PTopLoc
     
 is
-    Create returns mutable HShape from PTopoDS;
+    Create returns HShape from PTopoDS;
     ---Level: Internal 
 
     TShape(me) returns any TShape from PTopoDS

@@ -48,17 +48,17 @@ uses
 
 is
 
-    Create returns mutable Interference from TopOpeBRepDS;
+    Create returns Interference from TopOpeBRepDS;
 
     Create(Transition   : Transition from TopOpeBRepDS;
 	   SupportType  : Kind from TopOpeBRepDS;
 	   Support      : Integer from Standard;
 	   GeometryType : Kind from TopOpeBRepDS;
 	   Geometry     : Integer from Standard)
-    returns mutable Interference from TopOpeBRepDS;
+    returns Interference from TopOpeBRepDS;
 
     Create( I : Interference from TopOpeBRepDS )
-    returns mutable Interference from TopOpeBRepDS;
+    returns Interference from TopOpeBRepDS;
 
     Transition(me) returns Transition from TopOpeBRepDS
     ---C++: return const &

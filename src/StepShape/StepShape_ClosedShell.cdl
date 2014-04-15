@@ -24,7 +24,7 @@ uses
 	HArray1OfFace from StepShape
 is
 
-	Create returns mutable ClosedShell;
+	Create returns ClosedShell;
 	---Purpose: Returns a ClosedShell
 
 

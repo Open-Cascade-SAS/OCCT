@@ -54,7 +54,7 @@ uses CString, Character, Transient,
 
 is
 
-    Create (WS : mutable WorkSession) returns SessionFile;
+    Create (WS : WorkSession) returns SessionFile;
     ---Purpose : Creates a SessionFile, ready to read Files in order to load
     --           them into a given WorkSession.
     --           The following Read Operations must then be called.
@@ -164,7 +164,7 @@ is
     ---Purpose : Internal routine which processes a line into words
     --           and prepares its exploration
 
-    ReadOwn (me : in out; item : out mutable Transient) returns Boolean;
+    ReadOwn (me : in out; item : out Transient) returns Boolean;
     ---Purpose : Tries to Read an Item, by calling the Library of Dumpers
     --           Sets the list of parameters of the line to be read from the
     --           first own one
@@ -253,7 +253,7 @@ is
     ---Purpose : Returns the content of a Text Parameter (without the quotes).
     --           Returns an empty string if the Parameter is not a Text.
 
-    ItemValue (me; num : Integer) returns mutable Transient;
+    ItemValue (me; num : Integer) returns Transient;
     ---Purpose : Returns a Parameter as an Item. Returns a Null Handle if the
     --           Parameter is a Text, or if it is defined as Void
 

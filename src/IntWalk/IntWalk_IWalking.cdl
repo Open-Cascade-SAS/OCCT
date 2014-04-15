@@ -215,7 +215,7 @@ is
 		    
     TestArretCadre(me : in out; Umult  : SequenceOfReal from TColStd;
                                 Vmult  : SequenceOfReal from TColStd;
-                                Line   : mutable TheIWLine;
+                                Line   : TheIWLine;
 				Section: in out TheIWFunction;
                                 UV     : in out Vector from math;
                                 Irang  : out Integer from Standard)
@@ -244,7 +244,7 @@ is
                           Psol   : PntOn2S from IntSurf;
 			  Pnts1  : ThePOPIterator;
  			  Section: in out TheIWFunction;
-                          Line   : mutable TheIWLine)
+                          Line   : TheIWLine)
     is static protected;	
 
     ComputeCloseLine(me : in out; Umult  : SequenceOfReal from TColStd;
@@ -257,7 +257,7 @@ is
 
     AddPointInCurrentLine(me ; N           : Integer from Standard;
                                PathPnt     : ThePointOfPath;
-                               CurrentLine : mutable TheIWLine)
+                               CurrentLine : TheIWLine)
     is static protected;
 
     MakeWalkingPoint(me : in out ; Case    : Integer from Standard;

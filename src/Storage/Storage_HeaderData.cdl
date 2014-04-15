@@ -26,7 +26,7 @@ uses AsciiString from TCollection,
      
 is
 
-    Create returns mutable HeaderData from Storage;
+    Create returns HeaderData from Storage;
     
     CreationDate(me) returns AsciiString from TCollection;
     ---Purpose: return the creation date

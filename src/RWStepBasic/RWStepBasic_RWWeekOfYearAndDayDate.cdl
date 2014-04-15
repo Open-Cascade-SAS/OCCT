@@ -28,7 +28,7 @@ is
 	Create returns RWWeekOfYearAndDayDate;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable WeekOfYearAndDayDate from StepBasic);
+	              ach : in out Check; ent : WeekOfYearAndDayDate from StepBasic);
 
 	WriteStep (me; SW : in out StepWriter; ent : WeekOfYearAndDayDate from StepBasic);
 

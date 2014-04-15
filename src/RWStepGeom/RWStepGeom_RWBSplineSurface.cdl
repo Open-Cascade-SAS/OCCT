@@ -29,7 +29,7 @@ is
 	Create returns RWBSplineSurface;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable BSplineSurface from StepGeom);
+	              ach : in out Check; ent : BSplineSurface from StepGeom);
 
 	WriteStep (me; SW : in out StepWriter; ent : BSplineSurface from StepGeom);
 

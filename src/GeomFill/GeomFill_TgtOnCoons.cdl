@@ -27,7 +27,7 @@ uses
 is
     Create(K : CoonsAlgPatch from GeomFill;
            I : Integer from Standard)
-    returns mutable TgtOnCoons from GeomFill;
+    returns TgtOnCoons from GeomFill;
 
     Value(me; W : Real from Standard)
     returns Vec from gp;

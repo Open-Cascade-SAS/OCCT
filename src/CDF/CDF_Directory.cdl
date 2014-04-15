@@ -27,7 +27,7 @@ raises  NoSuchObject
     
 is
     Create 
-    returns mutable Directory from CDF;
+    returns Directory from CDF;
     ---Purpose: Creates an empty directory.
     
     

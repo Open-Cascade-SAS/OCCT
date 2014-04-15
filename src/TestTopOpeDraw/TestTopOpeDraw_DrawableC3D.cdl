@@ -31,17 +31,17 @@ uses
 is
 
     Create (C : Curve from Geom; CColor : Color from Draw)
-    returns mutable DrawableC3D from TestTopOpeDraw;
+    returns DrawableC3D from TestTopOpeDraw;
 
     Create (C : Curve from Geom; CColor : Color from Draw;
     	    Text : CString; TextColor : Color from Draw)
-    returns mutable DrawableC3D from TestTopOpeDraw;
+    returns DrawableC3D from TestTopOpeDraw;
 
     Create (C : Curve from Geom; CColor : Color from Draw;
     	    Text : CString; TextColor : Color from Draw;
     	    Discret : Integer; Deflection : Real; DrawMode : Integer;
     	    DispOrigin : Boolean from Standard = Standard_True)
-    returns mutable DrawableC3D from TestTopOpeDraw;
+    returns DrawableC3D from TestTopOpeDraw;
 
     Pnt(me) returns Pnt from gp is virtual;
     

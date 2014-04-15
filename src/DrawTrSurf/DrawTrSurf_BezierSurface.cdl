@@ -33,7 +33,7 @@ is
         --- Purpose :
         --  creates a drawable Bezier curve from a Bezier curve of 
         --  package Geom.
-     returns mutable BezierSurface from DrawTrSurf;
+     returns BezierSurface from DrawTrSurf;
 
 
 
@@ -42,7 +42,7 @@ is
           BoundsColor, IsosColor, PolesColor : Color from Draw;
           ShowPoles : Boolean; Discret : Integer;Deflection : Real;
           DrawMode : Integer)
-     returns mutable BezierSurface from DrawTrSurf;
+     returns BezierSurface from DrawTrSurf;
 
 
   DrawOn (me; dis : in out Display from Draw)
@@ -71,7 +71,7 @@ is
         ---C++: inline
      is static;
     
-  Copy(me) returns mutable Drawable3D from Draw
+  Copy(me) returns Drawable3D from Draw
 	---Purpose: For variable copy.
   is redefined;
   

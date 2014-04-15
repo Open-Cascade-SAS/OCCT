@@ -26,13 +26,13 @@ uses Pnt2d from gp,
 is
 
     Create(col : Color; Size : Integer = 5)
-    returns mutable Axis2D;
+    returns Axis2D;
 
     Create(p : Pnt2d; col : Color; Size : Integer = 5)
-    returns mutable Axis2D;
+    returns Axis2D;
     
     Create(A : Ax22d from gp; col : Color; Size : Integer = 5)
-    returns mutable Axis2D;
+    returns Axis2D;
     
     DrawOn(me; dis : in out Display);
 

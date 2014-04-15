@@ -17,7 +17,7 @@
 class Vertex from PTopoDS inherits HShape from PTopoDS
 
 is
-    Create returns mutable Vertex from PTopoDS;
+    Create returns Vertex from PTopoDS;
     	---Level: Internal 
 
 end Vertex;

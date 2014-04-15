@@ -36,7 +36,7 @@ raises NoSuchObject
 is
 
     Create (model : InterfaceModel; proto : Protocol;
-    	    applieds : mutable AppliedModifiers;  filename : CString)
+    	    applieds : AppliedModifiers;  filename : CString)
     	returns ContextWrite;
     ---Purpose : Prepares a ContextWrite with these informations :
     --           - the model which is to be written
@@ -48,7 +48,7 @@ is
     --             the model is considered
 
     Create (hgraph : HGraph; proto : Protocol;
-    	    applieds : mutable AppliedModifiers;  filename : CString)
+    	    applieds : AppliedModifiers;  filename : CString)
     	returns ContextWrite;
     ---Purpose : Same as above but with an already computed Graph
 
@@ -61,7 +61,7 @@ is
     FileName (me) returns CString;
     ---Purpose : Returns the File Name
 
-    AppliedModifiers (me) returns mutable AppliedModifiers;
+    AppliedModifiers (me) returns AppliedModifiers;
     ---Purpose : Returns the object AppliedModifiers
 
     Graph (me : in out) returns Graph;
@@ -80,7 +80,7 @@ is
     --           Then, it prepares the list of entities to consider, if any
     --           Returns False if <numod> out of range
 
-    FileModifier (me) returns mutable GeneralModifier;
+    FileModifier (me) returns GeneralModifier;
     ---Purpose : Returns the currently active File Modifier. Cast to be done
     --           Null if not properly set : must be test IsNull after casting
 

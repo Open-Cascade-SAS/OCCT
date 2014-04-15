@@ -61,7 +61,7 @@ is
     Create(NV, NE, NF : Integer from Standard)
 	---Purpose: Create an  empty data structure  of <NV> vertices,
 	--          <NE> edges and <NF> faces.
-    returns mutable Data from HLRBRep;
+    returns Data from HLRBRep;
     
     Write(me : mutable; DS       : Data    from HLRBRep;
                         dv,de,df : Integer from Standard)

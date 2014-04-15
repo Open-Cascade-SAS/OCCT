@@ -29,7 +29,7 @@ is
 	Create returns RWConversionBasedUnitAndPlaneAngleUnit;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable ConversionBasedUnitAndPlaneAngleUnit from StepBasic);
+	              ach : in out Check; ent : ConversionBasedUnitAndPlaneAngleUnit from StepBasic);
 
 	WriteStep (me; SW : in out StepWriter; ent : ConversionBasedUnitAndPlaneAngleUnit from StepBasic);
 

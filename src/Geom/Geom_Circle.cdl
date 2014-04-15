@@ -63,11 +63,11 @@ is
 
 
 
-  Create (C : Circ)   returns mutable Circle;
+  Create (C : Circ)   returns Circle;
     	---Purpose :  Constructs a circle by conversion of the gp_Circ circle C.
 
 
-  Create (A2 : Ax2; Radius : Real)  returns mutable Circle
+  Create (A2 : Ax2; Radius : Real)  returns Circle
         ---Purpose : Constructs a circle of radius Radius, where A2 locates the circle and
     	--   defines its orientation in 3D space such that:
     	--   - the center of the circle is the origin of A2,
@@ -170,7 +170,7 @@ is
     	---Purpose: Applies the transformation T to this circle.
 
        
-  Copy (me)  returns mutable like me
+  Copy (me)  returns like me
   is redefined static;
     	---Purpose: Creates a new object which is a copy of this circle.
 

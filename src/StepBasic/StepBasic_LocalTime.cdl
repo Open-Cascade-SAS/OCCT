@@ -26,7 +26,7 @@ uses
 	Boolean from Standard
 is
 
-	Create returns mutable LocalTime;
+	Create returns LocalTime;
 	---Purpose: Returns a LocalTime
 
 	Init (me : mutable;
@@ -35,7 +35,7 @@ is
 	      aMinuteComponent : Integer from Standard;
 	      hasAsecondComponent : Boolean from Standard;
 	      aSecondComponent : Real from Standard;
-	      aZone : mutable CoordinatedUniversalTimeOffset from StepBasic) is virtual;
+	      aZone : CoordinatedUniversalTimeOffset from StepBasic) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
@@ -49,8 +49,8 @@ is
 	UnSetSecondComponent (me:mutable);
 	SecondComponent (me) returns Real;
 	HasSecondComponent (me) returns Boolean;
-	SetZone(me : mutable; aZone : mutable CoordinatedUniversalTimeOffset);
-	Zone (me) returns mutable CoordinatedUniversalTimeOffset;
+	SetZone(me : mutable; aZone : CoordinatedUniversalTimeOffset);
+	Zone (me) returns CoordinatedUniversalTimeOffset;
 
 fields
 

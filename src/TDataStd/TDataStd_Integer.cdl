@@ -60,10 +60,10 @@ is
     Restore (me: mutable; With : Attribute from TDF);
 
     NewEmpty (me)
-    returns mutable Attribute from TDF;
+    returns Attribute from TDF;
 
-    Paste (me; Into : mutable Attribute from TDF;
-	       RT   : mutable RelocationTable from TDF);    
+    Paste (me; Into : Attribute from TDF;
+	       RT   : RelocationTable from TDF);    
 
     Dump(me; anOS : in out OStream from Standard)
     	returns OStream from Standard
@@ -72,7 +72,7 @@ is
 
 
     Create
-    returns mutable Integer from TDataStd;    
+    returns Integer from TDataStd;    
 
 
 fields

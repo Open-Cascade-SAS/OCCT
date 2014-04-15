@@ -23,7 +23,7 @@ uses HSequenceOfAsciiString from TColStd, SequenceOfTransient from TColStd,
 
 is
 
-    Create returns mutable ECDescr;
+    Create returns ECDescr;
     ---Purpose : Creates an ECDescr, empty
 
     Add (me : mutable; member : ESDescr);
@@ -48,7 +48,7 @@ is
     IsComplex  (me) returns Boolean;
     ---Purpose : Returns True
 
-    NewEntity  (me) returns mutable Described;
+    NewEntity  (me) returns Described;
     ---Purpose : Creates a described entity (i.e. a complex one, made of one
     --           simple entity per member)
 

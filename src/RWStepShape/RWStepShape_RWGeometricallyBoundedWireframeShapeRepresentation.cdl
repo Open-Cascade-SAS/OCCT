@@ -29,7 +29,7 @@ is
 	Create returns RWGeometricallyBoundedWireframeShapeRepresentation;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable GeometricallyBoundedWireframeShapeRepresentation from StepShape);
+	              ach : in out Check; ent : GeometricallyBoundedWireframeShapeRepresentation from StepShape);
 
 	WriteStep (me; SW : in out StepWriter; ent : GeometricallyBoundedWireframeShapeRepresentation from StepShape);
 

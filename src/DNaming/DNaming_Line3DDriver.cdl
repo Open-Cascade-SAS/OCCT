@@ -24,7 +24,7 @@ uses
      Wire             from TopoDS,
      Array1OfShape    from TopTools
 is
-  Create returns mutable Line3DDriver from DNaming;
+  Create returns Line3DDriver from DNaming;
     ---Purpose: Constructor
 
     ---Purpose: validation

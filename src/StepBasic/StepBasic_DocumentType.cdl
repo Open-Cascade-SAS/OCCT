@@ -21,7 +21,7 @@ uses
 
 is
 
-    Create returns mutable DocumentType;
+    Create returns DocumentType;
 
     Init (me : mutable; apdt : HAsciiString);
 

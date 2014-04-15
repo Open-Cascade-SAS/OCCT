@@ -29,8 +29,8 @@ uses
 
 is
 
-    Create(S : Shape from TopoDS) returns mutable Loop;
-    Create(BI : BlockIterator) returns mutable Loop;
+    Create(S : Shape from TopoDS) returns Loop;
+    Create(BI : BlockIterator) returns Loop;
 	
     IsShape(me) returns Boolean from Standard is virtual;
 

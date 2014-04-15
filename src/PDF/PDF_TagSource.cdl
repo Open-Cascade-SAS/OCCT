@@ -23,11 +23,11 @@ uses Integer from Standard
 is
 
     
-    Create returns mutable TagSource from  PDF;
+    Create returns TagSource from  PDF;
     
     
     Create (V : Integer from Standard) 
-    returns mutable TagSource from PDF;
+    returns TagSource from PDF;
     
     
     Get (me) returns Integer from Standard;

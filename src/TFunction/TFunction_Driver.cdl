@@ -35,7 +35,7 @@ uses
       
 is 
  
-    Initialize returns mutable Driver from TFunction; 
+    Initialize returns Driver from TFunction; 
 
 
     ---Purpose: initialisation of the driver

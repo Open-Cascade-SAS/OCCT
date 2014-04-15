@@ -25,29 +25,29 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable CartesianPoint;
+	Create returns CartesianPoint;
 	---Purpose: Returns a CartesianPoint
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection) is redefined;
+	      aName : HAsciiString from TCollection) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aCoordinates : mutable HArray1OfReal from TColStd) is virtual;
+	      aName : HAsciiString from TCollection;
+	      aCoordinates : HArray1OfReal from TColStd) is virtual;
 
     	Init2D (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
+	      aName : HAsciiString from TCollection;
 	      X,Y : Real);
 
     	Init3D (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
+	      aName : HAsciiString from TCollection;
 	      X,Y,Z : Real);
 
 	-- Specific Methods for Field Data Access --
 
-	SetCoordinates(me : mutable; aCoordinates : mutable HArray1OfReal);
-	Coordinates (me) returns mutable HArray1OfReal;
+	SetCoordinates(me : mutable; aCoordinates : HArray1OfReal);
+	Coordinates (me) returns HArray1OfReal;
 	CoordinatesValue (me; num : Integer) returns Real;
 	NbCoordinates (me) returns Integer;
 

@@ -29,7 +29,7 @@ is
 	Create returns RWEffectivity;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable Effectivity from StepBasic);
+	              ach : in out Check; ent : Effectivity from StepBasic);
 
 	WriteStep (me; SW : in out StepWriter; ent : Effectivity from StepBasic);
 

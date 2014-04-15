@@ -22,7 +22,7 @@ uses
 
 is
 
-    Create returns mutable ContextDependentShapeRepresentation;
+    Create returns ContextDependentShapeRepresentation;
 
     Init (me : mutable;
     	  aRepRel : ShapeRepresentationRelationship;

@@ -30,7 +30,7 @@ is
 	Create returns RWBrepWithVoids;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable BrepWithVoids from StepShape);
+	              ach : in out Check; ent : BrepWithVoids from StepShape);
 
 	WriteStep (me; SW : in out StepWriter; ent : BrepWithVoids from StepShape);
 

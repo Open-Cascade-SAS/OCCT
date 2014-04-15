@@ -37,7 +37,7 @@ uses
 is
 
     Create(anAtt : Attribute from TDF)
-    	returns mutable DeltaOnAddition from TDF;
+    	returns DeltaOnAddition from TDF;
 	---Purpose: Creates a TDF_DeltaOnAddition.
 
     Apply (me : mutable)

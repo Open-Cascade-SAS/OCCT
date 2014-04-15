@@ -24,19 +24,19 @@ uses
 	Colour from StepVisual
 is
 
-	Create returns mutable FillAreaStyleColour;
+	Create returns FillAreaStyleColour;
 	---Purpose: Returns a FillAreaStyleColour
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aFillColour : mutable Colour from StepVisual) is virtual;
+	      aName : HAsciiString from TCollection;
+	      aFillColour : Colour from StepVisual) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetName(me : mutable; aName : mutable HAsciiString);
-	Name (me) returns mutable HAsciiString;
-	SetFillColour(me : mutable; aFillColour : mutable Colour);
-	FillColour (me) returns mutable Colour;
+	SetName(me : mutable; aName : HAsciiString);
+	Name (me) returns HAsciiString;
+	SetFillColour(me : mutable; aFillColour : Colour);
+	FillColour (me) returns Colour;
 
 fields
 

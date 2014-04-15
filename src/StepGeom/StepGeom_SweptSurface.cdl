@@ -24,21 +24,21 @@ uses
 	HAsciiString from TCollection
 is
 
-	Create returns mutable SweptSurface;
+	Create returns SweptSurface;
 	---Purpose: Returns a SweptSurface
 
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection) is redefined;
+	      aName : HAsciiString from TCollection) is redefined;
 
 	Init (me : mutable;
-	      aName : mutable HAsciiString from TCollection;
-	      aSweptCurve : mutable Curve from StepGeom) is virtual;
+	      aName : HAsciiString from TCollection;
+	      aSweptCurve : Curve from StepGeom) is virtual;
 
 	-- Specific Methods for Field Data Access --
 
-	SetSweptCurve(me : mutable; aSweptCurve : mutable Curve);
-	SweptCurve (me) returns mutable Curve;
+	SetSweptCurve(me : mutable; aSweptCurve : Curve);
+	SweptCurve (me) returns Curve;
 
 fields
 

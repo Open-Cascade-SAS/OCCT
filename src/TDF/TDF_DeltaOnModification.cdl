@@ -38,7 +38,7 @@ uses
 is
 
     Initialize(anAttribute: Attribute from TDF)
-    	returns mutable DeltaOnModification from TDF;
+    	returns DeltaOnModification from TDF;
 	---Purpose: Initializes a TDF_DeltaOnModification.
 
     Apply (me : mutable)

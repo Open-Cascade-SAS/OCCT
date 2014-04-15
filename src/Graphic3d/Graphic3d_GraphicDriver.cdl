@@ -99,7 +99,7 @@ raises
 
 is
         Initialize ( AShrName       : CString from Standard )
-                returns mutable GraphicDriver from Graphic3d;
+                returns GraphicDriver from Graphic3d;
         ---Level: Public
         ---Purpose: Initialises the Driver
 

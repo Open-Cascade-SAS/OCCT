@@ -29,7 +29,7 @@ is
 	Create returns RWPersonalAddress;
 
 	ReadStep (me; data : StepReaderData; num : Integer;
-	              ach : in out Check; ent : mutable PersonalAddress from StepBasic);
+	              ach : in out Check; ent : PersonalAddress from StepBasic);
 
 	WriteStep (me; SW : in out StepWriter; ent : PersonalAddress from StepBasic);
 

@@ -21,9 +21,9 @@ uses
     
    Pnt from gp
 is
-    Create returns mutable Centroid from PXCAFDoc;
+    Create returns Centroid from PXCAFDoc;
     
-    Create (pnt: Pnt from gp) returns mutable Centroid from PXCAFDoc;
+    Create (pnt: Pnt from gp) returns Centroid from PXCAFDoc;
     
     Set (me: mutable; pnt: Pnt from gp);
     

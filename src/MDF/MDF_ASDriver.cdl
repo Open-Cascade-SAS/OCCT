@@ -49,13 +49,13 @@ is
 	--          Attribute from TDF.
 
     NewEmpty(me)
-    	returns mutable Attribute from PDF
+    	returns Attribute from PDF
     	is deferred;
 	---Purpose: Creates a new attribute from PDF.
 
     Paste(me;
     	  aSource     :         Attribute from TDF;
-    	  aTarget     : mutable Attribute from PDF;
+    	  aTarget     : Attribute from PDF;
     	  aRelocTable : SRelocationTable from MDF)
     	is deferred;
 	---Purpose: Translate the contents of <aSource> and put it

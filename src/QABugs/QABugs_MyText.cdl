@@ -23,9 +23,9 @@ uses
     Selection from SelectMgr
 is 
     Create(aText  :ExtendedString  from  TCollection;aPosition  : Pnt  from  gp)
-    returns mutable MyText from QABugs;
+    returns MyText from QABugs;
     Create(aText  :ExtendedString  from  TCollection;aPosition  : Pnt  from  gp;aFont :  CString from Standard; aColor : NameOfColor  from  Quantity; aHeight :Real  from  Standard)
-    returns mutable MyText from QABugs;
+    returns MyText from QABugs;
 
     NbPossibleSelection(me)
     returns Integer from Standard
@@ -33,11 +33,11 @@ is
     
     Compute(me:mutable;
             aPresentationManager: PresentationManager3d from PrsMgr;
-            aPresentation: mutable Presentation from Prs3d;
+            aPresentation: Presentation from Prs3d;
             aMode: Integer from Standard = 0)
     is redefined virtual protected;
 
-    ComputeSelection(me:mutable; aSelection :mutable Selection from SelectMgr;
+    ComputeSelection(me:mutable; aSelection : Selection from SelectMgr;
                                  aMode      : Integer) is redefined virtual protected;
 
 fields

@@ -25,7 +25,7 @@ uses
 is
 
     Create (theMsgDriver : MessageDriver from CDM)
-    returns mutable DimTolStorageDriver from MXCAFDoc;
+    returns DimTolStorageDriver from MXCAFDoc;
 	---Purpose: Returns mutable DimTolStorageDriver from MXCAFDoc;
 
     VersionNumber(me) returns Integer from Standard;
@@ -35,11 +35,11 @@ is
     SourceType(me) returns Type from Standard;
 	---Purpose: Returns the type: XCAFDoc_DimTol.
 
-    NewEmpty (me) returns mutable Attribute from PDF;
+    NewEmpty (me) returns Attribute from PDF;
 
     Paste(me;
     	  Source     :         Attribute from TDF;
-    	  Target     : mutable Attribute from PDF;
+    	  Target     : Attribute from PDF;
     	  RelocTable : SRelocationTable from MDF);
 
 end DimTolStorageDriver;

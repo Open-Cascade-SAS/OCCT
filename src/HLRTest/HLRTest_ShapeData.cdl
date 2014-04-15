@@ -23,7 +23,7 @@ uses
     
 is
     Create(CVis,COVis,CIVis,CHid,COHid,CIHid : Color from Draw)
-    returns mutable ShapeData from HLRTest; 
+    returns ShapeData from HLRTest; 
     
     VisibleColor(me: mutable; CVis : Color from Draw)
     	---C++: inline
