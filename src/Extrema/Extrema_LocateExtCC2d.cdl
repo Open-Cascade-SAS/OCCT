@@ -25,8 +25,7 @@ uses   POnCurv2d   from Extrema,
        Vec2d       from gp,
        HArray1OfPnt2d from TColgp,
        Curve2d     from Adaptor2d,
-       Curve2dTool from Extrema,
-       LCCache2d   from Extrema
+       Curve2dTool from Extrema
 
 raises  DomainError  from Standard,
         NotDone      from StdFail

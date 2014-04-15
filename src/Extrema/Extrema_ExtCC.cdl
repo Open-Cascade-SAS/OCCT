@@ -147,7 +147,6 @@ fields
     myInf: Real [2];
     mySup: Real [2];
     myTol:  Real [2];
-    myCacheLists: ListOfTransient from TColStd [2]; -- lists of Handle(Extrema_CCache)
     P1f:      Pnt;
     P1l:      Pnt;
     P2f:      Pnt;

@@ -51,6 +51,7 @@ is
     deferred class MultipleVarFunctionWithHessian;
     deferred class FunctionSet;
     deferred class FunctionSetWithDerivatives;
+    imported GlobOptMin;
     class IntegerRandom;
     class Gauss;
     class GaussLeastSquare;

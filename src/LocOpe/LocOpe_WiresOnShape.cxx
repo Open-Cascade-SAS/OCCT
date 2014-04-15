@@ -1158,7 +1158,7 @@ void FindInternalIntersections(const TopoDS_Edge& theEdge,
           }
         }
       }
-      if (!IntersFound) //intersection is inside "theEdge" => split
+      if (!IntersFound && aDist <= Precision::Confusion()) //intersection is inside "theEdge" => split
       {
         gp_Pnt aPoint = aCurve->Value(anIntPar);
         if (aPoint.Distance(thePnt[0]) > BRep_Tool::Tolerance(theVertices[0]) &&

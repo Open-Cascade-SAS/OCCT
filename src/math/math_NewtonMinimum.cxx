@@ -143,12 +143,19 @@ void math_NewtonMinimum::Perform(math_MultipleVarFunctionWithHessian& F,
     }
    
     LU.Solve(TheGradient, TheStep);
-    *suivant = *precedent - TheStep;
+    Standard_Boolean hasProblem = Standard_False;
+    do
+    {
+      *suivant = *precedent - TheStep;
 
+      //  Gestion de la convergence
+      hasProblem = !(F.Value(*suivant, TheMinimum));
 
-    //  Gestion de la convergence
-
-    F.Value(*suivant, TheMinimum);
+      if (hasProblem)
+      {
+        TheStep /= 2.0;
+      }
+    } while (hasProblem);
 
     if (IsConverged()) { NbConv++; }
     else               { NbConv=0; }

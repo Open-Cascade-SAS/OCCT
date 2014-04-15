@@ -419,7 +419,17 @@ static void CurveHermite (const TopOpeBRepDS_DataStructure& DStr,
       if (ext.NbExt()!=0){ 
         Extrema_POnCurv POnC, POnL;
         ext.Points(1, POnC, POnL);
-        param.ChangeValue(nb) =POnC.Parameter();
+        if (POnC.Value().Distance(POnL.Value()) < Precision::Confusion())
+          param.ChangeValue(nb) =POnC.Parameter();
+        else
+        {
+          if (!cproj.Value(nb).IsNull()) {
+            cproj.Value(nb)->D0(cproj.Value(nb)->LastParameter(),p01);
+          }
+          else if (!cproj.Value(nb+1).IsNull()) {
+            cproj.Value(nb+1)->D0(cproj.Value(nb+1)->FirstParameter(),p01);
+          }
+        }
       }
     }
     if (!ext.IsDone()||ext.NbExt()==0) {

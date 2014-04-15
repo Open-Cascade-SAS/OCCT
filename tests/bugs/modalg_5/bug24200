@@ -10,12 +10,6 @@ restore [locate_data_file bug24200_c1] c1
 restore [locate_data_file bug24200_c2] c2
 set info_1 [extrema c1 c2]
 
-if { [regexp "ext_15" $info_1] != 1 } {
-    puts "Error : Extrema is wrong"
-} else {
-    puts "OK : Extrema is correct"
-}
-
 trim c1t c1 677.8 678.8
 trim c2t c2 2477 2479
 extrema c1t c2t
@@ -34,4 +28,3 @@ if { [expr 1.*abs($checkdist - $dist)/$checkdist] > 0.1 } {
 } else {
     puts "OK: Distance is correct"
 }
-

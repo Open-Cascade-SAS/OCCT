@@ -92,9 +92,8 @@ is
     --  generic classes for  CURVE-CURVE extremas:
     ----------------------------------------------
     private generic class FuncExtCC, SeqPOnC;
-    generic class GenExtCC, CCF;
+    generic class GenExtCC;
     generic class GenLocateExtCC, CCLocF;
-    generic class CurveCache;
     
     
     ----------------------------------------------
@@ -126,36 +125,24 @@ is
     --  Curve-Curve:                                  
     --  3d:
     class ExtCC;
-    
-    class CCache instantiates CurveCache from Extrema
-        (Curve from Adaptor3d,
-         Pnt from gp,
-         HArray1OfPnt from TColgp);
 
     class ECC instantiates GenExtCC from Extrema
         (Curve from Adaptor3d,
          CurveTool from Extrema,
          Curve from Adaptor3d,
          CurveTool from Extrema,
-         CCache from Extrema,
          HArray1OfPnt from TColgp,
          POnCurv from Extrema,
          Pnt from gp,
          Vec from gp);
 
     class LocateExtCC;
-    
-    class LCCache instantiates CurveCache from Extrema 
-        (Curve from Adaptor3d,
-         Pnt from gp,
-         HArray1OfPnt from TColgp);
 
     class ELCC    instantiates GenExtCC from Extrema
         (Curve from Adaptor3d,
          CurveTool from Extrema,
          Curve from Adaptor3d,
          CurveTool from Extrema,
-         LCCache from Extrema,
          HArray1OfPnt from TColgp,
          POnCurv from Extrema,
          Pnt from gp,
@@ -173,17 +160,11 @@ is
     -- 2d:
     class ExtCC2d;
 
-    class CCache2d instantiates CurveCache from Extrema
-        (Curve2d from Adaptor2d,
-         Pnt2d from gp,
-         HArray1OfPnt2d from TColgp);
-
     class ECC2d instantiates GenExtCC from Extrema
         (Curve2d from Adaptor2d,
          Curve2dTool from Extrema,
          Curve2d from Adaptor2d,
          Curve2dTool from Extrema,
-         CCache2d from Extrema,
          HArray1OfPnt2d from TColgp,
          POnCurv2d from Extrema,
          Pnt2d from gp,
@@ -191,17 +172,12 @@ is
     
     class LocateExtCC2d;
     
-    class LCCache2d instantiates CurveCache from Extrema
-        (Curve2d from Adaptor2d,
-         Pnt2d from gp,
-         HArray1OfPnt2d from TColgp);
 
     class ELCC2d instantiates GenExtCC from Extrema
         (Curve2d from Adaptor2d,
          Curve2dTool from Extrema,
          Curve2d from Adaptor2d,
          Curve2dTool from Extrema,
-         LCCache2d from Extrema,
          HArray1OfPnt2d from TColgp,
          POnCurv2d from Extrema,
          Pnt2d from gp,

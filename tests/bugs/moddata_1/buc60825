@@ -11,7 +11,7 @@ checkshape aEdge2
 
 distmini d aEdge1 aEdge2
 regexp {NB RESULTS +: +([-0-9.+eE]+)} [BUC60825 aEdge1 aEdge2] full ext
-if { $ext != 0 } {
+if { $ext != 1 } {
     puts "Error : The extrema has not been calculated."
 }
 

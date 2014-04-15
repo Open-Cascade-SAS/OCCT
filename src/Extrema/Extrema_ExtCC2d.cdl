@@ -27,7 +27,6 @@ uses POnCurv2d           from Extrema,
      SequenceOfReal      from TColStd,
      Curve2d             from Adaptor2d,
      Curve2dTool         from Extrema,
-     CCache2d            from Extrema,
      ECC2d               from Extrema
 
 
@@ -126,9 +125,7 @@ is
 
     is static protected;    	
 
---  modified by NIZHNY-EAP Thu Jan 27 16:53:25 2000 ___BEGIN___
-    Results(me: in out;AlgExt: ECC2d from Extrema; C : Curve2d from Adaptor2d;
---  modified by NIZHNY-EAP Thu Jan 27 16:53:26 2000 ___END___
+    Results(me: in out;AlgExt: ECC2d from Extrema;
     	    Ut11, Ut12, Ut21, Ut22: Real;
     	    Period1 : Real from Standard = 0.0;
             Period2 : Real from Standard = 0.0)

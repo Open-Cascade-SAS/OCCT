@@ -11,7 +11,7 @@ restore [locate_data_file OCC862_2.draw] c2
 
 set result [extrema c1 c2]
 set err [llength $result]
-if { $err <= 1} {
+if { $err != 1} {
     puts "Faulty OCC862 (amount of solution): command extrema does NOT work properly"
 } else {
     puts "OCC862 OK (amount of solution): command extrema works properly"

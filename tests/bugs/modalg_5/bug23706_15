@@ -11,21 +11,12 @@ puts ""
 set info [2dextrema b7 b8]
 
 set status 0
-for { set i 2 } { $i <= 5 } { incr i } {
-    regexp "dist $i: +(\[-0-9.+eE\]+)" $info full pp1
-    if { $pp1 !=4.3624023150195192 } {
-       puts "Error : Extrema is wrong on dist $i"
-       set status 1
-    }
-}
 
-regexp {dist 1: +([-0-9.+eE]+)} $info full pp2
-set pp_ch 4.3624023150195184
-
-if { $pp2 != $pp_ch } {
-    puts "Error : Extrema is wrong on dist 1"
+regexp "dist 1: +(\[-0-9.+eE\]+)" $info full pp
+if { abs($pp - 2.3246777409727225) < 1.0e-7 } {
+	puts "Error : Extrema is wrong"
     set status 1
-}
+    }
 
 if { $status != 0 } {
     puts "Error : Extrema is wrong"

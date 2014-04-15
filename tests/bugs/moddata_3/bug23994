@@ -27,13 +27,6 @@ extrema airfl rhomb
 
 if { [isdraw ext_1] } {
    mkedge result ext_1
-   set length 9.09515
-} else {
-   puts "${BugNumber}: invalid result"
-}
-
-if { [isdraw ext_2] } {
-   mkedge result ext_2
    set length 5.14563
 } else {
    puts "${BugNumber}: invalid result"

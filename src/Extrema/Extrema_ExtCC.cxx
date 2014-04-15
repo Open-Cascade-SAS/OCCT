@@ -45,7 +45,6 @@
 
 #include <Adaptor3d_Curve.hxx>
 #include <Extrema_CurveTool.hxx>
-#include <Extrema_CCache.hxx>
 
 //=======================================================================
 //function : Extrema_ExtCC
@@ -72,8 +71,9 @@ Extrema_ExtCC::Extrema_ExtCC(const Adaptor3d_Curve& C1,
 			       const Standard_Real      V1,
 			       const Standard_Real      V2,
 			       const Standard_Real      TolC1,
-			       const Standard_Real      TolC2) :
-			         myDone (Standard_False)
+			       const Standard_Real      TolC2)
+: myECC(C1, C2, U1, U2, V1, V2),
+  myDone (Standard_False)
 {
   SetCurve (1, C1, U1, U2);
   SetCurve (2, C2, V1, V2);
@@ -91,8 +91,9 @@ Extrema_ExtCC::Extrema_ExtCC(const Adaptor3d_Curve& C1,
 Extrema_ExtCC::Extrema_ExtCC(const Adaptor3d_Curve& C1, 
 			       const Adaptor3d_Curve& C2,
 			       const Standard_Real      TolC1,
-			       const Standard_Real      TolC2) :
-                     myDone (Standard_False)
+			       const Standard_Real      TolC2)
+: myECC(C1, C2),
+  myDone (Standard_False)
 {
   SetCurve (1, C1, C1.FirstParameter(), C1.LastParameter());
   SetCurve (2, C2, C2.FirstParameter(), C2.LastParameter());
@@ -111,9 +112,6 @@ void Extrema_ExtCC::SetCurve (const Standard_Integer theRank, const Adaptor3d_Cu
   Standard_OutOfRange_Raise_if (theRank < 1 || theRank > 2, "Extrema_ExtCC::SetCurve()")
   Standard_Integer anInd = theRank - 1;
   myC[anInd] = (Standard_Address)&C;
-  
-  //clear the previous cache to rebuild it later in Perform()
-  myCacheLists[anInd].Clear();
 }
 
 //=======================================================================
@@ -163,6 +161,8 @@ void Extrema_ExtCC::SetTolerance (const Standard_Integer theRank, const Standard
 void Extrema_ExtCC::Perform()
 {  
   Standard_NullObject_Raise_if (!myC[0] || !myC[1], "Extrema_ExtCC::Perform()")
+  myECC.SetParams(*((Adaptor3d_Curve*)myC[0]), 
+                  *((Adaptor3d_Curve*)myC[1]), myInf[0], mySup[0], myInf[1], mySup[1]);
   myDone = Standard_False;
   mypoints.Clear();
   mySqDist.Clear();
@@ -193,8 +193,6 @@ void Extrema_ExtCC::Perform()
   else mydist21 = P1l.SquareDistance(P2f);
   if (Precision::IsInfinite(U12) || Precision::IsInfinite(U22)) mydist22 = RealLast();
   else mydist22 = P1l.SquareDistance(P2l);
-
-  myECC.SetTolerance (Tol);
 
   //Depending on the types of curves, the algorithm is chosen:
   //- _ExtElC, when one of the curves is a line and the other is elementary,
@@ -249,169 +247,12 @@ void Extrema_ExtCC::Perform()
       Results(CCXtrem, U11, U12, U21, U22);
     }
     else {
-      Standard_Integer i;
-      Standard_Integer aNbS = 32; //default number of sample points per interval (why 32?)
-      for (i = 0; i < 2; i++) {
-	TColStd_ListOfTransient& aCacheList = myCacheLists[i];
-	if (aCacheList.IsEmpty()) {
-	  //no caches, build them
-	  Adaptor3d_Curve& aC = *(Adaptor3d_Curve*)myC[i];
-          //single interval from myInf[i] to mySup[i]
-          Handle(Extrema_CCache) aCache = new Extrema_CCache(aC, myInf[i], mySup[i], aNbS, Standard_True);
-          aCacheList.Append (aCache);
-	}
-      }
-      Handle(Extrema_CCache) aCache1 = Handle(Extrema_CCache)::DownCast (myCacheLists[0].First());
-      myECC.SetCurveCache (1, aCache1);
-      Handle(Extrema_CCache) aCache2 = Handle(Extrema_CCache)::DownCast (myCacheLists[1].First());
-      myECC.SetCurveCache (2, aCache2);
       myECC.Perform();
-      Results (myECC, U11, U12, U21, U22);
+      Results(myECC, U11, U12, U21, U22);
     }
   } else {
-    //common case - use _GenExtCC
-    //1. check and prepare caches
-
-    Standard_Integer i;
-    Standard_Integer aNbS[2] = {32, 32}, aNbInter[2] = {1, 1};
-    Standard_Real Coeff[2] = {1., 1.};
-    Standard_Real rf = 0., rl = 0., LL[2] = {-1., -1.};
-    Standard_Boolean KnotSampling[2] = {Standard_False, Standard_False};
-    for (i = 0; i < 2; i++) {
-      TColStd_ListOfTransient& aCacheList = myCacheLists[i];
-      if (aCacheList.IsEmpty()) {
-        //no caches, build them
-        Adaptor3d_Curve& aC = *(Adaptor3d_Curve*)myC[i];
-
-	Standard_Real du1 = 0., t = 0.;
-	gp_Pnt P1, P2;
-        GeomAbs_CurveType aType = aC.GetType();
-        switch (aType) {
-        case GeomAbs_BezierCurve:
-          aNbS[i] = aC.NbPoles() * 2;
-          break;
-        case GeomAbs_BSplineCurve:
-          if (aC.Degree() <= 3 &&
-              aC.NbKnots() > 2)
-            KnotSampling[i] = Standard_True;
-          
-          aNbS[i] = aC.NbPoles() * 2;
-          rf = (Extrema_CurveTool::BSpline(*((Adaptor3d_Curve*)myC[i])))->FirstParameter();
-          rl = (Extrema_CurveTool::BSpline(*((Adaptor3d_Curve*)myC[i])))->LastParameter();
-          aNbS[i] = (Standard_Integer) ( aNbS[i] * ((mySup[i] - myInf[i]) / (rl - rf)) + 1 );
-        case GeomAbs_OtherCurve:
-        case GeomAbs_Line:
-          //adjust number of sample points for Lines, B-Splines and Other curves
-          aNbInter[i] = aC.NbIntervals (GeomAbs_C2);
-          aNbS[i] = Max(aNbS[i] / aNbInter[i], 3);
-	  LL[i] = 0.;
-	  du1 = (mySup[i] - myInf[i]) / ((aNbS[i]-1)*aNbInter[i]);
-	  P1 = Extrema_CurveTool::Value(*((Adaptor3d_Curve*)myC[i]), myInf[i]);
-	  for(t = myInf[i] + du1; t <= mySup[i]; t += du1) {
-	    P2 = Extrema_CurveTool::Value(*((Adaptor3d_Curve*)myC[i]), t);
-	    LL[i] += P1.Distance(P2);
-	    P1 = P2;
-	  }
-	  LL[i] /= ((aNbS[i]-1)*aNbInter[i]);
-          break;
-        default: 
-	  break;
-        }
-      }
-    }
-
-    if(LL[0] > 0. && LL[1] > 0.) {
-      if(LL[0] > 4.*LL[1]) {
-        Coeff[0] = LL[0]/LL[1]/2.;
-        if (aNbS[0] * Coeff[0] <= 10000.0)
-          aNbS[0]  = (Standard_Integer) ( aNbS[0] * Coeff[0] );
-      }
-      else if(LL[1] > 4.*LL[0]) {
-        Coeff[1] = LL[1]/LL[0]/2.;
-        if (aNbS[1] * Coeff[1] <= 10000.0)
-          aNbS[1]  = (Standard_Integer) (aNbS[1] * Coeff[1] );
-      }
-    }
-    //modified by NIZNHY-PKV Tue Apr 17 10:01:32 2012f
-    Standard_Integer aNbSTresh;
-    //
-    aNbSTresh=10000;
-    //
-    for (i = 0; i < 2; ++i) {
-      if (aNbS[i]>aNbSTresh) {
-	aNbS[i]=aNbSTresh;
-      }
-    }
-    //modified by NIZNHY-PKV Tue Apr 17 10:01:34 2012t
-    for (i = 0; i < 2; i++) {
-      TColStd_ListOfTransient& aCacheList = myCacheLists[i];
-      if (aCacheList.IsEmpty()) {
-        //no caches, build them
-        Adaptor3d_Curve& aC = *(Adaptor3d_Curve*)myC[i];
-
-        if (aC.GetType() >= GeomAbs_BSplineCurve)
-        {
-          //can be multiple intervals, one cache per one C2 interval
-          TColStd_Array1OfReal anArr (1, aNbInter[i] + 1);
-          aC.Intervals (anArr, GeomAbs_C2);
-          
-          if (KnotSampling[i])
-          {
-            Standard_Integer NbIntervCN = aC.NbIntervals(GeomAbs_CN);
-            TColStd_Array1OfReal IntervalsCN(1, NbIntervCN + 1);
-            aC.Intervals(IntervalsCN, GeomAbs_CN);
-
-            Standard_Integer j = 1, start_j = 1, k;
-            Standard_Real NextKnot;
-            for (k = 1; k <= aNbInter[i]; k++)
-            {
-              do
-              {
-                NextKnot = IntervalsCN(j+1);
-                j++;
-              }
-              while (NextKnot != anArr(k+1));
-
-              Handle(Extrema_CCache) aCache =
-                new Extrema_CCache(aC, anArr(k), anArr(k+1),
-                                    IntervalsCN, start_j, j, Coeff[i]);
-              aCacheList.Append (aCache);
-
-              start_j = j;
-            }
-          }
-          else
-          {
-            for (Standard_Integer k = 1; k <= aNbInter[i]; k++) {
-              Handle(Extrema_CCache) aCache =
-                new Extrema_CCache(aC, anArr(k), anArr(k+1), aNbS[i], Standard_True);
-              aCacheList.Append (aCache);
-            }
-          }
-        }
-        else
-        {
-          //single interval from myInf[i] to mySup[i]
-          Handle(Extrema_CCache) aCache = new Extrema_CCache (aC,
-            myInf[i], mySup[i], aNbS[i], Standard_True);
-          aCacheList.Append (aCache);
-        }
-      }
-    }
-
-    //2. process each cache from one list with each cache from the other
-    TColStd_ListIteratorOfListOfTransient anIt1 (myCacheLists[0]);
-    for (; anIt1.More(); anIt1.Next()) {
-      Handle(Extrema_CCache) aCache1 = Handle(Extrema_CCache)::DownCast (anIt1.Value());
-      myECC.SetCurveCache (1, aCache1);
-      TColStd_ListIteratorOfListOfTransient anIt2 (myCacheLists[1]);
-      for (; anIt2.More(); anIt2.Next()) {
-        Handle(Extrema_CCache) aCache2 = Handle(Extrema_CCache)::DownCast (anIt2.Value());
-        myECC.SetCurveCache (2, aCache2);
-        myECC.Perform();
-        Results(myECC, U11, U12, U21, U22);
-      }
-    }
+    myECC.Perform();
+    Results(myECC, U11, U12, U21, U22);
   }
 }
 

@@ -8,9 +8,19 @@ puts ""
 
 bsplinecurve r3 2 6 1 3 2 1 3 1 4 1 5 1 6 3 2 5 3 1 3 7 3 1 4 8 3 1 4 8 3 1 4 8 3 1 5 9 3 1 9 7 3 1
 bsplinecurve r4 2 6 2 3 2.5 1 3 1 3.5 1 4 1 4.5 3 -1 2 3 1 1 11 3 1 3 9 3 1 3 9 3 1 3 9 3 1 5 7 3 1 7 4 3 1
-set info [extrema r3 r4]
+extrema r3 r4
 
-if { [regexp "Extrema 3 is point : 4 8 3" $info] != 1 || [regexp "Extrema 8 is point : 4 8 3" $info] != 1 } {
+cvalue ext_1 0 x y z
+set info [dump x] 
+regexp "(\[-0-9.+eE\])" $info full xx
+set info [dump y] 
+regexp "(\[-0-9.+eE\])" $info full yy
+set info [dump z] 
+regexp "(\[-0-9.+eE\])" $info full zz
+
+if { sqrt(($xx - 4.0) * ($xx - 4.0) + 
+	      ($yy - 8.0) * ($yy - 8.0) + 
+	      ($zz - 3.0) * ($zz - 3.0)) > 1.0e-7} {
     puts "Error : Point of extrema is wrong"
 } else {
     puts "OK: Point of extrema is valid"
