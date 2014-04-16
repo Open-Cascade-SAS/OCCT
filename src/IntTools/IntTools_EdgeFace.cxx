@@ -400,40 +400,41 @@ void IntTools_EdgeFace::Prepare()
 //function : FindProjectableRoot
 //purpose  : 
 //=======================================================================
-void IntTools_EdgeFace::FindProjectableRoot 
-  (const Standard_Real tt1,
-   const Standard_Real tt2,
-   const Standard_Integer ff1,
-   const Standard_Integer ff2,
-   Standard_Real& tRoot)
+  void IntTools_EdgeFace::FindProjectableRoot (const Standard_Real tt1,
+                                               const Standard_Real tt2,
+                                               const Standard_Integer ff1,
+                                               const Standard_Integer /*ff2*/,
+                                               Standard_Real& tRoot)
 {
   Standard_Real tm, t1, t2, aEpsT;
-  Standard_Integer anIsProj1, anIsProj2, anIsProjm;
-  aEpsT=0.5*myEpsT;
-  //
+  Standard_Integer anIsProj1, anIsProjm;
+  aEpsT = 0.5 * myEpsT;
+
   // Root is inside [tt1, tt2]
-  t1=tt1;  
-  t2=tt2;
-  anIsProj1=ff1;
-  anIsProj2=ff2;
-  
-  for(;;) {
-    if (fabs(t1-t2) < aEpsT) {
-      tRoot=(anIsProj1) ? t1 : t2;
+  t1 = tt1;
+  t2 = tt2;
+  anIsProj1 =  ff1;
+
+  for(;;)
+  {
+    if (fabs(t1 - t2) < aEpsT)
+    {
+      tRoot = (anIsProj1) ? t1 : t2;
       return;
     }
-    tm=.5*(t1+t2);
-    anIsProjm=IsProjectable(tm);
-    
-    if (anIsProjm != anIsProj1) {
-      t2=tm;
-      anIsProj2=anIsProjm;
+    tm = 0.5 * (t1 + t2);
+    anIsProjm = IsProjectable(tm);
+
+    if (anIsProjm != anIsProj1)
+    {
+      t2 = tm;
     }
-    else {
-      t1=tm;
-      anIsProj1=anIsProjm;
+    else
+    {
+      t1 = tm;
+      anIsProj1 = anIsProjm;
     }
-  }
+  } // for(;;)
 }
 //=======================================================================
 //function : IsProjectable
