@@ -39,40 +39,6 @@
 #include <TopTools_DataMapOfShapeInteger.hxx>
 
 //=======================================================================
-//function : PropagateRecurs
-//purpose  : 
-//=======================================================================
-static void PropagateRecurs(const TopTools_IndexedDataMapOfShapeListOfShape& mapEF,
-		      const TopoDS_Shape& fac,
-		      TopTools_MapOfShape& mapF)
-{
-  if (mapF.Contains(fac))
-  {
-    return;
-  }
-  
-  mapF.Add(fac);  // attention, if oriented == Standard_True, fac should
-                  // be FORWARD or REVERSED. It is not checked.
-
-  TopExp_Explorer ex;
-  for (ex.Init(fac,TopAbs_EDGE); ex.More(); ex.Next())
-  {
-    const TopoDS_Edge& edg = TopoDS::Edge(ex.Current());
-    // test if the edge is in the map (only orienteed edges are present)
-    if (mapEF.Contains(edg))
-    {
-      for (TopTools_ListIteratorOfListOfShape itl(mapEF.FindFromKey(edg)); itl.More(); itl.Next())
-      {
-        if (!itl.Value().IsSame(fac) && !mapF.Contains(itl.Value()))
-        {
-          PropagateRecurs(mapEF,itl.Value(),mapF);
-        }
-      }
-    }
-  }
-}
-
-//=======================================================================
 //function : Propagate
 //purpose  : 
 //=======================================================================
