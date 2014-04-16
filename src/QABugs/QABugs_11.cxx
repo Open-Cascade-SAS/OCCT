@@ -2482,7 +2482,7 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
       Standard_Real res, r=RealLast();
       res = r * r;
       
-      sin(1.); //this function tests FPU flags and raises signal (tested on LINUX).
+      (void)sin(1.); //this function tests FPU flags and raises signal (tested on LINUX).
 
       di << "-- "<<res<<"="<<r<<"*"<<r<<"   Does not Caught... KO"<< "\n";
       Succes = Standard_False;
