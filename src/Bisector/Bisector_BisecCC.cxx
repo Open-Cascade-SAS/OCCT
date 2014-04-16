@@ -164,7 +164,7 @@ void  Bisector_BisecCC::Perform(const Handle(Geom2d_Curve)& Cu1,
     }
   }
 
-  if ( !myPolygon.Length() == 0) {
+  if ( myPolygon.Length() != 0 ) {
     SupLastParameter();
     //----------------------------------------------
     // Construction of the polygon of the bissectrice.

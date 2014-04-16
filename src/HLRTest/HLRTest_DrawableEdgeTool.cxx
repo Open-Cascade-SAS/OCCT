@@ -188,7 +188,7 @@ HLRTest_DrawableEdgeTool::DrawEdge (Draw_Display& D,
 	   It.NextVisible()) {
 	It.Visible(sta,tolsta,end,tolend);
 	D.MoveTo(ec.Value3D(sta));
-	if (!ec.GetType() == GeomAbs_Line) {
+	if (ec.GetType() != GeomAbs_Line) {
 	  Standard_Integer nbPnt = 100;
 	  Standard_Real step = (end-sta)/(nbPnt+1);
 	  
@@ -221,7 +221,7 @@ HLRTest_DrawableEdgeTool::DrawEdge (Draw_Display& D,
 	   It.NextHidden()) {
 	It.Hidden(sta,tolsta,end,tolend);
 	D.MoveTo(ec.Value3D(sta));
-	if (!ec.GetType() == GeomAbs_Line) {
+	if (ec.GetType() != GeomAbs_Line) {
 	  Standard_Integer nbPnt = 100;
 	  Standard_Real step = (end-sta)/(nbPnt+1);
 	  

@@ -261,7 +261,7 @@ void LocOpe_BuildShape::Perform(const TopTools_ListOfShape& L)
       }
       imbSh.Clear();
     }
-  } while (!imbSh.Extent() == 0);
+  } while (imbSh.Extent() != 0);
 
   Standard_Integer nbsol = lsolid.Extent();
   Standard_Integer nbshl = lshell.Extent();

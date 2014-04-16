@@ -1145,7 +1145,7 @@ Standard_Boolean AIS_Dimension::InitCircularDimension (const TopoDS_Shape& theSh
     }
 
     BRepAdaptor_Curve anAdaptedCurve (anEdge);
-    if (!anAdaptedCurve.GetType() == GeomAbs_Circle)
+    if (anAdaptedCurve.GetType() != GeomAbs_Circle)
     {
       return Standard_False;
     }

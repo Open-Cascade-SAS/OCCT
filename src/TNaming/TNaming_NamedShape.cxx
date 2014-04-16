@@ -557,7 +557,7 @@ void TNaming_NamedShape::References(const Handle(TDF_DataSet)& aDataSet) const
 void TNaming_NamedShape::Add(TNaming_Node*& pdn )
 { 
   pdn->myAtt             = this;
-  if (!myNode == 0L){
+  if (myNode != 0L){
     pdn->nextSameAttribute = myNode;
   }
   myNode = pdn;

@@ -602,7 +602,7 @@ static gp_Pnt2d ValueOnFace(const Standard_Real        U,
 
   Standard_Real UU =0., Dist = Precision::Infinite(), D1, D2;
 
-  if ( !Ext.NbPoints() == 0 ) {    
+  if ( Ext.NbPoints() != 0 ) {
     UU = Ext.LowerDistanceParameter();
     Dist = Ext.LowerDistance();
   }
