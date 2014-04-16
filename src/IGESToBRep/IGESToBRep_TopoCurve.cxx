@@ -589,7 +589,7 @@ TopoDS_Shape  IGESToBRep_TopoCurve::TransferOffsetCurve
     //AddFail(start, "OffsetCurve Transfer Error : Null IGESEntity");
     return  res;
   }
-  if (!start->OffsetType()==1) {
+  if (start->OffsetType() != 1) {
     Message_Msg Msg1100("IGES_1100"); //"Offset distance flag different from 1 not treated"
     SendFail(start,Msg1100);
     //AddFail(start, "Offset distance flag different from 1 not treated");
@@ -609,7 +609,7 @@ TopoDS_Shape  IGESToBRep_TopoCurve::TransferOffsetCurve
 
   while (BaseCrv->IsKind(STANDARD_TYPE(IGESGeom_OffsetCurve))) {
     DeclareAndCast(IGESGeom_OffsetCurve, OffCrv, BaseCrv);
-    if (!OffCrv->OffsetType()==1) {
+    if (OffCrv->OffsetType() != 1) {
        Message_Msg Msg1100("IGES_1100"); //"Offset distance flag different from 1 not treated"
        SendFail(start,Msg1100);
        return  res;
@@ -746,7 +746,7 @@ TopoDS_Shape  IGESToBRep_TopoCurve::Transfer2dOffsetCurve
     return  res;
   }
 
-  if (!start->OffsetType()==1) {
+  if (start->OffsetType() != 1) {
     Message_Msg Msg1100("IGES_1100"); //"Offset distance flag different from 1 not treated"
     SendFail(start,Msg1100);
   }

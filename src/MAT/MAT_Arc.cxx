@@ -115,15 +115,15 @@ Standard_Boolean MAT_Arc::HasNeighbour(const Handle(MAT_Node)& aNode,
 {
   if (aSide == MAT_Left) {
 //    if (aNode == FirstNode())  return (!firstArcLeft  == NULL);
-    if (aNode == FirstNode())  return (!firstArcLeft  == 0);
+    if (aNode == FirstNode())  return (firstArcLeft != 0);
 //    if (aNode == SecondNode()) return (!secondArcLeft == NULL);
-    if (aNode == SecondNode()) return (!secondArcLeft == 0);
+    if (aNode == SecondNode()) return (secondArcLeft != 0);
   }
   else {
 //    if (aNode == FirstNode())  return (!firstArcRight  == NULL);
-    if (aNode == FirstNode())  return (!firstArcRight  == 0);
+    if (aNode == FirstNode())  return (firstArcRight != 0);
 //    if (aNode == SecondNode()) return (!secondArcRight == NULL);
-    if (aNode == SecondNode()) return (!secondArcRight == 0);
+    if (aNode == SecondNode()) return (secondArcRight != 0);
   }
   Standard_DomainError::Raise("MAT_Arc::HasNeighbour");
   return Standard_False;

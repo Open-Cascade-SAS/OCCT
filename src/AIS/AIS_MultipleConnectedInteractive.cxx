@@ -89,7 +89,7 @@ void AIS_MultipleConnectedInteractive::Connect(const Handle(AIS_InteractiveObjec
 //=======================================================================
 Standard_Boolean AIS_MultipleConnectedInteractive::HasConnection() const 
 {
-  return (!myReferences.Length()==0);
+  return (myReferences.Length() != 0);
 }
 
 //=======================================================================

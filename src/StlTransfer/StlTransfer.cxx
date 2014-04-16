@@ -61,7 +61,7 @@ static void Normal(const TopoDS_Face&  aFace,
     CSLib_NormalStatus NStat;
     S.Initialize(aFace, Standard_False);
     const TColgp_Array1OfPnt2d& UVNodes = T->UVNodes();
-    if (!S.GetType() == GeomAbs_Plane) {
+    if (S.GetType() != GeomAbs_Plane) {
       for (i = UVNodes.Lower(); i <= UVNodes.Upper(); i++) {
 	U = UVNodes(i).X();
 	V = UVNodes(i).Y();

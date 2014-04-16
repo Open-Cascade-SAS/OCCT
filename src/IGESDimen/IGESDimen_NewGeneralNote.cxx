@@ -277,7 +277,7 @@ IGESDimen_NewGeneralNote::IGESDimen_NewGeneralNote ()    {  }
     Standard_Boolean  IGESDimen_NewGeneralNote::IsMirrored
   (const Standard_Integer Index) const 
 {
-  return (! theMirrorFlags->Value(Index) == 0);
+  return (theMirrorFlags->Value(Index) != 0);
 }
 
     Standard_Integer  IGESDimen_NewGeneralNote::RotateFlag
