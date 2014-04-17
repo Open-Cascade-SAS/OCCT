@@ -63,7 +63,6 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Context, Standard_Transient)
 namespace
 {
   static const Handle(OpenGl_Resource) NULL_GL_RESOURCE;
-  static const GLdouble OpenGl_DefaultPlaneEq[] = {0.0, 0.0, 0.0, 0.0};
 };
 
 // =======================================================================
