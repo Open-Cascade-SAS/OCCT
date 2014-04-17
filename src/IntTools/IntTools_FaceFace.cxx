@@ -519,8 +519,8 @@ static Standard_Boolean isTreatAnalityc(const TopoDS_Face& theF1,
 //function : Perform
 //purpose  : intersect surfaces of the faces
 //=======================================================================
-  void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
-                                  const TopoDS_Face& aF2)
+void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
+                                const TopoDS_Face& aF2)
 {
   Standard_Boolean RestrictLine = Standard_False, hasCone = Standard_False;
   
@@ -2616,12 +2616,12 @@ Handle(Geom2d_BSplineCurve) MakeBSpline2d(const Handle(IntPatch_WLine)& theWLine
 //function : CorrectSurfaceBoundaries
 //purpose  : 
 //=======================================================================
- void CorrectSurfaceBoundaries(const TopoDS_Face&  theFace,
-                               const Standard_Real theTolerance,
-                               Standard_Real&      theumin,
-                               Standard_Real&      theumax, 
-                               Standard_Real&      thevmin, 
-                               Standard_Real&      thevmax) 
+void CorrectSurfaceBoundaries(const TopoDS_Face&  theFace,
+                              const Standard_Real theTolerance,
+                              Standard_Real&      theumin,
+                              Standard_Real&      theumax, 
+                              Standard_Real&      thevmin, 
+                              Standard_Real&      thevmax) 
 {
   Standard_Boolean enlarge, isuperiodic, isvperiodic;
   Standard_Real uinf, usup, vinf, vsup, delta;
@@ -2662,7 +2662,8 @@ Handle(Geom2d_BSplineCurve) MakeBSpline2d(const Handle(IntPatch_WLine)& theWLine
   if((aType==GeomAbs_BezierSurface) ||
      (aType==GeomAbs_BSplineSurface) ||
      (aType==GeomAbs_SurfaceOfExtrusion) ||
-     (aType==GeomAbs_SurfaceOfRevolution)) {
+     (aType==GeomAbs_SurfaceOfRevolution) ||
+     (aType==GeomAbs_Cylinder)) {
     enlarge=Standard_True;
   }
   //
