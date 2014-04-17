@@ -1139,6 +1139,12 @@ Standard_Boolean BRep_Tool::HasContinuity(const TopoDS_Edge& E)
 gp_Pnt  BRep_Tool::Pnt(const TopoDS_Vertex& V)
 {
   Handle(BRep_TVertex)& TV = *((Handle(BRep_TVertex)*) &V.TShape());
+
+  if (TV.IsNull())
+  {
+    Standard_NullObject::Raise("BRep_Tool:: TopoDS_Vertex hasn't gp_Pnt");
+  }
+
   gp_Pnt P = TV->Pnt();
   P.Transform(V.Location().Transformation());
   return P;
@@ -1151,7 +1157,14 @@ gp_Pnt  BRep_Tool::Pnt(const TopoDS_Vertex& V)
 
 Standard_Real  BRep_Tool::Tolerance(const TopoDS_Vertex& V)
 {
-  Standard_Real p = (*((Handle(BRep_TVertex)*)&V.TShape()))->Tolerance();
+  Handle(BRep_TVertex)& aTVert = *((Handle(BRep_TVertex)*)&V.TShape());
+
+  if (aTVert.IsNull())
+  {
+    Standard_NullObject::Raise("BRep_Tool:: TopoDS_Vertex hasn't gp_Pnt");
+  }
+
+  Standard_Real p = aTVert->Tolerance();
   Standard_Real pMin = Precision::Confusion();
   if (p > pMin) return p;
   else          return pMin;

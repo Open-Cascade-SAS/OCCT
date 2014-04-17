@@ -1337,6 +1337,9 @@ Standard_Boolean ShapeFix_Wire::FixShifted()
     }
 
     TopoDS_Vertex V = sae.FirstVertex ( E2 );
+    if (V.IsNull())
+      continue;
+
     gp_Pnt p = BRep_Tool::Pnt ( V );
   
     Standard_Real a1 = 0., b1 = 0., a2 = 0., b2 = 0.;

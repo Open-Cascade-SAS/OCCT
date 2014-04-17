@@ -1,4 +1,5 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: TPSTAT : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 
 
@@ -6,7 +7,7 @@ set filename support_rampe.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 2 )  Warnings = 4  ( 172 )  Summary  = 4  ( 174 )
+TPSTAT      : Faulties = 4  ( 2 )  Warnings = 0  ( 170 )  Summary  = 4  ( 172 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 169  ( 169 )   Summary  = 5348  ( 5348 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 169  ( 169 )   FreeWire = 49  ( 49 )   FreeEdge  = 945 ( 945 )   SharedEdge = 2041  ( 2041 )

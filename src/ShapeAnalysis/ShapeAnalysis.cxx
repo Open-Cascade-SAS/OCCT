@@ -128,7 +128,7 @@ Standard_Real ShapeAnalysis::AdjustToPeriod(const Standard_Real Val,
 //purpose  : auxilary
 //=======================================================================
 template<class HSequence> 
-static inline void ReverceSeq (HSequence& Seq)
+static inline void ReverseSeq (HSequence& Seq)
 {
   Standard_Integer j=Seq.Length();
   for(Standard_Integer i=1; i<Seq.Length(); i++) {
@@ -157,7 +157,7 @@ Standard_Real ShapeAnalysis::TotCross2D(const Handle(ShapeExtend_WireData)& sewd
       TColgp_SequenceOfPnt2d SeqPnt;
       ShapeAnalysis_Curve::GetSamplePoints (c2d, f2d, l2d, SeqPnt);
       if( edge.Orientation()==1 )
-        ReverceSeq(SeqPnt);
+        ReverseSeq(SeqPnt);
       if(nbc==1)  {
         fuv=SeqPnt.Value(1);
         uv0=fuv;
@@ -200,7 +200,7 @@ Standard_Real ShapeAnalysis::ContourArea(const TopoDS_Wire& theWire)
         continue;
       nbc++;
       if( edge.Orientation()==TopAbs_REVERSED )
-        ReverceSeq(aSeqPnt);
+        ReverseSeq(aSeqPnt);
       if(nbc==1)  {
         fuv=aSeqPnt.Value(1);
         uv0=fuv;

@@ -807,6 +807,10 @@ Standard_Boolean ShapeAnalysis_Wire::CheckDegenerated (const Standard_Integer nu
   TopoDS_Vertex V0 = sae.LastVertex  (E1);
   TopoDS_Vertex V1 = sae.FirstVertex (E2);
   TopoDS_Vertex V2 = sae.LastVertex  (E2);
+
+  if (Vp.IsNull() || V0.IsNull() || V1.IsNull() || V2.IsNull())
+    return Standard_False;
+
   gp_Pnt pp = BRep_Tool::Pnt (Vp); //:i9
   gp_Pnt p0 = BRep_Tool::Pnt (V0);
   gp_Pnt p1 = BRep_Tool::Pnt (V1);

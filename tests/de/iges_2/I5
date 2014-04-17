@@ -7,7 +7,7 @@ set filename ims013.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 160 )  Warnings = 38  ( 799 )  Summary  = 38  ( 959 )
+TPSTAT      : Faulties = 38  ( 160 )  Warnings = 0  ( 780 )  Summary  = 38  ( 940 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 854  ( 702 )   Summary  = 25375  ( 23837 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 854  ( 854 )   FreeWire = 9  ( 31 )   FreeEdge  = 3865 ( 3865 )   SharedEdge = 9820  ( 9202 )

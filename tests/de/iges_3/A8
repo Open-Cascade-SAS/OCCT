@@ -7,11 +7,11 @@ set filename VERSEUSE.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 19 )  Warnings = 99  ( 1127 )  Summary  = 99  ( 1146 )
+TPSTAT      : Faulties = 2  ( 19 )  Warnings = 97  ( 1126 )  Summary  = 99  ( 1145 )
 CHECKSHAPE  : Wires    = 0  ( 1 )  Faces    = 0  ( 1 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 436  ( 436 )   Summary  = 7823  ( 7826 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 436  ( 436 )   FreeWire = 15  ( 15 )   FreeEdge  = 208 ( 208 )   SharedEdge = 3430  ( 3431 )
-TOLERANCE   : MaxTol   =   0.8904045146  (   0.8904045345 )  AvgTol   =   0.01244629536  (   0.01247379594 )
+TOLERANCE   : MaxTol   =   0.8904045146  (   0.8904045345 )  AvgTol   =   0.01244629531  (   0.01247379594 )
 LABELS      : N0Labels = 1  ( 1 )  N1Labels = 501  ( 2306 )  N2Labels = 0  ( 0 )   TotalLabels = 502  ( 2307 )   NameLabels = 502  ( 770 )   ColorLabels = 501  ( 2306 )   LayerLabels = 443  ( 2228 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 4  ( 4 )

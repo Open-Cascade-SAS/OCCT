@@ -1,4 +1,5 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: TPSTAT : Faulty" 
 puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 
@@ -7,7 +8,7 @@ set filename CTS17804.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 40  ( 279 )  Summary  = 40  ( 279 )
+TPSTAT      : Faulties = 2  ( 0 )  Warnings = 38  ( 278 )  Summary  = 40  ( 278 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 218  ( 218 )   Summary  = 2957  ( 2963 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 218  ( 218 )   FreeWire = 0  ( 0 )   FreeEdge  = 12 ( 12 )   SharedEdge = 1254  ( 1260 )

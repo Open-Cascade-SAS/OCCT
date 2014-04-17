@@ -1,16 +1,15 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
-puts "TODO CR23096 ALL: CHECKSHAPE : Faulty" 
 puts "TODO DEBUG_OCC24121 Debian60-64 Windows: Error: STEPCAFControl_Reader"
 
 set filename r86ug.stp
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 4  ( 128 )  Summary  = 4  ( 128 )
-CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 2  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 25  ( 25 )  Shell    = 25  ( 25 )  Face     = 476  ( 476 )   Summary  = 2928  ( 2928 )
-STATSHAPE   : Solid    = 25  ( 25 )  Shell    = 25  ( 25 )  Face     = 476  ( 476 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 1129  ( 1129 )
-TOLERANCE   : MaxTol   = 8.47188394e-006  (         1e-005 )  AvgTol   =  5.134746346e-007  (  2.385478664e-006 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 2  ( 127 )  Summary  = 2  ( 127 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 27  ( 27 )  Shell    = 28  ( 28 )  Face     = 479  ( 479 )   Summary  = 2919  ( 2919 )
+STATSHAPE   : Solid    = 27  ( 27 )  Shell    = 28  ( 28 )  Face     = 479  ( 479 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 1120  ( 1120 )
+TOLERANCE   : MaxTol   = 8.47188394e-06  (          1e-05 )  AvgTol   =  5.153699897e-07  (  2.36694229e-06 )
 LABELS      : N0Labels = 16  ( 16 )  N1Labels = 15  ( 15 )  N2Labels = 0  ( 0 )   TotalLabels = 31  ( 31 )   NameLabels = 31  ( 31 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 0  ( 0 )

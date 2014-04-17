@@ -7,12 +7,12 @@ set filename Rich.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 29 )  Warnings = 0  ( 2 )  Summary  = 0  ( 31 )
-TPSTAT      : Faulties = 0  ( 212 )  Warnings = 8  ( 559 )  Summary  = 8  ( 771 )
+TPSTAT      : Faulties = 2  ( 212 )  Warnings = 6  ( 559 )  Summary  = 8  ( 771 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 9  ( 9 )   Summary  = 20802  ( 16067 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 9  ( 9 )   FreeWire = 477  ( 477 )   FreeEdge  = 9018 ( 9018 )   SharedEdge = 9072  ( 6875 )
-TOLERANCE   : MaxTol   = 0.002386883227  ( 0.002386886993 )  AvgTol   =  1.573805359e-006  (  1.573804854e-006 )
-LABELS      : N0Labels = 2053  ( 2148 )  N1Labels = 381  ( 253 )  N2Labels = 0  ( 0 )   TotalLabels = 2434  ( 2401 )   NameLabels = 2053  ( 2148 )   ColorLabels = 1932  ( 2306 )   LayerLabels = 1560  ( 2306 )
+TOLERANCE   : MaxTol   = 0.002386883227  ( 0.002386886993 )  AvgTol   =  1.573805359e-06  (  1.573804854e-06 )
+LABELS      : N0Labels = 2053  ( 2148 )  N1Labels = 381  ( 253 )  N2Labels = 0  ( 0 )   TotalLabels = 2434  ( 2401 )   NameLabels = 2053  ( 2148 )   ColorLabels = 1932  ( 2306 )   LayerLabels = 1559  ( 2306 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 13  ( 13 )
 COLORS      : Colors   = BLUE1 CYAN1 CYAN3 DARKORANGE2 DEEPPINK4 GREEN GREEN4 LIGHTPINK2 MAGENTA1 MATRAGRAY RED SIENNA3 YELLOW  ( BLUE1 CYAN1 CYAN3 DARKORANGE2 DEEPPINK4 GREEN GREEN4 LIGHTPINK2 MAGENTA1 MATRAGRAY RED SIENNA3 YELLOW )

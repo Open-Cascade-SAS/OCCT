@@ -55,7 +55,6 @@
 #include <BRep_Builder.hxx>
 #include <BRepTopAdaptor_FClass2d.hxx>
 #include <BRepTools.hxx>
-#include <BRepTools_WireExplorer.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
@@ -108,6 +107,22 @@
 #ifdef DEB
 #define DEBUG
 #endif
+
+static Standard_Boolean IsSurfaceUVInfinite(const Handle(Geom_Surface)& theSurf)
+{
+  Standard_Real UMin,UMax,VMin,VMax;
+  theSurf->Bounds(UMin,UMax,VMin,VMax);
+
+  return (Precision::IsInfinite(UMin) ||
+          Precision::IsInfinite(UMax) ||
+          Precision::IsInfinite(VMin) ||
+          Precision::IsInfinite(VMax)   );
+}
+
+static Standard_Boolean IsSurfaceUVPeriodic(const Handle(Geom_Surface)& theSurf)
+{
+  return theSurf->IsUPeriodic() && theSurf->IsVPeriodic();
+}
 
 //=======================================================================
 //function : ShapeFix_Face
@@ -419,7 +434,7 @@ Standard_Boolean ShapeFix_Face::Perform()
         theAdvFixWire->SetPrecision(newpreci);    
       }
     }
-   
+
     isfixReorder = Standard_False;
     for ( TopoDS_Iterator iter(S,Standard_False); iter.More(); iter.Next()) { 
       if(iter.Value().ShapeType() != TopAbs_WIRE) {
@@ -497,7 +512,7 @@ Standard_Boolean ShapeFix_Face::Perform()
   }
 
   // cycle by all possible faces coming from FixMissingSeam
-  // each face is processed as if it was single 
+  // each face is processed as if it was single
   TopExp_Explorer exp(myResult,TopAbs_FACE);
   for ( ; exp.More(); exp.Next() ) {
     myFace = TopoDS::Face ( exp.Current() );
@@ -660,7 +675,7 @@ Standard_Boolean ShapeFix_Face::Perform()
   
   //return the original preci
   SetPrecision(aSavPreci);
-  theAdvFixWire->SetPrecision(aSavPreci);    
+  theAdvFixWire->SetPrecision(aSavPreci);
   
   // cycle by all possible faces coming from FixAddNaturalBound
   // each face is processed as if it was single 
@@ -807,11 +822,19 @@ Standard_Boolean ShapeFix_Face::FixAddNaturalBound()
       vs.Append(wi.Value());
   }
 
-  // deal with case of empty face: just create a new one by standard tool
-  if ( ws.Length() <=0 ) {
-    BRepBuilderAPI_MakeFace mf (mySurf->Surface(), Precision::Confusion());
-    if ( ! Context().IsNull() ) Context()->Replace ( myFace, mf.Face() );
-    myFace = mf.Face();
+  // deal with the case of an empty face: just create a new face by a standard tool
+  if (ws.IsEmpty() && !IsSurfaceUVInfinite (mySurf->Surface()))
+  {
+    BRepBuilderAPI_MakeFace aFaceBuilder (mySurf->Surface(), Precision::Confusion());
+
+    TopoDS_Face aNewFace = aFaceBuilder.Face();
+    aNewFace.Orientation (myFace.Orientation());
+
+    if ( ! Context().IsNull() )
+      Context()->Replace (myFace, aNewFace);
+
+    // taking into account orientation
+    myFace = aNewFace;
 
     //gka 11.01.99 file PRO7755.stp entity #2018 surface #1895: error BRepLib_MakeFace func IsDegenerated
     Handle(ShapeFix_Edge) sfe = myFixWire->FixEdgeTool();
@@ -823,13 +846,12 @@ Standard_Boolean ShapeFix_Face::FixAddNaturalBound()
 //    B.UpdateFace (myFace,myPrecision);
     SendWarning ( myFace, Message_Msg ( "FixAdvFace.FixOrientation.MSG0" ) );// Face created with natural bounds
     BRepTools::Update(myFace);
+    myResult = myFace;
     return Standard_True;
   }
-  
-  // check that surface is double-closed and fix is needed
-  if ( ( mySurf->Adaptor3d()->GetType() != GeomAbs_Sphere &&
-         mySurf->Adaptor3d()->GetType() != GeomAbs_Torus ) ||
-       ShapeAnalysis::IsOuterBound (myFace) ) 
+
+  // check if surface is double-closed and fix is needed
+  if ( !IsSurfaceUVPeriodic (mySurf->Surface()) || ShapeAnalysis::IsOuterBound (myFace) ) 
     return Standard_False;
 
   // Collect informations on free intervals in U and V
@@ -1015,7 +1037,7 @@ Standard_Boolean ShapeFix_Face::FixOrientation(TopTools_DataMapOfShapeListOfShap
       continue;
     }
     
-    TopoDS_Iterator ei (wi.Value(),Standard_False); 
+    TopoDS_Iterator ei (wi.Value(),Standard_False);
     TopoDS_Edge anEdge;
     Standard_Real length = RealLast();
     if ( ei.More() ) {
@@ -1059,8 +1081,7 @@ Standard_Boolean ShapeFix_Face::FixOrientation(TopTools_DataMapOfShapeListOfShap
   if ( nb <= 0) return Standard_False;
   Standard_Integer nbInternal=0;
   Standard_Boolean isAddNaturalBounds = (NeedFix (myFixAddNaturalBoundMode) && 
-                                         ( mySurf->Adaptor3d()->GetType() == GeomAbs_Sphere || 
-                                          mySurf->Adaptor3d()->GetType() == GeomAbs_Torus ));
+                                         IsSurfaceUVPeriodic (mySurf->Surface()));
   TColStd_SequenceOfInteger aSeqReversed;
   // if wire is only one, check its orientation
   if ( nb == 1 ) {
@@ -1070,10 +1091,10 @@ Standard_Boolean ShapeFix_Face::FixOrientation(TopTools_DataMapOfShapeListOfShap
     TopoDS_Face af = TopoDS::Face ( dummy );
     af.Orientation ( TopAbs_FORWARD );
     B.Add (af,ws.Value(1));
-    if ( ( myFixAddNaturalBoundMode != Standard_True || //: abv 29.08.01: Spatial_firex_lofting.sat
-           ( mySurf->Adaptor3d()->GetType() != GeomAbs_Sphere &&
-             mySurf->Adaptor3d()->GetType() != GeomAbs_Torus ) ) &&
-         ! ShapeAnalysis::IsOuterBound (af)) {
+    if ((myFixAddNaturalBoundMode != Standard_True || //: abv 29.08.01: Spatial_firex_lofting.sat
+         !IsSurfaceUVPeriodic (mySurf->Surface())    ) &&
+        !ShapeAnalysis::IsOuterBound (af)                )
+    {
       Handle(ShapeExtend_WireData) sbdw = 
         new ShapeExtend_WireData (TopoDS::Wire(ws.Value(1)));
       sbdw->Reverse ( myFace );
@@ -2300,10 +2321,10 @@ static Standard_Boolean IsPeriodicConicalLoop(const Handle(Geom_ConicalSurface)&
   Standard_Real aMaxV = aMaxU;
 
   // Iterate over the edges to check whether the wire is periodic on conical surface
-  BRepTools_WireExplorer aWireExp(theWire);
-  for ( ; aWireExp.More(); aWireExp.Next() )
+  TopoDS_Iterator aWireIter(theWire, Standard_False);
+  for ( ; aWireIter.More(); aWireIter.Next() )
   {
-    const TopoDS_Edge& aCurrentEdge = aWireExp.Current();
+    const TopoDS_Edge& aCurrentEdge = TopoDS::Edge(aWireIter.Value());
     Handle(Geom2d_Curve) aC2d;
     Standard_Real aPFirst, aPLast;
 

@@ -1,16 +1,13 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
-puts "TODO CR23096 ALL: CHECKSHAPE : Faulty" 
-
-
 set filename trj5_pm3-ug-203.stp
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 14  ( 83 )  Summary  = 14  ( 83 )
-CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 7  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 18  ( 18 )  Shell    = 18  ( 18 )  Face     = 369  ( 369 )   Summary  = 2501  ( 2501 )
-STATSHAPE   : Solid    = 18  ( 18 )  Shell    = 18  ( 18 )  Face     = 369  ( 369 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 976  ( 976 )
-TOLERANCE   : MaxTol   = 0.005929066011  ( 0.005929066208 )  AvgTol   =  9.59552537e-005  (  9.743599735e-005 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 8  ( 82 )  Summary  = 8  ( 82 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 18  ( 18 )  Shell    = 18  ( 18 )  Face     = 376  ( 376 )   Summary  = 2466  ( 2466 )
+STATSHAPE   : Solid    = 18  ( 18 )  Shell    = 18  ( 18 )  Face     = 376  ( 376 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 955  ( 955 )
+TOLERANCE   : MaxTol   = 0.005929066011  ( 0.005929066208 )  AvgTol   =  9.716404089e-05  (  9.861168642e-05 )
 LABELS      : N0Labels = 20  ( 20 )  N1Labels = 19  ( 19 )  N2Labels = 0  ( 0 )   TotalLabels = 39  ( 39 )   NameLabels = 39  ( 39 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 20  ( 20 )  Volume   = 20  ( 20 )  Area     = 20  ( 20 )
 NCOLORS     : NColors  = 0  ( 0 )

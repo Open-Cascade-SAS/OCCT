@@ -9,7 +9,7 @@ set filename UKI60028-1.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 150 )  Warnings = 49  ( 789 )  Summary  = 49  ( 939 )
+TPSTAT      : Faulties = 8  ( 150 )  Warnings = 41  ( 785 )  Summary  = 49  ( 935 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 1 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 159  ( 159 )   Summary  = 7582  ( 7684 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 159  ( 159 )   FreeWire = 189  ( 284 )   FreeEdge  = 1726 ( 1726 )   SharedEdge = 3035  ( 3035 )

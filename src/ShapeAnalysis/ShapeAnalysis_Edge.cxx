@@ -432,8 +432,14 @@ Standard_Boolean ShapeAnalysis_Edge::CheckCurve3dWithPCurve (const TopoDS_Edge& 
     return Standard_False;
   }
 
-  Standard_Real preci1 = BRep_Tool::Tolerance (FirstVertex (edge)),
-                preci2 = BRep_Tool::Tolerance (LastVertex (edge));
+  TopoDS_Vertex aFirstVert = FirstVertex (edge);
+  TopoDS_Vertex aLastVert  = LastVertex (edge);
+
+  if (aFirstVert.IsNull() || aLastVert.IsNull())
+    return Standard_False;
+
+  Standard_Real preci1 = BRep_Tool::Tolerance (aFirstVert),
+                preci2 = BRep_Tool::Tolerance (aLastVert);
 
   gp_Pnt2d p2d1 = c2d->Value (f2d),
            p2d2 = c2d->Value (l2d);

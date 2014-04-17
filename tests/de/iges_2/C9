@@ -1,4 +1,5 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: TPSTAT : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 
 
@@ -6,11 +7,11 @@ set filename ball_bearing.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 4  ( 5 )  Summary  = 4  ( 5 )
+TPSTAT      : Faulties = 4  ( 0 )  Warnings = 0  ( 3 )  Summary  = 4  ( 3 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 15  ( 15 )   Summary  = 320  ( 320 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 15  ( 15 )   FreeWire = 1  ( 1 )   FreeEdge  = 55 ( 55 )   SharedEdge = 117  ( 117 )
-TOLERANCE   : MaxTol   = 0.0006252987008  ( 0.0006252359927 )  AvgTol   =  2.234790875e-005  (  1.469671889e-005 )
+TOLERANCE   : MaxTol   = 0.0006252987008  ( 0.0006252359927 )  AvgTol   =  2.234790875e-05  (  1.469671889e-05 )
 LABELS      : N0Labels = 1  ( 1 )  N1Labels = 68  ( 137 )  N2Labels = 0  ( 0 )   TotalLabels = 69  ( 138 )   NameLabels = 69  ( 76 )   ColorLabels = 68  ( 137 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 1  ( 1 )

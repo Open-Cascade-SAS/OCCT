@@ -6,11 +6,11 @@ set filename 612319029MB-HEAD-CYLINDER.stp
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 1861  ( 2139 )  Summary  = 1861  ( 2139 )
-CHECKSHAPE  : Wires    = 38  ( 36 )  Faces    = 38  ( 36 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 1869  ( 2152 )  Summary  = 1869  ( 2152 )
+CHECKSHAPE  : Wires    = 36  ( 32 )  Faces    = 36  ( 32 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 1  ( 1 )  Shell    = 17  ( 17 )  Face     = 6173  ( 6173 )   Summary  = 41190  ( 41175 )
 STATSHAPE   : Solid    = 1  ( 1 )  Shell    = 17  ( 17 )  Face     = 6173  ( 6173 )   FreeWire = 0  ( 0 )   FreeEdge  = 4 ( 4 )   SharedEdge = 17493  ( 17486 )
-TOLERANCE   : MaxTol   =  0.07753055119  (  0.07753055119 )  AvgTol   =  0.0008280108325  (  0.0007444979965 )
+TOLERANCE   : MaxTol   =  0.07753055119  (  0.07753055119 )  AvgTol   =  0.0008306430334  (  0.0007527924205 )
 LABELS      : N0Labels = 3  ( 3 )  N1Labels = 2  ( 2 )  N2Labels = 0  ( 0 )   TotalLabels = 5  ( 5 )   NameLabels = 5  ( 5 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 0  ( 0 )
