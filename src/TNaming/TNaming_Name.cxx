@@ -308,7 +308,7 @@ TopAbs_ShapeEnum TNaming_Name::ShapeType() const
 }
 
 //=======================================================================
-//function : Append
+//function : Paste
 //purpose  : 
 //=======================================================================
 
@@ -317,7 +317,8 @@ void TNaming_Name::Paste (TNaming_Name& into,
 {
   into.myType      = myType;
   into.myShapeType = myShapeType;
-  into.myShape     = myShape; 
+  into.myShape     = myShape;
+  into.myIndex     = myIndex;
   into.myArgs.Clear();
 //  into.myOrientation = myOrientation;
   Handle(TNaming_NamedShape) NS;

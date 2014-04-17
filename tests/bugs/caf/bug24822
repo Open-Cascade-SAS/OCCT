@@ -1,0 +1,23 @@
+puts "=========="
+puts "OCC24822"
+puts "=========="
+puts ""
+###################################################
+# Solve selection fails after copying
+###################################################
+
+restore [locate_data_file bug24822_face.brep] f
+explode f w
+
+NewDocument D XmlOcaf
+ImportShape D 0:1 f
+SelectShape D 0:2 f_1 f
+SolveSelection D 0:2
+
+CopyLabel D 0:2 0:3
+
+if [catch { SolveSelection D 0:3 } ] {
+  puts "Error: Solve selection fails after copying"
+} else {
+  puts "OK: Solve selection is good after copying"
+}
