@@ -127,7 +127,7 @@ Standard_Integer bopcheck
   Standard_Integer iErr, aTypeInt, i, ind, j, nI1, nI2;
   Standard_Boolean bSelfInt, bFFInt;
   //
-  if (theLevelOfCheck >= 0 && theLevelOfCheck < aNbInterfTypes) {
+  if (theLevelOfCheck >= 0 && theLevelOfCheck < (aNbInterfTypes-1)) {
     di << "Info:\nThe level of check is set to " 
       << type[theLevelOfCheck] << ", i.e. intersection(s)\n";
     for (i=theLevelOfCheck+1; i<aNbInterfTypes; ++i) {

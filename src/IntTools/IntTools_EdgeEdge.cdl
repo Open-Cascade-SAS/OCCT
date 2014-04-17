@@ -124,15 +124,9 @@ is
     is protected;
     ---Purpose:
     -- Computes Line/Line intersection.  
- 
-    FindSolutions(me:out)
-    is protected; 
-    ---Purpose:
-    -- Looking for solutions
 
     FindSolutions(me:out;  
         theR1, theR2 : Range from IntTools;
-        theBC        : Box from Bnd;
         theRanges1   : out SequenceOfRanges from IntTools;
         theRanges2   : out SequenceOfRanges from IntTools)
     is protected; 
@@ -149,6 +143,7 @@ is
         theBAC  : Curve from BRepAdaptor;  
         aT1,aT2 : Real from Standard;  
         theRes  : Real from Standard;
+        thePTol : Real from Standard;
         theCBox : Box from Bnd; 
         aTB1,aTB2 : out Real from Standard)
     returns Boolean from Standard 
@@ -218,7 +213,10 @@ fields
     myTol    : Real  from Standard is protected;   
     
     myRes1   : Real  from Standard is protected;  
-    myRes2   : Real  from Standard is protected; 
+    myRes2   : Real  from Standard is protected;  
+     
+    myPTol1  : Real  from Standard is protected; 
+    myPTol2  : Real  from Standard is protected; 
     
     myRange1 : Range from IntTools is protected; 
     myRange2 : Range from IntTools is protected;  
