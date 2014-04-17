@@ -1532,8 +1532,6 @@ void AIS_Dimension::FitTextAlignmentForLinear (const gp_Pnt& theFirstPoint,
 
   Handle(Prs3d_DimensionAspect) aDimensionAspect = myDrawer->DimensionAspect();
 
-  gp_Lin aDimensionLine = gce_MakeLin (aLineBegPoint, aLineEndPoint);
-
   // For extensions we need to know arrow size, text size and extension size: get it from aspect
   Quantity_Length anArrowLength = aDimensionAspect->ArrowAspect()->Length();
 

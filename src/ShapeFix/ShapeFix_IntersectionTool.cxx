@@ -835,7 +835,7 @@ Standard_Boolean ShapeFix_IntersectionTool::FixSelfIntersectWire
 
   // step 2 : intersection of non-adjacent edges
   ShapeFix_DataMapOfShapeBox2d boxes;
-  Bnd_Box2d aTotalBox = CreateBoxes2d(sewd,face,boxes);
+  (void)CreateBoxes2d(sewd,face,boxes);
   Handle(ShapeAnalysis_Surface) sas = new ShapeAnalysis_Surface(BRep_Tool::Surface(face));
 
   NbSplit=0;
