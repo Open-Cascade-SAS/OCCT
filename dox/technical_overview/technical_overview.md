@@ -3,62 +3,44 @@ Technical Overview {#technical_overview}
 
 @tableofcontents
 
-@section OCCT_TOVW_SECTION_1 Product Overview
+Open CASCADE Technology is an object-oriented C++ class library designed for rapid production of sophisticated domain-specific design applications. 
 
-Open CASCADE Technology is an object-oriented C++ class library designed for rapid production of sophisticated domain-specific design applications. A typical application developed using OCCT deals with two or three-dimensional (2D or 3D) geometric modeling
+A typical application developed using OCCT deals with two or three-dimensional (2D or 3D) geometric modeling
 in general-purpose or specialized Computer Aided Design (CAD) systems, manufacturing
-or analysis applications, simulation applications, or illustration tools. OCCT Object
-Libraries help you to develop your applications significantly faster.
+or analysis applications, simulation applications, or illustration tools. 
 
-@image html /technical_overview/images/technical_overview_over.png
-@image latex /technical_overview/images/technical_overview_over.png
+@figure{/technical_overview/images/technical_overview_over.png}
 
-The OCCT Library provides the following services:
-
-
-  * 2D and 3D geometric modeling toolkits which allow you to model any type of object:
-    * Creating primitives such as prism, cylinder, cone and torus 
-    * Performing Boolean operations (addition, subtraction and intersection) 
-    * Tweaking constructions using fillets, chamfers and drafts 
-    * Modeling constructions using offsets, shelling, hollowing and sweeps 
-    * Computing properties such as surface, volume, center of gravity, curvature 
-    * Computing geometry using projection, interpolation, approximation 
-  * Visualization services that allow you to manage object display and manipulate views, for example:
-    * 3D rotation 
-    * Zoom 
-    * Shading 
-  * The application framework features: 
-    * Association between non-geometric application data and geometry 
-    * Parameterization of models 
-    * Java Application Desktop (JAD), a framework for creating your Graphical User Interfaces (GUI) 
-  * Data exchange providing import and export functions of OCCT models to and from standard formats such as IGES and STEP 
-
-OCCT Library is developed and marketed by OPEN CASCADE Company. The library is designed
-to be truly modular and extensible. As such, they separate C++ classes for:
-
+OCCT Library is designed to be truly modular and extensible. It provides C++ classes for:
   * Defining data structures (geometric modeling, display and graphic selection) 
   * Implementing complex algorithms 
   * Providing Application Programming Interfaces (APIs) 
 
+The classes are grouped into packages. 
+To prevent any class-name conflicts, C++ class-names are prefixed by a package name. 
+For example, all classes defining 3D geometric objects belong to the *Geom* package. 
+In Geom, the class implementing Bezier surfaces is called *BezierSurface*, thus its full name is <i>Geom_BezierSurface</i>.
 
-Related classes are grouped into packages to prevent any class-name conflicts; 
-C++ class-names are prefixed by a package name. For example, all classes defining 
-3D geometric objects belong to the Geompackage. 
-In Geom, the class implementing Bezier surfaces is called BezierSurface, and its full name is <i> Geom_BezierSurface</i>.
+Packages are then archived into toolkits (libraries), to which you can link your application. Finally, toolkits are grouped into seven modules.
 
-Packages are then archived into libraries, to which you can link your application.
+This modular structure is illustrated in the diagram below.
 
-Finally, libraries are grouped into six modules: Foundation Classes, 
-Modeling Data, Modeling Algorithms, Visualization, Data Exchange and Application Framework. 
+@figure{/technical_overview/images/technical_overview_schema.png}
 
-In addition Draw Test Harness (Draw) provides testing tools for the Visualization, 
-Modeling Algorithms, Application Framework and Data Exchange modules. 
-These tools include a wide range of interpreted commands which allow experimenting with OCCT.
+Refer to the Technical Overview and User's Guides for details about the services provided in each module. 
 
-Refer to the Technical Overview and OCCT documentation for details about the services provided in each module. 
+* @ref OCCT_TOVW_SECTION_2 "Foundation Classes"; 
+* @ref OCCT_TOVW_SECTION_3 "Modeling Data"; 
+* @ref OCCT_TOVW_SECTION_4 "Modeling Algorithms";
+* @ref OCCT_TOVW_SECTION_4a "Mesh";
+* @ref OCCT_TOVW_SECTION_5 "Visualization";
+* @ref OCCT_TOVW_SECTION_6 "Data Exchange";
+* @ref OCCT_TOVW_SECTION_7 "Application Framework". 
+
+In addition, @ref OCCT_TOVW_SECTION_7a "Open CASCADE Test Harness", also called Draw, provides testing tools for other modules. 
+
 
 @section OCCT_TOVW_SECTION_2 Foundation Classes
-
 
 Foundation Classes provide a variety of general-purpose services such as:
 
@@ -69,21 +51,19 @@ Foundation Classes provide a variety of general-purpose services such as:
   * Math tools such as vectors, matrices and primitive geometric types 
   * Basic services for saving data in ASCII files 
 
-These services are organized into the following libraries:
+These services are organized into the following toolkits:
+  * @ref OCCT_TOVW_SECTION_2_1 "Kernel Classes" 
+  * @ref OCCT_TOVW_SECTION_2_2 "Math Utilities" 
+  * @ref occt_fcug_5 "Basic Data Storage"
 
-  * Kernel Classes 
-  * Math Utilities 
-  * Basic Persistence
-
-The technical overview provides only a basic description of the libraries. Please, refer for more details to  <a href="user_guides__foundation_classes.html">Foundation Classes User's guide</a>
+The technical overview provides only a basic description of the libraries. 
+For more details see @ref occt_user_guides__foundation_classes "Foundation Classes User's Guide"
 
 See also: our web site at <a href="http://www.opencascade.org/support/training/">E-learning and Training</a>.
 
 @subsection OCCT_TOVW_SECTION_2_1 Kernel Classes
 
-
 ### Root Classes
-
 
 Root Classes, primarily implemented in the Standard package, are the predefined classes on which
 all other Open CASCADE Technology classes are built. They provide:
@@ -153,29 +133,18 @@ Strings may also be manipulated by handles and therefore, can be shared.
 
 These classes are implemented in <i>TCollection</i> and <i>NCollection</i> packages.
 
-
 ### Collections
 
 Apart from strings, the <i> TCollection</i> package contains classes of dynamically sized
 aggregates of data. They include a wide range of collections.
 
-  * Arrays (unidimensional and bidimensional) are generally used for quick access to an item.
-  Note that an array is a fixed-sized aggregate. 
-  * Sequences are ordered collections of non-unique objects. 
-  A sequence item is longer to access than an array item: only an exploration in sequence 
-  is efficient (but sequences are not adapted for numerous explorations). 
-  Arrays and sequences are commonly used as data structures for more complex objects.
-  * Maps are dynamic structures where the size is constantly adapted to the number of inserted
-  items and access to an item is the fastest. Maps structures are commonly used in
-  cases of numerous explorations: they are typically internal data structures for complex
-  algorithms. Sets generate the same results as maps but computation time is considerable.
-  * Lists, queues and stacks, which are minor structures similar to sequences but with different
-  algorithms to explore them 
-  * Specific iterators for sequences, maps, and stacks.
+  * Arrays (unidimensional and bidimensional) are generally used for quick access to an item. Note that an array is a fixed-sized aggregate. 
+  * Sequences are ordered collections of non-unique objects. A sequence item is longer to access than an array item: only an exploration in sequence is efficient (but sequences are not adapted for numerous explorations).  Arrays and sequences are commonly used as data structures for more complex objects.
+  * Maps are dynamic structures, where the size is constantly adapted to the number of inserted items and access to an item is the fastest. Maps structures are commonly used in cases of numerous explorations: they are typically internal data structures for complex algorithms.
+  * Lists are similar to sequences but with different algorithms to explore them. 
+  * Specific iterators for sequences and maps.
 
-Most collections follow value semantics: their instances are the actual collections,
-not handles to a collection. Only arrays, sequences and sets may also be manipulated
-by handle, and therefore shared.
+Most collections follow value semantics: their instances are the actual collections, not handles to a collection. Only arrays and sequences may also be manipulated by handle, and therefore shared.
 
 
 Collection classes are generic (C++ template-like), so they can contain 
@@ -200,9 +169,7 @@ the ANSI C++ compiler.
 
 @subsection OCCT_TOVW_SECTION_2_2 Math Utilities
 
-
 ### Vectors and Matrices
-
 
 The <i> Vector</i> and <i> Matrix </i> classes provide commonly used mathematical algorithms which
 include:
@@ -336,27 +303,30 @@ Common mathematical algorithms provided in OCCT include:
 
 Modeling Data supplies data structures to represent 2D and 3D geometric models.
 
-@image html /technical_overview/images/technical_overview_md.png
-@image latex /technical_overview/images/technical_overview_md.png
+@figure{/technical_overview/images/technical_overview_md.png}
 
-These services are organized into the following libraries:
+These services are organized into the following toolkits:
 
-  * 2D Geometry 
-  * 3D Geometry 
-  * Geometry Utilities 
-  * Topology 
+  * @ref OCCT_TOVW_SECTION_3_1 "2D Geometry Types"
+  * @ref OCCT_TOVW_SECTION_3_2 "3D Geometry Types"
+  * @ref OCCT_TOVW_SECTION_3_3 "Geometry Utilities" 
+  * @ref OCCT_TOVW_SECTION_3_4 "Topology" 
+   
+There are also some packages that help to find local and global @ref OCCT_TOVW_SECTION_3_5 "Properties of Shapes".
+ 
+The technical overview provides only a basic description of the libraries.
+For more details see @ref occt_user_guides__modeling_data "Modeling Data User's Guide"
 
-The technical overview provides only a basic description of the libraries. Please, refer for more details to  <a href="user_guides__modeling_data.html">Modeling Data User's guide</a>
-
-3D geometric models are stored in OCCT native BREP format. It is possible to learn
-more about it in <a href="occt_brep_format.html">BREP Format Description White Paper</a> 
+3D geometric models are stored in OCCT native BREP format.
+See @ref occt_user_guides__brep_wp "BREP Format Description White Paper" for details on the format.
 
 See also: our web site at <a href="http://www.opencascade.org/support/training/">E-learning and Training</a>.
 
 @subsection OCCT_TOVW_SECTION_3_1 2D Geometry Types
 
-<i> Geom2d</i> package provides an implementation of 2D geometric objects complying with
-STEP, part 42. In particular, it provides functions for:
+<i> Geom2d</i> package provides an implementation of 2D geometric objects, defined in the way similar to STEP standard (ISO 10303, part 42).
+
+In particular, it provides classes for:
 * description of points, vectors and curves,
 * their positioning in the plane using coordinate systems,
 * their geometric transformation, by applying translations, rotations, symmetries, scaling transformations and combinations thereof.
@@ -375,22 +345,14 @@ Moreover, <i> Geom2d</i> package provides more complex curves, including Bezier 
 BSpline curves, trimmed curves and offset curves.
 
 <i> Geom2d </i> objects are organized according to an inheritance structure over several levels.
-Thus, an ellipse (specific class <i> Geom2d_Ellipse</i>) is also a conical curve and inherits
-from the abstract class <i> Geom2d_Conic</i>, while a Bezier curve (concrete class <i> Geom2d_BezierCurve</i>)
-is also a bounded curve and inherits from the abstract class <i> Geom2d_BoundedCurve</i>;
-both these examples are also curves (abstract class <i>Geom2d_Curve</i>). Curves, points
-and vectors inherit from the abstract class <i> Geom2d_Geometry,</i> which describes the properties
-common to any geometric object from the <i>Geom2d</i> package.
 
-This inheritance structure is open and it is possible to describe new objects which
-inherit from those provided in the <i>Geom2d</i> package, provided that they respect the
-behavior of the classes from which they are to inherit.
+Thus, an ellipse (specific class <i> Geom2d_Ellipse</i>) is also a conical curve and inherits from the abstract class <i> Geom2d_Conic</i>, while a Bezier curve (concrete class <i> Geom2d_BezierCurve</i>) is also a bounded curve and inherits from the abstract class <i> Geom2d_BoundedCurve</i>; both these examples are also curves (abstract class <i>Geom2d_Curve</i>). Curves, points and vectors inherit from the abstract class <i> Geom2d_Geometry,</i> which describes the properties common to any geometric object from the <i>Geom2d</i> package.
 
-Finally, <i> Geom2d</i> objects can be shared within more complex data structures. 
-This is why they are used within topological data structures, for example.
+This inheritance structure is open and it is possible to describe new objects, which inherit from those provided in the <i>Geom2d</i> package, provided that they respect the behavior of the classes from which they are to inherit.
 
-<i> Geom2d </i>package uses the services of the <i> gp</i> package to:
+Finally, <i> Geom2d</i> objects can be shared within more complex data structures. This is why they are used within topological data structures, for example.
 
+<i>Geom2d</i>package uses the services of the <i> gp</i> package to:
   * implement elementary algebraic calculus and basic analytic geometry,
   * describe geometric transformations which can be applied to <i> Geom2d</i> objects,
   * describe the elementary data structures of <i>Geom2d</i> objects.
@@ -400,8 +362,9 @@ You can refer to the <i> GCE2d </i> package to find more evolved construction al
 
 @subsection OCCT_TOVW_SECTION_3_2 3D Geometry Types
 
-The <i> Geom</i> package provides an implementation of 3D geometric objects complying with
-STEP, part 42. In particular, it provides functions for:
+The <i> Geom</i> package provides an implementation of 3D geometric objects, defined in the way similar to STEP standard (ISO 10303, part 42). 
+
+In particular, it provides classes for:
 
   * description of points, vectors, curves and surfaces,
     * their positioning in 3D space using axis or coordinate systems, and
@@ -439,12 +402,12 @@ The <i> Geom</i> package uses the services of the <i> gp</i> package to:
   * describe geometric transformations which can be applied to Geom objects,
   * describe the elementary data structures of Geom objects.
 
-However, the Geom package essentially provides data structures and not algorithms.
+However, the Geom package essentially provides data structures, not algorithms.
+
 You can refer to the <i> GC</i> package to find more evolved construction algorithms for
 Geom objects.
 
-
-### Adaptors for Curves and Surfaces
+@subsubsection OCCT_TOVW_SECTION_3_2_1 Adaptors for Curves and Surfaces
 
 Some Open CASCADE Technology general algorithms may work theoretically on numerous types of curves or surfaces. 
 To do this, they simply get the services required of the analysed  curve or surface through an interface so as to a single API,  whatever the type of curve or surface. These interfaces are called adaptors.
@@ -466,11 +429,10 @@ For example, <i> Adaptor3d_Curve </i> is the abstract class which provides  the 
   * On an Edge
 
 When you write an algorithm which operates on geometric objects, use <i> Adaptor3d</i> (or <i> Adaptor2d</i>) objects. 
-As a result, you can use the algorithm with any kind of object, 
-if you provide for this object, an interface derived from *Adaptor3d* or *Adaptor2d*.
+
+As a result, you can use the algorithm with any kind of object, if you provide for this object an interface derived from *Adaptor3d* or *Adaptor2d*.
 These interfaces are easy to use: simply create an adapted curve or surface from a *Geom2d* curve, 
 and then use this adapted curve as an argument for the algorithm which requires it.
-
 
 @subsection OCCT_TOVW_SECTION_3_3 Geometry Utilities
 
@@ -482,7 +444,7 @@ This library provides standard high-level functions in 2D and 3D geometry such a
   * Calculation of points on a 2D or 3D curve; 
   * Calculation of extrema between two geometries. 
 
-### Direct Construction
+@subsubsection OCCT_TOVW_SECTION_3_3_1 Direct Construction
 
 The <i> gp</i>, <i> Geom2d</i> and <i> Geom</i> packages describe elementary data structures of simple geometric
 objects. The constructors of these objects are elementary: the construction arguments
@@ -532,7 +494,7 @@ construction or construction error) is described by the enumeration <i> gce_Erro
 Note: classes which construct geometric transformations do not return a status, and
 therefore do not inherit from Root.
 
-### Approximations
+@subsubsection OCCT_TOVW_SECTION_3_3_2 Approximations
 
 Approximation of Curves and Surfaces groups together a variety of functions used in 2D and 3D geometry for:
 
@@ -557,14 +519,21 @@ The classes <i> AppDef_Compute</i>, <i> AppDef_BSplineCompute</i> and <i> AppDef
 classes perform the approximation itself using Bezier curves, BSpline curves, and smooth BSpline curves, respectively.
 
 You can also find functions to compute:
-
   * The minimal box which includes a set of points
   * The mean plane, line or point of a set of coplanar, collinear or coincident points.
+  
+#### Example: How to approximate a curve with respect to tangencies
 
-### Conversion to and from BSplines
+To approximate a curve with respect to tangencies, follow these steps:
+
+  1. Create an object of type <i> AppDef_MultiPointConstraints</i> from the set of points to approximate and use the method <i> SetTang </i>to set the tangency vectors.
+  2. Create an object of type <i> AppDef_MultiLine </i>from the <i> AppDef_MultiPointConstraint</i>.
+  3. Use <i> AppDef_BSplineCompute</i>, which instantiates <i>Approx_BSplineComputeLine</i> to perform the approximation.
+
+@subsubsection OCCT_TOVW_SECTION_3_3_3 Conversion to and from BSplines
  
-The Conversion to and from BSplines component has the following two distinct purposes:
-  * Firstly, it provides a homogenous formulation which can be used to describe any curve or surface. 
+The Conversion to and from BSplines component has two distinct purposes:
+  * Firstly, it provides a homogeneous formulation which can be used to describe any curve or surface. 
   This is useful for writing algorithms for a single data structure model. 
   The BSpline formulation can be used to represent most basic geometric objects provided 
   by the components which describe geometric data structures ("Fundamental Geometry Types", "2D Geometry Types" and "3D Geometry Types" components).
@@ -605,7 +574,7 @@ The <i> GeomConvert</i> package also provides the following:
   * an algorithm, which converts a BSpline surface into a series of adjacent Bezier surfaces,
   * an algorithm, which converts a grid of adjacent Bezier surfaces into a BSpline surface.
 
-### Points on Curves
+@subsubsection OCCT_TOVW_SECTION_3_3_4 Calculation of Points on Curves
 
 The Making Points on Curves component comprises high level functions providing an Application Programming Interface for complex algorithms that compute points on a 2D or 3D curve. The functions use various methods.
 
@@ -667,7 +636,7 @@ Three additional packages provide tools to access and manipulate this abstract t
 
 @subsection OCCT_TOVW_SECTION_3_5 Properties of Shapes
 
-### Local Properties of Shapes
+@subsubsection OCCT_TOVW_SECTION_3_5_1 Local Properties of Shapes
 
 <i>BRepLProp</i> package provides the Local Properties of Shapes component, 
 which contains algorithms computing various local properties on edges and faces in a BRep model.
@@ -692,13 +661,12 @@ Analyzed edges and faces are described as <i> BRepAdaptor</i> curves and surface
 which provide shapes with an interface for the description of their geometric support. 
 The base point for local properties is defined by its u parameter value on a curve, or its (u, v) parameter values on a surface.
 
-### Local Properties of Curves and Surfaces
-
+@subsubsection OCCT_TOVW_SECTION_3_5_2 Local Properties of Curves and Surfaces
 
 The "Local Properties of Curves and Surfaces" component provides algorithms for computing various local 
 properties on a Geom curve (in 2D or 3D space) or a surface. It is composed of:
 
-  * <i> Geom2dLProp</i> package, which provides local properties on 2D curves
+  * <i> Geom2dLProp</i> package, which allows computing Derivative and Tangent vectors (normal and curvature) of a parametric point on a 2D curve;
   * <i> GeomLProp </i> package, which provides local properties on 3D curves and surfaces
   * <i> LProp </i> package, which provides an enumeration used to characterize a particular point on a 2D curve.
 
@@ -710,8 +678,17 @@ It is possible to query the same local properties for points as mentioned above,
 
   * the points corresponding to a minimum or a maximum of curvature;
   * the inflection points.
+  
+  
+#### Example: How to check the surface concavity
 
-### Global Properties of Shapes
+To check the concavity of a surface, proceed as follows:
+
+  1. Sample the surface and compute at each point the Gaussian curvature.
+  2. If the value of the curvature changes of sign, the surface is concave or convex depending on the point of view.
+  3. To compute a Gaussian curvature, use the class <i> SLprops</i> from <i> GeomLProp</i>, which instantiates the generic class <i> SLProps </i>from <i> LProp</i> and use the method <i> GaussianCurvature</i>.
+  
+@subsubsection OCCT_TOVW_SECTION_3_5_3 Global Properties of Shapes
 
 The Global Properties of Shapes component provides algorithms for computing the global 
 properties of a composite geometric system in 3D space, and frameworks to query the computed results.
@@ -775,22 +752,9 @@ The length of the curve is then computed using this curve object:
     Standard_Real L = myAlgo.Length( C ) ;
 ~~~~~~~~
 
-### How to check the surface concavity
-
-To check the concavity of a surface, proceed as follows:
-
-  1. Sample the surface and compute at each point the Gaussian curvature.
-  2. If the value of the curvature changes of sign, the surface is concave or convex depending on the point of view.
-  3. To compute a Gaussian curvature, use the class <i> SLprops</i> from <i> GeomLProp</i>, which instantiates the generic class <i> SLProps </i>from <i> LProp</i> and use the method <i> GaussianCurvature</i>.
-
-### How to approximate a curve with respect to tangencies
 
 
-To approximate a curve with respect to tangencies, follow these steps:
 
-  1. Create an object of type <i> AppDef_MultiPointConstraints</i> from the set of points to approximate and use the method <i> SetTang </i>to set the tangency vectors.
-  2. Create an object of type <i> AppDef_MultiLine </i>from the <i> AppDef_MultiPointConstraint</i>.
-  3. Use <i> AppDef_BSplineCompute</i>, which instantiates <i>Approx_BSplineComputeLine</i> to perform the approximation.
 
 ### How to extract the underlying geometry from shapes
 
@@ -936,22 +900,23 @@ The method to get a result is <i> Handle(Geom_BSplineCurve) GeomConvert_CompCurv
 Modeling Algorithms module groups a wide range of 
 topological algorithms used in modeling and geometric algorithms, called by them.
 
+@figure{/technical_overview/images/technical_overview_ma.png}
+
 These services are organized into the following libraries:
 
-  * Geometric Tools 
-  * Topological Tools 
-  * Construction of Primitives 
-  * Boolean Operations 
-  * Fillets and Chamfers 
-  * Offsets and Drafts 
-  * Features 
-  * Hidden Line Removal
-  * Shape Healing 
+  * @ref OCCT_TOVW_SECTION_4_1 "Geometric Tools" 
+  * @ref OCCT_TOVW_SECTION_4_2 "Topological Tools" 
+  * @ref OCCT_TOVW_SECTION_4_3 "Construction of Primitives" 
+  * @ref OCCT_TOVW_SECTION_4_4 "Boolean Operations"
+  * @ref OCCT_TOVW_SECTION_4_5 "Fillets and Chamfers" 
+  * @ref OCCT_TOVW_SECTION_4_6 "Offsets and Drafts" 
+  * @ref OCCT_TOVW_SECTION_4_7 "Features" 
+  * @ref OCCT_TOVW_SECTION_4_8 "Hidden Line Removal"
+  * @ref OCCT_TOVW_SECTION_4_9 "Sewing"  
+  * @ref OCCT_TOVW_SECTION_4_10 "Shape Healing" 
 
-@image html /technical_overview/images/technical_overview_ma.png
-@image latex /technical_overview/images/technical_overview_ma.png
-
-The technical overview provides only a basic description of the libraries. Please, refer for more details to  <a href="user_guides__modeling_algos.html">Modeling Algorithms User's guide</a>
+The technical overview provides only a basic description of the libraries.
+For more details see @ref occt_user_guides__modeling_algos "Modeling Algorithms User's Guide".
 
 See also: our web site at <a href="http://www.opencascade.org/support/training/">E-learning and Training</a>.
 
@@ -963,13 +928,9 @@ This library provides algorithms to:
   * Project points onto 2D and 3D curves, points onto surfaces, and 3D curves onto surfaces;
   * Construct lines and circles from constraints; 
   * Construct curves and surfaces from constraints; 
-  * Construct curves and surfaces by interpolation 
+  * Construct curves and surfaces by interpolation.
 
-OPEN CASCADE company also provides a product known as Surfaces from Scattered Points
-(SSP), which allows constructing surfaces from scattered points. This algorithm accepts
-or constructs an initial B-Spline surface and looks for its deformation (finite elements
-method) which would satisfy the constraints. Using optimized computation methods,
-this algorithm is able to construct a surface from more than 500 000 points.
+OPEN CASCADE company also provides a product known as <a href="http://www.opencascade.org/support/products/ssp/">Surfaces from Scattered Points</a>, which allows constructing surfaces from scattered points. This algorithm accepts or constructs an initial B-Spline surface and looks for its deformation (finite elements method) which would satisfy the constraints. Using optimized computation methods, this algorithm is able to construct a surface from more than 500 000 points.
 
 SSP product is not supplied with Open CASCADE Technology, but can be purchased separately.
 
@@ -1017,8 +978,7 @@ to which the tangency constraints are expressed. For example, consider the follo
 case of a circle of a given radius (a small one) which is tangential to two secant
 circles C1 and C2:
 
-@image html /technical_overview/images/technical_overview_occ_0005.png "Example of a Tangency Constraint"
-@image latex /technical_overview/images/technical_overview_occ_0005.png "Example of a Tangency Constraint"
+@figure{/technical_overview/images/technical_overview_occ_0005.png,"Example of a Tangency Constraint"}
 
 This diagram clearly shows that there are 8 possible solutions.
 
@@ -1050,8 +1010,8 @@ OCCT implements several categories of algorithms:
 For each kind of geometric construction of a constrained line or circle, OCCT provides
 two types of access to the user:
 
-  * algorithms from the package <i> Geom2dGcc </i> automatically select the algorithm best suited to the problem to be treated, both in the general case and in all types of specific cases; the arguments used are Geom2d objects; the solutions computed are <i> gp </i> objects;
-  * algorithms from the package <i> GccAna</i> resolve the problem analytically, and can only be used when the geometries to be worked on are lines or circles; the arguments used and solutions computed are <i> gp </i> objects.
+  * algorithms from the package <i> Geom2dGcc </i> automatically select the algorithm best suited to the problem, both in the general case and in all types of specific cases; the used arguments  are *Geom2d* objects, while the computed solutions are <i> gp </i> objects;
+  * algorithms from the package <i> GccAna</i> resolve the problem analytically, and can only be used when the geometries to be worked on are lines or circles; both the used arguments and the computed solutions  are <i> gp </i> objects.
 
 The provided algorithms compute all solutions, which correspond to the stated geometric
 problem, unless the solution is found by an iterative algorithm.
@@ -1100,7 +1060,6 @@ used in 2D and 3D geometry for:
 
 #### 2D Curves from constraints
 
-
 Elastic beam curves have their origin in traditional methods of modeling applied 
 in boat-building, where a long thin piece of wood, a lathe, was forced to pass
 between two sets of nails and in this way, take the form of a curve based on the
@@ -1142,8 +1101,7 @@ the fillet on one edge is different from that of the fillet on another, it becom
 impossible to sew together all the edges of the resulting surfaces. This leaves a
 gap in the overall surface of the object which you are constructing.
 
-@image html /technical_overview/images/technical_overview_occ_0006.png "Intersecting filleted edges with differing radiuses"
-@image latex /technical_overview/images/technical_overview_occ_0006.png "Intersecting filleted edges with differing radiuses"
+@figure{/technical_overview/images/technical_overview_occ_0006.png,"Intersecting filleted edges with differing radiuses"}
 
 These algorithms allow you to fill this gap from two, three or four curves. This
 can be done with or without constraints, and the resulting surface will be either
@@ -1154,7 +1112,6 @@ This package was designed with a view to handling gaps produced during fillet co
 Satisfactory results cannot be guaranteed for other uses.
 
 #### Plate surfaces
-
 
 In CAD, it is often necessary to generate a surface which has no exact mathematical
 definition, but which is defined by respective constraints. These can be of a mathematical,
@@ -1174,11 +1131,9 @@ in the input, an initial surface is calculated. This corresponds to the plate pr
 to deformation. Then, the algorithm is called to calculate the final surface. It
 looks for a solution satisfying constraints and minimizing energy input.
 
-@image html /technical_overview/images/technical_overview_occ_0007.png "Surface generated from four curves and a point"
-@image latex /technical_overview/images/technical_overview_occ_0007.png  "Surface generated from four curves and a point" 
+@figure{/technical_overview/images/technical_overview_occ_0007.png,"Surface generated from four curves and a point"}
 
-@image html /technical_overview/images/technical_overview_occ_0008.png "Surface generated from two curves and a point"
-@image latex /technical_overview/images/technical_overview_occ_0008.png "Surface generated from two curves and a point" 
+@figure{/technical_overview/images/technical_overview_occ_0008.png,"Surface generated from two curves and a point"}
 
 #### Extension of a 3D curve or surface beyond its original bounds
 
@@ -1205,7 +1160,6 @@ as the evolution law of a fillet, it is important that the function is always po
 @subsection OCCT_TOVW_SECTION_4_2 Topological Tools
 
 This library provides algorithms to:
-
   * Tessellate shapes 
   * Validate shapes 
   * Determine the local properties of shapes 
@@ -1214,10 +1168,7 @@ This library provides algorithms to:
   * Find planes in which edges are located
   * Convert shapes to NURBS geometry.
 
-It also furnishes a complete brep data structure for topological data structures defined 
-in the Topology library of the Modeling Data module. 
-This linAllows you to create standard topological objects such as:
-
+It also furnishes a complete brep data structure for topological data structures defined in the @ref OCCT_TOVW_SECTION_3_4 "Topology" library of the Modeling Data module. The following  standard topological objects can be created:
   * Vertices
   * Edges
   * Faces
@@ -1226,8 +1177,7 @@ This linAllows you to create standard topological objects such as:
   * Shells
   * Solids.
 
-The API provides classes to build objects:
-
+The classes provided by the API have the following features:
   * The constructors of classes provide different construction methods;
   * The class retains different tools used to build objects as fields;
   * The class provides a casting method to obtain the result automatically with a function-like call. 
@@ -1257,6 +1207,9 @@ This library contained in <i> BRepPrimAPI</i> package provides an API (Applicati
     * Cones;
     * Cylinders;
     * Prisms.
+
+It is possible to create partial solids, such as a sphere limited by longitude. In real models, primitives can be used  for easy creation of specific sub-parts.
+
   * Construction by sweeping along a profile:
     * Linear;
     * Rotational (through an angle of rotation).
@@ -1271,26 +1224,23 @@ The profile generates objects according to the following rules:
   * Faces generate Solids.
   * Shells generate Composite Solids.
 
-It is not allowed to sweep Solids and Composite Solids.
-
-Swept constructions along complex profiles such as 
-BSpline curves are also available in the <i> BRepOffsetAPI </i> package.
-
-This API provides simple, high level calls for the most common operations.
+It is not allowed to sweep Solids and Composite Solids. Swept constructions along complex profiles such as BSpline curves also available in the <i> BRepOffsetAPI </i> package. This API provides simple, high level calls for the most common operations.
 
 @subsection OCCT_TOVW_SECTION_4_4 Boolean Operations 
 
-Boolean operations to create new shapes from old ones by using:
-
+Boolean operations allow creating new shapes from old ones by using:
   * Common 
   * Cut 
   * Fuse 
   * Section 
+  
+From the viewpoint of Topology these are topological operations followed by blending (putting fillets onto edges created after the topological operation).
 
-There are two libraries for Boolean Operations: 
+Topological operations are the most convenient way to create real industrial parts. As most industrial parts consist of several simple elements such as gear wheels, arms, holes, ribs, tubes and pipes. It is usually easy to create those elements separately and then to combine them by Boolean operations in the whole final part.
 
+There exist two libraries providing Boolean Operations: 
   * Old Boolean Operations (BOA) provided by <i>BRepAlgo</i> package designed and developed in Open CASCADE 6x in 2000; its architecture and content are out of date.
-  * New Boolean Operations (NBOA) provided by <i>BRepAlgoAPI</i> package designed and developed in 2009 and completely revised in 2013.
+  * New Boolean Operations (NBOA) provided by <i>BRepAlgoAPI</i> package designed and developed in 2001 and completely revised in 2013.
 
 New Boolean Operations provide the following major benefits:
 
@@ -1308,10 +1258,32 @@ Boolean Operations have the following types of the arguments and produce the fol
 * It is possible to perform Boolean Operations on arguments of the COMPOUND shape type. In this case each compound must not be heterogeneous, i.e. it must contain equidimensional shapes (EDGEs or/and WIREs, FACEs or/and SHELLs, SOLIDs). SOLIDs inside the COMPOUND must not contact (intersect or touch) each other. The same condition should be respected for SHELLs or FACEs, WIREs or EDGEs.
 * Boolean Operations for COMPSOLID type of shape are not supported.
 
-@subsection OCCT_TOVW_SECTION_4_5 Features
+@subsection OCCT_TOVW_SECTION_4_5 Fillets and Chamfers
 
-This library contained in BRepFeat package is necessary for the creation 
-and manipulation of both form and mechanical features in a Boundary Representation framework.
+This library provides algorithms to make fillets and chamfers on shape edges.
+The following cases are addressed:
+
+  * Corners and apexes with different radii; 
+  * Corners and apexes with different concavity. 
+
+If there is a concavity, both surfaces that need to be extended and those, which do not, are processed.
+
+@subsection OCCT_TOVW_SECTION_4_6 Offsets, Drafts and Sweeps
+
+These classes provide the following services:
+
+  * Creation of offset shapes and their variants such as: 
+    * Hollowing; 
+    * Shelling; 
+    * Lofting; 
+  * Creation of tapered shapes using draft angles;
+  * Creation of sweeps.
+
+@subsection OCCT_TOVW_SECTION_4_7 Features
+
+This library contained in *BRepFeat* package is necessary for creation and manipulation of both form and mechanical features in a Boundary Representation framework.
+
+### Form Features
 
 The form features are depressions or protrusions including the following types:
 
@@ -1334,16 +1306,14 @@ The semantics of form feature creation is based on the construction of shapes:
 The shape defining the construction of a feature can be 
 either a supporting edge or a concerned area of a face.
 
-In case of supporting edge, this contour can be attached to a face 
-of the basis shape by binding. When the contour is bound to this face, 
-the information that the contour will slide on the face becomes available 
-to the relevant class methods. In case of the concerned area of a face, you could, 
-for example, cut it out and move it at a different height, 
-which will define the limiting face of a protrusion or depression.
+In case of supporting edge, this contour can be attached to a face of the basis shape by binding. When the contour is bound to this face, the information that the contour will slide on the face becomes available 
+to the relevant class methods. In case of the concerned area of a face, you can, for example, cut it out and move it at a different height, which defines the limiting face of a protrusion or depression.
 
 Topological definition with local operations of this sort makes calculations simpler 
 and faster than a global operation. The latter would entail a second phase 
 of removing unwanted matter to get the same result.
+
+### Mechanical Features
 
 Mechanical features include ribs, protrusions and grooves (or slots), 
 depressions along planar (linear) surfaces or revolution surfaces.
@@ -1365,65 +1335,141 @@ Here they include extrusion:
   * to a limiting face of the basis shape;
   * to or from a limiting plane;
   * to a height.
+  
+### Splitting and Gluing  
+  
+It can be required to perform low-level splitting/gluing operations on shapes. Open CASCADE provides the following algorithms for that:
 
-@subsection OCCT_TOVW_SECTION_4_6 Hidden Line Removal
+- **Split shape** allows defining particular faces in a shape and new edges which should split that faces. Upon completion the algorithm gives the part of the shape which is situated on the left side of the line composed from new edges. In combination with the Section algorithm it is a powerful tool for partitioning shapes.
+- **Glue shapes** allows to defining pairs of faces and pairs of edges of two neighboring shapes to glue. Upon completion the algorithm gives the glued shape with cut out parts of faces inside the shape.
+
+  
+
+@subsection OCCT_TOVW_SECTION_4_8 Hidden Line Removal
 
 This library provides two algorithms: <i> HLRBRep_Algo</i> and <i> HLRBRep_PolyAlgo</i>  to define the lines of a shape hidden in a given projection.  These lines can be shown or hidden to have the precision required in industrial design. To do this, the Hidden Line Removal component provides 
 
 These algorithms remove or indicate lines hidden by surfaces. 
+
 For a given projection, they calculate a set of lines characteristic of the object  being represented. They are also used in conjunction with extraction utilities,   which reconstruct a new, simplified shape from a selection of calculation results. 
 This new shape is made up of edges, which represent the lines of the visualized shape in a plane.   This plane is the projection plane.
 
 The algorithm <i> HLRBRep_Algo</i> allows working with the shape itself,  while <i> HLRBRep_PolyAlgo </i>works with its polyhedral simplification. When you use <i> HLRBRep_Algo</i>, you obtain an exact result, whereas, when you use <i> HLRBRep_PolyAlgo</i>, you reduce computation time but obtain polygonal segments.
 
-@subsection OCCT_TOVW_SECTION_4_7 Shape Healing
 
-Shape Healing library provides algorithms to modify the geometry and topology of OCCT shapes.
-Shape Healing adapts shapes to make them maximally appropriate for use by OCCT, for example:
+@subsection OCCT_TOVW_SECTION_4_9 Sewing
 
- * analyze shape characteristics and, in particular, identify the shapes that do not comply with OCCT validity rules; 
-  * fix incorrect or problem shapes;
-  * upgrade and change shape characteristics if needed, for example a C0 supporting surface can become C1 continuous.
+Sewing allows creation of connected topology (shells and wires) from a set of separate topological elements (faces and edges). For example, Sewing can be used to create of shell from a compound of separate faces. 
 
-It has several sub-domains, each with its own scope of functionality:
+It is important to distinguish between sewing and other procedures, which modify the geometry, such as filling holes or gaps, gluing, bending curves and surfaces, etc.
 
-  * analysis        - exploring shape properties, computing shape features, detecting violation of OCCT requirements (the shape itself is not modified);
-  * fixing          - fixing shape to meet the OCCT requirements (the shape may change its original form: modifying, removing, constructing sub-shapes, etc.);
-  * upgrade         - shape improvement for better usability in OCCT or other algorithms (the shape is replaced with a new one, but geometrically they are the same);
-  * customization   - modifying shape representation to fit specific needs (the shape is not modified, only the form of its representation is modified);
-  * processing      - mechanism of shape modification via a user-editable resource file.
+Sewing does not change geometrical representation of the shapes. Sewing applies to topological elements (faces, edges) which are not connected but can be connected because they are geometrically coincident : it adds the information about topological connectivity. Already connected elements are left untouched in case of manifold sewing.
 
-The technical overview provides only a basic description of the libraries. Please, refer for more details to  <a href="user_guides__shape_healing.html">Shape Healing User's guide</a>
+Let us define several terms:
+* **Floating edges** do not belong to any face;
+* **Free boundaries** belong to one face only;
+* **Shared edges** belong to several faces, (i.e. two faces in a manifold topology).
+* **Sewn faces** should have edges shared with each other.
+* **Sewn edges** should have vertices shared with each other.
+
+### Sewing Algorithm
+
+The sewing algorithm is one of the basic algorithms used for shape processing, therefore its quality is very important.
+
+There are two implementations of sewing algorithm: 
+* **Standard** provided by *BRepAlgo_Sewing*, and
+* **Advanced** provided by *ShapeUpgrade_Sewing*, which is a sub-class of *BRepAlgo_Sewing*. 
+
+The only difference between them is that Advanced sewing performs some additional fixes provided by Shape Healing (use of *ShapeFix_Shape*) and improves some particular cases, such as closed surfaces. The principle and architecture of the algorithm itself remain the same.
+
+Class *BRepAlgo_Sewing* provides methods implementing sewing algorithms: 
+* loading initial data for global or local sewing; 
+* setting customization parameters, such as special operation modes, tolerances and output results;
+* applying analysis methods that can be used to obtain connectivity data required by external algorithms;
+* sewing of the loaded shapes. 
+
+Sewing supports working mode with big value tolerance. It is not necessary to repeat sewing step by step while smoothly increasing tolerance.
+
+It is also possible to sew edges to wire and to sew locally separate faces and edges from a shape.
+
+The Sewing algorithm can be subdivided into several independent stages, some of which can be turned on or off using Boolean or other flags. 
+
+In brief, the algorithm should find a find a set of merge candidates for each free boundary, filter them according to certain criteria, and finally merge the found candidates and  build the resulting sewn shape.
+
+Each stage of the algorithm or the whole algorithm can be adjusted with the following parameters: 
+* **Working tolerance** defines the maximal distance between topological elements which can be sewn. It is not ultimate that such elements will  be actually sewn as many other criteria are applied to make the final decision.
+* **Minimal tolerance** defines the size of the smallest element (edge) in the resulting shape. It is declared that no edges with size less than this value are created after sewing. If encountered, such topology becomes degenerated.
+* **Non-manifold mode** enables sewing of non-manifold topology. 
+
+
+### Tolerance Management
+
+To produce a closed shell, Sewing allows specifying the value of working tolerance, exceeding the size of small faces belonging to the shape.
+
+However, if we produce an open shell, it is possible to get incorrect sewing results if the value of working tolerance is too large (i.e. it exceeds the size of faces lying on an open boundary).
+
+The following recommendations can be proposed for tuning-up the sewing process:
+- Use as small working tolerance as possible. This will reduce the sewing time and, consequently, the number of incorrectly sewn edges for shells with free boundaries.
+- Use as large minimal tolerance as possible. This will reduce the number of small geometry in the shape, both original and appearing after cutting.
+- If it is expected to obtain a shell with holes (free boundaries) as a result of sewing, the working tolerance should be set to a value not greater than the size of the smallest element (edge) or smallest distance between elements of such free boundary. Otherwise the free boundary may be sewn only partially.
+- It should  be mentioned that the Sewing algorithm is unable to understand which small (less than working tolerance) free boundary should be kept and which should be sewn.
+
+### Manifold and Non-manifold Sewing
+
+To create one or several shells from a set of faces, sewing merges edges, which belong to different faces or one closed face. 
+
+Face sewing supports manifold and non manifold modes. Manifold mode can produce only a manifold shell. Sewing should be used in the non manifold mode to create non manifold shells.
+
+Manifold sewing of faces merges only two nearest edges belonging to different faces or one closed face with each other. Non manifold sewing of faces merges all edges at a distance less than the specified tolerance.
+
+For a complex topology it is advisable to apply first the manifold sewing and then the non manifold sewing a minimum possible working tolerance. However, this is not necessary for a easy topology. 
+
+Giving a large tolerance value to non manifold sewing will cause a lot of incorrectness since all nearby geometry will be sewn.
+
+### Local Sewing
+If a shape still has some non-sewn faces or edges after sewing, it is possible to use local sewing with a greater tolerance.
+
+Local sewing is especially good for open shells. It allows sewing an unwanted hole in one part of the shape and keeping a required hole, which is smaller than the working tolerance specified for the local sewing in the other part of the shape. Local sewing is much faster than sewing on the whole shape.
+
+All preexisting connections of the whole shape are kept after local sewing. 
+
+@subsection OCCT_TOVW_SECTION_4_10 Shape Healing
+
+Shape Healing library provides algorithms to modify the geometry and topology of OCCT shapes and to make them maximally appropriate for use by OCCT, including, but not limited to the following operations:
+* analyze shape characteristics and, in particular, identify the shapes that do not comply with OCCT geometry and topology  validity rules by analyzing geometrical objects and topology: 
+	- check edge and wire consistency;
+	- check edge order in a wire;
+	- check the orientation of face boundaries;
+	- analyze shape tolerances;
+	- return closed and open wires in a boundary.
+* fix incorrect or problem shapes:
+	- provide consistency between a 3D curve and its corresponding parametric curve;
+	- repair defective wires;
+	- fit the shapes to a user-defined tolerance value;
+	- fill gaps between patches and edges. 
+* upgrade and change shape characteristics:
+	- reduce curve and surface degree;
+	- split shapes to obtain C1 continuity;
+	- convert any types of curves or surfaces to Bezier or Bspline curves or surfaces and back;
+	- split closed surfaces and revolution surfaces.
+
+Each sub-domain of Shape Healing has its own scope of functionality:
+
+| Sub-domain | Description | Impact on the shape |
+| :--- | :---- | :---- |
+| Analysis | Exploring shape properties, computing shape features, detecting violation of OCCT requirements. | The shape itself is not modified. |
+| Fixing  | Fixing shape to meet the OCCT requirements. | The shape may change its original form: modification, removal or creation of sub-shapes, etc.) |
+| Upgrade | Shape improvement for better usability in OCCT or other algorithms. | The shape is replaced with a new one, but geometrically they are the same. |
+| Customization | The shape representation is modified to fit specific needs. | The shape is not modified, only the form of its representation is modified. |
+| Processing | Mechanism of shape modification via a user-editable resource file. | |
+
+The technical overview provides only a basic description of the libraries. 
+For more details refer to @ref occt_user_guides__shape_healing "Shape Healing User's guide".
 
 See also: our web site at <a href="http://www.opencascade.org/support/training/">E-learning and Training</a>.
 
 
-@subsection OCCT_TOVW_SECTION_4_8 Miscellaneous modelling algorithms. 
-
-### Fillets and Chamfers
-
-This library provides algorithms to make fillets and chamfers on shape edges.
-The following cases are addressed:
-
-  * Corners and apexes with different radii; 
-  * Corners and apexes with different concavity. 
-
-If there is a concavity, both surfaces that need to be extended and those, which do not, are processed.
-
-### Offsets, Drafts, Sewing and Sweeps
-
-These classes provide the following services:
-
-  * Creation of offset shapes and their variants such as: 
-    * Hollowing; 
-    * Shelling; 
-    * Lofting; 
-  * Creation of tapered shapes using draft angles 
-  * Sewing 
-  * Creation of sweeps 
-
-
-@subsection OCCT_TOVW_SECTION_4_9 Examples
+@subsection OCCT_TOVW_SECTION_4_11 Examples
 
 ### How to compute the state of a point on a face:
 
@@ -1488,6 +1534,64 @@ If you want to create a solid from a closed shell, you must first check the orie
     BRepBuilderAPI_MakeSolid aSolid(aShell);
 ~~~~~
 
+
+
+@section OCCT_TOVW_SECTION_4a Mesh
+
+In addition to support of exact geometrical representation of 3D objects Open CASCADE Technology provides functionality to work with tessellated representations of the objects, in the form of mesh.
+
+Open CASCADE Technology mesh functionality provides:
+- data structures to store surface mesh data associated to shapes, and some basic algorithms to handle these data
+- data structures and algorithms to build surface triangular mesh from *BRep* objects (shapes).
+- tools to extend 3D visualization capabilities of Open CASCADE Technology with displaying meshes along with associated pre- and post-processor data.
+
+Additionally, Open CASCADE Technology includes two mesh converters:
+- VRML converter translates Open CASCADE shapes to VRML 1.0 files (Virtual Reality Modeling Language). Open CASCADE shapes may be translated in two representations: shaded or wireframe. A shaded representation present shapes as sets of triangles computed by a mesh algorithm while a wireframe representation present shapes as sets of curves.
+- STL converter translates Open CASCADE shapes to STL files. STL (STtereoLithography) format is widely used for rapid prototyping.
+
+Open CASCADE SAS also offers Advanced Mesh Products:
+- <a href="http://www.opencascade.org/support/products/omf">Open CASCADE Mesh Framework (OMF)</a>
+- <a href="http://www.opencascade.org/support/products/emesh">Express Mesh</a>
+
+Besides, we can efficiently help you in the fields of surface and volume meshing algorithms, mesh optimization algorithms etc. If you require a qualified advice about meshing algorithms, do not hesitate to benefit from the expertise of our team in that domain.
+
+The projects dealing with numerical simulation can benefit from using SALOME - an Open Source Framework for CAE with CAD data interfaces, generic Pre- and Post- F.E. processors and API for integrating F.E. solvers.
+
+Learn more about SALOME platform on http://www.salome-platform.org
+
+@subsection OCCT_TOVW_SECTION_4a_1 Shape Translation 
+
+@subsubsection OCCT_TOVW_SECTION_4a_1_1 STL Format
+
+OCCT includes a module for translating OCCT shapes to STL (Stereolithography) format. 
+STL is a format designed for rapid prototyping. 
+It is intended to send geometric data (volumic) to stereolithography machines, 
+which can read and interpret such data. These machines can transform a volumic model 
+to a physical prototype made of plastic, by using laser to coagulate material, 
+which corresponds to the volume, and set free the material around. 
+STL defines these surfaces by triangles. 
+Thus, no machining is required to switch from a virtual model to a physical one.
+
+Since STL files can only include solids described by their mesh structures, 
+OCCT shapes, which are intended to be written, must be solids, 
+components of solids or closed shells with a correct orientation.
+
+When translating shapes to STL format, remember that all references 
+to shapes mean references to OCCT shapes unless otherwise explicitly defined. 
+In addition, sets of faces or unclosed shells may also be translated but visualization in foreign viewers may be incorrect.
+
+@subsection OCCT_TOVW_SECTION_4a_1_2 VRML Format
+
+The Virtual Reality Modeling Language (VRML) is a language for describing multi-participant interactive simulations, virtual worlds networked via the Internet and hyperlinked with the World Wide Web. VRML is a format designed for animated visualization of solids.
+OCCT includes a module for translating OCCT shapes to VRML (Virtual Reality Modeling Language). 
+OCCT shapes may be translated in two representations (states): shaded or wireframe. 
+Since shaded VRML format files include only solids described by their mesh structures, the OCCT shapes intended to be written must be solids, components of solids or closed shells with a correct orientation.
+
+Please, note:
+
+  * all references to shapes indicate OCCT shapes unless otherwise explicitly stated;
+  * sets of faces or unclosed shells may also be translated to shaded VRML format but visualization with foreign viewers may be incorrect.
+  
 @section OCCT_TOVW_SECTION_5 Visualization
 
 Visualization in Open CASCADE Technology is based on the separation of modeling data you want to display and select, and on the graphical presentation of its structure.
@@ -1498,12 +1602,12 @@ Display is managed through presentation services, and selection in its turn is m
 
 Application Interactive Services (AIS) are provided to manage displaying, detection and selection of graphical presentations. These services associate data structures and interactive objects.
 
-The technical overview provides only a basic description of the libraries. Please, refer for more details to  <a href="user_guides__visualization.html">Visualization User's guide</a>
+The technical overview provides only a basic description of the libraries.
+For more details see @ref occt_user_guides__visualization "Visualization User's Guide".
 
 See also: our web site at <a href="http://www.opencascade.org/support/training/">E-learning and Training</a>.
 
-@image html /technical_overview/images/technical_overview_viz.png
-@image latex /technical_overview/images/technical_overview_viz.png
+@figure{/technical_overview/images/technical_overview_viz.png}
 
 @subsection OCCT_TOVW_SECTION_5_1 3D Graphics
 
@@ -1649,7 +1753,6 @@ Selection of 3D data structures is provided using various algorithms.
   
 ### Basic Selection
 
-
 The <i> SelectBasics </i>package provides the following services:
 
   * the root definition of the sensitive primitive, a selectable entity in a view
@@ -1657,8 +1760,7 @@ The <i> SelectBasics </i>package provides the following services:
 
 ### Standard Selections
 
- 
-The <i> StdSelect</i> package provides the following services:
+ The <i> StdSelect</i> package provides the following services:
 
   * definition of selection modes for topological shapes
   * definition of several filter standard <i> Selection2d.ap </i> classes
@@ -1672,11 +1774,10 @@ The <i>Select3D</i> package provides the following services:
   * a 3D-2D projector.
 
 ### Selection Management
-
  
-The <i> SelectMgr</i> package provides low level services and the classes 
-<i> SelectMgr_SelectionManager</i> and <i> SelectMgr_ViewerSelector </i>
-in particular are only to be used when you do not want to use the services provided by <i> AIS</i>.
+The <i> SelectMgr</i> package provides low level services and classes 
+<i> SelectMgr_SelectionManager</i> and <i> SelectMgr_ViewerSelector </i>.
+They can be used when you do not want to use the services provided by <i> AIS</i>.
 
 <i> SelectMgr </i> manages the process of dynamic selection through the following services:
 
@@ -1836,45 +1937,25 @@ The <i> Prs3d </i> package provides the following services:
 <i> MeshVS</i> (Mesh Visualization Service) component extends 3D visualization capabilities 
 of Open CASCADE Technology. It provides flexible means of displaying meshes along with associated pre- and post-processor data. 
 
-From a developer's point of view, it is easy to integrate the MeshVS component i
-nto any mesh-related application with the help of the following guidelines:
+From a developer's point of view, it is easy to integrate the *MeshVS* component into any mesh-related application with the following guidelines:
 
-Derive a data source class from the MeshVS_DataSource class. 
-Re-implement its virtual methods, so as to give the <i> MeshVS</i> component access 
-to the application data model. This is the most important part of the job, 
-since visualization performance is affected by performance of data retrieval methods of your data source class.
+* Derive a data source class from the *MeshVS_DataSource* class. 
+* Re-implement its virtual methods, so as to give the <i> MeshVS</i> component access to the application data model. This is the most important part of the job, since visualization performance is affected by performance of data retrieval methods of your data source class.
+* Create an instance of <i> MeshVS_Mesh</i> class. 
+* Create an instance of your data source class and pass it to a <i> MeshVS_Mesh </i> object through the <i> SetDataSource()</i> method.
+* Create one or several objects of <i> MeshVS_PrsBuilder</i>-derived classes (standard, included in the <i> MeshVS</i> package, or your custom ones). 
+* Each <i> PrsBuilder</i> is responsible for drawing a <i> MeshVS_Mesh</i> presentation in a certain display mode(s) specified as a <i> PrsBuilder</i> constructor's argument. Display mode is treated by <i> MeshVS</i> classes as a combination of bit flags (two least significant bits are used to encode standard display modes: wireframe, shading and shrink). 
+* Pass these objects to the <i> MeshVS_Mesh::AddBuilder()</i> method. <i> MeshVS_Mesh</i> takes advantage of improved selection highlighting mechanism: it highlights its selected entities itself, with the help of so called "highlighter" object. You can set one of <i> PrsBuilder</i> objects to act as a highlighter with the help of a corresponding argument of the <i> AddBuilder()</i> method.
 
-Create an instance of the <i> MeshVS_Mesh</i> class. 
+Visual attributes of the <i> MeshVS_Mesh </i> object (such as shading color, shrink coefficient and so on)  are controlled through <i> MeshVS_Drawer</i> object. It maintains a map "Attribute ID --> attribute value"  and can be easily extended with any number of custom attributes.
 
-Create an instance of your data source class and pass it to a <i> MeshVS_Mesh </i> object through the <i> SetDataSource()</i> method.
-
-Create one or several objects of <i> MeshVS_PrsBuilder</i>-derived classes 
-(either standard, included in the <i> MeshVS</i> package, or your custom ones). 
-Each <i> PrsBuilder</i> is responsible for drawing a <i> MeshVS_Mesh</i> presentation 
-in certain display mode(s) specified as a <i> PrsBuilder</i> constructor's argument. 
-Display mode is treated by <i> MeshVS</i> classes as a combination of bit flags
-(two least significant bits are used to encode standard display modes: wireframe, shading and shrink). 
-Pass these objects to the <i> MeshVS_Mesh::AddBuilder()</i> method. <i> MeshVS_Mesh</i> 
-takes advantage of improved selection highlighting mechanism: it highlights its selected entities itself, 
-with the help of so called "highlighter" object. You can set one of <i> PrsBuilder</i> 
-objects to act as a highlighter with the help of a corresponding argument of the <i> AddBuilder()</i> method.
-
-Visual attributes of the <i> MeshVS_Mesh </i> object (such as shading color, shrink coefficient and so on) 
-are controlled through <i> MeshVS_Drawer</i> object. It maintains a map "Attribute ID --> attribute value" 
-and can be easily extended with any number of custom attributes.
-
-In all other respects, <i> MeshVS_Mesh</i> is very similar to any other class derived 
-from <i> AIS_InteractiveObject</i> and it should be used accordingly 
-(refer to the description of <i> AIS package</i> in the documentation).
+In all other respects, <i> MeshVS_Mesh</i> is very similar to any other class derived from <i> AIS_InteractiveObject</i> and it should be used accordingly (refer to the description of <i> AIS package</i> in the documentation).
 
 @subsection OCCT_TOVW_SECTION_5_8 Images and Drivers
 
 ### Images
 
-The <i> Image</i> package provides <i> PseudoColorImage</i> 
-and <i> ColorImage</i> definitions, and a set of key functions from the image fields. 
-
-The <i> AlienImage</i> package allows importing images from other formats into OCCT format.
+The *Image* package provides classes *PixMap*, defining low-level image bitmap in arbitrary formats (RGB, RGBA, Grayscale), and *AlienPixMap*, providing import / export from / to external image files in formats supported by FreeImage library.
 
 ### Drivers
 
@@ -1912,8 +1993,7 @@ with fast access to the data and optimal allocation of data in memory.
 Also, a special visualization toolkit allows visualizing voxels 
 as colored or black/white points and cubes, displaying only the voxels visible from the user's point of view.
 
-Please, see for more information <a href="occt_voxels_wp.html">Voxels User's Guide</a>.
-
+See @ref occt_user_guides__voxels_wp "Voxels User's Guide" for more information.
 
 @subsection OCCT_TOVW_SECTION_5_11 Examples
 
@@ -2021,82 +2101,32 @@ This is the default behavior for managing the view perspective.
 
 @section OCCT_TOVW_SECTION_6 Data Exchange
 
-Data Exchange is a key factor in using Open CASCADE Technology (as well as applications based thereon) 
-concurrently with other software such as CAD systems. It provides the openness of OCCT in a multi-software environment, 
-by allowing it to process external data and providing a good level of integration.
+Data Exchange is a key factor in using Open CASCADE Technology (as well as applications based thereon) concurrently with other software such as CAD systems. It provides the openness of OCCT in a multi-software environment, by allowing it to process external data and providing a good level of integration.
 
-This means obtaining results of good quality, and covering the needs of exchanges 
-from OCCT-based applications regardless of external data quality or requirements, 
-in particular in respect of allowed data types and arrangements between them, accepted gaps between geometries.
+This means obtaining results of good quality, and covering the needs of exchanges from OCCT-based applications regardless of external data quality or requirements, in particular in respect of allowed data types and arrangements between them, accepted gaps between geometries.
 
 This matter is addressed by Data Exchange Module, which is organized in a modular way.
 
-@image html /technical_overview/images/technical_overview_de.png
-@image latex /technical_overview/images/technical_overview_de.png
+@figure{/technical_overview/images/technical_overview_de.png}
 
-Data Exchange interfaces in OCCT allow software based on OCCT 
-to exchange data with various CAD software, thus ensuring a good level of interoperability.
+Data Exchange interfaces in OCCT allow software based on OCCT to exchange data with various CAD software, thus ensuring a good level of interoperability.
+
+@figure{/technical_overview/images/644_sh_09_400.png,"Image imported from STEP"}
 
 Data Exchange interfaces function either in accordance with the standards (IGES, STEP), 
 which can be used by various software packages for CAD, PDM etc., or as direct connectors to proprietary formats.
 
-### Standardized Data Exchange
-
-
-* STEP (AP203 : Mechanical Design, this covers General 3D CAD; AP214: Automotive Design) 
-* IGES (up to 5.3) 
-* STL 
-* VRML
-
-Data Exchange interfaces (STEP, IGES) allow to query and examine a file, 
-results of conversion and its validity. They are designed to support extensions (like new standards) in a common modular architecture.
-
-### Extended data exchange
-
-
-Extended data exchange (XDE) allows you to extend the scope of exchange by translating
- additional data attached to geometric ("BREP") data, thereby improving the interoperability with external software.
-Data types such as colors, assembly descriptions and validation properties 
-(i.e. center of gravity, etc.) are supported. These data are stored together with shapes in an OCAF (XCAF) document.
-
-
-### Proprietary Data Exchange
-
-In addition to standard Data Exchange interfaces, separate components are available 
-to provide direct mapping and data adaptation (using Shape Healing) with CAD software supporting the following formats:
-
-* ACIS SAT
-* Parasolid X_T
-* DXF
+* **Standardized Data Exchange** interfaces allow to querying and examining a file, results of conversion and its validity. They are designed to support extensions (new standards) in a common modular architecture.
+	* @ref OCCT_TOVW_SECTION_6_3 "STEP" (AP203 : Mechanical Design, this covers General 3D CAD; AP214: Automotive Design) 
+	* @ref OCCT_TOVW_SECTION_6_2 "IGES" (up to 5.3) 
+	* @ref OCCT_TOVW_SECTION_4a_1 "VRML and STL" meshes. 
+* @ref OCCT_TOVW_SECTION_6_4 "Extended data exchange" allows extending the scope of exchange by translating  additional data attached to geometric *BREP* data.
+* <a href="http://www.opencascade.org/support/products/dataex/">Advanced Data Exchange Components</a> are available in addition to standard Data Exchange interfaces to provide direct mapping and data adaptation (also using @ref OCCT_TOVW_SECTION_6_3_3 "Shape Healing") with CAD software supporting the following formats:
+	* <a href="http://www.opencascade.org/support/products/dataex/acis/">ACIS SAT</a>
+	* <a href="http://www.opencascade.org/support/products/dataex/parasolid/">Parasolid</a>
+	* <a href="http://www.opencascade.org/support/products/dataex/dxf/">DXF</a> 
 
 These components are based on the same architecture as interfaces with STEP and IGES.
-
-### Translating a shape to STL Format
-
-
-OCCT includes a module for translating OCCT shapes to STL (Stereolithography) format. 
-STL is a format designed for rapid prototyping. 
-It is intended to send geometric data (volumic) to stereolithography machines, 
-which can read and interpret such data. These machines can transform a volumic model 
-to a physical prototype made of plastic, by using laser to coagulate material, 
-which corresponds to the volume, and set free the material around. 
-STL defines these surfaces by triangles. 
-Thus, no machining is required to switch from a virtual model to a physical one.
-
-Since STL files can only include solids described by their mesh structures, 
-OCCT shapes, which are intended to be written, must be solids, 
-components of solids or closed shells with a correct orientation.
-
-When translating shapes to STL format, remember that all references 
-to shapes mean references to OCCT shapes unless otherwise explicitly defined. 
-In addition, sets of faces or unclosed shells may also be translated but visualization in foreign viewers may be incorrect.
-
-### Translating a shape to VRML Format
-
-The Virtual Reality Modeling Language (VRML) is a language for describing multi-participant interactive simulations, virtual worlds networked via the Internet and hyperlinked with the World Wide Web. VRML is a format designed for animated visualization of solids.
-OCCT includes a module for translating OCCT shapes to VRML (Virtual Reality Modeling Language). 
-OCCT shapes may be translated in two representations (states): shaded or wireframe. 
-Since shaded VRML format files include only solids described by their mesh structures, the OCCT shapes intended to be written must be solids, components of solids or closed shells with a correct orientation.
 
 @subsection OCCT_TOVW_SECTION_6_1 General Definitions
 
@@ -2115,15 +2145,9 @@ of the loading operation, you use the following enumerations from the <i> IFSele
   * <i> PrintCount</i>
   * <i> ReturnStatus</i>
 
-To read and write attributes such as names, colors, layers for IGES and STEP 
-and validation properties and structure of assemblies for STEP, you can use an XDE document.
-
-It is possible to learn more about XDE documents from <a href="user_guides__xde.html">XDE User's guide</a>.
-
 See also: our web site at <a href="http://www.opencascade.org/support/training/">E-learning and Training</a>.
 
 
- 
 @subsection OCCT_TOVW_SECTION_6_2 IGES
 
 The IGES interface reads IGES files and translates them to Open CASCADE Technology models. 
@@ -2144,11 +2168,46 @@ Please, note:
   * an IGES entity is an entity in the IGES normal sense.
   * a root entity is the highest level entity of any given type, e.g. type 144 for surfaces and type 186 for solids. Roots are not referenced by other entities.
 
-It is possible to learn more about the IGES interface from <a href="user_guides__iges.html">IGES User's guide</a>.
+For more details see @ref occt_user_guides__iges "IGES User's Guide".
 
 See also: our web site at <a href="http://www.opencascade.org/support/training/">E-learning and Training</a>.
 
 @subsection OCCT_TOVW_SECTION_6_3 STEP
+
+STEP is more and more widely used to exchange data between various kinds of softwares, involved in CAD, PDM, Analysis, etc... STEP is far more than an "exchange standard" : it provides a technology and a set of methodologies to describe the data to exchange in a modular and upgradeable way. Regarding Open Cascade, this mostly applies to CAD data but it is not a limitation, other kinds of data for specific applications can be addressed too.
+
+@figure{/technical_overview/images/642_sh_08_400.png,"Image imported from STEP"}
+
+Open Cascade allows its users to employ STEP in the following domains:
+* Exchange of data for technical applications, following the state-of-the-art definitions and rules;
+* Extension of case coverage, according to specific needs or to the evolution of general business uses;
+* Expertise on data architecture of an application, to get experience from STEP definitions and make easier the mapping to them, for a better interoperability with outer world.
+
+For more details see @ref occt_user_guides__step "STEP User's Guide".
+
+See also: our web site at <a href="http://www.opencascade.org/support/training/">E-learning and Training</a>.
+
+@subsubsection OCCT_TOVW_SECTION_6_3_1 STEP Exchanges in Open Cascade technology
+
+Beyond the upper level API, which is fitted for an easy end-use, the STEP exchange functions enter in the general frame of Exchanges in Open Cascade, adapted for STEP:
+
+* Specific packages for Data definition and checking;
+* Physical Access supported by Drivers (Part 21 file access is embedded);
+* Conversion to/from Open Cascade or applicative data supported by drivers (OCC-BREP and XDE ard basically provided);
+* Tools for analysis, filtering, etc... including DRAW commands.
+
+These modules share common architecture and capabilities with other exchange modules of Open Cascade, like Shape Healing. Also, built-in Viewer and Converter (as Plugin for Netscape, Internet Explorer ..), are based on the same technology.
+
+In addition, Open Cascade provides tools to process models described using STEP: to reflect EXPRESS descriptions, to read, write and check data, to analyze the whole models ... Their key features are:
+
+* Modularity by sets of data types, which can be hierarchized to reflect the original modularity describing the resources and application protocols;
+* Implementation as CDL/C++ classes, providing comprehensive access to their members;
+* Early binding is basically used, providing good performance, easy installation and use as well as the capability to support non-compiled descriptions.
+
+This provides a natural way to deal with non-supported protocols when they share common definitions, as for geometry, which can then be exploited. The common frame, as the already supported data types, give a good foundation to go towards new uses of STEP, either on data definition (protocols from ISO or from industrial consortia) or on mapping with applicative data.
+
+
+@subsubsection OCCT_TOVW_SECTION_6_3_2 STEP Interface
 
 The STEP interface reads STEP files produced in accordance with STEP Application Protocol 214 (Conformance Class 2 both CD and DIS versions of schema) and translates them to Open CASCADE Technology models. STEP Application Protocol 203 is also supported.
 
@@ -2169,74 +2228,106 @@ Please, note:
 * all references to shapes indicate OCCT shapes unless otherwise explicitly stated;
 * a root entity is the highest level entity of any given type, i.e. an entity that is not referenced by any other one.
 
-It is possible to learn more about the STEP interface from <a href="user_guides__step.html">STEP User's guide</a>.
+@subsubsection OCCT_TOVW_SECTION_6_3_3 Usage of Shape Healing after import from STEP and IGES
 
-See also: our web site at <a href="http://www.opencascade.org/support/training/">E-learning and Training</a>.
+@ref OCCT_TOVW_SECTION_4_10 "Shape Healing" toolkit provides tools to heal various problems which may be encountered in shapes, and to make them valid in Open CASCADE. The Shape Healing is smoothly connected to IGES and STEP translators: the same API as for Open CASCADE IGES and STEP translators is used, only the names of API packages change.
 
-@subsection OCCT_TOVW_SECTION_6_4 STL
+Here are a few examples of typical problems that can be encountered in real IGES and STEP files, with illustrations of how Shape Healing deals with them:
 
-The STL component translates Open CASCADE Technology shapes to STL files. STL (Stereolithography) format is widely used for rapid prototyping.
+#### Face with missing seam edge
 
-As STL files can only include solids described by their mesh structure, 
-the OCCT shapes to be written must be solids, components of solids or closed shells with a correct orientation.
+The problem: Face on a periodical surface is limited by wires which make a full trip around the surface. These wires are closed in 3d but not closed in parametric space of the surface. This is not valid in Open CASCADE.
+The solution: Advanced Shape Healing fixes this face by inserting seam edge which combines two open wires and thus closes the parametric space. Note that internal wires are processed correctly.
 
-Note All references to shapes indicate OCCT shapes unless otherwise explicitly stated.
+#### Wrong orientation of wires
+The problem: Wires on face have incorrect orientation, so that interior and outer parts of the face are mixed.
+The solution: Advanced Shape Healing recovers correct orientation of wires.
 
-Sets of faces or unclosed shells may also be translated to STL format but visualization with foreign viewers may be incorrect.
+#### Self-intersecting wire
+The problem: Face is invalid because its boundary wire has self-intersection (on two adjacent edges)
+The solution: Advanced Shape Healing cuts intersecting edges at intersection points thus making boundary valid.
 
-@subsection OCCT_TOVW_SECTION_6_5 VRML
- 
-The VRML component translates Open CASCADE Technology shapes to VRML 1.0 files 
-(Virtual Reality Modeling Language). OCCT shapes may be translated in two representations: 
-shaded or wireframe. A shaded representation present shapes as sets of triangles 
-computed by a mesh algorithm while a wireframe representation present shapes as sets of curves.
+#### Lacking edge
+The problem: There is a gap between two edges in the wire, so that wire is not closed
+The solution: Advanced Shape Healing closes a gap by inserting lacking edge.
 
-As shaded VRML format files only include solids described by their mesh structures, 
-the OCCT shapes to be written must be solids, components of solids or closed shells with a correct orientation.
 
-Please, note:
+@subsection OCCT_TOVW_SECTION_6_4 Extended Data Exchange
 
-  * all references to shapes indicate OCCT shapes unless otherwise explicitly stated;
-  * sets of faces or unclosed shells may also be translated to shaded VRML format but visualization with foreign viewers may be incorrect.
+The Extended Data Exchange (XDE) module allows extending the scope of exchange by translating  additional data attached to geometric *BREP* data, thereby improving the interoperability with external software. Data types such as colors, layers, assembly descriptions and validation properties (i.e. center of gravity, etc.) are supported. These data are stored together with shapes in an XCAF document.
+
+The basis of XDE, called XCAF, is a framework based on OCAF (Open CASCADE Application Framework) intended to work with assemblies and with various kinds of data (attributes) attached to shapes. The following types of data are currently supported :
+	- assemblies;
+	- validation properties;
+	- names;
+	- colors;
+	- layers.
+
+It is also possible to add a new types of data taking the existing tools as prototypes.
+
+Finally, the XDE provides reader and writer tools for reading and writing the data supported by XCAF to and from IGES and STEP files. 
+
+@figure{/technical_overview/images/646_xde_11_400.png,"Shape imported using XDE"}
+
+For more details see @ref occt_user_guides__xde "XDE User's Guide".
+
+Here are some examples of IGES and STEP files with colors and other attributes read to XDE.
+
+### Assembly Structure
+
+@figure{/technical_overview/images/610_xde_01_400.png,"Sample Assembly"}
+
+XDE supports assemblies by separation the shape definition and its location. The shape itself is stored in OCAF as a simple shape object without location, and then assemblies are defined by specifying what shapes they have as components, and with what locations. This gives a flexibility to define and easily work with complex multi-level assemblies.
+
+### Validation Properties
+Validation properties are quite a new feature of STEP standard, currently being actively tested by CAX-IF organization and implemented in commercial STEP translators.
+
+Validation properties are geometric characteristics of shapes (volume, centroid, surface area) which can be put to the STEP file by the sending system. These data should be used by the receiving system in order to validate quality of translation (by comparing these values computed by original system with the same values computed by receiving system on resulting model).
+
+Extended Data Exchange supports both reading and writing validation properties, and provides some tool to check them.
+
+### Names
+
+@figure{/technical_overview/images/614_xde_04_400.png,"Instance Names"}
+
+XDE supports reading and writing names of shapes to and from both IGES and STEP formats. This functionality can be switched off in case of need (if these data are not needed, thus avoiding unnecessary information in the document).
+
+### Colors and Layers
+
+@figure{/technical_overview/images/239_xde_12_400.png,"Motor Head"}
+
+XDE can read and write colors and layers assigned to shapes or their subparts (down to level of faces and edges) to and from both IGES and STEP formats. 
+
 
 @section OCCT_TOVW_SECTION_7 Application Framework
 
-The Application Framework uses an associativity engine to simplify the development of a CAD application. 
-Based on application/document architecture, it does this due to the following features:
+Open CASCADE Application Framework (OCAF) provides a solution for handling of Application Data, based on the Application/Document paradigm. It uses an associativity engine to simplify the development of a CAD application due to the following features:
 
-  * Application data is handled by the mechanism of attributes 
-  * Attributes may be organized according to your development needs 
-  * Multiple documents can be managed by an application 
-  * Ready-to-use modeling data attributes common to CAD/CAM applications 
-  * Document modification and recomputation
-  * Data storage services 
-  * A ready-to-use Undo-Redo and Copy-Paste functions 
+* @ref OCCT_TOVW_SECTION_7_2 "Data Attributes" that provide management of application data. Attributes may be organized according to the development needs; 
+* @ref OCCT_TOVW_SECTION_7_3 "Data storage and Persistence" services; 
+* Possibility to modify and recompute documents
+* Possibility to manage multiple documents;  
+* Ready-to-use modeling data attributes common to CAD/CAM applications;
+* Ready-to-use Undo-Redo and Copy-Paste functions.
 
-Since OCAF handles your application structure, your only major development task is the creation 
-of application-specific data and GUIs. It is the organization of application data 
-due to which OCAF differs from any other CAD framework. In OCAF, data structures are not shape-driven, 
-but reference-key driven. In this respect, attributes such as shape data, color, material, 
-are attached to a deeper invariant structure of a model than the shapes themselves. 
-Then OCAF organizes and embeds these attributes in a document. 
-For example, a geometry becomes the value of the Shape attribute, 
-in the same way as a number is the value of the Integer attribute and a string is the value of the Name attribute.
+Since OCAF handles your application structure, your only major development task is the creation of application-specific data and GUIs. It is the organization of application data due to which OCAF differs from any other CAD framework. In OCAF, data structures are not shape-driven, but reference-key driven. 
 
-OCAF documents are in their turn managed by an OCAF application.
+Thus, the attributes, such as shape data, color and material, are attached to a deeper invariant structure of a model than the shapes themselves. OCAF organizes and embeds these attributes in a document. 
 
-Please, refer for more details to <a href="user_guides__ocaf.html">OCAF User's guide</a> and the OCAF white papers:
-* <a href="ocaf_wp.html">Application Framework</a>  
-* <a href="occt_ocaf_tree_wp.html">Distribution of Data through OCAF Tree</a>  
-* <a href="occt_ocaf_functionmechanism_wp.html">Application Framework Function Mechanism</a>  
+For example, a geometry becomes the value of *Shape* attribute, in the same way as a number is the value of *Integer* attribute and a string is the value of *Name* attribute. OCAF documents are in their turn managed by an OCAF application.
+
+For more details see @ref occt_user_guides__ocaf "OCAF User's Guide" and the OCAF white papers:
+* @ref occt_user_guides__ocaf_wp "Application Framework"
+* @ref occt_user_guides__ocaf_tree_wp "Distribution of Data through OCAF Tree"
+* @ref occt_user_guides__ocaf_functionmechanism_wp "Application Framework Function Mechanism"
 
 See also: our web site at <a href="http://www.opencascade.org/support/training/">E-learning and Training</a>.
 
 @subsection OCCT_TOVW_SECTION_7_1 How to start working with OCAF
 
-To create a useful OCAF-based application, it is necessary to redefine the following
-two deferred methods: <i> Formats</i> and <i> ResourcesName</i>
+To create a useful OCAF-based application, it is necessary to redefine two deferred methods: <i> Formats</i> and <i> ResourcesName</i>
 
-In the <i> Formats </i> method, it is necessary to add the format 
-of the documents to be read by the application and which may have been built in other applications.
+In the <i> Formats </i> method, add the format of the documents, which need to be read by the application and may have been built in other applications.
 
 For example:
 
@@ -2258,8 +2349,7 @@ with each format and calling of the plug-in file.
     }
 ~~~~
 
-To obtain the saving and opening mechanisms, it is necessary to set two environment
-variables: <i> CSF_PluginDefaults</i>, which defines the path of the plug-in file and <i> CSF_ResourcesDefault</i>, which defines the resource file:
+To obtain the saving and opening mechanisms, it is necessary to set two environment variables: <i> CSF_PluginDefaults</i>, which defines the path of the plug-in file, and <i> CSF_ResourcesDefault</i>, which defines the resource file:
 
 ~~~~
     SetEnvironmentVariable ( "CSF_ResourcesDefaults",myDirectory);
@@ -2360,8 +2450,7 @@ dependent shapes by the changed one.
 If a shape is newly created, the old shape for the corresponding named shape is an empty
 shape. If a shape is deleted, then the new shape in this named shape is empty.
 
-@image html /technical_overview/images/technical_overview_shapeattrib.png
-@image latex /technical_overview/images/technical_overview_shapeattrib.png
+@figure{/technical_overview/images/technical_overview_shapeattrib.png}
 
 
 ### Shape attributes in data framework. 
@@ -2381,8 +2470,7 @@ Not all functions can define explicit hooks for all topological entities they cr
 
 Consider the following example. A box defines six hooks for the six faces, but a protrusion created on a face of the box can only define two hooks, one for the top face, and one for all the lateral faces. As the basic wire defining the protrusion may change in the future the protrusion function cannot designate the lateral faces without ambiguity, their number may change. Figure 6 illustrates this example, faces F1 to F6 of the box each have a hook. Faces F7 to F10, the lateral faces of the protrusion, share a single hook, and face F11, the top face, has one hook.
 
-@image html /technical_overview/images/technical_overview_occ_0068.png
-@image latex /technical_overview/images/technical_overview_occ_0068.png
+@figure{/technical_overview/images/technical_overview_occ_0068.png}
 
 This structure raises two problems: 
 
@@ -2413,16 +2501,15 @@ attribute you are looking for. For this, find this information using the method
     Standard_Boolean HasAttribute = aLabel.Find(anID,anAttribute);
 ~~~~
 
-
 ### Function Attributes
 
-
-A model consists of data and algorithms manipulating with data. OCAF attributes store data. A Function attribute stores data corresponding to a Function (see the white paper <a href="occt_ocaf_functionmechanism_wp.html"> Application Framework Function Mechanism </a>). This mechanism manipulates with algorithms computing the model in the optimal way following the modifications. 
-
+A model consists of data and algorithms manipulating with data. OCAF attributes store data. 
+A Function attribute stores data corresponding to a Function (see the white paper @ref occt_user_guides__ocaf_functionmechanism_wp "Application Framework Function Mechanism").
+This mechanism manipulates with algorithms computing the model in the optimal way following the modifications. 
 
 @subsection OCCT_TOVW_SECTION_7_3 Persistent Data Storage
 
-There are three schemas of persistence, which you can use to store and retrieve OCAF data (documents):
+There are three schemes of persistence, which you can use to store and retrieve OCAF data (documents):
 
   * <i> Standard</i> persistence schema, compatible with previous OCAF applications
   * <i> XmlOcaf</i> persistence, allowing the storage of all OCAF data in XML form
@@ -2448,7 +2535,6 @@ Persistent storage of shapes is presented in the following chapters:
 Finally, information about opening and saving persistent data is presented in Standard
 Documents. 
 
-
 @subsubsection OCCT_TOVW_SECTION_7_3_1 Basic Data Storage
 
 Normally, all data structures provided by Open CASCADE Technology are run-time structures,
@@ -2464,7 +2550,7 @@ functions needed to translate data from transient to persistent state and vice-v
 Libraries of persistent classes are extensible libraries of elementary classes you
 use to define the database schema of your application. They include:
 * Unicode (8-bit or 16-bit character type) strings 
-* Collections of any kind of persistent data such as arrays, stacks, queues, and graphs.
+* Collections of any kind of persistent data such as arrays.
 
 All persistent classes are derived from the \b Persistent base class, which defines
 a unique way of creating and handling persistent objects. You create new persistent
@@ -2482,8 +2568,8 @@ which allow you to translate your data with ease.
 
 #### Creation of Persistent Classes
 
-If you are using Unix platforms as well as WOK and CDL, you can create your own persistent
-classes. In this case, data storage is achieved by implementing Storage and Retrieval
+If you use Unix platforms as well as WOK and CDL, you can create your own persistent
+classes. In this case, data storage is achieved by implementing *Storage* and *Retrieval*
 drivers.
 
 The <i> Storage </i> package is used to write and read persistent objects. 
@@ -2493,16 +2579,16 @@ Drivers (<i> FSD_File</i> objects) assign a physical container for data to be st
 
 The standard procedure for an application in reading a container is as follows:
 
-  *open the driver in reading mode,
-  *call the Read function from the schema, setting the driver as a parameter. This function returns an instance of the <i> Storage_Data </i> class which contains the data being read,
-  *close the driver.
+* open the driver in reading mode,
+* call the Read function from the schema, setting the driver as a parameter. This function returns an instance of the <i> Storage_Data </i> class which contains the data being read,
+* close the driver.
 
 The standard procedure for an application in writing a container is as follows:
 
-  *open the driver in writing mode,
-  *create an instance of the <i> Storage_Data </i> class, then add the persistent data to write with the function <i> AddRoot</i> ,
-  *call the function <i> Write </i> from the schema, setting the driver and the <i> Storage_Data </i> instance as parameters,
-  *close the driver.
+* open the driver in writing mode,
+* create an instance of the <i> Storage_Data </i> class, then add the persistent data to write with the function <i> AddRoot</i>,
+* call the function <i> Write </i> from the schema, setting the driver and the <i> Storage_Data </i> instance as parameters,
+* close the driver.
 
 @subsubsection OCCT_TOVW_SECTION_7_3_2 Persistent Collections
 
@@ -2522,7 +2608,7 @@ The purpose of these data collections is simply to convert transient data into i
 For this reason:
 
   * the persistent strings only provide constructors and functions to convert between transient and persistent strings, and
-  * the persistent data collections are limited to arrays. In other words, <i> PCollection</i> does not include sequences, lists, queues, sets, stacks and so on (unlike <i> TCollection</i>).
+  * the persistent data collections are limited to arrays. In other words, <i> PCollection</i> does not include sequences, lists, and so on (unlike <i> TCollection</i>).
 
 Persistent string and array classes are found in the <i> PCollection</i> package. In addition, <i> PColStd</i> package provides standard, and frequently used, instantiations of persistent arrays, for very simple objects.
 
@@ -2630,6 +2716,28 @@ alone provide access to the data framework. They also allow you to:
 *Update external links;
 *Manage the saving and opening of data;
 *Manage undo/redo functionality.
+
+@section OCCT_TOVW_SECTION_7a Draw Test Harness
+
+The Open CASCADE Test Harness, also called Draw, is an easy-to-use testing tool for the geometric modeling libraries. It can be used to test and demonstrate modeling components before building an entire application. It includes:
+- A command interpreter based on the TCL language;
+- A 2D and a 3D viewer based on X on Unix and Win32 API on Windows;
+- A set of predefined commands.
+
+The Test Harness is a single program written in C++, which can be called from interpreted commands. Predefined commands provide general-purpose services such as:
+- Getting help;
+- Evaluating a script from a file;
+- Capturing commands in a file;
+- Managing views;
+- Displaying objects.
+
+The viewers support operations such as zoom, pan, rotation and full-screen views.
+
+The Test Harness also provides geometric commands to create and manipulate curves and surfaces, and topological commands to create and manipulate shapes. Geometric and topological commands implement geometry and topology resources, and provide examples of their use.
+
+You can add new test harness commands to Draw in order to test or demonstrate a new functionality which you develop.
+
+For more details see @ref occt_user_guides__test_harness "Draw Test Harness Manual".
 
 @section OCCT_TOVW_SECTION_8 FAQ
 
@@ -2859,8 +2967,7 @@ Open CASCADE Technology uses a dynamic library loading mode. Sometimes, the erro
  "cannot map libname.so .. under any of the filenames .."
 ~~~~
 
-When this happens, check your *PATH* under Windows, *LD_LIBRARY_PATH* under UNIX ,
-*SHLIB_PATH* under HP-UX or *LIBPATH* under IBM AIX . 
+When this happens, check your *PATH* under Windows, *LD_LIBRARY_PATH* under UNIX, or *DYLD_LIBRARY_PATH* under Mac OS X. 
 It should contain the path where the required dynamic library is located.
 
 ### Running Draw under Windows
