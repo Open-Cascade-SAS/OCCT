@@ -262,14 +262,14 @@ static Standard_Boolean FUN_mkT2dquad(const TopoDS_Edge& e1,const Standard_Real 
   // = sta = state of point on e1 after pt / e2
 
   gp_Dir tga1,tga2;
-  Standard_Boolean mk1 = isINifh1 || isON2ifss || isIN2ifss;
+  Standard_Boolean mk1 = (mkt==isINifh1) || (mkt==isON2ifss) || (mkt==isIN2ifss);
   if (mk1) {
     Standard_Integer st1 = 0; gp_Dir tgnear1;
     Standard_Boolean ok = FUN_tg(e1,par1,f1,l1,factor,tgnear1,st1);
     if (!ok) return Standard_False;
     tga1 = (st1 == AFTER) ? tgnear1 : tgnear1.Reversed();    
   }
-  Standard_Boolean mk2 = isINifh2 || isON2ifss || isOU2ifss;
+  Standard_Boolean mk2 = (mkt==isINifh2) || (mkt==isON2ifss) || (mkt==isOU2ifss);
   if (mk2) {
     Standard_Real f2,l2; FUN_tool_bounds(e2,f2,l2);
     Standard_Integer st2 = 0; gp_Dir tgnear2;
