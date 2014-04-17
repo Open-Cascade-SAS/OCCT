@@ -266,10 +266,9 @@ static Standard_Boolean checkWiresIntersection(const Standard_Integer           
       Standard_Real dd[2][4] = { {(xc-x11), (xc-x12), (xc-x21), (xc-x22)},   //dX
                                  {(yc-y11), (yc-y12), (yc-y21), (yc-y22)} }; //dY
 
-      Standard_Integer i = 0;
-      for(; i < 2; i++ )
+      for( Standard_Integer i = 0; i < 2; i++ )
       {
-        if ( dd[i][0]*dd[i][1] > dTol || dd[i][2]*dd[i][3] > dTol)
+        if ( dd[i][0] * dd[i][1] > RESOLUTION || dd[i][2] * dd[i][3] > RESOLUTION )
         {
           isOnLines = Standard_False;
           break;
@@ -279,7 +278,7 @@ static Standard_Boolean checkWiresIntersection(const Standard_Integer           
       // check the intersection point is on the ends of segments
       if ( isOnLines )
       {
-        for( i = 0; i < 2; i++ )
+        for( Standard_Integer i = 0; i < 2; i++ )
         {
           //     if it's the last segment and intersection point lies at the end
           if ( ( jk == jkEnd                                              ||
