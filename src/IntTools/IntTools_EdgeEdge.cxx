@@ -33,10 +33,6 @@
 #include <IntTools_CommonPrt.hxx>
 
 
-static
-  Standard_Boolean BndCommon(const Bnd_Box& theB1,
-                             const Bnd_Box& theB2,
-                             Bnd_Box& theBOut);
 static 
   void BndBuildBox(const BRepAdaptor_Curve& theBAC,
                    const Standard_Real aT1,
@@ -177,9 +173,22 @@ void IntTools_EdgeEdge::Prepare()
   myRes2 = myCurve2.Resolution(myTol);
   //
   if (iCT1 != 0 || iCT2 != 0) {
-    Standard_Real f, l;
+    Standard_Real f, l, aTM;
+    //
     myGeom1 = BRep_Tool::Curve(myEdge1, f, l);
     myGeom2 = BRep_Tool::Curve(myEdge2, f, l);
+    //
+    myPTol1 = 5.e-13;
+    aTM = Max(fabs(myRange1.First()), fabs(myRange1.Last()));
+    if (aTM > 999.) {
+      myPTol1 = 5.e-16 * aTM;
+    }
+    //
+    myPTol2 = 5.e-13;
+    aTM = Max(fabs(myRange2.First()), fabs(myRange2.Last()));
+    if (aTM > 999.) {
+      myPTol2 = 5.e-16 * aTM;
+    }
   }
 }
 
@@ -205,37 +214,12 @@ void IntTools_EdgeEdge::Perform()
     return;
   }
   //
-  //3.2. Find solutions
-  FindSolutions();
-}
-
-//=======================================================================
-//function : FindSolutions
-//purpose  : 
-//=======================================================================
-void IntTools_EdgeEdge::FindSolutions()
-{
-  //1. Build common box for edges
-  Standard_Real aT11, aT12, aT21, aT22;
-  Bnd_Box aB1, aB2, aBC;
-  //
-  myRange1.Range(aT11, aT12);
-  myRange2.Range(aT21, aT22);
-  //
-  BndBuildBox(myCurve1, aT11, aT12, myTol1, aB1);
-  BndBuildBox(myCurve2, aT21, aT22, myTol2, aB2);
-  //
-  if (!BndCommon(aB1, aB2, aBC)) {
-    // No intersections at all
-    return;
-  }
-  //
   IntTools_SequenceOfRanges aRanges1, aRanges2;
   //
-  //2. Find ranges containig solutions
-  FindSolutions(myRange1, myRange2, aBC, aRanges1, aRanges2);
+  //3.2. Find ranges containig solutions
+  FindSolutions(myRange1, myRange2, aRanges1, aRanges2);
   //
-  //3. Merge solutions and save common parts
+  //4. Merge solutions and save common parts
   MergeSolutions(aRanges1, aRanges2);
 }
 
@@ -245,7 +229,6 @@ void IntTools_EdgeEdge::FindSolutions()
 //=======================================================================
 void IntTools_EdgeEdge::FindSolutions(const IntTools_Range& theR1,
                                       const IntTools_Range& theR2,
-                                      const Bnd_Box& theBC,
                                       IntTools_SequenceOfRanges& theRanges1, 
                                       IntTools_SequenceOfRanges& theRanges2)
 {
@@ -258,7 +241,13 @@ void IntTools_EdgeEdge::FindSolutions(const IntTools_Range& theR1,
   //
   theR1.Range(aT11, aT12);
   theR2.Range(aT21, aT22);
-  aB1 = theBC;
+  //
+  BndBuildBox(myCurve1, aT11, aT12, myTol1, aB1);
+  BndBuildBox(myCurve2, aT21, aT22, myTol2, aB2);
+  if (aB1.IsOut(aB2)) {
+    //no intersection;
+    return;
+  }
   //
   bOut  = Standard_False;
   bThin = Standard_False;
@@ -267,21 +256,20 @@ void IntTools_EdgeEdge::FindSolutions(const IntTools_Range& theR1,
   iCom  = 1;
   //
   do {
-    bOut = !FindParameters(myCurve2, aT21, aT22, myRes2, aB1, aTB21, aTB22);
+    bOut = !FindParameters(myCurve2, aT21, aT22, myRes2, myPTol2, aB1, aTB21, aTB22);
     if (bOut) {
       break;
     }
     //
     bThin = (aTB22 - aTB21) < myRes2;
     if (bThin) {
-      bOut = !FindParameters(myCurve1, aT11, aT12, myRes1, aB1, aTB11, aTB12);
+      bOut = !FindParameters(myCurve1, aT11, aT12, myRes1, myPTol1, aB1, aTB11, aTB12);
       break;
     }
     //
     BndBuildBox(myCurve2, aTB21, aTB22, myTol2, aB2);
-    BndCommon(aB1, aB2, aB2);
     //
-    bOut = !FindParameters(myCurve1, aT11, aT12, myRes1, aB2, aTB11, aTB12);
+    bOut = !FindParameters(myCurve1, aT11, aT12, myRes1, myPTol1, aB2, aTB11, aTB12);
     if (bOut) {
       break;
     }
@@ -305,7 +293,7 @@ void IntTools_EdgeEdge::FindSolutions(const IntTools_Range& theR1,
         bStop = Standard_True;
       } else {
         BndBuildBox(myCurve1, aTB11, aTB12, myTol1, aB1);
-        bOut = !BndCommon(aB1, aB2, aB1);
+        bOut = aB1.IsOut(aB2);
         if (bOut) {
           break;
         }
@@ -365,17 +353,12 @@ void IntTools_EdgeEdge::FindSolutions(const IntTools_Range& theR1,
   IntTools_SequenceOfRanges aSegments1;
   //
   IntTools_Range aR2(aT21, aT22);
-  BndBuildBox(myCurve2, aT21, aT22, myTol2, aB2);
   //
   SplitRangeOnSegments(aT11, aT12, myRes1, 3, aSegments1);
   aNb1 = aSegments1.Length();
   for (i = 1; i <= aNb1; ++i) {
     const IntTools_Range& aR1 = aSegments1(i);
-    aR1.Range(aT11, aT12);
-    BndBuildBox(myCurve1, aT11, aT12, myTol1, aB1);
-    if (BndCommon(aB1, aB2, aB1)) {
-      FindSolutions(aR1, aR2, aB1, theRanges1, theRanges2);
-    }
+    FindSolutions(aR1, aR2, theRanges1, theRanges2);
   }
 }
 
@@ -387,6 +370,7 @@ Standard_Boolean IntTools_EdgeEdge::FindParameters(const BRepAdaptor_Curve& theB
                                                    const Standard_Real aT1, 
                                                    const Standard_Real aT2, 
                                                    const Standard_Real theRes,
+                                                   const Standard_Real thePTol,
                                                    const Bnd_Box& theCBox,
                                                    Standard_Real& aTB1, 
                                                    Standard_Real& aTB2)
@@ -394,14 +378,13 @@ Standard_Boolean IntTools_EdgeEdge::FindParameters(const BRepAdaptor_Curve& theB
   Standard_Boolean bRet;
   Standard_Integer aC, i, k;
   Standard_Real aCf, aDiff, aDt, aT, aTB, aTOut, aTIn;
-  Standard_Real aDist, aDistP, aDistTol, aPTol, aTol;
+  Standard_Real aDist, aDistP, aDistTol, aTol;
   gp_Pnt aP;
   Bnd_Box aCBx;
   //
   bRet = Standard_False;
   aCf = 0.6180339887498948482045868343656;// =0.5*(1.+sqrt(5.))/2.;
   aDt = theRes;
-  aPTol = theRes * 0.001;
   aTol = theBAC.Tolerance();
   aDistP = 0.;
   aDistTol = Precision::PConfusion();
@@ -450,7 +433,7 @@ Standard_Boolean IntTools_EdgeEdge::FindParameters(const BRepAdaptor_Curve& theB
       aTIn = aTB;
       aTOut = aTB - aC*aDt;
       aDiff = aTIn - aTOut;
-      while (fabs(aDiff) > aPTol) {
+      while (fabs(aDiff) > thePTol) {
         aTB = aTOut + aDiff*aCf;
         theBAC.D0(aTB, aP);
         if (aCBx.IsOut(aP)) {
@@ -573,7 +556,7 @@ void IntTools_EdgeEdge::FindBestSolution(const Standard_Real aT11,
                                          Standard_Real& aT2)
 {
   Standard_Integer i, aNbS, iErr;
-  Standard_Real aDMin, aD, aCrit, aMinStep, aTMax;
+  Standard_Real aDMin, aD, aCrit;
   Standard_Real aT1x, aT2x, aT1p, aT2p;
   GeomAPI_ProjectPointOnCurve aProj;
   IntTools_SequenceOfRanges aSeg1;
@@ -584,11 +567,6 @@ void IntTools_EdgeEdge::FindBestSolution(const Standard_Real aT11,
   aDMin = 100.;
   aD = 100.;
   aCrit = 0.;//1.e-16;
-  aMinStep = 5.e-13;
-  aTMax = Max(fabs(aT11), fabs(aT12));
-  if (aTMax > 999.) {
-    aMinStep = 5.e-16 * aTMax;
-  }
   //
   aNbS = 10;
   SplitRangeOnSegments(aT11, aT12, 3*myRes1, aNbS, aSeg1);
@@ -599,7 +577,7 @@ void IntTools_EdgeEdge::FindBestSolution(const Standard_Real aT11,
     const IntTools_Range& aR1 = aSeg1(i);
     aR1.Range(aT1x, aT2x);
     //
-    iErr = FindDistPC(aT1x, aT2x, myGeom1, aCrit, aMinStep, 
+    iErr = FindDistPC(aT1x, aT2x, myGeom1, aCrit, myPTol1,
                       aProj, aD, aT1p, aT2p, Standard_False);
     if (iErr != 1 && aD < aDMin) {
       aT1 = aT1p;
@@ -1063,34 +1041,6 @@ void SplitRangeOnSegments(const Standard_Real aT1,
   //
   IntTools_Range aR(aT1x, aT2);
   theSegments.Append(aR);
-}
-
-//=======================================================================
-//function : BndCommon
-//purpose  : 
-//=======================================================================
-Standard_Boolean BndCommon(const Bnd_Box& theB1,
-                           const Bnd_Box& theB2,
-                           Bnd_Box& theBOut)
-{
-  Standard_Boolean bRet;
-  //
-  bRet = !theB1.IsOut(theB2);
-  if (bRet) {
-    Standard_Real aXmin1, aYmin1, aZmin1, aXmax1, aYmax1, aZmax1,
-                  aXmin2, aYmin2, aZmin2, aXmax2, aYmax2, aZmax2;
-    Bnd_Box aBCom;
-    //
-    theB1.Get(aXmin1, aYmin1, aZmin1, aXmax1, aYmax1, aZmax1);
-    theB2.Get(aXmin2, aYmin2, aZmin2, aXmax2, aYmax2, aZmax2);
-    //
-    aBCom.Update(Max(aXmin1, aXmin2), Max(aYmin1, aYmin2), Max(aZmin1, aZmin2),
-                 Min(aXmax1, aXmax2), Min(aYmax1, aYmax2), Min(aZmax1, aZmax2));
-    //
-    aBCom.Get(aXmin1, aYmin1, aZmin1, aXmax1, aYmax1, aZmax1);
-    theBOut = aBCom;
-  }
-  return bRet;
 }
 
 //=======================================================================
