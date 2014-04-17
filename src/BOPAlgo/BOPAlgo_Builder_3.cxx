@@ -640,7 +640,8 @@ void BOPAlgo_Builder::FillInternalShapes()
   // 1.1 Shapes from pure arguments aMSI 
   // 1.1.1 vertex, edge, wire
   //
-  aIt.Initialize(myArguments);
+  const BOPCol_ListOfShape& aArguments=myDS->Arguments();
+  aIt.Initialize(aArguments);
   for (; aIt.More(); aIt.Next()) {
     const TopoDS_Shape& aS=aIt.Value();
     TreatCompound(aS, aMFence, aLSC);

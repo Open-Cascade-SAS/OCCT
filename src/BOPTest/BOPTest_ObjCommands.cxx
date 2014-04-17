@@ -30,6 +30,7 @@ static Standard_Integer bclearobjects (Draw_Interpretor& , Standard_Integer , co
 static Standard_Integer baddtools   (Draw_Interpretor& , Standard_Integer , const char** );
 static Standard_Integer bcleartools (Draw_Interpretor& , Standard_Integer , const char** );
 static Standard_Integer baddcompound(Draw_Interpretor& , Standard_Integer , const char** );
+static Standard_Integer baddctools  (Draw_Interpretor& , Standard_Integer , const char** );
 //
 //=======================================================================
 //function :ObjCommands
@@ -43,11 +44,12 @@ static Standard_Integer baddcompound(Draw_Interpretor& , Standard_Integer , cons
   // Chapter's name
   const char* g = "BOP commands";
   // Commands
-  theCommands.Add("baddobjects"    , "baddobjects s1 s2 ..."    , __FILE__, baddobjects, g);
-  theCommands.Add("bclearobjects"  , "bclearobjects"            , __FILE__, bclearobjects, g);
-  theCommands.Add("baddtools"      , "baddtools s1 s2 ..."      , __FILE__, baddtools, g);
-  theCommands.Add("bcleartools"    , "bcleartools"              , __FILE__, bcleartools, g);
-  theCommands.Add("baddcompound"   , "baddcompound c"           , __FILE__, baddcompound, g);
+  theCommands.Add("baddobjects"    , "baddobjects s1 s2 ..." , __FILE__, baddobjects, g);
+  theCommands.Add("bclearobjects"  , "bclearobjects"         , __FILE__, bclearobjects, g);
+  theCommands.Add("baddtools"      , "baddtools s1 s2 ..."   , __FILE__, baddtools, g);
+  theCommands.Add("bcleartools"    , "bcleartools"           , __FILE__, bcleartools, g);
+  theCommands.Add("baddcompound"   , "baddcompound c"        , __FILE__, baddcompound, g);
+  theCommands.Add("baddctools"     , "baddctools c"          , __FILE__, baddctools, g);
 }
 //=======================================================================
 //function : baddcompound
@@ -70,6 +72,31 @@ Standard_Integer baddcompound (Draw_Interpretor& , Standard_Integer n, const cha
   for (; aIt.More(); aIt.Next()) {
     const TopoDS_Shape& aSx=aIt.Value();
     aLS.Append(aSx);
+  }
+  //
+  return 0;
+}
+//=======================================================================
+//function : baddctools
+//purpose  : 
+//=======================================================================
+Standard_Integer baddctools (Draw_Interpretor& , Standard_Integer n, const char** a)
+{
+  if (n<2) {
+    printf(" Use baddctools c\n");
+    return 0;
+  }
+  //
+  TopoDS_Iterator aIt;
+  TopoDS_Shape aS;
+  //
+  aS=DBRep::Get(a[1]);
+  //
+  BOPCol_ListOfShape& aLT=BOPTest_Objects::Tools();
+  aIt.Initialize(aS);
+  for (; aIt.More(); aIt.Next()) {
+    const TopoDS_Shape& aSx=aIt.Value();
+    aLT.Append(aSx);
   }
   //
   return 0;

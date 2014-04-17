@@ -22,14 +22,18 @@
 #include <BOPCol_ListOfShape.hxx>
 #include <BOPCol_MapOfShape.hxx>
 
+#include <BOPDS_DS.hxx>
+
 #include <BOPTools_AlgoTools.hxx>
 #include <BOPTools.hxx>
+
 
 //=======================================================================
 //function : Generated
 //purpose  : 
 //=======================================================================
-  const TopTools_ListOfShape& BOPAlgo_Builder::Generated(const TopoDS_Shape&)
+const TopTools_ListOfShape& BOPAlgo_Builder::Generated
+  (const TopoDS_Shape&)
 {
   myHistShapes.Clear();
   return myHistShapes;
@@ -38,7 +42,8 @@
 //function : Modified
 //purpose  : 
 //=======================================================================
-  const TopTools_ListOfShape& BOPAlgo_Builder::Modified(const TopoDS_Shape& theS)
+const TopTools_ListOfShape& BOPAlgo_Builder::Modified
+  (const TopoDS_Shape& theS)
 {
   Standard_Boolean bHasImage, bToReverse;
   TopAbs_ShapeEnum aType;
@@ -78,7 +83,8 @@
         aSp.Orientation(theS.Orientation());
       }
       else {
-        bToReverse=BOPTools_AlgoTools::IsSplitToReverse(aSp, theS, myContext);
+        bToReverse=
+          BOPTools_AlgoTools::IsSplitToReverse(aSp, theS, myContext);
         if (bToReverse) {
           aSp.Reverse();
         }
@@ -94,7 +100,8 @@
 //function : IsDeleted
 //purpose  : 
 //=======================================================================
-  Standard_Boolean BOPAlgo_Builder::IsDeleted(const TopoDS_Shape& theS)
+Standard_Boolean BOPAlgo_Builder::IsDeleted
+  (const TopoDS_Shape& theS)
 {
   Standard_Boolean bRet, bHasImage, bContains;
   TopAbs_ShapeEnum aType;
@@ -147,7 +154,7 @@
 //function : PrepareHistory
 //purpose  : 
 //=======================================================================
-  void BOPAlgo_Builder::PrepareHistory()
+void BOPAlgo_Builder::PrepareHistory()
 {
   if (!myFlagHistory) {
     return;
@@ -170,7 +177,8 @@
   BOPTools::MapShapes(myShape, myMapShape);
   //
   // 3. MS - all argument shapes with theirs sub-shapes
-  aIt.Initialize(myArguments);
+  const BOPCol_ListOfShape& aArguments=myDS->Arguments();
+  aIt.Initialize(aArguments);
   for (; aIt.More(); aIt.Next()) {
     const TopoDS_Shape& aSx=aIt.Value();
     BOPTools::MapShapes(aSx, aMS);

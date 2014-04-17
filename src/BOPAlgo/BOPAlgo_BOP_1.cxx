@@ -36,7 +36,7 @@
 //function : BuildSection
 //purpose  : 
 //=======================================================================
-  void BOPAlgo_BOP::BuildSection()
+void BOPAlgo_BOP::BuildSection()
 {
 
   Standard_Integer i, j, k, nE, nF1, nF2, aNbPB, aNbFF;
@@ -113,35 +113,14 @@
     }
   }
   //
-  //case when arguments are the same
-  if (!aNbFF) {
-    if (myArgs[0].IsSame(myArgs[1])) {
-      TopExp_Explorer anExpF, anExpE;
-      //
-      anExpF.Init(myArgs[0], TopAbs_FACE);
-      for(; anExpF.More(); anExpF.Next()) {
-        const TopoDS_Shape& aF = anExpF.Current();
-        //
-        anExpE.Init(aF, TopAbs_EDGE);
-        for (; anExpE.More(); anExpE.Next()) {
-          const TopoDS_Shape& aE = anExpE.Current();
-          //
-          if (aME.Add(aE)) {
-            aBB.Add(aRC, aE);
-          }
-        }
-      }
-    }
-  }
-  //
   myShape=aRC;
 }
-
 //=======================================================================
 //function : Generated
 //purpose  : 
 //=======================================================================
-const TopTools_ListOfShape& BOPAlgo_BOP::Generated(const TopoDS_Shape& theS)
+const TopTools_ListOfShape& BOPAlgo_BOP::Generated
+  (const TopoDS_Shape& theS)
 {
   myHistShapes.Clear();
   if (theS.IsNull() || (myOperation != BOPAlgo_SECTION)) {

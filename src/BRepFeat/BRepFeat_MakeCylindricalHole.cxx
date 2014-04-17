@@ -56,14 +56,15 @@ static void BoxParameters(const TopoDS_Shape&,
 
 void BRepFeat_MakeCylindricalHole::Perform(const Standard_Real Radius)
 {
-  if (Object().IsNull() || !myAxDef) {
+  const TopoDS_Shape& aObject=myArguments.First();
+  if (aObject.IsNull() || !myAxDef) {
     Standard_ConstructionError::Raise();
   }
 
   myIsBlind = Standard_False;
   myStatus = BRepFeat_NoError;
 
-  LocOpe_CurveShapeIntersector theASI(myAxis,Object());
+  LocOpe_CurveShapeIntersector theASI(myAxis,aObject);
   if (!theASI.IsDone() || theASI.NbPoints() <= 0) {
     myStatus = BRepFeat_InvalidPlacement;
     return;
@@ -76,7 +77,7 @@ void BRepFeat_MakeCylindricalHole::Perform(const Standard_Real Radius)
 
   // It is not possible to use infinite cylinder for topological operations.
   Standard_Real PMin,PMax;
-  BoxParameters(Object(),myAxis,PMin,PMax);
+  BoxParameters(aObject,myAxis,PMin,PMax);
   Standard_Real Heigth = 2.*(PMax-PMin);
   gp_XYZ theOrig = myAxis.Location().XYZ();
   theOrig += ((3.*PMin-PMax)/2.) * myAxis.Direction().XYZ();
@@ -102,9 +103,7 @@ void BRepFeat_MakeCylindricalHole::Perform(const Standard_Real Radius)
   //
   AddTool(theTool);
   SetOperation(Fuse);
-  BOPAlgo_Builder::Perform();
-  //myBuilder.Perform(theTool,theList,Fuse);
-//  myBuilder.PerformResult();
+  BOPAlgo_BOP::Perform();
 }
 
 
@@ -116,8 +115,9 @@ void BRepFeat_MakeCylindricalHole::Perform(const Standard_Real Radius)
 void BRepFeat_MakeCylindricalHole::PerformThruNext(const Standard_Real Radius,
                                                    const Standard_Boolean Cont)
 {
-
-  if (Object().IsNull() || !myAxDef) {
+  //
+  const TopoDS_Shape& aObject=myArguments.First();
+  if (aObject.IsNull() || !myAxDef) {
     Standard_ConstructionError::Raise();
   }
 
@@ -125,7 +125,7 @@ void BRepFeat_MakeCylindricalHole::PerformThruNext(const Standard_Real Radius,
   myValidate = Cont;
   myStatus = BRepFeat_NoError;
 
-  LocOpe_CurveShapeIntersector theASI(myAxis,Object());
+  LocOpe_CurveShapeIntersector theASI(myAxis,aObject);
   if (!theASI.IsDone()) {
     myStatus = BRepFeat_InvalidPlacement;
     return;
@@ -180,7 +180,7 @@ void BRepFeat_MakeCylindricalHole::PerformThruNext(const Standard_Real Radius,
 
   // It is not possible to use infinite cylinder for topological operations.
   Standard_Real PMin,PMax;
-  BoxParameters(Object(),myAxis,PMin,PMax);
+  BoxParameters(aObject,myAxis,PMin,PMax);
   Standard_Real Heigth = 2.*(PMax-PMin);
   gp_XYZ theOrig = myAxis.Location().XYZ();
   theOrig += ((3.*PMin-PMax)/2.) * myAxis.Direction().XYZ();
@@ -274,8 +274,9 @@ void BRepFeat_MakeCylindricalHole::PerformThruNext(const Standard_Real Radius,
 void BRepFeat_MakeCylindricalHole::PerformUntilEnd(const Standard_Real Radius,
                                                    const Standard_Boolean Cont)
 {
-
-  if (Object().IsNull() || !myAxDef) {
+  //
+  const TopoDS_Shape& aObject=myArguments.First();
+  if (aObject.IsNull() || !myAxDef) {
     Standard_ConstructionError::Raise();
   }
 
@@ -283,7 +284,7 @@ void BRepFeat_MakeCylindricalHole::PerformUntilEnd(const Standard_Real Radius,
   myValidate = Cont;
   myStatus = BRepFeat_NoError;
 
-  LocOpe_CurveShapeIntersector theASI(myAxis,Object());
+  LocOpe_CurveShapeIntersector theASI(myAxis,aObject);
   if (!theASI.IsDone()) {
     myStatus = BRepFeat_InvalidPlacement;
     return;
@@ -330,7 +331,7 @@ void BRepFeat_MakeCylindricalHole::PerformUntilEnd(const Standard_Real Radius,
 
   // It is not possible to use infinite cylinder for topological operations.
   Standard_Real PMin,PMax;
-  BoxParameters(Object(),myAxis,PMin,PMax);
+  BoxParameters(aObject,myAxis,PMin,PMax);
   Standard_Real Heigth = 2.*(PMax-PMin);
   gp_XYZ theOrig = myAxis.Location().XYZ();
   theOrig += ((3.*PMin-PMax)/2.) * myAxis.Direction().XYZ();
@@ -392,8 +393,9 @@ void BRepFeat_MakeCylindricalHole::Perform(const Standard_Real Radius,
                                            const Standard_Real PTo,
                                            const Standard_Boolean Cont)
 {
-
-  if (Object().IsNull() || !myAxDef) {
+  //
+  const TopoDS_Shape& aObject=myArguments.First();
+  if (aObject.IsNull() || !myAxDef) {
     Standard_ConstructionError::Raise();
   }
 
@@ -401,7 +403,7 @@ void BRepFeat_MakeCylindricalHole::Perform(const Standard_Real Radius,
   myValidate = Cont;
   myStatus = BRepFeat_NoError;
 
-  LocOpe_CurveShapeIntersector theASI(myAxis,Object());
+  LocOpe_CurveShapeIntersector theASI(myAxis,aObject);
   if (!theASI.IsDone()) {
     myStatus = BRepFeat_InvalidPlacement;
     return;
@@ -458,7 +460,7 @@ void BRepFeat_MakeCylindricalHole::Perform(const Standard_Real Radius,
 
   // // It is not possible to use infinite cylinder for topological operations.
   Standard_Real PMin,PMax;
-  BoxParameters(Object(),myAxis,PMin,PMax);
+  BoxParameters(aObject,myAxis,PMin,PMax);
   Standard_Real Heigth = 2.*(PMax-PMin);
   gp_XYZ theOrig = myAxis.Location().XYZ();
   theOrig += ((3.*PMin-PMax)/2.) * myAxis.Direction().XYZ();
@@ -522,8 +524,9 @@ void BRepFeat_MakeCylindricalHole::PerformBlind(const Standard_Real Radius,
                                                 const Standard_Real Length,
                                                 const Standard_Boolean Cont)
 {
-
-  if (Object().IsNull() || !myAxDef || Length <= 0.) {
+  //
+  const TopoDS_Shape& aObject=myArguments.First();
+  if (aObject.IsNull() || !myAxDef || Length <= 0.) {
     Standard_ConstructionError::Raise();
   }
 
@@ -531,7 +534,7 @@ void BRepFeat_MakeCylindricalHole::PerformBlind(const Standard_Real Radius,
   myValidate = Cont;
   myStatus = BRepFeat_NoError;
 
-  LocOpe_CurveShapeIntersector theASI(myAxis,Object());
+  LocOpe_CurveShapeIntersector theASI(myAxis,aObject);
   if (!theASI.IsDone()) {
     myStatus = BRepFeat_InvalidPlacement;
     return;
@@ -582,7 +585,7 @@ void BRepFeat_MakeCylindricalHole::PerformBlind(const Standard_Real Radius,
 
   //// It is not possible to use infinite cylinder for topological operations.
   Standard_Real PMin,PMax;
-  BoxParameters(Object(),myAxis,PMin,PMax);
+  BoxParameters(aObject,myAxis,PMin,PMax);
   if (PMin > Length) {
     myStatus = BRepFeat_InvalidPlacement;
     return;

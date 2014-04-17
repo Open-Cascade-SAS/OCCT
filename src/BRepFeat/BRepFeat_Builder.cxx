@@ -198,19 +198,23 @@
   void BRepFeat_Builder::FillRemoved()
 {
   TopExp_Explorer aExp;
-  aExp.Init(myArgs[0], TopAbs_SOLID);
+  //
+  const TopoDS_Shape& aArgs0=myArguments.First();
+  const TopoDS_Shape& aArgs1=myTools.First();
+  //
+  aExp.Init(aArgs0, TopAbs_SOLID);
   for (; aExp.More(); aExp.Next()) {
     const TopoDS_Shape& aS = aExp.Current();
     myImages.UnBind(aS);
   }
   //
-  if (!myImages.IsBound(myArgs[1])) {
+  if (!myImages.IsBound(aArgs1)) {
     return;
   }
   //
   BOPCol_ListIteratorOfListOfShape aItIm;
   //
-  BOPCol_ListOfShape& aLS = myImages.ChangeFind(myArgs[1]);
+  BOPCol_ListOfShape& aLS = myImages.ChangeFind(aArgs1);
   aItIm.Initialize(aLS);
   for (; aItIm.More(); aItIm.Next()) {
     const TopoDS_Shape& aS = aItIm.Value();
@@ -675,8 +679,11 @@
   BOPCol_ListIteratorOfListOfShape aIt;
   TopExp_Explorer aExp, aExpF;
   Standard_Boolean bFlagSD;
+  // 
+  const TopoDS_Shape& aArgs0=myArguments.First();
+  const TopoDS_Shape& aArgs1=myTools.First();
   //
-  const BOPCol_ListOfShape& aLSIm = myImages.Find(myArgs[1]);
+  const BOPCol_ListOfShape& aLSIm = myImages.Find(aArgs1);
   aIt.Initialize(aLSIm);
   for(;aIt.More();aIt.Next()) {
     const TopoDS_Shape& aSolIm = aIt.Value();
@@ -686,7 +693,7 @@
     aMST.Add(aST);
   }
   //
-  aExp.Init(myArgs[0], TopAbs_SOLID);
+  aExp.Init(aArgs0, TopAbs_SOLID);
   for(; aExp.More(); aExp.Next()) {
     const TopoDS_Shape& aSolid = aExp.Current();
     if (myImages.IsBound(aSolid)) {
