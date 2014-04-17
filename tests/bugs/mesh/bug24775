@@ -1,0 +1,35 @@
+puts "================"
+puts "CR24775"
+puts "================"
+puts ""
+###############################################
+## False detecting of intersection in BRepMesh_Classifier class.
+###############################################
+
+restore [locate_data_file bug24775_face.brep] face
+vinit
+vdisplay face
+vfit
+
+set trinfo_s [trinfo face]
+regexp {([0-9]+) triangles} ${trinfo_s} str nbtri_s
+regexp {([0-9]+) nodes} ${trinfo_s} str nbnod_s
+regexp {deflection ([0-9.+e-]+)} ${trinfo_s} str defl_s
+
+if { ${nbtri_s} == 0 } {
+   puts "Error: shape contains 0 triangles"
+} else {
+   puts "OK: shape contains triangles"
+}
+
+if { ${nbnod_s} == 0 } {
+   puts "Error: shape contains 0 nodes"
+} else {
+   puts "OK: shape contains nodes"
+}
+
+if { ${defl_s} == 0 } {
+   puts "Error: deflection is 0"
+} else {
+   puts "OK: deflection is good"
+}
