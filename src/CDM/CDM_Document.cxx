@@ -1187,7 +1187,16 @@ void CDM_Document::LoadResources()
     theResourceName+="StoragePlugin";
     TCollection_ExtendedString thePluginId;
     FIND(theDocumentResource,theResourceName,myStoragePluginWasFound,thePluginId);
-    if(myStoragePluginWasFound) myStoragePlugin=UTL::GUID(thePluginId);
+    if(myStoragePluginWasFound)
+    {
+      // Check whether the GUID (as a string) contains blanks before and after the string.
+      // If it is so, remove them.
+      if (thePluginId.Search(' ') != -1)
+        thePluginId.RemoveAll(' ');
+      
+      // Convert to GUID.
+      myStoragePlugin=UTL::GUID(thePluginId);
+    }
     myResourcesAreLoaded=Standard_True;
     
 //    cout << "resource Loaded: " << "Format: " << theFormat << ", FileExtension:" << myFileExtension << ", DataType:" <<  myDataType << ", VersionDataType:" << myVersionDataType << ", Description:" << myDescription << ", Domain:" << myDomain << endl;

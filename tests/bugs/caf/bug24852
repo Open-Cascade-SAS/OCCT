@@ -1,0 +1,18 @@
+puts "=========="
+puts "OCC24852"
+puts "=========="
+puts ""
+########################################################
+# Crash on storage of an Ocaf document in XML file format
+########################################################
+
+NewDocument D XmlOcaf
+
+set File ${imagedir}/bug24852_test.xml
+
+if { [catch {set res [SaveAs D ${File}]}] != 0 } {
+  puts "Error : Crash on storage of an Ocaf document in XML file format"
+} else {
+  puts "OK : Storage of an Ocaf document in XML file format is good"
+  file delete ${File}
+}
