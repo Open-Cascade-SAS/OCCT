@@ -103,9 +103,18 @@ is
         --   than P split  <Spline>. 
         -- Else  the  plan  define  by  P  and  the  tangent  to  the  <Spine> 
         --       intersect <AuxiliarySpine> in Q.
-        -- If <KeepContact> the  Normal  is  defined to  assume like  the  sweeped 
-        --                  section is  in  contact to  the  <AuxiliarySpine>
-        -- Else  the  Normal  is  defined  by the vector  PQ. 
+        -- If <KeepContact> equals BRepFill_NoContact: The Normal is defined
+        -- by the vector PQ.
+        -- If <KeepContact> equals BRepFill_Contact: The Normal is defined to
+        -- achieve that the sweeped section is in contact to the
+        -- auxiliarySpine. The width of section is constant all along the path.
+        -- In other words, the auxiliary spine lies on the swept surface,
+        -- but not necessarily is a boundary of this surface. However,
+        -- the auxiliary spine has to be close enough to the main spine
+        -- to provide intersection with any section all along the path.
+        -- If <KeepContact> equals BRepFill_ContactOnBorder: The auxiliary spine
+        -- becomes a boundary of the swept surface and the width of section varies
+        -- along the path.
 
         ---Level: Public
 
