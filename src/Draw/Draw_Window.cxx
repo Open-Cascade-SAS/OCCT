@@ -179,8 +179,6 @@ static Standard_Boolean tty;        /* Non-zero means standard input is a
                                  * terminal-like device.  Zero means it's
                                  * a file. */
 
-static unsigned long thePixels[MAXCOLOR];
-
 Standard_Integer Draw_WindowScreen = 0;
 Standard_Boolean Draw_BlackBackGround = Standard_True;
 
@@ -193,6 +191,8 @@ Draw_Window* Draw_Window::firstWindow = NULL;
 #if !defined(__APPLE__) || defined(MACOSX_USE_GLX)
 #include <X11/Xutil.h>
 #include <Aspect_DisplayConnection.hxx>
+
+static unsigned long thePixels[MAXCOLOR];
 
 Display* Draw_WindowDisplay = NULL;
 Colormap Draw_WindowColorMap;

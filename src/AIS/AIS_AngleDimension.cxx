@@ -1242,10 +1242,6 @@ void AIS_AngleDimension::AdjustParameters (const gp_Pnt& theTextPos,
   Handle(Prs3d_DimensionAspect) aDimensionAspect = myDrawer->DimensionAspect();
   Standard_Real anArrowLength = aDimensionAspect->ArrowAspect()->Length();
 
-  // Compute flyout direction vector.
-  gp_Dir aPlaneNormal = GetPlane().Axis().Direction();
-  gp_Dir aTargetPointsDir = gce_MakeDir (myFirstPoint, mySecondPoint);
-
   // Build circle with radius that is equal to distance from text position to the center point.
   Standard_Real aRadius = gp_Vec (myCenterPoint, theTextPos).Magnitude();
 

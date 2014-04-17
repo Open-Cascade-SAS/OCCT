@@ -585,7 +585,6 @@ void GetNextEvent (Standard_Boolean  theWait,
   theWindowNumber   = [aWindow windowNumber];
 
   NSPoint aMouseLoc = [aView convertPoint: [anEvent locationInWindow] fromView: nil];
-  NSRect  aBounds   = [aView bounds];
 
   theX = Standard_Integer (aMouseLoc.x);
   theY = Standard_Integer (aMouseLoc.y);
