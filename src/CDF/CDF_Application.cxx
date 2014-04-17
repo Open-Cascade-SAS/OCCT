@@ -481,7 +481,15 @@ Standard_Boolean CDF_Application::FindReaderFromFormat(const TCollection_Extende
   ResourceName+=".RetrievalPlugin";
   
   if(UTL::Find(Resources(),ResourceName))  {
-    thePluginId=UTL::GUID(UTL::Value(Resources(),ResourceName));
+    // Get GUID as a string.
+    TCollection_ExtendedString strPluginId = UTL::Value(Resources(),ResourceName);
+    
+    // If the GUID (as a string) contains blanks, remove them.
+    if (strPluginId.Search(' ') != -1)
+      strPluginId.RemoveAll(' ');
+    
+    // Convert to GUID.
+    thePluginId=UTL::GUID(strPluginId);
     return Standard_True;
   }
   return Standard_False;
