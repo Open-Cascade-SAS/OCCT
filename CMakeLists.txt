@@ -21,10 +21,12 @@ ENDIF()
 
 MATH(EXPR COMPILER_BITNESS "32 + 32*(${CMAKE_SIZEOF_VOID_P}/8)")
 
-SET( CMAKE_BUILD_TYPE ${BUILD_CONFIGURATION} CACHE INTERNAL "Build type of OCCT" FORCE )
+SET(CMAKE_BUILD_TYPE ${BUILD_CONFIGURATION} CACHE INTERNAL "Build type of OCCT" FORCE )
 
-SET( INSTALL_DIR "" CACHE PATH "Directory that will contain install files of OCCT" )
-SET( CMAKE_INSTALL_PREFIX "${INSTALL_DIR}" CACHE INTERNAL "" FORCE )
+SET(INSTALL_DIR "" CACHE PATH "Directory that will contain install files of OCCT" )
+SET(CMAKE_INSTALL_PREFIX "${INSTALL_DIR}" CACHE INTERNAL "" FORCE )
+
+set(BUILD_PATCH_DIR "" CACHE PATH "directory with occt patch")
 
 set (BUILD_TOOLKITS "" CACHE STRING "Toolkits are also included in OCCT")
 separate_arguments(BUILD_TOOLKITS)
@@ -33,7 +35,22 @@ IF(MSVC)
   SET(BUILD_Samples OFF CACHE BOOL "OCCT samples building")
 ENDIF()
 
-include(adm/cmake/CMakeModules.txt)
+# consider for patch existence
+SET (IS_PATCH_CURRENT "NO")
+SET (TK_ROOT_DIR ${CMAKE_SOURCE_DIR})
+IF(NOT "${BUILD_PATCH_DIR}" STREQUAL "")
+  SET (IS_PATCH_CURRENT "YES")
+  SET (TK_ROOT_DIR ${BUILD_PATCH_DIR})
+ENDIF()
+
+# include the list of patch modules if the one exists
+# or include the list of original modules
+IF(NOT "${BUILD_PATCH_DIR}" STREQUAL "" AND EXISTS "${BUILD_PATCH_DIR}/adm/cmake/CMakeModules.txt")
+  MESSAGE(STATUS "Info: the list of patched modules is included")
+  include(${BUILD_PATCH_DIR}/adm/cmake/CMakeModules.txt)
+ELSE()
+  include(adm/cmake/CMakeModules.txt)
+ENDIF()
 
 if (WIN32)
   set(SCRIPT_EXT bat)
@@ -489,26 +506,77 @@ IF("${INSTALL_DIR}" STREQUAL "")
   MESSAGE(FATAL_ERROR "INSTALL_DIR is empty")
 ELSE()
   # inc,data,tests DIRECTORY
-  install(DIRECTORY "${CMAKE_SOURCE_DIR}/inc"   DESTINATION  "${INSTALL_DIR}" )
+  install(DIRECTORY "${CMAKE_SOURCE_DIR}/inc" DESTINATION  "${INSTALL_DIR}" )
+
   install(DIRECTORY "${CMAKE_SOURCE_DIR}/data"  DESTINATION  "${INSTALL_DIR}" )
   IF(INSTALL_TESTS)
     install(DIRECTORY "${CMAKE_SOURCE_DIR}/tests" DESTINATION  "${INSTALL_DIR}" )
   ENDIF()
 
+    # install patch inc, data, tests folder
+  IF(NOT "${BUILD_PATCH_DIR}" STREQUAL "")
+    IF(EXISTS "${BUILD_PATCH_DIR}/inc")
+      install(DIRECTORY "${BUILD_PATCH_DIR}/inc" DESTINATION  "${INSTALL_DIR}" )
+    ENDIF()
+    
+    IF(EXISTS "${BUILD_PATCH_DIR}/data")
+      install(DIRECTORY "${BUILD_PATCH_DIR}/data"  DESTINATION  "${INSTALL_DIR}" )
+    ENDIF()
+    
+    IF(INSTALL_TESTS)
+      IF(EXISTS "${BUILD_PATCH_DIR}/tests")
+        install(DIRECTORY "${BUILD_PATCH_DIR}/tests" DESTINATION  "${INSTALL_DIR}" )
+      ENDIF()
+    ENDIF()
+  ENDIF()
+  
   # DRAW.BAT or DRAW.SH
-  install(FILES "${CMAKE_SOURCE_DIR}/adm/templates/draw.${SCRIPT_EXT}" DESTINATION  "${INSTALL_DIR}" PERMISSIONS  OWNER_READ OWNER_WRITE OWNER_EXECUTE 
-                                                                              GROUP_READ GROUP_WRITE GROUP_EXECUTE 
-                                                                              WORLD_READ WORLD_WRITE WORLD_EXECUTE)
+  IF(NOT "${BUILD_PATCH_DIR}" STREQUAL "" AND EXISTS "${BUILD_PATCH_DIR}/adm/templates/draw.${SCRIPT_EXT}")
+    install(FILES "${BUILD_PATCH_DIR}/adm/templates/draw.${SCRIPT_EXT}" DESTINATION  "${INSTALL_DIR}" PERMISSIONS  
+            OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_WRITE GROUP_EXECUTE WORLD_READ WORLD_WRITE WORLD_EXECUTE)
+  ELSE()
+    install(FILES "${CMAKE_SOURCE_DIR}/adm/templates/draw.${SCRIPT_EXT}" DESTINATION  "${INSTALL_DIR}" PERMISSIONS  
+            OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_WRITE GROUP_EXECUTE WORLD_READ WORLD_WRITE WORLD_EXECUTE)
+  ENDIF()
+  
   IF (BUILD_Samples)
-    install(FILES "${CMAKE_SOURCE_DIR}/adm/templates/sample.bat" DESTINATION  "${INSTALL_DIR}")
+    IF(NOT "${BUILD_PATCH_DIR}" STREQUAL "" AND EXISTS "${BUILD_PATCH_DIR}/adm/templates/sample.bat")
+      install(FILES "${BUILD_PATCH_DIR}/adm/templates/sample.bat" DESTINATION  "${INSTALL_DIR}")
+    ELSE()
+      install(FILES "${CMAKE_SOURCE_DIR}/adm/templates/sample.bat" DESTINATION  "${INSTALL_DIR}")
+    ENDIF()
   ENDIF()
 
-  configure_file("${CMAKE_SOURCE_DIR}/adm/templates/env.${SCRIPT_EXT}.in" env.${SCRIPT_EXT} @ONLY)
+  IF(NOT "${BUILD_PATCH_DIR}" STREQUAL "" AND EXISTS "${BUILD_PATCH_DIR}/adm/templates/env.${SCRIPT_EXT}.in")
+    configure_file("${BUILD_PATCH_DIR}/adm/templates/env.${SCRIPT_EXT}.in" env.${SCRIPT_EXT} @ONLY)
+  ELSE()
+    configure_file("${CMAKE_SOURCE_DIR}/adm/templates/env.${SCRIPT_EXT}.in" env.${SCRIPT_EXT} @ONLY)
+  ENDIF()
   install(FILES "${OCCT_BINARY_DIR}/env.${SCRIPT_EXT}" DESTINATION  "${INSTALL_DIR}" )
 ENDIF()
 
-include(adm/cmake/CMakeToolKitsDeps.txt)
+# include patched toolkit projects or original ones
+SET (UNSUBDIRS "")
+IF(NOT "${BUILD_PATCH_DIR}" STREQUAL "" AND EXISTS "${BUILD_PATCH_DIR}/adm/cmake/CMakeToolKitsDeps.txt")
+  include(${BUILD_PATCH_DIR}/adm/cmake/CMakeToolKitsDeps.txt)
+ELSE()
+  SET (IS_PATCH_CURRENT "NO")
+  SET (TK_ROOT_DIR ${CMAKE_SOURCE_DIR})
+  include(adm/cmake/CMakeToolKitsDeps.txt)
+ENDIF()
 
+# include some required original toolkit
+IF(NOT "${UNSUBDIRS}" STREQUAL "")
+  SET (IS_PATCH_CURRENT "NO")
+  SET (TK_ROOT_DIR ${CMAKE_SOURCE_DIR})
+  # add required subdirs
+  FOREACH(UNSUBDIR ${UNSUBDIRS})
+    MESSAGE(STATUS "${UNSUBDIR}")
+    subdirs(${TK_ROOT_DIR}/${UNSUBDIR})
+  ENDFOREACH()
+ENDIF()
+
+# samples do not support patch usage
 IF (BUILD_Samples)
   SET (CMAKE_MFC_FLAG 2)
   SET (OCCT_ROOT ${CMAKE_SOURCE_DIR})
