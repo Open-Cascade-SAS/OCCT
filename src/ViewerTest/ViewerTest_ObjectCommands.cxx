@@ -3186,8 +3186,8 @@ void MyPArrayObject::Compute (const Handle(PrsMgr_PresentationManager3d)& /*aPre
 
   // Parsing array description
   Standard_Integer aVertexNum = 0, aBoundNum = 0, aEdgeNum = 0;
-  Standard_Boolean hasVColors, hasBColors, hasNormals, hasInfos, hasTexels;
-  hasVColors = hasNormals = hasBColors = hasInfos = hasTexels = Standard_False;
+  Standard_Boolean hasVColors, hasBColors, hasNormals, hasTexels;
+  hasVColors = hasNormals = hasBColors = hasTexels = Standard_False;
 
   Standard_Integer anArgIndex = 0;
   Standard_Integer anArgsCount = myArrayDescription->Length();
@@ -3228,10 +3228,6 @@ void MyPArrayObject::Compute (const Handle(PrsMgr_PresentationManager3d)& /*aPre
     // edge command
     else if (CheckInputCommand ("e", myArrayDescription, anArgIndex, 1, anArgsCount))
     {
-      // edge has a hide flag
-      if (CheckInputCommand ("h", myArrayDescription, anArgIndex, 0, anArgsCount))
-        hasInfos = Standard_True;
-
       aEdgeNum++;
     }
     // unknown command
@@ -3248,10 +3244,10 @@ void MyPArrayObject::Compute (const Handle(PrsMgr_PresentationManager3d)& /*aPre
     anArray = new Graphic3d_ArrayOfSegments (aVertexNum, aEdgeNum, hasVColors);
   else if (anArrayType == "polylines")
     anArray = new Graphic3d_ArrayOfPolylines (aVertexNum, aBoundNum, aEdgeNum,
-                                              hasVColors, hasBColors, hasInfos);
+                                              hasVColors, hasBColors);
   else if (anArrayType == "triangles")
     anArray = new Graphic3d_ArrayOfTriangles (aVertexNum, aEdgeNum, hasNormals,
-                                              hasVColors, hasTexels, hasInfos);
+                                              hasVColors, hasTexels);
   else if (anArrayType == "trianglefans")
     anArray = new Graphic3d_ArrayOfTriangleFans (aVertexNum, aBoundNum,
                                                  hasNormals, hasVColors,
@@ -3263,7 +3259,7 @@ void MyPArrayObject::Compute (const Handle(PrsMgr_PresentationManager3d)& /*aPre
   else if (anArrayType == "quads")
     anArray = new Graphic3d_ArrayOfQuadrangles (aVertexNum, aEdgeNum,
                                                 hasNormals, hasVColors,
-                                                hasTexels, hasInfos);
+                                                hasTexels);
   else if (anArrayType == "quadstrips")
     anArray = new Graphic3d_ArrayOfQuadrangleStrips (aVertexNum, aBoundNum,
                                                      hasNormals, hasVColors,
@@ -3271,7 +3267,7 @@ void MyPArrayObject::Compute (const Handle(PrsMgr_PresentationManager3d)& /*aPre
   else if (anArrayType == "polygons")
     anArray = new Graphic3d_ArrayOfPolygons (aVertexNum, aBoundNum, aEdgeNum,
                                              hasNormals, hasVColors, hasBColors,
-                                             hasTexels, hasInfos);
+                                             hasTexels);
 
   anArgIndex = 1;
   while (anArgIndex < anArgsCount)
@@ -3287,22 +3283,23 @@ void MyPArrayObject::Compute (const Handle(PrsMgr_PresentationManager3d)& /*aPre
       anArray->AddVertex (myArrayDescription->Value (anArgIndex - 3).RealValue(),
                           myArrayDescription->Value (anArgIndex - 2).RealValue(),
                           myArrayDescription->Value (anArgIndex - 1).RealValue());
+      const Standard_Integer aVertIndex = anArray->VertexNumber();
 
       // vertex has a normal or normal with color or texel
       if (CheckInputCommand ("n", myArrayDescription, anArgIndex, 3, anArgsCount))
-        anArray->SetVertexNormal (anArray->VertexNumber (),
+        anArray->SetVertexNormal (aVertIndex,
                                   myArrayDescription->Value (anArgIndex - 3).RealValue(),
                                   myArrayDescription->Value (anArgIndex - 2).RealValue(),
                                   myArrayDescription->Value (anArgIndex - 1).RealValue());
       
       if (CheckInputCommand ("c", myArrayDescription, anArgIndex, 3, anArgsCount))
-        anArray->SetVertexColor (anArray->VertexNumber (),
+        anArray->SetVertexColor (aVertIndex,
                                  myArrayDescription->Value (anArgIndex - 3).RealValue(),
                                  myArrayDescription->Value (anArgIndex - 2).RealValue(),
                                  myArrayDescription->Value (anArgIndex - 1).RealValue());
       
       if (CheckInputCommand ("t", myArrayDescription, anArgIndex, 2, anArgsCount))
-        anArray->SetVertexTexel (anArray->VertexNumber (),
+        anArray->SetVertexTexel (aVertIndex,
                                  myArrayDescription->Value (anArgIndex - 2).RealValue(),
                                  myArrayDescription->Value (anArgIndex - 1).RealValue());
     }
@@ -3323,13 +3320,8 @@ void MyPArrayObject::Compute (const Handle(PrsMgr_PresentationManager3d)& /*aPre
     // edge command
     else if (CheckInputCommand ("e", myArrayDescription, anArgIndex, 1, anArgsCount))
     {
-      Standard_Integer aVertIndex = myArrayDescription->Value (anArgIndex - 1).IntegerValue();
-
-      // edge has/hasn't hide flag
-      if (CheckInputCommand ("h", myArrayDescription, anArgIndex, 0, anArgsCount))
-        anArray->AddEdge (aVertIndex, Standard_False);
-      else
-        anArray->AddEdge (aVertIndex, Standard_True);
+      const Standard_Integer aVertIndex = myArrayDescription->Value (anArgIndex - 1).IntegerValue();
+      anArray->AddEdge (aVertIndex);
     }
     // unknown command
     else
@@ -3420,7 +3412,7 @@ static int VDrawPArray (Draw_Interpretor& di, Standard_Integer argc, const char*
        << "  vertex={ 'v' x y z [normal={ 'n' nx ny nz }] [color={ 'c' r g b }]"
        << " [texel={ 't' tx ty }] } \n"
        << "  bounds={ 'b' verticies_count [color={ 'c' r g b }] }\n"
-       << "  edges={ 'e' vertex_id [hidden_edge={'h'}] }\n";
+       << "  edges={ 'e' vertex_id }\n";
     return 1;
   }
 
@@ -5120,7 +5112,7 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
     __FILE__, VComputeHLR, group);
 
   theCommands.Add("vdrawparray",
-    "vdrawparray : vdrawparray Name TypeOfArray [vertex = { 'v' x y z [vertex_normal = { 'n' x y z }] [vertex_color = { 'c' r g b }] ] ... [bound = { 'b' vertex_count [bound_color = { 'c' r g b }] ] ... [edge = { 'e' vertex_id [edge_hidden = { 'h' }] ]",
+    "vdrawparray : vdrawparray Name TypeOfArray [vertex = { 'v' x y z [vertex_normal = { 'n' x y z }] [vertex_color = { 'c' r g b }] ] ... [bound = { 'b' vertex_count [bound_color = { 'c' r g b }] ] ... [edge = { 'e' vertex_id ]",
     __FILE__,VDrawPArray,group);
 
   theCommands.Add("vconnect", 

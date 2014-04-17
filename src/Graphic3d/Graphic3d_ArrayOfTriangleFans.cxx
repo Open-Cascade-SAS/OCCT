@@ -14,11 +14,11 @@
 
 #include <Graphic3d_ArrayOfTriangleFans.ixx>
 
-Graphic3d_ArrayOfTriangleFans :: Graphic3d_ArrayOfTriangleFans (
-                        const Standard_Integer maxVertexs,
-                        const Standard_Integer maxFans,
-                        const Standard_Boolean hasVNormals,
-                        const Standard_Boolean hasVColors,
-                        const Standard_Boolean hasFColors,
-                        const Standard_Boolean hasVTexels)
-	: Graphic3d_ArrayOfPrimitives(Graphic3d_TOPA_TRIANGLEFANS,maxVertexs,maxFans,0,hasVNormals,hasVColors,hasFColors,hasVTexels,Standard_False) {}
+Graphic3d_ArrayOfTriangleFans::Graphic3d_ArrayOfTriangleFans (const Standard_Integer theMaxVertexs,
+                                                              const Standard_Integer theMaxFans,
+                                                              const Standard_Boolean theHasVNormals,
+                                                              const Standard_Boolean theHasVColors,
+                                                              const Standard_Boolean theHasFColors,
+                                                              const Standard_Boolean theHasVTexels)
+: Graphic3d_ArrayOfPrimitives (Graphic3d_TOPA_TRIANGLEFANS, theMaxVertexs, theMaxFans, 0, theHasVNormals, theHasVColors, theHasFColors, theHasVTexels)
+{}

@@ -1,3 +1,9 @@
+Graphic3d_Buffer.hxx
+Graphic3d_Buffer_Handle.hxx
+Graphic3d_BoundBuffer.hxx
+Graphic3d_BoundBuffer_Handle.hxx
+Graphic3d_IndexBuffer.hxx
+Graphic3d_IndexBuffer_Handle.hxx
 Graphic3d_CAspectFillArea.hxx
 Graphic3d_CAspectLine.hxx
 Graphic3d_CAspectMarker.hxx
@@ -34,7 +40,6 @@ Graphic3d_StructureManager.pxx
 Graphic3d.edl
 Graphic3d_CMPLRS.edl
 Graphic3d_WOKSteps.edl
-Graphic3d_PrimitiveArray.hxx
 Graphic3d_TransModeFlags.hxx
 Graphic3d_CTransPersStruct.hxx
 Graphic3d_NListOfHAsciiString.hxx

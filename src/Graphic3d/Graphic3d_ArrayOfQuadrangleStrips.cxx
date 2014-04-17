@@ -14,11 +14,11 @@
 
 #include <Graphic3d_ArrayOfQuadrangleStrips.ixx>
 
-Graphic3d_ArrayOfQuadrangleStrips :: Graphic3d_ArrayOfQuadrangleStrips (
-                        const Standard_Integer maxVertexs,
-                        const Standard_Integer maxStrips,
-                        const Standard_Boolean hasVNormals,
-                        const Standard_Boolean hasVColors,
-                        const Standard_Boolean hasSColors,
-                        const Standard_Boolean hasVTexels)
-	: Graphic3d_ArrayOfPrimitives(Graphic3d_TOPA_QUADRANGLESTRIPS,maxVertexs,maxStrips,0,hasVNormals,hasVColors,hasSColors,hasVTexels,Standard_False) {}
+Graphic3d_ArrayOfQuadrangleStrips::Graphic3d_ArrayOfQuadrangleStrips (const Standard_Integer theMaxVertexs,
+                                                                      const Standard_Integer theMaxStrips,
+                                                                      const Standard_Boolean theHasVNormals,
+                                                                      const Standard_Boolean theHasVColors,
+                                                                      const Standard_Boolean theHasSColors,
+                                                                      const Standard_Boolean theHasVTexels)
+: Graphic3d_ArrayOfPrimitives (Graphic3d_TOPA_QUADRANGLESTRIPS, theMaxVertexs, theMaxStrips, 0, theHasVNormals, theHasVColors, theHasSColors, theHasVTexels)
+{}

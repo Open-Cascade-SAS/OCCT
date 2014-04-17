@@ -15,7 +15,7 @@
 #ifndef InterfaceGraphic_Graphic3dHeader
 #define InterfaceGraphic_Graphic3dHeader
 
-#include <InterfaceGraphic_PrimitiveArray.hxx>
+#include <InterfaceGraphic_telem.hxx>
 #include <Standard_Transient.hxx>
 
 /* COULEUR */

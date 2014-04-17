@@ -79,7 +79,6 @@ uses
     Array2OfVertex      from Graphic3d,
     Vertex              from Graphic3d,
     VerticalTextAlignment   from Graphic3d,
-    PrimitiveArray      from Graphic3d,
     PtrFrameBuffer      from Graphic3d,
     HArray1OfByte       from TColStd,
     FillMethod          from Aspect,

@@ -257,22 +257,8 @@ void OpenGl_CappingAlgo::Init()
 // =======================================================================
 Standard_Boolean OpenGl_CappingAlgoFilter::CanRender (const OpenGl_Element* theElement)
 {
-  const OpenGl_PrimitiveArray* aPArray =
-    dynamic_cast<const OpenGl_PrimitiveArray*> (theElement);
-  if (!aPArray)
-    return Standard_False;
-
-  switch (aPArray->PArray()->type)
-  {
-    case TelPolygonsArrayType :
-    case TelTrianglesArrayType :
-    case TelQuadranglesArrayType :
-    case TelTriangleStripsArrayType :
-    case TelQuadrangleStripsArrayType :
-    case TelTriangleFansArrayType :
-      return Standard_True;
-
-    default:
-      return Standard_False;
-  }
+  const OpenGl_PrimitiveArray* aPArray = dynamic_cast<const OpenGl_PrimitiveArray*> (theElement);
+  return aPArray != NULL
+      && aPArray->DrawMode() >= GL_TRIANGLES
+      && aPArray->DrawMode() <= GL_POLYGON;
 }

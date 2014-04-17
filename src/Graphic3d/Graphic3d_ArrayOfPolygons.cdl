@@ -24,8 +24,7 @@ is
                 hasVNormals: Boolean from Standard = Standard_False;
                 hasVColors: Boolean from Standard = Standard_False;
                 hasBColors: Boolean from Standard = Standard_False;
-                hasTexels: Boolean from Standard = Standard_False;
-                hasEdgeInfos: Boolean from Standard = Standard_False)
+                hasTexels: Boolean from Standard = Standard_False)
 	returns mutable ArrayOfPolygons from Graphic3d;
         ---Purpose: Creates an array of polygons,
 	-- a polygon can be filled as:
@@ -105,9 +104,6 @@ is
 	-- When <hasBColors> is TRUE , <maxBounds> must be > 0 and
 	--	you must use the
 	--	AddBound(number,Color) method.
-	-- When <hasEdgeInfos> is TRUE , <maxEdges> must be > 0 and
-	--	you must use the
-	--	AddEdge(number,visibillity) method.
 	--  Warning:
 	-- the user is responsible about the orientation of the polygon
 	-- depending of the order of the created vertex or edges and this

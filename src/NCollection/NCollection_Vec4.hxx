@@ -29,7 +29,7 @@ class NCollection_Vec4
 public:
 
   //! Returns the number of components.
-  static size_t Length()
+  static int Length()
   {
     return 4;
   }

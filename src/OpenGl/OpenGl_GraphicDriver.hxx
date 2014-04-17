@@ -43,12 +43,10 @@
 #include <gp_Ax2.hxx>
 #include <Graphic3d_CView.hxx>
 #include <Graphic3d_CStructure.hxx>
-#include <Graphic3d_TypeOfPrimitive.hxx>
 #include <Graphic3d_CPick.hxx>
 #include <Graphic3d_TextPath.hxx>
 #include <Graphic3d_HorizontalTextAlignment.hxx>
 #include <Graphic3d_VerticalTextAlignment.hxx>
-#include <Graphic3d_PrimitiveArray.hxx>
 #include <Graphic3d_CUserDraw.hxx>
 #include <Graphic3d_CGraduatedTrihedron.hxx>
 #include <Graphic3d_TypeOfComposition.hxx>

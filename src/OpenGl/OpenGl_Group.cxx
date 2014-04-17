@@ -183,19 +183,22 @@ void OpenGl_Group::UpdateAspectText (const Standard_Boolean theIsGlobal)
 // function : AddPrimitiveArray
 // purpose  :
 // =======================================================================
-void OpenGl_Group::AddPrimitiveArray (const Handle(Graphic3d_ArrayOfPrimitives)& thePrim,
-                                      const Standard_Boolean                     theToEvalMinMax)
+void OpenGl_Group::AddPrimitiveArray (const Graphic3d_TypeOfPrimitiveArray theType,
+                                      const Handle(Graphic3d_IndexBuffer)& theIndices,
+                                      const Handle(Graphic3d_Buffer)&      theAttribs,
+                                      const Handle(Graphic3d_BoundBuffer)& theBounds,
+                                      const Standard_Boolean               theToEvalMinMax)
 {
   if (IsDeleted()
-  || !thePrim->IsValid())
+   || theAttribs.IsNull())
   {
     return;
   }
 
-  OpenGl_PrimitiveArray* anArray = new OpenGl_PrimitiveArray ((CALL_DEF_PARRAY *)thePrim->Array());
+  OpenGl_PrimitiveArray* anArray = new OpenGl_PrimitiveArray (theType, theIndices, theAttribs, theBounds);
   AddElement (anArray);
 
-  Graphic3d_Group::AddPrimitiveArray (thePrim, theToEvalMinMax);
+  Graphic3d_Group::AddPrimitiveArray (theType, theIndices, theAttribs, theBounds, theToEvalMinMax);
 }
 
 // =======================================================================

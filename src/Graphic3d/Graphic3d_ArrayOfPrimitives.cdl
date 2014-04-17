@@ -34,12 +34,14 @@ deferred class ArrayOfPrimitives from Graphic3d inherits TShared
 
 uses
 
-    TypeOfPrimitiveArray    from Graphic3d,
-    PrimitiveArray      from Graphic3d,
-    Color           from Quantity,
-    Pnt         from gp,
-    Pnt2d           from gp,
-    Dir         from gp
+    TypeOfPrimitiveArray from Graphic3d,
+    Buffer_Handle        from Graphic3d,
+    BoundBuffer_Handle   from Graphic3d,
+    IndexBuffer_Handle   from Graphic3d,
+    Color                from Quantity,
+    Pnt                  from gp,
+    Pnt2d                from gp,
+    Dir                  from gp
 
 raises
     OutOfRange from Standard,
@@ -56,8 +58,7 @@ is
                 hasVNormals: Boolean from Standard;
                 hasVColors: Boolean from Standard;
                 hasBColors: Boolean from Standard;
-                hasTexels: Boolean from Standard;
-            hasEdgeInfos: Boolean from Standard)
+                hasTexels: Boolean from Standard)
     returns mutable ArrayOfPrimitives from Graphic3d
         raises  InitialisationError from Graphic3d;
     ---Purpose:  Warning
@@ -68,8 +69,6 @@ is
     -- constructor parameter is > 0.
     -- You must use AddEdge() method only if the <maxEdges>
     -- constructor parameter is > 0.
-    -- You must use a coherent set of AddEdge() methods according to the
-    -- <hasEdgeInfos> constructor parameter.
 
     Destroy( me: mutable);
     -- destructor
@@ -327,64 +326,17 @@ is
     -- if the actual Bound number is >= <maxBounds>
 
     AddEdge( me:mutable;
-         vertexIndex: Integer from Standard;
-         isVisible: Boolean from Standard = Standard_True)
+         vertexIndex: Integer from Standard)
         returns Integer from Standard
         ---Level: Public
-    ---Purpose: Adds an edge in the range [1,VertexNumber()] in the array,
-    -- if <isVisible> is FALSE the edge between <vertexIndex> and
-    -- the next edge will not be visible even if the SetEdgeOn() method
-    -- is activated in Graphic3d_AspectFillArea3d class.
-    -- returns the actual edges number.
-    --  Warning: <isVisible> is ignored when the <hasEdgeInfos>
-    -- constructor parameter is FALSE.
+    ---Purpose: Adds an edge in the range [1,VertexNumber()] in the array.
+    -- Returns the actual edges number.
         raises OutOfRange from Standard;
     -- if the actual edge number is >= <maxEdges>
 
     -- -------------------------------------------------------------------
     --      Methods to modify the array
     -- -------------------------------------------------------------------
-
-    Orientate( me:mutable; 
-        aNormal: Dir from gp)
-    returns Boolean from Standard;
-    ---Level: Public 
-    ---Purpose: Orientate correctly all vertexs & normals of this array 
-    -- according to the <aNormal> parameter and
-    -- returns TRUE when something has change in the array.
-    --  Warning: When the array has edges this method is apply
-    -- on edge sub array instead on vertex sub array.
-
-    Orientate( me:mutable;
-        aVertexIndex: Integer from Standard;
-        aVertexNumber: Integer from Standard;
-        aNormal: Dir from gp)
-    returns Boolean from Standard
-    ---Level: Internal 
-    ---Purpose: Orientate correctly a set of vertexs & normal
-    -- from <aVertexIndex> to <aVertexIndex>+<aVertexNumber>-1 
-    -- according to the <aNormal> parameter and
-    -- returns TRUE when something has change in the array.
-    --  Warning: When the array has edges this method is apply
-    -- on edge sub array instead on vertex sub array.
-        raises OutOfRange from Standard is private;
-    -- if the <aVertexIndex> parameter is < 1 or > VertexNumber() or
-    -- EdgeNumber()
-
-    Orientate( me:mutable;
-        aBoundIndex: Integer from Standard;
-        aNormal: Dir from gp)
-    returns Boolean from Standard
-    ---Level: Public 
-    ---Purpose: Orientate correctly all vertexs & normal of the bound <aBound> 
-    -- according to the <aNormal> parameter and
-    -- returns TRUE when something has change in the array.
-    --  Warning: When the array has edges this method is apply
-    -- on edge sub array instead on vertex sub array.
-    -- When this array has no bound, <aBoundIndex> design the item number
-        raises OutOfRange from Standard;
-    -- if the <aBoundIndex> parameter is < 1 or > BoundNumber()
-    -- or if the <aBoundIndex> parameter is < 1 or > ItemNumber()
 
     SetVertice( me:mutable;
                 anIndex: Integer from Standard;
@@ -487,11 +439,23 @@ is
     -- Category Inquiries on array
     -------------------------------------------------------------------
 
-    Array( me ) 
-    returns PrimitiveArray from Graphic3d;
-    ---Level: Internal
-    ---Purpose: Returns the array address. 
+    Indices (me)
+    returns IndexBuffer_Handle from Graphic3d;
+    ---Purpose: Returns optional index buffer.
     ---C++: inline
+    ---C++: return const &
+
+    Attributes (me)
+    returns Buffer_Handle from Graphic3d;
+    ---Purpose: Returns vertex attributes buffer (colors, normals, texture coordinates).
+    ---C++: inline
+    ---C++: return const &
+
+    Bounds (me)
+    returns BoundBuffer_Handle from Graphic3d;
+    ---Purpose: Returns optional bounds buffer.
+    ---C++: inline
+    ---C++: return const &
 
     Type( me )
     returns TypeOfPrimitiveArray from Graphic3d;
@@ -606,12 +570,6 @@ is
     -- when the rank is < 1 or > VertexNumber().
     ---C++: inline
 
-    HasEdgeInfos( me )
-    returns Boolean from Standard;
-    ---Level: Public 
-    ---Purpose: Returns TRUE when edge visibillity array is defined. 
-    ---C++: inline
-
     EdgeNumber( me ) 
     returns Integer from Standard;  
     ---Level: Public 
@@ -623,15 +581,6 @@ is
     ---Level: Public 
     ---Purpose: Returns the vertex index at rank <aRank>
     -- in the range [1,VertexNumber()]
-    raises OutOfRange from Standard;
-    -- when the rank is < 1 or > EdgeNumber() 
-    ---C++: inline
-
-    EdgeIsVisible( me ; aRank: Integer from Standard)
-    returns Boolean from Standard   
-    ---Level: Public 
-    ---Purpose: Returns TRUE when the edge at rank <aRank>
-    -- is visible. 
     raises OutOfRange from Standard;
     -- when the rank is < 1 or > EdgeNumber() 
     ---C++: inline
@@ -692,10 +641,19 @@ is
     is private;
 
 fields
-    myPrimitiveArray:   PrimitiveArray from Graphic3d;
-    myMaxBounds:        Integer from Standard;
-    myMaxVertexs:       Integer from Standard;
-    myMaxEdges:     Integer from Standard;
+
+  myIndices        : IndexBuffer_Handle from Graphic3d; -- optional index buffer
+  myAttribs        : Buffer_Handle      from Graphic3d; -- vertex attributes buffer (colors, normals, texture coordinates)
+  myBounds         : BoundBuffer_Handle from Graphic3d; -- vertex attributes buffer (colors, normals, texture coordinates)
+
+  myType           : TypeOfPrimitiveArray from Graphic3d;
+
+  myMaxBounds      : Integer from Standard;
+  myMaxVertexs     : Integer from Standard;
+  myMaxEdges       : Integer from Standard;
+  myVNor           : Byte from Standard; -- offset to normal attribute
+  myVTex           : Byte from Standard; -- offset to texel  attribute
+  myVCol           : Byte from Standard; -- offset to color  attribute
 
 friends
     class Group from Graphic3d

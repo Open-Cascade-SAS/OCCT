@@ -380,32 +380,53 @@ protected: //! @name methods related to ray-tracing
     const OpenGl_PrimitiveArray* theArray, int theMatID, const Standard_ShortReal* theTrans);
 
   //! Adds vertex indices from OpenGL primitive array to ray-traced scene geometry.
-  Standard_Boolean AddRaytraceVertexIndices (OpenGl_TriangleSet* theSet,
-    const CALL_DEF_PARRAY* theArray, Standard_Integer theOffset, Standard_Integer theCount, Standard_Integer theMatID);
+  Standard_Boolean AddRaytraceVertexIndices (OpenGl_TriangleSet&          theSet,
+                                             const OpenGl_PrimitiveArray& theArray,
+                                             Standard_Integer             theOffset,
+                                             Standard_Integer             theCount,
+                                             Standard_Integer             theMatID);
 
   //! Adds OpenGL triangle array to ray-traced scene geometry.
-  Standard_Boolean AddRaytraceTriangleArray (OpenGl_TriangleSet* theSet,
-    const CALL_DEF_PARRAY* theArray, Standard_Integer theOffset, Standard_Integer theCount, Standard_Integer theMatID);
+  Standard_Boolean AddRaytraceTriangleArray (OpenGl_TriangleSet&                  theSet,
+                                             const Handle(Graphic3d_IndexBuffer)& theIndices,
+                                             Standard_Integer                     theOffset,
+                                             Standard_Integer                     theCount,
+                                             Standard_Integer                     theMatID);
 
   //! Adds OpenGL triangle fan array to ray-traced scene geometry.
-  Standard_Boolean AddRaytraceTriangleFanArray (OpenGl_TriangleSet* theSet,
-    const CALL_DEF_PARRAY* theArray, Standard_Integer theOffset, Standard_Integer theCount, Standard_Integer theMatID);
+  Standard_Boolean AddRaytraceTriangleFanArray (OpenGl_TriangleSet&                  theSet,
+                                                const Handle(Graphic3d_IndexBuffer)& theIndices,
+                                                Standard_Integer                     theOffset,
+                                                Standard_Integer                     theCount,
+                                                Standard_Integer                     theMatID);
 
   //! Adds OpenGL triangle strip array to ray-traced scene geometry.
-  Standard_Boolean AddRaytraceTriangleStripArray (OpenGl_TriangleSet* theSet,
-    const CALL_DEF_PARRAY* theArray, Standard_Integer theOffset, Standard_Integer theCount, Standard_Integer theMatID);
+  Standard_Boolean AddRaytraceTriangleStripArray (OpenGl_TriangleSet&                  theSet,
+                                                  const Handle(Graphic3d_IndexBuffer)& theIndices,
+                                                  Standard_Integer                     theOffset,
+                                                  Standard_Integer                     theCount,
+                                                  Standard_Integer                     theMatID);
 
   //! Adds OpenGL quadrangle array to ray-traced scene geometry.
-  Standard_Boolean AddRaytraceQuadrangleArray (OpenGl_TriangleSet* theSet,
-    const CALL_DEF_PARRAY* theArray, Standard_Integer theOffset, Standard_Integer theCount, Standard_Integer theMatID);
+  Standard_Boolean AddRaytraceQuadrangleArray (OpenGl_TriangleSet&                  theSet,
+                                               const Handle(Graphic3d_IndexBuffer)& theIndices,
+                                               Standard_Integer                     theOffset,
+                                               Standard_Integer                     theCount,
+                                               Standard_Integer                     theMatID);
 
   //! Adds OpenGL quadrangle strip array to ray-traced scene geometry.
-  Standard_Boolean AddRaytraceQuadrangleStripArray (OpenGl_TriangleSet* theSet,
-    const CALL_DEF_PARRAY* theArray, Standard_Integer theOffset, Standard_Integer theCount, Standard_Integer theMatID);
+  Standard_Boolean AddRaytraceQuadrangleStripArray (OpenGl_TriangleSet&                  theSet,
+                                                    const Handle(Graphic3d_IndexBuffer)& theIndices,
+                                                    Standard_Integer                     theOffset,
+                                                    Standard_Integer                     theCount,
+                                                    Standard_Integer                     theMatID);
 
   //! Adds OpenGL polygon array to ray-traced scene geometry.
-  Standard_Boolean AddRaytracePolygonArray (OpenGl_TriangleSet* theSet,
-    const CALL_DEF_PARRAY* theArray, Standard_Integer theOffset, Standard_Integer theCount, Standard_Integer theMatID);
+  Standard_Boolean AddRaytracePolygonArray (OpenGl_TriangleSet&                  theSet,
+                                            const Handle(Graphic3d_IndexBuffer)& theIndices,
+                                            Standard_Integer                     theOffset,
+                                            Standard_Integer                     theCount,
+                                            Standard_Integer                     theMatID);
 
   //! Loads and compiles shader object from specified source.
   Handle(OpenGl_ShaderObject) LoadShader (const ShaderSource& theSource, GLenum theType);

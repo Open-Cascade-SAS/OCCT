@@ -1,5 +1,4 @@
-// Created on: 2001-01-04
-// Copyright (c) 2001-2014 OPEN CASCADE SAS
+// Copyright (c) 2014 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -12,10 +11,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Graphic3d_ArrayOfSegments.ixx>
+#ifndef _Graphic3d_Buffer_Handle_HeaderFile
+#define _Graphic3d_Buffer_Handle_HeaderFile
 
-Graphic3d_ArrayOfSegments::Graphic3d_ArrayOfSegments (const Standard_Integer theMaxVertexs,
-                                                      const Standard_Integer theMaxEdges,
-                                                      const Standard_Boolean theHasVColors)
-: Graphic3d_ArrayOfPrimitives (Graphic3d_TOPA_SEGMENTS, theMaxVertexs, 0, theMaxEdges, Standard_False, theHasVColors, Standard_False, Standard_False)
-{}
+#include <Graphic3d_Buffer.hxx>
+typedef Handle(Graphic3d_Buffer) Graphic3d_Buffer_Handle;
+
+#endif // _Graphic3d_Buffer_Handle_HeaderFile

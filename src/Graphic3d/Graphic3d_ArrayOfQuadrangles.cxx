@@ -14,11 +14,10 @@
 
 #include <Graphic3d_ArrayOfQuadrangles.ixx>
 
-Graphic3d_ArrayOfQuadrangles :: Graphic3d_ArrayOfQuadrangles (
-                        const Standard_Integer maxVertexs,
-                        const Standard_Integer maxEdges,
-                        const Standard_Boolean hasVNormals,
-                        const Standard_Boolean hasVColors,
-                        const Standard_Boolean hasVTexels,
-			const Standard_Boolean hasEdgesInfos)
-	: Graphic3d_ArrayOfPrimitives(Graphic3d_TOPA_QUADRANGLES,maxVertexs,0,maxEdges,hasVNormals,hasVColors,Standard_False,hasVTexels,hasEdgesInfos) {}
+Graphic3d_ArrayOfQuadrangles::Graphic3d_ArrayOfQuadrangles (const Standard_Integer theMaxVertexs,
+                                                            const Standard_Integer theMaxEdges,
+                                                            const Standard_Boolean theHasVNormals,
+                                                            const Standard_Boolean theHasVColors,
+                                                            const Standard_Boolean theHasVTexels)
+: Graphic3d_ArrayOfPrimitives (Graphic3d_TOPA_QUADRANGLES, theMaxVertexs, 0, theMaxEdges, theHasVNormals, theHasVColors, Standard_False, theHasVTexels)
+{}

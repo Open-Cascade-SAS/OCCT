@@ -988,30 +988,79 @@ void Graphic3d_Group::AddPrimitiveArray (const Handle(Graphic3d_ArrayOfPrimitive
     return;
   }
 
+  AddPrimitiveArray (thePrim->Type(), thePrim->Indices(), thePrim->Attributes(), thePrim->Bounds(), theToEvalMinMax);
+}
+
+// =======================================================================
+// function : AddPrimitiveArray
+// purpose  :
+// =======================================================================
+void Graphic3d_Group::AddPrimitiveArray (const Graphic3d_TypeOfPrimitiveArray theType,
+                                         const Handle(Graphic3d_IndexBuffer)& ,
+                                         const Handle(Graphic3d_Buffer)&      theAttribs,
+                                         const Handle(Graphic3d_BoundBuffer)& ,
+                                         const Standard_Boolean               theToEvalMinMax)
+{
+  if (IsDeleted()
+   || theAttribs.IsNull())
+  {
+    return;
+  }
+
   if (!MyContainsFacet
-    && thePrim->Type() != Graphic3d_TOPA_POLYLINES
-    && thePrim->Type() != Graphic3d_TOPA_SEGMENTS
-    && thePrim->Type() != Graphic3d_TOPA_POINTS)
+    && theType != Graphic3d_TOPA_POLYLINES
+    && theType != Graphic3d_TOPA_SEGMENTS
+    && theType != Graphic3d_TOPA_POINTS)
   {
     myStructure->GroupsWithFacet (1);
     MyContainsFacet = Standard_True;
   }
 
   MyIsEmpty = Standard_False;
-  myListOfPArray.Append (thePrim);
   if (theToEvalMinMax)
   {
-    Standard_Real x, y, z;
-    const Standard_Integer aNbVerts = thePrim->VertexNumber();
-    for (Standard_Integer aVertIter = 1; aVertIter <= aNbVerts; ++aVertIter)
+    const Standard_Integer aNbVerts = theAttribs->NbElements;
+    for (Standard_Integer anAttribIter = 0; anAttribIter < theAttribs->NbAttributes; ++anAttribIter)
     {
-      thePrim->Vertice (aVertIter, x, y, z);
-      if (x < myBounds.XMin) myBounds.XMin = Standard_ShortReal (x);
-      if (y < myBounds.YMin) myBounds.YMin = Standard_ShortReal (y);
-      if (z < myBounds.ZMin) myBounds.ZMin = Standard_ShortReal (z);
-      if (x > myBounds.XMax) myBounds.XMax = Standard_ShortReal (x);
-      if (y > myBounds.YMax) myBounds.YMax = Standard_ShortReal (y);
-      if (z > myBounds.ZMax) myBounds.ZMax = Standard_ShortReal (z);
+      const Graphic3d_Attribute& anAttrib = theAttribs->Attribute (anAttribIter);
+      if (anAttrib.Id != Graphic3d_TOA_POS)
+      {
+        continue;
+      }
+
+      const size_t anOffset = theAttribs->AttributeOffset (anAttribIter);
+      switch (anAttrib.DataType)
+      {
+        case Graphic3d_TOD_VEC2:
+        {
+          for (Standard_Integer aVertIter = 0; aVertIter < aNbVerts; ++aVertIter)
+          {
+            const Graphic3d_Vec2& aVert = *reinterpret_cast<const Graphic3d_Vec2* >(theAttribs->value (aVertIter) + anOffset);
+            if (aVert.x() < myBounds.XMin) myBounds.XMin = aVert.x();
+            if (aVert.y() < myBounds.YMin) myBounds.YMin = aVert.y();
+            if (aVert.x() > myBounds.XMax) myBounds.XMax = aVert.x();
+            if (aVert.y() > myBounds.YMax) myBounds.YMax = aVert.y();
+          }
+          break;
+        }
+        case Graphic3d_TOD_VEC3:
+        case Graphic3d_TOD_VEC4:
+        {
+          for (Standard_Integer aVertIter = 0; aVertIter < aNbVerts; ++aVertIter)
+          {
+            const Graphic3d_Vec3& aVert = *reinterpret_cast<const Graphic3d_Vec3* >(theAttribs->value (aVertIter) + anOffset);
+            if (aVert.x() < myBounds.XMin) myBounds.XMin = aVert.x();
+            if (aVert.y() < myBounds.YMin) myBounds.YMin = aVert.y();
+            if (aVert.z() < myBounds.ZMin) myBounds.ZMin = aVert.z();
+            if (aVert.x() > myBounds.XMax) myBounds.XMax = aVert.x();
+            if (aVert.y() > myBounds.YMax) myBounds.YMax = aVert.y();
+            if (aVert.z() > myBounds.ZMax) myBounds.ZMax = aVert.z();
+          }
+          break;
+        }
+        default: break;
+      }
+      break;
     }
   }
 

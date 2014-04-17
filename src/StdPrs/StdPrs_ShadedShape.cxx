@@ -95,7 +95,7 @@ namespace
     TopLoc_Location aLoc;
     gp_Pnt p;
     Standard_Integer decal;
-    Standard_Integer t[3], n[3];
+    Standard_Integer n[3];
     Standard_Integer nbTriangles = 0, nbVertices = 0;
     Standard_Real    aUmin (0.0), aUmax (0.0), aVmin (0.0), aVmax (0.0), dUmax (0.0), dVmax (0.0);
 
@@ -132,9 +132,8 @@ namespace
       return Standard_False;
     }
 
-    Handle(Graphic3d_ArrayOfTriangles) aPArray
-      = new Graphic3d_ArrayOfTriangles (nbVertices, 3 * nbTriangles,
-                                        Standard_True, Standard_False, theHasTexels, Standard_True);
+    Handle(Graphic3d_ArrayOfTriangles) aPArray = new Graphic3d_ArrayOfTriangles (nbVertices, 3 * nbTriangles,
+                                                                                 Standard_True, Standard_False, theHasTexels);
     for (SST.Init (theShape); SST.MoreFace(); SST.NextFace())
     {
       const TopoDS_Face& aFace = SST.CurrentFace();
@@ -184,7 +183,6 @@ namespace
       const Poly_Array1OfTriangle& aTriangles = T->Triangles();
       for (Standard_Integer aTriIter = 1; aTriIter <= T->NbTriangles(); ++aTriIter)
       {
-        pc.Triangles (aTriIter, t[0], t[1], t[2]);
         if (SST.Orientation (aFace) == TopAbs_REVERSED)
           aTriangles (aTriIter).Get (n[0], n[2], n[1]);
         else
@@ -214,9 +212,9 @@ namespace
         V1.Cross (V2);
         if (V1.SquareMagnitude() > aPreci)
         {
-          aPArray->AddEdge (n[0] + decal, t[0] == 0);
-          aPArray->AddEdge (n[1] + decal, t[1] == 0);
-          aPArray->AddEdge (n[2] + decal, t[2] == 0);
+          aPArray->AddEdge (n[0] + decal);
+          aPArray->AddEdge (n[1] + decal);
+          aPArray->AddEdge (n[2] + decal);
         }
       }
     }

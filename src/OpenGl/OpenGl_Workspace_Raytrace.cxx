@@ -452,100 +452,114 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceStructure (const OpenGl_Structure*
 // function : AddRaytracePrimitiveArray
 // purpose  : Adds OpenGL primitive array to ray-traced scene geometry
 // =======================================================================
-OpenGl_TriangleSet* OpenGl_Workspace::AddRaytracePrimitiveArray (
-  const OpenGl_PrimitiveArray* theArray, Standard_Integer theMatID, const Standard_ShortReal* theTransform)
+OpenGl_TriangleSet* OpenGl_Workspace::AddRaytracePrimitiveArray (const OpenGl_PrimitiveArray* theArray,
+                                                                 Standard_Integer             theMatID,
+                                                                 const Standard_ShortReal*    theTransform)
 {
-  CALL_DEF_PARRAY* aPArray = theArray->PArray();
-
-  if (aPArray->type != TelPolygonsArrayType &&
-      aPArray->type != TelTrianglesArrayType &&
-      aPArray->type != TelQuadranglesArrayType &&
-      aPArray->type != TelTriangleFansArrayType &&
-      aPArray->type != TelTriangleStripsArrayType &&
-      aPArray->type != TelQuadrangleStripsArrayType)
+  const Handle(Graphic3d_IndexBuffer)& anIndices = theArray->Indices();
+  const Handle(Graphic3d_Buffer)&      anAttribs = theArray->Attributes();
+  const Handle(Graphic3d_BoundBuffer)& aBounds   = theArray->Bounds();
+  if (theArray->DrawMode() < GL_TRIANGLES
+   || theArray->DrawMode() > GL_POLYGON
+   || anAttribs.IsNull())
   {
     return NULL;
   }
 
-  if (aPArray->vertices == NULL)
-    return NULL;
-
 #ifdef RAY_TRACE_PRINT_INFO
-  switch (aPArray->type)
+  switch (aPArray->DrawMode())
   {
-    case TelPolygonsArrayType:
-      std::cout << "\tAdding TelPolygonsArrayType" << std::endl; break;
-    case TelTrianglesArrayType:
-      std::cout << "\tAdding TelTrianglesArrayType" << std::endl; break;
-    case TelQuadranglesArrayType:
-      std::cout << "\tAdding TelQuadranglesArrayType" << std::endl; break;
-    case TelTriangleFansArrayType:
-      std::cout << "\tAdding TelTriangleFansArrayType" << std::endl; break;
-    case TelTriangleStripsArrayType:
-      std::cout << "\tAdding TelTriangleStripsArrayType" << std::endl; break;
-    case TelQuadrangleStripsArrayType:
-      std::cout << "\tAdding TelQuadrangleStripsArrayType" << std::endl; break;
+    case GL_POLYGON:        std::cout << "\tAdding GL_POLYGON\n";        break;
+    case GL_TRIANGLES:      std::cout << "\tAdding GL_TRIANGLES\n";      break;
+    case GL_QUADS:          std::cout << "\tAdding GL_QUADS\n";          break;
+    case GL_TRIANGLE_FAN:   std::cout << "\tAdding GL_TRIANGLE_FAN\n";   break;
+    case GL_TRIANGLE_STRIP: std::cout << "\tAdding GL_TRIANGLE_STRIP\n"; break;
+    case GL_QUAD_STRIP:     std::cout << "\tAdding GL_QUAD_STRIP\n";     break;
   }
 #endif
 
   OpenGl_TriangleSet* aSet = new OpenGl_TriangleSet (theArray);
-
   {
-    aSet->Vertices.reserve (aPArray->num_vertexs);
-
-    for (Standard_Integer aVert = 0; aVert < aPArray->num_vertexs; ++aVert)
+    aSet->Vertices.reserve (anAttribs->NbElements);
+    aSet->Normals .reserve (anAttribs->NbElements);
+    const size_t aVertFrom = aSet->Vertices.size();
+    for (Standard_Integer anAttribIter = 0; anAttribIter < anAttribs->NbAttributes; ++anAttribIter)
     {
-      BVH_Vec4f aVertex (aPArray->vertices[aVert].xyz[0],
-                         aPArray->vertices[aVert].xyz[1],
-                         aPArray->vertices[aVert].xyz[2],
-                         1.f);
-      if (theTransform)
-        aVertex = MatVecMult (theTransform, aVertex);
-
-      aSet->Vertices.push_back (aVertex);
-    }
-
-    aSet->Normals.reserve (aPArray->num_vertexs);
-
-    for (Standard_Integer aNorm = 0; aNorm < aPArray->num_vertexs; ++aNorm)
-    {
-      BVH_Vec4f aNormal;
-
-      // Note: In case of absence of normals, the
-      // renderer uses generated geometric normals
-
-      if (aPArray->vnormals != NULL)
+      const Graphic3d_Attribute& anAttrib = anAttribs->Attribute       (anAttribIter);
+      const size_t               anOffset = anAttribs->AttributeOffset (anAttribIter);
+      if (anAttrib.Id == Graphic3d_TOA_POS)
       {
-        aNormal = BVH_Vec4f (aPArray->vnormals[aNorm].xyz[0],
-                             aPArray->vnormals[aNorm].xyz[1],
-                             aPArray->vnormals[aNorm].xyz[2],
-                             0.f);
-
-        if (theTransform)
-          aNormal = MatVecMult (theTransform, aNormal);
+        if (anAttrib.DataType == Graphic3d_TOD_VEC3
+         || anAttrib.DataType == Graphic3d_TOD_VEC4)
+        {
+          for (Standard_Integer aVertIter = 0; aVertIter < anAttribs->NbElements; ++aVertIter)
+          {
+            const Graphic3d_Vec3& aVert = *reinterpret_cast<const Graphic3d_Vec3* >(anAttribs->value (aVertIter) + anOffset);
+            aSet->Vertices.push_back (BVH_Vec4f (aVert.x(), aVert.y(), aVert.z(), 1.0f));
+          }
+        }
+        else if (anAttrib.DataType == Graphic3d_TOD_VEC2)
+        {
+          for (Standard_Integer aVertIter = 0; aVertIter < anAttribs->NbElements; ++aVertIter)
+          {
+            const Graphic3d_Vec2& aVert = *reinterpret_cast<const Graphic3d_Vec2* >(anAttribs->value (aVertIter) + anOffset);
+            aSet->Vertices.push_back (BVH_Vec4f (aVert.x(), aVert.y(), 0.0f, 1.0f));
+          }
+        }
       }
-
-      aSet->Normals.push_back (aNormal);
+      else if (anAttrib.Id == Graphic3d_TOA_NORM)
+      {
+        if (anAttrib.DataType == Graphic3d_TOD_VEC3
+         || anAttrib.DataType == Graphic3d_TOD_VEC4)
+        {
+          for (Standard_Integer aVertIter = 0; aVertIter < anAttribs->NbElements; ++aVertIter)
+          {
+            const Graphic3d_Vec3& aNorm = *reinterpret_cast<const Graphic3d_Vec3* >(anAttribs->value (aVertIter) + anOffset);
+            aSet->Normals.push_back (BVH_Vec4f (aNorm.x(), aNorm.y(), aNorm.z(), 0.0f));
+          }
+        }
+      }
     }
 
-    if (aPArray->num_bounds > 0)
+    if (aSet->Normals.size() != aSet->Vertices.size())
+    {
+      for (Standard_Integer aVertIter = 0; aVertIter < anAttribs->NbElements; ++aVertIter)
+      {
+        aSet->Normals.push_back (BVH_Vec4f());
+      }
+    }
+
+    if (theTransform)
+    {
+      for (size_t aVertIter = aVertFrom; aVertIter < aSet->Vertices.size(); ++aVertIter)
+      {
+        BVH_Vec4f& aVertex = aSet->Vertices[aVertIter];
+        aVertex = MatVecMult (theTransform, aVertex);
+      }
+      for (size_t aVertIter = aVertFrom; aVertIter < aSet->Normals.size(); ++aVertIter)
+      {
+        BVH_Vec4f& aNorm = aSet->Normals[aVertIter];
+        aNorm = MatVecMult (theTransform, aNorm);
+      }
+    }
+
+    if (!aBounds.IsNull())
     {
   #ifdef RAY_TRACE_PRINT_INFO
       std::cout << "\tNumber of bounds = " << aPArray->num_bounds << std::endl;
   #endif
 
       Standard_Integer aBoundStart = 0;
-
-      for (Standard_Integer aBound = 0; aBound < aPArray->num_bounds; ++aBound)
+      for (Standard_Integer aBound = 0; aBound < aBounds->NbBounds; ++aBound)
       {
-        const Standard_Integer aVertNum = aPArray->bounds[aBound];
+        const Standard_Integer aVertNum = aBounds->Bounds[aBound];
 
   #ifdef RAY_TRACE_PRINT_INFO
         std::cout << "\tAdding indices from bound " << aBound << ": " <<
                                       aBoundStart << " .. " << aVertNum << std::endl;
   #endif
 
-        if (!AddRaytraceVertexIndices (aSet, aPArray, aBoundStart, aVertNum, theMatID))
+        if (!AddRaytraceVertexIndices (*aSet, *theArray, aBoundStart, aVertNum, theMatID))
         {
           delete aSet;
           return NULL;
@@ -556,13 +570,13 @@ OpenGl_TriangleSet* OpenGl_Workspace::AddRaytracePrimitiveArray (
     }
     else
     {
-      const Standard_Integer aVertNum = aPArray->num_edges > 0 ? aPArray->num_edges : aPArray->num_vertexs;
+      const Standard_Integer aVertNum = !anIndices.IsNull() ? anIndices->NbElements : anAttribs->NbElements;
 
   #ifdef RAY_TRACE_PRINT_INFO
         std::cout << "\tAdding indices from array: " << aVertNum << std::endl;
   #endif
 
-      if (!AddRaytraceVertexIndices (aSet, aPArray, 0, aVertNum, theMatID))
+      if (!AddRaytraceVertexIndices (*aSet, *theArray, 0, aVertNum, theMatID))
       {
         delete aSet;
         return NULL;
@@ -580,61 +594,55 @@ OpenGl_TriangleSet* OpenGl_Workspace::AddRaytracePrimitiveArray (
 // function : AddRaytraceVertexIndices
 // purpose  : Adds vertex indices to ray-traced scene geometry
 // =======================================================================
-Standard_Boolean OpenGl_Workspace::AddRaytraceVertexIndices (OpenGl_TriangleSet* theSet,
-  const CALL_DEF_PARRAY* theArray, Standard_Integer theOffset, Standard_Integer theCount, Standard_Integer theMatID)
+Standard_Boolean OpenGl_Workspace::AddRaytraceVertexIndices (OpenGl_TriangleSet&          theSet,
+                                                             const OpenGl_PrimitiveArray& theArray,
+                                                             Standard_Integer             theOffset,
+                                                             Standard_Integer             theCount,
+                                                             Standard_Integer             theMatID)
 {
-  switch (theArray->type)
+  switch (theArray.DrawMode())
   {
-    case TelTrianglesArrayType:
-      return AddRaytraceTriangleArray (theSet, theArray, theOffset, theCount, theMatID);
-
-    case TelQuadranglesArrayType:
-      return AddRaytraceQuadrangleArray (theSet, theArray, theOffset, theCount, theMatID);
-
-    case TelTriangleFansArrayType:
-      return AddRaytraceTriangleFanArray (theSet, theArray, theOffset, theCount, theMatID);
-
-    case TelTriangleStripsArrayType:
-      return AddRaytraceTriangleStripArray (theSet, theArray, theOffset, theCount, theMatID);
-
-    case TelQuadrangleStripsArrayType:
-      return AddRaytraceQuadrangleStripArray (theSet, theArray, theOffset, theCount, theMatID);
-
-    default:
-      return AddRaytracePolygonArray (theSet, theArray, theOffset, theCount, theMatID);
+    case GL_TRIANGLES:      return AddRaytraceTriangleArray        (theSet, theArray.Indices(), theOffset, theCount, theMatID);
+    case GL_QUADS:          return AddRaytraceQuadrangleArray      (theSet, theArray.Indices(), theOffset, theCount, theMatID);
+    case GL_TRIANGLE_FAN:   return AddRaytraceTriangleFanArray     (theSet, theArray.Indices(), theOffset, theCount, theMatID);
+    case GL_TRIANGLE_STRIP: return AddRaytraceTriangleStripArray   (theSet, theArray.Indices(), theOffset, theCount, theMatID);
+    case GL_QUAD_STRIP:     return AddRaytraceQuadrangleStripArray (theSet, theArray.Indices(), theOffset, theCount, theMatID);
+    case GL_POLYGON:        return AddRaytracePolygonArray         (theSet, theArray.Indices(), theOffset, theCount, theMatID);
   }
+  return Standard_False;
 }
 
 // =======================================================================
 // function : AddRaytraceTriangleArray
 // purpose  : Adds OpenGL triangle array to ray-traced scene geometry
 // =======================================================================
-Standard_Boolean OpenGl_Workspace::AddRaytraceTriangleArray (OpenGl_TriangleSet* theSet,
-  const CALL_DEF_PARRAY* theArray, Standard_Integer theOffset, Standard_Integer theCount, Standard_Integer theMatID)
+Standard_Boolean OpenGl_Workspace::AddRaytraceTriangleArray (OpenGl_TriangleSet&                  theSet,
+                                                             const Handle(Graphic3d_IndexBuffer)& theIndices,
+                                                             Standard_Integer                     theOffset,
+                                                             Standard_Integer                     theCount,
+                                                             Standard_Integer                     theMatID)
 {
   if (theCount < 3)
     return Standard_True;
 
-  theSet->Elements.reserve (theSet->Elements.size() + theCount / 3);
+  theSet.Elements.reserve (theSet.Elements.size() + theCount / 3);
 
-  if (theArray->num_edges > 0)
+  if (!theIndices.IsNull())
   {
     for (Standard_Integer aVert = theOffset; aVert < theOffset + theCount - 2; aVert += 3)
     {
-      theSet->Elements.push_back (BVH_Vec4i (theArray->edges[aVert + 0],
-                                             theArray->edges[aVert + 1],
-                                             theArray->edges[aVert + 2],
-                                             theMatID));
+      theSet.Elements.push_back (BVH_Vec4i (theIndices->Index (aVert + 0),
+                                            theIndices->Index (aVert + 1),
+                                            theIndices->Index (aVert + 2),
+                                            theMatID));
     }
   }
   else
   {
     for (Standard_Integer aVert = theOffset; aVert < theOffset + theCount - 2; aVert += 3)
     {
-      theSet->Elements.push_back (BVH_Vec4i (aVert + 0,
-                                             aVert + 1,
-                                             aVert + 2,
-                                             theMatID));
+      theSet.Elements.push_back (BVH_Vec4i (aVert + 0, aVert + 1, aVert + 2,
+                                            theMatID));
     }
   }
 
@@ -645,32 +653,35 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceTriangleArray (OpenGl_TriangleSet*
 // function : AddRaytraceTriangleFanArray
 // purpose  : Adds OpenGL triangle fan array to ray-traced scene geometry
 // =======================================================================
-Standard_Boolean OpenGl_Workspace::AddRaytraceTriangleFanArray (OpenGl_TriangleSet* theSet,
-  const CALL_DEF_PARRAY* theArray, Standard_Integer theOffset, Standard_Integer theCount, Standard_Integer theMatID)
+Standard_Boolean OpenGl_Workspace::AddRaytraceTriangleFanArray (OpenGl_TriangleSet&                  theSet,
+                                                                const Handle(Graphic3d_IndexBuffer)& theIndices,
+                                                                Standard_Integer                     theOffset,
+                                                                Standard_Integer                     theCount,
+                                                                Standard_Integer                     theMatID)
 {
   if (theCount < 3)
     return Standard_True;
 
-  theSet->Elements.reserve (theSet->Elements.size() + theCount - 2);
+  theSet.Elements.reserve (theSet.Elements.size() + theCount - 2);
 
-  if (theArray->num_edges > 0)
+  if (!theIndices.IsNull())
   {
     for (Standard_Integer aVert = theOffset; aVert < theOffset + theCount - 2; ++aVert)
     {
-      theSet->Elements.push_back (BVH_Vec4i (theArray->edges[theOffset],
-                                             theArray->edges[aVert + 1],
-                                             theArray->edges[aVert + 2],
-                                             theMatID));
+      theSet.Elements.push_back (BVH_Vec4i (theIndices->Index (theOffset),
+                                            theIndices->Index (aVert + 1),
+                                            theIndices->Index (aVert + 2),
+                                            theMatID));
     }
   }
   else
   {
     for (Standard_Integer aVert = theOffset; aVert < theOffset + theCount - 2; ++aVert)
     {
-      theSet->Elements.push_back (BVH_Vec4i (theOffset,
-                                             aVert + 1,
-                                             aVert + 2,
-                                             theMatID));
+      theSet.Elements.push_back (BVH_Vec4i (theOffset,
+                                            aVert + 1,
+                                            aVert + 2,
+                                            theMatID));
     }
   }
 
@@ -681,32 +692,35 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceTriangleFanArray (OpenGl_TriangleS
 // function : AddRaytraceTriangleStripArray
 // purpose  : Adds OpenGL triangle strip array to ray-traced scene geometry
 // =======================================================================
-Standard_Boolean OpenGl_Workspace::AddRaytraceTriangleStripArray (OpenGl_TriangleSet* theSet,
-  const CALL_DEF_PARRAY* theArray, Standard_Integer theOffset, Standard_Integer theCount, Standard_Integer theMatID)
+Standard_Boolean OpenGl_Workspace::AddRaytraceTriangleStripArray (OpenGl_TriangleSet&                  theSet,
+                                                                  const Handle(Graphic3d_IndexBuffer)& theIndices,
+                                                                  Standard_Integer                     theOffset,
+                                                                  Standard_Integer                     theCount,
+                                                                  Standard_Integer                     theMatID)
 {
   if (theCount < 3)
     return Standard_True;
 
-  theSet->Elements.reserve (theSet->Elements.size() + theCount - 2);
+  theSet.Elements.reserve (theSet.Elements.size() + theCount - 2);
 
-  if (theArray->num_edges > 0)
+  if (!theIndices.IsNull())
   {
     for (Standard_Integer aVert = theOffset, aCW = 0; aVert < theOffset + theCount - 2; ++aVert, aCW = (aCW + 1) % 2)
     {
-      theSet->Elements.push_back (BVH_Vec4i (theArray->edges[aVert + aCW ? 1 : 0],
-                                             theArray->edges[aVert + aCW ? 0 : 1],
-                                             theArray->edges[aVert + 2],
-                                             theMatID));
+      theSet.Elements.push_back (BVH_Vec4i (theIndices->Index (aVert + aCW ? 1 : 0),
+                                            theIndices->Index (aVert + aCW ? 0 : 1),
+                                            theIndices->Index (aVert + 2),
+                                            theMatID));
     }
   }
   else
   {
     for (Standard_Integer aVert = theOffset, aCW = 0; aVert < theOffset + theCount - 2; ++aVert, aCW = (aCW + 1) % 2)
     {
-      theSet->Elements.push_back (BVH_Vec4i (aVert + aCW ? 1 : 0,
-                                             aVert + aCW ? 0 : 1,
-                                             aVert + 2,
-                                             theMatID));
+      theSet.Elements.push_back (BVH_Vec4i (aVert + aCW ? 1 : 0,
+                                            aVert + aCW ? 0 : 1,
+                                            aVert + 2,
+                                            theMatID));
     }
   }
 
@@ -717,42 +731,39 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceTriangleStripArray (OpenGl_Triangl
 // function : AddRaytraceQuadrangleArray
 // purpose  : Adds OpenGL quad array to ray-traced scene geometry
 // =======================================================================
-Standard_Boolean OpenGl_Workspace::AddRaytraceQuadrangleArray (OpenGl_TriangleSet* theSet,
-  const CALL_DEF_PARRAY* theArray, Standard_Integer theOffset, Standard_Integer theCount, Standard_Integer theMatID)
+Standard_Boolean OpenGl_Workspace::AddRaytraceQuadrangleArray (OpenGl_TriangleSet&                  theSet,
+                                                               const Handle(Graphic3d_IndexBuffer)& theIndices,
+                                                               Standard_Integer                     theOffset,
+                                                               Standard_Integer                     theCount,
+                                                               Standard_Integer                     theMatID)
 {
   if (theCount < 4)
     return Standard_True;
 
-  theSet->Elements.reserve (theSet->Elements.size() + theCount / 2);
+  theSet.Elements.reserve (theSet.Elements.size() + theCount / 2);
 
-  if (theArray->num_edges > 0)
+  if (!theIndices.IsNull())
   {
     for (Standard_Integer aVert = theOffset; aVert < theOffset + theCount - 3; aVert += 4)
     {
-      theSet->Elements.push_back (BVH_Vec4i (theArray->edges[aVert + 0],
-                                             theArray->edges[aVert + 1],
-                                             theArray->edges[aVert + 2],
-                                             theMatID));
-
-      theSet->Elements.push_back (BVH_Vec4i (theArray->edges[aVert + 0],
-                                             theArray->edges[aVert + 2],
-                                             theArray->edges[aVert + 3],
-                                             theMatID));
+      theSet.Elements.push_back (BVH_Vec4i (theIndices->Index (aVert + 0),
+                                            theIndices->Index (aVert + 1),
+                                            theIndices->Index (aVert + 2),
+                                            theMatID));
+      theSet.Elements.push_back (BVH_Vec4i (theIndices->Index (aVert + 0),
+                                            theIndices->Index (aVert + 2),
+                                            theIndices->Index (aVert + 3),
+                                            theMatID));
     }
   }
   else
   {
     for (Standard_Integer aVert = theOffset; aVert < theOffset + theCount - 3; aVert += 4)
     {
-      theSet->Elements.push_back (BVH_Vec4i (aVert + 0,
-                                             aVert + 1,
-                                             aVert + 2,
-                                             theMatID));
-
-      theSet->Elements.push_back (BVH_Vec4i (aVert + 0,
-                                             aVert + 2,
-                                             aVert + 3,
-                                             theMatID));
+      theSet.Elements.push_back (BVH_Vec4i (aVert + 0, aVert + 1, aVert + 2,
+                                            theMatID));
+      theSet.Elements.push_back (BVH_Vec4i (aVert + 0, aVert + 2, aVert + 3,
+                                            theMatID));
     }
   }
 
@@ -763,42 +774,45 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceQuadrangleArray (OpenGl_TriangleSe
 // function : AddRaytraceQuadrangleStripArray
 // purpose  : Adds OpenGL quad strip array to ray-traced scene geometry
 // =======================================================================
-Standard_Boolean OpenGl_Workspace::AddRaytraceQuadrangleStripArray (OpenGl_TriangleSet* theSet,
-  const CALL_DEF_PARRAY* theArray, Standard_Integer theOffset, Standard_Integer theCount, Standard_Integer theMatID)
+Standard_Boolean OpenGl_Workspace::AddRaytraceQuadrangleStripArray (OpenGl_TriangleSet&                  theSet,
+                                                                    const Handle(Graphic3d_IndexBuffer)& theIndices,
+                                                                    Standard_Integer                     theOffset,
+                                                                    Standard_Integer                     theCount,
+                                                                    Standard_Integer                     theMatID)
 {
   if (theCount < 4)
     return Standard_True;
 
-  theSet->Elements.reserve (theSet->Elements.size() + 2 * theCount - 6);
+  theSet.Elements.reserve (theSet.Elements.size() + 2 * theCount - 6);
 
-  if (theArray->num_edges > 0)
+  if (!theIndices.IsNull())
   {
     for (Standard_Integer aVert = theOffset; aVert < theOffset + theCount - 3; aVert += 2)
     {
-      theSet->Elements.push_back (BVH_Vec4i (theArray->edges[aVert + 0],
-                                             theArray->edges[aVert + 1],
-                                             theArray->edges[aVert + 2],
-                                             theMatID));
+      theSet.Elements.push_back (BVH_Vec4i (theIndices->Index (aVert + 0),
+                                            theIndices->Index (aVert + 1),
+                                            theIndices->Index (aVert + 2),
+                                            theMatID));
 
-      theSet->Elements.push_back (BVH_Vec4i (theArray->edges[aVert + 1],
-                                             theArray->edges[aVert + 3],
-                                             theArray->edges[aVert + 2],
-                                             theMatID));
+      theSet.Elements.push_back (BVH_Vec4i (theIndices->Index (aVert + 1),
+                                            theIndices->Index (aVert + 3),
+                                            theIndices->Index (aVert + 2),
+                                            theMatID));
     }
   }
   else
   {
     for (Standard_Integer aVert = theOffset; aVert < theOffset + theCount - 3; aVert += 2)
     {
-      theSet->Elements.push_back (BVH_Vec4i (aVert + 0,
-                                             aVert + 1,
-                                             aVert + 2,
-                                             theMatID));
+      theSet.Elements.push_back (BVH_Vec4i (aVert + 0,
+                                            aVert + 1,
+                                            aVert + 2,
+                                            theMatID));
 
-      theSet->Elements.push_back (BVH_Vec4i (aVert + 1,
-                                             aVert + 3,
-                                             aVert + 2,
-                                             theMatID));
+      theSet.Elements.push_back (BVH_Vec4i (aVert + 1,
+                                            aVert + 3,
+                                            aVert + 2,
+                                            theMatID));
     }
   }
 
@@ -809,32 +823,35 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceQuadrangleStripArray (OpenGl_Trian
 // function : AddRaytracePolygonArray
 // purpose  : Adds OpenGL polygon array to ray-traced scene geometry
 // =======================================================================
-Standard_Boolean OpenGl_Workspace::AddRaytracePolygonArray (OpenGl_TriangleSet* theSet,
-  const CALL_DEF_PARRAY* theArray, Standard_Integer theOffset, Standard_Integer theCount, Standard_Integer theMatID)
+Standard_Boolean OpenGl_Workspace::AddRaytracePolygonArray (OpenGl_TriangleSet&                  theSet,
+                                                            const Handle(Graphic3d_IndexBuffer)& theIndices,
+                                                            Standard_Integer                     theOffset,
+                                                            Standard_Integer                     theCount,
+                                                            Standard_Integer                     theMatID)
 {
   if (theCount < 3)
     return Standard_True;
 
-  theSet->Elements.reserve (theSet->Elements.size() + theCount - 2);
+  theSet.Elements.reserve (theSet.Elements.size() + theCount - 2);
 
-  if (theArray->num_edges > 0)
+  if (!theIndices.IsNull())
   {
     for (Standard_Integer aVert = theOffset; aVert < theOffset + theCount - 2; ++aVert)
     {
-      theSet->Elements.push_back (BVH_Vec4i (theArray->edges[theOffset],
-                                             theArray->edges[aVert + 1],
-                                             theArray->edges[aVert + 2],
-                                             theMatID));
+      theSet.Elements.push_back (BVH_Vec4i (theIndices->Index (theOffset),
+                                            theIndices->Index (aVert + 1),
+                                            theIndices->Index (aVert + 2),
+                                            theMatID));
     }
   }
   else
   {
     for (Standard_Integer aVert = theOffset; aVert < theOffset + theCount - 2; ++aVert)
     {
-      theSet->Elements.push_back (BVH_Vec4i (theOffset,
-                                             aVert + 1,
-                                             aVert + 2,
-                                             theMatID));
+      theSet.Elements.push_back (BVH_Vec4i (theOffset,
+                                            aVert + 1,
+                                            aVert + 2,
+                                            theMatID));
     }
   }
 

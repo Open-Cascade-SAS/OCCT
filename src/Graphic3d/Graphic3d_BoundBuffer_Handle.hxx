@@ -1,4 +1,4 @@
-// Copyright (c) 1999-2014 OPEN CASCADE SAS
+// Copyright (c) 2014 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -11,14 +11,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-/*
-	File Graphic3d_PrimitiveArray.hxx
-	Created 16/06/2000 : ATS : G005 : This structure is an enumeration of all internal structures for PARRAY primitives
-*/
-#ifndef _Graphic3d_PrimitiveArray_HeaderFile
-#define _Graphic3d_PrimitiveArray_HeaderFile
+#ifndef _Graphic3d_BoundBuffer_Handle_HeaderFile
+#define _Graphic3d_BoundBuffer_Handle_HeaderFile
 
-#include <InterfaceGraphic_PrimitiveArray.hxx>
-typedef CALL_DEF_PARRAY *Graphic3d_PrimitiveArray;
+#include <Graphic3d_BoundBuffer.hxx>
+typedef Handle(Graphic3d_BoundBuffer) Graphic3d_BoundBuffer_Handle;
 
-#endif /* _Graphic3d_PrimitiveArray_HeaderFile */
+#endif // _Graphic3d_BoundBuffer_Handle_HeaderFile

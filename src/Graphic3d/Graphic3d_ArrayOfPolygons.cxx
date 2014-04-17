@@ -14,13 +14,12 @@
 
 #include <Graphic3d_ArrayOfPolygons.ixx>
 
-Graphic3d_ArrayOfPolygons :: Graphic3d_ArrayOfPolygons (
-                        const Standard_Integer maxVertexs,
-                        const Standard_Integer maxBounds,
-                        const Standard_Integer maxEdges,
-                        const Standard_Boolean hasVNormals,
-                        const Standard_Boolean hasVColors,
-                        const Standard_Boolean hasFColors,
-                        const Standard_Boolean hasVTexels,
-			const Standard_Boolean hasEdgeInfos)
-	: Graphic3d_ArrayOfPrimitives(Graphic3d_TOPA_POLYGONS,maxVertexs,maxBounds,maxEdges,hasVNormals,hasVColors,hasFColors,hasVTexels,hasEdgeInfos) {}
+Graphic3d_ArrayOfPolygons::Graphic3d_ArrayOfPolygons (const Standard_Integer theMaxVertexs,
+                                                      const Standard_Integer theMaxBounds,
+                                                      const Standard_Integer theMaxEdges,
+                                                      const Standard_Boolean theHasVNormals,
+                                                      const Standard_Boolean theHasVColors,
+                                                      const Standard_Boolean theHasFColors,
+                                                      const Standard_Boolean theHasVTexels)
+: Graphic3d_ArrayOfPrimitives (Graphic3d_TOPA_POLYGONS, theMaxVertexs, theMaxBounds, theMaxEdges, theHasVNormals, theHasVColors, theHasFColors, theHasVTexels)
+{}

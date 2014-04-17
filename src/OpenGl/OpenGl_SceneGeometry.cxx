@@ -346,7 +346,7 @@ namespace OpenGl_Raytrace
   {
     OpenGl_PrimitiveArray* anArray = dynamic_cast< OpenGl_PrimitiveArray* > (theNode->elem);
     return anArray != NULL
-        && anArray->PArray()->type >= TelPolygonsArrayType;
+        && anArray->DrawMode() >= GL_TRIANGLES;
   }
 
   // =======================================================================

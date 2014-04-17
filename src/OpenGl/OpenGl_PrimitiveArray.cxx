@@ -24,8 +24,6 @@
 #include <OpenGl_Structure.hxx>
 #include <OpenGl_Workspace.hxx>
 
-#include <InterfaceGraphic_PrimitiveArray.hxx>
-
 namespace
 {
   template<class T>
@@ -49,28 +47,157 @@ namespace
 
     aCtx->ShaderManager()->PushState (aProgram);
   }
+
+  //! Convert index data type from size
+  inline GLenum toGlIndexType (const Standard_Integer theStride)
+  {
+    switch (theStride)
+    {
+      case 2:  return GL_UNSIGNED_SHORT;
+      case 4:  return GL_UNSIGNED_INT;
+      default: return GL_NONE;
+    }
+  }
+
+  //! Convert data type to GL info
+  inline GLenum toGlDataType (const Graphic3d_TypeOfData theType,
+                              GLint&                     theNbComp)
+  {
+    switch (theType)
+    {
+      case Graphic3d_TOD_USHORT:
+        theNbComp = 1;
+        return GL_UNSIGNED_SHORT;
+      case Graphic3d_TOD_UINT:
+        theNbComp = 1;
+        return GL_UNSIGNED_INT;
+      case Graphic3d_TOD_VEC2:
+        theNbComp = 2;
+        return GL_FLOAT;
+      case Graphic3d_TOD_VEC3:
+        theNbComp = 3;
+        return GL_FLOAT;
+      case Graphic3d_TOD_VEC4:
+        theNbComp = 4;
+        return GL_FLOAT;
+      case Graphic3d_TOD_VEC4UB:
+        theNbComp = 4;
+        return GL_UNSIGNED_BYTE;
+    }
+    theNbComp = 0;
+    return GL_NONE;
+  }
+
 }
 
-// =======================================================================
-// function : clearMemoryOwn
-// purpose  :
-// =======================================================================
-void OpenGl_PrimitiveArray::clearMemoryOwn() const
+//! Auxiliary template for VBO with interleaved attributes.
+template<int NbAttributes>
+class OpenGl_VertexBufferT : public OpenGl_VertexBuffer
 {
-  Standard::Free (myPArray->edges);
-  Standard::Free (myPArray->vertices);
-  Standard::Free (myPArray->vcolours);
-  Standard::Free (myPArray->vnormals);
-  Standard::Free (myPArray->vtexels);
-  Standard::Free (myPArray->edge_vis); /// ???
 
-  myPArray->edges    = NULL;
-  myPArray->vertices = NULL;
-  myPArray->vcolours = NULL;
-  myPArray->vnormals = NULL;
-  myPArray->vtexels  = NULL;
-  myPArray->edge_vis = NULL;
-}
+public:
+
+  //! Create uninitialized VBO.
+  OpenGl_VertexBufferT (const Graphic3d_Attribute* theAttribs,
+                        const Standard_Integer     theStride)
+  : Stride (theStride)
+  {
+    memcpy (Attribs, theAttribs, sizeof(Graphic3d_Attribute) * NbAttributes);
+  }
+
+  //! Create uninitialized VBO.
+  OpenGl_VertexBufferT (const Graphic3d_Buffer& theAttribs)
+  : Stride (theAttribs.Stride)
+  {
+    memcpy (Attribs, theAttribs.AttributesArray(), sizeof(Graphic3d_Attribute) * NbAttributes);
+  }
+
+  virtual bool HasColorAttribute() const
+  {
+    for (Standard_Integer anAttribIter = 0; anAttribIter < NbAttributes; ++anAttribIter)
+    {
+      const Graphic3d_Attribute& anAttrib = Attribs[anAttribIter];
+      if (anAttrib.Id == Graphic3d_TOA_COLOR)
+      {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  virtual void BindFixedPosition (const Handle(OpenGl_Context)& theGlCtx) const
+  {
+    if (!IsValid())
+    {
+      return;
+    }
+
+    Bind (theGlCtx);
+    GLint aNbComp;
+    const GLubyte* anOffset = NULL;
+    for (Standard_Integer anAttribIter = 0; anAttribIter < NbAttributes; ++anAttribIter)
+    {
+      const Graphic3d_Attribute& anAttrib = Attribs[anAttribIter];
+      const GLenum   aDataType = toGlDataType (anAttrib.DataType, aNbComp);
+      if (aDataType == GL_NONE)
+      {
+        continue;
+      }
+      else if (anAttrib.Id == Graphic3d_TOA_POS)
+      {
+        bindFixed (theGlCtx, Graphic3d_TOA_POS, aNbComp, aDataType, Stride, anOffset);
+        break;
+      }
+
+      anOffset += Graphic3d_Attribute::Stride (anAttrib.DataType);
+    }
+  }
+
+  virtual void BindFixed (const Handle(OpenGl_Context)& theGlCtx) const
+  {
+    if (!IsValid())
+    {
+      return;
+    }
+
+    Bind (theGlCtx);
+    GLint aNbComp;
+    const GLubyte* anOffset = NULL;
+    for (Standard_Integer anAttribIter = 0; anAttribIter < NbAttributes; ++anAttribIter)
+    {
+      const Graphic3d_Attribute& anAttrib = Attribs[anAttribIter];
+      const GLenum   aDataType = toGlDataType (anAttrib.DataType, aNbComp);
+      if (aDataType == GL_NONE)
+      {
+        continue;
+      }
+
+      bindFixed (theGlCtx, anAttrib.Id, aNbComp, aDataType, Stride, anOffset);
+      anOffset += Graphic3d_Attribute::Stride (anAttrib.DataType);
+    }
+  }
+
+  virtual void UnbindFixed (const Handle(OpenGl_Context)& theGlCtx) const
+  {
+    if (!IsValid())
+    {
+      return;
+    }
+    Unbind (theGlCtx);
+
+    for (Standard_Integer anAttribIter = 0; anAttribIter < NbAttributes; ++anAttribIter)
+    {
+      const Graphic3d_Attribute& anAttrib = Attribs[anAttribIter];
+      unbindFixed (theGlCtx, anAttrib.Id);
+    }
+  }
+
+public:
+
+  Graphic3d_Attribute Attribs[NbAttributes];
+  Standard_Integer    Stride;
+
+};
 
 // =======================================================================
 // function : clearMemoryGL
@@ -78,13 +205,15 @@ void OpenGl_PrimitiveArray::clearMemoryOwn() const
 // =======================================================================
 void OpenGl_PrimitiveArray::clearMemoryGL (const Handle(OpenGl_Context)& theGlCtx) const
 {
-  for (Standard_Integer anIter = 0; anIter < VBOMaxType; ++anIter)
+  if (!myVboIndices.IsNull())
   {
-    if (!myVbos[anIter].IsNull())
-    {
-      myVbos[anIter]->Release (theGlCtx.operator->());
-      myVbos[anIter].Nullify();
-    }
+    myVboIndices->Release (theGlCtx.operator->());
+    myVboIndices.Nullify();
+  }
+  if (!myVboAttribs.IsNull())
+  {
+    myVboAttribs->Release (theGlCtx.operator->());
+    myVboAttribs.Nullify();
   }
 }
 
@@ -95,50 +224,54 @@ void OpenGl_PrimitiveArray::clearMemoryGL (const Handle(OpenGl_Context)& theGlCt
 Standard_Boolean OpenGl_PrimitiveArray::BuildVBO (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
   const Handle(OpenGl_Context)& aGlCtx = theWorkspace->GetGlContext();
-  if (myPArray->vertices == NULL)
+  if (myAttribs.IsNull()
+   || myAttribs->IsEmpty()
+   || myAttribs->NbElements < 1)
   {
     // vertices should be always defined - others are optional
     return Standard_False;
   }
-  myVbos[VBOVertices] = new OpenGl_VertexBuffer();
-  if (!myVbos[VBOVertices]->Init (aGlCtx, 3, myPArray->num_vertexs, &myPArray->vertices[0].xyz[0]))
+
+  switch (myAttribs->NbAttributes)
+  {
+    case 1:  myVboAttribs = new OpenGl_VertexBufferT<1> (*myAttribs); break;
+    case 2:  myVboAttribs = new OpenGl_VertexBufferT<2> (*myAttribs); break;
+    case 3:  myVboAttribs = new OpenGl_VertexBufferT<3> (*myAttribs); break;
+    case 4:  myVboAttribs = new OpenGl_VertexBufferT<4> (*myAttribs); break;
+    case 5:  myVboAttribs = new OpenGl_VertexBufferT<5> (*myAttribs); break;
+    case 6:  myVboAttribs = new OpenGl_VertexBufferT<6> (*myAttribs); break;
+    case 7:  myVboAttribs = new OpenGl_VertexBufferT<7> (*myAttribs); break;
+    case 8:  myVboAttribs = new OpenGl_VertexBufferT<8> (*myAttribs); break;
+    case 9:  myVboAttribs = new OpenGl_VertexBufferT<9> (*myAttribs); break;
+    case 10: myVboAttribs = new OpenGl_VertexBufferT<10>(*myAttribs); break;
+    default: return Standard_False;
+  }
+
+  if (!myVboAttribs->init (aGlCtx, 0, myAttribs->NbElements, myAttribs->Data(), GL_NONE, myAttribs->Stride))
   {
     clearMemoryGL (aGlCtx);
     return Standard_False;
   }
 
-  if (myPArray->edges != NULL
-   && myPArray->num_edges > 0)
+  if (!myIndices.IsNull())
   {
-    myVbos[VBOEdges] = new OpenGl_IndexBuffer();
-    if (!myVbos[VBOEdges]->Init (aGlCtx, 1, myPArray->num_edges, (GLuint* )myPArray->edges))
+    myVboIndices = new OpenGl_IndexBuffer();
+    bool isOk = Standard_False;
+    switch (myIndices->Stride)
     {
-      clearMemoryGL (aGlCtx);
-      return Standard_False;
+      case 2:
+      {
+        isOk = myVboIndices->Init (aGlCtx, 1, myIndices->NbElements, reinterpret_cast<const GLushort*> (myIndices->Data()));
+        break;
+      }
+      case 4:
+      {
+        isOk = myVboIndices->Init (aGlCtx, 1, myIndices->NbElements, reinterpret_cast<const GLuint*> (myIndices->Data()));
+        break;
+      }
+      default: break;
     }
-  }
-  if (myPArray->vcolours != NULL)
-  {
-    myVbos[VBOVcolours] = new OpenGl_VertexBuffer();
-    if (!myVbos[VBOVcolours]->Init (aGlCtx, 4, myPArray->num_vertexs, (GLubyte* )myPArray->vcolours))
-    {
-      clearMemoryGL (aGlCtx);
-      return Standard_False;
-    }
-  }
-  if (myPArray->vnormals != NULL)
-  {
-    myVbos[VBOVnormals] = new OpenGl_VertexBuffer();
-    if (!myVbos[VBOVnormals]->Init (aGlCtx, 3, myPArray->num_vertexs, &myPArray->vnormals[0].xyz[0]))
-    {
-      clearMemoryGL (aGlCtx);
-      return Standard_False;
-    }
-  }
-  if (myPArray->vtexels)
-  {
-    myVbos[VBOVtexels] = new OpenGl_VertexBuffer();
-    if (!myVbos[VBOVtexels]->Init (aGlCtx, 2, myPArray->num_vertexs, &myPArray->vtexels[0].xy[0]))
+    if (!isOk)
     {
       clearMemoryGL (aGlCtx);
       return Standard_False;
@@ -147,7 +280,8 @@ Standard_Boolean OpenGl_PrimitiveArray::BuildVBO (const Handle(OpenGl_Workspace)
 
   if (!aGlCtx->caps->keepArrayData)
   {
-    clearMemoryOwn();
+    myIndices.Nullify();
+    myAttribs.Nullify();
   }
   
   return Standard_True;
@@ -163,49 +297,14 @@ void OpenGl_PrimitiveArray::DrawArray (Tint theLightingModel,
                                        const TEL_COLOUR* theInteriorColour,
                                        const TEL_COLOUR* theLineColour,
                                        const TEL_COLOUR* theEdgeColour,
-                                       const OPENGL_SURF_PROP* theFaceProp,
                                        const Handle(OpenGl_Workspace)& theWorkspace) const
 {
-  const Handle(OpenGl_Context)& aGlContext = theWorkspace->GetGlContext();
+  const Handle(OpenGl_Context)& aGlContext  = theWorkspace->GetGlContext();
+  const Graphic3d_Vec4*         aFaceColors = myBounds.IsNull() ? NULL : myBounds->Colors;
+  const bool                    toHilight   = (theWorkspace->NamedStatus & OPENGL_NS_HIGHLIGHT) != 0;
+  bool                          hasVColors  = false;
 
-  Tint i,n;
-  Tint transp = 0;
-  // Following pointers have been provided for performance improvement
-  tel_colour pfc = myPArray->fcolours;
-  Tint* pvc = myPArray->vcolours;
-  if (pvc != NULL)
-  {
-    for (i = 0; i < myPArray->num_vertexs; ++i)
-    {
-      transp = int(theFaceProp->trans * 255.0f);
-    #if defined (sparc) || defined (__sparc__) || defined (__sparc)
-      pvc[i] = (pvc[i] & 0xffffff00);
-      pvc[i] += transp;
-    #else
-      pvc[i] = (pvc[i] & 0x00ffffff);
-      pvc[i] += transp << 24;
-    #endif
-    }
-  }
-
-  switch (myPArray->type)
-  {
-    case TelPointsArrayType:
-    case TelPolylinesArrayType:
-    case TelSegmentsArrayType:
-      glColor3fv (theLineColour->rgb);
-      break;
-    case TelPolygonsArrayType:
-    case TelTrianglesArrayType:
-    case TelQuadranglesArrayType:
-    case TelTriangleStripsArrayType:
-    case TelQuadrangleStripsArrayType:
-    case TelTriangleFansArrayType:
-      glColor3fv (theInteriorColour->rgb);
-      break;
-    case TelUnknownArrayType:
-      break;
-  }
+  glColor3fv (myDrawMode <= GL_LINE_STRIP ? theLineColour->rgb : theInteriorColour->rgb);
 
   // Temporarily disable environment mapping
   if (myDrawMode <= GL_LINE_STRIP)
@@ -218,17 +317,15 @@ void OpenGl_PrimitiveArray::DrawArray (Tint theLightingModel,
   if ((myDrawMode >  GL_LINE_STRIP && theInteriorStyle != Aspect_IS_EMPTY) ||
       (myDrawMode <= GL_LINE_STRIP))
   {
-    if (theWorkspace->NamedStatus & OPENGL_NS_HIGHLIGHT)
+    if (toHilight)
     {
-      pfc = NULL;
-      pvc = NULL;
+      aFaceColors = NULL;
     }
 
     if (theInteriorStyle == Aspect_IS_HIDDENLINE)
     {
       theEdgeFlag = 1;
-      pfc = NULL;
-      pvc = NULL;
+      aFaceColors = NULL;
     }
 
     // Sometimes the GL_LIGHTING mode is activated here
@@ -239,86 +336,53 @@ void OpenGl_PrimitiveArray::DrawArray (Tint theLightingModel,
     else
       glEnable (GL_LIGHTING);
 
-    if (!toDrawVbo())
+    if (!myVboAttribs.IsNull())
     {
-      if (myPArray->vertices != NULL)
+      myVboAttribs->BindFixed (aGlContext);
+      if (myVboAttribs->HasColorAttribute())
       {
-        glVertexPointer (3, GL_FLOAT, 0, myPArray->vertices); // array of vertices
-        glEnableClientState (GL_VERTEX_ARRAY);
-      }
-      if (myPArray->vnormals != NULL)
-      {
-        glNormalPointer (GL_FLOAT, 0, myPArray->vnormals); // array of normals
-        glEnableClientState (GL_NORMAL_ARRAY);
-      }
-      if (myPArray->vtexels != NULL)
-      {
-        glTexCoordPointer (2, GL_FLOAT, 0, myPArray->vtexels); // array of texture coordinates
-        glEnableClientState (GL_TEXTURE_COORD_ARRAY);
-      }
-
-      if ((pvc != NULL) && (theWorkspace->NamedStatus & OPENGL_NS_HIGHLIGHT) == 0)
-      {
-        glColorPointer (4, GL_UNSIGNED_BYTE, 0, pvc);  // array of colors
-        glEnableClientState (GL_COLOR_ARRAY);
-        glColorMaterial (GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE);
-        glEnable (GL_COLOR_MATERIAL);
-      }
-    }
-    else
-    {
-      // Bindings concrete pointer in accordance with VBO buffer
-      myVbos[VBOVertices]->BindFixed (aGlContext, GL_VERTEX_ARRAY);
-      if (!myVbos[VBOVnormals].IsNull())
-      {
-        myVbos[VBOVnormals]->BindFixed (aGlContext, GL_NORMAL_ARRAY);
-      }
-      if (!myVbos[VBOVtexels].IsNull() && (theWorkspace->NamedStatus & OPENGL_NS_FORBIDSETTEX) == 0)
-      {
-        myVbos[VBOVtexels]->BindFixed (aGlContext, GL_TEXTURE_COORD_ARRAY);
-      }
-      if (!myVbos[VBOVcolours].IsNull() && (theWorkspace->NamedStatus & OPENGL_NS_HIGHLIGHT) == 0)
-      {
-        myVbos[VBOVcolours]->BindFixed (aGlContext, GL_COLOR_ARRAY);
-        glColorMaterial (GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-        glEnable (GL_COLOR_MATERIAL);
-      }
-    }
-
-    /// OCC22236 NOTE: draw for all situations:
-    /// 1) draw elements from myPArray->bufferVBO[VBOEdges] indicies array
-    /// 2) draw elements from vertice array, when bounds defines count of primitive's verts.
-    /// 3) draw primitive by vertexes if no edges and bounds array is specified
-    if (toDrawVbo())
-    {
-      if (!myVbos[VBOEdges].IsNull())
-      {
-        myVbos[VBOEdges]->Bind (aGlContext);
-        if (myPArray->num_bounds > 0)
+        if (toHilight)
         {
-          // draw primitives by vertex count with the indicies
-          Tint* anOffset = NULL;
-          for (i = 0; i < myPArray->num_bounds; ++i)
+          // disable per-vertex colors
+          OpenGl_VertexBuffer::unbindFixed (aGlContext, Graphic3d_TOA_COLOR);
+        }
+        else
+        {
+          hasVColors = true;
+        }
+      }
+      if (!myVboIndices.IsNull())
+      {
+        myVboIndices->Bind (aGlContext);
+        if (!myBounds.IsNull())
+        {
+          // draw primitives by vertex count with the indices
+          const size_t aStride  = myVboIndices->GetDataType() == GL_UNSIGNED_SHORT ? sizeof(unsigned short) : sizeof(unsigned int);
+          GLubyte*     anOffset = NULL;
+          for (Standard_Integer aGroupIter = 0; aGroupIter < myBounds->NbBounds; ++aGroupIter)
           {
-            if (pfc != NULL) glColor3fv (pfc[i].rgb);
-            glDrawElements (myDrawMode, myPArray->bounds[i], myVbos[VBOEdges]->GetDataType(), anOffset);
-            anOffset += myPArray->bounds[i];
+            const GLint aNbElemsInGroup = myBounds->Bounds[aGroupIter];
+            if (aFaceColors != NULL) glColor3fv (aFaceColors[aGroupIter].GetData());
+            glDrawElements (myDrawMode, aNbElemsInGroup, myVboIndices->GetDataType(), anOffset);
+            anOffset += aStride * aNbElemsInGroup;
           }
         }
         else
         {
-          // draw one (or sequential) primitive by the indicies
-          glDrawElements (myDrawMode, myPArray->num_edges, myVbos[VBOEdges]->GetDataType(), NULL);
+          // draw one (or sequential) primitive by the indices
+          glDrawElements (myDrawMode, myVboIndices->GetElemsNb(), myVboIndices->GetDataType(), NULL);
         }
-        myVbos[VBOEdges]->Unbind (aGlContext);
+        myVboIndices->Unbind (aGlContext);
       }
-      else if (myPArray->num_bounds > 0)
+      else if (!myBounds.IsNull())
       {
-        for (i = n = 0; i < myPArray->num_bounds; ++i)
+        GLint aFirstElem = 0;
+        for (Standard_Integer aGroupIter = 0; aGroupIter < myBounds->NbBounds; ++aGroupIter)
         {
-          if (pfc != NULL) glColor3fv (pfc[i].rgb);
-          glDrawArrays (myDrawMode, n, myPArray->bounds[i]);
-          n += myPArray->bounds[i];
+          const GLint aNbElemsInGroup = myBounds->Bounds[aGroupIter];
+          if (aFaceColors != NULL) glColor3fv (aFaceColors[aGroupIter].GetData());
+          glDrawArrays (myDrawMode, aFirstElem, aNbElemsInGroup);
+          aFirstElem += aNbElemsInGroup;
         }
       }
       else
@@ -329,53 +393,65 @@ void OpenGl_PrimitiveArray::DrawArray (Tint theLightingModel,
         }
         else
         {
-          glDrawArrays (myDrawMode, 0, myVbos[VBOVertices]->GetElemsNb());
+          glDrawArrays (myDrawMode, 0, myVboAttribs->GetElemsNb());
         }
       }
 
       // bind with 0
-      myVbos[VBOVertices]->UnbindFixed (aGlContext, GL_VERTEX_ARRAY);
-      if (!myVbos[VBOVnormals].IsNull())
-      {
-        myVbos[VBOVnormals]->UnbindFixed (aGlContext, GL_NORMAL_ARRAY);
-      }
-      if (!myVbos[VBOVtexels].IsNull() && (theWorkspace->NamedStatus & OPENGL_NS_FORBIDSETTEX) == 0)
-      {
-        myVbos[VBOVtexels]->UnbindFixed (aGlContext, GL_TEXTURE_COORD_ARRAY);
-      }
-      if (!myVbos[VBOVcolours].IsNull())
-      {
-        myVbos[VBOVcolours]->UnbindFixed (aGlContext, GL_COLOR_ARRAY);
-        glDisable (GL_COLOR_MATERIAL);
-        theWorkspace->NamedStatus |= OPENGL_NS_RESMAT; // Reset material
-      }
+      myVboAttribs->UnbindFixed (aGlContext);
     }
     else
     {
-      if (myPArray->num_bounds > 0)
+      GLint aNbComp;
+      for (Standard_Integer anAttribIter = 0; anAttribIter < myAttribs->NbAttributes; ++anAttribIter)
       {
-        if (myPArray->num_edges > 0)
+        const Graphic3d_Attribute& anAttrib = myAttribs->Attribute (anAttribIter);
+        if (anAttrib.Id == Graphic3d_TOA_COLOR)
         {
-          for (i = n = 0; i < myPArray->num_bounds; ++i)
+          if (toHilight)
           {
-            if (pfc != NULL) glColor3fv (pfc[i].rgb);
-            glDrawElements (myDrawMode, myPArray->bounds[i], GL_UNSIGNED_INT, (GLenum* )&myPArray->edges[n]);
-            n += myPArray->bounds[i];
+            continue;
+          }
+          hasVColors = true;
+        }
+        const GLenum  aDataType = toGlDataType (anAttrib.DataType, aNbComp);
+        const GLvoid* aData     = myAttribs->Data (anAttribIter);
+        if (aDataType == GL_NONE)
+        {
+          continue;
+        }
+
+        OpenGl_VertexBuffer::bindFixed (aGlContext, anAttrib.Id, aNbComp, aDataType, myAttribs->Stride, aData);
+      }
+
+      if (!myBounds.IsNull())
+      {
+        GLint aFirstElem = 0;
+        if (!myIndices.IsNull())
+        {
+          const GLenum anIndexType = toGlIndexType (myIndices->Stride);
+          for (Standard_Integer aGroupIter = 0; aGroupIter < myBounds->NbBounds; ++aGroupIter)
+          {
+            const GLint aNbElemsInGroup = myBounds->Bounds[aGroupIter];
+            if (aFaceColors != NULL) glColor3fv (aFaceColors[aGroupIter].GetData());
+            glDrawElements (myDrawMode, aNbElemsInGroup, anIndexType, myIndices->value (aFirstElem));
+            aFirstElem += aNbElemsInGroup;
           }
         }
         else
         {
-          for (i = n = 0; i < myPArray->num_bounds; ++i)
+          for (Standard_Integer aGroupIter = 0; aGroupIter < myBounds->NbBounds; ++aGroupIter)
           {
-            if (pfc != NULL) glColor3fv (pfc[i].rgb);
-            glDrawArrays (myDrawMode, n, myPArray->bounds[i]);
-            n += myPArray->bounds[i];
+            const GLint aNbElemsInGroup = myBounds->Bounds[aGroupIter];
+            if (aFaceColors != NULL) glColor3fv (aFaceColors[aGroupIter].GetData());
+            glDrawArrays (myDrawMode, aFirstElem, aNbElemsInGroup);
+            aFirstElem += aNbElemsInGroup;
           }
         }
       }
-      else if (myPArray->num_edges > 0)
+      else if (!myIndices.IsNull())
       {
-        glDrawElements (myDrawMode, myPArray->num_edges, GL_UNSIGNED_INT, (GLenum* )myPArray->edges);
+        glDrawElements (myDrawMode, myIndices->NbElements, toGlIndexType (myIndices->Stride), myIndices->Data());
       }
       else
       {
@@ -385,34 +461,23 @@ void OpenGl_PrimitiveArray::DrawArray (Tint theLightingModel,
         }
         else
         {
-          glDrawArrays (myDrawMode, 0, myPArray->num_vertexs);
+          glDrawArrays (myDrawMode, 0, myAttribs->NbElements);
         }
       }
 
-      if (pvc != NULL)
+      for (Standard_Integer anAttribIter = 0; anAttribIter < myAttribs->NbAttributes; ++anAttribIter)
       {
-        glDisable (GL_COLOR_MATERIAL);
-        theWorkspace->NamedStatus |= OPENGL_NS_RESMAT; // Reset material
+        const Graphic3d_Attribute& anAttrib = myAttribs->Attribute (anAttribIter);
+        OpenGl_VertexBuffer::unbindFixed (aGlContext, anAttrib.Id);
       }
-
-      glDisableClientState (GL_VERTEX_ARRAY);
-      if (myPArray->vcolours != NULL)
-        glDisableClientState (GL_COLOR_ARRAY);
-      if (myPArray->vnormals != NULL)
-        glDisableClientState (GL_NORMAL_ARRAY);
-      if (myPArray->vtexels != NULL)
-        glDisableClientState (GL_TEXTURE_COORD_ARRAY);
     }
   }
 
-  // On some NVIDIA graphic cards, using glEdgeFlagPointer() in
-  // combination with VBO (edge flag data put into a VBO buffer)
-  // leads to a crash in a driver. Therefore, edge flags are simply
-  // igonored when VBOs are enabled, so all the edges are drawn if
-  // edge visibility is turned on. In order to draw edges selectively,
-  // either disable VBO or turn off edge visibilty in the current
-  // primitive array and create a separate primitive array (segments)
-  // and put edges to be drawn into it.
+  if (hasVColors)
+  {
+    theWorkspace->NamedStatus |= OPENGL_NS_RESMAT;
+  }
+
   if (theEdgeFlag && myDrawMode > GL_LINE_STRIP)
   {
     DrawEdges (theEdgeColour, theWorkspace);
@@ -447,111 +512,102 @@ void OpenGl_PrimitiveArray::DrawEdges (const TEL_COLOUR*               theEdgeCo
     }
   }
 
-  Tint i, j, n;
-
   /// OCC22236 NOTE: draw edges for all situations:
-  /// 1) draw elements with GL_LINE style as edges from myPArray->bufferVBO[VBOEdges] indicies array
-  /// 2) draw elements from vertice array, when bounds defines count of primitive's verts.
+  /// 1) draw elements with GL_LINE style as edges from myPArray->bufferVBO[VBOEdges] indices array
+  /// 2) draw elements from vertex array, when bounds defines count of primitive's vertices.
   /// 3) draw primitive's edges by vertexes if no edges and bounds array is specified
-  if (toDrawVbo())
+  if (!myVboAttribs.IsNull())
   {
-    myVbos[VBOVertices]->BindFixed (aGlContext, GL_VERTEX_ARRAY);
+    myVboAttribs->BindFixedPosition (aGlContext);
     glColor3fv (theEdgeColour->rgb);
-    if (!myVbos[VBOEdges].IsNull())
+    if (!myVboIndices.IsNull())
     {
-      myVbos[VBOEdges]->Bind (aGlContext);
+      myVboIndices->Bind (aGlContext);
 
-      // draw primitives by vertex count with the indicies
-      if (myPArray->num_bounds > 0)
+      // draw primitives by vertex count with the indices
+      if (!myBounds.IsNull())
       {
-        Tint* offset = 0;
-        for (i = 0, offset = 0; i < myPArray->num_bounds; ++i)
+        const size_t aStride  = myVboIndices->GetDataType() == GL_UNSIGNED_SHORT ? sizeof(unsigned short) : sizeof(unsigned int);
+        GLubyte*     anOffset = NULL;
+        for (Standard_Integer aGroupIter = 0; aGroupIter < myBounds->NbBounds; ++aGroupIter)
         {
-          glDrawElements (myDrawMode, myPArray->bounds[i], myVbos[VBOEdges]->GetDataType(), offset);
-          offset += myPArray->bounds[i];
+          const GLint aNbElemsInGroup = myBounds->Bounds[aGroupIter];
+          glDrawElements (myDrawMode, aNbElemsInGroup, myVboIndices->GetDataType(), anOffset);
+          anOffset += aStride * aNbElemsInGroup;
         }
       }
-      // draw one (or sequential) primitive by the indicies
+      // draw one (or sequential) primitive by the indices
       else
       {
-        glDrawElements (myDrawMode, myVbos[VBOEdges]->GetElemsNb(), myVbos[VBOEdges]->GetDataType(), NULL);
+        glDrawElements (myDrawMode, myVboIndices->GetElemsNb(), myVboIndices->GetDataType(), NULL);
       }
-      myVbos[VBOEdges]->Unbind (aGlContext);
+      myVboIndices->Unbind (aGlContext);
     }
-    else if (myPArray->num_bounds > 0)
+    else if (!myBounds.IsNull())
     {
-      for (i = n = 0; i < myPArray->num_bounds; ++i)
+      GLint aFirstElem = 0;
+      for (Standard_Integer aGroupIter = 0; aGroupIter < myBounds->NbBounds; ++aGroupIter)
       {
-        glDrawArrays (myDrawMode, n, myPArray->bounds[i]);
-        n += myPArray->bounds[i];
+        const GLint aNbElemsInGroup = myBounds->Bounds[aGroupIter];
+        glDrawArrays (myDrawMode, aFirstElem, aNbElemsInGroup);
+        aFirstElem += aNbElemsInGroup;
       }
     }
     else
     {
-      glDrawArrays (myDrawMode, 0, myPArray->num_vertexs);
+      glDrawArrays (myDrawMode, 0, myAttribs->NbElements);
     }
 
     // unbind buffers
-    myVbos[VBOVertices]->UnbindFixed (aGlContext, GL_VERTEX_ARRAY);
+    myVboAttribs->UnbindFixed (aGlContext, GL_VERTEX_ARRAY);
   }
   else
   {
-    glEnableClientState (GL_VERTEX_ARRAY);
-    glVertexPointer (3, GL_FLOAT, 0, myPArray->vertices); // array of vertices
+    GLint aNbComp;
+    for (Standard_Integer anAttribIter = 0; anAttribIter < myAttribs->NbAttributes; ++anAttribIter)
+    {
+      const Graphic3d_Attribute& anAttrib = myAttribs->Attribute (anAttribIter);
+      if (anAttrib.Id == Graphic3d_TOA_POS)
+      {
+        const GLenum  aDataType = toGlDataType (anAttrib.DataType, aNbComp);
+        const GLvoid* aData     = myAttribs->Data (anAttribIter);
+        OpenGl_VertexBuffer::bindFixed (aGlContext, anAttrib.Id, aNbComp, aDataType, myAttribs->Stride, aData);
+        break;
+      }
+    }
 
     glColor3fv (theEdgeColour->rgb);
-    if (myPArray->num_bounds > 0)
+    if (!myBounds.IsNull())
     {
-      if (myPArray->num_edges > 0)
+      if (!myIndices.IsNull())
       {
-        for (i = n = 0; i < myPArray->num_bounds; ++i)
+        const GLenum anIndexType = toGlIndexType (myIndices->Stride);
+        GLint aFirstElem = 0;
+        for (Standard_Integer aGroupIter = 0; aGroupIter < myBounds->NbBounds; ++aGroupIter)
         {
-          if (myPArray->edge_vis)
-          {
-            glBegin (myDrawMode);
-            for (j = 0; j < myPArray->bounds[i]; ++j)
-            {
-              glEdgeFlag (myPArray->edge_vis[n+j]);
-              glVertex3fv (&myPArray->vertices[myPArray->edges[n+j]].xyz[0]);
-            }
-            glEnd();
-          }
-          else
-          {
-            glDrawElements (myDrawMode, myPArray->bounds[i], GL_UNSIGNED_INT, (GLenum* )&myPArray->edges[n]);
-          }
-          n += myPArray->bounds[i];
+          const GLint aNbElemsInGroup = myBounds->Bounds[aGroupIter];
+          glDrawElements (myDrawMode, aNbElemsInGroup, anIndexType, myIndices->value (aFirstElem));
+          aFirstElem += aNbElemsInGroup;
         }
       }
       else
       {
-        for (i = n = 0 ; i < myPArray->num_bounds; ++i)
+        GLint aFirstElem = 0;
+        for (Standard_Integer aGroupIter = 0; aGroupIter < myBounds->NbBounds; ++aGroupIter)
         {
-          glDrawArrays (myDrawMode, n, myPArray->bounds[i]);
-          n += myPArray->bounds[i];
+          const GLint aNbElemsInGroup = myBounds->Bounds[aGroupIter];
+          glDrawArrays (myDrawMode, aFirstElem, aNbElemsInGroup);
+          aFirstElem += aNbElemsInGroup;
         }
       }
     }
-    else if (myPArray->num_edges > 0)
+    else if (!myIndices.IsNull())
     {
-      if (myPArray->edge_vis)
-      {
-        glBegin (myDrawMode);
-        for (i = 0; i < myPArray->num_edges; ++i)
-        {
-          glEdgeFlag (myPArray->edge_vis[i]);
-          glVertex3fv (&myPArray->vertices[myPArray->edges[i]].xyz[0]);
-        }
-        glEnd();
-      }
-      else
-      {
-        glDrawElements (myDrawMode, myPArray->num_edges, GL_UNSIGNED_INT, (GLenum* )myPArray->edges);
-      }
+      glDrawElements (myDrawMode, myIndices->NbElements, toGlIndexType (myIndices->Stride), myIndices->Data());
     }
     else
     {
-      glDrawArrays (myDrawMode, 0, myPArray->num_vertexs);
+      glDrawArrays (myDrawMode, 0, myAttribs->NbElements);
     }
   }
 
@@ -594,7 +650,7 @@ void OpenGl_PrimitiveArray::DrawMarkers (const Handle(OpenGl_Workspace)& theWork
       glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
-    glDrawArrays (myDrawMode, 0, toDrawVbo() ? myVbos[VBOVertices]->GetElemsNb() : myPArray->num_vertexs);
+    glDrawArrays (myDrawMode, 0, !myVboAttribs.IsNull() ? myVboAttribs->GetElemsNb() : myAttribs->NbElements);
 
     glDisable (GL_BLEND);
     glDisable (GL_ALPHA_TEST);
@@ -617,7 +673,7 @@ void OpenGl_PrimitiveArray::DrawMarkers (const Handle(OpenGl_Workspace)& theWork
     {
       glPointSize (aPntSize);
     }
-    glDrawArrays (myDrawMode, 0, toDrawVbo() ? myVbos[VBOVertices]->GetElemsNb() : myPArray->num_vertexs);
+    glDrawArrays (myDrawMode, 0, !myVboAttribs.IsNull() ? myVboAttribs->GetElemsNb() : myAttribs->NbElements);
     if (aPntSize > 0.0f)
     {
       glPointSize (1.0f);
@@ -627,20 +683,20 @@ void OpenGl_PrimitiveArray::DrawMarkers (const Handle(OpenGl_Workspace)& theWork
   if (anAspectMarker->Type() != Aspect_TOM_POINT
    && !aSpriteNorm.IsNull())
   {
-    if (!isHilight && (myPArray->vcolours != NULL))
+    /**if (!isHilight && (myPArray->vcolours != NULL))
     {
-      for (Standard_Integer anIter = 0; anIter < myPArray->num_vertexs; anIter++)
+      for (Standard_Integer anIter = 0; anIter < myAttribs->NbElements; anIter++)
       {
-        glColor4ubv ((GLubyte* )&myPArray->vcolours[anIter]);
-        glRasterPos3fv (myPArray->vertices[anIter].xyz);
+        glColor4ubv    (myPArray->vcolours[anIter].GetData());
+        glRasterPos3fv (myAttribs->Value<Graphic3d_Vec3> (anIter).GetData());
         aSpriteNorm->DrawBitmap (theWorkspace->GetGlContext());
       }
     }
-    else
+    else*/
     {
-      for (Standard_Integer anIter = 0; anIter < myPArray->num_vertexs; anIter++)
+      for (Standard_Integer anIter = 0; anIter < myAttribs->NbElements; anIter++)
       {
-        glRasterPos3fv (myPArray->vertices[anIter].xyz);
+        glRasterPos3fv (myAttribs->Value<Graphic3d_Vec3> (anIter).GetData());
         aSpriteNorm->DrawBitmap (theWorkspace->GetGlContext());
       }
     }
@@ -651,41 +707,57 @@ void OpenGl_PrimitiveArray::DrawMarkers (const Handle(OpenGl_Workspace)& theWork
 // function : OpenGl_PrimitiveArray
 // purpose  :
 // =======================================================================
-OpenGl_PrimitiveArray::OpenGl_PrimitiveArray (CALL_DEF_PARRAY* thePArray)
-: myPArray (thePArray),
-  myDrawMode (DRAW_MODE_NONE),
+OpenGl_PrimitiveArray::OpenGl_PrimitiveArray (const Graphic3d_TypeOfPrimitiveArray theType,
+                                              const Handle(Graphic3d_IndexBuffer)& theIndices,
+                                              const Handle(Graphic3d_Buffer)&      theAttribs,
+                                              const Handle(Graphic3d_BoundBuffer)& theBounds)
+: myIndices   (theIndices),
+  myAttribs   (theAttribs),
+  myBounds    (theBounds),
+  myDrawMode  (DRAW_MODE_NONE),
   myIsVboInit (Standard_False)
 {
-  switch (myPArray->type)
+  if (!myIndices.IsNull()
+    && myIndices->NbElements < 1)
   {
-    case TelPointsArrayType:
+    // dummy index buffer?
+    myIndices.Nullify();
+  }
+  if (myAttribs.IsNull())
+  {
+    return;
+  }
+
+  switch (theType)
+  {
+    case Graphic3d_TOPA_POINTS:
       myDrawMode = GL_POINTS;
       break;
-    case TelPolylinesArrayType:
+    case Graphic3d_TOPA_POLYLINES:
       myDrawMode = GL_LINE_STRIP;
       break;
-    case TelSegmentsArrayType:
+    case Graphic3d_TOPA_SEGMENTS:
       myDrawMode = GL_LINES;
       break;
-    case TelPolygonsArrayType:
+    case Graphic3d_TOPA_POLYGONS:
       myDrawMode = GL_POLYGON;
       break;
-    case TelTrianglesArrayType:
+    case Graphic3d_TOPA_TRIANGLES:
       myDrawMode = GL_TRIANGLES;
       break;
-    case TelQuadranglesArrayType:
+    case Graphic3d_TOPA_QUADRANGLES:
       myDrawMode = GL_QUADS;
       break;
-    case TelTriangleStripsArrayType:
+    case Graphic3d_TOPA_TRIANGLESTRIPS:
       myDrawMode = GL_TRIANGLE_STRIP;
       break;
-    case TelQuadrangleStripsArrayType:
+    case Graphic3d_TOPA_QUADRANGLESTRIPS:
       myDrawMode = GL_QUAD_STRIP;
       break;
-    case TelTriangleFansArrayType:
+    case Graphic3d_TOPA_TRIANGLEFANS:
       myDrawMode = GL_TRIANGLE_FAN;
       break;
-    case TelUnknownArrayType:
+    case Graphic3d_TOPA_UNDEFINED:
       break;
   }
 }
@@ -705,16 +777,21 @@ OpenGl_PrimitiveArray::~OpenGl_PrimitiveArray()
 // =======================================================================
 void OpenGl_PrimitiveArray::Release (const Handle(OpenGl_Context)& theContext)
 {
-  for (Standard_Integer anIter = 0; anIter < VBOMaxType; ++anIter)
+  if (!myVboIndices.IsNull())
   {
-    if (!myVbos[anIter].IsNull())
+    if (!theContext.IsNull())
     {
-      if (!theContext.IsNull())
-      {
-        theContext->DelayedRelease (myVbos[anIter]);
-      }
-      myVbos[anIter].Nullify();
+      theContext->DelayedRelease (myVboIndices);
     }
+    myVboIndices.Nullify();
+  }
+  if (!myVboAttribs.IsNull())
+  {
+    if (!theContext.IsNull())
+    {
+      theContext->DelayedRelease (myVboAttribs);
+    }
+    myVboAttribs.Nullify();
   }
 }
 
@@ -724,7 +801,7 @@ void OpenGl_PrimitiveArray::Release (const Handle(OpenGl_Context)& theContext)
 // =======================================================================
 void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
-  if (myPArray == NULL || myDrawMode == DRAW_MODE_NONE || myPArray->num_vertexs <= 0)
+  if (myDrawMode == DRAW_MODE_NONE)
   {
     return;
   }
@@ -744,30 +821,22 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
     {
       TCollection_ExtendedString aMsg;
       aMsg += "VBO creation for Primitive Array has failed for ";
-      aMsg += myPArray->num_vertexs;
+      aMsg += myAttribs->NbElements;
       aMsg += " vertices. Out of memory?";
       aCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB, GL_DEBUG_TYPE_PERFORMANCE_ARB, 0, GL_DEBUG_SEVERITY_LOW_ARB, aMsg);
     }
     myIsVboInit = Standard_True;
   }
 
-  switch (myPArray->type)
+  if (myDrawMode <= GL_LINE_STRIP)
   {
-    case TelPointsArrayType:
-    case TelPolylinesArrayType:
-    case TelSegmentsArrayType:
-    {
-      glDisable (GL_LIGHTING);
-      break;
-    }
-    default:
-      break;
+    glDisable (GL_LIGHTING);
   }
 
   Tint aFrontLightingModel = anAspectFace->IntFront().color_mask;
   const TEL_COLOUR* anInteriorColor = &anAspectFace->IntFront().matcol;
   const TEL_COLOUR* anEdgeColor = &anAspectFace->AspectEdge()->Color();
-  const TEL_COLOUR* aLineColor = (myPArray->type == TelPointsArrayType) ? &anAspectMarker->Color() : &anAspectLine->Color();
+  const TEL_COLOUR* aLineColor  = myDrawMode == GL_POINTS ? &anAspectMarker->Color() : &anAspectLine->Color();
 
   // Use highlight colors
   if (theWorkspace->NamedStatus & OPENGL_NS_HIGHLIGHT)
@@ -778,15 +847,15 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
 
   if (aCtx->IsGlGreaterEqual (2, 0))
   {
-    switch (myPArray->type)
+    switch (myDrawMode)
     {
-      case TelPointsArrayType:
+      case GL_POINTS:
       {
         BindProgramWithMaterial (theWorkspace, anAspectMarker);
         break;
       }
-      case TelSegmentsArrayType:
-      case TelPolylinesArrayType:
+      case GL_LINES:
+      case GL_LINE_STRIP:
       {
         BindProgramWithMaterial (theWorkspace, anAspectLine);
         break;
@@ -805,6 +874,5 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
              anInteriorColor,
              aLineColor,
              anEdgeColor,
-             &anAspectFace->IntFront(),
              theWorkspace);
 }

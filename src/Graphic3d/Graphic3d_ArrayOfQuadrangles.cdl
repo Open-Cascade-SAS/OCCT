@@ -31,8 +31,7 @@ is
                 maxEdges: Integer from Standard = 0;
                 hasVNormals: Boolean from Standard = Standard_False;
                 hasVColors: Boolean from Standard = Standard_False;
-                hasTexels: Boolean from Standard = Standard_False;
-		hasEdgeInfos: Boolean from Standard = Standard_False)
+                hasTexels: Boolean from Standard = Standard_False)
 	returns mutable ArrayOfQuadrangles from Graphic3d;
         ---Purpose: Creates an array of quadrangles,
 	-- a quadrangle can be filled as:
@@ -71,9 +70,6 @@ is
 	-- When <hasTexels> is TRUE , you must use one of
 	--	AddVertex(Point,Texel) 
 	--  or  AddVertex(Point,Normal,Texel) methods.
-	-- When <hasEdgeInfos> is TRUE , <maxEdges> must be > 0 and
-	--	you must use the
-	--	AddEdge(number,visibillity) method.
 	--  Warning:
 	-- the user is responsible about the orientation of the quadrangle
 	-- depending of the order of the created vertex or edges and this

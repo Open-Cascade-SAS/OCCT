@@ -22,8 +22,7 @@ is
                 maxBounds: Integer from Standard = 0;
                 maxEdges: Integer from Standard = 0;
                 hasVColors: Boolean from Standard = Standard_False;
-                hasBColors: Boolean from Standard = Standard_False;
-                hasEdgeInfos: Boolean from Standard = Standard_False)
+                hasBColors: Boolean from Standard = Standard_False)
 	returns mutable ArrayOfPolylines from Graphic3d;
         ---Purpose: Creates an array of polylines,
         -- a polyline can be filled as:
@@ -97,8 +96,5 @@ is
         -- When <hasBColors> is TRUE , <maxBounds> must be > 0 and
         --      you must use the
         --      AddBound(number,Color) method.
-        -- When <hasEdgeInfos> is TRUE , <maxEdges> must be > 0 and
-        --      you must use the
-        --      AddEdge(number,visibillity) method.
 
 end;

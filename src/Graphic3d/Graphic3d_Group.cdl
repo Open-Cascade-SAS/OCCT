@@ -83,9 +83,12 @@ deferred class Group from Graphic3d inherits TShared
         Array1OfVertex              from Graphic3d,
         Array2OfVertex              from Graphic3d,
         Vertex                      from Graphic3d,
-        VerticalTextAlignment       from Graphic3d, 
+        VerticalTextAlignment       from Graphic3d,
         ArrayOfPrimitives           from Graphic3d,
-        ListOfPArray                from Graphic3d,
+        TypeOfPrimitiveArray        from Graphic3d,
+        IndexBuffer_Handle          from Graphic3d,
+        Buffer_Handle               from Graphic3d,
+        BoundBuffer_Handle          from Graphic3d,
         TransModeFlags              from Graphic3d,
         CBounds                     from Graphic3d,
         Ax2                         from gp
@@ -365,9 +368,18 @@ deferred class Group from Graphic3d inherits TShared
         ---Category: Methods to create Triangle
         ---------------------------------------
 
+    AddPrimitiveArray (me              : mutable;
+                       theType         : TypeOfPrimitiveArray from Graphic3d;
+                       theIndices      : IndexBuffer_Handle   from Graphic3d;
+                       theAttribs      : Buffer_Handle        from Graphic3d;
+                       theBounds       : BoundBuffer_Handle   from Graphic3d;
+                       theToEvalMinMax : Boolean from Standard = Standard_True) is virtual;
+    ---Level: Public
+    ---Purpose: Adds an array of primitives for display
+
     AddPrimitiveArray( me      : mutable;
                        thePrim : ArrayOfPrimitives from Graphic3d;
-                       theToEvalMinMax : Boolean from Standard = Standard_True ) is virtual;
+                       theToEvalMinMax : Boolean from Standard = Standard_True );
     ---Level: Public
     ---Purpose: Adds an array of primitives for display
 
@@ -522,9 +534,6 @@ deferred class Group from Graphic3d inherits TShared
   ContextFillArea : CAspectFillArea from Graphic3d is protected;
   ContextMarker   : CAspectMarker   from Graphic3d is protected;
   ContextText     : CAspectText     from Graphic3d is protected;
-
-  -- temporary field - to be removed
-  myListOfPArray : ListOfPArray from Graphic3d is protected;
 
 friends
 

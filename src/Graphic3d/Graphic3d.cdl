@@ -336,7 +336,13 @@ is
     -- Category: Imported types
     ---------------------------
 
-    imported PrimitiveArray;
+    imported Buffer;
+    imported Buffer_Handle;
+    imported BoundBuffer;
+    imported BoundBuffer_Handle;
+    imported IndexBuffer;
+    imported IndexBuffer_Handle;
+
     imported BufferType;
 
     imported CBitFields20;
@@ -518,10 +524,6 @@ is
     ---------------------------------
     -- Category: Instantiated classes
     ---------------------------------
-
-    class ListOfPArray instantiates
-        List from TCollection (ArrayOfPrimitives from Graphic3d);
-        ---Category: Instantiated classes
 
     class SequenceOfAddress instantiates
             Sequence from TCollection

@@ -61,8 +61,11 @@ public:
   Standard_EXPORT virtual void UpdateAspectText   (const Standard_Boolean theIsGlobal);
 
   //! Add primitive array element
-  Standard_EXPORT virtual void AddPrimitiveArray (const Handle(Graphic3d_ArrayOfPrimitives)& thePrim,
-                                                  const Standard_Boolean                     theToEvalMinMax);
+  Standard_EXPORT virtual void AddPrimitiveArray (const Graphic3d_TypeOfPrimitiveArray theType,
+                                                  const Handle(Graphic3d_IndexBuffer)& theIndices,
+                                                  const Handle(Graphic3d_Buffer)&      theAttribs,
+                                                  const Handle(Graphic3d_BoundBuffer)& theBounds,
+                                                  const Standard_Boolean               theToEvalMinMax);
 
   //! Add text element
   Standard_EXPORT virtual void Text (const Standard_CString                  theTextUtf,

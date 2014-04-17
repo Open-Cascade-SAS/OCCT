@@ -56,14 +56,8 @@ void AIS_Triangulation::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aP
       Standard_Boolean hasVNormals = myTriangulation->HasNormals();
       Standard_Boolean hasVColors  = (myFlagColor == 1);
 
-      Handle(Graphic3d_ArrayOfTriangles) anArray =
-         new Graphic3d_ArrayOfTriangles ( myNbNodes,        //maxVertexs
-                                          myNbTriangles * 3,//maxEdges
-                                          hasVNormals,      //hasVNormals
-                                          hasVColors,       //hasVColors
-                                          Standard_False,   //hasTexels
-                                          Standard_True     //hasEdgeInfos
-                                         );
+      Handle(Graphic3d_ArrayOfTriangles) anArray = new Graphic3d_ArrayOfTriangles (myNbNodes, myNbTriangles * 3,
+                                                                                   hasVNormals, hasVColors, Standard_False);
       Handle(Graphic3d_Group) TheGroup = Prs3d_Root::CurrentGroup(aPresentation);
       Handle(Graphic3d_AspectFillArea3d) aspect = myDrawer->ShadingAspect()->Aspect();
 

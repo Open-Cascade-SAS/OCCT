@@ -16,47 +16,55 @@
 #ifndef OpenGl_PrimitiveArray_Header
 #define OpenGl_PrimitiveArray_Header
 
-#include <OpenGl_VertexBuffer.hxx>
+#include <OpenGl_IndexBuffer.hxx>
 
 #include <InterfaceGraphic_Graphic3d.hxx>
 #include <Aspect_InteriorStyle.hxx>
 #include <Aspect_TypeOfMarker.hxx>
+#include <Graphic3d_TypeOfPrimitiveArray.hxx>
+#include <Graphic3d_IndexBuffer.hxx>
+#include <Graphic3d_BoundBuffer.hxx>
 
 #include <OpenGl_Element.hxx>
-
-struct OPENGL_SURF_PROP;
 
 class OpenGl_PrimitiveArray : public OpenGl_Element
 {
 public:
-  // OpenGL does not provie a constant for "none" draw mode.
+  // OpenGL does not provide a constant for "none" draw mode.
   // So we define our own one that does not conflict with GL constants
-  // and untilizes common GL invalid value
+  // and utilizes common GL invalid value
   enum
   {
     DRAW_MODE_NONE = -1
   };
 
   //! Default constructor
-  OpenGl_PrimitiveArray (CALL_DEF_PARRAY* thePArray);
+  OpenGl_PrimitiveArray (const Graphic3d_TypeOfPrimitiveArray theType,
+                         const Handle(Graphic3d_IndexBuffer)& theIndices,
+                         const Handle(Graphic3d_Buffer)&      theAttribs,
+                         const Handle(Graphic3d_BoundBuffer)& theBounds);
 
   //! Render primitives to the window
   virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
 
   virtual void Release (const Handle(OpenGl_Context)&   theContext);
 
-  CALL_DEF_PARRAY* PArray() const { return myPArray; }
+  //! @return primitive type (GL_LINES, GL_TRIANGLES and others)
+  GLint DrawMode() const { return myDrawMode; }
+
+  //! @return indices array
+  const Handle(Graphic3d_IndexBuffer)& Indices() const { return myIndices; }
+
+  //! @return attributes array
+  const Handle(Graphic3d_Buffer)& Attributes() const { return myAttribs; }
+
+  //! @return bounds array
+  const Handle(Graphic3d_BoundBuffer)& Bounds() const { return myBounds; }
 
 private:
 
-  Standard_Boolean toDrawVbo() const
-  {
-    return !myVbos[VBOVertices].IsNull();
-  }
-
   //! VBO initialization procedures
   Standard_Boolean BuildVBO (const Handle(OpenGl_Workspace)& theWorkspace) const;
-  void clearMemoryOwn() const;
   void clearMemoryGL (const Handle(OpenGl_Context)& theGlCtx) const;
 
   //! Main procedure to draw array
@@ -66,7 +74,6 @@ private:
                   const TEL_COLOUR* theInteriorColour,
                   const TEL_COLOUR* theLineColour,
                   const TEL_COLOUR* theEdgeColour,
-                  const OPENGL_SURF_PROP* theFaceProp,
                   const Handle(OpenGl_Workspace)& theWorkspace) const;
 
   //! Auxiliary procedures
@@ -82,20 +89,14 @@ protected:
 
 protected:
 
-  typedef enum
-  {
-    VBOEdges,
-    VBOVertices,
-    VBOVcolours,
-    VBOVnormals,
-    VBOVtexels,
-    VBOMaxType
-  } VBODataType;
+  mutable Handle(OpenGl_IndexBuffer)    myVboIndices;
+  mutable Handle(OpenGl_VertexBuffer)   myVboAttribs;
 
-  mutable CALL_DEF_PARRAY*            myPArray;
-  mutable Handle(OpenGl_VertexBuffer) myVbos[VBOMaxType];
-  GLint                               myDrawMode;
-  mutable Standard_Boolean            myIsVboInit;
+  mutable Handle(Graphic3d_IndexBuffer) myIndices;
+  mutable Handle(Graphic3d_Buffer)      myAttribs;
+  mutable Handle(Graphic3d_BoundBuffer) myBounds;
+  GLint                                 myDrawMode;
+  mutable Standard_Boolean              myIsVboInit;
 
 public:
 
