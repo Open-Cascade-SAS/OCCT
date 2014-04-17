@@ -1029,6 +1029,17 @@ void OpenGl_View::ChangeZLayer (const OpenGl_Structure *theStructure,
 }
 
 //=======================================================================
+//function : SetZLayerSettings
+//purpose  :
+//=======================================================================
+void OpenGl_View::SetZLayerSettings (const Standard_Integer theLayerId,
+                                     const Graphic3d_ZLayerSettings theSettings)
+{
+  myZLayers.Layer (theLayerId).SetLayerSettings (theSettings);
+}
+
+
+//=======================================================================
 //function : RedrawScene
 //purpose  :
 //=======================================================================

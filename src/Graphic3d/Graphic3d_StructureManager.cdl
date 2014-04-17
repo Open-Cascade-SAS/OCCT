@@ -40,6 +40,8 @@ uses
 	TypeOfHighlightMethod	from Aspect,
 	TypeOfUpdate		from Aspect,
 
+	ZLayerSettings      from Graphic3d,
+
 	DataStructureManager	from Graphic3d,
 	AspectFillArea3d	from Graphic3d,
 	AspectLine3d		from Graphic3d,
@@ -293,6 +295,17 @@ is
         ---Purpose: Get Z layer ID assigned to structure. If the structure
         -- has no layer ID (deleted from graphic driver), the method returns -1.
 
+        SetZLayerSettings ( me          : mutable;
+                            theLayerId  : Integer from Standard;
+                            theSettings : ZLayerSettings from Graphic3d )
+          is deferred;
+        ---Purpose: Sets the settings for a single Z layer for all managed views.
+
+        ZLayerSettings ( me          : mutable;
+                         theLayerId  : Integer from Standard )
+          returns ZLayerSettings from Graphic3d is deferred;
+        ---Purpose: Returns the settings of a single Z layer.
+        
         AddZLayer ( me : mutable;
                     theLayerId : in out Integer from Standard )
            returns Boolean from Standard is deferred;

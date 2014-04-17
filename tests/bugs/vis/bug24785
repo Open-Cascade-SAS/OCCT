@@ -1,0 +1,51 @@
+# This test case handles a specific task:
+# to draw 2d objects in same scene with 3d objects while 
+# 2d objects need to be drawn in specific order on 3d plane and
+# overlap correctly with 3d objects.
+
+pload ALL
+vinit
+# Thin boxes represent overlapping 2d objects in same plane
+# Normally such configuration would cause z-fighting noise (flickering)
+box b1 -0.75 -0.75 0 1 1 0.01
+box b2 -0.5 -0.5 0 1 1 0.01
+box b3 -0.25 -0.25 0 1 1 0.01
+vdisplay b1
+vdisplay b2
+vdisplay b3
+vsetmaterial b2 silver
+vsetmaterial b3 copper
+
+psphere s 0.3
+vdisplay s
+
+# Create new z-layer for 3d objects
+vzlayer add
+vobjzlayer set s 1 
+
+vsetdispmode 1
+
+# Disable OpenGl depth test for layer 0 (to eliminate flickering)
+# But depth write is still enabled
+vzlayer disable depthtest 0
+
+# Disable depth buffer clearing for layer 1 (we want correct overlapping with 3d objects)
+vzlayer disable depthclear 1
+
+# List currently enabled settings of each layer
+vzlayer settings 0
+vzlayer settings 1
+
+# "3d" box with one of its faces on same plane with "2d" objects
+# Normally this also would cause flickering because new box is
+# supposed to be in layer 1 as "3d" structure, thus depth test between
+# new box and "2d" objects will be enabled.
+box b 0 0 0.01 0.5 0.5 -0.5
+vdisplay b
+vobjzlayer set b 1 
+
+# To handle this situation, depth offset setting was introduced.
+# It implemented with glPolygonOffset calls per layer.
+vzlayer enable positiveoffset 1
+
+vfit

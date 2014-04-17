@@ -103,6 +103,7 @@ MyTransparency (Standard_False)
   myLayerSeq.Append (0);
 
   MyGraphicDriver = theDriver;
+  myMapOfZLayerSettings.Bind (0, Graphic3d_ZLayerSettings());
 }
 
 //-Destructors
@@ -776,6 +777,45 @@ Standard_Integer Visual3d_ViewManager::GetZLayer (const Handle(Graphic3d_Structu
 }
 
 //=======================================================================
+//function : SetZLayerSettings
+//purpose  :
+//=======================================================================
+void Visual3d_ViewManager::SetZLayerSettings (const Standard_Integer theLayerId,
+                                              const Graphic3d_ZLayerSettings& theSettings)
+{
+  // tell all managed views to set zlayer settings
+  Visual3d_SetIteratorOfSetOfView aViewIt (MyDefinedView);
+  for (; aViewIt.More (); aViewIt.Next ())
+  {
+    (aViewIt.Value ())->SetZLayerSettings (theLayerId, theSettings);
+  }
+
+  if (myMapOfZLayerSettings.IsBound (theLayerId))
+  {
+    myMapOfZLayerSettings.ChangeFind (theLayerId) = theSettings;
+  }
+  else
+  {
+    myMapOfZLayerSettings.Bind (theLayerId, theSettings);
+  }
+  
+}
+
+//=======================================================================
+//function : ZLayerSettings
+//purpose  :
+//=======================================================================
+Graphic3d_ZLayerSettings Visual3d_ViewManager::ZLayerSettings (const Standard_Integer theLayerId)
+{
+  if (!myLayerIds.Contains (theLayerId))
+  {
+    return Graphic3d_ZLayerSettings();
+  }
+
+  return myMapOfZLayerSettings.Find (theLayerId);
+}
+
+//=======================================================================
 //function : AddZLayer
 //purpose  :
 //=======================================================================
@@ -794,6 +834,9 @@ Standard_Boolean Visual3d_ViewManager::AddZLayer (Standard_Integer& theLayerId)
     // new index can't be generated
     return Standard_False;
   }
+
+  // default z-layer settings
+  myMapOfZLayerSettings.Bind (theLayerId, Graphic3d_ZLayerSettings());
 
   // tell all managed views to remove display layers
   Visual3d_SetIteratorOfSetOfView aViewIt(MyDefinedView);
@@ -814,7 +857,7 @@ Standard_Boolean Visual3d_ViewManager::RemoveZLayer (const Standard_Integer theL
     return Standard_False;
 
   // tell all managed views to remove display layers
-  Visual3d_SetIteratorOfSetOfView aViewIt(MyDefinedView);
+  Visual3d_SetIteratorOfSetOfView aViewIt (MyDefinedView);
   for ( ; aViewIt.More (); aViewIt.Next ())
     (aViewIt.Value ())->RemoveZLayer (theLayerId);
 
@@ -822,11 +865,15 @@ Standard_Boolean Visual3d_ViewManager::RemoveZLayer (const Standard_Integer theL
 
   // remove index
   for (int aIdx = 1; aIdx <= myLayerSeq.Length (); aIdx++)
-    if (myLayerSeq(aIdx) == theLayerId)
+  {
+    if (myLayerSeq (aIdx) == theLayerId)
     {
       myLayerSeq.Remove (aIdx);
       break;
     }
+  }
+
+  myMapOfZLayerSettings.UnBind (theLayerId);
 
   myLayerIds.Remove (theLayerId);
   getZLayerGenId ().Free (theLayerId);

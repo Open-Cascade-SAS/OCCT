@@ -90,7 +90,7 @@ Standard_Boolean OpenGl_Workspace::UpdateRaytraceGeometry (GeomUpdateMode theMod
 
   for (OpenGl_SequenceOfLayers::Iterator anLayerIt (aList.Layers()); anLayerIt.More(); anLayerIt.Next())
   {
-    const OpenGl_PriorityList& aPriorityList = anLayerIt.Value();
+    const OpenGl_PriorityList& aPriorityList = anLayerIt.Value().PriorityList();
 
     if (aPriorityList.NbStructures() == 0)
       continue;

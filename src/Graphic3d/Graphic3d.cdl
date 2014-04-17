@@ -421,6 +421,8 @@ is
     imported  Mat4;
     imported  Mat4d;
 
+    imported ZLayerSettings;
+
     --------------------
     -- Category: Classes
     --------------------
