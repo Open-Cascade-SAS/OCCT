@@ -80,7 +80,6 @@ IMPLEMENT_STANDARD_RTTIEXT(AIS_Dimension, AIS_InteractiveObject)
 namespace
 {
   // default text strings
-  static const Standard_Utf32Char THE_FILL_CHARACTER ('0');
   static const TCollection_ExtendedString THE_EMPTY_LABEL;
   static const TCollection_AsciiString    THE_UNDEFINED_UNITS;
 

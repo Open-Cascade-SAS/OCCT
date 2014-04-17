@@ -17,11 +17,6 @@
 #include <OpenGl_GlCore11.hxx>
 #include <OpenGl_Workspace.hxx>
 
-namespace
-{
-  static const GLdouble OpenGl_DefaultPlaneEq[] = {0.0, 0.0, 0.0, 0.0};
-};
-
 // =======================================================================
 // function : OpenGl_ClippingState
 // purpose  :

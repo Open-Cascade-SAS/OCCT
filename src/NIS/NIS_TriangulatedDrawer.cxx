@@ -78,8 +78,6 @@ void NIS_TriangulatedDrawer::Assign (const Handle(NIS_Drawer)& theOther)
   }
 }
 
-static const Standard_Integer nObjPerDrawer = 64;
-
 //=======================================================================
 //function : IsEqual
 //purpose  : Comparison of two Drawers (for Map impementation)
