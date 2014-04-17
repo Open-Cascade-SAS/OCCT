@@ -2083,7 +2083,7 @@ void IntAna_QuadQuadGeo::Perform(const gp_Cone& Con,
     return;
   }
   //
-  Standard_Real anAngle, aDist, aParam[4];
+  Standard_Real anAngle, aDist, aParam[4], aDt;
   Standard_Integer i;
   gp_Pnt aTorLoc, aPCT, aPN, aPt[4];
   gp_Dir aDir[4];
@@ -2114,16 +2114,16 @@ void IntAna_QuadQuadGeo::Perform(const gp_Cone& Con,
     typeres = IntAna_Circle;
     //
     gp_XYZ aPh = aPCT.XYZ() - aDist*aConL.Normal(aPCT).Direction().XYZ();
-    aDist = Sqrt(Abs(aRMin*aRMin - aDist*aDist));
+    aDt = Sqrt(Abs(aRMin*aRMin - aDist*aDist));
     //
     gp_Pnt aP;
-    gp_XYZ aDVal = aDist*aDL.XYZ();
+    gp_XYZ aDVal = aDt*aDL.XYZ();
     aP.SetXYZ(aPh + aDVal);
     aParam[nbint] = aLin.Distance(aP);
     aPt[nbint].SetXYZ(aP.XYZ() - aParam[nbint]*aXDir.XYZ());
     aDir[nbint] = aTorAx.Direction();
     ++nbint;
-    if ((aDist < aRMin) && (aDVal.Modulus() > Tol)) {
+    if ((aDist < aRMin) && (aDt > Tol)) {
       aP.SetXYZ(aPh - aDVal);
       aParam[nbint] = aLin.Distance(aP);
       aPt[nbint].SetXYZ(aP.XYZ() - aParam[nbint]*aXDir.XYZ());
