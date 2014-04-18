@@ -1,5 +1,3 @@
-puts "TODO #23828 MacOS: Tcl Exception:  null shapes are not allowed"
-puts "TODO #23828 MacOS: TEST INCOMPLETE"
 puts "TODO DEBUG_OCC24121 Debian60-64: Process killed by CPU limit"
 puts "TODO DEBUG_OCC24121 Debian60-64: TEST INCOMPLETE"
 

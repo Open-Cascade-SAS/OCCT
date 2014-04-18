@@ -22,6 +22,10 @@ if { [regexp {Debug mode} [dversion]] } {
   }
 }
 
+if {[string compare $os "MacOS"] == 0} {
+  set max_time 320
+}
+
 dchrono h reset
 dchrono h start
 

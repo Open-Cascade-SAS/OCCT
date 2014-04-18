@@ -42,6 +42,10 @@ if { [regexp {Debug mode} [dversion]] } {
   }
 }
 
+if {[string compare $os "MacOS"] == 0} {
+  set max_time 100.0
+}
+
 if { $z > ${max_time} } {                                         
     puts "Elapsed time is more than ${max_time} seconds - Faulty"
 } else {
