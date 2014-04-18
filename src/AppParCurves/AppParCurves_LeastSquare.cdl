@@ -362,8 +362,6 @@ Vec2c:            Vector           from math;
 theError:         Matrix           from math;
 myindex:          IntegerVector    from math;
 
-ERR3d:            Real;
-ERR2d:            Real;
 lambda1:          Real;
 lambda2:          Real; 
 

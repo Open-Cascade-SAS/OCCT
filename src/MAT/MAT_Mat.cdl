@@ -102,7 +102,6 @@ fields
     bisectortwotoremove   : DataMapOfIntegerBisector from MAT;
     bisectormap           : DataMapOfIntegerBisector from MAT;
     roots                 : ListOfBisector           from MAT;
-    thecurrentindex       : Integer;
     isDone                : Boolean;             
     
 end Mat;
