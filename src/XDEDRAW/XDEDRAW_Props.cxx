@@ -483,18 +483,6 @@ static Standard_Integer GetCentroid (Draw_Interpretor& di, Standard_Integer argc
   return 0;
 }
 
-
-//=======================================================================
-//function : doround
-//purpose  : auxilary
-//=======================================================================
-
-static inline Standard_Real doround (Standard_Real val, Standard_Real low)
-{
-  return Abs ( val ) < low ? 0. : val;
-}
-
-
 //=======================================================================
 //function : CheckProps
 //purpose  : 
