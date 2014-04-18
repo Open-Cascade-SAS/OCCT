@@ -289,7 +289,6 @@ fields
     Vm                  : Real              from Standard; -- Min V de la surf
     VM                  : Real              from Standard; -- Max V de la surf
     previousPoint       : PntOn2S           from IntSurf;
-    prevtg              : Boolean           from Standard;
     previousd3d         : Vec               from gp;
     previousd2d         : Dir2d             from gp;
     seqAjout            : SequenceOfInteger from TColStd; 

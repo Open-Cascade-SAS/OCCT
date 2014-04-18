@@ -42,6 +42,5 @@ class ComparatorOfVertexOfDelaun from BRepMesh
 
 
 fields  DirectionOfSort : XY from gp;
-        Tolerance       : Real from Standard;
 
 end ComparatorOfVertexOfDelaun;
