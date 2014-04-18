@@ -71,10 +71,6 @@ static void Write(const TopoDS_Shape& shape,
 }
 #endif
 
-inline static Standard_GUID getLine3DNamingVersionID() {
-  static Standard_GUID anID("BB74BAD5-7AAD-44b4-850F-05416F09B28E");
-  return anID;
-}
 //=======================================================================
 //function : DNaming_Line3DDriver
 //purpose  : Constructor
