@@ -55,6 +55,7 @@
 #include <BRepBuilderAPI_Transform.hxx>
 #include <BRepBuilderAPI_Copy.hxx>
 #include <TopTools_SequenceOfShape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <BRepLib.hxx>
 
 #include <Geom2dAdaptor_HCurve.hxx>
@@ -73,6 +74,7 @@ static void ReverseModifiedEdges(TopoDS_Shape& aShape,
 {
   TopExp_Explorer Explo(aShape, TopAbs_FACE);
   BRep_Builder BB;
+  
   for (; Explo.More(); Explo.Next())
   {
     TopoDS_Shape aFace = Explo.Current();
@@ -80,19 +82,22 @@ static void ReverseModifiedEdges(TopoDS_Shape& aShape,
     for (; itf.More(); itf.Next())
     {
       TopoDS_Shape aWire = itf.Value();
-      TopTools_SequenceOfShape ModEdges;
+      TopTools_ListOfShape Ledges;
       TopoDS_Iterator itw(aWire);
       for (; itw.More(); itw.Next())
-      {
-        TopoDS_Shape anEdge = itw.Value();
-        if (Emap.Contains(anEdge))
-          ModEdges.Append(anEdge);
-      }
+        Ledges.Append(itw.Value());
+
       aWire.Free(Standard_True);
-      for (Standard_Integer ii = 1; ii <= ModEdges.Length(); ii++)
+      TopTools_ListIteratorOfListOfShape itl(Ledges);
+      for (; itl.More(); itl.Next())
+        BB.Remove(aWire, itl.Value());
+        
+      for (itl.Initialize(Ledges); itl.More(); itl.Next())
       {
-        BB.Remove(aWire, ModEdges(ii));
-        BB.Add(aWire, ModEdges(ii).Reversed());
+        TopoDS_Shape anEdge = itl.Value();
+        if (Emap.Contains(anEdge))
+          anEdge.Reverse();
+        BB.Add(aWire, anEdge);
       }
     }
   }
@@ -276,9 +281,11 @@ void BRepFill_Pipe::Perform(const TopoDS_Wire&  Spine,
   if (!theLoc.IsIdentity())
   {
     TopoDS_Shape NewMyFirst = BRepBuilderAPI_Copy(myFirst);
+    RemLoc.Remove(NewMyFirst);
+    NewMyFirst = RemLoc.GetResult();
     TopLoc_Location theIdentity;
     NewMyFirst.Location(theIdentity);
-    myFirst = BRepBuilderAPI_Transform(NewMyFirst, theLoc.Transformation());
+    myFirst = BRepBuilderAPI_Transform(NewMyFirst, theLoc.Transformation(), Standard_True);
   }
   
   myLoc->Law(myLoc->NbLaw())->GetDomain(first, last);
@@ -307,9 +314,11 @@ void BRepFill_Pipe::Perform(const TopoDS_Wire&  Spine,
   if (!theLoc.IsIdentity())
   {
     TopoDS_Shape NewMyLast = BRepBuilderAPI_Copy(myLast);
+    RemLoc.Remove(NewMyLast);
+    NewMyLast = RemLoc.GetResult();
     TopLoc_Location theIdentity;
     NewMyLast.Location(theIdentity);
-    myLast = BRepBuilderAPI_Transform(NewMyLast, theLoc.Transformation());
+    myLast = BRepBuilderAPI_Transform(NewMyLast, theLoc.Transformation(), Standard_True);
   }
   
 #if DRAW
