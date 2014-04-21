@@ -37,16 +37,57 @@
 #include <BOPTools.hxx>
 #include <BOPTools_AlgoTools.hxx>
 #include <BOPTools_CoupleOfShape.hxx>
-//
-typedef BOPCol_NCVector<BOPTools_ConnexityBlock> \
-  BOPAlgo_ShellSplitter_VectorOfConnexityBlock;
+
 //
 static
   Standard_Boolean IsClosedShell(const TopoDS_Shell& );
+//
 static
   void MakeShell(const BOPCol_ListOfShape& , 
                  TopoDS_Shell& );
+//
+static
+  void RefineShell(TopoDS_Shell& theShell);
 
+//=======================================================================
+//class    : BOPAlgo_CBK
+//purpose  : 
+//=======================================================================
+class BOPAlgo_CBK {
+ public:
+  BOPAlgo_CBK() : 
+    myPCB (NULL) {
+  }
+  //
+  ~BOPAlgo_CBK() {
+  }
+  //
+  void SetConnexityBlock (const BOPTools_ConnexityBlock& aCB) {
+    myPCB=(BOPTools_ConnexityBlock*)&aCB;
+  }
+  //
+  BOPTools_ConnexityBlock& ConnexityBlock () {
+    return *myPCB;
+  }
+  //
+  void Perform() {
+    BOPAlgo_ShellSplitter::SplitBlock(*myPCB);
+  }
+ protected:
+  BOPTools_ConnexityBlock *myPCB;
+};
+//=======================================================================
+typedef BOPCol_NCVector
+  <BOPAlgo_CBK> BOPAlgo_VectorOfCBK; 
+//
+typedef BOPCol_TBBFunctor 
+  <BOPAlgo_CBK,
+  BOPAlgo_VectorOfCBK> BOPAlgo_CBKFunctor;
+//
+typedef BOPCol_TBBCnt 
+  <BOPAlgo_CBKFunctor,
+  BOPAlgo_VectorOfCBK> BOPAlgo_CBKCnt;
+//
 //=======================================================================
 //function : 
 //purpose  : 
@@ -148,7 +189,8 @@ void BOPAlgo_ShellSplitter::MakeConnexityBlocks()
     if (!aMEP.Contains(aSE)) {
       aMEP.Add(aSE);
       BOPTools::MapShapesAndAncestors(aSE, 
-                                      TopAbs_EDGE, TopAbs_FACE, 
+                                      TopAbs_EDGE, 
+                                      TopAbs_FACE, 
                                       aMEF);
     }
     else {
@@ -236,7 +278,8 @@ void BOPAlgo_ShellSplitter::MakeConnexityBlocks()
       //
       if (bRegular) {
         BOPTools::MapShapesAndAncestors(aFR,
-                                        TopAbs_EDGE, TopAbs_FACE, 
+                                        TopAbs_EDGE, 
+                                        TopAbs_FACE, 
                                         aMEFR);
       }
     }
@@ -288,8 +331,10 @@ void BOPAlgo_ShellSplitter::SplitBlock(BOPTools_ConnexityBlock& aCB)
   aItF.Initialize (myShapes);
   for (; aItF.More(); aItF.Next()) {
     const TopoDS_Shape& aFF = aItF.Value();
-    BOPTools::MapShapesAndAncestors
-      (aFF, TopAbs_EDGE, TopAbs_FACE, aEFMap);
+    BOPTools::MapShapesAndAncestors (aFF, 
+                                     TopAbs_EDGE, 
+                                     TopAbs_FACE, 
+                                     aEFMap);
   }
   //
   aItF.Initialize (myShapes);
@@ -306,7 +351,8 @@ void BOPAlgo_ShellSplitter::SplitBlock(BOPTools_ConnexityBlock& aCB)
     //
     aMEFP.Clear();
     BOPTools::MapShapesAndAncestors(aFF, 
-                                    TopAbs_EDGE, TopAbs_FACE, 
+                                    TopAbs_EDGE, 
+                                    TopAbs_FACE, 
                                     aMEFP);
     //
     // loop on faces added to Shell; 
@@ -381,88 +427,188 @@ void BOPAlgo_ShellSplitter::SplitBlock(BOPTools_ConnexityBlock& aCB)
           aSelF=(*(TopoDS_Face*)(&aLCSOff.First().Shape2()));
         }
         else if (aNbOff>1){
-          BOPTools_AlgoTools::GetFaceOff(aE, aF, 
-                                         aLCSOff, aSelF, aContext);
+          BOPTools_AlgoTools::GetFaceOff(aE, 
+                                         aF, 
+                                         aLCSOff, 
+                                         aSelF, 
+                                         aContext);
         }
         //
         if (!aSelF.IsNull() && AddedFacesMap.Add(aSelF)) { 
           aBB.Add(aShell, aSelF);
           BOPTools::MapShapesAndAncestors(aSelF, 
-                                          TopAbs_EDGE, TopAbs_FACE, 
+                                          TopAbs_EDGE, 
+                                          TopAbs_FACE, 
                                           aMEFP);
         }
-      } // for (; aEdgeExp.More(); aEdgeExp.Next()) { 
-    } //for (; aItAddedF.More(); aItAddedF.Next()) {
+      } // for (; aExp.More(); aExp.Next()) {
+    } // for (; aItS.More(); aItS.Next()) {
     //
     if (IsClosedShell(aShell)) {
       myLoops.Append(aShell);
     }
+    else {
+      RefineShell(aShell);
+      if (IsClosedShell(aShell)) {
+        myLoops.Append(aShell);
+      }
+    }
   } // for (; aItF.More(); aItF.Next()) {
 }
 //=======================================================================
-//class    : ShellSplitterFunctor
-//purpose  : Auxiliary class
+//function : RefineShell
+//purpose  : 
 //=======================================================================
-class BOPAlgo_ShellSplitterFunctor {
- protected:
-  TopoDS_Face myFace;
-  BOPAlgo_ShellSplitter_VectorOfConnexityBlock* myPVCB;
+void RefineShell(TopoDS_Shell& theShell)
+{
+  TopoDS_Iterator aIt;
   //
- public:
-  BOPAlgo_ShellSplitterFunctor
-    (BOPAlgo_ShellSplitter_VectorOfConnexityBlock& aVCB) 
-      : myPVCB(&aVCB) {
+  aIt.Initialize(theShell);
+  if(!aIt.More()) {
+    return;
   }
   //
-  void operator()( const flexible_range<Standard_Size>& aBR ) const{
-    Standard_Size i, iBeg, iEnd;
-    //
-    BOPAlgo_ShellSplitter_VectorOfConnexityBlock& aVCB=*myPVCB;
-    //
-    iBeg=aBR.begin();
-    iEnd=aBR.end();
-    for(i=iBeg; i!=iEnd; ++i) {
-      BOPTools_ConnexityBlock& aCB=aVCB((Standard_Integer)i);
+  Standard_Integer i, aNbMEF, aNbF;
+  BOPCol_IndexedDataMapOfShapeListOfShape aMEF; 
+  TopoDS_Builder aBB;
+  TopExp_Explorer aExp;
+  BOPCol_MapOfShape aMEStop, aMFB;
+  BOPCol_MapIteratorOfMapOfShape aItM;
+  BOPCol_ListIteratorOfListOfShape aItLF, aItLFP;
+  BOPCol_ListOfShape aLFP, aLFP1;
+  //
+  // Branch points
+  BOPTools::MapShapesAndAncestors (theShell, 
+                                   TopAbs_EDGE, 
+                                   TopAbs_FACE, 
+                                   aMEF);
+  aNbMEF=aMEF.Extent();
+  for (i=1; i<=aNbMEF; ++i) {
+    const TopoDS_Shape& aE=aMEF.FindKey(i);
+    const BOPCol_ListOfShape& aLF=aMEF.FindFromIndex(i);
+    aNbF=aLF.Extent();
+    if (aNbF>2) {
+      aMEStop.Add(aE);
+    }
+  }
+  //
+  if (aMEStop.IsEmpty()) {
+    return;
+  }
+  //
+  // The first Face 
+  const TopoDS_Shape& aF1=aIt.Value();
+  aMFB.Add(aF1);
+  aLFP.Append(aF1);
+  //
+  // Trying to reach the branch point
+  for (;;)  {
+    aItLFP.Initialize(aLFP);
+    for (; aItLFP.More(); aItLFP.Next()) { 
+      const TopoDS_Shape& aFP=aItLFP.Value();
       //
-      BOPAlgo_ShellSplitter::SplitBlock(aCB);
+      aExp.Init(aFP, TopAbs_EDGE);
+      for (; aExp.More(); aExp.Next()) {
+        const TopoDS_Edge& aE=(*(TopoDS_Edge*)(&aExp.Current()));
+        if (aMEStop.Contains(aE)) {
+          continue;
+        }
+        //
+        if (BRep_Tool::Degenerated(aE)) {
+          continue;
+        }
+        //
+        const BOPCol_ListOfShape& aLF=aMEF.FindFromKey(aE);
+        //
+        aItLF.Initialize(aLF);
+        for (; aItLF.More(); aItLF.Next()) { 
+          const TopoDS_Shape& aFP1=aItLF.Value();
+          if (aFP1.IsSame(aFP)) {
+            continue;
+          }
+          if (aMFB.Contains(aFP1)) {
+            continue;
+          }
+          aMFB.Add(aFP1);
+          aLFP1.Append(aFP1);
+        }// for (; aItLF.More(); aItLF.Next()) { 
+      }// for (; aExp.More(); aExp.Next()) {
+    }// for (; aItLFP.More(); aItLFP.Next()) { 
+    //
+    //
+    if (aLFP1.IsEmpty()) {
+      break;
+    }
+    //
+    aLFP.Clear();
+    aItLF.Initialize(aLFP1);
+    for (; aItLF.More(); aItLF.Next()) { 
+      const TopoDS_Shape& aFP1=aItLF.Value();
+      aLFP.Append(aFP1);
+    }
+    aLFP1.Clear();
+  }// for (;;)  {
+  //
+  // Remove all faces before the branch point
+  aItM.Initialize(aMFB);
+  for (; aItM.More(); aItM.Next()) { 
+    const TopoDS_Shape& aFB=aItM.Value();
+    aBB.Remove(theShell, aFB);
+  }
+}
+//=======================================================================
+//function : IsClosedShell
+//purpose  : 
+//=======================================================================
+Standard_Boolean IsClosedShell(const TopoDS_Shell& theShell)
+{
+  Standard_Integer i, aNbE;
+  Standard_Boolean bRet;
+  TopoDS_Iterator aIt;
+  TopExp_Explorer aExp;
+  BOPCol_MapOfShape aM;
+  // 
+  bRet=Standard_False;
+  //
+  aIt.Initialize(theShell);
+  for(i=0; aIt.More(); aIt.Next(), ++i) {
+    const TopoDS_Shape& aF=aIt.Value();
+    //
+    aExp.Init(aF, TopAbs_EDGE);
+    for (; aExp.More(); aExp.Next()) {
+      const TopoDS_Edge& aE=(*(TopoDS_Edge*)(&aExp.Current()));
+      if (BRep_Tool::Degenerated(aE)) {
+        continue;
+      }
+      //
+      if (aE.Orientation()==TopAbs_INTERNAL) {
+        continue;
+      }
+      if (!aM.Add(aE)) {
+        aM.Remove(aE);
+      }
     }
   }
-};
-//=======================================================================
-//class    : BOPAlgo_ShellSplitterCnt
-//purpose  : Auxiliary class
-//=======================================================================
-class BOPAlgo_ShellSplitterCnt {
- public:
-  //-------------------------------
-  // Perform
-  Standard_EXPORT 
-    static void Perform
-      (const Standard_Boolean bRunParallel,
-       BOPAlgo_ShellSplitter_VectorOfConnexityBlock& aVCB) {
-    //
-    BOPAlgo_ShellSplitterFunctor aSSF(aVCB);
-    Standard_Size aNbVCB=aVCB.Extent();
-    //
-    if (bRunParallel) {
-      flexible_for(flexible_range<Standard_Size>(0,aNbVCB), aSSF);
-    }
-    else {
-      aSSF.operator()(flexible_range<Standard_Size>(0,aNbVCB));
+  //
+  if(i) {
+    aNbE=aM.Extent();
+    if (!aNbE) {
+      bRet=!bRet; 
     }
   }
-};
+  return bRet;
+}
 //=======================================================================
-//function : MMakeShells
+//function : MakeShells
 //purpose  : 
 //=======================================================================
 void BOPAlgo_ShellSplitter::MakeShells()
 {
   Standard_Boolean bIsRegular;
-  Standard_Integer aNbVCB, k;
+  Standard_Integer aNbVCBK, k;
   BOPTools_ListIteratorOfListOfConnexityBlock aItCB;
   BOPCol_ListIteratorOfListOfShape aIt;
-  BOPAlgo_ShellSplitter_VectorOfConnexityBlock aVCB;
+  BOPAlgo_VectorOfCBK aVCBK;
   //
   myErrorStatus=0;
   myShells.Clear();
@@ -480,16 +626,18 @@ void BOPAlgo_ShellSplitter::MakeShells()
       myShells.Append(aShell);
     }
     else {
-      aVCB.Append(aCB);
+      BOPAlgo_CBK& aCBK=aVCBK.Append1();
+      aCBK.SetConnexityBlock(aCB);
     }
   }
   //
-  aNbVCB=aVCB.Extent();
+  aNbVCBK=aVCBK.Extent();
   //===================================================
-  BOPAlgo_ShellSplitterCnt::Perform(myRunParallel, aVCB);
+  BOPAlgo_CBKCnt::Perform(myRunParallel, aVCBK);
   //===================================================
-  for (k=0; k<aNbVCB; ++k) {
-    const BOPTools_ConnexityBlock& aCB=aVCB(k);
+  for (k=0; k<aNbVCBK; ++k) {
+    BOPAlgo_CBK& aCBK=aVCBK(k);
+    const BOPTools_ConnexityBlock& aCB=aCBK.ConnexityBlock();
     const BOPCol_ListOfShape& aLS=aCB.Loops();
     aIt.Initialize(aLS);
     for (; aIt.More(); aIt.Next()) {
@@ -498,44 +646,6 @@ void BOPAlgo_ShellSplitter::MakeShells()
       myShells.Append(aShell);
     }
   }
-}
-//=======================================================================
-//function : IsClosedShell
-//purpose  : 
-//=======================================================================
-Standard_Boolean IsClosedShell(const TopoDS_Shell& theShell)
-{
-  Standard_Integer aNbE;
-  Standard_Boolean bRet;
-  TopoDS_Iterator aIt;
-  TopExp_Explorer aExp;
-  BOPCol_MapOfShape aM;
-  // 
-  bRet=Standard_False;
-  aIt.Initialize(theShell);
-  for(; aIt.More(); aIt.Next()) {
-    const TopoDS_Face& aF=(*(TopoDS_Face*)(&aIt.Value()));
-    aExp.Init(aF, TopAbs_EDGE);
-    for (; aExp.More(); aExp.Next()) {
-      const TopoDS_Edge& aE=(*(TopoDS_Edge*)(&aExp.Current()));
-      if (BRep_Tool::Degenerated(aE)) {
-        continue;
-      }
-      //
-      if (aE.Orientation()==TopAbs_INTERNAL) {
-        continue;
-      }
-      if (!aM.Add(aE)) {
-        aM.Remove(aE);
-      }
-    }
-  }
-  //
-  aNbE=aM.Extent();
-  if (!aNbE) {
-    bRet=!bRet;
-  }
-  return bRet;
 }
 //=======================================================================
 //function : MakeShell

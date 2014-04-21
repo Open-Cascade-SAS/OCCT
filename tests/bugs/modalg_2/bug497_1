@@ -1,5 +1,3 @@
-puts "TODO OCC12345 ALL: Error : The square of result shape is"
-
 puts "========="
 puts " OCC497 "
 puts "(case 1)"
@@ -15,10 +13,14 @@ checkshape a_1
 restore [locate_data_file OCC497b.brep] a_2
 checkshape a_2
 
-if [catch {bcut result a_1 a_2 } catch_result] {
+explode a_2 so
+bop a_2_1 a_2_2
+bopfuse r1
+
+if [catch {bcut result a_1 r1 } catch_result] {
     puts "Faulty OCC497:function CUT works wrongly "
 } else {
     puts "OCC497 : function CUT works without hangs up "
 }
-set square 0
+set square 646.969
 set 2dviewer 0
