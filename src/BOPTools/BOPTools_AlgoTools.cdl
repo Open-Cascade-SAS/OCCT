@@ -46,60 +46,60 @@ uses
 
 is  
     ComputeVV(myclass;  
-        aV1:Vertex from TopoDS;  
-        aP2:Pnt from gp; 
-        aTolP2:Real from Standard) 
-    returns Integer from Standard; 
+            aV1:Vertex from TopoDS;  
+            aP2:Pnt from gp; 
+            aTolP2:Real from Standard) 
+        returns Integer from Standard; 
 
     ComputeVV(myclass;  
-        aV1:Vertex from TopoDS;  
-        aV2:Vertex from TopoDS) 
-    returns Integer from Standard;  
+            aV1:Vertex from TopoDS;  
+            aV2:Vertex from TopoDS) 
+        returns Integer from Standard;  
 
     MakeVertex  (myclass;  
-        aLV: out ListOfShape from BOPCol; 
-        aV : out Vertex from TopoDS); 
+            aLV: out ListOfShape from BOPCol; 
+            aV : out Vertex from TopoDS); 
  
     MakeEdge(myclass; 
-        theCurve:Curve from IntTools; 
-        theV1: Vertex from TopoDS; 
-        theT1: Real from Standard; 
-        theV2: Vertex from TopoDS; 
-        theT2: Real from Standard; 
-        theTolR3D: Real from Standard; 
-        theE :out Edge from TopoDS);  
+            theCurve:Curve from IntTools; 
+            theV1: Vertex from TopoDS; 
+            theT1: Real from Standard; 
+            theV2: Vertex from TopoDS; 
+            theT2: Real from Standard; 
+            theTolR3D: Real from Standard; 
+            theE :out Edge from TopoDS);  
   
     MakePCurve(myclass; 
-        theE : Edge from TopoDS;
-        theF1: Face from TopoDS;
-        theF2: Face from TopoDS;
-        theCurve:Curve from IntTools;
-        thePC1:Boolean from Standard; 
-    	thePC2:Boolean from Standard);  
+            theE : Edge from TopoDS;
+            theF1: Face from TopoDS;
+            theF2: Face from TopoDS;
+            theCurve:Curve from IntTools;
+            thePC1:Boolean from Standard; 
+            thePC2:Boolean from Standard);  
     
     MakeContainer(myclass; 
-        theType:ShapeEnum from TopAbs; 
-        theShape:out Shape from TopoDS); 
+            theType:ShapeEnum from TopAbs; 
+            theShape:out Shape from TopoDS); 
     
        
     IsHole(myclass;  
-        aW:  Shape from TopoDS;    
-        aF:  Shape from TopoDS) 
-    returns Boolean from Standard;
+            aW:  Shape from TopoDS;    
+            aF:  Shape from TopoDS) 
+        returns Boolean from Standard;
      
     IsSplitToReverse(myclass;  
-        theSplit   :  Shape from TopoDS; 
-        theShape   :  Shape from TopoDS; 
-        theContext:out Context from BOPInt)  
+            theSplit   :  Shape from TopoDS; 
+            theShape   :  Shape from TopoDS; 
+            theContext:out Context from BOPInt)  
     ---Purpose: Returns True if the shape theSplit has opposite 
     --          direction than theShape 
     --          theContext - cashed geometrical tools
     returns Boolean from Standard; 
 	 
     IsSplitToReverse(myclass;  
-        theSplit  :  Face from TopoDS; 
-        theShape  :  Face from TopoDS; 
-        theContext:out Context from BOPInt) 
+            theSplit  :  Face from TopoDS; 
+            theShape  :  Face from TopoDS; 
+            theContext:out Context from BOPInt) 
     ---Purpose: Returns True if normal direction of the face   
     --          theShape is not the same as for the face  
     --          theSplit 
@@ -107,33 +107,33 @@ is
     returns Boolean from Standard; 
      
     IsSplitToReverse  (myclass;  
-        aE1:  Edge from TopoDS; 	     
-        aE2:  Edge from TopoDS; 
-        aContext:out Context from BOPInt) 
-    returns Boolean from Standard; 
+            aE1:  Edge from TopoDS; 	     
+            aE2:  Edge from TopoDS; 
+            aContext:out Context from BOPInt) 
+        returns Boolean from Standard; 
 	 
      
     AreFacesSameDomain(myclass;  
-        theF1: Face from TopoDS; 	     
-        theF2: Face from TopoDS; 
-        theContext:out Context from BOPInt) 
-    returns Boolean from Standard;  
+            theF1: Face from TopoDS; 	     
+            theF2: Face from TopoDS; 
+            theContext:out Context from BOPInt) 
+        returns Boolean from Standard;  
 	
     CheckSameGeom (myclass;  
-        theF1: Face from TopoDS; 	     
-        theF2: Face from TopoDS; 
-        theContext:out Context from BOPInt) 
-    returns Boolean from Standard; 
+            theF1: Face from TopoDS; 	     
+            theF2: Face from TopoDS; 
+            theContext:out Context from BOPInt) 
+        returns Boolean from Standard; 
  
     Sense (myclass;  
-        theF1: Face from TopoDS; 	     
-        theF2: Face from TopoDS) 
-    returns Integer from Standard;  
+            theF1: Face from TopoDS; 	     
+            theF2: Face from TopoDS) 
+        returns Integer from Standard;  
 
     GetEdgeOff (myclass;  
-        theEdge    :Edge  from TopoDS;  
-        theFace    :Face  from TopoDS;  
-        theEdgeOff :out Edge  from TopoDS) 
+            theEdge    :Edge  from TopoDS;  
+            theFace    :Face  from TopoDS;  
+            theEdgeOff :out Edge  from TopoDS) 
     ---Purpose: Returns True if the face theFace contains 
     --          the edge theEdge but with opposite orientation. 
     --          If the method  returns True theEdgeOff is the 
@@ -141,12 +141,12 @@ is
     returns Boolean from Standard;  
  
     GetFaceOff(myclass;  
-        theEdge    :Edge  from TopoDS;  
-        theFace    :Face  from TopoDS; 
-        theLCEF    :out ListOfCoupleOfShape from BOPTools; 
-        theFaceOff :out Face  from TopoDS; 
-        theContext :out Context from BOPInt)  
-    returns Boolean from Standard;  
+            theEdge    :Edge  from TopoDS;  
+            theFace    :Face  from TopoDS; 
+            theLCEF    :out ListOfCoupleOfShape from BOPTools; 
+            theFaceOff :out Face  from TopoDS; 
+            theContext :out Context from BOPInt)  
+        returns Boolean from Standard;  
     
      ---Purpose:  For the face theFace and its edge theEdge 
      --           finds the face suitable to produce shell. 
@@ -154,11 +154,11 @@ is
      --           from theLCEF must share edge theEdge  
  
     IsInternalFace(myclass; 
-        theFace  :Face from TopoDS; 
-        theEdge  :Edge from TopoDS; 
-        theFace1 :Face from TopoDS; 
-        theFace2 :Face from TopoDS; 
-        theContext:out Context from BOPInt)
+            theFace  :Face from TopoDS; 
+            theEdge  :Edge from TopoDS; 
+            theFace1 :Face from TopoDS; 
+            theFace2 :Face from TopoDS; 
+            theContext:out Context from BOPInt)
     ---Purpose: Returns True if the face theFace is inside of the  
     --          couple of faces theFace1, theFace2. 
     --          The faces theFace, theFace1, theFace2  must 
@@ -166,10 +166,10 @@ is
     returns Integer from Standard; 
  
     IsInternalFace(myclass; 
-        theFace :Face  from TopoDS; 
-        theEdge :Edge  from TopoDS; 
-        theLF   :out ListOfShape from BOPCol; 
-        theContext:out Context from BOPInt)  
+            theFace :Face  from TopoDS; 
+            theEdge :Edge  from TopoDS; 
+            theLF   :out ListOfShape from BOPCol; 
+            theContext:out Context from BOPInt)  
     ---Purpose: Returns True if the face theFace is inside of the  
     --          appropriate couple of faces (from the set theLF)    . 
     --          The faces of the set theLF and theFace  must 
@@ -177,11 +177,11 @@ is
     returns Integer from Standard;  
  
     IsInternalFace(myclass; 
-        theFace  :Face  from TopoDS; 
-        theSolid :Solid from TopoDS; 
-        theMEF   :out IndexedDataMapOfShapeListOfShape from BOPCol;
-        theTol   :Real from Standard;       
-        theContext:out Context from BOPInt)  
+            theFace  :Face  from TopoDS; 
+            theSolid :Solid from TopoDS; 
+            theMEF   :out IndexedDataMapOfShapeListOfShape from BOPCol;
+            theTol   :Real from Standard;       
+            theContext:out Context from BOPInt)  
     ---Purpose: Returns True if the face theFace is inside the  
     --          solid theSolid. 
     --          theMEF - Map Edge/Faces for theSolid              
@@ -191,9 +191,9 @@ is
  
  
     GetEdgeOnFace (myclass;  
-        theEdge    :Edge  from TopoDS;  
-        theFace    :Face  from TopoDS;  
-        theEdgeOnF :out Edge  from TopoDS)  
+            theEdge    :Edge  from TopoDS;  
+            theFace    :Face  from TopoDS;  
+            theEdgeOnF :out Edge  from TopoDS)  
     ---Purpose: For the face theFace gets the edge theEdgeOnF 
     --          that is the same as theEdge 
     --          Returns True if such edge exists     	 
@@ -201,10 +201,10 @@ is
     returns Boolean from Standard;  
    
     ComputeState(myclass; 
-        thePoint :Pnt  from gp;  
-        theSolid :Solid from TopoDS;  
-        theTol   :Real from Standard;       
-        theContext:out Context from BOPInt) 
+            thePoint :Pnt  from gp;  
+            theSolid :Solid from TopoDS;  
+            theTol   :Real from Standard;       
+            theContext:out Context from BOPInt) 
     ---Purpose: Computes the 3-D state of the point thePoint 
     --          toward solid theSolid. 
     --          theTol - value of precision of computation   
@@ -213,10 +213,10 @@ is
     returns State from TopAbs;  
 
     ComputeState(myclass; 
-        theVertex:Vertex from TopoDS;  
-        theSolid :Solid from TopoDS;  
-        theTol   :Real from Standard;       
-        theContext:out Context from BOPInt) 
+            theVertex:Vertex from TopoDS;  
+            theSolid :Solid from TopoDS;  
+            theTol   :Real from Standard;       
+            theContext:out Context from BOPInt) 
     ---Purpose: Computes the 3-D state of the vertex theVertex 
     --          toward solid theSolid. 
     --          theTol - value of precision of computation   
@@ -225,10 +225,10 @@ is
     returns State from TopAbs;  
 
     ComputeState(myclass; 
-        theEdge  :Edge  from TopoDS;  
-        theSolid :Solid from TopoDS;  
-        theTol   :Real from Standard;       
-        theContext:out Context from BOPInt) 
+            theEdge  :Edge  from TopoDS;  
+            theSolid :Solid from TopoDS;  
+            theTol   :Real from Standard;       
+            theContext:out Context from BOPInt) 
     ---Purpose: Computes the 3-D state of the edge theEdge 
     --          toward solid theSolid. 
     --          theTol - value of precision of computation   
@@ -237,11 +237,11 @@ is
     returns State from TopAbs;  
 	
     ComputeState(myclass; 
-        theFace  :Face  from TopoDS;  
-        theSolid :Solid from TopoDS;  
-        theTol   :Real from Standard;     
-        theBounds:out IndexedMapOfShape from BOPCol;
-        theContext:out Context from BOPInt) 	       
+            theFace  :Face  from TopoDS;  
+            theSolid :Solid from TopoDS;  
+            theTol   :Real from Standard;     
+            theBounds:out IndexedMapOfShape from BOPCol;
+            theContext:out Context from BOPInt) 	       
     ---Purpose: Computes the 3-D state of the face theFace 
     --          toward solid theSolid. 
     --          theTol - value of precision of computation   
@@ -251,10 +251,10 @@ is
     returns State from TopAbs; 
 
     ComputeStateByOnePoint(myclass; 
-        theShape :Shape from TopoDS;  
-        theSolid :Solid from TopoDS;  
-        theTol   :Real from Standard;       
-        theContext:out Context from BOPInt) 
+            theShape :Shape from TopoDS;  
+            theSolid :Solid from TopoDS;  
+            theTol   :Real from Standard;       
+            theContext:out Context from BOPInt) 
     ---Purpose: Computes the 3-D state of the shape theShape 
     --          toward solid theSolid. 
     --          theTol - value of precision of computation   
@@ -263,30 +263,32 @@ is
     returns State from TopAbs; 
  
     MakeConnexityBlock(myclass; 
-        theLS      :out ListOfShape from BOPCol;   
-        theMapAvoid:out IndexedMapOfShape from BOPCol;        
-        theLSCB    :out ListOfShape from BOPCol; 
-        theAllocator:BaseAllocator from BOPCol);   
+            theLS      :out ListOfShape from BOPCol;   
+            theMapAvoid:out IndexedMapOfShape from BOPCol;        
+            theLSCB    :out ListOfShape from BOPCol; 
+            theAllocator:BaseAllocator from BOPCol);   
     ---Purpose: For the list of faces theLS build block  
     --          theLSCB in terms of connexity by edges   
     --          theMapAvoid - set of edges to avoid for 
     --          the treatment  
      
     MakeConnexityBlocks(myclass; 
-        theS       :Shape from TopoDS;   
-        theType1   :ShapeEnum from TopAbs;       	 
-        theType2   :ShapeEnum from TopAbs;       	 
-        theLCB     :out ListOfShape from BOPCol);   
+            theS       :Shape from TopoDS;   
+            theType1   :ShapeEnum from TopAbs;       	 
+            theType2   :ShapeEnum from TopAbs;       	 
+            theLCB     :out ListOfShape from BOPCol);   
     ---Purpose: For the compound theS build the blocks  
     --          theLCB (as list of compounds) 
     --          in terms of connexity by the shapes of theType  
 
     OrientFacesOnShell (myclass; 
-        theS   :out Shape from TopoDS); 
+            theS   :out Shape from TopoDS); 
      
     CorrectTolerances (myclass;  
-        theS: Shape  from  TopoDS; 
-         theTolMax: Real from Standard =0.0001);  
+            theS: Shape  from  TopoDS; 
+            theTolMax: Real from Standard =0.0001;  
+            theRunParallel: Boolean from Standard=Standard_False);   
+ 
     ---Purpose:	 
     --- Provides valid values of tolerances for the shape <theS>         
     --- <theTolMax> is max value of the tolerance that can be 
@@ -295,15 +297,17 @@ is
     --- perform. 
     ---
     CorrectCurveOnSurface  (myclass;  
-         theS: Shape  from  TopoDS; 
-         theTolMax: Real from Standard =0.0001); 
+            theS: Shape  from  TopoDS; 
+            theTolMax: Real from Standard =0.0001; 
+            theRunParallel: Boolean from Standard=Standard_False);   
     ---Purpose:	 
     --- Provides valid values of tolerances for the shape <theS> 
     --- in  terms of BRepCheck_InvalidCurveOnSurface.   
     ---
     CorrectPointOnCurve    (myclass;  
-         theS: Shape  from  TopoDS; 
-         theTolMax: Real from Standard =0.0001);  	 
+            theS: Shape  from  TopoDS; 
+            theTolMax: Real from Standard =0.0001; 
+            theRunParallel: Boolean from Standard=Standard_False);   
     ---Purpose:	 
     --- Provides valid values of tolerances for the shape <theS> 
     --- in  terms of BRepCheck_InvalidPointOnCurve.   
@@ -312,9 +316,9 @@ is
  
     --copy from BOPTools_AlgoTools.cdl
     MakeNewVertex  (myclass;  
-        aP1 : Pnt  from  gp;  
-        aTol: Real from Standard;
-        aNewVertex:out Vertex from TopoDS); 
+            aP1 : Pnt  from  gp;  
+            aTol: Real from Standard;
+            aNewVertex:out Vertex from TopoDS); 
     ---Purpose: 
     --- Make a vertex using 3D-point <aP1> and 3D-tolerance value <aTol>  
     ---
@@ -325,74 +329,74 @@ is
     --- Make a vertex using couple of vertices  <aV1, aV2>     
     ---
     MakeNewVertex  (myclass;  
-        aE1: Edge from TopoDS; 
-        aP1: Real from Standard; 
-        aE2: Edge from TopoDS; 
-        aP2: Real from Standard; 
-        aNewVertex:out Vertex from TopoDS);                                      
+            aE1: Edge from TopoDS; 
+            aP1: Real from Standard; 
+            aE2: Edge from TopoDS; 
+            aP2: Real from Standard; 
+            aNewVertex:out Vertex from TopoDS);                                      
     ---Purpose: 
     --- Make a vertex in place of intersection between two edges 
     --- <aE1, aE2> with parameters <aP1, aP2>     
     ---
     MakeNewVertex  (myclass;  
-        aE1: Edge from TopoDS; 
-        aP1: Real from Standard; 
-        aF2: Face from TopoDS; 
-        aNewVertex:out Vertex from TopoDS);         
+            aE1: Edge from TopoDS; 
+            aP1: Real from Standard; 
+            aF2: Face from TopoDS; 
+            aNewVertex:out Vertex from TopoDS);         
     ---Purpose: 
     --- Make a vertex in place of intersection between the edge <aE1> 
     --- with parameter <aP1> and the face <aF2> 
     ---
     PointOnEdge    (myclass;   
-        aEdge: Edge from TopoDS; 
-        aPrm: Real from Standard; 
-        aP:out Pnt  from  gp);
+            aEdge: Edge from TopoDS; 
+            aPrm: Real from Standard; 
+            aP:out Pnt  from  gp);
     ---Purpose: 
     --- Compute a 3D-point on the edge <aEdge> at parameter <aPrm> 
     ---
     MakeSplitEdge  (myclass;  
-        aE1: Edge from TopoDS; 
-        aV1: Vertex from TopoDS;             
-        aP1: Real from Standard; 
-        aV2: Vertex from TopoDS; 
-        aP2: Real from Standard; 
-        aNewEdge:out Edge from TopoDS);          
+            aE1: Edge from TopoDS; 
+            aV1: Vertex from TopoDS;             
+            aP1: Real from Standard; 
+            aV2: Vertex from TopoDS; 
+            aP2: Real from Standard; 
+            aNewEdge:out Edge from TopoDS);          
     ---Purpose: 
     --- Make the edge from base edge <aE1> and two vertices <aV1,aV2>  
     --- at parameters <aP1,aP2>  
     ---
     MakeSectEdge   (myclass;  
-        aIC: Curve  from IntTools; 
-        aV1: Vertex from TopoDS;             
-        aP1: Real from Standard; 
-        aV2: Vertex from TopoDS; 
-        aP2: Real from Standard; 
-        aNewEdge:out Edge from TopoDS);             
+            aIC: Curve  from IntTools; 
+            aV1: Vertex from TopoDS;             
+            aP1: Real from Standard; 
+            aV2: Vertex from TopoDS; 
+            aP2: Real from Standard; 
+            aNewEdge:out Edge from TopoDS);             
     ---Purpose: 
     --- Make the edge from 3D-Curve <aIC>  and two vertices <aV1,aV2>  
     --- at parameters <aP1,aP2>  
     ---
     UpdateVertex   (myclass;  
-        aIC: Curve  from IntTools; 
-        aT : Real from Standard;  
-        aV : Vertex from TopoDS); 
+            aIC: Curve  from IntTools; 
+            aT : Real from Standard;  
+            aV : Vertex from TopoDS); 
     ---Purpose:   
     --- Update the tolerance value for vertex  <aV> 
     --- taking into account the fact that <aV> lays on   
     --- the curve <aIC>   
     ---
     UpdateVertex   (myclass;  
-        aE : Edge from TopoDS;  
-        aT : Real from Standard;  
-        aV : Vertex from TopoDS);              
+            aE : Edge from TopoDS;  
+            aT : Real from Standard;  
+            aV : Vertex from TopoDS);              
     ---Purpose:  
     --- Update the tolerance value for vertex  <aV> 
     --- taking into account the fact that <aV> lays on   
     --- the edge <aE>   
     ---
     UpdateVertex   (myclass;  
-        aVF : Vertex from TopoDS; 
-        aVN : Vertex from TopoDS);         
+            aVF : Vertex from TopoDS; 
+            aVN : Vertex from TopoDS);         
     ---Purpose:  
     --- Update the tolerance value for vertex  <aVN> 
     --- taking into account the fact that <aVN> should   
@@ -400,62 +404,63 @@ is
     ---
  
     CorrectRange   (myclass;  
-        aE1:   Edge from TopoDS;    
-        aE2:   Edge from TopoDS;   
-        aSR:   Range from IntTools;                        
-        aNewSR:out  Range from IntTools);  
+            aE1:   Edge from TopoDS;    
+            aE2:   Edge from TopoDS;   
+            aSR:   Range from IntTools;                        
+            aNewSR:out  Range from IntTools);  
     ---Purpose:  
     --- Correct shrunk range <aSR> taking into account 3D-curve      
     --- resolution and corresp. tolerances' values of <aE1>, <aE2>   
     ---
     CorrectRange   (myclass;  
-        aE:   Edge from TopoDS;    
-        aF:   Face from TopoDS;   
-        aSR:  Range from IntTools;                        
-        aNewSR:out  Range from IntTools); 
+            aE:   Edge from TopoDS;    
+            aF:   Face from TopoDS;   
+            aSR:  Range from IntTools;                        
+            aNewSR:out  Range from IntTools); 
     ---Purpose:  
     --- Correct shrunk range <aSR> taking into account 3D-curve      
     --- resolution and corresp. tolerances' values of <aE>, <aF>
     ---
  
     IsBlockInOnFace(myclass;   
-        aShR  : Range from IntTools; 
-        aF    : Face from TopoDS;  
-        aE    : Edge from TopoDS;  
-        aContext:out Context from BOPInt)
-      returns Boolean from Standard;               
+            aShR  : Range from IntTools; 
+            aF    : Face from TopoDS;  
+            aE    : Edge from TopoDS;  
+            aContext:out Context from BOPInt)
+        returns Boolean from Standard;               
     ---Purpose:  
     --- Returns TRUE if PaveBlock <aPB> lays on the face <aF>, i.e 
     --- the <PB> is IN or ON in 2D of <aF> 
      
     IsMicroEdge(myclass; 
-        theEdge    : Edge from TopoDS; 
-        theContext : Context from BOPInt)  
-      returns Boolean from Standard; 
+            theEdge    : Edge from TopoDS; 
+            theContext : Context from BOPInt)  
+        returns Boolean from Standard; 
     ---Purpose: 
     --- Checks if it is possible to compute shrunk range for the edge <aE>. 
     ---  
  
     CorrectShapeTolerances (myclass;
-        theS: Shape from TopoDS);
+            theS: Shape from TopoDS; 
+            theRunParallel: Boolean from Standard=Standard_False);   
     ---Purpose: 
     --- Corrects tolerance values of the sub-shapes of the shape <theS> if needed. 
     ---
  
     Dimension(myclass; 
-        theS:Shape from TopoDS) 
-    returns Integer from Standard;
+            theS:Shape from TopoDS) 
+        returns Integer from Standard;
     ---Purpose: 
     --- Retutns dimension of the shape <theS>. 
      
     IsOpenShell(myclass; 
-    	    theShell:Shell from TopoDS)  
-    	returns Boolean from Standard;  
-    	---Purpose: Returns true if the  shell <theShell> is open  
+            theShell:Shell from TopoDS)  
+        returns Boolean from Standard;  
+     ---Purpose: Returns true if the  shell <theShell> is open  
      
     IsInvertedSolid(myclass; 
-    	    theSolid:Solid from TopoDS)  
-    	returns Boolean from Standard;  
-    	---Purpose: Returns true if the solid <theSolid> is inverted 	
- 
+            theSolid:Solid from TopoDS)  
+        returns Boolean from Standard;  
+    ---Purpose: Returns true if the solid <theSolid> is inverted 
+     
 end AlgoTools;

@@ -362,7 +362,6 @@ void BOPAlgo_Builder::PerformInternal(const BOPAlgo_PaveFiller& theFiller)
 //=======================================================================
 void BOPAlgo_Builder::PostTreat()
 {
-  //BRepLib::SameParameter(myShape, 1.e-7, Standard_True);
-  BOPTools_AlgoTools::CorrectTolerances(myShape, 0.05);
-  BOPTools_AlgoTools::CorrectShapeTolerances(myShape);
+  BOPTools_AlgoTools::CorrectTolerances(myShape, 0.05, myRunParallel);
+  BOPTools_AlgoTools::CorrectShapeTolerances(myShape, myRunParallel);
 }
