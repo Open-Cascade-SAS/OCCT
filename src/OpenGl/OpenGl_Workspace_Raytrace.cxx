@@ -219,7 +219,7 @@ Standard_Boolean OpenGl_Workspace::UpdateRaytraceGeometry (GeomUpdateMode theMod
 
     const BVH_Vec4f aSize = myRaytraceGeometry.Box().Size();
 
-    myRaytraceSceneEpsilon = Max (1e-4f, 1e-4f * sqrtf (
+    myRaytraceSceneEpsilon = Max (1e-7f, 1e-4f * sqrtf (
       aSize.x() * aSize.x() + aSize.y() * aSize.y() + aSize.z() * aSize.z()));
 
     return UploadRaytraceData();
@@ -290,8 +290,8 @@ void CreateMaterial (const OPENGL_SURF_PROP& theProp, OpenGl_RaytraceMaterial& t
   // to produce realistic-looking transparency effect
   theMaterial.Transparency = BVH_Vec4f (powf (theProp.trans, 0.75f),
                                         1.f - theProp.trans,
-                                        1.f,
-                                        1.f);
+                                        theProp.index == 0 ? 1.f : theProp.index,
+                                        theProp.index == 0 ? 1.f : 1.f / theProp.index);
 
   const float aMaxRefl = Max (theMaterial.Diffuse.x() + theMaterial.Specular.x(),
                          Max (theMaterial.Diffuse.y() + theMaterial.Specular.y(),

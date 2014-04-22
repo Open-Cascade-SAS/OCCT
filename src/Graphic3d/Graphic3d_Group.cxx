@@ -363,6 +363,7 @@ void Graphic3d_Group::SetGroupPrimitivesAspect (const Handle(Graphic3d_AspectFil
   ContextFillArea.Back.Specular     = float (aBack.Specular());
   ContextFillArea.Back.Transparency = float (aBack.Transparency());
   ContextFillArea.Back.Emission     = float (aBack.Emissive());
+  ContextFillArea.Back.RefractionIndex = float (aBack.RefractionIndex());
 
   // Reflection mode
   ContextFillArea.Back.IsAmbient    = aBack.ReflectionMode (Graphic3d_TOR_AMBIENT)  ? 1 : 0;
@@ -404,6 +405,7 @@ void Graphic3d_Group::SetGroupPrimitivesAspect (const Handle(Graphic3d_AspectFil
   ContextFillArea.Front.Specular      = float (aFront.Specular());
   ContextFillArea.Front.Transparency  = float (aFront.Transparency());
   ContextFillArea.Front.Emission      = float (aFront.Emissive());
+  ContextFillArea.Front.RefractionIndex = float (aFront.RefractionIndex());
 
   // Reflection mode
   ContextFillArea.Front.IsAmbient     = aFront.ReflectionMode (Graphic3d_TOR_AMBIENT)  ? 1 : 0;
