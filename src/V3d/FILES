@@ -12,3 +12,4 @@ V3d_View_Print.cxx
 V3d_View_5.cxx
 V3d_Plane.hxx
 V3d_Plane.cxx
+V3d_ListOfTransient.hxx

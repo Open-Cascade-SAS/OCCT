@@ -207,7 +207,7 @@ is
         ---Category: Instantiated classes
         ---------------------------------
 
-        private class ListOfTransient;
+        imported ListOfTransient;
 
         pointer ViewerPointer to Viewer from V3d;
         pointer ViewPointer to View from V3d;
