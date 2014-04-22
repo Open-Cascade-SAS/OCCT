@@ -1,0 +1,24 @@
+puts "============"
+puts "OCC24827"
+puts "============"
+puts ""
+###############################
+## Incorrect result of projection of an edge on a face
+###############################
+
+restore [locate_data_file bug24827_Comp.brep] c
+explode c
+
+nproject result c_3 c_1 1.e-7
+
+set nb_v_good 2
+set nb_e_good 1
+set nb_w_good 0
+set nb_f_good 0
+set nb_sh_good 0
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 4
+
+set length 0.0008
