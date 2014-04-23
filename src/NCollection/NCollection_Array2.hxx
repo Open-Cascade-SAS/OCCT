@@ -40,7 +40,11 @@
 template <class TheItemType> class NCollection_Array2
   : public NCollection_BaseCollection<TheItemType>
 {
- public:
+public:
+  //! STL-compliant typedef for value type
+  typedef TheItemType value_type;
+
+public:
   // **************** Implementation of the Iterator interface.
   class Iterator : public NCollection_BaseCollection<TheItemType>::Iterator
   {

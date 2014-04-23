@@ -31,9 +31,6 @@
 #include <TopTools_IndexedMapOfShape.hxx>
 #include <TopTools_DataMapOfIntegerShape.hxx>
 
-#include <TCollection_CompareOfReal.hxx>
-#include <SortTools_QuickSortOfReal.hxx>
-
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_IndexedMapOfReal.hxx>
 #include <TColStd_ListOfInteger.hxx>
@@ -47,6 +44,9 @@
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <BOPDS_CommonBlock.hxx>
 #include <BOPTools_AlgoTools3D.hxx>
+
+#include <NCollection_Array1.hxx>
+#include <algorithm>
 
 static Standard_Boolean AddShapeToHistoryMap(const TopoDS_Shape& theOldShape,
                                              const TopoDS_Shape& theNewShape,
@@ -815,7 +815,7 @@ void SortVertexOnEdge(const TopoDS_Edge&          theEdge,
     mapiv.Bind(iv,v);
   }
   Standard_Integer nv = mapiv.Extent();
-  TColStd_Array1OfReal tabpar(1,nv);
+  NCollection_Array1<Standard_Real> tabpar(1,nv);
   Standard_Integer i = 0;
 
   for ( i = 1; i <= nv; i++) {
@@ -823,8 +823,7 @@ void SortVertexOnEdge(const TopoDS_Edge&          theEdge,
     tabpar.SetValue(i,p);
   }
   theListOfVertexSorted.Clear();
-  TCollection_CompareOfReal compare;
-  SortTools_QuickSortOfReal::Sort(tabpar, compare);
+  std::sort (tabpar.begin(), tabpar.end());
 
   for (i = 1; i <= nv; i++) {
     Standard_Real par = tabpar.Value(i);

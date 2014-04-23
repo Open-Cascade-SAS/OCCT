@@ -18,6 +18,7 @@
 
 #include <NCollection_BaseCollection.hxx>
 #include <NCollection_BaseSequence.hxx>
+#include <NCollection_StlIterator.hxx>
 
 #ifndef No_Exception
 #include <Standard_OutOfRange.hxx>
@@ -32,8 +33,11 @@ template <class TheItemType> class NCollection_Sequence
   : public NCollection_BaseCollection<TheItemType>,
     public NCollection_BaseSequence
 {
+public:
+  //! STL-compliant typedef for value type
+  typedef TheItemType value_type;
 
- public:
+public:
   //!   Class defining sequence node - for internal use by Sequence
   class Node : public NCollection_SeqNode
   {
@@ -77,15 +81,44 @@ template <class TheItemType> class NCollection_Sequence
     virtual Standard_Boolean More (void) const
     { return (myCurrent!=NULL); }
     //! Make step
-    virtual void Next (void)         
-    { if (myCurrent) myCurrent = (NCollection_SeqNode *) myCurrent->Next(); }
+    virtual void Next (void)
+    {
+      if (myCurrent)
+      {
+        myPrevious = myCurrent;
+        myCurrent = myCurrent->Next();
+      }
+    }
     //! Constant value access
     virtual const TheItemType& Value (void) const
     { return ((const Node *)myCurrent)->Value(); }
     //! Variable value access
     virtual TheItemType& ChangeValue (void) const
     { return ((Node *)myCurrent)->ChangeValue(); }
+    //! Performs comparison of two iterators.
+    virtual Standard_Boolean IsEqual (const Iterator& theOther) const
+    {
+      return myCurrent == theOther.myCurrent;
+    }
   }; // End of nested class Iterator
+
+  //! Shorthand for a regular iterator type.
+  typedef NCollection_StlIterator<std::bidirectional_iterator_tag, Iterator, TheItemType, false> iterator;
+
+  //! Shorthand for a constant iterator type.
+  typedef NCollection_StlIterator<std::bidirectional_iterator_tag, Iterator, TheItemType, true> const_iterator;
+
+  //! Returns an iterator pointing to the first element in the sequence.
+  iterator begin() const { return Iterator (*this, true); }
+
+  //! Returns an iterator referring to the past-the-end element in the sequence.
+  iterator end() const { Iterator anIter (*this, false); anIter.Next(); return anIter; }
+  
+  //! Returns a const iterator pointing to the first element in the sequence.
+  const_iterator cbegin() const { return Iterator (*this, true); }
+
+  //! Returns a const iterator referring to the past-the-end element in the sequence.
+  const_iterator cend() const { Iterator anIter (*this, false); anIter.Next(); return anIter; }
 
  public:
   // ---------- PUBLIC METHODS ------------

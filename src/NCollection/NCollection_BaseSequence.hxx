@@ -24,26 +24,15 @@
 class NCollection_SeqNode 
 {
  public:
-  // Methods PUBLIC
-  // 
-  NCollection_SeqNode (void)
-    : myNext (NULL), myPrevious (NULL)                {}
-  const NCollection_SeqNode * Next      () const      { return myNext; }
-  const NCollection_SeqNode * Previous  () const      { return myPrevious; }
-  void                      SetNext     (const NCollection_SeqNode * theNext)
-                                                      { myNext = theNext; }
-  void                      SetPrevious (const NCollection_SeqNode * thePrev)
-                                                      { myPrevious = thePrev; }
-  //~NCollection_SeqNode() {
-  //  if (myNext)           myNext -> myPrevious = myPrevious;
-  //  if (myPrevious)       myPrevious -> myNext = myNext;
-  //}
+  NCollection_SeqNode () : myNext (NULL), myPrevious (NULL) {}
+  NCollection_SeqNode * Next      () const { return myNext; }
+  NCollection_SeqNode * Previous  () const { return myPrevious; }
+  void SetNext     (NCollection_SeqNode * theNext) { myNext = theNext; }
+  void SetPrevious (NCollection_SeqNode * thePrev) { myPrevious = thePrev; }
   
  private:
-  // Fields PRIVATE
-  //
-  const NCollection_SeqNode     * myNext;
-  const NCollection_SeqNode     * myPrevious;
+  NCollection_SeqNode* myNext;
+  NCollection_SeqNode* myPrevious;
 };
 
 typedef void (* NCollection_DelSeqNode) 
@@ -60,28 +49,41 @@ class NCollection_BaseSequence
   {
   public:
     //! Empty constructor
-    Iterator                    (void) : myCurrent (NULL) {}
+    Iterator (void) : myCurrent (NULL), myPrevious(NULL) {}
+
     //! Constructor with initialisation
-    Iterator                    (const NCollection_BaseSequence& theSeq,
-                                 const Standard_Boolean          isStart)
-      : myCurrent(isStart ? (NCollection_SeqNode *)theSeq.myFirstItem
-                          : (NCollection_SeqNode *)theSeq.myLastItem) {}
-    //! Initialisation
-    void             Init       (const NCollection_BaseSequence& theSeq,
-                                 const Standard_Boolean          isStart
-                                                                = Standard_True)
-    { myCurrent = isStart ? (NCollection_SeqNode *)theSeq.myFirstItem
-                          : (NCollection_SeqNode *)theSeq.myLastItem; }
+    Iterator (const NCollection_BaseSequence& theSeq,
+              const Standard_Boolean isStart)
+    {
+      Init (theSeq, isStart);
+    }
+
+     //! Initialisation
+    void Init (const NCollection_BaseSequence& theSeq,
+               const Standard_Boolean isStart = Standard_True)
+    {
+      myCurrent  = (isStart ? theSeq.myFirstItem : NULL);
+      myPrevious = (isStart ? NULL : theSeq.myLastItem);
+    }
+
     //! Assignment
     Iterator& operator = (const Iterator& theOther)
-    { myCurrent = theOther.myCurrent; return *this; }
-    //! Previous
-    void             Previous   ()
-    { if (myCurrent)
-        myCurrent = (NCollection_SeqNode *)myCurrent -> Previous(); }
+    {
+      myCurrent = theOther.myCurrent;
+      myPrevious = theOther.myPrevious;
+      return *this;
+    }
+    //! Switch to previous element; note that it will reset 
+    void Previous()
+    {
+      myCurrent = myPrevious;
+      if (myCurrent)
+        myPrevious = myCurrent->Previous();
+    }
       
   protected:
-    NCollection_SeqNode * myCurrent; //!< Pointer to the current node
+    NCollection_SeqNode* myCurrent;  //!< Pointer to the current node
+    NCollection_SeqNode* myPrevious; //!< Pointer to the previous node
     friend class NCollection_BaseSequence;
   };
 
@@ -122,17 +124,17 @@ class NCollection_BaseSequence
   Standard_EXPORT void   PReverse    ();
   Standard_EXPORT void   PExchange   (const Standard_Integer I,
                                       const Standard_Integer J) ;
-  Standard_EXPORT const NCollection_SeqNode *
+  Standard_EXPORT NCollection_SeqNode *
                          Find        (const Standard_Integer) const;
 
  protected:
   // Fields PROTECTED
   //
-  const NCollection_SeqNode         * myFirstItem;
-  const NCollection_SeqNode         * myLastItem;
-  const NCollection_SeqNode         * myCurrentItem;
-  Standard_Integer                  myCurrentIndex;
-  Standard_Integer                  mySize;
+  NCollection_SeqNode* myFirstItem;
+  NCollection_SeqNode* myLastItem;
+  NCollection_SeqNode* myCurrentItem;
+  Standard_Integer myCurrentIndex;
+  Standard_Integer mySize;
 
  private: 
   // Methods PRIVATE

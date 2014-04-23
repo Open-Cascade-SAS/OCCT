@@ -90,6 +90,12 @@ class NCollection_BaseMap
       myNode = NULL;
       PNext();
     }
+    
+    //! Performs comparison of two iterators.
+    virtual Standard_Boolean IsEqual (const Iterator& theOther) const
+    {
+      return myBucket == theOther.myBucket && myNode == theOther.myNode;
+    }
 
   protected:
     //! PMore

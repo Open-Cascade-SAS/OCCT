@@ -21,7 +21,7 @@
 #include <NCollection_TListNode.hxx>
 #include <Standard_TypeMismatch.hxx>
 #include <Standard_NoSuchObject.hxx>
-
+#include <NCollection_StlIterator.hxx>
 #include <NCollection_DefaultHasher.hxx>
 
 #if !defined No_Exception && !defined No_Standard_OutOfRange
@@ -110,7 +110,7 @@ template < class TheKeyType,
       myIndex (1) {}
     //! Query if the end of collection is reached by iterator
     virtual Standard_Boolean More(void) const
-    { return (myIndex <= myMap->Extent()); }
+    { return (myMap != NULL) && (myIndex <= myMap->Extent()); }
     //! Make a step along the collection
     virtual void Next(void)
     {
@@ -143,11 +143,36 @@ template < class TheKeyType,
 #endif
       return myNode->Key1();
     }
+    //! Performs comparison of two iterators.
+    virtual Standard_Boolean IsEqual (const Iterator& theOther) const
+    {
+      return myMap == theOther.myMap &&
+             myNode == theOther.myNode &&
+             myIndex == theOther.myIndex;
+    }
   private:
     NCollection_IndexedDataMap* myMap;   //!< Pointer to the map being iterated
     IndexedDataMapNode*         myNode;  //!< Current node
     Standard_Integer            myIndex; //!< Current index
   };
+  
+  //! Shorthand for a regular iterator type.
+  typedef NCollection_StlIterator<std::forward_iterator_tag, Iterator, TheItemType, false> iterator;
+
+  //! Shorthand for a constant iterator type.
+  typedef NCollection_StlIterator<std::forward_iterator_tag, Iterator, TheItemType, true> const_iterator;
+
+  //! Returns an iterator pointing to the first element in the map.
+  iterator begin() const { return Iterator (*this); }
+
+  //! Returns an iterator referring to the past-the-end element in the map.
+  iterator end() const { return Iterator(); }
+
+  //! Returns a const iterator pointing to the first element in the map.
+  const_iterator cbegin() const { return Iterator (*this); }
+
+  //! Returns a const iterator referring to the past-the-end element in the map.
+  const_iterator cend() const { return Iterator(); }
   
  public:
   // ---------- PUBLIC METHODS ------------

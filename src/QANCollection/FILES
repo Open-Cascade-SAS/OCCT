@@ -5,6 +5,7 @@ QANCollection1.cxx
 QANCollection2.cxx
 QANCollection3.cxx
 QANCollection4.cxx
+QANCollection_Stl.cxx
 QANCollection_Common.cxx
 QANCollection_Common.hxx
 QANCollection_Common2.hxx

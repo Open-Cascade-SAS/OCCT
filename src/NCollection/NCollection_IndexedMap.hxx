@@ -19,6 +19,7 @@
 #include <NCollection_BaseCollection.hxx>
 #include <NCollection_BaseMap.hxx>
 #include <NCollection_TListNode.hxx>
+#include <NCollection_StlIterator.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_ImmutableObject.hxx>
 
@@ -99,7 +100,7 @@ template < class TheKeyType,
       myIndex(1) {}
     //! Query if the end of collection is reached by iterator
     virtual Standard_Boolean More(void) const
-    { return (myIndex <= myMap->Extent()); }
+    { return (myMap != NULL) && (myIndex <= myMap->Extent()); }
     //! Make a step along the collection
     virtual void Next(void)
     { myIndex++; }
@@ -118,11 +119,25 @@ template < class TheKeyType,
       Standard_ImmutableObject::Raise ("impossible to ChangeValue");
       return * (TheKeyType *) NULL; // This for compiler
     }
+    //! Performs comparison of two iterators.
+    virtual Standard_Boolean IsEqual (const Iterator& theOther) const
+    {
+      return myMap == theOther.myMap && myIndex == theOther.myIndex;
+    }
     
   private:
     NCollection_IndexedMap * myMap;   // Pointer to the map being iterated
     Standard_Integer         myIndex; // Current index
   };
+  
+  //! Shorthand for a constant iterator type.
+  typedef NCollection_StlIterator<std::forward_iterator_tag, Iterator, TheKeyType, true> const_iterator;
+
+  //! Returns a const iterator pointing to the first element in the map.
+  const_iterator cbegin() const { return Iterator (*this); }
+
+  //! Returns a const iterator referring to the past-the-end element in the map.
+  const_iterator cend() const { return Iterator(); }
   
  public:
   // ---------- PUBLIC METHODS ------------

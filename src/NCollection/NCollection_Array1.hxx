@@ -23,6 +23,7 @@
 #endif
 
 #include <NCollection_BaseCollection.hxx>
+#include <NCollection_StlIterator.hxx>
 
 // *********************************************** Template for Array1 class
 
@@ -57,42 +58,100 @@
 template <class TheItemType> class NCollection_Array1
   : public NCollection_BaseCollection<TheItemType>
 {
+public:
+  //! STL-compliant typedef for value type
+  typedef TheItemType value_type;
 
- public:
+public:
   //! Implementation of the Iterator interface.
   class Iterator : public NCollection_BaseCollection<TheItemType>::Iterator
   {
   public:
+
     //! Empty constructor - for later Init
-    Iterator  (void) :
-      myCurrent (0),
-      myArray   (NULL) {}
-    //! Constructor with initialisation
-    Iterator  (const NCollection_Array1& theArray) :
-      myCurrent (theArray.Lower()),
-      myArray   ((NCollection_Array1 *) &theArray) {}
+    Iterator (void) :
+      myPtrCur (NULL),
+      myPtrEnd (NULL)
+    {
+      //
+    }
+
+    //! Constructor with initialization
+    Iterator (const NCollection_Array1& theArray, Standard_Boolean theToEnd = Standard_False) :
+      myPtrEnd (const_cast<TheItemType*> (&theArray.Last() + 1))
+    {
+      myPtrCur = theToEnd ? myPtrEnd : const_cast<TheItemType*> (&theArray.First());
+    }
+
     //! Initialisation
     void Init (const NCollection_Array1& theArray)
     { 
-      myCurrent = theArray.Lower();
-      myArray   = (NCollection_Array1 *) &theArray; 
+      myPtrCur = const_cast<TheItemType*> (&theArray.First());
+      myPtrEnd = const_cast<TheItemType*> (&theArray.Last() + 1);
     }
+
+    //! Assignment
+    Iterator& operator= (const Iterator& theOther)
+    {
+      myPtrCur = theOther.myPtrCur;
+      myPtrEnd = theOther.myPtrEnd;
+      return *this;
+    }
+
     //! Check end
     virtual Standard_Boolean More (void) const
-    { return (myCurrent<=myArray->Upper()); }
-    //! Make step
-    virtual void Next (void)         
-    { myCurrent++; }
+    { return myPtrCur < myPtrEnd; }
+    
+    //! Increment operator
+    virtual void Next (void)
+    { ++myPtrCur; }
+
+    //! Decrement operator
+    virtual void Previous()
+    { --myPtrCur; }
+
+    //! Offset operator.
+    virtual void Offset (ptrdiff_t theOffset)
+    { myPtrCur += theOffset; }
+
+    //! Difference operator.
+    virtual ptrdiff_t Differ (const Iterator& theOther) const
+    { return myPtrCur - theOther.myPtrCur; }
+
     //! Constant value access
     virtual const TheItemType& Value (void) const
-    { return myArray->Value(myCurrent); }
+    { return *myPtrCur; }
+
     //! Variable value access
     virtual TheItemType& ChangeValue (void) const 
-    { return myArray->ChangeValue(myCurrent); }
+    { return *myPtrCur; }
+
+    //! Performs comparison of two iterators
+    virtual Standard_Boolean IsEqual (const Iterator& theOther) const
+    { return myPtrCur == theOther.myPtrCur; }
+
   private:
-    Standard_Integer    myCurrent; //!< Index of the current item
-    NCollection_Array1* myArray;   //!< Pointer to the array being iterated
+    TheItemType* myPtrCur; //!< Pointer to the current element in the array
+    TheItemType* myPtrEnd; //!< Pointer to the past-the-end element in the array
   }; // End of the nested class Iterator
+
+  //! Shorthand for a regular iterator type.
+  typedef NCollection_StlIterator<std::random_access_iterator_tag, Iterator, TheItemType, false> iterator;
+
+  //! Shorthand for a constant iterator type.
+  typedef NCollection_StlIterator<std::random_access_iterator_tag, Iterator, TheItemType, true> const_iterator;
+
+  //! Returns an iterator pointing to the first element in the array.
+  iterator begin() const { return Iterator (*this, false); }
+
+  //! Returns an iterator referring to the past-the-end element in the array.
+  iterator end() const { return Iterator (*this, true); }
+  
+  //! Returns a const iterator pointing to the first element in the array.
+  const_iterator cbegin() const { return Iterator (*this, false); }
+
+  //! Returns a const iterator referring to the past-the-end element in the array.
+  const_iterator cend() const { return Iterator (*this, true); }
 
  public:
   // ---------- PUBLIC METHODS ------------

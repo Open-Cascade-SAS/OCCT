@@ -36,20 +36,24 @@ void NCollection_BaseVector::Iterator::copyV (const NCollection_BaseVector::Iter
 //purpose  : Initialisation of iterator by a vector
 //=======================================================================
 
-void NCollection_BaseVector::Iterator::initV (const NCollection_BaseVector& theVector)
+void NCollection_BaseVector::Iterator::initV (const NCollection_BaseVector& theVector, Standard_Boolean theToEnd)
 {
-  myVector    = &theVector;
-  myICurBlock = 0;
-  myCurIndex  = 0;
+  myVector = &theVector;
+
   if (theVector.myNBlocks == 0)
   {
-    myIEndBlock = 0;
+    myCurIndex  = 0;
     myEndIndex  = 0;
+    myICurBlock = 0;
+    myIEndBlock = 0;
   }
   else
   {
     myIEndBlock = theVector.myNBlocks - 1;
     myEndIndex  = theVector.myData[myIEndBlock].Length;
+
+    myICurBlock = !theToEnd ? 0 : myIEndBlock;
+    myCurIndex  = !theToEnd ? 0 : myEndIndex;
   }
 }
 

@@ -72,11 +72,16 @@ class NCollection_BaseList
     }
 //skt----------------------------------------------------
     // ******** Comparison operator
-    Standard_Boolean operator== (const Iterator& theIt)
+    Standard_Boolean operator== (const Iterator& theIt) const
     {
       return myCurrent == theIt.myCurrent;
     }
 //-------------------------------------------------------
+    //! Performs comparison of two iterators
+    virtual Standard_Boolean IsEqual (const Iterator& theOther) const
+    {
+      return *this == theOther;
+    }
   protected:
     void Init (const NCollection_BaseList& theList,
                NCollection_ListNode * const thePrev)

@@ -19,7 +19,7 @@
 #include <NCollection_BaseCollection.hxx>
 #include <NCollection_BaseMap.hxx>
 #include <NCollection_TListNode.hxx>
-
+#include <NCollection_StlIterator.hxx>
 #include <NCollection_DefaultHasher.hxx>
 
 #include <Standard_TypeMismatch.hxx>
@@ -124,6 +124,24 @@ template < class TheKeyType,
       return ((DataMapNode *) myNode)->Key();
     }
   };
+  
+  //! Shorthand for a regular iterator type.
+  typedef NCollection_StlIterator<std::forward_iterator_tag, Iterator, TheItemType, false> iterator;
+
+  //! Shorthand for a constant iterator type.
+  typedef NCollection_StlIterator<std::forward_iterator_tag, Iterator, TheItemType, true> const_iterator;
+
+  //! Returns an iterator pointing to the first element in the map.
+  iterator begin() const { return Iterator (*this); }
+
+  //! Returns an iterator referring to the past-the-end element in the map.
+  iterator end() const { return Iterator(); }
+
+  //! Returns a const iterator pointing to the first element in the map.
+  const_iterator cbegin() const { return Iterator (*this); }
+
+  //! Returns a const iterator referring to the past-the-end element in the map.
+  const_iterator cend() const { return Iterator(); }
 
  public:
   // ---------- PUBLIC METHODS ------------

@@ -51,5 +51,6 @@ is
     Commands2(DI : in out Interpretor from Draw);
     Commands3(DI : in out Interpretor from Draw);
     Commands4(DI : in out Interpretor from Draw);
+    CommandsStl(DI : in out Interpretor from Draw);
 
 end;

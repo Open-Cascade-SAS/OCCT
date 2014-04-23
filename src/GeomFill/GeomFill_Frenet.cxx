@@ -22,9 +22,9 @@
 #include <GeomFill_SnglrFunc.hxx>
 #include <Extrema_ExtPC.hxx>
 #include <TColStd_HArray1OfBoolean.hxx>
-#include <SortTools_QuickSortOfReal.hxx>
-#include <TCollection_CompareOfReal.hxx>
 #include <TColgp_SequenceOfPnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <algorithm>
 
 static const Standard_Real NullTol = 1.e-10;
 static const Standard_Real MaxSingular = 1.e-5;
@@ -211,11 +211,10 @@ Handle(GeomFill_TrihedronLaw) GeomFill_Frenet::Copy() const
 	  }
 	// sorting
 	if(SeqArray[i-1].Length() != 0) {
-	  TColStd_Array1OfReal anArray( 1, SeqArray[i-1].Length() );
+	  NCollection_Array1<Standard_Real> anArray( 1, SeqArray[i-1].Length() );
 	  for (j = 1; j <= anArray.Length(); j++)
 	    anArray(j) = SeqArray[i-1](j);
-	  TCollection_CompareOfReal Compar;
-	  SortTools_QuickSortOfReal::Sort( anArray, Compar);
+	  std::sort (anArray.begin(), anArray.end());
 	  for (j = 1; j <= anArray.Length(); j++)
 	    SeqArray[i-1](j) = anArray(j);
 	}
@@ -258,11 +257,10 @@ Handle(GeomFill_TrihedronLaw) GeomFill_Frenet::Copy() const
 
   if(SnglSeq.Length() > 0) {
     // sorting
-    TColStd_Array1OfReal anArray( 1, SnglSeq.Length() );
+    NCollection_Array1<Standard_Real> anArray( 1, SnglSeq.Length() );
     for (i = 1; i <= SnglSeq.Length(); i++)
       anArray(i) = SnglSeq(i);
-    TCollection_CompareOfReal Compar;
-    SortTools_QuickSortOfReal::Sort( anArray, Compar );
+    std::sort (anArray.begin(), anArray.end());
     for (i = 1; i <= SnglSeq.Length(); i++)
       SnglSeq(i) = anArray(i);
     

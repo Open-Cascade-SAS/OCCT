@@ -20,7 +20,7 @@
 #include <NCollection_BaseMap.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_TListNode.hxx>
-
+#include <NCollection_StlIterator.hxx>
 #include <NCollection_DefaultHasher.hxx>
 
 #include <Standard_ImmutableObject.hxx>
@@ -122,6 +122,15 @@ template < class TheKeyType,
       return ((MapNode *) myNode)->Value();
     }
   };
+  
+  //! Shorthand for a constant iterator type.
+  typedef NCollection_StlIterator<std::forward_iterator_tag, Iterator, TheKeyType, true> const_iterator;
+
+  //! Returns a const iterator pointing to the first element in the map.
+  const_iterator cbegin() const { return Iterator (*this); }
+
+  //! Returns a const iterator referring to the past-the-end element in the map.
+  const_iterator cend() const { return Iterator(); }
 
  public:
   // ---------- PUBLIC METHODS ------------

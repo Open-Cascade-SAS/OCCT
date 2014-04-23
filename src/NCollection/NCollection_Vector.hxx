@@ -18,6 +18,7 @@
 
 #include <NCollection_BaseVector.hxx>
 #include <NCollection_BaseCollection.hxx>
+#include <NCollection_StlIterator.hxx>
 
 //! Class NCollection_Vector (dynamic array of objects)
 //!
@@ -45,8 +46,10 @@ template <class TheItemType> class NCollection_Vector
   public NCollection_BaseVector
 {
 public:
+  //! STL-compliant typedef for value type
+  typedef TheItemType value_type;
 
-  typedef TheItemType TheItemTypeD;
+public:
 
   //! Nested class Iterator
   class Iterator : public NCollection_BaseCollection<TheItemType>::Iterator,
@@ -58,8 +61,8 @@ public:
     Iterator() {}
 
     //! Constructor with initialisation
-    Iterator (const NCollection_Vector& theVector)
-    : NCollection_BaseVector::Iterator (theVector) {}
+    Iterator (const NCollection_Vector& theVector, Standard_Boolean theToEnd = Standard_False)
+    : NCollection_BaseVector::Iterator (theVector, theToEnd) {}
 
     //! Copy constructor
     Iterator (const Iterator& theOther)
@@ -84,10 +87,28 @@ public:
       return moreV();
     }
 
-    //! Make step
+    //! Increment operator.
     virtual void Next()
     {
       nextV();
+    }
+
+    //! Decrement operator.
+    virtual void Previous()
+    {
+      prevV();
+    }
+
+    //! Offset operator.
+    virtual void Offset (ptrdiff_t theOffset)
+    {
+      offsetV ((int)theOffset);
+    }
+
+    //! Difference operator.
+    virtual ptrdiff_t Differ (const Iterator& theOther) const
+    {
+      return differV (theOther);
     }
 
     //! Constant value access
@@ -102,7 +123,34 @@ public:
       return ((TheItemType* )curBlockV()->DataPtr)[myCurIndex];
     }
 
+    //! Performs comparison of two iterators.
+    virtual Standard_Boolean IsEqual (const Iterator& theOther) const
+    {
+      return myVector    == theOther.myVector
+          && myCurIndex  == theOther.myCurIndex
+          && myEndIndex  == theOther.myEndIndex  
+          && myICurBlock == theOther.myICurBlock
+          && myIEndBlock == theOther.myIEndBlock;
+    }
   };
+
+  //! Shorthand for a regular iterator type.
+  typedef NCollection_StlIterator<std::random_access_iterator_tag, Iterator, TheItemType, false> iterator;
+
+  //! Shorthand for a constant iterator type.
+  typedef NCollection_StlIterator<std::random_access_iterator_tag, Iterator, TheItemType, true> const_iterator;
+
+  //! Returns an iterator pointing to the first element in the vector.
+  iterator begin() const { return Iterator (*this, false); }
+
+  //! Returns an iterator referring to the past-the-end element in the vector.
+  iterator end() const { return Iterator (*this, true); }
+
+  //! Returns a const iterator pointing to the first element in the vector.
+  const_iterator cbegin() const { return Iterator (*this, false); }
+
+  //! Returns a const iterator referring to the past-the-end element in the vector.
+  const_iterator cend() const { return Iterator (*this, true); }
 
 public: //! @name public methods
 
@@ -297,7 +345,7 @@ private: //! @name private methods
     {
       for (Standard_Integer anItemIter = 0; anItemIter < theBlock.Size; ++anItemIter)
       {
-        ((TheItemType* )theBlock.DataPtr)[anItemIter].~TheItemTypeD();
+        ((TheItemType* )theBlock.DataPtr)[anItemIter].~TheItemType();
       }
       anAllocator->Free (theBlock.DataPtr);
       theBlock.DataPtr = NULL;

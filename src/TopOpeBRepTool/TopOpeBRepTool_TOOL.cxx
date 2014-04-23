@@ -41,8 +41,7 @@
 #include <TopTools_DataMapOfIntegerShape.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_IndexedMapOfReal.hxx>
-#include <TCollection_CompareOfReal.hxx>
-#include <SortTools_QuickSortOfReal.hxx>
+#include <NCollection_Array1.hxx>
 #include <BRepLProp_CLProps.hxx>
 #include <GeomLProp_SLProps.hxx>
 #include <gp_Torus.hxx>
@@ -51,6 +50,7 @@
 #include <Bnd_Box.hxx>
 #include <BRepBndLib.hxx>
 #include <ElCLib.hxx>
+#include <algorithm>
 
 #define M_FORWARD(sta)  (sta == TopAbs_FORWARD)
 #define M_REVERSED(sta) (sta == TopAbs_REVERSED)
@@ -335,7 +335,7 @@ static void FUN_tool_sortVonE(TopTools_ListOfShape& lov, const TopoDS_Edge E)
     mapiv.Bind(iv,v);
   }
   Standard_Integer nv = mapiv.Extent();
-  TColStd_Array1OfReal tabpar(1,nv);
+  NCollection_Array1<Standard_Real> tabpar(1,nv);
 //  for (Standard_Integer i = 1; i <= nv; i++) {
   Standard_Integer i ;
   for ( i = 1; i <= nv; i++) {
@@ -344,7 +344,7 @@ static void FUN_tool_sortVonE(TopTools_ListOfShape& lov, const TopoDS_Edge E)
   }
   
   TopTools_ListOfShape newlov;
-  TCollection_CompareOfReal compare; SortTools_QuickSortOfReal::Sort(tabpar, compare);
+  std::sort (tabpar.begin(), tabpar.end());
   for (i = 1; i <= nv; i++) {
     Standard_Real par = tabpar.Value(i);
     Standard_Integer iv = mappar.FindIndex(par);

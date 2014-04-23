@@ -74,9 +74,9 @@ protected:
       myCurIndex  (0),
       myEndIndex  (0) {}
 
-    Iterator (const NCollection_BaseVector& theVector)
+    Iterator (const NCollection_BaseVector& theVector, Standard_Boolean theToEnd = Standard_False)
     {
-      initV (theVector);
+      initV (theVector, theToEnd);
     }
 
     Iterator (const Iterator& theVector)
@@ -84,7 +84,7 @@ protected:
       copyV (theVector);
     }
 
-    Standard_EXPORT void initV (const NCollection_BaseVector& theVector);
+    Standard_EXPORT void initV (const NCollection_BaseVector& theVector, Standard_Boolean theToEnd = Standard_False);
 
     Standard_EXPORT void copyV (const Iterator&);
 
@@ -101,6 +101,27 @@ protected:
         ++myICurBlock;
         myCurIndex = 0;
       }
+    }
+
+    void prevV()
+    {
+      if (--myCurIndex < 0 && myICurBlock > 0)
+      {
+        --myICurBlock;
+        myCurIndex = myVector->myData[myICurBlock].Length - 1;
+      }
+    }
+
+    virtual void offsetV (Standard_Integer theOffset)
+    {
+      const Standard_Integer anIndex = myCurIndex + myICurBlock * myVector->myIncrement + theOffset;
+      myICurBlock = anIndex / myVector->myIncrement;
+      myCurIndex = anIndex % myVector->myIncrement;
+    }
+
+    virtual Standard_Integer differV (const Iterator& theOther) const
+    {
+      return (myCurIndex - theOther.myCurIndex) + (myICurBlock - theOther.myICurBlock) * myVector->myIncrement;
     }
 
     const MemBlock* curBlockV() const

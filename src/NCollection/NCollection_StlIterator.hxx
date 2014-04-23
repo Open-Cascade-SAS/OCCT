@@ -1,0 +1,246 @@
+// Created on: 2014-04-15
+// Created by: Denis BOGOLEPOV
+// Copyright (c) 2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef NCollection_StlIterator_HeaderFile
+#define NCollection_StlIterator_HeaderFile
+
+#include <Standard_Assert.hxx>
+#include <iterator>
+
+// This file uses C++11 utilities like std::is_base<>, which are not 
+// available in some environments (e.g. MSVC includes them since VS 2008).
+// Hence here we define our own implementation of these tools in namespace opencascade.
+// When all compilers support this, this namespace can be removed and replaced by std.
+namespace opencascade
+{
+  template<bool Condition, typename T>
+  struct enable_if
+  {
+    typedef T type;
+  };
+  
+  template<typename T>
+  struct enable_if<false, T>
+  {
+  };
+  
+  template<typename T1, typename T2>
+  struct is_same
+  {
+    enum { value = 0 };
+  };
+  
+  template<typename T>
+  struct is_same<T, T>
+  {
+    enum { value = 1 };
+  };
+  
+  template<bool Condition, typename TypeTrue, typename TypeFalse>
+  struct conditional
+  {
+    typedef TypeTrue type;
+  };
+
+  template<typename TypeTrue, typename TypeFalse>
+  struct conditional<false, TypeTrue, TypeFalse>
+  {
+    typedef TypeFalse type;
+  };
+}
+
+//! Helper class that allows to use NCollection iterators as STL iterators.
+//! NCollection iterator can be extended to STL iterator of any category by
+//! adding necessary methods: STL forward iterator requires IsEqual method,
+//! STL bidirectional iterator requires Previous method, and STL random access
+//! iterator requires Offset and Differ methods. See NCollection_Vector as
+//! example of declaring custom STL iterators.
+template<class Category, class BaseIterator, class ItemType, bool IsConstant>
+class NCollection_StlIterator : private BaseIterator, 
+  public std::iterator<Category, ItemType, ptrdiff_t,
+                       typename opencascade::conditional<IsConstant, const ItemType*, ItemType*>::type,
+                       typename opencascade::conditional<IsConstant, const ItemType&, ItemType&>::type>
+{
+public:
+
+  //! Default constructor
+  NCollection_StlIterator () {}
+
+  //! Constructor from NCollection iterator
+  NCollection_StlIterator (const BaseIterator& theIterator)
+    : BaseIterator (theIterator)
+  { }
+
+  //! Cast from non-const variant to const one
+  NCollection_StlIterator (const NCollection_StlIterator<Category, BaseIterator, ItemType, false>& theIterator)
+    : BaseIterator (theIterator)
+  { }
+
+  //! Assignment of non-const iterator to const one
+  NCollection_StlIterator& operator= (const NCollection_StlIterator<Category, BaseIterator, ItemType, false>& theIterator)
+  {
+    BaseIterator::operator= (theIterator);
+    return *this;
+  }
+
+  friend class NCollection_StlIterator<Category, BaseIterator, ItemType, !IsConstant>;
+
+protected: //! @name methods related to forward STL iterator
+
+  // Note: Here we use SFINAE (Substitution failure is not an error) to choose
+  // an appropriate method based on template arguments (at instantiation time).
+
+  template<bool Condition>
+  typename opencascade::enable_if<!Condition, ItemType&>::type Reference()
+  {
+    return BaseIterator::ChangeValue();
+  }
+
+  template<bool Condition>
+  typename opencascade::enable_if<Condition, const ItemType&>::type Reference()
+  {
+    return BaseIterator::Value();
+  }
+
+public: //! @name methods related to forward STL iterator
+
+  //! Test for equality
+  bool operator== (const NCollection_StlIterator& theOther) const
+  {
+    return BaseIterator::More() == theOther.More() &&
+           (!BaseIterator::More() || BaseIterator::IsEqual (theOther));
+  }
+
+  //! Test for inequality
+  bool operator!= (const NCollection_StlIterator& theOther) const
+  {
+    return !(*this == theOther);
+  }
+
+  //! Get reference to current item
+  typename NCollection_StlIterator::reference operator*()
+  {
+    return Reference<IsConstant>();
+  }
+
+  //! Dereferencing operator
+  typename NCollection_StlIterator::pointer operator->()
+  {
+    return &Reference<IsConstant>();
+  }
+
+  //! Prefix increment
+  NCollection_StlIterator& operator++()
+  {
+    BaseIterator::Next();
+    return *this;
+  }
+
+  //! Postfix increment
+  NCollection_StlIterator operator++(int)
+  {
+    const NCollection_StlIterator theOld (*this);
+    ++(*this);
+    return theOld;
+  }
+
+public: //! @name methods related to bidirectional STL iterator
+  
+  //! Prefix decrement
+  NCollection_StlIterator& operator--()
+  {
+    Standard_STATIC_ASSERT((opencascade::is_same<std::bidirectional_iterator_tag,Category>::value ||
+                            opencascade::is_same<std::random_access_iterator_tag,Category>::value));
+    BaseIterator::Previous();
+    return *this;
+  }
+  
+  //! Postfix decrement
+  NCollection_StlIterator operator--(int)
+  {
+    NCollection_StlIterator theOld (*this);
+    --(*this);
+    return theOld;
+  }
+  
+public: //! @name methods related to random access STL iterator
+
+  //! Move forward
+  NCollection_StlIterator& operator+= (typename NCollection_StlIterator::difference_type theOffset)
+  {
+    Standard_STATIC_ASSERT((opencascade::is_same<std::random_access_iterator_tag,Category>::value));
+    BaseIterator::Offset (theOffset);
+    return *this;
+  }
+
+  //! Addition
+  NCollection_StlIterator operator+ (typename NCollection_StlIterator::difference_type theOffset) const
+  {
+    NCollection_StlIterator aTemp (*this);
+    return aTemp += theOffset;
+  }
+
+  //! Move backward
+  NCollection_StlIterator& operator-= (typename NCollection_StlIterator::difference_type theOffset)
+  {
+    return *this += -theOffset;
+  }
+
+  //! Decrease
+  NCollection_StlIterator operator- (typename NCollection_StlIterator::difference_type theOffset) const
+  {
+    NCollection_StlIterator aTemp (*this);
+    return aTemp += -theOffset;
+  }
+
+  //! Difference
+  typename NCollection_StlIterator::difference_type operator- (const NCollection_StlIterator& theOther) const
+  {
+    Standard_STATIC_ASSERT((opencascade::is_same<std::random_access_iterator_tag,Category>::value));
+    return BaseIterator::Differ (theOther);
+  }
+
+  //! Get item at offset from current
+  typename NCollection_StlIterator::reference operator[] (typename NCollection_StlIterator::difference_type theOffset) const
+  {
+    return *(*this + theOffset);
+  }
+  
+  //! Comparison
+  bool operator< (const NCollection_StlIterator& theOther) const
+  {
+    return (*this - theOther) < 0;
+  }
+
+  //! Comparison
+  bool operator> (const NCollection_StlIterator& theOther) const
+  {
+    return theOther < *this;
+  }
+
+  //! Comparison
+  bool operator<= (const NCollection_StlIterator& theOther) const
+  {
+    return !(theOther < *this);
+  }
+
+  //! Comparison
+  bool operator>= (const NCollection_StlIterator& theOther) const
+  {
+    return !(*this < theOther);
+  }
+};
+
+#endif // NCollection_StlIterator_HeaderFile

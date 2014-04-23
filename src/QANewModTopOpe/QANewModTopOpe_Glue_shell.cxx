@@ -1356,7 +1356,7 @@ QANewModTopOpe_Glue::SectionInsideFace(const TopoDS_Face& theFace,
     // check if vertices of aSEdge contacts edges of aFace
     TopoDS_Iterator aIter (aSEdge, Standard_False);
     for (; aIter.More(); aIter.Next()) {
-      const TopoDS_Vertex& aSVer = TopoDS::Vertex (aIter.Value());
+      TopoDS_Vertex aSVer = TopoDS::Vertex (aIter.Value());
       if (aSVer.Orientation() != TopAbs_FORWARD &&
 	  aSVer.Orientation() != TopAbs_REVERSED) continue;
 

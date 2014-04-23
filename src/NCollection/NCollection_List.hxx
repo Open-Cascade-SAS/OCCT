@@ -17,6 +17,7 @@
 #define NCollection_List_HeaderFile
 
 #include <NCollection_TListIterator.hxx>
+#include <NCollection_StlIterator.hxx>
 
 #if !defined No_Exception && !defined No_Standard_NoSuchObject
 #include <Standard_NoSuchObject.hxx>
@@ -31,9 +32,31 @@ template <class TheItemType> class NCollection_List
   : public NCollection_BaseCollection<TheItemType>,
     public NCollection_BaseList
 {
- public:
+public:
+  //! STL-compliant typedef for value type
+  typedef TheItemType value_type;
+
+public:
   typedef NCollection_TListNode<TheItemType>     ListNode;
   typedef NCollection_TListIterator<TheItemType> Iterator;
+
+  //! Shorthand for a regular iterator type.
+  typedef NCollection_StlIterator<std::forward_iterator_tag, Iterator, TheItemType, false> iterator;
+
+  //! Shorthand for a constant iterator type.
+  typedef NCollection_StlIterator<std::forward_iterator_tag, Iterator, TheItemType, true> const_iterator;
+
+  //! Returns an iterator pointing to the first element in the list.
+  iterator begin() const { return Iterator (*this); }
+
+  //! Returns an iterator referring to the past-the-end element in the list.
+  iterator end() const { return Iterator(); }
+
+  //! Returns a const iterator pointing to the first element in the list.
+  const_iterator cbegin() const { return Iterator (*this); }
+
+  //! Returns a const iterator referring to the past-the-end element in the list.
+  const_iterator cend() const { return Iterator(); }
 
  public:
   // ---------- PUBLIC METHODS ------------
