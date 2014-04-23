@@ -17,7 +17,6 @@
 #include <TDataStd_Name.hxx>
 #include <TDF_Data.hxx>
 #include <TDF_Tool.hxx>
-#include <TDF_LabelLabelMap.hxx>
 #include <TDataStd_TreeNode.hxx>
 
 //=======================================================================

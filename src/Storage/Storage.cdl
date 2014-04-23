@@ -141,9 +141,6 @@ is
     private class stCONSTclCOM;
 
     private class TypedCallBack;
-    private class SeqOfPersistent instantiates Sequence from TCollection(Persistent from Standard);
-    private class HSeqOfPersistent instantiates HSequence from TCollection(Persistent from Standard,SeqOfPersistent);
-    private class MapPSDHasher  instantiates MapHasher from TCollection(Persistent from Standard);
     
     private class PType instantiates IndexedDataMap from TCollection(AsciiString from TCollection, 
     				     		     	     Integer from Standard, 
@@ -163,9 +160,6 @@ is
     class ArrayOfSchema instantiates Array1 from TCollection(Schema from Storage);
     class HArrayOfSchema instantiates HArray1 from TCollection(Schema from Storage,ArrayOfSchema from Storage);
     
-    private class SeqOfCallBack instantiates Sequence from TCollection(CallBack from Storage);
-    private class HSeqOfCallBack instantiates HSequence from TCollection(CallBack from Storage,SeqOfCallBack from Storage);
-
     private class PArray instantiates Array1 from TCollection(Persistent from Standard);  
     private class HPArray instantiates HArray1 from TCollection(Persistent from Standard, PArray from Storage);
     

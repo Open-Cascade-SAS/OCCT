@@ -64,6 +64,5 @@ is
     class DocumentHasher instantiates MapHasher from TCollection(Document from CDM);
     class MapOfDocument instantiates Map from TCollection(Document from CDM, DocumentHasher from CDM);
     class ListOfDocument instantiates List from TCollection(Document from CDM);
-    class StackOfDocument instantiates List from TCollection(Document from CDM);
 
 end CDM;

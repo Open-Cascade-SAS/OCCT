@@ -18,10 +18,9 @@ private class StoreList from CDF inherits Transient from Standard
 
 uses
     Document from CDM,
-    StackOfDocument from CDM,
+    ListOfDocument from CDM,
     MapOfDocument from CDM,
     MapIteratorOfMapOfDocument from CDM,
-    ListIteratorOfStackOfDocument from CDM,
     MetaData from CDM,
     ExtendedString from TCollection,
     StoreStatus from PCDM
@@ -60,7 +59,7 @@ is
 fields
 
     myItems: MapOfDocument from CDM;
-    myStack: StackOfDocument from CDM;
+    myStack: ListOfDocument from CDM;
     myIterator: MapIteratorOfMapOfDocument from CDM;
     myMainDocument: Document from CDM;
 end StoreList from CDF;

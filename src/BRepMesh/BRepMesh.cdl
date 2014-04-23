@@ -113,8 +113,6 @@ is    enumeration DegreeOfFreedom is
         (Integer, Array1OfInteger from TColStd,
         ComparatorOfIndexedVertexOfDelaun from BRepMesh);
 
-      class NodeHasherOfDataStructureOfDelaun instantiates MapHasher from TCollection
-        (Vertex from BRepMesh);
       class LinkHasherOfDataStructureOfDelaun instantiates MapHasher from TCollection
         (Edge from BRepMesh);
       class ElemHasherOfDataStructureOfDelaun instantiates MapHasher from TCollection
@@ -122,11 +120,6 @@ is    enumeration DegreeOfFreedom is
 
       class DataMapOfIntegerListOfInteger     instantiates DataMap from TCollection
         (Integer from Standard, ListOfInteger from BRepMesh, MapIntegerHasher from TColStd);
-
-      class IDMapOfNodeOfDataStructureOfDelaun  instantiates IndexedDataMap from TCollection
-        (Vertex from BRepMesh,
-        ListOfInteger from BRepMesh,
-        NodeHasherOfDataStructureOfDelaun);
 
       class IDMapOfLinkOfDataStructureOfDelaun  instantiates IndexedDataMap from TCollection
         (Edge from BRepMesh,
@@ -154,11 +147,6 @@ is    enumeration DegreeOfFreedom is
       class IndexedMapOfVertex instantiates IndexedMap from TCollection 
           (Vertex from  BRepMesh,  VertexHasher from  BRepMesh);
 
-
-      class DataMapOfShapeReal instantiates DataMap from TCollection
-                                            (Shape          from TopoDS,
-                                             Real           from Standard,
-                                             ShapeMapHasher from TopTools);
 
       class BiPoint;
   

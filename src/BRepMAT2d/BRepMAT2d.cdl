@@ -47,12 +47,9 @@ is
     	--          the BasicElts contained in the bisecting locus.
 
 
-    class SequenceOfBasicElt instantiates Sequence from TCollection
-                                                         (BasicElt from MAT); 
-							 
     class DataMapOfShapeSequenceOfBasicElt instantiates DataMap from TCollection 
     		    		    	      (Shape               from TopoDS, 
-					       SequenceOfBasicElt  from  BRepMAT2d, 
+					       SequenceOfBasicElt  from MAT, 
 					       ShapeMapHasher      from TopTools); 
     
     class DataMapOfBasicEltShape  instantiates

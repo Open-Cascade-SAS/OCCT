@@ -737,6 +737,5 @@ fields
 friends
 
         class View from V3d,
-        class Light from V3d,
-        SetPlane  from package V3d (aViewer: Viewer from V3d; x1,y1,z1,x2,y2,z2: Length from Quantity)
+        class Light from V3d
 end Viewer;

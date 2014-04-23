@@ -69,7 +69,6 @@
 #include <BRepMesh_ListIteratorOfListOfXY.hxx>
 
 #include <TColStd_Array1OfInteger.hxx>
-#include <BRepMesh_IDMapOfNodeOfDataStructureOfDelaun.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 //#include <TColStd_DataMapOfInteger.hxx>

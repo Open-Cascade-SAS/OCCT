@@ -29,10 +29,6 @@ uses
     TopTools
 is
          
-    class DataMapOfShapeOfName instantiates
-    	DataMap from TCollection(Shape          from TopoDS,
-	    	    	    	 AsciiString    from TCollection,
-                                 ShapeMapHasher from TopTools);  				  			       								   
     CurrentShape (ShapeEntry      : CString  from Standard; 
     	    	  Data            : Data     from TDF)
     returns Shape from TopoDS;		  

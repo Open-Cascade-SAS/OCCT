@@ -261,11 +261,6 @@ is
 	 Integer from Standard,
     	 LabelMapHasher from TDF);
 
-    class LabelLabelMap instantiates DataMap from TCollection
-    	(Label from TDF,
-	 Label from TDF,
-    	 LabelMapHasher from TDF);
-
     class GUIDProgIDMap instantiates DoubleMap from TCollection
     	(GUID from Standard,
     	 ExtendedString from TCollection,

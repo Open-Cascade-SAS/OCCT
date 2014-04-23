@@ -35,50 +35,12 @@ is
 
         generic class HArray2, FieldOfHArray2 ;   
 
-        generic class HSingleList;
-	    ---Purpose: The private generic class SingleList represents
-	    -- a sequence of 0 or more linked items.
-
- 	 generic class HDoubleList;
-	    ---Purpose: A List is a sequence of zero or more items
-    	    -- Each item has two pointers (backward,forward)
-
-
 	generic class HSequence,SeqNode,SeqExplorer;
 
 		---Purpose: Generic sequence of elements
 		-- indexed by an integer in the range 1..N.
 
-
-	generic class Hash;
 	
-	---Purpose: Definition of hash function. This class is used by Map 
-	-- class and may be redefined by user.
-
-
-        deferred generic class Compare ;
-    	                            
-	     ---Purpose: Defines a comparison operator which can be used by
-	     -- any ordered structure.   The  way to compare items
-	     -- has  to be described  in  subclasses, which  inherit
-	     -- from instantiations of Compare.
-
-        private deferred class PrivCompareOfInteger 
-                            instantiates Compare from PCollection(Integer); 
-
-        private deferred class PrivCompareOfReal 
-                            instantiates Compare from PCollection(Real); 
-
-        class CompareOfInteger;
-	
-	class CompareOfReal;
-		
-        enumeration Side is Left , Right;
-
-        exception IsNotRoot inherits Failure;
-        exception IsNullTree inherits Failure;
-        exception IsContained inherits Failure;
-
         class HAsciiString;
 
 	class HExtendedString;

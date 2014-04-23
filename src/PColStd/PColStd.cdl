@@ -26,41 +26,6 @@ is
 ------------------------------------------------------------------------
 
 --
---       Instantiations HSequence (Integer,Real,Persistent,
---                                 HAsciiString,
---                                 HExtendedString)
---       **************************************************
---       
-class HSequenceOfInteger instantiates 
-           HSequence from PCollection(Integer);
-class HSequenceOfReal instantiates 
-           HSequence from PCollection(Real);
-class HSequenceOfPersistent instantiates 
-           HSequence from PCollection(Persistent);
-class HSequenceOfHAsciiString instantiates 
-           HSequence from PCollection(HAsciiString from PCollection);
-class HSequenceOfHExtendedString instantiates 
-           HSequence from PCollection(HExtendedString from PCollection);
---
---       Instantiations HSingleList (Integer,Real,Persistent)
---       *****************************************************
---       
-class HSingleListOfInteger instantiates 
-           HSingleList from PCollection(Integer);
-class HSingleListOfReal instantiates 
-           HSingleList from PCollection(Real);
-class HSingleListOfPersistent instantiates 
-           HSingleList from PCollection(Persistent);
---       Instantiations HDoubleList (Integer,Real,Persistent)
---       *********************************************
---       
-class HDoubleListOfInteger instantiates 
-           HDoubleList from PCollection(Integer);
-class HDoubleListOfReal instantiates 
-           HDoubleList from PCollection(Real);
-class HDoubleListOfPersistent instantiates 
-           HDoubleList from PCollection(Persistent);
---
 --       Instantiations HArray1 (Integer,Real,Persistent)
 --       ****************************************************
 --       
@@ -85,20 +50,6 @@ class HDoubleListOfPersistent instantiates
                         HArray2 from PCollection(Real);
     class HArray2OfPersistent instantiates 
                         HArray2 from PCollection(Persistent);
-
---       Instantiations Hash (Integer)
---       *****************************
---
-class HOfInteger instantiates Hash from PCollection(Integer);
-class HOfReal instantiates Hash from PCollection(Real);
-class HOfAsciiString instantiates Hash from PCollection(HAsciiString from PCollection);
----Purpose: Hash on the Handle.
-class HashAsciiString;
----Purpose: Hash on the string.
-class HOfExtendedString instantiates Hash from PCollection(HExtendedString from PCollection); 
----Purpose: Hash on the Handle
-class HashExtendedString;
----Purpose: Hash on the string.
 
 end PColStd;
 

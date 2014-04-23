@@ -56,7 +56,7 @@
 #include <Draw_Interpretor.hxx>
 #include <Draw_ProgressIndicator.hxx>
 
-#include <Draw_MapOfFunctions.hxx>
+#include <Plugin_MapOfFunctions.hxx>
 #include <OSD_SharedLibrary.hxx>
 #include <Resource_Manager.hxx>
 #include <Draw_Failure.hxx>
@@ -497,76 +497,6 @@ Standard_Integer  Draw_Call (char *c)
    return r;
 }
 
-
-//=================================================================================
-//
-//=================================================================================
-void Draw::Load(Draw_Interpretor& theDI, const TCollection_AsciiString& theKey,
-		 const TCollection_AsciiString& theResourceFileName) {
-
-  static Draw_MapOfFunctions theMapOfFunctions;
-  OSD_Function f;
-
-  if(!theMapOfFunctions.IsBound(theKey)) {
-
-    Handle(Resource_Manager) aPluginResource = new Resource_Manager(theResourceFileName.ToCString());
-    if(!aPluginResource->Find(theKey.ToCString())) {
-      Standard_SStream aMsg; aMsg << "Could not find the resource:";
-      aMsg << theKey.ToCString()<< endl;
-      cout << "could not find the resource:"<<theKey.ToCString()<< endl;
-      Draw_Failure::Raise(aMsg);
-    }
-
-    TCollection_AsciiString aPluginLibrary("");
-#ifndef WNT
-    aPluginLibrary += "lib";
-#endif
-    aPluginLibrary +=  aPluginResource->Value(theKey.ToCString());
-#ifdef WNT
-    aPluginLibrary += ".dll";
-#elif __APPLE__
-    aPluginLibrary += ".dylib";
-#elif defined (HPUX) || defined(_hpux)
-    aPluginLibrary += ".sl";
-#else
-    aPluginLibrary += ".so";
-#endif
-    OSD_SharedLibrary aSharedLibrary(aPluginLibrary.ToCString());
-    if(!aSharedLibrary.DlOpen(OSD_RTLD_LAZY)) {
-      TCollection_AsciiString error(aSharedLibrary.DlError());
-      Standard_SStream aMsg; aMsg << "Could not open: ";
-      aMsg << aPluginResource->Value(theKey.ToCString());
-      aMsg << "; reason: ";
-      aMsg << error.ToCString();
-#ifdef DEB
-      cout << "could not open: "  << aPluginResource->Value(theKey.ToCString())<< " ; reason: "<< error.ToCString() << endl;
-#endif
-      Draw_Failure::Raise(aMsg);
-    }
-    f = aSharedLibrary.DlSymb("PLUGINFACTORY");
-    if( f == NULL ) {
-      TCollection_AsciiString error(aSharedLibrary.DlError());
-      Standard_SStream aMsg; aMsg << "Could not find the factory in: ";
-      aMsg << aPluginResource->Value(theKey.ToCString());
-      aMsg << error.ToCString();
-      Draw_Failure::Raise(aMsg);
-    }
-    theMapOfFunctions.Bind(theKey, f);
-  }
-  else
-    f = theMapOfFunctions(theKey);
-
-//   void (*fp) (Draw_Interpretor&, const TCollection_AsciiString&) = NULL;
-//   fp = (void (*)(Draw_Interpretor&, const TCollection_AsciiString&)) f;
-//   (*fp) (theDI, theKey);
-
-  void (*fp) (Draw_Interpretor&) = NULL;
-  fp = (void (*)(Draw_Interpretor&)) f;
-  (*fp) (theDI);
-
-}
-
-
 //=================================================================================
 //
 //=================================================================================
@@ -576,7 +506,7 @@ void Draw::Load(Draw_Interpretor& theDI, const TCollection_AsciiString& theKey,
 		TCollection_AsciiString& theUserDefaultsDirectory,
 		const Standard_Boolean Verbose ) {
 
-  static Draw_MapOfFunctions theMapOfFunctions;
+  static Plugin_MapOfFunctions theMapOfFunctions;
   OSD_Function f;
 
   if(!theMapOfFunctions.IsBound(theKey)) {

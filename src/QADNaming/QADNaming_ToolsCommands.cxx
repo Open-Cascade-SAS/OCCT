@@ -28,8 +28,8 @@
 #include <TCollection_AsciiString.hxx>
 #include <TNaming_Translator.hxx>
 #include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
-#include <QADNaming_DataMapOfShapeOfName.hxx>
-#include <QADNaming_DataMapIteratorOfDataMapOfShapeOfName.hxx>
+#include <DNaming_DataMapOfShapeOfName.hxx>
+#include <DNaming_DataMapIteratorOfDataMapOfShapeOfName.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TopAbs.hxx>
 #include <TopExp_Explorer.hxx>
@@ -110,7 +110,7 @@ static Standard_Integer QADNaming_TCopyShape (Draw_Interpretor& di,
   TNaming_Translator TR;
   if(nb < 2) return (1);
 
-  QADNaming_DataMapOfShapeOfName aDMapOfShapeOfName;
+  DNaming_DataMapOfShapeOfName aDMapOfShapeOfName;
   for(Standard_Integer i= 1;i < nb; i++) {
     TopoDS_Shape S = DBRep::Get(arg[i]);
     TCollection_AsciiString name(arg[i]);
@@ -134,7 +134,7 @@ static Standard_Integer QADNaming_TCopyShape (Draw_Interpretor& di,
   if(TR.IsDone()){
 //    cout << "QADNaming_CopyShape:: Copy is Done " << endl;
 
-    QADNaming_DataMapIteratorOfDataMapOfShapeOfName itrn(aDMapOfShapeOfName);
+    DNaming_DataMapIteratorOfDataMapOfShapeOfName itrn(aDMapOfShapeOfName);
     for(;itrn.More();itrn.Next()) {
       TCollection_AsciiString name = itrn.Value();
       const TopoDS_Shape& Result = TR.Copied(itrn.Key());

@@ -522,11 +522,6 @@ is
     -- Category: Instantiated classes
     ---------------------------------
 
-    class SequenceOfAddress instantiates
-            Sequence from TCollection
-            (Address from Standard);
-    ---Category: Instantiated classes
-
     imported SequenceOfGroup;
 
     ---Category: Instantiated classes

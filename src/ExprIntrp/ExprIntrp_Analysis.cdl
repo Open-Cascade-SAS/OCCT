@@ -32,7 +32,7 @@ uses Generator from ExprIntrp,
     NamedFunction from Expr,
     NamedExpression from Expr,
     AsciiString from TCollection,
-    StackOfNames from ExprIntrp
+    ListOfAsciiString from TColStd
     
 is
 
@@ -107,7 +107,7 @@ fields
     myGEStack : StackOfGeneralExpression;
     myGRStack : StackOfGeneralRelation;
     myGFStack : StackOfGeneralFunction;
-    myNameStack : StackOfNames;
+    myNameStack : ListOfAsciiString from TColStd;
     myValueStack : ListOfInteger;
     myFunctions : SequenceOfNamedFunction;
     myNamed : SequenceOfNamedExpression;
