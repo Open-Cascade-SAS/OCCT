@@ -1,0 +1,25 @@
+puts "============"
+puts "OCC24376"
+puts "============"
+puts ""
+#######################################################################
+# BMP image cannot be read
+#######################################################################
+
+box b 1 1 1
+explode b FACE
+
+vinit
+vdisplay b_1
+vtexture b_1 [locate_data_file bug24376_Soap.bmp]
+vfit
+
+set x_coord 200
+set y_coord 100
+checkcolor $x_coord $y_coord 0 0 0
+
+set x_coord 200
+set y_coord 90
+checkcolor $x_coord $y_coord 0.78039216995239258 0.55294120311737061 0.094117648899555206
+
+set only_screen 1
