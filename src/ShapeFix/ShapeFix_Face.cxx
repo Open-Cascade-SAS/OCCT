@@ -2266,7 +2266,16 @@ Standard_Boolean ShapeFix_Face::FixSplitFace(const TopTools_DataMapOfShapeListOf
       const TopTools_ListOfShape& IntWires = MapWires.Find(wire);
       TopTools_ListIteratorOfListOfShape liter(IntWires);
       for( ; liter.More(); liter.Next()) {
-        B.Add(tmpFace,liter.Value());
+        TopoDS_Shape aShape = tmpFace.EmptyCopied();
+        TopoDS_Face aFace = TopoDS::Face ( aShape );
+        aFace.Orientation ( TopAbs_FORWARD );
+        B.Add (aFace,liter.Value());
+        BRepTopAdaptor_FClass2d clas (aFace,::Precision::PConfusion());
+        TopAbs_State staout = clas.PerformInfinitePoint();
+        if (staout == TopAbs_IN) 
+          B.Add(tmpFace,liter.Value());
+        else
+          B.Add(tmpFace,liter.Value().Reversed());                
         NbWiresNew++;
       }
       if(!myFwd) tmpFace.Orientation(TopAbs_REVERSED);
