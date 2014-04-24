@@ -2111,6 +2111,72 @@ static Standard_Integer OCC24755 (Draw_Interpretor& di, Standard_Integer n, cons
   return 0;
 }
 
+struct MyStubObject
+{
+  MyStubObject() : ptr(0L) {}
+  MyStubObject(void* thePtr) : ptr(thePtr) {}
+  char overhead[40];
+  void* ptr;
+};
+
+//=======================================================================
+//function : OCC24834
+//purpose  : 
+//=======================================================================
+static Standard_Integer OCC24834 (Draw_Interpretor& di, Standard_Integer n, const char** a)
+{
+  if (n != 1)
+  {
+    std::cout << "Usage : " << a[0] << "\n";
+    return 1;
+  }
+
+  NCollection_List<MyStubObject> aList;
+  const Standard_Integer aSmallBlockSize = 40;
+  const Standard_Integer aLargeBlockSize = 1500000;
+
+  // quick populate memory with large blocks
+  try
+  {
+    for (;;)
+    {
+      aList.Append(MyStubObject(Standard::Allocate(aLargeBlockSize)));
+    }
+  }
+  catch (Standard_Failure)
+  {
+    di << "caught out of memory for large blocks: OK\n";
+  }
+  catch (...)
+  {
+    di << "skept out of memory for large blocks: Error\n";
+  }
+
+  // allocate small blocks
+  try
+  {
+    for (;;)
+    {
+      aList.Append(MyStubObject(Standard::Allocate(aSmallBlockSize)));
+    }
+  }
+  catch (Standard_Failure)
+  {
+    di << "caught out of memory for small blocks: OK\n";
+  }
+  catch (...)
+  {
+    di << "skept out of memory for small blocks: Error\n";
+  }
+
+  // release all allocated blocks
+  for (NCollection_List<MyStubObject>::Iterator it(aList); it.More(); it.Next())
+  {
+    Standard::Free(it.Value().ptr);
+  }
+  return 0;
+}
+
 void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -2151,5 +2217,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC24667", "OCC24667 result Wire_spine Profile [Mode [Approx]], no args to get help", __FILE__, OCC24667, group);
   theCommands.Add ("OCC24565", "OCC24565 FileNameIGS FileNameSTOR", __FILE__, OCC24565, group);
   theCommands.Add ("OCC24755", "OCC24755", __FILE__, OCC24755, group);
+  theCommands.Add ("OCC24834", "OCC24834", __FILE__, OCC24834, group);
   return;
 }

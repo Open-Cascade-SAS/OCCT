@@ -1,0 +1,11 @@
+puts "================"
+puts "OCC24834"
+puts "================"
+puts ""
+#######################################################################
+# Allocation of memory for exception message must not throw another exception
+#######################################################################
+
+pload QAcommands
+
+OCC24834

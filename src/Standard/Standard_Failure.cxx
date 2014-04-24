@@ -25,13 +25,14 @@ static Standard_CString allocate_message(const Standard_CString AString)
   Standard_CString aStr = 0;
   if(AString) {
     const Standard_Size aLen = strlen(AString);
-    aStr = new Standard_Character[aLen+sizeof(Standard_Integer)+1];
-    Standard_PCharacter pStr=(Standard_PCharacter)aStr;
-    strcpy(pStr+sizeof(Standard_Integer),AString);
-    *((Standard_Integer*)aStr) = 1;
+    aStr = (Standard_CString) malloc(aLen+sizeof(Standard_Integer)+1);
+    if (aStr) {
+      Standard_PCharacter pStr=(Standard_PCharacter)aStr;
+      strcpy(pStr+sizeof(Standard_Integer),AString);
+      *((Standard_Integer*)aStr) = 1;
+    }
   }
   return aStr;
-
 }
 
 static Standard_CString copy_message(Standard_CString aMessage)
@@ -49,7 +50,7 @@ static void deallocate_message(Standard_CString aMessage)
   if(aMessage) {
     (*((Standard_Integer*)aMessage))--;
     if(*((Standard_Integer*)aMessage)==0)
-      delete [](Standard_PCharacter)aMessage;
+      free((void*)aMessage);
   }
 }
 
