@@ -166,8 +166,8 @@ OpenGl_Workspace::OpenGl_Workspace (const Handle(OpenGl_Display)& theDisplay,
   TextParam_applied (NULL),
   ViewMatrix_applied (&myDefaultMatrix),
   StructureMatrix_applied (&myDefaultMatrix),
-  myModelViewMatrix (myDefaultMatrix),
-  PolygonOffset_applied (NULL)
+  PolygonOffset_applied (THE_DEFAULT_POFFSET),
+  myModelViewMatrix (myDefaultMatrix)
 {
   theDisplay->InitAttributes();
 
@@ -268,7 +268,7 @@ void OpenGl_Workspace::ResetAppliedAspect()
   AspectText_applied    = NULL;
   TextParam_set         = &myDefaultTextParam;
   TextParam_applied     = NULL;
-  PolygonOffset_applied = NULL;
+  PolygonOffset_applied = THE_DEFAULT_POFFSET;
 
   AspectLine(Standard_True);
   AspectFace(Standard_True);

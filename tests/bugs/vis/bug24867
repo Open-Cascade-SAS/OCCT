@@ -1,0 +1,20 @@
+puts "============"
+puts "CR24867"
+puts "============"
+puts ""
+
+#######################################################################
+#  Test for displaying highlighted representation of a complex shape
+#######################################################################
+
+restore [locate_data_file Bottom.brep] obj 
+vinit
+vdisplay obj
+vsetdispmode 1
+vfit
+
+vmoveto 235 213
+vdump $imagedir/${casename}_highlighted.png
+
+vselect 235 213
+vdump $imagedir/${casename}_selected.png

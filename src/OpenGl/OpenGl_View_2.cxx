@@ -1518,13 +1518,6 @@ void OpenGl_View::ChangeZLayer (const OpenGl_Structure *theStructure,
 void OpenGl_View::SetZLayerSettings (const Standard_Integer theLayerId,
                                      const Graphic3d_ZLayerSettings theSettings)
 {
-  // Convert Graphic3d_ZLayerSettings to OpenGl_LayerSettings
-  OpenGl_LayerSettings aConvertedSettings;
-
-  aConvertedSettings.DepthOffsetFactor = theSettings.DepthOffsetFactor;
-  aConvertedSettings.DepthOffsetUnits  = theSettings.DepthOffsetUnits;
-  aConvertedSettings.Flags             = theSettings.Flags;
-
-  myZLayers.Layer (theLayerId).SetLayerSettings (aConvertedSettings);
+  myZLayers.Layer (theLayerId).SetLayerSettings (theSettings);
 }
 

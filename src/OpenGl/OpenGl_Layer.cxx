@@ -14,22 +14,8 @@
 // commercial license or contractual agreement.
 
 #include <OpenGl_Layer.hxx>
-
+#include <OpenGl_Workspace.hxx>
 #include <OpenGl_GlCore11.hxx>
-
-//=======================================================================
-//function : OpenGl_LayerSettings
-//purpose  : 
-//=======================================================================
-OpenGl_LayerSettings::OpenGl_LayerSettings()
-  : DepthOffsetFactor (1.0f),
-    DepthOffsetUnits  (1.0f),
-    Flags (OpenGl_LayerDepthTest
-          | OpenGl_LayerDepthWrite
-          | OpenGl_LayerDepthClear)
-{
-  //
-}
 
 //=======================================================================
 //function : OpenGl_Layer
@@ -45,36 +31,43 @@ OpenGl_Layer::OpenGl_Layer (const Standard_Integer theNbPriorities)
 //function : Render
 //purpose  : 
 //=======================================================================
-void OpenGl_Layer::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
+void OpenGl_Layer::Render (const Handle(OpenGl_Workspace) &theWorkspace, const OpenGl_GlobalLayerSettings& theDefaultSettings) const
 {
+  TEL_POFFSET_PARAM anAppliedOffsetParams = theWorkspace->AppliedPolygonOffset();
+
   // separate depth buffers
-  if (IsSettingEnabled (OpenGl_LayerDepthClear))
+  if (IsSettingEnabled (Graphic3d_ZLayerDepthClear))
   {
     glClear (GL_DEPTH_BUFFER_BIT);
   }
-
+ 
   // handle depth test
-  if (IsSettingEnabled (OpenGl_LayerDepthTest))
+  if (IsSettingEnabled (Graphic3d_ZLayerDepthTest))
   {
-    glDepthFunc (GL_LESS);
+    // assuming depth test is enabled by default
+    glDepthFunc (theDefaultSettings.DepthFunc);
   }
   else
   {
     glDepthFunc (GL_ALWAYS);
   }
-
+  
   // handle depth offset
-  if (IsSettingEnabled (OpenGl_LayerDepthOffset))
+  if (IsSettingEnabled (Graphic3d_ZLayerDepthOffset))
   {
-    glPolygonOffset (myLayerSettings.DepthOffsetFactor, myLayerSettings.DepthOffsetUnits);
+    theWorkspace->SetPolygonOffset (Aspect_POM_Fill,
+                                    myLayerSettings.DepthOffsetFactor,
+                                    myLayerSettings.DepthOffsetUnits);
   }
   else
   {
-    glPolygonOffset (0.f, 0.f);
+    theWorkspace->SetPolygonOffset (anAppliedOffsetParams.mode,
+                                    anAppliedOffsetParams.factor,
+                                    anAppliedOffsetParams.units);
   }
 
   // handle depth write
-  if (IsSettingEnabled (OpenGl_LayerDepthWrite))
+  if (IsSettingEnabled (Graphic3d_ZLayerDepthWrite))
   {
     glDepthMask (GL_TRUE);
   }
@@ -84,5 +77,10 @@ void OpenGl_Layer::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
   }
 
   // render priority list
-  myPriorityList.Render (AWorkspace);
+  myPriorityList.Render (theWorkspace);
+
+  // always restore polygon offset between layers rendering
+  theWorkspace->SetPolygonOffset (anAppliedOffsetParams.mode,
+                                  anAppliedOffsetParams.factor,
+                                  anAppliedOffsetParams.units);
 }
