@@ -22,7 +22,7 @@ if { [regexp {Debug mode} [dversion]] } {
   }
 }
 
-if {[string compare $os "MacOS"] == 0} {
+if { [regexp {Mac OS X} [dversion]] } {
   set max_time 260
 }
 

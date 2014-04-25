@@ -6,6 +6,8 @@ puts ""
 # Exception is raised during perform of "bfillds" command on attached shape
 ##############################################################################
 
+cpulimit 1500
+
 restore [locate_data_file bug24809_test3.brep] b
 
 bclearobjects
