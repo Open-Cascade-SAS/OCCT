@@ -540,9 +540,7 @@ void OpenGl_GraphicDriver::Transparency (const Graphic3d_CView& ACView, const St
 
 void OpenGl_GraphicDriver::Update (const Graphic3d_CView& ACView, const Aspect_CLayer2d& ACUnderLayer, const Aspect_CLayer2d& ACOverLayer)
 {
-  const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
-  if (aCView)
-    aCView->WS->Update(ACView,ACUnderLayer,ACOverLayer);
+  Redraw (ACView, ACUnderLayer, ACOverLayer);
 }
 
 Standard_Boolean OpenGl_GraphicDriver::View (Graphic3d_CView& theCView)
