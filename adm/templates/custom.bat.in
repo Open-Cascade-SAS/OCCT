@@ -1,0 +1,14 @@
+echo off
+
+if "%VCVER%" == "@COMPILER@" (
+  if "%ARCH%" == "@COMPILER_BITNESS@" (
+    if "%CASDEB%" == "@BUILD_SUFFIX@" (
+      set "TCL_DIR=@3RDPARTY_TCL_DLL_DIR@"
+      set "FREETYPE_DIR=@3RDPARTY_FREETYPE_DLL_DIR@"
+      set "FREEIMAGE_DIR=@3RDPARTY_FREEIMAGE_DLL_DIR@"
+      set "GL2PS_DIR=@3RDPARTY_GL2PS_DLL_DIR@"
+      set "TBB_DIR=@3RDPARTY_TBB_DLL_DIR@"
+    )
+  ) 
+)
+

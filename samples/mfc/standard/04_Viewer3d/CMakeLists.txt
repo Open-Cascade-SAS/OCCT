@@ -62,9 +62,9 @@ add_executable (Viewer3d WIN32 ${Viewer3d_SOURCE_FILES}
 
 set_property (TARGET Viewer3d PROPERTY FOLDER Samples)
 
-install (TARGETS Viewer3d RUNTIME DESTINATION "${INSTALL_DIR}/bin"
-                          ARCHIVE DESTINATION "${INSTALL_DIR}/lib"
-                          LIBRARY DESTINATION "${INSTALL_DIR}/lib")
+install (TARGETS Viewer3d RUNTIME DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/bin${BUILD_SUFFIX}"
+                          ARCHIVE DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/lib${BUILD_SUFFIX}"
+                          LIBRARY DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/lib${BUILD_SUFFIX}")
 
 include_directories (${OCCT_ROOT}/inc
                      ${Viewer3d_SRC_DIR}

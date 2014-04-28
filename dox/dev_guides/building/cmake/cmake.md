@@ -18,58 +18,55 @@ instructions for your platform in @ref occt_dev_guides__building.
 ## Decide on location of build and install directories.
 
 The build directory is the one where intermediate files will be created (projects / makefiles, objects, binaries).
-The install directory is the one where binaries will be installed after build, 
-along with header files and resources required for OCCT use in applications.
+Each configuration to be built should have its own build directory.
 
-OCCT CMake scripts assume use of separate build and one install directories 
-for each configuration (Debug or Release).
+The install directory is the one where binaries will be installed after build, along with header files and resources required for OCCT use in applications. 
+It is possible to install several configurations of OCCT (differentiated by platform, bitness, compiler, and build type) into the same directory.
 
 It is recommended to separate build and install directories from OCCT source directory, for example:
 
-       /user/home/occt/ - sources
-       /user/home/tmp/occt-build-release - intermediate files (release)
-       /user/home/occt-install-release - installed binaries (release)
+       /user/home/occt/                           - sources
+       /user/home/tmp/occt-build-vc10-x64-release - intermediate files
+       /user/home/occt-install                    - installed binaries
 
 ## CMake usage
 
-Run CMake indicating path to OCCT sources ($CASROOT; in previous example 
-CASROOT equal to /user/home/occt in lin case, and d:/occt in windows case) 
-and selected build directory (in prev example build directory is 
-/user/home/tmp/occt-build-release). 
+Run CMake indicating path to OCCT sources ($CASROOT) and selected build directory.
 
-It is recommended to use GUI tools provided by CMake: cmake-gui on Windows 
-and Mac, ccmake on Linux.
+It is recommended to use GUI tools provided by CMake: cmake-gui on Windows and Mac, ccmake or cmake-gui on Linux.
 
 ### Windows:
 
-@image html /dev_guides/building/cmake/images/cmake_image001.png
-@image latex /dev_guides/building/cmake/images/cmake_image001.png
+Specify the root folder of OCCT ($CASROOT, it contains CMakelists.txt file) by clicking Browse Source.
 
-* Specify "main" CMakelists.txt meta-project location by clicking Browse Source (e.g., $CASROOT)
-* Specify location (build folder) for Cmake generated project files by clicking Browse Build (e.g., d:/occt/build/win32-vc9-debug) (each cmake configuration of the project uses a specific build directory and a specific directory for installed files. It is recommended to compose names of the binary and install directory from system, bitness, compiler and build type.)
-* Configure opens the window with a drop-down list of generators supported by CMake project. Select the required generator (e.g., Visual Studio 2008) and click Finish)
+@figure{/dev_guides/building/cmake/images/cmake_image001.png}
 
-@image html /dev_guides/building/cmake/images/cmake_image002.png
-@image latex /dev_guides/building/cmake/images/cmake_image002.png
+Specify location (build folder) for Cmake generated project files by clicking Browse Build.
+Each configuration of the project should be built in its own directory.
+When building multiple configurations it is recommended to compose name of build directories including system, bitness, compiler, and build type (e.g., d:/occt/build/win32-vc9-debug).
 
-### Linux:
+Configure opens the window with a drop-down list of generators supported by CMake project. Select the required generator (e.g., Visual Studio 2008) and click Finish.
+
+@figure{/dev_guides/building/cmake/images/cmake_image002.png}
+
+### Linux (ccmake variant):
 
 In the console, change to the build directory and call ccmake with the path to the source directory of the project:
 
        > cd ~/occt/build/debug
        > ccmake ~/occt
 
-@image html /dev_guides/building/cmake/images/cmake_image003.png
-@image latex /dev_guides/building/cmake/images/cmake_image003.png
+@figure{/dev_guides/building/cmake/images/cmake_image003.png}
 
 Press "c" to configure.
+
+Use of *cmake-gui* is the same as described above for Windows.
 
 ### Mac OS:
 
 Use cmake-gui (Applications -> CMake 2.8-10.app) to generate project files for the chosen build environment (e.g., XCode).
 
-@image html /dev_guides/building/cmake/images/cmake_image004.png
-@image latex /dev_guides/building/cmake/images/cmake_image004.png
+@figure{/dev_guides/building/cmake/images/cmake_image004.png}
 
 ## OCCT Configuration
 
@@ -83,36 +80,37 @@ The variables with "BUILD_" prefix allow specifying OCCT components and
 configuration to be built:
 
 * BUILD_CONFIGURATION - defines configuration to be built (Release by default).
-* BUILD_<MODULE> - specify whether corresponding OCCT module should be 
-                   built (all toolkits). Note that even if whole module is not 
-                   selected for build, its toolkits used by other toolkits 
-                   selected for build will be included automatically.
-* BUILD_TOOLKITS - allows including additional toolkits from non-selected 
-                   modules (should be list of toolkit names separated by a 
-                   space or a semicolon).
-* BUILD_SAMPLES - specify whether OCCT MFC samples should be built.
+* BUILD_<MODULE>      - specify whether corresponding OCCT module should be 
+                        built (all toolkits). Note that even if whole module is not 
+                        selected for build, its toolkits used by other toolkits 
+                        selected for build will be included automatically.
+* BUILD_TOOLKITS      - allows including additional toolkits from non-selected 
+                        modules (should be list of toolkit names separated by a 
+                        space or a semicolon).
+* BUILD_SAMPLES       - specify whether OCCT MFC samples should be built.
+* BUILD_PATCH_DIR     - optionally specify additional folder containing patched OCCT source files.
+                        The patch may contain arbitrary subset of OCCT source files (including CMake scripts, templates, etc.), organized in the same structure of folders as OCCT.
+                        The projects generated by CMake will use files found in the patch folder instead of corresponding files of OCCT.
 
 Check variables with "USE_" prefix (USE_FREEIMAGE, USE_GL2PS, USE_TBB, and 
 USE_OPENCL) if you want to enable use of the corresponding optional 3rd-party 
 library.
 
-### 3rd-party configuration
-
 ### 3rd-party configuration (The variables with 3RDPARTY_ prefix)
 
 If you have 3rd-party libraries in a non-default location 
 (e.g., on Windows, binaries downloaded from "http://www.opencascade.org/getocc/download/3rdparty/"), 
-specify 3RDPARTY_DIR variable that points to the folders of 3rdparty products (some or all). 
-At the next configuration 3rd-party product paths stored in 3RDPARTY_\<PRODUCT\>_DIR variable 
-will be searched for in 3RDPARTY_DIR directory. If the structure of 3RDPARTY_DIR directory 
-is the same as adopted in the OCCT, the directory will contain product dir, lib and header files. 
+specify 3RDPARTY_DIR variable that points to the folders of 3rdparty libraries (some or all). 
+At the next configuration step the 3rd-party libraries will be searched for in 3RDPARTY_DIR directory, and stored in 3RDPARTY_\<LIBRARY\>_DIR variables.
+The procedure expects to find binary and header files of each 3rd-party library in its own sub-directory, separated by sub-directories *bin*, *lib*, and *include*.
 
 Press "Configure" ("c" key for ccmake).
 
 The result of the 3rdparty product search will be recorded in the corresponding variables:
 
 * 3RDPARTY_\<PRODUCT\>_DIR - path to the product directory (with directory name) (e.g., D:/3rdparty/Tcl-8.5.12.0-32)
-* 3RDPARTY_\<PRODUCT\>_LIBRARY - path to the .lib libraries (with the library name) (e.g., D:/3rdparty/Tcl-8.5.12.0-32/lib/tcl85.lib). In non-windows case, this variable is the same as 3RDPARTY_\<PRODUCT\>_DLL.
+* 3RDPARTY_\<PRODUCT\>_LIBRARY - path to the .lib libraries (with the library name) (e.g., D:/3rdparty/Tcl-8.5.12.0-32/lib/tcl85.lib). 
+  In non-windows case, this variable is the same as 3RDPARTY_\<PRODUCT\>_DLL.
 * 3RDPARTY_\<PRODUCT\>_INCLUDE - path to the include directory that contains the required header file (with "include" name) (e.g., D:/3rdparty/Tcl-8.5.12.0-32/include including tcl.h)
 * 3RDPARTY_\<PRODUCT\>_DLL - path to the .dll/.so/.dylib library  (with the library name) (e.g., D:/3rdparty/Tcl-8.5.12.0-32/bin/tcl85.dll)
 
@@ -156,8 +154,7 @@ can be changed to
 
 and the related variables: 3RDPARTY_FREETYPE_DLL, 3RDPARTY_FREETYPE_INCLUDE_DIR and  3RDPARTY_FREETYPE_LIBRARY will be cleared.
 
-@image html /dev_guides/building/cmake/images/cmake_image005.png
-@image latex /dev_guides/building/cmake/images/cmake_image005.png
+@figure{/dev_guides/building/cmake/images/cmake_image005.png}
 
 During configuration process the cleaned variables will be filled with new found values.
 
@@ -181,8 +178,7 @@ Then the project files will appear in the build folder (e.g., d:/occt/build/win3
 
 When the configuration is complete, start the generation process by pressing "g".
 
-@image html /dev_guides/building/cmake/images/cmake_image006.png
-@image latex /dev_guides/building/cmake/images/cmake_image006.png
+@figure{/dev_guides/building/cmake/images/cmake_image006.png}
 
 ### Mac OS X
 
@@ -227,6 +223,3 @@ When the building process finished, build the INSTALL project
 to move the above files to INSTALL_DIR. 
 Notice that env.sh (configure PATH and DYLD_LIBRARY_PATH environment variables 
 as well as Draw Harness extra variables) and draw.sh (to launch DRAWEXE) will be created in target directory. 
-
-## OCCT project debugging for Visual Studio
-Run OCCT.bat from the build directory to start Visual Studio with required environment for debugging.

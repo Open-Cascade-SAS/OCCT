@@ -40,9 +40,9 @@ add_executable (Triangulation WIN32 ${Triangulation_SOURCE_FILES}
 
 set_property (TARGET Triangulation PROPERTY FOLDER Samples)
 
-install (TARGETS Triangulation RUNTIME DESTINATION "${INSTALL_DIR}/bin"
-                               ARCHIVE DESTINATION "${INSTALL_DIR}/lib"
-                               LIBRARY DESTINATION "${INSTALL_DIR}/lib")
+install (TARGETS Triangulation RUNTIME DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/bin${BUILD_SUFFIX}"
+                               ARCHIVE DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/lib${BUILD_SUFFIX}"
+                               LIBRARY DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/lib${BUILD_SUFFIX}")
 
 include_directories (${OCCT_ROOT}/inc
                      ${MFC_STANDARD_SAMPLES_DIR}/07_Triangulation

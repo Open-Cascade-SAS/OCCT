@@ -45,9 +45,9 @@ add_executable (Animation WIN32 ${Animation_SOURCE_FILES}
 
 set_property (TARGET Animation PROPERTY FOLDER Samples)
 
-install (TARGETS Animation RUNTIME DESTINATION "${INSTALL_DIR}/bin"
-                           ARCHIVE DESTINATION "${INSTALL_DIR}/lib"
-                           LIBRARY DESTINATION "${INSTALL_DIR}/lib")
+install (TARGETS Animation RUNTIME DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/bin${BUILD_SUFFIX}"
+                           ARCHIVE DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/lib${BUILD_SUFFIX}"
+                           LIBRARY DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/lib${BUILD_SUFFIX}")
 
 include_directories (${OCCT_ROOT}/inc
                      ${Animation_RESOURCE_DIR}
