@@ -1379,7 +1379,7 @@ Handle(Geom_Curve) ShapeConstruct_ProjectCurveOnSurface::InterpolateCurve3d(cons
     Standard_Boolean PtEQext1 = Standard_False;
     Standard_Boolean PtEQext2 = Standard_False;
 
-    Standard_Real currd2[2], tp[2];
+    Standard_Real currd2[2], tp[2] = {0, 0};
     Standard_Integer mp[2];
     
     for (Standard_Integer i=0; i<2; i++) {
