@@ -2157,7 +2157,7 @@ int ViewerMainLoop(Standard_Integer argc, const char** argv)
   switch (aReport.type) {
       case ClientMessage:
         {
-          if(aReport.xclient.data.l[0] == GetDisplayConnection()->GetAtom(Aspect_XA_DELETE_WINDOW))
+          if((Atom)aReport.xclient.data.l[0] == GetDisplayConnection()->GetAtom(Aspect_XA_DELETE_WINDOW))
           {
             // Close the window
             ViewerTest::RemoveView(FindViewIdByWindowHandle (aReport.xclient.window));

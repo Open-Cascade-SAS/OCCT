@@ -194,7 +194,7 @@ static void FindBounds(const TColStd_Array1OfReal& Arr,
 		       Standard_Boolean& DerNull)
 
 {
-  Standard_Integer N;
+  Standard_Integer N=0;
   Standard_Real Tol=Precision::PConfusion()/10;
   Hunt(Arr,Coord,N);
   DerNull=Standard_False;
@@ -612,7 +612,7 @@ static void Locate2Coord(const Standard_Integer Index,
 {
   Standard_Real Comp=0,DComp=0,Tmp1=0.0,Tmp2=0.0;
   Standard_Real Tol=Precision::PConfusion()/10;
-  Standard_Integer N, NUp=0, NLo=0;
+  Standard_Integer N=0, NUp=0, NLo=0;
   if(Index==1)
     { Comp=UV.X();
       DComp=DUV.Y();
