@@ -54,9 +54,9 @@ add_executable (Ocaf WIN32 ${Ocaf_SOURCE_FILES}
 
 set_property (TARGET Ocaf PROPERTY FOLDER Samples)
 
-install (TARGETS Ocaf RUNTIME DESTINATION "${INSTALL_DIR}/bin"
-                      ARCHIVE DESTINATION "${INSTALL_DIR}/lib"
-                      LIBRARY DESTINATION "${INSTALL_DIR}/lib")
+install (TARGETS Ocaf RUNTIME DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/bin${BUILD_SUFFIX}"
+                      ARCHIVE DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/lib${BUILD_SUFFIX}"
+                      LIBRARY DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/lib${BUILD_SUFFIX}")
 
 include_directories (${OCCT_ROOT}/inc
                      ${MFC_STANDARD_SAMPLES_DIR}/06_Ocaf

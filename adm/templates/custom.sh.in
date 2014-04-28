@@ -1,0 +1,14 @@
+#!/bin/bash
+
+if [ "$COMPILER" == "@COMPILER@" ]; then
+  if [ "$ARCH" == "@COMPILER_BITNESS@" ]; then
+    if [ "$CASDEB" == "@BUILD_SUFFIX@" ]; then
+      export TCL_DIR="@3RDPARTY_TCL_DLL_DIR@"
+      export FREETYPE_DIR="@3RDPARTY_FREETYPE_DLL_DIR@"
+      export FREEIMAGE_DIR="@3RDPARTY_FREEIMAGE_DLL_DIR@"
+      export GL2PS_DIR="@3RDPARTY_GL2PS_DLL_DIR@"
+      export TBB_DIR="@3RDPARTY_TBB_DLL_DIR@"
+    fi
+  fi
+fi
+

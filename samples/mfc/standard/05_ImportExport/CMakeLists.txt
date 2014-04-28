@@ -38,9 +38,9 @@ add_executable (ImportExport WIN32 ${ImportExport_SOURCE_FILES}
 
 set_property (TARGET ImportExport PROPERTY FOLDER Samples)
 
-install (TARGETS ImportExport RUNTIME DESTINATION "${INSTALL_DIR}/bin"
-                              ARCHIVE DESTINATION "${INSTALL_DIR}/lib"
-                              LIBRARY DESTINATION "${INSTALL_DIR}/lib")
+install (TARGETS ImportExport RUNTIME DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/bin${BUILD_SUFFIX}"
+                              ARCHIVE DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/lib${BUILD_SUFFIX}"
+                              LIBRARY DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/lib${BUILD_SUFFIX}")
 
 include_directories (${OCCT_ROOT}/inc
                      ${MFC_STANDARD_SAMPLES_DIR}/05_ImportExport

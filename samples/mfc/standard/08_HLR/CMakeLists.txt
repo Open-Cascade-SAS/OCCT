@@ -62,9 +62,9 @@ add_executable (HLR WIN32 ${HLR_SOURCE_FILES}
 
 set_property (TARGET HLR PROPERTY FOLDER Samples)
 
-install (TARGETS HLR RUNTIME DESTINATION "${INSTALL_DIR}/bin"
-                     ARCHIVE DESTINATION "${INSTALL_DIR}/lib"
-                     LIBRARY DESTINATION "${INSTALL_DIR}/lib")
+install (TARGETS HLR RUNTIME DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/bin${BUILD_SUFFIX}"
+                     ARCHIVE DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/lib${BUILD_SUFFIX}"
+                     LIBRARY DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/lib${BUILD_SUFFIX}")
 
 include_directories (${OCCT_ROOT}/inc
                      ${HLR_RESOURCE_DIR}

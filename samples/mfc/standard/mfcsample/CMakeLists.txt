@@ -139,9 +139,9 @@ add_library ( mfcsample SHARED ${mfcsample_SOURCE_FILES}
 
 set_property (TARGET mfcsample PROPERTY FOLDER Samples)
 
-install (TARGETS mfcsample RUNTIME DESTINATION "${INSTALL_DIR}/bin"
-                           ARCHIVE DESTINATION "${INSTALL_DIR}/lib"
-                           LIBRARY DESTINATION "${INSTALL_DIR}/lib")
+install (TARGETS mfcsample RUNTIME DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/bin${BUILD_SUFFIX}"
+                           ARCHIVE DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/lib${BUILD_SUFFIX}"
+                           LIBRARY DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/lib${BUILD_SUFFIX}")
 
 include_directories( ${OCCT_ROOT}/inc
                      ${MFC_STANDARD_COMMON_SAMPLES_DIR}

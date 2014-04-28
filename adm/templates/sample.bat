@@ -2,7 +2,9 @@
 
 if ["%1"] == [""] (
   echo Launch selected sample as follows:
-  echo sample.bat SampleName
+  echo   sample.bat SampleName vc10 win32 d
+  echo or to use last sample build configuration:
+  echo   sample.bat SampleName
   echo available samples:
   echo    Geometry
   echo    Modeling
@@ -17,12 +19,13 @@ if ["%1"] == [""] (
   exit /B
 )
 
-if not exist "%~dp0/bin/%1.exe" (
-  echo Executable %~dp0/bin/%4.exe not found.
+call "%~dp0env.bat" %2 %3 %4
+
+if not exist "%~dp0/%BIN_TAIL%/%1.exe" (
+  echo Executable %~dp0/%BIN_TAIL%/%1.exe not found.
   echo Probably you didn't compile the application.
   exit /B
 )
 
-call "%~dp0/env.bat"
+"%~dp0/%BIN_TAIL%/%1.exe"
 
-"%~dp0/bin/%1.exe"

@@ -70,9 +70,9 @@ add_executable (Geometry WIN32 ${Geometry_SOURCE_FILES}
 
 set_property(TARGET Geometry PROPERTY FOLDER Samples)
 
-install (TARGETS Geometry RUNTIME DESTINATION "${INSTALL_DIR}/bin"
-                          ARCHIVE DESTINATION "${INSTALL_DIR}/lib"
-                          LIBRARY DESTINATION "${INSTALL_DIR}/lib")
+install (TARGETS Geometry RUNTIME DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/bin${BUILD_SUFFIX}"
+                          ARCHIVE DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/lib${BUILD_SUFFIX}"
+                          LIBRARY DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/lib${BUILD_SUFFIX}")
 
 include_directories (${OCCT_ROOT}/inc
                      ${Geometry_SRC_DIR}
