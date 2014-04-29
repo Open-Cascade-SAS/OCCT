@@ -258,6 +258,7 @@ V3d_View::V3d_View(const Handle(V3d_Viewer)& VM, const V3d_TypeOfView Type ) :
   SetZCueingWidth (zsize);
   SetDepth (VM->DefaultViewSize()/2.0);
   SetViewMappingDefault();
+  SetViewOrientationDefault();
   VM->AddView (this);
   Init();
   myImmediateUpdate = Standard_True;
@@ -305,6 +306,8 @@ V3d_View::V3d_View(const Handle(V3d_Viewer)& theVM,const Handle(V3d_View)& theVi
 
   SetAxis (0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
 
+  SetViewMappingDefault();
+  SetViewOrientationDefault();
   theVM->AddView (this);
 
   Init();
