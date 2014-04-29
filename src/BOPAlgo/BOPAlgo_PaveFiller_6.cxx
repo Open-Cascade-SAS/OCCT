@@ -835,6 +835,7 @@ Standard_Integer BOPAlgo_PaveFiller::PostTreatFF
               const BOPDS_Pave& aP1 = !j ? aPB1->Pave1() : aPB1->Pave2();
               if (aP1.Parameter() == aPave[j].Parameter() && aP1.Index() != iV) {
                 aDMI.Bind(aP1.Index(), iV);
+                myDS->AddShapeSD(aP1.Index(), iV);
               }
               //
               aPave[j].SetIndex(iV);
