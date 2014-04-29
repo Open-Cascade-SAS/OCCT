@@ -41,6 +41,9 @@ Note a few important details:
 Run msvc.bat to start MS Visual Studio for building the sample.
 Note that project files are provided only for VS 2008, you can open them in
 newer versions of Visual Studio using automatic converter.
+After conversion check option "Target framework" in properties of C# projects 
+(tab "Application") to ensure that it corresponds to the version set in
+the properties of the C++ projects (e.g. ".Net Framework 4.0" for VS 2010).
 
 Run run_winforms.bat or run_wpf.bat to launch the corresponding sample.
 
