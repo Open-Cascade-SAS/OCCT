@@ -64,7 +64,7 @@ IF("${3RDPARTY_TCL_LIBRARY}" STREQUAL "" OR CHANGES_ARE_NEEDED OR "${3RDPARTY_TC
   
   IF(NOT "${3RDPARTY_TCL_DIR}" STREQUAL "")
     FIND_LIBRARY(3RDPARTY_TCL_LIBRARY
-                 NAMES tcl tcl8${TCL_SEP}6 tcl8${TCL_SEP}5
+                 NAMES tcl8${TCL_SEP}6 tcl8${TCL_SEP}5 tcl
                  PATHS "${3RDPARTY_TCL_DIR}/lib" NO_DEFAULT_PATH)
   ELSE()
     SET(3RDPARTY_TCL_POSSIBLE_LIBRARIES_DIRS /usr/lib /usr/local/lib)
@@ -81,16 +81,16 @@ IF("${3RDPARTY_TCL_LIBRARY}" STREQUAL "" OR CHANGES_ARE_NEEDED OR "${3RDPARTY_TC
     
     # check default path (with additions) for library search
     FIND_LIBRARY(3RDPARTY_TCL_LIBRARY
-                 NAMES tcl tcl8${TCL_SEP}6 tcl8${TCL_SEP}5
+                 NAMES tcl8${TCL_SEP}6 tcl8${TCL_SEP}5 tcl
                  PATHS ${3RDPARTY_TCL_POSSIBLE_LIBRARIES_DIRS})
   ENDIF()
 ENDIF()
 
 #search the version of found tcl library
 IF("${3RDPARTY_TCL_LIBRARY}" STREQUAL "" OR "${3RDPARTY_TCL_LIBRARY}" STREQUAL "3RDPARTY_TCL_LIBRARY-NOTFOUND")
-  SET (TCL_DLL_SO_NAMES ${DLL_SO_PREFIX}tcl.${DLL_SO}
+  SET (TCL_DLL_SO_NAMES ${DLL_SO_PREFIX}tcl8${TCL_SEP}6.${DLL_SO}
                         ${DLL_SO_PREFIX}tcl8${TCL_SEP}5.${DLL_SO}
-                        ${DLL_SO_PREFIX}tcl8${TCL_SEP}6.${DLL_SO} )
+                        ${DLL_SO_PREFIX}tcl.${DLL_SO})
 ELSE()
   GET_FILENAME_COMPONENT(TCL_LIBRARY_NAME "${3RDPARTY_TCL_LIBRARY}" NAME)
 
