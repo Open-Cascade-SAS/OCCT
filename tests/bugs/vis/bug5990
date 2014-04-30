@@ -15,13 +15,13 @@ set y2 269
 set x3 348
 set y3 238
 
-set KUB_R 0.45098000764846802
-set KUB_G 0.32941100001335144
-set KUB_B 1
+set KUB_R 0.00
+set KUB_G 0.00
+set KUB_B 0.83
 
-set LINE_R 0
-set LINE_G 0
-set LINE_B 1
+set LINE_R 0.00
+set LINE_G 0.00
+set LINE_B 1.00
 
 
 box b1 10 10 10

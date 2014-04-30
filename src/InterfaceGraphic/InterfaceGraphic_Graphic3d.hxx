@@ -62,8 +62,9 @@ typedef struct {
         float Emission;
         int IsEmission;
 
-        float Transparency;
         float Shininess;
+        float Transparency;
+        float RefractionIndex;
 
         float EnvReflexion;
 

@@ -42,7 +42,7 @@ static const TEL_POFFSET_PARAM THE_DEFAULT_POFFSET = { Aspect_POM_Fill, 1.0F, 0.
 struct OPENGL_SURF_PROP
 {
   float        amb, diff, spec, emsv;
-  float        trans, shine;
+  float        trans, shine, index;
   float        env_reflexion;
   int          isphysic;
   unsigned int color_mask;

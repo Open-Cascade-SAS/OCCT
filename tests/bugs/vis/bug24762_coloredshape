@@ -43,6 +43,6 @@ if {"$aWireColor"  != "HOTPINK"} {
 if {"$anEdgeColor" != "RED"} {
   puts "Error: wrong Edge color"
 }
-if {"$aFaceColor"  != "LEMONCHIFFON1"} {
+if {"$aFaceColor"  != "GRAY62"} {
   puts "Error: wrong Face color"
 }

@@ -33,7 +33,7 @@ namespace
   static OPENGL_SURF_PROP THE_DEFAULT_MATERIAL =
   {
     0.2F,  0.8F, 0.1F, 0.0F, // amb, diff, spec, emsv
-    1.0F, 10.0F, 0.0F,       // trans, shine, env_reflexion
+    1.0F, 10.0F, 1.0F, 0.0F, // trans, shine, index, env_reflexion
     0, // isphysic
     (OPENGL_AMBIENT_MASK | OPENGL_DIFFUSE_MASK | OPENGL_SPECULAR_MASK), // color_mask
     {{ 1.0F, 1.0F, 1.0F, 1.0F }}, // ambient color
@@ -110,6 +110,7 @@ void OpenGl_AspectFace::convertMaterial (const CALL_DEF_MATERIAL& theMat,
   // trans = 1. => transparent
   // in OpenGl it is opposite.
   theSurf.trans = 1.0f - theMat.Transparency;
+  theSurf.index = theMat.RefractionIndex;
 }
 
 // =======================================================================

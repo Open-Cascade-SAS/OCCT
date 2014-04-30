@@ -1,0 +1,43 @@
+puts "========"
+puts "OCC24855: Revision of parameters of standard materials"
+puts "========"
+
+# custom shapes
+set aShape [locate_data_file occ/Top.brep]
+
+# setup 3D viewer content
+vinit View1 w=768 h=768
+vglinfo
+
+vsetgradientbg 180 200 255 180 180 180 2
+
+# display shape
+vlight change 0 pos -1 1 1
+restore $aShape s
+vsetdispmode 1
+vdisplay s
+vfit
+
+proc testmat {dirname filename} {
+  foreach {aMatIter} {brass bronze copper gold jade neon_phc pewter obsidian plaster plastic satin silver steel stone chrome aluminium charcoal} {
+    vsetmaterial -noredraw s $aMatIter
+    vdump $dirname/${filename}_${aMatIter}.png
+  }
+}
+
+# make material screenshots
+testmat $imagedir $casename
+
+vshaderprog s phong
+testmat $imagedir ${casename}_phong
+
+vraytrace 1
+vtextureenv on 5
+vsetraytracemode aa=1 refl=1
+
+testmat $imagedir ${casename}_rt
+
+vclear
+vraytrace 0
+vtextureenv off
+source $env(CASROOT)/samples/tcl/materials.tcl

@@ -1034,12 +1034,13 @@ void Graphic3d_Structure::SetPrimitivesAspect (const Handle(Graphic3d_AspectFill
   // Back Material
   const Graphic3d_MaterialAspect& aBack = theAspFill->BackMaterial();
   // Light specificity
-  myCStructure->ContextFillArea.Back.Shininess    = float (aBack.Shininess());
-  myCStructure->ContextFillArea.Back.Ambient      = float (aBack.Ambient());
-  myCStructure->ContextFillArea.Back.Diffuse      = float (aBack.Diffuse());
-  myCStructure->ContextFillArea.Back.Specular     = float (aBack.Specular());
-  myCStructure->ContextFillArea.Back.Transparency = float (aBack.Transparency());
-  myCStructure->ContextFillArea.Back.Emission     = float (aBack.Emissive());
+  myCStructure->ContextFillArea.Back.Shininess       = float (aBack.Shininess());
+  myCStructure->ContextFillArea.Back.Ambient         = float (aBack.Ambient());
+  myCStructure->ContextFillArea.Back.Diffuse         = float (aBack.Diffuse());
+  myCStructure->ContextFillArea.Back.Specular        = float (aBack.Specular());
+  myCStructure->ContextFillArea.Back.Transparency    = float (aBack.Transparency());
+  myCStructure->ContextFillArea.Back.RefractionIndex = float (aBack.RefractionIndex());
+  myCStructure->ContextFillArea.Back.Emission        = float (aBack.Emissive());
 
   // Reflection mode
   myCStructure->ContextFillArea.Back.IsAmbient    = (aBack.ReflectionMode (Graphic3d_TOR_AMBIENT)  ? 1 : 0);
@@ -1077,12 +1078,13 @@ void Graphic3d_Structure::SetPrimitivesAspect (const Handle(Graphic3d_AspectFill
   // Front Material
   const Graphic3d_MaterialAspect& aFront = theAspFill->FrontMaterial();
   // Light specificity
-  myCStructure->ContextFillArea.Front.Shininess    = float (aFront.Shininess());
-  myCStructure->ContextFillArea.Front.Ambient      = float (aFront.Ambient());
-  myCStructure->ContextFillArea.Front.Diffuse      = float (aFront.Diffuse());
-  myCStructure->ContextFillArea.Front.Specular     = float (aFront.Specular());
-  myCStructure->ContextFillArea.Front.Transparency = float (aFront.Transparency());
-  myCStructure->ContextFillArea.Front.Emission     = float (aFront.Emissive());
+  myCStructure->ContextFillArea.Front.Shininess       = float (aFront.Shininess());
+  myCStructure->ContextFillArea.Front.Ambient         = float (aFront.Ambient());
+  myCStructure->ContextFillArea.Front.Diffuse         = float (aFront.Diffuse());
+  myCStructure->ContextFillArea.Front.Specular        = float (aFront.Specular());
+  myCStructure->ContextFillArea.Front.Transparency    = float (aFront.Transparency());
+  myCStructure->ContextFillArea.Front.RefractionIndex = float (aFront.RefractionIndex());
+  myCStructure->ContextFillArea.Front.Emission        = float (aFront.Emissive());
 
   // Reflection mode
   myCStructure->ContextFillArea.Front.IsAmbient    = (aFront.ReflectionMode (Graphic3d_TOR_AMBIENT)  ? 1 : 0);

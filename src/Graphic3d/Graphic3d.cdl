@@ -115,32 +115,39 @@ is
 
         enumeration NameOfMaterial is
                     NOM_BRASS,      -- laiton       (PHYSIC)
-                                        NOM_BRONZE,     -- bronze       (PHYSIC)
-                                        NOM_COPPER,     -- cuivre       (PHYSIC)
-                                        NOM_GOLD,       -- or           (PHYSIC)
+                    NOM_BRONZE,     -- bronze       (PHYSIC)
+                    NOM_COPPER,     -- cuivre       (PHYSIC)
+                    NOM_GOLD,       -- or           (PHYSIC)
 
-                                        NOM_PEWTER,     -- etain        (PHYSIC)
+                    NOM_PEWTER,     -- etain        (PHYSIC)
 
-                                        NOM_PLASTER,    -- platre       (GENERIC)
-                                        NOM_PLASTIC,    -- plastic      (GENERIC)
+                    NOM_PLASTER,    -- platre       (GENERIC)
+                    NOM_PLASTIC,    -- plastic      (GENERIC)
 
-                                        NOM_SILVER,     -- argent       (PHYSIC)
+                    NOM_SILVER,     -- argent       (PHYSIC)
 
-                                        NOM_STEEL,      -- acier        (PHYSIC)
+                    NOM_STEEL,      -- acier        (PHYSIC)
 
-                                        NOM_STONE,      -- pierre       (PHYSIC)
+                    NOM_STONE,      -- pierre       (PHYSIC)
 
-                                        NOM_SHINY_PLASTIC,      -- plastique brillant   (GENERIC)
-                                        NOM_SATIN,      --  satin       (GENERIC)
-                                        NOM_METALIZED,  -- metallise New (GENERIC)
-                                        NOM_NEON_GNC,   -- neon      New (GENERIC)
-                                        NOM_CHROME,     -- chrome    New (PHYSIC)
-                                        NOM_ALUMINIUM,  -- aluminium New (PHYSIC)
-                                        NOM_OBSIDIAN,   -- obsidian  New (PHYSIC)
-                                        NOM_NEON_PHC,   -- neon      New (PHYSIC)
-                                        NOM_JADE,       -- jade      New (PHYSIC)
-                        NOM_DEFAULT,
-                        NOM_UserDefined -- owner material
+                    NOM_SHINY_PLASTIC,   -- plastique brillant   (GENERIC)
+                    NOM_SATIN,           --  satin        (GENERIC)
+                    NOM_METALIZED,       -- metallise New (GENERIC)
+                    NOM_NEON_GNC,        -- neon      New (GENERIC)
+                    NOM_CHROME,          -- chrome    New (PHYSIC)
+                    NOM_ALUMINIUM,       -- aluminium New (PHYSIC)
+                    NOM_OBSIDIAN,        -- obsidian  New (PHYSIC)
+                    NOM_NEON_PHC,        -- neon      New (PHYSIC)
+                    NOM_JADE,            -- jade      New (PHYSIC)
+
+                    NOM_CHARCOAL,
+
+                    NOM_WATER,
+                    NOM_GLASS,
+                    NOM_DIAMOND,
+
+                    NOM_DEFAULT,
+                    NOM_UserDefined -- owner material
     end NameOfMaterial;
     ---Purpose: Types of aspect materials.
     ---Category: Enumerations

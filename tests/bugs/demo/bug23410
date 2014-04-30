@@ -16,7 +16,7 @@ vsetdispmode 1
 vfit
 vsetcolor result GREEN
 
-checkcolor $x_coord $y_coord 0.45 0.95 0.05
+checkcolor $x_coord $y_coord 0.00 0.83 0.00
 
 set 3dviewer 1
 
