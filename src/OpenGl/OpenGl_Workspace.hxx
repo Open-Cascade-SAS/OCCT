@@ -41,7 +41,6 @@
 #include <NCollection_Sequence.hxx>
 
 #include <OpenGl_AspectFace.hxx>
-#include <OpenGl_Display.hxx>
 #include <OpenGl_FrameBuffer.hxx>
 #include <OpenGl_Matrix.hxx>
 #include <OpenGl_NamedStatus.hxx>
@@ -50,6 +49,7 @@
 #include <OpenGl_TextParam.hxx>
 #include <OpenGl_RenderFilter.hxx>
 #include <OpenGl_Vec.hxx>
+#include <OpenGl_LineAttributes.hxx>
 
 #include <Handle_OpenGl_View.hxx>
 #include <Handle_OpenGl_Texture.hxx>
@@ -98,7 +98,7 @@ class OpenGl_Workspace : public OpenGl_Window
 public:
 
   //! Main constructor - prepare GL context for specified window.
-  OpenGl_Workspace (const Handle(OpenGl_Display)& theDisplay,
+  OpenGl_Workspace (const Handle(Aspect_DisplayConnection)& theDisplayConnection,
                     const CALL_DEF_WINDOW&        theCWindow,
                     Aspect_RenderingContext       theGContext,
                     const Handle(OpenGl_Caps)&    theCaps,
@@ -155,6 +155,8 @@ public:
   Standard_Boolean& UseZBuffer()   { return myUseZBuffer; }
   Standard_Boolean& UseDepthTest() { return myUseDepthTest; }
   Standard_Boolean& UseGLLight()   { return myUseGLLight; }
+
+  Standard_Integer AntiAliasingMode() const { return myAntiAliasingMode; }
 
   //// RELATED TO STATUS ////
 
@@ -555,7 +557,9 @@ protected: //! @name fields related to ray-tracing
 protected: //! @name protected fields
 
   Handle(OpenGl_PrinterContext) myPrintContext;
-  Handle(OpenGl_View)    myView;            // WSViews - now just one view is supported
+  Handle(OpenGl_View)           myView;
+  Handle(OpenGl_LineAttributes) myLineAttribs;
+  Standard_Integer       myAntiAliasingMode;
   Standard_Boolean       myTransientDrawToFront; //!< optimization flag for immediate mode (to render directly to the front buffer)
   Standard_Boolean       myBackBufferRestored;
   Standard_Boolean       myIsImmediateDrawn;     //!< flag indicates that immediate mode buffer contains some data

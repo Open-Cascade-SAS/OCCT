@@ -72,15 +72,6 @@ typedef struct font_data {
 
 } FONT_DATA;
 
-#ifdef __cplusplus
-extern "C" {
-#endif  /* __cplusplus */
-
-  __declspec( dllimport ) long InterfaceGraphic_RealizePalette ( HDC, HPALETTE, BOOL, BOOL );
-
-#ifdef __cplusplus
-}
-#endif  /* __cplusplus */
 #endif //WNT
 
 #endif  /* __INTERFACE_GRAPHIC_WNT_HXX */

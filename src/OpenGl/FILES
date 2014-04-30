@@ -3,8 +3,6 @@ OpenGl_CMPLRS.edl
 Handle_OpenGl_GraphicDriver.hxx
 OpenGl_GraphicDriver.hxx
 OpenGl_GraphicDriver.cxx
-OpenGl_GraphicDriver_1.cxx
-OpenGl_GraphicDriver_2.cxx
 OpenGl_GraphicDriver_4.cxx
 OpenGl_GraphicDriver_7.cxx
 OpenGl_GraphicDriver_713.cxx
@@ -54,10 +52,8 @@ OpenGl_NamedStatus.hxx
 OpenGl_TextParam.hxx
 OpenGl_PrinterContext.hxx
 OpenGl_PrinterContext.cxx
-Handle_OpenGl_Display.hxx
-OpenGl_Display.hxx
-OpenGl_Display.cxx
-OpenGl_Display_2.cxx
+OpenGl_LineAttributes.hxx
+OpenGl_LineAttributes.cxx
 Handle_OpenGl_Window.hxx
 OpenGl_Window.hxx
 OpenGl_Window.cxx

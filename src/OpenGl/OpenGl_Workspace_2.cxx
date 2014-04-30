@@ -36,8 +36,6 @@
 #include <OpenGl_PrinterContext.hxx>
 #include <OpenGl_Workspace.hxx>
 #include <OpenGl_View.hxx>
-#include <OpenGl_Display.hxx>
-
 
 #ifdef _WIN32
 

@@ -39,10 +39,10 @@
 
 #include <OpenGl_LayerList.hxx>
 #include <OpenGl_Light.hxx>
+#include <OpenGl_LineAttributes.hxx>
 
 #include <Handle_OpenGl_Context.hxx>
 #include <Handle_OpenGl_GraphicDriver.hxx>
-#include <Handle_OpenGl_Display.hxx>
 #include <Handle_OpenGl_Workspace.hxx>
 #include <Handle_OpenGl_View.hxx>
 #include <Handle_OpenGl_Texture.hxx>
@@ -223,12 +223,13 @@ protected:
                     const OpenGl_Matrix* theProjection,
                     const OpenGl_Matrix* theOrientation);
 
-  Handle(OpenGl_Texture) myTextureEnv;
-  Visual3d_TypeOfSurfaceDetail mySurfaceDetail; //WSSurfaceDetail
-  Standard_Integer myBackfacing; //WSBackfacing
+  Handle(OpenGl_LineAttributes) myLineAttribs;
+  Handle(OpenGl_Texture)        myTextureEnv;
+  Visual3d_TypeOfSurfaceDetail  mySurfaceDetail;
+  Standard_Integer              myBackfacing;
 
-  OPENGL_BG_TEXTURE myBgTexture; //WSBgTexture
-  OPENGL_BG_GRADIENT myBgGradient; //WSBgGradient
+  OPENGL_BG_TEXTURE  myBgTexture;
+  OPENGL_BG_GRADIENT myBgGradient;
 
   OPENGL_ZCLIP   myZClip;
 

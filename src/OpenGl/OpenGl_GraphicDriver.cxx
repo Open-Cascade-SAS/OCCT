@@ -29,7 +29,12 @@
 #include <OpenGl_Trihedron.hxx>
 #include <OpenGl_Workspace.hxx>
 
+#include <OSD_Environment.hxx>
 #include <Standard_NotImplemented.hxx>
+
+#if (!defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX)))
+  #include <X11/Xlib.h> // XOpenDisplay()
+#endif
 
 IMPLEMENT_STANDARD_HANDLE(OpenGl_GraphicDriver,Graphic3d_GraphicDriver)
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_GraphicDriver,Graphic3d_GraphicDriver)
@@ -89,6 +94,80 @@ OpenGl_GraphicDriver::OpenGl_GraphicDriver (const Standard_CString theShrName)
   myTempText (new OpenGl_Text())
 {
   //
+}
+
+// =======================================================================
+// function : Begin
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_GraphicDriver::Begin (const Handle(Aspect_DisplayConnection)& theDisplayConnection)
+{
+  myDisplayConnection = theDisplayConnection;
+  if (myDisplayConnection.IsNull())
+  {
+  #if (!defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX)))
+    //Aspect_GraphicDeviceDefinitionError::Raise ("OpenGl_GraphicDriver: cannot connect to X server!");
+    return Standard_False;
+  #else
+    return Standard_True;
+  #endif
+  }
+
+#if (!defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX)))
+  Display* aDisplay = myDisplayConnection->GetDisplay();
+  Bool toSync = ::getenv ("CSF_GraphicSync") != NULL
+             || ::getenv ("CALL_SYNCHRO_X")  != NULL;
+  XSynchronize (aDisplay, toSync);
+
+  // does the server know about OpenGL & GLX?
+  int aDummy;
+  if (!XQueryExtension (aDisplay, "GLX", &aDummy, &aDummy, &aDummy))
+  {
+  #ifdef DEBUG
+    std::cerr << "This system doesn't appear to support OpenGL\n";
+  #endif
+  }
+#endif
+  return Standard_True;
+}
+
+// =======================================================================
+// function : End
+// purpose  :
+// =======================================================================
+void OpenGl_GraphicDriver::End()
+{
+  // deprecated method
+  ///myDisplayConnection.Nullify();
+}
+
+// =======================================================================
+// function : InquireLightLimit
+// purpose  :
+// =======================================================================
+Standard_Integer OpenGl_GraphicDriver::InquireLightLimit()
+{
+  return OpenGLMaxLights;
+}
+
+// =======================================================================
+// function : InquireViewLimit
+// purpose  :
+// =======================================================================
+Standard_Integer OpenGl_GraphicDriver::InquireViewLimit()
+{
+  return 10000;
+}
+
+// =======================================================================
+// function : InquirePlaneLimit
+// purpose  :
+// =======================================================================
+Standard_Integer OpenGl_GraphicDriver::InquirePlaneLimit()
+{
+  // NOTE the 2 first planes are reserved for ZClipping
+  const Handle(OpenGl_Context)& aCtx = GetSharedContext();
+  return aCtx.IsNull() ? 0 : Max (aCtx->MaxClipPlanes() - 2, 0);
 }
 
 // =======================================================================

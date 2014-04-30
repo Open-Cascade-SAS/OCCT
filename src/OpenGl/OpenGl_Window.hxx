@@ -21,8 +21,8 @@
 #include <OpenGl_Caps.hxx>
 
 #include <Handle_OpenGl_Context.hxx>
-#include <Handle_OpenGl_Display.hxx>
 #include <Handle_OpenGl_Window.hxx>
+#include <Aspect_DisplayConnection.hxx>
 
 #include <MMgt_TShared.hxx>
 
@@ -33,7 +33,7 @@ class OpenGl_Window : public MMgt_TShared
 public:
 
   //! Main constructor - prepare GL context for specified window.
-  OpenGl_Window (const Handle(OpenGl_Display)& theDisplay,
+  OpenGl_Window (const Handle(Aspect_DisplayConnection)& theDisplayConnection,
                  const CALL_DEF_WINDOW&        theCWindow,
                  Aspect_RenderingContext       theGContext,
                  const Handle(OpenGl_Caps)&    theCaps,
@@ -54,21 +54,11 @@ public:
                            const Standard_ShortReal theG,
                            const Standard_ShortReal theB);
 
-  void EnablePolygonOffset() const;
-  void DisablePolygonOffset() const;
-
   Standard_Integer Width()  const { return myWidth; }
   Standard_Integer Height() const { return myHeight; }
   const TEL_COLOUR& BackgroundColor() const { return myBgColor; }
-  Standard_Boolean Dither()     const { return myDither; }
-  Standard_Boolean BackDither() const { return myBackDither; }
-
-  const Handle(OpenGl_Display)& GetDisplay() const { return myDisplay; }
 
   const Handle(OpenGl_Context)& GetGlContext() const { return myGlContext; }
-
-  //! This method will be removed in future version!
-  GLCONTEXT GetGContext() const;
 
 protected:
 
@@ -89,18 +79,11 @@ protected:
 
 protected:
 
-  Handle(OpenGl_Display) myDisplay;
   Handle(OpenGl_Context) myGlContext;
   Standard_Boolean       myOwnGContext; //!< set to TRUE if GL context was not created by this class
-#if (defined(_WIN32) || defined(__WIN32__))
-  BOOL                   mySysPalInUse;
-#endif
-
-  Standard_Integer       myWidth;       // WSWidth
-  Standard_Integer       myHeight;      // WSHeight
-  TEL_COLOUR             myBgColor;     // WSBackground
-  Standard_Boolean       myDither;
-  Standard_Boolean       myBackDither;
+  Standard_Integer       myWidth;       //!< window width
+  Standard_Integer       myHeight;      //!< window height
+  TEL_COLOUR             myBgColor;     //!< background color
 
 public:
 

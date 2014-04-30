@@ -137,12 +137,12 @@ void OpenGl_Material::Init (const OPENGL_SURF_PROP& theProp)
 // function : OpenGl_Workspace
 // purpose  :
 // =======================================================================
-OpenGl_Workspace::OpenGl_Workspace (const Handle(OpenGl_Display)& theDisplay,
+OpenGl_Workspace::OpenGl_Workspace (const Handle(Aspect_DisplayConnection)& theDisplayConnection,
                                     const CALL_DEF_WINDOW&        theCWindow,
                                     Aspect_RenderingContext       theGContext,
                                     const Handle(OpenGl_Caps)&    theCaps,
                                     const Handle(OpenGl_Context)& theShareCtx)
-: OpenGl_Window (theDisplay, theCWindow, theGContext, theCaps, theShareCtx),
+: OpenGl_Window (theDisplayConnection, theCWindow, theGContext, theCaps, theShareCtx),
   NamedStatus (0),
   HighlightColor (&THE_WHITE_COLOR),
   //
@@ -152,6 +152,7 @@ OpenGl_Workspace::OpenGl_Workspace (const Handle(OpenGl_Display)& theDisplay,
   myViewModificationStatus (0),
   myLayersModificationStatus (0),
   //
+  myAntiAliasingMode     (3),
   myTransientDrawToFront (Standard_True),
   myBackBufferRestored   (Standard_False),
   myIsImmediateDrawn     (Standard_False),
@@ -176,7 +177,15 @@ OpenGl_Workspace::OpenGl_Workspace (const Handle(OpenGl_Display)& theDisplay,
   myModelViewMatrix (myDefaultMatrix),
   PolygonOffset_applied (NULL)
 {
-  theDisplay->InitAttributes();
+  myGlContext->core11fwd->glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
+
+  if (!myGlContext->GetResource ("OpenGl_LineAttributes", myLineAttribs))
+  {
+    // share and register for release once the resource is no longer used
+    myLineAttribs = new OpenGl_LineAttributes();
+    myGlContext->ShareResource ("OpenGl_LineAttributes", myLineAttribs);
+    myLineAttribs->Init (myGlContext);
+  }
 
   // General initialization of the context
 
@@ -190,8 +199,13 @@ OpenGl_Workspace::OpenGl_Workspace (const Handle(OpenGl_Display)& theDisplay,
   glHint (GL_LINE_SMOOTH_HINT,    GL_FASTEST);
   glHint (GL_POLYGON_SMOOTH_HINT, GL_FASTEST);
 
-  // Polygon Offset
-  EnablePolygonOffset();
+  // AA mode
+  const char* anAaEnv = ::getenv ("CALL_OPENGL_ANTIALIASING_MODE");
+  if (anAaEnv != NULL)
+  {
+    int v;
+    if (sscanf (anAaEnv, "%d", &v) > 0) myAntiAliasingMode = v;
+  }
 }
 
 // =======================================================================
@@ -211,6 +225,12 @@ Standard_Boolean OpenGl_Workspace::SetImmediateModeDrawToFront (const Standard_B
 // =======================================================================
 OpenGl_Workspace::~OpenGl_Workspace()
 {
+  if (!myLineAttribs.IsNull())
+  {
+    myLineAttribs.Nullify();
+    myGlContext->ReleaseResource ("OpenGl_LineAttributes", Standard_True);
+  }
+
   ReleaseRaytraceResources();
 }
 
@@ -618,23 +638,13 @@ void OpenGl_Workspace::redraw1 (const Graphic3d_CView& theCView,
                                 const Aspect_CLayer2d& theCOverLayer,
                                 const int              theToSwap)
 {
-  if (myDisplay.IsNull() || myView.IsNull())
+  if (myView.IsNull())
   {
     return;
   }
 
   // request reset of material
   NamedStatus |= OPENGL_NS_RESMAT;
-
-  // GL_DITHER on/off pour le background
-  if (myBackDither)
-  {
-    glEnable (GL_DITHER);
-  }
-  else
-  {
-    glDisable (GL_DITHER);
-  }
 
   GLbitfield toClear = GL_COLOR_BUFFER_BIT;
   if (myUseZBuffer)

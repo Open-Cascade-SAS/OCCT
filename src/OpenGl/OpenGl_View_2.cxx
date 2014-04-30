@@ -26,7 +26,6 @@
 
 #include <OpenGl_AspectLine.hxx>
 #include <OpenGl_Context.hxx>
-#include <OpenGl_Display.hxx>
 #include <OpenGl_Matrix.hxx>
 #include <OpenGl_Workspace.hxx>
 #include <OpenGl_View.hxx>
@@ -341,13 +340,9 @@ void OpenGl_View::DrawBackground (OpenGl_Workspace& theWorkspace)
     glPopAttrib(); //GL_ENABLE_BIT | GL_TEXTURE_BIT
 
     if (theWorkspace.UseZBuffer())
+    {
       glEnable (GL_DEPTH_TEST);
-
-    /* GL_DITHER on/off pour le trace */
-    if (theWorkspace.Dither())
-      glEnable (GL_DITHER);
-    else
-      glDisable (GL_DITHER);
+    }
   }
 }
 
@@ -662,7 +657,7 @@ void OpenGl_View::RenderStructs (const Handle(OpenGl_Workspace) &AWorkspace)
 
   if ( (AWorkspace->NamedStatus & OPENGL_NS_2NDPASSNEED) == 0 )
   {
-    const int antiAliasingMode = AWorkspace->GetDisplay()->AntiAliasingMode();
+    const int antiAliasingMode = AWorkspace->AntiAliasingMode();
 
     if ( !myAntiAliasing )
     {

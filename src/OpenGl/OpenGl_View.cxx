@@ -16,7 +16,6 @@
 #include <NCollection_Mat4.hxx>
 
 #include <OpenGl_Context.hxx>
-#include <OpenGl_Display.hxx>
 #include <OpenGl_GlCore11.hxx>
 #include <OpenGl_GraduatedTrihedron.hxx>
 #include <OpenGl_GraphicDriver.hxx>

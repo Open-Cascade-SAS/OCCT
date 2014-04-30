@@ -299,7 +299,7 @@ const OpenGl_AspectLine * OpenGl_Workspace::AspectLine(const Standard_Boolean Wi
 
     if ( !AspectLine_applied || (AspectLine_set->Type() != AspectLine_applied->Type() ) )
     {
-      myDisplay->SetTypeOfLine(AspectLine_set->Type());
+      myLineAttribs->SetTypeOfLine (AspectLine_set->Type());
     }
 
     if ( !AspectLine_applied || ( AspectLine_set->Width() != AspectLine_applied->Width() ) )
@@ -386,7 +386,7 @@ const OpenGl_AspectFace* OpenGl_Workspace::AspectFace (const Standard_Boolean th
       case Aspect_IS_HATCH:
       {
         glPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
-        myDisplay->SetTypeOfHatch (AspectFace_applied != NULL ? AspectFace_applied->Hatch() : TEL_HS_SOLID);
+        myLineAttribs->SetTypeOfHatch (AspectFace_applied != NULL ? AspectFace_applied->Hatch() : TEL_HS_SOLID);
         break;
       }
       case Aspect_IS_SOLID:
@@ -409,7 +409,7 @@ const OpenGl_AspectFace* OpenGl_Workspace::AspectFace (const Standard_Boolean th
     const Tint hatchstyle = AspectFace_set->Hatch();
     if (AspectFace_applied == NULL || AspectFace_applied->Hatch() != hatchstyle)
     {
-      myDisplay->SetTypeOfHatch(hatchstyle);
+      myLineAttribs->SetTypeOfHatch (hatchstyle);
     }
   }
 

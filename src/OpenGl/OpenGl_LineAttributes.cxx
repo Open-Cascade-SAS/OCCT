@@ -15,7 +15,8 @@
 
 #include <OpenGl_GlCore11.hxx>
 
-#include <OpenGl_Display.hxx>
+#include <OpenGl_LineAttributes.hxx>
+#include <OpenGl_Context.hxx>
 
 #ifdef HAVE_CONFIG_H
   #include <config.h>
@@ -25,10 +26,10 @@
   #include <gl2ps.h>
 #endif
 
-#define  DOT_LS            0xCCCC
-#define  DASH_DOT_LS       0xFF18
-#define  DASH_LS           0xFFC0
-#define  DASH_DDOT_LS      0xFF24
+#define DOT_LS       0xCCCC
+#define DASH_DOT_LS  0xFF18
+#define DASH_LS      0xFFC0
+#define DASH_DDOT_LS 0xFF24
 
 static const unsigned int myInteriors[TEL_HS_USER_DEF_START][32] =
 {
@@ -489,83 +490,131 @@ static const unsigned int myInteriors[TEL_HS_USER_DEF_START][32] =
   }
 };
 
-/*----------------------------------------------------------------------*/
+IMPLEMENT_STANDARD_HANDLE (OpenGl_LineAttributes, OpenGl_Resource)
+IMPLEMENT_STANDARD_RTTIEXT(OpenGl_LineAttributes, OpenGl_Resource)
 
-//TsmInitAttributes
-void OpenGl_Display::InitAttributes ()
+// =======================================================================
+// function : OpenGl_LineAttributes
+// purpose  :
+// =======================================================================
+OpenGl_LineAttributes::OpenGl_LineAttributes()
+: myLinestyleBase(0),
+  myPatternBase(0)
+{
+  //
+}
+
+// =======================================================================
+// function : ~OpenGl_LineAttributes
+// purpose  :
+// =======================================================================
+OpenGl_LineAttributes::~OpenGl_LineAttributes()
+{
+  Release (NULL);
+}
+
+// =======================================================================
+// function : Release
+// purpose  :
+// =======================================================================
+void OpenGl_LineAttributes::Release (const OpenGl_Context* theGlCtx)
+{
+  // Delete line styles
+  if (myLinestyleBase != 0)
+  {
+    if (theGlCtx->IsValid())
+    {
+      glDeleteLists ((GLuint )myLinestyleBase, 5);
+    }
+    myLinestyleBase = 0;
+  }
+  // Delete surface patterns
+  if (myPatternBase != 0)
+  {
+    if (theGlCtx->IsValid())
+    {
+      glDeleteLists ((GLuint )myPatternBase, TEL_HS_USER_DEF_START);
+    }
+    myPatternBase = 0;
+  }
+}
+
+// =======================================================================
+// function : Init
+// purpose  :
+// =======================================================================
+void OpenGl_LineAttributes::Init (const Handle(OpenGl_Context)& theGlCtx)
 {
   // Return if already initialized
-  if (myLinestyleBase) return;
-
-  myLinestyleBase = glGenLists(5);
-
-  /* Line */
-
-  glNewList( (GLuint)myLinestyleBase+(GLuint)Aspect_TOL_DASH, GL_COMPILE );
-  glLineStipple(1,  DASH_LS );
-  glEndList();
-
-  glNewList( (GLuint)myLinestyleBase+(GLuint)Aspect_TOL_DOT, GL_COMPILE );
-  glLineStipple(1,  DOT_LS );
-  glEndList();
-
-  glNewList( (GLuint)myLinestyleBase+(GLuint)Aspect_TOL_DOTDASH, GL_COMPILE );
-  glLineStipple(1,  DASH_DOT_LS );
-  glEndList();
-
-  glNewList( (GLuint)myLinestyleBase+(GLuint)Aspect_TOL_USERDEFINED, GL_COMPILE );
-  glLineStipple(1,  DASH_DDOT_LS );
-  glEndList();
-
-  /* FSXXX
-  * GL_POLYGON_STIPPLE
-  * need 32x32 stipple patterns
-  */
-  const int nbi = sizeof(myInteriors)/(32*sizeof(unsigned int));
-  myPatternBase = glGenLists(TEL_HS_USER_DEF_START);
-  int i;
-  for( i = 1; i < TEL_HS_USER_DEF_START; i++ )
+  if (myLinestyleBase != 0)
   {
-    glNewList( (GLuint)myPatternBase + i, GL_COMPILE );
-	glPolygonStipple((const GLubyte *) (myInteriors[i<nbi? i : 0]));
+    return;
+  }
+
+  myLinestyleBase = theGlCtx->core11->glGenLists (5);
+
+  // Line
+  glNewList ((GLuint )myLinestyleBase + (GLuint )Aspect_TOL_DASH, GL_COMPILE);
+  glLineStipple (1,  DASH_LS);
+  glEndList();
+
+  glNewList ((GLuint )myLinestyleBase + (GLuint )Aspect_TOL_DOT, GL_COMPILE);
+  glLineStipple (1,  DOT_LS);
+  glEndList();
+
+  glNewList ((GLuint )myLinestyleBase + (GLuint )Aspect_TOL_DOTDASH, GL_COMPILE);
+  glLineStipple (1,  DASH_DOT_LS);
+  glEndList();
+
+  glNewList ((GLuint )myLinestyleBase + (GLuint )Aspect_TOL_USERDEFINED, GL_COMPILE);
+  glLineStipple (1,  DASH_DDOT_LS);
+  glEndList();
+
+  // GL_POLYGON_STIPPLE need 32x32 stipple patterns
+  const int nbi = sizeof(myInteriors) / (32 * sizeof(unsigned int));
+  myPatternBase = glGenLists(TEL_HS_USER_DEF_START);
+  for (int i = 1; i < TEL_HS_USER_DEF_START; i++)
+  {
+    glNewList ((GLuint )myPatternBase + i, GL_COMPILE);
+    glPolygonStipple ((const GLubyte* )myInteriors[i < nbi ? i : 0]);
     glEndList();
   }
-
-  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 }
 
-/*----------------------------------------------------------------------*/
-
-void OpenGl_Display::SetTypeOfLine (const Aspect_TypeOfLine AType) const
+// =======================================================================
+// function : SetTypeOfLine
+// purpose  :
+// =======================================================================
+void OpenGl_LineAttributes::SetTypeOfLine (const Aspect_TypeOfLine theType) const
 {
-  if (AType != Aspect_TOL_SOLID)
+  if (theType != Aspect_TOL_SOLID)
   {
-    glCallList((GLuint)myLinestyleBase+(GLuint)AType);
-    glEnable( GL_LINE_STIPPLE );
-#ifdef HAVE_GL2PS
-    gl2psEnable( GL2PS_LINE_STIPPLE );
-#endif
+    glCallList ((GLuint )myLinestyleBase + (GLuint )theType);
+    glEnable (GL_LINE_STIPPLE);
+  #ifdef HAVE_GL2PS
+    gl2psEnable (GL2PS_LINE_STIPPLE);
+  #endif
   }
   else
   {
-    glDisable( GL_LINE_STIPPLE );
-#ifdef HAVE_GL2PS
-    gl2psDisable( GL2PS_LINE_STIPPLE );
-#endif
+    glDisable (GL_LINE_STIPPLE);
+  #ifdef HAVE_GL2PS
+    gl2psDisable (GL2PS_LINE_STIPPLE);
+  #endif
   }
 }
 
-/*----------------------------------------------------------------------*/
-
-void OpenGl_Display::SetTypeOfHatch (const int AType) const
+// =======================================================================
+// function : SetTypeOfHatch
+// purpose  :
+// =======================================================================
+void OpenGl_LineAttributes::SetTypeOfHatch (const int theType) const
 {
-  if (AType)
+  if (theType != 0)
   {
-    glCallList((GLuint)myPatternBase+(GLuint)AType);
-    glEnable( GL_POLYGON_STIPPLE );
+    glCallList ((GLuint )myPatternBase + (GLuint )theType);
+    glEnable (GL_POLYGON_STIPPLE);
   }
   else
-    glDisable( GL_POLYGON_STIPPLE );
+    glDisable (GL_POLYGON_STIPPLE);
 }
-
-/*----------------------------------------------------------------------*/

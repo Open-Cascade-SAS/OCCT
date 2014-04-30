@@ -22,7 +22,6 @@
 #include <OpenGl_Window.hxx>
 
 #include <OpenGl_Context.hxx>
-#include <OpenGl_Display.hxx>
 #include <Aspect_GraphicDeviceDefinitionError.hxx>
 #include <Cocoa_LocalPool.hxx>
 #include <TCollection_AsciiString.hxx>
@@ -38,19 +37,16 @@ namespace
 // function : OpenGl_Window
 // purpose  :
 // =======================================================================
-OpenGl_Window::OpenGl_Window (const Handle(OpenGl_Display)& theDisplay,
+OpenGl_Window::OpenGl_Window (const Handle(Aspect_DisplayConnection)& /*theDisplayConnection*/,
                               const CALL_DEF_WINDOW&        theCWindow,
                               Aspect_RenderingContext       theGContext,
                               const Handle(OpenGl_Caps)&    theCaps,
                               const Handle(OpenGl_Context)& theShareCtx)
-: myDisplay (theDisplay),
-  myGlContext (new OpenGl_Context (theCaps)),
+: myGlContext (new OpenGl_Context (theCaps)),
   myOwnGContext (theGContext == 0),
-  myWidth ((Standard_Integer )theCWindow.dx),
+  myWidth  ((Standard_Integer )theCWindow.dx),
   myHeight ((Standard_Integer )theCWindow.dy),
-  myBgColor (THE_DEFAULT_BG_COLOR),
-  myDither (theDisplay->Dither()),
-  myBackDither (theDisplay->BackDither())
+  myBgColor (THE_DEFAULT_BG_COLOR)
 {
   myBgColor.rgb[0] = theCWindow.Background.r;
   myBgColor.rgb[1] = theCWindow.Background.g;
@@ -122,14 +118,9 @@ OpenGl_Window::~OpenGl_Window()
 // =======================================================================
 void OpenGl_Window::Resize (const CALL_DEF_WINDOW& theCWindow)
 {
-  DISPLAY* aDisp = (DISPLAY* )myDisplay->GetDisplay();
-  if (aDisp == NULL)
-  {
-    return;
-  }
-
   // If the size is not changed - do nothing
-  if ((myWidth == theCWindow.dx) && (myHeight == theCWindow.dy))
+  if (myWidth  == (Standard_Integer )theCWindow.dx
+   && myHeight == (Standard_Integer )theCWindow.dy)
   {
     return;
   }

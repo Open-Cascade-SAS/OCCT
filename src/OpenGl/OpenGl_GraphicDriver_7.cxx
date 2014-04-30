@@ -19,7 +19,6 @@
 
 #include <OpenGl_Structure.hxx>
 #include <OpenGl_CView.hxx>
-#include <OpenGl_Display.hxx>
 #include <OpenGl_Text.hxx>
 
 /*----------------------------------------------------------------------*/
@@ -402,7 +401,6 @@ void OpenGl_GraphicDriver::RemoveView (const Graphic3d_CView& theCView)
       aStruct->ReleaseGlResources (aCtx);
     }
     myTempText->Release (aCtx);
-    myGlDisplay->ReleaseAttributes (aCtx.operator->());
     myDeviceLostFlag = !myMapOfStructure.IsEmpty();
   }
 
@@ -463,15 +461,14 @@ void OpenGl_GraphicDriver::Transparency (const Graphic3d_CView& ACView, const St
 
 Standard_Boolean OpenGl_GraphicDriver::View (Graphic3d_CView& theCView)
 {
-  if (myGlDisplay.IsNull()
-   || myMapOfView.IsBound (theCView.ViewId)
+  if (myMapOfView.IsBound (theCView.ViewId)
    || myMapOfWS  .IsBound (theCView.WsId))
   {
     return Standard_False;
   }
 
   Handle(OpenGl_Context)   aShareCtx = GetSharedContext();
-  Handle(OpenGl_Workspace) aWS       = new OpenGl_Workspace (myGlDisplay, theCView.DefWindow, theCView.GContext, myCaps, aShareCtx);
+  Handle(OpenGl_Workspace) aWS       = new OpenGl_Workspace (myDisplayConnection, theCView.DefWindow, theCView.GContext, myCaps, aShareCtx);
   Handle(OpenGl_View)      aView     = new OpenGl_View (theCView.Context, &myStateCounter);
   myMapOfWS  .Bind (theCView.WsId,   aWS);
   myMapOfView.Bind (theCView.ViewId, aView);

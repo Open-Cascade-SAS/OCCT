@@ -19,10 +19,10 @@
 
 #include <Font_FontAspect.hxx>
 
-#include <OpenGl_Display.hxx>
 #include <OpenGl_AspectText.hxx>
 #include <OpenGl_Text.hxx>
 #include <OpenGl_TextParam.hxx>
+#include <OpenGl_LineAttributes.hxx>
 
 /*----------------------------------------------------------------------*/
 
@@ -223,19 +223,29 @@ void OpenGl_GraphicDriver::UnsetTransparency ()
   glDisable (GL_BLEND);
 }
 
-void OpenGl_GraphicDriver::SetLineAttributes (const Standard_Integer Type, const Standard_ShortReal Width)
+void OpenGl_GraphicDriver::SetLineAttributes (const Standard_Integer   theType,
+                                              const Standard_ShortReal theWidth)
 {
-  if (!TheLayerProp.ListId || myGlDisplay.IsNull()) return;
-
-  if (TheLayerProp.LineType != Type)
+  const Handle(OpenGl_Context)& aCtx = GetSharedContext();
+  if (!TheLayerProp.ListId
+   || aCtx.IsNull())
   {
-    TheLayerProp.LineType = Type;
-    myGlDisplay->SetTypeOfLine((Aspect_TypeOfLine) Type);
+    return;
   }
-  if (TheLayerProp.LineWidth != Width)
+
+  if (TheLayerProp.LineType != theType)
   {
-    TheLayerProp.LineWidth = Width;
-    glLineWidth ((GLfloat) Width);
+    Handle(OpenGl_LineAttributes) aLineAttribs;
+    if (aCtx->GetResource ("OpenGl_LineAttributes", aLineAttribs))
+    {
+      TheLayerProp.LineType = theType;
+      aLineAttribs->SetTypeOfLine ((Aspect_TypeOfLine )theType);
+    }
+  }
+  if (TheLayerProp.LineWidth != theWidth)
+  {
+    TheLayerProp.LineWidth = theWidth;
+    glLineWidth ((GLfloat )theWidth);
   }
 }
 

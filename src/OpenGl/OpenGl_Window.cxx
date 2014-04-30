@@ -20,7 +20,6 @@
 #include <OpenGl_Window.hxx>
 
 #include <OpenGl_Context.hxx>
-#include <OpenGl_Display.hxx>
 
 #include <Aspect_GraphicDeviceDefinitionError.hxx>
 #include <TCollection_AsciiString.hxx>
@@ -127,28 +126,23 @@ namespace
 // function : OpenGl_Window
 // purpose  :
 // =======================================================================
-OpenGl_Window::OpenGl_Window (const Handle(OpenGl_Display)& theDisplay,
+OpenGl_Window::OpenGl_Window (const Handle(Aspect_DisplayConnection)& theDisplayConnection,
                               const CALL_DEF_WINDOW&        theCWindow,
                               Aspect_RenderingContext       theGContext,
                               const Handle(OpenGl_Caps)&    theCaps,
                               const Handle(OpenGl_Context)& theShareCtx)
-: myDisplay (theDisplay),
-  myGlContext (new OpenGl_Context (theCaps)),
+: myGlContext (new OpenGl_Context (theCaps)),
   myOwnGContext (theGContext == 0),
-#if defined(_WIN32)
-  mySysPalInUse (FALSE),
-#endif
   myWidth ((Standard_Integer )theCWindow.dx),
   myHeight ((Standard_Integer )theCWindow.dy),
-  myBgColor (THE_DEFAULT_BG_COLOR),
-  myDither (theDisplay->Dither()),
-  myBackDither (theDisplay->BackDither())
+  myBgColor (THE_DEFAULT_BG_COLOR)
 {
   myBgColor.rgb[0] = theCWindow.Background.r;
   myBgColor.rgb[1] = theCWindow.Background.g;
   myBgColor.rgb[2] = theCWindow.Background.b;
 
 #if defined(_WIN32)
+  (void )theDisplayConnection;
   HWND  aWindow   = (HWND )theCWindow.XWindow;
   HDC   aWindowDC = GetDC (aWindow);
   HGLRC aGContext = (HGLRC )theGContext;
@@ -195,23 +189,6 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_Display)& theDisplay,
   }
 
   DescribePixelFormat (aWindowDC, aPixelFrmtId, sizeof(aPixelFrmt), &aPixelFrmt);
-  if (aPixelFrmt.dwFlags & PFD_NEED_PALETTE)
-  {
-    WINDOW_DATA* aWndData = (WINDOW_DATA* )GetWindowLongPtr (aWindow, GWLP_USERDATA);
-
-    mySysPalInUse = (aPixelFrmt.dwFlags & PFD_NEED_SYSTEM_PALETTE) ? TRUE : FALSE;
-    InterfaceGraphic_RealizePalette (aWindowDC, aWndData->hPal, FALSE, mySysPalInUse);
-  }
-
-  if (myDither)
-  {
-    myDither = (aPixelFrmt.cColorBits <= 8);
-  }
-
-  if (myBackDither)
-  {
-    myBackDither = (aPixelFrmt.cColorBits <= 8);
-  }
 
   HGLRC aSlaveCtx = !theShareCtx.IsNull() ? (HGLRC )theShareCtx->myGContext : NULL;
   if (aGContext == NULL)
@@ -378,7 +355,8 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_Display)& theDisplay,
 #else
   WINDOW aParent = (WINDOW )theCWindow.XWindow;
   WINDOW aWindow = 0;
-  DISPLAY* aDisp = (DISPLAY* )myDisplay->GetDisplay();
+  
+  Display*   aDisp     = theDisplayConnection->GetDisplay();
   GLXContext aGContext = (GLXContext )theGContext;
 
   XWindowAttributes wattr;
@@ -433,7 +411,7 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_Display)& theDisplay,
         aStencilSize = 0;
 
       if (!isGl || !aDepthSize || !isRGBA  || !aStencilSize ||
-          (isDoubleBuffer ? 1 : 0) != (myDisplay->DBuffer()   ? 1 : 0) ||
+          (isDoubleBuffer ? 1 : 0) != 1 ||
           (isStereo       ? 1 : 0) != (theCaps->contextStereo ? 1 : 0))
       {
         XFree (aVis);
@@ -463,8 +441,7 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_Display)& theDisplay,
       anAttribs[anIter++] = GLX_BLUE_SIZE;
       anAttribs[anIter++] = (wattr.depth <= 8) ? 0 : 1;
 
-      if (myDisplay->DBuffer())
-        anAttribs[anIter++] = GLX_DOUBLEBUFFER;
+      anAttribs[anIter++] = GLX_DOUBLEBUFFER;
 
       // warning: this flag may be set to None, so it need to be last in anAttribs
       Standard_Integer aStereoFlagPos = anIter;
@@ -548,31 +525,7 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_Display)& theDisplay,
     }
   }
 
-  /*
-  * Le BackDitherProp est utilise pour le clear du background
-  * Pour eviter une difference de couleurs avec la couleur choisie
-  * par l'application (XWindow) il faut desactiver le dithering
-  * au dessus de 8 plans.
-  *
-  * Pour le DitherProp:
-  * On cherchera a activer le Dithering que si le Visual a au moins
-  * 8 plans pour le GLX_RED_SIZE. Le test est plus sur car on peut
-  * avoir une profondeur superieure a 12 mais avoir besoin du dithering.
-  * (Carte Impact avec GLX_RED_SIZE a 5 par exemple)
-  */
-
-  int aValue;
-  glXGetConfig (aDisp, aVis, GLX_RED_SIZE, &aValue);
-
-  if (myDither)
-    myDither = (aValue < 8);
-
-  if (myBackDither)
-    myBackDither = (aVis->depth <= 8);
-
-  XFree ((char* )aVis);
-
-  myGlContext->Init ((Aspect_Drawable )aWindow, (Aspect_Display )myDisplay->GetDisplay(), (Aspect_RenderingContext )aGContext);
+  myGlContext->Init ((Aspect_Drawable )aWindow, (Aspect_Display )aDisp, (Aspect_RenderingContext )aGContext);
 #endif
   myGlContext->Share (theShareCtx);
 
@@ -650,9 +603,11 @@ Standard_Boolean OpenGl_Window::Activate()
 // =======================================================================
 void OpenGl_Window::Resize (const CALL_DEF_WINDOW& theCWindow)
 {
-  DISPLAY* aDisp = (DISPLAY* )myDisplay->GetDisplay();
+#if !defined(_WIN32)
+  Display* aDisp = (Display* )myGlContext->myDisplay;
   if (aDisp == NULL)
     return;
+#endif
 
   // If the size is not changed - do nothing
   if ((myWidth == theCWindow.dx) && (myHeight == theCWindow.dy))
@@ -729,7 +684,7 @@ void OpenGl_Window::Init()
   unsigned int aDummyU;
   unsigned int aNewWidth  = 0;
   unsigned int aNewHeight = 0;
-  DISPLAY* aDisp = (DISPLAY* )myDisplay->GetDisplay();
+  Display* aDisp = (Display* )myGlContext->myDisplay;
   XGetGeometry (aDisp, myGlContext->myWindow, &aRootWin, &aDummy, &aDummy, &aNewWidth, &aNewHeight, &aDummyU, &aDummyU);
   myWidth  = aNewWidth;
   myHeight = aNewHeight;
@@ -745,38 +700,12 @@ void OpenGl_Window::Init()
 #endif // !__APPLE__
 
 // =======================================================================
-// function : EnablePolygonOffset
-// purpose  : call_subr_enable_polygon_offset
-// =======================================================================
-void OpenGl_Window::EnablePolygonOffset() const
-{
-  Standard_ShortReal aFactor, aUnits;
-  myDisplay->PolygonOffset (aFactor, aUnits);
-  glPolygonOffset (aFactor, aUnits);
-  glEnable (GL_POLYGON_OFFSET_FILL);
-}
-
-// =======================================================================
-// function : DisablePolygonOffset
-// purpose  : call_subr_disable_polygon_offset
-// =======================================================================
-void OpenGl_Window::DisablePolygonOffset() const
-{
-  glDisable (GL_POLYGON_OFFSET_FILL);
-}
-
-// =======================================================================
 // function : EnableFeatures
 // purpose  :
 // =======================================================================
 void OpenGl_Window::EnableFeatures() const
 {
-  /*glPixelTransferi (GL_MAP_COLOR, GL_TRUE);*/
-
-  if (myDither)
-    glEnable (GL_DITHER);
-  else
-    glDisable (GL_DITHER);
+  //
 }
 
 // =======================================================================
@@ -785,7 +714,6 @@ void OpenGl_Window::EnableFeatures() const
 // =======================================================================
 void OpenGl_Window::DisableFeatures() const
 {
-  glDisable (GL_DITHER);
   glPixelTransferi (GL_MAP_COLOR, GL_FALSE);
 
   /*
@@ -864,13 +792,4 @@ void OpenGl_Window::MakeFrontBufCurrent() const
 void OpenGl_Window::MakeBackBufCurrent() const
 {
   glDrawBuffer (GL_BACK);
-}
-
-// =======================================================================
-// function : GetGContext
-// purpose  :
-// =======================================================================
-GLCONTEXT OpenGl_Window::GetGContext() const
-{
-  return (GLCONTEXT )myGlContext->myGContext;
 }

@@ -8,6 +8,5 @@ InterfaceGraphic_Cocoa.hxx
 InterfaceGraphic_XWD.hxx
 InterfaceGraphic_wntio.hxx
 InterfaceGraphic_cPrintf.cxx
-InterfaceGraphic_Palette.c
 InterfaceGraphic_telem.hxx
 InterfaceGraphic_tgl_all.hxx
