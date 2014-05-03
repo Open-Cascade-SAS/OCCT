@@ -59,7 +59,7 @@ GCE2d_MakeHyperbola::GCE2d_MakeHyperbola(const gp_Pnt2d& S1     ,
 
 const Handle(Geom2d_Hyperbola)& GCE2d_MakeHyperbola::Value() const
 { 
-  StdFail_NotDone_Raise_if(!TheError == gce_Done,"");
+  StdFail_NotDone_Raise_if(TheError != gce_Done,"");
   return TheHyperbola;
 }
 

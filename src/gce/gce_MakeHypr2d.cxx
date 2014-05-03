@@ -67,7 +67,7 @@ gce_MakeHypr2d::gce_MakeHypr2d(const gp_Ax22d&     A           ,
 
 const gp_Hypr2d& gce_MakeHypr2d::Value() const
 { 
-  StdFail_NotDone_Raise_if(!TheError == gce_Done,"");
+  StdFail_NotDone_Raise_if(TheError != gce_Done,"");
   return TheHypr2d;
 }
 

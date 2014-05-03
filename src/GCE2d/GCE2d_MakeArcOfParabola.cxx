@@ -55,7 +55,7 @@ GCE2d_MakeArcOfParabola::
 
 const Handle(Geom2d_TrimmedCurve)& GCE2d_MakeArcOfParabola::Value() const
 { 
-  StdFail_NotDone_Raise_if(!TheError == gce_Done,"");
+  StdFail_NotDone_Raise_if(TheError != gce_Done,"");
   return TheArc;
 }
 

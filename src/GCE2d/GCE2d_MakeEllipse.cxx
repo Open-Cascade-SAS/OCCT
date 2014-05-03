@@ -59,7 +59,7 @@ GCE2d_MakeEllipse::GCE2d_MakeEllipse(const gp_Pnt2d& S1     ,
 
 const Handle(Geom2d_Ellipse)& GCE2d_MakeEllipse::Value() const
 { 
-  StdFail_NotDone_Raise_if(!TheError == gce_Done,"");
+  StdFail_NotDone_Raise_if(TheError != gce_Done,"");
   return TheEllipse;
 }
 

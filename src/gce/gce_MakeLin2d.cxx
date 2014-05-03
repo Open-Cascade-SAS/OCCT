@@ -103,7 +103,7 @@ gce_MakeLin2d::gce_MakeLin2d(const gp_Lin2d&     Line,
 
 gp_Lin2d gce_MakeLin2d::Value() const
 { 
-  StdFail_NotDone_Raise_if(!TheError == gce_Done,"");
+  StdFail_NotDone_Raise_if(TheError != gce_Done,"");
   return TheLin2d;
 }
 

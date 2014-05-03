@@ -73,7 +73,7 @@ GC_MakeTrimmedCone::GC_MakeTrimmedCone(const gp_Pnt&       P1 ,
 const Handle(Geom_RectangularTrimmedSurface)& GC_MakeTrimmedCone::
        Value() const
 { 
-  StdFail_NotDone_Raise_if(!TheError == gce_Done,"");
+  StdFail_NotDone_Raise_if(TheError != gce_Done,"");
   return TheCone;
 }
 

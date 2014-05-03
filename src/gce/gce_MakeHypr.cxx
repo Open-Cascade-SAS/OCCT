@@ -55,7 +55,7 @@ gce_MakeHypr::gce_MakeHypr(const gp_Ax2&       A2          ,
 
 const gp_Hypr& gce_MakeHypr::Value() const
 { 
-  StdFail_NotDone_Raise_if(!TheError == gce_Done,"");
+  StdFail_NotDone_Raise_if(TheError != gce_Done,"");
   return TheHypr;
 }
 

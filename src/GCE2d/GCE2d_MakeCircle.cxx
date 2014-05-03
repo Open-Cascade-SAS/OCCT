@@ -100,7 +100,7 @@ GCE2d_MakeCircle::GCE2d_MakeCircle(const gp_Pnt2d&        Center ,
 
 const Handle(Geom2d_Circle)& GCE2d_MakeCircle::Value() const
 { 
-  StdFail_NotDone_Raise_if(!TheError == gce_Done,"");
+  StdFail_NotDone_Raise_if(TheError != gce_Done,"");
   return TheCircle;
 }
 

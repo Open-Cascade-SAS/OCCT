@@ -47,7 +47,7 @@ GC_MakeHyperbola::GC_MakeHyperbola(const gp_Pnt& S1     ,
 
 const Handle(Geom_Hyperbola)& GC_MakeHyperbola::Value() const
 { 
-  StdFail_NotDone_Raise_if(!TheError == gce_Done,"");
+  StdFail_NotDone_Raise_if(TheError != gce_Done,"");
   return TheHyperbola;
 }
 

@@ -55,7 +55,7 @@ GC_MakeArcOfHyperbola::GC_MakeArcOfHyperbola(const gp_Hypr&        Hypr   ,
 
 const Handle(Geom_TrimmedCurve)& GC_MakeArcOfHyperbola::Value() const
 { 
-  StdFail_NotDone_Raise_if(!TheError == gce_Done,"");
+  StdFail_NotDone_Raise_if(TheError != gce_Done,"");
   return TheArc;
 }
 

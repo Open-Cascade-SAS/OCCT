@@ -77,7 +77,7 @@ GCE2d_MakeSegment::GCE2d_MakeSegment(const gp_Lin2d&     Line  ,
 
 const Handle(Geom2d_TrimmedCurve)& GCE2d_MakeSegment::Value() const
 { 
-  StdFail_NotDone_Raise_if(!TheError == gce_Done,"");
+  StdFail_NotDone_Raise_if(TheError != gce_Done,"");
   return TheSegment;
 }
 

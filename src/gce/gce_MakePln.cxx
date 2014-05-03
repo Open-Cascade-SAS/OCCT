@@ -124,7 +124,7 @@ gce_MakePln::gce_MakePln(const gp_Ax1& Axis )
 */
 const gp_Pln& gce_MakePln::Value () const
 {
-  StdFail_NotDone_Raise_if(!TheError == gce_Done,"");
+  StdFail_NotDone_Raise_if(TheError != gce_Done,"");
   return ThePln;
 }
 

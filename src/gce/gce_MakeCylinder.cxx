@@ -126,7 +126,7 @@ gce_MakeCylinder::gce_MakeCylinder(const gp_Cylinder& Cyl ,
 
 const gp_Cylinder& gce_MakeCylinder::Value() const
 { 
-  StdFail_NotDone_Raise_if(!TheError == gce_Done,"");
+  StdFail_NotDone_Raise_if(TheError != gce_Done,"");
   return TheCylinder;
 }
 

@@ -74,7 +74,7 @@ GCE2d_MakeParabola::GCE2d_MakeParabola(const gp_Pnt2d& S1 ,
 
 const Handle(Geom2d_Parabola)& GCE2d_MakeParabola::Value() const
 { 
-  StdFail_NotDone_Raise_if(!TheError == gce_Done,"");
+  StdFail_NotDone_Raise_if(TheError != gce_Done,"");
   return TheParabola;
 }
 

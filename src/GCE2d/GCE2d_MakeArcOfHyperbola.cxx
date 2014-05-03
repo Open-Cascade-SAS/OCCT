@@ -56,7 +56,7 @@ GCE2d_MakeArcOfHyperbola::
 
 const Handle(Geom2d_TrimmedCurve)& GCE2d_MakeArcOfHyperbola::Value() const
 { 
-  StdFail_NotDone_Raise_if(!TheError == gce_Done,"");
+  StdFail_NotDone_Raise_if(TheError != gce_Done,"");
   return TheArc;
 }
 

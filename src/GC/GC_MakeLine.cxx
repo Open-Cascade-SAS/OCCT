@@ -63,7 +63,7 @@ GC_MakeLine::GC_MakeLine(const gp_Lin& Lin   ,
 
 const Handle(Geom_Line)& GC_MakeLine::Value() const
 { 
-  StdFail_NotDone_Raise_if(!TheError == gce_Done,"");
+  StdFail_NotDone_Raise_if(TheError != gce_Done,"");
   return TheLine;
 }
 

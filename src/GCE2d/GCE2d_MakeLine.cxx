@@ -73,7 +73,7 @@ GCE2d_MakeLine::GCE2d_MakeLine(const gp_Lin2d&     Lin  ,
 
 const Handle(Geom2d_Line)& GCE2d_MakeLine::Value() const
 { 
-  StdFail_NotDone_Raise_if(!TheError == gce_Done,"");
+  StdFail_NotDone_Raise_if(TheError != gce_Done,"");
   return TheLine;
 }
 
