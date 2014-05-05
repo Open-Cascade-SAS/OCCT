@@ -221,6 +221,18 @@ public:
                              const Image_PixMap&           theImage,
                              const Graphic3d_TypeOfTexture theType);
 
+  //! Initialize the texture with specified format, size and texture type.
+  //! If theImage is empty the texture data will contain trash.
+  //! Notice that texture will be unbound after this call.
+  Standard_EXPORT bool Init (const Handle(OpenGl_Context)& theCtx,
+                             const GLint                   theTextFormat,
+                             const GLenum                  thePixelFormat,
+                             const GLenum                  theDataType,
+                             const GLsizei                 theSizeX,
+                             const GLsizei                 theSizeY,
+                             const Graphic3d_TypeOfTexture theType,
+                             const Image_PixMap*           theImage = NULL);
+
   //! Allocates texture rectangle with specified format and size.
   //! \note Texture data is not initialized (will contain trash).
   Standard_EXPORT bool InitRectangle (const Handle(OpenGl_Context)& theCtx,
@@ -236,6 +248,13 @@ public:
 
   //! @param texture parameters
   Standard_EXPORT void SetParams (const Handle(Graphic3d_TextureParams)& theParams);
+
+  //! Return texture type and format by Image_PixMap data format.
+  Standard_EXPORT static bool GetDataFormat (const Handle(OpenGl_Context)& theCtx,
+                                             const Image_PixMap&           theData,
+                                             GLint&                        theTextFormat,
+                                             GLenum&                       thePixelFormat,
+                                             GLenum&                       theDataType);
 
 protected:
 

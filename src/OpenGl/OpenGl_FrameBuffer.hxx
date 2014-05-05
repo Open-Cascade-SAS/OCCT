@@ -17,6 +17,7 @@
 
 #include <OpenGl_Context.hxx>
 #include <OpenGl_Resource.hxx>
+#include <OpenGl_Texture.hxx>
 
 #include <Standard_Boolean.hxx>
 #include <InterfaceGraphic.hxx>
@@ -29,9 +30,7 @@ class OpenGl_FrameBuffer : public OpenGl_Resource
 public:
 
   //! Helpful constants
-  static const GLuint NO_TEXTURE = 0;
   static const GLuint NO_FRAMEBUFFER = 0;
-  static const GLuint NO_RENDERBUFFER = 0;
 
 public:
 
@@ -44,16 +43,16 @@ public:
   //! Destroy object - will release GPU memory if any.
   Standard_EXPORT virtual void Release (const OpenGl_Context* theGlCtx);
 
-  //! Texture width.
+  //! Textures width.
   GLsizei GetSizeX() const
   {
-    return mySizeX;
+    return myColorTexture->SizeX();
   }
 
-  //! Texture height.
+  //! Textures height.
   GLsizei GetSizeY() const
   {
-    return mySizeY;
+    return myColorTexture->SizeY();
   }
 
   //! Viewport width.
@@ -71,7 +70,7 @@ public:
   //! Returns true if current object was initialized
   Standard_Boolean IsValid() const
   {
-    return isValidFrameBuffer() && isValidTexture() && isValidDepthBuffer() && isValidStencilBuffer();
+    return isValidFrameBuffer();
   }
 
   //! Notice! Obsolete hardware (GeForce FX etc)
@@ -84,8 +83,7 @@ public:
   //! 3) FBO rendering will be incorrect (some obsolete Catalyst drivers).
   Standard_EXPORT Standard_Boolean Init (const Handle(OpenGl_Context)& theGlCtx,
                                          const GLsizei                 theViewportSizeX,
-                                         const GLsizei                 theViewportSizeY,
-                                         const GLboolean               toForcePowerOfTwo = GL_FALSE);
+                                         const GLsizei                 theViewportSizeY);
 
   //! Setup viewport to render into FBO
   Standard_EXPORT void SetupViewport (const Handle(OpenGl_Context)& theGlCtx);
@@ -95,56 +93,41 @@ public:
                                        const GLsizei theVPSizeY);
 
   //! Bind frame buffer (to render into the texture).
-  Standard_EXPORT void BindBuffer (const Handle(OpenGl_Context)& theGlCtx);
+  Standard_EXPORT virtual void BindBuffer (const Handle(OpenGl_Context)& theGlCtx);
 
   //! Unbind frame buffer.
-  Standard_EXPORT void UnbindBuffer (const Handle(OpenGl_Context)& theGlCtx);
+  Standard_EXPORT virtual void UnbindBuffer (const Handle(OpenGl_Context)& theGlCtx);
 
-  //! Bind the texture.
-  Standard_EXPORT void BindTexture (const Handle(OpenGl_Context)& theGlCtx);
-
-  //! Unbind the texture.
-  Standard_EXPORT void UnbindTexture (const Handle(OpenGl_Context)& theGlCtx);
-
-private:
-
-  //! Check texture could be created
-  Standard_Boolean isProxySuccess() const;
-
-  //! Generate texture with undefined data
-  Standard_Boolean initTrashTexture (const Handle(OpenGl_Context)& theGlContext);
-
-  Standard_Boolean isValidTexture() const
+  //! Returns the color texture.
+  inline const Handle(OpenGl_Texture)& ColorTexture() const
   {
-    return myGlTextureId != NO_TEXTURE;
+    return myColorTexture;
   }
+
+  //! Returns the depth-stencil texture.
+  inline const Handle(OpenGl_Texture)& DepthStencilTexture() const
+  {
+    return myDepthStencilTexture;
+  }
+
+protected:
+
+  //! Generate textures with undefined data
+  Standard_Boolean initTrashTextures (const Handle(OpenGl_Context)& theGlContext);
 
   Standard_Boolean isValidFrameBuffer() const
   {
     return myGlFBufferId != NO_FRAMEBUFFER;
   }
 
-  Standard_Boolean isValidDepthBuffer() const
-  {
-    return myGlDepthRBId != NO_RENDERBUFFER;
-  }
+protected:
 
-  Standard_Boolean isValidStencilBuffer() const
-  {
-    return myGlStencilRBId != NO_RENDERBUFFER;
-  }
-
-private:
-
-  GLsizei mySizeX;         //!< texture width
-  GLsizei mySizeY;         //!< texture height
-  GLsizei myVPSizeX;       //!< viewport width  (should be <= texture width)
-  GLsizei myVPSizeY;       //!< viewport height (should be <= texture height)
-  GLint   myTextFormat;    //!< GL_RGB, GL_RGBA,...
-  GLuint  myGlTextureId;   //!< GL texture ID
-  GLuint  myGlFBufferId;   //!< FBO object ID
-  GLuint  myGlDepthRBId;   //!< RenderBuffer object for depth   ID
-  GLuint  myGlStencilRBId; //!< RenderBuffer object for stencil ID
+  GLsizei                myVPSizeX;             //!< viewport width  (should be <= texture width)
+  GLsizei                myVPSizeY;             //!< viewport height (should be <= texture height)
+  GLint                  myTextFormat;          //!< GL_RGB, GL_RGBA,...
+  GLuint                 myGlFBufferId;         //!< FBO object ID
+  Handle(OpenGl_Texture) myColorTexture;        //!< color texture object
+  Handle(OpenGl_Texture) myDepthStencilTexture; //!< depth-stencil texture object
 
 public:
 

@@ -33,7 +33,7 @@ static inline GLsizei getEvenNumber (const GLsizei theNumber)
 //! Notice - 0 is not power of two here
 static inline bool isPowerOfTwo (const GLsizei theNumber)
 {
-	return !(theNumber & (theNumber - 1));
+  return !(theNumber & (theNumber - 1));
 }
 
 // =======================================================================
@@ -41,15 +41,12 @@ static inline bool isPowerOfTwo (const GLsizei theNumber)
 // purpose  :
 // =======================================================================
 OpenGl_FrameBuffer::OpenGl_FrameBuffer (GLint theTextureFormat)
-: mySizeX (0),
-  mySizeY (0),
-  myVPSizeX (0),
+: myVPSizeX (0),
   myVPSizeY (0),
   myTextFormat (theTextureFormat),
-  myGlTextureId (NO_TEXTURE),
   myGlFBufferId (NO_FRAMEBUFFER),
-  myGlDepthRBId (NO_RENDERBUFFER),
-  myGlStencilRBId (NO_RENDERBUFFER)
+  myColorTexture (new OpenGl_Texture()),
+  myDepthStencilTexture (new OpenGl_Texture())
 {
   //
 }
@@ -69,8 +66,7 @@ OpenGl_FrameBuffer::~OpenGl_FrameBuffer()
 // =======================================================================
 Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlContext,
                                            const GLsizei   theViewportSizeX,
-                                           const GLsizei   theViewportSizeY,
-                                           const GLboolean toForcePowerOfTwo)
+                                           const GLsizei   theViewportSizeY)
 {
   if (theGlContext->arbFBO == NULL)
   {
@@ -80,75 +76,31 @@ Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlCo
   // clean up previous state
   Release (theGlContext.operator->());
 
-  // upscale width/height if numbers are odd
-  if (toForcePowerOfTwo)
-  {
-    mySizeX = OpenGl_Context::GetPowerOfTwo (theViewportSizeX, theGlContext->MaxTextureSize());
-    mySizeY = OpenGl_Context::GetPowerOfTwo (theViewportSizeY, theGlContext->MaxTextureSize());
-  }
-  else
-  {
-    mySizeX = getEvenNumber (theViewportSizeX);
-    mySizeY = getEvenNumber (theViewportSizeY);
-  }
-
   // setup viewport sizes as is
   myVPSizeX = theViewportSizeX;
   myVPSizeY = theViewportSizeY;
 
-  // Create the texture (will be used as color buffer)
-  if (!initTrashTexture (theGlContext))
+  // Create the textures (will be used as color buffer and depth-stencil buffer)
+  if (!initTrashTextures (theGlContext))
   {
-    if (!isPowerOfTwo (mySizeX) || !isPowerOfTwo (mySizeY))
-    {
-      return Init (theGlContext, theViewportSizeX, theViewportSizeY, GL_TRUE);
-    }
     Release (theGlContext.operator->());
     return Standard_False;
-  }
-
-  if (!theGlContext->extPDS)
-  {
-    // Create RenderBuffer to be used as depth buffer
-    theGlContext->arbFBO->glGenRenderbuffers (1, &myGlDepthRBId);
-    theGlContext->arbFBO->glBindRenderbuffer (GL_RENDERBUFFER, myGlDepthRBId);
-    theGlContext->arbFBO->glRenderbufferStorage (GL_RENDERBUFFER, GL_DEPTH_COMPONENT, mySizeX, mySizeY);
-
-    // Create RenderBuffer to be used as stencil buffer
-    theGlContext->arbFBO->glGenRenderbuffers (1, &myGlStencilRBId);
-    theGlContext->arbFBO->glBindRenderbuffer (GL_RENDERBUFFER, myGlStencilRBId);
-    theGlContext->arbFBO->glRenderbufferStorage (GL_RENDERBUFFER, GL_STENCIL_INDEX, mySizeX, mySizeY);
-  }
-  else
-  {
-    // Create combined depth stencil buffer
-    theGlContext->arbFBO->glGenRenderbuffers (1, &myGlDepthRBId);
-    theGlContext->arbFBO->glBindRenderbuffer (GL_RENDERBUFFER, myGlDepthRBId);
-    theGlContext->arbFBO->glRenderbufferStorage (GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, mySizeX, mySizeY);
-    myGlStencilRBId = myGlDepthRBId;
   }
 
   // Build FBO and setup it as texture
   theGlContext->arbFBO->glGenFramebuffers (1, &myGlFBufferId);
   theGlContext->arbFBO->glBindFramebuffer (GL_FRAMEBUFFER, myGlFBufferId);
-  glEnable (GL_TEXTURE_2D);
-  glBindTexture (GL_TEXTURE_2D, myGlTextureId);
-  theGlContext->arbFBO->glFramebufferTexture2D    (GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,  GL_TEXTURE_2D,   myGlTextureId, 0);
-  theGlContext->arbFBO->glFramebufferRenderbuffer (GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,   GL_RENDERBUFFER, myGlDepthRBId);
-  theGlContext->arbFBO->glFramebufferRenderbuffer (GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, myGlStencilRBId);
+  theGlContext->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+                                                GL_TEXTURE_2D, myColorTexture->TextureId(), 0);
+  theGlContext->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT,
+                                                GL_TEXTURE_2D, myDepthStencilTexture->TextureId(), 0);
   if (theGlContext->arbFBO->glCheckFramebufferStatus (GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
   {
-    if (!isPowerOfTwo (mySizeX) || !isPowerOfTwo (mySizeY))
-    {
-      return Init (theGlContext, theViewportSizeX, theViewportSizeY, GL_TRUE);
-    }
     Release (theGlContext.operator->());
     return Standard_False;
   }
 
-  UnbindBuffer  (theGlContext);
-  UnbindTexture (theGlContext);
-  theGlContext->arbFBO->glBindRenderbuffer (GL_RENDERBUFFER, NO_RENDERBUFFER);
+  UnbindBuffer (theGlContext);
   return Standard_True;
 }
 
@@ -158,107 +110,34 @@ Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlCo
 // =======================================================================
 void OpenGl_FrameBuffer::Release (const OpenGl_Context* theGlCtx)
 {
-  if (isValidDepthBuffer()
-   || isValidStencilBuffer()
-   || isValidTexture()
-   || isValidFrameBuffer())
+  if (isValidFrameBuffer())
   {
     // application can not handle this case by exception - this is bug in code
     Standard_ASSERT_RETURN (theGlCtx != NULL,
       "OpenGl_FrameBuffer destroyed without GL context! Possible GPU memory leakage...",);
-  }
-  if (isValidStencilBuffer())
-  {
-    if (theGlCtx->IsValid()
-     && myGlStencilRBId != myGlDepthRBId)
-    {
-      theGlCtx->arbFBO->glDeleteRenderbuffers (1, &myGlStencilRBId);
-    }
-    myGlStencilRBId = NO_RENDERBUFFER;
-  }
-  if (isValidDepthBuffer())
-  {
-    if (theGlCtx->IsValid())
-    {
-      theGlCtx->arbFBO->glDeleteRenderbuffers (1, &myGlDepthRBId);
-    }
-    myGlDepthRBId = NO_RENDERBUFFER;
-  }
-  if (isValidTexture())
-  {
-    if (theGlCtx->IsValid())
-    {
-      glDeleteTextures (1, &myGlTextureId);
-    }
-    myGlTextureId = NO_TEXTURE;
-  }
-  mySizeX = mySizeY = myVPSizeX = myVPSizeY = 0;
-  if (isValidFrameBuffer())
-  {
     if (theGlCtx->IsValid())
     {
       theGlCtx->arbFBO->glDeleteFramebuffers (1, &myGlFBufferId);
     }
     myGlFBufferId = NO_FRAMEBUFFER;
   }
-}
 
-// =======================================================================
-// function : isProxySuccess
-// purpose  :
-// =======================================================================
-Standard_Boolean OpenGl_FrameBuffer::isProxySuccess() const
-{
-  // use proxy to check texture could be created or not
-  glTexImage2D (GL_PROXY_TEXTURE_2D,
-                0,                // LOD number: 0 - base image level; n is the nth mipmap reduction image
-                myTextFormat,     // internalformat
-                mySizeX, mySizeY, 0,
-                GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-  GLint aTestParamX (0), aTestParamY (0);
-  glGetTexLevelParameteriv (GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &aTestParamX);
-  glGetTexLevelParameteriv (GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &aTestParamY);
-  return aTestParamX != 0 && aTestParamY != 0;
+  myColorTexture->Release (theGlCtx);
+  myDepthStencilTexture->Release (theGlCtx);
 }
 
 // =======================================================================
 // function : initTrashTexture
 // purpose  :
 // =======================================================================
-Standard_Boolean OpenGl_FrameBuffer::initTrashTexture (const Handle(OpenGl_Context)& theGlContext)
+Standard_Boolean OpenGl_FrameBuffer::initTrashTextures (const Handle(OpenGl_Context)& theGlContext)
 {
-  // Check texture size is fit dimension maximum
-  GLint aMaxTexDim = 2048;
-  glGetIntegerv (GL_MAX_TEXTURE_SIZE, &aMaxTexDim);
-  if (mySizeX > aMaxTexDim || mySizeY > aMaxTexDim)
-  {
-    return Standard_False;
-  }
-
-  // generate new id
-  glEnable (GL_TEXTURE_2D);
-  if (!isValidTexture())
-  {
-    glGenTextures (1, &myGlTextureId); // Create The Texture
-  }
-  glBindTexture (GL_TEXTURE_2D, myGlTextureId);
-
-  // texture interpolation parameters - could be overridden later
-  glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-  if (!isProxySuccess())
-  {
-    Release (theGlContext.operator->());
-    return Standard_False;
-  }
-
-  glTexImage2D (GL_TEXTURE_2D,
-                0,                // LOD number: 0 - base image level; n is the nth mipmap reduction image
-                myTextFormat,     // internalformat
-                mySizeX, mySizeY, 0,
-                GL_RGBA, GL_UNSIGNED_BYTE, NULL); // NULL pointer supported from OpenGL 1.1
-  return Standard_True;
+  return    myColorTexture->Init (theGlContext, myTextFormat,
+                                  GL_RGBA, GL_UNSIGNED_BYTE,
+                                  myVPSizeX, myVPSizeY, Graphic3d_TOT_2D)
+  && myDepthStencilTexture->Init (theGlContext, GL_DEPTH24_STENCIL8,
+                                  GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8,
+                                  myVPSizeX, myVPSizeY, Graphic3d_TOT_2D);
 }
 
 // =======================================================================
@@ -297,24 +176,4 @@ void OpenGl_FrameBuffer::BindBuffer (const Handle(OpenGl_Context)& theGlCtx)
 void OpenGl_FrameBuffer::UnbindBuffer (const Handle(OpenGl_Context)& theGlCtx)
 {
   theGlCtx->arbFBO->glBindFramebuffer (GL_FRAMEBUFFER, NO_FRAMEBUFFER);
-}
-
-// =======================================================================
-// function : BindTexture
-// purpose  :
-// =======================================================================
-void OpenGl_FrameBuffer::BindTexture (const Handle(OpenGl_Context)& /*theGlCtx*/)
-{
-  glEnable (GL_TEXTURE_2D); // needed only for fixed pipeline rendering
-  glBindTexture (GL_TEXTURE_2D, myGlTextureId);
-}
-
-// =======================================================================
-// function : UnbindTexture
-// purpose  :
-// =======================================================================
-void OpenGl_FrameBuffer::UnbindTexture (const Handle(OpenGl_Context)& /*theGlCtx*/)
-{
-  glBindTexture (GL_TEXTURE_2D, NO_TEXTURE);
-  glDisable (GL_TEXTURE_2D); // needed only for fixed pipeline rendering
 }

@@ -1976,10 +1976,8 @@ Standard_Boolean OpenGl_Workspace::RunRaytraceShaders (const Graphic3d_CView& th
     return Standard_True;
   }
 
-  myGlContext->core20fwd->glActiveTexture (
-    GL_TEXTURE0 + OpenGl_RT_FSAAInputTexture); // texture unit for FBO texture
-
-  myRaytraceFBO1->BindTexture (myGlContext);
+  myRaytraceFBO1->ColorTexture()->Bind (myGlContext,
+                     GL_TEXTURE0 + OpenGl_RT_FSAAInputTexture);
 
   myPostFSAAProgram->Bind (myGlContext);
 
@@ -2064,7 +2062,7 @@ Standard_Boolean OpenGl_Workspace::RunRaytraceShaders (const Graphic3d_CView& th
 
     if (anIt != 3) // set input for the next pass
     {
-      aFramebuffer->BindTexture  (myGlContext);
+      aFramebuffer->ColorTexture()->Bind (myGlContext);
       aFramebuffer->UnbindBuffer (myGlContext);
     }
   }
