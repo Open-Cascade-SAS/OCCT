@@ -158,7 +158,7 @@ public: //! @name methods to alter texture mapping properties
   Standard_Boolean ShowTriangles() const { return myToShowTriangles; }
 
   //! Use this method to show the triangulation of the shape (for debugging etc.).
-  Standard_EXPORT void ShowTriangles (const Standard_Boolean theToShowTriangles = Standard_False);
+  Standard_EXPORT void ShowTriangles (const Standard_Boolean theToShowTriangles);
 
   //! @return true if texture color modulation is turned on
   Standard_Boolean TextureModulate() const { return myModulate; }
