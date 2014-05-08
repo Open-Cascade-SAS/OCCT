@@ -43,7 +43,6 @@ namespace
     {{ 1.0F, 1.0F, 1.0F, 1.0F }}  // material color
   };
 
-  static TEL_POFFSET_PARAM THE_DEFAULT_POFFSET = { Aspect_POM_Fill, 1.0F, 0.0F };
   static const TCollection_AsciiString THE_EMPTY_KEY;
 };
 

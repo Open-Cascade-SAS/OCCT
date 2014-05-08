@@ -18,6 +18,7 @@
 
 #include <InterfaceGraphic_telem.hxx>
 #include <Aspect_InteriorStyle.hxx>
+#include <Aspect_PolygonOffsetMode.hxx>
 #include <TCollection_AsciiString.hxx>
 
 #include <Handle_Graphic3d_TextureParams.hxx>
@@ -35,6 +36,8 @@
 #define OPENGL_DIFFUSE_MASK  (1<<1)
 #define OPENGL_SPECULAR_MASK (1<<2)
 #define OPENGL_EMISSIVE_MASK (1<<3)
+
+static const TEL_POFFSET_PARAM THE_DEFAULT_POFFSET = { Aspect_POM_Fill, 1.0F, 0.0F };
 
 struct OPENGL_SURF_PROP
 {

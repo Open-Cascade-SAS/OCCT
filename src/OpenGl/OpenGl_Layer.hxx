@@ -18,8 +18,15 @@
 
 #include <OpenGl_PriorityList.hxx>
 #include <Graphic3d_ZLayerSettings.hxx>
+#include <OpenGl_GlCore11.hxx>
 
 class Handle(OpenGl_Workspace);
+
+struct OpenGl_GlobalLayerSettings
+{
+  GLint DepthFunc;
+  GLboolean DepthMask;
+};
 
 class OpenGl_Layer
 {
@@ -49,7 +56,7 @@ public:
   //! Returns const reference to associated priority list.
   const OpenGl_PriorityList& PriorityList() const { return myPriorityList; }
 
-  void Render (const Handle(OpenGl_Workspace) &AWorkspace, int theDefaultDepthFunc) const;
+  void Render (const Handle(OpenGl_Workspace) &AWorkspace, const OpenGl_GlobalLayerSettings& theDefaultSettings) const;
 
 private:
 

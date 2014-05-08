@@ -44,24 +44,36 @@
 
 /*----------------------------------------------------------------------*/
 
-static void TelUpdatePolygonOffsets( const TEL_POFFSET_PARAM *pdata )
+static void TelUpdatePolygonOffsets (const TEL_POFFSET_PARAM& theOffsetData)
 {
-  if ( ( pdata->mode & Aspect_POM_Fill ) == Aspect_POM_Fill )
-    glEnable ( GL_POLYGON_OFFSET_FILL );
+  if ((theOffsetData.mode & Aspect_POM_Fill) == Aspect_POM_Fill)
+  {
+    glEnable (GL_POLYGON_OFFSET_FILL);
+  }
   else
-    glDisable ( GL_POLYGON_OFFSET_FILL );
+  {
+    glDisable (GL_POLYGON_OFFSET_FILL);
+  }
 
-  if ( ( pdata->mode & Aspect_POM_Line ) == Aspect_POM_Line )
-    glEnable ( GL_POLYGON_OFFSET_LINE );
+  if ((theOffsetData.mode & Aspect_POM_Line) == Aspect_POM_Line)
+  {
+    glEnable (GL_POLYGON_OFFSET_LINE);
+  }
   else
-    glDisable( GL_POLYGON_OFFSET_LINE );
+  {
+    glDisable (GL_POLYGON_OFFSET_LINE);
+  }
 
-  if ( ( pdata->mode & Aspect_POM_Point ) == Aspect_POM_Point )
-    glEnable ( GL_POLYGON_OFFSET_POINT );
+  if ((theOffsetData.mode & Aspect_POM_Point) == Aspect_POM_Point)
+  {
+    glEnable (GL_POLYGON_OFFSET_POINT);
+  }
   else
-    glDisable( GL_POLYGON_OFFSET_POINT );
+  {
+    glDisable (GL_POLYGON_OFFSET_POINT);
+  }
 
-  glPolygonOffset( pdata->factor, pdata->units );
+  glPolygonOffset (theOffsetData.factor, theOffsetData.units);
 }
 
 /*----------------------------------------------------------------------*/
@@ -416,13 +428,13 @@ const OpenGl_AspectFace* OpenGl_Workspace::AspectFace (const Standard_Boolean th
   // Aspect_POM_None means: do not change current settings
   if ((AspectFace_set->PolygonOffset().mode & Aspect_POM_None) != Aspect_POM_None)
   {
-    if (PolygonOffset_applied         == NULL
-     || PolygonOffset_applied->mode   != AspectFace_set->PolygonOffset().mode
-     || PolygonOffset_applied->factor != AspectFace_set->PolygonOffset().factor
-     || PolygonOffset_applied->units  != AspectFace_set->PolygonOffset().units)
+    if (PolygonOffset_applied.mode   != AspectFace_set->PolygonOffset().mode
+     || PolygonOffset_applied.factor != AspectFace_set->PolygonOffset().factor
+     || PolygonOffset_applied.units  != AspectFace_set->PolygonOffset().units)
     {
-      PolygonOffset_applied = &AspectFace_set->PolygonOffset();
-      TelUpdatePolygonOffsets (PolygonOffset_applied);
+      SetPolygonOffset (AspectFace_set->PolygonOffset().mode,
+                        AspectFace_set->PolygonOffset().factor,
+                        AspectFace_set->PolygonOffset().units);
     }
   }
 
@@ -447,6 +459,21 @@ const OpenGl_AspectFace* OpenGl_Workspace::AspectFace (const Standard_Boolean th
 
   AspectFace_applied = AspectFace_set;
   return AspectFace_set;
+}
+
+//=======================================================================
+//function : SetPolygonOffset
+//purpose  :
+//=======================================================================
+void OpenGl_Workspace::SetPolygonOffset (int theMode,
+                                         Standard_ShortReal theFactor,
+                                         Standard_ShortReal theUnits)
+{
+  PolygonOffset_applied.mode   = theMode;
+  PolygonOffset_applied.factor = theFactor;
+  PolygonOffset_applied.units  = theUnits;
+
+  TelUpdatePolygonOffsets (PolygonOffset_applied);
 }
 
 /*----------------------------------------------------------------------*/

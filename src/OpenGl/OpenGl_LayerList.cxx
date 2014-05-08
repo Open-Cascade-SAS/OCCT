@@ -17,6 +17,7 @@
 
 #include <OpenGl_LayerList.hxx>
 #include <OpenGl_Structure.hxx>
+#include <OpenGl_Workspace.hxx>
 
 #include <InterfaceGraphic_Graphic3d.hxx>
 #include <InterfaceGraphic.hxx>
@@ -271,17 +272,22 @@ void OpenGl_LayerList::ChangeLayer (const OpenGl_Structure *theStructure,
 
 void OpenGl_LayerList::Render (const Handle(OpenGl_Workspace) &theWorkspace) const
 {
-  int aDefaultDepthFunc;
-  glGetIntegerv (GL_DEPTH_FUNC, &aDefaultDepthFunc);
+  OpenGl_GlobalLayerSettings aDefaultSettings;
+  
+  glGetIntegerv (GL_DEPTH_FUNC, &aDefaultSettings.DepthFunc);
+  glGetBooleanv (GL_DEPTH_WRITEMASK, &aDefaultSettings.DepthMask);
 
   OpenGl_SequenceOfLayers::Iterator anIts;
-  for(anIts.Init (myLayers); anIts.More (); anIts.Next ())
+  for (anIts.Init (myLayers); anIts.More(); anIts.Next())
   {
     const OpenGl_Layer& aLayer = anIts.Value ();
     if (aLayer.PriorityList().NbStructures () > 0)
     {
       // render layer
-      aLayer.Render (theWorkspace, aDefaultDepthFunc);
+      aLayer.Render (theWorkspace, aDefaultSettings);
     }
   }
+
+  glDepthMask (aDefaultSettings.DepthMask);
+  glDepthFunc (aDefaultSettings.DepthFunc);
 }

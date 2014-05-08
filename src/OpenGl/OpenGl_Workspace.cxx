@@ -175,7 +175,7 @@ OpenGl_Workspace::OpenGl_Workspace (const Handle(Aspect_DisplayConnection)& theD
   StructureMatrix_applied (&myDefaultMatrix),
   myCullingMode (TelCullUndefined),
   myModelViewMatrix (myDefaultMatrix),
-  PolygonOffset_applied (NULL)
+  PolygonOffset_applied (THE_DEFAULT_POFFSET)
 {
   myGlContext->core11fwd->glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
 
@@ -278,7 +278,7 @@ void OpenGl_Workspace::ResetAppliedAspect()
   AspectText_applied    = NULL;
   TextParam_set         = &myDefaultTextParam;
   TextParam_applied     = NULL;
-  PolygonOffset_applied = NULL;
+  PolygonOffset_applied = THE_DEFAULT_POFFSET;
   myCullingMode         = TelCullUndefined;
 
   AspectLine(Standard_True);

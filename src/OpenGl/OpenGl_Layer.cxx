@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 #include <OpenGl_Layer.hxx>
-
+#include <OpenGl_Workspace.hxx>
 #include <OpenGl_GlCore11.hxx>
 
 //=======================================================================
@@ -31,32 +31,39 @@ OpenGl_Layer::OpenGl_Layer (const Standard_Integer theNbPriorities)
 //function : Render
 //purpose  : 
 //=======================================================================
-void OpenGl_Layer::Render (const Handle(OpenGl_Workspace) &AWorkspace, int theDefaultDepthFunc) const
+void OpenGl_Layer::Render (const Handle(OpenGl_Workspace) &theWorkspace, const OpenGl_GlobalLayerSettings& theDefaultSettings) const
 {
+  TEL_POFFSET_PARAM anAppliedOffsetParams = theWorkspace->AppliedPolygonOffset();
+
   // separate depth buffers
   if (IsSettingEnabled (Graphic3d_ZLayerDepthClear))
   {
     glClear (GL_DEPTH_BUFFER_BIT);
   }
-
+ 
   // handle depth test
   if (IsSettingEnabled (Graphic3d_ZLayerDepthTest))
   {
-    glDepthFunc (theDefaultDepthFunc);
+    // assuming depth test is enabled by default
+    glDepthFunc (theDefaultSettings.DepthFunc);
   }
   else
   {
     glDepthFunc (GL_ALWAYS);
   }
-
+  
   // handle depth offset
   if (IsSettingEnabled (Graphic3d_ZLayerDepthOffset))
   {
-    glPolygonOffset (myLayerSettings.DepthOffsetFactor, myLayerSettings.DepthOffsetUnits);
+    theWorkspace->SetPolygonOffset (Aspect_POM_Fill,
+                                    myLayerSettings.DepthOffsetFactor,
+                                    myLayerSettings.DepthOffsetUnits);
   }
   else
   {
-    glPolygonOffset (0.0f, 0.0f);
+    theWorkspace->SetPolygonOffset (anAppliedOffsetParams.mode,
+                                    anAppliedOffsetParams.factor,
+                                    anAppliedOffsetParams.units);
   }
 
   // handle depth write
@@ -70,5 +77,10 @@ void OpenGl_Layer::Render (const Handle(OpenGl_Workspace) &AWorkspace, int theDe
   }
 
   // render priority list
-  myPriorityList.Render (AWorkspace);
+  myPriorityList.Render (theWorkspace);
+
+  // always restore polygon offset between layers rendering
+  theWorkspace->SetPolygonOffset (anAppliedOffsetParams.mode,
+                                  anAppliedOffsetParams.factor,
+                                  anAppliedOffsetParams.units);
 }
