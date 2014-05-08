@@ -216,9 +216,9 @@ static Standard_Integer LFillIntervalBounds(Standard_Real               A,
                                             const TColStd_Array1OfReal& Knots, 
                                             const Standard_Integer      NumSubs)
 {
-  Standard_Integer iEnd = Knots.Upper(), jEnd = L1->Upper();
+  Standard_Integer iEnd = MaxSubs(Knots.Upper()-1, NumSubs), jEnd = L1->Upper();
+  iEnd = Max(iEnd, Knots.Upper());
   if(iEnd - 1 > jEnd){
-    iEnd = MaxSubs(iEnd-1,NumSubs); 
     L1    = new math_Vector(1,iEnd);
     L2    = new math_Vector(1,iEnd);
     DimL  = new math_Vector(1,iEnd);
@@ -242,9 +242,9 @@ static Standard_Integer UFillIntervalBounds(Standard_Real               A,
                                             const TColStd_Array1OfReal& Knots, 
                                             const Standard_Integer      NumSubs)
 {
-  Standard_Integer iEnd = Knots.Upper(), jEnd = U1->Upper();
+  Standard_Integer iEnd = MaxSubs(Knots.Upper()-1, NumSubs), jEnd = U1->Upper();
+  iEnd = Max(iEnd, Knots.Upper());
   if(iEnd - 1 > jEnd){
-    iEnd = MaxSubs(iEnd-1,NumSubs); 
     U1   = new math_Vector(1,iEnd);
     U2   = new math_Vector(1,iEnd);
     DimU = new math_Vector(1,iEnd);

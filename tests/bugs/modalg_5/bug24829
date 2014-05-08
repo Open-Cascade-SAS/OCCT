@@ -1,0 +1,15 @@
+puts "========="
+puts "OCC24829"
+puts "========="
+puts ""
+###########################################################
+# sprops with precision throws an exception
+###########################################################
+
+restore [locate_data_file bug24829_faceOutput-wrong.brep] result
+
+sprops result 0.0001
+
+set square 15.1187
+
+set 3dviewer 1
