@@ -18,6 +18,8 @@
 
 #include <BVH_Builder.hxx>
 
+#include <algorithm>
+
 //! Stores parameters of single node bin (slice of AABB).
 template<class T, int N>
 struct BVH_Bin

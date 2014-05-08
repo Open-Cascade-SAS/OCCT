@@ -16,6 +16,8 @@
 #include <Image_PixMap.hxx>
 #include <NCollection_AlignedAllocator.hxx>
 
+#include <algorithm>
+
 IMPLEMENT_STANDARD_HANDLE (Image_PixMap, Standard_Transient)
 IMPLEMENT_STANDARD_RTTIEXT(Image_PixMap, Standard_Transient)
 
