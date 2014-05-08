@@ -2358,6 +2358,185 @@ static int VDisplayAll (Draw_Interpretor& ,
   return 0;
 }
 
+//! Auxiliary method to find presentation
+inline Handle(PrsMgr_Presentation) findPresentation (const Handle(AIS_InteractiveContext)& theCtx,
+                                                     const Handle(AIS_InteractiveObject)&  theIO,
+                                                     const Standard_Integer                theMode)
+{
+  if (theIO.IsNull())
+  {
+    return Handle(PrsMgr_Presentation)();
+  }
+
+  if (theMode != -1)
+  {
+    if (theCtx->MainPrsMgr()->HasPresentation (theIO, theMode))
+    {
+      return theCtx->MainPrsMgr()->Presentation (theIO, theMode);
+    }
+  }
+  else if (theCtx->MainPrsMgr()->HasPresentation (theIO, theIO->DisplayMode()))
+  {
+    return theCtx->MainPrsMgr()->Presentation (theIO, theIO->DisplayMode());
+  }
+  else if (theCtx->MainPrsMgr()->HasPresentation (theIO, theCtx->DisplayMode()))
+  {
+    return theCtx->MainPrsMgr()->Presentation (theIO, theCtx->DisplayMode());
+  }
+  return Handle(PrsMgr_Presentation)();
+}
+
+enum ViewerTest_BndAction
+{
+  BndAction_Hide,
+  BndAction_Show,
+  BndAction_Print
+};
+
+//! Auxiliary method to print bounding box of presentation
+inline void bndPresentation (Draw_Interpretor&                  theDI,
+                             const Handle(PrsMgr_Presentation)& thePrs,
+                             const TCollection_AsciiString&     theName,
+                             const ViewerTest_BndAction         theAction)
+{
+  switch (theAction)
+  {
+    case BndAction_Hide:
+    {
+      thePrs->Presentation()->GraphicUnHighlight();
+      break;
+    }
+    case BndAction_Show:
+    {
+      thePrs->Presentation()->BoundBox();
+      break;
+    }
+    case BndAction_Print:
+    {
+      Graphic3d_Vec3d aMin, aMax;
+      thePrs->Presentation()->MinMaxValues (aMin.x(), aMin.y(), aMin.z(),
+                                            aMax.x(), aMax.y(), aMax.z());
+      theDI << theName  << "\n"
+            << aMin.x() << " " << aMin.y() << " " << aMin.z() << " "
+            << aMax.x() << " " << aMax.y() << " " << aMax.z() << "\n";
+      break;
+    }
+  }
+}
+
+//==============================================================================
+//function : VBounding
+//purpose  :
+//==============================================================================
+int VBounding (Draw_Interpretor& theDI,
+               Standard_Integer  theArgNb,
+               const char**      theArgVec)
+{
+  Handle(AIS_InteractiveContext) aCtx = ViewerTest::GetAISContext();
+  if (aCtx.IsNull())
+  {
+    std::cout << "Error: no active view!\n";
+    return 1;
+  }
+
+  ViewerTest_RedrawMode aToUpdate = ViewerTest_RM_Auto;
+  ViewerTest_BndAction  anAction  = BndAction_Show;
+  Standard_Integer      aMode     = -1;
+
+  Standard_Integer anArgIter = 1;
+  for (; anArgIter < theArgNb; ++anArgIter)
+  {
+    TCollection_AsciiString anArg (theArgVec[anArgIter]);
+    anArg.LowerCase();
+    if (anArg == "-print")
+    {
+      anAction = BndAction_Print;
+    }
+    else if (anArg == "-show")
+    {
+      anAction = BndAction_Show;
+    }
+    else if (anArg == "-hide")
+    {
+      anAction = BndAction_Hide;
+    }
+    else if (anArg == "-mode")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cout << "Error: wrong syntax at " << anArg << "\n";
+        return 1;
+      }
+      aMode = Draw::Atoi (theArgVec[anArgIter]);
+    }
+    else if (!parseRedrawMode (anArg, aToUpdate))
+    {
+      break;
+    }
+  }
+
+  if (anArgIter < theArgNb)
+  {
+    // has a list of names
+    for (; anArgIter < theArgNb; ++anArgIter)
+    {
+      TCollection_AsciiString aName = theArgVec[anArgIter];
+      if (!GetMapOfAIS().IsBound2 (aName))
+      {
+        std::cout << "Error: presentation " << aName << " does not exist\n";
+        return 1;
+      }
+
+      Handle(AIS_InteractiveObject) anIO = Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2 (aName));
+      Handle(PrsMgr_Presentation)   aPrs = findPresentation (aCtx, anIO, aMode);
+      if (aPrs.IsNull())
+      {
+        std::cout << "Error: presentation " << aName << " does not exist\n";
+        return 1;
+      }
+      bndPresentation (theDI, aPrs, aName, anAction);
+    }
+  }
+  else if (TheAISContext()->NbCurrents() > 0)
+  {
+    // remove all currently selected objects
+    for (aCtx->InitCurrent(); aCtx->MoreCurrent(); aCtx->NextCurrent())
+    {
+      Handle(AIS_InteractiveObject) anIO = aCtx->Current();
+      Handle(PrsMgr_Presentation)   aPrs = findPresentation (aCtx, anIO, aMode);
+      if (!aPrs.IsNull())
+      {
+        bndPresentation (theDI, aPrs, GetMapOfAIS().IsBound1 (anIO) ? GetMapOfAIS().Find1 (anIO) : "", anAction);
+      }
+    }
+  }
+  else
+  {
+    // all objects
+    for (ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName anIter (GetMapOfAIS());
+         anIter.More(); anIter.Next())
+    {
+      Handle(AIS_InteractiveObject) anIO = Handle(AIS_InteractiveObject)::DownCast (anIter.Key1());
+      Handle(PrsMgr_Presentation)   aPrs = findPresentation (aCtx, anIO, aMode);
+      if (!aPrs.IsNull())
+      {
+        bndPresentation (theDI, aPrs, anIter.Key2(), anAction);
+      }
+    }
+  }
+
+  // update the screen and redraw the view
+  const Standard_Boolean isAutoUpdate = a3DView()->SetImmediateUpdate (Standard_False);
+  a3DView()->SetImmediateUpdate (isAutoUpdate);
+  if ((isAutoUpdate && aToUpdate != ViewerTest_RM_RedrawSuppress)
+   || aToUpdate == ViewerTest_RM_RedrawForce)
+  {
+    TheAISContext()->UpdateCurrentViewer();
+  }
+
+  return 0;
+}
+
 //==============================================================================
 //function : VTexture
 //purpose  :
@@ -4078,6 +4257,14 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
 		  "verasetype <Type>"
       "\n\t\t: Erase all the displayed objects of one given kind (see vtypes)",
 		  __FILE__,VEraseType,group);
+
+  theCommands.Add("vbounding",
+              "vbounding [-noupdate|-update] [-mode] name1 [name2 [...]]"
+      "\n\t\t:           [-print] [-hide]"
+      "\n\t\t: Temporarily display bounding box of specified Interactive"
+      "\n\t\t: Objects, or print it to console if -print is specified."
+      "\n\t\t: Already displayed box might be hidden by -hide option.",
+		  __FILE__,VBounding,group);
 
   theCommands.Add("vdisplaytype",
 		  "vdisplaytype        : vdisplaytype <Type> <Signature> \n\t display all the objects of one given kind (see vtypes) which are stored the AISContext ",
