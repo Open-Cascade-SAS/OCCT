@@ -57,6 +57,9 @@ is
     LoadNamingDS(me; theResultLabel : Label from TDF; MS : in out BooleanOperation from BRepAlgoAPI)  
     is private; 
 
+    LoadSectionNDS(me; theResultLabel : Label from TDF; MS : in out BooleanOperation from BRepAlgoAPI)  
+    is private; 
+
     CheckAndLoad(me; theMkOpe : in out BooleanOperation from BRepAlgoAPI; 
     	    	     theFunction : Function from TFunction)   
     returns Boolean from Standard is private; 

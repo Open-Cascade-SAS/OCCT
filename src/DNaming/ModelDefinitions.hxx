@@ -33,6 +33,7 @@
 #define CUT_GUID           Standard_GUID("12e94548-6dbc-11d4-b9c8-0060b0ee281b")
 #define FUSE_GUID          Standard_GUID("12e94549-6dbc-11d4-b9c8-0060b0ee281b")
 #define COMMON_GUID        Standard_GUID("12e9454a-6dbc-11d4-b9c8-0060b0ee281b")
+#define SECTION_GUID       Standard_GUID("12e9454b-6dbc-11d4-b9c8-0060b0ee281b")
 
 #define PRISM_GUID         Standard_GUID("12e94550-6dbc-11d4-b9c8-0060b0ee281b")
 #define FULREVOL_GUID      Standard_GUID("12e94551-6dbc-11d4-b9c8-0060b0ee281b")
@@ -59,6 +60,8 @@
 #define CYL_AXIS   3
 #define ATTACH_ARG 1
 #define BOOL_TOOL  1
+#define SECT_OBJECT 1
+#define SECT_TOOL   2
 #define FILLET_RADIUS 1
 #define FILLET_SURFTYPE 2
 #define FILLET_PATH   3

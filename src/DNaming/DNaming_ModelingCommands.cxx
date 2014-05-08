@@ -124,25 +124,26 @@ static Standard_Boolean GetFuncGUID(Standard_CString aKey,Standard_GUID& GUID)
   Standard_Boolean aRes(Standard_False);
   
   if(!isBuilt) {
-    aDMap.Bind("PntXYZ", PNTXYZ_GUID);
-    aDMap.Bind("PntRLT", PNTRLT_GUID);
-    aDMap.Bind("Line3D", LINE3D_GUID);
-    aDMap.Bind("Box",   BOX_GUID);//+
-    aDMap.Bind("Sph",   SPH_GUID);//+
-    aDMap.Bind("Cyl",   CYL_GUID);//+
-    aDMap.Bind("Cut",   CUT_GUID);//+
-    aDMap.Bind("Fuse",  FUSE_GUID);//+
-    aDMap.Bind("Comm",  COMMON_GUID);//+
-    aDMap.Bind("Prism", PRISM_GUID);//+
-    aDMap.Bind("FulRevol", FULREVOL_GUID);//+
-    aDMap.Bind("SecRevol", SECREVOL_GUID);//+
-    aDMap.Bind("PMirr", PMIRR_GUID);//+
-    aDMap.Bind("PTxyz", PTXYZ_GUID);//+
-    aDMap.Bind("PTALine", PTALINE_GUID);//+
-    aDMap.Bind("PRLine", PRRLINE_GUID);//+
-    aDMap.Bind("Fillet",FILLT_GUID);//+
-    aDMap.Bind("Attach",ATTCH_GUID);//+
-    aDMap.Bind("XAttach",XTTCH_GUID);//+
+    aDMap.Bind("PntXYZ",   PNTXYZ_GUID);
+    aDMap.Bind("PntRLT",   PNTRLT_GUID);
+    aDMap.Bind("Line3D",   LINE3D_GUID);
+    aDMap.Bind("Box",      BOX_GUID);
+    aDMap.Bind("Sph",      SPH_GUID);
+    aDMap.Bind("Cyl",      CYL_GUID);
+    aDMap.Bind("Cut",      CUT_GUID);
+    aDMap.Bind("Fuse",     FUSE_GUID);
+    aDMap.Bind("Comm",     COMMON_GUID);
+    aDMap.Bind("Prism",    PRISM_GUID);
+    aDMap.Bind("FulRevol", FULREVOL_GUID);
+    aDMap.Bind("SecRevol", SECREVOL_GUID);
+    aDMap.Bind("PMirr",    PMIRR_GUID);
+    aDMap.Bind("PTxyz",    PTXYZ_GUID);
+    aDMap.Bind("PTALine",  PTALINE_GUID);
+    aDMap.Bind("PRLine",   PRRLINE_GUID);
+    aDMap.Bind("Fillet",   FILLT_GUID);
+    aDMap.Bind("Attach",   ATTCH_GUID);
+    aDMap.Bind("XAttach",  XTTCH_GUID);
+    aDMap.Bind("Section",  SECTION_GUID);
     isBuilt = Standard_True;
   }
 
@@ -192,8 +193,10 @@ static Handle(TFunction_Driver) GetDriver(const TCollection_AsciiString& name)
     aDrv = new DNaming_PointDriver();
   else if(name == "PntRLT") 
     aDrv = new DNaming_PointDriver();
-else if(name == "Line3D") 
+  else if(name == "Line3D") 
     aDrv = new DNaming_Line3DDriver();
+  else if(name == "Section") 
+    aDrv = new DNaming_BooleanOperationDriver();
   else 
     cout << "the specified driver is not supported" <<endl;
   return aDrv;
@@ -957,6 +960,38 @@ static Standard_Integer DNaming_CylRad (Draw_Interpretor& theDI,
     return 0;
   }
    cout << "DModel_AddComm : Error" << endl;
+   return 1;  
+ }
+
+//=======================================================================
+//function : DNaming_AddSection
+//purpose  : "AddSection Doc Object Tool"
+//=======================================================================
+
+ static Standard_Integer DNaming_AddSection (Draw_Interpretor& theDI,
+ 					             Standard_Integer theNb, const char** theArg)
+ {
+   if (theNb == 4) {
+
+    Handle(TDocStd_Document) aDocument;   
+    Standard_CString aDocS(theArg[1]);
+    if (!DDocStd::GetDocument(aDocS, aDocument)) return 1;
+
+    Handle(TDataStd_UAttribute) anObject, aTool;
+    if (!DDocStd::Find(aDocument, theArg[2], GEOMOBJECT_GUID, anObject)) return 1;
+    if (!DDocStd::Find(aDocument, theArg[3], GEOMOBJECT_GUID, aTool)) return 1;
+    Standard_GUID funGUID;
+    if(!GetFuncGUID("Section",funGUID)) return 1;
+    Handle(TFunction_Function) aFun = SetFunctionDS(anObject->Label(), funGUID);
+    if(aFun.IsNull()) return 1;
+    TDataStd_Name::Set(aFun->Label(), "Section");
+    
+    TDF_Reference::Set(anObject->Label(), aFun->Label().FindChild(FUNCTION_RESULT_LABEL)); //result is here 
+    DNaming::SetObjectArg(aFun, BOOL_TOOL, aTool); 
+    DDF::ReturnLabel(theDI, aFun->Label());
+    return 0;
+  }
+   cout << "DModel_AddSection : Error" << endl;
    return 1;  
  }
 
@@ -2167,6 +2202,8 @@ void DNaming::ModelingCommands (Draw_Interpretor& theCommands)
   theCommands.Add ("AddCut",   "AddCut Doc Object Tool",     __FILE__, DNaming_AddCut, g2);  
 
   theCommands.Add ("AddCommon", "AddCommon Doc Object Tool",  __FILE__, DNaming_AddCommon, g2);  
+
+  theCommands.Add ("AddSection", "AddSection Doc Object Tool",  __FILE__, DNaming_AddSection, g2);  
 
   theCommands.Add ("AddFillet", 
 		   "AddFillet Doc Object Radius Path [SurfaceType(0-Rational;1-QuasiAngular;2-Polynomial)]",
