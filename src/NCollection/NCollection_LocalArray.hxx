@@ -36,7 +36,7 @@ public:
   NCollection_LocalArray ()
   : myPtr (myBuffer) {}
 
-  virtual ~NCollection_LocalArray()
+  ~NCollection_LocalArray()
   {
     Deallocate();
   }

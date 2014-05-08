@@ -164,5 +164,5 @@ const TObj_DataMapOfNameLabel& TObj_TNameContainer::Get() const
 void TObj_TNameContainer::Set(const TObj_DataMapOfNameLabel& theMap)
 {
   Backup();
-  myMap = theMap;
+  myMap.Assign (theMap);
 }

@@ -25,6 +25,7 @@
 #include <Standard_OStream.hxx>
 #include <Standard_IStream.hxx>
 #include <TCollection_ExtendedString.hxx>
+#include <NCollection_IncAllocator.hxx>
 #include <Standard_Mutex.hxx>
 
 struct VrmlData_InBuffer;

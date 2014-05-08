@@ -21,7 +21,6 @@
 #ifndef NCollection_DefineSequence_HeaderFile
 #define NCollection_DefineSequence_HeaderFile
 
-#include <NCollection_DefineBaseCollection.hxx>
 #include <NCollection_Sequence.hxx>
 
 // **************************************** Template for Sequence class ********

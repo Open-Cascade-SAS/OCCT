@@ -15,19 +15,15 @@
 
 #include <Message_MsgFile.hxx>
 
+#include <NCollection_DataMap.hxx>
+#include <OSD_Environment.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
-#include <NCollection_DefineBaseCollection.hxx>
-#include <NCollection_DefineDataMap.hxx>
-#include <OSD_Environment.hxx>
+
 #include <stdlib.h>
 #include <stdio.h>
 
-DEFINE_BASECOLLECTION(Message_CollectionOfExtendedString, TCollection_ExtendedString)
-DEFINE_DATAMAP(Message_DataMapOfExtendedString,
-               Message_CollectionOfExtendedString,
-               TCollection_AsciiString,
-               TCollection_ExtendedString)
+typedef NCollection_DataMap<TCollection_AsciiString,TCollection_ExtendedString> Message_DataMapOfExtendedString;
 
 static Message_DataMapOfExtendedString& msgsDataMap ()
 {

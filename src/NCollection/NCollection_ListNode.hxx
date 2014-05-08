@@ -17,6 +17,7 @@
 #define NCollection_ListNode_HeaderFile
 
 #include <NCollection_BaseAllocator.hxx>
+#include <NCollection_DefineAlloc.hxx>
 
 /**
  * Purpose:     This class is used to  represent a node  in the BaseList and
@@ -24,7 +25,10 @@
  */              
 class NCollection_ListNode
 {
- public:
+public:
+  // define new operator for use with NCollection allocators
+  DEFINE_NCOLLECTION_ALLOC
+public:
   //! The only constructor
   NCollection_ListNode (NCollection_ListNode* theNext)
   { myNext = theNext; }
@@ -39,10 +43,10 @@ class NCollection_ListNode
 
  private:
   //! operator= - forbidden
-  NCollection_ListNode& operator=(const NCollection_ListNode& )
-  {return *this;}
+  NCollection_ListNode& operator= (const NCollection_ListNode&);
+  
   //! copy constructor - forbidden
-  NCollection_ListNode (const NCollection_ListNode& ) {}
+  NCollection_ListNode (const NCollection_ListNode&);
 
  private:
   NCollection_ListNode * myNext; //!< Pointer to the next node

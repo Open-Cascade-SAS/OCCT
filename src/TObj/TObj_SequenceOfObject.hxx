@@ -18,19 +18,14 @@
 #ifndef TObj_SequenceOfObject_HeaderFile
 #define TObj_SequenceOfObject_HeaderFile
 
-#include <NCollection_DefineBaseCollection.hxx>
-#include <NCollection_DefineSequence.hxx>
+#include <NCollection_Sequence.hxx>
 #include <NCollection_DefineHSequence.hxx>
 
 #include <TObj_Common.hxx>
 #include <Handle_TObj_Object.hxx>
 
-DEFINE_BASECOLLECTION (TObj_CollectionOfObject,Handle(TObj_Object))
+typedef NCollection_Sequence<Handle(TObj_Object)> TObj_SequenceOfObject;
 
-DEFINE_SEQUENCE (TObj_SequenceOfObject,
-                 TObj_CollectionOfObject,Handle(TObj_Object))
-
-DEFINE_HSEQUENCE (TObj_HSequenceOfObject,
-                  TObj_SequenceOfObject)
+DEFINE_HSEQUENCE (TObj_HSequenceOfObject, TObj_SequenceOfObject)
 
 #endif

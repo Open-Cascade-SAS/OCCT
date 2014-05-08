@@ -20,19 +20,24 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_DomainError.hxx>
 
+inline void NCollection_BaseSequence::Nullify ()
+{
+  myFirstItem = myLastItem = myCurrentItem = NULL;
+  myCurrentIndex = mySize = 0;
+}
+
 //=======================================================================
 //function : ClearSeq
 //purpose  : removes all items from the current sequence
 //=======================================================================
 
-void NCollection_BaseSequence::ClearSeq 
-  (NCollection_DelSeqNode fDel, Handle(NCollection_BaseAllocator)& theAl)
+void NCollection_BaseSequence::ClearSeq (NCollection_DelSeqNode fDel)
 {
   NCollection_SeqNode* p = myFirstItem;
   while (p) {
     NCollection_SeqNode* q = p;
     p = p->Next();
-    fDel (q, theAl);
+    fDel (q, myAllocator);
   }
   Nullify();
 }
@@ -324,8 +329,7 @@ void NCollection_BaseSequence::PSplit (const Standard_Integer theIndex,
 
 void NCollection_BaseSequence::RemoveSeq 
                               (NCollection_BaseSequence::Iterator& thePosition,
-                               NCollection_DelSeqNode              fDel, 
-                               Handle(NCollection_BaseAllocator)&  theAl)
+                               NCollection_DelSeqNode              fDel)
 {
   NCollection_SeqNode * aPos = thePosition.myCurrent;
   if (aPos == NULL)
@@ -346,7 +350,7 @@ void NCollection_BaseSequence::RemoveSeq
   myCurrentItem  = myLastItem;
   myCurrentIndex = mySize;
 
-  fDel (aPos, theAl);
+  fDel (aPos, myAllocator);
 }
 
 //=======================================================================
@@ -354,10 +358,8 @@ void NCollection_BaseSequence::RemoveSeq
 //purpose  : 
 //=======================================================================
 
-void NCollection_BaseSequence::RemoveSeq 
-                              (const Standard_Integer theIndex,
-                               NCollection_DelSeqNode fDel, 
-                               Handle(NCollection_BaseAllocator)& theAl)
+void NCollection_BaseSequence::RemoveSeq (const Standard_Integer theIndex,
+                                          NCollection_DelSeqNode fDel)
 {
   Standard_OutOfRange_Raise_if (theIndex <= 0 || theIndex > mySize, "");
   
@@ -381,7 +383,7 @@ void NCollection_BaseSequence::RemoveSeq
       myCurrentIndex = mySize;
     }
   }
-  fDel (p, theAl);
+  fDel (p, myAllocator);
 }
 
 //=======================================================================
@@ -389,11 +391,9 @@ void NCollection_BaseSequence::RemoveSeq
 //purpose  : remove a set of items
 //=======================================================================
 
-void NCollection_BaseSequence::RemoveSeq 
-                              (const Standard_Integer From,
-                               const Standard_Integer To, 
-                               NCollection_DelSeqNode fDel,
-                               Handle(NCollection_BaseAllocator)& theAl)
+void NCollection_BaseSequence::RemoveSeq (const Standard_Integer From,
+                                          const Standard_Integer To, 
+                                          NCollection_DelSeqNode fDel)
 {
   Standard_OutOfRange_Raise_if (From <= 0 || To > mySize || From > To, "");
 
@@ -425,7 +425,7 @@ void NCollection_BaseSequence::RemoveSeq
   for (Standard_Integer i = From; i <= To; i++) {
     NCollection_SeqNode * tmp = pfrom;
     pfrom = pfrom->Next();
-    fDel (tmp, theAl);
+    fDel (tmp, myAllocator);
   }
 }
 

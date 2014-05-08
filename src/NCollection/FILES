@@ -18,7 +18,6 @@ NCollection_BaseSequence.cxx
 NCollection_BaseMap.hxx
 NCollection_BaseMap.cxx
 
-NCollection_BaseCollection.hxx
 NCollection_TListNode.hxx
 NCollection_TListIterator.hxx
 NCollection_Sequence.hxx
@@ -34,9 +33,6 @@ NCollection_DoubleMap.hxx
 NCollection_IndexedMap.hxx
 NCollection_IndexedDataMap.hxx
 
-NCollection_DefineBaseCollection.hxx
-NCollection_DefineTListIterator.hxx
-NCollection_DefineTListNode.hxx
 NCollection_DefineArray1.hxx
 NCollection_DefineHArray1.hxx
 NCollection_DefineArray2.hxx
@@ -54,7 +50,6 @@ NCollection_BaseVector.hxx
 NCollection_BaseVector.cxx
 NCollection_Vector.hxx
 NCollection_DefineVector.hxx
-NCollection_StdBase.hxx
 
 NCollection_EBTree.hxx
 NCollection_UBTree.hxx

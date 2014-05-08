@@ -38,7 +38,7 @@
 #include <BOPAlgo_BuilderSolid.hxx>
 
 #include <BRep_Tool.hxx>
-
+#include <NCollection_IncAllocator.hxx>
 
 static
   TopAbs_ShapeEnum TypeToExplore(const Standard_Integer theDim);

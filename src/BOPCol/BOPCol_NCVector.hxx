@@ -30,27 +30,23 @@ template <class Type> class BOPCol_NCVector
  public:
   BOPCol_NCVector(const Standard_Integer theIncrement=256,
 		  const Handle(NCollection_BaseAllocator)& theAlloc = NULL) 
-    : NCollection_Vector<Type>(theIncrement, theAlloc) {
-  };
+    : NCollection_Vector<Type>(theIncrement, theAlloc)
+  {}
   //
   BOPCol_NCVector(const BOPCol_NCVector& theOther) 
-    : NCollection_Vector<Type>(theOther) {
-  };
+    : NCollection_Vector<Type>(theOther)
+  {}
   //
   Type& Append1 ()
   {
-    Type& anAppended = 
-      *(Type* )NCollection_BaseVector::expandV (NCollection_BaseCollection<Type>::myAllocator, 
-			NCollection_Vector<Type>::myLength);
+    Type& anAppended = *(Type*)this->expandV (this->myLength);
     return anAppended;
   }
   //
   Standard_Integer Extent() const
   {
-    return NCollection_Vector<Type>::myLength;
+    return this->myLength;
   }
- protected:
-  
 };
 
 #endif

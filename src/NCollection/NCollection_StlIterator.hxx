@@ -68,7 +68,7 @@ namespace opencascade
 //! iterator requires Offset and Differ methods. See NCollection_Vector as
 //! example of declaring custom STL iterators.
 template<class Category, class BaseIterator, class ItemType, bool IsConstant>
-class NCollection_StlIterator : private BaseIterator, 
+class NCollection_StlIterator :
   public std::iterator<Category, ItemType, ptrdiff_t,
                        typename opencascade::conditional<IsConstant, const ItemType*, ItemType*>::type,
                        typename opencascade::conditional<IsConstant, const ItemType&, ItemType&>::type>
@@ -80,22 +80,26 @@ public:
 
   //! Constructor from NCollection iterator
   NCollection_StlIterator (const BaseIterator& theIterator)
-    : BaseIterator (theIterator)
+    : myIterator (theIterator)
   { }
 
   //! Cast from non-const variant to const one
   NCollection_StlIterator (const NCollection_StlIterator<Category, BaseIterator, ItemType, false>& theIterator)
-    : BaseIterator (theIterator)
+    : myIterator (theIterator.Iterator())
   { }
 
   //! Assignment of non-const iterator to const one
   NCollection_StlIterator& operator= (const NCollection_StlIterator<Category, BaseIterator, ItemType, false>& theIterator)
   {
-    BaseIterator::operator= (theIterator);
+    myIterator = theIterator.myIterator;
     return *this;
   }
 
-  friend class NCollection_StlIterator<Category, BaseIterator, ItemType, !IsConstant>;
+  //! Access to NCollection iterator instance
+  const BaseIterator& Iterator () const
+  {
+    return myIterator;
+  }
 
 protected: //! @name methods related to forward STL iterator
 
@@ -105,13 +109,13 @@ protected: //! @name methods related to forward STL iterator
   template<bool Condition>
   typename opencascade::enable_if<!Condition, ItemType&>::type Reference()
   {
-    return BaseIterator::ChangeValue();
+    return myIterator.ChangeValue();
   }
 
   template<bool Condition>
   typename opencascade::enable_if<Condition, const ItemType&>::type Reference()
   {
-    return BaseIterator::Value();
+    return myIterator.Value();
   }
 
 public: //! @name methods related to forward STL iterator
@@ -119,8 +123,8 @@ public: //! @name methods related to forward STL iterator
   //! Test for equality
   bool operator== (const NCollection_StlIterator& theOther) const
   {
-    return BaseIterator::More() == theOther.More() &&
-           (!BaseIterator::More() || BaseIterator::IsEqual (theOther));
+    return myIterator.More() == theOther.myIterator.More() &&
+           (!myIterator.More() || myIterator.IsEqual (theOther.myIterator));
   }
 
   //! Test for inequality
@@ -144,7 +148,7 @@ public: //! @name methods related to forward STL iterator
   //! Prefix increment
   NCollection_StlIterator& operator++()
   {
-    BaseIterator::Next();
+    myIterator.Next();
     return *this;
   }
 
@@ -163,7 +167,7 @@ public: //! @name methods related to bidirectional STL iterator
   {
     Standard_STATIC_ASSERT((opencascade::is_same<std::bidirectional_iterator_tag,Category>::value ||
                             opencascade::is_same<std::random_access_iterator_tag,Category>::value));
-    BaseIterator::Previous();
+    myIterator.Previous();
     return *this;
   }
   
@@ -181,7 +185,7 @@ public: //! @name methods related to random access STL iterator
   NCollection_StlIterator& operator+= (typename NCollection_StlIterator::difference_type theOffset)
   {
     Standard_STATIC_ASSERT((opencascade::is_same<std::random_access_iterator_tag,Category>::value));
-    BaseIterator::Offset (theOffset);
+    myIterator.Offset (theOffset);
     return *this;
   }
 
@@ -209,7 +213,7 @@ public: //! @name methods related to random access STL iterator
   typename NCollection_StlIterator::difference_type operator- (const NCollection_StlIterator& theOther) const
   {
     Standard_STATIC_ASSERT((opencascade::is_same<std::random_access_iterator_tag,Category>::value));
-    return BaseIterator::Differ (theOther);
+    return myIterator.Differ (theOther.myIterator);
   }
 
   //! Get item at offset from current
@@ -241,6 +245,10 @@ public: //! @name methods related to random access STL iterator
   {
     return !(*this < theOther);
   }
+
+private:
+  //! NCollection iterator
+  BaseIterator myIterator;
 };
 
 #endif // NCollection_StlIterator_HeaderFile

@@ -17,7 +17,6 @@
 #define NCollection_Vector_HeaderFile
 
 #include <NCollection_BaseVector.hxx>
-#include <NCollection_BaseCollection.hxx>
 #include <NCollection_StlIterator.hxx>
 
 //! Class NCollection_Vector (dynamic array of objects)
@@ -41,9 +40,8 @@
 //! creation or initialisation of the iterator.   Therefore the iteration begins
 //! at index 0  and stops at the index equal to (remembered_length-1).  It is OK
 //! to enlarge the vector during the iteration.
-template <class TheItemType> class NCollection_Vector
-: public NCollection_BaseCollection<TheItemType>,
-  public NCollection_BaseVector
+template <class TheItemType>
+class NCollection_Vector : public NCollection_BaseVector
 {
 public:
   //! STL-compliant typedef for value type
@@ -52,8 +50,7 @@ public:
 public:
 
   //! Nested class Iterator
-  class Iterator : public NCollection_BaseCollection<TheItemType>::Iterator,
-                   public NCollection_BaseVector::Iterator
+  class Iterator : public NCollection_BaseVector::Iterator
   {
   public:
 
@@ -82,49 +79,49 @@ public:
     }
 
     //! Check end
-    virtual Standard_Boolean More() const
+    Standard_Boolean More() const
     {
       return moreV();
     }
 
     //! Increment operator.
-    virtual void Next()
+    void Next()
     {
       nextV();
     }
 
     //! Decrement operator.
-    virtual void Previous()
+    void Previous()
     {
       prevV();
     }
 
     //! Offset operator.
-    virtual void Offset (ptrdiff_t theOffset)
+    void Offset (ptrdiff_t theOffset)
     {
-      offsetV ((int)theOffset);
+      offsetV (static_cast<int>(theOffset));
     }
 
     //! Difference operator.
-    virtual ptrdiff_t Differ (const Iterator& theOther) const
+    ptrdiff_t Differ (const Iterator& theOther) const
     {
       return differV (theOther);
     }
 
     //! Constant value access
-    virtual const TheItemType& Value() const
+    const TheItemType& Value() const
     {
       return ((const TheItemType* )curBlockV()->DataPtr)[myCurIndex];
     }
 
     //! Variable value access
-    virtual TheItemType& ChangeValue() const
+    TheItemType& ChangeValue() const
     {
       return ((TheItemType* )curBlockV()->DataPtr)[myCurIndex];
     }
 
     //! Performs comparison of two iterators.
-    virtual Standard_Boolean IsEqual (const Iterator& theOther) const
+    Standard_Boolean IsEqual (const Iterator& theOther) const
     {
       return myVector    == theOther.myVector
           && myCurIndex  == theOther.myCurIndex
@@ -156,14 +153,13 @@ public: //! @name public methods
 
   //! Constructor
   NCollection_Vector (const Standard_Integer theIncrement              = 256,
-                      const Handle(NCollection_BaseAllocator)& theAlloc = NULL)
-  : NCollection_BaseCollection<TheItemType> (theAlloc),
-    NCollection_BaseVector (NCollection_BaseCollection<TheItemType>::myAllocator, initMemBlocks, sizeof(TheItemType), theIncrement) {}
+                      const Handle(NCollection_BaseAllocator)& theAlloc = NULL) :
+    NCollection_BaseVector (theAlloc, initMemBlocks, sizeof(TheItemType), theIncrement)
+  {}
 
   //! Copy constructor
-  NCollection_Vector (const NCollection_Vector& theOther)
-  : NCollection_BaseCollection<TheItemType> (theOther.myAllocator),
-    NCollection_BaseVector (NCollection_BaseCollection<TheItemType>::myAllocator, initMemBlocks, theOther)
+  NCollection_Vector (const NCollection_Vector& theOther) :
+    NCollection_BaseVector (theOther.myAllocator, initMemBlocks, theOther)
   {
     copyData (theOther);
   }
@@ -175,14 +171,7 @@ public: //! @name public methods
     {
       initMemBlocks (*this, myData[anItemIter], 0, 0);
     }
-    NCollection_BaseCollection<TheItemType>::myAllocator->Free (myData);
-  }
-
-  //! Operator=
-  NCollection_Vector& operator= (const NCollection_Vector& theOther)
-  {
-    Assign (theOther, Standard_False);
-    return *this;
+    this->myAllocator->Free (myData);
   }
 
   //! Total number of items
@@ -192,7 +181,7 @@ public: //! @name public methods
   }
 
   //! Total number of items in the vector
-  virtual Standard_Integer Size() const
+  Standard_Integer Size() const
   {
     return myLength;
   }
@@ -217,34 +206,21 @@ public: //! @name public methods
     return (myLength == 0);
   }
 
-  //! Virtual assignment (any collection to this array)
-  virtual void Assign (const NCollection_BaseCollection<TheItemType>& theOther)
-  {
-    if (this != &theOther)
-    {
-      TYPENAME NCollection_BaseCollection<TheItemType>::Iterator& anIter2 = theOther.CreateIterator();
-      while (anIter2.More())
-      {
-        Append (anIter2.Value());
-        anIter2.Next();
-      }
-    }
-  }
-
   //! Assignment to the collection of the same type
   inline void Assign (const NCollection_Vector& theOther,
-                      const Standard_Boolean    theOwnAllocator = Standard_True);
+                      const Standard_Boolean theOwnAllocator = Standard_True);
 
-  //! Method to create iterators for base collections
-  virtual TYPENAME NCollection_BaseCollection<TheItemType>::Iterator& CreateIterator() const
+  //! Assignment operator
+  NCollection_Vector& operator= (const NCollection_Vector& theOther)
   {
-    return *(new (this->IterAllocator()) Iterator(*this));
+    Assign (theOther, Standard_False);
+    return *this;
   }
 
   //! Append
   TheItemType& Append (const TheItemType& theValue)
   {
-    TheItemType& anAppended = *(TheItemType* )expandV (NCollection_BaseCollection<TheItemType>::myAllocator, myLength);
+    TheItemType& anAppended = *(TheItemType* )expandV (myLength);
     anAppended = theValue;
     return anAppended;
   }
@@ -300,7 +276,7 @@ public: //! @name public methods
                          const TheItemType&     theValue)
   {
     Standard_OutOfRange_Raise_if (theIndex < 0, "NCollection_Vector::SetValue");
-    TheItemType* const aVecValue = (TheItemType* )(theIndex < myLength ? findV (theIndex) : expandV (NCollection_BaseCollection<TheItemType>::myAllocator, theIndex));
+    TheItemType* const aVecValue = (TheItemType* )(theIndex < myLength ? findV (theIndex) : expandV (theIndex));
     *aVecValue = theValue;
     return *aVecValue;
   }
@@ -384,18 +360,18 @@ void NCollection_Vector<TheItemType>::Assign (const NCollection_Vector& theOther
   {
     initMemBlocks (*this, myData[anItemIter], 0, 0);
   }
-  NCollection_BaseCollection<TheItemType>::myAllocator->Free (myData);
+  this->myAllocator->Free (myData);
 
   // allocate memory blocks with new allocator
   if (!theOwnAllocator)
   {
-    NCollection_BaseCollection<TheItemType>::myAllocator = theOther.myAllocator;
+    this->myAllocator = theOther.myAllocator;
   }
   myIncrement = theOther.myIncrement;
   myLength    = theOther.myLength;
   myNBlocks   = (myLength == 0) ? 0 : (1 + (myLength - 1)/myIncrement);
   myCapacity  = GetCapacity (myIncrement) + myLength / myIncrement;
-  myData      = allocMemBlocks (NCollection_BaseCollection<TheItemType>::myAllocator, myCapacity);
+  myData      = allocMemBlocks (myCapacity);
 
   // copy data
   copyData (theOther);

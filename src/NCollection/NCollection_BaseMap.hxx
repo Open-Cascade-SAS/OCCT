@@ -16,13 +16,9 @@
 #ifndef NCollection_BaseMap_HeaderFile
 #define NCollection_BaseMap_HeaderFile
 
-#include <Standard_Boolean.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_OStream.hxx>
-
 #include <Standard.hxx>
-#include <Standard_Macro.hxx>
 #include <NCollection_BaseAllocator.hxx>
+#include <NCollection_DefineAlloc.hxx>
 #include <NCollection_ListNode.hxx>
 
 typedef void (* NCollection_DelMapNode) 
@@ -40,7 +36,12 @@ typedef void (* NCollection_DelMapNode)
 
 class NCollection_BaseMap 
 {
- public:
+public:
+  //! Memory allocation
+  DEFINE_STANDARD_ALLOC
+  DEFINE_NCOLLECTION_ALLOC
+
+public:
   // **************************************** Class Iterator ****************
   class Iterator
   {
@@ -92,7 +93,7 @@ class NCollection_BaseMap
     }
     
     //! Performs comparison of two iterators.
-    virtual Standard_Boolean IsEqual (const Iterator& theOther) const
+    Standard_Boolean IsEqual (const Iterator& theOther) const
     {
       return myBucket == theOther.myBucket && myNode == theOther.myNode;
     }
@@ -153,29 +154,31 @@ class NCollection_BaseMap
 
   //! Constructor
   NCollection_BaseMap (const Standard_Integer NbBuckets,
-                       const Standard_Boolean single) :
-                         myData1(NULL),
-                         myData2(NULL),
-                         isDouble(!single),
-                         mySaturated(Standard_False),
-                         myNbBuckets(NbBuckets),
-                         mySize(0) {}
+                       const Standard_Boolean single,
+                       const Handle(NCollection_BaseAllocator)& theAllocator)
+  : myData1(NULL),
+    myData2(NULL),
+    isDouble(!single),
+    mySaturated(Standard_False),
+    myNbBuckets(NbBuckets),
+    mySize(0)
+  {
+    myAllocator = (theAllocator.IsNull() ? NCollection_BaseAllocator::CommonBaseAllocator() : theAllocator);
+  }
 
   //! BeginResize
   Standard_EXPORT Standard_Boolean BeginResize 
     (const Standard_Integer  NbBuckets,
      Standard_Integer&       NewBuckets,
      NCollection_ListNode**& data1,
-     NCollection_ListNode**& data2,
-     Handle(NCollection_BaseAllocator)& theAllocator) const;
+     NCollection_ListNode**& data2) const;
 
   //! EndResize
   Standard_EXPORT void EndResize 
     (const Standard_Integer NbBuckets,
      const Standard_Integer NewBuckets,
      NCollection_ListNode** data1,
-     NCollection_ListNode** data2,
-     Handle(NCollection_BaseAllocator)& theAllocator);
+     NCollection_ListNode** data2);
 
   //! Resizable
   Standard_Boolean Resizable() const
@@ -191,9 +194,7 @@ class NCollection_BaseMap
 
   //! Destroy
   Standard_EXPORT void Destroy(NCollection_DelMapNode fDel,
-                               Handle(NCollection_BaseAllocator)& theAllocator,
-                               const Standard_Boolean doReleaseMemory
-                                 = Standard_True);
+                               Standard_Boolean doReleaseMemory = Standard_True);
 
   //! NextPrimeForMap
   Standard_EXPORT Standard_Integer NextPrimeForMap
@@ -202,6 +203,7 @@ class NCollection_BaseMap
   //! Exchange content of two maps without data copying
   void exchangeMapsData (NCollection_BaseMap& theOther)
   {
+    std::swap (myAllocator, theOther.myAllocator);
     std::swap (myData1,     theOther.myData1);
     std::swap (myData2,     theOther.myData2);
     //std::swap (isDouble,    theOther.isDouble);
@@ -212,6 +214,7 @@ class NCollection_BaseMap
 
  protected:
   // --------- PROTECTED FIELDS -----------
+  Handle(NCollection_BaseAllocator) myAllocator;
   NCollection_ListNode ** myData1;
   NCollection_ListNode ** myData2;
 
@@ -224,7 +227,6 @@ class NCollection_BaseMap
 
   // ---------- FRIEND CLASSES ------------
   friend class Iterator;
-
 };
 
 #endif

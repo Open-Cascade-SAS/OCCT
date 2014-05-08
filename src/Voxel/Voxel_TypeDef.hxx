@@ -36,12 +36,10 @@ inline Standard_Boolean IsEqual(const iXYZ& one, const iXYZ& two)
   return one.ix == two.ix && one.iy == two.iy && one.iz == two.iz;
 }
 
-#include <NCollection_DefineBaseCollection.hxx>
-DEFINE_BASECOLLECTION(iXYZbase, iXYZ)
+#include <NCollection_DataMap.hxx>
 
-#include <NCollection_DefineDataMap.hxx>
-DEFINE_DATAMAP(iXYZIndex, iXYZbase, iXYZ, Standard_Integer)
-DEFINE_DATAMAP(iXYZBool,  iXYZbase, iXYZ, Standard_Byte)
+typedef NCollection_DataMap<iXYZ, Standard_Integer> iXYZIndex;
+typedef NCollection_DataMap<iXYZ, Standard_Byte> iXYZBool;
 
 // Defines
 

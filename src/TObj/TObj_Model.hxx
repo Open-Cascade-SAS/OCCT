@@ -22,8 +22,6 @@
 
 #include <TDF_Label.hxx>
 #include <TObj_Partition.hxx>
-#include <NCollection_DefineBaseCollection.hxx>
-#include <NCollection_DefineDataMap.hxx>
 #include <Message_Messenger.hxx>
 
 class Handle(TObj_Application);
@@ -363,8 +361,4 @@ class TObj_Model : public MMgt_TShared
 
 //! The Model Handle is defined in a separate header file
 
-#endif
-
-#ifdef _MSC_VER
-#pragma once
 #endif

@@ -29,6 +29,8 @@
 class HClassName : public _SequenceType_,                                      \
                    public MMgt_TShared {                                       \
  public:                                                                       \
+   DEFINE_STANDARD_ALLOC                                                       \
+   DEFINE_NCOLLECTION_ALLOC                                                    \
    inline                       HClassName ();                                 \
    inline                       HClassName (const _SequenceType_&);            \
    inline const _SequenceType_& Sequence        () const;                      \

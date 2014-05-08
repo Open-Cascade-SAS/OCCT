@@ -49,7 +49,7 @@ public:
   }
 
   //! Destructor.
-  virtual ~NCollection_Buffer()
+  ~NCollection_Buffer()
   {
     Free();
   }

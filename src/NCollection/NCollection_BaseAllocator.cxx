@@ -16,6 +16,7 @@
 // Purpose:     Implementation of the BaseAllocator class
 
 #include <NCollection_BaseAllocator.hxx>
+#include <NCollection_IncAllocator.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_Map.hxx>
 #include <NCollection_List.hxx>

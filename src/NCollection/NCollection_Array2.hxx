@@ -22,7 +22,7 @@
 #include <Standard_OutOfRange.hxx>
 #endif
 
-#include <NCollection_BaseCollection.hxx>
+#include <NCollection_DefineAlloc.hxx>
 
 // *********************************************** Template for Array2 class
 /**
@@ -37,8 +37,8 @@
 *            for (i = A.LowerRow(); i <= A.UpperRow(); i++)
 *              for (j = A.LowerCol(); j <= A.UpperCol(); j++)
 */            
-template <class TheItemType> class NCollection_Array2
-  : public NCollection_BaseCollection<TheItemType>
+template <class TheItemType>
+class NCollection_Array2
 {
 public:
   //! STL-compliant typedef for value type
@@ -46,7 +46,7 @@ public:
 
 public:
   // **************** Implementation of the Iterator interface.
-  class Iterator : public NCollection_BaseCollection<TheItemType>::Iterator
+  class Iterator
   {
   public:
     //! Empty constructor - for later Init
@@ -67,16 +67,16 @@ public:
       myArray   = (NCollection_Array2 *) &theArray; 
     }
     //! Check end
-    virtual Standard_Boolean More (void) const
+    Standard_Boolean More (void) const
     { return (myCurrent < mySize); }
     //! Make step
-    virtual void Next (void)
+    void Next (void)
     { myCurrent++; }
     //! Constant value access
-    virtual const TheItemType& Value (void) const
+    const TheItemType& Value (void) const
     { return myArray->myStart[myCurrent]; }
     //! Variable value access
-    virtual TheItemType& ChangeValue (void) const
+    TheItemType& ChangeValue (void) const
     { return myArray->myStart[myCurrent]; }
   private:
     Standard_Integer    myCurrent;  //!< Index of the current item
@@ -92,7 +92,6 @@ public:
                      const Standard_Integer theRowUpper,
                      const Standard_Integer theColLower,
                      const Standard_Integer theColUpper) :
-    NCollection_BaseCollection<TheItemType>     (),
     myLowerRow                                  (theRowLower),
     myUpperRow                                  (theRowUpper),
     myLowerCol                                  (theColLower),
@@ -102,7 +101,6 @@ public:
 
   //! Copy constructor 
   NCollection_Array2 (const NCollection_Array2& theOther) :
-    NCollection_BaseCollection<TheItemType>     (),
     myLowerRow                                  (theOther.LowerRow()),
     myUpperRow                                  (theOther.UpperRow()),
     myLowerCol                                  (theOther.LowerCol()),
@@ -119,7 +117,6 @@ public:
                      const Standard_Integer theRowUpper,
                      const Standard_Integer theColLower,
                      const Standard_Integer theColUpper) :
-    NCollection_BaseCollection<TheItemType>     (),
     myLowerRow                                  (theRowLower),
     myUpperRow                                  (theRowUpper),
     myLowerCol                                  (theColLower),
@@ -139,7 +136,7 @@ public:
   }
 
   //! Size (number of items)
-  virtual Standard_Integer Size (void) const
+  Standard_Integer Size (void) const
   { return Length(); }
   //! Length (number of items)
   Standard_Integer Length (void) const
@@ -169,28 +166,8 @@ public:
   Standard_Boolean IsDeletable (void) const
   { return myDeletable; }
 
-  //! Assign 
-  // Copies items from the other collection into the allocated
-  // storage. Raises an exception when sizes differ.
-  virtual void Assign (const NCollection_BaseCollection<TheItemType>& theOther)
-  {
-    if (&theOther == this)
-      return;
-#if !defined No_Exception && !defined No_Standard_DimensionMismatch
-    if (Length() != theOther.Size())
-      Standard_DimensionMismatch::Raise ("NCollection_Array2::Assign");
-#endif
-    TYPENAME NCollection_BaseCollection<TheItemType>::Iterator& anIter2 = 
-      theOther.CreateIterator();
-    const TheItemType* pEnd = myStart+Length();
-    for (TheItemType* pItem=myStart;
-         pItem < pEnd;
-         pItem++, anIter2.Next())
-      *pItem = anIter2.Value();
-  }
-
-  //! operator= (array to array)
-  NCollection_Array2& operator= (const NCollection_Array2& theOther)
+  //! Assignment
+  NCollection_Array2& Assign (const NCollection_Array2& theOther)
   { 
     if (&theOther == this)
       return *this;
@@ -204,6 +181,12 @@ public:
     for (Standard_Integer i=0; i < iSize; i++, pItem++, pMyItem++)
       *pMyItem = *pItem;
     return *this; 
+  }
+
+  //! Assignment operator
+  NCollection_Array2& operator= (const NCollection_Array2& theOther)
+  { 
+    return Assign (theOther);
   }
 
   //! Constant value access
@@ -298,11 +281,6 @@ public:
     // Set myData to the '0'th row pointer of the pTable
     myData = pTable - myLowerRow;
   }
-
-  //! Creates Iterator for use on BaseCollection
-  virtual TYPENAME NCollection_BaseCollection<TheItemType>::Iterator& 
-    CreateIterator(void) const
-  { return *(new (this->IterAllocator()) Iterator(*this)); }
 
  protected:
   // ---------- PROTECTED FIELDS -----------

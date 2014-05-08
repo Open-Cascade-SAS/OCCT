@@ -17,8 +17,6 @@
 #define NCollection_TListNode_HeaderFile
 
 #include <NCollection_ListNode.hxx>
-#include <NCollection_BaseAllocator.hxx>
-#include <NCollection_DefineAlloc.hxx>
 
 /**
  * Purpose:     Abstract list node class. Used by BaseList
@@ -36,9 +34,7 @@ template <class TheItemType> class NCollection_TListNode
   const TheItemType& Value () const { return myValue; }
   //! Variable value access
   TheItemType& ChangeValue () { return myValue; }
-  //! Memory allocation
-  DEFINE_STANDARD_ALLOC
-  DEFINE_NCOLLECTION_ALLOC
+
   //! Static deleter to be passed to BaseList
   static void delNode (NCollection_ListNode * theNode, 
                        Handle(NCollection_BaseAllocator)& theAl)

@@ -29,7 +29,6 @@
 #ifndef NCollection_DefineDataMap_HeaderFile
 #define NCollection_DefineDataMap_HeaderFile
 
-#include <NCollection_DefineBaseCollection.hxx>
 #include <NCollection_DataMap.hxx>
 
 // *********************************************** Class DataMap *************

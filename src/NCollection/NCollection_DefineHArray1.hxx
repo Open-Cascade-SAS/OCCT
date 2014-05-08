@@ -29,6 +29,8 @@
 class HClassName : public _Array1Type_,                                        \
                    public MMgt_TShared {                                       \
  public:                                                                       \
+   DEFINE_STANDARD_ALLOC                                                       \
+   DEFINE_NCOLLECTION_ALLOC                                                    \
    inline                     HClassName    (const Standard_Integer theLower,  \
                                              const Standard_Integer theUpper); \
    inline                     HClassName    (const _Array1Type_&);             \

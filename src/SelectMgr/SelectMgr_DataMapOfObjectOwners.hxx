@@ -16,7 +16,7 @@
 #ifndef _SelectMgr_DataMapOfObjectOwners_HeaderFile
 #define _SelectMgr_DataMapOfObjectOwners_HeaderFile
 
-#include <NCollection_DefineDataMap.hxx>
+#include <NCollection_DataMap.hxx>
 #include <SelectMgr_SelectableObject.hxx>
 #include <SelectMgr_SequenceOfOwner.hxx>
 
@@ -26,12 +26,7 @@ inline Standard_Boolean IsEqual (const Handle(SelectMgr_SelectableObject)& theH1
   return (theH1 == theH2);
 }
 
-DEFINE_BASECOLLECTION(SelectMgr_CollectionOfSequenceOfOwner, SelectMgr_SequenceOfOwner)
-DEFINE_DATAMAP(SelectMgr_DataMapOfObjectOwners, SelectMgr_CollectionOfSequenceOfOwner,
-               Handle(SelectMgr_SelectableObject), SelectMgr_SequenceOfOwner)
-
-typedef SelectMgr_DataMapOfObjectOwners::Iterator
-  SelectMgr_DataMapIteratorOfMapOfObjectOwners;
-
+typedef NCollection_DataMap<Handle(SelectMgr_SelectableObject), SelectMgr_SequenceOfOwner> SelectMgr_DataMapOfObjectOwners;
+typedef SelectMgr_DataMapOfObjectOwners::Iterator SelectMgr_DataMapIteratorOfMapOfObjectOwners;
 
 #endif

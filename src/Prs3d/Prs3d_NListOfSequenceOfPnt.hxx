@@ -17,17 +17,8 @@
 #define Prs3d_NListOfSequenceOfPnt_HeaderFile
 
 #include <TColgp_SequenceOfPnt.hxx>
-#include <NCollection_DefineList.hxx>
-#include <NCollection_DefineBaseCollection.hxx>
+#include <NCollection_List.hxx>
 
-DEFINE_BASECOLLECTION(Prs3d_BaseCollListOfSequenceOfPnt,
-                      TColgp_SequenceOfPnt)
-DEFINE_LIST          (Prs3d_NListOfSequenceOfPnt,
-                      Prs3d_BaseCollListOfSequenceOfPnt,
-                      TColgp_SequenceOfPnt)
+typedef NCollection_List<TColgp_SequenceOfPnt> Prs3d_NListOfSequenceOfPnt;
 
 #endif
-
-
-
-

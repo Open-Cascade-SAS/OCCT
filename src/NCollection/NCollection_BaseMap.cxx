@@ -27,8 +27,7 @@ Standard_Boolean  NCollection_BaseMap::BeginResize
   (const Standard_Integer  NbBuckets,
    Standard_Integer&       N,
    NCollection_ListNode**& data1,
-   NCollection_ListNode**& data2,
-   Handle(NCollection_BaseAllocator)& theAllocator) const 
+   NCollection_ListNode**& data2) const 
 {
   if (mySaturated) return Standard_False;
   N = NextPrimeForMap(NbBuckets);
@@ -39,12 +38,12 @@ Standard_Boolean  NCollection_BaseMap::BeginResize
       return Standard_False;
   }
   data1 = (NCollection_ListNode **)
-    theAllocator->Allocate((N+1)*sizeof(NCollection_ListNode *));
+    myAllocator->Allocate((N+1)*sizeof(NCollection_ListNode *));
   memset(data1, 0, (N+1)*sizeof(NCollection_ListNode *));
   if (isDouble) 
   {
     data2 = (NCollection_ListNode **)
-    theAllocator->Allocate((N+1)*sizeof(NCollection_ListNode *));
+    myAllocator->Allocate((N+1)*sizeof(NCollection_ListNode *));
     memset(data2, 0, (N+1)*sizeof(NCollection_ListNode *));
   }
   else
@@ -61,13 +60,12 @@ void  NCollection_BaseMap::EndResize
   (const Standard_Integer NbBuckets,
    const Standard_Integer N,
    NCollection_ListNode** data1,
-   NCollection_ListNode** data2,
-   Handle(NCollection_BaseAllocator)& theAllocator)
+   NCollection_ListNode** data2)
 {
   if (myData1) 
-    theAllocator->Free(myData1);
+    myAllocator->Free(myData1);
   if (myData2) 
-    theAllocator->Free(myData2);
+    myAllocator->Free(myData2);
   myNbBuckets = N;
   mySaturated = (myNbBuckets <= NbBuckets);
   myData1 = data1;
@@ -80,10 +78,8 @@ void  NCollection_BaseMap::EndResize
 //purpose  : 
 //=======================================================================
 
-void  NCollection_BaseMap::Destroy
-  (NCollection_DelMapNode fDel,
-   Handle(NCollection_BaseAllocator)& theAllocator,
-   const Standard_Boolean doReleaseMemory)
+void  NCollection_BaseMap::Destroy (NCollection_DelMapNode fDel,
+                                    Standard_Boolean doReleaseMemory)
 {
   if (!IsEmpty()) 
   {
@@ -98,7 +94,7 @@ void  NCollection_BaseMap::Destroy
         while (p) 
         {
           q = (NCollection_ListNode*)p->Next();
-          fDel (p, theAllocator);
+          fDel (p, myAllocator);
           p = q;
         }
         data[i] = NULL;
@@ -111,9 +107,9 @@ void  NCollection_BaseMap::Destroy
   {
     mySaturated = Standard_False;
     if (myData1) 
-      theAllocator->Free(myData1);
+      myAllocator->Free(myData1);
     if (isDouble && myData2) 
-      theAllocator->Free(myData2);
+      myAllocator->Free(myData2);
     myData1 = myData2 = NULL;
   }
 }

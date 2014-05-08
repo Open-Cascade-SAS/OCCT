@@ -16,7 +16,6 @@
 #ifndef NCollection_Sequence_HeaderFile
 #define NCollection_Sequence_HeaderFile
 
-#include <NCollection_BaseCollection.hxx>
 #include <NCollection_BaseSequence.hxx>
 #include <NCollection_StlIterator.hxx>
 
@@ -29,9 +28,8 @@
  * Purpose:     Definition of a sequence of elements indexed by
  *              an Integer in range of 1..n
  */              
-template <class TheItemType> class NCollection_Sequence
-  : public NCollection_BaseCollection<TheItemType>,
-    public NCollection_BaseSequence
+template <class TheItemType>
+class NCollection_Sequence : public NCollection_BaseSequence
 {
 public:
   //! STL-compliant typedef for value type
@@ -50,9 +48,6 @@ public:
     const TheItemType& Value () const { return myValue; }
     //! Variable value access
     TheItemType&       ChangeValue () { return myValue; }
-    //! Memory allocation
-    DEFINE_STANDARD_ALLOC
-    DEFINE_NCOLLECTION_ALLOC
 
   private:
     TheItemType    myValue;
@@ -60,8 +55,7 @@ public:
 
  public:
   //!   Implementation of the Iterator interface.
-  class Iterator : public NCollection_BaseCollection<TheItemType>::Iterator,
-                   public NCollection_BaseSequence::Iterator
+  class Iterator : public NCollection_BaseSequence::Iterator
   {
   public:
     //! Empty constructor - for later Init
@@ -70,18 +64,11 @@ public:
     Iterator  (const NCollection_Sequence& theSeq,
                const Standard_Boolean      isStart = Standard_True)
       : NCollection_BaseSequence::Iterator (theSeq, isStart) {}
-    //! Assignment
-    Iterator& operator= (const Iterator& theIt)
-    {
-      NCollection_BaseSequence::Iterator& me = * this;
-      me.operator= (theIt);
-      return * this;
-    }
     //! Check end
-    virtual Standard_Boolean More (void) const
+    Standard_Boolean More (void) const
     { return (myCurrent!=NULL); }
     //! Make step
-    virtual void Next (void)
+    void Next (void)
     {
       if (myCurrent)
       {
@@ -90,13 +77,13 @@ public:
       }
     }
     //! Constant value access
-    virtual const TheItemType& Value (void) const
+    const TheItemType& Value (void) const
     { return ((const Node *)myCurrent)->Value(); }
     //! Variable value access
-    virtual TheItemType& ChangeValue (void) const
+    TheItemType& ChangeValue (void) const
     { return ((Node *)myCurrent)->ChangeValue(); }
     //! Performs comparison of two iterators.
-    virtual Standard_Boolean IsEqual (const Iterator& theOther) const
+    Standard_Boolean IsEqual (const Iterator& theOther) const
     {
       return myCurrent == theOther.myCurrent;
     }
@@ -124,18 +111,18 @@ public:
   // ---------- PUBLIC METHODS ------------
 
   //! Constructor
-  NCollection_Sequence(const Handle(NCollection_BaseAllocator)& theAllocator=0L)
-    : NCollection_BaseCollection<TheItemType>(theAllocator),
-      NCollection_BaseSequence() {}
+  NCollection_Sequence(const Handle(NCollection_BaseAllocator)& theAllocator=0L) :
+    NCollection_BaseSequence(theAllocator) {}
 
   //! Copy constructor
   NCollection_Sequence (const NCollection_Sequence& theOther) :
-    NCollection_BaseCollection<TheItemType>(theOther.myAllocator),
-    NCollection_BaseSequence()
-  { *this = theOther; }
+    NCollection_BaseSequence(theOther.myAllocator)
+  {
+    Assign (theOther);
+  }
 
   //! Number of items
-  virtual Standard_Integer Size (void) const
+  Standard_Integer Size (void) const
   { return mySize; }
 
   //! Number of items
@@ -180,13 +167,13 @@ public:
   //! Clear the items out, take a new allocator if non null
   void Clear (const Handle(NCollection_BaseAllocator)& theAllocator=0L)
   {
-    ClearSeq (delNode, this->myAllocator);
+    ClearSeq (delNode);
     if (!theAllocator.IsNull())
       this->myAllocator = theAllocator;
   }
   
   //! Replace this sequence by the items of theOther
-  NCollection_Sequence& operator= (const NCollection_Sequence& theOther)
+  NCollection_Sequence& Assign (const NCollection_Sequence& theOther)
   { 
     if (this == &theOther) 
       return *this;
@@ -200,30 +187,24 @@ public:
     return * this;
   }
 
-  //! Replace this sequence by the items of theOther collection
-  virtual void Assign (const NCollection_BaseCollection<TheItemType>& theOther)
+  //! Replacement operator
+  NCollection_Sequence& operator= (const NCollection_Sequence& theOther)
   {
-    if (this == &theOther)
-      return;
-    Clear ();
-    TYPENAME NCollection_BaseCollection<TheItemType>::Iterator& anIter = 
-      theOther.CreateIterator();
-    for (; anIter.More(); anIter.Next())
-      Append(anIter.Value());
+    return Assign (theOther);
   }
 
   //! Remove one item
   void Remove (Iterator& thePosition)
-  { RemoveSeq (thePosition, delNode, this->myAllocator); }
+  { RemoveSeq (thePosition, delNode); }
 
   //! Remove one item
   void Remove (const Standard_Integer theIndex)
-  { RemoveSeq (theIndex, delNode, this->myAllocator); }
+  { RemoveSeq (theIndex, delNode); }
 
   //! Remove range of items
   void Remove (const Standard_Integer theFromIndex,
                const Standard_Integer theToIndex)
-  { RemoveSeq (theFromIndex, theToIndex, delNode, this->myAllocator); }
+  { RemoveSeq (theFromIndex, theToIndex, delNode); }
 
   //! Append one item
   void Append (const TheItemType& theItem)
@@ -367,14 +348,7 @@ public:
   ~NCollection_Sequence (void)
   { Clear(); }
 
-
  private:
-  // ----------- PRIVATE METHODS -----------
-
-  //! Creates Iterator for use on BaseCollection
-  virtual TYPENAME NCollection_BaseCollection<TheItemType>::Iterator& 
-    CreateIterator(void) const
-  { return *(new (this->IterAllocator()) Iterator(*this)); }
 
   // ---------- FRIEND CLASSES ------------
   friend class Iterator;

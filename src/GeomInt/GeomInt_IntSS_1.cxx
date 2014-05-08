@@ -1507,7 +1507,7 @@ Standard_Boolean DecompositionOfWLine(const Handle(IntPatch_WLine)& theWLine,
   aNbListOfPointIndex=aListOfPointIndex.Extent();
   if(aNbListOfPointIndex) {
     nblines++;
-    anArrayOfLines[nblines] = aListOfPointIndex;
+    anArrayOfLines[nblines].Assign (aListOfPointIndex);
     anArrayOfLineType[nblines] = bIsPrevPointOnBoundary;
     aListOfPointIndex.Clear();
   }

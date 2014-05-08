@@ -22,7 +22,7 @@
 #include <Standard_OutOfRange.hxx>
 #endif
 
-#include <NCollection_BaseCollection.hxx>
+#include <NCollection_DefineAlloc.hxx>
 #include <NCollection_StlIterator.hxx>
 
 // *********************************************** Template for Array1 class
@@ -55,8 +55,8 @@
 *              compatibility the method IsAllocated remained in class along
 *              with IsDeletable.
 */              
-template <class TheItemType> class NCollection_Array1
-  : public NCollection_BaseCollection<TheItemType>
+template <class TheItemType>
+class NCollection_Array1
 {
 public:
   //! STL-compliant typedef for value type
@@ -64,7 +64,7 @@ public:
 
 public:
   //! Implementation of the Iterator interface.
-  class Iterator : public NCollection_BaseCollection<TheItemType>::Iterator
+  class Iterator
   {
   public:
 
@@ -99,35 +99,35 @@ public:
     }
 
     //! Check end
-    virtual Standard_Boolean More (void) const
+    Standard_Boolean More (void) const
     { return myPtrCur < myPtrEnd; }
     
     //! Increment operator
-    virtual void Next (void)
+    void Next (void)
     { ++myPtrCur; }
 
     //! Decrement operator
-    virtual void Previous()
+    void Previous()
     { --myPtrCur; }
 
     //! Offset operator.
-    virtual void Offset (ptrdiff_t theOffset)
+    void Offset (ptrdiff_t theOffset)
     { myPtrCur += theOffset; }
 
     //! Difference operator.
-    virtual ptrdiff_t Differ (const Iterator& theOther) const
+    ptrdiff_t Differ (const Iterator& theOther) const
     { return myPtrCur - theOther.myPtrCur; }
 
     //! Constant value access
-    virtual const TheItemType& Value (void) const
+    const TheItemType& Value (void) const
     { return *myPtrCur; }
 
     //! Variable value access
-    virtual TheItemType& ChangeValue (void) const 
+    TheItemType& ChangeValue (void) const 
     { return *myPtrCur; }
 
     //! Performs comparison of two iterators
-    virtual Standard_Boolean IsEqual (const Iterator& theOther) const
+    Standard_Boolean IsEqual (const Iterator& theOther) const
     { return myPtrCur == theOther.myPtrCur; }
 
   private:
@@ -159,7 +159,6 @@ public:
   //! Constructor
   NCollection_Array1(const Standard_Integer theLower,
                      const Standard_Integer theUpper) :
-                NCollection_BaseCollection<TheItemType>  (),
                 myLowerBound                             (theLower),
                 myUpperBound                             (theUpper),
                 myDeletable                              (Standard_True)
@@ -179,7 +178,6 @@ public:
 
   //! Copy constructor 
   NCollection_Array1 (const NCollection_Array1& theOther) :
-    NCollection_BaseCollection<TheItemType>     (),
     myLowerBound                                (theOther.Lower()),
     myUpperBound                                (theOther.Upper()),
     myDeletable                                 (Standard_True)
@@ -198,7 +196,6 @@ public:
   NCollection_Array1 (const TheItemType& theBegin,
                       const Standard_Integer theLower,
                       const Standard_Integer theUpper) :
-    NCollection_BaseCollection<TheItemType>     (),
     myLowerBound                                (theLower),
     myUpperBound                                (theUpper),
     myDeletable                                 (Standard_False)
@@ -219,7 +216,7 @@ public:
   }
 
   //! Size query
-  virtual Standard_Integer Size (void) const
+  Standard_Integer Size (void) const
   { return Length(); }
   //! Length query (the same)
   Standard_Integer Length (void) const
@@ -240,27 +237,8 @@ public:
   Standard_Boolean IsAllocated (void) const
   { return myDeletable; }
 
-  //! Assign (any collection to this array)
-  // Copies items from the other collection into the allocated
-  // storage. Raises an exception when sizes differ.
-  virtual void Assign (const NCollection_BaseCollection<TheItemType>& theOther)
-  {
-    if (&theOther == this)
-      return;
-#if !defined No_Exception && !defined No_Standard_DimensionMismatch
-    if (Length() != theOther.Size())
-      Standard_DimensionMismatch::Raise ("NCollection_Array1::Assign");
-#endif
-    TYPENAME NCollection_BaseCollection<TheItemType>::Iterator& anIter2 = 
-      theOther.CreateIterator();
-    TheItemType * const pEndItem = &myData[myUpperBound];
-    for (TheItemType * pItem = &myData[myLowerBound];
-         pItem <= pEndItem;   anIter2.Next())
-      * pItem ++ = anIter2.Value();
-  }
-
-  //! operator= (array to array)
-  NCollection_Array1& operator= (const NCollection_Array1& theOther)
+  //! Assignment
+  NCollection_Array1& Assign (const NCollection_Array1& theOther)
   {
     if (&theOther == this)
       return *this;
@@ -273,6 +251,12 @@ public:
     TheItemType * pItem          = &(theOther.myData)[theOther.myLowerBound];
     while (pItem <= pEndItem) * pMyItem ++ = * pItem ++;
     return *this; 
+  }
+
+  //! Assignment operator
+  NCollection_Array1& operator= (const NCollection_Array1& theOther)
+  { 
+    return Assign (theOther);
   }
 
   //! @return first element
@@ -341,15 +325,6 @@ public:
   //! Destructor - releases the memory
   ~NCollection_Array1 (void)
   { if (myDeletable) delete [] &(myData[myLowerBound]); }
-
- private:
-  // ----------- PRIVATE METHODS -----------
-
-  // ******** Creates Iterator for use on BaseCollection
-  virtual
-  TYPENAME NCollection_BaseCollection<TheItemType>::Iterator& 
-                        CreateIterator(void) const
-  { return *(new (this->IterAllocator()) Iterator(*this)); }
 
  protected:
   // ---------- PROTECTED FIELDS -----------

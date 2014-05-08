@@ -21,7 +21,6 @@
 #ifndef NCollection_DefineDoubleMap_HeaderFile
 #define NCollection_DefineDoubleMap_HeaderFile
 
-#include <NCollection_DefineBaseCollection.hxx>
 #include <NCollection_DoubleMap.hxx>
 
 // *********************************************** Class DoubleMap ************

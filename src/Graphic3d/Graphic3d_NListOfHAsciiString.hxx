@@ -16,11 +16,9 @@
 #ifndef _Graphic3d_NListOfHAsciiString_HeaderFile
 #define _Graphic3d_NListOfHAsciiString_HeaderFile
 
-#include <NCollection_DefineList.hxx>
+#include <NCollection_List.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-DEFINE_LIST   (Graphic3d_NListOfHAsciiString,
-               NCollection_List,
-               Handle(TCollection_HAsciiString))
+typedef NCollection_List<Handle(TCollection_HAsciiString)> Graphic3d_NListOfHAsciiString;
 
 #endif

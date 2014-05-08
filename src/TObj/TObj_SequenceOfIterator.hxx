@@ -18,17 +18,9 @@
 #ifndef TObj_SequenceOfIterator_HeaderFile
 #define TObj_SequenceOfIterator_HeaderFile
 
-#include <NCollection_DefineBaseCollection.hxx>
-#include <NCollection_DefineSequence.hxx>
-
+#include <NCollection_Sequence.hxx>
 #include <TObj_ObjectIterator.hxx>
 
-DEFINE_BASECOLLECTION (TObj_CollectionOfIterator, Handle(TObj_ObjectIterator))
-DEFINE_SEQUENCE (TObj_SequenceOfIterator, TObj_CollectionOfIterator,
-                 Handle(TObj_ObjectIterator))
+typedef NCollection_Sequence<Handle(TObj_ObjectIterator)> TObj_SequenceOfIterator;
 
-#endif
-
-#ifdef _MSC_VER
-#pragma once
 #endif

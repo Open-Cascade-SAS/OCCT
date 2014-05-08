@@ -19,7 +19,6 @@
 #ifndef NCollection_DefineVector_HeaderFile
 #define NCollection_DefineVector_HeaderFile
 
-#include <NCollection_DefineBaseCollection.hxx>
 #include <NCollection_Vector.hxx>
 
 //  Class NCollection_Vector (dynamic array of objects)

@@ -62,7 +62,12 @@
 
 template <class TheObjType, class TheBndType> class NCollection_UBTree
 {
- public:
+public:
+  //! Memory allocation
+  DEFINE_STANDARD_ALLOC
+  DEFINE_NCOLLECTION_ALLOC
+
+public:
   // ---------- PUBLIC TYPES ----------
 
   /**

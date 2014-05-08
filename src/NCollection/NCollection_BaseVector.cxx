@@ -63,12 +63,11 @@ void NCollection_BaseVector::Iterator::initV (const NCollection_BaseVector& theV
 //=======================================================================
 
 NCollection_BaseVector::MemBlock* NCollection_BaseVector
-  ::allocMemBlocks (Handle(NCollection_BaseAllocator)& theAllocator,
-                    const Standard_Integer             theCapacity,
+  ::allocMemBlocks (const Standard_Integer             theCapacity,
                     MemBlock*                          theSource,
                     const Standard_Integer             theSourceSize)
 {
-  MemBlock* aData = (MemBlock* )theAllocator->Allocate (theCapacity * sizeof(MemBlock));
+  MemBlock* aData = (MemBlock* )myAllocator->Allocate (theCapacity * sizeof(MemBlock));
 
   // copy content from source array
   Standard_Integer aCapacity = 0;
@@ -76,7 +75,7 @@ NCollection_BaseVector::MemBlock* NCollection_BaseVector
   {
     memcpy (aData, theSource, theSourceSize * sizeof(MemBlock));
     aCapacity = theSourceSize;
-    theAllocator->Free (theSource);
+    myAllocator->Free (theSource);
   }
 
   // Nullify newly allocated blocks
@@ -110,8 +109,7 @@ void NCollection_BaseVector::Clear()
 //purpose  : returns the pointer where the new data item is supposed to be put
 //=======================================================================
 
-void* NCollection_BaseVector::expandV (Handle(NCollection_BaseAllocator)& theAllocator,
-                                       const Standard_Integer             theIndex)
+void* NCollection_BaseVector::expandV (const Standard_Integer theIndex)
 {
   const Standard_Integer aNewLength = theIndex + 1;
   if (myNBlocks > 0)
@@ -140,7 +138,7 @@ void* NCollection_BaseVector::expandV (Handle(NCollection_BaseAllocator)& theAll
     // Reallocate the array myData 
     do myCapacity += GetCapacity(myIncrement); while (myCapacity <= nNewBlock);
 
-    myData = allocMemBlocks (theAllocator, myCapacity, myData, myNBlocks);
+    myData = allocMemBlocks (myCapacity, myData, myNBlocks);
   }
   if (myNBlocks > 0)
   {

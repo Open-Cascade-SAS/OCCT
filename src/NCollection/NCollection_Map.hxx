@@ -16,7 +16,6 @@
 #ifndef NCollection_Map_HeaderFile
 #define NCollection_Map_HeaderFile
 
-#include <NCollection_BaseCollection.hxx>
 #include <NCollection_BaseMap.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_TListNode.hxx>
@@ -58,9 +57,8 @@
  */            
 
 template < class TheKeyType, 
-           class Hasher = NCollection_DefaultHasher<TheKeyType> > class NCollection_Map 
-  : public NCollection_BaseCollection<TheKeyType>,
-    public NCollection_BaseMap
+           class Hasher = NCollection_DefaultHasher<TheKeyType> >
+class NCollection_Map : public NCollection_BaseMap
 {
   //!   Adaptation of the TListNode to the map notations
  public:
@@ -80,9 +78,7 @@ template < class TheKeyType,
 
  public:
   //!   Implementation of the Iterator interface.
-  class Iterator 
-    : public NCollection_BaseCollection<TheKeyType>::Iterator,
-      public NCollection_BaseMap::Iterator
+  class Iterator : public NCollection_BaseMap::Iterator
   {
   public:
     //! Empty constructor
@@ -92,13 +88,13 @@ template < class TheKeyType,
     Iterator (const NCollection_Map& theMap) :
       NCollection_BaseMap::Iterator(theMap) {}
     //! Query if the end of collection is reached by iterator
-    virtual Standard_Boolean More(void) const
+    Standard_Boolean More(void) const
     { return PMore(); }
     //! Make a step along the collection
-    virtual void Next(void)
+    void Next(void)
     { PNext(); }
     //! Value inquiry
-    virtual const TheKeyType& Value(void) const
+    const TheKeyType& Value(void) const
     {
 #if !defined No_Exception && !defined No_Standard_NoSuchObject
       if (!More())
@@ -107,7 +103,7 @@ template < class TheKeyType,
       return ((MapNode *) myNode)->Value();
     }
     //! Value change access - denied
-    virtual TheKeyType& ChangeValue(void) const
+    TheKeyType& ChangeValue(void) const
     {  
       Standard_ImmutableObject::Raise("NCollection_Map::Iterator::ChangeValue");
       return * (TheKeyType *) NULL; // For compiler
@@ -137,40 +133,23 @@ template < class TheKeyType,
 
   //! Constructor
   NCollection_Map (const Standard_Integer NbBuckets = 1,
-                   const Handle(NCollection_BaseAllocator)& theAllocator = 0L)
-    : NCollection_BaseCollection<TheKeyType>(theAllocator),
-      NCollection_BaseMap (NbBuckets, Standard_True) {}
+                   const Handle(NCollection_BaseAllocator)& theAllocator = 0L) :
+    NCollection_BaseMap (NbBuckets, Standard_True, theAllocator) {}
 
   //! Copy constructor
-  NCollection_Map (const NCollection_Map& theOther)
-    : NCollection_BaseCollection<TheKeyType>(theOther.myAllocator),
-      NCollection_BaseMap (theOther.NbBuckets(), Standard_True) 
+  NCollection_Map (const NCollection_Map& theOther) :
+    NCollection_BaseMap (theOther.NbBuckets(), Standard_True, theOther.myAllocator)
   { *this = theOther; }
-
-  //! Assign another collection
-  virtual void Assign (const NCollection_BaseCollection<TheKeyType>& theOther)
-  { 
-    if (this == &theOther)
-      return;
-
-    Clear();
-    ReSize (theOther.Size()-1);
-    TYPENAME NCollection_BaseCollection<TheKeyType>::Iterator& anIter = 
-      theOther.CreateIterator();
-    for (; anIter.More(); anIter.Next())
-      Add (anIter.Value());
-  }
 
   //! Exchange the content of two maps without re-allocations.
   //! Notice that allocators will be swapped as well!
   void Exchange (NCollection_Map& theOther)
   {
-    this->exchangeAllocators (theOther);
-    this->exchangeMapsData   (theOther);
+    this->exchangeMapsData (theOther);
   }
 
-  //! = another map
-  NCollection_Map& operator= (const NCollection_Map& theOther)
+  //! Assign
+  NCollection_Map& Assign (const NCollection_Map& theOther)
   { 
     if (this == &theOther)
       return *this;
@@ -183,13 +162,19 @@ template < class TheKeyType,
     return *this;
   }
 
+  //! Assign operator
+  NCollection_Map& operator= (const NCollection_Map& theOther)
+  { 
+    return Assign(theOther);
+  }
+
   //! ReSize
   void ReSize (const Standard_Integer N)
   {
     NCollection_ListNode** newdata = 0L;
     NCollection_ListNode** dummy = 0L;
     Standard_Integer newBuck;
-    if (BeginResize (N, newBuck, newdata, dummy, this->myAllocator)) 
+    if (BeginResize (N, newBuck, newdata, dummy))
     {
       if (myData1) 
       {
@@ -212,7 +197,7 @@ template < class TheKeyType,
           }
         }
       }
-      EndResize (N, newBuck, newdata, dummy, this->myAllocator);
+      EndResize (N, newBuck, newdata, dummy);
     }
   }
 
@@ -302,7 +287,7 @@ template < class TheKeyType,
   //! Clear data. If doReleaseMemory is false then the table of
   //! buckets is not released and will be reused.
   void Clear(const Standard_Boolean doReleaseMemory = Standard_True)
-  { Destroy (MapNode::delNode, this->myAllocator, doReleaseMemory); }
+  { Destroy (MapNode::delNode, doReleaseMemory); }
 
   //! Clear data and reset allocator
   void Clear (const Handle(NCollection_BaseAllocator)& theAllocator)
@@ -317,7 +302,7 @@ template < class TheKeyType,
   { Clear(); }
 
   //! Size
-  virtual Standard_Integer Size(void) const
+  Standard_Integer Size(void) const
   { return Extent(); }
 
  public:
@@ -589,15 +574,6 @@ template < class TheKeyType,
   }
 
   //!@}
-
- private:
-  // ----------- PRIVATE METHODS -----------
-
-  //! Creates Iterator for use on BaseCollection
-  virtual TYPENAME NCollection_BaseCollection<TheKeyType>::Iterator& 
-    CreateIterator(void) const
-  { return *(new (this->IterAllocator()) Iterator(*this)); }
-
 };
 
 #endif

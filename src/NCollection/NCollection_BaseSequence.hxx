@@ -18,12 +18,16 @@
 
 #include <Standard.hxx>
 #include <NCollection_BaseAllocator.hxx>
+#include <NCollection_DefineAlloc.hxx>
 
 // **************************************** Class SeqNode ********************
 
 class NCollection_SeqNode 
 {
- public:
+public:
+  // define new operator for use with NCollection allocators
+  DEFINE_NCOLLECTION_ALLOC
+public:
   NCollection_SeqNode () : myNext (NULL), myPrevious (NULL) {}
   NCollection_SeqNode * Next      () const { return myNext; }
   NCollection_SeqNode * Previous  () const { return myPrevious; }
@@ -44,7 +48,12 @@ typedef void (* NCollection_DelSeqNode)
  */              
 class NCollection_BaseSequence 
 {
- public:
+public:
+  //! Memory allocation
+  DEFINE_STANDARD_ALLOC
+  DEFINE_NCOLLECTION_ALLOC
+
+public:
   class Iterator
   {
   public:
@@ -96,9 +105,17 @@ class NCollection_BaseSequence
  protected:
   // Methods PROTECTED
   // 
-  inline          NCollection_BaseSequence ();
-  Standard_EXPORT void   ClearSeq    (NCollection_DelSeqNode fDel,
-                                      Handle(NCollection_BaseAllocator)& theAl);
+  NCollection_BaseSequence (const Handle(NCollection_BaseAllocator)& theAllocator) :
+    myFirstItem        (NULL),
+    myLastItem         (NULL),
+    myCurrentItem      (NULL),
+    myCurrentIndex     (0),
+    mySize             (0)
+  {
+    myAllocator = (theAllocator.IsNull() ? NCollection_BaseAllocator::CommonBaseAllocator() : theAllocator);
+  }
+
+  Standard_EXPORT void   ClearSeq    (NCollection_DelSeqNode fDel);
   Standard_EXPORT void   PAppend     (NCollection_SeqNode *);
   Standard_EXPORT void   PAppend     (NCollection_BaseSequence& S);
   Standard_EXPORT void   PPrepend    (NCollection_SeqNode *);
@@ -112,15 +129,12 @@ class NCollection_BaseSequence
   Standard_EXPORT void   PSplit      (const Standard_Integer Index,
                                       NCollection_BaseSequence& Sub);
   Standard_EXPORT void   RemoveSeq   (Iterator& thePosition,
-                                      NCollection_DelSeqNode fDel,
-                                      Handle(NCollection_BaseAllocator)& theAl);
+                                      NCollection_DelSeqNode fDel);
   Standard_EXPORT void   RemoveSeq   (const Standard_Integer Index,
-                                      NCollection_DelSeqNode fDel,
-                                      Handle(NCollection_BaseAllocator)& theAl);
+                                      NCollection_DelSeqNode fDel);
   Standard_EXPORT void   RemoveSeq   (const Standard_Integer From,
                                       const Standard_Integer To,
-                                      NCollection_DelSeqNode fDel,
-                                      Handle(NCollection_BaseAllocator)& theAl);
+                                      NCollection_DelSeqNode fDel);
   Standard_EXPORT void   PReverse    ();
   Standard_EXPORT void   PExchange   (const Standard_Integer I,
                                       const Standard_Integer J) ;
@@ -130,6 +144,7 @@ class NCollection_BaseSequence
  protected:
   // Fields PROTECTED
   //
+  Handle(NCollection_BaseAllocator) myAllocator;
   NCollection_SeqNode* myFirstItem;
   NCollection_SeqNode* myLastItem;
   NCollection_SeqNode* myCurrentItem;
@@ -141,21 +156,8 @@ class NCollection_BaseSequence
   // 
   Standard_EXPORT NCollection_BaseSequence
                            (const NCollection_BaseSequence& Other);
-  inline void     Nullify ();
+  inline void Nullify ();
   friend class Iterator;
 };
-
-inline NCollection_BaseSequence::NCollection_BaseSequence ()
-     : myFirstItem        (NULL),
-       myLastItem         (NULL),
-       myCurrentItem      (NULL),
-       myCurrentIndex     (0),
-       mySize             (0) {}
-
-inline void NCollection_BaseSequence::Nullify ()
-{
-  myFirstItem = myLastItem = myCurrentItem = NULL;
-  myCurrentIndex = mySize = 0;
-}
 
 #endif

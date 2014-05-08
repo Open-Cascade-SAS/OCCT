@@ -22,16 +22,14 @@
 //purpose  : Deletes all nodes from the list
 //=======================================================================
 
-void NCollection_BaseList::PClear 
-  (NCollection_DelListNode fDel,
-   Handle(NCollection_BaseAllocator)& theAllocator)
+void NCollection_BaseList::PClear (NCollection_DelListNode fDel)
 { 
   NCollection_ListNode* pCur  = myFirst;
   NCollection_ListNode* pNext = NULL;
   while(pCur) 
   {
     pNext = pCur->Next();
-    fDel (pCur,theAllocator);
+    fDel (pCur, myAllocator);
     pCur = pNext;
   }
   myLength = 0;
@@ -115,15 +113,13 @@ void NCollection_BaseList::PPrepend (NCollection_BaseList& theOther)
 //purpose  : 
 //=======================================================================
 
-void NCollection_BaseList::PRemoveFirst 
-  (NCollection_DelListNode fDel,
-   Handle(NCollection_BaseAllocator)& theAllocator) 
+void NCollection_BaseList::PRemoveFirst (NCollection_DelListNode fDel) 
 {
   Standard_NoSuchObject_Raise_if(IsEmpty(),
                                  "NCollection_BaseList::PRemoveFirst");
   NCollection_ListNode* pItem = myFirst;
   myFirst = pItem->Next();
-  fDel (pItem, theAllocator);
+  fDel (pItem, myAllocator);
   myLength--;
   if (myLength == 0) 
     myLast = NULL;
@@ -134,23 +130,20 @@ void NCollection_BaseList::PRemoveFirst
 //purpose  : 
 //=======================================================================
 
-void NCollection_BaseList::PRemove 
-  (Iterator& theIter, 
-   NCollection_DelListNode fDel,
-   Handle(NCollection_BaseAllocator)& theAllocator) 
+void NCollection_BaseList::PRemove (Iterator& theIter, NCollection_DelListNode fDel) 
 {
   Standard_NoSuchObject_Raise_if(!theIter.More(),
                                  "NCollection_BaseList::PRemove");
   if (theIter.myPrevious == NULL) 
   {
-    PRemoveFirst (fDel,theAllocator);
+    PRemoveFirst (fDel);
     theIter.myCurrent = myFirst;
   }
   else 
   {
     NCollection_ListNode* pNode = (theIter.myCurrent)->Next();
     (theIter.myPrevious)->Next() = pNode;
-    fDel (theIter.myCurrent,theAllocator);
+    fDel (theIter.myCurrent, myAllocator);
     theIter.myCurrent = pNode;
     if (pNode == NULL) 
       myLast = theIter.myPrevious;

@@ -28,9 +28,8 @@
  *               and the last one.
  *               Inherits BaseList, adding the data item to each node.
  */               
-template <class TheItemType> class NCollection_List
-  : public NCollection_BaseCollection<TheItemType>,
-    public NCollection_BaseList
+template <class TheItemType>
+class NCollection_List : public NCollection_BaseList
 {
 public:
   //! STL-compliant typedef for value type
@@ -63,57 +62,39 @@ public:
 
   //! Constructor
   NCollection_List(const Handle(NCollection_BaseAllocator)& theAllocator=0L) :
-    NCollection_BaseCollection<TheItemType>(theAllocator),
-    NCollection_BaseList() {}
+    NCollection_BaseList(theAllocator) {}
 
   //! Copy constructor
   NCollection_List (const NCollection_List& theOther) :
-    NCollection_BaseCollection<TheItemType>(theOther.myAllocator),
-    NCollection_BaseList()
-  { *this = theOther; }
+    NCollection_BaseList(theOther.myAllocator)
+  {
+    Assign (theOther);
+  }
 
   //! Size - Number of items
-  virtual Standard_Integer Size (void) const
+  Standard_Integer Size (void) const
   { return Extent(); }
-
-  //! Replace this list by the items of theOther collection
-  virtual void Assign (const NCollection_BaseCollection<TheItemType>& theOther)
-  {
-    if (this == &theOther) 
-      return;
-    Clear();
-    TYPENAME NCollection_BaseCollection<TheItemType>::Iterator& anIter = 
-      theOther.CreateIterator();
-    for (; anIter.More(); anIter.Next())
-    {
-      ListNode* pNew = new (this->myAllocator) ListNode(anIter.Value());
-      PAppend(pNew);
-    }
-  }
 
   //! Replace this list by the items of another list (theOther parameter)
   void Assign (const NCollection_List& theOther)
   {
     if (this != &theOther) {
-      Clear();
+      Clear(theOther.myAllocator);
       appendList(theOther.PFirst());
     }
   }
 
-  //! Replace this list by the items of theOther list
+  //! Replacement operator
   NCollection_List& operator= (const NCollection_List& theOther)
-  { 
-    if (this != &theOther) {
-      Clear (theOther.myAllocator);
-      appendList(theOther.PFirst());
-    }
+  {
+    Assign (theOther);
     return *this;
   }
 
   //! Clear this list
   void Clear (const Handle(NCollection_BaseAllocator)& theAllocator=0L)
   {
-    PClear (ListNode::delNode, this->myAllocator);
+    PClear (ListNode::delNode);
     if (!theAllocator.IsNull())
       this->myAllocator = theAllocator;
   }
@@ -203,12 +184,12 @@ public:
 
   //! RemoveFirst item
   void RemoveFirst (void) 
-  { PRemoveFirst (ListNode::delNode, this->myAllocator); }
+  { PRemoveFirst (ListNode::delNode); }
 
   //! Remove item
   void Remove (Iterator& theIter) 
   { 
-    PRemove (theIter, ListNode::delNode, this->myAllocator); 
+    PRemove (theIter, ListNode::delNode); 
   }
 
   //! InsertBefore
@@ -290,11 +271,6 @@ public:
 
  private:
   // ----------- PRIVATE METHODS -----------
-
-  //! Creates Iterator for use on BaseCollection
-  virtual TYPENAME NCollection_BaseCollection<TheItemType>::Iterator& 
-    CreateIterator(void) const
-  { return *(new (this->IterAllocator()) Iterator(*this)); }
 
   //! append the list headed by the given ListNode
   void appendList(const NCollection_ListNode * pCur) {

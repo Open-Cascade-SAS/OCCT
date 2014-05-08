@@ -18,10 +18,7 @@
 #ifndef TObj_Container_HeaderFile
 #define TObj_Container_HeaderFile
 
-#include <NCollection_DefineBaseCollection.hxx>
-#include <NCollection_DefineDataMap.hxx>
-#include <NCollection_DefineSequence.hxx>
-#include <NCollection_DefineHSequence.hxx>
+#include <NCollection_DataMap.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HExtendedString.hxx>
 #include <TDF_Label.hxx>
@@ -29,21 +26,10 @@
 #include <TObj_Common.hxx>
 #include <TObj_SequenceOfObject.hxx>
 
-DEFINE_BASECOLLECTION (TObj_CollectionOfLabel, TDF_Label)
+typedef NCollection_DataMap<Handle(TCollection_HExtendedString), TDF_Label> TObj_DataMapOfNameLabel;
 
-DEFINE_BASECOLLECTION(TObj_CollectionOfPointer, Standard_Address)
+typedef NCollection_DataMap<Handle(TObj_Object), Handle(TObj_HSequenceOfObject)> TObj_DataMapOfObjectHSequenceOcafObjects;
 
-DEFINE_BASECOLLECTION (TObj_CollectionOfHSeqOfObject,
-                       Handle(TObj_HSequenceOfObject))
+typedef NCollection_DataMap<TCollection_AsciiString, Standard_Address> TObj_DataMapOfStringPointer;
 
-DEFINE_DATAMAP (TObj_DataMapOfNameLabel, TObj_CollectionOfLabel,
-                Handle(TCollection_HExtendedString), TDF_Label)
-
-
-DEFINE_DATAMAP (TObj_DataMapOfObjectHSequenceOcafObjects,
-                TObj_CollectionOfHSeqOfObject,
-                Handle(TObj_Object),Handle(TObj_HSequenceOfObject))
-
-DEFINE_DATAMAP(TObj_DataMapOfStringPointer,TObj_CollectionOfPointer,
-               TCollection_AsciiString,Standard_Address)
 #endif
