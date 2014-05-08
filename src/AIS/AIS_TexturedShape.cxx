@@ -189,6 +189,24 @@ void AIS_TexturedShape::DisableTextureModulate()
 }
 
 //=======================================================================
+//function : SetColor
+//purpose  :
+//=======================================================================
+
+void AIS_TexturedShape::SetColor (const Quantity_Color& theColor)
+{
+  AIS_Shape::SetColor (theColor);
+
+  if (!GetContext().IsNull())
+  {
+    if (GetContext()->MainPrsMgr()->HasPresentation (this, 3))
+    {
+      updateAttributes (GetContext()->MainPrsMgr()->Presentation (this, 3)->Presentation());
+    }
+  }
+}
+
+//=======================================================================
 //function : UpdateAttributes
 //purpose  :
 //=======================================================================
@@ -205,8 +223,7 @@ void AIS_TexturedShape::UpdateAttributes()
 
 void AIS_TexturedShape::updateAttributes (const Handle(Prs3d_Presentation)& thePrs)
 {
-  Prs3d_ShadingAspect aDummy;
-  myAspect = aDummy.Aspect();
+  myAspect = new Graphic3d_AspectFillArea3d (*myDrawer->ShadingAspect()->Aspect());
   if (HasPolygonOffsets())
   {
     // Issue 23115: copy polygon offset settings passed through myDrawer

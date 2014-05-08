@@ -98,6 +98,9 @@ public: //! @name methods to alter texture mapping properties
   //! @endcode
   Standard_EXPORT void UpdateAttributes();
 
+  //! Sets the color
+  Standard_EXPORT virtual void SetColor (const Quantity_Color& theColor);
+
   //! Enables texture modulation
   Standard_EXPORT void EnableTextureModulate();
 

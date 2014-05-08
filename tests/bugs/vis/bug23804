@@ -1,0 +1,25 @@
+puts "============"
+puts "CR23804"
+puts "============"
+puts ""
+
+############################################################
+#  Unexpected color modulation during texture mapping
+############################################################
+
+box b 100 100 100
+vinit
+vdisplay b
+vfit
+vsetdispmode b 1
+vsetmaterial b plastic
+vdump $imagedir/${casename}_1.png
+
+vsetcolor b ANTIQUEWHITE
+vdump $imagedir/${casename}_2.png
+
+vtexture b 3
+vdump $imagedir/${casename}_3.png
+
+vsetcolor b ANTIQUEWHITE
+vdump $imagedir/${casename}_4.png
