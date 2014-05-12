@@ -624,7 +624,6 @@ void BRepOffsetAPI_ThruSections::CreateSmoothed()
   TopLoc_Location loc;
   TopoDS_Vertex v1f,v1l,v2f,v2l;
 
-  GeomFill_SectionGenerator section;
   Standard_Integer nbPnts = 21;
   TColgp_Array2OfPnt points(1, nbPnts, 1, nbSects);
 
