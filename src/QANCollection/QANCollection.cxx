@@ -17,13 +17,12 @@
 #include <Draw_Interpretor.hxx>
 
 #include <gp_Pnt.hxx>
-//#include <QANCollection_Common.hxx>
 
 void QANCollection::Commands (Draw_Interpretor& theCommands)
 {
-  QANCollection::Commands1   (theCommands);
-  QANCollection::Commands2   (theCommands);
-  QANCollection::Commands3   (theCommands);
-  QANCollection::Commands4   (theCommands);
+  QANCollection::CommandsSimple (theCommands);
+  QANCollection::CommandsTest (theCommands);
+  QANCollection::CommandsPerf (theCommands);
+  QANCollection::CommandsAlloc (theCommands);
   QANCollection::CommandsStl (theCommands);
 }

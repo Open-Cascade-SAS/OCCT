@@ -21,35 +21,118 @@
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_SequenceOfPnt.hxx>
 
-#define USE_MACROS
-#ifdef USE_MACROS
-#include <NCollection_DefineArray1.hxx>
-#include <NCollection_DefineSequence.hxx>
-DEFINE_BASECOLLECTION (MyBaseCollPnt, gp_Pnt)
-DEFINE_ARRAY1   (MyArray1,   MyBaseCollPnt, gp_Pnt)
-DEFINE_SEQUENCE (MySequence, MyBaseCollPnt, gp_Pnt)
-#else
 #include <NCollection_Sequence.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_IncAllocator.hxx>
+
 typedef NCollection_Array1<gp_Pnt> MyArray1;
 typedef NCollection_Sequence<gp_Pnt> MySequence;
-typedef NCollection_BaseCollection<gp_Pnt> MyBaseCollPnt;
-#endif
-void checkArray         (const Standard_Boolean);
-void checkSequence      (const Standard_Boolean, const Standard_Boolean);
-void createArray        (TColgp_Array1OfPnt&);
-void assignArray        (TColgp_Array1OfPnt&, const TColgp_Array1OfPnt&);
-void createSequence     (TColgp_SequenceOfPnt&);
-void assignSequence     (TColgp_SequenceOfPnt&, const TColgp_SequenceOfPnt&);
 
-void createArray        (MyArray1&);
-void assignArray        (MyArray1&, const MyArray1&);
-void createSequence     (MySequence&);
-void assignSequence     (MySequence&, const MySequence&);
-void assignCollection   (MyBaseCollPnt&, const MyBaseCollPnt&, const char *);
-void printAllMeters     ();
+const Standard_Integer REPEAT = 100;
 
-void checkArray (const Standard_Boolean isNewColl)
+void printAllMeters ()
+{
+  PERF_PRINT_ALL
+}
+
+static void createArray (TColgp_Array1OfPnt& anArrPnt)
+{
+  OSD_PerfMeter aPerfMeter("Create array");
+
+  for (Standard_Integer j = 0; j < 2*REPEAT; j++) {
+    PERF_START_METER("Create array")
+      for (Standard_Integer i = anArrPnt.Lower(); i <= anArrPnt.Upper(); i++)
+        anArrPnt(i).SetCoord ((double)i, (double)(i+1), (double)(i+2));
+    PERF_STOP_METER("Create array")
+  }
+}
+
+static void createSequence (TColgp_SequenceOfPnt& aSeq)
+{
+  for (Standard_Integer j = 0; j < REPEAT; j++) {
+    PERF_START_METER("Clear sequence")
+    aSeq.Clear();
+    PERF_STOP_METER("Clear sequence")
+    PERF_START_METER("Create sequence")
+    for (Standard_Integer i = 0; i < 100000; i++)
+      aSeq.Append (gp_Pnt((double)i, (double)(i+1), (double)(i+2)));
+    PERF_STOP_METER("Create sequence")
+  }
+}
+
+static void createSequence (MySequence& aSeq)
+{
+  for (Standard_Integer j = 0; j < REPEAT; j++) {
+    PERF_START_METER("Clear sequence")
+    aSeq.Clear();
+    PERF_STOP_METER("Clear sequence")
+    PERF_START_METER("Create sequence")
+    for (Standard_Integer i = 0; i < 100000; i++)
+      aSeq.Append (gp_Pnt((double)i, (double)(i+1), (double)(i+2)));
+    PERF_STOP_METER("Create sequence")
+  }
+}
+
+static void assignSequence (TColgp_SequenceOfPnt& aDest,
+                            const TColgp_SequenceOfPnt& aSrc)
+{
+  for (Standard_Integer i = 0; i < REPEAT; i++) {
+    PERF_START_METER("Assign sequence to sequence")
+    aDest = aSrc;
+    PERF_STOP_METER("Assign sequence to sequence")
+  }
+}
+
+static void assignSequence (MySequence& aDest, const MySequence& aSrc)
+{
+  for (Standard_Integer i = 0; i < REPEAT; i++) {
+    PERF_START_METER("Assign sequence to sequence")
+    aDest = aSrc;
+    PERF_STOP_METER("Assign sequence to sequence")
+  }
+}
+
+static void createArray (MyArray1& anArrPnt)
+{
+  for (Standard_Integer j = 0; j < 2*REPEAT; j++) {
+    PERF_START_METER("Create array")
+      for (Standard_Integer i = anArrPnt.Lower(); i <= anArrPnt.Upper(); i++)
+        anArrPnt(i).SetCoord ((double)i, (double)(i+1), (double)(i+2));
+    PERF_STOP_METER("Create array")
+  }
+}
+
+static void assignArray (TColgp_Array1OfPnt& aDest, const TColgp_Array1OfPnt& aSrc)
+{
+  for (Standard_Integer i = 0; i < 2*REPEAT; i++) {
+    PERF_START_METER("Assign array to array")
+    aDest = aSrc;
+    PERF_STOP_METER("Assign array to array")
+  }
+}
+
+template <class MyBaseCollPnt>
+void assignCollection (MyBaseCollPnt&           aDest,
+                       const MyBaseCollPnt&     aSrc,
+                       const char               * MeterName)
+{
+  for (Standard_Integer i = 0; i < REPEAT; i++) {
+    perf_start_meter (MeterName);
+    aDest.Assign(aSrc);
+    perf_stop_meter (MeterName);
+  }
+}
+
+static void assignArray (MyArray1& aDest, const MyArray1& aSrc)
+{
+  for (Standard_Integer i = 0; i < 2*REPEAT; i++) {
+    PERF_START_METER("Assign array to array")
+    aDest = aSrc;
+    PERF_STOP_METER("Assign array to array")
+  }
+}
+
+static void checkArray (const Standard_Boolean isNewColl)
 {
   if (isNewColl) {
     MyArray1 anArrPnt (1, 100000), anArrPnt1 (1, 100000);
@@ -64,17 +147,11 @@ void checkArray (const Standard_Boolean isNewColl)
   printAllMeters ();
 }
 
-static  Handle(NCollection_BaseAllocator) anAlloc[2];
-
-Handle(NCollection_BaseAllocator) getAlloc (const int i)
-{
-  return i == 0 ? anAlloc[0]: anAlloc[1];
-}
-
-void checkSequence (const Standard_Boolean isNewColl,
-                    const Standard_Boolean isIncr)
+static void checkSequence (const Standard_Boolean isNewColl,
+                           const Standard_Boolean isIncr)
 {
   if (isNewColl) {
+    Handle(NCollection_BaseAllocator) anAlloc[2];
     if (isIncr) {
       anAlloc[0] = new NCollection_IncAllocator;
       anAlloc[1] = new NCollection_IncAllocator;
@@ -134,7 +211,7 @@ static Standard_Integer QANColCheckSequence(Draw_Interpretor& di, Standard_Integ
   return 0;
 }
 
-void QANCollection::Commands1(Draw_Interpretor& theCommands) {
+void QANCollection::CommandsSimple(Draw_Interpretor& theCommands) {
   const char *group = "QANCollection";
 
   // from agvCollTest/src/AgvColEXE/TestEXE.cxx

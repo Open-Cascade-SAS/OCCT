@@ -120,7 +120,7 @@ static Standard_Integer QANColStdAllocator2(Draw_Interpretor& di, Standard_Integ
   return 0;
 }
 
-void QANCollection::Commands4(Draw_Interpretor& theCommands) {
+void QANCollection::CommandsAlloc(Draw_Interpretor& theCommands) {
   const char *group = "QANCollection";
 
   theCommands.Add("QANColStdAllocator1", "QANColStdAllocator1", __FILE__, QANColStdAllocator1, group);
