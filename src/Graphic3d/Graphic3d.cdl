@@ -433,9 +433,6 @@ is
     -- Category: Classes
     --------------------
 
-    class Strips;
-    ---Purpose: Contains some static functions to strips treatment
-
     deferred class ArrayOfPrimitives;
     ---Purpose: Contains basic methods for array allocation and filling
 
