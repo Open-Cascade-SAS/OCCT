@@ -506,11 +506,13 @@ Standard_Boolean ShapeAnalysis_Curve::ValidateRange (const Handle(Geom_Curve)& t
     }
   }
 
-  if (First < Last) return Standard_True;
-
   // 15.11.2002 PTV OCC966
-  if (ShapeAnalysis_Curve::IsPeriodic(theCurve)) 
+  if (ShapeAnalysis_Curve::IsPeriodic(theCurve)) {
     ElCLib::AdjustPeriodic(cf,cl,Precision::PConfusion(),First,Last); //:a7 abv 11 Feb 98: preci -> PConfusion()
+  }
+  else if (First < Last) {
+    // nothing to fix
+  }
   else if (theCurve->IsClosed()) {
     // l'un des points projecte se trouve sur l'origine du parametrage
     // de la courbe 3D. L algo a donne cl +- preci au lieu de cf ou vice-versa
