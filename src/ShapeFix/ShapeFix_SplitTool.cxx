@@ -32,6 +32,7 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopExp_Explorer.hxx>
+#include <ShapeAnalysis_Curve.hxx>
 
 
 //=======================================================================
@@ -238,8 +239,29 @@ Standard_Boolean ShapeFix_SplitTool::CutEdge(const TopoDS_Edge &edge,
   if( Abs(Abs(a-b)-aRange) < Precision::PConfusion() ) return Standard_False;
   if( aRange<10.*Precision::PConfusion() ) return Standard_False;
 
+  Handle(Geom_Curve) c = BRep_Tool::Curve(edge, a, b);
+  ShapeAnalysis_Curve sac;
+  a = Min(pend,cut);
+  b = Max(pend,cut);
+  Standard_Real na = a, nb = b;
+  
   BRep_Builder B;
-  B.Range( edge, Min(pend,cut), Max(pend,cut) );
+  if (!BRep_Tool::Degenerated(edge) && !c.IsNull() && sac.ValidateRange(c, na, nb, Precision::PConfusion()) && (na != a || nb != b) )
+  {
+    B.Range( edge, na, nb, Standard_True );
+    ShapeAnalysis_Edge sae;
+    if(sae.HasPCurve(edge,face))
+    {
+      B.SameRange(edge,Standard_False);
+    }
+
+    ShapeFix_Edge sfe;
+    sfe.FixSameParameter(edge);
+  }
+  else
+  {
+    B.Range( edge, a, b, Standard_False );
+  }
 
   return Standard_True;
 }
