@@ -1407,15 +1407,22 @@ Standard_Boolean ShapeAnalysis_Wire::CheckIntersectingEdges(const Standard_Integ
     Standard_Real param2 = IP.ParamOnSecond();
     gp_Pnt pi1 = GetPointOnEdge ( edge1, mySurf, Crv1, param1 ); //:h0: thesurf.Value ( Crv1->Value ( param1 ) );
     gp_Pnt pi2 = GetPointOnEdge ( edge2, mySurf, Crv2, param2 );
-    Standard_Boolean OK = Standard_False;
-    for(Standard_Integer j=1; (j<=4)&&!OK; j++) {
+    Standard_Boolean OK1 = Standard_False;
+    Standard_Boolean OK2 = Standard_False;
+
+    for(Standard_Integer j=1; (j<=2)&&!OK1; j++) {
       Standard_Real di1 = pi1.SquareDistance (vertexPoints(j));
-      Standard_Real di2 = pi2.SquareDistance (vertexPoints(j));
-      Standard_Real dist2 = Max ( di1, di2 );
-      if(dist2 < vertexTolers(j) * vertexTolers(j))
-	OK = Standard_True;
+      if(di1 < vertexTolers(j) * vertexTolers(j))
+        OK1 = Standard_True;
     }
-    if(!OK) {
+
+    for(Standard_Integer j=3; (j<=4)&&!OK2; j++) {
+      Standard_Real di2 = pi2.SquareDistance (vertexPoints(j));
+      if(di2 < vertexTolers(j) * vertexTolers(j))
+        OK2 = Standard_True;
+    }
+
+    if(!OK1 || !OK2) {
       gp_Pnt pint = 0.5 * ( pi1.XYZ() + pi2.XYZ() );
       points2d.Append ( IP );
       points3d.Append ( pint );
