@@ -451,10 +451,10 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
     ii =1;
     new_par.Append(fcons);
 
-    while(Param_de_decoupeC1(inter) <= fcons + deltamin) inter++;
-    while(Param_de_decoupeC1(NbInt) >= lcons - deltamin) NbInt--;
+    while(inter <= NbInt && Param_de_decoupeC1(inter) <= fcons + deltamin) inter++;
+    while(NbInt > 0 && Param_de_decoupeC1(NbInt) >= lcons - deltamin) NbInt--;
 
-    while(inter <= NbInt || ii < NCONTROL) {
+    while(inter <= NbInt || (ii < NCONTROL && inter <= Param_de_decoupeC1.Length()) ) {
       if(Param_de_decoupeC1(inter) < pcons[ii]) {
         new_par.Append(Param_de_decoupeC1(inter));
         if((pcons[ii] - Param_de_decoupeC1(inter)) <= deltamin) {
