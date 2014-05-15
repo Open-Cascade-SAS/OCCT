@@ -1,0 +1,30 @@
+puts "========="
+puts "OCC24914"
+puts "========="
+puts ""
+###########################################################
+# Micro edge is created during Boolean Operations
+###########################################################
+
+restore [locate_data_file bug24914_qx14x15] b1
+explode b1
+copy b1_1 b1
+copy b1_2 b2
+
+bclearobjects
+bcleartools
+baddobjects b1 b2
+bfillds
+bbuild result
+
+set nb_v_good 14
+set nb_e_good 15
+set nb_w_good 2
+set nb_f_good 2
+set nb_sh_good 0
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good  1
+set nb_shape_good 34
+
+set 2dviewer 1

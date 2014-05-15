@@ -51,7 +51,7 @@ static
   void RefineDir(gp_Dir& aDir);
 
 //=======================================================================
-//class :  
+//class :  AxeOperator
 //purpose  : O p e r a t i o n s   D i v e r s e s  s u r   d e s   A x 1 
 //=======================================================================
 class AxeOperator {
@@ -116,7 +116,7 @@ class AxeOperator {
 //function : AxeOperator::AxeOperator
 //purpose  : 
 //=======================================================================
-  AxeOperator::AxeOperator(const gp_Ax1& A1,const gp_Ax1& A2) 
+AxeOperator::AxeOperator(const gp_Ax1& A1,const gp_Ax1& A2) 
 {
   myEPSILON_DISTANCE=0.00000000000001;
   myEPSILON_AXES_PARA=0.000000000001;
@@ -192,9 +192,11 @@ class AxeOperator {
 //function : Distance
 //purpose  : 
 //=======================================================================
-  void AxeOperator::Distance(Standard_Real& dist,Standard_Real& Param1,Standard_Real& Param2)
+void AxeOperator::Distance(Standard_Real& dist,
+                           Standard_Real& Param1,
+                           Standard_Real& Param2)
  {
-  gp_Vec O1O2(Axe1.Location(),Axe2.Location());   //-----------------------------
+  gp_Vec O1O2(Axe1.Location(),Axe2.Location());   
   gp_Dir U1 = Axe1.Direction();   //-- juste pour voir. 
   gp_Dir U2 = Axe2.Direction();
   
@@ -241,7 +243,7 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
 //function : IntAna_QuadQuadGeo
 //purpose  : Empty constructor
 //=======================================================================
-  IntAna_QuadQuadGeo::IntAna_QuadQuadGeo(void)
+IntAna_QuadQuadGeo::IntAna_QuadQuadGeo(void)
     : done(Standard_False),
       nbint(0),
       typeres(IntAna_Empty),
@@ -264,7 +266,7 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
 //function : InitTolerances
 //purpose  : 
 //=======================================================================
-  void IntAna_QuadQuadGeo::InitTolerances()
+void IntAna_QuadQuadGeo::InitTolerances()
 {
   myEPSILON_DISTANCE               = 0.00000000000001;
   myEPSILON_ANGLE_CONE             = 0.000000000001;
@@ -277,10 +279,10 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
 //function : IntAna_QuadQuadGeo
 //purpose  : Pln  Pln 
 //=======================================================================
-  IntAna_QuadQuadGeo::IntAna_QuadQuadGeo(const gp_Pln& P1, 
-                                         const gp_Pln& P2,
-                                         const Standard_Real TolAng,
-                                         const Standard_Real Tol)
+IntAna_QuadQuadGeo::IntAna_QuadQuadGeo(const gp_Pln& P1, 
+                                       const gp_Pln& P2,
+                                       const Standard_Real TolAng,
+                                       const Standard_Real Tol)
 : done(Standard_False),
   nbint(0),
   typeres(IntAna_Empty),
@@ -304,53 +306,121 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
 //function : Perform
 //purpose  : 
 //=======================================================================
-  void IntAna_QuadQuadGeo::Perform (const gp_Pln& P1, 
-                                    const gp_Pln& P2,
-                                    const Standard_Real TolAng,
-                                    const Standard_Real Tol)
+void IntAna_QuadQuadGeo::Perform (const gp_Pln& P1, 
+                                  const gp_Pln& P2,
+                                  const Standard_Real TolAng,
+                                  const Standard_Real Tol)
 {
-  done=Standard_False;
+  Standard_Real A1, B1, C1, D1, A2, B2, C2, D2, dist1, dist2, aMVD;
   //
-  param2bis=0.0;
-
-  Standard_Real A1 = 0., B1 = 0., C1 = 0., D1 = 0., A2 = 0., B2 = 0., C2 = 0., D2 = 0.;
+  done=Standard_False;
+  param2bis=0.;
+  //
   P1.Coefficients(A1,B1,C1,D1);
   P2.Coefficients(A2,B2,C2,D2);
-  
-  gp_Vec vd(gp_Vec(A1,B1,C1).Crossed(gp_Vec(A2,B2,C2)));
-  Standard_Real dist1= A2*P1.Location().X() + B2*P1.Location().Y() + C2*P1.Location().Z() + D2;
-  Standard_Real dist2= A1*P2.Location().X() + B1*P2.Location().Y() + C1*P2.Location().Z() + D1;
-
-  if(vd.Magnitude() <=TolAng) {
+  //
+  gp_Vec aVN1(A1,B1,C1);
+  gp_Vec aVN2(A2,B2,C2);
+  gp_Vec vd(aVN1.Crossed(aVN2));
+  //
+  const gp_Pnt& aLocP1=P1.Location();
+  const gp_Pnt& aLocP2=P2.Location();
+  //
+  dist1=A2*aLocP1.X() + B2*aLocP1.Y() + C2*aLocP1.Z() + D2;
+  dist2=A1*aLocP2.X() + B1*aLocP2.Y() + C1*aLocP2.Z() + D1;
+  //
+  aMVD=vd.Magnitude();
+  if(aMVD <=TolAng) {
     // normalles are collinear - planes are same or parallel
-    typeres = (Abs(dist1) <= Tol && Abs(dist2) <= Tol) ? IntAna_Same : IntAna_Empty;
+    typeres = (Abs(dist1) <= Tol && Abs(dist2) <= Tol) ? IntAna_Same 
+      : IntAna_Empty;
   }
   else {
-    Standard_Real denom=A1*A2 + B1*B2 + C1*C2;
-
-    Standard_Real denom2 = denom*denom;
-    Standard_Real ddenom = 1. - denom2;
-    //denom = ( Abs(ddenom) <= 1.e-9 ) ? 1.e-9 : ddenom;
-    denom = ( Abs(ddenom) <= 1.e-16 ) ? 1.e-16 : ddenom;
+    Standard_Real denom, denom2, ddenom, par1, par2;
+    Standard_Real X1, Y1, Z1, X2, Y2, Z2, aEps;
+    //
+    aEps=1.e-16;
+    denom=A1*A2 + B1*B2 + C1*C2;
+    denom2 = denom*denom;
+    ddenom = 1. - denom2;
+    
+    denom = ( Abs(ddenom) <= aEps ) ? aEps : ddenom;
       
-    Standard_Real par1 = dist1/denom;
-    Standard_Real par2 = -dist2/denom;
+    par1 = dist1/denom;
+    par2 = -dist2/denom;
       
-    gp_Vec inter1(gp_Vec(A1,B1,C1).Crossed(vd));
-    gp_Vec inter2(gp_Vec(A2,B2,C2).Crossed(vd));
+    gp_Vec inter1(aVN1.Crossed(vd));
+    gp_Vec inter2(aVN2.Crossed(vd));
       
-    Standard_Real X1=P1.Location().X() + par1*inter1.X();
-    Standard_Real Y1=P1.Location().Y() + par1*inter1.Y();
-    Standard_Real Z1=P1.Location().Z() + par1*inter1.Z();
-    Standard_Real X2=P2.Location().X() + par2*inter2.X();
-    Standard_Real Y2=P2.Location().Y() + par2*inter2.Y();
-    Standard_Real Z2=P2.Location().Z() + par2*inter2.Z();
+    X1=aLocP1.X() + par1*inter1.X();
+    Y1=aLocP1.Y() + par1*inter1.Y();
+    Z1=aLocP1.Z() + par1*inter1.Z();
+    X2=aLocP2.X() + par2*inter2.X();
+    Y2=aLocP2.Y() + par2*inter2.Y();
+    Z2=aLocP2.Z() + par2*inter2.Z();
       
     pt1=gp_Pnt((X1+X2)*0.5, (Y1+Y2)*0.5, (Z1+Z2)*0.5);
     dir1 = gp_Dir(vd);
     typeres = IntAna_Line;
     nbint = 1;
- 
+    //
+    //-------------------------------------------------------
+    // When the value of the angle between the planes is small
+    // the origin of intersection line is computed with error
+    // [ ~0.0001 ] that can not br considered as small one
+    // e.g.
+    // for {A~=2.e-6, dist1=4.2e-5, dist2==1.e-4} =>
+    // {denom=3.4e-12, par1=12550297.6, par2=32605552.9, etc}
+    // So, 
+    // the origin should be refined if it is possible
+    //
+    Standard_Real aTreshAng, aTreshDist;
+    //
+    aTreshAng=2.e-6; // 1.e-4 deg
+    aTreshDist=1.e-12;
+    //
+    if (aMVD < aTreshAng) {
+      Standard_Real aDist1, aDist2;
+      //
+      aDist1=A1*pt1.X() + B1*pt1.Y() + C1*pt1.Z() + D1;
+      aDist2=A2*pt1.X() + B2*pt1.Y() + C2*pt1.Z() + D2;
+      //
+      if (fabs(aDist1)>aTreshDist || fabs(aDist2)>aTreshDist) {
+        Standard_Boolean bIsDone, bIsParallel;
+        IntAna_IntConicQuad aICQ;
+        //
+        // 1.
+        gp_Dir aDN1(aVN1);
+        gp_Lin aL1(pt1, aDN1);
+        //
+        aICQ.Perform(aL1, P1, TolAng, Tol);
+        bIsDone=aICQ.IsDone();
+        if (!bIsDone) {
+          return;
+        }
+        //
+        const gp_Pnt& aPnt1=aICQ.Point(1);
+        //----------------------------------
+        // 2.
+        gp_Dir aDL2(dir1.Crossed(aDN1));
+        gp_Lin aL2(aPnt1, aDL2);
+        //
+        aICQ.Perform(aL2, P2, TolAng, Tol);
+        bIsDone=aICQ.IsDone();
+        if (!bIsDone) {
+          return;
+        }
+        //
+        bIsParallel=aICQ.IsParallel();
+        if (bIsParallel) {
+          return;
+        }
+        //
+        const gp_Pnt& aPnt2=aICQ.Point(1);
+        //
+        pt1=aPnt2;
+      }
+    }
   }
   done=Standard_True;
 }
@@ -358,26 +428,26 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
 //function : IntAna_QuadQuadGeo
 //purpose  : Pln Cylinder
 //=======================================================================
-  IntAna_QuadQuadGeo::IntAna_QuadQuadGeo( const gp_Pln& P
-       ,const gp_Cylinder& Cl
-       ,const Standard_Real Tolang
-       ,const Standard_Real Tol
-       ,const Standard_Real H)
-    : done(Standard_False),
-      nbint(0),
-      typeres(IntAna_Empty),
-      pt1(0,0,0),
-      pt2(0,0,0),
-      pt3(0,0,0),
-      pt4(0,0,0),
-      param1(0),
-      param2(0),
-      param3(0),
-      param4(0),
-      param1bis(0),
-      param2bis(0),
-      myCommonGen(Standard_False),
-      myPChar(0,0,0)
+IntAna_QuadQuadGeo::IntAna_QuadQuadGeo( const gp_Pln& P
+                                       ,const gp_Cylinder& Cl
+                                       ,const Standard_Real Tolang
+                                       ,const Standard_Real Tol
+                                       ,const Standard_Real H)
+     : done(Standard_False),
+       nbint(0),
+       typeres(IntAna_Empty),
+       pt1(0,0,0),
+       pt2(0,0,0),
+       pt3(0,0,0),
+       pt4(0,0,0),
+       param1(0),
+       param2(0),
+       param3(0),
+       param4(0),
+       param1bis(0),
+       param2bis(0),
+       myCommonGen(Standard_False),
+       myPChar(0,0,0)
 {
   InitTolerances();
   Perform(P,Cl,Tolang,Tol,H);
@@ -408,7 +478,8 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
 
   P.Coefficients(A,B,C,D);
   axec.Location().Coord(X,Y,Z);
-  dist = A*X + B*Y + C*Z + D; // la distance axe/plan est evaluee a l origine de l axe.
+  // la distance axe/plan est evaluee a l origine de l axe.
+  dist = A*X + B*Y + C*Z + D; 
 
   Standard_Real tolang = Tolang;
   Standard_Boolean newparams = Standard_False;
@@ -454,7 +525,9 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
             Standard_Real Xt,Yt,Zt,distt;
             omegaXYZtrnsl.Coord(Xt,Yt,Zt);
             distt = A*Xt + B*Yt + C*Zt + D;
-            gp_XYZ omega1( omegaXYZtrnsl.X()-distt*A, omegaXYZtrnsl.Y()-distt*B, omegaXYZtrnsl.Z()-distt*C );
+            gp_XYZ omega1(omegaXYZtrnsl.X()-distt*A, 
+                          omegaXYZtrnsl.Y()-distt*B, 
+                          omegaXYZtrnsl.Z()-distt*C );
             gp_Pnt ppt1;
             ppt1.SetXYZ( omega1 );
             gp_Vec vv1(pt1,ppt1);
@@ -484,7 +557,9 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
             Standard_Real anSqrtArg = radius*radius - distt*distt;
             ht = (anSqrtArg > 0.) ? Sqrt(anSqrtArg) : 0.;
 
-            gp_XYZ omega1( omegaXYZtrnsl.X()-distt*A, omegaXYZtrnsl.Y()-distt*B, omegaXYZtrnsl.Z()-distt*C );
+            gp_XYZ omega1( omegaXYZtrnsl.X()-distt*A, 
+                          omegaXYZtrnsl.Y()-distt*B, 
+                          omegaXYZtrnsl.Z()-distt*C );
             gp_Pnt ppt1,ppt2;
             ppt1.SetXYZ( omega1 - ht*axey);
             ppt2.SetXYZ( omega1 + ht*axey);
@@ -767,8 +842,8 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
 //function : IntAna_QuadQuadGeo
 //purpose  : Pln Sphere
 //=======================================================================
-  IntAna_QuadQuadGeo::IntAna_QuadQuadGeo(const gp_Pln& P,
-                                         const gp_Sphere& S)
+IntAna_QuadQuadGeo::IntAna_QuadQuadGeo(const gp_Pln& P,
+                                       const gp_Sphere& S)
 : done(Standard_False),
   nbint(0),
   typeres(IntAna_Empty),
@@ -792,8 +867,8 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
 //function : Perform
 //purpose  : 
 //=======================================================================
-  void IntAna_QuadQuadGeo::Perform( const gp_Pln& P
-                                   ,const gp_Sphere& S) 
+void IntAna_QuadQuadGeo::Perform( const gp_Pln& P
+                                 ,const gp_Sphere& S) 
 {
   
   done = Standard_False;
@@ -835,9 +910,9 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
 //function : IntAna_QuadQuadGeo
 //purpose  : Cylinder - Cylinder
 //=======================================================================
-  IntAna_QuadQuadGeo::IntAna_QuadQuadGeo(const gp_Cylinder& Cyl1,
-                                         const gp_Cylinder& Cyl2,
-                                         const Standard_Real Tol) 
+IntAna_QuadQuadGeo::IntAna_QuadQuadGeo(const gp_Cylinder& Cyl1,
+                                       const gp_Cylinder& Cyl2,
+                                       const Standard_Real Tol) 
 : done(Standard_False),
   nbint(0),
   typeres(IntAna_Empty),
@@ -861,9 +936,9 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
 //function : Perform
 //purpose  : 
 //=======================================================================
-  void IntAna_QuadQuadGeo::Perform(const gp_Cylinder& Cyl1,
-                     const gp_Cylinder& Cyl2,
-                     const Standard_Real Tol) 
+void IntAna_QuadQuadGeo::Perform(const gp_Cylinder& Cyl1,
+                                 const gp_Cylinder& Cyl2,
+                                 const Standard_Real Tol) 
 {
   done=Standard_True;
   //---------------------------- Parallel axes -------------------------
@@ -1038,9 +1113,9 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
 //function : IntAna_QuadQuadGeo
 //purpose  : Cylinder - Cone
 //=======================================================================
-  IntAna_QuadQuadGeo::IntAna_QuadQuadGeo(const gp_Cylinder& Cyl,
-                                         const gp_Cone& Con,
-                                         const Standard_Real Tol) 
+IntAna_QuadQuadGeo::IntAna_QuadQuadGeo(const gp_Cylinder& Cyl,
+                                       const gp_Cone& Con,
+                                       const Standard_Real Tol) 
 : done(Standard_False),
   nbint(0),
   typeres(IntAna_Empty),

@@ -512,9 +512,6 @@ static Standard_Boolean isTreatAnalityc(const TopoDS_Face& theF1,
     return inter.IsDone();
   }
 }
-
-
-
 //=======================================================================
 //function : Perform
 //purpose  : intersect surfaces of the faces
@@ -583,42 +580,51 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
                                         aType2 == GeomAbs_Cone ||
                                         aType2 == GeomAbs_Torus);
 
-  if(aType1==GeomAbs_Plane && aType2==GeomAbs_Plane)
-  {
+  if(aType1==GeomAbs_Plane && aType2==GeomAbs_Plane)  {
     Standard_Real umin, umax, vmin, vmax;
+    Standard_Real dU, dV;
+    //
     BRepTools::UVBounds(myFace1, umin, umax, vmin, vmax);
+    dU=0.1*(umax-umin);
+    dV=0.1*(vmax-vmin);
+    umin=umin-dU;
+    umax=umax+dU;
+    vmin=vmin-dV;
+    vmax=vmax+dV;
     myHS1->ChangeSurface().Load(S1, umin, umax, vmin, vmax);
     //
     BRepTools::UVBounds(myFace2, umin, umax, vmin, vmax);
+    dU=0.1*(umax-umin);
+    dV=0.1*(vmax-vmin);
+    umin=umin-dU;
+    umax=umax+dU;
+    vmin=vmin-dV;
+    vmax=vmax+dV;
     myHS2->ChangeSurface().Load(S2, umin, umax, vmin, vmax);
+    //
     Standard_Real TolAng = 1.e-8;
-
+    //
     PerformPlanes(myHS1, myHS2, TolAng, TolTang, myApprox1, myApprox2,
-                                          mySeqOfCurve, myTangentFaces);
-
+                  mySeqOfCurve, myTangentFaces);
+    //
     myIsDone = Standard_True;
     
-    if(!myTangentFaces)
-    {
+    if(!myTangentFaces) {
       const Standard_Integer NbLinPP = mySeqOfCurve.Length();
-      if(NbLinPP)
-      {
+      if(NbLinPP) {
         Standard_Real aTolFMax;
         myTolReached3d = 1.e-7;
         aTolFMax=Max(aTolF1, aTolF2);
-        if (aTolFMax>myTolReached3d)
-        {
+        if (aTolFMax>myTolReached3d) {
           myTolReached3d=aTolFMax;
         }
-
+        //
         myTolReached2d = myTolReached3d;
 
-        if (bReverse)
-        {
+        if (bReverse) {
           Handle(Geom2d_Curve) aC2D1, aC2D2;
           const Standard_Integer aNbLin = mySeqOfCurve.Length();
-          for (Standard_Integer i = 1; i <= aNbLin; ++i)
-          {
+          for (Standard_Integer i = 1; i <= aNbLin; ++i) {
             IntTools_Curve& aIC=mySeqOfCurve(i);
             aC2D1=aIC.FirstCurve2d();
             aC2D2=aIC.SecondCurve2d();
@@ -628,7 +634,6 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
         }
       }
     }
-
     return;
   }//if(aType1==GeomAbs_Plane && aType2==GeomAbs_Plane){
 
