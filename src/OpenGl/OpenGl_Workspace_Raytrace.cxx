@@ -1976,8 +1976,7 @@ Standard_Boolean OpenGl_Workspace::RunRaytraceShaders (const Graphic3d_CView& th
     return Standard_True;
   }
 
-  myRaytraceFBO1->ColorTexture()->Bind (myGlContext,
-                     GL_TEXTURE0 + OpenGl_RT_FSAAInputTexture);
+  myRaytraceFBO1->ColorTexture()->Bind (myGlContext, GL_TEXTURE0 + OpenGl_RT_FSAAInputTexture);
 
   myPostFSAAProgram->Bind (myGlContext);
 
@@ -2062,7 +2061,7 @@ Standard_Boolean OpenGl_Workspace::RunRaytraceShaders (const Graphic3d_CView& th
 
     if (anIt != 3) // set input for the next pass
     {
-      aFramebuffer->ColorTexture()->Bind (myGlContext);
+      aFramebuffer->ColorTexture()->Bind (myGlContext, GL_TEXTURE0 + OpenGl_RT_FSAAInputTexture);
       aFramebuffer->UnbindBuffer (myGlContext);
     }
   }
