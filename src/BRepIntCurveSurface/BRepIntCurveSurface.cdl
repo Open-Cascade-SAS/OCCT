@@ -37,7 +37,9 @@ uses
      TopAbs, 
      TopExp,
      StdFail,
-     gp
+     gp,
+     Bnd,
+     TopTools
 
 is
 

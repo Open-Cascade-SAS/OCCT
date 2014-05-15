@@ -59,6 +59,7 @@
 #include <TopExp.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Vertex.hxx>
+#include <TopExp_Explorer.hxx>
 
 #ifdef DRAW
 #include <DrawTrSurf.hxx>
@@ -434,7 +435,7 @@ Standard_Boolean BRepFill_TrimSurfaceTool::IsOnFace
 
   // eval if is on face 1
 //  modified by NIZHNY-EAP Fri Jan 21 09:49:09 2000 ___BEGIN___
-  Inter.Init(myFace1, Line, 1e-6);//Precision::PConfusion());
+  Inter.Init(myFace1, Line,1e-6);//Precision::PConfusion());
   if (Inter.More()) return Standard_True;
   
   // eval if is on face 2

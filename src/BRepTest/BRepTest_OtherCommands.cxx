@@ -75,6 +75,7 @@
 #include <BRepOffset.hxx>
 #include <BRepOffset_MakeOffset.hxx>
 #include <BRepClass3d_SolidClassifier.hxx>
+#include <GeomAdaptor_Curve.hxx>
 
 static 
   void SampleEdges (const TopoDS_Shape&   theShape, 
@@ -115,7 +116,7 @@ void  BRepTest::OtherCommands(Draw_Interpretor& theCommands)
 		  ,__FILE__,subshape,g);
 
   theCommands.Add("BRepIntCS",
-		  "Calcul d'intersection entre face et curve : BRepIntCS curve shape"
+    "Calcul d'intersection entre face et curve : BRepIntCS curve1 [curve2 ...] shape [res] [tol]"
 		  ,__FILE__,brepintcs,g);
 
   theCommands.Add("makeboss",  "create a boss on the shape myS", __FILE__, MakeBoss, g);
@@ -273,25 +274,54 @@ Standard_Integer subshape(Draw_Interpretor& di, Standard_Integer n, const char**
 //function : brepintcs
 //purpose  : 
 //=======================================================================
-Standard_Integer brepintcs(Draw_Interpretor& , Standard_Integer n, const char** a)
+Standard_Integer brepintcs(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
-  if (n <= 2) return 1;
-  TopoDS_Shape S = DBRep::Get(a[n-1]);
-  if (S.IsNull()) return 3;
+  if (n <= 2) 
+  {
+    cout<<"Invalid input arguments. Should be: curve1 [curve2 ...] shape [result] [tol]"<<endl;
+    return 1;
+  }
+  Standard_Integer indshape = 2;
+  TopoDS_Shape S;
+  for( ; indshape <= n-1 ; indshape++)
+  {
+    S = DBRep::Get(a[indshape]);
+    if(!S.IsNull())
+      break;
+  }
+  if (S.IsNull()) 
+  {
+    cout<<"Invalid input shape"<<endl;
+    return 1;
+  }
 
-  static BRepIntCurveSurface_Inter theAlg;
-  static double tol=1e-6;
-  static int nbpi=0;
-  static gp_Pnt curp;
-
-  if (n==3) {
+  BRepIntCurveSurface_Inter theAlg;
+  double tol=1e-6;
+  if( indshape < n-1)
+  {
+    Standard_Real preci = atof(a[n-1]);
+    if(preci >= Precision::Confusion())
+      tol = preci;
+  }
+  int nbpi=0;
+  gp_Pnt curp;
+  TopoDS_Compound aComp;
+  BRep_Builder aB;
+  aB.MakeCompound(aComp);
+  if (indshape == 2) {
     Handle(Geom_Curve) C= DrawTrSurf::GetCurve(a[1]);
     if (C.IsNull()) return 2;
     GeomAdaptor_Curve acur(C);
     theAlg.Init(S, acur, tol);
+
     for (; theAlg.More(); theAlg.Next()) {
       curp=theAlg.Pnt();
+      TopoDS_Vertex aV;
+
+      aB.MakeVertex(aV, curp, 0);
+      aB.Add(aComp, aV);
       nbpi++;
+      di<<"Point "<<nbpi<<" : "<<curp.X()<<" "<<curp.Y()<<" "<<curp.Z()<<"\n";
       char name[64];
       char* temp = name; // pour portage WNT
       Sprintf(temp, "%s_%d", "brics", nbpi); 
@@ -299,24 +329,31 @@ Standard_Integer brepintcs(Draw_Interpretor& , Standard_Integer n, const char** 
     }
   }
   else {
-    Handle(Geom_Line) hl;
-    gp_Lin thel;
-    for (Standard_Integer il = 1; il<n ; il++) {
-      hl= Handle(Geom_Line)::DownCast(DrawTrSurf::GetCurve(a[il]));
+    theAlg.Load(S,tol );
+    for (Standard_Integer il = 1; il<indshape ; il++) 
+    {
+      Handle(Geom_Curve) hl= DrawTrSurf::GetCurve(a[il]);
       if (!hl.IsNull()) {
-	thel=hl->Lin();
-	  theAlg.Init(S, thel, tol);
-	for (; theAlg.More(); theAlg.Next()) {
-	  curp=theAlg.Pnt();
-	  nbpi++;
-	  char name[64];
-	  char* temp = name; // pour portage WNT
-	  Sprintf(temp, "%s_%d", "brics", nbpi); 
-	  DrawTrSurf::Set(temp, curp);
-	}
+        theAlg.Init(hl);
+        for (; theAlg.More(); theAlg.Next()) {
+          curp=theAlg.Pnt();
+          nbpi++;
+          TopoDS_Vertex aV;
+          aB.MakeVertex(aV, curp, 0);
+          aB.Add(aComp, aV);
+          di<<"Point "<<nbpi<<" : "<<curp.X()<<" "<<curp.Y()<<" "<<curp.Z()<<"\n";
+          char name[64];
+          char* temp = name; // pour portage WNT
+          Sprintf(temp, "%s_%d", "brics", nbpi); 
+          DrawTrSurf::Set(temp, curp);
+        }
       }
     }
   }
+  if(!nbpi)
+    di<<"Points of intersections are not found"<<"\n";
+  if(indshape < n-1)
+    DBRep::Set(a[n-1], aComp);
   //POP pour NT
   return 0;
 }

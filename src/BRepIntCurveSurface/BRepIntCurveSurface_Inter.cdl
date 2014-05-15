@@ -16,8 +16,26 @@
 
 class Inter from BRepIntCurveSurface 
 
-	---Purpose: Computes the intersection between a face and a curve
+	---Purpose: Computes the intersection between a face and a
+	--          curve. To intersect one curve with shape method
+	--          Init(Shape, curve, tTol) should be used.  To
+	--          intersect a few curves with specified shape it is
+	--          necessary to load shape one time using method
+	--          Load(shape, tol) and find intersection points for
+	--          each curve using method Init(curve).  For
+	--          iteration by intersection points method More() and
+	--          Next() should be used.  
 	--          
+	--- Example:
+	---  Inter.Load(shape, tol); 
+	---  for( i =1; i <= nbCurves;i++) 
+	---   { 
+	---    Inter.Init(curve); 
+	---    for(  ;Inter.More(); Inter.Next()) 
+	---    {
+	---     .......
+	---    }
+	---   }
 
 uses  
 --modified by NIZNHY-PKV Sun Dec 15 16:52:33 2002  f 
@@ -34,7 +52,11 @@ uses
      Lin                 from gp,
      Pnt                 from gp,
      TransitionOnCurve   from IntCurveSurface,
-     Face                from TopoDS
+     Face                from TopoDS,
+     Box                 from Bnd,
+     SequenceOfShape     from TopTools,
+     HArray1OfBox        from Bnd,
+     HCurve               from GeomAdaptor
     
      
 raises 
@@ -47,118 +69,110 @@ is
     	--- Purpose: Empty constructor;
     	
     Init(me : in out;
-    	 Sh : Shape from TopoDS;
-	 Cu : Curve from GeomAdaptor;
-	 Tol: Real  from Standard)
+    	 theShape : Shape from TopoDS;
+	     theCurve : Curve from GeomAdaptor;
+	     theTol: Real  from Standard);
 	    
 	--- Purpose: Load the Shape, the curve  and initialize the
 	--           tolerance used for the classification.
-    	is static;
+    	
     
     Init(me : in out;
-    	 Sh : Shape from TopoDS;
-	 L  : Lin   from gp;
-	 Tol: Real  from Standard)
+    	 theShape : Shape from TopoDS;
+	     theLine  : Lin   from gp;
+	     theTol: Real  from Standard);
 	    
 	--- Purpose: Load the Shape, the curve  and initialize the
 	--           tolerance used for the classification.
-    	is static;
-    
-    More(me) 
+    	
 
+    Load(me : in out; theShape : Shape from TopoDS; theTol: Real  from Standard);
+    --- Purpose: Load the Shape,   and initialize the
+	  --           tolerance used for the classification.
+
+    Init(me : in out; theCurve : Curve from GeomAdaptor);
+    --- Purpose: Method to find intersections of specified curve with loaded shape.
+	  
+    
+    More(me) returns Boolean from Standard;
   	--- Purpose: returns True if there is a current face.
-    	returns Boolean from Standard
-    	is static;
-    
+    	    
 					     
-    Next(me: in out)
-
-      	--- Purpose: Sets the explorer to the next face.
-	is static;
+    Next(me: in out);
+    	--- Purpose: Sets the next intersection point to check.
 	
-    Find(me: in out) 
+	
+    Find(me: in out) is protected;
     	---Purpose: Internal function
-    	is static protected;
-
-    Point(me)
     	
-    	---Purpose: returns the current Intersection point.
-    	
-    	returns IntersectionPoint from IntCurveSurface
-    	raises NotDone from StdFail
-	is static;       
 
-    Pnt(me) 
+    Point(me) returns IntersectionPoint from IntCurveSurface
+  	  ---Purpose: returns the current Intersection point.
+    	raises NotDone from StdFail;
+     
+
+    Pnt(me) returns Pnt from gp
     	---Purpose: returns the current geometric Point
     	---C++: return const & 
-    	returns Pnt from gp
-    	raises NotDone from StdFail
-	is static;
+     	raises NotDone from StdFail;
+	
 	
 
-    U(me) 
+    U(me) returns Real from Standard
     	---Purpose: returns the U parameter of the current point 
     	--          on the current face.
-    	returns Real from Standard
-    	raises NotDone from StdFail
-	is static;
+   	  raises NotDone from StdFail;
 
-    V(me) 
+
+    V(me) returns Real from Standard
     	---Purpose: returns the V parameter of the current point 
     	--          on the current face.
-    	returns Real from Standard
-    	raises NotDone from StdFail
-	is static;
+     	raises NotDone from StdFail;
+	
 
-    W(me) 
+    W(me) returns Real from Standard
     	---Purpose: returns the  parameter of the current point 
     	--          on the curve.
-    	returns Real from Standard
-    	raises NotDone from StdFail
-	is static;
+   	  raises NotDone from StdFail;
 
-    State(me)
 
-	---Purpose: returns the current state  (IN or ON)
-	returns State from TopAbs
-    	raises NotDone from StdFail
-	is static;
+    State(me) returns State from TopAbs
+	  ---Purpose: returns the current state  (IN or ON)
+    	raises NotDone from StdFail;
 
-    Transition(me) 
-    
+
+    Transition(me) returns TransitionOnCurve   from IntCurveSurface
     	---Purpose: returns the transition of the line on the surface (IN or OUT or UNKNOWN)
-    	returns TransitionOnCurve   from IntCurveSurface
-    	raises NotDone from StdFail
-	is static;
+    	raises NotDone from StdFail;
 	
-    Face(me)
-    
+	
+    Face(me) returns Face from TopoDS;
     	---Purpose: returns the current face.
-        ---C++: return const &
-    	returns Face from TopoDS
-	is static;
+      ---C++: return const &
+    	
+	 FindPoint(me : in out) returns Boolean from Standard is protected;
+    ---Purpose: Method chec found intersection point
 
+    Clear(me : in out) is protected;
+    ---Purpose: Method to clear fields of class
 
 fields
 
-    empty          : Boolean           from Standard;
-    curveisaline   : Boolean           from Standard;
-    tolerance      : Real              from Standard;
-    line           : Lin               from gp;
-    curve          : Curve             from GeomAdaptor;
+    myTolerance      : Real              from Standard;
+    myCurve          : HCurve             from GeomAdaptor;
+       
+    myIntcs          : HInter             from IntCurveSurface;
     
-    explorer       : Explorer          from TopExp;
-    classifier     : FaceClassifier    from BRepClass;
-    --intcs          : ICSInter          from BRepIntCurveSurface;
-    intcs          : HInter             from IntCurveSurface;
+    myCurrentindex   : Integer           from Standard;
+    myCurrentnbpoints: Integer           from Standard;  
+    myFastClass       :  TopolTool  from  BRepTopAdaptor; 
     
-    currentindex   : Integer           from Standard;
-    currentnbpoints: Integer           from Standard;
---modified by NIZNHY-PKV Sun Dec 15 16:51:34 2002  f     
-    FastClass       :  TopolTool  from  BRepTopAdaptor; 
-    SurfForFastClass:  HSurface  from BRepAdaptor;  
-    currentstate    :  State  from  TopAbs; 
-    currentU        :  Real  from  Standard;
-    currentV        :  Real  from  Standard;
---modified by NIZNHY-PKV Sun Dec 15 16:52:15 2002  t    
+    myCurrentstate    :  State  from  TopAbs; 
+    myCurrentU        :  Real  from  Standard;
+    myCurrentV        :  Real  from  Standard;
+    myCurveBox      : Box from Bnd;
+    myIndFace       : Integer from Standard;
+    myFaces         : SequenceOfShape from TopTools;
+    myFaceBoxes     : HArray1OfBox from Bnd;
+
 end Inter from BRepIntCurveSurface;
