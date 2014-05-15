@@ -6,6 +6,8 @@ puts ""
 # Exception raised during topological operation.
 #######################################################################
 
+cpulimit 1500
+
 restore [locate_data_file bug24190_itz.brep] b
 
 bopcheck b

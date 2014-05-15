@@ -44,13 +44,13 @@ Extrema_GenExtCS::Extrema_GenExtCS()
 //purpose  : 
 //=======================================================================
 
- Extrema_GenExtCS::Extrema_GenExtCS(const Adaptor3d_Curve& C, 
-				    const Adaptor3d_Surface& S, 
-				    const Standard_Integer NbT, 
-				    const Standard_Integer NbU, 
-				    const Standard_Integer NbV, 
-				    const Standard_Real Tol1, 
-				    const Standard_Real Tol2)
+Extrema_GenExtCS::Extrema_GenExtCS(const Adaptor3d_Curve& C, 
+  const Adaptor3d_Surface& S, 
+  const Standard_Integer NbT, 
+  const Standard_Integer NbU, 
+  const Standard_Integer NbV, 
+  const Standard_Real Tol1, 
+  const Standard_Real Tol2)
 {
   Initialize(S, NbU, NbV, Tol2);
   Perform(C, NbT, Tol1);
@@ -61,19 +61,19 @@ Extrema_GenExtCS::Extrema_GenExtCS()
 //purpose  : 
 //=======================================================================
 
- Extrema_GenExtCS::Extrema_GenExtCS(const Adaptor3d_Curve& C, 
-				    const Adaptor3d_Surface& S, 
-				    const Standard_Integer NbT, 
-				    const Standard_Integer NbU, 
-				    const Standard_Integer NbV, 
-				    const Standard_Real tmin, 
-				    const Standard_Real tsup, 
-				    const Standard_Real Umin, 
-				    const Standard_Real Usup,
-				    const Standard_Real Vmin, 
-				    const Standard_Real Vsup, 
-				    const Standard_Real Tol1, 
-				    const Standard_Real Tol2)
+Extrema_GenExtCS::Extrema_GenExtCS(const Adaptor3d_Curve& C, 
+  const Adaptor3d_Surface& S, 
+  const Standard_Integer NbT, 
+  const Standard_Integer NbU, 
+  const Standard_Integer NbV, 
+  const Standard_Real tmin, 
+  const Standard_Real tsup, 
+  const Standard_Real Umin, 
+  const Standard_Real Usup,
+  const Standard_Real Vmin, 
+  const Standard_Real Vsup, 
+  const Standard_Real Tol1, 
+  const Standard_Real Tol2)
 {
   Initialize(S, NbU, NbV, Umin,Usup,Vmin,Vsup,Tol2);
   Perform(C, NbT, tmin, tsup, Tol1);
@@ -85,9 +85,9 @@ Extrema_GenExtCS::Extrema_GenExtCS()
 //=======================================================================
 
 void Extrema_GenExtCS::Initialize(const Adaptor3d_Surface& S, 
-				  const Standard_Integer NbU, 
-				  const Standard_Integer NbV, 
-				  const Standard_Real Tol2)
+  const Standard_Integer NbU, 
+  const Standard_Integer NbV, 
+  const Standard_Real Tol2)
 {
   myumin = S.FirstUParameter();
   myusup = S.LastUParameter();
@@ -102,13 +102,13 @@ void Extrema_GenExtCS::Initialize(const Adaptor3d_Surface& S,
 //=======================================================================
 
 void Extrema_GenExtCS::Initialize(const Adaptor3d_Surface& S, 
-				  const Standard_Integer NbU, 
-				  const Standard_Integer NbV, 
-				  const Standard_Real Umin, 
-				  const Standard_Real Usup, 
-				  const Standard_Real Vmin, 
-				  const Standard_Real Vsup, 
-				  const Standard_Real Tol2)
+  const Standard_Integer NbU, 
+  const Standard_Integer NbV, 
+  const Standard_Real Umin, 
+  const Standard_Real Usup, 
+  const Standard_Real Vmin, 
+  const Standard_Real Vsup, 
+  const Standard_Real Tol2)
 {
   myS = (Adaptor3d_SurfacePtr)&S;
   myusample = NbU;
@@ -126,8 +126,8 @@ void Extrema_GenExtCS::Initialize(const Adaptor3d_Surface& S,
 //=======================================================================
 
 void Extrema_GenExtCS::Perform(const Adaptor3d_Curve& C, 
-			       const Standard_Integer NbT,
-			       const Standard_Real Tol1)
+  const Standard_Integer NbT,
+  const Standard_Real Tol1)
 {
   mytmin = C.FirstParameter();
   mytsup = C.LastParameter();
@@ -140,10 +140,10 @@ void Extrema_GenExtCS::Perform(const Adaptor3d_Curve& C,
 //=======================================================================
 
 void Extrema_GenExtCS::Perform(const Adaptor3d_Curve& C, 
-			       const Standard_Integer NbT,
-			       const Standard_Real tmin, 
-			       const Standard_Real tsup, 
-			       const Standard_Real Tol1)
+  const Standard_Integer NbT,
+  const Standard_Real tmin, 
+  const Standard_Real tsup, 
+  const Standard_Real Tol1)
 {
   myDone = Standard_False;
   myF.Initialize(C,*myS);
@@ -189,7 +189,7 @@ void Extrema_GenExtCS::Perform(const Adaptor3d_Curve& C,
     Standard_Real dfUFirst = aCurve->FirstParameter();
     // Create iso line of U=U0
     GeomAdaptor_Curve anAx(new Geom_Line(aCurve->Value(dfUFirst), aDir),
-                           trimvmin, trimvsup);
+      trimvmin, trimvsup);
     Extrema_ExtCC aLocator(C, anAx);
     if (aLocator.IsDone() && aLocator.NbExt()>0)
     {
@@ -198,28 +198,28 @@ void Extrema_GenExtCS::Perform(const Adaptor3d_Curve& C,
       Extrema_POnCurv aP1, aP2;
       for (iExt=1; iExt<=aLocator.NbExt(); iExt++)
       {
-  aLocator.Points (iExt, aP1, aP2);
-  // Parameter on curve
-  UV(1) = aP1.Parameter();
-  // To find parameters on surf, try ExtPS
-  Extrema_ExtPS aPreciser (aP1.Value(), *myS, mytol2, mytol2);
-  if (aPreciser.IsDone())
-  {
-    // Managed to find extremas between point and surface
-    Standard_Integer iPExt;
-    for (iPExt=1; iPExt<=aPreciser.NbExt(); iPExt++)
-    {
-      aPreciser.Point(iPExt).Parameter(UV(2),UV(3));
-      math_FunctionSetRoot S1 (myF,UV,Tol,UVinf,UVsup);
-    }
-  }
-  else
-  {
-    // Failed... try the point on iso line
-    UV(2) = dfUFirst;
-    UV(3) = aP2.Parameter();
-    math_FunctionSetRoot S1 (myF,UV,Tol,UVinf,UVsup);
-  }
+        aLocator.Points (iExt, aP1, aP2);
+        // Parameter on curve
+        UV(1) = aP1.Parameter();
+        // To find parameters on surf, try ExtPS
+        Extrema_ExtPS aPreciser (aP1.Value(), *myS, mytol2, mytol2);
+        if (aPreciser.IsDone())
+        {
+          // Managed to find extremas between point and surface
+          Standard_Integer iPExt;
+          for (iPExt=1; iPExt<=aPreciser.NbExt(); iPExt++)
+          {
+            aPreciser.Point(iPExt).Parameter(UV(2),UV(3));
+            math_FunctionSetRoot S1 (myF,UV,Tol,UVinf,UVsup);
+          }
+        }
+        else
+        {
+          // Failed... try the point on iso line
+          UV(2) = dfUFirst;
+          UV(3) = aP2.Parameter();
+          math_FunctionSetRoot S1 (myF,UV,Tol,UVinf,UVsup);
+        }
       } // for (iExt=1; iExt<=aLocator.NbExt(); iExt++)
     } // if (aLocator.IsDone() && aLocator.NbExt()>0)
   } // if (myS.Type() == GeomAbs_ExtrusionSurface)
@@ -228,10 +228,63 @@ void Extrema_GenExtCS::Perform(const Adaptor3d_Curve& C,
     Standard_Real aCUAdd = (mytsup - mytmin) / mytsample;
     Standard_Real aSUAdd = (myusup - myumin) / myusample;
     Standard_Real aSVAdd = (myvsup - myvmin) / myvsample;
+    Standard_Real tres = C.Resolution(1.);
+    Standard_Real ures = myS->UResolution(1.);
+    Standard_Real vres = myS->VResolution(1.);
+    tres = aCUAdd / tres;
+    ures = aSUAdd / ures;
+    vres = aSVAdd / vres;
+    Standard_Real minres = Min(tres, Min(ures, vres));
+    Standard_Real factor = 5.;
+    Standard_Integer maxnbs = 50;
+    minres *= factor;
+    if(minres > Epsilon(1.))
+    {
+      if(tres > minres)
+      {
+        Standard_Real rsample = mytsample * tres / minres;
+        if(rsample > maxnbs)
+        {
+          mytsample = maxnbs;
+        }
+        else
+        {
+          mytsample = RealToInt(rsample);
+        }
+        aCUAdd = (mytsup - mytmin) / mytsample;
+      }
+      if(ures > minres)
+      {
+        Standard_Real rsample = myusample * ures / minres;
+        if(rsample > maxnbs)
+        {
+          myusample = maxnbs;
+        }
+        else
+        {
+          myusample = RealToInt(rsample);
+        }
+        aSUAdd = (myusup - myumin) / myusample;
+      }
+      if(vres > minres)
+      {
+        Standard_Real rsample = myvsample * vres / minres;
+        if(rsample > maxnbs)
+        {
+          myvsample = maxnbs;
+        }
+        else
+        {
+          myvsample = RealToInt(rsample);
+        }
+        aSVAdd = (myvsup - myvmin) / myvsample;
+      }
+    }
+
     TColgp_HArray1OfPnt aCPs(1, mytsample);
     TColgp_HArray2OfPnt aSPs(1, myusample, 1, myvsample);
     Standard_Integer aRestIterCount = 3;
-      // The value is calculated by the bug CR23830.
+    // The value is calculated by the bug CR23830.
     Standard_Integer aCUDen = 2, aSUDen = 2, aSVDen = 2;
     Standard_Boolean anAreAvSqsInited = Standard_False;
     Standard_Real aCUSq = 0, aSUSq = 0, aSVSq = 0;

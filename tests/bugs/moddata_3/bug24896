@@ -1,0 +1,58 @@
+puts "================"
+puts "OCC24896"
+puts "================"
+puts ""
+#######################################################################
+# BRepExtrema is giving wrong intersection point between curve and planar face
+#######################################################################
+
+restore [locate_data_file bug24896_face_8.brep] f8
+restore [locate_data_file bug24896_compound_line_8.brep] c8
+
+distmini d f8 c8
+
+# 1
+regexp {([-0-9.+eE]+)$} [dump d_val] full dist
+regexp { +Vertex +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} [ maxtolerance d ] full toler
+set good_dist 0
+if { [expr abs( ${dist} - ${good_dist} )] > ${toler} } {
+    puts "Faulty : the distanse is ${dist}. It is bad value"
+}
+
+# 2
+# Point 3D : 66.6, -11.8556887483839, 0.3
+
+regexp { +Point 3D : +([-0-9.+eE]+), +([-0-9.+eE]+), +([-0-9.+eE]+)} [ dump d ] full x1 y1 z1
+set good_x1 66.6
+set good_y1 -11.8556887483839
+set good_z1 0.3
+if { [expr abs( ${x1} - ${good_x1} )] > ${toler} } {
+    puts "Faulty : the x coordinate of the point is ${x1}. It is bad value"
+}
+if { [expr abs( ${y1} - ${good_y1} )] > ${toler} } {
+    puts "Faulty : the y coordinate of the point is ${y1}. It is bad value"
+}
+if { [expr abs( ${z1} - ${good_z1} )] > ${toler} } {
+    puts "Faulty : the z coordinate of the point is ${z1}. It is bad value"
+}
+
+# 3
+# Point 3D : 66.6, 11.8556887323157, 0.3
+
+regexp { +Point 3D : +([-0-9.+eE]+), +([-0-9.+eE]+), +([-0-9.+eE]+)} [ dump d2 ] full x2 y2 z2
+set good_x2 66.6
+set good_y2 11.8556887323157
+set good_z2 0.3
+if { [expr abs( ${x2} - ${good_x2} )] > ${toler} } {
+    puts "Faulty : the x coordinate of the point is ${x2}. It is bad value"
+}
+if { [expr abs( ${y2} - ${good_y2} )] > ${toler} } {
+    puts "Faulty : the y coordinate of the point is ${y2}. It is bad value"
+}
+if { [expr abs( ${z2} - ${good_z2} )] > ${toler} } {
+    puts "Faulty : the z coordinate of the point is ${z2}. It is bad value"
+}
+
+smallview
+fit
+set only_screen_axo 1
