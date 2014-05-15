@@ -26,18 +26,59 @@ Further in this document, this folder is referred to as *3rdparty*.
 
 @subsection dev_guides__building_3rdparty_win_2_1 Tcl/Tk
 
-Tcl/Tk is required for DRAW test harness. We recommend installing a binary distribution that can be downloaded from http://www.activestate.com/activetcl.
+Tcl/Tk is required for DRAW test harness.
 
-Go to \"Free Downloads\" and pick the version of the Install Wizard 
-that matches your target platform – 32 bit (x86) or 64 bit (x64). 
-The version of Visual Studio you use is irrelevant when choosing the Install Wizard. 
+@subsubsection dev_guides__building_3rdparty_win_2_1_1 Installation from sources: Tcl
+  
+Download the necessary archive from http://www.tcl.tk/software/tcltk/download.html and unpack it. 
+  
+1. In the *win* sub-directory, edit file *buildall.vc.bat*:
 
-Run the downloaded Install Wizard and install Tcl/Tk products :
+   * Edit the line "call ... vcvars32.bat" to have correct path to the version of Visual Studio to be used for building, for instance:
 
-* to *3rdparty\\tcltk-win32* folder (for 32-bit platform) or 
-* to *3rdparty\\tcltk-win64* folder (for 64-bit platform). 
+         call "%VS80COMNTOOLS%\vsvars32.bat"
 
-Further in this document,  this folder is referred to as *tcltk*. 
+     If you are building 64-bit version, set environment accordingly, e.g.:
+
+         call "%VS80COMNTOOLS%\..\..\VC\vcvarsall.bat" amd64
+     
+   * Define variable *INSTALLDIR* pointing to directory where Tcl/Tk will be installed, e.g.:
+
+         set INSTALLDIR=D:\OCCT\3rdparty\tcltk-86-32
+
+   * Add option *install* to the first command line calling *nmake*:
+
+         nmake -nologo -f makefile.vc release htmlhelp install %1
+
+   * Remove second call to *nmake* (building statically linked executable)
+
+2. Edit file *rules.vc* replacing line 
+
+       SUFX	    = tsgx
+
+   by
+
+       SUFX	    = sgx
+
+   This is to avoid extra prefix 't' in the library name, which is not recognized by default by OCCT build tools.
+
+3. In the command prompt, run *buildall.vc.bat*
+
+   You might need to run this script twice to have *tclsh* executable installed; check subfolder *bin* of specified installation path to verify this.
+
+4. For convenience of use, we recommend making a copy of *tclsh* executable created in subfolder *bin* of *INSTALLDIR* and named with Tcl version number suffix, as *tclsh.exe* (with no suffix)
+
+       > cd D:\OCCT\3rdparty\tcltk-86-32\bin
+       > cp tclsh86.exe tclsh.exe
+
+@subsubsection dev_guides__building_3rdparty_win_2_1_2 Installation from sources: Tk
+  
+Download the necessary archive from http://www.tcl.tk/software/tcltk/download.html and unpack it. 
+
+Apply the same steps as described for building Tcl above, with the same INSTALLDIR.
+Note that Tk produces its own executable, called *wish*. 
+
+You might need to edit default value of *TCLDIR* variable defined in *buildall.vc.bat* (should be not necessary if you unpack both Tcl and Tk sources in the same folder).
 
 @subsection dev_guides__building_3rdparty_win_2_2 FreeType
 

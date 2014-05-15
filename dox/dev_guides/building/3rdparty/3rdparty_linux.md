@@ -28,22 +28,6 @@ There are two types of third-party products, which are  necessary to build OCCT:
 
 Tcl/Tk is required for DRAW test harness. 
 
-@subsubsection dev_guides__building_3rdparty_linux_2_1_1 Installation from binaries:
-
-It is possible to download ready-to-install binaries from 
-http://www.activestate.com/activetcl/downloads
-
-1. Download the binaries archive and unpack them to a directory, which is further referred to as *TCL_SRC_DIR*. 
-2. Enter the directory *TCL_SRC_DIR*.
-
-       cd TCL_SRC_DIR
-
-3. Run the install command:
-
-       install.sh
-    
-   and follow the instructions. 
-
 @subsubsection dev_guides__building_3rdparty_linux_2_1_2 Installation from sources: Tcl
   
 Download the necessary archive from http://www.tcl.tk/software/tcltk/download.html and unpack it. 

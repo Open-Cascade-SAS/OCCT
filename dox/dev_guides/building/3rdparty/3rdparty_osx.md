@@ -28,15 +28,6 @@ There are two types of third-party products, which are  necessary to build OCCT:
 
 Tcl/Tk is required for DRAW test harness. Version 8.5 or  8.6 can be used with OCCT. 
 
-@subsubsection dev_guides__building_3rdparty_osx_2_1_1 Installation from binaries
-
-It is possible to download ready-to-install binaries from 
-http://www.activestate.com/activetcl/downloads   
-
-1. Download the disk image to a directory, which is further referred to as *TCL_DOWNLOAD_DIR*. 
-2. Open the directory *TCL_DOWNLOAD_DIR* in the Finder . 
-3. Open the disk image and follow the instructions. 
-
 @subsubsection dev_guides__building_3rdparty_osx_2_1_2 Installation from sources: Tcl 8.5
 
 Download the necessary archive from http://www.tcl.tk/software/tcltk/download.html and unpack it. 

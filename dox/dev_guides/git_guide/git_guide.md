@@ -396,7 +396,7 @@ In TortoiseGit:
 @image latex OCCT_GitGuide_V2_image014.png
 
   Unstaged files will be shown if you check the option ‘Show Unversioned Files’. 
-  Double-clock on each modified file to see the changes to be committed (as a difference vs. the base version). 
+  Double-click on each modified file to see the changes to be committed (as a difference vs. the base version). 
 
 @subsection occt_gitguide_4_6 Pushing branch to the remote repository
 

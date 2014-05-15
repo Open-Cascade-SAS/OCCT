@@ -234,7 +234,7 @@ for which OCCT is certified to work.
 | Video card   | See \ref overview_req_graphics |
 | Graphic library | OpenGL 1.1+ (OpenGL 2.1+ is recommended)|
 | C++      | GNU gcc 4.0.  - 4.7.3. |
-| TCL (for testing tools)    | Tcltk 8.5 or 8.6 http://www.tcl.tk/software/tcltk/8.6.html |
+| TCL (for testing tools)    | Tcltk 8.5 or 8.6 http://www.tcl.tk/software/tcltk/download.html |
 | Qt (for demonstration tools) | Qt 4.6.2 http://qt.nokia.com/downloads |
 | Freetype (for text rendering) | freetype-2.4.11 http://sourceforge.net/projects/freetype/files/ |
 | FreeImage (optional, for support of common 2D graphic formats) | FreeImage 3.15.4 http://sourceforge.net/projects/freeimage/files |
@@ -253,7 +253,7 @@ for which OCCT is certified to work.
 | Video card   | See \ref overview_req_graphics |
 | Graphic library | OpenGL 1.1+ (OpenGL 2.1+ is recommended)|
 | C++ | Microsoft Visual Studio: 2005 SP1, 2008 SP1\*, 2010 SP1, 2012 Update 3, 2013 <br>Intel C++ Composer XE 2013 SP1 |
-| TCL (for testing tools) | ActiveTcl 8.5 or 8.6 http://www.activestate.com/activetcl/downloads |
+| TCL (for testing tools) | Tcl/Tk 8.5 or 8.6 http://www.tcl/tk/software/tcltk/download.html |
 | Qt (for demonstration tools) | Qt 4.6.2 http://qt.nokia.com/downloads |
 | Freetype (OCCT Text rendering) | freetype-2.4.11 http://sourceforge.net/projects/freetype/files/ |
 | FreeImage (Support of common graphic formats) | FreeImage 3.15.4 http://sourceforge.net/projects/freeimage/files |
@@ -273,6 +273,7 @@ for which OCCT is certified to work.
 | Video card | See \ref overview_req_graphics |
 | Graphic library | OpenGL 1.1+ (OpenGL 2.1+ is recommended)|
 | C++      | XCode 3.2 or newer (4.x is recommended) |
+| TCL (for testing tools)    | Tcltk 8.5 or 8.6 http://www.tcl.tk/software/tcltk/download.html |
 | Qt (for demonstration tools) | Qt 4.6.2 http://qt.nokia.com/downloads |
 | Freetype (OCCT Text rendering) | freetype-2.4.11 http://sourceforge.net/projects/freetype/files/ |
 | FreeImage (Support of common graphic formats) | FreeImage 3.15.4 http://sourceforge.net/projects/freeimage/files |
