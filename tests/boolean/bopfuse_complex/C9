@@ -2,6 +2,8 @@ puts "TODO ?#22911 ALL: Error : The bopfuse cannot be built."
 puts "TODO ?DEBUG_OCC24121 Debian60-64: Process killed by CPU limit"
 puts "TODO ?DEBUG_OCC24121 Debian60-64: TEST INCOMPLETE"
 
+cpulimit 1500
+
 restore [locate_data_file OCC228.brep] sh
 explode sh
 
