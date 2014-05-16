@@ -1,3 +1,6 @@
+puts "TODO ?OCC12345 ALL: Error : The feat grid is not valid. The area is 0."
+puts "TODO ?OCC12345 ALL: Error : The area of the resulting shape is 0"
+
 restore [locate_data_file cylindre.rle] cyl
 restore [locate_data_file contour.rle] cont
 mkplane cont cont
