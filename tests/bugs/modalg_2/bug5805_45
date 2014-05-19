@@ -30,7 +30,7 @@ set distance -0.1
 catch { OFFSETSHAPE $distance {} $calcul $type }
 
 
-set square 754.039
+set square 767.63
 
 set nb_v_good 2
 set nb_e_good 3

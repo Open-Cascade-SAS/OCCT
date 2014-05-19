@@ -15,6 +15,6 @@ fit
 
 reflectlines result a 0 1 0
 
-set length 3877.8
+set length 3730.32
 
 set only_screen_axo 1

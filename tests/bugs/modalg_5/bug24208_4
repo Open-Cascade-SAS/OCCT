@@ -21,7 +21,7 @@ for {set i 0} {$i < $nbObjs} {incr i} {
 bfillds
 bbuild result
 
-set square 82726.4
+set square 81730.6
 
 # Analysis of "nbshapes result"
 set nb_v_good 121

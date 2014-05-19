@@ -533,6 +533,32 @@ void BRepOffsetAPI_MiddlePath::Build()
       if (myPaths((j<=NbPaths)? j : 1)(i).ShapeType() == TopAbs_EDGE)
         E2 = TopoDS::Edge(myPaths((j<=NbPaths)? j : 1)(i));
       TopoDS_Edge E12 = TopoDS::Edge(SectionsEdges(i)(j-1));
+      //Find the face on which (E1 or E2) and E12 lie
+      TopoDS_Shape E1orE2 = (E1.IsNull())? E2 : E1;
+      if (E1orE2.IsNull()) //both E1 and E2 are vertices =>
+      {
+        EdgeSeq(j-1) = E12; // => proper edge is the edge of previous section between them
+        continue;
+      }
+      const TopTools_ListOfShape& LF = EFmap.FindFromKey(E1orE2);
+      TopoDS_Face theFace;
+      for (itl.Initialize(LF); itl.More(); itl.Next())
+      {
+        const TopoDS_Shape& aFace = itl.Value();
+        const TopTools_ListOfShape& LF2 = EFmap.FindFromKey(E12);
+        TopTools_ListIteratorOfListOfShape itl2(LF2);
+        for (; itl2.More(); itl2.Next())
+        {
+          const TopoDS_Shape& aFace2 = itl2.Value();
+          if (aFace.IsSame(aFace2))
+          {
+            theFace = TopoDS::Face(aFace);
+            break;
+          }
+        }
+        if (!theFace.IsNull())
+          break;
+      }
       
       TopoDS_Vertex PrevVertex = (E1.IsNull())? TopoDS::Vertex(myPaths(j-1)(i))
         : TopExp::LastVertex(E1, Standard_True);
@@ -541,14 +567,19 @@ void BRepOffsetAPI_MiddlePath::Build()
       
       TopoDS_Edge ProperEdge;
       const TopTools_ListOfShape& LE = VEmap.FindFromKey(PrevVertex);
-
+      //Temporary
+      //Standard_Integer LenList = LE.Extent();
+      ///////////
+      TopTools_IndexedMapOfShape EdgesOfTheFace;
+      TopExp::MapShapes(theFace, TopAbs_EDGE, EdgesOfTheFace);
       for (itl.Initialize(LE); itl.More(); itl.Next())
       {
         anEdge = TopoDS::Edge(itl.Value());
         TopExp::Vertices(anEdge, V1, V2);
         if (((V1.IsSame(PrevVertex) && V2.IsSame(CurVertex)) ||
              (V1.IsSame(CurVertex) && V2.IsSame(PrevVertex))) &&
-            !anEdge.IsSame(E1))
+            EdgesOfTheFace.Contains(anEdge) && //this condition is for a section of two edges
+            !anEdge.IsSame(E1)) //the last condition is for torus-like shape
         {
           ProperEdge = anEdge;
           break;
@@ -570,35 +601,6 @@ void BRepOffsetAPI_MiddlePath::Build()
       {
         //Find the face on which E1, E2 and E12 lie
         //ToInsertVertex = Standard_False;
-        const TopoDS_Shape& EE1 = (E1.IsNull())?
-          myPaths(j-1)(i-1) : E1;
-        const TopoDS_Shape& EE2 = (E2.IsNull())?
-          myPaths((j<=NbPaths)? j : 1)(i-1) : E2;
-        const TopTools_ListOfShape& LF = EFmap.FindFromKey(EE1);
-        TopoDS_Face theFace;
-        for (itl.Initialize(LF); itl.More(); itl.Next())
-        {
-          const TopoDS_Shape& aFace = itl.Value();
-          TopExp_Explorer Explo(aFace, TopAbs_EDGE);
-          for (; Explo.More(); Explo.Next())
-          {
-            if (EE2.IsSame(Explo.Current()))
-            {
-              const TopTools_ListOfShape& LFsec = EFmap.FindFromKey(E12);
-              TopTools_ListIteratorOfListOfShape itlsec(LFsec);
-              for (; itlsec.More(); itlsec.Next())
-                if (aFace.IsSame(itlsec.Value()))
-                {
-                  theFace = TopoDS::Face(aFace);
-                  break;
-                }
-              if (!theFace.IsNull())
-                break;
-            }
-          }
-          if (!theFace.IsNull())
-            break;
-        }
         TopTools_ListOfShape ListOneFace;
         ListOneFace.Append(theFace);
 

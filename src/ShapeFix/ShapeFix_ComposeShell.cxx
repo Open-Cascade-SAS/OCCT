@@ -460,67 +460,74 @@ void ShapeFix_ComposeShell::LoadWires (ShapeFix_SequenceOfWireSegment &seqw) con
   seqw.Clear();
   
   // Init seqw by initial set of wires (with corresponding orientation)
-  for ( TopoDS_Iterator iw(myFace,Standard_False); iw.More(); iw.Next() ) {
-//smh#8
+  for ( TopoDS_Iterator iw(myFace,Standard_False); iw.More(); iw.Next() )
+  {
     TopoDS_Shape tmpW = Context()->Apply ( iw.Value() ) ;
-    if(tmpW.ShapeType() != TopAbs_WIRE) {
-      if(tmpW.ShapeType() == TopAbs_VERTEX) {
+    if(tmpW.ShapeType() != TopAbs_WIRE)
+    {
+      if(tmpW.ShapeType() == TopAbs_VERTEX)
+      {
         ShapeFix_WireSegment seg; //(( isOuter ? TopAbs_REVERSED : TopAbs_FORWARD ) );
         seg.SetVertex(TopoDS::Vertex(tmpW));
         seg.Orientation(tmpW.Orientation());
         seqw.Append ( seg );
       }
+
       continue;
     }
+
     TopoDS_Wire wire = TopoDS::Wire ( tmpW );
 
     Standard_Boolean isNonManifold = ( wire.Orientation() != TopAbs_REVERSED &&
                                       wire.Orientation() != TopAbs_FORWARD );
 
-    
-
     // protect against INTERNAL/EXTERNAL wires
-//    if ( wire.Orientation() != TopAbs_REVERSED &&
-//	 wire.Orientation() != TopAbs_FORWARD ) continue;
+    //    if ( wire.Orientation() != TopAbs_REVERSED &&
+    //	 wire.Orientation() != TopAbs_FORWARD ) continue;
     
     // determine orientation of the wire
-//    TopoDS_Face face = TopoDS::Face ( myFace.EmptyCopied() );
-//    B.Add ( face, wire );
-//    Standard_Boolean isOuter = ShapeAnalysis::IsOuterBound ( face );
+    //    TopoDS_Face face = TopoDS::Face ( myFace.EmptyCopied() );
+    //    B.Add ( face, wire );
+    //    Standard_Boolean isOuter = ShapeAnalysis::IsOuterBound ( face );
 
-    if(isNonManifold) {
-    
+    if(isNonManifold)
+    {
       Handle(ShapeExtend_WireData) sbwd = new ShapeExtend_WireData ( wire ,Standard_True,Standard_False);
       //pdn protection againts of wires w/o edges
       Standard_Integer nbEdges =  sbwd->NbEdges();
-      if(nbEdges) {
-
+      if(nbEdges)
+      {
         //wire segments for non-manifold topology should have INTERNAL orientation
         ShapeFix_WireSegment seg ( sbwd, TopAbs_INTERNAL); 
         seqw.Append ( seg );
       }
     }
-    else {
+    else
+    {
       //splitting wires containing manifold and non-manifold parts on a separate
-       //wire segment
-    
+      //wire segment    
       Handle(ShapeExtend_WireData) sbwdM = new ShapeExtend_WireData();
       Handle(ShapeExtend_WireData) sbwdNM = new ShapeExtend_WireData();
       sbwdNM->ManifoldMode() = Standard_False;
       TopoDS_Iterator aIt(wire);
-      for( ; aIt.More(); aIt.Next()) {
+      for( ; aIt.More(); aIt.Next())
+      {
         TopoDS_Edge E = TopoDS::Edge ( aIt.Value() );
         if(E.Orientation() == TopAbs_FORWARD || E.Orientation() == TopAbs_REVERSED)
           sbwdM->Add(E);
         else
           sbwdNM->Add(E);
       }
+
       Standard_Integer nbMEdges =  sbwdM->NbEdges();
       Standard_Integer nbNMEdges =  sbwdNM->NbEdges();
-      if(nbNMEdges) {
+      
+      if(nbNMEdges)
+      {
         ShapeFix_WireSegment seg ( sbwdNM, TopAbs_INTERNAL); //(( isOuter ? TopAbs_REVERSED : TopAbs_FORWARD ) );
         seqw.Append ( seg );
       }
+      
       if(nbMEdges) {
         // Orientation is set so as to allow the segment to be traversed in only one direction
         // skl 01.04.2002
@@ -528,7 +535,8 @@ void ShapeFix_ComposeShell::LoadWires (ShapeFix_SequenceOfWireSegment &seqw) con
         sfw->Load ( sbwdM );
         Standard_Integer stat=0;
         Handle(Geom_Surface) gs = BRep_Tool::Surface(myFace);
-        if( gs->IsUPeriodic() && gs->IsVPeriodic() ) {
+        if( gs->IsUPeriodic() && gs->IsVPeriodic() )
+        {
           // For torus-like shapes, first reorder in 2d since reorder is indifferent in 3d
           ShapeAnalysis_WireOrder sawo(Standard_False, 0);
           ShapeAnalysis_Edge sae;
@@ -541,6 +549,7 @@ void ShapeFix_ComposeShell::LoadWires (ShapeFix_SequenceOfWireSegment &seqw) con
               continue;
             sawo.Add(c2d->Value(f).XY(),c2d->Value(l).XY());
           }
+          
           sawo.Perform();
           stat = (sawo.Status() < 0 ? -1 : 1);
           sfw->FixReorder(sawo);
@@ -550,7 +559,8 @@ void ShapeFix_ComposeShell::LoadWires (ShapeFix_SequenceOfWireSegment &seqw) con
         if (sfw->StatusReorder(ShapeExtend_DONE3))
           stat=-1;
       
-        if( stat < 0 ) {
+        if(stat < 0)
+        {
           BRep_Builder B;
           TopoDS_Shape dummy = myFace.EmptyCopied();
           TopoDS_Face face = TopoDS::Face ( dummy );
@@ -569,7 +579,6 @@ void ShapeFix_ComposeShell::LoadWires (ShapeFix_SequenceOfWireSegment &seqw) con
         seqw.Append ( seg );
       }
     }
-    
   }
 }
   

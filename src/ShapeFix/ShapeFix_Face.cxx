@@ -1417,6 +1417,8 @@ static Standard_Boolean CheckWire (const TopoDS_Wire &wire,
   vec.SetX(0);
   vec.SetY(0);
   ShapeAnalysis_Edge sae;
+
+  isuopen = isvopen = 0;
   isDeg = Standard_True;
   for ( TopoDS_Iterator ed(wire); ed.More(); ed.Next() ) {
     TopoDS_Edge edge = TopoDS::Edge ( ed.Value() );
@@ -1427,17 +1429,48 @@ static Standard_Boolean CheckWire (const TopoDS_Wire &wire,
       return Standard_False;
     vec += c2d->Value(l).XY() - c2d->Value(f).XY();
   }
-  isuopen = ( Abs ( Abs ( vec.X() ) - dU ) < 0.1 * dU ? ( vec.X() >0 ? 1 : -1 ) : 0 );
-  isvopen = ( Abs ( Abs ( vec.Y() ) - dV ) < 0.1 * dV ? ( vec.Y() >0 ? 1 : -1 ) : 0 );
+
+  Standard_Real aDelta = Abs(vec.X())-dU;
+  if(Abs(aDelta) < 0.1*dU)
+  {
+    if(vec.X() > 0.0)
+    {
+      isuopen = 1;
+    }
+    else
+    {
+      isuopen = -1;
+    }
+  }
+  else
+  {
+    isuopen = 0;
+  }
+
+  aDelta = Abs(vec.Y())-dV;
+  if(Abs(aDelta) < 0.1*dV)
+  {
+    if(vec.Y() > 0.0)
+    {
+      isvopen = 1;
+    }
+    else
+    {
+      isvopen = -1;
+    }
+  }
+  else
+  {
+    isvopen = 0;
+  }
+
   return isuopen || isvopen;
 }
-
 
 //=======================================================================
 //function : FixMissingSeam
 //purpose  : 
 //=======================================================================
-
 Standard_Boolean ShapeFix_Face::FixMissingSeam() 
 {
   Standard_Boolean uclosed = mySurf->IsUClosed();
@@ -1480,8 +1513,8 @@ Standard_Boolean ShapeFix_Face::FixMissingSeam()
     }
   }
     
-  URange = Abs ( SUL - SUF );
-  VRange = Abs ( SVL - SVF );
+  URange = Min(Abs (SUL - SUF), Precision::Infinite());
+  VRange = Min(Abs(SVL - SVF), Precision::Infinite());
 //  Standard_Real UTol = 0.2 * URange, VTol = 0.2 * VRange;
   Standard_Integer ismodeu = 0, ismodev = 0; //szv#4:S4163:12Mar99 was Boolean
   Standard_Integer isdeg1=0, isdeg2=0;

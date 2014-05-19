@@ -2,6 +2,7 @@
 # Date : 02 Dec 98
 
 puts "TODO OCC22803 All:Error: The tolerance of the resulting shape is too big"
+puts "TODO OCC23511 Debian60-64: The area of the resulting shape is 186543"
 
 restore [locate_data_file CFE903_pro12ggx.rle] base
 
@@ -11,4 +12,4 @@ depouille result base 0 -1 0 base_13 3 110 0 96.5000000000001  0 -1 0 base_24 3 
 
 fsameparameter result
 
-set square 186544
+set square 200050

@@ -49,6 +49,7 @@
 #include <gp_Vec2d.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
 
 #include <errno.h>
 
@@ -132,7 +133,6 @@ void  BRepTools::AddUVBounds(const TopoDS_Face& FF, Bnd_Box2d& B)
 //function : AddUVBounds
 //purpose  : 
 //=======================================================================
-
 void  BRepTools::AddUVBounds(const TopoDS_Face& F, 
                              const TopoDS_Wire& W, 
                              Bnd_Box2d& B)
@@ -148,117 +148,62 @@ void  BRepTools::AddUVBounds(const TopoDS_Face& F,
 //function : AddUVBounds
 //purpose  : 
 //=======================================================================
-
-void  BRepTools::AddUVBounds(const TopoDS_Face& F, 
-                             const TopoDS_Edge& E,
-                             Bnd_Box2d& B)
+void BRepTools::AddUVBounds(const TopoDS_Face& aF, 
+			    const TopoDS_Edge& aE,
+			    Bnd_Box2d& aB)
 {
-  Standard_Real pf,pl;
-  Bnd_Box2d Baux; 
-  const Handle(Geom2d_Curve) C = BRep_Tool::CurveOnSurface(E,F,pf,pl);
-  if (C.IsNull()) return;
-  if (pl < pf) { // Petit Blindage
-    Standard_Real aux;
-    aux = pf; pf = pl; pl = aux;
+  Standard_Real aT1, aT2, aXmin, aYmin, aXmax, aYmax;
+  Standard_Real aUmin, aUmax, aVmin, aVmax;
+  Bnd_Box2d aBoxC, aBoxS; 
+  TopLoc_Location aLoc;
+  //
+  const Handle(Geom2d_Curve) aC2D = BRep_Tool::CurveOnSurface(aE, aF, aT1, aT2);
+  if (aC2D.IsNull()) {
+    return;
   }
-  Geom2dAdaptor_Curve PC(C,pf,pl);
-  if (Precision::IsNegativeInfinite(pf) ||
-      Precision::IsPositiveInfinite(pf)) {
-    Geom2dAdaptor_Curve GC(PC);
-    BndLib_Add2dCurve::Add(GC,0.,B);
-    }
-  else {
+  //
+  BndLib_Add2dCurve::Add(aC2D, aT1, aT2, 0., aBoxC);
+  aBoxC.Get(aXmin, aYmin, aXmax, aYmax);
+  //
+  Handle(Geom_Surface) aS = BRep_Tool::Surface(aF, aLoc);
+  aS->Bounds(aUmin, aUmax, aVmin, aVmax);
 
-    // just compute points to get a close box.
-    TopLoc_Location L;
-    Standard_Real Umin,Umax,Vmin,Vmax;
-    const Handle(Geom_Surface)& Surf=BRep_Tool::Surface(F,L);
-    Surf->Bounds(Umin,Umax,Vmin,Vmax);
-    gp_Pnt2d Pa,Pb,Pc;
+  if(aS->DynamicType() == STANDARD_TYPE(Geom_RectangularTrimmedSurface))
+  {
+    const Handle(Geom_RectangularTrimmedSurface) aSt = 
+                Handle(Geom_RectangularTrimmedSurface)::DownCast(aS);
+    aS = aSt->BasisSurface();
+  }
 
-
-    Standard_Integer i, j, k, nbp = 20;
-    if (PC.GetType() == GeomAbs_Line) nbp = 2;
-    Standard_Integer NbIntC1 = PC.NbIntervals(GeomAbs_C1);
-    if (NbIntC1 > 1)
-      nbp = 10;
-    TColStd_Array1OfReal SharpPoints(1, NbIntC1+1);
-    PC.Intervals(SharpPoints, GeomAbs_C1);
-    TColStd_Array1OfReal Parameters(1, nbp*NbIntC1+1);
-    k = 1;
-    for (i = 1; i <= NbIntC1; i++)
+  //
+  if(!aS->IsUPeriodic())
+  {
+    if((aXmin<aUmin) && (aUmin < aXmax))
     {
-      Standard_Real delta = (SharpPoints(i+1) - SharpPoints(i))/nbp;
-      for (j = 0; j < nbp; j++)
-        Parameters(k++) = SharpPoints(i) + j*delta;
+      aXmin=aUmin;
     }
-    Parameters(nbp*NbIntC1+1) = SharpPoints(NbIntC1+1);
-    
-    gp_Pnt2d P;
-    PC.D0(pf,P);
-    Baux.Add(P);
-
-    Standard_Real du=0.0;
-    Standard_Real dv=0.0;
-
-    Pc=P;
-    for (i = 2; i < Parameters.Upper(); i++) {
-      pf = Parameters(i);
-      PC.D0(pf,P);
-      Baux.Add(P);
-      if(i==2) { Pb=Pc; Pc=P; } 
-      else { 
-        //-- Calcul de la fleche 
-        Pa=Pb; Pb=Pc; Pc=P;     
-        gp_Vec2d PaPc(Pa,Pc);
-//      gp_Lin2d L2d(Pa,PaPc);
-//      Standard_Real up = ElCLib::Parameter(L2d,Pb);
-//      gp_Pnt2d PProj   = ElCLib::Value(up,L2d);
-        gp_Pnt2d PProj(Pa.Coord()+(PaPc.XY()/2.));
-        Standard_Real ddu=Abs(Pb.X()-PProj.X());
-        Standard_Real ddv=Abs(Pb.Y()-PProj.Y());
-        if(ddv>dv) dv=ddv;
-        if(ddu>du) du=ddu;
-      }
+    if((aXmin < aUmax) && (aUmax < aXmax))
+    {
+      aXmax=aUmax;
     }
-    PC.D0(pl,P);
-    Baux.Add(P);
-
-    //-- cout<<" du="<<du<<"   dv="<<dv<<endl;
-    Standard_Real u0,u1,v0,v1;
-    Baux.Get(u0,v0,u1,v1);
-    du*=1.5;
-    dv*=1.5;
-    u0-=du; v0-=dv; u1+=du; v1+=dv;
-    if(Surf->IsUPeriodic()) { } 
-    else { 
-      if(u0<=Umin) {  u0=Umin; } 
-      if(u1>=Umax) {  u1=Umax; } 
-    }
-    if(Surf->IsVPeriodic()) { } 
-    else { 
-      if(v0<=Vmin) {  v0=Vmin; } 
-      if(v1>=Vmax) {  v1=Vmax; }
-    }
-    P.SetCoord(u0,v0) ; Baux.Add(P);
-    P.SetCoord(u1,v1) ; Baux.Add(P);
-
-    Bnd_Box2d FinalBox;
-    Standard_Real aXmin, aYmin, aXmax, aYmax;
-    Baux.Get(aXmin, aYmin, aXmax, aYmax);
-    Standard_Real Tol2d = Precision::PConfusion();
-    if (Abs(aXmin - Umin) <= Tol2d)
-      aXmin = Umin;
-    if (Abs(aYmin - Vmin) <= Tol2d)
-      aYmin = Vmin;
-    if (Abs(aXmax - Umax) <= Tol2d)
-      aXmax = Umax;
-    if (Abs(aYmax - Vmax) <= Tol2d)
-      aYmax = Vmax;
-    FinalBox.Update(aXmin, aYmin, aXmax, aYmax);
-    
-    B.Add(FinalBox);
   }
+
+  if(!aS->IsVPeriodic())
+  {
+    if((aYmin<aVmin) && (aVmin < aYmax))
+    {
+      aYmin=aVmin;
+    }
+    
+    if((aYmin < aVmax) && (aVmax < aYmax))
+    {
+      aYmax=aVmax;
+    }
+  }
+  
+  aBoxS.Update(aXmin, aYmin, aXmax, aYmax);
+  
+  aB.Add(aBoxS);
 }
 
 //=======================================================================

@@ -1,5 +1,4 @@
 ## cts20461
-puts "TODO #22911 ALL: Error : The area of the resulting shape is"
 
 restore [locate_data_file cts20461.rle] a
 nexplode a f
@@ -43,4 +42,4 @@ bcut r4 r3 p4
 bcut r5 r4 p5
 bcut result r5 p6
 
-set square 0
+set square 55910.6

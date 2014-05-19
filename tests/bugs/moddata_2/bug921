@@ -11,10 +11,10 @@ puts ""
 ## strings of code. BRepTools.cxx line 213 (in dev version)
 ############################################################
 
-set good_u1 -0.157166
-set good_u2 4.88216
-set good_v1 -1.65583
-set good_v2 7.93778
+set good_u1 -0.14353846357954067
+set good_u2 4.8658600889104724
+set good_v1 -1.386764846506505
+set good_v2 7.6699722758333735
 
 set percent_max 0.1
 

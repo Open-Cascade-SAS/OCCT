@@ -19,6 +19,8 @@
 #include <HLRBRep_HLRToShape.hxx>
 #include <BRep_Builder.hxx>
 #include <gp_Ax3.hxx>
+#include <BRepLib.hxx>
+
 
 //=======================================================================
 //function : HLRAppli_ReflectLines
@@ -76,6 +78,8 @@ void HLRAppli_ReflectLines::Perform()
   HLRBRep_HLRToShape aHLRToShape( aHLRAlgo );
 
   myCompound = aHLRToShape.OutLineVCompound3d();
+
+  BRepLib::SameParameter(myCompound,Precision::PConfusion(),Standard_False);
 }
 
 //=======================================================================

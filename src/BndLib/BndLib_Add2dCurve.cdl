@@ -20,7 +20,8 @@ class Add2dCurve from BndLib
     	-- The 2D curve is defined from a Geom2d curve.
         
 uses Box2d   from Bnd,
-     Curve2d from Adaptor2d
+     Curve2d from Adaptor2d,
+     Curve   from Geom2d
 
 
 is
@@ -89,5 +90,33 @@ is
     	-- and P1 and P2 are either two negative infinite real
     	-- numbers, or two positive infinite real numbers.      
         
-        
+    	Add(myclass;  
+    	    C  : Curve from Geom2d;
+    	    Tol: Real  from Standard; 
+    	    Box: out Box2d from Bnd);  
+    	 
+    	---Purpose: Adds to the bounding box B the curve C
+        --  B is then enlarged by the tolerance value Tol.
+    	-- Note: depending on the type of curve, one of the following
+    	-- representations of the curve C is used to include it in the bounding box B:
+    	-- -   an exact representation if C is built from a line, a circle or a conic curve,
+    	-- -   the poles of the curve if C is built from a Bezier curve or a BSpline curve,
+    	-- -   if not, the points of an approximation of the curve C.
+     
+    	Add(myclass;  
+    	    C  : Curve from Geom2d; 
+    	    U1 : Real from Standard;
+    	    U2 : Real from Standard;
+    	    Tol: Real from Standard; 
+    	    B: out Box2d from Bnd); 
+	    
+    	---Purpose: Adds to the bounding box B the part of curve C  
+        --  B is then enlarged by the tolerance value Tol. 
+	--  U1, U2 - the parametric range to comute the bounding box;       
+    	-- Note: depending on the type of curve, one of the following
+    	-- representations of the curve C is used to include it in the bounding box B:
+    	-- -   an exact representation if C is built from a line, a circle or a conic curve,
+    	-- -   the poles of the curve if C is built from a Bezier curve or a BSpline curve,
+    	-- -   if not, the points of an approximation of the curve C. 
+	        
 end Add2dCurve;

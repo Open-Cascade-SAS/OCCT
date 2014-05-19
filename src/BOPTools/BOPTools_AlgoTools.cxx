@@ -1843,11 +1843,16 @@ Standard_Boolean FindPointInFace(const TopoDS_Edge& aE,
                                  GeomAPI_ProjectPointOnSurf& aProjPL) 
 {
   Standard_Integer aNbItMax;
-  Standard_Real aDt, aDtMin, aTolE, aTolF, aDist;
+  Standard_Real aDt, aDtMin, aTolE, aTolF, aDist, aDTol, aPM;
   Standard_Boolean bRet;
   gp_Pnt aP1;
   BRepAdaptor_Surface aBAS;
   //
+  aDTol = Precision::Angular();
+  aPM = aP.XYZ().Modulus();
+  if (aPM > 1000.) {
+    aDTol = 5.e-16 * aPM;
+  }
   bRet = Standard_False;
   aTolE = BRep_Tool::Tolerance(aE);
   aTolF = BRep_Tool::Tolerance(aF);
@@ -1910,9 +1915,9 @@ Standard_Boolean FindPointInFace(const TopoDS_Edge& aE,
     //
     gp_Vec aV(aP, aPOut);
     aDB.SetXYZ(aV.XYZ());
-  } while (aDist>Precision::Angular() && --aNbItMax);
+  } while (aDist > aDTol && --aNbItMax);
   //
-  bRet = aDist < Precision::Angular();
+  bRet = aDist < aDTol;
   return bRet;
 }
 //=======================================================================
