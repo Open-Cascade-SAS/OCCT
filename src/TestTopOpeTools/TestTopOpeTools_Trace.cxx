@@ -22,7 +22,6 @@ TestTopOpeTools_Trace::TestTopOpeTools_Trace
  mygenre(genre),
  myfirstentry(1),mynbmaxentry(nbmaxentry),mynbentries(0),
  myflag(myfirstentry,mynbmaxentry), 
- myfunc(myfirstentry,mynbmaxentry), 
  myftyp(myfirstentry,mynbmaxentry),
  myverbose(Standard_False),
  myfverbose(myfirstentry,mynbmaxentry)
@@ -33,7 +32,6 @@ TestTopOpeTools_Trace::TestTopOpeTools_Trace
 mygenre("flag"),
 myfirstentry(1),mynbmaxentry(nbmaxentry),mynbentries(0),
 myflag(myfirstentry,mynbmaxentry), 
-myfunc(myfirstentry,mynbmaxentry), 
 myftyp(myfirstentry,mynbmaxentry),
 myverbose(Standard_False),
 myfverbose(myfirstentry,mynbmaxentry)
@@ -153,7 +151,7 @@ Standard_Boolean TestTopOpeTools_Trace::Exist
 (const tf_value func, Standard_Integer& index)
 { 
   for (Standard_Integer i=myfirstentry; i<=mynbentries; i++)
-    if (myfunc.Value(i) == ((long)func)) { index = i; return Standard_True; }
+    if (myfunc.Value(i) == func) { index = i; return Standard_True; }
   return Standard_False;
 }
 
@@ -161,7 +159,7 @@ const t_flag TestTopOpeTools_Trace::Getflag(const Standard_Integer index)
 { return (t_flag)myflag.Value(index); }
 
 const tf_value TestTopOpeTools_Trace::Getfunc(const Standard_Integer index)
-{ return (tf_value)myfunc.Value(index); }
+{ return myfunc.Value(index); }
 
 const te_ftyp TestTopOpeTools_Trace::Getftyp(const Standard_Integer index)
 {
@@ -178,7 +176,7 @@ Standard_Integer TestTopOpeTools_Trace::Add
   if ( Exist(flag,index) || ( mynbentries >= mynbmaxentry) ) return 1;
   mynbentries++;
   myflag.SetValue(mynbentries,flag);
-  myfunc.SetValue(mynbentries,(long)func);
+  myfunc.SetValue(mynbentries,func);
   myftyp.SetValue(mynbentries,(Standard_Integer)ftyp);
   myfverbose.SetValue(mynbentries,Standard_False);
   return 0;

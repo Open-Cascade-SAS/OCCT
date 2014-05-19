@@ -17,6 +17,7 @@
 #ifndef _TestTopOpeTools_Trace_HeaderFile
 #define _TestTopOpeTools_Trace_HeaderFile
 
+#include <NCollection_Vector.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_Array1OfAsciiString.hxx>
 #include <TColStd_Array1OfInteger.hxx>
@@ -121,13 +122,14 @@ private:
   
   // ==== Fields
   
-  TCollection_AsciiString     mygenre;
-  Standard_Integer            myfirstentry,mynbmaxentry,mynbentries;
-  TColStd_Array1OfAsciiString myflag;
-  TColStd_Array1OfInteger     myfunc;
-  TColStd_Array1OfInteger     myftyp;
-  Standard_Boolean            myverbose;
-  TColStd_Array1OfBoolean     myfverbose;
+  TCollection_AsciiString           mygenre;
+  Standard_Integer                  myfirstentry,mynbmaxentry,mynbentries;
+  TColStd_Array1OfAsciiString       myflag;
+  NCollection_Vector<tf_value>      myfunc;
+  TColStd_Array1OfInteger           myftyp;
+  Standard_Boolean                  myverbose;
+  TColStd_Array1OfBoolean           myfverbose;
+
 };
 
 #endif
