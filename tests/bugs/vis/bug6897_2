@@ -1,0 +1,24 @@
+puts "============"
+puts "CR6987"
+puts "============"
+puts ""
+##########################################################################
+# Impossible to change edge line type in 3D View
+# Tests forced redisplay of object after aspect parameter's been changed
+##########################################################################
+
+pload VISUALIZATION
+
+set anImage1 $imagedir/${casename}_1.png
+set anImage2 $imagedir/${casename}_2.png
+
+vinit
+box b 1 1 1
+vdisplay b
+vfit
+vsetdispmode b 1
+vsetedgetype b -type DASH -color 10 255 10 -force
+vdump $anImage1
+
+vunsetedgetype b -force
+vdump $anImage2
