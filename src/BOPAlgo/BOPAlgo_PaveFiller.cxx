@@ -168,6 +168,11 @@ void BOPAlgo_PaveFiller::Perform()
     if (myErrorStatus) {
       return; 
     }
+    //
+    Prepare();
+    if (myErrorStatus) {
+      return; 
+    }
     // 00
     PerformVV();
     if (myErrorStatus) {

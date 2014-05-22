@@ -1,0 +1,23 @@
+puts "============"
+puts "OCC24157"
+puts "============"
+puts ""
+############################################
+# Parallelization of assembly part of BO
+############################################
+
+restore [locate_data_file bug24157_x_512_solids] b1
+bclearobjects
+bcleartools
+baddcompound b1
+bfillds
+
+regexp { +Tps: +([-0-9.+eE]+)} [bbuild result -t] full tps_time
+
+if { $tps_time > 15 } {
+  puts "Error: low performance"
+} else {
+  puts "OK: high performance"
+}
+
+set 2dviewer 1
