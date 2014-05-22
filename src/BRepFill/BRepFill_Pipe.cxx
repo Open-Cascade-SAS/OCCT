@@ -518,7 +518,7 @@ TopoDS_Wire BRepFill_Pipe::PipeLine(const gp_Pnt& Point)
  // Sweeping
  BRepFill_Sweep MkSw(Section, myLoc, Standard_True);
  MkSw.SetForceApproxC1(myForceApproxC1);
- MkSw.Build( myReversedEdges, myTapes,
+ MkSw.Build( myReversedEdges, myTapes, myRails,
              BRepFill_Modified, myContinuity, GeomFill_Location, myDegmax, mySegmax );
  TopoDS_Shape aLocalShape = MkSw.Shape();
  return TopoDS::Wire(aLocalShape);
@@ -645,7 +645,7 @@ TopoDS_Shape BRepFill_Pipe::MakeShape(const TopoDS_Shape& S,
 	new (BRepFill_ShapeLaw) (TopoDS::Vertex(TheS));
       BRepFill_Sweep MkSw(Section, myLoc, Standard_True);
       MkSw.SetForceApproxC1(myForceApproxC1);
-      MkSw.Build( myReversedEdges, myTapes,
+      MkSw.Build( myReversedEdges, myTapes, myRails,
                   BRepFill_Modified, myContinuity, GeomFill_Location, myDegmax, mySegmax );
       result = MkSw.Shape();
 
@@ -666,7 +666,7 @@ TopoDS_Shape BRepFill_Pipe::MakeShape(const TopoDS_Shape& S,
       MkSw.SetBounds(TopoDS::Wire(TheFirst), 
 		     TopoDS::Wire(TheLast));
       MkSw.SetForceApproxC1(myForceApproxC1);
-      MkSw.Build( myReversedEdges, myTapes,
+      MkSw.Build( myReversedEdges, myTapes, myRails,
                   BRepFill_Modified, myContinuity, GeomFill_Location, myDegmax, mySegmax );
       result = MkSw.Shape();
       //Correct <myFirst> and <myLast>

@@ -1943,6 +1943,7 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
 	    const Standard_Integer ILast,
             TopTools_MapOfShape& ReversedEdges,
             BRepFill_DataMapOfShapeHArray2OfShape& Tapes,
+            BRepFill_DataMapOfShapeHArray2OfShape& Rails,
 	    const Standard_Real ExtendFirst,
 	    const Standard_Real ExtendLast) 
 {
@@ -2079,11 +2080,13 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
     mySec->Init(FirstShape);
     for (isec=1; isec<=NbLaw; isec++) {
       E = mySec->CurrentEdge();
+      TopoDS_Vertex Vfirst, Vlast;
+      TopExp::Vertices(E, Vfirst, Vlast);
       VEdge(isec, 1) = E;
       if (E.Orientation() == TopAbs_REVERSED)
-        Vertex(isec+1, 1) = TopExp::FirstVertex(E);
+        Vertex(isec+1, 1) = Vfirst; //TopExp::FirstVertex(E);
       else 
-        Vertex(isec+1, 1) =  TopExp::LastVertex(E);
+        Vertex(isec+1, 1) = Vlast; //TopExp::LastVertex(E);
       UpdateVertex(IFirst-1, isec+1, 
                    TabErr(isec, 1), Vi(1),  Vertex(isec+1, 1));
 
@@ -2130,6 +2133,23 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
       {
         Handle(TopTools_HArray2OfShape) EmptyArray = new TopTools_HArray2OfShape(1, 6, 1, NbPath+1);
         Tapes.Bind(E, EmptyArray);
+        Standard_Integer j;
+        if (Rails.IsBound(Vfirst))
+        {
+          Standard_Integer ind = (E.Orientation() == TopAbs_REVERSED)? isec+1 : isec;
+          for (j = 1; j <= NbPath; j++)
+            UEdge(ind, j) = Rails(Vfirst)->Value(1, j);
+          for (j = 1; j <= NbPath+1; j++)
+            Vertex(ind, j) = Rails(Vfirst)->Value(2, j);
+        }
+        if (Rails.IsBound(Vlast))
+        {
+          Standard_Integer ind = (E.Orientation() == TopAbs_FORWARD)? isec+1 : isec;
+          for (j = 1; j <= NbPath; j++)
+            UEdge(ind, j) = Rails(Vlast)->Value(1, j);
+          for (j = 1; j <= NbPath+1; j++)
+            Vertex(ind, j) = Rails(Vlast)->Value(2, j);
+        }
       }
     }
     
@@ -2173,7 +2193,7 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
     else {
       if (exuv) {
         u = UFirst;
-          v = VLast;
+        v = VLast;
       }
       else {
         u = ULast;
@@ -2616,7 +2636,7 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
     }
   }
 
-  // (5) Update Tapes
+  // (5) Update Tapes and Rails
   Standard_Integer j;
   if (IFirst == 1 && !Tapes.IsEmpty()) //works only in case of single shell
   {
@@ -2634,6 +2654,26 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
         Tapes(StartEdges(isec))->SetValue(5, j, Vertex(isec+1, j));
       for (j = 1; j <= NbPath; j++)
         Tapes(StartEdges(isec))->SetValue(6, j, myFaces->Value(isec, j));
+      TopoDS_Vertex Vfirst, Vlast;
+      TopExp::Vertices(TopoDS::Edge(StartEdges(isec)), Vfirst, Vlast);
+      if (!Rails.IsBound(Vfirst))
+      {
+        Handle(TopTools_HArray2OfShape) anArray = new TopTools_HArray2OfShape(1, 2, 1, NbPath+1);
+        for (j = 1; j <= NbPath; j++)
+          anArray->SetValue(1, j, myUEdges->Value(isec, j));
+        for (j = 1; j <= NbPath+1; j++)
+          anArray->SetValue(2, j, Vertex(isec, j));
+        Rails.Bind(Vfirst, anArray);
+      }
+      if (!Rails.IsBound(Vlast))
+      {
+        Handle(TopTools_HArray2OfShape) anArray = new TopTools_HArray2OfShape(1, 2, 1, NbPath+1);
+        for (j = 1; j <= NbPath; j++)
+          anArray->SetValue(1, j, myUEdges->Value(isec+1, j));
+        for (j = 1; j <= NbPath+1; j++)
+          anArray->SetValue(2, j, Vertex(isec+1, j));
+        Rails.Bind(Vlast, anArray);
+      }
     }
   }
   
@@ -2646,6 +2686,7 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
 //======================================================================
 void BRepFill_Sweep::Build(TopTools_MapOfShape& ReversedEdges,
                            BRepFill_DataMapOfShapeHArray2OfShape& Tapes,
+                           BRepFill_DataMapOfShapeHArray2OfShape& Rails,
                            const BRepFill_TransitionStyle Transition,
                            const GeomAbs_Shape Continuity,
                            const GeomFill_ApproxStyle Approx,
@@ -2688,7 +2729,7 @@ void BRepFill_Sweep::Build(TopTools_MapOfShape& ReversedEdges,
       isDone = BuildShell(Transition, 
 			  1, NbPath+1,
                           ReversedEdges,
-                          Tapes,
+                          Tapes, Rails,
 			  Extend, Extend);
     }
     else { //  This is done piece by piece
@@ -2700,7 +2741,7 @@ void BRepFill_Sweep::Build(TopTools_MapOfShape& ReversedEdges,
 	isDone = BuildShell(Transition, 
 			    IFirst, ILast,
                             ReversedEdges,
-                            Tapes,
+                            Tapes, Rails,
 			    EvalExtrapol(IFirst, Transition),
 			    EvalExtrapol(ILast,  Transition));
 	if (IFirst>1) {
