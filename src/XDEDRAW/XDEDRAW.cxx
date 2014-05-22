@@ -29,7 +29,7 @@
 #include <V3d_Viewer.hxx>
 #include <V3d_View.hxx>
 #include <AIS_InteractiveContext.hxx>
-#include <ViewerTest_Tool.hxx>
+#include <ViewerTest.hxx>
 
 #include <DDF_Browser.hxx>
 #include <DDocStd.hxx>
@@ -474,37 +474,36 @@ static Standard_Integer show (Draw_Interpretor& di, Standard_Integer argc, const
     return 1;
   }
 
-  Handle(TDocStd_Document) Doc;
-  DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+  Handle(TDocStd_Document) aDoc;
+  DDocStd::GetDocument (argv[1], aDoc);
+  if (aDoc.IsNull())
+  {
+    std::cout << argv[1] << " is not a document\n";
+    return 1;
+  }
 
   // init viewer
-//  char string[260];
-//  Sprintf ( string, "AISInitViewer %s", argv[1] );
-//  di.Eval ( string );
-  TDF_Label acces = Doc->GetData()->Root();
-  Handle(TPrsStd_AISViewer) viewer;
-  if (!TPrsStd_AISViewer::Find (acces,viewer)) {
-    TCollection_AsciiString title;
-    title.Prepend(argv[1]);
-    title.Prepend("_");
-    title.Prepend("Document");
-    Handle(V3d_Viewer) vw=ViewerTest_Tool::MakeViewer (title.ToCString());
-    viewer = TPrsStd_AISViewer::New (acces,vw);
+  TDF_Label aRoot = aDoc->GetData()->Root();
+  Handle(TPrsStd_AISViewer) aDocViewer;
+  TCollection_AsciiString   aViewName = TCollection_AsciiString ("Driver1/Document_") + argv[1] + "/View1";
+  if (!TPrsStd_AISViewer::Find (aRoot, aDocViewer))
+  {
+    ViewerTest::ViewerInit (0, 0, 0, 0, aViewName.ToCString(), "");
+    aDocViewer = TPrsStd_AISViewer::New (aRoot, ViewerTest::GetAISContext());
   }
-  ViewerTest_Tool::InitViewerTest (viewer->GetInteractiveContext());
 
   //szv:CAX-TRJ7 c2-pe-214.stp was clipped
-  viewer->GetInteractiveContext()->CurrentViewer()->ActiveView()->SetZSize(ZVIEW_SIZE);
+  aDocViewer->GetInteractiveContext()->CurrentViewer()->InitActiveViews();
+  aDocViewer->GetInteractiveContext()->CurrentViewer()->ActiveView()->SetZSize(ZVIEW_SIZE);
   //DDF::ReturnLabel(di,viewer->Label());
 
   // collect sequence of labels to display
-  Handle(XCAFDoc_ShapeTool) shapes = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
+  Handle(XCAFDoc_ShapeTool) shapes = XCAFDoc_DocumentTool::ShapeTool (aDoc->Main());
   TDF_LabelSequence seq;
   if ( argc >2 ) {
     for ( Standard_Integer i=2; i < argc; i++ ) {
       TDF_Label aLabel;
-      TDF_Tool::Label(Doc->GetData(), argv[i], aLabel);
+      TDF_Tool::Label (aDoc->GetData(), argv[i], aLabel);
       if ( aLabel.IsNull() || ! shapes->IsShape ( aLabel ) ) {
 	di << argv[i] << " is not a valid shape label!";
 	continue;
@@ -531,7 +530,7 @@ static Standard_Integer show (Draw_Interpretor& di, Standard_Integer argc, const
 //      prs->SetColor ( Col.Name() );
     prs->Display(Standard_True);
   }
-  TPrsStd_AISViewer::Update(Doc->GetData()->Root());
+  TPrsStd_AISViewer::Update (aDoc->GetData()->Root());
   return 0;
 }
 
@@ -1027,9 +1026,10 @@ static Standard_Integer testDoc (Draw_Interpretor&,
   Handle(TDocStd_Document) aD1 = new TDocStd_Document("MDTV-XCAF");
   aD1->Open(A);
   
-  Handle(V3d_Viewer) vw = ViewerTest_Tool::MakeViewer ("Test viwer"); 
-  Handle(AIS_InteractiveContext) aContext = new AIS_InteractiveContext(vw);
-  TPrsStd_AISViewer::New (aD1->Main(),aContext);
+  TCollection_AsciiString  aViewName ("Driver1/DummyDocument/View1");
+  ViewerTest::ViewerInit (0, 0, 0, 0, aViewName.ToCString(), "");
+  TPrsStd_AISViewer::New (aD1->GetData()->Root(), ViewerTest::GetAISContext());
+
   // get shape tool for shape verification
   Handle(XCAFDoc_ShapeTool) aShapes =
     XCAFDoc_DocumentTool::ShapeTool (aD1->Main());
@@ -1047,12 +1047,12 @@ static Standard_Integer testDoc (Draw_Interpretor&,
    
   if( aLab.FindAttribute(TPrsStd_AISPresentation::GetID(), prs) ) 
     prs->Display();
-  
 
   TPrsStd_AISViewer::Update(aLab);
-  aContext->Display(aTriShape, Standard_True);
+  ViewerTest::GetAISContext()->Display (aTriShape, Standard_True);
   aD1->BeforeClose();
   aD1->Close();
+  ViewerTest::RemoveView (aViewName);
   return 0;
 }
 

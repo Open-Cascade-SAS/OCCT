@@ -1,0 +1,21 @@
+puts "============"
+puts "OCC24430"
+puts "============"
+puts ""
+#######################################################################################
+# vviewlist draw command does not added name of viewer created by XShow draw command
+#######################################################################################
+
+pload DCAF
+NewDocument D XmlXCAF
+ReadIges D [locate_data_file bug23921_case2.igs]
+
+XShow D
+set info [vviewlist long]
+if { $info == "" } {
+  puts "Error: viewer name was not added"
+} else {
+  puts "OK: viewer name was added"
+}
+
+set only_screen 1

@@ -22,13 +22,7 @@
 #include <AIS_InteractiveContext.hxx>
 #include <ViewerTest.hxx>
 #include <AIS_Shape.hxx>
-#include <TopoDS_Shape.hxx>
 
-#include <ViewerTest_Tool.hxx>
-#include <V3d_Viewer.hxx>
-#include <V3d_View.hxx>
-
-#include <ViewerTest_Tool.hxx>
 #include <V3d_Viewer.hxx>
 #include <V3d_View.hxx>
 #include <PCollection_HExtendedString.hxx>
@@ -51,21 +45,6 @@
 #include <Standard_Assert.hxx>
 
 #define DEFAULT_COLOR    Quantity_NOC_GOLDENROD
-
-static Standard_Integer BUC60851 (Draw_Interpretor& /*di*/, Standard_Integer /*argc*/, const char ** /*argv*/)
-{
-  Handle(AIS_InteractiveContext)   context= ViewerTest_Tool::MakeContext ("buc60851");
-  ViewerTest_Tool::InitViewerTest (context);
-  Handle(V3d_Viewer)  aV3dViewer= context->CurrentViewer();
-  Handle(V3d_View) aV3d_View = aV3dViewer->ActiveView();
-  for (Standard_Integer i=0;i<1000;++i) {
-    aV3d_View->TriedronDisplay();
-    aV3d_View->TriedronErase();
-  }
-  aV3d_View->TriedronDisplay();
-
-  return 0;
-}
 
 static Standard_Integer OCC216 (Draw_Interpretor& di, Standard_Integer /*argc*/, const char ** /*argv*/)
 {
@@ -265,7 +244,6 @@ static Standard_Integer OCC71bug (Draw_Interpretor& di, Standard_Integer /*argc*
 void QABugs::Commands_18(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
-  theCommands.Add("BUC60851", "BUC60851", __FILE__, BUC60851, group);
   theCommands.Add("OCC216", "OCC216", __FILE__, OCC216, group);
   theCommands.Add("OCC267", "OCC267 DOC path", __FILE__, OCC267, group);
   theCommands.Add("OCC181", "OCC181 FileName path1 path2 verbose=0/1", __FILE__, OCC181, group);

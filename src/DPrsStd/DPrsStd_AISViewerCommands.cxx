@@ -16,7 +16,6 @@
 
 #include <DPrsStd.hxx>
 
-#include <DPrsStd.hxx>
 #include <Draw.hxx>
 #include <Draw_Appli.hxx>
 #include <Draw_Interpretor.hxx>
@@ -29,54 +28,44 @@
 #include <TDF_ChildIterator.hxx>
 #include <DDF.hxx>
 #include <DDocStd.hxx>
-#include <TDocStd_Document.hxx> 
 #include <ViewerTest.hxx>
-
 #include <V3d_View.hxx>
-
-// for AIS
-
 #include <TPrsStd_AISPresentation.hxx>
 #include <TPrsStd_AISViewer.hxx>
-#include <ViewerTest.hxx>
 #include <AIS_InteractiveContext.hxx> 
-#include <ViewerTest.hxx>
-#include <ViewerTest_Tool.hxx>
-#include <V3d_View.hxx>
-
-
-
-extern int ViewerMainLoop (Standard_Integer, const char**);
 
 //=======================================================================
 //function : DPrsStd_AISInitViewer
 //purpose  : AISInitViewer (DOC)
 //=======================================================================
-extern void ViewerTest_InitViewerTest (const Handle(AIS_InteractiveContext)&);
 
-static Standard_Integer DPrsStd_AISInitViewer (Draw_Interpretor& di,
-					     Standard_Integer nb, 
-					     const char** arg) 
+static Standard_Integer DPrsStd_AISInitViewer (Draw_Interpretor& theDI,
+                                               Standard_Integer  theArgNb,
+                                               const char**      theArgVec)
 {   
-  if (nb == 2) {     
-    Handle(TDocStd_Document) D;
-    if (!DDocStd::GetDocument(arg[1],D)) return 1; 
-    TDF_Label acces = D->GetData()->Root();   
-    Handle(TPrsStd_AISViewer) viewer;
-    if (!TPrsStd_AISViewer::Find (acces,viewer)) {
-      TCollection_AsciiString title;  
-      title.Prepend(arg[1]);   
-      title.Prepend("_"); 
-      title.Prepend("Document");  
-      Handle(V3d_Viewer) vw = ViewerTest_Tool::MakeViewer (title.ToCString());
-      viewer = TPrsStd_AISViewer::New (acces,vw);
-    } 
-    ViewerTest_Tool::InitViewerTest (viewer->GetInteractiveContext());
-    DDF::ReturnLabel(di,viewer->Label());
-    return 0;
+  if (theArgNb != 2)
+  {
+    std::cout << "DPrsStd_AISInitViewer : Error\n";
+    return 1;
   }
-  di << "DPrsStd_AISInitViewer : Error" << "\n";
-  return 1;
+
+  Handle(TDocStd_Document) aDoc;
+  if (!DDocStd::GetDocument (theArgVec[1], aDoc))
+  {
+    return 1;
+  }
+
+  TDF_Label aRoot = aDoc->GetData()->Root();
+  Handle(TPrsStd_AISViewer) aDocViewer;
+  TCollection_AsciiString   aViewName = TCollection_AsciiString ("Driver1/Document_") + theArgVec[1] + "/View1";
+  if (!TPrsStd_AISViewer::Find (aRoot, aDocViewer))
+  {
+    ViewerTest::ViewerInit (0, 0, 0, 0, aViewName.ToCString(), "");
+    aDocViewer = TPrsStd_AISViewer::New (aRoot, ViewerTest::GetAISContext());
+  }
+
+  DDF::ReturnLabel (theDI, aDocViewer->Label());
+  return 0;
 }
 
 

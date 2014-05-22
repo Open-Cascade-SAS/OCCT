@@ -34,12 +34,6 @@ uses
 
 is
 
-    class Tool;
-    ---Purpose: to build a context and  set a given context as current
-    --          for ViewerTest.
-
-
-
     class EventManager;
     ---Purpose: used to manage mouse event (move,select,shiftselect)
     --          By default the events are transmitted to interactive context.
@@ -79,8 +73,14 @@ is
     GetCurrentViewName returns AsciiString from TCollection;
    
     ---Category: Delete the viewer....
-    RemoveView (theViewName:AsciiString from TCollection;
-               isContextRemoved:Boolean from Standard= Standard_True);
+    RemoveView (theViewName        : AsciiString from TCollection;
+                theToRemoveContext : Boolean from Standard = Standard_True);
+    ---Purpose: Removes view and clear all maps
+    --          with information about its resources if neccessary
+
+    ---Category: Delete the viewer....
+    RemoveView (theView            : View from V3d;
+                theToRemoveContext : Boolean from Standard = Standard_True);
     ---Purpose: Removes view and clear all maps
     --          with information about its resources if neccessary
 

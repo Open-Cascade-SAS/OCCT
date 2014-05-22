@@ -54,7 +54,6 @@
 #include <AIS_Trihedron.hxx>
 #include <Geom_Axis2Placement.hxx>
 #include <V3d_View.hxx>
-#include <ViewerTest_Tool.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <AIS_LengthDimension.hxx>
 #include <AIS_RadiusDimension.hxx>

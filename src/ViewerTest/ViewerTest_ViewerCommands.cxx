@@ -1012,6 +1012,22 @@ void ActivateView (const TCollection_AsciiString& theViewName)
 
 //==============================================================================
 //function : RemoveView
+//purpose  :
+//==============================================================================
+void ViewerTest::RemoveView (const Handle(V3d_View)& theView,
+                             const Standard_Boolean  theToRemoveContext)
+{
+  if (!ViewerTest_myViews.IsBound2 (theView))
+  {
+    return;
+  }
+
+  const TCollection_AsciiString aViewName = ViewerTest_myViews.Find2 (theView);
+  RemoveView (aViewName, theToRemoveContext);
+}
+
+//==============================================================================
+//function : RemoveView
 //purpose  : Close and remove view from display, clear maps if neccessary
 //==============================================================================
 void ViewerTest::RemoveView (const TCollection_AsciiString& theViewName, const Standard_Boolean isContextRemoved)
@@ -2524,38 +2540,6 @@ while (ViewerMainLoop( argc, argv)) {
 }
 
 return 0;
-}
-
-//==============================================================================
-//function : InitViewerTest
-//purpose  : initialisation de toutes les variables static de  ViewerTest (dp)
-//==============================================================================
-
-void ViewerTest_InitViewerTest (const Handle(AIS_InteractiveContext)& theContext)
-{
-  Handle(V3d_Viewer) aViewer = theContext->CurrentViewer();
-  ViewerTest::SetAISContext(theContext);
-  aViewer->InitActiveViews();
-  Handle(V3d_View) aView = aViewer->ActiveView();
-  if (aViewer->MoreActiveViews()) ViewerTest::CurrentView(aView);
-  ViewerTest::ResetEventManager();
-  Handle(Aspect_Window) aWindow = aView->Window();
-#if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
-  // X11
-  VT_GetWindow() = Handle(Xw_Window)::DownCast(aWindow);
-  OSWindowSetup();
-  static int aFirst = 1;
-  if ( aFirst ) {
-#if TCL_MAJOR_VERSION  < 8
-    Tk_CreateFileHandler((void*)XConnectionNumber(GetDisplayConnection()->GetDisplay()),
-      TK_READABLE, VProcessEvents, (ClientData) 0);
-#else
-    Tk_CreateFileHandler(XConnectionNumber(GetDisplayConnection()->GetDisplay()),
-      TK_READABLE, VProcessEvents, (ClientData) 0);
-#endif
-    aFirst = 0;
-  }
-#endif
 }
 
 //==============================================================================

@@ -67,7 +67,6 @@
 #include <ShapeFix_Wireframe.hxx>
 #include <ShapeBuild_ReShape.hxx>
 
-#include <ViewerTest_Tool.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 
 //#include <QAModTopOpe_ReShaper.hxx>
@@ -672,8 +671,6 @@ static Standard_Integer OCC394 (Draw_Interpretor& di, Standard_Integer argc, con
 
 static Standard_Integer OCC301 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
-  //Handle(AIS_InteractiveContext)   context= ViewerTest_Tool::MakeContext ("OCC301");
-  //ViewerTest_Tool::InitViewerTest (context);
   Handle(AIS_InteractiveContext) context = ViewerTest::GetAISContext();
   if(context.IsNull()) {
     di << "use 'vinit' command before " << argv[0] << "\n";

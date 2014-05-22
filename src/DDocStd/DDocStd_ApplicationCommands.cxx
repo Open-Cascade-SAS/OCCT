@@ -33,17 +33,17 @@
 
 #include <OSD_Path.hxx>
 #include <TDocStd_PathParser.hxx>
-//#include <TPrsStd_AISViewer.hxx>
-//#include <AIS_InteractiveContext.hxx>
 
-#ifndef WNT
+#include <AIS_InteractiveContext.hxx>
+#include <TPrsStd_AISViewer.hxx>
+#include <ViewerTest.hxx>
+#include <V3d_Viewer.hxx>
+
+#ifndef _WIN32
 extern Draw_Viewer dout;
 #else
 Standard_IMPORT Draw_Viewer dout;
 #endif
-
-extern int ViewerMainLoop (Standard_Integer, const char**); 
-#include <ViewerTest_Tool.hxx>
 
 //=======================================================================
 //function : ListDocuments
@@ -119,38 +119,6 @@ static Standard_Integer DDocStd_NewDocument (Draw_Interpretor& di,
   di << "DDocStd_NewDocument : Error" << "\n";
   return 1;
 }
-
-//=======================================================================
-//function : InitViewer
-//purpose  : 
-//=======================================================================
-
-// static Standard_Integer DDocStd_InitViewer (Draw_Interpretor& di,
-// 					    Standard_Integer nb,
-// 					    const char** arg)
-// {
-//   if (nb == 2) {    
-//     Handle(TDocStd_Application) A;
-//     if (!DDocStd::Find(A)) return 1;       
-//     Handle(TDocStd_Document) D;
-//     if (!DDocStd::GetDocument(arg[1],D)) return 1;     
-//     Handle(TPrsStd_AISViewer) viewer;
-//     if (!TPrsStd_AISViewer::Find (D->Main(),viewer)) {
-//       TCollection_AsciiString title;  
-//       title.Prepend(arg[1]);   
-//       title.Prepend("_"); 
-//       title.Prepend("Document");  
-//       Handle(V3d_Viewer) vw = ViewerTest_Tool::MakeViewer (title.ToCString()); 
-//       Handle(AIS_InteractiveContext) IC = new AIS_InteractiveContext(vw);
-//       A->SetViewer (D,IC);
-//     } 
-//     ViewerTest_Tool::InitViewerTest (viewer->GetInteractiveContext());
-//     return 0;
-//   }
-//   cout << "DDocStd_InitViewer : Error" << endl;
-//   return 1;
-// }
-
 
 //=======================================================================
 //function : Open
@@ -296,25 +264,48 @@ static Standard_Integer DDocStd_SaveAs (Draw_Interpretor& di,
 //purpose  : 
 //=======================================================================
 
-static Standard_Integer DDocStd_Close (Draw_Interpretor& di,
-				       Standard_Integer nb,
-				       const char** a)
+static Standard_Integer DDocStd_Close (Draw_Interpretor& /*theDI*/,
+                                       Standard_Integer  theArgNb,
+                                       const char**      theArgVec)
 {   
-  if (nb == 2) {   
-    Handle(TDocStd_Document) D;   
-    if (!DDocStd::GetDocument(a[1],D)) return 1;
-    Handle(TDocStd_Application) A;
-    if (!DDocStd::Find(A)) return 1;
-    A->Close(D); 
-
-    Handle(Draw_Drawable3D) DD = Draw::Get(a[1],Standard_False);
-    dout.RemoveDrawable (DD);
-    Handle(Draw_Drawable3D) aDNull;
-    Draw::Set(a[1], aDNull);
-    return 0;
+  if (theArgNb != 2)
+  {
+    std::cout << "DDocStd_Close : Error\n";
+    return 1;
   }
-  di << "DDocStd_Close : Error" << "\n";
-  return 1;
+
+  Handle(TDocStd_Document) aDoc;
+  Standard_CString aDocName = theArgVec[1];
+  if (!DDocStd::GetDocument (aDocName, aDoc))
+  {
+    return 1;
+  }
+
+  TDF_Label aRoot = aDoc->GetData()->Root();
+  Handle(TPrsStd_AISViewer) aDocViewer;
+  if (TPrsStd_AISViewer::Find (aRoot, aDocViewer)
+   && !aDocViewer->GetInteractiveContext().IsNull())
+  {
+    Handle(V3d_Viewer) aViewer = aDocViewer->GetInteractiveContext()->CurrentViewer();
+    for (aViewer->InitDefinedViews(); aViewer->MoreDefinedViews(); aViewer->NextDefinedViews())
+    {
+      Handle(V3d_View) aView = aViewer->DefinedView();
+      ViewerTest::RemoveView (aView);
+    }
+  }
+
+  Handle(TDocStd_Application) aDocApp;
+  if (!DDocStd::Find (aDocApp))
+  {
+    return 1;
+  }
+
+  aDocApp->Close (aDoc);
+
+  Handle(Draw_Drawable3D) aDrawable = Draw::Get (aDocName, Standard_False);
+  dout.RemoveDrawable (aDrawable);
+  Draw::Set (theArgVec[1], Handle(Draw_Drawable3D)());
+  return 0;
 }
 
 //=======================================================================
@@ -456,8 +447,6 @@ void DDocStd::ApplicationCommands(Draw_Interpretor& theCommands)
   const char* g = "DDocStd application commands";
 
   // user application commands
-
-  
   theCommands.Add("ListDocuments",
 		  "ListDocuments",
 		  __FILE__, DDocStd_ListDocuments, g);  
@@ -465,10 +454,6 @@ void DDocStd::ApplicationCommands(Draw_Interpretor& theCommands)
   theCommands.Add("NewDocument",
 		  "NewDocument docname format",
 		  __FILE__, DDocStd_NewDocument, g);  
-
-  //theCommands.Add("InitViewer",
-	//	  "InitViewer DOC",
-	//	  __FILE__, DDocStd_InitViewer, g);
 
   theCommands.Add("Open",
 		  "Open path docname",
@@ -505,11 +490,4 @@ void DDocStd::ApplicationCommands(Draw_Interpretor& theCommands)
   theCommands.Add("PrintComments",
 		  "PrintComments Doc",
 		  __FILE__, DDocStd_PrintComments, g);
-
- // active document
-
-  //theCommands.Add("Active",
-	//	  "Active [D]",
-	//	  __FILE__, DDocStd_Active, g);  
-
 }

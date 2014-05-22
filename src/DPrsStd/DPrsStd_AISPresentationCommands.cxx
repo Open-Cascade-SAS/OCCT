@@ -40,7 +40,6 @@
 #include <AIS_InteractiveObject.hxx>
 #include <AIS_Drawer.hxx> 
 #include <ViewerTest.hxx>
-#include <ViewerTest_Tool.hxx>
 #include <V3d_View.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <Quantity_NameOfColor.hxx>

@@ -2419,7 +2419,6 @@ static int VCircleBuilder(Draw_Interpretor& /*di*/, Standard_Integer argc, const
 #include <Font_NameOfFont.hxx>
 
 #include <Visual3d_ViewManager.hxx>
-#include <ViewerTest_Tool.ixx>
 
 #include <Standard_DefineHandle.hxx>
 
