@@ -9,8 +9,8 @@ box b2 3 0 0 3 2 1
 # draw box
 vinit View1
 vclear
+vrenderparams -rasterization
 vsetdispmode 1
-vraytrace 0
 vaxo
 vconnectsh b1c -3 0 0 1 0 0 0 0 1 b1 b2
 vfit
@@ -23,7 +23,7 @@ vconnectsh b1c -3 0 0 1 0 0 0 0 1 b1 b2
 vdump $::imagedir/${::casename}_OFF.png
 
 # turn on ray tracing
-vraytrace 1
+vrenderparams -raytrace
 vdump $::imagedir/${::casename}_rt1.png
 
 vclear

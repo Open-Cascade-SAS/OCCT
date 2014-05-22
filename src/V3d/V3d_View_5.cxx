@@ -53,60 +53,14 @@ Standard_Boolean V3d_View::IsGLLightEnabled() const
   return MyView->IsGLLightEnabled();
 }
 
-void V3d_View::SetRaytracingMode()
+const Graphic3d_RenderingParams& V3d_View::RenderingParams() const
 {
-  Graphic3d_CView* cView = (Graphic3d_CView* )MyView->CView();
-
-  cView->IsRaytracing = 1;
+  return static_cast<Graphic3d_CView*> (MyView->CView())->RenderParams;
 }
 
-void V3d_View::SetRasterizationMode()
+Graphic3d_RenderingParams& V3d_View::ChangeRenderingParams()
 {
-  Graphic3d_CView* cView = (Graphic3d_CView* )MyView->CView();
-
-  cView->IsRaytracing = 0;
-}
-
-void V3d_View::EnableRaytracedShadows()
-{
-  Graphic3d_CView* cView = (Graphic3d_CView* )MyView->CView();
-
-  cView->IsShadowsEnabled = 1;
-}
-
-void V3d_View::EnableRaytracedReflections()
-{
-  Graphic3d_CView* cView = (Graphic3d_CView* )MyView->CView();
-
-  cView->IsReflectionsEnabled = 1;
-}
-
-void V3d_View::EnableRaytracedAntialiasing()
-{
-  Graphic3d_CView* cView = (Graphic3d_CView* )MyView->CView();
-
-  cView->IsAntialiasingEnabled = 1;
-}
-
-void V3d_View::DisableRaytracedShadows()
-{
-  Graphic3d_CView* cView = (Graphic3d_CView* )MyView->CView();
-
-  cView->IsShadowsEnabled = 0;
-}
-
-void V3d_View::DisableRaytracedReflections()
-{
-  Graphic3d_CView* cView = (Graphic3d_CView* )MyView->CView();
-
-  cView->IsReflectionsEnabled = 0;
-}
-
-void V3d_View::DisableRaytracedAntialiasing()
-{
-  Graphic3d_CView* cView = (Graphic3d_CView* )MyView->CView();
-
-  cView->IsAntialiasingEnabled = 0;
+  return static_cast<Graphic3d_CView*> (MyView->CView())->RenderParams;
 }
 
 void V3d_View::SetLayerMgr(const Handle(V3d_LayerMgr)& aMgr)

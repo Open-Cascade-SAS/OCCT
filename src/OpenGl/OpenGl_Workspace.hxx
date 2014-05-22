@@ -363,8 +363,33 @@ protected:
 
   };
 
+  //! Default ray-tracing depth.
+  static const Standard_Integer THE_DEFAULT_RAY_DEPTH = 3;
+
   //! Default size of traversal stack.
   static const Standard_Integer THE_DEFAULT_STACK_SIZE = 24;
+
+  //! Compile-time ray-tracing parameters.
+  struct RaytracingParams
+  {
+    //! Actual size of traversal stack in shader program.
+    Standard_Integer StackSize;
+
+    //! Actual ray-tracing depth (number of ray bounces).
+    Standard_Integer TraceDepth;
+
+    //! Sets light propagation through transparent media.
+    Standard_Boolean TransparentShadows;
+
+    //! Creates default compile-time ray-tracing parameters.
+    RaytracingParams()
+    : StackSize (THE_DEFAULT_STACK_SIZE),
+      TraceDepth (THE_DEFAULT_RAY_DEPTH),
+      TransparentShadows (Standard_False)
+    {
+      //
+    }
+  };
 
 protected: //! @name methods related to ray-tracing
 
@@ -444,7 +469,7 @@ protected: //! @name methods related to ray-tracing
   Standard_Boolean SafeFailBack (const TCollection_ExtendedString& theMessage);
 
   //! Initializes OpenGL/GLSL shader programs.
-  Standard_Boolean InitRaytraceResources();
+  Standard_Boolean InitRaytraceResources (const Graphic3d_CView& theCView);
 
   //! Releases OpenGL/GLSL shader programs.
   void ReleaseRaytraceResources();
@@ -493,8 +518,8 @@ protected: //! @name fields related to ray-tracing
   //! Scene epsilon to prevent self-intersections.
   Standard_ShortReal myRaytraceSceneEpsilon;
 
-  //! Actual size of traversal stack in shader program.
-  Standard_Integer myTraversalStackSize;
+  //! Compile-time ray-tracing parameters.
+  RaytracingParams myRaytraceParameters;
 
   //! OpenGL/GLSL source of ray-tracing fragment shader.
   ShaderSource myRaytraceShaderSource;

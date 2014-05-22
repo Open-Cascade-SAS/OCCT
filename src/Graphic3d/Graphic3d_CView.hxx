@@ -16,6 +16,7 @@
 
 #include <InterfaceGraphic_Graphic3d.hxx>
 #include <InterfaceGraphic_Visual3d.hxx>
+#include <Graphic3d_RenderingParams.hxx>
 #include <Graphic3d_TextureEnv.hxx>
 #include <Graphic3d_Camera.hxx>
 
@@ -96,11 +97,7 @@ public:
     GDisplayCB  (NULL),
     GClientData (NULL),
     ptrFBO (NULL),
-    WasRedrawnGL (0),
-    IsRaytracing (0),
-    IsShadowsEnabled (1),
-    IsReflectionsEnabled (0),
-    IsAntialiasingEnabled (0)
+    WasRedrawnGL (0)
   {
 	  memset(&DefWindow,0,sizeof(DefWindow));
   }
@@ -134,17 +131,8 @@ public:
   //! Was the window redrawn by standard OpenGL?
   mutable int WasRedrawnGL;
 
-  //! Enables/disables OpenCL-based ray-tracing.
-  int IsRaytracing;
-
-  //! Enables/disables ray-traced sharp shadows.
-  int IsShadowsEnabled;
-  
-  //! Enables/disables ray-traced reflections.
-  int IsReflectionsEnabled;
-  
-  //! Enables/disables ray-traced adaptive anti-aliasing.
-  int IsAntialiasingEnabled;
+  //! Specifies rendering parameters and effects.
+  Graphic3d_RenderingParams RenderParams;
 
 };
 

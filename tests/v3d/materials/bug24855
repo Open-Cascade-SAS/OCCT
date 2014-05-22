@@ -31,13 +31,12 @@ testmat $imagedir $casename
 vshaderprog s phong
 testmat $imagedir ${casename}_phong
 
-vraytrace 1
+vrenderparams -raytrace -reflections -fsaa
 vtextureenv on 5
-vsetraytracemode aa=1 refl=1
 
 testmat $imagedir ${casename}_rt
 
 vclear
-vraytrace 0
+vrenderparams -rasterization
 vtextureenv off
 source $env(CASROOT)/samples/tcl/materials.tcl

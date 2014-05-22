@@ -103,34 +103,47 @@ struct SIntersect
 
 
 // =======================================================================
-// function : MatrixRowMultiply
+// function : MatrixRowMultiplyDir
 // purpose  : Multiplies a vector by matrix
 // =======================================================================
-vec3 MatrixRowMultiply (in vec4 v,
-                        in vec4 m0,
-                        in vec4 m1,
-                        in vec4 m2,
-                        in vec4 m3)
+vec3 MatrixRowMultiplyDir (in vec3 v,
+                           in vec4 m0,
+                           in vec4 m1,
+                           in vec4 m2)
 {
-  return vec3 (dot (m0, v),
-               dot (m1, v),
-               dot (m2, v));
+  return vec3 (dot (m0.xyz, v),
+               dot (m1.xyz, v),
+               dot (m2.xyz, v));
 }
 
-
 // =======================================================================
-// function : MatrixColMultiply
+// function : MatrixColMultiplyPnt
 // purpose  : Multiplies a vector by matrix
 // =======================================================================
-vec3 MatrixColMultiply (in vec4 v,
-                        in vec4 m0,
-                        in vec4 m1,
-                        in vec4 m2,
-                        in vec4 m3)
+vec3 MatrixColMultiplyPnt (in vec3 v,
+                           in vec4 m0,
+                           in vec4 m1,
+                           in vec4 m2,
+                           in vec4 m3)
 {
-  return vec3 (m0[0] * v.x + m1[0] * v.y + m2[0] * v.z + m3[0] * v.w,
-               m0[1] * v.x + m1[1] * v.y + m2[1] * v.z + m3[1] * v.w,
-               m0[2] * v.x + m1[2] * v.y + m2[2] * v.z + m3[2] * v.w);
+  return vec3 (m0[0] * v.x + m1[0] * v.y + m2[0] * v.z + m3[0],
+               m0[1] * v.x + m1[1] * v.y + m2[1] * v.z + m3[1],
+               m0[2] * v.x + m1[2] * v.y + m2[2] * v.z + m3[2]);
+}
+
+// =======================================================================
+// function : MatrixColMultiplyDir
+// purpose  : Multiplies a vector by matrix
+// =======================================================================
+vec3 MatrixColMultiplyDir (in vec3 v,
+                           in vec4 m0,
+                           in vec4 m1,
+                           in vec4 m2,
+                           in vec4 m3)
+{
+  return vec3 (m0[0] * v.x + m1[0] * v.y + m2[0] * v.z,
+               m0[1] * v.x + m1[1] * v.y + m2[1] * v.z,
+               m0[2] * v.x + m1[2] * v.y + m2[2] * v.z);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -218,25 +231,28 @@ int Stack[STACK_SIZE];
 ivec4 ObjectNearestHit (in int theBVHOffset, in int theVrtOffset, in int theTrgOffset,
   in SRay theRay, in vec3 theInverse, inout SIntersect theHit, in int theSentinel)
 {
-  int aHead = theSentinel; // stack pointer
-  int aNode = 0;           // node to visit
+  int aHead = theSentinel;  // stack pointer
+  int aNode = theBVHOffset; // node to visit
 
   ivec4 aTriIndex = INALID_HIT;
 
-  float aTimeOut;
-  float aTimeLft;
-  float aTimeRgh;
-
   while (true)
   {
-    ivec3 aData = texelFetch (uObjectNodeInfoTexture, aNode + theBVHOffset).xyz;
+    ivec3 aData = texelFetch (uObjectNodeInfoTexture, aNode).xyz;
 
     if (aData.x == 0) // if inner node
     {
-      vec3 aNodeMinLft = texelFetch (uObjectMinPointTexture, aData.y + theBVHOffset).xyz;
-      vec3 aNodeMaxLft = texelFetch (uObjectMaxPointTexture, aData.y + theBVHOffset).xyz;
-      vec3 aNodeMinRgh = texelFetch (uObjectMinPointTexture, aData.z + theBVHOffset).xyz;
-      vec3 aNodeMaxRgh = texelFetch (uObjectMaxPointTexture, aData.z + theBVHOffset).xyz;
+      float aTimeOut;
+      float aTimeLft;
+      float aTimeRgh;
+      
+      aData.y += theBVHOffset;
+      aData.z += theBVHOffset;
+  
+      vec3 aNodeMinLft = texelFetch (uObjectMinPointTexture, aData.y).xyz;
+      vec3 aNodeMaxLft = texelFetch (uObjectMaxPointTexture, aData.y).xyz;
+      vec3 aNodeMinRgh = texelFetch (uObjectMinPointTexture, aData.z).xyz;
+      vec3 aNodeMaxRgh = texelFetch (uObjectMaxPointTexture, aData.z).xyz;
 
       vec3 aTime0 = (aNodeMinLft - theRay.Origin) * theInverse;
       vec3 aTime1 = (aNodeMaxLft - theRay.Origin) * theInverse;
@@ -290,9 +306,9 @@ ivec4 ObjectNearestHit (in int theBVHOffset, in int theVrtOffset, in int theTrgO
       {
         ivec4 aTriangle = texelFetch (uGeometryTriangTexture, anIdx + theTrgOffset);
 
-        vec3 aPoint0 = texelFetch (uGeometryVertexTexture, aTriangle.x + theVrtOffset).xyz;
-        vec3 aPoint1 = texelFetch (uGeometryVertexTexture, aTriangle.y + theVrtOffset).xyz;
-        vec3 aPoint2 = texelFetch (uGeometryVertexTexture, aTriangle.z + theVrtOffset).xyz;
+        vec3 aPoint0 = texelFetch (uGeometryVertexTexture, aTriangle.x += theVrtOffset).xyz;
+        vec3 aPoint1 = texelFetch (uGeometryVertexTexture, aTriangle.y += theVrtOffset).xyz;
+        vec3 aPoint2 = texelFetch (uGeometryVertexTexture, aTriangle.z += theVrtOffset).xyz;
 
         float aTime = IntersectTriangle (theRay,
                                          aPoint0,
@@ -319,6 +335,14 @@ ivec4 ObjectNearestHit (in int theBVHOffset, in int theVrtOffset, in int theTrgO
   return aTriIndex;
 }
 
+#define MATERIAL_AMBN(index) (7 * index + 0)
+#define MATERIAL_DIFF(index) (7 * index + 1)
+#define MATERIAL_SPEC(index) (7 * index + 2)
+#define MATERIAL_EMIS(index) (7 * index + 3)
+#define MATERIAL_REFL(index) (7 * index + 4)
+#define MATERIAL_REFR(index) (7 * index + 5)
+#define MATERIAL_TRAN(index) (7 * index + 6)
+
 // =======================================================================
 // function : ObjectAnyHit
 // purpose  : Finds intersection with any object triangle
@@ -326,23 +350,30 @@ ivec4 ObjectNearestHit (in int theBVHOffset, in int theVrtOffset, in int theTrgO
 float ObjectAnyHit (in int theBVHOffset, in int theVrtOffset, in int theTrgOffset,
   in SRay theRay, in vec3 theInverse, in float theDistance, in int theSentinel)
 {
-  int aHead = theSentinel; // stack pointer
-  int aNode = 0;           // node to visit
+  int aHead = theSentinel;  // stack pointer
+  int aNode = theBVHOffset; // node to visit
 
-  float aTimeOut;
-  float aTimeLft;
-  float aTimeRgh;
+#ifdef TRANSPARENT_SHADOWS
+  float aFactor = 1.0f;
+#endif
 
   while (true)
   {
-    ivec4 aData = texelFetch (uObjectNodeInfoTexture, aNode + theBVHOffset);
+    ivec4 aData = texelFetch (uObjectNodeInfoTexture, aNode);
 
     if (aData.x == 0) // if inner node
     {
-      vec3 aNodeMinLft = texelFetch (uObjectMinPointTexture, aData.y + theBVHOffset).xyz;
-      vec3 aNodeMaxLft = texelFetch (uObjectMaxPointTexture, aData.y + theBVHOffset).xyz;
-      vec3 aNodeMinRgh = texelFetch (uObjectMinPointTexture, aData.z + theBVHOffset).xyz;
-      vec3 aNodeMaxRgh = texelFetch (uObjectMaxPointTexture, aData.z + theBVHOffset).xyz;
+      float aTimeOut;
+      float aTimeLft;
+      float aTimeRgh;
+      
+      aData.y += theBVHOffset;
+      aData.z += theBVHOffset;
+  
+      vec3 aNodeMinLft = texelFetch (uObjectMinPointTexture, aData.y).xyz;
+      vec3 aNodeMaxLft = texelFetch (uObjectMaxPointTexture, aData.y).xyz;
+      vec3 aNodeMinRgh = texelFetch (uObjectMinPointTexture, aData.z).xyz;
+      vec3 aNodeMaxRgh = texelFetch (uObjectMaxPointTexture, aData.z).xyz;
 
       vec3 aTime0 = (aNodeMinLft - theRay.Origin) * theInverse;
       vec3 aTime1 = (aNodeMaxLft - theRay.Origin) * theInverse;
@@ -380,8 +411,13 @@ float ObjectAnyHit (in int theBVHOffset, in int theVrtOffset, in int theTrgOffse
         }
         else
         {
+#ifdef TRANSPARENT_SHADOWS
+          if (aHead == theSentinel)
+            return aFactor;
+#else
           if (aHead == theSentinel)
             return 1.0f;
+#endif
 
           aNode = Stack[aHead--];
         }
@@ -406,19 +442,35 @@ float ObjectAnyHit (in int theBVHOffset, in int theVrtOffset, in int theTrgOffse
                                          aPoint2,
                                          aParams,
                                          aNormal);
-                                         
+
+#ifdef TRANSPARENT_SHADOWS
+        if (aTime < theDistance)
+        {
+          aFactor *= 1.0f - texelFetch (uRaytraceMaterialTexture, MATERIAL_TRAN (aTriangle.w)).x;
+        }
+#else
         if (aTime < theDistance)
           return 0.0f;
+#endif
       }
       
+#ifdef TRANSPARENT_SHADOWS
+      if (aHead == theSentinel || aFactor < 0.1f)
+        return aFactor;
+#else
       if (aHead == theSentinel)
         return 1.0f;
+#endif
 
       aNode = Stack[aHead--];
     }
   }
 
+#ifdef TRANSPARENT_SHADOWS
+  return aFactor;
+#else
   return 1.0f;
+#endif
 }
 
 // =======================================================================
@@ -431,10 +483,6 @@ ivec4 SceneNearestHit (in SRay theRay, in vec3 theInverse, inout SIntersect theH
   int aNode =  0; // node to visit
 
   ivec4 aHitObject = INALID_HIT;
-  
-  float aTimeOut;
-  float aTimeLft;
-  float aTimeRgh;
 
   while (true)
   {
@@ -454,34 +502,31 @@ ivec4 SceneNearestHit (in SRay theRay, in vec3 theInverse, inout SIntersect theH
       {
         // fetch object transformation
         int anObjectId = aData.x - 1;
+
         vec4 aInvTransf0 = texelFetch (uSceneTransformTexture, anObjectId * 4 + 0);
         vec4 aInvTransf1 = texelFetch (uSceneTransformTexture, anObjectId * 4 + 1);
         vec4 aInvTransf2 = texelFetch (uSceneTransformTexture, anObjectId * 4 + 2);
         vec4 aInvTransf3 = texelFetch (uSceneTransformTexture, anObjectId * 4 + 3);
 
-        SRay aNewRay;
+        SRay aTrsfRay = SRay (
+          MatrixColMultiplyPnt (theRay.Origin, aInvTransf0, aInvTransf1, aInvTransf2, aInvTransf3),
+          MatrixColMultiplyDir (theRay.Direct, aInvTransf0, aInvTransf1, aInvTransf2, aInvTransf3));
 
-        aNewRay.Origin = MatrixColMultiply (vec4 (theRay.Origin, 1.0f), 
-          aInvTransf0, aInvTransf1, aInvTransf2, aInvTransf3);
+        vec3 aTrsfInverse = 1.0f / max (abs (aTrsfRay.Direct), SMALL);
 
-        aNewRay.Direct = MatrixColMultiply (vec4 (theRay.Direct, 0.0f), 
-          aInvTransf0, aInvTransf1, aInvTransf2, aInvTransf3);
-
-        vec3 aNewInverse = 1.0f / max (abs (aNewRay.Direct), SMALL);
-        
-        aNewInverse.x = aNewRay.Direct.x < 0.0f ? -aNewInverse.x : aNewInverse.x;
-        aNewInverse.y = aNewRay.Direct.y < 0.0f ? -aNewInverse.y : aNewInverse.y;
-        aNewInverse.z = aNewRay.Direct.z < 0.0f ? -aNewInverse.z : aNewInverse.z;
+        aTrsfInverse.x = aTrsfRay.Direct.x < 0.f ? -aTrsfInverse.x : aTrsfInverse.x;
+        aTrsfInverse.y = aTrsfRay.Direct.y < 0.f ? -aTrsfInverse.y : aTrsfInverse.y;
+        aTrsfInverse.z = aTrsfRay.Direct.z < 0.f ? -aTrsfInverse.z : aTrsfInverse.z;
 
         ivec4 aTriIndex = ObjectNearestHit (
-          aData.y, aData.z, aData.w, aNewRay, aNewInverse, theHit, aHead);
+          aData.y, aData.z, aData.w, aTrsfRay, aTrsfInverse, theHit, aHead);
 
         if (aTriIndex.x != -1)
         {
-          aHitObject = ivec4 (aTriIndex.x + aData.z,  // vertex 0
-                              aTriIndex.y + aData.z,  // vertex 1
-                              aTriIndex.z + aData.z,  // vertex 2
-                              aTriIndex.w);           // material
+          aHitObject = ivec4 (aTriIndex.x,  // vertex 0
+                              aTriIndex.y,  // vertex 1
+                              aTriIndex.z,  // vertex 2
+                              aTriIndex.w); // material
 
           theObjectId = anObjectId;
         }
@@ -494,6 +539,10 @@ ivec4 SceneNearestHit (in SRay theRay, in vec3 theInverse, inout SIntersect theH
     }
     else // if inner node
     {
+      float aTimeOut;
+      float aTimeLft;
+      float aTimeRgh;
+
       vec3 aNodeMinLft = texelFetch (uSceneMinPointTexture, aData.y).xyz;
       vec3 aNodeMaxLft = texelFetch (uSceneMaxPointTexture, aData.y).xyz;
       vec3 aNodeMinRgh = texelFetch (uSceneMinPointTexture, aData.z).xyz;
@@ -555,10 +604,10 @@ float SceneAnyHit (in SRay theRay, in vec3 theInverse, in float theDistance)
 {
   int aHead = -1; // stack pointer
   int aNode =  0; // node to visit
-  
-  float aTimeOut;
-  float aTimeLft;
-  float aTimeRgh;
+
+#ifdef TRANSPARENT_SHADOWS
+  float aFactor = 1.0f;
+#endif
 
   while (true)
   {
@@ -568,35 +617,44 @@ float SceneAnyHit (in SRay theRay, in vec3 theInverse, in float theDistance)
     {
       // fetch object transformation
       int anObjectId = aData.x - 1;
+
       vec4 aInvTransf0 = texelFetch (uSceneTransformTexture, anObjectId * 4 + 0);
       vec4 aInvTransf1 = texelFetch (uSceneTransformTexture, anObjectId * 4 + 1);
       vec4 aInvTransf2 = texelFetch (uSceneTransformTexture, anObjectId * 4 + 2);
       vec4 aInvTransf3 = texelFetch (uSceneTransformTexture, anObjectId * 4 + 3);
 
-      SRay aNewRay;
+      SRay aTrsfRay = SRay (
+        MatrixColMultiplyPnt (theRay.Origin, aInvTransf0, aInvTransf1, aInvTransf2, aInvTransf3),
+        MatrixColMultiplyDir (theRay.Direct, aInvTransf0, aInvTransf1, aInvTransf2, aInvTransf3));
 
-      aNewRay.Origin = MatrixColMultiply (vec4 (theRay.Origin, 1.0f), 
-        aInvTransf0, aInvTransf1, aInvTransf2, aInvTransf3);
+      vec3 aTrsfInverse = 1.0f / max (abs (aTrsfRay.Direct), SMALL);
 
-      aNewRay.Direct = MatrixColMultiply (vec4 (theRay.Direct, 0.0f), 
-        aInvTransf0, aInvTransf1, aInvTransf2, aInvTransf3);
+      aTrsfInverse.x = aTrsfRay.Direct.x < 0.0f ? -aTrsfInverse.x : aTrsfInverse.x;
+      aTrsfInverse.y = aTrsfRay.Direct.y < 0.0f ? -aTrsfInverse.y : aTrsfInverse.y;
+      aTrsfInverse.z = aTrsfRay.Direct.z < 0.0f ? -aTrsfInverse.z : aTrsfInverse.z;
 
-      vec3 aNewInverse = 1.0f / max (abs (aNewRay.Direct), SMALL);
-      
-      aNewInverse.x = aNewRay.Direct.x < 0.0f ? -aNewInverse.x : aNewInverse.x;
-      aNewInverse.y = aNewRay.Direct.y < 0.0f ? -aNewInverse.y : aNewInverse.y;
-      aNewInverse.z = aNewRay.Direct.z < 0.0f ? -aNewInverse.z : aNewInverse.z;
+#ifdef TRANSPARENT_SHADOWS
+      aFactor *= ObjectAnyHit (
+        aData.y, aData.z, aData.w, aTrsfRay, aTrsfInverse, theDistance, aHead);
 
+      if (aHead < 0 || aFactor < 0.1f)
+        return aFactor;
+#else
       bool isShadow = 0.0f == ObjectAnyHit (
-        aData.y, aData.z, aData.w, aNewRay, aNewInverse, theDistance, aHead);
+        aData.y, aData.z, aData.w, aTrsfRay, aTrsfInverse, theDistance, aHead);
         
       if (aHead < 0 || isShadow)
         return isShadow ? 0.0f : 1.0f;
+#endif
             
       aNode = Stack[aHead--];
     }
     else // if inner node
     {
+      float aTimeOut;
+      float aTimeLft;
+      float aTimeRgh;
+
       vec3 aNodeMinLft = texelFetch (uSceneMinPointTexture, aData.y).xyz;
       vec3 aNodeMaxLft = texelFetch (uSceneMaxPointTexture, aData.y).xyz;
       vec3 aNodeMinRgh = texelFetch (uSceneMinPointTexture, aData.z).xyz;
@@ -638,8 +696,13 @@ float SceneAnyHit (in SRay theRay, in vec3 theInverse, in float theDistance)
         }
         else
         {
+#ifdef TRANSPARENT_SHADOWS
+          if (aHead < 0)
+            return aFactor;
+#else
           if (aHead < 0)
             return 1.0f;
+#endif
 
           aNode = Stack[aHead--];
         }
@@ -647,7 +710,11 @@ float SceneAnyHit (in SRay theRay, in vec3 theInverse, in float theDistance)
     }
   }
   
+#ifdef TRANSPARENT_SHADOWS
+  return aFactor;
+#else
   return 1.0f;
+#endif
 }
 
 #define PI 3.1415926f
@@ -683,7 +750,7 @@ vec3 SmoothNormal (in vec2 theUV, in ivec4 theTriangle)
 
 // =======================================================================
 // function : Refract
-// purpose  :
+// purpose  : Computes refraction ray (also handles TIR)
 // =======================================================================
 vec3 Refract (in vec3 theInput,
               in vec3 theNormal,
@@ -706,18 +773,10 @@ vec3 Refract (in vec3 theInput,
   float aNdotT = sqrt (1.0f - aSquare);
   
   return normalize (anIndex * theInput -
-  (anIndex * aNdotI + (aNdotI < 0.0f ? aNdotT : -aNdotT)) * theNormal);
+    (anIndex * aNdotI + (aNdotI < 0.0f ? aNdotT : -aNdotT)) * theNormal);
 }
 
-#define THRESHOLD vec3 (0.1f, 0.1f, 0.1f)
-
-#define MATERIAL_AMBN(index) (7 * index + 0)
-#define MATERIAL_DIFF(index) (7 * index + 1)
-#define MATERIAL_SPEC(index) (7 * index + 2)
-#define MATERIAL_EMIS(index) (7 * index + 3)
-#define MATERIAL_REFL(index) (7 * index + 4)
-#define MATERIAL_REFR(index) (7 * index + 5)
-#define MATERIAL_TRAN(index) (7 * index + 6)
+#define THRESHOLD vec3 (0.1f)
 
 #define LIGHT_POS(index) (2 * index + 1)
 #define LIGHT_PWR(index) (2 * index + 0)
@@ -733,7 +792,7 @@ vec4 Radiance (in SRay theRay, in vec3 theInverse)
 
   int anObjectId;
   
-  for (int aDepth = 0; aDepth < 5; ++aDepth)
+  for (int aDepth = 0; aDepth < TRACE_DEPTH; ++aDepth)
   {
     SIntersect aHit = SIntersect (MAXFLOAT, vec2 (ZERO), ZERO);
     
@@ -779,10 +838,9 @@ vec4 Radiance (in SRay theRay, in vec3 theInverse)
     vec4 aInvTransf0 = texelFetch (uSceneTransformTexture, anObjectId * 4 + 0);
     vec4 aInvTransf1 = texelFetch (uSceneTransformTexture, anObjectId * 4 + 1);
     vec4 aInvTransf2 = texelFetch (uSceneTransformTexture, anObjectId * 4 + 2);
-    vec4 aInvTransf3 = texelFetch (uSceneTransformTexture, anObjectId * 4 + 3);
 
-    aNormal = MatrixRowMultiply (vec4 (aNormal, 0.0f), aInvTransf0, aInvTransf1, aInvTransf2, aInvTransf3);
-    aNormal = normalize (aNormal);
+    aNormal = normalize (MatrixRowMultiplyDir (
+      aNormal, aInvTransf0, aInvTransf1, aInvTransf2));
     
     aHit.Normal = normalize (aHit.Normal);
     
@@ -825,14 +883,14 @@ vec4 Radiance (in SRay theRay, in vec3 theInverse)
  
         float aLdotN = dot (aShadow.Direct, aNormal);
         
-        if (aOpacity.y > 0.0f)    // force two-sided lighting
+        if (aOpacity.y > 0.0f)   // force two-sided lighting
           aLdotN = abs (aLdotN); // for transparent surfaces
           
         if (aLdotN > 0.0f)
         {
           float aRdotV = dot (reflect (aShadow.Direct, aNormal), theRay.Direct);
           
-          aResult.xyz += aWeight.xyz * aOpacity.x * aIntensity *
+          aResult.xyz += aWeight.xyz * (aOpacity.x * aVisibility) * aIntensity *
             (aDiffuse * aLdotN + aSpecular.xyz * pow (max (0.0f, aRdotV), aSpecular.w));
         }
       }
@@ -845,15 +903,18 @@ vec4 Radiance (in SRay theRay, in vec3 theInverse)
     {
       aWeight *= aOpacity.y;
       
-      theRay.Direct = Refract (theRay.Direct, aNormal, aOpacity.z, aOpacity.w);
+      if (aOpacity.z != 1.0f)
+      {
+        theRay.Direct = Refract (theRay.Direct, aNormal, aOpacity.z, aOpacity.w);
 
-      theInverse = 1.0f / max (abs (theRay.Direct), SMALL);
-      
-      theInverse.x = theRay.Direct.x < 0.0f ? -theInverse.x : theInverse.x;
-      theInverse.y = theRay.Direct.y < 0.0f ? -theInverse.y : theInverse.y;
-      theInverse.z = theRay.Direct.z < 0.0f ? -theInverse.z : theInverse.z;
-      
-      aPoint += aHit.Normal * (dot (aHit.Normal, theRay.Direct) >= 0.0f ? uSceneEpsilon : -uSceneEpsilon);
+        theInverse = 1.0f / max (abs (theRay.Direct), SMALL);
+        
+        theInverse.x = theRay.Direct.x < 0.0f ? -theInverse.x : theInverse.x;
+        theInverse.y = theRay.Direct.y < 0.0f ? -theInverse.y : theInverse.y;
+        theInverse.z = theRay.Direct.z < 0.0f ? -theInverse.z : theInverse.z;
+
+        aPoint += aHit.Normal * (dot (aHit.Normal, theRay.Direct) >= 0.0f ? uSceneEpsilon : -uSceneEpsilon);     
+      }
     }
     else
     {

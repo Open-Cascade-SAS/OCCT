@@ -3,6 +3,8 @@ puts "Ray Tracing - check refraction"
 puts "========"
 
 vinit View1
+vclear
+vrenderparams -rasterization
 vsetdispmode 1
 vsetgradientbg 180 200 255 180 180 180 2
 
@@ -52,7 +54,7 @@ vsetmaterial B3 diamond
 
 vsetmaterial wall1 stone
 vsetmaterial wall2 stone
-vsetmaterial wall3 stone
+vsetmaterial wall3 pewter
 
 vsetcolor wall1 red
 vsetcolor wall2 green
@@ -70,5 +72,4 @@ vturnview 0 -0.3 0
 vfit
 vlight change 0 pos 1 1 1
 vlight add directional
-vraytrace 1
-vsetraytracemode aa=0 shad=0 refl=0
+vrenderparams -raytrace -raydepth 5 -shadows off -reflections -fsaa

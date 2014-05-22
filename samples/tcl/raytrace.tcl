@@ -31,7 +31,6 @@ vfit
 
 # set ray tracing
 puts "Trying raytrace mode..."
-if { ! [catch {vraytrace 1}] } {
+if { ! [catch {vrenderparams -raytrace -shadows -reflections -fsaa -rayDepth 5}] } {
   vtextureenv on 1
-  vsetraytracemode shad=1 refl=1 aa=1
 }

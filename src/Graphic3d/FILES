@@ -67,3 +67,4 @@ Graphic3d_SequenceOfHClipPlane_Handle.hxx
 Graphic3d_Camera.cxx
 Graphic3d_Camera.hxx
 Graphic3d_Camera_Handle.hxx
+Graphic3d_RenderingParams.hxx

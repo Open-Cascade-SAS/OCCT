@@ -6395,84 +6395,207 @@ static int VLight (Draw_Interpretor& theDi,
   return 0;
 }
 
-//=======================================================================
-//function : VRaytrace
-//purpose  : Enables/disables OpenCL-based ray-tracing
-//=======================================================================
-
-static Standard_Integer VRaytrace (Draw_Interpretor& ,
-                                   Standard_Integer  theArgNb,
-                                   const char**      theArgVec)
+inline Standard_Boolean parseOnOff (Standard_CString  theArg,
+                                    Standard_Boolean& theIsOn)
 {
-  Handle(V3d_View) aView = ViewerTest::CurrentView();
-  if (aView.IsNull())
+  TCollection_AsciiString aFlag (theArg);
+  aFlag.LowerCase();
+  if (aFlag == "on")
   {
-    std::cerr << "Use 'vinit' command before " << theArgVec[0] << "\n";
-    return 1;
+    theIsOn = Standard_True;
+    return Standard_True;
   }
-
-  if (theArgNb < 2
-   || Draw::Atoi (theArgVec[1]))
+  else if (aFlag == "off")
   {
-    aView->SetRaytracingMode();
+    theIsOn = Standard_False;
+    return Standard_True;
   }
-  else
-  {
-    aView->SetRasterizationMode();
-  }
-  aView->Redraw();
-  return 0;
+  return Standard_False;
 }
 
 //=======================================================================
-//function : VSetRaytraceMode
-//purpose  : Enables/disables features of OpenCL-based ray-tracing
+//function : VRenderParams
+//purpose  : Enables/disables rendering features
 //=======================================================================
 
-static Standard_Integer VSetRaytraceMode (Draw_Interpretor&,
-                                          Standard_Integer theArgNb,
-                                          const char ** theArgVec)
+static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
+                                       Standard_Integer  theArgNb,
+                                       const char**      theArgVec)
 {
   Handle(V3d_View) aView = ViewerTest::CurrentView();
   if (aView.IsNull())
   {
-    std::cerr << "Use 'vinit' command before " << theArgVec[0] << "\n";
-    return 1;
-  }
-  else if (theArgNb < 2)
-  {
-    std::cerr << "Usage : " << theArgVec[0] << " [shad=0|1] [refl=0|1] [aa=0|1]\n";
+    std::cerr << "Error: no active viewer!\n";
     return 1;
   }
 
+  Graphic3d_RenderingParams& aParams = aView->ChangeRenderingParams();
+
+  if (theArgNb < 2)
+  {
+    theDI << "renderMode:  ";
+    switch (aParams.Method)
+    {
+      case Graphic3d_RM_RASTERIZATION: theDI << "rasterization "; break;
+      case Graphic3d_RM_RAYTRACING:    theDI << "raytrace ";      break;
+    }
+    theDI << "\n";
+    theDI << "fsaa:        " << (aParams.IsAntialiasingEnabled      ? "on" : "off") << "\n";
+    theDI << "shadows:     " << (aParams.IsShadowEnabled            ? "on" : "off") << "\n";
+    theDI << "reflections: " << (aParams.IsReflectionEnabled        ? "on" : "off") << "\n";
+    theDI << "rayDepth:    " <<  aParams.RaytracingDepth                            << "\n";
+    theDI << "gleam:       " << (aParams.IsTransparentShadowEnabled ? "on" : "off") << "\n";
+    return 0;
+  }
+
+  Standard_Boolean toPrint = Standard_False;
   for (Standard_Integer anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
   {
-    const TCollection_AsciiString anArg (theArgVec[anArgIter]);
+    Standard_CString        anArg (theArgVec[anArgIter]);
+    TCollection_AsciiString aFlag (anArg);
+    aFlag.LowerCase();
+    if (aFlag == "-echo"
+     || aFlag == "-print")
+    {
+      toPrint = Standard_True;
+    }
+    else if (aFlag == "-mode"
+          || aFlag == "-rendermode"
+          || aFlag == "-render_mode")
+    {
+      if (toPrint)
+      {
+        switch (aParams.Method)
+        {
+          case Graphic3d_RM_RASTERIZATION: theDI << "rasterization "; break;
+          case Graphic3d_RM_RAYTRACING:    theDI << "ray-tracing ";   break;
+        }
+        continue;
+      }
+      else
+      {
+        std::cerr << "Error: wrong syntax at argument '" << anArg << "'\n";
+        return 1;
+      }
+    }
+    else if (aFlag == "-ray"
+          || aFlag == "-raytrace")
+    {
+      if (toPrint)
+      {
+        theDI << (aParams.Method == Graphic3d_RM_RAYTRACING ? "true" : "false") << " ";
+        continue;
+      }
 
-    if (anArg.Search ("shad=") > -1)
-    {
-      if (anArg.Token ("=", 2).IntegerValue() != 0)
-        aView->EnableRaytracedShadows();
-      else
-        aView->DisableRaytracedShadows();
+      aParams.Method = Graphic3d_RM_RAYTRACING;
     }
-    else if (anArg.Search ("refl=") > -1)
+    else if (aFlag == "-rast"
+          || aFlag == "-raster"
+          || aFlag == "-rasterization")
     {
-      if (anArg.Token ("=", 2).IntegerValue() != 0)
-        aView->EnableRaytracedReflections();
-      else
-        aView->DisableRaytracedReflections();
+      if (toPrint)
+      {
+        theDI << (aParams.Method == Graphic3d_RM_RASTERIZATION ? "true" : "false") << " ";
+        continue;
+      }
+
+      aParams.Method = Graphic3d_RM_RASTERIZATION;
     }
-    else if (anArg.Search ("aa=") > -1)
+    else if (aFlag == "-raydepth"
+          || aFlag == "-ray_depth")
     {
-      if (anArg.Token ("=", 2).IntegerValue() != 0)
-        aView->EnableRaytracedAntialiasing();
+      if (toPrint)
+      {
+        theDI << aParams.RaytracingDepth << " ";
+        continue;
+      }
+      else if (++anArgIter >= theArgNb)
+      {
+        std::cerr << "Error: wrong syntax at argument '" << anArg << "'\n";
+        return 1;
+      }
+
+      const Standard_Integer aDepth = Draw::Atoi (theArgVec[anArgIter]);
+      if (aDepth < 1 || aDepth > 10)
+      {
+        std::cerr << "Error: invalid ray-tracing depth " << aDepth << ". Should be within range [1; 10]\n";
+        return 1;
+      }
       else
-        aView->DisableRaytracedAntialiasing();
+      {
+        aParams.RaytracingDepth = aDepth;
+      }
+    }
+    else if (aFlag == "-shad"
+          || aFlag == "-shadows")
+    {
+      if (toPrint)
+      {
+        theDI << (aParams.IsShadowEnabled ? "on" : "off") << " ";
+        continue;
+      }
+
+      Standard_Boolean toEnable = Standard_True;
+      if (++anArgIter < theArgNb
+      && !parseOnOff (theArgVec[anArgIter], toEnable))
+      {
+        --anArgIter;
+      }
+      aParams.IsShadowEnabled = toEnable;
+    }
+    else if (aFlag == "-refl"
+          || aFlag == "-reflections")
+    {
+      if (toPrint)
+      {
+        theDI << (aParams.IsReflectionEnabled ? "on" : "off") << " ";
+        continue;
+      }
+
+      Standard_Boolean toEnable = Standard_True;
+      if (++anArgIter < theArgNb
+      && !parseOnOff (theArgVec[anArgIter], toEnable))
+      {
+        --anArgIter;
+      }
+      aParams.IsReflectionEnabled = toEnable;
+    }
+    else if (aFlag == "-fsaa")
+    {
+      if (toPrint)
+      {
+        theDI << (aParams.IsAntialiasingEnabled ? "on" : "off") << " ";
+        continue;
+      }
+
+      Standard_Boolean toEnable = Standard_True;
+      if (++anArgIter < theArgNb
+      && !parseOnOff (theArgVec[anArgIter], toEnable))
+      {
+        --anArgIter;
+      }
+      aParams.IsAntialiasingEnabled = toEnable;
+    }
+    else if (aFlag == "-gleam")
+    {
+      if (toPrint)
+      {
+        theDI << (aParams.IsTransparentShadowEnabled ? "on" : "off") << " ";
+        continue;
+      }
+
+      Standard_Boolean toEnable = Standard_True;
+      if (++anArgIter < theArgNb
+      && !parseOnOff (theArgVec[anArgIter], toEnable))
+      {
+        --anArgIter;
+      }
+      aParams.IsTransparentShadowEnabled = toEnable;
     }
     else
     {
-      std::cerr << "Unknown argument: " << anArg << "\n";
+      std::cout << "Error: wrong syntax, unknown flag '" << anArg << "'\n";
+      return 1;
     }
   }
 
@@ -6835,10 +6958,14 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n\n        example: vlight add positional head 1 pos 0 1 1 color red"
     "\n        example: vlight change 0 direction 0 -1 0 linearAttenuation 0.2",
     __FILE__, VLight, group);
-  theCommands.Add("vraytrace",
-    "vraytrace 0|1",
-    __FILE__,VRaytrace,group);
-  theCommands.Add("vsetraytracemode",
-    "vsetraytracemode [shad=0|1] [refl=0|1] [aa=0|1]",
-    __FILE__,VSetRaytraceMode,group);
+  theCommands.Add("vrenderparams",
+    "\n    Manages rendering parameters: "
+    "\n      '-rayTrace'            Enables  GPU ray-tracing"
+    "\n      '-raster'              Disables GPU ray-tracing"
+    "\n      '-rayDepth    0..10'   Defines maximum ray-tracing depth"
+    "\n      '-shadows     on|off'  Enables/disables shadows rendering"
+    "\n      '-reflections on|off'  Enables/disables specular reflections"
+    "\n      '-fsaa        on|off'  Enables/disables adaptive anti-aliasing"
+    "\n      '-gleam       on|off'  Enables/disables transparency shadow effects",
+    __FILE__, VRenderParams, group);
 }

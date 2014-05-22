@@ -18,17 +18,18 @@ restore $aShape2 s2
 vdisplay s1 s2
 vsetmaterial s1 Silver
 vsetmaterial s2 Pewter
+vsetlocation s1 0.0 0.1 0.0
 vlight change 0 pos -1 1 1
 vfit
 
 # activate ray-tracing
-vraytrace 1
+vrenderparams -raytrace
 
 set aModeNum 0
-for { set aAAMode 0 } { $aAAMode <= 1 } { incr aAAMode } {
-  for { set aReflMode 0 } { $aReflMode <= 1 } { incr aReflMode } {
-    for { set aShadMode 0 } { $aShadMode <= 1 } { incr aShadMode } {
-      vsetraytracemode shad=$aShadMode refl=$aReflMode aa=$aAAMode
+foreach aFSAAMode {off on} {
+  foreach aReflMode {off on} {
+    foreach aShadMode {off on} {
+      vrenderparams -shadows $aShadMode -reflections $aReflMode -fsaa $aFSAAMode
       vdump $imagedir/${casename}_${aModeNum}.png
       incr aModeNum
     }
@@ -36,9 +37,18 @@ for { set aAAMode 0 } { $aAAMode <= 1 } { incr aAAMode } {
 }
 
 vtextureenv on 5
-for { set aAAMode 0 } { $aAAMode <= 1 } { incr aAAMode } {
-  for { set aShadMode 0 } { $aShadMode <= 1 } { incr aShadMode } {
-    vsetraytracemode shad=$aShadMode refl=1 aa=$aAAMode
+foreach aFSAAMode {off on} {
+  foreach aShadMode {off on} {
+    vrenderparams -shadows $aShadMode -reflections -fsaa $aFSAAMode
+    vdump $imagedir/${casename}_${aModeNum}.png
+    incr aModeNum
+  }
+}
+
+vsettransparency s2 0.5
+for { set aDepth 2 } { $aDepth <= 5 } { incr aDepth } {
+  foreach aFSAAMode {off on} {
+    vrenderparams -raydepth $aDepth -shadows off -fsaa $aFSAAMode
     vdump $imagedir/${casename}_${aModeNum}.png
     incr aModeNum
   }

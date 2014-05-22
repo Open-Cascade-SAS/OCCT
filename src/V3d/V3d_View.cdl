@@ -135,6 +135,8 @@ uses
         PrintAlgo                         from Aspect,
         ClipPlane_Handle                  from Graphic3d,
         SequenceOfHClipPlane              from Graphic3d,
+        RenderingMode                     from Graphic3d,
+        RenderingParams                   from Graphic3d,
         XYZ                               from gp
 raises
 
@@ -1627,37 +1629,15 @@ is
     -- @param theDXv [in] the translation in "x" direction.
     -- @param theDYv [in] the translation in "y" direction.
 
-        SetRaytracingMode (me : mutable) is static;
-     ---Level: Public
-     ---Purpose: enables OpenCL-based ray-tracing mode
-
-        SetRasterizationMode (me : mutable) is static;
-     ---Level: Public
-     ---Purpose: enables OpenGL-based rasterization mode
-
-        EnableRaytracedShadows (me : mutable) is static;
-     ---Level: Public
-     ---Purpose: enables sharp shadows in OpenCL-based ray-tracing mode
-
-        EnableRaytracedReflections (me : mutable) is static;
-     ---Level: Public
-     ---Purpose: enables specular reflections in OpenCL-based ray-tracing mode
-
-        EnableRaytracedAntialiasing (me : mutable) is static;
-     ---Level: Public
-     ---Purpose: enables antialiasing in OpenCL-based ray-tracing mode
-
-        DisableRaytracedShadows (me : mutable) is static;
-     ---Level: Public
-     ---Purpose: disables sharp shadows in OpenCL-based ray-tracing mode
-
-        DisableRaytracedReflections (me : mutable) is static;
-     ---Level: Public
-     ---Purpose: disables specular reflections in OpenCL-based ray-tracing mode
-
-        DisableRaytracedAntialiasing (me : mutable) is static;
-     ---Level: Public
-     ---Purpose: disables antialiasing in OpenCL-based ray-tracing mode
+    RenderingParams (me) returns RenderingParams from Graphic3d is static;
+    ---C++: return const &
+    ---Level: Public
+    ---Purpose: Returns current rendering parameters and effect settings.
+    
+    ChangeRenderingParams (me : mutable) returns RenderingParams from Graphic3d is static;
+    ---C++: return &
+    ---Level: Public
+    ---Purpose: Returns reference to current rendering parameters and effect settings.
 
 fields
 

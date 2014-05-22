@@ -467,7 +467,7 @@ OpenGl_TriangleSet* OpenGl_Workspace::AddRaytracePrimitiveArray (const OpenGl_Pr
   }
 
 #ifdef RAY_TRACE_PRINT_INFO
-  switch (aPArray->DrawMode())
+  switch (theArray->DrawMode())
   {
     case GL_POLYGON:        std::cout << "\tAdding GL_POLYGON\n";        break;
     case GL_TRIANGLES:      std::cout << "\tAdding GL_TRIANGLES\n";      break;
@@ -546,7 +546,7 @@ OpenGl_TriangleSet* OpenGl_Workspace::AddRaytracePrimitiveArray (const OpenGl_Pr
     if (!aBounds.IsNull())
     {
   #ifdef RAY_TRACE_PRINT_INFO
-      std::cout << "\tNumber of bounds = " << aPArray->num_bounds << std::endl;
+      std::cout << "\tNumber of bounds = " << aBounds->NbBounds << std::endl;
   #endif
 
       Standard_Integer aBoundStart = 0;
@@ -1119,7 +1119,7 @@ Standard_Boolean OpenGl_Workspace::SafeFailBack (const TCollection_ExtendedStrin
 // function : InitRaytraceResources
 // purpose  : Initializes OpenGL/GLSL shader programs
 // =======================================================================
-Standard_Boolean OpenGl_Workspace::InitRaytraceResources()
+Standard_Boolean OpenGl_Workspace::InitRaytraceResources (const Graphic3d_CView& theCView)
 {
   Standard_Boolean aToRebuildShaders = Standard_False;
 
@@ -1131,39 +1131,60 @@ Standard_Boolean OpenGl_Workspace::InitRaytraceResources()
     const Standard_Integer aRequiredStackSize =
       myRaytraceGeometry.HighLevelTreeDepth() + myRaytraceGeometry.BottomLevelTreeDepth();
 
-    if (myTraversalStackSize < aRequiredStackSize)
+    if (myRaytraceParameters.StackSize < aRequiredStackSize)
     {
-      myTraversalStackSize = Max (aRequiredStackSize, THE_DEFAULT_STACK_SIZE);
+      myRaytraceParameters.StackSize = Max (aRequiredStackSize, THE_DEFAULT_STACK_SIZE);
 
       aToRebuildShaders = Standard_True;
     }
     else
     {
-      if (aRequiredStackSize < myTraversalStackSize)
+      if (aRequiredStackSize < myRaytraceParameters.StackSize)
       {
-        if (myTraversalStackSize > THE_DEFAULT_STACK_SIZE)
+        if (myRaytraceParameters.StackSize > THE_DEFAULT_STACK_SIZE)
         {
-          myTraversalStackSize = Max (aRequiredStackSize, THE_DEFAULT_STACK_SIZE);
-
+          myRaytraceParameters.StackSize = Max (aRequiredStackSize, THE_DEFAULT_STACK_SIZE);
           aToRebuildShaders = Standard_True;
         }
       }
     }
 
+    if (theCView.RenderParams.RaytracingDepth != myRaytraceParameters.TraceDepth)
+    {
+      myRaytraceParameters.TraceDepth = theCView.RenderParams.RaytracingDepth;
+      aToRebuildShaders = Standard_True;
+    }
+
+    if (theCView.RenderParams.IsTransparentShadowEnabled != myRaytraceParameters.TransparentShadows)
+    {
+      myRaytraceParameters.TransparentShadows = theCView.RenderParams.IsTransparentShadowEnabled;
+      aToRebuildShaders = Standard_True;
+    }
+
     if (aToRebuildShaders)
     {
 #ifdef RAY_TRACE_PRINT_INFO
-      std::cout << "Info: Rebuild shaders with stack size: " << myTraversalStackSize << std::endl;
+      std::cout << "Info: Rebuild shaders with stack size: " << myRaytraceParameters.StackSize << std::endl;
 #endif
 
-      // Change state to force update all uniforms.
+      // Change state to force update all uniforms
       ++myViewModificationStatus;
 
-      TCollection_AsciiString aStackSizeStr =
-        TCollection_AsciiString ("#define STACK_SIZE ") + TCollection_AsciiString (myTraversalStackSize);
+      TCollection_AsciiString aPrefixString =
+        TCollection_AsciiString ("#define STACK_SIZE ") + TCollection_AsciiString (myRaytraceParameters.StackSize) + "\n" +
+        TCollection_AsciiString ("#define TRACE_DEPTH ") + TCollection_AsciiString (myRaytraceParameters.TraceDepth);
 
-      myRaytraceShaderSource.SetPrefix (aStackSizeStr);
-      myPostFSAAShaderSource.SetPrefix (aStackSizeStr);
+      if (myRaytraceParameters.TransparentShadows)
+      {
+        aPrefixString += TCollection_AsciiString ("\n#define TRANSPARENT_SHADOWS");
+      }
+
+#ifdef RAY_TRACE_PRINT_INFO
+      std::cout << "GLSL prefix string:" << std::endl << aPrefixString << std::endl;
+#endif
+
+      myRaytraceShaderSource.SetPrefix (aPrefixString);
+      myPostFSAAShaderSource.SetPrefix (aPrefixString);
 
       if (!myRaytraceShader->LoadSource (myGlContext, myRaytraceShaderSource.Source())
        || !myPostFSAAShader->LoadSource (myGlContext, myPostFSAAShaderSource.Source()))
@@ -1197,6 +1218,8 @@ Standard_Boolean OpenGl_Workspace::InitRaytraceResources()
       return Standard_False;
     }
 
+    myRaytraceParameters.TraceDepth = theCView.RenderParams.RaytracingDepth;
+
     TCollection_AsciiString aFolder = Graphic3d_ShaderProgram::ShadersFolder();
 
     if (aFolder.IsEmpty())
@@ -1211,9 +1234,22 @@ Standard_Boolean OpenGl_Workspace::InitRaytraceResources()
 
     if (myIsRaytraceDataValid)
     {
-      myTraversalStackSize = Max (THE_DEFAULT_STACK_SIZE,
+      myRaytraceParameters.StackSize = Max (THE_DEFAULT_STACK_SIZE,
         myRaytraceGeometry.HighLevelTreeDepth() + myRaytraceGeometry.BottomLevelTreeDepth());
     }
+
+    TCollection_AsciiString aPrefixString =
+      TCollection_AsciiString ("#define STACK_SIZE ") + TCollection_AsciiString (myRaytraceParameters.StackSize) + "\n" +
+      TCollection_AsciiString ("#define TRACE_DEPTH ") + TCollection_AsciiString (myRaytraceParameters.TraceDepth);
+
+    if (myRaytraceParameters.TransparentShadows)
+    {
+      aPrefixString += TCollection_AsciiString ("\n#define TRANSPARENT_SHADOWS");
+    }
+
+#ifdef RAY_TRACE_PRINT_INFO
+    std::cout << "GLSL prefix string:" << std::endl << aPrefixString << std::endl;
+#endif
 
     {
       Handle(OpenGl_ShaderObject) aBasicVertShader = LoadShader (
@@ -1228,10 +1264,7 @@ Standard_Boolean OpenGl_Workspace::InitRaytraceResources()
 
       myRaytraceShaderSource.Load (aFiles, 2);
 
-      TCollection_AsciiString aStackSizeStr =
-        TCollection_AsciiString ("#define STACK_SIZE ") + TCollection_AsciiString (myTraversalStackSize);
-
-      myRaytraceShaderSource.SetPrefix (aStackSizeStr);
+      myRaytraceShaderSource.SetPrefix (aPrefixString);
 
       myRaytraceShader = LoadShader (myRaytraceShaderSource, GL_FRAGMENT_SHADER);
 
@@ -1287,10 +1320,7 @@ Standard_Boolean OpenGl_Workspace::InitRaytraceResources()
 
       myPostFSAAShaderSource.Load (aFiles, 2);
 
-      TCollection_AsciiString aStackSizeStr =
-        TCollection_AsciiString ("#define STACK_SIZE ") + TCollection_AsciiString (myTraversalStackSize);
-
-      myPostFSAAShaderSource.SetPrefix (aStackSizeStr);
+      myPostFSAAShaderSource.SetPrefix (aPrefixString);
     
       myPostFSAAShader = LoadShader (myPostFSAAShaderSource, GL_FRAGMENT_SHADER);
 
@@ -1487,8 +1517,6 @@ void OpenGl_Workspace::ReleaseRaytraceResources()
   NullifyResource (myGlContext, mySceneMinPointTexture);
   NullifyResource (myGlContext, mySceneMaxPointTexture);
 
-  NullifyResource (myGlContext, mySceneTransformTexture);
-
   NullifyResource (myGlContext, myObjectNodeInfoTexture);
   NullifyResource (myGlContext, myObjectMinPointTexture);
   NullifyResource (myGlContext, myObjectMaxPointTexture);
@@ -1496,6 +1524,7 @@ void OpenGl_Workspace::ReleaseRaytraceResources()
   NullifyResource (myGlContext, myGeometryVertexTexture);
   NullifyResource (myGlContext, myGeometryNormalTexture);
   NullifyResource (myGlContext, myGeometryTriangTexture);
+  NullifyResource (myGlContext, mySceneTransformTexture);
 
   NullifyResource (myGlContext, myRaytraceLightSrcTexture);
   NullifyResource (myGlContext, myRaytraceMaterialTexture);
@@ -1588,7 +1617,7 @@ Standard_Boolean OpenGl_Workspace::UploadRaytraceData()
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  // Write OpenGL texture buffers
+  // Write top-level BVH buffers
 
   const NCollection_Handle<BVH_Tree<Standard_ShortReal, 4> >& aBVH = myRaytraceGeometry.BVH();
 
@@ -1637,6 +1666,7 @@ Standard_Boolean OpenGl_Workspace::UploadRaytraceData()
   delete[] aNodeTransforms;
 
   /////////////////////////////////////////////////////////////////////////////
+  // Write geometry and bottom-level BVH buffers
 
   Standard_Size aTotalVerticesNb = 0;
   Standard_Size aTotalElementsNb = 0;
@@ -1806,9 +1836,6 @@ Standard_Boolean OpenGl_Workspace::UploadRaytraceData()
   aMemUsed += static_cast<Standard_ShortReal> (
     myRaytraceGeometry.BVH()->MaxPointBuffer().size() * sizeof (BVH_Vec4f));
 
-  aMemUsed += static_cast<Standard_ShortReal> (
-    aTransformsNb * sizeof (BVH_Vec4f) * 4);
-
   std::cout << "GPU Memory Used (MB): ~" << aMemUsed / 1048576 << std::endl;
 
 #endif
@@ -1844,7 +1871,7 @@ void OpenGl_Workspace::UpdateCamera (const NCollection_Mat4<GLdouble>& theOrient
 {
   NCollection_Mat4<GLdouble> aInvModelProj;
 
-  // compute invserse model-view-projection matrix
+  // compute inverse model-view-projection matrix
   (theViewMapping * theOrientation).Inverted (aInvModelProj);
 
   Standard_Integer aOriginIndex = 0;
@@ -1917,7 +1944,7 @@ Standard_Boolean OpenGl_Workspace::RunRaytraceShaders (const Graphic3d_CView& th
   myRaytraceLightSrcTexture->BindTexture (myGlContext, GL_TEXTURE0 + OpenGl_RT_RaytraceLightSrcTexture);
   mySceneTransformTexture->BindTexture (myGlContext, GL_TEXTURE0 + OpenGl_RT_SceneTransformTexture);
 
-  if (theCView.IsAntialiasingEnabled) // render source image to FBO
+  if (theCView.RenderParams.IsAntialiasingEnabled) // render source image to FBO
   {
     myRaytraceFBO1->BindBuffer (myGlContext);
     
@@ -1954,9 +1981,9 @@ Standard_Boolean OpenGl_Workspace::RunRaytraceShaders (const Graphic3d_CView& th
   myRaytraceProgram->SetUniform (myGlContext,
     myUniformLocations[0][OpenGl_RT_uLightAmbnt], myRaytraceGeometry.Ambient);
   myRaytraceProgram->SetUniform (myGlContext,
-    myUniformLocations[0][OpenGl_RT_uShadEnabled], theCView.IsShadowsEnabled);
+    myUniformLocations[0][OpenGl_RT_uShadEnabled], theCView.RenderParams.IsShadowEnabled ? 1 : 0);
   myRaytraceProgram->SetUniform (myGlContext,
-    myUniformLocations[0][OpenGl_RT_uReflEnabled], theCView.IsReflectionsEnabled);
+    myUniformLocations[0][OpenGl_RT_uReflEnabled], theCView.RenderParams.IsReflectionEnabled ? 1 : 0);
 
   myGlContext->core20fwd->glEnableVertexAttribArray (
     myUniformLocations[0][OpenGl_RT_aPosition]);
@@ -1969,7 +1996,7 @@ Standard_Boolean OpenGl_Workspace::RunRaytraceShaders (const Graphic3d_CView& th
   myGlContext->core20fwd->glDisableVertexAttribArray (
     myUniformLocations[0][OpenGl_RT_aPosition]);
   
-  if (!theCView.IsAntialiasingEnabled)
+  if (!theCView.RenderParams.IsAntialiasingEnabled)
   {
     myRaytraceProgram->Unbind (myGlContext);
 
@@ -2005,9 +2032,9 @@ Standard_Boolean OpenGl_Workspace::RunRaytraceShaders (const Graphic3d_CView& th
   myPostFSAAProgram->SetUniform (myGlContext,
     myUniformLocations[1][OpenGl_RT_uLightAmbnt], myRaytraceGeometry.Ambient);
   myPostFSAAProgram->SetUniform (myGlContext,
-    myUniformLocations[1][OpenGl_RT_uShadEnabled], theCView.IsShadowsEnabled);
+    myUniformLocations[1][OpenGl_RT_uShadEnabled], theCView.RenderParams.IsShadowEnabled ? 1 : 0);
   myPostFSAAProgram->SetUniform (myGlContext,
-    myUniformLocations[1][OpenGl_RT_uReflEnabled], theCView.IsReflectionsEnabled);
+    myUniformLocations[1][OpenGl_RT_uReflEnabled], theCView.RenderParams.IsReflectionEnabled ? 1 : 0);
 
   const Standard_ShortReal aMaxOffset = 0.559017f;
   const Standard_ShortReal aMinOffset = 0.186339f;
@@ -2087,7 +2114,7 @@ Standard_Boolean OpenGl_Workspace::Raytrace (const Graphic3d_CView& theCView,
   if (!UpdateRaytraceGeometry (OpenGl_GUM_CHECK))
     return Standard_False;
 
-  if (!InitRaytraceResources())
+  if (!InitRaytraceResources (theCView))
     return Standard_False;
 
   if (!ResizeRaytraceBuffers (theSizeX, theSizeY))

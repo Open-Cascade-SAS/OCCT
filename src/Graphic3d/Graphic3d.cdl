@@ -339,6 +339,13 @@ is
     -- - ASPECT_MARKER: aspect for marker primitives;
     -- - ASPECT_FILL_AREA: aspect for face primitives.
 
+    enumeration RenderingMode is
+      RM_RASTERIZATION, RM_RAYTRACING
+    end RenderingMode;
+    ---Purpose: Describes rendering modes.
+    -- - RM_RASTERIZATION: enables OpenGL rasterization mode;
+    -- - RM_RAYTRACING: enables GPU ray-tracing mode.
+
     ---------------------------
     -- Category: Imported types
     ---------------------------
@@ -403,6 +410,10 @@ is
 
     imported CView;
     ---Purpose: Defines the C structure <aview>
+    ---Category: Imported types
+    
+    imported RenderingParams;
+    ---Purpose: Describes rendering parameters and effects.
     ---Category: Imported types
 
     imported CGraduatedTrihedron;

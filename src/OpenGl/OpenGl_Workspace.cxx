@@ -148,7 +148,6 @@ OpenGl_Workspace::OpenGl_Workspace (const Handle(Aspect_DisplayConnection)& theD
   //
   myComputeInitStatus (OpenGl_RT_NONE),
   myIsRaytraceDataValid (Standard_False),
-  myTraversalStackSize (THE_DEFAULT_STACK_SIZE),
   myViewModificationStatus (0),
   myLayersModificationStatus (0),
   //
@@ -579,7 +578,7 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
     toSwap = 0; // no need to swap buffers
   }
 
-  if (!theCView.IsRaytracing || myComputeInitStatus == OpenGl_RT_FAIL)
+  if (theCView.RenderParams.Method != Graphic3d_RM_RAYTRACING || myComputeInitStatus == OpenGl_RT_FAIL)
   {
     const Standard_Boolean isImmediate = !myView->ImmediateStructures().IsEmpty();
     redraw1 (theCView, theCUnderLayer, theCOverLayer, isImmediate ? 0 : toSwap);
