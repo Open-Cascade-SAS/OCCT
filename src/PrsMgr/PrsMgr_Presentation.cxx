@@ -21,16 +21,33 @@
 #include <Visual3d_View.hxx>
 #include <Precision.hxx>
 
+namespace
+{
+  enum BeforeHighlightState
+  {
+    State_Empty,
+    State_Hidden,
+    State_Visible
+  };
+
+  static BeforeHighlightState StructureState(const Handle(PrsMgr_Prs) theStructure)
+  {
+    return !theStructure->IsDisplayed() ?
+      State_Empty : !theStructure->IsVisible() ?
+        State_Hidden : State_Visible;
+  }
+}
+
 //=======================================================================
 //function : PrsMgr_Presentation
 //purpose  :
 //=======================================================================
 PrsMgr_Presentation::PrsMgr_Presentation (const Handle(PrsMgr_PresentationManager3d)& thePrsMgr,
                                           const Handle(PrsMgr_PresentableObject)&     thePrsObject)
-: myPresentationManager (thePrsMgr),
-  myPresentableObject   (thePrsObject.operator->()),
-  myMustBeUpdated       (Standard_False),
-  myDisplayReason       (Standard_False)
+: myPresentationManager  (thePrsMgr),
+  myPresentableObject    (thePrsObject.operator->()),
+  myMustBeUpdated        (Standard_False),
+  myBeforeHighlightState (State_Empty)
 {
   myStructure = new PrsMgr_Prs (thePrsMgr->StructureManager(),
                                 this, thePrsObject->TypeOfPresentation3d());
@@ -44,24 +61,22 @@ PrsMgr_Presentation::PrsMgr_Presentation (const Handle(PrsMgr_PresentationManage
 void PrsMgr_Presentation::Display()
 {
   Display (Standard_False);
-  myDisplayReason = Standard_False;
+  myBeforeHighlightState = State_Visible;
 }
 
 //=======================================================================
 //function : Display
 //purpose  :
 //=======================================================================
-void PrsMgr_Presentation::Display (const Standard_Boolean theIsHighlight)
+void PrsMgr_Presentation::Display (const Standard_Boolean /*theIsHighlight*/)
 {
   if (!myStructure->IsDisplayed())
   {
     myStructure->Display();
-    myDisplayReason = theIsHighlight;
   }
   else if (!myStructure->IsVisible())
   {
-    myStructure->SetVisible (Standard_True);
-    myDisplayReason = theIsHighlight;
+    SetVisible (Standard_True);
   }
 }
 
@@ -100,6 +115,11 @@ void PrsMgr_Presentation::SetVisible (const Standard_Boolean theValue)
 //=======================================================================
 void PrsMgr_Presentation::Highlight()
 {
+  if (!IsHighlighted())
+  {
+    myBeforeHighlightState = StructureState (myStructure);
+  }
+
   Display (Standard_True);
   myStructure->Highlight();
 }
@@ -111,9 +131,16 @@ void PrsMgr_Presentation::Highlight()
 void PrsMgr_Presentation::Unhighlight() const
 {
   myStructure->UnHighlight();
-  if (myDisplayReason)
+  switch (myBeforeHighlightState)
   {
+ case State_Visible:
+    return;
+ case State_Hidden:
     myStructure->SetVisible (Standard_False);
+    break;
+ case State_Empty:
+    myStructure->Erase();
+    break;
   }
 }
 
@@ -145,6 +172,11 @@ void PrsMgr_Presentation::Clear()
 //=======================================================================
 void PrsMgr_Presentation::Color (const Quantity_NameOfColor theColor)
 {
+  if (!IsHighlighted())
+  {
+    myBeforeHighlightState = StructureState (myStructure);
+  }
+
   Display (Standard_True);
   myStructure->Color (theColor);
 }
@@ -165,8 +197,7 @@ void PrsMgr_Presentation::BoundBox() const
 Standard_Boolean PrsMgr_Presentation::IsDisplayed() const
 {
   return  myStructure->IsDisplayed()
-      &&  myStructure->IsVisible()
-      && !myDisplayReason;
+      &&  myStructure->IsVisible();
 }
 
 //=======================================================================
@@ -375,6 +406,8 @@ void PrsMgr_Presentation::Destroy()
 {
   if (!myStructure.IsNull())
   {
+    // Remove structure from the list of displayed structures.
+    myStructure->Erase();
     myStructure->Clear();
     myStructure.Nullify();
   }

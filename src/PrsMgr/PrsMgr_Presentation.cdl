@@ -50,8 +50,7 @@ is
   Display (me : mutable;
            theIsHighlight : Boolean from Standard)
   is static private;
-  ---Purpose: Displays myStructure and sets myDisplayReason to theIsHighlight value if
-  -- myStructure was not displayed or was invisible
+  ---Purpose: Displays myStructure.
 
   Erase (me : mutable)
   is virtual private;
@@ -92,7 +91,7 @@ is
 
   Color (me       : mutable;
          theColor : NameOfColor from Quantity)
-  is static private;
+  is virtual private;
 
   BoundBox (me)
   is static private;
@@ -188,7 +187,7 @@ fields
   myStructure           : Prs from PrsMgr;
   myPresentableObject   : PresentableObjectPointer from PrsMgr;
   myMustBeUpdated       : Boolean from Standard;
-  myDisplayReason       : Boolean from Standard;
+  myBeforeHighlightState: Integer from Standard;
 
 friends
 
