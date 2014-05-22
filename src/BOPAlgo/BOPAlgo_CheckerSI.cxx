@@ -126,6 +126,8 @@ void BOPAlgo_CheckerSI::Init()
 void BOPAlgo_CheckerSI::Perform()
 {
   try {
+    Standard_Integer iErr;
+    //
     OCC_CATCH_SIGNALS
     //
     myErrorStatus=0;
@@ -142,36 +144,42 @@ void BOPAlgo_CheckerSI::Perform()
     }
     //
     BOPAlgo_PaveFiller::Perform();
+    iErr=myErrorStatus; 
     //
-    if (!myErrorStatus) {
-      PerformVZ();
+    PerformVZ();
+    if (myErrorStatus) {
+      iErr=myErrorStatus; 
     }
     //
-    if (!myErrorStatus) {
-      PerformEZ();
-    } 
-    //
-    if (!myErrorStatus) {
-      PerformFZ();
+    PerformEZ();
+    if (myErrorStatus) {
+      iErr=myErrorStatus; 
     }
     //
-    if (!myErrorStatus) {
-      PerformZZ();
+    PerformFZ();
+    if (myErrorStatus) {
+      iErr=myErrorStatus; 
+    }
+    //
+    PerformZZ();
+    if (myErrorStatus) {
+      iErr=myErrorStatus; 
     }
     // 
-    if (!myErrorStatus) {
-      PostTreat();
+    PostTreat();
+    if (myErrorStatus) {
+      iErr=myErrorStatus; 
     }
     //
     if (myNonDestructive) {
-      Standard_Integer iErr;
-      //
-      iErr=myErrorStatus; 
-      //
       PostTreatCopy();
-      if (!myErrorStatus) {
-        myErrorStatus=iErr;
+      if (myErrorStatus) {
+        iErr=myErrorStatus; 
       }
+    }
+    //
+    if (iErr) {
+      myErrorStatus=iErr;
     }
   }
   //
@@ -183,7 +191,6 @@ void BOPAlgo_CheckerSI::Perform()
     myErrorStatus=11;
   }
 }
-
 //=======================================================================
 //function : PostTreat
 //purpose  : 

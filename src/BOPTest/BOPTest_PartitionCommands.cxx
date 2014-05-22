@@ -34,71 +34,7 @@
 #include <BOPTest_DrawableShape.hxx>
 #include <BOPTest_Objects.hxx>
 
-//
-#ifdef HAVE_TBB
-#include <BOPCol_TBB.hxx>
-//=======================================================================
-//class : BOPTime_Chronometer
-//purpose  : 
-//=======================================================================
-class BOPTime_Chronometer {
- public:
-  BOPTime_Chronometer() {
-  }
-  //
-  ~BOPTime_Chronometer() {
-  }
-  //
-  void Start() {
-    myT0 = tick_count::now();
-  }
-  //
-  void Stop() {
-    myTime=(tick_count::now() - myT0).seconds();
-  }
-  //
-  double Time() const{
-    return myTime;
-  };
-  //
- protected:
-  tick_count myT0;
-  double myTime;
-};
-////////////////////////////////////////////////////////////////////////
-#else
-#include <OSD_Chronometer.hxx>
-//=======================================================================
-//class    : BOPTime_Chronometer
-//purpose  : 
-//=======================================================================
-class BOPTime_Chronometer {
- public:
-  BOPTime_Chronometer() {
-  }
-  //
-  ~BOPTime_Chronometer() {
-  }
-  //
-  void Start() {
-    myChronometer.Reset();
-    myChronometer.Start();
-  }
-  //
-  void Stop() {
-    myChronometer.Stop();
-    myChronometer.Show(myTime);
-  }
-  //
-  double Time() const{
-    return myTime;
-  };
-  //
- protected:
-  OSD_Chronometer myChronometer;
-  double myTime;
-};
-#endif
+#include <BOPTest_Chronometer.hxx>
 
 static Standard_Integer bfillds  (Draw_Interpretor&, Standard_Integer, const char**); 
 static Standard_Integer bbuild   (Draw_Interpretor&, Standard_Integer, const char**);

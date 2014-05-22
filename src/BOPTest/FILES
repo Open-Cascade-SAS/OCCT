@@ -4,3 +4,4 @@ BOPTest_LowCommands.cxx
 BOPTest_CheckCommands.cxx
 BOPTest_TolerCommands.cxx
 BOPTest_ObjCommands.cxx
+BOPTest_Chronometer.hxx

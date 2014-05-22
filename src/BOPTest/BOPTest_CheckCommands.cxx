@@ -13,55 +13,47 @@
 // commercial license or contractual agreement.
 
 #include <BOPTest.ixx>
-#include <TCollection_AsciiString.hxx>
 
-#include <gp_Pnt.hxx>
+#include <vector>
+#include <algorithm>
+#include <functional>
+
+#include <TCollection_AsciiString.hxx>
 
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Compound.hxx>
 #include <BRep_Builder.hxx>
+#include <BRepBuilderAPI_Copy.hxx>
 
 #include <DBRep.hxx>
-
-#include <Geom_Geometry.hxx>
-#include <Geom_CartesianPoint.hxx>
-
 #include <Draw.hxx>
-#include <DrawTrSurf.hxx>
-
-#include <BRepBuilderAPI_Copy.hxx>
 
 #include <BOPCol_ListOfShape.hxx>
 
 #include <BOPDS_DS.hxx>
+#include <BOPDS_MapOfPassKey.hxx>
 
 #include <BOPAlgo_CheckerSI.hxx>
-#include <BOPDS_VectorOfInterfVV.hxx>
-#include <BOPDS_VectorOfInterfVE.hxx>
-#include <BOPDS_VectorOfInterfEE.hxx>
-#include <BOPDS_VectorOfInterfVF.hxx>
-#include <BOPDS_VectorOfInterfEF.hxx>
-#include <BOPDS_VectorOfInterfFF.hxx>
-#include <BOPDS_VectorOfInterfVZ.hxx>
-#include <BOPDS_VectorOfInterfEZ.hxx>
-#include <BOPDS_VectorOfInterfFZ.hxx>
-#include <BOPDS_VectorOfInterfZZ.hxx>
-
 #include <BOPAlgo_ArgumentAnalyzer.hxx>
 #include <BOPAlgo_CheckResult.hxx>
 
-static 
-  Standard_Integer bopcheck (Draw_Interpretor&, Standard_Integer, const char** );
-
-static 
-  Standard_Integer bopargcheck (Draw_Interpretor&, Standard_Integer, const char** );
+#include <BOPTest_Chronometer.hxx>
 //
+static 
+  void MakeShapeForFullOutput (const TCollection_AsciiString&,
+                               const Standard_Integer,
+                               const BOPCol_ListOfShape&,
+                               Standard_Integer& ,
+                               Draw_Interpretor&);
+//
+static Standard_Integer bopcheck   (Draw_Interpretor&, Standard_Integer, const char** );
+static Standard_Integer bopargcheck(Draw_Interpretor&, Standard_Integer, const char** );
 
 //=======================================================================
 //function : CheckCommands
 //purpose  : 
 //=======================================================================
-  void  BOPTest::CheckCommands(Draw_Interpretor& theCommands)
+void  BOPTest::CheckCommands(Draw_Interpretor& theCommands)
 {
   static Standard_Boolean done = Standard_False;
   if (done) 
@@ -78,16 +70,71 @@ static
                   "Use bopargcheck without parameters to get ",  
                   __FILE__, bopargcheck, g);
 }
-
+//=======================================================================
+//class    : BOPTest_Interf
+//purpose  : Auxiliary class
+//=======================================================================
+class BOPTest_Interf {
+ public:
+  BOPTest_Interf() : myIndex1(-1), myIndex2(-1), myType(-1) {
+  }
+  //
+  ~BOPTest_Interf() {
+  }
+  //
+  void SetIndices(const Standard_Integer theIndex1,
+                  const Standard_Integer theIndex2) {
+    myIndex1=theIndex1; 
+    myIndex2=theIndex2; 
+  }
+  //
+  void Indices(Standard_Integer& theIndex1,
+               Standard_Integer& theIndex2) const {
+    theIndex1=myIndex1; 
+    theIndex2=myIndex2; 
+  }
+  //
+  void SetType(const Standard_Integer theType) {
+    myType=theType;
+  }
+  //
+  Standard_Integer Type() const {
+    return myType;
+  }
+  //
+  bool operator < (const  BOPTest_Interf& aOther) const {
+    bool bFlag;
+    //
+    if (myType==aOther.myType) {
+      if (myIndex1 == aOther.myIndex1) {
+        bFlag=(myIndex2 < aOther.myIndex2);
+      }
+      else {
+        bFlag=(myIndex1 < aOther.myIndex1);
+      }
+    }
+    else {
+      bFlag=(myType < aOther.myType);
+    }
+    //
+    return bFlag;
+  }
+  //
+ protected:
+  Standard_Integer myIndex1;
+  Standard_Integer myIndex2;
+  Standard_Integer myType;
+};
 //=======================================================================
 //function : bopcheck
 //purpose  : 
 //=======================================================================
-Standard_Integer bopcheck 
-  (Draw_Interpretor& di, Standard_Integer n,  const char** a )
+Standard_Integer bopcheck (Draw_Interpretor& di, 
+                           Standard_Integer n,  
+                           const char** a )
 {
   if (n<2) {
-    di << " Use >bopcheck Shape [level of check: 0 - 9" << "\n";
+    di << " Use > bopcheck Shape [level of check: 0 - 9] [-t -s]" << "\n";
     di << " The level of check defines "; 
     di << " which interferences will be checked:\n";
     di << " 0 - V/V only\n"; 
@@ -110,28 +157,53 @@ Standard_Integer bopcheck
     return 1;
   }
   //
-  Standard_Integer theLevelOfCheck, aNbInterfTypes;
+  Standard_Boolean bRunParallel, bShowTime;
+  Standard_Integer i, aLevel, aNbInterfTypes;
   //
   aNbInterfTypes=BOPDS_DS::NbInterfTypes();
   //
-  theLevelOfCheck = (n==3) ? Draw::Atoi(a[2]) : aNbInterfTypes-1;
-  if (theLevelOfCheck > aNbInterfTypes-1) {
+  aLevel=aNbInterfTypes-1;
+  //
+  if (n>2) {
+    aLevel=Draw::Atoi(a[2]); 
+  }
+  //
+  if (aLevel < 0 || aLevel > aNbInterfTypes-1) {
     di << "Invalid level";
     return 1;
   }
+  //
+  bShowTime=Standard_False;
+  bRunParallel=Standard_True;
+  for (i=3; i<n; ++i) {
+    if (!strcmp(a[i], "-s")) {
+      bRunParallel=Standard_False;
+    }
+    else if (!strcmp(a[i], "-t")) {
+      bShowTime=Standard_True;
+    }
+  }
+  //
+  //aLevel = (n==3) ? Draw::Atoi(a[2]) : aNbInterfTypes-1;
   //-------------------------------------------------------------------
-  char buf[256];
-  char type[10][4] = {
+  char buf[256], aName1[32], aName2[32];
+  char aInterfTypes[10][4] = {
     "V/V", "V/E", "E/E","V/F", "E/F", "F/F", "V/Z", "E/Z", "F/Z", "Z/Z"
   };
-  Standard_Integer iErr, aTypeInt, i, ind, j, nI1, nI2;
-  Standard_Boolean bSelfInt, bFFInt;
   //
-  if (theLevelOfCheck >= 0 && theLevelOfCheck < (aNbInterfTypes-1)) {
+  Standard_Integer iErr, iCnt, n1, n2, iT;
+  TopAbs_ShapeEnum aType1, aType2;
+  BOPAlgo_CheckerSI aChecker;
+  BOPCol_ListOfShape aLS;
+  BOPDS_MapIteratorMapOfPassKey aItMPK;
+  BOPTime_Chronometer aChrono;
+  //
+  if (aLevel < (aNbInterfTypes-1)) {
     di << "Info:\nThe level of check is set to " 
-      << type[theLevelOfCheck] << ", i.e. intersection(s)\n";
-    for (i=theLevelOfCheck+1; i<aNbInterfTypes; ++i) {
-      di << type[i];
+      << aInterfTypes[aLevel] << ", i.e. intersection(s)\n";
+    
+    for (i=aLevel+1; i<aNbInterfTypes; ++i) {
+      di << aInterfTypes[i];
       if (i<aNbInterfTypes-1) {
         di << ", ";
       }
@@ -139,138 +211,78 @@ Standard_Integer bopcheck
     di << " will not be checked.\n\n";
   }
   //
-  BOPAlgo_CheckerSI aChecker;
-  BOPCol_ListOfShape anArgs;
+  aLS.Append(aS);
+  aChecker.SetArguments(aLS);
+  aChecker.SetLevelOfCheck(aLevel);
+  aChecker.SetRunParallel(bRunParallel);
   //
-  anArgs.Append(aS);
-  aChecker.SetArguments(anArgs);
-  aChecker.SetLevelOfCheck(theLevelOfCheck);
+  aChrono.Start();
   //
   aChecker.Perform();
-  iErr = aChecker.ErrorStatus();
   //
-  const BOPDS_PDS& theDS = aChecker.PDS();
-  BOPDS_VectorOfInterfVV& aVVs=theDS->InterfVV();
-  BOPDS_VectorOfInterfVE& aVEs=theDS->InterfVE();
-  BOPDS_VectorOfInterfEE& aEEs=theDS->InterfEE();
-  BOPDS_VectorOfInterfVF& aVFs=theDS->InterfVF();
-  BOPDS_VectorOfInterfEF& aEFs=theDS->InterfEF();
-  BOPDS_VectorOfInterfFF& aFFs=theDS->InterfFF();
-  BOPDS_VectorOfInterfVZ& aVZs=theDS->InterfVZ();
-  BOPDS_VectorOfInterfEZ& aEZs=theDS->InterfEZ();
-  BOPDS_VectorOfInterfFZ& aFZs=theDS->InterfFZ();
-  BOPDS_VectorOfInterfZZ& aZZs=theDS->InterfZZ();
+  aChrono.Stop();
   //
-  Standard_Integer aNb[] ={
-    aVVs.Extent(), aVEs.Extent(), aEEs.Extent(), 
-    aVFs.Extent(), aEFs.Extent(), aFFs.Extent(),
-    aVZs.Extent(), aEZs.Extent(), aFZs.Extent(), 
-    aZZs.Extent(),
-  };
+  iErr=aChecker.ErrorStatus();
   //
-  bSelfInt = Standard_False;
-  ind = 0;
-  for (aTypeInt = 0; aTypeInt < aNbInterfTypes; ++aTypeInt) {
-    
-    for (i = 0; i < aNb[aTypeInt]; ++i) {
-      BOPDS_Interf* aInt=NULL;
-      //
-      switch(aTypeInt) {
-      case 0:
-        aInt=(BOPDS_Interf*)(&aVVs(i));
-        break;
-      case 1:
-        aInt=(BOPDS_Interf*)(&aVEs(i));
-        break;
-      case 2:
-        aInt=(BOPDS_Interf*)(&aEEs(i));
-        break;
-      case 3:
-        aInt=(BOPDS_Interf*)(&aVFs(i));
-        break;
-      case 4:
-        aInt=(BOPDS_Interf*)(&aEFs(i));
-        break;
-      case 5:
-        aInt=(BOPDS_Interf*)(&aFFs(i));
-        break;
-      case 6:
-        aInt=(BOPDS_Interf*)(&aVZs(i));
-        break;
-      case 7:
-        aInt=(BOPDS_Interf*)(&aEZs(i));
-        break;
-      case 8:
-        aInt=(BOPDS_Interf*)(&aFZs(i));
-        break;
-      case 9:
-        aInt=(BOPDS_Interf*)(&aZZs(i));
-        break;
-      default:
-        break;
-      }
-      //
-      nI1 = aInt->Index1();
-      nI2 = aInt->Index2();
-      if (nI1 == nI2) {
-        continue;
-      }
-      //
-      if(theDS->IsNewShape(nI1) || theDS->IsNewShape(nI2)) {
-        continue;
-      }
-      //
-      if (aTypeInt == 4) {
-        BOPDS_InterfEF& aEF=aEFs(i);
-        if (aEF.CommonPart().Type()==TopAbs_SHAPE) {
-          continue;
-        }
-      }
-      //
-      const TopoDS_Shape& aS1 = theDS->Shape(nI1);
-      const TopoDS_Shape& aS2 = theDS->Shape(nI2);
-      //
-      if (aTypeInt == 5) {
-        bFFInt = Standard_False;
-        BOPDS_InterfFF& aFF = aFFs(i);
-        BOPDS_VectorOfPoint& aVP=aFF.ChangePoints();
-        Standard_Integer aNbP=aVP.Extent();
-        BOPDS_VectorOfCurve& aVC=aFF.ChangeCurves();
-        Standard_Integer aNbC=aVC.Extent();
-        if (!aNbP && !aNbC) {
-          continue;
-        }
-        for (j=0; j<aNbC; ++j) {
-          BOPDS_Curve& aNC=aVC(j);
-          BOPDS_ListOfPaveBlock& aLPBC=aNC.ChangePaveBlocks();
-          if (aLPBC.Extent()) {
-            bFFInt = Standard_True;
-            break;
-          }
-        }
-        if (!bFFInt) {
-          continue;
-        }
-      }
-      //
-      di << type[aTypeInt] << ":";
-      //
-      TCollection_AsciiString aBaseName("x");
-      TCollection_AsciiString anumbername(ind);
-      TCollection_AsciiString aXName = aBaseName + anumbername;
-      Standard_CString aname=aXName.ToCString();
-      DBRep::Set (aname, aS1);
-      ++ind;
-      TCollection_AsciiString anumbername1(ind);
-      TCollection_AsciiString aXName1 = aBaseName + anumbername1;
-      Standard_CString aname1=aXName1.ToCString();
-      DBRep::Set (aname1, aS2);
-      ++ind;
-      //
-      Sprintf(buf, "%s, %s \n", aname, aname1);
-      di << buf;
-      bSelfInt = Standard_True;
+  const BOPDS_DS& aDS=*(aChecker.PDS());
+  //
+  const BOPDS_MapOfPassKey& aMPK=aDS.Interferences();
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  using namespace std;
+  vector <BOPTest_Interf> aVec;
+  vector <BOPTest_Interf>::iterator aIt;
+  BOPTest_Interf aBInterf;
+  //
+  aItMPK.Initialize(aMPK);
+  for (; aItMPK.More(); aItMPK.Next()) {
+    const BOPDS_PassKey& aPK=aItMPK.Value();
+    aPK.Ids(n1, n2);
+    if(aDS.IsNewShape(n1) || aDS.IsNewShape(n2)) {
+      continue;
     }
+    //
+    const BOPDS_ShapeInfo& aSI1=aDS.ShapeInfo(n1);
+    const BOPDS_ShapeInfo& aSI2=aDS.ShapeInfo(n2);
+    aType1=aSI1.ShapeType();
+    aType2=aSI2.ShapeType();
+    //
+    iT=BOPDS_Tools::TypeToInteger(aType1, aType2);
+    //
+    aBInterf.SetIndices(n1, n2);
+    aBInterf.SetType(iT);
+    //
+    aVec.push_back(aBInterf);
+  }
+  //
+  sort( aVec.begin(), aVec.end(), less<BOPTest_Interf>());
+  //
+  iCnt=0;
+  for (aIt=aVec.begin(); aIt!=aVec.end(); aIt++) {
+    const BOPTest_Interf& aBI=*aIt;
+    //
+    aBI.Indices(n1, n2);
+    if(aDS.IsNewShape(n1) || aDS.IsNewShape(n2)) {
+      continue;
+    }
+    //
+    const TopoDS_Shape& aS1=aDS.Shape(n1);
+    const TopoDS_Shape& aS2=aDS.Shape(n2);
+    //
+    iT=aBI.Type(); 
+    di << aInterfTypes[iT] << ": ";
+    //
+    sprintf(aName1, "x%d", n1);
+    //sprintf(aName1, "x%d", iCnt);
+    DBRep::Set (aName1, aS1);
+    //
+    ++iCnt;
+    sprintf(aName2, "x%d", n2);
+    //sprintf(aName2, "x%d", iCnt);
+    DBRep::Set (aName2, aS2);
+    ++iCnt;
+    //
+    sprintf(buf, "%s %s \n", aName1, aName2);
+    di << buf;
   }
   //
   if (iErr) {
@@ -278,48 +290,25 @@ Standard_Integer bopcheck
     di << "so the list may be incomplete." << "\n";
   }
   //
-  if (!bSelfInt) {
+  if (!iCnt) {
     di << " This shape seems to be OK." << "\n";
+  }
+  if (bShowTime) {
+    Standard_Real aTime;
+    //
+    aTime=aChrono.Time();
+    Sprintf(buf, "  Tps: %7.2lf\n", aTime);
+    di << buf;
   }
   return 0;
 }
-
-//=======================================================================
-//function : MakeShapeForFullOutput
-//purpose  : 
-//=======================================================================
-static void MakeShapeForFullOutput
-  (const TCollection_AsciiString & aBaseName,
-   const Standard_Integer          aIndex,
-   const BOPCol_ListOfShape &    aList,
-   Standard_Integer&               aCount,
-   Draw_Interpretor&               di)
-{
-  TCollection_AsciiString aNum(aIndex);
-  TCollection_AsciiString aName = aBaseName + aNum;
-  Standard_CString name = aName.ToCString();
-
-  TopoDS_Compound cmp;
-  BRep_Builder BB;
-  BB.MakeCompound(cmp);
-
-  BOPCol_ListIteratorOfListOfShape anIt(aList);
-  for(; anIt.More(); anIt.Next()) {
-    const TopoDS_Shape & aS = anIt.Value();
-    BB.Add(cmp, aS);
-    aCount++;
-  }
-  di << "Made faulty shape: " << name << "\n";
-  DBRep::Set(name, cmp);
-}
-
-
 //=======================================================================
 //function : bopargcheck
 //purpose  : 
 //=======================================================================
-Standard_Integer bopargcheck 
-  (Draw_Interpretor& di, Standard_Integer n,  const char** a )
+Standard_Integer bopargcheck (Draw_Interpretor& di, 
+                              Standard_Integer n,  
+                              const char** a )
 {
   if (n<2) {
     di << "\n";
@@ -333,7 +322,7 @@ Standard_Integer bopargcheck
     di << " S (section)" << "\n";
     di << " U (unknown)" << "\n";
     di << " For example: \"bopargcheck s1 s2 -F\" enables" ;
-    di << "checking for Fuse operation" << "\n";
+    di << " checking for Fuse operation" << "\n";
     di << " default - section" << "\n" << "\n";
     di << " /<Test Options>" << "\n";
     di << " R (disable small edges (shrank range) test)" << "\n";
@@ -851,4 +840,31 @@ Standard_Integer bopargcheck
   } // has faulties
 
   return 0;
+}
+//=======================================================================
+//function : MakeShapeForFullOutput
+//purpose  : 
+//=======================================================================
+void MakeShapeForFullOutput (const TCollection_AsciiString & aBaseName,
+                             const Standard_Integer          aIndex,
+                             const BOPCol_ListOfShape &    aList,
+                             Standard_Integer&               aCount,
+                             Draw_Interpretor&               di)
+{
+  TCollection_AsciiString aNum(aIndex);
+  TCollection_AsciiString aName = aBaseName + aNum;
+  Standard_CString name = aName.ToCString();
+
+  TopoDS_Compound cmp;
+  BRep_Builder BB;
+  BB.MakeCompound(cmp);
+
+  BOPCol_ListIteratorOfListOfShape anIt(aList);
+  for(; anIt.More(); anIt.Next()) {
+    const TopoDS_Shape & aS = anIt.Value();
+    BB.Add(cmp, aS);
+    aCount++;
+  }
+  di << "Made faulty shape: " << name << "\n";
+  DBRep::Set(name, cmp);
 }

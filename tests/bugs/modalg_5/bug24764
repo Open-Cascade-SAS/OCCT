@@ -9,15 +9,7 @@ puts ""
 restore [locate_data_file bug24764_qa.brep] a
 
 bopcheck a 4
-
-set N 16
-set qz {}
-
-lappend qz a
-for {set i 0} {$i < $N} {incr i} {
- lappend qz x${i}
-}
-eval compound $qz result
+compound a x2 x51 x8 x10 x28 x30 x36 x46 x1 x50 result
 
 set nb_v_good 24
 set nb_e_good 24

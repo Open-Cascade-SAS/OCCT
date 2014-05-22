@@ -16,12 +16,13 @@
 
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
-#include <TopExp.hxx>
-#include <TopExp_Explorer.hxx>
-#include <BRep_Builder.hxx>
-#include <BRep_Tool.hxx>
-#include <BRepExtrema_DistShapeShape.hxx>
+
+#include <TColStd_Array2OfBoolean.hxx>
+
 #include <gp_Pnt.hxx>
+
+#include <Geom_Surface.hxx>
+
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Vertex.hxx>
@@ -29,34 +30,34 @@
 #include <TopoDS_Wire.hxx>
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Solid.hxx>
+
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
+
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+
+#include <BRepExtrema_DistShapeShape.hxx>
+//
 #include <BOPCol_ListOfShape.hxx>
 #include <BOPCol_SequenceOfShape.hxx>
 #include <BOPCol_MapOfShape.hxx>
-
-#include <TColStd_Array2OfBoolean.hxx>
 
 #include <IntTools_Range.hxx>
 #include <IntTools_EdgeEdge.hxx>
 #include <IntTools_CommonPrt.hxx>
 
-#include <BOPAlgo_Operation.hxx>
-#include <BOPAlgo_CheckerSI.hxx>
-#include <BOPAlgo_BuilderFace.hxx>
-
-#include <BOPDS_DS.hxx>
-#include <BOPDS_VectorOfInterfVV.hxx>
-#include <BOPDS_VectorOfInterfVE.hxx>
-#include <BOPDS_VectorOfInterfEE.hxx>
-#include <BOPDS_VectorOfInterfVF.hxx>
-#include <BOPDS_VectorOfInterfEF.hxx>
-#include <BOPDS_VectorOfInterfFF.hxx>
-
 #include <BOPInt_Context.hxx>
 
 #include <BOPTools_AlgoTools3D.hxx>
 #include <BOPTools_AlgoTools.hxx>
-#include <BOPCol_ListOfShape.hxx>
-#include <Geom_Surface.hxx>
+
+#include <BOPDS_DS.hxx>
+#include <BOPDS_MapOfPassKey.hxx>
+
+#include <BOPAlgo_Operation.hxx>
+#include <BOPAlgo_CheckerSI.hxx>
+#include <BOPAlgo_BuilderFace.hxx>
 
 // ================================================================================
 // function: Constructor
@@ -302,145 +303,57 @@ void BOPAlgo_ArgumentAnalyzer::TestTypes()
 //=======================================================================
 void BOPAlgo_ArgumentAnalyzer::TestSelfInterferences()
 {
-  Standard_Integer ii=0, j;
-  Standard_Boolean bSelfInt;
-
+  Standard_Integer ii;
+  //
   for(ii = 0; ii < 2; ii++) {
     const TopoDS_Shape& aS = (ii == 0) ? myShape1 : myShape2;
-
     if(aS.IsNull()) {
       continue;
     }
-
+    //
     Standard_Boolean bIsEmpty = (ii == 0) ? myEmpty1 : myEmpty2;
     if (bIsEmpty) {
       continue;
     }
-
-    BOPAlgo_CheckerSI aChecker;
+    //
+    Standard_Integer iErr, n1, n2;
+    BOPDS_MapIteratorMapOfPassKey aItMPK;
     BOPCol_ListOfShape anArgs;
+    BOPAlgo_CheckerSI aChecker;
     //
     anArgs.Append(aS);
     aChecker.SetArguments(anArgs);
     //
     aChecker.Perform();
-    Standard_Integer iErr = aChecker.ErrorStatus();
+    iErr=aChecker.ErrorStatus();
     //
-    const BOPDS_PDS& theDS = aChecker.PDS();
-    BOPDS_VectorOfInterfVV& aVVs=theDS->InterfVV();
-    BOPDS_VectorOfInterfVE& aVEs=theDS->InterfVE();
-    BOPDS_VectorOfInterfEE& aEEs=theDS->InterfEE();
-    BOPDS_VectorOfInterfVF& aVFs=theDS->InterfVF();
-    BOPDS_VectorOfInterfEF& aEFs=theDS->InterfEF();
-    BOPDS_VectorOfInterfFF& aFFs=theDS->InterfFF();
-    BOPDS_VectorOfInterfVZ& aVZs=theDS->InterfVZ();
-    BOPDS_VectorOfInterfEZ& aEZs=theDS->InterfEZ();
-    BOPDS_VectorOfInterfFZ& aFZs=theDS->InterfFZ();
-    BOPDS_VectorOfInterfZZ& aZZs=theDS->InterfZZ();
+    const BOPDS_DS& aDS=*(aChecker.PDS());
+    const BOPDS_MapOfPassKey& aMPK=aDS.Interferences();
     //
-    Standard_Integer aNbTypeInt, aTypeInt, i, nI1, nI2;
-    Standard_Integer aNb[] = {
-      aVVs.Extent(), aVEs.Extent(), aEEs.Extent(), 
-      aVFs.Extent(), aEFs.Extent(), aFFs.Extent(),
-      aVZs.Extent(), aEZs.Extent(), aFZs.Extent(), 
-      aZZs.Extent()
-    };
-    //
-    BOPDS_Interf* aInt=NULL;
-    //
-    aNbTypeInt=BOPDS_DS::NbInterfTypes();
-    for (aTypeInt = 0; aTypeInt < aNbTypeInt; ++aTypeInt) {
-      for (i = 0; i < aNb[aTypeInt]; ++i) {
-        switch(aTypeInt) {
-        case 0:
-          aInt=(BOPDS_Interf*)(&aVVs(i));
-          break;
-        case 1:
-          aInt=(BOPDS_Interf*)(&aVEs(i));
-          break;
-        case 2:
-          aInt=(BOPDS_Interf*)(&aEEs(i));
-          break;
-        case 3:
-          aInt=(BOPDS_Interf*)(&aVFs(i));
-          break;
-        case 4:
-          aInt=(BOPDS_Interf*)(&aEFs(i));
-          break;
-        case 5:
-          aInt=(BOPDS_Interf*)(&aFFs(i));
-          break;
-        case 6:
-          aInt=(BOPDS_Interf*)(&aVZs(i));
-          break;
-        case 7:
-          aInt=(BOPDS_Interf*)(&aEZs(i));
-          break;
-        case 8:
-          aInt=(BOPDS_Interf*)(&aFZs(i));
-          break;
-        case 9:
-          aInt=(BOPDS_Interf*)(&aZZs(i));
-          break;
-        default:
-          aInt=NULL;
-        }
-        //
-        aInt->Indices(nI1, nI2);
-        if (nI1 == nI2) {
-          continue;
-        } 
-        if (theDS->IsNewShape(nI1) || theDS->IsNewShape(nI2)) {
-          continue;
-        }
-        //
-        if (aTypeInt == 4) {
-          BOPDS_InterfEF& aEF=aEFs(i);
-          if (aEF.CommonPart().Type()==TopAbs_SHAPE) {
-            continue;
-          }
-        }
-        //
-        const TopoDS_Shape& aS1 = theDS->Shape(nI1);
-        const TopoDS_Shape& aS2 = theDS->Shape(nI2);
-        //
-        if (aTypeInt == 5) {
-          bSelfInt = Standard_False;
-          BOPDS_InterfFF& aFF = aFFs(i);
-          BOPDS_VectorOfPoint& aVP=aFF.ChangePoints();
-          Standard_Integer aNbP=aVP.Extent();
-          BOPDS_VectorOfCurve& aVC=aFF.ChangeCurves();
-          Standard_Integer aNbC=aVC.Extent();
-          if (!aNbP && !aNbC) {
-            continue;
-          }
-          for (j=0; j<aNbC; ++j) {
-            BOPDS_Curve& aNC=aVC(j);
-            BOPDS_ListOfPaveBlock& aLPBC=aNC.ChangePaveBlocks();
-            if (aLPBC.Extent()) {
-              bSelfInt = Standard_True;
-              break;
-            }
-          }
-          if (!bSelfInt) {
-            continue;
-          }
-        }
-        //
-        BOPAlgo_CheckResult aResult;
-        if(ii == 0) {
-          aResult.SetShape1(myShape1);
-          aResult.AddFaultyShape1(aS1);
-          aResult.AddFaultyShape1(aS2);
-        }
-        else {
-          aResult.SetShape2(myShape2);
-          aResult.AddFaultyShape2(aS1);
-          aResult.AddFaultyShape2(aS2);
-        }
-        aResult.SetCheckStatus(BOPAlgo_SelfIntersect);
-        myResult.Append(aResult);
+    aItMPK.Initialize(aMPK);
+    for (; aItMPK.More(); aItMPK.Next()) {
+      const BOPDS_PassKey& aPK=aItMPK.Value();
+      aPK.Ids(n1, n2);
+      if(aDS.IsNewShape(n1) || aDS.IsNewShape(n2)) {
+        continue;
       }
+      //
+      const TopoDS_Shape& aS1=aDS.Shape(n1);
+      const TopoDS_Shape& aS2=aDS.Shape(n2);
+      //
+      BOPAlgo_CheckResult aResult;
+      if(ii == 0) {
+        aResult.SetShape1(myShape1);
+        aResult.AddFaultyShape1(aS1);
+        aResult.AddFaultyShape1(aS2);
+      }
+      else {
+        aResult.SetShape2(myShape2);
+        aResult.AddFaultyShape2(aS1);
+        aResult.AddFaultyShape2(aS2);
+      }
+      aResult.SetCheckStatus(BOPAlgo_SelfIntersect);
+      myResult.Append(aResult);
     }
     //
     if (iErr) {
@@ -456,7 +369,7 @@ void BOPAlgo_ArgumentAnalyzer::TestSelfInterferences()
       aResult.SetCheckStatus(BOPAlgo_OperationAborted);
       myResult.Append(aResult);
     }
-  }
+  }// for(ii = 0; ii < 2; ii++) {
 }
 // ================================================================================
 // function: TestSmallEdge
