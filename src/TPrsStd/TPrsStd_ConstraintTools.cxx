@@ -124,21 +124,27 @@ static void FindExternalShape(const Handle(TDataXtd_Constraint)& aConst,
 //function : static GetGoodShape for planar constraint
 //purpose  : 
 //=======================================================================
-static void  GetGoodShape(TopoDS_Shape& shape)
+static void  GetGoodShape(TopoDS_Shape& theShape)
 {
-  switch (shape.ShapeType()) {
+  switch (theShape.ShapeType())
+  {
   case TopAbs_EDGE:
   case TopAbs_VERTEX: { return; }
   default:
     {
-      TopExp_Explorer EXP(shape,TopAbs_EDGE);
-      if (EXP.More()) {
-	shape = EXP.Current();
-	return;
+      TopExp_Explorer anExp (theShape,TopAbs_EDGE);
+      if (anExp.More())
+      {
+        theShape = anExp.Current();
+        return;
       }
-      else {
-	EXP.Init(shape,TopAbs_VERTEX);
-	if (EXP.More()) shape = EXP.Current();
+      else
+      {
+        anExp.Init (theShape, TopAbs_VERTEX);
+        if (anExp.More())
+        {
+          theShape = anExp.Current();
+        }
       }
     }
   }
@@ -231,180 +237,232 @@ void TPrsStd_ConstraintTools::UpdateOnlyValue(const Handle(TDataXtd_Constraint)&
 
 //=======================================================================
 //function : ComputeDistance
-//purpose  : Build an AIS_LengtDimension.
+//purpose  : Build an AIS_LengthDimension.
 //=======================================================================
-void TPrsStd_ConstraintTools::ComputeDistance (const Handle(TDataXtd_Constraint)& aConst,
-					      Handle(AIS_InteractiveObject)& anAIS) 
+void TPrsStd_ConstraintTools::ComputeDistance (const Handle(TDataXtd_Constraint)& theConst,
+                                               Handle(AIS_InteractiveObject)&     theAIS)
 {
-  Standard_Integer nbgeom = aConst->NbGeometries();
-  if (nbgeom < 2) {
+  Standard_Integer aGeomNum = theConst->NbGeometries();
+
+  // Dimension is build on one or two shapes.
+  if (aGeomNum < 1 || aGeomNum > 2)
+  {
 #ifdef DEB
-    cout <<  "TPrsStd_ConstraintTools::ComputeDistance: at least 2 geometries are needed" << endl;
+    cout <<  "TPrsStd_ConstraintTools::ComputeDistance: 1 or 2 geometries are needed" << endl;
 #endif
-    NullifyAIS(anAIS);
+    NullifyAIS(theAIS);
     return;
   }
-  TopoDS_Shape shape1,shape2,shape3 ;
-  Handle(Geom_Geometry) ageom3;
-  Standard_Boolean is_planar(aConst->IsPlanar()),is_directed(Standard_False);
-  AIS_TypeOfDist typedist = AIS_TOD_Unknown;
+
+  TopoDS_Shape aShape1, aShape2;
+  Handle(Geom_Geometry) aGeom3;
+  Standard_Boolean isPlanar (theConst->IsPlanar());
 
   // Get shapes and geometry
-  if (is_planar) {
-    if (nbgeom == 2)
-      GetShapesAndGeom (aConst,shape1,shape2,ageom3);
-    else
-      GetShapesAndGeom (aConst,shape1,shape2,shape3,ageom3);
-  }
-  else
-    GetTwoShapes (aConst,shape1,shape2);    
+  if (aGeomNum == 1)
+  {
+    GetOneShape (theConst, aShape1);
 
-  if (shape1.IsNull() || shape2.IsNull()) {
-#ifdef DEB
-    cout << "TPrsStd_ConstraintTools::ComputeDistance : null shape" << endl;
-#endif
-    NullifyAIS(anAIS);
+    if (aShape1.IsNull())
+    {
+      #ifdef DEB
+      cout << "TPrsStd_ConstraintTools::ComputeDistance : null shape" << endl;
+      #endif
+      NullifyAIS (theAIS);
+      return;
+    }
+  }
+  else //aGeomNum == 2
+  {
+    GetTwoShapes (theConst, aShape1, aShape2);
+
+    if (aShape1.IsNull() || aShape2.IsNull())
+    {
+      #ifdef DEB
+      cout << "TPrsStd_ConstraintTools::ComputeDistance : null shape" << endl;
+      #endif
+      NullifyAIS (theAIS);
+      return;
+    }
+  }
+
+  // Get plane from constraint
+  Handle(Geom_Plane) aPlane;
+  if (isPlanar)
+  {
+    GetGeom (theConst, aGeom3);
+
+    GetGoodShape (aShape1);
+
+    if (aGeomNum == 2)
+    {
+      GetGoodShape (aShape2);
+    }
+
+    aPlane = Handle(Geom_Plane)::DownCast (aGeom3);
+  }
+
+  // Get custom value
+  Standard_Real aValue;
+  TCollection_ExtendedString aText;
+  ComputeTextAndValue (theConst, aValue, aText,Standard_False);
+
+  Standard_Boolean isFaces     = Standard_False;
+  Standard_Boolean isEdges     = Standard_False;
+  Standard_Boolean isEdgeFace  = Standard_False;
+  Standard_Boolean isVertices  = Standard_False;
+  Standard_Boolean isEdge      = Standard_False;
+
+  Standard_Boolean SaveDrw = Standard_False;
+  Handle(AIS_Drawer) aDrawer;
+  Handle(AIS_LengthDimension) aDim;
+
+  if (!theAIS.IsNull())
+  {
+    aDim = Handle(AIS_LengthDimension)::DownCast (theAIS);
+  }
+
+  // Check shapes for AIS dimension
+  if (aGeomNum == 1)
+  {
+    if (aShape1.ShapeType () != TopAbs_EDGE)
+    {
+      #ifdef DEB
+      cout << "TPrsStd_ConstraintTools::ComputeDistance : shape should be edge" << endl;
+      #endif
+      NullifyAIS (theAIS);
+      return;
+    }
+
+    isEdge = Standard_True;
+  }
+  else // nbgeom == 2
+  {
+    isFaces      = IsFace (aShape1) && IsFace (aShape2);
+
+    isEdges      = (aShape1.ShapeType() == TopAbs_EDGE) && (aShape2.ShapeType() == TopAbs_EDGE);
+
+    isEdgeFace   = ((aShape1.ShapeType() == TopAbs_FACE) && (aShape2.ShapeType() == TopAbs_EDGE))
+                   || ((aShape1.ShapeType() == TopAbs_EDGE) && (aShape2.ShapeType() == TopAbs_FACE));
+
+    isVertices  = (aShape1.ShapeType() == TopAbs_VERTEX) && (aShape2.ShapeType() == TopAbs_VERTEX);
+
+    if (!isPlanar && !isFaces && !isEdges && !isVertices)
+    {
+      // Search suitable geometry for dimension
+      if (aShape1.ShapeType() == aShape2.ShapeType())
+      {
+        TopoDS_Vertex aV1, aV2, aV3, aV4;
+        if (aShape1.ShapeType() == TopAbs_WIRE)
+        {
+          TopExp::Vertices (TopoDS::Wire(aShape1), aV1, aV2);
+          TopExp::Vertices (TopoDS::Wire(aShape2), aV3, aV4);
+        }
+        aShape1 = aV1;
+        gp_Pnt aP1 = BRep_Tool::Pnt(aV1);
+        gp_Pnt aP2 = BRep_Tool::Pnt(aV3);
+        gp_Pnt aP3 = BRep_Tool::Pnt (aV4);
+        if (aP1.Distance (aP2) < aP1.Distance (aP3))
+        {
+          aShape2 = aV3;
+          gp_Ax2 ax2 (aP1, gp_Dir (aP2.XYZ() - aP1.XYZ()));
+          aPlane = new Geom_Plane (aP1, ax2.XDirection());
+        }
+        else
+        {
+          aShape2 = aV4;
+          gp_Ax2 anAx2 (aP1, gp_Dir (aP3.XYZ() - aP1.XYZ()));
+          aPlane = new Geom_Plane (aP1, anAx2.XDirection());
+        }
+      }
+      else if (!isEdgeFace)
+      {
+        NullifyAIS (theAIS);
+        return;
+      }
+    }
+  }
+
+  // Check plane
+  Standard_Boolean isCheckPlane = (aDim.IsNull() && !isFaces) || isPlanar;
+  if ((isVertices || isEdges) && !isPlanar)
+  {
+    gp_Pnt aP1, aP2, aP3;
+
+    if (isVertices)
+    {
+      aP1 = BRep_Tool::Pnt (TopoDS::Vertex (aShape1));
+      aP2 = BRep_Tool::Pnt (TopoDS::Vertex (aShape2));
+      aP3 = gp_Pnt (aP1.Y() - 1.0, aP2.X() + 1.0, 0.0);
+    }
+
+    if (isEdges)
+    {
+      TopoDS_Vertex  aV1, aV2, aV3, aV4;
+      TopExp::Vertices (TopoDS::Edge(aShape1), aV1, aV2);
+      TopExp::Vertices (TopoDS::Edge(aShape2), aV3, aV4);
+      aP1 = BRep_Tool::Pnt (aV1);
+      aP2 = BRep_Tool::Pnt (aV2);
+      aP3 = BRep_Tool::Pnt (aV3);
+    }
+
+    GC_MakePlane aPlaneMaker (aP1, aP2, aP3);
+    if (aPlaneMaker.IsDone() && !isPlanar)
+    {
+      aPlane = aPlaneMaker.Value();
+    }
+  }
+
+  if (isCheckPlane && aPlane.IsNull())
+  {
+    #ifdef DEB
+    cout << "TPrsStd_ConstraintTools::ComputeDistance : null plane" << endl;
+    #endif
+    NullifyAIS (theAIS);
     return;
   }
 
-  Handle(Geom_Plane) aplane;
-  if (is_planar) {
-    if (nbgeom != 2) {
-      is_directed = !shape3.IsNull();
-      if (!is_directed)  {
-#ifdef DEB
-	cout << "TPrsStd_ConstraintTools::ComputeDistance : null shape" << endl;
-#endif
-	NullifyAIS(anAIS);
-	return;
-      }
-    }
-
-    GetGoodShape (shape1);
-    GetGoodShape (shape2);
-
-    aplane = Handle(Geom_Plane)::DownCast(ageom3);
-    if (aplane.IsNull()) {
-#ifdef DEB
-      cout << "TPrsStd_ConstraintTools::ComputeDistance : null plane" << endl;
-#endif
-      NullifyAIS(anAIS);
-      return;
-    }
-    
-    if (is_directed) {
-      GetGoodShape(shape3);
-      const TopoDS_Edge& E = TopoDS::Edge(shape3);
-      BRepAdaptor_Curve CURVE(E);
-      Handle(Geom_Geometry) aGeomGeometry = CURVE.Curve().Curve()->Transformed(CURVE.Trsf()) ;
-      gp_Dir Dir = ((Handle(Geom_Line)&) aGeomGeometry)->Lin().Direction();
-      gp_Dir xdir(aplane->Pln().Position().XDirection());
-      if (Dir.IsParallel(xdir,Precision::Confusion()))
-	typedist = AIS_TOD_Horizontal;
-      else
-	typedist = AIS_TOD_Vertical;
-    }
-  }
-
-  Standard_Real val1;
-  TCollection_ExtendedString txt;
-  ComputeTextAndValue(aConst,val1,txt,Standard_False);
-  
-  //  Arguments de l'AIS
-  Standard_Boolean isface = IsFace(shape1) && IsFace(shape2);
-  Standard_Boolean isedgeface = (shape1.ShapeType () == TopAbs_FACE && 
-                                 shape2.ShapeType () == TopAbs_EDGE);
-  Standard_Boolean is2vertices =(shape1.ShapeType () == TopAbs_VERTEX &&                 //addition 1
-                                 shape2.ShapeType () == TopAbs_VERTEX);
-  if (!isface && !is_planar && !is2vertices)  {
-    // Recherche arguments pouvant convenir
-    if (shape1.ShapeType() == shape2.ShapeType())  {
-      TopoDS_Vertex  v1,v2,v3,v4;
-      if (shape1.ShapeType() == TopAbs_EDGE)  {
-	TopExp::Vertices (TopoDS::Edge(shape1),v1,v2);
-	TopExp::Vertices (TopoDS::Edge(shape2),v3,v4);
-      }
-      else
-      if (shape1.ShapeType() == TopAbs_WIRE)  {
-	TopExp::Vertices (TopoDS::Wire(shape1),v1,v2);
-	TopExp::Vertices (TopoDS::Wire(shape2),v3,v4);
-      }
-      shape1 = v1;
-      gp_Pnt P1 = BRep_Tool::Pnt(v1);
-      gp_Pnt P2 = BRep_Tool::Pnt(v3), P3 = BRep_Tool::Pnt(v4);
-      if (P1.Distance(P2) < P1.Distance(P3))  {
-	shape2 = v3;
-	gp_Ax2 ax2 (P1, gp_Dir (P2.XYZ() - P1.XYZ()));
-	aplane = new Geom_Plane (P1,ax2.XDirection());
-      }
-      else {
-	shape2 = v4;
-	gp_Ax2 ax2 (P1, gp_Dir (P3.XYZ() - P1.XYZ()));
-	aplane = new Geom_Plane (P1,ax2.XDirection());
-      }
-    }
-    else  {
-      if (!isedgeface) {
-	NullifyAIS(anAIS);
-	return;
-      }
-    }
-  }
-
-  //  Update de l'AIS
-  Handle(AIS_LengthDimension) ais;
-  Standard_Boolean SaveDrw = Standard_False;
-  Handle(AIS_Drawer) aDrawer;
-
-  if (!anAIS.IsNull()) {
-    ais = Handle(AIS_LengthDimension)::DownCast(anAIS);
-  }
-
-  if (ais.IsNull())  {
-    if (is2vertices)  {                                        //addition 2
-      gp_Pnt P1 = BRep_Tool::Pnt( TopoDS::Vertex(shape1) );
-      gp_Pnt P2 = BRep_Tool::Pnt( TopoDS::Vertex(shape2) );
-      gp_Pnt P3(P1.Y()-1., P2.X()+1., 0.); 
-      GC_MakePlane mkPlane(P1, P2, P3); 
-      ais = new AIS_LengthDimension (P1, P2, mkPlane.Value()->Pln());
-    }
-    else if (isface)
+  //  Update of AIS
+  if (aDim.IsNull())
+  {
+    if (isEdge)
     {
-      ais = new AIS_LengthDimension (GetFace(shape1),GetFace(shape2),aplane->Pln());
+      aDim = new AIS_LengthDimension (GetEdge (aShape1), aPlane->Pln());
     }
-    else if (isedgeface) {
-      ais = new AIS_LengthDimension (GetFace(shape1),GetEdge(shape2),aplane->Pln());
-    }
-    else  {
-      ais = new AIS_LengthDimension (shape1,shape2,aplane->Pln());
-    }
-    if( SaveDrw ) ais->SetAttributes(aDrawer);   
-  }
-  else {
-    if (isface)
+    else if (isFaces)
     {
-      ais->SetMeasuredGeometry (GetFace(shape1), GetFace(shape2));
+      aDim = new AIS_LengthDimension (GetFace (aShape1), GetFace (aShape2));
     }
     else
     {
-      ais->SetMeasuredShapes (shape1, shape2);
-    }
-    if (is2vertices)  {                     //addition 3
-      gp_Pnt P1 = BRep_Tool::Pnt( TopoDS::Vertex(shape1) );
-      gp_Pnt P2 = BRep_Tool::Pnt( TopoDS::Vertex(shape2) );
-      gp_Pnt P3(P1.Y()-1., P2.X()+1., 0.); 
-      GC_MakePlane mkPlane(P1, P2, P3); 
-      ais->SetCustomPlane( mkPlane.Value()->Pln() );
+      aDim = new AIS_LengthDimension (aShape1, aShape2, aPlane->Pln());
     }
 
-    ais->SetCustomValue       (val1);
+    if (SaveDrw)
+    {
+        aDim->SetAttributes (aDrawer);
+    }
   }
-  
-  if (is_planar)
+  else
   {
-    ais->SetCustomPlane (aplane->Pln());
+    if (isEdge)
+    {
+      aDim->SetMeasuredGeometry (GetEdge(aShape1), aPlane->Pln());
+    }
+    else
+    {
+      aDim->SetMeasuredShapes (aShape1, aShape2);
+    }
+
+    aDim->SetCustomValue (aValue);
   }
-  anAIS = ais;
+
+  if (!aPlane.IsNull())
+  {
+    aDim->SetCustomPlane (aPlane->Pln());
+  }
+
+  theAIS = aDim;
 }
 
 //=======================================================================
