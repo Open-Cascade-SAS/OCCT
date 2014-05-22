@@ -41,6 +41,7 @@
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
 #include <Graphic3d_MaterialAspect.hxx>
+#include <Graphic3d_SequenceOfGroup.hxx>
 
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_Root.hxx>
@@ -539,35 +540,45 @@ void AIS_Shape::SetColor (const Quantity_Color& theColor)
   myOwnColor  = theColor;
   hasOwnColor = Standard_True;
 
-  // fast shading modification...
-  if (!GetContext().IsNull())
+  // modify shading presentation without re-computation
+  const PrsMgr_Presentations&        aPrsList     = Presentations();
+  Handle(Graphic3d_AspectFillArea3d) anAreaAspect = myDrawer->ShadingAspect()->Aspect();
+  Handle(Graphic3d_AspectLine3d)     aLineAspect  = myDrawer->LineAspect()->Aspect();
+  Handle(Graphic3d_AspectMarker3d)   aPointAspect = myDrawer->PointAspect()->Aspect();
+  for (Standard_Integer aPrsIt = 1; aPrsIt <= aPrsList.Length(); ++aPrsIt)
   {
-    if (GetContext()->MainPrsMgr()->HasPresentation (this, AIS_Shaded))
+    const PrsMgr_ModedPresentation& aPrsModed = aPrsList.Value (aPrsIt);
+    if (aPrsModed.Mode() != AIS_Shaded)
     {
-      Handle(Prs3d_Presentation)         aPrs         = GetContext()->MainPrsMgr()->Presentation (this, AIS_Shaded)->Presentation();
-      Handle(Graphic3d_Group)            aCurGroup    = Prs3d_Root::CurrentGroup (aPrs);
-      Handle(Graphic3d_AspectFillArea3d) anAreaAspect = myDrawer->ShadingAspect()->Aspect();
-      Handle(Graphic3d_AspectLine3d)     aLineAspect  = myDrawer->LineAspect()->Aspect();
-      Handle(Graphic3d_AspectMarker3d)   aPointAspect = myDrawer->PointAspect()->Aspect();
+      continue;
+    }
 
-      // Set aspects for presentation and for group
-      aPrs->SetPrimitivesAspect (anAreaAspect);
-      aPrs->SetPrimitivesAspect (aLineAspect);
-      aPrs->SetPrimitivesAspect (aPointAspect);
+    const Handle(Prs3d_Presentation)& aPrs = aPrsModed.Presentation()->Presentation();
+
+    // Set aspects for presentation
+    aPrs->SetPrimitivesAspect (anAreaAspect);
+    aPrs->SetPrimitivesAspect (aLineAspect);
+    aPrs->SetPrimitivesAspect (aPointAspect);
+
+    // Go through all groups to change color for all primitives
+    for (Graphic3d_SequenceOfGroup::Iterator aGroupIt (aPrs->Groups()); aGroupIt.More(); aGroupIt.Next())
+    {
+      const Handle(Graphic3d_Group)& aGroup = aGroupIt.Value();
+
       // Check if aspect of given type is set for the group, 
       // because setting aspect for group with no already set aspect
       // can lead to loss of presentation data
-      if (aCurGroup->IsGroupPrimitivesAspectSet (Graphic3d_ASPECT_FILL_AREA))
+      if (aGroup->IsGroupPrimitivesAspectSet (Graphic3d_ASPECT_FILL_AREA))
       {
-        aCurGroup->SetGroupPrimitivesAspect (anAreaAspect);
+        aGroup->SetGroupPrimitivesAspect (anAreaAspect);
       }
-      if (aCurGroup->IsGroupPrimitivesAspectSet (Graphic3d_ASPECT_LINE))
+      if (aGroup->IsGroupPrimitivesAspectSet (Graphic3d_ASPECT_LINE))
       {
-        aCurGroup->SetGroupPrimitivesAspect (aLineAspect);
+        aGroup->SetGroupPrimitivesAspect (aLineAspect);
       }
-      if (aCurGroup->IsGroupPrimitivesAspectSet (Graphic3d_ASPECT_MARKER))
+      if (aGroup->IsGroupPrimitivesAspectSet (Graphic3d_ASPECT_MARKER))
       {
-        aCurGroup->SetGroupPrimitivesAspect (aPointAspect);
+        aGroup->SetGroupPrimitivesAspect (aPointAspect);
       }
     }
   }
@@ -636,21 +647,28 @@ void AIS_Shape::UnsetColor()
   }
   myDrawer->SetPointAspect (Handle(Prs3d_PointAspect)());
 
-  if (!GetContext().IsNull())
+  // modify shading presentation without re-computation
+  const PrsMgr_Presentations&        aPrsList  = Presentations();
+  Handle(Graphic3d_AspectFillArea3d) anAreaAsp = myDrawer->Link()->ShadingAspect()->Aspect();
+  Handle(Graphic3d_AspectLine3d)     aLineAsp  = myDrawer->Link()->LineAspect()->Aspect();
+  for (Standard_Integer aPrsIt = 1; aPrsIt <= aPrsList.Length(); ++aPrsIt)
   {
-    if (GetContext()->MainPrsMgr()->HasPresentation (this, AIS_Shaded))
+    const PrsMgr_ModedPresentation& aPrsModed = aPrsList.Value (aPrsIt);
+    if (aPrsModed.Mode() != AIS_Shaded)
     {
-      Handle(Prs3d_Presentation) aPrs   = GetContext()->MainPrsMgr()->Presentation (this, AIS_Shaded)->Presentation();
-      Handle(Graphic3d_Group)    aGroup = Prs3d_Root::CurrentGroup (aPrs);
+      continue;
+    }
 
-      Handle(Graphic3d_AspectFillArea3d) anAreaAsp = myDrawer->Link()->ShadingAspect()->Aspect();
-      Handle(Graphic3d_AspectLine3d)     aLineAsp  = myDrawer->Link()->LineAspect()->Aspect();
-      Quantity_Color aColor;
-      AIS_GraphicTool::GetInteriorColor (myDrawer->Link(), aColor);
-      anAreaAsp->SetInteriorColor (aColor);
-      aPrs->SetPrimitivesAspect (anAreaAsp);
-      aPrs->SetPrimitivesAspect (aLineAsp);
-      // Check if aspect of given type is set for the group, 
+    const Handle(Prs3d_Presentation)& aPrs = aPrsModed.Presentation()->Presentation();
+
+    aPrs->SetPrimitivesAspect (anAreaAsp);
+    aPrs->SetPrimitivesAspect (aLineAsp);
+
+    for (Graphic3d_SequenceOfGroup::Iterator aGroupIt (aPrs->Groups()); aGroupIt.More(); aGroupIt.Next())
+    {
+      const Handle(Graphic3d_Group)& aGroup = aGroupIt.Value();
+
+      // Check if aspect of given type is set for the group,
       // because setting aspect for group with no already set aspect
       // can lead to loss of presentation data
       if (aGroup->IsGroupPrimitivesAspectSet (Graphic3d_ASPECT_FILL_AREA))
@@ -663,6 +681,7 @@ void AIS_Shape::UnsetColor()
       }
     }
   }
+
   LoadRecomputable (AIS_WireFrame);
   LoadRecomputable (2);
 }
@@ -775,15 +794,23 @@ void AIS_Shape::SetMaterial (const Graphic3d_MaterialAspect& theMat)
   }
   myDrawer->ShadingAspect()->SetTransparency (myTransparency, myCurrentFacingModel);
 
-  if (!GetContext().IsNull())
+  // modify shading presentation without re-computation
+  const PrsMgr_Presentations&        aPrsList  = Presentations();
+  Handle(Graphic3d_AspectFillArea3d) anAreaAsp = myDrawer->ShadingAspect()->Aspect();
+  for (Standard_Integer aPrsIt = 1; aPrsIt <= aPrsList.Length(); ++aPrsIt)
   {
-    if (GetContext()->MainPrsMgr()->HasPresentation (this, AIS_Shaded))
+    const PrsMgr_ModedPresentation& aPrsModed = aPrsList.Value (aPrsIt);
+    if (aPrsModed.Mode() != AIS_Shaded)
     {
-      Handle(Prs3d_Presentation) aPrs   = GetContext()->MainPrsMgr()->Presentation (this, AIS_Shaded)->Presentation();
-      Handle(Graphic3d_Group)    aGroup = Prs3d_Root::CurrentGroup (aPrs);
-    
-      Handle(Graphic3d_AspectFillArea3d) anAreaAsp = myDrawer->ShadingAspect()->Aspect();
-      aPrs->SetPrimitivesAspect (anAreaAsp);
+      continue;
+    }
+
+    const Handle(Prs3d_Presentation)& aPrs = aPrsModed.Presentation()->Presentation();
+    aPrs->SetPrimitivesAspect (anAreaAsp);
+    for (Graphic3d_SequenceOfGroup::Iterator aGroupIt (aPrs->Groups()); aGroupIt.More(); aGroupIt.Next())
+    {
+      const Handle(Graphic3d_Group)& aGroup = aGroupIt.Value();
+
       // Check if aspect of given type is set for the group, 
       // because setting aspect for group with no already set aspect
       // can lead to loss of presentation data
@@ -792,9 +819,10 @@ void AIS_Shape::SetMaterial (const Graphic3d_MaterialAspect& theMat)
         aGroup->SetGroupPrimitivesAspect (anAreaAsp);
       }
     }
-    myRecomputeEveryPrs = Standard_False; // no mode to recalculate  :only viewer update
-    myToRecomputeModes.Clear();
   }
+
+  myRecomputeEveryPrs = Standard_False; // no mode to recalculate  :only viewer update
+  myToRecomputeModes.Clear();
 }
 
 //=======================================================================
@@ -826,23 +854,29 @@ void AIS_Shape::UnsetMaterial()
   }
   hasOwnMaterial = Standard_False;
 
-  if (!GetContext().IsNull())
+  // modify shading presentation without re-computation
+  const PrsMgr_Presentations&        aPrsList  = Presentations();
+  Handle(Graphic3d_AspectFillArea3d) anAreaAsp = myDrawer->ShadingAspect()->Aspect();
+  for (Standard_Integer aPrsIt = 1; aPrsIt <= aPrsList.Length(); ++aPrsIt)
   {
-    if (GetContext()->MainPrsMgr()->HasPresentation (this, AIS_Shaded))
+    const PrsMgr_ModedPresentation& aPrsModed = aPrsList.Value (aPrsIt);
+    if (aPrsModed.Mode() != AIS_Shaded)
     {
-      Handle(Prs3d_Presentation) aPrs   = GetContext()->MainPrsMgr()->Presentation (this, AIS_Shaded)->Presentation();
-      Handle(Graphic3d_Group)    aGroup = Prs3d_Root::CurrentGroup (aPrs);
-      Handle(Graphic3d_AspectFillArea3d) anAreaAsp = myDrawer->ShadingAspect()->Aspect();
-      aPrs->SetPrimitivesAspect (anAreaAsp);
-      // Check if aspect of given type is set for the group, 
-      // because setting aspect for group with no already set aspect
-      // can lead to loss of presentation data
+      continue;
+    }
+
+    const Handle(Prs3d_Presentation)& aPrs = aPrsModed.Presentation()->Presentation();
+    aPrs->SetPrimitivesAspect (anAreaAsp);
+    for (Graphic3d_SequenceOfGroup::Iterator aGroupIt (aPrs->Groups()); aGroupIt.More(); aGroupIt.Next())
+    {
+      const Handle(Graphic3d_Group)& aGroup = aGroupIt.Value();
       if (aGroup->IsGroupPrimitivesAspectSet (Graphic3d_ASPECT_FILL_AREA))
       {
         aGroup->SetGroupPrimitivesAspect (anAreaAsp);
       }
     }
   }
+
   myRecomputeEveryPrs = Standard_False; // no mode to recalculate :only viewer update
   myToRecomputeModes.Clear();  
 }
@@ -875,25 +909,30 @@ void AIS_Shape::SetTransparency (const Standard_Real theValue)
   setTransparency (myDrawer, theValue);
   myTransparency = theValue;
 
-  if (!GetContext().IsNull())
+  // modify shading presentation without re-computation
+  const PrsMgr_Presentations&        aPrsList  = Presentations();
+  Handle(Graphic3d_AspectFillArea3d) anAreaAsp = myDrawer->ShadingAspect()->Aspect();
+  for (Standard_Integer aPrsIt = 1; aPrsIt <= aPrsList.Length(); ++aPrsIt)
   {
-    if (GetContext()->MainPrsMgr()->HasPresentation (this, AIS_Shaded))
+    const PrsMgr_ModedPresentation& aPrsModed = aPrsList.Value (aPrsIt);
+    if (aPrsModed.Mode() != AIS_Shaded)
     {
-      Handle(Prs3d_Presentation)         aPrs      = GetContext()->MainPrsMgr()->Presentation (this, AIS_Shaded)->Presentation();
-      Handle(Graphic3d_Group)            aGroup    = Prs3d_Root::CurrentGroup (aPrs);
-      Handle(Graphic3d_AspectFillArea3d) anAreaAsp = myDrawer->ShadingAspect()->Aspect();
-      aPrs->SetPrimitivesAspect (anAreaAsp);
-      // force highest priority for transparent objects
-      aPrs->SetDisplayPriority (10);
-      // Check if aspect of given type is set for the group, 
-      // because setting aspect for group with no already set aspect
-      // can lead to loss of presentation data
+      continue;
+    }
+
+    const Handle(Prs3d_Presentation)& aPrs = aPrsModed.Presentation()->Presentation();
+    aPrs->SetPrimitivesAspect (anAreaAsp);
+    aPrs->SetDisplayPriority (10); // force highest priority for translucent objects
+    for (Graphic3d_SequenceOfGroup::Iterator aGroupIt (aPrs->Groups()); aGroupIt.More(); aGroupIt.Next())
+    {
+      const Handle(Graphic3d_Group)& aGroup = aGroupIt.Value();
       if (aGroup->IsGroupPrimitivesAspectSet (Graphic3d_ASPECT_FILL_AREA))
       {
         aGroup->SetGroupPrimitivesAspect (anAreaAsp);
       }
     }
   }
+
   myRecomputeEveryPrs = Standard_False; // no mode to recalculate - only viewer update
   myToRecomputeModes.Clear();
 }
@@ -919,24 +958,30 @@ void AIS_Shape::UnsetTransparency()
     myDrawer->SetShadingAspect (Handle(Prs3d_ShadingAspect)());
   }
 
-  if (!GetContext().IsNull())
+  // modify shading presentation without re-computation
+  const PrsMgr_Presentations&        aPrsList  = Presentations();
+  Handle(Graphic3d_AspectFillArea3d) anAreaAsp = myDrawer->ShadingAspect()->Aspect();
+  for (Standard_Integer aPrsIt = 1; aPrsIt <= aPrsList.Length(); ++aPrsIt)
   {
-    if (GetContext()->MainPrsMgr()->HasPresentation (this, AIS_Shaded))
+    const PrsMgr_ModedPresentation& aPrsModed = aPrsList.Value (aPrsIt);
+    if (aPrsModed.Mode() != AIS_Shaded)
     {
-      Handle(Prs3d_Presentation)         aPrs      = GetContext()->MainPrsMgr()->Presentation (this, AIS_Shaded)->Presentation();
-      Handle(Graphic3d_Group)            aGroup    = Prs3d_Root::CurrentGroup (aPrs);
-      Handle(Graphic3d_AspectFillArea3d) anAreaAsp = myDrawer->ShadingAspect()->Aspect();
-      aPrs->SetPrimitivesAspect (anAreaAsp);
-      // Check if aspect of given type is set for the group, 
-      // because setting aspect for group with no already set aspect
-      // can lead to loss of presentation data
+      continue;
+    }
+
+    const Handle(Prs3d_Presentation)& aPrs = aPrsModed.Presentation()->Presentation();
+    aPrs->SetPrimitivesAspect (anAreaAsp);
+    for (Graphic3d_SequenceOfGroup::Iterator aGroupIt (aPrs->Groups()); aGroupIt.More(); aGroupIt.Next())
+    {
+      const Handle(Graphic3d_Group)& aGroup = aGroupIt.Value();
       if (aGroup->IsGroupPrimitivesAspectSet (Graphic3d_ASPECT_FILL_AREA))
       {
         aGroup->SetGroupPrimitivesAspect (anAreaAsp);
       }
-      aPrs->ResetDisplayPriority();
     }
+    aPrs->ResetDisplayPriority();
   }
+
   myRecomputeEveryPrs = Standard_False; // no mode to recalculate :only viewer update
   myToRecomputeModes.Clear();
 }

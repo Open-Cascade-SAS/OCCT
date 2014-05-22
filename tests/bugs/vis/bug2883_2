@@ -1,0 +1,31 @@
+puts "=========="
+puts "OCC2883"
+puts "=========="
+puts ""
+########################################################################
+# It is impossible to set material, color and transparency to compound
+########################################################################
+
+box b1 0 0 0 1 2 3
+box b2 4 0 0 3 1 2
+vinit drv1/v1/v1
+vsetdispmode 1
+vdisplay b1 b2
+vfit
+vinit drv1/v2/v1
+vsetdispmode 1
+vdisplay b1 b2
+vfit
+vsetcolor b1 RED
+vactivate drv1/v1/v1
+vdump v1.png
+vactivate drv1/v2/v1
+vdump v2.png
+set info [diffimage v1.png v2.png 0 0 0]
+if { $info != 0 } {
+  puts "Error: images v1 and v2 are different"
+} else {
+  puts "OK: images v1 and v2 are similar"
+}
+
+set only_screen 1
