@@ -33,7 +33,10 @@
 #include <gp_Vec.hxx>
 #include <math_FunctionSetRoot.hxx>
 #include <math_Vector.hxx>
-#include <Adaptor3d_SurfaceOfLinearExtrusion.hxx>
+#include <Adaptor3d_HSurfaceOfLinearExtrusion.hxx>
+
+IMPLEMENT_STANDARD_HANDLE (Extrema_ExtPExtS, Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(Extrema_ExtPExtS, Standard_Transient)
 
 static gp_Ax2 GetPosition (const Handle(Adaptor3d_HCurve)& C);
      
@@ -148,69 +151,85 @@ Extrema_ExtPExtS::Extrema_ExtPExtS ()
 
 //=============================================================================
 
-Extrema_ExtPExtS::Extrema_ExtPExtS (const gp_Pnt&       P, 
-				    const Adaptor3d_SurfaceOfLinearExtrusion&  S,
-				    const Standard_Real    Umin,
-				    const Standard_Real    Usup,
-				    const Standard_Real    Vmin,
-				    const Standard_Real    Vsup,
-				    const Standard_Real    TolU, 
-				    const Standard_Real    TolV) 
+Extrema_ExtPExtS::Extrema_ExtPExtS (const gp_Pnt&                                       theP,
+                                    const Handle(Adaptor3d_HSurfaceOfLinearExtrusion)&  theS,
+                                    const Standard_Real                                 theUmin,
+                                    const Standard_Real                                 theUsup,
+                                    const Standard_Real                                 theVmin,
+                                    const Standard_Real                                 theVsup,
+                                    const Standard_Real                                 theTolU,
+                                    const Standard_Real                                 theTolV)
 {
-  Initialize (S,
-	      Umin, Usup, Vmin, Vsup,
-	      TolU, TolV);
-  Perform(P);
+  Initialize (theS,
+              theUmin,
+              theUsup,
+              theVmin,
+              theVsup,
+              theTolU,
+              theTolV);
+
+  Perform (theP);
 }
 //=============================================================================
 
-Extrema_ExtPExtS::Extrema_ExtPExtS (const gp_Pnt&       P, 
-				    const Adaptor3d_SurfaceOfLinearExtrusion&  S,
-				    const Standard_Real    TolU, 
-				    const Standard_Real    TolV)
+Extrema_ExtPExtS::Extrema_ExtPExtS (const gp_Pnt&                                       theP,
+                                    const Handle(Adaptor3d_HSurfaceOfLinearExtrusion)&  theS,
+                                    const Standard_Real                                 theTolU, 
+                                    const Standard_Real                                 theTolV)
 {
-  Initialize (S,
-	      S.FirstUParameter(), S.LastUParameter(),
-	      S.FirstVParameter(), S.LastVParameter(),
-	      TolU, TolV);
-  Perform(P);
+  Initialize (theS,
+              theS->FirstUParameter(),
+              theS->LastUParameter(),
+              theS->FirstVParameter(),
+              theS->LastVParameter(),
+              theTolU,
+              theTolV);
+
+  Perform (theP);
 }
 //=======================================================================
 //function : Initialize
 //purpose  : 
 //=======================================================================
 
-void Extrema_ExtPExtS::Initialize(const Adaptor3d_SurfaceOfLinearExtrusion& S,
-				  const Standard_Real Uinf,
-				  const Standard_Real Usup,
-				  const Standard_Real Vinf,
-				  const Standard_Real Vsup,
-				  const Standard_Real TolU,
-				  const Standard_Real TolV)
+void Extrema_ExtPExtS::Initialize (const Handle(Adaptor3d_HSurfaceOfLinearExtrusion)&  theS,
+                                   const Standard_Real                                 theUinf,
+                                   const Standard_Real                                 theUsup,
+                                   const Standard_Real                                 theVinf,
+                                   const Standard_Real                                 theVsup,
+                                   const Standard_Real                                 theTolU,
+                                   const Standard_Real                                 theTolV)
 {
-  myuinf=Uinf;
-  myusup=Usup;
-  mytolu=TolU;
+  myuinf = theUinf;
+  myusup = theUsup;
+  mytolu = theTolU;
   
-  myvinf=Vinf;
-  myvsup=Vsup;
-  mytolv=TolV;
+  myvinf = theVinf;
+  myvsup = theVsup;
+  mytolv = theTolV;
   
-  Handle(Adaptor3d_HCurve) anACurve = S.BasisCurve();
+  Handle(Adaptor3d_HCurve) anACurve = theS->BasisCurve();
 
-  myF.Initialize(S);
+  myF.Initialize (theS->ChangeSurface());
   myC = anACurve;
-  myS = (Adaptor3d_SurfacePtr)&S;
+  myS = theS;
   myPosition = GetPosition(myC);
-  myDirection = S.Direction();
+  myDirection = theS->Direction();
   myIsAnalyticallyComputable = //Standard_False;
-    IsCaseAnalyticallyComputable (myC->GetType(),myPosition,myDirection);
+    IsCaseAnalyticallyComputable (myC->GetType(), myPosition, myDirection);
   
   if (!myIsAnalyticallyComputable)
-    
-    myExtPS.Initialize(S, 32, 32,
-		       Uinf, Usup, Vinf, Vsup,
-		       TolU, TolV);
+  {
+    myExtPS.Initialize (theS->ChangeSurface(),
+                        32,
+                        32,
+                        theUinf,
+                        theUsup,
+                        theVinf,
+                        theVsup,
+                        theTolU,
+                        theTolV);
+  }
 }
 
 

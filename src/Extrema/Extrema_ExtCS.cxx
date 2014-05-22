@@ -264,18 +264,28 @@ void Extrema_ExtCS::Perform(const Adaptor3d_Curve& C,
         Standard_Integer NbIntervals = aC.NbIntervals(GeomAbs_C1);
         TColStd_Array1OfReal SharpPoints(1, NbIntervals+1);
         aC.Intervals(SharpPoints, GeomAbs_C1);
-        for (i = 1; i <= SharpPoints.Upper(); i++)
+        
+        Extrema_ExtPS aProjPS;
+        aProjPS.Initialize (*myS,
+                            myS->FirstUParameter(),
+                            myS->LastUParameter(),
+                            myS->FirstVParameter(),
+                            myS->LastVParameter(),
+                            mytolS,
+                            mytolS);
+
+        for (i = 2; i < SharpPoints.Upper(); ++i)
         {
           T = SharpPoints(i);
           gp_Pnt aPnt = C.Value(T);
-          Extrema_ExtPS ProjPS(aPnt, *myS, mytolS, mytolS);
-          if (!ProjPS.IsDone())
+          aProjPS.Perform (aPnt);
+          if (!aProjPS.IsDone())
             continue;
-          Standard_Integer NbProj = ProjPS.NbExt(), jmin = 0;
+          Standard_Integer NbProj = aProjPS.NbExt(), jmin = 0;
           Standard_Real MinSqDist = RealLast();
           for (j = 1; j <= NbProj; j++)
           {
-            Standard_Real aSqDist = ProjPS.SquareDistance(j);
+            Standard_Real aSqDist = aProjPS.SquareDistance(j);
             if (aSqDist < MinSqDist)
             {
               MinSqDist = aSqDist;
@@ -284,9 +294,9 @@ void Extrema_ExtCS::Perform(const Adaptor3d_Curve& C,
           }
           if (jmin != 0)
           {
-            ProjPS.Point(jmin).Parameter(U,V);
+            aProjPS.Point(jmin).Parameter(U,V);
             AddSolution(C, T, U, V,
-              aPnt, ProjPS.Point(jmin).Value(), MinSqDist);
+                        aPnt, aProjPS.Point(jmin).Value(), MinSqDist);
           }
         }
         //Cut sharp solutions to keep only minimum and maximum

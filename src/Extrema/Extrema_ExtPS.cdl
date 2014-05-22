@@ -21,19 +21,19 @@ class ExtPS from Extrema
     	--          These distances can be minimum or maximum.
 		    
 uses  	
-    POnSurf           from Extrema,
-    ExtPElS           from Extrema,
-    Pnt               from gp,
-    SurfaceType       from GeomAbs,
-    SequenceOfPOnSurf from Extrema,
-    SequenceOfReal    from TColStd,
-    Surface           from Adaptor3d,
-    SurfacePtr        from Adaptor3d,
-    GenExtPS          from Extrema,
-    ExtFlag			  from Extrema,
-    ExtAlgo			  from Extrema
---    ExtPExtS from Extrema,
---    ExtPRevS from Extrema
+    POnSurf                   from Extrema,
+    ExtPElS                   from Extrema,
+    Pnt                       from gp,
+    SurfaceType               from GeomAbs,
+    SequenceOfPOnSurf         from Extrema,
+    SequenceOfReal            from TColStd,
+    Surface                   from Adaptor3d,
+    SurfacePtr                from Adaptor3d,
+    GenExtPS                  from Extrema,
+    ExtFlag                   from Extrema,
+    ExtAlgo                   from Extrema,
+    ExtPExtS                  from Extrema,
+    ExtPRevS                  from Extrema
 
 
 raises  NotDone      from StdFail,
@@ -147,26 +147,28 @@ is
 		    is static private;
 --  modified by NIZHNY-EAP Fri Oct 29 09:44:37 1999 ___END___
 fields
-    myS      : SurfacePtr        from Adaptor3d;
-    myDone   : Boolean           from Standard;
-    myExtPElS: ExtPElS           from Extrema;
-    myExtPS  : GenExtPS          from Extrema;
-    myPoints : SequenceOfPOnSurf from Extrema;
-    myuinf   : Real              from Standard;
-    myusup   : Real              from Standard;
-    myvinf   : Real              from Standard;
-    myvsup   : Real              from Standard;
-    mytolu   : Real              from Standard;
-    mytolv   : Real              from Standard;
-    d11      : Real              from Standard;
-    d12      : Real              from Standard;
-    d21      : Real              from Standard;
-    d22      : Real              from Standard;
-    P11      : Pnt               from gp;
-    P12      : Pnt               from gp;
-    P21      : Pnt               from gp;
-    P22      : Pnt               from gp;
-    mySqDist : SequenceOfReal    from TColStd;
-    mytype   : SurfaceType       from GeomAbs;
+    myS        : SurfacePtr         from Adaptor3d;
+    myDone     : Boolean            from Standard;
+    myExtPElS  : ExtPElS            from Extrema;
+    myExtPS    : GenExtPS           from Extrema;
+    myPoints   : SequenceOfPOnSurf  from Extrema;
+    myuinf     : Real               from Standard;
+    myusup     : Real               from Standard;
+    myvinf     : Real               from Standard;
+    myvsup     : Real               from Standard;
+    mytolu     : Real               from Standard;
+    mytolv     : Real               from Standard;
+    d11        : Real               from Standard;
+    d12        : Real               from Standard;
+    d21        : Real               from Standard;
+    d22        : Real               from Standard;
+    P11        : Pnt                from gp;
+    P12        : Pnt                from gp;
+    P21        : Pnt                from gp;
+    P22        : Pnt                from gp;
+    mySqDist   : SequenceOfReal     from TColStd;
+    mytype     : SurfaceType        from GeomAbs;
+    myExtPExtS : ExtPExtS           from Extrema;
+    myExtPRevS : ExtPRevS           from Extrema;
 
 end ExtPS;

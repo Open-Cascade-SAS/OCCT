@@ -203,7 +203,6 @@ static Standard_Boolean IsExtremum (const Standard_Real U, const Standard_Real V
 
 Extrema_ExtPRevS::Extrema_ExtPRevS() 
 {
-  myS=NULL;
   myDone = Standard_False;
 }
 //=======================================================================
@@ -211,71 +210,90 @@ Extrema_ExtPRevS::Extrema_ExtPRevS()
 //purpose  : 
 //=======================================================================
 
-Extrema_ExtPRevS::Extrema_ExtPRevS(const gp_Pnt& P,
-				   const Adaptor3d_SurfaceOfRevolution& S,
-				   const Standard_Real Umin,
-				   const Standard_Real Usup,
-				   const Standard_Real Vmin,
-				   const Standard_Real Vsup,
-				   const Standard_Real TolU,
-				   const Standard_Real TolV) 
+Extrema_ExtPRevS::Extrema_ExtPRevS (const gp_Pnt&                                 theP,
+                                    const Handle(Adaptor3d_HSurfaceOfRevolution)& theS,
+                                    const Standard_Real                           theUmin,
+                                    const Standard_Real                           theUsup,
+                                    const Standard_Real                           theVmin,
+                                    const Standard_Real                           theVsup,
+                                    const Standard_Real                           theTolU,
+                                    const Standard_Real                           theTolV)
 {
-  myS=NULL;
-  Initialize (S,
-	      Umin, Usup, Vmin, Vsup,
-	      TolU, TolV);
-  Perform(P);
+  Initialize (theS,
+              theUmin,
+              theUsup,
+              theVmin,
+              theVsup,
+              theTolU,
+              theTolV);
+
+  Perform (theP);
 }
 //=======================================================================
 //function : Extrema_ExtPRevS
 //purpose  : 
 //=======================================================================
 
-Extrema_ExtPRevS::Extrema_ExtPRevS(const gp_Pnt& P,
-				   const Adaptor3d_SurfaceOfRevolution& S,
-				   const Standard_Real TolU,
-				   const Standard_Real TolV) 
+Extrema_ExtPRevS::Extrema_ExtPRevS (const gp_Pnt&                                 theP,
+                                    const Handle(Adaptor3d_HSurfaceOfRevolution)& theS,
+                                    const Standard_Real                           theTolU,
+                                    const Standard_Real                           theTolV)
 {
-  myS=NULL;
-  Initialize (S,
-	      S.FirstUParameter(), S.LastUParameter(),
-	      S.FirstVParameter(), S.LastVParameter(),
-	      TolU, TolV);
-  Perform(P);
+  Initialize (theS,
+              theS->FirstUParameter(),
+              theS->LastUParameter(),
+              theS->FirstVParameter(),
+              theS->LastVParameter(),
+              theTolU,
+              theTolV);
+
+  Perform (theP);
 }
 //=======================================================================
 //function : Initialize
 //purpose  : 
 //=======================================================================
 
-void Extrema_ExtPRevS::Initialize(const Adaptor3d_SurfaceOfRevolution& S,
-				  const Standard_Real Umin,
-				  const Standard_Real Usup,
-				  const Standard_Real Vmin,
-				  const Standard_Real Vsup,
-				  const Standard_Real TolU,
-				  const Standard_Real TolV)
+void Extrema_ExtPRevS::Initialize (const Handle(Adaptor3d_HSurfaceOfRevolution)& theS,
+                                   const Standard_Real                           theUmin,
+                                   const Standard_Real                           theUsup,
+                                   const Standard_Real                           theVmin,
+                                   const Standard_Real                           theVsup,
+                                   const Standard_Real                           theTolU,
+                                   const Standard_Real                           theTolV)
 {
-  myvinf=Vmin;
-  myvsup=Vsup;
-  mytolv=TolV;
+  myvinf = theVmin;
+  myvsup = theVsup;
+  mytolv = theTolV;
 
-  Handle(Adaptor3d_HCurve) anACurve = S.BasisCurve();
-  if (!myS || myS != (Adaptor3d_SurfacePtr)&S) {
-    myS = Adaptor3d_SurfacePtr(&S);
-    myPosition = GetPosition(S);
+  Handle(Adaptor3d_HCurve) anACurve = theS->BasisCurve();
+  
+  if (myS != theS)
+  {
+    myS = theS;
+    myPosition = GetPosition (theS->ChangeSurface());
     myIsAnalyticallyComputable =
-      IsCaseAnalyticallyComputable (anACurve->GetType(),myPosition,S.AxeOfRevolution());
+      IsCaseAnalyticallyComputable (anACurve->GetType(), myPosition, theS->AxeOfRevolution());
   }
-  if (!myIsAnalyticallyComputable) {
-    
-    Standard_Integer nbu = 32, nbv = 32;
 
-    if(HasSingularity(S)) {nbv = 100;}
+  if (!myIsAnalyticallyComputable)
+  {
+    Standard_Integer aNbu = 32, aNbv = 32;
 
-    myExtPS.Initialize(S, nbu, nbv,
-		       Umin, Usup, Vmin, Vsup,
-		       TolU, TolV);
+    if (HasSingularity (theS->ChangeSurface()))
+    {
+      aNbv = 100;
+    }
+
+    myExtPS.Initialize (theS->ChangeSurface(),
+                        aNbu,
+                        aNbv,
+                        theUmin,
+                        theUsup,
+                        theVmin,
+                        theVsup,
+                        theTolU,
+                        theTolV);
   }
 }
 //=======================================================================
@@ -368,7 +386,7 @@ void Extrema_ExtPRevS::Perform(const gp_Pnt& P)
 	}
 	V = newV;
 
-	if ( !IsExtremum (U, V, P, myS, E, Dist2,
+	if ( !IsExtremum (U, V, P, &(myS->ChangeSurface()), E, Dist2,
 			   Standard_True, anExt.IsMin(i))) {
 	  continue;
 	}
@@ -394,7 +412,7 @@ void Extrema_ExtPRevS::Perform(const gp_Pnt& P)
 	}
 	V = newV;
 
-	if ( !IsExtremum (U, V, P, myS, E, Dist2,
+	if ( !IsExtremum (U, V, P, &(myS->ChangeSurface()), E, Dist2,
 			  Standard_False, anExt.IsMin(i))) continue;
       } else {
 	E = myS->Value(U,V);
@@ -441,7 +459,7 @@ void Extrema_ExtPRevS::Perform(const gp_Pnt& P)
 	}
 	V = newV;
 	
-	if ( !IsExtremum (U, V, P, myS, E, Dist2,
+	if ( !IsExtremum (U, V, P, &(myS->ChangeSurface()), E, Dist2,
 			   Standard_True, anExt.IsMin(i))) continue;
       } else if (V < myvinf) {
 	// 	if ( !IsExtremum (U, V = myvinf, P, myS, E, Dist2,
@@ -464,7 +482,7 @@ void Extrema_ExtPRevS::Perform(const gp_Pnt& P)
 	}
 	V = newV;
 
-	if ( !IsExtremum (U, V, P, myS, E, Dist2,
+	if ( !IsExtremum (U, V, P, &(myS->ChangeSurface()), E, Dist2,
 			  Standard_False, anExt.IsMin(i))) continue;
       } else {
 	E = myS->Value(U,V);

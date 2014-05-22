@@ -14,7 +14,7 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-class ExtPRevS from Extrema 
+class ExtPRevS from Extrema inherits Transient from Standard
 		    
 	---Purpose: It calculates all the extremum (minimum and
 	--          maximum) distances between a point and a surface
@@ -24,9 +24,8 @@ uses
     POnSurf from Extrema,
     GenExtPS from Extrema,
 
-    SurfaceOfRevolution from Adaptor3d,
-    SurfacePtr from Adaptor3d,
-    
+    HSurfaceOfRevolution from Adaptor3d,
+
     Ax2 from gp,
     Pnt from gp
 
@@ -39,25 +38,25 @@ is
 
     Create returns ExtPRevS from Extrema;
 
-    Create (P: Pnt; S: SurfaceOfRevolution from Adaptor3d;
+    Create (P: Pnt; S: HSurfaceOfRevolution from Adaptor3d;
 		    Umin, Usup, Vmin, Vsup: Real; 
 		    TolU,TolV: Real) 
 		    returns ExtPRevS from Extrema;
     ---Purpose: It calculates all the distances between a point 
     --          from gp and a SurfacePtr from Adaptor3d.
     
-    Create (P: Pnt; S: SurfaceOfRevolution from Adaptor3d; 
+    Create (P: Pnt; S: HSurfaceOfRevolution from Adaptor3d; 
 		    TolU,TolV: Real) 
 		    returns ExtPRevS from Extrema;
     ---Purpose: It calculates all the distances between a point 
     --          from gp and a SurfacePtr from Adaptor3d.
     
-    Initialize(me: in out; S: SurfaceOfRevolution from Adaptor3d; 
+    Initialize(me: mutable; S: HSurfaceOfRevolution from Adaptor3d; 
 			   Umin, Usup, Vmin, Vsup: Real; 
 			   TolU,TolV: Real)
 		    is static;
     
-    Perform (me: in out; P: Pnt)
+    Perform (me: mutable; P: Pnt)
 		    is static;
     
     IsDone (me) returns Boolean
@@ -88,10 +87,10 @@ is
     		    is static;
 
 fields
-    myS      : SurfacePtr from Adaptor3d;
-    myvinf   : Real       from Standard;
-    myvsup   : Real       from Standard;
-    mytolv   : Real       from Standard;
+    myS      : HSurfaceOfRevolution from Adaptor3d;
+    myvinf   : Real                 from Standard;
+    myvsup   : Real                 from Standard;
+    mytolv   : Real                 from Standard;
     
     myPosition  : Ax2      from gp;
     myExtPS     : GenExtPS from Extrema;

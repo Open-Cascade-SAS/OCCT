@@ -14,7 +14,7 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-class ExtPExtS from Extrema 
+class ExtPExtS from Extrema inherits Transient from Standard
 		    
 	---Purpose: It calculates all the extremum (minimum and
 	--          maximum) distances between a point and a linear
@@ -26,9 +26,9 @@ uses
     FuncExtPS from Extrema,
     
     HCurve from Adaptor3d,
-    SurfacePtr from Adaptor3d, 
-    SurfaceOfLinearExtrusion from Adaptor3d,
-    
+
+    HSurfaceOfLinearExtrusion from Adaptor3d,
+
     Ax2 from gp,
     Vec from gp,
     Pnt from gp
@@ -41,26 +41,26 @@ raises
 is
     Create returns ExtPExtS;
 
-    Create (P: Pnt; S: SurfaceOfLinearExtrusion from Adaptor3d; 
+    Create (P: Pnt; S: HSurfaceOfLinearExtrusion from Adaptor3d; 
 		    Umin, Usup, Vmin, Vsup: Real; 
 		    TolU,TolV: Real) 
 		    returns ExtPExtS;
     ---Purpose: It calculates all the distances between a point 
     --          from gp and a Surface.
     
-    Create (P: Pnt; S: SurfaceOfLinearExtrusion from Adaptor3d; 
+    Create (P: Pnt; S: HSurfaceOfLinearExtrusion from Adaptor3d; 
 		    TolU,TolV: Real) 
 		    returns ExtPExtS;
     ---Purpose: It calculates all the distances between a point 
     --          from gp and a Surface.
 
-    Initialize(me: in out; S: SurfaceOfLinearExtrusion from Adaptor3d;
+    Initialize(me: mutable; S: HSurfaceOfLinearExtrusion from Adaptor3d;
     			   Uinf, Usup, Vinf, Vsup: Real;
 			   TolU, TolV: Real)
     ---Purpose: Initializes the fields of the algorithm.
 		    is static;
 
-    Perform(me: in out; P: Pnt)
+    Perform(me: mutable; P: Pnt)
 		    is static;
     
     IsDone (me) returns Boolean
@@ -105,12 +105,12 @@ fields
     myvsup   : Real from Standard;
     mytolv   : Real from Standard;
     
-    myF	        : FuncExtPS  from Extrema;
-    myC         : HCurve     from Adaptor3d; 
-    myS	        : SurfacePtr from Adaptor3d;
-    myDirection : Vec        from gp;
-    myPosition  : Ax2        from gp;
-    myExtPS     : GenExtPS   from Extrema;
+    myF	        : FuncExtPS                 from Extrema;
+    myC         : HCurve                    from Adaptor3d; 
+    myS	        : HSurfaceOfLinearExtrusion from Adaptor3d;
+    myDirection : Vec                       from gp;
+    myPosition  : Ax2                       from gp;
+    myExtPS     : GenExtPS                  from Extrema;
     
     myIsAnalyticallyComputable : Boolean  from Standard;
 
