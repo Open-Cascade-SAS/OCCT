@@ -103,6 +103,7 @@
 #include <ShapeFix_SplitTool.hxx>
 #include <TColStd_MapOfInteger.hxx>
 #include <TopTools_DataMapOfShapeShape.hxx>
+#include <NCollection_Array1.hxx>
 
 #ifdef DEB
 #define DEBUG
@@ -1127,6 +1128,8 @@ Standard_Boolean ShapeFix_Face::FixOrientation(TopTools_DataMapOfShapeListOfShap
     Standard_Boolean vclosed = mySurf->IsVClosed();
     Standard_Real SUF, SUL, SVF, SVL;
     mySurf->Bounds(SUF, SUL, SVF, SVL);
+    Standard_Real uRange = SUL - SUF;
+    Standard_Real vRange = SVL - SVF;
     
     TopTools_DataMapOfShapeListOfShape MW;
     TopTools_DataMapOfShapeInteger SI;
@@ -1136,10 +1139,54 @@ Standard_Boolean ShapeFix_Face::FixOrientation(TopTools_DataMapOfShapeListOfShap
     MapIntWires.Clear();
     Standard_Integer NbOuts=0;
     Standard_Integer i;
+
+    NCollection_Array1<Bnd_Box2d> aWireBoxes(1, nb);
+    Standard_Real uMiddle = 0, vMiddle = 0;
+    Standard_Boolean isFirst = Standard_True;
+    //create Bounding boxes for each wire
+    for ( i = 1; i <= nb; i ++) {
+      TopoDS_Shape aShape = ws.Value(i);
+      TopoDS_Wire aWire = TopoDS::Wire (aShape);
+      Bnd_Box2d aBox;
+      Standard_Real cf,cl;
+      TopoDS_Iterator ew (aWire);
+      for(;ew.More(); ew.Next()) {
+        TopoDS_Edge ed = TopoDS::Edge (ew.Value());
+        Handle(Geom2d_Curve) cw = BRep_Tool::CurveOnSurface (ed,myFace,cf,cl);
+        Geom2dAdaptor_Curve gac;
+        Standard_Real aFirst = cw->FirstParameter();
+        Standard_Real aLast = cw->LastParameter();
+        if(cw->IsKind(STANDARD_TYPE(Geom2d_BSplineCurve)) && (cf < aFirst || cl > aLast)) {
+          //avoiding problems with segment in Bnd_Box
+          gac.Load(cw);
+        }
+       else
+         gac.Load(cw,cf,cl);
+       BndLib_Add2dCurve::Add(gac,::Precision::Confusion(),aBox);
+      }
+
+      Standard_Real aXMin, aXMax, aYMin, aYMax;
+      aBox.Get(aXMin, aYMin, aXMax, aYMax);
+      if (isFirst) {
+        isFirst = Standard_False;
+        uMiddle = (aXMin + aXMax) * 0.5;
+        vMiddle = (aYMin + aYMax) * 0.5;
+      }
+      else {
+        Standard_Real xShift = 0, yShift = 0;
+        if ( mySurf->IsUClosed() ) 
+          xShift = ShapeAnalysis::AdjustByPeriod ( 0.5*(aXMin + aXMax), uMiddle, uRange );
+        if ( mySurf->IsVClosed() ) 
+          yShift = ShapeAnalysis::AdjustByPeriod ( 0.5*(aYMin + aYMax), vMiddle, vRange ) ;
+        aBox.Update(aXMin + xShift, aYMin + yShift, aXMax + xShift, aYMax + yShift);
+      }
+      aWireBoxes.ChangeValue(i) = aBox;
+    }
     
     for ( i = 1; i <= nb; i ++) {
       TopoDS_Shape asw = ws.Value(i);
       TopoDS_Wire aw = TopoDS::Wire (asw);
+      Bnd_Box2d aBox1 = aWireBoxes.Value(i);
       TopoDS_Shape dummy = myFace.EmptyCopied();
       TopoDS_Face af = TopoDS::Face ( dummy );
 //      B.MakeFace (af,mySurf->Surface(),::Precision::Confusion());
@@ -1154,27 +1201,28 @@ Standard_Boolean ShapeFix_Face::FixOrientation(TopTools_DataMapOfShapeListOfShap
       TopAbs_State sta = TopAbs_OUT;
       TopAbs_State staout = clas.PerformInfinitePoint();
       TopTools_ListOfShape IntWires;
+      Standard_Integer aWireIt = 0;
       for ( Standard_Integer j = 1; j <= nbAll; j ++) {
+        aWireIt++;
         //if(i==j) continue;
         TopoDS_Shape aSh2 = allSubShapes.Value(j);
         if(aw == aSh2)
           continue;
         TopAbs_State stb = TopAbs_UNKNOWN;
         if(aSh2.ShapeType() == TopAbs_VERTEX) {
+          aWireIt--;
           gp_Pnt aP = BRep_Tool::Pnt(TopoDS::Vertex(aSh2));
           gp_Pnt2d p2d = mySurf->ValueOfUV(aP,Precision::Confusion());
           stb = clas.Perform (p2d,Standard_False);
           if(stb == staout && (uclosed || vclosed)) {
             gp_Pnt2d p2d1;
             if(uclosed) {
-              Standard_Real period = SUL-SUF;
-              p2d1.SetCoord(p2d.X()+period, p2d.Y());
+              p2d1.SetCoord(p2d.X()+uRange, p2d.Y());
               stb = clas.Perform (p2d1,Standard_False);
               
             }
             if(stb == staout && vclosed) {
-              Standard_Real period = SVL-SVF;
-              p2d1.SetCoord(p2d.X(), p2d.Y()+ period);
+              p2d1.SetCoord(p2d.X(), p2d.Y()+ vRange);
               stb = clas.Perform (p2d1,Standard_False);
             }
           }
@@ -1182,7 +1230,11 @@ Standard_Boolean ShapeFix_Face::FixOrientation(TopTools_DataMapOfShapeListOfShap
         else if (aSh2.ShapeType() == TopAbs_WIRE) {
           CheckShift = Standard_True;
           TopoDS_Wire bw = TopoDS::Wire (aSh2);
-          //	Standard_Integer numin =0;
+          //Standard_Integer numin =0;
+          Bnd_Box2d aBox2 = aWireBoxes.Value(aWireIt);
+          if (aBox2.IsOut(aBox1))
+            continue;
+
           TopoDS_Iterator ew (bw);
           for(;ew.More(); ew.Next()) {
             TopoDS_Edge ed = TopoDS::Edge (ew.Value());
@@ -1210,20 +1262,18 @@ Standard_Boolean ShapeFix_Face::FixOrientation(TopTools_DataMapOfShapeListOfShap
             if( stb == staout && CheckShift ) {
               CheckShift = Standard_False;
               if(uclosed) {
-                Standard_Real period = SUL-SUF;
-                unp1.SetCoord(unp.X()+period, unp.Y());
+                unp1.SetCoord(unp.X()+uRange, unp.Y());
                 found = (staout != clas.Perform (unp1,Standard_False));
                 if(!found) {
-                  unp1.SetX(unp.X()-period);
+                  unp1.SetX(unp.X()-uRange);
                   found = (staout != clas.Perform (unp1,Standard_False));
                 }
               }
               if(vclosed&&!found) {
-                Standard_Real period = SVL-SVF;
-                unp1.SetCoord(unp.X(), unp.Y()+period);
+                unp1.SetCoord(unp.X(), unp.Y()+vRange);
                 found = (staout != clas.Perform (unp1,Standard_False));
                 if(!found) {
-                  unp1.SetY(unp.Y()-period);
+                  unp1.SetY(unp.Y()-vRange);
                   found = (staout != clas.Perform (unp1,Standard_False));
                 }
               }
