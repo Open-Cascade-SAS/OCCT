@@ -16,8 +16,8 @@
 
 class EntityIterator  from Interface
 
-    ---Purpose : Defines an Iterator on Entities, complying with GraphTools
-    --           needs. Allows considering of various criteria
+    ---Purpose : Defines an Iterator on Entities.
+    --           Allows considering of various criteria
 
 uses Transient, HSequenceOfTransient from TColStd,
      IntVal, InterfaceModel
@@ -71,7 +71,7 @@ is
 
     Value (me) returns any Transient  raises NoSuchObject;
     ---Purpose : Returns the current Entity iterated, to be used by Interface
-    --           tools or by GraphTools (where Entity is a Vertex)
+    --           tools
     ---C++ : return const &
 
     Content (me) returns HSequenceOfTransient;

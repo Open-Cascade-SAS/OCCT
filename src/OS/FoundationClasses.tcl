@@ -15,7 +15,7 @@
 ;# Liste des toolkits WOK sous forme de full path
 ;# 
 proc FoundationClasses:toolkits { } {
-    return [list TKernel TKMath TKAdvTools]
+    return [list TKernel TKMath]
 }
 ;#
 ;# Autres UDs a prendre.

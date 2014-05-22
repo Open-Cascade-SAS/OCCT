@@ -943,7 +943,7 @@ This group allows  testing extended data exchange packages.
 | Data Exchange	|	TKSTEPBase, TKSTEPAttr, TKSTEP209, TKSTEP |	step |
 | Data Exchange	|	TKSTL, TKVRML 	| stlvrml |
 | Data Exchange	| TKXSBase, TKXCAF, TKXCAFSchema, TKXDEIGES, TKXDESTEP, TKXmlXCAF, TKBinXCAF | xde |
-| Foundation Classes |	TKernel, TKMath, TKAdvTools	| fclasses |
+| Foundation Classes |	TKernel, TKMath	| fclasses |
 | Modeling_algorithms |	TKGeomAlgo, TKTopAlgo, TKPrim, TKBO, TKBool, TKHLR, TKFillet, TKOffset, TKFeat, TKXMesh |	modalg |
 | Modeling Data | TKG2d, TKG3d, TKGeomBase, TKBRep	| moddata |
 | Visualization | TKService, TKV2d, TKV3d, TKOpenGl, TKMeshVS, TKNIS, TKVoxel	| vis |

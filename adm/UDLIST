@@ -7,17 +7,13 @@ p BVH
 p CSLib
 p Convert
 p Dico
-p Dynamic
 p ElCLib
 p ElSLib
 p Expr
 p ExprIntrp
 p FSD
 p GeomAbs
-p GraphDS
-p GraphTools
 p MMgt
-p Materials
 p Message
 p OSD
 p PLib
@@ -40,7 +36,6 @@ p UnitsAPI
 p gp
 p math
 r OS
-t TKAdvTools
 t TKMath
 t TKernel
 p Adaptor2d
