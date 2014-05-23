@@ -42,7 +42,7 @@ myStdToolBar( 0 )
   stWs = new QMdiArea( vb );
   layout->addWidget( stWs );
   setCentralWidget( vb );
-	
+
   createStandardOperations();
   createCasCadeOperations();
 
@@ -122,7 +122,7 @@ void ApplicationCommonWindow::createStandardOperations()
   // create preferences menu
   QMenu* aPrefMenu = new QMenu( QObject::tr("MNU_PREFERENCES") );
   aPrefMenu->addAction( filePrefUseVBOAction );
-  
+
   // populate a menu with all actions
   myFilePopup = new QMenu( this );
   myFilePopup = menuBar()->addMenu( QObject::tr("MNU_FILE") );
@@ -132,25 +132,25 @@ void ApplicationCommonWindow::createStandardOperations()
   myFilePopup->addMenu( aPrefMenu );
   myFileSeparator = myFilePopup->addSeparator();
   myFilePopup->addAction( fileQuitAction );
-    
-	// add a view menu
+
+  // add a view menu
   QMenu * view = new QMenu( this );
-	
+
   view = menuBar()->addMenu( QObject::tr("MNU_VIEW") );
   view->addAction( viewToolAction );
   view->addAction( viewStatusAction );
-	
-	// add a help menu
+
+  // add a help menu
   QMenu * help = new QMenu( this );
   menuBar()->addSeparator();
   help = menuBar()->addMenu( QObject::tr("MNU_HELP") );
   help->addAction( helpAboutAction );
 
-	// populate a tool bar with some actions
+  // populate a tool bar with some actions
   myStdToolBar = addToolBar( tr( "File Operations" ) );
   myStdToolBar->addAction( fileNewAction );
   myStdToolBar->addAction( helpAboutAction );
-	
+
   myStdActions.at(FileCloseId)->setEnabled(myDocuments.count() > 0);
 
   myStdActions.at(FilePrefUseVBOId)->setEnabled( true );
@@ -281,8 +281,8 @@ void ApplicationCommonWindow::createWindowPopup()
     if ( !myWindowPopup )
     {
       myWindowPopup = new QMenu( QObject::tr( "MNU_WINDOW" ), this );
-	    connect( myWindowPopup, SIGNAL( aboutToShow() ),
-		         this, SLOT( windowsMenuAboutToShow() ) );
+      connect( myWindowPopup, SIGNAL( aboutToShow() ),
+             this, SLOT( windowsMenuAboutToShow() ) );
     }
 }
 
@@ -315,7 +315,7 @@ void ApplicationCommonWindow::windowsMenuAboutToShow()
   QList<QMdiSubWindow *> windows = stWs->subWindowList();
   for (int i = 0; i < windows.count(); ++i)
   {
-	QAction* aAction = new QAction( windows.at(i)->windowTitle(), this );
+    QAction* aAction = new QAction( windows.at(i)->windowTitle(), this );
     aAction->setCheckable( true );
     aAction->setData( i );
     myWindowPopup->addAction( aAction );
@@ -328,7 +328,7 @@ void ApplicationCommonWindow::windowsMenuActivated( bool checked )
 {
   QAction* aSender = qobject_cast<QAction*>( sender() );
   if ( !aSender )
-	return;
+    return;
   QWidget * w = stWs->subWindowList().at( aSender->data().toInt() );
   if ( w && checked )
     w->setFocus();
@@ -351,29 +351,29 @@ void ApplicationCommonWindow::updateFileActions()
     if ( !myIsDocuments )
     {
       QAction *fileQuitAction, *windowAction;
-	    QList<QAction *> aListActions = myFilePopup->actions();
-	    for ( int i = 0; i < aListActions.size(); i++ )
+      QList<QAction *> aListActions = myFilePopup->actions();
+      for ( int i = 0; i < aListActions.size(); i++ )
       {
         if( aListActions.at( i )->text() == QObject::tr("MNU_QUIT") )
         {
-		      fileQuitAction = aListActions.at( i );
-		      break;
+          fileQuitAction = aListActions.at( i );
+          break;
         }
       }
-    		
-	    if( !fileQuitAction )
+        
+      if( !fileQuitAction )
         return;
       
       myIsDocuments = true;
       myCasCadeBar->show();
 
-	    QList<QAction *> aListMenuActions = menuBar()->actions();
-	    for ( int i = 0; i < aListMenuActions.size(); i++ )
+      QList<QAction *> aListMenuActions = menuBar()->actions();
+      for ( int i = 0; i < aListMenuActions.size(); i++ )
       {
         if( aListMenuActions.at( i )->text() == QObject::tr("MNU_HELP") )
         {
-	         windowAction= aListMenuActions.at( i );
-		       break;
+           windowAction= aListMenuActions.at( i );
+           break;
         }
       }
 
@@ -384,9 +384,9 @@ void ApplicationCommonWindow::updateFileActions()
     }
     else
     {
-	    myIsDocuments = false;
-	    myCasCadeBar->hide();
-	    menuBar()->removeAction( myWindowPopup->menuAction() );
+      myIsDocuments = false;
+      myCasCadeBar->hide();
+      menuBar()->removeAction( myWindowPopup->menuAction() );
     }
   }
 }
@@ -459,30 +459,30 @@ void ApplicationCommonWindow::onCloseDocument(DocumentCommon* theDoc)
 
 void ApplicationCommonWindow::onViewToolBar()
 {
-    bool show = myStdActions.at( ViewToolId )->isChecked();
-    if (  show == myStdToolBar->isVisible() )
-        return;
-    if ( show )
-        myStdToolBar->show();
-    else
-        myStdToolBar->hide();
+  bool show = myStdActions.at( ViewToolId )->isChecked();
+  if ( show == myStdToolBar->isVisible() )
+    return;
+  if ( show )
+    myStdToolBar->show();
+  else
+    myStdToolBar->hide();
 }
 
 void ApplicationCommonWindow::onViewStatusBar()
 {
-    bool show = myStdActions.at( ViewStatusId )->isChecked();
-    if (  show == statusBar()->isVisible() )
-        return;
-    if ( show )
-        statusBar()->show();
-    else
-        statusBar()->hide();
+  bool show = myStdActions.at( ViewStatusId )->isChecked();
+  if ( show == statusBar()->isVisible() )
+    return;
+  if ( show )
+    statusBar()->show();
+  else
+    statusBar()->hide();
 }
 
 void ApplicationCommonWindow::onAbout()
 {
-    QMessageBox::information( this, QObject::tr( "TIT_ABOUT" ), QObject::tr( "INF_ABOUT" ), QObject::tr("BTN_OK" ),
-		  		              QString::null, QString::null, 0, 0 );
+  QMessageBox::information( this, QObject::tr( "TIT_ABOUT" ), QObject::tr( "INF_ABOUT" ), QObject::tr("BTN_OK" ),
+                            QString::null, QString::null, 0, 0 );
 }
 
 void ApplicationCommonWindow::onCreateNewView()
@@ -505,37 +505,37 @@ void ApplicationCommonWindow::onWindowActivated ( QWidget * w )
 
 void ApplicationCommonWindow::onToolAction()
 {
-    QAction* sentBy = (QAction*) sender();
-    QMdiArea* ws = ApplicationCommonWindow::getWorkspace();
-    DocumentCommon* doc = qobject_cast<MDIWindow*>( ws->activeSubWindow()->widget() )->getDocument();
+  QAction* sentBy = (QAction*) sender();
+  QMdiArea* ws = ApplicationCommonWindow::getWorkspace();
+  DocumentCommon* doc = qobject_cast<MDIWindow*>( ws->activeSubWindow()->widget() )->getDocument();
 
-    if( sentBy == myToolActions.at( ToolWireframeId ) )
-        doc->onWireframe();
+  if( sentBy == myToolActions.at( ToolWireframeId ) )
+    doc->onWireframe();
 
-    if( sentBy == myToolActions.at( ToolShadingId ) )
-        doc->onShading();
+  if( sentBy == myToolActions.at( ToolShadingId ) )
+    doc->onShading();
 
-    if( sentBy == myToolActions.at( ToolColorId ) )
-        doc->onColor();
+  if( sentBy == myToolActions.at( ToolColorId ) )
+    doc->onColor();
 
-    if( sentBy == myToolActions.at( ToolMaterialId ) )
-        doc->onMaterial();
+  if( sentBy == myToolActions.at( ToolMaterialId ) )
+    doc->onMaterial();
 
-    if( sentBy == myToolActions.at( ToolTransparencyId ) )
-        doc->onTransparency();
+  if( sentBy == myToolActions.at( ToolTransparencyId ) )
+    doc->onTransparency();
 
-    if( sentBy == myToolActions.at( ToolDeleteId ) )
-        doc->onDelete();
+  if( sentBy == myToolActions.at( ToolDeleteId ) )
+    doc->onDelete();
 }
 
 void ApplicationCommonWindow::onSelectionChanged()
 {
   QMdiArea* ws = ApplicationCommonWindow::getWorkspace();
-	DocumentCommon* doc;
+    DocumentCommon* doc;
 
   if( !qobject_cast<MDIWindow*>( ws->activeSubWindow()->widget() ) )
-	  return;
-  
+    return;
+
   doc = ( qobject_cast<MDIWindow*>( ws->activeSubWindow()->widget() ) )->getDocument();
   Handle(AIS_InteractiveContext) context = doc->getContext();
 
@@ -609,5 +609,3 @@ QToolBar* ApplicationCommonWindow::getCasCadeBar()
 {
   return myCasCadeBar;
 }
-
-

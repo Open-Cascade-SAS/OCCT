@@ -74,7 +74,7 @@ DocumentCommon::~DocumentCommon()
 
 ApplicationCommonWindow* DocumentCommon::getApplication()
 {
-	return myApp;
+  return myApp;
 }
 
 MDIWindow* DocumentCommon::createNewMDIWindow()
@@ -87,9 +87,9 @@ void DocumentCommon::onCreateNewView()
 {
   QMdiArea* ws = myApp->getWorkspace();
   MDIWindow* w = createNewMDIWindow();
-	
-	if (!w)
-	  return;
+  
+  if (!w)
+    return;
 
   ws->addSubWindow (w);
   myViews.append (w);
@@ -97,14 +97,14 @@ void DocumentCommon::onCreateNewView()
   connect( w,    SIGNAL( selectionChanged() ),
            this, SIGNAL( selectionChanged() ) );
   connect( w, SIGNAL( message( const QString&, int ) ),
-	         myApp->statusBar(), SLOT( showMessage( const QString&, int ) ) );
+           myApp->statusBar(), SLOT( showMessage( const QString&, int ) ) );
   connect( w, SIGNAL( sendCloseView( MDIWindow* ) ),
-	         this, SLOT( onCloseView( MDIWindow* ) ) );
+           this, SLOT( onCloseView( MDIWindow* ) ) );
 
-	QString aName;
-	w->setWindowTitle( aName.sprintf( "Document %d:%d", myIndex, ++myNbViews ) );
+  QString aName;
+  w->setWindowTitle( aName.sprintf( "Document %d:%d", myIndex, ++myNbViews ) );
   QString dir = ApplicationCommonWindow::getResourceDir() + QString( "/" );
-	
+  
   w->setWindowIcon( QPixmap( dir + QObject::tr("ICON_DOC") ) );
 
   if ( ws->subWindowList().isEmpty() )
@@ -113,10 +113,10 @@ void DocumentCommon::onCreateNewView()
     // in the main menu if showMaximized() is called for a non-visible child window
     // Therefore calling show() first...
     w->show();
-	  w->showMaximized();
+    w->showMaximized();
   }
   else
-	  w->show();
+    w->show();
 
   w->setFocus();
 
@@ -134,9 +134,9 @@ void DocumentCommon::removeView(MDIWindow* theView)
 {
     if ( myViews.count( theView ) )
     {
-		myViews.removeAll(theView);
-		delete theView;
-	}
+    myViews.removeAll(theView);
+    delete theView;
+  }
 }
 void DocumentCommon::removeViews()
 {
@@ -148,19 +148,19 @@ void DocumentCommon::removeViews()
 
 int DocumentCommon::countOfWindow()
 {
-	return myViews.count();
+  return myViews.count();
 }
 
 Handle(AIS_InteractiveContext) DocumentCommon::getContext()
 {
-	return myContext;
+  return myContext;
 }
 
 void DocumentCommon::fitAll()
 {
-	QList<MDIWindow*>::iterator i;
-	for ( i = myViews.begin(); i != myViews.end(); i++ )
-		(*i)->fitAll();
+  QList<MDIWindow*>::iterator i;
+  for ( i = myViews.begin(); i != myViews.end(); i++ )
+    (*i)->fitAll();
 }
 
 void DocumentCommon::onWireframe()
@@ -201,7 +201,7 @@ void DocumentCommon::onColor()
     if ( aRetColor.isValid() )
     {
         Quantity_Color color( aRetColor.red() / 255., aRetColor.green() / 255.,
-			                  aRetColor.blue() / 255., Quantity_TOC_RGB );
+                        aRetColor.blue() / 255., Quantity_TOC_RGB );
         for (; myContext->MoreCurrent(); myContext->NextCurrent() )
             myContext->SetColor( myContext->Current(), color.Name() );
     }

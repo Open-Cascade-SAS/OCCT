@@ -22,28 +22,28 @@ MDIWindow::MDIWindow(View* aView,
 : QMainWindow( parent, wflags )
 {
   myView = aView;
-	myDocument = aDocument;
-}  
-  
+  myDocument = aDocument;
+}
+
 MDIWindow::MDIWindow( DocumentCommon* aDocument, QWidget* parent, Qt::WindowFlags wflags)
 : QMainWindow( parent, wflags )
 {
-	QFrame *vb = new QFrame( this );
+  QFrame *vb = new QFrame( this );
 
-	QVBoxLayout *layout = new QVBoxLayout( vb );
-	layout->setMargin( 0 );
+  QVBoxLayout *layout = new QVBoxLayout( vb );
+  layout->setMargin( 0 );
 
   vb->setFrameStyle( QFrame::StyledPanel | QFrame::Sunken );
 
-	setCentralWidget( vb );
+  setCentralWidget( vb );
 
-	myDocument = aDocument;
-	myView = new View (myDocument->getContext(), vb);
-	layout->addWidget (myView);
+  myDocument = aDocument;
+  myView = new View (myDocument->getContext(), vb);
+  layout->addWidget (myView);
 
   connect( myView, SIGNAL( selectionChanged() ),
            this,   SIGNAL( selectionChanged() ) );
-  
+
   createViewActions();
   createRaytraceActions();
 
@@ -58,26 +58,26 @@ MDIWindow::~MDIWindow()
 
 DocumentCommon* MDIWindow::getDocument()
 {
-	return myDocument;
+  return myDocument;
 }
 
 void MDIWindow::closeEvent(QCloseEvent* )
 {
-	emit sendCloseView(this);
+  emit sendCloseView(this);
 }
 
 void MDIWindow::fitAll()
 {
-	myView->fitAll();
+  myView->fitAll();
 }
 
 void MDIWindow::createViewActions()
 {
   // populate a tool bar with some actions
-	QToolBar* aToolBar = addToolBar( tr( "View Operations" ) );
-	
+  QToolBar* aToolBar = addToolBar( tr( "View Operations" ) );
+  
   QList<QAction*>* aList = myView->getViewActions();
-	aToolBar->addActions( *aList );
+  aToolBar->addActions( *aList );
 
   aToolBar->toggleViewAction()->setVisible(false);
   aList->at(View::ViewHlrOffId)->setChecked( true );
@@ -86,15 +86,15 @@ void MDIWindow::createViewActions()
 void MDIWindow::createRaytraceActions()
 {
   // populate a tool bar with some actions
-	QToolBar* aToolBar = addToolBar( tr( "Ray-tracing Options" ) );
-	
+  QToolBar* aToolBar = addToolBar( tr( "Ray-tracing Options" ) );
+  
   QList<QAction*>* aList = myView->getRaytraceActions();
-	aToolBar->addActions( *aList );
+  aToolBar->addActions( *aList );
 
   aToolBar->toggleViewAction()->setVisible (true);
   aList->at (View::ToolRaytracingId)->setChecked (false);
   aList->at (View::ToolShadowsId)->setChecked (true);
-  aList->at (View::ToolReflectionsId)->setChecked (true);
+  aList->at (View::ToolReflectionsId)->setChecked (false);
   aList->at (View::ToolAntialiasingId)->setChecked (false);
 }
 
@@ -106,48 +106,48 @@ void MDIWindow::onWindowActivated ()
 void MDIWindow::dump()
 {
   QString datadir = (QString(qgetenv ("CASROOT").constData()) + "/../data/images");
-	static QString filter;
+  static QString filter;
   filter = "Images Files (*.bmp *.ppm *.png *.jpg *.tiff *.tga *.gif *.exr *.ps *.eps *.tex *.pdf *.svg *.pgf)";
-	QFileDialog fd ( 0 );
-	fd.setModal( true );
-	fd.setNameFilter ( filter );
-	fd.setWindowTitle( QObject::tr("INF_APP_EXPORT") );
-	fd.setFileMode( QFileDialog::AnyFile );
-	int ret = fd.exec(); 
+  QFileDialog fd ( 0 );
+  fd.setModal( true );
+  fd.setNameFilter ( filter );
+  fd.setWindowTitle( QObject::tr("INF_APP_EXPORT") );
+  fd.setFileMode( QFileDialog::AnyFile );
+  int ret = fd.exec(); 
 
-	/* update the desktop after the dialog is closed */
-	qApp->processEvents();
+  /* update the desktop after the dialog is closed */
+  qApp->processEvents();
 
-	QStringList fileNames;
-	fileNames = fd.selectedFiles();
+  QStringList fileNames;
+  fileNames = fd.selectedFiles();
 
-	QString file ( (ret == QDialog::Accepted && !fileNames.isEmpty() )? fileNames[0] : QString::null);
+  QString file ( (ret == QDialog::Accepted && !fileNames.isEmpty() )? fileNames[0] : QString::null);
   if ( !file.isNull() )
   {
-	  QApplication::setOverrideCursor( Qt::WaitCursor );
-		if ( !QFileInfo( file ).completeSuffix().length() )
+    QApplication::setOverrideCursor( Qt::WaitCursor );
+    if ( !QFileInfo( file ).completeSuffix().length() )
       file += QString( ".bmp" );
 
     bool res = myView->dump( (Standard_CString)file.toLatin1().constData() );
     QApplication::restoreOverrideCursor();                
     if ( !res )
     {
-		  QWidgetList list = qApp->allWidgets();
-			QWidget* mainWidget;
+      QWidgetList list = qApp->allWidgets();
+      QWidget* mainWidget;
       for( int i = 0; i < list.size(); ++i )
-			{
-			  if( qobject_cast<ApplicationCommonWindow*>( list.at( i ) ) )
+      {
+        if( qobject_cast<ApplicationCommonWindow*>( list.at( i ) ) )
         mainWidget = qobject_cast<ApplicationCommonWindow*>( list.at( i ) );
-			}
+      }
 
-	    QMessageBox::information ( mainWidget, QObject::tr("TIT_ERROR"), QObject::tr("INF_ERROR"), QObject::tr("BTN_OK"),
-		    	                       QString::null, QString::null, 0, 0 );
-	    qApp->processEvents();
+      QMessageBox::information ( mainWidget, QObject::tr("TIT_ERROR"), QObject::tr("INF_ERROR"), QObject::tr("BTN_OK"),
+                                 QString::null, QString::null, 0, 0 );
+      qApp->processEvents();
     }
-	}
+  }
 }
 
 QSize MDIWindow::sizeHint() const
 {
-    return QSize( 450, 300 );
+  return QSize( 450, 300 );
 }
