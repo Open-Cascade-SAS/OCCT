@@ -18,7 +18,7 @@ if { [regexp {Debug mode} [dversion]] } {
   if { [regexp {Windows} [dversion]] } {
     set max_time 65
   } else {
-    set max_time 80
+    set max_time 100
   }
 }
 

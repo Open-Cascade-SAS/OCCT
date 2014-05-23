@@ -24,7 +24,7 @@ bfillds
 
 regexp { +Tps: +([-0-9.+eE]+)} [bbuild result -t] full tps_time
 
-if { $tps_time > 15.7 } {
+if { $tps_time > 85.7 } {
   puts "Error: low performance"
 } else {
   puts "OK: high performance"
