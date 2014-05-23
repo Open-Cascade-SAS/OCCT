@@ -1,7 +1,3 @@
-puts "TODO DEBUG_OCC24121 Debian60-64 Windows: \\*\\* Exception \\*\\*.*"
-puts "TODO DEBUG_OCC24121 Debian60-64 Windows: An exception was caught"
-puts "TODO DEBUG_OCC24121 Debian60-64 Windows: TEST INCOMPLETE"
-
 restore [locate_data_file offset_wire_026.brep] s
 
 set length 21112.9
