@@ -47,7 +47,7 @@
 #include <IntTools_EdgeEdge.hxx>
 #include <IntTools_CommonPrt.hxx>
 
-#include <BOPInt_Context.hxx>
+#include <IntTools_Context.hxx>
 
 #include <BOPTools_AlgoTools3D.hxx>
 #include <BOPTools_AlgoTools.hxx>
@@ -76,7 +76,6 @@ myMergeEdgeMode(Standard_False),
 myContinuityMode(Standard_False),
 myEmpty1(Standard_False),
 myEmpty2(Standard_False)
-// myMergeFaceMode(Standard_False)
 {
 }
 
@@ -379,9 +378,9 @@ void BOPAlgo_ArgumentAnalyzer::TestSmallEdge()
 {
   Standard_Integer i = 0;
   BRepExtrema_DistShapeShape aDist;
-  Handle(BOPInt_Context) aCtx;
+  Handle(IntTools_Context) aCtx;
   //
-  aCtx = new BOPInt_Context;
+  aCtx = new IntTools_Context;
   
   for(i = 0; i < 2; i++) {
     const TopoDS_Shape& aS = (i == 0) ? myShape1 : myShape2;
@@ -816,12 +815,3 @@ void BOPAlgo_ArgumentAnalyzer::TestContinuity()
     }
   }
 }
-
-// ================================================================================
-// function: TestMergeFace
-// purpose:
-// ================================================================================
-// void BOPAlgo_ArgumentAnalyzer::TestMergeFace() 
-// {
-  // not implemented
-// }

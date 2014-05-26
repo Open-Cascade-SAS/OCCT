@@ -20,7 +20,7 @@
 
 #include <BOPDS_DS.hxx>
 #include <BOPDS_IteratorSI.hxx>
-#include <BOPInt_Context.hxx>
+#include <IntTools_Context.hxx>
 
 #include <BOPDS_Interf.hxx>
 #include <TopoDS_Solid.hxx>

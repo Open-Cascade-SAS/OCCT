@@ -12,7 +12,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BOPInt_ShrunkRange.ixx>
+#include <IntTools_ShrunkRange.ixx>
 
 #include <Precision.hxx>
 
@@ -25,7 +25,7 @@
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BndLib_Add3dCurve.hxx>
-#include <BOPInt_Context.hxx>
+#include <IntTools_Context.hxx>
 #include <gp_Lin.hxx>
 #include <ElCLib.hxx>
 
@@ -33,7 +33,7 @@
 //function : 
 //purpose  : 
 //=======================================================================
-  BOPInt_ShrunkRange::BOPInt_ShrunkRange ()
+  IntTools_ShrunkRange::IntTools_ShrunkRange ()
 {
   myT1=-99;
   myT2=myT1;
@@ -45,18 +45,18 @@
 //function : ~
 //purpose  : 
 //=======================================================================
-BOPInt_ShrunkRange::~BOPInt_ShrunkRange () 
+IntTools_ShrunkRange::~IntTools_ShrunkRange () 
 {
 }
 //=======================================================================
 //function : SetData
 //purpose  : 
 //=======================================================================
-void BOPInt_ShrunkRange::SetData(const TopoDS_Edge& aE,
-                                 const Standard_Real aT1,
-                                 const Standard_Real aT2,
-                                 const TopoDS_Vertex& aV1,
-                                 const TopoDS_Vertex& aV2)
+void IntTools_ShrunkRange::SetData(const TopoDS_Edge& aE,
+                                   const Standard_Real aT1,
+                                   const Standard_Real aT2,
+                                   const TopoDS_Vertex& aV1,
+                                   const TopoDS_Vertex& aV2)
 {
   myEdge=aE;
   myV1=aV1;
@@ -69,7 +69,7 @@ void BOPInt_ShrunkRange::SetData(const TopoDS_Edge& aE,
 //function : SetContext
 //purpose  : 
 //=======================================================================
-void BOPInt_ShrunkRange::SetContext(const Handle(BOPInt_Context)& aCtx)
+void IntTools_ShrunkRange::SetContext(const Handle(IntTools_Context)& aCtx)
 {
   myCtx=aCtx;
 }
@@ -77,7 +77,7 @@ void BOPInt_ShrunkRange::SetContext(const Handle(BOPInt_Context)& aCtx)
 //function : Context
 //purpose  : 
 //=======================================================================
-const Handle(BOPInt_Context)& BOPInt_ShrunkRange::Context()const
+const Handle(IntTools_Context)& IntTools_ShrunkRange::Context()const
 {
   return myCtx;
 }
@@ -85,7 +85,7 @@ const Handle(BOPInt_Context)& BOPInt_ShrunkRange::Context()const
 //function : Edge
 //purpose  : 
 //=======================================================================
-const TopoDS_Edge& BOPInt_ShrunkRange::Edge() const
+const TopoDS_Edge& IntTools_ShrunkRange::Edge() const
 {
   return myEdge;
 }
@@ -93,8 +93,8 @@ const TopoDS_Edge& BOPInt_ShrunkRange::Edge() const
 //function : ShrunkRange
 //purpose  : 
 //=======================================================================
-void BOPInt_ShrunkRange::ShrunkRange(Standard_Real& aT1,
-                                     Standard_Real& aT2) const
+void IntTools_ShrunkRange::ShrunkRange(Standard_Real& aT1,
+                                       Standard_Real& aT2) const
 {
   aT1=myTS1;
   aT2=myTS2;
@@ -103,7 +103,7 @@ void BOPInt_ShrunkRange::ShrunkRange(Standard_Real& aT1,
 //function : BndBox
 //purpose  : 
 //=======================================================================
-const Bnd_Box& BOPInt_ShrunkRange::BndBox() const
+const Bnd_Box& IntTools_ShrunkRange::BndBox() const
 {
   return myBndBox;
 }
@@ -111,7 +111,7 @@ const Bnd_Box& BOPInt_ShrunkRange::BndBox() const
 //function : ErrorStatus
 //purpose  : 
 //=======================================================================
-Standard_Integer BOPInt_ShrunkRange::ErrorStatus() const
+Standard_Integer IntTools_ShrunkRange::ErrorStatus() const
 {
   return myErrorStatus;
 }
@@ -120,8 +120,8 @@ Standard_Integer BOPInt_ShrunkRange::ErrorStatus() const
 //function : SetShrunkRange
 //purpose  : 
 //=======================================================================
-void BOPInt_ShrunkRange::SetShrunkRange(const Standard_Real aT1,
-                                        const Standard_Real aT2) 
+void IntTools_ShrunkRange::SetShrunkRange(const Standard_Real aT1,
+                                          const Standard_Real aT2) 
 {
   myTS1=aT1;
   myTS2=aT2;
@@ -134,7 +134,7 @@ void BOPInt_ShrunkRange::SetShrunkRange(const Standard_Real aT1,
 //function : Perform
 //purpose  : 
 //=======================================================================
-void BOPInt_ShrunkRange::Perform()
+void IntTools_ShrunkRange::Perform()
 {
   Standard_Real aCF, aCL, aTolE, aTolV1;
   Standard_Real aTolV2, t1, t11, t1C, t2, t12, t2C;

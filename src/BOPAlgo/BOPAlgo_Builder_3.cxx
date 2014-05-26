@@ -52,7 +52,7 @@
 #include <BOPCol_NCVector.hxx>
 #include <BOPCol_TBB.hxx>
 //
-#include <BOPInt_Context.hxx>
+#include <IntTools_Context.hxx>
 //
 #include <BOPDS_DS.hxx>
 #include <BOPDS_ShapeInfo.hxx>
@@ -434,9 +434,8 @@ void BOPAlgo_Builder::BuildDraftSolid(const TopoDS_Shape& theSolid,
               theLIF.Append(aFSDx);
             }
             else {
-              bToReverse=BOPTools_AlgoTools::IsSplitToReverse(aFSDx, 
-	 aF, 
-	 myContext); 
+              bToReverse=BOPTools_AlgoTools::IsSplitToReverse
+                (aFSDx, aF, myContext); 
               if (bToReverse) {
                 aFSDx.Reverse();
               }

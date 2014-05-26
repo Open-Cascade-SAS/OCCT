@@ -25,10 +25,9 @@
 //function : 
 //purpose  : 
 //=======================================================================
-  BOPAlgo_BuilderArea::BOPAlgo_BuilderArea()
+BOPAlgo_BuilderArea::BOPAlgo_BuilderArea()
 :
   BOPAlgo_Algo(),
-  //myContext(NULL),
   myShapes(myAllocator),
   myLoops(myAllocator),
   myLoopsInternal(myAllocator),
@@ -40,10 +39,10 @@
 //function : 
 //purpose  : 
 //=======================================================================
-  BOPAlgo_BuilderArea::BOPAlgo_BuilderArea(const Handle(NCollection_BaseAllocator)& theAllocator)
+BOPAlgo_BuilderArea::BOPAlgo_BuilderArea
+  (const Handle(NCollection_BaseAllocator)& theAllocator)
 :
   BOPAlgo_Algo(theAllocator),
-  //myContext(NULL),
   myShapes(myAllocator),
   myLoops(myAllocator),
   myLoopsInternal(myAllocator),
@@ -55,14 +54,15 @@
 //function : ~
 //purpose  : 
 //=======================================================================
-  BOPAlgo_BuilderArea::~BOPAlgo_BuilderArea()
+BOPAlgo_BuilderArea::~BOPAlgo_BuilderArea()
 {
 }
 //=======================================================================
 //function : SetContext
 //purpose  : 
 //=======================================================================
-  void BOPAlgo_BuilderArea::SetContext(const Handle(BOPInt_Context)& theContext)
+void BOPAlgo_BuilderArea::SetContext
+  (const Handle(IntTools_Context)& theContext)
 {
   myContext=theContext;
 }
@@ -85,7 +85,7 @@
 //function : Shapes
 //purpose  : 
 //=======================================================================
-  const BOPCol_ListOfShape& BOPAlgo_BuilderArea::Shapes()const
+const BOPCol_ListOfShape& BOPAlgo_BuilderArea::Shapes()const
 {
   return myShapes;
 }
@@ -93,7 +93,7 @@
 //function : Loops
 //purpose  : 
 //=======================================================================
-  const BOPCol_ListOfShape& BOPAlgo_BuilderArea::Loops()const
+const BOPCol_ListOfShape& BOPAlgo_BuilderArea::Loops()const
 {
   return myLoops;
 }
@@ -105,33 +105,3 @@
 {
   return myAreas;
 }
-/*
-//=======================================================================
-//function :PerformShapesToAvoid
-//purpose  : 
-//=======================================================================
-  void BOPAlgo_BuilderArea::PerformShapesToAvoid()
-{
-}
-//=======================================================================
-//function : PerformLoops
-//purpose  : 
-//=======================================================================
-  void BOPAlgo_BuilderArea::PerformLoops()
-{
-}
-//=======================================================================
-//function : PerformAreas
-//purpose  : 
-//=======================================================================
-  void BOPAlgo_BuilderArea::PerformAreas()
-{
-}
-//=======================================================================
-//function : PerformInternalShapes
-//purpose  : 
-//=======================================================================
-  void BOPAlgo_BuilderArea::PerformInternalShapes()
-{
-}
-*/

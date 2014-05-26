@@ -28,14 +28,14 @@ uses
     SequenceOfRoots    from IntTools,
     MarkedRangeSet     from IntTools,
     SequenceOfRanges   from IntTools,
-    Context            from BOPInt,
+    Context            from IntTools,
     ExtCS              from Extrema,
     ProjectPointOnSurf from GeomAPI,
     Edge               from TopoDS,
     Face               from TopoDS,
     Curve              from BRepAdaptor,
     Surface            from BRepAdaptor,
-    Box	               from Bnd,
+    Box                from Bnd,
     CurveRangeSample   from IntTools,
     SurfaceRangeSample from IntTools,
     ListOfCurveRangeSample   from IntTools,
@@ -48,176 +48,176 @@ is
     Create returns BeanFaceIntersector from IntTools;
 
     Create(theEdge: Edge from TopoDS;
-    	   theFace: Face from TopoDS)
-	   returns BeanFaceIntersector from IntTools;
-    	---Purpose: 
-    	--- Initializes the algorithm
-	---
-	--  Warning: 
-    	--- The parts of the edge which are on
-    	--- the surface of the face and belong to
-	--- the whole in the face (if there is)
-	--- is considered as result
-	---
+        theFace: Face from TopoDS)
+    returns BeanFaceIntersector from IntTools;
+    ---Purpose: 
+    --- Initializes the algorithm
+    ---
+    --  Warning: 
+    --- The parts of the edge which are on
+    --- the surface of the face and belong to
+    --- the whole in the face (if there is)
+    --- is considered as result
+    ---
 
     Create(theCurve        : Curve   from BRepAdaptor;
-    	   theSurface      : Surface from BRepAdaptor;
-    	   theBeanTolerance: Real    from Standard;
-    	   theFaceTolerance: Real    from Standard)
-	   returns BeanFaceIntersector from IntTools;
-    	---Purpose: 
-    	--- Initializes the algorithm
-	---
+        theSurface      : Surface from BRepAdaptor;
+        theBeanTolerance: Real    from Standard;
+        theFaceTolerance: Real    from Standard)
+    returns BeanFaceIntersector from IntTools;
+    ---Purpose: 
+    --- Initializes the algorithm
+    ---
 
     Create(theCurve          : Curve   from BRepAdaptor;
-    	   theSurface        : Surface from BRepAdaptor;
-	   theFirstParOnCurve: Real from Standard;
-	   theLastParOnCurve : Real from Standard;
-	   theUMinParameter  : Real from Standard;
-    	   theUMaxParameter  : Real from Standard;
-    	   theVMinParameter  : Real from Standard;
-    	   theVMaxParameter  : Real from Standard;
-    	   theBeanTolerance  : Real from Standard;
-    	   theFaceTolerance  : Real from Standard)
-	   returns BeanFaceIntersector from IntTools;
-    	---Purpose: 
-    	--- Initializes the algorithm
-	--- theUMinParameter, ... are used for
-	--- optimization purposes
-	---
+        theSurface        : Surface from BRepAdaptor;
+        theFirstParOnCurve: Real from Standard;
+        theLastParOnCurve : Real from Standard;
+        theUMinParameter  : Real from Standard;
+        theUMaxParameter  : Real from Standard;
+        theVMinParameter  : Real from Standard;
+        theVMaxParameter  : Real from Standard;
+        theBeanTolerance  : Real from Standard;
+        theFaceTolerance  : Real from Standard)
+    returns BeanFaceIntersector from IntTools;
+    ---Purpose: 
+    --- Initializes the algorithm
+    --- theUMinParameter, ... are used for
+    --- optimization purposes
+    ---
 
     Init(me: in out;theEdge: Edge from TopoDS;
-    	            theFace: Face from TopoDS);
-    	---Purpose: 
-    	--- Initializes the algorithm
-	---
-	--  Warning: 
-    	--- The parts of the edge which are on
-    	--- the surface of the face and belong to
-	--- the whole in the face (if there is)
-	--- is considered as result
-	---
+                 theFace: Face from TopoDS);
+     ---Purpose: 
+    --- Initializes the algorithm
+    ---
+    --  Warning: 
+    --- The parts of the edge which are on
+    --- the surface of the face and belong to
+    --- the whole in the face (if there is)
+    --- is considered as result
+    ---
 
     Init(me: in out;theCurve        : Curve   from BRepAdaptor;
-    	     	    theSurface      : Surface from BRepAdaptor;
-    	    	    theBeanTolerance: Real from Standard;
-    	    	    theFaceTolerance: Real from Standard);
-    	---Purpose: 
-    	--- Initializes the algorithm
-	---
+               theSurface      : Surface from BRepAdaptor;
+              theBeanTolerance: Real from Standard;
+              theFaceTolerance: Real from Standard);
+    ---Purpose: 
+    --- Initializes the algorithm
+    ---
 
     Init(me: in out;theCurve          : Curve   from BRepAdaptor;
-    	    	    theSurface        : Surface from BRepAdaptor;
-	    	    theFirstParOnCurve: Real from Standard;
-	    	    theLastParOnCurve : Real from Standard;
-	    	    theUMinParameter  : Real from Standard;
-    	    	    theUMaxParameter  : Real from Standard;
-    	    	    theVMinParameter  : Real from Standard;
-    	    	    theVMaxParameter  : Real from Standard;
-    	    	    theBeanTolerance  : Real from Standard;
-    	    	    theFaceTolerance  : Real from Standard);
-    	---Purpose: 
-    	--- Initializes the algorithm
-    	--- theUMinParameter, ... are used for
-	--- optimization purposes
-	---
+              theSurface        : Surface from BRepAdaptor;
+          theFirstParOnCurve: Real from Standard;
+          theLastParOnCurve : Real from Standard;
+          theUMinParameter  : Real from Standard;
+              theUMaxParameter  : Real from Standard;
+              theVMinParameter  : Real from Standard;
+              theVMaxParameter  : Real from Standard;
+              theBeanTolerance  : Real from Standard;
+              theFaceTolerance  : Real from Standard);
+    ---Purpose: 
+    --- Initializes the algorithm
+    --- theUMinParameter, ... are used for
+    --- optimization purposes
+    ---
 
     SetContext(me: in out;  
-    	    theContext: Context from BOPInt);
-    	---Purpose:
-	--- Sets the intersecton context
-	---
-    Context(me) 
-    	returns Context from BOPInt; 
-    ---C++:  return const & 	
+         theContext: Context from IntTools);
     ---Purpose:
-	--- Gets the intersecton context
-	---	  
+    --- Sets the intersecton context
+    ---
+    Context(me) 
+     returns Context from IntTools; 
+    ---C++:  return const &  
+    ---Purpose:
+    --- Gets the intersecton context
+    ---   
     SetBeanParameters(me: in out;theFirstParOnCurve : Real from Standard;
-	    	    	    	 theLastParOnCurve  : Real from Standard);
-    	---Purpose: 
-    	--- Set restrictions for curve
-	---
+                 theLastParOnCurve  : Real from Standard);
+    ---Purpose: 
+    --- Set restrictions for curve
+    ---
 
     SetSurfaceParameters(me: in out;theUMinParameter : Real from Standard;
-			    	    theUMaxParameter : Real from Standard;
-    			    	    theVMinParameter : Real from Standard;
-    	   		 	    theVMaxParameter : Real from Standard);
-    	---Purpose: 
-    	--- Set restrictions for surface
-	---
+            theUMaxParameter : Real from Standard;
+                theVMinParameter : Real from Standard;
+                theVMaxParameter : Real from Standard);
+    ---Purpose: 
+    --- Set restrictions for surface
+    ---
 
     Perform(me: in out);
-    	---Purpose: 
-    	--- Launches the algorithm
-	---
+    ---Purpose: 
+    --- Launches the algorithm
+    ---
 
     IsDone(me) returns Boolean from Standard;
-    	---C++: inline
+     ---C++: inline
 
     Result(me)
-    	returns SequenceOfRanges from IntTools;
-	---C++: return const &
+     returns SequenceOfRanges from IntTools;
+    ---C++: return const &
 
     Result(me; theResults: out SequenceOfRanges from IntTools);
 
     -- private
 
     ComputeAroundExactIntersection(me: in out)
-    	is private;
+     is private;
 
     ComputeLinePlane(me: in out)
-    	is private;
+     is private;
  
     FastComputeExactIntersection(me: in out)
         returns Integer from Standard is private; 
 
     ComputeUsingExtremum(me: in out)
-    	is private;
+     is private;
 
     ComputeNearRangeBoundaries(me: in out)
-    	is private;
+     is private;
 
     ComputeLocalized(me: in out)
-    	returns Boolean from Standard is private;
-	
+     returns Boolean from Standard is private;
+ 
     ComputeRangeFromStartPoint(me: in out; ToIncreaseParameter : Boolean from Standard;
-    	    	    	    	    	   theParameter        : Real from Standard;
-    	    	    	    	    	   theUParameter       : Real from Standard;
-    	    	    	    	    	   theVParameter       : Real from Standard)
-    	is private;
+                            theParameter        : Real from Standard;
+                            theUParameter       : Real from Standard;
+                            theVParameter       : Real from Standard)
+     is private;
 
     ComputeRangeFromStartPoint(me: in out; ToIncreaseParameter : Boolean from Standard;
-    	    	    	    	    	   theParameter        : Real from Standard;
-    	    	    	    	    	   theUParameter       : Real from Standard;
-    	    	    	    	    	   theVParameter       : Real from Standard;
-    	    	    	    	    	   theIndex            : Integer from Standard)
-    	is private;
+                            theParameter        : Real from Standard;
+                            theUParameter       : Real from Standard;
+                            theVParameter       : Real from Standard;
+                            theIndex            : Integer from Standard)
+     is private;
 
     Distance(me: in out; theArg       : Real from Standard;
-    	    	    	 theUParameter: out Real from Standard;
-    	    	    	 theVParameter: out Real from Standard)
-    	returns Real from Standard
-    	is private;
+                theUParameter: out Real from Standard;
+                theVParameter: out Real from Standard)
+     returns Real from Standard
+     is private;
 
     Distance(me: in out; theArg: Real from Standard)
-    	returns Real from Standard
-    	is private;
+     returns Real from Standard
+     is private;
 
     LocalizeSolutions(me: in out; theCurveRange  : CurveRangeSample from IntTools;
-    	    	    	    	  theBoxCurve    : Box from Bnd;
-    	    	    	    	  theSurfaceRange: SurfaceRangeSample from IntTools;
-				  theBoxSurface  : Box from Bnd;
-				  theCurveData   : in out CurveRangeLocalizeData   from IntTools;
-				  theSurfaceData : in out SurfaceRangeLocalizeData from IntTools;
-    	    	    	    	  theListCurveRange: in out ListOfCurveRangeSample from IntTools;
-    	    	    	    	  theListSurfaceRange: in out ListOfSurfaceRangeSample from IntTools)
-    	returns Boolean from Standard
-    	is private;
+                      theBoxCurve    : Box from Bnd;
+                      theSurfaceRange: SurfaceRangeSample from IntTools;
+      theBoxSurface  : Box from Bnd;
+      theCurveData   : in out CurveRangeLocalizeData   from IntTools;
+      theSurfaceData : in out SurfaceRangeLocalizeData from IntTools;
+                      theListCurveRange: in out ListOfCurveRangeSample from IntTools;
+                      theListSurfaceRange: in out ListOfSurfaceRangeSample from IntTools)
+     returns Boolean from Standard
+     is private;
 
     TestComputeCoinside(me: in out)
-    	returns Boolean from Standard
-	is private;
+     returns Boolean from Standard
+        is private;
 
 fields
 
@@ -242,7 +242,7 @@ fields
     myProjector      : ProjectPointOnSurf from GeomAPI;
     myRangeManager   : MarkedRangeSet from IntTools;
     myDeflection     : Real from Standard;
-    myContext        : Context from BOPInt;
+    myContext        : Context from IntTools;
     
     -- results
     myResults        : SequenceOfRanges from IntTools;

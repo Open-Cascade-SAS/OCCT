@@ -12,7 +12,8 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-class Context from BOPInt  
+
+class Context from IntTools  
     inherits TShared from MMgt
 
 
@@ -48,11 +49,12 @@ uses
 
 is 
     Create   
-    returns Context from BOPInt;
-    ---C++: alias "Standard_EXPORT virtual  ~BOPInt_Context();"   
-      
+
+    returns Context from IntTools;
+    ---C++: alias "Standard_EXPORT virtual  ~IntTools_Context();"         
     Create (theAllocator: BaseAllocator from BOPCol) 
-    returns Context from BOPInt;
+
+    returns Context from IntTools;
      
     FClass2d(me:mutable; 
         aF: Face from TopoDS) 
@@ -150,32 +152,6 @@ is
     --- 2. the edge does not contain 3d curve and pcurves (-2)
     --- 3. projection algorithm failed (-3)
     ---
- 
-    --ComputeVE  (me:mutable;  
-    --aV   : Vertex from  TopoDS; 
-    --aE   : Edge   from  TopoDS; 
-    --aT   :out Real from Standard; 
-    --bToUpdateVertex:out Boolean from Standard; 
-    --aDist          :out Real from Standard)  
-    --returns Integer from Standard;
-    ---Purpose:
-    --- Computes parameter aT of the vertex aV on
-    --- the edge aE.
-    --- Returns zero if the distance between vertex
-    --- and edge is less than sum of tolerances,
-    --- otherwise and for following conditions returns
-    --- negative value
-    --- 1. the edge is degenerated (-1)
-    --- 2. the edge does not contain 3d curve and pcurves (-2)
-    --- 3. projection algorithm failed (-3)
-    ---  
-    --- Output parameters 
-    --- bToUpdateVertex - the flag that indicates whether the  
-    --- vertex tolerance should be modified or not 
-    --- aDist - the value of the distance between the vertex  
-    --- and the edge  
-        
-        
          
     ComputeVF  (me:mutable;  
        aV  :     Vertex from  TopoDS; 

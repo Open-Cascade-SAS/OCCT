@@ -68,7 +68,7 @@
 #include <BRep_TFace.hxx>
 #include <Poly_Triangulation.hxx>
 #include <BRep_Builder.hxx>
-#include <BOPInt_Context.hxx>
+#include <IntTools_Context.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dHatch_Hatcher.hxx>
 #include <HatchGen_Domain.hxx>
@@ -355,7 +355,7 @@ void BOPTools_AlgoTools3D::GetApproxNormalToFaceOnEdge
    const Standard_Real aT,
    gp_Pnt& aPNear,
    gp_Dir& aDNF,
-   Handle(BOPInt_Context)& theContext)
+   Handle(IntTools_Context)& theContext)
 {
   Standard_Real aFirst, aLast;
   Handle(Geom2d_Curve) aC2D= 
@@ -471,7 +471,7 @@ void BOPTools_AlgoTools3D::PointNearEdge
    const Standard_Real aT, 
    gp_Pnt2d& aPx2DNear,
    gp_Pnt& aPxNear,
-   Handle(BOPInt_Context)& theContext)
+   Handle(IntTools_Context)& theContext)
 {
   Standard_Real aTolE, aTolF, dTx, dT2D;
   Handle(Geom_Surface) aS;
@@ -530,7 +530,7 @@ void  BOPTools_AlgoTools3D::PointNearEdge
    const TopoDS_Face& aF, 
    gp_Pnt2d& aPInFace2D, 
    gp_Pnt& aPInFace,
-   Handle(BOPInt_Context)& theContext)
+   Handle(IntTools_Context)& theContext)
 {
   Standard_Real aT, aT1, aT2;
   //
@@ -718,7 +718,7 @@ Standard_Integer BOPTools_AlgoTools3D::PointInFace
   (const TopoDS_Face& aF,
    gp_Pnt& theP,
    gp_Pnt2d& theP2D,
-   Handle(BOPInt_Context)& theContext)
+   Handle(IntTools_Context)& theContext)
 {
   Standard_Boolean bIsDone, bHasFirstPoint, bHasSecondPoint;
   Standard_Integer iErr, aIx, aNbDomains;

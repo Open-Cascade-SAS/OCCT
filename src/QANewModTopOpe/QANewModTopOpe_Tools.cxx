@@ -24,7 +24,7 @@
 #include <BRep_Tool.hxx>
 #include <BRep_Builder.hxx>
 #include <Geom_Surface.hxx>
-#include <BOPInt_Context.hxx>
+#include <IntTools_Context.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopExp.hxx>
 #include <GeomAPI_ProjectPointOnSurf.hxx>

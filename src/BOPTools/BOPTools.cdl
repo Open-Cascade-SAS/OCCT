@@ -29,8 +29,7 @@ uses
     IntTools,   
     ProjLib,
     --                 
-    BOPCol, 
-    BOPInt 
+    BOPCol 
 is 
 
     -- 

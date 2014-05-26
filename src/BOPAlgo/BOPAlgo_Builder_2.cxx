@@ -38,7 +38,7 @@
 #include <BOPCol_NCVector.hxx>
 #include <BOPCol_TBB.hxx>
 //
-#include <BOPInt_Context.hxx>
+#include <IntTools_Context.hxx>
 //
 #include <BOPDS_PaveBlock.hxx>
 #include <BOPDS_ShapeInfo.hxx>
@@ -132,9 +132,9 @@ class BOPAlgo_BuilderSDFaceFunctor {
   void operator()( const flexible_range<Standard_Integer>& aBR ) const {
     Standard_Boolean bFlag;
     Standard_Integer i, iBeg, iEnd;
-    Handle(BOPInt_Context) aContext;
+    Handle(IntTools_Context) aContext;
     //
-    aContext=new BOPInt_Context;
+    aContext=new IntTools_Context;
     //
     BOPAlgo_VectorOfPairOfShapeBoolean& aVPSB=*myPVPSB;
     //
@@ -223,11 +223,11 @@ class BOPAlgo_VFI {
     return myFlag;
   }
   //
-  void SetContext(const Handle(BOPInt_Context)& aContext) {
+  void SetContext(const Handle(IntTools_Context)& aContext) {
     myContext=aContext;
   }
   //
-  const Handle(BOPInt_Context)& Context()const {
+  const Handle(IntTools_Context)& Context()const {
     return myContext;
   }
   //
@@ -241,7 +241,7 @@ class BOPAlgo_VFI {
   Standard_Integer myFlag;
   TopoDS_Vertex myV;
   TopoDS_Face myF;
-  Handle(BOPInt_Context) myContext;
+  Handle(IntTools_Context) myContext;
 };
 //
 typedef BOPCol_NCVector<BOPAlgo_VFI> BOPAlgo_VectorOfVFI; 
@@ -249,13 +249,13 @@ typedef BOPCol_NCVector<BOPAlgo_VFI> BOPAlgo_VectorOfVFI;
 typedef BOPCol_TBBContextFunctor 
   <BOPAlgo_VFI,
   BOPAlgo_VectorOfVFI,
-  Handle(BOPInt_Context), 
-  BOPInt_Context> BOPAlgo_VFIFunctor;
+  Handle(IntTools_Context), 
+  IntTools_Context> BOPAlgo_VFIFunctor;
 //
 typedef BOPCol_TBBContextCnt 
   <BOPAlgo_VFIFunctor,
   BOPAlgo_VectorOfVFI,
-  Handle(BOPInt_Context)> BOPAlgo_VFICnt;
+  Handle(IntTools_Context)> BOPAlgo_VFICnt;
 //
 //=======================================================================
 //function : FillImagesFaces

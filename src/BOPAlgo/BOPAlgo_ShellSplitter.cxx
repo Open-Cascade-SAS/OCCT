@@ -32,7 +32,7 @@
 #include <BOPCol_NCVector.hxx>
 #include <BOPCol_IndexedDataMapOfShapeListOfShape.hxx>
 //
-#include <BOPInt_Context.hxx>
+#include <IntTools_Context.hxx>
 //
 #include <BOPTools.hxx>
 #include <BOPTools_AlgoTools.hxx>
@@ -320,7 +320,7 @@ void BOPAlgo_ShellSplitter::SplitBlock(BOPTools_ConnexityBlock& aCB)
   BOPCol_MapOfOrientedShape AddedFacesMap;
   BOPCol_IndexedDataMapOfShapeListOfShape aEFMap, aMEFP;
   // 
-  Handle (BOPInt_Context) aContext=new BOPInt_Context;
+  Handle (IntTools_Context) aContext=new IntTools_Context;
   //
   const BOPCol_ListOfShape& myShapes=aCB.Shapes();
   //

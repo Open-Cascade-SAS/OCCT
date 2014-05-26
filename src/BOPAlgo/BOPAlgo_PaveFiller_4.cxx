@@ -29,7 +29,7 @@
 #include <BOPCol_NCVector.hxx>
 #include <BOPCol_TBB.hxx>
 //
-#include <BOPInt_Context.hxx>
+#include <IntTools_Context.hxx>
 //
 #include <BOPDS_Iterator.hxx>
 #include <BOPDS_VectorOfInterfVF.hxx>
@@ -94,11 +94,11 @@ class BOPAlgo_VertexFace {
     aT2=myT2;
   }
   //
-  void SetContext(const Handle(BOPInt_Context)& aContext) {
+  void SetContext(const Handle(IntTools_Context)& aContext) {
     myContext=aContext;
   }
   //
-  const Handle(BOPInt_Context)& Context()const {
+  const Handle(IntTools_Context)& Context()const {
     return myContext;
   }
   //
@@ -115,7 +115,7 @@ class BOPAlgo_VertexFace {
   Standard_Real myT2;
   TopoDS_Vertex myV;
   TopoDS_Face myF;
-  Handle(BOPInt_Context) myContext;
+  Handle(IntTools_Context) myContext;
 };
 //=======================================================================
 typedef BOPCol_NCVector<BOPAlgo_VertexFace>
@@ -124,13 +124,13 @@ typedef BOPCol_NCVector<BOPAlgo_VertexFace>
 typedef BOPCol_TBBContextFunctor 
   <BOPAlgo_VertexFace,
   BOPAlgo_VectorOfVertexFace,
-  Handle(BOPInt_Context), 
-  BOPInt_Context> BOPAlgo_VertexFaceFunctor;
+  Handle(IntTools_Context), 
+  IntTools_Context> BOPAlgo_VertexFaceFunctor;
 //
 typedef BOPCol_TBBContextCnt 
   <BOPAlgo_VertexFaceFunctor,
   BOPAlgo_VectorOfVertexFace,
-  Handle(BOPInt_Context)> BOPAlgo_VertexFaceCnt;
+  Handle(IntTools_Context)> BOPAlgo_VertexFaceCnt;
 //
 //=======================================================================
 // function: PerformVF

@@ -28,7 +28,7 @@
 #include <IntTools_CommonPrt.hxx>
 #include <IntTools_Root.hxx>
 #include <IntTools_BeanFaceIntersector.hxx>
-#include <BOPInt_Context.hxx>
+#include <IntTools_Context.hxx>
 
 #include <BRep_Tool.hxx>
 
@@ -100,7 +100,7 @@ static
 //function : SetContext
 //purpose  : 
 //=======================================================================
-void IntTools_EdgeFace::SetContext(const Handle(BOPInt_Context)& theContext) 
+void IntTools_EdgeFace::SetContext(const Handle(IntTools_Context)& theContext) 
 {
   myContext = theContext;
 }
@@ -109,7 +109,7 @@ void IntTools_EdgeFace::SetContext(const Handle(BOPInt_Context)& theContext)
 //function : Context
 //purpose  : 
 //=======================================================================
-const Handle(BOPInt_Context)& IntTools_EdgeFace::Context()const 
+const Handle(IntTools_Context)& IntTools_EdgeFace::Context()const 
 {
   return myContext;
 }
@@ -1221,7 +1221,7 @@ void IntTools_EdgeFace::Perform()
   }
   //
   if (myContext.IsNull()) {
-    myContext=new BOPInt_Context;
+    myContext=new IntTools_Context;
   }
   //
   myIsDone = Standard_False;

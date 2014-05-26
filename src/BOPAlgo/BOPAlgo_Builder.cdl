@@ -32,7 +32,7 @@ uses
     MapOfShape from BOPCol, 
     DataMapOfShapeShape from BOPCol, 
     DataMapOfShapeListOfShape from BOPCol,  
-    Context from BOPInt,
+    Context from IntTools,
     PDS from BOPDS, 
     PaveFiller  from BOPAlgo,
     PPaveFiller from BOPAlgo 
@@ -218,7 +218,7 @@ fields
     myMapFence   : MapOfShape from BOPCol is protected; 
     myPaveFiller : PPaveFiller from BOPAlgo is protected;  
     myDS         : PDS from BOPDS is protected; 
-    myContext    : Context from BOPInt is protected;   
+    myContext    : Context from IntTools is protected;   
     myEntryPoint : Integer from Standard is protected;
     -- 
     myImages     : DataMapOfShapeListOfShape from BOPCol is protected;  

@@ -61,11 +61,11 @@
 
 static
   void ParabolaTolerance(const Handle(Geom_Curve)& ,
-			 const Standard_Real ,
-			 const Standard_Real ,
-			 const Standard_Real ,
-			 Standard_Real& ,
-			 Standard_Real& );
+    const Standard_Real ,
+    const Standard_Real ,
+    const Standard_Real ,
+    Standard_Real& ,
+    Standard_Real& );
 
 //=======================================================================
 //function : HasInternalEdge
@@ -110,16 +110,11 @@ static
 
   
   //
-  //modified by NIZNHY-PKV Mon Jul 04 11:58:23 2011f
   aPC=Precision::Confusion();
   aPC=aPC*aPC;
   aDist=aP1.SquareDistance(aP2);
   bRet=aDist<aPC;
   return bRet;
-  //
-  //aDist=aP1.Distance(aP2);
-  //return (aDist < Precision::Confusion()); 
-  //modified by NIZNHY-PKV Mon Jul 04 11:59:50 2011t
 }
 
 //=======================================================================
@@ -127,7 +122,7 @@ static
 //purpose  : 
 //=======================================================================
    void IntTools_Tools::RejectLines(const IntTools_SequenceOfCurves& aSIn,
-				    IntTools_SequenceOfCurves& aSOut)
+        IntTools_SequenceOfCurves& aSOut)
 {
   Standard_Integer i, j, aNb;
   Standard_Boolean bFlag;
@@ -157,7 +152,7 @@ static
     if (aGLine.IsNull()) {
       aSOut.Clear();
       for (j=1; j<=aNb; j++) {
-	aSOut.Append(aSIn(j));
+ aSOut.Append(aSIn(j));
       }
       return;
     }
@@ -198,8 +193,8 @@ static
 //purpose  : 
 //=======================================================================
   Standard_Boolean IntTools_Tools::IsDirsCoinside  (const gp_Dir& D1, 
-						    const gp_Dir& D2,
-						    const Standard_Real dLim)
+          const gp_Dir& D2,
+          const Standard_Real dLim)
 {
   Standard_Boolean bFlag;
   Standard_Real d;
@@ -215,7 +210,7 @@ static
 //purpose  : 
 //=======================================================================
   Standard_Integer IntTools_Tools::SplitCurve(const IntTools_Curve& IC,
-					      IntTools_SequenceOfCurves& aCvs)
+           IntTools_SequenceOfCurves& aCvs)
 {
   Handle (Geom_Curve) aC3D =IC.Curve();
   if(aC3D.IsNull())
@@ -277,7 +272,7 @@ static
 //purpose  : 
 //=======================================================================
   Standard_Real IntTools_Tools::IntermediatePoint (const Standard_Real aFirst,
-						   const Standard_Real aLast)
+         const Standard_Real aLast)
 {
   //define parameter division number as 10*e^(-M_PI) = 0.43213918
   const Standard_Real PAR_T = 0.43213918;
@@ -291,8 +286,8 @@ static
 //purpose  : 
 //=======================================================================
   Standard_Boolean IntTools_Tools::IsVertex (const gp_Pnt& aP,
-					     const Standard_Real aTolPV,
-					     const TopoDS_Vertex& aV)
+          const Standard_Real aTolPV,
+          const TopoDS_Vertex& aV)
 {
   Standard_Boolean bRet;
   Standard_Real aTolV, aD, dTol;
@@ -305,15 +300,10 @@ static
   //
   aPv=BRep_Tool::Pnt(aV);
   //
-  //modified by NIZNHY-PKV Mon Jul 04 12:00:37 2011f
   aD=aPv.SquareDistance(aP);
   aTolV=aTolV*aTolV;
   bRet=(aD<=aTolV);
   return bRet;
-  //
-  //aD=aPv.Distance(aP);
-  //return (aD<=aTolV);
-  //modified by NIZNHY-PKV Mon Jul 04 12:00:40 2011t
 }
 
 
@@ -351,8 +341,8 @@ static
 //purpose  : 
 //=======================================================================
   Standard_Boolean IntTools_Tools::IsVertex (const TopoDS_Edge& aE,
-					     const TopoDS_Vertex& aV,
-					     const Standard_Real t)
+          const TopoDS_Vertex& aV,
+          const Standard_Real t)
 {
   Standard_Real aTolV, aTolV2, d2;
   gp_Pnt aPv, aPt; 
@@ -374,7 +364,7 @@ static
 //purpose  : 
 //=======================================================================
   Standard_Boolean IntTools_Tools::IsVertex (const TopoDS_Edge& aE,
-					     const Standard_Real t)
+          const Standard_Real t)
 {
   Standard_Real aTolV, aTolV2, d2;
   TopoDS_Vertex aV;
@@ -404,7 +394,7 @@ static
 //purpose  : 
 //=======================================================================
   Standard_Integer IntTools_Tools::ComputeVV(const TopoDS_Vertex& aV1, 
-					     const TopoDS_Vertex& aV2)
+          const TopoDS_Vertex& aV2)
 {
   Standard_Real aTolV1, aTolV2, aTolSum, d;
   gp_Pnt aP1, aP2;
@@ -415,11 +405,8 @@ static
   
   aP1=BRep_Tool::Pnt(aV1);
   aP2=BRep_Tool::Pnt(aV2);
-  //modified by NIZNHY-PKV Mon Jul 04 11:55:52 2011f
   aTolSum=aTolSum*aTolSum;
   d=aP1.SquareDistance(aP2);
-  //d=aP1.Distance(aP2);
-  //modified by NIZNHY-PKV Mon Jul 04 11:55:53 2011t
   if (d<aTolSum) {
     return 0;
   }
@@ -431,8 +418,8 @@ static
 //purpose  : 
 //=======================================================================
   void IntTools_Tools::MakeFaceFromWireAndFace(const TopoDS_Wire& aW,
-					       const TopoDS_Face& aF,
-					       TopoDS_Face& aFNew)
+            const TopoDS_Face& aF,
+            TopoDS_Face& aFNew)
 {
   TopoDS_Face aFF;
   aFF=aF;
@@ -447,7 +434,7 @@ static
 //purpose  : 
 //=======================================================================
   TopAbs_State IntTools_Tools::ClassifyPointByFace(const TopoDS_Face& aF,
-						   const gp_Pnt2d& aP2d)
+         const gp_Pnt2d& aP2d)
 {
   Standard_Real aFaceTolerance;
   TopAbs_State aState;
@@ -464,8 +451,8 @@ static
 //purpose  : 
 //=======================================================================
   Standard_Boolean IntTools_Tools::IsMiddlePointsEqual(const TopoDS_Edge& aE1,
-						       const TopoDS_Edge& aE2)
-						       
+             const TopoDS_Edge& aE2)
+             
 {
   Standard_Boolean bRet;
   Standard_Real f1, l1, m1, f2, l2, m2, aTol1, aTol2, aSumTol, aD2;
@@ -482,17 +469,10 @@ static
   C2->D0(m2, aP2);
 
   aSumTol=aTol1+aTol2;
-  //modified by NIZNHY-PKV Mon Jul 04 12:02:20 2011f
   aSumTol=aSumTol*aSumTol;
   aD2=aP1.SquareDistance(aP2);
   bRet=aD2<aSumTol;
   return bRet;
-  //
-  //if (aP1.Distance(aP2) < aSumTol) {
-  //  return Standard_True;
-  //}
-  //return Standard_False;
-  //modified by NIZNHY-PKV Mon Jul 04 12:02:24 2011t
 }
 
 //=======================================================================
@@ -500,7 +480,7 @@ static
 //purpose  : 
 //=======================================================================
   Standard_Real IntTools_Tools::CurveTolerance(const Handle(Geom_Curve)& aC3D,
-					       const Standard_Real aTolBase)
+            const Standard_Real aTolBase)
 {
   Standard_Real aTolReached, aTf, aTl, aTolMin, aTolMax;
 
@@ -535,16 +515,17 @@ static
 
 #include <Geom_Parabola.hxx>
 #include <gp_Parab.hxx>
+#include <BndLib_Add3dCurve.hxx>
 //=======================================================================
 //function : ParabolaTolerance
 //purpose  : 
 //=======================================================================
 void ParabolaTolerance(const Handle(Geom_Curve)& aC3D,
-		       const Standard_Real aTf,
-		       const Standard_Real aTl,
-		       const Standard_Real aTol,
-		       Standard_Real& aTolMin,
-		       Standard_Real& aTolMax)
+         const Standard_Real aTf,
+         const Standard_Real aTl,
+         const Standard_Real aTol,
+         Standard_Real& aTolMin,
+         Standard_Real& aTolMax)
 {
   
   aTolMin=aTol;
@@ -602,5 +583,198 @@ void ParabolaTolerance(const Handle(Geom_Curve)& aC3D,
   //
   aTolMax=(aTol1>aTol2) ? aTol1 : aTol2;
   aTolMin=(aTol1<aTol2) ? aTol1 : aTol2;
+}
+/////////////////////////////////////////////////////////////////////////
+//=======================================================================
+//function : CheckCurve
+//purpose  : 
+//=======================================================================
+Standard_Boolean IntTools_Tools::CheckCurve(const Handle (Geom_Curve)& aC3D,
+                                            const Standard_Real aTolR3D,
+                                            Bnd_Box& aBox)
+{
+  Standard_Boolean bRet;  
+  Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax, dX, dY, dZ;
+  Standard_Real dS, aTol;
+  GeomAdaptor_Curve aGAC;
+  //
+  aGAC.Load(aC3D);
+  BndLib_Add3dCurve::Add(aGAC, aTolR3D, aBox);
+  // 910/B1
+  aBox.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
+  dX=aXmax-aXmin;
+  dY=aYmax-aYmin;
+  dZ=aZmax-aZmin;
+  dS=1.e-12;
+  aTol=2.*aTolR3D+dS;
+  bRet=(dX>aTol ||  dY>aTol || dZ>aTol);
+  //
+  return bRet;
+}
+//=======================================================================
+//function : IsOnPave
+//purpose  : 
+//=======================================================================
+Standard_Boolean IntTools_Tools::IsOnPave(const Standard_Real aT1,
+                                          const IntTools_Range& aRange,
+                                          const Standard_Real aTolerance)
+{
+  Standard_Boolean firstisonpave1, firstisonpave2, bIsOnPave;
+  //
+  firstisonpave1  = (Abs(aRange.First() - aT1) < aTolerance);
+  firstisonpave2  = (Abs(aRange.Last()  - aT1) < aTolerance);
+  bIsOnPave=(firstisonpave1 || firstisonpave2);
+  return bIsOnPave;
+}
+//=======================================================================
+// function: VertexParameters
+// purpose: 
+//=======================================================================
+void IntTools_Tools::VertexParameters(const IntTools_CommonPrt& aCPart,
+                                      Standard_Real& aT1, 
+                                      Standard_Real& aT2)
+{
+  const IntTools_Range& aR1=aCPart.Range1();
+  aT1=0.5*(aR1.First()+aR1.Last());
+  //
+  if((aCPart.VertexParameter1() >= aR1.First()) &&
+     (aCPart.VertexParameter1() <= aR1.Last())) {
+    aT1 = aCPart.VertexParameter1();
+  }
+  //
+  const IntTools_SequenceOfRanges& aRanges2=aCPart.Ranges2();
+  const IntTools_Range& aR2=aRanges2(1);
+  aT2=0.5*(aR2.First()+aR2.Last());
+  //
+  if((aCPart.VertexParameter2() >= aR2.First()) &&
+     (aCPart.VertexParameter2() <= aR2.Last())) {
+    aT2 = aCPart.VertexParameter2();
+  }
+}
+//=======================================================================
+// function: VertexParameter
+// purpose: 
+//=======================================================================
+void IntTools_Tools::VertexParameter(const IntTools_CommonPrt& aCPart,
+                                     Standard_Real& aT)
+{
+  const IntTools_Range& aR=aCPart.Range1();
+  aT=0.5*(aR.First()+aR.Last());
+  if((aCPart.VertexParameter1() >= aR.First()) &&
+     (aCPart.VertexParameter1() <= aR.Last())) {
+    aT = aCPart.VertexParameter1();
+  }
+}
+//=======================================================================
+// function: IsOnPave1
+// purpose: 
+//=======================================================================
+Standard_Boolean IntTools_Tools::IsOnPave1(const Standard_Real aTR,
+                                           const IntTools_Range& aCPRange,
+                                           const Standard_Real aTolerance)
+{
+  Standard_Boolean bIsOnPave;
+  Standard_Real aT1, aT2, dT1, dT2;
+  //
+  aT1=aCPRange.First();
+  aT2=aCPRange.Last();
+  bIsOnPave=(aTR>=aT1 && aTR<=aT1);
+  if (bIsOnPave) {
+    return bIsOnPave;
+  }
+  //
+  dT1=Abs(aTR-aT1);  
+  dT2=Abs(aTR-aT2);
+  bIsOnPave=(dT1<=aTolerance || dT2<=aTolerance);
+  return bIsOnPave;
+}
+//=======================================================================
+// function: IsInRange
+// purpose: 
+//=======================================================================
+Standard_Boolean IntTools_Tools::IsInRange(const IntTools_Range& aRRef,
+                                           const IntTools_Range& aR,
+                                           const Standard_Real aTolerance)
+{
+  Standard_Boolean bIsIn;
+  Standard_Real aT1, aT2, aTRef1, aTRef2;
+  //
+  aR.Range(aT1, aT2);
+  aRRef.Range(aTRef1, aTRef2);
+  //
+  aTRef1-=aTolerance;
+  aTRef2+=aTolerance;
+  //
+  bIsIn = (aT1>=aTRef1 && aT1<=aTRef2) ||
+          (aT2>=aTRef1 && aT2<=aTRef2);
+  //
+  return bIsIn;
+}
+//=======================================================================
+//function : SegPln
+//purpose  : 
+//=======================================================================
+Standard_Integer IntTools_Tools::SegPln(const gp_Lin& theLin,
+                                        const Standard_Real theTLin1,
+                                        const Standard_Real theTLin2,
+                                        const Standard_Real theTolLin,
+                                        const gp_Pln& thePln,
+                                        const Standard_Real theTolPln,
+                                        gp_Pnt& theP,
+                                        Standard_Real& theTP,
+                                        Standard_Real& theTolP,
+                                        Standard_Real& theTPmin,
+                                        Standard_Real& theTPmax)
+{
+  Standard_Integer iRet;
+  Standard_Real aTol, aA, aB, aC, aD, aE, aH, aTP, aDist1, aDist2;
+  gp_Pnt aP1, aP2;
+  //
+  iRet=0;
+  aTol=theTolLin+theTolPln;
+  //
+  const gp_Ax3& aPosPln=thePln.Position();
+  const gp_Dir& aDirPln=aPosPln.Direction();
+  const gp_Pnt& aLocPln=aPosPln.Location();
+  //
+  const gp_Dir& aDirLin=theLin.Direction();
+  const gp_Pnt& aLocLin=theLin.Location();
+  //
+  aP1.SetXYZ(aLocLin.XYZ()+theTLin1*aDirLin.XYZ());
+  aDist1=aDirPln.X()*(aP1.X()-aLocPln.X())+
+         aDirPln.Y()*(aP1.Y()-aLocPln.Y())+
+         aDirPln.Z()*(aP1.Z()-aLocPln.Z());
+  //
+  aP2.SetXYZ(aLocLin.XYZ()+theTLin2*aDirLin.XYZ());
+  aDist2=aDirPln.X()*(aP2.X()-aLocPln.X())+
+         aDirPln.Y()*(aP2.Y()-aLocPln.Y())+
+         aDirPln.Z()*(aP2.Z()-aLocPln.Z());
+  //
+  if (aDist1<aTol && aDist2<aTol){
+    iRet=1; // common block
+    return iRet;
+  }
+  //
+  if (aDist1*aDist2 > 0.) {
+    iRet=2; // segment lays on one side to the Plane
+    return iRet;
+  } 
+  //
+  thePln.Coefficients(aA, aB, aC, aD);
+  aE=aA*aLocLin.X()+aB*aLocLin.Y()+aC*aLocLin.Z()+aD;
+  aH=aA*aDirLin.X()+aB*aDirLin.Y()+aC*aDirLin.Z();
+  aTP=-aE/aH;
+  if (aTP < theTLin1-aTol || aTP > theTLin2+aTol) {
+    iRet=3; // no intersections due to range of the Line
+    return iRet;
+  }
+  //
+  theTP=aTP;
+  theP.SetXYZ(aLocLin.XYZ()+aTP*aDirLin.XYZ());
+  theTolP=aTol;
+  theTPmin=theTP-theTolPln;
+  theTPmax=theTP+theTolPln;
+  iRet=0; // intersection point
+  return iRet;
 }
 

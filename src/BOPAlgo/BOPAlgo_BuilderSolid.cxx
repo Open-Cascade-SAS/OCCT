@@ -66,7 +66,7 @@
 #include <BOPTools_CoupleOfShape.hxx>
 #include <BOPTools_AlgoTools.hxx>
 //
-#include <BOPInt_Context.hxx>
+#include <IntTools_Context.hxx>
 //
 #include <BOPAlgo_ShellSplitter.hxx>
 
@@ -75,11 +75,11 @@ static
                                  const BOPCol_IndexedMapOfShape& );
 static
   Standard_Boolean IsHole(const TopoDS_Shape& ,
-                          Handle(BOPInt_Context)& );
+                          Handle(IntTools_Context)& );
 static
   Standard_Boolean IsInside(const TopoDS_Shape& ,
                             const TopoDS_Shape& ,
-                            Handle(BOPInt_Context)& );
+                            Handle(IntTools_Context)& );
 static
   void MakeInternalShells(const BOPCol_MapOfShape& ,
                           BOPCol_ListOfShape& );
@@ -185,7 +185,7 @@ void BOPAlgo_BuilderSolid::Perform()
   myErrorStatus=0;
   //
   if (myContext.IsNull()) {
-    myContext=new BOPInt_Context;
+    myContext=new IntTools_Context;
   }
   //
   TopoDS_Compound aC;
@@ -381,8 +381,8 @@ void BOPAlgo_BuilderSolid::PerformLoops()
   for (; aItM.More(); aItM.Next()) {
     const TopoDS_Shape& aFF=aItM.Key();
     BOPTools::MapShapesAndAncestors(aFF, 
-				    TopAbs_EDGE, TopAbs_FACE, 
-				    aEFMap);
+        TopAbs_EDGE, TopAbs_FACE, 
+        aEFMap);
   }
   //
   aItM.Initialize(myShapesToAvoid);
@@ -472,7 +472,7 @@ void BOPAlgo_BuilderSolid::PerformAreas()
       if (bIsHole) {
         aHoleShells.Append(aShell);
         BOPTools::MapShapes(aShell, TopAbs_FACE, aMHF);
-	aSB.SetShape(aShell);
+        aSB.SetShape(aShell);
       }
       else {
         // make a growth solid from a shell
@@ -480,7 +480,7 @@ void BOPAlgo_BuilderSolid::PerformAreas()
         aBB.Add (aSolid, aShell);
         //
         aNewSolids.Append (aSolid);
-	aSB.SetShape(aSolid);
+        aSB.SetShape(aSolid);
       }
     }
     //
@@ -537,8 +537,8 @@ void BOPAlgo_BuilderSolid::PerformAreas()
       }
       //
       if (aInOutMap.IsBound (aHole)){
-	const TopoDS_Shape& aHole2=aInOutMap(aHole);
-	if (IsInside(aHole, aHole2, myContext)) {
+        const TopoDS_Shape& aHole2=aInOutMap(aHole);
+        if (IsInside(aHole, aHole2, myContext)) {
           aInOutMap.UnBind(aHole);
           aInOutMap.Bind (aHole, aSolid);
         }
@@ -657,8 +657,8 @@ void BOPAlgo_BuilderSolid::PerformInternalShapes()
     }
     aMEF.Clear();
     BOPTools::MapShapesAndAncestors(aSolid, 
-				    TopAbs_EDGE, TopAbs_FACE, 
-				    aMEF);
+        TopAbs_EDGE, TopAbs_FACE, 
+        aMEF);
     //
     // 2.1 Separate faces to process aMFP
     aMFP.Clear();
@@ -667,10 +667,10 @@ void BOPAlgo_BuilderSolid::PerformInternalShapes()
       const TopoDS_Face& aF=(*(TopoDS_Face*)(&aItMF.Key()));
       if (!aMFx.Contains(aF)) {
         if (BOPTools_AlgoTools::IsInternalFace(aF, 
-					       aSolid, 
-					       aMEF, 
-					       1.e-14, 
-					       myContext)) {
+            aSolid, 
+            aMEF, 
+            1.e-14, 
+            myContext)) {
           aMFP.Add(aF);
         }
       }
@@ -732,8 +732,8 @@ void MakeInternalShells(const BOPCol_MapOfShape& theMF,
   for (; aItM.More(); aItM.Next()) {
     const TopoDS_Shape& aF=aItM.Key();
     BOPTools::MapShapesAndAncestors(aF, 
-				    TopAbs_EDGE, TopAbs_FACE, 
-				    aMEF);
+        TopAbs_EDGE, TopAbs_FACE, 
+        aMEF);
   }
   //
   aItM.Initialize(theMF);
@@ -775,7 +775,7 @@ void MakeInternalShells(const BOPCol_MapOfShape& theMF,
 //purpose  : 
 //=======================================================================
 Standard_Boolean IsHole(const TopoDS_Shape& theS2,
-                        Handle(BOPInt_Context)& theContext)
+                        Handle(IntTools_Context)& theContext)
 {
   TopoDS_Solid *pS2=(TopoDS_Solid *)&theS2;
   BRepClass3d_SolidClassifier& aClsf=theContext->SolidClassifier(*pS2);
@@ -790,7 +790,7 @@ Standard_Boolean IsHole(const TopoDS_Shape& theS2,
 //=======================================================================
 Standard_Boolean IsInside(const TopoDS_Shape& theS1,
                           const TopoDS_Shape& theS2,
-                          Handle(BOPInt_Context)& theContext)
+                          Handle(IntTools_Context)& theContext)
 {
   TopExp_Explorer aExp;
   TopAbs_State aState;
@@ -808,7 +808,7 @@ Standard_Boolean IsInside(const TopoDS_Shape& theS1,
     BOPTools::MapShapes(*pS2, TopAbs_EDGE, aBounds);
     const TopoDS_Face& aF = (*(TopoDS_Face*)(&aExp.Current()));
     aState=BOPTools_AlgoTools::ComputeState(aF, *pS2, 1.e-14, 
-					    aBounds, theContext);
+                                            aBounds, theContext);
   }
   return (aState==TopAbs_IN);
 }

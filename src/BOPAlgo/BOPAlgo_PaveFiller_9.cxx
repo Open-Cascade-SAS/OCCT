@@ -28,16 +28,16 @@
 #include <BOPDS_Iterator.hxx>
 #include <BOPDS_ListOfPaveBlock.hxx>
 
-#include <BOPInt_ShrunkRange.hxx>
+#include <IntTools_ShrunkRange.hxx>
 
 //=======================================================================
 //class    : BOPAlgo_ShrunkRange
 //purpose  : 
 //=======================================================================
-class BOPAlgo_ShrunkRange : public BOPInt_ShrunkRange {
+class BOPAlgo_ShrunkRange : public IntTools_ShrunkRange {
  public:
   BOPAlgo_ShrunkRange() 
-  : BOPInt_ShrunkRange(),
+  : IntTools_ShrunkRange(),
     myWarningStatus(0) {
   }
   //
@@ -56,7 +56,7 @@ class BOPAlgo_ShrunkRange : public BOPInt_ShrunkRange {
     //
     myWarningStatus=0;
     //
-    BOPInt_ShrunkRange::Perform();
+    IntTools_ShrunkRange::Perform();
     if (myErrorStatus) {
       myWarningStatus=1;
     }
@@ -78,13 +78,13 @@ typedef BOPCol_NCVector
 typedef BOPCol_TBBContextFunctor 
   <BOPAlgo_ShrunkRange,
   BOPAlgo_VectorOfShrunkRange,
-  Handle(BOPInt_Context), 
-  BOPInt_Context> BOPAlgo_ShrunkRangeFunctor;
+  Handle(IntTools_Context), 
+  IntTools_Context> BOPAlgo_ShrunkRangeFunctor;
 //
 typedef BOPCol_TBBContextCnt 
   <BOPAlgo_ShrunkRangeFunctor,
   BOPAlgo_VectorOfShrunkRange,
-  Handle(BOPInt_Context)> BOPAlgo_ShrunkRangeCnt;
+  Handle(IntTools_Context)> BOPAlgo_ShrunkRangeCnt;
 //
 //=======================================================================
 // function: FillShrunkData

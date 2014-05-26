@@ -28,7 +28,6 @@ uses
     IntSurf,
     --
     BOPDS, 
-    BOPInt, 
     BOPCol, 
     BOPTools 
 is   

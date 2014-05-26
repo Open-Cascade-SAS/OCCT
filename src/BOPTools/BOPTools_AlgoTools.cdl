@@ -38,7 +38,7 @@ uses
     ListOfShape from BOPCol,  
     IndexedMapOfShape from BOPCol,
     IndexedDataMapOfShapeListOfShape from BOPCol,  
-    Context from BOPInt,     
+    Context from IntTools,     
     ListOfCoupleOfShape from BOPTools, 
     Range from IntTools
     
@@ -90,7 +90,7 @@ is
     IsSplitToReverse(myclass;  
             theSplit   :  Shape from TopoDS; 
             theShape   :  Shape from TopoDS; 
-            theContext:out Context from BOPInt)  
+            theContext:out Context from IntTools)  
     ---Purpose: Returns True if the shape theSplit has opposite 
     --          direction than theShape 
     --          theContext - cashed geometrical tools
@@ -99,7 +99,7 @@ is
     IsSplitToReverse(myclass;  
             theSplit  :  Face from TopoDS; 
             theShape  :  Face from TopoDS; 
-            theContext:out Context from BOPInt) 
+            theContext:out Context from IntTools) 
     ---Purpose: Returns True if normal direction of the face   
     --          theShape is not the same as for the face  
     --          theSplit 
@@ -109,20 +109,20 @@ is
     IsSplitToReverse  (myclass;  
             aE1:  Edge from TopoDS; 	     
             aE2:  Edge from TopoDS; 
-            aContext:out Context from BOPInt) 
+            aContext:out Context from IntTools) 
         returns Boolean from Standard; 
 	 
      
     AreFacesSameDomain(myclass;  
             theF1: Face from TopoDS; 	     
             theF2: Face from TopoDS; 
-            theContext:out Context from BOPInt) 
+            theContext:out Context from IntTools) 
         returns Boolean from Standard;  
 	
     CheckSameGeom (myclass;  
             theF1: Face from TopoDS; 	     
             theF2: Face from TopoDS; 
-            theContext:out Context from BOPInt) 
+            theContext:out Context from IntTools) 
         returns Boolean from Standard; 
  
     Sense (myclass;  
@@ -145,7 +145,7 @@ is
             theFace    :Face  from TopoDS; 
             theLCEF    :out ListOfCoupleOfShape from BOPTools; 
             theFaceOff :out Face  from TopoDS; 
-            theContext :out Context from BOPInt)  
+            theContext :out Context from IntTools)  
         returns Boolean from Standard;  
     
      ---Purpose:  For the face theFace and its edge theEdge 
@@ -158,7 +158,7 @@ is
             theEdge  :Edge from TopoDS; 
             theFace1 :Face from TopoDS; 
             theFace2 :Face from TopoDS; 
-            theContext:out Context from BOPInt)
+            theContext:out Context from IntTools)
     ---Purpose: Returns True if the face theFace is inside of the  
     --          couple of faces theFace1, theFace2. 
     --          The faces theFace, theFace1, theFace2  must 
@@ -169,7 +169,7 @@ is
             theFace :Face  from TopoDS; 
             theEdge :Edge  from TopoDS; 
             theLF   :out ListOfShape from BOPCol; 
-            theContext:out Context from BOPInt)  
+            theContext:out Context from IntTools)  
     ---Purpose: Returns True if the face theFace is inside of the  
     --          appropriate couple of faces (from the set theLF)    . 
     --          The faces of the set theLF and theFace  must 
@@ -181,7 +181,7 @@ is
             theSolid :Solid from TopoDS; 
             theMEF   :out IndexedDataMapOfShapeListOfShape from BOPCol;
             theTol   :Real from Standard;       
-            theContext:out Context from BOPInt)  
+            theContext:out Context from IntTools)  
     ---Purpose: Returns True if the face theFace is inside the  
     --          solid theSolid. 
     --          theMEF - Map Edge/Faces for theSolid              
@@ -204,7 +204,7 @@ is
             thePoint :Pnt  from gp;  
             theSolid :Solid from TopoDS;  
             theTol   :Real from Standard;       
-            theContext:out Context from BOPInt) 
+            theContext:out Context from IntTools) 
     ---Purpose: Computes the 3-D state of the point thePoint 
     --          toward solid theSolid. 
     --          theTol - value of precision of computation   
@@ -216,7 +216,7 @@ is
             theVertex:Vertex from TopoDS;  
             theSolid :Solid from TopoDS;  
             theTol   :Real from Standard;       
-            theContext:out Context from BOPInt) 
+            theContext:out Context from IntTools) 
     ---Purpose: Computes the 3-D state of the vertex theVertex 
     --          toward solid theSolid. 
     --          theTol - value of precision of computation   
@@ -228,7 +228,7 @@ is
             theEdge  :Edge  from TopoDS;  
             theSolid :Solid from TopoDS;  
             theTol   :Real from Standard;       
-            theContext:out Context from BOPInt) 
+            theContext:out Context from IntTools) 
     ---Purpose: Computes the 3-D state of the edge theEdge 
     --          toward solid theSolid. 
     --          theTol - value of precision of computation   
@@ -241,7 +241,7 @@ is
             theSolid :Solid from TopoDS;  
             theTol   :Real from Standard;     
             theBounds:out IndexedMapOfShape from BOPCol;
-            theContext:out Context from BOPInt) 	       
+            theContext:out Context from IntTools) 	       
     ---Purpose: Computes the 3-D state of the face theFace 
     --          toward solid theSolid. 
     --          theTol - value of precision of computation   
@@ -254,7 +254,7 @@ is
             theShape :Shape from TopoDS;  
             theSolid :Solid from TopoDS;  
             theTol   :Real from Standard;       
-            theContext:out Context from BOPInt) 
+            theContext:out Context from IntTools) 
     ---Purpose: Computes the 3-D state of the shape theShape 
     --          toward solid theSolid. 
     --          theTol - value of precision of computation   
@@ -426,7 +426,7 @@ is
             aShR  : Range from IntTools; 
             aF    : Face from TopoDS;  
             aE    : Edge from TopoDS;  
-            aContext:out Context from BOPInt)
+            aContext:out Context from IntTools)
         returns Boolean from Standard;               
     ---Purpose:  
     --- Returns TRUE if PaveBlock <aPB> lays on the face <aF>, i.e 
@@ -434,7 +434,7 @@ is
      
     IsMicroEdge(myclass; 
             theEdge    : Edge from TopoDS; 
-            theContext : Context from BOPInt)  
+            theContext : Context from IntTools)  
         returns Boolean from Standard; 
     ---Purpose: 
     --- Checks if it is possible to compute shrunk range for the edge <aE>. 

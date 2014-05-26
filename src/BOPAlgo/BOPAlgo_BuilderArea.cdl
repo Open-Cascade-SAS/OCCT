@@ -16,66 +16,64 @@
 -- commercial license or contractual agreement.
 
 deferred class BuilderArea from BOPAlgo 
-    	inherits Algo from BOPAlgo 
-	 
-	---Purpose: The root class for algorithms to build  
-    	--          faces/solids from set of edges/faces  
+     inherits Algo from BOPAlgo 
+  
+ ---Purpose: The root class for algorithms to build  
+     --          faces/solids from set of edges/faces  
 
 uses 
     Shape from TopoDS, 
     BaseAllocator from BOPCol, 
     ListOfShape from BOPCol,
     MapOfOrientedShape from BOPCol, 
-    Context  from BOPInt 
+    Context  from IntTools 
     
 --raises
 
 is 
     Initialize  
-    	returns BuilderArea from BOPAlgo; 
+     returns BuilderArea from BOPAlgo; 
     ---C++: alias "Standard_EXPORT virtual ~BOPAlgo_BuilderArea();"  
      
     Initialize(theAllocator: BaseAllocator from BOPCol)   
-    	returns BuilderArea from BOPAlgo; 
+     returns BuilderArea from BOPAlgo; 
      
     SetContext(me:out; 
-    	    theContext:Context from BOPInt);  
-    	
+         theContext:Context from IntTools);  
+     
     Shapes(me) 
-    	returns ListOfShape from BOPCol;   
+     returns ListOfShape from BOPCol;   
     ---C++:  return const &   
     ---C++: alias "Standard_EXPORT void SetShapes(const BOPCol_ListOfShape& theLS);"  
     
     Loops(me)  
-    	returns ListOfShape from BOPCol; 
+     returns ListOfShape from BOPCol; 
     ---C++:  return const &   
      
     Areas(me) 
-    	returns ListOfShape from BOPCol; 
+     returns ListOfShape from BOPCol; 
     ---C++:  return const &     
      
     PerformShapesToAvoid(me:out) 
-    	is deferred protected; 
-	 
+     is deferred protected; 
+  
     PerformLoops(me:out) 
-    	is deferred protected;  
-	 
+     is deferred protected;  
+  
     PerformAreas(me:out)   
-    	is deferred protected;  
+     is deferred protected;  
 
     PerformInternalShapes(me:out)   
-    	is deferred protected;  
+     is deferred protected;  
 
 fields  
-    myContext        :  Context from BOPInt is protected; 
+    myContext        :  Context from IntTools is protected; 
     myShapes         :  ListOfShape from BOPCol is protected;  
     myLoops          :  ListOfShape from BOPCol is protected;  
     myLoopsInternal  :  ListOfShape from BOPCol is protected;
     
     myAreas          :  ListOfShape from BOPCol is protected;  
     myShapesToAvoid  :  MapOfOrientedShape from BOPCol is protected;  
-    --
-       	 
-
+ 
 end BuilderArea; 
 

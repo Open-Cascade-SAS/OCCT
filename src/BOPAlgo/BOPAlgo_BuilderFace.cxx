@@ -44,7 +44,7 @@
 #include <TopExp_Explorer.hxx>
 
 #include <IntTools_FClass2d.hxx>
-#include <BOPInt_Context.hxx>
+#include <IntTools_Context.hxx>
 
 //
 #include <BOPTools_AlgoTools.hxx>
@@ -67,13 +67,13 @@ static
 static 
   Standard_Boolean IsInside(const TopoDS_Shape& ,
                             const TopoDS_Shape& ,
-                            Handle(BOPInt_Context)& );
+                            Handle(IntTools_Context)& );
 static
   void MakeInternalWires(const BOPCol_MapOfShape& ,
                          BOPCol_ListOfShape& );
 static 
   void GetWire(const TopoDS_Shape& , 
-	       TopoDS_Shape& ); 
+        TopoDS_Shape& ); 
 //
 #include <NCollection_UBTreeFiller.hxx>
 #include <BOPCol_Box2DBndTree.hxx>
@@ -199,7 +199,7 @@ void BOPAlgo_BuilderFace::CheckData()
     return;
   }
   if (myContext.IsNull()) {
-    myContext = new BOPInt_Context;
+    myContext = new IntTools_Context;
   }
 }
 //=======================================================================
@@ -261,9 +261,6 @@ void BOPAlgo_BuilderFace::PerformShapesToAvoid()
       if (!myShapesToAvoid.Contains(aE)) {
         BOPTools::MapShapesAndAncestors(aE, TopAbs_VERTEX, TopAbs_EDGE, aMVE);
       }
-      //else {
-	//int a=0;
-      //}
     }
     aNbV=aMVE.Extent();
     //
@@ -393,7 +390,10 @@ void BOPAlgo_BuilderFace::PerformLoops()
   aItM.Initialize(myShapesToAvoid);
   for (; aItM.More(); aItM.Next()) {
     const TopoDS_Shape& aEE=aItM.Key();
-    BOPTools::MapShapesAndAncestors(aEE, TopAbs_VERTEX, TopAbs_EDGE, aVEMap);
+    BOPTools::MapShapesAndAncestors(aEE, 
+                                    TopAbs_VERTEX, 
+                                    TopAbs_EDGE, 
+                                    aVEMap);
   }
   //
   bFlag=Standard_True;
@@ -492,11 +492,11 @@ void BOPAlgo_BuilderFace::PerformAreas()
       bIsHole=aClsf.IsHole();
       if (bIsHole) {
         BOPTools::MapShapes(aWire, TopAbs_EDGE, aMHE);
-	//
-	bIsHole=Standard_True;
+          //
+          bIsHole=Standard_True;
       }
       else {
-	bIsHole=Standard_False;
+        bIsHole=Standard_False;
       }
     }
     //
@@ -557,8 +557,8 @@ void BOPAlgo_BuilderFace::PerformAreas()
       }
       //
       if (aInOutMap.IsBound (aHole)){
-	const TopoDS_Shape& aF2=aInOutMap(aHole);
-	if (IsInside(aF, aF2, myContext)) {
+        const TopoDS_Shape& aF2=aInOutMap(aHole);
+        if (IsInside(aF, aF2, myContext)) {
           aInOutMap.UnBind(aHole);
           aInOutMap.Bind (aHole, aF);
         }
@@ -769,7 +769,7 @@ void MakeInternalWires(const BOPCol_MapOfShape& theME,
 //=======================================================================
 Standard_Boolean IsInside(const TopoDS_Shape& theHole,
                           const TopoDS_Shape& theF2,
-                          Handle(BOPInt_Context)& theContext)
+                          Handle(IntTools_Context)& theContext)
 {
   Standard_Boolean bRet;
   Standard_Real aT, aU, aV;

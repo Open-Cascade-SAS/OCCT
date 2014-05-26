@@ -31,7 +31,7 @@ uses
     FClass2d             from IntTools, 
     SequenceOfRoots      from IntTools,
     SequenceOfCommonPrts from IntTools, 
-    Context              from BOPInt,
+    Context              from IntTools,
     Range                from IntTools 
     
 --raises
@@ -118,12 +118,12 @@ is
     --- The algorithm processes edge inside these boundaries.
      
     SetContext (me: in out;  
-            theContext: Context from BOPInt);
+            theContext: Context from IntTools);
     ---Purpose:
     --- Sets the intersecton context 
    
     Context (me) 
-        returns  Context from BOPInt; 
+        returns  Context from IntTools; 
     ---C++:return const &  
     ---Purpose:
     --- Gets the intersecton context 
@@ -234,7 +234,7 @@ is
             t,f:CArray1OfReal from IntTools)   
         is  protected;  
 
-   RemoveIdenticalRoots(me:out) 
+    RemoveIdenticalRoots(me:out) 
         is protected;   
   
     CheckTouch (me: out;   
@@ -276,7 +276,7 @@ fields
     myErrorStatus     :  Integer from Standard;    
     
 ---  internal  members     
-    myContext         :  Context from BOPInt;
+    myContext         :  Context from IntTools;
     myProjectableRanges: SequenceOfRanges from IntTools;    
     myFClass2d         : FClass2d from IntTools; 
     myFuncArray       :  CArray1OfReal from IntTools; 

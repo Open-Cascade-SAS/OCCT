@@ -15,8 +15,8 @@
 
 class FaceFace from IntTools
 
-    	---Purpose: This class provides the intersection of 
-    	---	    face's underlying surfaces.
+     ---Purpose: This class provides the intersection of 
+     ---     face's underlying surfaces.
 
 uses 
 
@@ -28,7 +28,7 @@ uses
     SequenceOfCurves      from IntTools,
     LineConstructor       from IntTools,
     SequenceOfPntOn2Faces from IntTools, 
-    Context from BOPInt
+    Context from IntTools
     
     
 
@@ -36,117 +36,114 @@ raises NotDone from StdFail
 is
 
     Create 
-    	returns FaceFace from IntTools; 
-    	---Purpose: 
-    	--- Empty constructor.
-	---
-
+     returns FaceFace from IntTools; 
+     ---Purpose: 
+     --- Empty constructor.
+ 
 
     SetParameters(me: in out;  
-    	    	    ApproxCurves    : Boolean from Standard;
-    	    	    ComputeCurveOnS1: Boolean from Standard;
-    	    	    ComputeCurveOnS2: Boolean from Standard;
-    	    	    ApproximationTolerance: Real from Standard);
-    	---Purpose:
-	--- Modifier
-	---
+              ApproxCurves    : Boolean from Standard;
+              ComputeCurveOnS1: Boolean from Standard;
+              ComputeCurveOnS2: Boolean from Standard;
+              ApproximationTolerance: Real from Standard);
+    ---Purpose:
+    --- Modifier
+    ---
 
     Perform(me: in out;  
-    	    	    F1: Face from TopoDS;
-    	    	    F2: Face from TopoDS);
-    	---Purpose: 
-    	--- Intersects underliing surfaces of F1 and F2
-	--- Use sum of tolerance of F1 and F2 as intersection
-	--- criteria
-	---
-	
+              F1: Face from TopoDS;
+              F2: Face from TopoDS);
+    ---Purpose: 
+    --- Intersects underliing surfaces of F1 and F2
+    --- Use sum of tolerance of F1 and F2 as intersection
+    --- criteria
+ 
     IsDone(me)
-    	returns Boolean from Standard;
-    	---Purpose: 
-    	--- Returns True if the intersection was successful
-	---
+     returns Boolean from Standard;
+    ---Purpose: 
+    --- Returns True if the intersection was successful
+    ---
 
     Lines(me)
-    	returns SequenceOfCurves from IntTools;
-    	---C++: return const&	
-    	---Purpose: 
-    	--- Returns sequence of 3d curves as result of intersection
-	---
-	 
+     returns SequenceOfCurves from IntTools;
+    ---C++: return const& 
+    ---Purpose: 
+    --- Returns sequence of 3d curves as result of intersection
+    ---
+  
     Points(me)
-    	returns  SequenceOfPntOn2Faces from IntTools;
-    	---C++: return const&	 
-    	---Purpose: 
-    	--- Returns sequence of 3d curves as result of intersection
-	---
+     returns  SequenceOfPntOn2Faces from IntTools;
+    ---C++: return const&  
+    ---Purpose: 
+    --- Returns sequence of 3d curves as result of intersection
+    ---
 
     TolReached3d(me)  
-    	returns Real from Standard;
-	---Purpose:
-	--- Returns tolerance reached during approximation.
-	--- If approximation was not done, returns zero.
-	---
+     returns Real from Standard;
+    ---Purpose:
+    --- Returns tolerance reached during approximation.
+    --- If approximation was not done, returns zero.
 
     TolReached2d(me)  
-    	returns Real from Standard;
-	---Purpose:
-    	--- Returns tolerance reached during approximation.
-	--- If approximation was not done, returns zero.
-	---
-	     
+     returns Real from Standard;
+     ---Purpose:
+     --- Returns tolerance reached during approximation.
+    --- If approximation was not done, returns zero.
+    ---
+      
     Face1  (me) 
-    	returns  Face  from  TopoDS; 
-	---C++: return const& 
-	---Purpose:
-	--- Returns first of processed faces
-	---
-	 
+     returns  Face  from  TopoDS; 
+    ---C++: return const& 
+    ---Purpose:
+    --- Returns first of processed faces
+    ---
+  
     Face2  (me) 
-    	returns  Face  from  TopoDS; 
-	---C++: return const& 
-	---Purpose:
-	--- Returns second of processed faces
-	---
+     returns  Face  from  TopoDS; 
+    ---C++: return const& 
+    ---Purpose:
+    --- Returns second of processed faces
+    ---
      
     TangentFaces  (me)
-    	returns Boolean from Standard; 
-	---Purpose:
-	--- Returns True if faces are tangent
-	--- 
+     returns Boolean from Standard; 
+    ---Purpose:
+    --- Returns True if faces are tangent
+    --- 
     PrepareLines3D (me:out; 
-    	    bToSplit: Boolean from Standard=Standard_True);
-    	---Purpose: 
-    	--- Provides post-processing the result lines. 
-        --- <bToSplit> - the flag.    		     
-    	--  In case of <bToSplit> is true the closed 3D-curves will be splitted  
-        --  on parts. 
-        --  In case of <bToSplit> is false the closed 3D-curves remain untouched.  
+         bToSplit: Boolean from Standard=Standard_True);
+    ---Purpose: 
+    --- Provides post-processing the result lines. 
+    --- <bToSplit> - the flag.           
+    --  In case of <bToSplit> is true the closed 3D-curves will be splitted  
+    --  on parts. 
+    --  In case of <bToSplit> is false the closed 3D-curves remain untouched.  
     
     SetList (me: in out;  
-    	    ListOfPnts: in out ListOfPntOn2S from IntSurf);
+         ListOfPnts: in out ListOfPntOn2S from IntSurf);
     
     ----------------------------------------------------------
     --                  private  block
     ----------------------------------------------------------
     MakeCurve(me: in out; Index   : Integer from Standard;
-    	                  D1      : TopolTool from Adaptor3d;
-    	                  D2      : TopolTool from Adaptor3d)
-	is protected; 
-	
+                       D1      : TopolTool from Adaptor3d;
+                       D2      : TopolTool from Adaptor3d)
+        is protected; 
+ 
     ComputeTolReached3d(me:out) 
-    	is  protected; 
+     is  protected; 
  
     SetContext(me:out; 
-    	  aContext : Context from BOPInt); 
-     	---Purpose:
-	--- Sets the intersecton context 
-	
+       aContext : Context from IntTools); 
+    ---Purpose:
+    --- Sets the intersecton context 
+ 
     Context(me) 
-    	returns Context from BOPInt; 
-    ---C++:  return const & 	
-    	---Purpose:
-	--- Gets the intersecton context	
-	---	  
+     returns Context from IntTools; 
+    ---C++:  return const &  
+    ---Purpose:
+    --- Gets the intersecton context 
+      
 fields 
  
     myIsDone       : Boolean         from Standard;
@@ -173,7 +170,7 @@ fields
     
     myListOfPnts  : ListOfPntOn2S from IntSurf;   
     
-    myContext     : Context from  BOPInt;	 
+    myContext     : Context from  IntTools;  
 
 end FaceFace from IntTools;
 

@@ -38,7 +38,7 @@ uses
     DataMapOfIntegerReal from BOPCol, 
     DataMapOfIntegerInteger from BOPCol,
     --  
-    Context from BOPInt,
+    Context from IntTools,
     -- 
     SectionAttribute from BOPAlgo, 
     
@@ -68,7 +68,7 @@ is
      
     Create (theAllocator: BaseAllocator from BOPCol) 
       returns PaveFiller from BOPAlgo;   
-	
+ 
     DS(me:out) 
       returns DS from BOPDS; 
     ---C++:return  const &   
@@ -87,7 +87,7 @@ is
     ---C++: alias "Standard_EXPORT void SetArguments(const BOPCol_ListOfShape& theLS);" 
 
     Context(me:out) 
-      returns Context from BOPInt;  
+      returns Context from IntTools;  
        
     SetSectionAttribute(me:out; 
         theSecAttr : SectionAttribute from BOPAlgo); 
@@ -114,10 +114,10 @@ is
      
     PerformVF(me:out) 
       is virtual protected;  
-	 
+  
     PerformEE(me:out) 
       is virtual protected; 
-	  
+   
     PerformEF(me:out) 
       is virtual protected; 
      
@@ -133,10 +133,10 @@ is
         
     MakeBlocks(me:out) 
       is protected; 
-	 
+  
     MakePCurves(me:out) 
       is protected; 
-	 
+  
     ProcessDE(me:out) 
       is protected;  
        
@@ -147,14 +147,14 @@ is
     FillShrunkData(me:out; 
         theType1: ShapeEnum from TopAbs; 
         theType2: ShapeEnum from TopAbs) 
-      is protected; 	 
+      is protected;   
  
     PerformVerticesEE(me:out; 
         theMVCPB:out IndexedDataMapOfShapeCoupleOfPaveBlocks from BOPDS; 
         theAllocator:out BaseAllocator from BOPCol) 
       returns Integer from Standard 
       is protected; 
-	 
+  
     PerformVerticesEF(me:out; 
         theMVCPB:out IndexedDataMapOfShapeCoupleOfPaveBlocks from BOPDS; 
         theAllocator:out BaseAllocator from BOPCol) 
@@ -166,14 +166,14 @@ is
         theMIF:MapOfInteger from BOPCol) 
       returns Boolean from Standard 
       is protected;  
-	  
+   
     CheckFacePaves(myclass; 
         theN:Integer from Standard; 
         theMIFOn:MapOfInteger from BOPCol; 
         theMIFIn:MapOfInteger from BOPCol) 
       returns Boolean from Standard 
       is protected;  
-	 
+  
     IsExistingVertex(me; 
         theP:Pnt from gp; 
         theTol:Real from Standard; 
@@ -210,7 +210,7 @@ is
     -- 1 - checks only EE; 
     -- 2 - checks only EF;
     -- other - checks both types of intersections.
-	 
+  
     PutBoundPaveOnCurve(me:out;  
         theF1: Face from TopoDS;  
         theF2: Face from TopoDS;  
@@ -263,12 +263,12 @@ is
         theLPB: ListOfPaveBlock from BOPDS; 
         thePB: PaveBlock from BOPDS) 
       is protected; 
-	 
+  
     MakeSplitEdge(me:out;  
         theV:Integer from Standard; 
         theF:Integer from Standard) 
       is protected;  
-    	 
+      
     GetEFPnts(me:out;
         nF1 : Integer from Standard;
         nF2 : Integer from Standard;
@@ -348,7 +348,7 @@ is
         theMVB     : MapOfInteger from BOPCol; 
         theMPB     : out MapOfPaveBlock from BOPDS)
       is  protected; 
-    ---Purpose: 	     
+    ---Purpose:       
     -- Adds the existing edges from the map <theMPBOnIn> which interfere  
     -- with the vertices from <theMVB> map to the post treatment of section edges.
  
@@ -449,7 +449,7 @@ fields
     myArguments   : ListOfShape from BOPCol is protected;  
     myDS          : PDS from BOPDS is protected; 
     myIterator    : PIterator from BOPDS is protected; 
-    myContext     : Context from BOPInt is protected;   
+    myContext     : Context from IntTools is protected;   
     mySectionAttribute : SectionAttribute from BOPAlgo is protected;
 
 end PaveFiller;

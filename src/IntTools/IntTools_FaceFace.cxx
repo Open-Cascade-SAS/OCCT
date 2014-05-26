@@ -111,7 +111,7 @@
 #include <IntTools_TopolTool.hxx>
 #include <IntTools_PntOnFace.hxx>
 #include <IntTools_PntOn2Faces.hxx>
-#include <BOPInt_Context.hxx>
+#include <IntTools_Context.hxx>
 #include <IntSurf_ListIteratorOfListOfPntOn2S.hxx>
 
 static
@@ -186,7 +186,7 @@ static
 					const Standard_Boolean                         theAvoidLConstructor,
 					IntPatch_SequenceOfLine&                       theNewLines,
 					Standard_Real&                                 theReachedTol3d,
-                                        const Handle(BOPInt_Context)& );
+                                        const Handle(IntTools_Context)& );
 
 static 
   Standard_Boolean ParameterOutOfBoundary(const Standard_Real       theParameter, 
@@ -196,7 +196,7 @@ static
 					  const Standard_Real       theOtherParameter,
 					  const Standard_Boolean    bIncreasePar,
 					  Standard_Real&            theNewParameter,
-                                          const Handle(BOPInt_Context)& );
+                                          const Handle(IntTools_Context)& );
 
 static 
   Standard_Boolean IsCurveValid(Handle(Geom2d_Curve)& thePCurve);
@@ -225,7 +225,7 @@ static
 				       Handle(TColgp_HArray1OfPnt2d)&       theResultOnS1,
 				       Handle(TColgp_HArray1OfPnt2d)&       theResultOnS2,
 				       Handle(TColStd_HArray1OfReal)&       theResultRadius,
-                                       const Handle(BOPInt_Context)& );
+                                       const Handle(IntTools_Context)& );
 
 static
   Standard_Boolean FindPoint(const gp_Pnt2d&     theFirstPoint,
@@ -296,7 +296,7 @@ static
 				   const Handle(GeomAdaptor_HSurface) myHS2,
 				   const TopoDS_Face& aF1,
 				   const TopoDS_Face& aF2,
-                                   const Handle(BOPInt_Context)& aCtx);
+                                   const Handle(IntTools_Context)& aCtx);
 
 static
   Standard_Boolean CheckPCurve(const Handle(Geom2d_Curve)& aPC, 
@@ -314,7 +314,7 @@ static
 				       const Handle(GeomAdaptor_HSurface)& myHS2,
 				       const TopoDS_Face& aF1,
 				       const TopoDS_Face& aF2,
-                                       const Handle(BOPInt_Context)& aCtx);
+                                       const Handle(IntTools_Context)& aCtx);
 
 //=======================================================================
 //function : 
@@ -336,7 +336,7 @@ IntTools_FaceFace::IntTools_FaceFace()
 //function : SetContext
 //purpose  : 
 //======================================================================= 
-void IntTools_FaceFace::SetContext(const Handle(BOPInt_Context)& aContext)
+void IntTools_FaceFace::SetContext(const Handle(IntTools_Context)& aContext)
 {
   myContext=aContext;
 }
@@ -344,7 +344,7 @@ void IntTools_FaceFace::SetContext(const Handle(BOPInt_Context)& aContext)
 //function : Context
 //purpose  : 
 //======================================================================= 
-const Handle(BOPInt_Context)& IntTools_FaceFace::Context()const
+const Handle(IntTools_Context)& IntTools_FaceFace::Context()const
 {
   return myContext;
 }
@@ -522,7 +522,7 @@ static Standard_Boolean isTreatAnalityc(const TopoDS_Face& theF1,
   Standard_Boolean RestrictLine = Standard_False, hasCone = Standard_False;
   
   if (myContext.IsNull()) {
-    myContext=new BOPInt_Context;
+    myContext=new IntTools_Context;
   }
 
   mySeqOfCurve.Clear();
@@ -3396,7 +3396,7 @@ Standard_Integer ComputeTangentZones( const Handle(GeomAdaptor_HSurface)& theSur
 				     Handle(TColgp_HArray1OfPnt2d)&       theResultOnS1,
 				     Handle(TColgp_HArray1OfPnt2d)&       theResultOnS2,
 				     Handle(TColStd_HArray1OfReal)&       theResultRadius,
-                                     const Handle(BOPInt_Context)& aContext)
+                                     const Handle(IntTools_Context)& aContext)
 {
   Standard_Integer aResult = 0;
   if ( !CheckTangentZonesExist( theSurface1, theSurface2 ) )
@@ -3608,7 +3608,7 @@ Standard_Boolean DecompositionOfWLine(const Handle(IntPatch_WLine)& theWLine,
 				      const Standard_Boolean                         theAvoidLConstructor,
 				      IntPatch_SequenceOfLine&                       theNewLines,
 				      Standard_Real&                                 theReachedTol3d,
-                                      const Handle(BOPInt_Context)& aContext) 
+                                      const Handle(IntTools_Context)& aContext) 
 {
 
   Standard_Boolean bRet, bAvoidLineConstructor;
@@ -4333,7 +4333,7 @@ Standard_Boolean ParameterOutOfBoundary(const Standard_Real       theParameter,
 					const Standard_Real       theOtherParameter,
 					const Standard_Boolean    bIncreasePar,
 					Standard_Real&            theNewParameter,
-                                        const Handle(BOPInt_Context)& aContext)
+                                        const Handle(IntTools_Context)& aContext)
 {
   Standard_Boolean bIsComputed = Standard_False;
   theNewParameter = theParameter;
@@ -4965,7 +4965,7 @@ Standard_Real FindMaxSquareDistance (const Standard_Real aT1,
 				     const Handle(GeomAdaptor_HSurface)& myHS2,
 				     const TopoDS_Face& myFace1,
 				     const TopoDS_Face& myFace2,
-                                     const Handle(BOPInt_Context)& myContext)
+                                     const Handle(IntTools_Context)& myContext)
 {
   Standard_Real aA, aB, aCf, aX1, aX2, aF1, aF2, aX, aF;
   //
@@ -5019,7 +5019,7 @@ Standard_Real MaxSquareDistance (const Standard_Real aT,
 				 const Handle(GeomAdaptor_HSurface) myHS2,
 				 const TopoDS_Face& aF1,
 				 const TopoDS_Face& aF2,
-                                 const Handle(BOPInt_Context)& aCtx)
+                                 const Handle(IntTools_Context)& aCtx)
 {
   Standard_Boolean bIsDone;
   Standard_Integer i;

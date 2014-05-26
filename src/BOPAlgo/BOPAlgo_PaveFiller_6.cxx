@@ -65,8 +65,8 @@
 #include <BOPCol_NCVector.hxx>
 #include <BOPCol_TBB.hxx>
 
-#include <BOPInt_Context.hxx>
-#include <BOPInt_Tools.hxx>
+#include <IntTools_Context.hxx>
+#include <IntTools_Tools.hxx>
 
 #include <BOPDS_Interf.hxx>
 #include <BOPDS_Iterator.hxx>
@@ -89,7 +89,7 @@
 #include <BOPAlgo_Tools.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <TopExp.hxx>
-#include <BOPInt_ShrunkRange.hxx>
+#include <IntTools_ShrunkRange.hxx>
 #include <BOPDS_DataMapOfPaveBlockListOfPaveBlock.hxx>
 
 static void ToleranceFF(const BRepAdaptor_Surface& aBAS1,
@@ -313,7 +313,7 @@ void BOPAlgo_PaveFiller::PerformFF()
         //
         const IntTools_Curve& aIC=aCvsX(i);
         const Handle(Geom_Curve)& aC3D= aIC.Curve();
-        bValid=BOPInt_Tools::CheckCurve(aC3D, aTolR3D, aBox);
+        bValid=IntTools_Tools::CheckCurve(aC3D, aTolR3D, aBox);
         if (bValid) {
           iC=aVNC.Append()-1;
           BOPDS_Curve& aNC=aVNC(iC);

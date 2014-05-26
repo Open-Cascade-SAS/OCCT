@@ -40,8 +40,8 @@
 #include <BOPCol_NCVector.hxx>
 #include <BOPCol_TBB.hxx>
 //
-#include <BOPInt_Context.hxx>
-#include <BOPInt_Tools.hxx>
+#include <IntTools_Context.hxx>
+#include <IntTools_Tools.hxx>
 //
 #include <BOPDS_Interf.hxx>
 #include <BOPDS_Iterator.hxx>
@@ -110,13 +110,13 @@ typedef BOPCol_NCVector<BOPAlgo_EdgeFace> BOPAlgo_VectorOfEdgeFace;
 typedef BOPCol_TBBContextFunctor 
   <BOPAlgo_EdgeFace,
   BOPAlgo_VectorOfEdgeFace,
-  Handle(BOPInt_Context), 
-  BOPInt_Context> BOPAlgo_EdgeFaceFunctor;
+  Handle(IntTools_Context), 
+  IntTools_Context> BOPAlgo_EdgeFaceFunctor;
 //
 typedef BOPCol_TBBContextCnt 
   <BOPAlgo_EdgeFaceFunctor,
   BOPAlgo_VectorOfEdgeFace,
-  Handle(BOPInt_Context)> BOPAlgo_EdgeFaceCnt;
+  Handle(IntTools_Context)> BOPAlgo_EdgeFaceCnt;
 //
 //=======================================================================
 //function : PerformEF
@@ -270,7 +270,7 @@ void BOPAlgo_PaveFiller::PerformEF()
           Standard_Real aT, aTolToDecide; 
           TopoDS_Vertex aVnew;
           //
-          BOPInt_Tools::VertexParameter(aCPart, aT);
+          IntTools_Tools::VertexParameter(aCPart, aT);
           BOPTools_AlgoTools::MakeNewVertex(aE, aT, aF, aVnew);
           //
           const IntTools_Range& aR=aCPart.Range1();
@@ -278,8 +278,8 @@ void BOPAlgo_PaveFiller::PerformEF()
           //
           IntTools_Range aR1(aT1,anewSR.First()),aR2(anewSR.Last(), aT2);
           //
-          bIsOnPave[0]=BOPInt_Tools::IsInRange(aR1, aR, aTolToDecide); 
-          bIsOnPave[1]=BOPInt_Tools::IsInRange(aR2, aR, aTolToDecide); 
+          bIsOnPave[0]=IntTools_Tools::IsInRange(aR1, aR, aTolToDecide); 
+          bIsOnPave[1]=IntTools_Tools::IsInRange(aR2, aR, aTolToDecide); 
           //
           if (bIsOnPave[0] && bIsOnPave[1]) {
             bV[0]=CheckFacePaves(nV[0], aMIFOn, aMIFIn);

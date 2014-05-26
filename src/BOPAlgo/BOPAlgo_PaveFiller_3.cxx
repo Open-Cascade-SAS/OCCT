@@ -49,9 +49,9 @@
 #include <BOPCol_NCVector.hxx>
 #include <BOPCol_TBB.hxx>
 //
-#include <BOPInt_Context.hxx>
-#include <BOPInt_ShrunkRange.hxx>
-#include <BOPInt_Tools.hxx>
+#include <IntTools_Context.hxx>
+#include <IntTools_ShrunkRange.hxx>
+#include <IntTools_Tools.hxx>
 //
 #include <BOPDS_DataMapOfPaveBlockListOfPaveBlock.hxx>
 #include <BOPDS_MapOfPaveBlock.hxx>
@@ -216,11 +216,11 @@ class BOPAlgo_PVE {
     return myT;
   }
   //
-  void SetContext(const Handle(BOPInt_Context)& aContext) {
+  void SetContext(const Handle(IntTools_Context)& aContext) {
     myContext=aContext;
   }
   //
-  const Handle(BOPInt_Context)& Context()const {
+  const Handle(IntTools_Context)& Context()const {
     return myContext;
   }
   //
@@ -236,7 +236,7 @@ class BOPAlgo_PVE {
   TopoDS_Vertex myV;
   TopoDS_Edge myE;
   Handle(BOPDS_PaveBlock) myPB;
-  Handle(BOPInt_Context) myContext;
+  Handle(IntTools_Context) myContext;
 };
 //=======================================================================
 typedef BOPCol_NCVector
@@ -245,13 +245,13 @@ typedef BOPCol_NCVector
 typedef BOPCol_TBBContextFunctor 
   <BOPAlgo_PVE,
   BOPAlgo_VectorOfPVE,
-  Handle(BOPInt_Context), 
-  BOPInt_Context> BOPAlgo_PVEFunctor;
+  Handle(IntTools_Context), 
+  IntTools_Context> BOPAlgo_PVEFunctor;
 //
 typedef BOPCol_TBBContextCnt 
   <BOPAlgo_PVEFunctor,
   BOPAlgo_VectorOfPVE,
-  Handle(BOPInt_Context)> BOPAlgo_PVECnt;
+  Handle(IntTools_Context)> BOPAlgo_PVECnt;
 /////////////////////////////////////////////////////////////////////////
 //=======================================================================
 // function: PerformEE
@@ -394,20 +394,20 @@ void BOPAlgo_PaveFiller::PerformEE()
           TopoDS_Vertex aVnew;
           IntTools_Range aCR1, aCR2;
           //
-          BOPInt_Tools::VertexParameters(aCPart, aT1, aT2);
+          IntTools_Tools::VertexParameters(aCPart, aT1, aT2);
           aTol = Precision::Confusion();
           aCR1 = aCPart.Range1();
           aCR2 = aCPart.Ranges2()(1);
           // 
           //decide to keep the pave or not
-          bIsOnPave[0] = BOPInt_Tools::IsOnPave1(aT1, aR11, aTol) ||
-            BOPInt_Tools::IsOnPave1(aR11.First(), aCR1, aTol);
-          bIsOnPave[1] = BOPInt_Tools::IsOnPave1(aT1, aR12, aTol) || 
-            BOPInt_Tools::IsOnPave1(aR12.Last(), aCR1, aTol);
-          bIsOnPave[2] = BOPInt_Tools::IsOnPave1(aT2, aR21, aTol) ||
-            BOPInt_Tools::IsOnPave1(aR21.First(), aCR2, aTol);
-          bIsOnPave[3] = BOPInt_Tools::IsOnPave1(aT2, aR22, aTol) ||
-            BOPInt_Tools::IsOnPave1(aR22.Last(), aCR2, aTol);
+          bIsOnPave[0] = IntTools_Tools::IsOnPave1(aT1, aR11, aTol) ||
+            IntTools_Tools::IsOnPave1(aR11.First(), aCR1, aTol);
+          bIsOnPave[1] = IntTools_Tools::IsOnPave1(aT1, aR12, aTol) || 
+            IntTools_Tools::IsOnPave1(aR12.Last(), aCR1, aTol);
+          bIsOnPave[2] = IntTools_Tools::IsOnPave1(aT2, aR21, aTol) ||
+            IntTools_Tools::IsOnPave1(aR21.First(), aCR2, aTol);
+          bIsOnPave[3] = IntTools_Tools::IsOnPave1(aT2, aR22, aTol) ||
+            IntTools_Tools::IsOnPave1(aR22.Last(), aCR2, aTol);
           //
           aPB1->Indices(nV[0], nV[1]);
           aPB2->Indices(nV[2], nV[3]);
@@ -824,7 +824,7 @@ void BOPAlgo_PaveFiller::FillShrunkData(Handle(BOPDS_PaveBlock)& thePB)
 {
   Standard_Integer nE, nV1, nV2, iErr;
   Standard_Real aT1, aT2, aTS1, aTS2;
-  BOPInt_ShrunkRange aSR;
+  IntTools_ShrunkRange aSR;
   //
   myErrorStatus=0;
   myWarningStatus = 0;

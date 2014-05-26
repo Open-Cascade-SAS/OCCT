@@ -12,7 +12,7 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-class ShrunkRange from BOPInt 
+class ShrunkRange from IntTools 
 
  ---Purpose:  
  ---  The class provides the computation of 
@@ -23,14 +23,14 @@ uses
     Box from Bnd, 
     Edge from TopoDS, 
     Vertex from TopoDS, 
-    Context  from BOPInt
+    Context  from IntTools
 
 --raises
 
 is 
     Create 
-        returns ShrunkRange from BOPInt;
-    ---C++: alias "Standard_EXPORT virtual ~BOPInt_ShrunkRange();"  
+        returns ShrunkRange from IntTools;
+    ---C++: alias "Standard_EXPORT virtual ~IntTools_ShrunkRange();"  
     
     SetData (me:out; 
             aE  : Edge from TopoDS;  
@@ -40,10 +40,10 @@ is
             aV2 : Vertex from TopoDS); 
      
     SetContext(me:out; 
-            aCtx: Context from BOPInt);  
+            aCtx: Context from IntTools);  
              
     Context(me) 
-        returns Context from BOPInt;       
+        returns Context from IntTools;       
     ---C++: return const &  
     
     SetShrunkRange(me:out; 
@@ -89,7 +89,7 @@ fields
     myTS1         : Real from Standard is protected;     
     myTS2         : Real from Standard is protected;     
     myBndBox      : Box from Bnd is protected;  
-    myCtx         : Context from BOPInt is protected;
+    myCtx         : Context from IntTools is protected;
     myErrorStatus : Integer from Standard is protected;   
      
 end ShrunkRange;

@@ -25,7 +25,7 @@
 #include <TopoDS_Compound.hxx>
 
 #include <IntTools_BeanFaceIntersector.hxx>
-#include <BOPInt_Context.hxx>
+#include <IntTools_Context.hxx>
 #include <IntTools_Range.hxx>
 
 #include <Geom_Curve.hxx>
@@ -58,7 +58,7 @@
 #include <TColgp_SequenceOfPnt.hxx>
 #include <gce_MakeLin.hxx>
 
-#include <BOPInt_Tools.hxx>
+#include <IntTools_Tools.hxx>
 #include <BOPAlgo_PaveFiller.hxx>
 #include <BOPDS_DS.hxx>
 #include <BOPAlgo_BOP.hxx>
@@ -971,9 +971,9 @@ Standard_Boolean FindCommonVertex(const BOPDS_PDS&         theDS,
       if(aCP.Type() == TopAbs_VERTEX) {
         theCommonVertex = *(TopoDS_Vertex*)&theDS->Shape(aEE.IndexNew());
         if (theEIndex1 == aEE.Index1()) {
-          BOPInt_Tools::VertexParameters(aCP, theParamOnE1, theParamOnE2);
+          IntTools_Tools::VertexParameters(aCP, theParamOnE1, theParamOnE2);
         } else {
-          BOPInt_Tools::VertexParameters(aCP, theParamOnE2, theParamOnE1);
+          IntTools_Tools::VertexParameters(aCP, theParamOnE2, theParamOnE1);
         }
         //
         bvertexfound = Standard_True;
@@ -1931,7 +1931,7 @@ Standard_Boolean FilterSectionEdges(const BOPDS_VectorOfCurve&       theBCurves,
         BRep_Tool::Range(anEdge, f, l);
         anIntersector.SetBeanParameters(f, l);
         //
-        Handle(BOPInt_Context) aContext = new BOPInt_Context;
+        Handle(IntTools_Context) aContext = new IntTools_Context;
         anIntersector.SetContext(aContext);
         //
         anIntersector.Perform();

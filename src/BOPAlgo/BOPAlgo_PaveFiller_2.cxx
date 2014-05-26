@@ -24,7 +24,7 @@
 #include <BOPCol_NCVector.hxx>
 #include <BOPCol_TBB.hxx>
 
-#include <BOPInt_Context.hxx>
+#include <IntTools_Context.hxx>
 
 #include <BOPDS_Iterator.hxx>
 #include <BOPDS_VectorOfInterfVE.hxx>
@@ -87,11 +87,11 @@ class BOPAlgo_VertexEdge {
     return myT;
   }
   //
-  void SetContext(const Handle(BOPInt_Context)& aContext) {
+  void SetContext(const Handle(IntTools_Context)& aContext) {
     myContext=aContext;
   }
   //
-  const Handle(BOPInt_Context)& Context()const {
+  const Handle(IntTools_Context)& Context()const {
     return myContext;
   }
   //
@@ -107,7 +107,7 @@ class BOPAlgo_VertexEdge {
   Standard_Real myT;
   TopoDS_Vertex myV;
   TopoDS_Edge myE;
-  Handle(BOPInt_Context) myContext;
+  Handle(IntTools_Context) myContext;
 };
 //=======================================================================
 typedef BOPCol_NCVector
@@ -116,13 +116,13 @@ typedef BOPCol_NCVector
 typedef BOPCol_TBBContextFunctor 
   <BOPAlgo_VertexEdge,
   BOPAlgo_VectorOfVertexEdge,
-  Handle(BOPInt_Context), 
-  BOPInt_Context> BOPAlgo_VertexEdgeFunctor;
+  Handle(IntTools_Context), 
+  IntTools_Context> BOPAlgo_VertexEdgeFunctor;
 //
 typedef BOPCol_TBBContextCnt 
   <BOPAlgo_VertexEdgeFunctor,
   BOPAlgo_VectorOfVertexEdge,
-  Handle(BOPInt_Context)> BOPAlgo_VertexEdgeCnt;
+  Handle(IntTools_Context)> BOPAlgo_VertexEdgeCnt;
 //
 //=======================================================================
 // function: PerformVE

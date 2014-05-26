@@ -22,7 +22,7 @@
 
 #include <NCollection_BaseAllocator.hxx>
 
-#include <BOPInt_Context.hxx>
+#include <IntTools_Context.hxx>
 #include <BOPDS_DS.hxx>
 #include <BOPDS_Iterator.hxx>
 
@@ -93,7 +93,7 @@ BOPDS_PDS BOPAlgo_PaveFiller::PDS()
 //function : Context
 //purpose  : 
 //=======================================================================
-Handle(BOPInt_Context) BOPAlgo_PaveFiller::Context()
+Handle(IntTools_Context) BOPAlgo_PaveFiller::Context()
 {
   return myContext;
 }
@@ -150,7 +150,7 @@ void BOPAlgo_PaveFiller::Init()
   myIterator->Prepare();
   //
   // 3 myContext
-  myContext=new BOPInt_Context;
+  myContext=new IntTools_Context;
   //
   myErrorStatus=0;
 }

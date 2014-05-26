@@ -38,7 +38,7 @@ uses
 
     ListOfShape from BOPCol,  
      
-    Context     from BOPInt,
+    Context     from IntTools,
 
     IndexedDataMapOfShapeListOfShape from BOPCol
 
@@ -95,7 +95,7 @@ is
               aT:  Real from Standard;  
               aPx:out Pnt from gp;
               aD:out Dir from gp; 
-              theContext:out Context from BOPInt); 
+              theContext:out Context from IntTools); 
           ---Purpose:  
           --- Computes normal to the face <aF> for the 3D-point that 
           --- belonds to the edge <aE> at parameter <aT>. 
@@ -136,7 +136,7 @@ is
               aT:  Real from Standard;  
               aP2D:out Pnt2d from  gp; 
               aPx:out Pnt from gp; 
-              theContext:out Context from BOPInt);
+              theContext:out Context from IntTools);
           ---Purpose: 
           --- Computes the point <aPx>,  (<aP2D>)  that is near to  
           --- the edge <aE>   at parameter <aT>  towards to the  
@@ -148,7 +148,7 @@ is
               aF:  Face from TopoDS;   
               aP2D:out Pnt2d from  gp; 
               aPx:out Pnt from gp; 
-              theContext:out Context from BOPInt);
+              theContext:out Context from IntTools);
           ---Purpose: 
           --- Compute the point <aPx>,  (<aP2D>)  that is near to  
           --- the edge <aE>   at arbitrary  parameter  towards to the  
@@ -183,7 +183,7 @@ is
               theF:Face from TopoDS;
               theP:out Pnt from gp;
               theP2D:out Pnt2d from gp; 
-              theContext:out Context from BOPInt) 
+              theContext:out Context from IntTools) 
           returns Integer from Standard; 
           ---Purpose: Computes a point <theP> inside the face <theF>. <br>
           --          <theP2D> -  2D  representation of <theP> <br>

@@ -39,7 +39,7 @@
 #include <BOPDS_VectorOfInterfEF.hxx>
 #include <BOPDS_VectorOfInterfFF.hxx>
 
-#include <BOPInt_Context.hxx>
+#include <IntTools_Context.hxx>
 
 #include <BOPTools.hxx>
 #include <BOPTools_AlgoTools.hxx>
@@ -115,7 +115,7 @@ void BOPAlgo_CheckerSI::Init()
   myIterator=theIterSI;
   //
   // 3 myContext
-  myContext=new BOPInt_Context;
+  myContext=new IntTools_Context;
   //
   myErrorStatus=0;
 }
