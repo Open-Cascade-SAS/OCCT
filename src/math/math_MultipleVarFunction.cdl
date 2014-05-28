@@ -20,6 +20,8 @@ deferred class MultipleVarFunction from math
 uses Vector from math
 
 is
+    Delete(me:out) is virtual;
+    ---C++: alias "Standard_EXPORT virtual ~math_MultipleVarFunction(){Delete();}"
 
     NbVariables(me)
     	---Purpose:

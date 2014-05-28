@@ -15,3 +15,6 @@
 // commercial license or contractual agreement.
 
 #include <math_MultipleVarFunctionWithHessian.ixx>
+
+void math_MultipleVarFunctionWithHessian::Delete()
+{}

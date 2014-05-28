@@ -24,7 +24,7 @@ uses Vector from math
 
 is
 
-    Delete(me:out) is virtual;
+    Delete(me:out) is redefined virtual;
     ---C++: alias "Standard_EXPORT virtual ~math_MultipleVarFunctionWithGradient(){Delete();}"
     
     NbVariables(me)

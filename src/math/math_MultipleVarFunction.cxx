@@ -16,3 +16,6 @@
 #include <math_MultipleVarFunction.ixx>
 
 Standard_Integer math_MultipleVarFunction::GetStateNumber() { return 0; }
+
+void math_MultipleVarFunction::Delete()
+{}

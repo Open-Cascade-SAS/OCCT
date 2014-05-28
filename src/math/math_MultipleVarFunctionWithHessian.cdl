@@ -24,6 +24,9 @@ uses Matrix from math,
 
 is
 
+    Delete(me:out) is redefined virtual;
+    ---C++: alias "Standard_EXPORT virtual ~math_MultipleVarFunctionWithHessian(){Delete();}"
+
     NbVariables(me)
     	---Purpose: returns the number of variables of the function.
 
