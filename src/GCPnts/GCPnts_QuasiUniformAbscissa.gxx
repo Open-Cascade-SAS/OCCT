@@ -53,9 +53,10 @@ void GCPnts_QuasiUniformAbscissa::Initialize(TheCurve& C,
 
 //=======================================================================
 //function : Initialize
-//purpose  : 
+//purpose  : This function divides given curve on the several parts with
+//            equal length. It returns array of parameters in the
+//            control points.
 //=======================================================================
-
 void GCPnts_QuasiUniformAbscissa::Initialize(TheCurve& C, 
 					     const Standard_Integer NbPoints,
 					     const Standard_Real U1, 
@@ -103,19 +104,34 @@ void GCPnts_QuasiUniformAbscissa::Initialize(TheCurve& C,
 // On cherche a mettre NbPoints dans la curve.
 // on met les points environ a Length/NbPoints.
 
-    Standard_Real DCorde = Length / ( NbPoints - 1); 
-    Standard_Real Corde  = DCorde;
-    Standard_Integer Index = 1;
-    Standard_Real U, Alpha;
-    myParams = new TColStd_HArray1OfReal(1,NbPoints); 
-    myParams->SetValue(1,U1); 
-    for ( i = 2; i < NbPoints; i++) {
-      while ( LP(Index).X() < Corde) Index ++;
-      Alpha = (Corde - LP(Index-1).X()) / (LP(Index).X() - LP(Index-1).X());
-      U = LP(Index-1).Y() + Alpha * ( LP(Index).Y() - LP(Index-1).Y());
-      myParams->SetValue(i,U);
-      Corde = i*DCorde;
+    if(IsEqual(Length, 0.0))
+    {//use usual analytical grid
+      Standard_Real aStep = (U2 - U1) / (NbPoints - 1);
+      myParams = new TColStd_HArray1OfReal(1,NbPoints); 
+      myParams->SetValue(1,U1);
+      for ( i = 2; i < NbPoints; i++)
+      {
+        myParams->SetValue(i, U1 + aStep*(i-1));
+      }
     }
+    else
+    {
+      Standard_Real DCorde = Length / ( NbPoints - 1); 
+      Standard_Real Corde  = DCorde;
+      Standard_Integer Index = 1;
+      Standard_Real U, Alpha;
+      myParams = new TColStd_HArray1OfReal(1,NbPoints); 
+      myParams->SetValue(1,U1); 
+      for ( i = 2; i < NbPoints; i++)
+      {
+        while ( LP(Index).X() < Corde) Index ++;
+        Alpha = (Corde - LP(Index-1).X()) / (LP(Index).X() - LP(Index-1).X());
+        U = LP(Index-1).Y() + Alpha * ( LP(Index).Y() - LP(Index-1).Y());
+        myParams->SetValue(i,U);
+        Corde = i*DCorde;
+      }
+    }
+
     myParams->SetValue(NbPoints,U2);
     myDone = Standard_True;
   }
