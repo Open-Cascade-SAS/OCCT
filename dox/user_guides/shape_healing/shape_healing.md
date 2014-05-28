@@ -75,27 +75,34 @@ The simplest way for fixing shapes is to use classes *ShapeFix_Shape* and *Shape
 The sequence of actions is as follows : 
 
 1. Create tool *ShapeFix_Shape* and initialize it by shape: 
-~~~~~
-Handle(ShapeFix_Shape) sfs = new ShapeFix_Shape; 
-sfs->Init ( shape ); 
-~~~~~
-2. Set the basic precision and the maximum allowed tolerance:
-~~~~~
-sfs->SetPrecision ( Prec ); 
-sfs->SetMaxTolerance ( maxTol ); 
-~~~~~
-where *Prec* – basic precision,  *maxTol* – maximum allowed tolerance. 
-All problems will be detected for cases when a dimension of invalidity is larger than the basic precision or a tolerance of sub-shape on that problem is detected.
-The maximum tolerance value limits the increasing tolerance for fixing a problem. If a value larger than the maximum allowed tolerance is necessary for correcting a detected problem the problem can not be fixed.
+   
+       Handle(ShapeFix_Shape) sfs = new ShapeFix_Shape; 
+       sfs->Init ( shape ); 
+
+2. Set the basic precision, the maximum allowed tolerance, the minimal allowed tolerance:
+
+        sfs->SetPrecision ( Prec ); 
+        sfs->SetMaxTolerance ( maxTol ); 
+        sfs->SetMinTolerance ( mintol );
+
+   where *Prec* – basic precision,  *maxTol* – maximum allowed tolerance, *minTol* – minimal allowed tolerance.
+   * *maxTol* - All problems will be detected for cases when a dimension of invalidity is larger than the basic precision or a tolerance of sub-shape on that problem is detected.
+                The maximum tolerance value limits the increasing tolerance for fixing a problem such as fix of not connenected and self-intersected wires. If a value larger than the maximum allowed tolerance is necessary for correcting a detected problem the problem can not be fixed.
+                The maximal tolerance is not taking into account during computation of tolerance of edges in ShapeFix_SameParameter() method and  ShapeFix_Edge::FixVertexTolerance() method.
+                See @ref occt_shg_2_3_8 for details.
+   * *minTol* - The minimal allowed tolerance defines minimal allowed length of edges. Detected edges having length less than specified minimal tolerance will be removed if ModifyTopologyMode in Repairing tool for wires is set to true.
+                See @ref occt_shg_2_3_7 for details.
+
 3. Launch fixing:
-~~~~~
-sfs->Perform(); 
-~~~~~
+
+        sfs->Perform(); 
+
 4. Get the result:
-~~~~~
-TopoDS_Shape aResult = sfs->Shape(); 
-~~~~~
-In some cases using  only *ShapeFix_Shape* can be insufficient. It is possible to use tools for merging and removing small edges and fixing gaps between 2D and 3D curves.
+
+        TopoDS_Shape aResult = sfs->Shape(); 
+
+   In some cases using  only *ShapeFix_Shape* can be insufficient. It is possible to use tools for merging and removing small edges and fixing gaps between 2D and 3D curves.
+
 5. Create *ShapeFix_Wireframe* tool and initialize it by shape:
 ~~~~~
 Handle(ShapeFix_Wirefarme) SFWF = new ShapeFix_Wirefarme(shape); 
