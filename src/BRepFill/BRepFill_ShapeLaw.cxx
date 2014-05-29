@@ -161,6 +161,9 @@ void BRepFill_ShapeLaw::Init(const Standard_Boolean Build)
 	      IsReallyClosed = V1.IsSame(V2);
 	    }
 	  }
+          if (IsReallyClosed &&
+              Abs(C->FirstParameter() - First) > Precision::PConfusion())
+            IsReallyClosed = Standard_False; //trimmed curve differs
 
 	  if ((ii>1) || !IsReallyClosed ) { // Trim C
 	    Handle(Geom_TrimmedCurve) TC = new Geom_TrimmedCurve(C,First, Last);
