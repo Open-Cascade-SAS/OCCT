@@ -216,7 +216,6 @@ is
         theF2: Face from TopoDS;  
         theTolR3D:Real from Standard; 
         theNC:out Curve from BOPDS;  
-        theMVOnIn:out MapOfInteger from BOPCol;
         theMVB:out MapOfInteger from BOPCol) 
       is protected; 
 

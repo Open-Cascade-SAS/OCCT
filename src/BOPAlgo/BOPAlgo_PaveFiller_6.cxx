@@ -460,7 +460,7 @@ void BOPAlgo_PaveFiller::MakeBlocks()
       }
       //
       if (aIC.HasBounds()) {
-        PutBoundPaveOnCurve(aF1, aF2, aTolR3D, aNC, aMVOnIn, aMVB);
+        PutBoundPaveOnCurve(aF1, aF2, aTolR3D, aNC, aMVB);
       }
     }//for (j=0; j<aNbC; ++j) {
     //
@@ -1129,7 +1129,6 @@ void BOPAlgo_PaveFiller::UpdateFaceInfo(BOPDS_DataMapOfPaveBlockListOfPaveBlock&
                                                const TopoDS_Face& aF2,
                                                const Standard_Real aTolR3D,
                                                BOPDS_Curve& aNC,
-                                               BOPCol_MapOfInteger& aMVOnIn,
                                                BOPCol_MapOfInteger& aMVB)
 {
   Standard_Boolean bVF;
@@ -1218,7 +1217,6 @@ void BOPAlgo_PaveFiller::UpdateFaceInfo(BOPDS_DataMapOfPaveBlockListOfPaveBlock&
       BOPDS_ShapeInfo& aSIDS=myDS->ChangeShapeInfo(nVn);
       Bnd_Box& aBoxDS=aSIDS.ChangeBox();
       BRepBndLib::Add(aVn, aBoxDS);
-      aMVOnIn.Add(nVn);
       aMVB.Add(nVn);
     }
   }
