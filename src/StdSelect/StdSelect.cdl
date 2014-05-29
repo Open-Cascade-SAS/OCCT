@@ -91,20 +91,11 @@ is
 
 
     class ViewerSelector3d;
-    	---Purpose: Viewer Selector for a view from V3d
-    	--          Accepts Only Sensitive Entities inheriting Select3D entities...
-    
-    
-    
+
     class BRepSelectionTool;
-    	---Purpose: gives standard selections for Shapes
 
     class BRepOwner;
-    	---Purpose: Owner classes for BRep objects 
-	--          used by BRepSelectionTool to know which entities
-	--          own the sensitive primitives created.
-	--          the hilight-unhilight methods are empty and
-	--          must be redefined by each User...
+
 
     ---Category: Shape Filters
 

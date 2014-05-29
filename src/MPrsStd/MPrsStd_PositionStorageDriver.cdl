@@ -16,7 +16,8 @@
 
 class PositionStorageDriver from MPrsStd inherits ASDriver from MDF
 
-	---Purpose: 
+	---Purpose: Storage driver for graphic attributes from
+	--          TPrsStd
 
 uses SRelocationTable from MDF,
      Attribute        from TDF,

@@ -18,8 +18,10 @@ generic class LeastSquare from AppCont(MultiLine as any;
     	    	    	    	       LineTool  as any)
 				       ---as TheToolLine(MultiLine)
 
-    ---Purpose:
-
+    ---Purpose: Makes an approximation of a continous Line described by
+    --          the tool TheLineTool.
+    --          Minimizing the difference between the approximate result
+    --          Curve and a continous MultiLine
 
 uses  Matrix          from math,
       Vector          from math,

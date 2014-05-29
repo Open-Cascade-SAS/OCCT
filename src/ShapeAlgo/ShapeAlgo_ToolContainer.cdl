@@ -15,7 +15,7 @@
 
 class ToolContainer from ShapeAlgo inherits TShared from MMgt
 
-    ---Purpose: 
+    ---Purpose:  Returns tools used by AlgoContainer
 
 uses
 

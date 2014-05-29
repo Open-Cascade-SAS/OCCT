@@ -43,11 +43,7 @@ end  StatusErrorType;
 
      
     class SurfaceContinuity;
-    ---Purpose:
-    -- This  class  computes  and gives  tools to check  the  local
-    -- continuity  between two points situated  on 2  surfaces
-    
-    
+
     class CurveContinuity; 
     ---Purpose:
     -- This  class  compute

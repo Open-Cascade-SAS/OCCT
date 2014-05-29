@@ -17,7 +17,7 @@
 class SolidSurfaceInterference from TopOpeBRepDS 
     inherits Interference from TopOpeBRepDS
 
-	---Purpose: 
+	---Purpose: Interference
 
 uses
 

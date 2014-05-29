@@ -32,19 +32,10 @@ uses
     
 is
     class Explorer;
-    	---Purpose: Construct an  explorer for  the computation of the 
-    	--          bisecting locus  from a Wire, a  Face, or a set of 
-    	--          curves from Geom2d.
 
     class BisectingLocus;
-	---Purpose: Constuction of the map of the bisector locus on a
-    	--          set of geometrys from Geom2d.
-	
-	---Purpose: the map of bisecting locus.
-					  
+
     class LinkTopoBilo;
-    	---Purpose: Constucts links between the Wire or the Face and
-    	--          the BasicElts contained in the bisecting locus.
 
 
     class DataMapOfShapeSequenceOfBasicElt instantiates DataMap from TCollection 

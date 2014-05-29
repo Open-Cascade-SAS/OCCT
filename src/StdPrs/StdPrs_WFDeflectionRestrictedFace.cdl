@@ -22,6 +22,11 @@ inherits Root from Prs3d
 	---Purpose: A framework to provide display of U and V
     	-- isoparameters of faces, while allowing you to impose
     	-- a deflection on them.
+      -- Computes the wireframe presentation of faces with
+      -- restrictions by displaying a given number of U and/or
+      -- V isoparametric curves. The isoparametric curves are
+      -- drawn with respect to a maximal chordial deviation.
+      -- The presentation includes the restriction curves.
 
 uses
     HSurface             from BRepAdaptor,

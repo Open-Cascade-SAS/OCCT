@@ -20,6 +20,9 @@
 
 
 class Context from AdvApp2Var
+    ---Purpose :
+    -- contains  all the  parameters  for approximation
+    --         ( tolerancy, computing option, ...)
 
 uses
     HArray1OfReal from TColStd,

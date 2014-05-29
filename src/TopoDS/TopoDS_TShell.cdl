@@ -15,6 +15,7 @@
 -- commercial license or contractual agreement.
 
 class TShell from TopoDS inherits TShape from TopoDS
+	---Purpose: A set of faces connected by their edges.
 
 uses
     ShapeEnum from TopAbs

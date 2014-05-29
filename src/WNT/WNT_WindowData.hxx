@@ -15,6 +15,8 @@
 #ifndef __WNT_WindowData_HeaderFile
 # define __WNT_WindowData_HeaderFile
 
+// Purpose:  Defines additional window data type.
+
 # ifndef __WINDOWS_H_INCLUDED
 #  define __WINDOWS_H_INCLUDED
 #  ifndef STRICT

@@ -17,10 +17,11 @@
 class ShadedSurface from StdPrs 
 
 inherits Root from Prs3d
-    	--- Purpose: Draws a surface by drawing the isoparametric curves with respect to 
-    	-- a maximal chordial deviation.
-    	-- The number of isoparametric curves to be drawn and their color are
-    	-- controlled by the furnished Drawer.
+      --- Purpose: Computes the shading presentation of surfaces.
+      -- Draws a surface by drawing the isoparametric curves with respect to
+      -- a maximal chordial deviation.
+      -- The number of isoparametric curves to be drawn and their color are
+      -- controlled by the furnished Drawer.
 uses
     Surface      from Adaptor3d,
     Presentation from Prs3d,

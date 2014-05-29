@@ -16,7 +16,8 @@
 
 private class CurveOnVertex from BiTgte inherits Curve from Adaptor3d
 
-	---Purpose: 
+	---Purpose: private class used  to create a filler rolling  on
+	--          an edge.
 
 uses
     Array1OfReal    from TColStd,

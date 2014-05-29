@@ -55,9 +55,7 @@ is
     --           
 
     deferred class MetaDataDriver;
-    ---Purpose: this class list the method that must be available for
-    --          a specific DBMS
-     
+
     exception MetaDataDriverError inherits Failure from Standard;
     ---Purpose: this exception is used in the deferred methods.
     --          Programmer implementing such methods may use this

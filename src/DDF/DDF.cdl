@@ -40,13 +40,10 @@ is
     -- ----------------------------------------------------------------------
 
     class Data;
-    	---Purpose : Encapsulates a data framework from TDF.
 
     class Browser;
-    	---Purpose : Browses a data framework from TDF.
 
     class Transaction;
-	---Purpose: Encapsulates a Transaction from TDF.
 
     class TransactionStack
     	instantiates List from TCollection (Transaction from DDF);

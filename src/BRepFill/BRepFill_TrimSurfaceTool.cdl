@@ -16,7 +16,8 @@
 
 private class TrimSurfaceTool from BRepFill 
 
-	---Purpose:
+	---Purpose: Compute the Pcurves and  the 3d curves resulting
+	  --        of the trimming of a face by an extruded surface.
 
 uses
 

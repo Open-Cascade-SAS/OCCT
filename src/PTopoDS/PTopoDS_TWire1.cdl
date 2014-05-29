@@ -16,8 +16,10 @@
 
 class TWire1 from PTopoDS  inherits TShape1 from PTopoDS
 
-	---Purpose: a Topological  Wire1 is a  structure of Edge1s.  The
-	--          Edge1s may have 2D curves stored with them. This is
+	---Purpose: a Topological  Wire1 is a  structure of Edge1s.
+	--          A set of Edges making a wire  structure, it can be
+	--          a wireframe or a composite line.
+	--          The Edge1s may have 2D curves stored with them. This is
 	--          a curve in the parametric space of a Surface.
 
 uses

@@ -14,6 +14,8 @@
 -- commercial license or contractual agreement.
 
 class Material from XCAFDoc inherits Attribute from TDF
+    ---Purpose: attribute to store material
+
 uses
     Label from TDF,
     RelocationTable from TDF,

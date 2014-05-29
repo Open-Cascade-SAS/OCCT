@@ -16,7 +16,7 @@
 
 class ShapeContents from ShapeAnalysis 
 
-	---Purpose: 
+	---Purpose: Dumps shape contents
 
 uses
 

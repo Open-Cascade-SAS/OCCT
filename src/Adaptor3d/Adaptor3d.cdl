@@ -139,31 +139,20 @@ uses
 is
 
       deferred class Curve; 
-      	---Purpose: Root of the 3d curve.
 
       pointer CurvePtr to Curve from Adaptor3d;
 
       deferred class HCurve;
-        ---Purpose: deferred  class for  the  curves manipulated  with
-        --          Handle.
 
       generic class GenHCurve;
-      	---Purpose: Generic  class  used to create a  curve inheriting
-      	--          from HCurve.
-      
               
       deferred class Surface;
-        ---Purpose: Root of the surface.
       
       pointer SurfacePtr to Surface from Adaptor3d;
 
       deferred class HSurface;
-        ---Purpose: deferred class for  the  surfaces manipulated with
-        --          Handle.
 
       generic class GenHSurface;
-      	---Purpose: Generic class used to  create a surface inheriting
-      	--          from  HSurface.
       
 
       --
@@ -188,15 +177,12 @@ is
 
 
       class IsoCurve;
-      ---Purpose: Algorithmic 3d curv, isoparametric on a surface.
 
       class HIsoCurve instantiates GenHCurve from Adaptor3d
         (IsoCurve from Adaptor3d);
               
 
       class CurveOnSurface;
-       ---Purpose: Algorithmic 3d curve from a surface and a 2d  curve
-       --          in the parameter space.
        
       pointer CurveOnSurfacePtr to CurveOnSurface from Adaptor3d;
 
@@ -206,16 +192,11 @@ is
 	
 
       class OffsetCurve;
-      ---Purpose: Algorithmic 2d curve.
 
-       class HOffsetCurve instantiates GenHCurve2d from Adaptor2d
+      class HOffsetCurve instantiates GenHCurve2d from Adaptor2d
         (OffsetCurve  from Adaptor3d);
-      
-    
+
       class SurfaceOfRevolution;
-      ---Purpose: Algorithmic Surface from a Curve and an Axis
-      --          Curve and Axis are coplanar.
-      --          Curve doesn't intersect Axis.
       
       class HSurfaceOfRevolution instantiates GenHSurface from Adaptor3d
        (SurfaceOfRevolution from Adaptor3d);
@@ -223,13 +204,10 @@ is
       
       
       class SurfaceOfLinearExtrusion;    
-      ---Purpose: Algorithmic Surface from a curve and a direction
 
       class HSurfaceOfLinearExtrusion instantiates GenHSurface from Adaptor3d
        (SurfaceOfLinearExtrusion from Adaptor3d);
 
       private  class  InterFunc; 
-      ---Purpose: function to find the Cn discontinuity point. Used to
-      --          find the roots of the functions 
 
 end Adaptor3d;

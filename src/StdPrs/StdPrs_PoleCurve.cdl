@@ -17,9 +17,9 @@
 class PoleCurve from StdPrs 
 
 inherits Root from Prs3d
-     
-  	     
-    	---Purpose: A framework to provide display of Bezier or BSpline curves.
+
+      ---Purpose: A framework to provide display of Bezier or BSpline curves
+      --          (by drawing a broken line linking the poles of the curve).
 
 uses
     Curve        from Adaptor3d,

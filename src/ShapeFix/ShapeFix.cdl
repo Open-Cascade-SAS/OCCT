@@ -53,62 +53,41 @@ is
     class EdgeProjAux;
 
     class Edge;
-    	---Purpose: Fixing different problems on edge
-	
+
     class Wire;
-      ---Purpose: Fixing different problems with wires
 
     class Face;
-    	---Purpose: Fixing problems with face (orientation of wires and wrong wires)
-	  
+
     class FixSmallFace;
-      ---Purpose: Fixing face with small size
 
     class WireVertex;
-    	---Purpose: Fixing disconnected edges in the wire
 
     class Wireframe;
-      ---Purpose: Provides methods to fix wireframe of shape
-    
+
     class FreeBounds;
-      ---Purpose: Fixing free bounds of the shape (connecting open wires)
 
     class FaceConnect;
-      ---Purpose: Rebuilds connectivity between faces in shell
-	
+
     class Shell;
-    	---Purpose: Fixing orientation of faces in shell
 
     class Solid;
-      ---Purpose: Creating solid from shell and orienting it to have finite volume
-	
+
     class ShapeTolerance;
-    	---Purpose: Modifying shape tolerances
 
     class Shape;
-    	---Purpose: Fixing problem of shape. 
 
     class EdgeConnect;
-        ---Purpose: Rebuilds edges to connect with new vertices, was moved from ShapeBuild
 
     class ComposeShell;
-    	---Purpose: Splits a (pseudo)face onto grid of faces (shell)
 
     class SplitCommonVertex;
-    	---Purpose: Splits vertex which is common for two wires
-      --          (for writing into STEP)
 
     class WireSegment;
-    	---Purpose: Auxiliary class (data storage) for ComposeShell
-	
+
     class IntersectionTool;
-    	---Purpose: Tool for fixing selfintersecting wire
-      --          and intersecting wires
-	
+
     class SplitTool;
-    	---Purpose: Tool for splitting and cutting edges; incudes methods
-      --          used in OverlappingTool and IntersectionTool
-	
+
     class SequenceOfWireSegment instantiates Sequence from TCollection
     	(WireSegment from ShapeFix);
     

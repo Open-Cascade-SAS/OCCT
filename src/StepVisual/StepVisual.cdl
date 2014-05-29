@@ -356,7 +356,6 @@ class HArray1OfBoxCharacteristicSelect
                          Array1OfBoxCharacteristicSelect);
 
 --	Protocol returns Protocol from StepVisual;
-	---Purpose : creates a Protocol
 
 end StepVisual;
 

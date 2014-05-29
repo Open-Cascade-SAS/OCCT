@@ -48,10 +48,7 @@ uses gp,
 is
 
     class BuildPlateSurface ; 
-    ---Purpose:
-    -- this class computes the plate surface corresponding to the constraints.
-    
-     
+
     class Array1OfHCurveOnSurface  
 	instantiates Array1 from TCollection ( HCurveOnSurface from Adaptor3d);     
      
@@ -84,27 +81,14 @@ is
 
 
     class BuildAveragePlane;
-    --- Purpose:
-    --  this class computes the initial surface (average plane) in the cases when the initial surface is not 
-    --  given.
 
     class Surface;
-    ---Purpose:
-    -- this class describes the characteristics of the plate surface
-    
+
     class MakeApprox;
-    ---Purpose:
-    -- this class converts a GeomPlate_Surface to a Geom_BSplineSurface
 
     class PlateG0Criterion;
-    ---Purpose:
-    -- inherits class Criterion from AdvApp2Var ;
-    -- this class contains a specific G0 criterion for GeomPlate_MakeApprox
 
     class PlateG1Criterion;
-    ---Purpose:
-    -- inherits class Criterion from AdvApp2Var ;
-    -- this class contains a specific G1 criterion for GeomPlate_MakeApprox
 
     class Aij;
 

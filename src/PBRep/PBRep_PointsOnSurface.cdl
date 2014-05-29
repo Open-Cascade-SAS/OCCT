@@ -15,7 +15,7 @@
 -- commercial license or contractual agreement.
 
 deferred class PointsOnSurface from PBRep inherits PointRepresentation from PBRep
-
+  ---Purpose: Root for points on surface.
 uses
 
     Surface  from PGeom,

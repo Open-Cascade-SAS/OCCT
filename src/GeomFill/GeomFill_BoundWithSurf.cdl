@@ -23,6 +23,8 @@ class BoundWithSurf from GeomFill inherits Boundary from GeomFill
  	--          the computations are done with a CurveOnSurf and a
  	--          normals field  defined by the normalized normal to
  	--          the surface along the PCurve.
+  --          Contains fields  to allow a reparametrization of curve
+  --          and normals field.
 
 uses
     Pnt            from gp,

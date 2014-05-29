@@ -15,6 +15,7 @@
 -- commercial license or contractual agreement.
 
 class TCompound from TopoDS inherits TShape from TopoDS
+	---Purpose: A TCompound is an all-purpose set of Shapes.
 
 uses
     ShapeEnum from TopAbs

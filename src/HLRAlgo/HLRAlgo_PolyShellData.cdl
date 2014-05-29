@@ -15,6 +15,7 @@
 -- commercial license or contractual agreement.
 
 class PolyShellData from HLRAlgo inherits TShared from MMgt
+	---Purpose: All the PolyData of a Shell
 
 uses
     Address            from Standard,

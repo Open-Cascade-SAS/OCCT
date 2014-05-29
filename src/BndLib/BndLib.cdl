@@ -43,10 +43,8 @@ uses TColgp,Bnd,gp,GeomAbs,Standard, Geom2d, Geom, Adaptor3d  ,Adaptor2d
 
 is
     class Add3dCurve;
-	    ---Purpose: Bounding box for a curve in  3d.		     
 
     class Add2dCurve;
-	    ---Purpose: Bounding box for a curve in 2d.        
 
     class AddSurface;
 	    ---Purpose: Bounding box for a surface trimmed or not    

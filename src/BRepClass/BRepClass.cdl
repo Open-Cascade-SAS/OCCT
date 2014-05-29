@@ -36,19 +36,14 @@ uses
 
 is
     class Edge;
-	---Purpose: Stores the Edge and the Face.
 
     class Intersector;
-	---Purpose: Intersect an Edge  with a segment.   This class is
-	--          inherited   from   IntConicCurveOfGInter      from
-	--          Geom2dInt.
 
     class FacePassiveClassifier instantiates Classifier2d from TopClass
     	(Edge         from BRepClass,
 	 Intersector  from BRepClass);
 
     class FaceExplorer;
-	---Purpose: Exploration of a Face to return UV edges.
 
     class FClassifier instantiates FaceClassifier from TopClass
     	(FaceExplorer from BRepClass,
@@ -56,8 +51,5 @@ is
 	 Intersector  from BRepClass);
 	 
     class FaceClassifier;
-	---Purpose: Inherited    from   FClassifier   to   provide   a
-	--          Constructor with a Face.
 
-       
 end BRepClass;

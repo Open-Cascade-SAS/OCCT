@@ -19,7 +19,7 @@ class LayerTool from XCAFDoc inherits Attribute from TDF
 	--          of TopoDS_Shape in and from TDocStd_Document
 	--          A Document is intended to hold different 
 	--          attributes of ONE shape and it's sub-shapes
-
+	--          Provide tools for management of Layers section of document.
 uses
     Shape           from TopoDS,
     Label           from TDF,

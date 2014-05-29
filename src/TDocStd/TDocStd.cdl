@@ -61,8 +61,8 @@ uses
 is
 
 
-    ---Purpose: standard Application/Document
-    --          =============================
+    --- standard Application/Document
+    --  =============================
 
     
     deferred class Application;
@@ -72,43 +72,26 @@ is
     class Context;    
 
     
-    ---Purpose: External reference Attribute
-    --          ============================
+    --- External reference Attribute
+    --  ============================
 	          
     class XLink;
-    ---Purpose:   This attribute,   when  setted,  store  an  external
-    --          reference .  An external reference is a memorized link
-    --           between attributes   wich  originate  from  different
-    --          documents.
-    
+
     class XLinkIterator;
-    ---Purpose: This is an iterator giving all the external references
-    --          of a Document.
 
     class XLinkTool;
-    ---Purpose: This class provide services to set, update and perform
-    --          external references.
 
-
-    ---Purpose: Attributes for Document Management
-    --          ==================================
+    --- Attributes for Document Management
+    --  ==================================
 
     private class Owner;
-    ---Purpose:   This  attribute located  at  the  root label  of the
-    --          framework contains  a   back reference to   the  owner
-    --          TDocStd_Document, providing acces to the document from
-    --          any label.  private class Owner;
 
     private class Modified;    
-    ---Purpose: This   attribute  located at the  root   label provide
-    --          services to register modified labels in a document.
-    
+
     pointer XLinkPtr to XLink from TDocStd;
     
     private class XLinkRoot;
-    ---Purpose: This attribute is  the root of all external references
-    --          setted in a document.
-    
+
     class PathParser;
 
 

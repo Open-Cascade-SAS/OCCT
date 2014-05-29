@@ -17,6 +17,8 @@
 class RstRstEvolRad from BRepBlend
 inherits RstRstFunction from Blend
 
+    ---Purpose: Function  to approximate by AppSurface  for
+    --          Edge/Edge  and  evolutif  radius
 
 uses Vector               from math,
      Matrix               from math,

@@ -28,6 +28,5 @@ uses
 is
 
     class Application;
-    	---Purpose: Defines application for DECAF documents
-    
+
 end XCAFApp;

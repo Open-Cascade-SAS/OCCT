@@ -15,8 +15,8 @@
 -- commercial license or contractual agreement.
 
 class PositionRetrievalDriver from MPrsStd inherits ARDriver from MDF
-	---Purpose: 
-
+	    ---Purpose: Retrieval drivers for graphic attributes from
+	    --          PPrsStd
 
 
 uses RRelocationTable from MDF,

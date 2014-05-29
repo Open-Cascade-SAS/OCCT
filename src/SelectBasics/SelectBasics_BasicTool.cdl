@@ -16,7 +16,8 @@
 
 class BasicTool from SelectBasics 
 
-	---Purpose: 
+	---Purpose: give Tools for sorting Selection results
+    --          (example : sensitive entities matching)
 
 uses
     Pnt2d from gp,

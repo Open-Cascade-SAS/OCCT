@@ -17,7 +17,8 @@
 class Intersector from BRepClass 
 inherits IntConicCurveOfGInter from Geom2dInt
 
-	---Purpose: Implement the Intersector2d required by the classifier.
+	---Purpose: Intersect an Edge  with a segment.
+	--          Implement the Intersector2d required by the classifier.
 
 uses
     Lin2d from gp,

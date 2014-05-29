@@ -167,7 +167,6 @@ is    enumeration DegreeOfFreedom is
       imported ClassifierPtr; -- smart pointer on Classifier
 
       class IncrementalMesh from BRepMesh;
-      ---Purpose: meshes faces from a Shape only if necessary.
 
          ---- classes moved from MeshShape
       class GeomTool;

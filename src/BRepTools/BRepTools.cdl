@@ -75,49 +75,24 @@ uses
 is
 
     class WireExplorer;
-	---Purpose: To explore the 3D or the UV topology of a Face.
     
     deferred class Modification;
-	---Purpose: Defines geometric modifications on a shape
-	--          ( on the faces, the edges, the vertices).
     
     class Modifier;
-	---Purpose: Performs geometric modifications on a shape.
 
     class TrsfModification;
-	---Purpose: Defines a  Modification  with  a  Trsf from   gp.
-	--          Inherited from Modification.
 
     class NurbsConvertModification;
-        ---Purpose: Conversion des entites analytiques d'une shape
-        --          en NURBS (courbes et surface 3D) 
-        --          Inherited from Modification.
 
     class GTrsfModification;
-	---Purpose: Defines a  Modification  with  a  GTrsf from   gp.
-	--          Inherited from Modification.
 
     class Substitution;
-    	---Purpose: Provides a tool to change subshapes in a shape. 
 
     class Quilt;
-	---Purpose: Provides a tool to glue shapes on edges.
-	--          for exemple glue faces to make a shell.
 
-  --  class Sewing;
-	---Purpose: Provides a tool to
-	--          - identify contigous boundaries (for control
-	--            of continuity: C0, C1, ...)
-	--          - assemble contigous shapes into one shape.
-
-    --
-    --  Dump, Write, Read tools
-    
     class ShapeSet;
-	---Purpose: A set of BRep TShapes. Inherited from TopTools. 
 
     class ReShape;
-     ---Purpose: Provides tools for modification of shape.
 
     class MapOfVertexPnt2d instantiates DataMap from TCollection
     	(Shape from TopoDS,

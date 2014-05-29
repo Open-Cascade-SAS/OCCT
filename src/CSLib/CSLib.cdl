@@ -86,19 +86,8 @@ is
         --  
         --  D1NuIsParallelD1Nv  : The angle between D1Nu and D1Nv is Null.
 
-     class Class2d;
-	---Purpose: 
-	--          
-	--          *** Class2d    : Low level algorithm for 2d classification
-	--          this class was moved from package BRepTopAdaptor
+    class Class2d;
 
-
-
-
-
-        --- Purpose :
-        --  The following functions computes the normal to a surface
-        
     private class NormalPolyDef;
         --- Purpose :
         --  The following functions computes the normal to a surface

@@ -21,6 +21,8 @@ class BRepOwner from StdSelect inherits EntityOwner from SelectMgr
 	--          Used in Dynamic Selection Mechanism.
 	--          A BRepOwner has an Owner (the shape it represents)
 	--          and Users (One or More Transient entities).
+	--          The highlight-unhighlight methods are empty and
+	--          must be redefined by each User.
 
 uses
     Location              from TopLoc,

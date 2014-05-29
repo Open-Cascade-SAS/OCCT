@@ -16,7 +16,8 @@
 
 class ContextTool from STEPConstruct
 
-    ---Purpose : Gives access to Product Definition Context (one per Model)
+    ---Purpose : Maintains global context tool for writing.
+    --           Gives access to Product Definition Context (one per Model)
     --           Maintains ApplicationProtocolDefinition entity (common for all
     --           products)
     --           Also maintains context specific for AP203 and provides set of

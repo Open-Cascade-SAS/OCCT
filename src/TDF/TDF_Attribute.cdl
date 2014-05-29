@@ -23,7 +23,9 @@
 deferred class Attribute from TDF
     inherits TShared from MMgt
 
-	---Purpose: This abstract class, alongwith Label,
+  ---Purpose: A class each application has to implement. It is
+      --      used to contain the application data.
+      -- This abstract class, alongwith Label,
     	-- is one of the cornerstones of Model Editor.
     	-- The groundwork is to define the root of
     	-- information. This information is to be

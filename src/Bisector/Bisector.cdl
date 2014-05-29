@@ -38,23 +38,13 @@ is
     deferred class Curve;
     
    	     class BisecAna;
-    	     --- Purpose: This class provides the bisecting line between two
-    	     --           geometric elements.The elements are Circles,Lines or
-    	     --           Points. 
 
     	     class BisecPC;
-	     ---Purpose: This class provides the bisecting line between a point
-	     --          a Curve.
-    
+
     	     class BisecCC;	
-	     ---Purpose: This class provides the bisecting line between two
-	     --          Curves. 
 
     class Bisec;
-	---Purpose: This class provides the bisecting line between two
-	--          geometris  elelements.  The   bisecting   line  is
-	--          trimmed by a point, 
-    
+
     class Inter;
     
     class PointOnBis;

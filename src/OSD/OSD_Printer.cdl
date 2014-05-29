@@ -16,7 +16,7 @@
 
 class Printer from OSD 
 
- ---Purpose: Selects a printer.
+ ---Purpose: Selects a printer (used by File).
 
 uses Error, AsciiString from TCollection
 raises ConstructionError, NullObject, OSDError

@@ -16,7 +16,7 @@
 
 class CheckSmallFace from ShapeAnalysis 
 
-	---Purpose: 
+	---Purpose: Analysis of the face size
 
 uses
     Shape from TopoDS,

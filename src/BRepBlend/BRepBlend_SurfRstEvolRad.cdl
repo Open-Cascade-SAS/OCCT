@@ -17,7 +17,8 @@
 class SurfRstEvolRad from BRepBlend
 inherits SurfRstFunction from Blend
 
-	---Purpose: 
+    ---Purpose: Function  to approximate by AppSurface  for
+    --          Edge/Face  and  evolutif  radius
 
 uses Vector          from math,
      Matrix          from math,

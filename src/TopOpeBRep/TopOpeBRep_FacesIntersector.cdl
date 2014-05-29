@@ -16,7 +16,7 @@
 
 class FacesIntersector from TopOpeBRep 
 
-	---Purpose: 
+	---Purpose: Describes the intersection of two faces.
 
 uses
 

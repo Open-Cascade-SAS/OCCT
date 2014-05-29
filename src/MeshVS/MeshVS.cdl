@@ -27,9 +27,6 @@ uses
   Graphic3d, gp, TCollection, Bnd, TColgp, Select3D, TopLoc, Aspect
 
 is
-    ---Purpose: The integer keys for most useful constants attuning mesh presentation appearence
-        -- WARNING: DA_TextExpansionFactor, DA_TextSpace, DA_TextDisplayType have no effect and might be removed
-        --          in the future.
 
   enumeration DrawerAttribute is
 
@@ -107,9 +104,11 @@ is
        DA_User
 
   end DrawerAttribute;
+    ---Purpose: The integer keys for most useful constants attuning mesh presentation appearence
+    --          WARNING: DA_TextExpansionFactor, DA_TextSpace, DA_TextDisplayType have
+    --          no effect and might be removed in the future.
 
-    ---Purpose: this enumeration describe what type of sensitive entity will be built
-    --          in 0-th selection mode (it means that whole mesh is selected )
+
   enumeration MeshSelectionMethod is
 
     MSM_PRECISE,  -- the list of sensitive entities according to nodes and elements (the slowest method)
@@ -117,6 +116,9 @@ is
     MSM_BOX       -- mesh bounding box (the fastest method)
 
   end MeshSelectionMethod;
+    ---Purpose: this enumeration describe what type of sensitive entity will be built
+    --          in 0-th selection mode (it means that whole mesh is selected )
+
 
   class Mesh;
   pointer MeshPtr to Mesh from MeshVS;

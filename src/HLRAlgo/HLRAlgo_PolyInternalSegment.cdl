@@ -15,6 +15,7 @@
 -- commercial license or contractual agreement.
 
 class PolyInternalSegment from HLRAlgo
+	---Purpose: to Update OutLines.
 
 uses
     Address from Standard,

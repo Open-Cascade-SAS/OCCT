@@ -17,8 +17,11 @@
 class WFPoleSurface from StdPrs
 
 inherits Root from Prs3d
-    	--- Purpose: The number of lines to be drawn is controlled 
-    	-- by the NetworkNumber of the given Drawer.
+      --- Purpose: Computes the presentation of surfaces by drawing a
+       --          double network of lines linking the poles of the surface
+       --          in the two parametric direction.
+       --          The number of lines to be drawn is controlled
+       --          by the NetworkNumber of the given Drawer.
 uses
     Surface      from Adaptor3d,
     Presentation from Prs3d,

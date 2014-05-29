@@ -17,6 +17,7 @@
 class Builder from BRep inherits Builder from TopoDS
 
         ---Purpose: A framework providing advanced tolerance control.
+  -- It is used to build Shapes.
 	-- If tolerance control is required, you are advised to:
 	-- 1. build a default precision for topology, using the
 	-- classes provided in the BRepAPI package

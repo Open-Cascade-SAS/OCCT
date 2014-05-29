@@ -24,7 +24,7 @@ inherits Intersection from IntRes2d
 		       
 
 	---Purpose: Generic algorithm to intersect a conic from gp and
-	--          a parametric  curve.  This class  uses   the class
+	--          a bounded parametric curve. This class uses the class
 	--          IConicTool    from  IntCurve,    and  Domain  from
 	--          IntCurve.  The  template class for  the PCurveTool
 	--          is  given in  the package IntImpParGen  (ParTool).

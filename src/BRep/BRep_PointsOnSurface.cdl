@@ -16,7 +16,7 @@
 
 deferred class PointsOnSurface from BRep inherits PointRepresentation from BRep
 
-	---Purpose: 
+	---Purpose: Root for points on surface.
 
 uses
 

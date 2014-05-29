@@ -16,7 +16,8 @@
 
 class TWire from PTopoDS  inherits TShape from PTopoDS
 
-	---Purpose: a Topological  Wire is a  structure of Edges.  The
+	---Purpose: a Topological  Wire is a  structure of Edges.
+	--          It can be a wireframe or a composite line. The
 	--          Edges may have 2D curves stored with them. This is
 	--          a curve in the parametric space of a Surface.
 

@@ -17,7 +17,8 @@
 generic class ComputeCLine from Approx 
     	    	    (MultiLine as any;
     	    	     LineTool  as any)
-
+    ---Purpose: Approximate a continous MultiLine with a cutting.
+    --          The Tool of the line is the tool from AppCont.
 
 uses ParametrizationType       from Approx,
      SequenceOfReal            from TColStd,

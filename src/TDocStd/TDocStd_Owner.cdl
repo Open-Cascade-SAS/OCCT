@@ -16,7 +16,10 @@
 
 private class Owner from TDocStd inherits Attribute from TDF
 
-	---Purpose: 
+	---Purpose: This  attribute located  at  the  root label  of the
+    --        framework contains  a   back reference to   the  owner
+    --        TDocStd_Document, providing acces to the document from
+    --        any label.  private class Owner;
 
 uses Attribute from TDF,
      GUID      from Standard, 

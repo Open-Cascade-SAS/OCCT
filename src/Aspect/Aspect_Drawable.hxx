@@ -17,6 +17,7 @@
 /*==== "Xw" & "WNT"                                                           */
 /*==== Implementation:  This is a primitive type implemented with typedef     */
 /*============================================================================*/
+// To manage Drawable
 
 #ifndef _Aspect_Drawable_HeaderFile
 #define _Aspect_Drawable_HeaderFile

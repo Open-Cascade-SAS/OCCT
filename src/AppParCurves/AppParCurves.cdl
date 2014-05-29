@@ -51,16 +51,8 @@ is
     
     
     generic class LeastSquare;
-     	---Purpose: computes in parallel the least square resolution of a 
-     	--          set of points (MultiLine). The result is a 
-     	--          set of Bezier curves (MultiCurve).
- 
-    generic class ResolConstraint;
-    	---Purpose: computes the approximating resolution with constraints
-    	--          starting from a guess solution issued, for example, 
-    	--          from the least squares.
-    	--          It uses the Uzawa method from the mathematical package.
 
+    generic class ResolConstraint;
 
     generic class Function;
 
@@ -69,17 +61,8 @@ is
     
 
     generic class Gradient,  Gradient_BFGS, ParLeastSquare, ResConstraint, ParFunction;
-    	---Purpose: computes the approximation of a MultiLine by the
-    	--          search for a new parameters to minimize the 
-    	--          sum||C(ui)-Qi||2 with a gradient method.
-
-
 
     generic class BSpGradient, BSpGradient_BFGS,  BSpParLeastSquare, BSpParFunction;
-    	---Purpose: computes the approximation of a MultiLine by the
-    	--          search for a new parameters to minimize the 
-    	--          sum||C(ui)-Qi||2 with a gradient method.
-    	--          The Result is a Bspline set.
 
 
     --- instantiate classes:

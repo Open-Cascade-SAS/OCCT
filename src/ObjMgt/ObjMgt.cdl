@@ -33,15 +33,13 @@ uses
 is
 
     --deferred class RetrievalDriver;
-    ---Purpose: to retrieve ExternShareable objects in the framework.
+    --- to retrieve ExternShareable objects in the framework.
  
 
     deferred class ExternShareable;
-    ---Purpose: Defines the root persistent object which can be persistent 
-    --          extern reference.
+
 
     private class ExternRef;
-    ---Purpose: Defines (objet-relais) to implement extern reference.
 
     private class PSeqOfExtRef instantiates HSequence from 
     	    PCollection (ExternRef from ObjMgt);

@@ -21,7 +21,7 @@
 
 
 class LabelMapHasher from TDF 
-
+    ---Purpose: A label hasher for label maps.
 uses
     Label from TDF
 

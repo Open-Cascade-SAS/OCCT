@@ -20,6 +20,7 @@
 class SortAlgo from SelectBasics 
 
 	---Purpose: Quickly selection of a rectangle in a set of rectangles
+	--          Sort algorithm for 2D rectangles.
 
 
 uses    Integer from Standard,

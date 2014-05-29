@@ -41,27 +41,22 @@ uses
 
 is
 
-    class Edge; 
-	---Purpose: Display of an edge. Edge + color.
+    class Edge;
 	
     class ListOfEdge instantiates 
     List from TCollection(Edge from DBRep);
 
     class Face;
-	---Purpose: Display of a face. Face + Array of iso + color.
 	
     class ListOfFace instantiates 
     List from TCollection(Face from DBRep);
 
     class HideData;
-	---Purpose: Hidden lines data for a view
 
     class ListOfHideData instantiates
     List from TCollection(HideData from DBRep);
 
     class DrawableShape;
-	---Purpose: Drawable structure to display a  shape. Contains a
-	--          list of edges and a list of faces.
     
     class IsoBuilder;
 	---Purpose: Creation of isoparametric curves.

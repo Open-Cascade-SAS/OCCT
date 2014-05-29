@@ -94,21 +94,20 @@ is
     class Transition;
 
     class CurvePointInterference;
-    ---Purpose: Interference + a parameter.
+
     class SurfaceCurveInterference;
-    ---Purpose: Interference + a pcurve.
+
     class SolidSurfaceInterference;
-    ---Purpose: Interference
+
     class ShapeShapeInterference;
-    ---Purpose: Interference
+
     class EdgeVertexInterference;
-    ---Purpose: ShapeShapeInterference
+
     class FaceEdgeInterference;
-    ---Purpose: ShapeShapeInterference
-	
-    class Surface; ---Purpose:A surface and a tolerance.
-    class Curve;   ---Purpose:A curve and a tolerance.
-    class Point;   ---Purpose:A point and a tolerance.
+
+    class Surface;
+    class Curve;
+    class Point;
     	
     class IndexedDataMapOfVertexPoint instantiates IndexedDataMap from TCollection
     (Shape from TopoDS,

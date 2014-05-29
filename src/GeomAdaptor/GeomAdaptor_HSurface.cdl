@@ -19,6 +19,7 @@ class HSurface from GeomAdaptor inherits GHSurface from GeomAdaptor
     	---Purpose: An interface between the services provided by any
     	-- surface from the package Geom and those required
     	-- of the surface by algorithms which use it.
+      -- Provides a  surface handled by reference.
 
 uses
     Surface from Geom,

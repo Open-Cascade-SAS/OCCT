@@ -34,17 +34,10 @@ is
 
 
     deferred class Dimension;
-    
-    ---Purpose: Dimension between planes and cylinder
-    --          =====================================
-    
+
     	class Angle;
 	class Distance;
 	class Radius;
-
-    
-    ---Purpose: Dimensions between point, line and circle ON a plane
-    --          ====================================================
 
     	deferred class PlanarDimension;
 	

@@ -16,7 +16,7 @@
 
 class CopyLabel from TDF 
 
-	---Purpose: 
+	---Purpose: This class gives copy of  source  label  hierarchy
 
 uses
  

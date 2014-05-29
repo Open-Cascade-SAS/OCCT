@@ -20,6 +20,7 @@ class GenericColorMap from Aspect inherits ColorMap from Aspect
 
 	---Level: Public
 	---Purpose: This class defines a GenericColorMap object.
+	--          Associates an index and a color.
 	---Keywords:
 	---Warning:
 	---References:

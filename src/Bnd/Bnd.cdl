@@ -63,8 +63,6 @@ uses    Standard,
 
 
 is  class Box;
-        ---Purpose: A box parallel to the main axes.
-        --          A 3D Bounding.
     class Array1OfBox instantiates Array1 from TCollection
                                    (Box from Bnd);
     class HArray1OfBox instantiates HArray1 from TCollection
@@ -80,8 +78,6 @@ is  class Box;
 
 
     class Box2d;
-        ---Purpose: A rectangle parallel to the main axes.
-        --          A 2D Bounding.
     class Array1OfBox2d instantiates Array1 from TCollection
                                    (Box2d from Bnd);
     class HArray1OfBox2d instantiates HArray1 from TCollection
@@ -90,15 +86,7 @@ is  class Box;
 
 
     class BoundSortBox2d;
-        ---Purpose: A tool to sort a set of Box2d  and compare with an
-        --          other Box2d to find the list of touched items.
-
-
     class BoundSortBox;
-        ---Purpose: A tool to sort a  set of Box  and compare with  an
-        --          other Box to find the list of touched items.
-
-
     class SeqOfBox instantiates Sequence from TCollection (Box from Bnd);
         ---Purpose: This sequence used to store the bounding boxes of sub-Shapes.
     

@@ -15,6 +15,9 @@
 -- commercial license or contractual agreement.
 
 class TFace from TopoDS inherits TShape from TopoDS
+	---Purpose: A  topological part  of a surface   or  of the  2D
+	--          space.  The  boundary  is  a   set of  wires   and
+	--          vertices.
 
 uses
     ShapeEnum from TopAbs

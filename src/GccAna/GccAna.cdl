@@ -36,58 +36,33 @@ is
 exception NoSolution inherits Failure from Standard;
 
 class Lin2dTanPar;
-    ---Purpose : Creates a 2d line TANgent to an 2d entity and PARallel 
-    --         to another 2d line.
 
 class Lin2dTanPer;
-    ---Purpose : Creates a 2d line TANgent to an 2d entity and PERpendicular
-    --         to another 2d entity.
 
 class Lin2dTanObl;
-    ---Purpose : Creates a 2d line TANgent to an 2d entity and OBLic 
-    --         to another 2d entity.
 
 class Lin2d2Tan;
-    ---Purpose : Creates a 2d line TANgent to 2 2d entities.
 
 class Lin2dBisec;
-    ---Purpose : Creates a 2d line BISECting line of 2 2d lines.
 
 class Circ2dTanCen;
-    ---Purpose : Creates a 2d circle TANgent to a 2d entity and CENtered
-    --         on a 2d point.
 
 class Circ2d3Tan;
-    ---Purpose : Creates a 2d circle TANgent to 3 2d entities.
 
 class Circ2d2TanRad;
-    ---Purpose : Creates a 2d circle TANgent to 2 2d entities with 
-    --         the given RADius.
 
 class Circ2d2TanOn;
-    ---Purpose : Creates a 2d circle TANgent to a 2d entity and centered 
-    --         ON a 2d entity (not a point).
 
 class Circ2dTanOnRad;
-    ---Purpose : Creates a 2d circle TANgent to a 2d entity and centered 
-    --         ON a 2d entity (not a point) with the given radius.
 
 class Pnt2dBisec;
-    ---Purpose : Creates a 2d line BISECting line of 2 2d points.
 
 class Circ2dBisec;
-    ---Purpose : Creates a 2d line BISECting line of 2 2d circles.
 
 class CircLin2dBisec;
-    ---Purpose : Creates a 2d line BISECting line of a 2d circle 
-    --         and a 2d line.
 
 class CircPnt2dBisec;
-    ---Purpose : Creates a 2d line BISECting line of a 2d circle 
-    --         and a 2d point.
 
 class LinPnt2dBisec;
-    ---Purpose : Creates a 2d line BISECting line of a 2d line 
-    --         and a 2d point.
 
 end GccAna;

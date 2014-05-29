@@ -31,28 +31,12 @@ uses
 is
 
     class Mesh;
-    	---Purpose: Mesh definition.  The mesh contains one or several
-    	--          domains. Each  mesh   domain  contains a  set   of
-    	--          triangles. Each domain can have its own deflection
-    	--          value.
-
 
     class MeshExplorer;
-    	---Purpose: Provides   facilities to explore  the triangles of
-    	--          each mesh domain.
-    
 
     class MeshDomain;
-    	---Purpose: Set of triangles defined with three vertices and a
-    	--          given orientation. Internal class used to classify
-    	--          the triangles of each domain.
-
 
     class MeshTriangle;
-        ---Purpose: triangle defined with three vertices and a given 
-        --          orientation
-
-    
 
     class SequenceOfMeshDomain  instantiates
           Sequence from TCollection (MeshDomain from StlMesh);

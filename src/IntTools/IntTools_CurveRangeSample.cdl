@@ -14,6 +14,8 @@
 -- commercial license or contractual agreement.
 
 class CurveRangeSample from IntTools inherits BaseRangeSample from IntTools
+    ---Purpose: class for range index management of curve
+
 uses
     Range from IntTools
 is

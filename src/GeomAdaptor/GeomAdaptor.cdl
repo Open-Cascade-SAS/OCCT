@@ -32,19 +32,13 @@ uses
 
 is
       class Curve; 
-        ---Purpose: creation of the loaded curve the curve is C1 by piece.
-        --          Inherits  Curve from Adaptor3d 
 
       class Surface;
-        ---Purpose: creation of the loaded surface the surface is C1 by piece 
-        --          Inherits  Surface from Adaptor3d 
 
       private class GHSurface instantiates GenHSurface from Adaptor3d
       	    (Surface from GeomAdaptor);
 	    
       class HSurface;
-	---Purpose: Inherited  from    GHSurface.   Provides a  surface
-	--          handled by reference.
 
       private class GHCurve instantiates GenHCurve from Adaptor3d
             (Curve from GeomAdaptor);

@@ -15,7 +15,7 @@
 
 class Centroid from XCAFDoc inherits Attribute from TDF
 
-	---Purpose: 
+	---Purpose: attribute to store centroid
 
 uses
     Pnt from gp,

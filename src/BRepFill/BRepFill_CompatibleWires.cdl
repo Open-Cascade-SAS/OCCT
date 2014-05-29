@@ -16,9 +16,9 @@
 
 class CompatibleWires from BRepFill
 
-	---Purpose: Constructs a sequence of Wires agreed each other 
-	--          so that the surface passing through these sections
-	--           is not twisted
+	---Purpose: Constructs a sequence of Wires (with good orientation
+	--          and origin) agreed each other so that the surface passing
+	--          through these sections is not twisted
 
 uses
 

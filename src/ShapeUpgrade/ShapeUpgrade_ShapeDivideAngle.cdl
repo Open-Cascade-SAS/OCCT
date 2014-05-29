@@ -19,7 +19,7 @@ class ShapeDivideAngle from ShapeUpgrade inherits ShapeDivide from ShapeUpgrade
 	---Purpose: Splits all surfaces of revolution, cylindrical, toroidal, 
     	--          conical, spherical surfaces in the given shape so that 
 	--          each resulting segment covers not more than defined number 
-	--          of degrees. 
+	--          of degrees (to segments less than 90).
 
 uses
     

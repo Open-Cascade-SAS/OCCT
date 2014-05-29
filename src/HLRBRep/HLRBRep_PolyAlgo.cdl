@@ -16,7 +16,8 @@
 
 class PolyAlgo from HLRBRep inherits TShared from MMgt
 
-	---Purpose:  A framework to compute the shape as seen in
+	---Purpose: to remove Hidden lines on Shapes with Triangulations.
+      -- A framework to compute the shape as seen in
     	-- a projection plane. This is done by calculating
     	-- the visible and the hidden parts of the shape.
     	-- HLRBRep_PolyAlgo works with three types of entity:

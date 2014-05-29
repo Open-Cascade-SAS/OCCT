@@ -19,6 +19,7 @@ class ColorRampColorMap from Aspect inherits ColorMap from Aspect
 	---Version: 0.0
 
 	---Purpose: This class defines a ColorRampColorMap object.
+	--          Associates a index and a color in the linear "ColorRamp" space.
 	---Keywords:
 	---Warning:
 	---References:

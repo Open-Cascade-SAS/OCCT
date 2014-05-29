@@ -19,6 +19,8 @@
 
 #include <Standard_TypeDef.hxx>
 
+//! A pointer on a function for MyGaussFunction
+
 typedef Standard_Real (*CPnts_RealFunction)(const Standard_Real, 
 					    const Standard_Address);
 

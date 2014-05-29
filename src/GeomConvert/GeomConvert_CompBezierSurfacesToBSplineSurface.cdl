@@ -17,7 +17,8 @@
 class CompBezierSurfacesToBSplineSurface from GeomConvert 
 
 	---Purpose: An algorithm to convert a grid of adjacent
-    	-- non-rational Bezier surfaces into a BSpline surface.
+      -- non-rational Bezier surfaces (with continuity CM) into a
+      -- BSpline surface (with continuity CM).
     	-- A CompBezierSurfacesToBSplineSurface object
     	-- provides a framework for:
     	-- -   defining the grid of adjacent Bezier surfaces

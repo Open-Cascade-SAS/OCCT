@@ -26,6 +26,8 @@
 #include <TDF_Label.hxx>
 #include <TDF_LabelNodePtr.hxx>
 
+// DO NOT USE THIS CLASS WITHOUT AUTHORIZATION!
+//
 // This class provides a way to iterates on the
 // up-to-date (current) valid attributes of a label.
 //

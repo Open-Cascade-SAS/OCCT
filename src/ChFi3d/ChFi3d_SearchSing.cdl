@@ -16,7 +16,8 @@
 
 private class SearchSing from ChFi3d inherits FunctionWithDerivative from math
 
-	---Purpose: F(t) = (C1(t) - C2(t)).(C1'(t) - C2'(t));
+	---Purpose: Searches   singularities on fillet.
+	--          F(t) = (C1(t) - C2(t)).(C1'(t) - C2'(t));
 
 uses Curve from Geom
 

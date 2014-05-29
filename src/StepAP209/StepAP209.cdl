@@ -33,6 +33,5 @@ is
 
 
     class Construct;
-    	---Purpose: Basic tool for working with AP209 model
-	
+
 end StepAP209;

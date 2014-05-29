@@ -51,51 +51,35 @@ is
     generic class HArray2;
    
     generic class List, ListNode, ListIterator;
-	---Purpose: A single list handled by value.
 
     class BaseSequence;
     class SeqNode;
     pointer SeqNodePtr to SeqNode from TCollection;
     generic class Sequence,SequenceNode;
-	---Purpose: An indexed double list handled by value.
-     
+
     generic class HSequence;
-	---Purpose: An indexed double list handle by reference.
 
     generic class MapHasher;
-	---Purpose: A Tool to instantiate Maps. Providing HashCode and
-	-- Comparisons on Keys.
-    
+
     private deferred class BasicMap;
     private class MapNode;
     pointer MapNodePtr to MapNode from TCollection;
-    ---Purpose: Basic class root of all the Maps.
-    
+
     private deferred class BasicMapIterator;
-	---Purpose: Basic class root of all the Iterators on Maps.
-    
+
     generic class Map, MapIterator,StdMapNode;
-	---Purpose: A Hashed map to store keys.
 
     generic class DataMap, DataMapIterator,DataMapNode;
-	---Purpose: A Map where data can be stored with the keys.
-	
+
     generic class DoubleMap, DoubleMapIterator, DoubleMapNode;
-	---Purpose: A Map to store pair of keys.
-	
+
     generic class IndexedMap,IndexedMapNode;
-	---Purpose: A Map where the keys are indexed.
-	
+
     generic class IndexedDataMap,IndexedDataMapNode;
-	---Purpose: An Indexed Map where data can be stored with the keys.
 
     enumeration Side is Left , Right;
     
     deferred generic class Compare ;
-        ---Purpose: Defines a comparison operator which can be used by
-        -- any ordered structure.   The  way to compare items
-        -- has  to be described  in  subclasses, which  herit
-        -- from instantiations of Compare.
 
     private deferred class PrivCompareOfInteger 
             instantiates Compare from TCollection(Integer from Standard); 

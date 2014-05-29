@@ -92,7 +92,7 @@ is
     class UAttribute; 
     
     
-    ---Purpose: Attributes for organization
+    ---Category: Attributes for organization
     --          ============================
     
     class TreeNode;

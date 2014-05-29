@@ -36,18 +36,13 @@ uses
 is
     pointer TrsfPtr to Trsf from gp;
     class Datum3D;
-	---Purpose: An elementary 3D coordinate system.
     
     private class ItemLocation;
-	---Purpose: Used to implement  the Location. A  Datum3D with a
-	--          power elevation.
 	
     private class SListOfItemLocation;
     private class SListNodeOfItemLocation;
     
     class Location;
-	---Purpose: A  Local Coordinate System.   A list of elementary
-	--          Datums.
 
     class MapLocationHasher instantiates
     	  MapHasher from TCollection(Location from TopLoc); 

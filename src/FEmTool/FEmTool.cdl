@@ -28,22 +28,18 @@ uses
 is  
                    
     class  Assembly; 
-      
-    ---Purpose: To define Criterium (or  Energy) on finite element   
+
     deferred  class  ElementaryCriterion;     
     class  LinearTension;      
     class  LinearFlexion;      
     class  LinearJerk;
-      
-    ---Purpose: To define sparse Matrix          
+
+
     deferred  class  SparseMatrix; 
     class  ProfileMatrix;
 
-    ---Purpose: Do define one curves with Finite Element
     class  Curve;   
     
-    ---Purpose:  To  define  set  of  functions  for  calculating  matrix 
-    --	         elements  of  RefMatrix  by  Gauss  integration. 
     class  ElementsOfRefMatrix; 
      
     --  instantiate  classes  

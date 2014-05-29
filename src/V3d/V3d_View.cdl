@@ -59,6 +59,7 @@ class View from V3d inherits TShared from MMgt
         --          and inquiring the parameters linked to the view.
         --          (Projection,Mapping,Zclipping,DepthCueing,AntiAliasing
         --           et Conversions) .
+        --          Provides a set of services common to all types of view.
         --  Warning: The default parameters are defined by the class
         --          Viewer (Example : SetDefaultViewSize()).
         --          Certain methods are mouse oriented, and it is

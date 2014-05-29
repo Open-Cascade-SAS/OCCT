@@ -16,9 +16,9 @@
 
 class DenominatorMultiplier from GeomLib
 
-	---Purpose: this class is used to  construct the BSpline curve
-	--          from an Approximation ( ApproxAFunction from AdvApprox).
-    	
+       ---Purpose: this defines an evaluator for a function of 2 variables
+       --          that will be used by CancelDenominatorDerivative in one
+       --          direction.
 
 uses
 

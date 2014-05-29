@@ -36,11 +36,9 @@ is
     --  Dump, Write, Read tools
     
     class SurfaceSet;
-	---Purpose: A set of Surfaces from Geom.
-    	
+
     class CurveSet;
-	---Purpose: A set of Curves from Geom.
-    	
+
     class Curve2dSet;
 	---Purpose: A set of Curves from Geom2d.
     	

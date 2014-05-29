@@ -15,7 +15,8 @@
 -- commercial license or contractual agreement.
 
 class ApproxAFunction from AdvApprox 
-
+    ---Purpose:
+    -- this approximate a given function
 uses Array1OfInteger   from TColStd,
      Vector            from math,
      HArray1OfInteger  from TColStd,

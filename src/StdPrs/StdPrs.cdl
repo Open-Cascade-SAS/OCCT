@@ -57,88 +57,46 @@ is
    class ShadedShape;
     
    class PoleCurve;
-	---Purpose: computes the presentation of curves by drawing
-	--          a broken line linking the poles of the curve.
 
    class Plane;
-   	---Purpose: computes the presentation of a infinite plane.
 
    class WFPoleSurface;
-   	---Purpose: computes the presentation of surfaces by drawing a
-	--          double network of lines linking the poles of the surface
-	--          in the two parametric direction.
-	
 
    class DeflectionCurve;		      
-	---Purpose: computes the presentation of objects to be
-	--          seen as curves. The computation will be made
-	--          according to a maximal chordial deviation.
-	          
+
 	---Category: Wireframe algorithms
    
    class WFDeflectionSurface;
-	---Purpose: computes the wireframe presentation of surfaces 
-	--          by displaying a given number of U and/or V isoparametric
-	---         curves. The isoparametric curves are drawn with respect
-	--          to a given maximal chordial deviation.
 
    class ShadedSurface;
-   	---Purpose: computes the shading presentation of surfaces.
 
    -----------------------------------------------
    --- deflection drawing classes :
    -----------------------------------------------
 
    class WFDeflectionRestrictedFace;
-	  ---Purpose: computes the wireframe presentation of faces with
-	--          restrictions by displaying a given number of U and/or
-	--          V isoparametric curves. The isoparametric curves are
-	--          drawn with respect to a maximal chordial deviation.
-	--          The presentation includes the restriction curves.
-		      
-   class Curve;
-   	---Purpose: computes the presentation of objects to be
-	--          seen as curves. The computation will be made
-	--          whith a constant number of points.
 
+   class Curve;
 
    class WFSurface;
-   	---Purpose: computes the wireframe presentation of surfaces 
-	--          by displaying a given number of U and/or V isoparametric
-	---         curves. The isoparametric curves are drawn with respect
-	--          to a given number of points.
-			
-   
+
    ---Category: Hidden lines removal algorithms.
    
    class HLRPolyShape; 
-    ---Purpose: computes the presentation of objects with
-	--          removal of their hidden lines for a specific
-	--          projector. The polygonal algorithm is used.
-  
+
    imported HLRShape;
-   ---Purpose: computes the presentation of objects with
-	--          removal of their hidden lines for a specific
-	--          projector. The exact algorithm is used.
-     
+
    imported NListOfSequenceOfPnt from Prs3d; 
    imported NListIteratorOfListOfSequenceOfPnt from Prs3d;
    
    imported WFShape;
    imported WFDeflectionShape;
-   ---Purpose: computes the wireframe presentation of surfaces 
-	--          by displaying planar sections.
+
    imported Vertex;
    imported Point;
-   ---Purpose: computes the presentation of objects to be
-	--          seen as points.
+
    imported WFRestrictedFace;
-   ---Purpose:  Computes the wireframe presentation of faces with
-  --           restrictions by displaying a given number of U and/or
-  --           V isoparametric curves. The isoparametric curves are
-  --           drawn with a fixed number of points.
-  --           The presentation includes the restriction curves.
-			
+
 end StdPrs;
 
 

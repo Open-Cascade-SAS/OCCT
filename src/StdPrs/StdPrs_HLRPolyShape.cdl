@@ -27,6 +27,7 @@ inherits Root from Prs3d
     	-- obtain an exact result, whereas, when you use
     	-- StdPrs_HLRPolyShape, you reduce computation
     	-- time but obtain polygonal segments.
+      -- The polygonal algorithm is used.
 uses
     Shape        from TopoDS,
     Presentation from Prs3d,

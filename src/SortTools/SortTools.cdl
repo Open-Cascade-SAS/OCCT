@@ -28,16 +28,12 @@ uses TCollection,
 
 is
         generic class HeapSort;
-        ---Purpose: Sort an array using the heap sort algorithm.
 
         generic class QuickSort;
-        ---Purpose: Sort an array using the quick sort algorithm.
 
         generic class ShellSort;
-        ---Purpose: Sort an array using the shell sort algorithm.
 
         generic class StraightInsertionSort;
-        ---Purpose: Sort an array using the straight insertion sort algorithm.
 
 
   -- The table below summarizes the most important characteristics that 

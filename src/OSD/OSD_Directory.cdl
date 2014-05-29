@@ -20,7 +20,7 @@
 
 class Directory from OSD 
 
- ---Purpose: Management of directories 
+ ---Purpose: Management of directories (a set of directory oriented tools)
  
 inherits FileNode 
 

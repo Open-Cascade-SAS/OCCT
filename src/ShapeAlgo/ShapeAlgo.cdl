@@ -33,7 +33,6 @@ uses
 is
 
     class ToolContainer;
-    	---Purpose: Returns tools used by AlgoContainer
 
     class AlgoContainer;
     	---Purpose: Provides initerface to the algorithms from Shape Healing.

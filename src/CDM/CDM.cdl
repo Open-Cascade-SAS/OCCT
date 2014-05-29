@@ -32,12 +32,11 @@ is
     deferred class Document;
 
     class ReferenceIterator;
-    
+
     class NullMessageDriver; 
-    ---Purpose: a MessageDriver that writes nowhere.
 
     class COutMessageDriver;
-    ---Purpose: aMessageDriver for output to COUT (only ASCII strings)
+
 
 ---Category: classes to manager automatic naming of documents.
 

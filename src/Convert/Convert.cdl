@@ -16,7 +16,7 @@
 
 package Convert
 
-        --- Purpose: 
+        --- Purpose:
     	--The Convert package provides algorithms to convert the following into a BSpline curve or surface:
     	-- -   a bounded curve based on an elementary 2D curve (line, circle or conic) from the gp package,
     	-- -   a bounded surface based on an elementary surface (cylinder, cone, sphere or torus) from the gp package,
@@ -27,7 +27,7 @@ package Convert
     	-- or the surface by calling the appropriate constructor provided by the classes
     	-- Geom2d_BSplineCurve, Geom_BSplineCurve or Geom_BSplineSurface.
 
-uses TColStd, 
+uses TColStd,
      TColgp,
      StdFail,
      gp,
@@ -109,7 +109,7 @@ enumeration  ParameterisationType is
         QuasiAngular,
         RationalC1,
         Polynomial;
-   
+
 
 
   imported CosAndSinEvalFunction ;
@@ -119,70 +119,32 @@ enumeration  ParameterisationType is
        -- const TColStd_Array1OfReal& 
        -- const TColStd_Array1OfInteger&
        -- Standard_Real Result[2]
-       -- 
-    	
+       --
+
 
   deferred class ConicToBSplineCurve;
-        --- Purpose :
-        --  Super class of the following classes :
-  
      class CircleToBSplineCurve;
-           --- Purpose : Converts a circle into a B-spline curve.
-     
      class EllipseToBSplineCurve;
-           --- Purpose : Converts an ellipse into a B-spline curve.
-     
      class HyperbolaToBSplineCurve;
-           --- Purpose : Converts an hyperbola into a B-spline curve.
-
      class ParabolaToBSplineCurve;
-           --- Purpose : Converts a parabola into a B-spline curve.
-     
 
-
-     
   deferred class ElementarySurfaceToBSplineSurface;
-        --  Super class of the following classes :
-  
      class CylinderToBSplineSurface;
-           --- Purpose : Converts a bounded cylinder into a B-spline surface.
-     
      class ConeToBSplineSurface;
-           --- Purpose : Converts a bounded cone into a B-spline surface.
-     
      class TorusToBSplineSurface;
-           --- Purpose : Converts a torus into a B-spline surface.
-     
      class SphereToBSplineSurface;
-           --- Purpose : Converts a sphere into a B-spline surface.
 
-
-  
   class SequenceOfArray1OfPoles 
     instantiates Sequence from TCollection( HArray1OfPnt from TColgp); 
-    
+
   class CompBezierCurvesToBSplineCurve;
-	   ---Purpose: Converts a list of connecting BezierCurves
-	   --          into a B-spline curve.
-    
+
   alias SequenceOfArray1OfPoles2d is SequenceOfArray1OfPnt2d from TColgp;  
-    
-    
+
   class CompBezierCurves2dToBSplineCurve2d;
-	   ---Purpose: Converts a list of connecting BezierCurves
-	   --          into a B-spline curve.
 
   class CompPolynomialToPoles;
-    	   ---Purpose: Convert a serie of Polynomial N-Dimensional
-    	   --          Curves that are have continuity CM to an 
-    	   --          N-Dimensional Bspline Curve that has continuity
-    	   --          CM
-    	   
+
   class GridPolynomialToPoles;
-    	   ---Purpose: Convert a grid of Polynomial Surfaces
-    	   --          that are have continuity CM to an 
-    	   --          Bspline Surface that has continuity
-    	   --          CM
-	       	             
-    	             
+
 end Convert;

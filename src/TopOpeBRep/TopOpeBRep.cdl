@@ -109,16 +109,15 @@ is
     class GeomTool;
      
     class FacesIntersector;
-    ---Purpose: Describes the intersection of two faces.
+
     pointer PFacesIntersector to FacesIntersector from TopOpeBRep;
 	
     class EdgesIntersector;
-    ---Purpose: Describes the intersection of two edges on the same surface
+
     pointer PEdgesIntersector to EdgesIntersector from TopOpeBRep;
 
     class FaceEdgeIntersector;
-    ---Purpose: Describes the intersection of a face and an edge.
-	
+
     class ShapeScanner;
 
     class ShapeIntersector;

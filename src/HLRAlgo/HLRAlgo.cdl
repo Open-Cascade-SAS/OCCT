@@ -61,26 +61,19 @@ is
     	(BiPoint from HLRAlgo);
 
     class PolyShellData;
-	---Purpose: All the PolyData of a Shell
-    
+
     class PolyInternalData;
-	---Purpose: to Update OutLines.
-    
+
     class PolyInternalSegment;
-	---Purpose: to Update OutLines.
-    
+
     class PolyInternalNode;
-	---Purpose: to Update OutLines.
-    
+
     class PolyData;
-	---Purpose: Data structure of a set of Triangles.
-    
+
     class PolyHidingData;
-	---Purpose: Data structure of a set of Hiding Triangles.
-    
+
     class TriangleData;
-	---Purpose: Data structure of a triangle.
-    
+
     class Array1OfPHDat            instantiates Array1       from TCollection
     	(PolyHidingData from HLRAlgo);
 	
@@ -110,22 +103,15 @@ is
          Array1OfTData from HLRAlgo);
 	
     class PolyAlgo;
-	---Purpose: to remove Hidden lines on Triangulations.
-    
+
     class EdgeStatus;
-	---Purpose: This class describes the  visible-hidden Status of
-	--          an Edge and its parametric bounds.
-	
+
     class Projector;
-    	---Purpose: To transform and project Points and Planes.
-	
+
     class Intersection;
-	---Purpose: Parameter and State (above, on or under the face).
 
     class Coincidence;
-	---Purpose: A coincidence  describes the geometry  of the edge
-	--          of the hiding face around the intersection.
-	
+
     class Interference             instantiates Interference from TopBas
     	(Intersection from HLRAlgo, 
 	 Coincidence  from HLRAlgo);
@@ -134,11 +120,9 @@ is
     	(Interference from HLRAlgo);
 	
     class EdgesBlock;
-	---Purpose: A set of oriented Edges. (A wire).
-    
+
     class WiresBlock;
-	---Purpose: A set of Wires. (A face).
-    
+
     class EdgeIterator;
 	---Purpose: Iterator  on the  visible or  hidden  parts of  an
 	--          EdgeStatus.

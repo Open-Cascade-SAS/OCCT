@@ -99,12 +99,9 @@ is
     --- Approximation:
     --  
     class PointsToBSpline;
-	---Purpose: To fit a curve.
-    
+
     class PointsToBSplineSurface;
-	---Purpose: To fit a surface.
-    
-    
+
     --- Interpolation:
     --
     class Interpolate;
@@ -116,10 +113,8 @@ is
     ------------------------------------------------------------------
 
     class IntSS;
-	---Purpose: To intersect two surfaces.
 
     class IntCS;
-	---Purpose: To intersect a curve and a surface.
 
 
     ------------------------------------------------------------------

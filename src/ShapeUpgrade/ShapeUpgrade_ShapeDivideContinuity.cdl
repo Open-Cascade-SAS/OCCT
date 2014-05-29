@@ -16,7 +16,7 @@
 
 class ShapeDivideContinuity from ShapeUpgrade inherits ShapeDivide from ShapeUpgrade
 
-	---Purpose: 
+	---Purpose: API Tool for converting shapes with C0 geometry into C1 ones
 
 uses
     

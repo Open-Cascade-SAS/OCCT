@@ -35,9 +35,6 @@ uses
 is
 
     class EventManager;
-    ---Purpose: used to manage mouse event (move,select,shiftselect)
-    --          By default the events are transmitted to interactive context.
-
 
     class DoubleMapOfInteractiveAndName  instantiates  DoubleMap
     	from  TCollection  (    Transient from Standard,

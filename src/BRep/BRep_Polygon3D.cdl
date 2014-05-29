@@ -16,7 +16,7 @@
 
 class Polygon3D from BRep inherits CurveRepresentation from BRep
 
-	---Purpose: 
+	---Purpose: Representation by a 3D polygon.
 
 uses
     Polygon3D           from Poly,

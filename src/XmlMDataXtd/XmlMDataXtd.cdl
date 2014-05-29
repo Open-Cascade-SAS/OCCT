@@ -22,7 +22,7 @@ uses XmlMDF,
      CDM
 
 is
-        ---Purpose: Storage/Retrieval drivers for TDataXtd attributes
+        ---Category: Storage/Retrieval drivers for TDataXtd attributes
         --          =======================================
 
         class AxisDriver;

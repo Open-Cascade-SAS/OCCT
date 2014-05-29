@@ -15,6 +15,8 @@
 -- commercial license or contractual agreement.
 
 deferred class Criterion from AdvApp2Var
+    ---Purpose:
+    -- this class contains a given criterion to be satisfied
 
 uses
     Patch,Context from AdvApp2Var,

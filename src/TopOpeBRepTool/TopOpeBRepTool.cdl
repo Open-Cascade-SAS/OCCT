@@ -121,8 +121,6 @@ is
     class mkTondgE;
     
     class PurgeInternalEdges;
-    ---Purpose: Detect and remove  Internal  and External edges  (that
-    --          are not connex to other faces) from all faces of a shape.
 
     class FuseEdges;
     ---Purpose:  Fuse  edges (in a   wire) of a  shape   where we have

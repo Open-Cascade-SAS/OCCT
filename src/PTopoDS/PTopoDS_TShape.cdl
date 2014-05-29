@@ -21,7 +21,8 @@ deferred class TShape from PTopoDS inherits Persistent from Standard
 
 	---Purpose: A TShape  is a topological  structure describing a
 	--          set of points in a 2D or 3D space.
-	--          
+	--          This is a deferred class  used to support
+	--          topological objects.
 
     	--  All the information stored are potentially frozen.  So has
     	--  the "free"  information no  sense in  the D.B. context.  A

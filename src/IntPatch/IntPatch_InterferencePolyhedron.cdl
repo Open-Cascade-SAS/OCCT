@@ -17,7 +17,8 @@
 class InterferencePolyhedron from IntPatch inherits Interference from Intf
 
 	---Purpose: Computes the  interference between two polyhedra or the
-	--          self interference of a polyhedron.
+	--          self interference of a polyhedron. Points of intersection,
+  --          polylines  of intersection and zones of tangence.
 
 uses    Pnt               from gp,
         XYZ               from gp,

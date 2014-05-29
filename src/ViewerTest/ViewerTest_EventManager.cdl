@@ -16,7 +16,9 @@
 
 class EventManager from ViewerTest inherits TShared from MMgt
 
-	---Purpose: 
+	---Purpose: used to manage mouse event (move,select,shiftselect)
+  --          By default the events are transmitted to interactive context.
+
 
 uses
     View                from V3d,

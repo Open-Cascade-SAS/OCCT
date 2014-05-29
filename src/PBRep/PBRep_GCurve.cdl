@@ -18,6 +18,7 @@ deferred class GCurve from PBRep inherits CurveRepresentation from PBRep
 
 	---Purpose: Root   class    for    the    geometric     curves
 	--          representation. Contains a range.
+	--          Contains a first and a last parameter.
 
 uses
 

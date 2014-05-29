@@ -19,7 +19,8 @@ private  class  InterFunc  from  Adaptor3d  inherits  FunctionWithDerivative  fr
          ---Purpose: Used to find the points U(t) = U0 or V(t) = V0 in
          --          order to determine the  Cn discontinuities of  an
          --               Adpator_CurveOnSurface  relativly  to    the
-         --          discontinuities of the surface. 
+         --          discontinuities of the surface. Used to
+         --          find the roots of the functions
 	 
 uses  
       HCurve2d  from  Adaptor2d

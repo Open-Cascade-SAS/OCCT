@@ -16,7 +16,7 @@
 
 class Node from MAT
 
-	---Purpose : 
+	---Purpose : Node of Graph.
 
 inherits 
 

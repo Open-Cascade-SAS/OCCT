@@ -16,7 +16,7 @@
 
 private class TrimEdgeTool from BRepFill 
 
-	---Purpose: 
+	---Purpose: Geometric Tool using to construct Offset Wires.
 
 uses
 

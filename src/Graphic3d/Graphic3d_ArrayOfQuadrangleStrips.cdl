@@ -13,6 +13,7 @@
 -- commercial license or contractual agreement.
 
 class ArrayOfQuadrangleStrips from Graphic3d inherits ArrayOfPrimitives from Graphic3d 
+    ---Purpose: Contains quadrangles strip array definition
 
 is
 

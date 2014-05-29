@@ -17,7 +17,7 @@
 class Builder from TopoDS
 
 	---Purpose: A  Builder is used   to  create  Topological  Data
-	--          Structures.
+	--          Structures.It is the root of the Builder class hierarchy.
 	--          
 	--          There are three groups of methods in the Builder :
 	--          

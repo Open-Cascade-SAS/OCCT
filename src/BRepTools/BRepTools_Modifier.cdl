@@ -16,7 +16,7 @@
 
 class Modifier from BRepTools
 
-	---Purpose: 
+	---Purpose: Performs geometric modifications on a shape.
 
 uses Shape               from TopoDS,
      Modification        from BRepTools,

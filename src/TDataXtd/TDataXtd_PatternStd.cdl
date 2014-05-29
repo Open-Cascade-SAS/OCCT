@@ -15,7 +15,9 @@
 
 class PatternStd from TDataXtd inherits Pattern from TDataXtd
 
-	---Purpose: to create a PatternStd 
+	---Purpose: to create a PatternStd
+  -- (LinearPattern, CircularPattern, RectangularPattern,
+  --  RadialCircularPattern, MirrorPattern)
 
 uses
 

@@ -15,7 +15,9 @@
 -- commercial license or contractual agreement.
 
 class Shell from PTopoDS inherits HShape from PTopoDS
-
+	---Purpose: A  Shell is a  TShell   with  a   Location  and an
+	--          Orientation.
+	--          It inherits HShape
 is
     Create returns Shell from PTopoDS;
     ---Level: Internal 

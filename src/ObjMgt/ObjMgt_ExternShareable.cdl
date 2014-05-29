@@ -14,6 +14,8 @@
 deferred class ExternShareable from ObjMgt 
 
 inherits Persistent from Standard
+    ---Purpose: Defines the root persistent object which can be persistent
+    --          extern reference.
 
 uses HAsciiString from PCollection
 

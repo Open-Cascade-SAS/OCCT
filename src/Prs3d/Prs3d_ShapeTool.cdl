@@ -15,7 +15,8 @@
 -- commercial license or contractual agreement.
 
 class ShapeTool from Prs3d
-
+	---Purpose: describes the behaviour requested for a wireframe
+	--          shape presentation.
 
 uses
     Shape             from TopoDS,
@@ -33,7 +34,6 @@ uses
     IndexedDataMapOfShapeListOfShape from TopTools,
     IndexedMapOfShape                from TopTools
 
-	---Purpose: 
 is
 
     Create ( TheShape: Shape from TopoDS) returns ShapeTool from Prs3d;

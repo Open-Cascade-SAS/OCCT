@@ -195,44 +195,23 @@ is
     deferred class SelectableObject;
 
     deferred class ViewerSelector;
-    	---Purpose: class selector dedicated to a view ;
-    	--          contains all the sensitive Entities present 
-    	--          in a view at selection time 
-
 
     deferred class Filter;
 
     deferred class CompositionFilter;     
 
     class AndFilter;
-    	---Purpose: AND filter
-    
+
     class OrFilter;
-    	---Purpose: OR filter
+
 
 
 
     class EntityOwner;
-    	---Purpose: Inherits EntityOwner from SelectBasics;
-    	--          knows the selectable object it was made from;
-    	--          
-
 
     class Selection;
-    	---Purpose: set of primitives for a mode an an Object;
-    	--          In fact a Selectable Object will have one or many
-    	--          modes of selection or decomposition;
-    	--          A Selection object will contain all the primitives
-    	--          coming from one decomposition.
-
-
 
     class  SelectionManager;
-    	---Purpose: manages all the Operations before selection -
-    	--          i.e. add specific selections for an object in a selectionview
-
-
-
 
     ---Category: instantiations of classes from TCollection...
 
@@ -276,7 +255,5 @@ is
     pointer SOPtr to SelectableObject from SelectMgr;
 
     imported CompareResults;
-        ---Purpose: Redefine CompareOfInteger from TCollection, to be used
-        --          in method SortResult from class ViewerSelector
 
 end SelectMgr;

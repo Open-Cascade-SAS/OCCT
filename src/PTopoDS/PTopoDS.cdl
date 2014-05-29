@@ -64,85 +64,41 @@ is
     --           ============================
 
     class HShape;
-	---Purpose: A reference (even outside the same container) to a
-	--          Topological shape with Location, Orientation.
-	
+
     deferred class TShape;
-    	-- inherits ExternShareable from ObjMgt
-	---Purpose: A topological shape is a structure made from other
-	--          shapes.  This is a deferred class  used to support
-	--          topological objects.
-	
+
     deferred class TVertex;
-	---Purpose: A TVertex  is a topological  point in two or three
-	--          dimensions.
-	
+
     class Vertex;
-	---Purpose: A Vertex  is  a TVertex  with a  Location   and an
-	--          Orientation.
-	--          It inherits HShape
-	
+
     deferred class TEdge;
-	---Purpose: A topological part  of a  curve  in 2D or 3D,  the
-	--          boundary    is   a   set  of oriented    Vertices.
-	
+
     class Edge;
-	---Purpose: A Edge  is a   TEdge    with  a Location  and   an
-	--          Orientation.
-	--          It inherits HShape
-	
+
     class TWire;
-	---Purpose: A set of Edges making a wire  structure, it can be
-	--          a wireframe or a composite line.
-	
+
     class Wire;
-	---Purpose: A  Wire is  a   TWire  with  a  Location  and   an
-	--          Orientation.
-	--          It inherits HShape
-	
+
     class TFace;
-	---Purpose: A  topological part  of a  surface  or of  the  2D
-	--          space. The boundary is a set of wires and edges.
-	
+
     class Face;
-	---Purpose: A Face  is   a   TFace with a   Location  and   an
-	--          Orientation.
-	--          It inherits HShape
-	
+
     class TShell;
-	---Purpose: A set of Faces or Shells, a topological surface or
-	--          any faces structure.
 
     class Shell;
-	---Purpose: A  Shell is a  TShell   with  a   Location  and an
-	--          Orientation.
-	--          It inherits HShape
-	
+
     class TSolid;
-	---Purpose: A Topological part of 3D  space, bounded by Shells
-	--          and Faces.
 
     class Solid;
-	---Purpose: A  Solid  is  a TSolid  with   a  Location and  an
-	--          Orientation.
-	--          It inherits HShape
-	
+
     class TCompSolid;
-	---Purpose: A structure of Solids sharing Faces.
-	
+
     class CompSolid;
-	---Purpose: A CompSolid is a TCompSolid with a Location and an
-	--          Orientation.
-	--          It inherits HShape
-	
+
     class TCompound;
-	---Purpose: A TCompound is an all-purpose set of Shapes.
-	
+
     class Compound;
-	---Purpose: A Compound is a  TCompound with a Location  and an
-	--          Orientation.
-	--          It inherits HShape
-	
+
 
     class HArray1OfHShape instantiates HArray1 from PCollection
     	(HShape from PTopoDS);
@@ -152,45 +108,25 @@ is
     --           ============================
 
     class Shape1;
-	---Purpose: A reference to a Topological TShape with Location,
-	--          Orientation.
-	
+
     deferred class TShape1;
-    	-- inherits ExternShareable from ObjMgt
-	---Purpose: A topological shape is a structure made from other
-	--          shapes.  This is a deferred class  used to support
-	--          topological objects.
-	
+
     deferred class TVertex1;
-	---Purpose: A TVertex  is a topological  point in two or three
-	--          dimensions.
-	
+
     deferred class TEdge1;
-	---Purpose: A topological part  of a  curve  in 2D or 3D,  the
-	--          boundary    is   a   set  of oriented    Vertices.
-	
+
     class TWire1;
-	---Purpose: A set of Edges making a wire  structure, it can be
-	--          a wireframe or a composite line.
-	
+
     class TFace1;
-	---Purpose: A  topological part  of a  surface  or of  the  2D
-	--          space. The boundary is a set of wires and edges.
-	
+
     class TShell1;
-	---Purpose: A set of Faces or Shells, a topological surface or
-	--          any faces structure.
 
     class TSolid1;
-	---Purpose: A Topological part of 3D  space, bounded by Shells
-	--          and Faces.
+
 
     class TCompSolid1;
-	---Purpose: A structure of Solids sharing Faces.
-	
+
     class TCompound1;
-	---Purpose: A TCompound is an all-purpose set of Shapes.
-	
 
     class HArray1OfShape1 instantiates HArray1 from PCollection
     	(Shape1 from PTopoDS);

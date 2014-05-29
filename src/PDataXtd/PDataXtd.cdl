@@ -39,8 +39,8 @@ uses Standard,
 is
 
 
-    ---Purpose: General Data
-    --          ============ 
+    ---Category: General Data
+    --           ============
 
     class Position;
     

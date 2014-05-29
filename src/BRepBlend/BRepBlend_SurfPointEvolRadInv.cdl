@@ -18,9 +18,10 @@ class SurfPointEvolRadInv from BRepBlend
 
 inherits SurfPointFuncInv from Blend
 
-    ---Purpose: This function  is used  to find a  solution on  a done
+    ---Purpose: Function of reframing between a point and a surface.
+    --          This function  is used  to find a  solution on  a done
     --          point   of   the curve when   using  SurfRstConsRad or
-    --          CSConstRad...          
+    --          CSConstRad...
     --          The vector <X>  used in Value, Values and  Derivatives
     --          methods  has  to   be the  vector   of the  parametric
     --          coordinates w, U,  V where w is  the parameter  on the

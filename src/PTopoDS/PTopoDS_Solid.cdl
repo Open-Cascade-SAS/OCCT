@@ -15,7 +15,9 @@
 -- commercial license or contractual agreement.
 
 class Solid from PTopoDS inherits HShape from PTopoDS
-
+	---Purpose: A  Solid  is  a TSolid  with   a  Location and  an
+	--          Orientation.
+	--          It inherits HShape
 is
     Create returns Solid from PTopoDS;
     ---Level: Internal 

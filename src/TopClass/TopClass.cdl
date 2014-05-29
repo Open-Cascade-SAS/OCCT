@@ -33,29 +33,17 @@ uses
 is 
 	
     generic class Classifier2d;
-	---Purpose: Basic algorithm for 2d classifications.
-                                     
 
     generic class  FaceClassifier, FClass2d;
-	---Purpose: Algorithm for classification in a Face.
 
-	
 
 
     deferred class Intersection3d;
-	---Purpose: Describes the intersection algorithm for 3d 
-	--          classifications.    	    
-		
+
     generic class Classifier3d;
-    	---Purpose: Basic algorithm for 3d classification.
-    	          
+
     deferred class SolidExplorer;
-    	---Purpose: Defines the description of a solid for the 
-    	--          SolidClassifier.
-       
+
     generic class SolidClassifier;
-    	---Purpose: Algorithm for classification in a Solid.
-    
-    
-    
+
 end TopClass;

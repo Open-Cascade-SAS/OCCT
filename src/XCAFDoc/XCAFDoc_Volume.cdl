@@ -15,7 +15,7 @@
 
 class Volume from XCAFDoc inherits Attribute from TDF
 
-	---Purpose: 
+	---Purpose: attribute to store volume
 
 uses
      Attribute       from TDF,

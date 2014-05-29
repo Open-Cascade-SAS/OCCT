@@ -58,60 +58,40 @@ is
     class CompareRange;     
 
     class  EdgeEdge;
-     ---Purpose: class provides the Edge/Edge algorithm 
 
     class  EdgeFace;
-     ---Purpose: class provides the Edge/Face algorithm 
 
     class  FClass2d;
-     ---Purpose: class provides classification of a point in a face
 
     class  LineConstructor;
-    ---Purpose: class provides post-processing of results of 
-    ---         surfaces intersection
 
     -----
     class MarkedRangeSet;
-    ---Purpose: auxiliary class for range management
 
     class BaseRangeSample;
-    ---Purpose: base class for range index management
-    
+
     class CurveRangeSample;
-    ---Purpose: class for range index management of curve
-    
+
     class SurfaceRangeSample;
-    ---Purpose: class for range index management of surface
 
     class CurveRangeLocalizeData;
-    
-    class SurfaceRangeLocalizeData;
-   
-    class BeanFaceIntersector;
-    ---Purpose: class provides computing ranges of parameters
-    ---         of edge/face intersection.
 
-    -----
+    class SurfaceRangeLocalizeData;
+
+    class BeanFaceIntersector;
+
+
     class  Curve;
-    ---Purpose: class is a container of
-    ---         one 3d curve
-    ---         two 2d curves
-    -----
 
     class  PntOnFace;
     class  PntOn2Faces; 
       
     class  TopolTool;
-    ---Purpose: class redefines TopolTool from Adaptor3d
 
     class  FaceFace;
-    ---Purpose: class provides the Face/Face algorithm
-    --- 
 
     class  Tools; 
-    ---Purpose: class is a container of usefull geometrical and
-    ---         topological algorithms
-    
+
     generic class CArray1;   
     ---
     ---                 I  n  s  t  a  n  t  i  a  t  i  o  n  s  
@@ -169,8 +149,7 @@ is
      List from TCollection(Box from Bnd);
  
     class CurveRangeSampleMapHasher;
-     ---Purpose: class for range index management of curve
-    
+
     class SurfaceRangeSampleMapHasher;
     
     class MapOfCurveSample instantiates 

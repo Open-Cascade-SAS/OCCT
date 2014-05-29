@@ -659,23 +659,12 @@ is
 
 
          class Date;
-             ---Purpose: Gets and sets values of date.
-             --          This represents a point in time.
-             --          So it deals with year,month,day,hour,minute,second,
-             --          millisecond and microsecond.
 
          class Period;
-             ---Purpose: Gets and sets values of Period
-             --          This allows management of an elapsed time.
-
-
 
     	 class Color;
-	     ---Purpose: Definition and manipulation of colors.
-
 
     	 class Convert;
-	     ---Purpose: Conversion units.
 
 
 	class Array1OfCoefficient instantiates

@@ -16,7 +16,7 @@
 
 deferred class TVertex1 from PTopoDS inherits TShape1 from PTopoDS
 
-	---Purpose: The vertex is a topological point in space.
+	---Purpose: The vertex is a topological point in in two or three dimensions.
 
 uses
     ShapeEnum from TopAbs

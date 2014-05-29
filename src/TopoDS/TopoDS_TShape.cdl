@@ -19,6 +19,10 @@ deferred class TShape from TopoDS inherits TShared from MMgt
 	---Purpose: A TShape  is a topological  structure describing a
 	--          set of points in a 2D or 3D space.
 	--          
+	--          A topological shape is a structure made from other
+	--          shapes.  This is a deferred class  used to support
+	--          topological objects.
+	--
 	--          TShapes are   defined   by  their  optional domain
 	--          (geometry)  and  their  components  (other TShapes
 	--          with  Locations and Orientations).  The components

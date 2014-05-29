@@ -19,6 +19,10 @@
 
 #include <Standard_TypeDef.hxx>
 
+// This is a one dimensional function
+// NOTE: StartEnd[2]
+// Serves to multiply a given vectorial BSpline by a function
+
 // History - C function pointer converted to a virtual class
 // in order to get rid of usage of static functions and static data
 class BSplCLib_EvaluatorFunction

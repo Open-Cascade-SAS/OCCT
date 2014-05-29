@@ -76,8 +76,8 @@ is
     class Tool from MDF;
 
 
-    ---Purpose: Storage and Retrieval attributes drivers
-    --          ========================================
+    ---Category: Storage and Retrieval attributes drivers
+    --           ========================================
 	
     class TagSourceStorageDriver;
     

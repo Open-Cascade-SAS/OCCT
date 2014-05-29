@@ -17,6 +17,7 @@
 class AppFunc from BRepBlend inherits AppFuncRoot from BRepBlend
 
 	---Purpose: Function to approximate by AppSurface
+	--          for Surface/Surface contact.
 	---Level: Advanced
 
 uses

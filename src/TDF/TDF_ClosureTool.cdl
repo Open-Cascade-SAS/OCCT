@@ -23,7 +23,9 @@ class ClosureTool from TDF
 
 	---Purpose: This class provides services to build the closure
 	--          of an information set.
-	--          
+	--          This class gives services around the transitive
+	--          enclosure of a set of information, starting from a
+	--          list of label.
 	--          You can set closure options by using IDFilter
 	--          (to select or exclude specific attribute IDs) and
 	--          CopyOption objects and by giving to Closure

@@ -14,6 +14,8 @@
 -- commercial license or contractual agreement.
 
 class Tools from QANewModTopOpe
+        ---Purpose: to  provide  several  tools  for  porting  to  OCC  5.0  (mkk)
+
 uses
     Edge from TopoDS,
     Shape from TopoDS,

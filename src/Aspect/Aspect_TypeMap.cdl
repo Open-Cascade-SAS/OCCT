@@ -19,6 +19,7 @@ class TypeMap from Aspect inherits TShared from MMgt
 	---Version: 0.0
 
 	---Purpose: This class defines a TypeMap object.
+	--          Associates an index and a line type entry.
 	---Keywords:
 	---Warning:
 	---References:

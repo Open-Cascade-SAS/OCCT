@@ -35,14 +35,11 @@ is
     --     
 
     class NumShape;
-	---Purpose: A shape represented by an index.
-    
+
     class NumShapeTool;
-	---Purpose: Tool for NumShapes.
-    
+
     class NumShapeIterator;
-	---Purpose: Iterator for NumShapes.
-    
+
 end Sweep;
 
 

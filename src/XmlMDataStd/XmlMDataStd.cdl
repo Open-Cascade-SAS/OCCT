@@ -22,7 +22,7 @@ uses XmlMDF,
      CDM
 
 is
-        ---Purpose: Storage/Retrieval drivers for TDataStd attributes
+        ---Category: Storage/Retrieval drivers for TDataStd attributes
         --          =======================================
 
         class NameDriver;

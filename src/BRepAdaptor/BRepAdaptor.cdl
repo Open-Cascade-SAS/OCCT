@@ -49,17 +49,12 @@ uses
 is
 
     class Surface;
-	---Purpose: Transforms a Face in a Surface from Adaptor3d.
 	
     class Curve;
-	---Purpose: Transforms an Edge in a Curve from Adaptor3d.
 
     class Curve2d;
-	---Purpose: Transforms an Edge   on a Face  in  a Curve2d from
-	--          Adaptor2d. 
 
     class  CompCurve; 
-    	---Purpose: Transforms a Wire in a Curve from Adaptor3d.
     	
     class HSurface instantiates GenHSurface from Adaptor3d
     	(Surface from BRepAdaptor);

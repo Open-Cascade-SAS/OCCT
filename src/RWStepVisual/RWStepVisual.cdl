@@ -143,6 +143,6 @@ class RWPresentationLayerUsage;
 	---Package Method ---
 
 --	Init;
-	---Purpose: enforced the initialisation of the  libraries
+-- Enforced the initialisation of the  libraries
 
 end RWStepVisual;

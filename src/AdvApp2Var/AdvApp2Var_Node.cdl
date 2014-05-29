@@ -15,7 +15,9 @@
 -- commercial license or contractual agreement.
 
 class Node from AdvApp2Var
-
+    ---Purpose :
+    -- used to store constraints on a (Ui,Vj) point
+    --
 
 uses
     XY,Pnt           from gp,

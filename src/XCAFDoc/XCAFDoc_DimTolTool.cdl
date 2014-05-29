@@ -18,8 +18,9 @@ class DimTolTool from XCAFDoc inherits Attribute from TDF
 	---Purpose: Provides tools to store and retrieve attributes (colors)
 	--          of TopoDS_Shape in and from TDocStd_Document
 	--          A Document is intended to hold different 
-	--          attributes of ONE shape and it's sub-shapes
-
+	--          attributes of ONE shape and it's sub-shapes.
+	--          Attribute containing DimTol section of DECAF document.
+	--          Provide tools for management of DimTol section of document.
 uses
     Shape from TopoDS,
     Label from TDF,

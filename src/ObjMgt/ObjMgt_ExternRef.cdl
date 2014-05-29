@@ -12,6 +12,7 @@
 -- commercial license or contractual agreement.
 
 private class ExternRef from ObjMgt inherits Persistent from Standard
+    ---Purpose: Defines (objet-relais) to implement extern reference.
 
 uses HAsciiString from PCollection
 is

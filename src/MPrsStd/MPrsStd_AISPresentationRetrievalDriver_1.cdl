@@ -16,7 +16,8 @@
 
 class AISPresentationRetrievalDriver_1 from MPrsStd  inherits ARDriver from MDF
 
-	---Purpose: 
+	    ---Purpose: Retrieval drivers for graphic attributes from
+	    --          PPrsStd
 
 uses RRelocationTable from MDF,
      Attribute        from PDF,

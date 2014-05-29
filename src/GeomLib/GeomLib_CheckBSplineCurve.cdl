@@ -16,9 +16,8 @@
 
 class CheckBSplineCurve from GeomLib
 
-	---Purpose: this class is used to  construct the BSpline curve
-	--          from an Approximation ( ApproxAFunction from AdvApprox).
-    	
+       ---Purpose:  Checks for the end  tangents : wether or not those
+       --           are reversed regarding the third or n-3rd control
 
 uses
     Pnt	            from gp,

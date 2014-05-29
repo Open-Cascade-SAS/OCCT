@@ -58,7 +58,6 @@ is
    class LexicalCompare ;
    
    class Manager;
-   ---Purpose: Defines a resource structure and its management methods.
 
    class Unicode;
 

@@ -21,6 +21,9 @@
 --		        Field 'myCritValue'
 
 class Patch from AdvApp2Var
+    ---Purpose :
+    -- used to store results on a domain [Ui,Ui+1]x[Vj,Vj+1]
+    --
 
 uses
 

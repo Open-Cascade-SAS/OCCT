@@ -84,12 +84,6 @@ is
     class Inter2d;
     
     class Offset;
-    	---Purpose: This class compute elemenary offset surface.
-	--          Evaluate the offset generated :
-	--               1 - from a face.
-	--               2 - from an edge.
-	--               3 - from a vertex.
-	--               
 
     class Analyse;
 

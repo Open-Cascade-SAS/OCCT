@@ -45,15 +45,9 @@ uses
 
 is
     class Datum3D;
-    -- inherits Persistent from Standard
-	---Purpose: Persistent elementary local coordinate system.
-	
+
     private class ItemLocation;
-    -- inherits Persistent from Standard
-	---Purpose: Persistent class  used to  implement Locations.
-	
+
     class Location;
-    -- inherits Storable from Standard
-	---Purpose: Storable composite local coordinate system.
 
 end PTopLoc;

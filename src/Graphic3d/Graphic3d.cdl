@@ -360,19 +360,15 @@ is
     imported BufferType;
 
     imported CBitFields20;
-    ---Purpose: Defines the C structure
     ---Category: Imported types
 
     imported CBitFields16;
-    ---Purpose: Defines the C structure
     ---Category: Imported types
 
     imported CBitFields8;
-    ---Purpose: Defines the C structure
     ---Category: Imported types
 
     imported CBitFields4;
-    ---Purpose: Defines the C structure
     ---Category: Imported types
 
     imported CAspectFillArea;
@@ -381,7 +377,6 @@ is
     imported CAspectText;
 
     imported CStructure;
-    ---Purpose: Defines the C structure <astructure>
     ---Category: Imported types
 
     pointer CStructurePtr to CStructure from Graphic3d;
@@ -389,27 +384,21 @@ is
     imported CStructure_Handle;
 
     imported CLight;
-    ---Purpose: Defines the C structure <alight>
     ---Category: Imported types
 
     imported CPick;
-    ---Purpose: Defines the C structure <apick>
     ---Category: Imported types
 
     imported CPlane;
-    ---Purpose: Defines the C structure <aplane>
     ---Category: Imported types
 
     imported CBounds;
-    ---Purpose: Defines the C structure <abounds>
     ---Category: Imported types
 
     imported CUserDraw;
-    ---Purpose: Defines the C structure <auserdraw>
     ---Category: Imported types
 
     imported CView;
-    ---Purpose: Defines the C structure <aview>
     ---Category: Imported types
     
     imported RenderingParams;
@@ -417,17 +406,12 @@ is
     ---Category: Imported types
 
     imported CGraduatedTrihedron;
-    ---Purpose: Defines the C structure of a graduated trihedron.
     ---Category: Imported types
 
     imported ClipPlane;
-    ---Purpose: Describes geometrical and auxiliary properties of clipping
-    -- planes applied on rendering by graphical driver.
     ---Category: Imported types
 
     imported ClipPlane_Handle;
-    ---Purpose: CDL-compatibility handle type definition for
-    -- clip plane objects.
 
     imported CTexture;
 
@@ -452,88 +436,65 @@ is
     --------------------
 
     deferred class ArrayOfPrimitives;
-    ---Purpose: Contains basic methods for array allocation and filling
 
     class ArrayOfPoints;
-    ---Purpose: Contains points array definition
 
     class ArrayOfPolylines;
-    ---Purpose: Contains polylines array definition
 
     class ArrayOfSegments;
-    ---Purpose: Contains segments array definition
 
     class ArrayOfPolygons;
-    ---Purpose: Contains polygons array definition
 
     class ArrayOfTriangles;
-    ---Purpose: Contains triangles array definition
 
     class ArrayOfTriangleStrips;
-    ---Purpose: Contains triangles strip array definition
 
     class ArrayOfTriangleFans;
-    ---Purpose: Contains triangles fan array definition
 
     class ArrayOfQuadrangles;
-    ---Purpose: Contains quatrangles array definition
 
     class ArrayOfQuadrangleStrips;
-    ---Purpose: Contains quadrangles strip array definition
 
     class AspectLine3d;
-    ---Purpose: Grouping line attributes
     ---Category: Classes
 
     class AspectFillArea3d;
-    ---Purpose: Grouping face attributes
     ---Category: Classes
 
     class AspectMarker3d;
-    ---Purpose: Grouping marker attributes
     ---Category: Classes
 
     class AspectText3d;
-    ---Purpose: Grouping text attributes.
     ---Category: Classes
 
     deferred class Group;
-    ---Purpose: For grouping together primitives in a structure
     ---Category: Classes
 
     class MaterialAspect;
-    ---Purpose: Aspect attributes of a 3d face.
     ---Category: Classes
 
     class Structure;
-    ---Purpose: Graphic object.
     ---Category: Classes
 
     pointer StructurePtr to Structure from Graphic3d;
 
     deferred class GraphicDriver;
-    ---Purpose: Defines a graphic driver for 3d interface
 
     deferred class StructureManager;
-    ---Purpose: Visualiser with which the graphic objects are associated.
     ---Category: Classes
 
     pointer StructureManagerPtr to StructureManager from Graphic3d;
 
     deferred class DataStructureManager;
-    ---Purpose: Visualiser with which the graphic objects are associated.
     ---Category: Classes
 
     deferred class Plotter;
-    ---Purpose: Defines the minimal plotter.
     ---Category: The classes
 
     class Vector;
-    ---Purpose: 3d vector
     ---Category: Classes
 
     imported Vertex;
-    ---Purpose: 3d vertex
     ---Category: Classes
 
     ---------------------------------

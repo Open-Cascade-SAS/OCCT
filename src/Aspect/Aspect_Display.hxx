@@ -17,6 +17,7 @@
 /*==== "V3d"                                                           */
 /*==== Implementation:  This is a primitive type implemented with typedef     */
 /*============================================================================*/
+// To manage Display
 
 #ifndef _Aspect_Display_HeaderFile
 #define _Aspect_Display_HeaderFile

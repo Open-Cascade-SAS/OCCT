@@ -16,7 +16,8 @@
 
 class SurfData from ChFiDS inherits TShared from MMgt
 
-	---Purpose: 
+	---Purpose: data structure for all information related to  the
+  --          fillet and to 2 faces vis a vis
 
 uses 
     Pnt2d from gp,

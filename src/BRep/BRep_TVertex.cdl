@@ -19,7 +19,7 @@ class TVertex from BRep inherits TVertex from TopoDS
 	---Purpose: The TVertex from  BRep inherits  from  the TVertex
 	--          from TopoDS. It contains the geometric data.
 	--          
-	--          The  TVertex contains a 3d point and a tolerance.
+	--          The  TVertex contains a 3d point, location and a tolerance.
 	--            
 uses
     Pnt    from gp,

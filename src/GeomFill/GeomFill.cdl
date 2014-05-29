@@ -65,7 +65,6 @@ is
       IsGuideACWithContact,  IsGuidePlanWithContact, IsDiscreteTrihedron  end;
     
     class Filling;
-	---Purpose: Root class for Filling;
 
       class Stretch;
       
@@ -75,26 +74,15 @@ is
       
       
     class BezierCurves;
-    	---Purpose: class for Filling BezierCurves.
-    	--          WARNING:
-    	--            Some problems may appear with the rational Curves.
-      
+
     class BSplineCurves;
-    	---Purpose: class for Filling BSplineCurves.
-    	--          WARNING:
-    	--            Some problems may appear with the rational Curves.
-      
+
     class Profiler;
-	---Purpose: class for evaluation of the Common BSpline Profile
-	--          from a sequence a BSplineCurves.
-	
+
     class SectionGenerator;
-	---Purpose: class for instantiation of AppBlend .
-	--          inherits Profiler.
 
     class Line;
-        ---Purpose: class for instantiation of AppBlend
-    
+
     class AppSurf instantiates AppSurf from AppBlend
     	( SectionGenerator from GeomFill,
 	  Line             from GeomFill);
@@ -103,8 +91,6 @@ is
 
 
     class SweepSectionGenerator;
-	---Purpose: class for instantiation of AppBlend.
-	--          evaluate the sections of a sweep surface.
 
     class AppSweep instantiates AppSurf from AppBlend
     	( SweepSectionGenerator from GeomFill,
@@ -114,74 +100,34 @@ is
  
 
     class Generator;
-        ---Purpose: Create a surface using generating lines.  Inherits
-        --          profiler.  The  surface will be  a  BSplineSurface
-        --          passing  by   all  the  curves  described  in  the
-        --          generator. The VDegree of the resulting surface is
-        --          1.
 
     class Pipe;
-	---Purpose: Create a pipe surface.         
 
 
     --- Family of classes providing algorithms to  fill a contour with
     --  constraints of tangency.
 
- 
---    class  Draft;
-    	---Purpose: Depouille
-    	        
+
     class  Tensor;
     	
 
     class ConstrainedFilling;
-    ---Purpose: class for filling  a contour of 2, 3  or 4 curves with
-    --          tangency  constaints. The  only FillingStyle  used  is
-    --          Coons.
-    --
 
     deferred class Boundary;      -- inherits TShared
-    ---Purpose: Root  class  defining the methods   we  need to make a
-    --          constrained boundary.   Any  new type  of  constrained
-    --          boundary must inherit this class.
-    --
-      
+
     class DegeneratedBound;       -- inherits Boundary
-    ---Purpose: class    defining  a   degenerated  boundary   for   a
-    --          constrained filling   with  a   point  and  no   other
-    --          constraint. Only used to  simulate an  ordinary bound,
-    --          may not be usefull and desapear soon. 
-    --
-      
+
     class SimpleBound;            -- inherits Boundary
-    ---Purpose: class  defining a boundary  for  a constrained filling
-    --          with a  3d curve  and  no other  constraint.  Contains
-    --          fields to allow a reparametrization of curve.
-    --
-      
+
     class BoundWithSurf;          -- inherits Boundary
-    ---Purpose: class defining   a boundary for  a constrained filling
-    --          with a  curve and  a normals  field along  a  surface.
-    --          Contains fields  to allow a reparametrization of curve
-    --          and normals field.
-    --
 
     class CoonsAlgPatch;          -- inherits TShared
-    ---Purpose: class defining an algorithmic patch based on 4 Curves.
 
     deferred class TgtField;      -- inherits TShared
-    ---Purpose: Root class defining the methods we need to definine an
-    --          algorithmic tgte field.
 
     class TgtOnCoons;             -- inherits TgteField
-    ---Purpose: Class defining  an   algorithmic  tgte field  along  a
-    --          boundary of a CoonsAlgPatch.
 
     class CornerState;
-    ---Purpose: Class (should be a structure) storing the informations
-    --          about    continuity,     normals parallelism,    coons
-    --          conditions and bounds  tangents angle on the corner of
-    --          contour  to be filled.
 
     --
     --	instantiation of Sequence of Trsf

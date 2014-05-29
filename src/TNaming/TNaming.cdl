@@ -97,11 +97,9 @@ is
     class CopyShape;
      
     class TranslateTool;
-    ---Purpose: tool to copy underlying TShape of a Shape
 
     private class Translator;   
-    ---Purpose: only  for  Shape  Copy  test - to move in DNaming
-				      
+
 
     ---Category: classes to store shapes and their evolution in the framework
     --           ============================================================
@@ -148,35 +146,25 @@ is
 	-- removed by a Boolean operation.
         
     class NamedShape;   
-    ---Purpose: attribute to store shapes and their evolution
-    
+
 
     private class UsedShapes;
-    ---Purpose: global attribute located under root label to store all
-    --          the shapes handled by the framework
+
    
 
    
     class Builder;
-    ---Purpose: API to build a NamedShape  attribute. 
     
     class Tool;
-    ---Purpose: methods to interogate naming data
 
     class Iterator;
-    ---Purpose:  Iterates on all the evolutions in an attribute.
 
     class NewShapeIterator;
-    ---Purpose:  To iterate  on all  the  shapes created  from a given
-    --          shape.
 	
     class OldShapeIterator;
-    ---Purpose: To iterate on all the shapes which created a given
-    --          shape.
 
     class SameShapeIterator;
-    ---Purpose:  To iterate on   all  the label which contained  a
-    --          given shape.
+
 
 
     class NamedShapeHasher instantiates MapHasher from TCollection(NamedShape from TNaming) ;
@@ -187,8 +175,8 @@ is
     class ListOfNamedShape instantiates List from TCollection (NamedShape from TNaming); 
 	 
 
-    ---Purpose: classes to store selected shape (involve naming algorithm)
-    --          =========================================================
+    ---Category: classes to store selected shape (involve naming algorithm)
+    --           ==========================================================
 
 
     enumeration NameType is 
@@ -208,14 +196,10 @@ is
     end NameType;	    
     
     class Name;
-    ---Purpose: store the arguments of Naming.
 
     class Naming;  
-    ---Purpose: Perform Topological naming when the topology is not 
-    --          already attached to a specific label. 	 
 
     class Selector;
-    ---Purpose: API to select shapes (identification and solving)
 
 
 

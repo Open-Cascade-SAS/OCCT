@@ -15,6 +15,7 @@
 -- commercial license or contractual agreement.
 
 class PointOnSurface from BRep inherits PointsOnSurface from BRep
+	---Purpose: Representation by two parameters on a surface.
 
 uses
     Surface  from Geom,

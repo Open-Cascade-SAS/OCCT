@@ -25,6 +25,8 @@ class Drawer from Prs3d inherits TShared from MMgt
     	-- can see that the AIS_Drawer is modified to set the
     	-- value of the deviation coefficient using a method
     	-- inherited from Prs3d_Drawer.
+      -- A drawer includes an instance of the Aspect classes
+      -- with particular default values.
 	
 uses
     DatumAspect from Prs3d,

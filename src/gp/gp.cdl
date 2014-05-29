@@ -33,10 +33,11 @@ is
 
   exception VectorWithNullMagnitude inherits DomainError;
 
-  ---Purpose: Identifies the type of a geometric transformation.
   enumeration TrsfForm is 
   Identity, Rotation, Translation, PntMirror, Ax1Mirror, Ax2Mirror, Scale, 
-  CompoundTrsf, Other;
+  CompoundTrsf, Other
+  end TrsfForm;
+  ---Purpose: Identifies the type of a geometric transformation.
 
   ---Purpose: Enumerates all 24 possible variants of generalized
   --          Euler angles, defining general 3d rotation by three 
@@ -88,126 +89,74 @@ is
   ;
 
   class XYZ;
-        --- Purpose : 3D Cartesian Coordinates {X, Y, Z}
 
   class Mat;
-        --- Purpose : Matrix 3*3
 
   class Quaternion;
-        --- Purpose : Quaternion representing 3d rotation
 
   class Trsf;
-        --- Purpose :
-        --  Elementary geometric transformation. This transformation never 
-        --  change the nature of the objects.
 
   class GTrsf;
-        --- Purpose :
-        --  General transformation. A GTrsf can be used only to transform
-        --  a point or a triplet of coordinates.
 
   class Pnt;
-        --- Purpose : Cartesian Point.
 
   class Vec;
-        --- Purpose : Vector.
 
   class Dir;
-        --- Purpose : Direction, it is an unitary vector.
 
   class Ax1;
-        --- Purpose : axis placement (Coordinate system -one axis)
 
   class Ax2;
-        --- Purpose :  axis  placement (Direct  Coordinate  system two
-        --  axis)
 
   class Ax3;
-        --- Purpose : axis placement  (Coordinate system two axis, can
-        --  be direct  or indirect)
 
   class Lin;
-        --- Purpose : Line.
 
   class Circ;
-        --- Purpose : Circle.
 
   class Elips;
-        --- Purpose : Ellipse.
 
   class Hypr;
-        --- Purpose : Hyperbola.
   
   class Parab;
-        --- Purpose : Parabola.
   
   class Pln;
-        --- Purpose : Plane.
 
   class Cylinder;
-        --- Purpose : Infinite cylindrical surface  .
   
   class Sphere;
-        --- Purpose : Spherical surface.  
   
   class Torus;
-        --- Purpose : Toroidal surface.  
   
   class Cone;
-        --- Purpose : Conical surface.
-
-
-
-
-        --- Purpose : Geometric entities for 2D.
-
-
 
   class XY;
-        --- Purpose : 2D cartesian Coordinates {X, Y}
 
   class Mat2d;
-        --- Purpose : Matrix 2*2
 
   class Trsf2d;
-        --- Purpose :
-        --  Elementary geometric transformation. This transformation never 
-        --  change the nature of the objects.
 
   class GTrsf2d;
-        --- Purpose :
-        --  General transformation. A GTrsf can be used only to transform
-        --  a point or a triplet of coordinates.
 
   class Pnt2d;
-        --- Purpose : Cartesian point.
 
   class Vec2d;
-        --- Purpose : Vector.
 
   class Dir2d;
-        --- Purpose : Direction, it is an unitary vector.
 
   class Ax2d;
-        --- Purpose : axis placement (Coordinate system - one axis)
 
   class Ax22d;
-        --- Purpose : axis placement (Coordinate system - two axis)
 
   class Lin2d;
-        --- Purpose : Line.
 
   class Circ2d;
-        --- Purpose : Circle.
 
   class Elips2d;
-        --- Purpose : Ellipse.
 
   class Hypr2d;
-        --- Purpose : Hyperbola.
 
   class Parab2d;
-        --- Purpose : Parabola.
   
 
 

@@ -76,11 +76,7 @@ is
 
     
     class Generator;
-    	   ---Purpose: Compute a topological surface ( a  shell) using
-    	   --          generating wires. The face of the shell will be
-    	   --          ruled surfaces through the wires.
-    	   --          The wires must have the same number of edges.
-       
+
     deferred class SectionLaw; 
     	class ShapeLaw; 
     	class NSections; 
@@ -94,31 +90,16 @@ is
    	class ACRLaw; 
 
     class Pipe;
-	  ---Purpose: Computes  a   topological  shape  using  a  wire
-	  --          (spine) and a shape (profile).
+
     class PipeShell; 
-          ---Purpose: Computes a topological shell using some wires --
-          --          (spines and profiles) and diplacement option
-          
 
     class Evolved;
-	  ---Purpose: Computes  an evolved  volum using  a  generating
-	  --          wire and a profile.
 
     class Sweep; 
-          ---Purpose: Computes an  Sweep  shell using a  generating
-          --          wire, an SectionLaw and an LocationLaw.
 
- 
     class CompatibleWires;
-	---Purpose: Computes Wires with good orientation and origin in order
-          --        to generate a shell not twisted.
-
 
     class OffsetWire;
-	---Purpose: Computes the offset of a Wire or the Wires contained
-	--          in a Face.
-	--          The Wire or the Face must be planar.
 
     class OffsetAncestors;
 
@@ -136,12 +117,9 @@ is
 	
 
     private class TrimSurfaceTool;
-	  ---Purpose: Compute the Pcurves and  the 3d curves resulting
-	  --          of the trimming of a face by an extruded surface.
 
     private class TrimEdgeTool;
-	  ---Purpose: Geometric Tool using to construct Offset Wires.
-     
+
     private class  SectionPlacement;  
      
     private class  Section;  
@@ -196,21 +174,9 @@ is
 
 
     class CurveConstraint ;
-	---Purpose: same as CurveConstraint from GeomPlate
-	--          with BRepAdaptor_Surface instead of 
-	--          GeomAdaptor_Surface 
-	-- inherits CurveConstraint  from  GeomPlate         
-				      
+
     class Filling; 
-	---Purpose: N-Side Filling
-	--  This algorithm avoids to build a face from:
-	--  * a set of edges defining the bounds of the face and some
-	--    constraints the surface of the face has to satisfy
-	--  * a set of edges and points defining some constraints
-	--    the support surface has to satisfy
-	--  * an initial surface to deform for satisfying the constraints
-	--  * a set of parameters to control the constraints.   
-    
+
     private class FaceAndOrder;
     
     private class EdgeFaceAndOrder;

@@ -22,7 +22,7 @@
 
 class Data from DDF inherits Drawable3D from Draw
 
-	---Purpose : Encapsulates a data framework in a drawable object
+	---Purpose : Encapsulates a data framework from TDF in a drawable object
 
 uses
 

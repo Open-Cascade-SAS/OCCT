@@ -77,28 +77,11 @@ is
     --  
 
     class ApproxAFunc2Var from AdvApp2Var ;
-    ---Purpose:
-    -- this class approximates a given function of 2 variables
 
     imported EvaluatorFunc2Var ;
-    ---Purpose:
-    --  typedef  void (*EvaluatorFunc2Var)  (
-    --  Standard_Integer *     -- dimension
-    --  Standard_Real    *     -- first and last parameters in U
-    --  Standard_Real    *     -- first and last parameters in V
-    --  Standard_Integer *     -- choice of constante, 1 for U, 2 for V
-    --  Standard_Real    *     -- value of constant parameter
-    --  Standard_Integer *     -- number of parameters
-    --  Standard_Real    *     -- values of parameters
-    --  Standard_Integer *     -- order of derivation in U
-    --  Standard_Integer *     -- order of derivation in V
-    --  Standard_Real    *     -- evaluation
-    --  Standard_Integer *     -- error code
-    --  ) ;
 
     deferred class Criterion from AdvApp2Var ;
-    ---Purpose:
-    -- this class contains a given criterion to be satisfied
+
 
 
     -- 
@@ -109,25 +92,12 @@ is
     -- Basic Data
 
     class Context from AdvApp2Var;
-    ---Purpose :
-    -- contains  all the  parameters  for approximation
-    --         ( tolerancy, computing option, ...)
-    --        
 
     class Node from AdvApp2Var;
-    ---Purpose :
-    -- used to store constraints on a (Ui,Vj) point
-    -- 
 
     class Iso from AdvApp2Var;
-    ---Purpose :
-    -- used to store constraints on a line U = Ui or V = Vj
-    -- 
 
     class Patch from AdvApp2Var;
-    ---Purpose :
-    -- used to store results on a domain [Ui,Ui+1]x[Vj,Vj+1]
-    -- 
 
     class Strip from AdvApp2Var instantiates
      	    	    Sequence from TCollection (Iso from  AdvApp2Var); 

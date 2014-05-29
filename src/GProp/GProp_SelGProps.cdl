@@ -17,8 +17,8 @@
 class SelGProps from GProp inherits GProps
 
     	    ---Purpose: 
-    	    --          Computes the global properties of an elementary 
-    	    --          surface (surface of the gp package)
+        --          Computes the global properties of a bounded
+        --          elementary surface in 3d (surface of the gp package)
 
 uses  Cylinder from gp,
       Cone     from gp,

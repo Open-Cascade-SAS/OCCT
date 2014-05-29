@@ -49,10 +49,8 @@ is
     generic class IWalking, TheIWLine, SequenceOfIWLine;
     
     imported VectorOfWalkingData;
-    ---Purpose: Defines a dynamic vector of work data.
-    
+
     imported VectorOfInteger;
-    ---Purpose: Defines a dynamic vector of integer.
 
     
 --algorithm/solution for a marching on intersection between

@@ -15,6 +15,9 @@
 -- commercial license or contractual agreement.
 
 class PlaneSet from Prs3d inherits TShared from MMgt
+	---Purpose: defines a set of planes used for a presentation
+	--          by sections.
+	--
 
 uses
 

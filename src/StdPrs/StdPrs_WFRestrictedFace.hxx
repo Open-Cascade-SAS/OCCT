@@ -20,6 +20,12 @@
 #include <Prs3d_Root.hxx>
 #include <Prs3d_NListOfSequenceOfPnt.hxx>
 
+// Computes the wireframe presentation of faces with
+// restrictions by displaying a given number of U and/or
+// V isoparametric curves. The isoparametric curves are
+// drawn with a fixed number of points.
+// The presentation includes the restriction curves.
+
 class StdPrs_WFRestrictedFace : public Prs3d_Root
 {
 public:

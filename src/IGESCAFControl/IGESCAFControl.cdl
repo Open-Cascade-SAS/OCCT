@@ -33,7 +33,6 @@ uses
 is
 
     class Reader;
-    	---Purpose: Provides a tool for reading IGES file
 
     class Writer;
     	---Purpose: Provides a tool for writing IGES file

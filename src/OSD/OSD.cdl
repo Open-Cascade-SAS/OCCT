@@ -38,9 +38,6 @@ is
  exception OSDError inherits Failure from Standard  ;
 
  imported Function;
-   ---Purpose: This is in fact a pointer to a function.
-   --          This is not an "enumeration" but a trick to solve an omission
-   --          from CDL.
    --- C++: alias "typedef int (* OSD_Function)(...);"
 
  enumeration OEMType is Unavailable,SUN,DEC,SGI,NEC,MAC,PC,HP,IBM,VAX,LIN,AIX;
@@ -98,64 +95,39 @@ is
    ---Purpose: Allows great accuracy for error management.
    --          This is private.
 
-
          class Error;
-             ---Purpose: Accurate management of OSD specific errors.
 
          class Protection;
-             ---Purpose: Gets and sets protection attributes of 'system , user ,
-             --          group, and world'.
 
          class Path;
-             ---Purpose: Manages independent system path translation.
 
          deferred class FileNode;
-             ---Purpose: A set of file/directory manipulation tools.
 
          class Disk;
-             ---Purpose: A set of disk oriented tools.
 
          class File;
-             ---Purpose: A set of file oriented tools.
 
          class FileIterator;
-             ---Purpose: Searches for child files in current directory.
 
          class Directory;
-             ---Purpose: A set of directory oriented tools
 
          class DirectoryIterator;
-             ---Purpose: Searches sub-directories in current directory.
 
          class Chronometer;
-             ---Purpose: Measures time elapsed for performance program tests.
-             --          Measures CPU time consumed by a method call.
 
          class Timer;
-             ---Purpose: Measures the effective time elapsed for a method call.
 
          class Printer;
-             ---Purpose: Selects a printer (used by File).
 
          class Host;
-             ---Purpose: Carries information about a host.
-             --          System version ,host name, nodename ...
 
          class Environment;
-             ---Purpose: Manages environment variables.
 
          class EnvironmentIterator;
-             ---Purpose: Get all environment variables.
 
          class Process;
-             ---Purpose: Process specific oriented tools
-
---         class Mutex is alias Mutex from Standard;
-             ---Purpose: Mutex object to synchronize threads within one process
 
          class SharedLibrary;
-             ---Purpose: Provides tools to load a shared library
-             --          and retrieve the address of an entry point.
 
      imported MemInfo;
      imported PThread;

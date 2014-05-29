@@ -19,6 +19,7 @@ class SimpleBound from GeomFill inherits Boundary from GeomFill
 	---Purpose: Defines a 3d curve as a boundary for a
     	-- GeomFill_ConstrainedFilling algorithm.
     	-- This curve is unattached to an existing surface.D
+      -- Contains fields to allow a reparametrization of curve.
 
 uses
     Pnt            from gp,

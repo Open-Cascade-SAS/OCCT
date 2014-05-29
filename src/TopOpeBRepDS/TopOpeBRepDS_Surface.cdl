@@ -16,7 +16,7 @@
 
 class Surface from TopOpeBRepDS
 
-    ---Purpose: A Geom poimt and a tolerance.
+    ---Purpose: A Geom surface and a tolerance.
 
 uses
 

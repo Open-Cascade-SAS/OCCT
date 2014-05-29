@@ -19,6 +19,7 @@ class EdgeList from IGESSolid  inherits IGESEntity
         ---Purpose: defines EdgeList, Type <504> Form <1>
         --          in package IGESSolid
         --          EdgeList is defined as a segment joining two vertices
+        --          It contains one or more edge tuples.
 
 uses
 

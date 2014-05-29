@@ -42,80 +42,47 @@ is
     -- classes
 
     class Shape;
-	---Purpose: A reference to a Topological shape with Location,
-	--          Orientation.
 
     class HShape;
-    	---Purpose: Class to manipulate a Shape with  handle.
 
     class ListOfShape instantiates List from TCollection (Shape from TopoDS);
 	---Purpose: Used to implement the TShape.
 
     deferred class TShape;
-	---Purpose: A topological shape is a structure made from other
-	--          shapes.  This is a deferred class  used to support
-	--          topological objects.
 
     deferred class TVertex;
-	---Purpose: A  Vertex is a topological  point in  two or three
-	--          dimensions.
 
     class Vertex;
-	---Purpose: A TVertex with a localisation and  an orientation.
 
     deferred class TEdge;
-	---Purpose: A topological part  of a  curve  in 2D or 3D,  the
-	--          boundary    is   a   set  of oriented    Vertices.
 
     class Edge;
-	---Purpose: A TEdge with a localisation and an orientation.
 
     class TWire;
-	---Purpose: A set of edges connected by their vertices.
 
     class Wire;
-	---Purpose: A TWire with a localisation and an orientation.
 
     class TFace;
-	---Purpose: A  topological part  of a surface   or  of the  2D
-	--          space.  The  boundary  is  a   set of  wires   and
-	--          vertices.
 
     class Face;
-	---Purpose: A TFace with a localisation and an orientation.
 
     class TShell;
-	---Purpose: A set of faces connected by their edges.
 
     class Shell;
-	---Purpose: A TShell with a localisation and an orientation.
 
     class TSolid;
-	---Purpose: A Topological part of 3D space, bounded by shells, 
-	--          edges and vertices.
 
     class Solid;
-	---Purpose: A Solid with a localisation and an orientation.
 
     class TCompSolid;
-	---Purpose: A set of solids connected by their faces.
 
     class CompSolid;
-	---Purpose: A    TCompSolid   with   a  localisation and    an 
-	--          orientation. Casts shape S to the more specialized return type, CompSolid.
 
     class TCompound;
-	---Purpose: A TCompound is an all-purpose set of Shapes.
 
     class Compound;
-	---Purpose: A    TCompound  with  a    localisation   and   an
-	--          orientation.
-	-- Casts shape S to the more specialized return type, Compound.
 
     class Builder;
-	---Purpose: A builder is an object  used to create and  modify
-	--          Data Structures. It   is the root  of  the Builder
-	--          class hierarchy.
 
     class Iterator;
 	---Purpose: Basic tool to access the data structure.

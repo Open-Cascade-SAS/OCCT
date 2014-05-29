@@ -19,10 +19,10 @@ deferred class PManaged from PMMgt
 inherits Persistent from Standard
 
   ---Purpose: 
-  --   The class <PManaged> is a persistent abstract class that
+  --   The class <PManaged> is a persistent abstract base class that
   --   provides a strategy for managing  the necessary storage 
-  --   for an instance of <PManaged>. The storage is taken from
-  --   Persistent cache.
+  --   for an instance of <PManaged> (allocation and deallocation).
+  --   The storage is taken from Persistent cache.
   --
   --   The storage of an instance is returned to persistent cache
   --   when the instance is deleted explicitly.

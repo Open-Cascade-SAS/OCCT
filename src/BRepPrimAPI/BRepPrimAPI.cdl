@@ -110,7 +110,6 @@ is
     class MakeWedge;               ---  inherits MakeShape from BRepBuilderAPI
     
     deferred class MakeOneAxis;    ---  inherits MakeShape from BRepBuilderAPI
-	---Purpose: Root class for rotational primitives.
     
     class MakeCylinder;            ---  inherits MakeShape from BRepBuilderAPI
     

@@ -15,7 +15,8 @@
 -- commercial license or contractual agreement.
 
 class FunctionTool2d from AppCont
-
+    ---Purpose: This class is the inteface between the Function2d
+    --          class and the tool asked by LeastSquare.
 
 uses Function2d      from AppCont,
      Pnt             from gp,

@@ -93,7 +93,7 @@ is
         -- G002A study 
 
         imported CLayer2d;
-        ---Purpose: Defines the C structure <alayer>
+
         ---Category: Imported types
 
         imported RGBPixel;
@@ -101,25 +101,15 @@ is
 
         primitive Handle;
         primitive Drawable;
-        ---Purpose:
-        -- To manage Drawable
 
         primitive Display;
-        ---Purpose:
-        -- To manage Display 
 
         primitive RenderingContext;
-        ---Purpose:
-        -- To manage 2D or 3D graphic context
 
         imported GraphicCallbackProc;
-        ---Purpose:
-        -- To manage client post display 
 
         -- 22-03-04 OCC4895 SAN High-level interface for controlling polygon offsets
         imported PolygonOffsetMode;
-        ---Purpose: 
-        -- Enumeration for polygon offset modes
 
         ---------------------
         -- Category: Pointers
@@ -214,25 +204,18 @@ is
         ------------------------------
 
         deferred class ColorMap;
-        ---Purpose: Defines a color map.
         ---Category: Classes Color map
 
         class ColorCubeColorMap;
-        ---Purpose: Associates a index and a color in the "ColorCube" space.
         ---Category: Classes Color map
 
         class ColorRampColorMap;
-        ---Purpose: Associates a index and a color in the linear "ColorRamp"
-        --          space.
         ---Category: Classes Color map
 
         class GenericColorMap;
-        ---Purpose: Associates an index and a color.
         ---Category: Classes Color map
 
         class ColorMapEntry;
-        ---Purpose: Defines an entry in the color map :
-        --          an index and a color.
         ---Category: Classes Color map
 
         ------------------------------
@@ -240,15 +223,12 @@ is
         ------------------------------
 
         deferred class Pixel;
-        ---Purpose: Defines a picture element.
         ---Category: Classes Pixel
 
         class IndexPixel;
-        ---Purpose: 
         ---Category: Classes Pixel
 
         class ColorPixel;
-        ---Purpose: 
         ---Category: Classes Pixel
 
         ---------------------------
@@ -256,18 +236,12 @@ is
         ---------------------------
 
         deferred class AspectLine;
-        ---Purpose: Creates and updates a group of graphic attributes
-        --          for primitives 'Line'
         ---Category: Classes Aspect
 
         deferred class AspectMarker;
-        ---Purpose: Creates and updates a group of graphic attributes
-        --          for primitives 'Marker'.
         ---Category: Classes Aspect
 
         deferred class AspectFillArea;
-        ---Purpose: Creates and updates a group of graphic attributes
-        --          for primitives 'Face'.
         ---Category: Classes Aspect
 
         --------------------
@@ -275,79 +249,57 @@ is
         --------------------
 
         class Background;
-        ---Purpose: Defines a window background
         ---Category: Classes
 
         class GradientBackground;
-        ---Purpose: Defines a window gradient background
         ---Category: Classes
 
         class Edge;
-        ---Purpose: Defines an edge.
         ---Category: Classes
 
         class GenId;
-        ---Purpose: Creates and controles all identifiers.
         ---Category: Classes
 
         class FontStyle;
-        ---Purpose: Defines a Font Style
         ---Category: The classes
 
         class FontMapEntry;
-        ---Purpose: Defines an entry in the Font map :
-        --          an index and a text Font.
         ---Category: Classes Font map
 
         class FontMap;
-        ---Purpose: Associates an index and a text Font entry.
         ---Category: The classes
 
         class WidthMapEntry;
-        ---Purpose: Defines an entry in the Width map :
-        --          an index and a line Width.
         ---Category: Classes Width map
 
         class WidthMap;
-        ---Purpose: Associates an index and a line width entry.
         ---Category: The classes
 
         class LineStyle;
-        ---Purpose: Defines a Line Style
         ---Category: The classes
 
         class TypeMap;
-        ---Purpose: Associates an index and a line type entry.
         ---Category: The classes
 
         class TypeMapEntry;
-        ---Purpose: Defines an entry in the Type map :
-        --          an index and a line style.
         ---Category: Classes Type map
 
         class MarkerStyle;
-        ---Purpose: Defines a Marker Style
         ---Category: The classes
 
         class MarkMap;
-        ---Purpose: Associates an index and a Marker entry.
         ---Category: The classes
 
         class MarkMapEntry;
-        ---Purpose: Defines an entry in the Marker map :
-        --          an index and a marker style.
         ---Category: Classes Mark map
 
         deferred class Window;
-        ---Purpose: Defines a window.
         ---Category: Classes
 
         deferred class Driver;
-        ---Purpose: Defines a virtual driver.
         ---Category: Classes
 
         deferred class WindowDriver;
-        ---Purpose: Defines a virtual driver associated to a window.
         ---Category: Classes
 
         deferred class Grid;
@@ -355,13 +307,10 @@ is
         class CircularGrid;
 
         deferred class ColorScale;
-        ---Purpose: Defines a color scale for viewer.
 
         imported DisplayConnection;
-        ---Purpose: Creates and provides connection with X server.
 
         imported DisplayConnection_Handle;
-        ---Purpose: Handle for DisplayConnection;
 
         -------------------------
         -- Category: Enumerations

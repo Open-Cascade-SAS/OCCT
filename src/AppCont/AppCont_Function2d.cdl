@@ -17,7 +17,8 @@
 deferred class Function2d from AppCont
 
     ---Purpose: deferred class describing a continous 2d function f(u)
-
+    --          This class must be provided by the user to use the
+    --          approximation algorithm FittingCurve2d.
 
 uses Pnt2d from gp,
      Vec2d from gp

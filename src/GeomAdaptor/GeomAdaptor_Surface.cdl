@@ -19,7 +19,7 @@ class Surface from GeomAdaptor inherits Surface from Adaptor3d
     	---Purpose: An interface between the services provided by any
     	-- surface from the package Geom and those required
     	-- of the surface by algorithms which use it.
-        
+      -- Creation of the loaded surface the surface is C1 by piece
 uses
      Pnt              from gp,
      Vec              from gp,

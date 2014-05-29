@@ -20,6 +20,7 @@ class VertexList from IGESSolid  inherits IGESEntity
         --          in package IGESSolid
         --          A vertex is a point in R3. A vertex is the bound of an
         --          edge and can participate in the bounds of a face.
+        --          It contains one or more vertices.
 
 uses
 

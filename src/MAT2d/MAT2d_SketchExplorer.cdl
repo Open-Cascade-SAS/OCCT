@@ -19,6 +19,7 @@ deferred class SketchExplorer from MAT2d
 	---Purpose: SketchExplorer  is  an iterator on  a  sketch.   A
 	--          sketch is a set of contours, each contour is a set
 	--          of curves from Geom2d.
+  --          It's use by BisectingLocus.
 
 uses
 

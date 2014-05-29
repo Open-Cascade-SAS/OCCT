@@ -15,6 +15,7 @@
 -- commercial license or contractual agreement.
 
 class EdgesIntersector from TopOpeBRep 
+    ---Purpose: Describes the intersection of two edges on the same surface
 
 uses
 

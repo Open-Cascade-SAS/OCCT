@@ -17,7 +17,7 @@
 class PointAspect from VrmlConverter inherits TShared from MMgt
 
 	---Purpose: qualifies the aspect properties for  
-	--          the VRML conversation of points. 
+  --          the VRML conversation of a Point Set.
 
 uses 
 

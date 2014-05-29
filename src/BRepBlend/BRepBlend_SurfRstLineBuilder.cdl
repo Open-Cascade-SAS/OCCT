@@ -34,6 +34,16 @@ class SurfRstLineBuilder from BRepBlend
       --          3)  stall as there  is a solution to  the problem
       --          surf/surf  within  the  domain of  the surface
       --          of  support  of  the   restriction.
+      --
+      --          Construction of a BRepBlend_Line between a surface and
+      --          a pcurve on surface from an approached
+      --          starting solution. The output entries of this builder
+      --          are of the same nature as of the traditional walking
+      --          but the requirements on the Line are not the same
+      --          If the determination of validity range is always
+      --          guaranteed, the criteria of correct repartition of sections
+      --          before smoothing are not respected. The resulting Line
+      --          is f(t) oriented.
 
 uses Point            from Blend,
      Status           from Blend,

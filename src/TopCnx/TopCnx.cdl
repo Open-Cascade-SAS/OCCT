@@ -52,7 +52,5 @@ uses
 
 is
     class EdgeFaceTransition;
-	---Purpose: Algorithm  to compute cumulated transitions  on an
-	--          edge crossing the boundary of a face.
 
 end TopCnx;

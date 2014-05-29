@@ -16,7 +16,7 @@
 
 class FaceClassifier from BRepClass inherits FClassifier from BRepClass
 
-	---Purpose: Provides Constructors.
+	---Purpose: Provides Constructors with a Face.
 
 uses
     FaceExplorer from BRepClass,

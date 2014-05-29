@@ -15,6 +15,7 @@
 -- commercial license or contractual agreement.
 
 class NullMessageDriver from CDM inherits MessageDriver from CDM
+    ---Purpose: a MessageDriver that writes nowhere.
 
 is
     Create returns NullMessageDriver from CDM;

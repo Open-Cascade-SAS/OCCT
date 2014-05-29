@@ -98,20 +98,15 @@ is
     deferred class ComplexCurve;
 
     class CompositeSurface;
-        ---Purpose: Defines surface composed of grid of connected patches
 
     class WireData;
-    	---Purpose: Defines data structure for work on a wire as a list of edges
-	
+
     class BasicMsgRegistrator;
-    	---Purpose: Abstract class to send messages to the objects
-	
+
     	class MsgRegistrator;
-    	    ---Purpose: Collects messages to be attached messages to the objects
-	
+
     class Explorer;
-    	---Purpose: Exploring of shapes (compounds)
-	
+
     class DataMapOfShapeListOfMsg instantiates DataMap from TCollection
     	(Shape          from TopoDS,
          ListOfMsg      from Message,

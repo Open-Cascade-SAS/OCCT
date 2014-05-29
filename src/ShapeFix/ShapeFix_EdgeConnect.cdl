@@ -16,7 +16,8 @@
 
 class EdgeConnect  from ShapeFix
 
-    ---Purpose : Makes vertices to be shared to connect edges,
+    ---Purpose : Rebuilds edges to connect with new vertices, was moved from ShapeBuild.
+    --           Makes vertices to be shared to connect edges,
     --           updates positions and tolerances for shared vertices.
     --           Accepts edges bounded by two vertices each.
 

@@ -27,29 +27,20 @@ uses  TCollection, TColStd, TopoDS, TopTools, Draw, ShapeProcessAPI
 is
 
     class ShapeTool;
-    	---Purpose: Contains commands to activate Topology/Geometry not
-    	--          Shape Healing
 
     class ShapeAnalysis;
-    	---Purpose: Contains commands to activate package ShapeAnalysis
 
     class ShapeCustom;
-    	---Purpose: Contains commands to activate package ShapeCustom
 
     class ShapeExtend;
-    	---Purpose: Contains commands to activate package ShapeExtend
 
     class ShapeFix;
-    	---Purpose: Contains commands to activate package ShapeFix
 
     class ShapeUpgrade;
-    	---Purpose: Contains commands to activate package ShapeUpgrade
 
     class ShapeProcess;
-    	---Purpose: Contains commands to activate package ShapeProcess
-    
+
     class ShapeProcessAPI;
-    	---Purpose: Contains commands to activate package ShapeProcessAPI
 
     Init (theCommands: in out Interpretor from Draw);
     	---Purpose: Loads commands defined in SWDRAW

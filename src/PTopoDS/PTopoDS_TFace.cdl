@@ -17,7 +17,8 @@
 class TFace from PTopoDS inherits TShape from PTopoDS
 
 	---Purpose: A topological  Face.
-
+  --          A  topological part  of a  surface  or of  the  2D
+  --          space. The boundary is a set of wires and edges.
 uses
     ShapeEnum from TopAbs
 

@@ -16,7 +16,7 @@
 
 class Line from GeomFill
 
-	---Purpose: 
+	---Purpose: class for instantiation of AppBlend
 
 inherits TShared from MMgt
 

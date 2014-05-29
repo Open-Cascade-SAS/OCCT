@@ -16,7 +16,7 @@
 
 class CompCurveToBSplineCurve from Geom2dConvert 
 
-	    ---Purpose: Concat sevral curve in an BSplineCurve
+	    ---Purpose: This algorithm converts and concat several curve in an BSplineCurve
 
 uses
  ParameterisationType from Convert,

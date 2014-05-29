@@ -239,7 +239,6 @@ class Array1OfTrimmingSelect instantiates Array1 from TCollection (TrimmingSelec
 class HArray1OfTrimmingSelect instantiates HArray1 from TCollection (TrimmingSelect,Array1OfTrimmingSelect from StepGeom);
 
 --	Protocol returns Protocol from StepGeom;
-	---Purpose : creates a Protocol
 
 end StepGeom;
 

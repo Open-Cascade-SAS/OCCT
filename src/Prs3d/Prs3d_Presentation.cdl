@@ -27,6 +27,7 @@ class Presentation from Prs3d inherits Structure from Graphic3d
     	-- This presentation object is used to give display
     	-- attributes defined at this level to
     	-- ApplicationInteractiveServices classes at the level above.
+      -- A presentation object is attached to a given Viewer.
         
 uses
 	Array2OfReal		from TColStd,

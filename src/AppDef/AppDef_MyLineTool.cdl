@@ -15,6 +15,9 @@
 -- commercial license or contractual agreement.
 
 class MyLineTool from AppDef
+    ---Purpose: example of MultiLine tool corresponding to the tools of the packages
+    -- AppParCurves and Approx. For Approx, the tool will not addd points
+    -- if the algorithms want some.
 
 uses MultiLine     from AppDef,
      Pnt           from gp,

@@ -19,6 +19,7 @@ class ColorCubeColorMap from Aspect inherits ColorMap from Aspect
 	---Version: 0.0
 
 	---Purpose: This class defines a ColorCube ColorMap object.
+	--          Associates a index and a color in the "ColorCube" space.
 	---Keywords:
 	---Warning:
 	---References:

@@ -19,6 +19,10 @@
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_Projector.hxx>
 
+// Computes the presentation of objects with
+// removal of their hidden lines for a specific
+// projector. The exact algorithm is used.
+
 class StdPrs_HLRShape: public Prs3d_Root
 {
 public:

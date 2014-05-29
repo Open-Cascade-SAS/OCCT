@@ -17,7 +17,8 @@
 class TSolid1 from PTopoDS inherits TShape1 from PTopoDS
 
 	---Purpose: A topological  Solid1 shape.   
-
+	--          A Topological part of 3D  space, bounded by Shells
+	--          and Faces.
 uses
     ShapeEnum from TopAbs
 

@@ -15,7 +15,8 @@
 
 class Reference from TDF inherits Attribute from TDF
 
-	---Purpose: 
+	---Purpose: This  attribute is  used to  store in the  framework a
+    --        reference to an other label.
 
 uses Attribute       from TDF,
      Label           from TDF,

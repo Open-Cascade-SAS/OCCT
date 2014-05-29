@@ -14,7 +14,7 @@
 -- commercial license or contractual agreement.
 
 class BaseRangeSample from IntTools
-
+    ---Purpose: base class for range index management
 
 is
     Create

@@ -68,12 +68,8 @@ uses
 is
 
     deferred class TranslateTool;
-	---Purpose: Supports   the translation of   inherited parts of
-	--          classes. Root of all translation tools.
 
     deferred class TranslateTool1;
-	---Purpose: Supports   the translation of   inherited parts of
-	--          classes. Root of all translation tools.
 
 
     ---Category: Old translate methods.

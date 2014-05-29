@@ -15,7 +15,8 @@
 -- commercial license or contractual agreement.
 
 deferred class MetaDataDriver from CDF inherits Transient from Standard
-
+    ---Purpose: this class list the method that must be available for
+    --          a specific DBMS
 
 uses
     Document from CDM, MetaData from CDM,

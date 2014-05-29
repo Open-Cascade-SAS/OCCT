@@ -23,6 +23,8 @@
 class XLinkIterator from TDocStd 
 
 	---Purpose: Iterates on Reference attributes.
+  --          This is an iterator giving all the external references
+  --          of a Document.
 
 uses Document from TDocStd,
      XLink     from TDocStd,

@@ -29,26 +29,14 @@ is
 
 
    imported RealFunction;
-    ---Purpose: typedef Standard_Real (*CPnts_RealFunction)
-    --          (const Standard_Real, const Standard_Address)
-    --          
-    --          A pointer on a function for MyGaussFunction
 
    private class MyGaussFunction;
-       ---Purpose: for implementation, compute values for Gauss
 
    private class MyRootFunction;
-       ---Purpose: for implementation,  compute Length  and Derivative
-       --          of the curve for Newton.
 
    class  AbscissaPoint;
-       ---Purpose:  
-       -- This algorithm computes a point and its parameter 
-       -- as the distance between this and a given point is the abscissa
 
    class UniformDeflection;
-        --- Purpose : This Algorithm computes a distribution of points 
-        --  with a given chordal deviation on a parametrized curve.
 
 end CPnts;
 

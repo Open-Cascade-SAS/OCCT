@@ -15,7 +15,7 @@
 
 class Area from XCAFDoc inherits Attribute from TDF
 
-	---Purpose: 
+	---Purpose: attribute to store area
 
 uses
      Attribute       from TDF,

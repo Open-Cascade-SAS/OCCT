@@ -17,7 +17,7 @@
 class EdgeVertexInterference from TopOpeBRepDS 
     inherits ShapeShapeInterference from TopOpeBRepDS
 
-    ---Purpose: An interference with a parameter.
+    ---Purpose: An interference with a parameter (ShapeShapeInterference).
 
 uses
 

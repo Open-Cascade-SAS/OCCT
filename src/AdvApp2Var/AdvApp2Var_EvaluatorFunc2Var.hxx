@@ -35,8 +35,8 @@ public:
 
   //! Function evaluation method to be defined by descendant
   virtual void Evaluate (Standard_Integer* theDimension,
-                         Standard_Real*    theUStartEnd,
-                         Standard_Real*    theVStartEnd,
+                         Standard_Real*    theUStartEnd,  //!< First and last parameters in U
+                         Standard_Real*    theVStartEnd,  //!< First and last parameters in V
                          Standard_Integer* theFavorIso,   //!< Choice of constante, 1 for U, 2 for V
                          Standard_Real*    theConstParam, //!< Value of constant parameter
                          Standard_Integer* theNbParams,   //!< Number of parameters N

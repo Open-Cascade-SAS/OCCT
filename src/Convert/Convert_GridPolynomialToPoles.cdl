@@ -15,8 +15,10 @@
 -- commercial license or contractual agreement.
 
 class GridPolynomialToPoles from Convert 
-
-	---Purpose: 
+          ---Purpose: Convert a grid of Polynomial Surfaces
+          --          that are have continuity CM to an
+          --          Bspline Surface that has continuity
+          --          CM
 
 uses     Array1OfReal       from TColStd,
          HArray1OfReal      from TColStd,

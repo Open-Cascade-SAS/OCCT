@@ -116,7 +116,6 @@ is
     imported Position; -- typedef long
     
     deferred class BaseDriver;
-    ---Purpose: base class for storage drivers
 
     deferred class CallBack;
       class DefaultCallBack;

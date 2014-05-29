@@ -36,13 +36,10 @@ uses
 is
 
     class Driver;
-    	---Purpose: Implements a presentation driver for DECAF
 
     class AISObject;
-    	---Purpose: Implements an interactive object for DECAF
 
     class Style;
-        ---Purpose: Object representing a set of style settings
 	
     class DataMapOfShapeStyle instantiates
     	DataMap from TCollection(Shape from TopoDS,

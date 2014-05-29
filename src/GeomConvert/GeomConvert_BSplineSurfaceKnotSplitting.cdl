@@ -17,7 +17,10 @@ class BSplineSurfaceKnotSplitting   from GeomConvert
 
         --- Purpose : An algorithm to determine isoparametric curves along
     	-- which a BSpline surface should be split in order to
-    	-- obtain patches of the same continuity.
+      -- obtain patches of the same continuity. The continuity order is given at the
+        --  construction time. It is possible to compute the surface patches
+        --  corresponding to the splitting with the method of package
+        --  SplitBSplineSurface.
         --  For a B-spline surface the discontinuities are localised at
         --  the knot values. Between two knots values the B-spline is
         --  infinitely continuously differentiable.  For each parametric 

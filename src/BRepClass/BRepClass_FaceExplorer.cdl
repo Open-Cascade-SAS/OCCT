@@ -19,7 +19,7 @@
 class FaceExplorer from BRepClass 
 
 	---Purpose: Provide an   exploration of a  BRep Face   for the
-	--          classification.
+	--          classification. Return UV edges.
 
 uses
     Orientation  from TopAbs,

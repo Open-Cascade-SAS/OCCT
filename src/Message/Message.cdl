@@ -49,25 +49,12 @@ is
     imported HArrayOfMsg;
 
     class Msg;
-    	---Purpose: Defines message.
     class MsgFile;
-    	---Purpose: Defines file storing messages.
-	
     class Messenger;
-    	---Purpose: Messenger is API class providing general-purpose interface for 
-	--          libraries that may issue text messages without knowledge
-	--          of how these messages will be further processed.
-	
     class Algorithm;
-	---Purpose: Class Message_Algorithm is the root class for all algorithms.
-	--          It provides generic mechanism for management execution status,
-	--          collection and output of corresponding error/warning messages
 
     deferred class Printer;
-    	---Purpose: Defines basic message printer.
-	
-	class PrinterOStream;
-	    ---Purpose: Defines printer associated with an ostream
+	  class PrinterOStream;
     
     class ListOfMsg instantiates List from TCollection (Msg from Message);
     

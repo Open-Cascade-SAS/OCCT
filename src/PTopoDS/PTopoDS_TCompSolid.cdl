@@ -17,7 +17,7 @@
 class TCompSolid from PTopoDS inherits TShape from PTopoDS
 
 	---Purpose: A  topological Composite  Solid shape.
-
+  --          A structure of Solids sharing Faces.
 uses
     ShapeEnum from TopAbs
 

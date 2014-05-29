@@ -17,7 +17,8 @@
 deferred class Function from AppCont
 
     ---Purpose: deferred class describing a continous 3d function f(u)
-
+    --          This class must be provided by the user to use the
+    --          approximation algorithm FittingCurve.
 
 uses Pnt from gp,
      Vec from gp

@@ -44,9 +44,6 @@ is
     	 MapIntegerHasher  from  TColStd);
 
     class ComputeData;
-    ---Purpose: Contient toutes  les   methodes de classe  destinees a
-    --          remplir  une SurfData   dans  les  cas  particuliers
-    --          enumeres ci-dessus.
 
 end ChFiKPart;
 

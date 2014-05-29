@@ -139,6 +139,6 @@ class RWRevolvedFaceSolid;
 	---Package Method ---
 
 --	Init;
-	---Purpose: enforced the initialisation of the  libraries
+-- Enforced the initialisation of the  libraries
 
 end RWStepShape;

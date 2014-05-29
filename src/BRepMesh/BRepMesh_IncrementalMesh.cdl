@@ -19,8 +19,8 @@ class IncrementalMesh from BRepMesh
 inherits DiscretRoot from BRepMesh
 
     ---Purpose: Builds the mesh of a shape with respect of their
-    --          correctly triangulated parts
-    --
+    --          correctly triangulated parts.
+    --          Meshes faces from a Shape only if necessary.
 
 uses
     Box from Bnd,

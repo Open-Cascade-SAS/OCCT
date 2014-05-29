@@ -24,6 +24,7 @@ class TranslateTool1 from MgtBRep inherits TranslateTool1 from MgtTopoDS
 
 	---Purpose: The TranslateTool1 class is provided to support the
 	--          translation of BRep topological data structures.
+	--          Used to call the MgtTopoDS methods.
 uses
 
     TransientPersistentMap from PTColStd,

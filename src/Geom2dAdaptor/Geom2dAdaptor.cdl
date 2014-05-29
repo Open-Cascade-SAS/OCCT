@@ -33,7 +33,6 @@ is
 
  
       class Curve; 
-       ---Purpose: Similar to Curve2d from Adaptor2d with a Curve from Geom2d.
 
       private class GHCurve instantiates GenHCurve2d from Adaptor2d
     	    (Curve from Geom2dAdaptor);

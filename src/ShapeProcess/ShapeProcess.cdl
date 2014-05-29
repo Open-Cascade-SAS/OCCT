@@ -40,18 +40,15 @@ uses
 is
 
     class Context; 
-    	---Purpose: Provides general context for processing (resource file)
+
     	class ShapeContext;
-	    ---Purpose: Extends context to support processing of the shape
 
     deferred class Operator;
-    	---Purpose: Defines interface to Operator which do the job
+
 	primitive OperFunc;
 	class UOperator;
-	    ---Purpose: Customizable operator-container loaded by OperFunc
 
     class OperLibrary;
-    	---Purpose: Provides standard set of operators
 
     class DictionaryOfOperator instantiates 
     	  Dictionary from Dico (Operator from ShapeProcess);

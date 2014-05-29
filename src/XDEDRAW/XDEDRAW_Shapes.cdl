@@ -15,7 +15,7 @@
 
 class Shapes from XDEDRAW 
 
-    ---Purpose: Contains commands to work with shapes
+    ---Purpose: Contains commands to work with shapes and assemblies
 
 uses
     Interpretor from Draw

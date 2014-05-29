@@ -17,6 +17,9 @@
 #include <SelectMgr_SortCriterion.hxx>
 #include <TCollection_CompareOfInteger.hxx>
 
+// Purpose: Redefine CompareOfInteger from TCollection, to be used
+// in method SortResult from class ViewerSelector
+
 class SelectMgr_CompareResults: public TCollection_CompareOfInteger
 {
  public:

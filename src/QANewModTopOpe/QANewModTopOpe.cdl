@@ -38,16 +38,12 @@ is
     pointer  CommonPtr  to  Common  from  BRepAlgoAPI;
 				       
     class Tools; 
-        ---Purpose: to  provide  several  tools  for  porting  to  OCC  5.0  (mkk)
 
     class  Limitation;  
-    	---Purpose: to  provide  cutting  object  by  face  or  shell. 
 
     class  Intersection;  
-    	---Purpose: to  provide  intersection  of  two  topological  objects.  
-	 
+
     class Glue;                     ---  inherits BooleanOperation from BRepAlgoAPI
-    	---Purpose: to  provide  topological  sewing  of  two  topological  objects.  
 
     class ReShaper;
     	---Purpose: to remove  "floating" objects from compound.

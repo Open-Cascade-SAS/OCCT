@@ -15,6 +15,9 @@
 -- commercial license or contractual agreement.
 
 class Iso from AdvApp2Var
+    ---Purpose :
+    -- used to store constraints on a line U = Ui or V = Vj
+    --
 
 uses
 

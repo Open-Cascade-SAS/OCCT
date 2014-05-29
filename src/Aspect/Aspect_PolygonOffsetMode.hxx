@@ -16,6 +16,8 @@
 #ifndef ASPECT_POLYGONOFFSETMODE_HEADER
 #define ASPECT_POLYGONOFFSETMODE_HEADER
 
+// Enumeration for polygon offset modes
+
 typedef enum 
 {
   Aspect_POM_Off   = 0x00,  /* all polygon offset modes disabled                     */

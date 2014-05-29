@@ -42,20 +42,15 @@ uses
 is
 
     class Curve;
-    	---Purpose: Tool for adjusting 3d and 2d curve
 
     class ProjectCurveOnSurface;
-    	---Purpose: Tool for computing pcurve by projecting 3d curve on a surface
+
     ---WARNING: The following two classes are just a copy of those from GEOMLITE
     --          They must be removed as soon as bug in them is fixed	
 
     class CompBezierCurvesToBSplineCurve;
-    	---Purpose: Converts a list of connecting BezierCurves
-	--          into a B-spline curve.
 
     class CompBezierCurves2dToBSplineCurve2d;
-	---Purpose: Converts a list of connecting BezierCurves
-	--          into a B-spline curve.	
 
     class MakeTriangulation;
     	---Purpose: Tool for wire triangulation

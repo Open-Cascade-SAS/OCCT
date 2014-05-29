@@ -16,7 +16,7 @@
 
 class FixSmallFace from ShapeFix inherits Root from ShapeFix
 
-	---Purpose: 
+	---Purpose: Fixing face with small size
 
 uses
     Shape from TopoDS,

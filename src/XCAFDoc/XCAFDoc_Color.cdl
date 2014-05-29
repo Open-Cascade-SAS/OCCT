@@ -15,7 +15,7 @@
 
 class Color from XCAFDoc inherits     Attribute from TDF
 
-	---Purpose: 
+	---Purpose: attribute to store color
 
 uses
     Color from Quantity,

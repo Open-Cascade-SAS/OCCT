@@ -25,7 +25,7 @@ deferred class TranslateTool1 from MgtTopoDS inherits TShared from MMgt
 	---Purpose: The TranslateTool1 class is provided to support the
 	--          translation of inherited parts of topological data
 	--          structures.
-
+	--          Root of all translation tools.
 uses
 
     TransientPersistentMap from PTColStd,

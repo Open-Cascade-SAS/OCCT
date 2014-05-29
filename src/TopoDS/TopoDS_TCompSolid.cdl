@@ -15,6 +15,7 @@
 -- commercial license or contractual agreement.
 
 class TCompSolid from TopoDS inherits TShape from TopoDS
+	---Purpose: A set of solids connected by their faces.
 
 uses
     ShapeEnum from TopAbs

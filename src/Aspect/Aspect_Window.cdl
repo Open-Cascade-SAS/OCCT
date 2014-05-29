@@ -14,7 +14,7 @@
 -- commercial license or contractual agreement.
 
 deferred class Window from Aspect
-
+        ---Purpose: Defines a window.
 inherits
 	TShared from MMgt
 

@@ -16,7 +16,9 @@
 class GraphNode from XCAFDoc inherits Attribute from TDF
 
 	---Purpose: This attribute allow user multirelation tree of labels.
-    	-- This GraphNode is experimental Graph that not control looping and redundance.
+    -- This GraphNode is experimental Graph that not control looping and redundance.
+    -- Attribute containg sequence of father's and child's labels.
+    -- Provide create and work with Graph in XCAFDocument.
 uses
 
   GUID              from Standard,   

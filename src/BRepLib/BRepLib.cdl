@@ -93,10 +93,8 @@ is
     end ShapeModification;
 
     deferred class Command;
-	---Purpose: Root class for all BRepBuilderAPI commands.
 
     deferred class MakeShape;
-	---Purpose: Root class for all shape constructions.
 
     -- 
     -- Construction of topology from geometry
@@ -131,7 +129,6 @@ is
 
 
     class FindSurface;
-	---Purpose: Find a surface in a set of edges.
 
     class FuseEdges;
 	---Purpose: 

@@ -60,17 +60,12 @@ is
     exception NotDefined    inherits Failure;
     
     generic class CLProps;
-    	---Purpose: Computation of local properties of a curve.
-    generic class SLProps;
-    	---Purpose: Computation of local properties of a surface.
 
-							    
+    generic class SLProps;
+
     class CurAndInf;	
-    	---Purpose: Stores the parameters of a curve 2d or 3d corresponding
-	--          to the curvature's extremas and the inflection's points.
-    
+
     class AnalyticCurInf;
-    	---Purpose: Computes the locals extremas of curvature of a gp curve.
 
     private class SequenceOfCIType instantiates Sequence from TCollection 
 						        (CIType  from  LProp); 

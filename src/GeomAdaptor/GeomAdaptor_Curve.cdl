@@ -18,7 +18,8 @@ class Curve from GeomAdaptor inherits Curve from Adaptor3d
         
     	---Purpose: This class provides an interface between the services provided by any
     	-- curve from the package Geom and those required of the curve by algorithms which use it.
-        
+      -- Creation of the loaded curve the curve is C1 by piece.
+
 uses Vec                  from gp,
      Pnt                  from gp,
      Circ                 from gp,

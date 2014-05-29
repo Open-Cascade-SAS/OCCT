@@ -21,6 +21,7 @@ class ConstrainedFilling from GeomFill
     	-- constraints and optionally, as tangency constraints.
     	-- The algorithm accepts three or four curves as the
     	-- boundaries of the target surface.
+    -- The only FillingStyle used is Coons.
     	-- A ConstrainedFilling object provides a framework for:
     	-- -   defining the boundaries of the surface
     	-- -   implementing the construction algorithm

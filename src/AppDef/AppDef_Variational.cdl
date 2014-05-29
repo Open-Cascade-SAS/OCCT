@@ -23,7 +23,8 @@ class Variational from AppDef
     ---Purpose: This class is used to smooth N points with constraints
     --          by   minimization  of quadratic  criterium   but  also
     --          variational criterium in order to obtain " fair Curve "
-    --          
+    --          Computes the approximation of a Multiline by
+    --          Variational optimization.
 
 uses Matrix                    from math,
      Vector                    from math,

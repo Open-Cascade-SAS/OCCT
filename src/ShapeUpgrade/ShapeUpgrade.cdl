@@ -68,14 +68,11 @@ is
     	class ShapeDivideArea;
     
     class ShapeDivideContinuity;    
-    	---Purpose: API Tool for converting shapes with C0 geometry into C1 ones
-    
+
     class ShapeDivideAngle;
-    	---Purpose: API Class for splitting revolutions to segments less than 90
 
     class ShapeConvertToBezier;
-    	---Purpose: API Class for convering curves to beziers.
-	
+
     class ShapeDivideClosed;
     	---Purpose:
 	
@@ -97,18 +94,16 @@ is
 	class SplitSurfaceArea;
 	
     class ShellSewing;
-    	---Purpose: Provides access to a sewing algorithms from BRepOffsetAPI
+
     class FixSmallCurves;
     ---Purpose:
     class FixSmallBezierCurves;
     ---Purpose:
     
     class RemoveLocations;
-    ---Purpose: Removes all locations sub-shapes of specified shape
-    
+
     class RemoveInternalWires;
-    ---Purpose: Removes all internal wires having area less than specified min area
-    
+
     class UnifySameDomain;
     ---Purpose: Unifies same domain faces and edges of specified shape
     

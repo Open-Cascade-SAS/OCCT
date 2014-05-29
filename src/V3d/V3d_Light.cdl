@@ -23,7 +23,7 @@
 deferred class Light from V3d 
 
     	---Purpose: Defines services on Light type objects.. 
-
+       --         (base class for AmbientLight and PositionLight)
 
 
 inherits 

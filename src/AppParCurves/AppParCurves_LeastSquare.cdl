@@ -19,12 +19,15 @@ generic class LeastSquare from AppParCurves
 		     ToolLine    as any)   -- as ToolLine(MultiLine)
 
 
-    ---Purpose: This class describes the least square fitting of a 
+    ---Purpose: This class describes the least square fitting of a
     --          MultiLine using the Householder method from the
     --          mathematical package.
+    --          Computes in parallel the least square resolution of a
+    --          set of points (MultiLine). The result is a
+    --          set of Bezier curves (MultiCurve).
     --          The problem to solve is the following one:
     --          minimizing the sum(|C(ui)- Qi|)2 where Qi are the points of
-    --          the MultiLine and C(ui) the points of the approximating 
+    --          the MultiLine and C(ui) the points of the approximating
     --          curves.
 
 

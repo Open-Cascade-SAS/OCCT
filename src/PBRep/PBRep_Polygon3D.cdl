@@ -16,7 +16,7 @@
 
 class Polygon3D from PBRep inherits CurveRepresentation from PBRep
 
-	---Purpose: 
+	---Purpose: Representation by a 3D polygon.
 
 uses
     Polygon3D           from PPoly,

@@ -17,7 +17,8 @@
 class TShell1 from PTopoDS inherits TShape1 from PTopoDS
 
 	---Purpose: A topological  Shell1 shape.
-
+	--          A set of Faces or Shells, a topological surface or
+	--          any faces structure.
 uses
     ShapeEnum from TopAbs
 

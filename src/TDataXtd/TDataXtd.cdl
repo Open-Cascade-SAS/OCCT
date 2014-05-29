@@ -109,13 +109,11 @@ is
     deferred class Pattern;
 	
         class PatternStd;
-	        ---Purpose: LinearPattern, CircularPattern, RectangularPattern, 
-	        --          RadialCircularPattern, MirrorPattern
-   
+
     class Shape;         
     
-    ---Purpose: tools
-    --          =====
+    ---Category: tools
+    --           =====
 
     class Array1OfTrsf instantiates Array1 from TCollection (Trsf from gp);
        	

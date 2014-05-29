@@ -48,17 +48,12 @@ uses ChFiDS,
 
 is
     deferred class Builder;
-    ---Purpose: Structure and methods common for the construction 
-    --          of fillets  and  chamfers 3d.
 
     class ChBuilder;
-    ---Purpose: Tool constructing chamfers on a solid.
 
     class FilBuilder;
-    ---Purpose: Outil de construction de conges sur un solide.
-    
+
     private class SearchSing;
-     ---Purpose: Searches   singularities on fillet
 
     enumeration FilletShape is
     	Rational,

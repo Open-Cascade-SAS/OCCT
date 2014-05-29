@@ -32,7 +32,7 @@ class Trsf   from gp   inherits Storable
         --    where {V1, V2, V3} defines the vectorial part of the
         --    transformation and T defines the translation part of the 
         --    transformation.
-
+        --  This transformation never change the nature of the objects.
  
 
 uses Ax1      from gp,

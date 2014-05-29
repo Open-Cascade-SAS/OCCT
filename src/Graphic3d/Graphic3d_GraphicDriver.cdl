@@ -19,7 +19,7 @@ deferred class GraphicDriver from Graphic3d inherits TShared
     ---Version:
 
     ---Purpose: This class allows the definition of a graphic driver
-    --      (currently only OpenGl driver is used).
+    --      for 3d interface (currently only OpenGl driver is used).
 
     ---Keywords: OpenGl
 

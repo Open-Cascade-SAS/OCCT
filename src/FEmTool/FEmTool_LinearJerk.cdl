@@ -16,7 +16,7 @@
 
 class LinearJerk from FEmTool inherits ElementaryCriterion from FEmTool  
 
-	---Purpose: Criterion of LinearFlexion To Hermit-Jacobi  elements      
+	---Purpose: Criterion of LinearJerk To Hermit-Jacobi  elements
 
 uses
    Vector  from  math, 

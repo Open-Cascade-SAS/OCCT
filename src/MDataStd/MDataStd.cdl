@@ -33,8 +33,8 @@ uses TDF,
 
 is
 
-    	---Purpose: Storage drivers for TDataStd attributes
-    	--          =======================================
+    ---Category: Storage drivers for TDataStd attributes
+    --           =======================================
 
 	
         class DirectoryStorageDriver;
@@ -80,8 +80,8 @@ is
         class AsciiStringStorageDriver; 
         class IntPackedMapStorageDriver; 
     
-    	---Purpose: Retrieval drivers for PDataStd attributes
-    	--          =========================================
+    ---Category: Retrieval drivers for PDataStd attributes
+    --           =========================================
 
         class DirectoryRetrievalDriver;
 

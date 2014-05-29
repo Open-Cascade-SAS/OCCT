@@ -15,7 +15,7 @@
 
 class DimTol from XCAFDoc inherits Attribute from TDF
 
-	---Purpose: 
+	---Purpose: attribute to store dimension and tolerance
 
 uses
     Label from TDF,

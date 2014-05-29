@@ -16,9 +16,10 @@
 
 class TranslateTool from TNaming inherits  TShared from MMgt
 
-	---Purpose: The TranslateTool class is provided to support the          
-        --          translation of topological data structures  Transient 
-    	--  .       to  Transient.
+	---Purpose: tool to copy underlying TShape of a Shape.
+        --    The TranslateTool class is provided to support the
+        --    translation of topological data structures  Transient
+        --    to  Transient.
 
 uses 
      Shape                  from TopoDS, 

@@ -26,10 +26,8 @@ uses
 
 is
     class Persistent;
-    ---Purpose: root for XML-persistence
 
     class GP;
-    ---Purpose: translation of gp objects
 
     imported DOMString;
     imported Document;

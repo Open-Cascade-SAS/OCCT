@@ -28,17 +28,13 @@ uses TDF,
 
 is
 
-    	    ---Purpose: Storage drivers for graphic attributes from
-    	    --          TPrsStd
     	    ---Category: StorageDriver
 
 	class AISPresentationStorageDriver;
 	class PositionStorageDriver;
-	
-    	    ---Purpose: Retrieval drivers for graphic attributes from
-    	    --          PPrsStd
-    	    ---Category: RetrievalDriver
 
+
+        ---Category: RetrievalDriver
 
         class AISPresentationRetrievalDriver;
         class AISPresentationRetrievalDriver_1;	

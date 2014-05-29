@@ -93,16 +93,8 @@ is
   --                otherwise - externally
 
   class Presentation;
-  ---Purpose: defines the presentation object. This object can be
-  --          displayed, highlighted, erased, etc... The output
-  --          of the presentation algorithms are sent in a
-  --          presentation object. A presentation object is attached
-  --          to a given Viewer.
 
 	---Category: Aspect classes.
-	---Purpose: The aspect classes qualifies how to represent
-	--          a given kind of object.
-	--          
 
   deferred class BasicAspect;	
   class PointAspect;
@@ -117,24 +109,12 @@ is
   imported DimensionUnits;
 
   class Drawer;
-	---Purpose: qualifies how the presentation algorithms compute
-	--          the presentation of a specific kind of object. 
-	--          This includes for example color, width and type
-	--          of lines, maximal chordial deviation, etc...
-	--          A drawer includes an instance of the Aspect classes
-	--          with particular default values.
-	
+
   class Projector;
-	---Purpose: defines the projection parameters for the hidden
-	--          lines removal algorithm.
-	
+
   class PlaneSet;
-	---Purpose: defines a set of planes used for a presentation
-	--          by sections.
-	-- 
 
   deferred class Root;
-	---Purpose: defines the root of the presentation algorithms.
 
   ---Category: Basis construction elements.
 
@@ -143,8 +123,6 @@ is
         ---Category: Class signatures.
 
 	class ShapeTool;
-	---Purpose: describes the behaviour requested for a wireframe
-	--          shape presentation.
 
   class Arrow;
 	---Purpose: draws an arrow at a given location, with respect

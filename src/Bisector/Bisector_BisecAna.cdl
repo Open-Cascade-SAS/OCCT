@@ -16,7 +16,9 @@
 
 class BisecAna from Bisector
 
-    --- Purpose :
+    --- Purpose : This class provides the bisecting line between two
+    --            geometric elements.The elements are Circles,Lines or
+    --            Points.
 
 inherits
 

@@ -15,7 +15,8 @@
 -- commercial license or contractual agreement.
 
 class PlateG0Criterion from GeomPlate inherits Criterion from AdvApp2Var
-
+    ---Purpose:
+    -- this class contains a specific G0 criterion for GeomPlate_MakeApprox
 
 uses
     SequenceOfXY,SequenceOfXYZ from TColgp,

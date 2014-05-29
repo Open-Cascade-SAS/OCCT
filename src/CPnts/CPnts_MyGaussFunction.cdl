@@ -16,6 +16,7 @@
 
 private class MyGaussFunction from CPnts 
 inherits Function from math
+       ---Purpose: for implementation, compute values for Gauss
 
 uses
     RealFunction from CPnts

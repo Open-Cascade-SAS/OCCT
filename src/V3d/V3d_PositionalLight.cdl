@@ -23,7 +23,7 @@ class PositionalLight from V3d
         ---Version:
 
 	---Purpose: Creation and modification of an isolated
-	--          light source.
+	--          (positional) light source.
 
         ---Keywords: Light,Positional 
 

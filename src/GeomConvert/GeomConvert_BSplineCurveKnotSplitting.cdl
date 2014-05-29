@@ -22,7 +22,8 @@ class BSplineCurveKnotSplitting   from GeomConvert
     	-- If you require curves with a minimum continuity for
     	-- your computation, it is useful to know the points
     	-- between which an arc has a continuity of a given
-    	-- order. For a BSpline curve, the discontinuities are
+      -- order. The continuity order is given at the construction time.
+      -- For a BSpline curve, the discontinuities are
     	-- localized at the knot values. Between two knot values
     	-- the BSpline is infinitely and continuously
     	-- differentiable. At a given knot, the continuity is equal

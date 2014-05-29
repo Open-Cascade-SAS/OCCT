@@ -17,7 +17,7 @@
 class MakePln from gce inherits Root from gce
 
     ---Purpose : This class implements the following algorithms used 
-    --           to create a Pln from gp.
+    --           to create a Plane from gp.
     --           * Create a Pln parallel to another and passing 
     --             through a point.
     --           * Create a Pln passing through 3 points.

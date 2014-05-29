@@ -17,6 +17,8 @@
 class SurfRstConstRad from BRepBlend
 inherits SurfRstFunction from Blend
 
+    ---Purpose: Copy of CSConstRad with pcurve on surface
+    --          as support.
 
 uses Vector          from math,
      Matrix          from math,

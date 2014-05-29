@@ -24,7 +24,5 @@ uses Standard
 
 is
     deferred class TShared;
-    ---Purpose:
-    --   Intermediate class between Standard_Transient and descendants.
 
 end MMgt;

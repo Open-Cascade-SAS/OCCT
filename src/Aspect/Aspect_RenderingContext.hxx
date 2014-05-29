@@ -17,6 +17,7 @@
 /*==== "V3d"                                                           */
 /*==== Implementation:  This is a primitive type implemented with typedef     */
 /*============================================================================*/
+// To manage 2D or 3D graphic context
 
 #ifndef _Aspect_RenderingContext_HeaderFile
 #define _Aspect_RenderingContext_HeaderFile

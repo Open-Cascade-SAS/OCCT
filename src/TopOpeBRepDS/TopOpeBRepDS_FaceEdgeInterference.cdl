@@ -16,6 +16,7 @@
 
 class FaceEdgeInterference from TopOpeBRepDS 
     inherits ShapeShapeInterference from TopOpeBRepDS
+    ---Purpose: ShapeShapeInterference
 
 uses
 

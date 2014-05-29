@@ -59,61 +59,37 @@ is
 
         
     class DocumentTool;
-    	---Purpose: Defines sections structure of an XDE document.
-    	--          attribute marking CAF document as being DECAF document.
-    	--          Creates the sections structure of the document.
     
     class Location;
-    	---Purpose: attribute to store TopLoc_Location
     
     class Color;
-    	---Purpose: attribute to store color
     
     class DimTol;
-    	---Purpose: attribute to store dimension and tolerance
     
     class Datum;
-    	---Purpose: attribute to store datum
     
     class Material;
-    	---Purpose: attribute to store material
     
     class Volume;
-    	---Purpose: attribute to store volume
 
     class Area;
-    	---Purpose: attribute to store area
 
     class Centroid;
-    	---Purpose: attribute to store centroid
 
     class ShapeTool;
-    	---Purpose: attribute containing Shapes section of DECAF document.
-    	--          Provide tools for management of Shapes section.
 
     class ShapeMapTool;
-    	---Purpose: attribute containing map of sub shapes
 
     class ColorTool;
-    	---Purpose: attribute containing Colors section of DECAF document.
-    	--          Provide tools for management of Colors section of document.
     
     class DimTolTool;
-    	---Purpose: attribute containing DimTol section of DECAF document.
-    	--          Provide tools for management of DimTol section of document.
-    
+
     class LayerTool;
-    	---Purpose: attribute containing Layers section og DECAF document.
-	--    	    Provide tools for management of Layers section of document.
 
     class MaterialTool;
-    	---Purpose: attribute containing Materials section og DECAF document.
-	--    	    Provide tools for management of Materialss section of document.
 
     class GraphNode;
-	---Purpose: attribute containg sequence of father's and chaild's labels.
-	--          Provide create and work with Graph in XCAFDocument.
-	
+
     class GraphNodeSequence instantiates Sequence from TCollection
     	(GraphNode from XCAFDoc);
     	---Purpose: class for containing GraphNodes.

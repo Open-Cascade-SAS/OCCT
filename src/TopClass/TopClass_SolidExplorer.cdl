@@ -17,7 +17,8 @@
 deferred class SolidExplorer from TopClass 
 
 	---Purpose: Provide an   exploration of a  BRep Shape   for the
-	--          classification.
+	--          classification. Defines the description of a solid for the
+  --          SolidClassifier.
 
 uses
     Pnt          from gp,

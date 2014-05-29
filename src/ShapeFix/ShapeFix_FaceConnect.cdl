@@ -16,7 +16,7 @@
 
 class FaceConnect  from ShapeFix
 
-    ---Purpose : 
+    ---Purpose : Rebuilds connectivity between faces in shell
 
 uses 
     DataMapOfShapeListOfShape from TopTools,

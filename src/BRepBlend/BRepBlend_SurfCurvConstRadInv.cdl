@@ -18,7 +18,9 @@ class SurfCurvConstRadInv from BRepBlend
 
 inherits SurfCurvFuncInv from Blend
 
-    ---Purpose: Class     used   to   compute  a    solution   of  the
+    ---Purpose: Function of reframing between a restriction surface of the
+    --          surface and a curve.
+    --          Class     used   to   compute  a    solution   of  the
     --          surfRstConstRad  problem  on a done restriction of the
     --          surface.          
     --          The vector  <X> used in  Value, Values and Derivatives

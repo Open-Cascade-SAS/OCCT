@@ -16,7 +16,7 @@
 
 class LinkTopoBilo from BRepMAT2d 
 
-	---Purpose:Constucts links between the Face of the explorer and
+	---Purpose:Constucts links between the Wire or the Face of the explorer and
     	--         the BasicElts contained in the bisecting locus. 
 
 uses

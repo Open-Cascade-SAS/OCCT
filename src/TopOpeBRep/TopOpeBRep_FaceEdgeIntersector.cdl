@@ -16,7 +16,7 @@
 
 class FaceEdgeIntersector from TopOpeBRep
 
-	---Purpose: 
+	---Purpose: Describes the intersection of a face and an edge.
 
 uses
 

@@ -15,7 +15,9 @@
 -- commercial license or contractual agreement.
 
 class Vertex from PTopoDS inherits HShape from PTopoDS
-
+	---Purpose: A Vertex  is  a TVertex  with a  Location   and an
+	--          Orientation.
+	--          It inherits HShape
 is
     Create returns Vertex from PTopoDS;
     	---Level: Internal 

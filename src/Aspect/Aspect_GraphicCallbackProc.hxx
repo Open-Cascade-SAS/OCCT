@@ -14,6 +14,8 @@
 #ifndef _Aspect_GraphicCallbackProc_HeaderFile
 #define _Aspect_GraphicCallbackProc_HeaderFile
 
+// To manage client post display
+
 #include <Aspect_Display.hxx>
 #include <Aspect_Drawable.hxx>
 #include <Aspect_RenderingContext.hxx>

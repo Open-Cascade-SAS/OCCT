@@ -20,6 +20,7 @@ inherits FunctionWithDerivative from math
 
 ---Purpose: Implements a function for the Newton algorithm to find the
 --          solution of Integral(F) = L
+--          (compute Length  and Derivative of the curve for Newton)
 
 uses
     MyGaussFunction from CPnts,

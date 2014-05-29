@@ -19,6 +19,7 @@ class FontMap from Aspect inherits TShared from MMgt
 	---Version: 0.0
 
 	---Purpose: This class defines a FontMap object.
+	--          Associates an index and a text Font entry.
 	---Keywords:
 	---Warning:
 	---References:

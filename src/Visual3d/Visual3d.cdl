@@ -198,56 +198,24 @@ is
     ------------------------
 
     class ContextPick;
-    ---Purpose: This class allows the creation and update of a
-    --      pick context for one view of the viewer.
-    --      A context allows the control of different parameters
-    --      before the activation of a pick :
-    --
-    --      * pick aperture.
-    --      * the depth of pick, the number of sub-structures selected.
-    --      * the order of picking, the possibility to traverse
-    --        the pick structures starting from the roots or the leaves.
     ---Category: The classes
 
     class ContextView;
-    ---Purpose: This class manages the creation and update of a
-    --      visualisation context for one view in the viewer.
-    --
-    --      A context is defined by :
-    --      * Antialiasing.
-    --      * ZClipping.
-    --      * Depth-cueing.
-    --      * The type of visualisation.
-    --      * The light sources.
     ---Category: The classes
 
     class Light;
-    ---Purpose: This class defines and updates light sources.
-    --      There is no limit to the number of light sources defined.
-    --      Only the number of active sources is limited.
     ---Category: The classes
 
     class View;
-    ---Purpose: Creation and editing of a view in a 3D visualiser.
-    --
-    --      A 3D view is composed of an 'orientation' part defined
-    --      by the position of the observer, the viewing direction,
-    --      and a 'mapping' part defined by the type of projection
-    --      (parallel or perspective), and by the window-viewport
-    --      couple which allows passage from the projected coordinate
-    --      space into the screen space.
     ---Category: The classes
 
     class ViewManager;
-    ---Purpose: 3D Visualiser
     ---Category: The classes
 
     class Layer;
-    ---Purpose: 2D Layer
     ---Category: The classes
 
         class LayerItem;
-    ---Purpose: 2D Layer presentation unit
     ---Category: The classes
 
         ---------------------

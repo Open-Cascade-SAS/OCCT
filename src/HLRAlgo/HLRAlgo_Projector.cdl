@@ -16,6 +16,7 @@
 
 class Projector from HLRAlgo
 ---Purpose: Implements a  projector object.
+-- To transform and project Points and Planes.
 -- This object is designed to be used in the
 -- removal of hidden lines and is returned by the
 -- Prs3d_Projector::Projector function.

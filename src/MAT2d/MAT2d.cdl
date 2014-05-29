@@ -34,34 +34,18 @@ uses
 is
 
     deferred class SketchExplorer;
-    	---Purpose: SletchExplorer contains an iterator on a set of geometrys 
-	--          from Geom2d. It's use by BisectingLocus.
-	
-    
+
     class Tool2d;
-    	---Purpose: Tool2d contains  the geometrys of  the map. Tool2d
-   	--          contains the set  of the geometric's methode  used for 
-        --          the map's  computation.
 
     class Mat2d;
-        --- Purpose: The Algorithm of Computation of the Map of 
-        --           bisecting locus.
 
     class Connexion;
-    	---Purpose: a Connexion links two lines.  
 
     class MiniPath;
-        ---Purpose: MiniPath computes one minimum path  to link all the
-        --          lines of a set. 
-				
+
     class Circuit;
-    	---Purpose: EquiCircuit gives a Circuit passing by all the lines
-    	--          in a set and all the connexions of the minipath associated.
-	    
+
     class CutCurve;   
-    	---Purpose: Cuts a curve at the extremas of curvature
-	--          and at the inflections. Constructs a trimmed
-	--          Curve for each interval.
 
     class SequenceOfConnexion instantiates Sequence  from TCollection
     	    	    	    	    	    	     (Connexion from  MAT2d); 

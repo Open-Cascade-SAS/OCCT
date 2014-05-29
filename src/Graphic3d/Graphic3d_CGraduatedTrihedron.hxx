@@ -25,6 +25,7 @@
 
 class Visual3d_View;
 
+//! Defines the C structure of a graduated trihedron.
 class Graphic3d_CGraduatedTrihedron
 {
 public:

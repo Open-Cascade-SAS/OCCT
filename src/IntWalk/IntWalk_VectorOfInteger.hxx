@@ -19,6 +19,8 @@
 #include <vector>
 #include <NCollection_StdAllocator.hxx>
 
+// Defines a dynamic vector of integer.
+
 typedef std::vector<Standard_Integer, NCollection_StdAllocator<Standard_Integer> >
     IntWalk_VectorOfInteger;
 

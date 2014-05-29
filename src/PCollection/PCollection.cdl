@@ -37,10 +37,6 @@ is
 
 	generic class HSequence,SeqNode,SeqExplorer;
 
-		---Purpose: Generic sequence of elements
-		-- indexed by an integer in the range 1..N.
-
-	
         class HAsciiString;
 
 	class HExtendedString;

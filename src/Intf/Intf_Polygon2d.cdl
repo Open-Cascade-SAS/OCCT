@@ -15,7 +15,8 @@
 
 deferred class Polygon2d from Intf
 
-	---Purpose: 
+	---Purpose: Describes the necessary polygon information to compute
+    --        the interferences.
 
 uses Pnt2d from gp,
      Box2d from Bnd

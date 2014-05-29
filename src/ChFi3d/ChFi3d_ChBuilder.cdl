@@ -16,7 +16,7 @@
 
 class ChBuilder from ChFi3d inherits Builder from ChFi3d
 
-	---Purpose: construction tool for 3D chamfers on edges.
+	---Purpose: construction tool for 3D chamfers on edges (on a solid).
 
 uses
     Shape              from TopoDS,

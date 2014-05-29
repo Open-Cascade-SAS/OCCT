@@ -19,6 +19,8 @@ deferred class TShared from MMgt
 inherits Transient from Standard
 
   ---Purpose: 
+-- Intermediate class between Standard_Transient
+-- and descendants.
 -- The abstract class TShared is the root class of
 -- managed objects. TShared objects are managed
 -- by a memory manager based on reference

@@ -16,6 +16,10 @@
 
 class Class2d from CSLib
 
+  ---Purpose:
+	  --  *** Class2d    : Low level algorithm for 2d classification
+	  --  this class was moved from package BRepTopAdaptor
+
 uses 
     Pnt2d          from gp,
     Array1OfPnt2d  from TColgp

@@ -38,14 +38,10 @@ is
 
 
     deferred class EntityOwner;
-    ---Purpose: entity able to set multiple owners for a SensitiveEntity;
 
     class SortAlgo; 
-    ---Purpose: sort algorithm for 2D rectangles.
 
     class BasicTool;
-    ---Purpose: give Tools for sorting Selection results
-    --          (example : sensitive entities matching)
 
     class ListOfBox2d instantiates List from TCollection 
     (Box2d from Bnd);
@@ -57,7 +53,6 @@ is
 
 
     deferred class SensitiveEntity;
-    ---Purpose: general entity able to give sensitive areas 
 
 
     class ListOfSensitive instantiates List from TCollection 

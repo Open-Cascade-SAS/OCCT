@@ -27,6 +27,8 @@ class XLinkTool from TDocStd
 	--           Depending  of   the called  method  an   external
 	--          reference is set  in  the the target  document  to
 	--          registred the externallink.
+	--          Provide services to set, update and perform
+  --          external references.
 	--  Warning1: Nothing is provided in this class  about the
 	--          opportunity to copy, set a link or  update  it.
 	--          Such decisions must be under application control. 

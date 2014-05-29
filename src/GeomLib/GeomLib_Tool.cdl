@@ -15,7 +15,8 @@
 
 class Tool from GeomLib
 
----Purpose:   The methods of this class compute the parameter(s) of a given point on a
+---Purpose: Provides various methods with Geom2d and Geom curves and surfaces.
+-- The methods of this class compute the parameter(s) of a given point on a
 -- curve or a surface. The point must be located either
 -- on the curve (surface) itself or relatively to the latter at
 -- a distance less than the tolerance value.

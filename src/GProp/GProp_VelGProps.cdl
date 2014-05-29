@@ -17,9 +17,9 @@
 class VelGProps from GProp  inherits GProps
 
         --- Purpose :
-        --  Computes the global properties of a geometric solid 
-        --  (3D closed region of space) 
-        --  The solid can be elementary(definition in the gp package) 
+        --  Computes the global properties and the volume of a geometric solid
+        --  (3D closed region of space)
+        --  The solid can be elementary(definition in the gp package)
 
 
 uses   	Cone     from gp,

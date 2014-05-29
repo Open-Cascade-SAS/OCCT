@@ -15,7 +15,9 @@
 -- commercial license or contractual agreement.
 
 class Compound from PTopoDS inherits HShape from PTopoDS
-
+	---Purpose: A Compound is a  TCompound with a Location  and an
+	--          Orientation.
+	--          It inherits HShape
 is
     Create returns Compound from PTopoDS;
 	---Level: Internal 

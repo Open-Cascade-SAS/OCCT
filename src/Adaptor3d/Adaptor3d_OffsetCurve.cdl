@@ -16,7 +16,7 @@
 
 class OffsetCurve from Adaptor3d inherits Curve2d from Adaptor2d
 	
-	---Purpose: Defines an Offset curve.
+	---Purpose: Defines an Offset curve (algorithmic 2d curve).
 	--          
 
 uses

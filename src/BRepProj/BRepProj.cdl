@@ -34,9 +34,6 @@ is
 
     
     class  Projection; 
-        ---Purpose: provides  conical  and  cylindrical projections of  
-        --          Edge  or Wire  on  a Shape from TopoDS. The result  
-        --          will be a Edge  or  Wire  from  TopoDS.    
-	
+
 
 end BRepProj;

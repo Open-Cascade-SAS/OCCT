@@ -45,32 +45,23 @@ uses
 is
 
     class Tool;
-    	---Purpose: Basic class providing general features
-	
+
     class UnitContext;
-    	---Purpose: Create and investigate context of units and uncertanties
 
     class Part;
-    	---Purpose: Create and investigate data associated with parts (product etc.)
-	
+
     class Assembly;
-    	---Purpose: Create and check assembly data structures
-    
+
     class Styles;
-    	---Purpose: Create and investigate STEP constructs for styles (mostly colors)
-    
+
     class ValidationProps;
-    	---Purpose: Create and investigate STEP constructs for validation properties
-    
+
     class ExternRefs;
-    	---Purpose: Work with references to external documents
-    
+
     class AP203Context;
-        ---Purpose: maintains context specific to AP203
-    
+
     class ContextTool;
-        ---Purpose: Maintains global context tool for writing
-	
+
     --- skl 15.01.2004
     class DataMapOfAsciiStringTransient instantiates 
     	  DataMap from TCollection (AsciiString from TCollection,

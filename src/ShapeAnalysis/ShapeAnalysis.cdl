@@ -52,74 +52,54 @@ uses
 is
  
     class Geom;
-    	---Purpose: Basic analysis on geometry
-    
+
     class Curve;
-    	---Purpose: Analysis on 2d and 3d curve (projecting points)
-    
+
     class Surface;
-    	---Purpose: Analysis on surface (computing singularities)
-    
+
     class Edge;
-    	---Purpose: Analysis on edge (geometrical and topological querying,
-	--          curves consistency, etc.)    
 
     class Wire;
-    	---Purpose: Comprehensive alysis of the wire lying on the face or surface
-    
+
     class WireOrder;
-        ---Purpose: Analysis of the edges order in the wire
-    
+
     class WireVertex;
-    	---Purpose: Analysis of the vertex in context of the wire
-	
+
     class CheckSmallFace;                                                                                 
-        ---Purpose: Analysis of the face size         
-	
+
     class Shell;		    
-        ---Purpose: Checking orientation in the shell                                                                          
-			
+
     class ShapeTolerance;
-    	---Purpose: Calculating shape tolerances
 
     --class OverlapEdges;  now it is in package OverlapShape of Products
-    	---Purpose: Container for keeping information about
+    --- Container for keeping information about
 	--          overlapping edges
 
     --class CheckCoincidenceTool;  now it is in package OverlapShape of Products
-    	---Purpose: Tool for checking coincidence of faces and edges
+    ---Tool for checking coincidence of faces and edges
 
      -- Class intended for analyzing shape contents
     
     class ShapeContents;
-    	---Purpose: Dumps shape contents
-    
-    
+
     -- Classes intended for free bounds analysis
 
-    class FreeBounds;                                                                                     
-        ---Purpose: Constructing free bounds of the shape                                                 
-                                                                                                          
-    class FreeBoundData;                                                                                  
-        ---Purpose: Data structure for storing free bound                                                 
-    
-    class FreeBoundsProperties;                                                                           
-        ---Purpose: Analysis of properties of free bounds                                                 
-                                                                                                          
+    class FreeBounds;
+
+    class FreeBoundData;
+
+    class FreeBoundsProperties;
+
     class TransferParameters;
-    	---Purpose: Transfers parameters between curve 3d of edge and its pcurves
-	
+
 	class TransferParametersProj;
-	    ---Purpose: Transfers parameters between curve 3d of edge and its 
-    	    --          pcurves. This algorithm uses projection for not 
-    	    --          sameparameter edges.
-    
-    class SequenceOfFreeBounds instantiates                                                               
-        Sequence  from TCollection (FreeBoundData from ShapeAnalysis);                                    
-                                                                                                          
-    class HSequenceOfFreeBounds instantiates                                                              
-        HSequence from TCollection (FreeBoundData        from ShapeAnalysis,                              
-                                    SequenceOfFreeBounds from ShapeAnalysis);                             
+
+    class SequenceOfFreeBounds instantiates
+        Sequence  from TCollection (FreeBoundData from ShapeAnalysis);
+
+    class HSequenceOfFreeBounds instantiates
+        HSequence from TCollection (FreeBoundData        from ShapeAnalysis,
+                                    SequenceOfFreeBounds from ShapeAnalysis);
 
     class DataMapOfShapeListOfReal instantiates
     	DataMap from TCollection(Shape          from TopoDS,

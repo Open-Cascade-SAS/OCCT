@@ -16,7 +16,7 @@
 
 class Blend from BiTgte 
 
-	---Purpose: 
+	---Purpose: Root class
 
 uses
 

@@ -15,7 +15,11 @@
 -- commercial license or contractual agreement.
 
 class ComputeApproxOnPolarSurface from ProjLib 
-
+	---Purpose: Approximate the  projection  of a  3d curve  on an
+	--          polar  surface  and  stores the result  in  Approx.
+	--          The result is a  2d curve.  The evaluation of  the
+	--          current  point of the  2d  curve is done with  the
+	--          evaluation of the extrema  P3d - Surface.
 
 
 uses

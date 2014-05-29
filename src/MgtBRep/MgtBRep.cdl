@@ -81,11 +81,9 @@ is
     -- ---------
 
     class TranslateTool;
-	---Purpose: Auxiliary class used to call the MgtTopoDS methods.
-    
+
     class TranslateTool1;
-	---Purpose: Auxiliary class used to call the MgtTopoDS methods.
-    
+
 
     -- ---------------
     -- Package Methods

@@ -17,7 +17,8 @@
 class RstRstConstRad from BRepBlend
 inherits RstRstFunction from Blend
 
-	---Purpose: 
+    ---Purpose: Copy of CSConstRad with a pcurve on surface
+    --          as support.
 
 uses Vector          from math,
      Matrix          from math,

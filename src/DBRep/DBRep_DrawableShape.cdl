@@ -15,7 +15,8 @@
 -- commercial license or contractual agreement.
 
 class DrawableShape from DBRep inherits Drawable3D from Draw
-    ---Purpose: 
+	---Purpose: Drawable structure to display a  shape. Contains a
+	--          list of edges and a list of faces.
 
 uses  
     Shape           from TopoDS,

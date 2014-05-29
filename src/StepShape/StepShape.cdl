@@ -249,7 +249,6 @@ class HArray1OfShell instantiates HArray1 from TCollection (Shell,Array1OfShell 
     class PointRepresentation;
 
 --	Protocol returns Protocol from StepShape;
-	---Purpose : creates a Protocol
 
 end StepShape;
 

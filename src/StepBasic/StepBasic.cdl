@@ -314,7 +314,6 @@ class Array1OfDocument instantiates Array1 from TCollection (Document);
 class HArray1OfDocument instantiates HArray1 from TCollection (Document,Array1OfDocument from StepBasic);
 
 --	Protocol returns Protocol from StepBasic;
-	---Purpose : creates a Protocol
 
 end StepBasic;
 

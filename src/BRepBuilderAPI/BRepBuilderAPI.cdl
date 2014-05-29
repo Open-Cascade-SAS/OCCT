@@ -231,10 +231,8 @@ is
     end  TransitionMode; 
 
     deferred class Command;
-	---Purpose: Root class for all BRepBuilderAPI commands.
 
     deferred class MakeShape;
-	---Purpose: Root class for all shape constructions.
 
     -- 
     -- Construction of topology from geometry
@@ -260,10 +258,6 @@ is
     -- 
 
     class  Sewing;
-	---Purpose: Provides a tool to
-	--          - identify contigous boundaries (for control
-	--            of continuity: C0, C1, ...)
-	--          - assemble contigous shapes into one shape.
 
     -- 
     --  Construction of composite topologies
@@ -284,9 +278,6 @@ is
     class Transform;
 
     class NurbsConvert ;
-    ---Purpose: converts all 3D analytical representation of surfaces 
-    --          and curves to NURBS execpt for Planes
-    --          
 
     class GTransform;
 

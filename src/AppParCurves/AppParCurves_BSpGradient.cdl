@@ -25,7 +25,7 @@ generic class BSpGradient from AppParCurves
     --          sum(square(|F(i)-Qi|)) by changing the parameter. 
     --          The algorithm used is from of the mathematical 
     --          package: math_BFGS, a gradient method.
-
+    --          The Result is a Bspline set.
 
 
 uses Vector                           from math, 

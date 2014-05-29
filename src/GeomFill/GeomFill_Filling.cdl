@@ -15,7 +15,7 @@
 -- commercial license or contractual agreement.
 
 class Filling from GeomFill
-
+	---Purpose: Root class for Filling;
 
 uses
     Array1OfPnt    from TColgp,

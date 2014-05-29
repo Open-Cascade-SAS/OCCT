@@ -13,6 +13,7 @@
 -- commercial license or contractual agreement.
 
 class ArrayOfTriangleFans from Graphic3d inherits ArrayOfPrimitives from Graphic3d 
+    ---Purpose: Contains triangles fan array definition
 
 is
 

@@ -40,6 +40,7 @@ class Triangulation from Poly inherits TShared from MMgt
         -- exact representation of a surface. A triangular
         -- representation induces simpler and more robust adjusting,
         -- faster performances, and the results are as good.
+        -- This is a Transient class.
 
 uses
    HArray1OfPnt2d    from TColgp,

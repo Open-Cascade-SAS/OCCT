@@ -17,6 +17,8 @@
 class LineConstructor from IntTools
 
         ---Purpose: Splits given Line.
+        --          Class provides post-processing of results of
+        --          surfaces intersection
 
 uses Line           from IntPatch,
      TopolTool      from Adaptor3d,

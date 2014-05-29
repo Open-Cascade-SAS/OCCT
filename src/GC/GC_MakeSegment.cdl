@@ -16,14 +16,16 @@
 
 class MakeSegment from GC inherits Root from GC
 
-    	--- Purpose: Implements construction algorithms for a line
-    	-- segment in 3D space. The result is a Geom_TrimmedCurve curve.
-    	-- A MakeSegment object provides a framework for:
-    	-- -   defining the construction of the line segment,
-    	-- -   implementing the construction algorithm, and
-    	-- -   consulting the results. In particular, the Value
-    	--   function returns the constructed line segment.
-        
+    --- Purpose: Implements construction algorithms for a line
+    -- segment in 3D space.
+    -- Makes a segment of Line from the 2 points <P1> and <P2>.
+    -- The result is a Geom_TrimmedCurve curve.
+    -- A MakeSegment object provides a framework for:
+    -- -   defining the construction of the line segment,
+    -- -   implementing the construction algorithm, and
+    -- -   consulting the results. In particular, the Value
+    --   function returns the constructed line segment.
+
 uses Pnt          from gp,
      Real         from Standard,
      Lin          from gp,

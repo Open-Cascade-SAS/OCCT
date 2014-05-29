@@ -23,7 +23,7 @@
 -- modified by ofv Thu Apr  8 14:45:35 2004 fip
 
 class MaillageAffinage from IntPolyh
-
+    ---Purpose: Provide the algorythms used in the package
 
 uses
     Box                 from Bnd,

@@ -34,11 +34,9 @@ uses
 is
 
     class Vertex;
-    	---Purpose: Provides low-level functions used for constructing vertices
-	
+
     class Edge;
-    	---Purpose: Provides low-level functions used for rebuilding edge
-	
+
     class ReShape;
     	---Purpose: Rebuilds a shape with substitution of some components
 

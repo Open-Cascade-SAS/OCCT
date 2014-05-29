@@ -70,44 +70,18 @@ enumeration ValueType
 
 
   class GProps;
-        --- Purpose :
-        --  Computes the global properties of a compound geometric 
-        --  system in 3d space.  It gives facilities to compose the
-        --  properties of hetegogeneous elements of the system 
-        --  (PGProps, CGProps, SGProps, VGProps or GProps). A density 
-        --  can be associated with each component of the system.
-
 
        class PGProps;
-           --- Purpose :
-           --  Computes the global properties of a set of points in 3d.
-           --  This class inherits GProps.
 
        class CelGProps;
-           ---Purpose :
-           --   Computes the global properties  of a gp curve in 3d 
-           --   This class inherits GProps.
 
        class SelGProps;
-           ---Purpose :
-           --   Computes the global properties and the area of a bounded
-           --   elementary surface in 3d. This class inherits GProps.
 
        class VelGProps;
-           ---Purpose :
-           --   Computes the global properties and the volume of a region
-           --   of space. the region of space is defined by an elementary 
-           --   surface. This class inherits GProps.
-
 
   class PrincipalProps;
-        ---Purpose :
-        --  Returns the principal inertia properties of a GProps. 
 
 
-
-
-        --- Purpose :  
         --  The following abstract classes define templates
         --  with the minimum of methods required to implement 
         --  the computation of the global properties for a curve

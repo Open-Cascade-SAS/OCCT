@@ -31,6 +31,5 @@ uses
 is
 
     class ApplySequence;
-    	---Purpose: Applies one of the sequence of calls from resource file.
-    
+
 end ShapeProcessAPI;

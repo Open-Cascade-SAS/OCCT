@@ -18,6 +18,8 @@
 class Sweep from BRepFill 
 
 	---Purpose: Topological Sweep Algorithm
+	--          Computes an  Sweep  shell using a  generating
+  --          wire, an SectionLaw and an LocationLaw.
 	---Level: Advanced
 
 uses 

@@ -17,6 +17,8 @@ class ShapeTool from XCAFDoc inherits Attribute from TDF
 
     ---Purpose:  A tool to store shapes in an XDE
 -- document in the form of assembly structure, and to maintain this structure.
+-- Attribute containing Shapes section of DECAF document.
+-- Provide tools for management of Shapes section.
 -- The API provided by this class allows to work with this
 -- structure regardless of its low-level implementation.
 -- All the shapes are stored on child labels of a main label which is

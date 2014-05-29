@@ -37,9 +37,6 @@ is
 --  Classes input data :
 
     deferred class Polygon2d;
-    ---Purpose: Describes the necessary polygon information to compute
-    --          the interferences.
-
 
     class Array1OfLin instantiates Array1 from TCollection
      	    	    (Lin from gp);
@@ -51,41 +48,28 @@ is
 --	Classes output data :
 
     class SectionPoint;
-    ---Purpose: Describes a common point between two polygons  or between a
-    --          polygon and a polyhedron.
 
     class SeqOfSectionPoint instantiates Sequence from TCollection
     	    	    	    	    	    (SectionPoint);
 
 
     class SectionLine;
-    ---Purpose: Describes a common line between two polyhedrons.
 
     class SeqOfSectionLine instantiates Sequence from TCollection
     	    	    	    	    	    (SectionLine);
 
 
     class TangentZone;
-    ---Purpose: Describes a zone  of tangence between two polygons  or  two
-    --          polyhedrons.
 
     class SeqOfTangentZone instantiates Sequence from TCollection
     	    	    	    	    	    (TangentZone);
 
 
     deferred class Interference;
-    ---Purpose: Describes  the Interference   computation result  as  three
-    --          sequences   of  points  of  intersection   ,  polylines of
-    --          intersection and zones de tangence.
-
 
 -- Algorithms :
 
     class Tool;
-    	---Purpose: The class tool  provide methods to  create Box  or
-    	--          Box2d in particular contex. 
-
-
 
 
     class InterferencePolygon2d;

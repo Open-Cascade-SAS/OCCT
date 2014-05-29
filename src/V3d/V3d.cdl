@@ -175,33 +175,22 @@ is
         ------------------------
 
         class Viewer;
-        ---Purpose: Provides the services of a 3D viewer.
 
         class View;
-        ---Purpose: Provides a set of services common to all types of view.
 
         class LayerMgr;
-        ---Purpose: Services of layer management.
 
         deferred class Light;
-        ---Purpose: Provides services common to all types of luminous source.
-        --          (base class for AmbientLight and PositionLight)
-
 
         class AmbientLight;
-        ---Purpose: Services of ambient light sources.
 
         deferred class PositionLight;
-        ---Purpose: Provides services common to Positional,Directional,Spot Lights.
 
         class PositionalLight;
-        ---Purpose: Services of positional light sources.
 
         class DirectionalLight;
-        ---Purpose: Services of directional light sources.
 
         class SpotLight;
-        ---Purpose: Services of spot light sources.
 
         ---------------------------------
         ---Category: Instantiated classes

@@ -50,7 +50,7 @@ is
                                                ADriver        from XmlMDF, 
                                                AsciiString    from TCollection);
 
-    ---Purpose: Storage and Retrieval attributes drivers
+    ---Category: Storage and Retrieval attributes drivers
     --          ========================================
 
     class TagSourceDriver;

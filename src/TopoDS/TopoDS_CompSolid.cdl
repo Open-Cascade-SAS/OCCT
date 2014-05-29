@@ -24,6 +24,7 @@ class CompSolid from TopoDS inherits Shape from TopoDS
 -- - has an orientation for the underlying composite
 --   solid, in terms of its geometry (as opposed to
 --   orientation in relation to other shapes).
+--   Casts shape S to the more specialized return type, CompSolid.
 
 is
     Create returns CompSolid from TopoDS;

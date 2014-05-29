@@ -30,11 +30,6 @@ uses  TCollection, TColStd, TopTools,
 is
 
     class Functions;
-    ---Purpose : Gathers general commands for XSDRAW : initialisation control,
-    --           also commands to analyse the result of a transfer
-    --           (it is an appendix made of user callable functions)
-    --           
-    --           Loaded by LoadDraw
 
     class Vars;
     ---Purpose : Takes variables to/from the DRAW session

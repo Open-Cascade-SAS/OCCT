@@ -15,6 +15,10 @@
 -- commercial license or contractual agreement.
 
 class WFSurface from StdPrs
+       ---Purpose: Computes the wireframe presentation of surfaces
+	--          by displaying a given number of U and/or V isoparametric
+	---         curves. The isoparametric curves are drawn with respect
+	--          to a given number of points.
 
 inherits Root from Prs3d
 

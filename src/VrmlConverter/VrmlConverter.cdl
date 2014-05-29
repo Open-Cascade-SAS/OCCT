@@ -55,90 +55,39 @@ is
 
  
     class  Drawer;
-	---Purpose: qualifies the aspect properties for  
-	--          the VRML conversation of a specific kind of object. 
-	--          This includes for example color,  maximal chordial deviation, etc...
 
     class  ShadingAspect; 
-	---Purpose: qualifies the aspect properties for  
-	--          the VRML conversation of  a ShadedShape. 
 
     class  LineAspect; 
-	---Purpose: qualifies the aspect properties for  
-	--          the VRML conversation of a Curve and  a  DeflectionCurve . 
 
     class  IsoAspect; 
-	---Purpose: qualifies the aspect properties for  
-	--          the VRML conversation of iso curves . 
 
     class  PointAspect; 
-	---Purpose: qualifies the aspect properties for  
-	--          the VRML conversation of a Point Set . 
-      
 
-
-       	---Category: Presentation classes.
-       	---Purpose:  To compute different kinds of presentation, to convert 
-       	--           CasCade objects into VRML objects for requested aspect 
-       	--           properties  and to add the  results to the stream. 
+       ---Category: Presentation classes.
+       --           To compute different kinds of presentation, to convert
+       --           CasCade objects into VRML objects for requested aspect
+       --           properties  and to add the  results to the stream.
 
 
    class ShadedShape; 
-    	---Purpose:  computes  the  shading presentation of shapes
-    	--           by triangulation algorithms. 
- 
-  
+
    class Curve;
-   	---Purpose: computes the presentation of objects to be
-	--          seen as curves. The computation will be made
-	--          whith a constant number of points.
 
-   class DeflectionCurve;		      
-	---Purpose: computes the presentation of objects to be seen as
-	--          curves. The  computation will be made  according to
-	--          a maximal chordial deviation.
+   class DeflectionCurve;
 
-	     
    class WFRestrictedFace; 
-	---Purpose: computes the wireframe presentation of faces with
-	--          restrictions by displaying a given number of U and/or
-	--          V isoparametric curves. The isoparametric curves are
-	--          drawn with a fixed number of points.
-
 
    class WFDeflectionRestrictedFace;
-	---Purpose: computes the wireframe presentation of faces with
-	--          restrictions by displaying a given number of U and/or
-	--          V isoparametric curves. The isoparametric curves are
-	--          drawn with respect to a maximal chordial deviation.
 
-
-   class WFShape;  
-   	---Purpose: computes the wireframe presentation of compound set 
-   	--          of  faces,  edges  and vertices by displaying a given  
-   	--          number of U and/or V isoparametric curves.
-  
+   class WFShape;
 
    class WFDeflectionShape;  
-    	---Purpose: computes the wireframe presentation of compound 
-    	--          set  of faces,  edges and vertices by displaying 
-    	--          a given number of U and/or V isoparametric  curves.
-      
 
    class HLRShape;
-        ---Purpose: computes the presentation of objects with
-	--          removal of their hidden lines for a specific
-	--          projector.
-	
-   class Projector;
-	---Purpose: defines the projection parameters for the hidden
-	--          lines removal algorithm  and calculates properties of cameras  
-    	--          and lights from Vrml ( OrthograpicCamera, PerspectiveCamera,  
-    	--          DirectionalLight, PointLight, SpotLight )  
-    	--          to display all shapes of scene with  arbitrary locations 
-	--          for requested the Projection Vector .
 
- 
+   class Projector;
+
     -- Enumeration for cameras  and  lights  from  Vrml 
 
    enumeration TypeOfCamera  

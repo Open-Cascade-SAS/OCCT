@@ -17,7 +17,7 @@
 class MakeCircle from GCE2d inherits Root from GCE2d
 
     ---Purpose : This class implements the following algorithms used 
-    --           to create Cirlec from Geom2d.
+    --           to create Circle from Geom2d.
     --           
     --           * Create a Circle parallel to another and passing 
     --             though a point.

@@ -32,16 +32,9 @@ uses Draw,
 
 is 
 
-    ---Purpose: attribute display presentation
-    --          ==============================
-
     class DrawPresentation;
     
     class DrawDriver;
-    ---Purpose: root class of drivers to build draw variables from TDF_Label.
-
-   ---Purpose: attribute tree presentation
-    --         ===========================
 
     class TreeBrowser;
     ---Purpose: Used to browse tree nodes.

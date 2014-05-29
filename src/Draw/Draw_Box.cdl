@@ -16,7 +16,7 @@
 
 class Box from Draw inherits Drawable3D from Draw
 
-	---Purpose: 
+	---Purpose: a 3d box
 
 uses Pnt from gp,
     Color from Draw,

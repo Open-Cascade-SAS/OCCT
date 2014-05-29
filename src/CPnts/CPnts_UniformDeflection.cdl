@@ -16,8 +16,9 @@
 
 class UniformDeflection from CPnts 
  
-        ---Purpose : This classe defines an algorithm to create a set of points at the
-        --  positions of constant deflection of a given curve or a trimmed 
+        ---Purpose : This class defines an algorithm to create a set of points
+        -- (with a given chordal deviation) at the
+        --  positions of constant deflection of a given parametrized curve or a trimmed
         --  circle.
         --  The continuity of the curve must be at least C2.
         --

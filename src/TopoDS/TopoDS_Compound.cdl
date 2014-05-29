@@ -24,6 +24,7 @@ class Compound from TopoDS inherits Shape from TopoDS
 -- - has an orientation for the underlying compound, in
 --   terms of its geometry (as opposed to orientation in
 --   relation to other shapes).
+--   Casts shape S to the more specialized return type, Compound.
 
 is
     Create returns Compound from TopoDS;

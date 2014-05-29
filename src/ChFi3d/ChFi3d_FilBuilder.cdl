@@ -16,7 +16,7 @@
 
 class FilBuilder from ChFi3d inherits Builder from ChFi3d
 
-	---Purpose: Tool  of  construction of  fillets 3d on  edges.
+	---Purpose: Tool  of  construction of  fillets 3d on  edges (on a solid).
 
 uses
     Shape             from TopoDS,

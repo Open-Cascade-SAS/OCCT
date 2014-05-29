@@ -16,7 +16,9 @@
 
 class PipeShell from BRepFill inherits  TShared from MMgt 
 
-	---Purpose: Perform general sweeping construction
+    ---Purpose: Computes a topological shell using some wires
+    --          (spines and profiles) and diplacement option
+    --          Perform general sweeping construction
 uses  
  Dir  from  gp,
  Ax2  from  gp,

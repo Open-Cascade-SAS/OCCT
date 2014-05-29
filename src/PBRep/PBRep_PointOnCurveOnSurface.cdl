@@ -15,7 +15,8 @@
 -- commercial license or contractual agreement.
 
 class PointOnCurveOnSurface from PBRep inherits PointsOnSurface from PBRep
-
+	---Purpose: Representation by   a parameter on  a curve   on a
+	--          surface.
 uses
 
     Curve    from PGeom2d,

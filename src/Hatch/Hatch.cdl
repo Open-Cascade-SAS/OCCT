@@ -42,19 +42,15 @@ is
 
 
     private class Parameter;
-	---Purpose: Used   by the Hatcher to  store  a parameter on  a
-	--          line. 
-	
+
     private class SequenceOfParameter instantiates Sequence from TCollection
     	    (Parameter from Hatch);
 
     private class Line;
-	---Purpose: Used by the Hatcher to store a line.
 
     private class SequenceOfLine instantiates Sequence from TCollection
     	    (Line from Hatch);
 	    
     class Hatcher;
-	---Purpose: The Hatching algorithm.
 
 end Hatch;

@@ -17,7 +17,9 @@
 deferred class Interference from Intf
 
 	---Purpose: Describes the   Interference  computation    result
-	--          between polygon2d or polygon3d or polyhedron.
+	--          between polygon2d or polygon3d or polyhedron
+	--         (as  three sequences   of  points  of  intersection,
+	--          polylines of intersection and zones de tangence).
 
 uses    SectionPoint      from Intf,
     	SeqOfSectionPoint from Intf,

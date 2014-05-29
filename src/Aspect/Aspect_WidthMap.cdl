@@ -19,6 +19,7 @@ class WidthMap from Aspect inherits TShared from MMgt
 	---Version: 0.0
 
 	---Purpose: This class defines a WidthMap object.
+	--          Associates an index and a line width entry.
 	---Keywords:
 	---Warning:
 	---References:

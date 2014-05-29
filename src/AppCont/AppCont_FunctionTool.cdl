@@ -15,7 +15,8 @@
 -- commercial license or contractual agreement.
 
 class FunctionTool from AppCont
-
+    ---Purpose: This class is the inteface between the Function
+    --          class and the tool asked by LeastSquare.
 
 uses Function        from AppCont,
      Pnt             from gp,

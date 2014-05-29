@@ -18,7 +18,7 @@ class OffsetWire from BRepFill
 
 	---Purpose: Constructs a Offset Wire to a spine (wire or face) 
 	--          on the left of spine.
-
+	--          The Wire or the Face must be planar.
 uses
 
     Face        from TopoDS,

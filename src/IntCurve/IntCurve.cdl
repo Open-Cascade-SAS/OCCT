@@ -68,7 +68,6 @@ uses Standard , math, gp, TColgp, GeomAbs,
 is 
 
     class IntConicConic;
-    ---Purpose: Intersection between 2 conics from gp.
 
     generic class DistBetweenPCurvesGen;
     
@@ -83,15 +82,12 @@ is
     generic class ProjPCurGen,TheCurveLocator,TheLocateExtPC;
     
     generic class IntConicCurveGen,TheIntersector;
-    ---Purpose: Intersection between a conic from gp and a bounded parametric curve.
 
     generic class IntCurveCurveGen,TheProjPCur,
                                    TheIntConicCurve,
                                    IntConicCurve,
                                    TheIntPCurvePCurve;
-				   
-    ---Purpose: Intersection between 2 2d curves.
-    
+
     private class ProjectOnPConicTool;
     
     class PConic;

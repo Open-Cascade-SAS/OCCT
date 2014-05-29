@@ -15,7 +15,7 @@
 -- commercial license or contractual agreement.
 
 class PointOnSurface from PBRep inherits PointsOnSurface from PBRep
-
+	---Purpose: Representation by two parameters on a surface.
 uses
     Surface  from PGeom,
     Location from PTopLoc

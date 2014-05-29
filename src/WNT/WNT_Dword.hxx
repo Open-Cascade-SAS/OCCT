@@ -15,6 +15,8 @@
 #ifndef __WNT_Dword_HeaderFile
 # define __WNT_Dword_HeaderFile
 
+// Purpose: Defines a Windows NT DWORD type.
+
 # ifndef __WINDOWS_H_INCLUDED
 #  define __WINDOWS_H_INCLUDED
 #  ifndef STRICT

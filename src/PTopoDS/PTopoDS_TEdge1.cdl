@@ -17,7 +17,8 @@
 deferred class TEdge1 from PTopoDS inherits TShape1 from PTopoDS
 
 	---Purpose: A  Topological edge   shape.
-
+	--          A topological part  of a  curve  in 2D or 3D,  the
+	--          boundary    is   a   set  of oriented    Vertices.
 uses
     ShapeEnum from TopAbs
 

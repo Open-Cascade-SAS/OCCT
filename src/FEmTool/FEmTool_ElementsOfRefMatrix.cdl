@@ -18,7 +18,7 @@ class ElementsOfRefMatrix from FEmTool inherits  FunctionSet  from  math
 
 	---Purpose: this  class  describes  the  functions  needed  for   
     	--          calculating  matrix  elements  of  RefMatrix  for  linear   
-	--          criteriums  (Tension,  Flexsion  and  Jerk).
+	--          criteriums  (Tension,  Flexsion  and  Jerk) by  Gauss  integration.
 	--          Each  function  from  set  gives  value  Pi(u)'*Pj(u)'  or 
 	--          Pi(u)''*Pj(u)''  or  Pi(u)'''*Pj(u)'''  for  each  i  and  j,  
     	--          where  Pi(u)  is  i-th  basis  function  of  expansion  and 

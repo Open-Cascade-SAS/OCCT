@@ -14,6 +14,8 @@
 -- commercial license or contractual agreement.
 
 class SurfaceRangeSample from IntTools
+	---Purpose: class for range index management of surface
+
 uses
     Range from IntTools,
     CurveRangeSample from IntTools

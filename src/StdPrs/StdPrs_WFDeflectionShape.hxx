@@ -24,6 +24,9 @@
 #include <TopoDS_Shape.hxx>
 #include <TopTools_HSequenceOfShape.hxx>
 
+// Computes the wireframe presentation of surfaces
+// by displaying planar sections.
+
 class StdPrs_WFDeflectionShape : public Prs3d_Root
 {
 

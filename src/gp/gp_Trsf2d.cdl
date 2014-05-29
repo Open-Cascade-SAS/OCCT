@@ -30,7 +30,7 @@ class Trsf2d   from gp   inherits Storable
         --
         --   where {V1, V2} defines the vectorial part of the transformation
         --   and T defines the translation part of the transformation.
-
+        --  This transformation never change the nature of the objects.
  
 uses Ax2d     from gp,
      Mat2d    from gp,

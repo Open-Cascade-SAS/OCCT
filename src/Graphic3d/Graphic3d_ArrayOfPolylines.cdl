@@ -13,6 +13,7 @@
 -- commercial license or contractual agreement.
 
 class ArrayOfPolylines from Graphic3d inherits ArrayOfPrimitives from Graphic3d
+    ---Purpose: Contains polylines array definition
 
 is
 

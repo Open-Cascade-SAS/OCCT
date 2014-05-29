@@ -15,6 +15,7 @@
 -- commercial license or contractual agreement.
 
 class PolyData from HLRAlgo inherits TShared from MMgt
+  ---Purpose: Data structure of a set of Triangles.
 
 uses
     Address          from Standard,

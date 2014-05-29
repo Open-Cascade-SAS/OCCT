@@ -198,7 +198,6 @@ is
     ----------------------------------------------------------
 
     class LocationSet;
-	---Purpose: A set of Locations. Can be dump, wrote or read.
   
     pointer LocationSetPtr to LocationSet from TopTools;
 

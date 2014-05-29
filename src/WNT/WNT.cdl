@@ -49,11 +49,9 @@ package WNT
         --------------------
 
     class Window;
-        ---Purpose:  Creates the Window drawable.
         ---Category: Classes
 
     class WClass;
-        ---Purpose:  Creates a Windows NT window class.
         ---Category: Classes
 
         ---------------------------
@@ -75,15 +73,12 @@ package WNT
 
 
     imported Dword;
-        ---Purpose:  Defines a Windows NT DWORD type.
         ---Category: Imported types
 
     imported Uint;
-        ---Purpose:  Defines a Windows NT UINT type.
         ---Category: Imported types
 
     imported WindowData;
-        ---Purpose:  Defines additional window data type.
         ---Category: Imported types
 
 

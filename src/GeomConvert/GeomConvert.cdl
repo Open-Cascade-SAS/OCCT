@@ -62,47 +62,19 @@ uses    Standard,
 is
  
   class BSplineCurveKnotSplitting;
-        --- Purpose : This algorithm searches the knot values corresponding to the 
-        --  splitting of a given B-spline curve into  several arcs with
-        --  the same continuity. The continuity order is given at the
-        --  construction time. It is possible to compute the curve arcs
-        --  corresponding to this splitting with the method of package 
-        --  SplitBSplineCurve.
-
 
   class BSplineSurfaceKnotSplitting;
-        --- Purpose :
-        --  This algorithm searches the knot values corresponding to the
-        --  splitting of a given B-spline surface into several patches with
-        --  the same continuity. The continuity order is given at the
-        --  construction time. It is possible to compute the surface patches
-        --  corresponding to the splitting with the method of package
-        --  SplitBSplineSurface.
-
 
   class BSplineCurveToBezierCurve;
-        --- Purpose : 
-        --  This algorithm converts a B-spline curve from the package Geom
-        --  into several Bezier curves.
-        
+
   class CompCurveToBSplineCurve;
-        --- Purpose : 
-        --  This algorithm converts and concat sevral curve in a 
-        --  B-spline curve.
 
   class BSplineSurfaceToBezierSurface;
-        --- Purpose : 
-        --  This algorithm converts a B-spline surface from the package Geom
-        --  into several Bezier surfaces.  
 
  class CompBezierSurfacesToBSplineSurface;
-    	---Purpose: Convert a grid of Bezier Surfaces
-    	--          that are have continuity CM to an 
-    	--          Bspline Surface that has continuity CM
-    	   
+
  class  ApproxSurface;  
-        ---Purpose: Convert a surface from Geom by an approximation method
-            --          
+
  class  ApproxCurve;  
         ---Purpose: Convert a curve from Geom by an approximation method
             --

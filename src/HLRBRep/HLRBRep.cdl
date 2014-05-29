@@ -122,12 +122,9 @@ is
     class InternalAlgo;
     
     class Algo;
-	---Purpose: Inherited  from InternalAlgo  to  provide  methods
-	--          with Shape from TopoDS.
-    
+
     class PolyAlgo;
-	---Purpose: to remove Hidden lines on Shapes with Triangulations.
-    
+
     class BiPoint;
     class BiPnt2D;
     

@@ -49,10 +49,7 @@ is
     --  
 
     class TFace;
-	---Purpose: The TFace  class is inherited  from the TFace from
-	--          TopoDS. It contains a  surface, a tolerance  and a
-	--          natural restriction flag.
-	
+
     --
     --  Edge
     --
@@ -83,92 +80,54 @@ is
     --  
 
     deferred class CurveRepresentation;
-	---Purpose: Root      for curve representations.    Contains a
-	--          location.
 
     class ListOfCurveRepresentation instantiates
     List from TCollection (CurveRepresentation from BRep);
     
     deferred class GCurve;
-	---Purpose: Root class  for geometric curves  representations.
-	--          Contains a first an a last parameter.
 
     class Curve3D;
-	---Purpose: Representation by a 3d curve.
 
     class CurveOnSurface;
-	---Purpose: Representation by a curve in the  parametric space
-	--          of a surface.
 
     class CurveOnClosedSurface;
-	---Purpose: Representation  by two   curves in the  parametric
-	--          space of a closed surface.
 
     class Polygon3D;
-	---Purpose: Representation by a 3D polygon.
 
     class PolygonOnTriangulation;
-	---Purpose: Representation by    an array  of  indices  on   a
-	--          triangulation.
-	
+
     class PolygonOnClosedTriangulation;
-	---Purpose: Representation   by two  arrays  of indices   on a
-	--          triangulation.
-	
+
     class PolygonOnSurface;
-	---Purpose: Representation by 2d polygon in the parametric space
-	--          of a surface.
 
     class PolygonOnClosedSurface;
-	---Purpose: Representation by two 2d polygons in the parametric
-	--          space of the  surface.
-	
+
     class CurveOn2Surfaces;
-	---Purpose: Geometric continuity bewtween two surfaces.
 
     class TEdge;
-	---Purpose: The TEdge class is  inherited  from the TEdge from
-	--          TopoDS.   It contains a  3d   curve and  a list of
-	--          representations.
 
-	
     --
     --  Vertex
     --
 
     deferred class PointRepresentation;
-	---Purpose: Root  for   point   representations.  Contains   a
-	--          location. 
-	
+
     class ListOfPointRepresentation instantiates
     List from TCollection (PointRepresentation from BRep);
     
     class PointOnCurve;
-	---Purpose: Representation by a parameter on a 3D curve.
-	
+
     deferred class PointsOnSurface;
-	---Purpose: Root for points on surface.
-    
+
     class PointOnCurveOnSurface;
-	---Purpose: Representation by   a parameter on  a curve   on a
-	--          surface. 
 
     class PointOnSurface;
-	---Purpose: Representation by two parameters on a surface.
 
     class TVertex;
-	---Purpose: The TVertex class  is  inherited from the  TVertex
-	--          from    TopoDS.  It contains  a  3d  point   and a
-	--          location.
 
     class Builder;
-	---Purpose: The  Builder  from BRep is   inherited    from the
-	--          Builder3D   from  TopoDS.    It  is  used to build
-	--          Shapes.
 
     class Tool;
-	---Purpose: The Tool from BRep is used to access the geometric
-	--          data.
 
 
 end BRep;

@@ -22,9 +22,11 @@
 
 class Delta from TDF inherits TShared from MMgt
 
-	---Purpose: A delta set is available at <aSourceTime>. If
-	--          applied, it restores the TDF_Data in the state it
-	--          was at <aTargetTime>.
+   ---Purpose: A set of AttributeDelta for a given transaction
+    --        number and reference time number.
+    --        A delta set is available at <aSourceTime>. If
+    --          applied, it restores the TDF_Data in the state it
+    --          was at <aTargetTime>.
 
 uses
 

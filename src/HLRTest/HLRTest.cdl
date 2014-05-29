@@ -35,14 +35,11 @@ is
     class ShapeData;
     
     class DrawableEdgeTool;
-	---Purpose: Used to display the results.
 
     class DrawablePolyEdgeTool;
-	---Purpose: Used to display the results.
 
     class Projector;
-	---Purpose: Draw Variable Projector to test
-	
+
     class OutLiner;
 	---Purpose: Draw Variable Outliner to test
 

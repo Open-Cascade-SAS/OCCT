@@ -19,6 +19,7 @@ class MarkMap from Aspect inherits TShared from MMgt
 	---Version: 0.0
 
 	---Purpose: This class defines a MarkMap object.
+	--          Associates an index and a Marker entry.
 	---Keywords:
 	---Warning:
 	---References:

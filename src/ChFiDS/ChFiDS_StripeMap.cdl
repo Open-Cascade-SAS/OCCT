@@ -16,7 +16,7 @@
 
 class StripeMap from ChFiDS 
 
-	---Purpose: 
+	---Purpose: encapsulation of IndexedDataMapOfVertexListOfStripe
 
 uses 
      IndexedDataMapOfVertexListOfStripe from ChFiDS,

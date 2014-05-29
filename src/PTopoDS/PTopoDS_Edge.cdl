@@ -15,7 +15,9 @@
 -- commercial license or contractual agreement.
 
 class Edge from PTopoDS inherits HShape from PTopoDS
-
+	---Purpose: A Edge  is a   TEdge    with  a Location  and   an
+	--          Orientation.
+	--          It inherits HShape
 is
     Create returns Edge from PTopoDS;
 	---Level: Internal 

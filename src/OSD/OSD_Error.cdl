@@ -16,7 +16,7 @@
 
 class Error from OSD
 
-   ---Purpose: Management of OSD errors
+   ---Purpose: Accurate management of OSD specific errors.
 
 --  Each method can be error tested with object.Failed().
 --  To manage an occuring error, just use object.Perror(); 

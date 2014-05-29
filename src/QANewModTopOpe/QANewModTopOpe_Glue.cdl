@@ -15,7 +15,8 @@
 
 class Glue from QANewModTopOpe inherits BooleanOperation from BRepAlgoAPI
 
-	---Purpose: Perform the gluing topological operation.
+  ---Purpose: Perform the gluing topological operation
+  --          (topological  sewing  of  two  topological  objects).
 
 uses
     Boolean from Standard,

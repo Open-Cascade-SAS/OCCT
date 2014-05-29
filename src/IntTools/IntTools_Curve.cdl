@@ -14,7 +14,9 @@
 -- commercial license or contractual agreement.
 
 class Curve from IntTools
-
+      ---Purpose: class is a container of
+      --          one 3d curve
+      --          two 2d curves
 
 uses
     Curve from Geom,

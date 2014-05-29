@@ -17,7 +17,7 @@
 generic class ComputeLine from Approx 
     	    	    (MultiLine as any;
     	    	     LineTool  as any)
-
+    ---Purpose: Approximate a MultiLine with a cutting.
 
 uses ParametrizationType       from Approx,
      SequenceOfReal            from TColStd,

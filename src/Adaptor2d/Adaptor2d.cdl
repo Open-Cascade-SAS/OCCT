@@ -134,17 +134,13 @@ uses
 is
 
       deferred class Curve2d; 
-       ---Purpose: Root of the 2d curve.
 
       pointer Curve2dPtr to Curve2d from Adaptor2d;
 
       deferred class HCurve2d;
-        ---Purpose: deferred class for the  2d curves manipulated with
-        --          Handle.
 
       generic class GenHCurve2d;
-      	---Purpose: Generic  class  used to create a  curve inheriting
-      	--          from HCurve2d.
+
 
               
 

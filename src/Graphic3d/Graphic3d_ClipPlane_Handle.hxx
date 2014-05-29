@@ -17,6 +17,7 @@
 #define _Graphic3d_ClipPlane_Handle_HeaderFile
 
 #include <Graphic3d_ClipPlane.hxx>
+//! CDL-compatibility handle type definition for clip plane objects.
 typedef Handle(Graphic3d_ClipPlane) Graphic3d_ClipPlane_Handle;
 
 #endif

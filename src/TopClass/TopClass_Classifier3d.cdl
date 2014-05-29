@@ -17,7 +17,7 @@
 generic class Classifier3d from TopClass 
     	(TheIntersector as any)  -- as Intersection3d from TopClass
 
-	---Purpose: 
+	---Purpose: Basic algorithm for 3d classification.
 
 uses
     Lin             from gp,

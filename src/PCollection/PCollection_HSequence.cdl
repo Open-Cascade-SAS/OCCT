@@ -28,7 +28,8 @@ raises
     is
     	
     	---Purpose: This class provides tools to manipulate a Sequence node.
-    
+      --          Generic sequence of elements indexed by an integer in the range 1..N.
+
     	Create( TheLast: SeqNode ; TheItem: Item)
 	    returns SeqNode from PCollection;
 

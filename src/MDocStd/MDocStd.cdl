@@ -25,8 +25,8 @@ uses TColStd, TCollection, PCollection, PTColStd,
 
 is
 
-    ---Purpose: Standard CAF Document drivers
-    --          =============================
+    ---Category: Standard CAF Document drivers
+    --           =============================
 
 
     class DocumentStorageDriver;
@@ -34,8 +34,8 @@ is
     class DocumentRetrievalDriver;
     
     
-    ---Purpose: External Reference Attribute  drivers
-    --          =====================================
+    ---Category: External Reference Attribute  drivers
+    --           =====================================
 
     class XLinkStorageDriver;
     

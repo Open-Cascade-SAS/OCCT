@@ -16,7 +16,7 @@
 
 class DrawablePolyEdgeTool from HLRTest inherits Drawable3D from Draw
 
-	---Purpose: 
+	---Purpose: Used to display the results.
 
 uses
     Boolean      from Standard,

@@ -15,7 +15,7 @@
 -- commercial license or contractual agreement.
 
 class Face from DBRep inherits TShared from MMgt
-
+	---Purpose: Display of a face. Face + Array of iso + color.
 uses
     Face            from TopoDS,
     IsoType         from GeomAbs,

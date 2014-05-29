@@ -20,7 +20,7 @@
 
 class CompCurveToBSplineCurve from GeomConvert 
 
-	---Purpose: Concat several curve in an BSplineCurve
+	---Purpose: Algorithm converts and concat several curve in an BSplineCurve
 
 uses
  ParameterisationType from Convert,

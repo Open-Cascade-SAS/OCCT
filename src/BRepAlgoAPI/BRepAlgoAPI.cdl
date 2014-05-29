@@ -98,20 +98,15 @@ uses
 is
 	     
     deferred class BooleanOperation; 
-    	---Purpose: Root class for boolean operations.
-    
+
     class Fuse;                    
-    	---Purpose: Perform the boolean operation FUSE.
-    	---
+
     class Common;                         
-    	---Purpose: Perform the boolean operation COMMON.
-    	--- 
+
     class Cut;                           
-    	---Purpose: Perform the boolean operation CUT.
- 	---    
+
     class Section;                       
-        ---Purpose: Perform the operation SECTION. 
-        --- 
+
     class Check;
         ---Purpose: Check shapes on validity for boolean
         --- operation.

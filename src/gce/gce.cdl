@@ -51,124 +51,73 @@ enumeration ErrorType is Done, ConfusedPoints, NegativeRadius, ColinearPoints,
 
 
 private deferred class Root;
-    	---Purpose: Root of classes with error report.
 
 class MakeDir2d;
-    	---Purpose: Makes a dir2d from gp.
 
 class MakeLin2d;
-    	---Purpose: Makes a Lin2d from gp.
 	
 class MakeCirc2d;
-    	---Purpose: Makes a Circ2d from gp.
 
 class MakeHypr2d;
-    	---Purpose: Makes an hypr2d from gp.
 
 class MakeElips2d;
-    	---Purpose: Makes an Elips2d from gp.
 
 class MakeParab2d;
-    	---Purpose: Makes a parab2d from gp.
 
 ---------------------------------------------------------------------------
-    ---Purpose : Constructions of Trsf2d from gp.
+    --- Constructions of Trsf2d from gp.
 ---------------------------------------------------------------------------
 
 class MakeTranslation2d;
-    	---Purpose: Returns a translation transformation.
 
 class MakeMirror2d;
-    	---Purpose: Returns a symmetry transformation.
 
 class MakeRotation2d;
-    	---Purpose: Returns a rotation transformation.
  
 class MakeScale2d;
-    	---Purpose: Returns a scaling transformation.
 
 ---------------------------------------------------------------------------
-    ---Purpose: scalar product.
----------------------------------------------------------------------------
-
---class MakeDot;
-    ---Purpose: Makes a scalar product between the two vectors P1P2 and P3P4.
-
----------------------------------------------------------------------------
-    ---Purpose: vector product.
----------------------------------------------------------------------------
-
---class MakeCross2d;
-    ---Purpose: Makes a Cross between the two vectors P1P2 and P1P3.
-
---class MakeDotCross;
-    ---Purpose: Makes the triple scalar product P1P2 * (P3P4 ^ P5P6).
-
----------------------------------------------------------------------------
-    ---Purpose : Constructions of 3d geometrical elements from gp.
+    --- Constructions of 3d geometrical elements from gp.
 ---------------------------------------------------------------------------
 
 class MakeDir;
-    	---Purpose: Makes a dir from gp.
 
 class MakeLin;
-    	---Purpose: Makes a Line <L> from gp.
 	
 class MakeCirc;
-    	---Purpose: Makes a Circle <C> from gp.
 
 class MakeHypr;
-    	---Purpose: Makes an hyperbola <H> from gp.
 
 class MakeElips;
-    	---Purpose: Makes an ellipse <E> from gp.
 
 class MakeParab;
-    	---Purpose: Makes a parabola <P> from gp.
 
 ---------------------------------------------------------------------------
-    ---Purpose : Constructions of planes from gp.
+    --- Constructions of planes from gp.
 ---------------------------------------------------------------------------
 
 class MakePln;
-    	---Purpose: Makes a plane <Pl> from gp.
 
 ---------------------------------------------------------------------------
-    ---Purpose: Construction of surfaces from gp.
+    --- Construction of surfaces from gp.
 ---------------------------------------------------------------------------
 
 class MakeCylinder;
-    ---Purpose: Makes a cylinder <Cyl> from gp.
  
 class MakeCone;
-    ---Purpose: Makes a cone <Cone> from gp.
 
 ---------------------------------------------------------------------------
-    ---Purpose : Constructions of Trsf from gp.
+    --- Constructions of Trsf from gp.
 ---------------------------------------------------------------------------
 
 class MakeTranslation;
-    	---Purpose: returns a translation transformation.
 
 class MakeMirror;
-    	---Purpose: returns a symmetry transformation.
 
 class MakeRotation;
-    	---Purpose: returns a rotation transformation.
  
 class MakeScale;
-    	---Purpose: returns a scaling transformation.
  
----------------------------------------------------------------------------
-    ---Purpose: vector product.
----------------------------------------------------------------------------
-
---class MakeCross;
-    ---Purpose: Makes a Cross product between the two vectors P1P2 and P1P3.
-
---class MakeDotCross;
-    ---Purpose: Makes the triple scalar product P1P2 * (P3P4 ^ P5P6).
-
 end gce;
 
 

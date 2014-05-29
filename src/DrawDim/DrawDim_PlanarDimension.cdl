@@ -16,7 +16,7 @@
 
 deferred class PlanarDimension from DrawDim inherits Dimension from DrawDim
 
-	---Purpose: 
+	---Purpose: Dimensions between point, line and circle ON a plane
 
 uses Face from TopoDS
 

@@ -143,7 +143,6 @@ is
 
 
     --	Protocol returns Protocol from StepRepr;
-	---Purpose : creates a Protocol
 
 end StepRepr;
 

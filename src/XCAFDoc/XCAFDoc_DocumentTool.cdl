@@ -16,7 +16,8 @@
 class DocumentTool from XCAFDoc inherits Attribute from TDF
 
 	---Purpose: Defines sections structure of an XDE document.
-
+	--          attribute marking CAF document as being DECAF document.
+	--          Creates the sections structure of the document.
 uses
     Label from TDF,
     Document from TDocStd,

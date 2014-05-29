@@ -39,8 +39,6 @@ uses
 is
 
     class Triangle;
-        ---Purpose: A triangle is  a triplet  of integers (indices  of
-        --          the nodes).
 
     class Array1OfTriangle
     instantiates Array1 from TCollection(Triangle from Poly);
@@ -50,26 +48,12 @@ is
                                           Array1OfTriangle from Poly);
 
     class Triangulation;
-        ---Purpose: A   Triangulation  is  a   3D  polyhedron made  of
-        --          triangles.  It   is  made  of  a nodes  which  are
-        --          indexed. Nodes  have a 3d  value  and a  2d value.
-        --          Triangles are triplet of node indices.
-        --
-        --          This is a Transient class.
-
 
     class Polygon3D;
-        ---Purpose: A Polygon3D is  made of  indexed nodes.
-        --          Nodes have a 3d value.
 
     class Polygon2D;
-        ---Purpose: A Polygon2D is made of  indexed nodes.
-        --          Nodes have a 2d value.
 
     class PolygonOnTriangulation;
-        ---Purpose: A polygonOnTriangulation is made of node indices
-        --          referencing a triangulation.
-
 
     --
     -- Tools to use triangulations

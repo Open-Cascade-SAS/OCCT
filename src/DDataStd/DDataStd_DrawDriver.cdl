@@ -16,7 +16,8 @@
 
 class DrawDriver from DDataStd inherits TShared from MMgt
 
-    ---Purpose: priority rule to display standard attributes is :   
+    ---Purpose: Root class of drivers to build draw variables from TDF_Label.
+    --          Priority rule to display standard attributes is :
     --          * 1 Constraint
     --          * 2 Object     
     --          * 3 Datum      (Point,Axis,Plane)    

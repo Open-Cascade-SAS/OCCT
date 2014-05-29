@@ -33,6 +33,8 @@ class SurfaceOfRevolution from Adaptor3d inherits Surface from Adaptor3d
         --  The derivatives are always defined for the u direction.
         --  For the v direction the definition of the derivatives depends on
         --  the degree of continuity of the referenced curve.
+        --  Curve and Axis are coplanar.
+        --  Curve doesn't intersect Axis.
 
 
 

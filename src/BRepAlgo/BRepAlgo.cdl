@@ -77,11 +77,7 @@ is
     class Image; 
     class AsDes;
     class FaceRestrictor;
-        ---Purpose:Build all the faces limited with a set of non 
-        --         jointing and planars wires
-        --         The Wires must have correct orientations.
-        --         
-         
+
     class BooleanOperations;
         ---Purpose: 
     class DSAccess;
@@ -89,7 +85,7 @@ is
     class EdgeConnector;
         ---Purpose: 
     class  NormalProjection; 
-            ---Purpose: 
+
   --  class  Sewing; now it is in BRepBuilderAPI
     
     class DataMapOfShapeBoolean instantiates

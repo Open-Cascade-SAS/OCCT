@@ -17,7 +17,10 @@
 class DegeneratedBound from GeomFill inherits Boundary from GeomFill 
 
 	---Purpose: Description of a degenerated boundary (a point).
-
+    --          Class defining  a degenerated  boundary   for   a
+    --          constrained filling   with  a   point  and  no   other
+    --          constraint. Only used to  simulate an  ordinary bound,
+    --          may not be usefull and desapear soon.
 uses
     Pnt            from gp,
     Vec            from gp

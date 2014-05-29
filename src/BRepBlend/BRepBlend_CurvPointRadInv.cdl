@@ -18,7 +18,9 @@ class CurvPointRadInv from BRepBlend
 
 inherits CurvPointFuncInv from Blend 
 
-    ---Purpose: This function  is used  to find a  solution on  a done
+    ---Purpose: Function of reframing between a point and a curve.
+    --          valid in cases of constant and progressive radius.
+    --          This function  is used  to find a  solution on  a done
     --          point   of   the curve 1 when   using  RstRstConsRad or
     --          CSConstRad... 
     --          The vector <X>  used in Value, Values and  Derivatives

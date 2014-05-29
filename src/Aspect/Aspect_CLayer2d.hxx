@@ -17,6 +17,7 @@
 /*====									      */
 /*==== Implementation:  This is a primitive type implemented with typedef     */
 /*============================================================================*/
+// Defines the C structure <alayer>
 
 #ifndef _Aspect_CLayer2d_HeaderFile
 #define _Aspect_CLayer2d_HeaderFile

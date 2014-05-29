@@ -20,7 +20,8 @@ from GC
 
     ---Purpose: This class implements an elementary construction algorithm for
     -- a scaling transformation in 3D space. The result is a
-    -- Geom_Transformation transformation.
+    -- Geom_Transformation transformation (a scaling transformation with
+    -- the center point <Point> and the scaling value <Scale>).
     -- A MakeScale object provides a framework for:
     -- -   defining the construction of the transformation,
     -- -   implementing the construction algorithm, and

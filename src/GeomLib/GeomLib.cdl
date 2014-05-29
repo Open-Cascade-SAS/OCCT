@@ -59,37 +59,18 @@ is
     Array1 from TCollection  (Mat from gp);
 
     class MakeCurvefromApprox;
-	---Purpose: This class is used to   create the curves ( 2d  or
-	--          3d)  rational   or  not  created   by the    class
-	--          ApproxAFunction from AdvApprox.
-
-
 
     class Interpolate ;
-       ---Purpose: this class compute the poles of a curve given some
-       --          parameters, points to interpolate and boundary conditions
-       --          in 3d 
-    class DenominatorMultiplier ;
-       ---Purpose: this defines an evaluator for a function of 2 variables
-       --          that will be used by CancelDenominatorDerivative in one
-       --          direction.
 
+    class DenominatorMultiplier ;
 
     class CheckBSplineCurve ;
-       ---Purpose:  Checks for the end  tangents : wether or not those
-       --           are reversed regarding the third or n-3rd control
-       --           
-       --           
+
     class Check2dBSplineCurve ;     
-            
-       ---Purpose:  Checks for the end  tangents : wether or not those
-       --           are reversed 
 
     class  IsPlanarSurface;
     
     class Tool;
-    	---Purpose: provides various methods with Geom2d and Geom curves
-	---         and surfaces.
 
     private  class  PolyFunc;  
      

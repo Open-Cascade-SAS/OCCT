@@ -15,8 +15,9 @@
 -- commercial license or contractual agreement.
 
 class ProjectedCurve from ProjLib inherits Curve2d from Adaptor2d 
-    
-
+    ---Purpose: Compute the 2d-curve.  Try to solve the particular
+    --          case if possible.  Otherwize, an approximation  is
+    --          done.
 
 uses
 

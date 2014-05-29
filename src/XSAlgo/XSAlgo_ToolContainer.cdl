@@ -15,7 +15,7 @@
 
 class ToolContainer from XSAlgo inherits TShared from MMgt
 
-    ---Purpose: 
+    ---Purpose: Returns tools used by AlgoContainer
 
 is
     Create returns ToolContainer from XSAlgo;

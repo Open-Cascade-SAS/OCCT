@@ -16,8 +16,10 @@
 
 class CompPolynomialToPoles from Convert
 
-    ---Purpose: To convert an function (curve) polynomial by span in a BSpline.
-    -- 
+    ---Purpose: Convert a serie of Polynomial N-Dimensional Curves
+    --   that are have continuity CM to an N-Dimensional Bspline Curve
+    --   that has continuity CM.
+    --   (to convert an function (curve) polynomial by span in a BSpline)
     --   This class uses the following arguments :
     --   NumCurves :  the number of Polynomial Curves 
     --   Continuity:  the requested continuity for the n-dimensional Spline

@@ -15,7 +15,7 @@
 
 class Location from XCAFDoc inherits Attribute from TDF
 
-	---Purpose: 
+	---Purpose: attribute to store TopLoc_Location
 
 uses
     Location from TopLoc,

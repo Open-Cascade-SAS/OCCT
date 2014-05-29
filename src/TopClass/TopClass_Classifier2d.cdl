@@ -21,7 +21,7 @@ generic class Classifier2d from TopClass
     	(TheEdge as any;
     	 TheIntersector as any)
 
-	---Purpose: 
+	---Purpose: Basic algorithm for 2d classifications.
 
 uses
     Lin2d           from gp,

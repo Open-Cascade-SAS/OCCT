@@ -51,10 +51,8 @@ is
     --           ==============================================================
 
     class Data;
-	---Purpose: The root class of this structure.
 
     class Label;
-	---Purpose: A label is a feature in the structure.
 
     imported HAllocator;
     imported LabelNode;
@@ -62,109 +60,71 @@ is
     pointer LabelNodePtr to LabelNode from TDF;
 
     deferred class Attribute;
-	---Purpose: A class each application has to implement. It is
-	--          used to contain the application data.
 
     class TagSource;
-    ---Purpose: this  attribute may be used  for automatic delivery of
-    --          labels under a given label.    
 
     class Reference;
-    ---Purpose: this  attribute is  used to  store in the  framework a
-    --          reference to an other label.
+
 
 
     ---Category: DF Copy algorithms
     --           ==============================================================
     
     class ClosureMode;
-	---Purpose:  This class provides options closure management.
-    
+
     class ClosureTool;
-	---Purpose: This class gives services around the transitive
-	--          enclosure of a set of information, starting from a
-	--          list of label.
 
     class CopyTool;
-	---Purpose: This class gives services around copy/paste actions.  
-	 
+
     class CopyLabel; 
-        ---Purpose: This class gives copy of  source  label  hierarchy
-	  
+
     class ComparisonTool;
-	---Purpose: This class gives services around the comparison
-	--          between two sets of information.
 
     ---Category: DF Transaction & Delta
     --           ==============================================================
 
     class Transaction;
-	---Purpose: This class offers services to open, commit or
-	--          abort a transaction in a more secure way than
-	--          using Data from TDF.
 
     class Delta;
-    	---Purpose: A set of AttributeDelta for a given transaction
-    	--          number and reference time number.
 
     deferred class AttributeDelta;
-    	---Purpose: Delta for a given attribute. 
 
     class DeltaOnAddition;
-	---Purpose: Attribute delta on ADDITION action.
 
     class DeltaOnForget;
-	---Purpose: Attribute delta on FORGET action.
 
     class DeltaOnResume;
-	---Purpose: Attribute delta on RESUME action.
 
     deferred class DeltaOnRemoval;
-	---Purpose: Attribute delta on REMOVAL action.
 
     deferred class DeltaOnModification;
-	---Purpose: Attribute delta on MODIFICATION action.
 
     class DefaultDeltaOnRemoval;
-	---Purpose: Default implementation of TDF_DeltaOnRemoval.
 
     class DefaultDeltaOnModification;
-	---Purpose: Default implementation of TDF_DeltaOnModification.
 
 
     ---Category: DF Basic Tools
     --           ==============================================================
 
     class ChildIterator;
-	---Purpose: A tool to iterate on the children of a label.
 
     class ChildIDIterator;
-	---Purpose: A tool to iterate on the children of a label to
-	--          find attributes with an ID.
 
     imported AttributeIterator;
-	---Purpose: DO NOT USE THIS CLASS WITHOUT AUTHORIZATION!
-    
 
     ---Category: DF Specific Tools
     --           ==============================================================
 
     class DataSet;
-	---Purpose: This class is used to build a set of DF
-	--          informations like labels or attributes.
 
     class RelocationTable;
-	---Purpose: Builds a attribute relocation dictionnary useful
-	--          for copy or paste actions.
 
     class Tool;
-	---Purpose: This class provides general services.
 
     class LabelMapHasher;
-	---Purpose: A label hasher for label maps.
 
     class IDFilter;
-	---Purpose: This class offers filtering services around an ID list.
 
 
     ---Category: DF Classes Instantiations

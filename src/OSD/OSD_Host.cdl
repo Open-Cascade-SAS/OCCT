@@ -17,6 +17,7 @@
 class Host from OSD
 
  ---Purpose: Carries information about a Host
+ --          System version ,host name, nodename ...
 
 
 uses SysType, OEMType, Error, AsciiString from TCollection

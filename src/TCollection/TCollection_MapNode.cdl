@@ -15,6 +15,7 @@
 -- commercial license or contractual agreement.
 
 private class MapNode from TCollection
+    ---Purpose: Basic class root of all the Maps.
 inherits TShared from MMgt
 uses MapNodePtr from TCollection
 is

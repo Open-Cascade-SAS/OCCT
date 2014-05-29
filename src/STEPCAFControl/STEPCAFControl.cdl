@@ -42,18 +42,14 @@ uses
 is
 
     class Reader;
-    	---Purpose: Reader for DECAF documents
-    
+
     class Writer;
-    	---Purpose: Writer for DECAF documents
 
     class ExternFile;
-        ---Purpose: Auxiliary class to store results of translation of external file
 
     class ActorWrite;
     class Controller;
-    	---Purpose: Extensions of standard STEP tools for DECAF specifics
-    
+
     class DictionaryOfExternFile instantiates 
     	  Dictionary from Dico (ExternFile from STEPCAFControl);
 

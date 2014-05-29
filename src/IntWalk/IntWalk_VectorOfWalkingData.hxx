@@ -19,6 +19,8 @@
 #include <vector>
 #include <NCollection_StdAllocator.hxx>
 
+// Defines a dynamic vector of work data.
+
 struct IntWalk_WalkingData
 {
     Standard_Real    ustart;

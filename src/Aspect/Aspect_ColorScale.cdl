@@ -14,7 +14,7 @@
 -- commercial license or contractual agreement.
 
 deferred class ColorScale from Aspect inherits TShared from MMgt
-
+        ---Purpose: Defines a color scale for viewer.
 uses
 
        TypeOfColorScaleData     from Aspect,

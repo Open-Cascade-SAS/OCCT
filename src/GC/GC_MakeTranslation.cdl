@@ -18,13 +18,13 @@ class MakeTranslation
 
 from GC
 
-    	---Purpose: This class mplements elementary construction algorithms for a
-    	-- translation in 3D space. The result is a
-    	-- Geom_Transformation transformation.
-    	-- A MakeTranslation object provides a framework for:
-    	-- -   defining the construction of the transformation,
-    	-- -   implementing the construction algorithm, and
-    	-- -   consulting the result.
+    ---Purpose: This class implements elementary construction algorithms for a
+    -- translation in 3D space. The result is a
+    -- Geom_Transformation transformation.
+    -- A MakeTranslation object provides a framework for:
+    -- -   defining the construction of the transformation,
+    -- -   implementing the construction algorithm, and
+    -- -   consulting the result.
 
 uses Pnt            from gp,
      Transformation from Geom,

@@ -106,14 +106,6 @@ uses TColStd, gp, TColgp, math, GeomAbs
 is
 
     imported EvaluatorFunction ;
-    ---Purpose: this is a one dimensional function 
-    --  typedef  void (*EvaluatorFunction)  (
-    --  Standard_Integer     // Derivative Request
-    --  Standard_Real    *   // StartEnd[2] 
-    --  Standard_Real        // Parameter
-    --  Standard_Real    &   // Result
-    --  Standard_Integer &) ;// Error Code
-    --  serves to multiply a given vectorial BSpline by a function 
 
     enumeration KnotDistribution is NonUniform, Uniform;
     ---Purpose: This enumeration describes the repartition of the

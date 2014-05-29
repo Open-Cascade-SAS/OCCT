@@ -75,7 +75,7 @@ is
     
 
     	---Category: Classes of VRML field types.
-	---Purpose: qualifies all types of VRML fields.
+   -- Qualifies all types of VRML fields.
 
 
    --  Notes: 
@@ -97,9 +97,8 @@ is
    --         MFVec3f    VRML type == HArray1OfVec           from  TColgp
 
 
-  ---Purpose:  defines SFImage type of VRML field types.
     class SFImage;
-  ---Purpose:  defines SFRotation type of VRML field types.
+
     class SFRotation;
  
 
@@ -177,7 +176,7 @@ is
 
 	---Category: Classes of VRML nodes specifying properties of geometry
 	---          and its appearance. 
-	---Purpose: qualifies properties of geometry and its appearance.
+	--- Qualifies properties of geometry and its appearance.
 
 
 
@@ -269,7 +268,7 @@ is
 
 	---Category: Classes of VRML nodes specifying matrix and transform
 	---          properties. 
-	---Purpose: qualifies matrix and transform properties.  
+	--- Qualifies matrix and transform properties.
 
     class MatrixTransform;
     class Rotation;
@@ -280,7 +279,7 @@ is
 
 	---Category: Classes of VRML nodes specifying properties of cameras
 	---          and lights. 
-	---Purpose: qualifies properties of cameras and lights. 
+	--- Qualifies properties of cameras and lights.
 
     class OrthographicCamera;
     class PerspectiveCamera;
@@ -290,7 +289,7 @@ is
 
         
 	---Category: Classes of VRML nodes specifying group properties. 
-	---Purpose: qualifies group properties.
+	--- Qualifies group properties.
 
 
 

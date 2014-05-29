@@ -15,7 +15,7 @@
 -- commercial license or contractual agreement.
 
 class Edge from DBRep inherits TShared from MMgt
-
+	---Purpose: Display of an edge. Edge + color.
 uses
     Edge    from TopoDS,
     Color   from Draw

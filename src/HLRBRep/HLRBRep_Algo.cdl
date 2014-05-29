@@ -16,7 +16,8 @@
 
 class Algo from HLRBRep inherits InternalAlgo from HLRBRep
 
-    	---Purpose: A framework to compute a shape as seen in a projection plane. This is done by
+      ---Purpose: Inherited  from InternalAlgo  to  provide  methods with Shape from TopoDS.
+      --          A framework to compute a shape as seen in a projection plane. This is done by
     	-- calculating the visible and the hidden parts of the shape.
     	-- HLRBRep_Algo works with three types of entity:
     	-- -   shapes to be visualized

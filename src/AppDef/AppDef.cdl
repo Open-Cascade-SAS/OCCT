@@ -43,25 +43,16 @@ uses AppParCurves, Approx, gp, TColgp, TCollection, Standard, MMgt, math, FEmToo
 is
 
 class MultiPointConstraint;  
-    ---Purpose: a MultiPointConstraint is a set of points which have the same range 
-    -- in the MultiLine and the same constraints.
-
 
 class MultiLine;
-    ---Purpose: this is the organized set of points.
 
 class MyLineTool;
-    ---Purpose: example of MultiLine tool corresponding to the tools of the packages
-    -- AppParCurves and Approx. For Approx, the tool will not addd points
-    -- if the algorithms want some.
 
 deferred  class  SmoothCriterion;
 
 class  LinearCriteria;
                  
 class Variational;
-     ---Purpose: computes the approximation of a Multiline by
-     --          Variational optimization.
 
 
 --- Classes instanciees:

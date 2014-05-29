@@ -13,6 +13,7 @@
 -- commercial license or contractual agreement.
 
 class ArrayOfPolygons from Graphic3d inherits ArrayOfPrimitives from Graphic3d
+    ---Purpose: Contains polygons array definition
 
 is
 

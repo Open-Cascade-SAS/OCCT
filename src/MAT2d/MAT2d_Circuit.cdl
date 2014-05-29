@@ -21,7 +21,8 @@ inherits
     TShared from MMgt
     
 	---Purpose: Constructs a circuit on a set of lines.
-	--          
+	--          EquiCircuit gives a Circuit passing by all the lines
+	--          in a set and all the connexions of the minipath associated.
 	--           
 
 uses

@@ -17,7 +17,7 @@
 class MakeEllipse from GCE2d inherits Root from GCE2d
 
     ---Purpose :This class implements the following algorithms used to 
-    --          create Ellipse from gp.           
+    --          create Ellipse from Geom2d.
     --          * Create an Ellipse from two apex  and the center.
     --  Defines an ellipse in 2D space. 
     --  The parametrization range is [0,2*PI].

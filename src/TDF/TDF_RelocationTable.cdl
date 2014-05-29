@@ -26,7 +26,8 @@ class RelocationTable from TDF
 
 	---Purpose: This is a relocation dictionnary between source
 	--          and target labels, attributes or any
-	--          transient. Note that one target value may be the
+	--          transient(useful for copy or paste actions).
+	--          Note that one target value may be the
 	--          relocation value of more than one source object.
 	--          
 	--          Common behaviour: it returns true and the found

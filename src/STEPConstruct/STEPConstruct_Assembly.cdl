@@ -16,7 +16,7 @@
 
 class Assembly  from STEPConstruct
 
-    ---Purpose : This operator creates an item of an assembly, from its
+    ---Purpose : This operator creates and checks an item of an assembly, from its
     --           basic data : a ShapeRepresentation, a Location ...
     --           
     --           Three ways of coding such item from a ShapeRepresentation :

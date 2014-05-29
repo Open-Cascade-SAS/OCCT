@@ -16,7 +16,7 @@
 
 class WireSegment from ShapeFix 
 
-	---Purpose: This class is auxiliary class used in ComposeShell.
+	---Purpose: This class is auxiliary class (data storage) used in ComposeShell.
         --          It is intended for representing segment of the wire 
         --          (or whole wire). The segment itself is represented by 
         --          ShapeExtend_WireData. In addition, some associated data 

@@ -17,7 +17,7 @@
 deferred class FileNode from OSD 
 
      ---Purpose: A class for 'File' and 'Directory' grouping common
-     --          methods.
+     --          methods (file/directory manipulation tools).
      --          The "file oriented" name means files or directories which are
      --          in fact hard coded as files.
 

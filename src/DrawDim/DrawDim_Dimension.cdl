@@ -16,7 +16,7 @@
 
 deferred class Dimension from DrawDim inherits Drawable3D from Draw
 
-	---Purpose: 
+	---Purpose: Dimension between planes and cylinder
 
 uses 
     Real       from Standard,

@@ -15,7 +15,7 @@
 -- commercial license or contractual agreement.
 
 class AppFuncRst from BRepBlend inherits AppFuncRoot from BRepBlend
-	---Purpose: Function to approximate by AppSurface for Edge/Face          
+	---Purpose: Function  to approximate by AppSurface  for Curve/Surface contact.
 	---Level: Advanced
 
 uses 

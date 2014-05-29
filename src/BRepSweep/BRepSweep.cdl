@@ -38,14 +38,10 @@ uses
 is
 
     class Builder;
-	---Purpose: Implements the Builder required for Sweep.
 
     class Tool;
-	---Purpose: Provides an indexation of the subShapes of a Shape
-	--          from TopoDS.
-	
+
     class Iterator;
-	---Purpose: Iterator on the subShapes of a shape.
 
     deferred class NumLinearRegularSweep;
 

@@ -22,7 +22,7 @@
 
 class Browser from DDF inherits Drawable3D from Draw
 
-	---Purpose: Browses a data framework.
+	---Purpose: Browses a data framework from TDF.
 
 uses
 

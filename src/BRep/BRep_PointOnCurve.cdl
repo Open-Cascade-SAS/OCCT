@@ -16,7 +16,7 @@
 
 class PointOnCurve from BRep inherits PointRepresentation from BRep
 
-	---Purpose: 
+	---Purpose: Representation by a parameter on a 3D curve.
 
 uses
     Curve    from Geom,

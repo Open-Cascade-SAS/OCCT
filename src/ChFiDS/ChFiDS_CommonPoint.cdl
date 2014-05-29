@@ -16,7 +16,9 @@
 
 class CommonPoint from ChFiDS 
 
-	---Purpose: 
+	---Purpose: point    start/end of  fillet common  to  2 adjacent  filets
+  --          and  to an edge on  one of 2 faces participating
+  --          in  the construction of  the  fillet
 
 uses Orientation from TopAbs,
      Vertex from TopoDS,

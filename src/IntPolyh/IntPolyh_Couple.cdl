@@ -15,7 +15,7 @@
 -- commercial license or contractual agreement.
 
 class Couple from IntPolyh
- 
+	---Purpose: couple of triangles
 
 uses
     

@@ -24,6 +24,8 @@ class BuildAveragePlane from GeomPlate
 
     ---Purpose: This class computes an average inertial plane with an
     --          array of points.
+    --          Computes the initial surface (average plane) in the cases
+    --          when the initial surface is not given.
 
 uses
     Jacobi from math,

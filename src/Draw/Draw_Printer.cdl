@@ -15,7 +15,8 @@
 
 class Printer from Draw inherits Printer from Message
 
-    ---Purpose: Implementation of Printer class with output directed to Draw_Interpretor
+    ---Purpose: Implementation of Printer class with output
+    --          (Message_Messenge) directed to Draw_Interpretor
 
 uses
 

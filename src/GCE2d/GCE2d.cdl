@@ -36,50 +36,36 @@ private deferred class Root;
 ---------------------------------------------------------------------------
 
 class MakeLine;
-    	---Purpose: Makes a Line from Geom2d.
 
 class MakeCircle;
-    	---Purpose: Makes a Circle from Geom2d.
 
 class MakeHyperbola;
-    	---Purpose: Makes an hyperbola from Geom2d.
 
 class MakeEllipse;
-    	---Purpose: Makes an Ellipse from Geom2d.
 
 class MakeParabola;
-    	---Purpose: Makes a parabola from Geom2d.
 
 class MakeSegment;
-    	---Purpose: Makes a segment of Line (TrimmedCurve from Geom2d).
 
 class MakeArcOfCircle;
-    	---Purpose: Makes an arc of circle (TrimmedCurve from Geom2d).
 
 class MakeArcOfEllipse;
-    	---Purpose: Makes an arc of ellipse (TrimmedCurve from Geom2d).
 
 class MakeArcOfParabola;
-    	---Purpose: Makes an arc of parabola (TrimmedCurve from Geom2d).
 
 class MakeArcOfHyperbola;
-    	---Purpose: Makes an arc of hyperbola (TrimmedCurve from Geom2d).
 
 ---------------------------------------------------------------------------
 --              Constructions of Transformation from Geom2d.
 ---------------------------------------------------------------------------
 
 class MakeTranslation;
-    	---Purpose: Returns a translation transformation.
  
 class MakeMirror;
-    	---Purpose: Returns a symmetry transformation. 
 
 class MakeRotation;
-    	---Purpose: Returns a rotation transformation.
 
 class MakeScale;
-    	---Purpose: Returns a scaling transformation.
 
     
 end GCE2d;

@@ -15,7 +15,7 @@
 
 class Datum from XCAFDoc inherits Attribute from TDF
 
-	---Purpose: 
+	---Purpose: attribute to store datum
 
 uses
     Label from TDF,

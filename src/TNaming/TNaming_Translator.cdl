@@ -16,7 +16,7 @@
 
 private class Translator from TNaming
 
-	---Purpose: 
+	---Purpose: only  for  Shape  Copy  test - to move in DNaming
 
 uses
     Shape  from  TopoDS, 

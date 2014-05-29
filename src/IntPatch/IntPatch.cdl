@@ -50,9 +50,6 @@ is
     class ArcFunction;
 	
 	class InterferencePolyhedron;
-    ---Purpose: Compute the  interference  between two polyhedron.  Points
-    --          of intersection ,  polylines  of intersection and zones of
-    --          tangence.
 
 -- implicite/implicite
 

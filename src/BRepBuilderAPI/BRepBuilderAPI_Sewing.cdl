@@ -26,7 +26,7 @@ class Sewing from BRepBuilderAPI inherits TShared from MMgt
 	---Purpose: Provides methods to
 	--           
 	--          - identify possible contigous boundaries (for control
-	--            afterwards)
+	--            afterwards (of continuity: C0, C1, ...))
 	--            
 	--          - assemble contigous shapes into one shape.
 	--            Only manifold shapes will be found. Sewing will not

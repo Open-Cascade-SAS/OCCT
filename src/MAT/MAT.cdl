@@ -30,20 +30,14 @@ is
     	--- Purpose: Definition on the Left and the Right on the Fig.
 
     class Graph;
-	--- Purpose: Graph of exploration of the Bisecting Locus.
 
     class Arc;
-    	--- Purpose: Arc of Graph. 
-    
+
     class Node;
-    	--- Purpose: Node of Graph.
-  
+
     class BasicElt;
-	--- Purpose: BasicElt of Graph.
-    
+
     class Zone;
-	--- Purpose: Class Zone contains the frontiere of the Zone of proximity
-	--           of a BasicElt.
 
     class SequenceOfBasicElt instantiates Sequence from TCollection
                                                          (BasicElt from MAT); 

@@ -15,7 +15,7 @@
 -- commercial license or contractual agreement.
 
 class Projector from HLRTest inherits Drawable3D from Draw
-	---Purpose: 
+	---Purpose: Draw Variable Projector to test.
 
 uses
     OStream,

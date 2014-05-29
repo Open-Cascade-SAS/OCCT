@@ -15,10 +15,6 @@
 -- commercial license or contractual agreement.
 
 package TopAbs 
-
-    	---Level : Public. 
-    	--  All methods of all  classes will be public.
-
 	---Purpose: This package gives resources for Topology oriented
 	--          applications such as : Topological Data Structure,
 	--          Topological Algorithms.
@@ -35,6 +31,9 @@ package TopAbs
 	--            position of a point relative to a Shape.
 	--            
 	--            * Methods to manage the enumerations.
+
+    ---Level : Public.
+    --  All methods of all  classes will be public.
 
 is
 

@@ -19,6 +19,7 @@
 class ViewerSelector3d from StdSelect inherits ViewerSelector from SelectMgr
 
     ---Purpose: Selector Usable by Viewers from V3d
+    --          Accepts Only Sensitive Entities inheriting Select3D entities...
 
 uses
     View                 from V3d,

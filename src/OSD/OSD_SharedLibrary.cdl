@@ -19,6 +19,8 @@
 class SharedLibrary from OSD 
 
     ---Purpose: Interface to dynamic library loader.
+    --          Provides tools to load a shared library
+    --          and retrieve the address of an entry point.
 uses LoadMode,Function
 is
 

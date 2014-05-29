@@ -29,15 +29,15 @@ uses Standard,
 is
 
 
-    ---Purpose: General Data
-    --          ============
+    ---Category: General Data
+    --           ============
 
     class Name;
     
     class Comment;
     
-    ---Purpose: Basic Data for Modeling
-    --          =======================
+    ---Category: Basic Data for Modeling
+    --           =======================
 
     class Integer; 
     
@@ -63,8 +63,8 @@ is
     
     class Variable;
     
-    ---Purpose: Document Data for Modeling
-    --          ==========================
+    ---Category: Document Data for Modeling
+    --           ==========================
     
     class NoteBook; 
  

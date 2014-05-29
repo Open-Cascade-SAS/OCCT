@@ -16,7 +16,7 @@
 
 class Disk from OSD  
 
-   ---Purpose: Disk management
+   ---Purpose: Disk management (a set of disk oriented tools)
 
 
 uses Error, Path, CString from Standard, AsciiString from TCollection

@@ -16,7 +16,9 @@
 
 private class UsedShapes from TNaming inherits Attribute from TDF
 
-	---Purpose: Set of Shapes Used in a Data from TDF
+	---Purpose: Global attribute located under root label to store all
+  --          the shapes handled by the framework
+  --          Set of Shapes Used in a Data from TDF
 	--          Only one instance by Data, it always
 	--          Stored as Attribute of The Root.
 

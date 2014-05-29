@@ -16,7 +16,7 @@
 
 class Curve from TopOpeBRepDS
 
-    ---Purpose: A Geom point and a tolerance.
+    ---Purpose: A Geom curve and a tolerance.
 
 uses
 
