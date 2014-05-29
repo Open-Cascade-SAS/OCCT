@@ -1584,31 +1584,63 @@ Standard_Boolean ShapeFix_Face::FixMissingSeam()
 
   BRep_Builder B;
   if ( w1.IsNull() ) return Standard_False;
-  else if ( w2.IsNull() ) {
-    // WARNING!!! Temporarily for spheres only: 
-    // If only one of wires limiting face on sphere is open in 2d,
-    // this means that degenerated edge should be added to one of poles, and
+  else if ( w2.IsNull()) {
+    // For spheres and BSpline cone-like surfaces(bug 24055):
+    // If only one of wires limiting face on surface is open in 2d,
+    // this may means that degenerated edge should be added, and
     // then usual procedure applied
+    gp_Pnt2d p;
+    gp_Dir2d d;
+    Standard_Real aRange;
+
     if ( ismodeu && mySurf->Surface()->IsKind(STANDARD_TYPE(Geom_SphericalSurface)) ) {
-      gp_Pnt2d p ( ( ismodeu < 0 ? 0. : 2.*M_PI ), ismodeu * 0.5 * M_PI );
-      gp_Dir2d d ( -ismodeu, 0. );
-      Handle(Geom2d_Line) line = new Geom2d_Line ( p, d );
-      TopoDS_Edge edge;
-      B.MakeEdge ( edge );
-      B.Degenerated ( edge, Standard_True );
-      B.UpdateEdge ( edge, line, myFace, ::Precision::Confusion() );
-      B.Range ( edge, myFace, 0., 2*M_PI );
-      TopoDS_Vertex V;
-      B.MakeVertex ( V, mySurf->Value ( p.X(), p.Y() ), ::Precision::Confusion() );
-      V.Orientation(TopAbs_FORWARD);
-      B.Add(edge,V);
-      V.Orientation(TopAbs_REVERSED);
-      B.Add(edge,V);
-      B.MakeWire ( w2 );
-      B.Add ( w2, edge );
-      ws.Append ( w2 );
+      p.SetCoord ( ( ismodeu < 0 ? 0. : 2.*M_PI ), ismodeu * 0.5 * M_PI );
+      Standard_Real aXCoord = -ismodeu;
+      d.SetCoord ( aXCoord, 0.);
+      aRange = 2.*M_PI;
+    }
+    else if ( ismodev && mySurf->Surface()->IsKind(STANDARD_TYPE(Geom_BSplineSurface))) {
+      Standard_Real uCoord;
+      if (mySurf->Value(SUF, SVF).Distance(mySurf->Value(SUF, (SVF + SVL) / 2)) < ::Precision::Confusion())
+        uCoord = SUF;
+      else if (mySurf->Value(SUL, SVF).Distance(mySurf->Value(SUL, (SVF + SVL) / 2)) < ::Precision::Confusion())
+        uCoord = SUL;
+      else return Standard_False;
+
+      p.SetCoord ( uCoord, ( ismodev < 0 ? 0. : VRange ) );
+      d.SetCoord ( 0., -ismodev);
+      aRange = VRange;
+    }
+    else if ( ismodeu && mySurf->Surface()->IsKind(STANDARD_TYPE(Geom_BSplineSurface))) {
+      Standard_Real vCoord;
+      if (mySurf->Value(SUF, SVF).Distance(mySurf->Value((SUF + SUL) / 2, SVF)) < ::Precision::Confusion())
+        vCoord = SVF;
+      else if (mySurf->Value(SUL, SVL).Distance(mySurf->Value((SUF + SUL) / 2, SVL)) < ::Precision::Confusion())
+        vCoord = SVL;
+      else return Standard_False;
+
+      p.SetCoord ( ( ismodeu < 0 ? 0. : URange ), vCoord );
+      Standard_Real aXCoord = -ismodeu;
+      d.SetCoord ( aXCoord, 0.);
+      aRange = URange;
     }
     else return Standard_False;
+
+    Handle(Geom2d_Line) line = new Geom2d_Line ( p, d );
+    TopoDS_Edge edge;
+    B.MakeEdge ( edge );
+    B.Degenerated ( edge, Standard_True );
+    B.UpdateEdge ( edge, line, myFace, ::Precision::Confusion() );
+    B.Range ( edge, myFace, 0., aRange );
+    TopoDS_Vertex V;
+    B.MakeVertex ( V, mySurf->Value ( p.X(), p.Y() ), ::Precision::Confusion() );
+    V.Orientation(TopAbs_FORWARD);
+    B.Add(edge,V);
+    V.Orientation(TopAbs_REVERSED);
+    B.Add(edge,V);
+    B.MakeWire ( w2 );
+    B.Add ( w2, edge );
+    ws.Append ( w2 );
   }
   
   // sort original wires
@@ -1724,7 +1756,7 @@ Standard_Boolean ShapeFix_Face::FixMissingSeam()
     }
     Standard_Boolean skipV = ! vclosed;
     if ( vclosed && ! ismodeu ) {
-      pos1.SetY ( pos1.Y() + ShapeAnalysis::AdjustByPeriod ( pos1.Y(), SVF, URange ) );
+      pos1.SetY ( pos1.Y() + ShapeAnalysis::AdjustByPeriod ( pos1.Y(), SVF, VRange ) );
       if ( foundV ==2 && Abs ( pos1.Y() ) > Abs(vf) ) skipV = Standard_True;
       else if ( ! foundV || ( foundV ==1 && Abs ( pos1.Y() ) < Abs(vf) ) ) {
 	foundV = 1;
