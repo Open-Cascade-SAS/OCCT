@@ -55,11 +55,11 @@ is
     	--          the path is an exploration of the tree which contains
     	--          the connexions and their reverses.
     	--          if the tree of connexions is
-    	--                  A
-    	--                 / \
-    	--                B   E
-    	--               / \   \
-    	--              C   D   F
+    	--                   A
+    	--                 / |
+    	--                B  E
+    	--              / |  |
+    	--             C  D  F
     	--              
     	--          the path is A->B, B->C, C->B, B->D, D->B, B->A, A->E,
     	--                      E->F, F->E, E->A.    
