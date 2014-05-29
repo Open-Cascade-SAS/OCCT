@@ -220,20 +220,32 @@ ShapeAnalysis_FreeBounds::ShapeAnalysis_FreeBounds(const TopoDS_Shape& shape,
     aBox.SetGap(tolerance);
     aTreeFiller.Add(inbW, aBox);
   }
+
   aTreeFiller.Fill();
   Standard_Integer nsel;
   
   ShapeAnalysis_Edge sae; //szv#4:S4163:12Mar99 moved
   Standard_Boolean done = Standard_False;
+
+  Standard_Boolean isUsedManifoldMode = Standard_True;
+
+  if((sewd->NbEdges() < 1) && (sewd->NbNonManifoldEdges() > 0))
+  {
+    isUsedManifoldMode = Standard_False;
+  }
   
-  while (!done) {
+  while (!done)
+  {
     Standard_Boolean found = Standard_False, tail = Standard_False, direct = Standard_False;
     Standard_Integer lwire=0;
     aSel.SetStop();
     Bnd_Box FVBox, LVBox;
     TopoDS_Vertex Vf, Vl;
-    Vf = sae.FirstVertex(sewd->Edge(1));
-    Vl = sae.LastVertex(sewd->Edge(sewd->NbEdges()));
+    Vf = isUsedManifoldMode ? sae.FirstVertex(sewd->Edge(1)) : 
+      sae.FirstVertex(sewd->NonmanifoldEdge(1));
+    Vl = isUsedManifoldMode ? sae.LastVertex(sewd->Edge(sewd->NbEdges())) :
+      sae.LastVertex(sewd->NonmanifoldEdge(sewd->NbNonManifoldEdges()));
+
     gp_Pnt pf, pl;
     pf = BRep_Tool::Pnt(Vf);
     pl = BRep_Tool::Pnt(Vl);
@@ -246,14 +258,16 @@ ShapeAnalysis_FreeBounds::ShapeAnalysis_FreeBounds(const TopoDS_Shape& shape,
     
     if (shared)
       aSel.DefineVertexes(Vf,Vl);
-    else{
+    else
+    {
       aSel.DefinePnt(pf,pl);
       aSel.SetTolerance(tolerance);
     }
     
     nsel = aBBTree.Select(aSel);
     
-    if (nsel != 0 && !aSel.LastCheckStatus(ShapeExtend_FAIL)) {
+    if (nsel != 0 && !aSel.LastCheckStatus(ShapeExtend_FAIL))
+    {
       found = Standard_True;
       lwire = aSel.GetNb();
       tail    = aSel.LastCheckStatus (ShapeExtend_DONE1) ||
@@ -263,53 +277,60 @@ ShapeAnalysis_FreeBounds::ShapeAnalysis_FreeBounds(const TopoDS_Shape& shape,
       aSel.LoadList(lwire);
     }
     
-    if (found) {
-      if (!direct) arrwires->ChangeValue(lwire).Reverse();
+    if (found)
+    {
+      if (!direct)
+        arrwires->ChangeValue(lwire).Reverse();
+
       TopoDS_Wire aCurW = TopoDS::Wire (arrwires->Value (lwire));
-      Handle(ShapeExtend_WireData) acurwd = 
-	new ShapeExtend_WireData ( TopoDS::Wire (arrwires->Value (lwire)));
+      Handle(ShapeExtend_WireData) acurwd = new 
+        ShapeExtend_WireData ( TopoDS::Wire (arrwires->Value (lwire)));
       sewd->Add (acurwd, (tail ? 0 : 1));
     }
-    else {
+    else
+    {
       //making wire
       //1.providing connection (see ShapeFix_Wire::FixConnected())
       //Standard_Integer i; // svv #1
-      for (/*Standard_Integer*/ i = 1; i <= saw->NbEdges(); i++) {
-	if (saw->CheckConnected (i)) {
-	  Standard_Integer n2 = i;
-	  Standard_Integer n1 = (n2 > 1 ? n2 - 1 : saw->NbEdges());
-	  TopoDS_Edge E1 = sewd->Edge(n1);
-	  TopoDS_Edge E2 = sewd->Edge(n2);
-  
-	  TopoDS_Vertex Vprev, Vfol, V; //connection vertex
-	  Vprev = sae.LastVertex (E1);
-	  Vfol = sae.FirstVertex (E2);
+      for (/*Standard_Integer*/ i = 1; i <= saw->NbEdges(); i++)
+      {
+        if (saw->CheckConnected (i))
+        {
+          Standard_Integer n2 = i;
+          Standard_Integer n1 = (n2 > 1 ? n2 - 1 : saw->NbEdges());
+          TopoDS_Edge E1 = sewd->Edge(n1);
+          TopoDS_Edge E2 = sewd->Edge(n2);
 
-	  if (saw->LastCheckStatus (ShapeExtend_DONE1)) //absolutely confused
-	    V = Vprev;
-	  else {
-	    ShapeBuild_Vertex sbv; 
-	    V = sbv.CombineVertex (Vprev, Vfol);
-	  }
-	  vertices.Bind (Vprev, V);
-	  vertices.Bind (Vfol, V);
+          TopoDS_Vertex Vprev, Vfol, V; //connection vertex
+          Vprev = sae.LastVertex (E1);
+          Vfol = sae.FirstVertex (E2);
 
-	  //replace vertices to a new one
-	  ShapeBuild_Edge sbe;
-	  if (saw->NbEdges() < 2)
-	    sewd->Set (sbe.CopyReplaceVertices (E2, V, V), n2);
-	  else {
-	    sewd->Set (sbe.CopyReplaceVertices (E2, V, TopoDS_Vertex()), n2);
-	    if (!saw->LastCheckStatus (ShapeExtend_DONE1))
-	      sewd->Set (sbe.CopyReplaceVertices (E1, TopoDS_Vertex(), V), n1);
-	  }
-	}
+          if (saw->LastCheckStatus (ShapeExtend_DONE1)) //absolutely confused
+            V = Vprev;
+          else {
+            ShapeBuild_Vertex sbv; 
+            V = sbv.CombineVertex (Vprev, Vfol);
+          }
+          vertices.Bind (Vprev, V);
+          vertices.Bind (Vfol, V);
+
+          //replace vertices to a new one
+          ShapeBuild_Edge sbe;
+          if (saw->NbEdges() < 2)
+            sewd->Set (sbe.CopyReplaceVertices (E2, V, V), n2);
+          else {
+            sewd->Set (sbe.CopyReplaceVertices (E2, V, TopoDS_Vertex()), n2);
+            if (!saw->LastCheckStatus (ShapeExtend_DONE1))
+              sewd->Set (sbe.CopyReplaceVertices (E1, TopoDS_Vertex(), V), n1);
+          }
+        }
       }
 
       //2.making wire
       TopoDS_Wire wire = sewd->Wire();
       if (!saw->CheckConnected (1) && saw->LastCheckStatus (ShapeExtend_OK))
         wire.Closed (Standard_True);
+
       owires->Append (wire);
       sewd->Clear();
         
@@ -317,17 +338,27 @@ ShapeAnalysis_FreeBounds::ShapeAnalysis_FreeBounds(const TopoDS_Shape& shape,
       //Searching for first edge for next wire
       lwire = -1;
       for (/*Standard_Integer*/ i = 1 ; i <= arrwires->Length() && lwire == -1; i++)
-	if (!aSel.ContWire(i)) lwire = i; //szv#4:S4163:12Mar99 optimized
+      {
+        if (!aSel.ContWire(i))
+        {
+          lwire = i; //szv#4:S4163:12Mar99 optimized
+        }
+      }
 
-      if (lwire == -1) done = 1;
-      else {
-	sewd->Add (TopoDS::Wire (arrwires->Value (lwire)));
+      if (lwire == -1)
+        done = 1;
+      else
+      {
+        sewd->Add (TopoDS::Wire (arrwires->Value (lwire)));
         aSel.LoadList(lwire);
       }
     }
   }
+
   for ( /*Standard_Integer*/ i = 1; i <= iwires->Length(); i++)
+  {
     iwires->SetValue (i, arrwires->Value(i));
+  }
 }
 
 static void SplitWire(const TopoDS_Wire& wire,
