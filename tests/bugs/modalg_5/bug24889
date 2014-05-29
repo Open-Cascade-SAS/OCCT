@@ -1,0 +1,38 @@
+puts "=========="
+puts "OCC24889"
+puts "=========="
+puts ""
+#####################################################################################
+# Geom2dAPI_InterCurveCurve produces result with parameter outside the curve limits
+#####################################################################################
+
+pload QAcommands
+
+set info [OCC24889]
+regexp {Curve 0: +FirstParam += +([-0-9.+eE]+); +LastParam += +([-0-9.+eE]+); +IntParameter += +([-0-9.+eE]+)} $info full first1 last1 intp1
+regexp {Curve 1: +FirstParam += +([-0-9.+eE]+); +LastParam += +([-0-9.+eE]+); +IntParameter += +([-0-9.+eE]+)} $info full first2 last2 intp2
+
+if { $intp1 >= $first1 && $intp1 <= $last1 } {
+  puts "OK: IntParameter1 inside the curve limits"
+} else {
+  puts "Error: IntParameter1 outside the curve limits"
+}
+
+if { $intp2 >= $first2 && $intp2 <= $last2 } {
+  puts "OK: IntParameter2 inside the curve limits"
+} else {
+  puts "Error: IntParameter2 outside the curve limits"
+}
+
+2dcvalue c_1 $intp1 xx1 yy1
+2dcvalue c_2 $intp2 xx2 yy2
+
+dump xx1 yy1
+dump xx2 yy2
+
+set dist_val [dval (xx1-xx2)*(xx1-xx2)+(yy1-yy2)*(yy1-yy2)]
+if { $dist_val < 1.0e-14 } {
+  puts "OK: point distance is good"
+} else {
+  puts "Error: point distance is wrong"
+}

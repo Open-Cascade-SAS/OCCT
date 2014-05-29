@@ -2268,6 +2268,59 @@ static Standard_Integer OCC24834 (Draw_Interpretor& di, Standard_Integer n, cons
   return 0;
 }
 
+
+#include <Geom2dAPI_InterCurveCurve.hxx>
+#include <IntRes2d_IntersectionPoint.hxx>
+//=======================================================================
+//function : OCC24889
+//purpose  : 
+//=======================================================================
+static Standard_Integer OCC24889 (Draw_Interpretor& theDI,
+                                  Standard_Integer /*theNArg*/,
+                                  const char** /*theArgs*/)
+{
+ // Curves
+  Handle( Geom2d_Circle ) aCircle1 = new Geom2d_Circle(
+    gp_Ax22d( gp_Pnt2d( 25, -25 ), gp_Dir2d( 1, 0 ), gp_Dir2d( -0, 1 ) ), 155 );
+
+  Handle( Geom2d_Circle ) aCircle2 = new Geom2d_Circle(
+    gp_Ax22d( gp_Pnt2d( 25, 25 ), gp_Dir2d( 1, 0 ), gp_Dir2d( -0, 1 ) ), 155 );
+
+  Handle( Geom2d_TrimmedCurve ) aTrim[2] = {
+    new Geom2d_TrimmedCurve( aCircle1, 1.57079632679490, 2.97959469729228 ),
+    new Geom2d_TrimmedCurve( aCircle2, 3.30359060633978, 4.71238898038469 )
+  };
+
+  DrawTrSurf::Set("c_1", aTrim[0]);
+  DrawTrSurf::Set("c_2", aTrim[1]);
+
+  // Intersection
+  const Standard_Real aTol = Precision::Confusion();
+  Geom2dAPI_InterCurveCurve aIntTool( aTrim[0], aTrim[1], aTol );
+
+  const IntRes2d_IntersectionPoint& aIntPnt =
+    aIntTool.Intersector().Point( 1 );
+
+  gp_Pnt2d aIntRes = aIntTool.Point( 1 );
+  Standard_Real aPar[2] = {
+    aIntPnt.ParamOnFirst(),
+    aIntPnt.ParamOnSecond()
+  };
+
+  //theDI.precision( 5 );
+  theDI << "Int point: X = " << aIntRes.X() << "; Y = " << aIntRes.Y() << "\n";
+  for (int i = 0; i < 2; ++i)
+  {
+    theDI << "Curve " << i << ": FirstParam = " << aTrim[i]->FirstParameter() <<
+      "; LastParam = " << aTrim[i]->LastParameter() <<
+      "; IntParameter = " << aPar[i] << "\n";
+  }
+
+  return 0;
+}
+
+
+
 void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -2309,6 +2362,7 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC24565", "OCC24565 FileNameIGS FileNameSTOR", __FILE__, OCC24565, group);
   theCommands.Add ("OCC24755", "OCC24755", __FILE__, OCC24755, group);
   theCommands.Add ("OCC24834", "OCC24834", __FILE__, OCC24834, group);
+  theCommands.Add ("OCC24889", "OCC24889", __FILE__, OCC24889, group);
   theCommands.Add ("OCC23951", "OCC23951", __FILE__, OCC23951, group);
   theCommands.Add ("OCC24931", "OCC24931", __FILE__, OCC24931, group);
   return;
