@@ -345,20 +345,25 @@ void BRepMesh_IncrementalMesh::Update(const TopoDS_Edge& E)
   do {
     BRep_Tool::PolygonOnTriangulation(E, Poly, T, l, i);
     i++;
-    if (!T.IsNull() && !Poly.IsNull()) {
-      if (!defined) {
+    if (!T.IsNull() && !Poly.IsNull())
+    {
+      if (!defined)
+      {
         if (myRelative) 
           defedge = BRepMesh_FastDiscret::RelativeEdgeDeflection(E, myDeflection, 
                                                                  mydtotale, cdef);
-        else 
+        else
           defedge = myDeflection;
+
         mymapedge.Bind(E, defedge);
         defined = Standard_True;
       }
-      if ((!myRelative && Poly->Deflection() <= 1.1*defedge) ||
-          (myRelative && Poly->Deflection() <= 1.1*defedge)) 
+      if (Poly->Deflection() <= 1.1 * defedge)
+      {
         found = Standard_True;
-      else {
+      }
+      else
+      {
         myModified = Standard_True;
         B.UpdateEdge(E, NullPoly, T, l);
       }
@@ -411,21 +416,27 @@ void  BRepMesh_IncrementalMesh::Update(const TopoDS_Face& F)
   else
     defface = myDeflection;
 
-  if (!T.IsNull()) {
-    if ((!myRelative && T->Deflection() <= 1.1*defface) ||
-        (myRelative && T->Deflection() <= 1.1*defface)) {
-      for (ex.Init(F, TopAbs_EDGE); ex.More(); ex.Next()) {
-        const TopoDS_Shape& E = ex.Current();
-        Poly = BRep_Tool::PolygonOnTriangulation(TopoDS::Edge(E), T, l);
-        if (Poly.IsNull() || myMap.Contains(E)) {
+  if (!T.IsNull())
+  {
+    if (T->Deflection() <= 1.1 * defface)
+    {
+      for (ex.Init(F, TopAbs_EDGE); ex.More(); ex.Next())
+      {
+        const TopoDS_Shape& anEdge = ex.Current();
+        Poly = BRep_Tool::PolygonOnTriangulation(TopoDS::Edge(anEdge), T, l);
+
+        if (Poly.IsNull() || myMap.Contains(anEdge))
+        {
+          // Triangulation is built but edge hasn't representation on it.
           WillBeTriangulated = Standard_True;
-          // cas un peu special. la triangulation est bonne, mais
-          // l'edge n'a pas de representation polygonalisee sur celle-ci.
           break;
         }
       }
-    } 
-    else WillBeTriangulated = Standard_True;
+    }
+    else
+    {
+      WillBeTriangulated = Standard_True;
+    }
   }
 
   if (WillBeTriangulated || T.IsNull()) {
@@ -460,9 +471,9 @@ void  BRepMesh_IncrementalMesh::Update(const TopoDS_Face& F)
           index = myancestors.FindIndex(edge);
           if (index != 0) {
             const TopTools_ListOfShape& L = myancestors.FindFromKey(edge);
-	  
+
             TopTools_ListIteratorOfListOfShape it(L);
-	  
+
             for (; it.More(); it.Next()) {
               TopoDS_Face F2 = TopoDS::Face(it.Value());
               if (!MShape.Contains(F2)) {
@@ -489,10 +500,11 @@ void  BRepMesh_IncrementalMesh::Update(const TopoDS_Face& F)
             }
           }
         }
-      }      
+      }
     }
   }
 }
+
 
 //=======================================================================
 //function : Discret
