@@ -152,21 +152,35 @@ void math_GlobOptMin::Perform()
   myE3 = - maxLength * myTol / 4;
 
   // Compure start point.
-  math_Vector aPnt(1,2);
+  math_Vector aPnt(1,myN);
   for(i = 1; i <= myN; i++)
   {
     Standard_Real currCentral = (myA(i) + myB(i)) / 2.0;
     aPnt(i) = currCentral;
-    myY.Append(currCentral);
   }
 
   myFunc->Value(aPnt, myF);
+
+  math_Vector aExtremumPoint(1,myN);
+  Standard_Real aExtremumValue = RealLast();
+  if (computeLocalExtremum(aPnt, aExtremumValue, aExtremumPoint))
+  {
+    // Local Extremum finds better solution than midpoint.
+    if (aExtremumValue < myF)
+    {
+      myF = aExtremumValue;
+      aPnt = aExtremumPoint;
+    }
+  }
+
+  myY.Clear();
+  for(i = 1; i <= myN; i++)
+    myY.Append(aPnt(i));
   mySolCount++;
 
   computeGlobalExtremum(myN);
 
   myDone = Standard_True;
-
 }
 
 //=======================================================================
