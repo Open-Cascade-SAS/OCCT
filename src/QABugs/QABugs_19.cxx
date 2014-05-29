@@ -1735,6 +1735,38 @@ struct QABugs_NHandleClass
   }
 };
 
+#include <XCAFDoc_ColorTool.hxx>
+#include <STEPControl_StepModelType.hxx>
+#include <STEPCAFControl_Writer.hxx>
+static Standard_Integer OCC23951 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
+{
+  if (argc != 1) {
+    di << "Usage: " << argv[0] << " invalid number of arguments" << "\n";
+    return 1;
+  }
+  Handle(TDocStd_Document) aDoc = new TDocStd_Document("dummy");;
+  TopoDS_Shape s1 = BRepPrimAPI_MakeBox(1,1,1).Shape();
+  TDF_Label lab1 = XCAFDoc_DocumentTool::ShapeTool (aDoc->Main ())->NewShape();
+  XCAFDoc_DocumentTool::ShapeTool (aDoc->Main ())->SetShape(lab1, s1);
+  TDataStd_Name::Set(lab1, "Box1");
+        
+  Quantity_Color yellow(1,1,0, Quantity_TOC_RGB);
+  XCAFDoc_DocumentTool::ColorTool (aDoc->Main())->SetColor(lab1, yellow, XCAFDoc_ColorGen);
+  XCAFDoc_DocumentTool::ColorTool(aDoc->Main())->SetVisibility(lab1, 0);
+
+  STEPControl_StepModelType mode = STEPControl_AsIs;
+  STEPCAFControl_Writer writer;
+  if ( ! writer.Transfer (aDoc, mode ) )
+  {
+    di << "The document cannot be translated or gives no result"  <<  "\n";
+    return 1;
+  }
+
+  writer.Write("test_box.step");
+  return 0;
+}
+
+
 //=======================================================================
 //function : OCC24622
 //purpose  : The command tests sourcing Image_PixMap to AIS_TexturedShape
@@ -2277,6 +2309,7 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC24565", "OCC24565 FileNameIGS FileNameSTOR", __FILE__, OCC24565, group);
   theCommands.Add ("OCC24755", "OCC24755", __FILE__, OCC24755, group);
   theCommands.Add ("OCC24834", "OCC24834", __FILE__, OCC24834, group);
+  theCommands.Add ("OCC23951", "OCC23951", __FILE__, OCC23951, group);
   theCommands.Add ("OCC24931", "OCC24931", __FILE__, OCC24931, group);
   return;
 }

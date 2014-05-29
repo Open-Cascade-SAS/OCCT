@@ -1,0 +1,23 @@
+puts "=========="
+puts "OCC23951"
+puts "=========="
+puts ""
+#####################################################################################
+# Visibility of free, simple shapes not saved when writing XCAF Document info STEP
+#####################################################################################
+
+pload QAcommands
+
+set info [OCC23951]
+
+if { [regexp "Write  Done" $info] != 1 } {
+  puts "Error: file was not written"
+} else {
+  puts "OK: file was written"
+}
+
+stepread test_box.step a *
+axo
+fit
+
+set only_screen_axo 1

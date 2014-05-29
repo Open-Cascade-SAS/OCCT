@@ -1079,7 +1079,7 @@ Standard_Boolean STEPCAFControl_Writer::WriteColors (const Handle(XSControl_Work
       TDF_Label lab = seq.Value(j);
       XCAFPrs_Style style;
       Quantity_Color C;
-      if ( isComponent && lab == L ) {
+      if ( lab == L ) {
         // check for invisible status of object on label
         if ( !CTool->IsVisible( lab ) ) {
           isVisible = Standard_False;
@@ -1167,27 +1167,27 @@ Standard_Boolean STEPCAFControl_Writer::WriteColors (const Handle(XSControl_Work
           newItems->SetValue( el++, Handle(StepRepr_RepresentationItem)::DownCast(Styles.Style(si)));
 //           WP->Model()->AddWithRefs ( Handle(StepRepr_RepresentationItem)::DownCast (Styles.Style(si)));
         }
-        if ( !isVisible ) {
-          // create invisibility item and refer for stiledItem
-          Handle(StepVisual_Invisibility) Invsblt = new StepVisual_Invisibility();
-          Handle(StepVisual_HArray1OfInvisibleItem) HInvsblItm = 
-            new StepVisual_HArray1OfInvisibleItem (1,Styles.NbStyles());
-          // put all style item into the harray
-          for ( si=1; si <= Styles.NbStyles(); si++ ) {
-            Handle(StepRepr_RepresentationItem) styledItm =
-              Handle(StepRepr_RepresentationItem)::DownCast(Styles.Style(si));
-            StepVisual_InvisibleItem anInvItem;
-            anInvItem.SetValue( styledItm );
-            HInvsblItm->SetValue( si, anInvItem );
-          }
-          // set the invisibility of items
-          Invsblt->Init( HInvsblItm );
-          WS->Model()->AddWithRefs( Invsblt );
-        }
-        
+       
         if (newItems->Length() > 0)
           aMDGPR->SetItems( newItems );
       } //end of work with CDSR
+    }
+    if ( !isVisible ) {
+    // create invisibility item and refer for stiledItem
+      Handle(StepVisual_Invisibility) Invsblt = new StepVisual_Invisibility();
+      Handle(StepVisual_HArray1OfInvisibleItem) HInvsblItm = 
+        new StepVisual_HArray1OfInvisibleItem (1,Styles.NbStyles());
+      // put all style item into the harray
+      for ( Standard_Integer si=1; si <= Styles.NbStyles(); si++ ) {
+        Handle(StepRepr_RepresentationItem) styledItm =
+          Handle(StepRepr_RepresentationItem)::DownCast(Styles.Style(si));
+        StepVisual_InvisibleItem anInvItem;
+        anInvItem.SetValue( styledItm );
+        HInvsblItm->SetValue( si, anInvItem );
+      }
+      // set the invisibility of items
+      Invsblt->Init( HInvsblItm );
+      WS->Model()->AddWithRefs( Invsblt );
     }
   }
 
