@@ -314,40 +314,42 @@ Handle(Geom2d_Curve) BRep_Tool::CurveOnSurface(const TopoDS_Edge& E,
     GP = Handle(Geom_Plane)::DownCast(S);
   //fin modif du 21-05-97
 
-  if (!GP.IsNull()) {
-
+  if (!GP.IsNull())
+  {
     Handle(GeomAdaptor_HCurve) HC;
     Handle(GeomAdaptor_HSurface) HS;
 
     HC = new GeomAdaptor_HCurve();
     HS = new GeomAdaptor_HSurface();
 
-    TopLoc_Location LC;
+    TopLoc_Location aCurveLocation;
 
     Standard_Real f, l;// for those who call with (u,u).
-    Handle(Geom_Curve) C3d =
-      BRep_Tool::Curve(E,/*LC,*/f,l); // transforming plane instead of curve
-    // we can loose scale factor of Curve transformation (eap 13 May 2002)
+    Handle(Geom_Curve) C3d = BRep_Tool::Curve(E, aCurveLocation, f, l);
 
-    LC = L/*.Predivided(LC)*/;
+    if (C3d.IsNull())
+    {
+      return nullPCurve;
+    }
 
-    if (C3d.IsNull()) return nullPCurve;
+    aCurveLocation = L.Predivided(aCurveLocation);
 
     Handle(Geom_Plane) Plane = GP;
-    if (!LC.IsIdentity()) {
-      const gp_Trsf& T = LC.Transformation();
+    if (!aCurveLocation.IsIdentity())
+    {
+      const gp_Trsf& T = aCurveLocation.Transformation();
       Handle(Geom_Geometry) GPT = GP->Transformed(T);
       Plane = *((Handle(Geom_Plane)*)&GPT);
     }
     GeomAdaptor_Surface& GAS = HS->ChangeSurface();
     GAS.Load(Plane);
-    
+
     Handle(Geom_Curve) ProjOnPlane = 
       GeomProjLib::ProjectOnPlane(new Geom_TrimmedCurve(C3d,f,l),
                                   Plane,
                                   Plane->Position().Direction(),
                                   Standard_True);
-    
+
     GeomAdaptor_Curve& GAC = HC->ChangeCurve();
     GAC.Load(ProjOnPlane);
 

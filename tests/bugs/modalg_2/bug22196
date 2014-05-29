@@ -12,7 +12,7 @@ set BugNumber OCC22196
 
 restore [locate_data_file OCC22196-scaled.brep] result
 
-set square 147.003
+set square 148.902
 
 set nb_v_good 75
 set nb_e_good 157
