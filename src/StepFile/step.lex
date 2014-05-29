@@ -44,7 +44,12 @@ void rec_typarg(int argtype);
 #ifdef _MSC_VER
 
 // disable MSVC warnings in flex code
+// Note that Intel compiler also defines _MSC_VER but has different warning ids
+#if defined(__INTEL_COMPILER)
+#pragma warning(disable:177 1786 1736)
+#else
 #pragma warning(disable:4131 4244 4273 4267 4127)
+#endif
 
 // Avoid includion of unistd.h if parser is generated on Linux (flex 2.5.35)
 #define YY_NO_UNISTD_H

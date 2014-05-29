@@ -1,0 +1,11 @@
+puts "============"
+puts "OCC24897"
+puts "============"
+puts ""
+#######################################################################
+# Possibility of uncontrolled exit if scanner fails in ExprIntrp
+#######################################################################
+
+pload QAcommands
+
+CR23403 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa

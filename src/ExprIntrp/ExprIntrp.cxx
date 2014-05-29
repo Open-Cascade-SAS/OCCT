@@ -20,13 +20,11 @@
 #include <Standard_ErrorHandler.hxx>
 #include <ExprIntrp_SyntaxError.hxx>
 
-TCollection_AsciiString ExprIntrp_thestring;
-Standard_Integer ExprIntrp_thecurchar=0;
+static TCollection_AsciiString ExprIntrp_thestring;
 
 Standard_Boolean ExprIntrp::Parse(const Handle(ExprIntrp_Generator)& gen, const TCollection_AsciiString& str)
 {
   ExprIntrp_Recept.SetMaster(gen);
-  ExprIntrp_thecurchar = 0;
   if (str.Length() == 0) return Standard_False;
   ExprIntrp_thestring = str;
   ExprIntrp_start_string(ExprIntrp_thestring.ToCString());

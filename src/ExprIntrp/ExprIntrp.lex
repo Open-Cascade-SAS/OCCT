@@ -19,18 +19,16 @@
 %{
 #include <ExprIntrp.tab.h>
 
+#include <ExprIntrp_yaccintrf.hxx>
+
 #define YY_SKIP_YYWRAP
 
 static YY_BUFFER_STATE ExprIntrp_bufstring;
 
-void ExprIntrp_SetResult();
-void ExprIntrp_SetDegree();
-
-int ExprIntrlex (void);
-
-void ExprIntrp_start_string(char* str)
+void ExprIntrp_start_string(const char* str)
 {
-  ExprIntrp_bufstring = ExprIntrp_scan_string(str);
+  // depending on configuration and generator, yyconst may be defined as const or empty
+  ExprIntrp_bufstring = ExprIntrp_scan_string((yyconst char*)str);
 }
 
 void ExprIntrp_stop_string()
@@ -39,10 +37,13 @@ void ExprIntrp_stop_string()
   ExprIntrp_bufstring = (YY_BUFFER_STATE) 0;
 }
 
-int yywrap()
+static int yywrap()
 {
   return 1;
 }
+
+// provide safe error handler (exception instead of exit())
+#define YY_FATAL_ERROR(msg) ExprIntrperror(msg)
 
 #ifdef _MSC_VER
 // add includes for flex 2.91 (Linux version)
@@ -52,8 +53,14 @@ int yywrap()
 // Avoid includion of unistd.h if parser is generated on Linux (flex 2.5.35)
 #define YY_NO_UNISTD_H
 
-// disable MSVC warnings in flex 2.89 code
-#pragma warning(disable:4131 4244 4273 4127)
+// disable MSVC warnings in flex 2.89 and 2.5.35 code
+// Note that Intel compiler also defines _MSC_VER but has different warning ids
+#if defined(__INTEL_COMPILER)
+#pragma warning(disable:177 1786 1736)
+#else
+#pragma warning(disable:4131 4244 4273 4127 4267)
+#endif
+
 #endif
 
 #ifdef __GNUC__

@@ -17,7 +17,7 @@
 #include <string.h>
 #include <ExprIntrp_yaccintrf.hxx>
 
-static char ExprIntrp_curres[255];
+static TCollection_AsciiString ExprIntrp_curres;
 static int ExprIntrp_degree;
 
 #ifndef WNT
@@ -29,7 +29,7 @@ extern "C" char* ExprIntrptext;
 
 extern "C" void ExprIntrp_SetResult()
 {
-  strcpy(ExprIntrp_curres,ExprIntrptext);
+  ExprIntrp_curres = ExprIntrptext;
 }
 
 extern "C" void ExprIntrp_SetDegree()
@@ -42,8 +42,7 @@ int ExprIntrp_GetDegree()
   return ExprIntrp_degree;
 }
 
-int ExprIntrp_GetResult(char *s) 
+const TCollection_AsciiString& ExprIntrp_GetResult ()
 {
-  strcpy(s,ExprIntrp_curres);
-  return (int)strlen(ExprIntrp_curres);
+  return ExprIntrp_curres;
 }

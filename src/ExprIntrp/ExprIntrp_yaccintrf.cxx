@@ -12,9 +12,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
 #include <ExprIntrp_yaccintrf.hxx>
 #include <ExprIntrp_yaccanal.hxx>
 #include <Expr_GeneralExpression.hxx>
@@ -49,39 +46,28 @@
 #include <Expr_SystemRelation.hxx>
 #include <Expr_UnknownIterator.hxx>
 #include <Expr_FunctionDerivative.hxx>
-#include <Expr.hxx>                    // ATTENTION POUR PROTECTION BUG STACK
-
+#include <Expr.hxx>
 #include <Expr_SequenceOfGeneralExpression.hxx>
 #include <Expr_Operators.hxx>
 #include <ExprIntrp_SyntaxError.hxx>
 #include <Expr_Array1OfNamedUnknown.hxx>
 #include <Expr_Array1OfGeneralExpression.hxx>
-#ifdef HAVE_STRINGS_H
-# include <strings.h>
-#endif
 
-extern char yysbuf[];
-extern char *yysptr;
-static char ExprIntrp_assname[30];
-TCollection_AsciiString ExprIntrp_funcdefname;
+static TCollection_AsciiString ExprIntrp_assname;
+static TCollection_AsciiString ExprIntrp_funcdefname;
 static Standard_Integer ExprIntrp_nbargs;
 static Standard_Integer ExprIntrp_nbdiff;
 
-
 extern "C" void ExprIntrp_StartFunction()
 {
-  char funcname[100];
-  ExprIntrp_GetResult(funcname);
-  TCollection_AsciiString name(funcname);
+  const TCollection_AsciiString& name = ExprIntrp_GetResult();
   ExprIntrp_Recept.PushName(name);
   ExprIntrp_nbargs = 0;
 }
 
 extern "C" void ExprIntrp_StartDerivate()
 {
-  char funcname[100];
-  ExprIntrp_GetResult(funcname);
-  TCollection_AsciiString name(funcname);
+  const TCollection_AsciiString& name = ExprIntrp_GetResult();
   ExprIntrp_Recept.PushName(name);
 }
 
@@ -95,9 +81,7 @@ extern "C" void ExprIntrp_EndDerivate()
 extern "C" void ExprIntrp_Derivation()
 {
   ExprIntrp_Recept.PushValue(1);
-  char name[100];
-  ExprIntrp_GetResult(name);
-  TCollection_AsciiString thename(name);
+  const TCollection_AsciiString& thename = ExprIntrp_GetResult();
   Handle(Expr_NamedExpression) namexp = ExprIntrp_Recept.GetNamed(thename);
   if (namexp.IsNull()) {
     namexp = new Expr_NamedUnknown(thename);
@@ -110,11 +94,9 @@ extern "C" void ExprIntrp_Derivation()
 
 extern "C" void ExprIntrp_DerivationValue()
 {
-  char num[30];
-  ExprIntrp_GetResult(num);
-  Standard_Integer degree = ExprIntrp_Recept.PopValue();
-  degree = atoi(num);
-  ExprIntrp_Recept.PushValue(degree);
+  const TCollection_AsciiString& aStr = ExprIntrp_GetResult();
+  ExprIntrp_Recept.PopValue();
+  ExprIntrp_Recept.PushValue(aStr.IntegerValue());
 }
 
 extern "C" void ExprIntrp_EndDerivation()
@@ -134,16 +116,11 @@ extern "C" void ExprIntrp_StartDifferential()
 
 extern "C" void ExprIntrp_DiffDegreeVar()
 {
-  char name[100];
-  ExprIntrp_GetResult(name);
-#ifndef WNT 
-  if (strncasecmp(name,"X",1)) {
-#else
-  if (  name[ 0 ] != 'X' && name[ 0 ] != 'x'  ) {
-#endif  // WNT
+  const TCollection_AsciiString& aStr = ExprIntrp_GetResult();
+  const char* s = aStr.ToCString();
+  if ( *s != 'X' && *s != 'x' ) {
     ExprIntrp_SyntaxError::Raise();
   }
-  char* s = name;
   s++;
   Standard_Integer rank = atoi(s);
   ExprIntrp_Recept.PushValue(rank);
@@ -158,17 +135,15 @@ extern "C" void ExprIntrp_DiffVar()
 
 extern "C" void ExprIntrp_DiffDegree()
 {
-  char name[100];
-  ExprIntrp_GetResult(name);
-  Standard_Integer deg = atoi(name);
+  const TCollection_AsciiString& aStr = ExprIntrp_GetResult();
+  Standard_Integer deg = aStr.IntegerValue();
   ExprIntrp_Recept.PushValue(deg);
 }
 
 extern "C" void ExprIntrp_VerDiffDegree()
 {
-  char name[100];
-  ExprIntrp_GetResult(name);
-  Standard_Integer deg = atoi(name);
+  const TCollection_AsciiString& aStr = ExprIntrp_GetResult();
+  Standard_Integer deg = aStr.IntegerValue();
   Standard_Integer thedeg = ExprIntrp_Recept.PopValue();
   if (deg != thedeg) {
     ExprIntrp_SyntaxError::Raise();
@@ -457,9 +432,7 @@ extern "C" void ExprIntrp_UnaryMinusOperator()
 
 extern "C" void ExprIntrp_VariableIdentifier()
 {
-  char name[30];
-  ExprIntrp_GetResult(name);
-  TCollection_AsciiString thename(name);
+  const TCollection_AsciiString& thename = ExprIntrp_GetResult();
   Handle(Expr_NamedExpression) nameexp = ExprIntrp_Recept.GetNamed(thename);
   if (nameexp.IsNull()) {
     nameexp = new Expr_NamedUnknown(thename);
@@ -470,24 +443,20 @@ extern "C" void ExprIntrp_VariableIdentifier()
 
 extern "C" void ExprIntrp_NumValue()
 {
-  char num[30];
-  int nbcar;
-  nbcar = ExprIntrp_GetResult(num);
-  Standard_Real value = Atof(num);
+  const TCollection_AsciiString& aStr = ExprIntrp_GetResult();
+  Standard_Real value = aStr.RealValue();
   Handle(Expr_NumericValue) nval = new Expr_NumericValue(value);
   ExprIntrp_Recept.Push(nval);
 }
 
 extern "C" void ExprIntrp_AssignVariable()
 {
-  ExprIntrp_GetResult(ExprIntrp_assname);
+  ExprIntrp_assname = ExprIntrp_GetResult();
 }
 
 extern "C" void ExprIntrp_Deassign()
 {
-  char name[100];
-  ExprIntrp_GetResult(name);
-  TCollection_AsciiString thename(name);
+  const TCollection_AsciiString& thename = ExprIntrp_GetResult();
   Handle(Expr_NamedExpression) nameexp = ExprIntrp_Recept.GetNamed(thename);
   if (nameexp.IsNull()) {
     ExprIntrp_SyntaxError::Raise();
@@ -599,19 +568,15 @@ extern "C" void ExprIntrp_EndOfFuncDef()
 
 extern "C" void ExprIntrp_ConstantIdentifier()
 {
-  char name[100];
-  ExprIntrp_GetResult(name);
-  TCollection_AsciiString thename(name);
+  const TCollection_AsciiString& thename = ExprIntrp_GetResult();
   ExprIntrp_Recept.PushName(thename);
 }
 
 extern "C" void ExprIntrp_ConstantDefinition()
 {
   TCollection_AsciiString name = ExprIntrp_Recept.PopName();
-  char num[30];
-  int nbcar;
-  nbcar = ExprIntrp_GetResult(num);
-  Standard_Real val = Atof(num);
+  const TCollection_AsciiString& aStr = ExprIntrp_GetResult();
+  Standard_Real val = aStr.RealValue();
   Handle(Expr_NamedConstant) theconst = new Expr_NamedConstant(name,val);
   ExprIntrp_Recept.Use(theconst);
   ExprIntrp_Recept.Push(theconst);

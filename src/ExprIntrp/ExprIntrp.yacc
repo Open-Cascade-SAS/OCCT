@@ -15,6 +15,8 @@
 */ 
 
 %{
+#include <ExprIntrp_yaccintrf.hxx>
+
 extern void ExprIntrp_EndOfFuncDef();
 extern void ExprIntrp_EndOfRelation();
 extern void ExprIntrp_AssignVariable();
@@ -58,9 +60,6 @@ extern void ExprIntrp_Sumator();
 extern void ExprIntrp_VariableIdentifier();
 extern void ExprIntrp_Productor();
 extern void ExprIntrp_EndOfEqual();
-
-extern void ExprIntrperror(char* msg);
-extern int  ExprIntrplex(void);
 
 // disable MSVC warnings in bison code
 #ifdef _MSC_VER

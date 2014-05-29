@@ -17,17 +17,32 @@
 #ifndef ExprIntrp_yaccintrf_HeaderFile
 #define ExprIntrp_yaccintrf_HeaderFile
 
+#ifdef __cplusplus
+extern "C" {
+#endif 
+
+int ExprIntrpparse();
+void ExprIntrperror(char* msg);
+
+void ExprIntrp_start_string(const char* str);
+void ExprIntrp_stop_string();
+
+void ExprIntrp_SetResult();
+void ExprIntrp_SetDegree();
+
+int ExprIntrplex(void);
+
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+
 #include <TCollection_AsciiString.hxx>
 
-extern "C" int ExprIntrpparse();
-extern "C" void  ExprIntrp_start_string(const char* str);
-extern "C" void  ExprIntrp_stop_string();
-extern TCollection_AsciiString ExprIntrp_thestring;
-extern Standard_Integer ExprIntrp_thecurchar;
+const TCollection_AsciiString& ExprIntrp_GetResult ();
 int ExprIntrp_GetDegree();
-int ExprIntrp_GetResult(char *s);
 
 #endif
 
-
-
+#endif
