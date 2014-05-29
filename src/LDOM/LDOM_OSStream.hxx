@@ -32,6 +32,7 @@
 //          and current element of sequence,
 //          also it has methods for the sequence management.
 
+#include <NCollection_BaseAllocator.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_Boolean.hxx>
 
@@ -74,10 +75,12 @@ class LDOM_SBuffer : public streambuf
   // Destructor
 
  private:
+ 
   Standard_Integer      myMaxBuf; // default length of one element
   Standard_Integer      myLength; // full length of contained data
   LDOM_StringElem* myFirstString; // the head of the sequence
   LDOM_StringElem* myCurString;   // current element of the sequence
+  Handle(NCollection_BaseAllocator) myAlloc; //allocator for chunks
 };
 
 class LDOM_OSStream : public Standard_OStream

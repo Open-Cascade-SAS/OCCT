@@ -2078,6 +2078,65 @@ static Standard_Integer OCC24565 (Draw_Interpretor& di, Standard_Integer argc, c
   return 0;
 }
 
+#include <Handle_BRepTools_NurbsConvertModification.hxx>
+#include <BRepPrimAPI_MakeCylinder.hxx>
+#include <BRepBuilderAPI_Copy.hxx>
+#include <BRepTools_NurbsConvertModification.hxx>
+static TopoDS_Shape CreateTestShape (int& theShapeNb)
+{
+  TopoDS_Compound aComp;
+  BRep_Builder aBuilder;
+  aBuilder.MakeCompound (aComp);
+  //NURBS modifier is used to increase footprint of each shape
+  Handle_BRepTools_NurbsConvertModification aNurbsModif = new BRepTools_NurbsConvertModification;
+  TopoDS_Shape aRefShape = BRepPrimAPI_MakeCylinder (50., 100.).Solid();
+  BRepTools_Modifier aModifier (aRefShape, aNurbsModif);
+  if (aModifier.IsDone()) {
+    aRefShape = aModifier.ModifiedShape (aRefShape);
+  }
+  int aSiblingNb = 0;
+  for (; theShapeNb > 0; --theShapeNb) {
+    TopoDS_Shape aShape;
+    if (++aSiblingNb <= 100) { //number of siblings is limited to avoid long lists
+		aShape = BRepBuilderAPI_Copy (aRefShape, Standard_True /*CopyGeom*/).Shape();
+    } else {
+      aShape = CreateTestShape (theShapeNb);
+    }
+    aBuilder.Add (aComp, aShape);
+  }
+  return aComp;
+}
+
+#include <AppStd_Application.hxx>
+#include <TDataStd_Integer.hxx>
+#include <TNaming_Builder.hxx>
+static Standard_Integer OCC24931 (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+{
+  if (argc != 1) {
+    di << "Usage: " << argv[0] << " invalid number of arguments"<<"\n";
+    return 1;
+  }
+  TCollection_ExtendedString aFileName ("testdocument.xml");
+  PCDM_StoreStatus aSStatus  = PCDM_SS_Failure;
+
+  Handle(TDocStd_Application) anApp = new AppStd_Application;
+  {
+    Handle(TDocStd_Document) aDoc;
+    anApp->NewDocument ("XmlOcaf", aDoc);
+    TDF_Label aLab = aDoc->Main();
+    TDataStd_Integer::Set (aLab, 0);
+    int n = 10000; //must be big enough
+    TopoDS_Shape aShape = CreateTestShape (n);
+    TNaming_Builder aBuilder (aLab);
+    aBuilder.Generated (aShape);
+
+    aSStatus = anApp->SaveAs (aDoc, aFileName);
+    anApp->Close (aDoc);
+  }
+  QCOMPARE (aSStatus, PCDM_SS_OK);
+  return 0;
+}
+
 #include <AppStdL_Application.hxx>
 #include <TDocStd_Application.hxx>
 #include <TDataStd_Integer.hxx>
@@ -2218,5 +2277,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC24565", "OCC24565 FileNameIGS FileNameSTOR", __FILE__, OCC24565, group);
   theCommands.Add ("OCC24755", "OCC24755", __FILE__, OCC24755, group);
   theCommands.Add ("OCC24834", "OCC24834", __FILE__, OCC24834, group);
+  theCommands.Add ("OCC24931", "OCC24931", __FILE__, OCC24931, group);
   return;
 }

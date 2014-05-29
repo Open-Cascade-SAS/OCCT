@@ -14,28 +14,31 @@
 // commercial license or contractual agreement.
 
 #include <LDOM_OSStream.hxx>
+#include <NCollection_DefineAlloc.hxx>
+#include <NCollection_IncAllocator.hxx>
 #include <string.h>
+#include <Standard.hxx>
 #include <Standard_Integer.hxx>
 
 // One element of sequence
+/* Can only be allocated by the allocator and assumes it is IncAllocator, so 
+   no destructor is required.
+*/
 class LDOM_StringElem
 {
   char* buf;             // pointer on data string
   int len;               // quantity of really written data
   LDOM_StringElem* next; // pointer on the next element of a sequence
 
-  LDOM_StringElem (int aLen)
+  DEFINE_NCOLLECTION_ALLOC
+  
+  LDOM_StringElem (int aLen, const Handle_NCollection_BaseAllocator& theAlloc) :
+    buf (reinterpret_cast<char*> (theAlloc->Allocate (aLen))),
+    len (0),
+    next (0)
   {
-    buf = new char[aLen];
-    len = 0;
-    next = 0;
   }
 
-  ~LDOM_StringElem ()
-  {
-    delete [] buf;
-    if (next) delete next;
-  }
 friend class LDOM_SBuffer;
 };
 
@@ -44,10 +47,11 @@ friend class LDOM_SBuffer;
 //purpose  : 
 //=======================================================================
 LDOM_SBuffer::LDOM_SBuffer (const Standard_Integer theMaxBuf)
-     : myMaxBuf (theMaxBuf), myLength(0)
+     : myMaxBuf (theMaxBuf), myLength(0),
+       myAlloc (new NCollection_IncAllocator)
 {
-  myFirstString = new LDOM_StringElem (theMaxBuf);
-  myCurString = myFirstString;
+  myFirstString = new (myAlloc) LDOM_StringElem (theMaxBuf, myAlloc);
+  myCurString   = myFirstString;
 }
 
 //=======================================================================
@@ -56,7 +60,7 @@ LDOM_SBuffer::LDOM_SBuffer (const Standard_Integer theMaxBuf)
 //=======================================================================
 LDOM_SBuffer::~LDOM_SBuffer ()
 {
-  if (myFirstString) delete myFirstString;
+  //no destruction is required as IncAllocator is used
 }
 
 //=======================================================================
@@ -65,11 +69,10 @@ LDOM_SBuffer::~LDOM_SBuffer ()
 //=======================================================================
 void LDOM_SBuffer::Clear ()
 {
-  if (myFirstString->next) delete myFirstString->next;
-  myFirstString->next = 0;
-  myFirstString->len = 0;
-  myLength = 0;
-  myCurString = myFirstString;
+  myAlloc       = new NCollection_IncAllocator;
+  myFirstString = new (myAlloc) LDOM_StringElem (myMaxBuf, myAlloc);
+  myLength      = 0;
+  myCurString   = myFirstString;
 }
 
 //=======================================================================
@@ -130,7 +133,7 @@ int LDOM_SBuffer::xsputn(const char* aStr, int n)
   }
   else if (freeLen <= 0)
   {
-    LDOM_StringElem* aNextElem = new LDOM_StringElem(Max(aLen, myMaxBuf));
+    LDOM_StringElem* aNextElem = new (myAlloc) LDOM_StringElem(Max(aLen, myMaxBuf), myAlloc);
     myCurString->next = aNextElem;
     myCurString = aNextElem;
     strncpy(myCurString->buf + myCurString->len, aStr, aLen);
@@ -142,7 +145,7 @@ int LDOM_SBuffer::xsputn(const char* aStr, int n)
     myCurString->len += freeLen;
     *(myCurString->buf + myCurString->len) = '\0';
     aLen -= freeLen;
-    LDOM_StringElem* aNextElem = new LDOM_StringElem(Max(aLen, myMaxBuf));
+    LDOM_StringElem* aNextElem = new (myAlloc) LDOM_StringElem(Max(aLen, myMaxBuf), myAlloc);
     myCurString->next = aNextElem;
     myCurString = aNextElem;
     strncpy(myCurString->buf + myCurString->len, aStr + freeLen, aLen);

@@ -1,0 +1,17 @@
+puts "=========="
+puts "OCC24931"
+puts "=========="
+puts ""
+####################################################
+# Stack overflow when writing large shapes to XML
+####################################################
+
+pload QAcommands
+
+set info [OCC24931]
+
+if { [regexp "OK" $info] != 1 } {
+  puts "Error: Stack is overflow"
+} else {
+  puts "OK: Stack is good"
+}

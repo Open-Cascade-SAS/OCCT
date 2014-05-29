@@ -370,7 +370,7 @@ void XmlMNaming_NamedShapeDriver::WriteShapeSection
   //  Add text to the "shapes" element
   if (myShapeSet.NbShapes() > 0) {
     myShapeSet.SetFormatNb(2);
-    LDOM_OSStream aStream (1024);
+    LDOM_OSStream aStream (16 * 1024);
 //    ostrstream aStream;
 //    aStream.rdbuf() -> setbuf (0, 16380);
     myShapeSet.Write (aStream);
