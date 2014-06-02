@@ -164,72 +164,83 @@ void BOPAlgo_PaveFiller::Perform()
   try { 
     OCC_CATCH_SIGNALS
     //
-    Init();
-    if (myErrorStatus) {
-      return; 
-    }
-    //
-    Prepare();
-    if (myErrorStatus) {
-      return; 
-    }
-    // 00
-    PerformVV();
-    if (myErrorStatus) {
-      return; 
-    }
-    // 01
-    PerformVE();
-    if (myErrorStatus) {
-      return; 
-    }
-    //
-    myDS->UpdatePaveBlocks();
-    // 11
-    PerformEE();
-    if (myErrorStatus) {
-      return; 
-    }
-    // 02
-    PerformVF();
-    if (myErrorStatus) {
-      return; 
-    }
-    // 12
-    PerformEF();
-    if (myErrorStatus) {
-      return; 
-    }
-    //
-    MakeSplitEdges();
-    if (myErrorStatus) {
-      return; 
-    }
-    //
-    // 22
-    PerformFF();
-    if (myErrorStatus) {
-      return; 
-    }
-    //
-    MakeBlocks();
-    if (myErrorStatus) {
-      return; 
-    }
-    //
-    RefineFaceInfoOn();
-    //
-    MakePCurves();
-    if (myErrorStatus) {
-      return; 
-    }
-    //
-    ProcessDE();
-    if (myErrorStatus) {
-      return; 
-    }
-  } // try {
+    PerformInternal();
+  }
+  //
   catch (Standard_Failure) {
     myErrorStatus=11;
-  }  
+  } 
 }
+//=======================================================================
+// function: PerformInternal
+// purpose: 
+//=======================================================================
+void BOPAlgo_PaveFiller::PerformInternal()
+{
+  myErrorStatus=0;
+  //
+  Init();
+  if (myErrorStatus) {
+    return; 
+  }
+  //
+  Prepare();
+  if (myErrorStatus) {
+    return; 
+  }
+  // 00
+  PerformVV();
+  if (myErrorStatus) {
+    return; 
+  }
+  // 01
+  PerformVE();
+  if (myErrorStatus) {
+    return; 
+  }
+  //
+  myDS->UpdatePaveBlocks();
+  // 11
+  PerformEE();
+  if (myErrorStatus) {
+    return; 
+  }
+  // 02
+  PerformVF();
+  if (myErrorStatus) {
+    return; 
+  }
+  // 12
+  PerformEF();
+  if (myErrorStatus) {
+    return; 
+  }
+  //
+  MakeSplitEdges();
+  if (myErrorStatus) {
+    return; 
+  }
+  //
+  // 22
+  PerformFF();
+  if (myErrorStatus) {
+    return; 
+  }
+  //
+  MakeBlocks();
+  if (myErrorStatus) {
+    return; 
+  }
+  //
+  RefineFaceInfoOn();
+  //
+  MakePCurves();
+  if (myErrorStatus) {
+    return; 
+  }
+  //
+  ProcessDE();
+  if (myErrorStatus) {
+    return; 
+  }
+} 

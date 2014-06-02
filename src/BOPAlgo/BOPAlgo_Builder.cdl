@@ -116,7 +116,11 @@ is
     PerformInternal(me:out; 
     thePF: PaveFiller from BOPAlgo) 
     is virtual protected;  
-  
+ 
+    PerformInternal1(me:out; 
+            thePF: PaveFiller from BOPAlgo) 
+        is virtual protected;    
+ 
     CheckData(me:out) 
     is redefined protected;  
 	 

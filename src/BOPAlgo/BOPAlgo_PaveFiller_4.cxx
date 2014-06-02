@@ -42,14 +42,17 @@
 //class    : BOPAlgo_VertexFace
 //purpose  : 
 //=======================================================================
-class BOPAlgo_VertexFace {
+class BOPAlgo_VertexFace : public BOPAlgo_Algo {
  public:
-  BOPAlgo_VertexFace()
-    : myIV(-1), myIF(-1), myIVx(-1), 
+  DEFINE_STANDARD_ALLOC
+
+  BOPAlgo_VertexFace() : 
+    BOPAlgo_Algo(),
+    myIV(-1), myIF(-1), myIVx(-1), 
     myFlag(-1), myT1(-1.),  myT2(-1.) {
   }
   //
-  ~BOPAlgo_VertexFace(){
+  virtual ~BOPAlgo_VertexFace(){
   }
   //
   void SetIndices(const Standard_Integer nV,
@@ -102,7 +105,8 @@ class BOPAlgo_VertexFace {
     return myContext;
   }
   //
-  void Perform() {
+  virtual void Perform() {
+    BOPAlgo_Algo::UserBreak();
     myFlag=myContext->ComputeVF(myV, myF, myT1, myT2);
   }
   //
@@ -189,6 +193,7 @@ void BOPAlgo_PaveFiller::PerformVF()
       aVertexFace.SetIndices(nV, nF, nVx);
       aVertexFace.SetVertex(aV);
       aVertexFace.SetFace(aF);
+      aVertexFace.SetProgressIndicator(myProgressIndicator);
     }//for (; myIterator->More(); myIterator->Next()) {
     //
     aNbVF=aVVF.Extent();

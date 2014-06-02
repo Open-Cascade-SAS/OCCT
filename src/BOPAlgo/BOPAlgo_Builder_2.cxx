@@ -87,10 +87,17 @@ typedef NCollection_IndexedDataMap\
 //class    : BOPAlgo_PairOfShapeBoolean
 //purpose  : 
 //=======================================================================
-class BOPAlgo_PairOfShapeBoolean {
+class BOPAlgo_PairOfShapeBoolean : public BOPAlgo_Algo {
+
  public:
-  BOPAlgo_PairOfShapeBoolean()
-    : myFlag(Standard_False) {
+  DEFINE_STANDARD_ALLOC
+
+  BOPAlgo_PairOfShapeBoolean() : 
+    BOPAlgo_Algo(),
+    myFlag(Standard_False) {
+  }
+  //
+  virtual ~BOPAlgo_PairOfShapeBoolean() {
   }
   //
   TopoDS_Shape& Shape1() {
@@ -105,78 +112,43 @@ class BOPAlgo_PairOfShapeBoolean {
     return myFlag;
   }
   //
+  void SetContext(const Handle(IntTools_Context)& aContext) {
+    myContext=aContext;
+  }
+  //
+  const Handle(IntTools_Context)& Context()const {
+    return myContext;
+  }
+  //
+  virtual void Perform() {
+    BOPAlgo_Algo::UserBreak();
+    //  
+    const TopoDS_Face& aFj=*((TopoDS_Face*)&myShape1);
+    const TopoDS_Face& aFk=*((TopoDS_Face*)&myShape2);
+    myFlag=BOPTools_AlgoTools::AreFacesSameDomain(aFj, aFk, myContext);
+  }
+  //
  protected: 
   Standard_Boolean myFlag;
   TopoDS_Shape myShape1;
   TopoDS_Shape myShape2;
+  Handle(IntTools_Context) myContext;
 };
 //
 typedef BOPCol_NCVector<BOPAlgo_PairOfShapeBoolean> \
   BOPAlgo_VectorOfPairOfShapeBoolean;
 //
-//=======================================================================
-//function : BOPAlgo_BuilderSDFaceFunctor
-//purpose  : The class provides the interface and implementation 
-//           of the parallel computations
-//=======================================================================
-class BOPAlgo_BuilderSDFaceFunctor {
- protected:
-  BOPAlgo_VectorOfPairOfShapeBoolean* myPVPSB;
-  
- public:
-  //
-  BOPAlgo_BuilderSDFaceFunctor(BOPAlgo_VectorOfPairOfShapeBoolean& aVPSB)
-    : myPVPSB(&aVPSB){
-  }
-  //
-  void operator()( const flexible_range<Standard_Integer>& aBR ) const {
-    Standard_Boolean bFlag;
-    Standard_Integer i, iBeg, iEnd;
-    Handle(IntTools_Context) aContext;
-    //
-    aContext=new IntTools_Context;
-    //
-    BOPAlgo_VectorOfPairOfShapeBoolean& aVPSB=*myPVPSB;
-    //
-    iBeg=aBR.begin();
-    iEnd=aBR.end();
-    for(i=iBeg; i!=iEnd; ++i) {
-      BOPAlgo_PairOfShapeBoolean& aPSB=aVPSB(i);
-      const TopoDS_Face& aFj=(*(TopoDS_Face*)(&aPSB.Shape1()));
-      const TopoDS_Face& aFk=(*(TopoDS_Face*)(&aPSB.Shape2()));
-      bFlag=BOPTools_AlgoTools::AreFacesSameDomain(aFj, aFk, aContext);
-      if (bFlag) {
-        aPSB.Flag()=bFlag;
-      }
-    }
-  }
-};
+typedef BOPCol_TBBContextFunctor 
+  <BOPAlgo_PairOfShapeBoolean,
+  BOPAlgo_VectorOfPairOfShapeBoolean,
+  Handle(IntTools_Context), 
+  IntTools_Context> BOPCol_BuilderSDFaceFunctor;
 //
-//=======================================================================
-//function : BOPAlgo_BuilderSDFaceCnt
-//purpose  : The class provides the interface and implementation 
-//           of the parallel computations
-//=======================================================================
-class BOPAlgo_BuilderSDFaceCnt {
- public:
-  //-------------------------------
-  // Perform
-  Standard_EXPORT static 
-    void Perform(const Standard_Boolean bRunParallel,
-                 BOPAlgo_VectorOfPairOfShapeBoolean& aVPSB) {
-      Standard_Integer aNbVPSB;
-      //
-      aNbVPSB=aVPSB.Extent();
-      BOPAlgo_BuilderSDFaceFunctor aBFF(aVPSB);
-      //
-      if (bRunParallel) {
-        flexible_for(flexible_range<Standard_Integer>(0,aNbVPSB), aBFF);
-      }
-      else {
-        aBFF.operator()(flexible_range<Standard_Integer>(0,aNbVPSB));
-      }
-    }
-};
+typedef BOPCol_TBBContextCnt 
+  <BOPCol_BuilderSDFaceFunctor,
+  BOPAlgo_VectorOfPairOfShapeBoolean,
+  Handle(IntTools_Context)> BOPAlgo_BuilderSDFaceCnt;
+//
 //=======================================================================
 // BuilderFace
 //
@@ -194,13 +166,17 @@ typedef BOPCol_TBBCnt
 //class    : BOPAlgo_VFI
 //purpose  : 
 //=======================================================================
-class BOPAlgo_VFI {
+class BOPAlgo_VFI : public BOPAlgo_Algo {
+
  public:
-  BOPAlgo_VFI() 
-   : myFlag(-1) {
+  DEFINE_STANDARD_ALLOC
+  
+  BOPAlgo_VFI() :
+    BOPAlgo_Algo(),
+    myFlag(-1) {
   }
   //
-  ~BOPAlgo_VFI(){
+  virtual ~BOPAlgo_VFI(){
   }
   //
   void SetVertex(const TopoDS_Vertex& aV) {
@@ -231,9 +207,10 @@ class BOPAlgo_VFI {
     return myContext;
   }
   //
-  void Perform() {
+  virtual void Perform() {
     Standard_Real aT1, aT2;
     //
+    BOPAlgo_Algo::UserBreak();
     myFlag=myContext->ComputeVF(myV, myF, aT1, aT2);
   }
   //
@@ -435,6 +412,7 @@ void BOPAlgo_Builder::BuildSplitFaces()
     aBF.SetFace(aF);
     aBF.SetShapes(aLE);
     aBF.SetRunParallel(myRunParallel);
+    aBF.SetProgressIndicator(myProgressIndicator);
     //
   }// for (i=0; i<aNbS; ++i) {
   //
@@ -619,12 +597,13 @@ void BOPAlgo_Builder::FillSameDomainFaces()
         BOPAlgo_PairOfShapeBoolean& aPSB=aVPSB.Append1();
         aPSB.Shape1()=aFj;
         aPSB.Shape2()=aFk;
+        aPSB.SetProgressIndicator(myProgressIndicator);
       }
     }
   }
-  //====================================================
-  BOPAlgo_BuilderSDFaceCnt::Perform(myRunParallel, aVPSB);
-  //====================================================
+  //================================================================
+  BOPAlgo_BuilderSDFaceCnt::Perform(myRunParallel, aVPSB, myContext);
+  //================================================================
   aAllocator=new NCollection_IncAllocator();
   BOPCol_IndexedDataMapOfShapeListOfShape aDMSLS(100, aAllocator);
   BOPCol_DataMapOfIntegerListOfShape aMBlocks(100, aAllocator);
@@ -747,6 +726,7 @@ void BOPAlgo_Builder::FillImagesFaces1()
         BOPAlgo_VFI& aVFI=aVVFI.Append1();
         aVFI.SetVertex(aVx);
         aVFI.SetFace(aFy);
+        aVFI.SetProgressIndicator(myProgressIndicator);
       }
     }
   }// for (i=0; i<aNbS; ++i) {

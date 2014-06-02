@@ -70,11 +70,11 @@ is
         is redefined protected; 
     ---Purpose:  Provides preparing actions 
 
-    PerformInternal(me:out; 
+    PerformInternal1(me:out; 
         thePF:PaveFiller from BOPAlgo) 
         is redefined protected;   
     ---Purpose:  Performs calculations using prepared Filler 
-    --           object theDSF          	 
+    --           object <thePF>          	 
      
     BuildResult(me:out; 
         theType: ShapeEnum from TopAbs) 

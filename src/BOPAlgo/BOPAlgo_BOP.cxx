@@ -333,10 +333,10 @@ void BOPAlgo_BOP::Perform()
   PerformInternal(*pPF);
 }
 //=======================================================================
-//function : PerformInternal
+//function : PerformInternal1
 //purpose  : 
 //=======================================================================
-void BOPAlgo_BOP::PerformInternal(const BOPAlgo_PaveFiller& theFiller)
+void BOPAlgo_BOP::PerformInternal1(const BOPAlgo_PaveFiller& theFiller)
 {
   myErrorStatus=0;
   myWarningStatus=0;

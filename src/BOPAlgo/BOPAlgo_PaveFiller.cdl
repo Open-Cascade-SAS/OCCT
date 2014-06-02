@@ -96,7 +96,10 @@ is
       is redefined;   
     --  
     -- protected methods 
-    -- 
+    --  
+    PerformInternal (me:out) 
+      is virtual protected;   
+      
     Clear(me:out) 
       is virtual protected;  
           

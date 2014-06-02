@@ -19,6 +19,9 @@
 
 #include <NCollection_BaseAllocator.hxx>
 
+#include <Standard_ProgramError.hxx>
+#include <Standard_NotImplemented.hxx>
+
 //=======================================================================
 // function: 
 // purpose: 
@@ -106,6 +109,30 @@ Standard_Boolean BOPAlgo_Algo::RunParallel()const
 {
   return myRunParallel;
 }
+//=======================================================================
+//function : SetProgressIndicator
+//purpose  : 
+//=======================================================================
+void BOPAlgo_Algo::SetProgressIndicator
+  (const Handle(Message_ProgressIndicator)& theObj)
+{
+  if (!theObj.IsNull()) {
+    myProgressIndicator=theObj;
+  }
+}
+//=======================================================================
+//function : UserBreak
+//purpose  : 
+//=======================================================================
+void BOPAlgo_Algo::UserBreak() const
+{
+  if (myProgressIndicator.IsNull()) {
+    return;
+  }
+  if (myProgressIndicator->UserBreak()) {
+    Standard_NotImplemented::Raise("");
+  }
+} 
 //  myErrorStatus
 //
 // 1 - object is just initialized

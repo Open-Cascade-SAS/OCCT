@@ -17,11 +17,13 @@
 
 #include <BOPAlgo_Builder.ixx>
 
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Failure.hxx>
+
 #include <NCollection_IncAllocator.hxx>
 
 #include <TopoDS_Compound.hxx>
 #include <BRep_Builder.hxx>
-
 
 #include <BOPTools_AlgoTools.hxx>
 
@@ -239,6 +241,21 @@ void BOPAlgo_Builder::PerformWithFiller(const BOPAlgo_PaveFiller& theFiller)
 //purpose  : 
 //=======================================================================
 void BOPAlgo_Builder::PerformInternal(const BOPAlgo_PaveFiller& theFiller)
+{
+  try { 
+    OCC_CATCH_SIGNALS
+    PerformInternal1(theFiller);
+  }
+  //
+  catch (Standard_Failure) {
+    myErrorStatus=191;
+  }  
+}
+//=======================================================================
+//function : PerformInternal1
+//purpose  : 
+//=======================================================================
+void BOPAlgo_Builder::PerformInternal1(const BOPAlgo_PaveFiller& theFiller)
 {
   myErrorStatus=0;
   //

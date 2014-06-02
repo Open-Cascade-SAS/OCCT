@@ -74,14 +74,18 @@ static void UpdateVertices(const TopoDS_Edge& aE,
 //class    : BOPAlgo_SplitEdge
 //purpose  : 
 //=======================================================================
-class BOPAlgo_SplitEdge {
+class BOPAlgo_SplitEdge : public BOPAlgo_Algo  {
+ 
  public:
-  BOPAlgo_SplitEdge() {
+  DEFINE_STANDARD_ALLOC
+
+  BOPAlgo_SplitEdge() :
+    BOPAlgo_Algo() {
     myT1=0.;
     myT2=0.;
   }
   //
-  ~BOPAlgo_SplitEdge() {
+  virtual ~BOPAlgo_SplitEdge() {
   }
   //
   void SetData(const TopoDS_Edge& aE,
@@ -121,7 +125,8 @@ class BOPAlgo_SplitEdge {
     return myBox;
   }
   //
-  void Perform () {
+  virtual void Perform () {
+    BOPAlgo_Algo::UserBreak();
     BOPTools_AlgoTools::MakeSplitEdge(myE, 
                                       myV1, myT1, 
                                       myV2, myT2, 
@@ -160,13 +165,17 @@ typedef BOPCol_TBBCnt
 //class    : BOPAlgo_MPC
 //purpose  : 
 //=======================================================================
-class BOPAlgo_MPC {
+class BOPAlgo_MPC : public BOPAlgo_Algo  {
+ 
  public:
-  BOPAlgo_MPC() 
-    : myFlag(Standard_False) {
+  DEFINE_STANDARD_ALLOC
+
+  BOPAlgo_MPC() : 
+    BOPAlgo_Algo(),
+    myFlag(Standard_False) {
   };
   //
-  ~BOPAlgo_MPC(){
+  virtual ~BOPAlgo_MPC(){
   };
   //
   void SetEdge(const TopoDS_Edge& aE) {
@@ -193,7 +202,8 @@ class BOPAlgo_MPC {
     return myFlag;
   }
   //
-  void Perform() {
+  virtual void Perform() {
+    BOPAlgo_Algo::UserBreak();
     BOPTools_AlgoTools2D::BuildPCurveForEdgeOnFace(myE, myF);
     if (myFlag) {
       UpdateVertices(myE, myF);
@@ -334,6 +344,7 @@ void BOPAlgo_PaveFiller::MakeSplitEdges()
         if (bCB) {
           aBSE.SetCommonBlock(aCB);
         }
+        aBSE.SetProgressIndicator(myProgressIndicator);
       }
     } // for (; aItPB.More(); aItPB.Next()) {
   }  // for (i=0; i<aNbPBP; ++i) {      
@@ -441,6 +452,7 @@ void BOPAlgo_PaveFiller::MakePCurves()
       BOPAlgo_MPC& aMPC=aVMPC.Append1();
       aMPC.SetEdge(aE);
       aMPC.SetFace(aF1F);
+      aMPC.SetProgressIndicator(myProgressIndicator);
     }
     //
     // On
@@ -455,6 +467,7 @@ void BOPAlgo_PaveFiller::MakePCurves()
         BOPAlgo_MPC& aMPC=aVMPC.Append1();
         aMPC.SetEdge(aE);
         aMPC.SetFace(aF1F);
+        aMPC.SetProgressIndicator(myProgressIndicator);
       }
     }
   }// for (i=0; i<aNbFI; ++i) {
@@ -497,6 +510,7 @@ void BOPAlgo_PaveFiller::MakePCurves()
               aMPC.SetEdge(aE);
               aMPC.SetFace(aFf[m]);
               aMPC.SetFlag(bPCurveOnS[m]);
+              aMPC.SetProgressIndicator(myProgressIndicator);
             }
           }
         }

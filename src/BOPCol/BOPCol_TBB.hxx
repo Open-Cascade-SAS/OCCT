@@ -15,8 +15,10 @@
 #ifndef _BOPDS_Col_HeaderFile
 #define _BOPDS_Col_HeaderFile
 
-#ifdef HAVE_TBB
+#include <Standard_Macro.hxx>
+#include <Standard_NotImplemented.hxx>
 
+#ifdef HAVE_TBB
 // On Windows, function TryEnterCriticalSection has appeared in Windows NT
 // and is surrounded by #ifdef in MS VC++ 7.1 headers.
 // Thus to use it we need to define appropriate macro saying that we wil
@@ -126,7 +128,20 @@ template <class TypeFunctor,
     Standard_Integer aNb=aV.Extent();
     //
     if (bRunParallel) {
+#ifdef HAVE_TBB
+      try {
+        flexible_for(flexible_range<Standard_Integer>(0,aNb), aFunctor);
+      }
+      //
+      catch( captured_exception&  ) {
+        Standard_NotImplemented::Raise("");
+      } 
+      catch( ... ) {
+        Standard_NotImplemented::Raise("");
+      }
+#else // not HAVE_TBB
       flexible_for(flexible_range<Standard_Integer>(0,aNb), aFunctor);
+#endif      
     }
     else {
       aFunctor.operator()(flexible_range<Standard_Integer>(0,aNb));
@@ -136,7 +151,6 @@ template <class TypeFunctor,
 //
 // 2.2. Context dependent version
 //
-#include <Standard_Macro.hxx>
 
 //=======================================================================
 //class    : BOPCol_TBBContextFunctor
@@ -208,7 +222,21 @@ template <class TypeFunctor,
     Standard_Integer aNb=aV.Extent();
     //
     if (bRunParallel) {
+#ifdef HAVE_TBB
+      try {
+        flexible_for(flexible_range<Standard_Integer>(0,aNb), aFunctor);
+      }
+      //
+      catch(captured_exception& ) {
+        //cout<<" captured_exception: " << ex.what() << endl;
+        Standard_NotImplemented::Raise("");
+      } 
+      catch( ... ) {
+        Standard_NotImplemented::Raise("");
+      }
+#else // not HAVE_TBB
       flexible_for(flexible_range<Standard_Integer>(0,aNb), aFunctor);
+#endif      
     }
     else {
       aFunctor.SetContext(aCtx);

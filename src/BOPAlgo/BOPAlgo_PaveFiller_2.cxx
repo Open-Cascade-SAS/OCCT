@@ -38,13 +38,17 @@
 //class    : BOPAlgo_VertexEdgeEdge
 //purpose  : 
 //=======================================================================
-class BOPAlgo_VertexEdge {
+class BOPAlgo_VertexEdge : public BOPAlgo_Algo {
+
  public:
-  BOPAlgo_VertexEdge()
-    : myIV(-1), myIE(-1), myIVx(-1), myFlag(-1), myT(-1.) {
+  DEFINE_STANDARD_ALLOC
+
+  BOPAlgo_VertexEdge() : 
+    BOPAlgo_Algo(),
+    myIV(-1), myIE(-1), myIVx(-1), myFlag(-1), myT(-1.) {
   };
   //
-  ~BOPAlgo_VertexEdge(){
+  virtual ~BOPAlgo_VertexEdge(){
   };
   //
   void SetIndices(const Standard_Integer nV,
@@ -95,7 +99,8 @@ class BOPAlgo_VertexEdge {
     return myContext;
   }
   //
-  void Perform() {
+  virtual void Perform() {
+    BOPAlgo_Algo::UserBreak();
     myFlag=myContext->ComputeVE (myV, myE, myT);
   };
   //
@@ -190,8 +195,9 @@ void BOPAlgo_PaveFiller::PerformVE()
     aVESolver.SetIndices(nV, nE, nVx);
     aVESolver.SetVertex(aV);
     aVESolver.SetEdge(aE);
+    aVESolver.SetProgressIndicator(myProgressIndicator);
     //
-  }// myIterator->Initialize(TopAbs_VERTEX, TopAbs_EDGE);
+  }// for (; myIterator->More(); myIterator->Next()) {
   //
   aNbVE=aVVE.Extent();
   //=============================================================

@@ -60,13 +60,20 @@
 //class    : BOPAlgo_EdgeFace
 //purpose  : 
 //=======================================================================
-class BOPAlgo_EdgeFace : public IntTools_EdgeFace {
+class BOPAlgo_EdgeFace : 
+  public IntTools_EdgeFace,
+  public BOPAlgo_Algo {
+ 
  public:
-  BOPAlgo_EdgeFace()
-    : IntTools_EdgeFace(), myIE(-1), myIF(-1) {
+  DEFINE_STANDARD_ALLOC
+  
+  BOPAlgo_EdgeFace() : 
+    IntTools_EdgeFace(), 
+    BOPAlgo_Algo(),
+    myIE(-1), myIF(-1) {
   };
   //
-  ~BOPAlgo_EdgeFace(){
+  virtual ~BOPAlgo_EdgeFace(){
   };
   //
   void SetIndices(const Standard_Integer nE,
@@ -95,6 +102,11 @@ class BOPAlgo_EdgeFace : public IntTools_EdgeFace {
   //
   Handle(BOPDS_PaveBlock)& PaveBlock() {
     return myPB;
+  }
+  //
+  virtual void Perform() {
+    BOPAlgo_Algo::UserBreak();
+    IntTools_EdgeFace::Perform();
   }
   //
  protected:
@@ -225,6 +237,7 @@ void BOPAlgo_PaveFiller::PerformEF()
       aSR = aPBRange;
       BOPTools_AlgoTools::CorrectRange(aE, aF, aSR, aPBRange);
       aEdgeFace.SetRange (aPBRange);
+      aEdgeFace.SetProgressIndicator(myProgressIndicator);
       //
     }//for (; aIt.More(); aIt.Next()) {
   }//for (; myIterator->More(); myIterator->Next()) {

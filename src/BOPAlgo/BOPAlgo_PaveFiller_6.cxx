@@ -101,13 +101,20 @@ static void ToleranceFF(const BRepAdaptor_Surface& aBAS1,
 //class    : BOPAlgo_FaceFace
 //purpose  : 
 //=======================================================================
-class BOPAlgo_FaceFace : public IntTools_FaceFace {
+class BOPAlgo_FaceFace : 
+  public IntTools_FaceFace,
+  public BOPAlgo_Algo {
+
  public:
-  BOPAlgo_FaceFace() 
-   : IntTools_FaceFace(),  myIF1(-1), myIF2(-1), myTolFF(1.e-7) {
+  DEFINE_STANDARD_ALLOC
+
+  BOPAlgo_FaceFace() : 
+    IntTools_FaceFace(),  
+    BOPAlgo_Algo(),
+    myIF1(-1), myIF2(-1), myTolFF(1.e-7) {
   }
   //
-  ~BOPAlgo_FaceFace() {
+  virtual ~BOPAlgo_FaceFace() {
   }
   //
   void SetIndices(const Standard_Integer nF1,
@@ -144,7 +151,8 @@ class BOPAlgo_FaceFace : public IntTools_FaceFace {
     return myTolFF;
   }
   //
-  void Perform() {
+  virtual void Perform() {
+    BOPAlgo_Algo::UserBreak();
     IntTools_FaceFace::Perform(myF1, myF2);
   }
   //
@@ -257,8 +265,7 @@ void BOPAlgo_PaveFiller::PerformFF()
     }
     //
     aFaceFace.SetParameters(bApp, bCompC2D1, bCompC2D2, aApproxTol);
-    //
-    //aFaceFace.Perform(aF1, aF2);
+    aFaceFace.SetProgressIndicator(myProgressIndicator);
   }//for (; myIterator->More(); myIterator->Next()) {
   //
   aNbFaceFace=aVFaceFace.Extent();
@@ -387,6 +394,9 @@ void BOPAlgo_PaveFiller::MakeBlocks()
   BOPCol_DataMapOfIntegerInteger aDMI(100, aAllocator);
   //
   for (i=0; i<aNbFF; ++i) {
+    //
+    UserBreak();
+    //
     BOPDS_InterfFF& aFF=aFFs(i);
     aFF.Indices(nF1, nF2);
     //
@@ -679,6 +689,7 @@ Standard_Integer BOPAlgo_PaveFiller::PostTreatFF
   }
   //
   // 2 Fuse shapes
+  aPF.SetProgressIndicator(myProgressIndicator);
   aPF.SetRunParallel(myRunParallel);
   aPF.SetArguments(aLS);
   aPF.Perform();

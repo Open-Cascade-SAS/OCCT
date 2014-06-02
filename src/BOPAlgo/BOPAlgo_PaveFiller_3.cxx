@@ -70,13 +70,20 @@
 //class    : BOPAlgo_EdgeEdge
 //purpose  : 
 //=======================================================================
-class BOPAlgo_EdgeEdge : public IntTools_EdgeEdge {
+class BOPAlgo_EdgeEdge : 
+  public IntTools_EdgeEdge,
+  public BOPAlgo_Algo {
+ 
  public:
-  BOPAlgo_EdgeEdge()
-    : IntTools_EdgeEdge() {
+
+  DEFINE_STANDARD_ALLOC
+  //
+  BOPAlgo_EdgeEdge(): 
+    IntTools_EdgeEdge(),
+    BOPAlgo_Algo() {
   };
   //
-  ~BOPAlgo_EdgeEdge(){
+  virtual ~BOPAlgo_EdgeEdge(){
   };
   //
   void SetPaveBlock1(const Handle(BOPDS_PaveBlock)& aPB) {
@@ -93,6 +100,11 @@ class BOPAlgo_EdgeEdge : public IntTools_EdgeEdge {
   //
   Handle(BOPDS_PaveBlock)& PaveBlock2() {
     return myPB2;
+  }
+  // 
+  virtual void Perform() {
+    BOPAlgo_Algo::UserBreak();
+    IntTools_EdgeEdge::Perform();
   }
   //
  protected:
@@ -345,6 +357,7 @@ void BOPAlgo_PaveFiller::PerformEE()
         //
         anEdgeEdge.SetEdge1(aE1, aT11, aT12);
         anEdgeEdge.SetEdge2(aE2, aT21, aT22);
+        anEdgeEdge.SetProgressIndicator(myProgressIndicator);
       }//for (; aIt2.More(); aIt2.Next()) {
     }//for (; aIt1.More(); aIt1.Next()) {
   }//for (; myIterator->More(); myIterator->Next()) {

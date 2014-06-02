@@ -199,20 +199,29 @@ void BOPAlgo_BuilderSolid::Perform()
     aBB.Add(aC, aF);
   }
   //
+  UserBreak();
   //
   PerformShapesToAvoid();
   if (myErrorStatus) {
     return;
   }
   //
+  UserBreak();
+  //
   PerformLoops();
   if (myErrorStatus) {
     return;
   }
+  //
+  UserBreak();
+  //
   PerformAreas();
   if (myErrorStatus) {
     return;
   }
+  //
+  UserBreak();
+  //
   PerformInternalShapes();
   if (myErrorStatus) {
     return;

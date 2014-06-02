@@ -17,35 +17,39 @@
 // commercial license or contractual agreement.
 
 #include <BOPAlgo_BuilderFace.ixx>
-
+//
+#include <NCollection_UBTreeFiller.hxx>
+#include <NCollection_DataMap.hxx>
+//
+#include <TColStd_MapIntegerHasher.hxx>
+//
 #include <gp_Pnt2d.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
-
+//
 #include <Geom_Surface.hxx>
-
+//
 #include <TopAbs.hxx>
 #include <TopLoc_Location.hxx>
-
+//
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Vertex.hxx>
-
+//
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepTools.hxx>
-
+//
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 
 #include <IntTools_FClass2d.hxx>
 #include <IntTools_Context.hxx>
-
 //
 #include <BOPTools_AlgoTools.hxx>
 #include <BOPTools_AlgoTools2D.hxx>
@@ -54,11 +58,13 @@
 #include <BOPCol_IndexedDataMapOfShapeListOfShape.hxx>
 #include <BOPTools.hxx>
 #include <BOPCol_ListOfShape.hxx>
-#include <BOPAlgo_WireSplitter.hxx>
+//
 #include <BOPCol_DataMapOfShapeShape.hxx>
 #include <BOPCol_DataMapOfShapeListOfShape.hxx>
 #include <BOPCol_MapOfShape.hxx>
-
+#include <BOPCol_Box2DBndTree.hxx>
+//
+#include <BOPAlgo_WireSplitter.hxx>
 
 static
   Standard_Boolean IsGrowthWire(const TopoDS_Shape& ,
@@ -75,11 +81,7 @@ static
   void GetWire(const TopoDS_Shape& , 
         TopoDS_Shape& ); 
 //
-#include <NCollection_UBTreeFiller.hxx>
-#include <BOPCol_Box2DBndTree.hxx>
-#include <BRepTools.hxx>
-#include <TColStd_MapIntegerHasher.hxx>
-#include <NCollection_DataMap.hxx>
+
 //
 //=======================================================================
 //class     : BOPAlgo_ShapeBox2D
@@ -215,20 +217,28 @@ void BOPAlgo_BuilderFace::Perform()
     return;
   }
   //
+  UserBreak();
+  //
   PerformShapesToAvoid();
   if (myErrorStatus) {
     return;
   }
+  //
+  UserBreak();
   //
   PerformLoops();
   if (myErrorStatus) {
     return;
   }
   //
+  UserBreak();
+  //
   PerformAreas();
   if (myErrorStatus) {
     return;
   }
+  //
+  UserBreak();
   //
   PerformInternalShapes();
   if (myErrorStatus) {

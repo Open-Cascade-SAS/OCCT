@@ -255,6 +255,7 @@ void BOPAlgo_Builder::FillIn3DParts
       continue;
     }
     // 
+    UserBreak();
     //---------------------------------------------
     Handle(NCollection_IncAllocator) aAlr1;
     //
@@ -564,6 +565,7 @@ void BOPAlgo_Builder::BuildSplitSolids
     BOPAlgo_BuilderSolid& aBS=aVBS.Append1();
     aBS.SetSolid(aSolid);
     aBS.SetShapes(aSFS);
+    aBS.SetProgressIndicator(myProgressIndicator);
   }//for (i=0; i<aNbS; ++i) {
   //
   Standard_Integer k, aNbBS;
@@ -700,6 +702,8 @@ void BOPAlgo_Builder::FillInternalShapes()
     if (aSI.ShapeType()!=TopAbs_SOLID) {
       continue;
     }
+    //
+    UserBreak();
     //
     const TopoDS_Shape& aS=aSI.Shape();
     //
