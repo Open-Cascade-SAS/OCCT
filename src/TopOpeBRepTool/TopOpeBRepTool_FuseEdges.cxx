@@ -308,7 +308,7 @@ void TopOpeBRepTool_FuseEdges::BuildListResultEdges()
       TopTools_ListIteratorOfListOfShape itEdg; 
 #endif
 
-      TopoDS_Edge& OldEdge = TopoDS::Edge(LmapEdg.First());
+      const TopoDS_Edge& OldEdge = TopoDS::Edge(LmapEdg.First());
 
       // the first edge of the list will be replaced by the result fusion edge
       if (OldEdge.Orientation()==TopAbs_REVERSED) {
@@ -407,7 +407,7 @@ void TopOpeBRepTool_FuseEdges::Perform()
       TopTools_ListIteratorOfListOfShape itEdg; 
 
       EdgeToSubs.Clear();
-      TopoDS_Edge& OldEdge = TopoDS::Edge(LmapEdg.First());
+      const TopoDS_Edge& OldEdge = TopoDS::Edge(LmapEdg.First());
 
 
       EdgeToSubs.Append(myMapEdg(iLst));

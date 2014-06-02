@@ -455,7 +455,7 @@ const TopTools_ListOfShape& BRepAlgo_DSAccess::SectionVertex
   Standard_Integer goodIndex = 0;
   TopOpeBRepDS_Kind goodKind;
   for(;II.More();II.Next()) {
-    Handle(TopOpeBRepDS_Interference)& I = II.Value();
+    const Handle(TopOpeBRepDS_Interference)& I = II.Value();
     const TopOpeBRepDS_Transition& T = I->Transition();
     if((T.ONAfter() == TopAbs_FACE) &&
        (T.IndexAfter()  == iF)) {

@@ -19,7 +19,7 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Extrema_LocateExtPC.hxx>
-#include <Handle_TColStd_HArray1OfReal.hxx>
+#include <TColStd_HArray1OfReal.hxx>
 
 class gp_Pnt;
 class TopoDS_Edge;

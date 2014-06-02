@@ -559,8 +559,7 @@ void BRepAlgo_Loop::Perform()
   {
     const TopoDS_Edge& anEdge = TopoDS::Edge(itl.Value());
     TopTools_ListOfShape LCE;
-    const TopTools_ListOfShape* pVertices = 
-      static_cast<TopTools_ListOfShape*>(myVerOnEdges.Find1(anEdge));
+    const TopTools_ListOfShape* pVertices = myVerOnEdges.Seek (anEdge);
     if (pVertices)
     {
       CutEdge (anEdge, *pVertices, LCE);
@@ -575,8 +574,7 @@ void BRepAlgo_Loop::Perform()
   // add cut edges.
   for (itl.Initialize(myEdges); itl.More(); itl.Next())
   {
-    const TopTools_ListOfShape* pLCE = 
-      static_cast<TopTools_ListOfShape*>(myCutEdges.Find1(itl.Value()));
+    const TopTools_ListOfShape* pLCE = myCutEdges.Seek (itl.Value());
     if (pLCE)
     {
       for (itl1.Initialize(*pLCE); itl1.More(); itl1.Next()) {

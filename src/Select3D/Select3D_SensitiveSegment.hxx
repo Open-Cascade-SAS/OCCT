@@ -32,8 +32,6 @@
 class SelectBasics_EntityOwner;
 class gp_Pnt;
 class TopLoc_Location;
-class TColgp_Array1OfPnt2d;
-
 
 //! A framework to define sensitive zones along a segment
 //!          One gives the 3D start and end point

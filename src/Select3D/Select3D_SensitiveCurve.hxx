@@ -25,7 +25,7 @@
 #include <Handle_Geom_Curve.hxx>
 #include <Select3D_SensitivePoly.hxx>
 #include <Handle_SelectBasics_EntityOwner.hxx>
-#include <Handle_TColgp_HArray1OfPnt.hxx>
+#include <TColgp_HArray1OfPnt.hxx>
 #include <Standard_Boolean.hxx>
 #include <SelectMgr_SelectingVolumeManager.hxx>
 #include <Standard_Real.hxx>
@@ -35,8 +35,6 @@ class Geom_Curve;
 class Standard_ConstructionError;
 class Standard_OutOfRange;
 class SelectBasics_EntityOwner;
-class TColgp_HArray1OfPnt;
-class TColgp_Array1OfPnt;
 class Select3D_SensitiveEntity;
 class TopLoc_Location;
 

@@ -30,7 +30,7 @@
 #include <gp_Trsf.hxx>
 #include <gp_Pnt.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
-#include <Handle_TColStd_HArray1OfInteger.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
 #include <Standard_Boolean.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
 #include <Select3D_SensitiveEntity.hxx>
@@ -41,13 +41,11 @@
 #include <NCollection_Handle.hxx>
 
 class Poly_Triangulation;
-class TColStd_HArray1OfInteger;
 class SelectBasics_EntityOwner;
 class TopLoc_Location;
 class gp_Pnt;
 class Select3D_SensitiveEntity;
 class Handle(Select3D_SensitiveEntity);
-class TColgp_Array1OfPnt2d;
 
 //! A framework to define selection of a sensitive entity made of a set of triangles.
 class Select3D_SensitiveTriangulation : public Select3D_SensitiveSet

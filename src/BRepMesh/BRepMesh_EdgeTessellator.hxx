@@ -26,12 +26,12 @@
 #include <Handle_Geom2d_Curve.hxx>
 #include <Handle_BRepAdaptor_HSurface.hxx>
 #include <BRepAdaptor_Curve.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 
 class Geom_Surface;
 class Geom2d_Curve;
 class TopoDS_Edge;
 class BRepAdaptor_HSurface;
-class TopTools_IndexedDataMapOfShapeListOfShape;
 
 //! Auxiliary class implements functionality producing tessellated
 //! representation of an edge based on edge geometry.

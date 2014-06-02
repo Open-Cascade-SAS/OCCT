@@ -1,6 +1,6 @@
-// Created on: 1991-01-14
-// Created by: Arnaud BOUZY
-// Copyright (c) 1991-1999 Matra Datavision
+// Created on: 1994-03-10
+// Created by: Jean Yves LEBEY
+// Copyright (c) 1994-1999 Matra Datavision
 // Copyright (c) 1999-2014 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
@@ -14,13 +14,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef Expr_Array1OfNamedUnknown_HeaderFile
-#define Expr_Array1OfNamedUnknown_HeaderFile
+#ifndef _TopOpeBRepTool_Plos_HeaderFile
+#define _TopOpeBRepTool_Plos_HeaderFile
 
-#include <Handle_Expr_NamedUnknown.hxx>
-#include <NCollection_Array1.hxx>
+#include <TopTools_ListOfShape.hxx>
 
-typedef NCollection_Array1<Handle(Expr_NamedUnknown)> Expr_Array1OfNamedUnknown;
+typedef TopTools_ListOfShape* TopOpeBRepTool_Plos;
 
-
-#endif
+#endif // _TopOpeBRepTool_Plos_HeaderFile

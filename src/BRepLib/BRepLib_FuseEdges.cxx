@@ -443,7 +443,7 @@ void BRepLib_FuseEdges::BuildListResultEdges()
       const Standard_Integer& iLst = itLstEdg.Key();
       const TopTools_ListOfShape& LmapEdg = myMapLstEdg.Find(iLst);
 
-      TopoDS_Edge& OldEdge = TopoDS::Edge(LmapEdg.First());
+      TopoDS_Edge OldEdge = TopoDS::Edge(LmapEdg.First());
 
       // the first edge of the list will be replaced by the result fusion edge
       if (OldEdge.Orientation()==TopAbs_REVERSED) {
@@ -575,8 +575,7 @@ void BRepLib_FuseEdges::Perform()
       TopTools_ListIteratorOfListOfShape itEdg; 
 
       EdgeToSubs.Clear();
-      TopoDS_Edge& OldEdge = TopoDS::Edge(LmapEdg.First());
-
+      TopoDS_Edge OldEdge = TopoDS::Edge(LmapEdg.First());
 
       EdgeToSubs.Append(myMapEdg(iLst));
       Bsub.Substitute(OldEdge,EdgeToSubs);

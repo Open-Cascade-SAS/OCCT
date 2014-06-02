@@ -22,7 +22,6 @@
 class Adaptor3d_Curve;
 class TopoDS_Edge;
 class TopoDS_Shape;
-class TColgp_SequenceOfPnt;
 class Handle(BRepAdaptor_HSurface);
 class Handle(Prs3d_Drawer);
 

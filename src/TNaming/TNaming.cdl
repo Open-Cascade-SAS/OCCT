@@ -227,11 +227,7 @@ is
     imported DataMapOfShapePtrRefShape;
 	
     imported DataMapIteratorOfDataMapOfShapePtrRefShape;
-    
 
-    pointer PtrDataMapOfShapePtrRefShape to DataMapOfShapePtrRefShape from TNaming;
-
-   
     ---Category: private classes for ANaming
     --           ===========================
 

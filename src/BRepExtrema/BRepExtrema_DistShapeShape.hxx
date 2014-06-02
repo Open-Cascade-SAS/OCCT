@@ -25,10 +25,7 @@
 #include <TopTools_IndexedMapOfShape.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_DefineAlloc.hxx>
-
-class TopoDS_Shape;
-class TopTools_IndexedMapOfShape;
-
+#include <TopTools_IndexedMapOfShape.hxx>
 
 //! This class  provides tools to compute minimum distance <br>
 //! between two Shapes (Compound,CompSolid, Solid, Shell, Face, Wire, Edge, Vertex). <br>

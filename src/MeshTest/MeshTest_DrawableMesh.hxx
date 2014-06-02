@@ -19,14 +19,11 @@
 #include <BRepMesh_IncrementalMesh.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
 #include <Draw_Drawable3D.hxx>
-#include <Handle_Draw_Drawable3D.hxx>
 #include <Standard_OStream.hxx>
 #include <Draw_Interpretor.hxx>
 
 class TopoDS_Shape;
-class TColStd_SequenceOfInteger;
 class Draw_Display;
-class Draw_Drawable3D;
 
 //! A drawable mesh. 
 //! Provides a mesh object inherited from Drawable3d to draw a triangulation.

@@ -26,10 +26,10 @@
 #include <Standard_Boolean.hxx>
 #include <Handle_MMgt_TShared.hxx>
 #include <TopAbs_ShapeEnum.hxx>
-#include <Handle_TopTools_HArray1OfShape.hxx>
+#include <TopTools_HArray1OfShape.hxx>
 #include <Handle_AIS_InteractiveObject.hxx>
 #include <AIS_KindOfInteractive.hxx>
-#include <Handle_TColStd_HArray1OfTransient.hxx>
+#include <TColStd_HArray1OfTransient.hxx>
 #include <Handle_V3d_Viewer.hxx>
 #include <Handle_AIS_InteractiveContext.hxx>
 #include <Handle_ViewerTest_EventManager.hxx>
@@ -39,16 +39,11 @@ class TCollection_AsciiString;
 class V3d_View;
 class MMgt_TShared;
 class TopoDS_Shape;
-class TopTools_HArray1OfShape;
 class AIS_InteractiveObject;
-class TColStd_HArray1OfTransient;
 class V3d_Viewer;
 class AIS_InteractiveContext;
 class ViewerTest_EventManager;
 class ViewerTest_EventManager;
-class ViewerTest_DoubleMapOfInteractiveAndName;
-class ViewerTest_DoubleMapNodeOfDoubleMapOfInteractiveAndName;
-class ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName;
 class Quantity_Color;
 
 class ViewerTest
@@ -207,12 +202,6 @@ private:
   //! This method is relevant for MS Windows only and respectively
   //! returns WNT_WClass handle.
   Standard_EXPORT static const Handle(MMgt_TShared)& WClass();
-
-friend class ViewerTest_EventManager;
-friend class ViewerTest_DoubleMapOfInteractiveAndName;
-friend class ViewerTest_DoubleMapNodeOfDoubleMapOfInteractiveAndName;
-friend class ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName;
-
 };
 
 #endif // _ViewerTest_HeaderFile

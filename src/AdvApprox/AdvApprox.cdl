@@ -26,8 +26,6 @@ uses gp,
      GeomAbs,
      TColStd, 
      TColgp, 
-     TCollection, 
-     Standard,
      StdFail, 
      PLib
 

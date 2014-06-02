@@ -38,26 +38,14 @@
 #include <TopoDS_Edge.hxx>
 
 
-static void CopyRanges (const TopoDS_Edge& toedge, 
-				  const TopoDS_Edge& fromedge,
-				  const Standard_Real alpha,
-				  const Standard_Real beta) 
+static void CopyRanges (const TopoDS_Shape& toedge, const TopoDS_Shape& fromedge,
+			const Standard_Real alpha, const Standard_Real beta) 
 {
-/*  BRep_Builder B;
-    for (BRep_ListIteratorOfListOfCurveRepresentation itcr
-    ((*((Handle(BRep_TEdge)*)&fromedge.TShape()))->ChangeCurves()); itcr.More(); itcr.Next()) {
-    Handle(BRep_GCurve) GC = Handle(BRep_GCurve)::DownCast(itcr.Value());
-    if ( GC.IsNull() ) continue;
-    Standard_Real first, last;
-    GC->Range ( first, last );
-    if ( GC->IsCurve3D() ) 
-      B.Range ( toedge, first, last );
-    else if ( GC->IsCurveOnSurface() )
-      B.Range ( toedge, GC->Surface(), fromedge.Location().Multiplied (GC->Location()), first, last);
-  }
-*/
-  for (BRep_ListIteratorOfListOfCurveRepresentation fromitcr
-       ((*((Handle(BRep_TEdge)*)&fromedge.TShape()))->ChangeCurves()); fromitcr.More(); fromitcr.Next()) {
+  Handle(BRep_TEdge) aTEdgeFrom = Handle(BRep_TEdge)::DownCast(fromedge.TShape());
+  Handle(BRep_TEdge) aTEdgeTo   = Handle(BRep_TEdge)::DownCast(toedge.TShape());
+  BRep_ListOfCurveRepresentation& tolist = aTEdgeTo->ChangeCurves();
+  BRep_ListIteratorOfListOfCurveRepresentation fromitcr (aTEdgeFrom->ChangeCurves());
+  for (; fromitcr.More(); fromitcr.Next()) {
     Handle(BRep_GCurve) fromGC = Handle(BRep_GCurve)::DownCast(fromitcr.Value());
     if ( fromGC.IsNull() ) continue;
     Standard_Boolean isC3d = fromGC->IsCurve3D();
@@ -75,7 +63,6 @@ static void CopyRanges (const TopoDS_Edge& toedge,
       L = fromGC->Location();
     } 
 
-    BRep_ListOfCurveRepresentation& tolist = (*((Handle(BRep_TEdge)*)&toedge.TShape()))->ChangeCurves();
     Handle(BRep_GCurve) toGC;
     for (BRep_ListIteratorOfListOfCurveRepresentation toitcr (tolist); toitcr.More(); toitcr.Next()) {
       toGC = Handle(BRep_GCurve)::DownCast(toitcr.Value());
@@ -536,8 +523,7 @@ TopoDS_Shape BRepTools_ReShape::Apply (const TopoDS_Shape& shape,
 
   // restore Range on edge broken by EmptyCopied()
   if ( st == TopAbs_EDGE ) {
-    //BRepTools_Edge sbe;
-    CopyRanges ( TopoDS::Edge ( result ), TopoDS::Edge ( shape ),0,1 );
+    CopyRanges (result, shape, 0, 1);
   }
   else if (st == TopAbs_FACE)  {
     TopoDS_Face face = TopoDS::Face ( shape );

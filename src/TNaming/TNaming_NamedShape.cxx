@@ -24,7 +24,6 @@
 #include <TNaming_PtrNode.hxx>
 #include <TNaming_PtrRefShape.hxx>
 #include <TNaming_RefShape.hxx>
-#include <TNaming_PtrDataMapOfShapePtrRefShape.hxx>
 #include <TNaming_UsedShapes.hxx>
 #include <TNaming_Tool.hxx>
 #include <TNaming_Iterator.hxx>

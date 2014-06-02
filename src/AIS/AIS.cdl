@@ -334,9 +334,9 @@ is
                             
     class LocalContext;    
 
-    private class LocalStatus;
+    class LocalStatus;
 
-    private class GlobalStatus;
+    class GlobalStatus;
  
     deferred class InteractiveObject;
 

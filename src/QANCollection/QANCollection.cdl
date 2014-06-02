@@ -31,7 +31,6 @@ is
     imported DoubleMapIteratorOfDoubleMapOfRealInteger;
 
     Commands(DI : in out Interpretor from Draw);
-    CommandsSimple(DI : in out Interpretor from Draw);
     CommandsTest(DI : in out Interpretor from Draw);
     CommandsPerf(DI : in out Interpretor from Draw);
     CommandsAlloc(DI : in out Interpretor from Draw);

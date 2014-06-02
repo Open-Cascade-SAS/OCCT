@@ -171,7 +171,7 @@ void TopOpeBRepDS_InterferenceIterator::Next()
 //purpose  : 
 //=======================================================================
 
-Handle(TopOpeBRepDS_Interference)& TopOpeBRepDS_InterferenceIterator::Value() const 
+const Handle(TopOpeBRepDS_Interference)& TopOpeBRepDS_InterferenceIterator::Value() const 
 {
   return myIterator.Value();
 }

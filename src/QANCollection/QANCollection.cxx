@@ -20,7 +20,6 @@
 
 void QANCollection::Commands (Draw_Interpretor& theCommands)
 {
-  QANCollection::CommandsSimple (theCommands);
   QANCollection::CommandsTest (theCommands);
   QANCollection::CommandsPerf (theCommands);
   QANCollection::CommandsAlloc (theCommands);

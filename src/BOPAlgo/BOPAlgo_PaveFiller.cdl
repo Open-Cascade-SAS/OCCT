@@ -86,9 +86,6 @@ is
     SetArguments(me:out; 
             theLS:ListOfShape from BOPCol);   
             
-    SetArguments(me:out; 
-            theLS:ListOfShape from TopTools);  
-
     Arguments(me) 
       returns ListOfShape from BOPCol; 
     ---C++: return const & 

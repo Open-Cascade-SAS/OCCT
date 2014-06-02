@@ -88,10 +88,10 @@ is
     ---Purpose: Move to the next Interference.
     is static;
 
-    Value(me) returns any Interference from TopOpeBRepDS
+    Value(me) returns Interference from TopOpeBRepDS
     ---Purpose: Returns   the   current   Interference,   matching   the
     --          conditions  (if defined).
-    ---C++: return &
+    ---C++: return const &
     is static;
 
     ChangeIterator(me : in out)

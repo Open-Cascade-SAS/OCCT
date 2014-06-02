@@ -36,20 +36,9 @@ class Storage_StreamFormatError;
 class Storage_StreamWriteError;
 class Storage_StreamExtCharParityError;
 
-class TColStd_SequenceOfExtendedString;
+#include <TColStd_SequenceOfExtendedString.hxx>
 
-#ifndef Standard_EXPORT
-#ifdef WNT
-#define Standard_EXPORT __declspec(dllexport)
-#else
-#define Standard_EXPORT
-#endif
-#endif
-#ifdef WNT
-#pragma warning (disable : 4275)
-#endif
-
-class Standard_EXPORT DDF_IOStream  : public Storage_BaseDriver {
+class DDF_IOStream  : public Storage_BaseDriver {
 
 public:
 

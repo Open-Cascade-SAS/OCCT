@@ -19,17 +19,15 @@
 #include <Standard_Type.hxx>
 #include <Standard_Transient.hxx>
 
-#include <Handle_TColStd_HArray1OfReal.hxx>
-#include <Handle_TColStd_HArray2OfReal.hxx>
-
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 
-class Handle(BSplSLib_Cache);
-class TColgp_Array2OfPnt;
-class TColStd_Array1OfInteger;
-class TColStd_Array1OfReal;
-class TColStd_Array2OfReal;
+#include <TColgp_Array2OfPnt.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_HArray2OfReal.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColStd_Array2OfReal.hxx>
 
 #ifndef NOWEIGHTS_SURF
 #define NOWEIGHTS_SURF (*((TColStd_Array2OfReal*) NULL))

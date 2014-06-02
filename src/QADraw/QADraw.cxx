@@ -40,18 +40,15 @@
 #include <Draw_PluginMacro.hxx>
 
 //=======================================================================
-#if ! defined(WNT)
-extern ViewerTest_DoubleMapOfInteractiveAndName& GetMapOfAIS();
-extern Handle(AIS_InteractiveContext)& TheAISContext();
-#else
-Standard_EXPORT ViewerTest_DoubleMapOfInteractiveAndName& GetMapOfAIS();
-Standard_EXPORT Handle(AIS_InteractiveContext)& TheAISContext();
-#endif
+
 #include <ViewerTest_DoubleMapOfInteractiveAndName.hxx>
 #include <AIS_Trihedron.hxx>
 #include <AIS_Axis.hxx>
 #include <Geom_Line.hxx>
 #include <AIS_Line.hxx>
+
+Standard_EXPORT ViewerTest_DoubleMapOfInteractiveAndName& GetMapOfAIS();
+Standard_EXPORT Handle(AIS_InteractiveContext)& TheAISContext();
 
 //==============================================================================
 // function : VTrihedronOrigins

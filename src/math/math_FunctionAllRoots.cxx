@@ -37,8 +37,8 @@ math_FunctionAllRoots::math_FunctionAllRoots (
 
 
     Standard_Boolean Nul, PNul, InterNul, Nuld, Nulf;
-    Standard_Real DebNul,FinNul;
-    Standard_Integer Indd,Indf;
+    Standard_Real DebNul = 0., FinNul = 0.;
+    Standard_Integer Indd = 0, Indf = 0;
     Standard_Real cst,val,valsav=0,valbid;
     Standard_Boolean fini;
     Standard_Integer Nbp,i;

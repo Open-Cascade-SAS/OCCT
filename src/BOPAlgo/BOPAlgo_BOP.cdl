@@ -52,10 +52,6 @@ is
         is virtual;  
         
     SetTools (me:out;
-            theShapes: ListOfShape from TopTools)
-        is virtual;  
-         
-    SetTools (me:out;
             theShapes: ListOfShape from BOPCol)
         is virtual; 
  

@@ -22,7 +22,6 @@
 
 class Bnd_Box;
 class gp_Pnt;
-class TColgp_Array1OfPnt;
 
 //! This class provides an interface for selecting volume manager,
 //! which is responsible for all overlap detection methods and

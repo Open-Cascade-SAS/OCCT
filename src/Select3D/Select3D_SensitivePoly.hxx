@@ -21,8 +21,7 @@
 #include <Standard_Type.hxx>
 
 #include <TColStd_HArray1OfInteger.hxx>
-#include <Handle_TColgp_HArray1OfPnt.hxx>
-#include <Handle_TColStd_HArray1OfInteger.hxx>
+#include <TColgp_HArray1OfPnt.hxx>
 
 #include <Select3D_PointData.hxx>
 #include <Select3D_Pnt.hxx>
@@ -34,8 +33,6 @@
 class Standard_ConstructionError;
 class Standard_OutOfRange;
 class SelectBasics_EntityOwner;
-class TColgp_Array1OfPnt;
-class TColgp_HArray1OfPnt;
 
 //! Sensitive Entity to make a face selectable.
 //! In some cases this class can raise Standard_ConstructionError and

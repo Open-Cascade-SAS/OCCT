@@ -26,7 +26,7 @@
 #include <NCollection_DataMap.hxx>
 #include <OSD_Chronometer.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
-#include <Handle_TColStd_HArray1OfInteger.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
 
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
@@ -41,12 +41,10 @@
 #include <Standard_OStream.hxx>
 #include <Handle_SelectBasics_SensitiveEntity.hxx>
 
-class TColStd_HArray1OfInteger;
 class SelectMgr_SelectionManager;
 class SelectMgr_Selection;
 class SelectMgr_SensitiveEntitySet;
 class SelectMgr_EntityOwner;
-class TColStd_ListOfInteger;
 class TCollection_AsciiString;
 class SelectBasics_SensitiveEntity;
 class SelectMgr_SelectableObjectSet;

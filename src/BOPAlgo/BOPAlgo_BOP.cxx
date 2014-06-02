@@ -133,21 +133,6 @@ void BOPAlgo_BOP::AddTool(const TopoDS_Shape& theShape)
 //function : SetTools
 //purpose  : 
 //=======================================================================
-void BOPAlgo_BOP::SetTools(const TopTools_ListOfShape& theShapes)
-{
-  TopTools_ListIteratorOfListOfShape aIt;
-  //
-  myTools.Clear();
-  aIt.Initialize(theShapes);
-  for (; aIt.More(); aIt.Next()) {
-    const TopoDS_Shape& aS = aIt.Value();
-    AddTool(aS);
-  }
-}
-//=======================================================================
-//function : SetTools
-//purpose  : 
-//=======================================================================
 void BOPAlgo_BOP::SetTools(const BOPCol_ListOfShape& theShapes)
 {
   BOPCol_ListIteratorOfListOfShape aIt;

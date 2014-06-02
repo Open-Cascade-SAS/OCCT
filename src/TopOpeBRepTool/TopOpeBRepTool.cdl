@@ -67,7 +67,7 @@ is
     
     imported IndexedDataMapOfSolidClassifier;
 	 
-    pointer Plos to ListOfShape from TopTools;
+    imported Plos;
     class SolidClassifier;
     
     class CurveTool;

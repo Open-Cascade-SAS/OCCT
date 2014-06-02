@@ -27,7 +27,7 @@
 #include <Select3D_Pnt.hxx>
 #include <Handle_Geom_Circle.hxx>
 #include <Handle_SelectBasics_EntityOwner.hxx>
-#include <Handle_TColgp_HArray1OfPnt.hxx>
+#include <TColgp_HArray1OfPnt.hxx>
 #include <SelectMgr_SelectingVolumeManager.hxx>
 #include <Select3D_TypeOfSensitivity.hxx>
 
@@ -35,8 +35,6 @@ class Geom_Circle;
 class Standard_ConstructionError;
 class Standard_OutOfRange;
 class SelectBasics_EntityOwner;
-class TColgp_HArray1OfPnt;
-class TColgp_Array1OfPnt;
 class gp_Pnt;
 class TopLoc_Location;
 

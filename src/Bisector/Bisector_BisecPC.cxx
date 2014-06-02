@@ -634,7 +634,7 @@ void Bisector_BisecPC::CuspFilter()
 void Bisector_BisecPC::ComputeIntervals ()
 {
   Standard_Real U1 =0.,U2 =0.,UProj =0.;
-  Standard_Real UStart,UEnd;
+  Standard_Real UStart = 0., UEnd = 0.;
   Standard_Real Dist1,Dist2,DistProj;
   isEmpty        = Standard_False;     
   shiftParameter = 0.;

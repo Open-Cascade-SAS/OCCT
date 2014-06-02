@@ -19,11 +19,11 @@
 #define TObj_Assistant_HeaderFile
 
 #include <TObj_Common.hxx>
+#include <TColStd_SequenceOfTransient.hxx>
+#include <TColStd_SequenceOfAsciiString.hxx>
+#include <TColStd_IndexedMapOfTransient.hxx>
 
 class Handle(TObj_Model);
-class TColStd_SequenceOfTransient;
-class TColStd_SequenceOfAsciiString;
-class TColStd_IndexedMapOfTransient;
 
 //! This class provides interface to the static data
 //! to be used during save or load models.

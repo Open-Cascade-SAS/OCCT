@@ -19,17 +19,14 @@
 #include <NCollection_Vector.hxx>
 
 #include <Handle_SelectBasics_EntityOwner.hxx>
-#include <Handle_TColgp_HArray1OfPnt.hxx>
-#include <Handle_TColStd_HArray1OfInteger.hxx>
+#include <TColgp_HArray1OfPnt.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
 
 #include <Select3D_SensitivePoly.hxx>
 #include <Select3D_SensitiveSet.hxx>
 
 class gp_Pnt;
 class SelectBasics_EntityOwner;
-class TColgp_Array1OfPnt;
-class TColgp_HArray1OfPnt;
-class TColStd_HArray1OfInteger;
 
 typedef NCollection_Vector<Handle(Select3D_SensitivePoly)> Select3D_VectorOfHPoly;
 

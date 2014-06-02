@@ -23,8 +23,8 @@
 
 #include <Standard_CString.hxx>
 
-#include <Handle_TColStd_HArray1OfByte.hxx>
-#include <Handle_TColStd_HArray1OfReal.hxx>
+#include <TColStd_HArray1OfByte.hxx>
+#include <TColStd_HArray1OfReal.hxx>
 #include <Quantity_PlaneAngle.hxx>
 #include <Quantity_NameOfColor.hxx>
 #include <Handle_OpenGl_View.hxx>
@@ -56,16 +56,16 @@
 #include <Graphic3d_BufferType.hxx>
 #include <NCollection_DataMap.hxx>
 
-class TColStd_Array1OfInteger;
-class TColStd_Array1OfReal;
-class TColStd_Array2OfReal;
-class TColStd_HArray1OfByte;
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+#include <TColStd_Array2OfReal.hxx>
+#include <TColStd_HArray1OfByte.hxx>
+
 class Graphic3d_Vector;
 class Quantity_Color;
 class Graphic3d_Vertex;
 class TCollection_ExtendedString;
 class Image_PixMap;
-class TColStd_HArray1OfReal;
 class Handle(OpenGl_Workspace);
 class OpenGl_Element;
 class OpenGl_Structure;

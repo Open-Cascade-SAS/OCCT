@@ -25,8 +25,6 @@
 #include <Select3D_TypeOfSensitivity.hxx>
 
 class SelectBasics_EntityOwner;
-class TColgp_Array1OfPnt;
-
 
 //! This class provides custom sensitive face, which will be selected if it center is in rectangle.
 class MeshVS_SensitiveFace : public Select3D_SensitiveFace

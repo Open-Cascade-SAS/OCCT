@@ -26,10 +26,12 @@
 #include <BRepMesh.hxx>
 #include <BRepMesh_DataStructureOfDelaun.hxx>
 #include <BRepMesh_GeomTool.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_SequenceOfInteger.hxx>
+#include <TColStd_MapOfInteger.hxx>
 
 class Bnd_B2d;
 class Bnd_Box2d;
-class BRepMesh_Array1OfVertexOfDelaun;
 class BRepMesh_Vertex;
 
 //! Compute the Delaunay's triangulation with the algorithm of Watson.

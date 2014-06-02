@@ -24,9 +24,6 @@
 #include <Plugin_MapOfFunctions.hxx>
 #include <BRepMesh_DiscretRoot.hxx>
 
-class TColStd_MapOfAsciiString;
-class TCollection_AsciiString;
-class BRepMesh_DiscretRoot;
 class TopoDS_Shape;
 
 //! This class intended to setup / retrieve default triangulation algorithm. <br>

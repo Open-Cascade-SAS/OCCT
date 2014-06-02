@@ -476,10 +476,10 @@ is
                             ---Category: INTERNAL METHODS;
 
 
-    Status(me) returns AsciiString from TCollection is private;
+    Status(me) returns AsciiString from TCollection;
     
     Status(me;anObject : InteractiveObject from AIS)
-    returns any LocalStatus from AIS is private;
+    returns any LocalStatus from AIS;
     ---C++: return const&
 
 
@@ -593,10 +593,6 @@ fields
     -- This variable is used by following functions:
     -- InitDetected(), MoreDetected(), NextDetected(), DetectedCurrentShape(), DetectedCurrentObject().
     
-friends 
-
-    KeepTemporary from  InteractiveContext from AIS(me:mutable;anIObj:InteractiveObject from AIS;WhichMode  :  Integer  from  Standard  =  -1) 
-
 end LocalContext;
 
 

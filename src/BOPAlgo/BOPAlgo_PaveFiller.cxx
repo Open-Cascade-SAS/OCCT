@@ -113,21 +113,6 @@ void BOPAlgo_PaveFiller::SetSectionAttribute
 //function : SetArguments
 //purpose  : 
 //=======================================================================
-void BOPAlgo_PaveFiller::SetArguments(const TopTools_ListOfShape& theLS)
-{
-  TopTools_ListIteratorOfListOfShape aItLS;
-  //
-  myArguments.Clear();
-  aItLS.Initialize(theLS);
-  for (; aItLS.More(); aItLS.Next()) {
-    const TopoDS_Shape& aS=aItLS.Value();
-    myArguments.Append(aS);
-  }
-}
-//=======================================================================
-//function : SetArguments
-//purpose  : 
-//=======================================================================
 void BOPAlgo_PaveFiller::SetArguments(const BOPCol_ListOfShape& theLS)
 {
   myArguments=theLS;

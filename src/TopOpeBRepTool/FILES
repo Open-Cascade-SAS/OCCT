@@ -42,3 +42,4 @@ TopOpeBRepTool_IndexedDataMapOfShapeBox.hxx
 TopOpeBRepTool_IndexedDataMapOfShapeconnexity.hxx
 TopOpeBRepTool_DataMapOfShapeface.hxx
 TopOpeBRepTool_DataMapIteratorOfDataMapOfShapeface.hxx
+TopOpeBRepTool_Plos.hxx

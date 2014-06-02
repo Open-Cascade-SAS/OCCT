@@ -32,7 +32,6 @@ class Standard_ConstructionError;
 class Standard_OutOfRange;
 class SelectBasics_EntityOwner;
 class gp_Pnt;
-class TColgp_Array1OfPnt2d;
 class Select3D_SensitiveEntity;
 class TopLoc_Location;
 

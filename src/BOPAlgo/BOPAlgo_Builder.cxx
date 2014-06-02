@@ -107,22 +107,6 @@ void BOPAlgo_Builder::AddArgument(const TopoDS_Shape& theShape)
 //function : SetArguments
 //purpose  : 
 //=======================================================================
-void BOPAlgo_Builder::SetArguments(const TopTools_ListOfShape& theShapes)
-{
-  TopTools_ListIteratorOfListOfShape aIt;
-  //
-  myArguments.Clear();
-  //
-  aIt.Initialize(theShapes);
-  for (; aIt.More(); aIt.Next()) {
-    const TopoDS_Shape& aS = aIt.Value();
-    AddArgument(aS);
-  }
-}
-//=======================================================================
-//function : SetArguments
-//purpose  : 
-//=======================================================================
 void BOPAlgo_Builder::SetArguments(const BOPCol_ListOfShape& theShapes)
 {
   BOPCol_ListIteratorOfListOfShape aIt;

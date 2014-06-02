@@ -33,7 +33,6 @@
 class Graphic3d_Group;
 class Graphic3d_Structure;
 class V3d_View;
-class TColgp_Array1OfPnt2d;
 class SelectMgr_EntityOwner;
 class SelectMgr_SelectableObjectSet;
 

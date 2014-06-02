@@ -40,7 +40,6 @@ uses
      TColStd, 
      TColgp,
      TColGeom,
-     TCollection,
      AdvApprox,
      Standard
  

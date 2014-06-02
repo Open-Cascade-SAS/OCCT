@@ -1,7 +1,6 @@
 FILES
 QANCollection.cdl
 QANCollection.cxx
-QANCollection_Simple.cxx
 QANCollection_Test.cxx
 QANCollection_Perf.cxx
 QANCollection_Alloc.cxx

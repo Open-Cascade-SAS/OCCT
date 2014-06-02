@@ -22,6 +22,7 @@
 #include <BRepMesh_Status.hxx>
 #include <BRepMesh_DataStructureOfDelaun.hxx>
 #include <BRepMesh.hxx>
+#include <TColStd_IndexedMapOfInteger.hxx>
 #include <TopoDS_Edge.hxx>
 #include <Bnd_Box2d.hxx>
 #include <gp_Pnt2d.hxx>
@@ -29,8 +30,6 @@
 
 #include <vector>
 
-class BRepMesh_DataMapOfShapePairOfPolygon;
-class TColStd_IndexedMapOfInteger;
 
 //! Auxilary class intended to check correctness of discretized face.
 //! In particular, checks boundaries of discretized face for self 
