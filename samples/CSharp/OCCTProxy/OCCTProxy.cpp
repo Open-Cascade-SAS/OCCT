@@ -1094,5 +1094,5 @@ private:
   NCollection_Haft<Handle_V3d_Viewer> myViewer;
   NCollection_Haft<Handle_V3d_View> myView;
   NCollection_Haft<Handle_AIS_InteractiveContext> myAISContext;
-  NCollection_Haft<Handle_OpenGl_GraphicDriver>   myGraphicDriver;
+  NCollection_Haft<Handle_OpenGl_GraphicDriver> myGraphicDriver;
 };

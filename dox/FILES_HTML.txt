@@ -9,6 +9,7 @@ overview/overview.md
 
 ../samples/mfc/standard/ReadMe.md
 ../samples/CSharp/ReadMe.md
+../samples/CSharp/ReadMe_D3D.md
 
 tutorial/tutorial.md
 

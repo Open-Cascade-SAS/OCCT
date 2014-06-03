@@ -1,22 +1,24 @@
-OCCT CSharp sample {#samples_csharp_occt}
+Direct3D CSharp sample {#samples_csharp_direct3d}
 ================== 
 	
-This sample demonstrates simple way of using OCCT libraries in .Net application
-whitten using CSharp and Windows Forms or Windows Presentation Foundation (WPF).
+This sample demonstrates simple way of using OCCT and DirectX libraries in .Net application
+whitten using CSharp and Windows Presentation Foundation (WPF).
 
-The connection between .Net and OCCT (C++) level is provided by proxy library,
-OCCProxy, written in C++/CLI. The proxy library contains single ref class
+The connection between .Net, OCCT (C++) and DirectX level is provided by proxy libraies,
+OCCProxy and D3DProxy, written in C++/CLI. The proxy OCCProxy library contains single ref class
 encapsulating OCCT viewer and providing functionality to manipulate this viewer
 and to import / export OCCT shapes from / to several supported formats of CAD 
-files (IGES, STEP, BREP). 
+files (IGES, STEP, BREP). And the proxy D3DProxy library contains helper methods for rendering 
+via DirectX.  
 
-The sample implements two approaches for organizing user interface with C#.
-Both applications provide the same functionality as the standard OCCT 
-Import/Export sample.
-First project is called "IE_WinForms" and uses Windows Forms for GUI.
-Second application is called "IE_WPF_WinForms" and uses Windows Presentation Foundation.
+Organizing of user interface in this sample is provided by Windows Presentation Foundation (WPF).
+And it has the same functionality as the standard OCCT Import/Export sample. The project is 
+called "IE_WPF_D3D".
 
 Note a few important details:
+
+- to build this sample you should to download and install DirectX SDK
+  http://www.microsoft.com/en-us/download/details.aspx?id=6812
 
 - to encapsulate C++ class into a field of ref class, template class 
   NCollection_Haft provided by OCCT is used
@@ -45,7 +47,7 @@ After conversion check option "Target framework" in properties of C# projects
 (tab "Application") to ensure that it corresponds to the version set in
 the properties of the C++ projects (e.g. ".Net Framework 4.0" for VS 2010).
 
-Run run_winforms.bat or run_wpf.bat to launch the corresponding sample.
+Run run_wpf-D3D.bat to launch the corresponding sample.
 
 Note that all batch scripts use configuration defined in OCCT custom.bat file
 as default; you can provide arguments specifying VS version, bitness, and mode

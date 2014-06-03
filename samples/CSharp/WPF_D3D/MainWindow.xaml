@@ -1,0 +1,177 @@
+﻿<Window
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	x:Class="IE_WPF_D3D.MainWindow"
+	xmlns:local="clr-namespace:IE_WPF_D3D"
+    Title="Sample Import/Export" Height="600" Width="900" Icon="res/MainFrame.ico">
+	
+	<Window.Background>
+		<SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ControlDarkColorKey}}"/>
+	</Window.Background>
+	
+	<Window.Resources>
+        <BooleanToVisibilityConverter x:Key="boolToVisibilityConverter"/>
+    </Window.Resources>
+		
+    <Grid>
+	    <Grid.RowDefinitions>
+ 			<RowDefinition Height="auto"/>
+			<RowDefinition Height="auto"/>
+			<RowDefinition />
+			<RowDefinition Height="auto"/>
+		</Grid.RowDefinitions>
+        
+    	<Menu Height="25" Grid.Row="0">
+    		<MenuItem Header="File">
+    			<MenuItem Command="local:IECommands.New"/>
+    			<MenuItem Command="local:IECommands.Close"/>
+				<MenuItem Header="Import" IsEnabled="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=IsDocumentOpen}">
+					<MenuItem Name="ImportBrep" Header="BRep..." Click="ImportBRep_Click"/>
+					<MenuItem Name="ImportIges" Header="Iges..." Click="ImportIges_Click"/>
+                    <MenuItem Name="ImportStep" Header="Step..." Click="ImportStep_Click"/>
+				</MenuItem>
+                <MenuItem Header="Export" IsEnabled="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=IsDocumentOpen}">
+					<MenuItem Name="ExportBrep" Header="BRep..." Click="ExportBRep_Click"/>
+					<MenuItem Name="ExportIges" Header="Iges..." Click="ExportIges_Click"/>
+					<MenuItem Name="ExportStep" Header="Step..." Click="ExportStep_Click"/>
+					<MenuItem Name="ExportStl" Header="Stl..." Click="ExportStl_Click"/>
+					<MenuItem Name="ExportVrml" Header="Vrml..." Click="ExportVrml_Click"/>
+					<Separator/>
+					<MenuItem Name="ExportImage" Header="Image..." Click="ExportImage_Click"/>
+				</MenuItem>
+    			<Separator/>
+    			<MenuItem Command="local:IECommands.Quit"/>
+    		</MenuItem>
+    		<MenuItem Header="View">
+    			<MenuItem Name="ActivateToolbar" IsCheckable="True" IsChecked="True" Header="Toolbar"/>
+    			<MenuItem Name="ActivateStatusbar" IsCheckable="True" IsChecked="True" Header="Statusbar"/>
+    		</MenuItem>
+    		<MenuItem Header="Help">
+    			<MenuItem Header="About" Command="local:IECommands.About"/>
+    		</MenuItem>
+    	</Menu>
+		
+		<ToolBarTray Background="White" Grid.Row="1">
+            <ToolBar Name="ToolBar" Band="1" BandIndex="1" 
+					 Visibility="{Binding ElementName=ActivateToolbar, Path=IsChecked, Converter={StaticResource boolToVisibilityConverter}}"
+                     MouseEnter="ToolBar_MouseEnter" MouseLeave="ToolBar_MouseLeave">
+                <Button ToolTip="New" Command="local:IECommands.New">
+                    <Image Source="res/new.png" Style="{StaticResource toolbarImageStyle}"/>
+                </Button>
+        		<Button ToolTip="About" Command="local:IECommands.About">
+                    <Image Source="res/help.png" Style="{StaticResource toolbarImageStyle}"/>
+                </Button>
+        	</ToolBar>
+			<ToolBar Name="DocumentToolBar" Band="1" BandIndex="2" 
+                     Visibility="{Binding ElementName=ActivateToolbar, Path=IsChecked, Converter={StaticResource boolToVisibilityConverter}}"
+					 IsEnabled="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=IsDocumentOpen}"
+                     MouseEnter="DocumentToolBar_MouseEnter" MouseLeave="ToolBar_MouseLeave">
+                <Button ToolTip="Wireframe" Click="Wireframe_Click"
+                        IsEnabled="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=IsWireframeEnabled}">
+					<Image Source="res/tool_wireframe.png" Style="{StaticResource toolbarImageStyle}"/>
+				</Button>
+        		<Button ToolTip="Shading" Click="Shading_Click"
+                        IsEnabled="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=IsShadingEnabled}">
+					<Image Source="res/tool_shading.png" Style="{StaticResource toolbarImageStyle}"/>
+				</Button>
+				<Button ToolTip="Color" Click="Color_Click"
+                        IsEnabled="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=IsColorEnabled}">
+					<Image Source="res/tool_color.png" Style="{StaticResource toolbarImageStyle}"/>
+				</Button>
+				<Button ToolTip="Material" Click="Material_Click"
+                        IsEnabled="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=IsMaterialEnabled}">
+					<Image Source="res/tool_material.png" Style="{StaticResource toolbarImageStyle}"/>
+				</Button>
+				<Button ToolTip="Transparency" Click="Transparency_Click"
+                        IsEnabled="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=IsTransparencyEnabled}">
+					<Image Source="res/tool_transparency.png" Style="{StaticResource toolbarImageStyle}"/>
+				</Button>
+				<Button ToolTip="Delete" Click="Delete_Click"
+                        IsEnabled="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=IsDeleteEnabled}">
+					<Image Source="res/tool_delete.png" Style="{StaticResource toolbarImageStyle}"/>
+				</Button>
+        	</ToolBar>
+            <ToolBar Name="ViewToolBar" Band="1" BandIndex="1"
+                     Visibility="{Binding ElementName=ActivateToolbar, Path=IsChecked, Converter={StaticResource boolToVisibilityConverter}}"
+					 IsEnabled="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=IsDocumentOpen}"
+                     MouseEnter="ViewToolBar_MouseEnter" MouseLeave="ToolBar_MouseLeave">
+                <Button ToolTip="FitAll" Name="FitAllBtn" Click="FitAllBtn_Click">
+					<Image Source="res/view_fitall.png" Style="{StaticResource toolbarImageStyle}"/>
+				</Button>
+        		<Button ToolTip="Zoom Window" Name="ZoomWindowBtn" Click="ZoomWindowBtn_Click"
+						IsEnabled="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=IsZoomWinEnabled}">
+					<Image Source="res/view_fitarea.png" Style="{StaticResource toolbarImageStyle}"/>
+				</Button>
+				<Button ToolTip="Dynamic Zooming" Name="DynamicZoomingBtn" Click="DynamicZoomingBtn_Click">
+					<Image Source="res/view_zoom.png" Style="{StaticResource toolbarImageStyle}"/>
+				</Button>
+				<Button ToolTip="Dynamic Panning" Name="DynamicPanningBtn" Click="DynamicPanningBtn_Click">
+					<Image Source="res/view_pan.png" Style="{StaticResource toolbarImageStyle}"/>
+				</Button>
+				<Button ToolTip="Global Panning" Name="GlobalPanningBtn" Click="GlobalPanningBtn_Click">
+					<Image Source="res/view_glpan.png" Style="{StaticResource toolbarImageStyle}"/>
+				</Button>
+				<Button ToolTip="Front" Name="FrontBtn" Click="FrontBtn_Click">
+					<Image Source="res/view_front.png" Style="{StaticResource toolbarImageStyle}"/>
+				</Button>
+				<Button ToolTip="Back" Name="BackBtn" Click="BackBtn_Click">
+					<Image Source="res/view_back.png" Style="{StaticResource toolbarImageStyle}"/>
+				</Button>
+				<Button ToolTip="Top" Name="TopBtn" Click="TopBtn_Click">
+					<Image Source="res/view_top.png" Style="{StaticResource toolbarImageStyle}"/>
+				</Button>
+				<Button ToolTip="Bottom" Name="BottomBtn" Click="BottomBtn_Click">
+					<Image Source="res/view_bottom.png" Style="{StaticResource toolbarImageStyle}"/>
+				</Button>
+				<Button ToolTip="Left" Name="LeftBtn" Click="LeftBtn_Click">
+					<Image Source="res/view_left.png" Style="{StaticResource toolbarImageStyle}"/>
+				</Button>
+				<Button ToolTip="Right" Name="RightBtn" Click="RightBtn_Click">
+					<Image Source="res/view_right.png" Style="{StaticResource toolbarImageStyle}"/>
+				</Button>
+				<Button ToolTip="Axo" Name="AxoBtn" Click="AxoBtn_Click">
+					<Image Source="res/view_axo.png" Style="{StaticResource toolbarImageStyle}"/>
+				</Button>
+				<Button ToolTip="Dynamic Rotation" Name="DynamicRotationBtn" Click="DynamicRotationBtn_Click">
+					<Image Source="res/view_rotate.png" Style="{StaticResource toolbarImageStyle}"/>
+				</Button>
+				<Button ToolTip="Reset" Name="ResetBtn" Click="ResetBtn_Click">
+					<Image Source="res/view_reset.png" Style="{StaticResource toolbarImageStyle}"/>
+				</Button>
+				<Button ToolTip="Hidden Off" Name="HiddenOffBtn" Click="HiddenOffBtn_Click"
+					IsEnabled="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=IsHlrOnPushed}">
+					<Image Source="vres/iew_comp_on.png" Style="{StaticResource toolbarImageStyle}"/>
+				</Button>
+				<Button ToolTip="Hidden On" Name="HiddenOnBtn" Click="HiddenOnBtn_Click"
+					IsEnabled="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=IsHlrOffPushed}">
+					<Image Source="res/view_comp_off.png" Style="{StaticResource toolbarImageStyle}"/>
+				</Button>
+        	</ToolBar>
+        </ToolBarTray>
+        
+		<TabControl Name="ViewPanel" Grid.Row="2"
+                    SelectionChanged="OnViewerChanged"
+                    Visibility="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=IsDocumentOpen, Converter={StaticResource boolToVisibilityConverter}}">
+
+            <TabControl.ContextMenu>
+                <ContextMenu Opened="OnContextOpened">
+                    <MenuItem Name="WireframeItem" Header="Wireframe" Click="Wireframe_Click" Style="{StaticResource popupItem}"/>
+                    <MenuItem Name="ShadingItem" Header="Shading" Click="Shading_Click" Style="{StaticResource popupItem}"/>
+                    <MenuItem Name="ColorItem" Header="Color" Click="Color_Click" Style="{StaticResource popupItem}"/>
+                    <MenuItem Name="MaterialItem" Header="Material" Click="Material_Click" Style="{StaticResource popupItem}"/>
+                    <MenuItem Name="TransparencyItem" Header="Transparency" Click="Transparency_Click" Style="{StaticResource popupItem}"/>
+                    <MenuItem Name="DeleteItem" Header="Delete" Click="Delete_Click" Style="{StaticResource popupItem}"/>
+                    <MenuItem Name="BackgroundItem" Header="Background" Click="Background_Click" Style="{StaticResource popupItem}"/>
+                    <Separator/>
+                    <MenuItem Command="local:IECommands.New" Style="{StaticResource popupItem}"/>
+                    <MenuItem Command="local:IECommands.Close" Style="{StaticResource popupItem}"/>
+                </ContextMenu>
+            </TabControl.ContextMenu>
+
+        </TabControl>
+        
+        <StatusBar Background="White"  Grid.Row="3" Visibility="{Binding ElementName=ActivateStatusbar, Path=IsChecked, Converter={StaticResource boolToVisibilityConverter}}">
+        	<TextBlock Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=StatusBarText}"/>
+		</StatusBar>
+    </Grid>
+</Window>

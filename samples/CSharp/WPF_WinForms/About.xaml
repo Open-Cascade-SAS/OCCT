@@ -1,0 +1,18 @@
+﻿<Window
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	x:Class="IE_WPF_WinForms.AboutDialog"
+	x:Name="Window"
+	xmlns:local="clr-namespace:IE_WPF_WinForms"
+	Title="About Import/Export Sample"
+	Width="312" Height="285">
+	
+	<StackPanel Orientation="Vertical">
+		<Label Content="Import/Export Sample," HorizontalAlignment="Center"/>
+		<Label Content="Open CASCADE Technology " HorizontalAlignment="Center"/>
+		<Image Source="occ_logo.bmp" Width="194" Height="100" />
+		<Label Content="Copyright (C) 2004-2013, Open CASCADE S.A.S" HorizontalAlignment="Center"/>
+		<Label Content="http://www.opencascade.com" HorizontalAlignment="Center"/>
+		<Button Content="OK" HorizontalAlignment="Center" Width="75" Command="local:IECommands.AboutOk"/>
+	</StackPanel>	
+</Window>

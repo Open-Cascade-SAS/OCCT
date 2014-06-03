@@ -1,0 +1,20 @@
+﻿<Window
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	x:Class="IE_WPF_D3D.MaterialDlg"
+	x:Name="Window"
+	Title="Material"
+	Width="133" Height="181" mc:Ignorable="d">
+
+	<StackPanel Orientation="Vertical" d:LayoutOverrides="Height" HorizontalAlignment="Center" VerticalAlignment="Center">
+		<RadioButton Name="PlasterBtn" Content="Plaster" Checked="PlasterBtn_Checked"/>
+		<RadioButton Name="BrassBtn" Content="Brass" Checked="BrassBtn_Checked"/>
+		<RadioButton Name="BronzeBtn" Content="Bronze" Checked="BronzeBtn_Checked"/>
+		<RadioButton Name="CopperBtn" Content="Copper" Checked="CopperBtn_Checked"/>
+		<RadioButton Name="GoldBtn" Content="Gold" Checked="GoldBtn_Checked"/>
+		<RadioButton Name="PewterBtn" Content="Pewter" Checked="PewterBtn_Checked"/>
+		<RadioButton Name="PlasticBtn" Content="Plastic" Checked="PlasticBtn_Checked"/>
+		<RadioButton Name="SilverBtn" Content="Silver" Checked="SilverBtn_Checked"/>
+	</StackPanel>
+</Window>

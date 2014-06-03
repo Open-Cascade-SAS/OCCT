@@ -623,5 +623,9 @@ Export:
   * Stl
   * Vrml
 
-See \subpage samples_csharp "Readme" for details.
+See \subpage samples_csharp_occt "Readme" for details.
+
+Also there is an other C# example with the same functionality which demonstrates integration of Direct3D Viewer into .NET applications using WPF front end.
+
+See \subpage samples_csharp_direct3d "Readme" for details.
 
