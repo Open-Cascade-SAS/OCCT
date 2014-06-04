@@ -46,7 +46,6 @@ void AppStd_Application::Formats(TColStd_SequenceOfExtendedString& theFormats)
 {
   theFormats.Append("XmlOcaf");
   theFormats.Append("BinOcaf");
-  theFormats.Append("MDTV-Standard");
 }
 
 //=======================================================================

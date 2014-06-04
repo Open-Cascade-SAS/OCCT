@@ -16,21 +16,14 @@
 ;# 
 proc ApplicationFramework:toolkits { } {
     return [list \
-		PTKernel \
-		TKPShape \
 		TKCDF \
 		TKLCAF \
                 TKCAF \
                 TKBinL \
                 TKXmlL \
-		TKShapeSchema \
-                TKPLCAF \
                 TKBin \
                 TKXml \
-		TKPCAF \
 		FWOSPlugin \
-		TKStdLSchema \
-                TKStdSchema \
                 TKTObj \
                 TKBinTObj \
                 TKXmlTObj \

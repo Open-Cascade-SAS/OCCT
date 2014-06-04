@@ -103,7 +103,7 @@ is
     anAlternativeDocument: out Document from CDM)
     returns Boolean from Standard
     ---Purpose: This method can be redefined to extract another document in
-    --           a different format. For example, to extract a MDTV-Shape 
+    --           a different format. For example, to extract a Shape 
     --           from an applicative document.
     is virtual;
     

@@ -121,7 +121,7 @@ static Standard_Integer newDoc (Draw_Interpretor& di, Standard_Integer argc, con
   if (!DDocStd::Find(A)) return 1;
 
   if (!DDocStd::GetDocument(argv[1],D,Standard_False)) {
-    A->NewDocument(  "MDTV-XCAF"  ,D);
+    A->NewDocument(  "BinXCAF"  ,D);
     DD = new DDocStd_DrawDocument(D);
     TDataStd_Name::Set(D->GetData()->Root(),argv[1]);
     Draw::Set(argv[1],DD);
@@ -1025,7 +1025,7 @@ static Standard_Integer testDoc (Draw_Interpretor&,
  
   Handle(XCAFApp_Application) A = XCAFApp_Application::GetApplication();
  
-  Handle(TDocStd_Document) aD1 = new TDocStd_Document("MDTV-XCAF");
+  Handle(TDocStd_Document) aD1 = new TDocStd_Document("BinXCAF");
   aD1->Open(A);
   
   TCollection_AsciiString  aViewName ("Driver1/DummyDocument/View1");

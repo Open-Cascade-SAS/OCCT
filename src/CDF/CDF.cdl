@@ -17,7 +17,7 @@
 package CDF
 
 
-uses CDM, PCDM, TCollection, TColStd, Storage, Resource, Quantity, OSD
+uses CDM, PCDM, TCollection, TColStd, Resource, Quantity, OSD
 
 is
     class Directory;

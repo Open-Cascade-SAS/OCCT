@@ -25,7 +25,6 @@
 
 #include <V3d_Viewer.hxx>
 #include <V3d_View.hxx>
-#include <PCollection_HExtendedString.hxx>
 
 #include <TDocStd_Application.hxx>
 #include <TDocStd_Document.hxx>
@@ -45,15 +44,6 @@
 #include <Standard_Assert.hxx>
 
 #define DEFAULT_COLOR    Quantity_NOC_GOLDENROD
-
-static Standard_Integer OCC216 (Draw_Interpretor& di, Standard_Integer /*argc*/, const char ** /*argv*/)
-{
-  Handle(PCollection_HExtendedString) HExtendedString = new PCollection_HExtendedString("");
-  HExtendedString.Nullify();
-  di << "OCC216: Deleting PCollection_HExtendedString initialized by empty string : OK" <<"\n";
-
-  return 0;
-}
 
 static Standard_Integer OCC267 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
@@ -244,7 +234,6 @@ static Standard_Integer OCC71bug (Draw_Interpretor& di, Standard_Integer /*argc*
 void QABugs::Commands_18(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
-  theCommands.Add("OCC216", "OCC216", __FILE__, OCC216, group);
   theCommands.Add("OCC267", "OCC267 DOC path", __FILE__, OCC267, group);
   theCommands.Add("OCC181", "OCC181 FileName path1 path2 verbose=0/1", __FILE__, OCC181, group);
   theCommands.Add("OCC367", "OCC367 shape step goodX goodY goodZ percent_tolerance", __FILE__, OCC367, group);

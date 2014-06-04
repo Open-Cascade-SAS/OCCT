@@ -4,7 +4,6 @@ TKernel
 TKService
 TKG2d
 TKDraw
-PTKernel
 TKV3d
 TKGeomBase
 TKG3d
@@ -32,8 +31,6 @@ TKXDESTEP
 TKXSDRAW
 TKSTL
 TKVoxel
-TKShapeSchema
-TKPShape
 CSF_gdi32
 CSF_advapi32
 CSF_user32

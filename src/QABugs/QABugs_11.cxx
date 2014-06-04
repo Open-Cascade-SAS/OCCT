@@ -4008,7 +4008,7 @@ int TestOpenSave(TCollection_ExtendedString aFile1,
 {
   // Std
   Handle(TDocStd_Document) doc_std, doc_std_open;
-  app->NewDocument("MDTV-Standard", doc_std);
+  app->NewDocument("BinOcaf", doc_std);
   // TDataStd_Tick:
   TDataStd_Tick::Set(doc_std->Main());
   // TDataStd_IntegerList:
@@ -4480,7 +4480,7 @@ static Standard_Integer OCC16782 (Draw_Interpretor& di, Standard_Integer argc, c
   int good = 0;
   
   Handle(TDocStd_Document) doc;
-  app->NewDocument("MDTV-Standard", doc);
+  app->NewDocument("BinOcaf", doc);
   doc->SetUndoLimit(10);
 
   di <<"\nTestSetGet start\n";

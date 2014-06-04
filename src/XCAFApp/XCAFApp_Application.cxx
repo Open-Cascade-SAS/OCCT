@@ -50,10 +50,8 @@ XCAFApp_Application::XCAFApp_Application()
 
 void XCAFApp_Application::Formats(TColStd_SequenceOfExtendedString& Formats) 
 {
-  Formats.Append(TCollection_ExtendedString ("MDTV-XCAF"));  
   Formats.Append(TCollection_ExtendedString ("XmlXCAF"));
-  Formats.Append(TCollection_ExtendedString ("XmlOcaf"));
-  Formats.Append(TCollection_ExtendedString ("MDTV-Standard"));
+  Formats.Append(TCollection_ExtendedString ("BinXCAF"));
 }
 
 //=======================================================================
