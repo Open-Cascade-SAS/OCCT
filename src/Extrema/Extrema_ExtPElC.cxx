@@ -124,6 +124,13 @@ Method:
   if (OPp.Magnitude() < Tol) { return; }
   Standard_Real Usol[2];
   Usol[0] = C.XAxis().Direction().AngleWithRef(OPp,Axe); // -M_PI<U1<M_PI
+
+  const Standard_Real aAngTol = Precision::Angular();
+  if ( Usol[0] + M_PI < aAngTol )
+    Usol[0] = -M_PI;
+  else if ( Usol[0] - M_PI > -aAngTol )
+    Usol[0] = M_PI; 
+
   Usol[1] = Usol[0] + M_PI;
 
   Standard_Real myuinf = Uinf;

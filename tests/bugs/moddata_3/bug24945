@@ -1,0 +1,27 @@
+puts "============"
+puts "OCC24945"
+puts "============"
+puts ""
+##########################################################################################################
+# Extrema_ExtPElC::Perform does not consider angular tolerance when calculates angle between two vectors
+##########################################################################################################
+
+pload QAcommands
+
+set info [OCC24945]
+regexp {Projected point: +X += +([-0-9.+eE]+); +Y += +([-0-9.+eE]+); +Z += +([-0-9.+eE]+)} $info full aX aY aZ
+regexp {Parameters on cylinder: +U += +([-0-9.+eE]+); +V += +([-0-9.+eE]+)} $info full aU aV
+
+set expected_X -1725.97
+set expected_Y 843.26
+set expected_Z 2.1137e-013
+set expected_U 6.2832
+set expected_V 1260.6
+set tol_abs_dist 1.0e-12
+set tol_rel_dist 0.1
+
+checkreal "Point X" ${aX} ${expected_X} ${tol_abs_dist} ${tol_rel_dist}
+checkreal "Point Y" ${aY} ${expected_Y} ${tol_abs_dist} ${tol_rel_dist}
+checkreal "Point Z" ${aZ} ${expected_Z} ${tol_abs_dist} ${tol_rel_dist}
+checkreal "Point U" ${aU} ${expected_U} ${tol_abs_dist} ${tol_rel_dist}
+checkreal "Point V" ${aV} ${expected_V} ${tol_abs_dist} ${tol_rel_dist}
