@@ -140,12 +140,13 @@ is
     -- Merges found solutions
 
     FindParameters(myclass; 
-        theBAC  : Curve from BRepAdaptor;  
-        aT1,aT2 : Real from Standard;  
-        theRes  : Real from Standard;
-        thePTol : Real from Standard;
-        theCBox : Box from Bnd; 
-        aTB1,aTB2 : out Real from Standard)
+        theBAC      : Curve from BRepAdaptor;
+        aT1, aT2    : Real  from Standard;  
+        theRes      : Real  from Standard;
+        thePTol     : Real  from Standard; 
+        theResCoeff : Real  from Standard;
+        theCBox     : Box   from Bnd; 
+        aTB1, aTB2  : out Real from Standard)
     returns Boolean from Standard 
     is protected; 
     ---Purpose:
@@ -213,7 +214,10 @@ fields
     myTol    : Real  from Standard is protected;   
     
     myRes1   : Real  from Standard is protected;  
-    myRes2   : Real  from Standard is protected;  
+    myRes2   : Real  from Standard is protected;   
+     
+    myResCoeff1 : Real  from Standard is protected;
+    myResCoeff2 : Real  from Standard is protected;
      
     myPTol1  : Real  from Standard is protected; 
     myPTol2  : Real  from Standard is protected; 

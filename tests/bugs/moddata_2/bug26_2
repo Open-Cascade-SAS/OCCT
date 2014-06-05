@@ -10,5 +10,5 @@ checkshape a_2
 
 bfuse result a_2 a_1
 
-set square 44819.8
+set square 41539.9
 set 2dviewer 0

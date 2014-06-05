@@ -2,7 +2,6 @@ puts "================"
 puts "OCC26"
 puts "================"
 puts ""
-puts "TODO OCC12345 Windows: Error : The square of result shape is"
 
 restore [locate_data_file OCC26.brep] a 
 explode a
@@ -11,7 +10,7 @@ checkshape a_2
 
 bfuse result a_1 a_2
 
-set square 44819.9
+set square 41539.9
 set 2dviewer 0
 
 
