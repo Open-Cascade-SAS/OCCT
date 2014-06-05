@@ -589,14 +589,16 @@ void BOPTools_AlgoTools2D::MakePCurveOnFace
 {
   Standard_Real aTolR;
   Handle(Geom2d_Curve) aC2DA;
-
-  BRepAdaptor_Surface aBAS(aF, Standard_False);
-  Handle(BRepAdaptor_HSurface) aBAHS = new BRepAdaptor_HSurface(aBAS);
-  Handle(GeomAdaptor_HCurve)   aBAHC = new 
-    GeomAdaptor_HCurve(aC3D, aFirst, aLast);
+  //
+  Handle(Geom_Surface) aS=BRep_Tool::Surface(aF);
+  GeomAdaptor_Surface aGAS(aS);
+  Handle(GeomAdaptor_HSurface) aBAHS=
+    new GeomAdaptor_HSurface(aGAS);
+  Handle(GeomAdaptor_HCurve) aBAHC = 
+    new GeomAdaptor_HCurve(aC3D, aFirst, aLast);
   
   //when the type of surface is GeomAbs_SurfaceOfRevolution
-  if (aBAS.GetType() == GeomAbs_SurfaceOfRevolution) {
+  if (aGAS.GetType() == GeomAbs_SurfaceOfRevolution) {
     Standard_Real aTR = 1.e-7;
     ProjLib_ProjectedCurve aProj1(aBAHS, aBAHC, aTR);
     BOPTools_AlgoTools2D::MakePCurveOfType(aProj1, aC2D);

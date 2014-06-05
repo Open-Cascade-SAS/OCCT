@@ -1,0 +1,26 @@
+puts "============"
+puts "OCC24973"
+puts "============"
+puts ""
+######################################################
+# Incorrect PCurve construction
+######################################################
+
+restore [locate_data_file bug24973_Face.brep] f
+
+pcurve f
+explode f e
+
+tcopy f_9 e
+bhaspc e f do
+mk2dcurve c e f
+to3d c3d c
+mkedge e c3d
+
+set info [bopargcheck e #F]
+
+if { [regexp "to be valid for BOP" ${info}] == 1 } {
+    puts "OK : Created curve is correct"
+} else {
+    puts "Error : Created curve is not correct"
+}
