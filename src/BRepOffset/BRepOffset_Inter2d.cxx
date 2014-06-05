@@ -47,6 +47,7 @@
 #include <BRep_GCurve.hxx>
 
 #include <Geom_Line.hxx>
+#include <Geom_Plane.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomConvert_CompCurveToBSplineCurve.hxx>
 #include <Precision.hxx>

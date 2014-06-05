@@ -16,6 +16,13 @@
 
 //  Modified by skv - Thu Jan 15 15:57:15 2004 OCC4455
 
+#include <IntPatch_ThePathPointOfTheSOnBounds.hxx>
+#include <IntPatch_TheSegmentOfTheSOnBounds.hxx>
+#include <IntPatch_RLine.hxx>
+#include <IntSurf.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_SequenceOfReal.hxx>
+
 static void PutPointsOnLine(const Handle(Adaptor3d_HSurface)& S1,
 			    const Handle(Adaptor3d_HSurface)& S2,
 			    const IntPatch_SequenceOfPathPointOfTheSOnBounds&,
