@@ -221,6 +221,20 @@ is
     	-- - boundary tolerance BoundTol
     	-- - angular tolerance TolAngular.
         
+        
+        
+--  ============================================
+--  Methods to set parameters for approximation
+--  ============================================
+    SetMaxDegree(me  :  in  out; 
+    	         NewMaxDegree : Integer  from  Standard);
+    ---Purpose: Define the maximum V degree of resulting surface  
+		 
+    SetMaxSegments(me  :  in  out; 
+    	           NewMaxSegments : Integer  from  Standard);
+    ---Purpose: Define the maximum number of spans in V-direction
+    --          on resulting surface
+		 
     SetForceApproxC1(me  :  in  out;
     	    	     ForceApproxC1 : Boolean from Standard);
 	---Purpose: Set the flag that indicates attempt to approximate

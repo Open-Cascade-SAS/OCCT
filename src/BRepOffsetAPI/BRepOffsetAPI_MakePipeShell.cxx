@@ -201,6 +201,24 @@ void BRepOffsetAPI_MakePipeShell::Delete( const TopoDS_Shape& Profile)
 }
 
 //=======================================================================
+//function : SetMaxDegree
+//purpose  : 
+//=======================================================================
+void BRepOffsetAPI_MakePipeShell::SetMaxDegree(const Standard_Integer NewMaxDegree)
+{
+  myPipe->SetMaxDegree(NewMaxDegree);
+}
+
+//=======================================================================
+//function : SetMaxSegments
+//purpose  : 
+//=======================================================================
+void BRepOffsetAPI_MakePipeShell::SetMaxSegments(const Standard_Integer NewMaxSegments)
+{
+  myPipe->SetMaxSegments(NewMaxSegments);
+}
+
+//=======================================================================
 //function : SetForceApproxC1
 //purpose  : Set the flag that indicates attempt to approximate
 //           a C1-continuous surface if a swept surface proved

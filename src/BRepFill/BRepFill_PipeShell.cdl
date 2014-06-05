@@ -115,6 +115,19 @@ is
 
         ---Level: Public
 
+
+--  ============================================
+--  Methods to set parameters for approximation
+--  ============================================
+    SetMaxDegree(me  :  mutable; 
+    	         NewMaxDegree : Integer  from  Standard);
+    ---Purpose: Define the maximum V degree of resulting surface  
+		 
+    SetMaxSegments(me  :  mutable; 
+    	           NewMaxSegments : Integer  from  Standard);
+    ---Purpose: Define the maximum number of spans in V-direction
+    --          on resulting surface
+		 
     SetForceApproxC1(me  :  mutable;
     	    	     ForceApproxC1 : Boolean from Standard);
 	---Purpose: Set the flag that indicates attempt to approximate
@@ -289,6 +302,8 @@ fields
   myBoundTol    :  Real;  
   myTolAngular  :  Real;
   angmin,  angmax  :  Real; 
+  myMaxDegree   :  Integer;
+  myMaxSegments :  Integer;
   myForceApproxC1 : Boolean;
   
   myLaw         :  Function         from  Law;    
