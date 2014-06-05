@@ -35,3 +35,8 @@ inline Standard_Boolean Select3D_SensitiveTriangulation::HasInitLocation() const
 {return !myiniloc.IsIdentity();}
 inline const TopLoc_Location& Select3D_SensitiveTriangulation::GetInitLocation() const
 {return myiniloc;}
+
+inline Standard_Integer Select3D_SensitiveTriangulation::DetectedTriangle() const
+{
+  return myDetectedTr;
+}
