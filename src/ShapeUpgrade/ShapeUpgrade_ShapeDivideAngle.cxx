@@ -73,7 +73,7 @@ double ShapeUpgrade_ShapeDivideAngle::MaxAngle () const
   Handle(ShapeUpgrade_FaceDivide) faceTool = GetSplitFaceTool();
   if ( faceTool.IsNull() ) return 0.;
   Handle(ShapeUpgrade_SplitSurfaceAngle) tool = 
-    Handle(ShapeUpgrade_SplitSurfaceAngle)::DownCast ( faceTool );
+    Handle(ShapeUpgrade_SplitSurfaceAngle)::DownCast (faceTool->GetSplitSurfaceTool());
   return ( tool.IsNull() ? 0. : tool->MaxAngle() );
 }
      

@@ -1104,9 +1104,9 @@ Standard_Boolean AIS_Dimension::InitCircularDimension (const TopoDS_Shape& theSh
         Handle(Geom_TrimmedCurve) aTrimmedCurve = Handle(Geom_TrimmedCurve)::DownCast (aCurve);
         aFirstU = aTrimmedCurve->FirstParameter();
         aLastU  = aTrimmedCurve->LastParameter();
-        if (aTrimmedCurve->DynamicType() == STANDARD_TYPE (Geom_Circle))
+        if (aTrimmedCurve->BasisCurve()->DynamicType() == STANDARD_TYPE (Geom_Circle))
         {
-          theCircle = Handle(Geom_Circle)::DownCast(aTrimmedCurve)->Circ();
+          theCircle = Handle(Geom_Circle)::DownCast(aTrimmedCurve->BasisCurve())->Circ();
         }
       }
       else

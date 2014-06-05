@@ -93,7 +93,7 @@ is
     	---Purpose: Sets the tool for dividing edges on Face.
 	
     GetSplitSurfaceTool (me) returns SplitSurface from ShapeUpgrade
-    is virtual protected;
+    is virtual;
     	---Purpose: Returns the tool for splitting surfaces. 
     	--          This tool must be already initialized.
 	

@@ -537,10 +537,12 @@ void AIS_InteractiveObject::SetInfiniteState(const Standard_Boolean aFlag)
   myInfiniteState = aFlag;
   Handle(Prs3d_Presentation) P;
 
-  for(Standard_Integer i =1; i<=myPresentations.Length();i++){
-    P = Handle(Prs3d_Presentation)::DownCast(myPresentations(i).Presentation());
+  for(Standard_Integer i =1; i<=myPresentations.Length();i++)
+  {
+    P = myPresentations(i).Presentation()->Presentation();
     if(!P.IsNull())
-      P->SetInfiniteState(myInfiniteState);}
+      P->SetInfiniteState(myInfiniteState);
+  }
 }
 
 //=======================================================================

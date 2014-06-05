@@ -68,6 +68,77 @@ static Standard_Boolean Affich = 0;
 #include <DBRep.hxx>
 #endif
 
+
+//=======================================================================
+//function : EdgeToBSpline
+//purpose  : auxiliary -- get curve from edge and convert it to bspline
+//           parameterized from 0 to 1
+//=======================================================================
+
+// NOTE: this code duplicates the same function in BRepOffsetAPI_ThruSections.cxx
+static Handle(Geom_BSplineCurve) EdgeToBSpline (const TopoDS_Edge& theEdge)
+{
+  Handle(Geom_BSplineCurve) aBSCurve;
+  if (BRep_Tool::Degenerated(theEdge)) {
+    // degenerated edge : construction of a point curve
+    TColStd_Array1OfReal aKnots (1,2);
+    aKnots(1) = 0.;
+    aKnots(2) = 1.;
+
+    TColStd_Array1OfInteger aMults (1,2);
+    aMults(1) = 2;
+    aMults(2) = 2;
+
+    TColgp_Array1OfPnt aPoles(1,2);
+    TopoDS_Vertex vf, vl;
+    TopExp::Vertices(theEdge,vl,vf);
+    aPoles(1) = BRep_Tool::Pnt(vf);
+    aPoles(2) = BRep_Tool::Pnt(vl);
+
+    aBSCurve = new Geom_BSplineCurve (aPoles, aKnots, aMults, 1);
+  }
+  else
+  {
+    // get the curve of the edge
+    TopLoc_Location aLoc;
+    Standard_Real aFirst, aLast;
+    Handle(Geom_Curve) aCurve = BRep_Tool::Curve (theEdge, aLoc, aFirst, aLast);
+
+    // convert its part used by edge to bspline; note that if edge curve is bspline,
+    // conversion made via trimmed curve is still needed -- it will copy it, segment 
+    // as appropriate, and remove periodicity if it is periodic (deadly for approximator)
+    Handle(Geom_TrimmedCurve) aTrimCurve = new Geom_TrimmedCurve (aCurve, aFirst, aLast);
+
+    // special treatment of conic curve
+    if (aTrimCurve->BasisCurve()->IsKind(STANDARD_TYPE(Geom_Conic)))
+    {
+      GeomConvert_ApproxCurve anAppr (aTrimCurve, Precision::Confusion(), GeomAbs_C1, 16, 14);
+      if (anAppr.HasResult())
+        aBSCurve = anAppr.Curve();
+    }
+
+    // general case
+    if (aBSCurve.IsNull())
+      aBSCurve = GeomConvert::CurveToBSplineCurve (aTrimCurve);
+
+    // apply transformation if needed
+    if (! aLoc.IsIdentity())
+      aBSCurve->Transform (aLoc.Transformation());
+
+    // reparameterize to [0,1]
+    TColStd_Array1OfReal aKnots (1, aBSCurve->NbKnots());
+    aBSCurve->Knots (aKnots);
+    BSplCLib::Reparametrize (0., 1., aKnots);
+    aBSCurve->SetKnots (aKnots);
+  }
+
+  // reverse curve if edge is reversed
+  if (theEdge.Orientation() == TopAbs_REVERSED)
+    aBSCurve->Reverse();
+
+  return aBSCurve;
+}
+
 //=======================================================================
 //function : totalsurf
 //purpose  : 
@@ -85,15 +156,11 @@ static Handle(Geom_BSplineSurface) totalsurf(const TopTools_Array2OfShape& shape
 {
   Standard_Integer i,j,jdeb=1,jfin=NbSects;
   TopoDS_Edge edge;
-  TopLoc_Location loc;
-  Standard_Real first, last;
   TopoDS_Vertex vf,vl;
 
   GeomFill_SectionGenerator section;
   Handle(Geom_BSplineSurface) surface;
   Handle(Geom_BSplineCurve) BS, BS1;
-  Handle(Geom_TrimmedCurve) curvTrim;
-  Handle(Geom_BSplineCurve) curvBS;
 
   if (w1Point) {
     jdeb++;
@@ -105,12 +172,11 @@ static Handle(Geom_BSplineSurface) totalsurf(const TopTools_Array2OfShape& shape
     TColStd_Array1OfReal Bounds(1,2);
     Bounds(1) = 0.;
     Bounds(2) = 1.;
-    Standard_Real Deg = 1;
     TColStd_Array1OfInteger Mult(1,2);
-    Mult(1) = (Standard_Integer) Deg+1;
-    Mult(2) = (Standard_Integer) Deg+1;
+    Mult(1) = 2;
+    Mult(2) = 2;
     Handle(Geom_BSplineCurve) BSPoint
-      = new Geom_BSplineCurve(Extremities,Bounds,Mult,(Standard_Integer ) Deg);
+      = new Geom_BSplineCurve(Extremities,Bounds,Mult, 1);
     section.AddCurve(BSPoint);
   }
 
@@ -127,101 +193,29 @@ static Handle(Geom_BSplineSurface) totalsurf(const TopTools_Array2OfShape& shape
 
     else {
       // read the first edge to initialise CompBS;
-      edge =  TopoDS::Edge(shapes.Value(1,j));
-      if (BRep_Tool::Degenerated(edge)) {
-	// degenerated edge : construction of a point curve
-	TopExp::Vertices(edge,vl,vf);
-	TColgp_Array1OfPnt Extremities(1,2);
-	Extremities(1) = BRep_Tool::Pnt(vf);
-	Extremities(2) = BRep_Tool::Pnt(vl);
-	Handle(Geom_Curve) curv = new Geom_BezierCurve(Extremities);
-	curvTrim = new Geom_TrimmedCurve(curv,
-					 curv->FirstParameter(),
-					 curv->LastParameter());
-      }
-      else {
-	// return the curve on the edge
-	Handle(Geom_Curve) curv = BRep_Tool::Curve(edge, loc, first, last);
-	curvTrim = new Geom_TrimmedCurve(curv, first, last);
-	curvTrim->Transform(loc.Transformation());
-      }
-      if (edge.Orientation() == TopAbs_REVERSED) {
-	curvTrim->Reverse();
-      }
-
-      // transformation into BSpline reparameterized on [i-1,i]
-      curvBS = Handle(Geom_BSplineCurve)::DownCast(curvTrim);
-      if (curvBS.IsNull()) {
-	Handle(Geom_Curve) theCurve = curvTrim->BasisCurve();
-	if (theCurve->IsKind(STANDARD_TYPE(Geom_Conic)))
-	  {
-	    GeomConvert_ApproxCurve appr(curvTrim, Precision::Confusion(), GeomAbs_C1, 16, 14);
-	    if (appr.HasResult())
-	      curvBS = appr.Curve();
-	  }
-	if (curvBS.IsNull())
-	  curvBS = GeomConvert::CurveToBSplineCurve(curvTrim);
-      }
-      TColStd_Array1OfReal BSK(1,curvBS->NbKnots());
-      curvBS->Knots(BSK);
-      BSplCLib::Reparametrize(0.,1.,BSK);
-      curvBS->SetKnots(BSK);
+      TopoDS_Edge aPrevEdge = TopoDS::Edge (shapes.Value(1,j));
+      Handle(Geom_BSplineCurve) curvBS = EdgeToBSpline (aPrevEdge);
       
       // initialization
       GeomConvert_CompCurveToBSplineCurve CompBS(curvBS);
 
       for (i=2; i<=NbEdges; i++) {  
 	// read the edge
-	edge =  TopoDS::Edge(shapes.Value(i,j));
-	if (BRep_Tool::Degenerated(edge)) {
-	  // degenerated edge : construction of a point curve
-	  TopExp::Vertices(edge,vl,vf);
-	  TColgp_Array1OfPnt Extremities(1,2);
-	  Extremities(1) = BRep_Tool::Pnt(vf);
-	  Extremities(2) = BRep_Tool::Pnt(vl);
-	  Handle(Geom_Curve) curv = new Geom_BezierCurve(Extremities);
-	  curvTrim = new Geom_TrimmedCurve(curv,
-					   curv->FirstParameter(),
-					   curv->LastParameter());
-	}
-	else {
-	  // return the curve on the edge
-	  Handle(Geom_Curve) curv = BRep_Tool::Curve(edge, loc, first, last);
-	  curvTrim = new Geom_TrimmedCurve(curv, first, last);
-	  curvTrim->Transform(loc.Transformation());
-	}
-	if (edge.Orientation() == TopAbs_REVERSED) {
-	  curvTrim->Reverse();
-	}
-
-	// transformation into BSpline reparameterized on [i-1,i]
-	curvBS = Handle(Geom_BSplineCurve)::DownCast(curvTrim);
-	if (curvBS.IsNull()) { 
-	  Handle(Geom_Curve) theCurve = curvTrim->BasisCurve();
-	  if (theCurve->IsKind(STANDARD_TYPE(Geom_Conic)))
-	    {
-	      GeomConvert_ApproxCurve appr(curvTrim, Precision::Confusion(), GeomAbs_C1, 16, 14);
-	      if (appr.HasResult())
-		curvBS = appr.Curve();
-	    }
-	  if (curvBS.IsNull())
-	    curvBS = GeomConvert::CurveToBSplineCurve(curvTrim);
-	}
-	TColStd_Array1OfReal BSK(1,curvBS->NbKnots());
-	curvBS->Knots(BSK);
-	BSplCLib::Reparametrize(i-1,i,BSK);
-	curvBS->SetKnots(BSK);
+        TopoDS_Edge aNextEdge = TopoDS::Edge (shapes.Value(i,j));
+        curvBS = EdgeToBSpline (aNextEdge);
 
 	// concatenation
 	TopoDS_Vertex ComV;
 	Standard_Real epsV;
-	Standard_Boolean Bof = 
-	  TopExp::CommonVertex(TopoDS::Edge(shapes.Value(i-1,j)), edge, ComV);
+	Standard_Boolean Bof = TopExp::CommonVertex(aPrevEdge, aNextEdge, ComV);
 	if (Bof) epsV = BRep_Tool::Tolerance(ComV);
 	else epsV = Precision::Confusion();
 	Bof = CompBS.Add(curvBS, epsV, Standard_True, Standard_False, 1);
 	if (!Bof) Bof = CompBS.Add(curvBS, 200*epsV,
 				   Standard_True, Standard_False, 1);
+
+        // remember previous edge
+        aPrevEdge = aNextEdge;
       }
 
       // return the final section
@@ -245,12 +239,11 @@ static Handle(Geom_BSplineSurface) totalsurf(const TopTools_Array2OfShape& shape
     TColStd_Array1OfReal Bounds(1,2);
     Bounds(1) = 0.;
     Bounds(2) = 1.;
-    Standard_Real Deg = 1;
     TColStd_Array1OfInteger Mult(1,2);
-    Mult(1) =  (Standard_Integer) Deg+1;
-    Mult(2) =  (Standard_Integer) Deg+1;
+    Mult(1) = 2;
+    Mult(2) = 2;
     Handle(Geom_BSplineCurve) BSPoint
-      = new Geom_BSplineCurve(Extremities,Bounds,Mult,(Standard_Integer ) Deg);
+      = new Geom_BSplineCurve(Extremities,Bounds,Mult,1);
     section.AddCurve(BSPoint);
   }
 

@@ -520,24 +520,19 @@ GeomFill_NSections::GeomFill_NSections(const TColGeom_SequenceOfCurve& NC,
     
     GeomFill_SectionGenerator section;
     Handle(Geom_BSplineSurface) surface;
-    Handle(Geom_TrimmedCurve) curvTrim;
-    Handle(Geom_BSplineCurve) curvBS, curvBS1;
-    Handle(Geom_Curve) curv =  mySections(1);
 
     for (j=jdeb; j<=jfin; j++) {
 
         // read the j-th curve
-        curv =  mySections(j);
-        curvTrim = new Geom_TrimmedCurve(curv,
-                                         curv->FirstParameter(),
-                                         curv->LastParameter());
+        Handle(Geom_Curve) curv = mySections(j);
         
-        // transformation en BSpline reparametree sur [UFirst,ULast]
-        curvBS = Handle(Geom_BSplineCurve)::DownCast(curvTrim);
-        if (curvBS.IsNull()) {
-          Convert_ParameterisationType ParamType = Convert_QuasiAngular;
-          curvBS = GeomConvert::CurveToBSplineCurve(curvTrim,ParamType);
+        // transformation to BSpline reparametrized to [UFirst,ULast]
+        Handle(Geom_BSplineCurve) curvBS = Handle(Geom_BSplineCurve)::DownCast (curv);
+        if (curvBS.IsNull())
+        {
+          curvBS = GeomConvert::CurveToBSplineCurve (curv, Convert_QuasiAngular);
         }
+
         TColStd_Array1OfReal BSK(1,curvBS->NbKnots());
         curvBS->Knots(BSK);
         BSplCLib::Reparametrize(UFirst,ULast,BSK);
