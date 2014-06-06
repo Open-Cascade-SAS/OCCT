@@ -241,3 +241,13 @@ Handle(Geom_BSplineCurve) GeomConvert_CompCurveToBSplineCurve::BSplineCurve() co
 {
  return myCurve;
 }
+
+//=======================================================================
+//function : Clear
+//purpose  :
+//=======================================================================
+
+void GeomConvert_CompCurveToBSplineCurve::Clear()
+{
+  myCurve.Nullify();
+}
