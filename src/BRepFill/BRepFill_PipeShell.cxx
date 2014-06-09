@@ -226,6 +226,9 @@ BRepFill_PipeShell::BRepFill_PipeShell(const TopoDS_Wire& Spine)
   myLaw.Nullify();
   SetTolerance();
 
+  myMaxDegree = 11;
+  myMaxSegments = 30;
+
   // Attention to closed non-declared wire !
   if (!mySpine.Closed()) {
     TopoDS_Vertex Vf, Vl;
@@ -412,6 +415,25 @@ BRepFill_PipeShell::BRepFill_PipeShell(const TopoDS_Wire& Spine)
     myLocation = new (BRepFill_Edge3DLaw) (mySpine, Loc);  
   }    
   mySection.Nullify(); //It is required to relocalize the sections.
+}
+
+
+//=======================================================================
+//function : SetMaxDegree
+//purpose  : 
+//=======================================================================
+void BRepFill_PipeShell::SetMaxDegree(const Standard_Integer NewMaxDegree)
+{
+  myMaxDegree = NewMaxDegree;
+}
+
+//=======================================================================
+//function : SetMaxSegments
+//purpose  : 
+//=======================================================================
+void BRepFill_PipeShell::SetMaxSegments(const Standard_Integer NewMaxSegments)
+{
+  myMaxSegments = NewMaxSegments;
 }
 
 //=======================================================================
