@@ -18,7 +18,10 @@
 
 #ifdef _MSC_VER
 
+#ifndef _USE_MATH_DEFINES
 #define _USE_MATH_DEFINES
+#endif
+
 #include <math.h>
 
 // MSVC versions prior to 12 did not provided acosh, asinh, atanh functions in standard library
