@@ -59,6 +59,9 @@ static Standard_Boolean S3D_STriangul_NearSegment (const gp_XY& p0, const gp_XY&
   gp_XY V01(p1);V01-=p0;
   gp_XY Vec(TheP);Vec -= p0;
 
+  if (V01.SquareModulus() < Precision::SquareConfusion())
+    return Standard_False;
+
   Standard_Real u = Vec*V01.Normalized();
   if(u<-aTol) return Standard_False;
   Standard_Real u1 = u-aTol;
