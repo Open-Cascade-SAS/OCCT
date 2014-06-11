@@ -19,9 +19,7 @@
 #include <NCollection_TListIterator.hxx>
 #include <NCollection_StlIterator.hxx>
 
-#if !defined No_Exception && !defined No_Standard_NoSuchObject
 #include <Standard_NoSuchObject.hxx>
-#endif
 
 /**
  * Purpose:      Simple list to link  items together keeping the first 
@@ -102,21 +100,29 @@ public:
   //! First item
   const TheItemType& First (void) const
   {
-#if !defined No_Exception && !defined No_Standard_NoSuchObject
-    if (IsEmpty())
-      Standard_NoSuchObject::Raise ("NCollection_List::First");
-#endif
+    Standard_NoSuchObject_Raise_if (IsEmpty(), "NCollection_List::First");
     return ((const ListNode *) PFirst())->Value();
+  }
+
+  //! First item (non-const)
+  TheItemType& First (void)
+  {
+    Standard_NoSuchObject_Raise_if (IsEmpty(), "NCollection_List::First");
+    return ((ListNode *) PFirst())->ChangeValue();
   }
 
   //! Last item
   const TheItemType& Last (void) const
   { 
-#if !defined No_Exception && !defined No_Standard_NoSuchObject
-    if (IsEmpty())
-      Standard_NoSuchObject::Raise ("NCollection_List::Last");
-#endif
+    Standard_NoSuchObject_Raise_if (IsEmpty(), "NCollection_List::Last");
     return ((const ListNode *) PLast())->Value();
+  }
+
+  //! Last item (non-const)
+  TheItemType& Last (void)
+  { 
+    Standard_NoSuchObject_Raise_if (IsEmpty(), "NCollection_List::Last");
+    return ((ListNode *) PLast())->ChangeValue();
   }
 
   //! Append one item at the end
@@ -249,10 +255,8 @@ public:
     else
     {
       // No - this list has different memory scope
-#if !defined No_Exception && !defined No_Standard_NoSuchObject
-      if (!theIter.More())
-        Standard_NoSuchObject::Raise ("NCollection_List::InsertAfter");
-#endif
+      Standard_NoSuchObject_Raise_if (!theIter.More(), "NCollection_List::InsertAfter");
+
       Iterator anIter;
       anIter.myPrevious = theIter.myCurrent;
       anIter.myCurrent = theIter.myCurrent->Next();

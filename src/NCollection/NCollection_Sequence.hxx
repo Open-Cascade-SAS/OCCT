@@ -19,10 +19,8 @@
 #include <NCollection_BaseSequence.hxx>
 #include <NCollection_StlIterator.hxx>
 
-#ifndef No_Exception
 #include <Standard_OutOfRange.hxx>
 #include <Standard_NoSuchObject.hxx>
-#endif
 
 /**
  * Purpose:     Definition of a sequence of elements indexed by
@@ -252,10 +250,7 @@ public:
   void InsertAfter (const Standard_Integer  theIndex, 
                     const TheItemType&      theItem)
   {
-#if !defined No_Exception && !defined No_Standard_OutOfRange
-    if (theIndex < 0 || theIndex > mySize)
-      Standard_OutOfRange::Raise ("NCollection_Sequence::InsertAfter");
-#endif
+    Standard_OutOfRange_Raise_if (theIndex < 0 || theIndex > mySize, "NCollection_Sequence::InsertAfter");
     PInsertAfter (theIndex, new (this->myAllocator) Node (theItem));
   }
 
@@ -269,50 +264,36 @@ public:
   //! First item access
   const TheItemType& First () const
   {
-#if !defined No_Exception && !defined No_Standard_NoSuchObject
-    if (mySize == 0)
-      Standard_NoSuchObject::Raise ("NCollection_Sequence::First");
-#endif
+    Standard_NoSuchObject_Raise_if (mySize == 0, "NCollection_Sequence::First");
     return ((const Node *) myFirstItem) -> Value();
   }
 
   //! First item access
   TheItemType& ChangeFirst()
   {
-#if !defined No_Exception && !defined No_Standard_NoSuchObject
-    if (mySize == 0)
-      Standard_NoSuchObject::Raise ("NCollection_Sequence::ChangeFirst");
-#endif
+    Standard_NoSuchObject_Raise_if (mySize == 0, "NCollection_Sequence::ChangeFirst");
     return ((Node* )myFirstItem)->ChangeValue();
   }
 
   //! Last item access
   const TheItemType& Last () const
   {
-#if !defined No_Exception && !defined No_Standard_NoSuchObject
-    if (mySize == 0)
-      Standard_NoSuchObject::Raise ("NCollection_Sequence::Last");
-#endif
+    Standard_NoSuchObject_Raise_if (mySize == 0, "NCollection_Sequence::Last");
     return ((const Node *) myLastItem) -> Value();
   }
 
   //! Last item access
   TheItemType& ChangeLast()
   {
-#if !defined No_Exception && !defined No_Standard_NoSuchObject
-    if (mySize == 0)
-      Standard_NoSuchObject::Raise ("NCollection_Sequence::ChangeLast");
-#endif
+    Standard_NoSuchObject_Raise_if (mySize == 0, "NCollection_Sequence::ChangeLast");
     return ((Node* )myLastItem)->ChangeValue();
   }
 
   //! Constant item access by theIndex
   const TheItemType& Value (const Standard_Integer theIndex) const
   {
-#if !defined No_Exception && !defined No_Standard_OutOfRange
-    if (theIndex <= 0 || theIndex > mySize)
-      Standard_OutOfRange::Raise ("NCollection_Sequence::Value");
-#endif
+    Standard_OutOfRange_Raise_if (theIndex <= 0 || theIndex > mySize, "NCollection_Sequence::Value");
+
     NCollection_Sequence * const aLocalTHIS = (NCollection_Sequence *) this;
     aLocalTHIS -> myCurrentItem  = Find (theIndex);
     aLocalTHIS -> myCurrentIndex = theIndex;
@@ -326,10 +307,8 @@ public:
   //! Variable item access by theIndex
   TheItemType& ChangeValue (const Standard_Integer theIndex)
   {
-#if !defined No_Exception && !defined No_Standard_OutOfRange
-    if (theIndex <= 0 || theIndex > mySize)
-      Standard_OutOfRange::Raise ("NCollection_Sequence::ChangeValue");
-#endif
+    Standard_OutOfRange_Raise_if (theIndex <= 0 || theIndex > mySize, "NCollection_Sequence::ChangeValue");
+
     myCurrentItem  = Find (theIndex);
     myCurrentIndex = theIndex;
     return ((Node *) myCurrentItem) -> ChangeValue();

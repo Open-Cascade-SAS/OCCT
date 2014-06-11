@@ -25,34 +25,26 @@
 //      Declaration of Sequence class managed by Handle
 
 #define DEFINE_HSEQUENCE(HClassName, _SequenceType_)                           \
-\
-class HClassName : public _SequenceType_,                                      \
-                   public MMgt_TShared {                                       \
+DEFINE_STANDARD_HANDLE (HClassName, MMgt_TShared)                              \
+class HClassName : public _SequenceType_, public MMgt_TShared {                \
  public:                                                                       \
    DEFINE_STANDARD_ALLOC                                                       \
    DEFINE_NCOLLECTION_ALLOC                                                    \
-   inline                       HClassName ();                                 \
-   inline                       HClassName (const _SequenceType_&);            \
-   inline const _SequenceType_& Sequence        () const;                      \
-   inline _SequenceType_&       ChangeSequence  ();                            \
-   DEFINE_STANDARD_RTTI (HClassName)                                           \
-};                                                                             \
-                                                                               \
-DEFINE_STANDARD_HANDLE (HClassName, MMgt_TShared)                              \
-                                                                               \
-inline HClassName::HClassName () :                                             \
-       _SequenceType_(),                                                       \
-       MMgt_TShared() {}                                                       \
-                                                                               \
-inline HClassName::HClassName (const _SequenceType_& anOther) :                \
-       _SequenceType_(anOther),                                                \
-       MMgt_TShared() {}                                                       \
-                                                                               \
-inline const _SequenceType_& HClassName::Sequence () const                     \
-{ return * (const _SequenceType_ *) this; }                                    \
-                                                                               \
-inline _SequenceType_& HClassName::ChangeSequence ()                           \
-{ return * (_SequenceType_ *) this; }                                          \
+   HClassName () {}                                                            \
+   HClassName (const _SequenceType_& theOther) : _SequenceType_(theOther) {}   \
+   const _SequenceType_& Sequence () const { return *this; }                   \
+   void Append (const _SequenceType_::value_type& theItem) {                   \
+     _SequenceType_::Append (theItem);                                         \
+   }                                                                           \
+   void Append (_SequenceType_& theSequence) {                                 \
+     _SequenceType_::Append (theSequence);                                     \
+   }                                                                           \
+   _SequenceType_& ChangeSequence ()       { return *this; }                   \
+   void Append (const Handle(HClassName)& theOther) {                          \
+     _SequenceType_::Append (theOther->ChangeSequence());                      \
+   }                                                                           \
+   DEFINE_STANDARD_RTTI (HClassName)                              \
+};
 
 #define IMPLEMENT_HSEQUENCE(HClassName)                                        \
 IMPLEMENT_STANDARD_HANDLE  (HClassName, MMgt_TShared)                          \

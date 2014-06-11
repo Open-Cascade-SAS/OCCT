@@ -160,13 +160,12 @@ void MeshTest_CheckTopology::Perform (Draw_Interpretor& di)
 	  if (aMapBndNodes.Contains(n1) && aMapBndNodes.Contains(n2))
 	    continue;
 	  if (!myMapFaceLinks.Contains(iF)) {
-	    //myMapFaceLinks.Add(iF, TColStd_SequenceOfInteger());
-            TColStd_SequenceOfInteger tmpSeq;
+            Handle(TColStd_HSequenceOfInteger) tmpSeq = new TColStd_HSequenceOfInteger;
 	    myMapFaceLinks.Add(iF, tmpSeq);
           }
-	  TColStd_SequenceOfInteger& aSeq = myMapFaceLinks.ChangeFromKey(iF);
-	  aSeq.Append(n1);
-	  aSeq.Append(n2);
+	  Handle(TColStd_HSequenceOfInteger)& aSeq = myMapFaceLinks.ChangeFromKey(iF);
+	  aSeq->Append(n1);
+	  aSeq->Append(n2);
 	}
       }
     }
@@ -193,10 +192,10 @@ void MeshTest_CheckTopology::GetFreeLink(const Standard_Integer theFaceIndex,
 					 Standard_Integer& theNode1,
 					 Standard_Integer& theNode2) const
 {
-  const TColStd_SequenceOfInteger& aSeq = myMapFaceLinks(theFaceIndex);
+  const Handle(TColStd_HSequenceOfInteger)& aSeq = myMapFaceLinks(theFaceIndex);
   Standard_Integer aInd = (theLinkIndex-1)*2 + 1;
-  theNode1 = aSeq(aInd);
-  theNode2 = aSeq(aInd+1);
+  theNode1 = aSeq->Value(aInd);
+  theNode2 = aSeq->Value(aInd+1);
 }
 
 //=======================================================================

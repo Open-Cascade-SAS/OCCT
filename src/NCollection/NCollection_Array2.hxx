@@ -16,11 +16,9 @@
 #ifndef NCollection_Array2_HeaderFile
 #define NCollection_Array2_HeaderFile
 
-#ifndef No_Exception
 #include <Standard_DimensionMismatch.hxx>
 #include <Standard_OutOfMemory.hxx>
 #include <Standard_OutOfRange.hxx>
-#endif
 
 #include <NCollection_DefineAlloc.hxx>
 
@@ -171,10 +169,7 @@ public:
   { 
     if (&theOther == this)
       return *this;
-#if !defined No_Exception && !defined No_Standard_DimensionMismatch
-    if (Length() != theOther.Length())
-      Standard_DimensionMismatch::Raise ("NCollection_Array2::operator=");
-#endif
+    Standard_DimensionMismatch_Raise_if (Length() != theOther.Length(), "NCollection_Array2::operator=");
     TheItemType * pMyItem  = myStart;
     TheItemType * pItem    = theOther.myStart;
     const Standard_Integer iSize = Length();
@@ -193,11 +188,8 @@ public:
   const TheItemType& Value (const Standard_Integer theRow,
                             const Standard_Integer theCol) const
   {
-#if !defined No_Exception && !defined No_Standard_OutOfRange
-    if (theRow < myLowerRow || theRow > myUpperRow ||
-        theCol < myLowerCol || theCol > myUpperCol)
-      Standard_OutOfRange::Raise ("NCollection_Array2::Value");
-#endif
+    Standard_OutOfRange_Raise_if (theRow < myLowerRow || theRow > myUpperRow ||
+                                  theCol < myLowerCol || theCol > myUpperCol, "NCollection_Array2::Value");
     return myData[theRow][theCol];
   }
 
@@ -210,11 +202,8 @@ public:
   TheItemType& ChangeValue (const Standard_Integer theRow,
                             const Standard_Integer theCol)
   {
-#if !defined No_Exception && !defined No_Standard_OutOfRange
-    if (theRow < myLowerRow || theRow > myUpperRow ||
-        theCol < myLowerCol || theCol > myUpperCol)
-      Standard_OutOfRange::Raise ("NCollection_Array2::ChangeValue");
-#endif
+    Standard_OutOfRange_Raise_if (theRow < myLowerRow || theRow > myUpperRow ||
+                                  theCol < myLowerCol || theCol > myUpperCol, "NCollection_Array2::ChangeValue");
     return myData[theRow][theCol];
   }
 
@@ -228,11 +217,8 @@ public:
                  const Standard_Integer theCol,
                  const TheItemType&     theItem)
   {
-#if !defined No_Exception && !defined No_Standard_OutOfRange
-    if (theRow < myLowerRow || theRow > myUpperRow ||
-        theCol < myLowerCol || theCol > myUpperCol)
-      Standard_OutOfRange::Raise ("NCollection_Array2::SetValue");
-#endif
+    Standard_OutOfRange_Raise_if (theRow < myLowerRow || theRow > myUpperRow ||
+                                  theCol < myLowerCol || theCol > myUpperCol, "NCollection_Array2::SetValue");
     myData[theRow][theCol] = theItem;
   }
   
@@ -251,24 +237,15 @@ public:
   {
     const Standard_Integer iRowSize = myUpperCol - myLowerCol + 1;
     const Standard_Integer iColSize = myUpperRow - myLowerRow + 1;
-#if !defined No_Exception && !defined No_Standard_RangeError
-    if (iRowSize <= 0  || iColSize <= 0)
-      Standard_RangeError::Raise ("NCollection_Array2::Allocate");
-#endif
+    Standard_RangeError_Raise_if (iRowSize <= 0  || iColSize <= 0, "NCollection_Array2::Allocate");
     if (myDeletable) {
       // allocation of the data in the array
       myStart = new TheItemType[iRowSize * iColSize];
-#if !defined No_Exception && !defined No_Standard_OutOfMemory
-      if (!myStart)
-        Standard_OutOfMemory::Raise ("NCollection_Array2 : Allocation failed");
-#endif
+      Standard_OutOfMemory_Raise_if (!myStart, "NCollection_Array2 : Allocation failed");
     }
     // else myStart is set to the beginning of the given array
     TheItemType** pTable = new TheItemType* [iColSize];
-#if !defined No_Exception && !defined No_Standard_OutOfMemory
-    if (!pTable)
-      Standard_OutOfMemory::Raise ("NCollection_Array2 : Allocation failed");
-#endif
+    Standard_OutOfMemory_Raise_if (!pTable, "NCollection_Array2 : Allocation failed");
 
     // Items of pTable point to the '0'th items in the rows of the array
     TheItemType* pRow = myStart - myLowerCol;

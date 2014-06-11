@@ -92,40 +92,30 @@ is
 
     -- The class instantiations :
 
---    class Array1OfHArray1OfInteger instantiates 
---        Array1 from TCollection (HArray1OfInteger from TColStd);
---    class Array1OfHArray1OfReal    instantiates 
---        Array1 from TCollection (HArray1OfReal from TColStd);
---    class Array1OfHArray1OfXY      instantiates 
---        Array1 from TCollection (HArray1OfXY   from TColgp);
---    class Array1OfHArray1OfXYZ     instantiates 
---        Array1 from TCollection (HArray1OfXYZ  from TColgp);
     class Array2OfHArray1OfReal    instantiates 
         Array2 from TCollection (HArray1OfReal from TColStd);
---    class Array1OfHArray1OfIGESEntity instantiates 
---        Array1 from TCollection (HArray1OfIGESEntity from IGESData);
     class Array1OfLineFontEntity instantiates
         Array1 from TCollection (LineFontEntity from IGESData);
 
     class HArray1OfHArray1OfInteger instantiates
-    -- HArray1 from TCollection (HArray1OfInteger from TColStd,Array1OfHArray1OfInteger);
     	JaggedArray from Interface (HArray1OfInteger     from TColStd);
+    -- HArray1 from TCollection (HArray1OfInteger from TColStd,Array1OfHArray1OfInteger);
     class HArray1OfHArray1OfReal    instantiates
-    -- HArray1 from TCollection (HArray1OfReal from TColStd,Array1OfHArray1OfReal);
     	JaggedArray from Interface (HArray1OfReal        from TColStd);
+    -- HArray1 from TCollection (HArray1OfReal from TColStd,Array1OfHArray1OfReal);
     class HArray1OfHArray1OfXY      instantiates
-    -- HArray1 from TCollection (HArray1OfXY   from TColgp, Array1OfHArray1OfXY);
     	JaggedArray from Interface (HArray1OfXY          from TColgp);
+    -- HArray1 from TCollection (HArray1OfXY   from TColgp, Array1OfHArray1OfXY);
     class HArray1OfHArray1OfXYZ     instantiates
-    -- HArray1 from TCollection (HArray1OfXYZ  from TColgp, Array1OfHArray1OfXYZ);
     	JaggedArray from Interface (HArray1OfXYZ         from TColgp);
+    -- HArray1 from TCollection (HArray1OfXYZ  from TColgp, Array1OfHArray1OfXYZ);
 
     class HArray2OfHArray1OfReal    instantiates HArray2 from TCollection
     	 (HArray1OfReal from TColStd,Array2OfHArray1OfReal);
 
     class HArray1OfHArray1OfIGESEntity instantiates
-    -- HArray1 from TCollection (HArray1OfIGESEntity from IGESData,Array1OfHArray1OfIGESEntity);
     	JaggedArray from Interface (HArray1OfIGESEntity  from IGESData);
+    -- HArray1 from TCollection (HArray1OfIGESEntity from IGESData,Array1OfHArray1OfIGESEntity);
 
     class HArray1OfLineFontEntity   instantiates HArray1 from TCollection
     	 (LineFontEntity from IGESData,Array1OfLineFontEntity);

@@ -18,7 +18,7 @@
 
 #include <TopoDS_Shape.hxx>
 #include <NCollection_IndexedDataMap.hxx>
-#include <TColStd_SequenceOfInteger.hxx>
+#include <TColStd_HSequenceOfInteger.hxx>
 #include <TColStd_SequenceOfReal.hxx>
 #include <Draw_Interpretor.hxx>
 
@@ -58,7 +58,7 @@ public:
 
   //! returns the number free links on a face with the given index
   Standard_Integer NbFreeLinks(const Standard_Integer theIndex) const
-  { return myMapFaceLinks(theIndex).Length() / 2; }
+  { return myMapFaceLinks(theIndex)->Length() / 2; }
 
   //! gets the numbers of nodes of a free link with the given index
   //! in the face with the given index
@@ -103,7 +103,7 @@ public:
 
 private:
   TopoDS_Shape myShape;
-  NCollection_IndexedDataMap<Standard_Integer,TColStd_SequenceOfInteger>
+  NCollection_IndexedDataMap<Standard_Integer,Handle(TColStd_HSequenceOfInteger)>
                myMapFaceLinks;
 
   TColStd_SequenceOfInteger myErrors;

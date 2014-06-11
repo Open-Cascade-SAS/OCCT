@@ -177,7 +177,7 @@ protected: //! @name protected methods
     myIncrement  (theOther.myIncrement),
     myLength     (theOther.myLength),
     myCapacity   (GetCapacity(myIncrement) + theOther.myLength / theOther.myIncrement),
-    myNBlocks    (1 + (theOther.myLength - 1)/theOther.myIncrement),
+    myNBlocks    (theOther.myLength == 0 ? 0 : 1 + (theOther.myLength - 1)/theOther.myIncrement),
     myInitBlocks (theInitBlocks)
   {
     myAllocator = (theAllocator.IsNull() ? NCollection_BaseAllocator::CommonBaseAllocator() : theAllocator);

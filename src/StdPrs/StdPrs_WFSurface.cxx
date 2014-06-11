@@ -143,7 +143,6 @@ void StdPrs_WFSurface::Add (const Handle(Prs3d_Presentation)& aPresentation,
     Prs3d_NListOfSequenceOfPnt freeCurves; 
     Prs3d_NListOfSequenceOfPnt UIsoCurves; 
     Prs3d_NListOfSequenceOfPnt VIsoCurves; 
-    TColgp_SequenceOfPnt Pnts;
     
     Standard_Boolean UClosed = aSurface->IsUClosed();
     Standard_Boolean VClosed = aSurface->IsVClosed();
@@ -183,24 +182,24 @@ void StdPrs_WFSurface::Add (const Handle(Prs3d_Presentation)& aPresentation,
       if ( !UClosed ) 
 	{ 
 	  anIso.Load(GeomAbs_IsoU,U1,V1,V2);
-	  StdPrs_Curve::Add(aPresentation,anIso,TheDeflection, aDrawer, Pnts, Standard_False);
-	  freeCurves.Append(Pnts);
-	  Pnts.Clear();
+          Handle(TColgp_HSequenceOfPnt) aPntsU1 = new TColgp_HSequenceOfPnt;
+	  StdPrs_Curve::Add(aPresentation,anIso,TheDeflection, aDrawer, aPntsU1->ChangeSequence(), Standard_False);
+	  freeCurves.Append(aPntsU1);
 	  anIso.Load(GeomAbs_IsoU,U2,V1,V2);
-	  StdPrs_Curve::Add(aPresentation,anIso,TheDeflection, aDrawer, Pnts, Standard_False);
-	  freeCurves.Append(Pnts);
-	  Pnts.Clear();
+          Handle(TColgp_HSequenceOfPnt) aPntsU2 = new TColgp_HSequenceOfPnt;
+	  StdPrs_Curve::Add(aPresentation,anIso,TheDeflection, aDrawer, aPntsU2->ChangeSequence(), Standard_False);
+	  freeCurves.Append(aPntsU2);
 	}
       if ( !VClosed )
 	{
 	  anIso.Load(GeomAbs_IsoV,V1,U1,U2);
-	  StdPrs_Curve::Add(aPresentation,anIso,TheDeflection, aDrawer, Pnts, Standard_False);
-	  freeCurves.Append(Pnts);
-	  Pnts.Clear();
+          Handle(TColgp_HSequenceOfPnt) aPntsV1 = new TColgp_HSequenceOfPnt;
+	  StdPrs_Curve::Add(aPresentation,anIso,TheDeflection, aDrawer, aPntsV1->ChangeSequence(), Standard_False);
+	  freeCurves.Append(aPntsV1);
 	  anIso.Load(GeomAbs_IsoV,V2,U1,U2);
-	  StdPrs_Curve::Add(aPresentation,anIso,TheDeflection, aDrawer, Pnts, Standard_False);
-	  freeCurves.Append(Pnts);
-	  Pnts.Clear();
+          Handle(TColgp_HSequenceOfPnt) aPntsV2 = new TColgp_HSequenceOfPnt;
+	  StdPrs_Curve::Add(aPresentation,anIso,TheDeflection, aDrawer, aPntsV2->ChangeSequence(), Standard_False);
+	  freeCurves.Append(aPntsV2);
 	}
     }
     //
@@ -216,9 +215,9 @@ void StdPrs_WFSurface::Add (const Handle(Prs3d_Presentation)& aPresentation,
       Standard_Real du= UClosed ? (U2-U1)/fin : (U2-U1)/(1+fin);
       for (Standard_Integer i=1; i<=fin;i++){
 	anIso.Load(GeomAbs_IsoU,U1+du*i,V1,V2);
-	StdPrs_Curve::Add(aPresentation,anIso,TheDeflection, aDrawer, Pnts, Standard_False);
+        Handle(TColgp_HSequenceOfPnt) Pnts = new TColgp_HSequenceOfPnt;
+	StdPrs_Curve::Add(aPresentation,anIso,TheDeflection, aDrawer, Pnts->ChangeSequence(), Standard_False);
 	UIsoCurves.Append(Pnts);
-	Pnts.Clear();
       }
     }
     fin = aDrawer->VIsoAspect()->Number();
@@ -230,9 +229,9 @@ void StdPrs_WFSurface::Add (const Handle(Prs3d_Presentation)& aPresentation,
       Standard_Real dv= VClosed ?(V2-V1)/fin : (V2-V1)/(1+fin);
       for (Standard_Integer i=1; i<=fin;i++){
 	anIso.Load(GeomAbs_IsoV,V1+dv*i,U1,U2);
-	StdPrs_Curve::Add(aPresentation,anIso,TheDeflection, aDrawer, Pnts, Standard_False);
+        Handle(TColgp_HSequenceOfPnt) Pnts = new TColgp_HSequenceOfPnt;
+	StdPrs_Curve::Add(aPresentation,anIso,TheDeflection, aDrawer, Pnts->ChangeSequence(), Standard_False);
 	VIsoCurves.Append(Pnts);
-	Pnts.Clear();
       }
     }
     
@@ -242,15 +241,14 @@ void StdPrs_WFSurface::Add (const Handle(Prs3d_Presentation)& aPresentation,
       nbBounds = UIsoCurves.Size();
       Prs3d_NListIteratorOfListOfSequenceOfPnt It;
       for( It.Init(UIsoCurves); It.More(); It.Next())
-	nbVertices += It.Value().Length();
+	nbVertices += It.Value()->Length();
       Handle(Graphic3d_ArrayOfPolylines) UIsoArray =
 	new Graphic3d_ArrayOfPolylines(nbVertices,nbBounds);
       for( It.Init(UIsoCurves); It.More(); It.Next()) {
-	TColgp_SequenceOfPnt Pnts;
-	Pnts.Assign(It.Value());
-	UIsoArray->AddBound(Pnts.Length());
-	for(int i=1; i<=Pnts.Length(); i++)
-	  UIsoArray->AddVertex(Pnts.Value(i));
+        const Handle(TColgp_HSequenceOfPnt)& Pnts = It.Value();
+	UIsoArray->AddBound(Pnts->Length());
+	for(int i=1; i<=Pnts->Length(); i++)
+	  UIsoArray->AddVertex(Pnts->Value(i));
       }      
       Handle(Graphic3d_Group) TheGroup = Prs3d_Root::NewGroup(aPresentation);
       TheGroup->SetPrimitivesAspect(aDrawer->UIsoAspect()->Aspect());
@@ -261,15 +259,14 @@ void StdPrs_WFSurface::Add (const Handle(Prs3d_Presentation)& aPresentation,
       nbBounds = VIsoCurves.Size();
       Prs3d_NListIteratorOfListOfSequenceOfPnt It;
       for( It.Init(VIsoCurves); It.More(); It.Next())
-	nbVertices += It.Value().Length();
+	nbVertices += It.Value()->Length();
       Handle(Graphic3d_ArrayOfPolylines) VIsoArray =
 	new Graphic3d_ArrayOfPolylines(nbVertices,nbBounds);
       for( It.Init(VIsoCurves); It.More(); It.Next()) {
-	TColgp_SequenceOfPnt Pnts;
-	Pnts.Assign(It.Value());
-	VIsoArray->AddBound(Pnts.Length());
-	for(int i=1; i<=Pnts.Length(); i++)
-	  VIsoArray->AddVertex(Pnts.Value(i));
+	const Handle(TColgp_HSequenceOfPnt)& Pnts = It.Value();
+	VIsoArray->AddBound(Pnts->Length());
+	for(int i=1; i<=Pnts->Length(); i++)
+	  VIsoArray->AddVertex(Pnts->Value(i));
       }
       Handle(Graphic3d_Group) TheGroup = Prs3d_Root::NewGroup(aPresentation);
       TheGroup->SetPrimitivesAspect(aDrawer->VIsoAspect()->Aspect());
@@ -279,15 +276,14 @@ void StdPrs_WFSurface::Add (const Handle(Prs3d_Presentation)& aPresentation,
       nbBounds = freeCurves.Size();
       Prs3d_NListIteratorOfListOfSequenceOfPnt It;
       for( It.Init(freeCurves); It.More(); It.Next())
-	nbVertices += It.Value().Length();
+	nbVertices += It.Value()->Length();
       Handle(Graphic3d_ArrayOfPolylines) freeArray =
 	new Graphic3d_ArrayOfPolylines(nbVertices,nbBounds);
       for( It.Init(freeCurves); It.More(); It.Next()) {
-	TColgp_SequenceOfPnt Pnts;
-	Pnts.Assign(It.Value());
-	freeArray->AddBound(Pnts.Length());
-	for(int i=1; i<=Pnts.Length(); i++)
-	  freeArray->AddVertex(Pnts.Value(i));
+	const Handle(TColgp_HSequenceOfPnt)& Pnts = It.Value();
+	freeArray->AddBound(Pnts->Length());
+	for(int i=1; i<=Pnts->Length(); i++)
+	  freeArray->AddVertex(Pnts->Value(i));
       }
       Handle(Graphic3d_Group) TheGroup = Prs3d_Root::NewGroup(aPresentation);
       TheGroup->SetPrimitivesAspect(aDrawer->FreeBoundaryAspect()->Aspect());

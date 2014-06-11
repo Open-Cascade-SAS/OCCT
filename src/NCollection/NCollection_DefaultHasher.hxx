@@ -22,20 +22,36 @@
 //function : HashCode_Proxy
 //purpose  : Function is required to call the global function HashCode.
 //=======================================================================
+
 template <class TheKeyType> 
-  static Standard_Integer HashCode_Proxy(const TheKeyType& theKey, 
-                                         const Standard_Integer Upper) {
-  return HashCode(theKey, Upper);
+inline Standard_Integer HashCode_Proxy (const TheKeyType& theKey, 
+                                        const Standard_Integer Upper)
+{
+  return HashCode (theKey, Upper);
+}
+
+//=======================================================================
+//function : IsEqual
+//purpose  : Default implementation of IsEqual via operator ==
+//=======================================================================
+
+template <class TheKeyType> 
+inline Standard_Boolean IsEqual (const TheKeyType& theKey1, 
+                                 const TheKeyType& theKey2)
+{
+  return theKey1 == theKey2;
 }
 
 //=======================================================================
 //function : IsEqual_Proxy
 //purpose  : Function is required to call the global function IsEqual.
 //=======================================================================
+
 template <class TheKeyType> 
-  static Standard_Boolean IsEqual_Proxy(const TheKeyType& theKey1, 
-                                        const TheKeyType& theKey2) {
-  return IsEqual(theKey1, theKey2);
+inline Standard_Boolean IsEqual_Proxy (const TheKeyType& theKey1, 
+                                       const TheKeyType& theKey2)
+{
+  return IsEqual (theKey1, theKey2);
 }
 
 

@@ -176,7 +176,7 @@ void StdPrs_WFRestrictedFace::Add
       if(b1 == RealFirst() || b2 == RealLast())
         continue;
 
-      TColgp_SequenceOfPnt aPoints;
+      Handle(TColgp_HSequenceOfPnt) aPoints = new TColgp_HSequenceOfPnt;
       if (!aGeomBSurface.IsNull())
       {
         if (anIsoBuild.IsXLine(anI))
@@ -186,7 +186,8 @@ void StdPrs_WFRestrictedFace::Add
 
         //Note that the isos are the part of the shape, it will be displayed after a computation the whole shape
         //NbPoints = 30 - default parameter for computation of such curves
-        StdPrs_Curve::Add(thePresentation,GeomAdaptor_Curve(aBCurve), b1, b2, theDeflection, aPoints, 30, Standard_False);
+        StdPrs_Curve::Add (thePresentation, GeomAdaptor_Curve(aBCurve), b1, b2, theDeflection, 
+                           aPoints->ChangeSequence(), 30, Standard_False);
         theCurves.Append(aPoints);
       }
       else
@@ -195,7 +196,8 @@ void StdPrs_WFRestrictedFace::Add
           anIsoCurve.Load(GeomAbs_IsoU,anIsoCoord,b1,b2);
         else
           anIsoCurve.Load(GeomAbs_IsoV,anIsoCoord,b1,b2);
-        StdPrs_Curve::Add(thePresentation,anIsoCurve, theDeflection, theDrawer, aPoints, Standard_False);
+        StdPrs_Curve::Add (thePresentation, anIsoCurve, theDeflection, theDrawer, 
+                           aPoints->ChangeSequence(), Standard_False);
         theCurves.Append(aPoints);
       }
     }

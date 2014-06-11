@@ -43,10 +43,16 @@ template <class TheItemType> class NCollection_TListIterator
     myPrevious = myCurrent;
     myCurrent = myCurrent->Next();
   }
+
   //! Constant Value access
   const TheItemType& Value (void) const
   { return ((const NCollection_TListNode<TheItemType>*) myCurrent)->Value(); }
-  //! Variable Value access
+
+  //! Non-const Value access
+  TheItemType& Value (void)
+  { return ((NCollection_TListNode<TheItemType>*) myCurrent)->ChangeValue(); }
+
+  //! Non-const Value access
   TheItemType& ChangeValue (void) const
   { return ((NCollection_TListNode<TheItemType> *)myCurrent)->ChangeValue(); }
 };

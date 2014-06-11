@@ -56,8 +56,10 @@ class NCollection_DataMap : public NCollection_BaseMap
     DataMapNode (const TheKeyType&     theKey, 
                  const TheItemType&    theItem, 
                  NCollection_ListNode* theNext) :
-                   NCollection_TListNode<TheItemType> (theItem, theNext) 
-    { myKey = theKey; }
+      NCollection_TListNode<TheItemType> (theItem, theNext),
+      myKey(theKey)
+    {}
+
     //! Key
     const TheKeyType& Key (void) const
     { return myKey; }
@@ -94,28 +96,19 @@ class NCollection_DataMap : public NCollection_BaseMap
     //! Value inquiry
     const TheItemType& Value(void) const
     {  
-#if !defined No_Exception && !defined No_Standard_NoSuchObject
-      if (!More())
-        Standard_NoSuchObject::Raise("NCollection_DataMap::Iterator::Value");  
-#endif
+      Standard_NoSuchObject_Raise_if(!More(), "NCollection_DataMap::Iterator::Value");  
       return ((DataMapNode *) myNode)->Value();
     }
     //! Value change access
     TheItemType& ChangeValue(void) const
     {  
-#if !defined No_Exception && !defined No_Standard_NoSuchObject
-      if (!More())
-        Standard_NoSuchObject::Raise("NCollection_DataMap::Iterator::ChangeValue");  
-#endif
+      Standard_NoSuchObject_Raise_if(!More(), "NCollection_DataMap::Iterator::ChangeValue");  
       return ((DataMapNode *) myNode)->ChangeValue();
     }
     //! Key
     const TheKeyType& Key (void) const
     { 
-#if !defined No_Exception && !defined No_Standard_NoSuchObject
-      if (!More())
-        Standard_NoSuchObject::Raise("NCollection_DataMap::Iterator::Key");  
-#endif
+      Standard_NoSuchObject_Raise_if(!More(), "NCollection_DataMap::Iterator::Key");  
       return ((DataMapNode *) myNode)->Key();
     }
   };
@@ -280,10 +273,7 @@ class NCollection_DataMap : public NCollection_BaseMap
   //! Find
   const TheItemType& Find(const TheKeyType& theKey) const
   {
-#if !defined No_Exception && !defined No_Standard_NoSuchObject
-    if (IsEmpty())
-      Standard_NoSuchObject::Raise ("NCollection_DataMap::Find");
-#endif
+    Standard_NoSuchObject_Raise_if (IsEmpty(), "NCollection_DataMap::Find");
     DataMapNode* p = (DataMapNode*) myData1[Hasher::HashCode(theKey,NbBuckets())];
     while (p) 
     {
@@ -325,10 +315,7 @@ class NCollection_DataMap : public NCollection_BaseMap
   //! ChangeFind
   TheItemType& ChangeFind (const TheKeyType& theKey)
   {
-#if !defined No_Exception && !defined No_Standard_NoSuchObject
-    if (IsEmpty())
-      Standard_NoSuchObject::Raise ("NCollection_DataMap::Find");
-#endif
+    Standard_NoSuchObject_Raise_if (IsEmpty(), "NCollection_DataMap::Find");
     DataMapNode*  p = (DataMapNode*) myData1[Hasher::HashCode(theKey,NbBuckets())];
     while (p) 
     {

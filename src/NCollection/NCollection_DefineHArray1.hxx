@@ -25,36 +25,23 @@
 //      Declaration of Array1 class managed by Handle
 
 #define DEFINE_HARRAY1(HClassName, _Array1Type_)                               \
-\
-class HClassName : public _Array1Type_,                                        \
-                   public MMgt_TShared {                                       \
+class HClassName : public _Array1Type_, public MMgt_TShared {                  \
  public:                                                                       \
    DEFINE_STANDARD_ALLOC                                                       \
    DEFINE_NCOLLECTION_ALLOC                                                    \
-   inline                     HClassName    (const Standard_Integer theLower,  \
-                                             const Standard_Integer theUpper); \
-   inline                     HClassName    (const _Array1Type_&);             \
-   inline const _Array1Type_& Array1        () const;                          \
-   inline _Array1Type_&       ChangeArray1  ();                                \
-   DEFINE_STANDARD_RTTI (HClassName)                                           \
+   HClassName (const Standard_Integer theLower,                                \
+               const Standard_Integer theUpper) :                              \
+     _Array1Type_ (theLower,theUpper)  {}                                      \
+   HClassName (const Standard_Integer theLower,                                \
+               const Standard_Integer theUpper,                                \
+               const _Array1Type_::value_type& theValue) :                     \
+     _Array1Type_ (theLower,theUpper)  { Init (theValue); }                    \
+   HClassName  (const _Array1Type_& theOther) : _Array1Type_(theOther) {}      \
+   const _Array1Type_& Array1 () const { return *this; }                       \
+   _Array1Type_& ChangeArray1 ()       { return *this; }                       \
+   DEFINE_STANDARD_RTTI (HClassName)                              \
 };                                                                             \
-                                                                               \
-DEFINE_STANDARD_HANDLE (HClassName, MMgt_TShared)                              \
-                                                                               \
-inline HClassName::HClassName (const Standard_Integer theLower,                \
-                               const Standard_Integer theUpper) :              \
-       _Array1Type_ (theLower,theUpper),                                       \
-       MMgt_TShared() {}                                                       \
-                                                                               \
-inline HClassName::HClassName (const _Array1Type_& theOther) :                 \
-       _Array1Type_(theOther),                                                 \
-       MMgt_TShared() {}                                                       \
-                                                                               \
-inline const _Array1Type_& HClassName::Array1 () const                         \
-{ return * (const _Array1Type_ *) this; }                                      \
-                                                                               \
-inline _Array1Type_& HClassName::ChangeArray1 ()                               \
-{ return * (_Array1Type_ *) this; }                                            \
+DEFINE_STANDARD_HANDLE (HClassName, MMgt_TShared)
 
 #define IMPLEMENT_HARRAY1(HClassName)                                          \
 IMPLEMENT_STANDARD_HANDLE  (HClassName, MMgt_TShared)                          \

@@ -324,8 +324,9 @@ void StdPrs_WFDeflectionRestrictedFace::Add
 	GeomAdaptor_Curve GC(BC);
 	FindLimits(GC, aLimit,b1, b2);
 	if (b2-b1>Precision::Confusion()) {
-	  TColgp_SequenceOfPnt Points;
-	  StdPrs_DeflectionCurve::Add(aPresentation, GC, b1, b2, Deflection, Points, anAngle, Standard_False);
+	  Handle(TColgp_HSequenceOfPnt) Points = new TColgp_HSequenceOfPnt;
+	  StdPrs_DeflectionCurve::Add (aPresentation, GC, b1, b2, Deflection, 
+                                       Points->ChangeSequence(), anAngle, Standard_False);
 	  Curves.Append(Points);
 	}
       }
@@ -336,8 +337,9 @@ void StdPrs_WFDeflectionRestrictedFace::Add
 	  anIso.Load(GeomAbs_IsoV,Coord,b1,b2);
 	FindLimits(anIso, aLimit,b1, b2);
 	if (b2-b1>Precision::Confusion()) {
-	  TColgp_SequenceOfPnt Points;
-	  StdPrs_DeflectionCurve::Add(aPresentation, anIso, b1, b2, Deflection, Points, anAngle, Standard_False);
+	  Handle(TColgp_HSequenceOfPnt) Points = new TColgp_HSequenceOfPnt;
+	  StdPrs_DeflectionCurve::Add (aPresentation, anIso, b1, b2, Deflection, 
+                                       Points->ChangeSequence(), anAngle, Standard_False);
 	  Curves.Append(Points);
 	}
       }

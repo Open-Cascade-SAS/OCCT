@@ -23,10 +23,7 @@
 #include <NCollection_DefaultHasher.hxx>
 
 #include <Standard_ImmutableObject.hxx>
-
-#if !defined No_Exception && !defined No_Standard_NoSuchObject
 #include <Standard_NoSuchObject.hxx>
-#endif
 
 /**
  * Purpose:     Single hashed Map. This  Map is used  to store and
@@ -96,10 +93,7 @@ class NCollection_Map : public NCollection_BaseMap
     //! Value inquiry
     const TheKeyType& Value(void) const
     {
-#if !defined No_Exception && !defined No_Standard_NoSuchObject
-      if (!More())
-        Standard_NoSuchObject::Raise ("NCollection_Map::Iterator::Value");  
-#endif
+      Standard_NoSuchObject_Raise_if (!More(), "NCollection_Map::Iterator::Value");  
       return ((MapNode *) myNode)->Value();
     }
     //! Value change access - denied
@@ -109,12 +103,9 @@ class NCollection_Map : public NCollection_BaseMap
       return * (TheKeyType *) NULL; // For compiler
     }
     //! Key
-    const TheKeyType& Key (void)
+    const TheKeyType& Key (void) const
     { 
-#if !defined No_Exception && !defined No_Standard_NoSuchObject
-      if (!More())
-        Standard_NoSuchObject::Raise ("NCollection_Map::Iterator::Key");  
-#endif
+      Standard_NoSuchObject_Raise_if (!More(), "NCollection_Map::Iterator::Key");  
       return ((MapNode *) myNode)->Value();
     }
   };

@@ -1024,12 +1024,6 @@ void MeshVS_Mesh::HilightOwnerWithColor ( const Handle(PrsMgr_PresentationManage
   if ( myHilighter.IsNull() )
     return;
 
-  SelectMgr_SequenceOfOwner theOwners;
-  //new functionality
-
-  //if ( myHilightPrs.IsNull() )
-  //  myHilightPrs = new Prs3d_Presentation ( PM->StructureManager() );
-
   Handle( Prs3d_Presentation ) aHilightPrs;
   aHilightPrs = GetHilightPresentation( PM );
 

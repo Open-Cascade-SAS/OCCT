@@ -25,40 +25,28 @@
 //      Declaration of Array2 class managed by Handle
 
 #define DEFINE_HARRAY2(HClassName, _Array2Type_)                               \
-\
-class HClassName : public _Array2Type_,                                        \
-                   public MMgt_TShared {                                       \
+class HClassName : public _Array2Type_, public MMgt_TShared {                  \
  public:                                                                       \
    DEFINE_STANDARD_ALLOC                                                       \
    DEFINE_NCOLLECTION_ALLOC                                                    \
-   inline                     HClassName  (const Standard_Integer theRowLower, \
-                                           const Standard_Integer theRowUpper, \
-                                           const Standard_Integer theColLower, \
-                                           const Standard_Integer theColUpper);\
-   inline                     HClassName  (const _Array2Type_&);               \
-   inline const _Array2Type_& Array2      () const;                            \
-   inline _Array2Type_&       ChangeArray2();                                  \
-   DEFINE_STANDARD_RTTI (HClassName)                                           \
+   HClassName  (const Standard_Integer theRowLow,                              \
+                const Standard_Integer theRowUpp,                              \
+                const Standard_Integer theColLow,                              \
+                const Standard_Integer theColUpp) :                            \
+     _Array2Type_ (theRowLow, theRowUpp, theColLow, theColUpp) {}              \
+   HClassName  (const Standard_Integer theRowLow,                              \
+                const Standard_Integer theRowUpp,                              \
+                const Standard_Integer theColLow,                              \
+                const Standard_Integer theColUpp,                              \
+                const _Array2Type_::value_type& theValue) :                    \
+     _Array2Type_ (theRowLow, theRowUpp, theColLow, theColUpp)                 \
+   { Init (theValue); }                                                        \
+   HClassName  (const _Array2Type_& theOther) : _Array2Type_(theOther) {}      \
+   const _Array2Type_& Array2 () const { return *this; }                       \
+   _Array2Type_& ChangeArray2 ()       { return *this; }                       \
+   DEFINE_STANDARD_RTTI (HClassName)                              \
 };                                                                             \
-                                                                               \
-DEFINE_STANDARD_HANDLE (HClassName, MMgt_TShared)                              \
-                                                                               \
-inline HClassName::HClassName (const Standard_Integer theRowLow,               \
-                               const Standard_Integer theRowUpp,               \
-                               const Standard_Integer theColLow,               \
-                               const Standard_Integer theColUpp) :             \
-       _Array2Type_ (theRowLow, theRowUpp, theColLow, theColUpp),              \
-       MMgt_TShared() {}                                                       \
-                                                                               \
-inline HClassName::HClassName (const _Array2Type_& theOther) :                 \
-       _Array2Type_(theOther),                                                 \
-       MMgt_TShared() {}                                                       \
-                                                                               \
-inline const _Array2Type_& HClassName::Array2 () const                         \
-{ return * (const _Array2Type_ *) this; }                                      \
-                                                                               \
-inline _Array2Type_& HClassName::ChangeArray2 ()                               \
-{ return * (_Array2Type_ *) this; }                                            \
+DEFINE_STANDARD_HANDLE (HClassName, MMgt_TShared)
 
 #define IMPLEMENT_HARRAY2(HClassName)                                          \
 IMPLEMENT_STANDARD_HANDLE  (HClassName, MMgt_TShared)                          \

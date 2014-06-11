@@ -21,6 +21,8 @@
 
 #include <gp_Pnt.hxx>
 
+#include <NCollection_Vector.hxx>
+
 #define ItemType gp_Pnt
 #define Key1Type Standard_Real
 #define Key2Type Standard_Integer
@@ -729,6 +731,32 @@ static Standard_Integer QANColTestList(Draw_Interpretor& di, Standard_Integer ar
 }
 
 //=======================================================================
+//function : QANColTestVector
+//purpose  : 
+//=======================================================================
+static Standard_Integer QANColTestVector (Draw_Interpretor&, Standard_Integer, const char**)
+{
+  // test method Append and copying of empty vector
+  NCollection_Vector<int> aVec;
+  NCollection_Vector<int> aVec2 (aVec);
+  NCollection_Vector<int> aVec3;
+  aVec3 = aVec;
+
+  aVec.Append(5);
+  if (aVec(0) != 5)
+    std::cout << "Error: wrong value in original vector!" << endl;
+  aVec2.Append(5);
+  if (aVec2(0) != 5)
+    std::cout << "Error: wrong value in copy-constructed vector!" << endl;
+  aVec3.Append(5);
+  if (aVec3(0) != 5)
+    std::cout << "Error: wrong value in copied vector!" << endl;
+  std::cout << "Test OK" << endl;
+
+  return 0;
+}
+
+//=======================================================================
 //function : QANColTestSequence
 //purpose  : 
 //=======================================================================
@@ -756,6 +784,5 @@ void QANCollection::CommandsTest(Draw_Interpretor& theCommands) {
   theCommands.Add("QANColTestIndexedDataMap", "QANColTestIndexedDataMap", __FILE__, QANColTestIndexedDataMap, group);  
   theCommands.Add("QANColTestList",           "QANColTestList",           __FILE__, QANColTestList,           group);  
   theCommands.Add("QANColTestSequence",       "QANColTestSequence",       __FILE__, QANColTestSequence,       group);  
-
-  return;
+  theCommands.Add("QANColTestVector",         "QANColTestVector",         __FILE__, QANColTestVector,         group);  
 }

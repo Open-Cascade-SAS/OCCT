@@ -44,10 +44,10 @@ is
     ---Purpose: this map will allows to get a directory object from a name.
 
     private class PresentationDirectory instantiates DataMap from TCollection 
-    ---Purpose: this map will allows to get a directory object from a name.
         (ExtendedString from TCollection,
          Document from CDM,
          ExtendedString from TCollection);
+    ---Purpose: this map will allows to get a directory object from a name.
          
     private pointer DocumentPointer to Document from CDM;
     private class Reference;    

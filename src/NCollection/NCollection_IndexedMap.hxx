@@ -24,9 +24,7 @@
 
 #include <NCollection_DefaultHasher.hxx>
 
-#if !defined No_Exception && !defined No_Standard_OutOfRange
 #include <Standard_OutOfRange.hxx>
-#endif
 
 /**
  * Purpose:     An indexed map is used to  store  keys and to bind
@@ -53,10 +51,10 @@ class NCollection_IndexedMap : public NCollection_BaseMap
                     const Standard_Integer theKey2, 
                     NCollection_ListNode*  theNext1, 
                     NCollection_ListNode*  theNext2) :
-                      NCollection_TListNode<TheKeyType> (theKey1, theNext1)
+      NCollection_TListNode<TheKeyType> (theKey1, theNext1),
+      myKey2(theKey2),
+      myNext2((IndexedMapNode*)theNext2)
     { 
-      myKey2 = theKey2;
-      myNext2 = (IndexedMapNode *) theNext2;
     }
     //! Key1
     TheKeyType& Key1 (void)
@@ -103,10 +101,7 @@ class NCollection_IndexedMap : public NCollection_BaseMap
     //! Value access
     const TheKeyType& Value(void) const
     {
-#if !defined No_Exception && !defined No_Standard_NoSuchObject
-      if (!More())
-        Standard_NoSuchObject::Raise("NCollection_IndexedMap::Iterator::Value");
-#endif
+      Standard_NoSuchObject_Raise_if(!More(), "NCollection_IndexedMap::Iterator::Value");
       return myMap->FindKey(myIndex);
     }
     //! Value change access denied - use Substitute
@@ -267,10 +262,8 @@ class NCollection_IndexedMap : public NCollection_BaseMap
   void Substitute (const Standard_Integer theIndex,
                    const TheKeyType& theKey1)
   {
-#if !defined No_Exception && !defined No_Standard_OutOfRange
-    if (theIndex < 1 || theIndex > Extent())
-      Standard_OutOfRange::Raise ("NCollection_IndexedMap::Substitute");
-#endif
+    Standard_OutOfRange_Raise_if (theIndex < 1 || theIndex > Extent(), "NCollection_IndexedMap::Substitute");
+
     IndexedMapNode * p;
     // check if theKey1 is not already in the map
     Standard_Integer iK1 = Hasher::HashCode (theKey1, NbBuckets());
@@ -313,10 +306,8 @@ class NCollection_IndexedMap : public NCollection_BaseMap
   //! RemoveLast
   void RemoveLast (void)
   {
-#if !defined No_Exception && !defined No_Standard_OutOfRange
-    if (Extent() == 0)
-      Standard_OutOfRange::Raise ("NCollection_IndexedMap::RemoveLast");
-#endif
+    Standard_OutOfRange_Raise_if (Extent() == 0, "NCollection_IndexedMap::RemoveLast");
+
     IndexedMapNode * p, * q;
     // Find the node for the last index and remove it
     Standard_Integer iK2 = ::HashCode (Extent(), NbBuckets());
@@ -353,10 +344,8 @@ class NCollection_IndexedMap : public NCollection_BaseMap
   //! FindKey
   const TheKeyType& FindKey (const Standard_Integer theKey2) const
   {
-#if !defined No_Exception && !defined No_Standard_OutOfRange
-    if (theKey2 < 1 || theKey2 > Extent())
-      Standard_OutOfRange::Raise ("NCollection_IndexedMap::FindKey");
-#endif
+    Standard_OutOfRange_Raise_if (theKey2 < 1 || theKey2 > Extent(), "NCollection_IndexedMap::FindKey");
+
     IndexedMapNode * pNode2 =
       (IndexedMapNode *) myData2[::HashCode(theKey2,NbBuckets())];
     while (pNode2)

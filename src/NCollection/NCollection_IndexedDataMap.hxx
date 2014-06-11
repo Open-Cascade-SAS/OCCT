@@ -23,9 +23,7 @@
 #include <NCollection_StlIterator.hxx>
 #include <NCollection_DefaultHasher.hxx>
 
-#if !defined No_Exception && !defined No_Standard_OutOfRange
 #include <Standard_OutOfRange.hxx>
-#endif
 
 /**
  * Purpose:     An indexed map is used  to store keys and to  bind
@@ -62,11 +60,11 @@ class NCollection_IndexedDataMap : public NCollection_BaseMap
                         const TheItemType&     theItem,
                         NCollection_ListNode*  theNext1, 
                         NCollection_ListNode*  theNext2) :
-                          NCollection_TListNode<TheItemType>(theItem,theNext1)
+      NCollection_TListNode<TheItemType>(theItem,theNext1),
+      myKey1(theKey1),
+      myKey2(theKey2),
+      myNext2((IndexedDataMapNode*)theNext2)
     { 
-      myKey1 = theKey1;
-      myKey2 = theKey2;
-      myNext2 = (IndexedDataMapNode *) theNext2;
     }
     //! Key1
     TheKeyType& Key1 (void)
@@ -116,28 +114,19 @@ class NCollection_IndexedDataMap : public NCollection_BaseMap
     //! Value access
     const TheItemType& Value(void) const
     {  
-#if !defined No_Exception && !defined No_Standard_NoSuchObject
-      if (!More())
-        Standard_NoSuchObject::Raise("NCollection_IndexedDataMap::Iterator::Value");
-#endif
+      Standard_NoSuchObject_Raise_if(!More(), "NCollection_IndexedDataMap::Iterator::Value");
       return myNode->Value();
     }
     //! ChangeValue access
     TheItemType& ChangeValue(void) const
     {  
-#if !defined No_Exception && !defined No_Standard_NoSuchObject
-      if (!More())
-        Standard_NoSuchObject::Raise("NCollection_IndexedDataMap::Iterator::ChangeValue");
-#endif
+      Standard_NoSuchObject_Raise_if(!More(), "NCollection_IndexedDataMap::Iterator::ChangeValue");
       return myNode->ChangeValue();
     }
     //! Key
     const TheKeyType& Key() const
     {
-#if !defined No_Exception && !defined No_Standard_NoSuchObject
-      if (!More())
-        Standard_NoSuchObject::Raise("NCollection_DataMap::Iterator::Key");
-#endif
+      Standard_NoSuchObject_Raise_if(!More(), "NCollection_IndexedDataMap::Iterator::Key");
       return myNode->Key1();
     }
     //! Performs comparison of two iterators.
@@ -302,10 +291,8 @@ class NCollection_IndexedDataMap : public NCollection_BaseMap
                    const TheKeyType&      theKey1,
                    const TheItemType&     theItem)
   {
-#if !defined No_Exception && !defined No_Standard_OutOfRange
-    if (theIndex < 1 || theIndex > Extent())
-      Standard_OutOfRange::Raise ("NCollection_IndexedDataMap::Substitute");
-#endif
+    Standard_OutOfRange_Raise_if (theIndex < 1 || theIndex > Extent(), "NCollection_IndexedDataMap::Substitute");
+
     IndexedDataMapNode * p;
     // check if theKey1 is not already in the map
     Standard_Integer iK1 = Hasher::HashCode (theKey1, NbBuckets());
@@ -349,10 +336,8 @@ class NCollection_IndexedDataMap : public NCollection_BaseMap
   //! RemoveLast
   void RemoveLast (void)
   {
-#if !defined No_Exception && !defined No_Standard_OutOfRange
-    if (Extent() == 0)
-      Standard_OutOfRange::Raise ("NCollection_IndexedDataMap::RemoveLast");
-#endif
+    Standard_OutOfRange_Raise_if (Extent() == 0, "NCollection_IndexedDataMap::RemoveLast");
+
     IndexedDataMapNode * p, * q;
     // Find the node for the last index and remove it
     Standard_Integer iK2 = ::HashCode (Extent(), NbBuckets());
@@ -389,10 +374,8 @@ class NCollection_IndexedDataMap : public NCollection_BaseMap
   //! FindKey
   const TheKeyType& FindKey (const Standard_Integer theKey2) const
   {
-#if !defined No_Exception && !defined No_Standard_OutOfRange
-    if (theKey2 < 1 || theKey2 > Extent())
-      Standard_OutOfRange::Raise ("NCollection_IndexedDataMap::FindKey");
-#endif
+    Standard_OutOfRange_Raise_if (theKey2 < 1 || theKey2 > Extent(), "NCollection_IndexedDataMap::FindKey");
+
     IndexedDataMapNode* aNode = nodeFromIndex (theKey2);
     if (aNode == NULL)
     {
@@ -404,10 +387,8 @@ class NCollection_IndexedDataMap : public NCollection_BaseMap
   //! FindFromIndex
   const TheItemType& FindFromIndex (const Standard_Integer theKey2) const
   {
-#if !defined No_Exception && !defined No_Standard_OutOfRange
-    if (theKey2 < 1 || theKey2 > Extent())
-      Standard_OutOfRange::Raise ("NCollection_IndexedDataMap::FindFromIndex");
-#endif
+    Standard_OutOfRange_Raise_if (theKey2 < 1 || theKey2 > Extent(), "NCollection_IndexedDataMap::FindFromIndex");
+
     IndexedDataMapNode* aNode = nodeFromIndex (theKey2);
     if (aNode == NULL)
     {
@@ -423,10 +404,8 @@ class NCollection_IndexedDataMap : public NCollection_BaseMap
   //! ChangeFromIndex
   TheItemType& ChangeFromIndex (const Standard_Integer theKey2)
   {
-#if !defined No_Exception && !defined No_Standard_OutOfRange
-    if (theKey2 < 1 || theKey2 > Extent())
-      Standard_OutOfRange::Raise("NCollection_IndexedDataMap::ChangeFromIndex");
-#endif
+    Standard_OutOfRange_Raise_if (theKey2 < 1 || theKey2 > Extent(), "NCollection_IndexedDataMap::ChangeFromIndex");
+
     IndexedDataMapNode* aNode = nodeFromIndex (theKey2);
     if (aNode == NULL)
     {
@@ -457,10 +436,8 @@ class NCollection_IndexedDataMap : public NCollection_BaseMap
   //! FindFromKey
   const TheItemType& FindFromKey(const TheKeyType& theKey1) const
   {
-#if !defined No_Exception && !defined No_Standard_NoSuchObject
-    if (IsEmpty())
-      Standard_NoSuchObject::Raise ("NCollection_IndexedDataMap::FindFromKey");
-#endif
+    Standard_NoSuchObject_Raise_if (IsEmpty(), "NCollection_IndexedDataMap::FindFromKey");
+
     IndexedDataMapNode * pNode1 = 
       (IndexedDataMapNode *) myData1[Hasher::HashCode(theKey1,NbBuckets())];
     while (pNode1)
@@ -476,10 +453,8 @@ class NCollection_IndexedDataMap : public NCollection_BaseMap
   //! ChangeFromKey
   TheItemType& ChangeFromKey (const TheKeyType& theKey1)
   {
-#if !defined No_Exception && !defined No_Standard_NoSuchObject
-    if (IsEmpty())
-      Standard_NoSuchObject::Raise("NCollection_IndexedDataMap::ChangeFromKey");
-#endif
+    Standard_NoSuchObject_Raise_if (IsEmpty(), "NCollection_IndexedDataMap::ChangeFromKey");
+
     IndexedDataMapNode * pNode1 = 
       (IndexedDataMapNode *) myData1[Hasher::HashCode(theKey1,NbBuckets())];
     while (pNode1)

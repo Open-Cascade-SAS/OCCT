@@ -84,12 +84,14 @@
 #include <Select3D_SensitiveTriangulation.hxx>
 #include <SelectBasics_SensitiveEntity.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <NCollection_Map.hxx>
+
 #ifdef OCC9026
 #include <SelectMgr_DataMapIteratorOfDataMapOfIntegerSensitive.hxx>
 #endif
 #include <SelectMgr_Selection.hxx>
+#include <SelectMgr_SequenceOfOwner.hxx>
 #include <OSD_Environment.hxx>
-#include <SelectMgr_DataMapOfObjectOwners.hxx>
 
 #include <Geom_Transformation.hxx>
 #include <AIS_Selection.hxx>
@@ -565,8 +567,10 @@ void AIS_LocalContext::HilightPicked(const Standard_Boolean updateviewer)
   if( Sel.IsNull() ) return;
 #endif
 
-  Handle (PrsMgr_PresentationManager3d) PM = myMainPM;
+  typedef NCollection_DataMap <Handle(SelectMgr_SelectableObject), NCollection_Handle<SelectMgr_SequenceOfOwner> > SelectMgr_DataMapOfObjectOwners;
   SelectMgr_DataMapOfObjectOwners aMap;
+
+  Handle (PrsMgr_PresentationManager3d) PM = myMainPM;
   
   // to avoid problems when there is a loop searching for selected objects...
 #if !defined OCC189 && !defined USE_MAP
@@ -602,18 +606,20 @@ void AIS_LocalContext::HilightPicked(const Standard_Boolean updateviewer)
       if ( Ownr->IsAutoHilight() )
         Ownr->HilightWithColor(PM,myCTX->SelectionColor(),HM);
       else if ( aMap.IsBound (SO) )
-        aMap.ChangeFind(SO).Append ( Ownr );        
+        aMap(SO)->Append ( Ownr );        
       else {
-        SelectMgr_SequenceOfOwner aSeq;
-        aSeq.Append ( Ownr );
+        NCollection_Handle<SelectMgr_SequenceOfOwner> aSeq = new SelectMgr_SequenceOfOwner;
+        aSeq->Append ( Ownr );
         aMap.Bind ( SO, aSeq );
       }      
     }
   }
 
-  for ( SelectMgr_DataMapIteratorOfMapOfObjectOwners aMapIter(aMap); 
+  for ( SelectMgr_DataMapOfObjectOwners::Iterator aMapIter(aMap); 
         aMapIter.More(); aMapIter.Next() )
-    aMapIter.Key()->HilightSelected ( myMainPM, aMapIter.Value() );
+  {
+    aMapIter.Key()->HilightSelected (myMainPM, *aMapIter.Value());
+  }
 
   if (updateviewer)
   {
@@ -636,8 +642,7 @@ void AIS_LocalContext::UnhilightPicked (const Standard_Boolean updateviewer)
   if( Sel.IsNull() ) return;
 #endif
   Handle (PrsMgr_PresentationManager3d) PM = myMainPM;
-  SelectMgr_DataMapOfObjectOwners anObjMap;
-  SelectMgr_SequenceOfOwner anOwnSeq;
+  NCollection_Map<Handle(SelectMgr_SelectableObject)> anObjMap;
   
 #if !defined OCC189 && !defined USE_MAP  
   const TColStd_Array1OfTransient& Obj = Sel->Objects()->Array1();
@@ -657,9 +662,9 @@ void AIS_LocalContext::UnhilightPicked (const Standard_Boolean updateviewer)
 #ifdef BUC60876
 	Handle(SelectMgr_SelectableObject) SO  = Ownr->Selectable();
 	Handle(AIS_InteractiveObject) IO = *((Handle(AIS_InteractiveObject)*)&SO);
-  anObjMap.Bind ( IO, anOwnSeq );
+        anObjMap.Add (IO);
 
-  HM = GetHiMod(IO);
+        HM = GetHiMod(IO);
 #endif
 	Handle(StdSelect_BRepOwner) BROwnr = Handle(StdSelect_BRepOwner)::DownCast(Ownr);
 	if(BROwnr.IsNull() || !BROwnr->ComesFromDecomposition()){
@@ -677,10 +682,12 @@ void AIS_LocalContext::UnhilightPicked (const Standard_Boolean updateviewer)
     }
   }
   
-  for ( SelectMgr_DataMapIteratorOfMapOfObjectOwners anIter1 ( anObjMap ); 
+  for (NCollection_Map<Handle(SelectMgr_SelectableObject)>::Iterator anIter1 ( anObjMap ); 
         anIter1.More(); anIter1.Next() )
+  {
     if ( !anIter1.Key()->IsAutoHilight() )
       anIter1.Key()->ClearSelected();
+  }
 
   if(updateviewer){
 #ifdef BUC60774

@@ -128,15 +128,13 @@ is
 
     	-- --  Instantiations  -- --
 
-    private class  SequenceOfCheck  instantiates           -- for HSequence
+    private class  SequenceOfCheck  instantiates
     	 Sequence from TCollection (Check);
-    private class HSequenceOfCheck  instantiates           -- Transient
+    private class HSequenceOfCheck  instantiates
     	HSequence from TCollection (Check,SequenceOfCheck);
 
-    class Array1OfFileParameter instantiates               -- for ParamList :
+    class Array1OfFileParameter instantiates
         Array1 from TCollection    (FileParameter);
---    class HArray1OfFileParameter instantiates                           -- Array, Transient
---        HArray1 from TCollection   (FileParameter,Array1OfFileParameter);
 
     --  Useful Instantiations to define Data
 

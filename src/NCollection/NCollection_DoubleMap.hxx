@@ -50,10 +50,10 @@ class NCollection_DoubleMap : public NCollection_BaseMap
                    const TheKey2Type&    theKey2, 
                    NCollection_ListNode* theNext1, 
                    NCollection_ListNode* theNext2) :
-                   NCollection_TListNode<TheKey2Type> (theKey2, theNext1)
+      NCollection_TListNode<TheKey2Type> (theKey2, theNext1),
+      myKey1(theKey1),
+      myNext2((DoubleMapNode*)theNext2)
     { 
-      myKey1 = theKey1;
-      myNext2 = (DoubleMapNode *) theNext2;
     }
     //! Key1
     const TheKey1Type& Key1 (void)
@@ -97,28 +97,19 @@ class NCollection_DoubleMap : public NCollection_BaseMap
     //! Key1 inquiry
     const TheKey1Type& Key1(void) const
     {
-#if !defined No_Exception && !defined No_Standard_NoSuchObject
-      if (!More())
-         Standard_NoSuchObject::Raise ("NCollection_DoubleMap::Iterator::Key1");
-#endif
+      Standard_NoSuchObject_Raise_if (!More(), "NCollection_DoubleMap::Iterator::Key1");
       return ((DoubleMapNode *) myNode)->Key1();
     }
     //! Key2 inquiry
     const TheKey2Type& Key2(void) const
     {  
-#if !defined No_Exception && !defined No_Standard_NoSuchObject
-      if (!More())
-         Standard_NoSuchObject::Raise ("NCollection_DoubleMap::Iterator::Key2");
-#endif
+      Standard_NoSuchObject_Raise_if (!More(), "NCollection_DoubleMap::Iterator::Key2");
       return ((DoubleMapNode *) myNode)->Key2();
     }
     //! Value access
     const TheKey2Type& Value(void) const
     {  
-#if !defined No_Exception && !defined No_Standard_NoSuchObject
-      if (!More())
-         Standard_NoSuchObject::Raise ("NCollection_DoubleMap::Iterator::Value");
-#endif
+      Standard_NoSuchObject_Raise_if (!More(), "NCollection_DoubleMap::Iterator::Value");
       return ((DoubleMapNode *) myNode)->Value();
     }
     //! Value change access - denied
@@ -402,10 +393,7 @@ class NCollection_DoubleMap : public NCollection_BaseMap
   //! Find1
   const TheKey2Type& Find1(const TheKey1Type& theKey1) const
   {
-#if !defined No_Exception && !defined No_Standard_NoSuchObject
-    if (IsEmpty())
-      Standard_NoSuchObject::Raise ("NCollection_DoubleMap::Find1");
-#endif
+    Standard_NoSuchObject_Raise_if (IsEmpty(), "NCollection_DoubleMap::Find1");
     DoubleMapNode * pNode1 = 
       (DoubleMapNode *) myData1[Hasher1::HashCode(theKey1,NbBuckets())];
     while (pNode1)
@@ -421,10 +409,7 @@ class NCollection_DoubleMap : public NCollection_BaseMap
   //! Find2
   const TheKey1Type& Find2(const TheKey2Type& theKey2) const
   {
-#if !defined No_Exception && !defined No_Standard_NoSuchObject
-    if (IsEmpty())
-      Standard_NoSuchObject::Raise ("NCollection_DoubleMap::Find2");
-#endif
+    Standard_NoSuchObject_Raise_if (IsEmpty(), "NCollection_DoubleMap::Find2");
     DoubleMapNode * pNode2 = 
       (DoubleMapNode *) myData2[Hasher2::HashCode(theKey2,NbBuckets())];
     while (pNode2)

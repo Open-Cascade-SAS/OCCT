@@ -16,11 +16,9 @@
 #ifndef NCollection_Array1_HeaderFile
 #define NCollection_Array1_HeaderFile
 
-#ifndef No_Exception
 #include <Standard_DimensionMismatch.hxx>
 #include <Standard_OutOfMemory.hxx>
 #include <Standard_OutOfRange.hxx>
-#endif
 
 #include <NCollection_DefineAlloc.hxx>
 #include <NCollection_StlIterator.hxx>
@@ -163,15 +161,9 @@ public:
                 myUpperBound                             (theUpper),
                 myDeletable                              (Standard_True)
   {
-#if !defined No_Exception && !defined No_Standard_RangeError
-    if (theUpper < theLower)
-      Standard_RangeError::Raise ("NCollection_Array1::Create");
-#endif
+    Standard_RangeError_Raise_if (theUpper < theLower, "NCollection_Array1::Create");
     TheItemType* pBegin = new TheItemType[Length()];
-#if !defined No_Exception && !defined No_Standard_OutOfMemory
-    if (!pBegin)
-      Standard_OutOfMemory::Raise ("NCollection_Array1 : Allocation failed");
-#endif
+    Standard_OutOfMemory_Raise_if (!pBegin, "NCollection_Array1 : Allocation failed");
 
     myData = pBegin - theLower;
   }
@@ -183,10 +175,7 @@ public:
     myDeletable                                 (Standard_True)
   {
     TheItemType* pBegin = new TheItemType[Length()];
-#if !defined No_Exception && !defined No_Standard_OutOfMemory
-    if (!pBegin)
-      Standard_OutOfMemory::Raise ("NCollection_Array1 : Allocation failed");
-#endif
+    Standard_OutOfMemory_Raise_if (!pBegin, "NCollection_Array1 : Allocation failed");
     myData = pBegin - myLowerBound;
 
     *this = theOther;
@@ -200,10 +189,7 @@ public:
     myUpperBound                                (theUpper),
     myDeletable                                 (Standard_False)
   {
-#if !defined No_Exception && !defined No_Standard_RangeError
-    if (theUpper < theLower)
-      Standard_RangeError::Raise ("NCollection_Array1::Array1");
-#endif
+    Standard_RangeError_Raise_if (theUpper < theLower, "NCollection_Array1::Create");
     myData = (TheItemType *) &theBegin - theLower; 
   }
 
@@ -242,10 +228,7 @@ public:
   {
     if (&theOther == this)
       return *this;
-#if !defined No_Exception && !defined No_Standard_DimensionMismatch
-    if (Length() != theOther.Length())
-      Standard_DimensionMismatch::Raise ("NCollection_Array1::operator=");
-#endif
+    Standard_DimensionMismatch_Raise_if (Length() != theOther.Length(), "NCollection_Array1::operator=");
     TheItemType * pMyItem        = &myData[myLowerBound];
     TheItemType * const pEndItem = &(theOther.myData)[theOther.myUpperBound];
     TheItemType * pItem          = &(theOther.myData)[theOther.myLowerBound];
@@ -286,10 +269,7 @@ public:
   //! Constant value access
   const TheItemType& Value (const Standard_Integer theIndex) const
   {
-#if !defined No_Exception && !defined No_Standard_OutOfRange
-    if (theIndex < myLowerBound || theIndex > myUpperBound)
-      Standard_OutOfRange::Raise ("NCollection_Array1::Value");
-#endif
+    Standard_OutOfRange_Raise_if (theIndex < myLowerBound || theIndex > myUpperBound, "NCollection_Array1::Value");
     return myData[theIndex];
   }
 
@@ -300,10 +280,7 @@ public:
   //! Variable value access
   TheItemType& ChangeValue (const Standard_Integer theIndex)
   {
-#if !defined No_Exception && !defined No_Standard_OutOfRange
-    if (theIndex < myLowerBound || theIndex > myUpperBound)
-      Standard_OutOfRange::Raise ("NCollection_Array1::ChangeValue");
-#endif
+    Standard_OutOfRange_Raise_if (theIndex < myLowerBound || theIndex > myUpperBound, "NCollection_Array1::ChangeValue");
     return myData[theIndex];
   }
 
@@ -315,10 +292,7 @@ public:
   void SetValue (const Standard_Integer theIndex,
                  const TheItemType&     theItem)
   {
-#if !defined No_Exception && !defined No_Standard_OutOfRange
-    if (theIndex < myLowerBound || theIndex > myUpperBound)
-      Standard_OutOfRange::Raise ("NCollection_Array1::SetValue");
-#endif
+    Standard_OutOfRange_Raise_if (theIndex < myLowerBound || theIndex > myUpperBound, "NCollection_Array1::SetValue");
     myData[theIndex] = theItem;
   }
 

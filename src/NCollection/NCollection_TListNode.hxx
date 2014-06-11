@@ -29,7 +29,7 @@ template <class TheItemType> class NCollection_TListNode
   //! Constructor
   NCollection_TListNode (const TheItemType& theItem,
                          NCollection_ListNode* theNext=NULL) :
-    NCollection_ListNode  (theNext) { myValue = theItem; }
+    NCollection_ListNode  (theNext), myValue(theItem) { }
   //! Constant value access
   const TheItemType& Value () const { return myValue; }
   //! Variable value access
