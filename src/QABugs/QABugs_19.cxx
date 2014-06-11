@@ -1801,6 +1801,47 @@ static Standard_Integer OCC23951 (Draw_Interpretor& di, Standard_Integer argc, c
 
 
 //=======================================================================
+//function : OCC23950
+//purpose  :
+//=======================================================================
+static Standard_Integer OCC23950 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
+{
+  if (argc != 1) {
+    di << "Usage: " << argv[0] << " invalid number of arguments" << "\n";
+    return 1;
+  }
+
+  Handle(TDocStd_Document) aDoc = new TDocStd_Document ("dummy");
+  TopoDS_Shape s6 = BRepBuilderAPI_MakeVertex (gp_Pnt (75, 0, 0));
+  gp_Trsf t0;
+  TopLoc_Location location0 (t0);
+
+  TDF_Label lab1 = XCAFDoc_DocumentTool::ShapeTool (aDoc->Main ())->NewShape ();
+  XCAFDoc_DocumentTool::ShapeTool (aDoc->Main ())->SetShape (lab1, s6);
+  TDataStd_Name::Set(lab1, "Point1");
+
+  TDF_Label labelA0 = XCAFDoc_DocumentTool::ShapeTool (aDoc->Main ())->NewShape ();
+  TDataStd_Name::Set(labelA0, "ASSEMBLY");
+
+  TDF_Label component01 = XCAFDoc_DocumentTool::ShapeTool (aDoc->Main ())->AddComponent (labelA0, lab1, location0);
+
+  Quantity_Color yellow(1,1,0, Quantity_TOC_RGB);
+  XCAFDoc_DocumentTool::ColorTool (labelA0)->SetColor (component01, yellow, XCAFDoc_ColorGen);
+  XCAFDoc_DocumentTool::ColorTool (labelA0)->SetVisibility (component01, 0);
+
+  STEPControl_StepModelType mode = STEPControl_AsIs;
+  STEPCAFControl_Writer writer;
+  if (! writer.Transfer (aDoc, mode))
+  {
+    di << "The document cannot be translated or gives no result" << "\n";
+    return 1;
+  }
+
+  writer.Write ("test_point_assembly.step");
+  return 0;
+}
+
+//=======================================================================
 //function : OCC24622
 //purpose  : The command tests sourcing Image_PixMap to AIS_TexturedShape
 //=======================================================================
@@ -2399,5 +2440,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC23951", "OCC23951", __FILE__, OCC23951, group);
   theCommands.Add ("OCC24931", "OCC24931", __FILE__, OCC24931, group);
   theCommands.Add ("OCC24945", "OCC24945", __FILE__, OCC24945, group);
+  theCommands.Add ("OCC23950", "OCC23950", __FILE__, OCC23950, group);
   return;
 }

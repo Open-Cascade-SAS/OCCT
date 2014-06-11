@@ -1,0 +1,33 @@
+puts "TODO OCC23950 ALL: ERROR: OCC23950 is reproduced"
+
+puts "=========="
+puts "OCC23950"
+puts "=========="
+puts ""
+#################################################################################
+# Names and visibility of points not saved when writing XCAF Document into STEP
+#################################################################################
+
+pload QAcommands
+
+set info [OCC23950]
+
+if {[regexp "Write  Done" $info] != 1} {
+  puts "Error: file was not written"
+} else {
+  puts "OK: file was written"
+}
+
+set is23950fixed "FALSE"
+set file23950 [open test_point_assembly.step RDONLY]
+while {[eof $file23950] == 0} {
+  set file23950line [string trim [gets $file23950]]
+  if {[string first "Point1" $file23950line] != -1} {
+    set is23950fixed "TRUE"
+  }
+}
+close $file23950
+
+if {[string compare $is23950fixed "FALSE"] == 0} {
+  puts "ERROR: OCC23950 is reproduced"
+}
