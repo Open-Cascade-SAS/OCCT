@@ -261,10 +261,11 @@ void AIS_Axis::ComputeFields()
   if (myIsXYZAxis){
     // calcul de myPFirst,myPlast
     Handle(Prs3d_DatumAspect) DA = myDrawer->DatumAspect();
-    gp_Pnt Orig = myAx2->Ax2().Location();
-    gp_Dir oX = myAx2->Ax2().XDirection();
-    gp_Dir oY = myAx2->Ax2().YDirection();
-    gp_Dir oZ = myAx2->Ax2().Direction();
+    gp_Ax2 anAxis = myAx2->Ax2();
+    const gp_Pnt& Orig = anAxis.Location();
+    const gp_Dir& oX   = anAxis.XDirection();
+    const gp_Dir& oY   = anAxis.YDirection();
+    const gp_Dir& oZ   = anAxis.Direction();
     Quantity_Length xo,yo,zo,x = 0.,y = 0.,z = 0.;
     Orig.Coord(xo,yo,zo);
     myPfirst.SetCoord(xo,yo,zo);

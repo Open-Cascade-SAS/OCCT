@@ -1,0 +1,11 @@
+puts "============"
+puts "OCC24989"
+puts "============"
+puts ""
+#######################################################################
+# Visualization - workaround vc12 32-bit compiler optimizer bug resulted in crash in AIS_Axis
+#######################################################################
+
+vinit
+vtrihedron vtr
+set only_screen 1
