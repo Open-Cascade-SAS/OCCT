@@ -41,33 +41,34 @@
 #include <ElCLib.hxx>
 #include <GeomAbs_SurfaceType.hxx>
 #include <TColStd_IndexedMapOfInteger.hxx>
+#include <IntTools_Tools.hxx>
 
 static
   void Parameters(const Handle(GeomAdaptor_HSurface)& myHS1,
-		  const gp_Pnt& Ptref,
-		  Standard_Real& U1,
-		  Standard_Real& V1);
+                  const gp_Pnt& Ptref,
+                  Standard_Real& U1,
+                  Standard_Real& V1);
 static
   void Parameters(const Handle(GeomAdaptor_HSurface)& myHS1,
-		  const Handle(GeomAdaptor_HSurface)& myHS2,
-		  const gp_Pnt& Ptref,
-		  Standard_Real& U1,
-		  Standard_Real& V1,
-		  Standard_Real& U2,
-		  Standard_Real& V2);
+                  const Handle(GeomAdaptor_HSurface)& myHS2,
+                  const gp_Pnt& Ptref,
+                  Standard_Real& U1,
+                  Standard_Real& V1,
+                  Standard_Real& U2,
+                  Standard_Real& V2);
 
 static 
   void GLinePoint(const IntPatch_IType typl,
-		  const Handle(IntPatch_GLine)& GLine,
-		  const Standard_Real aT,
-		  gp_Pnt& aP);
+                  const Handle(IntPatch_GLine)& GLine,
+                  const Standard_Real aT,
+                  gp_Pnt& aP);
 static
   void Recadre(const Handle(GeomAdaptor_HSurface)& myHS1,
-	       const Handle(GeomAdaptor_HSurface)& myHS2,
-	       Standard_Real& u1,
-	       Standard_Real& v1,
-	       Standard_Real& u2,
-	       Standard_Real& v2);
+               const Handle(GeomAdaptor_HSurface)& myHS2,
+               Standard_Real& u1,
+               Standard_Real& v1,
+               Standard_Real& u2,
+               Standard_Real& v2);
 
 //=======================================================================
 //function : Perform
@@ -89,18 +90,18 @@ void IntTools_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
       firstp = GeomInt_LineTool::Vertex(L,i).ParameterOnLine();
       lastp =  GeomInt_LineTool::Vertex(L,i+1).ParameterOnLine();
       if(firstp!=lastp)      {
-	const Standard_Real pmid = (firstp+lastp)*0.5;
-	const gp_Pnt Pmid = ALine->Value(pmid);
-	Parameters(myHS1,myHS2,Pmid,u1,v1,u2,v2);
-	Recadre(myHS1,myHS2,u1,v1,u2,v2);
-	const TopAbs_State in1 = myDom1->Classify(gp_Pnt2d(u1,v1),Tol);
-	if(in1 !=  TopAbs_OUT) {
-	  const TopAbs_State in2 = myDom2->Classify(gp_Pnt2d(u2,v2),Tol);
-	  if(in2 != TopAbs_OUT) { 
-	    seqp.Append(firstp);
-	    seqp.Append(lastp);
-	  }
-	}
+        const Standard_Real pmid = (firstp+lastp)*0.5;
+        const gp_Pnt Pmid = ALine->Value(pmid);
+        Parameters(myHS1,myHS2,Pmid,u1,v1,u2,v2);
+        Recadre(myHS1,myHS2,u1,v1,u2,v2);
+        const TopAbs_State in1 = myDom1->Classify(gp_Pnt2d(u1,v1),Tol);
+        if(in1 !=  TopAbs_OUT) {
+          const TopAbs_State in2 = myDom2->Classify(gp_Pnt2d(u2,v2),Tol);
+          if(in2 != TopAbs_OUT) { 
+            seqp.Append(firstp);
+            seqp.Append(lastp);
+          }
+        }
       }
     }
     done = Standard_True;
@@ -115,42 +116,42 @@ void IntTools_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
       firstp = GeomInt_LineTool::Vertex(L,i).ParameterOnLine();
       lastp =  GeomInt_LineTool::Vertex(L,i+1).ParameterOnLine();
       if(firstp!=lastp) { 
-	if(lastp != firstp+1)  {
-	  const Standard_Integer pmid = (Standard_Integer )( (firstp+lastp)/2);
-	  const IntSurf_PntOn2S& Pmid = WLine->Point(pmid);
-	  Pmid.Parameters(u1,v1,u2,v2);
-	  Recadre(myHS1,myHS2,u1,v1,u2,v2);
-	  const TopAbs_State in1 = myDom1->Classify(gp_Pnt2d(u1,v1),Tol);
-	  if(in1 !=  TopAbs_OUT) {   
-	    const TopAbs_State in2 = myDom2->Classify(gp_Pnt2d(u2,v2),Tol);
-	    if(in2 != TopAbs_OUT) {   
-	      seqp.Append(firstp);
-	      seqp.Append(lastp);
-	    }
-	  }
-	}
-	else {
-	  const IntSurf_PntOn2S& Pfirst = WLine->Point((Standard_Integer)(firstp));
-	  Pfirst.Parameters(u1,v1,u2,v2);
-	  Recadre(myHS1,myHS2,u1,v1,u2,v2);
-	  TopAbs_State in1 = myDom1->Classify(gp_Pnt2d(u1,v1),Tol);
-	  if(in1 !=  TopAbs_OUT) {  //-- !=ON donne Pb 
-	    TopAbs_State in2 = myDom2->Classify(gp_Pnt2d(u2,v2),Tol);
-	    if(in2 != TopAbs_OUT) { //-- !=ON  
-	      const IntSurf_PntOn2S& Plast = WLine->Point((Standard_Integer)(lastp));
-	      Plast.Parameters(u1,v1,u2,v2);
-	      Recadre(myHS1,myHS2,u1,v1,u2,v2);
-	      in1 = myDom1->Classify(gp_Pnt2d(u1,v1),Tol);
-	      if(in1 !=  TopAbs_OUT) {  //-- !=ON donne Pb 
-		in2 = myDom2->Classify(gp_Pnt2d(u2,v2),Tol);
-		if(in2 != TopAbs_OUT) {
-		  seqp.Append(firstp);
-		  seqp.Append(lastp);
-		}
-	      }
-	    }
-	  }
-	}
+        if(lastp != firstp+1)  {
+          const Standard_Integer pmid = (Standard_Integer )( (firstp+lastp)/2);
+          const IntSurf_PntOn2S& Pmid = WLine->Point(pmid);
+          Pmid.Parameters(u1,v1,u2,v2);
+          Recadre(myHS1,myHS2,u1,v1,u2,v2);
+          const TopAbs_State in1 = myDom1->Classify(gp_Pnt2d(u1,v1),Tol);
+          if(in1 !=  TopAbs_OUT) {   
+            const TopAbs_State in2 = myDom2->Classify(gp_Pnt2d(u2,v2),Tol);
+            if(in2 != TopAbs_OUT) {   
+              seqp.Append(firstp);
+              seqp.Append(lastp);
+            }
+          }
+        }
+        else {
+          const IntSurf_PntOn2S& Pfirst = WLine->Point((Standard_Integer)(firstp));
+          Pfirst.Parameters(u1,v1,u2,v2);
+          Recadre(myHS1,myHS2,u1,v1,u2,v2);
+          TopAbs_State in1 = myDom1->Classify(gp_Pnt2d(u1,v1),Tol);
+          if(in1 !=  TopAbs_OUT) {  //-- !=ON donne Pb 
+            TopAbs_State in2 = myDom2->Classify(gp_Pnt2d(u2,v2),Tol);
+            if(in2 != TopAbs_OUT) { //-- !=ON  
+              const IntSurf_PntOn2S& Plast = WLine->Point((Standard_Integer)(lastp));
+              Plast.Parameters(u1,v1,u2,v2);
+              Recadre(myHS1,myHS2,u1,v1,u2,v2);
+              in1 = myDom1->Classify(gp_Pnt2d(u1,v1),Tol);
+              if(in1 !=  TopAbs_OUT) {  //-- !=ON donne Pb 
+                in2 = myDom2->Classify(gp_Pnt2d(u2,v2),Tol);
+                if(in2 != TopAbs_OUT) {
+                  seqp.Append(firstp);
+                  seqp.Append(lastp);
+                }
+              }
+            }
+          }
+        }
       }
     }
     //
@@ -173,47 +174,47 @@ void IntTools_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
       //
       bCond=Standard_False;
       if (aST1==GeomAbs_Plane) {
-	if (aST2==GeomAbs_SurfaceOfExtrusion || 
-	    aST2==GeomAbs_SurfaceOfRevolution) {//+zft
-	  bCond=!bCond;
-	}
+        if (aST2==GeomAbs_SurfaceOfExtrusion || 
+            aST2==GeomAbs_SurfaceOfRevolution) {//+zft
+          bCond=!bCond;
+        }
       }
       else if (aST2==GeomAbs_Plane) {
-	if (aST1==GeomAbs_SurfaceOfExtrusion || 
-	    aST1==GeomAbs_SurfaceOfRevolution) {//+zft
-	  bCond=!bCond;
-	}
+        if (aST1==GeomAbs_SurfaceOfExtrusion || 
+            aST1==GeomAbs_SurfaceOfRevolution) {//+zft
+          bCond=!bCond;
+        }
       }
       //
       if (bCond) {
-	Standard_Integer aNb, anIndex, aNbTmp, jx;
-	TColStd_IndexedMapOfInteger aMap;
-	TColStd_SequenceOfReal aSeqTmp;
-	//
-	aNb=seqp.Length();
-	for(i=1; i<=aNb; ++i) {
-	  lastp =seqp(i);
-	  anIndex=(Standard_Integer)lastp;
-	  if (!aMap.Contains(anIndex)){
-	    aMap.Add(anIndex);
-	    aSeqTmp.Append(lastp);
-	  }
-	  else {
-	    aNbTmp=aSeqTmp.Length();
-	    aSeqTmp.Remove(aNbTmp);
-	  }
-	}
-	//
-	seqp.Clear();
-	//
-	aNb=aSeqTmp.Length()/2;
-	for(i=1; i<=aNb;++i) {
-	  jx=2*i;
-	  firstp=aSeqTmp(jx-1);
-	  lastp =aSeqTmp(jx);
-	  seqp.Append(firstp);
-	  seqp.Append(lastp);
-	}
+        Standard_Integer aNb, anIndex, aNbTmp, jx;
+        TColStd_IndexedMapOfInteger aMap;
+        TColStd_SequenceOfReal aSeqTmp;
+        //
+        aNb=seqp.Length();
+        for(i=1; i<=aNb; ++i) {
+          lastp =seqp(i);
+          anIndex=(Standard_Integer)lastp;
+          if (!aMap.Contains(anIndex)){
+            aMap.Add(anIndex);
+            aSeqTmp.Append(lastp);
+          }
+          else {
+            aNbTmp=aSeqTmp.Length();
+            aSeqTmp.Remove(aNbTmp);
+          }
+        }
+        //
+        seqp.Clear();
+        //
+        aNb=aSeqTmp.Length()/2;
+        for(i=1; i<=aNb;++i) {
+          jx=2*i;
+          firstp=aSeqTmp(jx-1);
+          lastp =aSeqTmp(jx);
+          seqp.Append(firstp);
+          seqp.Append(lastp);
+        }
       }//if (bCond) {
     }
     done = Standard_True;
@@ -241,21 +242,21 @@ void IntTools_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
       firstp = GeomInt_LineTool::Vertex(L,i).ParameterOnLine();
       lastp =  GeomInt_LineTool::Vertex(L,i+1).ParameterOnLine();
       if(Abs(firstp-lastp)>Precision::PConfusion()) {
-	intrvtested = Standard_True;
-	const Standard_Real pmid = (firstp+lastp)*0.5;
-	gp_Pnt Pmid;
-	GLinePoint(typl, GLine, pmid, Pmid);
-	//
-	Parameters(myHS1,myHS2,Pmid,u1,v1,u2,v2);
-	Recadre(myHS1,myHS2,u1,v1,u2,v2);
-	const TopAbs_State in1 = myDom1->Classify(gp_Pnt2d(u1,v1),Tol);
-	if(in1 !=  TopAbs_OUT) { 
-	  const TopAbs_State in2 = myDom2->Classify(gp_Pnt2d(u2,v2),Tol);
-	  if(in2 != TopAbs_OUT) { 
-	    seqp.Append(firstp);
-	    seqp.Append(lastp);
-	  }
-	}
+        intrvtested = Standard_True;
+        const Standard_Real pmid = (firstp+lastp)*0.5;
+        gp_Pnt Pmid;
+        GLinePoint(typl, GLine, pmid, Pmid);
+        //
+        Parameters(myHS1,myHS2,Pmid,u1,v1,u2,v2);
+        Recadre(myHS1,myHS2,u1,v1,u2,v2);
+        const TopAbs_State in1 = myDom1->Classify(gp_Pnt2d(u1,v1),Tol);
+        if(in1 !=  TopAbs_OUT) { 
+          const TopAbs_State in2 = myDom2->Classify(gp_Pnt2d(u2,v2),Tol);
+          if(in2 != TopAbs_OUT) { 
+            seqp.Append(firstp);
+            seqp.Append(lastp);
+          }
+        }
       }
     }
     //
@@ -315,38 +316,38 @@ void IntTools_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
     Standard_Boolean inserted = Standard_False;
     for (Standard_Integer j=1; j<=nbinserted;j++)    {
       if (Abs(prm-seqpss(j).Parameter()) <= Tol)      {
-	// accumulate
-	GeomInt_ParameterAndOrientation& valj = seqpss.ChangeValue(j);
-	if (or1 != TopAbs_INTERNAL) {
-	  if (valj.Orientation1() != TopAbs_INTERNAL) {
-	    if (or1 != valj.Orientation1()) {
-	      valj.SetOrientation1(TopAbs_INTERNAL);
-	    }
-	  }
-	  else {
-	    valj.SetOrientation1(or1);
-	  }
-	}
-	
-	if (or2 != TopAbs_INTERNAL) {
-	  if (valj.Orientation2() != TopAbs_INTERNAL) {
-	    if (or2 != valj.Orientation2()) {
-	      valj.SetOrientation2(TopAbs_INTERNAL);
-	    }
-	  }
-	  else {
-	    valj.SetOrientation2(or2);
-	  }
-	}	  
-	inserted = Standard_True;
-	break;
+        // accumulate
+        GeomInt_ParameterAndOrientation& valj = seqpss.ChangeValue(j);
+        if (or1 != TopAbs_INTERNAL) {
+          if (valj.Orientation1() != TopAbs_INTERNAL) {
+            if (or1 != valj.Orientation1()) {
+              valj.SetOrientation1(TopAbs_INTERNAL);
+            }
+          }
+          else {
+            valj.SetOrientation1(or1);
+          }
+        }
+        
+        if (or2 != TopAbs_INTERNAL) {
+          if (valj.Orientation2() != TopAbs_INTERNAL) {
+            if (or2 != valj.Orientation2()) {
+              valj.SetOrientation2(TopAbs_INTERNAL);
+            }
+          }
+          else {
+            valj.SetOrientation2(or2);
+          }
+        }          
+        inserted = Standard_True;
+        break;
       }
       
       if (prm < seqpss(j).Parameter()-Tol ) {
-	// insert before position j
-	seqpss.InsertBefore(j,GeomInt_ParameterAndOrientation(prm,or1,or2));
-	inserted = Standard_True;
-	break;
+        // insert before position j
+        seqpss.InsertBefore(j,GeomInt_ParameterAndOrientation(prm,or1,or2));
+        inserted = Standard_True;
+        break;
       }
       
     }
@@ -374,12 +375,12 @@ void IntTools_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
     Standard_Real U,V;
     for (i=1; i<=GeomInt_LineTool::NbVertex(L); i++ )    {
       if (!GeomInt_LineTool::Vertex(L,i).IsOnDomS1() )      {
-	GeomInt_LineTool::Vertex(L,i).ParametersOnS1(U,V);
-	gp_Pnt2d PPCC(U,V);
-	if (myDom1->Classify(PPCC,Tol) == TopAbs_OUT) {
-	  done = Standard_True;
-	  return;
-	}
+        GeomInt_LineTool::Vertex(L,i).ParametersOnS1(U,V);
+        gp_Pnt2d PPCC(U,V);
+        if (myDom1->Classify(PPCC,Tol) == TopAbs_OUT) {
+          done = Standard_True;
+          return;
+        }
         break;
       }
     }
@@ -399,11 +400,11 @@ void IntTools_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
     Standard_Real U,V;
     for (i=1; i<=GeomInt_LineTool::NbVertex(L); i++ )    {
       if (!GeomInt_LineTool::Vertex(L,i).IsOnDomS2() )      {
-	GeomInt_LineTool::Vertex(L,i).ParametersOnS2(U,V);
-	if (myDom2->Classify(gp_Pnt2d(U,V),Tol) == TopAbs_OUT) {
-	  done = Standard_True;
-	  return;
-	}
+        GeomInt_LineTool::Vertex(L,i).ParametersOnS2(U,V);
+        if (myDom2->Classify(gp_Pnt2d(U,V),Tol) == TopAbs_OUT) {
+          done = Standard_True;
+          return;
+        }
         break;
       }
     }
@@ -428,49 +429,49 @@ void IntTools_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
     or2 = seqpss(i).Orientation2(); 
     if (dansS1 && dansS2)    {
       if (or1 == TopAbs_REVERSED){
-	dansS1 = Standard_False;
+        dansS1 = Standard_False;
       }
       
       if (or2 == TopAbs_REVERSED){
-	dansS2 = Standard_False;
+        dansS2 = Standard_False;
       }
       if (!dansS1 || !dansS2)      {
-	lastp = seqpss(i).Parameter();
-	Standard_Real stofirst = Max(firstp, thefirst);
-	Standard_Real stolast  = Min(lastp,  thelast) ;
+        lastp = seqpss(i).Parameter();
+        Standard_Real stofirst = Max(firstp, thefirst);
+        Standard_Real stolast  = Min(lastp,  thelast) ;
 
-	if (stolast > stofirst) {
-	  seqp.Append(stofirst);
-	  seqp.Append(stolast);
-	}
-	if (lastp > thelast) {
-	  break;
-	}
+        if (stolast > stofirst) {
+          seqp.Append(stofirst);
+          seqp.Append(stolast);
+        }
+        if (lastp > thelast) {
+          break;
+        }
       }
     }
     else    {
       if (dansS1)      {
-	if (or1 == TopAbs_REVERSED) {
-	  dansS1 = Standard_False;
-	}
+        if (or1 == TopAbs_REVERSED) {
+          dansS1 = Standard_False;
+        }
       }
       else      {
-	if (or1 == TopAbs_FORWARD){
-	  dansS1 = Standard_True;
-	}
+        if (or1 == TopAbs_FORWARD){
+          dansS1 = Standard_True;
+        }
       }
       if (dansS2) {
-	if (or2 == TopAbs_REVERSED) {
-	  dansS2 = Standard_False;
-	}
+        if (or2 == TopAbs_REVERSED) {
+          dansS2 = Standard_False;
+        }
       }
       else {
-	if (or2 == TopAbs_FORWARD){
-	  dansS2 = Standard_True;
-	}
+        if (or2 == TopAbs_FORWARD){
+          dansS2 = Standard_True;
+        }
       }
       if (dansS1 && dansS2){
-	firstp = seqpss(i).Parameter();
+        firstp = seqpss(i).Parameter();
       }
     }
   }
@@ -491,11 +492,11 @@ void IntTools_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
 //purpose  : 
 //=======================================================================
 void Recadre(const Handle(GeomAdaptor_HSurface)& myHS1,
-	     const Handle(GeomAdaptor_HSurface)& myHS2,
-	     Standard_Real& u1,
-	     Standard_Real& v1,
-	     Standard_Real& u2,
-	     Standard_Real& v2)
+             const Handle(GeomAdaptor_HSurface)& myHS2,
+             Standard_Real& u1,
+             Standard_Real& v1,
+             Standard_Real& u2,
+             Standard_Real& v2)
 { 
   Standard_Boolean myHS1IsUPeriodic,myHS1IsVPeriodic;
   const GeomAbs_SurfaceType typs1 = myHS1->GetType();
@@ -545,33 +546,31 @@ void Recadre(const Handle(GeomAdaptor_HSurface)& myHS1,
       break;
     }
   }
+  Standard_Real du, dv;
+  //
   if(myHS1IsUPeriodic) {
     const Standard_Real lmf = M_PI+M_PI; //-- myHS1->UPeriod();
     const Standard_Real f = myHS1->FirstUParameter();
     const Standard_Real l = myHS1->LastUParameter();
-    while(u1 < f) { u1+=lmf; } 
-    while(u1 > l) { u1-=lmf; }
+    IntTools_Tools::AdjustPeriodic(u1, f, l, lmf, u1, du);
   }
   if(myHS1IsVPeriodic) {
     const Standard_Real lmf = M_PI+M_PI; //-- myHS1->VPeriod(); 
     const Standard_Real f = myHS1->FirstVParameter();
     const Standard_Real l = myHS1->LastVParameter();
-    while(v1 < f) { v1+=lmf; } 
-    while(v1 > l) { v1-=lmf; }
+    IntTools_Tools::AdjustPeriodic(v1, f, l, lmf, v1, dv);
   }
   if(myHS2IsUPeriodic) { 
     const Standard_Real lmf = M_PI+M_PI; //-- myHS2->UPeriod();
     const Standard_Real f = myHS2->FirstUParameter();
     const Standard_Real l = myHS2->LastUParameter();
-    while(u2 < f) { u2+=lmf; } 
-    while(u2 > l) { u2-=lmf; }
+    IntTools_Tools::AdjustPeriodic(u2, f, l, lmf, u2, du);
   }
   if(myHS2IsVPeriodic) { 
     const Standard_Real lmf = M_PI+M_PI; //-- myHS2->VPeriod();
     const Standard_Real f = myHS2->FirstVParameter();
     const Standard_Real l = myHS2->LastVParameter();
-    while(v2 < f) { v2+=lmf; } 
-    while(v2 > l) { v2-=lmf; }
+    IntTools_Tools::AdjustPeriodic(v2, f, l, lmf, v2, dv);
   }
 }
 //=======================================================================
@@ -579,12 +578,12 @@ void Recadre(const Handle(GeomAdaptor_HSurface)& myHS1,
 //purpose  : 
 //=======================================================================
 void Parameters(const Handle(GeomAdaptor_HSurface)& myHS1,
-		const Handle(GeomAdaptor_HSurface)& myHS2,
-		const gp_Pnt& Ptref,
-		Standard_Real& U1,
-		Standard_Real& V1,
-		Standard_Real& U2,
-		Standard_Real& V2)
+                const Handle(GeomAdaptor_HSurface)& myHS2,
+                const gp_Pnt& Ptref,
+                Standard_Real& U1,
+                Standard_Real& V1,
+                Standard_Real& U2,
+                Standard_Real& V2)
 {
   Parameters(myHS1, Ptref, U1, V1);
   Parameters(myHS2, Ptref, U2, V2);
@@ -627,9 +626,9 @@ void Parameters(const Handle(GeomAdaptor_HSurface)& myHS1,
 //purpose  : 
 //=======================================================================
 void GLinePoint(const IntPatch_IType typl,
-		const Handle(IntPatch_GLine)& GLine,
-		const Standard_Real aT,
-		gp_Pnt& aP)
+                const Handle(IntPatch_GLine)& GLine,
+                const Standard_Real aT,
+                gp_Pnt& aP)
 {
   switch (typl) {
     case IntPatch_Lin:       
@@ -695,32 +694,32 @@ class IntTools_RealWithFlag {
 //------------
 static 
   void SortShell(const Standard_Integer, 
-		 IntTools_RealWithFlag *); 
+                 IntTools_RealWithFlag *); 
 static
   void RejectDuplicates(Standard_Integer& aNbVtx, 
-			IntTools_RealWithFlag *pVtx, 
-			Standard_Real aTolPrm);
+                        IntTools_RealWithFlag *pVtx, 
+                        Standard_Real aTolPrm);
 static
   void RejectNearBeacons(Standard_Integer& aNbVtx, 
-			 IntTools_RealWithFlag *pVtx, 
-			 Standard_Real aTolPC1,
-			 const GeomAbs_SurfaceType aTS1,
-			 const GeomAbs_SurfaceType aTS2); 
+                         IntTools_RealWithFlag *pVtx, 
+                         Standard_Real aTolPC1,
+                         const GeomAbs_SurfaceType aTS1,
+                         const GeomAbs_SurfaceType aTS2); 
 static
   Standard_Real AdjustOnPeriod(const Standard_Real aTr,
-			       const Standard_Real aPeriod);
+                               const Standard_Real aPeriod);
 
 static
   Standard_Boolean RejectMicroCircle(const Handle(IntPatch_GLine)& aGLine,
-				     const IntPatch_IType aType,
-				     const Standard_Real aTol3D);
+                                     const IntPatch_IType aType,
+                                     const Standard_Real aTol3D);
 //
 //=======================================================================
 //function : TreatCircle
 //purpose  : 
 //=======================================================================
 void IntTools_LineConstructor::TreatCircle(const Handle(IntPatch_Line)& aLine,
-					   const Standard_Real aTol)
+                                           const Standard_Real aTol)
 {  
   Standard_Boolean bRejected;
   IntPatch_IType aType;
@@ -780,8 +779,8 @@ void IntTools_LineConstructor::TreatCircle(const Handle(IntPatch_Line)& aLine,
     for(i=1; i<=aNbVtxWas; ++i) {
       aT=GeomInt_LineTool::Vertex(aLine, i).ParameterOnLine();
       if (fabs(aT) < aTolPC1 || fabs(aT-aTwoPI) < aTolPC1) {
-	bFound=!bFound;
-	break;
+        bFound=!bFound;
+        break;
       }
     }
     if (!bFound) {
@@ -789,8 +788,8 @@ void IntTools_LineConstructor::TreatCircle(const Handle(IntPatch_Line)& aLine,
       pVtx[aNbVtx-1].SetValue(aT);
       //
       for(i=0; i<aNbVtx; ++i) { 
-	aT=pVtx[i+1].Value();
-	pVtx[i].SetValue(aT);
+        aT=pVtx[i+1].Value();
+        pVtx[i].SetValue(aT);
       }
       --aNbVtx;
     }
@@ -811,8 +810,8 @@ void IntTools_LineConstructor::TreatCircle(const Handle(IntPatch_Line)& aLine,
       aP2D.SetCoord(aU2, aV2);
       aIn2=myDom2->Classify(aP2D, aTol);
       if(aIn2 != TopAbs_OUT) { 
-	seqp.Append(aT1);
-	seqp.Append(aT2);
+        seqp.Append(aT1);
+        seqp.Append(aT2);
       }
     }
   }
@@ -826,10 +825,10 @@ void IntTools_LineConstructor::TreatCircle(const Handle(IntPatch_Line)& aLine,
 //           chl/930/B5 B8 C2 C5 E2 E5 E8 F2 G8 H2 H5 H8
 //=======================================================================
 void RejectNearBeacons(Standard_Integer& aNbVtx, 
-		       IntTools_RealWithFlag *pVtx, 
-		       Standard_Real aTolPC1,
-		       const GeomAbs_SurfaceType aTS1,
-		       const GeomAbs_SurfaceType aTS2) 
+                       IntTools_RealWithFlag *pVtx, 
+                       Standard_Real aTolPC1,
+                       const GeomAbs_SurfaceType aTS1,
+                       const GeomAbs_SurfaceType aTS2) 
 {
   Standard_Integer i, j, iBcn;
   Standard_Real aT, aBcn[2];
@@ -841,33 +840,33 @@ void RejectNearBeacons(Standard_Integer& aNbVtx,
     for (j=0; j<2; ++j) {
       iBcn=-1;
       for(i=0; i<aNbVtx; ++i) {
-	aT=pVtx[i].Value();
-	if (aT==aBcn[j]) {
-	  iBcn=i;
-	  break;
-	}
+        aT=pVtx[i].Value();
+        if (aT==aBcn[j]) {
+          iBcn=i;
+          break;
+        }
       }
       //
       if (iBcn<0) {
-	// The beacon is not found
-	continue;
+        // The beacon is not found
+        continue;
       }
       //  
       for(i=0; i<aNbVtx; ++i) {
-	if (i!=iBcn) {
-	  aT=pVtx[i].Value();
-	  if (fabs(aT-aBcn[j]) < aTolPC1) {
-	    pVtx[i].SetFlag(0);
-	  }
-	}
+        if (i!=iBcn) {
+          aT=pVtx[i].Value();
+          if (fabs(aT-aBcn[j]) < aTolPC1) {
+            pVtx[i].SetFlag(0);
+          }
+        }
       }
     }// for (j=0; j<2; ++j) {
     //------------------------------------------
     j=0;
     for(i=0; i<aNbVtx; ++i) {
       if (pVtx[i].Flag()) {
-	pVtx[j]=pVtx[i];
-	++j;
+        pVtx[j]=pVtx[i];
+        ++j;
       }
     }
     aNbVtx=j;
@@ -879,8 +878,8 @@ void RejectNearBeacons(Standard_Integer& aNbVtx,
 //purpose  : 
 //=======================================================================
 void RejectDuplicates(Standard_Integer& aNbVtx, 
-		      IntTools_RealWithFlag *pVtx, 
-		      Standard_Real aTolPC) 
+                      IntTools_RealWithFlag *pVtx, 
+                      Standard_Real aTolPC) 
 {
   Standard_Integer i, j;
   Standard_Real dX, aT1, aT2; 
@@ -908,7 +907,7 @@ void RejectDuplicates(Standard_Integer& aNbVtx,
 //purpose  : 
 //=======================================================================
 Standard_Real AdjustOnPeriod(const Standard_Real aTr,
-			     const Standard_Real aPeriod)
+                             const Standard_Real aPeriod)
 {
   Standard_Integer k;
   Standard_Real aT;
@@ -931,8 +930,8 @@ Standard_Real AdjustOnPeriod(const Standard_Real aTr,
 //purpose  : 
 //=======================================================================
 Standard_Boolean RejectMicroCircle(const Handle(IntPatch_GLine)& aGLine,
-				   const IntPatch_IType aType,
-				   const Standard_Real aTol3D)
+                                   const IntPatch_IType aType,
+                                   const Standard_Real aTol3D)
 {
   Standard_Boolean bRet;
   Standard_Real aR;
@@ -954,7 +953,7 @@ Standard_Boolean RejectMicroCircle(const Handle(IntPatch_GLine)& aGLine,
 // purpose : 
 //=======================================================================
 void SortShell(const Standard_Integer n, 
-	       IntTools_RealWithFlag *a) 
+               IntTools_RealWithFlag *a) 
 {
   Standard_Integer nd, i, j, l, d=1;
   IntTools_RealWithFlag x;

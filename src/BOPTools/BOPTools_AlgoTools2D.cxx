@@ -70,6 +70,7 @@
 #include <BOPCol_IndexedMapOfShape.hxx>
 
 #include <BOPTools.hxx>
+#include <IntTools_Tools.hxx>
 
 static 
   Standard_Boolean CheckEdgeLength (const TopoDS_Edge& );
@@ -296,10 +297,9 @@ void BOPTools_AlgoTools2D::AdjustPCurveOnFace
    const Handle(Geom2d_Curve)& aC2D, 
    Handle(Geom2d_Curve)& aC2DA)
 {
-  Standard_Boolean mincond, maxcond, decalu, decalv;
-  Standard_Integer k, iCnt;
+  Standard_Boolean mincond, maxcond;
   Standard_Real UMin, UMax, VMin, VMax, aT, u2, v2, du, dv, aDelta;
-  Standard_Real aUPeriod, aUP2, aUP1, aUNew, aDif, aUx;
+  Standard_Real aUPeriod;
   //
   aDelta=Precision::PConfusion();
   
@@ -317,65 +317,24 @@ void BOPTools_AlgoTools2D::AdjustPCurveOnFace
  
   du = 0.;
   if (aBAS.IsUPeriodic()) {
-    aUPeriod=aBAS.UPeriod(); 
-    mincond = (u2 < UMin-aDelta);
-    maxcond = (u2 > UMax+aDelta); 
-    
-    decalu = mincond || maxcond;
-    if (decalu) {
-      //du = ( mincond ) ? UPeriod : -UPeriod;
-      //
-      iCnt=1;
-      aUP2=aUPeriod+aUPeriod+aDelta;
-      aUP1=aUPeriod+aDelta;
-      //
-      if (u2 > aUP2) {
-        k=1;
-        do {
-          aUx=u2-k*aUPeriod;
-          iCnt = k++;
-        } while (aUx >= aUP1);
-      }
-      else if (u2 < -aUP2) {
-        k=1;
-        do {
-          aUx=u2+k*aUPeriod;
-          iCnt = (k++) + 1;
-        } while (aUx <= -aUP1);
-      }
-      du = ( mincond ) ? aUPeriod : -aUPeriod;
-      du=iCnt*du;
-    }
+    Standard_Real newu;
+    aUPeriod = aBAS.UPeriod(); 
     //
-    aUNew=u2+du;
-    if (aUNew<(UMin-aDelta) || 
-        aUNew>(UMax+aDelta)) {
-      // So previous correction was wrong.
-      // Try to be closer to UMin or UMax.
-      du=0.;
-      if (u2>UMax){
-        aDif=u2-UMax;
-        if (aDif < 4.e-7) {
-          du=-aDif;
-        }
-      }
-    }
-  } // if (BAHS->IsUPeriodic())
-  //
+    IntTools_Tools::AdjustPeriodic(u2, UMin, UMax, aUPeriod, newu, du);
+  }
   // dv
   dv = 0.;
   if (aBAS.IsVPeriodic()) {
     Standard_Real aVPeriod, aVm, aVr, aVmid, dVm, dVr;
     //
-    aVPeriod=aBAS.VPeriod();
+    aVPeriod = aBAS.VPeriod();
     mincond = (VMin - v2 > aDelta);
     maxcond = (v2 - VMax > aDelta);
-    decalv = mincond || maxcond;
-    if (decalv) {
+    //
+    if (mincond || maxcond) {
       dv = ( mincond ) ? aVPeriod : -aVPeriod;
     }
     //
-    //xf
     if ((VMax-VMin<aVPeriod) && dv) {
       aVm=v2;
       aVr=v2+dv;
@@ -386,7 +345,6 @@ void BOPTools_AlgoTools2D::AdjustPCurveOnFace
         dv=0.;
       }
     }
-    //xt
   }
   //
   {

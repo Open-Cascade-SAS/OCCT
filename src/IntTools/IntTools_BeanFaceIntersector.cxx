@@ -58,12 +58,6 @@
 #include <ElCLib.hxx>
 #include <ElSLib.hxx>
 
-static Standard_Boolean AdjustPeriodic(const Standard_Real U, 
-                                       const Standard_Real UFirst,
-                                       const Standard_Real ULast,
-                                       const Standard_Real Period,
-                                       Standard_Real&      UResult);
-
 static Standard_Boolean SetEmptyResultRange(const Standard_Real      theParameter, 
                                             IntTools_MarkedRangeSet& theMarkedRange);
 
@@ -645,37 +639,39 @@ void IntTools_BeanFaceIntersector::ComputeAroundExactIntersection()
         Standard_Real V = aPoint.V();
         
         if(UIsNotValid || VIsNotValid) {
-          // modified by NIZHNY-MKK  Thu Jun 17 12:50:39 2004
           Standard_Boolean bUCorrected = Standard_True;
           
           if(UIsNotValid) {
-            // modified by NIZHNY-MKK  Thu Jun 17 12:50:37 2004
             bUCorrected = Standard_False;
             solutionIsValid = Standard_False;
-            
+            //
             if(mySurface.IsUPeriodic()) {
-              Standard_Real aNewU = U;
-              
-              if(AdjustPeriodic(U, myUMinParameter, myUMaxParameter, mySurface.UPeriod(), aNewU)) {
-                solutionIsValid = Standard_True;
-                // modified by NIZHNY-MKK  Thu Jun 17 12:51:01 2004
-                bUCorrected = Standard_True;
-                U = aNewU;
-              }
+              Standard_Real aNewU, aUPeriod, aEps, du;
+              //
+              aUPeriod = mySurface.UPeriod();
+              aEps = Epsilon(aUPeriod);
+              //
+              IntTools_Tools::AdjustPeriodic(U, myUMinParameter, myUMaxParameter, 
+                                             aUPeriod, aNewU, du, aEps);
+              solutionIsValid = Standard_True;
+              bUCorrected = Standard_True;
+              U = aNewU;
             }
           }
-          // modified by NIZHNY-MKK  Thu Jun 17 12:51:03 2004
           //   if(solutionIsValid && VIsNotValid) {
           if(bUCorrected && VIsNotValid) {
             solutionIsValid = Standard_False;
-            
+            //
             if(mySurface.IsVPeriodic()) {
-              Standard_Real aNewV = V;
-              
-              if(AdjustPeriodic(V, myVMinParameter, myVMaxParameter, mySurface.VPeriod(), aNewV)) {
-                solutionIsValid = Standard_True;
-                V = aNewV;
-              }
+              Standard_Real aNewV, aVPeriod, aEps, dv;
+              //
+              aVPeriod = mySurface.VPeriod();
+              aEps = Epsilon(aVPeriod);
+              //
+              IntTools_Tools::AdjustPeriodic(V, myVMinParameter, myVMaxParameter, 
+                                             aVPeriod, aNewV, dv, aEps);
+              solutionIsValid = Standard_True;
+              V = aNewV;
             }
           }
         }
@@ -1386,27 +1382,6 @@ void IntTools_BeanFaceIntersector::ComputeRangeFromStartPoint(const Standard_Boo
     else
       myRangeManager.InsertRange(aPrevPar, theParameter, 2);
   }
-}
-
-// ---------------------------------------------------------------------------------
-// static function: AdjustPeriodic
-// purpose:  
-// ---------------------------------------------------------------------------------
-static Standard_Boolean AdjustPeriodic(const Standard_Real U, 
-                                       const Standard_Real UFirst,
-                                       const Standard_Real ULast,
-                                       const Standard_Real Period,
-                                       Standard_Real&      UResult) {
-  UResult = U;
-  Standard_Real u = U;
-  Standard_Real Eps = Epsilon(Period);
-  while (Eps < (UFirst-u)) u += Period;
-  while (Eps > (ULast -u)) u -= Period;
-  if ( u < UFirst) 
-    return Standard_False;
-  
-  UResult = u;
-  return Standard_True;
 }
 
 // ---------------------------------------------------------------------------------
