@@ -1516,7 +1516,7 @@ IntAna_QuadQuadGeo::IntAna_QuadQuadGeo(const gp_Cylinder& Cyl,
     gp_Pln aPln2(aQA2, aD3Ax2);
     //
     aIntr.Perform(aPln1, aPln2, Tol, Tol);
-    if (!aIntr.IsDone()) {
+    if (!aIntr.IsDone() || 0 == aIntr.NbSolutions()) {
       iRet=-1; // just in case. it must not be so
       typeres=IntAna_NoGeometricSolution; 
       return;
