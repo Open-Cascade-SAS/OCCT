@@ -729,7 +729,7 @@ Standard_Boolean ShapeFix_Wire::FixEdgeCurves()
         Standard_Real fp2d,lp2d;
         if(sae.PCurve(sbwd->Edge(i),face,C2d,fp2d,lp2d)) {
           if( fabs(First-fp2d)>Precision::PConfusion() ||
-              fabs(Last-fp2d)>Precision::PConfusion() ) {
+              fabs(Last-lp2d)>Precision::PConfusion() ) {
             BRep_Builder B;
             B.SameRange(sbwd->Edge(i),Standard_False);
           }
