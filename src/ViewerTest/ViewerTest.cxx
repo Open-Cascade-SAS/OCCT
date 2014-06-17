@@ -1623,7 +1623,7 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
       aChangeSet->LineWidth = 1.0;
     }
     else if (anArg == "-settransp"
-          || anArg == "-settransparancy")
+          || anArg == "-settransparency")
     {
       if (++anArgIter >= theArgNb)
       {
@@ -1663,7 +1663,7 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
       }
     }
     else if (anArg == "-unsettransp"
-          || anArg == "-unsettransparancy"
+          || anArg == "-unsettransparency"
           || anArg == "-unsetalpha"
           || anArg == "-opaque")
     {
@@ -4311,7 +4311,7 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
               "vaspects [-noupdate|-update] [name1 [name2 [...]]]"
       "\n\t\t:          [-setcolor ColorName] [-unsetcolor]"
       "\n\t\t:          [-setmaterial MatName] [-unsetmaterial]"
-      "\n\t\t:          [-settransparency Transp] [-unsettransparancy]"
+      "\n\t\t:          [-settransparency Transp] [-unsettransparency]"
       "\n\t\t:          [-setwidth LineWidth] [-unsetwidth]"
       "\n\t\t:          [-subshapes subname1 [subname2 [...]]]"
       "\n\t\t: Manage presentation properties of all, selected or named objects."
