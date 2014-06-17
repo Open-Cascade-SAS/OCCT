@@ -63,10 +63,14 @@ baddobjects b1
 baddcompound b2
 bfillds
 
-bbuild result -t
 regexp { +Tps: +([-0-9.+eE]+)} [bbuild result -t] full tps_time
 
-if { $tps_time > 100 } {
+if { [regexp {Debug mode} [dversion]] } {
+  set check_time 30
+} else {
+  set check_time 913
+}
+if { $tps_time > $check_time } {
   puts "Error: low performance"
 } else {
   puts "OK: high performance"

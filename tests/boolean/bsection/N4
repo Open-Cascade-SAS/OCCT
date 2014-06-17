@@ -1,6 +1,6 @@
 #puts "TODO #23749 ALL: Faulty shapes in variables faulty_1 to faulty_"
 
-cpulimit 4000
+cpulimit 4500
 
 restore [locate_data_file lh3d_px2.brep] a
 compound result
