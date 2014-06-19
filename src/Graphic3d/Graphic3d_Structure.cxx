@@ -2471,15 +2471,6 @@ void Graphic3d_Structure::SetComputeVisual (const Graphic3d_TypeOfStructure theV
 }
 
 //=============================================================================
-//function : Plot
-//purpose  :
-//=============================================================================
-void Graphic3d_Structure::Plot (const Handle(Graphic3d_Plotter)& )
-{
-  //
-}
-
-//=============================================================================
 //function : SetHLRValidation
 //purpose  :
 //=============================================================================

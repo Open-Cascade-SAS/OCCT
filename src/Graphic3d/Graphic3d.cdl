@@ -94,9 +94,6 @@ is
     exception MaterialDefinitionError inherits OutOfRange;
     ---Category: Exceptions
 
-    exception PlotterDefinitionError inherits OutOfRange;
-    ---Category: The exceptions
-
     exception PriorityDefinitionError inherits OutOfRange;
     ---Category: Exceptions
 
@@ -487,9 +484,6 @@ is
 
     deferred class DataStructureManager;
     ---Category: Classes
-
-    deferred class Plotter;
-    ---Category: The classes
 
     class Vector;
     ---Category: Classes

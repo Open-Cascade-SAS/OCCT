@@ -50,7 +50,6 @@ ne marche pas.
 ne marche pas. Contournement en appelant WNT_Window::Size(Int,Int).
 16-08-98 : CAL ; S3892. Ajout grilles 3d.
 09-09-98 : CAL ; S3892. Generalisation de TrsPoint.
-24-09-98 : CAL ; Ajout d'un parametre a V3d_View::SetPlotter.
 06-10-98 : CAL ; Ajout d'un TIMER si CSF_GraphicTimer est definie.
 16-10-98 : CAL ; Retrait d'un TIMER si CSF_GraphicTimer est definie.
 06-11-98 : CAL ; PRO ?????. Probleme dans ZFitAll si un point dans la vue.
@@ -3006,25 +3005,6 @@ void V3d_View::Init()
   if( !myComputedMode || !MyViewer->DefaultComputedMode() ) {
     SetComputedMode(Standard_False);
   }
-}
-
-//=============================================================================
-//function : SetPlotter
-//purpose  :
-//=============================================================================
-void V3d_View::SetPlotter(const Handle(Graphic3d_Plotter)& aPlotter)
-{
-  MyPlotter = aPlotter;
-}
-
-//=============================================================================
-//function : Plot
-//purpose  :
-//=============================================================================
-void V3d_View::Plot()
-{
-  V3d_BadValue_Raise_if( !MyPlotter.IsNull(), "view has no plotter");
-  MyView->Plot(MyPlotter);
 }
 
 //=============================================================================

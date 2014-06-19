@@ -105,7 +105,6 @@ uses
         ContextView                       from Visual3d,
         Vector                            from Graphic3d,
         Vertex                            from Graphic3d,
-        Plotter                           from Graphic3d,
         Camera_Handle                     from Graphic3d,
         Window                            from Aspect,
         PixMap                            from Image,
@@ -1390,16 +1389,6 @@ is
         WindowFitAll ( me : mutable ; Xmin, Ymin, Xmax, Ymax : Integer);
         ---Purpose: idem than WindowFit
 
-        SetPlotter ( me : mutable; aPlotter : Plotter from Graphic3d )
-        ---Purpose: Set a plotter for plotting the contents of the view
-        --          field MyPlotter
-        is virtual;
-
-        Plot ( me : mutable )
-        ---Purpose: Create a 2D View for plotting the contents of the view
-        raises BadValue from V3d;
-        --      if the plotter is undefined.
-
         Compute ( me; AVertex   : Vertex from Graphic3d )
                 returns Vertex from Graphic3d
                 is static private;
@@ -1661,8 +1650,6 @@ fields
         MyDefaultViewPoint:     Vertex from Graphic3d ;
 
         MyWindow:               Window from Aspect;
-
-        MyPlotter:              Plotter from Graphic3d;
 
         myActiveLightsIterator: ListIteratorOfListOfTransient from TColStd;
 

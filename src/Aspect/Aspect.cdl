@@ -20,28 +20,10 @@
 -- Reason :     Traitement des Markers (G400)
 -- Purpose:     Specifications definitives
 -- Modified:    15/01/98 ; FMN : Ajout Hidden Line
--- Modified:    07/07/98 ; DCB : Adding plotmode enum
--- Modified: 07-07-98 by DCB (S3602 study)
---    Adding plotmode enum
--- Modified: 20-07-98 by DCB (S3602 study)
---   Adding Plotter and PlotterConfigTool classes
---   to plotters (PLO)
--- Modified: 22-07-98 by DCB
---   Adding DriverPtr, PlotterDriverPtr, WindowDriverPtr
---   pointers.
 -- Modified: 24/08/98 ; CAL : S3892. Ajout grilles 3d.
 -- Modified: 16-09-98 by BGN (S3989) 
 ---   Adding TypeOfTriedronEcho, TypeOfTriedronPosition.
 -- Modified: 30-11-98 ; FMN : S4069. Textes always visible.
--- Modified: 30/10/98 : DCB : S4046
---   Adding class PlotterParameter and changing the Plotter's class
---   implementation according to new PLO specifications (S3604 ???)
---   Also new classes : (H)Array1OfPlotterParameter
---   New enumeration : TypeOfPlotterParameter.
---   New exception : PlotterParameterError.
--- Modified: 25-NOV-98 : DCB
---   Removing all plotters specific implementation from Aspect.
---   These classes and enums will now be located in PlotMgt.
 -- Modified: 17-NOV-99 : GG GER61351
 --   Add TypeOfFacingModel enum 
 -- Modified: 20-JAN-00 : GG 
@@ -629,37 +611,6 @@ is
                                 GT_Circular
         end GridType;
         ---Purpose: Defines the grid type : Rectangular or Circular.
-
-        --------- Start DCB modification ----------------------------------------
-        enumeration PlotMode is
-                                        PM_DPLOTTER,
-                                        PM_FILEONLY,
-                                        PM_NPLOTTER
-        end PlotMode;
-        ---Purpose: Defines plot mode for plotter drivers derived from
-        --          Aspect_PlotterDriver:
-        --          1) PM_DPLOTTER - send file to plotter and delete file
-        --          2) PM_FILEONLY - do not send file to the plotter
-        --          3) PM_NPLOTTER - send file to the plotter but not delete a file
- 
-  
-        enumeration ListingType is
-                                        LPID_DIRPLOT,
-                                        LPID_DIRPARPLO,
-                                        LPID_ALLDIRS
-        end ListingType;
-        ---Purpose: Defines where to search plotter files (PLO)
-
-      enumeration PlotterOrigin is
-        PO_CENTER,
-        PO_BOTTOMLEFT,
-        PO_TOPLEFT,
-        PO_TOPRIGHT,
-        PO_BOTTOMRIGHT,
-        PO_UNKNOWN
-      end PlotterOrigin;
-        --------- Stop  DCB modification ----------------------------------------
-
 
         enumeration TypeOfTriedronEcho is       TOTE_NONE,
                                                 TOTE_ORIGIN,

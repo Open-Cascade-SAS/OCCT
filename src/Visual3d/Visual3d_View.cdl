@@ -80,7 +80,6 @@ uses
     CView                   from Graphic3d,
     GraphicDriver           from Graphic3d,
     PtrFrameBuffer          from Graphic3d,
-    Plotter                 from Graphic3d,
     Structure               from Graphic3d,
     SequenceOfStructure     from Graphic3d,
     MapOfStructure          from Graphic3d,
@@ -1008,14 +1007,6 @@ is
 	---Purpose: Returns an index != 0 if the structure <AStructure>
 	--	    have the same owner than another structure in the
 	--	    sequence of the computed structures.
-	---Category: Private methods
-
-	Plot ( me;
-	       APlotter	: Plotter from Graphic3d )
-		is static;
-	---Level: Internal
-	---Purpose: Calls the method Plot for each Structure
-	--	    displayed in <me>.
 	---Category: Private methods
 
 	  Print (me; AnUnderLayer : Layer from Visual3d;

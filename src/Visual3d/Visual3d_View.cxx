@@ -29,7 +29,6 @@
      --------------------------------
       Mars 1992 : NW,JPB,CAL ; Creation.
       04-02-97  : FMN ; Suppression de PSOutput, XWDOutput ...
-      22-04-97  : CAL ; Ajout du Plot.
       03-06-97  : FMN ; Correction calcul SetRatio
       06-05-97  : CAL ; Ajout du Clear sur les TOS_COMPUTED.
       28-07-97  : PCT ; Ajout lumiere frontale headlight.
@@ -2230,19 +2229,6 @@ const Handle(Graphic3d_GraphicDriver)& Visual3d_View::GraphicDriver () const {
 
         return MyGraphicDriver;
 
-}
-
-void Visual3d_View::Plot (const Handle(Graphic3d_Plotter)& thePlotter) const
-{
-  for (Graphic3d_MapIteratorOfMapOfStructure S1Iterator (MyDisplayedStructure); S1Iterator.More(); S1Iterator.Next())
-  {
-    Standard_Integer Index = IsComputed (S1Iterator.Key ());
-    // displayed structure is plotted as if it was not calculated
-    if (Index == 0)
-      (S1Iterator.Key ())->Plot (thePlotter);
-    else
-      (MyCOMPUTEDSequence.Value (Index))->Plot (thePlotter);
-  }
 }
 
 Standard_Integer Visual3d_View::HaveTheSameOwner (const Handle(Graphic3d_Structure)& AStructure) const {

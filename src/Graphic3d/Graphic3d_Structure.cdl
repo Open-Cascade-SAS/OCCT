@@ -61,7 +61,6 @@ uses
 	SequenceOfStructure	from Graphic3d,
 	HSequenceOfStructure	from Graphic3d,
 	MapOfStructure		from Graphic3d,
-	Plotter			from Graphic3d,
 	StructureManager	from Graphic3d,
 	StructureManagerPtr from Graphic3d,
 	TypeOfComposition	from Graphic3d,
@@ -901,12 +900,6 @@ is
     --    theXMin = theYMin = theZMin = RealFirst().
     --    theXMax = theYMax = theZMax = RealLast().
     ---Category: Private methods
-
-	Plot ( me	: mutable;
-	       aPlotter	: Plotter from Graphic3d )
-		is virtual;
-	---Level: Internal
-	---Category: Private methods
 
 	PrintNetwork ( myclass;
 		       AStructure	: Structure from Graphic3d;
