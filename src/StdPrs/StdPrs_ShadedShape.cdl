@@ -17,7 +17,7 @@
 class ShadedShape from StdPrs
 
 inherits Root from Prs3d
-  --- Purpose: unknown.
+  --- Purpose: Auxiliary procedures to prepare Shaded presentation of specified shape.
 
 uses
 
@@ -29,20 +29,24 @@ uses
 is
 
   Add (myclass;
-       thePresentation : Presentation from Prs3d;
-       theShape        : Shape        from TopoDS;
-       theDrawer       : Drawer       from Prs3d);
+       thePresentation    : Presentation from Prs3d;
+       theShape           : Shape        from TopoDS;
+       theDrawer          : Drawer       from Prs3d;
+       theToExploreSolids : Boolean from Standard = Standard_True);
   ---Purpose: Shades <theShape>.
+  -- @param theToExploreSolids when set to true, explodes compound into two groups - with closed Solids and open Shells
 
   Add (myclass;
-       thePresentation : Presentation from Prs3d;
-       theShape        : Shape        from TopoDS;
-       theDrawer       : Drawer       from Prs3d;
-       theHasTexels    : Boolean      from Standard;
-       theUVOrigin     : Pnt2d        from gp;
-       theUVRepeat     : Pnt2d        from gp;
-       theUVScale      : Pnt2d        from gp);
+       thePresentation    : Presentation from Prs3d;
+       theShape           : Shape        from TopoDS;
+       theDrawer          : Drawer       from Prs3d;
+       theHasTexels       : Boolean      from Standard;
+       theUVOrigin        : Pnt2d        from gp;
+       theUVRepeat        : Pnt2d        from gp;
+       theUVScale         : Pnt2d        from gp;
+       theToExploreSolids : Boolean from Standard = Standard_True);
   ---Purpose: Shades <theShape> with texture coordinates.
+  -- @param theToExploreSolids when set to true, explodes compound into two groups - with closed Solids and open Shells
 
   Tessellate (myclass;
               theShape  : Shape  from TopoDS;

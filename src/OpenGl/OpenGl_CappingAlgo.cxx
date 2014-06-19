@@ -137,7 +137,10 @@ void OpenGl_CappingAlgo::RenderCapping (const Handle(OpenGl_Workspace)&  theWork
 
     for (OpenGl_Structure::GroupIterator aGroupIt (theGroups); aGroupIt.More(); aGroupIt.Next())
     {
-      aGroupIt.Value()->Render (theWorkspace);
+      if (aGroupIt.Value()->IsClosed())
+      {
+        aGroupIt.Value()->Render (theWorkspace);
+      }
     }
 
     // override material, cull back faces

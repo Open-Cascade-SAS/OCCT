@@ -37,6 +37,7 @@
 // purpose  :
 // =======================================================================
 Graphic3d_Group::Graphic3d_Group (const Handle(Graphic3d_Structure)& theStruct)
+: myIsClosed (Standard_False)
 {
   myBounds.XMin  = ShortRealLast();
   myBounds.YMin  = ShortRealLast();
@@ -1182,4 +1183,22 @@ void Graphic3d_Group::Text (const TCollection_ExtendedString& theText,
   const NCollection_String aText ((Standard_Utf16Char* )theText.ToExtString());
   Text (aText.ToCString(), thePoint, theHeight, 0.0,
         Graphic3d_TP_RIGHT, Graphic3d_HTA_LEFT, Graphic3d_VTA_BOTTOM, theToEvalMinMax);
+}
+
+// =======================================================================
+// function : SetClosed
+// purpose  :
+// =======================================================================
+void Graphic3d_Group::SetClosed (const Standard_Boolean theIsClosed)
+{
+  myIsClosed = theIsClosed;
+}
+
+// =======================================================================
+// function : IsClosed
+// purpose  :
+// =======================================================================
+Standard_Boolean Graphic3d_Group::IsClosed() const
+{
+  return myIsClosed;
 }

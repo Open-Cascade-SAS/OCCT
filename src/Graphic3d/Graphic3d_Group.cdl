@@ -509,7 +509,13 @@ deferred class Group from Graphic3d inherits TShared
         ---Purpose: Calls the Update method of the StructureManager which
         --      contains the associated Structure of the Group <me>.
         ---Category: Private methods
-    
+
+        SetClosed (me: mutable; theIsClosed : Boolean from Standard);
+        ---Purpose: Changes property shown that primitive arrays within this group form closed volume (do no contain open shells).
+
+        IsClosed (me) returns Boolean from Standard;
+        ---Purpose: Return true if primitive arrays within this graphic group form closed volume (do no contain open shells).
+
     fields
     
     --
@@ -529,6 +535,9 @@ deferred class Group from Graphic3d inherits TShared
 
   -- the min-max
   myBounds       : CBounds from Graphic3d is protected;
+
+  -- Identifies group forming closed volume. Used to filter groups for back face culling and capping algorithms.
+  myIsClosed  : Boolean from Standard is protected;
 
   ContextLine     : CAspectLine     from Graphic3d is protected;
   ContextFillArea : CAspectFillArea from Graphic3d is protected;
