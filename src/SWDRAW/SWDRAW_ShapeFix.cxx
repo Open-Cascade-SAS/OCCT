@@ -18,6 +18,7 @@
 
 #include <Draw.hxx>
 #include <DBRep.hxx>
+#include <BRep_Tool.hxx>
 #include <SWDRAW.hxx>
 #include <gp_XYZ.hxx>
 #include <gp_Pnt2d.hxx>
@@ -635,6 +636,19 @@ static Standard_Integer checkoverlapedges(Draw_Interpretor& di, Standard_Integer
      di<<"Invalid type of arguments"<<"\n";
      return 1;
    }
+
+   if (BRep_Tool::Degenerated(e1))
+   {
+     di << a[1] << " is degenerated\n";
+     return 1;
+   }
+
+   if (BRep_Tool::Degenerated(e2))
+   {
+     di << a[2] << " is degenerated\n";
+     return 1;
+   }
+
    Standard_Real aTol = Precision::Confusion();
    Standard_Real aDistDomain = 0.0;
    Standard_Integer k = 3;
