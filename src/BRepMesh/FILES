@@ -18,4 +18,8 @@ BRepMesh_VertexCellFilter.hxx
 BRepMesh_VertexInspector.hxx
 BRepMesh_VertexInspector.cxx
 BRepMesh_VectorOfVertex.hxx
+BRepMesh_EdgeChecker.hxx
+BRepMesh_FaceChecker.hxx
+BRepMesh_IncrementalMesh.hxx
+BRepMesh_IncrementalMesh.cxx
 EXTERNLIB

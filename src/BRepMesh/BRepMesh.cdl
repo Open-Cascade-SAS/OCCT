@@ -89,6 +89,8 @@ is    enumeration DegreeOfFreedom is
       imported VertexInspector from BRepMesh;
       imported VertexCellFilter from BRepMesh;
       imported VectorOfVertex from BRepMesh;
+      imported EdgeChecker from BRepMesh;
+      imported FaceChecker from BRepMesh;
 
       primitive PluginEntryType;
 
@@ -166,7 +168,8 @@ is    enumeration DegreeOfFreedom is
       private class Classifier;
       imported ClassifierPtr; -- smart pointer on Classifier
 
-      class IncrementalMesh from BRepMesh;
+      imported IncrementalMesh from BRepMesh;
+
 
          ---- classes moved from MeshShape
       class GeomTool;

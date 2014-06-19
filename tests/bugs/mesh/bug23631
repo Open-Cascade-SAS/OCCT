@@ -1,0 +1,37 @@
+puts "========"
+puts "OCC23631"
+puts "========"
+puts ""
+###########################################
+## Infinite memory consumption in BRepMesh
+###########################################
+
+set BugNumber 23631
+
+restore [locate_data_file OCC396_f2903.brep] result
+
+incmesh result 0.01
+triangles result 
+
+set tri 0
+set nod 0
+
+set good_tri 31
+set good_nod 33
+
+set tri_info [trinfo result]
+regexp { +([-0-9.+eE]+) +triangles} $tri_info full tri
+regexp { +([-0-9.+eE]+) +nodes} $tri_info full nod
+
+if { ${tri} == ${good_tri} && ${nod} == ${good_nod} } {
+    puts "Bug ${BugNumber} shading: OK"
+} else {
+    puts "Bug ${BugNumber} shading: Faulty"
+}
+
+vinit
+vdisplay result
+vfit
+vsetdispmode 1
+set only_screen 1
+

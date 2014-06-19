@@ -14,17 +14,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepMesh_IncrementalMesh.ixx>
+#include <BRepMesh_IncrementalMesh.hxx>
 
 #include <BRepMesh.hxx>
 #include <BRepMesh_Edge.hxx>
 #include <BRepMesh_Triangle.hxx>
+#include <BRepMesh_FastDiscret.hxx>
 #include <BRepMesh_FastDiscretFace.hxx>
 #include <BRepMesh_PluginMacro.hxx>
 
 #include <Bnd_Box.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
+#include <BRepTools.hxx>
 #include <BRepLib.hxx>
 #include <BRepBndLib.hxx>
 #include <BRepAdaptor_Curve.hxx>
@@ -45,8 +47,8 @@
 #include <Poly_Triangulation.hxx>
 #include <Poly_Polygon3D.hxx>
 #include <Poly_PolygonOnTriangulation.hxx>
-
-#include <vector>
+#include <Standard_Mutex.hxx>
+#include <BRepMesh_FaceChecker.hxx>
 
 #ifdef HAVE_TBB
   // paralleling using Intel TBB
@@ -60,18 +62,47 @@ namespace
   static Standard_Boolean IS_IN_PARALLEL = Standard_False;
 };
 
+IMPLEMENT_STANDARD_HANDLE (BRepMesh_IncrementalMesh, BRepMesh_DiscretRoot)
+IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_IncrementalMesh, BRepMesh_DiscretRoot)
+
+//=======================================================================
+//function : isCorrectPolyData
+//purpose  : 
+//=======================================================================
+Standard_Boolean BRepMesh_IncrementalMesh::isCorrectPolyData()
+{
+  collectFaces();
+
+  BRepMesh_FaceChecker aFaceChecker(myInParallel);
+  if (myInParallel)
+  {
+  #ifdef HAVE_TBB
+    // check faces in parallel threads using TBB
+    tbb::parallel_for_each(myFaces.begin(), myFaces.end(), aFaceChecker);
+  #else
+    // alternative parallelization not yet available
+    for (std::vector<TopoDS_Face>::iterator it(myFaces.begin()); it != myFaces.end(); it++)
+      aFaceChecker(*it);
+  #endif
+  }
+  else
+  {
+    for (std::vector<TopoDS_Face>::iterator it(myFaces.begin()); it != myFaces.end(); it++)
+      aFaceChecker(*it);
+  }
+
+  return aFaceChecker.IsValid();
+}
+
 //=======================================================================
 //function : BRepMesh_IncrementalMesh
 //purpose  : 
 //=======================================================================
 BRepMesh_IncrementalMesh::BRepMesh_IncrementalMesh() 
 : myRelative (Standard_False),
-  myInParallel (Standard_False),
-  myModified (Standard_False),
-  myStatus (0)
+  myInParallel (Standard_False)
 {
-  mymapedge.Clear();
-  myancestors.Clear();
+  Init();
 }
 
 //=======================================================================
@@ -82,14 +113,11 @@ BRepMesh_IncrementalMesh::BRepMesh_IncrementalMesh (const TopoDS_Shape& theShape
                                                     const Standard_Real theDeflection,
                                                     const Standard_Boolean theRelative,
                                                     const Standard_Real theAngle,
-													const Standard_Boolean theInParallel)
+                                                    const Standard_Boolean theInParallel)
 : myRelative (theRelative),
-  myInParallel (theInParallel),
-  myModified (Standard_False),
-  myStatus (0)
+  myInParallel (theInParallel)
 {
-  mymapedge.Clear();
-  myancestors.Clear();
+  Init();
   myDeflection = theDeflection;
   myAngle = theAngle;
   myShape = theShape;
@@ -130,9 +158,11 @@ Standard_Boolean BRepMesh_IncrementalMesh::IsParallel() const
 //=======================================================================
 void BRepMesh_IncrementalMesh::Init() 
 {
-  myModified=Standard_False;
+  myStatus = 0;
+  myModified = Standard_False;
   mymapedge.Clear();
   myancestors.Clear();
+  myFaces.clear();
 }
 
 //=======================================================================
@@ -141,7 +171,7 @@ void BRepMesh_IncrementalMesh::Init()
 //=======================================================================
 void BRepMesh_IncrementalMesh::SetRelative(const Standard_Boolean theFlag)
 {
-  myRelative=theFlag;
+  myRelative = theFlag;
 }
 
 //=======================================================================
@@ -168,11 +198,14 @@ Standard_Boolean BRepMesh_IncrementalMesh::IsModified() const
 //=======================================================================
 void BRepMesh_IncrementalMesh::Perform()
 {
+  Init(); 
+
+  if (!isCorrectPolyData())
+    BRepTools::Clean(myShape);
+
   Bnd_Box aBox;
   //
   SetDone();
-  //
-  Init(); 
   //
   BRepBndLib::Add(myShape, aBox);
   myBox = aBox;
@@ -202,6 +235,37 @@ Standard_Integer BRepMesh_IncrementalMesh::GetStatusFlags() const
 }
 
 //=======================================================================
+//function : collectFaces
+//purpose  : 
+//=======================================================================
+void BRepMesh_IncrementalMesh::collectFaces()
+{
+  TopTools_ListOfShape aFaceList;
+  BRepLib::ReverseSortFaces(myShape, aFaceList);
+  TopTools_MapOfShape aFaceMap;
+  myFaces.reserve(aFaceList.Extent());
+
+  // make array of faces suitable for processing (excluding faces without surface)
+  TopLoc_Location aDummyLoc;
+  const TopLoc_Location aEmptyLoc;
+  TopTools_ListIteratorOfListOfShape aFaceIter(aFaceList);
+  for (; aFaceIter.More(); aFaceIter.Next())
+  {
+    TopoDS_Shape aFaceNoLoc = aFaceIter.Value();
+    aFaceNoLoc.Location(aEmptyLoc);
+    if (!aFaceMap.Add (aFaceNoLoc))
+      continue; // already processed
+
+    TopoDS_Face aFace = TopoDS::Face(aFaceIter.Value());
+    const Handle(Geom_Surface)& aSurf = BRep_Tool::Surface(aFace, aDummyLoc);
+    if (aSurf.IsNull())
+      continue;
+
+    myFaces.push_back(aFace);
+  }
+}
+
+//=======================================================================
 //function : Update(shape)
 //purpose  : Builds the incremental mesh of the shape
 //=======================================================================
@@ -225,49 +289,26 @@ void BRepMesh_IncrementalMesh::Update(const TopoDS_Shape& S)
   }
 
   // get list of faces
-  std::vector<TopoDS_Face> aFaces;
-  {
-    TopTools_ListOfShape aFaceList;
-    BRepLib::ReverseSortFaces (S, aFaceList);
-    TopTools_MapOfShape aFaceMap;
-    aFaces.reserve (aFaceList.Extent());
-
-    // make array of faces suitable for processing (excluding faces without surface)
-    TopLoc_Location aDummyLoc;
-    const TopLoc_Location anEmptyLoc;
-    for (TopTools_ListIteratorOfListOfShape aFaceIter (aFaceList); aFaceIter.More(); aFaceIter.Next())
-    {
-      TopoDS_Shape aFaceNoLoc = aFaceIter.Value();
-      aFaceNoLoc.Location (anEmptyLoc);
-      if (!aFaceMap.Add (aFaceNoLoc))
-        continue; // already processed
-
-      TopoDS_Face aFace = TopoDS::Face (aFaceIter.Value());
-      const Handle(Geom_Surface)& aSurf = BRep_Tool::Surface (aFace, aDummyLoc);
-      if (aSurf.IsNull())
-        continue;
-
-      Update (aFace);
-      aFaces.push_back (aFace);
-    }
-  }
+  std::vector<TopoDS_Face>::iterator aFaceIt(myFaces.begin());
+  for (; aFaceIt != myFaces.end(); aFaceIt++)
+    Update(*aFaceIt);
 
   if (myInParallel)
   {
   #ifdef HAVE_TBB
     myMesh->CreateMutexesForSubShapes(S, TopAbs_EDGE);
     // mesh faces in parallel threads using TBB
-    tbb::parallel_for_each (aFaces.begin(), aFaces.end(), *myMesh.operator->());
+    tbb::parallel_for_each (myFaces.begin(), myFaces.end(), *myMesh.operator->());
   #else
     // alternative parallelization not yet available
-    for (std::vector<TopoDS_Face>::iterator it(aFaces.begin()); it != aFaces.end(); it++)
+    for (std::vector<TopoDS_Face>::iterator it(myFaces.begin()); it != myFaces.end(); it++)
       myMesh->Process (*it);
   #endif
     myMesh->RemoveAllMutexes();
   }
   else
   {
-    for (std::vector<TopoDS_Face>::iterator it(aFaces.begin()); it != aFaces.end(); it++)
+    for (std::vector<TopoDS_Face>::iterator it(myFaces.begin()); it != myFaces.end(); it++)
       myMesh->Process (*it);
   }
 
