@@ -765,7 +765,8 @@ void BRepFill_PipeShell::SetForceApproxC1(const Standard_Boolean ForceApproxC1)
   TopTools_MapOfShape Dummy;
   BRepFill_DataMapOfShapeHArray2OfShape Dummy2;
   BRepFill_DataMapOfShapeHArray2OfShape Dummy3;
-  MkSw.Build(Dummy, Dummy2, Dummy3, myTransition, theContinuity);
+  MkSw.Build(Dummy, Dummy2, Dummy3, myTransition, theContinuity,
+             GeomFill_Location, myMaxDegree, myMaxSegments);
 
   myStatus = myLocation->GetStatus();
   Ok =  (MkSw.IsDone() && (myStatus == GeomFill_PipeOk));
