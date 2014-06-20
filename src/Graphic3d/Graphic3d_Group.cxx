@@ -39,14 +39,6 @@
 Graphic3d_Group::Graphic3d_Group (const Handle(Graphic3d_Structure)& theStruct)
 : myIsClosed (Standard_False)
 {
-  myBounds.XMin  = ShortRealLast();
-  myBounds.YMin  = ShortRealLast();
-  myBounds.ZMin  = ShortRealLast();
-  myBounds.XMax  = ShortRealFirst();
-  myBounds.YMax  = ShortRealFirst();
-  myBounds.ZMax  = ShortRealFirst();
-
-  //
   // A small commentary on the usage of This!
   //
   // Graphic3d_Group is created in a structure. Graphic3d_Structure is a
@@ -95,12 +87,7 @@ void Graphic3d_Group::Clear (Standard_Boolean theUpdateStructureMgr)
   ContextMarker.IsDef   = 0,
   ContextFillArea.IsDef = 0;
 
-  myBounds.XMin = ShortRealLast();
-  myBounds.YMin = ShortRealLast();
-  myBounds.ZMin = ShortRealLast();
-  myBounds.XMax = ShortRealFirst();
-  myBounds.YMax = ShortRealFirst();
-  myBounds.ZMax = ShortRealFirst();
+  myBounds.Clear();
 
   if (MyContainsFacet)
   {
@@ -148,12 +135,7 @@ void Graphic3d_Group::Remove()
 
   Update();
 
-  myBounds.XMin = ShortRealLast();
-  myBounds.YMin = ShortRealLast();
-  myBounds.ZMin = ShortRealLast();
-  myBounds.XMax = ShortRealFirst();
-  myBounds.YMax = ShortRealFirst();
-  myBounds.ZMax = ShortRealFirst();
+  myBounds.Clear();
 
   MyIsEmpty = Standard_True;
 }
@@ -188,11 +170,7 @@ Standard_Boolean Graphic3d_Group::IsEmpty() const
     return Standard_True;
   }
 
-  const Standard_ShortReal RL = ShortRealLast();
-  const Standard_ShortReal RF = ShortRealFirst();
-  const Standard_Boolean isEmpty = ((myBounds.XMin == RL) && (myBounds.YMin == RL)
-                                 && (myBounds.ZMin == RL) && (myBounds.XMax == RF)
-                                 && (myBounds.YMax == RF) && (myBounds.ZMax == RF));
+  const Standard_Boolean isEmpty = myStructure->IsInfinite() ? Standard_False : !myBounds.IsValid();
   if (isEmpty != MyIsEmpty)
   {
     ::Message::DefaultMessenger()->Send ("Graphic3d_Group: MyIsEmpty != IsEmpty()", Message_Trace);
@@ -207,12 +185,14 @@ Standard_Boolean Graphic3d_Group::IsEmpty() const
 void Graphic3d_Group::SetMinMaxValues (const Standard_Real theXMin, const Standard_Real theYMin, const Standard_Real theZMin,
                                        const Standard_Real theXMax, const Standard_Real theYMax, const Standard_Real theZMax)
 {
-  myBounds.XMin = Standard_ShortReal (theXMin);
-  myBounds.YMin = Standard_ShortReal (theYMin);
-  myBounds.ZMin = Standard_ShortReal (theZMin);
-  myBounds.XMax = Standard_ShortReal (theXMax);
-  myBounds.YMax = Standard_ShortReal (theYMax);
-  myBounds.ZMax = Standard_ShortReal (theZMax);
+  myBounds.CornerMin() = Graphic3d_Vec4 (static_cast<Standard_ShortReal> (theXMin),
+                                         static_cast<Standard_ShortReal> (theYMin),
+                                         static_cast<Standard_ShortReal> (theZMin),
+                                         1.0f);
+  myBounds.CornerMax() = Graphic3d_Vec4 (static_cast<Standard_ShortReal> (theXMax),
+                                         static_cast<Standard_ShortReal> (theYMax),
+                                         static_cast<Standard_ShortReal> (theZMax),
+                                         1.0f);
 }
 
 // =======================================================================
@@ -248,14 +228,22 @@ void Graphic3d_Group::MinMaxCoord (Standard_Real& theXMin, Standard_Real& theYMi
     theXMin = theYMin = theZMin = ShortRealFirst();
     theXMax = theYMax = theZMax = ShortRealLast();
   }
+  else if (myBounds.IsValid())
+  {
+    const Graphic3d_Vec4& aMinPt = myBounds.CornerMin();
+    const Graphic3d_Vec4& aMaxPt = myBounds.CornerMax();
+    theXMin = Standard_Real (aMinPt.x());
+    theYMin = Standard_Real (aMinPt.y());
+    theZMin = Standard_Real (aMinPt.z());
+    theXMax = Standard_Real (aMaxPt.x());
+    theYMax = Standard_Real (aMaxPt.y());
+    theZMax = Standard_Real (aMaxPt.z());
+  }
   else
   {
-    theXMin = Standard_Real (myBounds.XMin);
-    theYMin = Standard_Real (myBounds.YMin);
-    theZMin = Standard_Real (myBounds.ZMin);
-    theXMax = Standard_Real (myBounds.XMax);
-    theYMax = Standard_Real (myBounds.YMax);
-    theZMax = Standard_Real (myBounds.ZMax);
+    // for consistency with old API
+    theXMin = theYMin = theZMin = ShortRealLast();
+    theXMax = theYMax = theZMax = ShortRealFirst();
   }
 }
 
@@ -1039,10 +1027,7 @@ void Graphic3d_Group::AddPrimitiveArray (const Graphic3d_TypeOfPrimitiveArray th
           for (Standard_Integer aVertIter = 0; aVertIter < aNbVerts; ++aVertIter)
           {
             const Graphic3d_Vec2& aVert = *reinterpret_cast<const Graphic3d_Vec2* >(theAttribs->value (aVertIter) + anOffset);
-            if (aVert.x() < myBounds.XMin) myBounds.XMin = aVert.x();
-            if (aVert.y() < myBounds.YMin) myBounds.YMin = aVert.y();
-            if (aVert.x() > myBounds.XMax) myBounds.XMax = aVert.x();
-            if (aVert.y() > myBounds.YMax) myBounds.YMax = aVert.y();
+            myBounds.Add (Graphic3d_Vec4 (aVert.x(), aVert.y(), 0.0f, 1.0f));
           }
           break;
         }
@@ -1052,12 +1037,7 @@ void Graphic3d_Group::AddPrimitiveArray (const Graphic3d_TypeOfPrimitiveArray th
           for (Standard_Integer aVertIter = 0; aVertIter < aNbVerts; ++aVertIter)
           {
             const Graphic3d_Vec3& aVert = *reinterpret_cast<const Graphic3d_Vec3* >(theAttribs->value (aVertIter) + anOffset);
-            if (aVert.x() < myBounds.XMin) myBounds.XMin = aVert.x();
-            if (aVert.y() < myBounds.YMin) myBounds.YMin = aVert.y();
-            if (aVert.z() < myBounds.ZMin) myBounds.ZMin = aVert.z();
-            if (aVert.x() > myBounds.XMax) myBounds.XMax = aVert.x();
-            if (aVert.y() > myBounds.YMax) myBounds.YMax = aVert.y();
-            if (aVert.z() > myBounds.ZMax) myBounds.ZMax = aVert.z();
+            myBounds.Add (Graphic3d_Vec4 (aVert.x(), aVert.y(), aVert.z(), 1.0f));
           }
           break;
         }
@@ -1130,12 +1110,11 @@ void Graphic3d_Group::Text (const Standard_CString                  /*theText*/,
   {
     Standard_ShortReal x, y, z;
     thePoint.Coord (x, y, z);
-    if (x < myBounds.XMin) myBounds.XMin = x;
-    if (y < myBounds.YMin) myBounds.YMin = y;
-    if (z < myBounds.ZMin) myBounds.ZMin = z;
-    if (x > myBounds.XMax) myBounds.XMax = x;
-    if (y > myBounds.YMax) myBounds.YMax = y;
-    if (z > myBounds.ZMax) myBounds.ZMax = z;
+    myStructure->CStructure()->Is2dText = Standard_True;
+    myBounds.Add (Graphic3d_Vec4 (static_cast<Standard_ShortReal> (x),
+                                  static_cast<Standard_ShortReal> (y),
+                                  static_cast<Standard_ShortReal> (z),
+                                  1.0f));
   }
   Update();
 }
@@ -1201,4 +1180,22 @@ void Graphic3d_Group::SetClosed (const Standard_Boolean theIsClosed)
 Standard_Boolean Graphic3d_Group::IsClosed() const
 {
   return myIsClosed;
+}
+
+//=======================================================================
+//function : BoundingBox
+//purpose  :
+//=======================================================================
+const Graphic3d_BndBox4f& Graphic3d_Group::BoundingBox() const
+{
+  return myBounds;
+}
+
+//=======================================================================
+//function : ChangeBoundingBox
+//purpose  :
+//=======================================================================
+Graphic3d_BndBox4f& Graphic3d_Group::ChangeBoundingBox()
+{
+  return myBounds;
 }

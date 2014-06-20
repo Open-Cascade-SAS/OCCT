@@ -37,6 +37,9 @@ Graphic3d_CStructure::Graphic3d_CStructure (const Handle(Graphic3d_StructureMana
   visible          (1),
   pick             (1),
   HLRValidation    (0),
+  IsForHighlight   (Standard_False),
+  IsMutable        (Standard_False),
+  Is2dText         (Standard_False),
   myGraphicDriver  (theManager->GraphicDriver())
 {
   for (Standard_Integer i = 0; i <= 3; ++i)

@@ -459,6 +459,19 @@ void OpenGl_GraphicDriver::Transparency (const Graphic3d_CView& ACView, const St
     aCView->WS->UseTransparency(AFlag);
 }
 
+// =======================================================================
+// function : InvalidateBVHData
+// purpose  :
+// =======================================================================
+void OpenGl_GraphicDriver::InvalidateBVHData (Graphic3d_CView& theCView, const Standard_Integer theLayerId)
+{
+  OpenGl_CView *aCView = (OpenGl_CView *)theCView.ptrView;
+  if(aCView)
+  {
+    aCView->View->InvalidateBVHData (theLayerId);
+  }
+}
+
 Standard_Boolean OpenGl_GraphicDriver::View (Graphic3d_CView& theCView)
 {
   if (myMapOfView.IsBound (theCView.ViewId)

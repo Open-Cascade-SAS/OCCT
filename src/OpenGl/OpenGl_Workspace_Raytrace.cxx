@@ -13,13 +13,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <OpenGl_Workspace.hxx>
+
 #include <NCollection_Mat4.hxx>
 #include <OpenGl_ArbFBO.hxx>
 #include <OpenGl_FrameBuffer.hxx>
+#include <OpenGl_PrimitiveArray.hxx>
 #include <OpenGl_Texture.hxx>
 #include <OpenGl_VertexBuffer.hxx>
 #include <OpenGl_View.hxx>
-#include <OpenGl_Workspace.hxx>
 #include <OSD_File.hxx>
 #include <OSD_Protection.hxx>
 #include <Standard_Assert.hxx>

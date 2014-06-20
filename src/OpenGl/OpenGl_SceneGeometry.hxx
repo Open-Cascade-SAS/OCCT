@@ -19,8 +19,11 @@
 #include <BVH_Geometry.hxx>
 #include <BVH_Triangulation.hxx>
 #include <NCollection_StdAllocator.hxx>
-#include <OpenGl_PrimitiveArray.hxx>
-#include <OpenGl_Structure.hxx>
+
+struct OpenGl_ElementNode;
+class  OpenGl_Group;
+class  OpenGl_Structure;
+class  OpenGl_PrimitiveArray;
 
 namespace OpenGl_Raytrace
 {

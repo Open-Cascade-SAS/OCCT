@@ -23,6 +23,8 @@
 template<class T, int N>
 class BVH_PrimitiveSet : public BVH_Object<T, N>, public BVH_Set<T, N>
 {
+protected:
+
   using BVH_Set<T, N>::Box;
 
 public:

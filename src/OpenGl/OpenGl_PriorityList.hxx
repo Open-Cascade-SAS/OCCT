@@ -22,6 +22,8 @@
 #include <InterfaceGraphic_telem.hxx>
 
 #include <Handle_OpenGl_Workspace.hxx>
+#include <OpenGl_BVHClipPrimitiveSet.hxx>
+#include <OpenGl_BVHTreeSelector.hxx>
 
 class OpenGl_Structure;
 
@@ -30,21 +32,27 @@ typedef NCollection_Array1<OpenGl_SequenceOfStructure> OpenGl_ArrayOfStructure;
 
 class OpenGl_PriorityList
 {
- public:
+public:
 
-  OpenGl_PriorityList (const Standard_Integer ANbPriorities = 11) : myArray(0,(ANbPriorities-1)), myNbStructures(0) {}
+  // Empty constructor.
+  OpenGl_PriorityList (const Standard_Integer theNbPriorities = 11);
 
-  virtual ~OpenGl_PriorityList () {}
+  //! Destructor.
+  virtual ~OpenGl_PriorityList();
 
-  void Add (const OpenGl_Structure *AStructure, const Standard_Integer APriority);
+  void Add (const OpenGl_Structure* theStructure,
+            const Standard_Integer  thePriority,
+            Standard_Boolean isForChangePriority = Standard_False);
 
-  //! Remove structure and returns its priority, if the structure is not found,
-  //! method returns negative value
-  Standard_Integer Remove (const OpenGl_Structure *AStructure);
+  //! Remove structure and returns its priority, if the structure is not found, method returns negative value
+  Standard_Integer Remove (const OpenGl_Structure* theStructure,
+                           Standard_Boolean isForChangePriority = Standard_False);
 
-  Standard_Integer NbStructures () const { return myNbStructures; }
+  //! @return the number of structures
+  Standard_Integer NbStructures() const { return myNbStructures; }
 
-  void Render (const Handle(OpenGl_Workspace) &AWorkspace) const;
+  // Render all structures.
+  void Render (const Handle(OpenGl_Workspace)& theWorkspace) const;
 
   //! Returns the number of available priority levels
   Standard_Integer NbPriorities() const;
@@ -56,13 +64,33 @@ class OpenGl_PriorityList
   //! Returns array of OpenGL structures.
   const OpenGl_ArrayOfStructure& ArrayOfStructures() const { return myArray; }
 
- protected:
+  //! Marks BVH tree for given priority list as dirty and
+  //! marks primitive set for rebuild.
+  void InvalidateBVHData();
 
-  OpenGl_ArrayOfStructure myArray;
-  Standard_Integer        myNbStructures;
+protected:
 
- public:
+  //! Traverses through BVH tree to determine which structures are in view volume.
+  void traverse (OpenGl_BVHTreeSelector& theSelector) const;
+
+  //! Iterates through the hierarchical list of existing structures and renders them all.
+  void renderAll (const Handle(OpenGl_Workspace)& theWorkspace) const;
+
+  //! Iterates through the hierarchical list of existing structures and renders only overlapping ones.
+  void renderTraverse (const Handle(OpenGl_Workspace)& theWorkspace) const;
+
+protected:
+
+  OpenGl_ArrayOfStructure            myArray;
+  Standard_Integer                   myNbStructures;
+  mutable OpenGl_BVHClipPrimitiveSet myBVHPrimitives;             //<! Set of OpenGl_Structures for building BVH tree
+  mutable Standard_Boolean           myBVHIsLeftChildQueuedFirst; //<! Is needed for implementation of stochastic order of BVH traverse
+  mutable Standard_Boolean           myIsBVHPrimitivesNeedsReset; //<! Defines if the primitive set for BVH is outdated
+
+public:
+
   DEFINE_STANDARD_ALLOC
+
 };
 
-#endif //_OpenGl_PriorityList_Header
+#endif // _OpenGl_PriorityList_Header

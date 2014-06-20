@@ -37,6 +37,7 @@
 #include <Graphic3d_ZLayerSettings.hxx>
 #include <Visual3d_TypeOfSurfaceDetail.hxx>
 
+#include <OpenGl_BVHTreeSelector.hxx>
 #include <OpenGl_LayerList.hxx>
 #include <OpenGl_Light.hxx>
 #include <OpenGl_LineAttributes.hxx>
@@ -164,6 +165,10 @@ class OpenGl_View : public MMgt_TShared
   void SetZLayerSettings (const Standard_Integer theLayerId,
                           const Graphic3d_ZLayerSettings theSettings);
 
+  //! Changes the priority of a structure within its ZLayer
+  void ChangePriority (const OpenGl_Structure *theStructure,
+                       const Standard_Integer theNewPriority);
+
   void CreateBackgroundTexture (const Standard_CString AFileName, const Aspect_FillMethod AFillStyle);
   void SetBackgroundTextureStyle (const Aspect_FillMethod FillStyle);
   void SetBackgroundGradient (const Quantity_Color& AColor1, const Quantity_Color& AColor2, const Aspect_GradientFillMethod AType);
@@ -189,6 +194,14 @@ class OpenGl_View : public MMgt_TShared
 
   //! Returns visualization mode for objects in the view.
   Visual3d_TypeOfSurfaceDetail SurfaceDetail() const { return mySurfaceDetail; }
+
+  //! Returns selector for BVH tree, providing a possibility to store information
+  //! about current view volume and to detect which objects are overlapping it.
+  OpenGl_BVHTreeSelector& BVHTreeSelector() { return myBVHSelector; }
+
+  //! Marks BVH tree for given priority list as dirty and
+  //! marks primitive set for rebuild.
+  void InvalidateBVHData (const Standard_Integer theLayerId);
 
   void GetMatrices (TColStd_Array2OfReal&  theMatOrient,
                     TColStd_Array2OfReal&  theMatMapping) const;
@@ -272,6 +285,9 @@ protected:
   StateInfo myLastOrientationState;
   StateInfo myLastViewMappingState;
   StateInfo myLastLightSourceState;
+
+  //! Is needed for selection of overlapping objects and storage of the current view volume
+  OpenGl_BVHTreeSelector myBVHSelector;
 
   Standard_Size myModificationState;
 

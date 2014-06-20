@@ -37,14 +37,15 @@ class OpenGl_BndBoxPrs : public OpenGl_Element
 public:
 
   //! Main constructor
-  OpenGl_BndBoxPrs (const CALL_DEF_BOUNDBOX& theBndBox)
+  OpenGl_BndBoxPrs (const Graphic3d_BndBox4f& theBndBox)
   {
-    const float Xm = theBndBox.Pmin.x;
-    const float Ym = theBndBox.Pmin.y;
-    const float Zm = theBndBox.Pmin.z;
-    const float XM = theBndBox.Pmax.x;
-    const float YM = theBndBox.Pmax.y;
-    const float ZM = theBndBox.Pmax.z;
+    const float Xm = theBndBox.CornerMin().x();
+    const float Ym = theBndBox.CornerMin().y();
+    const float Zm = theBndBox.CornerMin().z();
+    const float XM = theBndBox.CornerMax().x();
+    const float YM = theBndBox.CornerMax().y();
+    const float ZM = theBndBox.CornerMax().z();
+
     myVerts[0]  = OpenGl_Vec3 (Xm, Ym, Zm);
     myVerts[1]  = OpenGl_Vec3 (Xm, Ym, ZM);
     myVerts[2]  = OpenGl_Vec3 (Xm, YM, ZM);
@@ -143,7 +144,8 @@ OpenGl_Structure::OpenGl_Structure (const Handle(Graphic3d_StructureManager)& th
   myNamedStatus(0),
   myZLayer(0),
   myIsRaytracable (Standard_False),
-  myModificationState (0)
+  myModificationState (0),
+  myIsCulled (Standard_True)
 {
   UpdateNamedStatus();
 }
@@ -212,6 +214,7 @@ void OpenGl_Structure::SetTransformPersistence(const CALL_DEF_TRANSFORM_PERSISTE
   myTransPers->pointX = ATransPers.Point.x;
   myTransPers->pointY = ATransPers.Point.y;
   myTransPers->pointZ = ATransPers.Point.z;
+  MarkAsNotCulled();
 }
 
 // =======================================================================
@@ -323,12 +326,12 @@ void OpenGl_Structure::HighlightWithBndBox (const Handle(Graphic3d_Structure)& t
 
   CALL_DEF_CONTEXTLINE& aContextLine = myHighlightBox->ChangeContextLine();
   aContextLine.IsDef    = 1;
-  aContextLine.Color    = BoundBox.Color;
+  aContextLine.Color    = HighlightColor;
   aContextLine.LineType = Aspect_TOL_SOLID;
   aContextLine.Width    = 1.0f;
   myHighlightBox->UpdateAspectLine (Standard_True);
 
-  OpenGl_BndBoxPrs* aBndBoxPrs = new OpenGl_BndBoxPrs (BoundBox);
+  OpenGl_BndBoxPrs* aBndBoxPrs = new OpenGl_BndBoxPrs (myBndBox);
   myHighlightBox->AddElement (aBndBoxPrs);
 }
 
@@ -598,6 +601,9 @@ void OpenGl_Structure::Clear (const Handle(OpenGl_Context)& theGlCtx)
     UpdateStateWithAncestorStructures();
     UpdateRaytracableWithAncestorStructures();
   }
+
+  Is2dText       = Standard_False;
+  IsForHighlight = Standard_False;
 }
 
 // =======================================================================
@@ -610,14 +616,14 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
   if ( myNamedStatus & OPENGL_NS_HIDE )
     return;
 
+  const Handle(OpenGl_Context)& aCtx = AWorkspace->GetGlContext();
+
   // Render named status
   const Standard_Integer named_status = AWorkspace->NamedStatus;
   AWorkspace->NamedStatus |= myNamedStatus;
 
   // Is rendering in ADD or IMMEDIATE mode?
   const Standard_Boolean isImmediate = (AWorkspace->NamedStatus & OPENGL_NS_IMMEDIATE) != 0;
-
-  const Handle(OpenGl_Context)& aCtx = AWorkspace->GetGlContext();
 
   // Apply local transformation
   GLint matrix_mode = 0;
@@ -677,12 +683,6 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
     AWorkspace->SetAspectMarker(myAspectMarker);
   if (myAspectText)
     AWorkspace->SetAspectText(myAspectText);
-
-  // Apply highlight box
-  if (!myHighlightBox.IsNull())
-  {
-    myHighlightBox->Render (AWorkspace);
-  }
 
   // Apply highlight color
   const TEL_COLOUR *highlight_color = AWorkspace->HighlightColor;
@@ -800,6 +800,12 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
     }
   }
 
+  // Apply highlight box
+  if (!myHighlightBox.IsNull())
+  {
+    myHighlightBox->Render (AWorkspace);
+  }
+
   // Restore named status
   AWorkspace->NamedStatus = named_status;
 }
@@ -872,6 +878,7 @@ Standard_Integer OpenGl_Structure::GetZLayer () const
   return myZLayer;
 }
 
+//! Dummy structure which just redirects to groups of another structure.
 class OpenGl_StructureShadow : public OpenGl_Structure
 {
 
@@ -898,6 +905,10 @@ DEFINE_STANDARD_HANDLE(OpenGl_StructureShadow, OpenGl_Structure)
 IMPLEMENT_STANDARD_HANDLE (OpenGl_StructureShadow, OpenGl_Structure)
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_StructureShadow, OpenGl_Structure)
 
+//=======================================================================
+//function : OpenGl_StructureShadow
+//purpose  :
+//=======================================================================
 OpenGl_StructureShadow::OpenGl_StructureShadow (const Handle(Graphic3d_StructureManager)& theManager,
                                                 const Handle(OpenGl_Structure)&           theStructure)
 : OpenGl_Structure (theManager)

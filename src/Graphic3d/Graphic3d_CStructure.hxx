@@ -15,6 +15,7 @@
 #ifndef _Graphic3d_CStructure_HeaderFile
 #define _Graphic3d_CStructure_HeaderFile
 
+#include <Graphic3d_BndBox4f.hxx>
 #include <Graphic3d_CStructure_Handle.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Graphic3d_SequenceOfGroup.hxx>
@@ -52,6 +53,19 @@ public:
 
   //! Pass clip planes to the associated graphic driver structure
   void SetClipPlanes (const Graphic3d_SequenceOfHClipPlane& thePlanes) { myClipPlanes = thePlanes; }
+
+  //! @return bounding box of this presentation
+  const Graphic3d_BndBox4f& BoundingBox() const
+  {
+    return myBndBox;
+  }
+
+  //! @return bounding box of this presentation
+  //! without transformation matrix applied
+  Graphic3d_BndBox4f& ChangeBoundingBox()
+  {
+    return myBndBox;
+  }
 
 public:
 
@@ -101,19 +115,22 @@ public:
   CALL_DEF_CONTEXTMARKER   ContextMarker;
   CALL_DEF_CONTEXTTEXT     ContextText;
 
-  CALL_DEF_BOUNDBOX BoundBox;
+  CALL_DEF_COLOR HighlightColor;
 
   float Transformation[4][4];
   Graphic3d_TypeOfComposition Composition;
 
   int   ContainsFacet;
 
-  unsigned IsInfinite    : 1;
-  unsigned stick         : 1;
-  unsigned highlight     : 1;
-  unsigned visible       : 1;
-  unsigned pick          : 1;
-  unsigned HLRValidation : 1;
+  unsigned IsInfinite     : 1;
+  unsigned stick          : 1;
+  unsigned highlight      : 1;
+  unsigned visible        : 1;
+  unsigned pick           : 1;
+  unsigned HLRValidation  : 1;
+  unsigned IsForHighlight : 1;
+  unsigned IsMutable      : 1;
+  unsigned Is2dText       : 1;
 
   CALL_DEF_TRANSFORM_PERSISTENCE TransformPersistence;
 
@@ -126,6 +143,7 @@ protected:
 
   Handle(Graphic3d_GraphicDriver) myGraphicDriver;
   Graphic3d_SequenceOfGroup       myGroups;
+  Graphic3d_BndBox4f              myBndBox;
   Graphic3d_SequenceOfHClipPlane  myClipPlanes;
 
 public:

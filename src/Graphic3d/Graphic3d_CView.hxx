@@ -93,13 +93,14 @@ public:
     ptrUnderLayer (NULL),
     ptrOverLayer  (NULL),
     Backfacing  (0),
-	  GContext (NULL),
+    GContext (NULL),
     GDisplayCB  (NULL),
     GClientData (NULL),
     ptrFBO (NULL),
-    WasRedrawnGL (0)
+    WasRedrawnGL (0),
+    IsCullingEnabled (Standard_True)
   {
-	  memset(&DefWindow,0,sizeof(DefWindow));
+    memset (&DefWindow, 0, sizeof(DefWindow));
   }
 
 public:
@@ -133,6 +134,9 @@ public:
 
   //! Specifies rendering parameters and effects.
   Graphic3d_RenderingParams RenderParams;
+
+  //! Enables/disables frustum culling.
+  Standard_Boolean IsCullingEnabled;
 
 };
 

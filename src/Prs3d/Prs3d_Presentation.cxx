@@ -288,6 +288,15 @@ Handle(Graphic3d_Group) Prs3d_Presentation::CurrentGroup () const
 }
 
 //=======================================================================
+//=======================================================================
+//function : SetIsForHighlight
+//purpose  :
+//=======================================================================
+void Prs3d_Presentation::SetIsForHighlight (const Standard_Boolean isForHighlight)
+{
+  Graphic3d_Structure::SetIsForHighlight (isForHighlight);
+}
+
 //function : Compute
 //purpose  : 
 //=======================================================================

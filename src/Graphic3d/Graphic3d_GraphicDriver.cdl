@@ -643,6 +643,13 @@ is
     -- In contrast to Bitmaps, Vector graphics is scalable (so you may got quality benefits on printing to laser printer).
     -- Notice however that results may differ a lot and do not contain some elements.
 
+    InvalidateBVHData( me         : mutable;
+                       theCView   : out CView from Graphic3d;
+                       theLayerId : Integer from Standard )
+    is deferred;
+    ---Purpose:
+    -- Marks BVH tree and the set of BVH primitives of correspondent priority list with id theLayerId as outdated.
+
     AddZLayer( me         : mutable;
                theCView   : CView from Graphic3d;
                theLayerId : Integer from Standard )
@@ -695,6 +702,14 @@ is
                        theSettings : ZLayerSettings from Graphic3d)
         is deferred;
         ---Purpose:  Sets the settings for a single Z layer of specified view.
+
+    ChangePriority( me             : mutable;
+                    theCStructure  : CStructure from Graphic3d;
+                    theCView       : CView from Graphic3d;
+                    theNewPriority : Integer from Standard )
+        is deferred;
+        ---Purpose: Changes the priority of a structure within its Z layer
+        -- in the specified view.
 
     -----------------------------
     -- Category: Internal methods

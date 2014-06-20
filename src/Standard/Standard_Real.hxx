@@ -270,6 +270,20 @@ inline  Standard_Integer RealToInt (const Standard_Real Value)
     : (Standard_Integer)Value;
 }
 
+// =======================================================================
+// function : RealToShortReal
+// purpose  : Converts Standard_Real value to the nearest valid
+//            Standard_ShortReal. If input value is out of valid range
+//            for Standard_ShortReal, minimal or maximal
+//            Standard_ShortReal is returned.
+// =======================================================================
+inline Standard_ShortReal RealToShortReal (const Standard_Real theVal)
+{
+  return theVal < -FLT_MAX ? -FLT_MAX
+    : theVal > FLT_MAX ? FLT_MAX
+    : (Standard_ShortReal)theVal;
+}
+
 //-------------------------------------------------------------------
 // Round : Returns the nearest integer of a real
 //-------------------------------------------------------------------

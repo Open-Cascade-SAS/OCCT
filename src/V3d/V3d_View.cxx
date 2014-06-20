@@ -3392,3 +3392,23 @@ void V3d_View::Translate (const Handle(Graphic3d_Camera)& theCamera,
 
   theCamera->Transform (aPanTrsf);
 }
+
+// =======================================================================
+// function : IsCullingEnabled
+// purpose  :
+// =======================================================================
+Standard_Boolean V3d_View::IsCullingEnabled() const
+{
+  Graphic3d_CView* aView = (Graphic3d_CView* )MyView->CView();
+  return aView->IsCullingEnabled;
+}
+
+// =======================================================================
+// function : SetFrustumCulling
+// purpose  :
+// =======================================================================
+void V3d_View::SetFrustumCulling (const Standard_Boolean theToClip)
+{
+  Graphic3d_CView* aView = (Graphic3d_CView* )MyView->CView();
+  aView->IsCullingEnabled = theToClip;
+}

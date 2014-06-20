@@ -91,6 +91,12 @@ is
     	---Purpose: displays the whole content of the presentation in the specified color.
     BoundBox(me: mutable) is static;
 
+    SetIsForHighlight (me             : mutable;
+                       isForHighlight : Boolean from Standard)
+        is virtual;
+    ---Purpose: marks the structure <me> representing wired structure needed for
+    --          highlight only so it won't be added to BVH tree.
+
 ---Category: Global modification methods.
     SetShadingAspect(me: mutable; aShadingAspect: ShadingAspect from Prs3d);
     

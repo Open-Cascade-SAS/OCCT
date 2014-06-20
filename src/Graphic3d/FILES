@@ -1,3 +1,5 @@
+Graphic3d_BndBox4d.hxx
+Graphic3d_BndBox4f.hxx
 Graphic3d_Buffer.hxx
 Graphic3d_Buffer_Handle.hxx
 Graphic3d_BoundBuffer.hxx
@@ -18,7 +20,6 @@ Graphic3d_CBitFields4.hxx
 Graphic3d_CTexture.hxx
 Graphic3d_CLight.hxx
 Graphic3d_CPick.hxx
-Graphic3d_CBounds.hxx
 Graphic3d_CUserDraw.hxx
 Graphic3d_CView.hxx
 Graphic3d_CGraduatedTrihedron.hxx

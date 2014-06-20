@@ -27,6 +27,8 @@
 #include <OpenGl_Group.hxx>
 #include <OpenGl_Matrix.hxx>
 #include <OpenGl_NamedStatus.hxx>
+#include <OpenGl_Vec.hxx>
+#include <OpenGl_Workspace.hxx>
 
 #include <NCollection_List.hxx>
 #include <InterfaceGraphic_Graphic3d.hxx>
@@ -140,6 +142,34 @@ public:
   virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
   virtual void Release (const Handle(OpenGl_Context)&   theGlCtx);
 
+  //! Marks structure as not overlapping view volume (as it is by default).
+  void ResetCullingStatus() const
+  {
+    if (!IsAlwaysRendered())
+    {
+      myIsCulled = Standard_True;
+    }
+  }
+
+  //! Marks structure as overlapping the current view volume one.
+  //! The method is called during traverse of BVH tree.
+  void MarkAsNotCulled() const { myIsCulled = Standard_False; }
+
+  //! Returns Standard_False if the structure hits the current view volume, otherwise
+  //! returns Standard_True. The default value for all structures before each traverse
+  //! of BVH tree is Standard_True.
+  Standard_Boolean IsCulled() const { return myIsCulled; }
+
+  //! Checks if the structure should be included into BVH tree or not.
+  const Standard_Boolean IsAlwaysRendered() const
+  {
+    return IsInfinite
+        || IsForHighlight
+        || IsMutable
+        || Is2dText
+        || TransformPersistence.Flag != 0;
+  }
+
   //! This method releases GL resources without actual elements destruction.
   //! As result structure could be correctly destroyed layer without GL context
   //! (after last window was closed for example).
@@ -211,6 +241,8 @@ protected:
   mutable OpenGl_ListOfStructure   myAncestorStructures;
   mutable Standard_Boolean         myIsRaytracable;
   mutable Standard_Size            myModificationState;
+
+  mutable Standard_Boolean         myIsCulled; //!< A status specifying is structure needs to be rendered after BVH tree traverse.
 
 public:
 

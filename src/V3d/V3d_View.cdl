@@ -1629,6 +1629,14 @@ is
     ---Level: Public
     ---Purpose: Returns reference to current rendering parameters and effect settings.
 
+        IsCullingEnabled (me) returns Boolean from Standard is static;
+     ---Level: Public
+     ---Purpose: @return flag value of objects culling mechanism
+
+        SetFrustumCulling (me : mutable; theMode : Boolean from Standard) is static;
+     ---Level: Public
+     ---Purpose: Turn on/off automatic culling of objects outside frustrum (ON by default)
+
 fields
 
         myOldMouseX : Real is protected;

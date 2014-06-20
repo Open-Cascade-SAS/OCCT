@@ -60,7 +60,8 @@ class OpenGl_LayerList
   //! to default bottom-level layer.
   void AddStructure (const OpenGl_Structure *theStructure,
                      const Standard_Integer  theLayerId,
-                     const Standard_Integer  thePriority);
+                     const Standard_Integer  thePriority,
+                     Standard_Boolean isForChangePriority = Standard_False);
   
   //! Remove structure from structure list and return its previous priority
   void RemoveStructure (const OpenGl_Structure *theStructure,
@@ -73,6 +74,11 @@ class OpenGl_LayerList
                     const Standard_Integer  theOldLayerId,
                     const Standard_Integer  theNewLayerId);
 
+  //! Changes structure priority within its ZLayer
+  void ChangePriority (const OpenGl_Structure *theStructure,
+                       const Standard_Integer  theLayerId,
+                       const Standard_Integer theNewPriority);
+
   //! Returns reference to the layer with given ID.
   OpenGl_Layer& Layer (const Standard_Integer theLayerId);
 
@@ -84,6 +90,10 @@ class OpenGl_LayerList
 
   //! Returns the set of OpenGL Z-layers.
   const OpenGl_SequenceOfLayers& Layers() const { return myLayers; }
+
+  //! Marks BVH tree for given priority list as dirty and
+  //! marks primitive set for rebuild.
+  void InvalidateBVHData (const Standard_Integer theLayerId);
 
   //! Returns structure modification state (for ray-tracing).
   Standard_Size ModificationState() const { return myModificationState; }

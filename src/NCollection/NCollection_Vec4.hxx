@@ -315,7 +315,7 @@ public:
   //! Compute per-component division by scale factor.
   NCollection_Vec4 operator/ (const Element_t theInvFactor)
   {
-    NCollection_Vec4 aResult(this);
+    NCollection_Vec4 aResult(*this);
     return aResult /= theInvFactor;
   }
 

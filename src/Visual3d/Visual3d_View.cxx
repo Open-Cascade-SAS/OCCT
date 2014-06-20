@@ -1189,8 +1189,7 @@ Standard_Integer Index = IsComputed (AStructure);
              << ", " << OldPriority << ", " << NewPriority << ")\n";
         cout << flush;
 #endif
-                MyGraphicDriver->EraseStructure   (MyCView, *(MyCOMPUTEDSequence.Value (Index)->CStructure()));
-                MyGraphicDriver->DisplayStructure (MyCView, *(MyCOMPUTEDSequence.Value (Index)->CStructure()), NewPriority);
+                MyGraphicDriver->ChangePriority (*(MyCOMPUTEDSequence.Value (Index)->CStructure()), MyCView, NewPriority);
         }
         else
         {
@@ -1201,8 +1200,7 @@ Standard_Integer Index = IsComputed (AStructure);
              << ", " << OldPriority << ", " << NewPriority << ")\n";
         cout << flush;
 #endif
-                MyGraphicDriver->EraseStructure   (MyCView, *(AStructure->CStructure()));
-                MyGraphicDriver->DisplayStructure (MyCView, *(AStructure->CStructure()), NewPriority);
+                MyGraphicDriver->ChangePriority (*(AStructure->CStructure()), MyCView, NewPriority);
         }
 
 }
@@ -1381,6 +1379,7 @@ Standard_Integer Index = IsComputed (AStructure);
 
         if (Answer == Visual3d_TOA_YES ) {
                 if (IsDisplayed (AStructure)) return;
+                AStructure->CalculateBoundBox();
                 MyGraphicDriver->DisplayStructure (MyCView, *(AStructure->CStructure()), AStructure->DisplayPriority());
                 MyDisplayedStructure.Add (AStructure);
                 if (AnUpdateMode == Aspect_TOU_ASAP) Update ();
@@ -1628,6 +1627,14 @@ Standard_Integer Index = IsComputed (AStructure);
                     MyCOMPUTEDSequence.Value (Index)->GraphicTransform (ATrsf);
         }
 
+        Standard_Integer aLayerId = AStructure->GetZLayer();
+        if (!AStructure->IsMutable()
+         && !AStructure->CStructure()->IsForHighlight
+         && !AStructure->CStructure()->IsInfinite)
+        {
+          AStructure->CalculateBoundBox();
+          MyGraphicDriver->InvalidateBVHData (MyCView, aLayerId);
+        }
 }
 
 void Visual3d_View::UnHighlight (const Handle(Graphic3d_Structure)& AStructure) {
@@ -2089,6 +2096,13 @@ Graphic3d_SequenceOfStructure FooSequence;
 }
 
 void Visual3d_View::ReCompute (const Handle(Graphic3d_Structure)& AStructure) {
+        if (MyCView.IsCullingEnabled)
+        {
+          AStructure->CalculateBoundBox();
+          Standard_Integer aLayerId = AStructure->DisplayPriority();
+          MyGraphicDriver->InvalidateBVHData(MyCView, aLayerId);
+        }
+
         if (!ComputedMode()) return;
 
         if (IsDeleted ()) return;

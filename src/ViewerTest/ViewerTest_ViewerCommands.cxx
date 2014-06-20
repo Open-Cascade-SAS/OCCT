@@ -6604,6 +6604,53 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
 }
 
 //=======================================================================
+//function : VFrustumCulling
+//purpose  : enables/disables view volume's culling.
+//=======================================================================
+static int VFrustumCulling (Draw_Interpretor& theDI,
+                            Standard_Integer  theArgNb,
+                            const char**      theArgVec)
+{
+  Handle(V3d_View) aView = ViewerTest::CurrentView();
+  if (aView.IsNull())
+  {
+    std::cout << theArgVec[0] << " Error: Use 'vinit' command before\n";
+    return 1;
+  }
+
+  if (theArgNb < 2)
+  {
+    theDI << (aView->IsCullingEnabled() ? "on" : "off");
+    return 0;
+  }
+  else if (theArgNb != 2)
+  {
+    std::cout << theArgVec[0] << " Syntax error: Specify the mode\n";
+    return 1;
+  }
+
+  TCollection_AsciiString aModeStr (theArgVec[1]);
+  aModeStr.LowerCase();
+  Standard_Boolean toEnable = 0;
+  if (aModeStr == "on")
+  {
+    toEnable = 1;
+  }
+  else if (aModeStr == "off")
+  {
+    toEnable = 0;
+  }
+  else
+  {
+    toEnable = Draw::Atoi (theArgVec[1]) != 0;
+  }
+
+  aView->SetFrustumCulling (toEnable);
+  aView->Redraw();
+  return 0;
+}
+
+//=======================================================================
 //function : ViewerCommands
 //purpose  :
 //=======================================================================
@@ -6968,4 +7015,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n      '-fsaa        on|off'  Enables/disables adaptive anti-aliasing"
     "\n      '-gleam       on|off'  Enables/disables transparency shadow effects",
     __FILE__, VRenderParams, group);
+  theCommands.Add("vfrustumculling",
+    "vfrustumculling [toEnable]: enables/disables objects clipping",
+    __FILE__,VFrustumCulling,group);
 }

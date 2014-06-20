@@ -1,0 +1,86 @@
+puts "========"
+puts "OCC24307 Objects clipping algorithm using BVH performance test: Simple boxes test"
+puts "========"
+
+# object characteristics
+set BOXES_NUM 10
+set BOX_SIZE 100
+set PERCENT_OF_INNER_BOXES 30
+
+# window parameters
+set SMALL_WIN_WIDTH 512
+set SMALL_WIN_HEIGHT 512
+
+# other
+array set aBoxNames {}
+
+set aWithoutClippingSnapshot $imagedir/${casename}_without.png
+set aWithClippingSnapshot $imagedir/${casename}_with.png
+set aDiffImage $imagedir/${casename}_diff.png
+
+pload VISUALIZATION MODELING
+vinit name=small_wnd l=32 t=32 w=$SMALL_WIN_WIDTH h=$SMALL_WIN_HEIGHT
+vactivate small_wnd
+vfrustumculling 0
+vautozfit 0
+vviewparams -scale 1.953125 -eye 0.57735026918962573 -0.57735026918962573 0.57735026918962573
+vzrange 1 512
+vclear
+vremove -all -noinfo
+
+set aInnerBoxesNum [expr $BOXES_NUM * $PERCENT_OF_INNER_BOXES / 100]
+puts ""
+set aDebugInfo "Total number of visible objects: "
+append aDebugInfo $aInnerBoxesNum
+puts $aDebugInfo
+puts ""
+
+puts "Start boxes generation..."
+set aInnerWidthStep [expr $SMALL_WIN_WIDTH / (2 * ($aInnerBoxesNum + 1))]
+set aInnerHeightStep [expr $SMALL_WIN_HEIGHT / (2 * ($aInnerBoxesNum + 1))]
+set aOuterStep [expr $BOX_SIZE * 3 / ($BOXES_NUM - $aInnerBoxesNum + 1)]
+for {set i 0} {$i < $aInnerBoxesNum} {incr i} {
+  set aCurrName "inner_box"
+  append aCurrName $i
+  set aX [expr - $SMALL_WIN_WIDTH / 4 + ($i + 1) * $aInnerWidthStep ]
+  set aY [expr - $SMALL_WIN_HEIGHT / 4 + ($i + 1) * $aInnerHeightStep ]
+  box $aCurrName $aX $aY 0 $BOX_SIZE $BOX_SIZE $BOX_SIZE
+  set aBoxNames($i) $aCurrName
+}
+for {set i $aInnerBoxesNum} {$i < $BOXES_NUM} {incr i} {
+  set aCurrName "outer_box"
+  append aCurrName $i
+  set aX [expr - $SMALL_WIN_WIDTH - $BOX_SIZE * 3 + ($i - $aInnerBoxesNum + 1) * $aOuterStep]
+  set aY [expr - $SMALL_WIN_HEIGHT - $BOX_SIZE * 3 + ($i - $aInnerBoxesNum + 1) * $aOuterStep]
+  box $aCurrName $aX $aY 0 $BOX_SIZE $BOX_SIZE $BOX_SIZE
+  set aBoxNames($i) $aCurrName
+}
+puts "$BOXES_NUM boxes generated."
+puts ""
+
+puts "Start displaying boxes without clipping..."
+for {set i 0} {$i < $BOXES_NUM} {incr i} {
+  vdisplay -noupdate $aBoxNames($i)
+}
+puts [vfps]
+vdump $aWithoutClippingSnapshot
+puts "All boxes were displayed."
+puts ""
+
+verase
+
+vfrustumculling 1
+puts "Start displaying boxes with clipping..."
+for {set i 0} {$i < $BOXES_NUM} {incr i} {
+  vdisplay -noupdate $aBoxNames($i)
+}
+puts [vfps]
+vdump $aWithClippingSnapshot
+puts "All boxes were displayed."
+
+set aDiffImageResult [diffimage $aWithClippingSnapshot $aWithoutClippingSnapshot 0.1 0 0 $aDiffImage]
+if {$aDiffImageResult != 0} {
+  puts "ERROR : Test failed: there is a difference between images rendered with and without clipping"
+}
+
+verase

@@ -114,6 +114,32 @@ void Graphic3d_Structure::Clear (const Standard_Boolean theWithDestruction)
   Update();
 }
 
+//=======================================================================
+//function : CalculateBoundBox
+//purpose  : Calculates AABB of a structure.
+//=======================================================================
+void Graphic3d_Structure::CalculateBoundBox()
+{
+  Graphic3d_BndBox4d aBox;
+  addTransformed (aBox, Standard_True);
+  if (aBox.IsValid() && myCStructure->TransformPersistence.Flag == 0)
+  {
+    Graphic3d_Vec4 aMinPt (RealToShortReal (aBox.CornerMin().x()),
+                           RealToShortReal (aBox.CornerMin().y()),
+                           RealToShortReal (aBox.CornerMin().z()),
+                           1.0f);
+    Graphic3d_Vec4 aMaxPt (RealToShortReal (aBox.CornerMax().x()),
+                           RealToShortReal (aBox.CornerMax().y()),
+                           RealToShortReal (aBox.CornerMax().z()),
+                           1.0f);
+    myCStructure->ChangeBoundingBox() = Graphic3d_BndBox4f (aMinPt, aMaxPt);
+  }
+  else
+  {
+    myCStructure->ChangeBoundingBox().Clear();
+  }
+}
+
 //=============================================================================
 //function : Remove
 //purpose  :
@@ -150,8 +176,6 @@ void Graphic3d_Structure::Remove()
     ((Graphic3d_Structure *)(myAncestors.ChangeValue (aStructIter)))->Remove (APtr, Graphic3d_TOC_DESCENDANT);
   }
 
-  myCStructure->ContainsFacet = 0;
-
   // Destruction of me in the graphic library
   const Standard_Integer aStructId = myCStructure->Id;
   myCStructure->GraphicDriver()->RemoveStructure (myCStructure);
@@ -180,6 +204,15 @@ void Graphic3d_Structure::Display()
   }
 
   myCStructure->visible = 1;
+}
+
+//=============================================================================
+//function : SetIsForHighlight
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::SetIsForHighlight (const Standard_Boolean isForHighlight)
+{
+  myCStructure->IsForHighlight = isForHighlight;
 }
 
 //=============================================================================
@@ -1375,6 +1408,7 @@ void Graphic3d_Structure::Connect (const Handle(Graphic3d_Structure)& theStructu
       }
 
       myDescendants.Append (theStructure.operator->());
+      CalculateBoundBox();
       theStructure->Connect (this, Graphic3d_TOC_ANCESTOR);
 
       GraphicConnect (theStructure);
@@ -1395,6 +1429,7 @@ void Graphic3d_Structure::Connect (const Handle(Graphic3d_Structure)& theStructu
       }
 
       myAncestors.Append (theStructure.operator->());
+      CalculateBoundBox();
       theStructure->Connect (this, Graphic3d_TOC_DESCENDANT);
 
       // myGraphicDriver->Connect is called in case if connection between parent and child
@@ -1422,6 +1457,8 @@ void Graphic3d_Structure::Disconnect (const Handle(Graphic3d_Structure)& theStru
       GraphicDisconnect (theStructure);
       myStructureManager->Disconnect (this, theStructure);
 
+      CalculateBoundBox();
+
       Update();
       return;
     }
@@ -1434,6 +1471,7 @@ void Graphic3d_Structure::Disconnect (const Handle(Graphic3d_Structure)& theStru
     {
       myAncestors.Remove (anIter);
       theStructure->Disconnect (this);
+      CalculateBoundBox();
       // no call of myGraphicDriver->Disconnect in case of an ancestor
       return;
     }
@@ -1608,6 +1646,7 @@ void Graphic3d_Structure::Transform (TColStd_Array2OfReal& theMatrix) const
   }
 }
 
+
 //=============================================================================
 //function : MinMaxValues
 //purpose  :
@@ -1620,18 +1659,9 @@ void Graphic3d_Structure::MinMaxValues (Standard_Real& theXMin,
                                         Standard_Real& theZMax,
                                         const Standard_Boolean theToIgnoreInfiniteFlag) const
 {
-  if (IsEmpty())
-  {
-    return;
-  }
-
-  Standard_Real aXMin, aYMin, aZMin, aXMax, aYMax, aZMax;
-  MinMaxCoord (aXMin, aYMin, aZMin, aXMax, aYMax, aZMax);
-
-  // Infinite boundaries corresponding to empty structure or
-  // non-empty structure, without any primitives specified
-  if (aXMin == RealFirst() && aYMin == RealFirst() && aZMin == RealFirst() &&
-      aXMax == RealLast()  && aYMax == RealLast()  && aZMax == RealLast())
+  Graphic3d_BndBox4d aBox;
+  addTransformed (aBox, theToIgnoreInfiniteFlag);
+  if (!aBox.IsValid())
   {
     theXMin = RealFirst();
     theYMin = RealFirst();
@@ -1642,86 +1672,12 @@ void Graphic3d_Structure::MinMaxValues (Standard_Real& theXMin,
     return;
   }
 
-  // Handle flag, which specifies that structure should be considered as infinite
-  if (IsInfinite() && !theToIgnoreInfiniteFlag)
-  {
-    Graphic3d_Vertex aVertexMin (aXMin, aYMin, aZMin);
-    Graphic3d_Vertex aVertexMax (aXMax, aYMax, aZMax);
-    const Standard_Real aDistance = aVertexMin.Distance (aVertexMax);
-
-    // Special case for infinite line:
-    // Bounding borders of infinite line has been
-    // calculated as own point in center of this line
-    if (aDistance >= 500000.0)
-    {
-      theXMin = theXMax = 0.5 * (aXMin + aXMax);
-      theYMin = theYMax = 0.5 * (aYMin + aYMax);
-      theZMin = theZMax = 0.5 * (aZMin + aZMax);
-      return;
-    }
-
-    theXMin = RealFirst();
-    theYMin = RealFirst();
-    theZMin = RealFirst();
-    theXMax = RealLast();
-    theYMax = RealLast();
-    theZMax = RealLast();
-    return;
-  }
-
-  // Min-Max values of the descendant structures
-  Standard_Real aDescXMin = RealLast();
-  Standard_Real aDescYMin = RealLast();
-  Standard_Real aDescZMin = RealLast();
-  Standard_Real aDescXMax = RealFirst();
-  Standard_Real aDescYMax = RealFirst();
-  Standard_Real aDescZMax = RealFirst();
-  for (Standard_Integer aStructIt = 1; aStructIt <= myDescendants.Length(); aStructIt++)
-  {
-    Graphic3d_Structure* aStructure = (Graphic3d_Structure*) myDescendants.Value (aStructIt);
-    aStructure->MinMaxValues (aXMin, aYMin, aZMin, aXMax, aYMax, aZMax);
-    aDescXMin = Min (aXMin, aDescXMin);
-    aDescYMin = Min (aYMin, aDescYMin);
-    aDescZMin = Min (aZMin, aDescZMin);
-    aDescXMax = Max (aXMax, aDescXMax);
-    aDescYMax = Max (aYMax, aDescYMax);
-    aDescZMax = Max (aZMax, aDescZMax);
-  }
-
-  if (aDescXMin != RealLast()  || aDescYMin != RealLast()  ||
-      aDescZMin != RealLast()  || aDescXMax != RealFirst() ||
-      aDescYMax != RealFirst() || aDescZMax != RealFirst())
-  {
-    aXMin = Min (aDescXMin, aXMin);
-    aYMin = Min (aDescYMin, aYMin);
-    aZMin = Min (aDescZMin, aZMin);
-    aXMax = Max (aDescXMax, aXMax);
-    aYMax = Max (aDescYMax, aYMax);
-    aZMax = Max (aDescZMax, aZMax);
-  }
-
-  // Case impossible as it would mean that the structure is empty or infinite
-  if (aXMin == RealFirst() && aYMin == RealFirst() && aZMin == RealFirst() &&
-      aXMax == RealLast()  && aYMax == RealLast()  && aZMax == RealLast())
-  {
-    theXMin = RealFirst();
-    theYMin = RealFirst();
-    theZMin = RealFirst();
-    theXMax = RealLast();
-    theYMax = RealLast();
-    theZMax = RealLast();
-    return;
-  }
-
-  TColStd_Array2OfReal aTrsf(0, 3, 0, 3);
-  Transform (aTrsf);
-  TransformBoundaries (aTrsf, aXMin, aYMin, aZMin, aXMax, aYMax, aZMax);
-  theXMin = aXMin;
-  theYMin = aYMin;
-  theZMin = aZMin;
-  theXMax = aXMax;
-  theYMax = aYMax;
-  theZMax = aZMax;
+  theXMin = aBox.CornerMin().x();
+  theYMin = aBox.CornerMin().y();
+  theZMin = aBox.CornerMin().z();
+  theXMax = aBox.CornerMax().x();
+  theYMax = aBox.CornerMax().y();
+  theZMax = aBox.CornerMax().z();
 }
 
 //=============================================================================
@@ -1756,6 +1712,7 @@ void Graphic3d_Structure::SetTransformPersistence (const Graphic3d_TransModeFlag
   myCStructure->TransformPersistence.Point.y = float (thePoint.Y());
   myCStructure->TransformPersistence.Point.z = float (thePoint.Z());
   myCStructure->UpdateAspects();
+  CalculateBoundBox();
 
   myCStructure->TransformPersistence.IsSet = 1;
 }
@@ -1855,154 +1812,79 @@ Handle(Graphic3d_StructureManager) Graphic3d_Structure::StructureManager() const
 }
 
 //=============================================================================
-//function : MinMaxCoord
+//function : minMaxCoord
 //purpose  :
 //=============================================================================
-void Graphic3d_Structure::MinMaxCoord (Standard_Real& theXMin,
-                                       Standard_Real& theYMin,
-                                       Standard_Real& theZMin,
-                                       Standard_Real& theXMax,
-                                       Standard_Real& theYMax,
-                                       Standard_Real& theZMax) const
+Graphic3d_BndBox4f Graphic3d_Structure::minMaxCoord (const Standard_Boolean theToIgnoreInfiniteFlag) const
 {
-  if (IsEmpty())
-  {
-    theXMin = RealFirst();
-    theYMin = RealFirst();
-    theZMin = RealFirst();
-    theXMax = RealLast();
-    theYMax = RealLast();
-    theZMax = RealLast();
-    return;
-  }
-
-  Standard_Real aXMin = RealLast();
-  Standard_Real aYMin = RealLast();
-  Standard_Real aZMin = RealLast();
-  Standard_Real aXMax = RealFirst();
-  Standard_Real aYMax = RealFirst();
-  Standard_Real aZMax = RealFirst();
-  Standard_Real aGroupXMin, aGroupYMin, aGroupZMin, aGroupXMax, aGroupYMax, aGroupZMax;
+  Graphic3d_BndBox4f aBnd;
   for (Graphic3d_SequenceOfGroup::Iterator aGroupIter (myCStructure->Groups()); aGroupIter.More(); aGroupIter.Next())
   {
-    const Handle(Graphic3d_Group)& aGroup = aGroupIter.Value();
-    if (aGroup->IsEmpty())
+    if (!theToIgnoreInfiniteFlag)
     {
-      continue;
+      aBnd.Combine (aGroupIter.Value()->BoundingBox());
     }
-
-    aGroup->MinMaxValues (aGroupXMin, aGroupYMin, aGroupZMin, aGroupXMax, aGroupYMax, aGroupZMax);
-    aXMin = Min (aXMin, aGroupXMin);
-    aYMin = Min (aYMin, aGroupYMin);
-    aZMin = Min (aZMin, aGroupZMin);
-    aXMax = Max (aXMax, aGroupXMax);
-    aYMax = Max (aYMax, aGroupYMax);
-    aZMax = Max (aZMax, aGroupZMax);
+    else
+    {
+      Graphic3d_BndBox4f aValidBnd (aGroupIter.Value()->BoundingBox().CornerMin(),
+                                    aGroupIter.Value()->BoundingBox().CornerMax());
+      aBnd.Combine (aValidBnd);
+    }
   }
-
-  // Case impossible as it would mean that the structure is empty
-  if (aXMin == RealLast()  && aYMin == RealLast()  && aZMin == RealLast() &&
-      aXMax == RealFirst() && aYMax == RealFirst() && aZMax == RealFirst())
-  {
-    theXMin = RealFirst();
-    theYMin = RealFirst();
-    theZMin = RealFirst();
-    theXMax = RealLast();
-    theYMax = RealLast();
-    theZMax = RealLast();
-  }
-
-  theXMin = aXMin;
-  theYMin = aYMin;
-  theZMin = aZMin;
-  theXMax = aXMax;
-  theYMax = aYMax;
-  theZMax = aZMax;
+  return aBnd;
 }
 
 //=============================================================================
-//function : MinMaxCoordWithDescendants
+//function : addTransformed
 //purpose  :
 //=============================================================================
-void Graphic3d_Structure::MinMaxCoordWithDescendants (Standard_Real& theXMin,
-                                                      Standard_Real& theYMin,
-                                                      Standard_Real& theZMin,
-                                                      Standard_Real& theXMax,
-                                                      Standard_Real& theYMax,
-                                                      Standard_Real& theZMax) const
+void Graphic3d_Structure::addTransformed (Graphic3d_BndBox4d&    theBox,
+                                          const Standard_Boolean theToIgnoreInfiniteFlag) const
 {
-  if (IsEmpty())
+  Graphic3d_BndBox4d aBox;
+  Graphic3d_BndBox4f aBoxF = minMaxCoord (theToIgnoreInfiniteFlag);
+  if (aBoxF.IsValid())
   {
-    theXMin = RealFirst();
-    theYMin = RealFirst();
-    theZMin = RealFirst();
-    theXMax = RealLast();
-    theYMax = RealLast();
-    theZMax = RealLast();
-    return;
-  }
-
-  Standard_Real aXMin, aYMin, aZMin, aXMax, aYMax, aZMax;
-  MinMaxCoord (aXMin, aYMin, aZMin, aXMax, aYMax, aZMax);
-
-  // Min-Max of the descendant structures
-  Standard_Real aDescXMin = RealLast();
-  Standard_Real aDescYMin = RealLast();
-  Standard_Real aDescZMin = RealLast();
-  Standard_Real aDescXMax = RealFirst();
-  Standard_Real aDescYMax = RealFirst();
-  Standard_Real aDescZMax = RealFirst();
-  for (Standard_Integer aStructIt = 1; aStructIt <= myDescendants.Length(); aStructIt++)
-  {
-    Graphic3d_Structure* aStructure = (Graphic3d_Structure*) myDescendants.Value (aStructIt);
-    if (aStructure->IsEmpty())
+    aBox = Graphic3d_BndBox4d (Graphic3d_Vec4d ((Standard_Real )aBoxF.CornerMin().x(),
+                                                (Standard_Real )aBoxF.CornerMin().y(),
+                                                (Standard_Real )aBoxF.CornerMin().z(),
+                                                (Standard_Real )aBoxF.CornerMin().w()),
+                               Graphic3d_Vec4d ((Standard_Real )aBoxF.CornerMax().x(),
+                                                (Standard_Real )aBoxF.CornerMax().y(),
+                                                (Standard_Real )aBoxF.CornerMax().z(),
+                                                (Standard_Real )aBoxF.CornerMax().w()));
+    if (IsInfinite()
+    && !theToIgnoreInfiniteFlag)
     {
-      continue;
+      const Graphic3d_Vec4d aDiagVec = aBox.CornerMax() - aBox.CornerMin();
+      if (aDiagVec.xyz().SquareModulus() >= 500000.0 * 500000.0)
+      {
+        // bounding borders of infinite line has been calculated as own point in center of this line
+        aBox = Graphic3d_BndBox4d ((aBox.CornerMin() + aBox.CornerMax()) * 0.5);
+      }
+      else
+      {
+        theBox = Graphic3d_BndBox4d (Graphic3d_Vec4d (RealFirst(), RealFirst(), RealFirst(), 1.0),
+                                     Graphic3d_Vec4d (RealLast(),  RealLast(),  RealLast(),  1.0));
+        return;
+      }
     }
-
-    aStructure->MinMaxCoordWithDescendants (aXMin, aYMin, aZMin, aXMax, aYMax, aZMax);
-    aDescXMin = Min (aXMin, aDescXMin);
-    aDescYMin = Min (aYMin, aDescYMin);
-    aDescZMin = Min (aZMin, aDescZMin);
-    aDescXMax = Max (aXMax, aDescXMax);
-    aDescYMax = Max (aYMax, aDescYMax);
-    aDescZMax = Max (aZMax, aDescZMax);
   }
 
-  if (aDescXMin != RealLast()  || aDescYMin != RealLast()  ||
-      aDescZMin != RealLast()  || aDescXMax != RealFirst() ||
-      aDescYMax != RealFirst() || aDescZMax != RealFirst())
+  for (Standard_Integer aStructIt = 1; aStructIt <= myDescendants.Length(); ++aStructIt)
   {
-    TColStd_Array2OfReal aTrsf(0, 3, 0, 3);
+    const Graphic3d_Structure* aStruct = (const Graphic3d_Structure* )myDescendants.Value (aStructIt);
+    aStruct->addTransformed (aBox, theToIgnoreInfiniteFlag);
+  }
+
+  if (aBox.IsValid())
+  {
+    TColStd_Array2OfReal aTrsf (0, 3, 0, 3);
     Transform (aTrsf);
-    TransformBoundaries (aTrsf, aDescXMin, aDescYMin, aDescZMin, aDescXMax, aDescYMax, aDescZMax);
-
-    aXMin = Min (aDescXMin, aXMin);
-    aYMin = Min (aDescYMin, aYMin);
-    aZMin = Min (aDescZMin, aZMin);
-    aXMax = Max (aDescXMax, aXMax);
-    aYMax = Max (aDescYMax, aYMax);
-    aZMax = Max (aDescZMax, aZMax);
+    TransformBoundaries (aTrsf, aBox.CornerMin().x(), aBox.CornerMin().y(), aBox.CornerMin().z(),
+                                aBox.CornerMax().x(), aBox.CornerMax().y(), aBox.CornerMax().z());
+    theBox.Combine (aBox);
   }
-
-  // Case impossible as it would mean that the structure is empty
-  if (aXMin == RealLast()  && aYMin == RealLast()  && aZMin == RealLast() &&
-      aXMax == RealFirst() && aYMax == RealFirst() && aZMax == RealFirst())
-  {
-    theXMin = RealFirst();
-    theYMin = RealFirst();
-    theZMin = RealFirst();
-    theXMax = RealLast();
-    theYMax = RealLast();
-    theZMax = RealLast();
-  }
-
-  theXMin = aXMin;
-  theYMin = aYMin;
-  theZMin = aZMin;
-  theXMax = aXMax;
-  theYMax = aYMax;
-  theZMax = aZMax;
 }
 
 //=============================================================================
@@ -2384,27 +2266,10 @@ void Graphic3d_Structure::GraphicHighlight (const Aspect_TypeOfHighlightMethod t
     }
     case Aspect_TOHM_BOUNDBOX:
     {
-      Standard_Real XMin, YMin, ZMin, XMax, YMax, ZMax;
-      if (IsEmpty() || IsInfinite())
-      {
-        // Empty or infinite structure
-        XMin = YMin = ZMin = 0.0;
-        XMax = YMax = ZMax = 0.0;
-      }
-      else
-      {
-        MinMaxCoordWithDescendants (XMin, YMin, ZMin, XMax, YMax, ZMax);
-      }
-      myCStructure->BoundBox.Pmin.x  = float (XMin);
-      myCStructure->BoundBox.Pmin.y  = float (YMin);
-      myCStructure->BoundBox.Pmin.z  = float (ZMin);
-      myCStructure->BoundBox.Pmax.x  = float (XMax);
-      myCStructure->BoundBox.Pmax.y  = float (YMax);
-      myCStructure->BoundBox.Pmax.z  = float (ZMax);
       myHighlightColor.Values (anRGB[0], anRGB[1], anRGB[2], Quantity_TOC_RGB);
-      myCStructure->BoundBox.Color.r = float (anRGB[0]);
-      myCStructure->BoundBox.Color.g = float (anRGB[1]);
-      myCStructure->BoundBox.Color.b = float (anRGB[2]);
+      myCStructure->HighlightColor.r = float (anRGB[0]);
+      myCStructure->HighlightColor.g = float (anRGB[1]);
+      myCStructure->HighlightColor.b = float (anRGB[2]);
       myCStructure->HighlightWithBndBox (this, Standard_True);
       break;
     }
@@ -2530,4 +2395,22 @@ void Graphic3d_Structure::SetClipPlanes (const Graphic3d_SequenceOfHClipPlane& t
 const Graphic3d_SequenceOfHClipPlane& Graphic3d_Structure::GetClipPlanes() const
 {
   return myCStructure->ClipPlanes();
+}
+
+//=======================================================================
+//function : SetMutable
+//purpose  :
+//=======================================================================
+void Graphic3d_Structure::SetMutable (const Standard_Boolean theIsMutable)
+{
+  myCStructure->IsMutable = theIsMutable;
+}
+
+//=======================================================================
+//function : IsMutable
+//purpose  :
+//=======================================================================
+Standard_Boolean Graphic3d_Structure::IsMutable() const
+{
+  return myCStructure->IsMutable;
 }

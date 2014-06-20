@@ -143,3 +143,7 @@ OpenGl_SceneGeometry.cxx
 OpenGl_Workspace_Raytrace.cxx
 OpenGl_Flipper.hxx
 OpenGl_Flipper.cxx
+OpenGl_BVHTreeSelector.hxx
+OpenGl_BVHTreeSelector.cxx
+OpenGl_BVHClipPrimitiveSet.cxx
+OpenGl_BVHClipPrimitiveSet.hxx

@@ -279,6 +279,11 @@ public:
                                           const Standard_Integer theLayerId,
                                           const Graphic3d_ZLayerSettings& theSettings);
 
+  //! Changes priority of a structure within its Z layer for the specified view.
+  Standard_EXPORT void ChangePriority (const Graphic3d_CStructure& theCStructure,
+                                       const Graphic3d_CView& theCView,
+                                       const Standard_Integer theNewPriority);
+
 public:
 
   //! @return the visualization options
@@ -314,6 +319,10 @@ public:
   //! Method to retrieve valid GL context.
   //! Could return NULL-handle if no window created by this driver.
   Standard_EXPORT const Handle(OpenGl_Context)& GetSharedContext() const;
+
+  //! Marks BVH tree for given priority list as dirty and
+  //! marks primitive set for rebuild.
+  Standard_EXPORT void InvalidateBVHData (Graphic3d_CView& theCView, const Standard_Integer theLayerId);
 
 public:
 

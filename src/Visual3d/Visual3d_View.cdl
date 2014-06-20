@@ -297,25 +297,6 @@ is
 	---Purpose: Sets the context <CTX> in the view <me>.
 	---Category: Methods to modify the class definition
 
-	SetTransform ( me	: mutable;
-		       AMatrix	: Array2OfReal from TColStd )
-	---Level: Internal
-	---Purpose: Sets the transformation matrix that is applied
-	--          to <MyViewOrientation> field of the view <me>.
-	--
-	--	    <AMatrix> is defined as a 4*4 real matrix.
-	--
-	--		-------------------
-	--		| a11 a12 a13  t1 |
-	--		| a21 a22 a23  t2 |
-	--		| a31 a32 a33  t3 |
-	--		|  0   0   0   1  |
-	--		-------------------
-	--
-	--  Category: Methods to modify the class definition
-	--  Warning: Raises TransformError if the matrix isn't a 4x4 matrix.
-	raises TransformError from Visual3d is static;
-
 	SetViewMappingDefault ( me	: mutable )
 		is static;
 	---Level: Public

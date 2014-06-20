@@ -347,6 +347,9 @@ is
     -- Category: Imported types
     ---------------------------
 
+    imported BndBox4f;
+    ---Purpose: Redefines BVH_Box<Standard_ShortReal, 4> for AABB representation
+    ---Category: Imported types
     imported Buffer;
     imported Buffer_Handle;
     imported BoundBuffer;
@@ -354,6 +357,7 @@ is
     imported IndexBuffer;
     imported IndexBuffer_Handle;
 
+    imported BndBox4d;
     imported BufferType;
 
     imported CBitFields20;
@@ -387,9 +391,6 @@ is
     ---Category: Imported types
 
     imported CPlane;
-    ---Category: Imported types
-
-    imported CBounds;
     ---Category: Imported types
 
     imported CUserDraw;

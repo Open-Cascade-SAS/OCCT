@@ -18,9 +18,9 @@
 #ifdef HAVE_TBB
   // On Windows, function TryEnterCriticalSection has appeared in Windows NT
   // and is surrounded by #ifdef in MS VC++ 7.1 headers.
-  // Thus to use it we need to define appropriate macro saying that we wil
+  // Thus to use it we need to define appropriate macro saying that we will
   // run on Windows NT 4.0 at least
-  #if ((defined(_WIN32) || defined(__WIN32__)) && !defined(_WIN32_WINNT))
+  #if defined(_WIN32) && !defined(_WIN32_WINNT)
     #define _WIN32_WINNT 0x0501
   #endif
 
@@ -28,6 +28,9 @@
 #endif
 
 #include <OpenGl_SceneGeometry.hxx>
+
+#include <OpenGl_PrimitiveArray.hxx>
+#include <OpenGl_Structure.hxx>
 
 //! Use this macro to output BVH profiling info
 //#define BVH_PRINT_INFO

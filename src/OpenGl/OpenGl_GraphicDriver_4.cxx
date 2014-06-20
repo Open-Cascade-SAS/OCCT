@@ -127,3 +127,21 @@ void OpenGl_GraphicDriver::UnsetZLayer (const Standard_Integer theLayerId)
       aStruct->SetZLayer (0);
   }
 }
+
+//=======================================================================
+//function : ChangePriority
+//purpose  :
+//=======================================================================
+void OpenGl_GraphicDriver::ChangePriority (const Graphic3d_CStructure& theCStructure,
+                                           const Graphic3d_CView& theCView,
+                                           const Standard_Integer theNewPriority)
+{
+  const OpenGl_CView *aCView = (const OpenGl_CView *)theCView.ptrView;
+
+  if (!myMapOfStructure.IsBound (theCStructure.Id) || !aCView)
+    return;
+
+  OpenGl_Structure* aStructure = myMapOfStructure.Find (theCStructure.Id);
+
+  aCView->View->ChangePriority (aStructure, theNewPriority);
+}

@@ -25,10 +25,11 @@
 
 //=======================================================================
 //function : PrsMgr_PresentableObject
-//purpose  : 
+//purpose  :
 //=======================================================================
-PrsMgr_PresentableObject::PrsMgr_PresentableObject(const PrsMgr_TypeOfPresentation3d aTypeOfPresentation3d)
-     :myPresentations(),myTypeOfPresentation3d(aTypeOfPresentation3d)
+PrsMgr_PresentableObject::PrsMgr_PresentableObject (const PrsMgr_TypeOfPresentation3d theType)
+: myTypeOfPresentation3d (theType),
+  myIsMutable (Standard_False)
 {
   myTransformPersistence.Flag = 0;
   myTransformPersistence.Point.x = 0.0;
@@ -294,6 +295,7 @@ void PrsMgr_PresentableObject::SetTransformPersistence (const Graphic3d_TransMod
      && !aPrs3d->Presentation().IsNull())
     {
       aPrs3d->Presentation()->SetTransformPersistence (theFlag, thePoint);
+      aPrs3d->Presentation()->ReCompute();
     }
   }
 }
@@ -413,4 +415,38 @@ void PrsMgr_PresentableObject::UpdateClipping()
 
     aModedPrs.Presentation()->Presentation()->SetClipPlanes (myClipPlanes);
   }
+}
+
+// =======================================================================
+// function : SetMutable
+// purpose  :
+// =======================================================================
+void PrsMgr_PresentableObject::SetMutable (const Standard_Boolean theIsMutable)
+{
+  if (myIsMutable == theIsMutable)
+  {
+    return;
+  }
+
+  myIsMutable = theIsMutable;
+  for (Standard_Integer aPrsIter = 1; aPrsIter <= myPresentations.Length(); ++aPrsIter)
+  {
+    const PrsMgr_ModedPresentation& aModedPrs = myPresentations (aPrsIter);
+    if (aModedPrs.Presentation().IsNull()
+     || aModedPrs.Presentation()->Presentation().IsNull())
+    {
+      continue;
+    }
+
+    aModedPrs.Presentation()->Presentation()->SetMutable (theIsMutable);
+  }
+}
+
+// =======================================================================
+// function : IsMutable
+// purpose  :
+// =======================================================================
+const Standard_Boolean PrsMgr_PresentableObject::IsMutable() const
+{
+  return myIsMutable;
 }

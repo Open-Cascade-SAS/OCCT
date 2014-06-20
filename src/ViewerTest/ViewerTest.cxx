@@ -2028,6 +2028,7 @@ int VRemove (Draw_Interpretor& theDI,
   ViewerTest_RedrawMode aToUpdate     = ViewerTest_RM_Auto;
   Standard_Boolean      isContextOnly = Standard_False;
   Standard_Boolean      toRemoveAll   = Standard_False;
+  Standard_Boolean      toPrintInfo   = Standard_True;
 
   Standard_Integer anArgIter = 1;
   for (; anArgIter < theArgNb; ++anArgIter)
@@ -2041,6 +2042,10 @@ int VRemove (Draw_Interpretor& theDI,
     else if (anArg == "-all")
     {
       toRemoveAll = Standard_True;
+    }
+    else if (anArg == "-noinfo")
+    {
+      toPrintInfo = Standard_False;
     }
     else if (!parseRedrawMode (anArg, aToUpdate))
     {
@@ -2133,11 +2138,13 @@ int VRemove (Draw_Interpretor& theDI,
        anIter.More(); anIter.Next())
   {
     const Handle(AIS_InteractiveObject) anIO  = Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2 (anIter.Value()));
-
     if (!anIO.IsNull())
     {
       TheAISContext()->Remove (anIO, Standard_False);
-      theDI << anIter.Value().ToCString() << " was removed\n";
+      if (toPrintInfo)
+      {
+        theDI << anIter.Value().ToCString() << " was removed\n";
+      }
     }
     else
     {
@@ -2145,10 +2152,12 @@ int VRemove (Draw_Interpretor& theDI,
       if (!aNisIO.IsNull())
       {
         TheNISContext()->Remove (aNisIO);
-        theDI << anIter.Value().ToCString() << " was removed\n";
+        if (toPrintInfo)
+        {
+          theDI << anIter.Value().ToCString() << " was removed\n";
+        }
       }
     }
-      
     if (!isContextOnly)
     {
       GetMapOfAIS().UnBind2 (anIter.Value());
@@ -2854,11 +2863,19 @@ static int VDisplay2 (Draw_Interpretor& theDI,
   }
 
   ViewerTest_RedrawMode aToUpdate = ViewerTest_RM_Auto;
+  Standard_Integer      isMutable = -1;
   for (Standard_Integer anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
   {
-    const TCollection_AsciiString aName = theArgVec[anArgIter];
+    const TCollection_AsciiString aName     = theArgVec[anArgIter];
+    TCollection_AsciiString       aNameCase = aName;
+    aNameCase.LowerCase();
     if (parseRedrawMode (aName, aToUpdate))
     {
+      continue;
+    }
+    else if (aNameCase == "-mutable")
+    {
+      isMutable = 1;
       continue;
     }
     else if (!GetMapOfAIS().IsBound2 (aName))
@@ -2867,6 +2884,10 @@ static int VDisplay2 (Draw_Interpretor& theDI,
       const Handle(AIS_InteractiveObject) aShape = GetAISShapeFromName (aName.ToCString());
       if (!aShape.IsNull())
       {
+        if (isMutable != -1)
+        {
+          aShape->SetMutable (isMutable == 1);
+        }
         GetMapOfAIS().Bind (aShape, aName);
         aCtx->Display (aShape, Standard_False);
       }
@@ -2877,6 +2898,11 @@ static int VDisplay2 (Draw_Interpretor& theDI,
     if (anObj->IsKind (STANDARD_TYPE (AIS_InteractiveObject)))
     {
       Handle(AIS_InteractiveObject) aShape = Handle(AIS_InteractiveObject)::DownCast (anObj);
+      if (isMutable != -1)
+      {
+        aShape->SetMutable (isMutable == 1);
+      }
+
       if (aShape->Type() == AIS_KOI_Datum)
       {
         aCtx->Display (aShape, Standard_False);
@@ -2896,7 +2922,6 @@ static int VDisplay2 (Draw_Interpretor& theDI,
         aCtx->Redisplay (aShape, Standard_False);
         aCtx->Display   (aShape, Standard_False);
       }
-      aShape.Nullify();
     }
     else if (anObj->IsKind (STANDARD_TYPE (NIS_InteractiveObject)))
     {
@@ -3088,14 +3113,19 @@ static int VAnimation (Draw_Interpretor& di, Standard_Integer argc, const char**
   GetMapOfAIS().Bind(myAisCrankArm,"c");
   GetMapOfAIS().Bind(myAisPropeller,"d");
 
-  TheAISContext()->SetColor(myAisCylinderHead, Quantity_NOC_INDIANRED);
-  TheAISContext()->SetColor(myAisEngineBlock , Quantity_NOC_RED);
-  TheAISContext()->SetColor(myAisPropeller   , Quantity_NOC_GREEN);
+  myAisCylinderHead->SetMutable (Standard_True);
+  myAisEngineBlock ->SetMutable (Standard_True);
+  myAisCrankArm    ->SetMutable (Standard_True);
+  myAisPropeller   ->SetMutable (Standard_True);
 
-  TheAISContext()->Display(myAisCylinderHead,Standard_False);
-  TheAISContext()->Display(myAisEngineBlock,Standard_False );
-  TheAISContext()->Display(myAisCrankArm,Standard_False    );
-  TheAISContext()->Display(myAisPropeller,Standard_False);
+  TheAISContext()->SetColor (myAisCylinderHead, Quantity_NOC_INDIANRED);
+  TheAISContext()->SetColor (myAisEngineBlock,  Quantity_NOC_RED);
+  TheAISContext()->SetColor (myAisPropeller,    Quantity_NOC_GREEN);
+
+  TheAISContext()->Display (myAisCylinderHead, Standard_False);
+  TheAISContext()->Display (myAisEngineBlock,  Standard_False);
+  TheAISContext()->Display (myAisCrankArm,     Standard_False);
+  TheAISContext()->Display (myAisPropeller,    Standard_False);
 
   TheAISContext()->Deactivate(myAisCylinderHead);
   TheAISContext()->Deactivate(myAisEngineBlock );
@@ -4215,9 +4245,10 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
 		  __FILE__, visos, group);
 
   theCommands.Add("vdisplay",
-		  "vdisplay [-noupdate|-update] name1 [name2] ... [name n]"
+		  "vdisplay [-noupdate|-update] [-mutable] name1 [name2] ... [name n]"
       "\n\t\t: Displays named objects."
       "\n\t\t: Option -noupdate suppresses viewer redraw call."
+      "\n\t\t: Option -mutable enables optimizations for mutable objects."
 		  __FILE__,VDisplay2,group);
 
   theCommands.Add ("vupdate",
@@ -4232,12 +4263,13 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
 		  __FILE__, VErase, group);
 
   theCommands.Add("vremove",
-    "vremove [-noupdate|-update] [-context] [-all] [name1] ...  [name n]"
+    "vremove [-noupdate|-update] [-context] [-all] [-noinfo] [name1] ...  [name n]"
     "or vremove [-context] -all to remove all objects"
       "\n\t\t: Removes selected or named objects."
       "\n\t\t  If -context is in arguments, the objects are not deleted"
       "\n\t\t  from the map of objects and names."
-      "\n\t\t: Option -noupdate suppresses viewer redraw call.",
+      "\n\t\t: Option -noupdate suppresses viewer redraw call."
+      "\n\t\t: Option -noinfo suppresses displaying the list of removed objects.",
       __FILE__, VRemove, group);
 
   theCommands.Add("vdonly",

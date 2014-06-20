@@ -383,6 +383,19 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
     }
   }
 
+  Standard_Boolean isProjectionMatUpdateNeeded  = Standard_False;
+  Standard_Boolean isOrientationMatUpdateNeeded = Standard_False;
+  if (myBVHSelector.ProjectionState() != myCamera->ProjectionState())
+  {
+    isProjectionMatUpdateNeeded = Standard_True;
+    myBVHSelector.ChangeProjectionState() = myCamera->ProjectionState();
+  }
+  if (myBVHSelector.ModelViewState() != myCamera->ModelViewState())
+  {
+    isOrientationMatUpdateNeeded = Standard_True;
+    myBVHSelector.ChangeModelViewState() = myCamera->ModelViewState();
+  }
+
   // Set OCCT state uniform variables
   const Handle(OpenGl_ShaderManager) aManager = aContext->ShaderManager();
   if (!aManager->IsEmpty())
@@ -427,6 +440,12 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
       myModelViewState = myCamera->ModelViewState();
       aManager->UpdateWorldViewStateTo ((const Tmatrix3*)myCamera->OrientationMatrixF().GetData());
     }
+  }
+
+  if (isProjectionMatUpdateNeeded
+   || isOrientationMatUpdateNeeded)
+  {
+    myBVHSelector.SetViewVolume (myCamera);
   }
 
   // ====================================
@@ -641,6 +660,15 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
   {
     aManager->SetLastView (this);
   }
+}
+
+// =======================================================================
+// function : InvalidateBVHData
+// purpose  :
+// =======================================================================
+void OpenGl_View::InvalidateBVHData (const Standard_Integer theLayerId)
+{
+  myZLayers.InvalidateBVHData (theLayerId);
 }
 
 /*----------------------------------------------------------------------*/
@@ -1033,6 +1061,16 @@ void OpenGl_View::SetZLayerSettings (const Standard_Integer theLayerId,
   myZLayers.Layer (theLayerId).SetLayerSettings (theSettings);
 }
 
+//=======================================================================
+//function : ChangePriority
+//purpose  :
+//=======================================================================
+void OpenGl_View::ChangePriority (const OpenGl_Structure *theStructure,
+                                  const Standard_Integer theNewPriority)
+{
+  Standard_Integer aLayerId = theStructure->GetZLayer();
+  myZLayers.ChangePriority (theStructure, aLayerId, theNewPriority);
+}
 
 //=======================================================================
 //function : RedrawScene

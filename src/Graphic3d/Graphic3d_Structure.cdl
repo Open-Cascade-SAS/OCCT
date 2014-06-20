@@ -71,7 +71,9 @@ uses
 	Vertex			from Graphic3d,
 	TransModeFlags          from Graphic3d,
 	Pnt                     from gp,
-    SequenceOfHClipPlane from Graphic3d
+    SequenceOfHClipPlane from Graphic3d,
+    BndBox4f from Graphic3d,
+    BndBox4d from Graphic3d
 
 raises
 
@@ -208,6 +210,12 @@ is
 	---Purpose: Suppress the structure <me>.
 	--	    It will be erased at the next screen update.
 	--  Warning: No more graphic operations in <me> after this call.
+	--  Category: Methods to modify the class definition
+
+	CalculateBoundBox ( me	: mutable )
+		is static;
+	---Level:   Public
+	---Purpose: Computes axis-aligned bounding box of a structure.
 	--  Category: Methods to modify the class definition
 
 	SetHighlightColor ( me		: mutable;
@@ -357,6 +365,14 @@ is
 	--	    greater than <LimitSup> or if <LimitInf> or
 	--	    <LimitSup> is a negative value.
 	raises StructureDefinitionError from Graphic3d is static;
+
+    SetIsForHighlight ( me               : mutable;
+                        isForHighlight   : Boolean from Standard )
+        is static;
+    ---Level: Internal
+    ---Purpose: marks the structure <me> representing wired structure needed for
+    --          highlight only so it won't be added to BVH tree.
+    --  Category: Methods to modify the class definition
 
 	UnHighlight ( me	: mutable )
 		is static;
@@ -810,6 +826,17 @@ is
 	---Purpose: Get the current point of relative modelling transform persistence
         is static;
 
+  SetMutable ( me           : mutable;
+               theIsMutable : Boolean from Standard )
+  is static;
+  ---Purpose: Sets if the structure location has mutable nature (content or location will be changed regularly).
+
+  IsMutable ( me )
+  returns Boolean from Standard
+  is static;
+  ---Purpose: Returns true if structure has mutable nature (content or location are be changed regularly).
+  -- Mutable structure will be managed in different way than static onces.
+
 	----------------------------
 	-- Category: Private methods
 	----------------------------
@@ -878,28 +905,16 @@ is
 	---Purpose: Returns the identification number of the structure <me>.
 	---Category: Private methods
 
-    MinMaxCoord (me;
-                 theXMin, theYMin, theZMin : out Real from Standard;
-                 theXMax, theYMax, theZMax : out Real from Standard)
-    is static private;
-    ---Level: Internal
-    ---Purpose: Returns the extreme coordinates found in the structure <me>.
-    --  Warning: If the structure <me> is empty or infinite then :
-    --    theXMin = theYMin = theZMin = RealFirst().
-    --    theXMax = theYMax = theZMax = RealLast().
-    ---Category: Private methods
+  minMaxCoord (me;
+               theToIgnoreInfiniteFlag : Boolean from Standard = Standard_False)
+    returns BndBox4f from Graphic3d
+  is static private;
+  ---Purpose: Returns the extreme coordinates found in the structure <me> without transformation applied.
 
-    MinMaxCoordWithDescendants (me;
-                                theXMin, theYMin, theZMin : out Real from Standard;
-                                theXMax, theYMax, theZMax : out Real from Standard)
-    is static private;
-    ---Level: Internal
-    ---Purpose: Returns the extreme coordinates found in the structure <me>
-    -- and its descendants with transformation applied.
-    --  Warning: If the structure <me> is empty or infinite then :
-    --    theXMin = theYMin = theZMin = RealFirst().
-    --    theXMax = theYMax = theZMax = RealLast().
-    ---Category: Private methods
+  addTransformed (me;
+                  theBox : out BndBox4d from Graphic3d;
+                  theToIgnoreInfiniteFlag : Boolean from Standard = Standard_False)
+  is static private;
 
 	PrintNetwork ( myclass;
 		       AStructure	: Structure from Graphic3d;

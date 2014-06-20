@@ -1,0 +1,82 @@
+puts "========"
+puts "OCC24307 Objects clipping algorithm using BVH performance test: Solid spheres test"
+puts "========"
+
+# define objects' location parameters and their characteristics
+set SPHERES_NUM 10
+set SPERE_RADIUS 100
+set SPHERE_FINENESS 10
+set PERCENT_OF_INNER_SPHERES 30
+
+# window parameters
+set SMALL_WIN_WIDTH 512
+set SMALL_WIN_HEIGHT 512
+
+# other
+array set aSphereNames {}
+
+set aWithoutClippingSnapshot $imagedir/${casename}_without.png
+set aWithClippingSnapshot $imagedir/${casename}_with.png
+set aDiffImage $imagedir/${casename}_diff.png
+
+pload VISUALIZATION MODELING
+vinit name=small_wnd l=32 t=32 w=$SMALL_WIN_WIDTH h=$SMALL_WIN_HEIGHT
+vactivate small_wnd
+vfrustumculling 0
+vautozfit 0
+vviewparams -scale 1.953125 -eye 0.57735026918962573 -0.57735026918962573 0.57735026918962573
+vzrange 1 512
+vclear
+vremove -all -noinfo
+
+puts [vdrawsphere tmp_sph $SPHERE_FINENESS]
+vremove -noinfo tmp_sph
+
+set aInnerSpheresNum [expr $SPHERES_NUM * $PERCENT_OF_INNER_SPHERES / 100]
+puts ""
+set aDebugInfo "Total number of visible objects: "
+append aDebugInfo $aInnerSpheresNum
+puts $aDebugInfo
+puts ""
+
+puts "Start displaying spheres without clipping..."
+set aInnerWidthStep [expr $SMALL_WIN_WIDTH / ($aInnerSpheresNum + 1)]
+set aInnerHeightStep [expr $SMALL_WIN_HEIGHT / ($aInnerSpheresNum + 1)]
+set aOuterStep [expr $SPERE_RADIUS * 3 / ($SPHERES_NUM - $aInnerSpheresNum + 1)]
+for {set i 0} {$i < $aInnerSpheresNum} {incr i} {
+  set aCurrName "inner_sph"
+  append aCurrName $i
+  set aX [expr - $SMALL_WIN_WIDTH / 2 + ($i + 1) * $aInnerWidthStep ]
+  set aY [expr - $SMALL_WIN_HEIGHT / 2 + ($i + 1) * $aInnerHeightStep ]
+  vdrawsphere $aCurrName $SPHERE_FINENESS $aX $aY 0 $SPERE_RADIUS 0 0
+  set aSphereNames($i) $aCurrName
+}
+for {set i $aInnerSpheresNum} {$i < $SPHERES_NUM} {incr i} {
+  set aCurrName "outer_sph"
+  append aCurrName $i
+  set aX [expr - $SMALL_WIN_WIDTH - $SPERE_RADIUS * 3 + ($i - $aInnerSpheresNum + 1) * $aOuterStep ]
+  set aY [expr - $SMALL_WIN_HEIGHT - $SPERE_RADIUS * 3 + ($i - $aInnerSpheresNum + 1) * $aOuterStep ]
+  vdrawsphere $aCurrName $SPHERE_FINENESS $aX $aY 0 $SPERE_RADIUS 0 0
+  set aSphereNames($i) $aCurrName
+}
+puts [vfps]
+vdump $aWithoutClippingSnapshot
+puts "All spheres were displayed."
+puts ""
+
+verase
+
+puts "Start displaying spheres with clipping..."
+vfrustumculling 1
+vdisplayall
+puts [vfps]
+vdump $aWithClippingSnapshot
+puts "All spheres were displayed."
+puts ""
+
+set aDiffImageResult [diffimage $aWithClippingSnapshot $aWithoutClippingSnapshot 0.1 0 0 $aDiffImage]
+if {$aDiffImageResult != 0} {
+  puts "ERROR : Test failed: there is a difference between images rendered with and without clipping"
+}
+
+verase

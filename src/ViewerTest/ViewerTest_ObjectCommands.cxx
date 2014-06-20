@@ -2923,12 +2923,14 @@ static int VDrawSphere (Draw_Interpretor& /*di*/, Standard_Integer argc, const c
   Standard_Real aCenterY = (argc > 5) ? Draw::Atof (argv[4]) : 0.0;
   Standard_Real aCenterZ = (argc > 5) ? Draw::Atof (argv[5]) : 0.0;
   Standard_Real aRadius =  (argc > 6) ? Draw::Atof (argv[6]) : 100.0;
-  Standard_Boolean toShowEdges =  (argc > 7) ? Draw::Atoi (argv[7]) : Standard_False;
+  Standard_Boolean toShowEdges = (argc > 7) ? Draw::Atoi (argv[7]) == 1 : Standard_False;
+  Standard_Boolean toPrintInfo = (argc > 8) ? Draw::Atoi (argv[8]) == 1 : Standard_True;
 
   // remove AIS object with given name from map
   VDisplayAISObject (aShapeName, Handle(AIS_InteractiveObject)());
 
-  std::cout << "Compute Triangulation...\n";
+  if (toPrintInfo)
+    std::cout << "Compute Triangulation...\n";
   Handle(AIS_Triangulation) aShape
     = new AIS_Triangulation (CalculationOfSphere (aCenterX, aCenterY, aCenterZ,
                                                   aResolution,
@@ -2967,12 +2969,15 @@ static int VDrawSphere (Draw_Interpretor& /*di*/, Standard_Integer argc, const c
   aColorsSize >>= 20;
   aTrianglesSize >>= 20;
   aPolyConnectSize >>= 20;
-  std::cout << "NumberOfPoints:    " << aNumberPoints << "\n"
-            << "NumberOfTriangles: " << aNumberTriangles << "\n"
-            << "Amount of memory required for PolyTriangulation without Normals: " << (aTotalSize - aNormalsSize) << " Mb\n"
-            << "Amount of memory for colors: " << aColorsSize << " Mb\n"
-            << "Amount of memory for PolyConnect: " << aPolyConnectSize << " Mb\n"
-            << "Amount of graphic card memory required: " << aTotalSize << " Mb\n";
+  if (toPrintInfo)
+  {
+    std::cout << "NumberOfPoints:    " << aNumberPoints << "\n"
+      << "NumberOfTriangles: " << aNumberTriangles << "\n"
+      << "Amount of memory required for PolyTriangulation without Normals: " << (aTotalSize - aNormalsSize) << " Mb\n"
+      << "Amount of memory for colors: " << aColorsSize << " Mb\n"
+      << "Amount of memory for PolyConnect: " << aPolyConnectSize << " Mb\n"
+      << "Amount of graphic card memory required: " << aTotalSize << " Mb\n";
+  }
 
   // Setting material properties, very important for desirable visual result!
   Graphic3d_MaterialAspect aMat (Graphic3d_NOM_PLASTIC);
@@ -5283,7 +5288,7 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
     __FILE__,VDrawText,group);
 
   theCommands.Add("vdrawsphere",
-    "vdrawsphere: vdrawsphere shapeName Fineness [X=0.0 Y=0.0 Z=0.0] [Radius=100.0] [ToShowEdges=0]\n",
+    "vdrawsphere: vdrawsphere shapeName Fineness [X=0.0 Y=0.0 Z=0.0] [Radius=100.0] [ToShowEdges=0] [ToPrintInfo=1]\n",
     __FILE__,VDrawSphere,group);
 
   theCommands.Add ("vsetlocation",

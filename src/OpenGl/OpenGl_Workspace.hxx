@@ -64,6 +64,7 @@ class OpenGl_AspectMarker;
 class OpenGl_AspectText;
 class OpenGl_FrameBuffer;
 class OpenGl_Structure;
+class OpenGl_TriangleSet;
 class OpenGl_Element;
 class Image_PixMap;
 
@@ -223,6 +224,9 @@ public:
 
   //! Returns currently applied polygon offset params.
   const TEL_POFFSET_PARAM& AppliedPolygonOffset() { return PolygonOffset_applied; }
+
+  //! @return true if clipping algorithm enabled
+  inline Standard_Boolean IsCullingEnabled() const { return myIsCullingEnabled; }
 
 protected:
 
@@ -599,6 +603,7 @@ protected: //! @name protected fields
   Standard_Boolean       myUseZBuffer;
   Standard_Boolean       myUseDepthTest;
   Standard_Boolean       myUseGLLight;
+  Standard_Boolean       myIsCullingEnabled;     //!< frustum culling flag
 
 protected: //! @name fields related to status
 

@@ -159,6 +159,7 @@ OpenGl_Workspace::OpenGl_Workspace (const Handle(Aspect_DisplayConnection)& theD
   myUseZBuffer (Standard_False),
   myUseDepthTest (Standard_True),
   myUseGLLight (Standard_True),
+  myIsCullingEnabled (Standard_False),
   //
   AspectLine_set (&myDefaultAspectLine),
   AspectLine_applied (NULL),
@@ -559,6 +560,8 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
   {
     return;
   }
+
+  myIsCullingEnabled = theCView.IsCullingEnabled;
 
   // release pending GL resources
   Handle(OpenGl_Context) aGlCtx = GetGlContext();

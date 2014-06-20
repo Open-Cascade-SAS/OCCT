@@ -277,6 +277,16 @@ is
    ---Purpose: Get clip planes.
    -- @return set of previously added clip planes for all display mode presentations.
 
+  SetMutable ( me           : mutable;
+               theIsMutable : Boolean from Standard ) is virtual;
+  ---Purpose: Sets if the object has mutable nature (content or location will be changed regularly).
+  -- This method should be called before object displaying to take effect.
+
+  IsMutable (me) returns Boolean from Standard;
+  ---C++: return const
+  ---Purpose: Returns true if object has mutable nature (content or location are be changed regularly).
+  -- Mutable object will be managed in different way than static onces (another optimizations).
+
    UpdateClipping (me : mutable) is virtual protected;
    ---Purpose: General virtual method for internal update of presentation state
    -- when some modifications on list of clip planes occurs. Base 
@@ -287,8 +297,8 @@ fields
     myTypeOfPresentation3d: TypeOfPresentation3d from PrsMgr is protected;
     myLocation  : Location from TopLoc is protected; 
     myClipPlanes : SequenceOfHClipPlane from Graphic3d is protected;
-    --myTransformPersistence  :  TransModeFlags  from  Graphic3d; 
     myTransformPersistence  :  CTransPersStruct  from  Graphic3d;
+    myIsMutable : Boolean from Standard is protected;
 
 friends
     class Presentation        from PrsMgr,

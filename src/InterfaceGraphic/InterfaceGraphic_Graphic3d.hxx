@@ -16,6 +16,7 @@
 #define InterfaceGraphic_Graphic3dHeader
 
 #include <InterfaceGraphic_telem.hxx>
+#include <Graphic3d_BndBox4f.hxx>
 #include <Standard_Transient.hxx>
 
 /* COULEUR */
@@ -33,18 +34,6 @@ typedef struct {
         float x, y, z;
 
 } CALL_DEF_POINT;
-
-/* BOITE ENGLOBANTE */
-
-typedef struct {
-
-        CALL_DEF_COLOR Color;
-
-        CALL_DEF_POINT Pmin;
-
-        CALL_DEF_POINT Pmax;
-
-} CALL_DEF_BOUNDBOX;
 
 /* MATERIAL */
 
@@ -85,26 +74,12 @@ typedef struct
         CALL_DEF_POINT Point;
 } CALL_DEF_TRANSFORM_PERSISTENCE;
 
-/* BOUNDING BOX */
-
-typedef struct {
-
-        float XMin;
-        float YMin;
-        float ZMin;
-
-        float XMax;
-        float YMax;
-        float ZMax;
-
-} CALL_DEF_BOUNDS;
-
 /* USERDRAW DATA */
 
 typedef struct {
 
         void            *Data;
-        CALL_DEF_BOUNDS *Bounds;
+        Graphic3d_BndBox4f  *Bounds;
 
 } CALL_DEF_USERDRAW;
 

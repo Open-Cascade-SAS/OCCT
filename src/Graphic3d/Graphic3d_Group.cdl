@@ -90,7 +90,7 @@ deferred class Group from Graphic3d inherits TShared
         Buffer_Handle               from Graphic3d,
         BoundBuffer_Handle          from Graphic3d,
         TransModeFlags              from Graphic3d,
-        CBounds                     from Graphic3d,
+        BndBox4f                    from Graphic3d,
         Ax2                         from gp
     
     raises
@@ -480,6 +480,22 @@ deferred class Group from Graphic3d inherits TShared
         --      XMin = YMin = ZMin = RealFirst ().
         --      XMax = YMax = ZMax = RealLast ().
         ---Category: Inquire methods
+
+        BoundingBox ( me )
+            returns BndBox4f from Graphic3d
+            is static;
+        ---Level: Public
+        ---Purpose: Returns boundary box of the group <me> without transformation applied,
+        ---if it is specified for the structure.
+        ---C++: return const &
+
+        ChangeBoundingBox ( me : mutable )
+            returns BndBox4f from Graphic3d
+            is static;
+        ---Level: Public
+        ---Purpose: Returns non-const boundary box of the group <me> without transformation applied,
+        ---if it is specified for the structure.
+        ---C++: return &
     
         Structure ( me )
             returns Structure from Graphic3d
@@ -534,7 +550,7 @@ deferred class Group from Graphic3d inherits TShared
   myStructure    : StructurePtr from Graphic3d is protected;
 
   -- the min-max
-  myBounds       : CBounds from Graphic3d is protected;
+  myBounds        : BndBox4f from Graphic3d is protected;
 
   -- Identifies group forming closed volume. Used to filter groups for back face culling and capping algorithms.
   myIsClosed  : Boolean from Standard is protected;

@@ -52,6 +52,7 @@ PrsMgr_Presentation::PrsMgr_Presentation (const Handle(PrsMgr_PresentationManage
   myStructure = new PrsMgr_Prs (thePrsMgr->StructureManager(),
                                 this, thePrsObject->TypeOfPresentation3d());
   myStructure->SetOwner (myPresentableObject);
+  myStructure->SetMutable (myPresentableObject->IsMutable());
 }
 
 //=======================================================================
@@ -68,15 +69,17 @@ void PrsMgr_Presentation::Display()
 //function : Display
 //purpose  :
 //=======================================================================
-void PrsMgr_Presentation::Display (const Standard_Boolean /*theIsHighlight*/)
+void PrsMgr_Presentation::Display (const Standard_Boolean theIsHighlight)
 {
   if (!myStructure->IsDisplayed())
   {
+    myStructure->SetIsForHighlight (theIsHighlight);
     myStructure->Display();
   }
   else if (!myStructure->IsVisible())
   {
     SetVisible (Standard_True);
+    myStructure->SetIsForHighlight (theIsHighlight);
   }
 }
 
