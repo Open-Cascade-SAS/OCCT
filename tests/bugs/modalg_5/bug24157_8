@@ -47,7 +47,7 @@ regexp { +Tps: +([-0-9.+eE]+)} [bbuild result -t] full tps_time
 if { [regexp {Debug mode} [dversion]] } {
   set check_time 25
 } else {
-  set check_time 2.2
+  set check_time 8.2
 }
 if { $tps_time > $check_time } {
   puts "Error: low performance"
