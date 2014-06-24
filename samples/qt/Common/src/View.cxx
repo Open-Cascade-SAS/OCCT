@@ -157,12 +157,7 @@ View::View( Handle(AIS_InteractiveContext) theContext, QWidget* parent )
   myCurrentMode = CurAction3d_Nothing;
   myHlrModeIsOn = Standard_False;
   setMouseTracking( true );
-    
-  if( myFirst )
-  {
-    init();
-    myFirst = false;
-  }
+
   initViewActions();
   initCursors();
 
