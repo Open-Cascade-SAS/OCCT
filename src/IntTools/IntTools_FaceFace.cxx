@@ -3726,9 +3726,6 @@ Standard_Boolean DecompositionOfWLine(const Handle(IntPatch_WLine)& theWLine,
       continue;
     }
     const TColStd_ListOfInteger& aListOfIndex = anArrayOfLines.Value(i);
-    if(aListOfIndex.Extent() < 2) {
-      continue;
-    }
     TColStd_ListOfInteger aListOfFLIndex;
 
     for(j = 0; j < 2; j++) {
@@ -3744,7 +3741,15 @@ Standard_Boolean DecompositionOfWLine(const Handle(IntPatch_WLine)& theWLine,
       const IntSurf_PntOn2S& aPoint = theWLine->Point(anIndex);
 
       IntSurf_PntOn2S aNewP = aPoint;
-      
+      if(aListOfIndex.Extent() < 2) {
+        aSeqOfPntOn2S->Add(aNewP);
+        aListOfFLIndex.Append(aSeqOfPntOn2S->NbPoints());
+        continue;
+      }
+      //
+      Standard_Integer iFirst = aListOfIndex.First();
+      Standard_Integer iLast  = aListOfIndex.Last();
+      //
       for(Standard_Integer surfit = 0; surfit < 2; surfit++) {
 
         Handle(GeomAdaptor_HSurface) aGASurface = (surfit == 0) ? theSurface1 : theSurface2;
@@ -3797,11 +3802,11 @@ Standard_Boolean DecompositionOfWLine(const Handle(IntPatch_WLine)& theWLine,
               nbboundaries++;
             }
             else {
-              //check neighbourhood of boundary
-              Standard_Real anEpsilon = aResolution * 100.;
-              Standard_Real aPart = ( aupperboundary - alowerboundary ) * 0.1;
-              anEpsilon = ( anEpsilon > aPart ) ? aPart : anEpsilon;
-                
+            //check neighbourhood of boundary
+            Standard_Real anEpsilon = aResolution * 100.;
+            Standard_Real aPart = ( aupperboundary - alowerboundary ) * 0.1;
+            anEpsilon = ( anEpsilon > aPart ) ? aPart : anEpsilon;
+            
               bIsNearBoundary = IsPointOnBoundary(anAdjustPar, alowerboundary, aupperboundary, 
                                                   anEpsilon, bIsOnFirstBoundary);
 
@@ -3814,7 +3819,7 @@ Standard_Boolean DecompositionOfWLine(const Handle(IntPatch_WLine)& theWLine,
           gp_Pnt2d aPZone = (surfit == 0) ? aTanZoneS1->Value(zIt) : aTanZoneS2->Value(zIt);
           Standard_Real aZoneRadius = aTanZoneRadius->Value(zIt);
 
-          Standard_Integer aneighbourpointindex1 = (j == 0) ? aListOfIndex.First() : aListOfIndex.Last();
+          Standard_Integer aneighbourpointindex1 = (j == 0) ? iFirst : iLast;
           const IntSurf_PntOn2S& aNeighbourPoint = theWLine->Point(aneighbourpointindex1);
           Standard_Real nU1, nV1;
             
@@ -3898,7 +3903,7 @@ Standard_Boolean DecompositionOfWLine(const Handle(IntPatch_WLine)& theWLine,
               // assume there are at least two points in line (see "if" above)
               Standard_Integer anindexother = aneighbourpointindex;
 
-              while((anindexother <= aListOfIndex.Last()) && (anindexother >= aListOfIndex.First())) {
+              while((anindexother <= iLast) && (anindexother >= iFirst)) {
                 anindexother = (j == 0) ? (anindexother + 1) : (anindexother - 1);
                 const IntSurf_PntOn2S& aPrevNeighbourPoint = theWLine->Point(anindexother);
                 Standard_Real nU2, nV2;
@@ -3962,7 +3967,7 @@ Standard_Boolean DecompositionOfWLine(const Handle(IntPatch_WLine)& theWLine,
             else
               anewpoint = gp_Pnt2d( u2, v2 );
             
-            Standard_Integer aneighbourpointindex1 = (j == 0) ? aListOfIndex.First() : aListOfIndex.Last();
+            Standard_Integer aneighbourpointindex1 = (j == 0) ? iFirst : iLast;
             const IntSurf_PntOn2S& aNeighbourPoint = theWLine->Point(aneighbourpointindex1);
             Standard_Real nU1, nV1;
             
@@ -4002,7 +4007,7 @@ Standard_Boolean DecompositionOfWLine(const Handle(IntPatch_WLine)& theWLine,
           }
           else {
 
-            Standard_Integer aneighbourpointindex1 = (j == 0) ? aListOfIndex.First() : aListOfIndex.Last();
+            Standard_Integer aneighbourpointindex1 = (j == 0) ? iFirst : iLast;
             const IntSurf_PntOn2S& aNeighbourPoint = theWLine->Point(aneighbourpointindex1);
             Standard_Real nU1, nV1;
 
@@ -4014,7 +4019,7 @@ Standard_Boolean DecompositionOfWLine(const Handle(IntPatch_WLine)& theWLine,
             gp_Pnt2d ap2(nU1, nV1);
             Standard_Integer aneighbourpointindex2 = aneighbourpointindex1;
 
-            while((aneighbourpointindex2 <= aListOfIndex.Last()) && (aneighbourpointindex2 >= aListOfIndex.First())) {
+            while((aneighbourpointindex2 <= iLast) && (aneighbourpointindex2 >= iFirst)) {
               aneighbourpointindex2 = (j == 0) ? (aneighbourpointindex2 + 1) : (aneighbourpointindex2 - 1);
               const IntSurf_PntOn2S& aPrevNeighbourPoint = theWLine->Point(aneighbourpointindex2);
               Standard_Real nU2, nV2;
@@ -4052,7 +4057,7 @@ Standard_Boolean DecompositionOfWLine(const Handle(IntPatch_WLine)& theWLine,
 
                 //Correction of projected coordinates. Begin
                 //Note, it may be shifted on a period
-                Standard_Integer aneindex1 = (j == 0) ? aListOfIndex.First() : aListOfIndex.Last();
+                Standard_Integer aneindex1 = (j == 0) ? iFirst : iLast;
                 const IntSurf_PntOn2S& aNeighbourPoint = theWLine->Point(aneindex1);
                 Standard_Real nUn, nVn;
                 
@@ -4135,10 +4140,6 @@ Standard_Boolean DecompositionOfWLine(const Handle(IntPatch_WLine)& theWLine,
         continue;
       }
       const TColStd_ListOfInteger& aListOfIndex = anArrayOfLines.Value(i);
-
-      if(aListOfIndex.Extent() < 2) {
-        continue;
-      }
       const TColStd_ListOfInteger& aListOfFLIndex = anArrayOfLineEnds.Value(i);
       Standard_Boolean bhasfirstpoint = (aListOfFLIndex.Extent() == 2);
       Standard_Boolean bhaslastpoint = (aListOfFLIndex.Extent() == 2);
@@ -4150,25 +4151,31 @@ Standard_Boolean DecompositionOfWLine(const Handle(IntPatch_WLine)& theWLine,
       if(!bhaslastpoint && !aListOfFLIndex.IsEmpty()) {
         bhaslastpoint = (i != nblines);
       }
-      Standard_Boolean bIsFirstInside = ((ifprm >= aListOfIndex.First()) && (ifprm <= aListOfIndex.Last()));
-      Standard_Boolean bIsLastInside =  ((ilprm >= aListOfIndex.First()) && (ilprm <= aListOfIndex.Last()));
+      
+      Standard_Integer iFirst = aListOfIndex.First();
+      Standard_Integer iLast  = aListOfIndex.Last();
+      Standard_Boolean bIsFirstInside = ((ifprm >= iFirst) && (ifprm <= iLast));
+      Standard_Boolean bIsLastInside =  ((ilprm >= iFirst) && (ilprm <= iLast));
 
       if(!bIsFirstInside && !bIsLastInside) {
-        if((ifprm < aListOfIndex.First()) && (ilprm > aListOfIndex.Last())) {
+        if((ifprm < iFirst) && (ilprm > iLast)) {
           // append whole line, and boundaries if neccesary
           if(bhasfirstpoint) {
-            const IntSurf_PntOn2S& aP = aSeqOfPntOn2S->Value(aListOfFLIndex.First());
+            pit = aListOfFLIndex.First();
+            const IntSurf_PntOn2S& aP = aSeqOfPntOn2S->Value(pit);
             aLineOn2S->Add(aP);
           }
           TColStd_ListIteratorOfListOfInteger anIt(aListOfIndex);
 
           for(; anIt.More(); anIt.Next()) {
-            const IntSurf_PntOn2S& aP = theWLine->Point(anIt.Value());
+            pit = anIt.Value();
+            const IntSurf_PntOn2S& aP = theWLine->Point(pit);
             aLineOn2S->Add(aP);
           }
 
           if(bhaslastpoint) {
-            const IntSurf_PntOn2S& aP = aSeqOfPntOn2S->Value(aListOfFLIndex.Last());
+            pit = aListOfFLIndex.Last();
+            const IntSurf_PntOn2S& aP = aSeqOfPntOn2S->Value(pit);
             aLineOn2S->Add(aP);
           }
 
@@ -4203,9 +4210,10 @@ Standard_Boolean DecompositionOfWLine(const Handle(IntPatch_WLine)& theWLine,
         TColStd_ListIteratorOfListOfInteger anIt(aListOfIndex);
 
         for(; anIt.More(); anIt.Next()) {
-          if((anIt.Value() < ifprm) || (anIt.Value() > ilprm))
+          pit = anIt.Value();
+          if((pit < ifprm) || (pit > ilprm))
             continue;
-          const IntSurf_PntOn2S& aP = theWLine->Point(anIt.Value());
+          const IntSurf_PntOn2S& aP = theWLine->Point(pit);
           aLineOn2S->Add(aP);
         }
       }
@@ -4216,14 +4224,16 @@ Standard_Boolean DecompositionOfWLine(const Handle(IntPatch_WLine)& theWLine,
           TColStd_ListIteratorOfListOfInteger anIt(aListOfIndex);
 
           for(; anIt.More(); anIt.Next()) {
-            if(anIt.Value() < ifprm)
+            pit = anIt.Value();
+            if(pit < ifprm)
               continue;
-            const IntSurf_PntOn2S& aP = theWLine->Point(anIt.Value());
+            const IntSurf_PntOn2S& aP = theWLine->Point(pit);
             aLineOn2S->Add(aP);
           }
 
           if(bhaslastpoint) {
-            const IntSurf_PntOn2S& aP = aSeqOfPntOn2S->Value(aListOfFLIndex.Last());
+            pit = aListOfFLIndex.Last();
+            const IntSurf_PntOn2S& aP = aSeqOfPntOn2S->Value(pit);
             aLineOn2S->Add(aP);
           }
           // check end of split line (end is almost always)
@@ -4253,15 +4263,17 @@ Standard_Boolean DecompositionOfWLine(const Handle(IntPatch_WLine)& theWLine,
         if(bIsLastInside) {
           // append points from first boundary point to ilprm
           if(bhasfirstpoint) {
-            const IntSurf_PntOn2S& aP = aSeqOfPntOn2S->Value(aListOfFLIndex.First());
+            pit = aListOfFLIndex.First();
+            const IntSurf_PntOn2S& aP = aSeqOfPntOn2S->Value(pit);
             aLineOn2S->Add(aP);
           }
           TColStd_ListIteratorOfListOfInteger anIt(aListOfIndex);
 
           for(; anIt.More(); anIt.Next()) {
-            if(anIt.Value() > ilprm)
+            pit = anIt.Value();
+            if(pit > ilprm)
               continue;
-            const IntSurf_PntOn2S& aP = theWLine->Point(anIt.Value());
+            const IntSurf_PntOn2S& aP = theWLine->Point(pit);
             aLineOn2S->Add(aP);
           }
         }
