@@ -346,7 +346,7 @@ void Visual3d_ViewManager::Redraw() const
     {
       MyDefinedView.Value(i)->Window()->Size (aWidth, aHeight);
       aWidthMax  = Max (aWidthMax,  aWidth);
-      aHeightMax = Max (aHeightMax, aWidth);
+      aHeightMax = Max (aHeightMax, aHeight);
     }
 
     if (!MyUnderLayer.IsNull())

@@ -1,0 +1,17 @@
+puts "============"
+puts "OCC25027"
+puts "============"
+puts ""
+#######################################################################
+# Visualization - 2D layer viewport is updated incorrectly on resize
+#######################################################################
+
+box b 1 2 3
+vinit w=1024 h=512
+vsetdispmode 1
+vdisplay b
+vfit
+vcolorscale 10 20 100 16 2 0 0
+vmoveto 512 250
+
+set only_screen 1
