@@ -14,7 +14,7 @@
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
-
+//
 #include <BOPAlgo_Builder.hxx>
 //
 #include <NCollection_IncAllocator.hxx>
@@ -121,11 +121,12 @@ class BOPAlgo_ShapeBox {
   Bnd_Box myBox;
 };
 //
-typedef NCollection_DataMap\
-  <Standard_Integer, BOPAlgo_ShapeBox, TColStd_MapIntegerHasher> \
-  BOPAlgo_DataMapOfIntegerShapeBox; 
+typedef NCollection_DataMap
+  <Standard_Integer,
+  BOPAlgo_ShapeBox, 
+  TColStd_MapIntegerHasher> BOPAlgo_DataMapOfIntegerShapeBox; 
 //
-typedef BOPAlgo_DataMapOfIntegerShapeBox::Iterator \
+typedef BOPAlgo_DataMapOfIntegerShapeBox::Iterator 
   BOPAlgo_DataMapIteratorOfDataMapOfIntegerShapeBox; 
 // 
 
@@ -565,6 +566,7 @@ void BOPAlgo_Builder::BuildSplitSolids
     BOPAlgo_BuilderSolid& aBS=aVBS.Append1();
     aBS.SetSolid(aSolid);
     aBS.SetShapes(aSFS);
+    aBS.SetRunParallel(myRunParallel);
     aBS.SetProgressIndicator(myProgressIndicator);
   }//for (i=0; i<aNbS; ++i) {
   //

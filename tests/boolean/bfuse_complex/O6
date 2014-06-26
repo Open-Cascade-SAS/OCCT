@@ -3,4 +3,4 @@ restore [locate_data_file CTO908_topo106-n.brep] nervure
 
 bfuse result poche nervure
 
-set square 108943
+set square 105275

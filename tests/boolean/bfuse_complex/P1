@@ -1,3 +1,4 @@
+puts "TODO ?OCC24157 ALL: Error : The area of the resulting shape is"
 # cts17861
 
 restore [locate_data_file CTO900_cts17861a.rle] a

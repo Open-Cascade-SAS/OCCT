@@ -25,10 +25,10 @@ set nb_v_good 109
 set nb_e_good 189
 set nb_w_good 95
 set nb_f_good 88
-set nb_sh_good 11
+set nb_sh_good 13
 set nb_sol_good 5
 set nb_compsol_good 0
 set nb_compound_good 1
-set nb_shape_good 498
+set nb_shape_good 500
 
 set 2dviewer 1

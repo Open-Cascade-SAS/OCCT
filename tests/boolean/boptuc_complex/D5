@@ -1,3 +1,5 @@
+puts "TODO ?OCC24925 ALL: Error : The area of the resulting shape is"
+
 restore [locate_data_file a102] a
 restore [locate_data_file b136] b
 
