@@ -1,0 +1,60 @@
+puts "============"
+puts "OCC25019"
+puts "============"
+puts ""
+###############################
+## Command "bsection" in Test Harness with flag build pcurve on second shape works slowly.
+###############################
+
+restore [locate_data_file bug25019_a_shape_1.brep] a1
+restore [locate_data_file bug25019_prism.brep] p1
+
+# 1.
+dchrono h1 reset
+dchrono h1 start
+
+bsection r a1 p1 -n2d2
+
+dchrono h1 stop
+set q1 [dchrono h1 show]
+
+# 2.
+dchrono h2 reset
+dchrono h2 start
+
+bsection r a1 p1
+
+dchrono h2 stop
+set q2 [dchrono h2 show]
+
+#
+regexp {CPU user time: ([-0-9.+eE]+) seconds} $q1 full t1
+puts "$t1"
+if { [string compare $tcl_platform(platform) "windows"] == 0 }  {
+   puts "OS = Windows NT"
+   set max_time1 5
+} else {
+   puts "OS = Linux"
+   set max_time1 5
+}
+if { $t1 > ${max_time1} } {                                         
+    puts "Elapsed time is more than ${max_time1} seconds - Faulty"
+} else {
+    puts "Elapsed time is less than ${max_time1} seconds - OK"
+}
+
+#
+regexp {CPU user time: ([-0-9.+eE]+) seconds} $q2 full t2
+puts "$t2"
+if { [string compare $tcl_platform(platform) "windows"] == 0 }  {
+   puts "OS = Windows NT"
+   set max_time2 5
+} else {
+   puts "OS = Linux"
+   set max_time2 5
+}
+if { $t2 > ${max_time2} } {                                         
+    puts "Elapsed time is more than ${max_time2} seconds - Faulty"
+} else {
+    puts "Elapsed time is less than ${max_time2} seconds - OK"
+}

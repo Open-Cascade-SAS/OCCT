@@ -553,6 +553,10 @@ static Standard_Boolean isTreatAnalityc(const TopoDS_Face& theF1,
         aP2S.SetValue(aU2,aV2,aU1,aV1);
       }
     }
+    //
+    Standard_Boolean anAproxTmp = myApprox1;
+    myApprox1 = myApprox2;
+    myApprox2 = anAproxTmp;
   }
 
 
