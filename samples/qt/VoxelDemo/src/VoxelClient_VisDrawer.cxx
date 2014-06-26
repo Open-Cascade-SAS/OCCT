@@ -38,7 +38,7 @@ public:
   VisElement (Voxel_VisData*);
   virtual ~VisElement();
 
-  void EvaluateBounds (Graphic3d_CBounds& theMinMax);
+  void EvaluateBounds (Graphic3d_BndBox4f& theMinMax);
 
   void Render (const Handle(OpenGl_Workspace) &theWorkspace) const;
 
@@ -83,7 +83,7 @@ VoxelClient_VisDrawer::VisElement::~VisElement ()
 //=======================================================================
 
 void VoxelClient_VisDrawer::VisElement::EvaluateBounds
-  (Graphic3d_CBounds& theMinMax)
+  (Graphic3d_BndBox4f& theMinMax)
 {
   myHandler->EvalMinMax (theMinMax);
 }
@@ -221,60 +221,57 @@ VoxelClient_VisDrawer::~VoxelClient_VisDrawer()
 }
 
 /**************************************************************************/
-void VoxelClient_VisDrawer::EvalMinMax(Graphic3d_CBounds & theMinMax) const 
+void VoxelClient_VisDrawer::EvalMinMax(Graphic3d_BndBox4f& theMinMax) const
 {
-    theMinMax.XMin = FLT_MAX;
-    theMinMax.YMin = FLT_MAX;
-    theMinMax.ZMin = FLT_MAX;
-    theMinMax.XMax = -FLT_MAX;
-    theMinMax.YMax = -FLT_MAX;
-    theMinMax.ZMax = -FLT_MAX;
+    Graphic3d_Vec4 aMinPt (FLT_MAX, FLT_MAX, FLT_MAX, 1.0f);
+    Graphic3d_Vec4 aMaxPt (-FLT_MAX, -FLT_MAX, -FLT_MAX, 1.0f);
+
     if(!myData)
         return;
     if(myData->myBoolVoxels)
     {
-        if (theMinMax.XMin > myData->myBoolVoxels->GetX())
-	        theMinMax.XMin = myData->myBoolVoxels->GetX();
-        if (theMinMax.XMax < myData->myBoolVoxels->GetX() + myData->myBoolVoxels->GetXLen())
-	        theMinMax.XMax = myData->myBoolVoxels->GetX() + myData->myBoolVoxels->GetXLen();
-        if (theMinMax.YMin > myData->myBoolVoxels->GetY())
-	        theMinMax.YMin = myData->myBoolVoxels->GetY();
-        if (theMinMax.YMax < myData->myBoolVoxels->GetY() + myData->myBoolVoxels->GetYLen())
-	        theMinMax.YMax = myData->myBoolVoxels->GetY() + myData->myBoolVoxels->GetYLen();
-        if (theMinMax.ZMin > myData->myBoolVoxels->GetZ())
-	        theMinMax.ZMin = myData->myBoolVoxels->GetZ();
-        if (theMinMax.ZMax < myData->myBoolVoxels->GetZ() + myData->myBoolVoxels->GetZLen())
-	        theMinMax.ZMax = myData->myBoolVoxels->GetZ() + myData->myBoolVoxels->GetZLen();
+        Graphic3d_Vec4 aBoolVoxelsMin (RealToShortReal (myData->myBoolVoxels->GetX()),
+                                       RealToShortReal (myData->myBoolVoxels->GetY()),
+                                       RealToShortReal (myData->myBoolVoxels->GetZ()),
+                                       1.0f);
+        Graphic3d_Vec4 aBoolVoxelsMax (
+          RealToShortReal (myData->myBoolVoxels->GetX() + myData->myBoolVoxels->GetXLen()),
+          RealToShortReal (myData->myBoolVoxels->GetY() + myData->myBoolVoxels->GetYLen()),
+          RealToShortReal (myData->myBoolVoxels->GetZ() + myData->myBoolVoxels->GetZLen()),
+          1.0f);
+
+        aMinPt = aMinPt.cwiseMin (aBoolVoxelsMin);
+        aMaxPt = aMaxPt.cwiseMax (aBoolVoxelsMax);
     }
     if(myData->myColorVoxels)
     {
-        if (theMinMax.XMin > myData->myColorVoxels->GetX())
-	        theMinMax.XMin = myData->myColorVoxels->GetX();
-        if (theMinMax.XMax < myData->myColorVoxels->GetX() + myData->myColorVoxels->GetXLen())
-	        theMinMax.XMax = myData->myColorVoxels->GetX() + myData->myColorVoxels->GetXLen();
-        if (theMinMax.YMin > myData->myColorVoxels->GetY())
-	        theMinMax.YMin = myData->myColorVoxels->GetY();
-        if (theMinMax.YMax < myData->myColorVoxels->GetY() + myData->myColorVoxels->GetYLen())
-	        theMinMax.YMax = myData->myColorVoxels->GetY() + myData->myColorVoxels->GetYLen();
-        if (theMinMax.ZMin > myData->myColorVoxels->GetZ())
-	        theMinMax.ZMin = myData->myColorVoxels->GetZ();
-        if (theMinMax.ZMax < myData->myColorVoxels->GetZ() + myData->myColorVoxels->GetZLen())
-	        theMinMax.ZMax = myData->myColorVoxels->GetZ() + myData->myColorVoxels->GetZLen();
+        Graphic3d_Vec4 aColorVoxelsMin (RealToShortReal (myData->myColorVoxels->GetX()),
+                                        RealToShortReal (myData->myColorVoxels->GetY()),
+                                        RealToShortReal (myData->myColorVoxels->GetZ()),
+                                        1.0f);
+        Graphic3d_Vec4 aColorVoxelsMax (
+          RealToShortReal (myData->myColorVoxels->GetX() + myData->myColorVoxels->GetXLen()),
+          RealToShortReal (myData->myColorVoxels->GetY() + myData->myColorVoxels->GetYLen()),
+          RealToShortReal (myData->myColorVoxels->GetZ() + myData->myColorVoxels->GetZLen()),
+          1.0f);
+
+        aMinPt = aMinPt.cwiseMin (aColorVoxelsMin);
+        aMaxPt = aMaxPt.cwiseMax (aColorVoxelsMax);
     }
     if(myData->myROctBoolVoxels)
     {
-        if (theMinMax.XMin > myData->myROctBoolVoxels->GetX())
-	        theMinMax.XMin = myData->myROctBoolVoxels->GetX();
-        if (theMinMax.XMax < myData->myROctBoolVoxels->GetX() + myData->myROctBoolVoxels->GetXLen())
-	        theMinMax.XMax = myData->myROctBoolVoxels->GetX() + myData->myROctBoolVoxels->GetXLen();
-        if (theMinMax.YMin > myData->myROctBoolVoxels->GetY())
-	        theMinMax.YMin = myData->myROctBoolVoxels->GetY();
-        if (theMinMax.YMax < myData->myROctBoolVoxels->GetY() + myData->myROctBoolVoxels->GetYLen())
-	        theMinMax.YMax = myData->myROctBoolVoxels->GetY() + myData->myROctBoolVoxels->GetYLen();
-        if (theMinMax.ZMin > myData->myROctBoolVoxels->GetZ())
-	        theMinMax.ZMin = myData->myROctBoolVoxels->GetZ();
-        if (theMinMax.ZMax < myData->myROctBoolVoxels->GetZ() + myData->myROctBoolVoxels->GetZLen())
-	        theMinMax.ZMax = myData->myROctBoolVoxels->GetZ() + myData->myROctBoolVoxels->GetZLen();
+        Graphic3d_Vec4 aROctBoolVoxelsMin (RealToShortReal (myData->myROctBoolVoxels->GetX()),
+                                           RealToShortReal (myData->myROctBoolVoxels->GetY()),
+                                           RealToShortReal (myData->myROctBoolVoxels->GetZ()),
+                                           1.0f);
+        Graphic3d_Vec4 aROctBoolVoxelsMax (
+          RealToShortReal (myData->myROctBoolVoxels->GetX() + myData->myROctBoolVoxels->GetXLen()),
+          RealToShortReal (myData->myROctBoolVoxels->GetY() + myData->myROctBoolVoxels->GetYLen()),
+          RealToShortReal (myData->myROctBoolVoxels->GetZ() + myData->myROctBoolVoxels->GetZLen()),
+          1.0f);
+
+        aMinPt = aMinPt.cwiseMin (aROctBoolVoxelsMin);
+        aMaxPt = aMaxPt.cwiseMax (aROctBoolVoxelsMax);
     }
     if (!myData->myTriangulation.IsNull())
     {
@@ -284,19 +281,24 @@ void VoxelClient_VisDrawer::EvalMinMax(Graphic3d_CBounds & theMinMax) const
         for (; inode <= nb_nodes; inode++)
         {
             nodes.Value(inode).Coord(x, y, z);
-            if (theMinMax.XMin > x)
-	            theMinMax.XMin = x;
-            if (theMinMax.XMax < x)
-	            theMinMax.XMax = x;
-            if (theMinMax.YMin > y)
-	            theMinMax.YMin = y;
-            if (theMinMax.YMax < y)
-	            theMinMax.YMax = y;
-            if (theMinMax.ZMin > z)
-	            theMinMax.ZMin = z;
-            if (theMinMax.ZMax < z)
-	            theMinMax.ZMax = z;
+            Graphic3d_Vec4 aNodeCoord (RealToShortReal (x),
+                                       RealToShortReal (y),
+                                       RealToShortReal (z),
+                                       1.0f);
+            aMinPt = aMinPt.cwiseMin (aNodeCoord);
+            aMaxPt = aMaxPt.cwiseMax (aNodeCoord);
         }
+    }
+
+    if (theMinMax.IsValid())
+    {
+      theMinMax.CornerMin() = aMinPt;
+      theMinMax.CornerMax() = aMaxPt;
+    }
+    else
+    {
+      theMinMax.Add (aMinPt);
+      theMinMax.Add (aMaxPt);
     }
 }
 

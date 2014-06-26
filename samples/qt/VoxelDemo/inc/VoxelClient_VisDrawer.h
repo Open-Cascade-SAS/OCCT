@@ -17,7 +17,7 @@
 #define _VOXEL_VISDRAWER_H_
 
 #include "Voxel_VisData.h"
-#include <Graphic3d_CBounds.hxx>
+#include <Graphic3d_BndBox4f.hxx>
 
 class Handle(OpenGl_GraphicDriver);
 
@@ -34,7 +34,7 @@ public:
 	Standard_EXPORT VoxelClient_VisDrawer(Voxel_VisData* theData);
 	Standard_EXPORT virtual ~VoxelClient_VisDrawer();
 
-	Standard_EXPORT void EvalMinMax(Graphic3d_CBounds& theMinMax) const;
+	Standard_EXPORT void EvalMinMax(Graphic3d_BndBox4f& theMinMax) const;
 	Standard_EXPORT void Display(const Standard_Boolean theHighlight);
 
 private:
