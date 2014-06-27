@@ -2182,7 +2182,7 @@ static int VCircleBuilder(Draw_Interpretor& /*di*/, Standard_Integer argc, const
         std::cout << "vcircle error: 2d element is a unexpected to be a point.\n"; 
         return 1; // TCL_ERROR 
       }
-      // Ñheck that the radius is >= 0
+      // Check that the radius is >= 0
       if (Draw::Atof(argv[4]) <= 0 ) 
       {
         std::cout << "vcircle error: the radius must be >=0.\n"; 
@@ -2379,7 +2379,7 @@ static int VCircleBuilder(Draw_Interpretor& /*di*/, Standard_Integer argc, const
       // Recover the center
       gp_Pnt theCenter = BRep_Tool::Pnt(TopoDS::Vertex(ShapeB));
 
-      // Ñonstruct the circle
+      // Construct the circle
       GC_MakeCircle Cir = GC_MakeCircle (theCenter, theDir ,theRad);
       Handle (Geom_Circle) theGeomCircle;
       try 
