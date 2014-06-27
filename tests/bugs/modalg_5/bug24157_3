@@ -15,7 +15,7 @@ bfillds
 regexp { +Tps: +([-0-9.+eE]+)} [bbuild result -t] full tps_time
 
 if { [regexp {Debug mode} [dversion]] } {
-  set check_time 30
+  set check_time 50
 } else {
   set check_time 16
 }

@@ -32,10 +32,10 @@ regexp {CPU user time: ([-0-9.+eE]+) seconds} $q1 full t1
 puts "$t1"
 if { [string compare $tcl_platform(platform) "windows"] == 0 }  {
    puts "OS = Windows NT"
-   set max_time1 5
+   set max_time1 20
 } else {
    puts "OS = Linux"
-   set max_time1 5
+   set max_time1 30
 }
 if { $t1 > ${max_time1} } {                                         
     puts "Elapsed time is more than ${max_time1} seconds - Faulty"
@@ -48,10 +48,10 @@ regexp {CPU user time: ([-0-9.+eE]+) seconds} $q2 full t2
 puts "$t2"
 if { [string compare $tcl_platform(platform) "windows"] == 0 }  {
    puts "OS = Windows NT"
-   set max_time2 5
+   set max_time2 20
 } else {
    puts "OS = Linux"
-   set max_time2 5
+   set max_time2 30
 }
 if { $t2 > ${max_time2} } {                                         
     puts "Elapsed time is more than ${max_time2} seconds - Faulty"

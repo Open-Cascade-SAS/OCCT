@@ -24,7 +24,7 @@ regexp {CPU user time: ([-0-9.+eE]+) seconds} $q2 full z
 puts "$z"
 if { [string compare $tcl_platform(platform) "windows"] == 0 }  {
    puts "OS = Windows NT"
-   set max_time 0.2
+   set max_time 0.5
 } else {
    puts "OS = Linux"
    set max_time 0.1
