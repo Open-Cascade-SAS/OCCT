@@ -142,14 +142,6 @@ To solve the problem (for lack of a better solution) I make 2 passes.
 #include <Graphic3d_AspectMarker3d.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
 
-// S3603
-#include <Aspect_GenericColorMap.hxx>
-#include <Aspect_TypeMap.hxx>
-#include <Aspect_WidthMap.hxx>
-#include <Aspect_MarkMap.hxx>
-#include <Aspect_FontMap.hxx>
-#include <Aspect.hxx>
-
 #define V3d_FLAG_COMPUTATION   0x00000004
 
 // Perspective

@@ -1,10 +1,7 @@
 EXTERNLIB
 Aspect_WOKSteps.edl
 Aspect_CMPLRS.edl
-Aspect_FStream.hxx
-Aspect_IFStream.hxx
 Aspect_CLayer2d.hxx
-Aspect_RGBPixel.hxx
 Aspect_Handle.hxx
 Aspect_XWD.hxx
 Aspect_Units.hxx

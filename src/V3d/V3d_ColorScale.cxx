@@ -23,8 +23,6 @@
 #include <Visual3d_ViewManager.hxx>
 
 #include <Aspect_Window.hxx>
-#include <Aspect_ColorMap.hxx>
-#include <Aspect_ColorMapEntry.hxx>
 #include <Aspect_SequenceOfColor.hxx>
 #include <Aspect_TypeOfColorScaleData.hxx>
 #include <Aspect_TypeOfColorScalePosition.hxx>

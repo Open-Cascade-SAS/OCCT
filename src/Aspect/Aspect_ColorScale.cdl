@@ -19,7 +19,6 @@ uses
 
        TypeOfColorScaleData     from Aspect,
        TypeOfColorScalePosition from Aspect,
-       ColorMap                 from Aspect,
        SequenceOfColor          from Aspect,
        Color                    from Quantity,
        AsciiString              from TCollection,
@@ -149,9 +148,6 @@ is
 
        SetLabels(me : mutable; aSeq : SequenceOfExtendedString from TColStd);
        ---Purpose: Sets the color scale labels.
-
-       SetColors(me : mutable; aMap : ColorMap from Aspect);
-       ---Purpose: Sets the color scale colors.
 
        SetColors(me : mutable; aSeq : SequenceOfColor from Aspect);
        ---Purpose: Sets the color scale colors.

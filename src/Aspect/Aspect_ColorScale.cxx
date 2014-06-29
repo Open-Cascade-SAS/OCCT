@@ -15,8 +15,6 @@
 
 #include <Aspect_ColorScale.ixx>
 
-#include <Aspect_ColorMap.hxx>
-#include <Aspect_ColorMapEntry.hxx>
 #include <Aspect_SequenceOfColor.hxx>
 #include <Aspect_TypeOfColorScaleData.hxx>
 #include <Aspect_TypeOfColorScalePosition.hxx>
@@ -250,14 +248,6 @@ void Aspect_ColorScale::SetLabels( const TColStd_SequenceOfExtendedString& aSeq 
   myLabels.Clear();
   for ( Standard_Integer i = 1; i <= aSeq.Length(); i++ )
     myLabels.Append( aSeq.Value( i ) );
-}
-
-void Aspect_ColorScale::SetColors( const Handle(Aspect_ColorMap)& aMap )
-{
-  myColors.Clear();
-  if ( !aMap.IsNull() )
-    for ( Standard_Integer i = 1; i <= aMap->Size(); i++ )
-      myColors.Append( aMap->Entry( i ).Color() );
 }
 
 void Aspect_ColorScale::SetColors( const Aspect_SequenceOfColor& aSeq )

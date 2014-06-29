@@ -28,7 +28,6 @@
 #include <TopoDS_Shape.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <Aspect_Window.hxx>
-#include <Aspect_WindowDriver.hxx>
 #include <Aspect_DisplayConnection.hxx>
 #include <Graphic3d.hxx>
 #include <DBRep.hxx>

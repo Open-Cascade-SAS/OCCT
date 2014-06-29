@@ -78,9 +78,6 @@ is
 
         ---Category: Imported types
 
-        imported RGBPixel;
-        ---Purpose:
-
         primitive Handle;
         primitive Drawable;
 
@@ -92,15 +89,6 @@ is
 
         -- 22-03-04 OCC4895 SAN High-level interface for controlling polygon offsets
         imported PolygonOffsetMode;
-
-        ---------------------
-        -- Category: Pointers
-        ---------------------
-
-        pointer DriverPtr to Driver from Aspect;
-        pointer WindowDriverPtr to WindowDriver from Aspect;
-     
-        ---Category: Pointers
 
         -----------------------
         -- Category: Exceptions
@@ -118,26 +106,11 @@ is
         exception BadAccess inherits DomainError;
         ---Category: Exceptions
 
-        exception ColorMapDefinitionError inherits OutOfRange;
-        ---Category: The exceptions
-
         exception EdgeDefinitionError inherits OutOfRange;
         ---Category: Exceptions
 
         exception IdentDefinitionError inherits OutOfRange;
         ---Category: Exceptions
-
-        exception TypeMapDefinitionError inherits OutOfRange;
-        ---Category: The exceptions
-
-        exception WidthMapDefinitionError inherits OutOfRange;
-        ---Category: The exceptions
-
-        exception FontMapDefinitionError inherits OutOfRange;
-        ---Category: The exceptions
-
-        exception MarkMapDefinitionError inherits OutOfRange;
-        ---Category: The exceptions
 
         exception WindowDefinitionError inherits OutOfRange;
         ---Category: The exceptions
@@ -145,16 +118,7 @@ is
         exception WindowError inherits OutOfRange;
         ---Category: The exceptions
 
-        exception PixmapDefinitionError inherits OutOfRange;
-        ---Category: The exceptions
-
-        exception PixmapError inherits OutOfRange;
-        ---Category: The exceptions
-
         exception DriverDefinitionError inherits OutOfRange;
-        ---Category: The exceptions
-
-        exception DriverError inherits OutOfRange;
         ---Category: The exceptions
 
         exception GraphicDeviceDefinitionError inherits OutOfRange;
@@ -162,56 +126,6 @@ is
 
         exception DisplayConnectionDefinitionError inherits OutOfRange;
         ---Category: The exceptions
-
-        exception LineStyleDefinitionError inherits OutOfRange;
-        ---Category: Exceptions
-
-        exception LineWidthDefinitionError inherits OutOfRange;
-        ---Category: Exceptions
-
-        exception PolyStyleDefinitionError inherits OutOfRange;
-        ---Category: Exceptions
-
-        exception FontStyleDefinitionError inherits OutOfRange;
-        ---Category: Exceptions
-
-        exception MarkerStyleDefinitionError inherits OutOfRange;
-        ---Category: Exceptions
-
-        exception UndefinedMap inherits OutOfRange;
-        ---Category: Exceptions
-        
-        ------------------------------
-        -- Category: Classes Color map
-        ------------------------------
-
-        deferred class ColorMap;
-        ---Category: Classes Color map
-
-        class ColorCubeColorMap;
-        ---Category: Classes Color map
-
-        class ColorRampColorMap;
-        ---Category: Classes Color map
-
-        class GenericColorMap;
-        ---Category: Classes Color map
-
-        class ColorMapEntry;
-        ---Category: Classes Color map
-
-        ------------------------------
-        -- Category: Classes Pixel
-        ------------------------------
-
-        deferred class Pixel;
-        ---Category: Classes Pixel
-
-        class IndexPixel;
-        ---Category: Classes Pixel
-
-        class ColorPixel;
-        ---Category: Classes Pixel
 
         ---------------------------
         -- Category: Classes Aspect
@@ -242,46 +156,7 @@ is
         class GenId;
         ---Category: Classes
 
-        class FontStyle;
-        ---Category: The classes
-
-        class FontMapEntry;
-        ---Category: Classes Font map
-
-        class FontMap;
-        ---Category: The classes
-
-        class WidthMapEntry;
-        ---Category: Classes Width map
-
-        class WidthMap;
-        ---Category: The classes
-
-        class LineStyle;
-        ---Category: The classes
-
-        class TypeMap;
-        ---Category: The classes
-
-        class TypeMapEntry;
-        ---Category: Classes Type map
-
-        class MarkerStyle;
-        ---Category: The classes
-
-        class MarkMap;
-        ---Category: The classes
-
-        class MarkMapEntry;
-        ---Category: Classes Mark map
-
         deferred class Window;
-        ---Category: Classes
-
-        deferred class Driver;
-        ---Category: Classes
-
-        deferred class WindowDriver;
         ---Category: Classes
 
         deferred class Grid;
@@ -344,14 +219,6 @@ is
         --          IS_SOLID    display the interior entirely filled.
         --          IS_HIDDENLINE       display in hidden lines removed.
         --          IS_POINT            display only vertices.
-        --
-        ---Category: Enumerations
-
-        enumeration TypeOfColorMap is   TOC_Generic,
-                                        TOC_ColorCube,
-                                        TOC_ColorRamp 
-        end TypeOfColorMap;
-        ---Purpose: Definition of the color map types
         --
         ---Category: Enumerations
 
@@ -764,26 +631,6 @@ is
 
         class Array1OfEdge instantiates
                 Array1 from TCollection (Edge from Aspect);
-        ---Category: Instantiated classes
-
-        class SequenceOfColorMapEntry instantiates
-                Sequence from TCollection (ColorMapEntry from Aspect);
-        ---Category: Instantiated classes
-
-        class SequenceOfTypeMapEntry instantiates
-                Sequence from TCollection (TypeMapEntry from Aspect);
-        ---Category: Instantiated classes
-
-        class SequenceOfWidthMapEntry instantiates
-                Sequence from TCollection (WidthMapEntry from Aspect);
-        ---Category: Instantiated classes
-
-        class SequenceOfFontMapEntry instantiates
-                Sequence from TCollection (FontMapEntry from Aspect);
-        ---Category: Instantiated classes
-
-        class SequenceOfMarkMapEntry instantiates
-                Sequence from TCollection (MarkMapEntry from Aspect);
         ---Category: Instantiated classes
 
         class SequenceOfColor instantiates
