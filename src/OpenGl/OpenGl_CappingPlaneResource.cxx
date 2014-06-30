@@ -27,10 +27,10 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_CappingPlaneResource, OpenGl_Resource)
 // =======================================================================
 OpenGl_CappingPlaneResource::OpenGl_CappingPlaneResource (const Handle(Graphic3d_ClipPlane)& thePlane)
 : myOrientation (OpenGl_IdentityMatrix),
-  myAspect (NULL),
-  myPlaneRoot (thePlane),
-  myEquationMod (0),
-  myAspectMod (0)
+  myAspect      (NULL),
+  myPlaneRoot   (thePlane),
+  myEquationMod ((unsigned int )-1),
+  myAspectMod   ((unsigned int )-1)
 {}
 
 // =======================================================================
@@ -59,8 +59,8 @@ void OpenGl_CappingPlaneResource::Update (const Handle(OpenGl_Context)& theConte
 void OpenGl_CappingPlaneResource::Release (const OpenGl_Context* theContext)
 {
   OpenGl_Element::Destroy (theContext, myAspect);
-  myEquationMod = 0;
-  myAspectMod   = 0;
+  myEquationMod = (unsigned int )-1;
+  myAspectMod   = (unsigned int )-1;
 }
 
 // =======================================================================
