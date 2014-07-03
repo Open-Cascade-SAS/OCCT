@@ -1,0 +1,133 @@
+puts "========"
+puts "CR24817"
+puts "========"
+puts ""
+#########################################
+## Can not sew two circular faces in non-manifold mode
+#########################################
+
+# Create first face
+circle c 0 1 0 1
+trim c c 0.5*pi 1.5*pi
+mkedge e1 c
+line l 0 0 0 0 1 0
+trim l l 0 2
+mkedge e2 l
+wire w e1 e2
+mkplane plane1 w
+
+# Create second face
+circle c 0 1 0 1
+trim c c 1.5*pi 2.5*pi
+mkedge e1 c
+line l 0 0 0 0 1 0
+trim l l 0 2
+mkedge e2 l
+wire w e1 e2
+mkplane plane2 w
+
+# Create third face
+circle c 0 1 0 1 0 0 1
+trim c c 1.5*pi 2.5*pi
+mkedge e1 c
+line l 0 0 0 0 1 0
+trim l l 0 2
+mkedge e2 l
+wire w e1 e2
+mkplane plane3 w
+
+# Sew faces
+sewing sr1 plane1 plane2 +n
+sewing sr2 plane1 plane2 plane3 +n
+
+#
+set list1 [nbshapes sr1]
+regexp {VERTEX +: +([-0-9.+eE]+)} ${list1} full nb_v1
+regexp {EDGE +: +([-0-9.+eE]+)} ${list1} full nb_e1
+regexp {WIRE +: +([-0-9.+eE]+)} ${list1} full nb_w1
+regexp {FACE +: +([-0-9.+eE]+)} ${list1} full nb_f1
+regexp {SHELL +: +([-0-9.+eE]+)} ${list1} full nb_sh1
+regexp {SOLID +: +([-0-9.+eE]+)} ${list1} full nb_sol1
+regexp {COMPSOLID +: +([-0-9.+eE]+)} ${list1} full nb_compsol1
+regexp {COMPOUND +: +([-0-9.+eE]+)} ${list1} full nb_compound1
+regexp {SHAPE +: +([-0-9.+eE]+)} ${list1} full nb_shape1
+
+regexp {Mass +: +([-0-9.+eE]+)} [sprops sr1] full square1
+
+set square1_good 3.14159
+set nb_v1_good 2
+set nb_e1_good 3
+set nb_w1_good 2
+set nb_f1_good 2
+set nb_sh1_good 1
+set nb_sol1_good 0
+set nb_compsol1_good 0
+set nb_compound1_good 0
+set nb_shape1_good 10
+
+if { ${nb_v1} != ${nb_v1_good} 
+    || ${nb_e1} != ${nb_e1_good} 
+    || ${nb_w1} != ${nb_w1_good} 
+    || ${nb_f1} != ${nb_f1_good} 
+    || ${nb_sh1} != ${nb_sh1_good} 
+    || ${nb_sol1} != ${nb_sol1_good} 
+    || ${nb_compsol1} != ${nb_compsol1_good} 
+    || ${nb_compound1} != ${nb_compound1_good} 
+    || ${nb_shape1} != ${nb_shape1_good} } {
+    puts "Error 1: Number of shapes is faulty"
+}
+
+if { ${square1} != ${square1_good} } {
+   puts "Error 2: Square is not valid"
+}
+
+clear
+smallview
+donly sr1
+fit
+xwd $imagedir/${test_image}_1.png
+
+#
+set list2 [nbshapes sr2]
+regexp {VERTEX +: +([-0-9.+eE]+)} ${list2} full nb_v2
+regexp {EDGE +: +([-0-9.+eE]+)} ${list2} full nb_e2
+regexp {WIRE +: +([-0-9.+eE]+)} ${list2} full nb_w2
+regexp {FACE +: +([-0-9.+eE]+)} ${list2} full nb_f2
+regexp {SHELL +: +([-0-9.+eE]+)} ${list2} full nb_sh2
+regexp {SOLID +: +([-0-9.+eE]+)} ${list2} full nb_sol2
+regexp {COMPSOLID +: +([-0-9.+eE]+)} ${list2} full nb_compsol2
+regexp {COMPOUND +: +([-0-9.+eE]+)} ${list2} full nb_compound2
+regexp {SHAPE +: +([-0-9.+eE]+)} ${list2} full nb_shape2
+
+regexp {Mass +: +([-0-9.+eE]+)} [sprops sr2] full square2
+
+set square2_good 4.71239
+set nb_v2_good 2
+set nb_e2_good 4
+set nb_w2_good 3
+set nb_f2_good 3
+set nb_sh2_good 1
+set nb_sol2_good 0
+set nb_compsol2_good 0
+set nb_compound2_good 0
+set nb_shape2_good 13
+
+if { ${nb_v2} != ${nb_v2_good} 
+    || ${nb_e2} != ${nb_e2_good} 
+    || ${nb_w2} != ${nb_w2_good} 
+    || ${nb_f2} != ${nb_f2_good} 
+    || ${nb_sh2} != ${nb_sh2_good} 
+    || ${nb_sol2} != ${nb_sol2_good} 
+    || ${nb_compsol2} != ${nb_compsol2_good} 
+    || ${nb_compound2} != ${nb_compound2_good} 
+    || ${nb_shape2} != ${nb_shape2_good} } {
+    puts "Error 3: Number of shapes is faulty"
+}
+
+if { ${square2} != ${square2_good} } {
+   puts "Error 4: Square is not valid"
+}
+
+donly sr2
+fit
+xwd $imagedir/${test_image}_2.png

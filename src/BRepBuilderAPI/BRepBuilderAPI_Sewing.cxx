@@ -3549,33 +3549,14 @@ Standard_Boolean BRepBuilderAPI_Sewing::MergedNearestEdges(const TopoDS_Shape& e
     TColStd_SequenceOfInteger seqForward;
     TColStd_SequenceOfInteger seqCandidates;
     TColStd_IndexedMapOfInteger mapReference;
-    mapReference.Add(1); // Add index of reference section
+    mapReference.Add(indRef); // Add index of reference section
     if (FindCandidates(seqEdges,mapReference,seqCandidates,seqForward)) {
       Standard_Integer nbCandidates = seqCandidates.Length();
-      // Check if reference section is merged reversed
-      Standard_Boolean toReverse = Standard_False;
-      if (indRef != 1) {
-        // Find reference edge in candidates
-        Standard_Boolean isFound = Standard_False;
-        for (i = 1; i <= nbCandidates && !isFound; i++) {
-          isFound = (seqCandidates(i) == indRef);
-          if (isFound) {
-            // Record orientation
-            toReverse = !seqForward(i);
-            // Restore first edge
-            seqCandidates(i) = 1;
-            seqForward(i) = 1;
-          }
-        }
-        // Fail if reference is not in candidates
-        if (!isFound) return Standard_False;
-      }
       // Record candidate sections
       for (i = 1; i <= nbCandidates; i++) {
         // Retrieve merged edge
         TopoDS_Shape iedge = seqEdges(seqCandidates(i));
-        Standard_Integer ori =
-          ((seqForward(i) && toReverse) || (!seqForward(i) && !toReverse))? 0 : 1;
+        Standard_Integer ori = (seqForward(i))? 1 : 0;
         SeqMergedEdge.Append(iedge);
         SeqMergedOri.Append(ori);
         if (!myNonmanifold) break;
