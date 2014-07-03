@@ -93,6 +93,37 @@ struct OpenGl_Material
 
 };
 
+DEFINE_STANDARD_HANDLE (OpenGl_RaytraceFilter, OpenGl_RenderFilter)
+
+//! Graphical raytracing filter.
+//! Filters out all raytracable structures.
+class OpenGl_RaytraceFilter : public OpenGl_RenderFilter
+{
+public:
+
+  //! Default constructor.
+  OpenGl_RaytraceFilter() {}
+
+  //! Remembers the previously set filter.
+  inline void SetPrevRenderFilter (const Handle(OpenGl_RenderFilter)& theFilter)
+  {
+    myPrevRenderFilter = theFilter;
+  }
+
+  //! Checks whether the element can be rendered or not.
+  //! @param theElement [in] the element to check.
+  //! @return True if element can be rendered.
+  virtual Standard_Boolean CanRender (const OpenGl_Element* theElement);
+
+private:
+
+  Handle(OpenGl_RenderFilter) myPrevRenderFilter;
+
+public:
+
+  DEFINE_STANDARD_RTTI(OpenGl_RaytraceFilter)
+};
+
 //! Represents window with GL context.
 //! Provides methods to render primitives and maintain GL state.
 class OpenGl_Workspace : public OpenGl_Window
@@ -228,6 +259,9 @@ public:
   //! @return true if clipping algorithm enabled
   inline Standard_Boolean IsCullingEnabled() const { return myIsCullingEnabled; }
 
+  //! Returns a flag whether to redraw the scene using OpenGL rasterization
+  Standard_Boolean ToRedrawGL() const { return myToRedrawGL; }
+
 protected:
 
   //! Copy content of Back buffer to the Front buffer
@@ -277,6 +311,7 @@ protected:
     OpenGl_RT_uDirectLB,
     OpenGl_RT_uDirectRT,
     OpenGl_RT_uDirectRB,
+    OpenGl_RT_uInvModelProj,
     
     OpenGl_RT_uSceneRad,
     OpenGl_RT_uSceneEps,
@@ -320,7 +355,10 @@ protected:
 
     OpenGl_RT_FSAAInputTexture = 12,
 
-    OpenGl_RT_SceneTransformTexture = 13
+    OpenGl_RT_SceneTransformTexture = 13,
+
+    OpenGl_RT_OpenGlColorTexture = 14,
+    OpenGl_RT_OpenGlDepthTexture = 15
   };
 
   //! Tool class for management of shader sources.
@@ -489,7 +527,8 @@ protected: //! @name methods related to ray-tracing
   void UpdateCamera (const NCollection_Mat4<GLdouble>& theOrientation,
                      const NCollection_Mat4<GLdouble>& theViewMapping,
                      OpenGl_Vec3                       theOrigins[4],
-                     OpenGl_Vec3                       theDirects[4]);
+                     OpenGl_Vec3                       theDirects[4],
+                     NCollection_Mat4<GLdouble>&       theInvModelProj);
 
   //! Runs ray-tracing shader programs.
   Standard_Boolean RunRaytraceShaders (const Graphic3d_CView& theCView,
@@ -497,6 +536,7 @@ protected: //! @name methods related to ray-tracing
                                        const Standard_Integer theSizeY,
                                        const OpenGl_Vec3      theOrigins[4],
                                        const OpenGl_Vec3      theDirects[4],
+                                       const OpenGl_Matrix&   theInvModelProj,
                                        OpenGl_FrameBuffer*    theFrameBuffer);
 
   //! Redraws the window using OpenGL/GLSL ray-tracing.
@@ -504,6 +544,8 @@ protected: //! @name methods related to ray-tracing
                              const Standard_Integer theSizeX,
                              const Standard_Integer theSizeY,
                              const Standard_Boolean theToSwap,
+                             const Aspect_CLayer2d& theCOverLayer,
+                             const Aspect_CLayer2d& theCUnderLayer,
                              OpenGl_FrameBuffer*    theFrameBuffer);
 
 protected: //! @name fields related to ray-tracing
@@ -575,6 +617,8 @@ protected: //! @name fields related to ray-tracing
   Handle(OpenGl_FrameBuffer) myRaytraceFBO1;
   //! Framebuffer (FBO) to perform adaptive FSAA.
   Handle(OpenGl_FrameBuffer) myRaytraceFBO2;
+  //! Framebuffer (FBO) for pre-raytrace rendering by OpenGL.
+  Handle(OpenGl_FrameBuffer) myOpenGlFBO;
 
   //! State of OpenGL view.
   Standard_Size myViewModificationStatus;
@@ -590,6 +634,12 @@ protected: //! @name fields related to ray-tracing
   //! Cached locations of frequently used uniform variables.
   Standard_Integer myUniformLocations[2][OpenGl_RT_NbVariables];
 
+  //! Graphical raytracing filter to filter out all raytracable structures.
+  Handle(OpenGl_RaytraceFilter) myRaytraceFilter;
+
+  //! Redraw the scene using OpenGL rasterization or raytracing?
+  Standard_Boolean myToRedrawGL;
+
 protected: //! @name protected fields
 
   Handle(OpenGl_PrinterContext) myPrintContext;
@@ -604,6 +654,8 @@ protected: //! @name protected fields
   Standard_Boolean       myUseDepthTest;
   Standard_Boolean       myUseGLLight;
   Standard_Boolean       myIsCullingEnabled;     //!< frustum culling flag
+
+  unsigned int           myFrameCounter;         //!< redraw counter, for debugging
 
 protected: //! @name fields related to status
 

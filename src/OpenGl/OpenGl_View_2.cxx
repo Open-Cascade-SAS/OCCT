@@ -453,7 +453,10 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
   // ====================================
 
   // Render background
-  DrawBackground (*theWorkspace);
+  if (theWorkspace->ToRedrawGL())
+  {
+    DrawBackground (*theWorkspace);
+  }
 
   // Switch off lighting by default
   glDisable(GL_LIGHTING);
@@ -600,26 +603,22 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
     OpenGl_ShaderProgram::Unbind (aContext);
   }
 
-  // display global trihedron
-  if (myTrihedron != NULL)
+  // Render trihedron
+  if (theWorkspace->ToRedrawGL())
   {
-    myTrihedron->Render (theWorkspace);
-  }
-  if (myGraduatedTrihedron != NULL)
-  {
-    myGraduatedTrihedron->Render (theWorkspace);
-  }
+    RedrawTrihedron (theWorkspace);
 
-  // Restore face culling
-  if ( myBackfacing )
-  {
-    if ( isCullFace )
+    // Restore face culling
+    if ( myBackfacing )
     {
-      glEnable   ( GL_CULL_FACE );
-      glCullFace ( GL_BACK      );
+      if ( isCullFace )
+      {
+        glEnable   ( GL_CULL_FACE );
+        glCullFace ( GL_BACK      );
+      }
+      else
+        glDisable ( GL_CULL_FACE );
     }
-    else
-      glDisable ( GL_CULL_FACE );
   }
 
   // ===============================
@@ -842,6 +841,21 @@ void OpenGl_View::RedrawLayer2d (const Handle(OpenGl_PrinterContext)& thePrintCo
     glViewport (0, 0, (GLsizei) ACView.DefWindow.dx, (GLsizei) ACView.DefWindow.dy);
 
   glFlush ();
+}
+
+/*----------------------------------------------------------------------*/
+
+void OpenGl_View::RedrawTrihedron (const Handle(OpenGl_Workspace) &theWorkspace)
+{
+  // display global trihedron
+  if (myTrihedron != NULL)
+  {
+    myTrihedron->Render (theWorkspace);
+  }
+  if (myGraduatedTrihedron != NULL)
+  {
+    myGraduatedTrihedron->Render (theWorkspace);
+  }
 }
 
 /*----------------------------------------------------------------------*/

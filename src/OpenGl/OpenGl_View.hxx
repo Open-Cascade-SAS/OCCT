@@ -221,6 +221,7 @@ protected:
   void RedrawLayer2d (const Handle(OpenGl_PrinterContext)& thePrintContext,
                       const Graphic3d_CView&               theCView,
                       const Aspect_CLayer2d&               theCLayer);
+  void RedrawTrihedron (const Handle(OpenGl_Workspace) &theWorkspace);
 
   //! Redraw contents of model scene: clipping planes,
   //! lights, structures. The peculiar properties of "scene" is that
@@ -295,6 +296,8 @@ public:
 
   DEFINE_STANDARD_ALLOC
   DEFINE_STANDARD_RTTI(OpenGl_View) // Type definition
+
+  friend class OpenGl_Workspace;
 
 };
 

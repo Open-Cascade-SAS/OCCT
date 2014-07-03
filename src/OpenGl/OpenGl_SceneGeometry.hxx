@@ -20,6 +20,7 @@
 #include <BVH_Triangulation.hxx>
 #include <NCollection_StdAllocator.hxx>
 
+class  OpenGl_Element;
 struct OpenGl_ElementNode;
 class  OpenGl_Group;
 class  OpenGl_Structure;
@@ -32,6 +33,9 @@ namespace OpenGl_Raytrace
 
   //! Checks to see if the element contains ray-trace geometry.
   Standard_Boolean IsRaytracedElement (const OpenGl_ElementNode* theNode);
+
+  //! Checks to see if the element contains ray-trace geometry.
+  Standard_Boolean IsRaytracedElement (const OpenGl_Element* theElement);
 
   //! Checks to see if the structure contains ray-trace geometry.
   Standard_Boolean IsRaytracedStructure (const OpenGl_Structure* theStructure);

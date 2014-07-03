@@ -1051,35 +1051,43 @@ void Visual3d_View::Redraw (const Handle(Visual3d_Layer)& theUnderLayer,
     return;
   }
 
-  if (MyGraphicDriver->IsDeviceLost())
-  {
-    MyViewManager->RecomputeStructures();
-    MyViewManager->RecomputeStructures (myImmediateStructures);
-    MyGraphicDriver->ResetDeviceLostFlag();
-  }
-
-  // set up Z buffer state before redrawing
-  if (MyViewManager->ZBufferAuto())
-  {
-    const Standard_Boolean hasFacet   = ContainsFacet();
-    const Standard_Boolean hasZBuffer = ZBufferIsActivated();
-    // if the view contains facets and if ZBuffer is not active
-    if (hasFacet && !hasZBuffer)
-    {
-      SetZBufferActivity (1);
-    }
-    // if the view contains only facets and if ZBuffer is active
-    if (!hasFacet && hasZBuffer)
-    {
-      SetZBufferActivity (0);
-    }
-  }
-
   Aspect_CLayer2d anOverCLayer, anUnderCLayer;
   anOverCLayer.ptrLayer = anUnderCLayer.ptrLayer = NULL;
   if (!theOverLayer .IsNull()) anOverCLayer  = theOverLayer ->CLayer();
   if (!theUnderLayer.IsNull()) anUnderCLayer = theUnderLayer->CLayer();
-  MyGraphicDriver->Redraw (MyCView, anUnderCLayer, anOverCLayer, theX, theY, theWidth, theHeight);
+
+  for (Standard_Integer aRetryIter = 0; aRetryIter < 2; ++aRetryIter)
+  {
+    if (MyGraphicDriver->IsDeviceLost())
+    {
+      MyViewManager->RecomputeStructures();
+      MyViewManager->RecomputeStructures (myImmediateStructures);
+      MyGraphicDriver->ResetDeviceLostFlag();
+    }
+
+    // set up Z buffer state before redrawing
+    if (MyViewManager->ZBufferAuto())
+    {
+      const Standard_Boolean hasFacet   = ContainsFacet();
+      const Standard_Boolean hasZBuffer = ZBufferIsActivated();
+      // if the view contains facets and if ZBuffer is not active
+      if (hasFacet && !hasZBuffer)
+      {
+        SetZBufferActivity (1);
+      }
+      // if the view contains only facets and if ZBuffer is active
+      if (!hasFacet && hasZBuffer)
+      {
+        SetZBufferActivity (0);
+      }
+    }
+
+    MyGraphicDriver->Redraw (MyCView, anUnderCLayer, anOverCLayer, theX, theY, theWidth, theHeight);
+    if (!MyGraphicDriver->IsDeviceLost())
+    {
+      return;
+    }
+  }
 }
 
 void Visual3d_View::RedrawImmediate()

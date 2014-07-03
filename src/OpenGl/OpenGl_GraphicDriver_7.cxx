@@ -103,7 +103,9 @@ void OpenGl_GraphicDriver::Redraw (const Graphic3d_CView& ACView,
                                    const Standard_Integer /*width*/, 
                                    const Standard_Integer /*height*/)
 {
-  if (!myCaps->vboDisable && ACView.RenderParams.Method == Graphic3d_RM_RAYTRACING)
+  if (ACView.RenderParams.Method == Graphic3d_RM_RAYTRACING
+  && !myCaps->vboDisable
+  && !myCaps->keepArrayData)
   {
     if (ACView.WasRedrawnGL)
     {

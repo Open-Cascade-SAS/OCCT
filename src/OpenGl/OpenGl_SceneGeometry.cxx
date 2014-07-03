@@ -353,6 +353,17 @@ namespace OpenGl_Raytrace
   }
 
   // =======================================================================
+  // function : IsRaytracedElement
+  // purpose  : Checks to see if the element contains ray-trace geometry
+  // =======================================================================
+  Standard_Boolean IsRaytracedElement (const OpenGl_Element* theElement)
+  {
+    const OpenGl_PrimitiveArray* anArray = dynamic_cast<const OpenGl_PrimitiveArray*> (theElement);
+    return anArray != NULL
+        && anArray->DrawMode() >= GL_TRIANGLES;
+  }
+
+  // =======================================================================
   // function : IsRaytracedGroup
   // purpose  : Checks to see if the group contains ray-trace geometry
   // =======================================================================

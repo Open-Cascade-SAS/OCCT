@@ -151,6 +151,8 @@ OpenGl_Workspace::OpenGl_Workspace (const Handle(Aspect_DisplayConnection)& theD
   myViewModificationStatus (0),
   myLayersModificationStatus (0),
   //
+  myRaytraceFilter       (new OpenGl_RaytraceFilter()),
+  myToRedrawGL           (Standard_True),
   myAntiAliasingMode     (3),
   myTransientDrawToFront (Standard_True),
   myBackBufferRestored   (Standard_False),
@@ -160,6 +162,7 @@ OpenGl_Workspace::OpenGl_Workspace (const Handle(Aspect_DisplayConnection)& theD
   myUseDepthTest (Standard_True),
   myUseGLLight (Standard_True),
   myIsCullingEnabled (Standard_False),
+  myFrameCounter (0),
   //
   AspectLine_set (&myDefaultAspectLine),
   AspectLine_applied (NULL),
@@ -561,6 +564,7 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
     return;
   }
 
+  ++myFrameCounter;
   myIsCullingEnabled = theCView.IsCullingEnabled;
 
   // release pending GL resources
@@ -577,12 +581,67 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
   {
     glGetIntegerv (GL_VIEWPORT, aViewPortBack);
     aFrameBuffer->SetupViewport (aGlCtx);
-    aFrameBuffer->BindBuffer    (aGlCtx);
     toSwap = 0; // no need to swap buffers
   }
 
-  if (theCView.RenderParams.Method != Graphic3d_RM_RAYTRACING || myComputeInitStatus == OpenGl_RT_FAIL)
+  myToRedrawGL = Standard_True;
+  if (theCView.RenderParams.Method == Graphic3d_RM_RAYTRACING
+   && myComputeInitStatus != OpenGl_RT_FAIL)
   {
+    if (UpdateRaytraceGeometry (OpenGl_GUM_CHECK) && myIsRaytraceDataValid)
+    {
+      myToRedrawGL = Standard_False;
+
+      // Only non-raytracable structures should be rendered in OpenGL mode.
+      Handle(OpenGl_RenderFilter) aRenderFilter = GetRenderFilter();
+      myRaytraceFilter->SetPrevRenderFilter (aRenderFilter);
+      SetRenderFilter (myRaytraceFilter);
+
+      Standard_Integer aSizeX = aFrameBuffer != NULL ? aFrameBuffer->GetVPSizeX() : myWidth;
+      Standard_Integer aSizeY = aFrameBuffer != NULL ? aFrameBuffer->GetVPSizeY() : myHeight;
+
+      if (myOpenGlFBO.IsNull())
+      {
+        myOpenGlFBO = new OpenGl_FrameBuffer();
+      }
+      if (myOpenGlFBO->GetVPSizeX() != aSizeX
+       || myOpenGlFBO->GetVPSizeY() != aSizeY)
+      {
+        myOpenGlFBO->Init (aGlCtx, aSizeX, aSizeY);
+      }
+
+      // OverLayer and UnderLayer shouldn't be drawn by OpenGL.
+      // They will be drawn during ray-tracing.
+      Aspect_CLayer2d anEmptyCLayer;
+      anEmptyCLayer.ptrLayer = NULL;
+
+      myOpenGlFBO->BindBuffer (aGlCtx);
+      redraw1 (theCView, anEmptyCLayer, anEmptyCLayer, 0);
+      myOpenGlFBO->UnbindBuffer (aGlCtx);
+
+      const Standard_Boolean isImmediate = !myView->ImmediateStructures().IsEmpty();
+      Raytrace (theCView, aSizeX, aSizeY, isImmediate ? 0 : toSwap,
+                theCOverLayer, theCUnderLayer, aFrameBuffer);
+
+      if (isImmediate)
+      {
+        RedrawImmediate (theCView, theCUnderLayer, theCOverLayer, Standard_True);
+      }
+
+      SetRenderFilter (aRenderFilter);
+
+      theCView.WasRedrawnGL = Standard_False;
+    }
+  }
+
+  if (myToRedrawGL)
+  {
+    // draw entire frame using normal OpenGL pipeline
+    if (aFrameBuffer != NULL)
+    {
+      aFrameBuffer->BindBuffer (aGlCtx);
+    }
+
     const Standard_Boolean isImmediate = !myView->ImmediateStructures().IsEmpty();
     redraw1 (theCView, theCUnderLayer, theCOverLayer, isImmediate ? 0 : toSwap);
     if (isImmediate)
@@ -591,15 +650,6 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
     }
 
     theCView.WasRedrawnGL = Standard_True;
-  }
-  else
-  {
-    int aSizeX = aFrameBuffer != NULL ? aFrameBuffer->GetVPSizeX() : myWidth;
-    int aSizeY = aFrameBuffer != NULL ? aFrameBuffer->GetVPSizeY() : myHeight;
-
-    Raytrace (theCView, aSizeX, aSizeY, toSwap, aFrameBuffer);
-
-    theCView.WasRedrawnGL = Standard_False;
   }
 
   if (aFrameBuffer != NULL)
@@ -670,15 +720,24 @@ void OpenGl_Workspace::redraw1 (const Graphic3d_CView& theCView,
     glDisable (GL_DEPTH_TEST);
   }
 
-  if (NamedStatus & OPENGL_NS_WHITEBACK)
+  if (!ToRedrawGL())
   {
-    // set background to white
-    glClearColor (1.0f, 1.0f, 1.0f, 1.0f);
-    toClear |= GL_DEPTH_BUFFER_BIT;
+    // set background to black
+    glClearColor (0.0f, 0.0f, 0.0f, 0.0f);
+    toClear |= GL_DEPTH_BUFFER_BIT; //
   }
   else
   {
-    glClearColor (myBgColor.rgb[0], myBgColor.rgb[1], myBgColor.rgb[2], 0.0f);
+    if (NamedStatus & OPENGL_NS_WHITEBACK)
+    {
+        // set background to white
+      glClearColor (1.0f, 1.0f, 1.0f, 1.0f);
+      toClear |= GL_DEPTH_BUFFER_BIT;
+    }
+    else
+    {
+      glClearColor (myBgColor.rgb[0], myBgColor.rgb[1], myBgColor.rgb[2], 0.0f);
+    }
   }
   glClear (toClear);
 
@@ -694,9 +753,9 @@ void OpenGl_Workspace::redraw1 (const Graphic3d_CView& theCView,
   }
   else
   {
-    glFlush();
-    myBackBufferRestored = Standard_True;
-    myIsImmediateDrawn   = Standard_False;
+    glFlush(); //
+    myBackBufferRestored = Standard_True;//
+    myIsImmediateDrawn   = Standard_False;//
   }
 }
 

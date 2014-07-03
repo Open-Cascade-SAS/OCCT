@@ -221,7 +221,7 @@ Standard_Boolean OpenGl_Workspace::UpdateRaytraceGeometry (GeomUpdateMode theMod
 
     const BVH_Vec4f aSize = myRaytraceGeometry.Box().Size();
 
-    myRaytraceSceneEpsilon = Max (1e-7f, 1e-4f * sqrtf (
+    myRaytraceSceneEpsilon = Max (1e-6f, 1e-4f * sqrtf (
       aSize.x() * aSize.x() + aSize.y() * aSize.y() + aSize.z() * aSize.z()));
 
     return UploadRaytraceData();
@@ -1402,6 +1402,11 @@ Standard_Boolean OpenGl_Workspace::InitRaytraceResources (const Graphic3d_CView&
       aShaderProgram->SetSampler (myGlContext,
         "uEnvironmentMapTexture", OpenGl_RT_EnvironmentMapTexture);
 
+      aShaderProgram->SetSampler (myGlContext,
+        "uOpenGlColorTexture", OpenGl_RT_OpenGlColorTexture);
+      aShaderProgram->SetSampler (myGlContext,
+        "uOpenGlDepthTexture", OpenGl_RT_OpenGlDepthTexture);
+
       if (anIndex == 1)
       {
         aShaderProgram->SetSampler (myGlContext,
@@ -1427,6 +1432,8 @@ Standard_Boolean OpenGl_Workspace::InitRaytraceResources (const Graphic3d_CView&
         aShaderProgram->GetUniformLocation (myGlContext, "uDirectLT");
       myUniformLocations[anIndex][OpenGl_RT_uDirectRT] =
         aShaderProgram->GetUniformLocation (myGlContext, "uDirectRT");
+      myUniformLocations[anIndex][OpenGl_RT_uInvModelProj] =
+        aShaderProgram->GetUniformLocation (myGlContext, "uInvModelProj");
 
       myUniformLocations[anIndex][OpenGl_RT_uLightCount] =
         aShaderProgram->GetUniformLocation (myGlContext, "uLightCount");
@@ -1506,6 +1513,7 @@ inline void NullifyResource (const Handle(OpenGl_Context)& theContext,
 // =======================================================================
 void OpenGl_Workspace::ReleaseRaytraceResources()
 {
+  NullifyResource (myGlContext, myOpenGlFBO);
   NullifyResource (myGlContext, myRaytraceFBO1);
   NullifyResource (myGlContext, myRaytraceFBO2);
 
@@ -1869,12 +1877,11 @@ Standard_Boolean OpenGl_Workspace::ResizeRaytraceBuffers (const Standard_Integer
 void OpenGl_Workspace::UpdateCamera (const NCollection_Mat4<GLdouble>& theOrientation,
                                      const NCollection_Mat4<GLdouble>& theViewMapping,
                                      OpenGl_Vec3                       theOrigins[4],
-                                     OpenGl_Vec3                       theDirects[4])
+                                     OpenGl_Vec3                       theDirects[4],
+                                     NCollection_Mat4<GLdouble>&       theInvModelProj)
 {
-  NCollection_Mat4<GLdouble> aInvModelProj;
-
   // compute inverse model-view-projection matrix
-  (theViewMapping * theOrientation).Inverted (aInvModelProj);
+  (theViewMapping * theOrientation).Inverted (theInvModelProj);
 
   Standard_Integer aOriginIndex = 0;
   Standard_Integer aDirectIndex = 0;
@@ -1888,7 +1895,7 @@ void OpenGl_Workspace::UpdateCamera (const NCollection_Mat4<GLdouble>& theOrient
                            -1.0,
                             1.0);
 
-      aOrigin = aInvModelProj * aOrigin;
+      aOrigin = theInvModelProj * aOrigin;
 
       aOrigin.x() = aOrigin.x() / aOrigin.w();
       aOrigin.y() = aOrigin.y() / aOrigin.w();
@@ -1899,7 +1906,7 @@ void OpenGl_Workspace::UpdateCamera (const NCollection_Mat4<GLdouble>& theOrient
                             1.0,
                             1.0);
 
-      aDirect = aInvModelProj * aDirect;
+      aDirect = theInvModelProj * aDirect;
 
       aDirect.x() = aDirect.x() / aDirect.w();
       aDirect.y() = aDirect.y() / aDirect.w();
@@ -1931,6 +1938,7 @@ Standard_Boolean OpenGl_Workspace::RunRaytraceShaders (const Graphic3d_CView& th
                                                        const Standard_Integer theSizeY,
                                                        const OpenGl_Vec3      theOrigins[4],
                                                        const OpenGl_Vec3      theDirects[4],
+                                                       const OpenGl_Matrix&   theInvModelProj,
                                                        OpenGl_FrameBuffer*    theFrameBuffer)
 {
   mySceneMinPointTexture->BindTexture (myGlContext, GL_TEXTURE0 + OpenGl_RT_SceneMinPointTexture);
@@ -1942,9 +1950,12 @@ Standard_Boolean OpenGl_Workspace::RunRaytraceShaders (const Graphic3d_CView& th
   myGeometryVertexTexture->BindTexture (myGlContext, GL_TEXTURE0 + OpenGl_RT_GeometryVertexTexture);
   myGeometryNormalTexture->BindTexture (myGlContext, GL_TEXTURE0 + OpenGl_RT_GeometryNormalTexture);
   myGeometryTriangTexture->BindTexture (myGlContext, GL_TEXTURE0 + OpenGl_RT_GeometryTriangTexture);
+  mySceneTransformTexture->BindTexture (myGlContext, GL_TEXTURE0 + OpenGl_RT_SceneTransformTexture);
   myRaytraceMaterialTexture->BindTexture (myGlContext, GL_TEXTURE0 + OpenGl_RT_RaytraceMaterialTexture);
   myRaytraceLightSrcTexture->BindTexture (myGlContext, GL_TEXTURE0 + OpenGl_RT_RaytraceLightSrcTexture);
-  mySceneTransformTexture->BindTexture (myGlContext, GL_TEXTURE0 + OpenGl_RT_SceneTransformTexture);
+  
+  myOpenGlFBO->ColorTexture()->Bind        (myGlContext, GL_TEXTURE0 + OpenGl_RT_OpenGlColorTexture);
+  myOpenGlFBO->DepthStencilTexture()->Bind (myGlContext, GL_TEXTURE0 + OpenGl_RT_OpenGlDepthTexture);
 
   if (theCView.RenderParams.IsAntialiasingEnabled) // render source image to FBO
   {
@@ -1975,6 +1986,8 @@ Standard_Boolean OpenGl_Workspace::RunRaytraceShaders (const Graphic3d_CView& th
   myRaytraceProgram->SetUniform (myGlContext,
     myUniformLocations[0][OpenGl_RT_uDirectRT], theDirects[3]);
   myRaytraceProgram->SetUniform (myGlContext,
+    myUniformLocations[0][OpenGl_RT_uInvModelProj], theInvModelProj);
+  myRaytraceProgram->SetUniform (myGlContext,
     myUniformLocations[0][OpenGl_RT_uSceneRad], myRaytraceSceneRadius);
   myRaytraceProgram->SetUniform (myGlContext,
     myUniformLocations[0][OpenGl_RT_uSceneEps], myRaytraceSceneEpsilon);
@@ -2002,6 +2015,23 @@ Standard_Boolean OpenGl_Workspace::RunRaytraceShaders (const Graphic3d_CView& th
   {
     myRaytraceProgram->Unbind (myGlContext);
 
+    myOpenGlFBO->ColorTexture()->Unbind        (myGlContext, GL_TEXTURE0 + OpenGl_RT_OpenGlColorTexture);
+    myOpenGlFBO->DepthStencilTexture()->Unbind (myGlContext, GL_TEXTURE0 + OpenGl_RT_OpenGlDepthTexture);
+    mySceneMinPointTexture->UnbindTexture      (myGlContext, GL_TEXTURE0 + OpenGl_RT_SceneMinPointTexture);
+    mySceneMaxPointTexture->UnbindTexture      (myGlContext, GL_TEXTURE0 + OpenGl_RT_SceneMaxPointTexture);
+    mySceneNodeInfoTexture->UnbindTexture      (myGlContext, GL_TEXTURE0 + OpenGl_RT_SceneNodeInfoTexture);
+    myObjectMinPointTexture->UnbindTexture     (myGlContext, GL_TEXTURE0 + OpenGl_RT_ObjectMinPointTexture);
+    myObjectMaxPointTexture->UnbindTexture     (myGlContext, GL_TEXTURE0 + OpenGl_RT_ObjectMaxPointTexture);
+    myObjectNodeInfoTexture->UnbindTexture     (myGlContext, GL_TEXTURE0 + OpenGl_RT_ObjectNodeInfoTexture);
+    myGeometryVertexTexture->UnbindTexture     (myGlContext, GL_TEXTURE0 + OpenGl_RT_GeometryVertexTexture);
+    myGeometryNormalTexture->UnbindTexture     (myGlContext, GL_TEXTURE0 + OpenGl_RT_GeometryNormalTexture);
+    myGeometryTriangTexture->UnbindTexture     (myGlContext, GL_TEXTURE0 + OpenGl_RT_GeometryTriangTexture);
+    myRaytraceMaterialTexture->UnbindTexture   (myGlContext, GL_TEXTURE0 + OpenGl_RT_RaytraceMaterialTexture);
+    myRaytraceLightSrcTexture->UnbindTexture   (myGlContext, GL_TEXTURE0 + OpenGl_RT_RaytraceLightSrcTexture);
+    mySceneTransformTexture->UnbindTexture     (myGlContext, GL_TEXTURE0 + OpenGl_RT_SceneTransformTexture);
+
+    myGlContext->core15fwd->glActiveTexture (GL_TEXTURE0);
+
     return Standard_True;
   }
 
@@ -2025,6 +2055,8 @@ Standard_Boolean OpenGl_Workspace::RunRaytraceShaders (const Graphic3d_CView& th
     myUniformLocations[1][OpenGl_RT_uDirectLT], theDirects[2]);
   myPostFSAAProgram->SetUniform (myGlContext,
     myUniformLocations[1][OpenGl_RT_uDirectRT], theDirects[3]);
+  myRaytraceProgram->SetUniform (myGlContext,
+    myUniformLocations[1][OpenGl_RT_uInvModelProj], theInvModelProj);
   myPostFSAAProgram->SetUniform (myGlContext,
     myUniformLocations[1][OpenGl_RT_uSceneRad], myRaytraceSceneRadius);
   myPostFSAAProgram->SetUniform (myGlContext,
@@ -2099,6 +2131,23 @@ Standard_Boolean OpenGl_Workspace::RunRaytraceShaders (const Graphic3d_CView& th
     myUniformLocations[1][OpenGl_RT_aPosition]);
 
   myPostFSAAProgram->Unbind (myGlContext);
+  myRaytraceFBO1->ColorTexture()->Unbind     (myGlContext, GL_TEXTURE0 + OpenGl_RT_FSAAInputTexture);
+  myOpenGlFBO->ColorTexture()->Unbind        (myGlContext, GL_TEXTURE0 + OpenGl_RT_OpenGlColorTexture);
+  myOpenGlFBO->DepthStencilTexture()->Unbind (myGlContext, GL_TEXTURE0 + OpenGl_RT_OpenGlDepthTexture);
+  mySceneMinPointTexture->UnbindTexture      (myGlContext, GL_TEXTURE0 + OpenGl_RT_SceneMinPointTexture);
+  mySceneMaxPointTexture->UnbindTexture      (myGlContext, GL_TEXTURE0 + OpenGl_RT_SceneMaxPointTexture);
+  mySceneNodeInfoTexture->UnbindTexture      (myGlContext, GL_TEXTURE0 + OpenGl_RT_SceneNodeInfoTexture);
+  myObjectMinPointTexture->UnbindTexture     (myGlContext, GL_TEXTURE0 + OpenGl_RT_ObjectMinPointTexture);
+  myObjectMaxPointTexture->UnbindTexture     (myGlContext, GL_TEXTURE0 + OpenGl_RT_ObjectMaxPointTexture);
+  myObjectNodeInfoTexture->UnbindTexture     (myGlContext, GL_TEXTURE0 + OpenGl_RT_ObjectNodeInfoTexture);
+  myGeometryVertexTexture->UnbindTexture     (myGlContext, GL_TEXTURE0 + OpenGl_RT_GeometryVertexTexture);
+  myGeometryNormalTexture->UnbindTexture     (myGlContext, GL_TEXTURE0 + OpenGl_RT_GeometryNormalTexture);
+  myGeometryTriangTexture->UnbindTexture     (myGlContext, GL_TEXTURE0 + OpenGl_RT_GeometryTriangTexture);
+  myRaytraceMaterialTexture->UnbindTexture   (myGlContext, GL_TEXTURE0 + OpenGl_RT_RaytraceMaterialTexture);
+  myRaytraceLightSrcTexture->UnbindTexture   (myGlContext, GL_TEXTURE0 + OpenGl_RT_RaytraceLightSrcTexture);
+  mySceneTransformTexture->UnbindTexture     (myGlContext, GL_TEXTURE0 + OpenGl_RT_SceneTransformTexture);
+
+  myGlContext->core15fwd->glActiveTexture (GL_TEXTURE0);
 
   return Standard_True;
 }
@@ -2111,11 +2160,10 @@ Standard_Boolean OpenGl_Workspace::Raytrace (const Graphic3d_CView& theCView,
                                              const Standard_Integer theSizeX,
                                              const Standard_Integer theSizeY,
                                              const Standard_Boolean theToSwap,
+                                             const Aspect_CLayer2d& theCOverLayer,
+                                             const Aspect_CLayer2d& theCUnderLayer,
                                              OpenGl_FrameBuffer*    theFrameBuffer)
 {
-  if (!UpdateRaytraceGeometry (OpenGl_GUM_CHECK))
-    return Standard_False;
-
   if (!InitRaytraceResources (theCView))
     return Standard_False;
 
@@ -2151,16 +2199,32 @@ Standard_Boolean OpenGl_Workspace::Raytrace (const Graphic3d_CView& theCView,
 
   OpenGl_Vec3 aOrigins[4];
   OpenGl_Vec3 aDirects[4];
+  NCollection_Mat4<GLdouble> anInvModelProj;
 
   UpdateCamera (aOrientationMatrix,
                 aViewMappingMatrix,
                 aOrigins,
-                aDirects);
+                aDirects,
+                anInvModelProj);
+
+  OpenGl_Matrix anInvModelProjMatrix;
+  for (Standard_Integer j = 0; j < 4; ++j)
+  {
+    for (Standard_Integer i = 0; i < 4; ++i)
+    {
+      anInvModelProjMatrix.mat[j][i] = static_cast<GLfloat>(anInvModelProj.GetValue(i,j));
+    }
+  }
 
   Standard_Boolean wasBlendingEnabled = glIsEnabled (GL_BLEND);
   Standard_Boolean wasDepthTestEnabled = glIsEnabled (GL_DEPTH_TEST);
 
   glDisable (GL_DEPTH_TEST);
+
+  if (theFrameBuffer != NULL)
+  {
+    theFrameBuffer->BindBuffer (myGlContext);
+  }
 
   if (NamedStatus & OPENGL_NS_WHITEBACK)
   {
@@ -2176,16 +2240,17 @@ Standard_Boolean OpenGl_Workspace::Raytrace (const Graphic3d_CView& theCView,
 
   glClear (GL_COLOR_BUFFER_BIT);
 
-  if (theFrameBuffer != NULL)
-    theFrameBuffer->BindBuffer (myGlContext);
-
   myView->DrawBackground (*this);
+
+  myView->RedrawLayer2d (myPrintContext, theCView, theCUnderLayer);
 
   // Generate ray-traced image
   glMatrixMode (GL_PROJECTION);
+  glPushMatrix();
   glLoadIdentity();
 
   glMatrixMode (GL_MODELVIEW);
+  glPushMatrix();
   glLoadIdentity();
 
   glEnable (GL_BLEND);
@@ -2200,6 +2265,7 @@ Standard_Boolean OpenGl_Workspace::Raytrace (const Graphic3d_CView& theCView,
                         theSizeY,
                         aOrigins,
                         aDirects,
+                        anInvModelProjMatrix,
                         theFrameBuffer);
 
     myRaytraceScreenQuad.Unbind (myGlContext);
@@ -2210,6 +2276,20 @@ Standard_Boolean OpenGl_Workspace::Raytrace (const Graphic3d_CView& theCView,
 
   if (wasDepthTestEnabled)
     glEnable (GL_DEPTH_TEST);
+
+  glMatrixMode (GL_PROJECTION);
+  glPopMatrix();
+  glMatrixMode (GL_MODELVIEW);
+  glPopMatrix();
+
+  // Redraw trihedron
+  myView->RedrawTrihedron (this);
+
+  // Redraw overlay
+  const int aMode = 0;
+  DisplayCallback (theCView, (aMode | OCC_PRE_OVERLAY));
+  myView->RedrawLayer2d (myPrintContext, theCView, theCOverLayer);
+  DisplayCallback (theCView, aMode);
 
   // Swap the buffers
   if (theToSwap)
@@ -2223,4 +2303,22 @@ Standard_Boolean OpenGl_Workspace::Raytrace (const Graphic3d_CView& theCView,
   }
 
   return Standard_True;
+}
+
+IMPLEMENT_STANDARD_HANDLE(OpenGl_RaytraceFilter, OpenGl_RenderFilter)
+IMPLEMENT_STANDARD_RTTIEXT(OpenGl_RaytraceFilter, OpenGl_RenderFilter)
+
+// =======================================================================
+// function : CanRender
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_RaytraceFilter::CanRender (const OpenGl_Element* theElement)
+{
+  Standard_Boolean aPrevFilterResult = Standard_True;
+  if (!myPrevRenderFilter.IsNull())
+  {
+    aPrevFilterResult = myPrevRenderFilter->CanRender(theElement);
+  }
+  return aPrevFilterResult &&
+         !OpenGl_Raytrace::IsRaytracedElement (theElement);
 }

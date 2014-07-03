@@ -1,0 +1,72 @@
+puts "========"
+puts "OCC24819: TKOpenGl - extend the ray-tracing core by visualization of lines, text and point sprites"
+puts "========"
+
+# setup 3D viewer content
+vinit name=View1 w=512 h=512
+vglinfo
+
+vvbo 0
+vsetdispmode 1
+vsetgradientbg 180 200 255 180 180 180 2
+# boxes
+box b1 1 1 1
+vdisplay b1
+vsetlocation b1 0 0 0.001
+vsetmaterial b1 Silver
+vsettransparency b1 0.5
+box b2 3 2 2 1 2 1
+vdisplay b2
+vsetmaterial b2 Pewter
+vsettransparency b2 0.8
+
+# brep text
+text2brep t "text" "Arial" 8
+vdisplay t
+
+# overlay objects
+voverlaytext "Overlay text!" 200 440 40
+
+# markers
+vpoint p 1 1 1
+vdisplay p
+vmarkerstest mTest 7 -3 0 PointsOnSide=5 MarkerType=5
+
+# 3d text
+vdrawtext 3D_Text 1 2 2 255 0 0 0 0 0 0 20 0
+
+vlight change 0 pos -1 1 1
+
+vfit
+
+# trihedron
+vzbufftrihedron
+
+# activate ray-tracing
+vrenderparams -raytrace
+
+# orthogonal projection
+set aModeNum 0
+foreach aFSAAMode {on off} {
+  foreach aReflMode {on off} {
+    foreach aShadMode {on off} {
+      vrenderparams -shadows $aShadMode -reflections $aReflMode -fsaa $aFSAAMode
+      vdump $imagedir/${casename}_${aModeNum}.png
+      incr aModeNum
+    }
+  }
+}
+
+# perspective projection
+vchangecamera proj persp
+set aModeNum 0
+foreach aFSAAMode {on off} {
+  foreach aReflMode {on off} {
+    foreach aShadMode {on off} {
+      vrenderparams -shadows $aShadMode -reflections $aReflMode -fsaa $aFSAAMode
+      vdump $imagedir/${casename}_${aModeNum}.png
+      incr aModeNum
+    }
+  }
+}
+
