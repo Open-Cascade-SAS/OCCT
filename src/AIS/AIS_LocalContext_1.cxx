@@ -138,9 +138,9 @@ AIS_StatusOfDetection AIS_LocalContext::MoveTo (const Standard_Integer  theXpix,
       continue;
     }
 
-    myDetectedSeq.Append (aDetIter); // normallly they are already arranged in correct order...
+    myDetectedSeq.Append (aDetIter); // normally they are already arranged in correct order...
     Handle(AIS_InteractiveObject) anObj = Handle(AIS_InteractiveObject)::DownCast (anOwner->Selectable());
-    if (!Handle(AIS_Shape)::DownCast (anObj).IsNull())
+    if (!anObj.IsNull())
     {
       myAISDetectedSeq.Append (anObj);
     }
@@ -1476,7 +1476,6 @@ Handle(SelectMgr_EntityOwner) AIS_LocalContext::FindSelectedOwnerFromShape(const
 //function : AIS_LocalContext::InitDetected
 //purpose  :
 //=======================================================================
-
 void AIS_LocalContext::InitDetected()
 {
   myAISCurDetected = myAISDetectedSeq.Length()? 1 : 0;
@@ -1486,47 +1485,43 @@ void AIS_LocalContext::InitDetected()
 //function : AIS_LocalContext::MoreDetected
 //purpose  :
 //=======================================================================
-
 Standard_Boolean AIS_LocalContext::MoreDetected() const
 {
   return (myAISCurDetected > 0 && myAISCurDetected <= myAISDetectedSeq.Length());
 }
 
-
 //=======================================================================
 //function : AIS_LocalContext::NextDetected
 //purpose  :
 //=======================================================================
-
 void AIS_LocalContext::NextDetected()
 {
-  if (MoreDetected()) myAISCurDetected++;
+  myAISCurDetected++;
 }
 
 //=======================================================================
 //function : DetectedCurrentShape
 //purpose  :
 //=======================================================================
-
 const TopoDS_Shape& AIS_LocalContext::DetectedCurrentShape() const
 {
-  static TopoDS_Shape bidsh;
-  if (MoreDetected())
-    return Handle(AIS_Shape)::DownCast(myAISDetectedSeq(myAISCurDetected))->Shape();
-  return bidsh;
-}
+  static TopoDS_Shape aDummyShape;
 
+  Handle(AIS_Shape) aCurrentShape = Handle(AIS_Shape)::DownCast (DetectedCurrentObject());
+
+  if (aCurrentShape.IsNull())
+  {
+    return aDummyShape;
+  }
+
+  return aCurrentShape->Shape();
+}
 //=======================================================================
 //function : DetectedCurrentObject
 //purpose  :
 //=======================================================================
-
 Handle(AIS_InteractiveObject) AIS_LocalContext::DetectedCurrentObject() const
 {
-  Handle(AIS_InteractiveObject) theIObj;
-  if (MoreDetected())
-    theIObj = myAISDetectedSeq(myAISCurDetected);
-
-  return theIObj;
+  return MoreDetected() ? myAISDetectedSeq(myAISCurDetected) : NULL;
 }
 #endif

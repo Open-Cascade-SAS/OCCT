@@ -340,11 +340,28 @@ is
     ---C++: inline
 
     InitDetected(me: mutable);
+    ---Purpose:
+    -- Initialization for iteration through mouse-detected objects in local context.
+
     MoreDetected(me) returns Boolean from Standard;
+    ---Purpose:
+    -- @return true if there is more mouse-detected objects after the current one
+    -- during iteration through mouse-detected interactive objects.
+
     NextDetected(me: mutable);
+    ---Purpose:
+    -- Gets next current object during iteration through mouse-detected
+    -- interactive objects.
+
     DetectedCurrentShape(me) returns Shape from TopoDS;
     ---C++: return const &
+    ---Purpose:
+    -- @return current mouse-detected shape or empty (null) shape, if current interactive object
+    -- is not a shape (AIS_Shape) or there is no current mouse-detected interactive object at all.
+
     DetectedCurrentObject(me) returns InteractiveObject from AIS;
+    ---Purpose:
+    -- @return current mouse-detected interactive object or null object if there is no current detected.
 
     HasDetectedShape(me) returns Boolean from Standard;
     DetectedShape   (me) returns Shape from TopoDS;
@@ -625,10 +642,13 @@ fields
     myDetectedSeq  : SequenceOfInteger from TColStd;
     myCurDetected  : Integer from Standard;
 
-   -- the detected objects.
+   -- The detected objects.
+
     myAISDetectedSeq : SequenceOfInteractive from AIS;
+    -- the sequence of detected interative objects.
     myAISCurDetected : Integer from Standard;
-    -- This variables is used by following functions:
+    -- current detected interactive object.
+    -- This variable is used by following functions:
     -- InitDetected(), MoreDetected(), NextDetected(), DetectedCurrentShape(), DetectedCurrentObject().
     
 friends 

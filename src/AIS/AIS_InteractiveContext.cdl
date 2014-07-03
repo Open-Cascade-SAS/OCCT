@@ -1525,12 +1525,26 @@ is
     ---Purpose: returns the owner of the detected sensitive primitive.
 
     InitDetected(me: mutable);
-    
+    ---Purpose:
+    -- Initialization for iteration through mouse-detected objects in
+    -- interactive context or in local context if it is opened.
     MoreDetected(me) returns Boolean from Standard;
+    ---Purpose:
+    -- @return true if there is more mouse-detected objects after the current one
+    -- during iteration through mouse-detected interactive objects.
     NextDetected(me: mutable);
+    ---Purpose:
+    -- Gets next current object during iteration through mouse-detected
+    -- interactive objects.
     DetectedCurrentShape(me) returns Shape from TopoDS;
     ---C++: return const &
+    ---Purpose:
+    -- @return current mouse-detected shape or empty (null) shape, if current interactive object
+    -- is not a shape (AIS_Shape) or there is no current mouse-detected interactive object at all.
     DetectedCurrentObject(me) returns InteractiveObject from AIS;
+    --Purpose:
+    -- @return current mouse-detected interactive object or null object if there is no current detected.
+
 
 		    ---Category:  SPECIFIC LOCAL CONTEXT ACTIONS.
     
@@ -2078,13 +2092,16 @@ fields
     myCurLocalIndex      : Integer      from  Standard; 
     mylastmoveview       : View         from V3d;
 
-     -- the detected objects.
+    -- The detected objects
+
     myAISDetectedSeq : SequenceOfInteractive from AIS;
+    -- the sequence of detected interative objects.
     myAISCurDetected : Integer from Standard;
-    -- This variables is used by following functions:
+    -- current detected interactive object.
+    -- This variable is used by following functions:
     -- InitDetected(), MoreDetected(), NextDetected(), DetectedCurrentShape(), DetectedCurrentObject().
-    myZDetectionFlag:	Boolean from Standard;
-    -- This variables is used by SetZDetection() and ZDetection() methods
+    myZDetectionFlag: Boolean from Standard;
+    -- This variable is used by SetZDetection() and ZDetection() methods
 
     -- abd:
     myIsAutoActivateSelMode : Boolean from Standard;

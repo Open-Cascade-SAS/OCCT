@@ -167,7 +167,7 @@ AIS_StatusOfDetection AIS_InteractiveContext::MoveTo (const Standard_Integer  th
     }
 
     Handle(AIS_InteractiveObject) anObj = Handle(AIS_InteractiveObject)::DownCast (anOwner->Selectable());
-    if (!Handle(AIS_Shape)::DownCast (anObj).IsNull())
+    if (!anObj.IsNull())
     {
       myAISDetectedSeq.Append (anObj);
     }
@@ -1327,15 +1327,16 @@ Standard_Integer AIS_InteractiveContext::HilightPreviousDetected (const Handle(V
 //=======================================================================
 void AIS_InteractiveContext::InitDetected()
 {
-  if(HasOpenedContext())
+  if (HasOpenedContext())
   {
     myLocalContexts(myCurLocalIndex)->InitDetected();
     return;
   }
 
   if(myAISDetectedSeq.Length() != 0)
+  {
     myAISCurDetected = 1;
-
+  }
 }
 
 //=======================================================================
@@ -1344,10 +1345,12 @@ void AIS_InteractiveContext::InitDetected()
 //=======================================================================
 Standard_Boolean AIS_InteractiveContext::MoreDetected() const
 {
-  if(HasOpenedContext())
+  if (HasOpenedContext())
+  {
     return myLocalContexts(myCurLocalIndex)->MoreDetected();
+  }
 
-  return (myAISCurDetected>0 &&myAISCurDetected <= myAISDetectedSeq.Length()) ?
+  return (myAISCurDetected > 0 && myAISCurDetected <= myAISDetectedSeq.Length()) ?
           Standard_True : Standard_False;
 }
 
@@ -1370,33 +1373,35 @@ void AIS_InteractiveContext::NextDetected()
 //function : DetectedCurrentShape
 //purpose  :
 //=======================================================================
-
 const TopoDS_Shape& AIS_InteractiveContext::DetectedCurrentShape() const
 {
-  if(HasOpenedContext())
+  if (HasOpenedContext())
+  {
     return myLocalContexts(myCurLocalIndex)->DetectedCurrentShape();
+  }
 
-  static TopoDS_Shape bidsh;
-  if(myAISCurDetected > 0 &&
-     myAISCurDetected <= myAISDetectedSeq.Length())
-    return Handle(AIS_Shape)::DownCast(myAISDetectedSeq(myAISCurDetected))->Shape();
-  return bidsh;
+  static TopoDS_Shape aDummyShape;
+
+  Handle(AIS_Shape) aCurrentShape = Handle(AIS_Shape)::DownCast (DetectedCurrentObject());
+
+  if (aCurrentShape.IsNull())
+  {
+    return aDummyShape;
+  }
+
+  return aCurrentShape->Shape();
 }
 
 //=======================================================================
 //function : DetectedCurrentObject
 //purpose  :
 //=======================================================================
-
-Handle(AIS_InteractiveObject) AIS_InteractiveContext::DetectedCurrentObject() const {
-  if(HasOpenedContext())
+Handle(AIS_InteractiveObject) AIS_InteractiveContext::DetectedCurrentObject() const
+{
+  if (HasOpenedContext())
+  {
     return myLocalContexts(myCurLocalIndex)->DetectedCurrentObject();
+  }
 
-  Handle(AIS_InteractiveObject) aBad;
- 
-  if(myAISCurDetected > 0 &&
-     myAISCurDetected <= myAISDetectedSeq.Length())
-      return myAISDetectedSeq(myAISCurDetected);
-  else
-    return aBad;
+  return MoreDetected() ? myAISDetectedSeq(myAISCurDetected) : NULL;
 }
