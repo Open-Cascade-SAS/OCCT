@@ -1,5 +1,6 @@
 puts "TODO ?OCC24472 ALL: Error : Result shape is WRONG because it must contains 70 edges instead of 71"
 puts "TODO ?OCC24472 ALL: Error : Result shape is WRONG because it must contains 139 shapes instead of 140"
+puts "TODO ?OCC23753 ALL: ERROR: OCC23753 is reproduced."
 puts "TODO ?OCC23753 ALL: Process killed by CPU limit"
 puts "TODO ?OCC23753 ALL: TEST INCOMPLETE"
 
@@ -20,7 +21,10 @@ puts "Load second shape ..."
 restore [locate_data_file bug19793_shape.brep] b2 
 
 puts "Prepare boolean operation ..."
+dchrono perf_h reset
+dchrono perf_h start
 bop b1 b2
+dchrono perf_h stop
 
 puts "Start boolean operation ..."
 bopsection result
@@ -39,5 +43,26 @@ set nb_compsol_good 0
 set nb_compound_good 1
 set nb_shape_good 139
 
+# OCC23753 processing
+# Performance verification of bop operation
+set chrono_info [dchrono perf_h show]
+regexp {CPU user time: ([-0-9.+eE]+) seconds} $chrono_info full CPU_time
+set currentOS $tcl_platform(os)
+if {[string compare $currentOS "Windows NT"] == 0} {
+  puts "Checking WINDOWS performance..."
+  # Initial CPU_time is 92-94 seconds for Windows
+  if {$CPU_time > 60.} {
+    puts "ERROR: OCC23753 is reproduced."
+    puts "       Low performance: $CPU_time"
+  }
+}
+if {[string compare $currentOS "Linux"] == 0} {
+  puts "Checking LINUX performance..."
+  # Initial CPU_time is 287-289 seconds for Linux
+  if {$CPU_time > 100.} {
+    puts "ERROR: OCC23753 is reproduced."
+    puts "       Low performance: $CPU_time"
+  }
+}
 
 set 2dviewer 0
