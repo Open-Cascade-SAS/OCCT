@@ -156,7 +156,8 @@ protected:
     void SetShaderReady()       { myIsShaderReady = Standard_True; }
     void ResetShaderReadiness() { myIsShaderReady = Standard_False; }
 
-    void BuildShader (const Handle(OpenGl_Workspace)& theWS, const Handle(Graphic3d_ShaderProgram)& theShader);
+    Standard_EXPORT void BuildShader (const Handle(OpenGl_Workspace)&        theWS,
+                                      const Handle(Graphic3d_ShaderProgram)& theShader);
 
     Handle(OpenGl_ShaderProgram) ShaderProgram;
     TCollection_AsciiString      ShaderProgramId;

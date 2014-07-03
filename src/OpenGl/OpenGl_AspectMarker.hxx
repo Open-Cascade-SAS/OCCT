@@ -31,10 +31,10 @@ class OpenGl_AspectMarker : public OpenGl_Element
 {
 public:
 
-  OpenGl_AspectMarker();
+  Standard_EXPORT OpenGl_AspectMarker();
 
   //! Copy parameters
-  void SetAspect (const CALL_DEF_CONTEXTMARKER& theAspect);
+  Standard_EXPORT void SetAspect (const CALL_DEF_CONTEXTMARKER& theAspect);
 
   //! @return marker color
   const TEL_COLOUR& Color() const
@@ -99,8 +99,8 @@ public:
     return myResources.ShaderProgram;
   }
 
-  virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
-  virtual void Release (const Handle(OpenGl_Context)&   theContext);
+  Standard_EXPORT virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
+  Standard_EXPORT virtual void Release (const Handle(OpenGl_Context)&   theContext);
 
 protected: //! @name ordinary aspect properties
 
@@ -131,21 +131,22 @@ protected: //! @name OpenGl resources
     void ResetSpriteReadiness() { myIsSpriteReady = Standard_False; }
     void ResetShaderReadiness() { myIsShaderReady = Standard_False; }
 
-    void BuildSprites (const Handle(OpenGl_Workspace)& theWS,
-                       const Handle(Graphic3d_MarkerImage)& theMarkerImage,
-                       const Aspect_TypeOfMarker theType,
-                       const Standard_ShortReal theScale,
-                       const TEL_COLOUR& theColor,
-                       Standard_ShortReal& theMarkerSize);
+    Standard_EXPORT void BuildSprites (const Handle(OpenGl_Workspace)&      theWS,
+                                       const Handle(Graphic3d_MarkerImage)& theMarkerImage,
+                                       const Aspect_TypeOfMarker            theType,
+                                       const Standard_ShortReal             theScale,
+                                       const TEL_COLOUR&                    theColor,
+                                       Standard_ShortReal&                  theMarkerSize);
 
-    void BuildShader (const Handle(OpenGl_Workspace)& theWS, const Handle(Graphic3d_ShaderProgram)& theShader);
+    Standard_EXPORT void BuildShader (const Handle(OpenGl_Workspace)&        theWS,
+                                      const Handle(Graphic3d_ShaderProgram)& theShader);
 
-    void SpriteKeys (const Handle(Graphic3d_MarkerImage)& theMarkerImage,
-                     const Aspect_TypeOfMarker theType,
-                     const Standard_ShortReal theScale,
-                     const TEL_COLOUR& theColor,
-                     TCollection_AsciiString& theKey,
-                     TCollection_AsciiString& theKeyA);
+    Standard_EXPORT void SpriteKeys (const Handle(Graphic3d_MarkerImage)& theMarkerImage,
+                                     const Aspect_TypeOfMarker            theType,
+                                     const Standard_ShortReal             theScale,
+                                     const TEL_COLOUR&                    theColor,
+                                     TCollection_AsciiString&             theKey,
+                                     TCollection_AsciiString&             theKeyA);
 
     Handle(OpenGl_PointSprite)   Sprite;
     TCollection_AsciiString      SpriteKey;

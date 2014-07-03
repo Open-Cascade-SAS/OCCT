@@ -28,12 +28,13 @@
 
 class OpenGl_AspectLine : public OpenGl_Element
 {
- public:
+public:
 
-  OpenGl_AspectLine ();
-  OpenGl_AspectLine (const OpenGl_AspectLine &AnOther);
+  Standard_EXPORT OpenGl_AspectLine();
 
-  void SetAspect (const CALL_DEF_CONTEXTLINE &theAspect);
+  Standard_EXPORT OpenGl_AspectLine (const OpenGl_AspectLine &AnOther);
+
+  Standard_EXPORT void SetAspect (const CALL_DEF_CONTEXTLINE& theAspect);
 
   const TEL_COLOUR & Color() const { return myColor; }
   Aspect_TypeOfLine  Type() const { return myType; }
@@ -52,8 +53,8 @@ class OpenGl_AspectLine : public OpenGl_Element
     return myResources.ShaderProgram;
   }
 
-  virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
-  virtual void Release (const Handle(OpenGl_Context)&   theContext);
+  Standard_EXPORT virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
+  Standard_EXPORT virtual void Release (const Handle(OpenGl_Context)&   theContext);
 
 protected:
 
@@ -74,7 +75,7 @@ protected:
     void SetShaderReady()       { myIsShaderReady = Standard_True; }
     void ResetShaderReadiness() { myIsShaderReady = Standard_False; }
 
-    void BuildShader (const Handle(OpenGl_Workspace)& theWS, const Handle(Graphic3d_ShaderProgram)& theShader);
+    Standard_EXPORT void BuildShader (const Handle(OpenGl_Workspace)& theWS, const Handle(Graphic3d_ShaderProgram)& theShader);
 
     Handle(OpenGl_ShaderProgram) ShaderProgram;
     TCollection_AsciiString      ShaderProgramId;

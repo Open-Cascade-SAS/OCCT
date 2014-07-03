@@ -55,11 +55,11 @@ class OpenGl_AspectFace : public OpenGl_Element
 
 public:
 
-  OpenGl_AspectFace();
+  Standard_EXPORT OpenGl_AspectFace();
 
   //! Copy parameters
-  void SetAspect (const CALL_DEF_CONTEXTFILLAREA& theAspect);
-  void SetAspect (const Handle(Graphic3d_AspectFillArea3d)& theAspect);
+  Standard_EXPORT void SetAspect (const CALL_DEF_CONTEXTFILLAREA& theAspect);
+  Standard_EXPORT void SetAspect (const Handle(Graphic3d_AspectFillArea3d)& theAspect);
 
   //! Set edge aspect.
   void SetAspectEdge (const OpenGl_AspectLine* theAspectEdge)
@@ -211,13 +211,13 @@ public:
     return myResources.ShaderProgram;
   }
 
-  virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
-  virtual void Release (const Handle(OpenGl_Context)&   theContext);
+  Standard_EXPORT virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
+  Standard_EXPORT virtual void Release (const Handle(OpenGl_Context)&   theContext);
 
 protected:
 
-  void convertMaterial (const CALL_DEF_MATERIAL& theMat,
-                        OPENGL_SURF_PROP&        theSurf);
+  Standard_EXPORT void convertMaterial (const CALL_DEF_MATERIAL& theMat,
+                                        OPENGL_SURF_PROP&        theSurf);
 
 protected: //! @name ordinary aspect properties
 
@@ -250,11 +250,13 @@ protected:
     void ResetTextureReadiness() { myIsTextureReady = Standard_False; }
     void ResetShaderReadiness () { myIsShaderReady  = Standard_False; }
 
-    void BuildTexture (const Handle(OpenGl_Workspace)& theWS, const Handle(Graphic3d_TextureMap)& theTexture);
-    void BuildShader  (const Handle(OpenGl_Workspace)& theWS, const Handle(Graphic3d_ShaderProgram)& theShader);
+    Standard_EXPORT void BuildTexture (const Handle(OpenGl_Workspace)&        theWS,
+                                       const Handle(Graphic3d_TextureMap)&    theTexture);
+    Standard_EXPORT void BuildShader  (const Handle(OpenGl_Workspace)&        theWS,
+                                       const Handle(Graphic3d_ShaderProgram)& theShader);
 
-    Handle(OpenGl_Texture)  Texture;
-    TCollection_AsciiString TextureId;
+    Handle(OpenGl_Texture)       Texture;
+    TCollection_AsciiString      TextureId;
     Handle(OpenGl_ShaderProgram) ShaderProgram;
     TCollection_AsciiString      ShaderProgramId;
 

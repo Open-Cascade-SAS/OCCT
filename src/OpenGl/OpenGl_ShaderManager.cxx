@@ -568,14 +568,15 @@ void OpenGl_ShaderManager::UpdateMaterialStateTo (const Handle(OpenGl_ShaderProg
 {
   if (myMaterialStates.IsBound (theProgram))
   {
-    myMaterialStates.ChangeFind (theProgram).Set (theAspect);
+    OpenGl_MaterialState& aState = myMaterialStates.ChangeFind (theProgram);
+    aState.Set (theAspect);
+    aState.Update();
   }
   else
   {
-    myMaterialStates.Bind (theProgram, OpenGl_MaterialState (theAspect));
+    myMaterialStates.Bind       (theProgram, OpenGl_MaterialState (theAspect));
+    myMaterialStates.ChangeFind (theProgram).Update();
   }
-
-  myMaterialStates.ChangeFind (theProgram).Update();
 }
 
 // =======================================================================
