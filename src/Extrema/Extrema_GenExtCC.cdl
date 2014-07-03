@@ -44,18 +44,21 @@ is
       	---Purpose: It calculates all the distances.
         --          The function F(u,v)=distance(C1(u),C2(v)) has an 
         --          extremum when gradient(f)=0. The algorithm uses
-        --          Evtushenko's global optimization solver..
+        --          Evtushenko's global optimization solver.
 
     Create (C1: Curve1; C2: Curve2; Uinf, Usup, Vinf, Vsup: Real) returns GenExtCC;
     	---Purpose: Calculates all the distances as above
     	--          between Uinf and Usup for C1 and  between Vinf and Vsup 
     	--          for C2.
 
-    SetParams(me: in out; C1: Curve1; C2: Curve2; Uinf, Usup, Vinf, Vsup: Real)
+    SetParams (me: in out; C1: Curve1; C2: Curve2; Uinf, Usup, Vinf, Vsup: Real)
       ---Purpose: Set params in case of empty constructor is usage.
       is static;
 
-    Perform(me: in out) is static;
+    SetTolerance (me: in out; Tol: Real);
+      ---Purpose:
+
+    Perform (me: in out) is static;
     	---Purpose: Performs calculations.
 
 
@@ -93,12 +96,13 @@ is
     	is static;
 
 fields
-	myLowBorder : Vector from math;
-	myUppBorder : Vector from math;
-	mySolCount : Integer from Standard;
-	myPoints1 : SequenceOfReal from TColStd;
-	myPoints2 : SequenceOfReal from TColStd;
-	myC : Address from Standard [2];
-    myDone : Boolean;
+  myCurveMinTol : Real from Standard;
+  myLowBorder : Vector from math;
+  myUppBorder : Vector from math;
+  mySolCount : Integer from Standard;
+  myPoints1 : SequenceOfReal from TColStd;
+  myPoints2 : SequenceOfReal from TColStd;
+  myC : Address from Standard [2];
+  myDone : Boolean;
 
 end GenExtCC;

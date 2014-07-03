@@ -163,6 +163,7 @@ void Extrema_ExtCC::Perform()
   Standard_NullObject_Raise_if (!myC[0] || !myC[1], "Extrema_ExtCC::Perform()")
   myECC.SetParams(*((Adaptor3d_Curve*)myC[0]), 
                   *((Adaptor3d_Curve*)myC[1]), myInf[0], mySup[0], myInf[1], mySup[1]);
+  myECC.SetTolerance(Min(myTol[0], myTol[1]));
   myDone = Standard_False;
   mypoints.Clear();
   mySqDist.Clear();

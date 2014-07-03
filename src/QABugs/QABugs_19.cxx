@@ -2393,6 +2393,154 @@ static Standard_Integer OCC24889 (Draw_Interpretor& theDI,
   return 0;
 }
 
+#include <math_GlobOptMin.hxx>
+#include <math_MultipleVarFunctionWithHessian.hxx>
+//=======================================================================
+//function : OCC25004
+//purpose  : Check extremaCC on Branin function.
+//=======================================================================
+// Function is:
+// f(u,v) = a*(v - b*u^2 + c*u-r)^2+s(1-t)*cos(u)+s
+// Standard borders are:
+// -5 <= u <= 10
+//  0 <= v <= 15
+class BraninFunction : public math_MultipleVarFunctionWithHessian
+{
+public:
+  BraninFunction()
+  {
+    a = 1.0;
+    b = 5.1 / (4.0 * M_PI * M_PI);
+    c = 5.0 / M_PI;
+    r = 6.0;
+    s = 10.0;
+    t = 1.0 / (8.0 *  M_PI);
+  }
+  virtual Standard_Integer NbVariables() const
+  {
+    return 2;
+  }
+  virtual Standard_Boolean Value(const math_Vector& X,Standard_Real& F)
+  {
+    Standard_Real u = X(1);
+    Standard_Real v = X(2);
+
+    Standard_Real aSqPt = (v - b * u * u + c * u - r); // Square Part of function.
+    Standard_Real aLnPt = s * (1 - t) * cos(u); // Linear part of funcrtion.
+    F = a * aSqPt * aSqPt + aLnPt + s;
+    return Standard_True;
+  }
+  virtual Standard_Boolean Gradient(const math_Vector& X,math_Vector& G)
+  {
+    Standard_Real u = X(1);
+    Standard_Real v = X(2);
+
+    Standard_Real aSqPt = (v - b * u * u + c * u - r); // Square Part of function.
+    G(1) = 2 * a * aSqPt * (c - 2 * b * u) - s * (1 - t) * sin(u);
+    G(2) = 2 * a * aSqPt;
+
+    return Standard_True;
+  }
+  virtual Standard_Boolean Values(const math_Vector& X,Standard_Real& F,math_Vector& G)
+  {
+    Value(X,F);
+    Gradient(X,G);
+
+    return Standard_True;
+  }
+  virtual Standard_Boolean Values(const math_Vector& X,Standard_Real& F,math_Vector& G,math_Matrix& H)
+  {
+    Value(X,F);
+    Gradient(X,G);
+
+    Standard_Real u = X(1);
+    Standard_Real v = X(2);
+
+    Standard_Real aSqPt = (v - b * u * u + c * u - r); // Square Part of function.
+    Standard_Real aTmpPt = c - 2 * b *u; // Tmp part.
+    H(1,1) = 2 * a * aTmpPt * aTmpPt - 4 * a * b * aSqPt - s * (1 - t) * cos(u);
+    H(1,2) = 2 * a * aTmpPt;
+    H(2,1) = H(1,2);
+    H(2,2) = 2 * a;
+
+    return Standard_True;
+  }
+
+private:
+  // Standard parameters.
+  Standard_Real a, b, c, r, s, t;
+};
+
+static Standard_Integer OCC25004 (Draw_Interpretor& theDI,
+                                  Standard_Integer /*theNArg*/,
+                                  const char** /*theArgs*/)
+{
+  math_MultipleVarFunction* aFunc = new BraninFunction();
+
+  math_Vector aLower(1,2), aUpper(1,2);
+  aLower(1) = -5;
+  aLower(2) =  0;
+  aUpper(1) = 10;
+  aUpper(2) = 15;
+
+  Standard_Integer aGridOrder = 16;
+  math_Vector aFuncValues(1, aGridOrder * aGridOrder);
+
+  Standard_Real aLipConst = 0;
+  math_Vector aCurrPnt1(1, 2), aCurrPnt2(1, 2);
+
+  // Get Lipshitz constant estimation on regular grid.
+  Standard_Integer i, j, idx = 1;
+  for(i = 1; i <= aGridOrder; i++)
+  {
+    for(j = 1; j <= aGridOrder; j++)
+    {
+      aCurrPnt1(1) = aLower(1) + (aUpper(1) - aLower(1)) * (i - 1) / (aGridOrder - 1.0);
+      aCurrPnt1(2) = aLower(2) + (aUpper(2) - aLower(2)) * (j - 1) / (aGridOrder - 1.0);
+
+      aFunc->Value(aCurrPnt1, aFuncValues(idx));
+      idx++;
+    }
+  }
+
+  Standard_Integer k, l;
+  Standard_Integer idx1, idx2;
+  for(i = 1; i <= aGridOrder; i++)
+  for(j = 1; j <= aGridOrder; j++)
+  for(k = 1; k <= aGridOrder; k++)
+  for(l = 1; l <= aGridOrder; l++)
+    {
+      if (i == k && j == l) 
+        continue;
+
+      aCurrPnt1(1) = aLower(1) + (aUpper(1) - aLower(1)) * (i - 1) / (aGridOrder - 1.0);
+      aCurrPnt1(2) = aLower(2) + (aUpper(2) - aLower(2)) * (j - 1) / (aGridOrder - 1.0);
+      idx1 = (i - 1) * aGridOrder + j;
+
+      aCurrPnt2(1) = aLower(1) + (aUpper(1) - aLower(1)) * (k - 1) / (aGridOrder - 1.0);
+      aCurrPnt2(2) = aLower(2) + (aUpper(2) - aLower(2)) * (l - 1) / (aGridOrder - 1.0);
+      idx2 = (k - 1) * aGridOrder + l;
+
+      aCurrPnt1.Add(-aCurrPnt2);
+      Standard_Real dist = aCurrPnt1.Norm();
+
+      Standard_Real C = Abs(aFuncValues(idx1) - aFuncValues(idx2)) / dist;
+      if (C > aLipConst)
+        aLipConst = C;
+    }
+
+  math_GlobOptMin aFinder(aFunc, aLower, aUpper, aLipConst);
+  aFinder.Perform();
+  //(-pi , 12.275), (pi , 2.275), (9.42478, 2.475)
+
+  Standard_Real anExtValue = aFinder.GetF();
+  theDI << "F = " << anExtValue << "\n";
+
+  Standard_Integer aNbExt = aFinder.NbExtrema();
+  theDI << "NbExtrema = " << aNbExt << "\n";
+
+  return 0;
+}
 
 
 void QABugs::Commands_19(Draw_Interpretor& theCommands) {
@@ -2441,5 +2589,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC24931", "OCC24931", __FILE__, OCC24931, group);
   theCommands.Add ("OCC24945", "OCC24945", __FILE__, OCC24945, group);
   theCommands.Add ("OCC23950", "OCC23950", __FILE__, OCC23950, group);
+  theCommands.Add ("OCC25004", "OCC25004", __FILE__, OCC25004, group);
   return;
 }

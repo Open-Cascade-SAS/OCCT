@@ -1,0 +1,22 @@
+puts "============"
+puts "OCC25004"
+puts "============"
+puts ""
+##########################################################################################################
+# Extrema_ExtCC::Extrema curve/curve incorrect result
+##########################################################################################################
+
+pload QAcommands
+
+set info [OCC25004]
+regexp {F += +([-0-9.+eE]+)} $info full aF
+regexp {NbExtrema += +([-0-9.+eE]+)} $info full aNb
+
+set expected_F 0.39788735772
+set expected_aNb 3
+set tol_abs_dist 1.0e-12
+set tol_rel_dist 0.1
+
+checkreal "value F" ${aF} ${expected_F} ${tol_abs_dist} ${tol_rel_dist}
+checkreal "Nbextrema" ${aNb} ${expected_aNb} ${tol_abs_dist} ${tol_rel_dist}
+

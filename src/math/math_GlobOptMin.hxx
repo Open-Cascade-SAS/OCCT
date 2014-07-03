@@ -31,15 +31,25 @@ public:
   Standard_EXPORT math_GlobOptMin(math_MultipleVarFunction* theFunc,
                                  const math_Vector& theA,
                                  const math_Vector& theB,
-                                 Standard_Real theC = 9);
+                                 const Standard_Real theC = 9,
+                                 const Standard_Real theDiscretizationTol = 1.0e-2,
+                                 const Standard_Real theSameTol = 1.0e-7);
 
   Standard_EXPORT void SetGlobalParams(math_MultipleVarFunction* theFunc,
                                        const math_Vector& theA,
                                        const math_Vector& theB,
-                                       Standard_Real theC = 9);
+                                       const Standard_Real theC = 9,
+                                       const Standard_Real theDiscretizationTol = 1.0e-2,
+                                       const Standard_Real theSameTol = 1.0e-7);
 
   Standard_EXPORT void SetLocalParams(const math_Vector& theLocalA,
                                       const math_Vector& theLocalB);
+
+  Standard_EXPORT void SetTol(const Standard_Real theDiscretizationTol,
+                              const Standard_Real theSameTol);
+
+  Standard_EXPORT void GetTol(Standard_Real& theDiscretizationTol,
+                              Standard_Real& theSameTol);
 
   Standard_EXPORT ~math_GlobOptMin();
 
@@ -54,6 +64,8 @@ public:
   //! Return solution i, 1 <= i <= NbExtrema.
   Standard_EXPORT void Points(const Standard_Integer theIndex, math_Vector& theSol);
 
+  Standard_Boolean isDone();
+
 private:
 
   math_GlobOptMin & operator = (const math_GlobOptMin & theOther);
@@ -66,8 +78,6 @@ private:
   Standard_Boolean isInside(const math_Vector& thePnt);
 
   Standard_Boolean isStored(const math_Vector &thePnt);
-  
-  Standard_Boolean isDone();
 
   // Input.
   math_MultipleVarFunction* myFunc;
@@ -76,6 +86,11 @@ private:
   math_Vector myB; // Right border on current C2 interval.
   math_Vector myGlobA; // Global left border.
   math_Vector myGlobB; // Global right border.
+  Standard_Real myTol; // Discretization tolerance, default 1.0e-2.
+  Standard_Real mySameTol; // points with ||p1 - p2|| < mySameTol is equal,
+                           // function values |val1 - val2| * 0.01 < mySameTol is equal,
+                           // default value is 1.0e-7.
+  Standard_Real myC; //Lipschitz constant, default 9
 
   // Output.
   Standard_Boolean myDone;
@@ -84,14 +99,14 @@ private:
 
   // Algorithm data.
   Standard_Real myZ;
-  Standard_Real myC; //Lipschitz constant
   Standard_Real myE1; // Border coeff.
   Standard_Real myE2; // Minimum step size.
   Standard_Real myE3; // Local extrema starting parameter.
 
-  math_Vector myX; // Current modified solution
-  math_Vector myTmp; // Current modified solution
+  math_Vector myX; // Current modified solution.
+  math_Vector myTmp; // Current modified solution.
   math_Vector myV; // Steps array.
+  math_Vector myMaxV; // Max Steps array.
 
   Standard_Real myF; // Current value of Global optimum.
 };

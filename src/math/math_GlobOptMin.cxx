@@ -21,7 +21,6 @@
 #include <math_MultipleVarFunctionWithHessian.hxx>
 #include <math_NewtonMinimum.hxx>
 #include <math_Powell.hxx>
-#include <Precision.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
 
@@ -38,7 +37,9 @@ const Handle(Standard_Type)& STANDARD_TYPE(math_GlobOptMin)
 math_GlobOptMin::math_GlobOptMin(math_MultipleVarFunction* theFunc,
                                  const math_Vector& theA,
                                  const math_Vector& theB,
-                                 Standard_Real theC)
+                                 const Standard_Real theC,
+                                 const Standard_Real theDiscretizationTol,
+                                 const Standard_Real theSameTol)
 : myN(theFunc->NbVariables()),
   myA(1, myN),
   myB(1, myN),
@@ -46,7 +47,8 @@ math_GlobOptMin::math_GlobOptMin(math_MultipleVarFunction* theFunc,
   myGlobB(1, myN),
   myX(1, myN),
   myTmp(1, myN),
-  myV(1, myN)
+  myV(1, myN),
+  myMaxV(1, myN)
 {
   Standard_Integer i;
 
@@ -63,6 +65,14 @@ math_GlobOptMin::math_GlobOptMin(math_MultipleVarFunction* theFunc,
     myA(i) = theA(i);
     myB(i) = theB(i);
   }
+
+  for(i = 1; i <= myN; i++)
+  {
+    myMaxV(i) = (myB(i) - myA(i)) / 3.0;
+  }
+
+  myTol = theDiscretizationTol;
+  mySameTol = theSameTol;
 
   myDone = Standard_False;
 }
@@ -74,7 +84,9 @@ math_GlobOptMin::math_GlobOptMin(math_MultipleVarFunction* theFunc,
 void math_GlobOptMin::SetGlobalParams(math_MultipleVarFunction* theFunc,
                                       const math_Vector& theA,
                                       const math_Vector& theB,
-                                      Standard_Real theC)
+                                      const Standard_Real theC,
+                                      const Standard_Real theDiscretizationTol,
+                                      const Standard_Real theSameTol)
 {
   Standard_Integer i;
 
@@ -91,6 +103,9 @@ void math_GlobOptMin::SetGlobalParams(math_MultipleVarFunction* theFunc,
     myA(i) = theA(i);
     myB(i) = theB(i);
   }
+
+  myTol = theDiscretizationTol;
+  mySameTol = theSameTol;
 
   myDone = Standard_False;
 }
@@ -113,7 +128,34 @@ void math_GlobOptMin::SetLocalParams(const math_Vector& theLocalA,
     myB(i) = theLocalB(i);
   }
 
+  for(i = 1; i <= myN; i++)
+  {
+    myMaxV(i) = (myB(i) - myA(i)) / 3.0;
+  }
+
   myDone = Standard_False;
+}
+
+//=======================================================================
+//function : SetTol
+//purpose  : Set algorithm tolerances.
+//=======================================================================
+void math_GlobOptMin::SetTol(const Standard_Real theDiscretizationTol,
+                             const Standard_Real theSameTol)
+{
+  myTol = theDiscretizationTol;
+  mySameTol = theSameTol;
+}
+
+//=======================================================================
+//function : GetTol
+//purpose  : Get algorithm tolerances.
+//=======================================================================
+void math_GlobOptMin::GetTol(Standard_Real& theDiscretizationTol,
+                             Standard_Real& theSameTol)
+{
+  theDiscretizationTol = myTol;
+  theSameTol = mySameTol;
 }
 
 //=======================================================================
@@ -145,13 +187,11 @@ void math_GlobOptMin::Perform()
       maxLength = currentLength;
   }
 
-  Standard_Real myTol = 1e-2;
+  myE1 = minLength * myTol       / myC;
+  myE2 = maxLength * myTol * 2.0 / myC;
+  myE3 = - maxLength * myTol / 4.0;
 
-  myE1 = minLength * myTol / myC;
-  myE2 = 2.0 * myTol / myC * maxLength;
-  myE3 = - maxLength * myTol / 4;
-
-  // Compure start point.
+  // Compute start point.
   math_Vector aPnt(1,myN);
   for(i = 1; i <= myN; i++)
   {
@@ -255,9 +295,11 @@ void math_GlobOptMin::computeGlobalExtremum(Standard_Integer j)
   Standard_Real d; // Functional in moved point.
   Standard_Real val = RealLast(); // Local extrema computed in moved point.
   Standard_Real stepBestValue = RealLast();
-  math_Vector stepBestPoint(1,2);
+  Standard_Real realStep = RealLast();
+  math_Vector stepBestPoint(1, myN);
   Standard_Boolean isInside = Standard_False;
   Standard_Real r;
+
 
   for(myX(j) = myA(j) + myE1; myX(j) < myB(j) + myE1; myX(j) += myV(j))
   {
@@ -277,7 +319,7 @@ void math_GlobOptMin::computeGlobalExtremum(Standard_Integer j)
       stepBestPoint = (isInside && (val < d))? myTmp : myX;
 
       // Solutions are close to each other.
-      if (Abs(stepBestValue - myF) < Precision::Confusion() * 0.01)
+      if (Abs(stepBestValue - myF) < mySameTol * 0.01)
       {
         if (!isStored(stepBestPoint))
         {
@@ -290,7 +332,7 @@ void math_GlobOptMin::computeGlobalExtremum(Standard_Integer j)
       }
 
       // New best solution.
-      if ((stepBestValue - myF) * myZ > Precision::Confusion() * 0.01)
+      if ((stepBestValue - myF) * myZ > mySameTol * 0.01)
       {
         mySolCount = 0;
         myF = stepBestValue;
@@ -300,19 +342,20 @@ void math_GlobOptMin::computeGlobalExtremum(Standard_Integer j)
         mySolCount++;
       }
 
-      myV(1) = myE2 + Abs(myF - d) / myC;
+      realStep = myE2 + Abs(myF - d) / myC;
+      myV(1) = Min(realStep, myMaxV(1));
     }
     else
     {
       myV(j) = RealLast() / 2.0;
       computeGlobalExtremum(j - 1);
     }
-    if ((j < myN) && (myV(j + 1) > myV(j)))
+    if ((j < myN) && (myV(j + 1) > realStep))
     {
-      if (myV(j) > (myB(j + 1) - myA(j + 1)) / 3.0) // Case of too big step.
-        myV(j + 1) = (myB(j + 1) - myA(j + 1)) / 3.0; 
+      if (realStep > myMaxV(j + 1)) // Case of too big step.
+        myV(j + 1) = myMaxV(j + 1); 
       else
-        myV(j + 1) = myV(j);
+        myV(j + 1) = realStep;
     }
   }
 }
@@ -347,7 +390,7 @@ Standard_Boolean math_GlobOptMin::isStored(const math_Vector& thePnt)
     isSame = Standard_True;
     for(j = 1; j <= myN; j++)
     {
-      if ((Abs(thePnt(j) - myY(i * myN + j))) > (myB(j) -  myA(j)) * Precision::Confusion())
+      if ((Abs(thePnt(j) - myY(i * myN + j))) > (myB(j) -  myA(j)) * mySameTol)
       {
         isSame = Standard_False;
         break;
