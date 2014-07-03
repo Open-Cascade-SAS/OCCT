@@ -10,12 +10,12 @@ set filename y306351f.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 1 )  Summary  = 0  ( 1 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 160  ( 1956 )  Summary  = 160  ( 1956 )
-CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 1 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 392  ( 390 )   Summary  = 57074  ( 57071 )
-STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 392  ( 390 )   FreeWire = 0  ( 0 )   FreeEdge  = 1134 ( 1134 )   SharedEdge = 27578  ( 27578 )
-TOLERANCE   : MaxTol   =  0.01225276587  (  0.01225276466 )  AvgTol   =  0.0001845682826  (  0.0001846397195 )
-LABELS      : N0Labels = 1524  ( 1524 )  N1Labels = 0  ( 26430 )  N2Labels = 0  ( 0 )   TotalLabels = 1524  ( 27954 )   NameLabels = 1524  ( 1530 )   ColorLabels = 1497  ( 27954 )   LayerLabels = 1107  ( 1134 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 160  ( 1955 )  Summary  = 160  ( 1955 )
+CHECKSHAPE  : Wires    = 0  ( 1 )  Faces    = 0  ( 1 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 392  ( 390 )   Summary  = 57070  ( 57068 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 392  ( 390 )   FreeWire = 0  ( 0 )   FreeEdge  = 1134 ( 1134 )   SharedEdge = 27576  ( 27576 )
+TOLERANCE   : MaxTol   =  0.01225276587  (  0.01225276466 )  AvgTol   =  0.0001845815979  (  0.0001846530408 )
+LABELS      : N0Labels = 1524  ( 1524 )  N1Labels = 0  ( 26428 )  N2Labels = 0  ( 0 )   TotalLabels = 1524  ( 27952 )   NameLabels = 1524  ( 1530 )   ColorLabels = 1497  ( 27952 )   LayerLabels = 1107  ( 1134 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 2  ( 2 )
 COLORS      : Colors   = CYAN1 WHITE  ( CYAN1 WHITE )

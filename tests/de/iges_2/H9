@@ -15,12 +15,12 @@ set filename coque-sup.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 3 )  Warnings = 277  ( 4464 )  Summary  = 277  ( 4467 )
-CHECKSHAPE  : Wires    = 1  ( 1 )  Faces    = 2  ( 1 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1627  ( 1627 )   Summary  = 39249  ( 39256 )
-STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1627  ( 1627 )   FreeWire = 22  ( 26 )   FreeEdge  = 135 ( 135 )   SharedEdge = 17934  ( 17935 )
-TOLERANCE   : MaxTol   =    1.006358087  (    992.8187669 )  AvgTol   =  0.0004397450356  (    0.3174630609 )
-LABELS      : N0Labels = 6  ( 6 )  N1Labels = 1642  ( 9638 )  N2Labels = 0  ( 0 )   TotalLabels = 1648  ( 9644 )   NameLabels = 1648  ( 2887 )   ColorLabels = 1644  ( 9643 )   LayerLabels = 488  ( 3995 )
+TPSTAT      : Faulties = 0  ( 3 )  Warnings = 274  ( 4465 )  Summary  = 274  ( 4468 )
+CHECKSHAPE  : Wires    = 1  ( 1 )  Faces    = 3  ( 2 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1627  ( 1627 )   Summary  = 39245  ( 39252 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1627  ( 1627 )   FreeWire = 22  ( 26 )   FreeEdge  = 135 ( 135 )   SharedEdge = 17932  ( 17933 )
+TOLERANCE   : MaxTol   =   0.1961320506  (    992.8187669 )  AvgTol   =  0.0003490038155  (    0.2648369601 )
+LABELS      : N0Labels = 6  ( 6 )  N1Labels = 1642  ( 9636 )  N2Labels = 0  ( 0 )   TotalLabels = 1648  ( 9642 )   NameLabels = 1648  ( 2888 )   ColorLabels = 1644  ( 9641 )   LayerLabels = 488  ( 3995 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 4  ( 5 )
 COLORS      : Colors   = BLUE1 CYAN1 GOLD3 GREEN  ( BLUE1 CYAN1 GOLD3 GREEN YELLOW )

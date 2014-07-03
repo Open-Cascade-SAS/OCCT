@@ -22,9 +22,12 @@
 #include <Geom_VectorWithMagnitude.hxx>
 #include <StepToGeom_MakeVectorWithMagnitude.hxx>
 #include <Geom_Curve.hxx>
+#include <Geom_Line.hxx>
 #include <StepToGeom_MakeCurve.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Dir.hxx>
+#include <gp_Lin.hxx>
+#include <Precision.hxx>
 
 //=============================================================================
 // Creation d' une SurfaceOfLinearExtrusion de Geom a partir d' une
@@ -42,6 +45,9 @@ Standard_Boolean StepToGeom_MakeSurfaceOfLinearExtrusion::Convert (const Handle(
     if (StepToGeom_MakeVectorWithMagnitude::Convert(SS->ExtrusionAxis(),V))
     {
       const gp_Dir D(V->Vec());
+      Handle(Geom_Line) aLine = Handle(Geom_Line)::DownCast(C);
+      if (!aLine.IsNull() && aLine->Lin().Direction().IsParallel(D, Precision::Angular()))
+        return Standard_False;
       CS = new Geom_SurfaceOfLinearExtrusion(C,D);
       return Standard_True;
     }

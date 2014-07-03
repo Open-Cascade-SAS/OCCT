@@ -383,10 +383,10 @@ Standard_Boolean ShapeFix_Face::Perform()
     theAdvFixWire->SetFace ( myFace );
     
     Standard_Integer usFixLackingMode = theAdvFixWire->FixLackingMode();
-    Standard_Integer usFixNotchedEdgesMode = theAdvFixWire->FixNotchedEdgesMode();
+    //Standard_Integer usFixNotchedEdgesMode = theAdvFixWire->FixNotchedEdgesMode(); // CR0024983
     Standard_Integer usFixSelfIntersectionMode = theAdvFixWire->FixSelfIntersectionMode();
     theAdvFixWire->FixLackingMode() = Standard_False;
-    theAdvFixWire->FixNotchedEdgesMode() = Standard_False;
+    //theAdvFixWire->FixNotchedEdgesMode() = Standard_False; // CR0024983
     theAdvFixWire->FixSelfIntersectionMode() = Standard_False;
     
     Standard_Boolean fixed = Standard_False; 
@@ -459,6 +459,7 @@ Standard_Boolean ShapeFix_Face::Perform()
         fixed = (theAdvFixWire->StatusSmall(ShapeExtend_DONE) || 
                theAdvFixWire->StatusConnected(ShapeExtend_DONE) ||
                theAdvFixWire->StatusEdgeCurves(ShapeExtend_DONE) ||
+               theAdvFixWire->StatusNotches(ShapeExtend_DONE) ||  // CR0024983
                theAdvFixWire->StatusDegenerated(ShapeExtend_DONE) ||
                theAdvFixWire->StatusClosed(ShapeExtend_DONE));
         TopoDS_Wire w = theAdvFixWire->Wire();
@@ -480,7 +481,7 @@ Standard_Boolean ShapeFix_Face::Perform()
     }
     
     theAdvFixWire->FixLackingMode() = usFixLackingMode;
-    theAdvFixWire->FixNotchedEdgesMode() = usFixNotchedEdgesMode;
+    //theAdvFixWire->FixNotchedEdgesMode() = usFixNotchedEdgesMode;  // CR0024983
     theAdvFixWire->FixSelfIntersectionMode() = usFixSelfIntersectionMode;
     if ( ! myFwd ) tmpFace.Orientation ( TopAbs_REVERSED );
     

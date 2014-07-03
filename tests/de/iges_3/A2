@@ -13,12 +13,12 @@ set filename UKI60094.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 4  ( 33 )  Warnings = 124  ( 321 )  Summary  = 128  ( 354 )
-CHECKSHAPE  : Wires    = 1  ( 2 )  Faces    = 4  ( 2 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 424  ( 159 )   Summary  = 7865  ( 4458 )
-STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 424  ( 419 )   FreeWire = 66  ( 114 )   FreeEdge  = 430 ( 430 )   SharedEdge = 3353  ( 1895 )
-TOLERANCE   : MaxTol   =    3.181989255  (    2716.882548 )  AvgTol   =  0.008643189151  (     4.445642549 )
-LABELS      : N0Labels = 3  ( 3 )  N1Labels = 325  ( 1834 )  N2Labels = 0  ( 0 )   TotalLabels = 328  ( 1837 )   NameLabels = 328  ( 425 )   ColorLabels = 325  ( 1834 )   LayerLabels = 193  ( 1569 )
+TPSTAT      : Faulties = 4  ( 33 )  Warnings = 125  ( 319 )  Summary  = 129  ( 352 )
+CHECKSHAPE  : Wires    = 1  ( 1 )  Faces    = 2  ( 1 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 420  ( 159 )   Summary  = 7849  ( 4452 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 420  ( 419 )   FreeWire = 66  ( 114 )   FreeEdge  = 430 ( 430 )   SharedEdge = 3347  ( 1892 )
+TOLERANCE   : MaxTol   =    3.181671051  (    2716.882548 )  AvgTol   =  0.008547757257  (     3.678737151 )
+LABELS      : N0Labels = 3  ( 3 )  N1Labels = 325  ( 1833 )  N2Labels = 0  ( 0 )   TotalLabels = 328  ( 1836 )   NameLabels = 328  ( 424 )   ColorLabels = 325  ( 1833 )   LayerLabels = 193  ( 1568 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 6  ( 7 )
 COLORS      : Colors   = GREEN MATRABLUE RED RED4 WHITE YELLOW  ( GREEN MAGENTA1 MATRABLUE RED RED4 WHITE YELLOW )
