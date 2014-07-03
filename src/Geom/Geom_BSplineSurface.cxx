@@ -1331,12 +1331,14 @@ void Geom_BSplineSurface::PeriodicNormalization
     if(Period <= eps) 
       Standard_OutOfRange::Raise("Geom_BSplineSurface::PeriodicNormalization: Uparameter is too great number");
 
-    while (Uparameter > aMaxVal) {
-      Uparameter -= Period ;
-    }
-      
-    while (Uparameter < aMinVal) {
-      Uparameter +=  Period ;
+    Standard_Boolean isLess, isGreater;
+    isLess = aMinVal - Uparameter > 0;
+    isGreater = Uparameter - aMaxVal > 0;
+    if (isLess || isGreater) {
+      Standard_Real aDPar, aNbPer;
+      aDPar = (isLess) ? (aMaxVal - Uparameter) : (aMinVal - Uparameter);
+      modf(aDPar / Period, &aNbPer);
+      Uparameter += aNbPer * Period;
     }
   }
   if (vperiodic) {
@@ -1348,11 +1350,14 @@ void Geom_BSplineSurface::PeriodicNormalization
     if(Period <= eps) 
       Standard_OutOfRange::Raise("Geom_BSplineSurface::PeriodicNormalization: Vparameter is too great number");
 
-    while (Vparameter > aMaxVal) {
-      Vparameter -= Period ;
-    }
-    while (Vparameter < aMinVal) {
-      Vparameter +=  Period ;
+    Standard_Boolean isLess, isGreater;
+    isLess = aMinVal - Vparameter > 0;
+    isGreater = Vparameter - aMaxVal > 0;
+    if (isLess || isGreater) {
+      Standard_Real aDPar, aNbPer;
+      aDPar = (isLess) ? (aMaxVal - Vparameter) : (aMinVal - Vparameter);
+      modf(aDPar / Period, &aNbPer);
+      Vparameter += aNbPer * Period;
     }
   }
 }

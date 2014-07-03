@@ -110,7 +110,7 @@ Standard_Boolean ShapeFix_IntersectionTool::SplitEdge(const TopoDS_Edge& edge,
   // check distanse between edge and new vertex
   gp_Pnt P1;
   TopLoc_Location L;
-  if(BRep_Tool::SameParameter(edge)) {
+  if(BRep_Tool::SameParameter(edge) && !BRep_Tool::Degenerated(edge)) {
     Standard_Real f,l;
     const Handle(Geom_Curve) c3d = BRep_Tool::Curve(edge,L,f,l);
     if(c3d.IsNull())
@@ -213,9 +213,11 @@ Standard_Boolean ShapeFix_IntersectionTool::CutEdge(const TopoDS_Edge &edge,
             iscutline = Standard_True;
           }
         }
+
+        return Standard_True;
       }
     }
-    return Standard_True;
+    return Standard_False;
   }
 
   // det-study on 03/12/01 checking the old and new ranges
@@ -427,6 +429,7 @@ Standard_Boolean ShapeFix_IntersectionTool::UnionVertexes(const Handle(ShapeExte
                                                           const Bnd_Box2d& B2) const
 {
   // union vertexes
+  Standard_Boolean res = Standard_False;
   ShapeBuild_Edge sbe;
   ShapeAnalysis_Edge sae;
   BRep_Builder B;
@@ -499,6 +502,7 @@ Standard_Boolean ShapeFix_IntersectionTool::UnionVertexes(const Handle(ShapeExte
         myContext->Replace(edge22,NewE);
         sewd->Set(NewE,num22);
       }
+      res = Standard_True;
     }
   }
   else if(d12<d21 && d12<d22) {
@@ -558,6 +562,7 @@ Standard_Boolean ShapeFix_IntersectionTool::UnionVertexes(const Handle(ShapeExte
         myContext->Replace(edge22,NewE);
         sewd->Set(NewE,num22);
       }
+      res = Standard_True;
     }
   }
   else if(d21<d22) {
@@ -616,6 +621,7 @@ Standard_Boolean ShapeFix_IntersectionTool::UnionVertexes(const Handle(ShapeExte
         myContext->Replace(edge22,NewE);
         sewd->Set(NewE,num22);
       }
+      res = Standard_True;
     }
   }
   else {
@@ -674,10 +680,11 @@ Standard_Boolean ShapeFix_IntersectionTool::UnionVertexes(const Handle(ShapeExte
         myContext->Replace(edge22,NewE);
         sewd->Set(NewE,num22);
       }
+      res = Standard_True;
     }
   }
 
-  return Standard_True;
+  return res;
 }
 
 
@@ -889,36 +896,26 @@ Standard_Boolean ShapeFix_IntersectionTool::FixSelfIntersectWire
             gp_Pnt PVL1 = BRep_Tool::Pnt(VL1);
             Standard_Real dist1 = pi1.Distance(PVF1);
             Standard_Real dist2 = pi1.Distance(PVL1);
-            if( dist1<dist2 && dist1<MaxTolVert ) {
-              tolV = Max( dist1*1.00001, BRep_Tool::Tolerance(VF1) );
-              B.UpdateVertex(VF1,tolV);
-              V = VF1;
-              //gp_Pnt Ptmp = BRep_Tool::Pnt(VF1);
-              //B.MakeVertex(V,Ptmp,tolV);
-              //myContext->Replace(VF1,V);
+            Standard_Real distmin = Min(dist1, dist2);
+            if( dist1 != dist2 && distmin < MaxTolVert ) {
+              if (dist1 < dist2) {
+                tolV = Max( dist1*1.00001, BRep_Tool::Tolerance(VF1) );
+                B.UpdateVertex(VF1,tolV);
+                V = VF1;
+              } else {
+                tolV = Max( dist2*1.00001, BRep_Tool::Tolerance(VL1) );
+                B.UpdateVertex(VL1,tolV);
+                V = VL1;
+              }
+              
               Standard_Real dista = Abs(a1-param1);
               Standard_Real distb = Abs(b1-param1);
               Standard_Boolean IsCutLine;
-              if(dista>distb)
-                CutEdge(edge1, a1, param1, face, IsCutLine);
-              else
-                CutEdge(edge1, b1, param1, face, IsCutLine);
-              NbCut++;
-              ModifE1 = Standard_True;
-            }
-            if( dist2<dist1 && dist2<MaxTolVert ) {
-              tolV = Max( dist2*1.00001, BRep_Tool::Tolerance(VL1) );
-              B.UpdateVertex(VL1,tolV);
-              V = VL1;
-              Standard_Real dista = Abs(a1-param1);
-              Standard_Real distb = Abs(b1-param1);
-              Standard_Boolean IsCutLine;
-              if(dista>distb)
-                CutEdge(edge1, a1, param1, face, IsCutLine);
-              else
-                CutEdge(edge1, b1, param1, face, IsCutLine);
-              NbCut++;
-              ModifE1 = Standard_True;
+              ModifE1 = CutEdge(edge1, (( dista > distb ) ? a1 : b1 ), param1, face, IsCutLine);
+              if (ModifE1)
+                NbCut++;
+              //not needed split edge, if one of parts is too small
+              ModifE1 = ModifE1 || distmin < Precision::Confusion();
             }
             // analysis for edge2
             Standard_Boolean ModifE2 = Standard_False;
@@ -928,33 +925,26 @@ Standard_Boolean ShapeFix_IntersectionTool::FixSelfIntersectWire
             gp_Pnt PVL2 = BRep_Tool::Pnt(VL2);
             dist1 = pi2.Distance(PVF2);
             dist2 = pi2.Distance(PVL2);
-            if( dist1<dist2 && dist1<MaxTolVert ) {
-              tolV = Max( dist1*1.00001, BRep_Tool::Tolerance(VF2) );
-              B.UpdateVertex(VF2,tolV);
-              V = VF2;
+            distmin = Min(dist1, dist2);
+            if( dist1 != dist2 && distmin < MaxTolVert ) {
+              if (dist1 < dist2) {
+                tolV = Max( dist1*1.00001, BRep_Tool::Tolerance(VF2) );
+                B.UpdateVertex(VF2,tolV);
+                V = VF2;
+              } else {
+                tolV = Max( dist2*1.00001, BRep_Tool::Tolerance(VL2) );
+                B.UpdateVertex(VL2,tolV);
+                V = VL2;
+              }
+
               Standard_Real dista = Abs(a2-param2);
               Standard_Real distb = Abs(b2-param2);
               Standard_Boolean IsCutLine;
-              if(dista>distb)
-                CutEdge(edge2, a2, param2, face, IsCutLine);
-              else
-                CutEdge(edge2, b2, param2, face, IsCutLine);
-              NbCut++;
-              ModifE2 = Standard_True;
-            }
-            if( dist2<dist1 && dist2<MaxTolVert ) {
-              tolV = Max( dist2*1.00001, BRep_Tool::Tolerance(VL2) );
-              B.UpdateVertex(VL2,tolV);
-              V = VL2;
-              Standard_Real dista = Abs(a2-param2);
-              Standard_Real distb = Abs(b2-param2);
-              Standard_Boolean IsCutLine;
-              if(dista>distb)
-                CutEdge(edge2, a2, param2, face, IsCutLine);
-              else
-                CutEdge(edge2, b2, param2, face, IsCutLine);
-              NbCut++;
-              ModifE2 = Standard_True;
+              ModifE2 = CutEdge(edge2, (( dista > distb ) ? a2 : b2 ), param2, face, IsCutLine);
+              if (ModifE2)
+                NbCut++;
+              //not needed split edge, if one of parts is too small
+              ModifE2 = ModifE2 || distmin < Precision::Confusion();
             }
             if( ModifE1 && !ModifE2 ) {
               if(SplitEdge1(sewd, face, num2, param2, V, tolV, boxes)) {
@@ -1087,8 +1077,8 @@ Standard_Boolean ShapeFix_IntersectionTool::FixSelfIntersectWire
               if(Abs(pend-p11)>Abs(pend-p12)) cut=p12;
               else cut=p11;
               Standard_Boolean IsCutLine;
-              CutEdge(edge1, pend, cut, face, IsCutLine);
-              NbCut++;
+              if (CutEdge(edge1, pend, cut, face, IsCutLine))
+                NbCut++;
               if(newtol>BRep_Tool::Tolerance(NewV)) {
                 B.UpdateVertex(NewV,newtol);
               }
@@ -1140,8 +1130,8 @@ Standard_Boolean ShapeFix_IntersectionTool::FixSelfIntersectWire
               if(Abs(pend-p21)>Abs(pend-p22)) cut=p22;
               else cut=p21;
               Standard_Boolean IsCutLine;
-              CutEdge(edge2, pend, cut, face, IsCutLine);
-              NbCut++;
+              if (CutEdge(edge2, pend, cut, face, IsCutLine))
+                NbCut++;
               if(newtol>BRep_Tool::Tolerance(NewV)) {
                 B.UpdateVertex(NewV,newtol);
               }
@@ -1952,11 +1942,11 @@ Standard_Boolean ShapeFix_IntersectionTool::FixIntersectingWires
     newface.Orientation(TopAbs_FORWARD);
     BRep_Builder B;
     Standard_Integer i=1;
-    for( ; i<=SeqWir.Length(); i++) { 
+    for(i=1  ; i<=SeqWir.Length(); i++) { 
       TopoDS_Wire wire = TopoDS::Wire(SeqWir.Value(i));
       B.Add(newface,wire);
     }
-    for( ; i<=SeqWir.Length(); i++) { 
+    for(i=1 ; i<=SeqNMShapes.Length(); i++) { 
       TopoDS_Shape aNMS = SeqNMShapes.Value(i);
       B.Add(newface,aNMS);
     }

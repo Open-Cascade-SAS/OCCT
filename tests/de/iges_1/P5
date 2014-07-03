@@ -9,12 +9,12 @@ set filename brazo1.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 2 )  Warnings = 0  ( 0 )  Summary  = 0  ( 2 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 139  ( 454 )  Summary  = 139  ( 454 )
-CHECKSHAPE  : Wires    = 6  ( 8 )  Faces    = 6  ( 8 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 223  ( 223 )   Summary  = 4647  ( 4551 )
-STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 223  ( 223 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 2125  ( 2071 )
-TOLERANCE   : MaxTol   =    0.991254355  (    0.991254355 )  AvgTol   =   0.01133191355  (   0.01225911215 )
-LABELS      : N0Labels = 223  ( 223 )  N1Labels = 0  ( 256 )  N2Labels = 0  ( 0 )   TotalLabels = 223  ( 479 )   NameLabels = 223  ( 388 )   ColorLabels = 223  ( 479 )   LayerLabels = 223  ( 479 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 144  ( 455 )  Summary  = 144  ( 455 )
+CHECKSHAPE  : Wires    = 5  ( 7 )  Faces    = 6  ( 7 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 228  ( 228 )   Summary  = 4666  ( 4567 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 228  ( 228 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 2127  ( 2073 )
+TOLERANCE   : MaxTol   =    0.991254355  (    0.991254355 )  AvgTol   =    0.0113074551  (   0.01224298461 )
+LABELS      : N0Labels = 223  ( 223 )  N1Labels = 6  ( 301 )  N2Labels = 0  ( 0 )   TotalLabels = 229  ( 524 )   NameLabels = 223  ( 387 )   ColorLabels = 228  ( 524 )   LayerLabels = 228  ( 524 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 3  ( 3 )
 COLORS      : Colors   = BLUE1 MAGENTA1 YELLOW  ( BLUE1 MAGENTA1 YELLOW )
