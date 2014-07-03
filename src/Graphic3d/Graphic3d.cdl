@@ -576,15 +576,4 @@ is
 
         end SortType;
 
-    ----------------------------
-    -- Category: Package methods
-    ----------------------------
-
-    InitGraphicDriver (theDisplayConnection: DisplayConnection_Handle from Aspect)
-       returns GraphicDriver from Graphic3d
-       raises  DriverDefinitionError from Aspect;
-    ---Purpose: Initialize graphic driver and returns Handle to it.
-
-    
-
 end Graphic3d;

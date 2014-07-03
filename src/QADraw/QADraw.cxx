@@ -29,7 +29,6 @@
 #include <AIS_InteractiveContext.hxx>
 #include <Aspect_Window.hxx>
 #include <Aspect_DisplayConnection.hxx>
-#include <Graphic3d.hxx>
 #include <DBRep.hxx>
 #include <Bnd_Box.hxx>
 #include <BRepBndLib.hxx>

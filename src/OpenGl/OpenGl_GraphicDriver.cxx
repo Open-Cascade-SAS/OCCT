@@ -42,34 +42,14 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_GraphicDriver,Graphic3d_GraphicDriver)
 namespace
 {
   static const Handle(OpenGl_Context) TheNullGlCtx;
-};
-
-// Pour eviter de "mangler" MetaGraphicDriverFactory, le nom de la
-// fonction qui cree un Graphic3d_GraphicDriver.
-// En effet, ce nom est recherche par la methode DlSymb de la
-// classe OSD_SharedLibrary dans la methode SetGraphicDriver de la
-// classe Graphic3d_GraphicDevice
-extern "C" {
-#if defined(_MSC_VER) // disable MS VC++ warning on C-style function returning C++ object
-  #pragma warning(push)
-  #pragma warning(disable:4190)
-#endif
-  Standard_EXPORT Handle(Graphic3d_GraphicDriver) MetaGraphicDriverFactory (const Standard_CString theShrName)
-  {
-    Handle(OpenGl_GraphicDriver) aDriver = new OpenGl_GraphicDriver (theShrName);
-    return aDriver;
-  }
-#if defined(_MSC_VER)
-  #pragma warning(pop)
-#endif
 }
 
 // =======================================================================
 // function : OpenGl_GraphicDriver
 // purpose  :
 // =======================================================================
-OpenGl_GraphicDriver::OpenGl_GraphicDriver (const Handle(Aspect_DisplayConnection)& theDisplayConnection)
-: Graphic3d_GraphicDriver ("TKOpenGl"),
+OpenGl_GraphicDriver::OpenGl_GraphicDriver (const Handle(Aspect_DisplayConnection)& theDisp)
+: Graphic3d_GraphicDriver (theDisp),
   myCaps           (new OpenGl_Caps()),
   myMapOfView      (1, NCollection_BaseAllocator::CommonBaseAllocator()),
   myMapOfWS        (1, NCollection_BaseAllocator::CommonBaseAllocator()),
@@ -77,43 +57,13 @@ OpenGl_GraphicDriver::OpenGl_GraphicDriver (const Handle(Aspect_DisplayConnectio
   myUserDrawCallback (NULL),
   myTempText (new OpenGl_Text())
 {
-  Begin (theDisplayConnection);
-}
-
-// =======================================================================
-// function : OpenGl_GraphicDriver
-// purpose  :
-// =======================================================================
-OpenGl_GraphicDriver::OpenGl_GraphicDriver (const Standard_CString theShrName)
-: Graphic3d_GraphicDriver (theShrName),
-  myCaps           (new OpenGl_Caps()),
-  myMapOfView      (1, NCollection_BaseAllocator::CommonBaseAllocator()),
-  myMapOfWS        (1, NCollection_BaseAllocator::CommonBaseAllocator()),
-  myMapOfStructure (1, NCollection_BaseAllocator::CommonBaseAllocator()),
-  myUserDrawCallback (NULL),
-  myTempText (new OpenGl_Text())
-{
-  //
-}
-
-// =======================================================================
-// function : Begin
-// purpose  :
-// =======================================================================
-Standard_Boolean OpenGl_GraphicDriver::Begin (const Handle(Aspect_DisplayConnection)& theDisplayConnection)
-{
-  myDisplayConnection = theDisplayConnection;
+#if (!defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX)))
   if (myDisplayConnection.IsNull())
   {
-  #if (!defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX)))
     //Aspect_GraphicDeviceDefinitionError::Raise ("OpenGl_GraphicDriver: cannot connect to X server!");
-    return Standard_False;
-  #else
-    return Standard_True;
-  #endif
+    return;
   }
 
-#if (!defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX)))
   Display* aDisplay = myDisplayConnection->GetDisplay();
   Bool toSync = ::getenv ("CSF_GraphicSync") != NULL
              || ::getenv ("CALL_SYNCHRO_X")  != NULL;
@@ -128,17 +78,6 @@ Standard_Boolean OpenGl_GraphicDriver::Begin (const Handle(Aspect_DisplayConnect
   #endif
   }
 #endif
-  return Standard_True;
-}
-
-// =======================================================================
-// function : End
-// purpose  :
-// =======================================================================
-void OpenGl_GraphicDriver::End()
-{
-  // deprecated method
-  ///myDisplayConnection.Nullify();
 }
 
 // =======================================================================

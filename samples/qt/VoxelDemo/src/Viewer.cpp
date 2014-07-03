@@ -13,7 +13,6 @@
 #include <AIS_ListOfInteractive.hxx>
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
 #include <Aspect_DisplayConnection.hxx>
-#include <Graphic3d.hxx>
 #include <OpenGl_GraphicDriver.hxx>
 #include <V3d_DirectionalLight.hxx>
 #include <V3d_AmbientLight.hxx>

@@ -4,8 +4,6 @@
 //for OCC graphic
 #include <Aspect_DisplayConnection.hxx>
 #include <WNT_Window.hxx>
-#include <Graphic3d.hxx>
-#include <Graphic3d_GraphicDRiver.hxx>
 #include <OpenGl_GraphicDriver.hxx>
 //for object display
 #include <V3d_Viewer.hxx>
@@ -703,8 +701,7 @@ public:
     myView() = myAISContext()->CurrentViewer()->CreateView();
     if (myGraphicDriver().IsNull())
     {
-      Handle(Aspect_DisplayConnection) aDisplayConnection;
-      myGraphicDriver() = Graphic3d::InitGraphicDriver (aDisplayConnection);
+      myGraphicDriver() = new OpenGl_GraphicDriver (Handle(Aspect_DisplayConnection)());
     }
     Handle(WNT_Window) aWNTWindow = new WNT_Window (reinterpret_cast<HWND> (theWnd.ToPointer()));
     myView()->SetWindow(aWNTWindow);
@@ -1097,5 +1094,5 @@ private:
   NCollection_Haft<Handle_V3d_Viewer> myViewer;
   NCollection_Haft<Handle_V3d_View> myView;
   NCollection_Haft<Handle_AIS_InteractiveContext> myAISContext;
-  NCollection_Haft<Handle_Graphic3d_GraphicDriver> myGraphicDriver;
+  NCollection_Haft<Handle_OpenGl_GraphicDriver>   myGraphicDriver;
 };

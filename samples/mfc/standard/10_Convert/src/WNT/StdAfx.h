@@ -33,7 +33,6 @@
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_Shape.hxx>
 #include <AIS_Point.hxx>
-#include <Graphic3d.hxx>
 #include <V3d_Viewer.hxx>
 #include <V3d_View.hxx>
 #include <OpenGl_GraphicDriver.hxx>

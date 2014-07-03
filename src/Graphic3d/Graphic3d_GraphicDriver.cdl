@@ -28,8 +28,6 @@ deferred class GraphicDriver from Graphic3d inherits TShared
 
 uses
 
-    SharedLibrary       from OSD,
-
     Array1OfInteger     from TColStd,
     Array1OfReal        from TColStd,
     Array2OfReal        from TColStd,
@@ -98,24 +96,10 @@ raises
     TransformError      from Graphic3d
 
 is
-        Initialize ( AShrName       : CString from Standard )
-                returns GraphicDriver from Graphic3d;
-        ---Level: Public
-        ---Purpose: Initialises the Driver
-
-    -------------------------
-    -- Category: Init methods
-    -------------------------
-
-    Begin (me: mutable;
-           theDisplayConnection: DisplayConnection_Handle from Aspect)
-       returns Boolean from Standard
-       is deferred;
-    ---Purpose: Starts graphic driver with given connection
-
-    End ( me    : mutable )
-        is deferred;
-    ---Purpose: call_togl_end
+    Initialize (theDisp : DisplayConnection_Handle from Aspect)
+    returns GraphicDriver from Graphic3d;
+    ---Level: Public
+    ---Purpose: Initialises the Driver
 
     ----------------------------
     -- Category: Inquire methods
@@ -767,14 +751,6 @@ is
         returns Integer from Standard
         is static;
 
-    --ListOfAvalableFontNames( me;
-    --           lst: out NListOfHAsciiString from Graphic3d )
-    --           returns Boolean from Standard
-    --           is deferred;
-    --  Purpose:  Initialize list of names of avalable system fonts
-    --            returns Standard_False if fails
-    --  ABD Integration support of system fonts (using FTGL and FreeType)
-
     GetDisplayConnection (me)
        returns DisplayConnection_Handle from Aspect;
     ---C++: return const &
@@ -791,7 +767,6 @@ is
 fields
 
     MyTraceLevel       : Integer from Standard is protected;
-    MySharedLibrary    : SharedLibrary from OSD is protected;
     myDisplayConnection: DisplayConnection_Handle from Aspect is protected;
     myDeviceLostFlag   : Boolean from Standard is protected;
 

@@ -67,7 +67,6 @@
 #include <Aspect_TypeOfLine.hxx>
 #include <Image_Diff.hxx>
 #include <Aspect_DisplayConnection.hxx>
-#include <Graphic3d.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pln.hxx>
