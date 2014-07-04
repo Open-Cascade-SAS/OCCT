@@ -116,7 +116,6 @@
 #include <Aspect_TypeOfline.hxx>
 #include <Aspect_TypeOfText.hxx>
 #include <Aspect_WidthOfline.hxx>
-#include <Aspect_Window.hxx>
 #include <Bnd_Box2d.hxx>
 #include <BndLib_Add2dCurve.hxx>
 #include <BRep_Builder.hxx>
@@ -194,8 +193,6 @@
 #include <WNT_Window.hxx>
 
 #include <HLRAlgo_Projector.hxx>
-#include <Aspect_MarkMap.hxx>
-// specific to ISession2D_Shape
 #include <TopTools_ListOfShape.hxx>
 #include <HLRAlgo_Projector.hxx>
 #include <HLRBRep_Algo.hxx>
@@ -208,18 +205,8 @@
 #include <TopoDS_Vertex.hxx>
 #include <BRep_Tool.hxx>
 
-#include <Aspect_GenericColorMap.hxx>
-#include <Aspect_ColorMapEntry.hxx>
-#include <Aspect_WidthMapEntry.hxx>
-#include <Aspect_TypeMapEntry.hxx>
-#include <Aspect_LineStyle.hxx>
-#include <Aspect_TypeMap.hxx>
-
 #include <AIS_ListOfInteractive.hxx>
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
-
-#include <Aspect_ColorMapEntry.hxx>
-#include <Aspect_GenericColorMap.hxx>
 
 #include "..\res\resource.h"
 

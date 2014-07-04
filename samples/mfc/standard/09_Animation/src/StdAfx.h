@@ -127,7 +127,6 @@ enum CurrentAction3d {
 #include <Aspect_TypeOfline.hxx>
 #include <Aspect_TypeOfText.hxx>
 #include <Aspect_WidthOfline.hxx>
-#include <Aspect_Window.hxx>
 #include <Bnd_Box2d.hxx>
 #include <BndLib_Add2dCurve.hxx>
 #include <BRep_Builder.hxx>
@@ -208,7 +207,6 @@ enum CurrentAction3d {
 #include <V3d_Viewer.hxx>
 #include <WNT_Window.hxx>
 #include "HLRAlgo_Projector.hxx"
-#include "Aspect_MarkMap.hxx"
 
 #include <Geom_BSplineSurface.hxx>
 #include <TopoDS_Face.hxx>

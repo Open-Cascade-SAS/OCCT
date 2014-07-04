@@ -80,18 +80,8 @@
 #include <AIS_LocalContext.hxx>
 #include <AIS_TexturedShape.hxx>
 
-#include <Aspect_MarkMapEntry.hxx>
-#include <Aspect_ColorMapEntry.hxx>
-#include <Aspect_ColorScale.hxx>
-#include <Aspect_GenericColorMap.hxx>
-#include <Aspect_ColorMap.hxx>
-#include <Aspect_FontMap.hxx>
-#include <Aspect_MarkMap.hxx>
-#include <Aspect_TypeMap.hxx>
-#include <Aspect_WidthMap.hxx>
 #include <Aspect_TypeOfline.hxx>
 #include <Aspect_WidthOfline.hxx>
-#include <Aspect_Window.hxx>
 #include <Aspect_Background.hxx>
 #include <Aspect_TypeOfText.hxx>
 
