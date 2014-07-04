@@ -15,6 +15,8 @@
 
 #if defined(__APPLE__) && !defined(MACOSX_USE_GLX)
 
+#define GL_GLEXT_LEGACY // To prevent inclusion of system glext.h on Mac OS X 10.6.8
+
 #import <Cocoa/Cocoa.h>
 
 #include <OpenGl_GlCore11.hxx>
