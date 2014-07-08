@@ -56,7 +56,7 @@ return ;# this is to avoid an echo of the last command above in cout
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Note that variable *CSF_TestDataPath* is set to default value at DRAW start, pointing at the folder <i>$CASROOT/data</i>. 
-In this example, subdirectory <i>d:/occt/test-data</i> is added to this path. Similar code could be used on Linux and Mac OS X except that on non-Windows platforms colon ‘:’ should be used as path separator instead of semicolon ‘;’.
+In this example, subdirectory <i>d:/occt/test-data</i> is added to this path. Similar code could be used on Linux and Mac OS X except that on non-Windows platforms colon ":" should be used as path separator instead of semicolon ";".
 
 All tests are run from DRAW command prompt (run *draw.tcl* or *draw.sh* to start it).
 
@@ -70,12 +70,13 @@ Example:
 Draw[]> testgrid
 ~~~~~
 
-For running only a group or a grid of tests, give additional arguments indicating followed by path to the group and (if needed) the grid name.
+For running only a subset of test cases, give masks for group, grid, and test case names to be executed.
+Each argument is a list of comma- or space-separated file masks; by default "*" is assumed.
 
 Example:
 
 ~~~~~
-Draw[]> testgrid blend simple
+Draw[]> testgrid bugs caf,moddata*,xde
 ~~~~~
 
 
@@ -106,7 +107,7 @@ If necessary, a non-default output directory can be specified using option <i> �
 
 Example:
 ~~~~~
-Draw[]> testgrid –outdir d:/occt/last_results -overwrite
+Draw[]> testgrid -outdir d:/occt/last_results -overwrite
 ~~~~~
 In the output directory, a cumulative HTML report summary.html provides links to reports on each test case. An additional report in JUnit-style XML format can be output for use in Jenkins or other continuous integration system.
 
@@ -117,18 +118,20 @@ For example:
 ~~~~~
 Draw[3]> help testgrid
 testgrid: Run all tests, or specified group, or one grid
-    Use: testgrid [group [grid]] [options...]
+    Use: testgrid [groupmask [gridmask [casemask]]] [options...]
     Allowed options are:
     -parallel N: run N parallel processes (default is number of CPUs, 0 to disable)
     -refresh N: save summary logs every N seconds (default 60, minimal 1, 0 to disable)
     -outdir dirname: set log directory (should be empty or non-existing)
     -overwrite: force writing logs in existing non-empty directory
     -xml filename: write XML report for Jenkins (in JUnit-like format)
+    Groups, grids, and test cases to be executed can be specified by list of file 
+    masks, separated by spaces or comma; default is all (*).
 ~~~~~
 
 @subsubsection testmanual_1_3_3 Running a Single Test
 
-To run a single test, type command *test*’ followed by names of group, grid, and test case. 
+To run a single test, type command *test* followed by names of group, grid, and test case. 
 
 Example:
 
@@ -147,7 +150,7 @@ To see intermediate commands and their output during the test execution, add one
 
 The detailed rules of creation of new tests are given in <a href="#testmanual_3">section 3</a>. The following short description covers the most typical situations:
 
-Use prefix “bug” followed by Mantis issue ID and, if necessary, additional suffixes, for naming the test script and DRAW commands specific for this test case.
+Use prefix "bug" followed by Mantis issue ID and, if necessary, additional suffixes, for naming the test script and DRAW commands specific for this test case.
 
 1.	If the test requires C++ code, add it as new DRAW command(s) in one of files in *QABugs* package. Note that this package defines macros *QVERIFY* and *QCOMPARE*, thus code created for QTest or GoogleTest frameworks can be used with minimal modifications.
 2.	Add script(s) for the test case in grid (subfolder) corresponding to the relevant OCCT module of the group bugs <i>($CASROOT/tests/bugs)</i>. See <a href="#testmanual_5_2">the correspondence map</a>.
@@ -156,7 +159,7 @@ Use prefix “bug” followed by Mantis issue ID and, if necessary, additional s
 	*	Use command *locate_data_file* to get a path to data files used by test script. (Make sure to have this command not inside catch statement if it is used.)
 	*	Use DRAW commands to reproduce the situation being tested.
 	*	If test case is added to describe existing problem and the fix is not available, add TODO message for each error to mark it as known problem. The TODO statements must be specific so as to match the actually generated messages but not all similar errors.
-	*	Make sure that in case of failure the test produces message containing word “Error” or other recognized by test system as error (see files parse.rules).
+	*	Make sure that in case of failure the test produces message containing word "Error" or other recognized by test system as error (see files parse.rules).
 4.	If the test case uses data file(s) not yet present in the test database, these can be put to subfolder data of the test grid, and integrated to Git along with the test case.
 5.	Check that the test case runs as expected (test for fix: OK with the fix, FAILED without the fix; test for existing problem: BAD), and integrate to Git branch created for the issue.
 
@@ -617,7 +620,8 @@ return ;# this is to avoid an echo of the last command above in cout
 
 For better efficiency, on computers with multiple CPUs the tests can be run in parallel mode. This is default behavior for command *testgrid* : the tests are executed in parallel processes (their number is equal to the number of CPUs available on the system). In order to change this behavior, use option  parallel followed by the number of processes to be used (1 or 0 to run sequentially).
 
-Note that the parallel execution is only possible if Tcl extension package *Thread* is installed. It is included in *ActiveTcl* package, but can be absent in some Linux distributions. If this package is not available, *testgrid* command will output a warning message.
+Note that the parallel execution is only possible if Tcl extension package *Thread* is installed. 
+If this package is not available, *testgrid* command will output a warning message.
 
 @subsection testmanual_4_4 Checking non-regression of performance, memory, and visualization
 
