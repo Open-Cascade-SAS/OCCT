@@ -19,6 +19,7 @@
 #include <OSD_Environment.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
+#include <Standard_Mutex.hxx>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -30,6 +31,9 @@ static Message_DataMapOfExtendedString& msgsDataMap ()
   static Message_DataMapOfExtendedString aDataMap;
   return aDataMap;
 }
+
+// mutex used to prevent concurrent access to message registry
+static Standard_Mutex theMutex;
 
 typedef enum
 {
@@ -310,8 +314,8 @@ Standard_Boolean Message_MsgFile::AddMsg (const TCollection_AsciiString& theKeyw
 					  const TCollection_ExtendedString&  theMessage)
 {
   Message_DataMapOfExtendedString& aDataMap = ::msgsDataMap();
-//  if (aDataMap.IsBound (theKeyword))
-//    return Standard_False;
+
+  Standard_Mutex::Sentry aSentry (theMutex);
   aDataMap.Bind (theKeyword, theMessage);
   return Standard_True;
 }
@@ -328,7 +332,18 @@ const TCollection_ExtendedString &Message_MsgFile::Msg (const Standard_CString t
 } 
 
 //=======================================================================
-//function : getMsg
+//function : HasMsg
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean Message_MsgFile::HasMsg (const TCollection_AsciiString& theKeyword)
+{
+  Standard_Mutex::Sentry aSentry (theMutex);
+  return ::msgsDataMap().IsBound (theKeyword);
+}
+
+//=======================================================================
+//function : Msg
 //purpose  : retrieve the message previously defined for the given keyword
 //=======================================================================
 
@@ -336,23 +351,19 @@ const TCollection_ExtendedString &Message_MsgFile::Msg (const TCollection_AsciiS
 {
   // find message in the map
   Message_DataMapOfExtendedString& aDataMap = ::msgsDataMap();
-  if (aDataMap.IsBound (theKeyword))
-    return aDataMap.Find (theKeyword);
+  Standard_Mutex::Sentry aSentry (theMutex);
 
-  // if not found, generate error message
-  // to minimize risk of data races when running concurrently, set the static variables
-  // only if they are empty; this gives a possibility to enforce calling this method
-  // upfront to initialize these variables and only read access them afterwards. However
-  // theKeyword is no longer appended. aDefPrefix remained unchanged to not break some
-  // logs which might expect the previous value
-  static const TCollection_ExtendedString aDefPrefix ("Unknown message invoked with the keyword");
-  static const TCollection_AsciiString aPrefixCode ("Message_Msg_BadKeyword");
-  static TCollection_ExtendedString aFailureMessage;
-  if (aFailureMessage.Length() == 0) {
-     if (aDataMap.IsBound (aPrefixCode))
-       aFailureMessage = aDataMap.Find (aPrefixCode);
-     else
-       aFailureMessage = aDefPrefix;
+  // if message is not found, generate error message and add it to the map to minimize overhead
+  // on consequent calls with the same key
+  if (! aDataMap.IsBound(theKeyword))
+  {
+    // text of the error message can be itself defined in the map
+    static const TCollection_AsciiString aPrefixCode("Message_Msg_BadKeyword");
+    static const TCollection_ExtendedString aDefPrefix("Unknown message invoked with the keyword ");
+    TCollection_AsciiString aErrorMessage = (aDataMap.IsBound(aPrefixCode) ? aDataMap(aPrefixCode) : aDefPrefix);
+    aErrorMessage += theKeyword;
+    aDataMap.Bind (theKeyword, aErrorMessage); // do not use AddMsg() here to avoid mutex deadlock
   }
-  return aFailureMessage;
+
+  return aDataMap (theKeyword);
 }

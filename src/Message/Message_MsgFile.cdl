@@ -74,6 +74,9 @@ is
         --          If there already was defined the message identified by the 
         --          same keyword, it is replaced with the new one.
 
+    HasMsg (myclass; key: AsciiString from TCollection) returns Boolean;
+        ---Purpose: Returns True if message with specified keyword is registered
+
     Msg (myclass; key: CString) returns ExtendedString from TCollection;
     	---C++: return const &
     Msg (myclass; key: AsciiString from TCollection) returns ExtendedString from TCollection;

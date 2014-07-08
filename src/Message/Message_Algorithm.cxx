@@ -224,7 +224,7 @@ void Message_Algorithm::SendStatusMessages (const Message_ExecStatus& theStatus,
     // find message, iterating by base classes if necessary
     TCollection_AsciiString aMsgName = aClassName + aSuffix;
     Handle(Standard_Type) aType = DynamicType();
-    while (Message_MsgFile::Msg(aMsgName).Length() == 0 && !aType.IsNull())
+    while (! Message_MsgFile::HasMsg(aMsgName) && !aType.IsNull())
     {
       Standard_AncestorIterator it(aType);
       aType.Nullify();
@@ -233,7 +233,7 @@ void Message_Algorithm::SendStatusMessages (const Message_ExecStatus& theStatus,
         aType = it.Value();
         TCollection_AsciiString aClassName1 (aType->Name());
         TCollection_AsciiString aMsgName1 = aClassName1 + aSuffix;
-        if (Message_MsgFile::Msg(aMsgName1).Length() != 0)
+        if (Message_MsgFile::HasMsg(aMsgName1))
         {
           aMsgName = aMsgName1;
           break;
