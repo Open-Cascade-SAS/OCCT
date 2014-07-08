@@ -1635,12 +1635,12 @@ Standard_Integer Index = IsComputed (AStructure);
                     MyCOMPUTEDSequence.Value (Index)->GraphicTransform (ATrsf);
         }
 
-        Standard_Integer aLayerId = AStructure->GetZLayer();
+        AStructure->CalculateBoundBox();
         if (!AStructure->IsMutable()
          && !AStructure->CStructure()->IsForHighlight
          && !AStructure->CStructure()->IsInfinite)
         {
-          AStructure->CalculateBoundBox();
+          Standard_Integer aLayerId = AStructure->GetZLayer();
           MyGraphicDriver->InvalidateBVHData (MyCView, aLayerId);
         }
 }
@@ -2104,9 +2104,11 @@ Graphic3d_SequenceOfStructure FooSequence;
 }
 
 void Visual3d_View::ReCompute (const Handle(Graphic3d_Structure)& AStructure) {
-        if (MyCView.IsCullingEnabled)
+        AStructure->CalculateBoundBox();
+        if (!AStructure->IsMutable()
+         && !AStructure->CStructure()->IsForHighlight
+         && !AStructure->CStructure()->IsInfinite)
         {
-          AStructure->CalculateBoundBox();
           Standard_Integer aLayerId = AStructure->DisplayPriority();
           MyGraphicDriver->InvalidateBVHData(MyCView, aLayerId);
         }
