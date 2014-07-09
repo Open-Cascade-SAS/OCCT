@@ -41,8 +41,12 @@ TCollection_IndexedMap::TCollection_IndexedMap
   (const TCollection_IndexedMap& Other) :
   TCollection_BasicMap(Other.NbBuckets(),Standard_False)
 {
-  if (!Other.IsEmpty())
-    Standard_DomainError::Raise("TCollection:Copy of IndexedMap");
+  if  (!Other.IsEmpty()) { 
+    ReSize(Other.Extent());
+    for (Standard_Integer i = 1; i <= Other.Extent(); i++) {
+      Add(Other(i));
+    }
+  }
 }
 
 //=======================================================================

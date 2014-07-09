@@ -178,11 +178,9 @@ is
     	-- To copy a list, you must explicitly call the assignment operator (operator=).
 
     Create(Other : List from TCollection) 
-     returns List from TCollection
-     is private;
+     returns List from TCollection;
 	---Purpose: Creation by copy of existing list.
-	--  Warning: This constructor prints a warning message.
-	-- We recommand to use the operator =.
+	-- We recommend to use the operator =.
 		
     Assign(me : in out; Other : List from TCollection)
 	---Purpose: Replace <me> by a copy of <Other>.

@@ -36,8 +36,12 @@ TCollection_Map::TCollection_Map(const Standard_Integer NbBuckets) :
 TCollection_Map::TCollection_Map(const TCollection_Map& Other) :
        TCollection_BasicMap(Other.NbBuckets(),Standard_True)
 {
-  if (Other.Extent() != 0)
-    Standard_DomainError::Raise("TCollection:Copy of Map");
+  if  (!Other.IsEmpty()) { 
+    ReSize(Other.Extent()); 
+    for (TCollection_MapIterator It(Other); It.More(); It.Next()) {
+      Add(It.Key());
+    }
+  }
 }
 
 //=======================================================================

@@ -55,9 +55,6 @@ inherits BasicMap from TCollection
     	-- -   TCollection_MapHasher class describes the
     	--   functions required for a Hasher object.
   
-raises
-    DomainError from Standard
-    
  
     class StdMapNode from TCollection 
     inherits MapNode from TCollection
@@ -128,13 +125,9 @@ is
     	-- -   and a map iterator to explore the map.
     
 
-    Create(Other : Map from TCollection) returns Map from TCollection
+    Create(Other : Map from TCollection) returns Map from TCollection;
 	---Purpose: As  copying  Map  is an expensive  operation it is
-	-- incorrect  to  do  it implicitly. This constructor
-	-- will raise an  error if the Map  is not  empty. To
-	-- copy the content of a  Map use the  Assign  method (operator =).
-    raises DomainError from Standard
-    is private;
+	-- not recommended to  do  it implicitly.
     
     Assign(me : in out; Other : Map from TCollection) 
     returns Map from TCollection
