@@ -5,6 +5,3 @@ call "%~dp0env.bat" %1 %2 %3
 
 echo Hint: use "pload ALL" command to load standard commands
 DRAWEXE.exe
-
-set "PATH=%ORIGIN_PATH%"
-

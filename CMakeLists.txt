@@ -295,85 +295,84 @@ if ("${INSTALL_DIR}" STREQUAL "")
   set (CMAKE_INSTALL_PREFIX "${INSTALL_DIR}" CACHE INTERNAL "" FORCE )
 
   message (STATUS "INSTALL_DIR has been set as ${INSTALL_DIR}")
-else()
-
-  OCCT_INSTALL_FILE_OR_DIR ("data" "${INSTALL_DIR}")
-  OCCT_INSTALL_FILE_OR_DIR ("samples/tcl" "${INSTALL_DIR}/samples")
-
-  if (INSTALL_SAMPLES)
-    OCCT_INSTALL_FILE_OR_DIR ("samples" "${INSTALL_DIR}")
-  endif()
-
-  if (TESTS_INSTALL)
-    OCCT_INSTALL_FILE_OR_DIR ("tests" "${INSTALL_DIR}")
-  endif()
-
-  if (WIN32)
-    set (SCRIPT_EXT bat)
-  else()
-    set (SCRIPT_EXT sh)
-  endif()
-
-  # Creation of "START_TESTS" project
-  if (TESTS_RUN AND TESTS_INSTALL)
-    #set(BUILD_TESTING ON)
-    #enable_testing ()
-    #add_test(NAME RUN_TESTS COMMAND ${INSTALL_DIR}/draw.${SCRIPT_EXT} -c testgrid -overwrite -outdir ${INSTALL_DIR}/TestResults)
-    add_custom_target(START_TESTS ${INSTALL_DIR}/draw.${SCRIPT_EXT} -c testgrid -overwrite -outdir ${INSTALL_DIR}/TestResults DEPENDS INSTALL)
-  endif()
-
-  # Creation of "GenerateDocumentation" project
-  if (DOC_GENERATE_OVERVIEW OR DOC_GENERATE_REFMAN)
-    OCCT_INCLUDE_CMAKE_FILE("adm/cmake/occt_gendoc")
-    if(DOC_GENERATE_OVERVIEW)
-      gendoc(-overview -${DOC_OVERVIEW_OUTPUT_FORMAT})
-    endif()
-    if(DOC_GENERATE_REFMAN)
-      gendoc(-refman -html)
-    endif()
-  endif()
-
-  # DRAW.BAT or DRAW.SH
-  if (NOT "${BUILD_PATCH_DIR}" STREQUAL "" AND EXISTS "${BUILD_PATCH_DIR}/adm/templates/draw.${SCRIPT_EXT}")
-    install (FILES "${BUILD_PATCH_DIR}/adm/templates/draw.${SCRIPT_EXT}" DESTINATION  "${INSTALL_DIR}" PERMISSIONS
-            OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_WRITE GROUP_EXECUTE WORLD_READ WORLD_WRITE WORLD_EXECUTE)
-  else()
-    install (FILES "${CMAKE_SOURCE_DIR}/adm/templates/draw.${SCRIPT_EXT}" DESTINATION  "${INSTALL_DIR}" PERMISSIONS
-            OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_WRITE GROUP_EXECUTE WORLD_READ WORLD_WRITE WORLD_EXECUTE)
-  endif()
-  OCCT_COPY_FILE_OR_DIR ("adm/templates/draw.${SCRIPT_EXT}" "${CMAKE_BINARY_DIR}")
-
-  set (SUB_CUSTOM "custom_${COMPILER}_${COMPILER_BITNESS}.${SCRIPT_EXT}")
-
-  if (WIN32)
-    set (ADDITIONAL_CUSTOM_CONTENT "\nif exist \"%~dp0${SUB_CUSTOM}\" (\n  call \"%~dp0${SUB_CUSTOM}\" %VCVER% %ARCH% %CASDEB% \n)")
-  else()
-    set (ADDITIONAL_CUSTOM_CONTENT "\nif [ -e \"\${aScriptPath}/${SUB_CUSTOM}\" ]; then\n  source \"\${aScriptPath}/${SUB_CUSTOM}\" \"\${COMPILER}\" \"\${WOKSTATION}\${ARCH}\" \"\${CASDEB}\" \nfi")
-  endif()
-
-   # change custom.bat/sh
-  if (EXISTS "${INSTALL_DIR}/custom.${SCRIPT_EXT}")
-    file (READ "${INSTALL_DIR}/custom.${SCRIPT_EXT}" CUSTOM_CONTENT)
-
-    set (CUSTOM_CONTENT "${CUSTOM_CONTENT} ${ADDITIONAL_CUSTOM_CONTENT}")
-
-    file (WRITE "${INSTALL_DIR}/custom.${SCRIPT_EXT}" "${CUSTOM_CONTENT}")
-  else()
-    OCCT_CONFIGURE_AND_INSTALL ("adm/templates/custom.${SCRIPT_EXT}.main" "custom.${SCRIPT_EXT}" "${INSTALL_DIR}")
-  endif()
-
-  # write current custom.bat/sh
-  OCCT_CONFIGURE_AND_INSTALL ("adm/templates/custom.${SCRIPT_EXT}.in" "${SUB_CUSTOM}" "${INSTALL_DIR}")
-
-  if (BUILD_MFC_SAMPLES)
-    OCCT_INSTALL_FILE_OR_DIR ("adm/templates/sample.bat" "${INSTALL_DIR}")
-    OCCT_COPY_FILE_OR_DIR ("adm/templates/sample.bat" "${CMAKE_BINARY_DIR}")
-  endif()
-
-  OCCT_CONFIGURE ("adm/templates/env.build.${SCRIPT_EXT}.in" "env.${SCRIPT_EXT}")
-  OCCT_CONFIGURE ("adm/templates/env.${SCRIPT_EXT}.in" "env.install.${SCRIPT_EXT}")
-  install (FILES "${CMAKE_BINARY_DIR}/env.install.${SCRIPT_EXT}" DESTINATION  "${INSTALL_DIR}" RENAME "env.${SCRIPT_EXT}")
 endif()
+
+OCCT_INSTALL_FILE_OR_DIR ("data" "${INSTALL_DIR}")
+OCCT_INSTALL_FILE_OR_DIR ("samples/tcl" "${INSTALL_DIR}/samples")
+
+if (INSTALL_SAMPLES)
+  OCCT_INSTALL_FILE_OR_DIR ("samples" "${INSTALL_DIR}")
+endif()
+
+if (TESTS_INSTALL)
+  OCCT_INSTALL_FILE_OR_DIR ("tests" "${INSTALL_DIR}")
+endif()
+
+if (WIN32)
+  set (SCRIPT_EXT bat)
+else()
+  set (SCRIPT_EXT sh)
+endif()
+
+# Creation of "START_TESTS" project
+if (TESTS_RUN AND TESTS_INSTALL)
+  #set(BUILD_TESTING ON)
+  #enable_testing ()
+  #add_test(NAME RUN_TESTS COMMAND ${INSTALL_DIR}/draw.${SCRIPT_EXT} -c testgrid -overwrite -outdir ${INSTALL_DIR}/TestResults)
+  add_custom_target(START_TESTS ${INSTALL_DIR}/draw.${SCRIPT_EXT} -c testgrid -overwrite -outdir ${INSTALL_DIR}/TestResults DEPENDS INSTALL)
+endif()
+
+# Creation of "GenerateDocumentation" project
+if (DOC_GENERATE_OVERVIEW OR DOC_GENERATE_REFMAN)
+  OCCT_INCLUDE_CMAKE_FILE("adm/cmake/occt_gendoc")
+  if(DOC_GENERATE_OVERVIEW)
+    gendoc(-overview -${DOC_OVERVIEW_OUTPUT_FORMAT})
+  endif()
+  if(DOC_GENERATE_REFMAN)
+    gendoc(-refman -html)
+  endif()
+endif()
+
+# DRAW.BAT or DRAW.SH
+if (NOT "${BUILD_PATCH_DIR}" STREQUAL "" AND EXISTS "${BUILD_PATCH_DIR}/adm/templates/draw.${SCRIPT_EXT}")
+  install (FILES "${BUILD_PATCH_DIR}/adm/templates/draw.${SCRIPT_EXT}" DESTINATION  "${INSTALL_DIR}" PERMISSIONS
+          OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_WRITE GROUP_EXECUTE WORLD_READ WORLD_WRITE WORLD_EXECUTE)
+else()
+  install (FILES "${CMAKE_SOURCE_DIR}/adm/templates/draw.${SCRIPT_EXT}" DESTINATION  "${INSTALL_DIR}" PERMISSIONS
+          OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_WRITE GROUP_EXECUTE WORLD_READ WORLD_WRITE WORLD_EXECUTE)
+endif()
+OCCT_COPY_FILE_OR_DIR ("adm/templates/draw.${SCRIPT_EXT}" "${CMAKE_BINARY_DIR}")
+
+set (SUB_CUSTOM "custom_${COMPILER}_${COMPILER_BITNESS}.${SCRIPT_EXT}")
+
+if (WIN32)
+  set (ADDITIONAL_CUSTOM_CONTENT "\nif exist \"%~dp0${SUB_CUSTOM}\" (\n  call \"%~dp0${SUB_CUSTOM}\" %VCVER% %ARCH% %CASDEB% \n)")
+else()
+  set (ADDITIONAL_CUSTOM_CONTENT "\nif [ -e \"\${aScriptPath}/${SUB_CUSTOM}\" ]; then\n  source \"\${aScriptPath}/${SUB_CUSTOM}\" \"\${COMPILER}\" \"\${WOKSTATION}\${ARCH}\" \"\${CASDEB}\" \nfi")
+endif()
+
+ # change custom.bat/sh
+if (EXISTS "${INSTALL_DIR}/custom.${SCRIPT_EXT}")
+  file (READ "${INSTALL_DIR}/custom.${SCRIPT_EXT}" CUSTOM_CONTENT)
+
+  set (CUSTOM_CONTENT "${CUSTOM_CONTENT} ${ADDITIONAL_CUSTOM_CONTENT}")
+
+  file (WRITE "${INSTALL_DIR}/custom.${SCRIPT_EXT}" "${CUSTOM_CONTENT}")
+else()
+  OCCT_CONFIGURE_AND_INSTALL ("adm/templates/custom.${SCRIPT_EXT}.main" "custom.${SCRIPT_EXT}" "${INSTALL_DIR}")
+endif()
+
+# write current custom.bat/sh
+OCCT_CONFIGURE_AND_INSTALL ("adm/templates/custom.${SCRIPT_EXT}.in" "${SUB_CUSTOM}" "${INSTALL_DIR}")
+
+if (BUILD_MFC_SAMPLES)
+  OCCT_INSTALL_FILE_OR_DIR ("adm/templates/sample.bat" "${INSTALL_DIR}")
+  OCCT_COPY_FILE_OR_DIR ("adm/templates/sample.bat" "${CMAKE_BINARY_DIR}")
+endif()
+
+OCCT_CONFIGURE ("adm/templates/env.build.${SCRIPT_EXT}.in" "env.${SCRIPT_EXT}")
+OCCT_CONFIGURE ("adm/templates/env.${SCRIPT_EXT}.in" "env.install.${SCRIPT_EXT}")
+install (FILES "${CMAKE_BINARY_DIR}/env.install.${SCRIPT_EXT}" DESTINATION  "${INSTALL_DIR}" RENAME "env.${SCRIPT_EXT}")
 
 # RESOURCES
 FILE_TO_LIST ("adm/RESOURCES" RESOURCES)

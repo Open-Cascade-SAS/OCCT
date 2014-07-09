@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<VisualStudioUserFile
+	ProjectType="Visual C++"
+	Version="9.00"
+	ShowAllFiles="false"
+	>
+	<Configurations>
+		<Configuration
+			Name="Release|Win32"
+			>
+			<DebugSettings
+				Environment="PATH=..\..\..\win32\vc9\bin;$(CSF_OPT_BIN32);$(PATH)"
+				EnvironmentMerge="true"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|x64"
+			>
+			<DebugSettings
+				Environment="PATH=..\..\..\win64\vc9\bin;$(CSF_OPT_BIN64);$(PATH)"
+				EnvironmentMerge="true"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug|Win32"
+			>
+			<DebugSettings
+				Environment="PATH=..\..\..\win32\vc9\bind;$(CSF_OPT_BIN32D);$(PATH)"
+				EnvironmentMerge="true"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug|x64"
+			>
+			<DebugSettings
+				Environment="PATH=..\..\..\win64\vc9\bind;$(CSF_OPT_BIN64D);$(PATH)"
+				EnvironmentMerge="true"
+			/>
+		</Configuration>
+	</Configurations>
+</VisualStudioUserFile>

@@ -1,0 +1,10 @@
+# Makefile.am for executable __XQTNAM__
+srcdir = @srcdir@
+
+VPATH = @srcdir@ : \
+@top_srcdir@/src/__XQTNAM__
+
+INCLUDES = $(CSF_OPT_INCLUDES) __EXTERNINC__ \
+-I@top_srcdir@/inc \
+-I@top_srcdir@/src/__XQTNAM__
+
