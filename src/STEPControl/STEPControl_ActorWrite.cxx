@@ -831,6 +831,10 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferShape (const Handle(Tran
     FP->AddFail(start,"The Shape is not a SOLID, nor a SHELL, nor a FACE");
     return binder;
   }
+  else if (theShape.ShapeType() == TopAbs_COMPSOLID) {
+    FP->AddWarning(start, "COMPSOLID is not exported yet"); 
+    return binder;
+  }
   else RepItemSeq->Append (theShape);
 
   //    COMPUTING 3D TOLERANCE
@@ -1424,6 +1428,8 @@ Handle(Transfer_Binder)  STEPControl_ActorWrite::TransferSubShape (const Handle(
     FP->Bind (mapper,resbind);
     resprod=resbind; //KA - OCC7141(skl 10.11.2004)
   }
+  if (resprod.IsNull())
+    return resprod;
 
   // A new resbind may have been produced
 //  DeclareAndCast(Transfer_SimpleBinderOfTransient,restrans,resbind);
