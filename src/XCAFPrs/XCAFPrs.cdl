@@ -37,7 +37,7 @@ is
 
     class Driver;
 
-    class AISObject;
+    imported AISObject;
 
     class Style;
 	

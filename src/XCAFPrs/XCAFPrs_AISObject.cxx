@@ -13,311 +13,40 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XCAFPrs_AISObject.ixx>
-#include <TCollection_ExtendedString.hxx>
-#include <gp_Pnt.hxx>
-#include <Prs3d_Text.hxx>
-#include <Prs3d_DimensionAspect.hxx>
-#include <XCAFDoc_ShapeTool.hxx>
+#include <XCAFPrs_AISObject.hxx>
 
-#include <Standard_ErrorHandler.hxx>
-#include <Standard_Failure.hxx>
-
-#include <Precision.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <BRepTools.hxx>
-
-#include <StdPrs_WFDeflectionShape.hxx>
-#include <StdPrs_ShadedShape.hxx>
-#include <StdPrs_WFShape.hxx>
-#include <AIS_Drawer.hxx>
-#include <Graphic3d_Group.hxx>
-#include <Quantity_Color.hxx>
-#include <Aspect_TypeOfLine.hxx>
-#include <Prs3d_LineAspect.hxx>
-#include <Graphic3d_AspectLine3d.hxx>
-#include <BRep_Builder.hxx>
-#include <TopoDS_Compound.hxx>
-#include <XCAFPrs_Style.hxx>
-#include <TopoDS_Shape.hxx>
-#include <XCAFPrs_DataMapOfShapeStyle.hxx>
-#include <TDF_LabelSequence.hxx>
-#include <XCAFPrs_DataMapOfStyleShape.hxx>
-#include <TopoDS.hxx>
-#include <XCAFPrs_DataMapIteratorOfDataMapOfStyleShape.hxx>
-#include <Graphic3d_AspectFillArea3d.hxx>
-#include <Aspect_InteriorStyle.hxx>
-#include <Aspect_TypeOfLine.hxx>
-#include <Prs3d_ShadingAspect.hxx>
-
-#include <Prs3d_IsoAspect.hxx>
-#include <XCAFPrs.hxx>
-
-#include <TDataStd_Name.hxx>
+#include <AIS_DisplayMode.hxx>
 #include <BRepBndLib.hxx>
-
+#include <gp_Pnt.hxx>
+#include <Graphic3d_AspectFillArea3d.hxx>
+#include <Handle_AIS_Drawer.hxx>
+#include <Prs3d_DimensionAspect.hxx>
+#include <Prs3d_IsoAspect.hxx>
+#include <Prs3d_LineAspect.hxx>
+#include <Prs3d_ShadingAspect.hxx>
+#include <Prs3d_Text.hxx>
+#include <TDataStd_Name.hxx>
+#include <TDF_LabelSequence.hxx>
 #include <TPrsStd_AISPresentation.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <XCAFDoc_ShapeTool.hxx>
+#include <XCAFPrs.hxx>
+#include <XCAFPrs_DataMapOfShapeStyle.hxx>
+#include <XCAFPrs_DataMapIteratorOfDataMapOfShapeStyle.hxx>
+#include <XCAFPrs_Style.hxx>
 
-#ifdef DEBUG
-#include <DBRep.hxx>
-#endif
-
+IMPLEMENT_STANDARD_HANDLE (XCAFPrs_AISObject, AIS_ColoredShape)
+IMPLEMENT_STANDARD_RTTIEXT(XCAFPrs_AISObject, AIS_ColoredShape)
 
 //=======================================================================
 //function : XCAFPrs_AISObject
 //purpose  : 
 //=======================================================================
 
-XCAFPrs_AISObject::XCAFPrs_AISObject (const TDF_Label &lab) : AIS_Shape(TopoDS_Shape())
+XCAFPrs_AISObject::XCAFPrs_AISObject (const TDF_Label& theLabel)
+: AIS_ColoredShape(TopoDS_Shape())
 {
-  myLabel = lab;
-
-  TopoDS_Shape shape;
-  if ( XCAFDoc_ShapeTool::GetShape ( myLabel, shape ) && ! shape.IsNull() ) 
-    Set ( shape );
-}
-
-//=======================================================================
-//function : SetColor
-//purpose  : 
-//=======================================================================
-
-void XCAFPrs_AISObject::SetColor(const Quantity_Color &aCol)
-{
-  AIS_Shape::SetColor(aCol);
-  LoadRecomputable(1);
-}
-
-//=======================================================================
-//function : UnsetColor
-//purpose  : 
-//=======================================================================
-
-void XCAFPrs_AISObject::UnsetColor()
-{
-  if (HasColor())
-  {
-    AIS_Shape::UnsetColor();
-    LoadRecomputable(1);
-  }
-  else
-  {
-    myToRecomputeModes.Clear();
-  }
-}
-
-//=======================================================================
-//function : SetMaterial
-//purpose  : 
-//=======================================================================
-
-void XCAFPrs_AISObject::SetMaterial(const Graphic3d_NameOfMaterial aMat)
-{
-  AIS_Shape::SetMaterial(aMat);
-  LoadRecomputable(1);
-}
-
-//=======================================================================
-//function : SetMaterial
-//purpose  : 
-//=======================================================================
-
-void XCAFPrs_AISObject::SetMaterial(const Graphic3d_MaterialAspect& aMat)
-{
-  AIS_Shape::SetMaterial(aMat);
-  LoadRecomputable(1);
-}
-
-//=======================================================================
-//function : UnsetMaterial
-//purpose  : 
-//=======================================================================
-
-void XCAFPrs_AISObject::UnsetMaterial()
-{
-  if (HasMaterial())
-  {
-    AIS_Shape::UnsetMaterial();
-    LoadRecomputable(1);
-  }
-  else
-  {
-    myToRecomputeModes.Clear();
-  }
-}
-
-//=======================================================================
-//function : SetTransparency
-//purpose  : 
-//=======================================================================
-
-void XCAFPrs_AISObject::SetTransparency(const Standard_Real AValue)
-{
-  AIS_Shape::SetTransparency(AValue);
-  LoadRecomputable(1);
-}
-
-//=======================================================================
-//function : UnsetTransparency
-//purpose  : 
-//=======================================================================
-
-void XCAFPrs_AISObject::UnsetTransparency()
-{
-  AIS_Shape::UnsetTransparency();
-  LoadRecomputable(1);
-}
-
-//=======================================================================
-//function : AddStyledItem
-//purpose  : 
-//=======================================================================
-
-void XCAFPrs_AISObject::AddStyledItem (const XCAFPrs_Style &style, 
-                                       const TopoDS_Shape &shape, 
-                                       const Handle(PrsMgr_PresentationManager3d)&, // aPresentationManager,
-                                       const Handle(Prs3d_Presentation)& aPrs,
-                                       const Standard_Integer aMode)
-{ 
-  // remember current color settings
-  Handle(Graphic3d_AspectFillArea3d) a4bis = myDrawer->ShadingAspect()->Aspect();
-  Aspect_InteriorStyle aStyle;
-  Quantity_Color aIntColor, aEdgeColor;
-  Aspect_TypeOfLine aType;
-  Standard_Real aWidth;
-  a4bis->Values(aStyle,aIntColor,aEdgeColor,aType,aWidth);
-  Graphic3d_MaterialAspect FMAT = a4bis->FrontMaterial();
-  Quantity_Color aFColor = FMAT.Color();
-
-  Quantity_Color aColor1, aColor2;
-  Aspect_TypeOfLine aLine1, aLine2;
-  Standard_Real aWigth1, aWigth2;
-  Handle(Prs3d_LineAspect) waUFB = myDrawer->UnFreeBoundaryAspect();
-  waUFB->Aspect()->Values(aColor1,aLine1,aWigth1);
-  Handle(Prs3d_LineAspect) waFB = myDrawer->FreeBoundaryAspect();
-  waFB->Aspect()->Values(aColor2,aLine2,aWigth2);
-
-  Quantity_Color aColor;
-  Aspect_TypeOfLine aLine;
-  Standard_Real aWigth;
-  Handle(Prs3d_LineAspect) wa = myDrawer->WireAspect();
-  wa->Aspect()->Values(aColor,aLine,aWigth);
-
-  Quantity_Color aColorU, aColorV;
-  Aspect_TypeOfLine aLineU, aLineV;
-  Standard_Real aWigthU, aWigthV;
-  Handle(Prs3d_IsoAspect) UIso = myDrawer->UIsoAspect();
-  Handle(Prs3d_IsoAspect) VIso = myDrawer->VIsoAspect();
-  UIso->Aspect()->Values(aColorU,aLineU,aWigthU);
-  VIso->Aspect()->Values(aColorV,aLineV,aWigthV);
-  
-  // Set colors etc. for current shape according to style
-  if ( style.IsSetColorCurv() ) {
-    Quantity_Color Color = style.GetColorCurv();
-    waUFB->SetColor ( Color.Name() );
-    waFB->SetColor ( Color.Name() );
-    wa->SetColor ( Color.Name() );
-  }
-  if ( style.IsSetColorSurf() ) {
-    Quantity_Color Color = style.GetColorSurf();
-    a4bis->SetInteriorColor(Color);
-    FMAT.SetColor(Color);
-    a4bis->SetFrontMaterial(FMAT);
-    UIso->SetColor ( Color.Name() );
-    VIso->SetColor ( Color.Name() );
-  }
-
-  // force drawing isos on planes
-  Standard_Boolean drawIsosPln = myDrawer->IsoOnPlane();
-  myDrawer->SetIsoOnPlane (Standard_True);
-  
-  // add shape to presentation
-  switch (aMode) {
-  case 0:{
-    try { OCC_CATCH_SIGNALS  StdPrs_WFDeflectionShape::Add(aPrs,shape,myDrawer); }
-    catch (Standard_Failure) { 
-#ifdef DEB
-      cout << "AIS_Shape::Compute() failed: exception " <<
-	      Standard_Failure::Caught()->DynamicType()->Name() << ": " <<
-	      Standard_Failure::Caught()->GetMessageString() << endl;
-#endif
-//      cout << "a Shape should be incorrect: No Compute can be maked on it  "<< endl;     
-// on calcule une presentation de la boite englobante
-//      Compute(aPresentationManager,aPrs,2);
-    }
-    break;
-  }
-  case 1:
-    {
-      Standard_Real prevangle ;
-      Standard_Real newangle  ; 
-      Standard_Real prevcoeff ;
-      Standard_Real newcoeff  ; 
-      
-      Standard_Boolean isOwnDeviationAngle = OwnDeviationAngle(newangle,prevangle);
-      Standard_Boolean isOwnDeviationCoefficient = OwnDeviationCoefficient(newcoeff,prevcoeff);
-      if (((Abs (newangle - prevangle) > Precision::Angular()) && isOwnDeviationAngle) ||
-          ((Abs (newcoeff - prevcoeff) > Precision::Confusion()) && isOwnDeviationCoefficient)) { 
-#ifdef DEB
-	  cout << "AIS_Shape : compute"<<endl;
-	  cout << "newangl   : " << newangle << " # de " << "prevangl  : " << prevangle << " OU "<<endl;
-	  cout << "newcoeff  : " << newcoeff << " # de " << "prevcoeff : " << prevcoeff << endl;
-#endif
-	  BRepTools::Clean(shape);
-	}
-    
-      //shading seulement a partir de face...
-      try {
-	OCC_CATCH_SIGNALS
-	if ((Standard_Integer) shape.ShapeType()>4)
-	  StdPrs_WFDeflectionShape::Add(aPrs,shape,myDrawer);
-	else {
-	  myDrawer->SetShadingAspectGlobal(Standard_False);
-	  if (IsInfinite()) 
-	    StdPrs_WFDeflectionShape::Add(aPrs,shape,myDrawer);
-	  else
-	    StdPrs_ShadedShape::Add(aPrs,shape,myDrawer);
-	}
-      }
-      catch (Standard_Failure) {
-#ifdef DEB
-	cout << "AIS_Shape::Compute() in ShadingMode failed: exception " <<
-	        Standard_Failure::Caught()->DynamicType()->Name() << ": " <<
-	        Standard_Failure::Caught()->GetMessageString() << endl;
-#endif
-	// last resort: try to display as wireframe
-	try {
-	  OCC_CATCH_SIGNALS
-	  StdPrs_WFShape::Add(aPrs,shape,myDrawer);
-	}
-	catch (Standard_Failure) {
-	}
-      }
-      break;
-    }
-  case 2:
-    {
-      // boite englobante
-      if (IsInfinite()) StdPrs_WFDeflectionShape::Add(aPrs,shape,myDrawer);
-      else DisplayBox(aPrs,BoundingBox(),myDrawer);
-    }
-  }
-
-  // Restore initial settings
-  if ( style.IsSetColorCurv() ) {
-    waUFB->SetColor ( aColor1.Name() );
-    waFB->SetColor ( aColor2.Name() );
-    wa->SetColor ( aColor.Name() );
-  }
-  if ( style.IsSetColorSurf() ) {
-    a4bis->SetInteriorColor(aIntColor);
-    FMAT.SetColor(aFColor);
-    a4bis->SetFrontMaterial(FMAT);
-    UIso->SetColor ( aColorU );
-    VIso->SetColor ( aColorV );
-  }
-  myDrawer->SetIsoOnPlane (drawIsosPln);
+  myLabel = theLabel;
 }
 
 //=======================================================================
@@ -377,104 +106,127 @@ static void DisplayText (const TDF_Label& aLabel,
     }
   }
 }
-			 
+
 //=======================================================================
 //function : Compute
 //purpose  : 
 //=======================================================================
-// The Compute() method is copied from AIS_Shape::Compute and enhanced to 
-// support different color settings for different subshapes of a single shape
-  
-void XCAFPrs_AISObject::Compute (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,
-                                 const Handle(Prs3d_Presentation)& aPrs,
-                                 const Standard_Integer aMode)
-{  
-#ifdef DEB
-  //cout << "XCAFPrs_AISObject: Update called" << endl;
-#endif
-  aPrs->Clear();
+void XCAFPrs_AISObject::Compute (const Handle(PrsMgr_PresentationManager3d)& thePresentationManager,
+                                 const Handle(Prs3d_Presentation)&           thePrs,
+                                 const Standard_Integer                      theMode)
+{
+  thePrs->Clear();
 
   // abv: 06 Mar 00: to have good colors
-  Handle(TPrsStd_AISPresentation) prs = Handle(TPrsStd_AISPresentation)::DownCast ( GetOwner() );
-  if ( prs.IsNull() || !prs->HasOwnMaterial() )
-    AIS_Shape::SetMaterial ( Graphic3d_NOM_PLASTIC );
+  Handle(TPrsStd_AISPresentation) aPrs = Handle(TPrsStd_AISPresentation)::DownCast (GetOwner());
+  if (aPrs.IsNull() || !aPrs->HasOwnMaterial()) SetMaterial (Graphic3d_NOM_PLASTIC);
 
-  TopoDS_Shape shape;
-  if ( ! XCAFDoc_ShapeTool::GetShape ( myLabel, shape ) || shape.IsNull() ) return;
+  TopoDS_Shape aShape;
+  if (!XCAFDoc_ShapeTool::GetShape (myLabel, aShape) || aShape.IsNull()) return;
 
-  // wire,edge,vertex -> pas de HLR + priorite display superieure
-  Standard_Integer TheType = (Standard_Integer)shape.ShapeType();
-  if(TheType>4 && TheType<8) {
-    aPrs->SetVisual(Graphic3d_TOS_ALL);
-    aPrs->SetDisplayPriority(TheType+2);
-  }
   // Shape vide -> Assemblage vide.
-  if (shape.ShapeType() == TopAbs_COMPOUND) {
-    TopoDS_Iterator anExplor (shape);
-    if (!anExplor.More()) {
+  if (aShape.ShapeType() == TopAbs_COMPOUND)
+  {
+    TopoDS_Iterator anExplor (aShape);
+    if (!anExplor.More())
+    {
       return;
     }
   }
-  if (IsInfinite()) aPrs->SetInfiniteState(Standard_True); //pas de prise en compte lors du FITALL
-  
-  // collect information on colored subshapes
-  TopLoc_Location L;
-  XCAFPrs_DataMapOfShapeStyle settings;
-  XCAFPrs::CollectStyleSettings ( myLabel, L, settings );
-#ifdef DEB
-  //cout << "Styles collected" << endl;
-#endif
 
-  // dispatch (sub)shapes by their styles
-  XCAFPrs_DataMapOfStyleShape items;
-  XCAFPrs_Style DefStyle;
-  DefaultStyle (DefStyle);
-  XCAFPrs::DispatchStyles ( shape, settings, items, DefStyle );
-#ifdef DEB
-  //cout << "Dispatch done" << endl;
-#endif
+  Set (aShape);
+  ClearCustomAspects();
 
-  // add subshapes to presentation (one shape per style)
-  XCAFPrs_DataMapIteratorOfDataMapOfStyleShape it ( items );
-#ifdef DEB
-  //Standard_Integer i=1;
-#endif
-  for ( ; it.More(); it.Next() ) {
-    XCAFPrs_Style s = it.Key();
-#ifdef DEB
-    //cout << "Style " << i << ": [" << 
-    //  ( s.IsSetColorSurf() ? Quantity_Color::StringName ( s.GetColorSurf().Name() ) : "" ) << ", " <<
-    //  ( s.IsSetColorCurv() ? Quantity_Color::StringName ( s.GetColorCurv().Name() ) : "" ) << "]" <<
-	//" --> si_" << i << ( s.IsVisible() ? "" : " <invisible>" ) << endl;
-    //i++;
-#endif
-    if (! s.IsVisible() ) continue;
-    Prs3d_Root::NewGroup(aPrs);
-    AddStyledItem ( s, it.Value(), aPresentationManager, aPrs, aMode );
+  // Collecting information on colored subshapes
+  TopLoc_Location aLoc;
+  XCAFPrs_DataMapOfShapeStyle aSettings;
+  XCAFPrs::CollectStyleSettings ( myLabel, aLoc, aSettings );
+
+  // Getting default colors
+  XCAFPrs_Style aDefStyle;
+  DefaultStyle (aDefStyle);
+  Quantity_Color aColorCurv = aDefStyle.GetColorCurv();
+  Quantity_Color aColorSurf = aDefStyle.GetColorSurf();
+
+  SetColors (myDrawer, aColorCurv, aColorSurf);
+
+  // Set colors etc. for current shape according to style
+  for (XCAFPrs_DataMapIteratorOfDataMapOfShapeStyle anIter( aSettings ); anIter.More(); anIter.Next())
+  {
+    Handle(AIS_ColoredDrawer) aDrawer = CustomAspects (anIter.Key());
+    const XCAFPrs_Style& aStyle = anIter.Value();
+
+    aColorCurv = aStyle.IsSetColorCurv() ? aStyle.GetColorCurv() : aDefStyle.GetColorCurv();
+    aColorSurf = aStyle.IsSetColorSurf() ? aStyle.GetColorSurf() : aDefStyle.GetColorSurf();
+
+    SetColors (aDrawer, aColorCurv, aColorSurf);
   }
-  
-  if ( XCAFPrs::GetViewNameMode() ) {
-  // Displaying Name attributes
-#ifdef DEB
-    //cout << "Now display name of shapes" << endl;
-#endif
-    aPrs->SetDisplayPriority(10);
-    DisplayText (myLabel, aPrs, Attributes()->DimensionAspect()->TextAspect(), TopLoc_Location());//no location
+
+  AIS_ColoredShape::Compute (thePresentationManager, thePrs, theMode);
+
+  if (XCAFPrs::GetViewNameMode())
+  {
+    // Displaying Name attributes
+    thePrs->SetDisplayPriority (10);
+    DisplayText (myLabel, thePrs, Attributes()->DimensionAspect()->TextAspect(), TopLoc_Location());//no location
   }
-#ifdef DEB
-  //cout << "Compute finished" << endl;
-#endif
-  
-  aPrs->ReCompute(); // for hidden line recomputation if necessary...
+}
+
+//=======================================================================
+//function : SetColors
+//purpose  :
+//=======================================================================
+void XCAFPrs_AISObject::SetColors (const Handle(AIS_Drawer)& theDrawer,
+                                   const Quantity_Color&     theColorCurv,
+                                   const Quantity_Color&     theColorSurf)
+{
+  if (!theDrawer->HasShadingAspect())
+  {
+    theDrawer->SetShadingAspect (new Prs3d_ShadingAspect());
+  }
+  if (!theDrawer->HasLineAspect())
+  {
+    theDrawer->SetLineAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
+  }
+  if (!theDrawer->HasWireAspect())
+  {
+    theDrawer->SetWireAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
+  }
+  if (!theDrawer->HasUIsoAspect())
+  {
+    theDrawer->SetUIsoAspect (new Prs3d_IsoAspect (Quantity_NOC_GRAY75, Aspect_TOL_SOLID, 0.5, 1));
+  }
+  if (!theDrawer->HasVIsoAspect())
+  {
+    theDrawer->SetVIsoAspect (new Prs3d_IsoAspect (Quantity_NOC_GRAY75, Aspect_TOL_SOLID, 0.5, 1));
+  }
+  if (!theDrawer->HasFreeBoundaryAspect())
+  {
+    theDrawer->SetFreeBoundaryAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
+  }
+  if (!theDrawer->HasUnFreeBoundaryAspect())
+  {
+    theDrawer->SetUnFreeBoundaryAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
+  }
+
+  theDrawer->UnFreeBoundaryAspect()->SetColor (theColorCurv);
+  theDrawer->FreeBoundaryAspect()->SetColor (theColorCurv);
+  theDrawer->WireAspect()->SetColor (theColorCurv);
+
+  Graphic3d_MaterialAspect aMaterial = myDrawer->ShadingAspect()->Aspect()->FrontMaterial();
+  aMaterial.SetColor (theColorSurf);
+  theDrawer->ShadingAspect()->Aspect()->SetInteriorColor (theColorSurf);
+  theDrawer->ShadingAspect()->Aspect()->SetFrontMaterial (aMaterial);
+  theDrawer->UIsoAspect()->SetColor (theColorSurf);
+  theDrawer->VIsoAspect()->SetColor (theColorSurf);
 }
 
 //=======================================================================
 //function : DefaultStyle
 //purpose  : DefaultStyle() can be redefined by subclasses in order to set custom default style
 //=======================================================================
-void XCAFPrs_AISObject::DefaultStyle (XCAFPrs_Style& aStyle) const
+void XCAFPrs_AISObject::DefaultStyle (XCAFPrs_Style& theStyle) const
 {
-  static const Quantity_Color White ( Quantity_NOC_WHITE );
-  aStyle.SetColorSurf ( White );
-  aStyle.SetColorCurv ( White );
+  theStyle.SetColorSurf (Quantity_NOC_WHITE);
+  theStyle.SetColorCurv (Quantity_NOC_WHITE);
 }

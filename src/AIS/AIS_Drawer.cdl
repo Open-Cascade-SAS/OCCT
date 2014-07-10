@@ -264,6 +264,10 @@ is
 
     is redefined static;    
     
+    HasUIsoAspect (me) returns Boolean from Standard 
+	 ---Purpose: Returns true if the Drawer has a UIso aspect setting active.
+	 ---C++: inline
+   is static;
 
 -- Attributes for the V Isoparametric line of patches.
 
@@ -282,7 +286,11 @@ is
 	 --          Prs3d_WFDeflectionSurface 
 	 --          Prs3d_WFDeflectionRestrictedFace
     is redefined static;    
-    
+
+    HasVIsoAspect (me) returns Boolean from Standard 
+	 ---Purpose: Returns true if the Drawer has a VIso aspect setting active.
+	 ---C++: inline
+   is static;    
 
 -- Attributes for the free boundaries
 
@@ -296,8 +304,12 @@ is
      	 -- Type of line: Aspect_TOL_SOLID Width: 1.
     	 -- These attributes are used by Prs3d_WFShape.
     is redefined static;
-    
-        
+
+    HasFreeBoundaryAspect (me) returns Boolean from Standard
+    ---Purpose: Returns true if the Drawer has a free boundary aspect setting active.
+    ---C++: inline
+    is static;
+
     FreeBoundaryDraw(me) returns Boolean from Standard 
 	 ---Purpose: returns True if the drawing of the free boundaries is enabled.
     is redefined static;
@@ -349,7 +361,11 @@ is
 	 --          Prs3d_WFShape
     is redefined static;
 
-        
+    HasUnFreeBoundaryAspect (me) returns Boolean from Standard
+    ---Purpose: Returns true if the Drawer has an unfree boundary aspect setting active.
+    ---C++: inline
+    is static;
+
     UnFreeBoundaryDraw(me) returns Boolean from Standard 
     	 ---Purpose: Returns True if the drawing of the shared boundaries
     	 -- is enabled. True is the default setting.

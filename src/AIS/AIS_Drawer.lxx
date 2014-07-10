@@ -129,6 +129,26 @@ inline Standard_Boolean AIS_Drawer::HasPlaneAspect() const
   return !myPlaneAspect.IsNull();
 }
 
+inline Standard_Boolean AIS_Drawer::HasUIsoAspect() const
+{
+  return !myUIsoAspect.IsNull();
+}
+
+inline Standard_Boolean AIS_Drawer::HasVIsoAspect() const
+{
+  return !myVIsoAspect.IsNull();
+}
+
+inline Standard_Boolean AIS_Drawer::HasFreeBoundaryAspect() const
+{
+  return !myFreeBoundaryAspect.IsNull();
+}
+
+inline Standard_Boolean AIS_Drawer::HasUnFreeBoundaryAspect() const
+{
+  return !myUnFreeBoundaryAspect.IsNull();
+}
+
 inline Standard_Boolean AIS_Drawer::IsOwnFaceBoundaryDraw() const
 {
   return myHasOwnFaceBoundaryDraw;
