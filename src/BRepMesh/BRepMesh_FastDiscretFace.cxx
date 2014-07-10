@@ -25,6 +25,7 @@
 #include <BRepMesh_DataMapIteratorOfDataMapOfShapePairOfPolygon.hxx>
 #include <BRep_ListIteratorOfListOfPointRepresentation.hxx>
 #include <BRepMesh_ClassifierPtr.hxx>
+#include <BRepMesh_Classifier.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_PointRepresentation.hxx>
 #include <BRep_TVertex.hxx>

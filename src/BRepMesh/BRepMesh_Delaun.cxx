@@ -56,9 +56,8 @@ const Standard_Real AngDeviation1Deg  = M_PI/180.;
 const Standard_Real AngDeviation90Deg = 90 * AngDeviation1Deg;
 const Standard_Real Angle2PI          = 2 * M_PI;
 
-const Standard_Real Precision    = Precision::PConfusion();
-const Standard_Real EndPrecision = 1 - Precision;
-const Standard_Real Precision2   = Precision * Precision;
+const Standard_Real Precision  = Precision::PConfusion();
+const Standard_Real Precision2 = Precision * Precision;
 const gp_XY SortingDirection(M_SQRT1_2, M_SQRT1_2);
 
 //=======================================================================
@@ -1060,10 +1059,11 @@ Standard_Boolean BRepMesh_Delaun::checkIntersection(
         continue;
 
       gp_Pnt2d anIntPnt;
-      IntFlag aIntFlag = intSegSeg( theLink, aPolyLink, 
-        isConsiderEndPointTouch, isConsiderPointOnEdge, anIntPnt );
+      BRepMesh_WireInterferenceChecker::IntFlag aIntFlag = 
+        intSegSeg( theLink, aPolyLink, isConsiderEndPointTouch, 
+        isConsiderPointOnEdge, anIntPnt );
 
-      if ( aIntFlag != BRepMesh_Delaun::NoIntersection )
+      if ( aIntFlag != BRepMesh_WireInterferenceChecker::NoIntersection )
         return Standard_False;
     }
   }
@@ -1535,16 +1535,16 @@ void BRepMesh_Delaun::meshPolygon( TColStd_SequenceOfInteger&            thePoly
       };
 
       gp_Pnt2d anIntPnt;
-      IntFlag aIntFlag = intSegSeg( *aCurEdge, *aNextEdge, 
-        Standard_False, Standard_True, anIntPnt );
+      BRepMesh_WireInterferenceChecker::IntFlag aIntFlag = intSegSeg( *aCurEdge, 
+        *aNextEdge, Standard_False, Standard_True, anIntPnt );
 
-      if ( aIntFlag == BRepMesh_Delaun::NoIntersection )
+      if ( aIntFlag == BRepMesh_WireInterferenceChecker::NoIntersection )
         continue;
 
       Standard_Boolean isRemoveFromFirst  = Standard_False;
       Standard_Boolean isAddReplacingEdge = Standard_True;
       Standard_Integer aIndexToRemoveTo   = aNextPolyIt;
-      if ( aIntFlag == BRepMesh_Delaun::Cross )
+      if ( aIntFlag == BRepMesh_WireInterferenceChecker::Cross )
       {
         Standard_Real aLoopArea = polyArea( thePolygon, aPolyIt + 1, aNextPolyIt );
         gp_Vec2d aVec1( anIntPnt, aCurPnts [1] );
@@ -1586,7 +1586,7 @@ void BRepMesh_Delaun::meshPolygon( TColStd_SequenceOfInteger&            thePoly
             theSkipped->Add( Abs( thePolygon( aSkippedLinkIt ) ) );
         }
       }
-      else if ( aIntFlag == BRepMesh_Delaun::PointOnEdge )
+      else if ( aIntFlag == BRepMesh_WireInterferenceChecker::PointOnSegment )
       {
         // Indentify chopping link 
         Standard_Boolean isFirstChopping = Standard_False;
@@ -1657,7 +1657,7 @@ void BRepMesh_Delaun::meshPolygon( TColStd_SequenceOfInteger&            thePoly
             thePolygon, thePolyBoxes );
         }
       }
-      else if ( aIntFlag == BRepMesh_Delaun::Glued )
+      else if ( aIntFlag == BRepMesh_WireInterferenceChecker::Glued )
       {
         if ( aCurNodes[1] == aNextNodes[0] )
         {
@@ -1666,7 +1666,7 @@ void BRepMesh_Delaun::meshPolygon( TColStd_SequenceOfInteger&            thePoly
         }
         // TODO: Non-adjacent glued links within the polygon
       }
-      else if ( aIntFlag == BRepMesh_Delaun::Same )
+      else if ( aIntFlag == BRepMesh_WireInterferenceChecker::Same )
       {
         processLoop( aPolyIt, aNextPolyIt, thePolygon, thePolyBoxes );
 
@@ -1843,10 +1843,11 @@ void BRepMesh_Delaun::meshSimplePolygon( TColStd_SequenceOfInteger&     thePolyg
 
           // intersection is possible...                  
           gp_Pnt2d anIntPnt;
-          IntFlag aIntFlag = intSegSeg( aCheckLink, aPolyLink, 
-            Standard_False, Standard_False, anIntPnt );
+          BRepMesh_WireInterferenceChecker::IntFlag aIntFlag = 
+            intSegSeg( aCheckLink, aPolyLink, Standard_False, 
+            Standard_False, anIntPnt );
 
-          if( aIntFlag != BRepMesh_Delaun::NoIntersection )
+          if( aIntFlag != BRepMesh_WireInterferenceChecker::NoIntersection )
           {
             isIntersect = Standard_True;
             break;
@@ -2274,54 +2275,16 @@ Standard_Boolean BRepMesh_Delaun::Contains( const Standard_Integer theTriangleId
               ( aDistance[0] <= 0. && aDistance[1] <= 0. && aDistance[2] <= 0. ) ) );
 }
 
-
-//=============================================================================
-//function : classifyPoint
-//purpose  : Classifies the point in case of coincidence of two vectors.
-//           Returns zero value if point is out of segment and non zero 
-//           value if point is between the first and the second point of segment.
-//           thePoint1       - the start point of a segment (base point)
-//           thePoint2       - the end point of a segment
-//           thePointToCheck - the point to classify
-//=============================================================================
-Standard_Integer BRepMesh_Delaun::classifyPoint( const gp_XY& thePoint1,
-                                                 const gp_XY& thePoint2,
-                                                 const gp_XY& thePointToCheck ) const
-{
-  gp_XY aP1 = thePoint2       - thePoint1;
-  gp_XY aP2 = thePointToCheck - thePoint1;
-  
-  Standard_Real aDist = Abs( aP1 ^ aP2 );
-  if ( aDist >= Precision )
-  {
-    aDist = ( aDist * aDist ) / aP1.SquareModulus();
-    if ( aDist >= Precision2 )
-      return 0; //out
-  }
-    
-  gp_XY aMult = aP1.Multiplied( aP2 );
-  if ( aMult.X() < 0.0 || aMult.Y() < 0.0 )
-    return 0; //out
-    
-  if ( aP1.SquareModulus() < aP2.SquareModulus() )
-    return 0; //out
-    
-  if ( thePointToCheck.IsEqual( thePoint1, Precision ) || 
-       thePointToCheck.IsEqual( thePoint2, Precision ) )
-    return -1; //coinsides with an end point
-    
-  return 1;
-}
-
 //=============================================================================
 //function : intSegSeg
 //purpose  : Checks intersection between the two segments.
 //=============================================================================
-BRepMesh_Delaun::IntFlag BRepMesh_Delaun::intSegSeg( const BRepMesh_Edge&   theEdg1,
-                                                     const BRepMesh_Edge&   theEdg2,
-                                                     const Standard_Boolean isConsiderEndPointTouch,
-                                                     const Standard_Boolean isConsiderPointOnEdge,
-                                                     gp_Pnt2d&              theIntPnt) const
+BRepMesh_WireInterferenceChecker::IntFlag BRepMesh_Delaun::intSegSeg( 
+  const BRepMesh_Edge&   theEdg1,
+  const BRepMesh_Edge&   theEdg2,
+  const Standard_Boolean isConsiderEndPointTouch,
+  const Standard_Boolean isConsiderPointOnEdge,
+  gp_Pnt2d&              theIntPnt) const
 {
   gp_XY p1, p2, p3, p4;
   p1 = GetVertex( theEdg1.FirstNode() ).Coord();
@@ -2329,113 +2292,8 @@ BRepMesh_Delaun::IntFlag BRepMesh_Delaun::intSegSeg( const BRepMesh_Edge&   theE
   p3 = GetVertex( theEdg2.FirstNode() ).Coord();
   p4 = GetVertex( theEdg2.LastNode()  ).Coord();
   
-  Standard_Integer aPoint1 = classifyPoint( p1, p2, p3 );
-  Standard_Integer aPoint2 = classifyPoint( p1, p2, p4 );
-  Standard_Integer aPoint3 = classifyPoint( p3, p4, p1 );
-  Standard_Integer aPoint4 = classifyPoint( p3, p4, p2 );
-
-  // Consider case when edges have shared vertex
-  if ( isConsiderEndPointTouch )
-  {
-    if ( aPoint1 < 0 || aPoint2 < 0 )
-      return BRepMesh_Delaun::EndPointTouch;
-  }
-
-  Standard_Integer aPosHash = 
-    aPoint1 + aPoint2 + aPoint3 + aPoint4;
-
-  /*=========================================*/
-  /*  1) hash code == 1:
-
-                    0+
-                    /
-           0      1/         0
-           +======+==========+
-  
-      2) hash code == 2:
-
-           0    1        1   0
-        a) +----+========+---+
-
-           0       1   1     0
-        b) +-------+===+=====+
-
-                                             */
-  /*=========================================*/
-  if ( aPosHash == 1 )
-  {
-    return isConsiderPointOnEdge ? 
-      BRepMesh_Delaun::PointOnEdge :
-      BRepMesh_Delaun::NoIntersection;
-  }
-  else if ( aPosHash == 2 )
-    return BRepMesh_Delaun::Glued;
-
-  gp_XY aVec1           = p2 - p1;
-  gp_XY aVec2           = p4 - p3;
-  gp_XY aVecStartPoints = p3 - p1;
-    
-  Standard_Real aCrossD1D2 = aVec1           ^ aVec2;
-  Standard_Real aCrossD1D3 = aVecStartPoints ^ aVec2;
-
-  // is edgegs codirectional
-  if ( Abs( aCrossD1D2 ) < Precision )
-  {
-    // just a parallel case?
-    if( Abs( aCrossD1D3 ) < Precision )
-    {
-      /*=========================================*/
-      /*  Here the following cases are possible:
-          1) hash code == -4:
-
-               -1                -1
-                +=================+
-               -1                -1
-
-          2) hash code == -2:
-
-                0       -1        0
-                +--------+========+
-                        -1
-
-          3) hash code == -1:
-
-                0        1        -1
-                +--------+========+
-                                  -1
-
-          4) hash code == 0:
-
-                0      0  0       0
-                +------+  +=======+
-                0      0  0       0
-                                                 */
-      /*=========================================*/
-
-      if ( aPosHash < -2 )
-        return BRepMesh_Delaun::Same;
-      else if ( aPosHash == -1 )
-        return BRepMesh_Delaun::Glued;
-
-      return BRepMesh_Delaun::NoIntersection;
-    }
-    else
-      return BRepMesh_Delaun::NoIntersection;
-  }
-
-  Standard_Real aPar = aCrossD1D3 / aCrossD1D2;
-  // inrersects out of first segment range
-  if( aPar < Precision || aPar > EndPrecision )
-    return BRepMesh_Delaun::NoIntersection;
- 
-  Standard_Real aCrossD2D3 = aVecStartPoints.Reversed() ^ aVec1;
-  aPar = aCrossD2D3 / -aCrossD1D2;
-  // inrersects out of second segment range
-  if( aPar < Precision || aPar > EndPrecision )
-    return BRepMesh_Delaun::NoIntersection;
- 
-  theIntPnt = p3 + aPar * aVec2;
-  return BRepMesh_Delaun::Cross;
+  return BRepMesh_WireInterferenceChecker::Intersect(p1, p2, p3, p4,
+    isConsiderEndPointTouch, isConsiderPointOnEdge, theIntPnt);
 }
 
 //=============================================================================

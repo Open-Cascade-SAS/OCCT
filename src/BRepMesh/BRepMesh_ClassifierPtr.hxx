@@ -16,9 +16,9 @@
 #ifndef BRepMesh_ClassifierPtr_HeaderFile
 #define BRepMesh_ClassifierPtr_HeaderFile
 
-#include <BRepMesh_Classifier.hxx>
 #include <NCollection_Handle.hxx>
 
+class BRepMesh_Classifier;
 typedef NCollection_Handle<BRepMesh_Classifier> BRepMesh_ClassifierPtr;
 
 #endif

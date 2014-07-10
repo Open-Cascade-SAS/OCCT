@@ -20,6 +20,8 @@
 #include <BRepMesh_FaceAttribute.hxx>
 #include <BRepMesh_DataStructureOfDelaun.hxx>
 #include <BRepMesh_ClassifierPtr.hxx>
+#include <BRepMesh_Classifier.hxx>
+#include <BRepMesh_WireChecker.hxx>
 #include <BRepMesh_GeomTool.hxx>
 #include <BRepMesh_PairOfPolygon.hxx>
 #include <BRepMesh_DataMapOfShapePairOfPolygon.hxx>
@@ -126,11 +128,12 @@ BRepMesh_FastDiscret::BRepMesh_FastDiscret(const Standard_Real    theDefle,
                                            const Standard_Boolean theWithShare,
                                            const Standard_Boolean theInshape,
                                            const Standard_Boolean theRelative,
-                                           const Standard_Boolean theShapetrigu) :
-  myAngle (theAngl),
+                                           const Standard_Boolean theShapetrigu,
+                                           const Standard_Boolean isInParallel)
+: myAngle (theAngl),
   myDeflection (theDefle),
   myWithShare (theWithShare),
-  myInParallel (Standard_False),
+  myInParallel (isInParallel),
   myNbLocat (0),
   myRelative (theRelative),
   myShapetrigu (theShapetrigu), 
@@ -153,11 +156,12 @@ BRepMesh_FastDiscret::BRepMesh_FastDiscret(const Standard_Real    theDefle,
                                            const Standard_Boolean theWithShare,
                                            const Standard_Boolean theInshape,
                                            const Standard_Boolean theRelative,
-                                           const Standard_Boolean theShapetrigu): 
-  myAngle (theAngl),
+                                           const Standard_Boolean theShapetrigu,
+                                           const Standard_Boolean isInParallel)
+: myAngle (theAngl),
   myDeflection (theDefle),
   myWithShare (theWithShare),
-  myInParallel (Standard_False),
+  myInParallel (isInParallel),
   myNbLocat (0),
   myRelative (theRelative),
   myShapetrigu (theShapetrigu),
@@ -493,59 +497,59 @@ void BRepMesh_FastDiscret::Add(const TopoDS_Face& theface,
     Standard_Integer nbVertices = myVemap.Extent();
     const Standard_Real tolclass = Precision::PConfusion(); //0.03*Max(myumax-myumin, myvmax-myvmin);
     
-    BRepMesh_ClassifierPtr classifier ( 
-      new BRepMesh_Classifier(face, tolclass,  myInternaledges, myVemap, 
-                              myStructure, myumin, myumax, myvmin, myvmax) );   
-  
-    myFacestate = classifier->State();
-    if (myFacestate == BRepMesh_SelfIntersectingWire)
+    BRepMesh_ClassifierPtr classifier = new BRepMesh_Classifier;
     {
-      Standard_Integer nbmaill = 0;
-      Standard_Real eps = Precision::Confusion();
-      while (nbmaill < 5 && myFacestate != BRepMesh_ReMesh)
+      BRepMesh_WireChecker aDFaceChecker(face, 
+        tolclass, myInternaledges, myVemap, myStructure, 
+        myumin, myumax, myvmin, myvmax, myInParallel);
+      aDFaceChecker.ReCompute(classifier);
+    
+      myFacestate = aDFaceChecker.Status();
+      if (myFacestate == BRepMesh_SelfIntersectingWire)
       {
-        nbmaill++;
-        
-        //clear the structure of links
-        myStructure.Nullify();
-        myStructure = new BRepMesh_DataStructureOfDelaun(anAlloc);
-        
-        myVemap.Clear();
-        myLocation2d.Clear();
-        myInternaledges.Clear();
-
-        Standard_Integer j1;
-        for(j1 = 1; j1 <= aShSeq.Length(); j1++)
+        Standard_Integer nbmaill = 0;
+        Standard_Real eps = Precision::Confusion();
+        while (nbmaill < 5 && myFacestate != BRepMesh_ReMesh)
         {
-          const TopoDS_Edge& edge = TopoDS::Edge(aShSeq.Value(j1));
-          if (myEdges.IsBound(edge))
+          nbmaill++;
+          
+          //clear the structure of links
+          myStructure.Nullify();
+          myStructure = new BRepMesh_DataStructureOfDelaun(anAlloc);
+          
+          myVemap.Clear();
+          myLocation2d.Clear();
+          myInternaledges.Clear();
+
+          Standard_Integer j1;
+          for(j1 = 1; j1 <= aShSeq.Length(); j1++)
           {
-            myEdges.UnBind(edge);
-            myInternaledges.UnBind(edge);
+            const TopoDS_Edge& edge = TopoDS::Edge(aShSeq.Value(j1));
+            if (myEdges.IsBound(edge))
+            {
+              myEdges.UnBind(edge);
+              myInternaledges.UnBind(edge);
+            }
           }
-        }
-        
-        
-        for( j1 = 1; j1 <= aShSeq.Length(); j1++)
-        {
-          const TopoDS_Edge& edge = TopoDS::Edge(aShSeq.Value(j1));
-          defedge = myMapdefle(edge) / 3.;
-          defedge = Max(defedge, eps);
-          myMapdefle.Bind(edge, defedge);
-          const Handle(Geom2d_Curve)& C = aCSeq.Value(j1);
-          Add(edge, face, gFace, C, theAncestors, defedge, aFSeq.Value(j1), aLSeq.Value(j1));
-        }
+          
+          
+          for( j1 = 1; j1 <= aShSeq.Length(); j1++)
+          {
+            const TopoDS_Edge& edge = TopoDS::Edge(aShSeq.Value(j1));
+            defedge = myMapdefle(edge) / 3.;
+            defedge = Max(defedge, eps);
+            myMapdefle.Bind(edge, defedge);
+            const Handle(Geom2d_Curve)& C = aCSeq.Value(j1);
+            Add(edge, face, gFace, C, theAncestors, defedge, aFSeq.Value(j1), aLSeq.Value(j1));
+          }
 
-        classifier.Nullify();
-
-        classifier = new BRepMesh_Classifier(face, tolclass, myInternaledges, myVemap,
-                                             myStructure, myumin, myumax, myvmin, myvmax);
-
-        if (classifier->State() == BRepMesh_NoError)
-        {
-          myFacestate = BRepMesh_ReMesh;
+          aDFaceChecker.ReCompute(classifier);
+          if (aDFaceChecker.Status() == BRepMesh_NoError)
+          {
+            myFacestate = BRepMesh_ReMesh;
+          }
+          nbVertices = myVemap.Extent();
         }
-        nbVertices = myVemap.Extent();
       }
     }
     

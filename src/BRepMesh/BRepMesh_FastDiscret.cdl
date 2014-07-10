@@ -67,24 +67,26 @@ uses    Boolean                   from Standard,
 
 is
 
-        Create (defle     : Real    from Standard;
-                angle     : Real    from Standard;
-                B         : Box     from Bnd;
-                withShare : Boolean from Standard=Standard_True;
-                inshape   : Boolean from Standard=Standard_False;
-                relative  : Boolean from Standard=Standard_False;
-                shapetrigu: Boolean from Standard=Standard_False)
+        Create (defle       : Real    from Standard;
+                angle       : Real    from Standard;
+                B           : Box     from Bnd;
+                withShare   : Boolean from Standard=Standard_True;
+                inshape     : Boolean from Standard=Standard_False;
+                relative    : Boolean from Standard=Standard_False;
+                shapetrigu  : Boolean from Standard=Standard_False;
+                isInParallel: Boolean from Standard=Standard_False)
           returns FastDiscret from BRepMesh;
 
 
-        Create (defle     : Real    from Standard;
-                shape     : Shape   from TopoDS;
-                B         : Box     from Bnd;
-                angle     : Real    from Standard;
-                withShare : Boolean from Standard=Standard_True;
-                inshape   : Boolean from Standard=Standard_False;
-                relative  : Boolean from Standard=Standard_False;
-                shapetrigu: Boolean from Standard=Standard_False)
+        Create (defle       : Real    from Standard;
+                shape       : Shape   from TopoDS;
+                B           : Box     from Bnd;
+                angle       : Real    from Standard;
+                withShare   : Boolean from Standard=Standard_True;
+                inshape     : Boolean from Standard=Standard_False;
+                relative    : Boolean from Standard=Standard_False;
+                shapetrigu  : Boolean from Standard=Standard_False;
+                isInParallel: Boolean from Standard=Standard_False)
            ---Purpose: if the  boolean    <relative>   is  True,    the
            --          deflection used   for the polygonalisation   of
            --          each edge will be <defle> * Size of Edge.

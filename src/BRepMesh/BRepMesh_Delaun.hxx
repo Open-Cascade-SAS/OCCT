@@ -25,6 +25,7 @@
 #include <BRepMesh_MapOfIntegerInteger.hxx>
 #include <BRepMesh_DataStructureOfDelaun.hxx>
 #include <NCollection_Sequence.hxx>
+#include <BRepMesh_WireInterferenceChecker.hxx>
 
 class Bnd_B2d;
 class Bnd_Box2d;
@@ -118,16 +119,6 @@ public:
                                              Standard_Integer&      theEdgeOn) const;
 
 private:
-
-  enum IntFlag
-  {
-    NoIntersection,
-    Cross,
-    EndPointTouch,
-    PointOnEdge,
-    Glued,
-    Same
-  };
 
   enum ReplaceFlag
   {
@@ -305,21 +296,13 @@ private:
                                Standard_Real          theSqModulus[3],
                                Standard_Integer&      theEdgeOn) const;
 
-  //! Classifies the point in case of coincidence of two vectors.
-  //! @param thePoint1       the start point of a segment (base point)
-  //! @param thePoint2       the end point of a segment
-  //! @param thePointToCheck the point to classify
-  //! @returns zero value if point is out of segment and non zero value if point is between the first and the second point of segment
-  Standard_Integer classifyPoint (const gp_XY& thePoint1,
-                                  const gp_XY& thePoint2,
-                                  const gp_XY& thePointToCheck) const;
-
   //! Checks intersection between the two segments.
-  IntFlag intSegSeg (const BRepMesh_Edge&   theEdge1,
-                     const BRepMesh_Edge&   theEdge2,
-                     const Standard_Boolean isConsiderEndPointTouch,
-                     const Standard_Boolean isConsiderPointOnEdge,
-                     gp_Pnt2d&              theIntPnt) const;
+  BRepMesh_WireInterferenceChecker::IntFlag intSegSeg (
+    const BRepMesh_Edge&   theEdge1,
+    const BRepMesh_Edge&   theEdge2,
+    const Standard_Boolean isConsiderEndPointTouch,
+    const Standard_Boolean isConsiderPointOnEdge,
+    gp_Pnt2d&              theIntPnt) const;
 
   //! Returns area of the loop of the given polygon defined by indices of its start and end links.
   Standard_Real polyArea (const TColStd_SequenceOfInteger& thePolygon,

@@ -2,7 +2,13 @@ BRepMesh_PluginEntryType.hxx
 BRepMesh_PluginMacro.hxx
 BRepMesh_Triangle.hxx
 BRepMesh_Triangle.cxx
+BRepMesh_Classifier.hxx
+BRepMesh_Classifier.cxx
 BRepMesh_ClassifierPtr.hxx
+BRepMesh_WireInterferenceChecker.hxx
+BRepMesh_WireInterferenceChecker.cxx
+BRepMesh_WireChecker.hxx
+BRepMesh_WireChecker.cxx
 BRepMesh_CellFilter.hxx
 BRepMesh_Delaun.hxx
 BRepMesh_Delaun.cxx

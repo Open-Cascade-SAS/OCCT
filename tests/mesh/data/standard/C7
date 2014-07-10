@@ -4,6 +4,11 @@ if { [string compare $command "shading"] == 0 } {
    set nbfreenodes(All) 1
 } else {
    set bug_freelinks "OCC23105"
-   set nbfree(ALL) 4
+###   set nbfree(ALL) 4
+   if { [string compare $command "mesh"] == 0 } {
+     set nbfree(ALL) 8
+   } else {
+     set nbfree(ALL) 2
+   }
    set nbfreenodes(All) 4
 }

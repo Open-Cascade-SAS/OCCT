@@ -11,8 +11,8 @@ if { [string compare $command "shading"] == 0 } {
   set rel_tol 1.3
   set nbwithouttri(ALL) 6
   set nbfreenodes(ALL) 1
-  set bug_freelinks "OCC22687"
-  set nbfree(ALL) 2
+###  set bug_freelinks "OCC22687"
+###  set nbfree(ALL) 2
 } else {
   set nbfreenodes(ALL) 2
   set nbwithouttri(ALL) 5
@@ -30,7 +30,7 @@ if { [string compare $command "mesh"] == 0 } {
   }
   set nbfree($os) $nb
 }
-if { [string compare $command "shading"] == 0 } {
-  set bug_freelinks "OCC22687"
-  set nbfree(ALL) 2
-}
+###if { [string compare $command "shading"] == 0 } {
+###  set bug_freelinks "OCC22687"
+###  set nbfree(ALL) 2
+###}

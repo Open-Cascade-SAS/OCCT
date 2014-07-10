@@ -117,7 +117,7 @@ Standard_Boolean NCollection_EBTree<TheObjType,TheBndType>::Add
     UBTree::Add (theObj, theBnd);
 
     // Update the map
-    TreeNode& aNewNode = ChangeLastNode();
+    TreeNode& aNewNode = this->ChangeLastNode();
     myObjNodeMap.Bind (theObj, &aNewNode);
     // If the new node is not the root (has a parent) check the neighbour node
     if (!aNewNode.IsRoot()) {

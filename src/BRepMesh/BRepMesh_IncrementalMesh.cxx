@@ -109,10 +109,10 @@ BRepMesh_IncrementalMesh::BRepMesh_IncrementalMesh()
 //function : BRepMesh_IncrementalMesh
 //purpose  : 
 //=======================================================================
-BRepMesh_IncrementalMesh::BRepMesh_IncrementalMesh (const TopoDS_Shape& theShape,
-                                                    const Standard_Real theDeflection,
+BRepMesh_IncrementalMesh::BRepMesh_IncrementalMesh (const TopoDS_Shape&    theShape,
+                                                    const Standard_Real    theDeflection,
                                                     const Standard_Boolean theRelative,
-                                                    const Standard_Real theAngle,
+                                                    const Standard_Real    theAngle,
                                                     const Standard_Boolean theInParallel)
 : myRelative (theRelative),
   myInParallel (theInParallel)
@@ -215,12 +215,13 @@ void BRepMesh_IncrementalMesh::Perform()
   }
   //
   myMesh = new BRepMesh_FastDiscret(myDeflection,
-				    myAngle,
-				    aBox,
-				    Standard_True,
-				    Standard_True,
-				    myRelative,
-				    Standard_True);
+            myAngle,
+            aBox,
+            Standard_True,
+            Standard_True,
+            myRelative,
+            Standard_True,
+            myInParallel);
   //
   Update(myShape);
 }
@@ -519,7 +520,7 @@ void  BRepMesh_IncrementalMesh::Update(const TopoDS_Face& F)
               TopoDS_Face F2 = TopoDS::Face(it.Value());
               if (!MShape.Contains(F2)) {
                 MShape.Add(F2);
-                T = BRep_Tool::Triangulation(F2, l);	  
+                T = BRep_Tool::Triangulation(F2, l);
                 if (!T.IsNull()) {
 #ifdef DEB_MESH
                   cout <<"triangulation a refaire" <<endl;
