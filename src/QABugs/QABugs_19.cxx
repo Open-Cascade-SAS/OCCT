@@ -2542,6 +2542,105 @@ static Standard_Integer OCC25004 (Draw_Interpretor& theDI,
   return 0;
 }
 
+#include <OSD_Environment.hxx>
+#include <Plugin.hxx>
+#include <Plugin_Macro.hxx>
+#include <Resource_Manager.hxx>
+
+#define THE_QATEST_DOC_FORMAT       "My Proprietary Format"
+
+#define QA_CHECK(theDesc, theExpr, theValue) \
+{\
+  const bool isTrue = !!(theExpr); \
+  std::cout << theDesc << (isTrue ? " TRUE  " : " FALSE ") << (isTrue == theValue ? " is OK\n" : " is FAIL\n"); \
+}
+
+class Test_TDocStd_Application : public TDocStd_Application
+{
+public:
+
+  static void initGlobalPluginMap (const TCollection_AsciiString& thePlugin,
+                                   const TCollection_AsciiString& theSaver,
+                                   const TCollection_AsciiString& theLoader)
+  {
+    const Handle(Resource_Manager)& aManager = Plugin::AdditionalPluginMap();
+    aManager->SetResource ((theSaver  + ".Location").ToCString(), thePlugin.ToCString());
+    aManager->SetResource ((theLoader + ".Location").ToCString(), thePlugin.ToCString());
+  }
+
+  Test_TDocStd_Application (const TCollection_AsciiString& thePlugin,
+                            const TCollection_AsciiString& theSaver,
+                            const TCollection_AsciiString& theLoader)
+  {
+    initGlobalPluginMap (thePlugin, theSaver, theLoader);
+
+    // explicitly initialize resource manager
+    myResources = new Resource_Manager ("");
+    myResources->SetResource ("xml.FileFormat", THE_QATEST_DOC_FORMAT);
+    myResources->SetResource (THE_QATEST_DOC_FORMAT ".Description",     "Test XML Document");
+    myResources->SetResource (THE_QATEST_DOC_FORMAT ".FileExtension",   "xml");
+    myResources->SetResource (THE_QATEST_DOC_FORMAT ".StoragePlugin",   theSaver.ToCString());
+    myResources->SetResource (THE_QATEST_DOC_FORMAT ".RetrievalPlugin", theLoader.ToCString());
+  }
+
+  virtual Standard_CString ResourcesName() { return ""; }
+  virtual void Formats (TColStd_SequenceOfExtendedString& theFormats) { theFormats.Clear(); }
+};
+
+//=======================================================================
+//function : OCC24925
+//purpose  :
+//=======================================================================
+static Standard_Integer OCC24925 (Draw_Interpretor& theDI,
+                                  Standard_Integer  theArgNb,
+                                  const char**      theArgVec)
+{
+  if (theArgNb != 2
+   && theArgNb != 5)
+  {
+    std::cout << "Error: wrong syntax! See usage:\n";
+    theDI.PrintHelp (theArgVec[0]);
+    return 1;
+  }
+
+  Standard_Integer anArgIter = 1;
+  TCollection_ExtendedString aFileName = theArgVec[anArgIter++];
+  TCollection_AsciiString    aPlugin   = "TKXml";
+  TCollection_AsciiString    aSaver    = "03a56820-8269-11d5-aab2-0050044b1af1"; // XmlStorageDriver   in XmlDrivers.cxx
+  TCollection_AsciiString    aLoader   = "03a56822-8269-11d5-aab2-0050044b1af1"; // XmlRetrievalDriver in XmlDrivers.cxx
+  if (anArgIter < theArgNb)
+  {
+    aPlugin = theArgVec[anArgIter++];
+    aSaver  = theArgVec[anArgIter++];
+    aLoader = theArgVec[anArgIter++];
+  }
+
+  PCDM_StoreStatus  aSStatus = PCDM_SS_Failure;
+  PCDM_ReaderStatus aRStatus = PCDM_RS_OpenError;
+
+  Handle(TDocStd_Application) anApp = new Test_TDocStd_Application (aPlugin, aSaver, aLoader);
+  {
+    Handle(TDocStd_Document) aDoc;
+    anApp->NewDocument (THE_QATEST_DOC_FORMAT, aDoc);
+    TDF_Label aLab = aDoc->Main();
+    TDataStd_Integer::Set (aLab, 0);
+    TDataStd_Name::Set (aLab, "QABugs_19.cxx");
+
+    aSStatus = anApp->SaveAs (aDoc, aFileName);
+    anApp->Close (aDoc);
+  }
+  QA_CHECK ("SaveAs()", aSStatus == PCDM_SS_OK, true);
+
+  {
+    Handle(TDocStd_Document) aDoc;
+    aRStatus = anApp->Open (aFileName, aDoc);
+    anApp->Close (aDoc);
+  }
+  QA_CHECK ("Open()  ", aRStatus == PCDM_RS_OK, true);
+  return 0;
+}
+
+/*****************************************************************************/
 
 void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
@@ -2590,5 +2689,9 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC24945", "OCC24945", __FILE__, OCC24945, group);
   theCommands.Add ("OCC23950", "OCC23950", __FILE__, OCC23950, group);
   theCommands.Add ("OCC25004", "OCC25004", __FILE__, OCC25004, group);
+  theCommands.Add ("OCC24925",
+                   "OCC24925 filename [pluginLib=TKXml storageGuid retrievalGuid]"
+                   "\nOCAF persistence without setting environment variables",
+                   __FILE__, OCC24925, group);
   return;
 }

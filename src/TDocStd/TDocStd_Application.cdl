@@ -236,8 +236,8 @@ is
 
 fields
 
-    myResources      : Manager from Resource;
-    myIsDriverLoaded : Boolean from Standard;
+    myResources      : Manager from Resource is protected;
+    myIsDriverLoaded : Boolean from Standard is protected;
 
 friends
     class Document from TDocStd

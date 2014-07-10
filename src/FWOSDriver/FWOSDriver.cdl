@@ -20,7 +20,6 @@ uses
     CDM,CDF,TCollection
 
 is
-    class Driver;
     class DriverFactory;
 
     

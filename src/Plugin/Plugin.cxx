@@ -30,7 +30,8 @@ static Standard_PCharacter thePluginId = tc;
 //function : Load
 //purpose  : 
 //=======================================================================
-Handle(Standard_Transient) Plugin::Load(const Standard_GUID& aGUID) 
+Handle(Standard_Transient) Plugin::Load (const Standard_GUID& aGUID,
+                                         const Standard_Boolean theVerbose)
 {
   
   aGUID.ToCString(thePluginId);
@@ -45,10 +46,14 @@ Handle(Standard_Transient) Plugin::Load(const Standard_GUID& aGUID)
     theResource += ".Location";
 
     if(!PluginResource->Find(theResource.ToCString())) {
-      Standard_SStream aMsg; aMsg << "could not find the resource:";
-      aMsg << theResource.ToCString()<< endl;
-      cout << "could not find the resource:"<<theResource.ToCString()<< endl;
-      Plugin_Failure::Raise(aMsg);
+      PluginResource = AdditionalPluginMap();
+      if (!PluginResource->Find(theResource.ToCString())) {
+        Standard_SStream aMsg; aMsg << "could not find the resource:";
+        aMsg << theResource.ToCString()<< endl;
+        if (theVerbose)
+            cout << "could not find the resource:"<<theResource.ToCString()<< endl;
+        Plugin_Failure::Raise(aMsg);
+      }
     }
     
     TCollection_AsciiString thePluginLibrary("");
@@ -72,7 +77,8 @@ Handle(Standard_Transient) Plugin::Load(const Standard_GUID& aGUID)
       aMsg << PluginResource->Value(theResource.ToCString());
       aMsg << "; reason:";
       aMsg << error.ToCString();
-      cout << "could not open: "  << PluginResource->Value(theResource.ToCString())<< " ; reason: "<< error.ToCString() << endl;
+      if (theVerbose)
+        cout << "could not open: "  << PluginResource->Value(theResource.ToCString())<< " ; reason: "<< error.ToCString() << endl;
       Plugin_Failure::Raise(aMsg);
     }
     f = theSharedLibrary.DlSymb("PLUGINFACTORY");
@@ -95,3 +101,10 @@ Handle(Standard_Transient) Plugin::Load(const Standard_GUID& aGUID)
   
 }
 
+const Handle(Resource_Manager)& Plugin::AdditionalPluginMap()
+{
+  static Handle(Resource_Manager) aMap;
+  if (aMap.IsNull())
+    aMap = new Resource_Manager ("" /*theName*/, Standard_False /*theVerbose*/);
+  return aMap;
+}

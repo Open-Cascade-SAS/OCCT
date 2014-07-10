@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <FWOSDriver_Driver.ixx>
+#include <CDF_FWOSDriver.ixx>
 #include <TCollection_ExtendedString.hxx>
 #include <OSD_Path.hxx>
 #include <OSD_Directory.hxx>
@@ -39,16 +39,16 @@ static void PutSlash (TCollection_ExtendedString& anXSTRING) {
 }
 
 //==============================================================================
-//function : FWOSDriver_Driver
+//function : CDF_FWOSDriver
 //purpose  :
 //==============================================================================
-FWOSDriver_Driver::FWOSDriver_Driver() {}
+CDF_FWOSDriver::CDF_FWOSDriver() {}
 
 //==============================================================================
 //function : Find
 //purpose  :
 //==============================================================================
-Standard_Boolean FWOSDriver_Driver::Find(const TCollection_ExtendedString& aFolder,
+Standard_Boolean CDF_FWOSDriver::Find(const TCollection_ExtendedString& aFolder,
                                          const TCollection_ExtendedString& aName,
                                          const TCollection_ExtendedString& /*aVersion*/)
 {
@@ -70,7 +70,7 @@ Standard_Boolean FWOSDriver_Driver::Find(const TCollection_ExtendedString& aFold
 //function : HasReadPermission
 //purpose  :
 //==============================================================================
-Standard_Boolean FWOSDriver_Driver::HasReadPermission(const TCollection_ExtendedString& aFolder,
+Standard_Boolean CDF_FWOSDriver::HasReadPermission(const TCollection_ExtendedString& aFolder,
                                                       const TCollection_ExtendedString& aName,
                                                       const TCollection_ExtendedString& /*aVersion*/)
 {
@@ -96,7 +96,7 @@ Standard_Boolean FWOSDriver_Driver::HasReadPermission(const TCollection_Extended
 //function : MetaData
 //purpose  :
 //==============================================================================
-Handle(CDM_MetaData) FWOSDriver_Driver::MetaData(const TCollection_ExtendedString& aFolder,
+Handle(CDM_MetaData) CDF_FWOSDriver::MetaData(const TCollection_ExtendedString& aFolder,
                                                  const TCollection_ExtendedString& aName,
                                                  const TCollection_ExtendedString& /*aVersion*/)
 {
@@ -108,7 +108,7 @@ Handle(CDM_MetaData) FWOSDriver_Driver::MetaData(const TCollection_ExtendedStrin
 //function : CreateMetaData
 //purpose  :
 //==============================================================================
-Handle(CDM_MetaData) FWOSDriver_Driver::CreateMetaData(const Handle(CDM_Document)& aDocument,
+Handle(CDM_MetaData) CDF_FWOSDriver::CreateMetaData(const Handle(CDM_Document)& aDocument,
                                                        const TCollection_ExtendedString& aFileName)
 {
   return CDM_MetaData::LookUp(aDocument->RequestedFolder(),aDocument->RequestedName(),
@@ -120,7 +120,7 @@ Handle(CDM_MetaData) FWOSDriver_Driver::CreateMetaData(const Handle(CDM_Document
 //function : BuildFileName
 //purpose  :
 //==============================================================================
-TCollection_ExtendedString FWOSDriver_Driver::BuildFileName(const Handle(CDM_Document)& aDocument)
+TCollection_ExtendedString CDF_FWOSDriver::BuildFileName(const Handle(CDM_Document)& aDocument)
 {
 
   TCollection_ExtendedString retstr = TCollection_ExtendedString(aDocument->RequestedFolder());
@@ -133,7 +133,7 @@ TCollection_ExtendedString FWOSDriver_Driver::BuildFileName(const Handle(CDM_Doc
 //function : FindFolder
 //purpose  :
 //==============================================================================
-Standard_Boolean FWOSDriver_Driver::FindFolder(const TCollection_ExtendedString& aFolder)
+Standard_Boolean CDF_FWOSDriver::FindFolder(const TCollection_ExtendedString& aFolder)
 {
   
   OSD_Path thePath=UTL::Path(aFolder);
@@ -145,7 +145,7 @@ Standard_Boolean FWOSDriver_Driver::FindFolder(const TCollection_ExtendedString&
 //function : Concatenate
 //purpose  :
 //==============================================================================
-TCollection_ExtendedString FWOSDriver_Driver::Concatenate(const TCollection_ExtendedString& aFolder,
+TCollection_ExtendedString CDF_FWOSDriver::Concatenate(const TCollection_ExtendedString& aFolder,
                                                           const TCollection_ExtendedString& aName)
 {
   TCollection_ExtendedString ff(aFolder);
@@ -160,7 +160,7 @@ TCollection_ExtendedString FWOSDriver_Driver::Concatenate(const TCollection_Exte
 //function : DefaultFolder
 //purpose  :
 //==============================================================================
-TCollection_ExtendedString FWOSDriver_Driver::DefaultFolder()
+TCollection_ExtendedString CDF_FWOSDriver::DefaultFolder()
 {
   TCollection_ExtendedString theDefaultFolder;
   if (theDefaultFolder.Length() == 0) {
@@ -191,7 +191,7 @@ TCollection_ExtendedString FWOSDriver_Driver::DefaultFolder()
 //function : BuildMetaData
 //purpose  :
 //==============================================================================
-Handle(CDM_MetaData) FWOSDriver_Driver::BuildMetaData(const TCollection_ExtendedString& aFileName)
+Handle(CDM_MetaData) CDF_FWOSDriver::BuildMetaData(const TCollection_ExtendedString& aFileName)
 {
 
   OSD_Path p = UTL::Path(aFileName);
@@ -208,7 +208,7 @@ Handle(CDM_MetaData) FWOSDriver_Driver::BuildMetaData(const TCollection_Extended
 //function : SetName
 //purpose  :
 //==============================================================================
-TCollection_ExtendedString FWOSDriver_Driver::SetName(const Handle(CDM_Document)& aDocument,
+TCollection_ExtendedString CDF_FWOSDriver::SetName(const Handle(CDM_Document)& aDocument,
                                                       const TCollection_ExtendedString& aName)
 {
   

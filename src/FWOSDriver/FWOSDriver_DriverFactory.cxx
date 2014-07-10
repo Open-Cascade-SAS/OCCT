@@ -16,11 +16,11 @@
 
 #include <FWOSDriver_DriverFactory.ixx>
 
-#include <FWOSDriver_Driver.hxx>
+#include <CDF_FWOSDriver.hxx>
 FWOSDriver_DriverFactory::FWOSDriver_DriverFactory(){}
 
 
 Handle(CDF_MetaDataDriver) FWOSDriver_DriverFactory::Build() const {
-  static Handle(FWOSDriver_Driver) d =  new FWOSDriver_Driver();
+  static Handle(CDF_FWOSDriver) d =  new CDF_FWOSDriver();
   return d;
 }

@@ -14,14 +14,14 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-class Driver from FWOSDriver  inherits MetaDataDriver from CDF
+class FWOSDriver from CDF  inherits MetaDataDriver from CDF
 uses
-    MetaData from CDM,Document from CDM,
-    ExtendedString from TCollection,
+    MetaData from CDM,
+    Document from CDM,
     ExtendedString from TCollection
 is
     Create
-    returns Driver from FWOSDriver;
+    returns FWOSDriver from CDF;
     ---Purpose: initializes the MetaDatadriver with its specific name.
 
 
@@ -65,4 +65,4 @@ is
    returns ExtendedString from TCollection
    is redefined;
    
-end Driver from FWOSDriver;
+end FWOSDriver from CDF;

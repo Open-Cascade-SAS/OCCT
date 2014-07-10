@@ -152,6 +152,11 @@ void TDocStd_Application::InitDocument(const Handle(TDocStd_Document)& /*aDoc*/)
 
 void TDocStd_Application::Close(const Handle(TDocStd_Document)& aDoc)
 {
+  if (aDoc.IsNull())
+  {
+    return;
+  }
+
   Handle(TDocStd_Owner) Owner;
   if (aDoc->Main().Root().FindAttribute(TDocStd_Owner::GetID(),Owner)) {
     Handle(TDocStd_Document) emptyDoc;

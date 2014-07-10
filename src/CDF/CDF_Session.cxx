@@ -17,6 +17,7 @@
 #include <CDF_Session.ixx>
 #include <TCollection_ExtendedString.hxx>
 #include <CDF_MetaDataDriverFactory.hxx>
+#include <CDF_FWOSDriver.hxx>
 #include <Plugin.hxx>
 #include <Standard_GUID.hxx>
 #include <PCDM.hxx>
@@ -112,5 +113,18 @@ Handle(CDF_MetaDataDriver) CDF_Session::MetaDataDriver() const {
 //purpose  : 
 //=======================================================================
 void CDF_Session::LoadDriver() {
-   myMetaDataDriver=Handle(CDF_MetaDataDriverFactory)::DownCast(Plugin::Load(Standard_GUID("a148e300-5740-11d1-a904-080036aaa103")))->Build();
+  if (myMetaDataDriver.IsNull()) {
+    Handle(CDF_MetaDataDriverFactory) aFactory;
+    try {
+      aFactory = Handle(CDF_MetaDataDriverFactory)::DownCast (
+        Plugin::Load (Standard_GUID ("a148e300-5740-11d1-a904-080036aaa103"),
+                      Standard_False /*theVerbose*/));
+    } catch (const Standard_Failure&) {
+    }
+    if (!aFactory.IsNull()) {
+      myMetaDataDriver = aFactory->Build();
+    } else {
+      myMetaDataDriver = new CDF_FWOSDriver;
+    }
+  }
 }
