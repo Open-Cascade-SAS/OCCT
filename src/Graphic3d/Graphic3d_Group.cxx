@@ -185,14 +185,14 @@ Standard_Boolean Graphic3d_Group::IsEmpty() const
 void Graphic3d_Group::SetMinMaxValues (const Standard_Real theXMin, const Standard_Real theYMin, const Standard_Real theZMin,
                                        const Standard_Real theXMax, const Standard_Real theYMax, const Standard_Real theZMax)
 {
-  myBounds.CornerMin() = Graphic3d_Vec4 (static_cast<Standard_ShortReal> (theXMin),
-                                         static_cast<Standard_ShortReal> (theYMin),
-                                         static_cast<Standard_ShortReal> (theZMin),
-                                         1.0f);
-  myBounds.CornerMax() = Graphic3d_Vec4 (static_cast<Standard_ShortReal> (theXMax),
-                                         static_cast<Standard_ShortReal> (theYMax),
-                                         static_cast<Standard_ShortReal> (theZMax),
-                                         1.0f);
+  myBounds = Graphic3d_BndBox4f (Graphic3d_Vec4 (static_cast<Standard_ShortReal> (theXMin),
+                                                 static_cast<Standard_ShortReal> (theYMin),
+                                                 static_cast<Standard_ShortReal> (theZMin),
+                                                 1.0f),
+                                 Graphic3d_Vec4 (static_cast<Standard_ShortReal> (theXMax),
+                                                 static_cast<Standard_ShortReal> (theYMax),
+                                                 static_cast<Standard_ShortReal> (theZMax),
+                                                 1.0f));
 }
 
 // =======================================================================
