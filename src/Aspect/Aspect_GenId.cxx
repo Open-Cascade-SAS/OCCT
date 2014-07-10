@@ -14,111 +14,124 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//-Version	
-
-//-Design	Declaration des variables specifiques aux identificateurs
-
-//-Warning	Un identificateur est un entier.
-
-//-References	
-
-//-Language	C++ 2.0
-
-//-Declarations
-
-// for the class
 #include <Aspect_GenId.ixx>
 
-//-Aliases
-
-//-Global data definitions
-
-//-Constructors
-
-//-Destructors
-
-//-Methods, in order
-
-Aspect_GenId::Aspect_GenId ():
-
-	MyCount (INT_MAX/2 + 1),
-	MyLength (INT_MAX/2 + 1),
-	MyLowerBound (0),
-	MyUpperBound (INT_MAX/2),
-	MyFreeIds () {
-
+// =======================================================================
+// function : Aspect_GenId
+// purpose  :
+// =======================================================================
+Aspect_GenId::Aspect_GenId()
+: myFreeCount  (INT_MAX / 2 + 1),
+  myLength     (INT_MAX / 2 + 1),
+  myLowerBound (0),
+  myUpperBound (INT_MAX / 2)
+{
+  //
 }
 
-Aspect_GenId::Aspect_GenId (const Standard_Integer Low, const Standard_Integer Up):MyFreeIds () {
-
-	if (Low <= Up) {
-		MyLowerBound	= Low;
-		MyUpperBound	= Up;
-		MyLength	= MyUpperBound - MyLowerBound + 1;
-		MyCount		= MyLength;
-	}
-	else
-		Aspect_IdentDefinitionError::Raise
-			("GenId Create Error: Low > Up");
-
+// =======================================================================
+// function : Aspect_GenId
+// purpose  :
+// =======================================================================
+Aspect_GenId::Aspect_GenId (const Standard_Integer theLow,
+                            const Standard_Integer theUpper)
+: myFreeCount  (theUpper - theLow + 1),
+  myLength     (theUpper - theLow + 1),
+  myLowerBound (theLow),
+  myUpperBound (theUpper)
+{
+  if (theLow > theUpper)
+  {
+    Aspect_IdentDefinitionError::Raise ("GenId Create Error: wrong interval");
+  }
 }
 
-Standard_Integer Aspect_GenId::Available () const {
-
-	return (MyCount);
-
+// =======================================================================
+// function : HasFree
+// purpose  :
+// =======================================================================
+Standard_Boolean Aspect_GenId::HasFree() const
+{
+  return myFreeCount > 0
+      || myFreeIds.Extent() > 0;
 }
 
-void Aspect_GenId::Free () {
-
-	MyCount	= MyLength;
-	MyFreeIds.Clear ();
-
+// =======================================================================
+// function : Available
+// purpose  :
+// =======================================================================
+Standard_Integer Aspect_GenId::Available() const
+{
+  return myFreeCount + myFreeIds.Extent();
 }
 
-void Aspect_GenId::Free (const Standard_Integer Id) {
-
-	if ( (Id >= MyLowerBound) && (Id <= MyUpperBound) )
-		MyFreeIds.Prepend (Id);
-
+// =======================================================================
+// function : Free
+// purpose  :
+// =======================================================================
+void Aspect_GenId::Free()
+{
+  myFreeCount = myLength;
+  myFreeIds.Clear();
 }
 
-Standard_Integer Aspect_GenId::Lower () const {
-
-	return (MyLowerBound);
-
+// =======================================================================
+// function : Free
+// purpose  :
+// =======================================================================
+void Aspect_GenId::Free (const Standard_Integer theId)
+{
+  if (theId >= myLowerBound
+   && theId <= myUpperBound)
+  {
+    if (myFreeCount + myFreeIds.Extent() + 1 == myLength)
+    {
+      myFreeCount = myLength;
+      myFreeIds.Clear();
+    }
+    else
+    {
+      myFreeIds.Prepend (theId);
+    }
+  }
 }
 
-Standard_Integer Aspect_GenId::Next () {
-
-	if (MyCount == 0)
-		Aspect_IdentDefinitionError::Raise
-			("GenId Next Error: Available == 0");
-
-Standard_Integer Id;
-
-	if (! MyFreeIds.IsEmpty ()) {
-		Id	= MyFreeIds.First ();
-		MyFreeIds.RemoveFirst ();
-	}
-	else {
-		MyCount	--;
-		Id	= MyLowerBound + MyLength - MyCount - 1;
-	}
-
-	return Id;
-
+// =======================================================================
+// function : Lower
+// purpose  :
+// =======================================================================
+Standard_Integer Aspect_GenId::Lower() const
+{
+  return myLowerBound;
 }
 
-Standard_Integer Aspect_GenId::Upper () const {
+// =======================================================================
+// function : Next
+// purpose  :
+// =======================================================================
+Standard_Integer Aspect_GenId::Next()
+{
+  if (!myFreeIds.IsEmpty())
+  {
+    const Standard_Integer anId = myFreeIds.First();
+    myFreeIds.RemoveFirst();
+    return anId;
+  }
+  else if (myFreeCount < 1)
+  {
+    Aspect_IdentDefinitionError::Raise ("GenId Next Error: Available == 0");
+  }
 
-	return (MyUpperBound);
-
+  --myFreeCount;
+  const Standard_Integer anId = myLowerBound + myLength - myFreeCount - 1;
+  return anId;
 }
 
-//void Aspect_GenId::Assign (const Aspect_GenId& Other) {
-//
-//	MyLowerBound	= Other.Lower ();
-//	MyUpperBound	= Other.Upper ();
-//
-//}
+// =======================================================================
+// function : Upper
+// purpose  :
+// =======================================================================
+Standard_Integer Aspect_GenId::Upper() const
+{
+  return myUpperBound;
+}

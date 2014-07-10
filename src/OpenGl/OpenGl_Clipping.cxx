@@ -86,7 +86,7 @@ void OpenGl_Clipping::Add (Graphic3d_SequenceOfHClipPlane& thePlanes,
 void OpenGl_Clipping::Add (Graphic3d_SequenceOfHClipPlane& thePlanes, const EquationCoords& theCoordSpace)
 {
   Graphic3d_SequenceOfHClipPlane::Iterator aPlaneIt (thePlanes);
-  while (aPlaneIt.More() && myEmptyPlaneIds->Available() > 0)
+  while (aPlaneIt.More() && myEmptyPlaneIds->HasFree())
   {
     const Handle(Graphic3d_ClipPlane)& aPlane = aPlaneIt.Value();
     if (Contains (aPlane))
@@ -113,9 +113,12 @@ void OpenGl_Clipping::Add (Graphic3d_SequenceOfHClipPlane& thePlanes, const Equa
     aPlaneIt.Next();
   }
 
-  while (aPlaneIt.More() && myEmptyPlaneIds->Available() == 0)
+  if (!myEmptyPlaneIds->HasFree())
   {
-    thePlanes.Remove (aPlaneIt);
+    while (aPlaneIt.More())
+    {
+      thePlanes.Remove (aPlaneIt);
+    }
   }
 }
 

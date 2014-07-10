@@ -1,0 +1,48 @@
+puts "==========="
+puts "OCC25052"
+puts "==========="
+puts ""
+##########################################################################
+# Visualization - activation of all Clipping Planes within driver limit leads to broken planes management
+##########################################################################
+
+set Image1 ${imagedir}/${casename}_1.png
+set Image9 ${imagedir}/${casename}_9.png
+
+box b -30 -30 -30 70 80 90
+
+vinit
+vsetdispmode 1
+vdisplay b
+vfit
+
+vclipplane create p1
+vclipplane change p1 equation 1 0 0 -0.1
+vclipplane create p2
+vclipplane change p2 equation 1 0 0 -0.1
+vclipplane create p3
+vclipplane change p3 equation 1 0 0 -0.1
+vclipplane create p4
+vclipplane change p4 equation 1 0 0 -0.1
+vclipplane create p5
+vclipplane change p5 equation 1 0 0 -0.1
+vclipplane create p6
+vclipplane change p6 equation 1 0 0 -0.1
+vclipplane create p7
+vclipplane change p7 equation 1 0 0 -0.1
+vclipplane create p8
+vclipplane change p8 equation 1 0 0 -0.1
+vclipplane create p9
+vclipplane change p9 equation 1 0 0 -0.1
+
+vclipplane set p1 view Driver1/Viewer1/View1
+vdump ${Image1}
+vclipplane set p2 view Driver1/Viewer1/View1
+vclipplane set p3 view Driver1/Viewer1/View1
+vclipplane set p4 view Driver1/Viewer1/View1
+vclipplane set p5 view Driver1/Viewer1/View1
+vclipplane set p6 view Driver1/Viewer1/View1
+vclipplane set p7 view Driver1/Viewer1/View1
+vclipplane set p8 view Driver1/Viewer1/View1
+vclipplane set p9 view Driver1/Viewer1/View1
+vdump ${Image9}
