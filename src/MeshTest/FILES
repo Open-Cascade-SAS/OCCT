@@ -1,3 +1,5 @@
 MeshTest_PluginCommands.cxx
 MeshTest_CheckTopology.cxx
 MeshTest_CheckTopology.hxx
+MeshTest_DrawableMesh.cxx
+MeshTest_DrawableMesh.hxx

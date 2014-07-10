@@ -44,147 +44,43 @@ uses    Standard,
         SortTools,
         Plugin
 
-
-is    enumeration DegreeOfFreedom is 
-        Free,
-        InVolume,
-        OnSurface,
-        OnCurve,
-        Fixed,
-        Frontier,
-        Deleted;
-
+is
+      imported DegreeOfFreedom from BRepMesh;
       imported Status from BRepMesh;
-       
-      enumeration FactoryError is 
-        FE_NOERROR,  
-        FE_LIBRARYNOTFOUND,
-        FE_FUNCTIONNOTFOUND,
-        FE_CANNOTCREATEALGO
-      end FactoryError;   
-      
-      class Vertex;
-
-      class Edge;
-
-	  imported Triangle from BRepMesh;
-	  
-      class ShapeTool;
-
-      class Circ;
-
-      deferred class DiscretRoot; 
-      class DiscretFactory;
+      imported FactoryError from BRepMesh;
+      imported Vertex from BRepMesh;
+      imported Edge from BRepMesh;
+      imported Triangle from BRepMesh;
+      imported Circle from BRepMesh;
+      imported DiscretRoot from BRepMesh; 
+      imported DiscretFactory from BRepMesh;
       --
       pointer PDiscretRoot to DiscretRoot from BRepMesh;
-      --
+      
+      imported ShapeTool from BRepMesh;
+      imported Collections from BRepMesh;
       imported Delaun from BRepMesh;
-      imported MapOfIntegerInteger from BRepMesh;
-      imported MapOfInteger from BRepMesh;
-      imported ListOfInteger from BRepMesh;
-      imported BaseAllocator from BRepMesh;
       imported PairOfIndex from BRepMesh;
       imported CircleInspector from BRepMesh;
-      imported CellFilter from BRepMesh;
       imported VertexInspector from BRepMesh;
-      imported VertexCellFilter from BRepMesh;
-      imported VectorOfVertex from BRepMesh;
       imported WireInterferenceChecker from BRepMesh;
       imported EdgeChecker from BRepMesh;
       imported FaceChecker from BRepMesh;
 
       primitive PluginEntryType;
 
-      class ComparatorOfVertexOfDelaun;
-      class ComparatorOfIndexedVertexOfDelaun;
-      class SelectorOfDataStructureOfDelaun;
-      class DataStructureOfDelaun;
-      class CircleTool;
-      class VertexTool;
-    
-      class Array1OfVertexOfDelaun instantiates Array1 from TCollection
-        (Vertex from BRepMesh);
-
-      class HArray1OfVertexOfDelaun instantiates HArray1 from TCollection
-        (Vertex from BRepMesh, Array1OfVertexOfDelaun);
-
-      class HeapSortVertexOfDelaun instantiates  HeapSort from SortTools
-        (Vertex from BRepMesh, Array1OfVertexOfDelaun,
-        ComparatorOfVertexOfDelaun from BRepMesh);
-
-      class HeapSortIndexedVertexOfDelaun instantiates  HeapSort from SortTools
-        (Integer, Array1OfInteger from TColStd,
-        ComparatorOfIndexedVertexOfDelaun from BRepMesh);
-
-      class LinkHasherOfDataStructureOfDelaun instantiates MapHasher from TCollection
-        (Edge from BRepMesh);
-      class ElemHasherOfDataStructureOfDelaun instantiates MapHasher from TCollection
-        (Triangle from BRepMesh);
-
-      class DataMapOfIntegerListOfInteger     instantiates DataMap from TCollection
-        (Integer from Standard, ListOfInteger from BRepMesh, MapIntegerHasher from TColStd);
-
-      class IDMapOfLinkOfDataStructureOfDelaun  instantiates IndexedDataMap from TCollection
-        (Edge from BRepMesh,
-        PairOfIndex from BRepMesh,
-        LinkHasherOfDataStructureOfDelaun);
-
-      class IMapOfElementOfDataStructureOfDelaun instantiates IndexedMap from TCollection
-        (Triangle from BRepMesh,
-        ElemHasherOfDataStructureOfDelaun);
-
-      class DataMapOfVertexInteger instantiates DataMap from TCollection
-          (Vertex from TopoDS, Integer from Standard, ShapeMapHasher from TopTools);
-
-      class ListOfVertex instantiates List from TCollection 
-          (Vertex from  BRepMesh);
-          
-      class ListOfXY instantiates List from TCollection (XY from gp);
-
-      class DataMapOfIntegerListOfXY  instantiates DataMap from TCollection
-          (Integer from Standard, ListOfXY from BRepMesh, MapIntegerHasher from TColStd);
-
-
-      class  VertexHasher  instantiates   MapHasher  from  TCollection(Vertex  from  BRepMesh);
-
-      class IndexedMapOfVertex instantiates IndexedMap from TCollection 
-          (Vertex from  BRepMesh,  VertexHasher from  BRepMesh);
-
-      private class FastDiscretFace;
-      
-      class FastDiscret;
-      
-      class FaceAttribute;
-  
-      class DataMapOfFaceAttribute instantiates DataMap from TCollection
-                                            (Face           from TopoDS,
-                                             FaceAttribute  from BRepMesh,
-                                             ShapeMapHasher from TopTools);
-              
+      imported SelectorOfDataStructureOfDelaun from BRepMesh;
+      imported DataStructureOfDelaun from BRepMesh;
+      imported CircleTool from BRepMesh;
+      imported VertexTool from BRepMesh;
+      imported BiPoint from BRepMesh;
+      imported FastDiscretFace from BRepMesh;
+      imported FastDiscret from BRepMesh;
+      imported FaceAttribute from BRepMesh;
       imported Classifier from BRepMesh;
-      imported ClassifierPtr; -- smart pointer on Classifier
       imported WireChecker from BRepMesh;
-
       imported IncrementalMesh from BRepMesh;
+      imported GeomTool from BRepMesh;
+      imported PairOfPolygon from BRepMesh;
 
-
-         ---- classes moved from MeshShape
-      class GeomTool;
-
-      class DataMapOfIntegerPnt instantiates
-          DataMap from TCollection   (Integer          from Standard,
-                                      Pnt              from gp,
-                                      MapIntegerHasher from TColStd);
-
-      class PairOfPolygon;
-
-      class DataMapOfShapePairOfPolygon instantiates 
-      DataMap from TCollection(Shape          from TopoDS,
-                               PairOfPolygon  from BRepMesh,
-                               ShapeMapHasher from TopTools);
-
-      Mesh(S: Shape from TopoDS; d: Real from Standard);
-      ---Purpose: call to incremental mesh.
-
-  
 end BRepMesh;

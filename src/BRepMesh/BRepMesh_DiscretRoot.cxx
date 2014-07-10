@@ -13,7 +13,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepMesh_DiscretRoot.ixx>
+#include <BRepMesh_DiscretRoot.hxx>
+
+IMPLEMENT_STANDARD_HANDLE (BRepMesh_DiscretRoot, Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_DiscretRoot, Standard_Transient)
 
 //=======================================================================
 //function : BRepMesh_DiscretRoot
@@ -21,10 +24,9 @@
 //=======================================================================
 BRepMesh_DiscretRoot::BRepMesh_DiscretRoot()
 : myDeflection (0.001),
-  myAngle (0.1),
-  myIsDone (Standard_False)
+  myAngle      (0.1),
+  myIsDone     (Standard_False)
 {
-  //
 }
 
 //=======================================================================
@@ -36,91 +38,9 @@ BRepMesh_DiscretRoot::~BRepMesh_DiscretRoot()
 }
 
 //=======================================================================
-//function : SetDeflection
+//function : init
 //purpose  :
 //=======================================================================
-void BRepMesh_DiscretRoot::SetDeflection (const Standard_Real theDeflection)
+void BRepMesh_DiscretRoot::init()
 {
-  myDeflection = theDeflection;
-}
-
-//=======================================================================
-//function : Deflection
-//purpose  : 
-//=======================================================================
-Standard_Real BRepMesh_DiscretRoot::Deflection() const
-{
-  return myDeflection;
-}
-
-//=======================================================================
-//function : SetAngle
-//purpose  :
-//=======================================================================
-void BRepMesh_DiscretRoot::SetAngle (const Standard_Real theAngle)
-{
-  myAngle = theAngle;
-}
-
-//=======================================================================
-//function : Angle
-//purpose  :
-//=======================================================================
-Standard_Real BRepMesh_DiscretRoot::Angle() const
-{
-  return myAngle;
-}
-
-//=======================================================================
-//function : SetShape
-//purpose  :
-//=======================================================================
-void BRepMesh_DiscretRoot::SetShape (const TopoDS_Shape& theShape)
-{
-  myShape = theShape;
-}
-
-//=======================================================================
-//function : Shape
-//purpose  :
-//=======================================================================
-const TopoDS_Shape& BRepMesh_DiscretRoot::Shape() const
-{
-  return myShape;
-}
-
-//=======================================================================
-//function : IsDone
-//purpose  :
-//=======================================================================
-Standard_Boolean BRepMesh_DiscretRoot::IsDone() const
-{
-  return myIsDone;
-}
-
-//=======================================================================
-//function : SetDone
-//purpose  :
-//=======================================================================
-void BRepMesh_DiscretRoot::SetDone()
-{
-  myIsDone = Standard_True;
-}
-
-//=======================================================================
-//function : SetNotDone
-//purpose  :
-//=======================================================================
-void BRepMesh_DiscretRoot::SetNotDone()
-{
-  myIsDone = Standard_False;
-}
-
-//=======================================================================
-//function : Init
-//purpose  :
-//=======================================================================
-void BRepMesh_DiscretRoot::Init()
-{
-  //
 }

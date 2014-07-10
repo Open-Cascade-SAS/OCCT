@@ -1,4 +1,4 @@
-// Copyright (c) 1999-2014 OPEN CASCADE SAS
+// Copyright (c) 2013 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -11,6 +11,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <NCollection_List.hxx>
 
-typedef NCollection_List<Standard_Integer> BRepMesh_ListOfInteger;
+#ifndef _BRepMesh_DegreeOfFreedom_HeaderFile
+#define _BRepMesh_DegreeOfFreedom_HeaderFile
+
+enum BRepMesh_DegreeOfFreedom
+{
+  BRepMesh_Free,
+  BRepMesh_InVolume,
+  BRepMesh_OnSurface,
+  BRepMesh_OnCurve,
+  BRepMesh_Fixed,
+  BRepMesh_Frontier,
+  BRepMesh_Deleted
+};
+
+#endif

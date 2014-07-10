@@ -41,6 +41,8 @@
 #include <StdPrs_ToolShadedShape.hxx>
 #include <StdPrs_WFShape.hxx>
 #include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
@@ -132,11 +134,11 @@ namespace
     // Precision for compare square distances
     const Standard_Real aPreci = Precision::SquareConfusion();
 
-    StdPrs_ToolShadedShape aShapeTool;
-    for (aShapeTool.Init (theShape); aShapeTool.MoreFace(); aShapeTool.NextFace())
+    TopExp_Explorer aFaceIt(theShape, TopAbs_FACE);
+    for (; aFaceIt.More(); aFaceIt.Next())
     {
-      const TopoDS_Face& aFace = aShapeTool.CurrentFace();
-      aT = aShapeTool.Triangulation (aFace, aLoc);
+      const TopoDS_Face& aFace = TopoDS::Face(aFaceIt.Current());
+      aT = StdPrs_ToolShadedShape::Triangulation (aFace, aLoc);
       if (!aT.IsNull())
       {
         aNbTriangles += aT->NbTriangles();
@@ -151,10 +153,10 @@ namespace
     Handle(Graphic3d_ArrayOfTriangles) anArray = new Graphic3d_ArrayOfTriangles (aNbVertices, 3 * aNbTriangles,
                                                                                  Standard_True, Standard_False, theHasTexels);
     Standard_Real aUmin (0.0), aUmax (0.0), aVmin (0.0), aVmax (0.0), dUmax (0.0), dVmax (0.0);
-    for (aShapeTool.Init (theShape); aShapeTool.MoreFace(); aShapeTool.NextFace())
+    for (aFaceIt.Init (theShape, TopAbs_FACE); aFaceIt.More(); aFaceIt.Next())
     {
-      const TopoDS_Face& aFace = aShapeTool.CurrentFace();
-      aT = aShapeTool.Triangulation (aFace, aLoc);
+      const TopoDS_Face& aFace = TopoDS::Face(aFaceIt.Current());
+      aT = StdPrs_ToolShadedShape::Triangulation (aFace, aLoc);
       if (aT.IsNull())
       {
         continue;
@@ -165,7 +167,7 @@ namespace
       const TColgp_Array1OfPnt&   aNodes   = aT->Nodes();
       const TColgp_Array1OfPnt2d& aUVNodes = aT->UVNodes();
       TColgp_Array1OfDir aNormals (aNodes.Lower(), aNodes.Upper());
-      aShapeTool.Normal (aFace, aPolyConnect, aNormals);
+      StdPrs_ToolShadedShape::Normal (aFace, aPolyConnect, aNormals);
 
       if (theHasTexels)
       {
@@ -201,7 +203,7 @@ namespace
       Standard_Integer anIndex[3];
       for (Standard_Integer aTriIter = 1; aTriIter <= aT->NbTriangles(); ++aTriIter)
       {
-        if (aShapeTool.Orientation (aFace) == TopAbs_REVERSED)
+        if (aFace.Orientation() == TopAbs_REVERSED)
         {
           aTriangles (aTriIter).Get (anIndex[0], anIndex[2], anIndex[1]);
         }

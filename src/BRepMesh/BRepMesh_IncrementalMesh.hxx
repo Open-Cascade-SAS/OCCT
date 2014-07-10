@@ -17,119 +17,186 @@
 #include <Standard.hxx>
 #include <Standard_DefineHandle.hxx>
 
-#include <Handle_BRepMesh_FastDiscret.hxx>
+#include <BRepMesh_FastDiscret.hxx>
 #include <TopTools_MapOfShape.hxx>
 #include <TopTools_DataMapOfShapeReal.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <Bnd_Box.hxx>
 #include <BRepMesh_DiscretRoot.hxx>
 #include <BRepMesh_PDiscretRoot.hxx>
+#include <Handle_Poly_Triangulation.hxx>
+#include <BRepMesh_Collections.hxx>
 
 #include <vector>
 
-class BRepMesh_FastDiscret;
+class Poly_Triangulation;
 class TopoDS_Shape;
 class TopoDS_Edge;
 class TopoDS_Face;
 
-//! Builds the mesh of a shape with respect of their <br>
-//! correctly triangulated parts <br>
-//! <br>
-class BRepMesh_IncrementalMesh : public BRepMesh_DiscretRoot {
+//! Builds the mesh of a shape with respect of their 
+//! correctly triangulated parts 
+class BRepMesh_IncrementalMesh : public BRepMesh_DiscretRoot
+{
+public: //! \name mesher API
 
-public:
+  //! Default constructor
+  Standard_EXPORT BRepMesh_IncrementalMesh();
 
-  Standard_EXPORT   BRepMesh_IncrementalMesh();
-
+  //! Destructor
   Standard_EXPORT virtual ~BRepMesh_IncrementalMesh();
 
-  //! If the boolean flag <isRelative> is TRUE, the <br>
-  //! deflection used for the polygonalisation of <br>
-  //! each edge will be <theLinDeflection> * Size of Edge. <br>
-  //! the deflection used for the faces will be the maximum <br>
-  //! deflection of their edges. <br>
-  Standard_EXPORT BRepMesh_IncrementalMesh(const TopoDS_Shape&    theShape,
-                                           const Standard_Real    theLinDeflection,
-                                           const Standard_Boolean isRelative       = Standard_False,
-                                           const Standard_Real    theAngDeflection = 0.5,
-                                           const Standard_Boolean isInParallel     = Standard_False);
-  
-  Standard_EXPORT void SetRelative(const Standard_Boolean theFlag);
-  
-  Standard_EXPORT Standard_Boolean Relative() const;
-  
-  Standard_EXPORT virtual void Perform();
+  //! Constructor.
+  //! Automatically calls method Perform.
+  //! \param theShape shape to be meshed.
+  //! \param theLinDeflection linear deflection.
+  //! \param theAngDeflection angular deflection.
+  //! \paarm isRelative if TRUE deflection used for discretization of 
+  //! each edge will be <theLinDeflection> * <size of edge>. Deflection 
+  //! used for the faces will be the maximum deflection of their edges.
+  //! \param isInParallel if TRUE shape will be meshed in parallel.
+  Standard_EXPORT BRepMesh_IncrementalMesh(
+    const TopoDS_Shape&    theShape,
+    const Standard_Real    theLinDeflection,
+    const Standard_Real    theAngDeflection = 0.5,
+    const Standard_Boolean isRelative       = Standard_False,
+    const Standard_Boolean isInParallel     = Standard_False);
 
-  //! Builds the incremental mesh of the shape <br>
-  Standard_EXPORT void Update(const TopoDS_Shape& theShape);
+  //! Performs meshing ot the shape.
+  Standard_EXPORT virtual void Perform();
   
-  Standard_EXPORT Standard_Boolean IsModified() const;
+public: //! \name accessing to parameters.
+
+  //! Enables using relative deflection.
+  //! \param isRelative if TRUE deflection used for discretization of 
+  //! each edge will be <theLinDeflection> * <size of edge>. Deflection 
+  //! used for the faces will be the maximum deflection of their edges.
+  inline void SetRelative(const Standard_Boolean isRelative)
+  {
+    myRelative = isRelative;
+  }
   
-  Standard_EXPORT Standard_Integer GetStatusFlags() const;
+  //! Returns relative deflection flag.
+  inline Standard_Boolean IsRelative() const
+  {
+    return myRelative;
+  }
   
-  //! Request algorithm to launch in multiple threads to improve performance. <br>
-  Standard_EXPORT void SetParallel(const Standard_Boolean isInParallel);
+  //! Returns modified flag.
+  inline Standard_Boolean IsModified() const
+  {
+    return myModified;
+  }
   
-  //! Returns the multi-threading usage flag. <br>
-  Standard_EXPORT Standard_Boolean IsParallel() const;
+  //! Returns accumulated status flags faced during meshing.
+  inline Standard_Integer GetStatusFlags() const
+  {
+    return myStatus;
+  }
   
-  //! Plugin interface for the Mesh Factories. <br>
+  //! Request algorithm to launch in multiple threads to improve performance.
+  inline void SetParallel(const Standard_Boolean isInParallel)
+  {
+    myInParallel = isInParallel;
+  }
+  
+  //! Returns the multi-threading usage flag.
+  inline Standard_Boolean IsParallel() const
+  {
+    return myInParallel;
+  }
+
+public: //! \name plugin API
+
+  //! Plugin interface for the Mesh Factories.
+  //! Initializes meshing algorithm with the given parameters.
+  //! \param theShape shape to be meshed.
+  //! \param theLinDeflection linear deflection.
+  //! \param theAngDeflection angular deflection.
+  //! \param[out] theAlgo pointer to initialized algorithm.
   Standard_EXPORT static Standard_Integer Discret(const TopoDS_Shape&    theShape,
                                                   const Standard_Real    theLinDeflection,
                                                   const Standard_Real    theAngDeflection,
                                                   BRepMesh_PDiscretRoot& theAlgo);
   
-  //! Returns multi-threading usage flag set by default in <br>
-  //! Discret() static method (thus applied only to Mesh Factories). <br>
+  //! Returns multi-threading usage flag set by default in 
+  //! Discret() static method (thus applied only to Mesh Factories).
   Standard_EXPORT static Standard_Boolean IsParallelDefault();
   
-  //! Setup multi-threading usage flag set by default in <br>
-  //! Discret() static method (thus applied only to Mesh Factories). <br>
-  Standard_EXPORT static void SetParallelDefault(const Standard_Boolean isInParallel) ;
+  //! Setup multi-threading usage flag set by default in 
+  //! Discret() static method (thus applied only to Mesh Factories).
+  Standard_EXPORT static void SetParallelDefault(const Standard_Boolean isInParallel);
 
 
   DEFINE_STANDARD_RTTI(BRepMesh_IncrementalMesh)
 
 protected:
 
-  Standard_EXPORT virtual void Init();
+  Standard_EXPORT virtual void init();
+
+private:
+
+  //! Checks is the shape to be meshed has correct poly data, 
+  //! i.e. PolygonOnTriangulation of particular edge connected 
+  //! to the same Triangulation data structure as stored inside 
+  //! a parent face.
+  //! \return TRUE on success, FALSE in case of inconsistencies.
+  Standard_Boolean isCorrectPolyData();
+
+  //! Builds the incremental mesh for the shape.
+  void update();
+
+  //! Checks triangulation of the given face for consistency 
+  //! with the chosen tolerance. If some edge of face has no
+  //! discrete representation triangulation will be calculated.
+  //! \param theFace face to be checked.
+  void update(const TopoDS_Face& theFace);
+
+  //! Checks discretization of the given edge for consistency 
+  //! with the chosen tolerance.
+  //! \param theEdge edge to be checked.
+  void update(const TopoDS_Edge& theEdge);
 
   //! Collects faces suitable for meshing.
-  Standard_EXPORT void collectFaces();
+  void collectFaces();
+
+  //! Discretizes edges that have no associations with faces.
+  void discretizeFreeEdges();
+
+  //! Returns deflection of the given edge.
+  //! \param theEdge edge which tolerance should be taken.
+  Standard_Real edgeDeflection(const TopoDS_Edge& theEdge);
+
+  //! Returns deflection of the given face.
+  //! If relative flag is set, calculates relative deflection of the face 
+  //! as an average value of relative deflection regarding face's edges.
+  //! Returns value of deflection set by user elsewhere.
+  Standard_Real faceDeflection(const TopoDS_Face& theFace);
+
+  //! Prepares the given face for meshing.
+  //! Nullifies triangulation of face and polygons of face's edges.
+  //! \param theFace face to be checked.
+  //! \param isWithCheck if TRUE, checks parameters of triangulation 
+  //! existing in face. If its deflection satisfies the given value and
+  //! each edge of face has polygon corresponded to this triangulation,
+  //! method return FALSE.
+  //! \return TRUE in case if the given face should be meshed.
+  Standard_Boolean toBeMeshed(const TopoDS_Face&     theFace,
+                              const Standard_Boolean isWithCheck);
 
 protected:
 
-  Standard_Boolean                          myRelative;
-  Standard_Boolean                          myInParallel;
-  TopTools_MapOfShape                       myMap;
-  Handle_BRepMesh_FastDiscret               myMesh;
-  Standard_Boolean                          myModified;
-  TopTools_DataMapOfShapeReal               mymapedge;
-  TopTools_IndexedDataMapOfShapeListOfShape myancestors;
-  Standard_Real                             mydtotale;
-  Bnd_Box                                   myBox;
-  Standard_Integer                          myStatus;
-  std::vector<TopoDS_Face>                  myFaces;
-
-private:
-  //! Checks is the shape to be meshed has correct poly data, <br>
-  //! i.e. PolygonOnTriangulation of particular edge connected <br>
-  //! to the same Triangulation data structure as stored inside <br>
-  //! a parent face. <br>
-  Standard_Boolean isCorrectPolyData();
-
-  //! Locate a correct discretisation if it exists <br>
-  //! Set no one otherwise <br>
-  void Update(const TopoDS_Edge& theEdge);
-
-  //! If the face is not correctly triangulated, or if one <br>
-  //! of its edges is to be discretisated correctly, the <br>
-  //! triangulation of this face is built. <br>
-  void Update(const TopoDS_Face& theFace);
+  Standard_Boolean                            myRelative;
+  Standard_Boolean                            myInParallel;
+  BRepMeshCol::DMapOfEdgeListOfTriangulation  myEmptyEdges;
+  Handle(BRepMesh_FastDiscret)                myMesher;
+  Standard_Boolean                            myModified;
+  TopTools_DataMapOfShapeReal                 myEdgeDeflection;
+  TopTools_IndexedDataMapOfShapeListOfShape   mySharedFaces;
+  Standard_Real                               myMaxShapeSize;
+  Standard_Integer                            myStatus;
+  std::vector<TopoDS_Face>                    myFaces;
 };
 
 DEFINE_STANDARD_HANDLE(BRepMesh_IncrementalMesh,BRepMesh_DiscretRoot)
-
-// other Inline functions and methods (like "C++: function call" methods)
 
 #endif

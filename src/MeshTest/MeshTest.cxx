@@ -42,7 +42,6 @@
 #include <BRepMesh_DataStructureOfDelaun.hxx>
 #include <BRepMesh_Delaun.hxx>
 #include <BRepMesh_FastDiscret.hxx>
-#include <BRepMesh_Array1OfVertexOfDelaun.hxx>
 #include <BRepMesh_Vertex.hxx>
 #include <BRepMesh_Edge.hxx>
 #include <BRepMesh_IncrementalMesh.hxx>
@@ -141,7 +140,7 @@ static Standard_Integer incrementalmesh(Draw_Interpretor& di, Standard_Integer n
   di << "Incremental Mesh, multi-threading "
     << (isInParallel ? "ON\n" : "OFF\n");
   
-  BRepMesh_IncrementalMesh MESH(aShape, aDeflection, Standard_False, 0.5, isInParallel);
+  BRepMesh_IncrementalMesh MESH(aShape, aDeflection, 0.5, Standard_False, isInParallel);
   Standard_Integer statusFlags = MESH.GetStatusFlags();  
 
   di << "Meshing statuses: ";
@@ -564,9 +563,9 @@ static Standard_Integer vertices (Draw_Interpretor&, Standard_Integer n, const c
 
   // the faces
   for (ex.Init(S,TopAbs_FACE);ex.More();ex.Next()) {
-    BRepMesh_MapOfInteger vtx;
+    BRepMeshCol::MapOfInteger vtx;
     M->VerticesOfDomain(vtx);
-    for (BRepMesh_MapOfInteger::Iterator it(vtx); it.More(); it.Next())
+    for (BRepMeshCol::MapOfInteger::Iterator it(vtx); it.More(); it.Next())
       vseq.Append(it.Key());
   }
 

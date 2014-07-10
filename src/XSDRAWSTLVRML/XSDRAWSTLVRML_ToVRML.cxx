@@ -72,26 +72,26 @@ Standard_Boolean  XSDRAWSTLVRML_ToVRML::Write
     {
 
       // Creates facets from the shape
-//    	Create (defle     : Real    from Standard;
-//       	shape     : Shape   from TopoDS;
-//    	    	angl      : Real    from Standard= 0.17;
-//    	    	withShare : Boolean from Standard=Standard_True;
-//    	    	inshape   : Boolean from Standard=Standard_False;
-//    	    	relative  : Boolean from Standard=Standard_False;
-//    	    	shapetrigu: Boolean from Standard=Standard_False)
-//	    returns mutable Discret from BRepMesh;
+//      Create (defle     : Real    from Standard;
+//         shape     : Shape   from TopoDS;
+//            angl      : Real    from Standard= 0.17;
+//            withShare : Boolean from Standard=Standard_True;
+//            inshape   : Boolean from Standard=Standard_False;
+//            relative  : Boolean from Standard=Standard_False;
+//            shapetrigu: Boolean from Standard=Standard_False)
+//      returns mutable Discret from BRepMesh;
       Bnd_Box B;
       BRepBndLib::Add(aShape, B);
 
-      Handle(BRepMesh_FastDiscret) 	TheDiscret = 
-	new BRepMesh_FastDiscret(myDeflection,
-			     aShape,
-                             B,
-			     0.17,
-			     Standard_True,
-			     Standard_False,
-			     Standard_True,
-			     Standard_True);
+      Handle(BRepMesh_FastDiscret)   TheDiscret = 
+  new BRepMesh_FastDiscret(aShape,
+           myDeflection,
+           0.17,
+           B,
+           Standard_True,
+           Standard_False,
+           Standard_True,
+           Standard_True);
 
       Standard_Integer i,j;
 
@@ -111,7 +111,7 @@ Standard_Boolean  XSDRAWSTLVRML_ToVRML::Write
       TheFileOut << "     material Material { " << endl;
       TheFileOut << "  diffuseColor " << myDiffuseColorRed << " " << myDiffuseColorGreen << " " << myDiffuseColorBlue << " " << endl;
       TheFileOut << " emissiveColor " << myEmissiveColorRed << " "
-	<< myEmissiveColorGreen << " " << myEmissiveColorBlue << " " << endl;
+  << myEmissiveColorGreen << " " << myEmissiveColorBlue << " " << endl;
       TheFileOut << " transparency " << myTransparency << endl;
       TheFileOut << " ambientIntensity " << myAmbientIntensity << " " << endl;
       TheFileOut << " specularColor " << mySpecularColorRed << " " << mySpecularColorGreen << " " << mySpecularColorBlue << " " << endl;
@@ -126,13 +126,13 @@ Standard_Boolean  XSDRAWSTLVRML_ToVRML::Write
       // puts the coordinates of all the vertices using the order
       // given during the discretisation
       for (i=1;i<=TheDiscret->NbVertices();i++)
-	{
-	  gp_Pnt TheVertex=TheDiscret->Pnt(i);
-	  TheFileOut << "          " 
-	    <<  TheVertex.Coord().X() << " " 
-	      << TheVertex.Coord().Y() <<  " " 
-		<< TheVertex.Coord().Z() << "," << endl;
-	}
+  {
+    gp_Pnt TheVertex=TheDiscret->Pnt(i);
+    TheFileOut << "          " 
+      <<  TheVertex.Coord().X() << " " 
+        << TheVertex.Coord().Y() <<  " " 
+    << TheVertex.Coord().Z() << "," << endl;
+  }
       TheFileOut << "       ]" << endl;
       TheFileOut << "     }" << endl;
       
@@ -140,43 +140,20 @@ Standard_Boolean  XSDRAWSTLVRML_ToVRML::Write
       
       // retrieves all the triangles in order to draw the facets
       for (j=1; j <= TheDiscret->NbTriangles(); j++)
-	{
-	  BRepMesh_Triangle TheTri=TheDiscret->Triangle(j);
-	  Standard_Integer e1,e2,e3,i1,i2,i3;
-	  Standard_Boolean b1,b2,b3;
-	  
-	  TheTri.Edges(e1,e2,e3,b1,b2,b3);
-	  
-	  if (b1)
-	    {
-	      i1 = TheDiscret->Edge(e1).FirstNode()-1;
-	      i2 = TheDiscret->Edge(e1).LastNode()-1;
-	    }
-	  else
-	    {
-	      i2 = TheDiscret->Edge(e1).FirstNode()-1;
-	      i1 = TheDiscret->Edge(e1).LastNode()-1;
-	    }
-
-	  if (b2)
-	    {
-	      i3 = TheDiscret->Edge(e2).LastNode()-1;
-	    }
-	  else
-	    {
-	      i3 = TheDiscret->Edge(e2).FirstNode()-1;
-	    }
-	  
-	  TheFileOut << "          " << i1  << ", " << i2 << ", "  << i3  << ", -1, " << endl;
-	}
+  {
+    Standard_Integer v[3];
+    TheDiscret->TriangleNodes(j, v);
+    
+    TheFileOut << "          " << v[0]-1  << ", " << v[1]-1 << ", "  << v[2]-1  << ", -1, " << endl;
+  }
       
       TheFileOut << "          ]" << endl;
       TheFileOut << "     solid FALSE" << endl;      // it is not a closed solid
       TheFileOut << " creaseAngle " << myCreaseAngle << " " << endl; // for smooth shading
       TheFileOut << "     }" << endl;
       TheFileOut << "   }" << endl;
-	  TheFileOut << " ]" << endl;
-	  TheFileOut << "} " << endl;
+    TheFileOut << " ]" << endl;
+    TheFileOut << "} " << endl;
       
     }
   else return Standard_False;  // failure when opening file

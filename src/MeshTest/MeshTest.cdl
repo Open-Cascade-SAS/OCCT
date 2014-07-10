@@ -26,9 +26,7 @@ uses
 
 is
 
-    class DrawableMesh;
-	---Purpose: Provides a  mesh  object inherited from Drawable3d
-	--          to draw a triangulation.
+    imported DrawableMesh from MeshTest;
 
     Commands(DI : in out Interpretor from Draw);
 	---Purpose: Defines meshing commands 

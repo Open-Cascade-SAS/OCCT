@@ -46,7 +46,6 @@
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 #include <gp_Pln.hxx>
-#include <BRepMesh.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <Poly_Triangulation.hxx>
 #include <TopoDS_Compound.hxx>
@@ -150,7 +149,6 @@ static Standard_Real CalculVolume(const TopoDS_Shape& So,
       Handle (Poly_Triangulation) facing = BRep_Tool::Triangulation(F,L);
       if(facing.IsNull() || withForce)
 	{
-//    BRepMesh::Mesh(F, tol);
 	  BRepMesh_IncrementalMesh MESH(F, tol);
 	  
 	  facing = BRep_Tool::Triangulation(F,L);

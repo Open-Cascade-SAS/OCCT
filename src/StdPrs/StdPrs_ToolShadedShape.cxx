@@ -14,7 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StdPrs_ToolShadedShape.ixx>
+#include <StdPrs_ToolShadedShape.hxx>
 
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Surface.hxx>
@@ -31,6 +31,9 @@
 #include <TopLoc_Location.hxx>
 #include <TShort_HArray1OfShortReal.hxx>
 #include <TShort_Array1OfShortReal.hxx>
+#include <TColgp_Array1OfDir.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
 
 namespace
 {

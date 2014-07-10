@@ -24,7 +24,6 @@
 #include <Poly_Triangle.hxx>
 #include <Poly_Triangulation.hxx>
 #include <BRepTools.hxx>
-#include <BRepMesh.hxx>
 #include <BRep_Tool.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
@@ -52,7 +51,7 @@
 #include <Vrml_NormalBinding.hxx>
 #include <Vrml_Separator.hxx>
 #include <Vrml_NormalBinding.hxx>
-
+#include <BRepMesh_IncrementalMesh.hxx>
 
 //=========================================================================
 // function: Add
@@ -98,8 +97,11 @@ void VrmlConverter_ShadedShape::Add( Standard_OStream& anOStream,
 	theRequestedDeflection = aDrawer->MaximalChordialDeviation(); 
       }
 
-    if (!BRepTools::Triangulation(aShape,theRequestedDeflection)) 
-      BRepMesh::Mesh(aShape,theRequestedDeflection); // computes and save the triangulation in the face.
+    if (!BRepTools::Triangulation(aShape,theRequestedDeflection))
+    {
+      // computes and save the triangulation in the face.
+      BRepMesh_IncrementalMesh(aShape,theRequestedDeflection);
+    }
   
   
   Handle(Poly_Triangulation) T;

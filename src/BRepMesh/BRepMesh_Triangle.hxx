@@ -23,49 +23,125 @@
 
 #include <BRepMesh_DegreeOfFreedom.hxx>
 
-class BRepMesh_Triangle  {
+
+//! Light weighted structure representing triangle 
+//! of mesh consisting of oriented links.
+class BRepMesh_Triangle
+{
 public:
 
   DEFINE_STANDARD_ALLOC
 
+  //! Default constructor.
+  Standard_EXPORT BRepMesh_Triangle()
+  : myEdge1(0),
+    myEdge2(0),
+    myEdge3(0),
+    myOrientation1(Standard_False),
+    myOrientation2(Standard_False),
+    myOrientation3(Standard_False),
+    myMovability  (BRepMesh_Free)
+  {
+  }
+
+  //! Constructor.
+  //! \param theEdges array of edges of triangle.
+  //! \param theOrientations array of edge's orientations.
+  //! \param theMovability movability of triangle.
+  Standard_EXPORT BRepMesh_Triangle(
+    const Standard_Integer          (&theEdges)[3],
+    const Standard_Boolean          (&theOrientations)[3],
+    const BRepMesh_DegreeOfFreedom  theMovability)
+  {
+    Initialize(theEdges, theOrientations, theMovability);
+  }
   
-  Standard_EXPORT BRepMesh_Triangle();
+  //! Initializes the triangle by the given parameters.
+  //! \param theEdges array of edges of triangle.
+  //! \param theOrientations array of edge's orientations.
+  //! \param theMovability movability of triangle.
+  inline void Initialize(
+    const Standard_Integer          (&theEdges)[3],
+    const Standard_Boolean          (&theOrientations)[3],
+    const BRepMesh_DegreeOfFreedom  theMovability)
+  {
+    myEdge1        = theEdges[0];
+    myEdge2        = theEdges[1];
+    myEdge3        = theEdges[2];
+    myOrientation1 = theOrientations[0];
+    myOrientation2 = theOrientations[1];
+    myOrientation3 = theOrientations[2];
+    myMovability   = theMovability;
+  }
   
-  Standard_EXPORT BRepMesh_Triangle(const Standard_Integer          theEdge1,
-                                    const Standard_Integer          theEdge2,
-                                    const Standard_Integer          theEdge3,
-                                    const Standard_Boolean          theOrientation1,
-                                    const Standard_Boolean          theOrientation2,
-                                    const Standard_Boolean          theOrientation3,
-                                    const BRepMesh_DegreeOfFreedom  isCanMove);
+  //! Gets edges with orientations composing the triangle.
+  //! \param[out] theEdges array edges are stored to.
+  //! \param[out] theOrientations array orientations are stored to.
+  inline void Edges(Standard_Integer (&theEdges)[3],
+                    Standard_Boolean (&theOrientations)[3]) const
+  {
+    theEdges[0]        = myEdge1;
+    theEdges[1]        = myEdge2;
+    theEdges[2]        = myEdge3;
+    theOrientations[0] = myOrientation1;
+    theOrientations[1] = myOrientation2;
+    theOrientations[2] = myOrientation3;
+  }
   
-  Standard_EXPORT void Initialize(const Standard_Integer          theEdge1,
-                                  const Standard_Integer          theEdge2,
-                                  const Standard_Integer          theEdge3,
-                                  const Standard_Boolean          theOrientation1,
-                                  const Standard_Boolean          theOrientation2,
-                                  const Standard_Boolean          theOrientation3,
-                                  const BRepMesh_DegreeOfFreedom  isCanMove) ;
-  
-  Standard_EXPORT void Edges(Standard_Integer& theEdge1,
-                             Standard_Integer& theEdge2,
-                             Standard_Integer& theEdge3,
-                             Standard_Boolean& theOrientation1,
-                             Standard_Boolean& theOrientation2,
-                             Standard_Boolean& theOrientation3) const;
-  
+  //! Returns movability of the triangle.
   inline BRepMesh_DegreeOfFreedom Movability() const 
   {
     return myMovability;
   }
   
-  Standard_EXPORT void SetMovability(const BRepMesh_DegreeOfFreedom theMovability) ;
+  //! Sets movability of the triangle.
+  inline void SetMovability(const BRepMesh_DegreeOfFreedom theMovability)
+  {
+    myMovability = theMovability;
+  }
   
-  Standard_EXPORT Standard_Integer HashCode(const Standard_Integer theUpper) const;
+  //! Returns hash code for this triangle.
+  //! \param theUpper upper index in the container.
+  //! \return hash code.
+  Standard_EXPORT Standard_Integer HashCode(const Standard_Integer theUpper) const
+  {
+    return ::HashCode(myEdge1 + myEdge2 + myEdge3, theUpper);
+  }
   
-  Standard_EXPORT Standard_Boolean IsEqual(const BRepMesh_Triangle& theOther) const;
+  //! Checks for equality with another triangle.
+  //! \param theOther triangle to be checked against this one.
+  //! \return TRUE if equal, FALSE if not.
+  Standard_EXPORT Standard_Boolean IsEqual(const BRepMesh_Triangle& theOther) const
+  {
+    if (myMovability == BRepMesh_Deleted || theOther.myMovability == BRepMesh_Deleted)
+      return Standard_False;
+
+    if (myEdge1 == theOther.myEdge1 && 
+        myEdge2 == theOther.myEdge2 && 
+        myEdge3 == theOther.myEdge3)
+    {
+      return Standard_True;
+    }
+
+    if (myEdge1 == theOther.myEdge2 && 
+        myEdge2 == theOther.myEdge3 && 
+        myEdge3 == theOther.myEdge1)
+    {
+      return Standard_True;
+    }
+
+    if (myEdge1 == theOther.myEdge3 && 
+        myEdge2 == theOther.myEdge1 && 
+        myEdge3 == theOther.myEdge2)
+    {
+      return Standard_True;
+    }
+
+    return Standard_False;
+  }
   
-  Standard_Boolean operator ==(const BRepMesh_Triangle& theOther) const
+  //! Alias for IsEqual.
+  Standard_EXPORT Standard_Boolean operator ==(const BRepMesh_Triangle& theOther) const
   {
     return IsEqual(theOther);
   }
@@ -81,9 +157,8 @@ private:
   BRepMesh_DegreeOfFreedom  myMovability;
 };
 
-// Inline functions
 inline Standard_Integer HashCode(const BRepMesh_Triangle& theTriangle,
-                                 const Standard_Integer theUpper)
+                                 const Standard_Integer   theUpper)
 {
  return theTriangle.HashCode(theUpper);
 }

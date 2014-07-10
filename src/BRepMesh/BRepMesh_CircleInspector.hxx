@@ -16,78 +16,89 @@
 #ifndef BRepMesh_CircleInspector_Header
 #define BRepMesh_CircleInspector_Header
 
-#include <BRepMesh_Circ.hxx>
-
-#include <BRepMesh_ListOfInteger.hxx>
+#include <BRepMesh_Collections.hxx>
+#include <BRepMesh_Circle.hxx>
 #include <Precision.hxx>
 #include <gp_XY.hxx>
 #include <gp_XYZ.hxx>
-
 #include <NCollection_CellFilter.hxx>
-#include <NCollection_Vector.hxx>
 
-typedef NCollection_Vector<BRepMesh_Circ> CircVector;
-
-//=======================================================================
-//! The class to find in the coincidence points 
-//=======================================================================
-
+//! Auxilary class to find circles shot by the given point.
 class BRepMesh_CircleInspector : public NCollection_CellFilter_InspectorXY
 {
 public:
   typedef Standard_Integer Target;
-  //! Constructor; remembers tolerance and collector data structure.
-  //! All the found points are put in the map and excluded from further
-  //! consideration.
-  BRepMesh_CircleInspector (Standard_Real theTol,
-    Standard_Integer nbComp,
-    const BRepMesh_BaseAllocator& theAlloc);
 
-  void Add(Standard_Integer theInd,const BRepMesh_Circ& theCircle)
+  //! Constructor.
+  //! \param theTolerance tolerance to be used for identification of shot circles.
+  //! \param theReservedSize size to be reserved for vector of circles.
+  //! \param theAllocator memory allocator to be used by internal collections.
+  Standard_EXPORT BRepMesh_CircleInspector(
+    const Standard_Real           theTolerance,
+    const Standard_Integer        theReservedSize,
+    const BRepMeshCol::Allocator& theAllocator)
+  : myTolerance(theTolerance*theTolerance),
+    myResIndices(theAllocator),
+    myCircles(theReservedSize)
   {
-    myInitCircle.SetValue(theInd, theCircle);
   }
 
-  void ClerResList()
+  //! Adds the circle to vector of circles at the given position.
+  //! \param theIndex position of circle in the vector.
+  //! \param theCircle circle to be added.
+  inline void Bind(const Standard_Integer theIndex,
+                   const BRepMesh_Circle& theCircle)
   {
-    myResInd.Clear();
+    myCircles.SetValue(theIndex, theCircle);
   }
 
-  CircVector& MapOfCirc()
+  //! Resutns vector of registered circles.
+  inline BRepMeshCol::VectorOfCircle& Circles()
   {
-    return myInitCircle; 
+    return myCircles; 
   }
 
-  BRepMesh_Circ& GetCirc(Standard_Integer theInd)
+  //! Returns circle with the given index.
+  //! \param theIndex index of circle.
+  //! \return circle with the given index.
+  inline BRepMesh_Circle& Circle(const Standard_Integer theIndex)
   {
-    return myInitCircle(theInd);
+    return myCircles(theIndex);
   }
 
-  //! Set current node to be checked
-  void SetCurrent (const gp_XY& theCurCircle) 
-  { 
-    myCurrent = theCurCircle;
+  //! Set reference point to be checked.
+  //! \param thePoint bullet point.
+  inline void SetPoint(const gp_XY& thePoint)
+  {
+    myResIndices.Clear();
+    myPoint = thePoint;
   }
 
-  //!Get result index of node
-  BRepMesh_ListOfInteger& GetCoincidentInd()
+  //! Returns list of circles shot by the reference point.
+  inline BRepMeshCol::ListOfInteger& GetShotCircles()
   {
-    return myResInd;
+    return myResIndices;
   }
 
-  //! Implementation of inspection method
-  NCollection_CellFilter_Action Inspect (const Standard_Integer theTarget); 
+  //! Performs inspection of a circle with the given index.
+  //! \param theTargetIndex index of a circle to be checked.
+  //! \return status of the check.
+  Standard_EXPORT NCollection_CellFilter_Action Inspect(
+    const Standard_Integer theTargetIndex);
 
-  static Standard_Boolean IsEqual (Standard_Integer theIdx, const Standard_Integer theTarget)
+  //! Checks indices for equlity.
+  Standard_EXPORT static Standard_Boolean IsEqual(
+    const Standard_Integer theIndex,
+    const Standard_Integer theTargetIndex)
   {
-    return (theIdx == theTarget);
+    return (theIndex == theTargetIndex);
   }
 
 private:
-  Standard_Real                        myTol;
-  BRepMesh_ListOfInteger               myResInd;
-  CircVector                           myInitCircle;
-  gp_XY                                myCurrent;
+  Standard_Real               myTolerance;
+  BRepMeshCol::ListOfInteger  myResIndices;
+  BRepMeshCol::VectorOfCircle myCircles;
+  gp_XY                       myPoint;
 };
 
 #endif

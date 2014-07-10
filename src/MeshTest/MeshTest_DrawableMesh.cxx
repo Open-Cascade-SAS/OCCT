@@ -14,7 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <MeshTest_DrawableMesh.ixx>
+#include <MeshTest_DrawableMesh.hxx>
 #include <TopoDS.hxx>
 #include <Draw.hxx>
 #include <Draw_ColorKind.hxx>
@@ -28,6 +28,9 @@
 #include <BRepMesh_DataStructureOfDelaun.hxx>
 #include <Bnd_Box.hxx>
 #include <BRepBndLib.hxx>
+
+IMPLEMENT_STANDARD_HANDLE (MeshTest_DrawableMesh, Draw_Drawable3D)
+IMPLEMENT_STANDARD_RTTIEXT(MeshTest_DrawableMesh, Draw_Drawable3D)
 
 //=======================================================================
 //function : MeshTest_DrawableMesh
@@ -53,7 +56,7 @@ myDeflection(Deflect), myinshape(inshape)
   Bnd_Box B;
   BRepBndLib::Add(S, B);
 
-  myMesh = new BRepMesh_FastDiscret(Deflect, S, B, 0.5, Partage, inshape);
+  myMesh = new BRepMesh_FastDiscret(S, Deflect, 0.5, B, Partage, inshape);
 }
 
 
@@ -80,7 +83,7 @@ void MeshTest_DrawableMesh::Add(const TopoDS_Shape& S)
   BRepBndLib::Add(S, B);
 
   if (myMesh.IsNull())
-    myMesh=new BRepMesh_FastDiscret(myDeflection, S, B, 0.5, myinshape);
+    myMesh=new BRepMesh_FastDiscret(S, myDeflection, 0.5, B, myinshape);
   else
     myMesh->Perform(S);
 }

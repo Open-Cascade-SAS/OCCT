@@ -165,7 +165,7 @@ void VrmlData_ShapeConvert::Convert (const Standard_Boolean theExtractFaces,
                 isTessellate = Standard_True;
               if (isTessellate) {
                 // Triangulate the face by the standard OCC mesher
-                BRepMesh_IncrementalMesh IM (aFace, aDeflection, Standard_False, theDeflAngle);
+                BRepMesh_IncrementalMesh IM (aFace, aDeflection, theDeflAngle, Standard_False);
                 aTri = BRep_Tool::Triangulation (aFace, aLoc);
               }
               if (aTri.IsNull() == Standard_False) {

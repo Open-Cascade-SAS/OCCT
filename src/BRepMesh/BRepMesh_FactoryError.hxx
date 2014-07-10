@@ -1,6 +1,4 @@
-// Created on: 2011-06-01
-// Created by: Oleg AGASHIN
-// Copyright (c) 2011-2014 OPEN CASCADE SAS
+// Copyright (c) 2013 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -13,12 +11,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _BRepMesh_VectorOfVertex_HeaderFile
-#define _BRepMesh_VectorOfVertex_HeaderFile
 
-#include <BRepMesh_Vertex.hxx>
-#include <NCollection_Vector.hxx>
+#ifndef _BRepMesh_FactoryError_HeaderFile
+#define _BRepMesh_FactoryError_HeaderFile
 
-typedef NCollection_Vector<BRepMesh_Vertex> BRepMesh_VectorOfVertex;
+enum BRepMesh_FactoryError
+{
+  BRepMesh_FE_NOERROR,
+  BRepMesh_FE_LIBRARYNOTFOUND,
+  BRepMesh_FE_FUNCTIONNOTFOUND,
+  BRepMesh_FE_CANNOTCREATEALGO
+};
 
 #endif

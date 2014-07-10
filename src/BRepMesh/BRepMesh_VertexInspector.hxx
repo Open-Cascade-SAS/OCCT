@@ -16,111 +16,138 @@
 #ifndef _BRepMesh_VertexInspector_HeaderFile
 #define _BRepMesh_VertexInspector_HeaderFile
 
-#include <BRepMesh_ListOfInteger.hxx> 
 #include <Precision.hxx>
 #include <gp_XY.hxx>
 #include <gp_XYZ.hxx>
+#include <BRepMesh_Collections.hxx>
 #include <NCollection_CellFilter.hxx>
 #include <BRepMesh_Vertex.hxx>
-#include <BRepMesh_VectorOfVertex.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <BRepMesh_BaseAllocator.hxx>
 
-//=======================================================================
-//! The class to find in the coincidence points 
-//=======================================================================
-
+//! Class intended for fast searching of the coincidence points.
 class BRepMesh_VertexInspector : public NCollection_CellFilter_InspectorXY
 {
 public:
   typedef Standard_Integer Target;
-  //! Constructor; remembers tolerance and collector data structure.
-  //! theTol can be Real or Array1OfReal with two elements which describe
-  //! tolerance for each dimension.
-  BRepMesh_VertexInspector (const Standard_Integer nbComp,
-                            const BRepMesh_BaseAllocator& theAlloc);
-                            
-  BRepMesh_VertexInspector (const Standard_Integer nbComp,
-                            const Standard_Real    theTol,
-                            const BRepMesh_BaseAllocator& theAlloc);
-                            
-  BRepMesh_VertexInspector (const Standard_Integer nbComp,
-                            const Standard_Real    aTolX,
-                            const Standard_Real    aTolY,
-                            const BRepMesh_BaseAllocator& theAlloc);
 
-  Standard_Integer Add(const BRepMesh_Vertex& theVertex);
-  
-  void SetTolerance(const Standard_Real theTol)
+  //! Constructor.
+  //! \param theReservedSize size to be reserved for vector of vertices.
+  //! \param theAllocator memory allocator to be used by internal collections.
+  Standard_EXPORT BRepMesh_VertexInspector (
+    const Standard_Integer        theReservedSize,
+    const BRepMeshCol::Allocator& theAllocator)
+    : myResIndices(theAllocator),
+      myVertices  (theReservedSize),
+      myDelNodes  (theAllocator)
   {
-    myTol(0) = theTol*theTol;
-    myTol(1) = 0.;
+    SetTolerance( Precision::Confusion() );
+  }
+
+  //! Registers the given vertex.
+  //! \param theVertex vertex to be registered.
+  Standard_EXPORT Standard_Integer Add(const BRepMesh_Vertex& theVertex)
+  {
+    if( myDelNodes.IsEmpty() )
+    {
+      myVertices.Append(theVertex);
+      return myVertices.Length();
+    }
+    
+    Standard_Integer aNodeIndex = myDelNodes.First();
+    myVertices(aNodeIndex - 1) = theVertex;
+    myDelNodes.RemoveFirst();
+    return aNodeIndex;
   }
   
-  void SetTolerance(const Standard_Real theTolX, const Standard_Real theTolY)
+
+  //! Sets the tolerance to be used for identification of 
+  //! coincident vertices equal for both dimensions.
+  inline void SetTolerance(const Standard_Real theTolerance)
   {
-    myTol(0) = theTolX*theTolX;
-    myTol(1) = theTolY*theTolY;
+    myTolerance[0] = theTolerance * theTolerance;
+    myTolerance[1] = 0.;
   }
   
-  void Clear()
+  //! Sets the tolerance to be used for identification of 
+  //! coincident vertices.
+  //! \param theToleranceX tolerance for X dimension.
+  //! \param theToleranceY tolerance for Y dimension.
+  inline void SetTolerance(const Standard_Real theToleranceX,
+                           const Standard_Real theToleranceY)
+  {
+    myTolerance[0] = theToleranceX * theToleranceX;
+    myTolerance[1] = theToleranceY * theToleranceY;
+  }
+  
+  //! Clear inspector's internal data structures.
+  inline void Clear()
   {
     myVertices.Clear();
     myDelNodes.Clear();
   }
 
-  void Delete(const Standard_Integer theIndex)
+  //! Deletes vertex with the given index.
+  //! \param theIndex index of vertex to be removed.
+  inline void Delete(const Standard_Integer theIndex)
   {
-    myVertices(theIndex-1).SetMovability(BRepMesh_Deleted);
+    myVertices(theIndex - 1).SetMovability(BRepMesh_Deleted);
     myDelNodes.Append(theIndex);
   }
   
-  Standard_Integer GetNbVertices() const
+  //! Returns number of registered vertices.
+  inline Standard_Integer NbVertices() const
   {
     return myVertices.Length(); 
   }
 
-  BRepMesh_Vertex& GetVertex(Standard_Integer theInd)
+  //! Returns vertex with the given index.
+  inline BRepMesh_Vertex& GetVertex(Standard_Integer theIndex)
   {
-    return myVertices(theInd-1);
+    return myVertices(theIndex - 1);
   }
   
-  //! Set current node to be checked
-  void SetCurrent (const gp_XY& theCurVertex, const Standard_Boolean) 
+  //! Set reference point to be checked.
+  inline void SetPoint(const gp_XY& thePoint) 
   { 
-    myResInd.Clear();
-    myCurrent = theCurVertex;
+    myResIndices.Clear();
+    myPoint = thePoint;
   }
 
-  //!Get result index of node
-  const Standard_Integer GetCoincidentInd() const
+  //! Returns index of point coinciding with regerence one.
+  inline const Standard_Integer GetCoincidentPoint() const
   {
-    if ( myResInd.Size() > 0 )
+    if ( myResIndices.Size() > 0 )
     {
-      return myResInd.First();
+      return myResIndices.First();
     }
     return 0;
   }
   
-  const BRepMesh_ListOfInteger& GetListOfDelNodes() const
+  //! Returns list with indexes of vertices that have movability attribute 
+  //! equal to BRepMesh_Deleted and can be replaced with another node.
+  inline const BRepMeshCol::ListOfInteger& GetListOfDelPoints() const
   {
     return myDelNodes;
   }
 
-  //! Implementation of inspection method
-  NCollection_CellFilter_Action Inspect (const Standard_Integer theTarget); 
+  //! Performs inspection of a point with the given index.
+  //! \param theTargetIndex index of a circle to be checked.
+  //! \return status of the check.
+  Standard_EXPORT NCollection_CellFilter_Action Inspect(const Standard_Integer theTargetIndex);
 
-  static Standard_Boolean IsEqual (Standard_Integer theIdx, const Standard_Integer theTarget)
+  //! Checks indices for equlity.
+  Standard_EXPORT static Standard_Boolean IsEqual(const Standard_Integer theIndex,
+                                                  const Standard_Integer theTargetIndex)
   {
-    return (theIdx == theTarget);
+    return (theIndex == theTargetIndex);
   }
 
 private:
-  TColStd_Array1OfReal                 myTol;
-  BRepMesh_ListOfInteger               myResInd;
-  BRepMesh_VectorOfVertex              myVertices;
-  BRepMesh_ListOfInteger               myDelNodes;
-  gp_XY                                myCurrent;
+
+  Standard_Real               myTolerance[2];
+  BRepMeshCol::ListOfInteger  myResIndices;
+  BRepMeshCol::VectorOfVertex myVertices;
+  BRepMeshCol::ListOfInteger  myDelNodes;
+  gp_XY                       myPoint;
 };
 
 #endif

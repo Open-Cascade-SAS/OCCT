@@ -18,6 +18,7 @@
 
 #include <Standard.hxx>
 #include <Standard_Mutex.hxx>
+#include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopLoc_Location.hxx>
@@ -66,22 +67,20 @@ public:
       aEdges.push_back(TopoDS::Edge(aEdgeIt.Current()));
 
     BRepMesh_EdgeChecker aEdgeChecker(aFaceT, aFaceLoc, myMutex, myIsFailed);
+#ifdef HAVE_TBB
     if (myIsInParallel)
     {
-    #ifdef HAVE_TBB
       // check faces in parallel threads using TBB
       tbb::parallel_for_each(aEdges.begin(), aEdges.end(), aEdgeChecker);
-    #else
-      // alternative parallelization not yet available
-      for (std::vector<TopoDS_Edge>::iterator it(aEdges.begin()); it != aEdges.end(); it++)
-        aEdgeChecker(*it);
-    #endif
     }
     else
     {
+#endif
       for (std::vector<TopoDS_Edge>::iterator it(aEdges.begin()); it != aEdges.end(); it++)
         aEdgeChecker(*it);
+#ifdef HAVE_TBB
     }
+#endif
   }
 
   //! Returns status of the check.

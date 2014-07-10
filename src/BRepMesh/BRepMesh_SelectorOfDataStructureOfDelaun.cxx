@@ -14,32 +14,43 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepMesh_SelectorOfDataStructureOfDelaun.ixx>
+#include <BRepMesh_SelectorOfDataStructureOfDelaun.hxx>
 #include <BRepMesh_PairOfIndex.hxx>
 
 //=======================================================================
-//function : BRepMesh_SelectorOfDataStructureOfDelaun
+//function : Default constructor
 //purpose  : 
 //=======================================================================
 BRepMesh_SelectorOfDataStructureOfDelaun::BRepMesh_SelectorOfDataStructureOfDelaun()
-: myNodes(10, new NCollection_IncAllocator),
-myLinks(10, new NCollection_IncAllocator),
-myElements(10, new NCollection_IncAllocator),
-myFrontier(10, new NCollection_IncAllocator)
-
-{}
-
-BRepMesh_SelectorOfDataStructureOfDelaun::BRepMesh_SelectorOfDataStructureOfDelaun(const Handle(BRepMesh_DataStructureOfDelaun)& theMesh)
-: myMesh(theMesh),
-myNodes(10, myMesh->Allocator()),
-myLinks(10, myMesh->Allocator()),
-myElements(10, myMesh->Allocator()),
-myFrontier(10, myMesh->Allocator())
-{}
-
-void  BRepMesh_SelectorOfDataStructureOfDelaun::Initialize(const Handle(BRepMesh_DataStructureOfDelaun)& theMesh)
+: myNodes   (10, new NCollection_IncAllocator),
+  myLinks   (10, new NCollection_IncAllocator),
+  myElements(10, new NCollection_IncAllocator),
+  myFrontier(10, new NCollection_IncAllocator)
 {
-  myMesh=theMesh;
+}
+
+//=======================================================================
+//function : Constructor
+//purpose  : 
+//=======================================================================
+BRepMesh_SelectorOfDataStructureOfDelaun::BRepMesh_SelectorOfDataStructureOfDelaun(
+  const Handle(BRepMesh_DataStructureOfDelaun)& theMesh)
+: myMesh    (theMesh),
+  myNodes   (10, myMesh->Allocator()),
+  myLinks   (10, myMesh->Allocator()),
+  myElements(10, myMesh->Allocator()),
+  myFrontier(10, myMesh->Allocator())
+{
+}
+
+//=======================================================================
+//function : Initialize
+//purpose  : 
+//=======================================================================
+void BRepMesh_SelectorOfDataStructureOfDelaun::Initialize(
+  const Handle(BRepMesh_DataStructureOfDelaun)& theMesh)
+{
+  myMesh = theMesh;
   myNodes.Clear();
   myLinks.Clear();
   myElements.Clear();
@@ -47,121 +58,97 @@ void  BRepMesh_SelectorOfDataStructureOfDelaun::Initialize(const Handle(BRepMesh
 }
 
 //=======================================================================
-//function : NeighboursOfNode
+//function : NeighboursOf(Node)
 //purpose  : 
 //=======================================================================
-void  BRepMesh_SelectorOfDataStructureOfDelaun::NeighboursOf(const BRepMesh_Vertex& theNode)
+void BRepMesh_SelectorOfDataStructureOfDelaun::NeighboursOf(
+  const BRepMesh_Vertex& theNode)
 {
   NeighboursOfNode(myMesh->IndexOf(theNode));
 }
 
-void  BRepMesh_SelectorOfDataStructureOfDelaun::NeighboursOfNode(const Standard_Integer indexNode)
+//=======================================================================
+//function : NeighboursOfNode(NodeIndex)
+//purpose  : 
+//=======================================================================
+void BRepMesh_SelectorOfDataStructureOfDelaun::NeighboursOfNode(
+  const Standard_Integer theNodeIndex)
 {
-  BRepMesh_ListOfInteger::Iterator itL(myMesh->LinkNeighboursOf(indexNode));
+  BRepMeshCol::ListOfInteger::Iterator aLinkIt(
+    myMesh->LinksConnectedTo(theNodeIndex));
 
-  for (; itL.More(); itL.Next()) {
-    const BRepMesh_PairOfIndex& aPair = myMesh->ElemConnectedTo(itL.Value());
-    for(Standard_Integer j = 1, jn = aPair.Extent(); j <= jn; j++)
-      myElements.Add(aPair.Index(j));
-  }
+  for (; aLinkIt.More(); aLinkIt.Next())
+    elementsOfLink(aLinkIt.Value());
 }
 
 //=======================================================================
-//function : NeighboursOfLink
+//function : NeighboursOf(Link)
 //purpose  : 
 //=======================================================================
-void  BRepMesh_SelectorOfDataStructureOfDelaun::NeighboursOf(const BRepMesh_Edge& theLink)
+void BRepMesh_SelectorOfDataStructureOfDelaun::NeighboursOf(
+  const BRepMesh_Edge& theLink)
 {
   NeighboursOfNode(theLink.FirstNode());
   NeighboursOfNode(theLink.LastNode());
 }
 
-void  BRepMesh_SelectorOfDataStructureOfDelaun::NeighboursOfLink(const Standard_Integer indexLink)
+//=======================================================================
+//function : NeighboursOfLink(LinkIndex)
+//purpose  : 
+//=======================================================================
+void BRepMesh_SelectorOfDataStructureOfDelaun::NeighboursOfLink(
+  const Standard_Integer theLinkIndex)
 {
-  NeighboursOf(myMesh->GetLink(indexLink));
+  NeighboursOf(myMesh->GetLink(theLinkIndex));
 }
 
 //=======================================================================
-//function : NeighboursOfElement
-//purpose  : by edge and by vertices
+//function : NeighboursOf(Element)
+//purpose  :
 //=======================================================================
-void  BRepMesh_SelectorOfDataStructureOfDelaun::NeighboursOf(const BRepMesh_Triangle& theElem)
+void BRepMesh_SelectorOfDataStructureOfDelaun::NeighboursOf(
+  const BRepMesh_Triangle& theElement)
 {
-  Standard_Integer v1, v2, v3, ev;
-  Standard_Boolean o1, o2, o3;
-  theElem.Edges(v1, v3, ev, o1, o2, o3);
-  v2=myMesh->GetLink(v1).LastNode();
-  v1=myMesh->GetLink(v1).FirstNode();
-  ev=myMesh->GetLink(v3).LastNode();
-  if (v1!=ev && v2!=ev) v3=ev;
-  else v3=myMesh->GetLink(v3).FirstNode();
-  NeighboursOfNode(v1);
-  NeighboursOfNode(v2);
-  NeighboursOfNode(v3);
-}
+  Standard_Integer v[3];
+  myMesh->ElementNodes(theElement, v);
 
-void  BRepMesh_SelectorOfDataStructureOfDelaun::NeighboursOfElement(const Standard_Integer indexElem)
-{
-  NeighboursOf(myMesh->GetElement(indexElem));
+  for (Standard_Integer i = 0; i < 3; ++i)
+    NeighboursOfNode(v[i]);
 }
 
 //=======================================================================
-//function : NeighboursByEdgeOf
-//purpose  : Neighbours Of an element only by edge
+//function : NeighboursOfElement(ElementIndex)
+//purpose  :
 //=======================================================================
-void  BRepMesh_SelectorOfDataStructureOfDelaun::NeighboursByEdgeOf(const BRepMesh_Triangle& theElem)
+void BRepMesh_SelectorOfDataStructureOfDelaun::NeighboursOfElement(
+  const Standard_Integer theElementIndex)
 {
-  Standard_Integer e[3], iEd;
-  Standard_Boolean o1, o2, o3;
-  theElem.Edges(e[0], e[1], e[2], o1, o2, o3);
-
-  for (iEd=0; iEd<3; iEd++) {
-    const BRepMesh_PairOfIndex& aPair = myMesh->ElemConnectedTo(e[iEd]);
-    for(Standard_Integer j = 1, jn = aPair.Extent(); j <= jn; j++)
-      myElements.Add(aPair.Index(j));
-  }
+  NeighboursOf(myMesh->GetElement(theElementIndex));
 }
 
-
 //=======================================================================
-//function : NeighboursOfSelector
+//function : NeighboursByEdgeOf(Element)
 //purpose  : 
 //=======================================================================
-void  BRepMesh_SelectorOfDataStructureOfDelaun::NeighboursOf(const BRepMesh_SelectorOfDataStructureOfDelaun& /*theSelector*/)
-{}
+void BRepMesh_SelectorOfDataStructureOfDelaun::NeighboursByEdgeOf(
+  const BRepMesh_Triangle& theElement)
+{
+  Standard_Integer e[3];
+  Standard_Boolean o[3];
+  theElement.Edges(e, o);
+
+  for (Standard_Integer i = 0; i < 3; ++i)
+    elementsOfLink(e[i]);
+}
 
 //=======================================================================
-//function : AddNeighbours
+//function : elementsOfLink
 //purpose  : 
 //=======================================================================
-void  BRepMesh_SelectorOfDataStructureOfDelaun::AddNeighbours()
-{}
-
-//=======================================================================
-//function : Nodes
-//purpose  : 
-//=======================================================================
-const BRepMesh_MapOfInteger& BRepMesh_SelectorOfDataStructureOfDelaun::Nodes()const
-{return myNodes;}
-
-//=======================================================================
-//function : Links
-//purpose  : 
-//=======================================================================
-const BRepMesh_MapOfInteger& BRepMesh_SelectorOfDataStructureOfDelaun::Links()const
-{return myLinks;}
-
-//=======================================================================
-//function : Elements
-//purpose  : 
-//=======================================================================
-const BRepMesh_MapOfInteger& BRepMesh_SelectorOfDataStructureOfDelaun::Elements()const
-{return myElements;}
-
-//=======================================================================
-//function : FrontierLinks
-//purpose  : 
-//=======================================================================
-const BRepMesh_MapOfInteger& BRepMesh_SelectorOfDataStructureOfDelaun::FrontierLinks()const
-{return myFrontier;}
-
+void BRepMesh_SelectorOfDataStructureOfDelaun::elementsOfLink(
+  const Standard_Integer theIndex)
+{
+  const BRepMesh_PairOfIndex& aPair = myMesh->ElementsConnectedTo(theIndex);
+  for(Standard_Integer j = 1, jn = aPair.Extent(); j <= jn; ++j)
+    myElements.Add(aPair.Index(j));
+}

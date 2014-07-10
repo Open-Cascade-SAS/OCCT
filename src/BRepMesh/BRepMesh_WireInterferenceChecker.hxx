@@ -49,9 +49,9 @@ public:
   //! \param theStatus shared flag to set status of the check.
   //! \param theMutex shared mutex for parallel processing.
   BRepMesh_WireInterferenceChecker(
-    const std::vector<BRepMesh_WireChecker::SegmentsTree>& theWires,
-    BRepMesh_Status*                                       theStatus,
-    Standard_Mutex*                                        theMutex);
+    const std::vector<BRepMeshCol::SegmentsTree>& theWires,
+    BRepMesh_Status*                              theStatus,
+    Standard_Mutex*                               theMutex);
 
   //! Checker's body.
   //! \param theWireRange range of wires to be checked.
@@ -69,27 +69,6 @@ public:
   //! \param theWireId Id of discretized wire to be checked.
   void operator ()(const Standard_Integer& theWireId) const;
 
-  //! Checks intersection between the two segments.
-  //! \param theStartPnt1 start point of first segment.
-  //! \param theEndPnt1 end point of first segment.
-  //! \param theStartPnt2 start point of second segment.
-  //! \param theEndPnt2 end point of second segment.
-  //! \param isConsiderEndPointTouch if TRUE EndPointTouch status will be
-  //! returned in case if segments are touching by end points, if FALSE
-  //! returns NoIntersection flag.
-  //! \param isConsiderPointOnSegment if TRUE PointOnSegment status will be
-  //! returned in case if end point of one segment lies onto another one, 
-  //! if FALSE returns NoIntersection flag.
-  //! \param[out] theIntPnt point of intersection.
-  //! \return status of intersection check.
-  static IntFlag Intersect(const gp_XY&           theStartPnt1,
-                           const gp_XY&           theEndPnt1,
-                           const gp_XY&           theStartPnt2,
-                           const gp_XY&           theEndPnt2,
-                           const Standard_Boolean isConsiderEndPointTouch,
-                           const Standard_Boolean isConsiderPointOnSegment,
-                           gp_Pnt2d&              theIntPnt);
-
 private:
 
   //! Classifies the point in case of coincidence of two vectors.
@@ -102,12 +81,12 @@ private:
                                          const gp_XY& thePoint2,
                                          const gp_XY& thePointToCheck);
 private:
-  const BRepMesh_WireChecker::SegmentsTree* myWires;
-  Standard_Integer                          myWiresNb;
-  BRepMesh_Status*                          myStatus;
+  const BRepMeshCol::SegmentsTree* myWires;
+  Standard_Integer                 myWiresNb;
+  BRepMesh_Status*                 myStatus;
 
 #ifdef HAVE_TBB
-  Standard_Mutex*                           myMutex;
+  Standard_Mutex*                  myMutex;
 #endif
 };
 

@@ -12,135 +12,263 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepMesh_ShapeTool.ixx>
-#include <Geom2d_Curve.hxx>
-#include <BRep_Tool.hxx>
-#include <TopoDS.hxx>
-#include <BRepAdaptor_Surface.hxx>
-#include <BRepAdaptor_Curve.hxx>
-#include <Adaptor3d_CurveOnSurface.hxx>
-#include <Adaptor2d_HCurve2d.hxx>
+#include <BRepMesh_ShapeTool.hxx>
+
+#include <Bnd_Box.hxx>
+#include <TopoDS_Edge.hxx>
 #include <BRepBndLib.hxx>
-#include <Extrema_POnCurv.hxx>
-#include <Extrema_LocateExtPC.hxx>
-#include <TopExp.hxx>
-#include <Precision.hxx>
-#include <gp_Trsf.hxx>
+#include <TopoDS.hxx>
+#include <BRep_Tool.hxx>
+#include <TopExp_Explorer.hxx>
+#include <BRepAdaptor_HSurface.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <Poly_Triangulation.hxx>
 #include <BRep_Builder.hxx>
 
-Standard_Integer debug=0;
+namespace {
+  //! Auxilary struct to take a tolerance of edge.
+  struct EdgeTolerance
+  {
+    static Standard_Real Get(const TopoDS_Shape& theEdge)
+    {
+      return BRep_Tool::Tolerance(TopoDS::Edge(theEdge));
+    }
+  };
 
-BRepMesh_ShapeTool::BRepMesh_ShapeTool() {}
+  //! Auxilary struct to take a tolerance of vertex.
+  struct VertexTolerance
+  {
+    static Standard_Real Get(const TopoDS_Shape& theVertex)
+    {
+      return BRep_Tool::Tolerance(TopoDS::Vertex(theVertex));
+    }
+  };
 
-Standard_Boolean BRepMesh_ShapeTool::MoreInternalVertex() 
-{
-  while (theVIterator.More()) {
-    if (theVIterator.Current().Orientation() == TopAbs_INTERNAL) 
-      return Standard_True;
-    theVIterator.Next();
+  //! Returns maximum tolerance of face element of the specified type.
+  template<TopAbs_ShapeEnum ShapeType, class ToleranceExtractor>
+  Standard_Real MaxTolerance(const TopoDS_Face& theFace)
+  {
+    Standard_Real aMaxTolerance = RealFirst();
+    TopExp_Explorer aExplorer(theFace, ShapeType);
+    for (; aExplorer.More(); aExplorer.Next())
+    {
+      Standard_Real aTolerance = ToleranceExtractor::Get(aExplorer.Current());
+      if (aTolerance > aMaxTolerance)
+        aMaxTolerance = aTolerance;
+    }
+
+    return aMaxTolerance;
   }
-  return Standard_False;
 }
 
-
-TopoDS_Vertex BRepMesh_ShapeTool::FirstVertex(const TopoDS_Edge& E)
+//=======================================================================
+//function : BoxMaxDimension
+//purpose  : 
+//=======================================================================
+Standard_Real BRepMesh_ShapeTool::MaxFaceTolerance(const TopoDS_Face& theFace)
 {
-  TopExp_Explorer Ex(E,TopAbs_VERTEX);
-  while (Ex.More()) {
-    if (Ex.Current().Orientation() == TopAbs_FORWARD) 
-      return TopoDS::Vertex(Ex.Current());
-    Ex.Next();
+  Standard_Real aMaxTolerance = BRep_Tool::Tolerance(theFace);
+
+  Standard_Real aTolerance = Max(
+    MaxTolerance<TopAbs_EDGE,   EdgeTolerance  >(theFace),
+    MaxTolerance<TopAbs_VERTEX, VertexTolerance>(theFace));
+
+  return Max(aMaxTolerance, aTolerance);
+}
+
+//=======================================================================
+//function : BoxMaxDimension
+//purpose  : 
+//=======================================================================
+void BRepMesh_ShapeTool::BoxMaxDimension(const Bnd_Box& theBox,
+                                         Standard_Real& theMaxDimension)
+{
+  if(theBox.IsVoid())
+    return;
+
+  Standard_Real aMinX, aMinY, aMinZ, aMaxX, aMaxY, aMaxZ;
+  theBox.Get(aMinX, aMinY, aMinZ, aMaxX, aMaxY, aMaxZ);
+
+  theMaxDimension = Max(aMaxX - aMinX, Max(aMaxY - aMinY, aMaxZ - aMinZ));
+}
+
+//=======================================================================
+//function : RelativeEdgeDeflection
+//purpose  : 
+//=======================================================================
+Standard_Real BRepMesh_ShapeTool::RelativeEdgeDeflection(
+  const TopoDS_Edge&  theEdge,
+  const Standard_Real theDeflection,
+  const Standard_Real theMaxShapeSize,
+  Standard_Real&      theAdjustmentCoefficient)
+{
+  theAdjustmentCoefficient = 1.;
+  Standard_Real aDefEdge = theDeflection;
+  if(theEdge.IsNull())
+    return aDefEdge;
+
+  Bnd_Box aBox;
+  BRepBndLib::Add(theEdge, aBox);
+  BoxMaxDimension(aBox, aDefEdge);
+            
+  // Adjust resulting value in relation to the total size
+  theAdjustmentCoefficient = theMaxShapeSize / (2 * aDefEdge);
+  if (theAdjustmentCoefficient < 0.5)
+    theAdjustmentCoefficient = 0.5;
+  else if (theAdjustmentCoefficient > 2.)
+    theAdjustmentCoefficient = 2.;
+
+  return (theAdjustmentCoefficient * aDefEdge * theDeflection);
+}
+
+//=======================================================================
+//function : FindUV
+//purpose  : 
+//=======================================================================
+gp_XY BRepMesh_ShapeTool::FindUV(
+    const Standard_Integer                theIndexOfPnt3d,
+    const gp_Pnt2d&                       thePnt2d,
+    const TopoDS_Vertex&                  theVertex,
+    const Standard_Real                   theMinDistance,
+    const Handle(BRepMesh_FaceAttribute)& theFaceAttribute,
+    const Handle(BRepAdaptor_HSurface)&   theSurface,
+    BRepMeshCol::DMapOfIntegerListOfXY&   theLocation2dMap)
+{
+  const gp_XY& aPnt2d = thePnt2d.Coord();
+  if (!theLocation2dMap.IsBound(theIndexOfPnt3d))
+  {
+    BRepMeshCol::ListOfXY aPoints2d;
+    aPoints2d.Append(aPnt2d);
+    theLocation2dMap.Bind(theIndexOfPnt3d, aPoints2d);
+    return aPnt2d;
   }
-  Standard_NoSuchObject::Raise("non existent first vertex");
-  return TopoDS_Vertex();
-}
 
-TopoDS_Vertex BRepMesh_ShapeTool::LastVertex(const TopoDS_Edge& E)
-{
-  TopExp_Explorer Ex(E,TopAbs_VERTEX);
-  while (Ex.More()) {
-    if (Ex.Current().Orientation() == TopAbs_REVERSED) 
-      return TopoDS::Vertex(Ex.Current());
-    Ex.Next();
-  }
-  Standard_NoSuchObject::Raise("non existent last vertex");
-  return TopoDS_Vertex();
-}
+  BRepMeshCol::ListOfXY& aPoints2d = 
+    theLocation2dMap.ChangeFind(theIndexOfPnt3d);
 
-void BRepMesh_ShapeTool::Vertices(const TopoDS_Edge& E,
-				  TopoDS_Vertex& Vfirst,
-				  TopoDS_Vertex& Vlast)
-{
-  TopExp::Vertices(E, Vfirst, Vlast);
-}
+  // Find the most closest 2d point to the given one.
+  gp_XY aUV;
+  Standard_Real aMinDist = RealLast();
+  BRepMeshCol::ListOfXY::Iterator aPoint2dIt(aPoints2d);
+  for (; aPoint2dIt.More(); aPoint2dIt.Next())
+  {
+    const gp_XY& aCurPnt2d = aPoint2dIt.Value();
 
-Bnd_Box BRepMesh_ShapeTool::Bound(const TopoDS_Face& F)
-{
-  Bnd_Box Bf;
-  BRepBndLib::Add(F, Bf);
-  return Bf;
-}
-
-Bnd_Box BRepMesh_ShapeTool::Bound(const TopoDS_Edge& E)
-{
-  Bnd_Box Be;
-  BRepBndLib::Add(E, Be);
-  return Be;
-}
-
-void  BRepMesh_ShapeTool::Parameters(const TopoDS_Edge& E,
-				     const TopoDS_Face& F,
-				     const Standard_Real W,
-				     gp_Pnt2d& UV)
-{
-  Standard_Real a,b;
-  Handle(Geom2d_Curve) C = BRep_Tool::CurveOnSurface(E,F,a,b);
-  C->D0(W,UV);
-}
-
-void  BRepMesh_ShapeTool::Locate(const BRepAdaptor_Curve& C,
-				 const Standard_Real W,
-				 Standard_Real& wFound,
-				 const gp_Pnt& p3d,
-				 gp_Pnt2d& UV)
-{
-  gp_Pnt plocal(p3d.Transformed(C.Trsf().Inverted()));
-  Extrema_LocateExtPC 
-    pcos(plocal, C.CurveOnSurface(), W, Precision::PConfusion());
-  if (pcos.IsDone()) {
-    wFound=pcos.Point().Parameter();
-    C.CurveOnSurface().GetCurve()->D0(wFound, UV);
-    if (debug!=0) {
-      if (pcos.SquareDistance()>(4.* C.Tolerance()* C.Tolerance()))  {
-	cout << " ShapeTool :LocateExtPCOnS Done but (Distance "<< 
-	  sqrt(pcos.SquareDistance()) << ")(Tolerance "<<C.Tolerance()<<")" << endl;
-	cout << "                W given : "<< W<< " W calculated : "<<  
-	  wFound << endl;
-      }
-      else if (debug>1) {
-	cout << " ShapeTool : LocateExtPCOnS OK ! "<<endl; 
-	cout << "                W given : "<< W<< " W calculated : "<<  
-	  wFound << endl;
-      }
+    Standard_Real aDist = (aPnt2d - aCurPnt2d).Modulus();
+    if (aDist < aMinDist)
+    {
+      aUV      = aCurPnt2d;
+      aMinDist = aDist;
     }
   }
-  else {
-    wFound=W;
-    if (debug!=0) 
-      cout << " ShapeTool : LocateExtPCOnS Not Done ! " << endl;
-    C.CurveOnSurface().GetCurve()->D0(W, UV);
+
+  const Standard_Real aTolerance = 
+    Min(2. * BRep_Tool::Tolerance(theVertex), theMinDistance);
+
+  // Get face limits
+  Standard_Real aDiffU, aDiffV;
+  if (theFaceAttribute.IsNull())
+  {
+    aDiffU = theSurface->LastUParameter() - theSurface->FirstUParameter();
+    aDiffV = theSurface->LastVParameter() - theSurface->FirstVParameter();
   }
+  else
+  {
+    aDiffU = theFaceAttribute->GetUMax() - theFaceAttribute->GetUMin();
+    aDiffV = theFaceAttribute->GetVMax() - theFaceAttribute->GetVMin();
+  }
+
+  const Standard_Real Utol2d = .5 * aDiffU;
+  const Standard_Real Vtol2d = .5 * aDiffV;
+
+  const gp_Pnt aPnt1 = theSurface->Value(   aUV.X(),    aUV.Y());
+  const gp_Pnt aPnt2 = theSurface->Value(aPnt2d.X(), aPnt2d.Y());
+
+  //! If selected point is too far from the given one in parametric space
+  //! or their positions in 3d are different, add the given point as unique.
+  if (Abs(aUV.X() - aPnt2d.X()) > Utol2d ||
+      Abs(aUV.Y() - aPnt2d.Y()) > Vtol2d ||
+      !aPnt1.IsEqual(aPnt2, aTolerance))
+  {
+    aUV = aPnt2d;
+    aPoints2d.Append(aUV);
+  }
+
+  return aUV;
 }
 
-
-void BRepMesh_ShapeTool::AddInFace(const TopoDS_Face&          F,
-				   Handle(Poly_Triangulation)& T)
+//=======================================================================
+//function : AddInFace
+//purpose  : 
+//=======================================================================
+void BRepMesh_ShapeTool::AddInFace(
+  const TopoDS_Face&          theFace,
+  Handle(Poly_Triangulation)& theTriangulation)
 {
-  static BRep_Builder B1;
-  TColgp_Array1OfPnt& Nodes = T->ChangeNodes();
-  gp_Trsf tr = F.Location().Transformation();
-  tr.Invert();
-  for (Standard_Integer i = Nodes.Lower(); i <= Nodes.Upper(); i++) 
-    Nodes(i).Transform(tr);
-  B1.UpdateFace(F, T);
+  const TopLoc_Location& aLoc = theFace.Location();
+  if (!aLoc.IsIdentity())
+  {
+    gp_Trsf aTrsf = aLoc.Transformation();
+    aTrsf.Invert();
+
+    TColgp_Array1OfPnt& aNodes = theTriangulation->ChangeNodes();
+    for (Standard_Integer i = aNodes.Lower(); i <= aNodes.Upper(); ++i) 
+      aNodes(i).Transform(aTrsf);
+  }
+
+  BRep_Builder aBuilder;
+  aBuilder.UpdateFace(theFace, theTriangulation);
+}
+
+//=======================================================================
+//function : NullifyFace
+//purpose  : 
+//=======================================================================
+void BRepMesh_ShapeTool::NullifyFace(const TopoDS_Face& theFace)
+{
+  BRep_Builder aBuilder;
+  aBuilder.UpdateFace(theFace, Handle(Poly_Triangulation)());
+}
+
+//=======================================================================
+//function : NullifyEdge
+//purpose  : 
+//=======================================================================
+void BRepMesh_ShapeTool::NullifyEdge(
+  const TopoDS_Edge&                theEdge,
+  const Handle(Poly_Triangulation)& theTriangulation,
+  const TopLoc_Location&            theLocation)
+{
+  UpdateEdge(theEdge, Handle(Poly_PolygonOnTriangulation)(),
+    theTriangulation, theLocation);
+}
+
+//=======================================================================
+//function : UpdateEdge
+//purpose  : 
+//=======================================================================
+void BRepMesh_ShapeTool::UpdateEdge(
+  const TopoDS_Edge&                         theEdge,
+  const Handle(Poly_PolygonOnTriangulation)& thePolygon,
+  const Handle(Poly_Triangulation)&          theTriangulation,
+  const TopLoc_Location&                     theLocation)
+{
+  BRep_Builder aBuilder;
+  aBuilder.UpdateEdge(theEdge, thePolygon, theTriangulation, theLocation);
+}
+
+//=======================================================================
+//function : UpdateEdge
+//purpose  : 
+//=======================================================================
+void BRepMesh_ShapeTool::UpdateEdge(
+  const TopoDS_Edge&                         theEdge,
+  const Handle(Poly_PolygonOnTriangulation)& thePolygon1,
+  const Handle(Poly_PolygonOnTriangulation)& thePolygon2,
+  const Handle(Poly_Triangulation)&          theTriangulation,
+  const TopLoc_Location&                     theLocation)
+{
+  BRep_Builder aBuilder;
+  aBuilder.UpdateEdge(theEdge, thePolygon1, thePolygon2, 
+    theTriangulation, theLocation);
 }

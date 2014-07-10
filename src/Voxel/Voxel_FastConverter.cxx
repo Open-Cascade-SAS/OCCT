@@ -18,7 +18,6 @@
 #include <Bnd_Box.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepBndLib.hxx>
-#include <BRepMesh.hxx>
 
 #include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
@@ -31,6 +30,7 @@
 #include <Poly_Triangulation.hxx>
 #include <IntAna2d_AnaIntersection.hxx>
 #include <BRepClass3d_SolidClassifier.hxx>
+#include <BRepMesh_IncrementalMesh.hxx>
 
 // Printing the progress in stdout.
 //#define CONV_DUMP
@@ -141,7 +141,7 @@ void Voxel_FastConverter::Init()
   // Re-create the triangulation.
   if (triangulate)
   {
-    BRepMesh::Mesh(myShape, myDeflection);
+    BRepMesh_IncrementalMesh(myShape, myDeflection);
   }
 
   // Compute the number of triangles.

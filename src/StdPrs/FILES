@@ -1,3 +1,5 @@
+StdPrs_ToolShadedShape.hxx
+StdPrs_ToolShadedShape.cxx
 StdPrs_HLRShape.hxx
 StdPrs_HLRShape.cxx
 StdPrs_Point.hxx

@@ -80,7 +80,7 @@ void StdSelect_BRepSelectionTool
 
   if( isAutoTriangulation && !BRepTools::Triangulation (theShape, Precision::Infinite()) )
   {
-    BRepMesh_IncrementalMesh aMesher(theShape, theDeflection, Standard_False, theDeviationAngle);
+    BRepMesh_IncrementalMesh aMesher(theShape, theDeflection, theDeviationAngle, Standard_False);
   }
 
   Handle(StdSelect_BRepOwner) aBrepOwner;

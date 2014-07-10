@@ -53,7 +53,7 @@ is
    class ToolVertex;
    class ToolRFace;
    class HLRToolShape;
-   class ToolShadedShape;
+   imported ToolShadedShape from StdPrs;
    class ShadedShape;
     
    class PoleCurve;

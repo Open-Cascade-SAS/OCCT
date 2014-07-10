@@ -12,7 +12,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepMesh_FaceAttribute.ixx>
+#include <BRepMesh_FaceAttribute.hxx>
+
+IMPLEMENT_STANDARD_HANDLE (BRepMesh_FaceAttribute, Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_FaceAttribute, Standard_Transient)
 
 //=======================================================================
 //function : BRepMesh_FaceAttribute

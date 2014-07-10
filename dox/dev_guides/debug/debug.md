@@ -80,6 +80,16 @@ const char* BRepTools_DumpLoc (void* theShapePtr)
 Dumps shape or its location to cout.
 - *theShapePtr* - a pointer to *TopoDS_Shape* variable.
 
+The following function is provided by *TKMesh* toolkit:
+
+~~~~~
+const char* BRepMesh_Dump (void* theMeshHandlePtr, const char* theFileNameStr)
+~~~~~
+
+Stores mesh produced in parametric space to BREP file.
+- *theMeshHandlePtr* - a pointer to *Handle(BRepMesh_DataStructureOfDelaun)* variable.
+- *theFileNameStr* - name of file the mesh sould be stored to.
+
 The following additional function is provided by *TKGeomBase* toolkit:
 
 ~~~~~
@@ -119,6 +129,7 @@ For convenience it is possible to define aliases to commands in this window, for
 >alias saveshape  ? ({,,TKBRep}BRepTools_Write)
 >alias dumpshape  ? ({,,TKBRep}BRepTools_Dump)
 >alias dumploc    ? ({,,TKBRep}BRepTools_DumpLoc)
+>alias dumpmesh   ? ({,,TKMesh}BRepMesh_Dump)
 >alias dumpgeom   ? ({,,TKGeomBase}GeomTools_Dump)
 ~~~~~ 
 
