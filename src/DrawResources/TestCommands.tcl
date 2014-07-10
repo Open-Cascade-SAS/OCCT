@@ -162,13 +162,13 @@ proc testgrid {args} {
     set logdir [file normalize [string trim $logdir]]
     if { $logdir == "" } {
 	# if specified logdir is empty string, generate unique name like 
-        # results_<branch>_<timestamp>
-        set prefix "results"
+        # results/<branch>_<timestamp>
+        set prefix ""
         if { ! [catch {exec git branch} gitout] &&
              [regexp {[*] ([\w]+)} $gitout res branch] } {
-            set prefix "${prefix}_$branch"
+            set prefix "${branch}_"
         }
-	set logdir "${prefix}_[clock format [clock seconds] -format {%Y-%m-%dT%H%M}]"
+	set logdir "results/${prefix}[clock format [clock seconds] -format {%Y-%m-%dT%H%M}]"
 	set logdir [file normalize $logdir]
     }
     if { [file isdirectory $logdir] && ! $overwrite && ! [catch {glob -directory $logdir *}] } {
@@ -1203,9 +1203,14 @@ proc _log_html {file log {title {}}} {
     # print header
     puts $fd "<html><head><title>$title</title></head><body><h1>$title</h1>"
 
-    # add images if present
+    # add images if present; these should have either PNG, GIF, or JPG extension,
+    # and start with name of the test script, with optional suffix separated
+    # by underscore or dash
     set imgbasename [file rootname [file tail $file]]
-    foreach img [lsort [glob -nocomplain -directory [file dirname $file] -tails ${imgbasename}*.gif ${imgbasename}*.png ${imgbasename}*.jpg]] {
+    foreach img [lsort [glob -nocomplain -directory [file dirname $file] -tails \
+                             ${imgbasename}.gif   ${imgbasename}.png   ${imgbasename}.jpg \
+                             ${imgbasename}_*.gif ${imgbasename}_*.png ${imgbasename}_*.jpg \
+                             ${imgbasename}-*.gif ${imgbasename}-*.png ${imgbasename}-*.jpg]] {
 	puts $fd "<p>[file tail $img]<br><img src=\"$img\"/><p>"
     }
 
