@@ -153,6 +153,26 @@ inline void TopoDS_Shape::Free (const Standard_Boolean B)
 }
 
 //=======================================================================
+//function : Locked
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean TopoDS_Shape::Locked () const
+{
+  return myTShape->Locked();
+}
+
+//=======================================================================
+//function : Locked
+//purpose  : 
+//=======================================================================
+
+inline void TopoDS_Shape::Locked (const Standard_Boolean B)
+{
+  myTShape->Locked(B);
+}
+
+//=======================================================================
 //function : Modified
 //purpose  : 
 //=======================================================================

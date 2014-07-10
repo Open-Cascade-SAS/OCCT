@@ -35,6 +35,10 @@ is
     exception FrozenShape inherits DomainError;
 	---Purpose: An  attempt was  made to   modify  a Shape  already
 	--          shared or protected.
+
+    exception LockedShape inherits DomainError;
+	---Purpose: An attempt was made to modify a geometry of Shape already
+	--          shared or protected.
 	
     exception UnCompatibleShapes inherits DomainError;
 	---Purpose: An incorrect insertion was attempted.

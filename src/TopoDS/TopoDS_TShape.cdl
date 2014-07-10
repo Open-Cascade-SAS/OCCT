@@ -72,6 +72,16 @@ is
     ---C++: inline
 	---Purpose: Sets the free flag.
     is static;
+
+    Locked(me) returns Boolean
+    ---C++: inline
+	---Purpose: Returns the locked flag.
+    is static;
+    
+    Locked(me : mutable; F : Boolean)
+    ---C++: inline
+	---Purpose: Sets the locked flag.
+    is static;
     
     Modified(me) returns Boolean
     ---C++: inline

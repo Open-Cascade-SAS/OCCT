@@ -26,6 +26,7 @@
 #define TopoDS_TShape_Flags_Closed     (1<<4)
 #define TopoDS_TShape_Flags_Infinite   (1<<5)
 #define TopoDS_TShape_Flags_Convex     (1<<6)
+#define TopoDS_TShape_Flags_Locked     (1<<7)
 
 
 //=======================================================================
@@ -59,6 +60,26 @@ inline void TopoDS_TShape::Free(const Standard_Boolean F)
 {
   if (F) myFlags |=  TopoDS_TShape_Flags_Free;
   else   myFlags &= ~TopoDS_TShape_Flags_Free;
+}
+
+//=======================================================================
+//function : Locked
+//purpose  : 
+//=======================================================================
+inline Standard_Boolean TopoDS_TShape::Locked() const
+{
+  return ((myFlags & TopoDS_TShape_Flags_Locked) != 0);
+}
+
+//=======================================================================
+//function : Locked
+//purpose  : 
+//=======================================================================
+
+inline void TopoDS_TShape::Locked(const Standard_Boolean F)
+{
+  if (F) myFlags |=  TopoDS_TShape_Flags_Locked;
+  else   myFlags &= ~TopoDS_TShape_Flags_Locked;
 }
 
 //=======================================================================

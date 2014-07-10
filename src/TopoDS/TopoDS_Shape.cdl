@@ -131,6 +131,20 @@ is
     raises NullObject from Standard
     is static;
     
+    Locked(me) returns Boolean
+	---Purpose: Returns the locked flag.
+	--          
+	---C++: inline
+    raises NullObject from Standard
+    is static;
+    
+    Locked(me : in out; F : Boolean)
+	---Purpose: Sets the locked flag.
+	--          
+	---C++: inline
+    raises NullObject from Standard
+    is static;
+
     Modified(me) returns Boolean
 	---Purpose: Returns the modification flag.
 	--          

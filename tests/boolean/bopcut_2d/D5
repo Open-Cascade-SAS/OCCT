@@ -1,0 +1,11 @@
+puts "TODO #23876 ALL: Error : The bopcut cannot be built."
+
+restore [locate_data_file case_9_edge.brep] a
+restore [locate_data_file case_9_wire3.brep] b
+settolerance a 0.1
+setflags b locked
+bop a b
+bopcut result
+set length 613.678
+set nbsh_v 3
+set nbsh_e 2
