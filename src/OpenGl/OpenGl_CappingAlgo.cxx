@@ -103,6 +103,12 @@ void OpenGl_CappingAlgo::RenderCapping (const Handle(OpenGl_Workspace)&  theWork
   // prepare for rendering the clip planes
   glEnable (GL_STENCIL_TEST);
 
+  // remember current state of depth
+  // function and change its value
+  GLint aDepthFuncPrev;
+  glGetIntegerv (GL_DEPTH_FUNC, &aDepthFuncPrev);
+  glDepthFunc (GL_LESS);
+
   // generate capping for every clip plane
   for (aCappingIt.Init (aContextPlanes); aCappingIt.More(); aCappingIt.Next())
   {
@@ -158,7 +164,6 @@ void OpenGl_CappingAlgo::RenderCapping (const Handle(OpenGl_Workspace)&  theWork
     // render capping plane using the generated stencil mask
     glColorMask (GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
     glDepthMask (GL_TRUE);
-    glDepthFunc (GL_LESS);
     glStencilFunc (GL_EQUAL, 1, 0x01);
     glStencilOp (GL_KEEP, GL_KEEP, GL_KEEP);
     glEnable (GL_DEPTH_TEST);
@@ -168,6 +173,7 @@ void OpenGl_CappingAlgo::RenderCapping (const Handle(OpenGl_Workspace)&  theWork
 
   // restore previous application state
   glClear (GL_STENCIL_BUFFER_BIT);
+  glDepthFunc (aDepthFuncPrev);
   glStencilFunc (GL_ALWAYS, 0, 0xFF);
   glDisable (GL_STENCIL_TEST);
 

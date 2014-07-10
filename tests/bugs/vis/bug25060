@@ -1,0 +1,27 @@
+puts "============"
+puts "CR25060"
+puts "============"
+puts ""
+#######################################################################
+#  Capping breaks highlighting of shaded AIS_Shape with displayed edges.
+#######################################################################
+vinit View1
+box b 10 10 10
+vdisplay b
+vshowfaceboundary b 1
+vclipplane create pln1
+vclipplane set pln1 object b
+vclipplane change pln1 equation 0 1 0 -5
+vclipplane change pln1 capping on
+vsetdispmode 1
+vfit
+vmoveto 304 146
+
+set x_coord 304
+set y_coord 146
+checkcolor $x_coord $y_coord 0 1 1
+if { $stat != 1 } {
+   puts "Error : Highlighting is broken."
+}
+
+set only_screen 1
