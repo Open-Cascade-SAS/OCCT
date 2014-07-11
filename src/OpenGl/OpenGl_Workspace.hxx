@@ -629,7 +629,7 @@ protected: //! @name fields related to ray-tracing
   std::map<const OpenGl_Structure*, Standard_Size> myStructureStates;
 
   //! PrimitiveArray to TriangleSet map for scene partial update.
-  std::map<const OpenGl_PrimitiveArray*, OpenGl_TriangleSet*> myArrayToTrianglesMap;
+  std::map<Standard_Size, OpenGl_TriangleSet*> myArrayToTrianglesMap;
 
   //! Cached locations of frequently used uniform variables.
   Standard_Integer myUniformLocations[2][OpenGl_RT_NbVariables];

@@ -335,11 +335,16 @@ private:
 
 public:
 
+  //! State counter for OpenGl structures.
   OpenGl_StateCounter* GetStateCounter() const { return &myStateCounter; }
+
+  //! Returns unique ID for primitive arrays.
+  const Standard_Size GetNextPrimitiveArrayUID() const { return myUIDGenerator.Increment(); }
 
 private:
 
-  mutable OpenGl_StateCounter myStateCounter;
+  mutable OpenGl_StateCounter myStateCounter; //!< State counter for OpenGl structures.
+  mutable OpenGl_StateCounter myUIDGenerator; //!< Unique ID counter for primitive arrays.
 
 };
 

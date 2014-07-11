@@ -86,7 +86,7 @@ Standard_Boolean OpenGl_Workspace::UpdateRaytraceGeometry (GeomUpdateMode theMod
   std::set<const OpenGl_Structure*> anElements;
 
   // Set of all currently visible and "raytracable" primitive arrays.
-  std::set<const OpenGl_PrimitiveArray*> anArrays;
+  std::set<Standard_Size> anArrayIDs;
 
   const OpenGl_LayerList& aList = myView->LayerList();
 
@@ -132,7 +132,7 @@ Standard_Boolean OpenGl_Workspace::UpdateRaytraceGeometry (GeomUpdateMode theMod
               if (aPrimArray != NULL)
               {
                 // Collect all primitive arrays in scene.
-                anArrays.insert (aPrimArray);
+                anArrayIDs.insert (aPrimArray->GetUID());
               }
             }
           }
@@ -176,11 +176,11 @@ Standard_Boolean OpenGl_Workspace::UpdateRaytraceGeometry (GeomUpdateMode theMod
       // If primitive array of object not in "anArrays" set then it was hided or deleted.
       // If primitive array present in "anArrays" set but we don't have associated object yet, then
       // the object is new and still has to be built.
-      if ((aTriangleSet != NULL) && ((anArrays.find (aTriangleSet->AssociatedPArray())) != anArrays.end()))
+      if ((aTriangleSet != NULL) && ((anArrayIDs.find (aTriangleSet->AssociatedPArrayID())) != anArrayIDs.end()))
       {
         anUnchangedObjects.Append (myRaytraceGeometry.Objects().Value (anObjectIdx));
 
-        myArrayToTrianglesMap[aTriangleSet->AssociatedPArray()] = aTriangleSet;
+        myArrayToTrianglesMap[aTriangleSet->AssociatedPArrayID()] = aTriangleSet;
       }
     }
 
@@ -375,10 +375,10 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceStructure (const OpenGl_Structure*
       {
         OpenGl_PrimitiveArray* aPrimArray = dynamic_cast<OpenGl_PrimitiveArray*> (aNode->elem);
 
-        std::map<const OpenGl_PrimitiveArray*, OpenGl_TriangleSet*>::iterator aSetIter = myArrayToTrianglesMap.find (aPrimArray);
-
         if (aPrimArray != NULL)
         {
+          std::map<Standard_Size, OpenGl_TriangleSet*>::iterator aSetIter = myArrayToTrianglesMap.find (aPrimArray->GetUID());
+
           if (aSetIter != myArrayToTrianglesMap.end())
           {
             OpenGl_TriangleSet* aSet = aSetIter->second;
@@ -480,7 +480,7 @@ OpenGl_TriangleSet* OpenGl_Workspace::AddRaytracePrimitiveArray (const OpenGl_Pr
   }
 #endif
 
-  OpenGl_TriangleSet* aSet = new OpenGl_TriangleSet (theArray);
+  OpenGl_TriangleSet* aSet = new OpenGl_TriangleSet (theArray->GetUID());
   {
     aSet->Vertices.reserve (anAttribs->NbElements);
     aSet->Normals .reserve (anAttribs->NbElements);

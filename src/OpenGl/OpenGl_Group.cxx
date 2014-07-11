@@ -195,7 +195,10 @@ void OpenGl_Group::AddPrimitiveArray (const Graphic3d_TypeOfPrimitiveArray theTy
     return;
   }
 
-  OpenGl_PrimitiveArray* anArray = new OpenGl_PrimitiveArray (theType, theIndices, theAttribs, theBounds);
+  OpenGl_Structure* aStruct = GlStruct();
+  const OpenGl_GraphicDriver* aDriver = aStruct->GlDriver();
+
+  OpenGl_PrimitiveArray* anArray = new OpenGl_PrimitiveArray (aDriver, theType, theIndices, theAttribs, theBounds);
   AddElement (anArray);
 
   Graphic3d_Group::AddPrimitiveArray (theType, theIndices, theAttribs, theBounds, theToEvalMinMax);

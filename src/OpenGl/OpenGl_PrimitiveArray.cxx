@@ -707,15 +707,18 @@ void OpenGl_PrimitiveArray::DrawMarkers (const Handle(OpenGl_Workspace)& theWork
 // function : OpenGl_PrimitiveArray
 // purpose  :
 // =======================================================================
-OpenGl_PrimitiveArray::OpenGl_PrimitiveArray (const Graphic3d_TypeOfPrimitiveArray theType,
+OpenGl_PrimitiveArray::OpenGl_PrimitiveArray (const OpenGl_GraphicDriver*          theDriver,
+                                              const Graphic3d_TypeOfPrimitiveArray theType,
                                               const Handle(Graphic3d_IndexBuffer)& theIndices,
                                               const Handle(Graphic3d_Buffer)&      theAttribs,
                                               const Handle(Graphic3d_BoundBuffer)& theBounds)
+
 : myIndices   (theIndices),
   myAttribs   (theAttribs),
   myBounds    (theBounds),
   myDrawMode  (DRAW_MODE_NONE),
-  myIsVboInit (Standard_False)
+  myIsVboInit (Standard_False),
+  myUID       (theDriver->GetNextPrimitiveArrayUID())
 {
   if (!myIndices.IsNull()
     && myIndices->NbElements < 1)

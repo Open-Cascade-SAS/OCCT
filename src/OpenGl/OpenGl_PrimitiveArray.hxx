@@ -27,6 +27,8 @@
 
 #include <OpenGl_Element.hxx>
 
+class OpenGl_GraphicDriver;
+
 class OpenGl_PrimitiveArray : public OpenGl_Element
 {
 public:
@@ -39,7 +41,8 @@ public:
   };
 
   //! Default constructor
-  OpenGl_PrimitiveArray (const Graphic3d_TypeOfPrimitiveArray theType,
+  OpenGl_PrimitiveArray (const OpenGl_GraphicDriver*          theDriver,
+                         const Graphic3d_TypeOfPrimitiveArray theType,
                          const Handle(Graphic3d_IndexBuffer)& theIndices,
                          const Handle(Graphic3d_Buffer)&      theAttribs,
                          const Handle(Graphic3d_BoundBuffer)& theBounds);
@@ -60,6 +63,9 @@ public:
 
   //! @return bounds array
   const Handle(Graphic3d_BoundBuffer)& Bounds() const { return myBounds; }
+
+  //! Returns unique ID of primitive array. 
+  const Standard_Size GetUID() const { return myUID; }
 
 private:
 
@@ -97,6 +103,8 @@ protected:
   mutable Handle(Graphic3d_BoundBuffer) myBounds;
   GLint                                 myDrawMode;
   mutable Standard_Boolean              myIsVboInit;
+
+  Standard_Size                         myUID; //!< Unique ID of primitive array. 
 
 public:
 

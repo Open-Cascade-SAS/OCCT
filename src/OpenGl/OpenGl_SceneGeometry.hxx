@@ -135,9 +135,9 @@ public:
 public:
 
   //! Creates new OpenGL element triangulation.
-  OpenGl_TriangleSet (const OpenGl_PrimitiveArray* theArray = NULL)
+  OpenGl_TriangleSet (const Standard_Size theArrayID)
   : BVH_Triangulation<Standard_ShortReal, 4>(),
-    myArray (theArray)
+    myArrayID (theArrayID)
    {
      //
    }
@@ -148,10 +148,10 @@ public:
     //
   }
 
-  //! Returns associated OpenGl structure.
-  const OpenGl_PrimitiveArray* AssociatedPArray() const
+  //! Returns Id of associated primitive array.
+  const Standard_Size AssociatedPArrayID() const
   {
-    return myArray;
+    return myArrayID;
   }
 
   //! Returns material index of triangle set.
@@ -192,7 +192,7 @@ public:
  
 private:
 
-  const OpenGl_PrimitiveArray* myArray; //!< Reference to associated OpenGl structure.
+  Standard_Size myArrayID; //!< Id of associated primitive array.
 
 };
 
