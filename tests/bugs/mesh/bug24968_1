@@ -6,7 +6,7 @@ puts ""
 # Impove BRepMesh_Classifier to cope with intersection of huge number of wires
 #####################################
 
-cpulimt 2500
+cpulimit 2500
 
 restore [locate_data_file bug24968_Shape_1.brep] result
 
