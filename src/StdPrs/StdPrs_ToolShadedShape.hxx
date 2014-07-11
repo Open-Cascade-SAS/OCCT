@@ -34,14 +34,14 @@ public:
 
   //! Checks back faces visibility for specified shape (to activate back-face culling). <br>
   //! @return true if shape is closed Solid or compound of closed Solids. <br>
-  static Standard_Boolean IsClosed(const TopoDS_Shape& theShape);
+  Standard_EXPORT static Standard_Boolean IsClosed(const TopoDS_Shape& theShape);
   
-  static Handle_Poly_Triangulation Triangulation(const TopoDS_Face& aFace,
+  Standard_EXPORT static Handle_Poly_Triangulation Triangulation(const TopoDS_Face& aFace,
                                                  TopLoc_Location& loc);
   
-  static void Normal(const TopoDS_Face& aFace,
-                     Poly_Connect& PC,
-                     TColgp_Array1OfDir& Nor);
+  Standard_EXPORT static void Normal(const TopoDS_Face& aFace,
+                                     Poly_Connect& PC,
+                                     TColgp_Array1OfDir& Nor);
 };
 
 #endif

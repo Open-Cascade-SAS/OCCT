@@ -12,7 +12,6 @@ IMPLEMENT_STANDARD_RTTIEXT(User_Cylinder,AIS_InteractiveObject)
 #include <Graphic3d_ArrayOfTriangles.hxx>
 #include <Graphic3d_StructureManager.hxx>
 #include <PrsMgr_PresentationManager3d.hxx>
-#include <BRepMesh.hxx>
 #include <StdPrs_ToolShadedShape.hxx>
 #include <Poly_Connect.hxx>
 #include <TColgp_Array1OfPnt.hxx>
@@ -22,6 +21,7 @@ IMPLEMENT_STANDARD_RTTIEXT(User_Cylinder,AIS_InteractiveObject)
 #include <Graphic3d_Array1OfVertex.hxx>
 #include <Aspect_Array1OfEdge.hxx>
 #include <Quantity_Color.hxx>
+#include <BRepMesh_IncrementalMesh.hxx>
 
 #include <AIS_GraphicTool.hxx>
 
@@ -108,7 +108,7 @@ case 6: //color
     myAspect->SetEdgeOn();
 
     myDeflection = AIS_Shape::GetDeflection(myShape,myDrawer);
-    BRepMesh::Mesh(myShape,myDeflection);
+    BRepMesh_IncrementalMesh(myShape,myDeflection);
 
     myX1OnOff = Standard_False;
     myXBlueOnOff = Standard_False;
@@ -151,8 +151,6 @@ case 6: //color
     cout <<"Deflection = " << myDeflection << "\n" << endl;
 #endif
 
-    StdPrs_ToolShadedShape SST;
-
     Standard_Integer NumFace;
     TopExp_Explorer ExpFace;
 
@@ -191,7 +189,7 @@ case 6: //color
       {
         // triangles(nt).Get(n1,n2,n3); // le triangle est n1,n2,n3
 
-        if (SST.Orientation(myFace) == TopAbs_REVERSED) // si la face est "reversed"
+        if (myFace.Orientation() == TopAbs_REVERSED) // si la face est "reversed"
           triangles(nt).Get(n1,n3,n2); // le triangle est n1,n3,n2
         else
           triangles(nt).Get(n1,n2,n3); // le triangle est n1,n2,n3
@@ -242,7 +240,7 @@ case 6: //color
       const Poly_Array1OfTriangle& triangles = myT->Triangles();
       TColgp_Array1OfDir myNormal(Nodes.Lower(), Nodes.Upper());
 
-      SST.Normal(myFace, pc, myNormal);
+      StdPrs_ToolShadedShape::Normal(myFace, pc, myNormal);
       BRepTools::UVBounds(myFace,Umin, Umax, Vmin, Vmax);
       dUmax = (Umax - Umin);
       dVmax = (Vmax - Vmin);
@@ -258,7 +256,7 @@ case 6: //color
       for (nt = 1; nt <= nnn; nt++)
       {
         // triangles(nt).Get(n1,n2,n3); // le triangle est n1,n2,n3
-        if (SST.Orientation(myFace) == TopAbs_REVERSED) // si la face est "reversed"
+        if (myFace.Orientation() == TopAbs_REVERSED) // si la face est "reversed"
           triangles(nt).Get(n1,n3,n2); // le triangle est n1,n3,n2
         else
           triangles(nt).Get(n1,n2,n3); // le triangle est n1,n2,n3
@@ -278,7 +276,7 @@ case 6: //color
 #ifdef DEBUG
         cout << "On traite actuellement le triangle : "<< nt <<"\n";
 #endif
-        if (SST.Orientation(myFace) == TopAbs_REVERSED) // si la face est "reversed"
+        if (myFace.Orientation() == TopAbs_REVERSED) // si la face est "reversed"
           triangles(nt).Get(n1,n3,n2); // le triangle est n1,n3,n2
         else
           triangles(nt).Get(n1,n2,n3); // le triangle est n1,n2,n3

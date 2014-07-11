@@ -16,9 +16,9 @@
 #include <BRep_Builder.hxx>
 #include <BRepTools.hxx>
 #include <BRep_Tool.hxx>
-#include <BRepMesh.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
+#include <BRepMesh_IncrementalMesh.hxx>
 
 #include <TopExp_Explorer.hxx>
 #include <TopLoc_Location.hxx>
@@ -189,7 +189,7 @@ void Tesselate_Presentation::tesselateShape(const TopoDS_Shape& aShape)
 //==========================================================================
 
   BRepTools::Clean(aShape);
-  BRepMesh::Mesh(aShape,aDeflection);
+  BRepMesh_IncrementalMesh(aShape,aDeflection);
 
   BRep_Builder aBuilder,aBuild1,aBuild2;
   TopoDS_Compound aCompound,aComp1,aComp2;

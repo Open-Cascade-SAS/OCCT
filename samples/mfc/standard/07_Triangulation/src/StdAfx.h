@@ -90,7 +90,6 @@
 #include "BRepPrimAPI_MakeSphere.hxx"
 #include "gp_Pnt.hxx"
 #include "BRepAlgoAPI_Cut.hxx"
-#include "BRepMesh.hxx"
 #include "TopExp_Explorer.hxx"
 #include "TopoDS_Face.hxx"
 #include "TopLoc_Location.hxx"
@@ -108,6 +107,7 @@
 #include "BRepBuilderAPI_MakeVertex.hxx"
 #include "TopoDS.hxx"
 #include "BRepTools.hxx"
+#include "BRepMesh_IncrementalMesh.hxx"
 
 #include <UnitsAPI.hxx>
 

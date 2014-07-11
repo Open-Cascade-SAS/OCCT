@@ -89,6 +89,7 @@
 #include <Aspect_Window.hxx>
 #include <Aspect_Background.hxx>
 
+#include <BRepMesh_IncrementalMesh.hxx>
 #include <BRepAlgo.hxx>
 #include <BRep_Builder.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
@@ -100,7 +101,6 @@
 #include <BndLib_Add3dCurve.hxx>
 #include <BndLib_AddSurface.hxx>   
 #include <BRep_Tool.hxx>
-#include <BRepMesh.hxx>
 
 #include <DsgPrs_LengthPresentation.hxx>
 #include <FairCurve_Batten.hxx>
