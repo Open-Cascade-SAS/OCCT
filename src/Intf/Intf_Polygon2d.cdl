@@ -34,6 +34,7 @@ is
     Closed (me)
         returns Boolean from Standard is virtual;
     ---Purpose: Returns True if the polyline is closed.
+    ---C++: alias "  virtual ~Intf_Polygon2d() {}"
 
     DeflectionOverEstimation (me) returns Real from Standard is deferred;
     ---Purpose: Returns the tolerance of the polygon.
