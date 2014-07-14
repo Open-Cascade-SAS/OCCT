@@ -331,7 +331,7 @@ bool Image_AlienPixMap::savePPM (const TCollection_AsciiString& theFileName) con
   Standard_Byte aByte;
   for (Standard_Size aRow = 0; aRow < SizeY(); ++aRow)
   {
-    for (Standard_Size aCol = 0; aCol < SizeY(); ++aCol)
+    for (Standard_Size aCol = 0; aCol < SizeX(); ++aCol)
     {
       // extremely SLOW but universal (implemented for all supported pixel formats)
       aColor = PixelColor ((Standard_Integer )aCol, (Standard_Integer )aRow, aDummy);
