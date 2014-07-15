@@ -23,30 +23,9 @@ extrema intCrv pl
 
 if { [isdraw ext_1] } {
    mkedge result ext_1
-   set length 161.647
-} else {
-   puts "${BugNumber}: invalid result for ext_1"
-}
-
-if { [isdraw ext_2] } {
-   mkedge result ext_2
-   set length 161.647
-} else {
-   puts "${BugNumber}: invalid result for ext_2"
-}
-
-if { [isdraw ext_3] } {
-   mkedge result ext_3
    set length 136.705
 } else {
-   puts "${BugNumber}: invalid result for ext_3"
-}
-
-if { [isdraw ext_4] } {
-   mkedge result ext_4
-   set length 164.153
-} else {
-   puts "${BugNumber}: invalid result for ext_4"
+   puts "${BugNumber}: invalid result for ext_1"
 }
 
 smallview
