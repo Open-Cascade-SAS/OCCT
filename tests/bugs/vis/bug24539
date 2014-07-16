@@ -1,0 +1,16 @@
+puts "============"
+puts "OCC24539"
+puts "============"
+puts ""
+#############################################################
+# Visualization (new camera) - small objects displayed with visual artifacts
+#############################################################
+
+box b 0.001 0.001 0.001
+vinit View1
+vclear
+vsetdispmode 1
+vdisplay b
+vfit
+
+set only_screen 1
