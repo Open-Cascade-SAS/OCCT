@@ -290,10 +290,6 @@ uses
     	    aProjector           : Projector from Prs3d;
             aPresentation        : Presentation from Prs3d;
     	    ashape               : Shape from TopoDS) is static private;
-
-    GetDeflection(myclass; aShape  : Shape from TopoDS;
-    	    	    	   aDrawer : Drawer from Prs3d)
-    	    	    	   returns Real from Standard;
 		
     DisplayBox(myclass; aPrs : Presentation from Prs3d;
 		       	aBox : Box from Bnd;

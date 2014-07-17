@@ -31,6 +31,7 @@
 #include <gp_Pnt.hxx>
 #include <NCollection_List.hxx>
 #include <Precision.hxx>
+#include <Prs3d.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_Presentation.hxx>
@@ -94,28 +95,6 @@ namespace
     {
       StdPrs_WFShape::Add (thePrs, aCompoundWF, theDrawer);
     }
-  }
-
-  //! Computes absolute deflection, required by drawer
-  static Standard_Real getDeflection (const TopoDS_Shape&         theShape,
-                                      const Handle(Prs3d_Drawer)& theDrawer)
-  {
-    #define MAX2(X, Y)    (Abs(X) > Abs(Y) ? Abs(X) : Abs(Y))
-    #define MAX3(X, Y, Z) (MAX2 (MAX2 (X, Y), Z))
-
-    Standard_Real aDeflection = theDrawer->MaximalChordialDeviation();
-    if (theDrawer->TypeOfDeflection() == Aspect_TOD_RELATIVE)
-    {
-      Bnd_Box aBndBox;
-      BRepBndLib::Add (theShape, aBndBox, Standard_False);
-      if (!aBndBox.IsVoid())
-      {
-        Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
-        aBndBox.Get (aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
-        aDeflection = MAX3 (aXmax-aXmin, aYmax-aYmin, aZmax-aZmin) * theDrawer->DeviationCoefficient() * 4.0;
-      }
-    }
-    return aDeflection;
   }
 
   //! Gets triangulation of every face of shape and fills output array of triangles
@@ -458,7 +437,7 @@ void StdPrs_ShadedShape::Tessellate (const TopoDS_Shape&          theShape,
                                      const Handle (Prs3d_Drawer)& theDrawer)
 {
   // Check if it is possible to avoid unnecessary recomputation of shape triangulation
-  Standard_Real aDeflection = getDeflection (theShape, theDrawer);
+  Standard_Real aDeflection = Prs3d::GetDeflection (theShape, theDrawer);
   if (BRepTools::Triangulation (theShape, aDeflection))
   {
     return;

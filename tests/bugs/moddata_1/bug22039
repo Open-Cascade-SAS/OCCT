@@ -17,7 +17,8 @@ vsetdispmode 1
 vdisplay result
 vfit
 
-set x1 101
+###set x1 101
+set x1 102
 set y1 199
 set Color [QAGetPixelColor ${x1} ${y1}]
 

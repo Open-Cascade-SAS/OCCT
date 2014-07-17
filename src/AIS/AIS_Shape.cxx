@@ -43,6 +43,7 @@
 #include <Graphic3d_MaterialAspect.hxx>
 #include <Graphic3d_SequenceOfGroup.hxx>
 
+#include <Prs3d.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_Root.hxx>
 #include <Prs3d_ShadingAspect.hxx>
@@ -75,25 +76,6 @@
 #include <TopoDS_Iterator.hxx>
 
 static Standard_Boolean myFirstCompute;
-
-Standard_Real AIS_Shape::GetDeflection(const TopoDS_Shape& aShape,
-                                       const Handle(Prs3d_Drawer)& aDrawer)
-{
-  // WARNING: this same piece of code appears several times in Prs3d classes
-  Standard_Real aDeflection = aDrawer->MaximalChordialDeviation();
-  if (aDrawer->TypeOfDeflection() == Aspect_TOD_RELATIVE) {
-    Bnd_Box B;
-    BRepBndLib::Add(aShape, B, Standard_False);
-    if ( ! B.IsVoid() )
-    {
-      Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
-      B.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
-      aDeflection = Max( aXmax-aXmin, Max(aYmax-aYmin, aZmax-aZmin)) *
-                    aDrawer->DeviationCoefficient() * 4;
-    }
-  }
-  return aDeflection;
-}
 
 void AIS_Shape::DisplayBox(const Handle(Prs3d_Presentation)& aPrs,
                            const Bnd_Box& B,
@@ -435,7 +417,7 @@ void AIS_Shape::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
 
 // POP protection against crash in low layers
 
-  Standard_Real aDeflection = GetDeflection(shape, myDrawer);
+  Standard_Real aDeflection = Prs3d::GetDeflection(shape, myDrawer);
   Standard_Boolean autoTriangulation = Standard_True;
   try {  
     OCC_CATCH_SIGNALS

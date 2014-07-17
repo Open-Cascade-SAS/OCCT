@@ -1,0 +1,31 @@
+puts "============"
+puts "CR25071"
+puts "============"
+puts ""
+#######################################################################
+# Check that the selected wireframe representation uses exactly the same
+# discretization of face boundaries as the face outlines shown in shading mode
+#######################################################################
+
+vinit View1
+
+# Computing wireframe without triangulation, then checking face boundaries and selection
+pcone c 0 5 10
+vdisplay c; vfit
+vsetdispmode c 1
+vshowfaceboundary c 1 64 64 0
+vselect 200 200
+
+vdump $imagedir/${casename}_wf_no_triang.png
+
+vremove c
+vclose View1
+vinit View1
+
+# Computing wireframe after triangulation, then checking face boundaries and selection
+vsetdispmode 1
+vdisplay c; vfit
+vshowfaceboundary c 1 64 64 0
+vselect 200 200
+
+vdump $imagedir/${casename}_wf_with_triang.png

@@ -28,6 +28,7 @@
 #include <Poly_Array1OfTriangle.hxx>
 #include <Poly_Polygon3D.hxx>
 #include <Poly_PolygonOnTriangulation.hxx>
+#include <Prs3d.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_IsoAspect.hxx>
 #include <Prs3d_PointAspect.hxx>
@@ -154,20 +155,7 @@ void Prs3d_WFShape::Add (const Handle (Prs3d_Presentation)& thePresentation,
     }
   }
 
-  Standard_Real aDeflection = theDrawer->MaximalChordialDeviation();
-  if (theDrawer->TypeOfDeflection() == Aspect_TOD_RELATIVE)
-  {
-    // The arrow calculation is based on the global min max
-    Bnd_Box aBndBox;
-    BRepBndLib::Add (theShape, aBndBox);
-    if (!aBndBox.IsVoid())
-    {
-      Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
-      aBndBox.Get (aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
-      aDeflection = Max (aXmax-aXmin, Max (aYmax-aYmin, aZmax-aZmin))
-                       * theDrawer->DeviationCoefficient();
-    }
-  }
+  Standard_Real aDeflection = Prs3d::GetDeflection(theShape, theDrawer);
 
   Handle(Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup (thePresentation);
 

@@ -16,19 +16,19 @@
 
 package Prs3d
 
-    	---Purpose: The Prs3d package provides the following services
-	-- -   a presentation object (the context for all
-	--   modifications to the display, its presentation will be
-	--   displayed in every view of an active viewer)
-	-- -   an attribute manager governing how objects such
-	--   as color, width, and type of line are displayed;
-	--   these are generic objects, whereas those in
-	--   StdPrs are specific geometries and topologies.
-	-- -   generic   algorithms providing default settings for
-	--   objects such as points, curves, surfaces and shapes
-	-- -   a root object which provides the abstract
-	--   framework for the DsgPrs definitions at work in
-	--   display of dimensions, relations and trihedra.
+      ---Purpose: The Prs3d package provides the following services
+  -- -   a presentation object (the context for all
+  --   modifications to the display, its presentation will be
+  --   displayed in every view of an active viewer)
+  -- -   an attribute manager governing how objects such
+  --   as color, width, and type of line are displayed;
+  --   these are generic objects, whereas those in
+  --   StdPrs are specific geometries and topologies.
+  -- -   generic   algorithms providing default settings for
+  --   objects such as points, curves, surfaces and shapes
+  -- -   a root object which provides the abstract
+  --   framework for the DsgPrs definitions at work in
+  --   display of dimensions, relations and trihedra.
     
 uses
   Graphic3d,
@@ -94,18 +94,18 @@ is
 
   class Presentation;
 
-	---Category: Aspect classes.
+  ---Category: Aspect classes.
 
   deferred class BasicAspect;	
   class PointAspect;
   class LineAspect;
-	class ShadingAspect;
-	class TextAspect;
+  class ShadingAspect;
+  class TextAspect;
   class IsoAspect;
   class ArrowAspect;
-	class PlaneAspect;
+  class PlaneAspect;
   class DimensionAspect;
-	class DatumAspect;
+  class DatumAspect;
   imported DimensionUnits;
 
   class Drawer;
@@ -118,15 +118,15 @@ is
 
   ---Category: Basis construction elements.
 
-	class Text;
+  class Text;
 
         ---Category: Class signatures.
 
-	class ShapeTool;
+  class ShapeTool;
 
   class Arrow;
-	---Purpose: draws an arrow at a given location, with respect
-	--          to a given direction. 
+  ---Purpose: draws an arrow at a given location, with respect
+  --          to a given direction.
 
   imported NListOfSequenceOfPnt; 
   imported NListIteratorListOfSequenceOfPnt;
@@ -134,8 +134,22 @@ is
   imported WFShape;
   
   MatchSegment(X,Y,Z: Length from Quantity;
-	            aDistance: Length from Quantity;
-		          p1,p2: Pnt from gp;
+              aDistance: Length from Quantity;
+              p1,p2: Pnt from gp;
               dist: out Length from Quantity)
-	returns Boolean from Standard;
+  returns Boolean from Standard;
+
+  GetDeflection (theShape  : Shape from TopoDS;
+                 theDrawer : Drawer from Prs3d)
+  returns Real from Standard;
+  ---Purpose: Computes the absolute deflection value depending on
+  -- the type of deflection in theDrawer:
+  -- <ul>
+  -- <li><b>Aspect_TOD_RELATIVE</b>: the absolute deflection is computed using the relative
+  --   deviation coefficient from theDrawer and the shape's bounding box;</li>
+  -- <li><b>Aspect_TOD_ABSOLUTE</b>: the maximal chordial deviation from theDrawer is returned.</li>
+  -- </ul>
+  -- This function should always be used to compute the deflection value for building
+  -- discrete representations of the shape (triangualtion, wireframe) to avoid incosistencies
+  -- between different representations of the shape and undesirable visual artifacts.
 end Prs3d;
