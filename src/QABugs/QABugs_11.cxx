@@ -1348,7 +1348,7 @@ static Standard_Integer OCC369(Draw_Interpretor& di, Standard_Integer argc, cons
     if(aShape.IsNull()) {di << "OCC369 FAULTY. Entry shape is NULL \n"; return 0;}
 
     // 3. Build mesh
-    BRepMesh_IncrementalMesh aMesh(aShape, 0.2, M_PI/6, Standard_True);
+    BRepMesh_IncrementalMesh aMesh(aShape, 0.2, Standard_True, M_PI / 6);
 
   }
   catch (Standard_Failure) {di << "OCC369 Exception \n" ;return 0;}
@@ -3194,7 +3194,7 @@ Standard_Integer OCC14376(Draw_Interpretor& di, Standard_Integer argc, const cha
   }
   di<<"deflection="<< aDeflection << "\n";
 
-  BRepMesh_IncrementalMesh aIMesh(aShape, aDeflection, M_PI/9., Standard_False);
+  BRepMesh_IncrementalMesh aIMesh(aShape, aDeflection, Standard_False, M_PI / 9.);
   TopLoc_Location aLocation;
   Handle(Poly_Triangulation) aTriang = BRep_Tool::Triangulation(TopoDS::Face(aShape), aLocation);
 

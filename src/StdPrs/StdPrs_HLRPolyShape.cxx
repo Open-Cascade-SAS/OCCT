@@ -66,7 +66,7 @@ void StdPrs_HLRPolyShape::Add(const Handle (Prs3d_Presentation)& aPresentation,
 
   const Standard_Boolean rel = aDrawer->TypeOfDeflection() == Aspect_TOD_RELATIVE;
   Standard_Real def = rel? aDrawer->HLRDeviationCoefficient() : aDrawer->MaximalChordialDeviation();
-  BRepMesh_IncrementalMesh mesh(aShape, def, aDrawer->HLRAngle(), rel);
+  BRepMesh_IncrementalMesh mesh(aShape, def, rel, aDrawer->HLRAngle());
   
   Handle(HLRBRep_PolyAlgo) hider = new HLRBRep_PolyAlgo(aShape);
 

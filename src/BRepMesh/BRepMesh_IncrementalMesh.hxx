@@ -49,16 +49,16 @@ public: //! \name mesher API
   //! Automatically calls method Perform.
   //! \param theShape shape to be meshed.
   //! \param theLinDeflection linear deflection.
-  //! \param theAngDeflection angular deflection.
-  //! \paarm isRelative if TRUE deflection used for discretization of 
+  //! \param isRelative if TRUE deflection used for discretization of 
   //! each edge will be <theLinDeflection> * <size of edge>. Deflection 
   //! used for the faces will be the maximum deflection of their edges.
+  //! \param theAngDeflection angular deflection.
   //! \param isInParallel if TRUE shape will be meshed in parallel.
   Standard_EXPORT BRepMesh_IncrementalMesh(
     const TopoDS_Shape&    theShape,
     const Standard_Real    theLinDeflection,
-    const Standard_Real    theAngDeflection = 0.5,
     const Standard_Boolean isRelative       = Standard_False,
+    const Standard_Real    theAngDeflection = 0.5,
     const Standard_Boolean isInParallel     = Standard_False);
 
   //! Performs meshing ot the shape.

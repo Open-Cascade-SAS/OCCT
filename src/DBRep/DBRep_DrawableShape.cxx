@@ -842,7 +842,7 @@ void DBRep_DrawableShape::DisplayHiddenLines(Draw_Display& dis)
   if (!strcmp(dout.GetType(id),"PERS")) focal = dout.Focal(id);
   Standard_Real Ang,Def;
   HLRBRep::PolyHLRAngleAndDeflection(myAng,Ang,Def);
-  BRepMesh_IncrementalMesh MESH(myShape, Def, Ang, Standard_True);
+  BRepMesh_IncrementalMesh MESH(myShape, Def, Standard_True, Ang);
   Standard_Boolean recompute = Standard_True;
   // find if the view must be recomputed
   DBRep_ListIteratorOfListOfHideData it(myHidData);
