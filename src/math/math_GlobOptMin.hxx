@@ -58,7 +58,7 @@ public:
   //! Get best functional value.
   Standard_EXPORT Standard_Real GetF();
 
-  //! Return count of global extremas. NbExtrema <= MAX_SOLUTIONS.
+  //! Return count of global extremas.
   Standard_EXPORT Standard_Integer NbExtrema();
 
   //! Return solution i, 1 <= i <= NbExtrema.
@@ -73,6 +73,13 @@ private:
   Standard_Boolean computeLocalExtremum(const math_Vector& thePnt, Standard_Real& theVal, math_Vector& theOutPnt);
 
   void computeGlobalExtremum(Standard_Integer theIndex);
+
+  //! Computes starting value / approximation:
+  // myF - initial best value.
+  // myY - initial best point.
+  // myC - approximation of Lipschitz constant.
+  // to imporve convergence speed.
+  void computeInitialValues();
 
   //! Check that myA <= pnt <= myB
   Standard_Boolean isInside(const math_Vector& thePnt);

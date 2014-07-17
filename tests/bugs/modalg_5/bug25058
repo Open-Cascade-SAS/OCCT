@@ -1,0 +1,45 @@
+puts "============"
+puts "OCC25058"
+puts "============"
+puts ""
+###############################
+## Regression of performance of BRepExtrema_ExtCC (1000 times slower)
+###############################
+
+if { [regexp {Debug mode} [dversion]] } {
+  if { [regexp {Windows} [dversion]] } {
+    set max_time 1
+    set max_time2 1
+  } else {
+    set max_time 1
+    set max_time2 1
+  }
+} else {
+  if { [regexp {Windows} [dversion]] } {
+    set max_time 1
+    set max_time2 1
+  } else {
+    set max_time 1
+    set max_time2 1
+  }
+}
+
+restore [locate_data_file bug25058_e1.brep] e1
+restore [locate_data_file bug25058_e2.brep] e2
+
+dchrono h reset
+dchrono h start
+
+distmini r e1 e2
+
+dchrono h stop
+set q [dchrono h show]
+
+regexp {CPU user time: ([-0-9.+eE]+) seconds} $q full z
+puts "$z"
+
+if { $z > ${max_time} } {                                         
+    puts "Elapsed time of distmini is more than ${max_time} seconds - Faulty"
+} else {
+    puts "Elapsed time of distmini is less than ${max_time} seconds - OK"
+}

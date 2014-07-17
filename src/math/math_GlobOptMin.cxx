@@ -175,6 +175,9 @@ void math_GlobOptMin::Perform()
 {
   Standard_Integer i;
 
+  // Compute initial values for myF, myY, myC.
+  computeInitialValues();
+
   // Compute parameters range
   Standard_Real minLength = RealLast();
   Standard_Real maxLength = RealFirst();
@@ -187,36 +190,12 @@ void math_GlobOptMin::Perform()
       maxLength = currentLength;
   }
 
-  myE1 = minLength * myTol       / myC;
-  myE2 = maxLength * myTol * 2.0 / myC;
-  myE3 = - maxLength * myTol / 4.0;
-
-  // Compute start point.
-  math_Vector aPnt(1,myN);
-  for(i = 1; i <= myN; i++)
-  {
-    Standard_Real currCentral = (myA(i) + myB(i)) / 2.0;
-    aPnt(i) = currCentral;
-  }
-
-  myFunc->Value(aPnt, myF);
-
-  math_Vector aExtremumPoint(1,myN);
-  Standard_Real aExtremumValue = RealLast();
-  if (computeLocalExtremum(aPnt, aExtremumValue, aExtremumPoint))
-  {
-    // Local Extremum finds better solution than midpoint.
-    if (aExtremumValue < myF)
-    {
-      myF = aExtremumValue;
-      aPnt = aExtremumPoint;
-    }
-  }
-
-  myY.Clear();
-  for(i = 1; i <= myN; i++)
-    myY.Append(aPnt(i));
-  mySolCount++;
+  myE1 = minLength * myTol;
+  myE2 = maxLength * myTol;
+  if (myC > 1.0)
+    myE3 = - maxLength * myTol / 4.0;
+  else
+    myE3 = - maxLength * myTol * myC / 4.0;
 
   computeGlobalExtremum(myN);
 
@@ -283,6 +262,72 @@ Standard_Boolean math_GlobOptMin::computeLocalExtremum(const math_Vector& thePnt
     return Standard_True;
   else
     return Standard_False;
+}
+
+//=======================================================================
+//function : computeInitialValues
+//purpose  : 
+//=======================================================================
+void math_GlobOptMin::computeInitialValues()
+{
+  Standard_Integer i;
+  math_Vector aCurrPnt(1, myN);
+  math_Vector aBestPnt(1, myN);
+
+  Standard_Real aCurrVal = RealLast();
+  Standard_Real aBestVal = RealLast();
+
+  // Check functional value in midpoint, low and upp point border and
+  // in each point try to perform local optimization.
+  aBestPnt = (myA + myB) * 0.5;
+  myFunc->Value(aBestPnt, aBestVal);
+
+  for(i = 1; i <= 3; i++)
+  {
+    aCurrPnt = myA + (myB - myA) * (i - 1) / 2.0;
+
+    if(computeLocalExtremum(aCurrPnt, aCurrVal, aCurrPnt))
+    {
+      // Local Extremum finds better solution than current point.
+      if (aCurrVal < aBestVal)
+      {
+        aBestVal = aCurrVal;
+        aBestPnt = aCurrPnt;
+      }
+    }
+  }
+
+  myF = aBestVal;
+  myY.Clear();
+  for(i = 1; i <= myN; i++)
+    myY.Append(aBestPnt(i));
+  mySolCount++;
+
+  // Lipschitz const approximation
+  Standard_Real aLipConst = 0.0, aPrevVal;
+  Standard_Integer aPntNb = 13;
+  myFunc->Value(myA, aPrevVal);
+  Standard_Real aStep = (myB - myA).Norm() / aPntNb;
+  for(i = 1; i <= aPntNb; i++)
+  {
+    aCurrPnt = myA + (myB - myA) * i / (aPntNb - 1);
+    myFunc->Value(aCurrPnt, aCurrVal);
+
+    if(Abs(aCurrVal - aPrevVal) / aStep > aLipConst)
+      aLipConst = Abs(aCurrVal - aPrevVal) / aStep;
+
+    aPrevVal = aCurrVal;
+  }
+  aLipConst *= Sqrt(myN);
+
+  if (aLipConst < myC * 0.1)
+  {
+    myC = Max(aLipConst * 0.1, 0.01);
+  }
+  else if (aLipConst > myC * 10)
+  {
+    myC = Min(myC * 2, 30.0);
+  }
 }
 
 //=======================================================================
