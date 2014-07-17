@@ -1,0 +1,23 @@
+puts "============"
+puts "CR24996"
+puts "============"
+puts ""
+#######################################################################
+#  Visualization - newly displayed objects are clipped until first camera movement
+#######################################################################
+
+box b1 0  0 0 1 2 3
+box b2 3  2 1 1 2 3
+box b3 5 -4 0 1 2 3
+
+vinit
+vclear
+vaxo
+vsetdispmode 0
+vdisplay b1
+vfit
+vzoom 0.25
+vdisplay b2 b3
+
+set anImage ${imagedir}/${casename}.png
+vdump ${anImage}

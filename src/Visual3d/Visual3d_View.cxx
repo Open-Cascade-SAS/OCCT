@@ -155,11 +155,14 @@
 
 //-Constructors
 
-Visual3d_View::Visual3d_View (const Handle(Visual3d_ViewManager)& AManager):
-MyContext (),
-MyTOCOMPUTESequence (),
-MyCOMPUTEDSequence (),
-MyDisplayedStructure ()
+Visual3d_View::Visual3d_View (const Handle(Visual3d_ViewManager)& AManager) :
+  MyContext (),
+  MyTOCOMPUTESequence (),
+  MyCOMPUTEDSequence (),
+  MyDisplayedStructure (),
+  myAutoZFitIsOn (Standard_True),
+  myAutoZFitScaleFactor (1.0),
+  myStructuresUpdated (Standard_True)
 {
 
         MyPtrViewManager        = AManager.operator->();
@@ -409,8 +412,7 @@ void Visual3d_View::SetRatio()
   }
 
   MyViewManager->SetUpdateMode (UpdateMode);
-  if (UpdateMode == Aspect_TOU_ASAP)
-    Update();
+  Update (UpdateMode);
 }
 
 void Visual3d_View::UpdateLights()
@@ -487,8 +489,8 @@ void Visual3d_View::SetBackground (const Aspect_Background& ABack) {
 
         MyGraphicDriver->Background (MyCView);
 
-        if (MyPtrViewManager && MyViewManager->UpdateMode () == Aspect_TOU_ASAP)
-          Update ();
+        if (MyPtrViewManager)
+          Update (MyViewManager->UpdateMode());
 
 }
 
@@ -506,42 +508,61 @@ void Visual3d_View::SetGradientBackground(const Aspect_GradientBackground& ABack
   MyGraphicDriver->GradientBackground(MyCView, aCol1, aCol2, MyGradientBackground.BgGradientFillMethod());
 
   if ( update )
-     Update ();
-  else if (MyPtrViewManager && MyViewManager->UpdateMode () == Aspect_TOU_ASAP)
-    Update();
+  {
+     Update (Aspect_TOU_ASAP);
+  }
+  else if (MyPtrViewManager)
+  {
+    Update (MyViewManager->UpdateMode());
+  }
 }
 
 void Visual3d_View::SetBackgroundImage( const Standard_CString FileName,
                                         const Aspect_FillMethod FillStyle,
                                         const Standard_Boolean update )
 {
-  if ( IsDeleted() )
+  if (IsDeleted())
+  {
     return;
-  if ( !IsDefined() )
+  }
+  if (!IsDefined())
+  {
     Visual3d_ViewDefinitionError::Raise ("Window not defined");
+  }
 
   MyGraphicDriver->BackgroundImage( FileName, MyCView, FillStyle );
 
-  if ( update )
-    Update();
-  else if ( MyViewManager->UpdateMode() == Aspect_TOU_ASAP )
-    Update();
+  if (update)
+  {
+    Update (Aspect_TOU_ASAP);
+  }
+  else
+  {
+    Update (MyViewManager->UpdateMode());
+  }
 }
 
 void Visual3d_View::SetBgImageStyle( const Aspect_FillMethod FillStyle,
                                      const Standard_Boolean update )
 {
-  if ( IsDeleted() )
+  if (IsDeleted())
+  {
     return;
-  if ( !IsDefined() )
+  }
+  if (!IsDefined())
+  {
     Visual3d_ViewDefinitionError::Raise ("Window not defined");
+  }
 
   MyGraphicDriver->SetBgImageStyle( MyCView, FillStyle );
 
-  if ( update )
-    Update();
-  else if ( MyViewManager->UpdateMode() == Aspect_TOU_ASAP )
-    Update();
+  if (update)
+  {
+    Update (Aspect_TOU_ASAP);
+  } else
+  {
+    Update (MyViewManager->UpdateMode());
+  }
 }
 
 Aspect_Background Visual3d_View::Background () const {
@@ -553,17 +574,26 @@ Aspect_Background Visual3d_View::Background () const {
 void Visual3d_View::SetBgGradientStyle( const Aspect_GradientFillMethod FillStyle,
                                         const Standard_Boolean update )
 {
-  if ( IsDeleted() )
+  if (IsDeleted())
+  {
     return;
-  if ( !IsDefined() )
+  }
+
+  if (!IsDefined())
+  {
     Visual3d_ViewDefinitionError::Raise ("Window not defined");
+  }
 
   MyGraphicDriver->SetBgGradientStyle( MyCView, FillStyle );
 
-  if ( update )
-    Update();
-  else if ( MyViewManager->UpdateMode() == Aspect_TOU_ASAP )
-    Update();
+  if (update)
+  {
+    Update (Aspect_TOU_ASAP);
+  }
+  else
+  {
+    Update (MyViewManager->UpdateMode());
+  }
 
 }
 
@@ -598,10 +628,7 @@ void Visual3d_View::SetCamera (const Handle(Graphic3d_Camera)& theCamera)
 
   MyGraphicDriver->SetCamera (MyCView);
 
-  if (MyViewManager->UpdateMode() == Aspect_TOU_ASAP)
-  {
-    Update();
-  }
+  Update (MyViewManager->UpdateMode());
 }
 
 // =======================================================================
@@ -634,10 +661,7 @@ void Visual3d_View::ViewOrientationReset ()
     MyCView.Context.Camera->CopyOrientationData (myDefaultCamera);
   }
 
-  if (MyViewManager->UpdateMode() == Aspect_TOU_ASAP)
-  {
-    Update();
-  }
+  Update (MyViewManager->UpdateMode());
 }
 
 // =======================================================================
@@ -669,10 +693,7 @@ void Visual3d_View::ViewMappingReset ()
     MyCView.Context.Camera->CopyMappingData (myDefaultCamera);
   }
 
-  if (MyViewManager->UpdateMode() == Aspect_TOU_ASAP)
-  {
-    Update();
-  }
+  Update (MyViewManager->UpdateMode());
 }
 
 void Visual3d_View::SetContext (const Visual3d_ContextView& CTX) {
@@ -872,7 +893,7 @@ Standard_Integer Length = FooSequence.Length ();
                 if (Length != 0) FooSequence.Clear ();
         }
 
-        if (MyViewManager->UpdateMode () == Aspect_TOU_ASAP) Update ();
+        Update (MyViewManager->UpdateMode());
 
 }
 
@@ -957,7 +978,7 @@ Standard_Boolean BZBuffer       = ZBufferIsActivated ();
                         SetZBufferActivity (0);
         }
 
-        if (MyViewManager->UpdateMode () == Aspect_TOU_ASAP) Update ();
+        Update (MyViewManager->UpdateMode());
 
 }
 
@@ -1008,7 +1029,7 @@ void Visual3d_View::Deactivate () {
                     }
                 }
 
-                if (MyViewManager->UpdateMode () == Aspect_TOU_ASAP) Update ();
+                Update (MyViewManager->UpdateMode());
 
                 // No action currently possible in the view
                 MyCView.Active  = 0;
@@ -1082,6 +1103,12 @@ void Visual3d_View::Redraw (const Handle(Visual3d_Layer)& theUnderLayer,
       }
     }
 
+    if (myStructuresUpdated)
+    {
+      AutoZFit();
+      myStructuresUpdated = Standard_False;
+    }
+
     MyGraphicDriver->Redraw (MyCView, anUnderCLayer, anOverCLayer, theX, theY, theWidth, theHeight);
     if (!MyGraphicDriver->IsDeviceLost())
     {
@@ -1118,12 +1145,17 @@ void Visual3d_View::Invalidate()
   MyGraphicDriver->Invalidate (MyCView);
 }
 
-void Visual3d_View::Update()
+void Visual3d_View::Update (Aspect_TypeOfUpdate theUpdateMode)
 {
-  IsInitialized = Standard_True;
-  Compute ();
+  myStructuresUpdated = Standard_True;
 
-  Redraw (MyViewManager->UnderLayer(), MyViewManager->OverLayer(), 0, 0, 0, 0);
+  if (theUpdateMode == Aspect_TOU_ASAP)
+  {
+    IsInitialized = Standard_True;
+    Compute ();
+
+    Redraw (MyViewManager->UnderLayer(), MyViewManager->OverLayer(), 0, 0, 0, 0);
+  }
 }
 
 void Visual3d_View::Update (const Handle(Visual3d_Layer)& theUnderLayer,
@@ -1132,7 +1164,81 @@ void Visual3d_View::Update (const Handle(Visual3d_Layer)& theUnderLayer,
   IsInitialized = Standard_True;
   Compute ();
 
+  myStructuresUpdated = Standard_True;
+
   Redraw (theUnderLayer, theOverLayer, 0, 0, 0, 0);
+}
+
+//=============================================================================
+//function : SetAutoZFitMode
+//purpose  :
+//=============================================================================
+void Visual3d_View::SetAutoZFitMode (const Standard_Boolean theIsOn, const Standard_Real theScaleFactor)
+{
+  Standard_ASSERT_RAISE (theScaleFactor > 0.0, "Zero or negative scale factor is not allowed.");
+  myAutoZFitScaleFactor = theScaleFactor;
+  myAutoZFitIsOn = theIsOn;
+}
+
+//=============================================================================
+//function : AutoZFitMode
+//purpose  :
+//=============================================================================
+Standard_Boolean Visual3d_View::AutoZFitMode() const
+{
+  return myAutoZFitIsOn;
+}
+
+//=============================================================================
+//function : AutoZFitScaleFactor
+//purpose  :
+//=============================================================================
+Standard_Real Visual3d_View::AutoZFitScaleFactor () const
+{
+  return myAutoZFitScaleFactor;
+}
+
+//=============================================================================
+//function : AutoZFit
+//purpose  :
+//=============================================================================
+void Visual3d_View::AutoZFit()
+{
+  if (!AutoZFitMode())
+  {
+    return;
+  }
+
+  ZFitAll (myAutoZFitScaleFactor);
+}
+
+//=============================================================================
+//function : ZFitAll
+//purpose  :
+//=============================================================================
+void Visual3d_View::ZFitAll (const Standard_Real theScaleFactor)
+{
+  Standard_Real aMinMax[6];    // applicative min max boundaries
+  MinMaxValues (aMinMax[0], aMinMax[1], aMinMax[2],
+    aMinMax[3], aMinMax[4], aMinMax[5],
+    Standard_False);
+
+  Standard_Real aGraphicBB[6]; // real graphical boundaries (not accounting infinite flag).
+  MinMaxValues (aGraphicBB[0], aGraphicBB[1], aGraphicBB[2],
+    aGraphicBB[3], aGraphicBB[4], aGraphicBB[5],
+    Standard_True);
+
+  Bnd_Box aMinMaxBox;
+  Bnd_Box aGraphicBox;
+
+  aMinMaxBox.Update (aMinMax[0], aMinMax[1], aMinMax[2],
+    aMinMax[3], aMinMax[4], aMinMax[5]);
+
+  aGraphicBox.Update (aGraphicBB[0], aGraphicBB[1], aGraphicBB[2],
+    aGraphicBB[3], aGraphicBB[4], aGraphicBB[5]);
+
+  const Handle(Graphic3d_Camera)& aCamera = MyCView.Context.Camera;
+  aCamera->ZFitAll (theScaleFactor, aMinMaxBox, aGraphicBox);
 }
 
 Visual3d_TypeOfAnswer Visual3d_View::AcceptDisplay (const Handle(Graphic3d_Structure)& AStructure) const {
@@ -1390,7 +1496,7 @@ Standard_Integer Index = IsComputed (AStructure);
                 AStructure->CalculateBoundBox();
                 MyGraphicDriver->DisplayStructure (MyCView, *(AStructure->CStructure()), AStructure->DisplayPriority());
                 MyDisplayedStructure.Add (AStructure);
-                if (AnUpdateMode == Aspect_TOU_ASAP) Update ();
+                Update (AnUpdateMode);
         }
 
         if (Answer == Visual3d_TOA_COMPUTE) {
@@ -1405,7 +1511,7 @@ Standard_Integer OldStructId =
                     if (! IsDisplayed (AStructure)) {
                         MyDisplayedStructure.Add (AStructure);
                         MyGraphicDriver->DisplayStructure (MyCView, *(MyCOMPUTEDSequence.Value (Index)->CStructure()), AStructure->DisplayPriority ());
-                        if (AnUpdateMode == Aspect_TOU_ASAP) Update ();
+                        Update (AnUpdateMode);
                     }
                     return;
                 }
@@ -1429,7 +1535,7 @@ Standard_Integer OldStructId =
                                                         Identification ();
                             MyDisplayedStructure.Add (AStructure);
                             MyGraphicDriver->DisplayStructure (MyCView, *(MyCOMPUTEDSequence.Value (NewIndex)->CStructure()), AStructure->DisplayPriority ());
-                            if (AnUpdateMode == Aspect_TOU_ASAP) Update ();
+                            Update (AnUpdateMode);
                         }
                         return;
                     }
@@ -1517,7 +1623,7 @@ Standard_Boolean ComputeShading = ((ViewType == Visual3d_TOV_SHADING) &&
                 if (! IsDisplayed (AStructure))
                         MyDisplayedStructure.Add (AStructure);
                 MyGraphicDriver->DisplayStructure (MyCView, *(TheStructure->CStructure()), AStructure->DisplayPriority ());
-                if (AnUpdateMode == Aspect_TOU_ASAP) Update ();
+                Update (AnUpdateMode);
             }
         } // Visual3d_TOA_COMPUTE
 }
@@ -1575,7 +1681,7 @@ Standard_Integer Index = IsComputed (AStructure);
                     // else is impossible
                 }
                 MyDisplayedStructure.Remove (AStructure);
-                if (AnUpdateMode == Aspect_TOU_ASAP) Update ();
+                Update (AnUpdateMode);
         }
 
 }
@@ -2794,7 +2900,7 @@ void Visual3d_View :: SetComputedMode ( const Standard_Boolean aMode )
 
   }  // end while
 
-  if (  MyViewManager -> UpdateMode () == Aspect_TOU_ASAP  ) Update ();
+  Update (MyViewManager->UpdateMode());
 
  }  // end else
 

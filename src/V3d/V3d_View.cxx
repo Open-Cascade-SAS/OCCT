@@ -165,9 +165,7 @@ V3d_View::V3d_View(const Handle(V3d_Viewer)& VM, const V3d_TypeOfView Type ) :
   MyViewContext (),
   myActiveLightsIterator(),
   SwitchSetFront(Standard_False),
-  MyTrsf (1, 4, 1, 4),
-  myAutoZFitIsOn (Standard_True),
-  myAutoZFitScaleFactor (1.0)
+  MyTrsf (1, 4, 1, 4)
 {
   myImmediateUpdate = Standard_False;
   MyView = new Visual3d_View(MyViewer->Viewer());
@@ -287,8 +285,7 @@ V3d_View::V3d_View(const Handle(V3d_Viewer)& theVM,const Handle(V3d_View)& theVi
   MyViewContext = aFromView->Context() ;
 
   SetCamera (new Graphic3d_Camera (theView->Camera()));
-  myAutoZFitIsOn        = theView->AutoZFitMode();
-  myAutoZFitScaleFactor = theView->AutoZFitScaleFactor();
+  View()->SetAutoZFitMode (theView->View()->AutoZFitMode(), theView->View()->AutoZFitScaleFactor());
 
   MyBackground = aFromView->Background() ;
   MyGradientBackground = aFromView->GradientBackground();
@@ -396,7 +393,7 @@ void V3d_View::Remove() const
 //=============================================================================
 void V3d_View::Update() const
 {
-  if( MyView->IsDefined() )  MyView->Update() ;
+  if( MyView->IsDefined() )  MyView->Update (Aspect_TOU_ASAP) ;
 }
 
 //=============================================================================
@@ -430,6 +427,24 @@ void V3d_View::Invalidate() const
   {
     MyView->Invalidate();
   }
+}
+
+//=============================================================================
+//function : AutoZFit
+//purpose  :
+//=============================================================================
+void V3d_View::AutoZFit()
+{
+  View()->AutoZFit();
+}
+
+//=============================================================================
+//function : ZFitAll
+//purpose  :
+//=============================================================================
+void V3d_View::ZFitAll (const Standard_Real theScaleFactor)
+{
+  View()->ZFitAll (theScaleFactor);
 }
 
 //=============================================================================
@@ -676,7 +691,7 @@ void V3d_View::SetFront()
     myCamera->SetDirection (gp_Dir (vx, vy, vz).Reversed());
   myCamera->SetUp (gp_Dir (xu, yu, zu));
 
-  AutoZFit();
+  View()->AutoZFit();
 
   SwitchSetFront = !SwitchSetFront;
 
@@ -730,7 +745,7 @@ void V3d_View::Rotate (const Standard_Real ax,
 
   myCamera->Transform (aTrsf);
 
-  AutoZFit();
+  View()->AutoZFit();
 
   ImmediateUpdate();
 }
@@ -785,7 +800,7 @@ void V3d_View::Rotate(const Standard_Real ax, const Standard_Real ay, const Stan
 
   myCamera->Transform (aTrsf);
 
-  AutoZFit();
+  View()->AutoZFit();
 
   ImmediateUpdate();
 }
@@ -861,7 +876,7 @@ void V3d_View::Rotate(const V3d_TypeOfAxe Axe, const Standard_Real angle,
   aRotation.SetRotation (gp_Ax1 (aRCenter, aRAxis), Angle);
   myCamera->Transform (aRotation);
 
-  AutoZFit();
+  View()->AutoZFit();
 
   ImmediateUpdate();
 }
@@ -896,7 +911,7 @@ void V3d_View::Rotate(const Standard_Real angle, const Standard_Boolean Start)
   aRotation.SetRotation (gp_Ax1 (aRCenter, aRAxis), Angle);
   myCamera->Transform (aRotation);
 
-  AutoZFit();
+  View()->AutoZFit();
 
   ImmediateUpdate();
 }
@@ -944,7 +959,7 @@ void V3d_View::Turn(const Standard_Real ax, const Standard_Real ay, const Standa
 
   myCamera->Transform (aTrsf);
 
-  AutoZFit();
+  View()->AutoZFit();
 
   ImmediateUpdate();
 }
@@ -997,7 +1012,7 @@ void V3d_View::Turn(const Standard_Real angle, const Standard_Boolean Start)
   aRotation.SetRotation (gp_Ax1 (aRCenter, aRAxis), Angle);
   myCamera->Transform (aRotation);
 
-  AutoZFit();
+  View()->AutoZFit();
 
   ImmediateUpdate();
 }
@@ -1046,38 +1061,9 @@ void V3d_View::SetTwist(const Standard_Real angle)
   myCamera->SetUp (gp_Dir (myYscreenAxisX, myYscreenAxisY, myYscreenAxisZ));
   myCamera->Transform (aTrsf);
 
-  AutoZFit();
+  View()->AutoZFit();
 
   ImmediateUpdate();
-}
-
-//=============================================================================
-//function : SetAutoZFitMode
-//purpose  :
-//=============================================================================
-void V3d_View::SetAutoZFitMode (const Standard_Boolean theIsOn, const Standard_Real theScaleFactor)
-{
-  Standard_ASSERT_RAISE (theScaleFactor > 0.0, "Zero or negative scale factor is not allowed.");
-  myAutoZFitScaleFactor = theScaleFactor;
-  myAutoZFitIsOn = theIsOn;
-}
-
-//=============================================================================
-//function : AutoZFitMode
-//purpose  :
-//=============================================================================
-Standard_Boolean V3d_View::AutoZFitMode() const
-{
-  return myAutoZFitIsOn;
-}
-
-//=============================================================================
-//function : AutoZFitScaleFactor
-//purpose  :
-//=============================================================================
-Standard_Real V3d_View::AutoZFitScaleFactor () const
-{
-  return myAutoZFitScaleFactor;
 }
 
 //=============================================================================
@@ -1093,7 +1079,7 @@ void V3d_View::SetEye(const Standard_Real X,const Standard_Real Y,const Standard
   myCamera->SetEye (gp_Pnt (X, Y, Z));
   SetTwist (aTwistBefore);
 
-  AutoZFit();
+  View()->AutoZFit();
 
   SetImmediateUpdate (wasUpdateEnabled);
 
@@ -1123,7 +1109,7 @@ void V3d_View::SetDepth(const Standard_Real Depth)
     myCamera->SetCenter (aCameraCenter);
   }
 
-  AutoZFit();
+  View()->AutoZFit();
 
   ImmediateUpdate();
 }
@@ -1148,7 +1134,7 @@ void V3d_View::SetProj( const Standard_Real Vx,const Standard_Real Vy, const Sta
     SetTwist(aTwistBefore);
   }
 
-  AutoZFit();
+  View()->AutoZFit();
 
   SetImmediateUpdate (wasUpdateEnabled);
 
@@ -1190,7 +1176,7 @@ void V3d_View::SetProj( const V3d_TypeOfOrientation Orientation )
 
   Panning (aPanX, aPanY);
 
-  AutoZFit();
+  View()->AutoZFit();
 
   ImmediateUpdate();
 }
@@ -1209,7 +1195,7 @@ void V3d_View::SetAt(const Standard_Real X,const Standard_Real Y,const Standard_
 
   SetTwist (aTwistBefore);
 
-  AutoZFit();
+  View()->AutoZFit();
 
   SetImmediateUpdate (wasUpdateEnabled);
 
@@ -1253,7 +1239,7 @@ void V3d_View::SetUp(const Standard_Real Vx,const Standard_Real Vy,const Standar
 
   myCamera->SetUp (gp_Dir (myYscreenAxisX, myYscreenAxisY, myYscreenAxisZ));
 
-  AutoZFit();
+  View()->AutoZFit();
 
   ImmediateUpdate();
 }
@@ -1296,7 +1282,7 @@ void V3d_View::SetUp( const V3d_TypeOfOrientation Orientation )
 
   myCamera->SetUp (gp_Dir (myYscreenAxisX, myYscreenAxisY, myYscreenAxisZ));
 
-  AutoZFit();
+  View()->AutoZFit();
 
   ImmediateUpdate();
 }
@@ -1336,7 +1322,7 @@ void V3d_View::Reset( const Standard_Boolean update )
     myCamera->CopyMappingData (aDefaultCamera);
     myCamera->CopyOrientationData (aDefaultCamera);
 
-    AutoZFit();
+    View()->AutoZFit();
   }
 
   SwitchSetFront = Standard_False;
@@ -1368,7 +1354,7 @@ void V3d_View::SetSize (const Standard_Real theSize)
 
   myCamera->SetScale (myCamera->Aspect() >= 1.0 ? theSize / myCamera->Aspect() : theSize);
 
-  AutoZFit();
+  View()->AutoZFit();
 
   ImmediateUpdate();
 }
@@ -1471,7 +1457,7 @@ void V3d_View::SetZoom(const Standard_Real Coef,const Standard_Boolean Start)
   myCamera->SetEye (myCamStartOpEye);
   myCamera->SetCenter (myCamStartOpCenter);
   myCamera->SetScale (myCamera->Scale() / Coef);
-  AutoZFit();
+  View()->AutoZFit();
 
   ImmediateUpdate();
 }
@@ -1498,7 +1484,7 @@ void V3d_View::SetScale( const Standard_Real Coef )
     myCamera->SetScale (myCamera->Scale() / Coef);
   }
 
-  AutoZFit();
+  View()->AutoZFit();
 
   ImmediateUpdate();
 }
@@ -1512,7 +1498,7 @@ void V3d_View::SetAxialScale( const Standard_Real Sx, const Standard_Real Sy, co
   V3d_BadValue_Raise_if( Sx <= 0. || Sy <= 0. || Sz <= 0.,"V3d_View::SetAxialScale, bad coefficient");
 
   myCamera->SetAxialScale (gp_XYZ (Sx, Sy, Sz));
-  AutoZFit();
+  View()->AutoZFit();
 }
 
 //=============================================================================
@@ -1538,179 +1524,12 @@ void V3d_View::FitAll (const Standard_Real theMargin, const Standard_Boolean the
     return;
   }
 
-  AutoZFit();
+  View()->AutoZFit();
 
   if (myImmediateUpdate || theToUpdate)
   {
     Update();
   }
-}
-
-//=============================================================================
-//function : AutoZFit
-//purpose  :
-//=============================================================================
-void V3d_View::AutoZFit()
-{
-  if (!AutoZFitMode())
-  {
-    return;
-  }
-
-  ZFitAll (myAutoZFitScaleFactor);
-}
-
-//=============================================================================
-//function : ZFitAll
-//purpose  :
-//=============================================================================
-void V3d_View::ZFitAll (const Standard_Real theScaleFactor)
-{
-  Standard_ASSERT_RAISE (theScaleFactor > 0.0, "Zero or negative scale factor is not allowed.");
-
-  // Method changes ZNear and ZFar planes of camera so as to fit the graphical structures
-  // by their real boundaries (computed ignoring infinite flag) into the viewing volume.
-  // In addition to the graphical boundaries, the usual min max used for fitting perspective
-  // camera. To avoid numeric errors for perspective camera the negative ZNear values are
-  // fixed using tolerance distance, relative to boundaries size. The tolerance distance
-  // should be computed using information on boundaries of primary application actors,
-  // (e.g. representing the displayed model) - to ensure that they are not unreasonably clipped.
-
-  Standard_Real aMinMax[6];    // applicative min max boundaries
-  View()->MinMaxValues (aMinMax[0], aMinMax[1], aMinMax[2],
-                        aMinMax[3], aMinMax[4], aMinMax[5],
-                        Standard_False);
-
-  Standard_Real aGraphicBB[6]; // real graphical boundaries (not accounting infinite flag).
-  View()->MinMaxValues (aGraphicBB[0], aGraphicBB[1], aGraphicBB[2],
-                        aGraphicBB[3], aGraphicBB[4], aGraphicBB[5],
-                        Standard_True);
-
-  // Check if anything can be adjusted
-  Standard_Real aLim = (ShortRealLast() - 1.0);
-  if (Abs (aGraphicBB[0]) > aLim || Abs (aGraphicBB[1]) > aLim || Abs (aGraphicBB[2]) > aLim ||
-      Abs (aGraphicBB[3]) > aLim || Abs (aGraphicBB[4]) > aLim || Abs (aGraphicBB[5]) > aLim)
-  {
-    SetZSize (0.0);
-    ImmediateUpdate();
-    return;
-  }
-
-  // Measure depth of boundary points from camera eye
-  gp_Pnt aPntsToMeasure[16] =
-  {
-    gp_Pnt (aMinMax[0], aMinMax[1], aMinMax[2]),
-    gp_Pnt (aMinMax[0], aMinMax[1], aMinMax[5]),
-    gp_Pnt (aMinMax[0], aMinMax[4], aMinMax[2]),
-    gp_Pnt (aMinMax[0], aMinMax[4], aMinMax[5]),
-    gp_Pnt (aMinMax[3], aMinMax[1], aMinMax[2]),
-    gp_Pnt (aMinMax[3], aMinMax[1], aMinMax[5]),
-    gp_Pnt (aMinMax[3], aMinMax[4], aMinMax[2]),
-    gp_Pnt (aMinMax[3], aMinMax[4], aMinMax[5]),
-
-    gp_Pnt (aGraphicBB[0], aGraphicBB[1], aGraphicBB[2]),
-    gp_Pnt (aGraphicBB[0], aGraphicBB[1], aGraphicBB[5]),
-    gp_Pnt (aGraphicBB[0], aGraphicBB[4], aGraphicBB[2]),
-    gp_Pnt (aGraphicBB[0], aGraphicBB[4], aGraphicBB[5]),
-    gp_Pnt (aGraphicBB[3], aGraphicBB[1], aGraphicBB[2]),
-    gp_Pnt (aGraphicBB[3], aGraphicBB[1], aGraphicBB[5]),
-    gp_Pnt (aGraphicBB[3], aGraphicBB[4], aGraphicBB[2]),
-    gp_Pnt (aGraphicBB[3], aGraphicBB[4], aGraphicBB[5])
-  };
-
-  // Camera eye plane
-  gp_Dir aCamDir = myCamera->Direction();
-  gp_Pnt aCamEye = myCamera->Eye();
-  gp_Pln aCamPln (aCamEye, aCamDir);
-
-  Standard_Real aModelMinDist   = RealLast();
-  Standard_Real aModelMaxDist   = RealFirst();
-  Standard_Real aGraphicMinDist = RealLast();
-  Standard_Real aGraphicMaxDist = RealFirst();
-
-  const gp_XYZ& anAxialScale = myCamera->AxialScale();
-
-  // Get minimum and maximum distances to the eye plane
-  for (Standard_Integer aPntIt = 0; aPntIt < 16; ++aPntIt)
-  {
-    gp_Pnt aMeasurePnt = aPntsToMeasure[aPntIt];
-
-    if (Abs (aMeasurePnt.X()) > aLim || Abs (aMeasurePnt.Y()) > aLim || Abs (aMeasurePnt.Z()) > aLim)
-    {
-      continue;
-    }
-
-    aMeasurePnt = gp_Pnt (aMeasurePnt.X() * anAxialScale.X(),
-                          aMeasurePnt.Y() * anAxialScale.Y(),
-                          aMeasurePnt.Z() * anAxialScale.Z());
-
-    Standard_Real aDistance = aCamPln.Distance (aMeasurePnt);
-
-    // Check if the camera is intruded into the scene
-    if (aCamDir.IsOpposite (gp_Vec (aCamEye, aMeasurePnt), M_PI * 0.5))
-    {
-      aDistance *= -1;
-    }
-
-    Standard_Real& aChangeMinDist = aPntIt >= 8 ? aGraphicMinDist : aModelMinDist;
-    Standard_Real& aChangeMaxDist = aPntIt >= 8 ? aGraphicMaxDist : aModelMaxDist;
-    aChangeMinDist = Min (aDistance, aChangeMinDist);
-    aChangeMaxDist = Max (aDistance, aChangeMaxDist);
-  }
-
-  // Compute depth of bounding box center
-  Standard_Real aMidDepth  = (aGraphicMinDist + aGraphicMaxDist) * 0.5;
-  Standard_Real aHalfDepth = (aGraphicMaxDist - aGraphicMinDist) * 0.5;
-
-  // ShortReal precision factor used to add meaningful tolerance to
-  // ZNear, ZFar values in order to avoid equality after type conversion
-  // to ShortReal matrices type.
-  const Standard_Real aPrecision = Pow (0.1, ShortRealDigits() - 2);
-
-  // Compute enlarged or shrank near and far z ranges
-  Standard_Real aZNear = aMidDepth - aHalfDepth * theScaleFactor;
-  Standard_Real aZFar  = aMidDepth + aHalfDepth * theScaleFactor;
-  aZNear              -= aPrecision * 0.5;
-  aZFar               += aPrecision * 0.5;
-
-  if (!myCamera->IsOrthographic())
-  {
-    if (aZFar >= aPrecision)
-    {
-      // To avoid numeric errors... (See comments in the beginning of the method).
-      // Choose between model distance and graphical distance, as the model boundaries
-      // might be infinite if all structures have infinite flag.
-      const Standard_Real aGraphicDepth = aGraphicMaxDist >= aGraphicMinDist
-        ? aGraphicMaxDist - aGraphicMinDist : RealLast();
-
-      const Standard_Real aModelDepth = aModelMaxDist >= aModelMinDist
-        ? aModelMaxDist - aModelMinDist : RealLast();
-
-      const Standard_Real aMinDepth = Min (aModelDepth, aGraphicDepth);
-      const Standard_Real aZTolerance =
-        Max (Abs (aMinDepth) * aPrecision, aPrecision);
-
-      if (aZNear < aZTolerance)
-      {
-        aZNear = aZTolerance;
-      }
-    }
-    else // aZFar < aPrecision - Invalid case when both ZNear and ZFar are negative
-    {
-      aZNear = aPrecision;
-      aZFar  = aPrecision * 2.0;
-    }
-  }
-
-  // If range is too small
-  if (aZFar < (aZNear + Abs (aZFar) * aPrecision))
-  {
-    aZFar = aZNear + Abs (aZFar) * aPrecision;
-  }
-
-  myCamera->SetZRange (aZNear, aZFar);
-
-  ImmediateUpdate();
 }
 
 //=============================================================================
@@ -1858,7 +1677,7 @@ void V3d_View::WindowFit (const Standard_Integer theMinXp,
 
     Translate (myCamera, aPanVec.X(), -aPanVec.Y());
     Scale (myCamera, aUSize, aVSize);
-    AutoZFit();
+    View()->AutoZFit();
   }
   else
   {
@@ -2811,7 +2630,7 @@ void V3d_View::ZoomAtPoint (const Standard_Integer theMouseStartX,
   myCamera->SetScale (myCamera->Scale() / aCoef);
   Translate (myCamera, aZoomAtPointXv - aDxv, aZoomAtPointYv - aDyv);
 
-  AutoZFit();
+  View()->AutoZFit();
 
   SetImmediateUpdate (wasUpdateEnabled);
 
@@ -2867,7 +2686,7 @@ void V3d_View::FitAll(const Handle(Aspect_Window)& aWindow,
   myCamera->SetAspect (aWinAspect);
   Translate (myCamera, (Xmin + Xmax) * 0.5, (Ymin + Ymax) * 0.5);
   Scale (myCamera, aFitSizeU, aFitSizeV);
-  AutoZFit();
+  View()->AutoZFit();
 
   ImmediateUpdate();
 }
@@ -3104,7 +2923,7 @@ Standard_Boolean V3d_View::ToPixMap (Image_PixMap&               theImage,
 
   const Standard_Boolean toAutoUpdate = myImmediateUpdate;
   myImmediateUpdate = Standard_False;
-  AutoZFit();
+  View()->AutoZFit();
   myImmediateUpdate = toAutoUpdate;
 
   if (theToKeepAspect)

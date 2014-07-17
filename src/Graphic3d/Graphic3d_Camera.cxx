@@ -966,3 +966,173 @@ void Graphic3d_Camera::LookOrientation (const NCollection_Vec3<Elem_t>& theEye,
 
   theOutMx.Multiply (anAxialScaleMx);
 }
+
+//=============================================================================
+//function : ZFitAll
+//purpose  :
+//=============================================================================
+void Graphic3d_Camera::ZFitAll (const Standard_Real theScaleFactor, const Bnd_Box& theMinMax, const Bnd_Box& theGraphicBB)
+{
+  Standard_ASSERT_RAISE (theScaleFactor > 0.0, "Zero or negative scale factor is not allowed.");
+
+  // Method changes ZNear and ZFar planes of camera so as to fit the graphical structures
+  // by their real boundaries (computed ignoring infinite flag) into the viewing volume.
+  // In addition to the graphical boundaries, the usual min max used for fitting perspective
+  // camera. To avoid numeric errors for perspective camera the negative ZNear values are
+  // fixed using tolerance distance, relative to boundaries size. The tolerance distance
+  // should be computed using information on boundaries of primary application actors,
+  // (e.g. representing the displayed model) - to ensure that they are not unreasonably clipped.
+
+  
+  Standard_Real aMinMax[6];    // applicative min max boundaries
+  theMinMax.Get (aMinMax[0], aMinMax[1], aMinMax[2], aMinMax[3], aMinMax[4], aMinMax[5]);
+
+  Standard_Real aGraphicBB[6]; // real graphical boundaries (not accounting infinite flag).
+  theGraphicBB.Get (aGraphicBB[0], aGraphicBB[1], aGraphicBB[2], aGraphicBB[3], aGraphicBB[4], aGraphicBB[5]);
+
+  // Check if anything can be adjusted
+  Standard_Real aLim = (ShortRealLast() - 1.0);
+  if (Abs (aGraphicBB[0]) > aLim || Abs (aGraphicBB[1]) > aLim || Abs (aGraphicBB[2]) > aLim ||
+    Abs (aGraphicBB[3]) > aLim || Abs (aGraphicBB[4]) > aLim || Abs (aGraphicBB[5]) > aLim)
+  {
+    // ShortReal precision factor used to add meaningful tolerance to
+    // ZNear, ZFar values in order to avoid equality after type conversion
+    // to ShortReal matrices type.
+    const Standard_Real aPrecision = 1.0 / Pow (10.0, ShortRealDigits() - 1);
+
+    Standard_Real aZFar  = Distance() * 3.0;
+    Standard_Real aZNear = 0.0;
+
+    if (!IsOrthographic())
+    {
+      if (aZFar < aPrecision)
+      {
+        // Invalid case when both values are negative
+        aZNear = aPrecision;
+        aZFar  = aPrecision * 2.0;
+      }
+      else if (aZNear < Abs (aZFar) * aPrecision)
+      {
+        // Z is less than 0.0, try to fix it using any appropriate z-scale
+        aZNear = Abs (aZFar) * aPrecision;
+      }
+    }
+
+    SetZRange (aZNear, aZFar);
+    return;
+  }
+
+  // Measure depth of boundary points from camera eye
+  gp_Pnt aPntsToMeasure[16] =
+  {
+    gp_Pnt (aMinMax[0], aMinMax[1], aMinMax[2]),
+    gp_Pnt (aMinMax[0], aMinMax[1], aMinMax[5]),
+    gp_Pnt (aMinMax[0], aMinMax[4], aMinMax[2]),
+    gp_Pnt (aMinMax[0], aMinMax[4], aMinMax[5]),
+    gp_Pnt (aMinMax[3], aMinMax[1], aMinMax[2]),
+    gp_Pnt (aMinMax[3], aMinMax[1], aMinMax[5]),
+    gp_Pnt (aMinMax[3], aMinMax[4], aMinMax[2]),
+    gp_Pnt (aMinMax[3], aMinMax[4], aMinMax[5]),
+
+    gp_Pnt (aGraphicBB[0], aGraphicBB[1], aGraphicBB[2]),
+    gp_Pnt (aGraphicBB[0], aGraphicBB[1], aGraphicBB[5]),
+    gp_Pnt (aGraphicBB[0], aGraphicBB[4], aGraphicBB[2]),
+    gp_Pnt (aGraphicBB[0], aGraphicBB[4], aGraphicBB[5]),
+    gp_Pnt (aGraphicBB[3], aGraphicBB[1], aGraphicBB[2]),
+    gp_Pnt (aGraphicBB[3], aGraphicBB[1], aGraphicBB[5]),
+    gp_Pnt (aGraphicBB[3], aGraphicBB[4], aGraphicBB[2]),
+    gp_Pnt (aGraphicBB[3], aGraphicBB[4], aGraphicBB[5])
+  };
+
+  // Camera eye plane
+  gp_Dir aCamDir = Direction();
+  gp_Pnt aCamEye = myEye;
+  gp_Pln aCamPln (aCamEye, aCamDir);
+
+  Standard_Real aModelMinDist   = RealLast();
+  Standard_Real aModelMaxDist   = RealFirst();
+  Standard_Real aGraphicMinDist = RealLast();
+  Standard_Real aGraphicMaxDist = RealFirst();
+
+  const gp_XYZ& anAxialScale = myAxialScale;
+
+  // Get minimum and maximum distances to the eye plane
+  for (Standard_Integer aPntIt = 0; aPntIt < 16; ++aPntIt)
+  {
+    gp_Pnt aMeasurePnt = aPntsToMeasure[aPntIt];
+
+    if (Abs (aMeasurePnt.X()) > aLim || Abs (aMeasurePnt.Y()) > aLim || Abs (aMeasurePnt.Z()) > aLim)
+    {
+      continue;
+    }
+
+    aMeasurePnt = gp_Pnt (aMeasurePnt.X() * anAxialScale.X(),
+      aMeasurePnt.Y() * anAxialScale.Y(),
+      aMeasurePnt.Z() * anAxialScale.Z());
+
+    Standard_Real aDistance = aCamPln.Distance (aMeasurePnt);
+
+    // Check if the camera is intruded into the scene
+    if (aCamDir.IsOpposite (gp_Vec (aCamEye, aMeasurePnt), M_PI * 0.5))
+    {
+      aDistance *= -1;
+    }
+
+    Standard_Real& aChangeMinDist = aPntIt >= 8 ? aGraphicMinDist : aModelMinDist;
+    Standard_Real& aChangeMaxDist = aPntIt >= 8 ? aGraphicMaxDist : aModelMaxDist;
+    aChangeMinDist = Min (aDistance, aChangeMinDist);
+    aChangeMaxDist = Max (aDistance, aChangeMaxDist);
+  }
+
+  // Compute depth of bounding box center
+  Standard_Real aMidDepth  = (aGraphicMinDist + aGraphicMaxDist) * 0.5;
+  Standard_Real aHalfDepth = (aGraphicMaxDist - aGraphicMinDist) * 0.5;
+
+  // ShortReal precision factor used to add meaningful tolerance to
+  // ZNear, ZFar values in order to avoid equality after type conversion
+  // to ShortReal matrices type.
+  const Standard_Real aPrecision = Pow (0.1, ShortRealDigits() - 2);
+
+  // Compute enlarged or shrank near and far z ranges
+  Standard_Real aZNear = aMidDepth - aHalfDepth * theScaleFactor;
+  Standard_Real aZFar  = aMidDepth + aHalfDepth * theScaleFactor;
+  aZNear              -= aPrecision * 0.5;
+  aZFar               += aPrecision * 0.5;
+
+  if (!IsOrthographic())
+  {
+    if (aZFar >= aPrecision)
+    {
+      // To avoid numeric errors... (See comments in the beginning of the method).
+      // Choose between model distance and graphical distance, as the model boundaries
+      // might be infinite if all structures have infinite flag.
+      const Standard_Real aGraphicDepth = aGraphicMaxDist >= aGraphicMinDist
+        ? aGraphicMaxDist - aGraphicMinDist : RealLast();
+
+      const Standard_Real aModelDepth = aModelMaxDist >= aModelMinDist
+        ? aModelMaxDist - aModelMinDist : RealLast();
+
+      const Standard_Real aMinDepth = Min (aModelDepth, aGraphicDepth);
+      const Standard_Real aZTolerance =
+        Max (Abs (aMinDepth) * aPrecision, aPrecision);
+
+      if (aZNear < aZTolerance)
+      {
+        aZNear = aZTolerance;
+      }
+    }
+    else // aZFar < aPrecision - Invalid case when both ZNear and ZFar are negative
+    {
+      aZNear = aPrecision;
+      aZFar  = aPrecision * 2.0;
+    }
+  }
+
+  // If range is too small
+  if (aZFar < (aZNear + Abs (aZFar) * aPrecision))
+  {
+    aZFar = aZNear + Abs (aZFar) * aPrecision;
+  }
+
+  SetZRange (aZNear, aZFar);
+}

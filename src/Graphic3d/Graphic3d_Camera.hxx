@@ -28,6 +28,8 @@
 #include <Standard_Macro.hxx>
 #include <Standard_TypeDef.hxx>
 
+#include <Bnd_Box.hxx>
+
 DEFINE_STANDARD_HANDLE (Graphic3d_Camera, Standard_Transient)
 
 //! Camera class provides object-oriented approach to setting up projection
@@ -267,6 +269,21 @@ public:
   {
     return myFOVy;
   }
+
+  //! Change Z-min and Z-max planes of projection volume to match the
+  //! displayed objects. The methods ensures that view volume will
+  //! be close by depth range to the displayed objects. Fitting assumes that
+  //! for orthogonal projection the view volume contains the displayed objects
+  //! completely. For zoomed perspective view, the view volume is adjusted such
+  //! that it contains the objects or their parts, located in front of the camera.
+  //! @param theScaleFactor [in] the scale factor for Z-range.
+  //!   The range between Z-min, Z-max projection volume planes
+  //!   evaluated by z fitting method will be scaled using this coefficient.
+  //!   Program error exception is thrown if negative or zero value is passed.
+  //! @param theMinMax [in] applicative min max boundaries.
+  //! @param theScaleFactor [in] real graphical boundaries (not accounting infinite flag).
+
+  void ZFitAll (const Standard_Real theScaleFactor, const Bnd_Box& theMinMax, const Bnd_Box& theGraphicBB);
 
   //! Change the Near and Far Z-clipping plane positions.
   //! For orthographic projection, theZNear, theZFar can be negative or positive.

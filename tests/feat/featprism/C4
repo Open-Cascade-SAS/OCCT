@@ -17,4 +17,4 @@ if { [catch { featperform prism result face face } ] != 0 } {
   puts "Error in featperform"
 }
 
-set square 82351.1
+set square 103218

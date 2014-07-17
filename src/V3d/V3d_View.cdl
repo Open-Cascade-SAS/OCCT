@@ -244,6 +244,16 @@ is
         ---Level: Public
         ---Purpose: Updates the lights of the view. The view is redrawn.
 
+        AutoZFit (me : mutable);
+        ---Level: Public
+        ---Purpose: If automatic z-range fitting is turned on, adjusts Z-min and Z-max
+        --          projection volume planes with call to ZFitAll.
+
+        ZFitAll (me : mutable; theScaleFactor : Real from Standard = 1.0);
+        ---Level: Public
+        ---Purpose: Change Z-min and Z-max planes of projection volume to match the
+        --          displayed objects. 
+
         --------------------------------------------------------
         ---Category: Methods to modify the Attributes of the view
         --------------------------------------------------------
@@ -412,28 +422,6 @@ is
         SetImmediateUpdate(me: mutable; theImmediateUpdate: Boolean from Standard)
         returns Boolean from Standard;
     	  ---Purpose: sets the immediate update mode and returns the previous one.
-
-        SetAutoZFitMode (me : mutable;
-                         theIsOn : Boolean;
-                         theScaleFactor : Real from Standard = 1.0);
-          ---Level: public
-          ---Purpose: Sets the automatic z-fit mode and its parameters.
-          --          The auto z-fit has extra parameters which can controlled from application level
-          --          to ensure that the size of viewing volume will be sufficiently large to cover
-          --          the depth of unmanaged objects, for example, transformation persistent ones.
-          --          @param theScaleFactor [in] the scale factor for Z-range.
-          --          The range between Z-min, Z-max projection volume planes
-          --          evaluated by z fitting method will be scaled using this coefficient.
-          --          Program error exception is thrown if negative or zero value
-          --          is passed.
-
-        AutoZFitMode (me) returns Boolean;
-          ---Level: public
-          ---Purpose: returns TRUE if automatic z-fit mode is turned on.
-
-        AutoZFitScaleFactor (me) returns Real from Standard;
-        ---Level: public
-        ---Purpose: returns scale factor parameter of automatic z-fit mode.
 
         ---------------------------------------------------
         --           Triedron methods
@@ -918,24 +906,6 @@ is
         --          Updates the view.
         --          @param theMargin [in] the margin coefficient for view borders.
         --          @param theToUpdate [in] flag to perform view update.
-
-        ZFitAll (me : mutable; theScaleFactor : Real from Standard = 1.0);
-        ---Level: Public
-        ---Purpose: Change Z-min and Z-max planes of projection volume to match the
-        --          displayed objects. The methods ensures that view volume will
-        --          be close by depth range to the displayed objects. Fitting assumes that
-        --          for orthogonal projection the view volume contains the displayed objects
-        --          completely. For zoomed perspective view, the view volume is adjusted such
-        --          that it contains the objects or their parts, located in front of the camera.
-        --          @param theScaleFactor [in] the scale factor for Z-range.
-        --                                     The range between Z-min, Z-max projection volume planes
-        --                                     evaluated by z fitting method will be scaled using this coefficient.
-        --                                     Program error exception is thrown if negative or zero value is passed.
-
-        AutoZFit (me : mutable);
-        ---Level: Public
-        ---Purpose: If automatic z-range fitting is turned on, adjusts Z-min and Z-max
-        --          projection volume planes with call to ZFitAll.
 
         DepthFitAll( me : mutable ;   Aspect : Coefficient = 0.01;
                                       Margin : Coefficient = 0.01 );
@@ -1693,8 +1663,6 @@ fields
         myViewAxis              : Vector from Graphic3d;
         myGravityReferencePoint : Vertex from Graphic3d;
         myCamProjectionShift    : Pnt from gp;
-        myAutoZFitIsOn          : Boolean from Standard;
-        myAutoZFitScaleFactor   : Real from Standard;
 
 friends
 

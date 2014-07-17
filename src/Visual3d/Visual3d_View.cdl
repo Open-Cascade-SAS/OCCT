@@ -390,7 +390,8 @@ is
 	---Purpose:
 	--	    After this call, each view is mapped in an unique window.
 
-	Update ( me	: mutable )
+	Update ( me	: mutable;
+    theUpdateMode  : TypeOfUpdate from Aspect )
 		is static;
 	---Level: Public
 	---Purpose: Updates screen in function of modifications of
@@ -405,6 +406,38 @@ is
 	---Purpose: Updates screen in function of modifications of
 	--	    the structures.
 	---Category: Methods to modify the class definition
+
+  SetAutoZFitMode (me : mutable;
+                   theIsOn : Boolean;
+                   theScaleFactor : Real from Standard = 1.0);
+    ---Level: public
+    ---Purpose: Sets the automatic z-fit mode and its parameters.
+    --          The auto z-fit has extra parameters which can controlled from application level
+    --          to ensure that the size of viewing volume will be sufficiently large to cover
+    --          the depth of unmanaged objects, for example, transformation persistent ones.
+    --          @param theScaleFactor [in] the scale factor for Z-range.
+    --          The range between Z-min, Z-max projection volume planes
+    --          evaluated by z fitting method will be scaled using this coefficient.
+    --          Program error exception is thrown if negative or zero value
+    --          is passed.
+
+  AutoZFitMode (me) returns Boolean;
+    ---Level: public
+    ---Purpose: returns TRUE if automatic z-fit mode is turned on.
+
+  AutoZFitScaleFactor (me) returns Real from Standard;
+  ---Level: public
+  ---Purpose: returns scale factor parameter of automatic z-fit mode.
+
+  AutoZFit (me : mutable);
+  ---Level: Public
+  ---Purpose: If automatic z-range fitting is turned on, adjusts Z-min and Z-max
+  --          projection volume planes with call to ZFitAll.
+
+  ZFitAll (me : mutable; theScaleFactor : Real from Standard = 1.0);
+  ---Level: Public
+  ---Purpose: Change Z-min and Z-max planes of projection volume to match the
+  --          displayed objects. 
 
 	ViewMappingReset ( me	: mutable )
 		is static;
@@ -1204,6 +1237,11 @@ fields
   MyGTrihedron     : CGraduatedTrihedron from Graphic3d;
 
   myDefaultCamera  : Camera_Handle from Graphic3d;
+
+  myAutoZFitIsOn          : Boolean from Standard;
+  myAutoZFitScaleFactor   : Real from Standard;
+
+  myStructuresUpdated     : Boolean from Standard;
 
 friends
 

@@ -68,7 +68,7 @@ void V3d_View::Move(const Standard_Real Dx, const Standard_Real Dy, const Standa
     + Dz * gp_Pnt (ZX, ZY, ZZ).XYZ()
     );
 
-  AutoZFit();
+  View()->AutoZFit();
 
   ImmediateUpdate();
 }
@@ -86,7 +86,7 @@ void V3d_View::Move(const Standard_Real Length, const Standard_Boolean Start) {
 
   myCamera->SetEye (myCamera->Eye().XYZ() + Length * gp_Pnt (Vx, Vy, Vz).XYZ());
 
-  AutoZFit();
+  View()->AutoZFit();
 
   ImmediateUpdate();
 }
@@ -142,7 +142,7 @@ void V3d_View::Translate(const Standard_Real Dx, const Standard_Real Dy, const S
     - Dz * gp_Pnt (ZX, ZY, ZZ).XYZ()
     );
 
-  AutoZFit();
+  View()->AutoZFit();
 
   ImmediateUpdate();
 }
@@ -190,7 +190,7 @@ void V3d_View::Translate(const Standard_Real theLength, const Standard_Boolean t
   gp_Pnt aNewCenter (myCamStartOpCenter.XYZ() - gp_Pnt (aVx, aVy, aVz).XYZ() * theLength);
   myCamera->SetCenter (aNewCenter);
 
-  AutoZFit();
+  View()->AutoZFit();
 
   ImmediateUpdate();
 }

@@ -2480,7 +2480,7 @@ static int VZFit (Draw_Interpretor& /*theDi*/, Standard_Integer theArgsNb, const
 
   if (theArgsNb == 1)
   {
-    aCurrentView->ZFitAll();
+    aCurrentView->View()->ZFitAll();
     aCurrentView->Redraw();
     return 0;
   }
@@ -2492,7 +2492,7 @@ static int VZFit (Draw_Interpretor& /*theDi*/, Standard_Integer theArgsNb, const
     aScale = Draw::Atoi (theArgVec[1]);
   }
 
-  aCurrentView->ZFitAll (aScale);
+  aCurrentView->View()->ZFitAll (aScale);
   aCurrentView->Redraw();
 
   return 0;
@@ -2851,7 +2851,7 @@ static int VTestZBuffTrihedron(Draw_Interpretor& di, Standard_Integer argc, cons
     return 1;
   }
 
-  V3dView->ZFitAll();
+  V3dView->View()->ZFitAll();
 
   return 0;
 }
@@ -5671,7 +5671,7 @@ static int VAutoZFit (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const
     return 1;
   }
 
-  Standard_Real aScale = aCurrentView->AutoZFitScaleFactor();
+  Standard_Real aScale = aCurrentView->View()->AutoZFitScaleFactor();
 
   if (theArgsNb > 3)
   {
@@ -5682,7 +5682,7 @@ static int VAutoZFit (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const
   if (theArgsNb < 2)
   {
     theDi << "Auto z-fit mode: " << "\n"
-          << "On: " << (aCurrentView->AutoZFitMode() ? "enabled" : "disabled") << "\n"
+          << "On: " << (aCurrentView->View()->AutoZFitMode() ? "enabled" : "disabled") << "\n"
           << "Scale: " << aScale << "\n";
     return 0;
   }
@@ -5694,8 +5694,8 @@ static int VAutoZFit (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const
     aScale = Draw::Atoi (theArgVec[2]);
   }
 
-  aCurrentView->SetAutoZFitMode (isOn, aScale);
-  aCurrentView->AutoZFit();
+  aCurrentView->View()->SetAutoZFitMode (isOn, aScale);
+  aCurrentView->View()->AutoZFit();
   aCurrentView->Redraw();
 
   return 0;
@@ -5810,7 +5810,7 @@ static int VChangeCamera (Draw_Interpretor& theDi, Standard_Integer theArgsNb, c
     return 1;
   }
 
-  ViewerTest::CurrentView()->AutoZFit();
+  ViewerTest::CurrentView()->View()->AutoZFit();
   ViewerTest::CurrentView()->Redraw();
 
   return 0;

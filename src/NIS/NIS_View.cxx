@@ -121,7 +121,7 @@ Standard_Boolean NIS_View::FitAll3d (const Quantity_Coefficient theCoef)
     return Standard_False;
   }
 
-  AutoZFit();
+  View()->AutoZFit();
 
   ImmediateUpdate();
 
