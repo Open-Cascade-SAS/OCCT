@@ -1665,13 +1665,13 @@ void V3d_View::ZFitAll (const Standard_Real theScaleFactor)
   // ShortReal precision factor used to add meaningful tolerance to
   // ZNear, ZFar values in order to avoid equality after type conversion
   // to ShortReal matrices type.
-  const Standard_Real aPrecision = 1.0 / Pow (10.0, ShortRealDigits() - 1);
+  const Standard_Real aPrecision = Pow (0.1, ShortRealDigits() - 2);
 
   // Compute enlarged or shrank near and far z ranges
   Standard_Real aZNear = aMidDepth - aHalfDepth * theScaleFactor;
   Standard_Real aZFar  = aMidDepth + aHalfDepth * theScaleFactor;
-  aZNear              -= Abs (aZNear) * aPrecision;
-  aZFar               += Abs (aZFar)  * aPrecision;
+  aZNear              -= aPrecision * 0.5;
+  aZFar               += aPrecision * 0.5;
 
   if (!myCamera->IsOrthographic())
   {
@@ -3329,7 +3329,7 @@ Standard_Boolean V3d_View::FitMinMax (const Handle(Graphic3d_Camera)& theCamera,
   gp_Trsf aCenterTrsf;
   aCenterTrsf.SetTranslation (theCamera->Center(), aNewCenter);
   theCamera->Transform (aCenterTrsf);
-  theCamera->SetDistance (Max (aMatchDistance[5] + aMatchDistance[4], Precision::Confusion()));
+  theCamera->SetDistance (aMatchDistance[5] + aMatchDistance[4]);
 
   // Bounding box collapses to a point or thin line going in depth of the screen
   if (aViewSizeXv < theResolution && aViewSizeYv < theResolution)

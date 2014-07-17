@@ -163,6 +163,10 @@ Standard_ShortReal OpenGl_BVHTreeSelector::SignedPlanePointDistance (const OpenG
   const Standard_ShortReal aNormLength = std::sqrt (theNormal.x() * theNormal.x()
                                                   + theNormal.y() * theNormal.y()
                                                   + theNormal.z() * theNormal.z());
+
+  if (aNormLength < FLT_EPSILON)
+    return 0.0f;
+
   const Standard_ShortReal anInvNormLength = 1.0f / aNormLength;
   const Standard_ShortReal aD  = theNormal.w() * anInvNormLength;
   const Standard_ShortReal anA = theNormal.x() * anInvNormLength;

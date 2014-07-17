@@ -36,6 +36,9 @@ namespace
 
   // atomic state counter
   static volatile Standard_Integer THE_STATE_COUNTER = 0;
+
+  // minimum camera distance
+  static const Standard_Real MIN_DISTANCE = Pow (0.1, ShortRealDigits() - 2);
 };
 
 // =======================================================================
@@ -165,7 +168,9 @@ void Graphic3d_Camera::SetDistance (const Standard_Real theDistance)
 {
   gp_Vec aCenter2Eye (Direction());
   aCenter2Eye.Reverse();
-  aCenter2Eye.Scale (theDistance);
+
+  // Camera should have non-zero distance.
+  aCenter2Eye.Scale (Max (theDistance, MIN_DISTANCE));
   SetEye (Center().Translated (aCenter2Eye));
 }
 

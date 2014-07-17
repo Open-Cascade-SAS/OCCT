@@ -1,0 +1,14 @@
+puts "==========="
+puts "OCC25063"
+puts "==========="
+puts ""
+##########################################################################
+# Visualization - 2D objects are not displayed at some camera positions
+##########################################################################
+
+vinit
+vtop
+vline 1 -90 -90 130 90 90 130
+vfit
+
+set only_screen 1
