@@ -56,107 +56,107 @@
 //=======================================================================
 
 TopoDS_Wire  BRepAlgo::ConcatenateWire(const TopoDS_Wire& W,
-				       const GeomAbs_Shape Option,
-				       const Standard_Real TolAngular) 
+  const GeomAbs_Shape Option,
+  const Standard_Real TolAngular) 
 {
 
 
   Standard_Integer        nb_curve,                         //number of curves in the Wire
-                          index;
+    index;
   BRepTools_WireExplorer  WExp(W) ;
   TopoDS_Edge             edge;
   TopLoc_Location         L ;
   Standard_Real           First=0.,Last=0.,                       //extremal values for the curve
-                          First0 =0.,
-                          toler =0.,
-                          tolleft,tolright;                 //Vertex tolerances
+    First0 = 0.,
+    toler = 0.,
+    tolleft,tolright;                 //Vertex tolerances
   TopoDS_Vertex           Vfirst,Vlast;                     //Vertex of the Wire
   gp_Pnt                  Pfirst,Plast;            //, Pint;  corresponding points
 
   BRepLib_MakeWire        MakeResult;                       
   Standard_Real           closed_tolerance =0.0;
   Standard_Boolean        closed_flag = Standard_False ;
-  
+
   nb_curve = 0;
-  
+
   while ( WExp.More()){                                     //computation of the curve number
     nb_curve++ ;
     WExp.Next();
   }
-  
+
   if (nb_curve > 1) {
     TColGeom_Array1OfBSplineCurve tab(0,nb_curve-1);          //array of the wire's curve
     TColStd_Array1OfReal tabtolvertex(0,nb_curve-2);          //array of the tolerance's vertex
-    
+
     WExp.Init(W);
-    
+
     for (index=0 ;index<nb_curve; index++){                   //main loop
       edge = WExp.Current() ;
-      Handle(Geom_Curve) aCurve = BRep_Tool::Curve(edge, L, First, Last);
+      const Handle(Geom_Curve)& aCurve = BRep_Tool::Curve(edge, L, First, Last);
       Handle(Geom_TrimmedCurve) aTrCurve = new Geom_TrimmedCurve(aCurve, First, Last);
       tab(index) = GeomConvert::CurveToBSplineCurve(aTrCurve); //storage in a array 
       tab(index)->Transform(L.Transformation());
       GeomConvert::C0BSplineToC1BSplineCurve(tab(index),Precision::Confusion());
-      
+
       if (index >= 1){                                         //continuity test loop
-	if (edge.Orientation()==TopAbs_REVERSED)
-	  tab(index)->Reverse();
-	tolleft=BRep_Tool::Tolerance(TopExp::LastVertex(edge));
-	tolright=BRep_Tool::Tolerance(TopExp::FirstVertex(edge));
-	tabtolvertex(index-1)=Max(tolleft,tolright);
+        if (edge.Orientation()==TopAbs_REVERSED)
+          tab(index)->Reverse();
+        tolleft=BRep_Tool::Tolerance(TopExp::LastVertex(edge));
+        tolright=BRep_Tool::Tolerance(TopExp::FirstVertex(edge));
+        tabtolvertex(index-1)=Max(tolleft,tolright);
       }
-      
+
       if(index==0){                                           //storage of the first edge features
-	First0=First;
-	if(edge.Orientation()==TopAbs_REVERSED){             //(usefull for the closed wire) 
-	  Vfirst=TopExp::LastVertex(edge);
-	  tab(index)->Reverse();
-	}
-	else
-	  Vfirst=TopExp::FirstVertex(edge);
+        First0=First;
+        if(edge.Orientation()==TopAbs_REVERSED){             //(usefull for the closed wire) 
+          Vfirst=TopExp::LastVertex(edge);
+          tab(index)->Reverse();
+        }
+        else
+          Vfirst=TopExp::FirstVertex(edge);
       }
-      
+
       if(index==nb_curve-1){                                  //storage of the last edge features
-	if(edge.Orientation()==TopAbs_REVERSED)
-	  Vlast=TopExp::FirstVertex(edge);
-	else
-	  Vlast=TopExp::LastVertex(edge);
+        if(edge.Orientation()==TopAbs_REVERSED)
+          Vlast=TopExp::FirstVertex(edge);
+        else
+          Vlast=TopExp::LastVertex(edge);
       }
       WExp.Next() ; 
     }
-  
+
     if (BRep_Tool::Tolerance(Vfirst)>BRep_Tool::Tolerance(Vlast)) //computation of the closing tolerance
       toler=BRep_Tool::Tolerance(Vfirst);
     else
       toler=BRep_Tool::Tolerance(Vlast);
-    
+
     Pfirst=BRep_Tool::Pnt(Vfirst);
     Plast=BRep_Tool::Pnt(Vlast); 
-    
+
     if ((Pfirst.Distance(Plast)<=toler)&&                   //C0 continuity test at the closing point
-	(GeomLProp::Continuity(tab(nb_curve-1),tab(0),Last,First0,
-			       Standard_True,Standard_True, 
-			       toler, TolAngular)>=GeomAbs_G1)) 
-      {
-	closed_tolerance =toler;                                        //if ClosedG1!=0 it will be True and
-	closed_flag = Standard_True ;
-      }                                                        //with the toler value
+      (GeomLProp::Continuity(tab(nb_curve-1),tab(0),Last,First0,
+      Standard_True,Standard_True, 
+      toler, TolAngular)>=GeomAbs_G1)) 
+    {
+      closed_tolerance =toler;                                        //if ClosedG1!=0 it will be True and
+      closed_flag = Standard_True ;
+    }                                                        //with the toler value
     Handle(TColGeom_HArray1OfBSplineCurve)  concatcurve;     //array of the concatenated curves
     Handle(TColStd_HArray1OfInteger)        ArrayOfIndices;  //array of the remining Vertex
     if (Option==GeomAbs_G1)
       GeomConvert::ConcatG1(tab,
-			    tabtolvertex,
-			    concatcurve,
-			    closed_flag,
-			    closed_tolerance) ;    //G1 concatenation
+      tabtolvertex,
+      concatcurve,
+      closed_flag,
+      closed_tolerance) ;    //G1 concatenation
     else
       GeomConvert::ConcatC1(tab,
-			    tabtolvertex,
-			    ArrayOfIndices,
-			    concatcurve,
-			    closed_flag,
-			    closed_tolerance);   //C1 concatenation
-    
+      tabtolvertex,
+      ArrayOfIndices,
+      concatcurve,
+      closed_flag,
+      closed_tolerance);   //C1 concatenation
+
     for (index=0;index<=(concatcurve->Length()-1);index++){    //building of the resulting Wire
       BRepLib_MakeEdge EdgeBuilder(concatcurve->Value(index));
       edge = EdgeBuilder.Edge();
@@ -165,63 +165,25 @@ TopoDS_Wire  BRepAlgo::ConcatenateWire(const TopoDS_Wire& W,
 
   }
   else {
-    TColGeom_Array1OfBSplineCurve tab(0,0);          //array of the wire's curve
-    TColStd_Array1OfReal tabtolvertex(0,0);          //array of the tolerance's vertex 
+
     WExp.Init(W);
-    
+
     edge = WExp.Current() ;
-    tab(0)  = GeomConvert::CurveToBSplineCurve(new      //storage in a array 
-						     Geom_TrimmedCurve(BRep_Tool::Curve(edge,L,First,Last),First,Last));
-    tab(0)->Transform(L.Transformation());
-    GeomConvert::C0BSplineToC1BSplineCurve(tab(0),Precision::Confusion());
+    const Handle(Geom_Curve)& aC = BRep_Tool::Curve(edge,L,First,Last);
+    Handle(Geom_BSplineCurve) aBS  = GeomConvert::CurveToBSplineCurve(new Geom_TrimmedCurve(aC,First,Last));
+    aBS->Transform(L.Transformation());
+    GeomConvert::C0BSplineToC1BSplineCurve(aBS, Precision::Confusion());
     if (edge.Orientation()==TopAbs_REVERSED)
-	  tab(0)->Reverse();
-    tolleft=BRep_Tool::Tolerance(TopExp::LastVertex(edge));
-    tolright=BRep_Tool::Tolerance(TopExp::FirstVertex(edge));
-    tabtolvertex(0)=Max(tolleft,tolright);
-    if(edge.Orientation()==TopAbs_REVERSED){             //(usefull for the closed wire) 
-	  Vfirst=TopExp::LastVertex(edge);
-	  Vlast=TopExp::FirstVertex(edge);
+    {
+      aBS->Reverse();
     }
-    else {
-      
-      Vfirst=TopExp::FirstVertex(edge);
-      Vlast = TopExp::LastVertex(edge) ;
-    }
-    Pfirst=BRep_Tool::Pnt(Vfirst);
-    Plast=BRep_Tool::Pnt(Vlast); 
-    if ((Pfirst.Distance(Plast)<=toler)&&                   //C0 continuity test at the closing point
-	(GeomLProp::Continuity(tab(0),tab(0),Last,First,
-			       Standard_True,Standard_True,
-			       toler, TolAngular)>=GeomAbs_G1)) 
-      {
-	closed_tolerance =toler;                                        //if ClosedG1!=0 it will be True and
-	closed_flag = Standard_True ;
-      }                                                        //with the toler value
-    Handle(TColGeom_HArray1OfBSplineCurve)  concatcurve;     //array of the concatenated curves
-    Handle(TColStd_HArray1OfInteger)        ArrayOfIndices;  //array of the remining Vertex
-    if (Option==GeomAbs_G1)
-      GeomConvert::ConcatG1(tab,
-			    tabtolvertex,
-			    concatcurve,
-			    closed_flag,
-			    closed_tolerance) ;    //G1 concatenation
-    else
-      GeomConvert::ConcatC1(tab,
-			    tabtolvertex,
-			    ArrayOfIndices,
-			    concatcurve,
-			    closed_flag,
-			    closed_tolerance);   //C1 concatenation
-    
-    for (index=0;index<=(concatcurve->Length()-1);index++){    //building of the resulting Wire
-      BRepLib_MakeEdge EdgeBuilder(concatcurve->Value(index));
-      edge = EdgeBuilder.Edge();
-      MakeResult.Add(edge);
-    } 
+
+    BRepLib_MakeEdge EdgeBuilder(aBS);
+    edge = EdgeBuilder.Edge();
+    MakeResult.Add(edge);
   }
   return MakeResult.Wire() ;  
-  
+
 }
 
 //=======================================================================
@@ -271,9 +233,6 @@ TopoDS_Edge  BRepAlgo::ConcatenateWireC0(const TopoDS_Wire& aWire)
       ElCLib::AdjustPeriodic
         (aBasisCurve->FirstParameter(), aBasisCurve->LastParameter(),
         Precision::PConfusion(), fpar, lpar);
-
-
-
     }
 
     if (CurveSeq.IsEmpty()) {
@@ -293,102 +252,102 @@ TopoDS_Edge  BRepAlgo::ConcatenateWireC0(const TopoDS_Wire& aWire)
         NewLpar = lpar;
         isSameCurve = Standard_True;
       } else if (aType == CurType &&
-                 aType != GeomAbs_BezierCurve &&
-                 aType != GeomAbs_BSplineCurve &&
-                 aType != GeomAbs_OtherCurve) {
-        switch (aType) {
-        case GeomAbs_Line:
-        {
-          gp_Lin aLine    = aGACurve.Line();
-          gp_Lin PrevLine = GAprevcurve.Line(); 
+        aType != GeomAbs_BezierCurve &&
+        aType != GeomAbs_BSplineCurve &&
+        aType != GeomAbs_OtherCurve) {
+          switch (aType) {
+          case GeomAbs_Line:
+            {
+              gp_Lin aLine    = aGACurve.Line();
+              gp_Lin PrevLine = GAprevcurve.Line(); 
 
-          if (aLine.Contains(PrevLine.Location(), LinTol) &&
-              aLine.Direction().IsParallel(PrevLine.Direction(), AngTol)) {
-            gp_Pnt P1 = ElCLib::Value(fpar, aLine);
-            gp_Pnt P2 = ElCLib::Value(lpar, aLine);
+              if (aLine.Contains(PrevLine.Location(), LinTol) &&
+                aLine.Direction().IsParallel(PrevLine.Direction(), AngTol)) {
+                  gp_Pnt P1 = ElCLib::Value(fpar, aLine);
+                  gp_Pnt P2 = ElCLib::Value(lpar, aLine);
 
-            NewFpar = ElCLib::Parameter(PrevLine, P1);
-            NewLpar = ElCLib::Parameter(PrevLine, P2);
-            isSameCurve = Standard_True;
-          }
-          break;
-        }
-        case GeomAbs_Circle:
-        {
-          gp_Circ aCircle    = aGACurve.Circle();
-          gp_Circ PrevCircle = GAprevcurve.Circle();
+                  NewFpar = ElCLib::Parameter(PrevLine, P1);
+                  NewLpar = ElCLib::Parameter(PrevLine, P2);
+                  isSameCurve = Standard_True;
+              }
+              break;
+            }
+          case GeomAbs_Circle:
+            {
+              gp_Circ aCircle    = aGACurve.Circle();
+              gp_Circ PrevCircle = GAprevcurve.Circle();
 
-          if (aCircle.Location().Distance(PrevCircle.Location()) <= LinTol &&
-              Abs(aCircle.Radius() - PrevCircle.Radius()) <= LinTol &&
-              aCircle.Axis().IsParallel(PrevCircle.Axis(), AngTol)) {
-            gp_Pnt P1 = ElCLib::Value(fpar, aCircle);
-            gp_Pnt P2 = ElCLib::Value(lpar, aCircle);
+              if (aCircle.Location().Distance(PrevCircle.Location()) <= LinTol &&
+                Abs(aCircle.Radius() - PrevCircle.Radius()) <= LinTol &&
+                aCircle.Axis().IsParallel(PrevCircle.Axis(), AngTol)) {
+                  gp_Pnt P1 = ElCLib::Value(fpar, aCircle);
+                  gp_Pnt P2 = ElCLib::Value(lpar, aCircle);
 
-            NewFpar = ElCLib::Parameter(PrevCircle, P1);
-            NewLpar = ElCLib::Parameter(PrevCircle, P2);
-            isSameCurve = Standard_True;
-          }
-          break;
-        }
-        case GeomAbs_Ellipse:
-        {
-          gp_Elips anEllipse   = aGACurve.Ellipse();
-          gp_Elips PrevEllipse = GAprevcurve.Ellipse();
+                  NewFpar = ElCLib::Parameter(PrevCircle, P1);
+                  NewLpar = ElCLib::Parameter(PrevCircle, P2);
+                  isSameCurve = Standard_True;
+              }
+              break;
+            }
+          case GeomAbs_Ellipse:
+            {
+              gp_Elips anEllipse   = aGACurve.Ellipse();
+              gp_Elips PrevEllipse = GAprevcurve.Ellipse();
 
-          if (anEllipse.Focus1().Distance(PrevEllipse.Focus1()) <= LinTol &&
-              anEllipse.Focus2().Distance(PrevEllipse.Focus2()) <= LinTol &&
-              Abs(anEllipse.MajorRadius() - PrevEllipse.MajorRadius()) <= LinTol &&
-              Abs(anEllipse.MinorRadius() - PrevEllipse.MinorRadius()) <= LinTol &&
-              anEllipse.Axis().IsParallel(PrevEllipse.Axis(), AngTol)) {
-            gp_Pnt P1 = ElCLib::Value(fpar, anEllipse);
-            gp_Pnt P2 = ElCLib::Value(lpar, anEllipse);
+              if (anEllipse.Focus1().Distance(PrevEllipse.Focus1()) <= LinTol &&
+                anEllipse.Focus2().Distance(PrevEllipse.Focus2()) <= LinTol &&
+                Abs(anEllipse.MajorRadius() - PrevEllipse.MajorRadius()) <= LinTol &&
+                Abs(anEllipse.MinorRadius() - PrevEllipse.MinorRadius()) <= LinTol &&
+                anEllipse.Axis().IsParallel(PrevEllipse.Axis(), AngTol)) {
+                  gp_Pnt P1 = ElCLib::Value(fpar, anEllipse);
+                  gp_Pnt P2 = ElCLib::Value(lpar, anEllipse);
 
-            NewFpar = ElCLib::Parameter(PrevEllipse, P1);
-            NewLpar = ElCLib::Parameter(PrevEllipse, P2);
-            isSameCurve = Standard_True;
-          }
-          break;
-        }
-        case GeomAbs_Hyperbola:
-        {
-          gp_Hypr aHypr    = aGACurve.Hyperbola();
-          gp_Hypr PrevHypr = GAprevcurve.Hyperbola();
+                  NewFpar = ElCLib::Parameter(PrevEllipse, P1);
+                  NewLpar = ElCLib::Parameter(PrevEllipse, P2);
+                  isSameCurve = Standard_True;
+              }
+              break;
+            }
+          case GeomAbs_Hyperbola:
+            {
+              gp_Hypr aHypr    = aGACurve.Hyperbola();
+              gp_Hypr PrevHypr = GAprevcurve.Hyperbola();
 
-          if (aHypr.Focus1().Distance(PrevHypr.Focus1()) <= LinTol &&
-              aHypr.Focus2().Distance(PrevHypr.Focus2()) <= LinTol &&
-              Abs(aHypr.MajorRadius() - PrevHypr.MajorRadius()) <= LinTol &&
-              Abs(aHypr.MinorRadius() - PrevHypr.MinorRadius()) <= LinTol &&
-              aHypr.Axis().IsParallel(PrevHypr.Axis(), AngTol)) {
-            gp_Pnt P1 = ElCLib::Value(fpar, aHypr);
-            gp_Pnt P2 = ElCLib::Value(lpar, aHypr);
+              if (aHypr.Focus1().Distance(PrevHypr.Focus1()) <= LinTol &&
+                aHypr.Focus2().Distance(PrevHypr.Focus2()) <= LinTol &&
+                Abs(aHypr.MajorRadius() - PrevHypr.MajorRadius()) <= LinTol &&
+                Abs(aHypr.MinorRadius() - PrevHypr.MinorRadius()) <= LinTol &&
+                aHypr.Axis().IsParallel(PrevHypr.Axis(), AngTol)) {
+                  gp_Pnt P1 = ElCLib::Value(fpar, aHypr);
+                  gp_Pnt P2 = ElCLib::Value(lpar, aHypr);
 
-            NewFpar = ElCLib::Parameter(PrevHypr, P1);
-            NewLpar = ElCLib::Parameter(PrevHypr, P2);
-            isSameCurve = Standard_True;
-          }
-          break;
-        }
-        case GeomAbs_Parabola:
-        {
-          gp_Parab aParab    = aGACurve.Parabola();
-          gp_Parab PrevParab = GAprevcurve.Parabola();
+                  NewFpar = ElCLib::Parameter(PrevHypr, P1);
+                  NewLpar = ElCLib::Parameter(PrevHypr, P2);
+                  isSameCurve = Standard_True;
+              }
+              break;
+            }
+          case GeomAbs_Parabola:
+            {
+              gp_Parab aParab    = aGACurve.Parabola();
+              gp_Parab PrevParab = GAprevcurve.Parabola();
 
-          if (aParab.Location().Distance(PrevParab.Location()) <= LinTol &&
-              aParab.Focus().Distance(PrevParab.Focus()) <= LinTol &&
-              Abs(aParab.Focal() - PrevParab.Focal()) <= LinTol &&
-              aParab.Axis().IsParallel(PrevParab.Axis(), AngTol)) {
-            gp_Pnt P1 = ElCLib::Value(fpar, aParab);
-            gp_Pnt P2 = ElCLib::Value(lpar, aParab);
+              if (aParab.Location().Distance(PrevParab.Location()) <= LinTol &&
+                aParab.Focus().Distance(PrevParab.Focus()) <= LinTol &&
+                Abs(aParab.Focal() - PrevParab.Focal()) <= LinTol &&
+                aParab.Axis().IsParallel(PrevParab.Axis(), AngTol)) {
+                  gp_Pnt P1 = ElCLib::Value(fpar, aParab);
+                  gp_Pnt P2 = ElCLib::Value(lpar, aParab);
 
-            NewFpar = ElCLib::Parameter(PrevParab, P1);
-            NewLpar = ElCLib::Parameter(PrevParab, P2);
-            isSameCurve = Standard_True;
-          }
-          break;
-        }
-        default:
-          break;
-        } //end of switch
+                  NewFpar = ElCLib::Parameter(PrevParab, P1);
+                  NewLpar = ElCLib::Parameter(PrevParab, P2);
+                  isSameCurve = Standard_True;
+              }
+              break;
+            }
+          default:
+            break;
+          } //end of switch
       } //end of else
 
       if (isSameCurve) {
@@ -466,7 +425,7 @@ TopoDS_Edge  BRepAlgo::ConcatenateWireC0(const TopoDS_Wire& aWire)
   FirstVtx_final.Orientation(TopAbs_FORWARD);
   TopoDS_Vertex LastVtx_final = (isReverse)? FirstVertex : LastVertex;
   LastVtx_final.Orientation(TopAbs_REVERSED);
-  
+
   if (CurveSeq.IsEmpty())
     return ResEdge;
 
@@ -477,87 +436,87 @@ TopoDS_Edge  BRepAlgo::ConcatenateWireC0(const TopoDS_Wire& aWire)
   Standard_Integer i;
 
   if (nb_curve > 1)
+  {
+    for (i = 1; i <= nb_curve; i++)
     {
-      for (i = 1; i <= nb_curve; i++)
-	{
-	  if (CurveSeq(i)->IsInstance(STANDARD_TYPE(Geom_TrimmedCurve)))
-	    CurveSeq(i) = (*((Handle(Geom_TrimmedCurve)*)&(CurveSeq(i))))->BasisCurve();
-	  
-	  Handle(Geom_TrimmedCurve) aTrCurve = new Geom_TrimmedCurve(CurveSeq(i), FparSeq(i), LparSeq(i));
-	  tab(i-1) = GeomConvert::CurveToBSplineCurve(aTrCurve);
-	  GeomConvert::C0BSplineToC1BSplineCurve(tab(i-1), Precision::Confusion());
+      if (CurveSeq(i)->IsInstance(STANDARD_TYPE(Geom_TrimmedCurve)))
+        CurveSeq(i) = (*((Handle(Geom_TrimmedCurve)*)&(CurveSeq(i))))->BasisCurve();
 
-          if (!IsFwdSeq(i)) {
-	    tab(i-1)->Reverse();
-          }
-	  
-	  //Temporary
-	  //char* name = new char[100];
-	  //sprintf(name, "c%d", i);
-	  //DrawTrSurf::Set(name, tab(i-1));
-	  
-	  if (i > 1)
-	    tabtolvertex(i-2) = TolSeq(i-1) * 5.;
-	}
-      tabtolvertex(nb_curve-1) = TolSeq(TolSeq.Length()) * 5.;
-      
-      Standard_Boolean closed_flag = Standard_False;
-      Standard_Real closed_tolerance = 0.;
-      if (FirstVertex.IsSame(LastVertex) &&
-	  GeomLProp::Continuity(tab(0), tab(nb_curve-1),
-				tab(0)->FirstParameter(),
-				tab(nb_curve-1)->LastParameter(),
-				Standard_False, Standard_False, LinTol, AngTol) >= GeomAbs_G1)
-	{
-	  closed_flag = Standard_True ;
-	  closed_tolerance = BRep_Tool::Tolerance(FirstVertex);
-	}
-      
-      Handle(TColGeom_HArray1OfBSplineCurve)  concatcurve;     //array of the concatenated curves
-      Handle(TColStd_HArray1OfInteger)        ArrayOfIndices;  //array of the remining Vertex
-      GeomConvert::ConcatC1(tab,
-			    tabtolvertex,
-			    ArrayOfIndices,
-			    concatcurve,
-			    closed_flag,
-			    closed_tolerance);   //C1 concatenation
+      Handle(Geom_TrimmedCurve) aTrCurve = new Geom_TrimmedCurve(CurveSeq(i), FparSeq(i), LparSeq(i));
+      tab(i-1) = GeomConvert::CurveToBSplineCurve(aTrCurve);
+      GeomConvert::C0BSplineToC1BSplineCurve(tab(i-1), Precision::Confusion());
 
-      if (concatcurve->Length() > 1)
-	{
-          Standard_Real MaxTolVer = LinTol;
-          for (i = 1; i <= TolSeq.Length(); i++)
-            if (TolSeq(i) > MaxTolVer)
-              MaxTolVer = TolSeq(i);
-          MaxTolVer *= 5.;
-          
-	  GeomConvert_CompCurveToBSplineCurve Concat(concatcurve->Value(concatcurve->Lower()));
-	  
-	  for (i = concatcurve->Lower()+1; i <= concatcurve->Upper(); i++)
-	    Concat.Add( concatcurve->Value(i), MaxTolVer, Standard_True );
-	  
-	  concatcurve->SetValue(concatcurve->Lower(), Concat.BSplineCurve());
-	}
+      if (!IsFwdSeq(i)) {
+        tab(i-1)->Reverse();
+      }
 
-      ResEdge = BRepLib_MakeEdge(concatcurve->Value(concatcurve->Lower()),
-				 FirstVtx_final, LastVtx_final,
-                                 concatcurve->Value(concatcurve->Lower())->FirstParameter(),
-                                 concatcurve->Value(concatcurve->Lower())->LastParameter());
+      //Temporary
+      //char* name = new char[100];
+      //sprintf(name, "c%d", i);
+      //DrawTrSurf::Set(name, tab(i-1));
+
+      if (i > 1)
+        tabtolvertex(i-2) = TolSeq(i-1) * 5.;
     }
+    tabtolvertex(nb_curve-1) = TolSeq(TolSeq.Length()) * 5.;
+
+    Standard_Boolean closed_flag = Standard_False;
+    Standard_Real closed_tolerance = 0.;
+    if (FirstVertex.IsSame(LastVertex) &&
+      GeomLProp::Continuity(tab(0), tab(nb_curve-1),
+      tab(0)->FirstParameter(),
+      tab(nb_curve-1)->LastParameter(),
+      Standard_False, Standard_False, LinTol, AngTol) >= GeomAbs_G1)
+    {
+      closed_flag = Standard_True ;
+      closed_tolerance = BRep_Tool::Tolerance(FirstVertex);
+    }
+
+    Handle(TColGeom_HArray1OfBSplineCurve)  concatcurve;     //array of the concatenated curves
+    Handle(TColStd_HArray1OfInteger)        ArrayOfIndices;  //array of the remining Vertex
+    GeomConvert::ConcatC1(tab,
+      tabtolvertex,
+      ArrayOfIndices,
+      concatcurve,
+      closed_flag,
+      closed_tolerance);   //C1 concatenation
+
+    if (concatcurve->Length() > 1)
+    {
+      Standard_Real MaxTolVer = LinTol;
+      for (i = 1; i <= TolSeq.Length(); i++)
+        if (TolSeq(i) > MaxTolVer)
+          MaxTolVer = TolSeq(i);
+      MaxTolVer *= 5.;
+
+      GeomConvert_CompCurveToBSplineCurve Concat(concatcurve->Value(concatcurve->Lower()));
+
+      for (i = concatcurve->Lower()+1; i <= concatcurve->Upper(); i++)
+        Concat.Add( concatcurve->Value(i), MaxTolVer, Standard_True );
+
+      concatcurve->SetValue(concatcurve->Lower(), Concat.BSplineCurve());
+    }
+
+    ResEdge = BRepLib_MakeEdge(concatcurve->Value(concatcurve->Lower()),
+      FirstVtx_final, LastVtx_final,
+      concatcurve->Value(concatcurve->Lower())->FirstParameter(),
+      concatcurve->Value(concatcurve->Lower())->LastParameter());
+  }
   else
-    {
-      if (CurveSeq(1)->IsInstance(STANDARD_TYPE(Geom_TrimmedCurve)))
-	CurveSeq(1) = (*((Handle(Geom_TrimmedCurve)*)&(CurveSeq(1))))->BasisCurve();
+  {
+    if (CurveSeq(1)->IsInstance(STANDARD_TYPE(Geom_TrimmedCurve)))
+      CurveSeq(1) = (*((Handle(Geom_TrimmedCurve)*)&(CurveSeq(1))))->BasisCurve();
 
-      Handle(Geom_Curve) aCopyCurve =
-          Handle(Geom_Curve)::DownCast(CurveSeq(1)->Copy());
+    Handle(Geom_Curve) aCopyCurve =
+      Handle(Geom_Curve)::DownCast(CurveSeq(1)->Copy());
 
-      ResEdge = BRepLib_MakeEdge(aCopyCurve,
-				 FirstVtx_final, LastVtx_final,
-				 FparSeq(1), LparSeq(1));
-    }
+    ResEdge = BRepLib_MakeEdge(aCopyCurve,
+      FirstVtx_final, LastVtx_final,
+      FparSeq(1), LparSeq(1));
+  }
 
   if (isReverse)
     ResEdge.Reverse();
-  
+
   return ResEdge;
 }
