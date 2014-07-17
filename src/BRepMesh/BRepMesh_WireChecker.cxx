@@ -194,7 +194,7 @@ void BRepMesh_WireChecker::ReCompute(BRepMeshCol::HClassifier& theClassifier)
   if (!collectDiscretizedWires(aDWires))
     return;
 
-  const Standard_Integer aNbWires = aDWires.size();
+  const Standard_Integer aNbWires = (Standard_Integer)aDWires.size();
 
   BRepMeshCol::Array1OfSegmentsTree aWiresBiPoints(aNbWires);
   fillSegmentsTree(aDWires, aWiresBiPoints);
@@ -356,14 +356,14 @@ Standard_Boolean BRepMesh_WireChecker::collectDiscretizedWires(
 
 //=======================================================================
 //function : fillSegmentsTree
-//purpose  : 
+//purpose  :
 //=======================================================================
 void BRepMesh_WireChecker::fillSegmentsTree(
-  const SeqOfDWires&                 theDWires, 
+  const SeqOfDWires&                 theDWires,
   BRepMeshCol::Array1OfSegmentsTree& theWiresSegmentsTree)
 {
-  const Standard_Integer aNbWires = theDWires.size();
-  for (Standard_Integer aWireIt = 0; aWireIt < aNbWires; ++aWireIt)
+  const size_t aNbWires = theDWires.size();
+  for (size_t aWireIt = 0; aWireIt < aNbWires; ++aWireIt)
   {
     const SeqOfPnt2d&      aWire    = theDWires[aWireIt];
     const Standard_Integer aWireLen = aWire.Size();

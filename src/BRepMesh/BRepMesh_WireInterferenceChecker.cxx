@@ -23,16 +23,16 @@ static const Standard_Real MIN_LOOP_S = 2 * M_PI * 2.E-5;
 #ifdef HAVE_TBB
 //=======================================================================
 //function : Constructor
-//purpose  : 
+//purpose  :
 //=======================================================================
 BRepMesh_WireInterferenceChecker::BRepMesh_WireInterferenceChecker(
   const std::vector<BRepMeshCol::SegmentsTree>& theWires,
   BRepMesh_Status*                              theStatus,
   Standard_Mutex*                               theMutex)
-  : myWires(&theWires.front()),
-    myWiresNb(theWires.size()),
-    myStatus(theStatus),
-    myMutex(theMutex)
+: myWires   (&theWires.front()),
+  myWiresNb ((Standard_Integer)theWires.size()),
+  myStatus  (theStatus),
+  myMutex   (theMutex)
 {
 }
 
@@ -52,11 +52,11 @@ void BRepMesh_WireInterferenceChecker::operator ()(
 //purpose  : 
 //=======================================================================
 BRepMesh_WireInterferenceChecker::BRepMesh_WireInterferenceChecker(
-  const std::vector<BRepMesh_WireChecker::SegmentsTree>& theWires,
-  BRepMesh_Status*                                       theStatus)
-  : myWires(&theWires.front()),
-    myWiresNb(theWires.size()),
-    myStatus(theStatus)
+  const std::vector<BRepMeshCol::SegmentsTree>& theWires,
+  BRepMesh_Status*                              theStatus)
+: myWires   (&theWires.front()),
+  myWiresNb ((Standard_Integer)theWires.size()),
+  myStatus  (theStatus)
 {
 }
 #endif
@@ -74,7 +74,7 @@ void BRepMesh_WireInterferenceChecker::operator ()(
   const BRepMeshCol::SegmentsTree&  aWireSegTree1  = myWires[theWireId];
   const BRepMeshCol::Segment*       aWireSegments1 = &aWireSegTree1.first->front();
   const BRepMeshCol::HBndBox2dTree& aWireBoxTree1  = aWireSegTree1.second;
-  const Standard_Integer aWireLen1 = aWireSegTree1.first->size();
+  const Standard_Integer aWireLen1 = (Standard_Integer)aWireSegTree1.first->size();
 
   for (Standard_Integer aWireIt = theWireId; aWireIt < myWiresNb; ++aWireIt)
   {
@@ -91,7 +91,7 @@ void BRepMesh_WireInterferenceChecker::operator ()(
     const BRepMeshCol::Segment*       aWireSegments2 = &aWireSegTree2.first->front();
     const BRepMeshCol::HBndBox2dTree& aWireBoxTree2  = aWireSegTree2.second;
 
-    BRepMesh_WireChecker::BndBox2dTreeSelector aSelector(aWireSegTree2.first->size());
+    BRepMesh_WireChecker::BndBox2dTreeSelector aSelector ((Standard_Integer)aWireSegTree2.first->size());
     for (Standard_Integer aSegmentId1 = 0; aSegmentId1 < aWireLen1; ++aSegmentId1)
     {
 #ifdef HAVE_TBB

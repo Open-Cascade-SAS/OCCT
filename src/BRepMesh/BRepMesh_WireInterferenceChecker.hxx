@@ -61,8 +61,8 @@ public:
   //! \param theWires wires that should be checked.
   //! \param theStatus shared flag to set status of the check.
   BRepMesh_WireInterferenceChecker(
-    const std::vector<BRepMesh_WireChecker::SegmentsTree>& theWires,
-    BRepMesh_Status*                                       theStatus);
+    const std::vector<BRepMeshCol::SegmentsTree>& theWires,
+    BRepMesh_Status*                              theStatus);
 #endif
 
   //! Checker's body.
