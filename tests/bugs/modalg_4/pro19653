@@ -1,5 +1,5 @@
 puts "TODO OCC12345 ALL: Faulty : TEST FAILED"
-puts "TODO OCC12345 ALL: Error : The length of result shape is"
+#puts "TODO OCC12345 ALL: Error : The length of result shape is"
 
 puts "============"
 puts "PRO19653"
