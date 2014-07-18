@@ -22,6 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(User_Cylinder,AIS_InteractiveObject)
 #include <Aspect_Array1OfEdge.hxx>
 #include <Quantity_Color.hxx>
 #include <BRepMesh_IncrementalMesh.hxx>
+#include <Prs3d.hxx>
 
 #include <AIS_GraphicTool.hxx>
 
@@ -107,7 +108,7 @@ case 6: //color
     mygroup->SetPrimitivesAspect(myAspect);
     myAspect->SetEdgeOn();
 
-    myDeflection = AIS_Shape::GetDeflection(myShape,myDrawer);
+    myDeflection = Prs3d::GetDeflection(myShape,myDrawer);
     BRepMesh_IncrementalMesh(myShape,myDeflection);
 
     myX1OnOff = Standard_False;
