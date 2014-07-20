@@ -1192,14 +1192,8 @@ is
 
 fields
 
---
--- Classe: Visual3d_View
---
--- Purpose: Declaration of the variables specific to views.
---
--- Reminder: A view is defined by:
--- - a ViewManager
--- - a ContextView
+  -- the ViewManager associated with the view
+  myViewManager : ViewManagerPtr from Visual3d;
 
   -- the associated C structure
   MyCView   : CView from Graphic3d;
@@ -1211,11 +1205,12 @@ fields
   MyWindow  : Window from Aspect;
 
   -- association Structure_COMPUTE and Structure_Computed
-  MyTOCOMPUTESequence : SequenceOfStructure from Graphic3d;
-  MyCOMPUTEDSequence  : SequenceOfStructure from Graphic3d;
+  myStructsToCompute  : SequenceOfStructure from Graphic3d;
+  myStructsComputed   : SequenceOfStructure from Graphic3d;
+  myIsInComputedMode  : Boolean from Standard;
 
   -- the graphic driver used
-  MyGraphicDriver : GraphicDriver from Graphic3d;
+  myGraphicDriver : GraphicDriver from Graphic3d;
 
   -- the background of the associated window
   MyBackground    : Background from Aspect;
@@ -1224,15 +1219,8 @@ fields
   MyGradientBackground  : GradientBackground from Aspect;
 
   -- the displayed structures in the view
-  MyDisplayedStructure  : MapOfStructure from Graphic3d;
-
+  myStructsDisplayed    : MapOfStructure from Graphic3d;
   myImmediateStructures : MapOfStructure from Graphic3d;
-
-  -- the ViewManager associated with the view
-  MyPtrViewManager : ViewManagerPtr from Visual3d;
-
-  -- Booleans
-  MyCBitFields     : CBitFields8 from Graphic3d;
 
   MyGTrihedron     : CGraduatedTrihedron from Graphic3d;
 

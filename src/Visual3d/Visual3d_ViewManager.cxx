@@ -56,7 +56,6 @@
 
 // for the class
 #include <Visual3d_ViewManager.ixx>
-#include <Visual3d_ViewManager.pxx>
 
 #include <Standard_ErrorHandler.hxx>
 
@@ -76,17 +75,9 @@
 # include <Xw_Window.hxx>
 #endif
 
-//-Aliases
-
-//-Global data definitions
-
-//	-- les vues definies
-//	MyDefinedView		:	SequenceOfView;
-
-//	-- le generateur d'identificateurs de vues
-//	MyViewGenId		: 	GenId;
-
-//-Constructors
+// views identifiers : possible range
+#define View_IDMIN	1
+#define View_IDMAX	10000
 
 Visual3d_ViewManager::Visual3d_ViewManager (const Handle(Graphic3d_GraphicDriver)& theDriver):
 Graphic3d_StructureManager (theDriver),
