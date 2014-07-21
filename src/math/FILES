@@ -11,3 +11,8 @@ math_IntegerVector.cxx
 math_SingleTab.hxx
 math_GlobOptMin.hxx
 math_GlobOptMin.cxx
+math_PSO.hxx
+math_PSO.cxx
+math_BullardGenerator.hxx
+math_PSOParticlesPool.hxx
+math_PSOParticlesPool.cxx

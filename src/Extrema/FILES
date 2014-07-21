@@ -1,3 +1,5 @@
 Extrema_HUBTreeOfSphere.hxx
 Extrema_GlobOptFuncCC.hxx
 Extrema_GlobOptFuncCC.cxx
+Extrema_GlobOptFuncCS.hxx
+Extrema_GlobOptFuncCS.cxx

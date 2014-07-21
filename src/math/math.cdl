@@ -52,6 +52,9 @@ is
     deferred class FunctionSet;
     deferred class FunctionSetWithDerivatives;
     imported GlobOptMin;
+    imported PSO;
+    imported PSOParticlesPool;
+    imported BullardGenerator;
     class IntegerRandom;
     class Gauss;
     class GaussLeastSquare;

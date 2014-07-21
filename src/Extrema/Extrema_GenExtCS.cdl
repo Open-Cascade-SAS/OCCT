@@ -22,7 +22,7 @@ class   GenExtCS from Extrema
 
 uses  POnSurf       from Extrema,
       POnCurv       from Extrema,
-    	Pnt           from gp,
+      Pnt           from gp,
       HArray1OfPnt  from TColgp,
       HArray2OfPnt  from TColgp,
       FuncExtCS     from Extrema,
@@ -139,17 +139,15 @@ is
 fields
     myDone     : Boolean;
     myInit     : Boolean;
-    mytmin    : Real;
-    mytsup    : Real;
-    myumin    : Real;
-    myusup    : Real;
-    myvmin    : Real;
-    myvsup    : Real;
+    mytmin     : Real;
+    mytsup     : Real;
+    myumin     : Real;
+    myusup     : Real;
+    myvmin     : Real;
+    myvsup     : Real;
     mytsample  : Integer;
     myusample  : Integer;
     myvsample  : Integer;
-    mypoints1  : HArray1OfPnt from TColgp;
-    mypoints2  : HArray2OfPnt from TColgp;
     mytol1     : Real;
     mytol2     : Real;
     myF        : FuncExtCS from Extrema;
