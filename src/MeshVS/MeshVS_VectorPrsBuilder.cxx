@@ -19,6 +19,8 @@
 
 #include <Graphic3d_ArrayOfPolylines.hxx>
 #include <Graphic3d_ArrayOfPolygons.hxx>
+#include <Graphic3d_ArrayOfSegments.hxx>
+#include <Graphic3d_ArrayOfTriangles.hxx>
 #include <Graphic3d_ArrayOfTriangleFans.hxx>
 #include <Graphic3d_MaterialAspect.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
@@ -225,20 +227,13 @@ void MeshVS_VectorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
     return;
 
   // polylines
-  Standard_Integer aNbVertices         = aNbVectors  * NB_VERTICES;
-  Standard_Integer aNbBounds           = aNbVectors  * NB_BOUNDS;
+  Standard_Integer aNbVertices = aNbVectors  * NB_VERTICES;
 
-  // fans
-  Standard_Integer aNbTriangleVertices = aNbVectors  * (NB_TRIANGLES + 2);
-  Standard_Integer aNbFans             = aNbVectors  * NB_TRIANGLES;
+  Handle(Graphic3d_ArrayOfPrimitives) aLineArray = new Graphic3d_ArrayOfSegments (aNbVertices);
+  Handle(Graphic3d_ArrayOfPrimitives) aArrowLineArray = new Graphic3d_ArrayOfSegments (aNbVertices);
 
-  Handle(Graphic3d_ArrayOfPrimitives) aLineArray =
-    new Graphic3d_ArrayOfPolylines(aNbVertices, aNbBounds);
-  Handle(Graphic3d_ArrayOfPrimitives) aArrowLineArray =
-    new Graphic3d_ArrayOfPolylines(aNbVertices, aNbBounds);
-
-  Handle(Graphic3d_ArrayOfTriangleFans) aTriangleArray =
-    new Graphic3d_ArrayOfTriangleFans(aNbTriangleVertices, aNbFans);
+  Handle(Graphic3d_ArrayOfPrimitives) aTriangleArray = new Graphic3d_ArrayOfSegments (
+    aNbVectors * 8 /* vertices per arrow */, aNbVectors * 12 /* segments per arrow */ * 2 /* indices per segment */);
 
   TColgp_Array1OfPnt anArrowPnt(1,8);
   Standard_Real k, b, aMaxValue, aMinValue, aValue, X, Y, Z;
@@ -261,7 +256,7 @@ void MeshVS_VectorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
 
   TColStd_PackedMapOfInteger aCustomElements;
 
-  // subtract the hidden elements and ids to exclude (to minimise allocated memory)
+  // subtract the hidden elements and ids to exclude (to minimize allocated memory)
   TColStd_PackedMapOfInteger anIDs;
   anIDs.Assign( IDs );
   if ( IsElement )
@@ -338,17 +333,10 @@ void MeshVS_VectorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
 
   if ( !myIsSimplePrs )
   {
-    Graphic3d_MaterialAspect aMatAspect;
-    aMatAspect.SetAmbient( 1 );
-    aMatAspect.SetDiffuse( 0 );
-    aMatAspect.SetEmissive( 0 );
-    aMatAspect.SetShininess( 1 );
-    aMatAspect.SetSpecular( 0 );
-    Handle(Graphic3d_AspectFillArea3d) aFillAspect =
-      new Graphic3d_AspectFillArea3d (Aspect_IS_HOLLOW, aColor, aColor, Aspect_TOL_SOLID,
-                                      1., aMatAspect, aMatAspect );
+    Handle(Graphic3d_AspectLine3d) anArrowLinAspect =
+      new Graphic3d_AspectLine3d (aColor, Aspect_TOL_SOLID, mySimpleWidthPrm);
 
-    aVGroup->SetPrimitivesAspect( aFillAspect );
+    aVGroup->SetPrimitivesAspect( anArrowLinAspect );
     aVGroup->AddPrimitiveArray( aTriangleArray );
   }
   else
@@ -369,58 +357,68 @@ void MeshVS_VectorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
 // Purpose : Fill arrays of primitives for drawing force
 //=======================================================================
 void MeshVS_VectorPrsBuilder::DrawVector ( const gp_Trsf& theTrsf,
-                                           const Standard_Real Length,
-                                           const Standard_Real MaxLength,
-                                           const TColgp_Array1OfPnt& ArrowPoints,
-                                           const Handle(Graphic3d_ArrayOfPrimitives)& Lines,
-                                           const Handle(Graphic3d_ArrayOfPrimitives)& ArrowLines,
-                                           const Handle(Graphic3d_ArrayOfPrimitives)& Triangles) const
+                                           const Standard_Real theLength,
+                                           const Standard_Real theMaxLength,
+                                           const TColgp_Array1OfPnt& theArrowPoints,
+                                           const Handle(Graphic3d_ArrayOfPrimitives)& theLines,
+                                           const Handle(Graphic3d_ArrayOfPrimitives)& theArrowLines,
+                                           const Handle(Graphic3d_ArrayOfPrimitives)& theTriangles) const
 {
   const int PntNum = 8;
 
-  const Standard_Real aMinLength = MaxLength * ( 1 - mySimpleStartPrm );
-  const Standard_Real aLocalLength = ( !myIsSimplePrs || Length > aMinLength ? Length : aMinLength );
+  const Standard_Real aMinLength = theMaxLength * ( 1 - mySimpleStartPrm );
+  const Standard_Real aLocalLength = ( !myIsSimplePrs || theLength > aMinLength ? theLength : aMinLength );
   // draw line
   gp_Pnt aLinePnt[ 2 ] = { gp_Pnt( 0, 0, 0 ) , gp_Pnt( 0, 0, aLocalLength ) };
-  theTrsf.Transforms( aLinePnt[ 0 ].ChangeCoord() );
-  theTrsf.Transforms( aLinePnt[ 1 ].ChangeCoord() );
+  theTrsf.Transforms (aLinePnt[0].ChangeCoord());
+  theTrsf.Transforms (aLinePnt[1].ChangeCoord());
 
-  Lines->AddBound( 2 );
-  Lines->AddVertex( aLinePnt[ 0 ] );
-  Lines->AddVertex( aLinePnt[ 1 ] );
+  theLines->AddVertex (aLinePnt[0]);
+  theLines->AddVertex (aLinePnt[1]);
 
   // draw arrow
-  if ( !myIsSimplePrs )
+  if (!myIsSimplePrs)
   {
-    Standard_Integer l = ArrowPoints.Lower(),
-                     u = ArrowPoints.Upper(),
-                     i;
-    if ( u-l < PntNum-1 )
+    Standard_Integer aLower = theArrowPoints.Lower(),
+                     aUpper = theArrowPoints.Upper();
+
+    if (aUpper - aLower < PntNum - 1)
       return;
 
-    TColgp_Array1OfPnt anArrowPnt( l, u );
-    for ( i = l; i < l+PntNum; i++ )
+    TColgp_Array1OfPnt anArrowPnt (aLower, aUpper);
+    for (Standard_Integer aPntIdx = aLower; aPntIdx < aLower + PntNum; ++aPntIdx)
     {
-      anArrowPnt( i ).ChangeCoord() = ArrowPoints ( i ).Coord() + gp_XYZ( 0, 0, aLocalLength );
-      theTrsf.Transforms( anArrowPnt( i ).ChangeCoord() );
+      anArrowPnt (aPntIdx).ChangeCoord() = theArrowPoints (aPntIdx).Coord() + gp_XYZ (0, 0, aLocalLength);
+      theTrsf.Transforms (anArrowPnt (aPntIdx).ChangeCoord());
     }
 
-    Triangles->AddBound(8);
-    for ( i = 0; i < PntNum; i++ )
-      Triangles->AddVertex( anArrowPnt( l+i ) );
+    const Standard_Integer aVrtOffset = theTriangles->VertexNumber() + 1;
+
+    for (Standard_Integer aPntIdx = 0; aPntIdx < PntNum; ++aPntIdx)
+    {
+      theTriangles->AddVertex (anArrowPnt (aLower + aPntIdx));
+    }
+
+    for (Standard_Integer aPntIdx = 1; aPntIdx <= PntNum - 2; ++aPntIdx)
+    {
+      theTriangles->AddEdge (aVrtOffset);
+      theTriangles->AddEdge (aVrtOffset + aPntIdx);
+
+      theTriangles->AddEdge (aVrtOffset + aPntIdx);
+      theTriangles->AddEdge (aVrtOffset + aPntIdx + 1);
+    }
   }
   else
   {
-    const Standard_Real aEndPos = aLocalLength - MaxLength * ( 1 - mySimpleEndPrm );
-    const Standard_Real aArrowLength = MaxLength * ( mySimpleEndPrm - mySimpleStartPrm );
+    const Standard_Real aEndPos = aLocalLength - theMaxLength * ( 1 - mySimpleEndPrm );
+    const Standard_Real aArrowLength = theMaxLength * ( mySimpleEndPrm - mySimpleStartPrm );
     gp_Pnt aArrowPnt[ 2 ] = { gp_Pnt( 0, 0, aEndPos - aArrowLength ),
                               gp_Pnt( 0, 0, aEndPos ) };
-    theTrsf.Transforms( aArrowPnt[ 0 ].ChangeCoord() );
-    theTrsf.Transforms( aArrowPnt[ 1 ].ChangeCoord() );
+    theTrsf.Transforms (aArrowPnt[0].ChangeCoord());
+    theTrsf.Transforms (aArrowPnt[1].ChangeCoord());
 
-    ArrowLines->AddBound( 2 );
-    ArrowLines->AddVertex( aArrowPnt[ 0 ] );
-    ArrowLines->AddVertex( aArrowPnt[ 1 ] );
+    theArrowLines->AddVertex (aArrowPnt[0]);
+    theArrowLines->AddVertex (aArrowPnt[1]);
   }
 }
 

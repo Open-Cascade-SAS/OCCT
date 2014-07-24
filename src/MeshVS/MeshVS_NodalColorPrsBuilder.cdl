@@ -35,17 +35,21 @@ uses
   Boolean                 from Standard,
   Integer                 from Standard,
 
-  DisplayModeFlags        from MeshVS,
-  Mesh                    from MeshVS,
-  MeshPtr                 from MeshVS,
-  DataSource              from MeshVS,
-  DataMapOfIntegerColor   from MeshVS,
-  BuilderPriority         from MeshVS,
-  SequenceOfColor         from Aspect,
-  Color                   from Quantity,
-  DataMapOfIntegerReal    from TColStd,
-  Texture2D               from Graphic3d,
-  PackedMapOfInteger      from TColStd
+  DisplayModeFlags           from MeshVS,
+  Mesh                       from MeshVS,
+  MeshPtr                    from MeshVS,
+  DataSource                 from MeshVS,
+  DataMapOfIntegerColor      from MeshVS,
+  BuilderPriority            from MeshVS,
+  HArray1OfSequenceOfInteger from MeshVS,
+  SequenceOfColor            from Aspect,
+  Color                      from Quantity,
+  Texture2D                  from Graphic3d,
+  ArrayOfPrimitives          from Graphic3d,
+  DataMapOfIntegerReal       from TColStd,
+  PackedMapOfInteger         from TColStd,
+  Array1OfInteger            from TColStd,
+  Array1OfReal               from TColStd
   
 is
 
@@ -123,6 +127,16 @@ is
 	---Purpose: Create texture in accordance with myTextureColorMap
   is static private;
 	
+  AddVolumePrs ( me;
+                 theTopo        : HArray1OfSequenceOfInteger from MeshVS;
+                 theNodes       : Array1OfInteger from TColStd;
+                 theCoords      : Array1OfReal from TColStd;
+                 theArray       : ArrayOfPrimitives from Graphic3d;
+                 theIsShaded    : Boolean;
+                 theNbColors    : Integer;
+                 theNbTexColors : Integer;
+                 theColorRatio  : Real );
+    ---Purpose: Add to array polygons or polylines representing volume
 
 fields
   myNodeColorMap    : DataMapOfIntegerColor from MeshVS;

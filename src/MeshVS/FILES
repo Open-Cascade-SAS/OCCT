@@ -7,3 +7,4 @@ MeshVS_TwoColors.hxx
 MeshVS_TwoColors.cxx
 MeshVS_TwoNodes.hxx
 MeshVS_SelectionModeFlags.hxx
+MeshVS_SymmetricPairHasher.hxx

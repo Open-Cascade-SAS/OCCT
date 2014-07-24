@@ -37,8 +37,10 @@ uses
   AspectMarker3d             from Graphic3d,
   Array1OfReal               from TColStd,
   ArrayOfPolylines           from Graphic3d,
+  ArrayOfSegments            from Graphic3d,
   ArrayOfPolygons            from Graphic3d,
   ArrayOfPrimitives          from Graphic3d,
+  ArrayOfTriangles           from Graphic3d,
   PackedMapOfInteger         from TColStd
 
 is
@@ -76,29 +78,30 @@ is
 	---Purpose: Builds presentation of hilighted entity
 
   AddLinkPrs      ( me; theCoords    : Array1OfReal from TColStd;
-                        theLines     : ArrayOfPolylines from Graphic3d;
+                        theLines     : ArrayOfSegments from Graphic3d;
                         IsShrinked   : Boolean;
                         ShrinkCoef   : Real
                   )  is protected;
 	---Purpose: Add to array of polylines some lines representing link
 
-  AddFaceWirePrs      ( me; theCoords : Array1OfReal from TColStd;
-                        NbNodes       : Integer;
-                        theLines      : ArrayOfPolylines from Graphic3d;
-                        IsShrinked    : Boolean;
-                        ShrinkCoef    : Real
+  AddFaceWirePrs      ( me;
+                        theCoords        : Array1OfReal from TColStd;
+                        theNbNodes       : Integer;
+                        theLines         : ArrayOfSegments from Graphic3d;
+                        theIsShrinked    : Boolean;
+                        theShrinkingCoef : Real
                       )  is protected;
-    ---Purpose: Add to array of polylines some lines representing face's wire
+    ---Purpose: Add to array of segments representing face's wire
 
-  AddFaceSolidPrs     ( me; ID              : Integer;
-                        theCoords           : Array1OfReal from TColStd;
-                        NbNodes             : Integer;
-                        MaxNodes            : Integer;
-                        thePolygons         : ArrayOfPolygons from Graphic3d;
-                        IsReflected         : Boolean;
-                        IsShrinked          : Boolean;
-                        ShrinkCoef          : Real; 
-			IsMeshSmoothShading : Boolean
+  AddFaceSolidPrs     ( me; ID                 : Integer;
+                        theCoords              : Array1OfReal from TColStd;
+                        theNbNodes             : Integer;
+                        theMaxNodes            : Integer;
+                        theTriangles           : ArrayOfTriangles from Graphic3d;
+                        theIsReflected         : Boolean;
+                        theIsShrinked          : Boolean;
+                        theShrinkCoef          : Real;
+                        theIsMeshSmoothShading : Boolean
                       )  is protected;
     ---Purpose: Add to array of polygons a polygon representing face
 
@@ -120,10 +123,10 @@ is
     ---Purpose: Calculate how many polygons or polylines are necessary to draw passed topology
 
   DrawArrays      ( me; Prs                : Presentation from Prs3d;
-                        thePolygons        : ArrayOfPolygons from Graphic3d;
-                        theLines           : ArrayOfPolylines from Graphic3d;
-                        theLinkLines       : ArrayOfPolylines from Graphic3d;
-                        theVolumesInShad   : ArrayOfPolygons from Graphic3d;
+                        thePolygons        : ArrayOfPrimitives from Graphic3d;
+                        theLines           : ArrayOfPrimitives from Graphic3d;
+                        theLinkLines       : ArrayOfPrimitives from Graphic3d;
+                        theVolumesInShad   : ArrayOfPrimitives from Graphic3d;
                         IsPolygonsEdgesOff : Boolean;
                         IsSelected         : Boolean;
                         theFillAsp         : AspectFillArea3d from Graphic3d;

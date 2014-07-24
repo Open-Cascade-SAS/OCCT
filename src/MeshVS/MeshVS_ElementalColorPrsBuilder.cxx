@@ -19,6 +19,8 @@
 #include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_ArrayOfPolygons.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
+#include <Graphic3d_ArrayOfSegments.hxx>
+#include <Graphic3d_ArrayOfTriangles.hxx>
 #include <Graphic3d_Group.hxx>
 
 #include <Prs3d_ShadingAspect.hxx>
@@ -47,7 +49,7 @@
 #include <MeshVS_DataMapIteratorOfDataMapOfColorMapOfInteger.hxx>
 #include <MeshVS_MeshPrsBuilder.hxx>
 #include <MeshVS_Buffer.hxx>
-
+#include <MeshVS_HArray1OfSequenceOfInteger.hxx>
 
 //================================================================
 // Function : Constructor MeshVS_ElementalColorPrsBuilder
@@ -210,8 +212,7 @@ void MeshVS_ElementalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& 
   }
 
   Graphic3d_MaterialAspect aMaterial[2];
-  Standard_Integer i;
-  for ( i=0; i<2; i++ )
+  for (Standard_Integer i = 0; i < 2; i++)
   {
     // OCC20644 "plastic" is most suitable here, as it is "non-physic"
     // so TelUpdateMaterial() from OpenGl_attri.c uses the interior
@@ -257,129 +258,227 @@ void MeshVS_ElementalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& 
     Handle ( Graphic3d_Group ) aGGroup = Prs3d_Root::CurrentGroup ( Prs );
     Prs3d_Root::NewGroup ( Prs );
     Handle ( Graphic3d_Group ) aLGroup = Prs3d_Root::CurrentGroup ( Prs );
+    Prs3d_Root::NewGroup ( Prs );
+    Handle ( Graphic3d_Group ) aSGroup = Prs3d_Root::CurrentGroup ( Prs );
 
-    Handle (Graphic3d_ArrayOfPolygons) aPolyGArr = new Graphic3d_ArrayOfPolygons
-      ( aMaxFaceNodes*aSize + PolygonVerticesFor3D, aSize + PolygonBoundsFor3D, 0, IsReflect );
+    Standard_Integer aNbFacePrimitives = 0;
+    Standard_Integer aNbVolmPrimitives = 0;
+    Standard_Integer aNbEdgePrimitives = 0;
+    Standard_Integer aNbLinkPrimitives = 0;
+
+    for (it.Reset(); it.More(); it.Next())
+    {
+      Standard_Integer aNbNodes = 0;
+
+      if (!aColIter.Value().Contains (it.Key()))
+        continue;
+
+      if (!aSource->GetGeom (it.Key(), Standard_True, aCoords, aNbNodes, aType))
+        continue;
+
+      if (aType == MeshVS_ET_Volume)
+      {
+        if (aSource->Get3DGeom (it.Key(), aNbNodes, aTopo))
+        {
+          for (Standard_Integer aFaceIdx = aTopo->Lower(); aFaceIdx <= aTopo->Upper(); ++aFaceIdx)
+          {
+            const TColStd_SequenceOfInteger& aFaceNodes = aTopo->Value (aFaceIdx);
+
+            if (anEdgeOn) // add edge segments
+            {
+              aNbEdgePrimitives += aFaceNodes.Length();
+            }
+
+            if (IsReflect) // add volumetric cell triangles
+            {
+              aNbVolmPrimitives += aFaceNodes.Length() - 2;
+            }
+          }
+        }
+      }
+      else if (aType == MeshVS_ET_Link)
+      {
+        if (anEdgeOn)
+        {
+          aNbLinkPrimitives += aNbNodes - 1; // add link segments
+        }
+      }
+      else if (aType == MeshVS_ET_Face)
+      {
+        if (anEdgeOn)
+        {
+          aNbEdgePrimitives += aNbNodes; // add edge segments
+        }
+          
+        aNbFacePrimitives += aNbNodes - 2; // add face triangles
+      }
+    }
+
+    // Here we do not use indices arrays because they are not effective for some mesh
+    // drawing modes: shrinking mode (displaces the vertices inside the polygon), 3D
+    // cell rendering (normal interpolation is not always applicable - flat shading),
+    // elemental coloring (color interpolation is impossible)
+
+    Handle (Graphic3d_ArrayOfTriangles) aFaceTriangles = new Graphic3d_ArrayOfTriangles (
+     (aNbFacePrimitives + aNbVolmPrimitives) * 3, 0, IsReflect );
     Standard_Boolean IsPolyG = Standard_False;
 
-    Handle (Graphic3d_ArrayOfPolylines) aPolyLArr = new Graphic3d_ArrayOfPolylines
-      ( 2*aSize, aSize );
+    Handle (Graphic3d_ArrayOfSegments) anEdgeSegments = new Graphic3d_ArrayOfSegments (aNbEdgePrimitives * 2);
+    Handle (Graphic3d_ArrayOfSegments) aLinkSegments = new Graphic3d_ArrayOfSegments (aNbLinkPrimitives * 2);
     Standard_Boolean IsPolyL = Standard_False;
 
     // OCC20644 NOTE: aColIter.Key() color is then scaled by TelUpdateMaterial() in OpenGl_attri.c
     // using the material reflection coefficients. This affects the visual result.
-    Handle(Graphic3d_AspectFillArea3d) anAsp =
+    Handle(Graphic3d_AspectFillArea3d) aFillAspect =
       new Graphic3d_AspectFillArea3d ( Aspect_IS_SOLID, aColIter.Key(), anEdgeColor,
                                        anEdgeType, anEdgeWidth, aMaterial[0], aMaterial[1] );
 
-    Handle(Graphic3d_AspectLine3d) anLAsp =
+    Handle(Graphic3d_AspectLine3d) aLinkAspect =
       new Graphic3d_AspectLine3d ( aColIter.Key(), aLineType, aLineWidth );
 
-    anAsp->SetDistinguishOff ();
-    anAsp->SetInteriorColor ( aColIter.Key() );
-    if (anEdgeOn)
-      anAsp->SetEdgeOn();
-    else
-      anAsp->SetEdgeOff();
+    Handle(Graphic3d_AspectLine3d) anEdgeAspect =
+      new Graphic3d_AspectLine3d ( anEdgeColor, anEdgeType, anEdgeWidth );
 
-    for( it.Reset(); it.More(); it.Next() )
+    aFillAspect->SetDistinguishOff ();
+    aFillAspect->SetInteriorColor ( aColIter.Key() );
+    if (anEdgeOn)
+      aFillAspect->SetEdgeOn();
+    else
+      aFillAspect->SetEdgeOff();
+
+    for (it.Reset(); it.More(); it.Next())
     {
       Standard_Integer aKey = it.Key();
-      if( aColIter.Value().Contains( aKey ) )
+      
+      if (aColIter.Value().Contains (aKey))
       {
-        if ( !aSource->GetGeom  ( aKey, Standard_True, aCoords, NbNodes, aType ) )
+        if (!aSource->GetGeom (aKey, Standard_True, aCoords, NbNodes, aType))
           continue;
-
-        if( aType == MeshVS_ET_Face )
+        
+        if (aType != MeshVS_ET_Face && aType != MeshVS_ET_Link && aType != MeshVS_ET_Volume)
         {
-          aPolyGArr->AddBound ( NbNodes );
-          if( IsExcludingOn() )
-            IDsToExclude.Add( aKey );
+          aCustomElements.Add (aKey);
+          continue;
         }
-        else if( aType == MeshVS_ET_Link )
+        
+        if (IsExcludingOn())
+          IDsToExclude.Add (aKey);
+          
+        if (aType == MeshVS_ET_Volume)
         {
-          aPolyLArr->AddBound ( NbNodes );
-          if( IsExcludingOn() )
-            IDsToExclude.Add( aKey );
-        }
-        else if( aType == MeshVS_ET_Volume )
-        {
-          if( IsExcludingOn() )
-            IDsToExclude.Add( aKey );
-          if( aSource->Get3DGeom( aKey, NbNodes, aTopo ) )
+          if (!aSource->Get3DGeom (aKey, NbNodes, aTopo))
           {
-            MeshVS_MeshPrsBuilder::AddVolumePrs( aTopo, aCoords, NbNodes, aPolyGArr, IsReflect, Standard_False, Standard_False, 1.0 );
-            IsPolyG = Standard_True;
-          }
-          else
             continue;
-        }
-        else
-        {
-          aCustomElements.Add( aKey );
-          continue;
-        }
-
-        // Preparing normal(s) to show reflections if requested
-        Handle(TColStd_HArray1OfReal) aNormals;
-        Standard_Boolean hasNormals = IsReflect && aSource->GetNormalsByElement( aKey, IsMeshSmoothShading, aMaxFaceNodes, aNormals );
-
-        // Adding vertices (with normals if necessary)
-        for ( i=1; i<=NbNodes; i++ )
-          if ( aType == MeshVS_ET_Face )
-          {
-            if ( IsReflect )
-            {
-              hasNormals ? aPolyGArr->AddVertex ( aCoords(3 * i - 2), 
-                                                  aCoords(3 * i - 1), 
-                                                  aCoords(3 * i    ),
-                                                  aNormals->Value(3 * i - 2), 
-                                                  aNormals->Value(3 * i - 1), 
-                                                  aNormals->Value(3 * i    ) ) :
-                           aPolyGArr->AddVertex ( aCoords(3 * i - 2), 
-                                                  aCoords(3 * i - 1), 
-                                                  aCoords(3 * i    ),
-                                                  0., 
-                                                  0., 
-                                                  1. );
-            }
-            else
-              aPolyGArr->AddVertex ( aCoords(3 * i - 2), 
-                                     aCoords(3 * i - 1), 
-                                     aCoords(3 * i    ) );
-            IsPolyG = Standard_True;
           }
-          else if ( aType == MeshVS_ET_Link )
+          
+          MeshVS_MeshPrsBuilder::AddVolumePrs (aTopo, aCoords,
+            NbNodes, aFaceTriangles, IsReflect, Standard_False, Standard_False, 1.0);
+
+          if (anEdgeOn)
           {
-            aPolyLArr->AddVertex ( aCoords(3*i-2), aCoords(3*i-1), aCoords(3*i) );
+            MeshVS_MeshPrsBuilder::AddVolumePrs (aTopo, aCoords,
+              NbNodes, anEdgeSegments, IsReflect, Standard_False, Standard_False, 1.0);
+          }
+
+          IsPolyG = Standard_True;
+        }
+        else if (aType == MeshVS_ET_Face)
+        {
+          // Preparing normals
+          Handle(TColStd_HArray1OfReal) aNormals;
+          Standard_Boolean aHasNormals = IsReflect && aSource->GetNormalsByElement (aKey, IsMeshSmoothShading, aMaxFaceNodes, aNormals);
+
+          for (Standard_Integer aNodeIdx = 0; aNodeIdx < NbNodes - 2; ++aNodeIdx)
+          {
+            for (Standard_Integer anIdx = 0; anIdx < 3; ++anIdx)
+            {
+              if (IsReflect)
+              {
+                aFaceTriangles->AddVertex (aCoords (3 * (anIdx == 0 ? 0 : (aNodeIdx + anIdx)) + 1),
+                                           aCoords (3 * (anIdx == 0 ? 0 : (aNodeIdx + anIdx)) + 2),
+                                           aCoords (3 * (anIdx == 0 ? 0 : (aNodeIdx + anIdx)) + 3),
+                                           aHasNormals ? aNormals->Value (3 * (anIdx == 0 ? 0 : (aNodeIdx + anIdx)) + 1) : 0.0,
+                                           aHasNormals ? aNormals->Value (3 * (anIdx == 0 ? 0 : (aNodeIdx + anIdx)) + 2) : 0.0,
+                                           aHasNormals ? aNormals->Value (3 * (anIdx == 0 ? 0 : (aNodeIdx + anIdx)) + 3) : 1.0);
+              }
+              else
+              {
+                aFaceTriangles->AddVertex (aCoords (3 * (anIdx == 0 ? 0 : (aNodeIdx + anIdx)) + 1),
+                                           aCoords (3 * (anIdx == 0 ? 0 : (aNodeIdx + anIdx)) + 2),
+                                           aCoords (3 * (anIdx == 0 ? 0 : (aNodeIdx + anIdx)) + 3));
+              }
+            }
+          }
+
+          if (anEdgeOn)
+          {
+            for (Standard_Integer aNodeIdx = 0; aNodeIdx < NbNodes; ++aNodeIdx)
+            {
+              const Standard_Integer aNextIdx = (aNodeIdx + 1) % NbNodes;
+
+              anEdgeSegments->AddVertex (aCoords (3 * aNodeIdx + 1),
+                                         aCoords (3 * aNodeIdx + 2),
+                                         aCoords (3 * aNodeIdx + 3));
+              
+              anEdgeSegments->AddVertex (aCoords (3 * aNextIdx + 1),
+                                         aCoords (3 * aNextIdx + 2),
+                                         aCoords (3 * aNextIdx + 3));
+            }
+          }
+
+          IsPolyG = Standard_True;
+        }
+        else if (aType == MeshVS_ET_Link)
+        {
+          for (Standard_Integer aNodeIdx = 0; aNodeIdx < NbNodes - 1; ++aNodeIdx)
+          {
+            const Standard_Integer aNextIdx = aNodeIdx + 1;
+
+            aLinkSegments->AddVertex (aCoords (3 * aNodeIdx + 1),
+                                      aCoords (3 * aNodeIdx + 2),
+                                      aCoords (3 * aNodeIdx + 3));
+
+            aLinkSegments->AddVertex (aCoords (3 * aNextIdx + 1),
+                                      aCoords (3 * aNextIdx + 2),
+                                      aCoords (3 * aNextIdx + 3));
+
             IsPolyL = Standard_True;
           }
+        }
       }
     }
 
-    if ( IsPolyG )
+    if (IsPolyG)
     {
-      aGGroup->SetPrimitivesAspect ( anAsp );
-      aGGroup->AddPrimitiveArray ( aPolyGArr );
-    }
-    if ( IsPolyL )
-    {
-      anAsp->SetEdgeOff();
-      aLGroup->SetPrimitivesAspect ( anAsp );
-      aLGroup->SetPrimitivesAspect ( anLAsp );
-      aLGroup->AddPrimitiveArray ( aPolyLArr );
+      aFillAspect->SetEdgeOff();
+      aGGroup->SetPrimitivesAspect (aFillAspect);
+      aGGroup->AddPrimitiveArray (aFaceTriangles);
+      
       if (anEdgeOn)
-        anAsp->SetEdgeOn();
+      {
+        aFillAspect->SetEdgeOff();
+        aSGroup->AddPrimitiveArray (anEdgeSegments);
+        aSGroup->SetGroupPrimitivesAspect (anEdgeAspect);
+      }
+    }
+    if (IsPolyL)
+    {
+      aFillAspect->SetEdgeOff();
+      aLGroup->SetPrimitivesAspect (aFillAspect);
+      aLGroup->SetPrimitivesAspect (aLinkAspect);
+      aLGroup->AddPrimitiveArray (aLinkSegments);
+      if (anEdgeOn)
+        aFillAspect->SetEdgeOn();
       else
-        anAsp->SetEdgeOff();
+        aFillAspect->SetEdgeOff();
     }
 
-    if( !aCustomElements.IsEmpty() )
-      CustomBuild( Prs, aCustomElements, IDsToExclude, DisplayMode );
+    if (!aCustomElements.IsEmpty())
+      CustomBuild(Prs, aCustomElements, IDsToExclude, DisplayMode);
   }
 
   Graphic3d_MaterialAspect aMaterial2[2];
-  for ( i=0; i<2; i++ )
+  for (Standard_Integer i = 0; i < 2; i++)
   {
     // OCC20644 "plastic" is most suitable here, as it is "non-physic"
     // so TelUpdateMaterial() from OpenGl_attri.c uses the interior
@@ -422,13 +521,42 @@ void MeshVS_ElementalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& 
   {
     Prs3d_Root::NewGroup ( Prs );
     Handle ( Graphic3d_Group ) aGroup2 = Prs3d_Root::CurrentGroup ( Prs );
+    Prs3d_Root::NewGroup ( Prs );
+    Handle ( Graphic3d_Group ) aGroup3 = Prs3d_Root::CurrentGroup ( Prs );
 
     Standard_Integer aSize = aColIter2.Value().Extent();
     if ( aSize<=0 )
       continue;
 
-    Handle (Graphic3d_ArrayOfPolygons) aPolyArr = new Graphic3d_ArrayOfPolygons
-      ( aMaxFaceNodes*aSize, aSize, 0, IsReflect );
+    Standard_Integer aNbFacePrimitives = 0;
+    Standard_Integer aNbEdgePrimitives = 0;
+    
+    for (it.Reset(); it.More(); it.Next())
+    {
+      Standard_Integer aNbNodes = 0;
+
+      if (!aColIter2.Value().Contains (it.Key()))
+        continue;
+
+      if (!aSource->GetGeom (it.Key(), Standard_True, aCoords, aNbNodes, aType))
+        continue;
+
+      if ( aType == MeshVS_ET_Face && aNbNodes > 0 )
+      {
+        if (anEdgeOn)
+        {
+          aNbEdgePrimitives += aNbNodes; // add edge segments
+        }
+
+        aNbFacePrimitives += aNbNodes - 2; // add face triangles
+      }
+    }
+
+    Handle (Graphic3d_ArrayOfTriangles) aFaceTriangles = new Graphic3d_ArrayOfTriangles
+      (aNbFacePrimitives * 3, 0, IsReflect);
+
+    Handle (Graphic3d_ArrayOfSegments) anEdgeSegments = new Graphic3d_ArrayOfSegments
+      (aNbEdgePrimitives * 2);
 
     MeshVS_TwoColors aTC = aColIter2.Key();
     Quantity_Color aMyIntColor, aMyBackColor;
@@ -442,12 +570,13 @@ void MeshVS_ElementalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& 
     anAsp->SetDistinguishOn ();
     anAsp->SetInteriorColor ( aMyIntColor );
     anAsp->SetBackInteriorColor ( aMyBackColor );
-    if (anEdgeOn)
+    /*if (anEdgeOn)
       anAsp->SetEdgeOn();
     else
-      anAsp->SetEdgeOff();
+      anAsp->SetEdgeOff();*/
 
-    aGroup2->SetPrimitivesAspect ( anAsp );
+    Handle(Graphic3d_AspectLine3d) anEdgeAspect =
+      new Graphic3d_AspectLine3d (anEdgeColor, anEdgeType, anEdgeWidth);
 
     for( it.Reset(); it.More(); it.Next() )
     {
@@ -460,43 +589,60 @@ void MeshVS_ElementalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& 
         if( IsExcludingOn() )
           IDsToExclude.Add( aKey );
 
-        if ( aType == MeshVS_ET_Face && NbNodes > 0 )
+        if (aType == MeshVS_ET_Face && NbNodes > 0)
         {
           // Preparing normal(s) to show reflections if requested
           Handle(TColStd_HArray1OfReal) aNormals;
           // OCC21720 Always passing normals to OpenGL to make materials work
           // For OpenGL: "No normals" -> "No lighting" -> "no materials taken into account"
-          Standard_Boolean hasNormals = /*IsReflect &&*/
-            aSource->GetNormalsByElement( aKey, IsMeshSmoothShading, aMaxFaceNodes, aNormals );
+          Standard_Boolean aHasNormals = /*IsReflect &&*/
+            aSource->GetNormalsByElement (aKey, IsMeshSmoothShading, aMaxFaceNodes, aNormals);
 
-          aPolyArr->AddBound ( NbNodes );
-
-          for ( i=1; i<=NbNodes; i++ )
+          for (Standard_Integer aNodeIdx = 0; aNodeIdx < NbNodes - 2; ++aNodeIdx)
           {
-            if ( IsReflect )
+            for (Standard_Integer anIdx = 0; anIdx < 3; ++anIdx)
             {
-              hasNormals ? aPolyArr->AddVertex ( aCoords(3 * i - 2), 
-                                                 aCoords(3 * i - 1), 
-                                                 aCoords(3 * i    ),
-                                                 aNormals->Value(3 * i - 2), 
-                                                 aNormals->Value(3 * i - 1), 
-                                                 aNormals->Value(3 * i    ) ) :
-                           aPolyArr->AddVertex ( aCoords(3 * i - 2), 
-                                                 aCoords(3 * i - 1), 
-                                                 aCoords(3 * i    ),
-                                                 0., 
-                                                 0., 
-                                                 1. );
+              if (IsReflect)
+              {
+                aFaceTriangles->AddVertex (aCoords (3 * (anIdx == 0 ? 0 : aNodeIdx + anIdx) + 1),
+                                           aCoords (3 * (anIdx == 0 ? 0 : aNodeIdx + anIdx) + 2),
+                                           aCoords (3 * (anIdx == 0 ? 0 : aNodeIdx + anIdx) + 3),
+                                           aHasNormals ? aNormals->Value (3 * (anIdx == 0 ? 0 : aNodeIdx + anIdx) + 1) : 0.0,
+                                           aHasNormals ? aNormals->Value (3 * (anIdx == 0 ? 0 : aNodeIdx + anIdx) + 2) : 0.0,
+                                           aHasNormals ? aNormals->Value (3 * (anIdx == 0 ? 0 : aNodeIdx + anIdx) + 3) : 1.0);
+              }
+              else
+              {
+                aFaceTriangles->AddVertex (aCoords (3 * (anIdx == 0 ? 0 : aNodeIdx + anIdx) + 1),
+                                           aCoords (3 * (anIdx == 0 ? 0 : aNodeIdx + anIdx) + 2),
+                                           aCoords (3 * (anIdx == 0 ? 0 : aNodeIdx + anIdx) + 3));
+              }
             }
-            else
-              aPolyArr->AddVertex ( aCoords(3*i-2), 
-                                    aCoords(3*i-1), 
-                                    aCoords(3*i  ) );
+          }
+
+          if (anEdgeOn)
+          {
+            for (Standard_Integer aNodeIdx = 0; aNodeIdx < NbNodes; ++aNodeIdx)
+            {
+              const Standard_Integer aNextIdx = (aNodeIdx + 1) % NbNodes;
+
+              anEdgeSegments->AddVertex (aCoords (3 * aNodeIdx + 1),
+                                         aCoords (3 * aNodeIdx + 2),
+                                         aCoords (3 * aNodeIdx + 3));
+
+              anEdgeSegments->AddVertex (aCoords (3 * aNextIdx + 1),
+                                         aCoords (3 * aNextIdx + 2),
+                                         aCoords (3 * aNextIdx + 3));
+            }
           }
         }
       }
     }
-    aGroup2->AddPrimitiveArray ( aPolyArr );
+
+    aGroup2->AddPrimitiveArray (aFaceTriangles);
+    aGroup2->SetGroupPrimitivesAspect (anAsp);
+    aGroup3->AddPrimitiveArray (anEdgeSegments);
+    aGroup3->SetGroupPrimitivesAspect (anEdgeAspect);
   }
 }
 

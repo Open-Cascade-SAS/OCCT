@@ -24,6 +24,7 @@
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
 #include <Graphic3d_ArrayOfPolygons.hxx>
+#include <Graphic3d_ArrayOfTriangles.hxx>
 #include <Graphic3d_ArrayOfSegments.hxx>
 #include <Graphic3d_ArrayOfPoints.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
@@ -37,6 +38,7 @@
 #include <TColStd_SequenceOfInteger.hxx>
 #include <TColStd_PackedMapOfInteger.hxx>
 #include <TColStd_HPackedMapOfInteger.hxx>
+#include <TColStd_MapOfInteger.hxx>
 
 #include <Quantity_NameOfColor.hxx>
 #include <Aspect_InteriorStyle.hxx>
@@ -49,6 +51,10 @@
 #include <MeshVS_DrawerAttribute.hxx>
 #include <MeshVS_MapOfTwoNodes.hxx>
 #include <MeshVS_Buffer.hxx>
+#include <MeshVS_SymmetricPairHasher.hxx>
+
+#include <NCollection_Map.hxx>
+#include <NCollection_Vector.hxx>
 
 //================================================================
 // Function : Constructor MeshVS_MeshPrsBuilder
@@ -120,7 +126,7 @@ void MeshVS_MeshPrsBuilder::BuildNodes ( const Handle(Prs3d_Presentation)& Prs,
   anIDs.Assign( IDs );
   if ( !HasSelectFlag && !HasHilightFlag )
   {
-    // subtract the hidden nodes and ids to exclude (to minimise allocated memory)
+    // subtract the hidden nodes and ids to exclude (to minimize allocated memory)
     Handle(TColStd_HPackedMapOfInteger) aHiddenNodes = myParentMesh->GetHiddenNodes();
     if ( !aHiddenNodes.IsNull() )
       anIDs.Subtract( aHiddenNodes->Map() );
@@ -164,9 +170,9 @@ void MeshVS_MeshPrsBuilder::BuildElements( const Handle(Prs3d_Presentation)& Prs
                                            TColStd_PackedMapOfInteger& IDsToExclude,
                                            const Standard_Integer DisplayMode ) const
 {
-  Standard_Integer maxnodes;   
+  Standard_Integer maxnodes;
 
-  Handle (MeshVS_DataSource) aSource = GetDataSource();
+  Handle(MeshVS_DataSource) aSource = GetDataSource();
   if ( aSource.IsNull() )
     return;
 
@@ -200,7 +206,7 @@ void MeshVS_MeshPrsBuilder::BuildElements( const Handle(Prs3d_Presentation)& Prs
   IsReflect      = ( IsMeshReflect && !HasHilightFlag );
   aDrawer->GetBoolean  ( MeshVS_DA_SmoothShading, IsMeshSmoothShading );
 
-  // display mode for hilighted prs of groups
+  // display mode for highlighted prs of groups
   IsShrink       = ( IsShrink && !HasHilightFlag );
   IsShading      = ( IsShading || HasHilightFlag );
 
@@ -221,14 +227,7 @@ void MeshVS_MeshPrsBuilder::BuildElements( const Handle(Prs3d_Presentation)& Prs
   Standard_Boolean IsOverlapControl =
     !IsMeshAllowOverlap && ( IsWireFrame || IsShading ) && !HasSelectFlag;
 
-  Handle (Graphic3d_ArrayOfPolygons)  aPolygons, aVolumes;
-  Handle (Graphic3d_ArrayOfPolylines) aPolylines, aLinkPolylines;
-
-  Standard_Integer PolygonVerticesFor3D = 0, PolygonBoundsFor3D = 0,
-                   PolylineVerticesFor3D = 0, PolylineBoundsFor3D = 0,
-                   NbNodes;
-    
-  // subtract the hidden elements and ids to exclude (to minimise allocated memory)
+  // subtract the hidden elements and ids to exclude (to minimize allocated memory)
   TColStd_PackedMapOfInteger anIDs;
   anIDs.Assign( IDs );
   Handle(TColStd_HPackedMapOfInteger) aHiddenElems = myParentMesh->GetHiddenElems();
@@ -238,180 +237,276 @@ void MeshVS_MeshPrsBuilder::BuildElements( const Handle(Prs3d_Presentation)& Prs
 
   Handle( MeshVS_HArray1OfSequenceOfInteger ) aTopo;
   TColStd_MapIteratorOfPackedMapOfInteger it (anIDs);
-  for( ; it.More(); it.Next() )
+
+  Standard_Boolean showEdges = Standard_True;
+  aDrawer->GetBoolean( MeshVS_DA_ShowEdges, showEdges );
+
+  showEdges = IsWireFrame || showEdges;
+
+  Standard_Integer* aNodesBuf  = (Standard_Integer*) alloca (maxnodes * sizeof (Standard_Integer));
+  Standard_Real*    aCoordsBuf = (Standard_Real*)    alloca (3 * maxnodes * sizeof (Standard_Real));
+
+  TColStd_Array1OfInteger aNodes  (*aNodesBuf, 1, maxnodes);
+  TColStd_Array1OfReal    aCoords (*aCoordsBuf, 1, 3 * maxnodes);
+
+  Standard_Integer aNbFacePrimitives = 0;
+  Standard_Integer aNbVolmPrimitives = 0;
+  Standard_Integer aNbEdgePrimitives = 0;
+  Standard_Integer aNbLinkPrimitives = 0;
+
+  MeshVS_EntityType aType;
+
+  for (it.Reset(); it.More(); it.Next())
   {
-    Standard_Integer aKey = it.Key();
-    if( aSource->Get3DGeom( aKey, NbNodes, aTopo ) )
+    Standard_Integer aNbNodes = 0;
+
+    if (!aSource->GetGeom (it.Key(), Standard_True, aCoords, aNbNodes, aType))
+      continue;
+
+    if (aType == MeshVS_ET_Volume)
     {
-      if( !HasSelectFlag )
-        HowManyPrimitives( aTopo, Standard_True,  HasSelectFlag, NbNodes,
-                           PolygonVerticesFor3D, PolygonBoundsFor3D );      
-      HowManyPrimitives( aTopo, Standard_False, HasSelectFlag, NbNodes,
-                         PolylineVerticesFor3D, PolylineBoundsFor3D );
+      if (aSource->Get3DGeom (it.Key(), aNbNodes, aTopo))
+      {
+        for (Standard_Integer aFaceIdx = aTopo->Lower(); aFaceIdx <= aTopo->Upper(); ++aFaceIdx)
+        {
+          const TColStd_SequenceOfInteger& aFaceNodes = aTopo->Value (aFaceIdx);
+          
+          if (showEdges) // add edge segments
+          {
+            aNbEdgePrimitives += aFaceNodes.Length();
+          }
+          
+          if (IsShading || IsShrink) // add volumetric cell triangles
+          {
+            if (!HasSelectFlag)
+              aNbVolmPrimitives += aFaceNodes.Length() - 2;
+          }
+        }
+      }
+    }
+    else if (aType == MeshVS_ET_Link)
+    {
+      if (showEdges)
+      {
+        aNbLinkPrimitives += 1; // add link segment
+      }
+    }
+    else if (aType == MeshVS_ET_Face)
+    {
+      if (showEdges)
+      {
+        aNbEdgePrimitives += aNbNodes; // add edge segments
+      }
+
+      if (!IsOverlapControl || IsShading)
+      {
+        if ((IsShading || IsShrink) && !HasSelectFlag)
+        {
+          aNbFacePrimitives += aNbNodes - 2; // add face triangles
+        }
+      }
     }
   }
 
-  Standard_Integer Extent = anIDs.Extent();
+  // Here we do not use indices arrays because they are not effective for some mesh
+  // drawing modes: shrinking mode (displaces the vertices inside the polygon), 3D
+  // cell rendering (normal interpolation is not always applicable - flat shading),
+  // elemental coloring (color interpolation is impossible)
+  Handle (Graphic3d_ArrayOfTriangles) aVolmTriangles =
+    new Graphic3d_ArrayOfTriangles (aNbVolmPrimitives * 3, 0, IsReflect);
+  Handle (Graphic3d_ArrayOfTriangles) aFaceTriangles =
+    new Graphic3d_ArrayOfTriangles (aNbFacePrimitives * 3, 0, IsReflect);
 
-  if ( IsReflect )
+  Handle (Graphic3d_ArrayOfSegments) aLinkSegments;
+  Handle (Graphic3d_ArrayOfSegments) aEdgeSegments;
+
+  if (showEdges)
   {
-    aPolygons = new Graphic3d_ArrayOfPolygons
-      ( maxnodes*Extent, Extent, 0, Standard_True );
-    aVolumes = new Graphic3d_ArrayOfPolygons
-      ( PolygonVerticesFor3D, PolygonBoundsFor3D, 0, Standard_True );
-  }
-  else
-  {
-    aPolygons = new Graphic3d_ArrayOfPolygons( maxnodes*Extent, Extent );
-    aVolumes = new Graphic3d_ArrayOfPolygons ( PolygonVerticesFor3D, PolygonBoundsFor3D );
+    aLinkSegments = new Graphic3d_ArrayOfSegments (aNbLinkPrimitives * 2);
+    aEdgeSegments = new Graphic3d_ArrayOfSegments (aNbEdgePrimitives * 2);
   }
 
   Standard_Integer howMany = 1;
   if ( IsOverlapControl )
     howMany = 2;
 
-  Standard_Boolean showEdges = Standard_True;
-  aDrawer->GetBoolean( MeshVS_DA_ShowEdges, showEdges );
-
-  showEdges = IsWireFrame || showEdges;
-  if ( showEdges )
-  {
-    aPolylines = new Graphic3d_ArrayOfPolylines ( ( maxnodes+1 )*Extent + PolylineVerticesFor3D,
-                                                  howMany * Extent + PolylineBoundsFor3D );
-    aLinkPolylines = new Graphic3d_ArrayOfPolylines ( 2*Extent, Extent );
-  }
-
-  MeshVS_Buffer aCoordsBuf (3*maxnodes*sizeof(Standard_Real));
-  TColStd_Array1OfReal aCoords( aCoordsBuf, 1, 3*maxnodes );  
-  MeshVS_EntityType aType;
-
   TColStd_PackedMapOfInteger aCustomElements;
 
   Quantity_Color       anOldEdgeColor;
+  Quantity_Color       anEdgeColor;
+  Quantity_Color       anIntColor;
   Aspect_InteriorStyle anIntType;
-  Quantity_Color       anIntColor, anEdgeColor;
   Aspect_TypeOfLine    aLine;
   Standard_Real        aWidth;
 
-  MeshVS_TwoNodes aTwoNodes;
-  aFill->Values ( anIntType, anIntColor, anEdgeColor, aLine, aWidth );
+  aFill->Values (anIntType, anIntColor, anEdgeColor, aLine, aWidth);
   
   MeshVS_MapOfTwoNodes aLinkNodes;
-  if ( showEdges && IsOverlapControl )
-    // Forbid drawings of edges, which overlap with some links
-    for( it.Reset(); it.More(); it.Next() )
+  
+  // Forbid drawings of edges which overlap with some links
+  if (showEdges && IsOverlapControl)
+  {
+    for (it.Reset(); it.More(); it.Next())
     {
-      Standard_Integer aKey = it.Key();
-      if ( aSource->GetGeomType ( aKey, Standard_True, aType ) &&
-           aType == MeshVS_ET_Link )
+      if (aSource->GetGeomType (it.Key(), Standard_True, aType) && aType == MeshVS_ET_Link)
       {
-        MeshVS_Buffer aNodesBuf (maxnodes * sizeof(Standard_Integer));
-        TColStd_Array1OfInteger aNodes (aNodesBuf, 1, maxnodes);
-        Standard_Integer nbNodes;
-        if ( aSource->GetNodesByElement( aKey, aNodes, nbNodes ) &&
-             nbNodes == 2 )
+        Standard_Integer aNbNodes;
+
+        if (aSource->GetNodesByElement (it.Key(), aNodes, aNbNodes) && aNbNodes == 2)
         {
-          aTwoNodes.First = aNodes(1);
-          aTwoNodes.Second = aNodes(2);
-          aLinkNodes.Add ( aTwoNodes );
+          aLinkNodes.Add (MeshVS_TwoNodes (aNodes(1), aNodes(2)));
         }
       }
     }
+  }
 
-  for( it.Reset(); it.More(); it.Next() )
+  NCollection_Map<MeshVS_NodePair, MeshVS_SymmetricPairHasher> aSegmentMap;
+
+  for (it.Reset(); it.More(); it.Next())
   {
-    Standard_Integer aKey = it.Key();
+    const Standard_Integer aKey = it.Key();
 
-    if ( ! aSource->GetGeom ( aKey, Standard_True, aCoords, NbNodes, aType ) )
+    Standard_Integer NbNodes;
+    if (!aSource->GetGeom (aKey, Standard_True, aCoords, NbNodes, aType))
       continue;
 
-    switch ( aType )
+    if (!aSource->GetNodesByElement (aKey, aNodes, NbNodes))
+      continue;
+
+    switch (aType)
     {
-      case MeshVS_ET_Volume :
-        if( IsExcludingOn() )
+      case MeshVS_ET_Volume:
+      {
+        if (IsExcludingOn())
           IDsToExclude.Add (aKey);
-        if( aSource->Get3DGeom( aKey, NbNodes, aTopo ) )
+
+        if (aSource->Get3DGeom (aKey, NbNodes, aTopo))
         {
-          // !!! TO DO: Overlap control
-          // add wireframe presentation (draw edges for shading mode as well)
-          if ( showEdges )
-            AddVolumePrs ( aTopo, aCoords, NbNodes, aPolylines, IsReflect, IsShrink, HasSelectFlag, aShrinkCoef );
-
-          // add shading presentation
-          if ( ( IsShading || IsShrink ) && !HasSelectFlag )
-            AddVolumePrs ( aTopo, aCoords, NbNodes, aVolumes, IsReflect, IsShrink, HasSelectFlag, aShrinkCoef );
-        }
-        break;
-
-      case MeshVS_ET_Link :
-        if( IsExcludingOn() )
-          IDsToExclude.Add (aKey);
-        if ( showEdges )
-          AddLinkPrs ( aCoords, aLinkPolylines, IsShrink || HasSelectFlag, aShrinkCoef );
-        break;
-
-      case MeshVS_ET_Face :
-        if( IsExcludingOn() )
-          IDsToExclude.Add (aKey);
-        if ( showEdges && IsOverlapControl )
-        {
-          MeshVS_Buffer aNodesBuf (NbNodes * sizeof(Standard_Integer));
-          TColStd_Array1OfInteger aNodes (aNodesBuf, 1, NbNodes);
-          if ( !aSource->GetNodesByElement( aKey, aNodes, NbNodes ) )
-            continue;
-
-          Standard_Integer Last = 0;
-          for ( Standard_Integer i=1; i<=NbNodes; i++ )
+          // Add wire-frame presentation (draw edges for shading mode as well)
+          if (showEdges)
           {
-            if ( i==1 )
-              aTwoNodes.First = aNodes(i);
-            else
+            AddVolumePrs (aTopo, aCoords, NbNodes,
+              aEdgeSegments, IsReflect, IsShrink, HasSelectFlag, aShrinkCoef);
+          }
+
+          // Add shading presentation
+          if ((IsShading || IsShrink) && !HasSelectFlag)
+          {
+            AddVolumePrs (aTopo, aCoords, NbNodes,
+              aVolmTriangles, IsReflect, IsShrink, HasSelectFlag, aShrinkCoef);
+          }
+        }
+      }
+      break;
+
+      case MeshVS_ET_Link:
+      {
+        if (IsExcludingOn())
+          IDsToExclude.Add (aKey);
+
+        if (showEdges)
+        {
+          AddLinkPrs (aCoords, aLinkSegments, IsShrink || HasSelectFlag, aShrinkCoef);
+        }
+      }
+      break;
+
+      case MeshVS_ET_Face:
+      {
+        if (IsExcludingOn())
+          IDsToExclude.Add (aKey);
+
+        if (showEdges && IsOverlapControl)
+        {
+          Standard_Integer Last = 0;
+
+          MeshVS_TwoNodes aTwoNodes (aNodes (1));
+
+          for (Standard_Integer i = 1; i <= NbNodes; ++i)
+          {
+            if (i > 1)
               aTwoNodes.First = aTwoNodes.Second;
 
-            aTwoNodes.Second = ( i<NbNodes ? aNodes(i+1) : aNodes(1) );
-            if ( aLinkNodes.Contains ( aTwoNodes ) )
+            aTwoNodes.Second = (i < NbNodes) ? aNodes (i+1) : aNodes (1);
+
+            if (aLinkNodes.Contains (aTwoNodes))
+            {
+              for (Standard_Integer aNodeIdx = Last + 1; aNodeIdx < i; ++aNodeIdx)
               {
-                aPolylines->AddBound ( i-Last );
-                for (Standard_Integer j = Last+1; j<=i; j++)
-                  aPolylines->AddVertex ( aCoords(3*j-2), aCoords(3*j-1), aCoords(3*j) );
-                Last = i;
+                const Standard_Integer aNextIdx = aNodeIdx + 1;
+
+                aEdgeSegments->AddVertex (
+                  aCoords (3 * aNodeIdx - 2), aCoords (3 * aNodeIdx - 1), aCoords (3 * aNodeIdx));
+                aEdgeSegments->AddVertex (
+                  aCoords (3 * aNextIdx - 2), aCoords (3 * aNextIdx - 1), aCoords (3 * aNextIdx));
               }
+
+              Last = i;
+            }
           }
-          if ( NbNodes-Last > 0 )
+
+          if (NbNodes - Last > 0)
           {
-            aPolylines->AddBound ( NbNodes-Last+1 );
-            for (Standard_Integer j = Last+1; j<=NbNodes; j++)
-              aPolylines->AddVertex ( aCoords(3*j-2), aCoords(3*j-1), aCoords(3*j) );
+            for (Standard_Integer aNodeIdx = Last; aNodeIdx < NbNodes; ++aNodeIdx)
+            {
+              const Standard_Integer aNextIdx = (aNodeIdx + 1) % NbNodes;
+              
+              const MeshVS_NodePair aSegment (aNodes (aNodeIdx + 1),
+                                              aNodes (aNextIdx + 1));
 
-            aPolylines->AddVertex ( aCoords(1), aCoords(2), aCoords(3) );
+              if (!aSegmentMap.Contains (aSegment))
+              {
+                aEdgeSegments->AddVertex (aCoords (3 * aNodeIdx + 1),
+                                          aCoords (3 * aNodeIdx + 2),
+                                          aCoords (3 * aNodeIdx + 3));
+
+                aEdgeSegments->AddVertex (aCoords (3 * aNextIdx + 1),
+                                          aCoords (3 * aNextIdx + 2),
+                                          aCoords (3 * aNextIdx + 3));
+
+                aSegmentMap.Add (aSegment);
+              }
+            }
           }
         }
 
-        if ( !IsOverlapControl || IsShading )
+        if (!IsOverlapControl || IsShading)
         {
-          if ( !IsOverlapControl && showEdges )
-            AddFaceWirePrs(aCoords, NbNodes, aPolylines,
-                           IsShrink || HasSelectFlag, aShrinkCoef );
-          if ( ( IsShading || IsShrink ) && !HasSelectFlag )
-            AddFaceSolidPrs(aKey, aCoords, NbNodes, maxnodes, aPolygons,
-                            IsReflect, IsShrink || HasSelectFlag,
-                            aShrinkCoef, IsMeshSmoothShading );
+          if (!IsOverlapControl && showEdges)
+          {
+            AddFaceWirePrs (aCoords, NbNodes,
+              aEdgeSegments, IsShrink || HasSelectFlag, aShrinkCoef);
+          }
+
+          if ((IsShading || IsShrink) && !HasSelectFlag)
+          {
+            AddFaceSolidPrs (aKey, aCoords, NbNodes, maxnodes, aFaceTriangles, IsReflect,
+              IsShrink || HasSelectFlag, aShrinkCoef, IsMeshSmoothShading);
+          }
         }
-        break;
+      }
+      break;
 
       default:
-        aCustomElements.Add( aKey );
-        break;
+      {
+        aCustomElements.Add (aKey);
+      }
     }
   }
 
-  if ( IsShrink )
+  if (IsShrink)
   {
     anOldEdgeColor = anEdgeColor;
-    aFill->SetEdgeColor ( Quantity_NOC_BLACK );
+    aFill->SetEdgeColor (Quantity_NOC_BLACK);
   }
 
-  DrawArrays ( Prs, aPolygons, aPolylines, aLinkPolylines, aVolumes,
+  //std::cout << "Actual extents: " << std::endl
+  //  << "Face tris: " << aFaceTriangles->ItemNumber() << " from " << aNbFacePrimitives << std::endl
+  //  << "Volm tris: " << aVolmTriangles->ItemNumber()  << " from " << aNbVolmPrimitives << std::endl
+  //  << "Face segs: " << aEdgeSegments->ItemNumber()  << " from " << aNbEdgePrimitives << std::endl
+  //  << "Link segs: " << aLinkSegments->ItemNumber()  << " from " << aNbLinkPrimitives << std::endl;
+
+  DrawArrays ( Prs, aFaceTriangles, aEdgeSegments, aLinkSegments, aVolmTriangles,
     !showEdges, HasSelectFlag, aFill, aBeam );
 
   if ( !aCustomElements.IsEmpty() )
@@ -542,126 +637,186 @@ void MeshVS_MeshPrsBuilder::BuildHilightPrs ( const Handle(Prs3d_Presentation)& 
 // Function : AddLinkPrs
 // Purpose  :
 //================================================================
-void MeshVS_MeshPrsBuilder::AddLinkPrs (const TColStd_Array1OfReal& theCoords,
-                                        const Handle(Graphic3d_ArrayOfPolylines)& theLines,
-                                        const Standard_Boolean IsShrinked,
-                                        const Standard_Real ShrinkCoef) const
+void MeshVS_MeshPrsBuilder::AddLinkPrs (const TColStd_Array1OfReal&              theCoords,
+                                        const Handle(Graphic3d_ArrayOfSegments)& theSegments,
+                                        const Standard_Boolean                   theIsShrinked,
+                                        const Standard_Real                      theShrinkCoef) const
 {
-  Standard_Real x1 = theCoords(1);
-  Standard_Real y1 = theCoords(2);
-  Standard_Real z1 = theCoords(3);
-  Standard_Real x2 = theCoords(4);
-  Standard_Real y2 = theCoords(5);
-  Standard_Real z2 = theCoords(6);
-  Standard_Real xG, yG, zG;
+  Standard_Real aX1 = theCoords (1);
+  Standard_Real aY1 = theCoords (2);
+  Standard_Real aZ1 = theCoords (3);
+  Standard_Real aX2 = theCoords (4);
+  Standard_Real aY2 = theCoords (5);
+  Standard_Real aZ2 = theCoords (6);
 
-  if ( IsShrinked )
+  if (theIsShrinked)
   {
-    xG = (x1+x2)/2.0;
-    yG = (y1+y2)/2.0;
-    zG = (z1+z2)/2.0;
-    x1 = (x1 - xG) * ShrinkCoef + xG;
-    x2 = 2.0*xG - x1;
-    y1 = (y1 - yG) * ShrinkCoef + yG;
-    y2 = 2.0*yG - y1;
-    z1 = (z1 - zG) * ShrinkCoef + zG;
-    z2 = 2.0*zG - z1;
+    const Standard_Real xG = (aX1 + aX2) * 0.5;
+    const Standard_Real yG = (aY1 + aY2) * 0.5;
+    const Standard_Real zG = (aZ1 + aZ2) * 0.5;
+
+    aX1 = (aX1 - xG) * theShrinkCoef + xG;
+    aY1 = (aY1 - yG) * theShrinkCoef + yG;
+    aZ1 = (aZ1 - zG) * theShrinkCoef + zG;
+
+    aX2 = 2.0 * xG - aX1;
+    aY2 = 2.0 * yG - aY1;
+    aZ2 = 2.0 * zG - aZ1;
   }
-  theLines->AddBound ( 2 );
-  theLines->AddVertex ( x1, y1, z1 );
-  theLines->AddVertex ( x2, y2, z2 );
+
+  theSegments->AddVertex (aX1, aY1, aZ1);
+  theSegments->AddVertex (aX2, aY2, aZ2);
 }
 
 //================================================================
 // Function : AddFaceWirePrs
 // Purpose  :
 //================================================================
-void MeshVS_MeshPrsBuilder::AddFaceWirePrs (const TColStd_Array1OfReal& theCoords,
-                                            const Standard_Integer NbNodes,
-                                            const Handle(Graphic3d_ArrayOfPolylines)& theLines,
-                                            const Standard_Boolean IsShrinked,
-                                            const Standard_Real ShrinkCoef) const
+void MeshVS_MeshPrsBuilder::AddFaceWirePrs (const TColStd_Array1OfReal&              theCoords,
+                                            const Standard_Integer                   theNbNodes,
+                                            const Handle(Graphic3d_ArrayOfSegments)& theSegments,
+                                            const Standard_Boolean                   theIsShrinked,
+                                            const Standard_Real                      theShrinkingCoef) const
 {
-  Standard_Real xG = 0., yG = 0., zG = 0., X, Y, Z, startX=0., startY=0., startZ=0.;
-  theLines->AddBound ( NbNodes+1 );
-  if ( IsShrinked )
-    CalculateCenter( theCoords, NbNodes, xG, yG, zG );
+  Standard_Real aCenterX = 0.0;
+  Standard_Real aCenterY = 0.0;
+  Standard_Real aCenterZ = 0.0;
 
-  for ( Standard_Integer k=1; k<=NbNodes; k++)
+  if (theIsShrinked)
   {
-    X = theCoords(3*k-2);
-    Y = theCoords(3*k-1);
-    Z = theCoords(3*k);
-    if ( IsShrinked )
-    {
-      X = (X - xG) * ShrinkCoef + xG;
-      Y = (Y - yG) * ShrinkCoef + yG;
-      Z = (Z - zG) * ShrinkCoef + zG;
-    }
-    if( k==1 )
-    {
-      startX = X; startY = Y; startZ = Z;
-    }
-    theLines->AddVertex ( X, Y, Z );
+    CalculateCenter (theCoords, theNbNodes, aCenterX, aCenterY, aCenterZ);
   }
-  theLines->AddVertex( startX, startY, startZ );
+
+  NCollection_Vector<gp_XYZ> aNodes (theNbNodes);
+
+  for (Standard_Integer aNodeIdx = 0; aNodeIdx < theNbNodes; ++aNodeIdx)
+  {
+    gp_XYZ aPnt (theCoords (3 * aNodeIdx + 1),
+                 theCoords (3 * aNodeIdx + 2),
+                 theCoords (3 * aNodeIdx + 3));
+
+    if (theIsShrinked)
+    {
+      aPnt.SetX ((aPnt.X() - aCenterX) * theShrinkingCoef + aCenterX);
+      aPnt.SetY ((aPnt.Y() - aCenterY) * theShrinkingCoef + aCenterY);
+      aPnt.SetZ ((aPnt.Z() - aCenterZ) * theShrinkingCoef + aCenterZ);
+    }
+
+    aNodes.Append (aPnt);
+  }
+
+  for (Standard_Integer aNodeIdx = 0; aNodeIdx < theNbNodes; ++aNodeIdx)
+  {
+    theSegments->AddVertex (aNodes.Value (aNodeIdx).X(),
+                            aNodes.Value (aNodeIdx).Y(),
+                            aNodes.Value (aNodeIdx).Z());
+
+    const Standard_Integer aNextIdx = (aNodeIdx + 1) % theNbNodes;
+
+    theSegments->AddVertex (aNodes.Value (aNextIdx).X(),
+                            aNodes.Value (aNextIdx).Y(),
+                            aNodes.Value (aNextIdx).Z());
+  }
 }
 
 //================================================================
 // Function : AddFaceSolidPrs
 // Purpose  :
 //================================================================
-void MeshVS_MeshPrsBuilder::AddFaceSolidPrs (const Standard_Integer ID,
-                                             const TColStd_Array1OfReal& theCoords,
-                                             const Standard_Integer NbNodes,
-                                             const Standard_Integer MaxNodes,
-                                             const Handle(Graphic3d_ArrayOfPolygons)& thePolygons,
-                                             const Standard_Boolean IsReflected,
-                                             const Standard_Boolean IsShrinked,
-                                             const Standard_Real ShrinkCoef,
-                                             const Standard_Boolean IsMeshSmoothShading) const
+void MeshVS_MeshPrsBuilder::AddFaceSolidPrs (const Standard_Integer                    theID,
+                                             const TColStd_Array1OfReal&               theCoords,
+                                             const Standard_Integer                    theNbNodes,
+                                             const Standard_Integer                    theMaxNodes,
+                                             const Handle(Graphic3d_ArrayOfTriangles)& theTriangles,
+                                             const Standard_Boolean                    theIsShaded,
+                                             const Standard_Boolean                    theIsShrinked,
+                                             const Standard_Real                       theShrinkingCoef,
+                                             const Standard_Boolean                    theIsSmoothShading) const
 {
-  Handle( MeshVS_DataSource ) aDS = myParentMesh->GetDataSource();
-  if ( aDS.IsNull() )
+  Handle(MeshVS_DataSource) aDataSource = myParentMesh->GetDataSource();
+
+  if (aDataSource.IsNull())
     return;
 
-  Standard_Real xG = 0., yG = 0., zG = 0., X, Y, Z, nx = 0., ny = 0., nz = 0.;
-  thePolygons->AddBound ( NbNodes );
-  if ( IsShrinked )
-    CalculateCenter( theCoords, NbNodes, xG, yG, zG );
+  Standard_Real aCenterX = 0.0;
+  Standard_Real aCenterY = 0.0;
+  Standard_Real aCenterZ = 0.0;
+  Standard_Real aNormalX = 0.0;
+  Standard_Real aNormalY = 0.0;
+  Standard_Real aNormalZ = 0.0;
 
-  Standard_Boolean allNormals = Standard_True;
-  Standard_Integer k;
-
-  if( IsReflected )
+  if (theIsShrinked)
   {
-    if( IsMeshSmoothShading )
-      for( k=1; k<=NbNodes && allNormals; k++ )
-        allNormals = aDS->GetNodeNormal (k, ID, nx, ny, nz);
-    if( !IsMeshSmoothShading || !allNormals )
-      aDS->GetNormal( ID, MaxNodes, nx, ny, nz );
+    CalculateCenter (theCoords, theNbNodes, aCenterX, aCenterY, aCenterZ);
   }
 
-  for ( k=1; k<=NbNodes; k++)
+  NCollection_Vector<gp_XYZ> aVertexNormals (theMaxNodes);
+  
+  if (theIsShaded)
   {
-    X = theCoords(3*k-2);
-    Y = theCoords(3*k-1);
-    Z = theCoords(3*k);
-    if ( IsShrinked )
+    if (theIsSmoothShading)
     {
-      X = (X - xG) * ShrinkCoef + xG;
-      Y = (Y - yG) * ShrinkCoef + yG;
-      Z = (Z - zG) * ShrinkCoef + zG;
+      for (Standard_Integer aNodeIdx = 1; aNodeIdx <= theNbNodes; ++aNodeIdx)
+      {
+        if (!aDataSource->GetNodeNormal (aNodeIdx, theID, aNormalX, aNormalY, aNormalZ))
+          break;
+
+        aVertexNormals.Append (gp_XYZ (aNormalX, aNormalY, aNormalZ));
+      }
     }
 
-    if ( IsReflected )
+    if (!theIsSmoothShading || aVertexNormals.Size() != theNbNodes)
     {
-      if( IsMeshSmoothShading && allNormals )
-        aDS->GetNodeNormal (k, ID, nx, ny, nz);
-      thePolygons->AddVertex ( X, Y, Z, nx, ny, nz );
+      aDataSource->GetNormal (theID, theMaxNodes, aNormalX, aNormalY, aNormalZ);
     }
-    else
-      thePolygons->AddVertex ( X, Y, Z );
+  }
+
+  NCollection_Vector<gp_XYZ> aNodes (theMaxNodes);
+
+  for (Standard_Integer aNodeIdx = 0; aNodeIdx < theNbNodes; ++aNodeIdx)
+  {
+    gp_XYZ aPnt (theCoords (3 * aNodeIdx + 1),
+                 theCoords (3 * aNodeIdx + 2),
+                 theCoords (3 * aNodeIdx + 3));
+
+    if (theIsShrinked)
+    {
+      aPnt.SetX ((aPnt.X() - aCenterX) * theShrinkingCoef + aCenterX);
+      aPnt.SetY ((aPnt.Y() - aCenterY) * theShrinkingCoef + aCenterY);
+      aPnt.SetZ ((aPnt.Z() - aCenterZ) * theShrinkingCoef + aCenterZ);
+    }
+
+    aNodes.Append (aPnt);
+  }
+
+  // Triangulate polygon
+  for (Standard_Integer aNodeIdx = 0; aNodeIdx < theNbNodes - 2; ++aNodeIdx)
+  {
+    for (Standard_Integer aSubIdx = 0; aSubIdx < 3; ++aSubIdx)
+    {
+      if (theIsShaded)
+      {
+        if (theIsSmoothShading && aVertexNormals.Size() == theNbNodes)
+        {
+          aNormalX = aVertexNormals.Value (aSubIdx == 0 ? 0 : (aNodeIdx + aSubIdx)).X();
+          aNormalY = aVertexNormals.Value (aSubIdx == 0 ? 0 : (aNodeIdx + aSubIdx)).Y();
+          aNormalZ = aVertexNormals.Value (aSubIdx == 0 ? 0 : (aNodeIdx + aSubIdx)).Z();
+        }
+
+        theTriangles->AddVertex (aNodes.Value (aSubIdx == 0 ? 0 : (aNodeIdx + aSubIdx)).X(),
+                                 aNodes.Value (aSubIdx == 0 ? 0 : (aNodeIdx + aSubIdx)).Y(),
+                                 aNodes.Value (aSubIdx == 0 ? 0 : (aNodeIdx + aSubIdx)).Z(),
+                                 aNormalX,
+                                 aNormalY,
+                                 aNormalZ);
+      }
+      else
+      {
+        theTriangles->AddVertex (aNodes.Value (aSubIdx == 0 ? 0 : (aNodeIdx + aSubIdx)).X(),
+                                 aNodes.Value (aSubIdx == 0 ? 0 : (aNodeIdx + aSubIdx)).Y(),
+                                 aNodes.Value (aSubIdx == 0 ? 0 : (aNodeIdx + aSubIdx)).Z());
+      }
+    }
   }
 }
 
@@ -669,171 +824,178 @@ void MeshVS_MeshPrsBuilder::AddFaceSolidPrs (const Standard_Integer ID,
 // Function : AddVolumePrs
 // Purpose  :
 //================================================================
-void MeshVS_MeshPrsBuilder::AddVolumePrs (const Handle( MeshVS_HArray1OfSequenceOfInteger )& Topo,
-                                          const TColStd_Array1OfReal& Nodes,
-                                          const Standard_Integer NbNodes,
-                                          const Handle( Graphic3d_ArrayOfPrimitives )& Array,
-                                          const Standard_Boolean IsReflected,
-                                          const Standard_Boolean IsShrinked,
-                                          const Standard_Boolean IsSelect,
-                                          const Standard_Real ShrinkCoef)
+void MeshVS_MeshPrsBuilder::AddVolumePrs (const Handle(MeshVS_HArray1OfSequenceOfInteger)& theTopo,
+                                          const TColStd_Array1OfReal&                      theNodes,
+                                          const Standard_Integer                           theNbNodes,
+                                          const Handle(Graphic3d_ArrayOfPrimitives)&       theArray,
+                                          const Standard_Boolean                           theIsShaded,
+                                          const Standard_Boolean                           theIsShrinked,
+                                          const Standard_Boolean                           theIsSelected,
+                                          const Standard_Real                              theShrinkCoef)
 {
-  Standard_Real c[3]; c[0] = c[1] = c[2] = 0.0;
-  Standard_Integer low = Nodes.Lower(), n=NbNodes;
+  Standard_Real aCenter[] = { 0.0, 0.0, 0.0 };
 
-  if( Topo.IsNull() || Array.IsNull() )
+  Standard_Integer aLow = theNodes.Lower();
+
+  if (theTopo.IsNull() || theArray.IsNull())
     return;
 
-  if( IsShrinked )
+  if (theIsShrinked)
   {
-    for( Standard_Integer i=0; i<3*n; i++ )
-      c[i%3] += Nodes.Value( low + i );
+    for (Standard_Integer aNodeIdx = 0; aNodeIdx < 3 * theNbNodes; ++aNodeIdx)
+    {
+      aCenter[aNodeIdx % 3] += theNodes.Value (aLow + aNodeIdx);
+    }
 
-    c[0] /= n;
-    c[1] /= n;
-    c[2] /= n;
+    aCenter[0] /= theNbNodes;
+    aCenter[1] /= theNbNodes;
+    aCenter[2] /= theNbNodes;
   }
 
-  Standard_Boolean IsPolygons = Array->IsKind( STANDARD_TYPE( Graphic3d_ArrayOfPolygons ) );
-  Standard_Real x[2], y[2], z[2];
-  Standard_Integer ind;
-  gp_Vec norm;  
+  Standard_Boolean aIsPolygons = theArray->IsKind (STANDARD_TYPE (Graphic3d_ArrayOfTriangles));
 
-  if( IsPolygons )
-  {    
-    for( Standard_Integer i=Topo->Lower(), topoup=Topo->Upper(); i<=topoup; i++ )
+  if (aIsPolygons)
+  {
+    for (Standard_Integer aFaceIdx = theTopo->Lower(), topoup = theTopo->Upper(); aFaceIdx <= topoup; ++aFaceIdx)
     {
-      const TColStd_SequenceOfInteger& aSeq = Topo->Value( i );
+      const TColStd_SequenceOfInteger& aFaceNodes = theTopo->Value (aFaceIdx);
+      const Standard_Integer aNbPolyNodes = aFaceNodes.Length();
       
-      Standard_Integer m = aSeq.Length();
-      Array->AddBound( m );
-      
-      norm.SetCoord( 0, 0, 0 );
-      if( IsReflected )
+      Standard_Real* aPolyNodesBuf = (Standard_Real*) alloca ((3 * aNbPolyNodes + 1) * sizeof (Standard_Real));
+      TColStd_Array1OfReal aPolyNodes (*aPolyNodesBuf, 0, 3 * aNbPolyNodes);
+
+      for (Standard_Integer aNodeIdx = 0; aNodeIdx < aNbPolyNodes; ++aNodeIdx)
       {
-        MeshVS_Buffer PolyNodesBuf (3*m*sizeof(Standard_Real));
-        TColStd_Array1OfReal PolyNodes( PolyNodesBuf, 0, 3*m );
-        PolyNodes.SetValue( 0, m );
-        for( Standard_Integer j=1; j<=m; j++ )
-        {          
-          ind = aSeq.Value( j );
-          PolyNodes.SetValue( 3*j-2, Nodes.Value( low+3*ind ) );
-          PolyNodes.SetValue( 3*j-1, Nodes.Value( low+3*ind+1 ) );
-          PolyNodes.SetValue( 3*j,   Nodes.Value( low+3*ind+2 ) );
+        Standard_Integer anIdx = aFaceNodes.Value (aNodeIdx + 1);
+
+        Standard_Real aX = theNodes.Value (aLow + 3 * anIdx + 0);
+        Standard_Real aY = theNodes.Value (aLow + 3 * anIdx + 1);
+        Standard_Real aZ = theNodes.Value (aLow + 3 * anIdx + 2);
+
+        if (theIsShrinked)
+        {
+          aX = aCenter[0] + theShrinkCoef * (aX - aCenter[0]);
+          aY = aCenter[1] + theShrinkCoef * (aY - aCenter[1]);
+          aZ = aCenter[2] + theShrinkCoef * (aZ - aCenter[2]);
         }
 
-        // compute normal
-        // if( !MeshVS_Tool::GetNormal( PolyNodes, norm ) )
-        //   norm.SetCoord( 0, 0, 0 );
-        MeshVS_Tool::GetAverageNormal( PolyNodes, norm );
+        aPolyNodes.SetValue (3 * aNodeIdx + 1, aX);
+        aPolyNodes.SetValue (3 * aNodeIdx + 2, aY);
+        aPolyNodes.SetValue (3 * aNodeIdx + 3, aZ);
+      }
+      
+      gp_Vec aNorm;
+
+      if (theIsShaded)
+      {
+        aPolyNodes.SetValue (0, aNbPolyNodes);
+        
+        if (!MeshVS_Tool::GetAverageNormal (aPolyNodes, aNorm))
+        {
+          aNorm.SetCoord (0.0, 0.0, 1.0);
+        }
       }
 
-      Standard_Real nx = norm.X(), ny = norm.Y(), nz = norm.Z();
-       
-
-      for( Standard_Integer j=1; j<=m; j++ )
+      for (Standard_Integer aNodeIdx = 0; aNodeIdx < aNbPolyNodes - 2; ++aNodeIdx) // triangulate polygon
       {
-        ind = aSeq.Value( j );
-        x[0] = Nodes.Value( low + 3*ind   );
-        y[0] = Nodes.Value( low + 3*ind+1 );
-        z[0] = Nodes.Value( low + 3*ind+2 );
-
-        if( IsShrinked )
+        for (Standard_Integer aSubIdx = 0; aSubIdx < 3; ++aSubIdx) // generate sub-triangle
         {
-          x[0] = c[0] + ShrinkCoef * ( x[0]-c[0] );
-          y[0] = c[1] + ShrinkCoef * ( y[0]-c[1] );
-          z[0] = c[2] + ShrinkCoef * ( z[0]-c[2] );
+          if (theIsShaded)
+          {
+            theArray->AddVertex (aPolyNodes.Value (3 * (aSubIdx == 0 ? 0 : (aNodeIdx + aSubIdx)) + 1),
+                                 aPolyNodes.Value (3 * (aSubIdx == 0 ? 0 : (aNodeIdx + aSubIdx)) + 2),
+                                 aPolyNodes.Value (3 * (aSubIdx == 0 ? 0 : (aNodeIdx + aSubIdx)) + 3),
+                                 aNorm.X(),
+                                 aNorm.Y(),
+                                 aNorm.Z());
+          }
+          else
+          {
+            theArray->AddVertex (aPolyNodes.Value (3 * (aSubIdx == 0 ? 0 : (aNodeIdx + aSubIdx)) + 1),
+                                 aPolyNodes.Value (3 * (aSubIdx == 0 ? 0 : (aNodeIdx + aSubIdx)) + 2),
+                                 aPolyNodes.Value (3 * (aSubIdx == 0 ? 0 : (aNodeIdx + aSubIdx)) + 3));
+          }
         }
-    
-        if( IsReflected )
-          Array->AddVertex( x[0], y[0], z[0], nx, ny, nz );
-        else
-          Array->AddVertex( x[0], y[0], z[0] );
       }
     }
   }
-  else if( IsSelect )
+  else if (theIsSelected)
   {
-    for( Standard_Integer i=Topo->Lower(), topoup=Topo->Upper(); i<=topoup; i++ )
+    for (Standard_Integer aFaceIdx = theTopo->Lower(), topoup = theTopo->Upper(); aFaceIdx <= topoup; ++aFaceIdx)
     {
-      const TColStd_SequenceOfInteger& aSeq = Topo->Value( i );
-      Standard_Real pc[3]; pc[0] = pc[1] = pc[2] = 0;
-      Standard_Integer j,m;
-      for( j=1, m=aSeq.Length(); j<=m; j++ )
-      {
-        ind = aSeq.Value( j );
-        for( Standard_Integer k=0; k<3; k++ )
-          pc[k] += Nodes.Value( low + 3*ind+k );
-      }
-      pc[0] /= m;
-      pc[1] /= m;
-      pc[2] /= m;
+      const TColStd_SequenceOfInteger& aFaceNodes = theTopo->Value (aFaceIdx);
 
-      Array->AddBound( m+1 );
-      for( j=1, m=aSeq.Length(); j<=m+1; j++ )
+      Standard_Real aFaceCenter[] = { 0.0, 0.0, 0.0 };
+
+      for (Standard_Integer aNodeIdx = 1; aNodeIdx <= aFaceNodes.Length(); ++aNodeIdx)
       {
-        ind = aSeq.Value( (j-1)%m + 1 );
-        x[0] = Nodes.Value( low + 3*ind   );
-        y[0] = Nodes.Value( low + 3*ind+1 );
-        z[0] = Nodes.Value( low + 3*ind+2 );
-        x[0] = pc[0] + ShrinkCoef * ( x[0]-pc[0] );
-        y[0] = pc[1] + ShrinkCoef * ( y[0]-pc[1] );
-        z[0] = pc[2] + ShrinkCoef * ( z[0]-pc[2] );
-        Array->AddVertex( x[0], y[0], z[0] );
+        for (Standard_Integer aAxisIdx = 0; aAxisIdx < 3; ++aAxisIdx)
+        {
+          aFaceCenter[aAxisIdx] += theNodes.Value (aLow + 3 * aFaceNodes.Value (aNodeIdx) + aAxisIdx);
+        }
+      }
+
+      aFaceCenter[0] /= aFaceNodes.Length();
+      aFaceCenter[1] /= aFaceNodes.Length();
+      aFaceCenter[2] /= aFaceNodes.Length();
+
+      for (Standard_Integer aNodeIdx = 0, aNbNodes = aFaceNodes.Length(); aNodeIdx < aNbNodes; ++aNodeIdx)
+      {
+        for (Standard_Integer aSubIdx = 0; aSubIdx < 2; ++aSubIdx) // add segment
+        {
+          Standard_Integer anIdx = aFaceNodes.Value ((aNodeIdx + aSubIdx) % aNbNodes + 1);
+
+          Standard_Real aX = theNodes.Value (aLow + 3 * anIdx + 0);
+          Standard_Real aY = theNodes.Value (aLow + 3 * anIdx + 1);
+          Standard_Real aZ = theNodes.Value (aLow + 3 * anIdx + 2);
+
+          theArray->AddVertex (aFaceCenter[0] + theShrinkCoef * (aX - aFaceCenter[0]),
+                               aFaceCenter[1] + theShrinkCoef * (aY - aFaceCenter[1]),
+                               aFaceCenter[2] + theShrinkCoef * (aZ - aFaceCenter[2]));
+        }
       }
     }
   }
   else
   {
-    Standard_Integer F, S=0, k;
+    // Find all pairs of nodes (edges) to draw (will be drawn only once)
+    NCollection_Map<MeshVS_NodePair, MeshVS_SymmetricPairHasher> aEdgeMap;
 
-    // Find all pairs of nodes (edges) to draw;
-    // map is used to ensure that each edge will be drawn only once
-    TColStd_PackedMapOfInteger aMap;
-    for( Standard_Integer i=Topo->Lower(), topoup=Topo->Upper(); i<=topoup; i++ )
+    for (Standard_Integer aFaceIdx = theTopo->Lower(), topoup = theTopo->Upper(); aFaceIdx <= topoup; ++aFaceIdx)
     {
-      const TColStd_SequenceOfInteger& aSeq = Topo->Value( i );
-      for( Standard_Integer j=1, m=aSeq.Length(); j<=m; j++ )
+      const TColStd_SequenceOfInteger& aFaceNodes = theTopo->Value (aFaceIdx);
+      
+      for (Standard_Integer aNodeIdx = 0, aNbNodes = aFaceNodes.Length(); aNodeIdx < aNbNodes; ++aNodeIdx)
       {
-        if( j==1 )
-          F = aSeq.Value( j );
-        else
-          F = S;
+        const Standard_Integer aNextIdx = (aNodeIdx + 1) % aNbNodes;
 
-        S = j<m ? aSeq.Value( j+1 ) : aSeq.Value( 1 );
-
-        if( F<S )
-          aMap.Add( F + NbNodes * S );
-        else
-          aMap.Add( S + NbNodes * F );
+        aEdgeMap.Add (MeshVS_NodePair (aFaceNodes.Value (aNodeIdx + 1),
+                                       aFaceNodes.Value (aNextIdx + 1)));
       }
     }
 
-    // draw edges
-    TColStd_MapIteratorOfPackedMapOfInteger anIt( aMap );
-    for( ; anIt.More(); anIt.Next() )
+    // Draw edges
+    for(NCollection_Map<MeshVS_NodePair, MeshVS_SymmetricPairHasher>::Iterator anIt (aEdgeMap); anIt.More(); anIt.Next())
     {      
-      F = low + 3*(anIt.Key()%NbNodes);
-      S = low + 3*(anIt.Key()/NbNodes);
+      const Standard_Integer anIdx1 = aLow + 3 * anIt.Key().first;
+      const Standard_Integer anIdx2 = aLow + 3 * anIt.Key().second;
 
-      x[0] = Nodes.Value( F );
-      y[0] = Nodes.Value( F+1 );
-      z[0] = Nodes.Value( F+2 );
-      x[1] = Nodes.Value( S );
-      y[1] = Nodes.Value( S+1 );
-      z[1] = Nodes.Value( S+2 );
+      Standard_Real aX[] = { theNodes.Value (anIdx1 + 0), theNodes.Value (anIdx2 + 0) };
+      Standard_Real aY[] = { theNodes.Value (anIdx1 + 1), theNodes.Value (anIdx2 + 1) };
+      Standard_Real aZ[] = { theNodes.Value (anIdx1 + 2), theNodes.Value (anIdx2 + 2) };
 
-      if( IsShrinked )
-        for( k=0; k<2; k++ )
+      if (theIsShrinked)
+      {
+        for (Standard_Integer anAxisIdx = 0; anAxisIdx < 2; ++anAxisIdx)
         {
-          x[k] = c[0] + ShrinkCoef * ( x[k]-c[0] );
-          y[k] = c[1] + ShrinkCoef * ( y[k]-c[1] );
-          z[k] = c[2] + ShrinkCoef * ( z[k]-c[2] );
+          aX[anAxisIdx] = aCenter[0] + theShrinkCoef * (aX[anAxisIdx] - aCenter[0]);
+          aY[anAxisIdx] = aCenter[1] + theShrinkCoef * (aY[anAxisIdx] - aCenter[1]);
+          aZ[anAxisIdx] = aCenter[2] + theShrinkCoef * (aZ[anAxisIdx] - aCenter[2]);
         }
+      }
 
-      Array->AddBound( 2 );
-      Array->AddVertex( x[0], y[0], z[0] );
-      Array->AddVertex( x[1], y[1], z[1] );
+      theArray->AddVertex (aX[0], aY[0], aZ[0]);
+      theArray->AddVertex (aX[1], aY[1], aZ[1]);
     }
   }
 }
@@ -877,10 +1039,10 @@ void MeshVS_MeshPrsBuilder::HowManyPrimitives (const Handle(MeshVS_HArray1OfSequ
 // Purpose  :
 //================================================================
 void MeshVS_MeshPrsBuilder::DrawArrays( const Handle(Prs3d_Presentation)& Prs,
-                                        const Handle(Graphic3d_ArrayOfPolygons)& thePolygons,
-                                        const Handle(Graphic3d_ArrayOfPolylines)& theLines,
-                                        const Handle(Graphic3d_ArrayOfPolylines)& theLinkLines,
-                                        const Handle(Graphic3d_ArrayOfPolygons)& theVolumesInShad,
+                                        const Handle(Graphic3d_ArrayOfPrimitives)& thePolygons,
+                                        const Handle(Graphic3d_ArrayOfPrimitives)& theLines,
+                                        const Handle(Graphic3d_ArrayOfPrimitives)& theLinkLines,
+                                        const Handle(Graphic3d_ArrayOfPrimitives)& theVolumesInShad,
                                         const Standard_Boolean IsPolygonsEdgesOff,
                                         const Standard_Boolean IsSelected,
                                         const Handle(Graphic3d_AspectFillArea3d)& theFillAsp,

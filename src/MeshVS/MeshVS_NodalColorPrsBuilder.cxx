@@ -22,6 +22,8 @@
 #include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_ArrayOfPolygons.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
+#include <Graphic3d_ArrayOfSegments.hxx>
+#include <Graphic3d_ArrayOfTriangles.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Graphic3d_TextureParams.hxx>
 
@@ -45,6 +47,8 @@
 #include <MeshVS_MeshPrsBuilder.hxx>
 #include <MeshVS_HArray1OfSequenceOfInteger.hxx>
 #include <MeshVS_Buffer.hxx>
+#include <MeshVS_Tool.hxx>
+#include <MeshVS_SymmetricPairHasher.hxx>
 
 #include <gp_Pnt.hxx>
 #include <Image_PixMap.hxx>
@@ -55,6 +59,9 @@
 #include <AIS_Drawer.hxx>
 #include <Quantity_Array1OfColor.hxx>
 #include <Aspect_SequenceOfColor.hxx>
+
+#include <NCollection_Map.hxx>
+#include <NCollection_Vector.hxx>
 
 /*
   Class       : MeshVS_ImageTexture2D
@@ -146,7 +153,7 @@ void MeshVS_NodalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
        (!myUseTexture && !myNodeColorMap.Extent()) )
     return;
 
-  // subtract the hidden elements and ids to exclude (to minimise allocated memory)
+  // subtract the hidden elements and ids to exclude (to minimize allocated memory)
   TColStd_PackedMapOfInteger anIDs;
   anIDs.Assign( IDs );
   Handle(TColStd_HPackedMapOfInteger) aHiddenElems = myParentMesh->GetHiddenElems();
@@ -223,10 +230,54 @@ void MeshVS_NodalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
     ( aMaxFaceNodes * aSize + PolygonVerticesFor3D, aSize + PolygonBoundsFor3D,
     0, myUseTexture || IsReflect, !myUseTexture, Standard_False, myUseTexture );
 
+    Standard_Integer aNbFacePrimitives = 0;
+    Standard_Integer aNbVolmPrimitives = 0;
+    Standard_Integer aNbEdgePrimitives = 0;
+    Standard_Integer aNbLinkPrimitives = 0;
+
+    for (it.Reset(); it.More(); it.Next())
+    {
+      Standard_Integer aNbNodes = 0;
+
+      if (!aSource->GetGeom (it.Key(), Standard_True, aCoords, aNbNodes, aType))
+        continue;
+
+      if (aType == MeshVS_ET_Volume)
+      {
+        if (aSource->Get3DGeom (it.Key(), aNbNodes, aTopo))
+        {
+          for (Standard_Integer aFaceIdx = aTopo->Lower(); aFaceIdx <= aTopo->Upper(); ++aFaceIdx)
+          {
+            const TColStd_SequenceOfInteger& aFaceNodes = aTopo->Value (aFaceIdx);
+
+            aNbEdgePrimitives += aFaceNodes.Length();     // add edge segments
+            aNbVolmPrimitives += aFaceNodes.Length() - 2; // add volumetric cell triangles
+          }
+        }
+      }
+      else if (aType == MeshVS_ET_Link)
+      {
+        aNbLinkPrimitives += aNbNodes - 1; // add link segments
+      }
+      else if (aType == MeshVS_ET_Face)
+      {
+        aNbEdgePrimitives += aNbNodes;     // add edge segments
+        aNbFacePrimitives += aNbNodes - 2; // add face triangles
+      }
+    }
+
+  // Here we do not use indices arrays because they are not effective for some mesh
+  // drawing modes: shrinking mode (displaces the vertices inside the polygon), 3D
+  // cell rendering (normal interpolation is not always applicable - flat shading),
+  // elemental coloring (color interpolation is impossible)
+
+  // Create array of polygons for interior presentation of faces and volumes
+  Handle(Graphic3d_ArrayOfTriangles) aFaceTriangles = new Graphic3d_ArrayOfTriangles
+    ( (aNbFacePrimitives + aNbVolmPrimitives) * 3, 0, myUseTexture || IsReflect, !myUseTexture, myUseTexture );
+
   // Create array of polylines for presentation of edges
-  // (used for optimization insted of SetEdgeOn method call)
-  Handle(Graphic3d_ArrayOfPolylines) aPolyL = new Graphic3d_ArrayOfPolylines
-    ( ( aMaxFaceNodes + 1 ) * aSize + PolygonVerticesFor3D, aSize + PolygonBoundsFor3D );
+  Handle(Graphic3d_ArrayOfSegments) anEdgeSegments = new Graphic3d_ArrayOfSegments
+    (aNbEdgePrimitives * 2);
 
   gp_Pnt P, Start;
   Standard_Real aMin = gp::Resolution() * gp::Resolution();
@@ -235,204 +286,132 @@ void MeshVS_NodalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
   // Prepare for scaling the incoming colors
   Standard_Real anColorRatio = aMaterial[0].Ambient();
 
-  for( it.Reset(); it.More(); it.Next() )
+  for (it.Reset(); it.More(); it.Next())
   {
     Standard_Integer aKey = it.Key();
-    if ( aSource->GetGeom  ( aKey, Standard_True, aCoords, NbNodes, aType ) )
+
+    if (aSource->GetGeom (aKey, Standard_True, aCoords, NbNodes, aType))
     {
-      MeshVS_Buffer aNodesBuf (NbNodes*sizeof(Standard_Integer));
-      TColStd_Array1OfInteger aNodes(aNodesBuf, 1, NbNodes);
-      if ( !aSource->GetNodesByElement ( aKey, aNodes, NbNodes ) )
+      TColStd_Array1OfInteger aNodes (1, NbNodes);
+      
+      if (!aSource->GetNodesByElement (aKey, aNodes, NbNodes))
         continue;
 
       Quantity_Color aNColor;
 
       Standard_Boolean isValid = Standard_True;
       Standard_Integer i;
-      if ( myUseTexture )
+      
+      if (myUseTexture)
       {
-        for ( i = 1; i <= NbNodes && isValid; i++ )
-          isValid = myTextureCoords.IsBound( aNodes( i ) );
+        for (i = 1; i <= NbNodes && isValid; ++i)
+          isValid = myTextureCoords.IsBound (aNodes (i));
       }
       else
       {
-        for ( i = 1; i <= NbNodes && isValid; i++ )
-          isValid = GetColor ( aNodes( i ), aNColor );
+        for (i = 1; i <= NbNodes && isValid; ++i)
+          isValid = GetColor (aNodes (i), aNColor);
       }
 
-      if ( !isValid )
+      if (!isValid)
         continue;
 
       // Preparing normal(s) to show reflections if requested
       Handle(TColStd_HArray1OfReal) aNormals;
+
       Standard_Boolean hasNormals =
-        ( IsReflect && aSource->GetNormalsByElement( aKey, IsMeshSmoothShading, aMaxFaceNodes, aNormals ) );
+        (IsReflect && aSource->GetNormalsByElement (aKey, IsMeshSmoothShading, aMaxFaceNodes, aNormals));
 
-      if ( aType == MeshVS_ET_Face )
+      if (aType == MeshVS_ET_Face)
       {
-        aCPolyArr->AddBound ( NbNodes );
-        aPolyL->AddBound ( NbNodes + 1 );
-
-        for ( i = 1; i <= NbNodes; i++)
+        for (Standard_Integer aNodeIdx = 0; aNodeIdx < NbNodes - 2; ++aNodeIdx) // triangulate polygon
         {
-          P = gp_Pnt( aCoords( 3 * i - 2 ), aCoords( 3 * i - 1 ), aCoords( 3 * i ) );
-          if ( myUseTexture )
+          for (Standard_Integer aSubIdx = 0; aSubIdx < 3; ++aSubIdx) // generate sub-triangle
           {
-            int anId = aNodes( i );
-            double aTexCoord = myTextureCoords( anId );
+            gp_XYZ aPnt (aCoords (3 * (aSubIdx == 0 ? 0 : (aNodeIdx + aSubIdx)) + 1),
+                         aCoords (3 * (aSubIdx == 0 ? 0 : (aNodeIdx + aSubIdx)) + 2),
+                         aCoords (3 * (aSubIdx == 0 ? 0 : (aNodeIdx + aSubIdx)) + 3));
 
-            // transform texture coordinate in accordance with number of colors specified
-            // by upper level and real size of Gl texture
-            // The Gl texture has border colors interpolated with the colors from the color map,
-            // thats why we need to shrink texture coordinates around the middle point to
-            // exclude areas where the map colors are interpolated with the borders color
-            double aWrapCoord = 1.0 / (2.0 * nbTextureColors) + aTexCoord * (nbColors - 1.0) / nbTextureColors;
+            gp_Vec aNorm = aDefNorm;
 
-            if ( hasNormals )
+            if (hasNormals)
             {
-              gp_Vec aNorm(aNormals->Value( 3 * i - 2 ),
-                           aNormals->Value( 3 * i - 1 ),
-                           aNormals->Value( 3 * i     ));
-              // There are two "rows" of colors: user's invalid color at the top
-              // of texture and line of map colors at the bottom of the texture.
-              // Since the texture has borders, which are interpolated with the "rows" of colors
-              // we should specify the 0.25 offset to get the correct texture color
-              aNorm.SquareMagnitude() > aMin ?
-                aCPolyArr->AddVertex(P, gp_Dir( aNorm ),
-                  gp_Pnt2d( aWrapCoord, aTexCoord >= 0 && aTexCoord <= 1 ? 0.75 : 0.25 ) ) :
-                aCPolyArr->AddVertex(P, aDefNorm,
-                  gp_Pnt2d( aWrapCoord, aTexCoord >= 0 && aTexCoord <= 1 ? 0.75 : 0.25 ) );
+              gp_Vec aTestNorm (aNormals->Value (3 * (aSubIdx == 0 ? 0 : (aNodeIdx + aSubIdx)) + 1),
+                                aNormals->Value (3 * (aSubIdx == 0 ? 0 : (aNodeIdx + aSubIdx)) + 2),
+                                aNormals->Value (3 * (aSubIdx == 0 ? 0 : (aNodeIdx + aSubIdx)) + 3));
+
+              if (aTestNorm.SquareMagnitude() > aMin)
+              {
+                aNorm = gp_Dir (aTestNorm);
+              }
+            }
+
+            if (myUseTexture)
+            {
+              const Standard_Real aTexCoord = myTextureCoords (aNodes (aSubIdx == 0 ? 1 : (aNodeIdx + aSubIdx + 1)));
+
+              // Transform texture coordinate in accordance with number of colors specified
+              // by upper level and real size of OpenGL texture. The OpenGL texture has border
+              // colors interpolated with the colors from the color map, thats why we need to
+              // shrink texture coordinates around the middle point to exclude areas where the
+              // map colors are interpolated with the borders color
+              aFaceTriangles->AddVertex (aPnt, aNorm, gp_Pnt2d (
+                (aTexCoord * (nbColors - 1.0) + 0.5) / nbTextureColors, aTexCoord < 0 || aTexCoord > 1 ? 0.25 : 0.75));
             }
             else
-              aCPolyArr->AddVertex( P, aDefNorm,
-                gp_Pnt2d( aWrapCoord, aTexCoord >= 0 && aTexCoord <= 1 ? 0.75 : 0.25 ) );
-          }
-          else
-          {
-            GetColor ( aNodes( i ), aNColor );
-
-            if ( IsReflect )
             {
-              // Simulating TelUpdateMaterial() from OpenGl_attri.c
-              // to get the same colors in elemental and nodal color prs builders
-              aNColor.SetValues(anColorRatio * aNColor.Red(),
-                                anColorRatio * aNColor.Green(),
-                                anColorRatio * aNColor.Blue(),
-                                Quantity_TOC_RGB);
-
-              if ( hasNormals )
+              GetColor (aNodes (aSubIdx == 0 ? 1 : (aNodeIdx + aSubIdx + 1)), aNColor);
+              
+              if (IsReflect)
               {
-                gp_Vec aNorm(aNormals->Value( 3 * i - 2 ),
-                  aNormals->Value( 3 * i - 1 ),
-                  aNormals->Value( 3 * i     ));
-                aNorm.SquareMagnitude() > aMin ?
-                  aCPolyArr->AddVertex(P, gp_Dir( aNorm ), aNColor ) :
-                aCPolyArr->AddVertex(P, aDefNorm       , aNColor );
+                aNColor.SetValues (anColorRatio * aNColor.Red(),
+                                   anColorRatio * aNColor.Green(),
+                                   anColorRatio * aNColor.Blue(),
+                                   Quantity_TOC_RGB);
+
+                aFaceTriangles->AddVertex (aPnt, aNorm, aNColor);
               }
               else
-                aCPolyArr->AddVertex(P, aDefNorm, aNColor );
+              {
+                aFaceTriangles->AddVertex (aPnt, aNColor);
+              }
             }
-            else
-              aCPolyArr->AddVertex( P, aNColor );
           }
-          aPolyL->AddVertex ( P );
-          if ( i == 1 )
-            Start = P;
         }
-        aPolyL->AddVertex ( Start );
+
+        for (Standard_Integer aNodeIdx = 0; aNodeIdx < NbNodes; ++aNodeIdx) // border segmentation
+        {
+          const Standard_Integer aNextIdx = (aNodeIdx + 1) % NbNodes;
+
+          anEdgeSegments->AddVertex (aCoords (3 * aNodeIdx + 1),
+                                     aCoords (3 * aNodeIdx + 2),
+                                     aCoords (3 * aNodeIdx + 3));
+
+          anEdgeSegments->AddVertex (aCoords (3 * aNextIdx + 1),
+                                     aCoords (3 * aNextIdx + 2),
+                                     aCoords (3 * aNextIdx + 3));
+        }
 
         // if IsExcludingOn then presentation must not be built by other builders
-        if ( IsExcludingOn() )
-          IDsToExclude.Add( aKey );
+        if (IsExcludingOn())
+        {
+          IDsToExclude.Add (aKey);
+        }
       }
-      else if ( aType == MeshVS_ET_Volume )
+      else if (aType == MeshVS_ET_Volume)
       {
-        if ( !aSource->Get3DGeom( aKey, NbNodes, aTopo ) )
+        if (!aSource->Get3DGeom (aKey, NbNodes, aTopo))
           continue;
 
-        // iterate through faces of volume
-        for ( Standard_Integer k = aTopo->Lower(), last = aTopo->Upper(), normIndex = 1; k <= last; k++, normIndex++ )
-        {
-          const TColStd_SequenceOfInteger& aSeq = aTopo->Value( k );
-          Standard_Integer m = aSeq.Length(), ind;
-
-          // build polygon & polylines for current face
-          aCPolyArr->AddBound( m );
-          aPolyL->AddBound( m + 1 );
-          for ( Standard_Integer j = 1; j <= m; j++ )
-          {
-            ind = aSeq.Value( j );
-            P = gp_Pnt( aCoords( 3 * ind + 1 ),
-                        aCoords( 3 * ind + 2 ),
-                        aCoords( 3 * ind + 3 ) );
-            if ( myUseTexture )
-            {
-              Standard_Integer anId = aNodes( ind + 1 );
-              Standard_Real aTexCoord = myTextureCoords( anId );
-
-              // transform texture coordinate in accordance with number of colors specified
-              // by upper level and real size of Gl texture
-              // The Gl texture has border colors interpolated with the colors from the color map,
-              // thats why we need to shrink texture coordinates around the middle point to
-              // exclude areas where the map colors are interpolated with the borders color
-              double aWrapCoord = 1.0 / (2.0 * nbTextureColors) + aTexCoord * (nbColors - 1.0) / nbTextureColors;
-
-              if ( hasNormals )
-              {
-                gp_Vec aNorm(aNormals->Value( 3 * i - 2 ),
-                             aNormals->Value( 3 * i - 1 ),
-                             aNormals->Value( 3 * i     ));
-                // There are two "rows" of colors: user's invalid color at the top
-                // of texture and line of map colors at the bottom of the texture.
-                // Since the texture has borders, which are interpolated with the "rows" of colors
-                // we should specify the 0.25 offset to get the correct texture color
-                aNorm.SquareMagnitude() > aMin ?
-                  aCPolyArr->AddVertex(P, gp_Dir( aNorm ),
-                    gp_Pnt2d( aWrapCoord, aTexCoord >= 0 && aTexCoord <= 1 ? 0.75 : 0.25 ) ) :
-                  aCPolyArr->AddVertex(P, aDefNorm,
-                    gp_Pnt2d( aWrapCoord, aTexCoord >= 0 && aTexCoord <= 1 ? 0.75 : 0.25 ) );
-              }
-              else
-                aCPolyArr->AddVertex( P, aDefNorm,
-                  gp_Pnt2d( aWrapCoord, aTexCoord >= 0 && aTexCoord <= 1 ? 0.75 : 0.25 ) );
-            }
-            else
-            {
-              GetColor( aNodes( ind + 1 ), aNColor );
-              if  ( IsReflect )
-              {
-                // Simulating TelUpdateMaterial() from OpenGl_attri.c
-                // to get the same colors in elemental and nodal color prs builders
-                aNColor.SetValues(anColorRatio * aNColor.Red(),
-                                  anColorRatio * aNColor.Green(),
-                                  anColorRatio * aNColor.Blue(),
-                                  Quantity_TOC_RGB);
-
-                if ( hasNormals )
-                {
-                  gp_Vec aNorm(aNormals->Value( 3 * normIndex - 2 ),
-                    aNormals->Value( 3 * normIndex - 1 ),
-                    aNormals->Value( 3 * normIndex ));
-                  aNorm.SquareMagnitude() > aMin ?
-                    aCPolyArr->AddVertex( P, gp_Dir( aNorm ), aNColor ) :
-                  aCPolyArr->AddVertex( P, aDefNorm       , aNColor );
-                }
-                else
-                  aCPolyArr->AddVertex( P, aDefNorm, aNColor );
-              }
-              else
-                aCPolyArr->AddVertex( P, aNColor );
-            }
-            aPolyL->AddVertex ( P );
-            if ( j == 1 )
-              Start = P;
-          }
-          aPolyL->AddVertex ( Start );
-        }
+        AddVolumePrs (aTopo, aNodes, aCoords, aFaceTriangles,
+          IsReflect, nbColors, nbTextureColors, anColorRatio);
+        
+        AddVolumePrs (aTopo, aNodes, aCoords, anEdgeSegments,
+          IsReflect, nbColors, nbTextureColors, anColorRatio);
 
         // if IsExcludingOn then presentation must not be built by other builders
-        if ( IsExcludingOn() )
-          IDsToExclude.Add( aKey );
+        if (IsExcludingOn())
+          IDsToExclude.Add (aKey);
       }
     }
   } // for ( ...
@@ -500,7 +479,8 @@ void MeshVS_NodalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
   Handle(Graphic3d_Group) aGroup1 = Prs3d_Root::CurrentGroup ( Prs );
 
   aGroup1->SetPrimitivesAspect( anAsp );
-  aGroup1->AddPrimitiveArray( aCPolyArr );
+  aGroup1->AddPrimitiveArray( aFaceTriangles /*aCPolyArr*/ );
+  //aGroup1->AddPrimitiveArray( aCPolyArr );
 
   if (aShowEdges)
   {
@@ -511,8 +491,133 @@ void MeshVS_NodalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
     anAsp->SetTextureMapOff();
     aGroup2->SetPrimitivesAspect( anAsp );
     aGroup2->SetPrimitivesAspect( anLAsp );
-    aGroup2->AddPrimitiveArray( aPolyL );
+    aGroup2->AddPrimitiveArray( anEdgeSegments );
     anAsp->SetEdgeOn();
+  }
+}
+
+//================================================================
+// Function : AddVolumePrs
+// Purpose  :
+//================================================================
+void MeshVS_NodalColorPrsBuilder::AddVolumePrs (const Handle(MeshVS_HArray1OfSequenceOfInteger)& theTopo,
+                                                const TColStd_Array1OfInteger&                   theNodes,
+                                                const TColStd_Array1OfReal&                      theCoords,
+                                                const Handle(Graphic3d_ArrayOfPrimitives)&       theArray,
+                                                const Standard_Boolean                           theIsShaded,
+                                                const Standard_Integer                           theNbColors,
+                                                const Standard_Integer                           theNbTexColors,
+                                                const Standard_Real                              theColorRatio) const
+{
+  Standard_Integer aLow = theCoords.Lower();
+
+  if (theTopo.IsNull() || theArray.IsNull())
+    return;
+
+  Standard_Boolean aIsPolygons = theArray->IsKind (STANDARD_TYPE (Graphic3d_ArrayOfTriangles));
+
+  if (aIsPolygons)
+  {    
+    for (Standard_Integer aFaceIdx = theTopo->Lower(), topoup = theTopo->Upper(); aFaceIdx <= topoup; ++aFaceIdx)
+    {
+      const TColStd_SequenceOfInteger& aFaceNodes = theTopo->Value (aFaceIdx);
+      
+      TColStd_Array1OfReal aPolyNodes (0, 3 * aFaceNodes.Length());
+
+      for (Standard_Integer aNodeIdx = 0; aNodeIdx < aFaceNodes.Length(); ++aNodeIdx)
+      {
+        Standard_Integer anIdx = aFaceNodes.Value (aNodeIdx + 1);
+
+        Standard_Real aX = theCoords.Value (aLow + 3 * anIdx + 0);
+        Standard_Real aY = theCoords.Value (aLow + 3 * anIdx + 1);
+        Standard_Real aZ = theCoords.Value (aLow + 3 * anIdx + 2);
+
+        aPolyNodes.SetValue (3 * aNodeIdx + 1, aX);
+        aPolyNodes.SetValue (3 * aNodeIdx + 2, aY);
+        aPolyNodes.SetValue (3 * aNodeIdx + 3, aZ);
+      }
+      
+      gp_Vec aNorm (0.0, 0.0, 1.0);
+
+      if (theIsShaded)
+      {
+        aPolyNodes.SetValue (0, aFaceNodes.Length());
+        
+        if (!MeshVS_Tool::GetAverageNormal (aPolyNodes, aNorm))
+        {
+          aNorm.SetCoord (0.0, 0.0, 1.0);
+        }
+      }
+
+      for (Standard_Integer aNodeIdx = 0; aNodeIdx < aFaceNodes.Length() - 2; ++aNodeIdx) // triangulate polygon
+      {
+        for (Standard_Integer aSubIdx = 0; aSubIdx < 3; ++aSubIdx) // generate sub-triangle
+        {
+          gp_Pnt aPnt (aPolyNodes.Value (3 * (aSubIdx == 0 ? 0 : (aNodeIdx + aSubIdx)) + 1),
+                       aPolyNodes.Value (3 * (aSubIdx == 0 ? 0 : (aNodeIdx + aSubIdx)) + 2),
+                       aPolyNodes.Value (3 * (aSubIdx == 0 ? 0 : (aNodeIdx + aSubIdx)) + 3));
+
+          if (myUseTexture)
+          {
+            const Standard_Real aTexCoord = myTextureCoords (theNodes (aFaceNodes (aSubIdx == 0 ? 1 : (aNodeIdx + aSubIdx + 1)) + 1));
+
+            theArray->AddVertex (aPnt, aNorm, gp_Pnt2d (
+              (aTexCoord * (theNbColors - 1.0) + 0.5) / theNbTexColors, aTexCoord < 0 || aTexCoord > 1 ? 0.25 : 0.75));
+          }
+          else
+          {
+            Quantity_Color aNColor;
+            GetColor (theNodes ((aFaceNodes (aSubIdx == 0 ? 1 : (aNodeIdx + aSubIdx + 1)) + 1)), aNColor);
+
+            if (theIsShaded)
+            {
+              aNColor.SetValues (theColorRatio * aNColor.Red(),
+                                 theColorRatio * aNColor.Green(),
+                                 theColorRatio * aNColor.Blue(),
+                                 Quantity_TOC_RGB);
+
+              theArray->AddVertex (aPnt, aNorm, aNColor);
+            }
+            else
+            {
+              theArray->AddVertex (aPnt, aNColor);
+            }
+          }
+        }
+      }
+    }
+  }
+  else
+  {
+    // Find all pairs of nodes (edges) to draw (will be drawn only once)
+    NCollection_Map<MeshVS_NodePair, MeshVS_SymmetricPairHasher> aEdgeMap;
+
+    for (Standard_Integer aFaceIdx = theTopo->Lower(), topoup = theTopo->Upper(); aFaceIdx <= topoup; ++aFaceIdx)
+    {
+      const TColStd_SequenceOfInteger& aFaceNodes = theTopo->Value (aFaceIdx);
+      
+      for (Standard_Integer aNodeIdx = 0, aNbNodes = aFaceNodes.Length(); aNodeIdx < aNbNodes; ++aNodeIdx)
+      {
+        const Standard_Integer aNextIdx = (aNodeIdx + 1) % aNbNodes;
+
+        aEdgeMap.Add (MeshVS_NodePair (aFaceNodes.Value (aNodeIdx + 1),
+                                       aFaceNodes.Value (aNextIdx + 1)));
+      }
+    }
+
+    // Draw edges
+    for(NCollection_Map<MeshVS_NodePair, MeshVS_SymmetricPairHasher>::Iterator anIt (aEdgeMap); anIt.More(); anIt.Next())
+    {      
+      const Standard_Integer anIdx1 = aLow + 3 * anIt.Key().first;
+      const Standard_Integer anIdx2 = aLow + 3 * anIt.Key().second;
+
+      Standard_Real aX[] = { theCoords.Value (anIdx1 + 0), theCoords.Value (anIdx2 + 0) };
+      Standard_Real aY[] = { theCoords.Value (anIdx1 + 1), theCoords.Value (anIdx2 + 1) };
+      Standard_Real aZ[] = { theCoords.Value (anIdx1 + 2), theCoords.Value (anIdx2 + 2) };
+
+      theArray->AddVertex (aX[0], aY[0], aZ[0]);
+      theArray->AddVertex (aX[1], aY[1], aZ[1]);
+    }
   }
 }
 
