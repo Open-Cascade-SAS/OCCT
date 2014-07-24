@@ -1806,8 +1806,8 @@ static Standard_Integer OCC23951 (Draw_Interpretor& di, Standard_Integer argc, c
 //=======================================================================
 static Standard_Integer OCC23950 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
-  if (argc != 1) {
-    di << "Usage: " << argv[0] << " invalid number of arguments" << "\n";
+  if (argc != 2) {
+    di << "Usage : " << argv[0] << " step_file\n";
     return 1;
   }
 
@@ -1837,7 +1837,7 @@ static Standard_Integer OCC23950 (Draw_Interpretor& di, Standard_Integer argc, c
     return 1;
   }
 
-  writer.Write ("test_point_assembly.step");
+  writer.Write (argv[1]);
   return 0;
 }
 
@@ -2687,7 +2687,7 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC23951", "OCC23951", __FILE__, OCC23951, group);
   theCommands.Add ("OCC24931", "OCC24931", __FILE__, OCC24931, group);
   theCommands.Add ("OCC24945", "OCC24945", __FILE__, OCC24945, group);
-  theCommands.Add ("OCC23950", "OCC23950", __FILE__, OCC23950, group);
+  theCommands.Add ("OCC23950", "OCC23950 step_file", __FILE__, OCC23950, group);
   theCommands.Add ("OCC25004", "OCC25004", __FILE__, OCC25004, group);
   theCommands.Add ("OCC24925",
                    "OCC24925 filename [pluginLib=TKXml storageGuid retrievalGuid]"

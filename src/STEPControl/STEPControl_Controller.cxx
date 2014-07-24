@@ -177,6 +177,14 @@ STEPControl_Controller::STEPControl_Controller ()
     Interface_Static::Init ("step","read.step.ideas",'&',"eval Off");
     Interface_Static::Init ("step","read.step.ideas",'&',"eval On");
     Interface_Static::SetIVal("read.step.ideas",0); 
+
+    //Parameter to write all free vertices in one SDR (name and style of vertex are lost) (default) 
+    //or each vertex in its own SDR (name and style of vertex are exported). (ika; 21.07.2014) 
+    Interface_Static::Init ("step","write.step.vertex.mode",'e',"");
+    Interface_Static::Init ("step","write.step.vertex.mode",'&',"enum 0");
+    Interface_Static::Init ("step","write.step.vertex.mode",'&',"eval One Compound");
+    Interface_Static::Init ("step","write.step.vertex.mode",'&',"eval Single Vertex");
+    Interface_Static::SetIVal("write.step.vertex.mode",0);
   
     // abv 15.11.00: ShapeProcessing
     Interface_Static::Init ("XSTEP","write.step.resource.name",'t',"STEP");

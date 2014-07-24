@@ -863,6 +863,22 @@ See description of parameter read.step.resource.name above for more details on u
 Default values:  
 * read.step.resource.name - STEP, 
 * read.step.sequence - ToSTEP.
+
+<h4>write.step.vertex.mode</h4>
+This parameter indicates which of free vertices writing mode is switch on. 
+* 0 (One Compound) : (default)  All free vertices are united into one compound and exported in one SHAPE DEFINITION REPRESENTATION (vertex name and style are lost). 
+* 1 (Single Vertex) : Each vertex exported in its own SHAPE DEFINITION REPRESENTATION (vertex name and style are not lost, but size of STEP file increases). 
+
+Read this parameter with: 
+~~~~~
+Standard_Integer ic = Interface_Static::IVal("write.step.vertex.mode"); 
+~~~~~
+Modify this parameter with: 
+~~~~~
+if(!Interface_Static::SetIVal("write.step.vertex.mode",1))  
+.. error .. 
+~~~~~
+Default value is 0. 
  
 @subsubsection occt_step_3_3_3 Performing the Open CASCADE Technology shape translation
 An OCCT shape can be translated to STEP using one of the following models (shape_representations): 

@@ -524,17 +524,19 @@ Standard_Boolean STEPControl_ActorWrite::IsAssembly (TopoDS_Shape &S) const
 {
   if ( ! GroupMode() || S.ShapeType() != TopAbs_COMPOUND ) return Standard_False;
   // PTV 16.09.2002  OCC725 for storing compound of vertices
-  if (S.ShapeType() == TopAbs_COMPOUND ) {
-    Standard_Boolean IsOnlyVertices = Standard_True;
-    TopoDS_Iterator anItr( S );
-    for ( ; anItr.More(); anItr.Next() ) {
-      if ( anItr.Value().ShapeType() != TopAbs_VERTEX ) {
-        IsOnlyVertices = Standard_False;
-        break;
+  if (Interface_Static::IVal("write.step.vertex.mode") == 0) {//bug 23950
+    if (S.ShapeType() == TopAbs_COMPOUND ) {
+      Standard_Boolean IsOnlyVertices = Standard_True;
+      TopoDS_Iterator anItr( S );
+      for ( ; anItr.More(); anItr.Next() ) {
+        if ( anItr.Value().ShapeType() != TopAbs_VERTEX ) {
+          IsOnlyVertices = Standard_False;
+          break;
+        }
       }
+      if ( IsOnlyVertices )
+        return Standard_False;
     }
-    if ( IsOnlyVertices )
-      return Standard_False;
   }
   if ( GroupMode() ==1 ) return Standard_True;
   TopoDS_Iterator it ( S );
@@ -756,6 +758,8 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferShape (const Handle(Tran
   // create a list of items to translate
   Handle(TopTools_HSequenceOfShape) RepItemSeq = new TopTools_HSequenceOfShape();
   
+  Standard_Boolean isSeparateVertices = 
+    Interface_Static::IVal("write.step.vertex.mode") == 0;//bug 23950
   // PTV 16.09.2002 OCC725 separate shape from solo vertices.
   Standard_Boolean isOnlyVertices = Standard_False;
   if (theShape.ShapeType() == TopAbs_COMPOUND) {
@@ -766,24 +770,26 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferShape (const Handle(Tran
     aB.MakeCompound(aNewShape);
     aB.MakeCompound(aCompOfVrtx);
     TopoDS_Iterator anCompIt(theShape);
-    for (; anCompIt.More(); anCompIt.Next()) {
-      TopoDS_Shape aCurSh = anCompIt.Value();
-      if (aCurSh.ShapeType() != TopAbs_VERTEX) {
-        aB.Add(aNewShape, aCurSh);
-        countSh++;
+    if (isSeparateVertices) {
+      for (; anCompIt.More(); anCompIt.Next()) {
+        TopoDS_Shape aCurSh = anCompIt.Value();
+        if (aCurSh.ShapeType() != TopAbs_VERTEX) {
+          aB.Add(aNewShape, aCurSh);
+          countSh++;
+        }
+        else {
+          aB.Add(aCompOfVrtx, aCurSh);
+          countVrtx++;
+        }
       }
-      else {
-        aB.Add(aCompOfVrtx, aCurSh);
-        countVrtx++;
-      }
+      // replace the shapes
+      if (countSh)
+        theShape = aNewShape;
+      if (countVrtx)
+        RepItemSeq->Append(aCompOfVrtx);
+      if (countSh == 0) 
+        isOnlyVertices = Standard_True;
     }
-    // replace the shapes
-    if (countSh)
-      theShape = aNewShape;
-    if (countVrtx)
-      RepItemSeq->Append(aCompOfVrtx);
-    if (countSh == 0) 
-      isOnlyVertices = Standard_True;
   } 
   
   if (theShape.ShapeType() == TopAbs_COMPOUND) {
@@ -1280,6 +1286,8 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferCompound (const Handle(T
   Handle(TopTools_HSequenceOfShape) RepItemSeq = new TopTools_HSequenceOfShape();
   // Prepare a collection for non-manifold group of shapes
   Handle(TopTools_HSequenceOfShape) NonManifoldGroup = new TopTools_HSequenceOfShape();
+  Standard_Boolean isSeparateVertices = 
+    (Interface_Static::IVal("write.step.vertex.mode") == 0);//bug 23950
   // PTV OCC725 17.09.2002 -- begin --
   Standard_Integer nbFreeVrtx = 0;
   TopoDS_Compound aCompOfVrtx;
@@ -1293,7 +1301,7 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferCompound (const Handle(T
 
   for (TopoDS_Iterator iter(theShape); iter.More(); iter.Next()) {
     TopoDS_Shape aSubShape = iter.Value();
-    if (aSubShape.ShapeType() != TopAbs_VERTEX) {
+    if (aSubShape.ShapeType() != TopAbs_VERTEX || !isSeparateVertices) {
 
       // Store non-manifold topology as shells (ssv; 10.11.2010)
       if (!isManifold && aSubShape.ShapeType() == TopAbs_SOLID) {
