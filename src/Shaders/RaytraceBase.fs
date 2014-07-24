@@ -916,7 +916,9 @@ vec4 Radiance (in SRay theRay, in vec3 theInverse)
       uRaytraceMaterialTexture, MATERIAL_SPEC (aTriIndex.w));
     vec4 aOpacity  = texelFetch (
       uRaytraceMaterialTexture, MATERIAL_TRAN (aTriIndex.w));
-      
+    vec3 aEmission = texelFetch (
+      uRaytraceMaterialTexture, MATERIAL_EMIS (aTriIndex.w)).rgb;
+    
     vec3 aNormal = SmoothNormal (aHit.UV, aTriIndex);
 
     vec4 aInvTransf0 = texelFetch (uSceneTransformTexture, anObjectId * 4 + 0);
@@ -980,6 +982,8 @@ vec4 Radiance (in SRay theRay, in vec3 theInverse)
     
     aResult.xyz += aWeight.xyz * uGlobalAmbient.xyz *
       aAmbient * aOpacity.x * max (abs (dot (aNormal, theRay.Direct)), 0.5f);
+
+    aResult.xyz += aWeight.xyz * aOpacity.x * aEmission;
     
     if (aOpacity.x != 1.0f)
     {

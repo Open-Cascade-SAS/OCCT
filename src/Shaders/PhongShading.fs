@@ -165,9 +165,11 @@ vec4 computeLighting (in vec3 theNormal,
   vec4 aMaterialAmbient  = gl_FrontFacing ? occFrontMaterial_Ambient()  : occBackMaterial_Ambient();
   vec4 aMaterialDiffuse  = gl_FrontFacing ? occFrontMaterial_Diffuse()  : occBackMaterial_Diffuse();
   vec4 aMaterialSpecular = gl_FrontFacing ? occFrontMaterial_Specular() : occBackMaterial_Specular();
+  vec4 aMaterialEmission = gl_FrontFacing ? occFrontMaterial_Emission() : occBackMaterial_Emission();
   return vec4 (Ambient,  1.0) * aMaterialAmbient
        + vec4 (Diffuse,  1.0) * aMaterialDiffuse
-       + vec4 (Specular, 1.0) * aMaterialSpecular;
+       + vec4 (Specular, 1.0) * aMaterialSpecular
+                              + aMaterialEmission;
 }
 
 //! Entry point to the Fragment Shader

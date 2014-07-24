@@ -1,0 +1,10 @@
+puts "========="
+puts "OCC24872"
+puts "========="
+puts ""
+###########################################################
+# Support of emission color in Phong shader and ray-tracing
+###########################################################
+
+source $env(CASROOT)/samples/tcl/materials.tcl
+vrenderparams -raytrace
