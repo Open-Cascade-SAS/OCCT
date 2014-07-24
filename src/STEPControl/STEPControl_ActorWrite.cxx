@@ -827,12 +827,21 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferShape (const Handle(Tran
   else if (theShape.ShapeType() == TopAbs_FACE) {
     RepItemSeq->Append(TopoDS::Face(theShape));
   }
+  else if (theShape.ShapeType() == TopAbs_COMPSOLID) {
+    FP->AddWarning(start,"NonManifold COMPSOLID was translated like a set of SOLIDs");
+    if ( GroupMode() > 0)
+      return TransferCompound(start, SDR0, FP);
+    else {
+      TopExp_Explorer SolidExp;
+      for (SolidExp.Init(theShape, TopAbs_SOLID);
+           SolidExp.More();SolidExp.Next()) {
+        RepItemSeq->Append(TopoDS::Solid(SolidExp.Current()));
+      }
+    }
+  }
+
   else if (mymode != STEPControl_GeometricCurveSet && mymode != STEPControl_AsIs) {
     FP->AddFail(start,"The Shape is not a SOLID, nor a SHELL, nor a FACE");
-    return binder;
-  }
-  else if (theShape.ShapeType() == TopAbs_COMPSOLID) {
-    FP->AddWarning(start, "COMPSOLID is not exported yet"); 
     return binder;
   }
   else RepItemSeq->Append (theShape);
