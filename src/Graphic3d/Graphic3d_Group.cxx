@@ -29,7 +29,6 @@
 #include <Graphic3d_CStructure.hxx>
 #include <Graphic3d_Structure.pxx>
 
-#define MyIsEmpty       myCBitFields.bool1
 #define MyContainsFacet myCBitFields.bool2
 
 // =======================================================================
@@ -52,8 +51,7 @@ Graphic3d_Group::Graphic3d_Group (const Handle(Graphic3d_Structure)& theStruct)
 
   myStructure = theStruct.operator->();
 
-  MyContainsFacet     = Standard_False,
-  MyIsEmpty           = Standard_True;
+  MyContainsFacet = Standard_False,
 
   ContextLine.IsDef     = 0;
   ContextText.IsDef     = 0;
@@ -94,7 +92,6 @@ void Graphic3d_Group::Clear (Standard_Boolean theUpdateStructureMgr)
     myStructure->GroupsWithFacet (-1);
     MyContainsFacet = Standard_False;
   }
-  MyIsEmpty = Standard_True;
 
   // clear method could be used on Graphic3d_Structure destruction,
   // and its structure manager could be already destroyed, in that
@@ -136,8 +133,6 @@ void Graphic3d_Group::Remove()
   Update();
 
   myBounds.Clear();
-
-  MyIsEmpty = Standard_True;
 }
 
 // =======================================================================
@@ -170,12 +165,8 @@ Standard_Boolean Graphic3d_Group::IsEmpty() const
     return Standard_True;
   }
 
-  const Standard_Boolean isEmpty = myStructure->IsInfinite() ? Standard_False : !myBounds.IsValid();
-  if (isEmpty != MyIsEmpty)
-  {
-    ::Message::DefaultMessenger()->Send ("Graphic3d_Group: MyIsEmpty != IsEmpty()", Message_Trace);
-  }
-  return isEmpty;
+  return !myStructure->IsInfinite()
+      && !myBounds.IsValid();
 }
 
 // =======================================================================
@@ -1007,7 +998,6 @@ void Graphic3d_Group::AddPrimitiveArray (const Graphic3d_TypeOfPrimitiveArray th
     MyContainsFacet = Standard_True;
   }
 
-  MyIsEmpty = Standard_False;
   if (theToEvalMinMax)
   {
     const Standard_Integer aNbVerts = theAttribs->NbElements;
@@ -1083,7 +1073,6 @@ void Graphic3d_Group::UserDraw (const Standard_Address /*theObject*/,
     MyContainsFacet = Standard_True;
   }
 
-  MyIsEmpty = Standard_False;
   Update();
 }
 
@@ -1105,7 +1094,6 @@ void Graphic3d_Group::Text (const Standard_CString                  /*theText*/,
     return;
   }
 
-  MyIsEmpty  = Standard_False;
   if (theToEvalMinMax)
   {
     Standard_ShortReal x, y, z;
