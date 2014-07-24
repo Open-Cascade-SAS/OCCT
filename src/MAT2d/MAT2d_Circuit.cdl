@@ -41,7 +41,8 @@ uses
 
 is
 
-    Create returns Circuit from MAT2d;
+    Create(IsOpenResult : Boolean from Standard = Standard_False)
+    returns Circuit from MAT2d;
 
 ---Category:  Computation
 
@@ -129,6 +130,7 @@ fields
     connexionMap : DataMapOfIntegerConnexion       from MAT2d;
     linkRefEqui  : DataMapOfBiIntSequenceOfInteger from MAT2d;
     linesLength  : SequenceOfInteger               from TColStd; 
+    myIsOpenResult : Boolean from Standard;
     
 end Circuit;
 

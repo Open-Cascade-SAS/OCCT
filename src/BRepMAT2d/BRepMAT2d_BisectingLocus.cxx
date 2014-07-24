@@ -55,9 +55,10 @@ BRepMAT2d_BisectingLocus::BRepMAT2d_BisectingLocus()
 //purpose  : Calcul de la carte des lieux bisecteurs sur le contour defini par
 //           <anExplo>.
 //=============================================================================
-void BRepMAT2d_BisectingLocus::Compute(      BRepMAT2d_Explorer&        anExplo,
-				   const Standard_Integer IndexLine,
-				   const MAT_Side         aSide    ) 
+void BRepMAT2d_BisectingLocus::Compute(BRepMAT2d_Explorer&        anExplo,
+                                       const Standard_Integer IndexLine,
+                                       const MAT_Side         aSide,
+                                       const Standard_Boolean IsOpenResult)
 {
   MAT2d_Mat2d                        TheMAT;
   Handle(MAT_ListOfBisector)         TheRoots = new MAT_ListOfBisector();
@@ -86,7 +87,7 @@ void BRepMAT2d_BisectingLocus::Compute(      BRepMAT2d_Explorer&        anExplo,
   //----------------------------------------------------------
   // Construction du circuit sur lequel est calcule la carte.
   //----------------------------------------------------------
-  Handle(MAT2d_Circuit) ACircuit = new MAT2d_Circuit();
+  Handle(MAT2d_Circuit) ACircuit = new MAT2d_Circuit(IsOpenResult);
 //  Modified by Sergey KHROMOV - Wed Mar  6 17:43:47 2002 Begin
 //   ACircuit->Perform(Figure,IndexLine,(aSide == MAT_Left));
   ACircuit->Perform(Figure,anExplo.GetIsClosed(), IndexLine,(aSide == MAT_Left));

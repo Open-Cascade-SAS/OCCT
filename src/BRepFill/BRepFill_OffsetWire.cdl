@@ -39,12 +39,14 @@ is
     Create returns OffsetWire from BRepFill;
 
     Create ( Spine : Face     from TopoDS; 
-    	     Join  : JoinType from GeomAbs  =  GeomAbs_Arc)
+    	     Join  : JoinType from GeomAbs  =  GeomAbs_Arc;
+	     IsOpenResult : Boolean from Standard = Standard_False)
     returns OffsetWire from BRepFill;
 
     Init ( me    : in out;
     	   Spine : Face     from TopoDS; 
-    	   Join  : JoinType from GeomAbs  =  GeomAbs_Arc)
+    	   Join  : JoinType from GeomAbs  =  GeomAbs_Arc;
+	   IsOpenResult : Boolean from Standard = Standard_False)
 	---Purpose: Initialize the evaluation of Offseting.
     raises
     	ConstructionError from Standard
@@ -127,6 +129,7 @@ fields
     mySpine     : Face      from TopoDS;
     myWorkSpine : Face      from TopoDS;
     myOffset    : Real      from Standard; -- >0 ;
+    myIsOpenResult : Boolean from Standard;
     myShape     : Shape     from TopoDS;
     myIsDone    : Boolean   from Standard;
     myJoinType  : JoinType  from GeomAbs;	    

@@ -1502,6 +1502,7 @@ Standard_Integer mkoffset(Draw_Interpretor& di,
   char name[100];
 
   BRepOffsetAPI_MakeOffset Paral;  
+  Paral.Init(GeomAbs_Arc);
   TopoDS_Shape Base = DBRep::Get(a[2],TopAbs_FACE);
 
   if ( Base.IsNull())
@@ -1533,6 +1534,50 @@ Standard_Integer mkoffset(Draw_Interpretor& di,
 
   Standard_Integer Compt = 1;
 
+  for ( Standard_Integer i = 1; i <= Nb; i++)
+  {
+    U = i * dU;
+    Paral.Perform(U,Alt);
+
+    if ( !Paral.IsDone())
+    {
+      di << " Error: Offset is not done." << "\n";
+      return 1;
+    }
+    else
+    {
+      Sprintf(name,"%s_%d", a[1], Compt++);
+      char* temp = name; // portage WNT
+      DBRep::Set(temp,Paral.Shape());
+    }
+  }
+
+  return 0;
+}
+
+//=======================================================================
+//function : openoffset
+//purpose  : 
+//=======================================================================
+
+Standard_Integer openoffset(Draw_Interpretor& di, 
+  Standard_Integer n, const char** a)
+{
+  if (n < 5) return 1;
+  char name[100];
+
+  TopoDS_Shape Base = DBRep::Get(a[2], TopAbs_WIRE);
+
+  BRepOffsetAPI_MakeOffset Paral(TopoDS::Wire(Base), GeomAbs_Arc, Standard_True);
+  
+  Standard_Real U, dU;
+  Standard_Integer Nb;
+  dU = Draw::Atof(a[4]);
+  Nb = Draw::Atoi(a[3]);
+
+  Standard_Integer Compt = 1;
+  
+  Standard_Real Alt = 0.;
   for ( Standard_Integer i = 1; i <= Nb; i++)
   {
     U = i * dU;
@@ -1819,6 +1864,9 @@ void  BRepTest::CurveCommands(Draw_Interpretor& theCommands)
     "mkoffset result face/compound of wires  nboffset stepoffset [alt]",__FILE__,
     mkoffset);
 
+  theCommands.Add("openoffset",
+    "openoffset result wire nboffset stepoffset",__FILE__,
+    openoffset);
 
   theCommands.Add("mkedge",
     "mkedge edge curve [surface] [pfirst plast] [vfirst [pfirst] vlast [plast]] ",__FILE__,

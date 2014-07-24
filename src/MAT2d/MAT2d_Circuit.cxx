@@ -75,8 +75,9 @@ static Standard_Boolean IsSharpCorner (const Handle(Geom2d_Geometry)& Geom1,
 //function : Constructor
 //purpose :
 //=============================================================================
-MAT2d_Circuit::MAT2d_Circuit()
+MAT2d_Circuit::MAT2d_Circuit(const Standard_Boolean IsOpenResult)
 {
+  myIsOpenResult = IsOpenResult;
 }
 
 //=============================================================================
@@ -352,13 +353,17 @@ void MAT2d_Circuit::InitOpen (TColGeom2d_SequenceOfGeometry& Line) const
 { 
   Handle(Geom2d_TrimmedCurve) Curve;
   Standard_Real               DotProd;
- 
-  Curve = Handle(Geom2d_TrimmedCurve)::DownCast(Line.First());
-  Line.InsertBefore(1,new Geom2d_CartesianPoint(Curve->StartPoint()));
-  Curve = Handle(Geom2d_TrimmedCurve)::DownCast(Line.Last());
-  Line.Append(new Geom2d_CartesianPoint(Curve->EndPoint()));
 
-  for ( Standard_Integer i = 2; i <= Line.Length() - 2; i++) {
+  if (!myIsOpenResult)
+  {
+    Curve = Handle(Geom2d_TrimmedCurve)::DownCast(Line.First());
+    Line.InsertBefore(1,new Geom2d_CartesianPoint(Curve->StartPoint()));
+    Curve = Handle(Geom2d_TrimmedCurve)::DownCast(Line.Last());
+    Line.Append(new Geom2d_CartesianPoint(Curve->EndPoint()));
+  }
+
+  Standard_Integer addition = (myIsOpenResult)? 1 : 2;
+  for ( Standard_Integer i = addition; i <= Line.Length() - addition; i++) {
     if ( Abs(CrossProd(Line.Value(i),Line.Value(i+1),DotProd)) > 1.E-8 ||
 	 DotProd < 0. ) {
       Curve = Handle(Geom2d_TrimmedCurve)::DownCast(Line.Value(i));
@@ -389,15 +394,18 @@ const
   //--------------------------
   // Completion de la ligne.
   //--------------------------
-  for ( i = NbItems - 1; i > 1; i--){
-    Type = Line.Value(i)->DynamicType();
-    if ( Type == STANDARD_TYPE(Geom2d_CartesianPoint) ){
-      Line.Append(Line.Value(i));
-    }
-    else {
-      Curve = Handle(Geom2d_TrimmedCurve)::DownCast(Line.Value(i)->Copy());
-      Curve->Reverse();
-      Line.Append(Curve);
+  if (!myIsOpenResult)
+  {
+    for ( i = NbItems - 1; i > 1; i--){
+      Type = Line.Value(i)->DynamicType();
+      if ( Type == STANDARD_TYPE(Geom2d_CartesianPoint) ){
+        Line.Append(Line.Value(i));
+      }
+      else {
+        Curve = Handle(Geom2d_TrimmedCurve)::DownCast(Line.Value(i)->Copy());
+        Curve->Reverse();
+        Line.Append(Curve);
+      }
     }
   }
 
@@ -485,30 +493,34 @@ const
     ICorres++;
   }
   Corres(ICorres) = IndLine;
-  
-  for (i = 1; i < 2*NbItems - 2; i++) {
-    if (Corres(i) == 0) Corres(i) = Corres(2*NbItems - i);
-  }
 
-#ifdef DEB
-  if (AffichCircuit) {
-    for (i = 1; i <= 2*NbItems - 2; i++) {
-      cout<< "Correspondance "<< i<<" -> "<<Corres(i)<<endl;
+  if (!myIsOpenResult)
+  {
+    for (i = 1; i < 2*NbItems - 2; i++) {
+      if (Corres(i) == 0)
+        Corres(i) = Corres(2*NbItems - i);
     }
-  }
+    
+#ifdef DEB
+    if (AffichCircuit) {
+      for (i = 1; i <= 2*NbItems - 2; i++) {
+        cout<< "Correspondance "<< i<<" -> "<<Corres(i)<<endl;
+      }
+    }
 #endif
-
-  //----------------------------
-  // Mise a jour des Connexions.
-  //----------------------------
-  for ( i = 1; i <= NbConnexions; i++){
-    CC = ConnexionFrom.ChangeValue(i);
-    CC->IndexItemOnFirst(Corres(CC->IndexItemOnFirst()));
-  }
-
-  if (!ConnexionFather.IsNull()) {
-    ConnexionFather
-      ->IndexItemOnSecond(Corres(ConnexionFather->IndexItemOnSecond()));
+    
+    //----------------------------
+    // Mise a jour des Connexions.
+    //----------------------------
+    for ( i = 1; i <= NbConnexions; i++){
+      CC = ConnexionFrom.ChangeValue(i);
+      CC->IndexItemOnFirst(Corres(CC->IndexItemOnFirst()));
+    }
+    
+    if (!ConnexionFather.IsNull()) {
+      ConnexionFather
+        ->IndexItemOnSecond(Corres(ConnexionFather->IndexItemOnSecond()));
+    }
   }
 }
 

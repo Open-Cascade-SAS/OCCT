@@ -73,7 +73,8 @@ is
     Compute (me        : in out ; 
     	     anExplo   : in out Explorer from BRepMAT2d;
              LineIndex :        Integer       = 1;
-             aSide     :        Side from MAT = MAT_Left )
+             aSide     :        Side from MAT = MAT_Left;
+	     IsOpenResult :     Boolean       = Standard_False)
 	--- Purpose : Computation of the Bisector_Locus in a set of Lines 
 	--            defined in <anExplo>.
 	--            The bisecting locus are computed on the side <aSide>
