@@ -43,6 +43,7 @@
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_BezierCurve.hxx>
 
+//#define DRAW
 #ifdef DRAW
 #include <DrawTrSurf.hxx>
 #endif
@@ -463,7 +464,7 @@ static void Function_SetUVBounds(Standard_Real& myU1,
       // box+sphere >>
       Standard_Real UU = 0.;
       ElSLib::Parameters(SP, P1, U1, V1);
-      Standard_Real eps = 2.*Epsilon(1.);
+      Standard_Real eps = 10.*Epsilon(1.);
       Standard_Real dt = Max(Precision::PConfusion(), 0.01*(W2-W1)); 
       if(Abs(U1) < eps)
       {

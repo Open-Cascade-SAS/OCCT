@@ -1,0 +1,32 @@
+puts "============"
+puts "OCC25095"
+puts "============"
+puts ""
+#######################################################################
+# Wrong result obtained by projection algorithm
+#######################################################################
+
+restore [locate_data_file bug25095_fz639.brep] b1
+restore [locate_data_file bug25095_fz5075.brep] b2
+
+mksurface s1 b1
+bopcurves b1 b2
+
+trim ct1 c_1 0.79929107016766299 7.0824763773472492
+trim ct2 c_1 0.79929107016766343 7.0824763773472501
+
+project cp1 ct1 s1
+project cp2 ct2 s1
+
+regexp {The length cp1 is +([0-9.+eE]+)} [length cp1] full length1
+regexp {The length cp2 is +([0-9.+eE]+)} [length cp2] full length2
+
+set good_length 7.2783309522
+checkreal "length of cp1" ${length1} ${good_length} 0.01 0.01
+checkreal "length of cp2" ${length2} ${good_length} 0.01 0.01
+
+#v2d2
+view 1 -2D-  728 20 400 400
+
+2dfit
+set only_screen_axo 1
