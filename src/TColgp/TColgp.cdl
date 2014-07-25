@@ -218,11 +218,4 @@ is
     	instantiates HSequence  from TCollection (XY from gp,
                                                   SequenceOfXY from TColgp);
 
---                    
---       Instantiations DataMap
---       
-
-    class DataMapOfIntegerCirc2d  instantiates
-    	DataMap from TCollection(Integer,Circ2d from gp,MapIntegerHasher from TColStd);
-
 end TColgp;
