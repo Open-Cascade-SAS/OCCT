@@ -1,0 +1,14 @@
+puts "============"
+puts "OCC22470"
+puts "============"
+puts ""
+############################
+# Crash during IGES import 
+############################
+
+igesbrep [locate_data_file occ22470.igs] a *
+
+set bug_info [nbshapes a]
+if {[lindex $bug_info 31] == 0} {
+  puts "ERROR: OCC22470 is reproduced"
+}
