@@ -131,12 +131,17 @@ void CViewer3dDoc::Dump(CDumpContext& dc) const
 /////////////////////////////////////////////////////////////////////////////
 // CViewer3dDoc commands
 
-void CViewer3dDoc::UpdateResultMessageDlg(CString Title, TCollection_AsciiString aMessage)
+void CViewer3dDoc::UpdateResultMessageDlg (CString theTitle, const TCollection_AsciiString& theMessage)
 {
-    CString text(aMessage.ToCString());
-    myCResultDialog.SetText(text);
+    CString aText (theMessage.ToCString());
+    myCResultDialog.SetText (aText);
+    myCResultDialog.SetTitle(theTitle);
+}
 
-    myCResultDialog.SetTitle(Title);
+void CViewer3dDoc::UpdateResultMessageDlg(CString theTitle, CString theMessage)
+{
+  myCResultDialog.SetText (theMessage);
+  myCResultDialog.SetTitle(theTitle);
 }
 
 void CViewer3dDoc::OnBox() 
@@ -580,7 +585,7 @@ void CViewer3dDoc::InputEvent(const Standard_Integer /*x*/,
                                       "  Methods SetPlanarFaceColor and SetCylindricalFaceColor are also \n"
                                       "  defined in the User_Cylinder class. \n"
                                       "  \n");
-    SetTitle("Change face color");
+    SetTitle (L"Change face color");
   }
 }
 
@@ -718,7 +723,7 @@ void CViewer3dDoc::OnFaces()
                                     "  \n"
                                     "  myAISContext->ActivateStandardMode(TopAbs_FACE); \n"
                                     "  \n");
-  SetTitle("Standard mode: TopAbs_FACE");
+  SetTitle (L"Standard mode: TopAbs_FACE");
 }
 
 //Set edges selection mode
@@ -733,7 +738,7 @@ void CViewer3dDoc::OnEdges()
                                     "  \n"
                                     "  myAISContext->ActivateStandardMode(TopAbs_EDGE); \n"
                                     "  \n");
-  SetTitle("Standard mode: TopAbs_EDGE");
+  SetTitle (L"Standard mode: TopAbs_EDGE");
 }
 
 // Set vertices selection mode
@@ -748,7 +753,7 @@ void CViewer3dDoc::OnVertices()
                                     "  \n"
                                     "  myAISContext->ActivateStandardMode(TopAbs_VERTEX); \n"
                                     "  \n");
-  SetTitle("Standard mode: TopAbs_VERTEX");
+  SetTitle (L"Standard mode: TopAbs_VERTEX");
 }
 
 //Neutral selection mode
@@ -759,7 +764,7 @@ void CViewer3dDoc::OnNeutral()
   myCResultDialog.SetTitle("Standard mode: Neutral");
   myCResultDialog.SetText("  myAISContext->CloseAllContexts(); \n"
                                     "  \n");
-  SetTitle("Standard mode: Neutral");
+  SetTitle (L"Standard mode: Neutral");
 }
 
 // Change the color of faces on a user cylinder
@@ -778,8 +783,8 @@ void CViewer3dDoc::OnFillet3d()
 {
   if (!myAISContext->HasOpenedContext())
   {
-    AfxMessageBox("It is necessary to activate the edges selection mode\n"
-                  "and select edges on an object before \nrunning this function");
+    AfxMessageBox (L"It is necessary to activate the edges selection mode\n"
+                   L"and select edges on an object before \nrunning this function");
     return;
   }
 
@@ -790,8 +795,8 @@ void CViewer3dDoc::OnFillet3d()
 
     if (S.IsNull())
     {
-      AfxMessageBox("It is necessary to activate the edges selection mode\n"
-                    "and select edges on an object before \nrunning this function");
+      AfxMessageBox (L"It is necessary to activate the edges selection mode\n"
+                     L"and select edges on an object before \nrunning this function");
       return;
     }
 
@@ -804,8 +809,8 @@ void CViewer3dDoc::OnFillet3d()
       TopoDS_Shape aSelShape = myAISContext->SelectedShape();
       if (aSelShape.ShapeType() != TopAbs_EDGE)
       {
-        AfxMessageBox("It is necessary to activate the edges selection mode\n\
-                      and select edges on an object before \nrunning this function");
+        AfxMessageBox (L"It is necessary to activate the edges selection mode\n"
+                       L"and select edges on an object before \nrunning this function");
         return;
       }
     }
@@ -831,7 +836,7 @@ void CViewer3dDoc::OnFillet3d()
     }
     catch (Standard_Failure)
     {
-      AfxMessageBox("Error During Fillet computation");
+      AfxMessageBox (L"Error During Fillet computation");
       return;
     }
 
@@ -854,7 +859,7 @@ void CViewer3dDoc::OnFillet3d()
                                     "  \n"
                                     "  myAISContext->Redisplay(S); \n"
                                     "  \n");
-  SetTitle("Make a fillet");
+  SetTitle (L"Make a fillet");
 }
 
 // Create and display a circle with standard tools
@@ -877,7 +882,7 @@ void CViewer3dDoc::OnCircle()
                                     "  \n"
                                     "  myAISContext->Display(anAISCirc); \n"
                                     "  \n");
-  SetTitle("Create a circle");
+  SetTitle (L"Create a circle");
 }
 
 void CViewer3dDoc::OnLine() 
@@ -897,7 +902,7 @@ void CViewer3dDoc::OnLine()
                                     "  \n"
                                     "  myAISContext->Display(anAISLine); \n"
                                     "  \n");
-  SetTitle("Create a line");
+  SetTitle (L"Create a line");
 }
 
 void CViewer3dDoc::OnNbisos() 
@@ -917,7 +922,7 @@ void CViewer3dDoc::OnNbisos()
                                       "  \n"
                                       "  myAISContext->DefaultDrawer()->VIsoAspect()->SetNumber(dlg.m_isov); \n"
                                       "  \n");
-    SetTitle("Iso Aspect");
+    SetTitle (L"Iso Aspect");
   }
 }
 
@@ -981,8 +986,7 @@ void CViewer3dDoc::DoSample()
     {
       Standard_SStream aSStream;
       aSStream << "An exception was caught: " << Standard_Failure::Caught() << ends;
-      Standard_CString aMsg = aSStream.str().c_str();
-      //      aSStream.rdbuf()->freeze(0);   // allow deletion of dynamic array
+      CString aMsg = aSStream.str().c_str();
       AfxMessageBox (aMsg);
     }
   }

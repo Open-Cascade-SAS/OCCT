@@ -1,0 +1,142 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{71b03503-46e1-4a70-bf46-9d403d37b35a}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{22270cbf-7f10-4c26-8fc6-7f68842b776d}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{f220deda-1476-43c2-af8d-81ff1947d33d}</UniqueIdentifier>
+      <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\..\res\HLR.rc">
+      <Filter>Source Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\HLRApp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\HLRDoc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\HLRView2D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\SelectionDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\StdAfx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Common\WINMAIN.CPP">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\BaseConstantes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\HLRApp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\HLRDoc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\HLRView2D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\res\resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\SelectionDialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\StdAfx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\res\axoviewd.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\res\axoviewf.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\res\AXOVIEWU.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\res\BACKVIEWD.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\res\BACKVIEWF.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\res\BACKVIEWU.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\res\BOTTOMVIEWD.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\res\BOTTOMVIEWF.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\res\BOTTOMVIEWU.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\res\ChildFrame2D.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\res\ChildFrame3D.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\res\FRONTVIEWD.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\res\FRONTVIEWF.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\res\FRONTVIEWU.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\res\LEFTVIEWD.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\res\LEFTVIEWF.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\res\LEFTVIEWU.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\res\RIGHTVIEWD.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\res\RIGHTVIEWF.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\res\RIGHTVIEWU.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\res\Toolbar.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\res\ToolBarObjects.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\res\topviewd.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\res\topviewf.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\res\topviewu.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+</Project>

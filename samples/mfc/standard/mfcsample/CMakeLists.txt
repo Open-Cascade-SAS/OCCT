@@ -2,7 +2,8 @@ cmake_minimum_required (VERSION 2.6)
 
 project (mfcsample)
 
-add_definitions(-DWINVER=0x0500 -D_AFXEXT)
+add_definitions(-DWINVER=0x0501 -D_AFXEXT -DUNICODE -D_UNICODE)
+set (CMAKE_MFC_FLAG 2)
 
 # mfcsample
 set (mfcsample_SOURCE_FILES ${MFC_STANDARD_SAMPLES_DIR}/mfcsample/src/mfcsample.cpp

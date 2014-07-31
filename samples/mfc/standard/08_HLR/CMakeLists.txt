@@ -2,7 +2,8 @@ cmake_minimum_required (VERSION 2.6)
 
 project (HLR)
 
-add_definitions(-DWINVER=0x0500)
+add_definitions(-DWINVER=0x0501 -DUNICODE -D_UNICODE)
+set (CMAKE_MFC_FLAG 2)
 
 set (HLR_SRC_DIR      ${MFC_STANDARD_SAMPLES_DIR}/08_HLR/src)
 set (HLR_HEADER_FILES ${HLR_SRC_DIR}/HLRApp.h

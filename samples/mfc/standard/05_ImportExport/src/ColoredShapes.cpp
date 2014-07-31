@@ -85,7 +85,7 @@ void CColoredShapes::Serialize(CArchive & ar)
 			// Check
 			if (d->ErrorStatus() != Storage_VSOk) 
 			{
-				::MessageBox(NULL, " Error while writing... ", " Error ",MB_OK) ;
+				::MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, L"Error while writing... ", L" Error ", MB_OK);
 			}
 	
 			// Store the color in the archive

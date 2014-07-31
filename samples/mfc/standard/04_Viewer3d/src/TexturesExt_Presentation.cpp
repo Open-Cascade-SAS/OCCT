@@ -58,8 +58,8 @@ TexturesExt_Presentation::TexturesExt_Presentation()
 
 void TexturesExt_Presentation::DoSample()
 {
-	((CViewer3dApp*) AfxGetApp())->SetSampleName("Viewer3d");
-	((CViewer3dApp*) AfxGetApp())->SetSamplePath ("..\\..\\04_Viewer3d");
+	((CViewer3dApp*) AfxGetApp())->SetSampleName (L"Viewer3d");
+	((CViewer3dApp*) AfxGetApp())->SetSamplePath (L"..\\..\\04_Viewer3d");
 	getAISContext()->EraseAll();
 	if (myIndex >=0 && myIndex < myNbSamples)
 	{
@@ -152,7 +152,8 @@ Handle_AIS_TexturedShape TexturesExt_Presentation::Texturize(const TopoDS_Shape&
 	initfile += aTFileName.ToCString();
   }
 
-  aTShape->SetTextureFileName((Standard_CString)(LPCTSTR)initfile);
+  TCollection_ExtendedString aFileName ((Standard_ExtString )(const wchar_t* )initfile);
+  aTShape->SetTextureFileName (TCollection_AsciiString (aFileName, '?'));
 
   // do other initialization of AIS_TexturedShape
   aTShape->SetTextureMapOn();
@@ -178,18 +179,21 @@ Standard_Boolean TexturesExt_Presentation::loadShape(TopoDS_Shape& aShape,
   initfile += "\\Data\\";
   initfile += aFileName.ToCString();
 
-  TCollection_AsciiString Path((Standard_CString)(LPCTSTR)initfile);
-
+  std::filebuf aFileBuf;
+  std::istream aStream (&aFileBuf);
+  if (!aFileBuf.open (initfile, ios::in))
+  {
+    initfile += L" was not found. The sample can not be shown.";
+    getDocument()->UpdateResultMessageDlg ("Textured Shape", initfile);
+    return Standard_False;
+  }
 
   BRep_Builder aBld;
-  //Standard_Boolean isRead = BRepTools::Read (aShape, aPath.ToCString(), aBld);
-  //if (!isRead)
-	//  isRead = BRepTools::Read (aShape, bPath.ToCString(), aBld);
-  Standard_Boolean isRead = BRepTools::Read (aShape, Path.ToCString(), aBld);
-  if (!isRead)
+  BRepTools::Read (aShape, aStream, aBld);
+  if (aShape.IsNull())
   {
-    Path += " was not found.  The sample can not be shown.";
-    getDocument()->UpdateResultMessageDlg("Textured Shape", Path.ToCString());
+    initfile += " is invalid. The sample can not be shown.";
+    getDocument()->UpdateResultMessageDlg ("Textured Shape", initfile);
     return Standard_False;
   }
 

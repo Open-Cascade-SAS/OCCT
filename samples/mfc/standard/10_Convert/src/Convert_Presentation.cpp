@@ -78,8 +78,8 @@ Convert_Presentation::Convert_Presentation()
 
 void Convert_Presentation::DoSample()
 {
-	((COCCDemoApp*) AfxGetApp())->SetSampleName("Convert");
-  ((COCCDemoApp*) AfxGetApp())->SetSamplePath("..\\..\\10_Convert");
+	((COCCDemoApp*) AfxGetApp())->SetSampleName (L"Convert");
+  ((COCCDemoApp*) AfxGetApp())->SetSamplePath (L"..\\..\\10_Convert");
 	getAISContext()->EraseAll();
 	if (myIndex >=0 && myIndex < myNbFuncs)
     (this->*SampleFuncs[myIndex])();

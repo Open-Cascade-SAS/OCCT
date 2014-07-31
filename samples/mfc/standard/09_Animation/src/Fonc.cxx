@@ -8,39 +8,19 @@
 //           cf jm-oliva@paris3.matra-dtv.fr  ( Merci JMO )
 //=======================================================================
 
-Standard_Boolean grid2surf(Standard_CString ShapeName,Handle(Geom_BSplineSurface)& S )
+Standard_Boolean grid2surf(CString ShapeName, Handle(Geom_BSplineSurface)& S)
 {
+  CString aFileName = ShapeName;
+  aFileName.Replace(L'\\', L'/');
+
   Handle(TColStd_HArray2OfReal) H;  
 
   Standard_Real    xmin, ymin, Dx, Dy;
-  H = ReadRegularGrid(ShapeName, xmin, ymin, Dx, Dy);
+  H = ReadRegularGrid (aFileName, xmin, ymin, Dx, Dy);
   GeomAPI_PointsToBSplineSurface MkSurf;
   MkSurf.Interpolate(H->Array2(), xmin, Dx, ymin, Dy);
   S = MkSurf.Surface();
   return Standard_True;
-}
-
-
-//=======================================================================
-//function : grid2surf
-//purpose  : 
-//           cf jm-oliva@paris3.matra-dtv.fr  ( Merci JMO )
-//=======================================================================
-
-Standard_Boolean grid2surf(const CString  aCStringShapeName,
-			   Handle(Geom_BSplineSurface)& S )
-{
-    char tmp_char[256] ="";
-    strcpy_s(tmp_char,aCStringShapeName);
-    int i = 0, len = (int)strlen(tmp_char);
-    while (i < len)
-    {
-        if (tmp_char[i] == '\\')
-            tmp_char[i] = '/';
-        i++;
-    }
-    Standard_CString aFileName = tmp_char;	
-    return grid2surf(aFileName,S);
 }
 
 //=======================================================================
@@ -48,12 +28,15 @@ Standard_Boolean grid2surf(const CString  aCStringShapeName,
 //purpose  : 
 //           cf jm-oliva@paris3.matra-dtv.fr  ( Merci JMO )
 //=======================================================================
-Handle(TColStd_HArray2OfReal) ReadRegularGrid(Standard_CString FileName,
+Handle(TColStd_HArray2OfReal) ReadRegularGrid(CString FileName,
 					      Standard_Real& xmin,
 					      Standard_Real& ymin,
 					      Standard_Real& Deltax,
 					      Standard_Real& Deltay)
 {
+  CString aFileName = FileName;
+  aFileName.Replace (L'\\', L'/');
+
   Handle(TColStd_HArray2OfReal) H;
   Standard_Integer              R1 = 1, R2, C1 = 1, C2, R, C;
   Standard_Real                 x, y, z;
@@ -61,7 +44,7 @@ Handle(TColStd_HArray2OfReal) ReadRegularGrid(Standard_CString FileName,
   xmin = ymin = 10000000;
   
   FILE *fp = NULL;
-  fopen_s(&fp, FileName, "r");
+  _wfopen_s (&fp, aFileName, L"r");
 
   if (fp) 
     {
@@ -110,30 +93,4 @@ Handle(TColStd_HArray2OfReal) ReadRegularGrid(Standard_CString FileName,
       cout << "cannot open file : " << FileName << endl;
     }
   return H;
-}
-
-//=======================================================================
-//function : ReadRegularGrid
-//purpose  : 
-//           cf jm-oliva@paris3.matra-dtv.fr  ( Merci JMO )
-//=======================================================================
-Handle(TColStd_HArray2OfReal) ReadRegularGrid(const CString aCStringFileName,
-                                              Standard_Real& xmin,
-                                              Standard_Real& ymin,
-                                              Standard_Real& Deltax,
-                                              Standard_Real& Deltay)
-{
-    char tmp_char[256] ="";
-    strcpy_s(tmp_char,aCStringFileName);
-    int i = 0, len = (int)strlen(tmp_char);
-    while (i < len)
-    {
-        if (tmp_char[i] == '\\')
-            tmp_char[i] = '/';
-        i++;
-    }
-    Standard_CString aFileName = tmp_char;	
-    Handle(TColStd_HArray2OfReal) H;
-    H = ReadRegularGrid(aFileName,xmin,ymin,Deltax,Deltay);
-    return H;
 }

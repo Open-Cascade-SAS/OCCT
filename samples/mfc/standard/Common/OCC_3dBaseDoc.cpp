@@ -222,20 +222,17 @@ void OCC_3dBaseDoc::Fit()
 	pView->FitAll();
 }
 
-int OCC_3dBaseDoc::OnFileImportBrep_WithInitDir(LPCTSTR InitialDir) 
-{   
-	if(CImportExport::ReadBREP(myAISContext, InitialDir) == 1)
-		return 1;
-	Fit();
-	return 0;
+int OCC_3dBaseDoc::OnFileImportBrep_WithInitDir (const wchar_t* )
+{
+  if (CImportExport::ReadBREP (myAISContext) == 1)
+    return 1;
+  Fit();
+  return 0;
 }
 
 void OCC_3dBaseDoc::OnFileImportBrep() 
 {   
-	if(CImportExport::ReadBREP(myAISContext) == 1)
-		return;
-	Fit();
-	
+  OnFileImportBrep_WithInitDir (NULL);
 }
 
 void OCC_3dBaseDoc::OnFileExportBrep() 

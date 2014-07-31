@@ -50,7 +50,7 @@ void CNewCylDlg::OnOK()
 	UpdateData(TRUE);
 	if( (m_h<=Precision::Confusion()) || (m_r<=Precision::Confusion()) )
 	{
-		MessageBox("Radius and height of a cylinder should be srictly positives.", "New box",MB_ICONEXCLAMATION);
+		MessageBox (L"Radius and height of a cylinder should be srictly positives.", L"New box", MB_ICONEXCLAMATION);
 		return;
 	}
 	

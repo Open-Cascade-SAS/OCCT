@@ -23,9 +23,8 @@ CFileSaveSTEPDialog::CFileSaveSTEPDialog(CWnd* pParent /*=NULL*/)
 	m_Cc1ModelType = STEPControl_ManifoldSolidBrep;
 	//}}AFX_DATA_INIT
 
-	TCHAR tchBuf[80];
-
-CString CASROOTValue = ((GetEnvironmentVariable("CASROOT", tchBuf, 80) > 0) ? tchBuf : NULL); 
+CString CASROOTValue;
+CASROOTValue.GetEnvironmentVariable (L"CASROOT");
 CString initdir = (CASROOTValue + "\\..\\data\\step");
 
 	m_ofn.lpstrInitialDir = initdir;
@@ -79,12 +78,12 @@ BOOL CFileSaveSTEPDialog::OnInitDialog()
 {
 	
 	BOOL bRet =	CFileDialog::OnInitDialog();
-	m_SaveTypeCombo.InsertString(-1,"ManifoldSolidBrep");
+	m_SaveTypeCombo.InsertString(-1, L"ManifoldSolidBrep");
 
-	m_SaveTypeCombo.InsertString(-1,"FacetedBrep");
+  m_SaveTypeCombo.InsertString(-1, L"FacetedBrep");
 
-	m_SaveTypeCombo.InsertString(-1,"ShellBasedSurfaceModel");
-	m_SaveTypeCombo.InsertString(-1,"GeometricCurveSet");
+  m_SaveTypeCombo.InsertString(-1, L"ShellBasedSurfaceModel");
+  m_SaveTypeCombo.InsertString(-1, L"GeometricCurveSet");
 	m_SaveTypeCombo.SetCurSel(m_DialogType);
 
 	return bRet;

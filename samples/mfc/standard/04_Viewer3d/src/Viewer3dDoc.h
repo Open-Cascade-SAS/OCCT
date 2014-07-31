@@ -44,7 +44,8 @@ public:
 	static void Fit();
 
 	virtual ~CViewer3dDoc();
-	void UpdateResultMessageDlg(CString Title, TCollection_AsciiString aMessage);
+	void UpdateResultMessageDlg (CString theTitle, const TCollection_AsciiString& theMessage);
+  void UpdateResultMessageDlg (CString theTitle, CString theMessage);
 	virtual BOOL OnNewDocument();
 	virtual void Popup (const Standard_Integer  x       ,
 		    			const Standard_Integer  y       ,

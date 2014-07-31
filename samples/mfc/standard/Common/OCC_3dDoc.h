@@ -21,7 +21,12 @@ public:
 	OCC_3dDoc();
 	virtual ~OCC_3dDoc();
 
-	void PocessTextInDialog(char* aTitle, TCollection_AsciiString& aMessage);
+	void PocessTextInDialog (CString theTitle, CString theMessage);
+	void PocessTextInDialog (CString theTitle, const TCollection_AsciiString& theMessage)
+        {
+          CString aMessage (theMessage.ToCString());
+          PocessTextInDialog (theTitle, aMessage);
+        }
 	void ClearDialog();
 	void AddTextInDialog(TCollection_AsciiString& aMessage);
 

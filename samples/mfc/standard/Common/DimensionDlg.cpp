@@ -113,7 +113,7 @@ BOOL CDimensionDlg::OnInitDialog()
   CheckRadioButton (IDC_2DText, IDC_3DText, IDC_2DText);
   SetTextModeControlsVisible (false);
   CComboBox* aCombo =(CComboBox* )GetDlgItem (IDC_FontSize);
-  aCombo->SelectString (0,"10");
+  aCombo->SelectString (0, L"10");
 
   UpdateData (FALSE);
 
@@ -167,13 +167,13 @@ void CDimensionDlg::CreateLengthParamsTab()
 {
   TC_ITEM aTabItem;
   aTabItem.mask = TCIF_TEXT;
-  aTabItem.pszText = "Edge";
+  aTabItem.pszText = L"Edge";
   myLengthParams->InsertItem (0, &aTabItem);
-  aTabItem.pszText = "Vertices";
+  aTabItem.pszText = L"Vertices";
   myLengthParams->InsertItem (1, &aTabItem);
-  aTabItem.pszText = "Parallel edges";
+  aTabItem.pszText = L"Parallel edges";
   myLengthParams->InsertItem (2, &aTabItem);
-  aTabItem.pszText = "Parallel faces";
+  aTabItem.pszText = L"Parallel faces";
   myLengthParams->InsertItem (3, &aTabItem);
 
   CLengthParamsEdgePage *aPage1 = new CLengthParamsEdgePage (myAISContext);
@@ -218,11 +218,11 @@ void CDimensionDlg::CreateAngleParamsTab()
 {
   TC_ITEM aTabItem;
   aTabItem.mask = TCIF_TEXT;
-  aTabItem.pszText = "Two edges";
+  aTabItem.pszText = L"Two edges";
   myAngleParams->InsertItem (0, &aTabItem);
-  aTabItem.pszText = "Three vertices";
+  aTabItem.pszText = L"Three vertices";
   myAngleParams->InsertItem (1, &aTabItem);
-  aTabItem.pszText = "Two faces";
+  aTabItem.pszText = L"Two faces";
   myAngleParams->InsertItem (2, &aTabItem);
 
   CLengthParamsEdgesPage *aPage1 = new CLengthParamsEdgesPage (myAISContext, true);
@@ -259,7 +259,7 @@ void CDimensionDlg::CreateRadiusParamsTab()
 {
   TC_ITEM aTabItem;
   aTabItem.mask = TCIF_TEXT;
-  aTabItem.pszText = "Circle or arc";
+  aTabItem.pszText = L"Circle or arc";
   myRadiusParams->InsertItem (0, &aTabItem);
   CRadiusParamsPage *aPage1 = new CRadiusParamsPage (myAISContext);
   aTabItem.mask = TCIF_PARAM;
@@ -279,7 +279,7 @@ void CDimensionDlg::CreateDiameterParamsTab()
 {
   TC_ITEM aTabItem;
   aTabItem.mask = TCIF_TEXT;
-  aTabItem.pszText = "Circle or arc";
+  aTabItem.pszText = L"Circle or arc";
   myDiameterParams->InsertItem (0, &aTabItem);
   CRadiusParamsPage *aPage1 = new CRadiusParamsPage (myAISContext,Standard_True);
   aTabItem.mask = TCIF_PARAM;
@@ -615,8 +615,8 @@ const Standard_Real CDimensionDlg::GetFontHeight() const
 {
   CComboBox *aComboBox = (CComboBox*)GetDlgItem (IDC_FontSize);
   CString aStr;
-  aComboBox->GetWindowTextA (aStr);
-  return (Standard_Real)atof (aStr);
+  aComboBox->GetWindowText (aStr);
+  return _wtof (aStr);
 }
 
 //=======================================================================
@@ -671,10 +671,10 @@ void CDimensionDlg::UpdateUnitsListForLength()
 {
   CComboBox *aCombo = (CComboBox*)GetDlgItem (IDC_DisplayUnits);
   aCombo->ResetContent();
-  aCombo->AddString ("No");
-  aCombo->AddString ("m");
-  aCombo->AddString ("mm");
-  aCombo->AddString ("in");
+  aCombo->AddString (L"No");
+  aCombo->AddString (L"m");
+  aCombo->AddString (L"mm");
+  aCombo->AddString (L"in");
   aCombo->SetCurSel (1);
 }
 
@@ -687,9 +687,9 @@ void CDimensionDlg::UpdateUnitsListForAngle()
 {
   CComboBox *aCombo = (CComboBox*)GetDlgItem (IDC_DisplayUnits);
   aCombo->ResetContent();
-  aCombo->AddString ("No");
-  aCombo->AddString ("deg");
-  aCombo->AddString ("rad");
+  aCombo->AddString (L"No");
+  aCombo->AddString (L"deg");
+  aCombo->AddString (L"rad");
   aCombo->SetCurSel (1);
 }
 
@@ -701,7 +701,7 @@ void CDimensionDlg::UpdateUnitsListForAngle()
 const Standard_Boolean CDimensionDlg::IsUnitsDisplayed() const
 {
   CString aStr;
-  GetDlgItem (IDC_DisplayUnits)->GetWindowTextA (aStr);
+  GetDlgItem (IDC_DisplayUnits)->GetWindowText (aStr);
   return !aStr.IsEmpty() && aStr != "No";
 }
 
@@ -715,9 +715,9 @@ const TCollection_AsciiString CDimensionDlg::GetUnits() const
   if (!IsUnitsDisplayed())
     return TCollection_AsciiString();
   CString aStr;
-  GetDlgItem (IDC_DisplayUnits)->GetWindowTextA (aStr);
-  Standard_CString aChars = (LPCSTR)aStr;
-  return TCollection_AsciiString (aChars);
+  GetDlgItem (IDC_DisplayUnits)->GetWindowText (aStr);
+  TCollection_ExtendedString aCharsW ((Standard_ExtString )(const wchar_t* )aStr);
+  return TCollection_AsciiString (aCharsW, '?');
 }
 
 //=======================================================================

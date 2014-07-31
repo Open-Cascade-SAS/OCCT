@@ -127,7 +127,7 @@ Standard_Integer TOcafFunction_CutDriver::Execute(TFunction_Logbook& /*log*/) co
 	// Let's check if the Cut has been successfull:
 	if (!mkCut.IsDone()) 
 	{
-		MessageBox(0,"Cut not done.","Cut Function Driver",MB_ICONERROR);
+		MessageBoxW (NULL, L"Cut not done.", L"Cut Function Driver", MB_ICONERROR);
 		return 2;
 	}
 	TopoDS_Shape ResultShape = mkCut.Shape();

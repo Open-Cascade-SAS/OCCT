@@ -45,18 +45,18 @@ OCC_App::OCC_App() : CWinApp()
   }
   catch(Standard_Failure)
   {
-    AfxMessageBox ("Fatal error during graphic initialization", MB_ICONSTOP);
+    AfxMessageBox (L"Fatal error during graphic initialization", MB_ICONSTOP);
     ExitProcess (1);
   }
 }
 
 void OCC_App::SetSamplePath(LPCTSTR aPath)
 {
-  char AbsoluteExecutableFileName[MAX_PATH+1];
-  HMODULE hModule = GetModuleHandle(NULL);
-  GetModuleFileName(hModule, AbsoluteExecutableFileName, MAX_PATH);
+  wchar_t anAbsoluteExecutableFileName[MAX_PATH + 1];
+  HMODULE hModule = GetModuleHandleW (NULL);
+  GetModuleFileNameW (hModule, anAbsoluteExecutableFileName, MAX_PATH);
 
-  SamplePath = CString(AbsoluteExecutableFileName);
+  SamplePath = CString (anAbsoluteExecutableFileName);
   int index = SamplePath.ReverseFind('\\');
   SamplePath.Delete(index+1, SamplePath.GetLength() - index - 1);
   if (aPath == NULL)
@@ -141,11 +141,12 @@ BOOL CAboutDlgStd::OnInitDialog(){
   {
     aReadmeEdit->ShowWindow(TRUE);
     UINT aFileLength = (UINT)aFile.GetLength();
-    char* buffer=new char[aFileLength];
+    char* buffer = new char[aFileLength];
     aFile.Read(buffer,aFileLength);
-    ReadmeText.SetString(buffer);
-    ReadmeText.SetAt(aFileLength,'\0');
-    ReadmeText.Replace("\n","\r\n");
+    ReadmeText = buffer;
+    delete[] buffer;
+    ReadmeText.SetAt (aFileLength, '\0');
+    ReadmeText.Replace (L"\n", L"\r\n");
     UpdateData(FALSE);
   }
   else
@@ -164,19 +165,19 @@ void OCC_App::OnAppAbout()
   aboutDlg.DoModal();
 }
 
-LPCTSTR OCC_App::GetSampleName()
+const wchar_t* OCC_App::GetSampleName() const
 {
-  return SampleName;
+  return (const wchar_t* )SampleName;
 }
 
-LPCTSTR OCC_App::GetInitDataDir()
+const wchar_t* OCC_App::GetInitDataDir() const
 {
-  return (LPCTSTR) SamplePath;
+  return (const wchar_t* )SamplePath;
 }
 
-void OCC_App::SetSampleName(LPCTSTR Name)
+void OCC_App::SetSampleName (const wchar_t* theName)
 {
-  SampleName = Name;
+  SampleName = theName;
 }
 
 //=============================================================================
@@ -187,11 +188,11 @@ void OCC_App::OnStereo()
 {
   Handle(OpenGl_GraphicDriver) aDriver = Handle(OpenGl_GraphicDriver)::DownCast (myGraphicDriver);
 
-  int anAnswer = MessageBox(NULL,
-    "It is required to switch OpenGl context to turn on / off hardware stereo support. "
-    "The document views need to be re-created to change \"GL\" context pixel format. "
-    "This will close all current views and open new one (the model will be kept).\n"
-    "Do you want to continue?", "Enable/disable hardware stereo support", MB_OKCANCEL | MB_ICONQUESTION);
+  int anAnswer = MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd,
+    L"It is required to switch OpenGl context to turn on / off hardware stereo support. "
+    L"The document views need to be re-created to change \"GL\" context pixel format. "
+    L"This will close all current views and open new one (the model will be kept).\n"
+    L"Do you want to continue?", L"Enable/disable hardware stereo support", MB_OKCANCEL | MB_ICONQUESTION);
   if (anAnswer != IDOK)
   {
     return;

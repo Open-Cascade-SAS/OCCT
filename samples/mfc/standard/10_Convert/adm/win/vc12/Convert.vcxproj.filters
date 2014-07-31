@@ -1,0 +1,112 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{b2e6cca6-ebc5-4e7e-b06c-1e047a9e5013}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{3f765fb2-98a9-4f66-b536-0f09b68eefce}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl</Extensions>
+    </Filter>
+    <Filter Include="Common Files">
+      <UniqueIdentifier>{44a1d1d0-2210-4fc3-9d12-694b98b3e218}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common Files\Sources">
+      <UniqueIdentifier>{40f21a32-e9bf-4885-95d3-c8ee7a07c9ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common Files\Headers">
+      <UniqueIdentifier>{8cb29cb9-5584-4028-9405-cd74b6d71fb5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common Files\Resource Files">
+      <UniqueIdentifier>{83444696-f610-4476-9d6b-1fed4444557f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\Convert_Presentation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Common\WINMAIN.CPP">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\ISession\ISession_Curve.cpp">
+      <Filter>Common Files\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\WNT\MainFrm.cpp">
+      <Filter>Common Files\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\WNT\OCCDemo.cpp">
+      <Filter>Common Files\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\OCCDemo_Presentation.cpp">
+      <Filter>Common Files\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\WNT\OCCDemoDoc.cpp">
+      <Filter>Common Files\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\WNT\OCCDemoView.cpp">
+      <Filter>Common Files\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\WNT\ResultDialog.cpp">
+      <Filter>Common Files\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\WNT\StdAfx.cpp">
+      <Filter>Common Files\Sources</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\Convert_Presentation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\ISession\ISession_Curve.h">
+      <Filter>Common Files\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\WNT\MainFrm.h">
+      <Filter>Common Files\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\WNT\OCCDemo.h">
+      <Filter>Common Files\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\OCCDemo_Presentation.h">
+      <Filter>Common Files\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\WNT\OCCDemoDoc.h">
+      <Filter>Common Files\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\WNT\OCCDemoView.h">
+      <Filter>Common Files\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\WNT\resource.h">
+      <Filter>Common Files\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\WNT\ResultDialog.h">
+      <Filter>Common Files\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\WNT\StdAfx.h">
+      <Filter>Common Files\Headers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\..\src\WNT\OCCDemo.rc">
+      <Filter>Common Files\Sources</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\src\WNT\res\OCCDemo.ico">
+      <Filter>Common Files\Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\src\WNT\res\OCCDemo.rc2">
+      <Filter>Common Files\Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\src\WNT\res\occlogo.bmp">
+      <Filter>Common Files\Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\src\WNT\res\toolbar.bmp">
+      <Filter>Common Files\Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\src\WNT\res\toolbar1.bmp">
+      <Filter>Common Files\Resource Files</Filter>
+    </None>
+    <None Include="..\Common\WNT\res\logopen.bmp" />
+  </ItemGroup>
+</Project>

@@ -18,7 +18,7 @@
 CModelingApp::CModelingApp() : OCC_App()
 {
   SampleName = "Modeling"; //for about dialog
-  SetSamplePath ("..\\..\\02_Modeling");
+  SetSamplePath (L"..\\..\\02_Modeling");
 }
 
 /////////////////////////////////////////////////////////////////////////////

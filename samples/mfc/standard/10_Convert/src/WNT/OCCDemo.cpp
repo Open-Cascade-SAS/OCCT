@@ -36,7 +36,7 @@ COCCDemoApp::COCCDemoApp() : OCC_App()
   }
   catch (Standard_Failure)
   {
-    AfxMessageBox ("Fatal Error During Graphic Initialisation");
+    AfxMessageBox (L"Fatal Error During Graphic Initialisation");
   }
 }
 

@@ -2,7 +2,8 @@ cmake_minimum_required (VERSION 2.6)
 
 project (Modeling)
 
-add_definitions(-DWINVER=0x0500)
+add_definitions(-DWINVER=0x0501 -DUNICODE -D_UNICODE)
+set (CMAKE_MFC_FLAG 2)
 
 set (Modeling_SRC_DIR      ${MFC_STANDARD_SAMPLES_DIR}/02_Modeling/src)
 set (Modeling_HEADER_FILES ${Modeling_SRC_DIR}/ISession_Direction.h

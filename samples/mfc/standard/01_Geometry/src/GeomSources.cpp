@@ -53,13 +53,10 @@ void GeomSources::PreProcess(CGeometryDoc* aDoc,DisplayType aDisplayType)
   }
 }
 
-void GeomSources::PostProcess(CGeometryDoc* aDoc,
-							  UINT anID,
-							  DisplayType aDisplayType,
-							  const char* aString,
-							  Quantity_Coefficient Coef /* = -1 */
-							  /* double Zoom = -1 */)
+void GeomSources::PostProcess (CGeometryDoc* aDoc, UINT anID, DisplayType aDisplayType,
+                               const TCollection_AsciiString& theString, Quantity_Coefficient Coef)
 {
+  Standard_CString aString = theString.ToCString();
   if (aDisplayType == No2D3D || aDisplayType == a2D3D)
   {   
     aDoc->Fit3DViews(Coef);
@@ -91,7 +88,7 @@ void GeomSources::PostProcess(CGeometryDoc* aDoc,
 
   CString s;
   if (! s.LoadString( anID ))
-    AfxMessageBox("Error Loading String: ");
+    AfxMessageBox (L"Error Loading String: ");
 
   CString Title = s.Left( s.Find( '\n' ));
 
@@ -234,7 +231,7 @@ Standard_Real result = A.DotCross(B,C); \n\
     
   Message+= " result = ";
   Message+= Message2;
-  PostProcess(aDoc,ID_BUTTON_Test_1,TheDisplayType,Message.ToCString());
+  PostProcess(aDoc,ID_BUTTON_Test_1,TheDisplayType,Message);
 }
 
 // Function name	: GeomSources::gpTest2
@@ -257,7 +254,7 @@ gp_Pnt P1(1,2,3); \n\
   AddSeparator(aDoc,Message);
 //--------------------------------------------------------------
   DisplayPoint(aDoc,P1,"P1 (1,2,3)",false,0.5);
-  PostProcess(aDoc,ID_BUTTON_Test_2,TheDisplayType,Message.ToCString(),1.0);
+  PostProcess(aDoc,ID_BUTTON_Test_2,TheDisplayType,Message,1.0);
 }
 
 
@@ -283,7 +280,7 @@ gp_Pnt P2(A);      \n\
   AddSeparator(aDoc,Message);
 //--------------------------------------------------------------
   DisplayPoint(aDoc,P2,"P2 (1,2,3)",false,0.5);
-  PostProcess(aDoc,ID_BUTTON_Test_3,TheDisplayType,Message.ToCString(),1.0 /*0.02*/);
+  PostProcess(aDoc,ID_BUTTON_Test_3,TheDisplayType,Message,1.0 /*0.02*/);
 }
 
 
@@ -327,7 +324,7 @@ Standard_Real TheZ = P3.Z();   \n\
   Message4 = TheZ;
   Message += Message4;
 
-  PostProcess(aDoc,ID_BUTTON_Test_4,TheDisplayType,Message.ToCString(),1.0 /*0.02*/);
+  PostProcess(aDoc,ID_BUTTON_Test_4,TheDisplayType,Message,1.0 /*0.02*/);
 }
 
 
@@ -377,7 +374,7 @@ PB.BaryCenter(alpha,P2,beta);    \n\
   Message += " , ";
   Message += Message4; 
   Message += " ); ";
-  PostProcess(aDoc,ID_BUTTON_Test_5,TheDisplayType,Message.ToCString());
+  PostProcess(aDoc,ID_BUTTON_Test_5,TheDisplayType,Message);
 }
 
 
@@ -503,7 +500,7 @@ if (PE.IsSpace()) { /*... */ }                                   \n\
   else
     Message += "False\n";
 
-    PostProcess(aDoc,ID_BUTTON_Test_6,TheDisplayType,Message.ToCString());
+    PostProcess(aDoc,ID_BUTTON_Test_6,TheDisplayType,Message);
 }
 
 // Function name	: GeomSources::gpTest7
@@ -564,7 +561,7 @@ C->D1(param,P,V);                                   \n\
 
   DisplayPoint(aDoc,P,"P",false,0.5);
 
-  PostProcess(aDoc,ID_BUTTON_Test_7,TheDisplayType,Message.ToCString());
+  PostProcess(aDoc,ID_BUTTON_Test_7,TheDisplayType,Message);
 }
 
 // Function name	: GeomSources::gpTest8
@@ -614,7 +611,7 @@ CLP.Tangent(D);                                    \n\
   Message += Message2; Message += " , ";
   Message += Message3; Message += " ); \n";
 
-  PostProcess(aDoc,ID_BUTTON_Test_8,TheDisplayType,Message.ToCString());
+  PostProcess(aDoc,ID_BUTTON_Test_8,TheDisplayType,Message);
 }
 
 // Function name	: GeomSources::gpTest9
@@ -682,7 +679,7 @@ if (AP.IsDone()){C->D0(AP.Parameter(),P2);}                   \n\
   Message += " P2 ( ";
   Message += Message4; Message += " , ";
   Message += Message5; Message += " ); \n";
-  PostProcess(aDoc,ID_BUTTON_Test_9,TheDisplayType,Message.ToCString());
+  PostProcess(aDoc,ID_BUTTON_Test_9,TheDisplayType,Message);
 }
 
 // Function name	: GeomSources::gpTest10
@@ -774,7 +771,7 @@ Standard_Real Abscissa  = UA.Abscissa();                \n\
   Message += Message3;
   Message += " \n";
 
-  PostProcess(aDoc,ID_BUTTON_Test_10,TheDisplayType,Message.ToCString());
+  PostProcess(aDoc,ID_BUTTON_Test_10,TheDisplayType,Message);
 }
 
 // Function name	: GeomSources::gpTest11
@@ -818,7 +815,7 @@ gp_Pnt P = SP->Value(u,v);                                \n\
   Message += Message3; 
   Message += " ); \n";
 
-  PostProcess(aDoc,ID_BUTTON_Test_11,TheDisplayType,Message.ToCString());
+  PostProcess(aDoc,ID_BUTTON_Test_11,TheDisplayType,Message);
 }
 
 // Function name	: GeomSources::gpTest12
@@ -898,7 +895,7 @@ if(NbResults>0){                                            \n\
     }
   }
 
-  PostProcess(aDoc,ID_BUTTON_Test_12,TheDisplayType,Message.ToCString());
+  PostProcess(aDoc,ID_BUTTON_Test_12,TheDisplayType,Message);
 }
 
 // Function name	: GeomSources::gpTest13
@@ -982,7 +979,7 @@ if(NbResults>0){                                          \n\
      DisplayPoint(aDoc,Q,aString.ToCString(),false,0.5);			
    }
  }
- PostProcess(aDoc,ID_BUTTON_Test_13,TheDisplayType,Message.ToCString());
+ PostProcess(aDoc,ID_BUTTON_Test_13,TheDisplayType,Message);
 }
 
 // Function name	: GeomSources::gpTest14
@@ -1063,7 +1060,7 @@ if (ICQ.IsDone()){                                        \n\
    }
  }
 
- PostProcess(aDoc,ID_BUTTON_Test_14,TheDisplayType,Message.ToCString());
+ PostProcess(aDoc,ID_BUTTON_Test_14,TheDisplayType,Message);
 }
 
 // Function name	: GeomSources::gpTest15
@@ -1100,7 +1097,7 @@ P1Copy.Transform(TRSF);  \n\
  DisplayPoint(aDoc,P1,"P1",false,0.5);
  DisplayPoint(aDoc,P2,"P2",false,0.5);
 
- PostProcess(aDoc,ID_BUTTON_Test_15,TheDisplayType,Message.ToCString());
+ PostProcess(aDoc,ID_BUTTON_Test_15,TheDisplayType,Message);
 }
 
 // Function name	: GeomSources::gpTest16
@@ -1157,7 +1154,7 @@ V1.IsOpposite(V2,Precision::Angular());  \n\
  Message += "result = ";
  if (result) Message += "True \n"; else Message += "False \n";
 
- PostProcess(aDoc,ID_BUTTON_Test_16,TheDisplayType,Message.ToCString());
+ PostProcess(aDoc,ID_BUTTON_Test_16,TheDisplayType,Message);
 }
 
 // Function name	: GeomSources::gpTest17
@@ -1204,7 +1201,7 @@ Standard_Real ang = D1.Angle(D2);                \n\
   Message += Message3; 
   Message += "   degree \n";
 
-  PostProcess(aDoc,ID_BUTTON_Test_17,TheDisplayType,Message.ToCString());
+  PostProcess(aDoc,ID_BUTTON_Test_17,TheDisplayType,Message);
 }
 
 // Function name	: GeomSources::gpTest18
@@ -1251,7 +1248,7 @@ gp_Parab2d Para(A,6);                     \n\
 
   Message += " The entity A of type gp_Ax22d is not displayable \n ";
   Message += " The entity D of type gp_Dir2d is displayed as a vector \n    ( mean with a length != 1 ) \n ";
-  PostProcess(aDoc,ID_BUTTON_Test_18,TheDisplayType,Message.ToCString());
+  PostProcess(aDoc,ID_BUTTON_Test_18,TheDisplayType,Message);
 }
 
 // Function name	: GeomSources::gpTest19
@@ -1345,7 +1342,7 @@ gp_Dir A2YDirection = A2.YDirection() ;     \n\
  else
    Message += "False = Left Handed  \n";
 
- PostProcess(aDoc,ID_BUTTON_Test_19,TheDisplayType,Message.ToCString());
+ PostProcess(aDoc,ID_BUTTON_Test_19,TheDisplayType,Message);
 }
 
 // Function name	: GeomSources::gpTest20
@@ -1459,7 +1456,7 @@ Handle(Geom2d_BSplineCurve) SPL3 = anInterpolation2.Curve();         \n\
     aDoc->GetISessionContext()->Display(aCurve, Standard_False);
   }
   else
-    MessageBox(0,"SPL1.IsNull()","CasCade Error",MB_ICONERROR);
+    MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, L"SPL1.IsNull()", L"CasCade Error", MB_ICONERROR);
 
   if (!SPL2.IsNull())
   {
@@ -1468,7 +1465,7 @@ Handle(Geom2d_BSplineCurve) SPL3 = anInterpolation2.Curve();         \n\
     aDoc->GetISessionContext()->Display(aCurve2, Standard_False);  
   }
   else
-    MessageBox(0,"SPL2.IsNull()","CasCade Error",MB_ICONERROR);
+    MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, L"SPL2.IsNull()", L"CasCade Error", MB_ICONERROR);
 
   if (!SPL3.IsNull())
   {
@@ -1477,13 +1474,13 @@ Handle(Geom2d_BSplineCurve) SPL3 = anInterpolation2.Curve();         \n\
     aDoc->GetISessionContext()->Display(aCurve2, Standard_False);  
   }
   else
-    MessageBox(0,"SPL3.IsNull()","CasCade Error",MB_ICONERROR);
+    MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, L"SPL3.IsNull()", L"CasCade Error", MB_ICONERROR);
 
   Message += " SPL1  is Red  \n";
   Message += " SPL2  is Blue \n";   
   Message += " SPL3  is Yellow \n";   
 
-  PostProcess(aDoc,ID_BUTTON_Test_20,TheDisplayType,Message.ToCString());
+  PostProcess(aDoc,ID_BUTTON_Test_20,TheDisplayType,Message);
 }
 
 void GeomSources::gpTest21(CGeometryDoc* aDoc)
@@ -1521,7 +1518,7 @@ Handle(Geom2d_BSplineCurve) C = B.Curve();  \n\
 
   DisplayCurveAndCurvature(aDoc,C,6,Standard_False);               
 
-  PostProcess(aDoc,ID_BUTTON_Test_21,TheDisplayType,Message.ToCString());
+  PostProcess(aDoc,ID_BUTTON_Test_21,TheDisplayType,Message);
 }
 
 void GeomSources::gpTest22(CGeometryDoc* aDoc)
@@ -1565,7 +1562,7 @@ Handle(Geom2d_BSplineCurve) C = MV.Curve();     \n\
   DisplayPoint(aDoc,P1,"P1",false,0.5);
   DisplayPoint(aDoc,P2,"P2",false,0.5);
 
-  PostProcess(aDoc,ID_BUTTON_Test_22,TheDisplayType,Message.ToCString());
+  PostProcess(aDoc,ID_BUTTON_Test_22,TheDisplayType,Message);
 }
 
 // Function name	: GeomSources::gpTest23
@@ -1617,7 +1614,7 @@ Handle(Geom2d_BSplineCurve) SPL =                                  \n\
   Handle(ISession2D_Curve) aCurve2 = new ISession2D_Curve(SPL);
   aDoc->GetISessionContext()->Display(aCurve2, Standard_False);
 
-  PostProcess(aDoc,ID_BUTTON_Test_23,TheDisplayType,Message.ToCString());
+  PostProcess(aDoc,ID_BUTTON_Test_23,TheDisplayType,Message);
 }
 
 // Function name	: GeomSources::gpTest24
@@ -1720,7 +1717,7 @@ gp_Ax2d C2DCircleXAxis = C2DCircle->XAxis();            \n\
  Handle(ISession_Direction) aC2DCircleXAxisDirection = new ISession_Direction(C2DCircleXAxis.Location(),C2DCircleXAxis.Direction(),5.2);
  aDoc->GetISessionContext()->Display(aC2DCircleXAxisDirection, Standard_False);
 
- PostProcess(aDoc,ID_BUTTON_Test_24,TheDisplayType,Message.ToCString());
+ PostProcess(aDoc,ID_BUTTON_Test_24,TheDisplayType,Message);
 }
 
 // Function name	: GeomSources::gpTest25
@@ -1825,7 +1822,7 @@ for (Standard_Integer k = 1;k<=NbPoints;k++)                        \n\
     Message += " )\n"; 
   }
 
-  PostProcess(aDoc,ID_BUTTON_Test_25,TheDisplayType,Message.ToCString());
+  PostProcess(aDoc,ID_BUTTON_Test_25,TheDisplayType,Message);
 }
 
 // Function name	: GeomSources::gpTest26
@@ -1933,7 +1930,7 @@ for(int i=1;i <= NbExtrema; i++)   {                                  \n\
    aDoc->GetISessionContext()->Display(aCurve, Standard_False);
  }
  else
-   MessageBox(0,"SPL1.IsNull()","CasCade Error",MB_ICONERROR);
+   MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, L"SPL1.IsNull()", L"CasCade Error", MB_ICONERROR);
 
  Handle(ISession2D_Curve) aCurve1 = new ISession2D_Curve(TC1);
  aCurve1->SetColorIndex(6);
@@ -1971,7 +1968,7 @@ for(int i=1;i <= NbExtrema; i++)   {                                  \n\
  Message+= SPL1shortestdistance;
  Message += "\n";
 
- PostProcess(aDoc,ID_BUTTON_Test_26,TheDisplayType,Message.ToCString());
+ PostProcess(aDoc,ID_BUTTON_Test_26,TheDisplayType,Message);
 }
 
 // Function name	: GeomSources::gpTest27
@@ -2044,7 +2041,7 @@ Standard_Boolean result2 = OC2->IsCN(2);                               \n\
   else
     Message += " result2 = False \n";
 
-  PostProcess(aDoc,ID_BUTTON_Test_27,TheDisplayType,Message.ToCString());
+  PostProcess(aDoc,ID_BUTTON_Test_27,TheDisplayType,Message);
 }
 
 // Function name	: GeomSources::gpTest28
@@ -2080,7 +2077,7 @@ gp_Lin2d L = gce_MakeLin2d(P1,P2);    \n\
   Handle(ISession2D_Curve) aCurve = new ISession2D_Curve(aLine);
   aDoc->GetISessionContext()->Display(aCurve, Standard_False);
 
-  PostProcess(aDoc,ID_BUTTON_Test_28,TheDisplayType,Message.ToCString());
+  PostProcess(aDoc,ID_BUTTON_Test_28,TheDisplayType,Message);
 }
 
 // Function name	: GeomSources::gpTest29
@@ -2130,7 +2127,7 @@ if (B.IsDone())              \n\
 
   if (B.IsDone()) Message += " \n   B Is Done   ";
   else            Message += " \n   B Is not Done    ";
-  PostProcess(aDoc,ID_BUTTON_Test_29,TheDisplayType,Message.ToCString());
+  PostProcess(aDoc,ID_BUTTON_Test_29,TheDisplayType,Message);
 }
 
 // Function name	: GeomSources::gpTest30
@@ -2213,7 +2210,7 @@ if (LT.IsDone())                                     \n\
   TCollection_AsciiString Message2 (NbSol);
   Message += "NbSol       = "; Message += Message2      ; Message += "\n";
 
-  PostProcess(aDoc,ID_BUTTON_Test_30,TheDisplayType,Message.ToCString());
+  PostProcess(aDoc,ID_BUTTON_Test_30,TheDisplayType,Message);
 }
 
 // Function name	: GeomSources::gpTest31
@@ -2328,7 +2325,7 @@ if (TR.IsDone())                                                              \n
   }
   Message += "C is Red \n";
   Message += "L is Blue \n";
-  PostProcess(aDoc,ID_BUTTON_Test_31,TheDisplayType,Message.ToCString());
+  PostProcess(aDoc,ID_BUTTON_Test_31,TheDisplayType,Message);
 }
 
 // Function name	: GeomSources::gpTest32
@@ -2370,7 +2367,7 @@ Handle(Geom2d_TrimmedCurve) arc = GCE2d_MakeArcOfEllipse(EE,0.0,PI/4);  \n\
   TCollection_AsciiString Message2 (M_PI);
   Message += " PI = ";Message+= Message2;
 
-  PostProcess(aDoc,ID_BUTTON_Test_32,TheDisplayType,Message.ToCString());
+  PostProcess(aDoc,ID_BUTTON_Test_32,TheDisplayType,Message);
 }
 
 // Function name	: GeomSources::gpTest33
@@ -2412,7 +2409,7 @@ void GeomSources::gpTest33(CGeometryDoc* aDoc)
   if (anInterpolation.IsDone())
     SPL2 = anInterpolation.Curve();
   else
-    MessageBox(0,"The Interpolation is Not done","CasCade Warning",MB_ICONWARNING);
+    MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, L"The Interpolation is Not done", L"CasCade Warning", MB_ICONWARNING);
 
   //==============================================================
   TCollection_AsciiString Message (" \
@@ -2482,7 +2479,7 @@ else                                                                            
     aDoc->GetAISContext()->Display(aCurve2, Standard_False);
   }
 
-  PostProcess(aDoc,ID_BUTTON_Test_33,TheDisplayType,Message.ToCString());
+  PostProcess(aDoc,ID_BUTTON_Test_33,TheDisplayType,Message);
 }
 
 // Function name	: GeomSources::gpTest34
@@ -2577,7 +2574,7 @@ if (PE.IsSpace()) { /* ... */  }                \n\
   else
     Message += "False\n";
 
-  PostProcess(aDoc,ID_BUTTON_Test_34,TheDisplayType,Message.ToCString());
+  PostProcess(aDoc,ID_BUTTON_Test_34,TheDisplayType,Message);
 }
 
 // Function name	: GeomSources::gpTest35
@@ -2696,7 +2693,7 @@ if(CS.IsDone())                                             \n\
   Message += "NbSeg       = "; Message += Message2      ; Message += "\n";
   Message += "NbPoints  = "; Message += Message3      ; Message += "\n";
 
-  PostProcess(aDoc,ID_BUTTON_Test_35,TheDisplayType,Message.ToCString());
+  PostProcess(aDoc,ID_BUTTON_Test_35,TheDisplayType,Message);
 }
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -2812,7 +2809,7 @@ Standard_Real value = matrix.Determinant();                                     
   Message += " aScaledEntityTypeName = ";Message+= Message8; Message += "\n";
   Message += " aTranslatedEntityTypeName = ";Message+= Message9; Message += "\n";
 
-  PostProcess(aDoc,ID_BUTTON_Test_36,TheDisplayType,Message.ToCString());
+  PostProcess(aDoc,ID_BUTTON_Test_36,TheDisplayType,Message);
 }
 
 // Function name	: GeomSources::gpTest37
@@ -2892,7 +2889,7 @@ if (PE.IsSpace())  { /* ... */  }                                \n\
 
   Message += " PE.IsSpace() = ";   if (PE.IsSpace() ) Message += "True \n";  else Message += "False\n";
 
-  PostProcess(aDoc,ID_BUTTON_Test_37,TheDisplayType,Message.ToCString());
+  PostProcess(aDoc,ID_BUTTON_Test_37,TheDisplayType,Message);
 }
 
 void GeomSources::gpTest38(CGeometryDoc* aDoc)
@@ -2981,7 +2978,7 @@ Handle(Geom_BSplineSurface)    aBSplineSurface3 = aGeomFill3.Surface();         
   Message += "aBSplineSurface2  is Salmon;     ( GeomFill_CoonsStyle ) \n";
   Message += "aBSplineSurface3  is Hot pink;   ( GeomFill_CurvedStyle ) \n";
 
-  PostProcess(aDoc,ID_BUTTON_Test_38,TheDisplayType,Message.ToCString());
+  PostProcess(aDoc,ID_BUTTON_Test_38,TheDisplayType,Message);
 }
 void GeomSources::gpTest39(CGeometryDoc* aDoc)
 {
@@ -3077,7 +3074,7 @@ Handle(Geom_BSplineSurface) aBSplineSurface = aConstrainedFilling.Surface();    
 
   Message += "aBSplineSurface  is Yellow; \n";   
 
-  PostProcess(aDoc,ID_BUTTON_Test_39,TheDisplayType,Message.ToCString());
+  PostProcess(aDoc,ID_BUTTON_Test_39,TheDisplayType,Message);
 }
 
 void GeomSources::gpTest40(CGeometryDoc* aDoc)
@@ -3200,7 +3197,7 @@ if (!aSurface3.IsNull())                                           \n\
   Message += " aSurfaceEntityTypeName2     = ";Message+= Message3; Message += "\n";
   Message += " aSurfaceEntityTypeName3     = ";Message+= Message4; Message += "\n";
 
-  PostProcess(aDoc,ID_BUTTON_Test_40,TheDisplayType,Message.ToCString());
+  PostProcess(aDoc,ID_BUTTON_Test_40,TheDisplayType,Message);
 }
 
 void GeomSources::gpTest41(CGeometryDoc* aDoc)
@@ -3274,7 +3271,7 @@ Handle(Geom_BSplineSurface) anotherBSplineSurface =                \n\
   Message += "aBSplineSurface            is Yellow; \n";   
   Message += "anotherBSplineSurface  is Hot Pink; \n";   
 
-  PostProcess(aDoc,ID_BUTTON_Test_41,TheDisplayType,Message.ToCString());
+  PostProcess(aDoc,ID_BUTTON_Test_41,TheDisplayType,Message);
 }
 
 
@@ -3419,7 +3416,7 @@ if (BB.IsDone()){                                                 \n\
   Message += "BZ4 is Brown; \n";
   Message += "BSPLSURF is Hot Pink; \n";
 
-  PostProcess(aDoc,ID_BUTTON_Test_42,TheDisplayType,Message.ToCString());
+  PostProcess(aDoc,ID_BUTTON_Test_42,TheDisplayType,Message);
 }
 
 void GeomSources::gpTest43(CGeometryDoc* aDoc)
@@ -3494,7 +3491,7 @@ Handle(Geom_OffsetSurface) GOS2 = new Geom_OffsetSurface(aGeomSurface, offset); 
   Message += "aGeomSurface  is Blue; \n";
   Message += "GOS              are Green; \n";
 
-  PostProcess(aDoc,ID_BUTTON_Test_43,TheDisplayType,Message.ToCString());
+  PostProcess(aDoc,ID_BUTTON_Test_43,TheDisplayType,Message);
 }
 
 void GeomSources::gpTest44(CGeometryDoc* aDoc)
@@ -3572,7 +3569,7 @@ if (!SOLE.IsNull())                                        \n\
 
   Message += " SOLEEntityTypeName     = ";Message+= Message2; Message += "\n";
 
-  PostProcess(aDoc,ID_BUTTON_Test_44,TheDisplayType,Message.ToCString());
+  PostProcess(aDoc,ID_BUTTON_Test_44,TheDisplayType,Message);
 }
 
 void GeomSources::gpTest45(CGeometryDoc* aDoc)
@@ -3626,7 +3623,7 @@ if (!SOR.IsNull())                                   \n\
   TCollection_AsciiString Message2 (SOREntityTypeName);
   Message += " SOREntityTypeName     = ";Message+= Message2; Message += "\n";
 
-  PostProcess(aDoc,ID_BUTTON_Test_45,TheDisplayType,Message.ToCString());
+  PostProcess(aDoc,ID_BUTTON_Test_45,TheDisplayType,Message);
 }
 
 void GeomSources::gpTest46(CGeometryDoc* aDoc)
@@ -3715,7 +3712,7 @@ GeomLib::ExtendSurfByLength (aTranslatedGeomSurface,              \n\
   Message += "SPL1                                   is Red; \n";
   Message += "SPL2                                   is Green; \n";
 
-  PostProcess(aDoc,ID_BUTTON_Test_46,TheDisplayType,Message.ToCString());
+  PostProcess(aDoc,ID_BUTTON_Test_46,TheDisplayType,Message);
 }
 
 void GeomSources::gpTest47(CGeometryDoc* aDoc)
@@ -3831,7 +3828,7 @@ ESS.NearestPoints(P1,P2);                                      \n\
   DisplayPoint(aDoc,P1,Standard_CString("P1"));
   DisplayPoint(aDoc,P2,Standard_CString("P2"));
 
-  PostProcess(aDoc,ID_BUTTON_Test_47,TheDisplayType,Message.ToCString());
+  PostProcess(aDoc,ID_BUTTON_Test_47,TheDisplayType,Message);
 }
 
 void GeomSources::gpTest48(CGeometryDoc* aDoc)
@@ -3964,7 +3961,7 @@ aSPL2Box.Get(  aSPL2Xmin, aSPL2Ymin, aSPL2Xmax,aSPL2Ymax);             \n\
   DisplayCurve(aDoc,GCE2d_MakeSegment(gp_Pnt2d(aSPL2Xmin,aSPL2Ymin),gp_Pnt2d(aSPL2Xmin,aSPL2Ymax)) ,4); // Xmin,Y
   DisplayCurve(aDoc,GCE2d_MakeSegment(gp_Pnt2d(aSPL2Xmax,aSPL2Ymin),gp_Pnt2d(aSPL2Xmax,aSPL2Ymax)) ,4); // Xmax,Y
 
-  PostProcess(aDoc,ID_BUTTON_Test_48,TheDisplayType,Message.ToCString());
+  PostProcess(aDoc,ID_BUTTON_Test_48,TheDisplayType,Message);
 }
 
 
@@ -4043,7 +4040,7 @@ aBox.Get(  aXmin, aYmin,aZmin, aXmax,aYmax,aZmax);             \n\
   DisplayCurve(aDoc,GC_MakeSegment(gp_Pnt(aXmax,aYmax,aZmin),
     gp_Pnt(aXmax,aYmax,aZmax)) ,Quantity_NOC_RED); // Xmax,Ymax,Z
 
-  PostProcess(aDoc,ID_BUTTON_Test_49,TheDisplayType,Message.ToCString());
+  PostProcess(aDoc,ID_BUTTON_Test_49,TheDisplayType,Message);
 }
 
 void GeomSources::gpTest50(CGeometryDoc* aDoc)
@@ -4150,5 +4147,5 @@ aBox.Get(  aXmin, aYmin,aZmin, aXmax,aYmax,aZmax);             \n\
   DisplayCurve(aDoc,GC_MakeSegment(gp_Pnt(aXmax,aYmax,aZmin),
     gp_Pnt(aXmax,aYmax,aZmax)) ,Quantity_NOC_RED); // Xmax,Ymax,Z
 
-  PostProcess(aDoc,ID_BUTTON_Test_50,TheDisplayType,Message.ToCString());
+  PostProcess(aDoc,ID_BUTTON_Test_50,TheDisplayType,Message);
 }

@@ -68,7 +68,7 @@ Storage_Error FSD_Archive::IsGoodFileType(const TCollection_AsciiString&
   return s;
 }
 
-Storage_Error FSD_Archive::Open(const TCollection_AsciiString& aName,
+Storage_Error FSD_Archive::Open(const TCollection_AsciiString& theName,
                                 const Storage_OpenMode
 #ifdef WNT
                                 aMode
@@ -76,20 +76,20 @@ Storage_Error FSD_Archive::Open(const TCollection_AsciiString& aName,
                                )
 {
   Storage_Error result = Storage_VSOk;
-
-  SetName(aName);
+  CString aName = theName.ToCString();
+  SetName (theName);
 #ifdef WNT
   if (OpenMode() == Storage_VSNone) {
 	if (aMode == Storage_VSRead) {
-		if (!((FSD_CFile*)myCFile)->Open(aName.ToCString(),CFile::modeRead))
+		if (!((FSD_CFile*)myCFile)->Open(aName, CFile::modeRead))
 				result = Storage_VSOpenError;
 	}
 	else if (aMode == Storage_VSWrite) {
-		if (!((FSD_CFile*)myCFile)->Open(aName.ToCString(),CFile::modeCreate | CFile::modeWrite))
+		if (!((FSD_CFile*)myCFile)->Open(aName, CFile::modeCreate | CFile::modeWrite))
 				result = Storage_VSOpenError;
 	}
 	else if (aMode == Storage_VSReadWrite) {
-		if (!((FSD_CFile*)myCFile)->Open(aName.ToCString(),CFile::modeReadWrite))
+		if (!((FSD_CFile*)myCFile)->Open(aName, CFile::modeReadWrite))
 				result = Storage_VSOpenError;
 	}
 	if (result == Storage_VSOk) {

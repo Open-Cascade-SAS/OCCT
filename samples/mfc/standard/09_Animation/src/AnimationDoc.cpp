@@ -74,48 +74,58 @@ CAnimationDoc::CAnimationDoc()
 	TopoDS_Shape Piston;
 	TopoDS_Shape EngineBlock;
 	
-	char AbloluteExecutableFileName[200];
-	HMODULE hModule = GetModuleHandle(NULL);
-	GetModuleFileName (hModule, AbloluteExecutableFileName, 200);
+	/*wchar_t AbloluteExecutableFileName[200];
+	HMODULE hModule = GetModuleHandleW (NULL);
+	GetModuleFileNameW (hModule, AbloluteExecutableFileName, 200);
+  CString aDataDirPath (AbloluteExecutableFileName);
+  int index = aDataDirPath.ReverseFind ('\\');
+  aDataDirPath.Delete (index + 1, aDataDirPath.GetLength() - index - 1);*/
 
-	CString aString(AbloluteExecutableFileName);
-	int index = aString.ReverseFind('\\');
+  CString CASROOTValue;
+  CASROOTValue.GetEnvironmentVariable (L"CASROOT");
+  CString aDataDirPath = (CASROOTValue + "\\data\\occ");
 
-	aString.Delete(index+1, aString.GetLength() - index - 1);
+  std::filebuf aFileBuf;
+  std::istream aStream (&aFileBuf);
+  CString aPathCrankArm = aDataDirPath + "\\CrankArm.rle";
+  if (aFileBuf.open (aPathCrankArm, ios::in))
+  {
+    BRepTools::Read (CrankArm, aStream, B);
+    aFileBuf.close();
+  }
 
-	TCHAR tchBuf[80];
+  CString aPathCylinderHead = aDataDirPath + "\\CylinderHead.rle";
+  if (aFileBuf.open (aPathCylinderHead, ios::in))
+  {
+    BRepTools::Read (CylinderHead, aStream, B);
+    aFileBuf.close();
+  }
 
-	CString CASROOTValue = ((GetEnvironmentVariable("CASROOT", tchBuf, 80) > 0) ? tchBuf : NULL); 
-	aString = (CASROOTValue + "\\data\\occ");	
+  CString aPathPropeller = aDataDirPath + "\\Propeller.rle";
+  if (aFileBuf.open (aPathPropeller, ios::in))
+  {
+    BRepTools::Read (Propeller, aStream, B);
+    aFileBuf.close();
+  }
 
-	char DataDirPath[200];
-	strcpy_s(DataDirPath, aString);
-	char temp[200];
-	strcpy_s(temp, DataDirPath);
+  CString aPathPiston = aDataDirPath + "\\Piston.rle";
+  if (aFileBuf.open (aPathPiston, ios::in))
+  {
+    BRepTools::Read (Piston, aStream, B);
+    aFileBuf.close();
+  }
 
-    strcat_s(temp,"\\CrankArm.rle");
-	BRepTools::Read(CrankArm, temp, B);
-	
-    strcpy_s(temp, DataDirPath);
-    strcat_s(temp,"\\CylinderHead.rle");
-	BRepTools::Read(CylinderHead, temp, B);
+  CString aPathEngineBlock = aDataDirPath + "\\EngineBlock.rle";
+  if (aFileBuf.open (aPathEngineBlock, ios::in))
+  {
+    BRepTools::Read (EngineBlock, aStream, B);
+    aFileBuf.close();
+  }
 
-	strcpy_s(temp, DataDirPath);
-    strcat_s(temp,"\\Propeller.rle");
-	BRepTools::Read(Propeller, temp, B);
-
-	strcpy_s(temp, DataDirPath);
-    strcat_s(temp,"\\Piston.rle");
-	BRepTools::Read(Piston, temp, B);
-
-	strcpy_s(temp, DataDirPath);
-    strcat_s(temp,"\\EngineBlock.rle");
-	BRepTools::Read(EngineBlock, temp, B);
-	
 	if (CrankArm.IsNull() || CylinderHead.IsNull() || 
         Propeller.IsNull() || Piston.IsNull() || EngineBlock.IsNull())
 	{
-		int rep = MessageBox(NULL, "Shape(s) not found.\nCheck the Data directory path!", "Error",MB_OK | MB_ICONERROR);
+		int rep = MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, L"Shape(s) not found.\nCheck the Data directory path!", L"Error", MB_OK | MB_ICONERROR);
 		if (rep == IDOK)
 			exit(0);
 	}
@@ -356,7 +366,7 @@ void CAnimationDoc::OnFileLoadgrid()
 		  NULL,
 		  NULL,
 		  OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
-		  "Points Files (*.pnt;*.pnts)|*.pnt; *.pnts|All Files (*.*)|*.*||", 
+		  L"Points Files (*.pnt;*.pnts)|*.pnt; *.pnts|All Files (*.*)|*.*||",
 		  NULL );
 
 	CString initdir(((OCC_App*) AfxGetApp())->GetInitDataDir());
@@ -426,12 +436,6 @@ void CAnimationDoc::OnFileLoadgrid()
 void CAnimationDoc::OnUpdateWalkWalkthru(CCmdUI* pCmdUI) 
 {
 	// TODO: Add your command update UI handler code here
-
-	int i ;
-	char szMsg [256] ;
-	i = GetEnvironmentVariable( "CSF_WALKTHROUGH" , szMsg , sizeof szMsg ) ;
-	if ( i )
-		pCmdUI->SetCheck ( 1 ) ;
-	else
-		pCmdUI->SetCheck ( 0 ) ;
+  CString aValue;
+  pCmdUI->SetCheck (aValue.GetEnvironmentVariable (L"CSF_WALKTHROUGH") ? 1 : 0);
 }

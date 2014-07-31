@@ -181,7 +181,7 @@ void COffsetDlg::SetOffsets(Standard_Real theFactor, Standard_Real theUnits)
 	}
 	
 	CString aTextInDialog = myDoc -> GetDialogText();
-	if (strcmp(aTextInDialog, Message.ToCString()))
+  if (aTextInDialog != Message.ToCString())
 		myDoc -> UpdateResultMessageDlg("Set offsets", Message);
 	aAISContext->UpdateCurrentViewer();
 }

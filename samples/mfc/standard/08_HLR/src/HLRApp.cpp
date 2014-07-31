@@ -28,7 +28,7 @@ static char THIS_FILE[] = __FILE__;
 CHLRApp::CHLRApp() : OCC_App()
 {
   SampleName = "HLR"; //for about dialog
-  SetSamplePath ("..\\..\\08_HLR");
+  SetSamplePath (L"..\\..\\08_HLR");
 }
 
 CHLRApp::~CHLRApp()

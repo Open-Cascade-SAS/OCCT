@@ -20,9 +20,9 @@ CFileSaveCSFDBDialog::CFileSaveCSFDBDialog(CWnd* pParent /*=NULL*/)
 	//{{AFX_DATA_INIT(CFileSaveCSFDBDialog)
 	m_TriangleMode = MgtBRep_WithTriangle;
 	//}}AFX_DATA_INIT
-	TCHAR tchBuf[80];
 
-CString CASROOTValue = ((GetEnvironmentVariable("CASROOT", tchBuf, 80) > 0) ? tchBuf : NULL); 
+CString CASROOTValue;
+CASROOTValue.GetEnvironmentVariable (L"CASROOT");
 CString initdir = (CASROOTValue + "\\..\\data\\csfdb");
 
 	m_ofn.lpstrInitialDir = initdir;
@@ -60,8 +60,8 @@ BOOL CFileSaveCSFDBDialog::OnInitDialog()
 {
 	
 	BOOL bRet =	CFileDialog::OnInitDialog();
-    m_SaveTypeCombo.InsertString(-1,"WithTriangle");
-	m_SaveTypeCombo.InsertString(-1,"WithoutTriangle");
+  m_SaveTypeCombo.InsertString(-1, L"WithTriangle");
+  m_SaveTypeCombo.InsertString(-1, L"WithoutTriangle");
 	m_SaveTypeCombo.SetCurSel(m_TriangleMode);
 
 	return bRet;

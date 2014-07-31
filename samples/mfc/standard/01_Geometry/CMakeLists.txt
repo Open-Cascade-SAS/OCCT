@@ -2,7 +2,8 @@ cmake_minimum_required (VERSION 2.6)
 
 project (Geometry)
 
-add_definitions(-DWINVER=0x0500)
+add_definitions(-DWINVER=0x0501 -DUNICODE -D_UNICODE)
+set (CMAKE_MFC_FLAG 2)
 
 set (Geometry_SRC_DIR      ${MFC_STANDARD_SAMPLES_DIR}/01_Geometry/src)
 set (Geometry_HEADER_FILES ${Geometry_SRC_DIR}/ChildFrm.h

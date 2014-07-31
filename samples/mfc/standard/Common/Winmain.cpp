@@ -107,8 +107,8 @@ Application:
     {
       Standard_SStream ostr;
       ostr<<Standard_Failure::Caught()<<"\n\0";
-
-	  MessageBox(0,ostr.str().c_str(),"CasCade Error",MB_ICONERROR);
+      CString aMsg = ostr.str().c_str();
+      MessageBoxW (NULL, aMsg, L"CasCade Error", MB_ICONERROR);
       goto Application; // restart application loop
     }
 #else // _DEBUG  // By Matra

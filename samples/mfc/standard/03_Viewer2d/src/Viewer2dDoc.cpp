@@ -233,7 +233,7 @@ void CViewer2dDoc::OnBUTTONTestFace()
     NULL,
     NULL,
     OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
-    "BRep Files (*.brep)|*.brep; ||", 
+    L"BRep Files (*.brep)|*.brep; ||",
     NULL );
 
   CString initdir(((OCC_App*) AfxGetApp())->GetInitDataDir());
@@ -244,17 +244,21 @@ void CViewer2dDoc::OnBUTTONTestFace()
   if (dlg.DoModal() == IDOK) 
   {
     SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
-    CString filename = dlg.GetPathName();
-    Standard_CString aFileName = (Standard_CString)(LPCTSTR)filename;
+
+    std::filebuf aFileBuf;
+    std::istream aStream (&aFileBuf);
+    if (!aFileBuf.open (dlg.GetPathName(), ios::in))
+    {
+      AfxMessageBox (L"The shape must be not a null Face");
+      return;
+    }
 
     TopoDS_Shape aFaceShape;
     BRep_Builder aBuilder;
-    //Standard_Boolean result = BRepTools::Read(aFaceShape,aFileName,aBuilder);
-    BRepTools::Read(aFaceShape,aFileName,aBuilder);
-
+    BRepTools::Read (aFaceShape, aStream, aBuilder);
     if(aFaceShape.IsNull() || aFaceShape.ShapeType() != TopAbs_FACE) 
     {
-      AfxMessageBox("The shape must be not a null Face");
+      AfxMessageBox (L"The shape must be not a null Face");
       return;
     }
 
@@ -332,7 +336,8 @@ void CViewer2dDoc::OnBUTTONTestImage()
   {
     SetCursor(AfxGetApp()->LoadStandardCursor (IDC_WAIT));
     CString aFilePath = anOpenImageDlg.GetPathName();
-    TCollection_AsciiString aFileName (aFilePath);
+    TCollection_ExtendedString aFileNameW ((Standard_ExtString )(const wchar_t* )aFilePath);
+    TCollection_AsciiString    aFileName  (aFileNameW, '?');
 
     //erase viewer
     if(myAISContext->HasOpenedContext())
@@ -366,7 +371,8 @@ void CViewer2dDoc::OnBUTTONMultipleImage()
   {
     SetCursor(AfxGetApp()->LoadStandardCursor (IDC_WAIT));
     CString aFilePath = anOpenImageDlg.GetPathName();
-    TCollection_AsciiString aFileName (aFilePath);
+    TCollection_ExtendedString aFileNameW ((Standard_ExtString )(const wchar_t* )aFilePath);
+    TCollection_AsciiString    aFileName (aFileNameW, '?');
 
     //erase viewer
     if(myAISContext->HasOpenedContext())

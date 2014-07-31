@@ -1026,15 +1026,11 @@ void CGeometryDoc::OnCreateSol()
 {
   // TODO: Add your command handler code here
   // Creation d'un sol
-  CFileDialog dlg(TRUE,
-    NULL,
-    NULL,
-    OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
-    "Points Files (*.dat)|*.dat; |All Files (*.*)|*.*||", 
-    NULL );
+  CFileDialog dlg (TRUE, NULL, NULL, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
+                   L"Points Files (*.dat)|*.dat; |All Files (*.*)|*.*||", NULL);
 
   CString initdir(((OCC_App*) AfxGetApp())->GetInitDataDir());
-  initdir += "\\Data\\SurfaceFromPoints";
+  initdir += L"\\Data\\SurfaceFromPoints";
 
   dlg.m_ofn.lpstrInitialDir = initdir;
 
@@ -1045,8 +1041,9 @@ void CGeometryDoc::OnCreateSol()
 
     filebuf fic;
     istream in(&fic);  
-    if (!fic.open((Standard_CString)(LPCTSTR)filename,ios::in))
-      MessageBox(AfxGetApp()->m_pMainWnd->m_hWnd,"Error : Unable to open file","CasCade Error",MB_ICONERROR);
+    if (!fic.open (filename, ios::in))
+      MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, L"Error : Unable to open file", L"CasCade Error", MB_ICONERROR);
+
     TColgp_SequenceOfXYZ seqOfXYZ;
     gp_XYZ pntXYZ;
     Standard_Integer nbPnt=0;
@@ -1079,13 +1076,13 @@ void CGeometryDoc::OnCreateSol()
       Handle(Geom_BSplineSurface) GeomSol = sol.Surface();
       TopoDS_Face aface = BRepBuilderAPI_MakeFace(GeomSol, Precision::Confusion());
       if (!BRepAlgo::IsValid(aface))
-        MessageBox(AfxGetApp()->m_pMainWnd->m_hWnd,"Error : The plate surface is not valid!","CasCade Error",MB_ICONERROR);
+        MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, L"Error : The plate surface is not valid!", L"CasCade Error", MB_ICONERROR);
       Handle_AIS_Shape anAISShape=new AIS_Shape(aface);
       myAISContext->Display(anAISShape, Standard_False);
       Fit();
     }   
     else
-      MessageBox(AfxGetApp()->m_pMainWnd->m_hWnd,"Error : Computation has failed","CasCade Error",MB_ICONERROR);
+      MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, L"Error : Computation has failed", L"CasCade Error", MB_ICONERROR);
   }
 }
 
@@ -1118,18 +1115,25 @@ static Standard_Boolean fixParam(Standard_Real& theParam)
 void CGeometryDoc::OnSimplify() 
 {
   CString initfile(((OCC_App*) AfxGetApp())->GetInitDataDir());
-  initfile += "\\..\\..\\Data\\";
-  initfile += "shell1.brep";
+  initfile += L"\\..\\..\\Data\\";
+  initfile += L"shell1.brep";
 
-  TCollection_AsciiString Path((Standard_CString)(LPCTSTR)initfile);
+  std::filebuf aFileBuf;
+  std::istream aStream (&aFileBuf);
+  if (!aFileBuf.open (initfile, ios::in))
+  {
+    initfile += L" was not found. The sample can not be shown.";
+    myCResultDialog.SetText (initfile);
+    return;
+  }
 
   TopoDS_Shape aShape;
   BRep_Builder aBld;
-  Standard_Boolean isRead = BRepTools::Read (aShape, Path.ToCString(), aBld);
-  if (!isRead)
+  BRepTools::Read (aShape, aStream, aBld);
+  if (aShape.IsNull())
   {
-    Path += " was not found.  The sample can not be shown.";
-    myCResultDialog.SetText(Path.ToCString());
+    initfile += L" is invalid file. The sample can not be shown.";
+    myCResultDialog.SetText(initfile);
     return;
   }
   myAISContext->SetDisplayMode(AIS_Shaded);

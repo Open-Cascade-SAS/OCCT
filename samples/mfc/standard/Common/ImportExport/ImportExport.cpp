@@ -102,9 +102,9 @@ Handle(TopTools_HSequenceOfShape) CImportExport::BuildSequenceFromContext(const 
 //=                                                                    =
 //======================================================================
 
-int CImportExport::ReadBREP(const Handle_AIS_InteractiveContext& anInteractiveContext,LPCTSTR InitialDir /* = NULL*/)
+int CImportExport::ReadBREP (const Handle_AIS_InteractiveContext& anInteractiveContext)
 {
-    Handle(TopTools_HSequenceOfShape) aSequence = CImportExport::ReadBREP(InitialDir);
+    Handle(TopTools_HSequenceOfShape) aSequence = CImportExport::ReadBREP();
 	if(aSequence->IsEmpty())
 		return 1;
 	Handle_AIS_Shape aShape;
@@ -117,18 +117,17 @@ int CImportExport::ReadBREP(const Handle_AIS_InteractiveContext& anInteractiveCo
 	return 0;
 }
 
-Handle(TopTools_HSequenceOfShape) CImportExport::ReadBREP(LPCTSTR  /*InitialDir*/ /* = NULL*/) // not by reference --> the sequence is created here !!
+Handle(TopTools_HSequenceOfShape) CImportExport::ReadBREP()
 {
   CFileDialog dlg(TRUE,
 		  NULL,
 		  NULL,
 		  OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
-		  "BREP Files (*.brep , *.rle)|*.brep;  *.BREP; *.rle; *.RLE; |All Files (*.*)|*.*||", 
+		  L"BREP Files (*.brep , *.rle)|*.brep;  *.BREP; *.rle; *.RLE; |All Files (*.*)|*.*||",
 		  NULL ); 
 
-  TCHAR tchBuf[80];
-
-  CString CASROOTValue = ((GetEnvironmentVariable("CASROOT", tchBuf, 80) > 0) ? tchBuf : NULL); 
+  CString CASROOTValue;
+  CASROOTValue.GetEnvironmentVariable (L"CASROOT");
   CString initdir = (CASROOTValue + "\\..\\data\\occ");
 
   dlg.m_ofn.lpstrInitialDir = initdir;
@@ -140,17 +139,16 @@ Handle(TopTools_HSequenceOfShape) CImportExport::ReadBREP(LPCTSTR  /*InitialDir*
     SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
     CString filename = dlg.GetPathName();
     TopoDS_Shape aShape;
-    Standard_CString aFileName = (Standard_CString)(LPCTSTR)filename;
-    Standard_Boolean result = ReadBREP(aFileName,aShape);
+    Standard_Boolean result = ReadBREP (filename, aShape);
     if (result)
     {
       if (!BRepAlgo::IsValid(aShape))
-        MessageBox(AfxGetMainWnd()->m_hWnd,"Warning: The shape is not valid!","Cascade Warning",MB_ICONWARNING);
+        MessageBoxW (AfxGetMainWnd()->m_hWnd, L"Warning: The shape is not valid!", L"Cascade Warning", MB_ICONWARNING);
 
       aSequence->Append(aShape);
     }
     else 
-      MessageBox(AfxGetMainWnd()->m_hWnd,"Error: The file was not read","Cascade Error",MB_ICONERROR);
+      MessageBoxW (AfxGetMainWnd()->m_hWnd, L"Error: The file was not read", L"Cascade Error", MB_ICONERROR);
 
     SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
   }
@@ -159,19 +157,28 @@ Handle(TopTools_HSequenceOfShape) CImportExport::ReadBREP(LPCTSTR  /*InitialDir*
 }
 //----------------------------------------------------------------------
 
-Standard_Boolean CImportExport::ReadBREP(const Standard_CString& aFileName,
+Standard_Boolean CImportExport::ReadBREP(CString      aFileName,
                                         TopoDS_Shape& aShape)
 {
-	BRep_Builder aBuilder;
-	Standard_Boolean result = BRepTools::Read(aShape,aFileName,aBuilder);
-    return result;
+  aShape.Nullify();
+
+  std::filebuf aFileBuf;
+  std::istream aStream (&aFileBuf);
+  if (!aFileBuf.open (aFileName, ios::in))
+  {
+    return Standard_False;
+  }
+
+  BRep_Builder aBuilder;
+  BRepTools::Read (aShape, aStream, aBuilder);
+  return !aShape.IsNull();
 }
 
 void CImportExport::SaveBREP(const Handle_AIS_InteractiveContext& anInteractiveContext)
 {
 	anInteractiveContext->InitCurrent();
 	if (anInteractiveContext->NbCurrents() == 0){
-		AfxMessageBox("No shape selected for export!");
+		AfxMessageBox (L"No shape selected for export!");
 		return;
 	}
 	Handle(TopTools_HSequenceOfShape) aHSequenceOfShape;
@@ -201,12 +208,11 @@ void CImportExport::SaveBREP(const Handle_AIS_InteractiveContext& anInteractiveC
 
 Standard_Boolean CImportExport::SaveBREP(const TopoDS_Shape& aShape)
 {
-  CFileDialog dlg(FALSE,_T("*.brep"),NULL,OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
-	              "BREP Files (*.brep)|*.brep;|BREP Files (*.BREP)|*.BREP;||", NULL );
+  CFileDialog dlg (FALSE, L"*.brep",NULL,OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
+                   L"BREP Files (*.brep)|*.brep;|BREP Files (*.BREP)|*.BREP;||", NULL);
   
-TCHAR tchBuf[80];
-
-CString CASROOTValue = ((GetEnvironmentVariable("CASROOT", tchBuf, 80) > 0) ? tchBuf : NULL); 
+CString CASROOTValue;
+CASROOTValue.GetEnvironmentVariable (L"CASROOT");
 CString initdir = (CASROOTValue + "\\..\\data\\occ");
 
 dlg.m_ofn.lpstrInitialDir = initdir;
@@ -216,22 +222,29 @@ dlg.m_ofn.lpstrInitialDir = initdir;
   { 
     SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT)); 
     CString filename = dlg.GetPathName(); 
-    Standard_CString aFileName = (Standard_CString)(LPCTSTR)filename;
-    result =  SaveBREP(aFileName,aShape);
+    result = SaveBREP (filename, aShape);
     if (!result)  
-       MessageBox(0,"Error : The shape or shapes were not saved.",
-	                "CasCade Error",MB_ICONERROR); 
+       MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd,
+                    L"Error : The shape or shapes were not saved.",
+                    L"CasCade Error", MB_ICONERROR);
     SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW)); 
   } 
   return result;
 }
 
 //----------------------------------------------------------------------------------------
-Standard_Boolean CImportExport::SaveBREP(const Standard_CString& aFileName,
-                                        const TopoDS_Shape& aShape)
+Standard_Boolean CImportExport::SaveBREP (CString             aFileName,
+                                          const TopoDS_Shape& aShape)
 {
-    Standard_Boolean result = BRepTools::Write(aShape,aFileName); 
-    return result;
+  std::filebuf aFileBuf;
+  std::ostream aStream (&aFileBuf);
+  if (!aFileBuf.open (aFileName, ios::out))
+  {
+    return Standard_False;
+  }
+
+  BRepTools::Write (aShape, aStream); 
+  return Standard_True;
 }
 
 
@@ -308,12 +321,11 @@ Handle(TopTools_HSequenceOfShape) CImportExport::ReadCSFDB() // not by reference
                   NULL,
                   NULL,
                   OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
-                  "CSFDB Files (*.CSFDB , *.csf)|*.csfdb;  *.csf; |All Files (*.*)|*.*||", 
+                  L"CSFDB Files (*.CSFDB , *.csf)|*.csfdb;  *.csf; |All Files (*.*)|*.*||", 
                   NULL );
 
-TCHAR tchBuf[80];
-
-CString CASROOTValue = ((GetEnvironmentVariable("CASROOT", tchBuf, 80) > 0) ? tchBuf : NULL); 
+CString CASROOTValue;
+CASROOTValue.GetEnvironmentVariable(L"CASROOT");
 CString initdir = (CASROOTValue + "\\..\\data\\csfdb");
 
 dlg.m_ofn.lpstrInitialDir = initdir;
@@ -322,19 +334,12 @@ dlg.m_ofn.lpstrInitialDir = initdir;
   if (dlg.DoModal() == IDOK) 
   {
     SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
-    CString filename = dlg.GetPathName();
-    Standard_CString aFileName = (Standard_CString)(LPCTSTR)filename;
+    TCollection_ExtendedString aFileNameW ((Standard_ExtString )(const wchar_t* )dlg.GetPathName());
+    TCollection_AsciiString    aFileName  (aFileNameW, '?');
     TCollection_AsciiString Message;
-    Standard_Boolean result = ReadCSFDB(aFileName,aSequence,Message);
-	if (result)
-    {
-       // Display The Message :
-	   MessageBox(0,Message.ToCString(),"CasCade ",MB_OK);
-
- 
-    }
-    else 
-	   MessageBox(0,Message.ToCString(),"CasCade Error",MB_ICONERROR);
+    Standard_Boolean result = ReadCSFDB (aFileName.ToCString(), aSequence, Message);
+    CString aMsg (Message.ToCString());
+    MessageBoxW(AfxGetApp()->m_pMainWnd->m_hWnd, aMsg, result ? L"CasCade" : L"CasCade Error", result ? MB_OK : MB_ICONERROR);
     SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
   }
   return aSequence;
@@ -439,7 +444,7 @@ void CImportExport::SaveCSFDB(const Handle(AIS_InteractiveContext)& anInteractiv
 {
     anInteractiveContext->InitCurrent();
 	if (anInteractiveContext->NbCurrents() == 0){
-		AfxMessageBox("No shape selected for export!");
+		AfxMessageBox (L"No shape selected for export!");
 		return;
 	}
     Handle(Quantity_HArray1OfColor)   anArrayOfColors;
@@ -455,18 +460,13 @@ Standard_Boolean CImportExport::SaveCSFDB(const Handle(TopTools_HSequenceOfShape
   if (aDlg.DoModal() == IDOK) 
   {
         SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT)); 
-        CString filename = aDlg.GetPathName(); 
-        Standard_CString aFileName = (Standard_CString)(LPCTSTR)filename;
+        TCollection_ExtendedString aFileNameW ((Standard_ExtString )(const wchar_t* )aDlg.GetPathName());
+        TCollection_AsciiString    aFileName  (aFileNameW, '?');
         TCollection_AsciiString Message;
     //MgtBRep_TriangleMode selection = aDlg.m_TriangleMode;
-        Standard_Boolean result = SaveCSFDB(aFileName,aHSequenceOfShape,Message);
-	    if (result)
-        {
-            // Display The Message :
-	        MessageBox(0,Message.ToCString(),"CasCade ",MB_OK);
-        }
-        else 
-	        MessageBox(0,Message.ToCString(),"CasCade Error",MB_ICONERROR);
+        Standard_Boolean result = SaveCSFDB (aFileName.ToCString(), aHSequenceOfShape, Message);
+        CString aMsg (Message.ToCString());
+        MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, aMsg, result ? L"CasCade" : L"CasCade Error", result ? MB_OK : MB_ICONERROR);
         SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW)); 
     } 
   return result;
@@ -480,7 +480,7 @@ Standard_Boolean CImportExport::SaveCSFDB(const Standard_CString& aFileName,
 	Standard_Boolean ReturnValue = Standard_True;
     if (aHSequenceOfShape->Length() == 0)
     {
-        MessageBox(0,"No Shape in the HSequence!!","CasCade Warning",MB_ICONWARNING);
+        MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, L"No Shape in the HSequence!!", L"CasCade Warning", MB_ICONWARNING);
         return Standard_False;
     }
  
@@ -582,12 +582,11 @@ Handle(TopTools_HSequenceOfShape) CImportExport::ReadIGES()// not by reference -
                   NULL,
                   NULL,
                   OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
-                  "IGES Files (*.iges , *.igs)|*.iges; *.igs|All Files (*.*)|*.*||", 
+                  L"IGES Files (*.iges , *.igs)|*.iges; *.igs|All Files (*.*)|*.*||",
                   NULL );
 
-TCHAR tchBuf[80];
-
-CString CASROOTValue = ((GetEnvironmentVariable("CASROOT", tchBuf, 80) > 0) ? tchBuf : NULL); 
+CString CASROOTValue;
+CASROOTValue.GetEnvironmentVariable (L"CASROOT");
 CString initdir = (CASROOTValue + "\\..\\data\\iges");
 
 dlg.m_ofn.lpstrInitialDir = initdir;
@@ -596,14 +595,14 @@ dlg.m_ofn.lpstrInitialDir = initdir;
   if (dlg.DoModal() == IDOK) 
   {
     SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
-    CString C = dlg.GetPathName();
-    Standard_CString aFileName = (Standard_CString)(LPCTSTR)C;
-    Standard_Integer status = ReadIGES(aFileName,aSequence);
-	if (status != IFSelect_RetDone)
+    TCollection_ExtendedString aFileNameW ((Standard_ExtString )(const wchar_t* )dlg.GetPathName());
+    TCollection_AsciiString    aFileName  (aFileNameW, '?');
+    Standard_Integer status = ReadIGES (aFileName.ToCString(), aSequence);
+    if (status != IFSelect_RetDone)
     {
-		   MessageBox(0,"Error : The file is not read","CasCade Error",MB_ICONERROR);
-	}
-	
+      MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, L"Error : The file is not read", L"CasCade Error", MB_ICONERROR);
+    }
+
 	SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
    }
   return aSequence;
@@ -631,7 +630,7 @@ void CImportExport::SaveIGES(const Handle(AIS_InteractiveContext)& anInteractive
 {
 	anInteractiveContext->InitCurrent();
 	if (anInteractiveContext->NbCurrents() == 0){
-		AfxMessageBox("No shape selected for export!");
+		AfxMessageBox (L"No shape selected for export!");
 		return;
 	}
     Handle(Quantity_HArray1OfColor)   anArrayOfColors;
@@ -643,16 +642,15 @@ Standard_Boolean CImportExport::SaveIGES(const Handle(TopTools_HSequenceOfShape)
 {
     if (aHSequenceOfShape->Length() == 0)
     {
-        MessageBox(0,"No Shape in the HSequence!!","CasCade Warning",MB_ICONWARNING);
+        MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, L"No Shape in the HSequence!!", L"CasCade Warning", MB_ICONWARNING);
         return Standard_False;
     }
 
-  CFileDialog dlg(FALSE,_T("*.iges"),NULL,OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
-	              "IGES Files (*.iges )|*.iges;|IGES Files (*.igs )| *.igs;||", NULL ); 
+  CFileDialog dlg(FALSE, L"*.iges",NULL,OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
+                  L"IGES Files (*.iges )|*.iges;|IGES Files (*.igs )| *.igs;||", NULL);
 
-TCHAR tchBuf[80];
-
-CString CASROOTValue = ((GetEnvironmentVariable("CASROOT", tchBuf, 80) > 0) ? tchBuf : NULL); 
+CString CASROOTValue;
+CASROOTValue.GetEnvironmentVariable (L"CASROOT");
 CString initdir = (CASROOTValue + "\\..\\data\\iges");
 
 dlg.m_ofn.lpstrInitialDir = initdir;
@@ -661,11 +659,11 @@ dlg.m_ofn.lpstrInitialDir = initdir;
   if (dlg.DoModal() == IDOK)  
   { 
     SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT)); 
-    CString C = dlg.GetPathName(); 
-    Standard_CString aFileName = (Standard_CString)(LPCTSTR)C; 
 
+    TCollection_ExtendedString aFileNameW ((Standard_ExtString )(const wchar_t* )dlg.GetPathName());
+    TCollection_AsciiString    aFileName  (aFileNameW, '?');
 
-    result = SaveIGES(aFileName,aHSequenceOfShape);
+    result = SaveIGES (aFileName.ToCString(), aHSequenceOfShape);
     SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
    }
     return result;
@@ -711,12 +709,11 @@ Handle(TopTools_HSequenceOfShape) CImportExport::ReadSTEP()// not by reference -
                   NULL,
                   NULL,
                   OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
-                  "STEP Files (*.stp;*.step)|*.stp; *.step|All Files (*.*)|*.*||", 
+                  L"STEP Files (*.stp;*.step)|*.stp; *.step|All Files (*.*)|*.*||",
                   NULL );
 
-TCHAR tchBuf[80];
-
-CString CASROOTValue = ((GetEnvironmentVariable("CASROOT", tchBuf, 80) > 0) ? tchBuf : NULL); 
+CString CASROOTValue;
+CASROOTValue.GetEnvironmentVariable(L"CASROOT");
 CString initdir = (CASROOTValue + "\\..\\data\\step");
 
 dlg.m_ofn.lpstrInitialDir = initdir;
@@ -725,19 +722,19 @@ dlg.m_ofn.lpstrInitialDir = initdir;
   if (dlg.DoModal() == IDOK) 
   {
     SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
-    CString C = dlg.GetPathName();
-    Standard_CString aFileName = (Standard_CString)(LPCTSTR)C;
-	IFSelect_ReturnStatus ReturnStatus = ReadSTEP(aFileName,aSequence);
+    TCollection_ExtendedString aFileNameW ((Standard_ExtString )(const wchar_t* )dlg.GetPathName());
+    TCollection_AsciiString    aFileName  (aFileNameW, '?');
+	IFSelect_ReturnStatus ReturnStatus = ReadSTEP (aFileName.ToCString(), aSequence);
     switch (ReturnStatus) 
     {
        case IFSelect_RetError :
-           MessageBox(0,"Not a valid Step file","ERROR",MB_ICONWARNING);
+           MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, L"Not a valid Step file", L"ERROR", MB_ICONWARNING);
        break;
        case IFSelect_RetFail :
-           MessageBox(0,"Reading has failed","ERROR",MB_ICONWARNING);
+           MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, L"Reading has failed", L"ERROR", MB_ICONWARNING);
        break;
        case IFSelect_RetVoid :
-            MessageBox(0,"Nothing to transfer","ERROR",MB_ICONWARNING);
+            MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, L"Nothing to transfer", L"ERROR", MB_ICONWARNING);
        break;
     }
     SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));       
@@ -786,7 +783,7 @@ void CImportExport::SaveSTEP(const Handle(AIS_InteractiveContext)& anInteractive
 {
 	anInteractiveContext->InitCurrent();
 	if (anInteractiveContext->NbCurrents() == 0){
-		AfxMessageBox("No shape selected for export!");
+		AfxMessageBox (L"No shape selected for export!");
 		return;
 	}
     Handle(Quantity_HArray1OfColor)   anArrayOfColors;
@@ -831,7 +828,7 @@ IFSelect_ReturnStatus CImportExport::SaveSTEP(const Handle(TopTools_HSequenceOfS
 {
     if (aHSequenceOfShape->Length() == 0)
       {
-        MessageBox(0,"No Shape in the HSequence!!","CasCade Warning",MB_ICONWARNING);
+        MessageBox (AfxGetApp()->m_pMainWnd->m_hWnd, L"No Shape in the HSequence!!", L"CasCade Warning", MB_ICONWARNING);
         return IFSelect_RetError;
       }
 
@@ -843,8 +840,8 @@ IFSelect_ReturnStatus CImportExport::SaveSTEP(const Handle(TopTools_HSequenceOfS
 
 	if (aDlg.DoModal() == IDOK) {
         SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT)); 
-        CString C = aDlg.GetPathName(); 
-        Standard_CString aFileName = (Standard_CString)(LPCTSTR)C; 
+    TCollection_ExtendedString aFileNameW ((Standard_ExtString )(const wchar_t* )aDlg.GetPathName());
+    TCollection_AsciiString    aFileName  (aFileNameW, '?');
 
 		STEPControl_StepModelType selection = aDlg.m_Cc1ModelType;
 
@@ -852,22 +849,22 @@ IFSelect_ReturnStatus CImportExport::SaveSTEP(const Handle(TopTools_HSequenceOfS
 
     	if (!TestFacetedBrep(aHSequenceOfShape))
 	    {
-            MessageBox(0,"At least one shape doesn't contain facetes","CasCade Warning",MB_ICONWARNING);
+          MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, L"At least one shape doesn't contain facetes", L"CasCade Warning", MB_ICONWARNING);
             return IFSelect_RetError;
 	    }
 
 
-        status =  SaveSTEP(aFileName,aHSequenceOfShape,selection);
+        status =  SaveSTEP (aFileName.ToCString(), aHSequenceOfShape, selection);
         switch (status)
           {
             case IFSelect_RetError:
-                MessageBox(0,"Incorrect Data","ERROR",MB_ICONWARNING); 
+                MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, L"Incorrect Data", L"ERROR", MB_ICONWARNING); 
             break;
             case IFSelect_RetFail:
-                MessageBox(0,"Writing has failed","ERROR",MB_ICONWARNING); 
+                MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, L"Writing has failed", L"ERROR", MB_ICONWARNING); 
             break;
             case IFSelect_RetVoid:
-                MessageBox(0,"Nothing to transfer","ERROR",MB_ICONWARNING); 
+                MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, L"Nothing to transfer", L"ERROR", MB_ICONWARNING); 
             break;
           }
         SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW)); 
@@ -907,7 +904,7 @@ void CImportExport::SaveSTL(const Handle(AIS_InteractiveContext)& anInteractiveC
 {
     anInteractiveContext->InitCurrent();
 	if (anInteractiveContext->NbCurrents() == 0){
-		AfxMessageBox("No shape selected for export!");
+		AfxMessageBox (L"No shape selected for export!");
 		return;
 	}
     Handle(Quantity_HArray1OfColor)   anArrayOfColors;
@@ -917,31 +914,25 @@ void CImportExport::SaveSTL(const Handle(AIS_InteractiveContext)& anInteractiveC
 
 Standard_Boolean CImportExport::SaveSTL(const Handle(TopTools_HSequenceOfShape)& aHSequenceOfShape)
 {
-  CFileDialog dlg(FALSE,_T("*.stl"),NULL,OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
-	              "stl Files (*.stl)|*.stl;|STL Files (*.STL)|*.STL;||", NULL ); 
+  CFileDialog dlg(FALSE, L"*.stl", NULL, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
+	              L"stl Files (*.stl)|*.stl;|STL Files (*.STL)|*.STL;||", NULL);
 
-TCHAR tchBuf[80];
-
-CString CASROOTValue = ((GetEnvironmentVariable("CASROOT", tchBuf, 80) > 0) ? tchBuf : NULL); 
+CString CASROOTValue;
+CASROOTValue.GetEnvironmentVariable(L"CASROOT");
 CString initdir = (CASROOTValue + "\\..\\data\\stl");
 
 dlg.m_ofn.lpstrInitialDir = initdir;
 
-	Standard_Boolean result;
+	Standard_Boolean result = Standard_False;
 
 	if (dlg.DoModal() == IDOK) {
         SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT)); 
-        CString C = dlg.GetPathName(); 
-        Standard_CString aFileName = (Standard_CString)(LPCTSTR)C; 
+        TCollection_ExtendedString aFileNameW ((Standard_ExtString )(const wchar_t* )dlg.GetPathName());
+        TCollection_AsciiString    aFileName  (aFileNameW, '?');
         TCollection_AsciiString Message;
-        result = SaveSTL(aFileName,aHSequenceOfShape,Message);
-	    if (result)
-        {
-            // Display The Message :
-	        MessageBox(0,Message.ToCString(),"CasCade ",MB_OK);
-        }
-        else 
-	        MessageBox(0,Message.ToCString(),"CasCade Error",MB_ICONERROR);
+        result = SaveSTL (aFileName.ToCString(), aHSequenceOfShape, Message);
+        CString aMsg (Message.ToCString());
+        MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, aMsg, result ? L"CasCade" : L"CasCade Error", result ? MB_OK : MB_ICONERROR);
         SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW)); 
     } 
   return result;
@@ -954,7 +945,7 @@ Standard_Boolean CImportExport::SaveSTL(const Standard_CString& aFileName,
 	Standard_Boolean ReturnValue = Standard_True;
     if (aHSequenceOfShape->Length() == 0)
     {
-        MessageBox(0,"No Shape in the HSequence!!","CasCade Warning",MB_ICONWARNING);
+        MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, L"No Shape in the HSequence!!", L"CasCade Warning", MB_ICONWARNING);
         return Standard_False;
     }
 
@@ -1002,7 +993,7 @@ void CImportExport::SaveVRML(const Handle(AIS_InteractiveContext)& anInteractive
 {
    anInteractiveContext->InitCurrent();
 	if (anInteractiveContext->NbCurrents() == 0){
-		AfxMessageBox("No shape selected for export!");
+		AfxMessageBox (L"No shape selected for export!");
 		return;
 	}
     Handle(Quantity_HArray1OfColor) anArrayOfColors;
@@ -1015,31 +1006,25 @@ Standard_Boolean CImportExport::SaveVRML(const Handle(TopTools_HSequenceOfShape)
                                          const Handle(Quantity_HArray1OfColor)&   anArrayOfColors,
                                          const Handle(TColStd_HArray1OfReal)&     anArrayOfTransparencies)
 {
-  CFileDialog dlg(FALSE,_T("*.vrml"),NULL,OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
-	              "vrml Files (*.vrml)|*.vrml;|vrm Files (*.vrm)|*.vrm;||", NULL ); 
+  CFileDialog dlg(FALSE, L"*.vrml", NULL, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
+	              L"vrml Files (*.vrml)|*.vrml;|vrm Files (*.vrm)|*.vrm;||", NULL);
 
-TCHAR tchBuf[80];
-
-CString CASROOTValue = ((GetEnvironmentVariable("CASROOT", tchBuf, 80) > 0) ? tchBuf : NULL); 
+CString CASROOTValue;
+CASROOTValue.GetEnvironmentVariable(L"CASROOT");
 CString initdir = (CASROOTValue + "\\..\\data\\vrml");
 
 dlg.m_ofn.lpstrInitialDir = initdir;
   
-  Standard_Boolean result;
+  Standard_Boolean result = Standard_False;
 
 	if (dlg.DoModal() == IDOK) {
         SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT)); 
-        CString C = dlg.GetPathName(); 
-        Standard_CString aFileName = (Standard_CString)(LPCTSTR)C; 
+        TCollection_ExtendedString aFileNameW ((Standard_ExtString )(const wchar_t* )dlg.GetPathName());
+        TCollection_AsciiString    aFileName  (aFileNameW, '?');
         TCollection_AsciiString Message;
-        result = SaveVRML(aFileName,aHSequenceOfShape,anArrayOfColors, anArrayOfTransparencies, Message);
-	    if (result)
-        {
-            // Display The Message :
-	        MessageBox(0,Message.ToCString(),"CasCade ",MB_OK);
-        }
-        else 
-	        MessageBox(0,Message.ToCString(),"CasCade Error",MB_ICONERROR);
+        result = SaveVRML (aFileName.ToCString(), aHSequenceOfShape, anArrayOfColors, anArrayOfTransparencies, Message);
+        CString aMsg (Message.ToCString());
+        MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, aMsg, result ? L"CasCade" : L"CasCade Error", result ? MB_OK : MB_ICONERROR);
         SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW)); 
     } 
   return result;
@@ -1054,7 +1039,7 @@ Standard_Boolean CImportExport::SaveVRML(const Standard_CString&                
 	Standard_Boolean ReturnValue = Standard_True;
     if (aHSequenceOfShape->Length() == 0)
     {
-        MessageBox(0,"No Shape in the HSequence!!","CasCade Warning",MB_ICONWARNING);
+        MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, L"No Shape in the HSequence!!", L"CasCade Warning", MB_ICONWARNING);
         return Standard_False;
     }
 

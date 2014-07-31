@@ -95,7 +95,7 @@ TDF_Label TOcaf_Commands::CreateBox(Standard_Real x, Standard_Real y, Standard_R
 	if(!TFunction_DriverTable::Get()->FindDriver(TOcafFunction_BoxDriver::GetID(), myBoxDriver)) return L;
 	
 	myBoxDriver->Init(L);
-    if (myBoxDriver->Execute(log)) MessageBox(0,"DFunction_Execute : failed","Box",MB_ICONERROR);
+    if (myBoxDriver->Execute(log)) MessageBoxW (NULL, L"DFunction_Execute : failed", L"Box", MB_ICONERROR);
 
 	return L;
 }
@@ -150,7 +150,7 @@ TDF_Label TOcaf_Commands::CreateCyl(Standard_Real x, Standard_Real y, Standard_R
 	if(!TFunction_DriverTable::Get()->FindDriver(TOcafFunction_CylDriver::GetID(), myCylDriver)) return L;
 
 	myCylDriver->Init(L);
-    if (myCylDriver->Execute(log)) MessageBox(0,"DFunction_Execute : failed","Cylinder",MB_ICONERROR);
+    if (myCylDriver->Execute(log)) MessageBoxW (NULL, L"DFunction_Execute : failed", L"Cylinder", MB_ICONERROR);
 
 	return L;
 }
@@ -217,7 +217,7 @@ TDF_Label TOcaf_Commands::ModifyBox(Standard_Real x, Standard_Real y, Standard_R
 	Handle(TFunction_Function) TFF; 
 	if ( !MainLab.FindAttribute(TFunction_Function::GetID(),TFF) )
 	{
-		MessageBox(0,"Object cannot be modify.", "Modification", MB_ICONEXCLAMATION);
+		MessageBox (NULL, L"Object cannot be modify.", L"Modification", MB_ICONEXCLAMATION);
 		return MainLab;
 	}
 
@@ -233,7 +233,7 @@ TDF_Label TOcaf_Commands::ModifyBox(Standard_Real x, Standard_Real y, Standard_R
 		// Set the box touched, it will be usefull to recompute an object which used this box as attribute
 		log.SetTouched(MainLab);
 		if(myBoxDriver->Execute(log))
-			MessageBox(0,"Recompute failed","Modify box",MB_ICONEXCLAMATION);
+			MessageBox (NULL, L"Recompute failed", L"Modify box", MB_ICONEXCLAMATION);
 	}
 
 	return MainLab;
@@ -292,7 +292,7 @@ TDF_Label TOcaf_Commands::ModifyCyl(Standard_Real x, Standard_Real y, Standard_R
 	Handle(TFunction_Function) TFF; 
 	if ( !MainLab.FindAttribute(TFunction_Function::GetID(),TFF) )
 	{
-		MessageBox(0,"Object cannot be modify.", "Modification", MB_ICONEXCLAMATION);
+		MessageBoxW (NULL, L"Object cannot be modify.", L"Modification", MB_ICONEXCLAMATION);
 		return MainLab;
 	}
 
@@ -308,7 +308,7 @@ TDF_Label TOcaf_Commands::ModifyCyl(Standard_Real x, Standard_Real y, Standard_R
 		// Set the cylinder touched, it will be usefull to recompute an object which used this cylinder as attribute
 		log.SetTouched(MainLab);
 		if(myCylDriver->Execute(log))
-			MessageBox(0,"Recompute failed","Modify cylinder",MB_ICONEXCLAMATION);
+			MessageBoxW (NULL, L"Recompute failed", L"Modify cylinder", MB_ICONEXCLAMATION);
 	}
 
 	return MainLab;
@@ -351,7 +351,7 @@ TDF_Label TOcaf_Commands::Cut(TDF_Label ObjectLab, TDF_Label ToolObjectLab)
 	if(!TFunction_DriverTable::Get()->FindDriver(TOcafFunction_CutDriver::GetID(), myCutDriver)) return L;
 		
 	myCutDriver->Init(L);
-    if (myCutDriver->Execute(log)) MessageBox(0,"DFunction_Execute : failed","Cut",MB_ICONERROR);
+    if (myCutDriver->Execute(log)) MessageBoxW (NULL, L"DFunction_Execute : failed", L"Cut", MB_ICONERROR);
 
 	return L;
 }

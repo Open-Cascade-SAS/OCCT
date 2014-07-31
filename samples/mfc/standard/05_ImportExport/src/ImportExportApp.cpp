@@ -29,11 +29,11 @@ CImportExportApp::CImportExportApp() : OCC_App()
   }
   catch (Standard_Failure)
   {
-    AfxMessageBox ("Fatal Error in units initialisation");
+    AfxMessageBox (L"Fatal Error in units initialisation");
   }
 
   SampleName = "ImportExport"; //for about dialog
-  SetSamplePath ("..\\..\\05_ImportExport");
+  SetSamplePath (L"..\\..\\05_ImportExport");
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -98,7 +98,7 @@ CDocument* CImportExportApp::OpenDocumentFile(LPCTSTR lpszFileName)
 	CFile cf;
 	
 	if (!cf.Open(lpszFileName,CFile::modeReadWrite)){ 
-		AfxMessageBox("File not found!");
+		AfxMessageBox (L"File not found!");
 		return NULL;
 	}
 	cf.Close();

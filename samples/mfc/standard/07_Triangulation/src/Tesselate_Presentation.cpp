@@ -69,8 +69,8 @@ Tesselate_Presentation::Tesselate_Presentation()
 
 void Tesselate_Presentation::DoSample()
 {
-	((CTriangulationApp*) AfxGetApp())->SetSampleName("Tesselate");
-	((CTriangulationApp*) AfxGetApp())->SetSamplePath("");
+	((CTriangulationApp*) AfxGetApp())->SetSampleName (L"Tesselate");
+	((CTriangulationApp*) AfxGetApp())->SetSamplePath (L"");
 	getAISContext()->EraseAll();
 	if (myIndex >=0 && myIndex < myNbSamples)
     sample (myFileNames[myIndex]);
@@ -401,12 +401,10 @@ void Tesselate_Presentation::tesselateShape(const TopoDS_Shape& aShape)
 
 void Tesselate_Presentation::sample(const Standard_CString aFileName)
 {
-	CString initfile(((OCC_App*) AfxGetApp())->GetInitDataDir());
-	initfile += "\\..\\..\\Data\\";
-	initfile += aFileName;
+  CString initfile(((OCC_App*) AfxGetApp())->GetInitDataDir());
+  initfile += "\\..\\..\\Data\\";
+  initfile += aFileName;
 
-
-  TCollection_AsciiString Path((Standard_CString)(LPCTSTR)initfile);
 /*  
   ResetView();
   
@@ -431,20 +429,24 @@ void Tesselate_Presentation::sample(const Standard_CString aFileName)
   }
 */
 
+  std::filebuf aFileBuf;
+  std::istream aStream (&aFileBuf);
+  if (!aFileBuf.open (initfile, ios::in))
+  {
+    initfile += L" was not found. The sample can not be shown.";
+    GetDocument()->PocessTextInDialog ("Compute the triangulation on a shape", initfile);
+    return;
+  }
+
   TopoDS_Shape aShape;
   BRep_Builder aBld;
-  //Standard_Boolean isRead = BRepTools::Read (aShape, aPath.ToCString(), aBld);
-  //if (!isRead)
-//	  isRead = BRepTools::Read (aShape, bPath.ToCString(), aBld);
-  Standard_Boolean isRead = BRepTools::Read (aShape, Path.ToCString(), aBld);
-  if (!isRead)
+  BRepTools::Read (aShape, aStream, aBld);
+  if (aShape.IsNull())
   {
-    Path += " was not found.  The sample can not be shown.";
-	GetDocument()->PocessTextInDialog("Compute the triangulation on a shape", Path);
-//    setResultText(Path.ToCString());
+    initfile += L" was not found. The sample can not be shown.";
+    GetDocument()->PocessTextInDialog ("Compute the triangulation on a shape", initfile);
     return;
   }
 
   tesselateShape (aShape);
-
 }

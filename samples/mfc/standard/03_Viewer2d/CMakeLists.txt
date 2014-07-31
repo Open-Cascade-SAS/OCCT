@@ -2,7 +2,8 @@ cmake_minimum_required (VERSION 2.6)
 
 project (Viewer2d)
 
-add_definitions (-DWINVER=0x0500)
+add_definitions (-DWINVER=0x0501 -DUNICODE -D_UNICODE)
+set (CMAKE_MFC_FLAG 2)
 
 set (Viewer2d_SOURCE_DIR   ${MFC_STANDARD_SAMPLES_DIR}/03_Viewer2d/src)
 set (Viewer2d_HEADER_FILES ${Viewer2d_SOURCE_DIR}/Viewer2dApp.h

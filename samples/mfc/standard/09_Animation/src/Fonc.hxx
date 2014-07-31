@@ -36,18 +36,11 @@
 #include <AIS_InteractiveContext.hxx>
 
 
-Standard_Boolean grid2surf(Standard_CString  ShapeName,Handle(Geom_BSplineSurface)& S );
-Standard_Boolean grid2surf(const CString  aCStringShapeName,Handle(Geom_BSplineSurface)& S );
+Standard_Boolean grid2surf(CString ShapeName, Handle(Geom_BSplineSurface)& S);
 Handle(Geom_BSplineCurve) SetTransfo(Handle(Geom_BSplineCurve) aBSCurve);
 Handle(Geom_BSplineCurve) BuildBSplineCurve(Standard_Boolean DisplayPoints = Standard_True);
-Handle(TColStd_HArray2OfReal) ReadRegularGrid(Standard_CString FileName,
+Handle(TColStd_HArray2OfReal) ReadRegularGrid(CString FileName,
 					      Standard_Real& xmin,
 					      Standard_Real& ymin,
 					      Standard_Real& Deltax,
 					      Standard_Real& Deltay);
-Handle(TColStd_HArray2OfReal) ReadRegularGrid(const CString aCStringFileName,
-					      Standard_Real& xmin,
-					      Standard_Real& ymin,
-					      Standard_Real& Deltax,
-					      Standard_Real& Deltay);
-

@@ -111,7 +111,7 @@ void CResultDialog::Initialize()
     CLIP_DEFAULT_PRECIS,       // nClipPrecision
     DEFAULT_QUALITY,           // nQuality
     FF_MODERN,                 // Fix width fonts are FF_MODERN
-    "Courier New"));           // lpszFacename
+    L"Courier New"));          // lpszFacename
   pEd->SetFont(&aFixedWidthFont, false);
 
   // save button's width and height, so they are calculated only once

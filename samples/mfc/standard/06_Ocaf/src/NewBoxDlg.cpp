@@ -52,7 +52,7 @@ void CNewBoxDlg::OnOK()
 	UpdateData(TRUE);
 	if( (m_h<=Precision::Confusion()) || (m_l<=Precision::Confusion()) || (m_w<=Precision::Confusion()) )
 	{
-		MessageBox("Length, height and width of a box should be srictly positives.", "New box",MB_ICONEXCLAMATION);
+		MessageBox (L"Length, height and width of a box should be srictly positives.", L"New box", MB_ICONEXCLAMATION);
 		return;
 	}
 	

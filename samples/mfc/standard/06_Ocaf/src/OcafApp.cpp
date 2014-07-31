@@ -37,7 +37,7 @@ COcafApp::COcafApp() : OCC_App()
 {
   myApp = new TOcaf_Application();
   SampleName = "OCAF"; //for about dialog
-  SetSamplePath ("..\\..\\06_Ocaf");
+  SetSamplePath (L"..\\..\\06_Ocaf");
 
   try
   {
@@ -45,7 +45,7 @@ COcafApp::COcafApp() : OCC_App()
   }
   catch (Standard_Failure)
   {
-    AfxMessageBox("Fatal Error in units initialisation");
+    AfxMessageBox (L"Fatal Error in units initialisation");
   }
 }
 
@@ -137,15 +137,10 @@ BOOL COcafApp::IsViewExisting(CDocument * pDoc, CRuntimeClass * pViewClass, CVie
 void COcafApp::OnFileOpen() 
 {
 	CFileDialog aDlg(TRUE, NULL, NULL, OFN_FILEMUSTEXIST|OFN_HIDEREADONLY,
-	   "OCAFSample(STD) (*.std)|*.std|OCAFSample(XML) (*.xml)|*.xml|OCAFSample(Binary) (*.cbf)|*.cbf||");
+	   L"OCAFSample(STD) (*.std)|*.std|OCAFSample(XML) (*.xml)|*.xml|OCAFSample(Binary) (*.cbf)|*.cbf||");
 
 	if (aDlg.DoModal() != IDOK) 
         return;
 
-
-    int strLength = aDlg.GetPathName().GetLength()+1;
-	LPTSTR lpszFileName = new TCHAR[strLength];
-	strcpy_s(lpszFileName, strLength, aDlg.GetPathName() );
-	
-	OpenDocumentFile(lpszFileName);
+  OpenDocumentFile (aDlg.GetPathName());
 }

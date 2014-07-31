@@ -154,8 +154,7 @@ void COCCDemoDoc::DoSample()
     {
       Standard_SStream aSStream;
       aSStream << "An exception was caught: " << Standard_Failure::Caught() << ends;
-      Standard_CString aMsg = aSStream.str().c_str();
-//      aSStream.rdbuf()->freeze(0);   // allow deletion of dynamic array
+      CString aMsg = aSStream.str().c_str();
       AfxMessageBox (aMsg);
     }
   }

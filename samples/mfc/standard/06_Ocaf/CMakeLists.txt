@@ -2,7 +2,8 @@ cmake_minimum_required (VERSION 2.6)
 
 project (Ocaf)
 
-add_definitions (-DWINVER=0x0500)
+add_definitions (-DWINVER=0x0501 -DUNICODE -D_UNICODE)
+set (CMAKE_MFC_FLAG 2)
 
 set (Ocaf_SRC_DIR      ${MFC_STANDARD_SAMPLES_DIR}/06_Ocaf/src)
 set (Ocaf_HEADER_FILES ${Ocaf_SRC_DIR}/NewBoxDlg.h

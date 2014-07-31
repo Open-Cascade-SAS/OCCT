@@ -46,10 +46,10 @@ BOOL ZClippingDlg::OnInitDialog()
 	CDialog::OnInitDialog();
 	
 // Initializing the ComboBox
-	m_ZClippingTypeList.InsertString(-1,"OFF");
-	m_ZClippingTypeList.InsertString(-1,"BACK");
-	m_ZClippingTypeList.InsertString(-1,"FRONT");
-	m_ZClippingTypeList.InsertString(-1,"SLICE");
+	m_ZClippingTypeList.InsertString(-1, L"OFF");
+	m_ZClippingTypeList.InsertString(-1, L"BACK");
+	m_ZClippingTypeList.InsertString(-1, L"FRONT");
+	m_ZClippingTypeList.InsertString(-1, L"SLICE");
 
 // Getting the type of ZClipping and select it in the ComboBox
 	Quantity_Length Depth, Width;

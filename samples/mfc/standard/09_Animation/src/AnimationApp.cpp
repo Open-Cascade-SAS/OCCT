@@ -26,7 +26,7 @@ END_MESSAGE_MAP()
 CAnimationApp::CAnimationApp() : OCC_App()
 {
   SampleName = "Animation"; //for about dialog
-  SetSamplePath ("..\\..\\09_Animation");
+  SetSamplePath (L"..\\..\\09_Animation");
 }
 
 /////////////////////////////////////////////////////////////////////////////

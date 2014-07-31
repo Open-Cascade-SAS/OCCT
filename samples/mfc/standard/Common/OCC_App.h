@@ -16,10 +16,10 @@
 class AFX_EXT_CLASS OCC_App : public CWinApp 
 {
 public:
-	void SetSampleName(LPCTSTR Name);
-	virtual LPCTSTR GetSampleName();
-	LPCTSTR GetInitDataDir();
-	void SetSamplePath(LPCTSTR aPath);
+  void SetSampleName (const wchar_t* theName);
+  virtual const wchar_t* GetSampleName() const;
+	const wchar_t* GetInitDataDir() const;
+  void SetSamplePath (const wchar_t* thePath);
 	OCC_App();
   Handle_Graphic3d_GraphicDriver GetGraphicDriver() const
   {
@@ -38,7 +38,7 @@ public:
 protected:
   Handle_Graphic3d_GraphicDriver myGraphicDriver;
 public:
-	LPCTSTR SampleName;
+	CString SampleName;
 	CString SamplePath;
 };
 

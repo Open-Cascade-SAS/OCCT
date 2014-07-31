@@ -58,7 +58,7 @@ public:
 
   static void Fit();
 
-  int  OnFileImportBrep_WithInitDir(LPCTSTR InitialDir);
+  int  OnFileImportBrep_WithInitDir (const wchar_t* InitialDir);
 
   // Generated message map functions
 protected:

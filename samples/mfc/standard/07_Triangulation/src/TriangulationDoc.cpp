@@ -136,9 +136,9 @@ void CTriangulationDoc::OnVisu()
 		myAISContext->Remove(aListIterator.Value());
 	}
 
-TopoDS_Shape theBox = BRepPrimAPI_MakeBox(200,60,60);
-TopoDS_Shape theSphere = BRepPrimAPI_MakeSphere(gp_Pnt(100,20,20),80);
-TopoDS_Shape ShapeFused = BRepAlgoAPI_Fuse(theSphere,theBox);
+TopoDS_Shape theBox = BRepPrimAPI_MakeBox(200,60,60).Shape();
+TopoDS_Shape theSphere = BRepPrimAPI_MakeSphere(gp_Pnt(100, 20, 20), 80).Shape();
+TopoDS_Shape ShapeFused = BRepAlgoAPI_Fuse(theSphere, theBox).Shape();
 BRepMesh_IncrementalMesh(ShapeFused,1);
 
 Handle (AIS_Shape)	aSection = new AIS_Shape(ShapeFused);
@@ -261,8 +261,8 @@ void CTriangulationDoc::OnClear()
 		myAISContext->Remove(aListIterator.Value());
 	}
 
-TopoDS_Shape theBox = BRepPrimAPI_MakeBox(200,60,60);
-TopoDS_Shape theSphere = BRepPrimAPI_MakeSphere(gp_Pnt(100,20,20),80);
+TopoDS_Shape theBox = BRepPrimAPI_MakeBox(200, 60, 60).Shape();
+TopoDS_Shape theSphere = BRepPrimAPI_MakeSphere(gp_Pnt(100, 20, 20), 80).Shape();
 TopoDS_Shape ShapeFused = BRepAlgoAPI_Fuse(theSphere,theBox);
 BRepMesh_IncrementalMesh(ShapeFused,1);
 
@@ -350,7 +350,7 @@ void CTriangulationDoc::DoSample()
     {
       Standard_SStream aSStream;
       aSStream << "An exception was caught: " << Standard_Failure::Caught() << ends;
-      Standard_CString aMsg = aSStream.str().c_str();
+      CString aMsg = aSStream.str().c_str();
 //      aSStream.rdbuf()->freeze(0);   // allow deletion of dynamic array
       AfxMessageBox (aMsg);
     }

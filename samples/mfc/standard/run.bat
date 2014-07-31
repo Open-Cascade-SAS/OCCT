@@ -2,7 +2,7 @@
 
 if ["%4"] == [""] (
   echo Launch selected sample as follows: 
-  echo Run.bat [^vc8^|^vc9^|^vc10^|^vc11^] [^win32^|^win64^] [^Release^|^Debug^] [^SampleName^]
+  echo Run.bat [^vc8^|^vc9^|^vc10^|^vc11^|vc12] [^win32^|^win64^] [^Release^|^Debug^] [^SampleName^]
   echo Use option -d to run Debug mode
   exit /B
 )

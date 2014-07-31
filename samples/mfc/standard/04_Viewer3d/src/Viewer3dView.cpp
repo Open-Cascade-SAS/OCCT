@@ -892,10 +892,9 @@ void CViewer3dView::OnDirectionalLight()
 // Checking if the Active lights limit number is not reached
 	if( NbActiveLights>=myGraphicDriver->InquireLightLimit() )
 	{
-		char	tmpStr[128];
-		sprintf_s(tmpStr, "You have reach the limit number of active lights (%d).\n Clear lights to create new ones.",
-			myGraphicDriver->InquireLightLimit());
-		MessageBox(tmpStr,"Light creation", MB_OK);
+    CString aMsg;
+    aMsg.Format (L"You have reach the limit number of active lights (%d).\n Clear lights to create new ones.", myGraphicDriver->InquireLightLimit());
+		MessageBox (aMsg, L"Light creation", MB_OK);
 		return;
 	}
 
@@ -921,10 +920,9 @@ void CViewer3dView::OnSpotLight()
 // Checking if the Active lights limit number is not reached
 	if( NbActiveLights>=myGraphicDriver->InquireLightLimit() )
 	{
-		char	tmpStr[128];
-		sprintf_s(tmpStr, "You have reach the limit number of active lights (%d).\n Clear lights to create new ones.",
-			myGraphicDriver->InquireLightLimit());
-		MessageBox(tmpStr,"Light creation", MB_OK);
+    CString aMsg;
+    aMsg.Format(L"You have reach the limit number of active lights (%d).\n Clear lights to create new ones.", myGraphicDriver->InquireLightLimit());
+		MessageBox (aMsg, L"Light creation", MB_OK);
 		return;
 	}
 
@@ -949,10 +947,9 @@ void CViewer3dView::OnPositionalLight()
 // Checking if the Active lights limit number is not reached
 	if( NbActiveLights>=myGraphicDriver->InquireLightLimit() )
 	{
-		char	tmpStr[128];
-		sprintf_s(tmpStr, "You have reach the limit number of active lights (%d).\n Clear lights to create new ones.",
-			myGraphicDriver->InquireLightLimit());
-		MessageBox(tmpStr,"Light creation", MB_OK);
+    CString aMsg;
+    aMsg.Format(L"You have reach the limit number of active lights (%d).\n Clear lights to create new ones.", myGraphicDriver->InquireLightLimit());
+    MessageBox(aMsg, L"Light creation", MB_OK);
 		return;
 	}
 
@@ -980,10 +977,9 @@ void CViewer3dView::OnAmbientLight()
 // Checking if the Active lights limit number is not reached
 	if( NbActiveLights>=myGraphicDriver->InquireLightLimit() )
 	{
-		char	tmpStr[128];
-		sprintf_s(tmpStr, "You have reach the limit number of active lights (%d).\n Clear lights to create new ones.",
-			myGraphicDriver->InquireLightLimit());
-		MessageBox(tmpStr,"Light creation", MB_OK);
+    CString aMsg;
+    aMsg.Format(L"You have reach the limit number of active lights (%d).\n Clear lights to create new ones.", myGraphicDriver->InquireLightLimit());
+    MessageBox(aMsg, L"Light creation", MB_OK);
 		return;
 	}
 

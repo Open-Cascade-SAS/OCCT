@@ -926,31 +926,27 @@ void CAnimationView3D::SetFocal (double theFocus, double theAngle)
 
 void CAnimationView3D::ReloadData()
 {
-	char szMsg [128] ;
-	double dTwist ;
-
 	myView->At  ( m_Atx  , m_Aty  , m_Atz  ) ;
 	myView->Eye ( m_Eyex , m_Eyey , m_Eyez ) ;
+  double dTwist = myView->Twist() * 180. / M_PI;
 
-	dTwist = myView->Twist () ;
-	dTwist = dTwist * 180. / M_PI ;
+  CString aMsg;
+  aMsg.Format (L"%lf", m_Atx);
+	m_Tune.GetDlgItem (IDC_XAT)->SetWindowText (aMsg);
+  aMsg.Format (L"%lf", m_Aty);
+	m_Tune.GetDlgItem (IDC_YAT)->SetWindowText (aMsg);
+	aMsg.Format (L"%lf", m_Atz);
+	m_Tune.GetDlgItem (IDC_ZAT)->SetWindowText (aMsg);
 
-	sprintf_s ( szMsg , "%lf" , m_Atx ) ;
-	(m_Tune.GetDlgItem ( IDC_XAT ))->SetWindowText ( szMsg ) ;
-	sprintf_s ( szMsg , "%lf" , m_Aty ) ;
-	(m_Tune.GetDlgItem ( IDC_YAT ))->SetWindowText ( szMsg ) ;
-	sprintf_s ( szMsg , "%lf" , m_Atz ) ;
-	(m_Tune.GetDlgItem ( IDC_ZAT ))->SetWindowText ( szMsg ) ;
+  aMsg.Format (L"%lf", m_Eyex);
+	m_Tune.GetDlgItem (IDC_XEYE)->SetWindowText (aMsg);
+	aMsg.Format (L"%lf", m_Eyey);
+	m_Tune.GetDlgItem (IDC_YEYE)->SetWindowText (aMsg);
+	aMsg.Format (L"%lf", m_Eyez);
+	m_Tune.GetDlgItem (IDC_ZEYE)->SetWindowText (aMsg);
 
-	sprintf_s ( szMsg , "%lf" , m_Eyex ) ;
-	(m_Tune.GetDlgItem ( IDC_XEYE ))->SetWindowText ( szMsg ) ;
-	sprintf_s ( szMsg , "%lf" , m_Eyey ) ;
-	(m_Tune.GetDlgItem ( IDC_YEYE ))->SetWindowText ( szMsg ) ;
-	sprintf_s ( szMsg , "%lf" , m_Eyez ) ;
-	(m_Tune.GetDlgItem ( IDC_ZEYE ))->SetWindowText ( szMsg ) ;
-
-	sprintf_s ( szMsg , "%lf" , dTwist ) ;
-	(m_Tune.GetDlgItem ( IDC_TWIST ))->SetWindowText ( szMsg ) ;
+  aMsg.Format (L"%lf", dTwist);
+	m_Tune.GetDlgItem (IDC_TWIST)->SetWindowText (aMsg);
 
 	double dx,dy,dz ;
 	dx = m_Atx - m_Eyex ;

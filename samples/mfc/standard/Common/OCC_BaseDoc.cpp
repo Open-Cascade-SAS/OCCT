@@ -24,29 +24,30 @@ void OCC_BaseDoc::ExportView (const Handle(V3d_View)& theView) const
     // Set waiting cursor
     SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
 
-    CString aFileName = anExportDlg.GetPathName();
     CString aFileExt = anExportDlg.GetFileExt();
+    TCollection_ExtendedString aFileNameW ((Standard_ExtString )(const wchar_t* )anExportDlg.GetPathName());
+    TCollection_AsciiString    aFileName  (aFileNameW, '?');
 
     // For vector formats use V3d_View::Export() method
-    if (!(aFileExt.CompareNoCase ("ps")) || !(aFileExt.CompareNoCase ("pdf"))
-        || !(aFileExt.CompareNoCase ("eps")) || !(aFileExt.CompareNoCase ("tex"))
-        || !(aFileExt.CompareNoCase ("svg")) || !(aFileExt.CompareNoCase ("pgf")))
+    if (!(aFileExt.CompareNoCase (L"ps"))  || !(aFileExt.CompareNoCase (L"pdf"))
+     || !(aFileExt.CompareNoCase (L"eps")) || !(aFileExt.CompareNoCase (L"tex"))
+     || !(aFileExt.CompareNoCase (L"svg")) || !(aFileExt.CompareNoCase (L"pgf")))
     {
       Graphic3d_ExportFormat anExportFormat;
 
-      if (!(aFileExt.CompareNoCase ("ps"))) anExportFormat = Graphic3d_EF_PostScript;
-      else if (!(aFileExt.CompareNoCase ("eps"))) anExportFormat = Graphic3d_EF_EnhPostScript;
-      else if (!(aFileExt.CompareNoCase ("pdf"))) anExportFormat = Graphic3d_EF_PDF;
-      else if (!(aFileExt.CompareNoCase ("tex"))) anExportFormat = Graphic3d_EF_TEX;
-      else if (!(aFileExt.CompareNoCase ("svg"))) anExportFormat = Graphic3d_EF_SVG;
+      if      (!(aFileExt.CompareNoCase (L"ps")))  anExportFormat = Graphic3d_EF_PostScript;
+      else if (!(aFileExt.CompareNoCase (L"eps"))) anExportFormat = Graphic3d_EF_EnhPostScript;
+      else if (!(aFileExt.CompareNoCase (L"pdf"))) anExportFormat = Graphic3d_EF_PDF;
+      else if (!(aFileExt.CompareNoCase (L"tex"))) anExportFormat = Graphic3d_EF_TEX;
+      else if (!(aFileExt.CompareNoCase (L"svg"))) anExportFormat = Graphic3d_EF_SVG;
       else anExportFormat = Graphic3d_EF_PGF;
 
-      theView->View()->Export (aFileName, anExportFormat);
+      theView->View()->Export (aFileName.ToCString(), anExportFormat);
     }
     else
     {
       // For pixel formats use V3d_View:Dump() method
-      theView->Dump (aFileName);
+      theView->Dump (aFileName.ToCString());
     }
 
     // Restore cursor

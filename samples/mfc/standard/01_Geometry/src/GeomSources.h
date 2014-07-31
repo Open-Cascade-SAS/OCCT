@@ -77,7 +77,8 @@ private:
     a2DNo3D  ,   // 0 1 0
     a2D3D    };  // 1 1 1
   static  void PreProcess (CGeometryDoc* aDoc,DisplayType aDisplayType);
-  static void PostProcess(CGeometryDoc* aDoc,UINT anID,DisplayType aDisplayType,const char* aString="",Quantity_Coefficient Coef = -1/*double zoom =-1*/);
+  static void PostProcess(CGeometryDoc* aDoc,UINT anID,DisplayType aDisplayType,
+                          const TCollection_AsciiString& aString,Quantity_Coefficient Coef = -1);
   static void DisplayPoint(CGeometryDoc* aDoc,
     const gp_Pnt2d& aPoint,
     const char* aText,

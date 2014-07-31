@@ -108,7 +108,7 @@ void CModelingDoc::OnMirror()
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
 		myAISContext->Remove(aListIterator.Value());
 	}
-	TopoDS_Shape S = BRepPrimAPI_MakeWedge(60.,100.,80.,20.);
+	TopoDS_Shape S = BRepPrimAPI_MakeWedge (60.,100.,80.,20.).Shape();
 	Handle(AIS_Shape) ais1 = new AIS_Shape(S);
 	myAISContext->SetColor(ais1,Quantity_NOC_GREEN,Standard_False);
 	myAISContext->SetMaterial(ais1,Graphic3d_NOM_PLASTIC,Standard_False);
@@ -145,7 +145,7 @@ void CModelingDoc::OnMirroraxis()
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
 		myAISContext->Remove(aListIterator.Value());
 	}
-	TopoDS_Shape S = BRepPrimAPI_MakeWedge(60.,100.,80.,20.); 
+	TopoDS_Shape S = BRepPrimAPI_MakeWedge(60.,100.,80.,20.).Shape(); 
 	Handle(AIS_Shape) ais1 = new AIS_Shape(S);
 	myAISContext->SetColor(ais1,Quantity_NOC_GREEN,Standard_False); 
 	myAISContext->SetMaterial(ais1,Graphic3d_NOM_PLASTIC,Standard_False);   
@@ -186,7 +186,7 @@ void CModelingDoc::OnRotate()
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
 		myAISContext->Remove(aListIterator.Value());
 	}
-	TopoDS_Shape S = BRepPrimAPI_MakeWedge(60.,100.,80.,20.); 
+	TopoDS_Shape S = BRepPrimAPI_MakeWedge(60.,100.,80.,20.).Shape(); 
 	Handle(AIS_Shape) ais1 = new AIS_Shape(S);
 	myAISContext->SetColor(ais1,Quantity_NOC_GREEN,Standard_False); 
 	myAISContext->SetMaterial(ais1,Graphic3d_NOM_PLASTIC,Standard_False);   
@@ -226,7 +226,7 @@ void CModelingDoc::OnScale()
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
 		myAISContext->Remove(aListIterator.Value());
 	}
-	TopoDS_Shape S = BRepPrimAPI_MakeWedge(60.,100.,80.,20.); 
+	TopoDS_Shape S = BRepPrimAPI_MakeWedge(60.,100.,80.,20.).Shape(); 
 	Handle(AIS_Shape) ais1 = new AIS_Shape(S);
 	myAISContext->SetColor(ais1,Quantity_NOC_GREEN,Standard_False); 
 	myAISContext->SetMaterial(ais1,Graphic3d_NOM_PLASTIC,Standard_False);   
@@ -270,7 +270,7 @@ void CModelingDoc::OnTranslation()
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
 		myAISContext->Remove(aListIterator.Value());
 	}
-	TopoDS_Shape S = BRepPrimAPI_MakeWedge(6.,10.,8.,2.); 
+	TopoDS_Shape S = BRepPrimAPI_MakeWedge(6.,10.,8.,2.).Shape(); 
 	Handle(AIS_Shape) ais1 = new AIS_Shape(S);
 	myAISContext->SetColor(ais1,Quantity_NOC_GREEN,Standard_False); 
 	myAISContext->SetMaterial(ais1,Graphic3d_NOM_PLASTIC,Standard_False);
@@ -313,7 +313,7 @@ void CModelingDoc::OnDisplacement()
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
 		myAISContext->Remove(aListIterator.Value());
 	}
-	TopoDS_Shape S = BRepPrimAPI_MakeWedge(60.,100.,80.,20.); 
+  TopoDS_Shape S = BRepPrimAPI_MakeWedge(60., 100., 80., 20.).Shape();
 	Handle(AIS_Shape) ais1 = new AIS_Shape(S);
 	myAISContext->SetColor(ais1,Quantity_NOC_GREEN,Standard_False); 
 	myAISContext->SetMaterial(ais1,Graphic3d_NOM_PLASTIC,Standard_False);   
@@ -355,7 +355,7 @@ void CModelingDoc::OnDeform()
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
 		myAISContext->Remove(aListIterator.Value());
 	}
-	TopoDS_Shape S = BRepPrimAPI_MakeWedge(60.,100.,80.,20.); 
+  TopoDS_Shape S = BRepPrimAPI_MakeWedge(60., 100., 80., 20.).Shape();
 	Handle(AIS_Shape) ais1 = new AIS_Shape(S);
 	myAISContext->SetColor(ais1,Quantity_NOC_GREEN,Standard_False); 
 	myAISContext->SetMaterial(ais1,Graphic3d_NOM_PLASTIC,Standard_False);   
@@ -399,14 +399,14 @@ void CModelingDoc::OnBox()
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
 		myAISContext->Remove(aListIterator.Value());
 	}
-	TopoDS_Shape B1 = BRepPrimAPI_MakeBox (200.,150.,100.);
+  TopoDS_Shape B1 = BRepPrimAPI_MakeBox(200., 150., 100.).Shape();
 	Handle(AIS_Shape) aBox1 = new AIS_Shape(B1);
 	myAISContext->SetMaterial(aBox1,Graphic3d_NOM_PLASTIC,Standard_False);    
 	myAISContext->SetColor(aBox1,Quantity_NOC_GREEN,Standard_False); 
 	myAISContext->Display(aBox1,Standard_False);
 	TopoDS_Shape B2 = BRepPrimAPI_MakeBox (gp_Ax2(gp_Pnt(-200.,-80.,-70.),
-											  gp_Dir(1.,2.,1.)),
-										80.,90.,120.);
+                                         gp_Dir(1.,2.,1.)),
+                                         80., 90., 120.).Shape();
 	Handle(AIS_Shape) aBox2 = new AIS_Shape(B2);
 	myAISContext->SetMaterial(aBox2,Graphic3d_NOM_PLASTIC,Standard_False);    
 	myAISContext->SetColor(aBox2,Quantity_NOC_RED,Standard_False); 
@@ -431,14 +431,14 @@ void CModelingDoc::OnCylinder()
 		myAISContext->Remove(aListIterator.Value());
 	}
 
-	TopoDS_Shape C1 = BRepPrimAPI_MakeCylinder (50.,200.);
+  TopoDS_Shape C1 = BRepPrimAPI_MakeCylinder(50., 200.).Shape();
 	Handle(AIS_Shape) aCyl1 = new AIS_Shape(C1);
 	myAISContext->SetMaterial(aCyl1,Graphic3d_NOM_PLASTIC,Standard_False);    
 	myAISContext->SetColor(aCyl1,Quantity_NOC_RED,Standard_False); 
 	myAISContext->Display(aCyl1,Standard_False);
 	TopoDS_Shape C2 = BRepPrimAPI_MakeCylinder (gp_Ax2(gp_Pnt(200.,200.,0.),
-												   gp_Dir(0.,0.,1.)),
-											40.,110.,210.*M_PI/180);
+												                      gp_Dir(0.,0.,1.)),
+                                              40., 110., 210.*M_PI / 180).Shape();
 	Handle(AIS_Shape) aCyl2 = new AIS_Shape(C2);
 	myAISContext->SetMaterial(aCyl2,Graphic3d_NOM_PLASTIC,Standard_False);    
 	myAISContext->SetColor(aCyl2,Quantity_NOC_MATRABLUE,Standard_False); 	
@@ -464,14 +464,14 @@ void CModelingDoc::OnCone()
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
 		myAISContext->Remove(aListIterator.Value());
 	}
-	TopoDS_Shape C1 = BRepPrimAPI_MakeCone (50.,25.,200.);
+  TopoDS_Shape C1 = BRepPrimAPI_MakeCone(50., 25., 200.).Shape();
 	Handle(AIS_Shape) ais1 = new AIS_Shape(C1);
 	myAISContext->SetMaterial(ais1,Graphic3d_NOM_PLASTIC,Standard_False);    
 	myAISContext->SetColor(ais1,Quantity_NOC_MATRABLUE,Standard_False); 		
 	myAISContext->Display(ais1,Standard_False);
 	TopoDS_Shape C2 = BRepPrimAPI_MakeCone(gp_Ax2(gp_Pnt(100.,100.,0.),
-												   gp_Dir(0.,0.,1.)),
-											60.,0.,150.,210.*M_PI/180);
+												                 gp_Dir(0.,0.,1.)),
+                                         60., 0., 150., 210.*M_PI / 180).Shape();
 	Handle(AIS_Shape) ais2 = new AIS_Shape(C2);
 	myAISContext->SetMaterial(ais2,Graphic3d_NOM_PLASTIC,Standard_False);    
 	myAISContext->SetColor(ais2,Quantity_NOC_GREEN,Standard_False); 
@@ -497,24 +497,24 @@ void CModelingDoc::OnSphere()
 		myAISContext->Remove(aListIterator.Value());
 	}
 
-	TopoDS_Shape S1 = BRepPrimAPI_MakeSphere(gp_Pnt(-200.,-250.,0.),80.);
+  TopoDS_Shape S1 = BRepPrimAPI_MakeSphere(gp_Pnt(-200., -250., 0.), 80.).Shape();
 	Handle(AIS_Shape) ais1 = new AIS_Shape(S1);
 	myAISContext->SetColor(ais1,Quantity_NOC_AZURE,Standard_False); 
 	myAISContext->SetMaterial(ais1,Graphic3d_NOM_PLASTIC,Standard_False);    
 	myAISContext->Display(ais1,Standard_False);
-	TopoDS_Shape S2 = BRepPrimAPI_MakeSphere(100.,120.*M_PI/180);
+  TopoDS_Shape S2 = BRepPrimAPI_MakeSphere(100., 120.*M_PI / 180).Shape();
 	Handle(AIS_Shape) ais2 = new AIS_Shape(S2);
 	myAISContext->SetColor(ais2,Quantity_NOC_GREEN,Standard_False); 
 	myAISContext->SetMaterial(ais2,Graphic3d_NOM_PLASTIC,Standard_False);    
 	myAISContext->Display(ais2,Standard_False);
 	TopoDS_Shape S3 = BRepPrimAPI_MakeSphere(gp_Pnt(200.,250.,0.),100.,
-										 -60.*M_PI/180, 60.*M_PI/180);
+                                           -60.*M_PI / 180, 60.*M_PI / 180).Shape();
 	Handle(AIS_Shape) ais3 = new AIS_Shape(S3);
 	myAISContext->SetColor(ais3,Quantity_NOC_RED,Standard_False); 
 	myAISContext->SetMaterial(ais3,Graphic3d_NOM_PLASTIC,Standard_False);    
 	myAISContext->Display(ais3,Standard_False);
 	TopoDS_Shape S4 = BRepPrimAPI_MakeSphere(gp_Pnt(0.,0.,-300.),150.,
-										 -45.*M_PI/180, 45.*M_PI/180, 45.*M_PI/180);
+                                           -45.*M_PI / 180, 45.*M_PI / 180, 45.*M_PI / 180).Shape();
 	Handle(AIS_Shape) ais4 = new AIS_Shape(S4);
 	myAISContext->SetColor(ais4,Quantity_NOC_MATRABLUE,Standard_False); 
 	myAISContext->SetMaterial(ais4,Graphic3d_NOM_PLASTIC,Standard_False);    
@@ -542,19 +542,19 @@ void CModelingDoc::OnTorus()
 		myAISContext->Remove(aListIterator.Value());
 	}
 
-	TopoDS_Shape S1 = BRepPrimAPI_MakeTorus(60.,20.);
+  TopoDS_Shape S1 = BRepPrimAPI_MakeTorus(60., 20.).Shape();
 	Handle(AIS_Shape) ais1 = new AIS_Shape(S1);
 	myAISContext->SetColor(ais1,Quantity_NOC_AZURE,Standard_False); 
 	myAISContext->SetMaterial(ais1,Graphic3d_NOM_PLASTIC,Standard_False);    
 	myAISContext->Display(ais1,Standard_False);
 	TopoDS_Shape S2 = BRepPrimAPI_MakeTorus(gp_Ax2(gp_Pnt(100.,100.,0.),gp_Dir(1.,1.,1.)),
-										50.,20.,210.*M_PI/180);
+                                          50., 20., 210.*M_PI / 180).Shape();
 	Handle(AIS_Shape) ais2 = new AIS_Shape(S2);
 	myAISContext->SetColor(ais2,Quantity_NOC_GREEN,Standard_False); 
 	myAISContext->SetMaterial(ais2,Graphic3d_NOM_PLASTIC,Standard_False);    
 	myAISContext->Display(ais2,Standard_False);
 	TopoDS_Shape S3 = BRepPrimAPI_MakeTorus(gp_Ax2(gp_Pnt(-200.,-150.,-100),gp_Dir(0.,1.,0.)),
-										60.,20.,-45.*M_PI/180,45.*M_PI/180,90.*M_PI/180);
+                                          60., 20., -45.*M_PI / 180, 45.*M_PI / 180, 90.*M_PI / 180).Shape();
 	Handle(AIS_Shape) ais3= new AIS_Shape(S3);
 	myAISContext->SetColor(ais3,Quantity_NOC_CORAL,Standard_False); 
 	myAISContext->SetMaterial(ais3,Graphic3d_NOM_PLASTIC,Standard_False);    
@@ -581,13 +581,13 @@ void CModelingDoc::OnWedge()
 		myAISContext->Remove(aListIterator.Value());
 	}
 
-	TopoDS_Shape S1 = BRepPrimAPI_MakeWedge(60.,100.,80.,20.);
+  TopoDS_Shape S1 = BRepPrimAPI_MakeWedge(60., 100., 80., 20.).Shape();
 	Handle(AIS_Shape) ais1 = new AIS_Shape(S1);
 	myAISContext->SetColor(ais1,Quantity_NOC_AZURE,Standard_False); 
 	myAISContext->SetMaterial(ais1,Graphic3d_NOM_PLASTIC,Standard_False);    
 	myAISContext->Display(ais1,Standard_False);
 	TopoDS_Shape S2 = BRepPrimAPI_MakeWedge(gp_Ax2(gp_Pnt(100.,100.,0.),gp_Dir(0.,0.,1.)),
-										60.,50.,80.,25.,-10.,40.,70.);
+                                          60., 50., 80., 25., -10., 40., 70.).Shape();
 	Handle(AIS_Shape) ais2 = new AIS_Shape(S2);
 	myAISContext->SetColor(ais2,Quantity_NOC_CORAL2,Standard_False); 
 	myAISContext->SetMaterial(ais2,Graphic3d_NOM_PLASTIC,Standard_False);    
@@ -780,7 +780,7 @@ TopoDS_Face F = BRepBuilderAPI_MakeFace(gp_Pln(gp::XOY()),Wc); \n\
 axe = gp_Ax1(gp_Pnt(290,290.,0.),gp_Dir(0.,1,0.)); \n\
 TopoDS_Shape S4 = BRepPrimAPI_MakeRevol(F,axe, 90.*PI180); \n\
 		\n");
-	PocessTextInDialog("Make a prism", Message);
+  PocessTextInDialog("Make a prism", Message);
 }
 
 void CModelingDoc::OnPipe() 
@@ -841,7 +841,7 @@ TopoDS_Wire Wc = BRepBuilderAPI_MakeWire(Ec);\n\
 TopoDS_Face F = BRepBuilderAPI_MakeFace(gp_Pln(gp::ZOX()),Wc);\n\
 TopoDS_Shape S = BRepBuilderAPI_MakePipe(W,F);\n\
 		\n");
-	PocessTextInDialog("Make a pipe", Message);
+  PocessTextInDialog("Make a pipe", Message);
 
 }
 
@@ -967,7 +967,7 @@ generatorb.AddWire(W4b);\n\
 generatorb.Build();\n\
 TopoDS_Shape S2 = generatorb.Shape();\n\
 		\n");
-	PocessTextInDialog("Make a Thru sections", Message);
+  PocessTextInDialog("Make a Thru sections", Message);
 
 }
 
@@ -1032,7 +1032,7 @@ void CModelingDoc::OnDraft()
 		myAISContext->Remove(aListIterator.Value());
 	}
 
-	TopoDS_Shape S = BRepPrimAPI_MakeBox(200.,300.,150.);
+  TopoDS_Shape S = BRepPrimAPI_MakeBox(200., 300., 150.).Shape();
 	Handle(AIS_Shape) ais1 = new AIS_Shape(S);
 	myAISContext->SetColor(ais1,Quantity_NOC_GREEN,Standard_False); 
 	myAISContext->SetMaterial(ais1,Graphic3d_NOM_PLASTIC,Standard_False);   
@@ -1069,7 +1069,7 @@ for (Ex.Init(S,TopAbs_FACE); Ex.More(); Ex.Next()) {\n\
 		adraft.Add(F, gp_Dir(0.,0.,1.), 15.*PI180, gp_Pln(gp::XOY()));\n\
 }\n\
 		\n");
-	PocessTextInDialog("Make a tapered shape", Message);
+  PocessTextInDialog("Make a tapered shape", Message);
 
 }
 
@@ -1086,7 +1086,7 @@ void CModelingDoc::OnCut()
 		myAISContext->Remove(aListIterator.Value());
 	}
 
-TopoDS_Shape theBox = BRepPrimAPI_MakeBox(200,60,60);
+  TopoDS_Shape theBox = BRepPrimAPI_MakeBox(200, 60, 60).Shape();
 
 Handle (AIS_Shape)	ais1 = new AIS_Shape(theBox);
 myAISContext->SetDisplayMode(ais1,1,Standard_False);
@@ -1098,7 +1098,7 @@ Fit();
 Sleep(1000);
 
 
-TopoDS_Shape theSphere = BRepPrimAPI_MakeSphere(gp_Pnt(100,20,20),80);
+TopoDS_Shape theSphere = BRepPrimAPI_MakeSphere(gp_Pnt(100, 20, 20), 80).Shape();
 Handle (AIS_Shape)	ais2 = new AIS_Shape(theSphere);
 myAISContext->SetDisplayMode(ais2,1,Standard_False);
 myAISContext->SetColor(ais2,Quantity_NOC_YELLOW,Standard_False);
@@ -1153,7 +1153,7 @@ void CModelingDoc::OnFuse()
 	}
 
 gp_Pnt P(-5,5,-5);
-TopoDS_Shape theBox1 = BRepPrimAPI_MakeBox(60,200,70);
+TopoDS_Shape theBox1 = BRepPrimAPI_MakeBox(60, 200, 70).Shape();
 Handle (AIS_Shape)	ais1 = new AIS_Shape(theBox1);
 myAISContext->SetColor(ais1,Quantity_NOC_GREEN,Standard_False);
 myAISContext->SetMaterial(ais1,Graphic3d_NOM_PLASTIC,Standard_False);
@@ -1162,7 +1162,7 @@ myAISContext->SetCurrentObject(ais1,Standard_False);
 Fit();
 Sleep(1000);
 
-TopoDS_Shape theBox2 = BRepPrimAPI_MakeBox(P,20,150,110);
+TopoDS_Shape theBox2 = BRepPrimAPI_MakeBox(P, 20, 150, 110).Shape();
 Handle (AIS_Shape)	ais2 = new AIS_Shape(theBox2);
 myAISContext->SetColor(ais2,Quantity_NOC_YELLOW,Standard_False);
 myAISContext->SetMaterial(ais2,Graphic3d_NOM_PLASTIC,Standard_False);
@@ -1205,7 +1205,7 @@ void CModelingDoc::OnCommon()
 	}
 
 gp_Ax2 axe(gp_Pnt(10,10,10),gp_Dir(1,2,1));
-TopoDS_Shape theBox = BRepPrimAPI_MakeBox(axe,60,80,100);
+TopoDS_Shape theBox = BRepPrimAPI_MakeBox(axe, 60, 80, 100).Shape();
 
 Handle(AIS_Shape) aboxshape=new AIS_Shape(theBox);
 myAISContext->SetColor(aboxshape,Quantity_NOC_YELLOW,Standard_False);
@@ -1217,7 +1217,7 @@ myAISContext->SetCurrentObject(aboxshape,Standard_False);
 Fit();
 Sleep(500);
 
-TopoDS_Shape theWedge = BRepPrimAPI_MakeWedge(60.,100.,80.,20.);
+TopoDS_Shape theWedge = BRepPrimAPI_MakeWedge(60., 100., 80., 20.).Shape();
 
 Handle(AIS_Shape) awedge = new AIS_Shape(theWedge);
 myAISContext->SetColor(awedge,Quantity_NOC_RED,Standard_False);
@@ -1264,7 +1264,7 @@ void CModelingDoc::OnSection()
 		myAISContext->Remove(aListIterator.Value());
 	}
 
-TopoDS_Shape atorus = BRepPrimAPI_MakeTorus(120,20);
+  TopoDS_Shape atorus = BRepPrimAPI_MakeTorus(120, 20).Shape();
 
     Handle(AIS_Shape) ashape=new AIS_Shape(atorus);
     myAISContext->SetColor(ashape,Quantity_NOC_RED,Standard_False);
@@ -1278,7 +1278,7 @@ Standard_Real radius = 120;
 Standard_Integer i=-3;
 
 for(i;i<=3;i++) {
-    TopoDS_Shape asphere = BRepPrimAPI_MakeSphere(gp_Pnt(26*3*i,0,0),radius);
+    TopoDS_Shape asphere = BRepPrimAPI_MakeSphere(gp_Pnt(26 * 3 * i, 0, 0), radius).Shape();
 
     Handle (AIS_Shape) theShape=new AIS_Shape (asphere);
     myAISContext->SetTransparency(theShape,0.1,Standard_False);
@@ -1330,7 +1330,7 @@ void CModelingDoc::OnPsection()
 		myAISContext->Remove(aListIterator.Value());
 	}
 
-TopoDS_Shape theTorus = BRepPrimAPI_MakeTorus(35,8);
+TopoDS_Shape theTorus = BRepPrimAPI_MakeTorus(35, 8).Shape();
 Handle(AIS_Shape) atorus = new AIS_Shape(theTorus);
 myAISContext->SetColor(atorus,Quantity_NOC_YELLOW,Standard_False); 
 myAISContext->SetMaterial(atorus,Graphic3d_NOM_PLASTIC,Standard_False);
@@ -1381,7 +1381,7 @@ void CModelingDoc::OnBlend()
 		myAISContext->Remove(aListIterator.Value());
 	}
 
-TopoDS_Shape Box = BRepPrimAPI_MakeBox(gp_Pnt(-400,0,0),200,230,180);
+TopoDS_Shape Box = BRepPrimAPI_MakeBox(gp_Pnt(-400,0,0),200,230,180).Shape();
 Handle(AIS_Shape) ais1 = new AIS_Shape(Box);
 myAISContext->SetColor(ais1,Quantity_NOC_YELLOW,Standard_False); 
 myAISContext->SetMaterial(ais1,Graphic3d_NOM_PLASTIC,Standard_False); 
@@ -1410,8 +1410,8 @@ Sleep(500);
 
 
 gp_Pnt P1(250,150,75);
-TopoDS_Shape S1 = BRepPrimAPI_MakeBox(300,200,200);
-TopoDS_Shape S2 = BRepPrimAPI_MakeBox(P1,120,180,70);
+TopoDS_Shape S1 = BRepPrimAPI_MakeBox(300, 200, 200).Shape();
+TopoDS_Shape S2 = BRepPrimAPI_MakeBox(P1, 120, 180, 70).Shape();
 
 TopoDS_Shape fusedShape = BRepAlgoAPI_Fuse(S1,S2);
 Handle(AIS_Shape) ais2 = new AIS_Shape(fusedShape);
@@ -1498,7 +1498,7 @@ void CModelingDoc::OnEvolvedblend()
 		myAISContext->Remove(aListIterator.Value());
 	}
 
-TopoDS_Shape theBox = BRepPrimAPI_MakeBox(200,200,200);
+TopoDS_Shape theBox = BRepPrimAPI_MakeBox(200, 200, 200).Shape();
 Handle(AIS_Shape) ais1 = new AIS_Shape(theBox);
 myAISContext->SetColor(ais1,Quantity_NOC_BROWN,Standard_False); 
 myAISContext->SetMaterial(ais1,Graphic3d_NOM_PLASTIC,Standard_False); 
@@ -1526,7 +1526,7 @@ if (Rake.IsDone() ){
 
 }
 
-TopoDS_Shape theCylinder = BRepPrimAPI_MakeCylinder(gp_Ax2(gp_Pnt(-300,0,0),gp_Dir(0,0,1)),100,200);
+TopoDS_Shape theCylinder = BRepPrimAPI_MakeCylinder(gp_Ax2(gp_Pnt(-300, 0, 0), gp::DZ()), 100, 200).Shape();
 Handle(AIS_Shape) ais3 = new AIS_Shape(theCylinder);
 myAISContext->SetColor(ais3,Quantity_NOC_GREEN,Standard_False); 
 myAISContext->SetMaterial(ais3,Graphic3d_NOM_PLASTIC,Standard_False);    
@@ -1557,7 +1557,7 @@ if (fillet.IsDone() ){
 }
 
 gp_Pnt P(350,0,0);
-TopoDS_Shape theBox2 = BRepPrimAPI_MakeBox(P,200,200,200);
+TopoDS_Shape theBox2 = BRepPrimAPI_MakeBox(P, 200, 200, 200).Shape();
 Handle(AIS_Shape) ais2 = new AIS_Shape(theBox2);
 myAISContext->SetColor(ais2,Quantity_NOC_RED,Standard_False); 
 myAISContext->SetMaterial(ais2,Graphic3d_NOM_PLASTIC,Standard_False);    
@@ -1693,7 +1693,7 @@ void CModelingDoc::OnChamf()
 		myAISContext->Remove(aListIterator.Value());
 	}
 
-TopoDS_Shape theBox = BRepPrimAPI_MakeBox(60,200,70);
+TopoDS_Shape theBox = BRepPrimAPI_MakeBox(60,200,70).Shape();
 Handle(AIS_Shape) ais1 = new AIS_Shape(theBox);
 myAISContext->SetColor(ais1,Quantity_NOC_YELLOW,Standard_False); 
 myAISContext->SetMaterial(ais1,Graphic3d_NOM_PLASTIC,Standard_False);    
@@ -1751,7 +1751,7 @@ void CModelingDoc::OnPrismLocal()
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
 		myAISContext->Remove(aListIterator.Value());
 	}
-	TopoDS_Shape S = BRepPrimAPI_MakeBox(400.,250.,300.);
+  TopoDS_Shape S = BRepPrimAPI_MakeBox(400., 250., 300.).Shape();
 	Handle(AIS_Shape) ais1 = new AIS_Shape(S);
 
 	myAISContext->SetColor(ais1,Quantity_NOC_GREEN,Standard_False); 
@@ -1924,7 +1924,7 @@ void CModelingDoc::OnDprismLocal()
 		myAISContext->Remove(aListIterator.Value());
 	}
 
-	TopoDS_Shape S = BRepPrimAPI_MakeBox(400.,250.,300.);
+  TopoDS_Shape S = BRepPrimAPI_MakeBox(400., 250., 300.).Shape();
 	Handle(AIS_Shape) ais1 = new AIS_Shape(S);
 
 	myAISContext->SetColor(ais1,Quantity_NOC_RED,Standard_False); 
@@ -2004,7 +2004,7 @@ void CModelingDoc::OnRevolLocal()
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
 		myAISContext->Remove(aListIterator.Value());
 	}
-	TopoDS_Shape S = BRepPrimAPI_MakeBox(400.,250.,300.);
+  TopoDS_Shape S = BRepPrimAPI_MakeBox(400., 250., 300.).Shape();
 
 	Handle(AIS_Shape) ais1 = new AIS_Shape(S);
 	
@@ -2092,7 +2092,7 @@ TopoDS_Face F2 = TopoDS::Face(Ex.Current());\n\
 MKrev.Perform(F2);\n\
 TopoDS_Shape res1 = MKrev.Shape();\n\
 	\n");
-	PocessTextInDialog("Make a local revolution", Message);
+  PocessTextInDialog("Make a local revolution", Message);
 }
 
 void CModelingDoc::OnGlueLocal() 
@@ -2103,7 +2103,7 @@ void CModelingDoc::OnGlueLocal()
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
 		myAISContext->Remove(aListIterator.Value());
 	}
-	TopoDS_Shape S1 = BRepPrimAPI_MakeBox(gp_Pnt(-500.,-500.,0.),gp_Pnt(-100.,-250.,300.));
+  TopoDS_Shape S1 = BRepPrimAPI_MakeBox(gp_Pnt(-500., -500., 0.), gp_Pnt(-100., -250., 300.)).Shape();
 
 	Handle(AIS_Shape) ais1 = new AIS_Shape(S1);
 	myAISContext->SetColor(ais1,Quantity_NOC_ORANGE,Standard_False); 
@@ -2121,7 +2121,7 @@ void CModelingDoc::OnGlueLocal()
 	Ex1.Next();
 	Ex1.Next();
 	TopoDS_Face F1 = TopoDS::Face(Ex1.Current());
-	TopoDS_Shape S2 = BRepPrimAPI_MakeBox(gp_Pnt(-400.,-400.,300.),gp_Pnt(-200.,-300.,500.));
+  TopoDS_Shape S2 = BRepPrimAPI_MakeBox(gp_Pnt(-400., -400., 300.), gp_Pnt(-200., -300., 500.)).Shape();
 	Handle(AIS_Shape) ais2 = new AIS_Shape(S2);
 
 	myAISContext->SetColor(ais2,Quantity_NOC_AZURE,Standard_False); 
@@ -2150,7 +2150,7 @@ void CModelingDoc::OnGlueLocal()
 	Fit();
 	Sleep(1000);
 
-	TopoDS_Shape S3 = BRepPrimAPI_MakeBox(500.,400.,300.);
+  TopoDS_Shape S3 = BRepPrimAPI_MakeBox(500., 400., 300.).Shape();
 
 	Handle(AIS_Shape) ais3 = new AIS_Shape(S3);
 	myAISContext->SetColor(ais3,Quantity_NOC_ORANGE,Standard_False); 
@@ -2168,7 +2168,7 @@ void CModelingDoc::OnGlueLocal()
 	Ex3.Next();
 	Ex3.Next();
 	TopoDS_Face F3 = TopoDS::Face(Ex3.Current());
-	TopoDS_Shape S4 = BRepPrimAPI_MakeBox(gp_Pnt(0.,0.,300.),gp_Pnt(200.,200.,500.));
+  TopoDS_Shape S4 = BRepPrimAPI_MakeBox(gp_Pnt(0., 0., 300.), gp_Pnt(200., 200., 500.)).Shape();
 
 	Handle(AIS_Shape) ais4 = new AIS_Shape(S4);
 	myAISContext->SetColor(ais4,Quantity_NOC_AZURE,Standard_False); 
@@ -2251,7 +2251,7 @@ for (CommonEdges.InitIterator(); CommonEdges.More(); CommonEdges.Next()) \n\
 	glue2.Bind(CommonEdges.EdgeFrom(),CommonEdges.EdgeTo());\n\
 TopoDS_Shape res2 = glue2.Shape();\n\
 	\n");
-	PocessTextInDialog("Glue two solids", Message);
+  PocessTextInDialog("Glue two solids", Message);
 }
 
 
@@ -2263,7 +2263,7 @@ void CModelingDoc::OnPipeLocal()
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
 		myAISContext->Remove(aListIterator.Value());
 	}
-	TopoDS_Shape S = BRepPrimAPI_MakeBox(400.,250.,300.);
+  TopoDS_Shape S = BRepPrimAPI_MakeBox(400., 250., 300.).Shape();
 	Handle(AIS_Shape) ais1 = new AIS_Shape(S);
 
 	myAISContext->SetColor(ais1,Quantity_NOC_CORAL,Standard_False); 
@@ -2358,7 +2358,7 @@ BRepFeat_MakePipe MKPipe(S,FP,F1,W,1,Standard_True);\n\
 MKPipe.Perform();\n\
 TopoDS_Shape res1 = MKPipe.Shape();\n\
 	\n");
-	PocessTextInDialog("Make a local pipe", Message);
+  PocessTextInDialog("Make a local pipe", Message);
 }
 
 
@@ -2443,7 +2443,7 @@ BRepFeat_MakeLinearForm aform(S, W, aplane, gp_Dir(0.,10.,0.), gp_Dir(0.,0.,0.),
 aform.Perform(10.);\n\
 TopoDS_Shape res = aform.Shape();\n\
 	\n");
-	PocessTextInDialog("Make a rib", Message);
+  PocessTextInDialog("Make a rib", Message);
 }
 
 
@@ -2456,7 +2456,7 @@ void CModelingDoc::OnSplitLocal()
 		myAISContext->Remove(aListIterator.Value());
 	}
 
-	TopoDS_Shape S = BRepPrimAPI_MakeBox(gp_Pnt(-100,-60,-80),150,200,170); 
+  TopoDS_Shape S = BRepPrimAPI_MakeBox(gp_Pnt(-100, -60, -80), 150, 200, 170).Shape();
 	
 	Handle(AIS_Shape) ais1 = new AIS_Shape(S);
 	myAISContext->SetColor(ais1,Quantity_NOC_RED,Standard_False);
@@ -2543,7 +2543,7 @@ void CModelingDoc::OnThickLocal()
 		myAISContext->Remove(aListIterator.Value());
 	}
 
-	TopoDS_Shape S1 = BRepPrimAPI_MakeBox(150,200,110);
+  TopoDS_Shape S1 = BRepPrimAPI_MakeBox(150, 200, 110).Shape();
 	
 	Handle(AIS_Shape) abox1 = new AIS_Shape(S1);
 	myAISContext->SetColor(abox1,Quantity_NOC_WHITE);
@@ -2598,7 +2598,7 @@ void CModelingDoc::OnOffsetLocal()
 		myAISContext->Remove(aListIterator.Value());
 	}
 
-	TopoDS_Shape S1 = BRepPrimAPI_MakeBox(150,200,110);
+  TopoDS_Shape S1 = BRepPrimAPI_MakeBox(150, 200, 110).Shape();
 
 	Handle(AIS_Shape) aisBox1 = new AIS_Shape(S1);
 	myAISContext->SetColor(aisBox1,Quantity_NOC_BROWN,Standard_False);
@@ -2617,7 +2617,7 @@ void CModelingDoc::OnOffsetLocal()
 	Fit();
 	Sleep(500);
 
-	TopoDS_Shape S2 = BRepPrimAPI_MakeBox(gp_Pnt(500,0,0),220,140,180);
+  TopoDS_Shape S2 = BRepPrimAPI_MakeBox(gp_Pnt(500, 0, 0), 220, 140, 180).Shape();
 	
 	Handle(AIS_Shape) aisBox2 = new AIS_Shape(S2);
 	myAISContext->SetColor(aisBox2,Quantity_NOC_WHITE,Standard_False);
@@ -3221,7 +3221,7 @@ BRepLib::BuildCurves3d(PinkFace);	\n\
 \n\
 \n");
 
-	PocessTextInDialog("Make face ", Message);
+PocessTextInDialog("Make face ", Message);
 }
 
 void CModelingDoc::OnShell() 
@@ -3323,7 +3323,7 @@ TopoDS_Shell aShell = BRepBuilderAPI_MakeShell(BSpline);	\n\
 \n\
 \n");
 
-	PocessTextInDialog("Make shell", Message);
+  PocessTextInDialog("Make shell", Message);
 	
 }
 
@@ -3351,7 +3351,7 @@ void CModelingDoc::OnCompound()
 	TopoDS_Face aFace = BRepBuilderAPI_MakeFace(sphere,0.1,0.7,0.2,0.9);
 	builder.Add(Comp,aFace);
 
-	TopoDS_Shape aBox = BRepPrimAPI_MakeBox(gp_Pnt(-60,0,0),30,60,40);
+  TopoDS_Shape aBox = BRepPrimAPI_MakeBox(gp_Pnt(-60, 0, 0), 30, 60, 40).Shape();
 	builder.Add(Comp,aBox);
 
 	Handle(AIS_Shape) white = new AIS_Shape(Comp);
@@ -4161,7 +4161,7 @@ void CModelingDoc::OnExplorer()
 		myAISContext->Remove(aListIterator.Value());
 	}
 	
-	TopoDS_Shape aBox = BRepPrimAPI_MakeBox(100,100,100);
+  TopoDS_Shape aBox = BRepPrimAPI_MakeBox(100, 100, 100).Shape();
 	Standard_Integer j(8);
 	Handle(AIS_Shape) theBox = new AIS_Shape(aBox);
 	myAISContext->SetColor(theBox,Quantity_NOC_RED,Standard_False);
@@ -4268,7 +4268,7 @@ void CModelingDoc::OnValid()
 		myAISContext->Remove(aListIterator.Value());
 	}
 
-	TopoDS_Shape S = BRepPrimAPI_MakeBox(200.,300.,150.);
+  TopoDS_Shape S = BRepPrimAPI_MakeBox(200., 300., 150.).Shape();
 	Handle(AIS_Shape) ais1 = new AIS_Shape(S);
 	myAISContext->SetColor(ais1,Quantity_NOC_GREEN,Standard_False); 
 	myAISContext->SetMaterial(ais1,Graphic3d_NOM_PLASTIC,Standard_False);   
@@ -4291,16 +4291,7 @@ else\n\
 	PocessTextInDialog("Check a shape", Message);
 
 	Standard_Boolean theShapeIsValid = BRepAlgo::IsValid(S);
-	if ( theShapeIsValid )
-	{
-		MessageBox(0,"The Shape Is Valid !! ","Checking Shape",MB_OK);
-	}
-	else
-	{
-		MessageBox(0,"The Shape Is NOT Valid !! ","Checking Shape",MB_OK);
-	}
-
-
+  MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, theShapeIsValid ? L"The Shape Is Valid !! " : L"The Shape Is NOT Valid !! ", L"Checking Shape", MB_OK);
 }
 
 
@@ -4336,8 +4327,8 @@ void CModelingDoc::OnLinear()
 	Standard_Real Length = System.Mass();
 	gp_Mat I = System.MatrixOfInertia();
 
-	TCollection_AsciiString string("Length Of all the Edges =");
-	TCollection_AsciiString string1(Length);
+	TCollection_ExtendedString string("Length Of all the Edges =");
+  TCollection_ExtendedString string1(Length);
 	
 	string += string1;
 	string += "\nCenterOfMass : \n   X=";
@@ -4379,8 +4370,8 @@ void CModelingDoc::OnLinear()
 	string1 = I(3,3);
 	string += string1;
 	string += "\n" ;
-	Standard_CString CSTR = string.ToCString();
-	TCollection_AsciiString Message ("\
+
+  TCollection_AsciiString Message ("\
 		\n\
 TColgp_Array1OfPnt Points1(1,4);\n\
 Points1.SetValue(1,gp_Pnt(0,0,0));\n\
@@ -4397,8 +4388,7 @@ Standard_Real Length = System.Mass();\n\
 gp_Mat I = System.MatrixOfInertia();\n\
 \n");
 	PocessTextInDialog("Linear Properties", Message);
-	MessageBox(0,CSTR,"Linear Properties",MB_OK);
-
+	MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, (const wchar_t* )string.ToExtString(), L"Linear Properties", MB_OK);
 }
 
 void CModelingDoc::OnSurface() 
@@ -4459,8 +4449,8 @@ void CModelingDoc::OnSurface()
 	Standard_Real Area = System.Mass();
 	gp_Mat I = System.MatrixOfInertia();
 
-	TCollection_AsciiString string("Area Of the Face =");
-	TCollection_AsciiString string1(Area);
+	TCollection_ExtendedString string("Area Of the Face =");
+  TCollection_ExtendedString string1(Area);
 	
 	string += string1;
 	string += "\nCenterOfMass : \n   X=";
@@ -4502,8 +4492,8 @@ void CModelingDoc::OnSurface()
 	string1 = I(3,3);
 	string += string1;
 	string += "\n" ;
-	Standard_CString CSTR = string.ToCString();
-	TCollection_AsciiString Message ("\
+
+  TCollection_AsciiString Message ("\
 		\n\
 TopoDS_Shape S = BRepBuilderAPI_MakeFace(BSplineSurf).Face();\n\
 GProp_GProps System;\n\
@@ -4512,8 +4502,8 @@ gp_Pnt G = System.CentreOfMass ();\n\
 Standard_Real Area = System.Mass();\n\
 gp_Mat I = System.MatrixOfInertia();\n\
 \n");
-	PocessTextInDialog("Surface Properties", Message);
-	MessageBox(0,CSTR,"Surface Properties",MB_OK);
+  PocessTextInDialog("Surface Properties", Message);
+	MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, (const wchar_t* )string.ToExtString(), L"Surface Properties", MB_OK);
 
 }
 
@@ -4527,7 +4517,7 @@ void CModelingDoc::OnVolume()
 	}
 	
 
-	TopoDS_Shape S = BRepPrimAPI_MakeWedge(60.,100.,80.,20.);
+	TopoDS_Shape S = BRepPrimAPI_MakeWedge(60.,100.,80.,20.).Shape();
 	Handle(AIS_Shape) ais1 = new AIS_Shape(S);
 	myAISContext->SetColor(ais1,Quantity_NOC_GREEN,Standard_False); 
 	myAISContext->SetMaterial(ais1,Graphic3d_NOM_PLASTIC,Standard_False);   
@@ -4541,8 +4531,8 @@ void CModelingDoc::OnVolume()
 	Standard_Real Volume = System.Mass();
 	gp_Mat I = System.MatrixOfInertia();
 
-	TCollection_AsciiString string("Volume Of all the Shape =");
-TCollection_AsciiString string1(Volume);
+	TCollection_ExtendedString string("Volume Of all the Shape =");
+  TCollection_ExtendedString string1(Volume);
 	
 	string += string1;
 	string += "\nCenterOfMass : \n   X=";
@@ -4584,7 +4574,7 @@ TCollection_AsciiString string1(Volume);
 	string1 = I(3,3);
 	string += string1;
 	string += "\n" ;
-		Standard_CString CSTR = string.ToCString();
+
 	TCollection_AsciiString Message ("\
 		\n\
 TopoDS_Shape S = BRepBuilderAPI_MakeWedge(60.,100.,80.,20.);;\n\
@@ -4594,9 +4584,8 @@ gp_Pnt G = System.CentreOfMass ();\n\
 Standard_Real Volume = System.Mass();\n\
 gp_Mat I = System.MatrixOfInertia();\n\
 \n");
-	PocessTextInDialog("Volume Properties", Message);
-	MessageBox(0,CSTR,"Volume Properties",MB_OK);
-
+  PocessTextInDialog("Volume Properties", Message);
+	MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, (const wchar_t* )string.ToExtString(), L"Volume Properties", MB_OK);
 }
 
 
@@ -4615,14 +4604,14 @@ void CModelingDoc::OnButtonFill()
 		AIS_ListOfInteractive LI;
 		myAISContext->DisplayedObjects(LI);
 		if(LI.IsEmpty()){
-			if(OnFileImportBrep_WithInitDir("HoleFilling") == 1)
+			if(OnFileImportBrep_WithInitDir (L"HoleFilling") == 1)
 				return;
 		myAISContext->DisplayedObjects(LI);
 		myAISContext->SetCurrentObject(LI.First());	
 			OnButtonFill();
 			return;
 		}
-	AfxMessageBox("Select a shape before!");
+	AfxMessageBox (L"Select a shape before!");
 	}
 }
 
@@ -4670,7 +4659,7 @@ void CModelingDoc::OnStopStop()
 		GeomPlate_BuildPlateSurface abuildplate(NbPtsCur,Fronts,Tang,3);
 		abuildplate.Perform();
 		if (!abuildplate.IsDone()){ // New in 2.0
-			MessageBox(AfxGetApp()->m_pMainWnd->m_hWnd,"Error : Build plate not valid!","CasCade Error",MB_ICONERROR);
+			MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, L"Error : Build plate not valid!", L"CasCade Error", MB_ICONERROR);
 			return;
 		}
 		Handle(GeomPlate_Surface) aplate = abuildplate.Surface();
@@ -4709,12 +4698,12 @@ void CModelingDoc::OnStopStop()
 		
 		catch(StdFail_NotDone)
 		{
-			AfxMessageBox("Can't build wire!");
+			AfxMessageBox (L"Can't build wire!");
 			return;
 		}
 
 		if (!(W.Closed())){
-			AfxMessageBox("Wire is not closed!");
+			AfxMessageBox (L"Wire is not closed!");
 			return;
 			//Standard_Failure::Raise("Wire is not closed");
 			
@@ -4729,7 +4718,7 @@ void CModelingDoc::OnStopStop()
 			aface = MF1.Face();
 		}
 		if (!BRepAlgo::IsValid(aface))
-			MessageBox(AfxGetApp()->m_pMainWnd->m_hWnd,"Error : The plate face is not valid!","CasCade Error",MB_ICONERROR);
+			MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, L"Error : The plate face is not valid!", L"CasCade Error", MB_ICONERROR);
 		myAISContext->CloseLocalContext();
 		myState = -1;
 		Handle_AIS_Shape anAISShape = new AIS_Shape(aface);
@@ -4750,7 +4739,7 @@ void CModelingDoc::OnFillwithtang()
 		if(myAISContext->MoreCurrent())
 			aObject = myAISContext->Current();
 		((OCC_MainFrame*)AfxGetMainWnd())->SetStatusMessage("Select a file with second face");
-		if(OnFileImportBrep_WithInitDir("TangentSurface") == 1){
+		if(OnFileImportBrep_WithInitDir (L"TangentSurface") == 1){
 			((OCC_MainFrame*)AfxGetMainWnd())->SetStatusMessage("");
 				AIS_ListOfInteractive aList;
 				myAISContext->DisplayedObjects(aList);
@@ -4772,7 +4761,7 @@ void CModelingDoc::OnFillwithtang()
 	    catch(Standard_Failure){}
 		if (F1.IsNull())
                 {
-                    AfxMessageBox("Current object is not a face!\n\
+                    AfxMessageBox (L"Current object is not a face!\n\
 Please, select a face to continue\nthe creation of a tangent surface.");
                     return;
                 }
@@ -4787,7 +4776,7 @@ Please, select a face to continue\nthe creation of a tangent surface.");
 		myAISContext->DisplayedObjects(LI);
 		if(LI.IsEmpty()){
 			((OCC_MainFrame*)AfxGetMainWnd())->SetStatusMessage("Select a file with first face");
-			if(OnFileImportBrep_WithInitDir("TangentSurface") == 1){
+			if(OnFileImportBrep_WithInitDir (L"TangentSurface") == 1){
 				((OCC_MainFrame*)AfxGetMainWnd())->SetStatusMessage("");
 				AIS_ListOfInteractive aList;
 				myAISContext->DisplayedObjects(aList);
@@ -4806,7 +4795,7 @@ Please, select a face to continue\nthe creation of a tangent surface.");
 			OnFillwithtang();
 			return;
 		}
-		AfxMessageBox("Select a face before");
+		AfxMessageBox (L"Select a face before");
 	}
 }
 
@@ -4844,12 +4833,12 @@ void CModelingDoc::InputEvent(const Standard_Integer /*x*/,
 			AIS_ListOfInteractive LI;
 			myAISContext->DisplayedObjects(LI);
 			if(LI.Extent() == 1){
-				if(OnFileImportBrep_WithInitDir("TangentSurface") == 1)
+				if(OnFileImportBrep_WithInitDir (L"TangentSurface") == 1)
 				return;
 			}
  		}
  		else
- 			AfxMessageBox("Select an edge on the face!");
+ 			AfxMessageBox (L"Select an edge on the face!");
  
  	}
  	else if (myState == SELECT_EDGE_PLATE_TGTES_2) {
@@ -4863,7 +4852,7 @@ void CModelingDoc::InputEvent(const Standard_Integer /*x*/,
 			((OCC_MainFrame*)AfxGetMainWnd())->SetStatusMessage("Select an edge on the second face");
 		}
 		else 
-			AfxMessageBox("Select the second face!");
+			AfxMessageBox (L"Select the second face!");
 	}
 	else if (myState == SELECT_EDGE_PLATE_TGTES_3) {
 		myAISContext->InitSelected();
@@ -4937,11 +4926,11 @@ void CModelingDoc::InputEvent(const Standard_Integer /*x*/,
 					NULL,
 					NULL,
 					OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
-					"Points Files (*.pass)|*.pass; |All Files (*.*)|*.*||", 
-					NULL );
+					L"Points Files (*.pass)|*.pass; |All Files (*.*)|*.*||", 
+					NULL);
 
 			CString initdir(((OCC_App*) AfxGetApp())->GetInitDataDir());
-			initdir += "\\Data\\TangentSurface";
+			initdir += L"\\Data\\TangentSurface";
 
 			dlg.m_ofn.lpstrInitialDir = initdir;
 
@@ -4952,8 +4941,8 @@ void CModelingDoc::InputEvent(const Standard_Integer /*x*/,
 				CString filename = dlg.GetPathName();
 				filebuf fic;
 				istream in(&fic);  
-				if (!fic.open((Standard_CString)(LPCTSTR)filename,ios::in))
-					MessageBox(0,"Error : Unable to open file","CasCade Error",MB_ICONERROR);
+				if (!fic.open(filename, ios::in))
+					MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, L"Error : Unable to open file", L"CasCade Error", MB_ICONERROR);
 				Standard_Real x,y,z;
 				BRep_Builder B;
 				TopoDS_Compound C;
@@ -4980,7 +4969,7 @@ void CModelingDoc::InputEvent(const Standard_Integer /*x*/,
 			Standard_Integer Order = 3; // constraints continuity + 2
 			aPlate.SolveTI(Order,1.);
 			if (!aPlate.IsDone()){
-				MessageBox(0,"Error : Build plate not valid!","CasCade Error",MB_ICONERROR);
+				MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, L"Error : Build plate not valid!", L"CasCade Error", MB_ICONERROR);
 				return;
 			}
 			//Plate Surface creation 
@@ -5025,7 +5014,7 @@ void CModelingDoc::InputEvent(const Standard_Integer /*x*/,
 				theFace = BRepBuilderAPI_MakeFace(theWire);
 				BRepLib::BuildCurves3d(theFace);
 				if (!BRepAlgo::IsValid(theFace))
-					MessageBox(AfxGetApp()->m_pMainWnd->m_hWnd,"Error : The plate surface is not valid!!!","CasCade Error",MB_ICONERROR);
+					MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, L"Error : The plate surface is not valid!!!", L"CasCade Error", MB_ICONERROR);
 			}
 
 			Handle_AIS_Shape anAISShape=new AIS_Shape(theFace);
@@ -5036,7 +5025,7 @@ void CModelingDoc::InputEvent(const Standard_Integer /*x*/,
 			myState = -1;
 		}
 		else
-			AfxMessageBox("Select an edge on the second face!");
+			AfxMessageBox (L"Select an edge on the second face!");
 		((OCC_MainFrame*)AfxGetMainWnd())->SetStatusMessage("");
 
 	}

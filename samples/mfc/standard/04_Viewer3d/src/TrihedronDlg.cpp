@@ -134,26 +134,26 @@ BOOL CTrihedronDlg::OnInitDialog()
 	UpdateData(TRUE);
 
 // Initializing the ComboBox : Position
-	m_ComboTrihedronPosList.InsertString(-1,"Center");
-	m_ComboTrihedronPosList.InsertString(-1,"Left Lower");
-	m_ComboTrihedronPosList.InsertString(-1,"Left Upper");
-	m_ComboTrihedronPosList.InsertString(-1,"Right Lower");
-	m_ComboTrihedronPosList.InsertString(-1,"Right Upper");
+	m_ComboTrihedronPosList.InsertString(-1, L"Center");
+  m_ComboTrihedronPosList.InsertString(-1, L"Left Lower");
+  m_ComboTrihedronPosList.InsertString(-1, L"Left Upper");
+  m_ComboTrihedronPosList.InsertString(-1, L"Right Lower");
+  m_ComboTrihedronPosList.InsertString(-1, L"Right Upper");
 
 // Initializing the ComboBox : Color
 	/*
-	m_ComboTrihedronColorList.InsertString(-1,"BLACK");
-	m_ComboTrihedronColorList.InsertString(-1,"MATRABLUE");
-	m_ComboTrihedronColorList.InsertString(-1,"MATRAGRAY");
-	m_ComboTrihedronColorList.InsertString(-1,"ALICE BLUE");
-	m_ComboTrihedronColorList.InsertString(-1,"WHITE");
-	m_ComboTrihedronColorList.InsertString(-1,"BISQUE");
+	m_ComboTrihedronColorList.InsertString(-1, L"BLACK");
+	m_ComboTrihedronColorList.InsertString(-1, L"MATRABLUE");
+	m_ComboTrihedronColorList.InsertString(-1, L"MATRAGRAY");
+	m_ComboTrihedronColorList.InsertString(-1, L"ALICE BLUE");
+	m_ComboTrihedronColorList.InsertString(-1, L"WHITE");
+	m_ComboTrihedronColorList.InsertString(-1, L"BISQUE");
 	*/
-	m_ComboTrihedronColorList.InsertString(-1,"Black");
-	m_ComboTrihedronColorList.InsertString(-1,"Blue");
-	m_ComboTrihedronColorList.InsertString(-1,"Gray");
-	m_ComboTrihedronColorList.InsertString(-1,"White");
-	//m_ComboTrihedronColorList.InsertString(-1,"Bisque");
+  m_ComboTrihedronColorList.InsertString(-1, L"Black");
+  m_ComboTrihedronColorList.InsertString(-1, L"Blue");
+  m_ComboTrihedronColorList.InsertString(-1, L"Gray");
+  m_ComboTrihedronColorList.InsertString(-1, L"White");
+	//m_ComboTrihedronColorList.InsertString(-1, L"Bisque");
 	
 
 

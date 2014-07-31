@@ -39,7 +39,7 @@ void CResultDialog::Empty()
 {
    pEd = (CRichEditCtrl *) GetDlgItem (IDC_RICHEDIT_ResultDialog);
    //pEd->Clear();
-   pEd->SetWindowText("");
+   pEd->SetWindowText (L"");
 }
 
 void CResultDialog::SetText(const CString & aText)

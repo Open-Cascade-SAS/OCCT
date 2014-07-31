@@ -211,10 +211,9 @@ void COcafDoc::OnCreatebox()
 	D->NewCommand();
 	TOcaf_Commands TSC(D->Main());
 
-	TCollection_AsciiString Name((Standard_CString)(LPCTSTR)Dlg.m_Name);
-
 	// Create a new box using the CNewBoxDlg Dialog parameters as attributes
-	TDF_Label L=TSC.CreateBox(Dlg.m_x, Dlg.m_y, Dlg.m_z, Dlg.m_w, Dlg.m_l, Dlg.m_h, TCollection_ExtendedString(Name));
+  TDF_Label L = TSC.CreateBox (Dlg.m_x, Dlg.m_y, Dlg.m_z, Dlg.m_w, Dlg.m_l, Dlg.m_h,
+                               TCollection_ExtendedString ((Standard_ExtString )(const wchar_t* )Dlg.m_Name));
 
 	// Get the TPrsStd_AISPresentation of the new box TNaming_NamedShape
 	Handle(TPrsStd_AISPresentation) prs= TPrsStd_AISPresentation::Set(L, TNaming_NamedShape::GetID()); 
@@ -269,10 +268,9 @@ void COcafDoc::OnCreatecyl()
 	D->NewCommand();
 	TOcaf_Commands TSC(D->Main());
 
-	TCollection_AsciiString Name((Standard_CString)(LPCTSTR)Dlg.m_Name);
-
 	// Create a new box using the CNewCylDlg Dialog parameters as attributes
-	TDF_Label L=TSC.CreateCyl(Dlg.m_x, Dlg.m_y, Dlg.m_z, Dlg.m_r, Dlg.m_h, TCollection_ExtendedString(Name));
+  TDF_Label L = TSC.CreateCyl (Dlg.m_x, Dlg.m_y, Dlg.m_z, Dlg.m_r, Dlg.m_h,
+                               TCollection_ExtendedString ((Standard_ExtString )(const wchar_t* )Dlg.m_Name));
 
 	// Get the TPrsStd_AISPresentation of the new cylinder TNaming_NamedShape
 	Handle(TPrsStd_AISPresentation) prs= TPrsStd_AISPresentation::Set(L, TNaming_NamedShape::GetID()); 
@@ -331,7 +329,7 @@ void COcafDoc::OnModify()
 	Handle(TFunction_Function) TFF; 
 	if ( !LabObject.FindAttribute(TFunction_Function::GetID(),TFF) )
 	{
-		MessageBox(0,"Object cannot be modify.", "Modification", MB_ICONEXCLAMATION);
+		MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, L"Object cannot be modify.", L"Modification", MB_ICONEXCLAMATION);
 		return;
 	}
 	// Get the Standard_GUID of the TFunction_FunctionDriver of the selected object TFunction_Function attribute
@@ -388,11 +386,10 @@ Handle(TFunction_Function) TFF; \n\
 		// Open a new command (for undo)
 		D->NewCommand();
 
-		TCollection_AsciiString Name((Standard_CString)(LPCTSTR)Dlg.m_Name);
-
 		// Modify the box
 		TOcaf_Commands TSC(LabObject);
-		TSC.ModifyBox(Dlg.m_x, Dlg.m_y, Dlg.m_z, Dlg.m_w, Dlg.m_l, Dlg.m_h, TCollection_ExtendedString(Name), log);
+		TSC.ModifyBox (Dlg.m_x, Dlg.m_y, Dlg.m_z, Dlg.m_w, Dlg.m_l, Dlg.m_h,
+                   TCollection_ExtendedString ((Standard_ExtString )(const wchar_t* )Dlg.m_Name), log);
 
 		// Get the presentation of the box, display it and set it selected
 		Handle(TPrsStd_AISPresentation) prs= TPrsStd_AISPresentation::Set(LabObject, TNaming_NamedShape::GetID()); 
@@ -474,11 +471,10 @@ D->CommitCommand(); \n\
 		// Open a new command (for undo)
 		D->NewCommand();
 
-		TCollection_AsciiString Name((Standard_CString)(LPCTSTR)Dlg.m_Name);
-
 		// Modify the cylinder
 		TOcaf_Commands TSC(LabObject);
-		TSC.ModifyCyl(Dlg.m_x, Dlg.m_y, Dlg.m_z, Dlg.m_r, Dlg.m_h, TCollection_ExtendedString(Name), log);
+		TSC.ModifyCyl (Dlg.m_x, Dlg.m_y, Dlg.m_z, Dlg.m_r, Dlg.m_h,
+                   TCollection_ExtendedString ((Standard_ExtString )(const wchar_t* )Dlg.m_Name), log);
 
 		// Get the presentation of the cylinder, display it and set it selected
 		Handle(TPrsStd_AISPresentation) prs= TPrsStd_AISPresentation::Set(LabObject, TNaming_NamedShape::GetID()); 
@@ -591,11 +587,11 @@ D->CommitCommand(); \n\
 			myAISContext->UpdateCurrentViewer();
 			return;
 		}
-		TCollection_AsciiString Name((Standard_CString)(LPCTSTR)Dlg.m_Name);
 
 		// Modify the cylinder
 		TOcaf_Commands ToolTSC(ToolLab);
-		ToolTSC.ModifyCyl(Dlg.m_x, Dlg.m_y, Dlg.m_z, Dlg.m_r, Dlg.m_h, TCollection_ExtendedString(Name), log);
+		ToolTSC.ModifyCyl (Dlg.m_x, Dlg.m_y, Dlg.m_z, Dlg.m_r, Dlg.m_h,
+                       TCollection_ExtendedString ((Standard_ExtString )(const wchar_t* )Dlg.m_Name), log);
 
 		// Redisplay the modified Tool object
 		TDataStd_Integer::Set(ToolLab, 1);
@@ -613,7 +609,7 @@ D->CommitCommand(); \n\
 //		{
 			log.SetTouched(LabObject);
 			if(myCutDriver->Execute(log))
-				MessageBox(0,"Recompute failed","Modify cut",MB_ICONEXCLAMATION);
+				MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, L"Recompute failed", L"Modify cut", MB_ICONEXCLAMATION);
 //		}
 
 		// Erase the Original object and the Tool objectedisplay the modified Tool object
@@ -672,7 +668,7 @@ D->CommitCommand(); \n\
 	}
 	else
 	{
-		MessageBox(0,"No associated function driver","Modify",MB_OK);
+		MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, L"No associated function driver", L"Modify", MB_OK);
 	}
 
 	CString text(Message.ToCString());
@@ -902,8 +898,8 @@ void COcafDoc::OnCloseDocument()
 
 void COcafDoc::OnFileSaveAs() 
 {
-	Standard_CString SPathName = (Standard_CString) (LPCTSTR) PathName;
-	TCollection_ExtendedString TPathName(SPathName);
+	const wchar_t* SPathName = PathName;
+	TCollection_ExtendedString TPathName ((Standard_ExtString )SPathName);
 
 	CString Filter;
 
@@ -918,11 +914,10 @@ void COcafDoc::OnFileSaveAs()
 	}
 	
 	CFileDialog dlg(FALSE,
-			"std",
+			L"std",
 			GetTitle(),
 			OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
 			Filter,
-//			"std Files (*.std)|*.std; |All Files (*.*)|*.*||", 
 			NULL );
 	
 
@@ -934,13 +929,10 @@ void COcafDoc::OnFileSaveAs()
 	CWaitCursor aWaitCursor;
 	CString CSPath = dlg.GetPathName();
 
-//	if((CSPath.Find(CString(".std")))==-1 )
-//		CSPath = CSPath + ".std";
-
 	cout << "Save As " << CSPath << endl;
 	PathName=CSPath;
-	Standard_CString SPath = (Standard_CString) (LPCTSTR) CSPath;
-	TCollection_ExtendedString TPath(SPath);
+        const wchar_t* SPath = CSPath;
+	TCollection_ExtendedString TPath ((Standard_ExtString )SPath);
 
 	    if (TPath.SearchFromEnd(".xml") > 0)
 		{
@@ -965,7 +957,7 @@ void COcafDoc::OnFileSaveAs()
 		}
 		catch(...)
 		{
-			AfxMessageBox("Error! The file wasn't saved.");
+			AfxMessageBox (L"Error! The file wasn't saved.");
     		return;
 		}
 //	// save the document in the current application
@@ -994,14 +986,14 @@ void COcafDoc::OnFileSave()
 	
 	if (myOcafDoc.IsNull())
 	{
-	  AfxMessageBox("Error during saving! Empty document.");
+	  AfxMessageBox (L"Error during saving! Empty document.");
 	  return;
 	}
 
 	if(PathName!="")
 	{
-		Standard_CString SPath = (Standard_CString) (LPCTSTR) PathName;
-		TCollection_ExtendedString TPath(SPath);
+          const wchar_t* SPath = PathName;
+          TCollection_ExtendedString TPath ((Standard_ExtString )SPath);
 
 	    if (TPath.SearchFromEnd(".xml") > 0)
 		{
@@ -1026,7 +1018,7 @@ void COcafDoc::OnFileSave()
 		}
 		catch(...)
 		{
-			AfxMessageBox("Error! The file wasn't saved.");
+			AfxMessageBox (L"Error! The file wasn't saved.");
    		    return;
 		}
 
@@ -1046,11 +1038,10 @@ m_App->SaveAs(myOcafDoc,(TCollection_ExtendedString) TPath); \n\
 	}
 
 	CFileDialog dlg(FALSE,
-			"std",
+			L"std",
 			GetTitle(),
 			OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
-			"OCAFSample(STD) (*.std)|*.std|OCAFSample(XML) (*.xml)|*.xml|OCAFSample(Binary) (*.cbf)|*.cbf||",
-//			"std Files (*.std)|*.std; |All Files (*.*)|*.*||", 
+			L"OCAFSample(STD) (*.std)|*.std|OCAFSample(XML) (*.xml)|*.xml|OCAFSample(Binary) (*.cbf)|*.cbf||",
 			NULL );
 
 	if (dlg.DoModal() != IDOK) return;
@@ -1060,8 +1051,8 @@ m_App->SaveAs(myOcafDoc,(TCollection_ExtendedString) TPath); \n\
 	CWaitCursor aWaitCursor;
 	CString CSPath = dlg.GetPathName();
 
-	Standard_CString SPath = (Standard_CString)(LPCTSTR) CSPath;
-    TCollection_ExtendedString TPath(SPath);
+	const wchar_t* SPath = CSPath;
+    TCollection_ExtendedString TPath ((Standard_ExtString )SPath);
 
     // Choose storage format
     if (TPath.SearchFromEnd(".xml") > 0)
@@ -1087,21 +1078,9 @@ m_App->SaveAs(myOcafDoc,(TCollection_ExtendedString) TPath); \n\
    }
    catch(...)
    {
-	  AfxMessageBox("Error! The file wasn't saved.");
+	  AfxMessageBox (L"Error! The file wasn't saved.");
 	  return;
    }
-
-
-//	if((CSPath.Find(CString(".std")))==-1 )
-//		CSPath = CSPath + ".std";
-
-//	cout << "Save As " << CSPath << endl;
-//	PathName=CSPath;
-//	Standard_CString SPath = (Standard_CString) (LPCTSTR) CSPath;
-//	TCollection_ExtendedString TPath(SPath);
-
-	// save the document in the current application
-//	m_App->SaveAs(myOcafDoc,TPath);
 
 	SetPathName(SPath);
 	PathName=CSPath;
