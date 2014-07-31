@@ -180,11 +180,7 @@ void  TopTools_LocationSet::Write(Standard_OStream& OS) const
   
   //OCC19559
   Message_ProgressSentry PS(GetProgress(), "Locations", 0, nbLoc, 1);
-  
   for (i = 1; i <= nbLoc && PS.More(); i++, PS.Next()) {
-    if ( !GetProgress().IsNull() ) 
-      GetProgress()->Show();
-
     TopLoc_Location L = myMap(i);
 
     
@@ -261,9 +257,6 @@ void  TopTools_LocationSet::Read(Standard_IStream& IS)
   //OCC19559
   Message_ProgressSentry PS(GetProgress(), "Locations", 0, nbLoc, 1);
   for (i = 1; i <= nbLoc&& PS.More(); i++, PS.Next()) {
-    if ( !GetProgress().IsNull() ) 
-      GetProgress()->Show();
-
     Standard_Integer typLoc;
     IS >> typLoc;
     

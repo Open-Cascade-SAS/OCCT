@@ -521,14 +521,9 @@ void  GeomTools_CurveSet::Write(Standard_OStream& OS)const
     //OCC19559
   Handle(Message_ProgressIndicator) progress = GetProgress();
   Message_ProgressSentry PS(progress, "3D Curves", 0, nbcurve, 1);
-
   for (i = 1; i <= nbcurve && PS.More(); i++, PS.Next()) {
-    if ( !progress.IsNull() ) 
-      progress->Show();
-
     PrintCurve(Handle(Geom_Curve)::DownCast(myMap(i)),OS,Standard_True);
   }
-
   OS.precision(prec);
 }
 
@@ -872,9 +867,6 @@ void  GeomTools_CurveSet::Read(Standard_IStream& IS)
   Handle(Message_ProgressIndicator) progress = GetProgress();
   Message_ProgressSentry PS(progress, "3D Curves", 0, nbcurve, 1);
   for (i = 1; i <= nbcurve && PS.More(); i++, PS.Next()) {
-    if ( !progress.IsNull() ) 
-      progress->Show();
-
     GeomTools_CurveSet::ReadCurve(IS,C);
     myMap.Add(C);
   }

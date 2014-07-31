@@ -499,11 +499,7 @@ void  TopTools_ShapeSet::Write(Standard_OStream& OS)
   if ( !myProgress.IsNull() ) 
     myProgress->NewScope ( 15, "Shapes" );
   Message_ProgressSentry PS(myProgress, "Shapes", 0, nbShapes, 1);
-
   for (i = 1; i <= nbShapes && PS.More(); i++, PS.Next()) {
-    if ( !myProgress.IsNull() ) 
-      myProgress->Show();
-
     const TopoDS_Shape& S = myShapes(i);
     
     // Type
@@ -687,8 +683,6 @@ void  TopTools_ShapeSet::Read(Standard_IStream& IS)
     myProgress->NewScope ( 15, "Shapes" );
   Message_ProgressSentry PS(myProgress, "Shapes", 0, nbShapes, 1);
   for (i = 1; i <= nbShapes && PS.More(); i++, PS.Next() ) {
-    if ( !myProgress.IsNull() ) 
-      myProgress->Show();
     TopoDS_Shape S;
     
     //Read type and create empty shape.

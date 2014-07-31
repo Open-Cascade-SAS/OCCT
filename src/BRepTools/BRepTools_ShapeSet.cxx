@@ -1238,11 +1238,7 @@ void BRepTools_ShapeSet::WritePolygonOnTriangulation(Standard_OStream&      OS,
 
   Handle(Poly_PolygonOnTriangulation) Poly;
   Handle(TColStd_HArray1OfReal) Param;
-
   for (i=1; i<=nbpOntri && PS.More(); i++, PS.Next()) {
-    if ( !progress.IsNull() ) 
-      progress->Show();
-
     Poly = Handle(Poly_PolygonOnTriangulation)::DownCast(myNodes(i));
     const TColStd_Array1OfInteger& Nodes = Poly->Nodes();
     if (!Compact) {
@@ -1305,9 +1301,6 @@ void BRepTools_ShapeSet::ReadPolygonOnTriangulation(Standard_IStream& IS)
   Handle(Message_ProgressIndicator) progress = GetProgress();
   Message_ProgressSentry PS(progress, "Polygons On Triangulation", 0, nbpol, 1);
   for (i=1; i<=nbpol&& PS.More(); i++, PS.Next()) {
-    if ( !progress.IsNull() ) 
-      progress->Show();
-
     IS >> nbnodes;
     TColStd_Array1OfInteger Nodes(1, nbnodes);
     for (j = 1; j <= nbnodes; j++) {
@@ -1365,9 +1358,6 @@ void BRepTools_ShapeSet::WritePolygon3D(Standard_OStream&      OS,
   
   Handle(Poly_Polygon3D) P;
   for (i = 1; i <= nbpol && PS.More(); i++, PS.Next()) {
-    if ( !progress.IsNull() ) 
-      progress->Show();
-
     P = Handle(Poly_Polygon3D)::DownCast(myPolygons3D(i));
     if (Compact) {
       OS << P->NbNodes() << " ";
@@ -1443,9 +1433,6 @@ void BRepTools_ShapeSet::ReadPolygon3D(Standard_IStream& IS)
   Handle(Message_ProgressIndicator) progress = GetProgress();
   Message_ProgressSentry PS(progress, "3D Polygons", 0, nbpol, 1);
   for (i=1; i<=nbpol && PS.More(); i++, PS.Next()) {
-    if ( !progress.IsNull() ) 
-      progress->Show();
-
     IS >> nbnodes;
     IS >> hasparameters;
     TColgp_Array1OfPnt Nodes(1, nbnodes);
@@ -1490,11 +1477,9 @@ void BRepTools_ShapeSet::WriteTriangulation(Standard_OStream&      OS,
     OS <<"Dump of " << nbtri << " Triangulations\n";
     OS << " -------\n";
   }
-  
+
   Handle(Poly_Triangulation) T;
   for (i = 1; i <= nbtri && PS.More(); i++, PS.Next()) {
-    if ( !progress.IsNull() ) 
-      progress->Show();
 
     T = Handle(Poly_Triangulation)::DownCast(myTriangulations(i));
     if (Compact) {
@@ -1599,8 +1584,6 @@ void BRepTools_ShapeSet::ReadTriangulation(Standard_IStream& IS)
   Handle(Message_ProgressIndicator) progress = GetProgress();
   Message_ProgressSentry PS(progress, "Triangulations", 0, nbtri, 1);
   for (i=1; i<=nbtri && PS.More();i++, PS.Next()) {
-    if ( !progress.IsNull() )  
-      progress->Show();
 
     IS >> nbNodes >> nbTriangles >> hasUV;
     IS >> d;
@@ -1636,5 +1619,3 @@ void BRepTools_ShapeSet::ReadTriangulation(Standard_IStream& IS)
     myTriangulations.Add(T);
   }
 }
-
-

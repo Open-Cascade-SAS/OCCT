@@ -641,14 +641,9 @@ void  GeomTools_SurfaceSet::Write(Standard_OStream& OS)const
   //OCC19559
   Handle(Message_ProgressIndicator) progress = GetProgress();
   Message_ProgressSentry PS(progress, "Surfaces", 0, nbsurf, 1);
-
   for (i = 1; i <= nbsurf && PS.More(); i++, PS.Next()) {
-    if ( !progress.IsNull() ) 
-      progress->Show();
-
     PrintSurface(Handle(Geom_Surface)::DownCast(myMap(i)),OS,Standard_True);
   }
-
   OS.precision(prec);
 }
 
@@ -1062,9 +1057,6 @@ void  GeomTools_SurfaceSet::Read(Standard_IStream& IS)
   Handle(Message_ProgressIndicator) progress = GetProgress();
   Message_ProgressSentry PS(progress, "Surfaces", 0, nbsurf, 1);
   for (i = 1; i <= nbsurf && PS.More(); i++, PS.Next()) {
-    if ( !progress.IsNull() ) 
-      progress->Show();
-
     GeomTools_SurfaceSet::ReadSurface(IS,S);
     myMap.Add(S);
   }

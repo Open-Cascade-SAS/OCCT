@@ -504,13 +504,9 @@ void  GeomTools_Curve2dSet::Write(Standard_OStream& OS)const
   //OCC19559
   Handle(Message_ProgressIndicator) progress = GetProgress();
   Message_ProgressSentry PS(progress, "2D Curves", 0, nbsurf, 1);
-
   for (i = 1; i <= nbsurf && PS.More(); i++, PS.Next()) {
-    if ( !myProgress.IsNull() ) 
-      progress->Show();
     PrintCurve2d(Handle(Geom2d_Curve)::DownCast(myMap(i)),OS,Standard_True);
   }
-
   OS.precision(prec);
 }
 
@@ -851,11 +847,7 @@ void  GeomTools_Curve2dSet::Read(Standard_IStream& IS)
   //OCC19559
   Handle(Message_ProgressIndicator) progress = GetProgress();
   Message_ProgressSentry PS(progress, "2D Curves", 0, nbcurve, 1);
-
   for (i = 1; i <= nbcurve && PS.More(); i++, PS.Next()) {
-    if ( !myProgress.IsNull() ) 
-      progress->Show();
-    
     GeomTools_Curve2dSet::ReadCurve2d(IS,C);
     myMap.Add(C);
   }
