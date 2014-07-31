@@ -1,0 +1,10 @@
+puts "============"
+puts "OCC23010"
+puts "============"
+puts ""
+##################################################################################
+# Error with a .stp model during transfer from STEPCAFControl_Reader to document
+##################################################################################
+
+pload QAcommands
+OCC23010 [locate_data_file occ23010.step]

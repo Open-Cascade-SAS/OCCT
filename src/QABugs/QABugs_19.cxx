@@ -2640,6 +2640,46 @@ static Standard_Integer OCC24925 (Draw_Interpretor& theDI,
   return 0;
 }
 
+//=======================================================================
+//function : OCC23010
+//purpose  :
+//=======================================================================
+#include <STEPCAFControl_Reader.hxx>
+
+class mOcafApplication : public TDocStd_Application
+{
+  void Formats(TColStd_SequenceOfExtendedString& Formats)
+  {
+    Formats.Append(TCollection_ExtendedString("mOcafApplication"));
+  }
+  Standard_CString ResourcesName()
+  {
+    return Standard_CString("Resources");
+  }
+};
+
+static Standard_Integer OCC23010 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
+{
+  if (argc != 2) {
+    di << "Usage: " << argv[0] << " invalid number of arguments" << "\n";
+    return 1;
+  }
+  std::string fileName=argv[1];
+  mOcafApplication *mCasApp = new mOcafApplication();
+  Handle(TDocStd_Document) doc;
+  mCasApp->NewDocument("MDTV-XCAF", doc);
+  STEPCAFControl_Reader stepReader;
+  IFSelect_ReturnStatus status = stepReader.ReadFile (fileName.c_str());
+  if (status != IFSelect_RetDone)
+    return false;
+  stepReader.SetColorMode(Standard_True);
+  stepReader.SetLayerMode(Standard_True);
+  stepReader.SetNameMode(Standard_True);
+  stepReader.Transfer(doc); // ERROR HERE!!!
+  delete mCasApp;
+  return 0;
+}
+
 /*****************************************************************************/
 
 void QABugs::Commands_19(Draw_Interpretor& theCommands) {
@@ -2693,5 +2733,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
                    "OCC24925 filename [pluginLib=TKXml storageGuid retrievalGuid]"
                    "\nOCAF persistence without setting environment variables",
                    __FILE__, OCC24925, group);
+  theCommands.Add ("OCC23010", "OCC23010 STEP_file", __FILE__, OCC23010, group);
   return;
 }
