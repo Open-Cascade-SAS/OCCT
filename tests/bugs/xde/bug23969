@@ -1,3 +1,6 @@
+puts "TODO DEBUG_OCC23969 ALL: Warning: ShapeAnalysis_Surface::ValueOfUV()"
+puts "TODO DEBUG_OCC23969 ALL: Warning: ShapeFix_Edge::FixAddPCurve()"
+
 puts "============"
 puts "OCC23969"
 puts "============"
