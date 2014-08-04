@@ -24,6 +24,7 @@ class Edge from ShapeAnalysis
     --          (3d and pcurve(s) consistency, their adjacency to the vertices).
 
 uses
+    Curve    from Adaptor3d,
     Pnt      from gp,
     Pnt2d    from gp,
     Vec2d    from gp,
@@ -275,7 +276,20 @@ is
 	--          FAIL1 - edge does not have 3d curve
 	--          FAIL2 - if some computational problems were encountered (when
 	--                  projecting points on curves)
-		
+
+    ComputeDeviation (myclass; CRef         : Curve from Adaptor3d;
+                               Other        : Curve from Adaptor3d;
+                               SameParameter: Boolean;
+                               dev          : in out Real;
+                               NCONTROL     : Integer)
+    returns Boolean;
+        ---Purpose: Computes the maximal deviation between the two curve
+        --          representations.
+        --          dev is an input/output parameter and contains the computed
+        --          deviation (should be initialized with 0. for the first call).
+        --          Used by CheckSameParameter().
+        ---Returns: True if the computation has been successful and False otherwise.
+        
     CheckOverlapping(me :in out; theEdge1, theEdge2 : Edge from TopoDS; 
     	    	     theTolOverlap:in out Real; theDomainDist : Real =0.0) returns Boolean;
 	---Purpose: Checks the first edge is overlapped with second edge.

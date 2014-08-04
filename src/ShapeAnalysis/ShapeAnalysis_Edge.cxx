@@ -705,11 +705,11 @@ Standard_Boolean ShapeAnalysis_Edge::CheckVertexTolerance(const TopoDS_Edge& edg
 //note: This function is made from Validate() in BRepCheck_Edge.cxx
 //=======================================================================
 
-static Standard_Boolean ComputeDeviation (const Adaptor3d_Curve& CRef,
-					  const Adaptor3d_Curve& Other,
-					  const Standard_Boolean SameParameter,
-					  Standard_Real &dev,
-					  const Standard_Integer NCONTROL)
+Standard_Boolean ShapeAnalysis_Edge::ComputeDeviation (const Adaptor3d_Curve& CRef,
+                                                       const Adaptor3d_Curve& Other,
+                                                       const Standard_Boolean SameParameter,
+                                                       Standard_Real &dev,
+                                                       const Standard_Integer NCONTROL)
 {
   Standard_Boolean OK = Standard_True;
   Standard_Real dev2 = dev*dev;
