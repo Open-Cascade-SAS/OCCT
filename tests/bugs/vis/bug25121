@@ -1,0 +1,25 @@
+puts "================"
+puts "OCC25121"
+puts "================"
+puts ""
+#######################################################################################
+# Visualization, OpenGl_Text - correct scaling factor for fixed-size text at 3D point
+#######################################################################################
+
+vinit
+
+box b -5 -5 0 10 10 1
+vdisplay -noupdate b
+vtop
+vfit
+
+vdrawtext "000 3D" 0.0 0.0 0.0 255 255 255 1 1 000 0 16 1 Courier
+vdrawtext "001 3D" 0.0 1.0 0.0 255 255 255 1 1 000 0 16 1 Courier
+vdrawtext "101 3D" 0.0 2.0 0.0 255 255 255 1 1 000 0 16 1 Courier
+vdrawtext "110 3D" 0.0 3.0 0.0 255 255 255 1 1 000 0 16 1 Courier
+voverlaytext "000 2D" 100 200 16 Courier 255 255 255 normal 0 0 255
+voverlaytext "001 2D" 100 250 16 Courier 255 255 255 normal 0 0 255
+voverlaytext "101 2D" 100 300 16 Courier 255 255 255 normal 0 0 255
+voverlaytext "110 2D" 100 350 16 Courier 255 255 255 normal 0 0 255
+
+set only_screen 1

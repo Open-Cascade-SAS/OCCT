@@ -696,7 +696,7 @@ void OpenGl_Text::render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
 
     GLdouble x2, y2, z2;
     const GLdouble h = (GLdouble )myFont->FTFont()->PointSize();
-    gluUnProject (myWinX, myWinY + h - 1.0, myWinZ,
+    gluUnProject (myWinX, myWinY + h, myWinZ,
                   (GLdouble* )THE_IDENTITY_MATRIX, myProjMatrix, myViewport,
                   &x2, &y2, &z2);
 
