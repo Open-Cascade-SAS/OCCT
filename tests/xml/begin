@@ -43,7 +43,7 @@ proc SaveToFile { aD aFile } {
     upvar $aD D 
     global FileSuffix ValidatorCheck
     catch {[file delete ${aFile}]}
-    SaveAs D $aFile
+    SaveAs $D $aFile
     if { [file exists $aFile] } {
 	if { $FileSuffix == "xml" && $ValidatorCheck} {
 	    ValidateXml $aFile

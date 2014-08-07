@@ -138,8 +138,7 @@ puts " "
 
 # Check if area of triangles is valid
 proc CheckTriArea {shape {eps 0}} {
-  upvar #0 $shape a
-  set area [triarea a $eps]
+  set area [triarea $shape $eps]
   set t_area [lindex $area 0]
   set g_area [expr abs([lindex $area 1])]
   puts "area by triangles: $t_area"

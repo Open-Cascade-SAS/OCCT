@@ -17,7 +17,7 @@ if { [regexp "Faulty" $che] == 1 } {
     puts "OCC945: Source shape is valid."
 }
 
-if [catch {fixshape result a 29.9 } result] {
+if [catch {fixshape result a 29.9 } res] {
     puts "Faulty OCC945: here is problem with FIXSHAPE function"
 } else {
     decho off

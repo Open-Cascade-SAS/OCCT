@@ -1,20 +1,19 @@
 #################### select shape and check selection procedure ####################
 proc Select {lab shape context} {
   global D IsDone TestError
-  upvar 1 $shape myshape $context mycontext
   set res ""
   if {[string compare $context ""] == 0} {
-    if {[catch {set res [SelectShape D $lab myshape]}]} {
+    if {[catch {set res [SelectShape D $lab $shape]}]} {
 	set IsDone 0
-	set TestError "$TestError # SelectShape bad result for args: $lab myshape"
+	set TestError "$TestError # SelectShape bad result for args: $lab shape"
     }
   } else {
-    if {[catch {set res [SelectShape D $lab myshape mycontext]}]} {
+    if {[catch {set res [SelectShape D $lab $shape $context]}]} {
 	set IsDone 0
-	set TestError "$TestError # SelectShape bad result for args: $lab myshape"
+	set TestError "$TestError # SelectShape bad result for args: $lab shape"
     }
   }
-  return [CenterOfShape myshape]
+  return [CenterOfShape $shape]
 }
 
 if {[catch {set TestLab}] == 1} {

@@ -111,11 +111,6 @@ is
 
     class Printer;
 
-    class VMap instantiates
-      DataMap from TCollection(Integer,
-    	    	    	       Drawable3D from Draw,
-                               MapIntegerHasher from TColStd);    
-        
     class MapOfAsciiString instantiates IndexedMap from TCollection(AsciiString from TCollection,AsciiString from TCollection); 
      
     Load(theDI: out Interpretor from Draw;

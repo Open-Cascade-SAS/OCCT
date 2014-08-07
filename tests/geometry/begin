@@ -21,12 +21,11 @@ if { [info exists test_image ] == 0 } {
 proc val2d { c u1 u2 n } {
 
   dset du ($u2-$u1)/$n
-  upvar $c cc
 
   set i 1
 			
   for {dset u $u1} { [dval u] <= $u2} {dset u ($u1+$i*[dval du])} {
-    2dcvalue cc u x y dx dy d2x d2y  ;
+    2dcvalue $c u x y dx dy d2x d2y  ;
     global p_$i d1_$i d2_$i 
     point p_$i  x y;
     puts "u   = [dval u]"
@@ -47,12 +46,11 @@ proc val2d { c u1 u2 n } {
 proc val3d { c u1 u2 n } {
 
   dset du ($u2-$u1)/$n
-  upvar $c cc
   
   set i 1
 		
   for {dset u $u1} { [dval u] <= $u2} {dset u (u+[dval du])} {
-    cvalue cc u x y z dx dy dz d2x d2y d2z ; 
+    cvalue $c u x y z dx dy dz d2x d2y d2z ;
     point p_$i  x y z;
     puts "u   = [dval u]"
     puts "p_$i  [dval x  ] [dval y  ] [dval z]";
@@ -75,10 +73,8 @@ proc compare {r1 r2 tol} {
 } 
 
 proc comparepnt2d {p1 p2 tol} {
-	upvar $p1 pp1
-	upvar $p2 pp2
-	coord pp1 x1 y1
-	coord pp2 x2 y2
+	coord $p1 x1 y1
+	coord $p2 x2 y2
 	compare [dval x1] [dval x2] $tol
 	compare [dval y1] [dval y2] $tol
 }

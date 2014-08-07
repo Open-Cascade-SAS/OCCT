@@ -37,7 +37,7 @@ if { [catch { set tolmaxres [tolmax result] } catch_result] } {
 }
 
 regexp {max tol = ([-0-9.+eE]+)} $tolmaxres full maxtolerance
-if { [catch { expr $maxtolerance } result] } {
+if { [catch { expr $maxtolerance } res] } {
    puts "Faulty ${BugNumber} : maxtolerance is wrong (1)."
 }
 if { $maxtolerance > 1. } {

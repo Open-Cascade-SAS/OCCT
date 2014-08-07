@@ -12,7 +12,7 @@ restore [locate_data_file f3] b2
 checkshape b2
 
 
-if [catch {bcut result b2 b1 } result] {
+if [catch {bcut result b2 b1 } res] {
     puts "Faulty OCC410: function CUT works wrongly"
 } else {
     puts " OCC410 OK: function CUT works properly"

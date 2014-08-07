@@ -1,0 +1,19 @@
+# Test for #24863: protect variable
+
+box b 10 10 10
+set is_ok [whatis b]
+protect b
+
+if {![catch {set b aaaaa}]} {
+     puts "Error : variable was changed"
+}
+
+set check_puts [puts $b]
+if {$check_puts != ""} {
+    puts "Error : result of command \"puts\" is wrong"
+}
+
+set check_ok [whatis b]
+if {$is_ok != $check_ok} {
+    puts "Error : results of command \"whatis\" are different"
+}

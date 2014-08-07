@@ -13,7 +13,7 @@ checkshape a_1
 restore [locate_data_file OCC485a.brep] a_2
 checkshape a_2
 
-if [catch {bfuse result a_1 a_2 } result] {
+if [catch {bfuse result a_1 a_2 } res] {
     puts "Faulty OCC485: Draw hangs up during performing fuse operation"
 } else {
     puts "OCC485 OK: function FUSE works without Draw hangs up "

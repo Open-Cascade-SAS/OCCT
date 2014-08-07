@@ -267,10 +267,9 @@ help datadir {datadir [directory]} "DRAW Variables management"
 
 proc save {name {file ""}} {
     if {$file == ""} {set file $name}
-    upvar $name n
-    if {![isdraw n]} {error "save : $name is not a Draw variable"}
+    if {![isdraw $name]} {error "save : $name is not a Draw variable"}
     global Draw_DataDir
-    bsave n [file join $Draw_DataDir $file]
+    bsave $name [file join $Draw_DataDir $file]
     return [file join $Draw_DataDir $file]
 }
 

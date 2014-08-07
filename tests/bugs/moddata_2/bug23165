@@ -96,15 +96,15 @@ restore [locate_data_file OCC23165-curve.rle] c
 mkedge result c 20 36
 
 donly result
-set result [bounding result]
+set res [bounding result]
 fit
 
-set x1 [lindex ${result} 0]
-set y1 [lindex ${result} 1]
-set z1 [lindex ${result} 2]
-set x2 [lindex ${result} 3]
-set y2 [lindex ${result} 4]
-set z2 [lindex ${result} 5]
+set x1 [lindex ${res} 0]
+set y1 [lindex ${res} 1]
+set z1 [lindex ${res} 2]
+set x2 [lindex ${res} 3]
+set y2 [lindex ${res} 4]
+set z2 [lindex ${res} 5]
 
 set good_x1 -17.6105835090592
 set good_y1 -4.7133570660117909

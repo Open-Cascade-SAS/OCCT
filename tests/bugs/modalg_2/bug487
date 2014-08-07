@@ -14,7 +14,7 @@ puts "========================"
 restore [locate_data_file CFI_pro15441.rle] m 
 explode m e
 
-if [catch {blend result  m 2 m_36 2 m_21 } result] {
+if [catch {blend result  m 2 m_36 2 m_21 } res] {
     puts "Faulty OCC485: function BLEND works wrongly"
 } else {
     puts "OCC485 OK: function BLEND works properly "

@@ -72,11 +72,11 @@ if { ${listLength} < 20 } {
 regexp {Mass +: +([-0-9.+eE]+)} $props_6 full CircleLength_6
 
 # Calculation
-set pi [expr 2. * asin(1.0)]
-set TheoryCircleLength_4 [expr ${pi} * ${dia1}]
-set TheoryCircleLength_3 [expr ${pi} * (${dia1} + 2 * ${wall_thickness}) ]
-set TheoryCircleLength_6 [expr ${pi} * ${dia2}]
-set TheoryCircleLength_5 [expr ${pi} * (${dia2} + 2 * ${wall_thickness}) ]
+set Pi [expr 2. * asin(1.0)]
+set TheoryCircleLength_4 [expr ${Pi} * ${dia1}]
+set TheoryCircleLength_3 [expr ${Pi} * (${dia1} + 2 * ${wall_thickness}) ]
+set TheoryCircleLength_6 [expr ${Pi} * ${dia2}]
+set TheoryCircleLength_5 [expr ${Pi} * (${dia2} + 2 * ${wall_thickness}) ]
 
 set delta_3 [expr abs(${CircleLength_3} - ${TheoryCircleLength_3}) / ${TheoryCircleLength_3} * 100]
 set delta_4 [expr abs(${CircleLength_4} - ${TheoryCircleLength_4}) / ${TheoryCircleLength_4} * 100]

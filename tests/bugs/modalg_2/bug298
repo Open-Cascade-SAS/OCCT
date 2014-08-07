@@ -10,7 +10,7 @@ puts ""
 restore [locate_data_file OCC298.brep] result
 checkshape result
 
-if [catch {tcopy result a } result] {
+if [catch {tcopy result a } res] {
   puts "Faulty OCC298: function TCOPY works wrongly"
 } else {
   puts "OCC298 OK: function TCOPY works properly"
