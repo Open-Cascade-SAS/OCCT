@@ -2295,6 +2295,11 @@ static Standard_Integer OCC24834 (Draw_Interpretor& di, Standard_Integer n, cons
     std::cout << "Usage : " << a[0] << "\n";
     return 1;
   }
+  
+  if (sizeof (char*) > 4) {
+    std::cout << "64-bit architecture is not supported.\n";
+    return 0;
+  }
 
   NCollection_List<MyStubObject> aList;
   const Standard_Integer aSmallBlockSize = 40;
