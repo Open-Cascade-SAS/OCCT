@@ -34,42 +34,38 @@ TDataStd_DeltaOnModificationOfIntPackedMap::TDataStd_DeltaOnModificationOfIntPac
 : TDF_DeltaOnModification(OldAtt)
 {
   Handle(TDataStd_IntPackedMap) CurrAtt;
-  if (Label().FindAttribute(OldAtt->ID(),CurrAtt)) {
-    {
-      Handle(TColStd_HPackedMapOfInteger) aMap1, aMap2;
-      aMap1 = OldAtt->GetHMap();
-      aMap2 = CurrAtt->GetHMap();
-#ifdef DEB
-      if(aMap1.IsNull())
-	cout <<"DeltaOnModificationOfIntPackedMap:: Old Map is Null" <<endl;
-      if(aMap2.IsNull())
-	cout <<"DeltaOnModificationOfIntPackedMap:: Current Map is Null" <<endl;
+  if (Label().FindAttribute(OldAtt->ID(), CurrAtt))
+  {
+    Handle(TColStd_HPackedMapOfInteger) aMap1, aMap2;
+    aMap1 = OldAtt->GetHMap();
+    aMap2 = CurrAtt->GetHMap();
+#ifdef DEB_disable
+    if (aMap1.IsNull())
+      cout <<"DeltaOnModificationOfIntPackedMap:: Old Map is Null" <<endl;
+    if (aMap2.IsNull())
+      cout <<"DeltaOnModificationOfIntPackedMap:: Current Map is Null" <<endl;
 #endif
       
-      if(aMap1.IsNull() || aMap2.IsNull()) return;
-      if(aMap1 != aMap2) {
-	if(!aMap1->Map().HasIntersection(aMap2->Map()))
-	  return; // no intersection: use full-scale backup
-
-	if(aMap1->Map().IsSubset(aMap2->Map())) { 
-	  myDeletion = new TColStd_HPackedMapOfInteger();
-	  myDeletion->ChangeMap().Subtraction(aMap2->Map(), aMap1->Map());
-	} else if(aMap2->Map().IsSubset(aMap1->Map())) { 
-	  myAddition = new TColStd_HPackedMapOfInteger();
-	  myAddition->ChangeMap().Subtraction(aMap1->Map(), aMap2->Map());
-	} else {
-	  myAddition = new TColStd_HPackedMapOfInteger();
-	  myAddition->ChangeMap().Subtraction(aMap1->Map(), aMap2->Map());
-	  myDeletion = new TColStd_HPackedMapOfInteger();
-	  myDeletion->ChangeMap().Subtraction(aMap2->Map(), aMap1->Map());
-	}
+    if (aMap1.IsNull() || aMap2.IsNull()) return;
+    if (aMap1 != aMap2) {
+      const TColStd_PackedMapOfInteger& map1 = aMap1->Map();
+      const TColStd_PackedMapOfInteger& map2 = aMap2->Map();
+      if (map1.IsSubset(map2)) {
+        myDeletion = new TColStd_HPackedMapOfInteger();
+        myDeletion->ChangeMap().Subtraction(map2, map1);
+      } else if (map2.IsSubset(map1)) { 
+        myAddition = new TColStd_HPackedMapOfInteger();
+        myAddition->ChangeMap().Subtraction(map1, map2);
+      } else if (map1.HasIntersection(map2)) {
+        myAddition = new TColStd_HPackedMapOfInteger();
+        myAddition->ChangeMap().Subtraction(map1, map2);
+        myDeletion = new TColStd_HPackedMapOfInteger();
+        myDeletion->ChangeMap().Subtraction(map2, map1);
+      } else {
+        myAddition = new TColStd_HPackedMapOfInteger(map1);
+        myDeletion = new TColStd_HPackedMapOfInteger(map2);
       }
     }
-    OldAtt->RemoveMap();
-#ifdef DEB
-    if(OldAtt->GetHMap().IsNull())
-      cout << "BackUp Arr is Nullified" << endl;
-#endif
   }
 }
 
@@ -109,23 +105,21 @@ void TDataStd_DeltaOnModificationOfIntPackedMap::Apply()
   
   
   Handle(TColStd_HPackedMapOfInteger) IntMap = aCurAtt->GetHMap();
-  if(IntMap.IsNull()) return;
+  if (IntMap.IsNull()) return;
 
-  if(myDeletion.IsNull() && myAddition.IsNull())
+  if (myDeletion.IsNull() && myAddition.IsNull())
     return;
-  else {
-    if(!myDeletion.IsNull()) {
-  
-      if(myDeletion->Map().Extent())
-	IntMap->ChangeMap().Subtract(myDeletion->Map());
-    } 
-    if(!myAddition.IsNull()) {
-      if(myAddition->Map().Extent())
-	IntMap->ChangeMap().Unite(myAddition->Map());
-    }
+
+  if (!myDeletion.IsNull()) {
+    if (myDeletion->Map().Extent())
+      IntMap->ChangeMap().Subtract(myDeletion->Map());
+  }
+  if (!myAddition.IsNull()) {
+    if (myAddition->Map().Extent())
+      IntMap->ChangeMap().Unite(myAddition->Map());
   }
   
-#ifdef DEB    
+#ifdef DEB_disable
   cout << " << Map Dump after Delta Apply >>" <<endl;
   Handle(TColStd_HPackedMapOfInteger) aIntMap = aCurAtt->GetHMap();
   TColStd_MapIteratorOfPackedMapOfInteger it(aIntMap->Map());
@@ -134,5 +128,3 @@ void TDataStd_DeltaOnModificationOfIntPackedMap::Apply()
   cout <<endl;
 #endif
 }
-
-

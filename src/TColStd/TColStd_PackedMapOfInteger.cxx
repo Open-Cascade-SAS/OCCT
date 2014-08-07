@@ -1215,6 +1215,8 @@ Standard_Boolean TColStd_PackedMapOfInteger::IsSubset (const TColStd_PackedMapOf
         // Find the corresponding block in the 2nd map
         const TColStd_intMapNode * p2 =
           aData2 [HashCode (aKeyInt, nBuckets2)];
+        if (!p2)
+          return Standard_False;
         while (p2) {
           if ( p2->IsEqual(aKeyInt) ) {
             if ( p1->Data() & ~p2->Data() ) // at least one bit set in p1 is not set in p2
