@@ -12,14 +12,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef BOPDS_MapOfPave_HeaderFile
-#define BOPDS_MapOfPave_HeaderFile
+#ifndef BOPDS_VectorOfPave_HeaderFile
+#define BOPDS_VectorOfPave_HeaderFile
 
-#include <NCollection_Map.hxx>   
-#include <BOPDS_PaveMapHasher.hxx>
+#include <NCollection_Array1.hxx>
 #include <BOPDS_Pave.hxx>
 
-typedef NCollection_Map<BOPDS_Pave, BOPDS_PaveMapHasher> BOPDS_MapOfPave; 
-typedef BOPDS_MapOfPave::Iterator BOPDS_MapIteratorOfMapOfPave;
+typedef NCollection_Array1<BOPDS_Pave> BOPDS_VectorOfPave;
 
 #endif

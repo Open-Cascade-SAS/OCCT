@@ -14,6 +14,8 @@
 
 #include <BOPDS_DS.ixx>
 //
+#include <Standard_Assert.hxx>
+//
 #include <NCollection_IncAllocator.hxx>
 #include <NCollection_BaseAllocator.hxx>
 
@@ -40,6 +42,7 @@
 #include <BOPDS_PassKey.hxx>
 #include <BOPDS_MapOfPave.hxx>
 #include <BOPDS_MapOfPaveBlock.hxx>
+#include <BOPDS_VectorOfPave.hxx>
 
 #include <Geom_Curve.hxx>
 #include <BRep_Builder.hxx>
@@ -47,6 +50,8 @@
 #include <IntTools_Tools.hxx>
 #include <BOPTools_AlgoTools.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
+
+#include <algorithm>
 
 //
 static
@@ -62,8 +67,6 @@ static
 static
   Standard_Real ComputeParameter(const TopoDS_Vertex& aV,
                                  const TopoDS_Edge& aE);
-static
-  void SortShell(const int n, BOPDS_Pave *a);
 
 //=======================================================================
 //function : 
@@ -1752,36 +1755,41 @@ void BOPDS_DS::Paves(const Standard_Integer theEdge,
                      BOPDS_ListOfPave& theLP)
 {
   Standard_Integer aNb, i;
-  BOPDS_Pave *pPaves;
   BOPDS_ListIteratorOfListOfPaveBlock aIt;
   BOPDS_MapOfPave aMP;
   //
   const BOPDS_ListOfPaveBlock& aLPB = PaveBlocks(theEdge);
-  aNb = aLPB.Extent();
-  aNb = (aNb==0) ? 0 : (aNb+1);
-  //
-  pPaves=(BOPDS_Pave *)myAllocator->Allocate(aNb*sizeof(BOPDS_Pave));
-  for (i=0; i<aNb; ++i) {
-    new (pPaves+i) BOPDS_Pave();
+  aNb = aLPB.Extent() + 1;
+  if (aNb == 1) {
+    return;
   }
   //
-  i = 0;
-  for (aIt.Initialize(aLPB); aIt.More(); aIt.Next()) {
+  BOPDS_VectorOfPave pPaves(1, aNb);
+  //
+  i = 1;
+  aIt.Initialize(aLPB);
+  for (; aIt.More(); aIt.Next()) {
     const Handle(BOPDS_PaveBlock)& aPB = aIt.Value();
-    if (aMP.Add(aPB->Pave1())){
-      pPaves[i] = aPB->Pave1();
+    const BOPDS_Pave& aPave1 = aPB->Pave1();
+    const BOPDS_Pave& aPave2 = aPB->Pave2();
+    //
+    if (aMP.Add(aPave1)){
+      pPaves(i) = aPave1;
       ++i;
     }
-    if (aMP.Add(aPB->Pave2())){
-      pPaves[i] = aPB->Pave2();
+    //
+    if (aMP.Add(aPave2)){
+      pPaves(i) = aPave2;
       ++i;
     }
   }
   //
-  SortShell(aNb, pPaves);
+  Standard_ASSERT_VOID(aNb == aMP.Extent(), "Abnormal number of paves");
   //
-  for (i = 0; i < aNb; ++i) {
-    theLP.Append(pPaves[i]);
+  std::sort(pPaves.begin(), pPaves.end());
+  //
+  for (i = 1; i <= aNb; ++i) {
+    theLP.Append(pPaves(i));
   }
 }
 
@@ -1903,37 +1911,6 @@ Standard_Real ComputeParameter(const TopoDS_Vertex& aV,
   }
   //
   return aTRet;
-}
-//=======================================================================
-// function: SortShell
-// purpose : 
-//=======================================================================
-void SortShell(const int n, BOPDS_Pave *a) 
-{
-  int nd, i, j, l, d=1;
-  BOPDS_Pave x;
-  //
-  while(d<=n) {
-    d*=2;
-  }
-  //
-  while (d) {
-    d=(d-1)/2;
-    //
-    nd=n-d;
-    for (i=0; i<nd; ++i) {
-      j=i;
-    m30:;
-      l=j+d;
-      if (a[l] < a[j]){
-        x=a[j];
-        a[j]=a[l];
-        a[l]=x;
-        j-=d;
-        if (j > -1) goto m30;
-      }//if (a[l] < a[j]){
-    }//for (i=0; i<nd; ++i) 
-  }//while (1)
 }
 //=======================================================================
 //function : BuildBndBoxSolid

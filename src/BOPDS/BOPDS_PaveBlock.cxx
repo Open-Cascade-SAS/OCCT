@@ -14,16 +14,16 @@
 
 #include <BOPDS_PaveBlock.ixx>
 #include <BOPDS_ListOfPave.hxx>
+#include <BOPDS_VectorOfPave.hxx>
+
 #include <Standard.hxx>
 #include <NCollection_BaseAllocator.hxx>
 
+#include <algorithm>
 
 #ifdef WNT
 #pragma warning ( disable : 4291 )
 #endif
-
-static
-  void SortShell(const int n, BOPDS_Pave *a);
 
 //=======================================================================
 //function : 
@@ -262,7 +262,6 @@ static
                                const Standard_Boolean theFlag)
 {
   Standard_Integer i, aNb;
-  BOPDS_Pave *pPaves;
   BOPDS_Pave aPave1, aPave2;
   Handle(BOPDS_PaveBlock) aPB;
   BOPDS_ListIteratorOfListOfPave aIt;
@@ -272,86 +271,51 @@ static
     aNb=aNb+2;
   }
   //
-  pPaves=(BOPDS_Pave *)myAllocator->Allocate(aNb*sizeof(BOPDS_Pave));
-  for (i=0; i<aNb; ++i) {
-    new (pPaves+i) BOPDS_Pave();
+  if (aNb <= 1) {
+    myExtPaves.Clear();
+    myMFence.Clear();
+    return;
   }
   //
-  i=0;
+  BOPDS_VectorOfPave pPaves(1, aNb);
+  //
+  i=1;
   if (theFlag) {
-    pPaves[i]=myPave1; 
+    pPaves(i) = myPave1; 
     ++i;
-    pPaves[i]=myPave2; 
+    pPaves(i) = myPave2; 
     ++i;
   }
   //
   aIt.Initialize(myExtPaves);
   for (; aIt.More(); aIt.Next()) {
     const BOPDS_Pave& aPave=aIt.Value();
-    pPaves[i]=(aPave);
+    pPaves(i) = aPave;
     ++i;
   }
   myExtPaves.Clear();
   myMFence.Clear();
   //
-  SortShell(aNb, pPaves);
+  std::sort(pPaves.begin(), pPaves.end());
   //
-  for (i=0; i<aNb; ++i) {
-    const BOPDS_Pave& aPave=pPaves[i];
-    if (!i) {
-      aPave1=aPave;
+  for (i = 1; i <= aNb; ++i) {
+    const BOPDS_Pave& aPave = pPaves(i);
+    if (i == 1) {
+      aPave1 = aPave;
       continue;
     }
     //
-    aPave2=aPave;
-    aPB=new BOPDS_PaveBlock;
+    aPave2 = aPave;
+    aPB = new BOPDS_PaveBlock;
     aPB->SetOriginalEdge(myOriginalEdge);
     aPB->SetPave1(aPave1);
     aPB->SetPave2(aPave2);
     //
     theLPB.Append(aPB);
     //
-    aPave1=aPave2;
+    aPave1 = aPave2;
   }
-  //
-  for (i=0; i<aNb; ++i) {
-    pPaves[i].~BOPDS_Pave();
-  }
-  myAllocator->Free(pPaves);
 }
-
-//=======================================================================
-// function: SortShell
-// purpose : 
-//=======================================================================
-void SortShell(const int n, BOPDS_Pave *a) 
-{
-  int nd, i, j, l, d=1;
-  BOPDS_Pave x;
-  //
-  while(d<=n) {
-    d*=2;
-  }
-  //
-  while (d) {
-    d=(d-1)/2;
-    //
-    nd=n-d;
-    for (i=0; i<nd; ++i) {
-      j=i;
-    m30:;
-      l=j+d;
-      if (a[l] < a[j]){
-        x=a[j];
-        a[j]=a[l];
-        a[l]=x;
-        j-=d;
-        if (j > -1) goto m30;
-      }//if (a[l] < a[j]){
-    }//for (i=0; i<nd; ++i) 
-  }//while (1)
-}
-
 // ShrunkData
 //=======================================================================
 //function : HasShrunkData

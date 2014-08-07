@@ -36,4 +36,4 @@ BOPDS_IndexedMapOfPaveBlock.hxx
 BOPDS_IndexedDataMapOfPaveBlockListOfInteger.hxx
 BOPDS_IndexedDataMapOfShapeCoupleOfPaveBlocks.hxx
 BOPDS_DataMapOfPaveBlockCommonBlock.hxx
-
+BOPDS_VectorOfPave.hxx

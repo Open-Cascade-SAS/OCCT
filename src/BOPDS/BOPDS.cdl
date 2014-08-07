@@ -111,8 +111,9 @@ is
     imported VectorOfInterfFZ from BOPDS; 
     imported VectorOfInterfZZ from BOPDS; 
     --  
-    imported VectorOfPoint   from BOPDS; 
+    imported VectorOfPoint from BOPDS; 
     imported VectorOfCurve from BOPDS; 
+    imported VectorOfPave  from BOPDS; 
     --
 end BOPDS;
 
