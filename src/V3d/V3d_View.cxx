@@ -1928,7 +1928,7 @@ void V3d_View::Convert(const Standard_Real X,
   gp_Pnt aPoint = myCamera->Project (gp_Pnt (X, Y, Z));
 
   Xp = RealToInt ((aPoint.X() + 1) * 0.5 * aWidth);
-  Yp = RealToInt ((aPoint.Y() + 1) * 0.5 * aHeight);
+  Yp = RealToInt (aHeight - 1 - (aPoint.Y() + 1) * 0.5 * aHeight);
 }
 
 //=======================================================================
