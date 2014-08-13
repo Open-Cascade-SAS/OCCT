@@ -248,7 +248,8 @@ Use of tabulation characters for indentation is disallowed.
 Punctuation rules follow the rules of the English language.
 * C/C++ reserved words, commas, colons and semicolons should be followed by a space character if they are not at the end of a line.
 * There should be no space characters after '(' and before ')'. Closing and opening brackets should be separated by a space character.
-* For better readability it is also recommended to surround conventional operators by a space character. See the following examples:
+* For better readability it is also recommended to surround conventional operators by a space character. 
+Examples:
 
 ~~~~~{.cpp}
 while (true)                            // NOT: while( true ) ...
@@ -259,6 +260,30 @@ for (anIter = 0; anIter < 10; ++anIter) // NOT: for (anIter=0;anIter<10;++anIter
 {
   theA = (theB + theC) * theD;          // NOT: theA=(theB+theC)*theD
 }
+~~~~~
+
+### Declaration of pointers and references
+
+In declarations of simple pointers and references put asterisk (*) or ampersand (&) right after the type without extra space.
+
+Since declaration of several variables with mixed pointer types contrudicts this rule, it should be avoided. Instead, declare each variable independently with fully qualified type.
+
+Examples:
+
+~~~~~{.cpp}
+Standard_Integer   *theVariable;      // not recommended
+Standard_Integer *  theVariable;      // not recommended
+Standard_Integer*   theVariable;      // this is OK
+
+Standard_Integer  *&theVariable;      // not recommended
+Standard_Integer *& theVariable;      // not recommended
+Standard_Integer*&  theVariable;      // this is OK
+
+Standard_Integer  **theVariable;      // not recommended
+Standard_Integer ** theVariable;      // not recommended
+Standard_Integer**  theVariable;      // this is OK
+
+Standard_Integer *theA, theB, **theC; // not recommended (declare each variable independently)
 ~~~~~
 
 ### Separate logical blocks
@@ -344,6 +369,25 @@ if (!theAlgo.IsNull())                // preferred
 ~~~~~
 
 Having all code in the same line is less convenient for debugging.
+
+### Comparison expressions with constants
+
+In comparisons, put the variable (in the current context) on the left side and constant on the right side of expression.
+That is, the so called "Yoda style" is to be avoided.
+
+~~~~~{.cpp}
+if (NULL != thePointer)    // Yoda style, not recommended
+if (thePointer != NULL)    // OK
+
+if (34 < anIter)           // Yoda style, not recommended
+if (anIter > 34)           // OK
+
+if (theNbValues >= anIter) // bad style (constant function argument vs. local variable)
+if (anIter <= theNbValues) // OK
+
+if (THE_LIMIT == theValue) // bad style (global constant vs. variable)
+if (theValue == THE_LIMIT) // OK
+~~~~~
 
 ### Alignment
 
