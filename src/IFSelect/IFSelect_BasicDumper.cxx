@@ -36,6 +36,7 @@
 #include <IFSelect_DispGlobal.hxx>
 #include <IFSelect_DispPerCount.hxx>
 #include <IFSelect_TransformStandard.hxx>
+#include <IFSelect_Modifier.hxx>
 
 #include <Interface_Macros.hxx>
 

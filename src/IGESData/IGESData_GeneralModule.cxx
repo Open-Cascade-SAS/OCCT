@@ -18,9 +18,12 @@
 #include <IGESData_IGESEntity.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <Interface_Macros.hxx>
-
-
-
+#include <IGESData_LineFontEntity.hxx>
+#include <IGESData_LevelListEntity.hxx>
+#include <IGESData_ViewKindEntity.hxx>
+#include <IGESData_TransfEntity.hxx>
+#include <IGESData_ColorEntity.hxx>
+#include <IGESData_LabelDisplayEntity.hxx>
 
 void  IGESData_GeneralModule::FillSharedCase
   (const Standard_Integer CN, const Handle(Standard_Transient)& ent,

@@ -73,6 +73,7 @@
 #include <IFSelect_Editor.hxx>
 #include <IFSelect_EditForm.hxx>
 #include <IFSelect_ListEditor.hxx>
+#include <IFSelect_Transformer.hxx>
 
 #include <Interface_Macros.hxx>
 #include <Interface_Version.hxx>

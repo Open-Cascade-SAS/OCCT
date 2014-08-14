@@ -19,6 +19,12 @@
 #include <IGESData_IGESModel.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <IGESData_UndefinedEntity.hxx>
+#include <IGESData_LineFontEntity.hxx>
+#include <IGESData_LevelListEntity.hxx>
+#include <IGESData_ViewKindEntity.hxx>
+#include <IGESData_TransfEntity.hxx>
+#include <IGESData_LabelDisplayEntity.hxx>
+#include <IGESData_ColorEntity.hxx>
 #include <Interface_FileParameter.hxx>
 #include <Interface_ParamList.hxx>
 #include <TCollection_HAsciiString.hxx>

@@ -14,12 +14,9 @@
 #include <IGESSelect_AutoCorrect.ixx>
 #include <IGESData_Protocol.hxx>
 #include <IGESData_BasicEditor.hxx>
+#include <IGESData_IGESEntity.hxx>
 #include <Interface_Check.hxx>
-
 #include <Interface_Macros.hxx>
-
-
-
 
 IGESSelect_AutoCorrect::IGESSelect_AutoCorrect ()
     : IGESSelect_ModelModifier (Standard_False)    {  }
