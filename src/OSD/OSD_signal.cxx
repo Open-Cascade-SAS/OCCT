@@ -53,7 +53,6 @@ static pthread_t getOCCThread () {
 
 #ifdef linux
 #include <fenv.h>
-#include <fpu_control.h>
 static Standard_Boolean fFltExceptions = Standard_False;
 #endif
 

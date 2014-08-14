@@ -25,7 +25,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Aspect_DisplayConnection, Standard_Transient)
 // =======================================================================
 Aspect_DisplayConnection::Aspect_DisplayConnection()
 {
-#if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
+#if !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX)) && !defined(__ANDROID__)
   OSD_Environment anEnv ("DISPLAY");
   myDisplayName = anEnv.Value();
   Init();
@@ -38,7 +38,7 @@ Aspect_DisplayConnection::Aspect_DisplayConnection()
 // =======================================================================
 Aspect_DisplayConnection::~Aspect_DisplayConnection()
 {
-#if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
+#if !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX)) && !defined(__ANDROID__)
   if (myDisplay != NULL)
   {
     XCloseDisplay (myDisplay);
@@ -46,7 +46,7 @@ Aspect_DisplayConnection::~Aspect_DisplayConnection()
 #endif
 }
 
-#if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
+#if !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX)) && !defined(__ANDROID__)
 // =======================================================================
 // function : Aspect_DisplayConnection
 // purpose  :

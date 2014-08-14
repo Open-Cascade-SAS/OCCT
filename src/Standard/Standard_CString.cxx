@@ -77,7 +77,12 @@ Standard_Integer HashCodes (const Standard_CString Value,
   // So we switch to C locale temporarily
   #define SAVE_TL() Standard_CLocaleSentry aLocaleSentry;
   #ifndef HAVE_XLOCALE_H
-    #error System does not support xlocale. Import/export could be broken if C locale did not specified by application.
+    // glibc version for android platform use locale-independent implementation of
+    // strtod, strtol, strtoll functions. For other system with locale-depended
+    // implementations problems may appear if "C" locale is not set explicitly.
+    #ifndef __ANDROID__
+      #error System does not support xlocale. Import/export could be broken if C locale did not specified by application.
+    #endif
     #define strtod_l(thePtr, theNextPtr, theLocale)              strtod(thePtr, theNextPtr)
   #endif
   #define vprintf_l(theLocale, theFormat, theArgPtr)             vprintf(theFormat, theArgPtr)

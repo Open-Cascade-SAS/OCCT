@@ -371,9 +371,9 @@ Quantity_Date  OSD_FileNode::CreationMoment(){
  TCollection_AsciiString aBuffer;
  myPath.SystemName ( aBuffer );
  if (!stat ( aBuffer.ToCString(), &buffer )) {
-   decode = localtime(&buffer.st_ctime);
-   result.SetValues ( 
-		     decode->tm_mon+1, decode->tm_mday, decode->tm_year+1900,
+   time_t aTime = (time_t)buffer.st_ctime;
+   decode = localtime (&aTime);
+   result.SetValues (decode->tm_mon+1, decode->tm_mday, decode->tm_year+1900,
 		     decode->tm_hour, decode->tm_min, decode->tm_sec , 0,0);
  }
  else
@@ -399,9 +399,9 @@ Quantity_Date  OSD_FileNode::AccessMoment(){
  TCollection_AsciiString aBuffer;
  myPath.SystemName ( aBuffer );
  if (!stat ( aBuffer.ToCString(), &buffer )) {
-   decode = localtime(&buffer.st_atime);
-   result.SetValues (
-		     decode->tm_mon+1, decode->tm_mday, decode->tm_year+1900,
+   time_t aTime = (time_t)buffer.st_ctime;
+   decode = localtime (&aTime);
+   result.SetValues (decode->tm_mon+1, decode->tm_mday, decode->tm_year+1900,
 		     decode->tm_hour, decode->tm_min, decode->tm_sec, 0,0 );
  }
  else

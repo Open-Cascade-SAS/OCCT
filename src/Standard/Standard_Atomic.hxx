@@ -27,6 +27,10 @@
 #ifndef _Standard_Atomic_HeaderFile
 #define _Standard_Atomic_HeaderFile
 
+#if defined(__ANDROID__)
+  #include <sys/atomics.h>
+#endif
+
 //! Increments atomically integer variable pointed by theValue
 //! and returns resulting incremented value.
 inline int Standard_Atomic_Increment (volatile int* theValue);
@@ -93,6 +97,23 @@ int Standard_Atomic_Increment (volatile int* theValue)
 int Standard_Atomic_Decrement (volatile int* theValue)
 {
   return OSAtomicDecrement32Barrier (theValue);
+}
+
+#elif defined(__ANDROID__)
+// Atomic operations that were exported by the C library didn't
+// provide any memory barriers, which created potential issues on
+// multi-core devices. Starting from ndk version r7b they are defined as
+// inlined calls to GCC sync builtins, which always provide a full barrier.
+// It is strongly recommended to use newer versions of ndk.
+
+int Standard_Atomic_Increment (volatile int* theValue)
+{
+  return __atomic_inc (theValue);
+}
+
+int Standard_Atomic_Decrement (volatile int* theValue)
+{
+  return __atomic_dec (theValue);
 }
 
 #elif defined(__GNUC__) && (defined(__i386__) || defined(__x86_64))

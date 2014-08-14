@@ -15,7 +15,7 @@
 
 #include <Xw_Window.hxx>
 
-#if !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
+#if !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX)) && !defined(__ANDROID__)
 
 #include <Aspect_Convert.hxx>
 #include <Aspect_WindowDefinitionError.hxx>

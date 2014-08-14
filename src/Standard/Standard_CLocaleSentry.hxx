@@ -20,16 +20,23 @@
 
 #include <locale.h>
 
-//! "xlocale.h" available in Mac OS X and glibc (Linux) for a long time as an extension
-//! and become part of POSIX since '2008.
-//! Notice that this is impossible to test (_POSIX_C_SOURCE >= 200809L)
-//! since POSIX didn't declared such identifier.
-//! We check _GNU_SOURCE for glibc extensions here and it is always defined by g++ compiler.
-#if defined(__APPLE__) || defined(_GNU_SOURCE) || defined(HAVE_XLOCALE_H)
-  #include <xlocale.h>
-  #ifndef HAVE_XLOCALE_H
+#ifndef HAVE_XLOCALE_H
+  //! "xlocale.h" available in Mac OS X and glibc (Linux) for a long time as an extension
+  //! and become part of POSIX since '2008.
+  //! Notice that this is impossible to test (_POSIX_C_SOURCE >= 200809L)
+  //! since POSIX didn't declared such identifier.
+  #if defined(__APPLE__)
     #define HAVE_XLOCALE_H
   #endif
+
+  //! We check _GNU_SOURCE for glibc extensions here and it is always defined by g++ compiler.
+  #if defined(_GNU_SOURCE) && !defined(__ANDROID__)
+    #define HAVE_XLOCALE_H
+  #endif
+#endif // ifndef HAVE_LOCALE_H
+
+#ifdef HAVE_XLOCALE_H
+  #include <xlocale.h>
 #endif
 
 //! This class intended to temporary switch C locale and logically equivalent to setlocale(LC_ALL, "C").

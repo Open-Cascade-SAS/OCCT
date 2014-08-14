@@ -28,7 +28,7 @@
   #include <locale.h>
 #endif
 
-#ifdef _MSC_VER
+#if defined(_MSC_VER) || defined(__ANDROID__)
   #include <malloc.h>
 #elif (defined(__GNUC__) && __GNUC__ >= 4 && __GNUC_MINOR__ >= 1)
   #include <mm_malloc.h>
@@ -231,8 +231,10 @@ Standard_Address Standard::AllocateAligned (const Standard_Size theSize,
 {
 #if defined(_MSC_VER)
   return _aligned_malloc (theSize, theAlign);
+#elif defined(__ANDROID__)
+  return memalign (theAlign, theSize);
 #elif (defined(__GNUC__) && __GNUC__ >= 4 && __GNUC_MINOR__ >= 1)
-  return      _mm_malloc (theSize, theAlign);
+  return _mm_malloc (theSize, theAlign);
 #else
   void* aPtr;
   if (posix_memalign (&aPtr, theAlign, theSize))
@@ -252,6 +254,8 @@ void Standard::FreeAligned (Standard_Address thePtrAligned)
 {
 #if defined(_MSC_VER)
   _aligned_free (thePtrAligned);
+#elif defined(__ANDROID__)
+  free (thePtrAligned);
 #elif (defined(__GNUC__) && __GNUC__ >= 4 && __GNUC_MINOR__ >= 1)
   _mm_free (thePtrAligned);
 #else

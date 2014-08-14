@@ -21,7 +21,7 @@
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_DataMap.hxx>
 
-#if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
+#if !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX)) && !defined(__ANDROID__)
   #include <X11/Xlib.h>
 #endif
 
@@ -40,7 +40,7 @@ public:
   //! Destructor. Close opened connection.
   Standard_EXPORT ~Aspect_DisplayConnection();
 
-#if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
+#if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX)) && !defined(__ANDROID__)
   //! Constructor. Creates connection with display specified in theDisplayName.
   //! Display name should be in format "hostname:number" or "hostname:number.screen_number", where:
   //! hostname      - Specifies the name of the host machine on which the display is physically attached.
