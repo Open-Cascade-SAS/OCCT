@@ -1126,6 +1126,10 @@ Standard_Boolean BOPTools_AlgoTools::IsSplitToReverse
     if (!bFlag) {
       return bRet;
     }
+    //
+    if (theFSp.Orientation()==TopAbs_REVERSED){
+      aDNFSp.Reverse();
+    }
   }
   else {
     BRep_Tool::Range(aESp, aT1, aT2);
