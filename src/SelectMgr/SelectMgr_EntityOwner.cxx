@@ -25,14 +25,14 @@
 SelectMgr_EntityOwner::SelectMgr_EntityOwner(const Standard_Integer aPriority):
 SelectBasics_EntityOwner(aPriority),
 mySelectable(NULL),
-mystate(0)
+myIsSelected (Standard_False)
 {
 }
 
 SelectMgr_EntityOwner::SelectMgr_EntityOwner(const Handle(SelectMgr_SelectableObject)& aSO,
 					     const Standard_Integer aPriority):
 SelectBasics_EntityOwner(aPriority),
-mystate(0)
+myIsSelected (Standard_False)
 {
   mySelectable = aSO.operator->();
 }

@@ -712,7 +712,7 @@ void AIS_LocalContext::Terminate (const Standard_Boolean theToUpdate)
   Handle(Standard_Transient) Tr;
   for(S->Init();S->More();S->Next()){
     Tr = S->Value();
-    (*((Handle(SelectMgr_EntityOwner)*)&Tr))->State(0);
+    (*((Handle(SelectMgr_EntityOwner)*)&Tr))->SetSelected (Standard_False);
   }
 
       

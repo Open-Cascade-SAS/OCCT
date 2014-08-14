@@ -242,3 +242,9 @@ void ViewerTest_EventManager::ShiftSelect (const TColgp_Array1OfPnt2d& thePolyli
   }
   myView->Redraw();
 }
+
+void ViewerTest_EventManager::GetCurrentPosition (Standard_Integer& theXPix, Standard_Integer& theYPix) const
+{
+  theXPix = myX;
+  theYPix = myY;
+}

@@ -123,7 +123,7 @@ void MeshVS_MeshOwner::SetDetectedEntities (const Handle(TColStd_HPackedMapOfInt
 {
   myDetectedNodes = Nodes;
   myDetectedElems = Elems;
-  if( State() ) State( 0 );
+  if (IsSelected()) SetSelected (Standard_False);
 }
 
 //================================================================

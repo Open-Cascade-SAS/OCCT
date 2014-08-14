@@ -130,20 +130,33 @@ is
 
     --very Internal method (to be used in selection process only...)
 
+    SetSelected(me:mutable;theIsSelected : Boolean from Standard);
+      ---C++: inline
+      ---Purpose:Set the state of the owner.
+      -- @param theIsSelected [in] shows if owner is selected.
+    IsSelected(me) returns Boolean from Standard;
+      ---C++: inline
+      ---Purpose: @return Standard_True if the owner is selected.
+
     State(me:mutable;aStatus:Integer from Standard);
-    	---C++: inline
+    ---C++: inline
+    ---Purpose:Set the state of the owner.
+    -- The method is deprecated. Use SetSelected() instead.
+
     State(me)  returns Integer from Standard;
-    	---C++: inline
+    ---C++: inline
+    -- @return 1 if the owner is selected and 0 otherwise.
+    -- The method is deprecated. Use IsSelected() instead.
 
     IsAutoHilight ( me ) returns Boolean from Standard is virtual; 
     ---Purpose: if owner is not auto hilighted, for group contains many such owners 
     --          will be called one method HilightSelected of SelectableObject 
-     
+
     IsForcedHilight ( me ) returns Boolean from Standard is virtual; 
     ---Purpose: if this method returns TRUE the owner will allways call method
     --          Hilight for SelectableObject when the owner is detected. By default 
     --          it always return FALSE.  
-    
+
     SetZLayer ( me         : mutable;
                 thePrsMgr  : PresentationManager from PrsMgr;
                 theLayerId : Integer from Standard )
@@ -153,6 +166,11 @@ is
 fields
 
     mySelectable        : SOPtr;
-    mystate             : Integer from Standard;
+
+    myIsSelected : Boolean from Standard;
+    ---Purpose: Describes selection state of this owner:
+    -- Standard_False: the owner not selected
+    -- Standard_True: the owner is selected.
+    
 
 end EntityOwner;

@@ -1,0 +1,35 @@
+puts "============"
+puts "CR23649"
+puts "============"
+puts ""
+
+#######################################################################
+# 0023649: Different behaviour of highlighting after shift selection
+# It tests highlighting of selected sub-shapes.
+# This mode is option of interactive context.
+#######################################################################
+
+set anImage1 $imagedir/${casename}_HighlightFirst.png
+set anImage2 $imagedir/${casename}_HighlightSecond.png
+
+box b 1 2 3
+vinit
+vdisplay b
+vfit
+vselmode b 2 1
+#select the first edge
+vselect 232 368
+#select the second edge
+vselect 165 278 1
+vmoveto 0 0 
+
+#enable 'highlight selected' mode
+vhighlightselected on
+
+#highlight the first edge - it should be highlightable by default
+vmoveto 232 368
+vdump ${anImage1}
+
+#highlight the second edge - it should be highlightable by default
+vmoveto 165 278
+vdump ${anImage2}

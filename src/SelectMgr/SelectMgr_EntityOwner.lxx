@@ -15,7 +15,13 @@
 // commercial license or contractual agreement.
 
 inline Standard_Integer SelectMgr_EntityOwner::State() const
-{return mystate;}
+{ return myIsSelected ? 1 : 0; }
 
 inline void SelectMgr_EntityOwner::State(const Standard_Integer aStatus)
-{mystate = aStatus;}
+{ myIsSelected = (aStatus == 1);}
+
+inline Standard_Boolean SelectMgr_EntityOwner::IsSelected() const
+{ return myIsSelected; }
+
+inline void SelectMgr_EntityOwner::SetSelected (const Standard_Boolean theIsSelected)
+{ myIsSelected = theIsSelected; }

@@ -1,0 +1,34 @@
+puts "============"
+puts "CR23649"
+puts "============"
+puts ""
+
+#######################################################################
+# 0023649: Different behaviour of highlighting after shift selection.
+# It tests default functionality of highlighting 
+# during shift selection of shapes (neutral point). 
+#######################################################################
+
+set anImage1 $imagedir/${casename}_Selection.png
+set anImage2 $imagedir/${casename}_HighlightFirst.png
+set anImage3 $imagedir/${casename}_HighlightSecond.png
+
+box a 2 0 0 3 2 1
+box b 1 2 3
+vinit
+vdisplay a b
+vfit
+#select the first shape
+vselect 70 230
+#select the second shape
+vselect 200 360 1
+vmoveto 0 0
+vdump ${anImage1}
+
+#highlight the first edge - it should NOT be highlightable by default
+vmoveto 70 230
+vdump ${anImage2}
+
+#highlight the second edge - it should NOT be highlightable by default
+vmoveto 200 360
+vdump ${anImage3}

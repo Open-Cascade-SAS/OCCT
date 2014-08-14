@@ -49,6 +49,9 @@ is
     ---C++: inline
     ---C++: return const&
 
+    GetCurrentPosition (me; theXPix, theYPix: out Integer from Standard);
+    ---Purpose: Gets current mouse position. It tracks change of mouse position
+    -- with mouse drugging or with DRAW command call (vmoveto).
 fields
 
     myCtx : InteractiveContext  from AIS;

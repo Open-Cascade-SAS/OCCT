@@ -6650,6 +6650,70 @@ static int VFrustumCulling (Draw_Interpretor& theDI,
 }
 
 //=======================================================================
+//function : VHighlightSelected
+//purpose  : 
+//=======================================================================
+static int VHighlightSelected (Draw_Interpretor& theDI,
+                               Standard_Integer  theArgNb,
+                               const char**      theArgVec)
+{
+  if (ViewerTest::GetAISContext().IsNull())
+  {
+    std::cout << theArgVec[0] << " error : Context is not created. Please call vinit before.\n";
+    return 1;
+  }
+
+  const Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
+
+  if (theArgNb < 2)
+  {
+    theDI << (aContext->ToHilightSelected() ? "on" : "off");
+    return 0;
+  }
+
+  if (theArgNb != 2)
+  {
+    std::cout  << theArgVec[0] << " error : wrong number of parameters."
+          << "Type 'help" << theArgVec[0] << "' for more information.";
+    return 1;
+  }
+
+  // Parse parameter
+  TCollection_AsciiString aMode (theArgVec[1]);
+  aMode.LowerCase();
+  Standard_Boolean toEnable = Standard_False;
+  if (aMode.IsEqual ("on"))
+  {
+    toEnable = Standard_True;
+  }
+  else if (aMode.IsEqual ("off"))
+  {
+    toEnable = Standard_False;
+  }
+  else
+  {
+    toEnable = Draw::Atoi (theArgVec[1]) != 0;
+  }
+
+  if (toEnable != aContext->ToHilightSelected())
+  {
+    aContext->SetToHilightSelected (toEnable);
+
+    // Move cursor to null position and  back to process updating of detection
+    // and highlighting of selected object immediatly.
+    Standard_Integer aPixX = 0;
+    Standard_Integer aPixY = 0;
+    const Handle(ViewerTest_EventManager)& anEventManager =  ViewerTest::CurrentEventManager();
+
+    anEventManager->GetCurrentPosition (aPixX, aPixY);
+    anEventManager->MoveTo (0, 0);
+    anEventManager->MoveTo (aPixX, aPixY);
+  }
+
+  return 0;
+}
+
+//=======================================================================
 //function : ViewerCommands
 //purpose  :
 //=======================================================================
@@ -7017,4 +7081,9 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
   theCommands.Add("vfrustumculling",
     "vfrustumculling [toEnable]: enables/disables objects clipping",
     __FILE__,VFrustumCulling,group);
+  theCommands.Add("vhighlightselected",
+    "vhighlightselected [0|1] or vhighlightselected [on|off]: enables/disables highlighting of selected objects.\n"
+    "Without arguments it shows if highlighting of selected objects is enabled now.",
+    __FILE__,VHighlightSelected,group);
+
 }

@@ -323,9 +323,9 @@ is
                         aShape       : Shape from TopoDS;
                         updateviewer : Boolean from Standard=Standard_True);
 
-    AddOrRemoveSelected(me           : mutable;
-                        Ownr         : EntityOwner from SelectMgr;
-                        updateviewer : Boolean from Standard=Standard_True);
+    AddOrRemoveSelected(me             : mutable;
+                        theOwner       : EntityOwner from SelectMgr;
+                        toUpdateViewer : Boolean from Standard = Standard_True);
 
 
 

@@ -181,332 +181,336 @@ AIS_StatusOfDetection AIS_LocalContext::MoveTo (const Standard_Integer  theXpix,
   }
 }
 
-//==================================================
-// Function: 
-// Purpose :
-//==================================================
-AIS_StatusOfPick AIS_LocalContext::Select(const Standard_Boolean updateviewer)
+//=======================================================================
+//function : Select
+//purpose  : 
+//=======================================================================
+AIS_StatusOfPick AIS_LocalContext::Select (const Standard_Boolean toUpdateViewer)
 {
-  if(myAutoHilight)
-    UnhilightPicked(Standard_False);
-  
-  Standard_Integer DI = DetectedIndex();
-  AIS_Selection::SetCurrentSelection(mySelName.ToCString());
-  Standard_Integer NbSel = AIS_Selection::Extent();
-
-  if(DI<=0){
-    ClearSelected(updateviewer);
-    return NbSel== 0 ? AIS_SOP_NothingSelected : AIS_SOP_Removed;
+  if (myAutoHilight)
+  {
+    UnhilightPicked (Standard_False);
   }
 
-  const Handle(SelectMgr_EntityOwner)& EO = myMapOfOwner(DI);
+  AIS_Selection::SetCurrentSelection (mySelName.ToCString());
 
-#ifdef BUC60569
-  ClearSelected(Standard_False);
-  Standard_Integer state = EO->State();
-  if( state < 1 ){
-    EO->State(1);
-    if( state == 0 ) AIS_Selection::Select(EO);
+  Standard_Integer aDetIndex = DetectedIndex();
+  if (aDetIndex <= 0)
+  {
+    ClearSelected (toUpdateViewer);
+    return (AIS_Selection::Extent() == 0) ? AIS_SOP_NothingSelected : AIS_SOP_Removed;
   }
-#else
-  if(!IsSelected(EO))
-    AIS_Selection::ClearAndSelect(EO);
-#endif
-    
+
+  const Handle(SelectMgr_EntityOwner)& anOwner = myMapOfOwner (aDetIndex);
+
+  ClearSelected (Standard_False);
+
+  if (!anOwner->IsSelected()) // anOwner is not selected
+  {
+    anOwner->SetSelected (Standard_True);
+    AIS_Selection::Select (anOwner);
+  }
+
   if (myAutoHilight)
   {
     const Handle(V3d_Viewer)& aViewer = myCTX->CurrentViewer();
     for (aViewer->InitActiveViews(); aViewer->MoreActiveViews(); aViewer->NextActiveViews())
     {
-      Unhilight (EO, aViewer->ActiveView());
+      Unhilight (anOwner, aViewer->ActiveView());
     }
 
     // advanced selection highlighting mechanism
-    if (!EO->IsAutoHilight() && EO->HasSelectable())
+    if (!anOwner->IsAutoHilight() && anOwner->HasSelectable())
     {
-      Handle(AIS_InteractiveObject) anIO = Handle(AIS_InteractiveObject)::DownCast(EO->Selectable());
+      Handle(AIS_InteractiveObject) anIO = Handle(AIS_InteractiveObject)::DownCast(anOwner->Selectable());
       UpdateSelected (anIO, Standard_False);
     }
 
-    if (updateviewer)
+    if (toUpdateViewer)
     {
       myCTX->CurrentViewer()->Update();
     }
   }
-  return ( AIS_Selection::Extent() == 1)? AIS_SOP_OneSelected : AIS_SOP_SeveralSelected ;
+
+  return (AIS_Selection::Extent() == 1) ? AIS_SOP_OneSelected : AIS_SOP_SeveralSelected;
 }
-//==================================================
-// Function: 
-// Purpose :
-//==================================================
-AIS_StatusOfPick AIS_LocalContext::Select(const Standard_Integer XPMin,
-					  const Standard_Integer YPMin,
-					  const Standard_Integer XPMax,
-					  const Standard_Integer YPMax, 
-					  const Handle(V3d_View)& aView,
-					  const Standard_Boolean updateviewer)
+
+//=======================================================================
+//function : Select
+//purpose  : 
+//=======================================================================
+AIS_StatusOfPick AIS_LocalContext::Select (const Standard_Integer  theXPMin,
+                                           const Standard_Integer  theYPMin,
+                                           const Standard_Integer  theXPMax,
+                                           const Standard_Integer  theYPMax,
+                                           const Handle(V3d_View)& theView,
+                                           const Standard_Boolean  toUpdateViewer)
 {
-  if(aView->Viewer()== myCTX->CurrentViewer()){
-    myMainVS->Pick( XPMin,YPMin,XPMax,YPMax,aView);
-    if (myAutoHilight) UnhilightPicked(Standard_False);
-    
-    AIS_Selection::SetCurrentSelection(mySelName.ToCString());
-    Standard_Integer LastExt = AIS_Selection::Extent();
-    
-    myMainVS->Init();
-    if(!myMainVS->More()) {
-      ClearSelected(updateviewer);
-      mylastindex=0;
-      return LastExt == 0 ? AIS_SOP_NothingSelected:AIS_SOP_Removed;
+  if (theView->Viewer() == myCTX->CurrentViewer())
+  {
+    myMainVS->Pick (theXPMin, theYPMin, theXPMax, theYPMax, theView);
+    if (myAutoHilight)
+    {
+      UnhilightPicked (Standard_False);
     }
 
-    ClearSelected(Standard_False);
-   
-    for(myMainVS->Init();myMainVS->More();myMainVS->Next()){
-      const Handle(SelectMgr_EntityOwner)& OWNR = myMainVS->Picked();
-      if(myFilters->IsOk(OWNR)){
-	// it can be helpfil to classify this owner immediately...
-#ifdef BUC60569
-	  Standard_Integer state = OWNR->State();
-	  if( state < 1 ){
-#ifdef BUC60953
-            if( state == 0 ) AIS_Selection::Select(OWNR);
-            OWNR->State(1);
-#else
-            OWNR->State(1);
-            if( state == 0 ) AIS_Selection::Select(OWNR);
-#endif //BUC60953
-	  }
-#else //BUC60569
-	  if(!IsSelected(OWNR)){
-	    OWNR->State(1);
-	    AIS_Selection::Select(OWNR);
-	  }
-#endif //BUC60569
+    AIS_Selection::SetCurrentSelection (mySelName.ToCString());
+    Standard_Integer aSelNum = AIS_Selection::Extent();
+
+    myMainVS->Init();
+    if (!myMainVS->More())
+    {
+      ClearSelected (toUpdateViewer);
+      mylastindex = 0;
+      return aSelNum == 0 ? AIS_SOP_NothingSelected : AIS_SOP_Removed;
+    }
+
+    ClearSelected (Standard_False);
+
+    for (myMainVS->Init(); myMainVS->More(); myMainVS->Next())
+    {
+      const Handle(SelectMgr_EntityOwner)& anOwner = myMainVS->Picked();
+      if (myFilters->IsOk (anOwner))
+      {
+        // it can be helpful to classify this owner immediately...
+        if (!anOwner->IsSelected())
+        {
+          anOwner->SetSelected (Standard_True);
+          AIS_Selection::Select (anOwner);
+        }
       }
     }
-    if (myAutoHilight) 
-      HilightPicked(updateviewer);
+
+    if (myAutoHilight)
+    {
+      HilightPicked (toUpdateViewer);
+    }
   }
-#ifdef BUC60774
-  Standard_Integer NS = AIS_Selection::Extent();
-  if( NS == 1 ) return AIS_SOP_OneSelected;
-  else if( NS > 1 ) return AIS_SOP_SeveralSelected;
-#endif
-  return AIS_SOP_Error;
+
+  Standard_Integer aSelNum = AIS_Selection::Extent();
+
+  return (aSelNum == 1) ? AIS_SOP_OneSelected
+                        : (aSelNum > 1) ? AIS_SOP_SeveralSelected
+                                        : AIS_SOP_Error;
 }
 
-
-
 //==================================================
-// Function: 
-// Purpose :
+// Function: Select
+// Purpose : Selection by polyline
 //==================================================
-AIS_StatusOfPick AIS_LocalContext::ShiftSelect(const Standard_Boolean updateviewer)
+AIS_StatusOfPick AIS_LocalContext::Select (const TColgp_Array1OfPnt2d& thePolyline,
+                                           const Handle(V3d_View)& theView,
+                                           const Standard_Boolean toUpdateViewer)
 {
-  Standard_Integer I = DetectedIndex();
-  if(I>0){
-    
-    AIS_Selection::SetCurrentSelection(mySelName.ToCString());
-#ifdef BUC60774
-    Standard_Integer NbSel = AIS_Selection::Extent();
-#endif
-    const Handle(SelectMgr_EntityOwner)& EO  = myMapOfOwner(I);
-#ifdef BUC60569
-    Standard_Integer mod = EO->State()==0 ? -1 : 0;
-#else
-    Standard_Integer mod = EO->State()==0 ? 1 : 0;
-#endif
+  if (theView->Viewer() == myCTX->CurrentViewer())
+  {
+    myMainVS->Pick (thePolyline, theView);
 
-#ifdef BUC60953
-    AIS_Selection::Select(EO);
-    EO->State(mod);
-#else
-    EO->State(mod);
+    AIS_Selection::SetCurrentSelection (mySelName.ToCString());
 
-    AIS_Selection::Select(EO);
-#endif
-    
+    Standard_Integer aLastSelNum = AIS_Selection::Extent();
+    myMainVS->Init();
+    if (!myMainVS->More())
+    {
+      // Nothing is selected clear selection.
+      ClearSelected (toUpdateViewer);
+      mylastindex = 0;
+
+      // Return state to know if something was unselected
+      return aLastSelNum == 0 ? AIS_SOP_NothingSelected : AIS_SOP_Removed;
+    }
+
+    if (myAutoHilight)
+    {
+      UnhilightPicked (Standard_False);
+    }
+
+    // Clear previous selection without update to process this selection
+    ClearSelected (Standard_False);
+
+    for (myMainVS->Init(); myMainVS->More(); myMainVS->Next())
+    {
+      const Handle(SelectMgr_EntityOwner)& anOwner = myMainVS->Picked();
+      if (myFilters->IsOk (anOwner))
+      {
+        // it can be helpful to classify this owner immediately...
+        if (!anOwner->IsSelected())
+        {
+          AIS_Selection::AddSelect (anOwner);
+          anOwner->SetSelected (Standard_True);
+        }
+      }
+    }
+
+    if (myAutoHilight)
+    {
+      HilightPicked (toUpdateViewer);
+    }
+  }
+
+  Standard_Integer aSelNum = AIS_Selection::Extent();
+  return (aSelNum == 1) ? AIS_SOP_OneSelected
+                        : (aSelNum > 1) ? AIS_SOP_SeveralSelected
+                                        : AIS_SOP_Error;
+}
+
+//=======================================================================
+//function : ShiftSelect
+//purpose  : 
+//=======================================================================
+AIS_StatusOfPick AIS_LocalContext::ShiftSelect (const Standard_Boolean toUpdateViewer)
+{
+  Standard_Integer aDetIndex = DetectedIndex();
+  AIS_Selection::SetCurrentSelection (mySelName.ToCString());
+
+  if(aDetIndex > 0)
+  {
+    AIS_Selection::SetCurrentSelection (mySelName.ToCString());
+    Standard_Integer aSelNum = AIS_Selection::Extent();
+    const Handle(SelectMgr_EntityOwner)& anOwner = myMapOfOwner (aDetIndex);
+    Standard_Boolean toSelect = anOwner->IsSelected() ? Standard_False : Standard_True;
+    AIS_Selection::Select (anOwner);
+    anOwner->SetSelected (toSelect);
+
     if(myAutoHilight)
     {
       const Handle(V3d_Viewer)& aViewer = myCTX->CurrentViewer();
       for (aViewer->InitActiveViews(); aViewer->MoreActiveViews(); aViewer->NextActiveViews())
       {
-        Unhilight (EO, aViewer->ActiveView());
+        Unhilight (anOwner, aViewer->ActiveView());
       }
 
       // advanced selection highlighting mechanism
-      if (!EO->IsAutoHilight() && EO->HasSelectable())
+      if (!anOwner->IsAutoHilight() && anOwner->HasSelectable())
       {
-        Handle(AIS_InteractiveObject) anIO = Handle(AIS_InteractiveObject)::DownCast (EO->Selectable());
+        Handle(AIS_InteractiveObject) anIO = Handle(AIS_InteractiveObject)::DownCast (anOwner->Selectable());
         UpdateSelected (anIO, Standard_False);
       }
 
-      if (updateviewer)
+      if (toUpdateViewer)
       {
         myCTX->CurrentViewer()->Update();
       }
     } 
+
 #ifdef BUC60774
     Standard_Integer NS = AIS_Selection::Extent();
     if( NS == 1 ) return AIS_SOP_OneSelected;
     else if( NS > 1 ) return AIS_SOP_SeveralSelected;
-    return NbSel== 0 ? AIS_SOP_NothingSelected : AIS_SOP_Removed;
+    return aSelNum == 0 ? AIS_SOP_NothingSelected : AIS_SOP_Removed;
 #endif
   }
   return AIS_SOP_Error;
 }
-//==================================================
-// Function: the already selected objects are unselected
-// Purpose : others are selected.
-//==================================================
-AIS_StatusOfPick AIS_LocalContext::ShiftSelect(const Standard_Integer XPMin,
-				   const Standard_Integer YPMin,
-				   const Standard_Integer XPMax,
-				   const Standard_Integer YPMax, 
-				   const Handle(V3d_View)& aView,
-				   const Standard_Boolean updateviewer)
+
+//=======================================================================
+//function : ShiftSelect
+//purpose  : 
+//=======================================================================
+AIS_StatusOfPick AIS_LocalContext::ShiftSelect (const Standard_Integer  theXPMin,
+                                                const Standard_Integer  theYPMin,
+                                                const Standard_Integer  theXPMax,
+                                                const Standard_Integer  theYPMax,
+                                                const Handle(V3d_View)& theView,
+                                                const Standard_Boolean  toUpdateViewer)
 {
   myMainPM->ClearImmediateDraw();
 
-  if(aView->Viewer()== myCTX->CurrentViewer()) {
-    myMainVS->Pick( XPMin,YPMin,XPMax,YPMax,aView);
-#ifdef BUC60774
-    AIS_Selection::SetCurrentSelection(mySelName.ToCString());
-    Standard_Integer LastExt = AIS_Selection::Extent();
-#endif
+  if (theView->Viewer() == myCTX->CurrentViewer())
+  {
+    myMainVS->Pick (theXPMin, theYPMin, theXPMax, theYPMax, theView);
+
+    AIS_Selection::SetCurrentSelection (mySelName.ToCString());
+    Standard_Integer aLastSelNum = AIS_Selection::Extent();
+
     myMainVS->Init();
-    if(!myMainVS->More()) 
-#ifdef BUC60774
-      return LastExt == 0 ? AIS_SOP_NothingSelected:AIS_SOP_Removed;
-#else
-      return AIS_SOP_NothingSelected; // no effet if click on empty space
-#endif
+    if (!myMainVS->More())
+    {
+      // Nothing is selected clear selection, but don't clear the selection
+      // as it is shift selection and previous selection matters.
+      // Return state to know if something was unselected
+      return aLastSelNum == 0 ? AIS_SOP_NothingSelected : AIS_SOP_Removed;
+    }
 
-    AIS_Selection::SetCurrentSelection(mySelName.ToCString());
-    if (myAutoHilight) UnhilightPicked(Standard_False);
-    
-    for(myMainVS->Init();myMainVS->More();myMainVS->Next()){
-      const Handle(SelectMgr_EntityOwner)& EO = myMainVS->Picked();
-      if(myFilters->IsOk(EO)){
-#ifdef BUC60569
-        Standard_Integer mod = EO->State()==0 ? -1 : 0;
-#else
-	Standard_Integer mod = EO->State()==0 ? 1 : 0;
-#endif
+    if (myAutoHilight)
+    {
+      UnhilightPicked (Standard_False);
+    }
 
-#ifdef BUC60953
-	AIS_Selection::Select(EO);
-	EO->State(mod);
-#else
-	EO->State(mod);
-	AIS_Selection::Select(EO);
-#endif
+    for (myMainVS->Init(); myMainVS->More(); myMainVS->Next())
+    {
+      const Handle(SelectMgr_EntityOwner)& anOwner = myMainVS->Picked();
+      if(myFilters->IsOk (anOwner))
+      {
+        Standard_Boolean toSelect = anOwner->IsSelected() ? Standard_False : Standard_True;
+        AIS_Selection::Select (anOwner);
+        anOwner->SetSelected (toSelect);
       }
     }
-    if (myAutoHilight) HilightPicked(updateviewer);
-    
+
+    if (myAutoHilight)
+    {
+      HilightPicked (toUpdateViewer);
+    }
   }
-#ifdef BUC60774
-  Standard_Integer NS = AIS_Selection::Extent();
-  if( NS == 1 ) return AIS_SOP_OneSelected;
-  else if( NS > 1 ) return AIS_SOP_SeveralSelected;
-#endif
-  return AIS_SOP_Error;
+
+  Standard_Integer aSelNum = AIS_Selection::Extent();
+
+  return (aSelNum == 1) ? AIS_SOP_OneSelected
+                        : (aSelNum > 1) ? AIS_SOP_SeveralSelected
+                                        : AIS_SOP_Error;
 }
 
 //==================================================
 // Function: Select
 // Purpose : Selection by polyline
 //==================================================
-AIS_StatusOfPick AIS_LocalContext::Select(const TColgp_Array1OfPnt2d& aPolyline,
-					  const Handle(V3d_View)& aView,
-					  const Standard_Boolean updateviewer)
+AIS_StatusOfPick AIS_LocalContext::ShiftSelect (const TColgp_Array1OfPnt2d& thePolyline,
+                                                const Handle(V3d_View)&     theView,
+                                                const Standard_Boolean      toUpdateViewer)
 {
-  if(aView->Viewer()== myCTX->CurrentViewer()){
-    myMainVS->Pick(aPolyline,aView);
-    if (myAutoHilight) UnhilightPicked(Standard_False);
-    
-    AIS_Selection::SetCurrentSelection(mySelName.ToCString());
-    Standard_Integer LastExt = AIS_Selection::Extent();
-    
+  if (theView->Viewer() == myCTX->CurrentViewer())
+  {
+    myMainVS->Pick (thePolyline, theView);
+
+    AIS_Selection::SetCurrentSelection (mySelName.ToCString());
+
+    Standard_Integer aLastSelNum = AIS_Selection::Extent();
     myMainVS->Init();
-    if(!myMainVS->More()) {
-      ClearSelected(updateviewer);
-      mylastindex=0;
-      return LastExt == 0 ? AIS_SOP_NothingSelected:AIS_SOP_Removed;
+    if(!myMainVS->More())
+    {
+      // Nothing is selected clear selection, but don't clear the selection
+      // as it is shift selection and previous selection matters.
+      // Return state to know if something was unselected
+      return aLastSelNum == 0 ? AIS_SOP_NothingSelected : AIS_SOP_Removed;
     }
 
-    ClearSelected(Standard_False);
+    if (myAutoHilight)
+    {
+      UnhilightPicked (Standard_False);
+    }
 
-    for(myMainVS->Init();myMainVS->More();myMainVS->Next()){
-      const Handle(SelectMgr_EntityOwner)& OWNR = myMainVS->Picked();
-      if(myFilters->IsOk(OWNR)){
-	// it can be helpfil to classify this owner immediately...
-#ifdef BUC60953
-        Standard_Integer state = OWNR->State();
-        if( state < 1 ){
-          if( state == 0 ) AIS_Selection::AddSelect(OWNR);
-          OWNR->State(1);
-        }
-#else 
-	if(!IsSelected(OWNR)){
-	  OWNR->State(1);
-	  AIS_Selection::AddSelect(OWNR);
-	}
-#endif //BUC60953
+    for (myMainVS->Init(); myMainVS->More(); myMainVS->Next())
+    {
+      const Handle(SelectMgr_EntityOwner)& anOwner = myMainVS->Picked();
+      if (myFilters->IsOk (anOwner))
+      {
+        Standard_Boolean toSelect = anOwner->IsSelected() ? Standard_False : Standard_True;
+        AIS_Selection::Select (anOwner);
+        anOwner->SetSelected (toSelect);
       }
     }
-
-    if (myAutoHilight) 
-      HilightPicked(updateviewer);
-  }
-#ifdef BUC60774
-  Standard_Integer NS = AIS_Selection::Extent();
-  if( NS == 1 ) return AIS_SOP_OneSelected;
-  else if( NS > 1 ) return AIS_SOP_SeveralSelected;
-#endif
-  return AIS_SOP_Error;
-}
-
-//==================================================
-// Function: Select
-// Purpose : Selection by polyline
-//==================================================
-AIS_StatusOfPick AIS_LocalContext::ShiftSelect( const TColgp_Array1OfPnt2d& aPolyline,
-                                                const Handle(V3d_View)& aView,
-                                                const Standard_Boolean updateviewer )
-{
-    if( aView->Viewer() == myCTX->CurrentViewer() ) {
-        myMainVS->Pick( aPolyline, aView );
-        
-        AIS_Selection::SetCurrentSelection( mySelName.ToCString() );
-        Standard_Integer LastExt = AIS_Selection::Extent();
-        myMainVS->Init();
-        if( !myMainVS->More() ) 
-            return LastExt == 0 ? AIS_SOP_NothingSelected : AIS_SOP_Removed;
-        
-        AIS_Selection::SetCurrentSelection( mySelName.ToCString() );
-        
-        if ( myAutoHilight )
-            UnhilightPicked( Standard_False );
-        for( myMainVS->Init(); myMainVS->More(); myMainVS->Next() ) {
-            const Handle(SelectMgr_EntityOwner)& EO = myMainVS->Picked();
-            if( myFilters->IsOk( EO ) ) {
-                Standard_Integer mod = EO->State() == 0 ? -1 : 0;
-                AIS_Selection::Select(EO);
-                EO->State( mod );
-            }
-        }
-        if ( myAutoHilight )
-            HilightPicked( updateviewer );
+    if (myAutoHilight)
+    {
+      HilightPicked (toUpdateViewer);
     }
-    Standard_Integer NS = AIS_Selection::Extent();
-    if( NS == 1 ) 
-        return AIS_SOP_OneSelected;
-    else if( NS > 1 ) 
-        return AIS_SOP_SeveralSelected;
-    return AIS_SOP_Error;
+  }
+
+  Standard_Integer aSelNum = AIS_Selection::Extent();
+
+  return (aSelNum == 1) ? AIS_SOP_OneSelected
+                        : (aSelNum > 1) ? AIS_SOP_SeveralSelected
+                                        : AIS_SOP_Error;
 }
 
 //==================================================
@@ -713,15 +717,9 @@ Standard_Boolean AIS_LocalContext::IsSelected(const Handle(AIS_InteractiveObject
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean AIS_LocalContext::IsSelected(const Handle(SelectMgr_EntityOwner)& Ownr) const 
+Standard_Boolean AIS_LocalContext::IsSelected (const Handle(SelectMgr_EntityOwner)& theOwner) const 
 {
-  if (Ownr.IsNull()) return Standard_False;
-#ifdef BUC60569
-  Standard_Boolean state = (Ownr->State()!=0);
-#else
-  Standard_Boolean state = (Ownr->State()==1);
-#endif
-  return state;
+  return !theOwner.IsNull() && theOwner->IsSelected();
 }
 
 //==================================================
@@ -893,7 +891,7 @@ void AIS_LocalContext::UpdateSelected(const Handle(AIS_InteractiveObject)& anobj
 // Function: ClearSelected
 // Purpose :
 //==================================================
-void AIS_LocalContext::ClearSelected(const Standard_Boolean updateviewer)
+void AIS_LocalContext::ClearSelected (const Standard_Boolean updateviewer)
 {
   UnhilightPicked(updateviewer);
   AIS_Selection::SetCurrentSelection(mySelName.ToCString());
@@ -909,8 +907,9 @@ void AIS_LocalContext::ClearSelected(const Standard_Boolean updateviewer)
   for(; anIter.More(); anIter.Next()){
     const Handle(Standard_Transient)& Tr = anIter.Value();
 #endif
-    if(!Tr.IsNull()){
-      (*((const Handle(SelectMgr_EntityOwner)*)&Tr))->State(0);
+    if(!Tr.IsNull())
+    {
+      (*((const Handle(SelectMgr_EntityOwner)*)&Tr))->SetSelected (Standard_False);
     }
   }
   AIS_Selection::Select();
@@ -950,13 +949,10 @@ void AIS_LocalContext::SetSelected(const Handle(AIS_InteractiveObject)& anIObj,
   }
   
   ClearSelected(Standard_False);
-#ifdef OCC138 
+
   AIS_Selection::Select(EO);
-  EO->State(1);
-#else
-  EO->State(1);
-  AIS_Selection::Select(EO);
-#endif
+  EO->SetSelected (Standard_True);
+
   HilightPicked(updateviewer);
 }
 
@@ -974,42 +970,34 @@ void AIS_LocalContext::AddOrRemoveSelected(const Handle(AIS_InteractiveObject)& 
   Handle(SelectMgr_EntityOwner) EO;
 
   EO = FindSelectedOwnerFromIO(anIObj);
-#ifndef OCC138
-  if(!EO.IsNull())
-    EO->State(0);
-  else{
-#else
-  if(EO.IsNull()) {
-#endif
-    if(anIObj->HasSelection(0)){
+
+  if (EO.IsNull())
+  {
+    if(anIObj->HasSelection(0))
+    {
       const Handle(SelectMgr_Selection)& SIOBJ = anIObj->Selection(0);
       SIOBJ->Init();
-      if(SIOBJ->More()){
-	Handle(SelectBasics_EntityOwner) BO = SIOBJ->Sensitive()->OwnerId();
-	EO = *((Handle(SelectMgr_EntityOwner)*)&BO);
+      if(SIOBJ->More())
+      {
+        Handle(SelectBasics_EntityOwner) BO = SIOBJ->Sensitive()->OwnerId();
+        EO = *((Handle(SelectMgr_EntityOwner)*)&BO);
       }
     }
-    if(EO.IsNull()) 
+    if(EO.IsNull())
+    {
       EO = new SelectMgr_EntityOwner(anIObj);
-#ifndef OCC138
-    EO->State(1);
-#endif
+    }
   }
   
 //  cout<<"AIS_LocalContext::AddOrRemoveSelected : Selection = "<<mySelName<<endl;
   const Handle(AIS_Selection)& S = AIS_Selection::Selection(mySelName.ToCString());
-#ifdef OCC138
-  if(!S.IsNull()) {
+  
+  if (!S.IsNull())
+  {
     AIS_SelectStatus aStatus = S->Select(EO);
-    if(aStatus == AIS_SS_Added)
-      EO->State(1);
-    else
-      EO->State(0);
+    EO->SetSelected (aStatus == AIS_SS_Added);
   }
-#else
-  if(!S.IsNull())
-    S->Select(EO);
-#endif
+
   HilightPicked(updateviewer);
 }
 
@@ -1020,42 +1008,33 @@ void AIS_LocalContext::AddOrRemoveSelected(const Handle(AIS_InteractiveObject)& 
 void AIS_LocalContext::AddOrRemoveSelected(const TopoDS_Shape& Sh,
 					   const Standard_Boolean updateviewer)
 {     
-  UnhilightPicked(Standard_False);
+  UnhilightPicked (Standard_False);
   Handle(SelectMgr_EntityOwner) EO = FindSelectedOwnerFromShape(Sh);
-  if(!EO.IsNull()){
-//    cout<<"AIS_LocalContext::AddOrRemoveSelected(sh) : Selection = "<<mySelName<<endl;
-    
-#ifdef OCC138
+  if (!EO.IsNull())
+  {
     AIS_Selection::Selection(mySelName.ToCString())->Select(EO);
-    EO->State(1);
-#else
-    EO->State(1);
-    AIS_Selection::Selection(mySelName.ToCString())->Select(EO);
-#endif
+    EO->SetSelected (Standard_True);
   }
-  HilightPicked(updateviewer);
+  HilightPicked (updateviewer);
 }
 
-void AIS_LocalContext::AddOrRemoveSelected(const Handle(SelectMgr_EntityOwner)& Ownr,
-					   const Standard_Boolean updateviewer)
-{     
-  //Not Yet Implemented
+void AIS_LocalContext::AddOrRemoveSelected (const Handle(SelectMgr_EntityOwner)& theOwner,
+					   const Standard_Boolean toUpdateViewer)
+{
   if(myAutoHilight)
-  UnhilightPicked(Standard_False);
-//  cout<<"AIS_LocalContext::AddOrRemoveSelected(ownr) : Selection = "<<mySelName<<endl;
+  {
+    UnhilightPicked (Standard_False);
+  }
 
-  Standard_Integer mod = Ownr->State()==0 ? 1 : 0;
-#ifdef OCC138
-  AIS_Selection::Selection(mySelName.ToCString())->Select(Ownr);
+  Standard_Boolean toSelect = theOwner->IsSelected() ? Standard_False : Standard_True;
 
-  Ownr->State(mod);  
-#else
-  Ownr->State(mod);
-  
-  AIS_Selection::Selection(mySelName.ToCString())->Select(Ownr);
-#endif
+  AIS_Selection::Selection (mySelName.ToCString())->Select (theOwner);
+  theOwner->SetSelected (toSelect);
+
   if(myAutoHilight)
-  HilightPicked(updateviewer);
+  {
+    HilightPicked (toUpdateViewer);
+  }
 }
 
 //==================================================
@@ -1128,8 +1107,7 @@ void AIS_LocalContext::manageDetected (const Handle(SelectMgr_EntityOwner)& theP
 
     if (myAutoHilight)
     {
-      if (thePickOwner->State() <= 0
-       || myCTX->ToHilightSelected())
+      if (!thePickOwner->IsSelected() || myCTX->ToHilightSelected())
       {
         Hilight (thePickOwner, theView);
       }

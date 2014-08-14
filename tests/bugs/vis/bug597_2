@@ -15,7 +15,7 @@ puts ""
 restore [locate_data_file buc60569a.rle] result
 tclean result
 vinit
-
+vhighlightselected 0
 checkshape result
 
 BUC60569 result
