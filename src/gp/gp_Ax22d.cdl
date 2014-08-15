@@ -12,7 +12,7 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-class Ax22d   from gp  inherits Storable
+class Ax22d   from gp
         --- Purpose :
         --  Describes a coordinate system in a plane (2D space).
         -- A coordinate system is defined by:

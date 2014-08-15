@@ -12,7 +12,7 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-class Dir   from gp  inherits Storable
+class Dir   from gp
         ---Purpose:
         -- Describes a unit vector in 3D space. This unit vector is also called "Direction".
         -- See Also

@@ -14,7 +14,7 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-deferred class SelectType  from StepData  --  inherits Storable
+deferred class SelectType  from StepData
 
     ---Purpose : SelectType is the basis used for SELECT_TYPE definitions from
     --           the EXPRESS form. A SELECT_TYPE in EXPRESS is an enumeration
@@ -22,8 +22,8 @@ deferred class SelectType  from StepData  --  inherits Storable
     --           no specific Methods, and no exclusivity (a given Type can be
     --           member of several SELECT_TYPES, plus be itself a SUB_TYPE).
     --           
-    --           A SelectType can be field of a Transient Entity (it is itself
-    --           Storable) or only used to control an input Argument
+    --           A SelectType can be field of a Transient Entity or only used 
+    --           to control an input Argument
     --           
     --           This class implies to designate each member Type by a Case
     --           Number which is a positive Integer value (this allows a faster

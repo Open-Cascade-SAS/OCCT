@@ -12,7 +12,7 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-class Hypr   from gp   inherits Storable
+class Hypr   from gp
 
         --- Purpose : Describes a branch of a hyperbola in 3D space.
         -- A hyperbola is defined by its major and minor radii and

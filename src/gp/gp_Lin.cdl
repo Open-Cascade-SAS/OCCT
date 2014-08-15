@@ -12,7 +12,7 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-class Lin    from gp   inherits Storable
+class Lin    from gp
 
         ---Purpose:
         -- Describes a line in 3D space.

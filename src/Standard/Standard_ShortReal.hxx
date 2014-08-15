@@ -141,7 +141,6 @@ inline Standard_ShortReal     Min (const Standard_ShortReal Val1,
 // ==================================
 // Methods implemeted in Standard_ShortReal.cxx
 // ==================================
-//....             Herited from Standard_Storable
 __Standard_API Standard_Integer HashCode (const Standard_ShortReal, const Standard_Integer);  
 
 //-------------------------------------------------------------------

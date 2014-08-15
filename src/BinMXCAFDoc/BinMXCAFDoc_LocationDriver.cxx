@@ -119,14 +119,14 @@ Standard_Boolean BinMXCAFDoc_LocationDriver::Translate(const BinObjMgt_Persisten
 
       Standard_Real aScaleFactor;
       theSource >> aScaleFactor;
-      aTrsf._CSFDB_Setgp_Trsfscale(aScaleFactor);
+      aTrsf.SetScaleFactor(aScaleFactor);
 
       Standard_Integer aForm;
       theSource >> aForm;
-      aTrsf._CSFDB_Setgp_Trsfshape((gp_TrsfForm)aForm);
+      aTrsf.SetForm((gp_TrsfForm)aForm);
 
       Standard_Integer R, C;
-      gp_Mat& aMat = (gp_Mat&)aTrsf._CSFDB_Getgp_Trsfmatrix();
+      gp_Mat& aMat = (gp_Mat&)aTrsf.HVectorialPart();
       for(R = 1; R <= 3; R++)
         for(C = 1; C <= 3; C++) {
           Standard_Real aVal;
@@ -136,7 +136,7 @@ Standard_Boolean BinMXCAFDoc_LocationDriver::Translate(const BinObjMgt_Persisten
 
       Standard_Real x, y, z;
       theSource >> x >> y >> z;
-      gp_XYZ& aLoc = (gp_XYZ&)aTrsf._CSFDB_Getgp_Trsfloc();
+      gp_XYZ& aLoc = (gp_XYZ&)aTrsf.TranslationPart();
       aLoc.SetX(x);
       aLoc.SetY(y);
       aLoc.SetZ(z);

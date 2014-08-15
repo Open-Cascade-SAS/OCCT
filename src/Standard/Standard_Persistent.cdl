@@ -15,8 +15,6 @@
 -- commercial license or contractual agreement.
 
 deferred class Persistent from Standard 
-inherits
-    Storable from Standard 
     
     	    ---Purpose: 
             -- The root of the entire persistent class hierarchy.
@@ -59,7 +57,7 @@ uses
          
 is
 
-    	Delete (me: mutable) is redefined;
+    	Delete (me: mutable) is virtual;
 	    ---Purpose: Deletes this object.
 	    
 

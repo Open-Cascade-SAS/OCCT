@@ -19,9 +19,6 @@ class IntersectionSegment from IntRes2d
     ---Purpose: Definition of an intersection curve between
     --          two 2D curves.
 
-
-inherits Storable from Standard
-
 uses IntersectionPoint from IntRes2d
 
 raises DomainError from Standard

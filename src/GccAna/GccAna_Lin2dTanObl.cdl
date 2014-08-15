@@ -27,8 +27,6 @@ from GccAna
         --          Its direction is making an angle Angle with the 
         --          second argument.
 
---inherits Storable from Standard
-
 uses Lin2d            from gp, 
      Pnt2d            from gp, 
      QualifiedCirc    from GccEnt,

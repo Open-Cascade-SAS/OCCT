@@ -15,7 +15,6 @@
 -- commercial license or contractual agreement.
 
 generic class   Point from Extrema  (Pnt as any)
-        inherits Storable from Standard
     	---Purpose: Definition of a point on curve.
 
 

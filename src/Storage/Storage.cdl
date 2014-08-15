@@ -109,8 +109,6 @@ is
 	ReadSolve
     end;
     
-    primitive Container inherits Storable from Standard;
-    
     imported BucketOfPersistent;
     
     imported Position; -- typedef long

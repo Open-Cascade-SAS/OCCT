@@ -26,8 +26,6 @@ from GccEnt
     	-- -   is enclosed by the circle, or
     	-- -   is built so that both the circle and it are external to   one another, or
     	-- -   is undefined (all solutions apply).
-  
-inherits Storable from Standard
 
 uses Position from GccEnt,
      Circ2d   from gp

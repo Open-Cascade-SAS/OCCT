@@ -78,19 +78,19 @@ Standard_Boolean XmlObjMgt_GP::Translate
   Standard_Real aScaleFactor = Standard_Real(Strtod (aStr, &ptr));
   if (ptr != aStr && errno != ERANGE && errno != EINVAL)
   {
-    T._CSFDB_Setgp_Trsfscale(aScaleFactor);
+    T.SetScaleFactor(aScaleFactor);
     aStr = ptr;
     Standard_Integer aForm = Standard_Integer(strtol(aStr, &ptr, 10));
     if (ptr != aStr && errno != ERANGE && errno != EINVAL) {
-      T._CSFDB_Setgp_Trsfshape((gp_TrsfForm)aForm);
+      T.SetForm((gp_TrsfForm)aForm);
       aStr = ptr;
 
 //  gp_Mat aMatr;
-      aStr = ::Translate(aStr, (gp_Mat&)T._CSFDB_Getgp_Trsfmatrix());
+      aStr = ::Translate(aStr, (gp_Mat&)T.HVectorialPart());
       if (aStr) {
 
 //  gp_XYZ aTransl;
-        ::Translate(aStr, (gp_XYZ&)T._CSFDB_Getgp_Trsfloc());
+        ::Translate(aStr, (gp_XYZ&)T.TranslationPart());
         aResult = Standard_True;
       }
     }

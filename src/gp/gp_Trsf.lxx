@@ -54,6 +54,11 @@ inline void gp_Trsf::SetTranslation(const gp_Pnt& P1,
   loc = (P2.XYZ()).Subtracted (P1.XYZ());
 }
 
+inline void gp_Trsf::SetForm(const gp_TrsfForm P)
+{
+  shape = P;
+}
+
 inline Standard_Boolean gp_Trsf::IsNegative() const 
 { return (scale < 0.0); }
 

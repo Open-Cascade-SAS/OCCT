@@ -34,7 +34,6 @@ class Standard_Transient;
 #include <Standard_CString.hxx>
 #include <Standard_ExtString.hxx>
 #include <Standard_Address.hxx>
-#include <Standard_Storable.hxx>
 
 __Standard_API Standard_Integer HashCode(const Standard_Address, 
 			  const Standard_Integer,

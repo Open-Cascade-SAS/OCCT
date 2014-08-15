@@ -29,8 +29,6 @@ from GccAna
     	-- -   defining the construction of 2D line(s),
     	-- -   implementing the construction algorithm, and
     	-- -   consulting the result(s).
-        
---inherits Storable from Standard
 
 uses   Pnt2d            from gp,
        Lin2d            from gp, 

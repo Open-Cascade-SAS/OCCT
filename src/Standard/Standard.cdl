@@ -73,19 +73,19 @@ is
     
     class AncestorIterator;
     
-    deferred class Storable ;
-        primitive Boolean      inherits Storable;
-        primitive Character    inherits Storable;
-        primitive ExtCharacter inherits Storable;
-        primitive Integer      inherits Storable;
-        primitive Byte         inherits Storable;
-        primitive Real         inherits Storable;
-        primitive ShortReal    inherits Storable;
-        primitive Time         inherits Storable;
-        primitive OId          inherits Storable;
+    primitive Boolean;
+    primitive Character;
+    primitive ExtCharacter;
+    primitive Integer;
+    primitive Byte;
+    primitive Real;
+    primitive ShortReal;
+    primitive Time;
+    primitive OId;
+    
+    class GUID;
 
-    	deferred class Persistent ; -- inherits Storable
-	class GUID;     -- inherits Storable
+    deferred class Persistent ;
 
     deferred class Transient ;
    	    class Type; -- inherits Transient

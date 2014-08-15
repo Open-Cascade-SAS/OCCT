@@ -16,8 +16,6 @@
 
 class Transition from IntRes2d
 
-inherits Storable from Standard 
-
     ---Purpose: Definition of    the  type  of   transition    near an
     --          intersection point between  two curves. The transition
     --          is either a "true transition", which means that one of

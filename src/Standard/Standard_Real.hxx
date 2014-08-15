@@ -31,7 +31,6 @@
 // ==================================
 // Methods implemeted in Standard_Real.cxx
 // ==================================
-//....             Herited from Standard_Storable
 __Standard_API Standard_Integer HashCode    (const Standard_Real, const Standard_Integer);  
 
 __Standard_API Standard_Real    ACos        (const Standard_Real );

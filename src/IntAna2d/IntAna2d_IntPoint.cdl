@@ -14,7 +14,7 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-class IntPoint from IntAna2d inherits Storable from Standard
+class IntPoint from IntAna2d
 
     ---Purpose: Geometrical intersection between two 2d elements.
 

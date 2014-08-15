@@ -18,8 +18,6 @@ class QualifiedLin
 
 from GccEnt
 
-inherits Storable from Standard
-
     	--- Purpose: Describes a qualified 2D line.
     	-- A qualified 2D line is a line (gp_Lin2d line) with a
     	-- qualifier which specifies whether the solution of a

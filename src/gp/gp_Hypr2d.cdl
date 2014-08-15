@@ -12,7 +12,7 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-class Hypr2d   from gp   inherits Storable
+class Hypr2d   from gp
 
         ---Purpose:
         -- Describes a branch of a hyperbola in the plane (2D space).

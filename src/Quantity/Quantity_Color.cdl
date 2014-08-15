@@ -14,7 +14,6 @@
 -- commercial license or contractual agreement.
 
 class Color from Quantity
-inherits  Storable
 
 	---Purpose: This class allows the definition of a colour.
 	--	    The names of the colours are from the X11 specification.

@@ -19,9 +19,6 @@ class IntersectionPoint from IntRes2d
     ---Purpose: Definition of an intersection point between two
     --          2D curves.
 
-
-inherits Storable from Standard
-
 uses Pnt2d      from gp,
      Transition from IntRes2d
 is

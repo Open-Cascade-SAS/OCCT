@@ -40,8 +40,6 @@ from GccAna
     	--          distance between C1 and OnLine is lower than or 
     	--          equal Tolerance.
 
---inherits Storable from Standard
-
 uses Pnt2d           from gp,
      Lin2d           from gp,
      Circ2d          from gp,

@@ -12,7 +12,7 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-class Trsf   from gp   inherits Storable
+class Trsf   from gp
 
         --- Purpose: Defines a non-persistent transformation in 3D space.
         --  The following transformations are implemented :  
@@ -200,6 +200,8 @@ is
   raises
     ConstructionError from Standard
   is static;
+  
+  SetForm (me : in out; P : TrsfForm from gp) is static;
 
   SetValues(me : in out;
             a11, a12, a13, a14,

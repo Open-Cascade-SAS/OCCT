@@ -14,9 +14,7 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-class Date from Quantity 
-
-inherits Storable from Standard 
+class Date from Quantity
 
     	---Purpose: This class provides services to manage date information.
     	--          A date represents the following time intervals:

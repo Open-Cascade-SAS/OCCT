@@ -20,8 +20,6 @@ class Period from Quantity
     	-- gives the interval between two dates.
     	-- A period is expressed in seconds and microseconds.
 
-inherits Storable from Standard
-
 raises PeriodDefinitionError
 
 is

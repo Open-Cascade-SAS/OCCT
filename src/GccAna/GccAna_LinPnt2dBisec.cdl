@@ -29,8 +29,6 @@ from GccAna
     	-- - implementing the construction algorithm, and
     	-- - consulting the result.
 
---inherits Storable from Standard
-
 uses Lin2d from gp,
      Pnt2d from gp,
      Bisec from GccInt
