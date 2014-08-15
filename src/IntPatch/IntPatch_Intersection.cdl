@@ -143,6 +143,16 @@ is
                     typs1, typs2: SurfaceType from GeomAbs)
 
       is private;
+      
+    GeomGeomPerfomTrimSurf( me: in out;
+                            S1: HSurface from Adaptor3d; D1: TopolTool from Adaptor3d;
+                            S2: HSurface from Adaptor3d; D2: TopolTool from Adaptor3d;
+                            TolArc,TolTang: Real from Standard;
+                            LOfPnts: in out ListOfPntOn2S from IntSurf;
+                            RestrictLine: Boolean from Standard;
+                            typs1, typs2: SurfaceType from GeomAbs)
+
+      is private;
                     
     GeomParamPerfom(me: in out;
                     S1: HSurface from Adaptor3d; D1: TopolTool from Adaptor3d;

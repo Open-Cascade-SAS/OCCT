@@ -7,7 +7,7 @@ puts ""
 ###########################################################################################################
 
 set BugNumber OCC22967
-set check_value 1.04742e-05
+set check_value 3.46945e-006
 
 restore [locate_data_file bug22967_Cylinder_1.brep] b1 
 restore [locate_data_file bug22967_Scale_1.brep] b2 
@@ -54,6 +54,6 @@ if {${status} > 0} {
    puts "OK ${BugNumber}"
 }
 
-set square 671262
+set square 669221
 set 2dviewer 0
 

@@ -951,8 +951,11 @@ void Geom2dHatch_Hatcher::ComputeDomains (const Standard_Integer IndH)
 
   Hatching.IsDone (Standard_False) ;
 
-  if (!Hatching.TrimDone()) Trim (IndH) ;
-  if (Hatching.Status() != HatchGen_NoProblem) return ;
+  if (!Hatching.TrimDone())
+    Trim (IndH);
+
+  if (Hatching.Status() != HatchGen_NoProblem)
+    return;
   
   Standard_Boolean Points   = myKeepPoints ;
   Standard_Boolean Segments = myKeepSegments ;
@@ -962,19 +965,23 @@ void Geom2dHatch_Hatcher::ComputeDomains (const Standard_Integer IndH)
   Standard_Integer NbPnt = Hatching.NbPoints() ;
   Standard_Integer IPnt =1;
 
-  if (NbPnt == 0) {
+  if(NbPnt == 0)
+  {
     //-- cout << "The hatching # " << setw(3) << IndH << " has to be classified" << endl ;
     Geom2dHatch_Classifier Classifier(myElements,Hatching.ClassificationPoint(),0.0000001); 
-    if(Classifier.State() == TopAbs_IN) { 
+    if(Classifier.State() == TopAbs_IN)
+    { 
       HatchGen_Domain domain ;
       Hatching.AddDomain (domain) ;
     }
+    
     Hatching.IsDone (Standard_True) ;
     return ;
   }
   
 //for (Standard_Integer IPnt = 1 ; IPnt <= NbPnt ; IPnt++) {
-  for (IPnt = 1 ; IPnt <= NbPnt ; IPnt++) {
+  for (IPnt = 1 ; IPnt <= NbPnt ; IPnt++)
+  {
     Standard_Boolean NoDomain   = Hatching.NbDomains() == 0 ; 
     Standard_Boolean FirstPoint = IPnt ==     1 ;
     Standard_Boolean LastPoint  = IPnt == NbPnt ;
@@ -1003,34 +1010,52 @@ void Geom2dHatch_Hatcher::ComputeDomains (const Standard_Integer IndH)
 // Initialisations dues au premier point.
 //-----------------------------------------------------------------------
 
-    if (FirstPoint) {
+    if (FirstPoint)
+    {
       SavPnt  = Standard_False ;
       ISav = 0 ;
       NbOpenedSegments = 0 ;
-      if (SegmentEnd && SegmentBegin) {
-	if (StateAfter  == TopAbs_UNKNOWN) StateAfter  = TopAbs_IN ;
-	if (StateBefore == TopAbs_UNKNOWN) StateBefore = TopAbs_IN ;
-	if (Segments) {
-	  SavPnt  = Standard_True ;
-	  ISav = 0 ;
-	}
-      } else if (SegmentEnd) {
-	if (StateAfter == TopAbs_UNKNOWN) StateAfter = TopAbs_IN ;
-	if (Segments) {
-	  SavPnt  = Standard_True ;
-	  ISav = 0 ;
-	}
-      } else if (SegmentBegin) {
-	if (StateBefore == TopAbs_UNKNOWN) StateBefore = TopAbs_IN ;
-	if (StateBefore == TopAbs_IN) {
-	  SavPnt  = Standard_True ;
-	  ISav = 0 ;
-	}
-      } else {
-	if (StateBefore == TopAbs_IN) {
-	  SavPnt  = Standard_True ;
-	  ISav = 0 ;
-	}
+      if (SegmentEnd && SegmentBegin)
+      {
+        if (StateAfter  == TopAbs_UNKNOWN)
+          StateAfter  = TopAbs_IN ;
+        if (StateBefore == TopAbs_UNKNOWN)
+          StateBefore = TopAbs_IN ;
+
+        if (Segments)
+        {
+          SavPnt  = Standard_True ;
+          ISav = 0 ;
+        }
+      }
+      else if (SegmentEnd)
+      {
+        if (StateAfter == TopAbs_UNKNOWN)
+          StateAfter = TopAbs_IN ;
+
+        if (Segments)
+        {
+          SavPnt  = Standard_True ;
+          ISav = 0 ;
+        }
+      }
+      else if (SegmentBegin)
+      {
+        if (StateBefore == TopAbs_UNKNOWN)
+          StateBefore = TopAbs_IN ;
+        if (StateBefore == TopAbs_IN)
+        {
+          SavPnt  = Standard_True ;
+          ISav = 0 ;
+        }
+      }
+      else
+      {
+        if (StateBefore == TopAbs_IN)
+        {
+          SavPnt  = Standard_True ;
+          ISav = 0 ;
+        }
       }
     }
 
@@ -1038,15 +1063,28 @@ void Geom2dHatch_Hatcher::ComputeDomains (const Standard_Integer IndH)
 // Initialisations dues au dernier point.
 //-----------------------------------------------------------------------
 
-    if (LastPoint) {
-      if (SegmentEnd && SegmentBegin) {
-	if (StateAfter  == TopAbs_UNKNOWN) StateAfter  = TopAbs_IN ;
-	if (StateBefore == TopAbs_UNKNOWN) StateBefore = TopAbs_IN ;
-      } else if (SegmentEnd) {
-	if (StateAfter  == TopAbs_UNKNOWN) StateAfter = TopAbs_IN ;
-      } else if (SegmentBegin) {
-	if (StateBefore == TopAbs_UNKNOWN) StateBefore = TopAbs_IN ;
-      } else {
+    if (LastPoint)
+    {
+      if (SegmentEnd && SegmentBegin)
+      {
+        if (StateAfter  == TopAbs_UNKNOWN)
+          StateAfter  = TopAbs_IN ;
+        
+        if (StateBefore == TopAbs_UNKNOWN)
+          StateBefore = TopAbs_IN ;
+      }
+      else if (SegmentEnd)
+      {
+        if (StateAfter  == TopAbs_UNKNOWN)
+          StateAfter = TopAbs_IN ;
+      }
+      else if (SegmentBegin)
+      {
+        if (StateBefore == TopAbs_UNKNOWN)
+          StateBefore = TopAbs_IN ;
+      }
+      else
+      {
       }
     }
     
@@ -1056,337 +1094,461 @@ void Geom2dHatch_Hatcher::ComputeDomains (const Standard_Integer IndH)
 
     Standard_Boolean ToAppend = Standard_False ;
 
-    if (SegmentEnd && SegmentBegin) {
+    if (SegmentEnd && SegmentBegin)
+    {
+      if (StateBefore != TopAbs_IN && StateAfter != TopAbs_IN)
+      {
+        Hatching.Status (HatchGen_IncompatibleStates) ;
+        return ;
+      }
 
-      if (StateBefore != TopAbs_IN && StateAfter != TopAbs_IN) {
-	Hatching.Status (HatchGen_IncompatibleStates) ;
-	return ;
-      }
-      if (Points) {
-	if (Segments) {
-	  if (!SavPnt) {
-	    if(NoDomain) { 
-	      Hatching.Status (HatchGen_IncoherentParity) ;
-	    }
-	    else { 
-	      Hatching.IsDone(Standard_True);
-	    }
-	    return ;
-	  }
-	  if (ISav != 0) domain.SetFirstPoint (Hatching.Point(ISav)) ;
-	  domain.SetSecondPoint (CurPnt) ;
-	  ToAppend = Standard_True ;
-	  SavPnt = Standard_True ;
-	  ISav = IPnt ;
-	} else {
-	  Standard_Boolean isININ = (StateBefore == TopAbs_IN && StateAfter == TopAbs_IN);
-	  if (SavPnt && !isININ) {
-	    if(NoDomain) { 
-	      Hatching.Status (HatchGen_IncoherentParity) ;
-	    }
-	    else { 
-	      Hatching.IsDone(Standard_True);
-	    }
-	    return ;
-	  }
-	  domain.SetPoints (CurPnt, CurPnt) ;
-	  ToAppend = Standard_True ;
-	  SavPnt = Standard_False ;
-	  ISav = 0 ;
-	}
-      }
-	  
-    } else if (SegmentEnd) {
+      if (Points)
+      {
+        if (Segments)
+        {
+          if (!SavPnt)
+          {
+            if(NoDomain)
+            {
+              Hatching.Status (HatchGen_IncoherentParity) ;
+            }
+            else
+            { 
+              Hatching.IsDone(Standard_True);
+            }
+            return ;
+          }
 
-      if (Segments) {
-	if (StateAfter == TopAbs_OUT) {
-	  if (!SavPnt) {
-	    if(NoDomain) { 
-	      Hatching.Status (HatchGen_IncoherentParity) ;
-	    }
-	    else { 
-	      Hatching.IsDone(Standard_True);
-	    }
-	    return ;
-	  }
-	  if (ISav != 0) domain.SetFirstPoint (Hatching.Point(ISav)) ;
-	  domain.SetSecondPoint (CurPnt) ;
-	  ToAppend = Standard_True ;
-	} else {
-	  if (Points) {
-	    if (ISav != 0) domain.SetFirstPoint (Hatching.Point(ISav)) ;
-	    domain.SetSecondPoint (CurPnt) ;
-	    ToAppend = Standard_True ;
-	    SavPnt = Standard_True ;
-	    ISav = IPnt ;
-	  }
-	}
-      } else {
-	if (StateAfter == TopAbs_IN) {
-	  SavPnt = Standard_True ;
-	  ISav = IPnt ;
-	}
+          if (ISav != 0)
+            domain.SetFirstPoint (Hatching.Point(ISav)) ;
+
+          domain.SetSecondPoint (CurPnt) ;
+          ToAppend = Standard_True ;
+          SavPnt = Standard_True ;
+          ISav = IPnt ;
+        }
+        else
+        {
+          Standard_Boolean isININ = (StateBefore == TopAbs_IN && StateAfter == TopAbs_IN);
+          if (SavPnt && !isININ)
+          {
+            if(NoDomain)
+            { 
+              Hatching.Status (HatchGen_IncoherentParity) ;
+            }
+            else
+            {
+              Hatching.IsDone(Standard_True);
+            }
+            
+            return ;
+          }
+
+          domain.SetPoints (CurPnt, CurPnt) ;
+          ToAppend = Standard_True ;
+          SavPnt = Standard_False ;
+          ISav = 0 ;
+        }
       }
+    }
+    else if (SegmentEnd)
+    {
+      if (Segments)
+      {
+        if (StateAfter == TopAbs_OUT)
+        {
+          if (!SavPnt)
+          {
+            if(NoDomain)
+            { 
+              Hatching.Status (HatchGen_IncoherentParity) ;
+            }
+            else
+            { 
+              Hatching.IsDone(Standard_True);
+            }
+            return ;
+          }
+
+          if (ISav != 0)
+            domain.SetFirstPoint (Hatching.Point(ISav)) ;
+
+          domain.SetSecondPoint (CurPnt) ;
+          ToAppend = Standard_True ;
+        }
+        else
+        {
+          if (Points)
+          {
+            if (ISav != 0)
+              domain.SetFirstPoint (Hatching.Point(ISav)) ;
+
+            domain.SetSecondPoint (CurPnt) ;
+            ToAppend = Standard_True ;
+            SavPnt = Standard_True ;
+            ISav = IPnt ;
+          }
+        }
+      }
+      else
+      {
+        if (StateAfter == TopAbs_IN)
+        {
+          SavPnt = Standard_True ;
+          ISav = IPnt ;
+        }
+      }
+
       NbOpenedSegments-- ;
       
-    } else if (SegmentBegin) {
+    }
+    else if (SegmentBegin)
+    {
+      if (Segments)
+      {
+        if (StateBefore == TopAbs_OUT)
+        {
+          SavPnt = Standard_True ;
+          ISav = IPnt ;
+        }
+        else
+        {
+          if (Points)
+          {
+            if (!SavPnt)
+            {
+              if(NoDomain)
+              {
+                Hatching.Status (HatchGen_IncoherentParity) ;
+              }
+              else
+              {
+                Hatching.IsDone(Standard_True);
+              }
 
-      if (Segments) {
-	if (StateBefore == TopAbs_OUT) {
-	  SavPnt = Standard_True ;
-	  ISav = IPnt ;
-	} else {
-	  if (Points) {
-	    if (!SavPnt) {
-	      if(NoDomain) { 
-		Hatching.Status (HatchGen_IncoherentParity) ;
-	      }
-	      else { 
-		Hatching.IsDone(Standard_True);
-	      }
-	      
-	      return ;
-	    }
-	    if (ISav != 0) domain.SetFirstPoint (Hatching.Point(ISav)) ;
-	    domain.SetSecondPoint (CurPnt) ;
-	    ToAppend = Standard_True ;
-	    SavPnt = Standard_True ;
-	    ISav = IPnt ;
-	  }
-	}
-      } else {
-	if (StateBefore == TopAbs_IN) {
-	  if (!SavPnt) {
-	    if(NoDomain) { 
-	      Hatching.Status (HatchGen_IncoherentParity) ;
-	    }
-	    else { 
-	      Hatching.IsDone(Standard_True);
-	    }
-	    
-	    return ;
-	  }
-	  if (ISav != 0) domain.SetFirstPoint (Hatching.Point(ISav)) ;
-	  domain.SetSecondPoint (CurPnt) ;
-	  ToAppend = Standard_True ;
-//  Modified by Sergey KHROMOV - Fri Jan  5 12:05:30 2001
-// 	  SavPnt = Standard_False ;
-// 	  ISav = 0 ;
-	  SavPnt = Standard_True ;
-	  ISav = IPnt ;
-//  Modified by Sergey KHROMOV - Fri Jan  5 12:05:31 2001
-	}
+              return ;
+            }
+
+            if (ISav != 0)
+              domain.SetFirstPoint (Hatching.Point(ISav)) ;
+
+            domain.SetSecondPoint (CurPnt) ;
+            ToAppend = Standard_True ;
+            SavPnt = Standard_True ;
+            ISav = IPnt ;
+          }
+        }
       }
+      else
+      {
+        if (StateBefore == TopAbs_IN)
+        {
+          if (!SavPnt)
+          {
+            if(NoDomain)
+            { 
+              Hatching.Status (HatchGen_IncoherentParity) ;
+            }
+            else
+            {
+              Hatching.IsDone(Standard_True);
+            }
+
+            return ;
+          }
+
+          if (ISav != 0)
+            domain.SetFirstPoint (Hatching.Point(ISav)) ;
+
+          domain.SetSecondPoint (CurPnt) ;
+          ToAppend = Standard_True ;
+
+          //Modified by Sergey KHROMOV - Fri Jan  5 12:05:30 2001
+          //SavPnt = Standard_False ;
+          //ISav = 0 ;
+
+          SavPnt = Standard_True ;
+          ISav = IPnt ;
+          //Modified by Sergey KHROMOV - Fri Jan  5 12:05:31 2001
+        }
+      }
+
       NbOpenedSegments++ ;
-      
-    } else {
+    }
+    else
+    {
       //-- ???????????????????????????????????????????????????????????????????????????
       //-- Solution provisoire (lbr le 11 Aout 97 )
       //-- si On a 2 points dont des points OUT OUT ou IN IN qui delimitent une isos
       //-- on transforme les transitions 
-      if (StateBefore == TopAbs_OUT && StateAfter == TopAbs_OUT) {
-	if(NbPnt == 2) { 
-	  if(FirstPoint) 
-	    StateAfter  = TopAbs_IN; 
-	  else
-	    StateBefore = TopAbs_IN; 
-	}
+      if (StateBefore == TopAbs_OUT && StateAfter == TopAbs_OUT)
+      {
+        if(NbPnt == 2)
+        {
+          if(FirstPoint)
+            StateAfter  = TopAbs_IN; 
+          else
+            StateBefore = TopAbs_IN;
+        }
       }
        //-- ???????????????????????????????????????????????????????????????????????????
-      if        (StateBefore == TopAbs_OUT && StateAfter == TopAbs_OUT) {
+      if(StateBefore == TopAbs_OUT && StateAfter == TopAbs_OUT)
+      {
+        if (SavPnt)
+        {
+          if(NoDomain)
+          {
+            Hatching.Status (HatchGen_IncoherentParity) ;
+          }
+          else
+          {
+            Hatching.IsDone(Standard_True);
+          }
 
-	if (SavPnt) {
-	  if(NoDomain) { 
-	    Hatching.Status (HatchGen_IncoherentParity) ;
-	  }
-	  else { 
-	    Hatching.IsDone(Standard_True);
-	  }
-	  
-	  return ;
-	}
-	if (Points) {
-	  domain.SetPoints (CurPnt, CurPnt) ;
-	  ToAppend = Standard_True ;
-	  SavPnt = Standard_True ;
-	  ISav = IPnt ;
-	}
+          return ;
+        }
 
-      } else if (StateBefore == TopAbs_OUT && StateAfter == TopAbs_IN ) {
-
-	SavPnt = Standard_True ;
-	ISav = IPnt ;
-
-      } else if (StateBefore == TopAbs_IN  && StateAfter == TopAbs_OUT) {
-
-	if (!SavPnt) {
-	  if(NoDomain) { 
-	    Hatching.Status (HatchGen_IncoherentParity) ;
-	  }
-	  else { 
-	    Hatching.IsDone(Standard_True);
-	  }
-	  
-	  return ;
-	}
-	if (ISav != 0) domain.SetFirstPoint (Hatching.Point(ISav)) ;
-	domain.SetSecondPoint (CurPnt) ;
-	ToAppend = Standard_True ;
-	SavPnt = Standard_False ;
-	ISav = 0 ;
-
-      } else if (StateBefore == TopAbs_IN  && StateAfter == TopAbs_IN ) {
-
-	if (Points) {
-	  if (NbOpenedSegments == 0) {
-	    if (!SavPnt) {
-	      if(NoDomain) { 
-		Hatching.Status (HatchGen_IncoherentParity) ;
-	      }
-	      else { 
-		Hatching.IsDone(Standard_True);
-	      }
-	      
-	      return ;
-	    }
-	    if (ISav != 0) domain.SetFirstPoint (Hatching.Point(ISav)) ;
-	    domain.SetSecondPoint (CurPnt) ;
-	    ToAppend = Standard_True ;
-	    SavPnt = Standard_True ;
-	    ISav = IPnt ;
-	  } else {
-	    if (Segments) {
-	      if (!SavPnt) {
-		if(NoDomain) { 
-		  Hatching.Status (HatchGen_IncoherentParity) ;
-		}
-		else { 
-		  Hatching.IsDone(Standard_True);
-		}
-
-		return ;
-	      }
-	      if (ISav != 0) domain.SetFirstPoint (Hatching.Point(ISav)) ;
-	      domain.SetSecondPoint (CurPnt) ;
-	      ToAppend = Standard_True ;
-	      SavPnt = Standard_True ;
-	      ISav = IPnt ;
-	    } else {
-	      if (SavPnt) {
-		if(NoDomain) { 
-		  Hatching.Status (HatchGen_IncoherentParity) ;
-		}
-		else { 
-		  Hatching.IsDone(Standard_True);
-		}
-		
-		return ;
-	      }
-	      domain.SetPoints (CurPnt, CurPnt) ;
-	      ToAppend = Standard_True ;
-	      SavPnt = Standard_False ;
-	      ISav = 0 ;
-	    }
-	  }
-	}
-
-      } else {
-
-	Hatching.Status (HatchGen_IncompatibleStates) ;
-	return ;
-
+        if (Points)
+        {
+          domain.SetPoints (CurPnt, CurPnt) ;
+          ToAppend = Standard_True ;
+          SavPnt = Standard_True ;
+          ISav = IPnt ;
+        }
       }
-	
+      else if (StateBefore == TopAbs_OUT && StateAfter == TopAbs_IN )
+      {
+        SavPnt = Standard_True ;
+        ISav = IPnt ;
+      }
+      else if (StateBefore == TopAbs_IN  && StateAfter == TopAbs_OUT)
+      {
+        if (!SavPnt)
+        {
+          if(NoDomain)
+          { 
+            Hatching.Status (HatchGen_IncoherentParity) ;
+          }
+          else
+          { 
+            Hatching.IsDone(Standard_True);
+          }
+
+          return ;
+        }
+
+        if (ISav != 0)
+          domain.SetFirstPoint (Hatching.Point(ISav));
+
+        domain.SetSecondPoint (CurPnt) ;
+        ToAppend = Standard_True ;
+        SavPnt = Standard_False ;
+        ISav = 0 ;
+      }
+      else if (StateBefore == TopAbs_IN  && StateAfter == TopAbs_IN )
+      {
+        if (Points)
+        {
+          if (NbOpenedSegments == 0)
+          {
+            if (!SavPnt)
+            {
+              if(NoDomain)
+              {
+                Hatching.Status (HatchGen_IncoherentParity) ;
+              }
+              else
+              { 
+                Hatching.IsDone(Standard_True);
+              }
+
+              //return;
+              continue;
+            }
+
+            if (ISav != 0)
+              domain.SetFirstPoint (Hatching.Point(ISav)) ;
+
+            domain.SetSecondPoint (CurPnt) ;
+            ToAppend = Standard_True ;
+            SavPnt = Standard_True ;
+            ISav = IPnt ;
+          }
+          else
+          {
+            if (Segments)
+            {
+              if (!SavPnt)
+              {
+                if(NoDomain)
+                {
+                  Hatching.Status (HatchGen_IncoherentParity) ;
+                }
+                else
+                {
+                  Hatching.IsDone(Standard_True);
+                }
+
+                return ;
+              }
+
+              if (ISav != 0)
+                domain.SetFirstPoint (Hatching.Point(ISav)) ;
+
+              domain.SetSecondPoint (CurPnt) ;
+              ToAppend = Standard_True ;
+              SavPnt = Standard_True ;
+              ISav = IPnt ;
+            }
+            else
+            {
+              if (SavPnt)
+              {
+                if(NoDomain)
+                {
+                  Hatching.Status (HatchGen_IncoherentParity) ;
+                }
+                else
+                {
+                  Hatching.IsDone(Standard_True);
+                }
+
+                return ;
+              }
+
+              domain.SetPoints (CurPnt, CurPnt) ;
+              ToAppend = Standard_True ;
+              SavPnt = Standard_False ;
+              ISav = 0 ;
+            }
+          }
+        }
+      }
+      else
+      {
+        Hatching.Status (HatchGen_IncompatibleStates) ;
+        return ;
+      }
     }
 
 //-----------------------------------------------------------------------
 // Ajout du domaine.
 //-----------------------------------------------------------------------
 
-    if (ToAppend) Hatching.AddDomain (domain) ;
+    if (ToAppend)
+      Hatching.AddDomain (domain) ;
     
 //-----------------------------------------------------------------------
 // Traitement lie au dernier point.
 //-----------------------------------------------------------------------
 
-    if (LastPoint) {
-      
+    if (LastPoint)
+    {
       domain.SetPoints () ;
       ToAppend = Standard_False ;
       
-      if (SegmentEnd && SegmentBegin) {
-	
-	if (Segments) {
-	  if (!SavPnt) {
-	    if(NoDomain) { 
-	      Hatching.Status (HatchGen_IncoherentParity) ;
-	    }
-	    else { 
-	      Hatching.IsDone(Standard_True);
-	    }
-	    
-	    return ;
-	  }
-	  if (ISav != 0) domain.SetFirstPoint (Hatching.Point(ISav)) ;
-	  ToAppend = Standard_True ;
-	}
-	
-      } else if (SegmentEnd) {
+      if (SegmentEnd && SegmentBegin)
+      {
+        if (Segments)
+        {
+          if (!SavPnt)
+          {
+            if(NoDomain)
+            {
+              Hatching.Status (HatchGen_IncoherentParity) ;
+            }
+            else
+            {
+              Hatching.IsDone(Standard_True);
+            }
 
-	if (StateAfter == TopAbs_IN) {
-	  if (!SavPnt) {
-	    if(NoDomain) { 
-	      Hatching.Status (HatchGen_IncoherentParity) ;
-	    }
-	    else { 
-	      Hatching.IsDone(Standard_True);
-	    }
-	    
-	    return ;
-	  }
-	  if (ISav != 0) domain.SetFirstPoint (Hatching.Point(ISav)) ;
-	  ToAppend = Standard_True ;
-	}
-	
-      } else if (SegmentBegin) {
-	
-	if (Segments) {
-	  if (!SavPnt) {
-	    if(NoDomain) { 
-	      Hatching.Status (HatchGen_IncoherentParity) ;
-	    }
-	    else { 
-	      Hatching.IsDone(Standard_True);
-	    }
-	    
-	    return ;
-	  }
-	  if (ISav != 0) domain.SetFirstPoint (Hatching.Point(ISav)) ;
-	  ToAppend = Standard_True ;
-	}
+            return ;
+          }
 
-      } else {
-	
-	if (StateAfter == TopAbs_IN) {
-	  if (!SavPnt) {
-	    if(NoDomain) { 
-	      Hatching.Status (HatchGen_IncoherentParity) ;
-	    }
-	    else { 
-	      Hatching.IsDone(Standard_True);
-	    }
-	    
-	    return ;
-	  }
-	  if (ISav != 0) domain.SetFirstPoint (Hatching.Point(ISav)) ;
-	  ToAppend = Standard_True ;
-	}
+          if(ISav != 0)
+            domain.SetFirstPoint (Hatching.Point(ISav)) ;
 
+          ToAppend = Standard_True ;
+        }	
       }
-      if (ToAppend) Hatching.AddDomain (domain) ;
+      else if (SegmentEnd)
+      {
+        if (StateAfter == TopAbs_IN)
+        {
+          if (!SavPnt)
+          {
+            if(NoDomain)
+            {
+              Hatching.Status (HatchGen_IncoherentParity) ;
+            }
+            else
+            {
+              Hatching.IsDone(Standard_True);
+            }
+
+            return ;
+          }
+
+          if (ISav != 0)
+            domain.SetFirstPoint (Hatching.Point(ISav)) ;
+
+          ToAppend = Standard_True ;
+        }	
+      }
+      else if (SegmentBegin)
+      {
+        if (Segments)
+        {
+          if (!SavPnt)
+          {
+            if(NoDomain)
+            {
+              Hatching.Status (HatchGen_IncoherentParity) ;
+            }
+            else
+            {
+              Hatching.IsDone(Standard_True);
+            }
+
+            return ;
+          }
+
+          if (ISav != 0)
+            domain.SetFirstPoint (Hatching.Point(ISav)) ;
+          
+          ToAppend = Standard_True ;
+        }
+      }
+      else
+      {
+        if (StateAfter == TopAbs_IN)
+        {
+          if(!SavPnt)
+          {
+            if(NoDomain)
+            {
+              Hatching.Status (HatchGen_IncoherentParity) ;
+            }
+            else
+            {
+              Hatching.IsDone(Standard_True);
+            }
+
+            return ;
+          }
+
+          if (ISav != 0)
+            domain.SetFirstPoint (Hatching.Point(ISav)) ;
+
+          ToAppend = Standard_True ;
+        }
+      }
+
+      if (ToAppend)
+        Hatching.AddDomain (domain) ;
     }
-    
   }
+
   Hatching.IsDone(Standard_True) ;
 }
 

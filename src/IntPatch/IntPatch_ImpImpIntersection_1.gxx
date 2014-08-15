@@ -14,6 +14,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <Bnd_Box2d.hxx>
+
 static Standard_Boolean IntPP (const IntSurf_Quadric&,
 			       const IntSurf_Quadric&,
 			       const Standard_Real,
@@ -76,6 +78,18 @@ static Standard_Boolean IntCyCy(const IntSurf_Quadric&,
 				Standard_Boolean&,
 				IntPatch_SequenceOfLine&,
 				IntPatch_SequenceOfPoint&);
+
+static Standard_Boolean IntCyCyTrim(const IntSurf_Quadric& theQuad1,
+                                    const IntSurf_Quadric& theQuad2,
+                                    const Standard_Real theTol3D,
+                                    const Standard_Real theTol2D,
+                                    const Bnd_Box2d& theUVSurf1,
+                                    const Bnd_Box2d& theUVSurf2,
+                                    const Standard_Boolean isTheReverse,
+                                    Standard_Boolean& isTheEmpty,
+                                    IntPatch_SequenceOfLine& theSlin,
+                                    IntPatch_SequenceOfPoint& theSPnt);
+
 
 static Standard_Boolean IntCySp(const IntSurf_Quadric&,
 				const IntSurf_Quadric&,

@@ -1,0 +1,96 @@
+puts "========="
+puts "CR24915"
+puts "========="
+puts ""
+###############################
+## Wrong intersection curves between two cylinders
+###############################
+
+proc checkList {List Tolerance D_good Limit_Tol} {
+   set L1 [llength ${List}]
+   set L2 10
+   set L3 5
+   set N [expr (${L1} - ${L2})/${L3} + 1]
+
+   for {set i 1} {${i} <= ${N}} {incr i} {
+      set j1 [expr ${L2} + (${i}-1)*${L3}]
+      set j2 [expr ${j1} + 2]
+      set T [lindex ${List} ${j1}]
+      set D [lindex ${List} ${j2}]
+      #puts "i=${i} j1=${j1} j2=${j2} T=${T} D=${D}"
+      if { [expr abs(${D} - ${D_good})] > ${Tolerance} } {
+         puts "Error : T=${T} D=${D}"
+      }
+      if { [expr abs(${D} - ${D_good})] > ${Limit_Tol} 
+           && [expr abs(${D} - ${D_good})] <= ${Tolerance} } {
+         puts "Attention (critical value of tolerance) : T=${T} D=${D}"
+      }
+   }
+}
+
+puts "##############################"
+puts "#!!!Searh \"Attention\" keyword on this web-page for additinal checking!!!"
+puts "##############################"
+
+restore [locate_data_file bug24915_ft2.brep] b1
+restore [locate_data_file bug24915_ft3.brep] b2
+
+# 1. topology
+bclearobjects
+bcleartools
+baddobjects b1 b2
+bfillds
+bbuild r
+checkshape r
+
+# 2. geometry
+set MaxTol 1.5e-6
+set log [bopcurves b1 b2]
+
+mksurface s1 b1
+mksurface s2 b2
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Toler NbCurv
+
+if {${Toler} > ${MaxTol}} {
+  puts "Error: Tolerance is too big!"
+}
+
+for {set i 1} {$i <= ${NbCurv}} {incr i} {
+  set log [dump c_$i]
+  
+  regexp {Degree +([-0-9.+eE]+), +([-0-9.+eE]+) Poles, +([-0-9.+eE]+)} ${log} full Degree Poles KnotsPoles
+  
+  set Knot 1
+  set exp_string "Knots :\n\n +${Knot} :  +(\[-0-9.+eE\]+) +(\[-0-9.+eE\]+)"
+  regexp ${exp_string} ${log} full U1 Mult1
+
+  set Knot ${KnotsPoles}
+  set exp_string " +${Knot} :  +(\[-0-9.+eE\]+) +(\[-0-9.+eE\]+)"
+  regexp ${exp_string} ${log} full U2 Mult2
+  
+  dlog reset
+  dlog on
+  xdistcs c_$i s1 ${U1} ${U2} 100
+  set Log2 [dlog get]
+  set List2 [split ${Log2} {TD= \t\n}]
+  set Tolerance 1.6e-5
+  set Limit_Tol 1.0e-7
+  set D_good 0.
+  catch {checkList ${List2} ${Tolerance} ${D_good} ${Limit_Tol}}
+
+  dlog reset
+  dlog on
+  xdistcs c_$i s2 ${U1} ${U2} 100
+  set Log2 [dlog get]
+  set List2 [split ${Log2} {TD= \t\n}]
+  set Tolerance 1.6e-5
+  set Limit_Tol 1.0e-7
+  set D_good 0.
+  catch {checkList ${List2} ${Tolerance} ${D_good} ${Limit_Tol}}
+}
+
+smallview
+donly b2 c_2
+fit
+set only_screen_axo 1

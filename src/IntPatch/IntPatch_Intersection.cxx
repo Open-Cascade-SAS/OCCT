@@ -1137,7 +1137,16 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_HSurface)&  theS1,
   }
   else if(ts1 == 1)
   {
-    GeomGeomPerfom(theS1, theD1, theS2, theD2, TolArc, TolTang, ListOfPnts, RestrictLine, typs1, typs2);
+    if(theD1->DomainIsInfinite() || theD2->DomainIsInfinite())
+    {
+      GeomGeomPerfom(theS1, theD1, theS2, theD2, TolArc, 
+                      TolTang, ListOfPnts, RestrictLine, typs1, typs2);
+    }
+    else
+    {
+      GeomGeomPerfomTrimSurf(theS1, theD1, theS2, theD2,
+              TolArc, TolTang, ListOfPnts, RestrictLine, typs1, typs2);
+    }
   }
 }
 
@@ -1357,16 +1366,17 @@ void IntPatch_Intersection::GeomGeomPerfom(const Handle(Adaptor3d_HSurface)& the
 }
 
 //=======================================================================
-////function : GeomParamPerfom
+//function : GeomParamPerfom
 //purpose  : 
 //=======================================================================
-void IntPatch_Intersection::GeomParamPerfom(const Handle(Adaptor3d_HSurface)&  theS1,
-                                            const Handle(Adaptor3d_TopolTool)& theD1,
-                                            const Handle(Adaptor3d_HSurface)&  theS2,
-                                            const Handle(Adaptor3d_TopolTool)& theD2,
-                                            const Standard_Boolean isNotAnalitical,
-                                            const GeomAbs_SurfaceType typs1,
-                                            const GeomAbs_SurfaceType typs2)
+void IntPatch_Intersection::
+  GeomParamPerfom(const Handle(Adaptor3d_HSurface)&  theS1,
+                  const Handle(Adaptor3d_TopolTool)& theD1,
+                  const Handle(Adaptor3d_HSurface)&  theS2,
+                  const Handle(Adaptor3d_TopolTool)& theD2,
+                  const Standard_Boolean isNotAnalitical,
+                  const GeomAbs_SurfaceType typs1,
+                  const GeomAbs_SurfaceType typs2)
 {
   IntPatch_ImpPrmIntersection interip;
   if (myIsStartPnt)
@@ -1436,6 +1446,54 @@ void IntPatch_Intersection::GeomParamPerfom(const Handle(Adaptor3d_HSurface)&  t
       for (Standard_Integer i = 1; i <= interip.NbPnts(); i++)
         spnt.Append(interip.Point(i));
     }
+  }
+}
+
+//=======================================================================
+//function : GeomGeomPerfomTrimSurf
+//purpose  : This function returns ready walking-line (which is not need
+//            in convertation) as an intersection line between two
+//            trimmed surfaces.
+//=======================================================================
+void IntPatch_Intersection::
+  GeomGeomPerfomTrimSurf( const Handle(Adaptor3d_HSurface)& theS1,
+                          const Handle(Adaptor3d_TopolTool)& theD1,
+                          const Handle(Adaptor3d_HSurface)& theS2,
+                          const Handle(Adaptor3d_TopolTool)& theD2,
+                          const Standard_Real theTolArc,
+                          const Standard_Real theTolTang,
+                          IntSurf_ListOfPntOn2S& theListOfPnts,
+                          const Standard_Boolean RestrictLine,
+                          const GeomAbs_SurfaceType theTyps1,
+                          const GeomAbs_SurfaceType theTyps2)
+{
+  IntSurf_Quadric Quad1,Quad2;
+
+  if((theTyps1 == GeomAbs_Cylinder) && (theTyps2 == GeomAbs_Cylinder))
+  {
+    IntPatch_ImpImpIntersection anInt;
+    anInt.Perform(theS1, theD1, theS2, theD2, theTolArc, theTolTang, Standard_True);
+
+    done = anInt.IsDone();
+
+    const Standard_Integer aNbLin = anInt.NbLines();
+    const Standard_Integer aNbPts = anInt.NbPnts();
+
+    for(Standard_Integer aLID = 1; aLID <= aNbLin; aLID++)
+    {
+      const Handle(IntPatch_Line)& aLine = anInt.Line(aLID);
+      slin.Append(aLine);
+    }
+
+    for(Standard_Integer aPID = 1; aPID <= aNbPts; aPID++)
+    {
+      const IntPatch_Point& aPoint = anInt.Point(aPID);
+      spnt.Append(aPoint);
+    }
+  }
+  else
+  {
+    GeomGeomPerfom(theS1, theD1, theS2, theD2, theTolArc, theTolTang, theListOfPnts, RestrictLine, theTyps1, theTyps2);
   }
 }
 

@@ -955,16 +955,21 @@ void IntAna_QuadQuadGeo::Perform(const gp_Cylinder& Cyl1,
 
   Standard_Real DistA1A2=A1A2.Distance();
   
-  if(A1A2.Parallel()) {
-    if(DistA1A2<=Tol) {
-      if(RmR<=Tol) {
+  if(A1A2.Parallel())
+  {
+    if(DistA1A2<=Tol)
+    {
+      if(RmR<=Tol)
+      {
         typeres=IntAna_Same;
       }
-      else {
+      else
+      {
         typeres=IntAna_Empty;
       }
     }
-    else {  //-- DistA1A2 > Tol
+    else
+    {  //-- DistA1A2 > Tol
       gp_Pnt P1=Cyl1.Location();
       gp_Pnt P2t=Cyl2.Location();
       gp_Pnt P2;
@@ -972,28 +977,30 @@ void IntAna_QuadQuadGeo::Perform(const gp_Cylinder& Cyl1,
       gp_Dir DirCyl = Cyl1.Position().Direction();
       Standard_Real ProjP2OnDirCyl1=gp_Vec(DirCyl).Dot(gp_Vec(P1,P2t));
       
-      P2.SetCoord( P2t.X() - ProjP2OnDirCyl1*DirCyl.X()
-                  ,P2t.Y() - ProjP2OnDirCyl1*DirCyl.Y()
-                  ,P2t.Z() - ProjP2OnDirCyl1*DirCyl.Z());
+      P2.SetCoord(P2t.X() - ProjP2OnDirCyl1*DirCyl.X(),
+                  P2t.Y() - ProjP2OnDirCyl1*DirCyl.Y(),
+                  P2t.Z() - ProjP2OnDirCyl1*DirCyl.Z());
       //-- 
       Standard_Real R1pR2=R1+R2;
-      if(DistA1A2>(R1pR2+Tol)) { 
+      if(DistA1A2>(R1pR2+Tol))
+      { 
         typeres=IntAna_Empty;
         nbint=0;
       }
-      else if(DistA1A2>(R1pR2)) {
+      else if(DistA1A2>(R1pR2))
+      {
         //-- 1 Tangent line -------------------------------------OK
         typeres=IntAna_Line;
 
         nbint=1;
         dir1=DirCyl;
         Standard_Real R1_R1pR2=R1/R1pR2;
-        pt1.SetCoord( P1.X() + R1_R1pR2 * (P2.X()-P1.X())
-                     ,P1.Y() + R1_R1pR2 * (P2.Y()-P1.Y())
-                     ,P1.Z() + R1_R1pR2 * (P2.Z()-P1.Z()));
-        
+        pt1.SetCoord( P1.X() + R1_R1pR2 * (P2.X()-P1.X()),
+                      P1.Y() + R1_R1pR2 * (P2.Y()-P1.Y()),
+                      P1.Z() + R1_R1pR2 * (P2.Z()-P1.Z()));
       }
-      else if(DistA1A2>RmR) {
+      else if(DistA1A2>RmR)
+      {
         //-- 2 lines ---------------------------------------------OK
         typeres=IntAna_Line;
         nbint=2;
@@ -1004,38 +1011,42 @@ void IntAna_QuadQuadGeo::Perform(const gp_Cylinder& Cyl1,
         dir2=dir1;
         Standard_Real Alpha=0.5*(R1*R1-R2*R2+DistA1A2*DistA1A2)/(DistA1A2);       
 
-//         Standard_Real Beta = Sqrt(R1*R1-Alpha*Alpha);
+        //Standard_Real Beta = Sqrt(R1*R1-Alpha*Alpha);
         Standard_Real anSqrtArg = R1*R1-Alpha*Alpha;
         Standard_Real Beta = (anSqrtArg > 0.) ? Sqrt(anSqrtArg) : 0.;
         
-        if((Beta+Beta)<Tol) { 
+        if((Beta+Beta)<Tol)
+        {
           nbint=1;
           pt1.SetCoord( P1.X() + Alpha*DirA1A2.X()
                        ,P1.Y() + Alpha*DirA1A2.Y()
                        ,P1.Z() + Alpha*DirA1A2.Z());
         }
-        else { 
-          pt1.SetCoord( P1.X() + Alpha*DirA1A2.X() + Beta*Ortho_dir1_P1P2.X()
-                       ,P1.Y() + Alpha*DirA1A2.Y() + Beta*Ortho_dir1_P1P2.Y()
-                       ,P1.Z() + Alpha*DirA1A2.Z() + Beta*Ortho_dir1_P1P2.Z() );
+        else
+        { 
+          pt1.SetCoord( P1.X() + Alpha*DirA1A2.X() + Beta*Ortho_dir1_P1P2.X(),
+                        P1.Y() + Alpha*DirA1A2.Y() + Beta*Ortho_dir1_P1P2.Y(),
+                        P1.Z() + Alpha*DirA1A2.Z() + Beta*Ortho_dir1_P1P2.Z());
           
-          pt2.SetCoord( P1.X() + Alpha*DirA1A2.X() - Beta*Ortho_dir1_P1P2.X()
-                       ,P1.Y() + Alpha*DirA1A2.Y() - Beta*Ortho_dir1_P1P2.Y()
-                       ,P1.Z() + Alpha*DirA1A2.Z() - Beta*Ortho_dir1_P1P2.Z());
+          pt2.SetCoord( P1.X() + Alpha*DirA1A2.X() - Beta*Ortho_dir1_P1P2.X(),
+                        P1.Y() + Alpha*DirA1A2.Y() - Beta*Ortho_dir1_P1P2.Y(),
+                        P1.Z() + Alpha*DirA1A2.Z() - Beta*Ortho_dir1_P1P2.Z());
         }
       }
-      else if(DistA1A2>(RmR-Tol)) {
+      else if(DistA1A2>(RmR-Tol))
+      {
         //-- 1 Tangent ------------------------------------------OK
         typeres=IntAna_Line;
         nbint=1;
         dir1=DirCyl;
         Standard_Real R1_RmR=R1/RmR;
 
-        if(R1 < R2) R1_RmR = -R1_RmR;
+        if(R1 < R2)
+          R1_RmR = -R1_RmR;
 
-        pt1.SetCoord( P1.X() + R1_RmR * (P2.X()-P1.X())
-                     ,P1.Y() + R1_RmR * (P2.Y()-P1.Y())
-                     ,P1.Z() + R1_RmR * (P2.Z()-P1.Z()));
+        pt1.SetCoord( P1.X() + R1_RmR * (P2.X()-P1.X()),
+                      P1.Y() + R1_RmR * (P2.Y()-P1.Y()),
+                      P1.Z() + R1_RmR * (P2.Z()-P1.Z()));
       }
       else {
         nbint=0;
@@ -1045,7 +1056,8 @@ void IntAna_QuadQuadGeo::Perform(const gp_Cylinder& Cyl1,
   }
   else { //-- No Parallel Axis ---------------------------------OK
     if((RmR_Relative<=myEPSILON_CYLINDER_DELTA_RADIUS) 
-       && (DistA1A2 <= myEPSILON_CYLINDER_DELTA_DISTANCE)) {
+       && (DistA1A2 <= myEPSILON_CYLINDER_DELTA_DISTANCE))
+    {
       //-- PI/2 between the two axis   and   Intersection  
       //-- and identical radius
       typeres=IntAna_Ellipse;
@@ -1059,11 +1071,11 @@ void IntAna_QuadQuadGeo::Perform(const gp_Cylinder& Cyl1,
       B=Abs(Sin(0.5*(M_PI-A)));
       A=Abs(Sin(0.5*A));
       
-      if(A==0.0 || B==0.0) {
+      if(A==0.0 || B==0.0)
+      {
         typeres=IntAna_Same;
         return;
       }
-      
       
       gp_Vec dircyl1(DirCyl1);gp_Vec dircyl2(DirCyl2);
       dir1 = gp_Dir(dircyl1.Added(dircyl2));
@@ -1072,15 +1084,24 @@ void IntAna_QuadQuadGeo::Perform(const gp_Cylinder& Cyl1,
       param2   = Cyl1.Radius() / A;
       param1   = Cyl1.Radius() / B;
       param2bis= param1bis = Cyl1.Radius();
-      if(param1 < param1bis) {
-        A=param1; param1=param1bis; param1bis=A;
+      if(param1 < param1bis)
+      {
+        A=param1;
+        param1=param1bis;
+        param1bis=A;
       }
-      if(param2 < param2bis) {
-        A=param2; param2=param2bis; param2bis=A;
+
+      if(param2 < param2bis)
+      {
+        A=param2;
+        param2=param2bis;
+        param2bis=A;
       }
     }
-    else {
-      if(Abs(DistA1A2-Cyl1.Radius()-Cyl2.Radius())<Tol) { 
+    else
+    {
+      if(Abs(DistA1A2-Cyl1.Radius()-Cyl2.Radius())<Tol)
+      {
         typeres = IntAna_Point;
         Standard_Real d,p1,p2;
 
@@ -1091,19 +1112,24 @@ void IntAna_QuadQuadGeo::Perform(const gp_Cylinder& Cyl1,
         gp_Pnt P1(P.X() - p1*D1.X(),
                   P.Y() - p1*D1.Y(),
                   P.Z() - p1*D1.Z());
+        
         P = Cyl2.Axis().Location();
+        
         gp_Pnt P2(P.X() - p2*D2.X(),
                   P.Y() - p2*D2.Y(),
                   P.Z() - p2*D2.Z());
+        
         gp_Vec P1P2(P1,P2);
         D1=gp_Dir(P1P2);
         p1=Cyl1.Radius();
+        
         pt1.SetCoord(P1.X() + p1*D1.X(),
                      P1.Y() + p1*D1.Y(),
                      P1.Z() + p1*D1.Z());
         nbint = 1;
       }
-      else {
+      else
+      {
         typeres=IntAna_NoGeometricSolution;
       }
     }

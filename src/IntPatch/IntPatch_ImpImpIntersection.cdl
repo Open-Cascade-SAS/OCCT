@@ -54,7 +54,8 @@ is
     Perform (me: in out;
              S1: HSurface from Adaptor3d; D1: TopolTool from Adaptor3d;
              S2: HSurface from Adaptor3d; D2: TopolTool from Adaptor3d;
-             TolArc,TolTang: Real from Standard)
+             TolArc,TolTang: Real from Standard;
+             isTheTrimmed: Boolean from Standard = Standard_False)
 
 	raises ConstructionError from Standard    
 

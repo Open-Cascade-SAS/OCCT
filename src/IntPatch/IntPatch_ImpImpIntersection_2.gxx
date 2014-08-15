@@ -50,8 +50,10 @@ void IntPatch_ImpImpIntersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
                                           const Handle(Adaptor3d_HSurface)&  S2,
                                           const Handle(Adaptor3d_TopolTool)& D2,
                                           const Standard_Real TolArc,
-                                          const Standard_Real TolTang) {
+                                          const Standard_Real TolTang,
+                                          const Standard_Boolean isTheTrimmed) {
   done = Standard_False;
+  Standard_Boolean isTrimmed = isTheTrimmed;
   spnt.Clear();
   slin.Clear();
 
@@ -142,13 +144,61 @@ void IntPatch_ImpImpIntersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
       break;
     }
     //
-    case 22: { // Cylinder/Cylinder
-      if (!IntCyCy(quad1, quad2, TolTang, empt, SameSurf, multpoint, slin, spnt)) {
-        return;
+    case 22:
+      { // Cylinder/Cylinder
+        Standard_Boolean isDONE = Standard_False;
+        
+        if(!isTrimmed)
+        {
+          isDONE = IntCyCy(quad1, quad2, TolTang, empt,
+                            SameSurf, multpoint, slin, spnt);
+        }
+        else
+        {
+          Bnd_Box2d aBox1, aBox2;
+
+          const Standard_Real aU1f = S1->FirstUParameter();
+          const Standard_Real aU1l = S1->LastUParameter();
+          const Standard_Real aU2f = S2->FirstUParameter();
+          const Standard_Real aU2l = S2->LastUParameter();
+
+          aBox1.Add(gp_Pnt2d(aU1f, S1->FirstVParameter()));
+          aBox1.Add(gp_Pnt2d(aU1l, S1->LastVParameter()));
+          aBox2.Add(gp_Pnt2d(aU2f, S2->FirstVParameter()));
+          aBox2.Add(gp_Pnt2d(aU2l, S2->LastVParameter()));
+
+          const Standard_Real a2DTol = Min( S1->UResolution(TolTang),
+                                              S2->UResolution(TolTang));
+
+          Standard_Boolean isReversed = ((aU2l - aU2f) < (aU1l - aU1f));
+
+          if(isReversed)
+          {
+            isDONE = IntCyCyTrim(quad2, quad1, TolTang, a2DTol, aBox2, aBox1,
+                                                  isReversed, empt, slin, spnt);
+          }
+          else
+          {
+            isDONE = IntCyCyTrim(quad1, quad2, TolTang, a2DTol, aBox1, aBox2,
+                                                  isReversed, empt, slin, spnt);
+          }
+
+          if(!isDONE)
+          {
+            isDONE = IntCyCy(quad1, quad2, TolTang, empt,
+                            SameSurf, multpoint, slin, spnt);
+            isTrimmed = Standard_False;
+          }
+        }
+
+        if (!isDONE)
+        {
+          return;
+        }
+
+        bEmpty = empt;
+        break;
       }
-      bEmpty = empt;
-      break;
-    }
     //
     case 23:
     case 32: { // Cylinder/Cone
@@ -238,136 +288,140 @@ void IntPatch_ImpImpIntersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
     return;
   }
   //
-  if (!SameSurf) {
-    AFunc.SetQuadric(quad2);
-    AFunc.Set(S1);
+
+  if(!isTrimmed)
+  {
+    if (!SameSurf) {
+      AFunc.SetQuadric(quad2);
+      AFunc.Set(S1);
     
-    solrst.Perform(AFunc, D1, TolArc, TolTang);
-    if (!solrst.IsDone()) {
-      return;
+      solrst.Perform(AFunc, D1, TolArc, TolTang);
+      if (!solrst.IsDone()) {
+        return;
+      }
+
+      if (solrst.AllArcSolution() && typs1 == typs2) {
+        all1 = Standard_True;
+      }
+      nbpt = solrst.NbPoints();
+      nbseg= solrst.NbSegments();
+      for (i=1; i<= nbpt; i++) {
+        pnt1.Append(solrst.Point(i));
+      }
+      for (i=1; i<= nbseg; i++) {
+        edg1.Append(solrst.Segment(i));
+      }
+      nosolonS1 = (nbpt == 0) && (nbseg == 0);
+
+      if (nosolonS1 && all1) {  // cas de face sans restrictions
+        all1 = Standard_False;
+      }
+    }//if (!SameSurf) {
+    else {
+      nosolonS1 = Standard_True;
     }
 
-    if (solrst.AllArcSolution() && typs1 == typs2) {
-      all1 = Standard_True;
-    }
-    nbpt = solrst.NbPoints();
-    nbseg= solrst.NbSegments();
-    for (i=1; i<= nbpt; i++) {
-      pnt1.Append(solrst.Point(i));
-    }
-    for (i=1; i<= nbseg; i++) {
-      edg1.Append(solrst.Segment(i));
-    }
-    nosolonS1 = (nbpt == 0) && (nbseg == 0);
+    if (!SameSurf) {
+      AFunc.SetQuadric(quad1);
+      AFunc.Set(S2);
 
-    if (nosolonS1 && all1) {  // cas de face sans restrictions
-      all1 = Standard_False;
-    }
-  }//if (!SameSurf) {
-  else {
-    nosolonS1 = Standard_True;
-  }
-
-  if (!SameSurf) {
-    AFunc.SetQuadric(quad1);
-    AFunc.Set(S2);
-
-    solrst.Perform(AFunc, D2, TolArc, TolTang);
-    if (!solrst.IsDone()) {
-      return;
-    }
+      solrst.Perform(AFunc, D2, TolArc, TolTang);
+      if (!solrst.IsDone()) {
+        return;
+      }
     
-    if (solrst.AllArcSolution() && typs1 == typs2) {
-      all2 = Standard_True;
-    }
-    nbpt = solrst.NbPoints();
-    nbseg= solrst.NbSegments();
-    for (i=1; i<= nbpt; i++) {
-      pnt2.Append(solrst.Point(i));
-    }
+      if (solrst.AllArcSolution() && typs1 == typs2) {
+        all2 = Standard_True;
+      }
+      nbpt = solrst.NbPoints();
+      nbseg= solrst.NbSegments();
+      for (i=1; i<= nbpt; i++) {
+        pnt2.Append(solrst.Point(i));
+      }
     
-    for (i=1; i<= nbseg; i++) {
-      edg2.Append(solrst.Segment(i));
-    }
-    nosolonS2 = (nbpt == 0) && (nbseg == 0);
+      for (i=1; i<= nbseg; i++) {
+        edg2.Append(solrst.Segment(i));
+      }
+      nosolonS2 = (nbpt == 0) && (nbseg == 0);
 
-    if (nosolonS2 && all2) {  // cas de face sans restrictions
-      all2 = Standard_False;
-    }
-  }// if (!SameSurf) {
-  else {
-    nosolonS2 = Standard_True;
-  }
-  //
-  if (SameSurf || (all1 && all2)) {
-    // faces "paralleles" parfaites
-    empt = Standard_False;
-    tgte = Standard_True;
-    slin.Clear();
-    spnt.Clear();
-
-    gp_Pnt Ptreference;
-
-    switch (typs1) {
-    case GeomAbs_Plane:      {
-      Ptreference = (S1->Plane()).Location();
-    }
-      break;
-    case GeomAbs_Cylinder: {
-      Ptreference = ElSLib::Value(0.,0.,S1->Cylinder());
-    }
-      break;
-    case GeomAbs_Sphere:      {
-      Ptreference = ElSLib::Value(M_PI/4.,M_PI/4.,S1->Sphere());
-    }
-      break;
-    case GeomAbs_Cone:      {
-      Ptreference = ElSLib::Value(0.,10.,S1->Cone());
-    }
-      break;
-    case GeomAbs_Torus:      {
-      Ptreference = ElSLib::Value(0.,0.,S1->Torus());
-    }
-      break;
-    default: 
-      break;
+      if (nosolonS2 && all2) {  // cas de face sans restrictions
+        all2 = Standard_False;
+      }
+    }// if (!SameSurf) {
+    else {
+      nosolonS2 = Standard_True;
     }
     //
-    oppo = quad1.Normale(Ptreference).Dot(quad2.Normale(Ptreference)) < 0.0;
-    done = Standard_True;
-    return;
-  }// if (SameSurf || (all1 && all2)) {
+    if (SameSurf || (all1 && all2)) {
+      // faces "paralleles" parfaites
+      empt = Standard_False;
+      tgte = Standard_True;
+      slin.Clear();
+      spnt.Clear();
 
-  if (!nosolonS1 || !nosolonS2) {
-    empt = Standard_False;
-    // C est la qu il faut commencer a bosser...
-    PutPointsOnLine(S1,S2,pnt1, slin, Standard_True, D1, quad1,quad2,
-                    multpoint,TolArc);
+      gp_Pnt Ptreference;
+
+      switch (typs1) {
+      case GeomAbs_Plane:      {
+        Ptreference = (S1->Plane()).Location();
+      }
+        break;
+      case GeomAbs_Cylinder: {
+        Ptreference = ElSLib::Value(0.,0.,S1->Cylinder());
+      }
+        break;
+      case GeomAbs_Sphere:      {
+        Ptreference = ElSLib::Value(M_PI/4.,M_PI/4.,S1->Sphere());
+      }
+        break;
+      case GeomAbs_Cone:      {
+        Ptreference = ElSLib::Value(0.,10.,S1->Cone());
+      }
+        break;
+      case GeomAbs_Torus:      {
+        Ptreference = ElSLib::Value(0.,0.,S1->Torus());
+      }
+        break;
+      default: 
+        break;
+      }
+      //
+      oppo = quad1.Normale(Ptreference).Dot(quad2.Normale(Ptreference)) < 0.0;
+      done = Standard_True;
+      return;
+    }// if (SameSurf || (all1 && all2)) {
+
+    if (!nosolonS1 || !nosolonS2) {
+      empt = Standard_False;
+      // C est la qu il faut commencer a bosser...
+      PutPointsOnLine(S1,S2,pnt1, slin, Standard_True, D1, quad1,quad2,
+                      multpoint,TolArc);
     
-    PutPointsOnLine(S1,S2,pnt2, slin, Standard_False,D2, quad2,quad1,
-                    multpoint,TolArc);
+      PutPointsOnLine(S1,S2,pnt2, slin, Standard_False,D2, quad2,quad1,
+                      multpoint,TolArc);
 
-    if (edg1.Length() != 0) {
-      ProcessSegments(edg1,slin,quad1,quad2,Standard_True,TolArc);
-    }
+      if (edg1.Length() != 0) {
+        ProcessSegments(edg1,slin,quad1,quad2,Standard_True,TolArc);
+      }
 
-    if (edg2.Length() != 0) {
-      ProcessSegments(edg2,slin,quad1,quad2,Standard_False,TolArc);
-    }
+      if (edg2.Length() != 0) {
+        ProcessSegments(edg2,slin,quad1,quad2,Standard_False,TolArc);
+      }
 
-    if (edg1.Length() !=0 || edg2.Length() !=0) {
-      //      ProcessRLine(slin,S1,S2,TolArc);
-      ProcessRLine(slin,quad1,quad2,TolArc);
+      if (edg1.Length() !=0 || edg2.Length() !=0) {
+        //      ProcessRLine(slin,S1,S2,TolArc);
+        ProcessRLine(slin,quad1,quad2,TolArc);
+      }
+    }//if (!nosolonS1 || !nosolonS2) {
+    else {
+      empt = ((slin.Length()==0) && (spnt.Length()==0));
     }
-  }//if (!nosolonS1 || !nosolonS2) {
-  else {
-    empt = ((slin.Length()==0) && (spnt.Length()==0));
   }
-  //
-  Standard_Integer nblin, aNbPnt;
+  
+  Standard_Integer  nblin = slin.Length(),
+                    aNbPnt = spnt.Length();
   //
   //modified by NIZNHY-PKV Tue Sep 06 10:03:35 2011f
-  aNbPnt=spnt.Length();
   if (aNbPnt) {
     IntPatch_SequenceOfPoint aSIP;
     //
@@ -401,7 +455,6 @@ void IntPatch_ImpImpIntersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
   }//  if (aNbPnt) {
   //modified by NIZNHY-PKV Tue Sep 06 10:18:20 2011t
   //
-  nblin = slin.Length();
   for(i=1; i<=nblin; i++) {
     IntPatch_IType thetype = slin.Value(i)->ArcType();
     if(  (thetype ==  IntPatch_Ellipse)

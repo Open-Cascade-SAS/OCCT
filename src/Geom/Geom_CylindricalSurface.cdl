@@ -19,6 +19,10 @@ class CylindricalSurface from Geom inherits ElementarySurface from Geom
        
         ---Purpose : This class defines the infinite cylindrical surface.
         --  
+        --  Every cylindrical surface is set by the following equation:
+        --      S(U,V) = Location + R*cos(U)*XAxis + R*sin(U)*YAxis + V*ZAxis,
+        --  where R is cylinder radius.
+        --
         --  The local coordinate system of the CylindricalSurface is defined
         --  with an axis placement (see class ElementarySurface).
         --  

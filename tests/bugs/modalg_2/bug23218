@@ -19,7 +19,7 @@ set result [bopcurves b1 b2]
 puts $result
 puts "Finish project operation ..."
 
-set GoodToleranceReached 8.9651741230950248e-06
+set GoodToleranceReached 2.4950140688989345e-006
 regexp {Tolerance Reached=([-0-9.+eE]+)} $result full ToleranceReached
 
 proc GetPercent {Value GoodValue} {

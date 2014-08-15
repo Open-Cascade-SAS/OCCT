@@ -46,32 +46,32 @@ static Standard_Real HatcherConfusion3d   = 1.e-8 ;
 //=======================================================================
 
 DBRep_IsoBuilder::DBRep_IsoBuilder (const TopoDS_Face&     TopologicalFace,
-				    const Standard_Real    Infinite,
-				    const Standard_Integer NbIsos) :
-       Geom2dHatch_Hatcher (Geom2dHatch_Intersector (IntersectorConfusion,
-						     IntersectorTangency),
-			    HatcherConfusion2d,
-			    HatcherConfusion3d,
-			    Standard_True,
-			    Standard_False) ,
-       myInfinite (Infinite) ,
-       myUMin     (0.0) ,
-       myUMax     (0.0) ,
-       myVMin     (0.0) ,
-       myVMax     (0.0) ,
-       myUPrm     (1, NbIsos) ,
-       myUInd     (1, NbIsos) ,
-       myVPrm     (1, NbIsos) ,
-       myVInd     (1, NbIsos) ,
-       myNbDom    (0)
+  const Standard_Real    Infinite,
+  const Standard_Integer NbIsos) :
+Geom2dHatch_Hatcher (Geom2dHatch_Intersector (IntersectorConfusion,
+  IntersectorTangency),
+  HatcherConfusion2d,
+  HatcherConfusion3d,
+  Standard_True,
+  Standard_False) ,
+  myInfinite (Infinite) ,
+  myUMin     (0.0) ,
+  myUMax     (0.0) ,
+  myVMin     (0.0) ,
+  myVMax     (0.0) ,
+  myUPrm     (1, NbIsos) ,
+  myUInd     (1, NbIsos) ,
+  myVPrm     (1, NbIsos) ,
+  myVInd     (1, NbIsos) ,
+  myNbDom    (0)
 {
   myUInd.Init(0);
   myVInd.Init(0);
 
-//-----------------------------------------------------------------------
-// If the Min Max bounds are infinite, there are bounded to Infinite
-// value.
-//-----------------------------------------------------------------------
+  //-----------------------------------------------------------------------
+  // If the Min Max bounds are infinite, there are bounded to Infinite
+  // value.
+  //-----------------------------------------------------------------------
 
   BRepTools::UVBounds (TopologicalFace, myUMin, myUMax, myVMin, myVMax) ;
   Standard_Boolean InfiniteUMin = Precision::IsNegativeInfinite (myUMin) ;
@@ -95,9 +95,9 @@ DBRep_IsoBuilder::DBRep_IsoBuilder (const TopoDS_Face&     TopologicalFace,
     myVMax = myVMin + Infinite ;
   }
 
-//-----------------------------------------------------------------------
-// Retreiving the edges and loading them into the hatcher.
-//-----------------------------------------------------------------------
+  //-----------------------------------------------------------------------
+  // Retreiving the edges and loading them into the hatcher.
+  //-----------------------------------------------------------------------
 
   TopExp_Explorer ExpEdges;
   for (ExpEdges.Init (TopologicalFace, TopAbs_EDGE); ExpEdges.More(); ExpEdges.Next())
@@ -108,22 +108,22 @@ DBRep_IsoBuilder::DBRep_IsoBuilder (const TopoDS_Face&     TopologicalFace,
 
     if (PCurve.IsNull())
     {
-    #ifdef DEB
+#ifdef DEB
       cout << "DBRep_IsoBuilder : PCurve is null\n";
-    #endif
+#endif
       return;
     }
     else if (U1 == U2)
     {
-    #ifdef DEB
+#ifdef DEB
       cout << "DBRep_IsoBuilder PCurve : U1==U2\n";
-    #endif
+#endif
       return;
     }
 
     //-- Test if a TrimmedCurve is necessary
     if (Abs(PCurve->FirstParameter()-U1)<= Precision::PConfusion()
-     && Abs(PCurve->LastParameter()-U2)<= Precision::PConfusion())
+      && Abs(PCurve->LastParameter()-U2)<= Precision::PConfusion())
     {
       AddElement (PCurve, TopologicalEdge.Orientation());
     }
@@ -135,16 +135,16 @@ DBRep_IsoBuilder::DBRep_IsoBuilder (const TopoDS_Face&     TopologicalFace,
         if (!TrimPCurve.IsNull())
         {
           if (TrimPCurve->BasisCurve()->FirstParameter() - U1 > Precision::PConfusion() ||
-              TrimPCurve->BasisCurve()->FirstParameter() - U2 > Precision::PConfusion() ||
-              U1 - TrimPCurve->BasisCurve()->LastParameter()  > Precision::PConfusion() ||
-              U2 - TrimPCurve->BasisCurve()->LastParameter()  > Precision::PConfusion())
+            TrimPCurve->BasisCurve()->FirstParameter() - U2 > Precision::PConfusion() ||
+            U1 - TrimPCurve->BasisCurve()->LastParameter()  > Precision::PConfusion() ||
+            U2 - TrimPCurve->BasisCurve()->LastParameter()  > Precision::PConfusion())
           {
             AddElement (PCurve, TopologicalEdge.Orientation());
-          #ifdef DEB
+#ifdef DEB
             cout << "DBRep_IsoBuilder TrimPCurve : parameters out of range\n";
             cout << "    U1(" << U1 << "), Umin(" << PCurve->FirstParameter()
-                 << "), U2("  << U2 << "), Umax(" << PCurve->LastParameter() << ")\n";
-          #endif
+              << "), U2("  << U2 << "), Umax(" << PCurve->LastParameter() << ")\n";
+#endif
             return;
           }
         }
@@ -152,34 +152,34 @@ DBRep_IsoBuilder::DBRep_IsoBuilder (const TopoDS_Face&     TopologicalFace,
         {
           if (PCurve->FirstParameter() - U1 > Precision::PConfusion())
           {
-          #ifdef DEB
+#ifdef DEB
             cout << "DBRep_IsoBuilder PCurve : parameters out of range\n";
             cout << "    U1(" << U1 << "), Umin(" << PCurve->FirstParameter() << ")\n";
-          #endif
+#endif
             U1 = PCurve->FirstParameter();
           }
           if (PCurve->FirstParameter() - U2 > Precision::PConfusion())
           {
-          #ifdef DEB
+#ifdef DEB
             cout << "DBRep_IsoBuilder PCurve : parameters out of range\n";
             cout << "    U2(" << U2 << "), Umin(" << PCurve->FirstParameter() << ")\n";
-          #endif
+#endif
             U2 = PCurve->FirstParameter();
           }
           if (U1 - PCurve->LastParameter() > Precision::PConfusion())
           {
-          #ifdef DEB
+#ifdef DEB
             cout << "DBRep_IsoBuilder PCurve : parameters out of range\n";
             cout << "    U1(" << U1 << "), Umax(" << PCurve->LastParameter() << ")\n";
-          #endif
+#endif
             U1 = PCurve->LastParameter();
           }
           if (U2 - PCurve->LastParameter() > Precision::PConfusion())
           {
-          #ifdef DEB
+#ifdef DEB
             cout << "DBRep_IsoBuilder PCurve : parameters out of range\n";
             cout << "    U2(" << U2 << "), Umax(" << PCurve->LastParameter() << ")\n";
-          #endif
+#endif
             U2 = PCurve->LastParameter();
           }
         }
@@ -192,9 +192,9 @@ DBRep_IsoBuilder::DBRep_IsoBuilder (const TopoDS_Face&     TopologicalFace,
     }
   }
 
-//-----------------------------------------------------------------------
-// Loading and trimming the hatchings.
-//-----------------------------------------------------------------------
+  //-----------------------------------------------------------------------
+  // Loading and trimming the hatchings.
+  //-----------------------------------------------------------------------
 
   Standard_Integer IIso ;
   Standard_Real DeltaU = Abs (myUMax - myUMin) ;
@@ -228,29 +228,36 @@ DBRep_IsoBuilder::DBRep_IsoBuilder (const TopoDS_Face&     TopologicalFace,
     }
   }
 
-//-----------------------------------------------------------------------
-// Computation.
-//-----------------------------------------------------------------------
+  //-----------------------------------------------------------------------
+  // Computation.
+  //-----------------------------------------------------------------------
 
   Trim() ;
 
   myNbDom = 0 ;
-  for (IIso = 1 ; IIso <= NbIsos ; IIso++) {
+  for (IIso = 1 ; IIso <= NbIsos ; IIso++)
+  {
     Standard_Integer Index ;
 
     Index = myUInd(IIso) ;
-    if (Index != 0) {
-      if (TrimDone (Index) && !TrimFailed (Index)) {
-	ComputeDomains (Index);
-	if (IsDone (Index)) myNbDom = myNbDom + Geom2dHatch_Hatcher::NbDomains (Index) ;
+    if (Index != 0)
+    {
+      if (TrimDone (Index) && !TrimFailed (Index))
+      {
+        ComputeDomains (Index);
+        if (IsDone (Index))
+          myNbDom = myNbDom + Geom2dHatch_Hatcher::NbDomains (Index) ;
       }
     }
 
     Index = myVInd(IIso) ;
-    if (Index != 0) {
-      if (TrimDone (Index) && !TrimFailed (Index)) {
-	ComputeDomains (Index);
-	if (IsDone (Index)) myNbDom = myNbDom + Geom2dHatch_Hatcher::NbDomains (Index) ;
+    if (Index != 0)
+    {
+      if (TrimDone (Index) && !TrimFailed (Index))
+      {
+        ComputeDomains (Index);
+        if (IsDone (Index))
+          myNbDom = myNbDom + Geom2dHatch_Hatcher::NbDomains (Index) ;
       }
     }
   }
