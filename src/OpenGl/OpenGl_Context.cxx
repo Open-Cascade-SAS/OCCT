@@ -33,7 +33,12 @@
 
 #include <Standard_ProgramError.hxx>
 
-#if defined(_WIN32)
+#if defined(HAVE_EGL)
+  #include <EGL/egl.h>
+  #ifdef _MSC_VER
+    #pragma comment(lib, "libEGL.lib")
+  #endif
+#elif defined(_WIN32)
   //
 #elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
   #include <dlfcn.h>
@@ -313,7 +318,18 @@ void OpenGl_Context::Share (const Handle(OpenGl_Context)& theShareCtx)
 // =======================================================================
 Standard_Boolean OpenGl_Context::IsCurrent() const
 {
-#if defined(_WIN32)
+#if defined(HAVE_EGL)
+  if ((EGLDisplay )myDisplay  == EGL_NO_DISPLAY
+   || (EGLSurface )myWindow   == EGL_NO_SURFACE
+   || (EGLContext )myGContext == EGL_NO_CONTEXT)
+  {
+    return Standard_False;
+  }
+
+  return (((EGLDisplay )myDisplay  == eglGetCurrentDisplay())
+       && ((EGLContext )myGContext == eglGetCurrentContext())
+       && ((EGLSurface )myWindow   == eglGetCurrentSurface (EGL_DRAW)));
+#elif defined(_WIN32)
   if (myWindowDC == NULL || myGContext == NULL)
   {
     return Standard_False;
@@ -338,7 +354,24 @@ Standard_Boolean OpenGl_Context::IsCurrent() const
 // =======================================================================
 Standard_Boolean OpenGl_Context::MakeCurrent()
 {
-#if defined(_WIN32)
+#if defined(HAVE_EGL)
+  if ((EGLDisplay )myDisplay  == EGL_NO_DISPLAY
+   || (EGLSurface )myWindow   == EGL_NO_SURFACE
+   || (EGLContext )myGContext == EGL_NO_CONTEXT)
+  {
+    Standard_ProgramError_Raise_if (myIsInitialized, "OpenGl_Context::Init() should be called before!");
+    return Standard_False;
+  }
+
+  if (eglMakeCurrent ((EGLDisplay )myDisplay, (EGLSurface )myWindow, (EGLSurface )myWindow, (EGLContext )myGContext) != EGL_TRUE)
+  {
+    // if there is no current context it might be impossible to use glGetError() correctly
+    PushMessage (GL_DEBUG_SOURCE_WINDOW_SYSTEM_ARB, GL_DEBUG_TYPE_ERROR_ARB, 0, GL_DEBUG_SEVERITY_HIGH_ARB,
+                 "eglMakeCurrent() has failed!");
+    myIsInitialized = Standard_False;
+    return Standard_False;
+  }
+#elif defined(_WIN32)
   if (myWindowDC == NULL || myGContext == NULL)
   {
     Standard_ProgramError_Raise_if (myIsInitialized, "OpenGl_Context::Init() should be called before!");
@@ -395,7 +428,12 @@ Standard_Boolean OpenGl_Context::MakeCurrent()
 // =======================================================================
 void OpenGl_Context::SwapBuffers()
 {
-#if defined(_WIN32)
+#if defined(HAVE_EGL)
+  if ((EGLSurface )myWindow != EGL_NO_SURFACE)
+  {
+    eglSwapBuffers ((EGLDisplay )myDisplay, (EGLSurface )myWindow);
+  }
+#elif defined(_WIN32)
   if ((HDC )myWindowDC != NULL)
   {
     ::SwapBuffers ((HDC )myWindowDC);
@@ -417,7 +455,9 @@ void OpenGl_Context::SwapBuffers()
 // =======================================================================
 void* OpenGl_Context::findProc (const char* theFuncName)
 {
-#if defined(_WIN32)
+#if defined(HAVE_EGL)
+  return (void* )eglGetProcAddress (theFuncName);
+#elif defined(_WIN32)
   return wglGetProcAddress (theFuncName);
 #elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
   return (myGlLibHandle != NULL) ? dlsym (myGlLibHandle, theFuncName) : NULL;
@@ -508,7 +548,11 @@ Standard_Boolean OpenGl_Context::Init()
     return Standard_True;
   }
 
-#if defined(_WIN32)
+#if defined(HAVE_EGL)
+  myDisplay  = (Aspect_Display )eglGetCurrentDisplay();
+  myGContext = (Aspect_RenderingContext )eglGetCurrentContext();
+  myWindow   = (Aspect_Drawable )eglGetCurrentSurface(EGL_DRAW);
+#elif defined(_WIN32)
   myWindowDC = (Aspect_Handle )wglGetCurrentDC();
   myGContext = (Aspect_RenderingContext )wglGetCurrentContext();
 #else
@@ -532,7 +576,11 @@ Standard_Boolean OpenGl_Context::Init()
 // function : Init
 // purpose  :
 // =======================================================================
-#if defined(_WIN32)
+#if defined(HAVE_EGL)
+Standard_Boolean OpenGl_Context::Init (const Aspect_Drawable         theEglSurface,
+                                       const Aspect_Display          theEglDisplay,
+                                       const Aspect_RenderingContext theEglContext)
+#elif defined(_WIN32)
 Standard_Boolean OpenGl_Context::Init (const Aspect_Handle           theWindow,
                                        const Aspect_Handle           theWindowDC,
                                        const Aspect_RenderingContext theGContext)
@@ -545,7 +593,11 @@ Standard_Boolean OpenGl_Context::Init (const Aspect_Drawable         theWindow,
 #endif
 {
   Standard_ProgramError_Raise_if (myIsInitialized, "OpenGl_Context::Init() should be called only once!");
-#if defined(_WIN32)
+#if defined(HAVE_EGL)
+  myWindow   = theEglSurface;
+  myGContext = theEglContext;
+  myDisplay  = theEglDisplay;
+#elif defined(_WIN32)
   myWindow   = theWindow;
   myGContext = theGContext;
   myWindowDC = theWindowDC;
@@ -809,7 +861,7 @@ void OpenGl_Context::init()
   #define FindProcShort(theFunc) FindProc(#theFunc, myFuncs->theFunc)
 
     // retrieve platform-dependent extensions
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(HAVE_EGL)
   if (FindProcShort (wglGetExtensionsStringARB))
   {
     const char* aWglExts = myFuncs->wglGetExtensionsStringARB (wglGetCurrentDC());

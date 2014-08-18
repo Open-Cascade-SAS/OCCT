@@ -178,7 +178,13 @@ public:
     return myIsInitialized;
   }
 
-#if defined(_WIN32)
+#if defined(HAVE_EGL)
+  //! Initialize class from specified surface and rendering context. Method should be called only once.
+  //! @return false if OpenGL context can not be bound to specified surface
+  Standard_EXPORT Standard_Boolean Init (const Aspect_Drawable         theEglSurface,
+                                         const Aspect_Display          theEglDisplay,
+                                         const Aspect_RenderingContext theEglContext);
+#elif defined(_WIN32)
   //! Initialize class from specified window and rendering context. Method should be called only once.
   //! @return false if OpenGL context can not be bound to specified window
   Standard_EXPORT Standard_Boolean Init (const Aspect_Handle           theWindow,
@@ -445,7 +451,11 @@ public: //! @name extensions
 
 private: // system-dependent fields
 
-#if defined(_WIN32)
+#if defined(HAVE_EGL)
+  Aspect_Drawable         myWindow;   //!< EGL surface                   : EGLSurface
+  Aspect_Display          myDisplay;  //!< EGL connection to the Display : EGLDisplay
+  Aspect_RenderingContext myGContext; //!< EGL rendering context         : EGLContext
+#elif defined(_WIN32)
   Aspect_Handle           myWindow;   //!< window handle (owner of GL context) : HWND
   Aspect_Handle           myWindowDC; //!< Device Descriptor handle : HDC
   Aspect_RenderingContext myGContext; //!< Rendering Context handle : HGLRC
