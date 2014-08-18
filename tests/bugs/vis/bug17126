@@ -1,0 +1,15 @@
+puts "================"
+puts "OCC17126"
+puts "================"
+puts ""
+#######################################################################################
+# Vizualisation in 3d viewer in Draw hungs up
+#######################################################################################
+
+restore [locate_data_file bug17126_ff_1285_viz.brep] a
+
+vinit
+vdisplay a
+vfit
+
+set only_screen 1
