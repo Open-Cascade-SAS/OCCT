@@ -43,9 +43,9 @@ void RWStepShape_RWManifoldSolidBrep::ReadStep
 
 	// --- own field : outer ---
 
-	Handle(StepShape_ClosedShell) aOuter;
+	Handle(StepShape_ConnectedFaceSet) aOuter;
 	//szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
-	data->ReadEntity(num, 2,"outer", ach, STANDARD_TYPE(StepShape_ClosedShell), aOuter);
+	data->ReadEntity(num, 2,"outer", ach, STANDARD_TYPE(StepShape_ConnectedFaceSet), aOuter);
 
 	//--- Initialisation of the read entity ---
 

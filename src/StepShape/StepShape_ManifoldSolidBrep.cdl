@@ -20,6 +20,7 @@ inherits SolidModel from StepShape
 
 uses
 
+	ConnectedFaceSet from StepShape, 
 	ClosedShell from StepShape, 
 	HAsciiString from TCollection
 is
@@ -35,13 +36,17 @@ is
 	      aName : HAsciiString from TCollection;
 	      aOuter : ClosedShell from StepShape) is virtual;
 
+	Init (me : mutable;
+	      aName : HAsciiString from TCollection;
+	      aOuter : ConnectedFaceSet from StepShape) is virtual;
+
 	-- Specific Methods for Field Data Access --
 
-	SetOuter(me : mutable; aOuter : ClosedShell);
-	Outer (me) returns ClosedShell;
+	SetOuter(me : mutable; aOuter : ConnectedFaceSet);
+	Outer (me) returns ConnectedFaceSet;
 
 fields
 
-	outer : ClosedShell from StepShape;
+	outer : ConnectedFaceSet from StepShape;
 
 end ManifoldSolidBrep;

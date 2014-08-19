@@ -2184,7 +2184,7 @@ void STEPCAFControl_Reader::ExpandManifoldSolidBrep(TDF_Label& ShapeLab,
 {
   // Access outer shell
   Handle(StepShape_ManifoldSolidBrep) aMSB = Handle(StepShape_ManifoldSolidBrep)::DownCast(Repr);
-  Handle(StepShape_ClosedShell) aShell = aMSB->Outer();
+  Handle(StepShape_ConnectedFaceSet) aShell = aMSB->Outer();
 
   // Expand shell contents to CAF tree
   ExpandShell(aShell, ShapeLab, TP, ShapeTool);

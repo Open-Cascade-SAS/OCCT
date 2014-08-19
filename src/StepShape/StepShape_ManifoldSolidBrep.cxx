@@ -24,8 +24,18 @@ void StepShape_ManifoldSolidBrep::Init(
 }
 
 void StepShape_ManifoldSolidBrep::Init(
+  const Handle(TCollection_HAsciiString)& aName,
+  const Handle(StepShape_ClosedShell)& aOuter)
+{
+  // --- classe own fields ---
+  outer = aOuter;
+  // --- classe inherited fields ---
+  StepRepr_RepresentationItem::Init(aName);
+}
+
+void StepShape_ManifoldSolidBrep::Init(
 	const Handle(TCollection_HAsciiString)& aName,
-	const Handle(StepShape_ClosedShell)& aOuter)
+	const Handle(StepShape_ConnectedFaceSet)& aOuter)
 {
 	// --- classe own fields ---
 	outer = aOuter;
@@ -33,13 +43,12 @@ void StepShape_ManifoldSolidBrep::Init(
 	StepRepr_RepresentationItem::Init(aName);
 }
 
-
-void StepShape_ManifoldSolidBrep::SetOuter(const Handle(StepShape_ClosedShell)& aOuter)
+void StepShape_ManifoldSolidBrep::SetOuter(const Handle(StepShape_ConnectedFaceSet)& aOuter)
 {
 	outer = aOuter;
 }
 
-Handle(StepShape_ClosedShell) StepShape_ManifoldSolidBrep::Outer() const
+Handle(StepShape_ConnectedFaceSet) StepShape_ManifoldSolidBrep::Outer() const
 {
 	return outer;
 }

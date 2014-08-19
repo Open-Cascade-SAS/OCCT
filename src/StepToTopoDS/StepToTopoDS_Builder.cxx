@@ -192,15 +192,15 @@ void StepToTopoDS_Builder::Init
 
   // Start Mapping
 
-  Handle(StepShape_ClosedShell) aCShell;
-  aCShell = aManifoldSolid->Outer();
+  Handle(StepShape_ConnectedFaceSet) aShell;
+  aShell = aManifoldSolid->Outer();
 
   StepToTopoDS_TranslateShell myTranShell;
   myTranShell.SetPrecision(Precision());
   myTranShell.SetMaxTol(MaxTol());
   // Non-manifold topology is not referenced by ManifoldSolidBrep (ssv; 14.11.2010)
   StepToTopoDS_NMTool dummyNMTool;
-  myTranShell.Init(aCShell, myTool, dummyNMTool);
+  myTranShell.Init(aShell, myTool, dummyNMTool);
 
   if (myTranShell.IsDone()) {
     TopoDS_Shape Sh = myTranShell.Value();
@@ -234,7 +234,7 @@ void StepToTopoDS_Builder::Init
     ResetPreci (S, MaxTol());
   }
   else {
-    TP->AddWarning(aCShell," OuterShell from ManifoldSolidBrep not mapped to TopoDS");
+    TP->AddWarning(aShell," OuterShell from ManifoldSolidBrep not mapped to TopoDS");
     myError  = StepToTopoDS_BuilderOther;
     done     = Standard_False;
   }
@@ -273,7 +273,7 @@ void StepToTopoDS_Builder::Init
   myTranShell.SetMaxTol(MaxTol());
   // OuterBound
 
-  aCShell = aBRepWithVoids->Outer();
+  aCShell = Handle(StepShape_ClosedShell)::DownCast(aBRepWithVoids->Outer());
   // Non-manifold topology is not referenced by BrepWithVoids (ssv; 14.11.2010)
   StepToTopoDS_NMTool dummyNMTool;
   myTranShell.Init(aCShell, myTool, dummyNMTool);
@@ -360,7 +360,7 @@ void StepToTopoDS_Builder::Init(const Handle(StepShape_FacetedBrep)& aFB,
   // Start Mapping
 
   Handle(StepShape_ClosedShell) aCShell;
-  aCShell = aFB->Outer();
+  aCShell = Handle(StepShape_ClosedShell)::DownCast(aFB->Outer());
   TopoDS_Shape Sh;
 
   StepToTopoDS_TranslateShell myTranShell; 
@@ -411,7 +411,7 @@ void StepToTopoDS_Builder::Init
   // Start Mapping
 
   Handle(StepShape_ClosedShell) aCShell;
-  aCShell = aFBABWV->Outer();
+  aCShell = Handle(StepShape_ClosedShell)::DownCast(aFBABWV->Outer());
   TopoDS_Shape Sh;
 
   StepToTopoDS_TranslateShell myTranShell;
