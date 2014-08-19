@@ -83,9 +83,12 @@ void RWStepAP214_RWAppliedGroupAssignment::WriteStep (StepData_StepWriter& SW,
   // Own fields of AppliedGroupAssignment
 
   SW.OpenSub();
-  for (Standard_Integer i1=1; i1 <= ent->Items()->Length(); i1++ ) {
-    StepAP214_GroupItem Var0 = ent->Items()->Value(i1);
-    SW.Send (Var0.Value());
+  if (!ent->Items().IsNull())
+  {
+    for (Standard_Integer i1=1; i1 <= ent->Items()->Length(); i1++ ) {
+      StepAP214_GroupItem Var0 = ent->Items()->Value(i1);
+      SW.Send (Var0.Value());
+    }
   }
   SW.CloseSub();
 }
