@@ -17,6 +17,8 @@
 
 #include <RWStepRepr_RWAssemblyComponentUsage.ixx>
 
+#include <StepRepr_ProductDefinitionShape.hxx>
+
 //=======================================================================
 //function : RWStepRepr_RWAssemblyComponentUsage
 //purpose  : 
@@ -58,9 +60,27 @@ void RWStepRepr_RWAssemblyComponentUsage::ReadStep (const Handle(StepData_StepRe
 
   Handle(StepBasic_ProductDefinition) aProductDefinitionRelationship_RelatingProductDefinition;
   data->ReadEntity (num, 4, "product_definition_relationship.relating_product_definition", ach, STANDARD_TYPE(StepBasic_ProductDefinition), aProductDefinitionRelationship_RelatingProductDefinition);
+  if (aProductDefinitionRelationship_RelatingProductDefinition.IsNull())
+  {
+    Handle(StepRepr_ProductDefinitionShape) aProductDefinitionShape;
+    data->ReadEntity (num, 4, "product_definition_relationship.relating_product_definition_shape", ach, STANDARD_TYPE(StepRepr_ProductDefinitionShape), aProductDefinitionShape);
+    if (!aProductDefinitionShape.IsNull())
+    {
+      aProductDefinitionRelationship_RelatingProductDefinition = aProductDefinitionShape->Definition().ProductDefinition();
+    }
+  }
 
   Handle(StepBasic_ProductDefinition) aProductDefinitionRelationship_RelatedProductDefinition;
   data->ReadEntity (num, 5, "product_definition_relationship.related_product_definition", ach, STANDARD_TYPE(StepBasic_ProductDefinition), aProductDefinitionRelationship_RelatedProductDefinition);
+  if (aProductDefinitionRelationship_RelatedProductDefinition.IsNull())
+  {
+    Handle(StepRepr_ProductDefinitionShape) aProductDefinitionShape;
+    data->ReadEntity (num, 5, "product_definition_relationship.related_product_definition_shape", ach, STANDARD_TYPE(StepRepr_ProductDefinitionShape), aProductDefinitionShape);
+    if (!aProductDefinitionShape.IsNull())
+    {
+      aProductDefinitionRelationship_RelatedProductDefinition = aProductDefinitionShape->Definition().ProductDefinition();
+    }
+  }
 
   // Own fields of AssemblyComponentUsage
 

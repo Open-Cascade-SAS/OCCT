@@ -399,6 +399,7 @@ static void getListSDR(const Handle(StepRepr_ShapeAspect)& sa,
 
 static void getSDR(const Handle(StepRepr_ProductDefinitionShape)& PDS,
                    Handle(TColStd_HSequenceOfTransient)& listSDR,
+                   Handle(TColStd_HSequenceOfTransient)& listNAUO,
                    Handle(TColStd_HSequenceOfTransient)& listSDRAspect,
                    const Handle(Transfer_TransientProcess)& TP)
 {
@@ -448,6 +449,15 @@ static void getSDR(const Handle(StepRepr_ProductDefinitionShape)& PDS,
       getListSDR(sa,listSDRAspect,TP);
       continue;
     }
+
+    // NAUO is used to find sub-assemblies
+    Handle(StepRepr_NextAssemblyUsageOccurrence) NAUO = 
+      Handle(StepRepr_NextAssemblyUsageOccurrence)::DownCast(subs4.Value());
+    if ( ! NAUO.IsNull() ) {
+      if ( PDS->Definition().ProductDefinition() == NAUO->RelatingProductDefinition() )
+        listNAUO->Append(NAUO);
+      continue;
+    }
   }
 }
 
@@ -480,7 +490,7 @@ static void getSDR(const Handle(StepRepr_ProductDefinitionShape)& PDS,
     Handle(StepRepr_ProductDefinitionShape) PDS = 
       Handle(StepRepr_ProductDefinitionShape)::DownCast(subs3.Value());
     if ( ! PDS.IsNull() ) {
-      getSDR(PDS,listSDR,listSDRAspect,TP);
+      getSDR(PDS,listSDR,listNAUO,listSDRAspect,TP);
       continue;
     }
     // NAUO is used to find sub-assemblies
