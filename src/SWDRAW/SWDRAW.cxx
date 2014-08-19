@@ -34,9 +34,6 @@
 #include <gp_Trsf.hxx>
 
 //  for NSPApply -- CKY 12 JUL 2001
-#include <XSAlgo.hxx>
-#include <XSAlgo_AlgoContainer.hxx>
-
 #include <Draw_ProgressIndicator.hxx>
 
 static int dejadraw = 0;
