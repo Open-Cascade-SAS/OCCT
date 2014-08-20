@@ -697,7 +697,8 @@ static Standard_Integer DNaming_AttachShape (Draw_Interpretor& di,
 	    TNaming_Selector aSelector(aResultLabel);
 	    if(!aSelector.Select(aShape, aCONTEXT, aGeometry, aKeepOrientation))
 	      return 1;
-	  }catch (...) {
+	  }
+          catch (Standard_Failure) {
 	    cout << "EXCEPTION: SELECTION_IMPOSSIBLE" <<endl;
 	  }
     
@@ -773,7 +774,8 @@ static Standard_Integer DNaming_XAttachShape (Draw_Interpretor& di,
 	      TNaming_Selector aSelector(aResultLabel);
 	      if(!aSelector.Select(aShape, aCONTEXT, aGeometry, aKeepOrientation))
 		return 1;
-	    } catch (...) {
+	    }
+            catch (Standard_Failure) {
 	      cout << "EXCEPTION: SELECTION_IMPOSSIBLE" <<endl;
 	    }
     

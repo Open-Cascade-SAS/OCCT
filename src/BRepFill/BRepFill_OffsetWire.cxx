@@ -644,7 +644,7 @@ void BRepFill_OffsetWire::Perform (const Standard_Real Offset,
       PerformWithBiLo(myWorkSpine,Offset,myBilo,myLink,myJoinType,Alt);
     }
   }
-  catch (...)//Every exception was caught.
+  catch (Standard_Failure)//Every exception was caught.
   {
     myShape.Nullify();
     myIsDone = Standard_False;

@@ -352,7 +352,7 @@ class BOPTools_CheckCurveOnSurface :
       //
       theFVal = -1.0*aP1.SquareDistance(aP2);
     }
-    catch(...) {
+    catch(Standard_Failure) {
       return Standard_False;
     }
     //
@@ -382,7 +382,7 @@ class BOPTools_CheckCurveOnSurface :
       
       theGrad(1) = -2.0*aP1.XYZ().Dot(aP2.XYZ());
     }
-    catch(...) {
+    catch(Standard_Failure) {
       return Standard_False;
     }
     
@@ -1260,7 +1260,7 @@ Standard_Boolean BOPTools_AlgoTools::
 
     theMaxDist = sqrt(Abs(theMaxDist));
   }
-  catch (...) {
+  catch (Standard_Failure) {
     return Standard_False;
   }
   //

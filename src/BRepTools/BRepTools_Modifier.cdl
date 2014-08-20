@@ -20,7 +20,8 @@ class Modifier from BRepTools
 
 uses Shape               from TopoDS,
      Modification        from BRepTools,
-     DataMapOfShapeShape from TopTools
+     DataMapOfShapeShape from TopTools,
+     ProgressIndicator   from Message
 
 raises NullObject   from Standard,
        NoSuchObject from Standard
@@ -47,7 +48,7 @@ is
 	---Purpose: Initializes the modifier with the shape <S>.
 
 
-    Perform(me: in out; M: Modification from BRepTools)
+    Perform(me: in out; M: Modification from BRepTools; aProgress: ProgressIndicator from Message = NULL)
 	---Purpose: Performs the modifications described by <M>.
     	raises NullObject from Standard 
         -- if the modifier has not been initialized with a shape.
@@ -61,7 +62,7 @@ is
 	---C++: inline
     	returns Boolean from Standard
 	is static;
-    
+
 
     ModifiedShape(me; S: Shape from TopoDS)
     	returns Shape from TopoDS
@@ -82,7 +83,7 @@ is
     	is static private;
 
 
-    Rebuild(me: in out; S: Shape from TopoDS; M: Modification from BRepTools) 
+    Rebuild(me: in out; S: Shape from TopoDS; M: Modification from BRepTools; aProgress: ProgressIndicator from Message = NULL) 
     	returns Boolean from Standard
     	is static private;
 

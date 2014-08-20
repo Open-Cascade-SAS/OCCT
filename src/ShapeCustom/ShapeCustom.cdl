@@ -41,7 +41,9 @@ uses
     BRepTools,
     TopTools,
     TColgp,
-    Precision
+    Precision,
+    Message,
+    ShapeBuild
 
 is
 
@@ -64,7 +66,9 @@ is
     ApplyModifier(S      : Shape from TopoDS;
      	    	  M      : Modification from BRepTools;
 		  context: in out DataMapOfShapeShape from TopTools;
-		  MD     : in out Modifier from BRepTools)
+		  MD     : in out Modifier from BRepTools;
+		  aProgress : ProgressIndicator from Message = NULL;
+		  aReShape  : ReShape from ShapeBuild = NULL )
 		   
     returns Shape from TopoDS;
     	---Purpose: Applies modifier to shape and checks sharing in the case assemblies.

@@ -32,7 +32,11 @@
 #include <TopoDS_Iterator.hxx>
 #include <BRep_Builder.hxx>
 #include <BRepTools_Modifier.hxx>
+#include <ShapeBuild_ReShape.hxx>
+#include <Standard_ErrorHandler.hxx>
 
+#include <Message_ProgressIndicator.hxx>
+#include <Message_ProgressSentry.hxx>
 
 //=======================================================================
 //function : ApplyModifier
@@ -42,7 +46,9 @@
 TopoDS_Shape ShapeCustom::ApplyModifier (const TopoDS_Shape &S, 
                                          const Handle(BRepTools_Modification) &M,
                                          TopTools_DataMapOfShapeShape &context,
-                                         BRepTools_Modifier& MD )
+                                         BRepTools_Modifier& MD,
+                                         const Handle(Message_ProgressIndicator) & aProgress,
+                                         const Handle(ShapeBuild_ReShape) & aReShape)
 {
   // protect against INTERNAL/EXTERNAL shapes
   TopoDS_Shape SF = S.Oriented(TopAbs_FORWARD);
@@ -53,14 +59,23 @@ TopoDS_Shape ShapeCustom::ApplyModifier (const TopoDS_Shape &S,
     TopoDS_Compound C;
     BRep_Builder B;
     B.MakeCompound ( C );
-    for ( TopoDS_Iterator it(SF); it.More(); it.Next() ) {
+
+    Standard_Integer aShapeCount = 0;
+    {
+      for (TopoDS_Iterator it(SF); it.More(); it.Next()) ++aShapeCount;
+    }
+
+    Message_ProgressSentry aPSentry(aProgress, "Applying Modifier For Solids", 0, aShapeCount, 1);
+    for ( TopoDS_Iterator it(SF); it.More() && aPSentry.More(); it.Next(), aPSentry.Next() ) {
       TopoDS_Shape shape = it.Value();
       TopLoc_Location L = shape.Location(), nullLoc;
       shape.Location ( nullLoc );
       TopoDS_Shape res;
       if ( context.IsBound ( shape ) )
-	   res = context.Find ( shape ).Oriented ( shape.Orientation() );
-      else res = ApplyModifier ( shape, M, context ,MD);
+        res = context.Find ( shape ).Oriented ( shape.Orientation() );
+      else
+        res = ApplyModifier ( shape, M, context ,MD, aProgress);
+
       if ( ! res.IsSame ( shape ) ) {
         context.Bind ( shape, res );
         locModified = Standard_True;
@@ -68,17 +83,48 @@ TopoDS_Shape ShapeCustom::ApplyModifier (const TopoDS_Shape &S,
       res.Location ( L );
       B.Add ( C, res );
     }
+
+    if ( !aPSentry.More() )
+    {
+      // Was cancelled
+      return S;
+    }
+
     if ( ! locModified ) return S;
     context.Bind ( SF, C );
     return C.Oriented ( S.Orientation() );
   }
 
+  Message_ProgressSentry aPSentry(aProgress, "Modify the Shape", 0, 1, 1);
   // Modify the shape
-  //BRepTools_Modifier Op(SF,M);
   MD.Init(SF);
-  MD.Perform(M);
-    
-  if ( ! MD.IsDone() ) return S;
+  MD.Perform(M, aProgress);
+  
+  if ( !aPSentry.More() || !MD.IsDone() ) return S;
+  if ( !aReShape.IsNull() )
+  {
+    for(TopoDS_Iterator theIterator(SF,Standard_False);theIterator.More();theIterator.Next())
+    {
+      const TopoDS_Shape & current = theIterator.Value();
+      TopoDS_Shape result;
+      try
+      {
+        OCC_CATCH_SIGNALS
+        result = MD.ModifiedShape( current );
+      }
+      catch (Standard_NoSuchObject)
+      {
+        // the sub shape isn't in the map
+        result.Nullify();
+      }
+
+      if (!result.IsNull() && !current.IsSame(result))
+      {
+        aReShape->Replace(current, result);
+      }
+    }
+  }
+
   return MD.ModifiedShape(SF).Oriented(S.Orientation());
 }
   

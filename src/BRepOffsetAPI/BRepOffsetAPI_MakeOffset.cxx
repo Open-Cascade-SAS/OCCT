@@ -333,7 +333,7 @@ void BRepOffsetAPI_MakeOffset::Perform(const Standard_Real Offset,
     else
       Done();
   }
-  catch(...) //Every exception was caught.
+  catch(Standard_Failure) //Every exception was caught.
   {
 #ifdef OCCT_DEBUG
     cout<<"An exception was caught in BRepOffsetAPI_MakeOffset::Perform : ";

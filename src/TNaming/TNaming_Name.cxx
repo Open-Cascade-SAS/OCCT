@@ -40,6 +40,7 @@
 
 #include <Standard_NotImplemented.hxx>
 #include <Standard_ConstructionError.hxx>
+#include <Standard_ErrorHandler.hxx>
 #include <TopTools_Array1OfShape.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TopoDS_Wire.hxx>
@@ -2075,6 +2076,7 @@ Standard_Boolean TNaming_Name::Solve(const TDF_Label&    aLab,
   PrintEntry(aLab);
 #endif
   try {
+  OCC_CATCH_SIGNALS
   switch (myType) {
   case TNaming_UNKNOWN :
     {
@@ -2145,7 +2147,7 @@ case TNaming_SHELLIN:
       break;
     }
   }
-} catch (...) {
+} catch (Standard_Failure) {
 #ifdef OCCT_DEBUG
   cout << "Name::Solve: EXCEPTION==> NameType = " << NameTypeToString(myType) << "  ";
   PrintEntry(aLab);
