@@ -71,25 +71,71 @@ Standard_Boolean StepToGeom_MakeBSplineSurface::Convert
   }
   const Standard_Integer NUKnots = BS->NbUMultiplicities();
   const Handle(TColStd_HArray1OfInteger)& aUMultiplicities = BS->UMultiplicities();
-  TColStd_Array1OfInteger UMult(1,NUKnots);
+  const Handle(TColStd_HArray1OfReal)& aUKnots = BS->UKnots();
+  
+  // count number of unique uknots
+  Standard_Real lastKnot = RealFirst();
+  Standard_Integer NUKnotsUnique = 0;
   for (i=1; i<=NUKnots; i++) {
-    UMult.SetValue(i,aUMultiplicities->Value(i));
+    if (aUKnots->Value(i) - lastKnot > Epsilon (Abs(lastKnot))) {
+      NUKnotsUnique++;
+      lastKnot = aUKnots->Value(i);
+    }
+  }
+
+  // set umultiplicities and uknots
+  TColStd_Array1OfInteger UMult(1,NUKnotsUnique);
+  TColStd_Array1OfReal KUn(1,NUKnotsUnique);
+  Standard_Integer pos = 1;
+  lastKnot = aUKnots->Value(1);
+  KUn.SetValue(1, aUKnots->Value(1));
+  UMult.SetValue(1, aUMultiplicities->Value(1));
+  for (i=2; i<=NUKnots; i++) {
+    if (aUKnots->Value(i) - lastKnot > Epsilon (Abs(lastKnot))) {
+      pos++;
+      KUn.SetValue(pos, aUKnots->Value(i));
+      UMult.SetValue(pos, aUMultiplicities->Value(i));
+      lastKnot = aUKnots->Value(i);
+    }
+    else {
+      // Knot not unique, increase multiplicity
+      Standard_Integer curMult = UMult.Value(pos);
+      UMult.SetValue(pos, curMult + aUMultiplicities->Value(i));
+    }
   }
   const Standard_Integer NVKnots = BS->NbVMultiplicities();
   const Handle(TColStd_HArray1OfInteger)& aVMultiplicities = BS->VMultiplicities();
-  TColStd_Array1OfInteger VMult(1,NVKnots);
-  for (i=1; i<=NVKnots; i++) {
-    VMult.SetValue(i,aVMultiplicities->Value(i));
-  }
-  const Handle(TColStd_HArray1OfReal)& aUKnots = BS->UKnots();
-  TColStd_Array1OfReal KUn(1,NUKnots);
-  for (i=1; i<=NUKnots; i++) {
-    KUn.SetValue(i,aUKnots->Value(i));
-  }
   const Handle(TColStd_HArray1OfReal)& aVKnots = BS->VKnots();
-  TColStd_Array1OfReal KVn(1,NVKnots);
+  
+  // count number of unique vknots
+  lastKnot = RealFirst();
+  Standard_Integer NVKnotsUnique = 0;
   for (i=1; i<=NVKnots; i++) {
-    KVn.SetValue(i,aVKnots->Value(i));
+    if (aVKnots->Value(i) - lastKnot > Epsilon (Abs(lastKnot))) {
+      NVKnotsUnique++;
+      lastKnot = aVKnots->Value(i);
+    }
+  }
+  
+  // set vmultiplicities and vknots
+  TColStd_Array1OfInteger VMult(1,NVKnotsUnique);
+  TColStd_Array1OfReal KVn(1,NVKnotsUnique);
+  pos = 1;
+  lastKnot = aVKnots->Value(1);
+  KVn.SetValue(1, aVKnots->Value(1));
+  VMult.SetValue(1, aVMultiplicities->Value(1));
+  for (i=2; i<=NVKnots; i++) {
+    if (aVKnots->Value(i) - lastKnot > Epsilon (Abs(lastKnot))) {
+      pos++;
+      KVn.SetValue(pos, aVKnots->Value(i));
+      VMult.SetValue(pos, aVMultiplicities->Value(i));
+      lastKnot = aVKnots->Value(i);
+    }
+    else {
+      // Knot not unique, increase multiplicity
+      Standard_Integer curMult = VMult.Value(pos);
+      VMult.SetValue(pos, curMult + aVMultiplicities->Value(i));
+    }
   }
   
   // --- Does the Surface Descriptor LOOKS like a U and/or V Periodic ---
@@ -98,17 +144,17 @@ Standard_Boolean StepToGeom_MakeBSplineSurface::Convert
   // --- U Periodic ? ---
   
   Standard_Integer SumMult = 0;
-  for (i=1; i<=NUKnots; i++) {
-    SumMult += aUMultiplicities->Value(i);
+  for (i=1; i<=NUKnotsUnique; i++) {
+    SumMult += UMult.Value(i);
   }
   
   Standard_Boolean shouldBeUPeriodic = Standard_False;
   if (SumMult == (NUPoles + UDeg + 1)) {
     //shouldBeUPeriodic = Standard_False;
   }
-  else if ((aUMultiplicities->Value(1) == 
-	    aUMultiplicities->Value(NUKnots)) &&
-	   ((SumMult - aUMultiplicities->Value(1))== NUPoles)) {
+  else if ((UMult.Value(1) == 
+	    UMult.Value(NUKnotsUnique)) &&
+	   ((SumMult - UMult.Value(1))== NUPoles)) {
     shouldBeUPeriodic = Standard_True;
   }
   /*else {  // --- What is that ??? ---
@@ -121,17 +167,17 @@ Standard_Boolean StepToGeom_MakeBSplineSurface::Convert
   // --- V Periodic ? ---
   
   SumMult = 0;
-  for (i=1; i<=NVKnots; i++) {
-    SumMult += aVMultiplicities->Value(i);
+  for (i=1; i<=NVKnotsUnique; i++) {
+    SumMult += VMult.Value(i);
   }
   
   Standard_Boolean shouldBeVPeriodic = Standard_False;
   if (SumMult == (NVPoles + VDeg + 1)) {
     //shouldBeVPeriodic = Standard_False;
   }
-  else if ((aVMultiplicities->Value(1) == 
-	    aVMultiplicities->Value(NVKnots)) &&
-	   ((SumMult - aVMultiplicities->Value(1)) == NVPoles)) {
+  else if ((VMult.Value(1) == 
+	    VMult.Value(NVKnotsUnique)) &&
+	   ((SumMult - VMult.Value(1)) == NVPoles)) {
     shouldBeVPeriodic = Standard_True;
   }
   /*else {  // --- What is that ??? ---

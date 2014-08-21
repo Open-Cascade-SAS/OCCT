@@ -8,12 +8,12 @@ set filename r0601_sy.stp
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 15  ( 0 )  Warnings = 73  ( 24 )  Summary  = 88  ( 24 )
+TPSTAT      : Faulties = 11  ( 0 )  Warnings = 78  ( 24 )  Summary  = 89  ( 24 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 91  ( 106 )  Face     = 91  ( 106 )   Summary  = 1381  ( 1665 )
-STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 91  ( 106 )  Face     = 91  ( 106 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 551  ( 670 )
-TOLERANCE   : MaxTol   =  0.02881427566  (  0.03703290736 )  AvgTol   =  0.002754968673  (  0.003655741726 )
-LABELS      : N0Labels = 1  ( 1 )  N1Labels = 182  ( 212 )  N2Labels = 0  ( 0 )   TotalLabels = 183  ( 213 )   NameLabels = 1  ( 1 )   ColorLabels = 91  ( 106 )   LayerLabels = 91  ( 106 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 95  ( 106 )  Face     = 95  ( 106 )   Summary  = 1451  ( 1665 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 95  ( 106 )  Face     = 95  ( 106 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 580  ( 670 )
+TOLERANCE   : MaxTol   =  0.02881427566  (  0.03703290736 )  AvgTol   =  0.002745495233  (  0.003655741726 )
+LABELS      : N0Labels = 1  ( 1 )  N1Labels = 190  ( 212 )  N2Labels = 0  ( 0 )   TotalLabels = 191  ( 213 )   NameLabels = 1  ( 1 )   ColorLabels = 95  ( 106 )   LayerLabels = 95  ( 106 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 5  ( 5 )
 COLORS      : Colors   = GREEN RED ROYALBLUE STEELBLUE2 TURQUOISE  ( GREEN RED ROYALBLUE STEELBLUE2 TURQUOISE )

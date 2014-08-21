@@ -11,12 +11,12 @@ set filename r_77-sy.stp
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 6  ( 0 )  Warnings = 8  ( 2 )  Summary  = 14  ( 2 )
+TPSTAT      : Faulties = 5  ( 0 )  Warnings = 8  ( 2 )  Summary  = 13  ( 2 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 53  ( 59 )  Face     = 53  ( 59 )   Summary  = 745  ( 889 )
-STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 53  ( 59 )  Face     = 53  ( 59 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 293  ( 356 )
-TOLERANCE   : MaxTol   =  0.01782737572  (  0.03722151184 )  AvgTol   =   0.00156896468  (  0.003291526808 )
-LABELS      : N0Labels = 1  ( 1 )  N1Labels = 106  ( 118 )  N2Labels = 0  ( 0 )   TotalLabels = 107  ( 119 )   NameLabels = 1  ( 1 )   ColorLabels = 53  ( 59 )   LayerLabels = 53  ( 59 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 54  ( 59 )  Face     = 54  ( 59 )   Summary  = 766  ( 889 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 54  ( 59 )  Face     = 54  ( 59 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 302  ( 356 )
+TOLERANCE   : MaxTol   =  0.01782737572  (  0.03722151184 )  AvgTol   =  0.001549641187  (  0.003291526808 )
+LABELS      : N0Labels = 1  ( 1 )  N1Labels = 108  ( 118 )  N2Labels = 0  ( 0 )   TotalLabels = 109  ( 119 )   NameLabels = 1  ( 1 )   ColorLabels = 54  ( 59 )   LayerLabels = 54  ( 59 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 3  ( 3 )
 COLORS      : Colors   = GREEN RED TURQUOISE  ( GREEN RED TURQUOISE )
