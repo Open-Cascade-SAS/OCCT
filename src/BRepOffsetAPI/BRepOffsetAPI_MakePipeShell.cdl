@@ -349,6 +349,9 @@ is
     returns ListOfShape from TopTools
     is redefined; 
      
+    ErrorOnSurface (me)
+    returns Real from Standard;
+    
 fields 
 
   myPipe  :  PipeShell  from  BRepFill;

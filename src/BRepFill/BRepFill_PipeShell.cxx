@@ -773,6 +773,7 @@ void BRepFill_PipeShell::SetForceApproxC1(const Standard_Boolean ForceApproxC1)
 
   if (Ok) {
     myShape = MkSw.Shape();
+    myErrorOnSurf = MkSw.ErrorOnSurface();
 
     TopoDS_Shape aBottomWire = myFirst;
     TopoDS_Shape aTopWire    = myLast;
@@ -877,6 +878,16 @@ void BRepFill_PipeShell::SetForceApproxC1(const Standard_Boolean ForceApproxC1)
 const TopoDS_Shape& BRepFill_PipeShell::Shape() const
 {
   return myShape;
+}
+
+//=======================================================================
+//function : ErrorOnSurface
+//purpose  : 
+//=======================================================================
+
+Standard_Real BRepFill_PipeShell::ErrorOnSurface() const 
+{
+  return myErrorOnSurf;
 }
 
 //=======================================================================

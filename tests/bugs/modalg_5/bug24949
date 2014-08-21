@@ -1,0 +1,31 @@
+puts "============"
+puts "OCC24949"
+puts "============"
+puts ""
+#######################################################################
+# Segmentation Violation during pipe creation
+#######################################################################
+
+restore [locate_data_file bug24949_Comp.brep] c
+explode c
+mksweep c_1
+addsweep c_2
+catch {buildsweep res}
+
+restore [locate_data_file bug24949_Comp.brep] c
+explode c
+pipe result c_1 c_2 2
+
+set square 188.689
+
+set nb_v_good 14
+set nb_e_good 19
+set nb_w_good 6
+set nb_f_good 6
+set nb_sh_good 1
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 0
+set nb_shape_good 46
+
+set 2dviewer 1

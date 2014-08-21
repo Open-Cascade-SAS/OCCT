@@ -2456,8 +2456,13 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
 				      Vertex(1,ipath+1),
 				      myTol3d);
 	}
- 	else UpdateEdge(TopoDS::Edge(UEdge(isec, ipath)), 
-			S, !exuv, UFirst);
+ 	else
+        {
+          if (UEdge(isec, ipath).IsNull()) //sweep failed
+            return Standard_False;
+          UpdateEdge(TopoDS::Edge(UEdge(isec, ipath)), 
+                     S, !exuv, UFirst);
+        }
      
 	if (uclose && (isec==NbLaw)) {
 	  UpdateEdge(TopoDS::Edge(UEdge(1, ipath)), 

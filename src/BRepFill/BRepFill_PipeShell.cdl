@@ -256,6 +256,9 @@ is
     returns Shape from TopoDS
     is  static;    
     
+    ErrorOnSurface (me)
+    returns Real from Standard;
+    
     FirstShape (me)
     ---Purpose: Returns the  TopoDS  Shape of the bottom of the sweep.
     ---C++: return const & 
@@ -316,6 +319,8 @@ fields
   myTrihedron   :  Trihedron        from  GeomFill;
   myTransition  :  TransitionStyle  from  BRepFill; 
   myStatus      :  PipeError        from  GeomFill;
+  myErrorOnSurf :  Real             from  Standard;
+  
 end PipeShell;
 
 

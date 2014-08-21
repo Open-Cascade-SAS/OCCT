@@ -363,6 +363,16 @@ const TopoDS_Shape& BRepFill_Pipe::Shape() const
   return myShape;
 }
 
+//=======================================================================
+//function : ErrorOnSurface
+//purpose  : 
+//=======================================================================
+
+Standard_Real BRepFill_Pipe::ErrorOnSurface() const 
+{
+  return myErrorOnSurf;
+}
+
 
 //=======================================================================
 //function : FirstShape
@@ -521,6 +531,7 @@ TopoDS_Wire BRepFill_Pipe::PipeLine(const gp_Pnt& Point)
  MkSw.Build( myReversedEdges, myTapes, myRails,
              BRepFill_Modified, myContinuity, GeomFill_Location, myDegmax, mySegmax );
  TopoDS_Shape aLocalShape = MkSw.Shape();
+ myErrorOnSurf = MkSw.ErrorOnSurface();
  return TopoDS::Wire(aLocalShape);
 // return TopoDS::Wire(MkSw.Shape());
 }
@@ -648,6 +659,7 @@ TopoDS_Shape BRepFill_Pipe::MakeShape(const TopoDS_Shape& S,
       MkSw.Build( myReversedEdges, myTapes, myRails,
                   BRepFill_Modified, myContinuity, GeomFill_Location, myDegmax, mySegmax );
       result = MkSw.Shape();
+      myErrorOnSurf = MkSw.ErrorOnSurface();
 
       Handle(TopTools_HArray2OfShape) aSections = MkSw.Sections();
 
@@ -669,6 +681,7 @@ TopoDS_Shape BRepFill_Pipe::MakeShape(const TopoDS_Shape& S,
       MkSw.Build( myReversedEdges, myTapes, myRails,
                   BRepFill_Modified, myContinuity, GeomFill_Location, myDegmax, mySegmax );
       result = MkSw.Shape();
+      myErrorOnSurf = MkSw.ErrorOnSurface();
       //Correct <myFirst> and <myLast>
       ReverseModifiedEdges(myFirst, myReversedEdges);
       ReverseModifiedEdges(myLast, myReversedEdges);

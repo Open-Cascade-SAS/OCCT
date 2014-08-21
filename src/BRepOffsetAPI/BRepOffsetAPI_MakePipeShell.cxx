@@ -305,3 +305,12 @@ BRepOffsetAPI_MakePipeShell::Generated(const TopoDS_Shape& S)
   return myGenerated;
 }
 
+//=======================================================================
+//function : ErrorOnSurface
+//purpose  : 
+//=======================================================================
+
+Standard_Real BRepOffsetAPI_MakePipeShell::ErrorOnSurface() const
+{
+  return myPipe->ErrorOnSurface();
+}

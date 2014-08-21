@@ -72,6 +72,9 @@ is
 	---C++ : return const &
     is static;
 
+    ErrorOnSurface (me)
+    returns Real from Standard;
+    
     FirstShape(me) returns Shape from TopoDS
 	---C++ : return const &
     is static;
@@ -184,5 +187,7 @@ fields
     myContinuity : Shape from GeomAbs;
     myMode    : Trihedron from GeomFill;
     myForceApproxC1 : Boolean from Standard;
+    
+    myErrorOnSurf : Real from Standard;
     
 end Pipe;

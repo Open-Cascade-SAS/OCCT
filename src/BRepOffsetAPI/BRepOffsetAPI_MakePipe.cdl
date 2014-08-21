@@ -90,6 +90,11 @@ is
     returns Shape from TopoDS;
 
 
+    ErrorOnSurface (me)
+        ---Level: Public
+    returns Real from Standard;
+
+
 fields
 
     myPipe : Pipe from BRepFill;

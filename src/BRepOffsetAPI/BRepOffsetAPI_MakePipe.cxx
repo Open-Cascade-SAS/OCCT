@@ -22,6 +22,8 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS.hxx>
 #include <TopAbs_ShapeEnum.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopExp.hxx>
 
 //=======================================================================
 //function : BRepOffsetAPI_MakePipe
@@ -76,7 +78,13 @@ const BRepFill_Pipe& BRepOffsetAPI_MakePipe::Pipe() const
 void BRepOffsetAPI_MakePipe::Build() 
 {
   myShape = myPipe.Shape();
-  Done();
+  //Check for emptiness of result
+  TopTools_IndexedMapOfShape theMap;
+  TopExp::MapShapes(myShape, theMap);
+  if (theMap.Extent() == 1)
+    NotDone();
+  else
+    Done();
 }
 
 
@@ -122,3 +130,12 @@ TopoDS_Shape BRepOffsetAPI_MakePipe::Generated (const TopoDS_Shape& SSpine,
   return bid;
 }
 
+//=======================================================================
+//function : ErrorOnSurface
+//purpose  : 
+//=======================================================================
+
+Standard_Real BRepOffsetAPI_MakePipe::ErrorOnSurface() const
+{
+  return myPipe.ErrorOnSurface();
+}
