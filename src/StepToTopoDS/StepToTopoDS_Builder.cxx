@@ -79,8 +79,12 @@
 #include <StepToTopoDS_TranslateFace.hxx>
 #include <StepShape_HArray1OfFace.hxx>
 
+#include <STEPControl_ActorRead.hxx>
+
 #include <Message_ProgressSentry.hxx>
 #include <Message_Messenger.hxx>
+#include <Transfer_ActorOfTransientProcess.hxx>
+#include <STEPControl_ActorRead.hxx>
 
 static void ResetPreci (const TopoDS_Shape& S, Standard_Real maxtol)
 {
@@ -720,7 +724,9 @@ static TopoDS_Face TranslateBoundedSurf (const Handle(StepGeom_Surface) &surf,
 
 void StepToTopoDS_Builder::Init
 (const Handle(StepShape_GeometricSet)& GCS,
- const Handle(Transfer_TransientProcess)& TP)
+ const Handle(Transfer_TransientProcess)& TP,
+ const Handle(Transfer_ActorOfTransientProcess)& RA,
+ const Standard_Boolean isManifold)
 {
   // Initialisation of the Tool
 
@@ -842,7 +848,23 @@ void StepToTopoDS_Builder::Init
       // try other surfs
       else res = TranslateBoundedSurf (aSurf, preci);
     }
-    else TP->AddWarning (ent," Entity is not a Curve, Point or Surface");
+    else if ( ent->IsKind(STANDARD_TYPE(StepGeom_GeometricRepresentationItem)) )
+    {
+      Handle(StepGeom_GeometricRepresentationItem) GRI = 
+        Handle(StepGeom_GeometricRepresentationItem)::DownCast(ent);
+      if (!RA.IsNull())
+      {
+        Handle(STEPControl_ActorRead) anActor = Handle(STEPControl_ActorRead)::DownCast(RA);
+        Handle(Transfer_Binder) binder;
+        if( !anActor.IsNull())
+          binder = anActor->TransferShape(GRI, TP, isManifold);
+        if (!binder.IsNull())
+        {
+          res = TransferBRep::ShapeResult(binder);
+        }
+      }
+    }
+    else TP->AddWarning (ent," Entity is not a Curve, Point, Surface or GeometricRepresentationItem");
     if ( ! res.IsNull() ) {
       B.Add(S, res);
       TransferBRep::SetShapeResult ( TP, ent, res );

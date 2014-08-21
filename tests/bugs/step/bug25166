@@ -1,0 +1,24 @@
+puts "============"
+puts "OCC25166"
+puts "============"
+puts ""
+#####################################################
+# STEP Reader - allow GEOMETRIC_SET entity to accept non-geometric children
+#####################################################
+
+stepread [locate_data_file bug25166_piston.stp] a *
+tpcompound result
+
+set square 46280.7
+
+set nb_v_good 176
+set nb_e_good 176
+set nb_w_good 176
+set nb_f_good 168
+set nb_sh_good 168
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 2
+set nb_shape_good 866
+
+set 3dviewer 1

@@ -22,6 +22,7 @@ Standard_Integer StepShape_GeometricSetSelect::CaseNum(const Handle(Standard_Tra
 	if (ent->IsKind(STANDARD_TYPE(StepGeom_Point))) return 1;
 	if (ent->IsKind(STANDARD_TYPE(StepGeom_Curve))) return 2;
 	if (ent->IsKind(STANDARD_TYPE(StepGeom_Surface))) return 3;
+  if (ent->IsKind(STANDARD_TYPE(StepGeom_GeometricRepresentationItem))) return 4;
 	return 0;
 }
 

@@ -34,10 +34,12 @@ uses
     Shape                       from TopoDS,
     BuilderError                from StepToTopoDS,
     TransientProcess            from Transfer,
-    NMTool                      from StepToTopoDS
+    NMTool                      from StepToTopoDS,
+    ActorRead                   from STEPControl,
+    ActorOfTransientProcess     from Transfer
     
     raises NotDone from StdFail
-     
+    
 is 
 
     Create returns Builder from StepToTopoDS;
@@ -98,7 +100,9 @@ is
 	  
     Init (me : in out;
     	  S  : GeometricSet from StepShape;
-          TP : TransientProcess  from Transfer );
+          TP : TransientProcess  from Transfer;
+	  RA : ActorOfTransientProcess from Transfer = NULL;
+	  isManifold : Boolean = Standard_False );
 	  
     Value (me) returns Shape from TopoDS
     	raises NotDone

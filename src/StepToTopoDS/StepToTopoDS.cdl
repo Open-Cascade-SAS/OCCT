@@ -22,7 +22,7 @@ package StepToTopoDS
 
 uses TopoDS, StdFail, TCollection, TColStd, BRep, Geom, Geom2d,
      GeomAdaptor, Extrema, gp, Transfer, Geom2dAPI,
-     StepRepr, StepGeom, StepShape, TopTools
+     StepRepr, StepGeom, StepShape, TopTools, STEPControl
 
 is
 

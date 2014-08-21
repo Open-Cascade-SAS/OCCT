@@ -1231,7 +1231,7 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity(const Han
     found = Standard_True;
   } 
   else if (start->IsKind(STANDARD_TYPE(StepShape_GeometricSet))) {
-    myShapeBuilder.Init(GetCasted(StepShape_GeometricSet, start), TP);
+    myShapeBuilder.Init(GetCasted(StepShape_GeometricSet, start), TP, this, isManifold);
     found = Standard_True;
   }
   else if (start->IsKind(STANDARD_TYPE(StepShape_EdgeBasedWireframeModel))) {
