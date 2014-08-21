@@ -248,10 +248,13 @@ static void TDF_Tool_OutReferers(const TDF_Label& aRefLabel,
       // const Handle(TDF_Attribute)& att = attMItr.Key();
       Handle(TDF_Attribute) att = attMItr.Key();
       // ENDCLE
-      if (aFilterForReferences.IsKept(att) && !att->Label().IsDescendant(aRefLabel)) {
-	atts.Add(itr.Value());
-	outRefFound = Standard_True;
-	break;
+      if (aFilterForReferences.IsKept(att) &&
+          !att->Label().IsNull() &&
+          !att->Label().IsDescendant(aRefLabel))
+      {
+        atts.Add(itr.Value());
+        outRefFound = Standard_True;
+        break;
       }
     }
 
@@ -318,8 +321,11 @@ static void TDF_Tool_OutReferences(const TDF_Label& aRefLabel,
     const TDF_AttributeMap& attMap = ds->Attributes();
     for (TDF_MapIteratorOfAttributeMap attMItr(attMap);attMItr.More();attMItr.Next()) {
       Handle(TDF_Attribute) att = attMItr.Key();
-      if (aFilterForReferences.IsKept(att) && !att->Label().IsDescendant(aRefLabel)) {
-	atts.Add(att);
+      if (aFilterForReferences.IsKept(att) &&
+          !att->Label().IsNull() &&
+          !att->Label().IsDescendant(aRefLabel))
+      {
+        atts.Add(att);
       }
     }
     const TDF_LabelMap& labMap = ds->Labels();

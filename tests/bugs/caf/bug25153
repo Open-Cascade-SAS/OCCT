@@ -1,0 +1,16 @@
+puts "=========="
+puts "OCC25123"
+puts "=========="
+puts ""
+###################################################
+# Retrieval of arguments of selection crashes the application
+###################################################
+
+plane p 0 0 0 0 0 1
+mkface f p -100 100 -100 100
+
+NewDocument D XmlOcaf
+ImportShape D 0:1 f
+SelectShape D 0:2 f
+ForgetAll D 0:1
+ArgsSelection D 0:2
