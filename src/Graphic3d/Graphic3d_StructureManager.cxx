@@ -271,40 +271,6 @@ void Graphic3d_StructureManager::PickStructures (Graphic3d_MapOfStructure& SG) c
 
 }
 
-void Graphic3d_StructureManager::MinMaxValues (Standard_Real& XMin, Standard_Real& YMin, Standard_Real& ZMin, Standard_Real& XMax, Standard_Real& YMax, Standard_Real& ZMax) const {
-
-Standard_Boolean Flag = Standard_True;
-Standard_Real Xm, Ym, Zm, XM, YM, ZM, RL, RF;
-
-        RL = RealLast ();
-        RF = RealFirst ();
-
-        XMin = YMin = ZMin = RL;
-        XMax = YMax = ZMax = RF;
-
-        Graphic3d_MapIteratorOfMapOfStructure it(MyDisplayedStructure);
-        for (; it.More(); it.Next()) {
-          Handle(Graphic3d_Structure) SG = it.Key();
-          if (! (SG->IsEmpty() || SG->IsInfinite ())) {
-            SG->MinMaxValues (Xm, Ym, Zm, XM, YM, ZM);
-            if (Xm < XMin) XMin = Xm;
-            if (Ym < YMin) YMin = Ym;
-            if (Zm < ZMin) ZMin = Zm;
-            if (XM > XMax) XMax = XM;
-            if (YM > YMax) YMax = YM;
-            if (ZM > ZMax) ZMax = ZM;
-            Flag = Standard_False;
-          }
-        }
-
-        // If all structures are empty or infinite
-        if (Flag) {
-          XMin = YMin = ZMin = RF;
-          XMax = YMax = ZMax = RL;
-        }
- 
-}
- 
 Standard_Integer Graphic3d_StructureManager::NewIdentification () {
 
 Standard_Integer Id     = MyStructGenId.Next ();

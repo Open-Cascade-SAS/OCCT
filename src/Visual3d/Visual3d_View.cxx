@@ -1766,6 +1766,9 @@ void Visual3d_View::MinMaxValues (const Graphic3d_MapOfStructure& theSet,
     {
       const Handle(Graphic3d_Structure)& aStructure = anIterator.Key();
 
+      if (!aStructure->IsVisible())
+        continue;
+
       if (aStructure->IsInfinite() && !theToIgnoreInfiniteFlag)
       {
         //XMin, YMin .... ZMax are initialized by means of infinite line data

@@ -231,15 +231,6 @@ is
 	---Purpose: Returns the values of the current default attributes.
 	---Category: Inquire methods
 
-	MinMaxValues ( me;
-		       XMin, YMin, ZMin	: out Real from Standard;
-		       XMax, YMax, ZMax	: out Real from Standard )
-		is static;
-	---Level: Public
-	---Purpose: Returns the coordinates of the boundary box of all
-	--	    structures displayed in the manager <me>.
-	---Category: Inquire methods
-
 	PrimitivesAspect ( me;
 			   CTXL	: out AspectLine3d from Graphic3d;
 			   CTXT	: out AspectText3d from Graphic3d;
