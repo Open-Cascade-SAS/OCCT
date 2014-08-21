@@ -1078,11 +1078,6 @@ void FindInternalIntersections(const TopoDS_Edge& theEdge,
   
   TopoDS_Vertex theVertices [2];
   TopExp::Vertices(theEdge, theVertices[0], theVertices[1]);
-  if (theEdge.Orientation() == TopAbs_REVERSED)
-  {
-    theVertices[0].Reverse();
-    theVertices[1].Reverse();
-  }
   gp_Pnt thePnt [2];
   thePnt[0] = BRep_Tool::Pnt(theVertices[0]);
   thePnt[1] = BRep_Tool::Pnt(theVertices[1]);
@@ -1217,11 +1212,13 @@ void FindInternalIntersections(const TopoDS_Edge& theEdge,
     LastVertex.Orientation(TopAbs_REVERSED);
     
     TopoDS_Shape aLocalShape = theEdge.EmptyCopied();
+    TopAbs_Orientation anOrient = aLocalShape.Orientation();
+    aLocalShape.Orientation(TopAbs_FORWARD);
     TopoDS_Edge NewEdge = TopoDS::Edge(aLocalShape);
     BB.Range(NewEdge, FirstPar, LastPar);
     BB.Add(NewEdge, FirstVertex);
     BB.Add(NewEdge, LastVertex);
-
+    NewEdge.Orientation(anOrient);
     NewEdges.Append(NewEdge);
     FirstVertex = LastVertex;
     FirstPar = LastPar;
