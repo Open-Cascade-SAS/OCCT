@@ -21,6 +21,7 @@
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <gp.hxx>
+#include <TColStd_Array1OfReal.hxx>
 
 #define Us3 0.3333333333333333333333333333
 
@@ -244,7 +245,7 @@ void GCPnts_TangentialDeflection::PerformCircular (const TheCurve& C)
 void GCPnts_TangentialDeflection::PerformCurve (const TheCurve& C)
 
 {
-  Standard_Integer i;       
+  Standard_Integer i, j;       
   gp_XYZ V1, V2;
   gp_Pnt MiddlePoint, CurrentPoint, LastPoint;   
   Standard_Real Du, Dusave, MiddleU, L1, L2;
@@ -274,26 +275,55 @@ void GCPnts_TangentialDeflection::PerformCurve (const TheCurve& C)
       Standard_Boolean IsLine   = Standard_True;
       Standard_Integer NbPoints = 3;
       if (minNbPnts > 3) NbPoints = minNbPnts;
-      Du = (lastu-firstu)/NbPoints;
-      MiddleU = firstu + Du;
-      for (i = 2; i < NbPoints; i++) {
-        D0 (C, MiddleU, MiddlePoint);
-        V2 = MiddlePoint.XYZ();
-        V2.Subtract (CurrentPoint.XYZ());
-        L2 = V2.Modulus ();
-        if (L2 > LTol) {
-          if (((V2.CrossMagnitude (V1))/(L1*L2)) >= ATol) {
-            //C'etait une singularite
-            IsLine = Standard_False;
-            break;
-          }
-          if (minNbPnts > 2) {
-            parameters.Append (MiddleU);
-            points    .Append (MiddlePoint);
+      ////
+      Standard_Integer NbInterv = const_cast<TheCurve*>(&C)->NbIntervals(GeomAbs_CN);
+      TColStd_Array1OfReal Intervs(1, NbInterv+1);
+      const_cast<TheCurve*>(&C)->Intervals(Intervs, GeomAbs_CN);
+      Standard_Real param = 0.;
+      for (i = 1; i <= NbInterv; i++)
+      {
+        // Avoid usage intervals out of [firstu, lastu].
+        if ((Intervs(i+1) < firstu) ||
+            (Intervs(i)   > lastu))
+        {
+          continue;
+        }
+        // Fix border points in applicable intervals, to avoid be out of target interval.
+        if ((Intervs(i)   < firstu) &&
+            (Intervs(i+1) > firstu))
+        {
+          Intervs(i) = firstu;
+        }
+        if ((Intervs(i)   < lastu) &&
+            (Intervs(i+1) > lastu))
+        {
+          Intervs(i + 1) = lastu;
+        }
+
+        Standard_Real delta = (Intervs(i+1) - Intervs(i))/NbPoints;
+        for (j = 1; j <= NbPoints; j++)
+        {
+          param = Intervs(i) + j*delta;
+          D0 (C, param, MiddlePoint);
+          V2 = MiddlePoint.XYZ();
+          V2.Subtract (CurrentPoint.XYZ());
+          L2 = V2.Modulus ();
+          if (L2 > LTol) {
+            if (((V2.CrossMagnitude (V1))/(L1*L2)) >= ATol) {
+              //C'etait une singularite
+              IsLine = Standard_False;
+              break;
+            }
+            if (minNbPnts > 2) {
+              parameters.Append (param);
+              points    .Append (MiddlePoint);
+            }
           }
         }
-        MiddleU += Du;
+        if (!IsLine)
+          break;
       }
+      ////
       if (IsLine) {
         //C'etait une droite (plusieurs poles alignes), Calcul termine :
         parameters.Append (lastu);
@@ -308,7 +338,8 @@ void GCPnts_TangentialDeflection::PerformCurve (const TheCurve& C)
           parameters.Remove (i);
           pointsLength--;
         }
-        Du = Dusave;
+        //Du = Dusave;
+        EvaluateDu (C, param, MiddlePoint, Du, NotDone);
       }
     }
     else  {
