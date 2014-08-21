@@ -322,6 +322,7 @@ void BOPAlgo_ArgumentAnalyzer::TestSelfInterferences()
     //
     anArgs.Append(aS);
     aChecker.SetArguments(anArgs);
+    aChecker.SetNonDestructive(Standard_True);
     //
     aChecker.Perform();
     iErr=aChecker.ErrorStatus();

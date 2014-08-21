@@ -15,7 +15,6 @@
 
 #include <BRepAlgoAPI_Check.ixx>
 #include <BOPAlgo_ArgumentAnalyzer.hxx>
-#include <BRepBuilderAPI_Copy.hxx>
 #include <BRepCheck_Analyzer.hxx>
 
 //=======================================================================
@@ -104,14 +103,14 @@
                                const Standard_Boolean bTestSI)
 {
   myResult.Clear();
-  myS1 = theS1.IsNull() ? theS1 : BRepBuilderAPI_Copy(theS1).Shape();
-  myS2 = theS2.IsNull() ? theS2 : BRepBuilderAPI_Copy(theS2).Shape();
+  myS1 = theS1;
+  myS2 = theS2;
   //
   myAnalyzer = new BOPAlgo_ArgumentAnalyzer();
   //
   myAnalyzer->SetShape1(myS1);
   myAnalyzer->SetShape2(myS2);
-  myAnalyzer->OperationType()=theOp;
+  myAnalyzer->OperationType() = theOp;
   myAnalyzer->ArgumentTypeMode() = Standard_True;
   myAnalyzer->SmallEdgeMode() = bTestSE;
   myAnalyzer->SelfInterMode() = bTestSI;

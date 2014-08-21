@@ -2647,6 +2647,69 @@ static Standard_Integer OCC24925 (Draw_Interpretor& theDI,
 }
 
 //=======================================================================
+//function : OCC25043
+//purpose  :
+//=======================================================================
+#include <BRepAlgoAPI_Check.hxx>
+static Standard_Integer OCC25043 (Draw_Interpretor& theDI,
+                                  Standard_Integer  theArgNb,
+                                  const char**      theArgVec)
+{
+  if (theArgNb != 2) {
+    theDI << "Usage: " << theArgVec[0] << " shape\n";
+    return 1;
+  }
+  
+  TopoDS_Shape aShape = DBRep::Get(theArgVec[1]);
+  if (aShape.IsNull()) 
+  {
+    theDI << theArgVec[1] << " shape is NULL\n";
+    return 1;
+  }
+  
+  BRepAlgoAPI_Check  anAlgoApiCheck(aShape, Standard_True, Standard_True);
+
+  if (!anAlgoApiCheck.IsValid())
+  {
+    BOPAlgo_ListIteratorOfListOfCheckResult anCheckIter(anAlgoApiCheck.Result());
+    for (; anCheckIter.More(); anCheckIter.Next())
+    {
+      const BOPAlgo_CheckResult& aCurCheckRes = anCheckIter.Value();
+      const BOPCol_ListOfShape& aCurFaultyShapes = aCurCheckRes.GetFaultyShapes1();
+      BOPCol_ListIteratorOfListOfShape aFaultyIter(aCurFaultyShapes);
+      for (; aFaultyIter.More(); aFaultyIter.Next())
+      {
+        const TopoDS_Shape& aFaultyShape = aFaultyIter.Value();
+        
+        Standard_Boolean anIsFaultyShapeFound = Standard_False;
+        TopExp_Explorer anExp(aShape, aFaultyShape.ShapeType());
+        for (; anExp.More() && !anIsFaultyShapeFound; anExp.Next())
+        {
+          if (anExp.Current().IsEqual(aFaultyShape))
+            anIsFaultyShapeFound = Standard_True;
+        }
+        
+        if (!anIsFaultyShapeFound)
+        {
+          theDI << "Error. Faulty Shape is NOT found in source shape.\n";
+          return 0;
+        }
+        else 
+        {
+          theDI << "Info. Faulty shape if found in source shape\n";
+        }
+      }
+    }
+  }
+  else 
+  {
+    theDI << "Error. Problems are not detected. Test is not performed.";
+  }
+
+  return 0;
+}
+
+//=======================================================================
 //function : OCC23010
 //purpose  :
 //=======================================================================
@@ -2740,5 +2803,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
                    "\nOCAF persistence without setting environment variables",
                    __FILE__, OCC24925, group);
   theCommands.Add ("OCC23010", "OCC23010 STEP_file", __FILE__, OCC23010, group);
+  theCommands.Add ("OCC25043", "OCC25043 shape", __FILE__, OCC25043, group);
   return;
 }
