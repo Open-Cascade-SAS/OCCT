@@ -36,7 +36,13 @@ uses
 
 is
 
-    Create ( TheShape: Shape from TopoDS) returns ShapeTool from Prs3d;
+    Create ( theShape      : Shape from TopoDS;
+             theAllVertices: Boolean from Standard = Standard_False)
+    ---Purpose: Constructs the tool and initializes it using theShape and theAllVertices
+    -- (optional) arguments. By default, only isolated and internal vertices are considered,
+    -- however if theAllVertices argument is equal to True, all shape's vertices are taken into account.
+    returns ShapeTool from Prs3d;
+
     InitFace (me: in out);
     MoreFace (me) returns Boolean from Standard;
     NextFace (me: in out);

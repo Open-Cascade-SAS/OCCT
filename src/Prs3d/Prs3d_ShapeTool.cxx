@@ -14,9 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#define OCC215           //SAV: 01/04/02 vertex exploring is done for all types of shape.
-#define OCC598		 //SAV: 22/10/02 searching for internal vertices. 
-
 #include <Prs3d_ShapeTool.ixx>
 
 #include <BRepTools.hxx>
@@ -41,56 +38,44 @@
 //purpose  : 
 //=======================================================================
 
-Prs3d_ShapeTool::Prs3d_ShapeTool(const TopoDS_Shape& TheShape):
-                                 myShape (TheShape) 
+Prs3d_ShapeTool::Prs3d_ShapeTool (const TopoDS_Shape& theShape,
+                                  const Standard_Boolean theAllVertices)
+: myShape (theShape)
 {
   myEdgeMap.Clear();
   myVertexMap.Clear();
-  TopExp::MapShapesAndAncestors(TheShape,TopAbs_EDGE,TopAbs_FACE,myEdgeMap);
+  TopExp::MapShapesAndAncestors (theShape,TopAbs_EDGE,TopAbs_FACE, myEdgeMap);
 
-#ifndef OCC215
-  // find vertices not under ancestors.
-  TopAbs_ShapeEnum E = TheShape.ShapeType();
-
-
-  // this check were done to reduce the number of selectable objects
-  // in a local context. By now, there's no noticeable performance improvement.
-  if (E != TopAbs_SOLID && E != TopAbs_SHELL)
-#endif
+  TopExp_Explorer anExpl;
+  if (theAllVertices)
+  {
+    for (anExpl.Init (theShape, TopAbs_VERTEX); anExpl.More(); anExpl.Next())
     {
-      TopExp_Explorer ex(TheShape,TopAbs_VERTEX, TopAbs_EDGE);
-      while (ex.More()) {
-	const TopoDS_Shape& aV=ex.Current();
-	myVertexMap.Add(aV);
-	ex.Next();
-      }
+      myVertexMap.Add (anExpl.Current());
     }
-#ifdef OCC598
-  TopExp_Explorer edges( TheShape, TopAbs_EDGE );
-  while( edges.More() ) {
-    //xf
-    const TopoDS_Shape& aE= edges.Current();
-    TopoDS_Iterator aIt(aE, Standard_False, Standard_True);
-    while( aIt.More() ) {
-      const TopoDS_Shape& aV=aIt.Value();
-      if (aV.Orientation()==TopAbs_INTERNAL) {
-	myVertexMap.Add(aV);
-      }
-      aIt.Next();
-    }
-    /*
-    TopExp_Explorer vertices( edges.Current(), TopAbs_VERTEX );
-    while( vertices.More() ) {
-      TopoDS_Vertex current = TopoDS::Vertex( vertices.Current() );
-      if ( current.Orientation() == TopAbs_INTERNAL )
-	myVertexMap.Add( current );
-      vertices.Next();
-    }
-    */
-    //xt
-    edges.Next();
   }
-#endif
+  else
+  {
+    // Extracting isolated vertices
+    for (anExpl.Init (theShape, TopAbs_VERTEX, TopAbs_EDGE); anExpl.More(); anExpl.Next())
+    {
+      myVertexMap.Add (anExpl.Current());
+    }
+
+    // Extracting internal vertices
+    for (anExpl.Init (theShape, TopAbs_EDGE); anExpl.More(); anExpl.Next())
+    {
+      TopoDS_Iterator aIt (anExpl.Current(), Standard_False, Standard_True);
+      for (; aIt.More(); aIt.Next())
+      {
+        const TopoDS_Shape& aV = aIt.Value();
+        if (aV.Orientation() == TopAbs_INTERNAL)
+        {
+          myVertexMap.Add (aV);
+        }
+      }
+    }
+  }
 }
 
 //=======================================================================

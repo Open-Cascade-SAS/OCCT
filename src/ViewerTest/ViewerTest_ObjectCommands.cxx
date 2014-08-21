@@ -133,6 +133,7 @@
 #include <BRepExtrema_ExtPC.hxx>
 #include <BRepExtrema_ExtPF.hxx>
 
+#include <Prs3d_VertexDrawMode.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_PointAspect.hxx>
 
@@ -5209,6 +5210,102 @@ static int VUnsetEdgeType (Draw_Interpretor& theDI,
   return 0;
 }
 
+
+//=======================================================================
+//function : VVertexMode
+//purpose  : Switches vertex display mode for AIS_Shape or displays the current value
+//=======================================================================
+
+static int VVertexMode (Draw_Interpretor& theDI,
+                         Standard_Integer  theArgNum,
+                         const char**      theArgs)
+{
+  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
+  if (aContext.IsNull())
+  {
+    std::cout << "Error: no view available, call 'vinit' before!" << std::endl;
+    return 1;
+  }
+
+  // No arguments --> print the current default vertex draw mode
+  if (theArgNum == 1)
+  {
+    Prs3d_VertexDrawMode aCurrMode = aContext->DefaultDrawer()->VertexDrawMode();
+    theDI <<  "Default vertex draw mode: " << (aCurrMode == Prs3d_VDM_Isolated ? "'isolated'" : "'all'") << "\n";
+    return 0;
+  }
+
+  // -set argument --> change the default vertex draw mode and the mode for all displayed or given object(s)
+  TCollection_AsciiString aParam (theArgs[1]);
+  if (aParam == "-set")
+  {
+    if (theArgNum == 2)
+    {
+      std::cout << "Error: '-set' option not followed by the mode and optional object name(s)" << std::endl;
+      std::cout << "Type 'help vvertexmode' for usage hints" << std::endl;
+      return 1;
+    }
+
+    TCollection_AsciiString aModeStr (theArgs[2]);
+    Prs3d_VertexDrawMode aNewMode =
+       aModeStr == "isolated" ? Prs3d_VDM_Isolated :
+      (aModeStr == "all"      ? Prs3d_VDM_All :
+                                Prs3d_VDM_Inherited);
+
+    Standard_Boolean aRedrawNeeded = Standard_False;
+    AIS_ListOfInteractive anObjs;
+
+    // No object(s) specified -> use all displayed
+    if (theArgNum == 3)
+    {
+      theDI << "Setting the default vertex draw mode and updating all displayed objects...\n";
+      aContext->DisplayedObjects (anObjs);
+      aContext->DefaultDrawer()->SetVertexDrawMode (aNewMode);
+      aRedrawNeeded = Standard_True;
+    }
+
+    Handle(AIS_InteractiveObject) anObject;
+    for (Standard_Integer aCount = 3; aCount < theArgNum; aCount++)
+    {
+      TCollection_AsciiString aName (theArgs[aCount]);
+      if (!GetMapOfAIS().IsBound2 (aName))
+      {
+        theDI << "Warning: wrong object name ignored - " << theArgs[0] << "\n";
+        continue;
+      }
+      anObject = Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2(aName));
+      anObjs.Append (anObject);
+    }
+
+    for (AIS_ListIteratorOfListOfInteractive anIt (anObjs); anIt.More(); anIt.Next())
+    {
+      anObject = anIt.Value();
+      anObject->Attributes()->SetVertexDrawMode (aNewMode);
+      aContext->Redisplay (anObject, Standard_False);
+      aRedrawNeeded = Standard_True;
+    }
+
+    if (aRedrawNeeded)
+      ViewerTest::CurrentView()->Redraw();
+
+    return 0;
+  }
+
+  if (theArgNum > 2)
+  {
+    std::cout << "Error: invalid number of arguments" << std::endl;
+    std::cout << "Type 'help vvertexmode' for usage hints" << std::endl;
+    return 1;
+  }
+
+  // One argument (object name) --> print the current vertex draw mode for the object
+  Handle(AIS_InteractiveObject) anObject =
+    Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2 (aParam));
+  Prs3d_VertexDrawMode aCurrMode = anObject->Attributes()->VertexDrawMode();
+  theDI <<  "Object's vertex draw mode: " << (aCurrMode == Prs3d_VDM_Isolated ? "'isolated'" : "'all'") << "\n";
+  return 0;
+}
+
 //=======================================================================
 //function : ObjectsCommands
 //purpose  :
@@ -5378,4 +5475,12 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
                    "vunsetedgetype ShapeName [-force]"
                    "\n\t\t:        Unsets edges type and color for input shape",
                    __FILE__, VUnsetEdgeType, group);
+
+  theCommands.Add ("vvertexmode",
+                   "vvertexmode [name | -set {isolated | all | inherited} [name1 name2 ...]]\n"
+                   "vvertexmode - prints the default vertex draw mode\n"
+                   "vvertexmode name - prints the vertex draw mode of the given object\n"
+                   "vvertexmode -set {isolated | all | inherited} - sets the default vertex draw mode and updates the mode for all displayed objects\n"
+                   "vvertexmode -set {isolated | all | inherited} name1 name2 ... - sets the vertex draw mode for the specified object(s)\n",
+                   __FILE__, VVertexMode, group);
 }

@@ -33,6 +33,7 @@ Prs3d_Drawer::Prs3d_Drawer()
   myHLRDeviationCoefficient (0.02),
   myDeviationAngle (12.0 * M_PI / 180.0),
   myHLRAngle (20.0 * M_PI / 180.0),
+  myVertexDrawMode (Prs3d_VDM_Isolated),
   myLineDrawArrow (Standard_False),
   myDrawHiddenLine (Standard_False),
   myFaceBoundaryDraw (Standard_False),
@@ -333,6 +334,18 @@ Handle (Prs3d_PointAspect) Prs3d_Drawer::PointAspect() {
 
 void Prs3d_Drawer::SetPointAspect ( const Handle(Prs3d_PointAspect)& anAspect) {
  myPointAspect = anAspect;
+}
+
+void Prs3d_Drawer::SetVertexDrawMode (const Prs3d_VertexDrawMode theMode)
+{
+  // Prs3d_VDM_Inherited value is allowed at AIS_Drawer level.
+  // Replacing it by Prs3d_VDM_Isolated to avoid unpredictable behavior.
+  myVertexDrawMode = (theMode == Prs3d_VDM_Inherited ? Prs3d_VDM_Isolated : theMode);
+}
+
+Prs3d_VertexDrawMode Prs3d_Drawer::VertexDrawMode () const
+{
+  return myVertexDrawMode;
 }
 
 Standard_Boolean Prs3d_Drawer::DrawHiddenLine () const {return myDrawHiddenLine;}

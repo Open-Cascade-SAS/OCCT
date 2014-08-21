@@ -61,7 +61,9 @@ namespace
                            const TopoDS_Shape&                theShape,
                            const Handle (Prs3d_Drawer)&       theDrawer)
   {
-    if (theShape.ShapeType() != TopAbs_COMPOUND)
+    Standard_Boolean aDrawAllVerticesFlag = (theDrawer->VertexDrawMode() == Prs3d_VDM_All);
+
+    if (!aDrawAllVerticesFlag && theShape.ShapeType() != TopAbs_COMPOUND)
     {
       return;
     }
@@ -74,6 +76,11 @@ namespace
       return;
     }
 
+    // We have to create a compound and collect all subshapes not drawn by the shading algo.
+    // This includes:
+    // - isolated edges
+    // - isolated vertices, if aDrawAllVerticesFlag == Standard_False
+    // - all shape's vertices, if aDrawAllVerticesFlag == Standard_True
     TopoDS_Compound aCompoundWF;
     BRep_Builder aBuilder;
     aBuilder.MakeCompound (aCompoundWF);
@@ -85,8 +92,9 @@ namespace
       hasElement = Standard_True;
       aBuilder.Add (aCompoundWF, aShapeIter.Current());
     }
-    // isolated vertices
-    for (aShapeIter.Init (theShape, TopAbs_VERTEX, TopAbs_EDGE); aShapeIter.More(); aShapeIter.Next())
+    // isolated or all vertices
+    aShapeIter.Init (theShape, TopAbs_VERTEX, aDrawAllVerticesFlag ? TopAbs_SHAPE : TopAbs_EDGE);
+    for (; aShapeIter.More(); aShapeIter.Next())
     {
       hasElement = Standard_True;
       aBuilder.Add (aCompoundWF, aShapeIter.Current());

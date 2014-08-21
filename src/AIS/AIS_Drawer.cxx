@@ -32,6 +32,7 @@ AIS_Drawer::AIS_Drawer()
   SetMaximalParameterValue (500000.0);
   myLink->SetMaximalParameterValue (500000.0);
   SetTypeOfHLR (Prs3d_TOH_NotSet);
+  SetVertexDrawMode (Prs3d_VDM_Inherited);
 }
 
 Aspect_TypeOfDeflection AIS_Drawer::TypeOfDeflection () const 
@@ -196,6 +197,18 @@ Handle (Prs3d_ArrowAspect) AIS_Drawer::ArrowAspect()
 
 Handle (Prs3d_PointAspect) AIS_Drawer::PointAspect() 
 {return myPointAspect.IsNull()?  myLink->PointAspect () :  myPointAspect;}
+
+void AIS_Drawer::SetVertexDrawMode (const Prs3d_VertexDrawMode theMode)
+{
+  // Assuming that myLink always exists --> Prs3d_VDM_Inherited value is acceptable.
+  // So we simply store the new mode, as opposed to Prs3d_Drawer::SetVertexDrawMode()
+  myVertexDrawMode = theMode;
+}
+
+Prs3d_VertexDrawMode AIS_Drawer::VertexDrawMode () const
+{
+  return IsOwnVertexDrawMode() ? myVertexDrawMode : myLink->VertexDrawMode();
+}
 
 Standard_Boolean AIS_Drawer::DrawHiddenLine ()  const 
 {return myLink->DrawHiddenLine();}

@@ -142,7 +142,7 @@ void Prs3d_WFShape::Add (const Handle (Prs3d_Presentation)& thePresentation,
     return;
   }
 
-  Prs3d_ShapeTool aTool (theShape);
+  Prs3d_ShapeTool aTool (theShape, theDrawer->VertexDrawMode() == Prs3d_VDM_All);
   TopTools_ListOfShape aLFree, aLUnFree, aLWire;
   for (aTool.InitCurve(); aTool.MoreCurve(); aTool.NextCurve())
   {

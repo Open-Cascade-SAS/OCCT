@@ -119,6 +119,11 @@ inline Standard_Boolean AIS_Drawer::HasPointAspect() const
   return !myPointAspect.IsNull();
 }
 
+inline Standard_Boolean AIS_Drawer::IsOwnVertexDrawMode() const
+{
+  return (myVertexDrawMode != Prs3d_VDM_Inherited);
+}
+
 inline Standard_Boolean AIS_Drawer::HasDatumAspect() const
 {
   return !myDatumAspect.IsNull();

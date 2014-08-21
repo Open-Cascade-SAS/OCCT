@@ -92,6 +92,12 @@ is
   -- DAO_Fit      - arrows oriented inside if value label with arrowtips fit the dimension line,
   --                otherwise - externally
 
+  enumeration VertexDrawMode is VDM_Isolated, VDM_All, VDM_Inherited;
+  ---Purpose: Describes supported modes of visualization of the shape's vertices:
+  -- VDM_Isolated  - only isolated vertices (not belonging to a face) are displayed.
+  -- VDM_All       - all vertices of the shape are displayed.
+  -- VDM_Inherited - the global settings are inherited and applied to the shape's presentation.
+
   class Presentation;
 
   ---Category: Aspect classes.

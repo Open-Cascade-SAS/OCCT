@@ -44,6 +44,7 @@ uses
     Length from Quantity,
     TypeOfHLR from Prs3d,
     DimensionUnits from Prs3d,
+    VertexDrawMode from Prs3d,
     AsciiString from TCollection,
     Ax2 from gp
 
@@ -340,8 +341,8 @@ is
     is virtual;
     
     LineArrowDraw(me) returns Boolean from Standard 
-    	---Purpose: Sets LineArrowDraw on or off by setting the
-    	-- parameter OnOff to true or false.
+      ---Purpose: Returns True if drawing an arrow at the end of each edge is enabled
+      -- and False otherwise (the default).
     is virtual;
     
     ArrowAspect(me:mutable) returns ArrowAspect from Prs3d 
@@ -363,6 +364,19 @@ is
     SetPointAspect(me:mutable; anAspect: PointAspect from Prs3d) 
     is virtual;
     	--- Purpose: Sets the parameter anAspect for display attributes of points
+
+    SetVertexDrawMode(me: mutable; theMode: VertexDrawMode from Prs3d)
+      ---Purpose: Sets the mode of visualization of vertices of a TopoDS_Shape instance.
+      -- By default, only stand-alone vertices (not belonging topologically to an edge) are drawn,
+      -- that corresponds to <b>Prs3d_VDM_Standalone</b> mode.
+      -- Switching to <b>Prs3d_VDM_Standalone</b> mode makes all shape's vertices visible.
+      -- To inherit this parameter from the global drawer instance ("the link") when it is present,
+      -- <b>Prs3d_VDM_Inherited</b> value should be used.
+    is virtual;
+
+    VertexDrawMode(me) returns VertexDrawMode from Prs3d
+      ---Purpose: Returns the current mode of visualization of vertices of a TopoDS_Shape instance.
+    is virtual;
         
     ShadingAspect (me:mutable) returns ShadingAspect from Prs3d
    is virtual;
@@ -564,6 +578,7 @@ fields
     myHLRAngle:       Real from Standard is protected;
 
     myPointAspect: PointAspect from Prs3d is protected;
+    myVertexDrawMode: VertexDrawMode from Prs3d is protected;
     myPlaneAspect: PlaneAspect from Prs3d is protected;
     myArrowAspect: ArrowAspect from Prs3d is protected;
     myLineDrawArrow: Boolean from Standard is protected;

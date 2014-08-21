@@ -1,0 +1,54 @@
+puts "============"
+puts "CR25099"
+puts "============"
+puts ""
+#######################################################################
+# Test vertex draw modes
+#######################################################################
+
+vinit View1
+
+# Checking that the default behavior is not impacted by the vertex draw mode
+vertex v1 0 -1 0
+vertex v2 0 -1 5
+vertex v3 -1 -1 0
+vertex v4 -1 -1 5
+edge e v3 v4
+box b1 1 2 3
+box b2 3 4 2
+compound v1 v2 v3 v4 e b1 c
+vdisplay c; vfit
+vvertexmode
+vdump $imagedir/${casename}_default_wf_isolated.png
+
+vsetdispmode c 1
+vdump $imagedir/${casename}_default_shading_isolated.png
+
+# Changing default vertex draw mode to 'all vertices'
+vclear
+vvertexmode -set all
+vdisplay c
+vvertexmode
+vdump $imagedir/${casename}_default_wf_all1.png
+
+# Newly displayed objects should inherit the default vertex draw mode
+vdisplay b2; vfit
+vvertexmode b2
+vdump $imagedir/${casename}_default_wf_all2.png
+
+# Checking the new mode in shading
+vsetdispmode 1
+vdump $imagedir/${casename}_default_shading_all.png
+
+# Set individual vertex draw mode for an objects
+vvertexmode -set isolated b2
+vvertexmode b2
+vdump $imagedir/${casename}_individual.png
+
+# Reset individual vertex draw mode using 'inherited' value
+vvertexmode -set inherited b2
+# The next line should report 'all' (inherited from the default drawer)
+vvertexmode b2
+vdump $imagedir/${casename}_inherited.png
+
+

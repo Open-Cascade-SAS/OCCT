@@ -59,6 +59,7 @@ uses
     PlaneAngle from Quantity,
     Length from Quantity,
     DimensionUnits from Prs3d,
+    VertexDrawMode from Prs3d,
     AsciiString from TCollection,
     TypeOfHLR from Prs3d,
     Ax2 from gp
@@ -424,9 +425,27 @@ is
     HasPointAspect (me) returns Boolean from Standard 
 	---Purpose: Returns true if the Drawer has a point aspect setting active. 
     is static;      
-	---C++: inline 
+	---C++: inline
+
+    SetVertexDrawMode(me: mutable; theMode: VertexDrawMode from Prs3d)
+      ---Purpose: Sets the mode of visualization of vertices by AIS_Shape and helper algorithms.
+      -- By default, only isolated vertices not belonging to any face are drawn,
+      -- that corresponds to <b>Prs3d_VDM_Isolated</b> mode.
+      -- Switching to <b>Prs3d_VDM_Isolated</b> mode makes all shape's vertices visible.
+      -- To inherit this parameter from the global drawer instance ("the link") when it is present,
+      -- <b>Prs3d_VDM_Inherited</b> value should be used.
+    is redefined static;
+
+    VertexDrawMode(me) returns VertexDrawMode from Prs3d
+      ---Purpose: Returns the current mode of visualization of vertices of a TopoDS_Shape instance.
+    is redefined static;
     
-    
+    IsOwnVertexDrawMode(me) returns Boolean from Standard;
+      ---Purpose: Returns true if the vertex draw mode is not equal to <b>Prs3d_VDM_Inherited</b>.
+      -- This means that individual vertex draw mode value (i.e. not inherited from the global
+      -- drawer) is used for a specific interactive object.
+      ---C++: inline
+
 --  Attributes for the faces:
 --  
     ShadingAspect (me:mutable) returns ShadingAspect from Prs3d
