@@ -1,0 +1,31 @@
+puts "============"
+puts "OCC25163"
+puts "============"
+puts ""
+###############################################################################################
+# Wrong result of common operation for faces.
+###############################################################################################
+
+restore [locate_data_file bug25163_qf_25_39.brep] b
+
+explode b f
+copy b_1 b1
+copy b_2 b2
+
+bop b1 b2
+bopcommon result
+
+set square 3417.71
+
+# Analysis of "nbshapes result"
+set nb_v_good 4
+set nb_e_good 4
+set nb_w_good 1
+set nb_f_good 1
+set nb_sh_good 1
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 12
+
+set 2dviewer 1

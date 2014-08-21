@@ -1036,7 +1036,6 @@ Standard_Boolean RefineAngle2D(const TopoDS_Vertex& aV,
     aLi=new Geom2d_Line(aPV, aDiri);
     //
     aGAC2.Load(aLi);
-    aDomain2.SetValues(aPV, 0., aTolInt, Standard_True);
     //
     aGInter.Perform(aGAC1, aDomain1, aGAC2, aDomain2, aTolInt, aTolInt);
     if (!aGInter.IsDone()) {

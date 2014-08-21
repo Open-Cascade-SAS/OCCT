@@ -71,6 +71,8 @@
 
 #include <BOPTools.hxx>
 #include <IntTools_Tools.hxx>
+#include <gp_Cylinder.hxx>
+#include <TopExp_Explorer.hxx>
 
 static 
   Standard_Boolean CheckEdgeLength (const TopoDS_Edge& );
@@ -88,6 +90,8 @@ static
                                                 Standard_Real& ,
                                                 Standard_Real& ,
                                                 Standard_Boolean& );
+static
+  Standard_Real MaxToleranceEdge (const TopoDS_Face& );
 
 //=======================================================================
 //function : BuildPCurveForEdgeOnFace
@@ -314,14 +318,36 @@ void BOPTools_AlgoTools2D::AdjustPCurveOnFace
 
   u2 = pC2D.X();
   v2 = pC2D.Y();
- 
+  //
+  // du
   du = 0.;
   if (aBAS.IsUPeriodic()) {
     Standard_Real newu;
     aUPeriod = aBAS.UPeriod(); 
     //
     IntTools_Tools::AdjustPeriodic(u2, UMin, UMax, aUPeriod, newu, du);
+    //
+    if (du==0.) {
+      if (aBAS.GetType()==GeomAbs_Cylinder) {
+        Standard_Real aR, dFi, aTol;
+        //
+        gp_Cylinder aCylinder=aBAS.Cylinder();
+        aR=aCylinder.Radius();
+        aTol=MaxToleranceEdge(aF);
+        dFi=aTol/aR;
+        if (dFi<aDelta) {
+          dFi=aDelta;
+        }
+        //
+        mincond = (UMin - u2 > dFi);
+        maxcond = (u2 - UMax > dFi);
+        if (mincond || maxcond) {
+          du = ( mincond ) ? aUPeriod : -aUPeriod;
+        }
+      }
+    } 
   }
+  
   // dv
   dv = 0.;
   if (aBAS.IsVPeriodic()) {
@@ -778,4 +804,24 @@ Handle(Geom2d_Curve) BRep_Tool_CurveOnSurface
   }
   
   return nullPCurve;
+}
+//=======================================================================
+//function : MaxToleranceEdge
+//purpose  : 
+//=======================================================================
+Standard_Real MaxToleranceEdge (const TopoDS_Face& aF) 
+{
+  Standard_Real aTol, aTolMax;
+  TopExp_Explorer aExp;
+  //
+  aTolMax=0.;
+  aExp.Init(aF, TopAbs_EDGE);
+  for (; aExp.More(); aExp.Next()) {
+    const TopoDS_Edge& aE=*((TopoDS_Edge *)&aExp.Current());
+    aTol=BRep_Tool::Tolerance(aE);
+    if (aTol>aTolMax) {
+      aTolMax=aTol;
+    }
+  }
+  return aTolMax;
 }
