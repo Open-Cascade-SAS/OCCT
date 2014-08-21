@@ -2330,6 +2330,8 @@ static Standard_Boolean DecomposeResult(const Handle(IntPatch_Line)& theLine,
   // build WLine parts (if any)
   Standard_Boolean flNextLine = Standard_True;
   Standard_Boolean hasBeenDecomposed = Standard_False;
+  Standard_Boolean PrePointExist = Standard_False;
+  IntSurf_PntOn2S PrePoint;
   while(flNextLine)
   {
     // reset variables
@@ -2342,6 +2344,12 @@ static Standard_Boolean DecomposeResult(const Handle(IntPatch_Line)& theLine,
     //if((Lindex-Findex+1) <= 2 )
     if(aLindex <= aFindex)
       return hasBeenDecomposed;
+
+    if (PrePointExist)
+    {
+      sline->Add(PrePoint);
+      PrePointExist = Standard_False;
+    }
     
     // analyze other points
     for(Standard_Integer k = aFindex; k <= aLindex; k++)
@@ -2358,6 +2366,7 @@ static Standard_Boolean DecomposeResult(const Handle(IntPatch_Line)& theLine,
         }
 
         sline->Add(aSSLine->Value(k));
+        PrePoint = aSSLine->Value(k);
         continue;
       }
 
@@ -2374,10 +2383,56 @@ static Standard_Boolean DecomposeResult(const Handle(IntPatch_Line)& theLine,
       {
         aBindex = k;
         isDecomposited = Standard_True;
+        ////
+        if (Abs(U1) <= Precision::PConfusion() ||
+            Abs(U1 - 2*M_PI) <= Precision::PConfusion())
+        {
+          IntSurf_PntOn2S NewPoint;
+          IntSurf_PntOn2S CurPoint = aSSLine->Value(k);
+          gp_Pnt thePnt = CurPoint.Value();
+          Standard_Real theU1, theV1, theU2, theV2;
+          theU1 = (Abs(U1) <= Precision::PConfusion())? 2*M_PI : 0.;
+          theV1 = V1;
+          NewPoint.SetValue(thePnt);
+          if (!IsReversed)
+          {
+            CurPoint.ParametersOnS2(theU2, theV2);
+            NewPoint.SetValue(theU1, theV1, theU2, theV2);
+          }
+          else
+          {
+            CurPoint.ParametersOnS1(theU2, theV2);
+            NewPoint.SetValue(theU2, theV2, theU1, theV1);
+          }
+          sline->Add(NewPoint);
+        }
+        else if (Abs(AnU1) <= Precision::PConfusion() ||
+                 Abs(AnU1 - 2*M_PI) <= Precision::PConfusion())
+        {
+          //Modify <PrePoint>
+          PrePointExist = Standard_True;
+          Standard_Real theU1, theV1;
+          if (!IsReversed)
+          {
+            PrePoint.ParametersOnS1(theU1, theV1);
+            theU1 = (Abs(AnU1) <= Precision::PConfusion())? 2*M_PI : 0.;
+            PrePoint.SetValue(Standard_True, //on first
+                              theU1, theV1);
+          }
+          else
+          {
+            PrePoint.ParametersOnS2(theU1, theV1);
+            theU1 = (Abs(AnU1) <= Precision::PConfusion())? 2*M_PI : 0.;
+            PrePoint.SetValue(Standard_False, //on second
+                              theU1, theV1);
+          }
+        }
+        ////
         break;
       }
 
       sline->Add(aSSLine->Value(k));
+      PrePoint = aSSLine->Value(k);
       AnU1=U1;
     }
 

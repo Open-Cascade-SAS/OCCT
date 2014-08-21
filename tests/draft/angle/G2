@@ -1,5 +1,6 @@
 #E6----------------------------------------------
 puts "TODO ?OCC22803 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO ?OCC25111 ALL: The area of the resulting shape is"
 
 ptorus pt 25 24 90
 profile pr o 20 18 5  p 0 -1 0 1 0 0 l 10 t 0 30 \

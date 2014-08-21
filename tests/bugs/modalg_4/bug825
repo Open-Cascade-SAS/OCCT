@@ -31,12 +31,12 @@ if { [ catch { set info_result [OCC825 a1 a2 a3 res1 res2 0] } ] } {
     }
     checkshape res1
 
-    set nbFace_exp 0
-    set nbShell_exp 0
-    set nbSolid_exp 0
+    set nbFace_exp 2
+    set nbShell_exp 1
+    set nbSolid_exp 1
     set nbCompSolid_exp 0
     set nbCompound_exp 1
-    set nbShape_exp 1
+    set nbShape_exp 15
         
     set nb_info [nbshapes res1]
     regexp {FACE +: +([-0-9.+eE]+)} $nb_info full nb_face

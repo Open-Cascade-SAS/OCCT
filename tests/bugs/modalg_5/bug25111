@@ -1,0 +1,30 @@
+puts "============"
+puts "OCC25111"
+puts "============"
+puts ""
+#######################################################################
+# Incomplete section curve between Conical and Toroidal surfaces
+#######################################################################
+
+restore [locate_data_file bug25111_s1.draw] s1
+restore [locate_data_file bug25111_s2.draw] s2
+
+mkface f1 s1
+mkface f2 s2
+
+bop f1 f2
+bopsection result
+
+set length 53.1714
+
+set nb_v_good 3
+set nb_e_good 2
+set nb_w_good 0
+set nb_f_good 0
+set nb_sh_good 0
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good  1
+set nb_shape_good 6
+
+set 2dviewer 1
