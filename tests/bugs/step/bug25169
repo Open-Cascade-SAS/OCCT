@@ -1,0 +1,24 @@
+puts "========"
+puts "OCC25169"
+puts "========"
+puts ""
+##########################################################################
+# STEP Reader - allow opened shells to be an outer for ManifoldSolidBrep
+##########################################################################
+
+stepread [locate_data_file bug25169_box-openshell.stp] a *
+tpcompound result
+
+set square 2400
+
+set nb_v_good 8
+set nb_e_good 12
+set nb_w_good 6
+set nb_f_good 6
+set nb_sh_good 1
+set nb_sol_good 1
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 35
+
+set 3dviewer 1
