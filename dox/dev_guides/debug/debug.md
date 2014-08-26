@@ -124,7 +124,8 @@ For convenience it is possible to define aliases to commands in this window, for
 ~~~~~
 >alias deval      ? ({,,TKDraw}Draw_Eval)
 >alias dsetshape  ? ({,,TKDraw}DBRep_Set)
->alias dsetgeom   ? ({,,TKDraw}DrawTrSurf_SetPnt)
+>alias dsetgeom   ? ({,,TKDraw}DrawTrSurf_Set)
+>alias dsetpnt    ? ({,,TKDraw}DrawTrSurf_SetPnt)
 >alias dsetpnt2d  ? ({,,TKDraw}DrawTrSurf_SetPnt2d)
 >alias saveshape  ? ({,,TKBRep}BRepTools_Write)
 >alias dumpshape  ? ({,,TKBRep}BRepTools_Dump)

@@ -283,7 +283,7 @@ public:
   //! @param theMinMax [in] applicative min max boundaries.
   //! @param theScaleFactor [in] real graphical boundaries (not accounting infinite flag).
 
-  void ZFitAll (const Standard_Real theScaleFactor, const Bnd_Box& theMinMax, const Bnd_Box& theGraphicBB);
+  Standard_EXPORT void ZFitAll (const Standard_Real theScaleFactor, const Bnd_Box& theMinMax, const Bnd_Box& theGraphicBB);
 
   //! Change the Near and Far Z-clipping plane positions.
   //! For orthographic projection, theZNear, theZFar can be negative or positive.

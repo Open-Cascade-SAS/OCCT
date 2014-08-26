@@ -164,13 +164,6 @@ deferred class Group from Graphic3d inherits TShared
     ---Purpose: Get the current modelling transform persistence (pan, zoom or rotate)
         --is static;
     
-        SetGroupPrimitivesAspect ( me   : mutable )
-            is static;
-        ---Level: Public
-        ---Purpose: Removes the context for all the line primitives
-        --      of the group.
-        ---Category: Methods to modify the class definition
-    
         SetGroupPrimitivesAspect ( me   : mutable;
                                    CTX  : AspectLine3d from Graphic3d )
             is static;
