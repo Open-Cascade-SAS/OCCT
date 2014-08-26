@@ -39,18 +39,6 @@ void ApplicationWindow::createTranslatePopups()
 	myCasCadeTranslateActions.insert( FileExportBREPId, a );
 	myExportPopup->addAction( a );
 
-	a = new QAction( QObject::tr("MNU_IMPORT_CSFDB"), this );
-	a->setStatusTip( QObject::tr("TBR_IMPORT_CSFDB") );
-	connect( a, SIGNAL( triggered() ), this, SLOT( onImport() ) );
-	myCasCadeTranslateActions.insert( FileImportCSFDBId, a );
-	myImportPopup->addAction( a );
-
-	a = new QAction( QObject::tr("MNU_EXPORT_CSFDB"), this );
-	a->setStatusTip( QObject::tr("TBR_EXPORT_CSFDB") );
-	connect( a, SIGNAL( triggered() ), this, SLOT( onExport() ) );
-	myCasCadeTranslateActions.insert( FileExportCSFDBId, a );
-	myExportPopup->addAction( a );
-
 	a = new QAction( QObject::tr("MNU_IMPORT_IGES"), this );
 	a->setStatusTip( QObject::tr("TBR_IMPORT_IGES") );
 	connect( a, SIGNAL( triggered() ), this, SLOT( onImport() ) );
@@ -165,10 +153,6 @@ int ApplicationWindow::translationFormat( const QAction* a )
     case FileExportSTEPId:
         type =  Translate::FormatSTEP;
         break;
-    case FileImportCSFDBId:
-    case FileExportCSFDBId:
-        type = Translate::FormatCSFDB;
-        break;
     case FileExportSTLId:
         type = Translate::FormatSTL;
         break;
@@ -217,7 +201,6 @@ void ApplicationWindow::onSelectionChanged()
   int numSel = context->NbSelected();
 
   myCasCadeTranslateActions.at( FileExportBREPId )->setEnabled( numSel );
-  myCasCadeTranslateActions.at( FileExportCSFDBId )->setEnabled( numSel );
   myCasCadeTranslateActions.at( FileExportIGESId )->setEnabled( numSel );
   myCasCadeTranslateActions.at( FileExportSTEPId )->setEnabled( numSel );
   myCasCadeTranslateActions.at( FileExportSTLId )->setEnabled( numSel );

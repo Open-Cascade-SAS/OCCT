@@ -26,9 +26,6 @@
 #if !defined(WNT)
    #error WNT precompiler directive is mandatory for CasCade 
 #endif
-#if !defined(CSFDB)
-   #error CSFDB precompiler directive is mandatory for CasCade 
-#endif
 
 enum CurrentAction3d { 
   CurAction3d_Nothing,

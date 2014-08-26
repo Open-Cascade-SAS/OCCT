@@ -7,10 +7,6 @@
         <translation>Qt based application for Import / Export CASCADE operations.</translation>
     </message>
     <message>
-        <source>TBR_EXPOR_CSFDB</source>
-        <translation>Csfdb ...</translation>
-    </message>
-    <message>
         <source>INF_NOTHING_ERROR</source>
         <translation>Nothing to transfer.</translation>
     </message>
@@ -71,24 +67,12 @@
         <translation>Sample ImportExport.</translation>
     </message>
     <message>
-        <source>MNU_EXPORT_CSFDB</source>
-        <translation>&amp;Csfdb ...</translation>
-    </message>
-    <message>
         <source>MNU_EXPORT_IMAGE</source>
         <translation>&amp;Image</translation>
     </message>
     <message>
         <source>TBR_EXPORT_IMAGE</source>
         <translation>Image</translation>
-    </message>
-    <message>
-        <source>MNU_IMPORT_CSFDB</source>
-        <translation>&amp;Csfdb ...</translation>
-    </message>
-    <message>
-        <source>TBR_IMPORT_CSFDB</source>
-        <translation>Csfdb ...</translation>
     </message>
     <message>
         <source>INF_TRANSLATE_ERROR_INVALIDSHAPE</source>
@@ -171,10 +155,6 @@
         <translation>/../data/step</translation>
     </message>
     <message>
-        <source>INF_PATH_3</source>
-        <translation>/../data/csfdb</translation>
-    </message>
-    <message>
         <source>INF_PATH_4</source>
         <translation>/../data/vrml</translation>
     </message>
@@ -213,10 +193,6 @@
     <message>
         <source>INF_FILTER_FORMAT_2</source>
         <translation>STEP Files (*.stp *.step)</translation>
-    </message>
-    <message>
-        <source>INF_FILTER_FORMAT_3</source>
-        <translation>CSFDB Files (*.csfdb)</translation>
     </message>
     <message>
         <source>INF_FILTER_FORMAT_4</source>

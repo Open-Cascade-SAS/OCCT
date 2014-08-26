@@ -79,12 +79,10 @@ BEGIN
     BUTTON      ID_FILE_IMPORT_BREP
     BUTTON      ID_FILE_IMPORT_IGES
     BUTTON      ID_FILE_IMPORT_STEP
-    BUTTON      ID_FILE_IMPORT_CSFDB
     SEPARATOR
     BUTTON      ID_FILE_EXPORT_BREP
     BUTTON      ID_FILE_EXPORT_IGES
     BUTTON      ID_FILE_EXPORT_STEP
-    BUTTON      ID_FILE_EXPORT_CSFDB
     BUTTON      ID_FILE_EXPORT_STL
     BUTTON      ID_FILE_EXPORT_VRML
     SEPARATOR
@@ -137,14 +135,12 @@ BEGIN
         POPUP "Import"
         BEGIN
             MENUITEM "BREP...",                     ID_FILE_IMPORT_BREP
-            MENUITEM "CSFDB...",                    ID_FILE_IMPORT_CSFDB
             MENUITEM "STEP...",                     ID_FILE_IMPORT_STEP
             MENUITEM "IGES...",                     ID_FILE_IMPORT_IGES
         END
         POPUP "Export"
         BEGIN
             MENUITEM "BREP...",                     ID_FILE_EXPORT_BREP
-            MENUITEM "CSFDB...",                    ID_FILE_EXPORT_CSFDB
             MENUITEM "STEP...",                     ID_FILE_EXPORT_STEP
             MENUITEM "IGES...",                     ID_FILE_EXPORT_IGES
             MENUITEM "STL...",                      ID_FILE_EXPORT_STL
@@ -219,14 +215,6 @@ END
 //
 // Dialog
 //
-
-IDD_FILESAVECSFDB DIALOG  0, 0, 288, 165
-STYLE DS_SETFONT | WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS
-FONT 8, "MS Sans Serif"
-BEGIN
-    GROUPBOX        "",1119,7,7,274,126,NOT WS_VISIBLE
-    COMBOBOX        IDC_FSaveCSFDB_Type,80,138,127,57,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-END
 
 IDD_FILESAVESTEP DIALOG  0, 0, 288, 165
 STYLE DS_SETFONT | WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS

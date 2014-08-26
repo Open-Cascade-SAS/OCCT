@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="Viewer3d"
 	ProjectGUID="{949DFBDF-9007-4C88-8925-43209C36A5D6}"
 	RootNamespace="Viewer3d"
@@ -82,7 +82,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="TKBRep.lib FWOSPlugin.lib PTKernel.lib TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib TKPCAF.lib TKPrim.lib TKPShape.lib TKService.lib TKTopAlgo.lib TKV3d.lib TKOpenGl.lib mfcsample.lib"
+				AdditionalDependencies="TKBRep.lib FWOSPlugin.lib  TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib  TKPrim.lib TKService.lib TKTopAlgo.lib TKV3d.lib TKOpenGl.lib mfcsample.lib"
 				OutputFile="../../../..\win32\vc9\bin/Viewer3d.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -178,7 +178,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="TKBRep.lib FWOSPlugin.lib PTKernel.lib TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib TKPCAF.lib TKPrim.lib TKPShape.lib TKService.lib TKTopAlgo.lib TKV3d.lib TKOpenGl.lib mfcsample.lib"
+				AdditionalDependencies="TKBRep.lib FWOSPlugin.lib  TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib  TKPrim.lib TKService.lib TKTopAlgo.lib TKV3d.lib TKOpenGl.lib mfcsample.lib"
 				OutputFile="../../../..\win64\vc9\bin/Viewer3d.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -274,7 +274,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="TKBRep.lib FWOSPlugin.lib PTKernel.lib TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib TKPCAF.lib TKPrim.lib TKPShape.lib TKService.lib TKTopAlgo.lib TKV3d.lib TKOpenGl.lib mfcsample.lib"
+				AdditionalDependencies="TKBRep.lib FWOSPlugin.lib TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib TKPrim.lib TKService.lib TKTopAlgo.lib TKV3d.lib TKOpenGl.lib mfcsample.lib"
 				OutputFile="../../../..\win32\vc9\bind/Viewer3d.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
@@ -371,7 +371,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="TKBRep.lib FWOSPlugin.lib PTKernel.lib TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib TKPCAF.lib TKPrim.lib TKPShape.lib TKService.lib TKTopAlgo.lib TKV3d.lib TKOpenGl.lib mfcsample.lib"
+				AdditionalDependencies="TKBRep.lib FWOSPlugin.lib  TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib  TKPrim.lib TKService.lib TKTopAlgo.lib TKV3d.lib TKOpenGl.lib mfcsample.lib"
 				OutputFile="../../../..\win64\vc9\bind/Viewer3d.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"

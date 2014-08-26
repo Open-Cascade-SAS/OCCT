@@ -23,9 +23,6 @@
 #if !defined(WNT)
    #error WNT precompiler directive is mandatory for CasCade 
 #endif
-#if !defined(CSFDB)
-   #error CSFDB precompiler directive is mandatory for CasCade 
-#endif
 
 #define DEFAULT_DEVIATIONCOEFFICIENT 0.001
 #define DEFAULT_DCBIG 0.005
@@ -103,7 +100,6 @@
 #include <SelectMgr_SelectableObject.hxx>
 #include <SelectMgr_Selection.hxx>
 #include <SelectMgr_SelectionManager.hxx>
-#include <ShapeSchema.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_ErrorHandler.hxx>
@@ -156,19 +152,6 @@
 #include <IGESToBRep_Actor.hxx>
 #include <IGESToBRep_Reader.hxx>
 #include <XSControl_WorkSession.hxx>
-
-// specific CSFDB
-#include <FSD_File.hxx>
-#include <MgtBRep.hxx>
-#include <MgtBRep_TriangleMode.hxx>
-//#include <MgtBRep_PurgeMode.hxx>
-#include <PTColStd_PersistentTransientMap.hxx>
-#include <PTColStd_TransientPersistentMap.hxx>
-#include <PTopoDS_HShape.hxx>
-#include <Storage_Data.hxx>
-#include <Storage_Error.hxx>
-#include <Storage_HSeqOfRoot.hxx>
-#include <Storage_Root.hxx>
 
 #include <STEPControl_StepModelType.hxx>
 

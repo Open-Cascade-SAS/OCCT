@@ -14,7 +14,7 @@ class IESAMPLE_EXPORT Translate: public QObject
 	Q_OBJECT
 
 public:
-    enum { FormatBREP, FormatIGES, FormatSTEP, FormatCSFDB, FormatVRML, FormatSTL };
+    enum { FormatBREP, FormatIGES, FormatSTEP, FormatVRML, FormatSTL };
 
 	Translate( QObject* );
 	~Translate();
@@ -39,12 +39,10 @@ private:
 	  Handle(TopTools_HSequenceOfShape)         importBREP( const QString& );
 	  Handle(TopTools_HSequenceOfShape)         importIGES( const QString& );
 	  Handle(TopTools_HSequenceOfShape)         importSTEP( const QString& );
-	  Handle(TopTools_HSequenceOfShape)         importCSFDB( const QString& );
 
 	  bool exportBREP( const QString&, const Handle(TopTools_HSequenceOfShape)& );
 	  bool exportIGES( const QString&, const Handle(TopTools_HSequenceOfShape)& );
 	  bool exportSTEP( const QString&, const Handle(TopTools_HSequenceOfShape)& );
-	  bool exportCSFDB( const QString&, const Handle(TopTools_HSequenceOfShape)& );
   	bool exportSTL( const QString&, const Handle(TopTools_HSequenceOfShape)& );
   	bool exportVRML( const QString&, const Handle(TopTools_HSequenceOfShape)& );
 

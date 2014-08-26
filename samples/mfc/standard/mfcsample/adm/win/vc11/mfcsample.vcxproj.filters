@@ -87,9 +87,6 @@
     <ClCompile Include="..\..\..\..\Common\OCC_StereoConfigDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Common\ImportExport\SaveCSFDBDlg.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\Common\ImportExport\SaveSTEPDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -200,9 +197,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Common\OCC_StereoConfigDlg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Common\ImportExport\SaveCSFDBDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Common\ImportExport\SaveSTEPDlg.h">

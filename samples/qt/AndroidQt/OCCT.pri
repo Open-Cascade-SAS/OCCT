@@ -2,7 +2,7 @@
 INCLUDEPATH += $$_PRO_FILE_PWD_/occt/inc $$_PRO_FILE_PWD_/3rdparty/include
 DEPENDPATH  += $$_PRO_FILE_PWD_/occt/inc $$_PRO_FILE_PWD_/3rdparty/include
 
-DEFINES += OCC_CONVERT_SIGNALS CSFDB
+DEFINES += OCC_CONVERT_SIGNALS
 
 QMAKE_CFLAGS   += -fexceptions -Wno-ignored-qualifiers
 QMAKE_CXXFLAGS += -fexceptions -Wno-ignored-qualifiers

@@ -19,7 +19,6 @@
 #define IDR_2dCHILDFRAME                137
 #define IDR_3dCHILDFRAME                138
 #define IDD_ResultDialog                143
-#define IDD_FILESAVECSFDB               144
 #define IDD_FILESAVESTEP                145
 #define IDR_Popup3D                     146
 #define IDR_TB_AIS                      149
@@ -107,7 +106,6 @@
 #define IDC_CHECK_X1                    1773
 #define IDC_CHECK_Y1                    1774
 #define IDC_CHECK_Z1                    1775
-#define IDC_FSaveCSFDB_Type             3001
 #define IDC_FSaveSTEP_Type              3002
 #define IDD_AISMATERIAL                 7544
 #define IDD_AISMATERIAL1                7545
@@ -156,11 +154,9 @@
 #define ID_BUTTON_STEREOSETTINGS        40038
 #define ID_BUTTON_STEREO                40039
 #define ID_BUTTON_STEREOCONFIG          40040
-#define ID_FILE_IMPORT_CSFDB            40100
 #define ID_FILE_IMPORT_BREP             40101
 #define ID_FILE_IMPORT_STEP             40102
 #define ID_FILE_IMPORT_IGES             40103
-#define ID_FILE_EXPORT_CSFDB            40104
 #define ID_FILE_EXPORT_BREP             40105
 #define ID_FILE_EXPORT_STEP             40106
 #define ID_FILE_EXPORT_IGES             40107

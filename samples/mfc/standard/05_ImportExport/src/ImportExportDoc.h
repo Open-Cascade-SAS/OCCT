@@ -35,8 +35,6 @@ public:
 // Generated message map functions
 protected:
 	//{{AFX_MSG(CImportExportDoc)
-	afx_msg void OnFileImportCSFDB();
-	afx_msg void OnFileExportCSFDB();
 	afx_msg void OnFileImportIges();
 	afx_msg void OnFileExportIges();
 	afx_msg void OnFileImportStep();

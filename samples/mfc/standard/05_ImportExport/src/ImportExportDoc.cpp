@@ -27,8 +27,6 @@ IMPLEMENT_DYNCREATE(CImportExportDoc, OCC_3dDoc)
 BEGIN_MESSAGE_MAP(CImportExportDoc, OCC_3dDoc)
 	//{{AFX_MSG_MAP(CImportExportDoc)
 	ON_COMMAND(ID_FILE_IMPORT_BREP, OnFileImportBrep)
-	ON_COMMAND(ID_FILE_IMPORT_CSFDB, OnFileImportCSFDB)
-	ON_COMMAND(ID_FILE_EXPORT_CSFDB, OnFileExportCSFDB)
 	ON_COMMAND(ID_FILE_IMPORT_IGES, OnFileImportIges)
 	ON_COMMAND(ID_FILE_EXPORT_IGES, OnFileExportIges)
 	ON_COMMAND(ID_FILE_IMPORT_STEP, OnFileImportStep)
@@ -153,19 +151,6 @@ void CImportExportDoc::OnFileImportBrep()
 	}
 	Fit();
 }
-
-void CImportExportDoc::OnFileImportCSFDB() 
-{   
-	Handle(TopTools_HSequenceOfShape) aSeqOfShape = CImportExport::ReadCSFDB();
-	for(int i=1;i<= aSeqOfShape->Length();i++)
-	{
-		m_pcoloredshapeList->Add(Quantity_NOC_YELLOW, aSeqOfShape->Value(i));
-        m_pcoloredshapeList->Display(myAISContext);
-	}
-	Fit();
-}
-void CImportExportDoc::OnFileExportCSFDB() 
-{   CImportExport::SaveCSFDB(myAISContext);}
 
 void CImportExportDoc::OnFileImportIges() 
 {   

@@ -1,7 +1,3 @@
-#if !defined(CSFDB)
-#error CSFDB precompiler directive is mandatory for CasCade 
-#endif
-
 #include "Translate.h"
 
 #include "Application.h"
@@ -22,14 +18,6 @@
 
 #include <FSD_File.hxx>
 
-#include <ShapeSchema.hxx>
-#include <Storage_Data.hxx>
-#include <Storage_Root.hxx>
-#include <Storage_HSeqOfRoot.hxx>
-#include <PTopoDS_HShape.hxx>
-#include <PTColStd_PersistentTransientMap.hxx>
-#include <PTColStd_TransientPersistentMap.hxx>
-
 #include <IGESControl_Reader.hxx>
 #include <IGESControl_Writer.hxx>
 #include <IGESControl_Controller.hxx>
@@ -41,9 +29,6 @@
 
 #include <StlAPI_Writer.hxx>
 #include <VrmlAPI_Writer.hxx>
-
-#include <MgtBRep.hxx>
-#include <MgtBRep_TriangleMode.hxx>
 
 #include <BRepTools.hxx>
 #include <BRep_Tool.hxx>
@@ -235,9 +220,6 @@ Handle(TopTools_HSequenceOfShape) Translate::importModel( const int format, cons
         case FormatSTEP:
             shapes = importSTEP( file );
             break;
-        case FormatCSFDB:
-            shapes = importCSFDB( file );
-            break;
         }
     } catch ( Standard_Failure ) {
         shapes.Nullify();
@@ -277,9 +259,6 @@ bool Translate::exportModel( const int format, const QString& file, const Handle
             break;
         case FormatSTEP:
             status = exportSTEP( file, shapes );
-            break;
-        case FormatCSFDB:
-            status = exportCSFDB( file, shapes );
             break;
         case FormatSTL:
             status = exportSTL( file, shapes );
@@ -401,10 +380,6 @@ TranslateDlg* Translate::getDialog( const int format, const bool import )
 	      myDlg->addMode( STEPControl_ShellBasedSurfaceModel, QObject::tr( "INF_BREP_SHELL" ) );
 	      myDlg->addMode( STEPControl_GeometricCurveSet,      QObject::tr( "INF_BREP_CURVE" ) );
         break;
-      case FormatCSFDB:
-        myDlg->addMode( MgtBRep_WithTriangle,    QObject::tr( "INF_TRIANGLES_YES" ) );
-	      myDlg->addMode( MgtBRep_WithoutTriangle, QObject::tr( "INF_TRIANGLES_NO" ) );
-        break;
      }
   }
 
@@ -476,45 +451,6 @@ Handle(TopTools_HSequenceOfShape) Translate::importSTEP( const QString& file )
 	return aSequence;
 }
 
-Handle(TopTools_HSequenceOfShape) Translate::importCSFDB( const QString& file )
-{
-	Handle(TopTools_HSequenceOfShape) aSequence;
-
-    // Check file type
-    if ( FSD_File::IsGoodFileType( (Standard_CString)file.toLatin1().constData() ) != Storage_VSOk )
-	    return aSequence;
-
-    FSD_File fileDriver;
-    TCollection_AsciiString aName( (Standard_CString)file.toLatin1().constData() );
-    if ( fileDriver.Open( aName, Storage_VSRead ) != Storage_VSOk )
-        return aSequence;
-
-    Handle(ShapeSchema) schema = new ShapeSchema();
-    Handle(Storage_Data) data  = schema->Read( fileDriver );
-    if ( data->ErrorStatus() != Storage_VSOk )
-        return aSequence;
-
-    fileDriver.Close();
-
-    aSequence = new TopTools_HSequenceOfShape();
-    Handle(Storage_HSeqOfRoot) roots = data->Roots();
-    for ( int i = 1; i <= roots->Length() ; i++ )
-    {
-        Handle(Storage_Root) r = roots->Value( i );
-        Handle(Standard_Persistent) p = r->Object();
-        Handle(PTopoDS_HShape) aPShape = Handle(PTopoDS_HShape)::DownCast(p);
-        if ( !aPShape.IsNull() )
-        {
-	        PTColStd_PersistentTransientMap aMap;
-	        TopoDS_Shape aTShape;
-            MgtBRep::Translate( aPShape, aMap, aTShape, MgtBRep_WithTriangle );
-            aSequence->Append( aTShape );
-        }
-    }
-
-    return aSequence;
-}
-
 // ----------------------------- Export functionality -----------------------------
 
 bool Translate::exportBREP( const QString& file, const Handle(TopTools_HSequenceOfShape)& shapes )
@@ -582,60 +518,6 @@ bool Translate::exportSTEP( const QString& file, const Handle(TopTools_HSequence
         break;
     }
     return status == IFSelect_RetDone;
-}
-
-bool Translate::exportCSFDB( const QString& file, const Handle(TopTools_HSequenceOfShape)& shapes )
-{
-    if ( shapes.IsNull() || shapes->IsEmpty() )
-        return false;
-
-    TranslateDlg* theDlg = getDialog( -1, false );
-    MgtBRep_TriangleMode type = (MgtBRep_TriangleMode)theDlg->getMode();
-    if ( type < 0 )
-        return false;
-
-    FSD_File fileDriver;
-
-    Handle(ShapeSchema) schema = new ShapeSchema();
-    Handle(Storage_Data) data  = new Storage_Data();
-    data->ClearErrorStatus();
-
-    data->SetApplicationName( TCollection_ExtendedString( "Sample Import / Export" ) );
-    data->SetApplicationVersion( "1" );
-    data->SetDataType( TCollection_ExtendedString( "Shapes" ) );
-    data->AddToUserInfo( "Storing a persistent set of shapes in a flat file" );
-    data->AddToComments( TCollection_ExtendedString( "Application is based on CasCade 5.0 Professional" ) );
-
-    if ( fileDriver.Open( (Standard_CString)file.toLatin1().constData(), Storage_VSWrite ) != Storage_VSOk )
-    {
-        myInfo = QObject::tr( "INF_TRANSLATE_ERROR_CANTSAVEFILE" ).arg( file );
-        return false;
-    }
-
-    PTColStd_TransientPersistentMap aMap;
-	for ( int i = 1; i <= shapes->Length(); i++ )
-	{
-		TopoDS_Shape shape = shapes->Value( i );
-		if ( shape.IsNull() )
-		{
-			myInfo = QObject::tr( "INF_TRANSLATE_ERROR_INVALIDSHAPE" );
-			return false;
-        }
-
-        Handle(PTopoDS_HShape) pshape = MgtBRep::Translate( shape, aMap, type );
-		TCollection_AsciiString objName = TCollection_AsciiString( "Object_" ) + TCollection_AsciiString( i );
-		data->AddRoot( objName, pshape );
-	}
-
-    schema->Write( fileDriver, data );
-    fileDriver.Close();
-
-    if ( data->ErrorStatus() != Storage_VSOk )
-    {
-        myInfo = QObject::tr( "INF_TRANSLATE_ERROR_CANTSAVEDATA" );
-        return false;
-    } 
-    return true;
 }
 
 bool Translate::exportSTL( const QString& file, const Handle(TopTools_HSequenceOfShape)& shapes )

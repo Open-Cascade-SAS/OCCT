@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="mfcsample"
 	ProjectGUID="{2D6CBBE8-6965-4016-B503-0D715AE26691}"
 	RootNamespace="mfcsample"
@@ -81,8 +81,13 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+<<<<<<< HEAD
 				AdditionalDependencies="TKVrml.lib TKStl.lib TKBrep.lib TKIGES.lib TKShHealing.lib TKStep.lib TKXSBase.lib TKShapeSchema.lib FWOSPlugin.lib PTKernel.lib TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib TKPCAF.lib TKPrim.lib TKPShape.lib TKService.lib TKTopAlgo.lib TKMesh.lib TKV3d.lib TKOpenGl.lib"
 				OutputFile="../../../../win32\vc9\bind/mfcsample.dll"
+=======
+				AdditionalDependencies="TKVrml.lib TKStl.lib TKBrep.lib TKIGES.lib TKShHealing.lib TKStep.lib TKXSBase.lib FWOSPlugin.lib TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib TKPrim.lib TKService.lib TKTopAlgo.lib TKMesh.lib TKV3d.lib TKOpenGl.lib"
+				OutputFile="../../../../win32\vc9\libd/mfcsample.dll"
+>>>>>>> 9479c49... 0024927: Getting rid of "Persistent" functionality -- Samples and data
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="$(CSF_OPT_LIB32D)"
@@ -178,8 +183,13 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+<<<<<<< HEAD
 				AdditionalDependencies="TKVrml.lib TKStl.lib TKBrep.lib TKIGES.lib TKShHealing.lib TKStep.lib TKXSBase.lib TKShapeSchema.lib FWOSPlugin.lib PTKernel.lib TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib TKPCAF.lib TKPrim.lib TKPShape.lib TKService.lib TKTopAlgo.lib TKMesh.lib TKV3d.lib TKOpenGl.lib"
 				OutputFile="../../../../win64\vc9\bind/mfcsample.dll"
+=======
+				AdditionalDependencies="TKVrml.lib TKStl.lib TKBrep.lib TKIGES.lib TKShHealing.lib TKStep.lib TKXSBase.lib  FWOSPlugin.lib  TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib  TKPrim.lib TKService.lib TKTopAlgo.lib TKMesh.lib TKV3d.lib TKOpenGl.lib"
+				OutputFile="../../../../win64\vc9\libd/mfcsample.dll"
+>>>>>>> 9479c49... 0024927: Getting rid of "Persistent" functionality -- Samples and data
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="$(CSF_OPT_LIB64D)"
@@ -276,8 +286,13 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+<<<<<<< HEAD
 				AdditionalDependencies="TKVrml.lib TKStl.lib TKBrep.lib TKIGES.lib TKShHealing.lib TKStep.lib TKXSBase.lib TKShapeSchema.lib PTKernel.lib TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib TKPCAF.lib TKPrim.lib TKPShape.lib TKService.lib TKTopAlgo.lib TKMesh.lib TKV3d.lib TKOpenGl.lib"
 				OutputFile="../../../../win32\vc9\bin/mfcsample.dll"
+=======
+				AdditionalDependencies="TKVrml.lib TKStl.lib TKBrep.lib TKIGES.lib TKShHealing.lib TKStep.lib TKXSBase.lib   TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib  TKPrim.lib TKService.lib TKTopAlgo.lib TKMesh.lib TKV3d.lib TKOpenGl.lib"
+				OutputFile="../../../../win32\vc9\lib/mfcsample.dll"
+>>>>>>> 9479c49... 0024927: Getting rid of "Persistent" functionality -- Samples and data
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="$(CSF_OPT_LIB32)"
@@ -373,8 +388,13 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+<<<<<<< HEAD
 				AdditionalDependencies="TKVrml.lib TKStl.lib TKBrep.lib TKIGES.lib TKShHealing.lib TKStep.lib TKXSBase.lib TKShapeSchema.lib PTKernel.lib TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib TKPCAF.lib TKPrim.lib TKPShape.lib TKService.lib TKTopAlgo.lib TKMesh.lib TKV3d.lib TKOpenGl.lib"
 				OutputFile="../../../../win64\vc9\bin/mfcsample.dll"
+=======
+				AdditionalDependencies="TKVrml.lib TKStl.lib TKBrep.lib TKIGES.lib TKShHealing.lib TKStep.lib TKXSBase.lib   TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib  TKPrim.lib TKService.lib TKTopAlgo.lib TKMesh.lib TKV3d.lib TKOpenGl.lib"
+				OutputFile="../../../../win64\vc9\lib/mfcsample.dll"
+>>>>>>> 9479c49... 0024927: Getting rid of "Persistent" functionality -- Samples and data
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="$(CSF_OPT_LIB64)"
@@ -463,10 +483,6 @@
 			</File>
 			<File
 				RelativePath="..\..\..\..\Common\AngleParamsVerticesPage.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\..\Common\ParamsFacesPage.cpp"
 				>
 			</File>
 			<File
@@ -1174,57 +1190,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\..\Common\ParamsFacesPage.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\..\Common\RadiusParamsPage.cpp"
 				>
 			</File>
 			<File
 				RelativePath="..\..\..\..\Common\ResultDialog.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\..\..\..\Common\ImportExport\SaveCSFDBDlg.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -1781,10 +1755,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\Common\ParamsFacesPage.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\..\..\Common\LengthParamsEdgesPage.h"
 				>
 			</File>
@@ -1849,15 +1819,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\..\Common\ParamsFacesPage.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\..\Common\RadiusParamsPage.h"
 				>
 			</File>
 			<File
 				RelativePath="..\..\..\..\Common\ResultDialog.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\..\Common\ImportExport\SaveCSFDBDlg.h"
 				>
 			</File>
 			<File

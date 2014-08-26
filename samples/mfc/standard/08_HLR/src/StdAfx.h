@@ -26,9 +26,6 @@
 #if !defined(WNT)
    #error WNT precompiler directive is mandatory for CasCade 
 #endif
-#if !defined(CSFDB)
-   #error CSFDB precompiler directive is mandatory for CasCade 
-#endif
 
 #define DEFAULT_DEVIATIONCOEFFICIENT 0.001
 #define DEFAULT_DCBIG 0.005

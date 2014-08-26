@@ -25,7 +25,7 @@ INCLUDEPATH += $$quote($${SAMPLESROOT}/Interface/src)
 
 OCCT_DEFINES = $$(CSF_DEFINES)
 
-DEFINES = CSFDB $$split(OCCT_DEFINES, ;)
+DEFINES = $$split(OCCT_DEFINES, ;)
 
 unix {
     UNAME = $$system(uname -s)
@@ -86,10 +86,10 @@ win32 {
     DEFINES +=WNT WIN32 NO_COMMONSAMPLE_EXPORTS NO_IESAMPLE_EXPORTS
 }
 
-LIBS += -lTKernel -lPTKernel -lTKMath -lTKService -lTKV3d -lTKOpenGl \
+LIBS += -lTKernel -lTKMath -lTKService -lTKV3d -lTKOpenGl \
         -lTKBRep -lTKIGES -lTKSTL -lTKVRML -lTKSTEP -lTKSTEPAttr -lTKSTEP209 \
-        -lTKSTEPBase -lTKShapeSchema -lTKGeomBase -lTKGeomAlgo -lTKG3d -lTKG2d \
-        -lTKXSBase -lTKPShape -lTKShHealing -lTKHLR -lTKTopAlgo -lTKMesh -lTKPrim \
+        -lTKSTEPBase -lTKGeomBase -lTKGeomAlgo -lTKG3d -lTKG2d \
+        -lTKXSBase -lTKShHealing -lTKHLR -lTKTopAlgo -lTKMesh -lTKPrim \
         -lTKCDF -lTKBool -lTKBO -lTKFillet -lTKOffset \
 
 !exists($${RES_DIR}) {

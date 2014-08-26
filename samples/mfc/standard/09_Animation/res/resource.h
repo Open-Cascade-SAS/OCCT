@@ -28,7 +28,6 @@
 #define ID_OBJECT_TRANPARENCY           1214
 #define IDC_SLIDER1                     1500
 #define IDC_Angle                       1502
-#define IDC_FSaveCSFDB_Type             3001
 #define IDC_FSaveSTEP_Type              3002
 #define ID_ANIMATION                    32790
 #define ID_STOP                         32792

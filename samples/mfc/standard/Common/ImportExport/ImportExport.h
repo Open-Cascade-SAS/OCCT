@@ -10,7 +10,6 @@
 #endif // _MSC_VER >= 1000
 
 #include <Storage_Error.hxx>
-#include <MgtBRep_TriangleMode.hxx>
 #include <IFSelect_ReturnStatus.hxx>
 #include <STEPControl_StepModelType.hxx>
 #include <Quantity_HArray1OfColor.hxx>
@@ -46,22 +45,6 @@ public :
     static Standard_Boolean SaveBREP(CString aFileName,
                                     const TopoDS_Shape& aShape);
 
-
-    static TCollection_AsciiString BuildStorageErrorMessage( Storage_Error anError);
-
-    static void ReadCSFDB(const Handle(AIS_InteractiveContext)& anInteractiveContext);
-	static Handle(TopTools_HSequenceOfShape) ReadCSFDB(); // not by reference --> the sequence is created here !!
-    static Standard_Boolean ReadCSFDB(const Standard_CString& aFileName,
-                                      Handle(TopTools_HSequenceOfShape)& aHSequenceOfShape, // out parameter
-                                      TCollection_AsciiString& ReturnMessage);// out parameter
-    //----------------------------------------------------------------------
-
-    static void SaveCSFDB(const Handle(AIS_InteractiveContext)& anInteractiveContext);
-    static Standard_Boolean SaveCSFDB(const Handle(TopTools_HSequenceOfShape)& aHSequenceOfShape);
-    static Standard_Boolean SaveCSFDB(const Standard_CString& aFileName,
-                                      const Handle(TopTools_HSequenceOfShape)& aHSequenceOfShape,
-                                      TCollection_AsciiString& ReturnMessage, // out parameter
-                                      const MgtBRep_TriangleMode aTriangleMode = MgtBRep_WithTriangle);
     //======================================================================
 
     static void ReadIGES(const Handle(AIS_InteractiveContext)& anInteractiveContext);

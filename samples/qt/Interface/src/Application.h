@@ -12,9 +12,9 @@ class IESAMPLE_EXPORT ApplicationWindow: public ApplicationCommonWindow
 
 public:
   
-  enum { FileImportBREPId=0, FileExportBREPId=1, FileImportCSFDBId=2, FileExportCSFDBId=3,
-         FileImportIGESId=4, FileExportIGESId=5, FileImportSTEPId=6, FileExportSTEPId=7,
-         FileExportSTLId=8, FileExportVRMLId=9 };
+  enum { FileImportBREPId=0, FileExportBREPId=1, FileImportIGESId=2,
+         FileExportIGESId=3, FileImportSTEPId=4, FileExportSTEPId=5,
+         FileExportSTLId=6,  FileExportVRMLId=7 };
 	
   ApplicationWindow();
   ~ApplicationWindow();

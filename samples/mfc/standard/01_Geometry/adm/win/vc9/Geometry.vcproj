@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="Geometry"
 	ProjectGUID="{31E8199C-C981-4B7F-9CC2-B8502565B581}"
 	RootNamespace="Geometry"
@@ -82,7 +82,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="TKVrml.lib TKStl.lib TKBrep.lib TKIGES.lib TKShHealing.lib TKStep.lib TKXSBase.lib TKShapeSchema.lib FWOSPlugin.lib PTKernel.lib TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib TKPCAF.lib TKPrim.lib TKPShape.lib TKService.lib TKTopAlgo.lib TKV3d.lib TKOpenGl.lib mfcsample.lib TKMesh.lib"
+				AdditionalDependencies="TKVrml.lib TKStl.lib TKBrep.lib TKIGES.lib TKShHealing.lib TKStep.lib TKXSBase.lib  FWOSPlugin.lib  TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib  TKPrim.lib TKService.lib TKTopAlgo.lib TKV3d.lib TKOpenGl.lib mfcsample.lib TKMesh.lib"
 				OutputFile="../../../..\win32\vc9\bin/Geometry.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -179,7 +179,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="TKVrml.lib TKStl.lib TKBrep.lib TKIGES.lib TKShHealing.lib TKStep.lib TKXSBase.lib TKShapeSchema.lib FWOSPlugin.lib PTKernel.lib TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib TKPCAF.lib TKPrim.lib TKPShape.lib TKService.lib TKTopAlgo.lib TKV3d.lib TKOpenGl.lib mfcsample.lib TKMesh.lib"
+				AdditionalDependencies="TKVrml.lib TKStl.lib TKBrep.lib TKIGES.lib TKShHealing.lib TKStep.lib TKXSBase.lib  FWOSPlugin.lib  TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib  TKPrim.lib TKService.lib TKTopAlgo.lib TKV3d.lib TKOpenGl.lib mfcsample.lib TKMesh.lib"
 				OutputFile="../../../..\win64\vc9\bin/Geometry.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -276,7 +276,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="TKVrml.lib TKStl.lib TKBrep.lib TKIGES.lib TKShHealing.lib TKStep.lib TKXSBase.lib TKShapeSchema.lib FWOSPlugin.lib PTKernel.lib TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib TKPCAF.lib TKPrim.lib TKPShape.lib TKService.lib TKTopAlgo.lib TKV3d.lib TKOpenGl.lib mfcsample.lib TKMesh.lib"
+				AdditionalDependencies="TKVrml.lib TKStl.lib TKBrep.lib TKIGES.lib TKShHealing.lib TKStep.lib TKXSBase.lib FWOSPlugin.lib TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib TKPrim.lib TKService.lib TKTopAlgo.lib TKV3d.lib TKOpenGl.lib mfcsample.lib TKMesh.lib"
 				OutputFile="../../../..\win32\vc9\bind/Geometry.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
@@ -374,7 +374,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="TKVrml.lib TKStl.lib TKBrep.lib TKIGES.lib TKShHealing.lib TKStep.lib TKXSBase.lib TKShapeSchema.lib FWOSPlugin.lib PTKernel.lib TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib TKPCAF.lib TKPrim.lib TKPShape.lib TKService.lib TKTopAlgo.lib TKV3d.lib TKOpenGl.lib mfcsample.lib TKMesh.lib"
+				AdditionalDependencies="TKVrml.lib TKStl.lib TKBrep.lib TKIGES.lib TKShHealing.lib TKStep.lib TKXSBase.lib  FWOSPlugin.lib  TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib  TKPrim.lib TKService.lib TKTopAlgo.lib TKV3d.lib TKOpenGl.lib mfcsample.lib TKMesh.lib"
 				OutputFile="../../../..\\win64\vc9\bind/Geometry.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"

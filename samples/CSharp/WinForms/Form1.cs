@@ -700,15 +700,6 @@ namespace IE_WinForms
       this.myStatusBar.Text = "";
     }
 
-    private void ImportCsfdb_Click(object sender, System.EventArgs e)
-    {
-      Form2 curForm = (Form2)this.ActiveMdiChild;
-      if (curForm == null)
-        return;
-      this.myModelFormat = IE_WinForms.ModelFormat.CSFDB;
-      curForm.ImportModel(this.myModelFormat);
-    }
-
     private void ImportIges_Click(object sender, System.EventArgs e)
     {
       Form2 curForm = (Form2)this.ActiveMdiChild;
@@ -733,15 +724,6 @@ namespace IE_WinForms
       if (curForm == null)
         return;
       this.myModelFormat = IE_WinForms.ModelFormat.BREP;
-      curForm.ExportModel(this.myModelFormat);
-    }
-
-    private void ExportCsfdb_Click(object sender, System.EventArgs e)
-    {
-      Form2 curForm = (Form2)this.ActiveMdiChild;
-      if (curForm == null)
-        return;
-      this.myModelFormat = IE_WinForms.ModelFormat.CSFDB;
       curForm.ExportModel(this.myModelFormat);
     }
 

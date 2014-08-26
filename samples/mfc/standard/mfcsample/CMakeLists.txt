@@ -39,10 +39,8 @@ set (COMMON_SOURCE_FILES ${MFC_STANDARD_COMMON_SAMPLES_DIR}/AISDialogs.cpp
 # Common ImportExport
 set (COMMON_IE_DIR          ${MFC_STANDARD_COMMON_SAMPLES_DIR}/ImportExport)
 set (COMMON_IE_HEADER_FILES ${COMMON_IE_DIR}/ImportExport.h
-                            ${COMMON_IE_DIR}/SaveCSFDBDlg.h
                             ${COMMON_IE_DIR}/SaveSTEPDlg.h )
 set (COMMON_IE_SOURCE_FILES ${COMMON_IE_DIR}/ImportExport.cpp
-                            ${COMMON_IE_DIR}/SaveCSFDBDlg.cpp
                             ${COMMON_IE_DIR}/SaveSTEPDlg.cpp )
 
 # Common ISession2D

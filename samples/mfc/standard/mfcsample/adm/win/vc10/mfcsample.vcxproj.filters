@@ -84,9 +84,6 @@
     <ClCompile Include="..\..\..\..\Common\ResultDialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Common\ImportExport\SaveCSFDBDlg.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\Common\ImportExport\SaveSTEPDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -197,9 +194,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Common\ResultDialog.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Common\ImportExport\SaveCSFDBDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Common\ImportExport\SaveSTEPDlg.h">

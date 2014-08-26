@@ -25,9 +25,6 @@ protected:
 	// Declare CArchive >> operator
 	DECLARE_SERIAL(CColoredShapes);
 
-	// mute CObject::Serialize
-	void Serialize(CArchive& ar);
-
 private:
 	TopTools_DataMapOfShapeInteger m_colorMap;
 	TopoDS_ListOfShape   m_shapeList;

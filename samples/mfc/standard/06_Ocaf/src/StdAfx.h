@@ -26,9 +26,6 @@
 #if !defined(WNT)
    #error WNT precompiler directive is mandatory for CasCade 
 #endif
-#if !defined(CSFDB)
-   #error CSFDB precompiler directive is mandatory for CasCade 
-#endif
 
 #ifdef MAINWIN
 # define false FALSE
@@ -100,7 +97,6 @@
 #include <SelectMgr_SelectableObject.hxx>
 #include <SelectMgr_Selection.hxx>
 #include <SelectMgr_SelectionManager.hxx>
-#include <ShapeSchema.hxx> 
 #include <Standard_Boolean.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_ErrorHandler.hxx>

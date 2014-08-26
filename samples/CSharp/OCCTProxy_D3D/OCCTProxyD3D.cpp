@@ -23,14 +23,6 @@
 //brep tools
 #include <BRep_Builder.hxx>
 #include <BRepTools.hxx>
-#include <MgtBRep.hxx>
-#include <PTColStd_PersistentTransientMap.hxx>
-//csfdb I/E
-#include <FSD_File.hxx>
-#include <ShapeSchema.hxx>
-#include <Storage_Data.hxx>
-#include <Storage_HSeqOfRoot.hxx>
-#include <Storage_Root.hxx>
 // iges I/E
 #include <IGESControl_Reader.hxx>
 #include <IGESControl_Controller.hxx>
@@ -51,9 +43,6 @@
 #pragma comment(lib, "TKernel.lib")
 #pragma comment(lib, "TKMath.lib")
 #pragma comment(lib, "TKBRep.lib")
-#pragma comment(lib, "PTKernel.lib")
-#pragma comment(lib, "TKPShape.lib")
-#pragma comment(lib, "TKShapeSchema.lib")
 #pragma comment(lib, "TKXSBase.lib")
 #pragma comment(lib, "TKService.lib")
 #pragma comment(lib, "TKV3d.lib")
@@ -836,50 +825,6 @@ public:
   }
 
   /// <summary>
-  ///Import Csfdb file
-  /// </summary>
-  /// <param name="theFileName">Name of import file</param>
-  bool ImportCsfdb (char* theFileName)
-  {
-    TCollection_AsciiString aName (theFileName);
-    if (FSD_File::IsGoodFileType (aName) != Storage_VSOk)
-    {
-      return false;
-    }
-
-    FSD_File aFileDriver;
-    if (aFileDriver.Open (aName, Storage_VSRead) != Storage_VSOk)
-    {
-      return false;
-    }
-
-    Handle(ShapeSchema)  aSchema = new ShapeSchema();
-    Handle(Storage_Data) aData   = aSchema->Read (aFileDriver);
-    if (aData->ErrorStatus() != Storage_VSOk)
-    {
-      return false;
-    }
-    aFileDriver.Close();
-
-    Handle(Storage_HSeqOfRoot) aRoots = aData->Roots();
-    for (Standard_Integer aRootIter = 1; aRootIter <= aRoots->Length(); ++aRootIter)
-    {
-      Handle(Storage_Root)        aStorRoot        = aRoots->Value (aRootIter);
-      Handle(Standard_Persistent) aStandPersistent = aStorRoot->Object();
-      Handle(PTopoDS_HShape)      aPShape          = Handle(PTopoDS_HShape)::DownCast (aStandPersistent);
-      if (!aPShape.IsNull())
-      {
-        PTColStd_PersistentTransientMap aMap;
-        TopoDS_Shape aTShape;
-        MgtBRep::Translate (aPShape, aMap, aTShape, MgtBRep_WithTriangle);
-        myAISContext()->Display (new AIS_Shape (aTShape), Standard_True);
-      }
-    }
-
-    return true;
-  }
-
-  /// <summary>
   ///Import Step file
   /// </summary>
   /// <param name="theFileName">Name of import file</param>
@@ -1066,9 +1011,8 @@ public:
       switch (theFormat)
       {
         case 0: isResult = ImportBrep  (aFilename); break;
-        case 1: isResult = ImportCsfdb (aFilename); break;
-        case 2: isResult = ImportStep  (aFilename); break;
-        case 3: isResult = ImportIges  (aFilename); break;
+        case 1: isResult = ImportStep  (aFilename); break;
+        case 2: isResult = ImportIges  (aFilename); break;
       }
     }
     else 
@@ -1076,11 +1020,11 @@ public:
       switch (theFormat)
       {
         case 0: isResult = ExportBRep (aFilename); break;
-        case 2: isResult = ExportStep (aFilename); break;
-        case 3: isResult = ExportIges (aFilename); break;
-        case 4: isResult = ExportVrml (aFilename); break;
-        case 5: isResult = ExportStl  (aFilename); break;
-        case 6: isResult = Dump (aFilename);      break;
+        case 1: isResult = ExportStep (aFilename); break;
+        case 2: isResult = ExportIges (aFilename); break;
+        case 3: isResult = ExportVrml (aFilename); break;
+        case 4: isResult = ExportStl  (aFilename); break;
+        case 5: isResult = Dump (aFilename);      break;
       }
     }
     delete[] aFilename;

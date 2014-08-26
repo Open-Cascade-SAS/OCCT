@@ -25,7 +25,6 @@ namespace IE_WinForms
   public enum ModelFormat
   {
     BREP,
-    CSFDB,
     STEP,
     IGES,
     VRML,
@@ -656,18 +655,14 @@ namespace IE_WinForms
           theformat = 0;
           filter = "BREP Files (*.brep *.rle)|*.brep; *.rle";
           break;
-        case ModelFormat.CSFDB:
-          theformat = 1;
-          filter = "CSFDB Files (*.csfdb)|*.csfdb";
-          break;
         case IE_WinForms.ModelFormat.STEP:
           openDialog.InitialDirectory = (DataDir + "\\step");
-          theformat = 2;
+          theformat = 1;
           filter = "STEP Files (*.stp *.step)|*.stp; *.step";
           break;
         case IE_WinForms.ModelFormat.IGES:
           openDialog.InitialDirectory = (DataDir + "\\iges");
-          theformat = 3;
+          theformat = 2;
           filter = "IGES Files (*.igs *.iges)|*.igs; *.iges";
           break;
         default:
@@ -701,33 +696,29 @@ namespace IE_WinForms
           theformat = 0;
           filter = "BREP Files (*.brep *.rle)|*.brep; *.rle";
           break;
-        case IE_WinForms.ModelFormat.CSFDB:
-          theformat = 1;
-          filter = "CSFDB Files (*.csfdb)|*.csfdb";
-          break;
         case IE_WinForms.ModelFormat.STEP:
           saveDialog.InitialDirectory = (DataDir + "\\step");
-          theformat = 2;
+          theformat = 1;
           filter = "STEP Files (*.stp *.step)|*.step; *.stp";
           break;
         case IE_WinForms.ModelFormat.IGES:
           saveDialog.InitialDirectory = (DataDir + "\\iges");
-          theformat = 3;
+          theformat = 2;
           filter = "IGES Files (*.igs *.iges)| *.iges; *.igs";
           break;
         case IE_WinForms.ModelFormat.VRML:
           saveDialog.InitialDirectory = (DataDir + "\\vrml");
-          theformat = 4;
+          theformat = 3;
           filter = "VRML Files (*.vrml)|*.vrml";
           break;
         case IE_WinForms.ModelFormat.STL:
           saveDialog.InitialDirectory = (DataDir + "\\stl");
-          theformat = 5;
+          theformat = 4;
           filter = "STL Files (*.stl)|*.stl";
           break;
         case IE_WinForms.ModelFormat.IMAGE:
           saveDialog.InitialDirectory = (DataDir + "\\images");
-          theformat = 6;
+          theformat = 5;
           filter = "Images Files (*.bmp *.gif)| *.bmp; *.gif";
           break;
         default:

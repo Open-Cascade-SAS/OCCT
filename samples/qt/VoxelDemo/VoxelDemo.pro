@@ -13,7 +13,7 @@ SOURCES   = $${SAMPLESROOT}/voxeldemo/src/*.cxx \
 
 INCLUDEPATH += $$quote($${SAMPLESROOT}/voxeldemo/inc)
 
-DEFINES = CSFDB
+DEFINES = 
 
 unix {
     UNAME = $$system(uname -s)
@@ -158,8 +158,8 @@ win32 {
     DEFINES +=WNT WIN32 NO_COMMONSAMPLE_EXPORTS NO_IESAMPLE_EXPORTS
 }
 
-LIBS += -lTKernel -lPTKernel -lTKMath -lTKService -lTKV3d \
-        -lTKBRep -lTKGeomBase -lTKPShape -lTKTopAlgo -lTKPrim \
+LIBS += -lTKernel -lTKMath -lTKService -lTKV3d \
+        -lTKBRep -lTKGeomBase -lTKTopAlgo -lTKPrim \
         -lTKBool -lTKVoxel -lTKOpenGl \
 
 QMAKE_CXXFLAGS            = -Zc:wchar_t 

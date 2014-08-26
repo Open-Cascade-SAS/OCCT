@@ -24,7 +24,6 @@ namespace IE_WPF_WinForms
     public enum ModelFormat
     {
         BREP,
-        CSFDB,
         STEP,
         IGES,
         VRML,
@@ -182,18 +181,14 @@ namespace IE_WPF_WinForms
                     aFormat = 0;
                     aFilter = "BREP Files (*.brep *.rle)|*.brep; *.rle";
                     break;
-                case ModelFormat.CSFDB:
-                    aFormat = 1;
-                    aFilter = "CSFDB Files (*.csfdb)|*.csfdb";
-                    break;
                 case ModelFormat.STEP:
                     anOpenDialog.InitialDirectory = (aDataDir + "\\step");
-                    aFormat = 2;
+                    aFormat = 1;
                     aFilter = "STEP Files (*.stp *.step)|*.stp; *.step";
                     break;
                 case ModelFormat.IGES:
                     anOpenDialog.InitialDirectory = (aDataDir + "\\iges");
-                    aFormat = 3;
+                    aFormat = 2;
                     aFilter = "IGES Files (*.igs *.iges)|*.igs; *.iges";
                     break;
                 default:
@@ -233,33 +228,29 @@ namespace IE_WPF_WinForms
                     aFormat = 0;
                     aFilter = "BREP Files (*.brep *.rle)|*.brep; *.rle";
                     break;
-                case ModelFormat.CSFDB:
-                    aFormat = 1;
-                    aFilter = "CSFDB Files (*.csfdb)|*.csfdb";
-                    break;
                 case ModelFormat.STEP:
                     saveDialog.InitialDirectory = ( aDataDir + "\\step" );
-                    aFormat = 2;
+                    aFormat = 1;
                     aFilter = "STEP Files (*.stp *.step)|*.step; *.stp";
                     break;
                 case ModelFormat.IGES:
                     saveDialog.InitialDirectory = ( aDataDir + "\\iges" );
-                    aFormat = 3;
+                    aFormat = 2;
                     aFilter = "IGES Files (*.igs *.iges)| *.iges; *.igs";
                     break;
                 case ModelFormat.VRML:
                     saveDialog.InitialDirectory = ( aDataDir + "\\vrml" );
-                    aFormat = 4;
+                    aFormat = 3;
                     aFilter = "VRML Files (*.vrml)|*.vrml";
                     break;
                 case ModelFormat.STL:
                     saveDialog.InitialDirectory = ( aDataDir + "\\stl" );
-                    aFormat = 5;
+                    aFormat = 4;
                     aFilter = "STL Files (*.stl)|*.stl";
                     break;
                 case ModelFormat.IMAGE:
                     saveDialog.InitialDirectory = ( aDataDir + "\\images" );
-                    aFormat = 6;
+                    aFormat = 5;
                     aFilter = "Images Files (*.bmp)|*.bmp";
                     break;
                 default:
