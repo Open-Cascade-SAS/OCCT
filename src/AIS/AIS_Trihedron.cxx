@@ -107,14 +107,14 @@ void AIS_Trihedron::SetComponent(const Handle(Geom_Axis2Placement)& aComponent)
 //purpose  : 
 //=======================================================================
 
-void AIS_Trihedron::SetLocation(const TopLoc_Location& aLoc)
+void AIS_Trihedron::SetLocalTransformation (const gp_Trsf& theTransformation)
 {
   // Update location to the subshapes
   Standard_Integer anIdx;
   for (anIdx = 0; anIdx < 7; anIdx++)
-    myShapes[anIdx]->SetLocation (aLoc);
+    myShapes[anIdx]->SetLocalTransformation (theTransformation);
 
-  AIS_InteractiveObject::SetLocation (aLoc);
+  AIS_InteractiveObject::SetLocalTransformation (theTransformation);
 }
 
 //=======================================================================

@@ -165,7 +165,7 @@ Standard_Boolean TPrsStd_ConstraintDriver::Update (const TDF_Label& aLabel,
   }
   if (anAIS.IsNull()) return Standard_False;
  
-  anAIS->ResetLocation();
+  anAIS->ResetTransformation();
   anAIS->SetToUpdate();
   anAIS->UpdateSelection();
   

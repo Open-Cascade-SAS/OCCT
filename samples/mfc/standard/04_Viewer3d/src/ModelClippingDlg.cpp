@@ -86,7 +86,7 @@ void CModelClippingDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBa
   }
   else
   {
-    myShape->SetLocation (TopLoc_Location (myTrsf));
+    myShape->SetLocalTransformation (myTrsf);
   }
 
   TCollection_AsciiString aMessage (
@@ -174,7 +174,7 @@ void CModelClippingDlg::OnChangeEditModelclippingZ()
   }
   else
   {
-    myShape->SetLocation (TopLoc_Location (myTrsf));
+    myShape->SetLocalTransformation (myTrsf);
   }
 
   myModelClipping_Z = m_ModelClipping_Z;

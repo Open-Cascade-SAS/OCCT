@@ -3154,11 +3154,11 @@ static int VAnimation (Draw_Interpretor& di, Standard_Integer argc, const char**
     TheAISContext()->UpdateCurrentViewer();
   }
 
-  TopoDS_Shape myNewCrankArm  =myAisCrankArm ->Shape().Located( myAisCrankArm ->Location() );
-  TopoDS_Shape myNewPropeller =myAisPropeller->Shape().Located( myAisPropeller->Location() );
+  TopoDS_Shape myNewCrankArm  =myAisCrankArm ->Shape().Located( myAisCrankArm ->Transformation() );
+  TopoDS_Shape myNewPropeller =myAisPropeller->Shape().Located( myAisPropeller->Transformation() );
 
-  myAisCrankArm ->ResetLocation();
-  myAisPropeller->ResetLocation();
+  myAisCrankArm ->ResetTransformation();
+  myAisPropeller->ResetTransformation();
 
   myAisCrankArm  -> Set(myNewCrankArm );
   myAisPropeller -> Set(myNewPropeller);

@@ -16,38 +16,30 @@
 
 class ConnectedInteractive from AIS inherits InteractiveObject from AIS
 
-	---Purpose: Defines an Interactive Object through a connection to
-    	-- another Interactive   Object, which serves as a
-    	-- reference, and which is located elsewhere in the viewer.
+	---Purpose: Creates an arbitrary located instance of another Interactive Object,
+    	-- which serves as a reference.
     	-- This allows you to use the Connected Interactive
     	-- Object without having to recalculate presentation,
     	-- selection or graphic structure. These are deduced
     	-- from your reference object.
     	-- The relation between the connected interactive object
     	-- and its source is generally one of geometric transformation. 
-        -- AIS_ConnectedInteractive class doesn't support selection
-        -- modes different from 0. Descendants should redefine ComputeSelection()
-        -- method in order to handle other selection modes and generate connected
-        -- sensitive entities properly. Refer to AIS_ConnectedShape class
-        -- for exisiting implementation of a connected interactive object
-        -- for AIS_Shape that supports all standard sub-shape selection modes.
-    	-- Warning
-    	-- An Interactive entity which is view (or projector)
-    	-- dependent requires recalculation of views in hidden
-    	-- parts mode depending on the position of the
-    	-- projector in each view. You should derive the entity's
-    	-- inheritance from ConnectedInteractive and redefine
-    	-- its compute method to enable this type of calculation.
+        -- AIS_ConnectedInteractive class supports selection mode 0 for any InteractiveObject and
+        -- all standard modes if its reference based on AIS_Shape.
+        -- Descendants may redefine ComputeSelection() though.
+    	-- Also ConnectedInteractive will handle HLR if its reference based on AIS_Shape.
 
 uses
     Location              from TopLoc,
+    Shape                 from TopoDS,
     Transformation        from Geom,
     PresentationManager3d from PrsMgr,
     Presentation          from Prs3d,
     TypeOfPresentation3d  from PrsMgr,
     Selection             from SelectMgr,
     Projector             from Prs3d,
-    KindOfInteractive     from AIS
+    KindOfInteractive     from AIS,
+    Trsf                  from gp
 raises
     NotImplemented from Standard
 
@@ -73,16 +65,15 @@ is
     Connect(me          : mutable; 
     	    anotherIObj : InteractiveObject from AIS) is virtual;
     	---Purpose: Establishes the connection between the Connected
-    	-- Interactive Object, anotherIobj, and its reference
-    	-- entity. If a previous connection with an Interactive
-    	-- Object already exists, it is removed by Disconnect.
-    	-- The second syntax also initiates the location of the
-    	-- Connected Interactive Object.
+    	-- Interactive Object, anotherIobj, and its reference.
+
 
     Connect(me:mutable;
     	    anotherIobj: InteractiveObject from AIS;
-	    aLocation : Location from TopLoc) is virtual;
-        ---Purpose: 
+	        aLocation : Trsf from gp) is virtual;
+        ---Purpose: Establishes the connection between the Connected
+        -- Interactive Object, anotherIobj, and its reference.
+        -- Locates instance in aLocation.
 	    
 
     HasConnection(me) returns Boolean from Standard;
@@ -123,7 +114,7 @@ is
     	    aProjector    : Projector from Prs3d;
     	    aTrsf         : Transformation from Geom;
 	    aPresentation : Presentation from Prs3d)
-    is redefined;
+    is redefined virtual private;
 	---Purpose: Computes the presentation according to a point of view
 	--          given by <aProjector>. 
 	--          To be Used when the associated degenerated Presentations 
@@ -136,34 +127,46 @@ is
     Compute(me:mutable;
     	        aProjector: Projector from Prs3d;
                 aPresentation: Presentation from Prs3d)
-    is redefined;     
+    is redefined virtual private;
+    ---Purpose: Computes the presentation according to a point of view
+    --          given by <aProjector>. 
     
-    ComputeSelection(me:mutable; aSelection : Selection from SelectMgr;
-                                 aMode      : Integer) is redefined virtual private;
+    ComputeSelection(me:mutable; theSelection : Selection from SelectMgr;
+                                 theMode      : Integer) is redefined virtual private;
 	---Level: Public 
 	---Purpose: Generates sensitive entities by copying 
         -- them from myReference selection, creates and sets an entity 
-        -- owner for this entities and adds them to aSelection
+        -- owner for this entities and adds them to theSelection
+
+    computeSubShapeSelection (me:mutable; theSelection : Selection from SelectMgr;
+                                          theMode      : Integer) is private;
+    ---Level: Public 
+    ---Purpose: Generates sensitive entities by copying 
+        -- them from myReference sub shapes selection, creates and sets an entity 
+        -- owner for this entities and adds them to theSelection
 
     AcceptShapeDecomposition(me) returns Boolean from Standard is 
     redefined virtual;
-	---C++: inline
+        ---C++: inline
+        ---Purpose:  Informs the graphic context that the interactive Object
+        -- may be decomposed into sub-shapes for dynamic selection.
 
 
-    UpdateLocation(me:mutable) is redefined virtual;
-
-    UpdateLocation(me:mutable;aSel:Selection from SelectMgr) is redefined virtual;
-	---Purpose: For this class, the  location effect is treated in the
-	--           compute   &     computeSelection  methods.  So     the
-	--        UpdateLocation Methods are redefined to do nothing else
-
---   UpdateLocation(me:mutable;P : Presentation from Prs3d) is redefined virtual;
+    updateShape(me:mutable;WithLocation:Boolean from Standard = Standard_True)
+    is static private;
+    
+    Compute(me:mutable;
+                aProjector   :         Projector    from Prs3d;
+                aPresentation: Presentation from Prs3d;
+                aShape       :         Shape from TopoDS)
+    is  private;
+    ---Purpose: Computes the presentation according to a point of view
+    --          given by <aProjector>. 
     
 fields
 
-    myReference    : InteractiveObject from AIS is protected;
-        ---Purpose: To have the time to Disconnect below, the old is kept for a while. 
-    myOldReference : InteractiveObject from AIS is protected; 
+    myReference : InteractiveObject from AIS is protected; -- reference object
+    myShape : Shape from TopoDS; -- used for HLR
 
 end ConnectedInteractive;
 

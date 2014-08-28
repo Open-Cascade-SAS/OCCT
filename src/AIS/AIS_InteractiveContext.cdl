@@ -526,7 +526,6 @@ is
     returns Location from TopLoc;
     	---Purpose:
     	-- Returns the location of the entity aniobj.
-    	---C++: return const&
 
 
 

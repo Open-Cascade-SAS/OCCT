@@ -448,8 +448,12 @@ protected: //! @name methods related to ray-tracing
   Standard_Boolean UpdateRaytraceEnvironmentMap();
 
   //! Adds OpenGL structure to ray-traced scene geometry.
-  Standard_Boolean AddRaytraceStructure (const OpenGl_Structure* theStructure,
-    const Standard_ShortReal* theTransform, std::set<const OpenGl_Structure*>& theElements);
+  Standard_Boolean AddRaytraceStructure (const OpenGl_Structure* theStructure, std::set<const OpenGl_Structure*>& theElements);
+
+  //! Adds OpenGL groups to ray-traced scene geometry.
+  Standard_Boolean AddRaytraceGroups (const OpenGl_Structure*   theStructure,
+                                      const Standard_Integer    theStructMatId,
+                                      const Standard_ShortReal* theTransform);
 
   //! Adds OpenGL primitive array to ray-traced scene geometry.
   OpenGl_TriangleSet* AddRaytracePrimitiveArray (

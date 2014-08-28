@@ -57,6 +57,7 @@ is
     deferred class PresentableObject;
 
     imported ListOfPresentations;
+    imported ListOfPresentableObjects;
 
     class Prs;
 

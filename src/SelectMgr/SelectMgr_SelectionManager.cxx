@@ -263,8 +263,8 @@ Activate(const Handle(SelectMgr_SelectableObject)& anObject,
         anObject->UpdateSelection(aMode); // pas de break expres...
       case SelectMgr_TOU_Partial:
         {
-          if(anObject->HasLocation())
-            anObject->UpdateLocation(Sel);
+          if(anObject->HasTransformation())
+            anObject->UpdateTransformation(Sel);
           Sel->UpdateStatus(SelectMgr_TOU_None);
           break;
         }
@@ -302,8 +302,8 @@ Activate(const Handle(SelectMgr_SelectableObject)& anObject,
     anObject->UpdateSelection(aMode); 
   case SelectMgr_TOU_Partial:
     {
-      if(anObject->HasLocation())
-        anObject->UpdateLocation(Sel);
+      if(anObject->HasTransformation())
+        anObject->UpdateTransformation(Sel);
       break;
     }
   default:
@@ -580,11 +580,11 @@ RecomputeSelection (const Handle(SelectMgr_SelectableObject)& anObject,
     if( SelectDebugModeOnSM() ) cout<<"\t Global Recalculation of selections"<<endl;
     if(aMode==-1){
       anObject->UpdateSelection();
-      anObject->UpdateLocation();
+      anObject->UpdateTransformation();
     }
     else if(anObject->HasSelection(aMode)){
       anObject->UpdateSelection(aMode);
-      anObject->UpdateLocation();
+      anObject->UpdateTransformation();
     }
     return;
   }
@@ -628,7 +628,7 @@ RecomputeSelection (const Handle(SelectMgr_SelectableObject)& anObject,
     case SelectMgr_TOU_Full:
       anObject->UpdateSelection(curmode); // no break on purpose...
     case SelectMgr_TOU_Partial:
-      anObject->UpdateLocation(Sel);
+      anObject->UpdateTransformation(Sel);
       break;
     default:
       break;
@@ -653,6 +653,17 @@ RecomputeSelection (const Handle(SelectMgr_SelectableObject)& anObject,
 void SelectMgr_SelectionManager::Update(const Handle(SelectMgr_SelectableObject)& anObject,
                                         const Standard_Boolean ForceUpdate)
 {
+  PrsMgr_ListOfPresentableObjectsIter anIter (anObject->Children());
+  for (; anIter.More(); anIter.Next())
+  {
+    const Handle(SelectMgr_SelectableObject) aSelectable = Handle(SelectMgr_SelectableObject)::DownCast (anIter.Value());
+
+    if (!aSelectable.IsNull())
+    {
+      Update (aSelectable, ForceUpdate);
+    }
+  }
+
   Standard_Boolean wasrecomputed;
 
   for(anObject->Init();anObject->More();anObject->Next()){
@@ -663,7 +674,7 @@ void SelectMgr_SelectionManager::Update(const Handle(SelectMgr_SelectableObject)
       case SelectMgr_TOU_Full:
         anObject->UpdateSelection(Sel->Mode()); // no break on purpose...
       case SelectMgr_TOU_Partial:
-        anObject->UpdateLocation(Sel);
+        anObject->UpdateTransformation(Sel);
         wasrecomputed = Standard_True;
         break;
       default:
@@ -683,7 +694,7 @@ void SelectMgr_SelectionManager::Update(const Handle(SelectMgr_SelectableObject)
   case SelectMgr_TOU_Full:
     anObject->UpdateSelection(Sel->Mode()); // no break on purpose...
   case SelectMgr_TOU_Partial:
-    anObject->UpdateLocation(Sel);
+    anObject->UpdateTransformation(Sel);
     wasrecomputed = Standard_True;
     break;
   default:
@@ -725,7 +736,7 @@ Update(const Handle(SelectMgr_SelectableObject)& anObject,
       case SelectMgr_TOU_Full:
         anObject->UpdateSelection(Sel->Mode()); //  no break on purpose...
       case SelectMgr_TOU_Partial:
-        anObject->UpdateLocation(Sel);
+        anObject->UpdateTransformation(Sel);
         wasrecomputed = Standard_True;
         break;
       default:
@@ -739,8 +750,8 @@ Update(const Handle(SelectMgr_SelectableObject)& anObject,
       case SelectMgr_TOU_Full:
         anObject->UpdateSelection(Sel->Mode());
       case SelectMgr_TOU_Partial:
-        if(anObject->HasLocation())
-          anObject->UpdateLocation(Sel);
+        if(anObject->HasTransformation())
+          anObject->UpdateTransformation(Sel);
         wasrecomputed = Standard_True;
         break;
       default:

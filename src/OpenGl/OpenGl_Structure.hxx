@@ -139,8 +139,14 @@ public:
   //! Get z layer ID
   Standard_EXPORT Standard_Integer GetZLayer() const;
 
+  //! Renders groups of structure without applying any attributes (i.e. transform, material etc).
+  virtual void RenderGeometry  (const Handle(OpenGl_Workspace)& theWorkspace) const;
+
+  //! Renders the structure.
   virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
-  virtual void Release (const Handle(OpenGl_Context)&   theGlCtx);
+
+  //! Releases structure resources.
+  virtual void Release (const Handle(OpenGl_Context)& theGlCtx);
 
   //! Marks structure as not overlapping view volume (as it is by default).
   void ResetCullingStatus() const

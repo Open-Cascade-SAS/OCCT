@@ -23,7 +23,25 @@
 
 #include <PrsMgr_ModedPresentation.hxx>
 #include <PrsMgr_Presentation.hxx>
-#include <OSD_Timer.hxx>
+
+#include <StdSelect_BRepOwner.hxx>
+
+#include <StdSelect.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_OrientedShapeMapHasher.hxx>
+
+#include <AIS_InteractiveContext.hxx>
+#include <BRepTools.hxx>
+#include <Precision.hxx>
+#include <AIS_Drawer.hxx>
+#include <TopAbs_ShapeEnum.hxx>
+#include <StdPrs_WFDeflectionShape.hxx>
+#include <StdPrs_HLRPolyShape.hxx>
+#include <Prs3d_Drawer.hxx>
+
+#include <AIS_Shape.hxx>
+
+#include <NCollection_DataMap.hxx>
 
 
 //=======================================================================
@@ -32,7 +50,7 @@
 //=======================================================================
 AIS_ConnectedInteractive::AIS_ConnectedInteractive(const PrsMgr_TypeOfPresentation3d aTypeOfPresentation3d):
 AIS_InteractiveObject(aTypeOfPresentation3d)
-{    
+{
   SetHilightMode(0);
 }
 
@@ -41,44 +59,52 @@ AIS_InteractiveObject(aTypeOfPresentation3d)
 //purpose  : 
 //=======================================================================
 AIS_KindOfInteractive AIS_ConnectedInteractive::Type() const
-{return AIS_KOI_Object;}
+{
+  return AIS_KOI_Object;
+}
 
 Standard_Integer AIS_ConnectedInteractive::Signature() const
-{return 0; }
-
-
+{
+  return 0;
+}
 
 
 //=======================================================================
 //function : Connect
 //purpose  : 
 //=======================================================================
-void AIS_ConnectedInteractive::
-Connect(const Handle(AIS_InteractiveObject)& anotherIObj)
+void AIS_ConnectedInteractive::Connect (const Handle(AIS_InteractiveObject)& theAnotherObj)
 {
-  // To have the time to Disconnect below, 
-  // the old is kept for a while. 
-  if(myReference==anotherIObj) return;
-  myOldReference = myReference;
-//Disconnect();
-  myReference = anotherIObj ;
+  if (myReference == theAnotherObj) return;
+
+  Handle(AIS_ConnectedInteractive) aConnected = Handle(AIS_ConnectedInteractive)::DownCast (theAnotherObj);
+  if (!aConnected.IsNull())
+  {
+    myReference = aConnected->myReference;
+  }
+  else if (theAnotherObj->HasOwnPresentations())
+  {
+    myReference = theAnotherObj;
+  }
+
+  if (!myReference.IsNull())
+  {
+    myTypeOfPresentation3d = myReference->TypeOfPresentation3d();
+  }
+
+  theAnotherObj->AddChild (this);
 }
 
 //=======================================================================
 //function : Connect
 //purpose  : 
 //=======================================================================
-void AIS_ConnectedInteractive::
-Connect(const Handle(AIS_InteractiveObject)& anotherIobj, 
-	const TopLoc_Location& aLocation)
+void AIS_ConnectedInteractive::Connect (const Handle(AIS_InteractiveObject)& theAnotherObj, 
+                                        const gp_Trsf&                       theLocation)
 {
-  if(myLocation!=aLocation)
-    myLocation = aLocation;
-  if(myReference!=anotherIobj) {
-    myOldReference = myReference; // necessary to disconnect below..
-//  Disconnect();
-    myReference = anotherIobj;}
-  
+  Connect (theAnotherObj);
+
+  SetLocalTransformation (theLocation);
 }
 
 
@@ -106,11 +132,6 @@ void AIS_ConnectedInteractive::Compute (const Handle(PrsMgr_PresentationManager3
                                         const Handle(Prs3d_Presentation)&           thePrs,
                                         const Standard_Integer                      theMode)
 {
-  if (!(HasLocation() || HasConnection()))
-  {
-    return;
-  }
-
   if (HasConnection())
   {
     thePrs->Clear (Standard_False);
@@ -127,77 +148,246 @@ void AIS_ConnectedInteractive::Compute (const Handle(PrsMgr_PresentationManager3
     }
   }
 
-  if (HasLocation())
+  if (!thePrs.IsNull())
   {
-    Handle(Geom_Transformation) aPrsTrans = new Geom_Transformation (myLocation.Transformation());
-    thePrsMgr->Transform (this, aPrsTrans, theMode);
+    thePrs->ReCompute();
   }
-  thePrs->ReCompute();
 }
 
-void AIS_ConnectedInteractive::Compute(const Handle(Prs3d_Projector)& aProjector, const Handle(Geom_Transformation)& aTransformation, const Handle(Prs3d_Presentation)& aPresentation)
+//=======================================================================
+//function : Compute
+//purpose  :
+//=======================================================================
+void AIS_ConnectedInteractive::Compute (const Handle(Prs3d_Projector)& theProjector,
+                                        const Handle(Geom_Transformation)& theTransformation,
+                                        const Handle(Prs3d_Presentation)& thePresentation)
 {
-// Standard_NotImplemented::Raise("AIS_ConnectedInteractive::Compute(const Handle(Prs3d_Projector)&, const Handle(Geom_Transformation)&, const Handle(Prs3d_Presentation)&)");
-  PrsMgr_PresentableObject::Compute( aProjector , aTransformation , aPresentation ) ;
+  updateShape (Standard_False);
+  if (myShape.IsNull())
+  {
+    return;
+  }
+  const TopLoc_Location& aLocation = myShape.Location();
+  TopoDS_Shape aShape = myShape.Located (TopLoc_Location (theTransformation->Trsf()) * aLocation);
+  Compute (theProjector, thePresentation, aShape);
 }
 
+//=======================================================================
+//function : Compute
+//purpose  :
+//=======================================================================
 void AIS_ConnectedInteractive::Compute(const Handle(Prs3d_Projector)& aProjector, const Handle(Prs3d_Presentation)& aPresentation)
 {
-// Standard_NotImplemented::Raise("AIS_ConnectedInteractive::Compute(const Handle(Prs3d_Projector)&, const Handle(Prs3d_Presentation)&)");
- PrsMgr_PresentableObject::Compute( aProjector , aPresentation ) ;
+  updateShape (Standard_True);
+  Compute (aProjector, aPresentation, myShape);
+}
+
+//=======================================================================
+//function : Compute
+//purpose  :
+//=======================================================================
+void AIS_ConnectedInteractive::Compute (const Handle(Prs3d_Projector)& theProjector,
+                                        const Handle(Prs3d_Presentation)& thePresentation,
+                                        const TopoDS_Shape& theShape)
+{
+  if (myShape.IsNull())
+  {
+    return;
+  }
+
+  switch (theShape.ShapeType())
+  {
+    case TopAbs_VERTEX:
+    case TopAbs_EDGE:
+    case TopAbs_WIRE:
+    {
+      thePresentation->SetDisplayPriority (4);
+      StdPrs_WFDeflectionShape::Add (thePresentation, theShape, myDrawer);
+      break;
+    }
+    default:
+    {
+      Handle(Prs3d_Drawer) aDefaultDrawer = GetContext()->DefaultDrawer();
+      if (aDefaultDrawer->DrawHiddenLine()) 
+      {
+        myDrawer->EnableDrawHiddenLine();
+      }
+      else 
+      {
+        myDrawer->DisableDrawHiddenLine();
+      }
+      
+      Aspect_TypeOfDeflection aPrevDeflection = aDefaultDrawer->TypeOfDeflection();
+      aDefaultDrawer->SetTypeOfDeflection(Aspect_TOD_RELATIVE);
+
+      // process HLRAngle and HLRDeviationCoefficient()
+      Standard_Real aPrevAngle = myDrawer->HLRAngle();
+      Standard_Real aNewAngle = aDefaultDrawer->HLRAngle();
+      if (Abs (aNewAngle - aPrevAngle) > Precision::Angular())
+      {
+        BRepTools::Clean (theShape);
+      }
+
+      myDrawer->SetHLRAngle (aNewAngle);
+      myDrawer->SetHLRDeviationCoefficient (aDefaultDrawer->HLRDeviationCoefficient());
+      StdPrs_HLRPolyShape::Add (thePresentation, theShape, myDrawer, theProjector);
+      aDefaultDrawer->SetTypeOfDeflection (aPrevDeflection);
+    }
+  }
+}
+
+//=======================================================================
+//function : updateShape
+//purpose  : 
+//=======================================================================
+void AIS_ConnectedInteractive::updateShape (const Standard_Boolean isWithLocation)
+{
+  Handle(AIS_Shape) anAisShape = Handle(AIS_Shape)::DownCast (myReference);
+  if (anAisShape.IsNull())
+  {
+    return;
+  }
+ 
+  TopoDS_Shape aShape = anAisShape->Shape();
+  if (aShape.IsNull())
+  {
+    return;
+  }
+
+  if(!isWithLocation)
+  {
+    myShape = aShape;
+  }
+  else
+  {
+    myShape = aShape.Moved (TopLoc_Location (Transformation()));
+  }
 }
 
 //=======================================================================
 //function : ComputeSelection
 //purpose  : 
 //=======================================================================
-
-void AIS_ConnectedInteractive::ComputeSelection(const Handle(SelectMgr_Selection)& aSel, 
-                                                const Standard_Integer aMode)
+void AIS_ConnectedInteractive::ComputeSelection (const Handle(SelectMgr_Selection)& theSelection, 
+                                                 const Standard_Integer theMode)
 {
-  if(!(HasLocation() ||HasConnection())) return;
-  
-  aSel->Clear();
-  if(!myReference->HasSelection(aMode))
-    myReference->UpdateSelection(aMode);
-
-  const Handle(SelectMgr_Selection)& TheRefSel = myReference->Selection(aMode);
-  Handle(SelectMgr_EntityOwner) OWN = new SelectMgr_EntityOwner(this);
-  Handle(Select3D_SensitiveEntity) SE3D, SNew;
-  
-  if(TheRefSel->IsEmpty())
-    myReference->UpdateSelection(aMode);
-  for(TheRefSel->Init();TheRefSel->More();TheRefSel->Next())
+  if (!HasConnection())
   {
-    SE3D = Handle(Select3D_SensitiveEntity)::DownCast(TheRefSel->Sensitive());
-    if(!SE3D.IsNull())
+    return;
+  }
+
+  if (theMode != 0 && myReference->AcceptShapeDecomposition())
+  {
+    computeSubShapeSelection (theSelection, theMode);
+    return;
+  }
+
+  if (!myReference->HasSelection (theMode))
+  {
+    myReference->UpdateSelection (theMode);
+  }
+
+  const Handle(SelectMgr_Selection)& TheRefSel = myReference->Selection (theMode);
+  Handle(SelectMgr_EntityOwner) anOwner = new SelectMgr_EntityOwner (this);
+  Handle(Select3D_SensitiveEntity) aSensitive, aNewSensitive;
+  
+  if (TheRefSel->IsEmpty())
+  {
+    myReference->UpdateSelection (theMode);
+  }
+
+  for (TheRefSel->Init(); TheRefSel->More(); TheRefSel->Next())
+  {
+    aSensitive = Handle(Select3D_SensitiveEntity)::DownCast (TheRefSel->Sensitive());
+    if (!aSensitive.IsNull())
     {
+      TopLoc_Location aLocation (Transformation());
       // Get the copy of SE3D
-      SNew = SE3D->GetConnected(myLocation);
-      if(aMode==0)
-      {
-        SNew->Set(OWN);
-        // In case if SE3D caches some location-dependent data
-        // that must be updated after setting OWN
-        SNew->SetLocation(myLocation);
-      }
-      aSel->Add(SNew);
+      aNewSensitive = aSensitive->GetConnected (aLocation);
+
+      aNewSensitive->Set(anOwner);
+      // In case if SE3D caches some location-dependent data
+      // that must be updated after setting OWN
+      aNewSensitive->SetLocation (aLocation);
+
+      theSelection->Add (aNewSensitive);
     }
   }
 }
 
-void AIS_ConnectedInteractive::UpdateLocation()
+//=======================================================================
+//function : ComputeSubShapeSelection 
+//purpose  :
+//=======================================================================
+void AIS_ConnectedInteractive::computeSubShapeSelection (const Handle(SelectMgr_Selection)& theSelection, 
+                                                         const Standard_Integer theMode)
 {
-// Standard_NotImplemented::Raise("AIS_ConnectedInteractive::UpdateLocation()");
- SelectMgr_SelectableObject::UpdateLocation() ;
+  typedef NCollection_List<Handle(Select3D_SensitiveEntity)> SensitiveList;
+  typedef NCollection_DataMap<TopoDS_Shape, SensitiveList, TopTools_OrientedShapeMapHasher>
+    Shapes2EntitiesMap;
+
+  if (!myReference->HasSelection (theMode))
+    myReference->UpdateSelection (theMode);
+   
+  const Handle(SelectMgr_Selection)& aRefSel = myReference->Selection (theMode);
+
+  if (aRefSel->IsEmpty() || aRefSel->UpdateStatus() == SelectMgr_TOU_Full)
+  {
+    myReference->UpdateSelection (theMode);
+  }
+  
+  Handle(StdSelect_BRepOwner) anOwner;
+  TopLoc_Location aDummyLoc;
+
+  Handle(Select3D_SensitiveEntity) aSE, aNewSE;
+  Shapes2EntitiesMap aShapes2EntitiesMap;
+
+  SensitiveList aSEList;
+  TopoDS_Shape aSubShape;
+
+  // Fill in the map of subshapes and corresponding 
+  // sensitive entities associated with aMode 
+  for (aRefSel->Init(); aRefSel->More(); aRefSel->Next())
+  {
+    aSE = Handle(Select3D_SensitiveEntity)::DownCast (aRefSel->Sensitive()); 
+    if(!aSE.IsNull())
+    {
+      anOwner = Handle(StdSelect_BRepOwner)::DownCast (aSE->OwnerId());
+      if(!anOwner.IsNull())
+      {
+        aSubShape = anOwner->Shape(); 
+        if(!aShapes2EntitiesMap.IsBound (aSubShape))
+        {
+          aShapes2EntitiesMap.Bind (aSubShape, aSEList);
+        }
+        aShapes2EntitiesMap (aSubShape).Append (aSE);
+      }
+    }
+  }
+
+  // Fill in selection from aShapes2EntitiesMap
+  for (Shapes2EntitiesMap::Iterator aMapIt (aShapes2EntitiesMap); aMapIt.More(); aMapIt.Next())
+  {
+    aSEList = aMapIt.Value();
+    anOwner = new StdSelect_BRepOwner (aMapIt.Key(), 
+                                       this, 
+                                       aSEList.First()->OwnerId()->Priority(), 
+                                       Standard_True);
+
+    for (SensitiveList::Iterator aListIt (aSEList); aListIt.More(); aListIt.Next())
+    {      
+      aSE = aListIt.Value();
+
+      TopLoc_Location aLocation (Transformation());
+      aNewSE = aSE->GetConnected (aDummyLoc);
+      aNewSE->Set (anOwner);
+      // In case if aSE caches some location-dependent data 
+      // that must be updated after setting anOwner
+      aNewSE->SetLocation (aLocation);
+
+      theSelection->Add (aNewSE);
+    }
+  }
+
+  StdSelect::SetDrawerForBRepOwner (theSelection, myDrawer);  
 }
-void AIS_ConnectedInteractive::UpdateLocation(const Handle(SelectMgr_Selection)& Sel)
-{
-// Standard_NotImplemented::Raise("AIS_ConnectedInteractive::UpdateLocation(const Handle(SelectMgr_Selection)& Sel)");
- SelectMgr_SelectableObject::UpdateLocation(Sel) ;
-}
-/*void AIS_ConnectedInteractive::UpdateLocation(const Handle(Prs3d_Presentation)& aPresentation)
-{
-// Standard_NotImplemented::Raise("AIS_ConnectedInteractive::UpdateLocation(const Handle(Prs3d_Presentation)&)");
- SelectMgr_SelectableObject::UpdateLocation(aPresentation) ;
-}*/

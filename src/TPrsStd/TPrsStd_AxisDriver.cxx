@@ -70,7 +70,7 @@ Standard_Boolean TPrsStd_AxisDriver::Update (const TDF_Label& aLabel,
 	aistrihed = new AIS_Axis(apt);
       else {
 	aistrihed->SetComponent(apt);
-        aistrihed->ResetLocation();
+        aistrihed->ResetTransformation();
         aistrihed->SetToUpdate();
         aistrihed->UpdateSelection();
       }

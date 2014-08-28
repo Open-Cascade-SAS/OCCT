@@ -360,9 +360,6 @@ is
     
     ---Category: Object of type Shape
     class Shape;                         --signature 0
-    class ConnectedShape;                --signature 1
-    class MultipleConnectedShape;        --signature 2        
-
 
 
     ---Category: General Objects

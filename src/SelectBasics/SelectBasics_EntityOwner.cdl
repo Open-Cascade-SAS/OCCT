@@ -60,7 +60,6 @@ is
     ResetLocation(me:mutable) is deferred;
     
     Location(me) returns Location from TopLoc is deferred;
-    ---C++: return const&
 
 
 

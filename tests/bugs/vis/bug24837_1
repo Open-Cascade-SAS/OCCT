@@ -1,0 +1,41 @@
+puts "============"
+puts "CR24837_1"
+puts "============"
+puts ""
+#######################################################################
+#  Visualization - revise design and implementation of connected Interactive Objects
+#######################################################################
+
+pload MODELING VISUALIZATION
+vinit
+box b 1 1 1
+psphere s 0.5
+vdisplay b s
+vsetlocation s 0 2.5 0
+box d 0.5 0.5 3
+box d2 0.5 3 0.5
+vdisplay d d2
+vconnectto b1 -2 0 0 b
+vconnect z 2 0 0 b s
+vconnect z2 4 0 0 d d2
+vconnect z3 6 0 0 z z2
+vconnect z4 10 0 0 z3 z2
+vfit
+set anImage ${imagedir}/${casename}_1_1.png
+vdump ${anImage}
+
+vaddconnected z4 0 4 0 s
+vdisconnect z4 1
+vfit
+set anImage ${imagedir}/${casename}_1_2.png
+vdump ${anImage}
+
+vhlr on
+set anImage ${imagedir}/${casename}_1_3.png
+vdump ${anImage}
+
+vhlr off
+vsetdispmode 1
+vmoveto 320 330
+set anImage ${imagedir}/${casename}_1_4.png
+vdump ${anImage}

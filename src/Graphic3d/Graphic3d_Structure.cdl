@@ -911,10 +911,17 @@ is
   is static private;
   ---Purpose: Returns the extreme coordinates found in the structure <me> without transformation applied.
 
+  getBox (me;
+          theBox : out BndBox4d from Graphic3d;
+          theToIgnoreInfiniteFlag : Boolean from Standard = Standard_False)
+  is static private;
+  ---Purpose: Gets untransformed bounding box from structure.
+
   addTransformed (me;
                   theBox : out BndBox4d from Graphic3d;
                   theToIgnoreInfiniteFlag : Boolean from Standard = Standard_False)
   is static private;
+  ---Purpose: Adds transformed (with myCStructure->Transformation) bounding box of structure to theBox.
 
 	PrintNetwork ( myclass;
 		       AStructure	: Structure from Graphic3d;

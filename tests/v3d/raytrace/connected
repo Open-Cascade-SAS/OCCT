@@ -12,12 +12,12 @@ vclear
 vrenderparams -rasterization
 vsetdispmode 1
 vaxo
-vconnectsh b1c -3 0 0 1 0 0 0 0 1 b1 b2
+vconnect b1c -3 0 0 b1 b2
 vfit
 vrotate 0.2 0.0 0.0
 vfit
 vclear
-vconnectsh b1c -3 0 0 1 0 0 0 0 1 b1 b2
+vconnect b1c -3 0 0 b1 b2
 
 # take snapshot with fixed pipeline
 vdump $::imagedir/${::casename}_OFF.png
@@ -27,4 +27,4 @@ vrenderparams -raytrace
 vdump $::imagedir/${::casename}_rt1.png
 
 vclear
-vconnectsh b1c -3 0 0 1 0 0 0 0 1 b1 b2
+vconnect b1c -3 0 0 b1 b2

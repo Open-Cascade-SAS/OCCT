@@ -49,6 +49,12 @@ is
     returns EntityOwner from SelectMgr;
     	---Purpose: Constructs a framework with the selectable object
     	-- anSO being attributed the selection priority aPriority.
+
+    Create (theOwner : EntityOwner from SelectMgr;
+            aPriority : Integer=0)
+      returns EntityOwner from SelectMgr;
+        ---Purpose: Constructs a framework from existing one
+        -- anSO being attributed the selection priority aPriority.
 	
     HasSelectable(me) returns Boolean from Standard;
     	---Purpose: Returns true if there is a selectable object to serve as an owner.
@@ -56,7 +62,7 @@ is
     Selectable(me) returns any SelectableObject from SelectMgr
         ---Purpose: Returns a selectable object detected in the working context.
     raises NoSuchObject from Standard
-    is static;
+    is  virtual;
     
     Set(me:mutable; aSO : SelectableObject) is static;    
         ---Purpose: Sets the selectable object anSO to be used by the
@@ -124,9 +130,6 @@ is
     SetLocation(me:mutable; aLoc : Location from TopLoc) is redefined;
     ResetLocation(me:mutable) is redefined;
     Location(me) returns Location from TopLoc is redefined;
-    ---C++: return const&
-    
-    
 
     --very Internal method (to be used in selection process only...)
 

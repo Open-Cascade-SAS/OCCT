@@ -13,14 +13,3 @@
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
-
-//		<g_design>
-//=======================================================================
-//function : ConnectedTo
-//purpose  : 
-//=======================================================================
-
-inline const AIS_SequenceOfInteractive& AIS_MultipleConnectedInteractive::ConnectedTo() const 
-{
-  return myReferences;
-}

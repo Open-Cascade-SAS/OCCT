@@ -1,0 +1,38 @@
+puts "============"
+puts "CR24837_2"
+puts "============"
+puts ""
+#######################################################################
+#  Visualization - revise design and implementation of connected Interactive Objects
+#######################################################################
+
+pload MODELING VISUALIZATION
+box o1 -10 -10 -5 1 1 10
+box o2  10  10 -5 1 1 10
+box b1 0 0 0 1 2 3
+box b2 3 0 0 3 2 1
+vinit View1
+vclear
+vtop
+vsetdispmode 0
+vdisplay o1 o2
+vdisplay b1 b2
+vfit
+vdrawtext "b1"   0 -3 3 255  25  25 2 0 000 0 14 1 Arial
+vdrawtext "b2"   3  0 3  25 255  25 2 0 000 0 14 1 Arial
+vdrawtext "bc_1" 0 -9 3 255 225 225 2 0 000 0 14 1 Arial
+vdrawtext "bc_2" 3 -6 3 255 225 225 2 0 000 0 14 1 Arial
+vsetdispmode 1
+set anImage ${imagedir}/${casename}_2_1.png
+vdump ${anImage}
+
+vsetmaterial b1 b2 plastic
+vsetcolor b1 RED
+vsetcolor b2 GREEN
+set anImage ${imagedir}/${casename}_2_2.png
+vdump ${anImage}
+
+vsetlocation b1 0 -3 0
+vconnect bc 0 -6 0 b1 b2
+set anImage ${imagedir}/${casename}_2_3.png
+vdump ${anImage}

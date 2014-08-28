@@ -82,7 +82,7 @@ Standard_Boolean TPrsStd_NamedShapeDriver::Update (const TDF_Label& aLabel,
     else {
       TopoDS_Shape oldShape = AISShape->Shape();
       if(oldShape != S) {
-	AISShape->ResetLocation();
+	AISShape->ResetTransformation();
 
 #ifdef OPTIM_UPDATE
 	Handle(AIS_InteractiveContext) ctx = AISShape->GetContext();

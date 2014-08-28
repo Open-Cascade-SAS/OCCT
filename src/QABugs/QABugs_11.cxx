@@ -1675,7 +1675,7 @@ static Standard_Integer OCC708 (Draw_Interpretor& di, Standard_Integer argc, con
       di << argv[1] << " : No interactive object" << "\n";
       return 1;
     } 
-    AISObj->UnsetTransformation();
+    AISObj->ResetTransformation();
     if (!aContext->HasOpenedContext()) {
       aContext->OpenLocalContext();
     }

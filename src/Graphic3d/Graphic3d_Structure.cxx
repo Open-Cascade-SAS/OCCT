@@ -1838,29 +1838,28 @@ Graphic3d_BndBox4f Graphic3d_Structure::minMaxCoord (const Standard_Boolean theT
 //function : addTransformed
 //purpose  :
 //=============================================================================
-void Graphic3d_Structure::addTransformed (Graphic3d_BndBox4d&    theBox,
-                                          const Standard_Boolean theToIgnoreInfiniteFlag) const
+void Graphic3d_Structure::getBox (Graphic3d_BndBox4d&    theBox,
+                                  const Standard_Boolean theToIgnoreInfiniteFlag) const
 {
-  Graphic3d_BndBox4d aBox;
   Graphic3d_BndBox4f aBoxF = minMaxCoord (theToIgnoreInfiniteFlag);
   if (aBoxF.IsValid())
   {
-    aBox = Graphic3d_BndBox4d (Graphic3d_Vec4d ((Standard_Real )aBoxF.CornerMin().x(),
-                                                (Standard_Real )aBoxF.CornerMin().y(),
-                                                (Standard_Real )aBoxF.CornerMin().z(),
-                                                (Standard_Real )aBoxF.CornerMin().w()),
-                               Graphic3d_Vec4d ((Standard_Real )aBoxF.CornerMax().x(),
-                                                (Standard_Real )aBoxF.CornerMax().y(),
-                                                (Standard_Real )aBoxF.CornerMax().z(),
-                                                (Standard_Real )aBoxF.CornerMax().w()));
+    theBox = Graphic3d_BndBox4d (Graphic3d_Vec4d ((Standard_Real )aBoxF.CornerMin().x(),
+                                                  (Standard_Real )aBoxF.CornerMin().y(),
+                                                  (Standard_Real )aBoxF.CornerMin().z(),
+                                                  (Standard_Real )aBoxF.CornerMin().w()),
+                                 Graphic3d_Vec4d ((Standard_Real )aBoxF.CornerMax().x(),
+                                                  (Standard_Real )aBoxF.CornerMax().y(),
+                                                  (Standard_Real )aBoxF.CornerMax().z(),
+                                                  (Standard_Real )aBoxF.CornerMax().w()));
     if (IsInfinite()
     && !theToIgnoreInfiniteFlag)
     {
-      const Graphic3d_Vec4d aDiagVec = aBox.CornerMax() - aBox.CornerMin();
+      const Graphic3d_Vec4d aDiagVec = theBox.CornerMax() - theBox.CornerMin();
       if (aDiagVec.xyz().SquareModulus() >= 500000.0 * 500000.0)
       {
         // bounding borders of infinite line has been calculated as own point in center of this line
-        aBox = Graphic3d_BndBox4d ((aBox.CornerMin() + aBox.CornerMax()) * 0.5);
+        theBox = Graphic3d_BndBox4d ((theBox.CornerMin() + theBox.CornerMax()) * 0.5);
       }
       else
       {
@@ -1870,20 +1869,42 @@ void Graphic3d_Structure::addTransformed (Graphic3d_BndBox4d&    theBox,
       }
     }
   }
+}
+
+//=============================================================================
+//function : addTransformed
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::addTransformed (Graphic3d_BndBox4d&    theBox,
+                                          const Standard_Boolean theToIgnoreInfiniteFlag) const
+{
+  Graphic3d_BndBox4d aCombinedBox, aBox;
+  getBox (aCombinedBox, theToIgnoreInfiniteFlag);
 
   for (Standard_Integer aStructIt = 1; aStructIt <= myDescendants.Length(); ++aStructIt)
   {
     const Graphic3d_Structure* aStruct = (const Graphic3d_Structure* )myDescendants.Value (aStructIt);
-    aStruct->addTransformed (aBox, theToIgnoreInfiniteFlag);
+    aStruct->getBox (aBox, theToIgnoreInfiniteFlag);
+    aCombinedBox.Combine (aBox);
   }
 
+  aBox = aCombinedBox;
   if (aBox.IsValid())
   {
     TColStd_Array2OfReal aTrsf (0, 3, 0, 3);
     Transform (aTrsf);
     TransformBoundaries (aTrsf, aBox.CornerMin().x(), aBox.CornerMin().y(), aBox.CornerMin().z(),
                                 aBox.CornerMax().x(), aBox.CornerMax().y(), aBox.CornerMax().z());
-    theBox.Combine (aBox);
+
+    // if box is still valid after transformation
+    if (aBox.IsValid())
+    {
+      theBox.Combine (aBox);
+    }
+    else // it was infinite, return untransformed
+    {
+      theBox.Combine (aCombinedBox);
+    }
   }
 }
 

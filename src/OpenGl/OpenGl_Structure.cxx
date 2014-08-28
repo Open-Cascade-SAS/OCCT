@@ -607,6 +607,20 @@ void OpenGl_Structure::Clear (const Handle(OpenGl_Context)& theGlCtx)
 }
 
 // =======================================================================
+// function : RenderGeometry
+// purpose  :
+// =======================================================================
+void OpenGl_Structure::RenderGeometry (const Handle(OpenGl_Workspace) &AWorkspace) const
+{
+  // Render groups
+  const Graphic3d_SequenceOfGroup& aGroups = DrawGroups();
+  for (OpenGl_Structure::GroupIterator aGroupIter (aGroups); aGroupIter.More(); aGroupIter.Next())
+  {
+    aGroupIter.Value()->Render (AWorkspace);
+  }
+}
+
+// =======================================================================
 // function : Render
 // purpose  :
 // =======================================================================
@@ -693,7 +707,7 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
   OpenGl_ListOfStructure::Iterator its(myConnected);
   while (its.More())
   {
-    its.Value()->Render(AWorkspace);
+    its.Value()->RenderGeometry (AWorkspace);
     its.Next();
   }
 

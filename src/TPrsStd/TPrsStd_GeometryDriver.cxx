@@ -84,7 +84,7 @@ Standard_Boolean TPrsStd_GeometryDriver::Update(const TDF_Label& aLabel,
 	  ais1 = new AIS_Point(apt);
 	else {
 	  ais1->SetComponent(apt);
-	  ais1->ResetLocation();
+	  ais1->ResetTransformation();
 	  ais1->SetToUpdate();
 	  ais1->UpdateSelection();
 	}
@@ -107,7 +107,7 @@ Standard_Boolean TPrsStd_GeometryDriver::Update(const TDF_Label& aLabel,
 	  ais2 = new AIS_Line(aln);
 	else {
 	  ais2->SetLine(aln);
-	  ais2->ResetLocation();
+	  ais2->ResetTransformation();
 	  ais2->SetToUpdate();
 	  ais2->UpdateSelection();
 	}
@@ -131,7 +131,7 @@ Standard_Boolean TPrsStd_GeometryDriver::Update(const TDF_Label& aLabel,
 	  ais3 = new AIS_Circle(acir);
 	else {
 	  ais3->SetCircle(acir);
-	  ais3->ResetLocation();
+	  ais3->ResetTransformation();
 	  ais3->SetToUpdate();
 	  ais3->UpdateSelection();
 	}
@@ -153,7 +153,7 @@ Standard_Boolean TPrsStd_GeometryDriver::Update(const TDF_Label& aLabel,
 	  if (ais.IsNull()) 
 	    ais = new AIS_Shape(mkEdge);
 	  else {
-	    ais->ResetLocation();
+	    ais->ResetTransformation();
 	    ais->Set(mkEdge);
 	    ais->SetToUpdate();
 	    ais->UpdateSelection();

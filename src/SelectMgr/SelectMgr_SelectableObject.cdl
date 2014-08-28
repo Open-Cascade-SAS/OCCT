@@ -53,7 +53,7 @@ is
     Initialize(aTypeOfPresentation3d: TypeOfPresentation3d from PrsMgr = PrsMgr_TOP_AllView);
 
     ComputeSelection(me:mutable; aSelection : Selection from SelectMgr;
-                                 aMode      : Integer) is deferred private;
+                                 aMode      : Integer) is deferred;
         ---Purpose: Recovers and calculates any sensitive primitive,
     	-- aSelection, available in Shape mode, specified by
     	-- aMode. As a rule, these are sensitive faces.
@@ -133,12 +133,12 @@ is
     ---C++: inline
     
 
-    ResetLocation(me:mutable) is redefined static;
+    ResetTransformation(me:mutable) is redefined static;
     
-    UpdateLocation(me:mutable) is redefined virtual;
+    UpdateTransformation(me:mutable) is redefined virtual;
         ---Purpose: Recomputes the location of the selection aSelection.
 
-    UpdateLocation(me:mutable;aSelection: Selection from SelectMgr) is virtual protected;
+    UpdateTransformation(me:mutable;aSelection: Selection from SelectMgr) is virtual protected;
     ---Level: Internal
     ---Purpose: Updates locations in all sensitive entities from <aSelection> 
     --          and in corresponding entity owners.

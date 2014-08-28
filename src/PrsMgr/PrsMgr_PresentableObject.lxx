@@ -18,8 +18,30 @@ inline PrsMgr_TypeOfPresentation3d PrsMgr_PresentableObject::TypeOfPresentation3
 {return myTypeOfPresentation3d;}
 
 
-inline const TopLoc_Location& PrsMgr_PresentableObject::Location() const
-{return myLocation;}
+inline const gp_Trsf& PrsMgr_PresentableObject::LocalTransformation() const
+{
+  return myLocalTransformation;
+}
+
+inline const gp_Trsf& PrsMgr_PresentableObject::Transformation() const
+{
+  return myTransformation;
+}
+
+inline const PrsMgr_ListOfPresentableObjects& PrsMgr_PresentableObject::Children() const 
+{
+  return myChildren;
+}
+
+inline const Standard_Boolean PrsMgr_PresentableObject::HasOwnPresentations() const
+{
+  return myHasOwnPresentations;
+}
+
+inline const PrsMgr_PresentableObjectPointer PrsMgr_PresentableObject::Parent() const
+{
+  return myParent;
+}
 
 inline const Graphic3d_SequenceOfHClipPlane& PrsMgr_PresentableObject::GetClipPlanes() const
 {

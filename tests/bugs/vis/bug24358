@@ -17,7 +17,7 @@ vinit View1
 vclear
 vaxo
 vsetdispmode 1
-vconnectsh b1c -3 0 0 1 0 0 0 0 1 b1 b2
+vconnect b1c -3 0 0 b1 b2
 vfit
 
 vdump $Image1

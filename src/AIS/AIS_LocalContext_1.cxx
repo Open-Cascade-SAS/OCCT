@@ -774,8 +774,7 @@ HasShape() const
 // Function: 
 // Purpose :
 //==================================================
-const TopoDS_Shape& AIS_LocalContext::
-SelectedShape() const 
+TopoDS_Shape AIS_LocalContext::SelectedShape() const 
 {
   static TopoDS_Shape aSh;
   Handle(Standard_Transient) Tr = AIS_Selection::CurrentSelection()->Value();
@@ -785,7 +784,7 @@ SelectedShape() const
   {
     return aSh;
   }
-  return BRO->Shape();
+  return BRO->Shape().Located (BRO->Location());
 }
 
 //==================================================

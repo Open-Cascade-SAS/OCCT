@@ -72,8 +72,7 @@ myCTXPtr(NULL),
 mySelPriority(-1),
 myDisplayMode (-1),
 mySelectionMode(0),
-mystate(0),
-myHasTransformation(Standard_False)
+mystate(0)
 {
   Handle (AIS_InteractiveContext) Bid;
   myCTXPtr = Bid.operator->();
@@ -543,79 +542,6 @@ void AIS_InteractiveObject::SetInfiniteState(const Standard_Boolean aFlag)
     if(!P.IsNull())
       P->SetInfiniteState(myInfiniteState);
   }
-}
-
-//=======================================================================
-//function : SetTransformation
-//purpose  :
-//=======================================================================
-void AIS_InteractiveObject::SetTransformation (const Handle(Geom_Transformation)& theTrsf,
-                                               const Standard_Boolean             theToPostConcatenate,
-                                               const Standard_Boolean             theToUpdateSelection)
-{
-  if (GetContext().IsNull())
-  {
-    return;
-  }
-
-  const PrsMgr_Presentations& aPrsList = Presentations();
-  myHasTransformation = Standard_True;
-  for (Standard_Integer aPrsIter = 1; aPrsIter <= aPrsList.Length(); ++aPrsIter)
-  {
-    const Standard_Integer aMode = aPrsList (aPrsIter).Mode();
-    Handle(Prs3d_Presentation) aPrs = GetContext()->MainPrsMgr()->Presentation (this, aMode)->Presentation();
-    theToPostConcatenate ? aPrs->Multiply  (theTrsf)
-                         : aPrs->Transform (theTrsf);
-    if (theToUpdateSelection)
-    {
-      myCTXPtr->ClearSelected (Standard_True);
-      myCTXPtr->RecomputeSelectionOnly (this);
-    }
-  }
-}
-
-//=======================================================================
-//function : SetTransformation
-//purpose  : 
-//=======================================================================
-void AIS_InteractiveObject::UnsetTransformation() {
-#ifdef OCC708
-  static Handle(Geom_Transformation) trsf = new Geom_Transformation( gp_Trsf() );
-#else
-Handle(Geom_Transformation) trsf;
-#endif
-
-    SetTransformation(trsf);	// Set identity transformation
-    myHasTransformation = Standard_False;
-}
-
-//=======================================================================
-//function : Transformation
-//purpose  :
-//=======================================================================
-Handle(Geom_Transformation) AIS_InteractiveObject::Transformation()
-{
-  if (GetContext().IsNull())
-  {
-    return Handle(Geom_Transformation)();
-  }
-
-  const PrsMgr_Presentations& aPrsList = Presentations();
-  if (aPrsList.Length() > 0)
-  {
-    Handle(Prs3d_Presentation) aPrs = GetContext()->MainPrsMgr()->Presentation (this, 1)->Presentation();
-    return aPrs->Transformation();
-  }
-  return Handle(Geom_Transformation)();
-}
-
-//=======================================================================
-//function : HasTransformation
-//purpose  : 
-//=======================================================================
-Standard_Boolean AIS_InteractiveObject::HasTransformation() const {
-
-  return myHasTransformation;
 }
 
 //=======================================================================

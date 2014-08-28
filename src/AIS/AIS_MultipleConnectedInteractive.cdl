@@ -37,22 +37,27 @@ uses
     Projector             from Prs3d,
     Transformation        from Geom,
     Integer                from Standard,
-    Selection              from SelectMgr
+    Selection              from SelectMgr,
+    Trsf                  from gp
 
 is 
     
 
-    Create (aTypeOfPresentation3d: TypeOfPresentation3d from PrsMgr = PrsMgr_TOP_AllView) 
+    Create
     returns  MultipleConnectedInteractive  from  AIS;
     ---Purpose: Initializes the Interactive Object with multiple
-    -- presentation connections. If aTypeOfPresentation3d
-    -- does not have the affectation PrsMgr_TOP_AllView,
-    -- it is projector dependent.
+    -- connections to AIS_Interactive objects.
     
-    Connect(me          : mutable; 
-    	    anotherIObj : InteractiveObject from AIS);
-    ---Purpose: Add anotherIObj in the presentation of me
+    Connect(me             : mutable; 
+    	    theInteractive : InteractiveObject from AIS);
+    ---Purpose: Adds instance of theInteractive to child list.
 
+    Connect(me:mutable;
+            anotherIobj: InteractiveObject from AIS;
+            aLocation : Trsf from gp) is virtual;
+        ---Purpose: Establishes the connection between the Connected
+        -- Interactive Object, anotherIobj, and its reference.
+        -- Locates instance in aLocation.
 
     Type(me) returns KindOfInteractive from AIS
     is redefined virtual;	  
@@ -63,16 +68,9 @@ is
     HasConnection(me) returns Boolean from Standard;
     ---Purpose: Returns true if the object is connected to others.
    
-     ConnectedTo(me) returns SequenceOfInteractive from AIS;
-     ---Purpose:
-     -- Returns the connection references of the previous
-     -- Interactive Objects in view.
-     ---C++: inline
-     ---C++: return const&
-
-    Disconnect(me:mutable;
-    	       anotherIObj : InteractiveObject from AIS);
-    ---Purpose:  Removes the connection anotherIObj to an entity.
+    Disconnect(me             : mutable;
+    	       theInteractive : InteractiveObject from AIS);
+    ---Purpose:  Removes the connection with theInteractive.
 
     DisconnectAll(me:mutable);
     ---Purpose: Clears all the connections to objects.
@@ -106,17 +104,20 @@ is
     Compute(me:mutable;
     	        aProjector: Projector from Prs3d;
                 aPresentation: Presentation from Prs3d)
-    is redefined ;     
+    is redefined ;
+
+    AcceptShapeDecomposition(me) returns Boolean from Standard is redefined virtual;
+        ---C++: inline
+        ---Purpose:  Informs the graphic context that the interactive Object
+        -- may be decomposed into sub-shapes for dynamic selection.
+
 
     ComputeSelection(me:mutable; aSelection : Selection from SelectMgr;
                                  aMode      :        Integer   from Standard)
     is redefined virtual private;
+        ---Purpose:  Computes the selection for whole subtree in scene hierarchy.
 
 
 
-fields
-
-    myReferences         : SequenceOfInteractive from AIS;
-    myPreviousReferences : SequenceOfInteractive from AIS;
     
 end MultipleConnectedInteractive;

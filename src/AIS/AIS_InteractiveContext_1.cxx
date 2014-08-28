@@ -1120,17 +1120,17 @@ Standard_Boolean AIS_InteractiveContext::HasSelectedShape() const
 
 TopoDS_Shape AIS_InteractiveContext::SelectedShape() const 
 {
-
-  if(!HasOpenedContext()){
+  if (!HasOpenedContext())
+  {
     TopoDS_Shape sh;
-#ifdef IMP280200
-    Handle(AIS_Shape) shape = 
-	Handle(AIS_Shape)::DownCast(SelectedInteractive());
-    if( !shape.IsNull() ) sh = shape->Shape();
-#endif
+    Handle(AIS_Shape) shape = Handle(AIS_Shape)::DownCast(SelectedInteractive());
+    if (!shape.IsNull()) sh = shape->Shape().Located (SelectedInteractive()->Transformation());
     return sh;
-  } else
-    return myLocalContexts(myCurLocalIndex)->SelectedShape();
+  } 
+  else
+  {
+    return myLocalContexts (myCurLocalIndex)->SelectedShape();
+  }
 }
 
 //=======================================================================

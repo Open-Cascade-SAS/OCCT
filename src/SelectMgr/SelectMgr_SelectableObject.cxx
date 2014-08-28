@@ -24,6 +24,7 @@
 #include <SelectMgr_EntityOwner.hxx>
 #include <PrsMgr_PresentationManager3d.hxx>
 
+#include <TopLoc_Location.hxx>
 #include <gp_Pnt.hxx>
 
 static Standard_Integer Search (const SelectMgr_SequenceOfSelection& seq,
@@ -160,13 +161,14 @@ void SelectMgr_SelectableObject
 
 
 //=======================================================================
-//function : ReSetLocation
+//function : ReSetTransformation
 //purpose  : 
 //=======================================================================
-void SelectMgr_SelectableObject::ResetLocation() 
+void SelectMgr_SelectableObject::ResetTransformation() 
 {
   TopLoc_Location aLoc;
 
+  TopLoc_Location aSelfLocation (Transformation());
 
   // les selections
   Handle(Select3D_SensitiveEntity) SE;
@@ -176,13 +178,13 @@ void SelectMgr_SelectableObject::ResetLocation()
       SE =  *((Handle(Select3D_SensitiveEntity)*) &(Sel->Sensitive()));
       if(!SE.IsNull()){
         if(SE->HasLocation()) {
-          if( SE->Location()==myLocation){
+          if( SE->Location()==aSelfLocation){
             SE->ResetLocation();
             const Handle(SelectBasics_EntityOwner)& EO = SE->OwnerId();
             (*((Handle(SelectMgr_EntityOwner)*)&EO))->ResetLocation();}
           else{
             const TopLoc_Location& iniloc =SE->Location();
-            SE->SetLocation(iniloc*myLocation.Inverted());
+            SE->SetLocation(iniloc*aSelfLocation.Inverted());
             const Handle(SelectBasics_EntityOwner)& EO = SE->OwnerId();
             (*((Handle(SelectMgr_EntityOwner)*)&EO))->SetLocation(SE->Location());}
         }
@@ -191,15 +193,15 @@ void SelectMgr_SelectableObject::ResetLocation()
     Sel->UpdateStatus(SelectMgr_TOU_None);
   }
 
-  PrsMgr_PresentableObject::ResetLocation();
+  PrsMgr_PresentableObject::ResetTransformation();
 }
 
 
 //=======================================================================
-//function : UpdateLocation
+//function : UpdateTransformation
 //purpose  : 
 //=======================================================================
-void SelectMgr_SelectableObject::UpdateLocation() 
+void SelectMgr_SelectableObject::UpdateTransformation() 
 {
   
   Handle(Select3D_SensitiveEntity) SE;
@@ -207,28 +209,29 @@ void SelectMgr_SelectableObject::UpdateLocation()
     const Handle(SelectMgr_Selection) & Sel =  CurrentSelection();
     Sel->UpdateStatus(SelectMgr_TOU_Partial);
   }
-  PrsMgr_PresentableObject::UpdateLocation();
+  PrsMgr_PresentableObject::UpdateTransformation();
 
 }
 
 
 //=======================================================================
-//function : UpdateLocation
+//function : UpdateTransformation
 //purpose  : 
 //=======================================================================
-void SelectMgr_SelectableObject::UpdateLocation(const Handle(SelectMgr_Selection)& Sel)
+void SelectMgr_SelectableObject::UpdateTransformation(const Handle(SelectMgr_Selection)& Sel)
 {
+  TopLoc_Location aSelfLocation (Transformation());
   Handle(Select3D_SensitiveEntity) SE;
-  if(myLocation.IsIdentity()) return;
+  if(aSelfLocation.IsIdentity()) return;
   for(Sel->Init();Sel->More();Sel->Next()){
     SE =  *((Handle(Select3D_SensitiveEntity)*) &(Sel->Sensitive()));
     if(!SE.IsNull()){
-      SE->UpdateLocation(myLocation);
+      SE->UpdateLocation(aSelfLocation);
       const Handle(SelectBasics_EntityOwner)& aEOwner = SE->OwnerId();
       Handle(SelectMgr_EntityOwner) aMgrEO =
                               Handle(SelectMgr_EntityOwner)::DownCast (aEOwner);
       if (!aMgrEO.IsNull())
-        aMgrEO->SetLocation (myLocation);
+        aMgrEO->SetLocation (aSelfLocation);
     }
   }
 }

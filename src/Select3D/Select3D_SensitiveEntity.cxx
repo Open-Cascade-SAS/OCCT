@@ -120,9 +120,9 @@ void Select3D_SensitiveEntity::UpdateLocation(const TopLoc_Location& aLoc)
 //purpose  : 
 //=======================================================================
 
-const TopLoc_Location& Select3D_SensitiveEntity::Location() const 
+const TopLoc_Location Select3D_SensitiveEntity::Location() const 
 {
-  static TopLoc_Location anIdentity;	
+  TopLoc_Location anIdentity;	
   Handle(SelectBasics_EntityOwner) anOwner = OwnerId();
   return anOwner.IsNull() ? anIdentity : anOwner->Location();
 }

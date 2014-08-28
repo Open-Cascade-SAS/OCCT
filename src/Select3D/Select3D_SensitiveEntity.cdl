@@ -110,7 +110,7 @@ is
     ---Purpose: Returns true if this framework has a location defined.
 
     Location(me) returns Location from TopLoc is virtual;
-    ---C++: return const&
+    ---C++: return const
 
     ResetLocation(me:mutable) is virtual;
     ---Purpose: sets the location to Identity

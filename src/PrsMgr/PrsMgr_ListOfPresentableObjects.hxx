@@ -1,7 +1,6 @@
-// Created on: 1997-04-22
-// Created by: Guest Design
-// Copyright (c) 1997-1999 Matra Datavision
-// Copyright (c) 1999-2014 OPEN CASCADE SAS
+// Created on: 2014-08-11
+// Created by: duv
+// Copyright (c) 2014 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -14,16 +13,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//		<g_design>
+#ifndef _PrsMgr_ListOfPresentableObjects_HeaderFile
+#define _PrsMgr_ListOfPresentableObjects_HeaderFile
 
-inline void AIS_MultipleConnectedShape::Set(const TopoDS_Shape& ashap)
-{
-  myShape = ashap;
-}
+#include <PrsMgr_PresentableObject.hxx>
+#include <NCollection_List.hxx>
 
-inline const TopoDS_Shape& 
-AIS_MultipleConnectedShape::Shape() const 
-{
-  return myShape;
-}
+typedef NCollection_List<Handle(PrsMgr_PresentableObject)> PrsMgr_ListOfPresentableObjects;
+typedef NCollection_List<Handle(PrsMgr_PresentableObject)>::Iterator PrsMgr_ListOfPresentableObjectsIter;
 
+
+#endif // _PrsMgr_ListOfPresentableObjects_HeaderFile

@@ -6714,6 +6714,53 @@ static int VHighlightSelected (Draw_Interpretor& theDI,
 }
 
 //=======================================================================
+//function : VXRotate
+//purpose  :
+//=======================================================================
+static Standard_Integer VXRotate (Draw_Interpretor& di,
+                                   Standard_Integer argc,
+                                   const char ** argv)
+{
+  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
+  if (aContext.IsNull())
+  {
+    di << argv[0] << "ERROR : use 'vinit' command before " << "\n";
+    return 1;
+  }
+  
+  if (argc != 3)
+  {
+    di << "ERROR : Usage : " << argv[0] << " name angle" << "\n";
+    return 1;
+  }
+
+  TCollection_AsciiString aName (argv[1]);
+  Standard_Real anAngle = Draw::Atof (argv[2]);
+
+  // find object
+  ViewerTest_DoubleMapOfInteractiveAndName& aMap = GetMapOfAIS();
+  Handle(AIS_InteractiveObject) anIObj;
+  if (!aMap.IsBound2 (aName) )
+  {
+    di << "Use 'vdisplay' before" << "\n";
+    return 1;
+  }
+  else
+  {
+    anIObj = Handle(AIS_InteractiveObject)::DownCast (aMap.Find2 (aName));
+
+    gp_Trsf aTransform;
+    aTransform.SetRotation (gp_Ax1 (gp_Pnt (0.0, 0.0, 0.0), gp_Vec (1.0, 0.0, 0.0)), anAngle);
+    aTransform.SetTranslationPart (anIObj->LocalTransformation().TranslationPart());
+
+    aContext->SetLocation (anIObj, aTransform);
+    aContext->UpdateCurrentViewer();
+  }
+
+  return 0;
+}
+
+//=======================================================================
 //function : ViewerCommands
 //purpose  :
 //=======================================================================
@@ -7085,5 +7132,10 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "vhighlightselected [0|1] or vhighlightselected [on|off]: enables/disables highlighting of selected objects.\n"
     "Without arguments it shows if highlighting of selected objects is enabled now.",
     __FILE__,VHighlightSelected,group);
+
+
+  theCommands.Add("vxrotate",
+    "vxrotate",
+    __FILE__,VXRotate,group);
 
 }

@@ -105,8 +105,6 @@ Standard_Boolean OpenGl_Workspace::UpdateRaytraceGeometry (GeomUpdateMode theMod
 
       for (aStructIt.Init (aStructArray (anIndex)); aStructIt.More(); aStructIt.Next())
       {
-        Standard_ShortReal* aTransform (NULL);
-
         const OpenGl_Structure* aStructure = aStructIt.Value();
 
         if (theMode == OpenGl_GUM_CHECK)
@@ -142,22 +140,8 @@ Standard_Boolean OpenGl_Workspace::UpdateRaytraceGeometry (GeomUpdateMode theMod
           if (!aStructure->IsRaytracable())
             continue;
 
-          if (aStructure->Transformation()->mat != NULL)
-          {
-            if (aTransform == NULL)
-              aTransform = new Standard_ShortReal[16];
-
-            for (Standard_Integer i = 0; i < 4; ++i)
-              for (Standard_Integer j = 0; j < 4; ++j)
-              {
-                aTransform[j * 4 + i] = aStructure->Transformation()->mat[i][j];
-              }
-          }
-
-          AddRaytraceStructure (aStructure, aTransform, anElements);
+          AddRaytraceStructure (aStructure, anElements);
         }
-
-        delete [] aTransform;
       }
     }
   }
@@ -311,8 +295,7 @@ void CreateMaterial (const OPENGL_SURF_PROP& theProp, OpenGl_RaytraceMaterial& t
 // function : AddRaytraceStructure
 // purpose  : Adds OpenGL structure to ray-traced scene geometry
 // =======================================================================
-Standard_Boolean OpenGl_Workspace::AddRaytraceStructure (const OpenGl_Structure* theStructure,
-  const Standard_ShortReal* theTransform, std::set<const OpenGl_Structure*>& theElements)
+Standard_Boolean OpenGl_Workspace::AddRaytraceStructure (const OpenGl_Structure* theStructure, std::set<const OpenGl_Structure*>& theElements)
 {
   theElements.insert (theStructure);
 
@@ -335,6 +318,41 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceStructure (const OpenGl_Structure*
     myRaytraceGeometry.Materials.push_back (aStructMaterial);
   }
 
+  Standard_ShortReal  aStructTransformArr[16];
+  Standard_ShortReal* aStructTransform = NULL;
+  if (theStructure->Transformation()->mat != NULL)
+  {
+    aStructTransform = aStructTransformArr;
+    for (Standard_Integer i = 0; i < 4; ++i)
+    {
+      for (Standard_Integer j = 0; j < 4; ++j)
+      {
+        aStructTransform[j * 4 + i] = theStructure->Transformation()->mat[i][j];
+      }
+    }
+  }
+
+  AddRaytraceGroups (theStructure, aStructMatID, aStructTransform);
+
+  // Process all connected OpenGL structures
+  for (OpenGl_ListOfStructure::Iterator anIts (theStructure->ConnectedStructures()); anIts.More(); anIts.Next())
+  {
+    if (anIts.Value()->IsRaytracable())
+      AddRaytraceGroups (anIts.Value(), aStructMatID, aStructTransform);
+  }
+
+  myStructureStates[theStructure] = theStructure->ModificationState();
+  return Standard_True;
+}
+
+// =======================================================================
+// function : AddRaytraceGroups
+// purpose  : Adds OpenGL groups to ray-traced scene geometry
+// =======================================================================
+Standard_Boolean OpenGl_Workspace::AddRaytraceGroups (const OpenGl_Structure*   theStructure,
+                                                      const Standard_Integer    theStructMatId,
+                                                      const Standard_ShortReal* theTransform)
+{
   for (OpenGl_Structure::GroupIterator aGroupIter (theStructure->DrawGroups()); aGroupIter.More(); aGroupIter.Next())
   {
     // Get group material
@@ -349,7 +367,7 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceStructure (const OpenGl_Structure*
       myRaytraceGeometry.Materials.push_back (aGroupMaterial);
     }
 
-    Standard_Integer aMatID = aGroupMatID < 0 ? aStructMatID : aGroupMatID;
+    Standard_Integer aMatID = aGroupMatID < 0 ? theStructMatId : aGroupMatID;
 
     if (aMatID < 0)
     {
@@ -420,32 +438,6 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceStructure (const OpenGl_Structure*
       }
     }
   }
-
-  Standard_ShortReal* aTransform = NULL;
-
-  // Process all connected OpenGL structures
-  for (OpenGl_ListOfStructure::Iterator anIts (theStructure->ConnectedStructures()); anIts.More(); anIts.Next())
-  {
-    if (anIts.Value()->Transformation()->mat != NULL)
-    {
-      if (aTransform == NULL)
-        aTransform = new Standard_ShortReal[16];
-
-      for (Standard_Integer i = 0; i < 4; ++i)
-        for (Standard_Integer j = 0; j < 4; ++j)
-        {
-          aTransform[j * 4 + i] =
-            anIts.Value()->Transformation()->mat[i][j];
-        }
-    }
-
-    if (anIts.Value()->IsRaytracable())
-      AddRaytraceStructure (anIts.Value(), aTransform != NULL ? aTransform : theTransform, theElements);
-  }
-
-  delete[] aTransform;
-
-  myStructureStates[theStructure] = theStructure->ModificationState();
 
   return Standard_True;
 }

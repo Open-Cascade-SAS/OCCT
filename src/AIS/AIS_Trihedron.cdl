@@ -47,6 +47,7 @@ class Trihedron from AIS inherits InteractiveObject from AIS
 
 uses 
     Axis2Placement        from Geom,
+    Trsf                  from gp,
     Presentation          from Prs3d,
     PresentationManager3d from PrsMgr,
     NameOfColor           from Quantity,
@@ -152,9 +153,7 @@ is
 
 -- Methods from PresentableObject
 
-    SetLocation(me              : mutable;
-    	    	aLoc            : Location from TopLoc)
-    is redefined static;
+    SetLocalTransformation(me:mutable; theTransformation:Trsf from gp) is redefined static;
 
 -- Methods from SelectableObject
 

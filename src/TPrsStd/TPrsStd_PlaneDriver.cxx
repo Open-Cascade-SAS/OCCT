@@ -63,7 +63,7 @@ Standard_Boolean TPrsStd_PlaneDriver::Update (const TDF_Label& aLabel,
     else {
       aisplane->SetComponent(apt); 
       aisplane->SetCenter(pln.Location());
-      aisplane->ResetLocation();
+      aisplane->ResetTransformation();
       aisplane->SetToUpdate();
       aisplane->UpdateSelection();
     }

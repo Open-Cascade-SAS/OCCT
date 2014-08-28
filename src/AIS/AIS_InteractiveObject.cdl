@@ -521,37 +521,6 @@ is
     State(me) returns Integer from Standard ;
     	---C++: inline
 
-    SetTransformation ( me : mutable;
-                aTranformation: Transformation from Geom;
-                postConcatenate: Boolean from Standard = Standard_False;
-                updateSelection: Boolean from Standard = Standard_True)
-        is static;
-    	---Level: Public
-    	---Purpose: Transforms all presentations of the object
-    	--  and replace the actual transformation matrix if <postConcatenate> is FALSE.
-    	-- Note that the selection  must be updated only at the end of 
-    	-- object animation when <updateSelection> is TRUE
-    	---Category: Transformation method
-
-    UnsetTransformation ( me : mutable )   
-        is static;
-    	---Level: Public
-    	---Purpose: Deactivate the current transformation
-    	---Category: Transformation method
-
-    Transformation ( me : mutable ) returns Transformation from Geom 
-        is static;
-    	---Level: Public
-    	---Purpose: Returns the current transformation associated
-    	-- to the first available presentation of this object.
-    	---Category: Inquire transformation method
-
-    HasTransformation ( me ) returns Boolean from Standard
-        is static;
-    	---Level: Public
-    	---Purpose: Returns TRUE when this object is transformed
-    	---Category: Inquire transformation method
-
     HasPresentation ( me ) returns Boolean from Standard
         is static;
     	---Level: Public
@@ -657,7 +626,6 @@ fields
     
     myToRecomputeModes  : ListOfInteger from TColStd is protected;
     mystate             : Integer from Standard;
-    myHasTransformation : Boolean from Standard;
 
 
 friends

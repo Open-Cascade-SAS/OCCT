@@ -379,7 +379,6 @@ is
     ---Purpose: returns TRUE if the detected entity is a shape
     --          coming from a Decomposition of an element.
     SelectedShape(me) returns Shape from TopoDS;
-    ---C++: return const &
 
     SelectedOwner(me) returns EntityOwner from SelectMgr;
     IsSelected(me;aniobj: InteractiveObject from AIS) returns Boolean  from  Standard;

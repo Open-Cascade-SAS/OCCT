@@ -199,36 +199,6 @@ is
   -- thePrsObject has the display mode theMode; this has the default value of 0, that is, the wireframe display mode.
   is static;
 
-  Place (me           : mutable;
-         thePrsObject : PresentableObject from PrsMgr;
-         X, Y, Z      : Length from Quantity;
-         theMode      : Integer from Standard = 0)
-  ---Purpose:
-  -- Sets a position to move the presentable object
-  -- aPresentableObject to. This position is defined by the
-  -- lengths along the x, y and z axes: X, Y and Z respectively.
-  -- aPresentableObject has the display mode aMode;
-  -- this has the default value of 0, that is, the wireframe display mode.
-  is static;
-
-  Multiply  (me                : mutable;
-             thePrsObject      : PresentableObject from PrsMgr;
-             theTransformation : Transformation from Geom;
-             theMode           : Integer from Standard = 0)
-  ---Purpose:
-  -- Defines the transformation theTransformation for the presentable object thePrsObject.
-  -- thePrsObject has the display mode aMode; this has the default value of 0, that is, the wireframe display mode.
-  is static;
-
-  Move (me           : mutable;
-        thePrsObject : PresentableObject from PrsMgr;
-        X, Y, Z      : Length from Quantity;
-        theMode      : Integer from Standard = 0)
-  ---Purpose:
-  -- Sets a position to move the presentable object thePrsObject to. This position is defined by the lengths along the x, y and z axes: X, Y and Z respectively.
-  -- thePrsObject has the display mode aMode; this has the default value of 0, that is, the wireframe display mode.
-  is static;
-
   StructureManager (me) returns StructureManager from Graphic3d
   is static;
   ---C++: inline

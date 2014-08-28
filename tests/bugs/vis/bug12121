@@ -58,7 +58,7 @@ set y_refresh 10
 restore [locate_data_file OCC12121-CrankArm.brep] obj 
 vinit
 vdisplay obj
-vconnectsh new 50 50 50 1 0 0 0 0 1 obj
+vconnect new 50 50 50 obj
 vfit
 vmoveto $x1 $y1
 set ColorObj1 [QAGetPixelColor ${x2} ${y2}]
@@ -68,12 +68,12 @@ vselect $x1 $y1
 set ColorObj2 [QAGetPixelColor ${x2} ${y2}]
 set ColorNew2 [QAGetPixelColor ${x3} ${y3}]
 
-puts "Check vconnectsh command"
-set status_vconnectsh 0
+puts "Check vconnect command"
+set status_vconnect 0
 if { ${ColorObj1} == ${ColorNew1} && ${ColorObj2} == ${ColorNew2} } {   
-    set status_vconnectsh 0
+    set status_vconnect 0
 } else {
-    set status_vconnectsh 1
+    set status_vconnect 1
 }
 
 vselect ${x_refresh} ${y_refresh}
@@ -124,7 +124,7 @@ vselect ${x_refresh} ${y_refresh}
 
 ##Resume
 puts ""
-if { ${status_vconnectsh} == 0 } {
+if { ${status_vconnect} == 1 } {
    puts "OK ${BugNumber}"
 } else {
    puts "Faulty ${BugNumber}"

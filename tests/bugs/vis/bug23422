@@ -1,0 +1,20 @@
+puts "============"
+puts "CR23422"
+puts "============"
+puts ""
+#######################################################################
+#  Selection problems when using SetLocation.
+#######################################################################
+
+box b 50 50 50
+vinit
+vsetdispmode 1
+vdisplay b
+vtrihedron t
+
+vsetlocation b 30 30 130
+
+vmoveto 240 150
+
+set anImage ${imagedir}/${casename}.png
+vdump ${anImage}
