@@ -1,0 +1,25 @@
+puts "========="
+puts "OCC23948"
+puts "========="
+puts ""
+###########################################################
+# Wrong intersection between a surface of revolution and a plane.
+###########################################################
+
+set MaxTol 1.0e-4
+set NbCurv_OK 2
+
+restore [locate_data_file bug22766_f1] f1
+restore [locate_data_file bug22766_f2] f2
+
+set log [bopcurves f1 f2]
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Toler NbCurv
+
+if {${NbCurv} != ${NbCurv_OK}} {
+  puts "Error: ${NbCurv_OK} curve(s) expected, but ${NbCurv} found."
+}
+
+if {${Toler} > ${MaxTol}} {
+  puts "Error: Tolerance is too big!"
+}
