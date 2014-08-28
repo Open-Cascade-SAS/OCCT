@@ -35,27 +35,23 @@
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 
-namespace
+//=======================================================================
+//function : isTriangulated
+//purpose  :
+//=======================================================================
+Standard_Boolean StdPrs_ToolShadedShape::IsTriangulated (const TopoDS_Shape& theShape)
 {
-  //=======================================================================
-  //function : isTriangulated
-  //purpose  : Returns true if all faces within shape are triangulated.
-  //           Same as BRepTools::Triangulation() but without extra checks.
-  //=======================================================================
-  static Standard_Boolean isTriangulated (const TopoDS_Shape& theShape)
+  TopLoc_Location aLocDummy;
+  for (TopExp_Explorer aFaceIter (theShape, TopAbs_FACE); aFaceIter.More(); aFaceIter.Next())
   {
-    TopLoc_Location aLocDummy;
-    for (TopExp_Explorer aFaceIter (theShape, TopAbs_FACE); aFaceIter.More(); aFaceIter.Next())
+    const TopoDS_Face&                aFace = TopoDS::Face (aFaceIter.Current());
+    const Handle(Poly_Triangulation)& aTri  = BRep_Tool::Triangulation (aFace, aLocDummy);
+    if (aTri.IsNull())
     {
-      const TopoDS_Face&                aFace = TopoDS::Face (aFaceIter.Current());
-      const Handle(Poly_Triangulation)& aTri  = BRep_Tool::Triangulation (aFace, aLocDummy);
-      if (aTri.IsNull())
-      {
-        return Standard_False;
-      }
+      return Standard_False;
     }
-    return Standard_True;
   }
+  return Standard_True;
 }
 
 //=======================================================================
@@ -88,6 +84,12 @@ Standard_Boolean StdPrs_ToolShadedShape::IsClosed (const TopoDS_Shape& theShape)
     }
     case TopAbs_SOLID:
     {
+      // Check for non-manifold topology first of all:
+      // have to use BRep_Tool::IsClosed() because it checks the face connectivity
+      // inside the shape
+      if (!BRep_Tool::IsClosed (theShape))
+        return Standard_False;
+
       for (TopoDS_Iterator anIter (theShape); anIter.More(); anIter.Next())
       {
         const TopoDS_Shape& aShape = anIter.Value();
@@ -96,17 +98,12 @@ Standard_Boolean StdPrs_ToolShadedShape::IsClosed (const TopoDS_Shape& theShape)
           continue;
         }
 
-        if (aShape.ShapeType() == TopAbs_SHELL
-        && !aShape.Closed())
-        {
-          return Standard_False;
-        }
-        else if (aShape.ShapeType() == TopAbs_FACE)
+        if (aShape.ShapeType() == TopAbs_FACE)
         {
           // invalid solid
           return Standard_False;
         }
-        else if (!isTriangulated (aShape))
+        else if (!IsTriangulated (aShape))
         {
           // mesh contains holes
           return Standard_False;

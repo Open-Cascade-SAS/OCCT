@@ -1,0 +1,34 @@
+puts "============"
+puts "OCC25132"
+puts "============"
+puts ""
+####################################################################################
+# Visualization - Capping algorithm not working sometimes
+####################################################################################
+
+vinit View1
+vsetdispmode 1
+vclipplane create pln1
+vclipplane change pln1 equation 0 1 0 0
+vclipplane change pln1 capping on
+vclipplane set pln1 view Driver1/Viewer1/View1
+
+# Capping should be enabled for the solid with a bounding shell with Closed flag not set
+restore [locate_data_file OCC25132-flight_solid.brep] fs
+vdisplay fs
+vfit
+vdump $imagedir/${casename}_flight_solid.png
+vremove fs
+
+# Capping should be enabled for the solid with cavities
+restore [locate_data_file OCC25132-solid_with_cavities.brep] sc
+vdisplay sc
+vfit
+vdump $imagedir/${casename}_solid_with_cavities.png
+vremove sc
+
+# Capping should display a non-manifold solid with an internal open shell correctly
+restore [locate_data_file OCC25132-Partition_1.brep] p1
+vdisplay p1
+vfit
+vdump $imagedir/${casename}_Partition_1.png

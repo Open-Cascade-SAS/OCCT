@@ -32,8 +32,12 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
+  //! Similar to BRepTools::Triangulation() but without extra checks.
+  //! @return true if all faces within shape are triangulated.
+  Standard_EXPORT static Standard_Boolean IsTriangulated (const TopoDS_Shape& theShape);
+
   //! Checks back faces visibility for specified shape (to activate back-face culling). <br>
-  //! @return true if shape is closed Solid or compound of closed Solids. <br>
+  //! @return true if shape is closed manifold Solid or compound of such Solids. <br>
   Standard_EXPORT static Standard_Boolean IsClosed(const TopoDS_Shape& theShape);
   
   Standard_EXPORT static Handle_Poly_Triangulation Triangulation(const TopoDS_Face& aFace,

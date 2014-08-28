@@ -257,7 +257,14 @@ namespace
       }
       case TopAbs_SOLID:
       {
-        theBuilder.Add (StdPrs_ToolShadedShape::IsClosed (theShape) ? theCompoundForClosed : theCompoundForOpened, theShape);
+        for (TopoDS_Iterator anIter (theShape); anIter.More(); anIter.Next())
+        {
+          const TopoDS_Shape& aSubShape   = anIter.Value();
+          const Standard_Boolean isClosed = aSubShape.ShapeType() == TopAbs_SHELL &&
+                                            BRep_Tool::IsClosed (aSubShape) &&
+                                            StdPrs_ToolShadedShape::IsTriangulated (aSubShape);
+          theBuilder.Add (isClosed ? theCompoundForClosed : theCompoundForOpened, aSubShape);
+        }
         return;
       }
       case TopAbs_SHELL:
@@ -483,12 +490,15 @@ void StdPrs_ShadedShape::Add (const Handle (Prs3d_Presentation)& thePrs,
   // add wireframe presentation for isolated edges and vertices
   wireframeFromShape (thePrs, theShape, theDrawer);
 
-  // IsClosed also verifies triangulation completeness - perform tessellation beforehand
+  // Triangulation completeness is important for "open-closed" analysis - perform tessellation beforehand
   Tessellate (theShape, theDrawer);
-  const Standard_Boolean isClosed = StdPrs_ToolShadedShape::IsClosed (theShape);
+
+  // The shape types listed below need advanced analysis as potentially containing
+  // both closed and open parts. Solids are also included, because they might
+  // contain non-manifold parts inside (internal open shells)
   if ((theShape.ShapeType() == TopAbs_COMPOUND
-    || theShape.ShapeType() == TopAbs_COMPSOLID)
-   && !isClosed
+    || theShape.ShapeType() == TopAbs_COMPSOLID
+    || theShape.ShapeType() == TopAbs_SOLID)
    &&  theToExploreSolids)
   {
     // collect two compounds: for opened and closed (solid) sub-shapes
@@ -515,7 +525,8 @@ void StdPrs_ShadedShape::Add (const Handle (Prs3d_Presentation)& thePrs,
   else
   {
     shadeFromShape (theShape, thePrs, theDrawer,
-                    theHasTexels, theUVOrigin, theUVRepeat, theUVScale, isClosed);
+                    theHasTexels, theUVOrigin, theUVRepeat, theUVScale,
+                    StdPrs_ToolShadedShape::IsClosed (theShape));
   }
 
   if (theDrawer->IsFaceBoundaryDraw())
