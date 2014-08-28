@@ -402,7 +402,7 @@ void OpenGl_GraphicDriver::RemoveView (const Graphic3d_CView& theCView)
       OpenGl_Structure* aStruct = aStructIt.ChangeValue();
       aStruct->ReleaseGlResources (aCtx);
     }
-    myTempText->Release (aCtx);
+    myTempText->Release (aCtx.operator->());
     myDeviceLostFlag = !myMapOfStructure.IsEmpty();
   }
 

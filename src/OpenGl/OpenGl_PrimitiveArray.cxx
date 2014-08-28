@@ -778,11 +778,11 @@ OpenGl_PrimitiveArray::~OpenGl_PrimitiveArray()
 // function : Release
 // purpose  :
 // =======================================================================
-void OpenGl_PrimitiveArray::Release (const Handle(OpenGl_Context)& theContext)
+void OpenGl_PrimitiveArray::Release (OpenGl_Context* theContext)
 {
   if (!myVboIndices.IsNull())
   {
-    if (!theContext.IsNull())
+    if (theContext)
     {
       theContext->DelayedRelease (myVboIndices);
     }
@@ -790,7 +790,7 @@ void OpenGl_PrimitiveArray::Release (const Handle(OpenGl_Context)& theContext)
   }
   if (!myVboAttribs.IsNull())
   {
-    if (!theContext.IsNull())
+    if (theContext)
     {
       theContext->DelayedRelease (myVboAttribs);
     }

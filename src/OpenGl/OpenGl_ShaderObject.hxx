@@ -57,7 +57,7 @@ public:
   Standard_EXPORT Standard_Boolean Create (const Handle(OpenGl_Context)& theCtx);
 
   //! Destroys shader object.
-  Standard_EXPORT virtual void Release (const OpenGl_Context* theCtx);
+  Standard_EXPORT virtual void Release (OpenGl_Context* theCtx);
 
   //! Returns type of shader object.
   GLenum Type() const { return myType; }

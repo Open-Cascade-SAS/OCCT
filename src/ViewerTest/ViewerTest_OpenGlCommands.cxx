@@ -103,7 +103,7 @@ public:
         myIObj->Render(theWorkspace);
     }
 
-    virtual void Release (const Handle(OpenGl_Context)&)
+    virtual void Release (OpenGl_Context*)
     {
       //
     }

@@ -59,7 +59,7 @@ public:
                                     const Standard_Integer        theFontSize);
 
   Standard_EXPORT virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
-  Standard_EXPORT virtual void Release (const Handle(OpenGl_Context)&   theContext);
+  Standard_EXPORT virtual void Release (OpenGl_Context* theContext);
 
 public: //! @name methods for compatibility with layers
 
@@ -107,7 +107,7 @@ protected:
 private:
 
   //! Release cached VBO resources
-  void releaseVbos (const Handle(OpenGl_Context)& theCtx);
+  void releaseVbos (OpenGl_Context* theCtx);
 
   //! Setup matrix.
   void setupMatrix (const Handle(OpenGl_PrinterContext)& thePrintCtx,

@@ -104,8 +104,8 @@ OpenGl_View::~OpenGl_View ()
 
 void OpenGl_View::ReleaseGlResources (const Handle(OpenGl_Context)& theCtx)
 {
-  OpenGl_Element::Destroy (theCtx, myTrihedron);
-  OpenGl_Element::Destroy (theCtx, myGraduatedTrihedron);
+  OpenGl_Element::Destroy (theCtx.operator->(), myTrihedron);
+  OpenGl_Element::Destroy (theCtx.operator->(), myGraduatedTrihedron);
 
   if (!myTextureEnv.IsNull())
   {
@@ -233,7 +233,7 @@ void OpenGl_View::TriedronDisplay (const Handle(OpenGl_Context)&       theCtx,
                                    const Standard_Real                 theScale,
                                    const Standard_Boolean              theAsWireframe)
 {
-  OpenGl_Element::Destroy (theCtx, myTrihedron);
+  OpenGl_Element::Destroy (theCtx.operator->(), myTrihedron);
   myTrihedron = new OpenGl_Trihedron (thePosition, theColor, theScale, theAsWireframe);
 }
 
@@ -241,7 +241,7 @@ void OpenGl_View::TriedronDisplay (const Handle(OpenGl_Context)&       theCtx,
 
 void OpenGl_View::TriedronErase (const Handle(OpenGl_Context)& theCtx)
 {
-  OpenGl_Element::Destroy (theCtx, myTrihedron);
+  OpenGl_Element::Destroy (theCtx.operator->(), myTrihedron);
 }
 
 /*----------------------------------------------------------------------*/
@@ -249,7 +249,7 @@ void OpenGl_View::TriedronErase (const Handle(OpenGl_Context)& theCtx)
 void OpenGl_View::GraduatedTrihedronDisplay (const Handle(OpenGl_Context)&        theCtx,
                                              const Graphic3d_CGraduatedTrihedron& theData)
 {
-  OpenGl_Element::Destroy (theCtx, myGraduatedTrihedron);
+  OpenGl_Element::Destroy (theCtx.operator->(), myGraduatedTrihedron);
   myGraduatedTrihedron = new OpenGl_GraduatedTrihedron (theData);
 }
 
@@ -257,7 +257,7 @@ void OpenGl_View::GraduatedTrihedronDisplay (const Handle(OpenGl_Context)&      
 
 void OpenGl_View::GraduatedTrihedronErase (const Handle(OpenGl_Context)& theCtx)
 {
-  OpenGl_Element::Destroy (theCtx, myGraduatedTrihedron);
+  OpenGl_Element::Destroy (theCtx.operator->(), myGraduatedTrihedron);
 }
 
 /*----------------------------------------------------------------------*/

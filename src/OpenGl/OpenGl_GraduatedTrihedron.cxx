@@ -189,7 +189,7 @@ static void drawArrow(float x1, float y1, float z1,
 // function : Release
 // purpose  :
 // =======================================================================
-void OpenGl_GraduatedTrihedron::Release (const Handle(OpenGl_Context)& theCtx)
+void OpenGl_GraduatedTrihedron::Release (OpenGl_Context* theCtx)
 {
   myLabelX.Release (theCtx);
   myLabelY.Release (theCtx);

@@ -101,10 +101,10 @@ void OpenGl_AspectText::Render (const Handle(OpenGl_Workspace)& theWorkspace) co
 // function : Release
 // purpose  :
 // =======================================================================
-void OpenGl_AspectText::Release (const Handle(OpenGl_Context)& theContext)
+void OpenGl_AspectText::Release (OpenGl_Context* theContext)
 {
   if (!myResources.ShaderProgram.IsNull()
-   && !theContext.IsNull())
+   && theContext)
   {
     theContext->ShaderManager()->Unregister (myResources.ShaderProgramId,
                                              myResources.ShaderProgram);

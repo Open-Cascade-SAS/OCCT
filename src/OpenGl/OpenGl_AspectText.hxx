@@ -130,7 +130,7 @@ public:
   }
 
   Standard_EXPORT virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
-  Standard_EXPORT virtual void Release (const Handle(OpenGl_Context)&   theContext);
+  Standard_EXPORT virtual void Release (OpenGl_Context* theContext);
 
 protected:
 

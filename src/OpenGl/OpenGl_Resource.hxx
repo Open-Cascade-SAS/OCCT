@@ -45,7 +45,7 @@ public:
   //! Notice that implementation should be SAFE for several consecutive calls
   //! (thus should invalidate internal structures / ids to avoid multiple-free errors).
   //! @param theGlCtx - bound GL context, shouldn't be NULL.
-  Standard_EXPORT virtual void Release (const OpenGl_Context* theGlCtx) = 0;
+  Standard_EXPORT virtual void Release (OpenGl_Context* theGlCtx) = 0;
 
 private:
 

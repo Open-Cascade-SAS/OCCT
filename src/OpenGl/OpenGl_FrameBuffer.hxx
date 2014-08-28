@@ -41,7 +41,7 @@ public:
   Standard_EXPORT virtual ~OpenGl_FrameBuffer();
 
   //! Destroy object - will release GPU memory if any.
-  Standard_EXPORT virtual void Release (const OpenGl_Context* theGlCtx);
+  Standard_EXPORT virtual void Release (OpenGl_Context* theGlCtx);
 
   //! Textures width.
   GLsizei GetSizeX() const

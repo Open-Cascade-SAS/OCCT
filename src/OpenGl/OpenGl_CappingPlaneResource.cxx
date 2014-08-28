@@ -56,7 +56,7 @@ void OpenGl_CappingPlaneResource::Update (const Handle(OpenGl_Context)& theConte
 // function : Release
 // purpose  :
 // =======================================================================
-void OpenGl_CappingPlaneResource::Release (const OpenGl_Context* theContext)
+void OpenGl_CappingPlaneResource::Release (OpenGl_Context* theContext)
 {
   OpenGl_Element::Destroy (theContext, myAspect);
   myEquationMod = (unsigned int )-1;
@@ -83,7 +83,7 @@ void OpenGl_CappingPlaneResource::UpdateAspect (const Handle(OpenGl_Context)& th
   // no more used
   if (myAspect != NULL && aCappingAsp.IsNull())
   {
-    OpenGl_Element::Destroy (theContext, myAspect);
+    OpenGl_Element::Destroy (theContext.operator->(), myAspect);
     myAspectMod = myPlaneRoot->MCountAspect();
     return;
   }

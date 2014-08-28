@@ -42,7 +42,7 @@ void OpenGl_StencilTest::Render (const Handle(OpenGl_Workspace)&) const
 // function : Release
 // purpose  :
 // =======================================================================
-void OpenGl_StencilTest::Release (const Handle(OpenGl_Context)&)
+void OpenGl_StencilTest::Release (OpenGl_Context*)
 {
   //
 }

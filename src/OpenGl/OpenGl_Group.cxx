@@ -378,14 +378,14 @@ void OpenGl_Group::Release (const Handle(OpenGl_Context)& theGlCtx)
   while (myFirst != NULL)
   {
     OpenGl_ElementNode* aNext = myFirst->next;
-    OpenGl_Element::Destroy (theGlCtx, myFirst->elem);
+    OpenGl_Element::Destroy (theGlCtx.operator->(), myFirst->elem);
     delete myFirst;
     myFirst = aNext;
   }
   myLast = NULL;
 
-  OpenGl_Element::Destroy (theGlCtx, myAspectLine);
-  OpenGl_Element::Destroy (theGlCtx, myAspectFace);
-  OpenGl_Element::Destroy (theGlCtx, myAspectMarker);
-  OpenGl_Element::Destroy (theGlCtx, myAspectText);
+  OpenGl_Element::Destroy (theGlCtx.operator->(), myAspectLine);
+  OpenGl_Element::Destroy (theGlCtx.operator->(), myAspectFace);
+  OpenGl_Element::Destroy (theGlCtx.operator->(), myAspectMarker);
+  OpenGl_Element::Destroy (theGlCtx.operator->(), myAspectText);
 }

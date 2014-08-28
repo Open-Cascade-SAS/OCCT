@@ -640,7 +640,7 @@ OpenGl_Trihedron::~OpenGl_Trihedron()
 // function : Release
 // purpose  :
 // =======================================================================
-void OpenGl_Trihedron::Release (const Handle(OpenGl_Context)& theCtx)
+void OpenGl_Trihedron::Release (OpenGl_Context* theCtx)
 {
   myLabelX.Release (theCtx);
   myLabelY.Release (theCtx);

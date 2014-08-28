@@ -108,7 +108,7 @@ Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlCo
 // function : Release
 // purpose  :
 // =======================================================================
-void OpenGl_FrameBuffer::Release (const OpenGl_Context* theGlCtx)
+void OpenGl_FrameBuffer::Release (OpenGl_Context* theGlCtx)
 {
   if (isValidFrameBuffer())
   {

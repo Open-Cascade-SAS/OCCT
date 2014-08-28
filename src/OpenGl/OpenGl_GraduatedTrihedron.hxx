@@ -37,7 +37,7 @@ public:
   OpenGl_GraduatedTrihedron (const Graphic3d_CGraduatedTrihedron& theData);
 
   virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
-  virtual void Release (const Handle(OpenGl_Context)&   theCtx);
+  virtual void Release (OpenGl_Context* theCtx);
 
 protected:
 

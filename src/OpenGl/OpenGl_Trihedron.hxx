@@ -43,7 +43,7 @@ public:
                     const Standard_Boolean              theAsWireframe);
 
   virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
-  virtual void Release (const Handle(OpenGl_Context)&   theCtx);
+  virtual void Release (OpenGl_Context* theCtx);
 
 protected:
 

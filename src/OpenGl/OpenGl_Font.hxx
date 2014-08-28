@@ -57,7 +57,7 @@ public:
   Standard_EXPORT virtual ~OpenGl_Font();
 
   //! Destroy object - will release GPU memory if any
-  Standard_EXPORT virtual void Release (const OpenGl_Context* theCtx);
+  Standard_EXPORT virtual void Release (OpenGl_Context* theCtx);
 
   //! @return key of shared resource
   inline const TCollection_AsciiString& ResourceKey() const

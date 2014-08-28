@@ -192,7 +192,7 @@ void OpenGl_Text::SetFontSize (const Handle(OpenGl_Context)& theCtx,
 {
   if (myParams.Height != theFontSize)
   {
-    Release (theCtx);
+    Release (theCtx.operator->());
   }
   myParams.Height = theFontSize;
 }
@@ -205,7 +205,7 @@ void OpenGl_Text::Init (const Handle(OpenGl_Context)& theCtx,
                         const Standard_Utf8Char*      theText,
                         const OpenGl_Vec3&            thePoint)
 {
-  releaseVbos (theCtx);
+  releaseVbos (theCtx.operator->());
   myIs2d   = false;
   myPoint  = thePoint;
   myString.FromUnicode (theText);
@@ -222,11 +222,11 @@ void OpenGl_Text::Init (const Handle(OpenGl_Context)& theCtx,
 {
   if (myParams.Height != theParams.Height)
   {
-    Release (theCtx);
+    Release (theCtx.operator->());
   }
   else
   {
-    releaseVbos (theCtx);
+    releaseVbos (theCtx.operator->());
   }
   myIs2d   = false;
   myParams = theParams;
@@ -245,11 +245,11 @@ void OpenGl_Text::Init (const Handle(OpenGl_Context)&     theCtx,
 {
   if (myParams.Height != theParams.Height)
   {
-    Release (theCtx);
+    Release (theCtx.operator->());
   }
   else
   {
-    releaseVbos (theCtx);
+    releaseVbos (theCtx.operator->());
   }
   myIs2d       = true;
   myParams     = theParams;
@@ -271,14 +271,14 @@ OpenGl_Text::~OpenGl_Text()
 // function : releaseVbos
 // purpose  :
 // =======================================================================
-void OpenGl_Text::releaseVbos (const Handle(OpenGl_Context)& theCtx)
+void OpenGl_Text::releaseVbos (OpenGl_Context* theCtx)
 {
   for (Standard_Integer anIter = 0; anIter < myVertsVbo.Length(); ++anIter)
   {
     Handle(OpenGl_VertexBuffer)& aVerts = myVertsVbo.ChangeValue (anIter);
     Handle(OpenGl_VertexBuffer)& aTCrds = myTCrdsVbo.ChangeValue (anIter);
 
-    if (!theCtx.IsNull())
+    if (theCtx)
     {
       theCtx->DelayedRelease (aVerts);
       theCtx->DelayedRelease (aTCrds);
@@ -297,7 +297,7 @@ void OpenGl_Text::releaseVbos (const Handle(OpenGl_Context)& theCtx)
 // function : Release
 // purpose  :
 // =======================================================================
-void OpenGl_Text::Release (const Handle(OpenGl_Context)& theCtx)
+void OpenGl_Text::Release (OpenGl_Context* theCtx)
 {
   releaseVbos (theCtx);
   if (!myFont.IsNull())
@@ -305,7 +305,8 @@ void OpenGl_Text::Release (const Handle(OpenGl_Context)& theCtx)
     Handle(OpenGl_Context) aCtx = theCtx;
     const TCollection_AsciiString aKey = myFont->ResourceKey();
     myFont.Nullify();
-    aCtx->ReleaseResource (aKey, Standard_True);
+    if (aCtx)
+      aCtx->ReleaseResource (aKey, Standard_True);
   }
 }
 
@@ -637,7 +638,7 @@ void OpenGl_Text::render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
    && !myFont->ResourceKey().IsEqual (aFontKey))
   {
     // font changed
-    const_cast<OpenGl_Text* > (this)->Release (theCtx);
+    const_cast<OpenGl_Text* > (this)->Release (theCtx.operator->());
   }
 
   if (myFont.IsNull())

@@ -387,11 +387,11 @@ void OpenGl_AspectFace::Render (const Handle(OpenGl_Workspace)& theWorkspace) co
 // function : Release
 // purpose  :
 // =======================================================================
-void OpenGl_AspectFace::Release (const Handle(OpenGl_Context)& theContext)
+void OpenGl_AspectFace::Release (OpenGl_Context* theContext)
 {
   if (!myResources.Texture.IsNull())
   {
-    if (!theContext.IsNull())
+    if (theContext)
     {
       if (myResources.TextureId.IsEmpty())
       {
@@ -409,7 +409,7 @@ void OpenGl_AspectFace::Release (const Handle(OpenGl_Context)& theContext)
   myResources.ResetTextureReadiness();
 
   if (!myResources.ShaderProgram.IsNull()
-   && !theContext.IsNull())
+   && theContext)
   {
     theContext->ShaderManager()->Unregister (myResources.ShaderProgramId,
                                              myResources.ShaderProgram);

@@ -56,7 +56,7 @@ public:
   }
 
   //! Destroy object - will release GPU memory if any.
-  Standard_EXPORT virtual void Release (const OpenGl_Context* theGlCtx);
+  Standard_EXPORT virtual void Release (OpenGl_Context* theGlCtx);
 
   //! Creates VBO and Texture names (ids) if not yet generated.
   //! Data should be initialized by another method.

@@ -49,7 +49,7 @@ OpenGl_PointSprite::~OpenGl_PointSprite()
 // function : Release
 // purpose  :
 // =======================================================================
-void OpenGl_PointSprite::Release (const OpenGl_Context* theGlCtx)
+void OpenGl_PointSprite::Release (OpenGl_Context* theGlCtx)
 {
   if (myBitmapList != 0)
   {

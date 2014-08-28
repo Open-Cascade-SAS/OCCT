@@ -50,7 +50,7 @@ public:
   //! Render primitives to the window
   virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
 
-  virtual void Release (const Handle(OpenGl_Context)&   theContext);
+  virtual void Release (OpenGl_Context* theContext);
 
   //! @return primitive type (GL_LINES, GL_TRIANGLES and others)
   GLint DrawMode() const { return myDrawMode; }

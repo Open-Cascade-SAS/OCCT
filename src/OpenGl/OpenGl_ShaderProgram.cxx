@@ -1245,7 +1245,7 @@ Standard_Boolean OpenGl_ShaderProgram::Create (const Handle(OpenGl_Context)& the
 // function : Release
 // purpose  : Destroys shader program
 // =======================================================================
-void OpenGl_ShaderProgram::Release (const OpenGl_Context* theCtx)
+void OpenGl_ShaderProgram::Release (OpenGl_Context* theCtx)
 {
   if (myProgramID == NO_PROGRAM)
   {

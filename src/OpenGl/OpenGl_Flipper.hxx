@@ -41,7 +41,7 @@ public:
   void SetOptions (const Standard_Boolean theIsEnabled) { myIsEnabled = theIsEnabled; }
 
   Standard_EXPORT virtual void Render (const Handle(OpenGl_Workspace)& theWorkspace) const;
-  Standard_EXPORT virtual void Release (const Handle(OpenGl_Context)&  theCtx);
+  Standard_EXPORT virtual void Release (OpenGl_Context* theCtx);
 
 public:
 

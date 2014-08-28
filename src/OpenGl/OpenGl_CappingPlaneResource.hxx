@@ -50,7 +50,7 @@ public:
 
   //! Release associated OpenGl resources.
   //! @param theContext [in] the resource context.
-  Standard_EXPORT void Release (const OpenGl_Context* theContext);
+  Standard_EXPORT void Release (OpenGl_Context* theContext);
 
   //! @return aspect face for rendering capping surface.
   inline const OpenGl_AspectFace* AspectFace() const { return myAspect; }

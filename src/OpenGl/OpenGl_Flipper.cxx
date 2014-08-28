@@ -53,7 +53,7 @@ OpenGl_Flipper::OpenGl_Flipper (const gp_Ax2& theReferenceSystem)
 // function : Release
 // purpose  :
 // =======================================================================
-void OpenGl_Flipper::Release (const Handle(OpenGl_Context)& )
+void OpenGl_Flipper::Release (OpenGl_Context*)
 {
   //
 }

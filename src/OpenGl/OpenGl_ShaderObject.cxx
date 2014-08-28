@@ -125,7 +125,7 @@ Standard_Boolean OpenGl_ShaderObject::Create (const Handle(OpenGl_Context)& theC
 // function : Release
 // purpose  : Destroys shader object
 // =======================================================================
-void OpenGl_ShaderObject::Release (const OpenGl_Context* theCtx)
+void OpenGl_ShaderObject::Release (OpenGl_Context* theCtx)
 {
   if (myShaderID == NO_SHADER)
   {

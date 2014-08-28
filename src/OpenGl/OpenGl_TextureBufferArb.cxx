@@ -54,7 +54,7 @@ GLenum OpenGl_TextureBufferArb::GetTarget() const
 // function : Release
 // purpose  :
 // =======================================================================
-void OpenGl_TextureBufferArb::Release (const OpenGl_Context* theGlCtx)
+void OpenGl_TextureBufferArb::Release (OpenGl_Context* theGlCtx)
 {
   if (myTextureId != NO_TEXTURE)
   {

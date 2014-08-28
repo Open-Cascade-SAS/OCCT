@@ -115,7 +115,7 @@ bool OpenGl_Texture::Create (const Handle(OpenGl_Context)& )
 // function : Release
 // purpose  :
 // =======================================================================
-void OpenGl_Texture::Release (const OpenGl_Context* theGlCtx)
+void OpenGl_Texture::Release (OpenGl_Context* theGlCtx)
 {
   if (myTextureId == NO_TEXTURE)
   {

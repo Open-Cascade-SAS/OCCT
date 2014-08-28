@@ -30,11 +30,17 @@ public:
   virtual void Render (const Handle(OpenGl_Workspace)& theWorkspace) const = 0;
 
   //! Release GPU resources.
-  virtual void Release (const Handle(OpenGl_Context)& theContext) = 0;
+  //! Pointer to the context is used because this method might be called
+  //! when the context is already being destroyed and usage of a handle
+  //! would be unsafe
+  virtual void Release (OpenGl_Context* theContext) = 0;
 
+  //! Pointer to the context is used because this method might be called
+  //! when the context is already being destroyed and usage of a handle
+  //! would be unsafe
   template <typename theResource_t>
-  static void Destroy (const Handle(OpenGl_Context)& theContext,
-                       theResource_t*&               theElement)
+  static void Destroy (OpenGl_Context* theContext,
+                       theResource_t*& theElement)
   {
     if (theElement == NULL)
     {

@@ -83,10 +83,10 @@ void OpenGl_AspectLine::Render (const Handle(OpenGl_Workspace) &theWorkspace) co
 // function : Release
 // purpose  :
 // =======================================================================
-void OpenGl_AspectLine::Release (const Handle(OpenGl_Context)& theContext)
+void OpenGl_AspectLine::Release (OpenGl_Context* theContext)
 {
   if (!myResources.ShaderProgram.IsNull()
-   && !theContext.IsNull())
+   && theContext)
   {
     theContext->ShaderManager()->Unregister (myResources.ShaderProgramId,
                                              myResources.ShaderProgram);

@@ -93,7 +93,7 @@ public:
   }
 
   //! Release graphical resources
-  virtual void Release (const Handle(OpenGl_Context)& )
+  virtual void Release (OpenGl_Context*)
   {
     //
   }
@@ -818,10 +818,10 @@ void OpenGl_Structure::Release (const Handle(OpenGl_Context)& theGlCtx)
 {
   // Release groups
   Clear (theGlCtx);
-  OpenGl_Element::Destroy (theGlCtx, myAspectLine);
-  OpenGl_Element::Destroy (theGlCtx, myAspectFace);
-  OpenGl_Element::Destroy (theGlCtx, myAspectMarker);
-  OpenGl_Element::Destroy (theGlCtx, myAspectText);
+  OpenGl_Element::Destroy (theGlCtx.operator->(), myAspectLine);
+  OpenGl_Element::Destroy (theGlCtx.operator->(), myAspectFace);
+  OpenGl_Element::Destroy (theGlCtx.operator->(), myAspectMarker);
+  OpenGl_Element::Destroy (theGlCtx.operator->(), myAspectText);
   clearHighlightColor (theGlCtx);
 
   // Remove from connected list of ancestor
@@ -840,23 +840,23 @@ void OpenGl_Structure::ReleaseGlResources (const Handle(OpenGl_Context)& theGlCt
   }
   if (myAspectLine != NULL)
   {
-    myAspectLine->Release (theGlCtx);
+    myAspectLine->Release (theGlCtx.operator->());
   }
   if (myAspectFace != NULL)
   {
-    myAspectFace->Release (theGlCtx);
+    myAspectFace->Release (theGlCtx.operator->());
   }
   if (myAspectMarker != NULL)
   {
-    myAspectMarker->Release (theGlCtx);
+    myAspectMarker->Release (theGlCtx.operator->());
   }
   if (myAspectText != NULL)
   {
-    myAspectText->Release (theGlCtx);
+    myAspectText->Release (theGlCtx.operator->());
   }
   if (!myHighlightBox.IsNull())
   {
-    myHighlightBox->Release (theGlCtx);
+    myHighlightBox->Release (theGlCtx.operator->());
   }
 }
 

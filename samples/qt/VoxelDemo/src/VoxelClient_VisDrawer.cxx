@@ -42,7 +42,7 @@ public:
 
   void Render (const Handle(OpenGl_Workspace) &theWorkspace) const;
 
-  virtual void Release (const Handle(OpenGl_Context)& theContext)
+  virtual void Release (OpenGl_Context* theContext)
   {
     //
   }

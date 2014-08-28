@@ -157,7 +157,7 @@ public:
   Standard_EXPORT Standard_Boolean Create (const Handle(OpenGl_Context)& theCtx);
 
   //! Destroys shader program.
-  Standard_EXPORT virtual void Release (const OpenGl_Context* theCtx);
+  Standard_EXPORT virtual void Release (OpenGl_Context* theCtx);
 
   //! Attaches shader object to the program object.
   Standard_EXPORT Standard_Boolean AttachShader (const Handle(OpenGl_Context)&      theCtx,

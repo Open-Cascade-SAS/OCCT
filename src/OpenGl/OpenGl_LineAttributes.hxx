@@ -33,7 +33,7 @@ public:
   virtual ~OpenGl_LineAttributes();
 
   void Init (const Handle(OpenGl_Context)& theGlCtx);
-  virtual void Release (const OpenGl_Context* theGlCtx);
+  virtual void Release (OpenGl_Context* theGlCtx);
 
   void SetTypeOfLine (const Aspect_TypeOfLine theType) const;
 

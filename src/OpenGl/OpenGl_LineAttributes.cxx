@@ -517,7 +517,7 @@ OpenGl_LineAttributes::~OpenGl_LineAttributes()
 // function : Release
 // purpose  :
 // =======================================================================
-void OpenGl_LineAttributes::Release (const OpenGl_Context* theGlCtx)
+void OpenGl_LineAttributes::Release (OpenGl_Context* theGlCtx)
 {
   // Delete line styles
   if (myLinestyleBase != 0)

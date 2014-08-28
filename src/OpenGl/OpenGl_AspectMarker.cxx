@@ -1505,11 +1505,11 @@ void OpenGl_AspectMarker::Render (const Handle(OpenGl_Workspace)& theWorkspace) 
 // function : Release
 // purpose  :
 // =======================================================================
-void OpenGl_AspectMarker::Release (const Handle(OpenGl_Context)& theCtx)
+void OpenGl_AspectMarker::Release (OpenGl_Context* theCtx)
 {
   if (!myResources.Sprite.IsNull())
   {
-    if (!theCtx.IsNull())
+    if (theCtx)
     {
       if (myResources.SpriteKey.IsEmpty())
       {
@@ -1531,7 +1531,7 @@ void OpenGl_AspectMarker::Release (const Handle(OpenGl_Context)& theCtx)
   myResources.SpriteAKey.Clear();
   myResources.ResetSpriteReadiness();
 
-  if (!myResources.ShaderProgram.IsNull() && !theCtx.IsNull())
+  if (!myResources.ShaderProgram.IsNull() && theCtx)
   {
     theCtx->ShaderManager()->Unregister (myResources.ShaderProgramId,
                                          myResources.ShaderProgram);

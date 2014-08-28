@@ -54,7 +54,7 @@ OpenGl_Font::~OpenGl_Font()
 // function : Release
 // purpose  :
 // =======================================================================
-void OpenGl_Font::Release (const OpenGl_Context* theCtx)
+void OpenGl_Font::Release (OpenGl_Context* theCtx)
 {
   if (myTextures.IsEmpty())
   {

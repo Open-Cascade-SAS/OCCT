@@ -69,7 +69,7 @@ bool OpenGl_VertexBuffer::Create (const Handle(OpenGl_Context)& theGlCtx)
 // function : Release
 // purpose  :
 // =======================================================================
-void OpenGl_VertexBuffer::Release (const OpenGl_Context* theGlCtx)
+void OpenGl_VertexBuffer::Release (OpenGl_Context* theGlCtx)
 {
   if (myBufferId == NO_BUFFER)
   {
