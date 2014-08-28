@@ -92,19 +92,19 @@ public: //! @name sub-shape aspects
 public: //! @name global aspects
 
   //! Setup color of entire shape.
-  Standard_EXPORT virtual void SetColor (const Quantity_Color& theColor);
+  Standard_EXPORT virtual void SetColor (const Quantity_Color& theColor) Standard_OVERRIDE;
 
   //! Setup line width of entire shape.
-  Standard_EXPORT virtual void SetWidth (const Standard_Real theLineWidth);
+  Standard_EXPORT virtual void SetWidth (const Standard_Real theLineWidth) Standard_OVERRIDE;
 
   //! Sets transparency value.
-  Standard_EXPORT virtual void SetTransparency (const Standard_Real theValue);
+  Standard_EXPORT virtual void SetTransparency (const Standard_Real theValue) Standard_OVERRIDE;
 
 protected: //! @name override presentation computation
 
   Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager3d)& thePrsMgr,
                                         const Handle(Prs3d_Presentation)&           thePrs,
-                                        const Standard_Integer                      theMode);
+                                        const Standard_Integer                      theMode) Standard_OVERRIDE;
 
 protected:
 

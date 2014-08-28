@@ -27,6 +27,16 @@
 # define   Handle(ClassName)      Handle_##ClassName
 # define   STANDARD_TYPE(aType)   aType##_Type_()
 
+#if defined(__cplusplus) && (__cplusplus >= 201100L)
+  // part of C++11 standard
+  #define Standard_OVERRIDE override
+#elif defined(_MSC_VER) && (_MSC_VER >= 1700)
+  // MSVC extension since VS2005
+  #define Standard_OVERRIDE override
+#else
+  #define Standard_OVERRIDE
+#endif
+
 //======================================================
 // Windows-specific definitions
 //======================================================
@@ -36,7 +46,7 @@
 #error "Wrong compiler options has been detected. Add /DWNT option for proper compilation!!!!!"
 #endif
 
-# if defined(WNT) && !defined(HAVE_NO_DLL)
+# if defined(_WIN32) && !defined(HAVE_NO_DLL)
 
 #  ifndef Standard_EXPORT
 #   define Standard_EXPORT __declspec( dllexport )
@@ -129,7 +139,7 @@
 
 # ifndef __Standard_API
 //#  ifdef WNT
-#   if !defined(WNT) || defined(__Standard_DLL) || defined(__FSD_DLL) || defined(__MMgt_DLL) || defined(__OSD_DLL) || defined(__Plugin_DLL) || defined(__Quantity_DLL) || defined(__Resource_DLL) || defined(__SortTools_DLL) || defined(__StdFail_DLL) || defined(__Storage_DLL) || defined(__TColStd_DLL) || defined(__TCollection_DLL) || defined(__TShort_DLL) || defined(__Units_DLL) || defined(__UnitsAPI_DLL) || defined(__Dico_DLL)
+#   if !defined(_WIN32) || defined(__Standard_DLL) || defined(__FSD_DLL) || defined(__MMgt_DLL) || defined(__OSD_DLL) || defined(__Plugin_DLL) || defined(__Quantity_DLL) || defined(__Resource_DLL) || defined(__SortTools_DLL) || defined(__StdFail_DLL) || defined(__Storage_DLL) || defined(__TColStd_DLL) || defined(__TCollection_DLL) || defined(__TShort_DLL) || defined(__Units_DLL) || defined(__UnitsAPI_DLL) || defined(__Dico_DLL)
 #    define __Standard_API Standard_EXPORT
 #    define __Standard_APIEXTERN Standard_EXPORTEXTERN
 #   else

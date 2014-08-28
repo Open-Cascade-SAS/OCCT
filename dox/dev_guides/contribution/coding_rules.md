@@ -556,6 +556,41 @@ If a class has a destructor, an assignment operator or a copy constructor, it us
 
 A class with virtual function(s) ought to have a virtual destructor.
 
+### Overriding virtual methods
+
+Declaration of overriding method should contains specifiers "virtual" and "override"
+(using Standard_OVERRIDE alias for compatibility with old compilers).
+
+~~~~~{.cpp}
+class MyPackage_BaseClass
+{
+
+public:
+
+  Standard_EXPORT virtual Standard_Boolean Perform();
+
+};
+
+~~~~~{.cpp}
+class MyPackage_MyClass : public MyPackage_BaseClass
+{
+
+public:
+
+  Standard_EXPORT virtual Standard_Boolean Perform() Standard_OVERRIDE;
+
+};
+~~~~~
+
+This makes class definition more clear (virtual methods become highlighted).
+
+Declaration of interface using pure virtual functions protects against
+incomplete inheritance at first level, but does not help when method is overridden multiple times within nested inheritance
+or when method in base class is intended to be optional.
+
+And here "override" specifier introduces additional protection against situations when interface changes might be missed
+(class might contain old methods which will be never called).
+
 ### Default parameter value
 
 Do not redefine a default parameter value in an inherited function.
