@@ -6,7 +6,7 @@ if { [array get Draw_Groups "DF basic commands"] == "" } {
 
 chrono qat start
 # Create a new document and set UndoLimit
-NewDocument D MDTV-Standard
+NewDocument D BinOcaf
 
 #NewDocument D
 cpulimit 300

@@ -6,7 +6,7 @@ puts ""
 # OCAF testing framework extending
 ###################################################
 
-NewDocument D MDTV-Standard
+NewDocument D BinOcaf
 
 #1 - create box1
 NewCommand D

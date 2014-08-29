@@ -9,10 +9,10 @@ puts ""
 set BugNumber OCC22995
 
 set status 0
-set aFile1 $imagedir/${test_image}-1.std
-set aFile2 $imagedir/${test_image}-2.std
+set aFile1 $imagedir/${test_image}-1.cbf
+set aFile2 $imagedir/${test_image}-2.cbf
 
-NewDocument D MDTV-Standard
+NewDocument D BinOcaf
 
 if { [file exists ${aFile1}] } {
     file delete ${aFile1}

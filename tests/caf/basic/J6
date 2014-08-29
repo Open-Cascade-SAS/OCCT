@@ -24,7 +24,7 @@ set aGetAttr2 [GetUAttribute D ${aLabel} ${aSetAttr2}]
 NewCommand D
 
 # Save the document
-set aFile ${imagedir}/caf001-J6.std
+set aFile ${imagedir}/caf001-J6.cbf
 file delete ${aFile}
 SaveAs D ${aFile}
 if { ![file exists ${aFile}] } {

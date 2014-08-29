@@ -9,8 +9,8 @@
 puts "caf004-C1"
 
 # 1. Create two new documents Doc1, Doc2
-NewDocument Doc1 MDTV-Design
-NewDocument Doc2 MDTV-Design
+NewDocument Doc1 BinOcaf
+NewDocument Doc2 BinOcaf
 
 # 2. Set UndoLimit for them
 UndoLimit Doc1 100

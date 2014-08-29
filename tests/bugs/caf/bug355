@@ -4,7 +4,7 @@ puts "==========="
 
 pload QAcommands
 
-NewDocument D MDTV-Standard
+NewDocument D BinOcaf
 
 NameCylinder D 0:1 20 100 0 Solid
 NamePrism D 0:2 0:1:2 50 0 0 1

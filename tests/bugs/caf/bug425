@@ -10,7 +10,7 @@ puts "==========="
 
 set IsGood 1
 
-NewDocument D MDTV-Standard
+NewDocument D BinOcaf
 UndoLimit D 10
 
 # Add an attribute to a data framework
@@ -23,7 +23,7 @@ SetName D ${aLabel} ${aSetAttr1}
 NewCommand D
 
 # Save the document
-set aFile ${imagedir}/OCC425.std
+set aFile ${imagedir}/OCC425.cbf
 catch {file delete ${aFile}}
 SaveAs D ${aFile}
 if { ![file exists ${aFile}] } {

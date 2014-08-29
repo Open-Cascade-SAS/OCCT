@@ -18,7 +18,7 @@
 erase 
 Close D 
 
-NewDocument D MDTV-Standard
+NewDocument D BinOcaf
 
 AddDriver D Box Cyl Sph Attach XAttach PTxyz PTALine PRLine PMirr Cut Fuse Prism FulRevol SecRevol Fillet
 

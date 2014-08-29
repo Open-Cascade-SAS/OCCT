@@ -2,7 +2,7 @@ set aTestName "caf004-B3"
 puts ${aTestName}
 
 # Create two new documents Doc1, Doc2
-set FileFormat "MDTV-Standard"
+set FileFormat "BinOcaf"
 if { $FileSuffix == "xml" } {
    set FileFormat "XmlOcaf"
 }

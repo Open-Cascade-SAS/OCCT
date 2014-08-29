@@ -5,7 +5,7 @@ pload XDE
 cpulimit 2500
 
 # Create a new document and set UndoLimit
-NewDocument D MDTV-XCAF
+NewDocument D BinXCAF
 UndoLimit D 100
 
 # Open a transaction

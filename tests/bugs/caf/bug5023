@@ -6,7 +6,7 @@ puts ""
 # Performance regression in opening OCAF file
 ######################################################
 
-set aFile [locate_data_file OCC5023.std]
+set aFile [locate_data_file OCC5023.cbf]
 
 puts "Info: Restore the document"
 

@@ -9,8 +9,8 @@
 puts "caf004-B3"
 
 # Create two new documents Doc1, Doc2
-NewDocument Doc1 MDTV-Standard
-NewDocument Doc2 MDTV-Standard
+NewDocument Doc1 BinOcaf
+NewDocument Doc2 BinOcaf
 
 # Set UndoLimit for them
 UndoLimit Doc1 100
@@ -55,7 +55,7 @@ CopyWithLink Doc1 ${aLabel2} Doc1 ${aLabel1}
 NewCommand Doc1
 
 # Save the document
-set aFile ${imagedir}/caf004-B3.std
+set aFile ${imagedir}/caf004-B3.cbf
 file delete ${aFile}
 SaveAs Doc1 ${aFile}
 if { ![file exists ${aFile}] } {

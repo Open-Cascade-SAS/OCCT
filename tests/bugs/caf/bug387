@@ -3,7 +3,7 @@ puts "OCC387"
 puts "SAM1452"
 puts "==========="
 
-NewDocument D MDTV-Standard
+NewDocument D BinOcaf
 UndoLimit D 10
 NewCommand D
 SetVariable D 0:1 0 a

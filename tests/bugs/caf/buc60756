@@ -5,12 +5,12 @@ puts "BUC60762"
 puts "BUC60764"
 puts "==========="
 
-Open [locate_data_file BUC60756_Doc.std] D
+Open [locate_data_file BUC60756_Doc.cbf] D
 
 ######################################################################
-catch {file delete ${imagedir}/Doc2.std}
+catch {file delete ${imagedir}/Doc2.cbf}
 
-SaveAs D ${imagedir}/Doc2.std
+SaveAs D ${imagedir}/Doc2.cbf
 Close D
-Open ${imagedir}/Doc2.std D 
+Open ${imagedir}/Doc2.cbf D 
 

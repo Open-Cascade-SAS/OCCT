@@ -16,7 +16,7 @@
 
 pload FULL
 set doc d16
-NewDocument $doc MDTV-Standard
+NewDocument $doc BinOcaf
 AddDriver $doc Box Fuse Attach
 #1.create 3 boxes
 set B1 [AddBox $doc 100 200 350]

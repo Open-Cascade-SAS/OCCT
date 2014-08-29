@@ -4,7 +4,7 @@ puts "==========="
 
 pload QAcommands
 
-NewDocument D MDTV-Standard
+NewDocument D BinOcaf
 
 vertex v1 0 0 -50
 vertex v2 0 100 -50

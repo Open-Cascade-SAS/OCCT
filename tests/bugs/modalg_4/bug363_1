@@ -13,9 +13,9 @@ puts ""
 ######################################################################
 #set filedir $env(TmpDir)
 #puts $filedir
-#catch {exec rm $filedir/OCC363.dxc}
+#catch {exec rm $filedir/OCC363.xbf}
 pload XDE
 
-set T [OCC363 OCC363Doc [locate_data_file OCC363.dxc]]
+set T [OCC363 OCC363Doc [locate_data_file OCC363.xbf]]
 puts $T
 

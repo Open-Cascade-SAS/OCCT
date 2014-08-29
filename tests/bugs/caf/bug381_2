@@ -5,13 +5,13 @@ puts ""
 
 pload QAcommands
 
-NewDocument D MDTV-Standard
+NewDocument D BinOcaf
 
 ######################################################
-if { [catch { OCC381_SaveAs D ${imagedir}/OCC381_2.std}] } {
+if { [catch { OCC381_SaveAs D ${imagedir}/OCC381_2.cbf}] } {
     puts "OCC381: Error" 
 } else {
-    catch {exec chmod 777 ${imagedir}/OCC381_2.std}
-    file delete -force ${imagedir}/OCC381_2.std
+    catch {exec chmod 777 ${imagedir}/OCC381_2.cbf}
+    file delete -force ${imagedir}/OCC381_2.cbf
 }
 

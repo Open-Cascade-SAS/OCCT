@@ -10,9 +10,9 @@ pload QAcommands
 
 set BugNumber OCC22788
 
-NewDocument D MDTV-Standard
+NewDocument D BinOcaf
 
-set aFile OCC22788.std
+set aFile OCC22788.cbf
 
 Open [locate_data_file ${aFile}] D
 

@@ -6,7 +6,7 @@ puts "==========="
 set i_max 10
 puts "Amount of iterations is $i_max"
 
-NewDocument D MDTV-Standard
+NewDocument D BinOcaf
 UndoLimit D 10
 
 restore [locate_data_file OCC294.brep] s

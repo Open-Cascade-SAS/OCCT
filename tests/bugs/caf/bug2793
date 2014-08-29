@@ -6,7 +6,7 @@ puts ""
 # BinOcaf: low performance saving documents with large attributes
 ########################################################################
 
-NewDocument D MDTV-Standard
+NewDocument D BinOcaf
 
 # Loaded shapes for attributes
 restore [locate_data_file Radhaus.brep] shape1

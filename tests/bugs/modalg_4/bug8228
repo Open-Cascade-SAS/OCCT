@@ -13,7 +13,7 @@ catch {pload DCAF}
 
 # Create a new document and set UndoLimit
 
-NewDocument D MDTV-XCAF
+NewDocument D BinXCAF
 UndoLimit D 100
 
 # Open a transaction

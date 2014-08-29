@@ -7,7 +7,7 @@ puts "===== OCC1454 ====="
 puts "Info: Open the document with 80000 sublabels of the label 0:2"
 dchrono h reset
 dchrono h start
-Open [locate_data_file OCC1726.std] D
+Open [locate_data_file OCC1726.cbf] D
 dchrono h stop
 set TimeList [dchrono h show]
 

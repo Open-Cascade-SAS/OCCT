@@ -4,7 +4,7 @@ puts "==========="
 
 pload QAcommands
 
-NewDocument D MDTV-Standard
+NewDocument D BinOcaf
 UndoLimit D 100
 
 box b 10 10 10 

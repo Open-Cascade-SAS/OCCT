@@ -18,7 +18,7 @@
 # 8. check the restored attributes at the specified labels
 # ===============================================
 
-NewDocument D MDTV-Standard
+NewDocument D BinOcaf
 # 1.  create BooleanList attribute with empty list
 set Lab1 [Label D 0:1:1]
 SetBooleanList D $Lab1
@@ -50,11 +50,11 @@ set info5 [GetReferenceList D $Lab5]
 # output => "List is empty"
 
 # 6. save the Document in external file
-SaveAs D ${imagedir}/bug26014_test1.std
+SaveAs D ${imagedir}/bug26014_test1.cbf
 Close D
 
 # 7. reopen the Document
-Open ${imagedir}/bug26014_test1.std D
+Open ${imagedir}/bug26014_test1.cbf D
 
 # 8. Check the restored attributes at the specified labels
 set info8 [GetBooleanList D $Lab1]

@@ -5,7 +5,7 @@ puts "================="
 
 pload QAcommands
 
-NewDocument D MDTV-Standard
+NewDocument D BinOcaf
 
 if { [catch { OCC361 D }] } {
     puts "OCC361: Error"

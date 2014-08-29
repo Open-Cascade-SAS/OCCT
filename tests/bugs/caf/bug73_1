@@ -5,7 +5,7 @@ puts "==========="
 
 pload QAcommands
 
-NewDocument D MDTV-Standard
+NewDocument D BinOcaf
 UndoLimit D 10
 
 # Close/Open transaction

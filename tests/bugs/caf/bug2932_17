@@ -11,7 +11,7 @@ puts ""
 pload QAcommands
 
 # Create a new document and set UndoLimit
-NewDocument D MDTV-Standard
+NewDocument D BinOcaf
 UndoLimit D 100
 
 # Create a label and set attributes

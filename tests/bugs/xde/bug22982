@@ -13,7 +13,7 @@ puts ""
 set BugNumber OCC22982
 pload DCAF
 
-NewDocument D11 MDTV-XCAF
+NewDocument D11 BinXCAF
 UndoLimit D11 100
 
 # Open a transaction
@@ -62,7 +62,7 @@ NewCommand D11
 file delete -force ${imagedir}/${test_image}.step
 WriteStep D11 ${imagedir}/${test_image}.step
 
-NewDocument D2 MDTV-XCAF
+NewDocument D2 BinXCAF
 UndoLimit D2 100
 
 # Close/Open a transaction

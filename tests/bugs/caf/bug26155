@@ -8,7 +8,7 @@ puts ""
 
 pload QAcommands
 
-NewDocument D MDTV-Standard
+NewDocument D BinOcaf
 
 set x_ref 0.0
 set x_tol 0.1

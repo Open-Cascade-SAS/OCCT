@@ -26,7 +26,7 @@
 erase 
 Close D 
 
-NewDocument D MDTV-Standard
+NewDocument D BinOcaf
 isos 12
 #1 - create Box using short-cut
 NewCommand D

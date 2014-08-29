@@ -4,7 +4,7 @@ puts "==========="
 
 pload QAcommands
 
-NewDocument D MDTV-Standard
+NewDocument D BinOcaf
 
 NameBox D 0:1 100 100 100
 box abox 100 100 100

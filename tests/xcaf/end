@@ -527,9 +527,9 @@ if { [regexp "LAYERS" $CompareDocumentsMode] || [regexp "ALL" $CompareDocumentsM
 ################## WRITING FILE ##################"
 ###Open temporary file
 if { [string compare ${TypeOfFile} ""] == 0  } {
-    set saving [SaveAs D_First $WorkDirectory/${casename}_D_First.dxc]
+    set saving [SaveAs D_First $WorkDirectory/${casename}_D_First.xbf]
     set closing [Close D_First]
-    set opening [Open $WorkDirectory/${casename}_D_First.dxc D_Second]
+    set opening [Open $WorkDirectory/${casename}_D_First.xbf D_Second]
 } elseif {[string compare ${TypeOfFile} "igs"] == 0 } {
     set writing [WriteIges D_First $WorkDirectory/${casename}_D_First.igs]
     set reading [ReadIges D_Second $WorkDirectory/${casename}_D_First.igs]
@@ -548,7 +548,7 @@ if { [string compare ${TypeOfFile} ""] == 0  } {
 }
 
 if { [string compare ${TypeOfFile} ""] == 0  } {
-    catch {[file delete $WorkDirectory/${casename}_D_First.dxc]}
+    catch {[file delete $WorkDirectory/${casename}_D_First.xbf]}
 } elseif {[string compare ${TypeOfFile} "igs"] == 0 } {
     catch {[file delete $WorkDirectory/${casename}_D_First.igs]}    
 } elseif {[string compare ${TypeOfFile} "stp"] == 0} {

@@ -8,9 +8,9 @@ puts ""
 
 set BugNumber OCC23071
 
-set FileName $imagedir/${test_image}.STD
-set FileName2 $imagedir/${test_image}.std
-set FileName3 ${FileName}.std
+set FileName $imagedir/${test_image}.CBF
+set FileName2 $imagedir/${test_image}.cbf
+set FileName3 ${FileName}.cbf
 
 set status 0
 
@@ -30,7 +30,7 @@ if [file exists ${FileName3}] {
   set status 1
 }
 
-catch { NewDocument D MDTV-Standard }
+catch { NewDocument D BinOcaf }
 
 if [catch {SaveAs D ${FileName} }] {
   puts "Faulty ${BugNumber} ; SaveAs command: Error"

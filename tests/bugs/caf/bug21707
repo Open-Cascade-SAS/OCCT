@@ -6,7 +6,7 @@ puts ""
 # Selection of Vertex returns Compound of vertexes
 ##############################################################
 
-NewDocument D MDTV-Standard
+NewDocument D BinOcaf
 isos 12
 NewCommand D
 AddDriver D PntXYZ PntRLT Line3D Attach

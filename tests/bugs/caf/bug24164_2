@@ -6,7 +6,7 @@ if { [info exists imagedir] == 0 } {
 }
 
 #1 open new document
-NewDocument  D MDTV-Standard
+NewDocument  D BinOcaf
 UndoLimit D 10 0 0
 
 #2 define set of labels
@@ -40,7 +40,7 @@ GetRefArray D $Lab5
 GetRefArray D $Lab6
 
 #6 save the document
-SaveAs D ${imagedir}/testDoc2.std
+SaveAs D ${imagedir}/testDoc2.cbf
 
 #7 close the document
 set catch_status 0
@@ -54,7 +54,7 @@ if { ${catch_status} != 0 } {
 }
 
 #8 reopen just saved document with the same name
-Open ${imagedir}/testDoc2.std D
+Open ${imagedir}/testDoc2.cbf D
 
 #9 close the document
 if { [catch {Close D} catch_result] } {

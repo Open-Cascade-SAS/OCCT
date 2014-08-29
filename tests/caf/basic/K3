@@ -34,7 +34,7 @@ SetShape D ${aLabel} aBox1
 NewCommand D
 
 # Save the document
-set aFile ${imagedir}/caf001-K3.std
+set aFile ${imagedir}/caf001-K3.cbf
 file delete ${aFile}
 SaveAs D ${aFile}
 if { ![file exists ${aFile}] } {

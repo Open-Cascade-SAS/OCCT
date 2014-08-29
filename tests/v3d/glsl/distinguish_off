@@ -7,7 +7,7 @@ box b 10 10 10
 vclear
 vclose all
 catch { Close D }
-NewDocument D MDTV-XCAF
+NewDocument D BinXCAF
 XAddShape D b
 XSetColor D b 0 0 1
 explode b f

@@ -11,7 +11,7 @@ for {set i 1} {$i < 10} {incr i} {
     restore $file a
 
     # add shape to new OCAF document
-    NewDocument D MDTV-Standard
+    NewDocument D BinOcaf
 
     # add shape to document
     SetShape D 0:1 a

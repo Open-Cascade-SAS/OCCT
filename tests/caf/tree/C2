@@ -21,7 +21,7 @@ SetNode D ${aLabel_Root}
 NewCommand D
 
 # Save the document
-set aFile ${imagedir}/caf005-C2.std
+set aFile ${imagedir}/caf005-C2.cbf
 file delete ${aFile}
 SaveAs D ${aFile}
 if { ![file exists ${aFile}] } {

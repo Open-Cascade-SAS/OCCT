@@ -29,7 +29,7 @@ pload QAcommands
 set BREP [locate_data_file BUC60921.brep]
 #set BREP [locate_data_file Bottom.brep]
 
-NewDocument D MDTV-Standard
+NewDocument D BinOcaf
 UndoLimit D 100
 
 set i_max 10

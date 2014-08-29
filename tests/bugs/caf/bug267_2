@@ -8,9 +8,9 @@ puts "========"
 
 pload QAcommands
 
-NewDocument D MDTV-Standard
-file delete -force ${imagedir}/OCC267.std
-catch { OCC267 D ${imagedir}/OCC267.std } status
+NewDocument D BinOcaf
+file delete -force ${imagedir}/OCC267.cbf
+catch { OCC267 D ${imagedir}/OCC267.cbf } status
 
 set list [split ${status}]
 set index [lsearch -exact ${list} "CDF_StoreStatus"]

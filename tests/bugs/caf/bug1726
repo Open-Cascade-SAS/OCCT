@@ -8,7 +8,7 @@ puts ""
 
 puts "Info: Open the document with 80000 sublabels of the label 0:2"
 chrono h reset; chrono h start
-Open [locate_data_file OCC1726.std] D
+Open [locate_data_file OCC1726.cbf] D
 chrono h stop; chrono h show
 
 set IsGood 1

@@ -2,13 +2,13 @@ puts "=============="
 puts "OCC158"
 puts "=============="
 
-NewDocument D MDTV-Standard
+NewDocument D BinOcaf
 
 ##################################################################
-if { [catch {set res [SaveAs D ${imagedir}/OCC158.std]}] != 0 } {
+if { [catch {set res [SaveAs D ${imagedir}/OCC158.cbf]}] != 0 } {
   puts "OCC158: Error"
 } else {
-    file delete ${imagedir}/OCC158.std
+    file delete ${imagedir}/OCC158.cbf
 }
 
 

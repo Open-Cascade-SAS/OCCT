@@ -19,7 +19,7 @@
 erase
 Close D
 
-NewDocument D MDTV-Standard
+NewDocument D BinOcaf
 
 #Drivers' nick-names:
 #Box|Sph|Cyl|Cut|Fuse|Prism|Revol|PTxyz|PTALine|PRLine|PMirr|Fillet|Attach|XAttach
