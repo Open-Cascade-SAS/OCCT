@@ -3490,7 +3490,7 @@ static int VDrawPArray (Draw_Interpretor& di, Standard_Integer argc, const char*
 //purpose  : Change location of AIS interactive object
 //=======================================================================
 
-static Standard_Integer VSetLocation (Draw_Interpretor& di,
+static Standard_Integer VSetLocation (Draw_Interpretor& /*di*/,
                                       Standard_Integer argc,
                                       const char ** argv)
 {
@@ -3896,7 +3896,7 @@ static Standard_Integer VAddConnected (Draw_Interpretor& di,
 //function : VListConnected
 //purpose  :
 //=======================================================================
-static Standard_Integer VListConnected (Draw_Interpretor& di,
+static Standard_Integer VListConnected (Draw_Interpretor& /*di*/,
                                         Standard_Integer argc,
                                         const char ** argv)
 {
