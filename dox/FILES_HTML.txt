@@ -60,4 +60,6 @@ dev_guides/building/code_blocks.md
 dev_guides/building/msvc.md
 dev_guides/building/xcode.md
 
+dev_guides/upgrade/upgrade.md
+
 license.md
