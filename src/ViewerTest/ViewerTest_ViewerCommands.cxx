@@ -4035,10 +4035,15 @@ static int VGlDebug (Draw_Interpretor& theDI,
                      Standard_Integer  theArgNb,
                      const char**      theArgVec)
 {
+  Handle(OpenGl_GraphicDriver) aDriver;
+  Handle(V3d_View) aView = ViewerTest::CurrentView();
+  if (!aView.IsNull())
+  {
+    aDriver = Handle(OpenGl_GraphicDriver)::DownCast (aView->Viewer()->Driver());
+  }
   if (theArgNb < 2)
   {
-    Handle(V3d_View) aView = ViewerTest::CurrentView();
-    if (aView.IsNull())
+    if (aDriver.IsNull())
     {
       std::cerr << "No active view. Please call vinit.\n";
       return 0;
@@ -4051,7 +4056,15 @@ static int VGlDebug (Draw_Interpretor& theDI,
     return 0;
   }
 
-  ViewerTest_myDefaultCaps.contextDebug = Draw::Atoi (theArgVec[1]) != 0;
+  const Standard_Boolean toEnableDebug = Draw::Atoi (theArgVec[1]) != 0;
+  ViewerTest_myDefaultCaps.contextDebug = toEnableDebug;
+  ViewerTest_myDefaultCaps.glslWarnings = toEnableDebug;
+  if (aDriver.IsNull())
+  {
+    return 0;
+  }
+
+  aDriver->ChangeOptions().glslWarnings = toEnableDebug;
   return 0;
 }
 
