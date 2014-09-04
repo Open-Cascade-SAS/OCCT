@@ -1,0 +1,19 @@
+puts "============"
+puts "OCC25068"
+puts "============"
+puts ""
+###################################################
+## ShapeAnalysis_FreeBounds::ConnectEdgesToWires returns wires with not valid Closed flag
+###################################################
+
+restore [locate_data_file bug24807_Compound.brep] a
+connectedges r a 1.e-7 0
+explode r
+
+set info [whatis r_1]
+
+if { [regexp "Closed" ${info}] == 1 } {
+    puts "Error: Closed flag is not valid"
+} else {
+    puts "OK: Closed flag is valid"
+}

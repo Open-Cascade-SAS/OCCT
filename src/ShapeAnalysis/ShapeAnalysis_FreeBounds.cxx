@@ -199,6 +199,15 @@ ShapeAnalysis_FreeBounds::ShapeAnalysis_FreeBounds(const TopoDS_Shape& shape,
   Handle(ShapeExtend_WireData)
     sewd = new ShapeExtend_WireData (TopoDS::Wire (arrwires->Value (1)));
 
+  Standard_Boolean isUsedManifoldMode = Standard_True;
+
+  if((sewd->NbEdges() < 1) && (sewd->NbNonManifoldEdges() > 0))
+  {
+    isUsedManifoldMode = Standard_False;
+    sewd = new ShapeExtend_WireData (TopoDS::Wire (arrwires->Value (1)), Standard_True,
+                                     isUsedManifoldMode);
+  }
+
   Handle(ShapeAnalysis_Wire) saw = new ShapeAnalysis_Wire;
   saw->Load (sewd);
   saw->SetPrecision (tolerance);
@@ -227,12 +236,6 @@ ShapeAnalysis_FreeBounds::ShapeAnalysis_FreeBounds(const TopoDS_Shape& shape,
   ShapeAnalysis_Edge sae; //szv#4:S4163:12Mar99 moved
   Standard_Boolean done = Standard_False;
 
-  Standard_Boolean isUsedManifoldMode = Standard_True;
-
-  if((sewd->NbEdges() < 1) && (sewd->NbNonManifoldEdges() > 0))
-  {
-    isUsedManifoldMode = Standard_False;
-  }
   
   while (!done)
   {
@@ -241,10 +244,8 @@ ShapeAnalysis_FreeBounds::ShapeAnalysis_FreeBounds(const TopoDS_Shape& shape,
     aSel.SetStop();
     Bnd_Box FVBox, LVBox;
     TopoDS_Vertex Vf, Vl;
-    Vf = isUsedManifoldMode ? sae.FirstVertex(sewd->Edge(1)) : 
-      sae.FirstVertex(sewd->NonmanifoldEdge(1));
-    Vl = isUsedManifoldMode ? sae.LastVertex(sewd->Edge(sewd->NbEdges())) :
-      sae.LastVertex(sewd->NonmanifoldEdge(sewd->NbNonManifoldEdges()));
+    Vf = sae.FirstVertex(sewd->Edge(1));
+    Vl = sae.LastVertex(sewd->Edge(sewd->NbEdges()));
 
     gp_Pnt pf, pl;
     pf = BRep_Tool::Pnt(Vf);
@@ -284,7 +285,7 @@ ShapeAnalysis_FreeBounds::ShapeAnalysis_FreeBounds(const TopoDS_Shape& shape,
 
       TopoDS_Wire aCurW = TopoDS::Wire (arrwires->Value (lwire));
       Handle(ShapeExtend_WireData) acurwd = new 
-        ShapeExtend_WireData ( TopoDS::Wire (arrwires->Value (lwire)));
+        ShapeExtend_WireData ( TopoDS::Wire (arrwires->Value (lwire)), Standard_True, isUsedManifoldMode);
       sewd->Add (acurwd, (tail ? 0 : 1));
     }
     else
@@ -328,11 +329,42 @@ ShapeAnalysis_FreeBounds::ShapeAnalysis_FreeBounds(const TopoDS_Shape& shape,
 
       //2.making wire
       TopoDS_Wire wire = sewd->Wire();
-      if (!saw->CheckConnected (1) && saw->LastCheckStatus (ShapeExtend_OK))
-        wire.Closed (Standard_True);
+      if(isUsedManifoldMode)
+      {
+        if (!saw->CheckConnected (1) && saw->LastCheckStatus (ShapeExtend_OK))
+          wire.Closed (Standard_True);
+      }
+      else
+      {
+        //Try to check connection by number of free vertices
+        TopTools_MapOfShape vmap;
+        TopoDS_Iterator it(wire);
+
+        for(; it.More(); it.Next())
+        {
+          const TopoDS_Shape& E = it.Value();
+          TopoDS_Iterator ite(E, Standard_False, Standard_True);
+          for(; ite.More(); ite.Next())
+          {
+            const TopoDS_Shape& V = ite.Value();
+            if (V.Orientation() == TopAbs_FORWARD ||
+                V.Orientation() == TopAbs_REVERSED)
+            {
+              // add or remove in the vertex map
+              if (!vmap.Add(V)) vmap.Remove(V);
+            }
+          }
+
+        }
+        if(vmap.IsEmpty())
+        {
+          wire.Closed(Standard_True);
+        }
+      }
 
       owires->Append (wire);
       sewd->Clear();
+      sewd->ManifoldMode() = isUsedManifoldMode;
         
       // Recherche de la premier edge non traitee pour un autre wire.
       //Searching for first edge for next wire
