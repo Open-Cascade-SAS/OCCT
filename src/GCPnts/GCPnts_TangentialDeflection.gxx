@@ -382,9 +382,13 @@ void GCPnts_TangentialDeflection::PerformCurve (const TheCurve& C)
       V1.Subtract (MiddlePoint.XYZ ());
       L1 = V1.Modulus ();
       L2 = V2.Modulus ();
-      Standard_Real angg = V1.CrossMagnitude(V2)/(L1*L2);
-      if (L1 > LTol && L2 > LTol) ACoef = angg/AngleMax;
-      else                        ACoef = 0.0;
+      if (L1 > LTol && L2 > LTol)
+      {
+        Standard_Real angg = V1.CrossMagnitude(V2) / (L1 * L2);
+        ACoef = angg / AngleMax;
+      }
+      else
+        ACoef = 0.0;
 
       if (ACoef >= FCoef) Coef = ACoef;      //On retient le plus penalisant
       else                Coef = FCoef;
