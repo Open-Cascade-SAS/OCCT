@@ -237,15 +237,4 @@ is
         theTmax  :out Real from Standard) 
     returns Integer from Standard;  
  
-    AdjustPeriodic(myclass;
-        thePar    : Real from Standard;
-        theParMin : Real from Standard;
-        theParMax : Real from Standard;
-        thePeriod : Real from Standard;
-        theNewPar : out Real from Standard;
-        theOffset : out Real from Standard;
-        theEps    : Real from Standard = 0.0)
-    returns Boolean from Standard;        
-    ---Purpose:  Adjusts the parameter <thePar> to the range [theParMin,  theParMax]
-
 end Tools;

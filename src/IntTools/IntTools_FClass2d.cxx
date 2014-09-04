@@ -45,6 +45,7 @@
 #include <TColStd_DataMapOfIntegerInteger.hxx>
 #include <TColgp_SequenceOfVec2d.hxx>
 #include <IntTools_Tools.hxx>
+#include <GeomInt.hxx>
 
 //=======================================================================
 //function : IntTools_FClass2d:IntTools:_FClass2d
@@ -554,11 +555,11 @@ IntTools_FClass2d::IntTools_FClass2d()
   if (RecadreOnPeriodic) {
     Standard_Real du, dv;
     if (IsUPer) {
-      IntTools_Tools::AdjustPeriodic(uu, Umin, Umax, uperiod, uu, du);
+      GeomInt::AdjustPeriodic(uu, Umin, Umax, uperiod, uu, du);
     }// if (IsUPer) {
     //
     if (IsVPer) {
-      IntTools_Tools::AdjustPeriodic(vv, Vmin, Vmax, vperiod, vv, dv);
+      GeomInt::AdjustPeriodic(vv, Vmin, Vmax, vperiod, vv, dv);
     }//if (IsVPer) {
   }
   //
@@ -685,11 +686,11 @@ IntTools_FClass2d::IntTools_FClass2d()
   if (RecadreOnPeriodic) {
     Standard_Real du, dv;
     if (IsUPer) {
-      IntTools_Tools::AdjustPeriodic(uu, Umin, Umax, uperiod, uu, du);
+      GeomInt::AdjustPeriodic(uu, Umin, Umax, uperiod, uu, du);
     }// if (IsUPer) {
     //
     if (IsVPer) {
-      IntTools_Tools::AdjustPeriodic(vv, Vmin, Vmax, vperiod, vv, dv);
+      GeomInt::AdjustPeriodic(vv, Vmin, Vmax, vperiod, vv, dv);
     }//if (IsVPer) {
   }
   //

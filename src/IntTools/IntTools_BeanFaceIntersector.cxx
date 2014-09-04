@@ -57,6 +57,7 @@
 #include <BndLib_Add3dCurve.hxx>
 #include <ElCLib.hxx>
 #include <ElSLib.hxx>
+#include <GeomInt.hxx>
 
 static Standard_Boolean SetEmptyResultRange(const Standard_Real      theParameter, 
                                             IntTools_MarkedRangeSet& theMarkedRange);
@@ -651,7 +652,7 @@ void IntTools_BeanFaceIntersector::ComputeAroundExactIntersection()
               aUPeriod = mySurface.UPeriod();
               aEps = Epsilon(aUPeriod);
               //
-              IntTools_Tools::AdjustPeriodic(U, myUMinParameter, myUMaxParameter, 
+              GeomInt::AdjustPeriodic(U, myUMinParameter, myUMaxParameter, 
                                              aUPeriod, aNewU, du, aEps);
               solutionIsValid = Standard_True;
               bUCorrected = Standard_True;
@@ -668,7 +669,7 @@ void IntTools_BeanFaceIntersector::ComputeAroundExactIntersection()
               aVPeriod = mySurface.VPeriod();
               aEps = Epsilon(aVPeriod);
               //
-              IntTools_Tools::AdjustPeriodic(V, myVMinParameter, myVMaxParameter, 
+              GeomInt::AdjustPeriodic(V, myVMinParameter, myVMaxParameter, 
                                              aVPeriod, aNewV, dv, aEps);
               solutionIsValid = Standard_True;
               V = aNewV;

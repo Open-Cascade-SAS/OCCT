@@ -51,10 +51,20 @@ is
 	 Quadric      from IntSurf,
 	 QuadricTool  from IntSurf,
 	 WLine        from IntPatch);
-
+	 
     private class ParameterAndOrientation;
 
     private class SequenceOfParameterAndOrientation instantiates
     	Sequence from TCollection(ParameterAndOrientation);
+
+    AdjustPeriodic(thePar    : Real from Standard;
+            	   theParMin : Real from Standard;
+            	   theParMax : Real from Standard;
+            	   thePeriod : Real from Standard;
+            	   theNewPar : out Real from Standard;
+            	   theOffset : out Real from Standard;
+            	   theEps    : Real from Standard = 0.0)
+    returns Boolean from Standard;        
+    ---Purpose:  Adjusts the parameter <thePar> to the range [theParMin,  theParMax]
 
 end GeomInt;

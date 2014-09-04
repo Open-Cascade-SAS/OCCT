@@ -46,7 +46,7 @@ xdistcs i_22 s1 0 1 10
 set Log1 [dlog get]
 
 set List1 [split ${Log1} {TD= \t\n}]
-set Tolerance 1.0e-12
+set Tolerance 1.0e-7
 set D_good 0.
 checkList ${List1} ${Tolerance} ${D_good}
 

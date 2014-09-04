@@ -26,7 +26,7 @@ uses
     Intersection          from IntPatch,
     Face                  from TopoDS,
     SequenceOfCurves      from IntTools,
-    LineConstructor       from IntTools,
+    LineConstructor       from GeomInt,
     SequenceOfPntOn2Faces from IntTools, 
     Context from IntTools
     
@@ -148,7 +148,7 @@ fields
  
     myIsDone       : Boolean         from Standard;
     myIntersector  : Intersection    from IntPatch;
-    myLConstruct   : LineConstructor from IntTools;
+    myLConstruct   : LineConstructor from GeomInt;
     myHS1          : HSurface        from GeomAdaptor;
     myHS2          : HSurface        from GeomAdaptor;
     myNbrestr      : Integer         from Standard;

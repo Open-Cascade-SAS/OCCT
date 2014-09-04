@@ -63,7 +63,7 @@ is
 
     class  FClass2d;
 
-    class  LineConstructor;
+    --class  LineConstructor;
 
     -----
     class MarkedRangeSet;

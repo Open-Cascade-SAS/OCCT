@@ -73,6 +73,7 @@
 #include <IntTools_Tools.hxx>
 #include <gp_Cylinder.hxx>
 #include <TopExp_Explorer.hxx>
+#include <GeomInt.hxx>
 
 static 
   Standard_Boolean CheckEdgeLength (const TopoDS_Edge& );
@@ -325,7 +326,7 @@ void BOPTools_AlgoTools2D::AdjustPCurveOnFace
     Standard_Real newu;
     aUPeriod = aBAS.UPeriod(); 
     //
-    IntTools_Tools::AdjustPeriodic(u2, UMin, UMax, aUPeriod, newu, du);
+    GeomInt::AdjustPeriodic(u2, UMin, UMax, aUPeriod, newu, du);
     //
     if (du==0.) {
       if (aBAS.GetType()==GeomAbs_Cylinder) {

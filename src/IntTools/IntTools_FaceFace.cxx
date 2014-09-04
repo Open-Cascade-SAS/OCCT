@@ -113,6 +113,7 @@
 #include <IntTools_PntOn2Faces.hxx>
 #include <IntTools_Context.hxx>
 #include <IntSurf_ListIteratorOfListOfPntOn2S.hxx>
+#include <GeomInt.hxx>
 
 static
   void RefineVector(gp_Vec2d& aV2D);
@@ -175,7 +176,7 @@ static
                                         const Handle(GeomAdaptor_HSurface)&            theSurface2,
                                         const TopoDS_Face&                             theFace1,
                                         const TopoDS_Face&                             theFace2,
-                                        const IntTools_LineConstructor&                theLConstructor,
+                                        const GeomInt_LineConstructor&                 theLConstructor,
                                         const Standard_Boolean                         theAvoidLConstructor,
                                         IntPatch_SequenceOfLine&                       theNewLines,
                                         Standard_Real&                                 theReachedTol3d,
@@ -2407,7 +2408,7 @@ void BuildPCurves (Standard_Real f,
     U0 = pm.X();
     //
     bAdjust = 
-      IntTools_Tools::AdjustPeriodic(U0, umin, umax, period, U0x, du, aEps);
+      GeomInt::AdjustPeriodic(U0, umin, umax, period, U0x, du, aEps);
     if (bAdjust) {
       gp_Vec2d T1(du, 0.);
       C2d->Translate(T1);
@@ -3561,7 +3562,7 @@ Standard_Boolean DecompositionOfWLine(const Handle(IntPatch_WLine)& theWLine,
                                       const Handle(GeomAdaptor_HSurface)&            theSurface2,
                                       const TopoDS_Face&                             theFace1,
                                       const TopoDS_Face&                             theFace2,
-                                      const IntTools_LineConstructor&                theLConstructor,
+                                      const GeomInt_LineConstructor&                 theLConstructor,
                                       const Standard_Boolean                         theAvoidLConstructor,
                                       IntPatch_SequenceOfLine&                       theNewLines,
                                       Standard_Real&                                 theReachedTol3d,
@@ -3649,7 +3650,7 @@ Standard_Boolean DecompositionOfWLine(const Handle(IntPatch_WLine)& theWLine,
           aParameter=V;
         }
         
-        IntTools_Tools::AdjustPeriodic(aParameter, 
+        GeomInt::AdjustPeriodic(aParameter, 
                                        alowerboundary, 
                                        aupperboundary, 
                                        aPeriod,
@@ -3791,7 +3792,7 @@ Standard_Boolean DecompositionOfWLine(const Handle(IntPatch_WLine)& theWLine,
           else {
             Standard_Real aPeriod     = (parit == 0) ? aGASurface->UPeriod() : aGASurface->VPeriod();
             Standard_Real anoffset, anAdjustPar;
-            IntTools_Tools::AdjustPeriodic(aParameter, alowerboundary, aupperboundary,
+            GeomInt::AdjustPeriodic(aParameter, alowerboundary, aupperboundary,
                                            aPeriod, anAdjustPar, anoffset);
 
             bIsPointOnBoundary=
@@ -3856,7 +3857,7 @@ Standard_Boolean DecompositionOfWLine(const Handle(IntPatch_WLine)& theWLine,
             Standard_Real aPeriod     = (bIsUBoundary) ? aGASurface->UPeriod() : aGASurface->VPeriod();
             Standard_Real aParameter = (bIsUBoundary) ? U : V;
             Standard_Real anoffset, anAdjustPar;
-            IntTools_Tools::AdjustPeriodic(aParameter, alowerboundary, aupperboundary, 
+            GeomInt::AdjustPeriodic(aParameter, alowerboundary, aupperboundary, 
                                            aPeriod, anAdjustPar, anoffset);
 
             Standard_Real adist = (bIsFirstBoundary) ? fabs(anAdjustPar - alowerboundary) : fabs(anAdjustPar - aupperboundary);
