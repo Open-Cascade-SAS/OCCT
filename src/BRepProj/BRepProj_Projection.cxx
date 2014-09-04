@@ -20,6 +20,7 @@
 #include <BRepBndLib.hxx>
 #include <BRepTools_TrsfModification.hxx>
 #include <BRepTools_Modifier.hxx>
+#include <BRepLib_MakeVertex.hxx>
 #include <BRepLib_MakeEdge.hxx>
 #include <BRepLib_MakeWire.hxx>
 #include <BRep_Tool.hxx>
@@ -246,23 +247,29 @@ BRepProj_Projection::BRepProj_Projection (const TopoDS_Shape& Wire,
   Scale = 1. + mdis / Scale;
   
   // move the base of the conical surface by scaling it with ratio Scale
-  // then we do a symmetric relative to a point. So we have two generators
-  // for building a "semi-infinite" conic surface
   gp_Trsf T;
   T.SetScale(P, Scale);
   Handle(BRepTools_TrsfModification) Tsca = new BRepTools_TrsfModification(T);
   BRepTools_Modifier ModifScale(aWire,Tsca);
   TopoDS_Shape ShapeGen1 = ModifScale.ModifiedShape(aWire);
 
-  T.SetMirror(P);
-  Handle(BRepTools_TrsfModification) Tmir = new BRepTools_TrsfModification(T);
-  BRepTools_Modifier ModifMirror(ShapeGen1,Tmir);
-  TopoDS_Shape ShapeGen2 = ModifMirror.ModifiedShape(ShapeGen1);
+  TopoDS_Vertex aVertex = BRepLib_MakeVertex(P);
+  TopoDS_Edge DegEdge;
+  BRep_Builder BB;
+  BB.MakeEdge( DegEdge );
+  BB.Add( DegEdge, aVertex.Oriented(TopAbs_FORWARD) );
+  BB.Add( DegEdge, aVertex.Oriented(TopAbs_REVERSED) );
+  BB.Degenerated( DegEdge, Standard_True );
+  DegEdge.Closed( Standard_True );
+  TopoDS_Wire DegWire;
+  BB.MakeWire( DegWire );
+  BB.Add( DegWire, DegEdge );
+  DegWire.Closed( Standard_True );
 
   // Build the Ruled surface based shape
   BRepFill_Generator RuledSurf;
+  RuledSurf.AddWire(DegWire);
   RuledSurf.AddWire(TopoDS::Wire(ShapeGen1));
-  RuledSurf.AddWire(TopoDS::Wire(ShapeGen2));
   RuledSurf.Perform();
   TopoDS_Shell SurfShell = RuledSurf.Shell();
 
