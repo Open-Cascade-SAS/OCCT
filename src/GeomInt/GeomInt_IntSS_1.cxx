@@ -1558,7 +1558,10 @@ Standard_Boolean DecompositionOfWLine(const Handle(IntPatch_WLine)& theWLine,
 
 	Handle(GeomAdaptor_HSurface) aGASurface = (!surfit) ? theSurface1 : theSurface2;
 	
-	aGASurface->ChangeSurface().Surface()->Bounds(umin, umax, vmin, vmax);
+        umin = aGASurface->FirstUParameter();
+        umax = aGASurface->LastUParameter();
+        vmin = aGASurface->FirstVParameter();
+        vmax = aGASurface->LastVParameter();
 	Standard_Real U=0., V=0.;
 
 	if(!surfit) {
