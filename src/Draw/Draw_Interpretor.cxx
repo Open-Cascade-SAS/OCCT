@@ -29,13 +29,13 @@
 
 #include <string.h>
 #include <tcl.h>
+#ifndef _WIN32
+#include <unistd.h>
+#endif
 
 // for capturing of cout and cerr (dup(), dup2())
 #ifdef _MSC_VER
 #include <io.h>
-#endif
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
 #endif
 
 #if ! defined(STDOUT_FILENO)

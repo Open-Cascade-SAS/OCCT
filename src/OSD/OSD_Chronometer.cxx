@@ -23,21 +23,8 @@
 
 //---------- Systemes autres que WNT : ----------------------------------
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
-#ifdef HAVE_SYS_TYPES_H
-# include <sys/types.h>
-#endif
-
-#ifdef HAVE_UNISTD_H
-# include <unistd.h>
-#endif
-
-#ifdef HAVE_SYS_TIMES_H
-# include <sys/times.h>
-#endif
+#include <sys/times.h>
+#include <unistd.h>
 
 #ifdef SOLARIS
 # include <sys/resource.h>
@@ -51,19 +38,13 @@
 # define _sysconf sysconf
 #endif
 
-#if defined(HAVE_TIME_H) || defined(WNT) || defined(DECOSF1)
+#if defined(DECOSF1)
 # include <time.h>
 #endif
 
 #  ifndef CLK_TCK
 #   define CLK_TCK	CLOCKS_PER_SEC
 #  endif
-
-#ifdef HAVE_LIMITS
-# include <limits>
-#elif defined (HAVE_LIMITS_H)
-# include <limits.h>
-#endif
 
 #if (defined(__APPLE__))
   #include <mach/task.h>

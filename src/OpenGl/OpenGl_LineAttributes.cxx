@@ -18,10 +18,6 @@
 #include <OpenGl_LineAttributes.hxx>
 #include <OpenGl_Context.hxx>
 
-#ifdef HAVE_CONFIG_H
-  #include <config.h>
-#endif
-
 #ifdef HAVE_GL2PS
   #include <gl2ps.h>
 #endif

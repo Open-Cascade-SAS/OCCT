@@ -14,37 +14,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
 #include <Draw.ixx>
-
-#if defined(HAVE_TIME_H) || defined(WNT)
-# include <time.h>
-#endif
 
 #include <Draw_Appli.hxx>
 #include <OSD.hxx>
 #include <OSD_Environment.hxx>
 #include <OSD_Timer.hxx>
-
-#ifdef HAVE_SYS_TIME_H
-# include <sys/time.h>
-#endif
-
-#ifdef HAVE_SYS_TYPES_H
-# include <sys/types.h>
-#endif
-
-#ifdef HAVE_UNISTD_H
-# include <unistd.h>
-#endif
-
-#ifdef HAVE_STRINGS_H
-# include <strings.h>
-#endif
-
 
 #include <Draw_Window.hxx>
 #include <gp_Pnt2d.hxx>

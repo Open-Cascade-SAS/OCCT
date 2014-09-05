@@ -12,10 +12,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
 #ifndef WNT
 
 #include <OSD_FileIterator.ixx>
@@ -25,28 +21,11 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#ifdef	HAVE_DIRENT_H
 # include <dirent.h>
 # define NAMLEN(dirent) strlen((dirent)->d_name)
 # ifdef VMS
 extern char *vmsify PARAMS ((char *name, int type));
 # endif
-#else
-# define dirent direct
-# define NAMLEN(dirent) (dirent)->d_namlen
-# ifdef HAVE_SYS_NDIR_H
-#  include <sys/ndir.h>
-# endif
-# ifdef HAVE_SYS_DIR_H
-#  include <sys/dir.h>
-# endif
-# ifdef HAVE_NDIR_H
-#  include <ndir.h>
-# endif
-# ifdef HAVE_VMSDIR_H
-#  include "vmsdir.h"
-# endif /* HAVE_VMSDIR_H */
-#endif
 
 /* In GNU systems, <dirent.h> defines this macro for us.  */
 #ifdef _D_NAMLEN

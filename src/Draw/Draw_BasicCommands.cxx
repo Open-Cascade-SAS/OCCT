@@ -51,26 +51,7 @@ static clock_t CPU_CURRENT; // cpu time already used at last
 #else /* _WIN32 */
 
 #include <sys/resource.h>
-
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
-#ifdef HAVE_STRINGS_H
-# include <strings.h>
-#endif
-
-#if defined(HAVE_TIME_H)
-# include <time.h>
-#endif
-
-#ifdef HAVE_SIGNAL_H
-# include <signal.h>
-#endif
-
-#ifdef HAVE_SYS_SIGNAL_H
-# include <sys/signal.h>
-#endif
+#include <signal.h>
 
 #if defined (__hpux) || defined ( HPUX )
 #define RLIM_INFINITY   0x7fffffff

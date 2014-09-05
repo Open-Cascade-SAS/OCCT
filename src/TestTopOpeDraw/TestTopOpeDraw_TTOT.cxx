@@ -14,16 +14,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
 #include <TestTopOpeDraw_TTOT.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <BRep_Tool.hxx>
-#ifdef HAVE_STRINGS_H
-# include <strings.h>
-#endif
 
 //=======================================================================
 //function : ShapeEnumToString

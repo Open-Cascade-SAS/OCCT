@@ -15,20 +15,6 @@
 #ifndef STRUCTURE_PXX_INCLUDED
 #define STRUCTURE_PXX_INCLUDED
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
-#ifdef HAVE_LIMITS
-# include <limits>
-#elif defined (HAVE_LIMITS_H)
-# include <limits.h>
-#endif
-
-#ifdef WNT
-# include <limits>
-#endif
-
 // structure priority : range (do not change this range !)
 // call_togl_displaystructure, CALL_DEF_VIEW, MajView ...
 #define Structure_MAX_PRIORITY 10

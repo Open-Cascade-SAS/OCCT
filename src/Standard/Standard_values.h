@@ -21,23 +21,10 @@
 #error "Wrong compiler options has been detected. Add /DWNT option for proper compilation!!!!!"
 #endif
 
-#ifndef WNT
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
-#ifdef HAVE_LIMITS
+#ifdef _WIN32
 # include <limits>
-#elif defined (HAVE_LIMITS_H)
-# include <limits.h>
 #else
-#error "check config.h file or compilation options: either HAVE_LIMITS or HAVE_LIMITS_H should be defined"
-#endif
-#endif
-
-
-#ifdef WNT
-# include <limits>
+# include <limits.h>
 #endif
 
 #if defined (__hpux) || defined (HPUX)

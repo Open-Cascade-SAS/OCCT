@@ -12,10 +12,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
 //------------------------------------------------------------------------
 //                    UNIX Part
 //------------------------------------------------------------------------
@@ -39,22 +35,11 @@ const OSD_WhoAmI Iam = OSD_WFile;
 #endif
 
 #include <errno.h>
-
-#ifdef HAVE_UNISTD_H
-# include <unistd.h>
-#endif
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <fcntl.h>
-
-#ifdef HAVE_SYS_TYPES_H
-# include <sys/types.h>
-#endif
-
-#ifdef HAVE_SYS_STAT_H
-# include <sys/stat.h>
-#endif
+#include <unistd.h>
+#include <sys/stat.h>
 
 #define NEWLINE '\10';
 

@@ -14,9 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
 #include <TCollection_BasicMap.ixx>
 #include <TCollection.hxx>
 #include <TCollection_BasicMapIterator.hxx>

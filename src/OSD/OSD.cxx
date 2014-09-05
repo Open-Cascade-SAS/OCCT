@@ -16,10 +16,7 @@
 #include <Standard_Stream.hxx>
 #include <stdio.h>
 #include <math.h>
-#if HAVE_IEEEFP_H
-# include <ieeefp.h>
-#endif
-#if !defined(HAVE_FINITE) && defined(isfinite)
+#if defined(isfinite)
 # define finite isfinite
 #endif
 
@@ -82,13 +79,8 @@ Standard_Boolean OSD::CStringToReal(const Standard_CString aString,
 #else
 # define SLEEP(NSEC)                 sleep(NSEC)
 #endif
-
-#ifdef HAVE_VALUES_H
-//# include <values.h>
-#endif
-
-#ifdef HAVE_UNISTD_H
-# include <unistd.h>
+#ifndef _WIN32
+#include <unistd.h>
 #endif
 
 void OSD::SecSleep(const Standard_Integer aDelay)
@@ -101,7 +93,7 @@ void OSD::SecSleep(const Standard_Integer aDelay)
 //purpose  : Cause the process to sleep during a amount of milliseconds  
 //=======================================================================
 
-#ifdef WNT
+#ifdef _WIN32
 
 void OSD::MilliSecSleep(const Standard_Integer aDelay)
 {
@@ -110,9 +102,7 @@ void OSD::MilliSecSleep(const Standard_Integer aDelay)
 
 #else
 
-#ifdef HAVE_SYS_TIME_H
-# include <sys/time.h>
-#endif
+#include <sys/time.h>
 
 void OSD::MilliSecSleep(const Standard_Integer aDelay)
 {

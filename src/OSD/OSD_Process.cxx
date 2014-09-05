@@ -12,10 +12,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
 #ifndef WNT
 
 #include <OSD_Process.ixx>
@@ -25,28 +21,11 @@
 const OSD_WhoAmI Iam = OSD_WProcess;
 
 #include <errno.h>
-
-#ifdef HAVE_UNISTD_H
-# include <unistd.h>
-#endif
-
 #include <stdlib.h>
-
-#ifdef HAVE_SYS_PARAM_H
-# include <sys/param.h>
-#endif
-
-#if defined(HAVE_TIME_H) || defined(WNT)
-# include <time.h>
-#endif
-
-#ifdef HAVE_SYS_TIME_H
-# include <sys/time.h>
-#endif
-
-#ifdef HAVE_PWD_H
-# include <pwd.h>       // For command getpwuid
-#endif
+#include <sys/param.h>
+#include <sys/time.h>
+#include <pwd.h>       // For command getpwuid
+#include <unistd.h>
 
 OSD_Process::OSD_Process(){
 }

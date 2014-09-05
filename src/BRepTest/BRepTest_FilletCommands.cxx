@@ -14,11 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
-#include <string.h>
 #include <BRepTest.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <DBRep.hxx>
@@ -57,14 +52,7 @@
 #include <TopAbs.hxx>
 #include <DrawTrSurf.hxx>
 
-#ifdef WNT
-//#define strcasecmp strcmp Already defined
-#endif
-#ifdef HAVE_STRINGS_H
-# include <strings.h>
-#endif
 #include <stdio.h>
-//#endif
 
 
 static Standard_Real t3d = 1.e-4;

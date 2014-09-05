@@ -12,10 +12,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
 #ifndef WNT
 
 #include <OSD_LoadMode.hxx>
@@ -23,10 +19,6 @@
 #include <OSD_Function.hxx>
 
 #include <stdio.h>
-
-#ifdef HAVE_MALLOC_H
-# include <malloc.h>
-#endif
 
 #ifdef __some_crappy_system__
 /*
@@ -49,13 +41,7 @@ extern "C" {int     dlclose (       void  *handle  );}
 extern "C" {void    *dlerror (void);}
 #endif
 
-#ifdef HAVE_DLFCN_H
-# include <dlfcn.h>
-#endif
-
-#ifdef HAVE_DL_H
-# include <dl.h>
-#endif
+#include <dlfcn.h>
 
 extern "C" {size_t  strlen  (const  char*  s      );}
 
@@ -125,25 +111,12 @@ void  OSD_SharedLibrary::SetName(const Standard_CString aName)  {
 //
 // ----------------------------------------------------------------
 Standard_Boolean  OSD_SharedLibrary::DlOpen(const OSD_LoadMode aMode ) {
-
-#ifdef HAVE_DL_H
-if (aMode == OSD_RTLD_LAZY){
-//  myHandle = cxxshl_load(myName, BIND_FIRST | BIND_TOGETHER | BIND_DEFERRED | BIND_VERBOSE | DYNAMIC_PATH, 0L);
-  myHandle = shl_load(myName, BIND_FIRST | BIND_TOGETHER | BIND_DEFERRED | BIND_VERBOSE | DYNAMIC_PATH, 0L);
-}
-else if (aMode == OSD_RTLD_NOW){
-//  myHandle = cxxshl_load(myName, BIND_FIRST | BIND_TOGETHER | BIND_IMMEDIATE | BIND_VERBOSE | DYNAMIC_PATH, 0L);
-  myHandle = shl_load(myName, BIND_FIRST | BIND_TOGETHER | BIND_IMMEDIATE | BIND_VERBOSE | DYNAMIC_PATH, 0L);
-
-}
-#else
 if (aMode == OSD_RTLD_LAZY){
   myHandle = dlopen (myName,RTLD_LAZY);
 }
 else if (aMode == OSD_RTLD_NOW){
   myHandle = dlopen (myName,RTLD_NOW);
 }
-#endif
 
 if (!BAD(myHandle)){
   return Standard_True;
@@ -161,8 +134,6 @@ else {
 //
 // ----------------------------------------------------------------
 OSD_Function  OSD_SharedLibrary::DlSymb(const Standard_CString aName )const{
-
-#ifndef HAVE_DL_H
 void (*fp)();
 fp =  (void (*)()) dlsym (myHandle,aName);
 if (!BAD(fp)){
@@ -171,20 +142,6 @@ if (!BAD(fp)){
 else {
   return (OSD_Function)NULL;
  }
-#else
-  void *adr_get = NULL;
-//  shl_t handlesym=0 ;
-
-  errno = 0 ;
-  //  if (  shl_findsym( &handlesym,aName,TYPE_PROCEDURE,&adr_get) == -1 ) {
-  if ( shl_findsym((shl_t *)&myHandle,aName,TYPE_PROCEDURE,&adr_get) == -1 ) {
-    if ( errno != 0 )
-      perror("OSD_SharedLibrary : shl_findsym perror : ") ;
-    return (OSD_Function)NULL;
-  }
-  else return (OSD_Function) adr_get;
-#endif
-
 }
 // ----------------------------------------------------------------
 //
@@ -195,13 +152,7 @@ else {
 //
 // ----------------------------------------------------------------
 void OSD_SharedLibrary::DlClose()const{
-
-#ifndef HAVE_DL_H
  dlclose(myHandle);
-#else
- shl_unload((shl_t)myHandle);
-#endif
-
 }
 // ----------------------------------------------------------------
 //
@@ -210,12 +161,7 @@ void OSD_SharedLibrary::DlClose()const{
 //
 // ----------------------------------------------------------------
 Standard_CString OSD_SharedLibrary::DlError()const{
-#ifndef HAVE_DL_H
 return (char*) dlerror();
-#else
-perror("shl_load, shl_findsym, or shl_unload : perror : ") ;
-return (char*) errno;
-#endif
 }
 // ----------------------------------------------------------------------------
 // Destroy

@@ -15,9 +15,6 @@
 // commercial license or contractual agreement.
 
 #include <Draw.ixx>
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
 
 #include <Standard_Stream.hxx>
 #include <Standard_SStream.hxx>
@@ -36,11 +33,8 @@
 
 #include <ios>
 
-#ifdef WNT
+#ifdef _WIN32
 extern Draw_Viewer dout;
-#endif
-#ifdef HAVE_STRINGS_H
-# include <strings.h>
 #endif
 
 #include <tcl.h>

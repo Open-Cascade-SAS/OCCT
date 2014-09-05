@@ -14,18 +14,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
 #include <TestTopOpeTools.hxx>
 #include <TestTopOpeTools_Trace.hxx>
 #include <Draw_Interpretor.hxx>
 #include <Draw_Appli.hxx>
 #include <TopOpeBRepTool_define.hxx>
-
-#ifdef HAVE_STRINGS_H
-# include <strings.h>
-#endif
 
 #ifdef DEB
 TestTopOpeTools_Trace theTrace(100,"trace");

@@ -14,11 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
-#ifdef HAVE_STRINGS_H
+#ifndef _WIN32
 # include <strings.h>
 #endif
 

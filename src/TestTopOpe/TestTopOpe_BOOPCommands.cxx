@@ -14,9 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
 #include <TestTopOpe.ixx>
 
 #include <TestTopOpe_BOOP.hxx>
@@ -26,9 +23,6 @@
 #include <TColStd_HArray1OfBoolean.hxx>
 #include <Draw.hxx>
 #include <DBRep.hxx>
-#ifdef HAVE_STRINGS_H
-# include <strings.h>
-#endif
 
 extern void suppressarg(Standard_Integer& na,const char** a,const Standard_Integer d);
 #ifdef DEB

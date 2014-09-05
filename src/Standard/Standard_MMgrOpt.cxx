@@ -16,37 +16,15 @@
 #include <Standard_MMgrOpt.hxx>
 #include <Standard_OutOfMemory.hxx>
 #include <Standard_Assert.hxx>
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
 
 #include <stdio.h>
 
-#ifdef HAVE_STRING_H
-# include <string.h>
-#endif
-
-#ifndef WNT
-# include <stdlib.h>
-# include <errno.h>
-#endif
-
-#ifdef WNT
-#include <windows.h>
+#ifdef _WIN32
+# include <windows.h>
 #else
-# ifdef HAVE_UNISTD_H
-#  include <unistd.h>
-# endif
-# ifdef HAVE_SYS_MMAN_H
-#  include <sys/mman.h>    /* mmap() */
-# endif
+# include <sys/mman.h>    /* mmap() */
 #endif
-#ifdef HAVE_MALLOC_H
-# include <malloc.h>
-#endif
-#include <stdlib.h>
-#include <sys/types.h>
-#include <sys/stat.h>
+
 #include <fcntl.h>
 //
 #if defined (__sun) || defined(SOLARIS)

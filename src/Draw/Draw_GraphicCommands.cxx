@@ -18,10 +18,6 @@
 
 
 // Modif : DFO 05/11/96
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
 #include <Draw.ixx>
 #include <Draw_Appli.hxx>
 
@@ -34,12 +30,9 @@
 #include <Standard_Stream.hxx>
 
 #include <stdio.h>
-#ifdef WNT
+#ifdef _WIN32
 extern Draw_Viewer dout;
 extern Standard_Boolean Draw_Batch;
-#endif
-#ifdef HAVE_STRINGS_H
-# include <strings.h>
 #endif
 
 extern Standard_Boolean Draw_BlackBackGround;

@@ -24,10 +24,7 @@
 #include <InterfaceGraphic_Aspect.hxx>
 #include <InterfaceGraphic_Visual3d.hxx>
 
-#ifdef HAVE_CONFIG_H
-  #include <config.h>
-#endif
-#ifdef HAVE_STRING_H
+#ifndef _WIN32
   #include <string.h>
 #endif
 

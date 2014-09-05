@@ -16,7 +16,7 @@
 #include "stdio.h"
 #include "string.h"
 #include "stdlib.h"
-#if defined(HAVE_MALLOC_H)
+#if !defined(_WIN32)
 #include "malloc.h"
 #endif
 #include "recfile.ph" 

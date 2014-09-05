@@ -14,9 +14,6 @@
 // commercial license or contractual agreement.
 
 #include <QABugs.hxx>
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
 #include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
 #include <TopLoc_Location.hxx>

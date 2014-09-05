@@ -14,9 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
 #include <BRepTest.hxx>
 #include <DBRep.hxx>
 #include <Draw_Interpretor.hxx>
@@ -48,10 +45,6 @@
 #include <gp_Pln.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
 #include <TopExp.hxx>
-
-#ifdef HAVE_STRINGS_H
-# include <strings.h>
-#endif
 
 //=======================================================================
 // topop

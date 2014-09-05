@@ -19,19 +19,7 @@
 #include <Standard_NegativeValue.hxx>
 #include <Standard_OutOfRange.hxx>
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-#if defined(HAVE_STRING_H)
-# include <string.h>
-#endif
 #include <stdio.h>
-#if defined(HAVE_STDLIB_H)
-#include <stdlib.h>
-#endif
-#if defined(HAVE_LIBC_H)
-# include <libc.h>
-#endif
 
 //------------------------------------------------------------------------
 //  Create from an ExtendedString of TCollection

@@ -14,16 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
-#ifdef HAVE_IOS
-# include <ios>
-#elif defined(HAVE_IOS_H)
-# include <ios.h>
-#endif
-
 #include <DrawTrSurf_Point.ixx>
 #include <Standard_Stream.hxx>
 
@@ -186,7 +176,7 @@ Handle(Draw_Drawable3D) DrawTrSurf_Point::Copy() const
 
 void DrawTrSurf_Point::Dump(Standard_OStream& S) const 
 {
-#if defined(HAVE_IOS) && !defined(__sgi) && !defined(IRIX)
+#if !defined(_WIN32) && !defined(__sgi) && !defined(IRIX)
   ios::fmtflags F = S.flags();
   S.setf(ios::scientific,ios::floatfield);
   S.precision(15);
@@ -198,7 +188,7 @@ void DrawTrSurf_Point::Dump(Standard_OStream& S) const
     S << "Point : " << myPoint.X() << ", " << myPoint.Y() << ", " << myPoint.Z() <<endl;
   else
     S << "Point 2d : " << myPoint.X() << ", " << myPoint.Y() <<endl;
-#if defined(HAVE_IOS) && !defined(__sgi) && !defined(IRIX)
+#if !defined(_WIN32) && !defined(__sgi) && !defined(IRIX)
   S.setf(F);
 #else
   S.setf(form);

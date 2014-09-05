@@ -14,10 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
 #include <Draw_Interpretor.hxx>
 #include <Draw_Appli.hxx>
 #include <DrawTrSurf.hxx>
@@ -71,12 +67,9 @@
 
 #include <Precision.hxx>
 
-#ifdef WNT
+#ifdef _WIN32
 //#define strcasecmp _stricmp Already defined
 Standard_IMPORT Draw_Viewer dout;
-#endif
-#ifdef HAVE_STRINGS_H
-# include <strings.h>
 #endif
 
 static BRepFeat_MakeCylindricalHole theHole;

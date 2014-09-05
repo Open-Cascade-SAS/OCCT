@@ -14,10 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
 #include <Draw_Interpretor.hxx>
 #include <BRepTest.hxx>
 #include <Draw.hxx>
@@ -31,11 +27,6 @@
 #include <TopoDS_Shape.hxx>
 
 #include <Precision.hxx>
-#ifdef HAVE_STRINGS_H
-# include <strings.h>
-#endif
-
-
 
 //=========================================================================
 // function : chamfer

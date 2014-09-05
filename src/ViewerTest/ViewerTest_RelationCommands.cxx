@@ -15,9 +15,6 @@
 // commercial license or contractual agreement.
 
 #include <ViewerTest.hxx>
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
 
 #include <AIS_AngleDimension.hxx>
 #include <AIS_Circle.hxx>
@@ -57,7 +54,6 @@
 #include <Precision.hxx>
 #include <Select3D_Projector.hxx>
 #include <StdSelect.hxx>
-#include <string.h>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <TColStd_MapOfInteger.hxx>
@@ -81,10 +77,6 @@ extern Standard_Boolean VDisplayAISObject (const TCollection_AsciiString& theNam
 extern ViewerTest_DoubleMapOfInteractiveAndName& GetMapOfAIS();
 extern int ViewerMainLoop(Standard_Integer argc, const char** argv);
 extern Handle(AIS_InteractiveContext)& TheAISContext ();
-
-#ifdef HAVE_STRINGS_H
-# include <strings.h>
-#endif
 
 #define VertexMask 0x01
 #define EdgeMask 0x02

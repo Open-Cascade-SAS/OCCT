@@ -41,17 +41,7 @@
 // - Standard_IMPOR is differently defined,
 // - Draw_Appli is differently declared.
 
-
-
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
-#ifdef HAVE_STRINGS_H
-# include <strings.h>
-#endif
-  
-#ifdef WNT
+#ifdef _WIN32
 #include <windows.h> /* SW_SHOW */
 #endif
 

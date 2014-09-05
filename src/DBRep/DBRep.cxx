@@ -14,10 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
 #include <DBRep.ixx>
 #include <DBRep_DrawableShape.hxx>
 #include <Draw_Appli.hxx>
@@ -50,13 +46,9 @@
 
 // memory management
 #include <Standard.hxx>
-//#ifdef WNT
 #include <stdio.h>
-#ifdef WNT
+#ifdef _WIN32
 extern Draw_Viewer dout;
-#endif
-#ifdef HAVE_STRINGS_H
-# include <strings.h>
 #endif
 
 #define Characters(IArg) (strspn (Arg[IArg], "0123456789.+-eE") != strlen (Arg[IArg]))

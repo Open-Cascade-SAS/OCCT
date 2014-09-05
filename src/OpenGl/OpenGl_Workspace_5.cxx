@@ -25,10 +25,6 @@
 #include <OpenGl_ShaderManager.hxx>
 #include <OpenGl_telem_util.hxx>
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
 /* OCC22218 NOTE: project dependency on gl2ps is specified by macro */
 #ifdef HAVE_GL2PS
   #include <gl2ps.h>

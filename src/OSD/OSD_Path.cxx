@@ -12,10 +12,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
 #ifndef WNT
 
 #include <Standard_NumericError.hxx>
@@ -24,10 +20,6 @@
 #include <Standard_ConstructionError.hxx>
 #include <OSD_Path.ixx>
 #include <OSD_WhoAmI.hxx>
-
-#ifdef HAVE_SYS_UTSNAME_H
-//# include <sys/utsname.h>
-#endif
 
 static OSD_SysType whereAmI(){
 #if defined(__digital__) || defined(__FreeBSD__) || defined(SUNOS) || defined(__APPLE__)

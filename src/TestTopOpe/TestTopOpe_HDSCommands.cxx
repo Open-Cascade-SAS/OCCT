@@ -14,9 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
 #include <TestTopOpe.hxx>
 #include <TestTopOpe_HDSDisplayer.hxx>
 #include <TestTopOpeDraw_DrawableSHA.hxx>
@@ -54,10 +51,6 @@
 #include <DrawTrSurf_Curve.hxx>
 #include <Draw_Interpretor.hxx>
 #include <DrawTrSurf.hxx>
-
-#ifdef HAVE_STRINGS_H
-# include <strings.h>
-#endif
 
 class TSEEpar {
 public:

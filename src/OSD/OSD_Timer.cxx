@@ -19,19 +19,13 @@
 //         system call gettimeofday. This function is portable and give us
 //         elapsed time in seconds and microseconds.
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
 #include <OSD_Timer.ixx>
 
 #ifndef WNT
 
 //---------- No Windows NT Systems ----------------------------------
 
-#ifdef HAVE_SYS_TIME_H
-# include <sys/time.h>
-#endif
+#include <sys/time.h>
 
 //=======================================================================
 //function : GetWallClockTime

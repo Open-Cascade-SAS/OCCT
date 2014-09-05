@@ -14,9 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
 #include <TestTopOpeDraw.hxx>
 #include <TestTopOpeDraw_Displayer.hxx>
 #include <TestTopOpeDraw_TTOT.hxx>
@@ -27,9 +24,6 @@
 #include <Draw_Appli.hxx>
 #include <TopOpeBRepTool_define.hxx>
 #include <stdio.h>
-#ifdef HAVE_STRINGS_H
-# include <strings.h>
-#endif
 
 //-----------------------------------------------------------------------
 // 0 = testtopopedraw_cdinp

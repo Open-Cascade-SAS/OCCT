@@ -12,28 +12,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
 #ifndef WNT
 
 #include <OSD_DirectoryIterator.ixx>
 #include <OSD_WhoAmI.hxx>
 
 #include <stdio.h>
-
-#ifdef	HAVE_DIRENT_H
-# include <dirent.h>
-#endif
-
-#ifdef HAVE_SYS_TYPES_H
-# include <sys/types.h>
-#endif
-
-#ifdef HAVE_SYS_STAT_H
-# include <sys/stat.h>
-#endif
+#include <dirent.h>
+#include <sys/stat.h>
 
 //const OSD_WhoAmI Iam = OSD_WDirectoryIterator;
 

@@ -14,9 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
 #include <TopOpeBRepBuild_Builder.ixx>
 #include <TopOpeBRepBuild_define.hxx>
 #include <stdio.h>
@@ -63,9 +60,6 @@
 #include <TopOpeBRepBuild_WireEdgeSet.hxx>
 
 #ifdef DEB
-#ifdef HAVE_STRINGS_H
-# include <strings.h>
-#endif
 extern Standard_Boolean TopOpeBRepDS_GettraceSPSX(const Standard_Integer);
 extern Standard_Boolean TopOpeBRepDS_GettraceSPSXX(const Standard_Integer,const Standard_Integer);
 static TCollection_AsciiString PRODINS("dins ");

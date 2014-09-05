@@ -14,13 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include <ViewerTest.hxx>
-
-#include <string.h>
 
 #include <Quantity_NameOfColor.hxx>
 #include <Draw_Interpretor.hxx>
@@ -139,13 +133,9 @@
 #include <Image_AlienPixMap.hxx>
 #include <TColStd_HArray1OfAsciiString.hxx>
 
-#ifdef HAVE_STRINGS_H
-#include <strings.h>
-#endif
-
-#ifdef WNT
-#define _CRT_SECURE_NO_DEPRECATE
-#pragma warning (disable:4996)
+#ifdef _WIN32
+# define _CRT_SECURE_NO_DEPRECATE
+# pragma warning (disable:4996)
 #endif
 
 extern ViewerTest_DoubleMapOfInteractiveAndName& GetMapOfAIS();

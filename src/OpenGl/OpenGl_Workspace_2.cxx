@@ -19,10 +19,6 @@
 #include <TColStd_Array2OfReal.hxx>
 #include <OpenGl_telem_util.hxx>
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
 #if (defined(_WIN32) || defined(__WIN32__)) && defined(HAVE_FREEIMAGE)
   #include <NCollection_Handle.hxx>
   #include <FreeImagePlus.h>

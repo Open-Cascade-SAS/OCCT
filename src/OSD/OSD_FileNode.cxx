@@ -12,19 +12,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
 #ifndef _WIN32
 
 //----------------------------------------------------------------------------
 //------------------- Linux Sources of OSD_FileNode --------------------------
 //----------------------------------------------------------------------------
 
-#include <unistd.h>
 #include <errno.h>
-#include <string.h>
 
 #include <Standard_ProgramError.hxx>
 #include <OSD_OSDError.hxx>
@@ -32,34 +26,13 @@
 #include <OSD_WhoAmI.hxx>
 #include <OSD_FileNode.ixx>
 
-#if!defined(TM_IN_SYS_TIME) && defined(HAVE_TIME_H)
-# include <time.h>
-#elif HAVE_SYS_TIME_H
-# include <sys/time.h>
-#endif
-
-#ifdef HAVE_SYS_TYPES_H
-# include <sys/types.h>
-#endif
-
-#ifdef HAVE_SYS_STAT_H
-# include <sys/stat.h>  // for "stat"
-#endif
-
 #include <stdlib.h>    // For "system"
 #include <errno.h>
 #include <fcntl.h>
 
-#ifdef HAVE_UNISTD_H
-# include <unistd.h>
-#endif
-
 #include <stdio.h>
-
-#ifdef HAVE_OSFCN_H
-# include <osfcn.h>
-#endif
-
+#include <unistd.h>
+#include <sys/stat.h>
 
 const OSD_WhoAmI Iam = OSD_WFileNode;
 

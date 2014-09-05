@@ -14,9 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
 #include <GeomliteTest.hxx>
 #include <DrawTrSurf.hxx>
 #include <Draw.hxx>
@@ -86,12 +83,9 @@
 
 //#ifdef WNT
 #include <stdio.h>
-#ifdef WNT
+#ifdef _WIN32
 //#define strcasecmp strcmp Already defined
 Standard_IMPORT Draw_Viewer dout;
-#endif
-#ifdef HAVE_STRINGS_H
-# include <strings.h>
 #endif
 
 

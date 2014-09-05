@@ -58,13 +58,7 @@
 #include <Prs3d_IsoAspect.hxx>
 #include <TopTools_MapOfShape.hxx>
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
 #include <stdio.h>
-#ifdef HAVE_STRINGS_H
-# include <strings.h>
-#endif
 
 #include <Draw_Interpretor.hxx>
 #include <TCollection_AsciiString.hxx>

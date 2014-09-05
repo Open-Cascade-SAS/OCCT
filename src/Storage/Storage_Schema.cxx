@@ -37,18 +37,6 @@
 #include <Storage_StreamExtCharParityError.hxx>
 #include <Standard_ErrorHandler.hxx>
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
-#if defined(HAVE_TIME_H) || defined(WNT)
-# include <time.h>
-#endif
-
-#ifdef HAVE_SYS_TIME_H
-# include <sys/time.h>
-#endif
-
 #include <locale.h>
 #include <stdio.h>
 

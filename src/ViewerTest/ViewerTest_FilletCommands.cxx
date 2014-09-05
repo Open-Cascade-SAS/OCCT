@@ -14,12 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
 #include <ViewerTest.hxx>
-#include <string.h>
 #include <BRepTest.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <DBRep.hxx>
@@ -55,12 +50,9 @@
 #include <AIS_InteractiveObject.hxx>
 #include <AIS_Shape.hxx>
 
-#ifdef HAVE_STRINGS_H
-# include <strings.h>
-#endif
-#ifdef WNT
+#ifdef _WIN32
 //#define strcasecmp strcmp Already defined in Standard
-#include <stdio.h>
+# include <stdio.h>
 #endif
 
 extern  Handle(AIS_Shape) GetAISShapeFromName(const char* name);

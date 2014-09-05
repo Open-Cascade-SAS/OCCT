@@ -14,9 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
 #include <stdio.h>
 #include <BRepTest.hxx>
 #include <GeometryTest.hxx>
@@ -46,12 +43,9 @@
 #include <Precision.hxx>
 #include <Draw_ProgressIndicator.hxx>
 
-#ifdef WNT
+#ifdef _WIN32
 //#define strcasecmp strcmp Already defined
 #include <stdio.h>
-#endif
-#ifdef HAVE_STRINGS_H
-# include <strings.h>
 #endif
 
 //-----------------------------------------------------------------------

@@ -12,10 +12,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
 #ifndef WNT
 
 #include <Standard_NullObject.hxx>
@@ -27,19 +23,10 @@ const OSD_WhoAmI Iam = OSD_WHost;
 
 #include <errno.h>
 
-#ifdef HAVE_SYS_UTSNAME_H
-# include <sys/utsname.h> // For 'uname'
-#endif
-
-#ifdef HAVE_NETDB_H
-# include <netdb.h>       // This is for 'gethostbyname'
-#endif
-
+#include <sys/utsname.h> // For 'uname'
+#include <netdb.h>       // This is for 'gethostbyname'
+#include <unistd.h>
 #include <stdio.h>
-
-#ifdef HAVE_SYS_IOCTL_H
-# include <sys/ioctl.h>
-#endif
 
 #if defined(__osf__) || defined(DECOSF1)
 #include <sys/types.h>
@@ -50,26 +37,6 @@ const OSD_WhoAmI Iam = OSD_WHost;
 extern "C" {
   int gethostname(char* address, int len); 
 }
-#endif
-
-#ifdef HAVE_SYSENT_H
-# include <sysent.h>      // for 'gethostname'
-#endif
-
-#ifdef HAVE_SYS_SOCKET_H
-# include <sys/socket.h>
-#endif
-
-#ifdef HAVE_SYS_UNISTD_H
-# include <sys/unistd.h>
-#endif
-
-#ifdef HAVE_UNISTD_H
-# include <unistd.h>
-#endif
-
-#ifdef HAVE_SYS_SYSTEMINFO_H
-# include <sys/systeminfo.h>
 #endif
 
 extern "C" {int sysinfo(int, char *, long);}
@@ -84,22 +51,11 @@ OSD_Host::OSD_Host(){}
 TCollection_AsciiString OSD_Host::SystemVersion(){
 struct utsname info;
 TCollection_AsciiString result;
-#ifdef HAVE_SYS_SYSTEMINFO_H
-char buf[100];
-#endif
 
  uname (&info);
  result  = info.sysname;
  result += " ";
  result += info.release;
-#ifdef HAVE_SYS_SYSTEMINFO_H
- result += " ";
- sysinfo(SI_ARCHITECTURE,buf,99);
- result += buf;
- result += " ";
- sysinfo(SI_HW_PROVIDER,buf,99);
- result += buf;
-#endif
  return(result);
 }
 

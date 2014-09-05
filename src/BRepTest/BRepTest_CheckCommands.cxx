@@ -15,10 +15,6 @@
 // commercial license or contractual agreement.
 
 #include <BRepTest.hxx>
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
 #include <BRepAlgo.hxx>
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepCheck_Result.hxx>
@@ -72,9 +68,6 @@
 #include <Standard_Failure.hxx>
 
 #include <stdio.h>
-#ifdef HAVE_STRINGS_H
-# include <strings.h>
-#endif
 
 static char* checkfaultyname = NULL;
 Standard_EXPORT void BRepTest_CheckCommands_SetFaultyName(const char* name)

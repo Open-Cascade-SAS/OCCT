@@ -111,9 +111,9 @@ add_definitions(-DCSFDB)
 if(WIN32)
   add_definitions(/DWNT -wd4996)
 elseif(APPLE)
-  add_definitions(-fexceptions -fPIC -DOCC_CONVERT_SIGNALS -DHAVE_WOK_CONFIG_H -DHAVE_CONFIG_H)
+  add_definitions(-fexceptions -fPIC -DOCC_CONVERT_SIGNALS)
 else()
-  add_definitions(-fexceptions -fPIC -DOCC_CONVERT_SIGNALS -DHAVE_WOK_CONFIG_H -DHAVE_CONFIG_H -DLIN)
+  add_definitions(-fexceptions -fPIC -DOCC_CONVERT_SIGNALS -DLIN)
 endif()
 
 # enable structured exceptions for MSVC
