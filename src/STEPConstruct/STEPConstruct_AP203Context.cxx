@@ -167,7 +167,7 @@ Handle(StepBasic_PersonAndOrganization) STEPConstruct_AP203Context::DefaultPerso
     // construct person`s name
     OSD_Process sys;
     Standard_CString usr = sys.UserName().ToCString();
-#ifndef WNT
+#if !defined(_WIN32) && !defined(__ANDROID__)
     if ( usr ) {
       struct passwd *pwd = getpwnam ( usr );
       if ( pwd ) usr = pwd->pw_gecos;

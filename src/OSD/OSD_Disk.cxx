@@ -12,7 +12,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef WNT
+#ifndef _WIN32
 
 #include <OSD_Disk.ixx>
 #include <OSD_WhoAmI.hxx>
@@ -23,15 +23,20 @@ const OSD_WhoAmI Iam = OSD_WDisk;
 extern "C" {
 #endif
 
-#include <sys/statvfs.h>
+#if defined(__ANDROID__)
+  #include <sys/vfs.h>
+  #define statvfs  statfs
+  #define fstatvfs fstatfs
+#else
+  #include <sys/statvfs.h>
+  int statvfs(const char *, struct statvfs *);
+#endif
 
 #ifdef __cplusplus
 }
-#endif                                                       
+#endif
 
 #include <errno.h>
-
-extern "C" {int statvfs(const char *, struct statvfs *); }
 
 OSD_Disk::OSD_Disk() : myQuotaSize(0) {}
 

@@ -39,6 +39,8 @@
   #include <xlocale.h>
 #endif
 
+#if !defined(__ANDROID__)
+
 //! This class intended to temporary switch C locale and logically equivalent to setlocale(LC_ALL, "C").
 //! It is intended to format text regardless of user locale settings (for import/export functionality).
 //! Thus following calls to sprintf, atoi and other functions will use "C" locale.
@@ -57,7 +59,7 @@ public:
   Standard_EXPORT Standard_CLocaleSentry();
 
   //! Restore previous locale.
-  Standard_EXPORT virtual ~Standard_CLocaleSentry();
+  Standard_EXPORT ~Standard_CLocaleSentry();
 
 public:
 
@@ -87,5 +89,18 @@ private:
   Standard_CLocaleSentry& operator= (const Standard_CLocaleSentry& );
 
 };
+
+#else
+
+//! C/C++ runtime on Android currently supports only C-locale, no need to call anything.
+class Standard_CLocaleSentry
+{
+public:
+  Standard_CLocaleSentry() {}
+  typedef void* clocale_t;
+  static clocale_t GetCLocale() { return 0; }
+};
+
+#endif // __ANDROID__
 
 #endif // _Standard_CLocaleSentry_H__

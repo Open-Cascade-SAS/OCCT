@@ -13,7 +13,7 @@
 
 #include <OSD.ixx>
 
-#ifndef WNT
+#ifndef _WIN32
 
 //---------- All Systems except Windows NT : ----------------------------------
 
@@ -68,9 +68,12 @@ typedef void (* SIG_PFV) (int);
 typedef void (* SIG_PFV) (int);
 
 #include <signal.h>
-#include <sys/signal.h>
 
-#if defined(HAVE_PTHREAD_H) && defined(NO_CXX_EXCEPTION) 
+#if !defined(__ANDROID__)
+  #include <sys/signal.h>
+#endif
+
+#if defined(HAVE_PTHREAD_H) && defined(NO_CXX_EXCEPTION)
 //============================================================================
 //====  GetOldSigAction
 //====     get previous 
