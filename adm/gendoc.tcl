@@ -684,7 +684,7 @@ proc OCCDoc_MakeDoxyfile {docType outDir tagFileDir {doxyFileName} {generatorMod
       foreach tk [$module:toolkits] {
         foreach pk [split [OCCDoc_GetPackagesList [OCCDoc_Locate $tk $productsPath]]] {
           if { [llength $pk] != "{}" } {
-            lappend filelist [OCCDoc_GetHeadersList "p" "pubinclude" "$pk" "$productsPath"]
+            lappend filelist [OCCDoc_GetHeadersList "p" "$pk" "$productsPath"]
           }
         }
       }

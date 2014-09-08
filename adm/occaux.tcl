@@ -537,26 +537,15 @@ proc OCCDoc_GetModulesList { {theProductsDir ""} } {
 }
 
 # Returns list of desired files in the specified location
-proc OCCDoc_GetHeadersList { theDesiredContent theFileType thePackageName {theProductsDir ""} } {
+proc OCCDoc_GetHeadersList { theDesiredContent thePackageName {theProductsDir ""} } {
 
-  # Get file type
-  set file_type_pattern "*.*"
-  if { $theFileType == "pubinclude" } {
-    set file_type_pattern "*.*"
-  } elseif { $theFileType == "privinclude" } {
-    set file_type_pattern "*.ixx"
-  }
-  
+  # Get list of header files with path
+  set files_list [split [glob -nocomplain -type f -directory "[OCCDoc_GetIncDir $theProductsDir]" "${thePackageName}.hxx" "${thePackageName}_*.hxx"]]
+
   # Get content according to desired type ('p' for path and 'f' for filenames only)
   if { $theDesiredContent == "p" } {
-
-    # Get list of files with path
-    set files_list [split [glob -nocomplain -type f -directory "[OCCDoc_GetIncDir $theProductsDir]" "$thePackageName$file_type_pattern"]]
-
     return $files_list
   } elseif { $theDesiredContent == "f" } {
-  # Get list of files without path
-    set files_list [split [glob -nocomplain -type f -directory "[OCCDoc_GetIncDir $theProductsDir]" "$thePackageName$file_type_pattern"]]
 
     # Cut paths from filenames
     foreach file $files_list {
@@ -662,7 +651,7 @@ proc OCCDoc_MakeMainPage {outDir outFile modules {theProductsDir ""} } {
     set u [OCCDoc_GetNameFromPath $pk]
     puts $fd "/**"
     puts $fd "\\page [string tolower $package_prefix$u] Package $u"
-    foreach hdr [lsort [OCCDoc_GetHeadersList "f" "pubinclude" "$pk" "$theProductsDir"]] {
+    foreach hdr [lsort [OCCDoc_GetHeadersList "f" "$pk" "$theProductsDir"]] {
       if { ! [regexp {^Handle_} $hdr] && [regexp {(.*)[.]hxx} $hdr str obj] } {
         puts $fd "\\li \\subpage $obj"
       }
