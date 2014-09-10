@@ -46,9 +46,7 @@ static Standard_IStream& operator >>(Standard_IStream& IS, gp_Trsf& T)
 
   T.SetValues(V1[0],V1[1],V1[2],V[0],
 	      V2[0],V2[1],V2[2],V[1],
-	      V3[0],V3[1],V3[2],V[2],
-	      Precision::Angular(),
-	      Precision::Confusion());
+	      V3[0],V3[1],V3[2],V[2]);
   return IS;
 }
 

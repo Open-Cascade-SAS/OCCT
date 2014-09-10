@@ -195,8 +195,7 @@ TColStd_Array2OfReal matrix(1,4,1,4);
   trsf.SetValues(
         matrix.Value(1,1),matrix.Value(1,2),matrix.Value(1,3),matrix.Value(1,4),
         matrix.Value(2,1),matrix.Value(2,2),matrix.Value(2,3),matrix.Value(2,4),
-        matrix.Value(3,1),matrix.Value(3,2),matrix.Value(3,3),matrix.Value(3,4),
-        0.001,0.0001);  
+        matrix.Value(3,1),matrix.Value(3,2),matrix.Value(3,3),matrix.Value(3,4));  
   Handle(Geom_Transformation) gtrsf = new Geom_Transformation(trsf); 
 
   return gtrsf;

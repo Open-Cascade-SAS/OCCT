@@ -58,8 +58,7 @@ Handle(Graphic3d_Structure) PrsMgr_Prs::Compute(const Handle(Graphic3d_DataStruc
   Standard_Integer LC(AMatrix.LowerCol()),LR(AMatrix.LowerRow());
   TheTrsf.SetValues(AMatrix(LR,LC),AMatrix(LR,LC+1),AMatrix(LR,LC+2),AMatrix(LR,LC+3),
 		    AMatrix(LR+1,LC),AMatrix(LR+1,LC+1),AMatrix(LR+1,LC+2),AMatrix(LR+1,LC+3),
-		    AMatrix(LR+2,LC),AMatrix(LR+2,LC+1),AMatrix(LR+2,LC+2),AMatrix(LR+2,LC+3),
-		    Precision::Angular(),Precision::Confusion());
+		    AMatrix(LR+2,LC),AMatrix(LR+2,LC+1),AMatrix(LR+2,LC+2),AMatrix(LR+2,LC+3));
    Handle(Geom_Transformation) G = new Geom_Transformation(TheTrsf);
   
   return myPresentation3d->Compute(aProjector,G);
@@ -90,8 +89,7 @@ void PrsMgr_Prs::Compute(const Handle(Graphic3d_DataStructureManager)& aProjecto
   Standard_Integer LC(AMatrix.LowerCol()),LR(AMatrix.LowerRow());
   TheTrsf.SetValues(AMatrix(LR,LC),AMatrix(LR,LC+1),AMatrix(LR,LC+2),AMatrix(LR,LC+3),
 		    AMatrix(LR+1,LC),AMatrix(LR+1,LC+1),AMatrix(LR+1,LC+2),AMatrix(LR+1,LC+3),
-		    AMatrix(LR+2,LC),AMatrix(LR+2,LC+1),AMatrix(LR+2,LC+2),AMatrix(LR+2,LC+3),
-		    Precision::Angular(),Precision::Confusion());
+		    AMatrix(LR+2,LC),AMatrix(LR+2,LC+1),AMatrix(LR+2,LC+2),AMatrix(LR+2,LC+3));
   Handle(Geom_Transformation) G = new Geom_Transformation(TheTrsf);
 
 

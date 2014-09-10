@@ -28,8 +28,7 @@ Vrml_MatrixTransform::Vrml_MatrixTransform()
   gp_Trsf T;
   T.SetValues ( 1, 0, 0, 0,
 	        0, 1, 0, 0,
-	        0, 0, 1, 0,
-	        Precision::Angular(), Precision::Confusion());
+	        0, 0, 1, 0);
   T.SetScaleFactor(1); 
 
   myMatrix = T;

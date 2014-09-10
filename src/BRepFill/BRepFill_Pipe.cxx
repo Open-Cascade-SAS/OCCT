@@ -263,8 +263,7 @@ void BRepFill_Pipe::Perform(const TopoDS_Wire&  Spine,
   myLoc->Law(1)->D0(first, M, V);
     fila.SetValues(M(1,1), M(1,2), M(1,3), V.X(),
 		   M(2,1), M(2,2), M(2,3), V.Y(),
-		   M(3,1), M(3,2), M(3,3), V.Z(),
-		   1.e-12, 1.e-14);
+		   M(3,1), M(3,2), M(3,3), V.Z());
 
   fila.Multiply(myTrsf);
   TopLoc_Location LocFirst(fila);
@@ -293,8 +292,7 @@ void BRepFill_Pipe::Perform(const TopoDS_Wire&  Spine,
 //    try { // Not good, but there are no other means to test SetValues
   fila.SetValues(M(1,1), M(1,2), M(1,3), V.X(),
 		 M(2,1), M(2,2), M(2,3), V.Y(),
-		 M(3,1), M(3,2), M(3,3), V.Z(),
-		 1.e-12, 1.e-14);
+		 M(3,1), M(3,2), M(3,3), V.Z());
   fila.Multiply(myTrsf);
   TopLoc_Location LocLast(fila);
   if (! myLoc->IsClosed() || LocFirst != LocLast) {

@@ -1106,6 +1106,38 @@ Handle(Adaptor2d_HCurve2d)
                   V1 = V0 + vsens*vperiod;
                   Pts2d(i).SetCoord(U1,V1);
                   myProjIsDone = Standard_True;
+
+                  if((i == 2) && (!IsEqual(uperiod, 0.0) || !IsEqual(vperiod, 0.0)))
+                  {//Make 1st point more precise for periodic surfaces
+                    const Standard_Integer aSize = 3;
+                    const gp_Pnt2d aP(Pts2d(2)); 
+                    Standard_Real aUpar[aSize], aVpar[aSize];
+                    Pts2d(1).Coord(aUpar[1], aVpar[1]);
+                    aUpar[0] = aUpar[1] - uperiod;
+                    aUpar[2] = aUpar[1] + uperiod;
+                    aVpar[0] = aVpar[1] - vperiod;
+                    aVpar[2] = aVpar[1] + vperiod;
+
+                    Standard_Real aSQdistMin = RealLast();
+                    Standard_Integer aBestUInd = 1, aBestVInd = 1;
+                    const Standard_Integer  aSizeU = IsEqual(uperiod, 0.0) ? 1 : aSize,
+                                            aSizeV = IsEqual(vperiod, 0.0) ? 1 : aSize;
+                    for(Standard_Integer uInd = 0; uInd < aSizeU; uInd++)
+                    {
+                      for(Standard_Integer vInd = 0; vInd < aSizeV; vInd++)
+                      {
+                        Standard_Real aSQdist = aP.SquareDistance(gp_Pnt2d(aUpar[uInd], aVpar[vInd]));
+                        if(aSQdist < aSQdistMin)
+                        {
+                          aSQdistMin = aSQdist;
+                          aBestUInd = uInd;
+                          aBestVInd = vInd;
+                        }
+                      }
+                    }
+
+                    Pts2d(1).SetCoord(aUpar[aBestUInd], aVpar[aBestVInd]);
+                  }//if(i == 2) condition
                 }
               }
             }

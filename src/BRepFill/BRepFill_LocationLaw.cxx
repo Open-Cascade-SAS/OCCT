@@ -608,8 +608,7 @@ void BRepFill_LocationLaw::CurvilinearBounds(const Standard_Integer Index,
     gp_Trsf fila;
     fila.SetValues(M(1,1), M(1,2), M(1,3), V.X(),
 		   M(2,1), M(2,2), M(2,3), V.Y(),
-		   M(3,1), M(3,2), M(3,3), V.Z(),
-		   1.e-12, 1.e-14);
+		   M(3,1), M(3,2), M(3,3), V.Z());
     //TopLoc_Location Loc(fila);
     //W.Location(Loc.Multiplied(W.Location()));
     W = BRepBuilderAPI_Transform(W, fila, Standard_True); //copy

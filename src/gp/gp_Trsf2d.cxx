@@ -23,31 +23,32 @@
 void gp_Trsf2d::SetMirror (const gp_Ax2d& A)
 {
   shape = gp_Ax1Mirror;
-  scale = - 1.0;
   const gp_Dir2d& V = A.Direction ();
   const gp_Pnt2d& P = A.Location ();
   Standard_Real VX = V.X();
   Standard_Real VY = V.Y();
   Standard_Real X0 = P.X();
   Standard_Real Y0 = P.Y();
-  matrix.SetCol (1, gp_XY (1.0 - 2.0 * VX * VX, -2.0 * VX * VY));
-  matrix.SetCol (2, gp_XY (-2.0 * VX * VY, 1.0 - 2.0 * VY * VY));
 
-  loc.SetCoord  (-2.0 * ((VX * VX - 1.0) * X0 + (VX * VY * Y0)),
-                 -2.0 * ((VX * VY * X0) + (VY * VY - 1.0) * Y0));
+  SetValues(1.0-2.0*VX*VX, -2.0*VX*VY, -2.0*((VX * VX - 1.0)*X0 + (VX*VY*Y0)), 
+            -2.0*VX*VY, 1.0-2.0*VY*VY, -2.0*((VX*VY*X0)+(VY*VY-1.0)*Y0));
+
+  scale = - 1.0;
 }
 
 void gp_Trsf2d::SetTransformation (const gp_Ax2d& FromA1,
 				   const gp_Ax2d& ToA2)
 {
   shape = gp_CompoundTrsf;
-  scale = 1.0;
   //matrix from XOY to A2 :
   const gp_XY& V1 = ToA2.Direction().XY();
   gp_XY V2 (-V1.Y(), V1.X());
-  matrix.SetCol (1, V1);
-  matrix.SetCol (2, V2);
-  loc = ToA2.Location().XY();
+
+  SetValues(V1.X(), V2.X(), ToA2.Location().X(),
+            V1.Y(), V2.Y(), ToA2.Location().Y());
+
+  scale = 1.0;
+
   matrix.Transpose();
   loc.Multiply (matrix);
   loc.Reverse();
@@ -65,12 +66,14 @@ void gp_Trsf2d::SetTransformation (const gp_Ax2d& FromA1,
 void gp_Trsf2d::SetTransformation (const gp_Ax2d& A)
 {
   shape = gp_CompoundTrsf;
-  scale = 1.0;
   const gp_XY& V1 = A.Direction().XY();
   gp_XY V2 (-V1.Y(), V1.X());
-  matrix.SetCol (1, V1);
-  matrix.SetCol (2, V2);
-  loc = A.Location().XY();
+
+  SetValues(V1.X(), V2.X(), A.Location().X(),
+            V1.Y(), V2.Y(), A.Location().Y());
+
+  scale = 1.0;
+
   matrix.Transpose();
   loc.Multiply (matrix);
   loc.Reverse();
@@ -497,3 +500,73 @@ void gp_Trsf2d::PreMultiply (const gp_Trsf2d& T)
   }
 }
 
+//=======================================================================
+//function : SetValues
+//purpose  : 
+//=======================================================================
+void gp_Trsf2d::SetValues(const Standard_Real a11,
+                          const Standard_Real a12,
+                          const Standard_Real a13,
+                          const Standard_Real a21,
+                          const Standard_Real a22,
+                          const Standard_Real a23)
+{
+  gp_XY col1(a11,a21);
+  gp_XY col2(a12,a22);
+  gp_XY col3(a13,a23);
+  // compute the determinant
+  gp_Mat2d M(col1,col2);
+  Standard_Real s = M.Determinant();
+  Standard_Real As = s;
+  if (As < 0)
+    As = - As;
+  Standard_ConstructionError_Raise_if
+    (As < gp::Resolution(),"gp_Trsf2d::SetValues, null determinant");
+
+  if (s > 0)
+    s = sqrt(s);
+  else
+    s = sqrt(-s);
+  
+  M.Divide(s);
+
+  scale = s;
+  shape = gp_CompoundTrsf;
+
+  matrix = M;
+  Orthogonalize();
+  
+  loc = col3;
+}
+
+
+//=======================================================================
+//function : Orthogonalize
+//purpose  : 
+//=======================================================================
+void gp_Trsf2d::Orthogonalize()
+{
+  gp_Mat2d aTM(matrix);
+
+  gp_XY aV1 = aTM.Column(1);
+  gp_XY aV2 = aTM.Column(2);
+
+  aV1.Normalize();
+
+  aV2 -= aV1*(aV2.Dot(aV1));
+  aV2.Normalize();
+
+  aTM.SetCols(aV1, aV2);
+
+  aV1 = aTM.Row(1);
+  aV2 = aTM.Row(2);
+
+  aV1.Normalize();
+
+  aV2 -= aV1*(aV2.Dot(aV1));
+  aV2.Normalize();
+
+  aTM.SetRows(aV1, aV2);
+
+  matrix = aTM;
+}

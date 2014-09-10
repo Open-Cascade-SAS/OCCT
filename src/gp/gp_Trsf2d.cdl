@@ -242,6 +242,31 @@ is
   Transforms (me; Coord : out XY)   is static;
         ---C++: inline    
         --- Purpose : Transforms  a doublet XY with a Trsf2d
+
+  SetValues(me : in out;
+            a11, a12, a13, a21, a22, a23 : Real)
+
+        ---Purpose: Sets the coefficients  of the transformation. The 
+         --         transformation  of the  point  x,y is  the point
+         --         x',y' with :
+         --
+         --         x' = a11 x + a12 y + a13
+         --         y' = a21 x + a22 y + a23
+         --
+         --         The method Value(i,j) will return aij.
+         --         Raises ConstructionError if the determinant of the aij is null.
+         --         If the matrix as not a uniform scale it will be orthogonalyzed before future using.
+
+    raises
+        ConstructionError from Standard
+
+    is static;
+        
+  Orthogonalize(me: in out)
+    is protected;
+        --- Purpose : Makes orthogonalization of "matrix"
+  
+
 fields
 
   scale  : Real;

@@ -322,14 +322,7 @@ void gp_Trsf::SetValues(const Standard_Real a11,
                         const Standard_Real a31, 
                         const Standard_Real a32,
                         const Standard_Real a33, 
-                        const Standard_Real a34, 
-//                      const Standard_Real Tolang, 
-                        const Standard_Real , 
-                        const Standard_Real
-#ifndef No_Exception
-                                            TolDist
-#endif
-                       )
+                        const Standard_Real a34)
 {
   gp_XYZ col1(a11,a21,a31);
   gp_XYZ col2(a12,a22,a32);
@@ -341,63 +334,19 @@ void gp_Trsf::SetValues(const Standard_Real a11,
   Standard_Real As = s;
   if (As < 0) As = - As;
   Standard_ConstructionError_Raise_if
-    (As < gp::Resolution(),"gp_Trsf::SeValues, null determinant");
+    (As < gp::Resolution(),"gp_Trsf::SetValues, null determinant");
   if (s > 0)
     s = Pow(s,1./3.);
   else
     s = -Pow(-s,1./3.);
   M.Divide(s);
   
-  // check if the matrix is a rotation matrix
-  // the transposition should be the invert.
-  gp_Mat TM(M);
-  TM.Transpose();
-  TM.Multiply(M);
-  //
-  // don t trust the initial values !
-  //
-  gp_Mat anIdentity ;
-  anIdentity.SetIdentity() ;
-  TM.Subtract(anIdentity);
-  As = TM.Value(1,1);
-  if (As < 0) As = - As;
-  Standard_ConstructionError_Raise_if
-    (As > TolDist,"gp_Trsf::SeValues, non uniform");
-  As = TM.Value(1,2);
-  if (As < 0) As = - As;
-  Standard_ConstructionError_Raise_if
-    (As > TolDist,"gp_Trsf::SeValues, non uniform");
-  As = TM.Value(1,3);
-  if (As < 0) As = - As;
-  Standard_ConstructionError_Raise_if
-    (As > TolDist,"gp_Trsf::SeValues, non uniform");
-  As = TM.Value(2,1);
-  if (As < 0) As = - As;
-  Standard_ConstructionError_Raise_if
-    (As > TolDist,"gp_Trsf::SeValues, non uniform");
-  As = TM.Value(2,2);
-  if (As < 0) As = - As;
-  Standard_ConstructionError_Raise_if
-    (As > TolDist,"gp_Trsf::SeValues, non uniform");
-  As = TM.Value(2,3);
-  if (As < 0) As = - As;
-  Standard_ConstructionError_Raise_if
-    (As > TolDist,"gp_Trsf::SeValues, non uniform");
-  As = TM.Value(3,1);
-  if (As < 0) As = - As;
-  Standard_ConstructionError_Raise_if
-    (As > TolDist,"gp_Trsf::SeValues, non uniform");
-  As = TM.Value(3,2);
-  if (As < 0) As = - As;
-  Standard_ConstructionError_Raise_if
-    (As > TolDist,"gp_Trsf::SeValues, non uniform");
-  As = TM.Value(3,3);
-  if (As < 0) As = - As;
-  Standard_ConstructionError_Raise_if
-    (As > TolDist,"gp_Trsf::SeValues, non uniform");
   scale = s;
   shape = gp_CompoundTrsf;
+
   matrix = M;
+  Orthogonalize();
+  
   loc = col4;
 }
 
@@ -810,4 +759,43 @@ Standard_Boolean gp_Trsf::GetRotation (gp_XYZ&        theAxis,
   Q.GetVectorAndAngle (aVec, theAngle);
   theAxis = aVec.XYZ();
   return Standard_True;
+}
+
+//=======================================================================
+//function : Orthogonalize
+//purpose  : 
+//=======================================================================
+void gp_Trsf::Orthogonalize()
+{
+  gp_Mat aTM(matrix);
+
+  gp_XYZ aV1 = aTM.Column(1);
+  gp_XYZ aV2 = aTM.Column(2);
+  gp_XYZ aV3 = aTM.Column(3);
+
+  aV1.Normalize();
+
+  aV2 -= aV1*(aV2.Dot(aV1));
+  aV2.Normalize();
+
+  aV3 -= aV1*(aV3.Dot(aV1)) + aV2*(aV3.Dot(aV2));
+  aV3.Normalize();
+
+  aTM.SetCols(aV1, aV2, aV3);
+
+  aV1 = aTM.Row(1);
+  aV2 = aTM.Row(2);
+  aV3 = aTM.Row(3);
+
+  aV1.Normalize();
+
+  aV2 -= aV1*(aV2.Dot(aV1));
+  aV2.Normalize();
+
+  aV3 -= aV1*(aV3.Dot(aV1)) + aV2*(aV3.Dot(aV2));
+  aV3.Normalize();
+
+  aTM.SetRows(aV1, aV2, aV3);
+
+  matrix = aTM;
 }

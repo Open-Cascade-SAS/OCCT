@@ -204,8 +204,7 @@ is
   SetValues(me : in out;
             a11, a12, a13, a14,
             a21, a22, a23, a24,
-            a31, a32, a33, a34 : Real;
-            Tolang, TolDist : Real)
+            a31, a32, a33, a34 : Real)
 
         ---Purpose: Sets the coefficients  of the transformation.  The
         --          transformation  of the  point  x,y,z is  the point
@@ -213,16 +212,11 @@ is
         --          
         --          x' = a11 x + a12 y + a13 z + a14
         --          y' = a21 x + a22 y + a23 z + a24
-        --          z' = a31 x + a32 y + a43 z + a34
-        --          
-        --          Tolang and  TolDist are  used  to  test  for  null
-        --          angles and null distances to determine the form of
-        --          the transformation (identity, translation, etc..).
+        --          z' = a31 x + a32 y + a33 z + a34
         --          
         --          The method Value(i,j) will return aij.
-        --          Raises ConstructionError if the determinant of  the aij is null. Or  if
-        --          the matrix as not a uniform scale.
-
+        --          Raises ConstructionError if the determinant of  the aij is null.
+        --          The matrix is orthogonalyzed before future using.
     raises
         ConstructionError from Standard
 
@@ -371,7 +365,9 @@ is
         ---C++: inline
         --- Purpose : Transformation of a triplet XYZ with a Trsf
 
-
+  Orthogonalize(me: in out)
+    is protected;
+        --- Purpose : Makes orthogonalization of "matrix"
 
 fields
 
