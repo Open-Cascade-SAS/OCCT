@@ -424,9 +424,7 @@ Handle(PrsMgr_Presentation) PrsMgr_PresentationManager::Presentation (const Hand
     }
   }
 
-  // To be changed within dedicated patch
-  ///return Handle(PrsMgr_Presentation)();
-  return aPrsList.Last().Presentation();
+  return Handle(PrsMgr_Presentation)();
 }
 
 // =======================================================================
