@@ -19,7 +19,7 @@
 #include <OpenGl_GraphicDriver.hxx>
 #include <OpenGl_ShaderManager.hxx>
 #include <OpenGl_ShaderProgram.hxx>
-#include <OpenGl_Structure.hxx>
+#include <OpenGl_StructureShadow.hxx>
 #include <OpenGl_telem_util.hxx>
 #include <OpenGl_Vec.hxx>
 #include <OpenGl_View.hxx>
@@ -890,61 +890,6 @@ void OpenGl_Structure::SetZLayer (const Standard_Integer theLayerIndex)
 Standard_Integer OpenGl_Structure::GetZLayer () const
 {
   return myZLayer;
-}
-
-//! Dummy structure which just redirects to groups of another structure.
-class OpenGl_StructureShadow : public OpenGl_Structure
-{
-
-public:
-
-  //! Create empty structure
-  OpenGl_StructureShadow (const Handle(Graphic3d_StructureManager)& theManager,
-                          const Handle(OpenGl_Structure)&           theStructure);
-
-  virtual const Graphic3d_SequenceOfGroup& DrawGroups() const { return myParent->DrawGroups(); }
-
-private:
-
-  Handle(OpenGl_Structure) myParent;
-
-public:
-
-  DEFINE_STANDARD_RTTI(OpenGl_StructureShadow) // Type definition
-
-};
-
-DEFINE_STANDARD_HANDLE(OpenGl_StructureShadow, OpenGl_Structure)
-
-IMPLEMENT_STANDARD_HANDLE (OpenGl_StructureShadow, OpenGl_Structure)
-IMPLEMENT_STANDARD_RTTIEXT(OpenGl_StructureShadow, OpenGl_Structure)
-
-//=======================================================================
-//function : OpenGl_StructureShadow
-//purpose  :
-//=======================================================================
-OpenGl_StructureShadow::OpenGl_StructureShadow (const Handle(Graphic3d_StructureManager)& theManager,
-                                                const Handle(OpenGl_Structure)&           theStructure)
-: OpenGl_Structure (theManager)
-{
-  Handle(OpenGl_StructureShadow) aShadow = Handle(OpenGl_StructureShadow)::DownCast (theStructure);
-  myParent = aShadow.IsNull() ? theStructure : aShadow->myParent;
-
-
-  Composition   = myParent->Composition;
-  ContainsFacet = myParent->ContainsFacet;
-  IsInfinite    = myParent->IsInfinite;
-  for (Standard_Integer i = 0; i <= 3; ++i)
-  {
-    for (Standard_Integer j = 0; j <= 3; ++j)
-    {
-      Graphic3d_CStructure::Transformation[i][j] = myParent->Graphic3d_CStructure::Transformation[i][j];
-    }
-  }
-
-  TransformPersistence.IsSet = myParent->TransformPersistence.IsSet;
-  TransformPersistence.Flag  = myParent->TransformPersistence.Flag;
-  TransformPersistence.Point = myParent->TransformPersistence.Point;
 }
 
 //=======================================================================

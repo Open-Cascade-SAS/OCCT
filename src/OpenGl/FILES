@@ -20,6 +20,8 @@ OpenGl_Group.hxx
 OpenGl_Group.cxx
 OpenGl_Structure.hxx
 OpenGl_Structure.cxx
+OpenGl_StructureShadow.hxx
+OpenGl_StructureShadow.cxx
 OpenGl_Element.hxx
 OpenGl_Element.cxx
 OpenGl_Text.hxx
