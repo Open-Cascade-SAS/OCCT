@@ -1,0 +1,24 @@
+puts "============"
+puts "erase"
+puts "============"
+puts ""
+#######################################################
+#  Tests erasing of shapes in the IVtk view
+#######################################################
+
+set anImage1 $imagedir/${casename}_before.png
+set anImage2 $imagedir/${casename}_oneErased.png
+set anImage3 $imagedir/${casename}_allErased.png
+
+ivtkinit
+box b1 1 1 1
+box b2 3 3 3 1 1 1
+ivtkdisplay b1 b2 
+ivtkdump $anImage1
+
+ivtkerase b1
+ivtkdump $anImage2
+
+ivtkdisplay b1
+ivtkerase
+ivtkdump $anImage3

@@ -48,3 +48,4 @@ XDEDRAW            : TKXDEDRAW
 TOBJ               : TKTObjDRAW
 DFBROWSER          : TKDFBrowser
 QAcommands         : TKQADraw
+VIS                : TKIVtkDraw

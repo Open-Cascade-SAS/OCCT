@@ -1,0 +1,5 @@
+pload VIS
+
+set to_dump_screen 1
+
+set subgroup ivtk

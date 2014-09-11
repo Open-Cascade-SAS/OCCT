@@ -1,0 +1,16 @@
+puts "============"
+puts "selection_mode"
+puts "============"
+puts ""
+#######################################################
+#  Tests selection modes changing in the IVtk view
+#######################################################
+
+set anImage $imagedir/${casename}.png
+ivtkinit
+box b 1 1 1
+ivtkdisplay b
+ivtksetselmode 2 1
+ivtkselect 86 117
+
+ivtkdump $anImage

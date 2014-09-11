@@ -1,0 +1,15 @@
+puts "============"
+puts "detect"
+puts "============"
+puts ""
+#######################################################
+#  Tests detection of shapes in the IVtk view
+#######################################################
+
+set anImage $imagedir/${casename}.png
+ivtkinit
+box b 1 1 1
+ivtkdisplay b
+ivtkmoveto 100 100
+
+ivtkdump $anImage

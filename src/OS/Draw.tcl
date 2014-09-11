@@ -15,8 +15,15 @@
 ;# Liste des toolkits WOK sous forme de full path
 ;# 
 proc Draw:toolkits { } {
-    return [list TKDraw TKTopTest TKViewerTest TKXSDRAW TKDCAF TKXDEDRAW TKTObjDRAW TKQADraw]
+    set aResult [list TKDraw TKTopTest TKViewerTest TKXSDRAW TKDCAF TKXDEDRAW TKTObjDRAW TKQADraw]
+
+    if { $::env(HAVE_VTK) == "true" } {
+      lappend aResult "TKIVtkDraw"
+    }
+
+    return $aResult
 }
+
 ;#
 ;# Autres UDs a prendre. Listes de triplets
 ;# { ar typ UD str } Tous les types de UD vont dans un sous directory nomme root/str

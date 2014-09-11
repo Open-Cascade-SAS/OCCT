@@ -480,3 +480,5 @@ p IVtkOCC
 p IVtkVTK
 p IVtkTools
 t TKIVtk
+p IVtkDraw
+t TKIVtkDraw
