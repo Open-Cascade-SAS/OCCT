@@ -1,0 +1,17 @@
+puts "============"
+puts "CR24886"
+puts "============"
+puts ""
+###################################################################################
+# BRepOffsetAPI_NormalProjection failure
+###################################################################################
+
+restore [locate_data_file bug24886_comp.brep] c
+
+explode c
+
+if [catch { nproject r c_1 c_2 } ] {
+  puts "Error : BRepOffsetAPI_NormalProjection failure"
+} else {
+  puts "OK : BRepOffsetAPI_NormalProjection work good"
+}
