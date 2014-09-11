@@ -185,8 +185,12 @@ static Standard_Boolean IsBetter(const Standard_Integer first,
 
 void ShapeAnalysis_WireOrder::Perform(const Standard_Boolean /*closed*/) 
 {
-  Standard_Integer i, nb = myXYZ->Length() / 2;
-  myOrd = new TColStd_HArray1OfInteger(1,nb);  myOrd->Init(0);
+  myStat = 0;
+  Standard_Integer i, nb = NbEdges();
+  if(nb == 0)
+    return; // no edges loaded, nothing to do -- return with status OK
+  myOrd = new TColStd_HArray1OfInteger(1,nb);
+  myOrd->Init(0);
 
   Handle(TColStd_HSequenceOfInteger) seq = new TColStd_HSequenceOfInteger;
   TColStd_SequenceOfTransient loops;

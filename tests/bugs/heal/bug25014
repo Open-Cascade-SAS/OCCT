@@ -1,0 +1,10 @@
+puts "============"
+puts "OCC25014"
+puts "============"
+puts ""
+#######################################################################
+## ShapeAnalysis_WireOrder produces Standard_RangeError on empty wire (debug mode only)
+#######################################################################
+
+shape w w
+stwire w r +r
