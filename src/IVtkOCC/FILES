@@ -1,0 +1,10 @@
+IVtkOCC_SelectableObject.hxx
+IVtkOCC_SelectableObject.cxx
+IVtkOCC_Shape.hxx
+IVtkOCC_Shape.cxx
+IVtkOCC_ShapeMesher.hxx
+IVtkOCC_ShapeMesher.cxx
+IVtkOCC_ShapePickerAlgo.hxx
+IVtkOCC_ShapePickerAlgo.cxx
+IVtkOCC_ViewerSelector.hxx
+IVtkOCC_ViewerSelector.cxx

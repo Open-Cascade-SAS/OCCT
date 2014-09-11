@@ -1,0 +1,11 @@
+-- File: IVtkVTK_CMPLRS.edl
+-- Created by: Anastasia Arzhadeyeva
+
+@ifnotdefined ( %IVtkVTK_CMPLRS_EDL) then
+  @set %IVtkVTK_CMPLRS_EDL = "";
+
+  @if (%Station == "wnt") then
+    @string %CMPLRS_CXX_INCLUDE = %CMPLRS_CXX_INCLUDE " " %CSF_VTK_INCLUDES;
+  @endif;
+
+@endif;

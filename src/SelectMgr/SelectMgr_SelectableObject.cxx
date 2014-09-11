@@ -218,7 +218,7 @@ void SelectMgr_SelectableObject::UpdateTransformation()
 //function : UpdateTransformation
 //purpose  : 
 //=======================================================================
-void SelectMgr_SelectableObject::UpdateTransformation(const Handle(SelectMgr_Selection)& Sel)
+void SelectMgr_SelectableObject::UpdateTransformations(const Handle(SelectMgr_Selection)& Sel)
 {
   TopLoc_Location aSelfLocation (Transformation());
   Handle(Select3D_SensitiveEntity) SE;

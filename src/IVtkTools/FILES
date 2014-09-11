@@ -1,0 +1,13 @@
+EXTERNLIB
+IVtkTools.hxx
+IVtkTools.cxx
+IVtkTools_DisplayModeFilter.hxx
+IVtkTools_DisplayModeFilter.cxx
+IVtkTools_ShapeDataSource.hxx
+IVtkTools_ShapeDataSource.cxx
+IVtkTools_ShapeObject.hxx
+IVtkTools_ShapeObject.cxx
+IVtkTools_ShapePicker.hxx
+IVtkTools_ShapePicker.cxx
+IVtkTools_SubPolyDataFilter.hxx
+IVtkTools_SubPolyDataFilter.cxx

@@ -138,8 +138,8 @@ is
     UpdateTransformation(me:mutable) is redefined virtual;
         ---Purpose: Recomputes the location of the selection aSelection.
 
-    UpdateTransformation(me:mutable;aSelection: Selection from SelectMgr) is virtual protected;
-    ---Level: Internal
+    UpdateTransformations(me:mutable;aSelection: Selection from SelectMgr) is virtual;
+    ---Level: Public
     ---Purpose: Updates locations in all sensitive entities from <aSelection> 
     --          and in corresponding entity owners.
         
@@ -197,9 +197,6 @@ fields
 
     mySelectionPrs      : Presentation from Prs3d;
     myHilightPrs        : Presentation from Prs3d;
-    
-friends
-    class SelectionManager from SelectMgr
 
 end SelectableObject;
 

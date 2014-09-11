@@ -1,0 +1,5 @@
+EXTERNLIB
+IVtkVTK_ShapeData.hxx
+IVtkVTK_ShapeData.cxx
+IVtkVTK_View.hxx
+IVtkVTK_View.cxx

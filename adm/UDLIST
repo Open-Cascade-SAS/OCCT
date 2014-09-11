@@ -475,3 +475,8 @@ p Font
 p BOPAlgo
 p BOPDS
 p BOPCol
+p IVtk
+p IVtkOCC
+p IVtkVTK
+p IVtkTools
+t TKIVtk

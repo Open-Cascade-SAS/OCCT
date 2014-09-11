@@ -15,13 +15,18 @@
 ;# Liste des toolkits WOK sous forme de full path
 ;# 
 proc Visualization:toolkits { } {
-    return [list TKService \
-		 TKV3d \
-		 TKOpenGl \
-                 TKMeshVS \
-                 TKNIS \
-                 TKVoxel \
-	    ]
+    set aResult [list TKService \
+                     TKV3d \
+                     TKOpenGl \
+                     TKMeshVS \
+                     TKNIS \
+                     TKVoxel]
+
+    if { "$::env(HAVE_VTK)" == "true" } {
+      lappend aResult "TKIVtk"
+    }
+
+    return $aResult
 }
 ;#
 ;# Autres UDs a prendre.
@@ -46,7 +51,7 @@ proc Visualization:depends { } {
 }
 
 proc Visualization:acdepends { } {
-    return [list X11 GL FREETYPE]
+    return [list X11 GL FREETYPE VTK]
 }
 
 ;#

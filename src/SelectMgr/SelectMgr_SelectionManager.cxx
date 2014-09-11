@@ -264,7 +264,7 @@ Activate(const Handle(SelectMgr_SelectableObject)& anObject,
       case SelectMgr_TOU_Partial:
         {
           if(anObject->HasTransformation())
-            anObject->UpdateTransformation(Sel);
+            anObject->UpdateTransformations(Sel);
           Sel->UpdateStatus(SelectMgr_TOU_None);
           break;
         }
@@ -303,7 +303,7 @@ Activate(const Handle(SelectMgr_SelectableObject)& anObject,
   case SelectMgr_TOU_Partial:
     {
       if(anObject->HasTransformation())
-        anObject->UpdateTransformation(Sel);
+        anObject->UpdateTransformations(Sel);
       break;
     }
   default:
@@ -628,7 +628,7 @@ RecomputeSelection (const Handle(SelectMgr_SelectableObject)& anObject,
     case SelectMgr_TOU_Full:
       anObject->UpdateSelection(curmode); // no break on purpose...
     case SelectMgr_TOU_Partial:
-      anObject->UpdateTransformation(Sel);
+      anObject->UpdateTransformations(Sel);
       break;
     default:
       break;
@@ -674,7 +674,7 @@ void SelectMgr_SelectionManager::Update(const Handle(SelectMgr_SelectableObject)
       case SelectMgr_TOU_Full:
         anObject->UpdateSelection(Sel->Mode()); // no break on purpose...
       case SelectMgr_TOU_Partial:
-        anObject->UpdateTransformation(Sel);
+        anObject->UpdateTransformations(Sel);
         wasrecomputed = Standard_True;
         break;
       default:
@@ -694,7 +694,7 @@ void SelectMgr_SelectionManager::Update(const Handle(SelectMgr_SelectableObject)
   case SelectMgr_TOU_Full:
     anObject->UpdateSelection(Sel->Mode()); // no break on purpose...
   case SelectMgr_TOU_Partial:
-    anObject->UpdateTransformation(Sel);
+    anObject->UpdateTransformations(Sel);
     wasrecomputed = Standard_True;
     break;
   default:
@@ -736,7 +736,7 @@ Update(const Handle(SelectMgr_SelectableObject)& anObject,
       case SelectMgr_TOU_Full:
         anObject->UpdateSelection(Sel->Mode()); //  no break on purpose...
       case SelectMgr_TOU_Partial:
-        anObject->UpdateTransformation(Sel);
+        anObject->UpdateTransformations(Sel);
         wasrecomputed = Standard_True;
         break;
       default:
@@ -751,7 +751,7 @@ Update(const Handle(SelectMgr_SelectableObject)& anObject,
         anObject->UpdateSelection(Sel->Mode());
       case SelectMgr_TOU_Partial:
         if(anObject->HasTransformation())
-          anObject->UpdateTransformation(Sel);
+          anObject->UpdateTransformations(Sel);
         wasrecomputed = Standard_True;
         break;
       default:
