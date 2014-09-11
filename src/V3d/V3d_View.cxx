@@ -159,7 +159,6 @@ To solve the problem (for lack of a better solution) I make 2 passes.
 //purpose  :
 //=============================================================================
 V3d_View::V3d_View(const Handle(V3d_Viewer)& VM, const V3d_TypeOfView Type ) :
-  MyProjModel(V3d_TPM_SCREEN),
   MyViewer(VM.operator->()),
   MyActiveLights(),
   MyViewContext (),
@@ -264,7 +263,6 @@ V3d_View::V3d_View(const Handle(V3d_Viewer)& VM, const V3d_TypeOfView Type ) :
 //purpose  :
 //=============================================================================
 V3d_View::V3d_View(const Handle(V3d_Viewer)& theVM,const Handle(V3d_View)& theView) :
-  MyProjModel(V3d_TPM_SCREEN),
   MyViewer(theVM.operator->()),
   MyActiveLights(),
   MyViewContext (),
@@ -1129,10 +1127,7 @@ void V3d_View::SetProj( const Standard_Real Vx,const Standard_Real Vy, const Sta
 
   myCamera->SetDirection (gp_Dir (Vx, Vy, Vz).Reversed());
 
-  if (MyProjModel == V3d_TPM_SCREEN)
-  {
-    SetTwist(aTwistBefore);
-  }
+  SetTwist(aTwistBefore);
 
   View()->AutoZFit();
 

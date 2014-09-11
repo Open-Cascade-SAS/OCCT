@@ -146,10 +146,6 @@ is
             NOTHINGCAMERA
         end TypeOfPickCamera;
 
-    enumeration TypeOfProjectionModel is
-        TPM_SCREEN,TPM_WALKTHROUGH
-    end TypeOfProjectionModel;
-
         enumeration TypeOfBackfacingModel is
             TOBM_AUTOMATIC, TOBM_ALWAYS_DISPLAYED, TOBM_NEVER_DISPLAYED
         end TypeOfBackfacingModel;

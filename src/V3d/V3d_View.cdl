@@ -96,7 +96,6 @@ uses
         TextureEnv                        from Graphic3d,
         TypeOfVisualization               from V3d,
         TypeOfZclipping                   from V3d,
-        TypeOfProjectionModel             from V3d,
         TypeOfBackfacingModel             from V3d,
         StereoDumpOptions                 from V3d,
         Viewer                            from V3d,
@@ -1453,18 +1452,6 @@ is
         --           <theStereoOptions> flags are to be used for dumping then left or
         --           right eye projections.
 
-    SetProjModel( me : mutable;
-        amOdel: TypeOfProjectionModel from V3d = V3d_TPM_SCREEN )
-        is static;
-         ---Level   : Advanced
-         ---Purpose : Manages projection model
-
-    ProjModel( me )
-        returns TypeOfProjectionModel from V3d
-        is static;
-         ---Level   : Advanced
-         ---Purpose : Returns the current projection model
-
         SetBackFacingModel ( me     : mutable;
             aModel : TypeOfBackfacingModel from V3d = V3d_TOBM_AUTOMATIC)
             is static;
@@ -1645,8 +1632,6 @@ fields
         --MyColorScale            :       ColorScale from V3d;
         MyLayerMgr              :       LayerMgr from V3d;
 
-        MyProjModel         :   TypeOfProjectionModel from V3d is protected;
-            
         -- the transformation between XoY and the grid plane
         MyTrsf                  :       Array2OfReal from TColStd;
 
