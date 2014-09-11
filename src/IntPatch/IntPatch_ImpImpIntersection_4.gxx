@@ -1834,14 +1834,19 @@ Standard_Boolean IntCyCyTrim( const IntSurf_Quadric& theQuad1,
           isFirst = Standard_False;
         }
 
-        if(((aUSurf2f-aU21) <= theTol2D) && ((aU21-aUSurf2l) <= theTol2D) && (aVSurf1f <= aV11) && (aV11 <= aVSurf1l) && (aVSurf2f <= aV21) && (aV21 <= aVSurf2l))
+        if( ((aUSurf2f-aU21) <= theTol2D) && 
+            ((aU21-aUSurf2l) <= theTol2D) &&
+            ((aVSurf1f - aV11) <= theTol2D) && 
+            ((aV11 - aVSurf1l) <= theTol2D) &&
+            ((aVSurf2f - aV21) <= theTol2D) && ((aV21 - aVSurf2l) <= theTol2D))
         {
           if(!aWL1FindStatus)
           {
             Standard_Boolean isFound1 = Standard_False, isFound2 = Standard_False;
 
             AddBoundaryPoint(theQuad1, theQuad2, aWLine1, anEquationCoeffs, theUVSurf1, theUVSurf2,
-                        theTol2D, aPeriod, aNulValue, anU1, aU21, aV11, aV11Prev, aV21, aV21Prev, isTheReverse, 1.0, isFound1, isFound2);
+                        theTol2D, aPeriod, aNulValue, anU1, aU21, 
+                        aV11, aV11Prev, aV21, aV21Prev, isTheReverse, 1.0, isFound1, isFound2);
               
             if(isFound1 || isFound2)
             {
@@ -1851,7 +1856,8 @@ Standard_Boolean IntCyCyTrim( const IntSurf_Quadric& theQuad1,
 
           if((aWL1FindStatus != 2) || (aWLine1->NbPnts() >= 1))
           {
-            if(AddPointIntoWL(theQuad1, theQuad2, isTheReverse, gp_Pnt2d(anU1, aV11), gp_Pnt2d(aU21, aV21), aUSurf1f, aUSurf1l, aPeriod, aWLine1->Curve(), theTol2D))
+            if(AddPointIntoWL(theQuad1, theQuad2, isTheReverse, gp_Pnt2d(anU1, aV11), 
+                    gp_Pnt2d(aU21, aV21), aUSurf1f, aUSurf1l, aPeriod, aWLine1->Curve(), theTol2D))
             {
               if(!aWL1FindStatus)
               {
@@ -1874,14 +1880,20 @@ Standard_Boolean IntCyCyTrim( const IntSurf_Quadric& theQuad1,
           }
         }
       
-        if(((aUSurf2f-aU22) <= theTol2D) && ((aU22-aUSurf2l) <= theTol2D) && (aVSurf1f <= aV12) && (aV12 <= aVSurf1l)&& (aVSurf2f <= aV22) && (aV22 <= aVSurf2l))
+        if( ((aUSurf2f-aU22) <= theTol2D) &&
+            ((aU22-aUSurf2l) <= theTol2D) && 
+            ((aVSurf1f - aV12) <= theTol2D) &&
+            ((aV12 - aVSurf1l) <= theTol2D) &&
+            ((aVSurf2f - aV22) <= theTol2D) &&
+            ((aV22 - aVSurf2l) <= theTol2D))
         {
           if(!aWL2FindStatus)
           {
             Standard_Boolean isFound1 = Standard_False, isFound2 = Standard_False;
 
             AddBoundaryPoint(theQuad1, theQuad2, aWLine2, anEquationCoeffs, theUVSurf1, theUVSurf2,
-                        theTol2D, aPeriod, aNulValue, anU1, aU22, aV12, aV12Prev, aV22, aV22Prev, isTheReverse, -1.0, isFound1, isFound2);
+                        theTol2D, aPeriod, aNulValue, anU1, aU22,
+                        aV12, aV12Prev, aV22, aV22Prev, isTheReverse, -1.0, isFound1, isFound2);
               
             if(isFound1 || isFound2)
             {
@@ -1891,7 +1903,8 @@ Standard_Boolean IntCyCyTrim( const IntSurf_Quadric& theQuad1,
 
           if((aWL2FindStatus != 2) || (aWLine2->NbPnts() >= 1))
           {
-            if(AddPointIntoWL(theQuad1, theQuad2, isTheReverse, gp_Pnt2d(anU1, aV12), gp_Pnt2d(aU22, aV22), aUSurf1f, aUSurf1l, aPeriod, aWLine2->Curve(), theTol2D))
+            if(AddPointIntoWL(theQuad1, theQuad2, isTheReverse, gp_Pnt2d(anU1, aV12),
+                  gp_Pnt2d(aU22, aV22), aUSurf1f, aUSurf1l, aPeriod, aWLine2->Curve(), theTol2D))
             {
               if(!aWL2FindStatus)
               {
@@ -1907,7 +1920,8 @@ Standard_Boolean IntCyCyTrim( const IntSurf_Quadric& theQuad1,
             Standard_Boolean isFound1 = Standard_False, isFound2 = Standard_False;
 
             AddBoundaryPoint(theQuad1, theQuad2, aWLine2, anEquationCoeffs, theUVSurf1, theUVSurf2,
-                        theTol2D, aPeriod, aNulValue, anU1, aU22, aV12, aV12Prev, aV22, aV22Prev, isTheReverse, -1.0, isFound1, isFound2);
+                        theTol2D, aPeriod, aNulValue, anU1, aU22, 
+                        aV12, aV12Prev, aV22, aV22Prev, isTheReverse, -1.0, isFound1, isFound2);
 
             if(isFound1 || isFound2)
               aWL2FindStatus = 2; //start a new line

@@ -1,0 +1,51 @@
+puts "================"
+puts "OCC25224"
+puts "================"
+puts ""
+#######################################################################
+# The section curve between two cylindrical faces is incomplete
+#######################################################################
+
+restore [locate_data_file bug25224_Input_5.brep]  b1
+restore [locate_data_file bug25224_Input_21.brep] b2
+
+# 1. bopcurves
+explode b1 f
+explode b2 f
+
+set log [bopcurves b1_1 b2_1]
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Toler NbCurv
+set MaxTol 1.e-7
+if {${Toler} > ${MaxTol}} {
+  puts "Error: Tolerance is too big!"
+}
+
+regexp {The length c_1 is ([-0-9.+eE]+)} [length c_1] full Curve_Length
+
+set expected_length 0.52377379499528021
+set tol_abs_length 1.e-7
+set tol_rel_length 0.01
+checkreal "Curve length" ${Curve_Length} ${expected_length} ${tol_abs_length} ${tol_rel_length}
+
+# 2. BOP
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+bfillds
+bbuild result
+
+set square 21.4983
+
+set nb_v_good 10
+set nb_e_good 19
+set nb_w_good 13
+set nb_f_good 13
+set nb_sh_good 3
+set nb_sol_good 3
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 62
+
+set 3dviewer 1
