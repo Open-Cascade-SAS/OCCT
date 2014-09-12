@@ -1,5 +1,3 @@
-puts "TODO ?OCC24130 Windows: TKOpenGl | Type\: Error | ID\: 0 | Severity\: High | Message\:"
-
 # test for creation of bottle as in tutorial (script is in samples)
 source $env(CASROOT)/samples/tcl/bottle.tcl
 

@@ -1,0 +1,7 @@
+# test for creation of drill shape
+source $env(CASROOT)/samples/tcl/drill.tcl
+
+# make a snapshot
+vdump $imagedir/${test_image}.png
+
+puts "TEST COMPLETED"

@@ -1,0 +1,7 @@
+# test for visual properties of materials in 3d viewer
+source $env(CASROOT)/samples/tcl/materials.tcl
+
+# make a snapshot
+vdump $imagedir/${test_image}.png
+
+puts "TEST COMPLETED"

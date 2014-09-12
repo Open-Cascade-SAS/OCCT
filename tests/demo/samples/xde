@@ -1,0 +1,7 @@
+# test for XDE sample
+source $env(CASROOT)/samples/tcl/xde.tcl
+
+# make a snapshot
+vdump $imagedir/${test_image}.png
+
+puts "TEST COMPLETED"

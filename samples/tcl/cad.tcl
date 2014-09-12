@@ -54,8 +54,9 @@ bcommon res b9 c2
 
 # show result
 donly res
+trotate res 0 0 0 0 0 1 90
 vinit
 vdisplay res
 vsetdispmode 1
+vshowfaceboundary res 1 255 255 255
 vfit
-

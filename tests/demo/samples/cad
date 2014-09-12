@@ -1,0 +1,8 @@
+# test for generating funny shape 
+source $env(CASROOT)/samples/tcl/cad.tcl
+
+# check shape validity and make a snapshot
+checkshape res
+vdump $imagedir/${test_image}.png
+
+puts "TEST COMPLETED"

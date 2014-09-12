@@ -512,11 +512,14 @@ Type pload ALL
   * DataExchangeDemo.tcl: demonstrates sample sequence of operations with writing and reading IGES file
   * ModelingDemo.tcl: demonstrates creation of simple shape and displaying it in HLR mode
   * VisualizationDemo.tcl: demonstrates use of 3d viewer
-  * challenge.tcl: creates solid shape looking like abbreviation "CAD"
+  * cad.tcl: creates solid shape looking like abbreviation "CAD"
   * bottle.tcl: creates bottle as in OCCT Tutorial
   * drill.tcl: creates twist drill bit shape
-  * mill.tcl: creates milling cutter shape
+  * cutter.tcl: creates milling cutter shape
+  * xde.tcl: demonstrates creation of simple assembly in XDE
+  * materials.tcl: demonstrates visual properties of materials supported by 3d viewer
   * raytrace.tcl: demonstrates use of ray tracing display in 3d viewer
+  * dimensions.tcl: demonstrates use of dimensions, clipping, and capping in 3d viewer
 
 **Getting Help**
 

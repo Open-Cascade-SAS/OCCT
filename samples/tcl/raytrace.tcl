@@ -1,4 +1,4 @@
-# Script reproducing creation of bottle model as described in OCCT Tutorial
+# Script demonstrating ray tracing in 3d view
 
 # make bottle by calling another script
 source [file join [file dirname [info script]] bottle.tcl]
@@ -12,6 +12,7 @@ bcut glass glass_out glass_in
 ttranslate glass -30 -30 0
 
 # show table and glass
+vinit w=1024 h=1024
 vsetmaterial bottle aluminium
 vdisplay table
 vsetmaterial table bronze
