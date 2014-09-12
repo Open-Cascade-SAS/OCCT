@@ -17,7 +17,7 @@
 proc Draw:toolkits { } {
     set aResult [list TKDraw TKTopTest TKViewerTest TKXSDRAW TKDCAF TKXDEDRAW TKTObjDRAW TKQADraw]
 
-    if { $::env(HAVE_VTK) == "true" } {
+    if { [info exists ::env(HAVE_VTK)] && $::env(HAVE_VTK) == "true" } {
       lappend aResult "TKIVtkDraw"
     }
 

@@ -22,7 +22,7 @@ proc Visualization:toolkits { } {
                      TKNIS \
                      TKVoxel]
 
-    if { "$::env(HAVE_VTK)" == "true" } {
+    if { [info exists ::env(HAVE_VTK)] && "$::env(HAVE_VTK)" == "true" } {
       lappend aResult "TKIVtk"
     }
 
@@ -53,7 +53,7 @@ proc Visualization:depends { } {
 proc Visualization:acdepends { } {
     set aList [list X11 GL FREETYPE]
 
-    if { "$::env(HAVE_VTK)" == "true" } {
+    if { [info exists ::env(HAVE_VTK)] && "$::env(HAVE_VTK)" == "true" } {
       lappend aList "VTK"
     }
 
