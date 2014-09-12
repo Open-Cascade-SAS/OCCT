@@ -28,7 +28,7 @@ vmoveto 100 329
 vmoveto 0 0
 vmoveto 200 245
 vmoveto 0 0
-vmoveto 300 349
+vmoveto 300 345
 vmoveto 0 0
 vselect 100 329 1
 vmoveto 0 0
@@ -36,7 +36,7 @@ vmoveto 100 329
 vmoveto 0 0
 vmoveto 200 245
 vmoveto 0 0
-vmoveto 300 349
+vmoveto 300 345
 vmoveto 0 0
 vviewparams -scale 6.063093 -proj 0.524772 0.731256 0.434393 -up 0.716008 -0.104342 -0.691426 -at 21.6212460112894 0.5192504580656 16.591446657356
 vfit

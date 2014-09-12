@@ -57,6 +57,11 @@
 #include <Image_AlienPixMap.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 #include <Prs3d_IsoAspect.hxx>
+#include <Select3D_SensitiveWire.hxx>
+#include <SelectMgr_EntityOwner.hxx>
+#include <StdSelect_BRepOwner.hxx>
+#include <StdSelect_ViewerSelector3d.hxx>
+#include <Select3D_Projector.hxx>
 #include <TopTools_MapOfShape.hxx>
 #include <ViewerTest_AutoUpdater.hxx>
 
@@ -3459,7 +3464,6 @@ static void localCtxInfo (Draw_Interpretor& theDI)
 //==============================================================================
 //function : VState
 //purpose  :
-//Draw arg : vstate [nameA] ... [nameN]
 //==============================================================================
 static Standard_Integer VState (Draw_Interpretor& theDI,
                                 Standard_Integer  theArgNb,
@@ -3470,6 +3474,55 @@ static Standard_Integer VState (Draw_Interpretor& theDI,
   {
     std::cerr << "Error: No opened viewer!\n";
     return 1;
+  }
+
+  TCollection_AsciiString anOption (theArgNb >= 2 ? theArgVec[1] : "");
+  anOption.LowerCase();
+  if (anOption == "-detectedEntities"
+   || anOption == "-entities")
+  {
+    theDI << "Detected entities:\n";
+    Handle(StdSelect_ViewerSelector3d) aSelector = aCtx->HasOpenedContext() ? aCtx->LocalSelector() : aCtx->MainSelector();
+    for (aSelector->Init(); aSelector->More(); aSelector->Next())
+    {
+      Handle(SelectBasics_SensitiveEntity) anEntity = aSelector->Primitive (0);
+      Standard_Real aMatchDMin  = 0.0;
+      Standard_Real aMatchDepth = Precision::Infinite();
+      anEntity->Matches (aSelector->LastPickingArguments(), aMatchDMin, aMatchDepth);
+
+      Handle(SelectMgr_EntityOwner) anOwner    = Handle(SelectMgr_EntityOwner)::DownCast (anEntity->OwnerId());
+      Handle(AIS_InteractiveObject) anObj      = Handle(AIS_InteractiveObject)::DownCast (anOwner->Selectable());
+
+      const gp_Lin aLine = aSelector->LastPickingArguments().PickLine();
+      const gp_Pnt aPnt  = aLine.Location().Translated (gp_Vec (aLine.Direction()) * aMatchDepth);
+
+      TCollection_AsciiString aName = GetMapOfAIS().Find1 (anObj);
+      aName.LeftJustify (20, ' ');
+      char anInfoStr[512];
+      Sprintf (anInfoStr, " Depth: %+.3f Distance: %+.3f Point: %+.3f %+.3f %+.3f", aMatchDepth, aMatchDMin, aPnt.X(), aPnt.Y(), aPnt.Z());
+      theDI << "  " << aName
+            << anInfoStr
+            << " (" << anEntity->DynamicType()->Name() << ")"
+            << "\n";
+
+      Handle(StdSelect_BRepOwner) aBRepOwner = Handle(StdSelect_BRepOwner)::DownCast (anOwner);
+      if (!aBRepOwner.IsNull())
+      {
+        theDI << "                       Detected Shape: "
+              << aBRepOwner->Shape().TShape()->DynamicType()->Name()
+              << "\n";
+      }
+
+      Handle(Select3D_SensitiveWire) aWire = Handle(Select3D_SensitiveWire)::DownCast (anEntity);
+      if (!aWire.IsNull())
+      {
+        Handle(Select3D_SensitiveEntity) aSen = aWire->GetLastDetected();
+        theDI << "                       Detected Child: "
+              << aSen->DynamicType()->Name()
+              << "\n";
+      }
+    }
+    return 0;
   }
 
   NCollection_Map<Handle(AIS_InteractiveObject)> aDetected;
@@ -4382,8 +4435,9 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
 		  __FILE__,VActivatedMode,group);
 
   theCommands.Add("vstate",
-      "vstate [name1] ... [nameN]"
-      "\n\t\t: Reports show/hidden state for selected or named objects",
+      "vstate [-entities] [name1] ... [nameN]"
+      "\n\t\t: Reports show/hidden state for selected or named objects"
+      "\n\t\t:   -entities - print low-level information about detected entities",
 		  __FILE__,VState,group);
 
   theCommands.Add("vpickshapes",

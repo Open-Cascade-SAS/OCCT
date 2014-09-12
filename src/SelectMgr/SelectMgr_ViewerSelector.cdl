@@ -71,6 +71,7 @@ uses
     IndexedDataMapOfOwnerCriterion   from SelectMgr,
     SensitiveEntity              from SelectBasics,
     SortAlgo                     from SelectBasics,
+    PickArgs                     from SelectBasics,
     EntityOwner                  from SelectMgr,
     StateOfSelection             from SelectMgr,
     Array1OfPnt2d                from TColgp,
@@ -396,6 +397,11 @@ is
     -- @param theOwner [in] the onwer to check.
     -- @return True if owner provides depth limits for sensitive clipping.
 
+    LastPickingArguments(me) returns PickArgs from SelectBasics;
+    ---C++: inline
+    ---C++: return const&
+    -- Return last picking arguments.
+
 fields
 
 --before selection
@@ -415,6 +421,7 @@ fields
     myprim       : SequenceOfInteger from TColStd; -- for debug only
     myCurRank    : Integer from Standard;
 
+    myLastPickArgs : PickArgs from SelectBasics;
     lastx        : Real;
     lasty        : Real;
 

@@ -35,6 +35,11 @@ inline void SelectMgr_ViewerSelector::SetPickClosest (const Standard_Boolean pre
   preferclosest = preferClosest;
 }
 
+inline const SelectBasics_PickArgs& SelectMgr_ViewerSelector::LastPickingArguments() const
+{
+  return myLastPickArgs;
+}
+
 #ifdef OCC9026
 inline const SelectMgr_DataMapOfIntegerSensitive& SelectMgr_ViewerSelector::Primitives() const
 {

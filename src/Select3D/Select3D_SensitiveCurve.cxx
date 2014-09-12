@@ -20,7 +20,7 @@
 #include <Precision.hxx>
 #include <ElCLib.hxx>
 #include <CSLib_Class2d.hxx>
-
+#include <Extrema_ExtElC.hxx>
 
 //==================================================
 // Function: Creation
@@ -187,20 +187,43 @@ void Select3D_SensitiveCurve::Dump(Standard_OStream& S,const Standard_Boolean Fu
 Standard_Real Select3D_SensitiveCurve::ComputeDepth (const gp_Lin& thePickLine,
                                                      const Standard_Integer theSegment) const
 {
+  Standard_Real aDepth = Precision::Infinite();
   if (theSegment == 0)
   {
-    return Precision::Infinite();
+    return aDepth;
   }
 
   // In case if theSegment and theSegment + 1 are not valid
   // the depth will be infinite
   if (theSegment >= mypolyg.Size())
   {
-    return Precision::Infinite();
+    return aDepth;
   }
 
   gp_XYZ aCDG = mypolyg.Pnt (theSegment);
 
+  // Check depth of a line forward within the curve.
+  if (theSegment + 1 < mypolyg.Size())
+  {
+    gp_XYZ aCDG1 = mypolyg.Pnt (theSegment + 1);
+    if (ComputeDepth(thePickLine, aCDG, aCDG1, aDepth))
+    {
+      return aDepth;
+    }
+  }
+
+  // Check depth of a line backward within the curve.
+  if (theSegment - 1 >= 0)
+  {
+    gp_XYZ aCDG1 = mypolyg.Pnt (theSegment - 1);
+    if (ComputeDepth(thePickLine, aCDG, aCDG1, aDepth))
+    {
+      return aDepth;
+    }
+  }
+
+  // Calculate the depth in the middle point of
+  // a next (forward) segment of the curve.
   if (theSegment + 1 < mypolyg.Size())
   {
     aCDG += mypolyg.Pnt(theSegment + 1);
@@ -243,4 +266,49 @@ Handle(Select3D_SensitiveEntity) Select3D_SensitiveCurve::GetConnected(const Top
   aNewEntity->UpdateLocation(theLocation);
 
   return aNewEntity;
+}
+
+//=======================================================================
+//function : ComputeDepth()
+//purpose  : Computes the depth by means of intersection of
+//           a segment of the curve defined by <theP1, theP2> and
+//           the eye-line <thePickLine>.
+//=======================================================================
+
+Standard_Boolean Select3D_SensitiveCurve::ComputeDepth(const gp_Lin& thePickLine,
+                                                       const gp_XYZ& theP1,
+                                                       const gp_XYZ& theP2,
+                                                       Standard_Real& theDepth) const
+{
+  // The segment may have null length.
+  gp_XYZ aVec = theP2 - theP1;
+  Standard_Real aLength = aVec.Modulus();
+  if (aLength <= gp::Resolution())
+  {
+    theDepth = ElCLib::Parameter(thePickLine, theP1);
+    return Standard_True;
+  }
+
+  // Compute an intersection point of the segment-line and the eye-line.
+  gp_Lin aLine (theP1, aVec);
+  Extrema_ExtElC anExtrema(aLine, thePickLine, Precision::Angular());
+  if (anExtrema.IsDone() && !anExtrema.IsParallel() )
+  {
+    // Iterator on solutions (intersection points).
+    for (Standard_Integer i = 1; i <= anExtrema.NbExt(); i++)
+    {
+      // Get the intersection point.
+      Extrema_POnCurv aPointOnLine1, aPointOnLine2;
+      anExtrema.Points(i, aPointOnLine1, aPointOnLine2);
+
+      // Check bounds: the point of intersection should lie within the segment.
+      if (aPointOnLine1.Parameter() > 0.0 && aPointOnLine1.Parameter() < aLength)
+      {
+        theDepth = ElCLib::Parameter(thePickLine, aPointOnLine1.Value());
+        return Standard_True;
+      }
+    }
+  }
+
+  return Standard_False;
 }

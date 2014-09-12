@@ -86,6 +86,7 @@ tosort(Standard_True),
 preferclosest(Standard_True),
 mytolerance(0.),
 myCurRank(0),
+myLastPickArgs (0.0, 0.0, 0.0, RealFirst(), RealLast(), gp_Lin()),
 lastx (Precision::Infinite()),
 lasty (Precision::Infinite()),
 myUpdateSortPossible( Standard_True )
@@ -479,12 +480,12 @@ void SelectMgr_ViewerSelector::LoadResult()
           continue;
         }
 
-        SelectBasics_PickArgs aPickArgs (lastx, lasty, mytolerance,
-                                         anEntityDRange.DepthMin,
-                                         anEntityDRange.DepthMax,
-                                         aPickLine);
+        myLastPickArgs = SelectBasics_PickArgs (lastx, lasty, mytolerance,
+                                                anEntityDRange.DepthMin,
+                                                anEntityDRange.DepthMax,
+                                                aPickLine);
 
-        if (SE->Matches (aPickArgs, aDMin, aDepthMin))
+        if (SE->Matches (myLastPickArgs, aDMin, aDepthMin))
         {
           if (!anOwner.IsNull())
           {
