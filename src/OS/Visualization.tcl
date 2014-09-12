@@ -51,7 +51,13 @@ proc Visualization:depends { } {
 }
 
 proc Visualization:acdepends { } {
-    return [list X11 GL FREETYPE VTK]
+    set aList [list X11 GL FREETYPE]
+
+    if { "$::env(HAVE_VTK)" == "true" } {
+      lappend aList "VTK"
+    }
+
+    return $aList
 }
 
 ;#
