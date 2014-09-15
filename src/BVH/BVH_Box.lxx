@@ -199,7 +199,8 @@ namespace BVHTools
 template<class T, int N>
 T BVH_Box<T, N>::Area() const
 {
-  return BVHTools::SurfaceCalculator<T, N>::Area (myMaxPoint - myMinPoint);
+  return !myInitialized ? static_cast<T> (0.0) :
+    BVHTools::SurfaceCalculator<T, N>::Area (myMaxPoint - myMinPoint);
 }
 
 // =======================================================================
