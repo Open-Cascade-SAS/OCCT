@@ -1,0 +1,26 @@
+puts "=========="
+puts "OCC24504"
+puts "=========="
+puts ""
+################################################
+# Wrong result obtained by Extrema Curve/Curve
+################################################
+
+restore [locate_data_file bug24504_c1] c1
+restore [locate_data_file bug24504_c2] c2
+
+trim c1t c1 1435.4903148955743 1484.9899809123547
+trim c2t c2 2590.8671336821694 4503.5062290971819
+
+if { [llength [extrema c1t c2t]] != 1 } {
+  puts "Error: expected only one line as result of extrema!"
+}
+
+# Distance check
+set info [dump ext_1]
+regexp "Parameters : 0 +(\[-0-9*\.+eE\]+)" $info full extLength
+if {$extLength > 1e-12 } {
+  puts "Error: bad distance points obtained"
+} else {
+  puts "OK: good distance between obtained points "
+}
