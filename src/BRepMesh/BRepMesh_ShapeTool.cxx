@@ -135,23 +135,23 @@ gp_XY BRepMesh_ShapeTool::FindUV(
   const Handle(BRepMesh_FaceAttribute)& theFaceAttribute)
 {
   const gp_XY& aPnt2d = thePnt2d.Coord();
-  BRepMeshCol::DMapOfIntegerListOfXY& aLocation2D =
+  BRepMesh::DMapOfIntegerListOfXY& aLocation2D =
     theFaceAttribute->ChangeLocation2D();
 
   if (!aLocation2D.IsBound(theIndexOfPnt3d))
   {
-    BRepMeshCol::ListOfXY aPoints2d;
+    BRepMesh::ListOfXY aPoints2d;
     aPoints2d.Append(aPnt2d);
     aLocation2D.Bind(theIndexOfPnt3d, aPoints2d);
     return aPnt2d;
   }
 
-  BRepMeshCol::ListOfXY& aPoints2d = aLocation2D.ChangeFind(theIndexOfPnt3d);
+  BRepMesh::ListOfXY& aPoints2d = aLocation2D.ChangeFind(theIndexOfPnt3d);
 
   // Find the most closest 2d point to the given one.
   gp_XY aUV;
   Standard_Real aMinDist = RealLast();
-  BRepMeshCol::ListOfXY::Iterator aPoint2dIt(aPoints2d);
+  BRepMesh::ListOfXY::Iterator aPoint2dIt(aPoints2d);
   for (; aPoint2dIt.More(); aPoint2dIt.Next())
   {
     const gp_XY& aCurPnt2d = aPoint2dIt.Value();

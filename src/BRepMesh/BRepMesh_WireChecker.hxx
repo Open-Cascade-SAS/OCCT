@@ -21,7 +21,7 @@
 #include <TopoDS_Face.hxx>
 #include <BRepMesh_Status.hxx>
 #include <BRepMesh_DataStructureOfDelaun.hxx>
-#include <BRepMesh_Collections.hxx>
+#include <BRepMesh.hxx>
 #include <TopoDS_Edge.hxx>
 #include <Bnd_Box2d.hxx>
 #include <gp_Pnt2d.hxx>
@@ -43,7 +43,7 @@ public:
   //! Used to identify segments with overlapped bounding boxes.
   //! Note that instance of selector can be used only once due to
   //! unextentable array of indices.
-  class BndBox2dTreeSelector : public BRepMeshCol::BndBox2dTree::Selector
+  class BndBox2dTreeSelector : public BRepMesh::BndBox2dTree::Selector
   {
     public:
       Standard_EXPORT BndBox2dTreeSelector(const Standard_Integer theReservedSize);
@@ -53,42 +53,41 @@ public:
       Standard_EXPORT void Clear();
       Standard_EXPORT void SetBox(const Bnd_Box2d& theBox2D);
       Standard_EXPORT void SetSkippedIndex(const Standard_Integer theIndex);
-      Standard_EXPORT const BRepMeshCol::Array1OfInteger& Indices() const;
+      Standard_EXPORT const BRepMesh::Array1OfInteger& Indices() const;
       Standard_EXPORT Standard_Integer IndicesNb() const;
 
     protected:
-      Bnd_Box2d                     myBox2D;
-      Standard_Integer              mySkippedIndex;
-      BRepMeshCol::Array1OfInteger  myIndices;
-      Standard_Integer              myIndicesNb;
+      Bnd_Box2d                  myBox2D;
+      Standard_Integer           mySkippedIndex;
+      BRepMesh::Array1OfInteger  myIndices;
+      Standard_Integer           myIndicesNb;
   };
 
 private:
 
-  typedef NCollection_List<TopoDS_Edge>                           ListOfEdges;
-  typedef std::vector<ListOfEdges>                                SeqOfWireEdges;
-  typedef NCollection_Sequence<gp_Pnt2d>                          SeqOfPnt2d;
-  typedef std::vector<SeqOfPnt2d>                                 SeqOfDWires;
-  typedef NCollection_DataMap<Standard_Integer, Standard_Integer> DataMapIntInt;
-  typedef std::pair<Standard_Integer, gp_XY>                      PairIntPnt;
+  typedef NCollection_List<TopoDS_Edge>      ListOfEdges;
+  typedef NCollection_Sequence<ListOfEdges>  SeqOfWireEdges;
+
+  typedef NCollection_Sequence<gp_Pnt2d>     SeqOfPnt2d;
+  typedef NCollection_Sequence<SeqOfPnt2d>   SeqOfDWires;
 
 public:
 
   //! Constructor.
-  //! \param theFace Face to be checked.
-  //! \param theTolUV Tolerance to be used for calculations in parametric space.
-  //! \param theEdges Map of edges with associated polygon on triangulation.
-  //! \param theVertexMap Map of face vertices.
-  //! \param theStructure Discretized representation of face in parametric space.
-  //! \param theUmin Lower U boundary of the face in parametric space.
-  //! \param theUmax Upper U boundary of the face in parametric space.
-  //! \param theVmin Lower V boundary of the face in parametric space.
-  //! \param theVmax Upper V boundary of the face in parametric space.
+  //! @param theFace Face to be checked.
+  //! @param theTolUV Tolerance to be used for calculations in parametric space.
+  //! @param theEdges Map of edges with associated polygon on triangulation.
+  //! @param theVertexMap Map of face vertices.
+  //! @param theStructure Discretized representation of face in parametric space.
+  //! @param theUmin Lower U boundary of the face in parametric space.
+  //! @param theUmax Upper U boundary of the face in parametric space.
+  //! @param theVmin Lower V boundary of the face in parametric space.
+  //! @param theVmax Upper V boundary of the face in parametric space.
   Standard_EXPORT BRepMesh_WireChecker(
     const TopoDS_Face&                            theFace,
     const Standard_Real                           theTolUV,
-    const BRepMeshCol::HDMapOfShapePairOfPolygon& theEdges,
-    const BRepMeshCol::HIMapOfInteger&            theVertexMap,
+    const BRepMesh::HDMapOfShapePairOfPolygon&    theEdges,
+    const BRepMesh::HIMapOfInteger&               theVertexMap,
     const Handle(BRepMesh_DataStructureOfDelaun)& theStructure,
     const Standard_Real                           theUmin,
     const Standard_Real                           theUmax,
@@ -97,8 +96,8 @@ public:
     const Standard_Boolean                        isInParallel);
 
   //! Recompute data using parameters passed in constructor.
-  //! \param[out] theClassifier Classifier to be updated using calculated data.
-  Standard_EXPORT void ReCompute(BRepMeshCol::HClassifier& theClassifier);
+  //! @param[out] theClassifier Classifier to be updated using calculated data.
+  Standard_EXPORT void ReCompute(BRepMesh::HClassifier& theClassifier);
 
   //! Returns status of the check.
   inline BRepMesh_Status Status() const
@@ -109,17 +108,17 @@ public:
 private:
 
   //! Collects disñrete wires.
-  //! \param[out] theDWires sequence of discretized wires to be filled.
-  //! \return TRUE on success, FALSE in case of open wire.
+  //! @param[out] theDWires sequence of discretized wires to be filled.
+  //! @return TRUE on success, FALSE in case of open wire.
   Standard_Boolean collectDiscretizedWires(SeqOfDWires& theDWires);
 
   //! Fills array of BiPoints for corresponding wire.
-  //! \param theDWires Sequence of wires to be processed.
-  //! \param theWiresSegmentsTree Array of segments with corresponding 
+  //! @param theDWires Sequence of wires to be processed.
+  //! @param theWiresSegmentsTree Array of segments with corresponding 
   //! bounding boxes trees to be filled.
   void fillSegmentsTree(
-    const SeqOfDWires&                 theDWires, 
-    BRepMeshCol::Array1OfSegmentsTree& theWiresSegmentsTree);
+    const SeqOfDWires&              theDWires, 
+    BRepMesh::Array1OfSegmentsTree& theWiresSegmentsTree);
 
   //! Assignment operator.
   void operator =(BRepMesh_WireChecker& /*theOther*/)
@@ -129,8 +128,8 @@ private:
 private:
 
   const Standard_Real                           myTolUV;
-  const BRepMeshCol::HDMapOfShapePairOfPolygon& myEdges;
-  const BRepMeshCol::HIMapOfInteger&            myVertexMap;
+  const BRepMesh::HDMapOfShapePairOfPolygon&    myEdges;
+  const BRepMesh::HIMapOfInteger&               myVertexMap;
   const Handle(BRepMesh_DataStructureOfDelaun)& myStructure;
   const Standard_Real                           myUmin;
   const Standard_Real                           myUmax;

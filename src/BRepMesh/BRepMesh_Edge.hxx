@@ -18,69 +18,7 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Macro.hxx>
 #include <BRepMesh_DegreeOfFreedom.hxx>
-
-//! Light weighted structure representing simple link.
-class BRepMesh_OrientedEdge
-{
-public:
-
-  DEFINE_STANDARD_ALLOC
-
-  //! Default constructor.
-  Standard_EXPORT BRepMesh_OrientedEdge()
-    : myFirstNode(-1),
-      myLastNode(-1)
-  {
-  }
-
-  //! Constructs a link between two vertices.
-  Standard_EXPORT BRepMesh_OrientedEdge(
-    const Standard_Integer         theFirstNode,
-    const Standard_Integer         theLastNode)
-    : myFirstNode(theFirstNode),
-      myLastNode(theLastNode)
-  {
-  }
-
-  //! Returns index of first node of the Link.
-  inline Standard_Integer FirstNode() const
-  {
-    return myFirstNode;
-  }
-
-  //! Returns index of last node of the Link.
-  inline Standard_Integer LastNode() const
-  {
-    return myLastNode;
-  }
-
-  //! Returns hash code for this edge.
-  //! @param theUpper upper index in the container.
-  //! @return hash code.
-  Standard_EXPORT Standard_Integer HashCode(const Standard_Integer theUpper) const
-  {
-    return ::HashCode(myFirstNode + myLastNode, theUpper);
-  }
-
-  //! Checks this and other edge for equality.
-  //! @param theOther edge to be checked against this one.
-  //! @retrun TRUE if edges have the same orientation, FALSE if not.
-  inline Standard_Boolean IsEqual(const BRepMesh_OrientedEdge& theOther) const
-  {
-    return (myFirstNode == theOther.myFirstNode && myLastNode == theOther.myLastNode);
-  }
-
-  //! Alias for IsEqual.
-  Standard_Boolean operator ==(const BRepMesh_OrientedEdge& Other) const
-  {
-    return IsEqual(Other);
-  }
-
-private:
-
-  Standard_Integer myFirstNode;
-  Standard_Integer myLastNode;
-};
+#include <BRepMesh_OrientedEdge.hxx>
 
 //! Light weighted structure representing link of the mesh.
 class BRepMesh_Edge : public BRepMesh_OrientedEdge
@@ -111,14 +49,14 @@ public:
   }
 
   //! Sets movability flag of the Link.
-  //! \param theMovability flag to be set.
+  //! @param theMovability flag to be set.
   inline void SetMovability(const BRepMesh_DegreeOfFreedom theMovability)
   {
     myMovability = theMovability;
   }
 
   //! Checks if the given edge and this one have the same orientation.
-  //! \param theOther edge to be checked against this one.
+  //! @param theOther edge to be checked against this one.
   //! \retrun TRUE if edges have the same orientation, FALSE if not.
   inline Standard_Boolean IsSameOrientation(const BRepMesh_Edge& theOther) const
   {
@@ -126,8 +64,8 @@ public:
   }
 
   //! Checks for equality with another edge.
-  //! \param theOther edge to be checked against this one.
-  //! \return TRUE if equal, FALSE if not.
+  //! @param theOther edge to be checked against this one.
+  //! @return TRUE if equal, FALSE if not.
   inline Standard_Boolean IsEqual(const BRepMesh_Edge& theOther) const
   {
     if (myMovability == BRepMesh_Deleted || theOther.myMovability == BRepMesh_Deleted)
@@ -147,12 +85,6 @@ private:
 
   BRepMesh_DegreeOfFreedom  myMovability;
 };
-
-inline Standard_Integer HashCode(const BRepMesh_OrientedEdge&   theEdge,
-                                 const Standard_Integer         theUpper)
-{
-  return theEdge.HashCode(theUpper);
-}
 
 inline Standard_Integer HashCode(const BRepMesh_Edge&   theEdge,
                                  const Standard_Integer theUpper)

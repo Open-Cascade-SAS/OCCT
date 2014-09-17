@@ -74,7 +74,7 @@ void BRepMesh_SelectorOfDataStructureOfDelaun::NeighboursOf(
 void BRepMesh_SelectorOfDataStructureOfDelaun::NeighboursOfNode(
   const Standard_Integer theNodeIndex)
 {
-  BRepMeshCol::ListOfInteger::Iterator aLinkIt(
+  BRepMesh::ListOfInteger::Iterator aLinkIt(
     myMesh->LinksConnectedTo(theNodeIndex));
 
   for (; aLinkIt.More(); aLinkIt.Next())

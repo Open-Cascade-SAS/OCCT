@@ -33,8 +33,8 @@ public:
   }
   
   //! Constructor.
-  //! \param theLocation location of a circle.
-  //! \param theRadius radius of a circle.
+  //! @param theLocation location of a circle.
+  //! @param theRadius radius of a circle.
   Standard_EXPORT BRepMesh_Circle(const gp_XY&        theLocation,
                                   const Standard_Real theRadius)
     : myLocation(theLocation),
@@ -43,14 +43,14 @@ public:
   }
   
   //! Sets location of a circle.
-  //! \param theLocation location of a circle.
+  //! @param theLocation location of a circle.
   inline void SetLocation(const gp_XY& theLocation)
   {
     myLocation = theLocation;
   }
   
   //! Sets radius of a circle.
-  //! \param theRadius radius of a circle.
+  //! @param theRadius radius of a circle.
   inline void SetRadius(const Standard_Real theRadius)
   {
     myRadius = theRadius;

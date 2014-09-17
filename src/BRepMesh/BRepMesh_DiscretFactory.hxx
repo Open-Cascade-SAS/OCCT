@@ -89,9 +89,9 @@ public:
                                               const TCollection_AsciiString& theFuncName = "DISCRETALGO");
 
   //! Returns triangulation algorithm instance.
-  //! \param theShape shape to be meshed.
-  //! \param theLinDeflection linear deflection to be used for meshing.
-  //! \param theAngDeflection angular deflection to be used for meshing.
+  //! @param theShape shape to be meshed.
+  //! @param theLinDeflection linear deflection to be used for meshing.
+  //! @param theAngDeflection angular deflection to be used for meshing.
   Standard_EXPORT Handle(BRepMesh_DiscretRoot) Discret(const TopoDS_Shape& theShape,
                                                        const Standard_Real theLinDeflection,
                                                        const Standard_Real theAngDeflection);

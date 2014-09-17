@@ -26,10 +26,28 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_FaceAttribute, Standard_Transient)
 //function : Constructor
 //purpose  : 
 //=======================================================================
+BRepMesh_FaceAttribute::BRepMesh_FaceAttribute()
+  : myDefFace         (0.),
+    myUMin            (0.),
+    myUMax            (0.),
+    myVMin            (0.),
+    myVMax            (0.),
+    myDeltaX          (1.),
+    myDeltaY          (1.),
+    myStatus          (BRepMesh_NoError),
+    myAllocator       (new NCollection_IncAllocator(64000))
+{
+  init();
+}
+
+//=======================================================================
+//function : Constructor
+//purpose  : 
+//=======================================================================
 BRepMesh_FaceAttribute::BRepMesh_FaceAttribute(
-  const TopoDS_Face&                theFace,
-  BRepMeshCol::DMapOfVertexInteger& theBoundaryVertices,
-  BRepMeshCol::DMapOfIntegerPnt&    theBoundaryPoints)
+  const TopoDS_Face&                    theFace,
+  const BRepMesh::HDMapOfVertexInteger& theBoundaryVertices,
+  const BRepMesh::HDMapOfIntegerPnt&    theBoundaryPoints)
   : myDefFace         (0.),
     myUMin            (0.),
     myUMax            (0.),
@@ -40,21 +58,10 @@ BRepMesh_FaceAttribute::BRepMesh_FaceAttribute(
     myStatus          (BRepMesh_NoError),
     myBoundaryVertices(theBoundaryVertices),
     myBoundaryPoints  (theBoundaryPoints),
+    myFace            (theFace),
     myAllocator       (new NCollection_IncAllocator(64000))
 {
-  myVertexEdgeMap = new BRepMeshCol::IMapOfInteger;
-  myInternalEdges = new BRepMeshCol::DMapOfShapePairOfPolygon;
-  mySurfacePoints = new BRepMeshCol::DMapOfIntegerPnt;
-  myClassifier    = new BRepMesh_Classifier;
-
-  myFace = theFace;
-  BRepTools::Update(myFace);
-  myFace.Orientation(TopAbs_FORWARD);
-
-  BRepAdaptor_Surface aSurfAdaptor(myFace, Standard_False);
-  mySurface = new BRepAdaptor_HSurface(aSurfAdaptor);
-
-  ResetStructure();
+  init();
 }
 
 //=======================================================================
@@ -70,6 +77,29 @@ BRepMesh_FaceAttribute::~BRepMesh_FaceAttribute()
 
   myClassifier.Nullify();
   myAllocator.Nullify();
+}
+
+//=======================================================================
+//function : init
+//purpose  : 
+//=======================================================================
+void BRepMesh_FaceAttribute::init()
+{
+  myVertexEdgeMap = new BRepMesh::IMapOfInteger;
+  myInternalEdges = new BRepMesh::DMapOfShapePairOfPolygon;
+  mySurfacePoints = new BRepMesh::DMapOfIntegerPnt;
+  myClassifier    = new BRepMesh_Classifier;
+
+  if (!myFace.IsNull())
+  {
+    BRepTools::Update(myFace);
+    myFace.Orientation(TopAbs_FORWARD);
+
+    BRepAdaptor_Surface aSurfAdaptor(myFace, Standard_False);
+    mySurface = new BRepAdaptor_HSurface(aSurfAdaptor);
+  }
+
+  ResetStructure();
 }
 
 //=======================================================================
@@ -96,7 +126,9 @@ Handle(BRepMesh_DataStructureOfDelaun)& BRepMesh_FaceAttribute::ResetStructure()
   clearLocal();
   myStructure = new BRepMesh_DataStructureOfDelaun(myAllocator);
 
-  BRepTools::UVBounds(myFace, myUMin, myUMax, myVMin, myVMax);
+  if (!myFace.IsNull())
+    BRepTools::UVBounds(myFace, myUMin, myUMax, myVMin, myVMax);
+
   Standard_Real aTolU = ToleranceU();
   Standard_Real aTolV = ToleranceV();
 
@@ -125,8 +157,8 @@ Standard_Boolean BRepMesh_FaceAttribute::getVertexIndex(
   const TopoDS_Vertex& theVertex,
   Standard_Integer&    theVertexIndex) const
 {
-  if (myBoundaryVertices.IsBound(theVertex))
-    theVertexIndex = myBoundaryVertices.Find(theVertex);
+  if (!myBoundaryVertices.IsNull() && myBoundaryVertices->IsBound(theVertex))
+    theVertexIndex = myBoundaryVertices->Find(theVertex);
   else if (mySurfaceVertices.IsBound(theVertex))
     theVertexIndex = mySurfaceVertices.Find(theVertex);
   else
@@ -163,4 +195,22 @@ gp_XY BRepMesh_FaceAttribute::Scale(const gp_XY&           thePoint2d,
   return isToFaceBasis ?
     gp_XY((thePoint2d.X() - myUMin) / myDeltaX, (thePoint2d.Y() - myVMin) / myDeltaY) :
     gp_XY(thePoint2d.X() * myDeltaX + myUMin, thePoint2d.Y() * myDeltaY + myVMin);
+}
+
+//=======================================================================
+//function : ToleranceU
+//purpose  : 
+//=======================================================================
+Standard_Real BRepMesh_FaceAttribute::ToleranceU() const
+{
+  return computeParametricTolerance(myUMin, myUMax);
+}
+
+//=======================================================================
+//function : ToleranceV
+//purpose  : 
+//=======================================================================
+Standard_Real BRepMesh_FaceAttribute::ToleranceV() const
+{
+  return computeParametricTolerance(myVMin, myVMax);
 }

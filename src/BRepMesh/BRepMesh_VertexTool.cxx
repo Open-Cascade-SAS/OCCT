@@ -56,8 +56,8 @@ NCollection_CellFilter_Action BRepMesh_VertexInspector::Inspect(
 //purpose  : 
 //=======================================================================
 BRepMesh_VertexTool::BRepMesh_VertexTool(
-  const Standard_Integer        theReservedSize,
-  const BRepMeshCol::Allocator& theAllocator)
+  const Standard_Integer                  theReservedSize,
+  const Handle(NCollection_IncAllocator)& theAllocator)
   : myAllocator (theAllocator),
     myCellFilter(0., myAllocator),
     mySelector  (Max(theReservedSize, 64),myAllocator)
@@ -76,7 +76,7 @@ Standard_Integer BRepMesh_VertexTool::Add(const BRepMesh_Vertex& theVertex)
   Standard_Integer aIndex = FindIndex(theVertex);
   if (aIndex == 0)
   {
-    BRepMeshCol::ListOfInteger aParams(myAllocator);
+    BRepMesh::ListOfInteger aParams(myAllocator);
     aIndex = Add(theVertex, aParams);
   }
   return aIndex;
@@ -87,8 +87,8 @@ Standard_Integer BRepMesh_VertexTool::Add(const BRepMesh_Vertex& theVertex)
 //purpose  : 
 //=======================================================================
 Standard_Integer BRepMesh_VertexTool::Add(
-  const BRepMesh_Vertex&            theVertex,
-  const BRepMeshCol::ListOfInteger& theParams)
+  const BRepMesh_Vertex&         theVertex,
+  const BRepMesh::ListOfInteger& theParams)
 {
   Standard_Integer aIndex = mySelector.Add(theVertex);
   myLinksMap.Bind(aIndex, theParams);
@@ -120,9 +120,9 @@ void BRepMesh_VertexTool::Delete(const Standard_Integer theIndex)
 //purpose  : 
 //=======================================================================
 void BRepMesh_VertexTool::Substitute(
-  const Standard_Integer            theIndex,
-  const BRepMesh_Vertex&            theVertex,
-  const BRepMeshCol::ListOfInteger& theData)
+  const Standard_Integer         theIndex,
+  const BRepMesh_Vertex&         theVertex,
+  const BRepMesh::ListOfInteger& theData)
 {
   BRepMesh_Vertex& aV = mySelector.GetVertex(theIndex);
 

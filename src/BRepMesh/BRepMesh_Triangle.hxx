@@ -45,9 +45,9 @@ public:
   }
 
   //! Constructor.
-  //! \param theEdges array of edges of triangle.
-  //! \param theOrientations array of edge's orientations.
-  //! \param theMovability movability of triangle.
+  //! @param theEdges array of edges of triangle.
+  //! @param theOrientations array of edge's orientations.
+  //! @param theMovability movability of triangle.
   Standard_EXPORT BRepMesh_Triangle(
     const Standard_Integer          (&theEdges)[3],
     const Standard_Boolean          (&theOrientations)[3],
@@ -57,9 +57,9 @@ public:
   }
   
   //! Initializes the triangle by the given parameters.
-  //! \param theEdges array of edges of triangle.
-  //! \param theOrientations array of edge's orientations.
-  //! \param theMovability movability of triangle.
+  //! @param theEdges array of edges of triangle.
+  //! @param theOrientations array of edge's orientations.
+  //! @param theMovability movability of triangle.
   inline void Initialize(
     const Standard_Integer          (&theEdges)[3],
     const Standard_Boolean          (&theOrientations)[3],
@@ -75,8 +75,8 @@ public:
   }
   
   //! Gets edges with orientations composing the triangle.
-  //! \param[out] theEdges array edges are stored to.
-  //! \param[out] theOrientations array orientations are stored to.
+  //! @param[out] theEdges array edges are stored to.
+  //! @param[out] theOrientations array orientations are stored to.
   inline void Edges(Standard_Integer (&theEdges)[3],
                     Standard_Boolean (&theOrientations)[3]) const
   {
@@ -101,16 +101,16 @@ public:
   }
   
   //! Returns hash code for this triangle.
-  //! \param theUpper upper index in the container.
-  //! \return hash code.
+  //! @param theUpper upper index in the container.
+  //! @return hash code.
   Standard_EXPORT Standard_Integer HashCode(const Standard_Integer theUpper) const
   {
     return ::HashCode(myEdge1 + myEdge2 + myEdge3, theUpper);
   }
   
   //! Checks for equality with another triangle.
-  //! \param theOther triangle to be checked against this one.
-  //! \return TRUE if equal, FALSE if not.
+  //! @param theOther triangle to be checked against this one.
+  //! @return TRUE if equal, FALSE if not.
   Standard_EXPORT Standard_Boolean IsEqual(const BRepMesh_Triangle& theOther) const
   {
     if (myMovability == BRepMesh_Deleted || theOther.myMovability == BRepMesh_Deleted)

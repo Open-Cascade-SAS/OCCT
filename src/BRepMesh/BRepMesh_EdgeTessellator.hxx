@@ -18,7 +18,7 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <BRepMesh_Collections.hxx>
+#include <BRepMesh.hxx>
 #include <BRepMesh_IEdgeTool.hxx>
 #include <BRepMesh_GeomTool.hxx>
 #include <BRepMesh_FaceAttribute.hxx>
@@ -77,10 +77,10 @@ private:
                     const Standard_Integer      theNbIter);
 
 private:
-  N_HANDLE<BRepMesh_GeomTool>  myTool;
-  Handle(BRepAdaptor_HSurface) mySurface;
-  BRepAdaptor_Curve            myCOnS;
-  Standard_Real                mySquareEdgeDef;
+  NCollection_Handle<BRepMesh_GeomTool> myTool;
+  Handle(BRepAdaptor_HSurface)          mySurface;
+  BRepAdaptor_Curve                     myCOnS;
+  Standard_Real                         mySquareEdgeDef;
 };
 
 DEFINE_STANDARD_HANDLE(BRepMesh_EdgeTessellator, BRepMesh_IEdgeTool)

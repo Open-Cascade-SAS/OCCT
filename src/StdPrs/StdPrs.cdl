@@ -41,7 +41,6 @@ uses
   HLRAlgo,
   HLRBRep,
   Quantity,
-	BRepMesh,
 	gp,
 	TColgp,
 	Poly,

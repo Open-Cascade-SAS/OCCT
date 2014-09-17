@@ -19,7 +19,7 @@
 #include <Standard_DefineHandle.hxx>
 
 #include <BRepMesh_Status.hxx>
-#include <BRepMesh_Collections.hxx>
+#include <BRepMesh.hxx>
 #include <BRepMesh_DataStructureOfDelaun.hxx>
 #include <Handle_BRepAdaptor_HSurface.hxx>
 
@@ -30,6 +30,9 @@ class BRepMesh_FaceAttribute : public Standard_Transient
 {
 public:
 
+  //! Default constructor.
+  Standard_EXPORT BRepMesh_FaceAttribute();
+
   //! Constructor.
   //! @param theFace face the attribute is created for. 
   //! Used for default initialization. Attribute keeps reference 
@@ -37,12 +40,12 @@ public:
   //! @param theBoundaryVertices shared map of shape vertices.
   //! @param theBoundaryPoints shared discretization points of shape boundaries.
   Standard_EXPORT BRepMesh_FaceAttribute(
-    const TopoDS_Face&                  theFace,
-    BRepMeshCol::DMapOfVertexInteger&   theBoundaryVertices,
-    BRepMeshCol::DMapOfIntegerPnt&      theBoundaryPoints);
+    const TopoDS_Face&                    theFace,
+    const BRepMesh::HDMapOfVertexInteger& theBoundaryVertices,
+    const BRepMesh::HDMapOfIntegerPnt&    theBoundaryPoints);
 
   //! Destructor.
-  virtual ~BRepMesh_FaceAttribute();
+  Standard_EXPORT virtual ~BRepMesh_FaceAttribute();
 
 public: //! @name main geometrical properties.
 
@@ -52,24 +55,36 @@ public: //! @name main geometrical properties.
     return mySurface;
   }
 
+  //! Sets reference face.
+  inline void SetFace(const TopoDS_Face& theFace)
+  {
+    myFace = theFace;
+  }
+
   //! Returns forward oriented face to be used for calculations.
   inline const TopoDS_Face& Face() const
   {
     return myFace;
   }
 
+  //! Sets boundary vertices map.
+  inline void SetBoundaryVertices(const BRepMesh::HDMapOfVertexInteger& theVertices)
+  {
+    myBoundaryVertices = theVertices;
+  }
+
+  //! Sets boundary points map.
+  inline void SetBoundaryPoints(const BRepMesh::HDMapOfIntegerPnt& theBoundaryPoints)
+  {
+    myBoundaryPoints = theBoundaryPoints;
+  }
+
   //! Returns U tolerance of face calculated regarding its parameters.
-  inline Standard_Real ToleranceU() const
-  {
-    return computeParametricTolerance(myUMin, myUMax);
-  }
-
+  Standard_EXPORT Standard_Real ToleranceU() const;
+  
   //! Returns V tolerance of face calculated regarding its parameters.
-  inline Standard_Real ToleranceV() const
-  {
-    return computeParametricTolerance(myVMin, myVMax);
-  }
-
+  Standard_EXPORT Standard_Real ToleranceV() const;
+  
   //! Gives face deflection parameter.
   inline Standard_Real GetDefFace() const
   {
@@ -174,33 +189,30 @@ public: //! @name main geometrical properties.
 
 public: //! @name auxiliary structures
 
-  //! Clear all face attribute.
-  Standard_EXPORT void Clear();
-
   //! Resets mesh data structure.
   //! @returns reset data structure.
   Standard_EXPORT Handle(BRepMesh_DataStructureOfDelaun)& ResetStructure();
 
   //! Gives reference to map of internal edges of face.
-  inline BRepMeshCol::HDMapOfShapePairOfPolygon& ChangeInternalEdges()
+  inline BRepMesh::HDMapOfShapePairOfPolygon& ChangeInternalEdges()
   {
     return myInternalEdges;
   }
 
   //! Gives reference to map of 2D points of discretization.
-  inline BRepMeshCol::DMapOfIntegerListOfXY& ChangeLocation2D()
+  inline BRepMesh::DMapOfIntegerListOfXY& ChangeLocation2D()
   {
     return myLocation2D;
   }
 
   //! Gives reference to map of 3D points of discretization.
-  inline BRepMeshCol::HDMapOfIntegerPnt& ChangeSurfacePoints()
+  inline BRepMesh::HDMapOfIntegerPnt& ChangeSurfacePoints()
   {
     return mySurfacePoints;
   }
 
   //! Gives reference on map of (vertex, edge) pairs of face.
-  inline BRepMeshCol::HIMapOfInteger& ChangeVertexEdgeMap()
+  inline BRepMesh::HIMapOfInteger& ChangeVertexEdgeMap()
   {
     return myVertexEdgeMap;
   }
@@ -212,7 +224,7 @@ public: //! @name auxiliary structures
   }
 
   //! Returns classifier.
-  inline BRepMeshCol::HClassifier& ChangeClassifier()
+  inline BRepMesh::HClassifier& ChangeClassifier()
   {
     return myClassifier;
   }
@@ -222,7 +234,8 @@ public: //! @name Point/Vertex/Node manipulators
   //! Gives the number of different locations in 3D space.
   inline Standard_Integer LastPointId() const
   {
-    return myBoundaryPoints.Extent() + mySurfacePoints->Extent();
+    return (myBoundaryPoints.IsNull() ? 0 : myBoundaryPoints->Extent())
+      + mySurfacePoints->Extent();
   }
 
   //! Gives the 3D location of the vertex.
@@ -234,10 +247,10 @@ public: //! @name Point/Vertex/Node manipulators
   //! Gives the 3D location of the vertex.
   inline const gp_Pnt& GetPoint(const Standard_Integer theIndex) const
   {
-    if (theIndex > myBoundaryPoints.Extent())
+    if (myBoundaryPoints.IsNull() || theIndex > myBoundaryPoints->Extent())
       return mySurfacePoints->Find(theIndex);
 
-    return myBoundaryPoints(theIndex);
+    return myBoundaryPoints->Find(theIndex);
   }
 
   //! Returns index of the given vertex if it exists in cache, 
@@ -262,14 +275,14 @@ public: //! @name Point/Vertex/Node manipulators
     {
       aNewVertexIndex = LastPointId() + 1;
 
-      BRepMeshCol::DMapOfIntegerPnt& aPointsMap = isFillEdgeVertices ?
-        myBoundaryPoints : *mySurfacePoints;
+      BRepMesh::DMapOfIntegerPnt& aPointsMap = isFillEdgeVertices ?
+        *myBoundaryPoints : *mySurfacePoints;
 
       aPointsMap.Bind(aNewVertexIndex, theVertexExplorer->Point());
     }
 
-    BRepMeshCol::DMapOfVertexInteger& aVertexMap = isFillEdgeVertices ?
-      myBoundaryVertices : mySurfaceVertices;
+    BRepMesh::DMapOfVertexInteger& aVertexMap = isFillEdgeVertices ?
+      *myBoundaryVertices : mySurfaceVertices;
 
     aVertexMap.Bind(aVertex, aNewVertexIndex);
 
@@ -308,6 +321,9 @@ private:
   {
   }
 
+  //! Initializes internal data structures.
+  void init();
+
   //! Computes parametric tolerance of a face regarding the given limits.
   Standard_Real computeParametricTolerance(
     const Standard_Real theFirstParam,
@@ -335,21 +351,21 @@ private:
   Standard_Real                           myDeltaY;
   Standard_Integer                        myStatus;
 
-  BRepMeshCol::DMapOfVertexInteger&       myBoundaryVertices;
-  BRepMeshCol::DMapOfIntegerPnt&          myBoundaryPoints;
+  BRepMesh::HDMapOfVertexInteger          myBoundaryVertices;
+  BRepMesh::HDMapOfIntegerPnt             myBoundaryPoints;
 
   TopoDS_Face                             myFace;
   Handle(BRepAdaptor_HSurface)            mySurface;
-  BRepMeshCol::DMapOfVertexInteger        mySurfaceVertices;
-  BRepMeshCol::HDMapOfIntegerPnt          mySurfacePoints;
+  BRepMesh::DMapOfVertexInteger           mySurfaceVertices;
+  BRepMesh::HDMapOfIntegerPnt             mySurfacePoints;
 
-  BRepMeshCol::DMapOfIntegerListOfXY      myLocation2D;
-  BRepMeshCol::HIMapOfInteger             myVertexEdgeMap;
-  BRepMeshCol::HDMapOfShapePairOfPolygon  myInternalEdges;
+  BRepMesh::DMapOfIntegerListOfXY         myLocation2D;
+  BRepMesh::HIMapOfInteger                myVertexEdgeMap;
+  BRepMesh::HDMapOfShapePairOfPolygon     myInternalEdges;
 
   Handle(BRepMesh_DataStructureOfDelaun)  myStructure;
-  BRepMeshCol::HClassifier                myClassifier;
-  BRepMeshCol::Allocator                  myAllocator;
+  BRepMesh::HClassifier                   myClassifier;
+  Handle(NCollection_IncAllocator)        myAllocator;
 };
 
 DEFINE_STANDARD_HANDLE(BRepMesh_FaceAttribute, Standard_Transient)

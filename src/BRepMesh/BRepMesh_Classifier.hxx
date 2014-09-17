@@ -24,9 +24,7 @@
 #include <TColStd_SequenceOfBoolean.hxx>
 #include <TopAbs_State.hxx>
 #include <NCollection_Sequence.hxx>
-
-class gp_Pnt2d;
-class TColgp_SequenceOfPnt2d;
+#include <gp_Pnt2d.hxx>
 
 //! Auxilary class contains information about correctness of discretized 
 //! face and used for classification of points regarding face internals.
@@ -40,7 +38,7 @@ public:
   Standard_EXPORT BRepMesh_Classifier();
 
   //! Destructor.
-  ~BRepMesh_Classifier()
+  Standard_EXPORT virtual ~BRepMesh_Classifier()
   {
     Destroy();
   }
@@ -50,19 +48,19 @@ public:
   Standard_EXPORT void Destroy();
   
   //! Performs classification of the given point regarding to face internals.
-  //! \param thePoint Point in parametric space to be classified.
-  //! \return 
+  //! @param thePoint Point in parametric space to be classified.
+  //! @return 
   Standard_EXPORT TopAbs_State Perform(const gp_Pnt2d& thePoint) const;
 
   //! Registers wire specified by sequence of points for 
   //! further classification of points.
-  //! \param theWire Wire to be registered. Specified by sequence of points.
-  //! \param theTolUV Tolerance to be used for calculations in parametric space.
-  //! \param theUmin Lower U boundary of the face in parametric space.
-  //! \param theUmax Upper U boundary of the face in parametric space.
-  //! \param theVmin Lower V boundary of the face in parametric space.
-  //! \param theVmax Upper V boundary of the face in parametric space.
-  void RegisterWire(
+  //! @param theWire Wire to be registered. Specified by sequence of points.
+  //! @param theTolUV Tolerance to be used for calculations in parametric space.
+  //! @param theUmin Lower U boundary of the face in parametric space.
+  //! @param theUmax Upper U boundary of the face in parametric space.
+  //! @param theVmin Lower V boundary of the face in parametric space.
+  //! @param theVmax Upper V boundary of the face in parametric space.
+  Standard_EXPORT void RegisterWire(
     const NCollection_Sequence<gp_Pnt2d>& theWire,
     const Standard_Real                   theTolUV,
     const Standard_Real                   theUmin,

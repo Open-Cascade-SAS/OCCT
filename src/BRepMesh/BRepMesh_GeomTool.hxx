@@ -50,12 +50,12 @@ public:
   
   //! Constructor.
   //! Initiates discretization of the given geometric curve.
-  //! \param theCurve curve to be discretized.
-  //! \param theFirstParam first parameter of the curve.
-  //! \param theLastParam last parameter of the curve.
-  //! \param theLinDeflection linear deflection.
-  //! \param theAngDeflection angular deflection.
-  //! \param theMinPointsNb minimum nuber of points to be produced.
+  //! @param theCurve curve to be discretized.
+  //! @param theFirstParam first parameter of the curve.
+  //! @param theLastParam last parameter of the curve.
+  //! @param theLinDeflection linear deflection.
+  //! @param theAngDeflection angular deflection.
+  //! @param theMinPointsNb minimum nuber of points to be produced.
   Standard_EXPORT BRepMesh_GeomTool(const BRepAdaptor_Curve& theCurve,
                                     const Standard_Real      theFirstParam,
                                     const Standard_Real      theLastParam,
@@ -66,14 +66,14 @@ public:
   //! Constructor.
   //! Initiates discretization of geometric curve corresponding 
   //! to iso curve of the given surface.
-  //! \param theSurface surface the iso curve to be taken from.
-  //! \param theIsoType type of iso curve to be used, U or V.
-  //! \param theParamIso parameter on the surface specifying the iso curve.
-  //! \param theFirstParam first parameter of the curve.
-  //! \param theLastParam last parameter of the curve.
-  //! \param theLinDeflection linear deflection.
-  //! \param theAngDeflection angular deflection.
-  //! \param theMinPointsNb minimum nuber of points to be produced.
+  //! @param theSurface surface the iso curve to be taken from.
+  //! @param theIsoType type of iso curve to be used, U or V.
+  //! @param theParamIso parameter on the surface specifying the iso curve.
+  //! @param theFirstParam first parameter of the curve.
+  //! @param theLastParam last parameter of the curve.
+  //! @param theLinDeflection linear deflection.
+  //! @param theAngDeflection angular deflection.
+  //! @param theMinPointsNb minimum nuber of points to be produced.
   Standard_EXPORT BRepMesh_GeomTool(const Handle(BRepAdaptor_HSurface)& theSurface,
                                     const GeomAbs_IsoType               theIsoType,
                                     const Standard_Real                 theParamIso,
@@ -84,11 +84,11 @@ public:
                                     const Standard_Integer              theMinPointsNb = 2);
 
   //! Adds point to already calculated points (or replaces existing).
-  //! \param thePoint point to be added.
-  //! \param theParam parameter on the curve corresponding to the given point.
-  //! \param theIsReplace if TRUE replaces existing point lying within 
+  //! @param thePoint point to be added.
+  //! @param theParam parameter on the curve corresponding to the given point.
+  //! @param theIsReplace if TRUE replaces existing point lying within 
   //! parameteric tolerance of the given point.
-  //! \return index of new added point or found with parametric tolerance
+  //! @return index of new added point or found with parametric tolerance
   inline Standard_Integer AddPoint(const gp_Pnt&           thePoint,
                                    const Standard_Real     theParam,
                                    const Standard_Boolean  theIsReplace = Standard_True)
@@ -103,13 +103,13 @@ public:
   }
   
   //! Gets parameters of discretization point with the given index.
-  //! \param theIndex index of discretization point.
-  //! \param theIsoParam parameter on surface to be used as second coordinate 
+  //! @param theIndex index of discretization point.
+  //! @param theIsoParam parameter on surface to be used as second coordinate 
   //! of resulting 2d point.
-  //! \param theParam[out] parameter of the point on the iso curve.
-  //! \param thePoint[out] discretization point.
-  //! \param theUV[out] discretization point in parametric space of the surface.
-  //! \return TRUE on success, FALSE elsewhere.
+  //! @param theParam[out] parameter of the point on the iso curve.
+  //! @param thePoint[out] discretization point.
+  //! @param theUV[out] discretization point in parametric space of the surface.
+  //! @return TRUE on success, FALSE elsewhere.
   Standard_EXPORT Standard_Boolean Value(const Standard_Integer theIndex,
                                          const Standard_Real    theIsoParam,
                                          Standard_Real&         theParam,
@@ -117,26 +117,26 @@ public:
                                          gp_Pnt2d&              theUV) const;
   
   //! Gets parameters of discretization point with the given index.
-  //! \param theIndex index of discretization point.
-  //! \param theSurface surface the curve is lying onto.
-  //! \param theParam[out] parameter of the point on the curve.
-  //! \param thePoint[out] discretization point.
-  //! \param theUV[out] discretization point in parametric space of the surface.
-  //! \return TRUE on success, FALSE elsewhere.
+  //! @param theIndex index of discretization point.
+  //! @param theSurface surface the curve is lying onto.
+  //! @param theParam[out] parameter of the point on the curve.
+  //! @param thePoint[out] discretization point.
+  //! @param theUV[out] discretization point in parametric space of the surface.
+  //! @return TRUE on success, FALSE elsewhere.
   Standard_EXPORT Standard_Boolean Value(const Standard_Integer              theIndex,
                                          const Handle(BRepAdaptor_HSurface)& theSurface,
                                          Standard_Real&                      theParam,
                                          gp_Pnt&                             thePoint,
                                          gp_Pnt2d&                           theUV) const;
   
-public: //! \name static API
+public: //! @name static API
 
-  //! \param theSurface surface the nomal should be found for.
-  //! \param theParamU U parameter in parametric space of the surface.
-  //! \param theParamV V parameter in parametric space of the surface.
-  //! \param[out] thePoint 3d point corresponding to the given parameters.
-  //! \param[out] theNormal normal vector at the point specified by the parameters.
-  //! \return FALSE if the normal can not be computed, TRUE elsewhere.
+  //! @param theSurface surface the nomal should be found for.
+  //! @param theParamU U parameter in parametric space of the surface.
+  //! @param theParamV V parameter in parametric space of the surface.
+  //! @param[out] thePoint 3d point corresponding to the given parameters.
+  //! @param[out] theNormal normal vector at the point specified by the parameters.
+  //! @return FALSE if the normal can not be computed, TRUE elsewhere.
   static Standard_Boolean Normal(const Handle(BRepAdaptor_HSurface)& theSurface,
                                  const Standard_Real                 theParamU,
                                  const Standard_Real                 theParamV,
@@ -144,14 +144,14 @@ public: //! \name static API
                                  gp_Dir&                             theNormal);
 
   //! Checks intersection between two lines defined by two points.
-  //! \param theStartPnt1 start point of first line.
-  //! \param theEndPnt1 end point of first line.
-  //! \param theStartPnt2 start point of second line.
-  //! \param theEndPnt2 end point of second line.
-  //! \param[out] theIntPnt point of intersection.
-  //! \param[out] theParamOnSegment parameters of intersection point 
+  //! @param theStartPnt1 start point of first line.
+  //! @param theEndPnt1 end point of first line.
+  //! @param theStartPnt2 start point of second line.
+  //! @param theEndPnt2 end point of second line.
+  //! @param[out] theIntPnt point of intersection.
+  //! @param[out] theParamOnSegment parameters of intersection point 
   //! corresponding to first and second segment.
-  //! \return status of intersection check.
+  //! @return status of intersection check.
   static IntFlag IntLinLin(const gp_XY&  theStartPnt1,
                            const gp_XY&  theEndPnt1,
                            const gp_XY&  theStartPnt2,
@@ -161,18 +161,18 @@ public: //! \name static API
 
   //! Checks intersection between the two segments. 
   //! Checks that intersection point lies within ranges of both segments.
-  //! \param theStartPnt1 start point of first segment.
-  //! \param theEndPnt1 end point of first segment.
-  //! \param theStartPnt2 start point of second segment.
-  //! \param theEndPnt2 end point of second segment.
-  //! \param isConsiderEndPointTouch if TRUE EndPointTouch status will be
+  //! @param theStartPnt1 start point of first segment.
+  //! @param theEndPnt1 end point of first segment.
+  //! @param theStartPnt2 start point of second segment.
+  //! @param theEndPnt2 end point of second segment.
+  //! @param isConsiderEndPointTouch if TRUE EndPointTouch status will be
   //! returned in case if segments are touching by end points, if FALSE
   //! returns NoIntersection flag.
-  //! \param isConsiderPointOnSegment if TRUE PointOnSegment status will be
+  //! @param isConsiderPointOnSegment if TRUE PointOnSegment status will be
   //! returned in case if end point of one segment lies onto another one, 
   //! if FALSE returns NoIntersection flag.
-  //! \param[out] theIntPnt point of intersection.
-  //! \return status of intersection check.
+  //! @param[out] theIntPnt point of intersection.
+  //! @return status of intersection check.
   static IntFlag IntSegSeg(const gp_XY&           theStartPnt1,
                            const gp_XY&           theEndPnt1,
                            const gp_XY&           theStartPnt2,
@@ -184,10 +184,10 @@ public: //! \name static API
 private:
 
   //! Classifies the point in case of coincidence of two vectors.
-  //! \param thePoint1 the start point of a segment (base point).
-  //! \param thePoint2 the end point of a segment.
-  //! \param thePointToCheck the point to classify.
-  //! \return zero value if point is out of segment and non zero value 
+  //! @param thePoint1 the start point of a segment (base point).
+  //! @param thePoint2 the end point of a segment.
+  //! @param thePointToCheck the point to classify.
+  //! @return zero value if point is out of segment and non zero value 
   //! if point is between the first and the second point of segment.
   static Standard_Integer classifyPoint (const gp_XY& thePoint1,
                                          const gp_XY& thePoint2,

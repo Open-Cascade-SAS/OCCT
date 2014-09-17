@@ -107,7 +107,7 @@ void BRepMesh_WireChecker::BndBox2dTreeSelector::SetSkippedIndex(
 //function : Indices
 //purpose  : 
 //=======================================================================
-const BRepMeshCol::Array1OfInteger& 
+const BRepMesh::Array1OfInteger& 
   BRepMesh_WireChecker::BndBox2dTreeSelector::Indices() const
 {
   return myIndices;
@@ -129,8 +129,8 @@ Standard_Integer BRepMesh_WireChecker::BndBox2dTreeSelector::IndicesNb() const
 BRepMesh_WireChecker::BRepMesh_WireChecker(
   const TopoDS_Face&                            theFace,
   const Standard_Real                           theTolUV,
-  const BRepMeshCol::HDMapOfShapePairOfPolygon& theEdges,
-  const BRepMeshCol::HIMapOfInteger&            theVertexMap,
+  const BRepMesh::HDMapOfShapePairOfPolygon&    theEdges,
+  const BRepMesh::HIMapOfInteger&               theVertexMap,
   const Handle(BRepMesh_DataStructureOfDelaun)& theStructure,
   const Standard_Real                           theUmin,
   const Standard_Real                           theUmax,
@@ -156,8 +156,8 @@ BRepMesh_WireChecker::BRepMesh_WireChecker(
   {
     const TopoDS_Wire& aWire = TopoDS::Wire(aFaceExplorer.Current());
 
-    myWiresEdges.push_back(ListOfEdges());
-    ListOfEdges& aEdges = myWiresEdges.back();
+    myWiresEdges.Append(ListOfEdges());
+    ListOfEdges& aEdges = myWiresEdges.ChangeLast();
 
     // Start traversing the wires
     BRepTools_WireExplorer aWireExplorer(aWire, aFace);
@@ -172,7 +172,7 @@ BRepMesh_WireChecker::BRepMesh_WireChecker(
     }
 
     if (aEdges.IsEmpty())
-      myWiresEdges.pop_back();
+      myWiresEdges.Remove(myWiresEdges.Size());
   }
 }
 
@@ -180,7 +180,7 @@ BRepMesh_WireChecker::BRepMesh_WireChecker(
 //function : ReCompute
 //purpose  : 
 //=======================================================================
-void BRepMesh_WireChecker::ReCompute(BRepMeshCol::HClassifier& theClassifier)
+void BRepMesh_WireChecker::ReCompute(BRepMesh::HClassifier& theClassifier)
 {
   if (theClassifier.IsNull())
     return;
@@ -192,9 +192,8 @@ void BRepMesh_WireChecker::ReCompute(BRepMeshCol::HClassifier& theClassifier)
   if (!collectDiscretizedWires(aDWires))
     return;
 
-  const Standard_Integer aNbWires = (Standard_Integer)aDWires.size();
-
-  BRepMeshCol::Array1OfSegmentsTree aWiresBiPoints(aNbWires);
+  const Standard_Integer aNbWires = aDWires.Size();
+  BRepMesh::Array1OfSegmentsTree aWiresBiPoints(1, aNbWires);
   fillSegmentsTree(aDWires, aWiresBiPoints);
 
 #ifdef HAVE_TBB
@@ -205,7 +204,7 @@ void BRepMesh_WireChecker::ReCompute(BRepMeshCol::HClassifier& theClassifier)
   if (myIsInParallel && aNbWires > 1)
   {
     // check wires in parallel threads using TBB
-    tbb::parallel_for(tbb::blocked_range<Standard_Integer>(0, aNbWires), 
+    tbb::parallel_for(tbb::blocked_range<Standard_Integer>(1, aNbWires + 1), 
       aIntChecker);
   }
   else
@@ -213,7 +212,7 @@ void BRepMesh_WireChecker::ReCompute(BRepMeshCol::HClassifier& theClassifier)
 #else
     BRepMesh_WireInterferenceChecker aIntChecker(aWiresBiPoints, &myStatus);
 #endif
-    for (Standard_Integer i = 0; i < aNbWires; ++i)
+    for (Standard_Integer i = 1; i <= aNbWires; ++i)
       aIntChecker(i);
 #ifdef HAVE_TBB
   }
@@ -223,10 +222,10 @@ void BRepMesh_WireChecker::ReCompute(BRepMeshCol::HClassifier& theClassifier)
     return;
 
   // Find holes
-  SeqOfDWires::iterator aDWiresIt = aDWires.begin();
-  for (; aDWiresIt != aDWires.end(); ++aDWiresIt)
+  SeqOfDWires::Iterator aDWiresIt(aDWires);
+  for (; aDWiresIt.More(); aDWiresIt.Next())
   {
-    const SeqOfPnt2d& aDWire = *aDWiresIt;
+    const SeqOfPnt2d& aDWire = aDWiresIt.Value();
     theClassifier->RegisterWire(aDWire, myTolUV, myUmin, myUmax, myVmin, myVmax);
   }
 }
@@ -238,11 +237,10 @@ void BRepMesh_WireChecker::ReCompute(BRepMeshCol::HClassifier& theClassifier)
 Standard_Boolean BRepMesh_WireChecker::collectDiscretizedWires(
   SeqOfDWires& theDWires)
 {
-  // TODO: Collect disretized wires in parallel
-  SeqOfWireEdges::iterator aWireIt = myWiresEdges.begin();
-  for(; aWireIt != myWiresEdges.end(); ++aWireIt)
+  SeqOfWireEdges::Iterator aWireIt(myWiresEdges);
+  for(; aWireIt.More(); aWireIt.Next())
   {
-    const ListOfEdges& aEdges = *aWireIt;
+    const ListOfEdges& aEdges = aWireIt.Value();
     // For each wire we create a data map, linking vertices (only
     // the ends of edges) with their positions in the sequence of
     // all 2d points from this wire.
@@ -252,8 +250,8 @@ Standard_Boolean BRepMesh_WireChecker::collectDiscretizedWires(
     // loop from the map, but since they can't appear twice on the
     // valid wire, leave them for a little speed up.
 
-    SeqOfPnt2d    aSeqPnt2d;
-    DataMapIntInt aNodeInSeq;
+    SeqOfPnt2d                    aSeqPnt2d;
+    BRepMesh::MapOfIntegerInteger aNodeInSeq;
     Standard_Integer aFirstIndex = 0, aLastIndex = 0;
 
     // Start traversing the wire
@@ -331,8 +329,8 @@ Standard_Boolean BRepMesh_WireChecker::collectDiscretizedWires(
         const Standard_Integer aIdxWireStart = aNodeInSeq(aLastVertexId);
         if(aIdxWireStart < aSeqPnt2d.Length())
         {
-          theDWires.push_back(SeqOfPnt2d());
-          SeqOfPnt2d& aWire = theDWires.back();
+          theDWires.Append(SeqOfPnt2d());
+          SeqOfPnt2d& aWire = theDWires.ChangeLast();
           aSeqPnt2d.Split(aIdxWireStart, aWire);
         }
       }
@@ -357,22 +355,22 @@ Standard_Boolean BRepMesh_WireChecker::collectDiscretizedWires(
 //purpose  :
 //=======================================================================
 void BRepMesh_WireChecker::fillSegmentsTree(
-  const SeqOfDWires&                 theDWires,
-  BRepMeshCol::Array1OfSegmentsTree& theWiresSegmentsTree)
+  const SeqOfDWires&              theDWires,
+  BRepMesh::Array1OfSegmentsTree& theWiresSegmentsTree)
 {
-  const size_t aNbWires = theDWires.size();
-  for (size_t aWireIt = 0; aWireIt < aNbWires; ++aWireIt)
+  const Standard_Integer aNbWires = theDWires.Size();
+  for (Standard_Integer aWireIt = 1; aWireIt <= aNbWires; ++aWireIt)
   {
-    const SeqOfPnt2d&      aWire    = theDWires[aWireIt];
+    const SeqOfPnt2d&      aWire    = theDWires(aWireIt);
     const Standard_Integer aWireLen = aWire.Size();
 
-    BRepMeshCol::HArray1OfSegments  aWireSegments = 
-      new BRepMeshCol::Array1OfSegments(aWireLen);
+    BRepMesh::HArray1OfSegments  aWireSegments = 
+      new BRepMesh::Array1OfSegments(1, aWireLen);
 
-    BRepMeshCol::HBndBox2dTree      aBndBoxTree   = 
-      new BRepMeshCol::BndBox2dTree;
+    BRepMesh::HBndBox2dTree      aBndBoxTree   = 
+      new BRepMesh::BndBox2dTree;
 
-    BRepMeshCol::BndBox2dTreeFiller aBndBoxTreeFiller(*aBndBoxTree);
+    BRepMesh::BndBox2dTreeFiller aBndBoxTreeFiller(*aBndBoxTree);
 
     Standard_Real x1 = 0., y1 = 0., aXstart = 0., aYstart = 0.;
     for (Standard_Integer aPntIt = 0; aPntIt <= aWireLen; ++aPntIt)
@@ -402,22 +400,21 @@ void BRepMesh_WireChecker::fillSegmentsTree(
         gp_Pnt2d aStartPnt(x1, y1);
         gp_Pnt2d   aEndPnt(x2, y2);
        
-        const Standard_Integer aPointId = aPntIt - 1;
-        BRepMeshCol::Segment& aSegment = aWireSegments->at(aPointId);
+        BRepMesh::Segment& aSegment = aWireSegments->ChangeValue(aPntIt);
         aSegment.StartPnt = aStartPnt.XY();
         aSegment.EndPnt   = aEndPnt.XY();
 
         Bnd_Box2d aBox;
         aBox.Add(aStartPnt);
         aBox.Add(  aEndPnt);
-        aBndBoxTreeFiller.Add(aPointId, aBox);
+        aBndBoxTreeFiller.Add(aPntIt, aBox);
       }
       x1 = x2;
       y1 = y2;
     }
     aBndBoxTreeFiller.Fill();
 
-    BRepMeshCol::SegmentsTree& aSegmentsTree = theWiresSegmentsTree[aWireIt];
+    BRepMesh::SegmentsTree& aSegmentsTree = theWiresSegmentsTree(aWireIt);
     aSegmentsTree.first  = aWireSegments;
     aSegmentsTree.second = aBndBoxTree;
   }

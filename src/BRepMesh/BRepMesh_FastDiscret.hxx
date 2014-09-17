@@ -30,7 +30,7 @@
 #include <TopAbs_ShapeEnum.hxx>
 #include <BRepMesh_Triangle.hxx>
 #include <BRepMesh_FaceAttribute.hxx>
-#include <BRepMesh_Collections.hxx>
+#include <BRepMesh.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepMesh_ShapeTool.hxx>
@@ -120,9 +120,6 @@ public:
     return myInParallel;
   }
   
-  //! Gives the list of indices of the vertices <br>
-  Standard_EXPORT void VerticesOfDomain(BRepMeshCol::MapOfInteger& Indices) const;
-
   //! returns the deflection value. <br>
   inline Standard_Real GetDeflection() const
   {
@@ -167,7 +164,7 @@ public:
   //! Returns number of boundary 3d points.
   inline Standard_Integer NbBoundaryPoints() const
   {
-    return myBoundaryPoints.Extent();
+    return myBoundaryPoints->Extent();
   }
 
   DEFINE_STANDARD_RTTI(BRepMesh_FastDiscret)
@@ -260,20 +257,20 @@ private:
   //! used for tessellation.
   struct EdgeAttributes
   {
-    TopoDS_Vertex              FirstVertex;
-    TopoDS_Vertex              LastVertex;
+    TopoDS_Vertex                       FirstVertex;
+    TopoDS_Vertex                       LastVertex;
 
-    Standard_Real              FirstParam;
-    Standard_Real              LastParam;
+    Standard_Real                       FirstParam;
+    Standard_Real                       LastParam;
 
-    gp_Pnt2d                   FirstUV;
-    gp_Pnt2d                   LastUV;
+    gp_Pnt2d                            FirstUV;
+    gp_Pnt2d                            LastUV;
 
-    Standard_Boolean           IsSameUV;
-    Standard_Real              MinDist;
+    Standard_Boolean                    IsSameUV;
+    Standard_Real                       MinDist;
 
-    N_HANDLE<TopoDSVExplorer>  FirstVExtractor;
-    N_HANDLE<TopoDSVExplorer>  LastVExtractor;
+    NCollection_Handle<TopoDSVExplorer> FirstVExtractor;
+    NCollection_Handle<TopoDSVExplorer> LastVExtractor;
   };
 
   //! Structure keeps geometrical parameters of edge's PCurve.
@@ -348,29 +345,29 @@ private:
 
 private:
 
-  TopoDS_Face                                         myFace;
-  Standard_Real                                       myAngle;
-  Standard_Real                                       myDeflection;
-  Standard_Real                                       myDtotale;
-  Standard_Boolean                                    myWithShare;
-  Standard_Boolean                                    myInParallel;
-  BRepMeshCol::DMapOfShapePairOfPolygon               myEdges;
-  BRepMeshCol::DMapOfFaceAttribute                    myAttributes;
-  Standard_Boolean                                    myRelative;
-  Standard_Boolean                                    myShapetrigu;
-  Standard_Boolean                                    myInshape;
-  TopTools_DataMapOfShapeReal                         myMapdefle;
+  TopoDS_Face                                      myFace;
+  Standard_Real                                    myAngle;
+  Standard_Real                                    myDeflection;
+  Standard_Real                                    myDtotale;
+  Standard_Boolean                                 myWithShare;
+  Standard_Boolean                                 myInParallel;
+  BRepMesh::DMapOfShapePairOfPolygon               myEdges;
+  BRepMesh::DMapOfFaceAttribute                    myAttributes;
+  Standard_Boolean                                 myRelative;
+  Standard_Boolean                                 myShapetrigu;
+  Standard_Boolean                                 myInshape;
+  TopTools_DataMapOfShapeReal                      myMapdefle;
 
   // Data shared for whole shape
-  BRepMeshCol::DMapOfVertexInteger                    myBoundaryVertices;
-  BRepMeshCol::DMapOfIntegerPnt                       myBoundaryPoints;
+  BRepMesh::HDMapOfVertexInteger                   myBoundaryVertices;
+  BRepMesh::HDMapOfIntegerPnt                      myBoundaryPoints;
 
   // Fast access to attributes of current face
-  Handle(BRepMesh_FaceAttribute)                      myAttribute;
-  Handle(BRepMesh_DataStructureOfDelaun)              myStructure;
-  BRepMeshCol::HIMapOfInteger                         myVertexEdgeMap;
-  BRepMeshCol::HDMapOfShapePairOfPolygon              myInternalEdges;
-  TopTools_IndexedDataMapOfShapeListOfShape           mySharedFaces;
+  Handle(BRepMesh_FaceAttribute)                   myAttribute;
+  Handle(BRepMesh_DataStructureOfDelaun)           myStructure;
+  BRepMesh::HIMapOfInteger                         myVertexEdgeMap;
+  BRepMesh::HDMapOfShapePairOfPolygon              myInternalEdges;
+  TopTools_IndexedDataMapOfShapeListOfShape        mySharedFaces;
 };
 
 DEFINE_STANDARD_HANDLE(BRepMesh_FastDiscret, Standard_Transient)

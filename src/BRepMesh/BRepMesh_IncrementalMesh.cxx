@@ -371,7 +371,7 @@ void BRepMesh_IncrementalMesh::update(const TopoDS_Edge& theEdge)
     }
 
     if (!myEmptyEdges.IsBound(theEdge))
-      myEmptyEdges.Bind(theEdge, BRepMeshCol::MapOfTriangulation());
+      myEmptyEdges.Bind(theEdge, BRepMesh::MapOfTriangulation());
 
     if (!aTriangulation.IsNull())
       myEmptyEdges(theEdge).Add(aTriangulation);
@@ -407,7 +407,7 @@ Standard_Boolean BRepMesh_IncrementalMesh::toBeMeshed(
         if (!myEmptyEdges.IsBound(aEdge))
           continue;
 
-        BRepMeshCol::MapOfTriangulation& aTriMap = myEmptyEdges(aEdge);
+        BRepMesh::MapOfTriangulation& aTriMap = myEmptyEdges(aEdge);
         isEdgesConsistent &= !aTriMap.IsEmpty() && !aTriMap.Contains(aTriangulation);
       }
 
@@ -444,7 +444,7 @@ void BRepMesh_IncrementalMesh::update(const TopoDS_Face& theFace)
   if (aStatus != BRepMesh_ReMesh)
     return;
 
-  BRepMeshCol::MapOfShape aUsedFaces;
+  BRepMesh::MapOfShape aUsedFaces;
   aUsedFaces.Add(theFace);
 
   const TopTools_IndexedDataMapOfShapeListOfShape& aMapOfSharedFaces = 
@@ -515,11 +515,11 @@ void BRepMesh_IncrementalMesh::commitFace(const TopoDS_Face& theFace)
     OCC_CATCH_SIGNALS
 
     Handle(BRepMesh_DataStructureOfDelaun)& aStructure = aFaceAttribute->ChangeStructure();
-    const BRepMeshCol::MapOfInteger&        aTriangles = aStructure->ElementsOfDomain();
+    const BRepMesh::MapOfInteger&           aTriangles = aStructure->ElementsOfDomain();
     if (aTriangles.IsEmpty())
       return;
 
-    BRepMeshCol::HIMapOfInteger& aVetrexEdgeMap = aFaceAttribute->ChangeVertexEdgeMap();
+    BRepMesh::HIMapOfInteger& aVetrexEdgeMap = aFaceAttribute->ChangeVertexEdgeMap();
 
     // Store triangles
     Standard_Integer aVerticesNb  = aVetrexEdgeMap->Extent();
@@ -530,7 +530,7 @@ void BRepMesh_IncrementalMesh::commitFace(const TopoDS_Face& theFace)
     Poly_Array1OfTriangle& aPolyTrianges = aNewTriangulation->ChangeTriangles();
 
     Standard_Integer aTriangeId = 1;
-    BRepMeshCol::MapOfInteger::Iterator aTriIt(aTriangles);
+    BRepMesh::MapOfInteger::Iterator aTriIt(aTriangles);
     for (; aTriIt.More(); aTriIt.Next())
     {
       const BRepMesh_Triangle& aCurElem = aStructure->GetElement(aTriIt.Key());
@@ -563,8 +563,8 @@ void BRepMesh_IncrementalMesh::commitFace(const TopoDS_Face& theFace)
     BRepMesh_ShapeTool::AddInFace(aFace, aNewTriangulation);
 
     // Store discretization of edges
-    BRepMeshCol::HDMapOfShapePairOfPolygon& aInternalEdges = aFaceAttribute->ChangeInternalEdges();
-    BRepMeshCol::DMapOfShapePairOfPolygon::Iterator aEdgeIt(*aInternalEdges);
+    BRepMesh::HDMapOfShapePairOfPolygon& aInternalEdges = aFaceAttribute->ChangeInternalEdges();
+    BRepMesh::DMapOfShapePairOfPolygon::Iterator aEdgeIt(*aInternalEdges);
     for (; aEdgeIt.More(); aEdgeIt.Next())
     {
       const TopoDS_Edge& aEdge = TopoDS::Edge(aEdgeIt.Key());

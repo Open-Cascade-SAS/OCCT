@@ -41,7 +41,7 @@ public:
   
   //! Sets the first element of the pair.
   //! If last element is empty, also assignes the given polygon to it.
-  //! \param thePolygon plygon to be set.
+  //! @param thePolygon plygon to be set.
   inline void Prepend(const Handle(Poly_PolygonOnTriangulation)& thePolygon)
   {
     myFirst = thePolygon;
@@ -52,7 +52,7 @@ public:
 
   //! Sets the last element of the pair.
   //! If first element is empty, also assignes the given polygon to it.
-  //! \param thePolygon plygon to be set.
+  //! @param thePolygon plygon to be set.
   inline void Append(const Handle(Poly_PolygonOnTriangulation)& thePolygon)
   {
     if (myFirst.IsNull())

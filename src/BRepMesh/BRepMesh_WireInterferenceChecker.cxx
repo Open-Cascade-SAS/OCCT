@@ -26,13 +26,12 @@ static const Standard_Real MIN_LOOP_S = 2 * M_PI * 2.E-5;
 //purpose  :
 //=======================================================================
 BRepMesh_WireInterferenceChecker::BRepMesh_WireInterferenceChecker(
-  const std::vector<BRepMeshCol::SegmentsTree>& theWires,
-  BRepMesh_Status*                              theStatus,
-  Standard_Mutex*                               theMutex)
-: myWires   (&theWires.front()),
-  myWiresNb ((Standard_Integer)theWires.size()),
-  myStatus  (theStatus),
-  myMutex   (theMutex)
+  const BRepMesh::Array1OfSegmentsTree& theWires,
+  BRepMesh_Status*                      theStatus,
+  Standard_Mutex*                       theMutex)
+: myWires (theWires),
+  myStatus(theStatus),
+  myMutex (theMutex)
 {
 }
 
@@ -52,11 +51,10 @@ void BRepMesh_WireInterferenceChecker::operator ()(
 //purpose  : 
 //=======================================================================
 BRepMesh_WireInterferenceChecker::BRepMesh_WireInterferenceChecker(
-  const std::vector<BRepMeshCol::SegmentsTree>& theWires,
-  BRepMesh_Status*                              theStatus)
-: myWires   (&theWires.front()),
-  myWiresNb ((Standard_Integer)theWires.size()),
-  myStatus  (theStatus)
+  const BRepMesh::Array1OfSegmentsTree& theWires,
+  BRepMesh_Status*                      theStatus)
+: myWires (theWires),
+  myStatus(theStatus)
 {
 }
 #endif
@@ -71,12 +69,11 @@ void BRepMesh_WireInterferenceChecker::operator ()(
   if (*myStatus == BRepMesh_SelfIntersectingWire)
     return;
 
-  const BRepMeshCol::SegmentsTree&  aWireSegTree1  = myWires[theWireId];
-  const BRepMeshCol::Segment*       aWireSegments1 = &aWireSegTree1.first->front();
-  const BRepMeshCol::HBndBox2dTree& aWireBoxTree1  = aWireSegTree1.second;
-  const Standard_Integer aWireLen1 = (Standard_Integer)aWireSegTree1.first->size();
+  const BRepMesh::SegmentsTree&      aWireSegTree1  = myWires(theWireId);
+  const BRepMesh::HArray1OfSegments& aWireSegments1 = aWireSegTree1.first;
+  const BRepMesh::HBndBox2dTree&     aWireBoxTree1  = aWireSegTree1.second;
 
-  for (Standard_Integer aWireIt = theWireId; aWireIt < myWiresNb; ++aWireIt)
+  for (Standard_Integer aWireIt = theWireId; aWireIt <= myWires.Upper(); ++aWireIt)
   {
 #ifdef HAVE_TBB
     // Break execution in case if flag was raised by another thread
@@ -85,14 +82,16 @@ void BRepMesh_WireInterferenceChecker::operator ()(
 #endif
 
     const Standard_Boolean isSelfIntCheck = (aWireIt == theWireId);
-    const BRepMeshCol::SegmentsTree& aWireSegTree2 = 
-      isSelfIntCheck ? aWireSegTree1 : myWires[aWireIt];
+    const BRepMesh::SegmentsTree& aWireSegTree2 = 
+      isSelfIntCheck ? aWireSegTree1 : myWires(aWireIt);
 
-    const BRepMeshCol::Segment*       aWireSegments2 = &aWireSegTree2.first->front();
-    const BRepMeshCol::HBndBox2dTree& aWireBoxTree2  = aWireSegTree2.second;
+    const BRepMesh::HArray1OfSegments& aWireSegments2 = aWireSegTree2.first;
+    const BRepMesh::HBndBox2dTree&     aWireBoxTree2  = aWireSegTree2.second;
 
-    BRepMesh_WireChecker::BndBox2dTreeSelector aSelector ((Standard_Integer)aWireSegTree2.first->size());
-    for (Standard_Integer aSegmentId1 = 0; aSegmentId1 < aWireLen1; ++aSegmentId1)
+    BRepMesh_WireChecker::BndBox2dTreeSelector aSelector (aWireSegments2->Size());
+
+    Standard_Integer aSegmentId1 = aWireSegments1->Lower();
+    for (; aSegmentId1 <= aWireSegments1->Upper(); ++aSegmentId1)
     {
 #ifdef HAVE_TBB
       // Break execution in case if flag was raised by another thread
@@ -108,8 +107,8 @@ void BRepMesh_WireInterferenceChecker::operator ()(
       if (aWireBoxTree2->Select(aSelector) == 0)
         continue;
 
-      const BRepMeshCol::Segment& aSegment1 = aWireSegments1[aSegmentId1];
-      const BRepMeshCol::Array1OfInteger& aSelected = aSelector.Indices();
+      const BRepMesh::Segment& aSegment1 = aWireSegments1->Value(aSegmentId1);
+      const BRepMesh::Array1OfInteger& aSelected = aSelector.Indices();
       const Standard_Integer aSelectedNb = aSelector.IndicesNb();
       for (Standard_Integer aBndIt = 0; aBndIt < aSelectedNb; ++aBndIt)
       {
@@ -120,7 +119,7 @@ void BRepMesh_WireInterferenceChecker::operator ()(
 #endif
 
         const Standard_Integer aSegmentId2 = aSelected(aBndIt);
-        const BRepMeshCol::Segment& aSegment2 = aWireSegments2[aSegmentId2];
+        const BRepMesh::Segment& aSegment2 = aWireSegments2->Value(aSegmentId2);
 
         gp_Pnt2d aIntPnt;
         BRepMesh_GeomTool::IntFlag aIntStatus = BRepMesh_GeomTool::IntSegSeg(
@@ -139,7 +138,7 @@ void BRepMesh_WireInterferenceChecker::operator ()(
             const gp_XY& aRefPnt  = aIntPnt.Coord();
             for (Standard_Integer i = aSegmentId1; i < aSegmentId2; ++i)
             {
-              const BRepMeshCol::Segment& aSeg = aWireSegments1[i];
+              const BRepMesh::Segment& aSeg = aWireSegments1->Value(i);
               gp_XY aCurVec = aSeg.EndPnt - aRefPnt;
 
               if (aCurVec.SquareModulus() < gp::Resolution())

@@ -18,7 +18,7 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Macro.hxx>
 #include <BRepMesh_DataStructureOfDelaun.hxx>
-#include <BRepMesh_Collections.hxx>
+#include <BRepMesh.hxx>
 #include <Standard_Integer.hxx>
 #include <BRepMesh_Triangle.hxx>
 
@@ -75,25 +75,25 @@ public:
   }
   
   //! Returns selected nodes.
-  inline const BRepMeshCol::MapOfInteger& Nodes() const
+  inline const BRepMesh::MapOfInteger& Nodes() const
   {
     return myNodes;
   }
   
   //! Returns selected links.
-  inline const BRepMeshCol::MapOfInteger& Links() const
+  inline const BRepMesh::MapOfInteger& Links() const
   {
     return myLinks;
   }
   
   //! Returns selected elements.
-  inline const BRepMeshCol::MapOfInteger& Elements() const
+  inline const BRepMesh::MapOfInteger& Elements() const
   {
     return myElements;
   }
   
   //! Gives the list of incices of frontier links.
-  inline const BRepMeshCol::MapOfInteger& FrontierLinks() const
+  inline const BRepMesh::MapOfInteger& FrontierLinks() const
   {
     return myFrontier;
   }
@@ -105,10 +105,10 @@ private:
 
 private:
   Handle(BRepMesh_DataStructureOfDelaun) myMesh;
-  BRepMeshCol::MapOfInteger              myNodes;
-  BRepMeshCol::MapOfInteger              myLinks;
-  BRepMeshCol::MapOfInteger              myElements;
-  BRepMeshCol::MapOfInteger              myFrontier;
+  BRepMesh::MapOfInteger                 myNodes;
+  BRepMesh::MapOfInteger                 myLinks;
+  BRepMesh::MapOfInteger                 myElements;
+  BRepMesh::MapOfInteger                 myFrontier;
 };
 
 #endif

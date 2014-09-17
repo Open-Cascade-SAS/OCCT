@@ -19,7 +19,7 @@
 #include <Precision.hxx>
 #include <gp_XY.hxx>
 #include <gp_XYZ.hxx>
-#include <BRepMesh_Collections.hxx>
+#include <BRepMesh.hxx>
 #include <NCollection_CellFilter.hxx>
 #include <BRepMesh_Vertex.hxx>
 
@@ -30,11 +30,11 @@ public:
   typedef Standard_Integer Target;
 
   //! Constructor.
-  //! \param theReservedSize size to be reserved for vector of vertices.
-  //! \param theAllocator memory allocator to be used by internal collections.
+  //! @param theReservedSize size to be reserved for vector of vertices.
+  //! @param theAllocator memory allocator to be used by internal collections.
   Standard_EXPORT BRepMesh_VertexInspector (
-    const Standard_Integer        theReservedSize,
-    const BRepMeshCol::Allocator& theAllocator)
+    const Standard_Integer                  theReservedSize,
+    const Handle(NCollection_IncAllocator)& theAllocator)
     : myResIndices(theAllocator),
       myVertices  (theReservedSize),
       myDelNodes  (theAllocator)
@@ -43,7 +43,7 @@ public:
   }
 
   //! Registers the given vertex.
-  //! \param theVertex vertex to be registered.
+  //! @param theVertex vertex to be registered.
   Standard_EXPORT Standard_Integer Add(const BRepMesh_Vertex& theVertex)
   {
     if( myDelNodes.IsEmpty() )
@@ -69,8 +69,8 @@ public:
   
   //! Sets the tolerance to be used for identification of 
   //! coincident vertices.
-  //! \param theToleranceX tolerance for X dimension.
-  //! \param theToleranceY tolerance for Y dimension.
+  //! @param theToleranceX tolerance for X dimension.
+  //! @param theToleranceY tolerance for Y dimension.
   inline void SetTolerance(const Standard_Real theToleranceX,
                            const Standard_Real theToleranceY)
   {
@@ -86,7 +86,7 @@ public:
   }
 
   //! Deletes vertex with the given index.
-  //! \param theIndex index of vertex to be removed.
+  //! @param theIndex index of vertex to be removed.
   inline void Delete(const Standard_Integer theIndex)
   {
     myVertices(theIndex - 1).SetMovability(BRepMesh_Deleted);
@@ -124,14 +124,14 @@ public:
   
   //! Returns list with indexes of vertices that have movability attribute 
   //! equal to BRepMesh_Deleted and can be replaced with another node.
-  inline const BRepMeshCol::ListOfInteger& GetListOfDelPoints() const
+  inline const BRepMesh::ListOfInteger& GetListOfDelPoints() const
   {
     return myDelNodes;
   }
 
   //! Performs inspection of a point with the given index.
-  //! \param theTargetIndex index of a circle to be checked.
-  //! \return status of the check.
+  //! @param theTargetIndex index of a circle to be checked.
+  //! @return status of the check.
   Standard_EXPORT NCollection_CellFilter_Action Inspect(const Standard_Integer theTargetIndex);
 
   //! Checks indices for equlity.
@@ -143,11 +143,11 @@ public:
 
 private:
 
-  Standard_Real               myTolerance[2];
-  BRepMeshCol::ListOfInteger  myResIndices;
-  BRepMeshCol::VectorOfVertex myVertices;
-  BRepMeshCol::ListOfInteger  myDelNodes;
-  gp_XY                       myPoint;
+  Standard_Real            myTolerance[2];
+  BRepMesh::ListOfInteger  myResIndices;
+  BRepMesh::VectorOfVertex myVertices;
+  BRepMesh::ListOfInteger  myDelNodes;
+  gp_XY                    myPoint;
 };
 
 #endif

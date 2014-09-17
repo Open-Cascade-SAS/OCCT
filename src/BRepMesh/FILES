@@ -1,8 +1,10 @@
+BRepMesh.hxx
 BRepMesh_PluginEntryType.hxx
 BRepMesh_PluginMacro.hxx
 BRepMesh_DegreeOfFreedom.hxx
 BRepMesh_FactoryError.hxx
 BRepMesh_Vertex.hxx
+BRepMesh_OrientedEdge.hxx
 BRepMesh_Edge.hxx
 BRepMesh_Triangle.hxx
 BRepMesh_Circle.hxx
@@ -16,7 +18,6 @@ BRepMesh_DiscretRoot.hxx
 BRepMesh_DiscretRoot.cxx
 BRepMesh_DiscretFactory.hxx
 BRepMesh_DiscretFactory.cxx
-BRepMesh_Collections.hxx
 BRepMesh_DataStructureOfDelaun.hxx
 BRepMesh_DataStructureOfDelaun.cxx
 BRepMesh_CircleTool.hxx

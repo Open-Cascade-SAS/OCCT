@@ -31,10 +31,10 @@ class BRepMesh_EdgeChecker
 public:
 
   //! Constructor
-  //! \param theFaceTri Poly triangulation of face the edges relie to.
-  //! \param theFaceLoc Face location to be used to extract polygon on triangulation.
-  //! \param theMutex Upper level shared mutex to protect isFailed flag from concurrent write access.
-  //! \param isFailed Upper level shared flag indicating that polygon on triangulation of checked 
+  //! @param theFaceTri Poly triangulation of face the edges relie to.
+  //! @param theFaceLoc Face location to be used to extract polygon on triangulation.
+  //! @param theMutex Upper level shared mutex to protect isFailed flag from concurrent write access.
+  //! @param isFailed Upper level shared flag indicating that polygon on triangulation of checked 
   //! edge is not consistent. If this flag is set to TRUE, other tasks will not check details of their data.
   BRepMesh_EdgeChecker( Handle(Poly_Triangulation)& theFaceTri,
                         TopLoc_Location&            theFaceLoc,
@@ -48,7 +48,7 @@ public:
   }
 
   //! Checker's body.
-  //! \param theEdge edge to be checked.
+  //! @param theEdge edge to be checked.
   void operator ()(const TopoDS_Edge& theEdge) const
   {
     if (theEdge.IsNull() || myIsFailed)

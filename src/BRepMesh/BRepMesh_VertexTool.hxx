@@ -18,7 +18,7 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Macro.hxx>
 #include <BRepMesh_VertexInspector.hxx>
-#include <BRepMesh_Collections.hxx>
+#include <BRepMesh.hxx>
 #include <Standard_OStream.hxx>
 #include <gp_XYZ.hxx>
 #include <gp_XY.hxx>
@@ -35,10 +35,11 @@ public:
   DEFINE_STANDARD_ALLOC
   
   //! Constructor.
-  //! \param theReservedSize size to be reserved for vector of vertices.
-  //! \param theAllocator memory allocator to be used by internal collections.
-  Standard_EXPORT BRepMesh_VertexTool(const Standard_Integer        theReservedSize,
-                                      const BRepMeshCol::Allocator& theAllocator);
+  //! @param theReservedSize size to be reserved for vector of vertices.
+  //! @param theAllocator memory allocator to be used by internal collections.
+  Standard_EXPORT BRepMesh_VertexTool(
+    const Standard_Integer                  theReservedSize,
+    const Handle(NCollection_IncAllocator)& theAllocator);
 
   //! Sets new size of cell for cellfilter equal in both directions.
   Standard_EXPORT void SetCellSize(const Standard_Real theSize)
@@ -48,8 +49,8 @@ public:
   }
 
   //! Sets new size of cell for cellfilter.
-  //! \param theSizeX size for X dimension.
-  //! \param theSizeY size for Y dimension.
+  //! @param theSizeX size for X dimension.
+  //! @param theSizeY size for Y dimension.
   Standard_EXPORT void SetCellSize(const Standard_Real theSizeX,
                                    const Standard_Real theSizeY)
   {
@@ -69,8 +70,8 @@ public:
 
   //! Sets the tolerance to be used for identification of 
   //! coincident vertices.
-  //! \param theToleranceX tolerance for X dimension.
-  //! \param theToleranceY tolerance for Y dimension.
+  //! @param theToleranceX tolerance for X dimension.
+  //! @param theToleranceY tolerance for Y dimension.
   Standard_EXPORT void SetTolerance(const Standard_Real theToleranceX,
                                     const Standard_Real theToleranceY)
   {
@@ -83,24 +84,24 @@ public:
   Standard_EXPORT Standard_Integer Add(const BRepMesh_Vertex& theVertex);
 
   //! Adds vertex with associated data to the tool.
-  //! \param theVertex vertex to be added.
-  //! \param theParams data associated with the vertex.
-  Standard_EXPORT Standard_Integer Add(const BRepMesh_Vertex&            theVertex,
-                                       const BRepMeshCol::ListOfInteger& theParams);
+  //! @param theVertex vertex to be added.
+  //! @param theParams data associated with the vertex.
+  Standard_EXPORT Standard_Integer Add(const BRepMesh_Vertex&         theVertex,
+                                       const BRepMesh::ListOfInteger& theParams);
 
   //! Deletes vertex with the given index from the tool.
   Standard_EXPORT void Delete(const Standard_Integer theIndex);
 
   //! Returns data assigned to link with the given index.
-  //! \param theIndex index of link which data should be returned.
-  //! \return attached data.
-  inline BRepMeshCol::ListOfInteger& FindFromIndex(const Standard_Integer theIndex) const
+  //! @param theIndex index of link which data should be returned.
+  //! @return attached data.
+  inline BRepMesh::ListOfInteger& FindFromIndex(const Standard_Integer theIndex) const
   {
-    return (BRepMeshCol::ListOfInteger&)myLinksMap.Find(theIndex);
+    return (BRepMesh::ListOfInteger&)myLinksMap.Find(theIndex);
   }
 
   //! Alias for FindFromIndex.
-  BRepMeshCol::ListOfInteger& operator()(const Standard_Integer theIndex) const
+  BRepMesh::ListOfInteger& operator()(const Standard_Integer theIndex) const
   {
     return FindFromIndex(theIndex);
   }
@@ -132,12 +133,12 @@ public:
   }
 
   //! Substitutes vertex with the given by the given vertex with attributes.
-  //! \param theIndex index of vertex to be substituted.
-  //! \param theVertex replacement vertex.
-  //! \param theData data associated to the vertex.
-  Standard_EXPORT void Substitute(const Standard_Integer            theIndex,
-                                  const BRepMesh_Vertex&            theVertex,
-                                  const BRepMeshCol::ListOfInteger& theData);
+  //! @param theIndex index of vertex to be substituted.
+  //! @param theVertex replacement vertex.
+  //! @param theData data associated to the vertex.
+  Standard_EXPORT void Substitute(const Standard_Integer         theIndex,
+                                  const BRepMesh_Vertex&         theVertex,
+                                  const BRepMesh::ListOfInteger& theData);
 
   //! Remove last node from the structure.
   inline void RemoveLast()
@@ -147,7 +148,7 @@ public:
 
   //! Returns the list with indexes of vertices that have movability attribute
   //! equal to BRepMesh_Deleted and can be replaced with another node.
-  inline const BRepMeshCol::ListOfInteger& GetListOfDelNodes() const
+  inline const BRepMesh::ListOfInteger& GetListOfDelNodes() const
   {
     return mySelector.GetListOfDelPoints();
   }
@@ -158,9 +159,9 @@ public:
 private:
   
   //! Expands the given point according to specified tolerance.
-  //! \param thePoint point to be expanded.
-  //! \param[out] theMinPoint bottom left corner of area defined by expanded point.
-  //! \param[out] theMaxPoint top right corner of area defined by expanded point.
+  //! @param thePoint point to be expanded.
+  //! @param[out] theMinPoint bottom left corner of area defined by expanded point.
+  //! @param[out] theMaxPoint top right corner of area defined by expanded point.
   inline void expandPoint(const gp_XY& thePoint,
                           gp_XY&       theMinPoint,
                           gp_XY&       theMaxPoint)
@@ -173,11 +174,11 @@ private:
 
 private:
 
-  BRepMeshCol::Allocator                     myAllocator;
-  BRepMeshCol::VertexCellFilter              myCellFilter;
-  BRepMesh_VertexInspector                   mySelector;
-  BRepMeshCol::DMapOfIntegerListOfInteger    myLinksMap;
-  Standard_Real                              myTolerance[2];
+  Handle(NCollection_IncAllocator)      myAllocator;
+  BRepMesh::VertexCellFilter            myCellFilter;
+  BRepMesh_VertexInspector              mySelector;
+  BRepMesh::DMapOfIntegerListOfInteger  myLinksMap;
+  Standard_Real                         myTolerance[2];
 };
 
 #endif

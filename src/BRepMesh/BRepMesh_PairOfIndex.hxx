@@ -88,7 +88,7 @@ public:
   }
 
   //! Returns index corresponding to the given position in the pair.
-  //! \param thePairPos position of index in the pair (1 or 2).
+  //! @param thePairPos position of index in the pair (1 or 2).
   inline Standard_Integer Index(const Standard_Integer thePairPos) const
   {
     if (thePairPos != 1 && thePairPos != 2)
@@ -98,8 +98,8 @@ public:
   }
 
   //! Sets index corresponding to the given position in the pair.
-  //! \param thePairPos position of index in the pair (1 or 2).
-  //! \param theIndex index to be stored.
+  //! @param thePairPos position of index in the pair (1 or 2).
+  //! @param theIndex index to be stored.
   inline void SetIndex(const Standard_Integer thePairPos,
                        const Standard_Integer theIndex)
   {
@@ -110,7 +110,7 @@ public:
   }
 
   //! Remove index from the given position.
-  //! \param thePairPos position of index in the pair (1 or 2).
+  //! @param thePairPos position of index in the pair (1 or 2).
   inline void RemoveIndex(const Standard_Integer thePairPos)
   {
     if (thePairPos != 1 && thePairPos != 2)

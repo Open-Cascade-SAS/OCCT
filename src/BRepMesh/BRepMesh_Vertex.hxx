@@ -38,9 +38,9 @@ public:
   }
   
   //! Creates vertex associated with point in 3d space.
-  //! \param theUV position of vertex in parametric space.
-  //! \param theLocation3d index of 3d point to be associated with vertex.
-  //! \param theMovability movability of the vertex.
+  //! @param theUV position of vertex in parametric space.
+  //! @param theLocation3d index of 3d point to be associated with vertex.
+  //! @param theMovability movability of the vertex.
   Standard_EXPORT BRepMesh_Vertex(const gp_XY&                   theUV,
                                   const Standard_Integer         theLocation3d,
                                   const BRepMesh_DegreeOfFreedom theMovability)
@@ -49,9 +49,9 @@ public:
   }
   
   //! Creates vertex without association with point in 3d space.
-  //! \param theU U position of vertex in parametric space.
-  //! \param theV V position of vertex in parametric space.
-  //! \param theMovability movability of the vertex.
+  //! @param theU U position of vertex in parametric space.
+  //! @param theV V position of vertex in parametric space.
+  //! @param theMovability movability of the vertex.
   Standard_EXPORT BRepMesh_Vertex(const Standard_Real            theU,
                                   const Standard_Real            theV,
                                   const BRepMesh_DegreeOfFreedom theMovability)
@@ -61,9 +61,9 @@ public:
   {}
 
   //! Initializes vertex associated with point in 3d space.
-  //! \param theUV position of vertex in parametric space.
-  //! \param theLocation3d index of 3d point to be associated with vertex.
-  //! \param theMovability movability of the vertex.
+  //! @param theUV position of vertex in parametric space.
+  //! @param theLocation3d index of 3d point to be associated with vertex.
+  //! @param theMovability movability of the vertex.
   inline void Initialize(const gp_XY&                   theUV,
                          const Standard_Integer         theLocation3d,
                          const BRepMesh_DegreeOfFreedom theMovability)
@@ -98,16 +98,16 @@ public:
   }
   
   //! Returns hash code for this vertex.
-  //! \param theUpper upper index in the container.
-  //! \return hash code.
+  //! @param theUpper upper index in the container.
+  //! @return hash code.
   Standard_EXPORT Standard_Integer HashCode(const Standard_Integer Upper) const
   {
     return ::HashCode(Floor(1e5 * myUV.X()) * Floor(1e5 * myUV.Y()), Upper);
   }
   
   //! Checks for equality with another vertex.
-  //! \param theOther vertex to be checked against this one.
-  //! \return TRUE if equal, FALSE if not.
+  //! @param theOther vertex to be checked against this one.
+  //! @return TRUE if equal, FALSE if not.
   Standard_EXPORT Standard_Boolean IsEqual(const BRepMesh_Vertex& theOther) const
   {
     if (myMovability          == BRepMesh_Deleted || 

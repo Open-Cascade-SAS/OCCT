@@ -40,7 +40,7 @@ class BRepMesh_FaceChecker
 public:
 
   //! Constructor
-  //! \param isInParallel Flag indicates that face edges should be checked in parallel.
+  //! @param isInParallel Flag indicates that face edges should be checked in parallel.
   BRepMesh_FaceChecker(const Standard_Boolean isInParallel)
     : myIsFailed(Standard_False),
       myIsInParallel(isInParallel)
@@ -48,7 +48,7 @@ public:
   }
 
   //! Checker's body.
-  //! \param theFace Face to be checked.
+  //! @param theFace Face to be checked.
   void operator ()(const TopoDS_Face& theFace) const
   {
     if (theFace.IsNull() || myIsFailed)

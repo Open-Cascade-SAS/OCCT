@@ -196,7 +196,7 @@ void BRepMesh_FastDiscretFace::Add(const Handle(BRepMesh_FaceAttribute)& theAttr
   const Standard_Real deltaX = myAttribute->GetDeltaX();
   const Standard_Real deltaY = myAttribute->GetDeltaY();
 
-  BRepMeshCol::Array1OfInteger tabvert_corr(1, nbVertices);
+  BRepMesh::Array1OfInteger tabvert_corr(1, nbVertices);
 
   // Check the necessity to fill the map of parameters
   const Standard_Boolean useUVParam = (thetype == GeomAbs_Torus         ||
@@ -223,7 +223,7 @@ void BRepMesh_FastDiscretFace::Add(const Handle(BRepMesh_FaceAttribute)& theAttr
 
     aPnt2d = myAttribute->Scale(aPnt2d, Standard_True);
     BRepMesh_Vertex v_new(aPnt2d, v.Location3d(), v.Movability());
-    const BRepMeshCol::ListOfInteger& alist = myStructure->LinksConnectedTo(i);
+    const BRepMesh::ListOfInteger& alist = myStructure->LinksConnectedTo(i);
     aMoveNodes.Add(v_new, alist);
     tabvert_corr(i) = i;
   }
@@ -261,7 +261,7 @@ void BRepMesh_FastDiscretFace::Add(const Handle(BRepMesh_FaceAttribute)& theAttr
   Standard_Real aDef = -1;
   if ( !isaline && myStructure->ElementsOfDomain().Extent() > 0 )
   {
-    BRepMeshCol::ListOfVertex aNewVertices;
+    BRepMesh::ListOfVertex aNewVertices;
     if ( !rajout )
     {
       aDef = control(aNewVertices, trigu, Standard_True);
@@ -298,7 +298,7 @@ void BRepMesh_FastDiscretFace::Add(const Handle(BRepMesh_FaceAttribute)& theAttr
     const BRepMesh_Vertex& v = myStructure->GetNode(i);
     gp_XY aPnt2d = myAttribute->Scale(v.Coord(), Standard_False);
     BRepMesh_Vertex v_new(aPnt2d, v.Location3d(), v.Movability());
-    const BRepMeshCol::ListOfInteger& alist = myStructure->LinksConnectedTo(i);
+    const BRepMesh::ListOfInteger& alist = myStructure->LinksConnectedTo(i);
     aMoveNodes.Add(v_new, alist);
 
     // Register internal nodes used in triangulation
@@ -316,14 +316,14 @@ void BRepMesh_FastDiscretFace::Add(const Handle(BRepMesh_FaceAttribute)& theAttr
 //purpose  : 
 //=======================================================================
 Standard_Boolean BRepMesh_FastDiscretFace::addVerticesToMesh(
-  const BRepMeshCol::ListOfVertex& theVertices,
-  BRepMesh_Delaun&                 theMeshBuilder)
+  const BRepMesh::ListOfVertex& theVertices,
+  BRepMesh_Delaun&              theMeshBuilder)
 {
   if (theVertices.IsEmpty())
     return Standard_False;
 
-  BRepMeshCol::Array1OfVertexOfDelaun aArrayOfNewVertices(1, theVertices.Extent());
-  BRepMeshCol::ListOfVertex::Iterator aVertexIt(theVertices);
+  BRepMesh::Array1OfVertexOfDelaun aArrayOfNewVertices(1, theVertices.Extent());
+  BRepMesh::ListOfVertex::Iterator aVertexIt(theVertices);
   for (Standard_Integer aVertexId = 0; aVertexIt.More(); aVertexIt.Next())
     aArrayOfNewVertices(++aVertexId) = aVertexIt.Value();
 
@@ -335,13 +335,13 @@ Standard_Boolean BRepMesh_FastDiscretFace::addVerticesToMesh(
 //function : insertInternalVertices
 //purpose  : 
 //=======================================================================
-static void filterParameters(const BRepMeshCol::IMapOfReal& theParams,
-                             const Standard_Real            theMinDist,
-                             const Standard_Real            theFilterDist,
-                             BRepMeshCol::SequenceOfReal&   theResult)
+static void filterParameters(const BRepMesh::IMapOfReal& theParams,
+                             const Standard_Real         theMinDist,
+                             const Standard_Real         theFilterDist,
+                             BRepMesh::SequenceOfReal&   theResult)
 {
   // Sort sequence of parameters
-  BRepMeshCol::SequenceOfReal aParamTmp;
+  BRepMesh::SequenceOfReal aParamTmp;
   Standard_Integer aParamLength = 1;
   const Standard_Integer anInitLen = theParams.Extent();
     
@@ -430,8 +430,8 @@ static void filterParameters(const BRepMeshCol::IMapOfReal& theParams,
 }
 
 void BRepMesh_FastDiscretFace::insertInternalVertices(
-  BRepMeshCol::ListOfVertex&  theNewVertices,
-  BRepMesh_Delaun&            theMeshBuilder)
+  BRepMesh::ListOfVertex&  theNewVertices,
+  BRepMesh_Delaun&         theMeshBuilder)
 {
   const Handle(BRepAdaptor_HSurface)& gFace = myAttribute->Surface();
   switch (gFace->GetType())
@@ -470,7 +470,7 @@ void BRepMesh_FastDiscretFace::insertInternalVertices(
 //purpose  : 
 //=======================================================================
 void BRepMesh_FastDiscretFace::insertInternalVerticesSphere(
-  BRepMeshCol::ListOfVertex& theNewVertices)
+  BRepMesh::ListOfVertex& theNewVertices)
 {
   const Standard_Real umax = myAttribute->GetUMax();
   const Standard_Real umin = myAttribute->GetUMin();
@@ -517,7 +517,7 @@ void BRepMesh_FastDiscretFace::insertInternalVerticesSphere(
 //purpose  : 
 //=======================================================================
 void BRepMesh_FastDiscretFace::insertInternalVerticesCylinder(
-  BRepMeshCol::ListOfVertex& theNewVertices)
+  BRepMesh::ListOfVertex& theNewVertices)
 {
   const Standard_Real umax = myAttribute->GetUMax();
   const Standard_Real umin = myAttribute->GetUMin();
@@ -557,7 +557,7 @@ void BRepMesh_FastDiscretFace::insertInternalVerticesCylinder(
 //purpose  : 
 //=======================================================================
 void BRepMesh_FastDiscretFace::insertInternalVerticesCone(
-  BRepMeshCol::ListOfVertex& theNewVertices)
+  BRepMesh::ListOfVertex& theNewVertices)
 {
   const Standard_Real umax = myAttribute->GetUMax();
   const Standard_Real umin = myAttribute->GetUMin();
@@ -592,7 +592,7 @@ void BRepMesh_FastDiscretFace::insertInternalVerticesCone(
 //purpose  : 
 //=======================================================================
 void BRepMesh_FastDiscretFace::insertInternalVerticesTorus(
-  BRepMeshCol::ListOfVertex& theNewVertices)
+  BRepMesh::ListOfVertex& theNewVertices)
 {
   const Standard_Real umax     = myAttribute->GetUMax();
   const Standard_Real umin     = myAttribute->GetUMin();
@@ -609,7 +609,7 @@ void BRepMesh_FastDiscretFace::insertInternalVerticesTorus(
   Standard_Real pp, pasu, pasv;
   Standard_Real r = T.MinorRadius(), R = T.MajorRadius();
 
-  BRepMeshCol::SequenceOfReal ParamU, ParamV;
+  BRepMesh::SequenceOfReal ParamU, ParamV;
 
   Standard_Real Du, Dv;//, pasu, pasv;
   Dv = Max(1.0e0 - (aDefFace / r), 0.0e0);
@@ -726,7 +726,7 @@ void BRepMesh_FastDiscretFace::insertInternalVerticesTorus(
 //purpose  : 
 //=======================================================================
 void BRepMesh_FastDiscretFace::insertInternalVerticesBSpline(
-  BRepMeshCol::ListOfVertex& theNewVertices)
+  BRepMesh::ListOfVertex& theNewVertices)
 {
   const Standard_Real aRange[2][2] = {
       { myAttribute->GetUMax(), myAttribute->GetUMin() },
@@ -741,7 +741,7 @@ void BRepMesh_FastDiscretFace::insertInternalVerticesBSpline(
   const Standard_Real                 aDefFace = myAttribute->GetDefFace();
   const Handle(BRepAdaptor_HSurface)& gFace    = myAttribute->Surface();
 
-  BRepMeshCol::SequenceOfReal aParams[2];
+  BRepMesh::SequenceOfReal aParams[2];
   for (Standard_Integer i = 0; i < 2; ++i)
   {
     Standard_Boolean isU = (i == 0);
@@ -773,8 +773,8 @@ void BRepMesh_FastDiscretFace::insertInternalVerticesBSpline(
   const Standard_Real aSqPrecision = aPrecision * aPrecision;
   for (Standard_Integer k = 0; k < 2; ++k)
   {
-    BRepMeshCol::SequenceOfReal& aParams1 = aParams[k];
-    BRepMeshCol::SequenceOfReal& aParams2 = aParams[(k + 1) % 2];
+    BRepMesh::SequenceOfReal& aParams1 = aParams[k];
+    BRepMesh::SequenceOfReal& aParams2 = aParams[(k + 1) % 2];
     const Standard_Boolean isU = (k == 0);
     Standard_Integer aStartIndex, aEndIndex; 
     if (isU)
@@ -873,7 +873,7 @@ void BRepMesh_FastDiscretFace::insertInternalVerticesBSpline(
 //purpose  : 
 //=======================================================================
 void BRepMesh_FastDiscretFace::insertInternalVerticesOther(
-  BRepMeshCol::ListOfVertex& theNewVertices)
+  BRepMesh::ListOfVertex& theNewVertices)
 {
   const Standard_Real aAngle = 0.35;
   const Standard_Real aRange[2][2] = {
@@ -884,7 +884,7 @@ void BRepMesh_FastDiscretFace::insertInternalVerticesOther(
   const Standard_Real                 aDefFace = myAttribute->GetDefFace();
   const Handle(BRepAdaptor_HSurface)& gFace = myAttribute->Surface();
 
-  BRepMeshCol::SequenceOfReal aParams[2];
+  BRepMesh::SequenceOfReal aParams[2];
   const Standard_Integer aIsoPointsNb = 11;
   for (Standard_Integer k = 0; k < 2; ++k)
   {
@@ -918,8 +918,8 @@ void BRepMesh_FastDiscretFace::insertInternalVerticesOther(
       }
     }
 
-    BRepMeshCol::SequenceOfReal& aParams2 = aParams[aOtherParamsIndex];
-    GCPnts_TangentialDeflection& aDIso    = aDiscretIso[aMaxIndex];
+    BRepMesh::SequenceOfReal& aParams2 = aParams[aOtherParamsIndex];
+    GCPnts_TangentialDeflection& aDIso = aDiscretIso[aMaxIndex];
     for (Standard_Integer i = 1; i <= aMaxPointsNb; ++i)
       aParams2.Append(aDIso.Parameter(i));
 
@@ -953,9 +953,9 @@ void BRepMesh_FastDiscretFace::insertInternalVerticesOther(
 //purpose  : 
 //=======================================================================
 Standard_Real BRepMesh_FastDiscretFace::control(
-  BRepMeshCol::ListOfVertex&  theNewVertices,
-  BRepMesh_Delaun&            theTrigu,
-  const Standard_Boolean      theIsFirst)
+  BRepMesh::ListOfVertex&  theNewVertices,
+  BRepMesh_Delaun&         theTrigu,
+  const Standard_Boolean   theIsFirst)
 
 #define CHECK_DEF_AND_INSERT_CURRENT(isSkipped)                 \
 if (aSqDef > aMaxSqDef)                                         \
@@ -989,7 +989,7 @@ if (aSqDef > aSqDefFace)                                        \
     aBSpline = gFace->BSpline();
 
   NCollection_DataMap<Standard_Integer, gp_Dir> aNorMap;
-  BRepMeshCol::MapOfIntegerInteger              aStatMap;
+  BRepMesh::MapOfIntegerInteger                 aStatMap;
   NCollection_Map<BRepMesh_OrientedEdge>        aCouples(3 * aTrianglesNb);
 
   // Perform refinement passes
@@ -1014,8 +1014,8 @@ if (aSqDef > aSqDefFace)                                        \
       break;
 
     // Iterate on current triangles
-    const BRepMeshCol::MapOfInteger& aTriangles = myStructure->ElementsOfDomain();
-    BRepMeshCol::MapOfInteger::Iterator aTriangleIt(aTriangles);
+    const BRepMesh::MapOfInteger& aTriangles = myStructure->ElementsOfDomain();
+    BRepMesh::MapOfInteger::Iterator aTriangleIt(aTriangles);
     for (; aTriangleIt.More(); aTriangleIt.Next())
     {
       const Standard_Integer aTriangleId = aTriangleIt.Key();
@@ -1181,7 +1181,7 @@ void BRepMesh_FastDiscretFace::add(const TopoDS_Vertex& theVertex)
 
     gp_Pnt2d aPnt2d = BRep_Tool::Parameters(theVertex, myAttribute->Face());
 
-    N_HANDLE<FixedVExplorer> aFixedVExplorer = new FixedVExplorer(theVertex);
+    NCollection_Handle<FixedVExplorer> aFixedVExplorer = new FixedVExplorer(theVertex);
     Standard_Integer aIndex = myAttribute->GetVertexIndex(aFixedVExplorer);
     gp_XY anUV = BRepMesh_ShapeTool::FindUV(aIndex, aPnt2d,
       theVertex, BRep_Tool::Tolerance(theVertex), myAttribute);
@@ -1199,9 +1199,9 @@ void BRepMesh_FastDiscretFace::add(const TopoDS_Vertex& theVertex)
 //purpose  : 
 //=======================================================================
 void BRepMesh_FastDiscretFace::insertVertex(
-  const gp_Pnt&              thePnt3d,
-  const gp_XY&               theUV,
-  BRepMeshCol::ListOfVertex& theVertices)
+  const gp_Pnt&           thePnt3d,
+  const gp_XY&            theUV,
+  BRepMesh::ListOfVertex& theVertices)
 {
   Standard_Integer aNbLocat = myAttribute->LastPointId();
   mySurfacePoints->Bind(++aNbLocat, thePnt3d);

@@ -47,7 +47,7 @@ NCollection_CellFilter_Action BRepMesh_CircleInspector::Inspect(
 //purpose  : 
 //=======================================================================
 BRepMesh_CircleTool::BRepMesh_CircleTool(
-  const BRepMeshCol::Allocator& theAllocator)
+  const Handle(NCollection_IncAllocator)& theAllocator)
 : myTolerance (Precision::PConfusion() * Precision::PConfusion()),
   myAllocator (theAllocator),
   myCellFilter(10, theAllocator),
@@ -60,8 +60,8 @@ BRepMesh_CircleTool::BRepMesh_CircleTool(
 //purpose  : 
 //=======================================================================
 BRepMesh_CircleTool::BRepMesh_CircleTool(
-  const Standard_Integer        theReservedSize,
-  const BRepMeshCol::Allocator& theAllocator)
+  const Standard_Integer                  theReservedSize,
+  const Handle(NCollection_IncAllocator)& theAllocator)
 : myTolerance (Precision::PConfusion() * Precision::PConfusion()),
   myAllocator (theAllocator),
   myCellFilter(10, theAllocator),
@@ -164,7 +164,7 @@ void BRepMesh_CircleTool::Delete(const Standard_Integer theIndex)
 //function : Select
 //purpose  : 
 //=======================================================================
-BRepMeshCol::ListOfInteger& BRepMesh_CircleTool::Select(const gp_XY& thePoint)
+BRepMesh::ListOfInteger& BRepMesh_CircleTool::Select(const gp_XY& thePoint)
 {
   mySelector.SetPoint(thePoint);
   myCellFilter.Inspect(thePoint, mySelector);

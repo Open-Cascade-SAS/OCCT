@@ -100,7 +100,9 @@ BRepMesh_FastDiscret::BRepMesh_FastDiscret(
   myInParallel (isInParallel),
   myRelative (theRelative),
   myShapetrigu (theShapetrigu), 
-  myInshape (theInshape)
+  myInshape (theInshape),
+  myBoundaryVertices(new BRepMesh::DMapOfVertexInteger),
+  myBoundaryPoints(new BRepMesh::DMapOfIntegerPnt)
 {
   if ( myRelative )
     BRepMesh_ShapeTool::BoxMaxDimension(theBox, myDtotale);
@@ -125,7 +127,9 @@ BRepMesh_FastDiscret::BRepMesh_FastDiscret(const TopoDS_Shape&    theShape,
   myInParallel (isInParallel),
   myRelative (theRelative),
   myShapetrigu (theShapetrigu),
-  myInshape (theInshape)
+  myInshape (theInshape),
+  myBoundaryVertices(new BRepMesh::DMapOfVertexInteger),
+  myBoundaryPoints(new BRepMesh::DMapOfIntegerPnt)
 {
   if ( myRelative )
     BRepMesh_ShapeTool::BoxMaxDimension(theBox, myDtotale);
@@ -227,8 +231,8 @@ Standard_Integer BRepMesh_FastDiscret::Add(const TopoDS_Face& theFace)
     if (!myWithShare)
     {
       myEdges.Clear();
-      myBoundaryVertices.Clear();
-      myBoundaryPoints.Clear();
+      myBoundaryVertices->Clear();
+      myBoundaryPoints->Clear();
     }
 
     Standard_Real defedge;
@@ -241,8 +245,8 @@ Standard_Integer BRepMesh_FastDiscret::Add(const TopoDS_Face& theFace)
     if (!myRelative)
       defface = Max(myDeflection, maxdef);
 
-    N_SEQUENCE<EdgePCurve>  aPCurves;
-    N_SEQUENCE<TopoDS_Edge> aFaceEdges;
+    NCollection_Sequence<EdgePCurve>  aPCurves;
+    NCollection_Sequence<TopoDS_Edge> aFaceEdges;
 
     const TopoDS_Face&                  aFace = myAttribute->Face();
     const Handle(BRepAdaptor_HSurface)& gFace = myAttribute->Surface();
@@ -414,7 +418,7 @@ Standard_Integer BRepMesh_FastDiscret::Add(const TopoDS_Face& theFace)
       Standard_Real deltaY = 1.0;
 
       {
-        BRepMeshCol::HClassifier& aClassifier = myAttribute->ChangeClassifier();
+        BRepMesh::HClassifier& aClassifier = myAttribute->ChangeClassifier();
         BRepMesh_WireChecker aDFaceChecker(aFace, Precision::PConfusion(),
           myInternalEdges, myVertexEdgeMap, myStructure,
           myumin, myumax, myvmin, myvmax, myInParallel );
@@ -770,7 +774,7 @@ void BRepMesh_FastDiscret::add(
     for (Standard_Integer i = 2; i < aNodesNb; ++i)
     {
       const Standard_Integer aPointId = aNodes(i);
-      gp_Pnt& aPnt = myBoundaryPoints(aPointId);
+      const gp_Pnt& aPnt = myBoundaryPoints->Find(aPointId);
 
       const Standard_Real aParam = aProvider.Parameter(i, aPnt);
       gp_Pnt2d aUV = thePCurve.Curve2d->Value(aParam);
@@ -892,7 +896,7 @@ void BRepMesh_FastDiscret::update(
       gp_Pnt2d      aUV;
       Standard_Real aParam;
       aEdgeTool->Value(i, aParam, aPnt, aUV);
-      myBoundaryPoints.Bind(++aLastPointId, aPnt);
+      myBoundaryPoints->Bind(++aLastPointId, aPnt);
 
       Standard_Integer iv2, isv;
       myAttribute->AddNode(aLastPointId, aUV.Coord(), BRepMesh_Frontier, iv2, isv);

@@ -31,8 +31,8 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_DataStructureOfDelaun, Standard_Transient)
 //purpose  : 
 //=======================================================================
 BRepMesh_DataStructureOfDelaun::BRepMesh_DataStructureOfDelaun(
-  const BRepMeshCol::Allocator& theAllocator,
-  const Standard_Integer        theReservedNodeSize)
+  const Handle(NCollection_IncAllocator)& theAllocator,
+  const Standard_Integer                  theReservedNodeSize)
   : myNodes           (theReservedNodeSize, theAllocator),
     myLinks           (theReservedNodeSize * 3),
     myDelLinks        (theAllocator),
@@ -54,7 +54,7 @@ Standard_Boolean BRepMesh_DataStructureOfDelaun::SubstituteNode(
   if (myNodes.FindIndex(theNewNode) != 0)
     return Standard_False;
 
-  const BRepMeshCol::ListOfInteger& aLinks = myNodes(theIndex);
+  const BRepMesh::ListOfInteger& aLinks = myNodes(theIndex);
   myNodes.Substitute(theIndex, theNewNode, aLinks);
   return Standard_True;
 }
@@ -158,8 +158,8 @@ void BRepMesh_DataStructureOfDelaun::cleanLink(
     const Standard_Integer aNodeId = (i == 0) ?
       theLink.FirstNode() : theLink.LastNode();
 
-    BRepMeshCol::ListOfInteger& aLinkList = myNodes(aNodeId);
-    BRepMeshCol::ListOfInteger::Iterator aLinkIt(aLinkList);
+    BRepMesh::ListOfInteger& aLinkList = myNodes(aNodeId);
+    BRepMesh::ListOfInteger::Iterator aLinkIt(aLinkList);
     for(; aLinkIt.More(); aLinkIt.Next())
     {
       if (aLinkIt.Value() == theIndex)
@@ -315,8 +315,8 @@ void BRepMesh_DataStructureOfDelaun::ElementNodes(
 //=======================================================================
 void BRepMesh_DataStructureOfDelaun::ClearDomain()
 {
-  BRepMeshCol::MapOfInteger aFreeEdges;
-  BRepMeshCol::MapOfInteger::Iterator aElementIt(myElementsOfDomain);
+  BRepMesh::MapOfInteger aFreeEdges;
+  BRepMesh::MapOfInteger::Iterator aElementIt(myElementsOfDomain);
   for (; aElementIt.More(); aElementIt.Next())
   {
     const Standard_Integer aElementId = aElementIt.Key();
@@ -334,7 +334,7 @@ void BRepMesh_DataStructureOfDelaun::ClearDomain()
   }
   myElementsOfDomain.Clear();
 
-  BRepMeshCol::MapOfInteger::Iterator aEdgeIt(aFreeEdges);
+  BRepMesh::MapOfInteger::Iterator aEdgeIt(aFreeEdges);
   for (; aEdgeIt.More(); aEdgeIt.Next())
     RemoveLink(aEdgeIt.Key());
 }
@@ -374,7 +374,7 @@ void BRepMesh_DataStructureOfDelaun::clearDeletedLinks()
     --aLastLiveItem;
 
     const Standard_Integer aLastLiveItemId = aLastLiveItem + 1;
-    BRepMeshCol::ListOfInteger::Iterator aLinkIt;
+    BRepMesh::ListOfInteger::Iterator aLinkIt;
     // update link references
     for (Standard_Integer i = 0; i < 2; ++i)
     {
@@ -421,8 +421,8 @@ void BRepMesh_DataStructureOfDelaun::clearDeletedLinks()
 //=======================================================================
 void BRepMesh_DataStructureOfDelaun::clearDeletedNodes()
 {
-  BRepMeshCol::ListOfInteger& aDelNodes = 
-    (BRepMeshCol::ListOfInteger&)myNodes.GetListOfDelNodes();
+  BRepMesh::ListOfInteger& aDelNodes = 
+    (BRepMesh::ListOfInteger&)myNodes.GetListOfDelNodes();
 
   Standard_Integer aLastLiveItem = NbNodes();
   while (!aDelNodes.IsEmpty())
@@ -443,7 +443,7 @@ void BRepMesh_DataStructureOfDelaun::clearDeletedNodes()
       continue;
 
     BRepMesh_Vertex aNode = GetNode(aLastLiveItem);
-    BRepMeshCol::ListOfInteger& aLinkList = myNodes(aLastLiveItem);
+    BRepMesh::ListOfInteger& aLinkList = myNodes(aLastLiveItem);
 
     myNodes.RemoveLast();
     --aLastLiveItem;
@@ -451,7 +451,7 @@ void BRepMesh_DataStructureOfDelaun::clearDeletedNodes()
     myNodes.Substitute(aDelItem, aNode, aLinkList);
 
     const Standard_Integer aLastLiveItemId = aLastLiveItem + 1;
-    BRepMeshCol::ListOfInteger::Iterator aLinkIt(aLinkList);
+    BRepMesh::ListOfInteger::Iterator aLinkIt(aLinkList);
     for (; aLinkIt.More(); aLinkIt.Next())
     {
       const Standard_Integer aLinkId = aLinkIt.Value();
@@ -518,7 +518,7 @@ Standard_CString BRepMesh_Dump(void*            theMeshHandlePtr,
   {
     OCC_CATCH_SIGNALS
 
-    BRepMeshCol::MapOfInteger::Iterator aLinksIt(aMeshData->LinksOfDomain());
+    BRepMesh::MapOfInteger::Iterator aLinksIt(aMeshData->LinksOfDomain());
     for (; aLinksIt.More(); aLinksIt.Next())
     {
       const BRepMesh_Edge& aLink = aMeshData->GetLink(aLinksIt.Value());

@@ -45,48 +45,53 @@ public:
 
 #ifdef HAVE_TBB
   //! Constructor
-  //! \param theWires wires that should be checked.
-  //! \param theStatus shared flag to set status of the check.
-  //! \param theMutex shared mutex for parallel processing.
+  //! @param theWires wires that should be checked.
+  //! @param theStatus shared flag to set status of the check.
+  //! @param theMutex shared mutex for parallel processing.
   BRepMesh_WireInterferenceChecker(
-    const std::vector<BRepMeshCol::SegmentsTree>& theWires,
-    BRepMesh_Status*                              theStatus,
-    Standard_Mutex*                               theMutex);
+    const BRepMesh::Array1OfSegmentsTree& theWires,
+    BRepMesh_Status*                      theStatus,
+    Standard_Mutex*                       theMutex);
 
   //! Checker's body.
-  //! \param theWireRange range of wires to be checked.
+  //! @param theWireRange range of wires to be checked.
   void operator ()(const tbb::blocked_range<Standard_Integer>& theWireRange) const;
 #else
   //! Constructor
-  //! \param theWires wires that should be checked.
-  //! \param theStatus shared flag to set status of the check.
+  //! @param theWires wires that should be checked.
+  //! @param theStatus shared flag to set status of the check.
   BRepMesh_WireInterferenceChecker(
-    const std::vector<BRepMeshCol::SegmentsTree>& theWires,
-    BRepMesh_Status*                              theStatus);
+    const BRepMesh::Array1OfSegmentsTree& theWires,
+    BRepMesh_Status*                      theStatus);
 #endif
 
   //! Checker's body.
-  //! \param theWireId Id of discretized wire to be checked.
+  //! @param theWireId Id of discretized wire to be checked.
   void operator ()(const Standard_Integer& theWireId) const;
 
 private:
 
   //! Classifies the point in case of coincidence of two vectors.
-  //! \param thePoint1 the start point of a segment (base point).
-  //! \param thePoint2 the end point of a segment.
-  //! \param thePointToCheck the point to classify.
-  //! \return zero value if point is out of segment and non zero value 
+  //! @param thePoint1 the start point of a segment (base point).
+  //! @param thePoint2 the end point of a segment.
+  //! @param thePointToCheck the point to classify.
+  //! @return zero value if point is out of segment and non zero value 
   //! if point is between the first and the second point of segment.
   static Standard_Integer classifyPoint (const gp_XY& thePoint1,
                                          const gp_XY& thePoint2,
                                          const gp_XY& thePointToCheck);
+
+  //! Assignment operator.
+  void operator =(const BRepMesh_WireInterferenceChecker& /*theOther*/)
+  {
+  }
+
 private:
-  const BRepMeshCol::SegmentsTree* myWires;
-  Standard_Integer                 myWiresNb;
-  BRepMesh_Status*                 myStatus;
+  const BRepMesh::Array1OfSegmentsTree& myWires;
+  BRepMesh_Status*                      myStatus;
 
 #ifdef HAVE_TBB
-  Standard_Mutex*                  myMutex;
+  Standard_Mutex*                       myMutex;
 #endif
 };
 
