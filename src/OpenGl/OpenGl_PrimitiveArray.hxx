@@ -28,7 +28,9 @@
 #include <OpenGl_Element.hxx>
 
 class OpenGl_GraphicDriver;
+class Handle(OpenGl_ShaderProgram);
 
+//! Class for rendering of arbitrary primitive array.
 class OpenGl_PrimitiveArray : public OpenGl_Element
 {
 public:
@@ -69,24 +71,25 @@ public:
 
 private:
 
+  //! Initialize normal (OpenGL-provided) VBO
+  Standard_Boolean initNormalVbo (const Handle(OpenGl_Context)& theCtx) const;
+
   //! VBO initialization procedures
-  Standard_Boolean BuildVBO (const Handle(OpenGl_Workspace)& theWorkspace) const;
+  //! @param theCtx        bound GL context
+  //! @param theToKeepData when true, myAttribs will not be nullified after VBO creation
+  Standard_Boolean buildVBO (const Handle(OpenGl_Context)& theCtx,
+                             const Standard_Boolean        theToKeepData) const;
   void clearMemoryGL (const Handle(OpenGl_Context)& theGlCtx) const;
 
   //! Main procedure to draw array
-  void DrawArray (Tint theLightingModel,
-                  const Aspect_InteriorStyle theInteriorStyle,
-                  Tint theEdgeFlag,
-                  const TEL_COLOUR* theInteriorColour,
-                  const TEL_COLOUR* theLineColour,
-                  const TEL_COLOUR* theEdgeColour,
-                  const Handle(OpenGl_Workspace)& theWorkspace) const;
+  void drawArray (const Handle(OpenGl_Workspace)& theWorkspace,
+                  const Graphic3d_Vec4*           theFaceColors) const;
 
   //! Auxiliary procedures
-  void DrawEdges (const TEL_COLOUR*               theEdgeColour,
+  void drawEdges (const TEL_COLOUR*               theEdgeColour,
                   const Handle(OpenGl_Workspace)& theWorkspace) const;
 
-  void DrawMarkers (const Handle(OpenGl_Workspace)& theWorkspace) const;
+  void drawMarkers (const Handle(OpenGl_Workspace)& theWorkspace) const;
 
 protected:
 
@@ -95,7 +98,7 @@ protected:
 
 protected:
 
-  mutable Handle(OpenGl_IndexBuffer)    myVboIndices;
+  mutable Handle(OpenGl_VertexBuffer)   myVboIndices;
   mutable Handle(OpenGl_VertexBuffer)   myVboAttribs;
 
   mutable Handle(Graphic3d_IndexBuffer) myIndices;

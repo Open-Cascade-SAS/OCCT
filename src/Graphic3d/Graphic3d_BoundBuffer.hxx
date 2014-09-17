@@ -63,8 +63,12 @@ public:
   Standard_Integer* Bounds;   //!< pointer to bounds array
   Standard_Integer  NbBounds; //!< number of bounds
 
+public:
+
+  DEFINE_STANDARD_RTTI(Graphic3d_BoundBuffer) // Type definition
+
 };
 
-typedef NCollection_Handle<Graphic3d_BoundBuffer> Handle(Graphic3d_BoundBuffer);
+DEFINE_STANDARD_HANDLE(Graphic3d_BoundBuffer, NCollection_Buffer)
 
 #endif // _Graphic3d_BoundBuffer_HeaderFile

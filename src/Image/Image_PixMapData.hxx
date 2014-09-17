@@ -124,8 +124,13 @@ public:
   Standard_Size  SizeRowBytes; //!< number of bytes per line (in most cases equal to 3 * sizeX)
   Standard_Size  TopToDown;    //!< image scanlines direction in memory from Top to the Down
 
+
+public:
+
+  DEFINE_STANDARD_RTTI(Image_PixMapData) // Type definition
+
 };
 
-typedef NCollection_Handle<Image_PixMapData> Handle(Image_PixMapData);
+DEFINE_STANDARD_HANDLE(Image_PixMapData, NCollection_Buffer)
 
 #endif // _Image_PixMapData_H__

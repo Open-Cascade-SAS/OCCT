@@ -187,7 +187,6 @@ protected:
 
 private:
 
-  Standard_Boolean         myIsPP;         //!< Is any program object bound (programmable pipeline)?
   const OpenGl_View*       myLastView;     //!< Pointer to the last view shader manager used with.
 };
 

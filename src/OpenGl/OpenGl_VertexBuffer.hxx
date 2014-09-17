@@ -18,6 +18,7 @@
 #include <OpenGl_GlCore20.hxx>
 #include <OpenGl_Resource.hxx>
 #include <OpenGl_Context.hxx>
+#include <OpenGl_ShaderProgram.hxx>
 
 #include <Graphic3d_IndexBuffer.hxx>
 
@@ -65,18 +66,24 @@ public:
     return myDataType;
   }
 
+  //! @return offset to data, NULL by default
+  inline GLubyte* GetDataOffset() const
+  {
+    return myOffset;
+  }
+
   //! Creates VBO name (id) if not yet generated.
   //! Data should be initialized by another method.
-  Standard_EXPORT bool Create (const Handle(OpenGl_Context)& theGlCtx);
+  Standard_EXPORT virtual bool Create (const Handle(OpenGl_Context)& theGlCtx);
 
   //! Destroy object - will release GPU memory if any.
   Standard_EXPORT virtual void Release (OpenGl_Context* theGlCtx);
 
   //! Bind this VBO.
-  Standard_EXPORT void Bind (const Handle(OpenGl_Context)& theGlCtx) const;
+  Standard_EXPORT virtual void Bind (const Handle(OpenGl_Context)& theGlCtx) const;
 
   //! Unbind this VBO.
-  Standard_EXPORT void Unbind (const Handle(OpenGl_Context)& theGlCtx) const;
+  Standard_EXPORT virtual void Unbind (const Handle(OpenGl_Context)& theGlCtx) const;
 
   //! Notice that VBO will be unbound after this call.
   //! @param theComponentsNb - specifies the number of components per generic vertex attribute; must be 1, 2, 3, or 4;
@@ -190,17 +197,31 @@ public:
   Standard_EXPORT void UnbindVertexAttrib (const Handle(OpenGl_Context)& theGlCtx,
                                            const GLuint                  theAttribLoc) const;
 
-  //! Bind this VBO as fixed pipeline attribute.
+  //! Bind this VBO and enable specified attribute in OpenGl_Context::ActiveProgram() or FFP.
   //! @param theGlCtx - handle to bound GL context;
   //! @param theMode  - array mode (GL_VERTEX_ARRAY, GL_NORMAL_ARRAY, GL_COLOR_ARRAY, GL_INDEX_ARRAY, GL_TEXTURE_COORD_ARRAY).
-  Standard_EXPORT void BindFixed (const Handle(OpenGl_Context)& theGlCtx,
-                                  const GLenum                  theMode) const;
+  void BindAttribute (const Handle(OpenGl_Context)&   theCtx,
+                      const Graphic3d_TypeOfAttribute theMode) const
+  {
+    if (IsValid())
+    {
+      Bind (theCtx);
+      bindAttribute (theCtx, theMode, static_cast<GLint> (myComponentsNb), myDataType, 0, myOffset);
+    }
+  }
 
-  //! Unbind this VBO as fixed pipeline attribute.
-  //! @param theGlCtx - handle to bound GL context;
-  //! @param theMode  - array mode.
-  Standard_EXPORT void UnbindFixed (const Handle(OpenGl_Context)& theGlCtx,
-                                    const GLenum                  theMode) const;
+  //! Unbind this VBO and disable specified attribute in OpenGl_Context::ActiveProgram() or FFP.
+  //! @param theCtx handle to bound GL context
+  //! @param theMode  array mode
+  void UnbindAttribute (const Handle(OpenGl_Context)&   theCtx,
+                        const Graphic3d_TypeOfAttribute theMode) const
+  {
+    if (IsValid())
+    {
+      Unbind (theCtx);
+      unbindAttribute (theCtx, theMode);
+    }
+  }
 
 public: //! @name advanced methods
 
@@ -222,12 +243,12 @@ public: //! @name advanced methods
   }
 
   //! Initialize buffer with new data.
-  Standard_EXPORT bool init (const Handle(OpenGl_Context)& theGlCtx,
-                             const GLuint   theComponentsNb,
-                             const GLsizei  theElemsNb,
-                             const void*    theData,
-                             const GLenum   theDataType,
-                             const GLsizei  theStride);
+  Standard_EXPORT virtual bool init (const Handle(OpenGl_Context)& theGlCtx,
+                                     const GLuint   theComponentsNb,
+                                     const GLsizei  theElemsNb,
+                                     const void*    theData,
+                                     const GLenum   theDataType,
+                                     const GLsizei  theStride);
 
   //! Initialize buffer with new data.
   bool init (const Handle(OpenGl_Context)& theGlCtx,
@@ -240,11 +261,27 @@ public: //! @name advanced methods
   }
 
   //! Update part of the buffer with new data.
-  Standard_EXPORT bool subData (const Handle(OpenGl_Context)& theGlCtx,
-                                const GLsizei  theElemFrom,
-                                const GLsizei  theElemsNb,
-                                const void*    theData,
-                                const GLenum   theDataType);
+  Standard_EXPORT virtual bool subData (const Handle(OpenGl_Context)& theGlCtx,
+                                        const GLsizei  theElemFrom,
+                                        const GLsizei  theElemsNb,
+                                        const void*    theData,
+                                        const GLenum   theDataType);
+
+  //! Setup array pointer - either for active GLSL program OpenGl_Context::ActiveProgram()
+  //! or for FFP using bindFixed() when no program bound.
+  static void bindAttribute (const Handle(OpenGl_Context)&   theGlCtx,
+                             const Graphic3d_TypeOfAttribute theMode,
+                             const GLint                     theNbComp,
+                             const GLenum                    theDataType,
+                             const GLsizei                   theStride,
+                             const GLvoid*                   theOffset);
+
+  //! Disable GLSL array pointer - either for active GLSL program OpenGl_Context::ActiveProgram()
+  //! or for FFP using unbindFixed() when no program bound.
+  static void unbindAttribute (const Handle(OpenGl_Context)&   theGlCtx,
+                               const Graphic3d_TypeOfAttribute theMode);
+
+private:
 
   //! Setup FFP array pointer.
   static void bindFixed (const Handle(OpenGl_Context)&   theGlCtx,
@@ -252,85 +289,37 @@ public: //! @name advanced methods
                          const GLint                     theNbComp,
                          const GLenum                    theDataType,
                          const GLsizei                   theStride,
-                         const GLvoid*                   theOffset)
-  {
-    switch (theMode)
-    {
-      case Graphic3d_TOA_POS:
-      {
-        theGlCtx->core11->glEnableClientState (GL_VERTEX_ARRAY);
-        theGlCtx->core11->glVertexPointer (theNbComp, theDataType, theStride, theOffset);
-        break;
-      }
-      case Graphic3d_TOA_NORM:
-      {
-        theGlCtx->core11->glEnableClientState (GL_NORMAL_ARRAY);
-        theGlCtx->core11->glNormalPointer (theDataType, theStride, theOffset);
-        break;
-      }
-      case Graphic3d_TOA_UV:
-      {
-        theGlCtx->core11->glEnableClientState (GL_TEXTURE_COORD_ARRAY);
-        theGlCtx->core11->glTexCoordPointer (theNbComp, theDataType, theStride, theOffset);
-        break;
-      }
-      case Graphic3d_TOA_COLOR:
-      {
-        theGlCtx->core11->glEnableClientState (GL_COLOR_ARRAY);
-        theGlCtx->core11->glColorPointer (theNbComp, theDataType, theStride, theOffset);
-        theGlCtx->core11->glColorMaterial (GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE);
-        theGlCtx->core11fwd->glEnable (GL_COLOR_MATERIAL);
-        break;
-      }
-      case Graphic3d_TOA_CUSTOM:
-      {
-        break;
-      }
-    }
-  }
+                         const GLvoid*                   theOffset);
 
   //! Disable FFP array pointer.
   static void unbindFixed (const Handle(OpenGl_Context)&   theGlCtx,
-                           const Graphic3d_TypeOfAttribute theMode)
-  {
-    switch (theMode)
-    {
-      case Graphic3d_TOA_POS:    theGlCtx->core11->glDisableClientState (GL_VERTEX_ARRAY);        break;
-      case Graphic3d_TOA_NORM:   theGlCtx->core11->glDisableClientState (GL_NORMAL_ARRAY);        break;
-      case Graphic3d_TOA_UV:     theGlCtx->core11->glDisableClientState (GL_TEXTURE_COORD_ARRAY); break;
-      case Graphic3d_TOA_COLOR:
-      {
-        theGlCtx->core11->glDisableClientState (GL_COLOR_ARRAY);
-        theGlCtx->core11fwd->glDisable (GL_COLOR_MATERIAL);
-        break;
-      }
-      case Graphic3d_TOA_CUSTOM:
-      {
-        break;
-      }
-    }
-  }
+                           const Graphic3d_TypeOfAttribute theMode);
 
 public: //! @name methods for interleaved attributes array
-
-  //! Bind all vertex attributes. Default implementation does nothing.
-  Standard_EXPORT virtual void BindFixed   (const Handle(OpenGl_Context)& theGlCtx) const;
-
-  //! Bind all vertex position attribute only. Default implementation does nothing.
-  Standard_EXPORT virtual void BindFixedPosition (const Handle(OpenGl_Context)& theGlCtx) const;
-
-  //! Unbind all vertex attributes. Default implementation does nothing.
-  Standard_EXPORT virtual void UnbindFixed (const Handle(OpenGl_Context)& theGlCtx) const;
 
   //! @return true if buffer contains per-vertex color attribute
   Standard_EXPORT virtual bool HasColorAttribute() const;
 
+  //! @return true if buffer contains per-vertex normal attribute
+  Standard_EXPORT virtual bool HasNormalAttribute() const;
+
+  //! Bind all vertex attributes to active program OpenGl_Context::ActiveProgram() or for FFP.
+  //! Default implementation does nothing.
+  Standard_EXPORT virtual void BindAllAttributes (const Handle(OpenGl_Context)& theGlCtx) const;
+
+  //! Bind vertex position attribute only. Default implementation does nothing.
+  Standard_EXPORT virtual void BindPositionAttribute (const Handle(OpenGl_Context)& theGlCtx) const;
+
+  //! Unbind all vertex attributes. Default implementation does nothing.
+  Standard_EXPORT virtual void UnbindAllAttributes (const Handle(OpenGl_Context)& theGlCtx) const;
+
 protected:
 
-  GLuint  myBufferId;     //!< VBO name (index)
-  GLuint  myComponentsNb; //!< Number of components per generic vertex attribute, must be 1, 2, 3, or 4
-  GLsizei myElemsNb;      //!< Number of vertex attributes / number of vertices
-  GLenum  myDataType;     //!< Data type (GL_FLOAT, GL_UNSIGNED_INT, GL_UNSIGNED_BYTE etc.)
+  GLubyte* myOffset;       //!< offset to data
+  GLuint   myBufferId;     //!< VBO name (index)
+  GLuint   myComponentsNb; //!< Number of components per generic vertex attribute, must be 1, 2, 3, or 4
+  GLsizei  myElemsNb;      //!< Number of vertex attributes / number of vertices
+  GLenum   myDataType;     //!< Data type (GL_FLOAT, GL_UNSIGNED_INT, GL_UNSIGNED_BYTE etc.)
 
 public:
 
@@ -339,5 +328,7 @@ public:
 };
 
 DEFINE_STANDARD_HANDLE(OpenGl_VertexBuffer, OpenGl_Resource)
+
+#include <OpenGl_VertexBuffer.lxx>
 
 #endif // _OpenGl_VertexBuffer_H__

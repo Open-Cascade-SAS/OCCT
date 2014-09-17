@@ -117,8 +117,11 @@ OpenGl_TextureBufferArb.hxx
 OpenGl_TextureBufferArb.cxx
 OpenGl_Vec.hxx
 OpenGl_VertexBuffer.hxx
+OpenGl_VertexBuffer.lxx
 OpenGl_VertexBuffer.cxx
 OpenGl_VertexBufferEditor.hxx
+OpenGl_VertexBufferCompat.hxx
+OpenGl_VertexBufferCompat.cxx
 OpenGl_RenderFilter.hxx
 OpenGl_RenderFilter.cxx
 OpenGl_CappingAlgo.hxx

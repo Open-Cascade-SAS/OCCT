@@ -1,0 +1,121 @@
+// Created by: Kirill GAVRILOV
+// Copyright (c) 2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+// =======================================================================
+// function : bindAttribute
+// purpose  :
+// =======================================================================
+inline void OpenGl_VertexBuffer::bindAttribute (const Handle(OpenGl_Context)&   theCtx,
+                                                const Graphic3d_TypeOfAttribute theAttribute,
+                                                const GLint                     theNbComp,
+                                                const GLenum                    theDataType,
+                                                const GLsizei                   theStride,
+                                                const GLvoid*                   theOffset)
+{
+  if (theCtx->ActiveProgram().IsNull())
+  {
+    bindFixed (theCtx, theAttribute, theNbComp, theDataType, theStride, theOffset);
+    return;
+  }
+
+  theCtx->core20fwd->glEnableVertexAttribArray (theAttribute);
+  theCtx->core20fwd->glVertexAttribPointer (theAttribute, theNbComp, theDataType, GL_FALSE, theStride, theOffset);
+}
+
+// =======================================================================
+// function : bindFixed
+// purpose  :
+// =======================================================================
+inline void OpenGl_VertexBuffer::bindFixed (const Handle(OpenGl_Context)&   theCtx,
+                                            const Graphic3d_TypeOfAttribute theMode,
+                                            const GLint                     theNbComp,
+                                            const GLenum                    theDataType,
+                                            const GLsizei                   theStride,
+                                            const GLvoid*                   theOffset)
+{
+  switch (theMode)
+  {
+    case Graphic3d_TOA_POS:
+    {
+      theCtx->core11->glEnableClientState (GL_VERTEX_ARRAY);
+      theCtx->core11->glVertexPointer (theNbComp, theDataType, theStride, theOffset);
+      return;
+    }
+    case Graphic3d_TOA_NORM:
+    {
+      theCtx->core11->glEnableClientState (GL_NORMAL_ARRAY);
+      theCtx->core11->glNormalPointer (theDataType, theStride, theOffset);
+      return;
+    }
+    case Graphic3d_TOA_UV:
+    {
+      theCtx->core11->glEnableClientState (GL_TEXTURE_COORD_ARRAY);
+      theCtx->core11->glTexCoordPointer (theNbComp, theDataType, theStride, theOffset);
+      return;
+    }
+    case Graphic3d_TOA_COLOR:
+    {
+      theCtx->core11->glEnableClientState (GL_COLOR_ARRAY);
+      theCtx->core11->glColorPointer (theNbComp, theDataType, theStride, theOffset);
+      theCtx->core11->glColorMaterial (GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE);
+      theCtx->core11fwd->glEnable (GL_COLOR_MATERIAL);
+      return;
+    }
+    case Graphic3d_TOA_CUSTOM:
+    {
+      return;
+    }
+  }
+}
+
+// =======================================================================
+// function : unbindAttribute
+// purpose  :
+// =======================================================================
+inline void OpenGl_VertexBuffer::unbindAttribute (const Handle(OpenGl_Context)&   theCtx,
+                                                  const Graphic3d_TypeOfAttribute theAttribute)
+{
+  if (theCtx->ActiveProgram().IsNull())
+  {
+    unbindFixed (theCtx, theAttribute);
+    return;
+  }
+
+  theCtx->core20fwd->glDisableVertexAttribArray (theAttribute);
+}
+
+// =======================================================================
+// function : unbindAttribute
+// purpose  :
+// =======================================================================
+inline void OpenGl_VertexBuffer::unbindFixed (const Handle(OpenGl_Context)&   theCtx,
+                                              const Graphic3d_TypeOfAttribute theMode)
+{
+  switch (theMode)
+  {
+    case Graphic3d_TOA_POS:   theCtx->core11->glDisableClientState (GL_VERTEX_ARRAY);        return;
+    case Graphic3d_TOA_NORM:  theCtx->core11->glDisableClientState (GL_NORMAL_ARRAY);        return;
+    case Graphic3d_TOA_UV:    theCtx->core11->glDisableClientState (GL_TEXTURE_COORD_ARRAY); return;
+    case Graphic3d_TOA_COLOR:
+    {
+      theCtx->core11->glDisableClientState (GL_COLOR_ARRAY);
+      theCtx->core11fwd->glDisable (GL_COLOR_MATERIAL);
+      return;
+    }
+    case Graphic3d_TOA_CUSTOM:
+    {
+      return;
+    }
+  }
+}

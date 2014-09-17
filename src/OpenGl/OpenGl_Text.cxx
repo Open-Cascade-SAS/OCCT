@@ -285,8 +285,6 @@ void OpenGl_Text::releaseVbos (OpenGl_Context* theCtx)
   myTextures.Clear();
   myVertsVbo.Clear();
   myTCrdsVbo.Clear();
-  myVertsArray.Clear();
-  myTCrdsArray.Clear();
 }
 
 // =======================================================================
@@ -384,11 +382,11 @@ void OpenGl_Text::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
 
   if (aCtx->IsGlGreaterEqual (2, 0))
   {
-    Handle(OpenGl_ShaderProgram) aProgram = aTextAspect->ShaderProgramRes (theWorkspace);
-
+    const Handle(OpenGl_ShaderProgram)& aProgram = aTextAspect->ShaderProgramRes (theWorkspace);
+    aCtx->BindProgram (aProgram);
     if (!aProgram.IsNull())
     {
-      aProgram->BindWithVariables (aCtx);
+      aProgram->ApplyVariables (aCtx);
 
       const OpenGl_MaterialState* aMaterialState = aCtx->ShaderManager()->MaterialState (aProgram);
 
@@ -396,10 +394,6 @@ void OpenGl_Text::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
         aCtx->ShaderManager()->UpdateMaterialStateTo (aProgram, aTextAspect);
 
       aCtx->ShaderManager()->PushState (aProgram);
-    }
-    else
-    {
-      OpenGl_ShaderProgram::Unbind (aCtx);
     }
   }
 
@@ -513,45 +507,28 @@ void OpenGl_Text::drawText (const Handle(OpenGl_PrinterContext)& ,
   }
 #endif
 
-  if (myVertsVbo.Length() == myTextures.Length())
+  if (myVertsVbo.Length() != myTextures.Length()
+   || myTextures.IsEmpty())
   {
-    for (Standard_Integer anIter = 0; anIter < myTextures.Length(); ++anIter)
-    {
-      const GLuint aTexId = myTextures.Value (anIter);
-      const Handle(OpenGl_VertexBuffer)& aVerts = myVertsVbo.Value (anIter);
-      const Handle(OpenGl_VertexBuffer)& aTCrds = myTCrdsVbo.Value (anIter);
-      aVerts->BindFixed (theCtx, GL_VERTEX_ARRAY);
-      aTCrds->BindFixed (theCtx, GL_TEXTURE_COORD_ARRAY);
-      glBindTexture (GL_TEXTURE_2D, aTexId);
-
-      glDrawArrays (GL_TRIANGLES, 0, GLsizei(aVerts->GetElemsNb()));
-
-      glBindTexture (GL_TEXTURE_2D, 0);
-      aTCrds->UnbindFixed (theCtx, GL_TEXTURE_COORD_ARRAY);
-      aVerts->UnbindFixed (theCtx, GL_VERTEX_ARRAY);
-    }
+    return;
   }
-  else if (myVertsArray.Length() == myTextures.Length())
+
+  for (Standard_Integer anIter = 0; anIter < myTextures.Length(); ++anIter)
   {
-    glEnableClientState (GL_VERTEX_ARRAY);
-    glEnableClientState (GL_TEXTURE_COORD_ARRAY);
-    for (Standard_Integer anIter = 0; anIter < myTextures.Length(); ++anIter)
-    {
-      const GLuint aTexId = myTextures.Value (anIter);
-      const Handle(OpenGl_Vec2Array)& aVerts = myVertsArray.Value (anIter);
-      const Handle(OpenGl_Vec2Array)& aTCrds = myTCrdsArray.Value (anIter);
+    const GLuint aTexId = myTextures.Value (anIter);
+    glBindTexture (GL_TEXTURE_2D, aTexId);
 
-      glVertexPointer   (2, GL_FLOAT, 0, (GLfloat* )&aVerts->First());
-      glTexCoordPointer (2, GL_FLOAT, 0, (GLfloat* )&aTCrds->First());
-      glBindTexture (GL_TEXTURE_2D, aTexId);
+    const Handle(OpenGl_VertexBuffer)& aVerts = myVertsVbo.Value (anIter);
+    const Handle(OpenGl_VertexBuffer)& aTCrds = myTCrdsVbo.Value (anIter);
+    aVerts->BindAttribute (theCtx, Graphic3d_TOA_POS);
+    aTCrds->BindAttribute (theCtx, Graphic3d_TOA_UV);
 
-      glDrawArrays (GL_TRIANGLES, 0, aVerts->Length());
+    glDrawArrays (GL_TRIANGLES, 0, GLsizei(aVerts->GetElemsNb()));
 
-      glBindTexture (GL_TEXTURE_2D, 0);
-    }
-    glDisableClientState (GL_TEXTURE_COORD_ARRAY);
-    glDisableClientState (GL_VERTEX_ARRAY);
+    aVerts->UnbindAttribute (theCtx, Graphic3d_TOA_UV);
+    aVerts->UnbindAttribute (theCtx, Graphic3d_TOA_POS);
   }
+  glBindTexture (GL_TEXTURE_2D, 0);
 }
 
 // =======================================================================
@@ -654,14 +631,7 @@ void OpenGl_Text::render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
     aFormatter.Append (theCtx, myString, *myFont.operator->());
     aFormatter.Format();
 
-    if (!theCtx->caps->vboDisable && theCtx->core15 != NULL)
-    {
-      aFormatter.Result (theCtx, myTextures, myVertsVbo, myTCrdsVbo);
-    }
-    else
-    {
-      aFormatter.Result (theCtx, myTextures, myVertsArray, myTCrdsArray);
-    }
+    aFormatter.Result (theCtx, myTextures, myVertsVbo, myTCrdsVbo);
     aFormatter.BndBox (myBndBox);
   }
 

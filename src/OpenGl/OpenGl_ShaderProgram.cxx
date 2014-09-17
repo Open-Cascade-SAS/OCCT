@@ -16,6 +16,7 @@
 #include <OSD_File.hxx>
 #include <OSD_Protection.hxx>
 
+#include <Graphic3d_Buffer.hxx>
 #include <Standard_Assert.hxx>
 #include <Standard_Atomic.hxx>
 #include <TCollection_ExtendedString.hxx>
@@ -262,6 +263,12 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
     }
   }
 
+  // bind locations for pre-defined Vertex Attributes
+  SetAttributeName (theCtx, Graphic3d_TOA_POS,   "occVertex");
+  SetAttributeName (theCtx, Graphic3d_TOA_NORM,  "occNormal");
+  SetAttributeName (theCtx, Graphic3d_TOA_UV,    "occTexCoord");
+  SetAttributeName (theCtx, Graphic3d_TOA_COLOR, "occColor");
+
   if (!Link (theCtx))
   {
     TCollection_AsciiString aLog;
@@ -414,21 +421,6 @@ Standard_Boolean OpenGl_ShaderProgram::FetchInfoLog (const Handle(OpenGl_Context
 }
 
 // =======================================================================
-// function : Bind
-// purpose  : Sets the program object as part of current rendering state
-// =======================================================================
-void OpenGl_ShaderProgram::Bind (const Handle(OpenGl_Context)& theCtx) const
-{
-  if (myProgramID == NO_PROGRAM)
-  {
-    return;
-  }
-
-  theCtx->core20->glUseProgram (myProgramID);
-  theCtx->ShaderManager()->myIsPP = Standard_True;
-}
-
-// =======================================================================
 // function : ApplyVariables
 // purpose  : Fetches uniform variables from proxy shader program
 // =======================================================================
@@ -446,29 +438,6 @@ Standard_Boolean OpenGl_ShaderProgram::ApplyVariables(const Handle(OpenGl_Contex
 
   myProxy->ClearVariables();
   return Standard_True;
-}
-
-// =======================================================================
-// function : BindWithVariables
-// purpose  : Binds the program object and applies variables
-// =======================================================================
-Standard_Boolean OpenGl_ShaderProgram::BindWithVariables (const Handle(OpenGl_Context)& theCtx)
-{
-  Bind (theCtx);
-  return ApplyVariables (theCtx);
-}
-
-// =======================================================================
-// function : Unbind
-// purpose  : Reverts to fixed-function graphics pipeline (FFP)
-// =======================================================================
-void OpenGl_ShaderProgram::Unbind (const Handle(OpenGl_Context)& theCtx)
-{
-  if (theCtx->ShaderManager()->myIsPP)
-  {
-    theCtx->core20->glUseProgram (NO_PROGRAM);
-    theCtx->ShaderManager()->myIsPP = Standard_False;
-  }
 }
 
 // =======================================================================

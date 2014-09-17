@@ -23,10 +23,10 @@
 // vertex attributes from compatibility profile. In the next
 // release old functionality will be removed from shader API.
 #ifdef VERTEX_SHADER
-  #define occColor    gl_Color          //!< Vertex color
-  #define occNormal   gl_Normal         //!< Normal  coordinates
-  #define occVertex   gl_Vertex         //!< Vertex  coordinates
-  #define occTexCoord gl_MultiTexCoord0 //!< Texture coordinates
+  attribute vec4 occVertex;
+  attribute vec3 occNormal;
+  attribute vec4 occTexCoord;
+  attribute vec4 occColor;
 #endif
 
 // Matrix state

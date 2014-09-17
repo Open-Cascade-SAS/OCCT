@@ -26,6 +26,7 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_VertexBuffer, OpenGl_Resource)
 // =======================================================================
 OpenGl_VertexBuffer::OpenGl_VertexBuffer()
 : OpenGl_Resource(),
+  myOffset (NULL),
   myBufferId (NO_BUFFER),
   myComponentsNb (4),
   myElemsNb (0),
@@ -84,6 +85,7 @@ void OpenGl_VertexBuffer::Release (OpenGl_Context* theGlCtx)
   {
     theGlCtx->core15->glDeleteBuffers (1, &myBufferId);
   }
+  myOffset   = NULL;
   myBufferId = NO_BUFFER;
 }
 
@@ -171,7 +173,7 @@ void OpenGl_VertexBuffer::BindVertexAttrib (const Handle(OpenGl_Context)& theGlC
   }
   Bind (theGlCtx);
   theGlCtx->core20->glEnableVertexAttribArray (theAttribLoc);
-  theGlCtx->core20->glVertexAttribPointer (theAttribLoc, GLint (myComponentsNb), myDataType, GL_FALSE, 0, NULL);
+  theGlCtx->core20->glVertexAttribPointer (theAttribLoc, GLint (myComponentsNb), myDataType, GL_FALSE, 0, myOffset);
 }
 
 // =======================================================================
@@ -190,91 +192,30 @@ void OpenGl_VertexBuffer::UnbindVertexAttrib (const Handle(OpenGl_Context)& theG
 }
 
 // =======================================================================
-// function : BindFixed
+// function : BindAllAttributes
 // purpose  :
 // =======================================================================
-void OpenGl_VertexBuffer::BindFixed (const Handle(OpenGl_Context)& theGlCtx,
-                                     const GLenum                  theMode) const
-{
-  if (!IsValid())
-  {
-    return;
-  }
-
-  Bind (theGlCtx);
-  glEnableClientState (theMode);
-  switch (theMode)
-  {
-    case GL_VERTEX_ARRAY:
-    {
-      glVertexPointer (static_cast<GLint> (myComponentsNb), myDataType, 0, NULL);
-      break;
-    }
-    case GL_NORMAL_ARRAY:
-    {
-      glNormalPointer (myDataType, 0, NULL);
-      break;
-    }
-    case GL_TEXTURE_COORD_ARRAY:
-    {
-      glTexCoordPointer (static_cast<GLint> (myComponentsNb), myDataType, 0, NULL);
-      break;
-    }
-    case GL_COLOR_ARRAY:
-    {
-      glColorPointer (static_cast<GLint> (myComponentsNb), myDataType, 0, NULL);
-      glColorMaterial (GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-      glEnable (GL_COLOR_MATERIAL);
-      break;
-    }
-    default: break;
-  }
-}
-
-// =======================================================================
-// function : UnbindFixed
-// purpose  :
-// =======================================================================
-void OpenGl_VertexBuffer::UnbindFixed (const Handle(OpenGl_Context)& theGlCtx,
-                                       const GLenum                  theMode) const
-{
-  if (!IsValid())
-  {
-    return;
-  }
-  Unbind (theGlCtx);
-  glDisableClientState (theMode);
-  if (theMode == GL_COLOR_ARRAY)
-  {
-    glDisable (GL_COLOR_MATERIAL);
-  }
-}
-
-// =======================================================================
-// function : BindFixed
-// purpose  :
-// =======================================================================
-void OpenGl_VertexBuffer::BindFixed (const Handle(OpenGl_Context)& ) const
+void OpenGl_VertexBuffer::BindAllAttributes (const Handle(OpenGl_Context)& ) const
 {
   //
 }
 
 // =======================================================================
-// function : BindFixedPosition
+// function : BindPositionAttribute
 // purpose  :
 // =======================================================================
-void OpenGl_VertexBuffer::BindFixedPosition (const Handle(OpenGl_Context)& ) const
+void OpenGl_VertexBuffer::BindPositionAttribute (const Handle(OpenGl_Context)& ) const
 {
   //
 }
 
 // =======================================================================
-// function : UnbindFixed
+// function : UnbindAllAttributes
 // purpose  :
 // =======================================================================
-void OpenGl_VertexBuffer::UnbindFixed (const Handle(OpenGl_Context)& ) const
+void OpenGl_VertexBuffer::UnbindAllAttributes (const Handle(OpenGl_Context)& ) const
 {
-    //
+  //
 }
 
 // =======================================================================
@@ -282,6 +223,15 @@ void OpenGl_VertexBuffer::UnbindFixed (const Handle(OpenGl_Context)& ) const
 // purpose  :
 // =======================================================================
 bool OpenGl_VertexBuffer::HasColorAttribute() const
+{
+  return false;
+}
+
+// =======================================================================
+// function : HasNormalAttribute
+// purpose  :
+// =======================================================================
+bool OpenGl_VertexBuffer::HasNormalAttribute() const
 {
   return false;
 }

@@ -14,9 +14,13 @@
 // commercial license or contractual agreement.
 
 #include <NCollection_AlignedAllocator.hxx>
+#include <NCollection_Buffer.hxx>
 
 IMPLEMENT_STANDARD_HANDLE  (NCollection_AlignedAllocator, NCollection_BaseAllocator)
 IMPLEMENT_STANDARD_RTTIEXT (NCollection_AlignedAllocator, NCollection_BaseAllocator)
+
+IMPLEMENT_STANDARD_HANDLE  (NCollection_Buffer, Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT (NCollection_Buffer, Standard_Transient)
 
 //=======================================================================
 //function : NCollection_AlignedAllocator()

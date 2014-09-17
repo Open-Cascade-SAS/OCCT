@@ -22,6 +22,7 @@
 #include <Aspect_RenderingContext.hxx>
 #include <Handle_OpenGl_Context.hxx>
 #include <Handle_OpenGl_ShaderManager.hxx>
+#include <Handle_OpenGl_ShaderProgram.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_Map.hxx>
 #include <NCollection_Handle.hxx>
@@ -352,6 +353,13 @@ public:
   //! @return value for GL_MAX_CLIP_PLANES
   Standard_EXPORT Standard_Integer MaxClipPlanes() const;
 
+  //! Returns true if VBO is supported and permitted.
+  inline bool ToUseVbo() const
+  {
+    return core15fwd != NULL
+       && !caps->vboDisable;
+  }
+
 public:
 
   //! @return messenger instance
@@ -381,6 +389,8 @@ public:
     return myIsStereoBuffers;
   }
 
+public: //! @name methods to alter or retrieve current state
+
   //! Switch to left stereographic rendering buffer.
   //! This method can be used to keep unchanged choise
   //! of front/back/both buffer rendering.
@@ -401,6 +411,16 @@ public:
   //! doing the same via OpenGl API. Call this method if any of the controlled
   //! OpenGl state variables has a possibility of being out-of-date.
   Standard_EXPORT void FetchState();
+
+  //! @return active GLSL program
+  const Handle(OpenGl_ShaderProgram)& ActiveProgram() const
+  {
+    return myActiveProgram;
+  }
+
+  //! Bind specified program to current context,
+  //! or unbind previous one when NULL specified.
+  Standard_EXPORT void BindProgram (const Handle(OpenGl_ShaderProgram)& theProgram);
 
 private:
 
@@ -490,12 +510,16 @@ private: // context info
   Standard_Integer myMaxClipPlanes;   //!< value for GL_MAX_CLIP_PLANES
   Standard_Integer myGlVerMajor;      //!< cached GL version major number
   Standard_Integer myGlVerMinor;      //!< cached GL version minor number
-  Standard_Integer myRenderMode;      //!< value for active rendering mode
   Standard_Boolean myIsInitialized;   //!< flag indicates initialization state
   Standard_Boolean myIsStereoBuffers; //!< context supports stereo buffering
-  Standard_Integer myDrawBuffer;      //!< current draw buffer.
 
   Handle(OpenGl_ShaderManager) myShaderManager; //! support object for managing shader programs
+
+private: //! @name fields tracking current state
+
+  Handle(OpenGl_ShaderProgram) myActiveProgram; //!< currently active GLSL program
+  Standard_Integer             myRenderMode;    //!< value for active rendering mode
+  Standard_Integer             myDrawBuffer;    //!< current draw buffer
 
 private:
 

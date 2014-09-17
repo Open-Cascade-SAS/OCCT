@@ -24,9 +24,6 @@
 
 #include <NCollection_String.hxx>
 
-typedef NCollection_Array1<OpenGl_Vec2> OpenGl_Vec2Array;
-typedef NCollection_Handle<OpenGl_Vec2Array> Handle(OpenGl_Vec2Array);
-
 //! This class intended to prepare formatted text.
 class OpenGl_TextFormatter : public Standard_Transient
 {
@@ -62,12 +59,6 @@ public:
                                NCollection_Vector<GLuint>&                      theTextures,
                                NCollection_Vector<Handle(OpenGl_VertexBuffer)>& theVertsPerTexture,
                                NCollection_Vector<Handle(OpenGl_VertexBuffer)>& theTCrdsPerTexture) const;
-
-  //! Retrieve formatting results.
-  Standard_EXPORT void Result (const Handle(OpenGl_Context)&                 theCtx,
-                               NCollection_Vector<GLuint>&                   theTextures,
-                               NCollection_Vector<Handle(OpenGl_Vec2Array)>& theVertsPerTexture,
-                               NCollection_Vector<Handle(OpenGl_Vec2Array)>& theTCrdsPerTexture) const;
 
   //! @return width of formatted text.
   inline Standard_ShortReal ResultWidth() const

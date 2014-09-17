@@ -70,8 +70,12 @@ public:
     }
   }
 
+public:
+
+  DEFINE_STANDARD_RTTI(Graphic3d_IndexBuffer) // Type definition
+
 };
 
-typedef NCollection_Handle<Graphic3d_IndexBuffer> Handle(Graphic3d_IndexBuffer);
+DEFINE_STANDARD_HANDLE(Graphic3d_IndexBuffer, Graphic3d_Buffer)
 
 #endif // _Graphic3d_IndexBuffer_HeaderFile

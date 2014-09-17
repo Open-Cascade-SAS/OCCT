@@ -17,10 +17,10 @@
 #define _NCollection_Buffer_HeaderFile
 
 #include <NCollection_BaseAllocator.hxx>
-#include <NCollection_Handle.hxx>
+#include <Standard_Transient.hxx>
 
 //! Low-level buffer object.
-class NCollection_Buffer
+class NCollection_Buffer : public Standard_Transient
 {
 
 public:
@@ -128,8 +128,12 @@ protected:
   Standard_Size                     mySize;      //!< buffer length in bytes
   Handle(NCollection_BaseAllocator) myAllocator; //!< buffer allocator
 
+public:
+
+  DEFINE_STANDARD_RTTI(NCollection_Buffer) // Type definition
+
 };
 
-typedef NCollection_Handle<NCollection_Buffer> Handle(NCollection_Buffer);
+DEFINE_STANDARD_HANDLE(NCollection_Buffer, Standard_Transient)
 
 #endif // _NCollection_Buffer_HeaderFile

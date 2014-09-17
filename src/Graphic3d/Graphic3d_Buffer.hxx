@@ -201,8 +201,12 @@ public:
   Standard_Integer NbElements;   //!< number of the elements
   Standard_Integer NbAttributes; //!< number of vertex attributes
 
+public:
+
+  DEFINE_STANDARD_RTTI(Graphic3d_Buffer) // Type definition
+
 };
 
-typedef NCollection_Handle<Graphic3d_Buffer> Handle(Graphic3d_Buffer);
+DEFINE_STANDARD_HANDLE(Graphic3d_Buffer, NCollection_Buffer)
 
 #endif // _Graphic3d_Buffer_HeaderFile

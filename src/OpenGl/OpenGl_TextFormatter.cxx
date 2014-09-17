@@ -15,7 +15,7 @@
 
 #include <OpenGl_TextFormatter.hxx>
 
-#include <OpenGl_VertexBuffer.hxx>
+#include <OpenGl_VertexBufferCompat.hxx>
 
 #include <cmath>
 
@@ -220,10 +220,20 @@ void OpenGl_TextFormatter::Result (const Handle(OpenGl_Context)&                
     theVertsPerTexture.Clear();
     theTCrdsPerTexture.Clear();
 
+    const bool isNormalMode = theCtx->ToUseVbo();
+    Handle(OpenGl_VertexBuffer) aVertsVbo, aTcrdsVbo;
     while (theVertsPerTexture.Length() < theTextures.Length())
     {
-      Handle(OpenGl_VertexBuffer) aVertsVbo = new OpenGl_VertexBuffer();
-      Handle(OpenGl_VertexBuffer) aTcrdsVbo = new OpenGl_VertexBuffer();
+      if (isNormalMode)
+      {
+        aVertsVbo = new OpenGl_VertexBuffer();
+        aTcrdsVbo = new OpenGl_VertexBuffer();
+      }
+      else
+      {
+        aVertsVbo = new OpenGl_VertexBufferCompat();
+        aTcrdsVbo = new OpenGl_VertexBufferCompat();
+      }
       theVertsPerTexture.Append (aVertsVbo);
       theTCrdsPerTexture.Append (aTcrdsVbo);
       aVertsVbo->Create (theCtx);
@@ -260,42 +270,6 @@ void OpenGl_TextFormatter::Result (const Handle(OpenGl_Context)&                
     myVboEditor.Flush();
   }
   myVboEditor.Init (NULL, NULL);
-}
-
-// =======================================================================
-// function : Result
-// purpose  :
-// =======================================================================
-void OpenGl_TextFormatter::Result (const Handle(OpenGl_Context)&                 /*theCtx*/,
-                                   NCollection_Vector<GLuint>&                   theTextures,
-                                   NCollection_Vector<Handle(OpenGl_Vec2Array)>& theVertsPerTexture,
-                                   NCollection_Vector<Handle(OpenGl_Vec2Array)>& theTCrdsPerTexture) const
-{
-  NCollection_Vector< NCollection_Handle <NCollection_Vector <OpenGl_Vec2> > > aVertsPerTexture;
-  NCollection_Vector< NCollection_Handle <NCollection_Vector <OpenGl_Vec2> > > aTCrdsPerTexture;
-  Result (theTextures, aVertsPerTexture, aTCrdsPerTexture);
-
-  theVertsPerTexture.Clear();
-  theTCrdsPerTexture.Clear();
-
-  for (Standard_Integer aTextureIter = 0; aTextureIter < theTextures.Length(); ++aTextureIter)
-  {
-    const NCollection_Vector<OpenGl_Vec2>& aVerts = *aVertsPerTexture.Value (aTextureIter);
-    const NCollection_Vector<OpenGl_Vec2>& aTCrds = *aTCrdsPerTexture.Value (aTextureIter);
-    Handle(OpenGl_Vec2Array) aVertsArray = new OpenGl_Vec2Array (1, aVerts.Length());
-    Handle(OpenGl_Vec2Array) aTCrdsArray = new OpenGl_Vec2Array (1, aVerts.Length());
-    theVertsPerTexture.Append (aVertsArray);
-    theTCrdsPerTexture.Append (aTCrdsArray);
-
-    for (Standard_Integer aVertIter = 0; aVertIter < aVerts.Length(); ++aVertIter)
-    {
-      aVertsArray->ChangeValue (aVertIter + 1) = aVerts.Value (aVertIter);
-    }
-    for (Standard_Integer aVertIter = 0; aVertIter < aVerts.Length(); ++aVertIter)
-    {
-      aTCrdsArray->ChangeValue (aVertIter + 1) = aTCrds.Value (aVertIter);
-    }
-  }
 }
 
 // =======================================================================

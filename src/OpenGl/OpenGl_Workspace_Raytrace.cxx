@@ -947,7 +947,7 @@ Standard_Boolean OpenGl_Workspace::UpdateRaytraceEnvironmentMap()
 
     if (!aProgram.IsNull())
     {
-      aProgram->Bind (myGlContext);
+      myGlContext->BindProgram (aProgram);
 
       if (!myView->TextureEnv().IsNull() && myView->SurfaceDetail() != Visual3d_TOD_NONE)
       {
@@ -965,10 +965,8 @@ Standard_Boolean OpenGl_Workspace::UpdateRaytraceEnvironmentMap()
     }
   }
 
-  OpenGl_ShaderProgram::Unbind (myGlContext);
-
+  myGlContext->BindProgram (NULL);
   myViewModificationStatus = myView->ModificationState();
-
   return Standard_True;
 }
 
@@ -1192,6 +1190,8 @@ Standard_Boolean OpenGl_Workspace::InitRaytraceResources (const Graphic3d_CView&
         return Standard_False;
       }
 
+      myRaytraceProgram->SetAttributeName (myGlContext, Graphic3d_TOA_POS, "occVertex");
+      myPostFSAAProgram->SetAttributeName (myGlContext, Graphic3d_TOA_POS, "occVertex");
       if (!myRaytraceProgram->Link (myGlContext)
        || !myPostFSAAProgram->Link (myGlContext))
       {
@@ -1286,6 +1286,7 @@ Standard_Boolean OpenGl_Workspace::InitRaytraceResources (const Graphic3d_CView&
         return SafeFailBack ("Failed to attach ray-trace shader objects");
       }
 
+      myRaytraceProgram->SetAttributeName (myGlContext, Graphic3d_TOA_POS, "occVertex");
       if (!myRaytraceProgram->Link (myGlContext))
       {
         TCollection_AsciiString aLinkLog;
@@ -1342,6 +1343,7 @@ Standard_Boolean OpenGl_Workspace::InitRaytraceResources (const Graphic3d_CView&
         return SafeFailBack ("Failed to attach FSAA shader objects");
       }
 
+      myPostFSAAProgram->SetAttributeName (myGlContext, Graphic3d_TOA_POS, "occVertex");
       if (!myPostFSAAProgram->Link (myGlContext))
       {
         TCollection_AsciiString aLinkLog;
@@ -1365,7 +1367,7 @@ Standard_Boolean OpenGl_Workspace::InitRaytraceResources (const Graphic3d_CView&
       Handle(OpenGl_ShaderProgram)& aShaderProgram =
         (anIndex == 0) ? myRaytraceProgram : myPostFSAAProgram;
 
-      aShaderProgram->Bind (myGlContext);
+      myGlContext->BindProgram (aShaderProgram);
 
       aShaderProgram->SetSampler (myGlContext,
         "uSceneMinPointTexture", OpenGl_RT_SceneMinPointTexture);
@@ -1406,7 +1408,7 @@ Standard_Boolean OpenGl_Workspace::InitRaytraceResources (const Graphic3d_CView&
       }
 
       myUniformLocations[anIndex][OpenGl_RT_aPosition] =
-        aShaderProgram->GetAttributeLocation (myGlContext, "aPosition");
+        aShaderProgram->GetAttributeLocation (myGlContext, "occVertex");
 
       myUniformLocations[anIndex][OpenGl_RT_uOriginLB] =
         aShaderProgram->GetUniformLocation (myGlContext, "uOriginLB");
@@ -1453,7 +1455,7 @@ Standard_Boolean OpenGl_Workspace::InitRaytraceResources (const Graphic3d_CView&
         aShaderProgram->GetUniformLocation (myGlContext, "uEnvironmentEnable");
     }
 
-    OpenGl_ShaderProgram::Unbind (myGlContext);
+    myGlContext->BindProgram (NULL);
   }
 
   if (myComputeInitStatus != OpenGl_RT_NONE)
@@ -1956,7 +1958,7 @@ Standard_Boolean OpenGl_Workspace::RunRaytraceShaders (const Graphic3d_CView& th
     glDisable (GL_BLEND);
   }
 
-  myRaytraceProgram->Bind (myGlContext);
+  myGlContext->BindProgram (myRaytraceProgram);
 
   Standard_Integer aLightSourceBufferSize =
     static_cast<Standard_Integer> (myRaytraceGeometry.Sources.size());
@@ -1992,20 +1994,16 @@ Standard_Boolean OpenGl_Workspace::RunRaytraceShaders (const Graphic3d_CView& th
   myRaytraceProgram->SetUniform (myGlContext,
     myUniformLocations[0][OpenGl_RT_uReflEnabled], theCView.RenderParams.IsReflectionEnabled ? 1 : 0);
 
-  myGlContext->core20fwd->glEnableVertexAttribArray (
-    myUniformLocations[0][OpenGl_RT_aPosition]);
+  myGlContext->core20fwd->glEnableVertexAttribArray (Graphic3d_TOA_POS);
   {
-    myGlContext->core20fwd->glVertexAttribPointer (
-      myUniformLocations[0][OpenGl_RT_aPosition], 3, GL_FLOAT, GL_FALSE, 0, NULL);
-
+    myGlContext->core20fwd->glVertexAttribPointer (Graphic3d_TOA_POS, 3, GL_FLOAT, GL_FALSE, 0, NULL);
     myGlContext->core15fwd->glDrawArrays (GL_TRIANGLES, 0, 6);
   }
-  myGlContext->core20fwd->glDisableVertexAttribArray (
-    myUniformLocations[0][OpenGl_RT_aPosition]);
+  myGlContext->core20fwd->glDisableVertexAttribArray (Graphic3d_TOA_POS);
   
   if (!theCView.RenderParams.IsAntialiasingEnabled)
   {
-    myRaytraceProgram->Unbind (myGlContext);
+    myGlContext->BindProgram (NULL);
 
     myOpenGlFBO->ColorTexture()->Unbind        (myGlContext, GL_TEXTURE0 + OpenGl_RT_OpenGlColorTexture);
     myOpenGlFBO->DepthStencilTexture()->Unbind (myGlContext, GL_TEXTURE0 + OpenGl_RT_OpenGlDepthTexture);
@@ -2029,7 +2027,7 @@ Standard_Boolean OpenGl_Workspace::RunRaytraceShaders (const Graphic3d_CView& th
 
   myRaytraceFBO1->ColorTexture()->Bind (myGlContext, GL_TEXTURE0 + OpenGl_RT_FSAAInputTexture);
 
-  myPostFSAAProgram->Bind (myGlContext);
+  myGlContext->BindProgram (myPostFSAAProgram);
 
   myPostFSAAProgram->SetUniform (myGlContext,
     myUniformLocations[1][OpenGl_RT_uOriginLB], theOrigins[0]);
@@ -2065,11 +2063,8 @@ Standard_Boolean OpenGl_Workspace::RunRaytraceShaders (const Graphic3d_CView& th
   const Standard_ShortReal aMaxOffset = 0.559017f;
   const Standard_ShortReal aMinOffset = 0.186339f;
 
-  myGlContext->core20fwd->glEnableVertexAttribArray (
-    myUniformLocations[1][OpenGl_RT_aPosition]);
-  
-  myGlContext->core20fwd->glVertexAttribPointer (
-    myUniformLocations[1][OpenGl_RT_aPosition], 3, GL_FLOAT, GL_FALSE, 0, NULL);
+  myGlContext->core20fwd->glEnableVertexAttribArray (Graphic3d_TOA_POS);
+  myGlContext->core20fwd->glVertexAttribPointer (Graphic3d_TOA_POS, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 
   // Perform multi-pass adaptive FSAA using ping-pong technique
   // rotated grid AA always uses 4 samples
@@ -2119,10 +2114,9 @@ Standard_Boolean OpenGl_Workspace::RunRaytraceShaders (const Graphic3d_CView& th
     }
   }
 
-  myGlContext->core20fwd->glDisableVertexAttribArray (
-    myUniformLocations[1][OpenGl_RT_aPosition]);
+  myGlContext->core20fwd->glDisableVertexAttribArray (Graphic3d_TOA_POS);
 
-  myPostFSAAProgram->Unbind (myGlContext);
+  myGlContext->BindProgram (NULL);
   myRaytraceFBO1->ColorTexture()->Unbind     (myGlContext, GL_TEXTURE0 + OpenGl_RT_FSAAInputTexture);
   myOpenGlFBO->ColorTexture()->Unbind        (myGlContext, GL_TEXTURE0 + OpenGl_RT_OpenGlColorTexture);
   myOpenGlFBO->DepthStencilTexture()->Unbind (myGlContext, GL_TEXTURE0 + OpenGl_RT_OpenGlDepthTexture);

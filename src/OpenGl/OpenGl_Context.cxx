@@ -110,9 +110,9 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   myMaxClipPlanes (6),
   myGlVerMajor (0),
   myGlVerMinor (0),
-  myRenderMode (GL_RENDER),
   myIsInitialized (Standard_False),
   myIsStereoBuffers (Standard_False),
+  myRenderMode (GL_RENDER),
   myDrawBuffer (0)
 {
 #if defined(MAC_OS_X_VERSION_10_3) && !defined(MACOSX_USE_GLX)
@@ -1975,4 +1975,25 @@ void OpenGl_Context::ReleaseDelayed()
   {
     myDelayed->UnBind (aDeadList.Value (anIter));
   }
+}
+
+// =======================================================================
+// function : BindProgram
+// purpose  :
+// =======================================================================
+void OpenGl_Context::BindProgram (const Handle(OpenGl_ShaderProgram)& theProgram)
+{
+  if (theProgram.IsNull()
+  || !theProgram->IsValid())
+  {
+    if (!myActiveProgram.IsNull())
+    {
+      core20fwd->glUseProgram (OpenGl_ShaderProgram::NO_PROGRAM);
+      myActiveProgram.Nullify();
+    }
+    return;
+  }
+
+  myActiveProgram = theProgram;
+  core20fwd->glUseProgram (theProgram->ProgramId());
 }

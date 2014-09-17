@@ -22,22 +22,24 @@
 #include <OpenGl_ShaderManager.hxx>
 #include <OpenGl_ShaderProgram.hxx>
 #include <OpenGl_Structure.hxx>
+#include <OpenGl_VertexBufferCompat.hxx>
 #include <OpenGl_Workspace.hxx>
 
 namespace
 {
   template<class T>
-  void BindProgramWithMaterial (const Handle(OpenGl_Workspace)& theWS,
-                                const T*                      theAspect)
+  const Handle(OpenGl_ShaderProgram)& bindProgram (const Handle(OpenGl_Workspace)& theWS,
+                                                   const T*                        theAspect)
   {
-    const Handle(OpenGl_Context)& aCtx = theWS->GetGlContext();
+    const Handle(OpenGl_Context)&       aCtx     = theWS->GetGlContext();
     const Handle(OpenGl_ShaderProgram)& aProgram = theAspect->ShaderProgramRes (theWS);
+    aCtx->BindProgram (aProgram);
     if (aProgram.IsNull())
     {
-      OpenGl_ShaderProgram::Unbind (aCtx);
-      return;
+      return aCtx->ActiveProgram();
     }
-    aProgram->BindWithVariables (aCtx);
+
+    aProgram->ApplyVariables (aCtx);
 
     const OpenGl_MaterialState* aMaterialState = aCtx->ShaderManager()->MaterialState (aProgram);
     if (aMaterialState == NULL || aMaterialState->Aspect() != theAspect)
@@ -46,6 +48,28 @@ namespace
     }
 
     aCtx->ShaderManager()->PushState (aProgram);
+    return aProgram;
+  }
+
+  inline const Handle(OpenGl_ShaderProgram)& bindProgram (const Handle(OpenGl_Workspace)& theWorkspace,
+                                                          const OpenGl_AspectFace*        theAspectFace,
+                                                          const OpenGl_AspectLine*        theAspectLine,
+                                                          const OpenGl_AspectMarker*      theAspectMarker,
+                                                          const GLint                     theDrawMode)
+  {
+    if (!theWorkspace->GetGlContext()->IsGlGreaterEqual (2, 0))
+    {
+      return theWorkspace->GetGlContext()->ActiveProgram();
+    }
+    switch (theDrawMode)
+    {
+      case GL_POINTS:
+        return bindProgram (theWorkspace, theAspectMarker);
+      case GL_LINES:
+      case GL_LINE_STRIP:
+        return bindProgram (theWorkspace, theAspectLine);
+    }
+    return bindProgram (theWorkspace, theAspectFace);
   }
 
   //! Convert index data type from size
@@ -91,8 +115,8 @@ namespace
 }
 
 //! Auxiliary template for VBO with interleaved attributes.
-template<int NbAttributes>
-class OpenGl_VertexBufferT : public OpenGl_VertexBuffer
+template<class TheBaseClass, int NbAttributes>
+class OpenGl_VertexBufferT : public TheBaseClass
 {
 
 public:
@@ -125,16 +149,29 @@ public:
     return false;
   }
 
-  virtual void BindFixedPosition (const Handle(OpenGl_Context)& theGlCtx) const
+  virtual bool HasNormalAttribute() const
   {
-    if (!IsValid())
+    for (Standard_Integer anAttribIter = 0; anAttribIter < NbAttributes; ++anAttribIter)
+    {
+      const Graphic3d_Attribute& anAttrib = Attribs[anAttribIter];
+      if (anAttrib.Id == Graphic3d_TOA_NORM)
+      {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  virtual void BindPositionAttribute (const Handle(OpenGl_Context)& theGlCtx) const
+  {
+    if (!TheBaseClass::IsValid())
     {
       return;
     }
 
-    Bind (theGlCtx);
+    TheBaseClass::Bind (theGlCtx);
     GLint aNbComp;
-    const GLubyte* anOffset = NULL;
+    const GLubyte* anOffset = TheBaseClass::myOffset;
     for (Standard_Integer anAttribIter = 0; anAttribIter < NbAttributes; ++anAttribIter)
     {
       const Graphic3d_Attribute& anAttrib = Attribs[anAttribIter];
@@ -145,7 +182,7 @@ public:
       }
       else if (anAttrib.Id == Graphic3d_TOA_POS)
       {
-        bindFixed (theGlCtx, Graphic3d_TOA_POS, aNbComp, aDataType, Stride, anOffset);
+        TheBaseClass::bindAttribute (theGlCtx, Graphic3d_TOA_POS, aNbComp, aDataType, Stride, anOffset);
         break;
       }
 
@@ -153,16 +190,16 @@ public:
     }
   }
 
-  virtual void BindFixed (const Handle(OpenGl_Context)& theGlCtx) const
+  virtual void BindAllAttributes (const Handle(OpenGl_Context)& theGlCtx) const
   {
-    if (!IsValid())
+    if (!TheBaseClass::IsValid())
     {
       return;
     }
 
-    Bind (theGlCtx);
+    TheBaseClass::Bind (theGlCtx);
     GLint aNbComp;
-    const GLubyte* anOffset = NULL;
+    const GLubyte* anOffset = TheBaseClass::myOffset;
     for (Standard_Integer anAttribIter = 0; anAttribIter < NbAttributes; ++anAttribIter)
     {
       const Graphic3d_Attribute& anAttrib = Attribs[anAttribIter];
@@ -172,23 +209,23 @@ public:
         continue;
       }
 
-      bindFixed (theGlCtx, anAttrib.Id, aNbComp, aDataType, Stride, anOffset);
+      TheBaseClass::bindAttribute (theGlCtx, anAttrib.Id, aNbComp, aDataType, Stride, anOffset);
       anOffset += Graphic3d_Attribute::Stride (anAttrib.DataType);
     }
   }
 
-  virtual void UnbindFixed (const Handle(OpenGl_Context)& theGlCtx) const
+  virtual void UnbindAllAttributes (const Handle(OpenGl_Context)& theGlCtx) const
   {
-    if (!IsValid())
+    if (!TheBaseClass::IsValid())
     {
       return;
     }
-    Unbind (theGlCtx);
+    TheBaseClass::Unbind (theGlCtx);
 
     for (Standard_Integer anAttribIter = 0; anAttribIter < NbAttributes; ++anAttribIter)
     {
       const Graphic3d_Attribute& anAttrib = Attribs[anAttribIter];
-      unbindFixed (theGlCtx, anAttrib.Id);
+      TheBaseClass::unbindAttribute (theGlCtx, anAttrib.Id);
     }
   }
 
@@ -218,398 +255,315 @@ void OpenGl_PrimitiveArray::clearMemoryGL (const Handle(OpenGl_Context)& theGlCt
 }
 
 // =======================================================================
-// function : BuildVBO
+// function : initNormalVbo
 // purpose  :
 // =======================================================================
-Standard_Boolean OpenGl_PrimitiveArray::BuildVBO (const Handle(OpenGl_Workspace)& theWorkspace) const
+Standard_Boolean OpenGl_PrimitiveArray::initNormalVbo (const Handle(OpenGl_Context)& theCtx) const
 {
-  const Handle(OpenGl_Context)& aGlCtx = theWorkspace->GetGlContext();
+  switch (myAttribs->NbAttributes)
+  {
+    case 1:  myVboAttribs = new OpenGl_VertexBufferT<OpenGl_VertexBuffer, 1> (*myAttribs); break;
+    case 2:  myVboAttribs = new OpenGl_VertexBufferT<OpenGl_VertexBuffer, 2> (*myAttribs); break;
+    case 3:  myVboAttribs = new OpenGl_VertexBufferT<OpenGl_VertexBuffer, 3> (*myAttribs); break;
+    case 4:  myVboAttribs = new OpenGl_VertexBufferT<OpenGl_VertexBuffer, 4> (*myAttribs); break;
+    case 5:  myVboAttribs = new OpenGl_VertexBufferT<OpenGl_VertexBuffer, 5> (*myAttribs); break;
+    case 6:  myVboAttribs = new OpenGl_VertexBufferT<OpenGl_VertexBuffer, 6> (*myAttribs); break;
+    case 7:  myVboAttribs = new OpenGl_VertexBufferT<OpenGl_VertexBuffer, 7> (*myAttribs); break;
+    case 8:  myVboAttribs = new OpenGl_VertexBufferT<OpenGl_VertexBuffer, 8> (*myAttribs); break;
+    case 9:  myVboAttribs = new OpenGl_VertexBufferT<OpenGl_VertexBuffer, 9> (*myAttribs); break;
+    case 10: myVboAttribs = new OpenGl_VertexBufferT<OpenGl_VertexBuffer, 10>(*myAttribs); break;
+  }
+
+  if (!myVboAttribs->init (theCtx, 0, myAttribs->NbElements, myAttribs->Data(), GL_NONE, myAttribs->Stride))
+  {
+    TCollection_ExtendedString aMsg;
+    aMsg += "VBO creation for Primitive Array has failed for ";
+    aMsg += myAttribs->NbElements;
+    aMsg += " vertices. Out of memory?";
+    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB, GL_DEBUG_TYPE_PERFORMANCE_ARB, 0, GL_DEBUG_SEVERITY_LOW_ARB, aMsg);
+
+    clearMemoryGL (theCtx);
+    return Standard_False;
+  }
+  else if (myIndices.IsNull())
+  {
+    return Standard_True;
+  }
+
+  myVboIndices = new OpenGl_IndexBuffer();
+  bool isOk = false;
+  switch (myIndices->Stride)
+  {
+    case 2:
+    {
+      isOk = myVboIndices->Init (theCtx, 1, myIndices->NbElements, reinterpret_cast<const GLushort*> (myIndices->Data()));
+      break;
+    }
+    case 4:
+    {
+      isOk = myVboIndices->Init (theCtx, 1, myIndices->NbElements, reinterpret_cast<const GLuint*> (myIndices->Data()));
+      break;
+    }
+    default:
+    {
+      clearMemoryGL (theCtx);
+      return Standard_False;
+    }
+  }
+  if (!isOk)
+  {
+    TCollection_ExtendedString aMsg;
+    aMsg += "VBO creation for Primitive Array has failed for ";
+    aMsg += myIndices->NbElements;
+    aMsg += " indices. Out of memory?";
+    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB, GL_DEBUG_TYPE_PERFORMANCE_ARB, 0, GL_DEBUG_SEVERITY_LOW_ARB, aMsg);
+    clearMemoryGL (theCtx);
+    return Standard_False;
+  }
+  return Standard_True;
+}
+
+// =======================================================================
+// function : buildVBO
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_PrimitiveArray::buildVBO (const Handle(OpenGl_Context)& theCtx,
+                                                  const Standard_Boolean        theToKeepData) const
+{
+  bool isNormalMode = theCtx->ToUseVbo();
   if (myAttribs.IsNull()
    || myAttribs->IsEmpty()
-   || myAttribs->NbElements < 1)
+   || myAttribs->NbElements < 1
+   || myAttribs->NbAttributes < 1
+   || myAttribs->NbAttributes > 10)
   {
     // vertices should be always defined - others are optional
     return Standard_False;
   }
 
+  if (isNormalMode
+   && initNormalVbo (theCtx))
+  {
+    if (!theCtx->caps->keepArrayData
+     && !theToKeepData)
+    {
+      myIndices.Nullify();
+      myAttribs.Nullify();
+    }
+    return Standard_True;
+  }
+
+  Handle(OpenGl_VertexBufferCompat) aVboAttribs;
   switch (myAttribs->NbAttributes)
   {
-    case 1:  myVboAttribs = new OpenGl_VertexBufferT<1> (*myAttribs); break;
-    case 2:  myVboAttribs = new OpenGl_VertexBufferT<2> (*myAttribs); break;
-    case 3:  myVboAttribs = new OpenGl_VertexBufferT<3> (*myAttribs); break;
-    case 4:  myVboAttribs = new OpenGl_VertexBufferT<4> (*myAttribs); break;
-    case 5:  myVboAttribs = new OpenGl_VertexBufferT<5> (*myAttribs); break;
-    case 6:  myVboAttribs = new OpenGl_VertexBufferT<6> (*myAttribs); break;
-    case 7:  myVboAttribs = new OpenGl_VertexBufferT<7> (*myAttribs); break;
-    case 8:  myVboAttribs = new OpenGl_VertexBufferT<8> (*myAttribs); break;
-    case 9:  myVboAttribs = new OpenGl_VertexBufferT<9> (*myAttribs); break;
-    case 10: myVboAttribs = new OpenGl_VertexBufferT<10>(*myAttribs); break;
-    default: return Standard_False;
+    case 1:  aVboAttribs = new OpenGl_VertexBufferT<OpenGl_VertexBufferCompat, 1> (*myAttribs); break;
+    case 2:  aVboAttribs = new OpenGl_VertexBufferT<OpenGl_VertexBufferCompat, 2> (*myAttribs); break;
+    case 3:  aVboAttribs = new OpenGl_VertexBufferT<OpenGl_VertexBufferCompat, 3> (*myAttribs); break;
+    case 4:  aVboAttribs = new OpenGl_VertexBufferT<OpenGl_VertexBufferCompat, 4> (*myAttribs); break;
+    case 5:  aVboAttribs = new OpenGl_VertexBufferT<OpenGl_VertexBufferCompat, 5> (*myAttribs); break;
+    case 6:  aVboAttribs = new OpenGl_VertexBufferT<OpenGl_VertexBufferCompat, 6> (*myAttribs); break;
+    case 7:  aVboAttribs = new OpenGl_VertexBufferT<OpenGl_VertexBufferCompat, 7> (*myAttribs); break;
+    case 8:  aVboAttribs = new OpenGl_VertexBufferT<OpenGl_VertexBufferCompat, 8> (*myAttribs); break;
+    case 9:  aVboAttribs = new OpenGl_VertexBufferT<OpenGl_VertexBufferCompat, 9> (*myAttribs); break;
+    case 10: aVboAttribs = new OpenGl_VertexBufferT<OpenGl_VertexBufferCompat, 10>(*myAttribs); break;
   }
-
-  if (!myVboAttribs->init (aGlCtx, 0, myAttribs->NbElements, myAttribs->Data(), GL_NONE, myAttribs->Stride))
-  {
-    clearMemoryGL (aGlCtx);
-    return Standard_False;
-  }
-
+  aVboAttribs->initLink (myAttribs, 0, myAttribs->NbElements, GL_NONE);
   if (!myIndices.IsNull())
   {
-    myVboIndices = new OpenGl_IndexBuffer();
-    bool isOk = Standard_False;
+    Handle(OpenGl_VertexBufferCompat) aVboIndices = new OpenGl_VertexBufferCompat();
     switch (myIndices->Stride)
     {
       case 2:
       {
-        isOk = myVboIndices->Init (aGlCtx, 1, myIndices->NbElements, reinterpret_cast<const GLushort*> (myIndices->Data()));
+        aVboIndices->initLink (myIndices, 1, myIndices->NbElements, GL_UNSIGNED_SHORT);
         break;
       }
       case 4:
       {
-        isOk = myVboIndices->Init (aGlCtx, 1, myIndices->NbElements, reinterpret_cast<const GLuint*> (myIndices->Data()));
+        aVboIndices->initLink (myIndices, 1, myIndices->NbElements, GL_UNSIGNED_INT);
         break;
       }
-      default: break;
+      default:
+      {
+        return Standard_False;
+      }
     }
-    if (!isOk)
-    {
-      clearMemoryGL (aGlCtx);
-      return Standard_False;
-    }
+    myVboIndices = aVboIndices;
+  }
+  myVboAttribs = aVboAttribs;
+  if (!theCtx->caps->keepArrayData
+   && !theToKeepData)
+  {
+    // does not make sense for compatibility mode
+    //myIndices.Nullify();
+    //myAttribs.Nullify();
   }
 
-  if (!aGlCtx->caps->keepArrayData)
-  {
-    myIndices.Nullify();
-    myAttribs.Nullify();
-  }
-  
   return Standard_True;
 }
 
 // =======================================================================
-// function : DrawArray
+// function : drawArray
 // purpose  :
 // =======================================================================
-void OpenGl_PrimitiveArray::DrawArray (Tint theLightingModel,
-                                       const Aspect_InteriorStyle theInteriorStyle,
-                                       Tint theEdgeFlag,
-                                       const TEL_COLOUR* theInteriorColour,
-                                       const TEL_COLOUR* theLineColour,
-                                       const TEL_COLOUR* theEdgeColour,
-                                       const Handle(OpenGl_Workspace)& theWorkspace) const
+void OpenGl_PrimitiveArray::drawArray (const Handle(OpenGl_Workspace)& theWorkspace,
+                                       const Graphic3d_Vec4*           theFaceColors) const
 {
   const Handle(OpenGl_Context)& aGlContext  = theWorkspace->GetGlContext();
-  const Graphic3d_Vec4*         aFaceColors = myBounds.IsNull() ? NULL : myBounds->Colors;
   const bool                    toHilight   = (theWorkspace->NamedStatus & OPENGL_NS_HIGHLIGHT) != 0;
   bool                          hasVColors  = false;
-
-  glColor3fv (myDrawMode <= GL_LINE_STRIP ? theLineColour->rgb : theInteriorColour->rgb);
-
-  // Temporarily disable environment mapping
-  if (myDrawMode <= GL_LINE_STRIP)
+  if (myVboAttribs.IsNull())
   {
-    glPushAttrib (GL_ENABLE_BIT);
-    glDisable (GL_TEXTURE_1D);
-    glDisable (GL_TEXTURE_2D);
+    if (myDrawMode == GL_POINTS)
+    {
+      // extreme compatibility mode - without sprites but with markers
+      drawMarkers (theWorkspace);
+    }
+    return;
   }
 
-  if ((myDrawMode >  GL_LINE_STRIP && theInteriorStyle != Aspect_IS_EMPTY) ||
-      (myDrawMode <= GL_LINE_STRIP))
+  myVboAttribs->BindAllAttributes (aGlContext);
+  if (myVboAttribs->HasColorAttribute())
   {
     if (toHilight)
     {
-      aFaceColors = NULL;
-    }
-
-    if (theInteriorStyle == Aspect_IS_HIDDENLINE)
-    {
-      theEdgeFlag = 1;
-      aFaceColors = NULL;
-    }
-
-    // Sometimes the GL_LIGHTING mode is activated here
-    // without glEnable(GL_LIGHTING) call for an unknown reason, so it is necessary
-    // to call glEnable(GL_LIGHTING) to synchronize Light On/Off mechanism*
-    if (theLightingModel == 0 || myDrawMode <= GL_LINE_STRIP)
-      glDisable (GL_LIGHTING);
-    else
-      glEnable (GL_LIGHTING);
-
-    if (!myVboAttribs.IsNull())
-    {
-      myVboAttribs->BindFixed (aGlContext);
-      if (myVboAttribs->HasColorAttribute())
-      {
-        if (toHilight)
-        {
-          // disable per-vertex colors
-          OpenGl_VertexBuffer::unbindFixed (aGlContext, Graphic3d_TOA_COLOR);
-        }
-        else
-        {
-          hasVColors = true;
-        }
-      }
-      if (!myVboIndices.IsNull())
-      {
-        myVboIndices->Bind (aGlContext);
-        if (!myBounds.IsNull())
-        {
-          // draw primitives by vertex count with the indices
-          const size_t aStride  = myVboIndices->GetDataType() == GL_UNSIGNED_SHORT ? sizeof(unsigned short) : sizeof(unsigned int);
-          GLubyte*     anOffset = NULL;
-          for (Standard_Integer aGroupIter = 0; aGroupIter < myBounds->NbBounds; ++aGroupIter)
-          {
-            const GLint aNbElemsInGroup = myBounds->Bounds[aGroupIter];
-            if (aFaceColors != NULL) glColor3fv (aFaceColors[aGroupIter].GetData());
-            glDrawElements (myDrawMode, aNbElemsInGroup, myVboIndices->GetDataType(), anOffset);
-            anOffset += aStride * aNbElemsInGroup;
-          }
-        }
-        else
-        {
-          // draw one (or sequential) primitive by the indices
-          glDrawElements (myDrawMode, myVboIndices->GetElemsNb(), myVboIndices->GetDataType(), NULL);
-        }
-        myVboIndices->Unbind (aGlContext);
-      }
-      else if (!myBounds.IsNull())
-      {
-        GLint aFirstElem = 0;
-        for (Standard_Integer aGroupIter = 0; aGroupIter < myBounds->NbBounds; ++aGroupIter)
-        {
-          const GLint aNbElemsInGroup = myBounds->Bounds[aGroupIter];
-          if (aFaceColors != NULL) glColor3fv (aFaceColors[aGroupIter].GetData());
-          glDrawArrays (myDrawMode, aFirstElem, aNbElemsInGroup);
-          aFirstElem += aNbElemsInGroup;
-        }
-      }
-      else
-      {
-        if (myDrawMode == GL_POINTS)
-        {
-          DrawMarkers (theWorkspace);
-        }
-        else
-        {
-          glDrawArrays (myDrawMode, 0, myVboAttribs->GetElemsNb());
-        }
-      }
-
-      // bind with 0
-      myVboAttribs->UnbindFixed (aGlContext);
+      // disable per-vertex colors
+      OpenGl_VertexBuffer::unbindAttribute (aGlContext, Graphic3d_TOA_COLOR);
     }
     else
     {
-      GLint aNbComp;
-      for (Standard_Integer anAttribIter = 0; anAttribIter < myAttribs->NbAttributes; ++anAttribIter)
-      {
-        const Graphic3d_Attribute& anAttrib = myAttribs->Attribute (anAttribIter);
-        if (anAttrib.Id == Graphic3d_TOA_COLOR)
-        {
-          if (toHilight)
-          {
-            continue;
-          }
-          hasVColors = true;
-        }
-        const GLenum  aDataType = toGlDataType (anAttrib.DataType, aNbComp);
-        const GLvoid* aData     = myAttribs->Data (anAttribIter);
-        if (aDataType == GL_NONE)
-        {
-          continue;
-        }
-
-        OpenGl_VertexBuffer::bindFixed (aGlContext, anAttrib.Id, aNbComp, aDataType, myAttribs->Stride, aData);
-      }
-
-      if (!myBounds.IsNull())
-      {
-        GLint aFirstElem = 0;
-        if (!myIndices.IsNull())
-        {
-          const GLenum anIndexType = toGlIndexType (myIndices->Stride);
-          for (Standard_Integer aGroupIter = 0; aGroupIter < myBounds->NbBounds; ++aGroupIter)
-          {
-            const GLint aNbElemsInGroup = myBounds->Bounds[aGroupIter];
-            if (aFaceColors != NULL) glColor3fv (aFaceColors[aGroupIter].GetData());
-            glDrawElements (myDrawMode, aNbElemsInGroup, anIndexType, myIndices->value (aFirstElem));
-            aFirstElem += aNbElemsInGroup;
-          }
-        }
-        else
-        {
-          for (Standard_Integer aGroupIter = 0; aGroupIter < myBounds->NbBounds; ++aGroupIter)
-          {
-            const GLint aNbElemsInGroup = myBounds->Bounds[aGroupIter];
-            if (aFaceColors != NULL) glColor3fv (aFaceColors[aGroupIter].GetData());
-            glDrawArrays (myDrawMode, aFirstElem, aNbElemsInGroup);
-            aFirstElem += aNbElemsInGroup;
-          }
-        }
-      }
-      else if (!myIndices.IsNull())
-      {
-        glDrawElements (myDrawMode, myIndices->NbElements, toGlIndexType (myIndices->Stride), myIndices->Data());
-      }
-      else
-      {
-        if (myDrawMode == GL_POINTS)
-        {
-          DrawMarkers (theWorkspace);
-        }
-        else
-        {
-          glDrawArrays (myDrawMode, 0, myAttribs->NbElements);
-        }
-      }
-
-      for (Standard_Integer anAttribIter = 0; anAttribIter < myAttribs->NbAttributes; ++anAttribIter)
-      {
-        const Graphic3d_Attribute& anAttrib = myAttribs->Attribute (anAttribIter);
-        OpenGl_VertexBuffer::unbindFixed (aGlContext, anAttrib.Id);
-      }
+      hasVColors = true;
     }
   }
+  if (!myVboIndices.IsNull())
+  {
+    myVboIndices->Bind (aGlContext);
+    GLubyte* anOffset = myVboIndices->GetDataOffset();
+    if (!myBounds.IsNull())
+    {
+      // draw primitives by vertex count with the indices
+      const size_t aStride = myVboIndices->GetDataType() == GL_UNSIGNED_SHORT ? sizeof(unsigned short) : sizeof(unsigned int);
+      for (Standard_Integer aGroupIter = 0; aGroupIter < myBounds->NbBounds; ++aGroupIter)
+      {
+        const GLint aNbElemsInGroup = myBounds->Bounds[aGroupIter];
+        if (theFaceColors != NULL) glColor3fv (theFaceColors[aGroupIter].GetData());
+        glDrawElements (myDrawMode, aNbElemsInGroup, myVboIndices->GetDataType(), anOffset);
+        anOffset += aStride * aNbElemsInGroup;
+      }
+    }
+    else
+    {
+      // draw one (or sequential) primitive by the indices
+      glDrawElements (myDrawMode, myVboIndices->GetElemsNb(), myVboIndices->GetDataType(), anOffset);
+    }
+    myVboIndices->Unbind (aGlContext);
+  }
+  else if (!myBounds.IsNull())
+  {
+    GLint aFirstElem = 0;
+    for (Standard_Integer aGroupIter = 0; aGroupIter < myBounds->NbBounds; ++aGroupIter)
+    {
+      const GLint aNbElemsInGroup = myBounds->Bounds[aGroupIter];
+      if (theFaceColors != NULL) glColor3fv (theFaceColors[aGroupIter].GetData());
+      glDrawArrays (myDrawMode, aFirstElem, aNbElemsInGroup);
+      aFirstElem += aNbElemsInGroup;
+    }
+  }
+  else
+  {
+    if (myDrawMode == GL_POINTS)
+    {
+      drawMarkers (theWorkspace);
+    }
+    else
+    {
+      glDrawArrays (myDrawMode, 0, myVboAttribs->GetElemsNb());
+    }
+  }
+
+  // bind with 0
+  myVboAttribs->UnbindAllAttributes (aGlContext);
 
   if (hasVColors)
   {
     theWorkspace->NamedStatus |= OPENGL_NS_RESMAT;
   }
-
-  if (theEdgeFlag && myDrawMode > GL_LINE_STRIP)
-  {
-    DrawEdges (theEdgeColour, theWorkspace);
-  }
-
-  if (myDrawMode <= GL_LINE_STRIP)
-    glPopAttrib();
 }
 
 // =======================================================================
-// function : DrawEdges
+// function : drawEdges
 // purpose  :
 // =======================================================================
-void OpenGl_PrimitiveArray::DrawEdges (const TEL_COLOUR*               theEdgeColour,
+void OpenGl_PrimitiveArray::drawEdges (const TEL_COLOUR*               theEdgeColour,
                                        const Handle(OpenGl_Workspace)& theWorkspace) const
 {
+  if (myVboAttribs.IsNull())
+  {
+    return;
+  }
+
   glDisable (GL_LIGHTING);
 
   const Handle(OpenGl_Context)& aGlContext = theWorkspace->GetGlContext();
   const OpenGl_AspectLine* anAspectLineOld = NULL;
-  if (myDrawMode > GL_LINE_STRIP)
+
+  anAspectLineOld = theWorkspace->SetAspectLine (theWorkspace->AspectFace (Standard_True)->AspectEdge());
+  const OpenGl_AspectLine* anAspect = theWorkspace->AspectLine (Standard_True);
+
+  glPushAttrib (GL_POLYGON_BIT);
+  glPolygonMode (GL_FRONT_AND_BACK, GL_LINE);
+
+  if (aGlContext->IsGlGreaterEqual (2, 0))
   {
-    anAspectLineOld = theWorkspace->SetAspectLine (theWorkspace->AspectFace (Standard_True)->AspectEdge());
-    const OpenGl_AspectLine* anAspect = theWorkspace->AspectLine (Standard_True);
-
-    glPushAttrib (GL_POLYGON_BIT);
-    glPolygonMode (GL_FRONT_AND_BACK, GL_LINE);
-
-    if (aGlContext->IsGlGreaterEqual (2, 0))
-    {
-      BindProgramWithMaterial (theWorkspace, anAspect);
-    }
+    bindProgram (theWorkspace, anAspect);
   }
 
   /// OCC22236 NOTE: draw edges for all situations:
   /// 1) draw elements with GL_LINE style as edges from myPArray->bufferVBO[VBOEdges] indices array
   /// 2) draw elements from vertex array, when bounds defines count of primitive's vertices.
   /// 3) draw primitive's edges by vertexes if no edges and bounds array is specified
-  if (!myVboAttribs.IsNull())
+  myVboAttribs->BindPositionAttribute (aGlContext);
+  glColor3fv (theEdgeColour->rgb);
+  if (!myVboIndices.IsNull())
   {
-    myVboAttribs->BindFixedPosition (aGlContext);
-    glColor3fv (theEdgeColour->rgb);
-    if (!myVboIndices.IsNull())
-    {
-      myVboIndices->Bind (aGlContext);
+    myVboIndices->Bind (aGlContext);
+    GLubyte* anOffset = myVboIndices->GetDataOffset();
 
-      // draw primitives by vertex count with the indices
-      if (!myBounds.IsNull())
-      {
-        const size_t aStride  = myVboIndices->GetDataType() == GL_UNSIGNED_SHORT ? sizeof(unsigned short) : sizeof(unsigned int);
-        GLubyte*     anOffset = NULL;
-        for (Standard_Integer aGroupIter = 0; aGroupIter < myBounds->NbBounds; ++aGroupIter)
-        {
-          const GLint aNbElemsInGroup = myBounds->Bounds[aGroupIter];
-          glDrawElements (myDrawMode, aNbElemsInGroup, myVboIndices->GetDataType(), anOffset);
-          anOffset += aStride * aNbElemsInGroup;
-        }
-      }
-      // draw one (or sequential) primitive by the indices
-      else
-      {
-        glDrawElements (myDrawMode, myVboIndices->GetElemsNb(), myVboIndices->GetDataType(), NULL);
-      }
-      myVboIndices->Unbind (aGlContext);
-    }
-    else if (!myBounds.IsNull())
+    // draw primitives by vertex count with the indices
+    if (!myBounds.IsNull())
     {
-      GLint aFirstElem = 0;
+      const size_t aStride = myVboIndices->GetDataType() == GL_UNSIGNED_SHORT ? sizeof(unsigned short) : sizeof(unsigned int);
       for (Standard_Integer aGroupIter = 0; aGroupIter < myBounds->NbBounds; ++aGroupIter)
       {
         const GLint aNbElemsInGroup = myBounds->Bounds[aGroupIter];
-        glDrawArrays (myDrawMode, aFirstElem, aNbElemsInGroup);
-        aFirstElem += aNbElemsInGroup;
+        glDrawElements (myDrawMode, aNbElemsInGroup, myVboIndices->GetDataType(), anOffset);
+        anOffset += aStride * aNbElemsInGroup;
       }
     }
+    // draw one (or sequential) primitive by the indices
     else
     {
-      glDrawArrays (myDrawMode, 0, myAttribs->NbElements);
+      glDrawElements (myDrawMode, myVboIndices->GetElemsNb(), myVboIndices->GetDataType(), anOffset);
     }
-
-    // unbind buffers
-    myVboAttribs->UnbindFixed (aGlContext, GL_VERTEX_ARRAY);
+    myVboIndices->Unbind (aGlContext);
+  }
+  else if (!myBounds.IsNull())
+  {
+    GLint aFirstElem = 0;
+    for (Standard_Integer aGroupIter = 0; aGroupIter < myBounds->NbBounds; ++aGroupIter)
+    {
+      const GLint aNbElemsInGroup = myBounds->Bounds[aGroupIter];
+      glDrawArrays (myDrawMode, aFirstElem, aNbElemsInGroup);
+      aFirstElem += aNbElemsInGroup;
+    }
   }
   else
   {
-    GLint aNbComp;
-    for (Standard_Integer anAttribIter = 0; anAttribIter < myAttribs->NbAttributes; ++anAttribIter)
-    {
-      const Graphic3d_Attribute& anAttrib = myAttribs->Attribute (anAttribIter);
-      if (anAttrib.Id == Graphic3d_TOA_POS)
-      {
-        const GLenum  aDataType = toGlDataType (anAttrib.DataType, aNbComp);
-        const GLvoid* aData     = myAttribs->Data (anAttribIter);
-        OpenGl_VertexBuffer::bindFixed (aGlContext, anAttrib.Id, aNbComp, aDataType, myAttribs->Stride, aData);
-        break;
-      }
-    }
-
-    glColor3fv (theEdgeColour->rgb);
-    if (!myBounds.IsNull())
-    {
-      if (!myIndices.IsNull())
-      {
-        const GLenum anIndexType = toGlIndexType (myIndices->Stride);
-        GLint aFirstElem = 0;
-        for (Standard_Integer aGroupIter = 0; aGroupIter < myBounds->NbBounds; ++aGroupIter)
-        {
-          const GLint aNbElemsInGroup = myBounds->Bounds[aGroupIter];
-          glDrawElements (myDrawMode, aNbElemsInGroup, anIndexType, myIndices->value (aFirstElem));
-          aFirstElem += aNbElemsInGroup;
-        }
-      }
-      else
-      {
-        GLint aFirstElem = 0;
-        for (Standard_Integer aGroupIter = 0; aGroupIter < myBounds->NbBounds; ++aGroupIter)
-        {
-          const GLint aNbElemsInGroup = myBounds->Bounds[aGroupIter];
-          glDrawArrays (myDrawMode, aFirstElem, aNbElemsInGroup);
-          aFirstElem += aNbElemsInGroup;
-        }
-      }
-    }
-    else if (!myIndices.IsNull())
-    {
-      glDrawElements (myDrawMode, myIndices->NbElements, toGlIndexType (myIndices->Stride), myIndices->Data());
-    }
-    else
-    {
-      glDrawArrays (myDrawMode, 0, myAttribs->NbElements);
-    }
+    glDrawArrays (myDrawMode, 0, myAttribs->NbElements);
   }
+
+  // unbind buffers
+  myVboAttribs->UnbindAttribute (aGlContext, Graphic3d_TOA_POS);
 
   if (myDrawMode > GL_LINE_STRIP)
   {
@@ -620,10 +574,10 @@ void OpenGl_PrimitiveArray::DrawEdges (const TEL_COLOUR*               theEdgeCo
 }
 
 // =======================================================================
-// function : DrawMarkers
+// function : drawMarkers
 // purpose  :
 // =======================================================================
-void OpenGl_PrimitiveArray::DrawMarkers (const Handle(OpenGl_Workspace)& theWorkspace) const
+void OpenGl_PrimitiveArray::drawMarkers (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
   const OpenGl_AspectMarker* anAspectMarker     = theWorkspace->AspectMarker (Standard_True);
   const Handle(OpenGl_Context)&     aCtx        = theWorkspace->GetGlContext();
@@ -815,25 +769,14 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
 
   // create VBOs on first render call
   const Handle(OpenGl_Context)& aCtx = theWorkspace->GetGlContext();
-  if (!myIsVboInit
-   && !aCtx->caps->vboDisable
-   && aCtx->core15 != NULL
-   && (myDrawMode != GL_POINTS || anAspectMarker->SpriteRes (theWorkspace).IsNull() || !anAspectMarker->SpriteRes (theWorkspace)->IsDisplayList()))
+  if (!myIsVboInit)
   {
-    if (!BuildVBO (theWorkspace))
-    {
-      TCollection_ExtendedString aMsg;
-      aMsg += "VBO creation for Primitive Array has failed for ";
-      aMsg += myAttribs->NbElements;
-      aMsg += " vertices. Out of memory?";
-      aCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB, GL_DEBUG_TYPE_PERFORMANCE_ARB, 0, GL_DEBUG_SEVERITY_LOW_ARB, aMsg);
-    }
+    // compatibility - keep data to draw markers using display lists
+    const Standard_Boolean toKeepData = myDrawMode == GL_POINTS
+                                    && !anAspectMarker->SpriteRes (theWorkspace).IsNull()
+                                    &&  anAspectMarker->SpriteRes (theWorkspace)->IsDisplayList();
+    buildVBO (aCtx, toKeepData);
     myIsVboInit = Standard_True;
-  }
-
-  if (myDrawMode <= GL_LINE_STRIP)
-  {
-    glDisable (GL_LIGHTING);
   }
 
   Tint aFrontLightingModel = anAspectFace->IntFront().color_mask;
@@ -848,34 +791,53 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
     aFrontLightingModel = 0;
   }
 
-  if (aCtx->IsGlGreaterEqual (2, 0))
+  // Temporarily disable environment mapping
+  if (myDrawMode <= GL_LINE_STRIP)
   {
-    switch (myDrawMode)
+    glPushAttrib (GL_ENABLE_BIT);
+    glDisable (GL_TEXTURE_1D);
+    glDisable (GL_TEXTURE_2D);
+  }
+  // manage FFP lighting
+  if (aFrontLightingModel == 0
+  ||  myVboAttribs.IsNull()
+  || !myVboAttribs->HasNormalAttribute())
+  {
+    glDisable (GL_LIGHTING);
+  }
+  else
+  {
+    glEnable (GL_LIGHTING);
+  }
+
+  bindProgram (theWorkspace,
+               anAspectFace, anAspectLine, anAspectMarker,
+               myDrawMode);
+
+  if ((myDrawMode >  GL_LINE_STRIP && anAspectFace->InteriorStyle() != Aspect_IS_EMPTY) ||
+      (myDrawMode <= GL_LINE_STRIP))
+  {
+    const bool            toHilight   = (theWorkspace->NamedStatus & OPENGL_NS_HIGHLIGHT) != 0;
+    const Graphic3d_Vec4* aFaceColors = !myBounds.IsNull() && !toHilight && anAspectFace->InteriorStyle() != Aspect_IS_HIDDENLINE
+                                      ?  myBounds->Colors
+                                      :  NULL;
+    glColor3fv (myDrawMode <= GL_LINE_STRIP ? aLineColor->rgb : anInteriorColor->rgb);
+
+    drawArray (theWorkspace, aFaceColors);
+  }
+
+  if (myDrawMode > GL_LINE_STRIP)
+  {
+    if (anAspectFace->Edge()
+     || anAspectFace->InteriorStyle() == Aspect_IS_HIDDENLINE)
     {
-      case GL_POINTS:
-      {
-        BindProgramWithMaterial (theWorkspace, anAspectMarker);
-        break;
-      }
-      case GL_LINES:
-      case GL_LINE_STRIP:
-      {
-        BindProgramWithMaterial (theWorkspace, anAspectLine);
-        break;
-      }
-      default: // polygonal array
-      {
-        BindProgramWithMaterial (theWorkspace, anAspectFace);
-        break;
-      }
+      drawEdges (anEdgeColor, theWorkspace);
     }
   }
 
-  DrawArray (aFrontLightingModel,
-             anAspectFace->InteriorStyle(),
-             anAspectFace->Edge(),
-             anInteriorColor,
-             aLineColor,
-             anEdgeColor,
-             theWorkspace);
+  if (myDrawMode <= GL_LINE_STRIP)
+  {
+    glPopAttrib();
+  }
+  aCtx->BindProgram (NULL);
 }

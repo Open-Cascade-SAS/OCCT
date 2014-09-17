@@ -181,19 +181,16 @@ public:
   //! Fetches uniform variables from proxy shader program.
   Standard_EXPORT Standard_Boolean ApplyVariables (const Handle(OpenGl_Context)& theCtx);
 
-  //! Sets the program object as part of current rendering state.
-  Standard_EXPORT void Bind (const Handle(OpenGl_Context)& theCtx) const;
-
-  //! Binds the program object and applies variables from proxy shader program.
-  Standard_EXPORT Standard_Boolean BindWithVariables (const Handle(OpenGl_Context)& theCtx);
-
-  //! Reverts to fixed-function graphics pipeline (FFP).
-  Standard_EXPORT static void Unbind (const Handle(OpenGl_Context)& theCtx);
-
   //! @return true if current object was initialized
   inline bool IsValid() const
   {
     return myProgramID != NO_PROGRAM;
+  }
+
+  //! @return program ID
+  inline GLuint ProgramId() const
+  {
+    return myProgramID;
   }
 
 private:

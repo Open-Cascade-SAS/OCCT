@@ -1,12 +1,12 @@
-in vec4 aPosition;
+in vec4 occVertex;
 
 //! Normalized pixel coordinates.
 out vec2 vPixel;
 
 void main (void)
 {
-  vPixel = vec2 ((aPosition.x + 1.f) * 0.5f,
-                 (aPosition.y + 1.f) * 0.5f);
-                 
-  gl_Position = aPosition;
+  vPixel = vec2 ((occVertex.x + 1.f) * 0.5f,
+                 (occVertex.y + 1.f) * 0.5f);
+
+  gl_Position = occVertex;
 }

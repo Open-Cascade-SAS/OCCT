@@ -600,7 +600,7 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
     // We need to disable (unbind) all shaders programs to ensure
     // that all objects without specified aspect will be drawn
     // correctly (such as background)
-    OpenGl_ShaderProgram::Unbind (aContext);
+    aContext->BindProgram (NULL);
   }
 
   // Render trihedron
