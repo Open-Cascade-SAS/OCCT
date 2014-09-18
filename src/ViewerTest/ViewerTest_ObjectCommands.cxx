@@ -35,6 +35,7 @@
 #include <AIS_DisplayMode.hxx>
 #include <TColStd_MapOfInteger.hxx>
 #include <AIS_MapOfInteractive.hxx>
+#include <ViewerTest_AutoUpdater.hxx>
 #include <ViewerTest_DoubleMapOfInteractiveAndName.hxx>
 #include <ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName.hxx>
 #include <ViewerTest_EventManager.hxx>
@@ -3481,53 +3482,72 @@ static int VDrawPArray (Draw_Interpretor& di, Standard_Integer argc, const char*
 //=======================================================================
 
 static Standard_Integer VSetLocation (Draw_Interpretor& /*di*/,
-                                      Standard_Integer argc,
-                                      const char ** argv)
+                                      Standard_Integer  theArgNb,
+                                      const char**      theArgVec)
 {
   Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
+  ViewerTest_AutoUpdater anUpdateTool (aContext, ViewerTest::CurrentView());
   if (aContext.IsNull())
   {
-    std::cout << argv[0] << "ERROR : use 'vinit' command before " << "\n";
+    std::cout << "Error: no active view!\n";
     return 1;
   }
 
-  if (argc != 5)
-  {
-    std::cout << "ERROR : Usage : " << argv[0] << " name x y z; new location" << "\n";
-    return 1;
-  }
+  TCollection_AsciiString aName;
+  gp_Vec aLocVec;
+  Standard_Boolean isSetLoc = Standard_False;
 
-  TCollection_AsciiString aName (argv[1]);
-  Standard_Real aX = Draw::Atof (argv[2]);
-  Standard_Real aY = Draw::Atof (argv[3]);
-  Standard_Real aZ = Draw::Atof (argv[4]);
-
-  // find object
-  ViewerTest_DoubleMapOfInteractiveAndName& aMap = GetMapOfAIS();
-  Handle(AIS_InteractiveObject) anIObj;
-  if (!aMap.IsBound2 (aName))
+  Standard_Integer anArgIter = 1;
+  for (; anArgIter < theArgNb; ++anArgIter)
   {
-    std::cout << "Use 'vdisplay' before" << "\n";
-    return 1;
-  }
-  else
-  {
-    anIObj = Handle(AIS_InteractiveObject)::DownCast (aMap.Find2 (aName));
-
-    // not an AIS_InteractiveObject
-    if (anIObj.IsNull())
+    Standard_CString anArg = theArgVec[anArgIter];
+    if (anUpdateTool.parseRedrawMode (theArgVec[anArgIter]))
     {
-      std::cout << argv[1] << " : Not an AIS interactive object" << "\n";
+      continue;
+    }
+    else if (aName.IsEmpty())
+    {
+      aName = anArg;
+    }
+    else if (!isSetLoc)
+    {
+      isSetLoc = Standard_True;
+      if (anArgIter + 1 >= theArgNb)
+      {
+        std::cout << "Error: syntax error at '" << anArg << "'\n";
+        return 1;
+      }
+      aLocVec.SetX (Draw::Atof (theArgVec[anArgIter++]));
+      aLocVec.SetY (Draw::Atof (theArgVec[anArgIter]));
+      if (anArgIter + 1 < theArgNb)
+      {
+        aLocVec.SetZ (Draw::Atof (theArgVec[++anArgIter]));
+      }
+    }
+    else
+    {
+      std::cout << "Error: unknown argument '" << anArg << "'\n";
       return 1;
     }
-
-    gp_Trsf aTrsf;
-    aTrsf.SetTranslation (gp_Vec (aX, aY, aZ));
-    TopLoc_Location aLocation (aTrsf);
-    aContext->SetLocation (anIObj, aLocation);
-    aContext->UpdateCurrentViewer();
   }
 
+  // find object
+  const ViewerTest_DoubleMapOfInteractiveAndName& aMap = GetMapOfAIS();
+  Handle(AIS_InteractiveObject) anIObj;
+  if (aMap.IsBound2 (aName))
+  {
+    anIObj = Handle(AIS_InteractiveObject)::DownCast (aMap.Find2 (aName));
+  }
+  if (anIObj.IsNull())
+  {
+    std::cout << "Error: object '" << aName << "' is not displayed!\n";
+    return 1;
+  }
+
+  gp_Trsf aTrsf;
+  aTrsf.SetTranslation (aLocVec);
+  TopLoc_Location aLocation (aTrsf);
+  aContext->SetLocation (anIObj, aLocation);
   return 0;
 }
 
@@ -5429,7 +5449,8 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
     __FILE__,VDrawSphere,group);
 
   theCommands.Add ("vsetlocation",
-        "vsetlocation : name x y z; set new location for an interactive object",
+                   "vsetlocation [-noupdate|-update] name x y z"
+                   "\n\t\t: Set new location for an interactive object.",
         __FILE__, VSetLocation, group);
 
   theCommands.Add (

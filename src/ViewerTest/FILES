@@ -1,5 +1,7 @@
 EXTERNLIB
 ViewerTest_CMPLRS.edl
+ViewerTest_AutoUpdater.hxx
+ViewerTest_AutoUpdater.cxx
 ViewerTest_AviCommands.cxx
 ViewerTest_ViewerCommands.cxx
 ViewerTest_RelationCommands.cxx

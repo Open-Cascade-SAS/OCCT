@@ -25,6 +25,7 @@
 #include <Standard_Stream.hxx>
 
 #include <ViewerTest.hxx>
+
 #include <TopLoc_Location.hxx>
 #include <TopTools_HArray1OfShape.hxx>
 #include <TColStd_HArray1OfTransient.hxx>
@@ -57,13 +58,13 @@
 #include <Prs3d_ShadingAspect.hxx>
 #include <Prs3d_IsoAspect.hxx>
 #include <TopTools_MapOfShape.hxx>
+#include <ViewerTest_AutoUpdater.hxx>
 
 #include <stdio.h>
 
 #include <Draw_Interpretor.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <Draw_PluginMacro.hxx>
-#include <ViewerTest.hxx>
 
 // avoid warnings on 'extern "C"' functions returning C++ classes
 #ifdef WNT
@@ -83,34 +84,6 @@ extern int ViewerMainLoop(Standard_Integer argc, const char** argv);
 
 #define DEFAULT_COLOR    Quantity_NOC_GOLDENROD
 #define DEFAULT_MATERIAL Graphic3d_NOM_BRASS
-
-enum ViewerTest_RedrawMode
-{
-  ViewerTest_RM_Auto = -1,
-  ViewerTest_RM_RedrawForce,
-  ViewerTest_RM_RedrawSuppress
-};
-
-//! Auxiliary method to parse redraw mode argument
-static Standard_Boolean parseRedrawMode (const TCollection_AsciiString& theArg,
-                                         ViewerTest_RedrawMode&         theMode)
-{
-  TCollection_AsciiString anArgCase (theArg);
-  anArgCase.LowerCase();
-  if (anArgCase == "-update"
-   || anArgCase == "-redraw")
-  {
-    theMode = ViewerTest_RM_RedrawForce;
-    return Standard_True;
-  }
-  else if (anArgCase == "-noupdate"
-        || anArgCase == "-noredraw")
-  {
-    theMode = ViewerTest_RM_RedrawSuppress;
-    return Standard_True;
-  }
-  return Standard_False;
-}
 
 //=======================================================================
 //function : GetColorFromName
@@ -1313,17 +1286,17 @@ static int VSetInteriorStyle (Draw_Interpretor& theDI,
                               const char**      theArgVec)
 {
   const Handle(AIS_InteractiveContext)& aCtx = ViewerTest::GetAISContext();
+  ViewerTest_AutoUpdater anUpdateTool (aCtx, ViewerTest::CurrentView());
   if (aCtx.IsNull())
   {
     std::cerr << "Error: no active view!\n";
     return 1;
   }
 
-  ViewerTest_RedrawMode aToUpdate = ViewerTest_RM_Auto;
-  Standard_Integer      anArgIter = 1;
+  Standard_Integer anArgIter = 1;
   for (; anArgIter < theArgNb; ++anArgIter)
   {
-    if (!parseRedrawMode (theArgVec[anArgIter], aToUpdate))
+    if (!anUpdateTool.parseRedrawMode (theArgVec[anArgIter]))
     {
       break;
     }
@@ -1396,15 +1369,6 @@ static int VSetInteriorStyle (Draw_Interpretor& theDI,
       aFillAspect->SetInteriorStyle ((Aspect_InteriorStyle )anInterStyle);
       aCtx->RecomputePrsOnly (anIO, Standard_False, Standard_True);
     }
-  }
-
-  // update the screen and redraw the view
-  const Standard_Boolean isAutoUpdate = a3DView()->SetImmediateUpdate (Standard_False);
-  a3DView()->SetImmediateUpdate (isAutoUpdate);
-  if ((isAutoUpdate && aToUpdate != ViewerTest_RM_RedrawSuppress)
-   || aToUpdate == ViewerTest_RM_RedrawForce)
-  {
-    TheAISContext()->UpdateCurrentViewer();
   }
   return 0;
 }
@@ -1490,19 +1454,19 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
 {
   TCollection_AsciiString aCmdName (theArgVec[0]);
   const Handle(AIS_InteractiveContext)& aCtx = ViewerTest::GetAISContext();
+  ViewerTest_AutoUpdater anUpdateTool (aCtx, ViewerTest::CurrentView());
   if (aCtx.IsNull())
   {
     std::cerr << "Error: no active view!\n";
     return 1;
   }
 
-  ViewerTest_RedrawMode aToUpdate = ViewerTest_RM_Auto;
-  Standard_Integer      anArgIter = 1;
+  Standard_Integer anArgIter = 1;
   NCollection_Sequence<TCollection_AsciiString> aNames;
   for (; anArgIter < theArgNb; ++anArgIter)
   {
     TCollection_AsciiString anArg = theArgVec[anArgIter];
-    if (parseRedrawMode (anArg, aToUpdate))
+    if (anUpdateTool.parseRedrawMode (anArg))
     {
       continue;
     }
@@ -1885,15 +1849,6 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
       }
     }
   }
-
-  // update the screen and redraw the view
-  const Standard_Boolean isAutoUpdate = a3DView()->SetImmediateUpdate (Standard_False);
-  a3DView()->SetImmediateUpdate (isAutoUpdate);
-  if ((isAutoUpdate && aToUpdate != ViewerTest_RM_RedrawSuppress)
-   || aToUpdate == ViewerTest_RM_RedrawForce)
-  {
-    TheAISContext()->UpdateCurrentViewer();
-  }
   return 0;
 }
 
@@ -1908,6 +1863,7 @@ static int VDonly2 (Draw_Interpretor& ,
                     const char**      theArgVec)
 {
   const Handle(AIS_InteractiveContext)& aCtx = ViewerTest::GetAISContext();
+  ViewerTest_AutoUpdater anUpdateTool (aCtx, ViewerTest::CurrentView());
   if (aCtx.IsNull())
   {
     std::cerr << "Error: no active view!\n";
@@ -1918,12 +1874,11 @@ static int VDonly2 (Draw_Interpretor& ,
   {
     aCtx->CloseLocalContext();
   }
-  ViewerTest_RedrawMode aToUpdate = ViewerTest_RM_Auto;
 
   Standard_Integer anArgIter = 1;
   for (; anArgIter < theArgNb; ++anArgIter)
   {
-    if (!parseRedrawMode (theArgVec[anArgIter], aToUpdate))
+    if (!anUpdateTool.parseRedrawMode (theArgVec[anArgIter]))
     {
       break;
     }
@@ -1986,16 +1941,6 @@ static int VDonly2 (Draw_Interpretor& ,
       TheNISContext()->Erase (aShape);
     }
   }
-
-  // update the screen and redraw the view
-  const Standard_Boolean isAutoUpdate = a3DView()->SetImmediateUpdate (Standard_False);
-  a3DView()->SetImmediateUpdate (isAutoUpdate);
-  if ((isAutoUpdate && aToUpdate != ViewerTest_RM_RedrawSuppress)
-   || aToUpdate == ViewerTest_RM_RedrawForce)
-  {
-    TheAISContext()->UpdateCurrentViewer();
-  }
-
   return 0;
 }
 
@@ -2011,18 +1956,19 @@ int VRemove (Draw_Interpretor& theDI,
              Standard_Integer  theArgNb,
              const char**      theArgVec)
 {
-  if (a3DView().IsNull())
+  const Handle(AIS_InteractiveContext)& aCtx = ViewerTest::GetAISContext();
+  ViewerTest_AutoUpdater anUpdateTool (aCtx, ViewerTest::CurrentView());
+  if (aCtx.IsNull())
   {
-    std::cout << "Error: wrong syntax!\n";
+    std::cout << "Error: no active view!\n";
     return 1;
   }
 
-  TheAISContext()->CloseAllContexts (Standard_False);
+  aCtx->CloseAllContexts (Standard_False);
 
-  ViewerTest_RedrawMode aToUpdate     = ViewerTest_RM_Auto;
-  Standard_Boolean      isContextOnly = Standard_False;
-  Standard_Boolean      toRemoveAll   = Standard_False;
-  Standard_Boolean      toPrintInfo   = Standard_True;
+  Standard_Boolean isContextOnly = Standard_False;
+  Standard_Boolean toRemoveAll   = Standard_False;
+  Standard_Boolean toPrintInfo   = Standard_True;
 
   Standard_Integer anArgIter = 1;
   for (; anArgIter < theArgNb; ++anArgIter)
@@ -2041,7 +1987,7 @@ int VRemove (Draw_Interpretor& theDI,
     {
       toPrintInfo = Standard_False;
     }
-    else if (!parseRedrawMode (anArg, aToUpdate))
+    else if (!anUpdateTool.parseRedrawMode (anArg))
     {
       break;
     }
@@ -2078,7 +2024,7 @@ int VRemove (Draw_Interpretor& theDI,
       const Handle(AIS_InteractiveObject) anIO = Handle(AIS_InteractiveObject)::DownCast (aTransientObj);
       if (!anIO.IsNull())
       {
-        if (anIO->GetContext() != TheAISContext())
+        if (anIO->GetContext() != aCtx)
         {
           theDI << aName.ToCString() << " was not displayed in current context.\n";
           theDI << "Please activate view with this object displayed and try again.\n";
@@ -2096,7 +2042,7 @@ int VRemove (Draw_Interpretor& theDI,
       }
     }
   }
-  else if (TheAISContext()->NbCurrents() > 0
+  else if (aCtx->NbCurrents() > 0
         || TheNISContext()->GetSelected().Extent() > 0)
   {
     for (ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName anIter (GetMapOfAIS());
@@ -2105,7 +2051,7 @@ int VRemove (Draw_Interpretor& theDI,
       const Handle(AIS_InteractiveObject) anIO = Handle(AIS_InteractiveObject)::DownCast (anIter.Key1());
       if (!anIO.IsNull())
       {
-        if (!TheAISContext()->IsCurrent (anIO))
+        if (!aCtx->IsCurrent (anIO))
         {
           continue;
         }
@@ -2134,7 +2080,7 @@ int VRemove (Draw_Interpretor& theDI,
     const Handle(AIS_InteractiveObject) anIO  = Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2 (anIter.Value()));
     if (!anIO.IsNull())
     {
-      TheAISContext()->Remove (anIO, Standard_False);
+      aCtx->Remove (anIO, Standard_False);
       if (toPrintInfo)
       {
         theDI << anIter.Value().ToCString() << " was removed\n";
@@ -2157,16 +2103,6 @@ int VRemove (Draw_Interpretor& theDI,
       GetMapOfAIS().UnBind2 (anIter.Value());
     }
   }
-
-  // update the screen and redraw the view
-  const Standard_Boolean isAutoUpdate = a3DView()->SetImmediateUpdate (Standard_False);
-  a3DView()->SetImmediateUpdate (isAutoUpdate);
-  if ((isAutoUpdate && aToUpdate != ViewerTest_RM_RedrawSuppress)
-   || aToUpdate == ViewerTest_RM_RedrawForce)
-  {
-    TheAISContext()->UpdateCurrentViewer();
-  }
-
   return 0;
 }
 
@@ -2179,20 +2115,21 @@ int VErase (Draw_Interpretor& theDI,
             Standard_Integer  theArgNb,
             const char**      theArgVec)
 {
-  if (a3DView().IsNull())
+  const Handle(AIS_InteractiveContext)& aCtx = ViewerTest::GetAISContext();
+  ViewerTest_AutoUpdater anUpdateTool (aCtx, ViewerTest::CurrentView());
+  if (aCtx.IsNull())
   {
     std::cout << "Error: no active view!\n";
     return 1;
   }
-  TheAISContext()->CloseAllContexts (Standard_False);
+  aCtx->CloseAllContexts (Standard_False);
 
-  ViewerTest_RedrawMode  aToUpdate  = ViewerTest_RM_Auto;
   const Standard_Boolean toEraseAll = TCollection_AsciiString (theArgNb > 0 ? theArgVec[0] : "") == "veraseall";
 
   Standard_Integer anArgIter = 1;
   for (; anArgIter < theArgNb; ++anArgIter)
   {
-    if (!parseRedrawMode (theArgVec[anArgIter], aToUpdate))
+    if (!anUpdateTool.parseRedrawMode (theArgVec[anArgIter]))
     {
       break;
     }
@@ -2220,7 +2157,7 @@ int VErase (Draw_Interpretor& theDI,
       theDI << aName.ToCString() << " ";
       if (!anIO.IsNull())
       {
-        TheAISContext()->Erase (anIO, Standard_False);
+        aCtx->Erase (anIO, Standard_False);
       }
       else
       {
@@ -2233,7 +2170,7 @@ int VErase (Draw_Interpretor& theDI,
     }
   }
   else if (!toEraseAll
-        && TheAISContext()->NbCurrents() > 0)
+        && aCtx->NbCurrents() > 0)
   {
     // remove all currently selected objects
     for (ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName anIter (GetMapOfAIS());
@@ -2241,10 +2178,10 @@ int VErase (Draw_Interpretor& theDI,
     {
       const Handle(AIS_InteractiveObject) anIO = Handle(AIS_InteractiveObject)::DownCast (anIter.Key1());
       if (!anIO.IsNull()
-       && TheAISContext()->IsCurrent (anIO))
+       && aCtx->IsCurrent (anIO))
       {
         theDI << anIter.Key2().ToCString() << " ";
-        TheAISContext()->Erase (anIO, Standard_False);
+        aCtx->Erase (anIO, Standard_False);
       }
     }
   }
@@ -2257,7 +2194,7 @@ int VErase (Draw_Interpretor& theDI,
       const Handle(AIS_InteractiveObject) anIO = Handle(AIS_InteractiveObject)::DownCast (anIter.Key1());
       if (!anIO.IsNull())
       {
-        TheAISContext()->Erase (anIO, Standard_False);
+        aCtx->Erase (anIO, Standard_False);
       }
       else
       {
@@ -2269,16 +2206,6 @@ int VErase (Draw_Interpretor& theDI,
       }
     }
   }
-
-  // update the screen and redraw the view
-  const Standard_Boolean isAutoUpdate = a3DView()->SetImmediateUpdate (Standard_False);
-  a3DView()->SetImmediateUpdate (isAutoUpdate);
-  if ((isAutoUpdate && aToUpdate != ViewerTest_RM_RedrawSuppress)
-   || aToUpdate == ViewerTest_RM_RedrawForce)
-  {
-    TheAISContext()->UpdateCurrentViewer();
-  }
-
   return 0;
 }
 
@@ -2292,18 +2219,18 @@ static int VDisplayAll (Draw_Interpretor& ,
                         const char**      theArgVec)
 
 {
-  if (a3DView().IsNull())
+  const Handle(AIS_InteractiveContext)& aCtx = ViewerTest::GetAISContext();
+  ViewerTest_AutoUpdater anUpdateTool (aCtx, ViewerTest::CurrentView());
+  if (aCtx.IsNull())
   {
     std::cout << "Error: no active view!\n";
     return 1;
   }
 
-  ViewerTest_RedrawMode aToUpdate = ViewerTest_RM_Auto;
-
   Standard_Integer anArgIter = 1;
   for (; anArgIter < theArgNb; ++anArgIter)
   {
-    if (!parseRedrawMode (theArgVec[anArgIter], aToUpdate))
+    if (!anUpdateTool.parseRedrawMode (theArgVec[anArgIter]))
     {
       break;
     }
@@ -2314,9 +2241,9 @@ static int VDisplayAll (Draw_Interpretor& ,
     return 1;
   }
 
-  if (TheAISContext()->HasOpenedContext())
+  if (aCtx->HasOpenedContext())
   {
-    TheAISContext()->CloseLocalContext();
+    aCtx->CloseLocalContext();
   }
 
   for (ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName anIter (GetMapOfAIS());
@@ -2325,7 +2252,7 @@ static int VDisplayAll (Draw_Interpretor& ,
     if (anIter.Key1()->IsKind (STANDARD_TYPE(AIS_InteractiveObject)))
     {
       const Handle(AIS_InteractiveObject) aShape = Handle(AIS_InteractiveObject)::DownCast (anIter.Key1());
-      TheAISContext()->Erase (aShape, Standard_False);
+      aCtx->Erase (aShape, Standard_False);
     }
     else if (anIter.Key1()->IsKind(STANDARD_TYPE(NIS_InteractiveObject)))
     {
@@ -2340,7 +2267,7 @@ static int VDisplayAll (Draw_Interpretor& ,
     if (anIter.Key1()->IsKind (STANDARD_TYPE(AIS_InteractiveObject)))
     {
       const Handle(AIS_InteractiveObject) aShape = Handle(AIS_InteractiveObject)::DownCast (anIter.Key1());
-      TheAISContext()->Display (aShape, Standard_False);
+      aCtx->Display (aShape, Standard_False);
     }
     else if (anIter.Key1()->IsKind (STANDARD_TYPE(NIS_InteractiveObject)))
     {
@@ -2348,16 +2275,6 @@ static int VDisplayAll (Draw_Interpretor& ,
       TheNISContext()->Display (aShape);
     }
   }
-
-  // update the screen and redraw the view
-  const Standard_Boolean isAutoUpdate = a3DView()->SetImmediateUpdate (Standard_False);
-  a3DView()->SetImmediateUpdate (isAutoUpdate);
-  if ((isAutoUpdate && aToUpdate != ViewerTest_RM_RedrawSuppress)
-   || aToUpdate == ViewerTest_RM_RedrawForce)
-  {
-    TheAISContext()->UpdateCurrentViewer();
-  }
-
   return 0;
 }
 
@@ -2436,15 +2353,15 @@ int VBounding (Draw_Interpretor& theDI,
                const char**      theArgVec)
 {
   Handle(AIS_InteractiveContext) aCtx = ViewerTest::GetAISContext();
+  ViewerTest_AutoUpdater anUpdateTool (aCtx, ViewerTest::CurrentView());
   if (aCtx.IsNull())
   {
     std::cout << "Error: no active view!\n";
     return 1;
   }
 
-  ViewerTest_RedrawMode aToUpdate = ViewerTest_RM_Auto;
-  ViewerTest_BndAction  anAction  = BndAction_Show;
-  Standard_Integer      aMode     = -1;
+  ViewerTest_BndAction anAction = BndAction_Show;
+  Standard_Integer     aMode    = -1;
 
   Standard_Integer anArgIter = 1;
   for (; anArgIter < theArgNb; ++anArgIter)
@@ -2472,7 +2389,7 @@ int VBounding (Draw_Interpretor& theDI,
       }
       aMode = Draw::Atoi (theArgVec[anArgIter]);
     }
-    else if (!parseRedrawMode (anArg, aToUpdate))
+    else if (!anUpdateTool.parseRedrawMode (anArg))
     {
       break;
     }
@@ -2500,7 +2417,7 @@ int VBounding (Draw_Interpretor& theDI,
       bndPresentation (theDI, aPrs, aName, anAction);
     }
   }
-  else if (TheAISContext()->NbCurrents() > 0)
+  else if (aCtx->NbCurrents() > 0)
   {
     // remove all currently selected objects
     for (aCtx->InitCurrent(); aCtx->MoreCurrent(); aCtx->NextCurrent())
@@ -2527,16 +2444,6 @@ int VBounding (Draw_Interpretor& theDI,
       }
     }
   }
-
-  // update the screen and redraw the view
-  const Standard_Boolean isAutoUpdate = a3DView()->SetImmediateUpdate (Standard_False);
-  a3DView()->SetImmediateUpdate (isAutoUpdate);
-  if ((isAutoUpdate && aToUpdate != ViewerTest_RM_RedrawSuppress)
-   || aToUpdate == ViewerTest_RM_RedrawForce)
-  {
-    TheAISContext()->UpdateCurrentViewer();
-  }
-
   return 0;
 }
 
@@ -2838,32 +2745,33 @@ static int VDisplay2 (Draw_Interpretor& theDI,
                       Standard_Integer  theArgNb,
                       const char**      theArgVec)
 {
+  Handle(AIS_InteractiveContext) aCtx = ViewerTest::GetAISContext();
   if (theArgNb < 2)
   {
     std::cout << theArgVec[0] << "Error: wrong syntax!\n";
     return 1;
   }
-  else if (a3DView().IsNull())
+  else if (aCtx.IsNull())
   {
     ViewerTest::ViewerInit();
     std::cout << "Command vinit should be called before!\n";
     // return 1;
+    aCtx = ViewerTest::GetAISContext();
   }
 
-  const Handle(AIS_InteractiveContext)& aCtx = ViewerTest::GetAISContext();
+  ViewerTest_AutoUpdater anUpdateTool (aCtx, ViewerTest::CurrentView());
   if (aCtx->HasOpenedContext())
   {
     aCtx->CloseLocalContext();
   }
 
-  ViewerTest_RedrawMode aToUpdate = ViewerTest_RM_Auto;
-  Standard_Integer      isMutable = -1;
+  Standard_Integer isMutable = -1;
   for (Standard_Integer anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
   {
     const TCollection_AsciiString aName     = theArgVec[anArgIter];
     TCollection_AsciiString       aNameCase = aName;
     aNameCase.LowerCase();
-    if (parseRedrawMode (aName, aToUpdate))
+    if (anUpdateTool.parseRedrawMode (aName))
     {
       continue;
     }
@@ -2922,15 +2830,6 @@ static int VDisplay2 (Draw_Interpretor& theDI,
       Handle(NIS_InteractiveObject) aShape = Handle(NIS_InteractiveObject)::DownCast (anObj);
       TheNISContext()->Display (aShape);
     }
-  }
-
-  const Standard_Boolean isAutoUpdate = a3DView()->SetImmediateUpdate (Standard_False);
-  a3DView()->SetImmediateUpdate (isAutoUpdate);
-  if ((isAutoUpdate && aToUpdate != ViewerTest_RM_RedrawSuppress)
-   || aToUpdate == ViewerTest_RM_RedrawForce)
-  {
-    // update the screen and redraw the view
-    aCtx->UpdateCurrentViewer();
   }
   return 0;
 }
