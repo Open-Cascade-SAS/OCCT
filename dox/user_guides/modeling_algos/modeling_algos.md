@@ -2711,19 +2711,39 @@ TopoDS_Shape OutLineHCompound =
 aPolyHLRToShape.OutLineHCompound(); 
 ~~~~~
 
-@section occt_modalg_10_2 Meshing of  Shapes
+@section occt_modalg_10_2 Meshing of Shapes
 
-The *HLRBRep_PolyAlgo*  algorithm works with triangulation of shapes. This is provided by the function  *BRepMesh::Mesh*, which adds a triangulation of the shape to its topological data  structure. This triangulation is computed with a given deflection. 
+The algorithm of shape triangulation is provided by the functionality of *BRepMesh_IncrementalMesh* class, which adds a triangulation of the shape to its topological data structure.
 
 ~~~~~
-Standard_Real radius=10. ; 
-Standard_Real height=25. ; 
-BRepBuilderAPI_MakeCylinder myCyl (radius, height) ; 
-TopoDS_Shape myShape = myCyl.Shape() ; 
-Standard_Real Deflection = 0.01 ; 
-BRepMesh::Mesh (myShape, Deflection); 
+const Standard_Real aRadius = 10.0; 
+const Standard_Real aHeight = 25.0; 
+BRepBuilderAPI_MakeCylinder aCylinder(aRadius, aHeight); 
+TopoDS_Shape aShape = aCylinder.Shape();
+ 
+const Standard_Real aLinearDeflection   = 0.01;
+const Standard_Real anAngularDeflection = 0.5;
+
+BRepMesh_IncrementalMesh aMesh(aShape, aLinearDeflection, Standard_False, anAngularDeflection);
 ~~~~~
 
-Meshing covers a shape with a triangular mesh. Other  than hidden line removal, you can use meshing to transfer the shape to another  tool: a manufacturing tool, a shading algorithm, a finite element algorithm, or  a collision algorithm, for example. 
+Default meshing algorithm *BRepMesh_IncrementalMesh* has two major options to define triangulation – linear and angular deflections. At the first step all edges from face are discretized according to specified parameters. Linear deflection limits distance between curve and its tessellation and angular deflection limits the angle between subsequent segments in polyline.
 
-You can obtain  information on the shape by first exploring it. To then access triangulation of  a face in the shape, use *BRepTool::Triangulation*. To access a polygon which is  the approximation of an edge of the face, use *BRepTool::PolygonOnTriangulation*. 
+@image html /user_guides/modeling_algos/images/modeling_algos_image056.png  "Deflection parameters of BRepMesh_IncrementalMesh algorithm"
+
+Linear deflection limits distance between triangles and face interior.
+
+@image html /user_guides/modeling_algos/images/modeling_algos_image057.png  "Linear deflection"
+
+Note that if given value of linear deflection is less than shape tolerance then the algorithm will skip this value and will take into account the shape tolerance.
+
+Application should provide deflection parameters to compute satisfying mesh. Angular deflection is relatively simple and default value can be used (12-20 degrees). Linear deflection has absolute meaning and application should provide correct value for its models. Giving small values may result in too huge mesh (a lot of memory, long computation time and slow rendering) while big values results in ugly mesh.
+
+For application working in dimensions known in advance this is reasonable to fix absolute linear deflection for all models. This gives a meshes according to metrics and precision used in application (for example models known to be stored in meters and 0.004 m is enough for most tasks).
+
+However applications worked with alien models can not use the same deflection for all models (notice that this is abnormal situation in fact and this application is probably just a viewer for CAD models with dimensions vary by an order). To solve this problem conception of relative linear deflection was introduced that has some kind of LOD (level of detail) meaning. This value in fact is a scale factor to absolute deflection applied to model dimensions.
+
+
+Meshing covers a shape with a triangular mesh. Other than hidden line removal, you can use meshing to transfer the shape to another tool: a manufacturing tool, a shading algorithm, a finite element algorithm, or a collision algorithm, for example. 
+
+You can obtain information on the shape by first exploring it. To then access triangulation of a face in the shape, use *BRepTool::Triangulation*. To access a polygon which is the approximation of an edge of the face, use *BRepTool::PolygonOnTriangulation*.
