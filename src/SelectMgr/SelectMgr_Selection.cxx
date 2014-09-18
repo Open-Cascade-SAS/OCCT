@@ -25,6 +25,19 @@ SelectMgr_Selection
 ::SelectMgr_Selection (const Standard_Integer IdMode):
 myMode(IdMode)
 {}
+
+//==================================================
+// Function: Destroy
+// Purpose :
+//==================================================
+void SelectMgr_Selection::Destroy()
+{
+  for (SelectBasics_ListIteratorOfListOfSensitive anIt(myentities); anIt.More(); anIt.Next())
+  {
+    anIt.Value()->Set (NULL);
+  }
+}
+
 //==================================================
 // Function: ADD
 // Purpose :

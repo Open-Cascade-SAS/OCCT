@@ -68,6 +68,12 @@ is
     	--- Purpose: Constructs a selection object defined by the selection mode IdMode.
     	-- The default setting 0 is the selection mode for a shape in its entirety.   
 
+    Destroy (me : mutable) is static;
+        ---Level: Public
+        ---Purpose:
+        ---Category: Methods to modify the class definition
+        ---C++: alias ~
+
     Add  (me         : mutable;
     	  aprimitive : SensitiveEntity from SelectBasics) 
     	---Purpose: Adds the sensitive primitive aprimitive to the list of
