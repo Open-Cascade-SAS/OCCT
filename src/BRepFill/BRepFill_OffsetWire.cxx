@@ -1938,7 +1938,7 @@ void MakeOffset (const TopoDS_Edge&        E,
     Standard_Real Crossed = Xd.X()*Yd.Y()-Xd.Y()*Yd.X();
     Standard_Real Signe = ( Crossed > 0.) ? 1. : -1.;
 
-    if (anOffset*Signe < AC.Circle().Radius()) {
+    if (anOffset*Signe < AC.Circle().Radius() - Precision::Confusion()) {
 
       Handle(Geom2dAdaptor_HCurve) AHC = 
 	new Geom2dAdaptor_HCurve(G2d);

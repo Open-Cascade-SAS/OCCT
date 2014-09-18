@@ -1,12 +1,3 @@
-puts "TODO ?OCC23748 ALL: An exception was caught"
-puts "TODO ?OCC23748 ALL: \\*\\* Exception "
-puts "TODO ?OCC23748 ALL: Error: Offset is not done."
-puts "TODO ?OCC23748 ALL: Faulty OCC745"
-puts "TODO ?OCC12345 ALL: Exception: result is not a topological shape!!!"
-puts "TODO ?OCC12345 ALL: TEST INCOMPLETE"
-
-pload QAcommands
-
 puts "========"
 puts "OCC745"
 puts "========"
@@ -14,6 +5,8 @@ puts ""
 ###########################################
 # Exception Standard_NullValue while performing the offset:
 ###########################################
+
+pload QAcommands
 
 restore [locate_data_file OCC745_pocket1.brep] a 
 checkshape a
@@ -47,6 +40,5 @@ if { [catch { mkoffset result a 1 -10 } status] } {
     }
 }
 
-set length 0
+set length 511.416
 set 2dviewer 0
-
