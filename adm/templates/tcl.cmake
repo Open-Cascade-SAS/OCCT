@@ -1,163 +1,333 @@
-# - Find Tcl includes and libraries
+# tcl
 
-IF(WIN32)
-  SET(TCL_SEP "")
+if (NOT DEFINED INSTALL_TCL)
+  set (INSTALL_TCL OFF CACHE BOOL "Is tcl lib required to be copied into install directory")
+endif()
 
-  GET_FILENAME_COMPONENT(ActiveTcl_CurrentVersion 
-    "[HKEY_LOCAL_MACHINE\\SOFTWARE\\ActiveState\\ActiveTcl;CurrentVersion]" NAME)
+# tcl directory
+if (NOT DEFINED 3RDPARTY_TCL_DIR)
+  set (3RDPARTY_TCL_DIR "" CACHE PATH "The directory containing tcl")
+endif()
 
-ELSE()
-  SET(TCL_SEP ".")
-ENDIF()
+# tcl include directory
+if (NOT DEFINED 3RDPARTY_TCL_INCLUDE_DIR)
+  set (3RDPARTY_TCL_INCLUDE_DIR "" CACHE FILEPATH "The directory containing headers of tcl")
+endif()
 
-IF(NOT DEFINED 3RDPARTY_TCL_DIR)
-  SET(3RDPARTY_TCL_DIR "" CACHE PATH "Directory contains TCL product")
-ENDIF()
+# tk include directory
+if (NOT DEFINED 3RDPARTY_TK_INCLUDE_DIR)
+  set (3RDPARTY_TK_INCLUDE_DIR "" CACHE FILEPATH "The directory containing headers of tk")
+endif()
 
-IF(3RDPARTY_DIR AND ("${3RDPARTY_TCL_DIR}" STREQUAL "" OR CHANGES_ARE_NEEDED))
+# tcl library file (with absolute path)
+if (NOT DEFINED 3RDPARTY_TCL_LIBRARY OR NOT 3RDPARTY_TCL_LIBRARY_DIR)
+  set (3RDPARTY_TCL_LIBRARY "" CACHE FILEPATH "tcl library"  FORCE)
+endif()
+
+# tcl library directory
+if (NOT DEFINED 3RDPARTY_TCL_LIBRARY_DIR)
+  set (3RDPARTY_TCL_LIBRARY_DIR "" CACHE FILEPATH "The directory containing tcl library")
+endif()
+
+# tk library file (with absolute path)
+if (NOT DEFINED 3RDPARTY_TK_LIBRARY OR NOT 3RDPARTY_TK_LIBRARY_DIR)
+  set (3RDPARTY_TK_LIBRARY "" CACHE FILEPATH "tk library" FORCE)
+endif()
+
+# tk library directory
+if (NOT DEFINED 3RDPARTY_TK_LIBRARY_DIR)
+  set (3RDPARTY_TK_LIBRARY_DIR "" CACHE FILEPATH "The directory containing tk library")
+endif()
+
+# tcl shared library (with absolute path)
+if (WIN32)
+  if (NOT DEFINED 3RDPARTY_TCL_DLL OR NOT 3RDPARTY_TCL_DLL_DIR)
+    set (3RDPARTY_TCL_DLL "" CACHE FILEPATH "tcl shared library" FORCE)
+  endif()
+endif()
+
+# tcl shared library directory
+if (WIN32 AND NOT DEFINED 3RDPARTY_TCL_DLL_DIR)
+  set (3RDPARTY_TCL_DLL_DIR "" CACHE FILEPATH "The directory containing tcl shared library")
+endif()
+
+# tk shared library (with absolute path)
+if (WIN32)
+  if (NOT DEFINED 3RDPARTY_TK_DLL OR NOT 3RDPARTY_TK_DLL_DIR)
+    set (3RDPARTY_TK_DLL "" CACHE FILEPATH "tk shared library" FORCE)
+  endif()
+endif()
+
+# tk shared library directory
+if (WIN32 AND NOT DEFINED 3RDPARTY_TK_DLL_DIR)
+  set (3RDPARTY_TK_DLL_DIR "" CACHE FILEPATH "The directory containing tk shared library")
+endif()
+
+# search for tcl in user defined directory
+if (NOT 3RDPARTY_TCL_DIR AND 3RDPARTY_DIR)
   FIND_PRODUCT_DIR("${3RDPARTY_DIR}" tcl TCL_DIR_NAME)
-  IF("${TCL_DIR_NAME}" STREQUAL "")
-    MESSAGE(STATUS "\nInfo: tcl folder isn't found in ${3RDPARTY_DIR}. Start seeking in default folders")
-  ELSE()
-    SET(3RDPARTY_TCL_DIR "${3RDPARTY_DIR}/${TCL_DIR_NAME}" CACHE PATH "Directory contains TCL product" FORCE)
-  ENDIF()
-ENDIF()
-  
-SET(INSTALL_TCL OFF CACHE BOOL "Is TCL lib copy to install directory")
+  if (TCL_DIR_NAME)
+    set (3RDPARTY_TCL_DIR "${3RDPARTY_DIR}/${TCL_DIR_NAME}" CACHE PATH "The directory containing tcl" FORCE)
+  endif()
+endif()
 
-# include dir search
-IF("${3RDPARTY_TCL_INCLUDE_DIR}" STREQUAL "" OR CHANGES_ARE_NEEDED OR "${3RDPARTY_TCL_INCLUDE_DIR}" STREQUAL "3RDPARTY_TCL_INCLUDE_DIR-NOTFOUND")
-  SET(3RDPARTY_TCL_INCLUDE_DIR "3RDPARTY_TCL_INCLUDE_DIR-NOTFOUND" CACHE FILEPATH "Directory contains headers of the TCL product" FORCE)
-  
-  IF(NOT "${3RDPARTY_TCL_DIR}" STREQUAL "")
-    FIND_PATH(3RDPARTY_TCL_INCLUDE_DIR tcl.h PATHS "${3RDPARTY_TCL_DIR}/include" NO_DEFAULT_PATH)
-  ELSE()
-    SET(3RDPARTY_TCL_POSSIBLE_INCLUDE_DIRS /usr/include
-                                           /usr/local/include
-                                           /usr/include/tcl8${TCL_SEP}6
-                                           /usr/include/tcl8${TCL_SEP}5)
-    IF(WIN32)
-      SET(3RDPARTY_TCL_POSSIBLE_INCLUDE_DIRS ${3RDPARTY_TCL_POSSIBLE_INCLUDE_DIRS}
-          "[HKEY_LOCAL_MACHINE\\SOFTWARE\\ActiveState\\ActiveTcl\\${ActiveTcl_CurrentVersion}]/include"
-          "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Scriptics\\Tcl\\8.6;Root]/include"
-          "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Scriptics\\Tcl\\8.5;Root]/include"
-          "$ENV{ProgramFiles}/Tcl/include"
-          #"$ENV{ProgramFiles\(x86\)}/Tcl/include"
-          "C:/Program Files/Tcl/include"
-          "C:/Tcl/include")
-    ENDIF(WIN32)
+# define paths for default engine
+if (3RDPARTY_TCL_DIR AND EXISTS "${3RDPARTY_TCL_DIR}")
+  set (TCL_INCLUDE_PATH "${3RDPARTY_TCL_DIR}/include")
+endif()
 
-    # check default path (with additions) for header search
-    FIND_PATH(3RDPARTY_TCL_INCLUDE_DIR tcl.h PATHS ${3RDPARTY_TCL_POSSIBLE_INCLUDE_DIRS})
+# check tcl/tk include dir, library dir and shared library dir
+macro (DIR_SUBDIR_FILE_FIT LIBNAME)
+  if (3RDPARTY_TCL_DIR AND EXISTS "${3RDPARTY_TCL_DIR}")
+    # tcl/tk include dir
+    if (3RDPARTY_${LIBNAME}_INCLUDE_DIR AND EXISTS "${3RDPARTY_${LIBNAME}_INCLUDE_DIR}")
+      string (REGEX MATCH "${3RDPARTY_TCL_DIR}" DOES_PATH_CONTAIN "${3RDPARTY_${LIBNAME}_INCLUDE_DIR}")
+      if (NOT DOES_PATH_CONTAIN)
+        set (3RDPARTY_${LIBNAME}_INCLUDE_DIR "" CACHE FILEPATH "The directory containing headers of ${LIBNAME}" FORCE)
+      endif()
+    else()
+      set (3RDPARTY_${LIBNAME}_INCLUDE_DIR "" CACHE FILEPATH "The directory containing headers of ${LIBNAME}" FORCE)
+    endif()
     
-    #if find_path found something - set 3RDPARTY_TCL_DIR
-    IF(NOT "${3RDPARTY_TCL_INCLUDE_DIR}" STREQUAL "3RDPARTY_TCL_INCLUDE_DIR-NOTFOUND")
-      GET_FILENAME_COMPONENT (3RDPARTY_TCL_DIR "${3RDPARTY_TCL_INCLUDE_DIR}/../" ABSOLUTE)
-      SET(3RDPARTY_TCL_DIR ${3RDPARTY_TCL_DIR} CACHE FILEPATH "Directory contains TCL product" FORCE)
-    ENDIF()
-  ENDIF()
-ENDIF()
+    # tcl/tk library dir
+    if (3RDPARTY_${LIBNAME}_LIBRARY_DIR AND EXISTS "${3RDPARTY_${LIBNAME}_LIBRARY_DIR}")
+      
+      string (REGEX MATCH "${3RDPARTY_TCL_DIR}" DOES_PATH_CONTAIN "${3RDPARTY_${LIBNAME}_LIBRARY_DIR}")
+      if (NOT DOES_PATH_CONTAIN)
+        set (3RDPARTY_${LIBNAME}_LIBRARY_DIR "" CACHE FILEPATH "The directory containing ${LIBNAME} library" FORCE)
+      endif()
+    else()
+      set (3RDPARTY_${LIBNAME}_LIBRARY_DIR "" CACHE FILEPATH "The directory containing ${LIBNAME} library" FORCE)
+    endif()
 
-#library dir search
-IF("${3RDPARTY_TCL_LIBRARY}" STREQUAL "" OR CHANGES_ARE_NEEDED OR "${3RDPARTY_TCL_LIBRARY}" STREQUAL "3RDPARTY_TCL_LIBRARY-NOTFOUND")
-  SET(3RDPARTY_TCL_LIBRARY "3RDPARTY_TCL_LIBRARY-NOTFOUND" CACHE FILEPATH "Path to library of the TCL product" FORCE)
+    # tcl/tk shared library dir
+    if (WIN32)
+      if (3RDPARTY_${LIBNAME}_DLL_DIR AND EXISTS "${3RDPARTY_${LIBNAME}_DLL_DIR}")
+        string (REGEX MATCH "${3RDPARTY_TCL_DIR}" DOES_PATH_CONTAIN "${3RDPARTY_${LIBNAME}_DLL_DIR}")
+        if (NOT DOES_PATH_CONTAIN)
+          set (3RDPARTY_${LIBNAME}_DLL_DIR "" CACHE FILEPATH "The directory containing ${LIBNAME} shared library" FORCE)
+        endif()
+      else()
+        set (3RDPARTY_${LIBNAME}_DLL_DIR "" CACHE FILEPATH "The directory containing ${LIBNAME} shared library" FORCE)
+      endif()
+    endif()
+  endif()
+
+  # check tcl/tk library
+  if (3RDPARTY_${LIBNAME}_LIBRARY_DIR AND EXISTS "${3RDPARTY_${LIBNAME}_LIBRARY_DIR}")
+    if (3RDPARTY_${LIBNAME}_LIBRARY AND EXISTS "${3RDPARTY_${LIBNAME}_LIBRARY}")
+      string (REGEX MATCH "${3RDPARTY_${LIBNAME}_LIBRARY_DIR}" DOES_PATH_CONTAIN "${3RDPARTY_${LIBNAME}_LIBRARY}")
+
+      if (NOT DOES_PATH_CONTAIN)
+        set (3RDPARTY_${LIBNAME}_LIBRARY "" CACHE FILEPATH "${LIBNAME} library" FORCE)
+      endif()
+    else()
+      set (3RDPARTY_${LIBNAME}_LIBRARY "" CACHE FILEPATH "${LIBNAME} library" FORCE)
+    endif()
+  else()
+    set (3RDPARTY_${LIBNAME}_LIBRARY "" CACHE FILEPATH "${LIBNAME} library" FORCE)
+  endif()
+
+  # check tcl/tk shared library
+  if (WIN32)
+    if (3RDPARTY_${LIBNAME}_DLL_DIR AND EXISTS "${3RDPARTY_${LIBNAME}_DLL_DIR}")
+      if (3RDPARTY_${LIBNAME}_DLL AND EXISTS "${3RDPARTY_${LIBNAME}_DLL}")
+        string (REGEX MATCH "${3RDPARTY_${LIBNAME}_DLL_DIR}" DOES_PATH_CONTAIN "${3RDPARTY_${LIBNAME}_DLL}")
+
+        if (NOT DOES_PATH_CONTAIN)
+          set (3RDPARTY_${LIBNAME}_DLL "" CACHE FILEPATH "${LIBNAME} shared library" FORCE)
+        endif()
+      else()
+        set (3RDPARTY_${LIBNAME}_DLL "" CACHE FILEPATH "${LIBNAME} shared library" FORCE)
+      endif()
+    else()
+      set (3RDPARTY_${LIBNAME}_DLL "" CACHE FILEPATH "${LIBNAME} shared library" FORCE)
+    endif()
+  endif()
+endmacro()
+
+
+DIR_SUBDIR_FILE_FIT(TCL)
+DIR_SUBDIR_FILE_FIT(TK)
+
+
+# use default (CMake) TCL search
+find_package(TCL)
+
+foreach (LIBNAME TCL TK)
+  string (TOLOWER "${LIBNAME}" LIBNAME_L)
+
+  # tcl/tk include dir
+  if (NOT 3RDPARTY_${LIBNAME}_INCLUDE_DIR)
+    if (${LIBNAME}_INCLUDE_PATH AND EXISTS "${${LIBNAME}_INCLUDE_PATH}")
+      set (3RDPARTY_${LIBNAME}_INCLUDE_DIR "${${LIBNAME}_INCLUDE_PATH}" CACHE FILEPATH "The directory containing headers of ${LIBNAME}" FORCE)
+    endif()
+  endif()
+
+  # tcl/tk dir and library
+  if (NOT 3RDPARTY_${LIBNAME}_LIBRARY)
+    if (${LIBNAME}_LIBRARY AND EXISTS "${${LIBNAME}_LIBRARY}")
+      set (3RDPARTY_${LIBNAME}_LIBRARY "${${LIBNAME}_LIBRARY}" CACHE FILEPATH "${LIBNAME} library" FORCE)
+      
+      if (NOT 3RDPARTY_${LIBNAME}_LIBRARY_DIR)
+        get_filename_component (3RDPARTY_${LIBNAME}_LIBRARY_DIR "${3RDPARTY_${LIBNAME}_LIBRARY}" PATH)
+        set (3RDPARTY_${LIBNAME}_LIBRARY_DIR "${3RDPARTY_${LIBNAME}_LIBRARY_DIR}" CACHE FILEPATH "The directory containing ${LIBNAME} library" FORCE)
+      endif()
+    endif()
+  endif()
   
-  IF(NOT "${3RDPARTY_TCL_DIR}" STREQUAL "")
-    FIND_LIBRARY(3RDPARTY_TCL_LIBRARY
-                 NAMES tcl8${TCL_SEP}6 tcl8${TCL_SEP}5 tcl
-                 PATHS "${3RDPARTY_TCL_DIR}/lib" NO_DEFAULT_PATH)
-  ELSE()
-    SET(3RDPARTY_TCL_POSSIBLE_LIBRARIES_DIRS /usr/lib /usr/local/lib)
+
+  if (WIN32)
+    if (NOT 3RDPARTY_${LIBNAME}_DLL)
+        set (CMAKE_FIND_LIBRARY_SUFFIXES ".lib" ".dll")
+
+        set (DLL_FOLDER_FOR_SEARCH "")
+        if (3RDPARTY_${LIBNAME}_DLL_DIR)
+          set (DLL_FOLDER_FOR_SEARCH "${3RDPARTY_${LIBNAME}_DLL_DIR}")
+        elseif (3RDPARTY_TCL_DIR)
+          set (DLL_FOLDER_FOR_SEARCH "${3RDPARTY_TCL_DIR}/bin")
+        elseif (3RDPARTY_${LIBNAME}_LIBRARY_DIR)
+          get_filename_component (3RDPARTY_${LIBNAME}_LIBRARY_DIR_PARENT "${3RDPARTY_${LIBNAME}_LIBRARY_DIR}" PATH)
+          set (DLL_FOLDER_FOR_SEARCH "${3RDPARTY_${LIBNAME}_LIBRARY_DIR_PARENT}/bin")
+        endif()
+        
+        set (3RDPARTY_${LIBNAME}_DLL "3RDPARTY_${LIBNAME}_DLL-NOTFOUND" CACHE FILEPATH "${LIBNAME} shared library" FORCE)
+        find_library (3RDPARTY_${LIBNAME}_DLL NAMES ${LIBNAME_L}86 ${LIBNAME_L}85
+                                              PATHS "${DLL_FOLDER_FOR_SEARCH}"
+                                              NO_DEFAULT_PATH)
+    endif()
+  endif()
+
+  DIR_SUBDIR_FILE_FIT(${LIBNAME})
+  
+
+  # tcl/tk dir and library
+  if (NOT 3RDPARTY_${LIBNAME}_LIBRARY)
+    set (3RDPARTY_${LIBNAME}_LIBRARY "3RDPARTY_${LIBNAME}_LIBRARY-NOTFOUND" CACHE FILEPATH "${LIBNAME} library" FORCE)
+    find_library (3RDPARTY_${LIBNAME}_LIBRARY NAMES ${LIBNAME_L}8.6 ${LIBNAME_L}86 ${LIBNAME_L}8.5 ${LIBNAME_L}85
+                                              PATHS "${3RDPARTY_${LIBNAME}_LIBRARY_DIR}"
+                                              NO_DEFAULT_PATH)
     
-    IF(WIN32)
-      SET(3RDPARTY_TCL_POSSIBLE_LIBRARIES_DIRS ${3RDPARTY_TCL_POSSIBLE_LIBRARIES_DIRS}
-        "[HKEY_LOCAL_MACHINE\\SOFTWARE\\ActiveState\\ActiveTcl\\${ActiveTcl_CurrentVersion}]/lib"
-        "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Scriptics\\Tcl\\8.6;Root]/lib"
-        "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Scriptics\\Tcl\\8.5;Root]/lib"
-        "$ENV{ProgramFiles}/Tcl/Lib"
-        "C:/Program Files/Tcl/lib" 
-        "C:/Tcl/lib" )
-    ENDIF()
+    # search in another place if previous search doesn't find anything
+    find_library (3RDPARTY_${LIBNAME}_LIBRARY NAMES ${LIBNAME_L}8.6 ${LIBNAME_L}86 ${LIBNAME_L}8.5 ${LIBNAME_L}85 
+                                              PATHS "${3RDPARTY_TCL_DIR}/lib"
+                                              NO_DEFAULT_PATH)    
     
-    # check default path (with additions) for library search
-    FIND_LIBRARY(3RDPARTY_TCL_LIBRARY
-                 NAMES tcl8${TCL_SEP}6 tcl8${TCL_SEP}5 tcl
-                 PATHS ${3RDPARTY_TCL_POSSIBLE_LIBRARIES_DIRS})
-  ENDIF()
-ENDIF()
 
-#search the version of found tcl library
-IF("${3RDPARTY_TCL_LIBRARY}" STREQUAL "" OR "${3RDPARTY_TCL_LIBRARY}" STREQUAL "3RDPARTY_TCL_LIBRARY-NOTFOUND")
-  SET (TCL_DLL_SO_NAMES ${DLL_SO_PREFIX}tcl8${TCL_SEP}6.${DLL_SO}
-                        ${DLL_SO_PREFIX}tcl8${TCL_SEP}5.${DLL_SO}
-                        ${DLL_SO_PREFIX}tcl.${DLL_SO})
-ELSE()
-  GET_FILENAME_COMPONENT(TCL_LIBRARY_NAME "${3RDPARTY_TCL_LIBRARY}" NAME)
-
-  STRING(REGEX REPLACE "^.*tcl([0-9])[^0-9]*[0-9].*$" "\\1" TCL_MAJOR_VERSION "${TCL_LIBRARY_NAME}")
-  STRING(REGEX REPLACE "^.*tcl[0-9][^0-9]*([0-9]).*$" "\\1" TCL_MINOR_VERSION "${TCL_LIBRARY_NAME}")
-
-  IF (NOT "${TCL_MAJOR_VERSION}" STREQUAL "${TCL_LIBRARY_NAME}")
-    SET (IS_TCL_VERSION_FOUND ON)
-  ELSE()
-    SET (IS_TCL_VERSION_FOUND OFF)
-  ENDIF()
-  
-  IF (IS_TCL_VERSION_FOUND)
-    SET (TCL_DLL_SO_NAMES "${DLL_SO_PREFIX}tcl${TCL_MAJOR_VERSION}${TCL_SEP}${TCL_MINOR_VERSION}.${DLL_SO}")
-  ELSE()
-    MESSAGE(STATUS "\nWarning: Tcl version isn't found. ${DLL_SO_PREFIX}tcl.${DLL_SO} is used")
-    SET (TCL_DLL_SO_NAMES "${DLL_SO_PREFIX}tcl.${DLL_SO}")
-  ENDIF()
-ENDIF()
-
-#dll_so search
-IF("${3RDPARTY_TCL_DLL}" STREQUAL "" OR CHANGES_ARE_NEEDED OR "${3RDPARTY_TCL_DLL}" STREQUAL "3RDPARTY_TCL_DLL-NOTFOUND")
-  SET(3RDPARTY_TCL_DLL "3RDPARTY_TCL_DLL-NOTFOUND" CACHE FILEPATH "Path to shared library of the TCL product" FORCE)
-  
-  IF(NOT "${3RDPARTY_TCL_DIR}" STREQUAL "")
-    FIND_FILE(3RDPARTY_TCL_DLL 
-              NAMES ${TCL_DLL_SO_NAMES}
-              PATHS "${3RDPARTY_TCL_DIR}/${DLL_SO_FOLDER}" NO_DEFAULT_PATH)
-  ELSE() 
-    SET(3RDPARTY_TCL_POSSIBLE_SO_DIRS /usr/lib /usr/local/lib)
+    if (NOT 3RDPARTY_${LIBNAME}_LIBRARY OR NOT EXISTS "${3RDPARTY_${LIBNAME}_LIBRARY}")
+      set (3RDPARTY_${LIBNAME}_LIBRARY "" CACHE FILEPATH "${LIBNAME} library" FORCE)
+    endif()
     
-    IF(WIN32)
-      SET(3RDPARTY_TCL_POSSIBLE_SO_DIRS ${3RDPARTY_TCL_POSSIBLE_SO_DIRS}
-        "[HKEY_LOCAL_MACHINE\\SOFTWARE\\ActiveState\\ActiveTcl\\${ActiveTcl_CurrentVersion}]/bin"
-        "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Scriptics\\Tcl\\8.6;Root]/bin"
-        "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Scriptics\\Tcl\\8.5;Root]/bin"
-        "$ENV{ProgramFiles}/Tcl/Bin"
-        "C:/Program Files/Tcl/bin" 
-        "C:/Tcl/b" )
-    ENDIF()
+    if (NOT 3RDPARTY_${LIBNAME}_LIBRARY_DIR AND 3RDPARTY_${LIBNAME}_LIBRARY)
+      get_filename_component (3RDPARTY_${LIBNAME}_LIBRARY_DIR "${3RDPARTY_${LIBNAME}_LIBRARY}" PATH)
+      set (3RDPARTY_${LIBNAME}_LIBRARY_DIR "${3RDPARTY_${LIBNAME}_LIBRARY_DIR}" CACHE FILEPATH "The directory containing ${LIBNAME} library" FORCE)
+    endif()
+  endif()
+
+  set (3RDPARTY_${LIBNAME}_LIBRARY_VERSION "")
+  if (3RDPARTY_${LIBNAME}_LIBRARY AND EXISTS "${3RDPARTY_${LIBNAME}_LIBRARY}")
+    get_filename_component (${LIBNAME}_LIBRARY_NAME "${3RDPARTY_${LIBNAME}_LIBRARY}" NAME)
+    string(REGEX REPLACE "^.*${LIBNAME_L}([0-9]\\.*[0-9]).*$" "\\1" ${LIBNAME}_LIBRARY_VERSION "${${LIBNAME}_LIBRARY_NAME}")
     
-    # check default path (with additions) for dll_so search
-    FIND_FILE(3RDPARTY_TCL_DLL 
-              NAMES ${TCL_DLL_SO_NAMES}
-              PATHS ${3RDPARTY_TCL_POSSIBLE_SO_DIRS})
-  ENDIF()
-ENDIF()
+    if (NOT "${${LIBNAME}_LIBRARY_VERSION}" STREQUAL "${${LIBNAME}_LIBRARY_NAME}")
+      set (3RDPARTY_${LIBNAME}_LIBRARY_VERSION "${${LIBNAME}_LIBRARY_VERSION}")
+    else() # if the version isn't found - seek other library with 8.6 or 8.5 version in the same dir
+      message (STATUS "Info: ${LIBNAME} version isn't found")
+    endif()
+  endif()
   
-IF(NOT "${3RDPARTY_TCL_DIR}" STREQUAL "")
-  MARK_AS_ADVANCED(3RDPARTY_TCL_DIR)
-ENDIF()
 
-# #includes found paths to common variables
-IF(3RDPARTY_TCL_INCLUDE_DIR)
-  SET(3RDPARTY_INCLUDE_DIRS "${3RDPARTY_INCLUDE_DIRS};${3RDPARTY_TCL_INCLUDE_DIR}")
-ELSE()
-  LIST(APPEND 3RDPARTY_NOT_INCLUDED 3RDPARTY_TCL_INCLUDE_DIR)
-ENDIF()
+  set (3RDPARTY_${LIBNAME}_LIBRARY_VERSION_WITH_DOT "")
+  if (3RDPARTY_${LIBNAME}_LIBRARY_VERSION)
+    string (REGEX REPLACE "^.*([0-9])[^0-9]*[0-9].*$" "\\1" 3RDPARTY_${LIBNAME}_MAJOR_VERSION "${3RDPARTY_${LIBNAME}_LIBRARY_VERSION}")
+    string (REGEX REPLACE "^.*[0-9][^0-9]*([0-9]).*$" "\\1" 3RDPARTY_${LIBNAME}_MINOR_VERSION "${3RDPARTY_${LIBNAME}_LIBRARY_VERSION}")
+    set (3RDPARTY_${LIBNAME}_LIBRARY_VERSION_WITH_DOT "${3RDPARTY_${LIBNAME}_MAJOR_VERSION}.${3RDPARTY_${LIBNAME}_MINOR_VERSION}")
+  endif()
 
-IF(3RDPARTY_TCL_LIBRARY)
-  GET_FILENAME_COMPONENT(3RDPARTY_TCL_LIBRARY_DIR "${3RDPARTY_TCL_LIBRARY}" PATH)
-SET(3RDPARTY_LIBRARY_DIRS "${3RDPARTY_LIBRARY_DIRS};${3RDPARTY_TCL_LIBRARY_DIR}")
-ELSE()
-  LIST(APPEND 3RDPARTY_NOT_INCLUDED 3RDPARTY_TCL_LIBRARY)
-ENDIF()
+  if (WIN32)
+    if (NOT 3RDPARTY_${LIBNAME}_DLL)
+        set (CMAKE_FIND_LIBRARY_SUFFIXES ".lib" ".dll")
+
+        set (DLL_FOLDER_FOR_SEARCH "")
+        if (3RDPARTY_${LIBNAME}_DLL_DIR)
+          set (DLL_FOLDER_FOR_SEARCH "${3RDPARTY_${LIBNAME}_DLL_DIR}")
+        elseif (3RDPARTY_TCL_DIR)
+          set (DLL_FOLDER_FOR_SEARCH "${3RDPARTY_TCL_DIR}/bin")
+        else()
+          get_filename_component (3RDPARTY_${LIBNAME}_LIBRARY_DIR_PARENT "${3RDPARTY_${LIBNAME}_LIBRARY_DIR}" PATH)
+          set (DLL_FOLDER_FOR_SEARCH "${3RDPARTY_${LIBNAME}_LIBRARY_DIR_PARENT}/bin")
+        endif()
+        
+        set (3RDPARTY_${LIBNAME}_DLL "3RDPARTY_${LIBNAME}_DLL-NOTFOUND" CACHE FILEPATH "${LIBNAME} shared library" FORCE)
+        find_library (3RDPARTY_${LIBNAME}_DLL NAMES ${LIBNAME_L}${3RDPARTY_${LIBNAME}_LIBRARY_VERSION}
+                                              PATHS "${DLL_FOLDER_FOR_SEARCH}"
+                                              NO_DEFAULT_PATH)
+        
+        if (NOT 3RDPARTY_${LIBNAME}_DLL OR NOT EXISTS "${3RDPARTY_${LIBNAME}_DLL}")
+          set (3RDPARTY_${LIBNAME}_DLL "" CACHE FILEPATH "${LIBNAME} shared library" FORCE)
+        endif()
+      
+        if (NOT 3RDPARTY_${LIBNAME}_DLL_DIR AND 3RDPARTY_${LIBNAME}_DLL)
+          get_filename_component (3RDPARTY_${LIBNAME}_DLL_DIR "${3RDPARTY_${LIBNAME}_DLL}" PATH)
+          set (3RDPARTY_${LIBNAME}_DLL_DIR "${3RDPARTY_${LIBNAME}_DLL_DIR}" CACHE FILEPATH "The directory containing ${LIBNAME} shared library" FORCE)
+        endif()
+    endif()
+  endif()
   
-IF(3RDPARTY_TCL_DLL)
-ELSE()
-  LIST(APPEND 3RDPARTY_NOT_INCLUDED 3RDPARTY_TCL_DLL)
-ENDIF()
+  # include found paths to common variables
+  if (3RDPARTY_${LIBNAME}_INCLUDE_DIR AND EXISTS "${3RDPARTY_${LIBNAME}_INCLUDE_DIR}")
+    list (APPEND 3RDPARTY_INCLUDE_DIRS "${3RDPARTY_${LIBNAME}_INCLUDE_DIR}")
+  else()
+    list (APPEND 3RDPARTY_NOT_INCLUDED 3RDPARTY_${LIBNAME}_INCLUDE_DIR)
+  endif()
+
+  if (3RDPARTY_${LIBNAME}_LIBRARY AND EXISTS "${3RDPARTY_${LIBNAME}_LIBRARY}")
+    list (APPEND 3RDPARTY_LIBRARY_DIRS "${3RDPARTY_${LIBNAME}_LIBRARY_DIR}")
+  else()
+    list (APPEND 3RDPARTY_NOT_INCLUDED 3RDPARTY_${LIBNAME}_LIBRARY_DIR})
+  endif()
+
+  if (WIN32)
+    if (NOT 3RDPARTY_${LIBNAME}_DLL OR NOT EXISTS "${3RDPARTY_${LIBNAME}_DLL}")
+      list (APPEND 3RDPARTY_NOT_INCLUDED 3RDPARTY_${LIBNAME}_DLL_DIR)
+    endif()
+  endif()
+endforeach()
+
+# install tcltk
+if (INSTALL_TCL)
+  # include occt macros. compiler_bitness, os_wiht_bit, compiler and build_postfix
+  OCCT_INCLUDE_CMAKE_FILE ("adm/templates/occt_macros")
+
+  OCCT_MAKE_OS_WITH_BITNESS()
+  OCCT_MAKE_COMPILER_SHORT_NAME()
+  OCCT_MAKE_BUILD_POSTFIX()
+
+  if (WIN32)
+    install (FILES ${3RDPARTY_TCL_DLL} ${3RDPARTY_TK_DLL} DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/bin${BUILD_POSTFIX}")
+  else()
+    install (FILES ${3RDPARTY_TCL_LIBRARY} ${3RDPARTY_TK_LIBRARY} DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib${BUILD_POSTFIX}")
+  endif()
+
+  if (TCL_TCLSH_VERSION)
+    # tcl is required to install in lib folder (without ${BUILD_POSTFIX})
+    install (DIRECTORY "${3RDPARTY_TCL_LIBRARY_DIR}/tcl8"                    DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib")
+    install (DIRECTORY "${3RDPARTY_TCL_LIBRARY_DIR}/tcl${3RDPARTY_TCL_LIBRARY_VERSION_WITH_DOT}" DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib")
+    install (DIRECTORY "${3RDPARTY_TCL_LIBRARY_DIR}/tk${3RDPARTY_TK_LIBRARY_VERSION_WITH_DOT}"  DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib")
+  else()
+    message (STATUS "\nWarning: tclX.X and tkX.X subdirs won't be copyied during the installation process.")
+    message (STATUS "Try seeking tcl within another folder by changing 3RDPARTY_TCL_DIR variable.")
+  endif()
+endif()
+
+mark_as_advanced (3RDPARTY_TCL_LIBRARY 3RDPARTY_TK_LIBRARY 3RDPARTY_TCL_DLL 3RDPARTY_TK_DLL)
+
+# unset all redundant variables
+#TCL
+OCCT_CHECK_AND_UNSET (TCL_LIBRARY)
+OCCT_CHECK_AND_UNSET (TCL_INCLUDE_PATH)
+OCCT_CHECK_AND_UNSET (TCL_TCLSH)
+#TK
+OCCT_CHECK_AND_UNSET (TK_LIBRARY)
+OCCT_CHECK_AND_UNSET (TK_INCLUDE_PATH)
+OCCT_CHECK_AND_UNSET (TK_WISH)

@@ -39,9 +39,9 @@ add_executable ( Modeling WIN32 ${Modeling_SOURCE_FILES}
 
 set_property (TARGET Modeling PROPERTY FOLDER Samples)
 
-install (TARGETS Modeling RUNTIME DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/bin${BUILD_SUFFIX}"
-                          ARCHIVE DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/lib${BUILD_SUFFIX}"
-                          LIBRARY DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/lib${BUILD_SUFFIX}")
+install (TARGETS Modeling RUNTIME DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/bin${BUILD_POSTFIX}"
+                          ARCHIVE DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/lib${BUILD_POSTFIX}"
+                          LIBRARY DESTINATION "${INSTALL_DIR}/win${COMPILER_BITNESS}/${COMPILER}/lib${BUILD_POSTFIX}")
 
 include_directories (${OCCT_ROOT}/inc
                      ${MFC_STANDARD_SAMPLES_DIR}/02_Modeling

@@ -50,6 +50,7 @@ dev_guides/building/3rdparty/3rdparty_osx.md
 dev_guides/building/wok/wok.md
 dev_guides/building/automake.md
 dev_guides/building/cmake/cmake.md
+dev_guides/building/android/android.md
 dev_guides/building/code_blocks.md
 dev_guides/building/msvc.md
 dev_guides/building/xcode.md

@@ -1,657 +1,340 @@
-cmake_minimum_required ( VERSION 2.6)
+cmake_minimum_required (VERSION 2.8.10 FATAL_ERROR)
 
 set (CMAKE_SUPPRESS_REGENERATION TRUE)
 
+# set build configurations list
 if (NOT BUILD_CONFIGURATION)
-  set(BUILD_CONFIGURATION "Release" CACHE STRING "Build type of OCCT" FORCE)
+  set (BUILD_CONFIGURATION "Release" CACHE STRING "Build type of OCCT" FORCE)
   SET_PROPERTY(CACHE BUILD_CONFIGURATION PROPERTY STRINGS Release Debug RelWithDebInfo)
 endif()
 
-set(CMAKE_CONFIGURATION_TYPES ${BUILD_CONFIGURATION} CACHE INTERNAL "" FORCE)
+set (CMAKE_CONFIGURATION_TYPES ${BUILD_CONFIGURATION} CACHE INTERNAL "" FORCE)
 
-project(OCCT)
+# the name of the project
+project (OCCT)
 
-set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+# Solution folder property
+set_property (GLOBAL PROPERTY USE_FOLDERS ON)
 
-set(BUILD_SHARED_LIBS ON)
+set (CMAKE_BUILD_TYPE ${BUILD_CONFIGURATION} CACHE INTERNAL "Build type of OCCT" FORCE )
 
-IF("${BUILD_CONFIGURATION}" STREQUAL "${CMAKE_BUILD_TYPE}")
-  SET(CHANGES_ARE_NEEDED OFF)
-ELSE()
-  SET(CHANGES_ARE_NEEDED ON)
-ENDIF()
+# install dir of the built project
+set (INSTALL_DIR "" CACHE PATH "Directory that will contain install files of OCCT" )
+set (CMAKE_INSTALL_PREFIX "${INSTALL_DIR}" CACHE INTERNAL "" FORCE )
 
-MATH(EXPR COMPILER_BITNESS "32 + 32*(${CMAKE_SIZEOF_VOID_P}/8)")
+# whether install test bundle or not
+set (INSTALL_TESTS OFF CACHE BOOL "Is tests copy to install directory")
 
-SET(CMAKE_BUILD_TYPE ${BUILD_CONFIGURATION} CACHE INTERNAL "Build type of OCCT" FORCE )
+set (BUILD_PATCH_DIR "" CACHE PATH "directory with OCCT patch")
 
-SET(INSTALL_DIR "" CACHE PATH "Directory that will contain install files of OCCT" )
-SET(CMAKE_INSTALL_PREFIX "${INSTALL_DIR}" CACHE INTERNAL "" FORCE )
-
-set(BUILD_PATCH_DIR "" CACHE PATH "directory with occt patch")
-
+# the list of being built toolkits
 set (BUILD_TOOLKITS "" CACHE STRING "Toolkits are also included in OCCT")
-separate_arguments(BUILD_TOOLKITS)
-
-IF(MSVC)
-  SET(BUILD_Samples OFF CACHE BOOL "OCCT samples building")
-ENDIF()
-
-# consider for patch existence
-SET (IS_PATCH_CURRENT "NO")
-SET (TK_ROOT_DIR ${CMAKE_SOURCE_DIR})
-IF(NOT "${BUILD_PATCH_DIR}" STREQUAL "")
-  SET (IS_PATCH_CURRENT "YES")
-  SET (TK_ROOT_DIR ${BUILD_PATCH_DIR})
-ENDIF()
-
-# include the list of patch modules if the one exists
-# or include the list of original modules
-IF(NOT "${BUILD_PATCH_DIR}" STREQUAL "" AND EXISTS "${BUILD_PATCH_DIR}/adm/cmake/CMakeModules.txt")
-  MESSAGE(STATUS "Info: the list of patched modules is included")
-  include(${BUILD_PATCH_DIR}/adm/cmake/CMakeModules.txt)
-ELSE()
-  include(adm/cmake/CMakeModules.txt)
-ENDIF()
-
-if (WIN32)
-  set(SCRIPT_EXT bat)
-else()
-  set(SCRIPT_EXT sh)
-endif()
+separate_arguments (BUILD_TOOLKITS)
 
 if (MSVC)
-  add_definitions(/fp:precise)
+  set (BUILD_MFC_SAMPLES OFF CACHE BOOL "OCCT samples building")
 endif()
 
-# choose SSE2 option for appropriate MSVC compilers
-if (MSVC80 OR MSVC90 OR MSVC10)
-  if (${COMPILER_BITNESS} STREQUAL 32)
-    add_definitions(/arch:SSE2)
-  endif()
+# whether use optional 3rdparty or not
+if (APPLE)
+  set (USE_GLX OFF CACHE BOOL "Are X11 OpenGL used on OSX or not")
 endif()
 
-# set compiler short name
-if (MSVC)
-  if (MSVC70)
-    set (COMPILER vc7)
-  elseif (MSVC80)
-    set (COMPILER vc8)
-  elseif (MSVC90)
-    set (COMPILER vc9)
-  elseif (MSVC10)
-    set (COMPILER vc10)
-  elseif (MSVC11)
-    set (COMPILER vc11)
-  elseif (MSVC12)
-    set (COMPILER vc12)
-  endif()
-elseif (DEFINED CMAKE_COMPILER_IS_GNUCC)
-  set (COMPILER gcc)
-elseif (DEFINED CMAKE_COMPILER_IS_GNUCXX)
-  set (COMPILER gxx)
-elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-  set (COMPILER clang)
-elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
-  set (COMPILER icc)
-else()
-  set (COMPILER ${CMAKE_GENERATOR})
-  string (REGEX REPLACE " " "" COMPILER ${COMPILER})
+set (USE_FREEIMAGE OFF CACHE BOOL "Is freeimage used or not")
+
+if (NOT DEFINED ANDROID)
+  set (USE_GL2PS OFF CACHE BOOL "Is gl2ps used or not")
+  set (USE_TBB OFF CACHE BOOL "Is tbb used or not")
+  set (USE_OPENCL OFF CACHE BOOL "Is OpenCL used or not")
 endif()
 
-if (WIN32)
-  SET(OS_WITH_BIT "win${COMPILER_BITNESS}")
-elseif(APPLE)
-  SET(OS_WITH_BIT "mac${COMPILER_BITNESS}")
-else()
-  SET(OS_WITH_BIT "lin${COMPILER_BITNESS}")
-endif()
-
-add_definitions(-DCSFDB)
-if(WIN32)
-  add_definitions(/DWNT -wd4996)
-elseif(APPLE)
-  add_definitions(-fexceptions -fPIC -DOCC_CONVERT_SIGNALS)
-else()
-  add_definitions(-fexceptions -fPIC -DOCC_CONVERT_SIGNALS -DLIN)
-endif()
-
-# enable structured exceptions for MSVC
-string(REGEX MATCH "EHsc" ISFLAG "${CMAKE_CXX_FLAGS}")
-IF(ISFLAG)
-  STRING(REGEX REPLACE "EHsc" "EHa" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-ELSEIF(WIN32)
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -EHa")
-ENDIF()
-
-# enable parallel compilation on MSVC 9 and above
-IF(WIN32)
-  IF(NOT DEFINED MSVC70 AND NOT DEFINED MSVC80)
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -MP")
-  ENDIF()
-ENDIF()
-
-# increase compiler warnings level (-W4 for MSVC, -Wall for GCC)
-IF(MSVC)
-  if(CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
-    string(REGEX REPLACE "/W[0-4]" "/W4" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+# macro: include patched file if it exists
+macro (OCCT_INCLUDE_CMAKE_FILE BEING_INCLUDED_FILE)
+  if (NOT "${BUILD_PATCH_DIR}" STREQUAL "" AND EXISTS "${BUILD_PATCH_DIR}/${BEING_INCLUDED_FILE}.cmake")
+    include(${BUILD_PATCH_DIR}/${BEING_INCLUDED_FILE}.cmake)
   else()
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
+    include(${BEING_INCLUDED_FILE}.cmake)
   endif()
-elseif(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
+endmacro()
+
+# include occt macros
+OCCT_INCLUDE_CMAKE_FILE ("adm/templates/occt_macros")
+
+# BUILD_POSTFIX variable is used by all toolkit cmakelists.txt projects
+OCCT_MAKE_BUILD_POSTFIX()
+
+# include the patched or original list of modules
+OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/occt_modules")
+
+# include the list of being used toolkits. USED_TOOLKITS variable
+OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/occt_toolkits")
+
+# include the patched or original list of definitions and flags
+OCCT_INCLUDE_CMAKE_FILE ("adm/templates/occt_defs_flags")
+
+OCCT_INCLUDE_CMAKE_FILE ("adm/templates/3rdparty_macro")
+
+set (3RDPARTY_DIR_LABEL "The directory containing required 3rdparty products")
+if (NOT DEFINED 3RDPARTY_DIR)
+  set (3RDPARTY_DIR "" CACHE PATH ${3RDPARTY_DIR_LABEL})
 endif()
 
-SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DNo_Exception")
-SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -DNo_Exception")
+# search for 3rdparty dir
+if ("${3RDPARTY_DIR}" STREQUAL "")
+  if (DEFINED ENV{3RDPARTY_DIR})
+    set (3RDPARTY_DIR "$ENV{3RDPARTY_DIR}" CACHE PATH ${3RDPARTY_DIR_LABEL} FORCE)
+  elseif (EXISTS "${CMAKE_SOURCE_DIR}/../")
+    # in version 6.7.0 and above, occt parent directory contains 3rdparties
+    GET_FILENAME_COMPONENT(3RDPARTY_DIR "${CMAKE_SOURCE_DIR}/../" ABSOLUTE)
+    SET(3RDPARTY_DIR "${3RDPARTY_DIR}" CACHE PATH ${3RDPARTY_DIR_LABEL} FORCE)
+  endif()
+endif()
 
-SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEB")
-SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DDEB")
+# search for CSF_TclLibs variable in EXTERNLIB of each being used toolkit
+OCCT_IS_PRODUCT_REQUIRED(CSF_TclLibs USE_TCL)
 
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/out/lib)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/out/lib)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/out/bin)
-
-# RESOURCES
-install(DIRECTORY "${CMAKE_SOURCE_DIR}/src/DrawResources" DESTINATION  "${INSTALL_DIR}/src" )
-install(DIRECTORY "${CMAKE_SOURCE_DIR}/src/StdResource" DESTINATION  "${INSTALL_DIR}/src" )
-install(DIRECTORY "${CMAKE_SOURCE_DIR}/src/SHMessage" DESTINATION  "${INSTALL_DIR}/src" )
-install(DIRECTORY "${CMAKE_SOURCE_DIR}/src/Textures" DESTINATION  "${INSTALL_DIR}/src" )
-install(DIRECTORY "${CMAKE_SOURCE_DIR}/src/Shaders" DESTINATION  "${INSTALL_DIR}/src" )
-install(DIRECTORY "${CMAKE_SOURCE_DIR}/src/XSMessage" DESTINATION  "${INSTALL_DIR}/src" )
-install(DIRECTORY "${CMAKE_SOURCE_DIR}/src/XSTEPResource" DESTINATION  "${INSTALL_DIR}/src" )
-install(DIRECTORY "${CMAKE_SOURCE_DIR}/src/XmlOcafResource" DESTINATION  "${INSTALL_DIR}/src" )
-
-install(FILES "${CMAKE_SOURCE_DIR}/src/UnitsAPI/Lexi_Expr.dat" DESTINATION  "${INSTALL_DIR}/src/UnitsAPI" )
-install(FILES "${CMAKE_SOURCE_DIR}/src/UnitsAPI/Units.dat"     DESTINATION  "${INSTALL_DIR}/src/UnitsAPI" )
-install(FILES "${CMAKE_SOURCE_DIR}/src/TObj/TObj.msg" DESTINATION  "${INSTALL_DIR}/src/TObj" )
-
-IF("${BUILD_CONFIGURATION}" STREQUAL "Debug") 
-  SET(3RDPARTY_BUILD_SUFFIX "") # debug == release
-  SET(BUILD_SUFFIX "d")
-ELSE()
-  SET(3RDPARTY_BUILD_SUFFIX "") 
-  SET(BUILD_SUFFIX "")
-ENDIF()
-
-FUNCTION(SUBDIRECTORY_NAMES MAIN_DIRECTORY RESULT)
-  file(GLOB SUB_ITEMS "${MAIN_DIRECTORY}/*")
-
-  foreach(ITEM ${SUB_ITEMS})
-    if(IS_DIRECTORY "${ITEM}")
-      GET_FILENAME_COMPONENT(ITEM_NAME "${ITEM}" NAME)
-      LIST(APPEND LOCAL_RESULT "${ITEM_NAME}")
-    endif()
-  endforeach()
-  set (${RESULT} ${LOCAL_RESULT} PARENT_SCOPE)
-ENDFUNCTION()
-
-FUNCTION(FIND_PRODUCT_DIR ROOT_DIR PRODUCT_NAME RESULT)
-  string( TOLOWER "${PRODUCT_NAME}" lower_PRODUCT_NAME )
-
-  LIST(APPEND SEARCH_TEMPLATES "${lower_PRODUCT_NAME}.*${COMPILER}.*${COMPILER_BITNESS}")
-  LIST(APPEND SEARCH_TEMPLATES "${lower_PRODUCT_NAME}.*[0-9.]+.*${COMPILER}.*${COMPILER_BITNESS}")
-  LIST(APPEND SEARCH_TEMPLATES "${lower_PRODUCT_NAME}.*[0-9.]+.*${COMPILER_BITNESS}")
-  LIST(APPEND SEARCH_TEMPLATES "${lower_PRODUCT_NAME}.*[0-9.]+")
-  LIST(APPEND SEARCH_TEMPLATES "${lower_PRODUCT_NAME}")
-
-  SUBDIRECTORY_NAMES( "${ROOT_DIR}" SUBDIR_NAME_LIST)
-
-  FOREACH( SEARCH_TEMPLATE ${SEARCH_TEMPLATES})
-    IF(LOCAL_RESULT)
-      BREAK()
-    ENDIF()
-
-    FOREACH(SUBDIR_NAME ${SUBDIR_NAME_LIST})
-      string( TOLOWER "${SUBDIR_NAME}" lower_SUBDIR_NAME )
-
-      STRING(REGEX MATCH "${SEARCH_TEMPLATE}" DUMMY_VAR "${lower_SUBDIR_NAME}")
-      IF(DUMMY_VAR)
-        LIST(APPEND LOCAL_RESULT ${SUBDIR_NAME})
-      ENDIF()
-    ENDFOREACH()
-  ENDFOREACH()
-
-  IF(LOCAL_RESULT)
-    LIST(LENGTH "${LOCAL_RESULT}" LOC_LEN)
-    MATH(EXPR LAST_ELEMENT_INDEX "${LOC_LEN}-1")
-    LIST(GET LOCAL_RESULT ${LAST_ELEMENT_INDEX} DUMMY)
-    SET(${RESULT} ${DUMMY} PARENT_SCOPE)
-  ENDIF()
-ENDFUNCTION()
-
-IF(WIN32)
-  SET(DLL_SO "dll")
-  SET(DLL_SO_FOLDER "bin")
-  SET(DLL_SO_PREFIX "")
-ELSEIF(APPLE)
-  SET(DLL_SO "dylib")
-  SET(DLL_SO_FOLDER "lib")
-  SET(DLL_SO_PREFIX "lib")
-ELSE()
-  SET(DLL_SO "so")
-  SET(DLL_SO_FOLDER "lib")
-  SET(DLL_SO_PREFIX "lib")
-ENDIF()
-
-SET(3RDPARTY_DIR ${CMAKE_SOURCE_DIR} CACHE PATH "Directory contains required 3rdparty products")
-SET(3RDPARTY_INCLUDE_DIRS "")
-SET(3RDPARTY_NOT_INCLUDED)
-
-IF(APPLE)
-  SET(USE_GLX OFF CACHE BOOL "whether use X11 OpenGL on OSX or not")
-ENDIF()
-
-SET(USE_GL2PS OFF CACHE BOOL "whether use gl2ps product or not")
-SET(USE_FREEIMAGE OFF CACHE BOOL "whether use freeimage product or not")
-SET(USE_TBB OFF CACHE BOOL "whether use tbb product or not")
-SET(USE_OPENCL OFF CACHE BOOL "whether use OpenCL or not")
-
-SET(INSTALL_TESTS OFF CACHE BOOL "Is tests copy to install directory")
-
-MACRO (CHECK_AND_UNSET VARNAME)
-  IF(DEFINED ${VARNAME})
-    UNSET(${VARNAME} CACHE)
-  ENDIF()
-ENDMACRO()
-
-MACRO (CHECK_AND_UNSET_GROUP VARNAME)
-  CHECK_AND_UNSET ("${VARNAME}_DIR")
-  CHECK_AND_UNSET ("${VARNAME}_INCLUDE_DIR")
-  CHECK_AND_UNSET ("${VARNAME}_DLL")
-  CHECK_AND_UNSET ("${VARNAME}_LIBRARY")
-ENDMACRO()
-
-MACRO(THIRDPARTY_PRODUCT PRODUCT_NAME HEADER_NAME LIBRARY_NAME)
-  IF(NOT DEFINED 3RDPARTY_${PRODUCT_NAME}_DIR)
-    SET(3RDPARTY_${PRODUCT_NAME}_DIR "" CACHE PATH "Directory contains ${PRODUCT_NAME} product")
-  ENDIF()
-
-  IF(3RDPARTY_DIR AND ("${3RDPARTY_${PRODUCT_NAME}_DIR}" STREQUAL "" OR CHANGES_ARE_NEEDED))
-    FIND_PRODUCT_DIR("${3RDPARTY_DIR}" ${PRODUCT_NAME} ${PRODUCT_NAME}_DIR_NAME)
-    IF("${${PRODUCT_NAME}_DIR_NAME}" STREQUAL "")
-      MESSAGE(STATUS "${PRODUCT_NAME} DON'T FIND")
-    ELSE()
-      SET(3RDPARTY_${PRODUCT_NAME}_DIR "${3RDPARTY_DIR}/${${PRODUCT_NAME}_DIR_NAME}" CACHE PATH "Directory contains ${PRODUCT_NAME} product" FORCE)
-    ENDIF()
-  ENDIF()
-
-  SET(INSTALL_${PRODUCT_NAME} OFF CACHE BOOL "Is ${PRODUCT_NAME} lib copy to install directory")
-
-  IF(3RDPARTY_${PRODUCT_NAME}_DIR)
-    IF("${3RDPARTY_${PRODUCT_NAME}_INCLUDE_DIR}" STREQUAL "" OR CHANGES_ARE_NEEDED OR "${3RDPARTY_${PRODUCT_NAME}_INCLUDE_DIR}" STREQUAL "3RDPARTY_${PRODUCT_NAME}_INCLUDE_DIR-NOTFOUND")
-      SET(3RDPARTY_${PRODUCT_NAME}_INCLUDE_DIR "3RDPARTY_${PRODUCT_NAME}_INCLUDE_DIR-NOTFOUND" CACHE FILEPATH "Directory contains headers of the ${PRODUCT_NAME} product" FORCE)
-      if ("${PRODUCT_NAME}" STREQUAL "FREETYPE")
-        FIND_PATH(3RDPARTY_FREETYPE_INCLUDE_DIR ${HEADER_NAME} PATHS "${3RDPARTY_FREETYPE_DIR}/include" "${3RDPARTY_FREETYPE_DIR}/include/freetype2" NO_DEFAULT_PATH)
-      else()
-        FIND_PATH(3RDPARTY_${PRODUCT_NAME}_INCLUDE_DIR ${HEADER_NAME} PATHS "${3RDPARTY_${PRODUCT_NAME}_DIR}/include" NO_DEFAULT_PATH)
-      endif()
-    ENDIF()
-
-    IF("${3RDPARTY_${PRODUCT_NAME}_LIBRARY}" STREQUAL "" OR CHANGES_ARE_NEEDED OR "${3RDPARTY_${PRODUCT_NAME}_LIBRARY}" STREQUAL "3RDPARTY_${PRODUCT_NAME}_LIBRARY-NOTFOUND")
-      SET(3RDPARTY_${PRODUCT_NAME}_LIBRARY "3RDPARTY_${PRODUCT_NAME}_LIBRARY-NOTFOUND" CACHE FILEPATH "Path to library of the ${PRODUCT_NAME} product" FORCE)
-      FIND_LIBRARY(3RDPARTY_${PRODUCT_NAME}_LIBRARY ${LIBRARY_NAME}  PATHS "${3RDPARTY_${PRODUCT_NAME}_DIR}/lib" NO_DEFAULT_PATH)
-    ENDIF()
-
-    IF("${3RDPARTY_${PRODUCT_NAME}_DLL}" STREQUAL "" OR CHANGES_ARE_NEEDED OR "${3RDPARTY_${PRODUCT_NAME}_DLL}" STREQUAL "3RDPARTY_${PRODUCT_NAME}_DLL-NOTFOUND")
-      SET(3RDPARTY_${PRODUCT_NAME}_DLL "3RDPARTY_${PRODUCT_NAME}_DLL-NOTFOUND" CACHE FILEPATH "Path to shared library of the ${PRODUCT_NAME} product" FORCE)
-      FIND_FILE(3RDPARTY_${PRODUCT_NAME}_DLL "${DLL_SO_PREFIX}${LIBRARY_NAME}.${DLL_SO}"  PATHS "${3RDPARTY_${PRODUCT_NAME}_DIR}/${DLL_SO_FOLDER}" NO_DEFAULT_PATH)
-    ENDIF()
-
-    MARK_AS_ADVANCED(3RDPARTY_${PRODUCT_NAME}_DIR)
-  ELSE()
-
-  ENDIF()
-
-  # check default path (with additions) for header search
-  IF("${3RDPARTY_${PRODUCT_NAME}_INCLUDE_DIR}" STREQUAL "" OR "${3RDPARTY_${PRODUCT_NAME}_INCLUDE_DIR}" STREQUAL "3RDPARTY_${PRODUCT_NAME}_INCLUDE_DIR-NOTFOUND")
-    SET(3RDPARTY_${PRODUCT_NAME}_INCLUDE_DIR "3RDPARTY_${PRODUCT_NAME}_INCLUDE_DIR-NOTFOUND" CACHE FILEPATH "Directory contains headers of the ${PRODUCT_NAME} product" FORCE)
-    FIND_PATH(3RDPARTY_${PRODUCT_NAME}_INCLUDE_DIR ${HEADER_NAME} ${3RDPARTY_${PRODUCT_NAME}_ADDITIONAL_PATH_FOR_HEADER})
-  ENDIF()
-
-  # check default path (with additions) for library search
-  IF("${3RDPARTY_${PRODUCT_NAME}_LIBRARY}" STREQUAL "" OR "${3RDPARTY_${PRODUCT_NAME}_LIBRARY}" STREQUAL "3RDPARTY_${PRODUCT_NAME}_LIBRARY-NOTFOUND")
-    SET(3RDPARTY_${PRODUCT_NAME}_LIBRARY "3RDPARTY_${PRODUCT_NAME}_LIBRARY-NOTFOUND" CACHE FILEPATH "Directory contains library of the ${PRODUCT_NAME} product" FORCE)
-    FIND_LIBRARY(3RDPARTY_${PRODUCT_NAME}_LIBRARY ${LIBRARY_NAME} ${3RDPARTY_${PRODUCT_NAME}_ADDITIONAL_PATH_FOR_LIB})
-  ENDIF()
-
-  # check default path (with additions) for DLL search
-  IF("${3RDPARTY_${PRODUCT_NAME}_DLL}" STREQUAL "" OR "${3RDPARTY_${PRODUCT_NAME}_DLL}" STREQUAL "3RDPARTY_${PRODUCT_NAME}_DLL-NOTFOUND")
-    SET(3RDPARTY_${PRODUCT_NAME}_DLL "3RDPARTY_${PRODUCT_NAME}_DLL-NOTFOUND" CACHE FILEPATH "Directory contains shared library of the ${PRODUCT_NAME} product" FORCE)
-    FIND_FILE(3RDPARTY_${PRODUCT_NAME}_DLL "${DLL_SO_PREFIX}${LIBRARY_NAME}.${DLL_SO}" ${3RDPARTY_${PRODUCT_NAME}_ADDITIONAL_PATH_FOR_DLL})
-  ENDIF()
-
-  IF(3RDPARTY_${PRODUCT_NAME}_INCLUDE_DIR)
-    SET(3RDPARTY_INCLUDE_DIRS "${3RDPARTY_INCLUDE_DIRS};${3RDPARTY_${PRODUCT_NAME}_INCLUDE_DIR}")
-  ELSE()
-    LIST(APPEND 3RDPARTY_NOT_INCLUDED 3RDPARTY_${PRODUCT_NAME}_INCLUDE_DIR)
-  ENDIF()
-
-  IF(3RDPARTY_${PRODUCT_NAME}_LIBRARY)
-    GET_FILENAME_COMPONENT(3RDPARTY_${PRODUCT_NAME}_LIBRARY_DIR "${3RDPARTY_${PRODUCT_NAME}_LIBRARY}" PATH)
-    SET(3RDPARTY_LIBRARY_DIRS "${3RDPARTY_LIBRARY_DIRS};${3RDPARTY_${PRODUCT_NAME}_LIBRARY_DIR}")
-  ELSE()
-    LIST(APPEND 3RDPARTY_NOT_INCLUDED 3RDPARTY_${PRODUCT_NAME}_LIBRARY)
-  ENDIF()
-
-  IF(3RDPARTY_${PRODUCT_NAME}_DLL)
-    #
-  ELSE()
-    LIST(APPEND 3RDPARTY_NOT_INCLUDED 3RDPARTY_${PRODUCT_NAME}_DLL)
-  ENDIF()
-
-  IF(INSTALL_${PRODUCT_NAME})
-    INSTALL(FILES "${3RDPARTY_${PRODUCT_NAME}_DLL}" DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/${DLL_SO_FOLDER}${BUILD_SUFFIX}")
-    SET(3RDPARTY_${PRODUCT_NAME}_DLL_DIR "")
-  ELSE()
-    GET_FILENAME_COMPONENT(3RDPARTY_${PRODUCT_NAME}_DLL_DIR "${3RDPARTY_${PRODUCT_NAME}_DLL}" PATH)
-  ENDIF()
-ENDMACRO()
-
-# TCL
-INCLUDE(adm/templates/tcl.cmake)
-
-#install tcltk
-IF(INSTALL_TCL)
-  SET(3RDPARTY_TCL_DLL_DIR "")
-  SET(3RDPARTY_TCL_LIB_DIR "")
-  
-  GET_FILENAME_COMPONENT(3RDPARTY_TCL_LIB_DIR_INSIDE "${3RDPARTY_TCL_LIBRARY}" PATH)
-  GET_FILENAME_COMPONENT(3RDPARTY_TCL_DLL_DIR_INSIDE "${3RDPARTY_TCL_DLL}" PATH)
-
-  IF (IS_TCL_VERSION_FOUND)
-    SET (TCL_VERSION ${TCL_MAJOR_VERSION}${TCL_SEP}${TCL_MINOR_VERSION})
-    SET (TCL_FOLDER_VERSION ${TCL_MAJOR_VERSION}.${TCL_MINOR_VERSION})
-  ELSE()
-    SET (TCL_VERSION "")
-
-    #TODO SEARCH tclX.X & tkX.X subdirs
-    SET (TCL_FOLDER_VERSION "")
-  ENDIF()
-  
-  INSTALL(FILES "${3RDPARTY_TCL_DLL_DIR_INSIDE}/${DLL_SO_PREFIX}tcl${TCL_VERSION}.${DLL_SO}" DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/${DLL_SO_FOLDER}${BUILD_SUFFIX}")
-  INSTALL(FILES "${3RDPARTY_TCL_DLL_DIR_INSIDE}/${DLL_SO_PREFIX}tk${TCL_VERSION}.${DLL_SO}" DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/${DLL_SO_FOLDER}${BUILD_SUFFIX}")
-  
-  IF (IS_TCL_VERSION_FOUND)
-    # tcl is required to install in lib folder (without ${BUILD_SUFFIX})
-    INSTALL(DIRECTORY "${3RDPARTY_TCL_LIB_DIR_INSIDE}/tcl8" DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib")
-    INSTALL(DIRECTORY "${3RDPARTY_TCL_LIB_DIR_INSIDE}/tcl${TCL_FOLDER_VERSION}" DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib")
-    INSTALL(DIRECTORY "${3RDPARTY_TCL_LIB_DIR_INSIDE}/tk${TCL_FOLDER_VERSION}" DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib")
-  ELSE()
-    MESSAGE(STATUS "\nWarning: tclX.X and tkX.X subdirs won't be copyied during the installation process.")
-    MESSAGE(STATUS "Try seeking tcl within another folder by changing 3RDPARTY_TCL_DIR variable.")
-  ENDIF()
-ELSE()
-  GET_FILENAME_COMPONENT(3RDPARTY_TCL_DLL_DIR "${3RDPARTY_TCL_DLL}" PATH)
-  GET_FILENAME_COMPONENT(3RDPARTY_TCL_LIB_DIR "${3RDPARTY_TCL_LIBRARY}" PATH)
-ENDIF()
+if ("${USE_TCL}" STREQUAL ON)
+  message (STATUS "Info: tcl is used by OCCT")
+  OCCT_INCLUDE_CMAKE_FILE ("adm/templates/tcl")
+else()
+  OCCT_CHECK_AND_UNSET ("3RDPARTY_TCL_DIR")
+  OCCT_CHECK_AND_UNSET ("3RDPARTY_TCL_INCLUDE_DIR")
+  OCCT_CHECK_AND_UNSET ("3RDPARTY_TCL_LIBRARY")
+  OCCT_CHECK_AND_UNSET ("3RDPARTY_TCL_LIBRARY_DIR")
+  OCCT_CHECK_AND_UNSET ("3RDPARTY_TK_INCLUDE_DIR")
+  OCCT_CHECK_AND_UNSET ("3RDPARTY_TK_LIBRARY")
+  OCCT_CHECK_AND_UNSET ("3RDPARTY_TK_LIBRARY_DIR")
+endif()
 
 # GLX
-IF(USE_GLX)
-  ADD_DEFINITIONS(-DMACOSX_USE_GLX)
+if (USE_GLX)
+  add_definitions (-DMACOSX_USE_GLX)
+  OCCT_INCLUDE_CMAKE_FILE ("adm/templates/glx")
+endif()
 
-  IF(NOT DEFINED 3RDPARTY_GLX_DIR)
-    SET(3RDPARTY_GLX_DIR "" CACHE PATH "Directory contains GLX product")
-  ENDIF()
+# search for CSF_FREETYPE variable in EXTERNLIB of each being used toolkit
+OCCT_IS_PRODUCT_REQUIRED(CSF_FREETYPE USE_FREETYPE)
 
-  IF(3RDPARTY_DIR AND ("${3RDPARTY_GLX_DIR}" STREQUAL "" OR CHANGES_ARE_NEEDED))
-    FIND_PRODUCT_DIR("${3RDPARTY_DIR}" GLX GLX_DIR_NAME)
-    IF("${GLX_DIR_NAME}" STREQUAL "")
-      MESSAGE(STATUS "GLX DON'T FIND")
-    ELSE()
-      SET(3RDPARTY_GLX_DIR "${3RDPARTY_DIR}/${GLX_DIR_NAME}" CACHE PATH "Directory contains GLX product" FORCE)
-    ENDIF()
-  ENDIF()
-
-  IF(3RDPARTY_GLX_DIR)
-    SET(3RDPARTY_GLX_INCLUDE_DIR "${3RDPARTY_GLX_DIR}/include" CACHE FILEPATH "Directory contains headers of the GLX product" FORCE)
-    SET(3RDPARTY_GLX_LIBRARY_DIR "${3RDPARTY_GLX_DIR}/lib"     CACHE FILEPATH "Directory contains library of the GLX product" FORCE)
-
-    SET(3RDPARTY_INCLUDE_DIRS "${3RDPARTY_INCLUDE_DIRS};${3RDPARTY_GLX_INCLUDE_DIR}")
-    SET(3RDPARTY_LIBRARY_DIRS "${3RDPARTY_LIBRARY_DIRS};${3RDPARTY_GLX_LIBRARY_DIR}")
-
-    MARK_AS_ADVANCED(3RDPARTY_GLX_DIR)
-  ELSE()
-    LIST(APPEND 3RDPARTY_NOT_INCLUDED 3RDPARTY_GLX_INCLUDE_DIR)
-    LIST(APPEND 3RDPARTY_NOT_INCLUDED 3RDPARTY_GLX_LIBRARY_DIR)
-  ENDIF()
-ENDIF()
-
-# FREETYPE
-THIRDPARTY_PRODUCT("FREETYPE" "ft2build.h" "freetype${3RDPARTY_BUILD_SUFFIX}")
+if ("${USE_FREETYPE}" STREQUAL ON)
+  message (STATUS "Info: freetype is used by OCCT")
+  OCCT_INCLUDE_CMAKE_FILE ("adm/templates/freetype")
+else()
+  OCCT_CHECK_AND_UNSET ("3RDPARTY_FREETYPE_DIR")
+  OCCT_CHECK_AND_UNSET ("3RDPARTY_FREETYPE_INCLUDE_DIR_freetype2")
+  OCCT_CHECK_AND_UNSET ("3RDPARTY_FREETYPE_INCLUDE_DIR_ft2build")
+  OCCT_CHECK_AND_UNSET ("3RDPARTY_FREETYPE_LIBRARY")
+  OCCT_CHECK_AND_UNSET ("3RDPARTY_FREETYPE_LIBRARY_DIR")
+endif()
 
 # FREEIMAGE
-IF(USE_FREEIMAGE)
-  ADD_DEFINITIONS(-DHAVE_FREEIMAGE)
-
-  THIRDPARTY_PRODUCT("FREEIMAGE" "FreeImage.h" "freeimage${3RDPARTY_BUILD_SUFFIX}")
-  IF(WIN32)
-    IF("${3RDPARTY_FREEIMAGE_DIR}" STREQUAL "")
-    ELSE()
-      SET (3RDPARTY_FREEIMAGEPLUS_DIR "${3RDPARTY_FREEIMAGE_DIR}")
-    ENDIF()
-
-    THIRDPARTY_PRODUCT("FREEIMAGEPLUS" "FreeImagePlus.h" "freeimageplus${3RDPARTY_BUILD_SUFFIX}")
-
-  ENDIF()
-ELSE()
-  CHECK_AND_UNSET_GROUP ("3RDPARTY_FREEIMAGE")
-  CHECK_AND_UNSET_GROUP ("3RDPARTY_FREEIMAGEPLUS")
-  CHECK_AND_UNSET ("INSTALL_FREEIMAGE")
-  CHECK_AND_UNSET ("INSTALL_FREEIMAGEPLUS")
-ENDIF()
+if (USE_FREEIMAGE)
+  add_definitions (-DHAVE_FREEIMAGE)
+  message (STATUS "Info: freeimage is used by OCCT")
+  OCCT_INCLUDE_CMAKE_FILE ("adm/templates/freeimage")
+  OCCT_INCLUDE_CMAKE_FILE ("adm/templates/freeimageplus")
+else()
+  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_FREEIMAGE")
+  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_FREEIMAGEPLUS")
+  OCCT_CHECK_AND_UNSET ("INSTALL_FREEIMAGE")
+  OCCT_CHECK_AND_UNSET ("INSTALL_FREEIMAGEPLUS")
+endif()
 
 # GL2PS
-IF(USE_GL2PS)
-  ADD_DEFINITIONS(-DHAVE_GL2PS)
-  THIRDPARTY_PRODUCT("GL2PS" "gl2ps.h" "gl2ps${3RDPARTY_BUILD_SUFFIX}")
-ELSE()
-  CHECK_AND_UNSET_GROUP ("3RDPARTY_GL2PS")
-  CHECK_AND_UNSET ("INSTALL_GL2PS")
-ENDIF()
+if (USE_GL2PS)
+  add_definitions (-DHAVE_GL2PS)
+  message (STATUS "Info: gl2ps is used by OCCT")
+  OCCT_INCLUDE_CMAKE_FILE ("adm/templates/gl2ps")
+else()
+  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_GL2PS")
+  OCCT_CHECK_AND_UNSET ("INSTALL_GL2PS")
+endif()
 
 # OPENCL
-IF(USE_OPENCL)
-  ADD_DEFINITIONS(-DHAVE_OPENCL)
-
-  SET (3RDPARTY_OPENCL_ADDITIONAL_PATH_FOR_HEADER $ENV{AMDAPPSDKROOT}/include
-                                                  $ENV{INTELOCLSDKROOT}/include
-                                                  $ENV{NVSDKCOMPUTE_ROOT}/OpenCL/common/inc
-                                                  $ENV{ATISTREAMSDKROOT}/include)
-
-
-  IF(${COMPILER_BITNESS} STREQUAL 32)
-    SET (3RDPARTY_OPENCL_ADDITIONAL_PATH_FOR_LIB $ENV{AMDAPPSDKROOT}/lib/x86
-                                                 $ENV{INTELOCLSDKROOT}/lib/x86
-                                                 $ENV{NVSDKCOMPUTE_ROOT}/OpenCL/common/lib/Win32
-                                                 $ENV{ATISTREAMSDKROOT}/lib/x86)
-  ELSEIF(${COMPILER_BITNESS} STREQUAL 64)
-    SET (3RDPARTY_OPENCL_ADDITIONAL_PATH_FOR_LIB $ENV{AMDAPPSDKROOT}/lib/x86_64
-                                                 $ENV{INTELOCLSDKROOT}/lib/x64
-                                                 $ENV{NVSDKCOMPUTE_ROOT}/OpenCL/common/lib/x64
-                                                 $ENV{ATISTREAMSDKROOT}/lib/x86_64)
-  ENDIF()
-
-
-  THIRDPARTY_PRODUCT("OPENCL" "CL/cl.h" "OpenCL${3RDPARTY_BUILD_SUFFIX}")
-
-  # if CL/cl.h isn't found (and 3RDPARTY_OPENCL_INCLUDE_DIR isn't defined)
-  # then try to find OpenCL/cl.h (all other variable won't be changed)
-  IF("${3RDPARTY_OPENCL_INCLUDE_DIR}" STREQUAL "" OR "${3RDPARTY_OPENCL_INCLUDE_DIR}" STREQUAL "3RDPARTY_OPENCL_INCLUDE_DIR-NOTFOUND")
-    THIRDPARTY_PRODUCT("OPENCL" "OpenCL/cl.h" "OpenCL${3RDPARTY_BUILD_SUFFIX}")
-  ENDIF()
-  
-ELSE()
-  CHECK_AND_UNSET_GROUP ("3RDPARTY_OPENCL")
-  CHECK_AND_UNSET ("3RDPARTY_OPENCL_ADDITIONAL_PATH_FOR_HEADER")
-  CHECK_AND_UNSET ("3RDPARTY_OPENCL_ADDITIONAL_PATH_FOR_LIB")
-  CHECK_AND_UNSET ("INSTALL_OPENCL")
-ENDIF()
+if (USE_OPENCL)
+  add_definitions (-DHAVE_OPENCL)
+  message (STATUS "Info: OpenCL is used by OCCT")
+  OCCT_INCLUDE_CMAKE_FILE ("adm/templates/opencl")
+else()
+  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_OPENCL")
+  OCCT_CHECK_AND_UNSET ("3RDPARTY_OPENCL_ADDITIONAL_PATH_FOR_HEADER")
+  OCCT_CHECK_AND_UNSET ("3RDPARTY_OPENCL_ADDITIONAL_PATH_FOR_LIB")
+  OCCT_CHECK_AND_UNSET ("INSTALL_OPENCL")
+endif()
 
 # TBB
-IF (USE_TBB)
+if (USE_TBB)
   ADD_DEFINITIONS(-DHAVE_TBB)
+  message (STATUS "Info: tbb is used by OCCT")
+  OCCT_INCLUDE_CMAKE_FILE ("adm/templates/tbb")
+else()
+  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_TBB")
+  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_TBBMALLOC")
+  OCCT_CHECK_AND_UNSET ("INSTALL_TBB")
+endif()
 
-  INCLUDE(adm/templates/tbb.cmake)
+string (REGEX REPLACE ";" " " 3RDPARTY_NOT_INCLUDED "${3RDPARTY_NOT_INCLUDED}")
 
-  IF(INSTALL_TBB)
-    INSTALL(FILES "${3RDPARTY_TBB_DLL}" "${3RDPARTY_TBB_MALLOC_DLL}" DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/${DLL_SO_FOLDER}${BUILD_SUFFIX}")
+# check all 3rdparty paths
+if (3RDPARTY_NOT_INCLUDED)
+  message (FATAL_ERROR "NOT FOUND: ${3RDPARTY_NOT_INCLUDED}" )
+endif()
 
-    SET(3RDPARTY_TBB_DLL_DIR "")
-    SET(3RDPARTY_TBB_MALLOC_DLL_DIR "")
-  ELSE()
-    GET_FILENAME_COMPONENT(3RDPARTY_TBB_DLL_DIR "${3RDPARTY_TBB_DLL}" PATH)
-    GET_FILENAME_COMPONENT(3RDPARTY_TBB_MALLOC_DLL_DIR "${3RDPARTY_TBB_MALLOC_DLL}" PATH)
-  ENDIF()
-ELSE()
-  CHECK_AND_UNSET_GROUP ("3RDPARTY_TBB")
-  CHECK_AND_UNSET_GROUP ("3RDPARTY_TBB_MALLOC")
-  CHECK_AND_UNSET ("3RDPARTY_TBB_DIR_NAME")
-  CHECK_AND_UNSET ("INSTALL_TBB")
-ENDIF()
+list (REMOVE_DUPLICATES 3RDPARTY_INCLUDE_DIRS)
+string (REGEX REPLACE ";" "\n\t" 3RDPARTY_INCLUDE_DIRS_WITH_ENDS "${3RDPARTY_INCLUDE_DIRS}")
+message (STATUS "The directories containing 3rdparty headers: ${3RDPARTY_INCLUDE_DIRS_WITH_ENDS}")
+include_directories (${3RDPARTY_INCLUDE_DIRS})
 
-string( REGEX REPLACE ";" " " 3RDPARTY_NOT_INCLUDED "${3RDPARTY_NOT_INCLUDED}")
+list (REMOVE_DUPLICATES 3RDPARTY_LIBRARY_DIRS)
+string (REGEX REPLACE ";" "\n\t" 3RDPARTY_LIBRARY_DIRS_WITH_ENDS "${3RDPARTY_LIBRARY_DIRS}")
+message (STATUS "The directories containing 3rdparty libraries: ${3RDPARTY_LIBRARY_DIRS_WITH_ENDS}")
+link_directories (${3RDPARTY_LIBRARY_DIRS})
 
-#CHECK ALL 3RDPARTY PATHS
-IF(3RDPARTY_NOT_INCLUDED)
-  MESSAGE(FATAL_ERROR "NOT FOUND: ${3RDPARTY_NOT_INCLUDED}" )
-ENDIF()
+OCCT_MAKE_BUILD_POSTFIX()
 
-list(REMOVE_DUPLICATES 3RDPARTY_INCLUDE_DIRS)
-string( REGEX REPLACE ";" "\n\t" 3RDPARTY_INCLUDE_DIRS_WITH_ENDS "${3RDPARTY_INCLUDE_DIRS}")
-MESSAGE(STATUS "3RDPARTY_INCLUDE_DIRS: ${3RDPARTY_INCLUDE_DIRS_WITH_ENDS}")
-include_directories( ${3RDPARTY_INCLUDE_DIRS} )
+# build directories
+set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/out/lib${BUILD_POSTFIX})
+set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/out/lib${BUILD_POSTFIX})
+set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/out/bin${BUILD_POSTFIX})
 
-list(REMOVE_DUPLICATES 3RDPARTY_LIBRARY_DIRS)
-string( REGEX REPLACE ";" "\n\t" 3RDPARTY_LIBRARY_DIRS_WITH_ENDS "${3RDPARTY_LIBRARY_DIRS}")
-MESSAGE(STATUS "3RDPARTY_LIBRARY_DIRS: ${3RDPARTY_LIBRARY_DIRS_WITH_ENDS}")
-link_directories( ${3RDPARTY_LIBRARY_DIRS} )
-
-IF("${INSTALL_DIR}" STREQUAL "")
-  MESSAGE(FATAL_ERROR "INSTALL_DIR is empty")
-ELSE()
+if ("${INSTALL_DIR}" STREQUAL "")
+  message (FATAL_ERROR "INSTALL_DIR variable is empty. It's required to define installation directory")
+else()
   # inc,data,tests DIRECTORY
-  install(DIRECTORY "${CMAKE_SOURCE_DIR}/inc"          DESTINATION  "${INSTALL_DIR}")
-  install(DIRECTORY "${CMAKE_SOURCE_DIR}/data"         DESTINATION  "${INSTALL_DIR}")
-  install(DIRECTORY "${CMAKE_SOURCE_DIR}/samples/tcl"  DESTINATION  "${INSTALL_DIR}/samples")
-  IF(INSTALL_TESTS)
-    install(DIRECTORY "${CMAKE_SOURCE_DIR}/tests" DESTINATION  "${INSTALL_DIR}" )
-  ENDIF()
+  install (DIRECTORY "${CMAKE_SOURCE_DIR}/inc"          DESTINATION  "${INSTALL_DIR}")
+  install (DIRECTORY "${CMAKE_SOURCE_DIR}/data"         DESTINATION  "${INSTALL_DIR}")
+  install (DIRECTORY "${CMAKE_SOURCE_DIR}/samples/tcl"  DESTINATION  "${INSTALL_DIR}/samples")
+  if (INSTALL_TESTS)
+    install (DIRECTORY "${CMAKE_SOURCE_DIR}/tests" DESTINATION  "${INSTALL_DIR}" )
+  endif()
 
-    # install patch inc, data, tests folder
-  IF(NOT "${BUILD_PATCH_DIR}" STREQUAL "")
-    IF(EXISTS "${BUILD_PATCH_DIR}/inc")
-      install(DIRECTORY "${BUILD_PATCH_DIR}/inc" DESTINATION  "${INSTALL_DIR}" )
-    ENDIF()
-    
-    IF(EXISTS "${BUILD_PATCH_DIR}/data")
-      install(DIRECTORY "${BUILD_PATCH_DIR}/data"  DESTINATION  "${INSTALL_DIR}" )
-    ENDIF()
-    
-    IF(INSTALL_TESTS)
-      IF(EXISTS "${BUILD_PATCH_DIR}/tests")
-        install(DIRECTORY "${BUILD_PATCH_DIR}/tests" DESTINATION  "${INSTALL_DIR}" )
-      ENDIF()
-    ENDIF()
-  ENDIF()
-  
+  # install patch inc, data, tests folder
+  if (NOT "${BUILD_PATCH_DIR}" STREQUAL "")
+    if (EXISTS "${BUILD_PATCH_DIR}/inc")
+      install (DIRECTORY "${BUILD_PATCH_DIR}/inc" DESTINATION  "${INSTALL_DIR}" )
+    endif()
+
+    if (EXISTS "${BUILD_PATCH_DIR}/data")
+      install (DIRECTORY "${BUILD_PATCH_DIR}/data"  DESTINATION  "${INSTALL_DIR}" )
+    endif()
+
+    if (INSTALL_TESTS)
+      if (EXISTS "${BUILD_PATCH_DIR}/tests")
+        install (DIRECTORY "${BUILD_PATCH_DIR}/tests" DESTINATION  "${INSTALL_DIR}" )
+      endif()
+    endif()
+  endif()
+
+  if (WIN32)
+    set (SCRIPT_EXT bat)
+  else()
+    set (SCRIPT_EXT sh)
+  endif()
+
   # DRAW.BAT or DRAW.SH
   IF(NOT "${BUILD_PATCH_DIR}" STREQUAL "" AND EXISTS "${BUILD_PATCH_DIR}/adm/templates/draw.${SCRIPT_EXT}")
-    install(FILES "${BUILD_PATCH_DIR}/adm/templates/draw.${SCRIPT_EXT}" DESTINATION  "${INSTALL_DIR}" PERMISSIONS  
+    install(FILES "${BUILD_PATCH_DIR}/adm/templates/draw.${SCRIPT_EXT}" DESTINATION  "${INSTALL_DIR}" PERMISSIONS
             OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_WRITE GROUP_EXECUTE WORLD_READ WORLD_WRITE WORLD_EXECUTE)
   ELSE()
-    install(FILES "${CMAKE_SOURCE_DIR}/adm/templates/draw.${SCRIPT_EXT}" DESTINATION  "${INSTALL_DIR}" PERMISSIONS  
+    install(FILES "${CMAKE_SOURCE_DIR}/adm/templates/draw.${SCRIPT_EXT}" DESTINATION  "${INSTALL_DIR}" PERMISSIONS
             OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_WRITE GROUP_EXECUTE WORLD_READ WORLD_WRITE WORLD_EXECUTE)
   ENDIF()
-  
-  
-  SET(CUSTOM_CUR "custom_${COMPILER}_${COMPILER_BITNESS}_${BUILD_SUFFIX}.${SCRIPT_EXT}")
-  
+
+  # set compiler short name
+  OCCT_MAKE_COMPILER_SHORT_NAME()
+
+  OCCT_MAKE_COMPILER_BITNESS()
+
+  SET(SUB_CUSTOM "custom_${COMPILER}_${COMPILER_BITNESS}_${BUILD_POSTFIX}.${SCRIPT_EXT}")
+
   if (WIN32)
-    SET (CUSTOM_ADD_CONTENT "\nif exist \"%~dp0${CUSTOM_CUR}\" (\n  call \"%~dp0${CUSTOM_CUR}\" %1 %2 %3 \n)")
+    SET (ADDITIONAL_CUSTOM_CONTENT "\nif exist \"%~dp0${SUB_CUSTOM}\" (\n  call \"%~dp0${SUB_CUSTOM}\" %1 %2 %3 \n)")
   else()
-    SET (CUSTOM_ADD_CONTENT "\nif [ -e \"\${aScriptPath}/${CUSTOM_CUR}\" ]; then\n  source \"\${aScriptPath}/${CUSTOM_CUR}\" \"\${COMPILER}\" \"\${WOKSTATION}\${ARCH}\" \"\${CASDEB}\" \nfi")
+    SET (ADDITIONAL_CUSTOM_CONTENT "\nif [ -e \"\${aScriptPath}/${SUB_CUSTOM}\" ]; then\n  source \"\${aScriptPath}/${SUB_CUSTOM}\" \"\${COMPILER}\" \"\${WOKSTATION}\${ARCH}\" \"\${CASDEB}\" \nfi")
   endif()
-  
+
   # change custom.bat/sh
   if (EXISTS "${INSTALL_DIR}/custom.${SCRIPT_EXT}")
-    FILE(READ "${INSTALL_DIR}/custom.${SCRIPT_EXT}" CUSTOM_CONTENT)
+    file (READ "${INSTALL_DIR}/custom.${SCRIPT_EXT}" CUSTOM_CONTENT)
 
-    SET (CUSTOM_CONTENT "${CUSTOM_CONTENT} ${CUSTOM_ADD_CONTENT}")
+    set (CUSTOM_CONTENT "${CUSTOM_CONTENT} ${ADDITIONAL_CUSTOM_CONTENT}")
 
-    FILE(WRITE "${INSTALL_DIR}/custom.${SCRIPT_EXT}" "${CUSTOM_CONTENT}")
+    file (WRITE "${INSTALL_DIR}/custom.${SCRIPT_EXT}" "${CUSTOM_CONTENT}")
   else()
-    IF(NOT "${BUILD_PATCH_DIR}" STREQUAL "" AND EXISTS "${BUILD_PATCH_DIR}/adm/templates/custom.${SCRIPT_EXT}.main")
-      configure_file("${BUILD_PATCH_DIR}/adm/templates/custom.${SCRIPT_EXT}.main" "custom.${SCRIPT_EXT}" @ONLY)
-    ELSE()
-      configure_file("${CMAKE_SOURCE_DIR}/adm/templates/custom.${SCRIPT_EXT}.main" "custom.${SCRIPT_EXT}" @ONLY)
-    ENDIF()
-
-    install(FILES "${OCCT_BINARY_DIR}/custom.${SCRIPT_EXT}" DESTINATION  "${INSTALL_DIR}")
+    OCCT_CONFIGURE_AND_INSTALL ("adm/templates/custom.${SCRIPT_EXT}.main" "custom.${SCRIPT_EXT}" "${INSTALL_DIR}")
   endif()
 
   # write current custom.bat/sh
-  IF(NOT "${BUILD_PATCH_DIR}" STREQUAL "" AND EXISTS "${BUILD_PATCH_DIR}/adm/templates/custom.${SCRIPT_EXT}.in")
-    configure_file("${BUILD_PATCH_DIR}/adm/templates/custom.${SCRIPT_EXT}.in" ${CUSTOM_CUR} @ONLY)
-  ELSE()
-    configure_file("${CMAKE_SOURCE_DIR}/adm/templates/custom.${SCRIPT_EXT}.in" ${CUSTOM_CUR} @ONLY)
-  ENDIF()
+  OCCT_CONFIGURE_AND_INSTALL ("adm/templates/custom.${SCRIPT_EXT}.in" "${SUB_CUSTOM}" "${INSTALL_DIR}")
 
-  install(FILES "${OCCT_BINARY_DIR}/${CUSTOM_CUR}" DESTINATION  "${INSTALL_DIR}" )
-  
-  IF (BUILD_Samples)
-    IF(NOT "${BUILD_PATCH_DIR}" STREQUAL "" AND EXISTS "${BUILD_PATCH_DIR}/adm/templates/sample.bat")
-      install(FILES "${BUILD_PATCH_DIR}/adm/templates/sample.bat" DESTINATION  "${INSTALL_DIR}")
-    ELSE()
-      install(FILES "${CMAKE_SOURCE_DIR}/adm/templates/sample.bat" DESTINATION  "${INSTALL_DIR}")
-    ENDIF()
-  ENDIF()
+  if (BUILD_MFC_SAMPLES)
+    OCCT_INSTALL_FILE_OR_DIR ("adm/templates/sample.bat" "${INSTALL_DIR}")
+  endif()
 
-  IF(NOT "${BUILD_PATCH_DIR}" STREQUAL "" AND EXISTS "${BUILD_PATCH_DIR}/adm/templates/env.${SCRIPT_EXT}.in")
-    configure_file("${BUILD_PATCH_DIR}/adm/templates/env.${SCRIPT_EXT}.in" env.${SCRIPT_EXT} @ONLY)
-  ELSE()
-    configure_file("${CMAKE_SOURCE_DIR}/adm/templates/env.${SCRIPT_EXT}.in" env.${SCRIPT_EXT} @ONLY)
-  ENDIF()
-  install(FILES "${OCCT_BINARY_DIR}/env.${SCRIPT_EXT}" DESTINATION  "${INSTALL_DIR}" )
-ENDIF()
+  OCCT_CONFIGURE_AND_INSTALL ("adm/templates/env.${SCRIPT_EXT}.in" "env.${SCRIPT_EXT}" "${INSTALL_DIR}")
+endif()
+
+# RESOURCES
+OCCT_INSTALL_FILE_OR_DIR ("src/DrawResources"          "${INSTALL_DIR}/src")
+OCCT_INSTALL_FILE_OR_DIR ("src/StdResource"            "${INSTALL_DIR}/src")
+OCCT_INSTALL_FILE_OR_DIR ("src/SHMessage"              "${INSTALL_DIR}/src")
+OCCT_INSTALL_FILE_OR_DIR ("src/Textures"               "${INSTALL_DIR}/src")
+OCCT_INSTALL_FILE_OR_DIR ("src/Shaders"                "${INSTALL_DIR}/src")
+OCCT_INSTALL_FILE_OR_DIR ("src/XSMessage"              "${INSTALL_DIR}/src")
+OCCT_INSTALL_FILE_OR_DIR ("src/XSTEPResource"          "${INSTALL_DIR}/src")
+OCCT_INSTALL_FILE_OR_DIR ("src/XmlOcafResource"        "${INSTALL_DIR}/src")
+
+OCCT_INSTALL_FILE_OR_DIR ("src/UnitsAPI/Lexi_Expr.dat" "${INSTALL_DIR}/src/UnitsAPI")
+OCCT_INSTALL_FILE_OR_DIR ("src/UnitsAPI/Units.dat"     "${INSTALL_DIR}/src/UnitsAPI")
+OCCT_INSTALL_FILE_OR_DIR ("src/TObj/TObj.msg"          "${INSTALL_DIR}/src/TObj")
+
+
+#Toolkits uses variables: INSTALL_DIR, OS_WITH_BIT, COMPILER, BUILD_POSTFIX
+OCCT_MAKE_OS_WITH_BITNESS()
+
+# consider for patch existence
+set (IS_PATCH_CURRENT "NO")
+set (TK_ROOT_DIR ${CMAKE_SOURCE_DIR})
+if (NOT "${BUILD_PATCH_DIR}" STREQUAL "")
+  set (IS_PATCH_CURRENT "YES")
+  set (TK_ROOT_DIR ${BUILD_PATCH_DIR})
+endif()
 
 # include patched toolkit projects or original ones
-SET (UNSUBDIRS "")
-IF(NOT "${BUILD_PATCH_DIR}" STREQUAL "" AND EXISTS "${BUILD_PATCH_DIR}/adm/cmake/CMakeToolKitsDeps.txt")
-  include(${BUILD_PATCH_DIR}/adm/cmake/CMakeToolKitsDeps.txt)
-ELSE()
-  SET (IS_PATCH_CURRENT "NO")
-  SET (TK_ROOT_DIR ${CMAKE_SOURCE_DIR})
-  include(adm/cmake/CMakeToolKitsDeps.txt)
-ENDIF()
+set (UNSUBDIRS "")
+if (NOT "${BUILD_PATCH_DIR}" STREQUAL "" AND EXISTS "${BUILD_PATCH_DIR}/adm/cmake/occt_inc_toolkits.cmake")
+  set (TK_ROOT_DIR ${BUILD_PATCH_DIR})
+  include (${BUILD_PATCH_DIR}/adm/cmake/occt_inc_toolkits.cmake)
+else()
+  set (IS_PATCH_CURRENT "NO")
+  set (TK_ROOT_DIR ${CMAKE_SOURCE_DIR})
+  include (adm/cmake/occt_inc_toolkits.cmake)
+endif()
 
-# include some required original toolkit
-IF(NOT "${UNSUBDIRS}" STREQUAL "")
-  SET (IS_PATCH_CURRENT "NO")
-  SET (TK_ROOT_DIR ${CMAKE_SOURCE_DIR})
+# include some required original occt_inc_toolkits
+if (NOT "${UNSUBDIRS}" STREQUAL "")
+  set (IS_PATCH_CURRENT "NO")
   # add required subdirs
-  FOREACH(UNSUBDIR ${UNSUBDIRS})
-    MESSAGE(STATUS "${UNSUBDIR}")
-    ADD_SUBDIRECTORY (${TK_ROOT_DIR}/${UNSUBDIR})
-  ENDFOREACH()
-ENDIF()
+  foreach (UNSUBDIR ${UNSUBDIRS})
+    add_subdirectory (${CMAKE_SOURCE_DIR}/${UNSUBDIR})
+  endforeach()
+endif()
 
 # samples do not support patch usage
-IF (BUILD_Samples)
+IF (BUILD_MFC_SAMPLES)
   SET (OCCT_ROOT ${CMAKE_SOURCE_DIR})
 
   SET (MFC_STANDARD_SAMPLES_DIR ${OCCT_ROOT}/samples/mfc/standard)
   SET (COMMON_WINMAIN_FILE      ${MFC_STANDARD_SAMPLES_DIR}/Common/Winmain.cpp)
 
-  ADD_SUBDIRECTORY (samples/mfc/standard/mfcsample)
-  ADD_SUBDIRECTORY (samples/mfc/standard/01_Geometry)
-  ADD_SUBDIRECTORY (samples/mfc/standard/02_Modeling)
-  ADD_SUBDIRECTORY (samples/mfc/standard/03_Viewer2d)
-  ADD_SUBDIRECTORY (samples/mfc/standard/04_Viewer3d)
-  ADD_SUBDIRECTORY (samples/mfc/standard/05_ImportExport)
-  ADD_SUBDIRECTORY (samples/mfc/standard/06_Ocaf)
-  ADD_SUBDIRECTORY (samples/mfc/standard/07_Triangulation)
-  ADD_SUBDIRECTORY (samples/mfc/standard/08_HLR)
-  ADD_SUBDIRECTORY (samples/mfc/standard/09_Animation)
-  ADD_SUBDIRECTORY (samples/mfc/standard/10_Convert)
+  add_subdirectory(samples/mfc/standard/mfcsample)
+  add_subdirectory(samples/mfc/standard/01_Geometry)
+  add_subdirectory(samples/mfc/standard/02_Modeling)
+  add_subdirectory(samples/mfc/standard/03_Viewer2d)
+  add_subdirectory(samples/mfc/standard/04_Viewer3d)
+  add_subdirectory(samples/mfc/standard/05_ImportExport)
+  add_subdirectory(samples/mfc/standard/06_Ocaf)
+  add_subdirectory(samples/mfc/standard/07_Triangulation)
+  add_subdirectory(samples/mfc/standard/08_HLR)
+  add_subdirectory(samples/mfc/standard/09_Animation)
+  add_subdirectory(samples/mfc/standard/10_Convert)
 ENDIF()

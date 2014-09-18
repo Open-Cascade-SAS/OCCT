@@ -24,6 +24,7 @@ you need to:
 3. Build using your preferred build tool.
    - \subpage occt_dev_guides__building_automake "Building on Linux with Autotools"
    - \subpage occt_dev_guides__building_cmake "Building with CMake (cross-platform)"
+   - \subpage occt_dev_guides__building_android "Building with CMake and ADT for Android (cross-platform)"
    - \subpage occt_dev_guides__building_code_blocks "Building on Mac OS X with Code::Blocks"
    - \subpage occt_dev_guides__building_msvc "Building on Windows with MS Visual Studio"
    - \subpage occt_dev_guides__building_xcode "Building on Mac OS X with Xcode"

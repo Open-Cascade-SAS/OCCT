@@ -5,7 +5,7 @@ Building with CMake {#occt_dev_guides__building_cmake}
 
 This file describes the steps to build OCCT libraries from a complete source package
 with **CMake**. CMake is free software that can create GNU Makefiles, KDevelop, 
-XCode, and Visual Studio project files. **CMake** version 2.6 or above is 
+XCode, Eclipse and Visual Studio project files. **CMake** version 3.0 or above is 
 required.
 
 If you build OCCT from bare sources (as in Git repository) or make some 
@@ -32,7 +32,7 @@ It is recommended to separate build and install directories from OCCT source dir
 
 Run CMake indicating the path to OCCT sources <i>($CASROOT)</i> and selected build directory.
 
-It is recommended to use GUI tools provided by CMake: *cmake-gui* on Windows and Mac, *ccmake* or *cmake-gui* on Linux.
+It is recommended to use GUI tools provided by CMake: *cmake-gui* on Windows, Mac and Linux (*ccmake* also can be used on Linux).
 
 ### Windows:
 
@@ -100,69 +100,65 @@ library.
 
 If you have 3rd-party libraries in a non-default location 
 (e.g., on Windows, binaries downloaded from http://www.opencascade.org/getocc/download/3rdparty/") 
-specify *3RDPARTY_DIR* variable that points to the folders of 3rd-party libraries (some or all). 
+*3RDPARTY_DIR* variable should be specified with the path to the folders where required 3rd-party libraries will be sought
 
-At the next configuration step the 3rd-party libraries will be searched for in *3RDPARTY_DIR* directory, and stored in *3RDPARTY_\<LIBRARY\>_DIR* variables.
+The results of search for 3rd-party directories will be stored in *3RDPARTY_\<LIBRARY\>_DIR* variables. If *3RDPARTY_DIR* directory is defined, required libraries are sought in *3RDPARTY_DIR* location.
 
-The procedure expects to find binary and header files of each 3rd-party library in its own sub-directory, separated by sub-directories *bin*, *lib*, and *include*.
+The procedure expects to find binary and header files of each 3rd-party library in its own sub-directory: *bin*, *lib* and *include*.
 
 Press **Configure** (**c** key for ccmake).
 
-The result of the 3rdparty product search will be recorded in the corresponding variables:
+The result of the search are recorded in the corresponding variables:
 
-* *3RDPARTY_\<PRODUCT\>_DIR* - path to the product directory (with directory name) (e.g. <i>D:/3rdparty/Tcl-8.5.12.0-32</i>)
-* *3RDPARTY_\<PRODUCT\>_LIBRARY* - path to .lib libraries (with the library name) (e.g. <i>D:/3rdparty/Tcl-8.5.12.0-32/lib/tcl85.lib</i>). 
-  In non-windows case, this variable is the same as *3RDPARTY_\<PRODUCT\>_DLL*.
-* *3RDPARTY_\<PRODUCT\>_INCLUDE* - path to the include directory that contains the required header file (with "include" name) (e.g., <i>D:/3rdparty/Tcl-8.5.12.0-32/include including tcl.h</i>)
-* *3RDPARTY_\<PRODUCT\>_DLL* - path to  <i>.dll/.so/.dylib</i> library  (with the library name) (e.g., <i>D:/3rdparty/Tcl-8.5.12.0-32/bin/tcl85.dll</i>)
+* *3RDPARTY_\<PRODUCT\>_DIR* - path to the 3rdparty directory (with directory name) (e.g. <i>D:/3rdparty/tcltk-86-32</i>)
+* *3RDPARTY_\<PRODUCT\>_LIBRARY_DIR* - path to directory containing a library (e.g. <i>D:/3rdparty/tcltk-86-32/lib</i>). 
+* *3RDPARTY_\<PRODUCT\>_INCLUDE_DIR* - path to the directory containing a header file (e.g., <i>D:/3rdparty/tcltk-86-32/include</i>)
+* *3RDPARTY_\<PRODUCT\>_DLL_DIR* - path to the directory containing a shared library (e.g., <i>D:/3rdparty/tcltk-86-32/bin</i>) This variable is able just in windows case
+
+
+Note: a libraries and include directories should be the children of product directory if the last one is defined.
 
 The search process is as follows:
 
 1. Common path: *3RDPARTY_DIR*
 2. Path to a particular 3rd-party library: *3RDPARTY_\<PRODUCT\>_DIR*
 3. Paths to headers and binaries:
-   1. *3RDPARTY_\<PRODUCT\>_INCLUDE*
-   2. *3RDPARTY_\<PRODUCT\>_LIBRARY*
-   3. *3RDPARTY_\<PRODUCT\>_DLL*
+   1. *3RDPARTY_\<PRODUCT\>_INCLUDE_DIR*
+   2. *3RDPARTY_\<PRODUCT\>_LIBRARY_DIR*
+   3. *3RDPARTY_\<PRODUCT\>_DLL_DIR*
 
 If a variable of any level is not defined (empty or <i> \<variable name\>-NOTFOUND </i>) 
 and the upper level variable is defined, the content of the non-defined variable 
-will be searched for at the next configuration step. If search process in level 3 
-does not find the required files, it searches in default places also.
-
-**Note**: the names of searched libraries and header files are hard-coded.
-Freetype search process tries to find *ft2build.h* file in *3RDPARTY_FREETYPE INCLUDE* directory 
-and after that adds *3RDPARTY_FREETYPE_INCLUDE /freetype2* path to common includes if it exists. 
+will be sought at the next configuration step. If search process at level 3 does not find the required files, it seeks in default places.
 
 Important: If *BUILD_CONFIGURATION* variable is changed, at the next configuration 
 *3RDPARTY_ variables* will be replaced by the search process result, except for the *3RDPARTY_DIR* variable.
 
-*Note* : CMake will produce an error after the configuration step until all required variables are defined correctly.
+**Note** : CMake will produce an error after the configuration step until all required variables are defined correctly.
 If the search result (include path, or library path, or dll path) does not meet your expectations, 
-you can  change *3RDPARTY_\<PRODUCT\>_DIR variable*, clear (if they are not empty) 
-*3RDPARTY_\<PRODUCT\>_DLL, 3RDPARTY_\<PRODUCT\>_INCLUDE_DIR* and 3RDPARTY_\<PRODUCT\>_LIBRARY variables 
+you can  change *3RDPARTY_\<PRODUCT\>_*_DIR variable*, clear (if they are not empty) 
+*3RDPARTY_\<PRODUCT\>_DLL_DIR, 3RDPARTY_\<PRODUCT\>_INCLUDE_DIR* and 3RDPARTY_\<PRODUCT\>_LIBRARY_DIR variables 
 (or clear one of them) and run the configuration process again. 
 
 At this time the search will be performed in the newly identified directory 
-and the result will be recorded to empty variables (non-empty variables will not be replaced).
+and the result will be recorded to corresponding variables (replace old value if it is necessary).
 
 For example, (Linux case) *3RDPARTY_FREETYPE_DIR* variable 
 
-    /PRODUCTS/maintenance/Mandriva2010/freetype-2.3.7
+    /PRODUCTS/maintenance/Mandriva2010/freetype-2.4.10
 
 can be changed to 
 
-    /PRODUCTS/maintenance/Mandriva2010/freetype-2.4.10
+    /PRODUCTS/maintenance/Mandriva2010/freetype-2.5.3
 
-and the related variables *3RDPARTY_FREETYPE_DLL, 3RDPARTY_FREETYPE_INCLUDE_DIR* and  *3RDPARTY_FREETYPE_LIBRARY* will be cleared.
+During the configuration process and the related variables (*3RDPARTY_FREETYPE_DLL_DIR*, *3RDPARTY_FREETYPE_INCLUDE_DIR* and *3RDPARTY_FREETYPE_LIBRARY_DIR*) will be filled with new found values
 
-@figure{/dev_guides/building/cmake/images/cmake_image005.png}
-
-During the configuration process the cleaned variables will be filled with new found values.
+**Note**: The names of searched libraries and header files are hard-coded. If there is the need to change their names,
+change appropriate cmake variables (edit CMakeCache.txt file or edit in cmake-gui in advance mode) without reconfiguration: *3RDPARTY_\<PRODUCT\>_INCLUDE* for include, *3RDPARTY_\<PRODUCT\>_LIB* for library and *3RDPARTY_\<PRODUCT\>_DLL* for shared library.
 
 ###The variables with INSTALL_ prefix:
 
-Define in *INSTALL_DIR* variable the path, where the built OCCT files (libraries, executables and headers) will be placed.
+Define *INSTALL_DIR* variable as the path will be contain the built OCCT files (libraries, executables and headers)
 If <i>INSTALL_\<PRODUCT\></i> variable is checked, 3rd-party products will be copied to the install directory.
 
 At the end of the configuration process "configuring done" message will be shown and the generation process can be started.
@@ -178,9 +174,7 @@ Then the project files will appear in the build folder (e.g. <i> d:/occt/build/w
 
 ### Linux
 
-When the configuration is complete, start the generation process by pressing **g**.
-
-@figure{/dev_guides/building/cmake/images/cmake_image006.png}
+Click **Generate** button (if you use cmake-gui) or press **g** (for ccmake) to start the generation process.
 
 ### Mac OS X
 
@@ -189,11 +183,14 @@ Then the project files will appear in the build folder (e.g. <i> /Developer/occt
 
 ## OCCT Building
 
-The install folder contains *bin, inc, lib* and *res* folders and a script to run *DRAWEXE* (*draw.bat* or *draw.sh*).
-* **bin** contains executables, DLL (Windows) style shared libraries and pdb-files in OCCT debug version.
-* **lib** contains the import parts of DLL libraries.
-* **inc** contains header files.
-* **res** contains all required source files for OCCT.
+The install folder contains the scripts to run *DRAWEXE* (*draw.bat* or *draw.sh*) and samples (if its were built; (see below **MFC samples**)); the directory structure is follow:
+* **data**    - data files for OCCT (brep, iges, stp)
+* **inc**     - header files
+* **samples** - tcl sample files
+* **src**     - all required source files for OCCT
+* **tests**   - OCCT test suite
+* **win32/vc10/bind**> - example relative directory tree of binary files (3rdparty and occt) (the abstract one is <system with bitness>/<compiler>/bin<build type>)
+* **win32/vc9/lib**>   - example relative directory tree of libraries (3rdparty and occt) (the abstract one is <system with bitness>/<compiler>/lib<build type>)
 
 ### Windows (Visual studio)
 

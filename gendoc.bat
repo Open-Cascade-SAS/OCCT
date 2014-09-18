@@ -10,5 +10,14 @@ if exist "%~dp0env.bat" (
   call "%~dp0env.bat"
 )
 
-tclsh.exe %~dp0adm/start.tcl  %*
+set "TCL_EXEC=tclsh.exe"
+
+for %%X in (%TCL_EXEC%) do (set TCL_FOUND=%%~$PATH:X)
+
+if defined TCL_FOUND (
+  %TCL_EXEC% %~dp0adm/start.tcl  %*
+) else (
+  echo "Error. %TCL_EXEC% is not found. Please update PATH variable"
+)
+
 SET "PATH=%OLD_PATH%"

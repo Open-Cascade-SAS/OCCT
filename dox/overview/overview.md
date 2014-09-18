@@ -218,9 +218,9 @@ then run **wgendoc** command with required arguments, for instance:
 @section OCCT_OVW_SECTION_5 Requirements
 
 Open CASCADE Technology is designed to be highly portable and is known to 
-work on wide range of platforms (UNIX, Linux, Windows, Mac OS X). 
+work on wide range of platforms (UNIX, Linux, Windows, Mac OS X, Android). 
 Current version is officially certified on Windows (IA-32 and x86-64), 
-Linux (x86-64) and MAC OS X (x86-64) platforms. 
+Linux (x86-64), MAC OS X (x86-64) and Android (4.0.4 armv7) platforms. 
 
 The tables below describe the recommended hardware and software configurations
 for which OCCT is certified to work.
@@ -235,7 +235,7 @@ for which OCCT is certified to work.
 | Graphic library | OpenGL 1.1+ (OpenGL 2.1+ is recommended)|
 | C++      | GNU gcc 4.0.  - 4.7.3. |
 | TCL (for testing tools)    | Tcltk 8.5 or 8.6 http://www.tcl.tk/software/tcltk/download.html |
-| Qt (for demonstration tools) | Qt 4.6.2 http://qt.nokia.com/downloads |
+| Qt (for demonstration tools) | Qt 4.6.2 http://qt-project.org/downloads |
 | Freetype (for text rendering) | freetype-2.4.11 http://sourceforge.net/projects/freetype/files/ |
 | FreeImage (optional, for support of common 2D graphic formats) | FreeImage 3.15.4 http://sourceforge.net/projects/freeimage/files |
 | gl2ps (optional, for export contents of OCCT viewer to vector graphic files) | gl2ps-1.3.8  http://geuz.org/gl2ps/ |
@@ -254,7 +254,7 @@ for which OCCT is certified to work.
 | Graphic library | OpenGL 1.1+ (OpenGL 2.1+ is recommended)|
 | C++ | Microsoft Visual Studio: 2005 SP1, 2008 SP1\*, 2010 SP1, 2012 Update 3, 2013 <br>Intel C++ Composer XE 2013 SP1 |
 | TCL (for testing tools) | Tcl/Tk 8.5 or 8.6 http://www.tcl/tk/software/tcltk/download.html |
-| Qt (for demonstration tools) | Qt 4.6.2 http://qt.nokia.com/downloads |
+| Qt (for demonstration tools) | Qt 4.6.2 http://qt-project.org/downloads |
 | Freetype (OCCT Text rendering) | freetype-2.4.11 http://sourceforge.net/projects/freetype/files/ |
 | FreeImage (Support of common graphic formats) | FreeImage 3.15.4 http://sourceforge.net/projects/freeimage/files |
 | gl2ps (Export contents of OCCT viewer to vector graphic file) | gl2ps-1.3.8  http://geuz.org/gl2ps/ |
@@ -274,12 +274,19 @@ for which OCCT is certified to work.
 | Graphic library | OpenGL 1.1+ (OpenGL 2.1+ is recommended)|
 | C++      | XCode 3.2 or newer (4.x is recommended) |
 | TCL (for testing tools)    | Tcltk 8.5 or 8.6 http://www.tcl.tk/software/tcltk/download.html |
-| Qt (for demonstration tools) | Qt 4.6.2 http://qt.nokia.com/downloads |
+| Qt (for demonstration tools) | Qt 4.6.2 http://qt-project.org/downloads |
 | Freetype (OCCT Text rendering) | freetype-2.4.11 http://sourceforge.net/projects/freetype/files/ |
 | FreeImage (Support of common graphic formats) | FreeImage 3.15.4 http://sourceforge.net/projects/freeimage/files |
 | gl2ps (Export contents of OCCT viewer to vector graphic file) | gl2ps-1.3.8  http://geuz.org/gl2ps/ |
 | Intel TBB (optional, for multithreaded algorithms) | TBB 3.x or 4.x http://www.threadingbuildingblocks.org/ |
 | OpenCL (optional, for ray tracing visualization) | Native OpenCL 1.2.8 | 
+
+@subsection OCCT_OVW_SECTION_5_4 Android
+
+| Operating System  | Android 4.0.4+  |
+| ----- | ----- |
+| Minimum memory    | 512 MB, 1 GB recommended |
+| Freetype (for text rendering) | freetype-2.4.11 http://sourceforge.net/projects/freetype/files/ |
 
 @subsection overview_req_graphics Graphic cards
 
