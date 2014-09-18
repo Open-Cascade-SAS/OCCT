@@ -5451,7 +5451,9 @@ static int VClipPlane (Draw_Interpretor& theDi, Standard_Integer theArgsNb, cons
         Standard_Real aBlu = atof (theArgVec [7]);
 
         Graphic3d_MaterialAspect aMat = aClipPlane->CappingMaterial();
-        aMat.SetColor (Quantity_Color (aRed, aGrn, aBlu, Quantity_TOC_RGB));
+        Quantity_Color aColor (aRed, aGrn, aBlu, Quantity_TOC_RGB);
+        aMat.SetAmbientColor (aColor);
+        aMat.SetDiffuseColor (aColor);
         aClipPlane->SetCappingMaterial (aMat);
       }
       else if (aCappingArg == "texname") // texture name
