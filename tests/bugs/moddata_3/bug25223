@@ -1,0 +1,88 @@
+puts "================"
+puts "OCC25223"
+puts "================"
+puts ""
+#######################################################################
+# Wrong result done by projection algorithm
+#######################################################################
+
+restore [locate_data_file bug25223_surface] s
+restore [locate_data_file bug25223_curve] c
+
+project c2d c s
+
+# I.
+#Parameters : 2.50050886855066 2.71802559491834
+regexp {Parameters : ([-0-9.+eE]+) ([-0-9.+eE]+)} [dump c] full a1 a2
+set good_a1 2.50050886855066
+set good_a2 2.71802559491834
+set c_tol 1.e-13
+if { [expr abs(${a1} - ${good_a1}) ] > ${c_tol} } {
+   puts "Error: invalid a1 parameter"
+}
+if { [expr abs(${a2} - ${good_a2}) ] > ${c_tol} } {
+   puts "Error: invalid a2 parameter"
+}
+
+# II.
+set u1 2.6
+cvalue c $u1 x y z
+vertex v1 x y z
+point p1 x y z
+
+mkface f s
+set proj_fp [projponf f p1]
+#proj dist = 9.8455689542838467e-014
+
+regexp {proj dist = ([-0-9.+eE]+) uvproj = \(([-0-9.+eE]+) ([-0-9.+eE]+)\); pproj = \(([-0-9.+eE]+) ([-0-9.+eE]+) ([-0-9.+eE]+)\)} ${proj_fp} full dist uproj vproj proj1 proj2
+
+puts "dist=${dist}"
+puts "uproj=${uproj}"
+puts "vproj=${vproj}"
+puts "proj1=${proj1}"
+puts "proj2=${proj2}"
+
+set tolmax_f [tolmax f]
+regexp {max tol = ([-0-9.+eE]+)} ${tolmax_f} full CMP_TOL
+
+puts "CMP_TOL=${CMP_TOL}"
+
+set good_dist 9.8455689542838467e-14
+set good_uproj 0.66864242394263962
+set good_vproj 0.53857983853386682
+set good_proj1 336.79267755053786
+set good_proj2 -256.45869438720723
+
+if { [expr abs(${dist} - ${good_dist}) ] > ${CMP_TOL} } {
+   puts "Error: invalid dist"
+}
+if { [expr abs(${uproj} - ${good_uproj}) ] > ${CMP_TOL} } {
+   puts "Error: invalid uproj"
+}
+if { [expr abs(${vproj} - ${good_vproj}) ] > ${CMP_TOL} } {
+   puts "Error: invalid vproj"
+}
+if { [expr abs(${proj1} - ${good_proj1}) ] > ${CMP_TOL} } {
+   puts "Error: invalid proj1"
+}
+if { [expr abs(${proj2} - ${good_proj2}) ] > ${CMP_TOL} } {
+   puts "Error: invalid proj2"
+}
+
+# III.
+2dcvalue c2d $u1 u v
+svalue s u v x y z
+vertex v2 x y z
+distmini d v1 v2
+#the distance value is : 3.99072821948773e-08
+
+regexp {([-0-9.+eE]+)$} [dump d_val] full dist
+regexp { +Vertex +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} [ maxtolerance d ] full toler
+set good_dist 3.99072821948773e-08
+if { [expr abs( ${dist} - ${good_dist} )] > ${toler} } {
+    puts "Error : the distanse is ${dist}. It is bad value"
+}
+
+smallview
+fit
+set only_screen_axo 1

@@ -1072,9 +1072,14 @@ ProjLib_ComputeApprox::ProjLib_ComputeApprox
     }
     if (F.UCouture || (F.VCouture && SType == GeomAbs_Sphere))
     {
-      gp_Pnt2d P2d = F.Value( UFirst );
-      number = (Standard_Integer) (Floor((P2d.X()-u)/M_PI + Epsilon(M_PI)));
-      du = -number*M_PI;
+      Standard_Real aNbPer;
+      gp_Pnt2d P2d = F.Value(UFirst);
+      du = u - P2d.X();
+      du = (du < 0) ? (du - Precision::PConfusion()) : 
+        (du + Precision::PConfusion());
+      modf(du/M_PI, &aNbPer);
+      number = (Standard_Integer)aNbPer;
+      du = number*M_PI;
     }
 
     if (!myBSpline.IsNull())
