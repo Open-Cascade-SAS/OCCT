@@ -14,22 +14,8 @@
 
 #include <BOPTools_AlgoTools3D.ixx>
 
-#include <TopExp.hxx>
-#include <TopExp_Explorer.hxx>
-
-#include <TopoDS.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Vertex.hxx>
-
-#include <BOPCol_IndexedMapOfShape.hxx>
-#include <BOPCol_IndexedDataMapOfShapeListOfShape.hxx>
-
-#include <BRep_Builder.hxx>
-#include <BRep_Tool.hxx>
-#include <BRepTools.hxx>
-#include <BRepAdaptor_Surface.hxx>
+#include <Bnd_Box.hxx>
+#include <Poly_Triangulation.hxx>
 
 #include <gp_Vec2d.hxx>
 #include <gp_Pnt2d.hxx>
@@ -38,6 +24,7 @@
 #include <gp_Vec.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pln.hxx>
+#include <gp_Cylinder.hxx>
 
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
@@ -47,18 +34,21 @@
 #include <Geom_Surface.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_BezierSurface.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
 
 #include <GeomAdaptor_Surface.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <Geom2dHatch_Hatcher.hxx>
+#include <HatchGen_Domain.hxx>
 
-#include <IntTools_Tools.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Vertex.hxx>
 
-#include <BOPTools_AlgoTools2D.hxx>
-
-#include <GProp_GProps.hxx>
-#include <BRepGProp.hxx>
-#include <BRepBndLib.hxx>
-#include <Bnd_Box.hxx>
-#include <gp_Cylinder.hxx>
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
 #include <BRep_TVertex.hxx>
 #include <BRep_ListIteratorOfListOfPointRepresentation.hxx>
 #include <BRep_PointRepresentation.hxx>
@@ -66,12 +56,24 @@
 #include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
 #include <BRep_CurveRepresentation.hxx>
 #include <BRep_TFace.hxx>
-#include <Poly_Triangulation.hxx>
-#include <BRep_Builder.hxx>
+
+#include <BRepTools.hxx>
+#include <BRepBndLib.hxx>
+#include <BRepAdaptor_Surface.hxx>
+
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+
+#include <GProp_GProps.hxx>
+#include <BRepGProp.hxx>
+
+#include <BOPCol_IndexedMapOfShape.hxx>
+#include <BOPCol_IndexedDataMapOfShapeListOfShape.hxx>
+
+#include <IntTools_Tools.hxx>
 #include <IntTools_Context.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
-#include <Geom2dHatch_Hatcher.hxx>
-#include <HatchGen_Domain.hxx>
+
+#include <BOPTools_AlgoTools2D.hxx>
 
 static void Add(const TopoDS_Shape& aS,
                 BOPCol_IndexedMapOfShape& myShapes, 
@@ -89,6 +91,7 @@ void BOPTools_AlgoTools3D::DoSplitSEAMOnFace (const TopoDS_Edge& aSplit,
   Standard_Boolean bIsUPeriodic, bIsVPeriodic, bIsLeft;
   Standard_Real aTol, a, b, anUPeriod, anVPeriod, aT, anU, dU, anU1;
   Standard_Real aScPr, anV, dV, anV1;
+  Standard_Real aUmin, aUmax, aVmin, aVmax;
   gp_Pnt2d aP2D;
   gp_Vec2d aVec2D;
   Handle(Geom2d_Curve) aTmpC1, aTmpC2;
@@ -104,6 +107,9 @@ void BOPTools_AlgoTools3D::DoSplitSEAMOnFace (const TopoDS_Edge& aSplit,
   aTol=BRep_Tool::Tolerance(aSp);
   //
   aS=BRep_Tool::Surface(aF);
+  //
+  aS->Bounds(aUmin, aUmax, aVmin, aVmax);
+  //
   bIsUPeriodic=aS->IsUPeriodic();
   bIsVPeriodic=aS->IsVPeriodic();
   //
@@ -112,37 +118,53 @@ void BOPTools_AlgoTools3D::DoSplitSEAMOnFace (const TopoDS_Edge& aSplit,
   //
   if (!bIsUPeriodic && !bIsVPeriodic) {
     Standard_Boolean bIsUClosed, bIsVClosed;
-    Standard_Real aUmin = 0., aUmax = 0., aVmin = 0., aVmax = 0.;
     Handle(Geom_BSplineSurface) aBS;
     Handle(Geom_BezierSurface) aBZ;
+    Handle(Geom_RectangularTrimmedSurface) aRTS;
     //
     bIsUClosed=Standard_False;
     bIsVClosed=Standard_False;
     aBS=Handle(Geom_BSplineSurface)::DownCast(aS);
     aBZ=Handle(Geom_BezierSurface) ::DownCast(aS);
+    aRTS=Handle(Geom_RectangularTrimmedSurface)::DownCast(aS);
     //
     if (!aBS.IsNull()) {
       bIsUClosed=aBS->IsUClosed();
       bIsVClosed=aBS->IsVClosed();
-      aBS->Bounds(aUmin, aUmax, aVmin, aVmax);
     }
     else if (!aBZ.IsNull()) {
       bIsUClosed=aBZ->IsUClosed();
       bIsVClosed=aBZ->IsVClosed();
-      aBZ->Bounds(aUmin, aUmax, aVmin, aVmax);
     }
-    if (!bIsUClosed && !bIsVClosed) {
-      return;
+    else if (!aRTS.IsNull()) {
+      Handle(Geom_Surface) aSB;
+      //
+      aSB=aRTS->BasisSurface();
+      bIsUPeriodic=aSB->IsUPeriodic();
+      bIsVPeriodic=aSB->IsVPeriodic();
+      //
+      if (!(bIsUPeriodic || bIsVPeriodic)) {
+        return;
+      }
+      anUPeriod = bIsUPeriodic ? aSB->UPeriod() : 0.;
+      anVPeriod = bIsVPeriodic ? aSB->VPeriod() : 0.;
     }
     //
-    if (bIsUClosed) {
-      anUPeriod=aUmax-aUmin;
-    }
-    if (bIsVClosed) {
-      anVPeriod=aVmax-aVmin;
+    if (aRTS.IsNull()) {
+      if (!bIsUClosed && !bIsVClosed) {
+        return;
+      }
+      //
+      if (bIsUClosed) {
+        anUPeriod=aUmax-aUmin;
+      }
+      if (bIsVClosed) {
+        anVPeriod=aVmax-aVmin;
+      }
     }
   }
   //
+  //---------------------------------------------------
   C2D1=BRep_Tool::CurveOnSurface(aSp, aF, a, b);
   //
   aT=BOPTools_AlgoTools2D::IntermediatePoint(a, b);
@@ -160,22 +182,22 @@ void BOPTools_AlgoTools3D::DoSplitSEAMOnFace (const TopoDS_Edge& aSplit,
   dV = aGAS.VResolution(aTol);
   //
   if (anUPeriod > 0.){
-    if (fabs (anU) < dU) {
+    if (fabs (anU-aUmin) < dU) {
       bIsLeft=Standard_True;
       anU1=anU+anUPeriod;
     }
-    else if (fabs (anU-anUPeriod) < dU) {
+    else if (fabs (anU-aUmax) < dU) {
       bIsLeft=Standard_False;
       anU1=anU-anUPeriod;
     }
   }
   //
   if (anVPeriod > 0.) {
-    if (fabs (anV) < dV) {
+    if (fabs (anV-aVmin) < dV) {
       bIsLeft=Standard_True;
       anV1=anV+anVPeriod;
     }
-    else if (fabs (anV-anVPeriod) < dV) {
+    else if (fabs (anV-aVmax) < dV) {
       bIsLeft=Standard_False;
       anV1=anV-anVPeriod;
     }
@@ -429,8 +451,7 @@ void BOPTools_AlgoTools3D::PointNearEdge (const TopoDS_Edge& aE,
     }
   }
   if( aETol > 1.e-5 || aFTol > 1.e-5 ) {
-  //if( aETol > 1.e-5 && aFTol > 1.e-5 ) {
-    //pkv/103/D7
+    //
     if(aTS!=GeomAbs_Sphere) {
       gp_Vec2d transVec( aDP );
       transVal = aDt2D + aETol + aFTol;
