@@ -125,6 +125,11 @@ is
 
     LoadInitSurface( me : in out; aFace : Face from TopoDS );
     ---Purpose: Loads the initial Surface
+    --          The initial surface must have orthogonal local coordinates,
+    --          i.e. partial derivatives dS/du and dS/dv must be orthogonal
+    --          at each point of surface.
+    --          If this condition breaks, distortions of resulting surface
+    --          are possible.
     
 
     Add( me : in out; anEdge : Edge from TopoDS;

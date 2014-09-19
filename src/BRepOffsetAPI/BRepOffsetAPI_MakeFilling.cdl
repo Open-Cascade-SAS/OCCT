@@ -146,6 +146,11 @@ is
     	-- If no initial surface is given, the algorithm computes it
     	-- automatically. If the set of edges is not connected (Free constraint),
     	-- missing edges are automatically computed.
+    	-- Important: the initial surface must have orthogonal local coordinates,
+    	-- i.e. partial derivatives dS/du and dS/dv must be orthogonal
+    	-- at each point of surface.
+    	-- If this condition breaks, distortions of resulting surface
+    	-- are possible.
     
     
     Add( me : in out; Constr : Edge from TopoDS;
