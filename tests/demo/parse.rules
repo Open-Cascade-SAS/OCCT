@@ -1,2 +1,3 @@
 OK     /Wanted exception/ intentionally generated exception
 FAILED /Failure message/ artificial failure
+IGNORE /^Error [23]d = [\d.-]+/ debug output of blend command
