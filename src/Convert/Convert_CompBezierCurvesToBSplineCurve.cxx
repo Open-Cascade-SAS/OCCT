@@ -160,7 +160,7 @@ void Convert_CompBezierCurvesToBSplineCurve::Perform()
     myDegree = Max( myDegree, (mySequence(i))->Length() -1);
   }
 
-  Standard_Real D1, D2, Lambda, Det=0;
+  Standard_Real Det=0;
   gp_Pnt P1, P2, P3;
   Standard_Integer Deg, Inc, MaxDegree = myDegree;
   TColgp_Array1OfPnt Points(1, myDegree+1);
@@ -182,7 +182,7 @@ void Convert_CompBezierCurvesToBSplineCurve::Perform()
     if (i == LowerI) {
       // Processing of the initial node of the BSpline.
       for (Standard_Integer j = 1 ; j <= MaxDegree ; j++) {
-	CurvePoles.Append(Points(j));
+        CurvePoles.Append(Points(j));
       }
       CurveKnVals(1)         = 1.; // To begin the series.
       KnotsMultiplicities.Append(MaxDegree+1);
@@ -194,40 +194,37 @@ void Convert_CompBezierCurvesToBSplineCurve::Perform()
       P2 = Points(1);
       P3 = Points(2);
       gp_Vec V1(P1, P2), V2(P2, P3);
-      D1 = P1.SquareDistance(P2);
-      D2 = P3.SquareDistance(P2);
-      Lambda = Sqrt(D2/D1);
-//      cout << "D1, D2, Lambda : " << D1 << " " <<  D2 << " " << Lambda << endl;
 
       // Processing of the tangency between Bezier and the previous.
       // This allows to guarantee at least a C1 continuity if the tangents are  
       // coherent.
       
-      if (V1.Magnitude() > gp::Resolution() &&
-	  V2.Magnitude() > gp::Resolution() &&
-	  V1.IsParallel(V2, myAngular )) {
-	if(CurveKnVals(i-1) * Lambda > 10. * Epsilon(Det)) {
-	  KnotsMultiplicities.Append(MaxDegree-1);
-	  CurveKnVals(i) = CurveKnVals(i-1) * Lambda;
-	  Det += CurveKnVals(i);
-	}
-	else {
-	  CurvePoles.Append(Points(1));
-	  KnotsMultiplicities.Append(MaxDegree);
-	  CurveKnVals(i) = 1.0 ;
-	  Det += CurveKnVals(i) ;
-	}
+      Standard_Real D1 = V1.SquareMagnitude();
+      Standard_Real D2 = V2.SquareMagnitude();
+      if (D1 > gp::Resolution() && D2 > gp::Resolution() && V1.IsParallel(V2, myAngular )) {
+          Standard_Real Lambda = Sqrt(D2/D1);
+          if(CurveKnVals(i-1) * Lambda > 10. * Epsilon(Det)) {
+            KnotsMultiplicities.Append(MaxDegree-1);
+            CurveKnVals(i) = CurveKnVals(i-1) * Lambda;
+            Det += CurveKnVals(i);
+          }
+          else {
+            CurvePoles.Append(Points(1));
+            KnotsMultiplicities.Append(MaxDegree);
+            CurveKnVals(i) = 1.0 ;
+            Det += CurveKnVals(i) ;
+          }
       }
       else {
-	CurvePoles.Append(Points(1));
-	KnotsMultiplicities.Append(MaxDegree);
+        CurvePoles.Append(Points(1));
+        KnotsMultiplicities.Append(MaxDegree);
         CurveKnVals(i) = 1.0 ;
         Det += CurveKnVals(i) ;
       }
 
       // Store the poles.
       for (Standard_Integer j = 2 ; j <= MaxDegree ; j++) {
-	CurvePoles.Append(Points(j));
+        CurvePoles.Append(Points(j));
       }
 
     }
