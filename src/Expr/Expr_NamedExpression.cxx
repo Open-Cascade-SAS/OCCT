@@ -16,29 +16,57 @@
 
 #include <Expr_NamedExpression.ixx>
 
+//=======================================================================
+//function : GetName
+//purpose  : 
+//=======================================================================
+
 const TCollection_AsciiString& Expr_NamedExpression::GetName() const
 {
   return myName;
 }
+
+//=======================================================================
+//function : SetName
+//purpose  : 
+//=======================================================================
 
 void Expr_NamedExpression::SetName(const TCollection_AsciiString& name)
 {
   myName = name;
 }
 
+//=======================================================================
+//function : IsShareable
+//purpose  : 
+//=======================================================================
+
 Standard_Boolean Expr_NamedExpression::IsShareable () const
 {
   return Standard_True;
 }
 
-Standard_Boolean Expr_NamedExpression::IsIdentical (const Handle(Expr_GeneralExpression)& Other) const
+//=======================================================================
+//function : IsIdentical
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean Expr_NamedExpression::IsIdentical
+                        (const Handle(Expr_GeneralExpression)& theOther) const
 {
-  if (!Other->IsKind(STANDARD_TYPE(Expr_NamedExpression))) {
-    return Standard_False;
+  Standard_Boolean aResult(Standard_False);
+  if (theOther->IsKind(STANDARD_TYPE(Expr_NamedExpression))) {
+//  Handle(Expr_NamedExpression) me = this;
+//  Handle(Expr_NamedExpression) NEOther = Handle(Expr_NamedExpression)::DownCast(Other);
+//  return  (me == NEOther);
+
+//AGV 22.03.12: Comparison should be based on names rather than Handles
+    const Expr_NamedExpression* pOther =
+      static_cast<const Expr_NamedExpression*>(theOther.operator->());
+    if (pOther == this || pOther->GetName().IsEqual(myName))
+      aResult = Standard_True;
   }
-  Handle(Expr_NamedExpression) me = this;
-  Handle(Expr_NamedExpression) NEOther = Handle(Expr_NamedExpression)::DownCast(Other);
-  return  (me == NEOther);
+  return aResult;
 }
 
 TCollection_AsciiString Expr_NamedExpression::String() const

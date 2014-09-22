@@ -92,10 +92,16 @@ Standard_Boolean Expr_NamedUnknown::ContainsUnknowns () const
   }
 }
 
-Standard_Boolean Expr_NamedUnknown::Contains (const Handle(Expr_GeneralExpression)& exp) const
+Standard_Boolean Expr_NamedUnknown::Contains
+                        (const Handle(Expr_GeneralExpression)& exp) const
 {
   if (!IsAssigned()) {
-    return Standard_False;
+    const Handle(Expr_NamedUnknown) expNamed =
+      Handle(Expr_NamedUnknown)::DownCast(exp);
+    if (expNamed.IsNull() || expNamed->IsAssigned())
+      return Standard_False;
+    //AGV 22.03.12: Comparison based on name coincidence
+    return IsIdentical(expNamed);
   }
   if (myExpression == exp) {
     return Standard_True;
