@@ -41,6 +41,7 @@ IntPatch_CSFunction::IntPatch_CSFunction(const Handle(Adaptor3d_HSurface)& S1,
   surface1 = (Standard_Address)(&S1);
   surface2 = (Standard_Address)(&S2);
   curve    = (Standard_Address)(&C);
+  f = 0.;
 }
 
 Standard_Integer IntPatch_CSFunction::NbVariables()const { return 3;}
