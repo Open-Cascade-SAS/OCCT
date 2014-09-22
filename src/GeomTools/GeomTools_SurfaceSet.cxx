@@ -656,7 +656,9 @@ void  GeomTools_SurfaceSet::Write(Standard_OStream& OS)const
 static Standard_IStream& operator>>(Standard_IStream& IS, gp_Pnt& P)
 {
   Standard_Real X=0.,Y=0.,Z=0.;
-  IS >> X >> Y >> Z;
+  GeomTools::GetReal(IS, X);
+  GeomTools::GetReal(IS, Y);
+  GeomTools::GetReal(IS, Z);
   P.SetCoord(X,Y,Z);
   return IS;
 }
@@ -669,7 +671,9 @@ static Standard_IStream& operator>>(Standard_IStream& IS, gp_Pnt& P)
 static Standard_IStream& operator>>(Standard_IStream& IS, gp_Dir& D)
 {
   Standard_Real X=0.,Y=0.,Z=0.;
-  IS >> X >> Y >> Z;
+  GeomTools::GetReal(IS, X);
+  GeomTools::GetReal(IS, Y);
+  GeomTools::GetReal(IS, Z);
   D.SetCoord(X,Y,Z);
   return IS;
 }
@@ -716,7 +720,8 @@ static Standard_IStream& operator>>(Standard_IStream& IS,
 {
   gp_Ax3 A;
   Standard_Real R=0.;
-  IS >> A  >> R;
+  IS >> A;
+  GeomTools::GetReal(IS, R);
   S = new Geom_CylindricalSurface(A,R);
   return IS;
 }
@@ -731,7 +736,9 @@ static Standard_IStream& operator>>(Standard_IStream& IS,
 {
   gp_Ax3 A;
   Standard_Real R=0.,Ang=0.;
-  IS >> A >> R >> Ang;
+  IS >> A;
+  GeomTools::GetReal(IS, R);
+  GeomTools::GetReal(IS, Ang);
   S = new Geom_ConicalSurface(A,Ang,R);
   return IS;
 }
@@ -746,7 +753,8 @@ static Standard_IStream& operator>>(Standard_IStream& IS,
 {
   gp_Ax3 A;
   Standard_Real R=0.;
-  IS >> A >> R;
+  IS >> A;
+  GeomTools::GetReal(IS, R);
   S = new Geom_SphericalSurface(A,R);
   return IS;
 }
@@ -761,7 +769,9 @@ static Standard_IStream& operator>>(Standard_IStream& IS,
 {
   gp_Ax3 A;
   Standard_Real R1=0.,R2=0.;
-  IS >> A >> R1 >> R2;
+  IS >> A;
+  GeomTools::GetReal(IS, R1);
+  GeomTools::GetReal(IS, R2);
   S = new Geom_ToroidalSurface(A,R1,R2);
   return IS;
 }
@@ -819,7 +829,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS,
     for (j = 1; j <= vdegree+1; j++) {
       IS >> poles(i,j);
       if (urational || vrational)
-	IS >> weights(i,j);
+	GeomTools::GetReal(IS, weights(i,j));
     }
   }
 
@@ -855,20 +865,22 @@ static Standard_IStream& operator>>(Standard_IStream& IS,
     for (j = 1; j <= nbvpoles; j++) {
       IS >> poles(i,j);
       if (urational || vrational)
-	IS >> weights(i,j);
+	GeomTools::GetReal(IS, weights(i,j));
     }
   }
 
   TColStd_Array1OfReal uknots(1,nbuknots);
   TColStd_Array1OfInteger umults(1,nbuknots);
   for (i = 1; i <= nbuknots; i++) {
-    IS >> uknots(i) >> umults(i);
+    GeomTools::GetReal(IS, uknots(i)); 
+    IS >> umults(i);
   }
 
   TColStd_Array1OfReal vknots(1,nbvknots);
   TColStd_Array1OfInteger vmults(1,nbvknots);
   for (i = 1; i <= nbvknots; i++) {
-    IS >> vknots(i) >> vmults(i);
+    GeomTools::GetReal(IS, vknots(i));
+    IS >> vmults(i);
   }
 
   if (urational || vrational)
@@ -889,7 +901,10 @@ static Standard_IStream& operator>>(Standard_IStream& IS,
 				    Handle(Geom_RectangularTrimmedSurface)& S)
 {
   Standard_Real U1=0.,U2=0.,V1=0.,V2=0.;
-  IS >> U1 >> U2 >> V1 >> V2;
+  GeomTools::GetReal(IS, U1);
+  GeomTools::GetReal(IS, U2);
+  GeomTools::GetReal(IS, V1);
+  GeomTools::GetReal(IS, V2);
   Handle(Geom_Surface) BS;
   GeomTools_SurfaceSet::ReadSurface(IS,BS);
   S = new Geom_RectangularTrimmedSurface(BS,U1,U2,V1,V2);
@@ -905,7 +920,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS,
 				    Handle(Geom_OffsetSurface)& S)
 {
   Standard_Real O=0.;
-  IS >> O;
+  GeomTools::GetReal(IS, O);
   Handle(Geom_Surface) BS;
   GeomTools_SurfaceSet::ReadSurface(IS,BS);
   S = new Geom_OffsetSurface(BS,O);

@@ -519,7 +519,8 @@ void  GeomTools_Curve2dSet::Write(Standard_OStream& OS)const
 static Standard_IStream& operator>>(Standard_IStream& IS, gp_Pnt2d& P)
 {
   Standard_Real X=0.,Y=0.;
-  IS >> X >> Y;
+  GeomTools::GetReal(IS, X);
+  GeomTools::GetReal(IS, Y);
   P.SetCoord(X,Y);
   return IS;
 }
@@ -532,7 +533,8 @@ static Standard_IStream& operator>>(Standard_IStream& IS, gp_Pnt2d& P)
 static Standard_IStream& operator>>(Standard_IStream& IS, gp_Dir2d& D)
 {
   Standard_Real X=0.,Y=0.;
-  IS >> X >> Y;
+  GeomTools::GetReal(IS, X);
+  GeomTools::GetReal(IS, Y);
   D.SetCoord(X,Y);
   return IS;
 }
@@ -564,7 +566,8 @@ static Standard_IStream& operator>>(Standard_IStream& IS,
   gp_Pnt2d P(0.,0.);
   gp_Dir2d AX(1.,0.),AY(1.,0.);
   Standard_Real R=0.;
-  IS >> P >> AX >> AY >> R;
+  IS >> P >> AX >> AY;
+  GeomTools::GetReal(IS, R);
   C = new Geom2d_Circle(gp_Ax22d(P,AX,AY),R);
   return IS;
 }
@@ -580,7 +583,9 @@ static Standard_IStream& operator>>(Standard_IStream& IS,
   gp_Pnt2d P(0.,0.);
   gp_Dir2d AX(1.,0.),AY(1.,0.);
   Standard_Real R1=0.,R2=0.;
-  IS >> P >> AX >> AY >> R1 >> R2;
+  IS >> P >> AX >> AY;
+  GeomTools::GetReal(IS, R1);
+  GeomTools::GetReal(IS, R2);
   E = new Geom2d_Ellipse(gp_Ax22d(P,AX,AY),R1,R2);
   return IS;
 }
@@ -596,7 +601,8 @@ static Standard_IStream& operator>>(Standard_IStream& IS,
   gp_Pnt2d P(0.,0.);
   gp_Dir2d AX(1.,0.),AY(1.,0.);
   Standard_Real R1=0.;
-  IS >> P >> AX >> AY >> R1;
+  IS >> P >> AX >> AY;
+  GeomTools::GetReal(IS, R1);
   C = new Geom2d_Parabola(gp_Ax22d(P,AX,AY),R1);
   return IS;
 }
@@ -612,7 +618,9 @@ static Standard_IStream& operator>>(Standard_IStream& IS,
   gp_Pnt2d P(0.,0.);
   gp_Dir2d AX(1.,0.),AY(1.,0.);
   Standard_Real R1=0.,R2=0.;
-  IS >> P >> AX >> AY >> R1 >> R2;
+  IS >> P >> AX >> AY;
+  GeomTools::GetReal(IS, R1);
+  GeomTools::GetReal(IS, R2);
   H = new Geom2d_Hyperbola(gp_Ax22d(P,AX,AY),R1,R2);
   return IS;
 }
@@ -638,7 +646,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS,
   for (i = 1; i <= degree+1; i++) {
     IS >> poles(i);
     if (rational)
-      IS >> weights(i);
+      GeomTools::GetReal(IS, weights(i));
   }
 
   if (rational)
@@ -670,14 +678,15 @@ static Standard_IStream& operator>>(Standard_IStream& IS,
   for (i = 1; i <= nbpoles; i++) {
     IS >> poles(i);
     if (rational)
-      IS >> weights(i);
+      GeomTools::GetReal(IS, weights(i));
   }
 
   TColStd_Array1OfReal knots(1,nbknots);
   TColStd_Array1OfInteger mults(1,nbknots);
 
   for (i = 1; i <= nbknots; i++) {
-    IS >> knots(i) >> mults(i);
+    GeomTools::GetReal(IS, knots(i)); 
+    IS >> mults(i);
   }
 
   if (rational)
@@ -697,7 +706,8 @@ static Standard_IStream& operator>>(Standard_IStream& IS,
 				    Handle(Geom2d_TrimmedCurve)& C)
 {
   Standard_Real p1=0.,p2=0.;
-  IS >> p1 >> p2;
+  GeomTools::GetReal(IS, p1);
+  GeomTools::GetReal(IS, p2);
   Handle(Geom2d_Curve) BC;
   GeomTools_Curve2dSet::ReadCurve2d(IS,BC);
   C = new Geom2d_TrimmedCurve(BC,p1,p2);
@@ -713,7 +723,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS,
 				    Handle(Geom2d_OffsetCurve)& C)
 {
   Standard_Real p=0.;
-  IS >> p;
+  GeomTools::GetReal(IS, p);
   Handle(Geom2d_Curve) BC;
   GeomTools_Curve2dSet::ReadCurve2d(IS,BC);
   C = new Geom2d_OffsetCurve(BC,p);

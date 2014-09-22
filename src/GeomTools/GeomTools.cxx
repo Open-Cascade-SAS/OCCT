@@ -88,3 +88,22 @@ Handle(GeomTools_UndefinedTypeHandler) GeomTools::GetUndefinedTypeHandler()
 {
   return theActiveHandler;
 }
+
+//=======================================================================
+//function : GetReal
+//purpose  : 
+//=======================================================================
+
+void GeomTools::GetReal(Standard_IStream& IS,Standard_Real& theValue)
+{
+  theValue = 0.;
+  if (IS.eof()) 
+    return;
+
+  char buffer[256];
+  buffer[0] = '\0';
+  std::streamsize anOldWide = IS.width(256);
+  IS >> buffer;
+  IS.width(anOldWide);
+  theValue = Strtod(buffer, NULL);
+}

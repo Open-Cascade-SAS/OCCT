@@ -79,6 +79,11 @@ is
     
     GetUndefinedTypeHandler returns UndefinedTypeHandler from GeomTools;
 
+    GetReal(IS : out IStream from Standard; theValue : out Real from Standard);
+      ---Purpose: Reads the Standard_Real value from the stream. Zero is read 
+      ---         in case of error
+
+
 end GeomTools;
 
 
