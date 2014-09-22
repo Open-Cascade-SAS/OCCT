@@ -233,16 +233,7 @@ void gp_Trsf::SetDisplacement (const gp_Ax3& FromA1,
 void gp_Trsf::SetTranslationPart (const gp_Vec& V) {   
 
   loc = V.XYZ();
-  Standard_Real X = loc.X();
-  if (X < 0) X = - X;
-  Standard_Real Y = loc.Y();
-  if (Y < 0) Y = - Y;
-  Standard_Real Z = loc.Z();
-  if (Z < 0) Z = - Z;
-  Standard_Boolean locnull =
-    (X <= gp::Resolution() && 
-     Y <= gp::Resolution() && 
-     Z <= gp::Resolution());
+  const Standard_Boolean locnull = (loc.SquareModulus() < gp::Resolution());
 
   switch (shape) {
 
@@ -261,6 +252,9 @@ void gp_Trsf::SetTranslationPart (const gp_Vec& V) {
   case gp_Scale :
   case gp_CompoundTrsf :
   case gp_Other :
+    if (!locnull) {
+      shape = gp_CompoundTrsf;
+    }
     break;
   }
 }
