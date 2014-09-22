@@ -50,6 +50,10 @@ is
     Clear (me:mutable);
       ---Purpose: Clear myShapeSet 
        
+    SetWithTriangles(me: mutable; isWithTriangles : Boolean from Standard);  
+    ---C++: inline 
+    ---Purpose: set whether to store triangulation  
+       
     SetFormatNb(me: mutable; theFormat : Integer from Standard);  
     ---C++: inline 
     ---Purpose: set the format of topology  

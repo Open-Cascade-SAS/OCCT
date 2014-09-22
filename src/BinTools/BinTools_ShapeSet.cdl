@@ -41,6 +41,9 @@ is
     Delete(me:out) is virtual;
     ---C++: alias "Standard_EXPORT virtual ~BinTools_ShapeSet(){Delete() ; }"
 
+    SetWithTriangles(me : out; isWithTriangles : Boolean) is static;
+        ---Purpose: Define if shape will be stored with triangles 
+
     SetFormatNb(me : out; theFormatNb : Integer) is static; 
     
     FormatNb(me) returns Integer is static;

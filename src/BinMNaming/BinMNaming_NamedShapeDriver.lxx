@@ -34,6 +34,16 @@ inline void BinMNaming_NamedShapeDriver::SetFormatNb(const Standard_Integer theF
 }
 
 //=======================================================================
+//function : SetWithTriangles
+//purpose  : 
+//=======================================================================
+
+inline void BinMNaming_NamedShapeDriver::SetWithTriangles(const Standard_Boolean isWithTriangles) 
+{
+  myShapeSet.SetWithTriangles(isWithTriangles);
+}
+
+//=======================================================================
 //function : GetShapesLocations
 //purpose  : 
 //=======================================================================

@@ -81,6 +81,15 @@ void BinTools_ShapeSet::Delete()
 {}
 
 //=======================================================================
+//function : SetWithTriangles
+//purpose  : 
+//=======================================================================
+void BinTools_ShapeSet::SetWithTriangles(const Standard_Boolean isWithTriangles)
+{
+  myWithTriangles = isWithTriangles;
+}
+
+//=======================================================================
 //function : SetFormatNb
 //purpose  : 
 //=======================================================================
