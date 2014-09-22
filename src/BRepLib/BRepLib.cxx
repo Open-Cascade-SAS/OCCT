@@ -1484,6 +1484,16 @@ static Standard_Boolean tgtfaces(const TopoDS_Edge& Ed,
   const Standard_Real ta,
   const Standard_Boolean couture)
 {
+  // Check if pcurves exist on both faces of edge
+  Standard_Real aFirst,aLast;
+  Handle(Geom2d_Curve) aCurve;
+  aCurve = BRep_Tool::CurveOnSurface(Ed,F1,aFirst,aLast);
+  if(aCurve.IsNull())
+    return Standard_False;
+  aCurve = BRep_Tool::CurveOnSurface(Ed,F2,aFirst,aLast);
+  if(aCurve.IsNull())
+    return Standard_False;
+
   Standard_Real u;
   TopoDS_Edge E = Ed;
   BRepAdaptor_Surface aBAS1(F1,Standard_False);
