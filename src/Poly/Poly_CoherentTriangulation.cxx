@@ -222,34 +222,42 @@ Standard_Boolean Poly_CoherentTriangulation::RemoveDegenerated
         const Standard_Integer ip1(aTri.Node(ind[i+1]));
 
         // Disconnect from both neighbours
-        Poly_CoherentTriangle * pTriConn[2] = {
-          const_cast<Poly_CoherentTriangle *>(aTri.GetConnectedTri(ind[i-1])),
-          const_cast<Poly_CoherentTriangle *>(aTri.GetConnectedTri(ind[i+1]))
-        };
         RemoveTriangle(aTri);
 
         // Reconnect all triangles from Node(ind[i+1]) to Node(ind[i-1])        
-        Poly_CoherentTriPtr::Iterator anIterConn =
-          pNode[ind[i+1]]->TriangleIterator();
-        for (; anIterConn.More(); anIterConn.Next()) {
+        for (;;)
+        {
+          Poly_CoherentTriPtr::Iterator anIterConn = pNode[ind[i+1]]->TriangleIterator();
+          if (!anIterConn.More())
+          {
+            break;
+          }
+
           Poly_CoherentTriangle& aTriConn = anIterConn.ChangeValue();
-          if (&aTriConn != &aTri) {
-            if (aTriConn.Node(0) == ip1)
-              aTriConn.myNodes[0] = im1;
-            else if (aTriConn.Node(1) == ip1)
-              aTriConn.myNodes[1] = im1;
-            else if (aTriConn.Node(2) == ip1)
-              aTriConn.myNodes[2] = im1;
-            pNode[ind[i+1]]->RemoveTriangle(aTriConn, myAlloc);
-            pNode[ind[i-1]]->AddTriangle(aTriConn, myAlloc);
+          Standard_Integer aNewTriConn[] = {aTriConn.Node(0), aTriConn.Node(1), aTriConn.Node(2)};
+          if (&aTriConn != &aTri)
+          {
+            if (aNewTriConn[0] == ip1)
+              aNewTriConn[0] = im1;
+            else if (aNewTriConn[1] == ip1)
+              aNewTriConn[1] = im1;
+            else if (aNewTriConn[2] == ip1)
+              aNewTriConn[2] = im1;
+
+            RemoveTriangle (aTriConn);
+            AddTriangle (aNewTriConn[0], aNewTriConn[1], aNewTriConn[2]);
+          }
+          else
+          {
+            anIterConn.Next();
+            if (!anIterConn.More())
+            {
+              break;
+            }
           }
         }
-        // Set the new mutual connection between the neighbours of the
-        // removed degenerated triangle.
-        if (pTriConn[0] && pTriConn[1]) {
-          pTriConn[0]->SetConnection(* pTriConn[1]);
-        }
-        if (pLstRemovedNode) {
+        if (pLstRemovedNode)
+        {
           pLstRemovedNode->Append(TwoIntegers(ip1, im1));
         }
         aResult = Standard_True;
@@ -440,10 +448,6 @@ Standard_Boolean Poly_CoherentTriangulation::RemoveTriangle
   for (Standard_Integer i = 0; i < 3; i++) {
     if (theTriangle.Node(i) >= 0) {
       Poly_CoherentNode& aNode = myNodes(theTriangle.Node(i));
-      if (aNode.RemoveTriangle(theTriangle, myAlloc)) {
-        theTriangle.myNodes[i] = -1;
-        aResult = Standard_True;
-      }
       // If Links exist in this Triangulation, remove or update a Link
       Poly_CoherentLink * aLink =
         const_cast<Poly_CoherentLink *>(theTriangle.mypLink[i]);
@@ -456,10 +460,10 @@ Standard_Boolean Poly_CoherentTriangulation::RemoveTriangle
           for (Standard_Integer j = 0; j < 3; j++) {
             if (aLink == pTriOpp->GetLink(j)) {
               if (aLink->OppositeNode(0) == theTriangle.Node(i)) {
-                aLink->myOppositeNode[0] = 0L;
+                aLink->myOppositeNode[0] = -1;
                 toRemoveLink = Standard_False;
               } else if (aLink->OppositeNode(1) == theTriangle.Node(i)) {
-                aLink->myOppositeNode[1] = 0L;
+                aLink->myOppositeNode[1] = -1;
                 toRemoveLink = Standard_False;
               }
               break;
@@ -468,6 +472,11 @@ Standard_Boolean Poly_CoherentTriangulation::RemoveTriangle
         }
         if (toRemoveLink)
           RemoveLink(* aLink);
+      }
+      if (aNode.RemoveTriangle(theTriangle, myAlloc))
+      {
+        theTriangle.myNodes[i] = -1;
+        aResult = Standard_True;
       }
     }
     theTriangle.RemoveConnection(i);
@@ -540,7 +549,6 @@ Standard_Boolean Poly_CoherentTriangulation::ReplaceNodes
                   toAddLink = Standard_False;
                 }
               }
-              break;
             }
           }
         }

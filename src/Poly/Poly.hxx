@@ -125,6 +125,33 @@ public:
   //! point is inside).
   Standard_EXPORT static Standard_Real PointOnTriangle (const gp_XY& P1, const gp_XY& P2, const gp_XY& P3, const gp_XY& P, gp_XY& UV);
 
+  //! Computes the intersection between axis and triangulation.
+  //! @param theTri  [in] input triangulation
+  //! @param theAxis [in] intersecting ray
+  //! @param theIsClosest [in] finds the closest intersection when TRUE, finds the farthest otherwise
+  //! @param theTriangle [out] intersected triangle
+  //! @param theDistance [out] distance along ray to intersection point
+  //! @return TRUE if intersection takes place, FALSE otherwise.
+  Standard_EXPORT static Standard_Boolean Intersect (const Handle(Poly_Triangulation)& theTri,
+                                                     const gp_Ax1& theAxis,
+                                                     const Standard_Boolean theIsClosest,
+                                                     Poly_Triangle& theTriangle,
+                                                     Standard_Real& theDistance);
+
+  //! Computes the intersection between a triangle defined by three vertexes and a line.
+  //! @param theStart [in] picking ray origin
+  //! @param theDir   [in] picking ray direction
+  //! @param theV0    [in] first triangle node
+  //! @param theV1    [in] second triangle node
+  //! @param theV2    [in] third triangle node
+  //! @param theParam [out] param on line of the intersection point
+  //! @return 1 if intersection was found, 0 otherwise.
+  Standard_EXPORT static Standard_Integer IntersectTriLine  (const gp_XYZ& theStart,
+                                                             const gp_Dir& theDir,
+                                                             const gp_XYZ& theV0,
+                                                             const gp_XYZ& theV1,
+                                                             const gp_XYZ& theV2,
+                                                             Standard_Real& theParam);
 
   //! Returns area and perimeter of 2D-polygon given by its vertices.
   //! theArea will be negative if the polygon is bypassed clockwise
@@ -169,17 +196,7 @@ public:
     return Standard_True;
   }
 
-
-protected:
-
-
-
-
-
 private:
-
-
-
 
 friend class Poly_Triangle;
 friend class Poly_Triangulation;
@@ -189,11 +206,5 @@ friend class Poly_PolygonOnTriangulation;
 friend class Poly_Connect;
 
 };
-
-
-
-
-
-
 
 #endif // _Poly_HeaderFile

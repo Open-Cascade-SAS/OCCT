@@ -14,11 +14,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <Poly.hxx>
 
+#include <gp_Ax1.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_XY.hxx>
-#include <Poly.hxx>
 #include <Poly_Array1OfTriangle.hxx>
 #include <Poly_ListOfTriangulation.hxx>
 #include <Poly_Polygon2D.hxx>
@@ -562,3 +563,122 @@ Standard_Real Poly::PointOnTriangle (const gp_XY& theP1, const gp_XY& theP2, con
   }
 }
 
+//=======================================================================
+//function : Intersect
+//purpose  :
+//=======================================================================
+Standard_Boolean Poly::Intersect (const Handle(Poly_Triangulation)& theTri,
+                                  const gp_Ax1& theAxis,
+                                  const Standard_Boolean theIsClosest,
+                                  Poly_Triangle& theTriangle,
+                                  Standard_Real& theDistance)
+{
+  const Standard_Real aConf = 1E-15;
+  const gp_XYZ& aLoc = theAxis.Location().XYZ();
+  const gp_Dir& aDir = theAxis.Direction();
+
+  Standard_Real aResult = theIsClosest ? RealLast() : 0.0;
+  Standard_Real aParam = 0.0;
+  Standard_Integer aTriNodes[3] = {};
+  for (Standard_Integer aTriIter = 1; aTriIter <= theTri->NbTriangles(); ++aTriIter)
+  {
+    const Poly_Triangle& aTri = theTri->Triangle (aTriIter);
+    aTri.Get (aTriNodes[0], aTriNodes[1], aTriNodes[2]);
+    if (IntersectTriLine (aLoc, aDir,
+                          theTri->Node (aTriNodes[0]).XYZ(),
+                          theTri->Node (aTriNodes[1]).XYZ(),
+                          theTri->Node (aTriNodes[2]).XYZ(),
+                          aParam))
+    {
+      if (aParam > aConf)
+      {
+        if (theIsClosest)
+        {
+          if (aParam < aResult)
+          {
+            aResult = aParam;
+            theTriangle = aTri;
+          }
+        }
+        else if (aParam > aResult)
+        {
+          aResult = aParam;
+          theTriangle = aTri;
+        }
+      }
+    }
+  }
+
+  if (aConf < aResult && aResult < RealLast())
+  {
+    theDistance = aResult;
+    return Standard_True;
+  }
+  return Standard_False;
+}
+
+//! Calculate the minor of the given matrix, defined by the columns specified by values c1, c2, c3.
+static double Determinant (const double a[3][4],
+                           const int    c1,
+                           const int    c2,
+                           const int    c3)
+{
+  return a[0][c1]*a[1][c2]*a[2][c3] +
+         a[0][c2]*a[1][c3]*a[2][c1] +
+         a[0][c3]*a[1][c1]*a[2][c2] -
+         a[0][c3]*a[1][c2]*a[2][c1] -
+         a[0][c2]*a[1][c1]*a[2][c3] -
+         a[0][c1]*a[1][c3]*a[2][c2];
+}
+
+//=======================================================================
+//function : IntersectTriLine
+//purpose  : Intersect a triangle with a line
+//=======================================================================
+Standard_Integer Poly::IntersectTriLine (const gp_XYZ& theStart,
+                                         const gp_Dir& theDir,
+                                         const gp_XYZ& theV0,
+                                         const gp_XYZ& theV1,
+                                         const gp_XYZ& theV2,
+                                         Standard_Real& theParam)
+{
+  int aRes = 0;
+  const double aConf = 1E-15;
+
+  const double aMat34[3][4] =
+  {
+    { -theDir.X(),
+      theV1.X() - theV0.X(), theV2.X() - theV0.X(), theStart.X() - theV0.X() },
+    { -theDir.Y(),
+      theV1.Y() - theV0.Y(), theV2.Y() - theV0.Y(), theStart.Y() - theV0.Y() },
+    { -theDir.Z(),
+      theV1.Z() - theV0.Z(), theV2.Z() - theV0.Z(), theStart.Z() - theV0.Z() }
+  };
+
+  const double aD  = Determinant (aMat34, 0, 1, 2);
+  const double aDt = Determinant (aMat34, 3, 1, 2);
+  if (aD > aConf)
+  {
+    const double aDa = Determinant (aMat34, 0, 3, 2);
+    if (aDa > -aConf)
+    {
+      const double aDb = Determinant (aMat34, 0, 1, 3);
+      aRes = ((aDb > -aConf) && (aDa + aDb <= aD + aConf));
+    }
+  }
+  else if (aD < -aConf)
+  {
+    const double aDa = Determinant (aMat34, 0, 3, 2);
+    if (aDa < aConf)
+    {
+      const double aDb = Determinant (aMat34, 0, 1, 3);
+      aRes = ((aDb < aConf) && (aDa + aDb >= aD - aConf));
+    }
+  }
+  if (aRes != 0)
+  {
+    theParam = aDt / aD;
+  }
+
+  return aRes;
+}
