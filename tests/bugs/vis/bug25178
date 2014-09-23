@@ -1,0 +1,16 @@
+puts "======="
+puts "CR25178"
+puts "======="
+puts ""
+###########################################################################
+# Visualization - edges of the model are still clipped after vfit command
+###########################################################################
+
+restore [locate_data_file bug25179_nurbs-with-partial-seam.brep] a
+
+vinit
+vdisplay a
+vback
+vfit
+
+set only_screen 1
