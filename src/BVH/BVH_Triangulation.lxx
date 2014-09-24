@@ -40,7 +40,7 @@ BVH_Triangulation<T, N>::~BVH_Triangulation()
 template<class T, int N>
 Standard_Integer BVH_Triangulation<T, N>::Size() const
 {
-  return BVHTools::ArrayOp<Standard_Integer, 4>::Size (Elements);
+  return BVH::ArrayOp<Standard_Integer, 4>::Size (Elements);
 }
 
 // =======================================================================
@@ -50,14 +50,19 @@ Standard_Integer BVH_Triangulation<T, N>::Size() const
 template<class T, int N>
 BVH_Box<T, N> BVH_Triangulation<T, N>::Box (const Standard_Integer theIndex) const
 {
-  const BVH_Vec4i& anIndex = BVHTools::ArrayOp<Standard_Integer, 4>::Value (Elements, theIndex);
+  const BVH_Vec4i& anIndex = BVH::ArrayOp<Standard_Integer, 4>::Value (Elements, theIndex);
 
-  const BVH_VecNt& aPoint0 = BVHTools::ArrayOp<T, N>::Value (Vertices, anIndex.x());
-  const BVH_VecNt& aPoint1 = BVHTools::ArrayOp<T, N>::Value (Vertices, anIndex.y());
-  const BVH_VecNt& aPoint2 = BVHTools::ArrayOp<T, N>::Value (Vertices, anIndex.z());
+  const BVH_VecNt& aPoint0 = BVH::ArrayOp<T, N>::Value (Vertices, anIndex.x());
+  const BVH_VecNt& aPoint1 = BVH::ArrayOp<T, N>::Value (Vertices, anIndex.y());
+  const BVH_VecNt& aPoint2 = BVH::ArrayOp<T, N>::Value (Vertices, anIndex.z());
   
-  const BVH_VecNt aMinPoint = aPoint0.cwiseMin (aPoint1.cwiseMin (aPoint2));
-  const BVH_VecNt aMaxPoint = aPoint0.cwiseMax (aPoint1.cwiseMax (aPoint2));
+  BVH_VecNt aMinPoint = aPoint0;
+  BVH_VecNt aMaxPoint = aPoint0;
+
+  BVH::BoxMinMax<T, N>::CwiseMin (aMinPoint, aPoint1);
+  BVH::BoxMinMax<T, N>::CwiseMin (aMinPoint, aPoint2);
+  BVH::BoxMinMax<T, N>::CwiseMax (aMaxPoint, aPoint1);
+  BVH::BoxMinMax<T, N>::CwiseMax (aMaxPoint, aPoint2);
 
   return BVH_Box<T, N> (aMinPoint, aMaxPoint);
 }
@@ -70,15 +75,15 @@ template<class T, int N>
 T BVH_Triangulation<T, N>::Center (const Standard_Integer theIndex,
                                    const Standard_Integer theAxis) const
 {
-  const BVH_Vec4i& anIndex = BVHTools::ArrayOp<Standard_Integer, 4>::Value (Elements, theIndex);
+  const BVH_Vec4i& anIndex = BVH::ArrayOp<Standard_Integer, 4>::Value (Elements, theIndex);
 
-  const BVH_VecNt& aPoint0 = BVHTools::ArrayOp<T, N>::Value (Vertices, anIndex.x());
-  const BVH_VecNt& aPoint1 = BVHTools::ArrayOp<T, N>::Value (Vertices, anIndex.y());
-  const BVH_VecNt& aPoint2 = BVHTools::ArrayOp<T, N>::Value (Vertices, anIndex.z());
+  const BVH_VecNt& aPoint0 = BVH::ArrayOp<T, N>::Value (Vertices, anIndex.x());
+  const BVH_VecNt& aPoint1 = BVH::ArrayOp<T, N>::Value (Vertices, anIndex.y());
+  const BVH_VecNt& aPoint2 = BVH::ArrayOp<T, N>::Value (Vertices, anIndex.z());
 
-  return ( BVHTools::VecComp<T, N>::Get (aPoint0, theAxis) +
-           BVHTools::VecComp<T, N>::Get (aPoint1, theAxis) +
-           BVHTools::VecComp<T, N>::Get (aPoint2, theAxis) ) * static_cast<T> (1.0 / 3.0);
+  return ( BVH::VecComp<T, N>::Get (aPoint0, theAxis) +
+           BVH::VecComp<T, N>::Get (aPoint1, theAxis) +
+           BVH::VecComp<T, N>::Get (aPoint2, theAxis) ) * static_cast<T> (1.0 / 3.0);
 }
 
 // =======================================================================
@@ -89,9 +94,9 @@ template<class T, int N>
 void BVH_Triangulation<T, N>::Swap (const Standard_Integer theIndex1,
                                     const Standard_Integer theIndex2)
 {
-  BVH_Vec4i anIndices1 = BVHTools::ArrayOp<Standard_Integer, 4>::Value (Elements, theIndex1);
-  BVH_Vec4i anIndices2 = BVHTools::ArrayOp<Standard_Integer, 4>::Value (Elements, theIndex2);
+  BVH_Vec4i anIndices1 = BVH::ArrayOp<Standard_Integer, 4>::Value (Elements, theIndex1);
+  BVH_Vec4i anIndices2 = BVH::ArrayOp<Standard_Integer, 4>::Value (Elements, theIndex2);
 
-  BVHTools::ArrayOp<Standard_Integer, 4>::ChangeValue (Elements, theIndex1) = anIndices2;
-  BVHTools::ArrayOp<Standard_Integer, 4>::ChangeValue (Elements, theIndex2) = anIndices1;
+  BVH::ArrayOp<Standard_Integer, 4>::ChangeValue (Elements, theIndex1) = anIndices2;
+  BVH::ArrayOp<Standard_Integer, 4>::ChangeValue (Elements, theIndex2) = anIndices1;
 }

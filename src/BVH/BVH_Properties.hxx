@@ -37,7 +37,7 @@ class BVH_Transform : public BVH_Properties
 public:
 
   //! Type of transformation matrix.
-  typedef typename BVHTools::MatrixType<T, N>::Type BVH_MatNt;
+  typedef typename BVH::MatrixType<T, N>::Type BVH_MatNt;
 
 public:
 

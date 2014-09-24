@@ -24,7 +24,7 @@ class BVH_Box
 {
 public:
 
-  typedef typename BVHTools::VectorType<T, N>::Type BVH_VecNt;
+  typedef typename BVH::VectorType<T, N>::Type BVH_VecNt;
 
 public:
 

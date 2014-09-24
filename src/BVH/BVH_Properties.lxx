@@ -54,7 +54,7 @@ const typename BVH_Transform<T, N>::BVH_MatNt& BVH_Transform<T, N>::Transform() 
   return myTransform;
 }
 
-namespace BVHTools
+namespace BVH
 {
   template<class T, int N> struct MatrixOp
   {
@@ -63,7 +63,7 @@ namespace BVHTools
 
   template<class T> struct MatrixOp<T, 4>
   {
-    typedef typename BVHTools::MatrixType<T, 4>::Type BVH_Mat4t;
+    typedef typename BVH::MatrixType<T, 4>::Type BVH_Mat4t;
 
     static void Inverse (const BVH_Mat4t& theIn,
                          BVH_Mat4t&       theOut)
@@ -71,7 +71,7 @@ namespace BVHTools
       theIn.Inverted (theOut);
     }
 
-    typedef typename BVHTools::VectorType<T, 4>::Type BVH_Vec4t;
+    typedef typename BVH::VectorType<T, 4>::Type BVH_Vec4t;
 
     static BVH_Vec4t Multiply (const BVH_Mat4t& theMat,
                                const BVH_Vec4t& theVec)
@@ -90,7 +90,7 @@ template<class T, int N>
 void BVH_Transform<T, N>::SetTransform (const BVH_MatNt& theTransform)
 {
   myTransform = theTransform;
-  BVHTools::MatrixOp<T, N>::Inverse (myTransform, myTransformInversed);
+  BVH::MatrixOp<T, N>::Inverse (myTransform, myTransformInversed);
 }
 
 // =======================================================================
@@ -103,7 +103,7 @@ const typename BVH_Transform<T, N>::BVH_MatNt& BVH_Transform<T, N>::Inversed() c
   return myTransformInversed;
 }
 
-namespace BVHTools
+namespace BVH
 {
   template<class T, int N>
   struct UnitVector
@@ -114,7 +114,7 @@ namespace BVHTools
   template<class T>
   struct UnitVector<T, 2>
   {
-    typedef typename BVHTools::VectorType<T, 2>::Type BVH_Vec2t;
+    typedef typename BVH::VectorType<T, 2>::Type BVH_Vec2t;
 
     static BVH_Vec2t DX()
     {
@@ -138,7 +138,7 @@ namespace BVHTools
   template<class T>
   struct UnitVector<T, 3>
   {
-    typedef typename BVHTools::VectorType<T, 3>::Type BVH_Vec3t;
+    typedef typename BVH::VectorType<T, 3>::Type BVH_Vec3t;
 
     static BVH_Vec3t DX()
     {
@@ -165,7 +165,7 @@ namespace BVHTools
   template<class T>
   struct UnitVector<T, 4>
   {
-    typedef typename BVHTools::VectorType<T, 4>::Type BVH_Vec4t;
+    typedef typename BVH::VectorType<T, 4>::Type BVH_Vec4t;
 
     static BVH_Vec4t DX()
     {
@@ -210,11 +210,11 @@ BVH_Box<T, N> BVH_Transform<T, N>::Apply (const BVH_Box<T, N>& theBox) const
       for (Standard_Integer aZ = 0; aZ <= 1; ++aZ)
       {
         typename BVH_Box<T, N>::BVH_VecNt aCorner = theBox.CornerMin() +
-          BVHTools::UnitVector<T, N>::DX() * aSize * static_cast<T> (aX) +
-          BVHTools::UnitVector<T, N>::DY() * aSize * static_cast<T> (aY) +
-          BVHTools::UnitVector<T, N>::DZ() * aSize * static_cast<T> (aZ);
+          BVH::UnitVector<T, N>::DX() * aSize * static_cast<T> (aX) +
+          BVH::UnitVector<T, N>::DY() * aSize * static_cast<T> (aY) +
+          BVH::UnitVector<T, N>::DZ() * aSize * static_cast<T> (aZ);
 
-        aBox.Add (BVHTools::MatrixOp<T, N>::Multiply (myTransform, aCorner));
+        aBox.Add (BVH::MatrixOp<T, N>::Multiply (myTransform, aCorner));
       }
     }
   }

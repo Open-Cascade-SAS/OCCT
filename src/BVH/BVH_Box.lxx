@@ -15,7 +15,7 @@
 
 #include <Standard_ShortReal.hxx>
 
-namespace BVHTools
+namespace BVH
 {
   template<class T, int N>
   struct CenterAxis {
@@ -126,6 +126,47 @@ void BVH_Box<T, N>::Add (const BVH_VecNt& thePoint)
   }
 }
 
+namespace BVH
+{
+  template<class T, int N>
+  struct BoxMinMax
+  {
+    typedef typename BVH::VectorType<T, N>::Type BVH_VecNt;
+
+    static void CwiseMin (BVH_VecNt& theVec1, const BVH_VecNt& theVec2)
+    {
+      theVec1.x() = Min (theVec1.x(), theVec2.x());
+      theVec1.y() = Min (theVec1.y(), theVec2.y());
+      theVec1.z() = Min (theVec1.z(), theVec2.z());
+    }
+
+    static void CwiseMax (BVH_VecNt& theVec1, const BVH_VecNt& theVec2)
+    {
+      theVec1.x() = Max (theVec1.x(), theVec2.x());
+      theVec1.y() = Max (theVec1.y(), theVec2.y());
+      theVec1.z() = Max (theVec1.z(), theVec2.z());
+    }
+  };
+
+  template<class T>
+  struct BoxMinMax<T, 2>
+  {
+    typedef typename BVH::VectorType<T, 2>::Type BVH_VecNt;
+
+    static void CwiseMin (BVH_VecNt& theVec1, const BVH_VecNt& theVec2)
+    {
+      theVec1.x() = Min (theVec1.x(), theVec2.x());
+      theVec1.y() = Min (theVec1.y(), theVec2.y());
+    }
+
+    static void CwiseMax (BVH_VecNt& theVec1, const BVH_VecNt& theVec2)
+    {
+      theVec1.x() = Max (theVec1.x(), theVec2.x());
+      theVec1.y() = Max (theVec1.y(), theVec2.y());
+    }
+  };
+}
+
 // =======================================================================
 // function : Combine
 // purpose  :
@@ -133,26 +174,24 @@ void BVH_Box<T, N>::Add (const BVH_VecNt& thePoint)
 template<class T, int N>
 void BVH_Box<T, N>::Combine (const BVH_Box& theBox)
 {
-  if (!theBox.myInitialized)
+  if (theBox.myInitialized)
   {
-    return;
-  }
+    if (!myInitialized)
+    {
+      myMinPoint = theBox.myMinPoint;
+      myMaxPoint = theBox.myMaxPoint;
 
-  if (!myInitialized)
-  {
-    myMinPoint = theBox.myMinPoint;
-    myMaxPoint = theBox.myMaxPoint;
-
-    myInitialized = Standard_True;
-  }
-  else
-  {
-    myMinPoint = myMinPoint.cwiseMin (theBox.myMinPoint);
-    myMaxPoint = myMaxPoint.cwiseMax (theBox.myMaxPoint);
+      myInitialized = Standard_True;
+    }
+    else
+    {
+      BVH::BoxMinMax<T, N>::CwiseMin (myMinPoint, theBox.myMinPoint);
+      BVH::BoxMinMax<T, N>::CwiseMax (myMaxPoint, theBox.myMaxPoint);
+    }
   }
 }
 
-namespace BVHTools
+namespace BVH
 {
   template<class T, int N>
   struct SurfaceCalculator

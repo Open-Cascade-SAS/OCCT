@@ -68,8 +68,8 @@ void BVH_SweepPlaneBuilder<T, N>::BuildNode (BVH_Set<T, N>*         theSet,
   // Find best split
   for (Standard_Integer anAxis = 0; anAxis < (N < 4 ? N : 3); ++anAxis)
   {
-    const T aNodeSize = BVHTools::VecComp<T, N>::Get (theBVH->MaxPoint (theNode), anAxis) -
-                        BVHTools::VecComp<T, N>::Get (theBVH->MinPoint (theNode), anAxis);
+    const T aNodeSize = BVH::VecComp<T, N>::Get (theBVH->MaxPoint (theNode), anAxis) -
+                        BVH::VecComp<T, N>::Get (theBVH->MinPoint (theNode), anAxis);
     if (aNodeSize <= THE_NODE_MIN_SIZE)
     {
       continue;

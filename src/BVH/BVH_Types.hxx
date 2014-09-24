@@ -28,9 +28,9 @@
 
 #include <vector>
 
-namespace BVHTools
+namespace BVH
 {
-  //! Allows to fast switching between Eigen and NCollection vectors.
+  //! Allows for fast switching between Eigen and NCollection vectors.
   template<class T, int N> struct VectorType
   {
     // Not implemented
@@ -78,52 +78,52 @@ namespace BVHTools
 }
 
 //! 2D vector of integers.
-typedef BVHTools::VectorType<Standard_Integer, 2>::Type BVH_Vec2i;
+typedef BVH::VectorType<Standard_Integer, 2>::Type BVH_Vec2i;
 //! 3D vector of integers.
-typedef BVHTools::VectorType<Standard_Integer, 3>::Type BVH_Vec3i;
+typedef BVH::VectorType<Standard_Integer, 3>::Type BVH_Vec3i;
 //! 4D vector of integers.
-typedef BVHTools::VectorType<Standard_Integer, 4>::Type BVH_Vec4i;
+typedef BVH::VectorType<Standard_Integer, 4>::Type BVH_Vec4i;
 
 //! Array of 2D vectors of integers.
-typedef BVHTools::ArrayType<Standard_Integer, 2>::Type BVH_Array2i;
+typedef BVH::ArrayType<Standard_Integer, 2>::Type BVH_Array2i;
 //! Array of 3D vectors of integers.
-typedef BVHTools::ArrayType<Standard_Integer, 3>::Type BVH_Array3i;
+typedef BVH::ArrayType<Standard_Integer, 3>::Type BVH_Array3i;
 //! Array of 4D vectors of integers.
-typedef BVHTools::ArrayType<Standard_Integer, 4>::Type BVH_Array4i;
+typedef BVH::ArrayType<Standard_Integer, 4>::Type BVH_Array4i;
 
 //! 2D vector of single precision reals.
-typedef BVHTools::VectorType<Standard_ShortReal, 2>::Type BVH_Vec2f;
+typedef BVH::VectorType<Standard_ShortReal, 2>::Type BVH_Vec2f;
 //! 3D vector of single precision reals.
-typedef BVHTools::VectorType<Standard_ShortReal, 3>::Type BVH_Vec3f;
+typedef BVH::VectorType<Standard_ShortReal, 3>::Type BVH_Vec3f;
 //! 4D vector of single precision reals.
-typedef BVHTools::VectorType<Standard_ShortReal, 4>::Type BVH_Vec4f;
+typedef BVH::VectorType<Standard_ShortReal, 4>::Type BVH_Vec4f;
 
 //! Array of 2D vectors of single precision reals.
-typedef BVHTools::ArrayType<Standard_ShortReal, 2>::Type BVH_Array2f;
+typedef BVH::ArrayType<Standard_ShortReal, 2>::Type BVH_Array2f;
 //! Array of 3D vectors of single precision reals.
-typedef BVHTools::ArrayType<Standard_ShortReal, 3>::Type BVH_Array3f;
+typedef BVH::ArrayType<Standard_ShortReal, 3>::Type BVH_Array3f;
 //! Array of 4D vectors of single precision reals.
-typedef BVHTools::ArrayType<Standard_ShortReal, 4>::Type BVH_Array4f;
+typedef BVH::ArrayType<Standard_ShortReal, 4>::Type BVH_Array4f;
 
 //! 2D vector of double precision reals.
-typedef BVHTools::VectorType<Standard_Real, 2>::Type BVH_Vec2d;
+typedef BVH::VectorType<Standard_Real, 2>::Type BVH_Vec2d;
 //! 3D vector of double precision reals.
-typedef BVHTools::VectorType<Standard_Real, 3>::Type BVH_Vec3d;
+typedef BVH::VectorType<Standard_Real, 3>::Type BVH_Vec3d;
 //! 4D vector of double precision reals.
-typedef BVHTools::VectorType<Standard_Real, 4>::Type BVH_Vec4d;
+typedef BVH::VectorType<Standard_Real, 4>::Type BVH_Vec4d;
 
 //! Array of 2D vectors of double precision reals.
-typedef BVHTools::ArrayType<Standard_Real, 2>::Type BVH_Array2d;
+typedef BVH::ArrayType<Standard_Real, 2>::Type BVH_Array2d;
 //! Array of 3D vectors of double precision reals.
-typedef BVHTools::ArrayType<Standard_Real, 3>::Type BVH_Array3d;
+typedef BVH::ArrayType<Standard_Real, 3>::Type BVH_Array3d;
 //! Array of 4D vectors of double precision reals.
-typedef BVHTools::ArrayType<Standard_Real, 4>::Type BVH_Array4d;
+typedef BVH::ArrayType<Standard_Real, 4>::Type BVH_Array4d;
 
 //! 4x4 matrix of single precision reals.
-typedef BVHTools::MatrixType<Standard_ShortReal, 4>::Type BVH_Mat4f;
+typedef BVH::MatrixType<Standard_ShortReal, 4>::Type BVH_Mat4f;
 
 //! 4x4 matrix of double precision reals.
-typedef BVHTools::MatrixType<Standard_Real, 4>::Type BVH_Mat4d;
+typedef BVH::MatrixType<Standard_Real, 4>::Type BVH_Mat4d;
 
 #include <BVH_Types.lxx>
 

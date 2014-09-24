@@ -13,7 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-namespace BVHTools
+namespace BVH
 {
   template<class T, int N> struct VecComp
   {
@@ -22,7 +22,7 @@ namespace BVHTools
 
   template<class T> struct VecComp<T, 2>
   {
-    typedef typename BVHTools::VectorType<T, 2>::Type BVH_Vec2t;
+    typedef typename BVH::VectorType<T, 2>::Type BVH_Vec2t;
 
     static T Get (const BVH_Vec2t&       theVec,
                   const Standard_Integer theAxis)
@@ -33,7 +33,7 @@ namespace BVHTools
 
   template<class T> struct VecComp<T, 3>
   {
-    typedef typename BVHTools::VectorType<T, 3>::Type BVH_Vec3t;
+    typedef typename BVH::VectorType<T, 3>::Type BVH_Vec3t;
 
     static T Get (const BVH_Vec3t&       theVec,
                   const Standard_Integer theAxis)
@@ -44,7 +44,7 @@ namespace BVHTools
 
   template<class T> struct VecComp<T, 4>
   {
-    typedef typename BVHTools::VectorType<T, 4>::Type BVH_Vec4t;
+    typedef typename BVH::VectorType<T, 4>::Type BVH_Vec4t;
 
     static T Get (const BVH_Vec4t&       theVec,
                   const Standard_Integer theAxis)
@@ -57,11 +57,11 @@ namespace BVHTools
 
   template<class T, int N = 1> struct ArrayOp
   {
-    typedef typename BVHTools::ArrayType<T, N>::Type BVH_ArrayNt;
+    typedef typename BVH::ArrayType<T, N>::Type BVH_ArrayNt;
 
     static inline
-    const typename BVHTools::VectorType<T, N>::Type& Value (const BVH_ArrayNt&     theArray,
-                                                            const Standard_Integer theIndex)
+    const typename BVH::VectorType<T, N>::Type& Value (const BVH_ArrayNt&     theArray,
+                                                       const Standard_Integer theIndex)
     {
     #ifdef _BVH_USE_STD_VECTOR_
       return theArray.at (theIndex);
@@ -71,8 +71,8 @@ namespace BVHTools
     }
 
     static inline
-    typename BVHTools::VectorType<T, N>::Type& ChangeValue (BVH_ArrayNt&           theArray,
-                                                            const Standard_Integer theIndex)
+    typename BVH::VectorType<T, N>::Type& ChangeValue (BVH_ArrayNt&           theArray,
+                                                       const Standard_Integer theIndex)
     {
     #ifdef _BVH_USE_STD_VECTOR_
       return theArray.at (theIndex);
@@ -82,7 +82,7 @@ namespace BVHTools
     }
 
     static inline void Append (BVH_ArrayNt& theArray,
-                               const typename BVHTools::VectorType<T, N>::Type& theElement)
+                               const typename BVH::VectorType<T, N>::Type& theElement)
     {
     #ifdef _BVH_USE_STD_VECTOR_
       theArray.push_back (theElement);

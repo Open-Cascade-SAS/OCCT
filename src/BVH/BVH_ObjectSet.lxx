@@ -96,7 +96,7 @@ T BVH_ObjectSet<T, N>::Center (const Standard_Integer theIndex,
                                const Standard_Integer theAxis) const
 {
   typename BVH_Set<T, N>::BVH_BoxNt aBox = myObjects.Value (theIndex)->Box();
-  return BVHTools::CenterAxis<T, N>::Center (aBox, theAxis);
+  return BVH::CenterAxis<T, N>::Center (aBox, theAxis);
 }
 
 // =======================================================================

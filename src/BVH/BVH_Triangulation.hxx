@@ -24,7 +24,7 @@ class BVH_Triangulation : public BVH_PrimitiveSet<T, N>
 {
 public:
 
-  typedef typename BVHTools::VectorType<T, N>::Type BVH_VecNt;
+  typedef typename BVH::VectorType<T, N>::Type BVH_VecNt;
 
 public:
 
@@ -37,7 +37,7 @@ public:
 public:
 
   //! Array of vertex coordinates.
-  typename BVHTools::ArrayType<T, N>::Type Vertices;
+  typename BVH::ArrayType<T, N>::Type Vertices;
 
   //! Array of indices of triangle indicies vertices.
   BVH_Array4i Elements;

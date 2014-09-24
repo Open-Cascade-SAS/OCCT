@@ -50,73 +50,73 @@ public:
   //! Returns minimum point of the given node.
   BVH_VecNt& MinPoint (const Standard_Integer theNodeIndex)
   {
-    return BVHTools::ArrayOp<T, N>::ChangeValue (myMinPointBuffer, theNodeIndex);
+    return BVH::ArrayOp<T, N>::ChangeValue (myMinPointBuffer, theNodeIndex);
   }
 
   //! Returns maximum point of the given node.
   BVH_VecNt& MaxPoint (const Standard_Integer theNodeIndex)
   {
-    return BVHTools::ArrayOp<T, N>::ChangeValue (myMaxPointBuffer, theNodeIndex);
+    return BVH::ArrayOp<T, N>::ChangeValue (myMaxPointBuffer, theNodeIndex);
   }
 
   //! Returns minimum point of the given node.
   const BVH_VecNt& MinPoint (const Standard_Integer theNodeIndex) const
   {
-    return BVHTools::ArrayOp<T, N>::Value (myMinPointBuffer, theNodeIndex);
+    return BVH::ArrayOp<T, N>::Value (myMinPointBuffer, theNodeIndex);
   }
 
   //! Returns maximum point of the given node.
   const BVH_VecNt& MaxPoint (const Standard_Integer theNodeIndex) const
   {
-    return BVHTools::ArrayOp<T, N>::Value (myMaxPointBuffer, theNodeIndex);
+    return BVH::ArrayOp<T, N>::Value (myMaxPointBuffer, theNodeIndex);
   }
 
   //! Returns index of left child of the given inner node.
   Standard_Integer& LeftChild (const Standard_Integer theNodeIndex)
   {
-    return BVHTools::ArrayOp<Standard_Integer, 4>::ChangeValue (myNodeInfoBuffer, theNodeIndex).y();
+    return BVH::ArrayOp<Standard_Integer, 4>::ChangeValue (myNodeInfoBuffer, theNodeIndex).y();
   }
 
   //! Returns index of left child of the given inner node.
   Standard_Integer LeftChild (const Standard_Integer theNodeIndex) const
   {
-    return BVHTools::ArrayOp<Standard_Integer, 4>::Value (myNodeInfoBuffer, theNodeIndex).y();
+    return BVH::ArrayOp<Standard_Integer, 4>::Value (myNodeInfoBuffer, theNodeIndex).y();
   }
 
   //! Returns index of right child of the given inner node.
   Standard_Integer& RightChild (const Standard_Integer theNodeIndex)
   {
-    return BVHTools::ArrayOp<Standard_Integer, 4>::ChangeValue (myNodeInfoBuffer, theNodeIndex).z();
+    return BVH::ArrayOp<Standard_Integer, 4>::ChangeValue (myNodeInfoBuffer, theNodeIndex).z();
   }
 
   //! Returns index of right child of the given inner node.
   Standard_Integer RightChild (const Standard_Integer theNodeIndex) const
   {
-    return BVHTools::ArrayOp<Standard_Integer, 4>::Value (myNodeInfoBuffer, theNodeIndex).z();
+    return BVH::ArrayOp<Standard_Integer, 4>::Value (myNodeInfoBuffer, theNodeIndex).z();
   }
 
   //! Returns index of first primitive of the given leaf node.
   Standard_Integer& BegPrimitive (const Standard_Integer theNodeIndex)
   {
-    return BVHTools::ArrayOp<Standard_Integer, 4>::ChangeValue (myNodeInfoBuffer, theNodeIndex).y();
+    return BVH::ArrayOp<Standard_Integer, 4>::ChangeValue (myNodeInfoBuffer, theNodeIndex).y();
   }
 
   //! Returns index of first primitive of the given leaf node.
   Standard_Integer BegPrimitive (const Standard_Integer theNodeIndex) const
   {
-    return BVHTools::ArrayOp<Standard_Integer, 4>::Value (myNodeInfoBuffer, theNodeIndex).y();
+    return BVH::ArrayOp<Standard_Integer, 4>::Value (myNodeInfoBuffer, theNodeIndex).y();
   }
 
   //! Returns index of last primitive of the given leaf node.
   Standard_Integer& EndPrimitive (const Standard_Integer theNodeIndex)
   {
-    return BVHTools::ArrayOp<Standard_Integer, 4>::ChangeValue (myNodeInfoBuffer, theNodeIndex).z();
+    return BVH::ArrayOp<Standard_Integer, 4>::ChangeValue (myNodeInfoBuffer, theNodeIndex).z();
   }
 
   //! Returns index of last primitive of the given leaf node.
   Standard_Integer EndPrimitive (const Standard_Integer theNodeIndex) const
   {
-    return BVHTools::ArrayOp<Standard_Integer, 4>::Value (myNodeInfoBuffer, theNodeIndex).z();
+    return BVH::ArrayOp<Standard_Integer, 4>::Value (myNodeInfoBuffer, theNodeIndex).z();
   }
 
   //! Returns number of primitives for the given tree node.
@@ -128,37 +128,37 @@ public:
   //! Returns level (depth) of the given node.
   Standard_Integer& Level (const Standard_Integer theNodeIndex)
   {
-    return BVHTools::ArrayOp<Standard_Integer, 4>::ChangeValue (myNodeInfoBuffer, theNodeIndex).w();
+    return BVH::ArrayOp<Standard_Integer, 4>::ChangeValue (myNodeInfoBuffer, theNodeIndex).w();
   }
 
   //! Returns level (depth) of the given node.
   Standard_Integer Level (const Standard_Integer theNodeIndex) const
   {
-    return BVHTools::ArrayOp<Standard_Integer, 4>::Value (myNodeInfoBuffer, theNodeIndex).w();
+    return BVH::ArrayOp<Standard_Integer, 4>::Value (myNodeInfoBuffer, theNodeIndex).w();
   }
 
   //! Is node a leaf (outer)?
   Standard_Boolean IsOuter (const Standard_Integer theNodeIndex) const
   {
-    return BVHTools::ArrayOp<Standard_Integer, 4>::Value (myNodeInfoBuffer, theNodeIndex).x() > 0;
+    return BVH::ArrayOp<Standard_Integer, 4>::Value (myNodeInfoBuffer, theNodeIndex).x() > 0;
   }
 
   //! Sets node type to 'outer'.
   void SetOuter (const Standard_Integer theNodeIndex)
   {
-    BVHTools::ArrayOp<Standard_Integer, 4>::ChangeValue (myNodeInfoBuffer, theNodeIndex).x() = 1;
+    BVH::ArrayOp<Standard_Integer, 4>::ChangeValue (myNodeInfoBuffer, theNodeIndex).x() = 1;
   }
 
   //! Sets node type to 'inner'.
   void SetInner (const Standard_Integer theNodeIndex)
   {
-    BVHTools::ArrayOp<Standard_Integer, 4>::ChangeValue (myNodeInfoBuffer, theNodeIndex).x() = 0;
+    BVH::ArrayOp<Standard_Integer, 4>::ChangeValue (myNodeInfoBuffer, theNodeIndex).x() = 0;
   }
 
   //! Returns total number of BVH nodes.
   Standard_Integer Length() const
   {
-    return BVHTools::ArrayOp<Standard_Integer, 4>::Size (myNodeInfoBuffer);
+    return BVH::ArrayOp<Standard_Integer, 4>::Size (myNodeInfoBuffer);
   }
 
   //! Returns depth of BVH tree from last build.
@@ -202,25 +202,25 @@ public:
 public:
 
   //! Returns array of node min points.
-  typename BVHTools::ArrayType<T, N>::Type& MinPointBuffer()
+  typename BVH::ArrayType<T, N>::Type& MinPointBuffer()
   {
     return myMinPointBuffer;
   }
 
   //! Returns array of node min points.
-  const typename BVHTools::ArrayType<T, N>::Type& MinPointBuffer() const
+  const typename BVH::ArrayType<T, N>::Type& MinPointBuffer() const
   {
     return myMinPointBuffer;
   }
 
   //! Returns array of node max points.
-  typename BVHTools::ArrayType<T, N>::Type& MaxPointBuffer()
+  typename BVH::ArrayType<T, N>::Type& MaxPointBuffer()
   {
     return myMaxPointBuffer;
   }
 
   //! Returns array of node max points.
-  const typename BVHTools::ArrayType<T, N>::Type& MaxPointBuffer() const
+  const typename BVH::ArrayType<T, N>::Type& MaxPointBuffer() const
   {
     return myMaxPointBuffer;
   }
@@ -240,10 +240,10 @@ public:
 protected:
 
   //! Array of node minimum points.
-  typename BVHTools::ArrayType<T, N>::Type myMinPointBuffer;
+  typename BVH::ArrayType<T, N>::Type myMinPointBuffer;
 
   //! Array of node maximum points.
-  typename BVHTools::ArrayType<T, N>::Type myMaxPointBuffer;
+  typename BVH::ArrayType<T, N>::Type myMaxPointBuffer;
 
   //! Array of node data records.
   BVH_Array4i myNodeInfoBuffer;

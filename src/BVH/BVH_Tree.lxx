@@ -22,10 +22,10 @@ void BVH_Tree<T, N>::Clear()
 {
   myDepth = 0;
 
-  BVHTools::ArrayOp<T, N>::Clear (myMinPointBuffer);
-  BVHTools::ArrayOp<T, N>::Clear (myMaxPointBuffer);
+  BVH::ArrayOp<T, N>::Clear (myMinPointBuffer);
+  BVH::ArrayOp<T, N>::Clear (myMaxPointBuffer);
 
-  BVHTools::ArrayOp<Standard_Integer, 4>::Clear (myNodeInfoBuffer);
+  BVH::ArrayOp<Standard_Integer, 4>::Clear (myNodeInfoBuffer);
 }
 
 // =======================================================================
@@ -38,12 +38,12 @@ Standard_Integer BVH_Tree<T, N>::AddLeafNode (const BVH_VecNt&       theMinPoint
                                               const Standard_Integer theBegElem,
                                               const Standard_Integer theEndElem)
 {
-  BVHTools::ArrayOp<T, N>::Append (myMinPointBuffer, theMinPoint);
-  BVHTools::ArrayOp<T, N>::Append (myMaxPointBuffer, theMaxPoint);
+  BVH::ArrayOp<T, N>::Append (myMinPointBuffer, theMinPoint);
+  BVH::ArrayOp<T, N>::Append (myMaxPointBuffer, theMaxPoint);
 
-  BVHTools::ArrayOp<Standard_Integer, 4>::Append (myNodeInfoBuffer, BVH_Vec4i (1, theBegElem, theEndElem, 0));
+  BVH::ArrayOp<Standard_Integer, 4>::Append (myNodeInfoBuffer, BVH_Vec4i (1, theBegElem, theEndElem, 0));
 
-  return static_cast<Standard_Integer> (BVHTools::ArrayOp<Standard_Integer, 4>::Size (myNodeInfoBuffer) - 1);
+  return static_cast<Standard_Integer> (BVH::ArrayOp<Standard_Integer, 4>::Size (myNodeInfoBuffer) - 1);
 }
 
 // =======================================================================
@@ -56,12 +56,12 @@ Standard_Integer BVH_Tree<T, N>::AddInnerNode (const BVH_VecNt&       theMinPoin
                                                const Standard_Integer theLftChild,
                                                const Standard_Integer theRghChild)
 {
-  BVHTools::ArrayOp<T, N>::Append (myMinPointBuffer, theMinPoint);
-  BVHTools::ArrayOp<T, N>::Append (myMaxPointBuffer, theMaxPoint);
+  BVH::ArrayOp<T, N>::Append (myMinPointBuffer, theMinPoint);
+  BVH::ArrayOp<T, N>::Append (myMaxPointBuffer, theMaxPoint);
 
-  BVHTools::ArrayOp<Standard_Integer, 4>::Append (myNodeInfoBuffer, BVH_Vec4i (0, theLftChild, theRghChild, 0));
+  BVH::ArrayOp<Standard_Integer, 4>::Append (myNodeInfoBuffer, BVH_Vec4i (0, theLftChild, theRghChild, 0));
 
-  return static_cast<Standard_Integer> (BVHTools::ArrayOp<Standard_Integer, 4>::Size (myNodeInfoBuffer)  - 1);
+  return static_cast<Standard_Integer> (BVH::ArrayOp<Standard_Integer, 4>::Size (myNodeInfoBuffer)  - 1);
 }
 
 // =======================================================================
@@ -88,7 +88,7 @@ Standard_Integer BVH_Tree<T, N>::AddInnerNode (const BVH_Box<T, N>&   theAABB,
   return AddInnerNode (theAABB.CornerMin(), theAABB.CornerMax(), theLftChild, theRghChild);
 }
 
-namespace BVHTools
+namespace BVH
 {
   template<class T, int N>
   void EstimateSAH (const BVH_Tree<T, N>*  theTree,
@@ -136,6 +136,6 @@ template<class T, int N>
 T BVH_Tree<T, N>::EstimateSAH() const
 {
   T aSAH = static_cast<T> (0.0);
-  BVHTools::EstimateSAH (this, 0, static_cast<T> (1.0), aSAH);
+  BVH::EstimateSAH (this, 0, static_cast<T> (1.0), aSAH);
   return aSAH;
 }
