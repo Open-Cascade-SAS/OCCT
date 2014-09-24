@@ -15,7 +15,7 @@
 
 // =======================================================================
 // function : BVH_Builder
-// purpose  :
+// purpose  : Creates abstract BVH builder
 // =======================================================================
 template<class T, int N>
 BVH_Builder<T, N>::BVH_Builder (const Standard_Integer theLeafNodeSize,
@@ -28,57 +28,10 @@ BVH_Builder<T, N>::BVH_Builder (const Standard_Integer theLeafNodeSize,
 
 // =======================================================================
 // function : ~BVH_Builder
-// purpose  :
+// purpose  : Releases resources of BVH builder
 // =======================================================================
 template<class T, int N>
 BVH_Builder<T, N>::~BVH_Builder()
 {
   //
-}
-
-// =======================================================================
-// function : Build
-// purpose  :
-// =======================================================================
-template<class T, int N>
-void BVH_Builder<T, N>::Build (BVH_Set<T, N>*       theSet,
-                               BVH_Tree<T, N>*      theBVH,
-                               const BVH_Box<T, N>& theBox)
-{
-  if (theBVH == NULL)
-  {
-    return;
-  }
-
-  theBVH->Clear();
-  if (theSet->Size() == 0)
-  {
-    return;
-  }
-
-  const Standard_Integer aRoot = theBVH->AddLeafNode (theBox, 0, theSet->Size() - 1);
-  if (theSet->Size() == 1)
-  {
-    return;
-  }
-
-  myTasksQueue.Append (aRoot);
-  for (Standard_Integer aTask = 0; aTask < myTasksQueue.Size(); ++aTask)
-  {
-    BuildNode (theSet, theBVH, myTasksQueue.Value (aTask));
-  }
-
-  myTasksQueue.Clear();
-}
-
-// =======================================================================
-// function : BuildNode
-// purpose  :
-// =======================================================================
-template<class T, int N>
-void BVH_Builder<T, N>::BuildNode (BVH_Set<T, N>* ,
-                                   BVH_Tree<T, N>* ,
-                                   const Standard_Integer )
-{
-  // need to disable compile warnings
 }

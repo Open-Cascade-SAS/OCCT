@@ -16,11 +16,11 @@
 #ifndef _BVH_SweepPlaneBuilder_Header
 #define _BVH_SweepPlaneBuilder_Header
 
-#include <BVH_Builder.hxx>
+#include <BVH_QueueBuilder.hxx>
 
 //! Performs building of BVH tree using sweep plane SAH algorithm.
 template<class T, int N>
-class BVH_SweepPlaneBuilder : public BVH_Builder<T, N>
+class BVH_SweepPlaneBuilder : public BVH_QueueBuilder<T, N>
 {
 public:
 

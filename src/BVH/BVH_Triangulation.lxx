@@ -94,9 +94,8 @@ template<class T, int N>
 void BVH_Triangulation<T, N>::Swap (const Standard_Integer theIndex1,
                                     const Standard_Integer theIndex2)
 {
-  BVH_Vec4i anIndices1 = BVH::ArrayOp<Standard_Integer, 4>::Value (Elements, theIndex1);
-  BVH_Vec4i anIndices2 = BVH::ArrayOp<Standard_Integer, 4>::Value (Elements, theIndex2);
+  BVH_Vec4i& anIndices1 = BVH::ArrayOp<Standard_Integer, 4>::ChangeValue (Elements, theIndex1);
+  BVH_Vec4i& anIndices2 = BVH::ArrayOp<Standard_Integer, 4>::ChangeValue (Elements, theIndex2);
 
-  BVH::ArrayOp<Standard_Integer, 4>::ChangeValue (Elements, theIndex1) = anIndices2;
-  BVH::ArrayOp<Standard_Integer, 4>::ChangeValue (Elements, theIndex2) = anIndices1;
+  std::swap (anIndices1, anIndices2);
 }

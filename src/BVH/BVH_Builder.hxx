@@ -19,8 +19,6 @@
 #include <BVH_Set.hxx>
 #include <BVH_Tree.hxx>
 
-#include <NCollection_Vector.hxx>
-
 namespace
 {
   //! Minimum node size to split.
@@ -38,21 +36,14 @@ public:
                const Standard_Integer theMaxTreeDepth);
 
   //! Releases resources of BVH builder.
-  virtual ~BVH_Builder() = 0;
+  virtual ~BVH_Builder();
 
 public:
 
   //! Builds BVH using specified algorithm.
-  void Build (BVH_Set<T, N>*       theSet,
-              BVH_Tree<T, N>*      theBVH,
-              const BVH_Box<T, N>& theBox);
-
-protected:
-
-  //! Builds BVH node for specified task info.
-  virtual void BuildNode (BVH_Set<T, N>*         theSet,
-                          BVH_Tree<T, N>*        theBVH,
-                          const Standard_Integer theTask);
+  virtual void Build (BVH_Set<T, N>*       theSet,
+                      BVH_Tree<T, N>*      theBVH,
+                      const BVH_Box<T, N>& theBox) = 0;
 
   //! Updates depth of constructed BVH tree.
   void UpdateDepth (BVH_Tree<T, N>*        theBVH,
@@ -68,7 +59,6 @@ protected:
 
   Standard_Integer                     myMaxTreeDepth; //!< Maximum depth of constructed BVH
   Standard_Integer                     myLeafNodeSize; //!< Maximum number of primitives per leaf
-  NCollection_Vector<Standard_Integer> myTasksQueue;   //!< Queue to manage BVH node building tasks
 
 };
 

@@ -75,6 +75,14 @@ namespace BVH
   {
     typedef NCollection_Mat4<T> Type;
   };
+
+  template<class T>
+  static inline Standard_Integer IntFloor (const T theValue)
+  {
+    const Standard_Integer aRes = static_cast<Standard_Integer> (theValue);
+    
+    return aRes - static_cast<Standard_Integer> (aRes > theValue);
+  }
 }
 
 //! 2D vector of integers.

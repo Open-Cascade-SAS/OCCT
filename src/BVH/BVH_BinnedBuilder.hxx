@@ -16,7 +16,7 @@
 #ifndef _BVH_BinnedBuilder_Header
 #define _BVH_BinnedBuilder_Header
 
-#include <BVH_Builder.hxx>
+#include <BVH_QueueBuilder.hxx>
 
 #include <algorithm>
 
@@ -34,7 +34,7 @@ struct BVH_Bin
 //! Performs building of BVH tree using binned SAH algorithm.
 //! Number of Bins controls tree's quality (greater - better) in cost of construction time.
 template<class T, int N, int Bins = 32>
-class BVH_BinnedBuilder : public BVH_Builder<T, N>
+class BVH_BinnedBuilder : public BVH_QueueBuilder<T, N>
 {
 public:
 

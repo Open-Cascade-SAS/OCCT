@@ -15,6 +15,7 @@
 
 #include <BVH_Geometry.hxx>
 #include <BVH_Triangulation.hxx>
+#include <BVH_LinearBuilder.hxx>
 #include <BVH_BinnedBuilder.hxx>
 #include <BVH_SweepPlaneBuilder.hxx>
 #include <BVH_SpatialMedianBuilder.hxx>
@@ -84,6 +85,12 @@ template class BVH_BinnedBuilder<Standard_Real, 4>;
 template class BVH_BinnedBuilder<Standard_ShortReal, 2>;
 template class BVH_BinnedBuilder<Standard_ShortReal, 3>;
 template class BVH_BinnedBuilder<Standard_ShortReal, 4>;
+
+template class BVH_LinearBuilder<Standard_Real, 3>;
+template class BVH_LinearBuilder<Standard_Real, 4>;
+
+template class BVH_LinearBuilder<Standard_ShortReal, 3>;
+template class BVH_LinearBuilder<Standard_ShortReal, 4>;
 
 template class BVH_SweepPlaneBuilder<Standard_Real, 2>;
 template class BVH_SweepPlaneBuilder<Standard_Real, 3>;

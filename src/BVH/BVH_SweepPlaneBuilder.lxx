@@ -22,8 +22,8 @@
 template<class T, int N>
 BVH_SweepPlaneBuilder<T, N>::BVH_SweepPlaneBuilder (const Standard_Integer theLeafNodeSize,
                                                     const Standard_Integer theMaxTreeDepth)
-: BVH_Builder<T, N> (theLeafNodeSize,
-                     theMaxTreeDepth)
+: BVH_QueueBuilder<T, N> (theLeafNodeSize,
+                          theMaxTreeDepth)
 {
   //
 }
@@ -182,7 +182,7 @@ void BVH_SweepPlaneBuilder<T, N>::BuildNode (BVH_Set<T, N>*         theSet,
 
     if (!isLeaf)
     {
-      BVH_Builder<T, N>::myTasksQueue.Append (aChildIndex);
+      BVH_QueueBuilder<T, N>::myTasksQueue.Append (aChildIndex);
     }
 
     BVH_Builder<T, N>::UpdateDepth (theBVH, theBVH->Level (aChildIndex));

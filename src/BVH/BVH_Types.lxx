@@ -64,7 +64,7 @@ namespace BVH
                                                        const Standard_Integer theIndex)
     {
     #ifdef _BVH_USE_STD_VECTOR_
-      return theArray.at (theIndex);
+      return theArray[theIndex];
     #else
       return theArray.Value (theIndex);
     #endif
@@ -75,7 +75,7 @@ namespace BVH
                                                        const Standard_Integer theIndex)
     {
     #ifdef _BVH_USE_STD_VECTOR_
-      return theArray.at (theIndex);
+      return theArray[theIndex];
     #else
       return theArray.ChangeValue (theIndex);
     #endif

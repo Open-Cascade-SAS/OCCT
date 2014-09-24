@@ -7,6 +7,8 @@ BVH_Builder.hxx
 BVH_Builder.lxx
 BVH_Geometry.hxx
 BVH_Geometry.lxx
+BVH_LinearBuilder.hxx
+BVH_LinearBuilder.lxx
 BVH_Object.hxx
 BVH_Object.lxx
 BVH_ObjectSet.hxx
@@ -30,3 +32,5 @@ BVH_Triangulation.hxx
 BVH_Triangulation.lxx
 BVH_Types.hxx
 BVH_Types.lxx
+BVH_QueueBuilder.hxx
+BVH_QueueBuilder.lxx

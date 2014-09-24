@@ -20,8 +20,8 @@
 template<class T, int N, int Bins>
 BVH_BinnedBuilder<T, N, Bins>::BVH_BinnedBuilder (const Standard_Integer theLeafNodeSize,
                                                   const Standard_Integer theMaxTreeDepth)
-: BVH_Builder<T, N> (theLeafNodeSize,
-                     theMaxTreeDepth)
+: BVH_QueueBuilder<T, N> (theLeafNodeSize,
+                          theMaxTreeDepth)
 {
   //
 }
@@ -34,17 +34,6 @@ template<class T, int N, int Bins>
 BVH_BinnedBuilder<T, N, Bins>::~BVH_BinnedBuilder()
 {
   //
-}
-
-namespace BVH
-{
-  template<class T>
-  static inline Standard_Integer IntFloor (const T theValue)
-  {
-    const Standard_Integer aRes = static_cast<Standard_Integer> (theValue);
-    
-    return aRes - static_cast<Standard_Integer> (aRes > theValue);
-  }
 }
 
 // =======================================================================
@@ -291,7 +280,7 @@ void BVH_BinnedBuilder<T, N, Bins>::BuildNode (BVH_Set<T, N>*         theSet,
 
     if (!isLeaf)
     {
-      BVH_Builder<T, N>::myTasksQueue.Append (aChildIndex);
+      BVH_QueueBuilder<T, N>::myTasksQueue.Append (aChildIndex);
     }
 
     BVH_Builder<T, N>::UpdateDepth (theBVH, theBVH->Level (aChildIndex));

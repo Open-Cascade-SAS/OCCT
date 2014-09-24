@@ -194,6 +194,14 @@ public:
                                  const Standard_Integer theLftChild,
                                  const Standard_Integer theRghChild);
 
+  //! Adds new leaf node to the BVH with UNINITIALIZED bounds.
+  Standard_Integer AddLeafNode (const Standard_Integer theBegElem,
+                                const Standard_Integer theEndElem);
+
+  //! Adds new inner node to the BVH with UNINITIALIZED bounds.
+  Standard_Integer AddInnerNode (const Standard_Integer theLftChild,
+                                 const Standard_Integer theRghChild);
+
   //! Returns value of SAH (surface area heuristic).
   //! Allows to compare the quality of BVH trees constructed for
   //! the same sets of geometric objects with different methods.
