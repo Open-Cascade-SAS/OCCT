@@ -267,6 +267,7 @@ void OpenGl_View::EndTransformPersistence(const Handle(OpenGl_Context)& theCtx)
 {
   if (myIsTransPers)
   {
+  #if !defined(GL_ES_VERSION_2_0)
     // restore matrix
     glMatrixMode (GL_PROJECTION);
     glPopMatrix();
@@ -286,6 +287,7 @@ void OpenGl_View::EndTransformPersistence(const Handle(OpenGl_Context)& theCtx)
     // Set OCCT state uniform variables
     theCtx->ShaderManager()->RevertWorldViewStateTo (&aResultWorldView);
     theCtx->ShaderManager()->RevertProjectionStateTo (&aResultProjection);
+  #endif
   }
 }
 
@@ -303,12 +305,14 @@ const TEL_TRANSFORM_PERSISTENCE* OpenGl_View::BeginTransformPersistence (const H
     return aTransPersPrev;
   }
 
+#if !defined(GL_ES_VERSION_2_0)
   GLint aViewport[4];
   GLdouble aModelMatrix[4][4];
   GLdouble aProjMatrix[4][4];
   glGetIntegerv (GL_VIEWPORT,          aViewport);
   glGetDoublev  (GL_MODELVIEW_MATRIX,  (GLdouble* )aModelMatrix);
   glGetDoublev  (GL_PROJECTION_MATRIX, (GLdouble *)aProjMatrix);
+
   const GLdouble aViewportW = (GLdouble )aViewport[2];
   const GLdouble aViewportH = (GLdouble )aViewport[3];
 
@@ -418,11 +422,12 @@ const TEL_TRANSFORM_PERSISTENCE* OpenGl_View::BeginTransformPersistence (const H
       gluUnProject (-0.5 * aViewportW, -0.5 * aViewportH, 0.0,
                     (GLdouble* )THE_IDENTITY_MATRIX, (GLdouble* )aProjMatrix, aViewport,
                     &aW2, &aH2, &aDummy);
+
       GLdouble aMoveX = 0.5 * (aW1 - aW2 - theTransPers->pointZ);
       GLdouble aMoveY = 0.5 * (aH1 - aH2 - theTransPers->pointZ);
       aMoveX = (theTransPers->pointX > 0.0) ? aMoveX : -aMoveX;
       aMoveY = (theTransPers->pointY > 0.0) ? aMoveY : -aMoveY;
-      glTranslated (aMoveX, aMoveY, 0.0);
+      theCtx->core11->glTranslated (aMoveX, aMoveY, 0.0);
     }
   }
   else if ((theTransPers->mode & TPF_PAN) != TPF_PAN)
@@ -436,7 +441,7 @@ const TEL_TRANSFORM_PERSISTENCE* OpenGl_View::BeginTransformPersistence (const H
                   &aMoveX, &aMoveY, &aMoveZ);
 
     glMatrixMode (GL_MODELVIEW);
-    glTranslated (aMoveX, aMoveY, aMoveZ);
+    theCtx->core11->glTranslated (aMoveX, aMoveY, aMoveZ);
   }
 
   // Note: the approach of accessing OpenGl matrices is used now since the matrix
@@ -451,7 +456,7 @@ const TEL_TRANSFORM_PERSISTENCE* OpenGl_View::BeginTransformPersistence (const H
   // Set OCCT state uniform variables
   theCtx->ShaderManager()->UpdateWorldViewStateTo (&aResultWorldView);
   theCtx->ShaderManager()->UpdateProjectionStateTo (&aResultProjection);
-
+#endif
   return aTransPersPrev;
 }
 

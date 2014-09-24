@@ -637,6 +637,7 @@ void OpenGl_Window::ReadDepths (const Standard_Integer theX,     const Standard_
   if (theDepths == NULL || !Activate())
     return;
 
+#if !defined(GL_ES_VERSION_2_0)
   glMatrixMode (GL_PROJECTION);
   glLoadIdentity();
   gluOrtho2D (0.0, (GLdouble )myWidth, 0.0, (GLdouble )myHeight);
@@ -647,6 +648,7 @@ void OpenGl_Window::ReadDepths (const Standard_Integer theX,     const Standard_
   DisableFeatures();
   glReadPixels (theX, theY, theWidth, theHeight, GL_DEPTH_COMPONENT, GL_FLOAT, theDepths);
   EnableFeatures();
+#endif
 }
 
 // =======================================================================
@@ -690,11 +692,12 @@ void OpenGl_Window::Init()
   myHeight = aNewHeight;
 #endif
 
+  glDisable (GL_SCISSOR_TEST);
+#if !defined(GL_ES_VERSION_2_0)
   glMatrixMode (GL_MODELVIEW);
   glViewport (0, 0, myWidth, myHeight);
-
-  glDisable (GL_SCISSOR_TEST);
   glDrawBuffer (GL_BACK);
+#endif
 }
 
 #endif // !__APPLE__
@@ -714,23 +717,27 @@ void OpenGl_Window::EnableFeatures() const
 // =======================================================================
 void OpenGl_Window::DisableFeatures() const
 {
+#if !defined(GL_ES_VERSION_2_0)
   glPixelTransferi (GL_MAP_COLOR, GL_FALSE);
+#endif
 
   /*
   * Disable stuff that's likely to slow down glDrawPixels.
   * (Omit as much of this as possible, when you know in advance
   * that the OpenGL state will already be set correctly.)
   */
-  glDisable(GL_ALPHA_TEST);
   glDisable(GL_BLEND);
   glDisable(GL_DEPTH_TEST);
-  glDisable(GL_FOG);
-  glDisable(GL_LIGHTING);
-
-  glDisable(GL_LOGIC_OP);
-  glDisable(GL_STENCIL_TEST);
-  glDisable(GL_TEXTURE_1D);
   glDisable(GL_TEXTURE_2D);
+  glDisable(GL_STENCIL_TEST);
+
+#if !defined(GL_ES_VERSION_2_0)
+  glDisable(GL_LIGHTING);
+  glDisable(GL_ALPHA_TEST);
+  glDisable(GL_FOG);
+  glDisable(GL_LOGIC_OP);
+  glDisable(GL_TEXTURE_1D);
+
   glPixelTransferi(GL_MAP_COLOR, GL_FALSE);
   glPixelTransferi(GL_RED_SCALE, 1);
   glPixelTransferi(GL_RED_BIAS, 0);
@@ -774,6 +781,7 @@ void OpenGl_Window::DisableFeatures() const
       glDisable(GL_TEXTURE_3D_EXT);
 #endif
   }
+#endif
 }
 
 // =======================================================================
@@ -782,7 +790,9 @@ void OpenGl_Window::DisableFeatures() const
 // =======================================================================
 void OpenGl_Window::MakeFrontBufCurrent() const
 {
+#if !defined(GL_ES_VERSION_2_0)
   glDrawBuffer (GL_FRONT);
+#endif
 }
 
 // =======================================================================
@@ -791,5 +801,7 @@ void OpenGl_Window::MakeFrontBufCurrent() const
 // =======================================================================
 void OpenGl_Window::MakeBackBufCurrent() const
 {
+#if !defined(GL_ES_VERSION_2_0)
   glDrawBuffer (GL_BACK);
+#endif
 }

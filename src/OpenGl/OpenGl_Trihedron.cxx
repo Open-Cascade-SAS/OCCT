@@ -88,6 +88,7 @@ static int   theNbFacettes = 12;
 //call_triedron_redraw
 void OpenGl_Trihedron::redraw (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
+#if !defined(GL_ES_VERSION_2_0)
   const Standard_Real U = theWorkspace->ActiveView()->Height();
   const Standard_Real V = theWorkspace->ActiveView()->Width();
 
@@ -286,6 +287,7 @@ void OpenGl_Trihedron::redraw (const Handle(OpenGl_Workspace)& theWorkspace) con
   glPopMatrix ();
   glMatrixMode (GL_MODELVIEW);
   glPopMatrix ();
+#endif
 }
 
 
@@ -295,6 +297,7 @@ void OpenGl_Trihedron::redraw (const Handle(OpenGl_Workspace)& theWorkspace) con
 //call_zbuffer_triedron_redraw
 void OpenGl_Trihedron::redrawZBuffer (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
+#if !defined(GL_ES_VERSION_2_0)
   const Standard_Real U = theWorkspace->ActiveView()->Height();
   const Standard_Real V = theWorkspace->ActiveView()->Width();
 
@@ -572,6 +575,7 @@ void OpenGl_Trihedron::redrawZBuffer (const Handle(OpenGl_Workspace)& theWorkspa
     glMatrixMode (GL_MODELVIEW);
     glPopMatrix ();
   }
+#endif
 }
 
 
@@ -672,7 +676,9 @@ void OpenGl_Trihedron::Render (const Handle(OpenGl_Workspace)& theWorkspace) con
   */
   if (!theWorkspace->UseGLLight())
   {
+  #if !defined(GL_ES_VERSION_2_0)
     glDisable (GL_LIGHTING);
+  #endif
   }
 
   const Handle(OpenGl_Texture) aPrevTexture = theWorkspace->DisableTexture();

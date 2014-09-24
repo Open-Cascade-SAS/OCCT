@@ -28,6 +28,8 @@ struct OpenGl_TmplCore30 : public theBaseClass_t
 
 public: //! @name GL_ARB_framebuffer_object (added to OpenGL 3.0 core)
 
+#if !defined(GL_ES_VERSION_2_0)
+
   using theBaseClass_t::glIsRenderbuffer;
   using theBaseClass_t::glBindRenderbuffer;
   using theBaseClass_t::glDeleteRenderbuffers;
@@ -121,6 +123,8 @@ public: //! @name OpenGL 3.0 additives to 2.1
   using theBaseClass_t::glClearBufferfv;
   using theBaseClass_t::glClearBufferfi;
   using theBaseClass_t::glGetStringi;
+
+#endif
 
 };
 

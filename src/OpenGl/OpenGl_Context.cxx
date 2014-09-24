@@ -88,6 +88,13 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   core44     (NULL),
   core44back (NULL),
   caps   (!theCaps.IsNull() ? theCaps : new OpenGl_Caps()),
+#if defined(GL_ES_VERSION_2_0)
+  hasHighp   (Standard_False),
+  hasTexRGBA8(Standard_False),
+#else
+  hasHighp   (Standard_True),
+  hasTexRGBA8(Standard_True),
+#endif
   arbNPTW(Standard_False),
   arbTBO (NULL),
   arbIns (NULL),
@@ -106,13 +113,18 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   myGlLibHandle (NULL),
   myFuncs (new OpenGl_GlFunctions()),
   myAnisoMax   (1),
+  myTexClamp   (GL_CLAMP_TO_EDGE),
   myMaxTexDim  (1024),
   myMaxClipPlanes (6),
   myGlVerMajor (0),
   myGlVerMinor (0),
   myIsInitialized (Standard_False),
   myIsStereoBuffers (Standard_False),
+#if !defined(GL_ES_VERSION_2_0)
   myRenderMode (GL_RENDER),
+#else
+  myRenderMode (0),
+#endif
   myDrawBuffer (0)
 {
 #if defined(MAC_OS_X_VERSION_10_3) && !defined(MACOSX_USE_GLX)
@@ -157,6 +169,7 @@ OpenGl_Context::~OpenGl_Context()
   mySharedResources.Nullify();
   myDelayed.Nullify();
 
+#if !defined(GL_ES_VERSION_2_0)
   if (arbDbg != NULL
    && caps->contextDebug
    && IsValid())
@@ -169,6 +182,7 @@ OpenGl_Context::~OpenGl_Context()
       arbDbg->glDebugMessageCallbackARB (NULL, NULL);
     }
   }
+#endif
 }
 
 // =======================================================================
@@ -204,6 +218,7 @@ Standard_Integer OpenGl_Context::MaxClipPlanes() const
 // =======================================================================
 void OpenGl_Context::SetDrawBufferLeft()
 {
+#if !defined(GL_ES_VERSION_2_0)
   switch (myDrawBuffer)
   {
     case GL_BACK_RIGHT :
@@ -224,6 +239,7 @@ void OpenGl_Context::SetDrawBufferLeft()
       myDrawBuffer = GL_LEFT;
       break;
   }
+#endif
 }
 
 // =======================================================================
@@ -232,6 +248,7 @@ void OpenGl_Context::SetDrawBufferLeft()
 // =======================================================================
 void OpenGl_Context::SetDrawBufferRight()
 {
+#if !defined(GL_ES_VERSION_2_0)
   switch (myDrawBuffer)
   {
     case GL_BACK_LEFT :
@@ -252,6 +269,7 @@ void OpenGl_Context::SetDrawBufferRight()
       myDrawBuffer = GL_RIGHT;
       break;
   }
+#endif
 }
 
 // =======================================================================
@@ -260,6 +278,7 @@ void OpenGl_Context::SetDrawBufferRight()
 // =======================================================================
 void OpenGl_Context::SetDrawBufferMono()
 {
+#if !defined(GL_ES_VERSION_2_0)
   switch (myDrawBuffer)
   {
     case GL_BACK_LEFT :
@@ -280,6 +299,7 @@ void OpenGl_Context::SetDrawBufferMono()
       myDrawBuffer = GL_FRONT_AND_BACK;
       break;
   }
+#endif
 }
 
 // =======================================================================
@@ -288,11 +308,13 @@ void OpenGl_Context::SetDrawBufferMono()
 // =======================================================================
 void OpenGl_Context::FetchState()
 {
+#if !defined(GL_ES_VERSION_2_0)
   // cache feedback mode state
   glGetIntegerv (GL_RENDER_MODE, &myRenderMode);
 
   // cache draw buffer state
   glGetIntegerv (GL_DRAW_BUFFER, &myDrawBuffer);
+#endif
 }
 
 // =======================================================================
@@ -640,13 +662,14 @@ void OpenGl_Context::readGlVersion()
   myGlVerMajor = 0;
   myGlVerMinor = 0;
 
-  // available since OpenGL 3.0
+#ifdef GL_MAJOR_VERSION
+  // available since OpenGL 3.0 and OpenGL 3.0 ES
   GLint aMajor = 0, aMinor = 0;
   glGetIntegerv (GL_MAJOR_VERSION, &aMajor);
   glGetIntegerv (GL_MINOR_VERSION, &aMinor);
   // glGetError() sometimes does not report an error here even if
   // GL does not know GL_MAJOR_VERSION and GL_MINOR_VERSION constants.
-  // This happens on some rendereres like e.g. Cygwin MESA.
+  // This happens on some renderers like e.g. Cygwin MESA.
   // Thus checking additionally if GL has put anything to
   // the output variables.
   if (glGetError() == GL_NO_ERROR && aMajor != 0 && aMinor != 0)
@@ -656,9 +679,10 @@ void OpenGl_Context::readGlVersion()
     return;
   }
   ResetErrors();
+#endif
 
   // Read version string.
-  // Notice that only first two numbers splitted by point '2.1 XXXXX' are significant.
+  // Notice that only first two numbers split by point '2.1 XXXXX' are significant.
   // Following trash (after space) is vendor-specific.
   // New drivers also returns micro version of GL like '3.3.0' which has no meaning
   // and should be considered as vendor-specific too.
@@ -668,6 +692,17 @@ void OpenGl_Context::readGlVersion()
     // invalid GL context
     return;
   }
+
+//#if defined(GL_ES_VERSION_2_0)
+  // skip "OpenGL ES-** " section
+  for (; *aVerStr != '\0'; ++aVerStr)
+  {
+    if (*aVerStr >= '0' && *aVerStr <= '9')
+    {
+      break;
+    }
+  }
+//#endif
 
   // parse string for major number
   char aMajorStr[32];
@@ -734,6 +769,7 @@ static Standard_CString THE_DBGMSG_SEV_HIGH   = "High";   // GL_DEBUG_SEVERITY_H
 static Standard_CString THE_DBGMSG_SEV_MEDIUM = "Medium"; // GL_DEBUG_SEVERITY_MEDIUM_ARB
 static Standard_CString THE_DBGMSG_SEV_LOW    = "Low";    // GL_DEBUG_SEVERITY_LOW_ARB
 
+#if !defined(GL_ES_VERSION_2_0)
 //! Callback for GL_ARB_debug_output extension
 static void APIENTRY debugCallbackWrap(unsigned int theSource,
                                        unsigned int theType,
@@ -746,6 +782,7 @@ static void APIENTRY debugCallbackWrap(unsigned int theSource,
   OpenGl_Context* aCtx = (OpenGl_Context* )theUserParam;
   aCtx->PushMessage (theSource, theType, theId, theSeverity, theMessage);
 }
+#endif
 
 // =======================================================================
 // function : PushMessage
@@ -784,7 +821,6 @@ void OpenGl_Context::PushMessage (const unsigned int theSource,
   aMsg += " | Severity: ";    aMsg += aSev;
   aMsg += " | Message:\n  ";
   aMsg += theMessage;
-
   Messenger()->Send (aMsg, aGrav);
 }
 
@@ -819,6 +855,41 @@ void OpenGl_Context::init()
   arbFBO     = NULL;
   extGS      = NULL;
 
+#if defined(GL_ES_VERSION_2_0)
+
+  hasTexRGBA8 = IsGlGreaterEqual (3, 0)
+             || CheckExtension ("GL_OES_rgb8_rgba8");
+  arbNPTW     = IsGlGreaterEqual (3, 0)
+             || CheckExtension ("GL_OES_texture_npot");
+  arbTexRG    = IsGlGreaterEqual (3, 0)
+             || CheckExtension ("GL_EXT_texture_rg");
+  extBgra     = CheckExtension ("GL_EXT_texture_format_BGRA8888");
+  extAnis = CheckExtension ("GL_EXT_texture_filter_anisotropic");
+  extPDS  = CheckExtension ("GL_OES_packed_depth_stencil");
+
+  core11fwd = (OpenGl_GlCore11Fwd* )(&(*myFuncs));
+  if (IsGlGreaterEqual (2, 0))
+  {
+    // enable compatible functions
+    core20    = (OpenGl_GlCore20*    )(&(*myFuncs));
+    core20fwd = (OpenGl_GlCore20Fwd* )(&(*myFuncs));
+    core15fwd = (OpenGl_GlCore15Fwd* )(&(*myFuncs));
+    arbFBO    = (OpenGl_ArbFBO* )(&(*myFuncs));
+  }
+
+  hasHighp = CheckExtension ("OES_fragment_precision_high");
+  GLint aRange[2] = {0, 0};
+  GLint aPrec [2] = {0, 0};
+  ::glGetShaderPrecisionFormat (GL_FRAGMENT_SHADER, GL_HIGH_FLOAT, aRange, aPrec);
+  if (aPrec[1] != 0)
+  {
+    hasHighp = Standard_True;
+  }
+#else
+
+  myTexClamp = IsGlGreaterEqual (1, 2) ? GL_CLAMP_TO_EDGE : GL_CLAMP;
+
+  hasTexRGBA8 = Standard_True;
   arbNPTW = CheckExtension ("GL_ARB_texture_non_power_of_two");
   extBgra = CheckExtension ("GL_EXT_bgra");
   extAnis = CheckExtension ("GL_EXT_texture_filter_anisotropic");
@@ -826,13 +897,15 @@ void OpenGl_Context::init()
   atiMem  = CheckExtension ("GL_ATI_meminfo");
   nvxMem  = CheckExtension ("GL_NVX_gpu_memory_info");
 
-  // get number of maximum clipping planes
-  glGetIntegerv (GL_MAX_CLIP_PLANES, &myMaxClipPlanes);
-  glGetIntegerv (GL_MAX_TEXTURE_SIZE, &myMaxTexDim);
-
-  GLint aStereo;
+  GLint aStereo = GL_FALSE;
   glGetIntegerv (GL_STEREO, &aStereo);
   myIsStereoBuffers = aStereo == 1;
+
+  // get number of maximum clipping planes
+  glGetIntegerv (GL_MAX_CLIP_PLANES,  &myMaxClipPlanes);
+#endif
+
+  glGetIntegerv (GL_MAX_TEXTURE_SIZE, &myMaxTexDim);
 
   if (extAnis)
   {
@@ -840,6 +913,8 @@ void OpenGl_Context::init()
   }
 
   myClippingState.Init (myMaxClipPlanes);
+
+#if !defined(GL_ES_VERSION_2_0)
 
   bool has12 = false;
   bool has13 = false;
@@ -1787,6 +1862,7 @@ void OpenGl_Context::init()
   }
   core44     = (OpenGl_GlCore44*     )(&(*myFuncs));
   core44back = (OpenGl_GlCore44Back* )(&(*myFuncs));
+#endif
 }
 
 // =======================================================================
@@ -1795,6 +1871,7 @@ void OpenGl_Context::init()
 // =======================================================================
 Standard_Size OpenGl_Context::AvailableMemory() const
 {
+#if !defined(GL_ES_VERSION_2_0)
   if (atiMem)
   {
     // this is actually information for VBO pool
@@ -1813,6 +1890,7 @@ Standard_Size OpenGl_Context::AvailableMemory() const
     glGetIntegerv (GL_GPU_MEMORY_INFO_CURRENT_AVAILABLE_VIDMEM_NVX, &aMemInfo);
     return Standard_Size(aMemInfo) * 1024;
   }
+#endif
   return 0;
 }
 
@@ -1823,6 +1901,7 @@ Standard_Size OpenGl_Context::AvailableMemory() const
 TCollection_AsciiString OpenGl_Context::MemoryInfo() const
 {
   TCollection_AsciiString anInfo;
+#if !defined(GL_ES_VERSION_2_0)
   if (atiMem)
   {
     GLint aValues[4];
@@ -1860,6 +1939,7 @@ TCollection_AsciiString OpenGl_Context::MemoryInfo() const
       anInfo += TCollection_AsciiString ("  Total memory:       ") + (aValue / 1024) + " MiB\n";
     }
   }
+#endif
   return anInfo;
 }
 

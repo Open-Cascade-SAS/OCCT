@@ -414,11 +414,13 @@ void OpenGl_PrimitiveArray::drawArray (const Handle(OpenGl_Workspace)& theWorksp
   bool                          hasVColors  = false;
   if (myVboAttribs.IsNull())
   {
+  #if !defined(GL_ES_VERSION_2_0)
     if (myDrawMode == GL_POINTS)
     {
       // extreme compatibility mode - without sprites but with markers
       drawMarkers (theWorkspace);
     }
+  #endif
     return;
   }
 
@@ -446,7 +448,9 @@ void OpenGl_PrimitiveArray::drawArray (const Handle(OpenGl_Workspace)& theWorksp
       for (Standard_Integer aGroupIter = 0; aGroupIter < myBounds->NbBounds; ++aGroupIter)
       {
         const GLint aNbElemsInGroup = myBounds->Bounds[aGroupIter];
+      #if !defined(GL_ES_VERSION_2_0)
         if (theFaceColors != NULL) glColor3fv (theFaceColors[aGroupIter].GetData());
+      #endif
         glDrawElements (myDrawMode, aNbElemsInGroup, myVboIndices->GetDataType(), anOffset);
         anOffset += aStride * aNbElemsInGroup;
       }
@@ -464,7 +468,9 @@ void OpenGl_PrimitiveArray::drawArray (const Handle(OpenGl_Workspace)& theWorksp
     for (Standard_Integer aGroupIter = 0; aGroupIter < myBounds->NbBounds; ++aGroupIter)
     {
       const GLint aNbElemsInGroup = myBounds->Bounds[aGroupIter];
+    #if !defined(GL_ES_VERSION_2_0)
       if (theFaceColors != NULL) glColor3fv (theFaceColors[aGroupIter].GetData());
+    #endif
       glDrawArrays (myDrawMode, aFirstElem, aNbElemsInGroup);
       aFirstElem += aNbElemsInGroup;
     }
@@ -502,7 +508,9 @@ void OpenGl_PrimitiveArray::drawEdges (const TEL_COLOUR*               theEdgeCo
     return;
   }
 
+#if !defined(GL_ES_VERSION_2_0)
   glDisable (GL_LIGHTING);
+#endif
 
   const Handle(OpenGl_Context)& aGlContext = theWorkspace->GetGlContext();
   const OpenGl_AspectLine* anAspectLineOld = NULL;
@@ -510,8 +518,10 @@ void OpenGl_PrimitiveArray::drawEdges (const TEL_COLOUR*               theEdgeCo
   anAspectLineOld = theWorkspace->SetAspectLine (theWorkspace->AspectFace (Standard_True)->AspectEdge());
   const OpenGl_AspectLine* anAspect = theWorkspace->AspectLine (Standard_True);
 
+#if !defined(GL_ES_VERSION_2_0)
   glPushAttrib (GL_POLYGON_BIT);
   glPolygonMode (GL_FRONT_AND_BACK, GL_LINE);
+#endif
 
   if (aGlContext->IsGlGreaterEqual (2, 0))
   {
@@ -523,7 +533,9 @@ void OpenGl_PrimitiveArray::drawEdges (const TEL_COLOUR*               theEdgeCo
   /// 2) draw elements from vertex array, when bounds defines count of primitive's vertices.
   /// 3) draw primitive's edges by vertexes if no edges and bounds array is specified
   myVboAttribs->BindPositionAttribute (aGlContext);
+#if !defined(GL_ES_VERSION_2_0)
   glColor3fv (theEdgeColour->rgb);
+#endif
   if (!myVboIndices.IsNull())
   {
     myVboIndices->Bind (aGlContext);
@@ -569,7 +581,9 @@ void OpenGl_PrimitiveArray::drawEdges (const TEL_COLOUR*               theEdgeCo
   {
     // Restore line context
     theWorkspace->SetAspectLine (anAspectLineOld);
+  #if !defined(GL_ES_VERSION_2_0)
     glPopAttrib();
+  #endif
   }
 }
 
@@ -587,7 +601,9 @@ void OpenGl_PrimitiveArray::drawMarkers (const Handle(OpenGl_Workspace)& theWork
    && !aSpriteNorm.IsNull() && !aSpriteNorm->IsDisplayList())
   {
     // Textured markers will be drawn with the point sprites
+  #if !defined(GL_ES_VERSION_2_0)
     glPointSize (anAspectMarker->MarkerSize());
+  #endif
 
     Handle(OpenGl_Texture) aTextureBack;
     if (anAspectMarker->Type() != Aspect_TOM_POINT)
@@ -597,8 +613,10 @@ void OpenGl_PrimitiveArray::drawMarkers (const Handle(OpenGl_Workspace)& theWork
                                                 : aSpriteNorm;
       aTextureBack = theWorkspace->EnableTexture (aSprite);
 
+    #if !defined(GL_ES_VERSION_2_0)
       glEnable (GL_ALPHA_TEST);
       glAlphaFunc (GL_GEQUAL, 0.1f);
+    #endif
 
       glEnable (GL_BLEND);
       glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -607,12 +625,16 @@ void OpenGl_PrimitiveArray::drawMarkers (const Handle(OpenGl_Workspace)& theWork
     glDrawArrays (myDrawMode, 0, !myVboAttribs.IsNull() ? myVboAttribs->GetElemsNb() : myAttribs->NbElements);
 
     glDisable (GL_BLEND);
+  #if !defined(GL_ES_VERSION_2_0)
     glDisable (GL_ALPHA_TEST);
+  #endif
     if (anAspectMarker->Type() != Aspect_TOM_POINT)
     {
       theWorkspace->EnableTexture (aTextureBack);
     }
+  #if !defined(GL_ES_VERSION_2_0)
     glPointSize (1.0f);
+  #endif
     return;
   }
 
@@ -623,17 +645,22 @@ void OpenGl_PrimitiveArray::drawMarkers (const Handle(OpenGl_Workspace)& theWork
     const GLfloat aPntSize = anAspectMarker->Type() == Aspect_TOM_POINT
                            ? anAspectMarker->MarkerSize()
                            : 0.0f;
+  #if !defined(GL_ES_VERSION_2_0)
     if (aPntSize > 0.0f)
     {
       glPointSize (aPntSize);
     }
+  #endif
     glDrawArrays (myDrawMode, 0, !myVboAttribs.IsNull() ? myVboAttribs->GetElemsNb() : myAttribs->NbElements);
+  #if !defined(GL_ES_VERSION_2_0)
     if (aPntSize > 0.0f)
     {
       glPointSize (1.0f);
     }
+  #endif
   }
 
+#if !defined(GL_ES_VERSION_2_0)
   if (anAspectMarker->Type() != Aspect_TOM_POINT
    && !aSpriteNorm.IsNull())
   {
@@ -655,6 +682,7 @@ void OpenGl_PrimitiveArray::drawMarkers (const Handle(OpenGl_Workspace)& theWork
       }
     }
   }
+#endif
 }
 
 // =======================================================================
@@ -696,24 +724,30 @@ OpenGl_PrimitiveArray::OpenGl_PrimitiveArray (const OpenGl_GraphicDriver*       
     case Graphic3d_TOPA_SEGMENTS:
       myDrawMode = GL_LINES;
       break;
-    case Graphic3d_TOPA_POLYGONS:
-      myDrawMode = GL_POLYGON;
-      break;
     case Graphic3d_TOPA_TRIANGLES:
       myDrawMode = GL_TRIANGLES;
-      break;
-    case Graphic3d_TOPA_QUADRANGLES:
-      myDrawMode = GL_QUADS;
       break;
     case Graphic3d_TOPA_TRIANGLESTRIPS:
       myDrawMode = GL_TRIANGLE_STRIP;
       break;
-    case Graphic3d_TOPA_QUADRANGLESTRIPS:
-      myDrawMode = GL_QUAD_STRIP;
-      break;
     case Graphic3d_TOPA_TRIANGLEFANS:
       myDrawMode = GL_TRIANGLE_FAN;
       break;
+  #if !defined(GL_ES_VERSION_2_0)
+    case Graphic3d_TOPA_POLYGONS:
+      myDrawMode = GL_POLYGON;
+      break;
+    case Graphic3d_TOPA_QUADRANGLES:
+      myDrawMode = GL_QUADS;
+      break;
+    case Graphic3d_TOPA_QUADRANGLESTRIPS:
+      myDrawMode = GL_QUAD_STRIP;
+      break;
+  #else
+    case Graphic3d_TOPA_POLYGONS:
+    case Graphic3d_TOPA_QUADRANGLES:
+    case Graphic3d_TOPA_QUADRANGLESTRIPS:
+  #endif
     case Graphic3d_TOPA_UNDEFINED:
       break;
   }
@@ -791,6 +825,7 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
     aFrontLightingModel = 0;
   }
 
+#if !defined(GL_ES_VERSION_2_0)
   // Temporarily disable environment mapping
   if (myDrawMode <= GL_LINE_STRIP)
   {
@@ -809,6 +844,7 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
   {
     glEnable (GL_LIGHTING);
   }
+#endif
 
   bindProgram (theWorkspace,
                anAspectFace, anAspectLine, anAspectMarker,
@@ -821,7 +857,9 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
     const Graphic3d_Vec4* aFaceColors = !myBounds.IsNull() && !toHilight && anAspectFace->InteriorStyle() != Aspect_IS_HIDDENLINE
                                       ?  myBounds->Colors
                                       :  NULL;
+  #if !defined(GL_ES_VERSION_2_0)
     glColor3fv (myDrawMode <= GL_LINE_STRIP ? aLineColor->rgb : anInteriorColor->rgb);
+  #endif
 
     drawArray (theWorkspace, aFaceColors);
   }
@@ -835,9 +873,11 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
     }
   }
 
+#if !defined(GL_ES_VERSION_2_0)
   if (myDrawMode <= GL_LINE_STRIP)
   {
     glPopAttrib();
   }
+#endif
   aCtx->BindProgram (NULL);
 }

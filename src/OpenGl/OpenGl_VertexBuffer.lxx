@@ -25,7 +25,9 @@ inline void OpenGl_VertexBuffer::bindAttribute (const Handle(OpenGl_Context)&   
 {
   if (theCtx->ActiveProgram().IsNull())
   {
+  #if !defined(GL_ES_VERSION_2_0)
     bindFixed (theCtx, theAttribute, theNbComp, theDataType, theStride, theOffset);
+  #endif
     return;
   }
 
@@ -33,6 +35,7 @@ inline void OpenGl_VertexBuffer::bindAttribute (const Handle(OpenGl_Context)&   
   theCtx->core20fwd->glVertexAttribPointer (theAttribute, theNbComp, theDataType, GL_FALSE, theStride, theOffset);
 }
 
+#if !defined(GL_ES_VERSION_2_0)
 // =======================================================================
 // function : bindFixed
 // purpose  :
@@ -78,6 +81,7 @@ inline void OpenGl_VertexBuffer::bindFixed (const Handle(OpenGl_Context)&   theC
     }
   }
 }
+#endif
 
 // =======================================================================
 // function : unbindAttribute
@@ -88,13 +92,16 @@ inline void OpenGl_VertexBuffer::unbindAttribute (const Handle(OpenGl_Context)& 
 {
   if (theCtx->ActiveProgram().IsNull())
   {
+  #if !defined(GL_ES_VERSION_2_0)
     unbindFixed (theCtx, theAttribute);
+  #endif
     return;
   }
 
   theCtx->core20fwd->glDisableVertexAttribArray (theAttribute);
 }
 
+#if !defined(GL_ES_VERSION_2_0)
 // =======================================================================
 // function : unbindAttribute
 // purpose  :
@@ -119,3 +126,4 @@ inline void OpenGl_VertexBuffer::unbindFixed (const Handle(OpenGl_Context)&   th
     }
   }
 }
+#endif

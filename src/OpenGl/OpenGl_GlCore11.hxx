@@ -25,6 +25,23 @@
 struct OpenGl_GlCore11 : protected OpenGl_GlFunctions
 {
 
+#if !defined(GL_ES_VERSION_2_0)
+  inline void glRotated (GLdouble theAngleDegrees,
+                         GLdouble theX, GLdouble theY, GLdouble theZ)
+  {
+    ::glRotated (theAngleDegrees, theX, theY, theZ);
+  }
+
+  inline void glScaled (GLdouble theX, GLdouble theY, GLdouble theZ)
+  {
+    ::glScaled (theX, theY, theZ);
+  }
+
+  inline void glTranslated (GLdouble theX, GLdouble theY, GLdouble theZ)
+  {
+    ::glTranslated (theX, theY, theZ);
+  }
+
 public: //! @name Begin/End primitive specification (removed since 3.1)
 
   inline void glBegin (GLenum theMode)
@@ -631,38 +648,6 @@ public: //! @name Matrix operations (removed since 3.1)
   inline void glMultMatrixf (const GLfloat*  theMatrix)
   {
     ::glMultMatrixf (theMatrix);
-  }
-
-  inline void glRotated (GLdouble theAngleDegrees,
-                 GLdouble theX, GLdouble theY, GLdouble theZ)
-  {
-    ::glRotated (theAngleDegrees, theX, theY, theZ);
-  }
-
-  inline void glRotatef (GLfloat theAngleDegrees,
-                 GLfloat theX, GLfloat theY, GLfloat theZ)
-  {
-    ::glRotatef (theAngleDegrees, theX, theY, theZ);
-  }
-
-  inline void glScaled (GLdouble theX, GLdouble theY, GLdouble theZ)
-  {
-    ::glScaled (theX, theY, theZ);
-  }
-
-  inline void glScalef (GLfloat theX, GLfloat theY, GLfloat theZ)
-  {
-    ::glScalef (theX, theY, theZ);
-  }
-
-  inline void glTranslated (GLdouble theX, GLdouble theY, GLdouble theZ)
-  {
-    ::glTranslated (theX, theY, theZ);
-  }
-
-  inline void glTranslatef (GLfloat theX, GLfloat theY, GLfloat theZ)
-  {
-    ::glTranslatef (theX, theY, theZ);
   }
 
 public: //! @name Line and Polygon stripple (removed since 3.1)
@@ -1313,29 +1298,9 @@ public: //! @name Edge flags and fixed-function vertex processing (removed since
     ::glEdgeFlagv (theFlag);
   }
 
-  inline void glVertexPointer (GLint theSize, GLenum theType, GLsizei theStride, const GLvoid* thePtr)
-  {
-    ::glVertexPointer (theSize, theType, theStride, thePtr);
-  }
-
-  inline void glNormalPointer (GLenum theType, GLsizei theStride, const GLvoid* thePtr)
-  {
-    ::glNormalPointer (theType, theStride, thePtr);
-  }
-
-  inline void glColorPointer (GLint theSize, GLenum theType, GLsizei theStride, const GLvoid* thePtr)
-  {
-    ::glColorPointer (theSize, theType, theStride, thePtr);
-  }
-
   inline void glIndexPointer (GLenum theType, GLsizei theStride, const GLvoid* thePtr)
   {
     ::glIndexPointer (theType, theStride, thePtr);
-  }
-
-  inline void glTexCoordPointer (GLint theSize, GLenum theType, GLsizei theStride, const GLvoid* thePtr)
-  {
-    ::glTexCoordPointer (theSize, theType, theStride, thePtr);
   }
 
   inline void glEdgeFlagPointer (GLsizei theStride, const GLvoid* thePtr)
@@ -1353,6 +1318,26 @@ public: //! @name Edge flags and fixed-function vertex processing (removed since
     ::glInterleavedArrays (theFormat, theStride, thePointer);
   }
 
+  inline void glVertexPointer (GLint theSize, GLenum theType, GLsizei theStride, const GLvoid* thePtr)
+  {
+    ::glVertexPointer (theSize, theType, theStride, thePtr);
+  }
+
+  inline void glNormalPointer (GLenum theType, GLsizei theStride, const GLvoid* thePtr)
+  {
+    ::glNormalPointer (theType, theStride, thePtr);
+  }
+
+  inline void glColorPointer (GLint theSize, GLenum theType, GLsizei theStride, const GLvoid* thePtr)
+  {
+    ::glColorPointer (theSize, theType, theStride, thePtr);
+  }
+
+  inline void glTexCoordPointer (GLint theSize, GLenum theType, GLsizei theStride, const GLvoid* thePtr)
+  {
+    ::glTexCoordPointer (theSize, theType, theStride, thePtr);
+  }
+
   inline void glEnableClientState (GLenum theCap)
   {
     ::glEnableClientState (theCap);
@@ -1362,6 +1347,8 @@ public: //! @name Edge flags and fixed-function vertex processing (removed since
   {
     ::glDisableClientState (theCap);
   }
+
+#endif
 
 };
 

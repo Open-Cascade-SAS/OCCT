@@ -25,6 +25,8 @@ struct OpenGl_TmplCore43 : public theBaseClass_t
 
 public: //! @name OpenGL 4.3 additives to 4.2
 
+#if !defined(GL_ES_VERSION_2_0)
+
   using theBaseClass_t::glClearBufferData;
   using theBaseClass_t::glClearBufferSubData;
   using theBaseClass_t::glDispatchCompute;
@@ -68,6 +70,8 @@ public: //! @name OpenGL 4.3 additives to 4.2
   using theBaseClass_t::glGetObjectLabel;
   using theBaseClass_t::glObjectPtrLabel;
   using theBaseClass_t::glGetObjectPtrLabel;
+
+#endif
 
 };
 

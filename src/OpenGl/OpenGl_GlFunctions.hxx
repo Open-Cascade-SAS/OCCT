@@ -40,6 +40,88 @@
   #include <OpenGL/gl.h>
   #include <OpenGL/glu.h>
   #define __X_GL_H // prevent chaotic gl.h inclusions to avoid compile errors
+#elif defined(HAVE_GLES2) || defined(__ANDROID__)
+  #include <GLES2/gl2.h>
+  //#include <GLES3/gl3.h>
+
+  typedef double GLdouble;
+  typedef double GLclampd;
+  #define GL_NONE 0
+
+  // OpenGL ES 3.0+ or GL_OES_element_index_uint extension
+  #define GL_UNSIGNED_INT 0x1405
+
+  // in core since OpenGL ES 3.0, extension GL_EXT_texture_rg
+  #define GL_RED   0x1903
+  #define GL_R8    0x8229
+  // in core since OpenGL ES 3.0, extension GL_OES_rgb8_rgba8
+  #define GL_RGB8  0x8051
+  #define GL_RGBA8 0x8058
+  // GL_EXT_texture_format_BGRA8888
+  #define GL_BGRA_EXT 0x80E1 // same as GL_BGRA on desktop
+
+  #define GL_R16      0x822A
+  #define GL_R16F     0x822D
+  #define GL_R32F     0x822E
+  #define GL_RGB16F   0x881B
+  #define GL_RGBA32F  0x8814
+  #define GL_RGB32F   0x8815
+  #define GL_RGBA16F  0x881A
+  #define GL_RGB16F   0x881B
+  #define GL_RGB4     0x804F
+  #define GL_RGB5     0x8050
+  #define GL_RGB8     0x8051
+  #define GL_RGB10    0x8052
+  #define GL_RGB12    0x8053
+  #define GL_RGB16    0x8054
+  #define GL_RGBA8    0x8058
+  #define GL_RGB10_A2 0x8059
+  #define GL_RGBA12   0x805A
+  #define GL_RGBA16   0x805B
+  #define GL_ALPHA8   0x803C
+  #define GL_ALPHA16  0x803E
+
+  #define GL_RG       0x8227
+  #define GL_RG8      0x822B
+  #define GL_RG16     0x822C
+  #define GL_RG16F    0x822F
+  #define GL_RG32F    0x8230
+
+  // GL_OES_packed_depth_stencil
+  #define GL_DEPTH_STENCIL                  0x84F9
+  #define GL_UNSIGNED_INT_24_8              0x84FA
+  #define GL_DEPTH24_STENCIL8               0x88F0
+
+  // GL_EXT_texture_filter_anisotropic
+  #define GL_TEXTURE_MAX_ANISOTROPY_EXT     0x84FE
+  #define GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT 0x84FF
+
+  // debug ARB extension
+  #define GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB   0x8242
+  #define GL_DEBUG_NEXT_LOGGED_MESSAGE_LENGTH_ARB 0x8243
+  #define GL_DEBUG_CALLBACK_FUNCTION_ARB    0x8244
+  #define GL_DEBUG_CALLBACK_USER_PARAM_ARB  0x8245
+  #define GL_DEBUG_SOURCE_API_ARB           0x8246
+  #define GL_DEBUG_SOURCE_WINDOW_SYSTEM_ARB 0x8247
+  #define GL_DEBUG_SOURCE_SHADER_COMPILER_ARB 0x8248
+  #define GL_DEBUG_SOURCE_THIRD_PARTY_ARB   0x8249
+  #define GL_DEBUG_SOURCE_APPLICATION_ARB   0x824A
+  #define GL_DEBUG_SOURCE_OTHER_ARB         0x824B
+  #define GL_DEBUG_TYPE_ERROR_ARB           0x824C
+  #define GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR_ARB 0x824D
+  #define GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR_ARB  0x824E
+  #define GL_DEBUG_TYPE_PORTABILITY_ARB     0x824F
+  #define GL_DEBUG_TYPE_PERFORMANCE_ARB     0x8250
+  #define GL_DEBUG_TYPE_OTHER_ARB           0x8251
+  #define GL_MAX_DEBUG_MESSAGE_LENGTH_ARB   0x9143
+  #define GL_MAX_DEBUG_LOGGED_MESSAGES_ARB  0x9144
+  #define GL_DEBUG_LOGGED_MESSAGES_ARB      0x9145
+  #define GL_DEBUG_SEVERITY_HIGH_ARB        0x9146
+  #define GL_DEBUG_SEVERITY_MEDIUM_ARB      0x9147
+  #define GL_DEBUG_SEVERITY_LOW_ARB         0x9148
+
+  // GL_EXT_texture_buffer for OpenGL ES 3.1+
+  #define GL_TEXTURE_BUFFER_ARB             0x8C2A
 #else
   #include <GL/gl.h>
   #include <GL/glu.h>
@@ -54,28 +136,555 @@
 #include <InterfaceGraphic_telem.hxx>
 
 // GL version can be defined by system gl.h header
-#undef GL_VERSION_1_2
-#undef GL_VERSION_1_3
-#undef GL_VERSION_1_4
-#undef GL_VERSION_1_5
-#undef GL_VERSION_2_0
-#undef GL_VERSION_2_1
-#undef GL_VERSION_3_0
-#undef GL_VERSION_3_1
-#undef GL_VERSION_3_2
-#undef GL_VERSION_3_3
-#undef GL_VERSION_4_0
-#undef GL_VERSION_4_1
-#undef GL_VERSION_4_2
-#undef GL_VERSION_4_3
-#undef GL_VERSION_4_4
+#if !defined(GL_ES_VERSION_2_0)
+  #undef GL_VERSION_1_2
+  #undef GL_VERSION_1_3
+  #undef GL_VERSION_1_4
+  #undef GL_VERSION_1_5
+  #undef GL_VERSION_2_0
+  #undef GL_VERSION_2_1
+  #undef GL_VERSION_3_0
+  #undef GL_VERSION_3_1
+  #undef GL_VERSION_3_2
+  #undef GL_VERSION_3_3
+  #undef GL_VERSION_4_0
+  #undef GL_VERSION_4_1
+  #undef GL_VERSION_4_2
+  #undef GL_VERSION_4_3
+  #undef GL_VERSION_4_4
 
-// include glext.h provided by Khronos group
-#include <glext.h>
+  // include glext.h provided by Khronos group
+  #include <glext.h>
+#endif
 
 //! Mega structure defines the complete list of OpenGL functions.
 struct OpenGl_GlFunctions
 {
+
+public: //! @name OpenGL ES 1.1
+
+#if defined(GL_ES_VERSION_2_0)
+
+  inline void glActiveTexture (GLenum texture)
+  {
+    ::glActiveTexture (texture);
+  }
+
+  inline void glCompressedTexImage2D (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const GLvoid *data)
+  {
+    ::glCompressedTexImage2D (target, level, internalformat, width, height, border, imageSize, data);
+  }
+
+  inline void glCompressedTexSubImage2D (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const GLvoid *data)
+  {
+    ::glCompressedTexSubImage2D (target, level, xoffset, yoffset, width, height, format, imageSize, data);
+  }
+
+  inline void glBindBuffer (GLenum target, GLuint buffer)
+  {
+    ::glBindBuffer (target, buffer);
+  }
+
+  inline void glBufferData (GLenum target, GLsizeiptr size, const void* data, GLenum usage)
+  {
+    ::glBufferData (target, size, data, usage);
+  }
+
+  inline void glBufferSubData (GLenum target, GLintptr offset, GLsizeiptr size, const void* data)
+  {
+    ::glBufferSubData (target, offset, size, data);
+  }
+
+  inline void glDeleteBuffers (GLsizei n, const GLuint *buffers)
+  {
+    ::glDeleteBuffers (n, buffers);
+  }
+
+  inline void glDeleteTextures (GLsizei n, const GLuint *textures)
+  {
+    ::glDeleteTextures (n, textures);
+  }
+
+  inline void glDepthFunc (GLenum func)
+  {
+    ::glDepthFunc (func);
+  }
+
+  inline void glDepthMask (GLboolean flag)
+  {
+    ::glDepthMask (flag);
+  }
+
+  inline void glDepthRangef (GLfloat n, GLfloat f)
+  {
+    ::glDepthRangef (n, f);
+  }
+
+  inline void glGenBuffers (GLsizei n, GLuint *buffers)
+  {
+    ::glGenBuffers (n, buffers);
+  }
+
+  inline void glGenTextures (GLsizei n, GLuint *textures)
+  {
+    ::glGenTextures (n, textures);
+  }
+
+  inline void glGetBufferParameteriv (GLenum target, GLenum pname, GLint* params)
+  {
+    ::glGetBufferParameteriv (target, pname, params);
+  }
+
+  inline GLboolean glIsBuffer (GLuint buffer)
+  {
+    return ::glIsBuffer (buffer);
+  }
+
+  inline void glSampleCoverage (GLfloat value, GLboolean invert)
+  {
+    ::glSampleCoverage (value, invert);
+  }
+
+  inline void glMultiDrawElements (GLenum theMode, const GLsizei* theCount, GLenum theType, const void* const* theIndices, GLsizei theDrawCount)
+  {
+    if (theCount   == NULL
+     || theIndices == NULL)
+    {
+      return;
+    }
+
+    for (GLsizei aBatchIter = 0; aBatchIter < theDrawCount; ++aBatchIter)
+    {
+      ::glDrawElements (theMode, theCount[aBatchIter], theType, theIndices[aBatchIter]);
+    }
+  }
+
+#endif
+
+public: //! @name OpenGL ES 2.0
+
+#if defined(GL_ES_VERSION_2_0)
+  inline void glBlendColor (GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha)
+  {
+    ::glBlendColor (red, green, blue, alpha);
+  }
+
+  inline void glBlendEquation (GLenum mode)
+  {
+    ::glBlendEquation (mode);
+  }
+
+  inline void glBlendFuncSeparate (GLenum sfactorRGB, GLenum dfactorRGB, GLenum sfactorAlpha, GLenum dfactorAlpha)
+  {
+    ::glBlendFuncSeparate (sfactorRGB, dfactorRGB, sfactorAlpha, dfactorAlpha);
+  }
+
+  inline void glBlendEquationSeparate (GLenum modeRGB, GLenum modeAlpha)
+  {
+    ::glBlendEquationSeparate (modeRGB, modeAlpha);
+  }
+
+  inline void glStencilOpSeparate (GLenum face, GLenum sfail, GLenum dpfail, GLenum dppass)
+  {
+    ::glStencilOpSeparate (face, sfail, dpfail, dppass);
+  }
+
+  inline void glStencilFuncSeparate (GLenum face, GLenum func, GLint ref, GLuint mask)
+  {
+    ::glStencilFuncSeparate (face, func, ref, mask);
+  }
+
+  inline void glStencilMaskSeparate (GLenum face, GLuint mask)
+  {
+    ::glStencilMaskSeparate (face, mask);
+  }
+
+  inline void glAttachShader (GLuint program, GLuint shader)
+  {
+    ::glAttachShader (program, shader);
+  }
+
+  inline void glBindAttribLocation (GLuint program, GLuint index, const GLchar *name)
+  {
+    ::glBindAttribLocation (program, index, name);
+  }
+
+  inline void glBindFramebuffer (GLenum target, GLuint framebuffer)
+  {
+    ::glBindFramebuffer (target, framebuffer);
+  }
+
+  inline void glBindRenderbuffer (GLenum target, GLuint renderbuffer)
+  {
+    ::glBindRenderbuffer (target, renderbuffer);
+  }
+
+  inline GLenum glCheckFramebufferStatus (GLenum target)
+  {
+    return ::glCheckFramebufferStatus (target);
+  }
+
+  inline void glCompileShader (GLuint shader)
+  {
+    ::glCompileShader (shader);
+  }
+
+  inline GLuint glCreateProgram()
+  {
+    return ::glCreateProgram();
+  }
+
+  inline GLuint glCreateShader (GLenum type)
+  {
+    return ::glCreateShader (type);
+  }
+
+  inline void glDeleteFramebuffers (GLsizei n, const GLuint *framebuffers)
+  {
+    ::glDeleteFramebuffers (n, framebuffers);
+  }
+
+  inline void glDeleteProgram (GLuint program)
+  {
+    ::glDeleteProgram (program);
+  }
+
+  inline void glDeleteRenderbuffers (GLsizei n, const GLuint *renderbuffers)
+  {
+    ::glDeleteRenderbuffers (n, renderbuffers);
+  }
+
+  inline void glDeleteShader (GLuint shader)
+  {
+    ::glDeleteShader (shader);
+  }
+
+  inline void glDetachShader (GLuint program, GLuint shader)
+  {
+    ::glDetachShader (program, shader);
+  }
+
+  inline void glDisableVertexAttribArray (GLuint index)
+  {
+    ::glDisableVertexAttribArray (index);
+  }
+
+  inline void glEnableVertexAttribArray (GLuint index)
+  {
+    ::glEnableVertexAttribArray (index);
+  }
+
+  inline void glFramebufferRenderbuffer (GLenum target, GLenum attachment, GLenum renderbuffertarget, GLuint renderbuffer)
+  {
+    ::glFramebufferRenderbuffer (target, attachment, renderbuffertarget, renderbuffer);
+  }
+
+  inline void glFramebufferTexture2D (GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level)
+  {
+    ::glFramebufferTexture2D (target, attachment, textarget, texture, level);
+  }
+
+  inline void glGenerateMipmap (GLenum target)
+  {
+    ::glGenerateMipmap (target);
+  }
+
+  inline void glGenFramebuffers (GLsizei n, GLuint *framebuffers)
+  {
+    ::glGenFramebuffers (n, framebuffers);
+  }
+
+  inline void glGenRenderbuffers (GLsizei n, GLuint *renderbuffers)
+  {
+    ::glGenRenderbuffers (n, renderbuffers);
+  }
+
+  inline void glGetActiveAttrib (GLuint program, GLuint index, GLsizei bufSize, GLsizei *length, GLint* size, GLenum *type, GLchar *name)
+  {
+    ::glGetActiveAttrib (program, index, bufSize, length, size, type, name);
+  }
+
+  inline void glGetActiveUniform (GLuint program, GLuint index, GLsizei bufSize, GLsizei *length, GLint* size, GLenum *type, GLchar *name)
+  {
+    ::glGetActiveUniform (program, index, bufSize, length, size, type, name);
+  }
+
+  inline void glGetAttachedShaders (GLuint program, GLsizei maxCount, GLsizei *count, GLuint *shaders)
+  {
+    ::glGetAttachedShaders (program, maxCount, count, shaders);
+  }
+
+  inline GLint glGetAttribLocation (GLuint program, const GLchar *name)
+  {
+    return ::glGetAttribLocation (program, name);
+  }
+
+  inline void glGetFramebufferAttachmentParameteriv (GLenum target, GLenum attachment, GLenum pname, GLint* params)
+  {
+    ::glGetFramebufferAttachmentParameteriv (target, attachment, pname, params);
+  }
+
+  inline void glGetProgramiv (GLuint program, GLenum pname, GLint* params)
+  {
+    ::glGetProgramiv (program, pname, params);
+  }
+
+  inline void glGetProgramInfoLog (GLuint program, GLsizei bufSize, GLsizei *length, GLchar *infoLog)
+  {
+    ::glGetProgramInfoLog (program, bufSize, length, infoLog);
+  }
+
+  inline void glGetRenderbufferParameteriv (GLenum target, GLenum pname, GLint* params)
+  {
+    ::glGetRenderbufferParameteriv (target, pname, params);
+  }
+
+  inline void glGetShaderiv (GLuint shader, GLenum pname, GLint* params)
+  {
+    ::glGetShaderiv (shader, pname, params);
+  }
+
+  inline void glGetShaderInfoLog (GLuint shader, GLsizei bufSize, GLsizei *length, GLchar *infoLog)
+  {
+    ::glGetShaderInfoLog (shader, bufSize, length, infoLog);
+  }
+
+  inline void glGetShaderPrecisionFormat (GLenum shadertype, GLenum precisiontype, GLint* range, GLint* precision)
+  {
+    ::glGetShaderPrecisionFormat (shadertype, precisiontype, range, precision);
+  }
+
+  inline void glGetShaderSource (GLuint shader, GLsizei bufSize, GLsizei *length, GLchar *source)
+  {
+    ::glGetShaderSource (shader, bufSize, length, source);
+  }
+
+  inline void glGetUniformfv (GLuint program, GLint location, GLfloat* params)
+  {
+    ::glGetUniformfv (program, location, params);
+  }
+
+  inline void glGetUniformiv (GLuint program, GLint location, GLint* params)
+  {
+    ::glGetUniformiv (program, location, params);
+  }
+
+  GLint glGetUniformLocation (GLuint program, const GLchar *name)
+  {
+    return ::glGetUniformLocation (program, name);
+  }
+
+  inline void glGetVertexAttribfv (GLuint index, GLenum pname, GLfloat* params)
+  {
+    ::glGetVertexAttribfv (index, pname, params);
+  }
+
+  inline void glGetVertexAttribiv (GLuint index, GLenum pname, GLint* params)
+  {
+    ::glGetVertexAttribiv (index, pname, params);
+  }
+
+  inline void glGetVertexAttribPointerv (GLuint index, GLenum pname, void* *pointer)
+  {
+    ::glGetVertexAttribPointerv (index, pname, pointer);
+  }
+
+  inline GLboolean glIsFramebuffer (GLuint framebuffer)
+  {
+    return ::glIsFramebuffer (framebuffer);
+  }
+
+  inline GLboolean glIsProgram (GLuint program)
+  {
+    return ::glIsProgram (program);
+  }
+
+  inline GLboolean glIsRenderbuffer (GLuint renderbuffer)
+  {
+    return ::glIsRenderbuffer (renderbuffer);
+  }
+
+  inline GLboolean glIsShader (GLuint shader)
+  {
+    return ::glIsShader (shader);
+  }
+
+  inline void glLinkProgram (GLuint program)
+  {
+    ::glLinkProgram (program);
+  }
+
+  inline void glReleaseShaderCompiler()
+  {
+    ::glReleaseShaderCompiler();
+  }
+
+  inline void glRenderbufferStorage (GLenum target, GLenum internalformat, GLsizei width, GLsizei height)
+  {
+    ::glRenderbufferStorage (target, internalformat, width, height);
+  }
+
+  inline void glShaderBinary (GLsizei count, const GLuint *shaders, GLenum binaryformat, const void* binary, GLsizei length)
+  {
+    ::glShaderBinary (count, shaders, binaryformat, binary, length);
+  }
+
+  inline void glShaderSource (GLuint shader, GLsizei count, const GLchar** string, const GLint* length)
+  {
+    ::glShaderSource (shader, count, string, length);
+  }
+
+  inline void glUniform1f (GLint location, GLfloat v0)
+  {
+    ::glUniform1f (location, v0);
+  }
+
+  inline void glUniform1fv (GLint location, GLsizei count, const GLfloat* value)
+  {
+    ::glUniform1fv (location, count, value);
+  }
+
+  inline void glUniform1i (GLint location, GLint v0)
+  {
+    ::glUniform1i (location, v0);
+  }
+
+  inline void glUniform1iv (GLint location, GLsizei count, const GLint* value)
+  {
+    ::glUniform1iv (location, count, value);
+  }
+
+  inline void glUniform2f (GLint location, GLfloat v0, GLfloat v1)
+  {
+    ::glUniform2f (location, v0, v1);
+  }
+
+  inline void glUniform2fv (GLint location, GLsizei count, const GLfloat* value)
+  {
+    ::glUniform2fv (location, count, value);
+  }
+
+  inline void glUniform2i (GLint location, GLint v0, GLint v1)
+  {
+    ::glUniform2i (location, v0, v1);
+  }
+
+  inline void glUniform2iv (GLint location, GLsizei count, const GLint* value)
+  {
+    ::glUniform2iv (location, count, value);
+  }
+
+  inline void glUniform3f (GLint location, GLfloat v0, GLfloat v1, GLfloat v2)
+  {
+    ::glUniform3f (location, v0, v1, v2);
+  }
+
+  inline void glUniform3fv (GLint location, GLsizei count, const GLfloat* value)
+  {
+    ::glUniform3fv (location, count, value);
+  }
+
+  inline void glUniform3i (GLint location, GLint v0, GLint v1, GLint v2)
+  {
+    ::glUniform3i (location, v0, v1, v2);
+  }
+
+  inline void glUniform3iv (GLint location, GLsizei count, const GLint* value)
+  {
+    ::glUniform3iv (location, count, value);
+  }
+
+  inline void glUniform4f (GLint location, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3)
+  {
+    ::glUniform4f (location, v0, v1, v2, v3);
+  }
+
+  inline void glUniform4fv (GLint location, GLsizei count, const GLfloat* value)
+  {
+    ::glUniform4fv (location, count, value);
+  }
+
+  inline void glUniform4i (GLint location, GLint v0, GLint v1, GLint v2, GLint v3)
+  {
+    ::glUniform4i (location, v0, v1, v2, v3);
+  }
+
+  inline void glUniform4iv (GLint location, GLsizei count, const GLint* value)
+  {
+    ::glUniform4iv (location, count, value);
+  }
+
+  inline void glUniformMatrix2fv (GLint location, GLsizei count, GLboolean transpose, const GLfloat* value)
+  {
+    ::glUniformMatrix2fv (location, count, transpose, value);
+  }
+
+  inline void glUniformMatrix3fv (GLint location, GLsizei count, GLboolean transpose, const GLfloat* value)
+  {
+    ::glUniformMatrix3fv (location, count, transpose, value);
+  }
+
+  inline void glUniformMatrix4fv (GLint location, GLsizei count, GLboolean transpose, const GLfloat* value)
+  {
+    ::glUniformMatrix4fv (location, count, transpose, value);
+  }
+
+  inline void glUseProgram (GLuint program)
+  {
+    ::glUseProgram (program);
+  }
+
+  inline void glValidateProgram (GLuint program)
+  {
+    ::glValidateProgram (program);
+  }
+
+  inline void glVertexAttrib1f (GLuint index, GLfloat x)
+  {
+    ::glVertexAttrib1f (index, x);
+  }
+
+  inline void glVertexAttrib1fv (GLuint index, const GLfloat* v)
+  {
+    ::glVertexAttrib1fv (index, v);
+  }
+
+  inline void glVertexAttrib2f (GLuint index, GLfloat x, GLfloat y)
+  {
+    ::glVertexAttrib2f (index, x, y);
+  }
+
+  inline void glVertexAttrib2fv (GLuint index, const GLfloat* v)
+  {
+    ::glVertexAttrib2fv (index, v);
+  }
+
+  inline void glVertexAttrib3f (GLuint index, GLfloat x, GLfloat y, GLfloat z)
+  {
+    ::glVertexAttrib3f (index, x, y, z);
+  }
+
+  inline void glVertexAttrib3fv (GLuint index, const GLfloat* v)
+  {
+    ::glVertexAttrib3fv (index, v);
+  }
+
+  inline void glVertexAttrib4f (GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w)
+  {
+    ::glVertexAttrib4f (index, x, y, z, w);
+  }
+
+  inline void glVertexAttrib4fv (GLuint index, const GLfloat* v)
+  {
+    ::glVertexAttrib4fv (index, v);
+  }
+
+  inline void glVertexAttribPointer (GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const void* pointer)
+  {
+    ::glVertexAttribPointer (index, size, type, normalized, stride, pointer);
+  }
+
+#else // OpenGL ES vs. desktop
 
 public: //! @name OpenGL 1.2
 
@@ -938,6 +1547,8 @@ public: //! @name glX extensions
   typedef int         (*glXSwapIntervalSGI_t)(int theInterval);
   glXSwapIntervalSGI_t glXSwapIntervalSGI;
 #endif
+
+#endif // OpenGL ES vs. desktop
 
 };
 

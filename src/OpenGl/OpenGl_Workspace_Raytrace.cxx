@@ -454,7 +454,11 @@ OpenGl_TriangleSet* OpenGl_Workspace::AddRaytracePrimitiveArray (const OpenGl_Pr
   const Handle(Graphic3d_Buffer)&      anAttribs = theArray->Attributes();
   const Handle(Graphic3d_BoundBuffer)& aBounds   = theArray->Bounds();
   if (theArray->DrawMode() < GL_TRIANGLES
+  #if !defined(GL_ES_VERSION_2_0)
    || theArray->DrawMode() > GL_POLYGON
+  #else
+   || theArray->DrawMode() > GL_TRIANGLE_FAN
+  #endif
    || anAttribs.IsNull())
   {
     return NULL;
@@ -463,12 +467,14 @@ OpenGl_TriangleSet* OpenGl_Workspace::AddRaytracePrimitiveArray (const OpenGl_Pr
 #ifdef RAY_TRACE_PRINT_INFO
   switch (theArray->DrawMode())
   {
-    case GL_POLYGON:        std::cout << "\tAdding GL_POLYGON\n";        break;
     case GL_TRIANGLES:      std::cout << "\tAdding GL_TRIANGLES\n";      break;
-    case GL_QUADS:          std::cout << "\tAdding GL_QUADS\n";          break;
     case GL_TRIANGLE_FAN:   std::cout << "\tAdding GL_TRIANGLE_FAN\n";   break;
     case GL_TRIANGLE_STRIP: std::cout << "\tAdding GL_TRIANGLE_STRIP\n"; break;
+  #if !defined(GL_ES_VERSION_2_0)
+    case GL_QUADS:          std::cout << "\tAdding GL_QUADS\n";          break;
     case GL_QUAD_STRIP:     std::cout << "\tAdding GL_QUAD_STRIP\n";     break;
+    case GL_POLYGON:        std::cout << "\tAdding GL_POLYGON\n";        break;
+  #endif
   }
 #endif
 
@@ -597,11 +603,13 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceVertexIndices (OpenGl_TriangleSet&
   switch (theArray.DrawMode())
   {
     case GL_TRIANGLES:      return AddRaytraceTriangleArray        (theSet, theArray.Indices(), theOffset, theCount, theMatID);
-    case GL_QUADS:          return AddRaytraceQuadrangleArray      (theSet, theArray.Indices(), theOffset, theCount, theMatID);
     case GL_TRIANGLE_FAN:   return AddRaytraceTriangleFanArray     (theSet, theArray.Indices(), theOffset, theCount, theMatID);
     case GL_TRIANGLE_STRIP: return AddRaytraceTriangleStripArray   (theSet, theArray.Indices(), theOffset, theCount, theMatID);
+  #if !defined(GL_ES_VERSION_2_0)
+    case GL_QUADS:          return AddRaytraceQuadrangleArray      (theSet, theArray.Indices(), theOffset, theCount, theMatID);
     case GL_QUAD_STRIP:     return AddRaytraceQuadrangleStripArray (theSet, theArray.Indices(), theOffset, theCount, theMatID);
     case GL_POLYGON:        return AddRaytracePolygonArray         (theSet, theArray.Indices(), theOffset, theCount, theMatID);
+  #endif
   }
   return Standard_False;
 }
@@ -1483,7 +1491,7 @@ Standard_Boolean OpenGl_Workspace::InitRaytraceResources (const Graphic3d_CView&
   myRaytraceScreenQuad.Init (myGlContext, 3, 6, aVertices);
 
   myComputeInitStatus = OpenGl_RT_INIT; // initialized in normal way
-  
+
   return Standard_True;
 }
 
@@ -2230,6 +2238,7 @@ Standard_Boolean OpenGl_Workspace::Raytrace (const Graphic3d_CView& theCView,
 
   myView->RedrawLayer2d (myPrintContext, theCView, theCUnderLayer);
 
+#if !defined(GL_ES_VERSION_2_0)
   // Generate ray-traced image
   glMatrixMode (GL_PROJECTION);
   glPushMatrix();
@@ -2238,6 +2247,7 @@ Standard_Boolean OpenGl_Workspace::Raytrace (const Graphic3d_CView& theCView,
   glMatrixMode (GL_MODELVIEW);
   glPushMatrix();
   glLoadIdentity();
+#endif
 
   glEnable (GL_BLEND);
   glBlendFunc (GL_ONE, GL_SRC_ALPHA);
@@ -2263,10 +2273,12 @@ Standard_Boolean OpenGl_Workspace::Raytrace (const Graphic3d_CView& theCView,
   if (wasDepthTestEnabled)
     glEnable (GL_DEPTH_TEST);
 
+#if !defined(GL_ES_VERSION_2_0)
   glMatrixMode (GL_PROJECTION);
   glPopMatrix();
   glMatrixMode (GL_MODELVIEW);
   glPopMatrix();
+#endif
 
   // Redraw trihedron
   myView->RedrawTrihedron (this);

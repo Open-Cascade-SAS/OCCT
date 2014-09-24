@@ -234,10 +234,14 @@ public: //! @name advanced methods
       case GL_UNSIGNED_BYTE:  return sizeof(GLubyte);
       case GL_SHORT:
       case GL_UNSIGNED_SHORT: return sizeof(GLushort);
+    #ifdef GL_INT
       case GL_INT:
+    #endif
       case GL_UNSIGNED_INT:   return sizeof(GLuint);
       case GL_FLOAT:          return sizeof(GLfloat);
+    #ifdef GL_DOUBLE
       case GL_DOUBLE:         return sizeof(GLdouble);
+    #endif
       default:                return 0;
     }
   }
@@ -282,7 +286,7 @@ public: //! @name advanced methods
                                const Graphic3d_TypeOfAttribute theMode);
 
 private:
-
+#if !defined(GL_ES_VERSION_2_0)
   //! Setup FFP array pointer.
   static void bindFixed (const Handle(OpenGl_Context)&   theGlCtx,
                          const Graphic3d_TypeOfAttribute theMode,
@@ -294,7 +298,7 @@ private:
   //! Disable FFP array pointer.
   static void unbindFixed (const Handle(OpenGl_Context)&   theGlCtx,
                            const Graphic3d_TypeOfAttribute theMode);
-
+#endif
 public: //! @name methods for interleaved attributes array
 
   //! @return true if buffer contains per-vertex color attribute

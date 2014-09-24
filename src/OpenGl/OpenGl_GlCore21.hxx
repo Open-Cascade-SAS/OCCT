@@ -25,12 +25,16 @@ struct OpenGl_TmplCore21 : public theBaseClass_t
 
 public: //! @name OpenGL 2.1 additives to 2.0
 
+#if !defined(GL_ES_VERSION_2_0)
+
   using theBaseClass_t::glUniformMatrix2x3fv;
   using theBaseClass_t::glUniformMatrix3x2fv;
   using theBaseClass_t::glUniformMatrix2x4fv;
   using theBaseClass_t::glUniformMatrix4x2fv;
   using theBaseClass_t::glUniformMatrix3x4fv;
   using theBaseClass_t::glUniformMatrix4x3fv;
+
+#endif
 
 };
 

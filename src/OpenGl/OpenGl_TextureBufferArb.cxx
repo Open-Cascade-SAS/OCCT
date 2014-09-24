@@ -98,6 +98,7 @@ bool OpenGl_TextureBufferArb::Init (const Handle(OpenGl_Context)& theGlCtx,
                                     const GLsizei  theElemsNb,
                                     const GLfloat* theData)
 {
+#if !defined(GL_ES_VERSION_2_0)
   if (theComponentsNb != 1
    && theComponentsNb != 2
    && theComponentsNb != 4)
@@ -125,6 +126,9 @@ bool OpenGl_TextureBufferArb::Init (const Handle(OpenGl_Context)& theGlCtx,
   UnbindTexture (theGlCtx);
   Unbind (theGlCtx);
   return true;
+#else
+  return false;
+#endif
 }
 
 // =======================================================================
@@ -136,6 +140,7 @@ bool OpenGl_TextureBufferArb::Init (const Handle(OpenGl_Context)& theGlCtx,
                                     const GLsizei  theElemsNb,
                                     const GLuint*  theData)
 {
+#if !defined(GL_ES_VERSION_2_0)
   if (theComponentsNb != 1
    && theComponentsNb != 2
    && theComponentsNb != 3
@@ -164,6 +169,9 @@ bool OpenGl_TextureBufferArb::Init (const Handle(OpenGl_Context)& theGlCtx,
   UnbindTexture (theGlCtx);
   Unbind (theGlCtx);
   return true;
+#else
+  return false;
+#endif
 }
 
 // =======================================================================

@@ -27,11 +27,6 @@ struct OpenGl_GlCore11Fwd : protected OpenGl_GlFunctions
 
 public: //! @name Miscellaneous
 
-  inline void glClearIndex (GLfloat c)
-  {
-    ::glClearIndex(c);
-  }
-
   inline void glClearColor (GLclampf theRed, GLclampf theGreen, GLclampf theBlue, GLclampf theAlpha)
   {
     ::glClearColor  (theRed, theGreen, theBlue, theAlpha);
@@ -42,29 +37,14 @@ public: //! @name Miscellaneous
     ::glClear (theMask);
   }
 
-  inline void glIndexMask (GLuint theMask)
-  {
-    ::glIndexMask (theMask);
-  }
-
   inline void glColorMask (GLboolean theRed, GLboolean theGreen, GLboolean theBlue, GLboolean theAlpha)
   {
     ::glColorMask (theRed, theGreen, theBlue, theAlpha);
   }
 
-  inline void glAlphaFunc (GLenum theFunc, GLclampf theRef)
-  {
-    ::glAlphaFunc (theFunc, theRef);
-  }
-
   inline void glBlendFunc (GLenum sfactor, GLenum dfactor)
   {
     ::glBlendFunc(sfactor, dfactor);
-  }
-
-  inline void glLogicOp (GLenum opcode)
-  {
-    ::glLogicOp(opcode);
   }
 
   inline void glCullFace (GLenum theMode)
@@ -77,19 +57,9 @@ public: //! @name Miscellaneous
     ::glFrontFace (theMode);
   }
 
-  inline void glPointSize (GLfloat theSize)
-  {
-    ::glPointSize (theSize);
-  }
-
   inline void glLineWidth (GLfloat theWidth)
   {
     ::glLineWidth (theWidth);
-  }
-
-  inline void glPolygonMode (GLenum theFace, GLenum theMode)
-  {
-    ::glPolygonMode (theFace, theMode);
   }
 
   inline void glPolygonOffset (GLfloat theFactor, GLfloat theUnits)
@@ -100,16 +70,6 @@ public: //! @name Miscellaneous
   inline void glScissor (GLint theX, GLint theY, GLsizei theWidth, GLsizei theHeight)
   {
     ::glScissor (theX, theY, theWidth, theHeight);
-  }
-
-  inline void glDrawBuffer (GLenum theMode)
-  {
-    ::glDrawBuffer (theMode);
-  }
-
-  inline void glReadBuffer (GLenum theMode)
-  {
-    ::glReadBuffer (theMode);
   }
 
   inline void glEnable (GLenum theCap)
@@ -132,11 +92,6 @@ public: //! @name Miscellaneous
     ::glGetBooleanv (theParamName, theValues);
   }
 
-  inline void glGetDoublev (GLenum theParamName, GLdouble* theValues)
-  {
-    ::glGetDoublev (theParamName, theValues);
-  }
-
   inline void glGetFloatv (GLenum theParamName, GLfloat* theValues)
   {
     ::glGetFloatv (theParamName, theValues);
@@ -145,11 +100,6 @@ public: //! @name Miscellaneous
   inline void glGetIntegerv (GLenum theParamName, GLint* theValues)
   {
     ::glGetIntegerv (theParamName, theValues);
-  }
-
-  inline GLint glRenderMode (GLenum theMode)
-  {
-    return ::glRenderMode (theMode);
   }
 
   inline GLenum glGetError()
@@ -181,7 +131,20 @@ public: //! @name Depth Buffer
 
   inline void glClearDepth (GLclampd theDepth)
   {
+  #if defined(GL_ES_VERSION_2_0)
+    ::glClearDepthf ((GLfloat )theDepth);
+  #else
     ::glClearDepth (theDepth);
+  #endif
+  }
+
+  inline void glClearDepthf (GLfloat theDepth)
+  {
+  #if defined(GL_ES_VERSION_2_0)
+    ::glClearDepthf (theDepth);
+  #else
+    ::glClearDepth ((GLclampd )theDepth);
+  #endif
   }
 
   inline void glDepthFunc (GLenum theFunc)
@@ -194,9 +157,24 @@ public: //! @name Depth Buffer
     ::glDepthMask (theFlag);
   }
 
-  inline void glDepthRange (GLclampd theNearValue, GLclampd theFarValue)
+  inline void glDepthRange (GLclampd theNearValue,
+                            GLclampd theFarValue)
   {
+  #if defined(GL_ES_VERSION_2_0)
+    ::glDepthRangef ((GLfloat )theNearValue, (GLfloat )theFarValue);
+  #else
     ::glDepthRange (theNearValue, theFarValue);
+  #endif
+  }
+
+  inline void glDepthRangef (GLfloat theNearValue,
+                             GLfloat theFarValue)
+  {
+  #if defined(GL_ES_VERSION_2_0)
+    ::glDepthRangef (theNearValue, theFarValue);
+  #else
+    ::glDepthRange ((GLclampd )theNearValue, (GLclampd )theFarValue);
+  #endif
   }
 
 public: //! @name Transformation
@@ -207,11 +185,6 @@ public: //! @name Transformation
   }
 
 public: //! @name Vertex Arrays
-
-  inline void glArrayElement (GLint i)
-  {
-    ::glArrayElement (i);
-  }
 
   inline void glDrawArrays (GLenum theMode, GLint theFirst, GLsizei theCount)
   {
@@ -225,14 +198,273 @@ public: //! @name Vertex Arrays
 
 public: //! @name Raster functions
 
-  inline void glPixelStoref (GLenum theParamName, GLfloat theParam)
-  {
-    ::glPixelStoref (theParamName, theParam);
-  }
-
   inline void glPixelStorei (GLenum theParamName, GLint   theParam)
   {
     ::glPixelStorei (theParamName, theParam);
+  }
+
+  inline void glReadPixels (GLint x, GLint y,
+                            GLsizei width, GLsizei height,
+                            GLenum format, GLenum type,
+                            GLvoid* pixels)
+  {
+    ::glReadPixels (x, y, width, height, format, type, pixels);
+  }
+
+public: //! @name Stenciling
+
+  inline void glStencilFunc (GLenum func, GLint ref, GLuint mask)
+  {
+    ::glStencilFunc (func, ref, mask);
+  }
+
+  inline void glStencilMask (GLuint mask)
+  {
+    ::glStencilMask (mask);
+  }
+
+  inline void glStencilOp (GLenum fail, GLenum zfail, GLenum zpass)
+  {
+    ::glStencilOp (fail, zfail, zpass);
+  }
+
+  inline void glClearStencil (GLint s)
+  {
+    ::glClearStencil (s);
+  }
+
+public: //! @name Texture mapping
+
+  inline void glTexParameterf (GLenum target, GLenum pname, GLfloat param)
+  {
+    ::glTexParameterf (target, pname, param);
+  }
+
+  inline void glTexParameteri (GLenum target, GLenum pname, GLint param)
+  {
+    ::glTexParameteri (target, pname, param);
+  }
+
+  inline void glTexParameterfv (GLenum target, GLenum pname, const GLfloat* params)
+  {
+    ::glTexParameterfv (target, pname, params);
+  }
+
+  inline void glTexParameteriv (GLenum target, GLenum pname, const GLint* params)
+  {
+    ::glTexParameteriv (target, pname, params);
+  }
+
+  inline void glGetTexParameterfv (GLenum target, GLenum pname, GLfloat* params)
+  {
+    ::glGetTexParameterfv (target, pname, params);
+  }
+
+  inline void glGetTexParameteriv (GLenum target, GLenum pname, GLint* params)
+  {
+    ::glGetTexParameteriv (target, pname, params);
+  }
+
+  inline void glTexImage2D (GLenum target, GLint level,
+                            GLint internalFormat,
+                            GLsizei width, GLsizei height,
+                            GLint border, GLenum format, GLenum type,
+                            const GLvoid* pixels)
+  {
+    ::glTexImage2D(target, level, internalFormat, width, height, border, format, type, pixels);
+  }
+
+  inline void glGenTextures (GLsizei n, GLuint* textures)
+  {
+    ::glGenTextures(n, textures);
+  }
+
+  inline void glDeleteTextures (GLsizei n, const GLuint* textures)
+  {
+    ::glDeleteTextures(n, textures);
+  }
+
+  inline void glBindTexture (GLenum target, GLuint texture)
+  {
+    ::glBindTexture(target, texture);
+  }
+
+  inline GLboolean glIsTexture (GLuint texture)
+  {
+    return ::glIsTexture (texture);
+  }
+
+  inline void glTexSubImage2D (GLenum target, GLint level,
+                               GLint xoffset, GLint yoffset,
+                               GLsizei width, GLsizei height,
+                               GLenum format, GLenum type,
+                               const GLvoid* pixels)
+  {
+    ::glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, type, pixels);
+  }
+
+  inline void glCopyTexImage2D (GLenum target, GLint level,
+                                GLenum internalformat,
+                                GLint x, GLint y,
+                                GLsizei width, GLsizei height,
+                                GLint border)
+  {
+    ::glCopyTexImage2D(target, level, internalformat, x, y, width, height, border);
+  }
+
+  inline void glCopyTexSubImage2D (GLenum target, GLint level,
+                                   GLint xoffset, GLint yoffset,
+                                   GLint x, GLint y,
+                                   GLsizei width, GLsizei height)
+  {
+    ::glCopyTexSubImage2D(target, level, xoffset, yoffset, x, y, width, height);
+  }
+
+#if !defined(GL_ES_VERSION_2_0)
+  inline void glTexImage1D (GLenum target, GLint level,
+                            GLint internalFormat,
+                            GLsizei width, GLint border,
+                            GLenum format, GLenum type,
+                            const GLvoid* pixels)
+  {
+    ::glTexImage1D(target, level, internalFormat, width, border, format, type, pixels);
+  }
+
+  inline void glTexSubImage1D (GLenum target, GLint level,
+                               GLint xoffset,
+                               GLsizei width, GLenum format,
+                               GLenum type, const GLvoid* pixels)
+  {
+    ::glTexSubImage1D(target, level, xoffset, width, format, type, pixels);
+  }
+
+  inline void glCopyTexImage1D (GLenum target, GLint level,
+                                GLenum internalformat,
+                                GLint x, GLint y,
+                                GLsizei width, GLint border)
+  {
+    ::glCopyTexImage1D(target, level, internalformat, x, y, width, border);
+  }
+
+  inline void glCopyTexSubImage1D (GLenum target, GLint level,
+                                   GLint xoffset, GLint x, GLint y,
+                                   GLsizei width)
+  {
+    ::glCopyTexSubImage1D(target, level, xoffset, x, y, width);
+  }
+#endif
+
+#if !defined(GL_ES_VERSION_2_0)
+
+  inline void glAlphaFunc (GLenum theFunc, GLclampf theRef)
+  {
+    ::glAlphaFunc (theFunc, theRef);
+  }
+
+  inline void glPointSize (GLfloat theSize)
+  {
+    ::glPointSize (theSize);
+  }
+
+#endif
+
+/*#if !defined(GL_ES_VERSION_2_0)
+
+  inline void glTexEnvf (GLenum target, GLenum pname, GLfloat param)
+  {
+    ::glTexEnvf (target, pname, param);
+  }
+
+  inline void glTexEnvi (GLenum target, GLenum pname, GLint param)
+  {
+    ::glTexEnvi (target, pname, param);
+  }
+
+  inline void glTexEnvfv (GLenum target, GLenum pname, const GLfloat* params)
+  {
+    ::glTexEnvfv (target, pname, params);
+  }
+
+  inline void glTexEnviv (GLenum target, GLenum pname, const GLint* params)
+  {
+    ::glTexEnviv (target, pname, params);
+  }
+
+  inline void glGetTexEnvfv (GLenum target, GLenum pname, GLfloat* params)
+  {
+    ::glGetTexEnvfv (target, pname, params);
+  }
+
+  inline void glGetTexEnviv (GLenum target, GLenum pname, GLint* params)
+  {
+    ::glGetTexEnviv (target, pname, params);
+  }
+
+  inline void glGetTexImage (GLenum target, GLint level,
+                             GLenum format, GLenum type,
+                             GLvoid* pixels)
+  {
+    ::glGetTexImage(target, level, format, type, pixels);
+  }
+
+  inline void glGetTexLevelParameterfv (GLenum target, GLint level, GLenum pname, GLfloat* params)
+  {
+    ::glGetTexLevelParameterfv (target, level, pname, params);
+  }
+
+  inline void glGetTexLevelParameteriv (GLenum target, GLint level, GLenum pname, GLint* params)
+  {
+    ::glGetTexLevelParameteriv (target, level, pname, params);
+  }
+
+  inline void glClearIndex (GLfloat c)
+  {
+    ::glClearIndex(c);
+  }
+
+  inline void glIndexMask (GLuint theMask)
+  {
+    ::glIndexMask (theMask);
+  }
+
+  inline void glLogicOp (GLenum opcode)
+  {
+    ::glLogicOp(opcode);
+  }
+
+  inline void glPolygonMode (GLenum theFace, GLenum theMode)
+  {
+    ::glPolygonMode (theFace, theMode);
+  }
+
+  inline void glDrawBuffer (GLenum theMode)
+  {
+    ::glDrawBuffer (theMode);
+  }
+
+  inline void glReadBuffer (GLenum theMode)
+  {
+    ::glReadBuffer (theMode);
+  }
+
+  inline void glGetDoublev (GLenum theParamName, GLdouble* theValues)
+  {
+    ::glGetDoublev (theParamName, theValues);
+  }
+
+  inline GLint glRenderMode (GLenum theMode)
+  {
+    return ::glRenderMode (theMode);
+  }
+
+  inline void glArrayElement (GLint i)
+  {
+    ::glArrayElement (i);
+  }
+
+  inline void glPixelStoref (GLenum theParamName, GLfloat theParam)
+  {
+    ::glPixelStoref (theParamName, theParam);
   }
 
   inline void glPixelTransferf (GLenum theParamName, GLfloat theParam)
@@ -274,202 +506,7 @@ public: //! @name Raster functions
   {
     ::glGetPixelMapusv (map, values);
   }
-
-  inline void glReadPixels (GLint x, GLint y,
-                            GLsizei width, GLsizei height,
-                            GLenum format, GLenum type,
-                            GLvoid* pixels)
-  {
-    ::glReadPixels (x, y, width, height, format, type, pixels);
-  }
-
-public: //! @name Stenciling
-
-  inline void glStencilFunc (GLenum func, GLint ref, GLuint mask)
-  {
-    ::glStencilFunc (func, ref, mask);
-  }
-
-  inline void glStencilMask (GLuint mask)
-  {
-    ::glStencilMask (mask);
-  }
-
-  inline void glStencilOp (GLenum fail, GLenum zfail, GLenum zpass)
-  {
-    ::glStencilOp (fail, zfail, zpass);
-  }
-
-  inline void glClearStencil (GLint s)
-  {
-    ::glClearStencil (s);
-  }
-
-public: //! @name Texture mapping
-
-  inline void glTexEnvf (GLenum target, GLenum pname, GLfloat param)
-  {
-    ::glTexEnvf (target, pname, param);
-  }
-
-  inline void glTexEnvi (GLenum target, GLenum pname, GLint param)
-  {
-    ::glTexEnvi (target, pname, param);
-  }
-
-  inline void glTexEnvfv (GLenum target, GLenum pname, const GLfloat* params)
-  {
-    ::glTexEnvfv (target, pname, params);
-  }
-
-  inline void glTexEnviv (GLenum target, GLenum pname, const GLint* params)
-  {
-    ::glTexEnviv (target, pname, params);
-  }
-
-  inline void glGetTexEnvfv (GLenum target, GLenum pname, GLfloat* params)
-  {
-    ::glGetTexEnvfv (target, pname, params);
-  }
-
-  inline void glGetTexEnviv (GLenum target, GLenum pname, GLint* params)
-  {
-    ::glGetTexEnviv (target, pname, params);
-  }
-
-  inline void glTexParameterf (GLenum target, GLenum pname, GLfloat param)
-  {
-    ::glTexParameterf (target, pname, param);
-  }
-
-  inline void glTexParameteri (GLenum target, GLenum pname, GLint param)
-  {
-    ::glTexParameteri (target, pname, param);
-  }
-
-  inline void glTexParameterfv (GLenum target, GLenum pname, const GLfloat* params)
-  {
-    ::glTexParameterfv (target, pname, params);
-  }
-
-  inline void glTexParameteriv (GLenum target, GLenum pname, const GLint* params)
-  {
-    ::glTexParameteriv (target, pname, params);
-  }
-
-  inline void glGetTexParameterfv (GLenum target, GLenum pname, GLfloat* params)
-  {
-    ::glGetTexParameterfv (target, pname, params);
-  }
-
-  inline void glGetTexParameteriv (GLenum target, GLenum pname, GLint* params)
-  {
-    ::glGetTexParameteriv (target, pname, params);
-  }
-
-  inline void glGetTexLevelParameterfv (GLenum target, GLint level, GLenum pname, GLfloat* params)
-  {
-    ::glGetTexLevelParameterfv (target, level, pname, params);
-  }
-
-  inline void glGetTexLevelParameteriv (GLenum target, GLint level, GLenum pname, GLint* params)
-  {
-    ::glGetTexLevelParameteriv (target, level, pname, params);
-  }
-
-  inline void glTexImage1D (GLenum target, GLint level,
-                            GLint internalFormat,
-                            GLsizei width, GLint border,
-                            GLenum format, GLenum type,
-                            const GLvoid* pixels)
-  {
-    ::glTexImage1D(target, level, internalFormat, width, border, format, type, pixels);
-  }
-
-  inline void glTexImage2D (GLenum target, GLint level,
-                            GLint internalFormat,
-                            GLsizei width, GLsizei height,
-                            GLint border, GLenum format, GLenum type,
-                            const GLvoid* pixels)
-  {
-    ::glTexImage2D(target, level, internalFormat, width, height, border, format, type, pixels);
-  }
-
-  inline void glGetTexImage (GLenum target, GLint level,
-                             GLenum format, GLenum type,
-                             GLvoid* pixels)
-  {
-    ::glGetTexImage(target, level, format, type, pixels);
-  }
-
-  inline void glGenTextures (GLsizei n, GLuint* textures)
-  {
-    ::glGenTextures(n, textures);
-  }
-
-  inline void glDeleteTextures (GLsizei n, const GLuint* textures)
-  {
-    ::glDeleteTextures(n, textures);
-  }
-
-  inline void glBindTexture (GLenum target, GLuint texture)
-  {
-    ::glBindTexture(target, texture);
-  }
-
-  inline GLboolean glIsTexture (GLuint texture)
-  {
-    return ::glIsTexture (texture);
-  }
-
-  inline void glTexSubImage1D (GLenum target, GLint level,
-                               GLint xoffset,
-                               GLsizei width, GLenum format,
-                               GLenum type, const GLvoid* pixels)
-  {
-    ::glTexSubImage1D(target, level, xoffset, width, format, type, pixels);
-  }
-
-  inline void glTexSubImage2D (GLenum target, GLint level,
-                               GLint xoffset, GLint yoffset,
-                               GLsizei width, GLsizei height,
-                               GLenum format, GLenum type,
-                               const GLvoid* pixels)
-  {
-    ::glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, type, pixels);
-  }
-
-  inline void glCopyTexImage1D (GLenum target, GLint level,
-                                GLenum internalformat,
-                                GLint x, GLint y,
-                                GLsizei width, GLint border)
-  {
-    ::glCopyTexImage1D(target, level, internalformat, x, y, width, border);
-  }
-
-  inline void glCopyTexImage2D (GLenum target, GLint level,
-                                GLenum internalformat,
-                                GLint x, GLint y,
-                                GLsizei width, GLsizei height,
-                                GLint border)
-  {
-    ::glCopyTexImage2D(target, level, internalformat, x, y, width, height, border);
-  }
-
-  inline void glCopyTexSubImage1D (GLenum target, GLint level,
-                                   GLint xoffset, GLint x, GLint y,
-                                   GLsizei width)
-  {
-    ::glCopyTexSubImage1D(target, level, xoffset, x, y, width);
-  }
-
-  inline void glCopyTexSubImage2D (GLenum target, GLint level,
-                                   GLint xoffset, GLint yoffset,
-                                   GLint x, GLint y,
-                                   GLsizei width, GLsizei height)
-  {
-    ::glCopyTexSubImage2D(target, level, xoffset, yoffset, x, y, width, height);
-  }
+#endif*/
 
 };
 

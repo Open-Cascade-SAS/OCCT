@@ -95,12 +95,12 @@ void OpenGl_GraphicDriver::RatioWindow (const Graphic3d_CView& theCView)
     aCView->WS->Resize (theCView.DefWindow);
 }
 
-void OpenGl_GraphicDriver::Redraw (const Graphic3d_CView& ACView, 
-                                   const Aspect_CLayer2d& ACUnderLayer, 
-                                   const Aspect_CLayer2d& ACOverLayer, 
-                                   const Standard_Integer /*x*/, 
-                                   const Standard_Integer /*y*/, 
-                                   const Standard_Integer /*width*/, 
+void OpenGl_GraphicDriver::Redraw (const Graphic3d_CView& ACView,
+                                   const Aspect_CLayer2d& ACUnderLayer,
+                                   const Aspect_CLayer2d& ACOverLayer,
+                                   const Standard_Integer /*x*/,
+                                   const Standard_Integer /*y*/,
+                                   const Standard_Integer /*width*/,
                                    const Standard_Integer /*height*/)
 {
   if (ACView.RenderParams.Method == Graphic3d_RM_RAYTRACING
@@ -240,21 +240,17 @@ inline bool getDataFormat (const Image_PixMap& theData,
   theDataType    = GL_UNSIGNED_BYTE;
   switch (theData.Format())
   {
+  #if !defined(GL_ES_VERSION_2_0)
     case Image_PixMap::ImgGray:
       thePixelFormat = GL_DEPTH_COMPONENT;
       theDataType    = GL_UNSIGNED_BYTE;
       return true;
-    case Image_PixMap::ImgRGB:
-      thePixelFormat = GL_RGB;
-      theDataType    = GL_UNSIGNED_BYTE;
+    case Image_PixMap::ImgGrayF:
+      thePixelFormat = GL_DEPTH_COMPONENT;
+      theDataType    = GL_FLOAT;
       return true;
     case Image_PixMap::ImgBGR:
       thePixelFormat = GL_BGR;
-      theDataType    = GL_UNSIGNED_BYTE;
-      return true;
-    case Image_PixMap::ImgRGBA:
-    case Image_PixMap::ImgRGB32:
-      thePixelFormat = GL_RGBA;
       theDataType    = GL_UNSIGNED_BYTE;
       return true;
     case Image_PixMap::ImgBGRA:
@@ -262,24 +258,30 @@ inline bool getDataFormat (const Image_PixMap& theData,
       thePixelFormat = GL_BGRA;
       theDataType    = GL_UNSIGNED_BYTE;
       return true;
-    case Image_PixMap::ImgGrayF:
-      thePixelFormat = GL_DEPTH_COMPONENT;
+    case Image_PixMap::ImgBGRF:
+      thePixelFormat = GL_BGR;
       theDataType    = GL_FLOAT;
+      return true;
+    case Image_PixMap::ImgBGRAF:
+      thePixelFormat = GL_BGRA;
+      theDataType    = GL_FLOAT;
+      return true;
+  #endif
+    case Image_PixMap::ImgRGB:
+      thePixelFormat = GL_RGB;
+      theDataType    = GL_UNSIGNED_BYTE;
+      return true;
+    case Image_PixMap::ImgRGBA:
+    case Image_PixMap::ImgRGB32:
+      thePixelFormat = GL_RGBA;
+      theDataType    = GL_UNSIGNED_BYTE;
       return true;
     case Image_PixMap::ImgRGBF:
       thePixelFormat = GL_RGB;
       theDataType    = GL_FLOAT;
       return true;
-    case Image_PixMap::ImgBGRF:
-      thePixelFormat = GL_BGR;
-      theDataType    = GL_FLOAT;
-      return true;
     case Image_PixMap::ImgRGBAF:
       thePixelFormat = GL_RGBA;
-      theDataType    = GL_FLOAT;
-      return true;
-    case Image_PixMap::ImgBGRAF:
-      thePixelFormat = GL_BGRA;
       theDataType    = GL_FLOAT;
       return true;
     default:
@@ -302,33 +304,43 @@ Standard_Boolean OpenGl_Workspace::BufferDump (OpenGl_FrameBuffer*         theFB
   GLenum aFormat, aType;
   if (theImage.IsEmpty()
    || !getDataFormat (theImage, aFormat, aType)
-   || ((theBufferType == Graphic3d_BT_Depth) && (aFormat != GL_DEPTH_COMPONENT))
    || !Activate())
   {
     return Standard_False;
   }
+#if !defined(GL_ES_VERSION_2_0)
+  GLint aReadBufferPrev = GL_BACK;
+  if (theBufferType == Graphic3d_BT_Depth
+   && aFormat != GL_DEPTH_COMPONENT)
+  {
+    return Standard_False;
+  }
+#endif
 
   // bind FBO if used
-  GLint aReadBufferPrev = GL_BACK;
   if (theFBOPtr != NULL && theFBOPtr->IsValid())
   {
     theFBOPtr->BindBuffer (GetGlContext());
   }
   else
   {
+  #if !defined(GL_ES_VERSION_2_0)
     glGetIntegerv (GL_READ_BUFFER, &aReadBufferPrev);
     GLint aDrawBufferPrev = GL_BACK;
     glGetIntegerv (GL_DRAW_BUFFER, &aDrawBufferPrev);
     glReadBuffer (aDrawBufferPrev);
+  #endif
   }
 
   // setup alignment
-  const GLint anExtraBytes = (GLint )theImage.RowExtraBytes();
   const GLint anAligment   = Min (GLint(theImage.MaxRowAligmentBytes()), 8); // limit to 8 bytes for OpenGL
   glPixelStorei (GL_PACK_ALIGNMENT, anAligment);
 
+#if !defined(GL_ES_VERSION_2_0)
+  const GLint anExtraBytes = (GLint )theImage.RowExtraBytes();
   const GLint aPixelsWidth = GLint(theImage.SizeRowBytes() / theImage.SizePixelBytes());
   glPixelStorei (GL_PACK_ROW_LENGTH, (anExtraBytes >= anAligment) ? aPixelsWidth : 0);
+#endif
 
   if (theImage.IsTopDown())
   {
@@ -346,7 +358,9 @@ Standard_Boolean OpenGl_Workspace::BufferDump (OpenGl_FrameBuffer*         theFB
   }
 
   glPixelStorei (GL_PACK_ALIGNMENT,  1);
+#if !defined(GL_ES_VERSION_2_0)
   glPixelStorei (GL_PACK_ROW_LENGTH, 0);
+#endif
 
   if (theFBOPtr != NULL && theFBOPtr->IsValid())
   {
@@ -354,7 +368,9 @@ Standard_Boolean OpenGl_Workspace::BufferDump (OpenGl_FrameBuffer*         theFB
   }
   else
   {
+  #if !defined(GL_ES_VERSION_2_0)
     glReadBuffer (aReadBufferPrev);
+  #endif
   }
   return Standard_True;
 }

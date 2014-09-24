@@ -23,6 +23,8 @@ template<typename theBaseClass_t>
 struct OpenGl_TmplCore31 : public theBaseClass_t
 {
 
+#if !defined(GL_ES_VERSION_2_0)
+
 public: //! @name GL_ARB_uniform_buffer_object (added to OpenGL 3.1 core)
 
   using theBaseClass_t::glGetUniformIndices;
@@ -43,6 +45,8 @@ public: //! @name OpenGL 3.1 additives to 3.0
   using theBaseClass_t::glDrawElementsInstanced;
   using theBaseClass_t::glTexBuffer;
   using theBaseClass_t::glPrimitiveRestartIndex;
+
+#endif
 
 };
 

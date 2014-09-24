@@ -1773,6 +1773,7 @@ void OpenGl_AspectMarker::Resources::BuildSprites (const Handle(OpenGl_Workspace
   }
   else
   {
+  #if !defined(GL_ES_VERSION_2_0)
     // Creating list with bitmap for using it in compatibility mode
     GLuint aBitmapList = glGenLists (1);
     Sprite->SetDisplayList (aContext, aBitmapList);
@@ -1881,6 +1882,7 @@ void OpenGl_AspectMarker::Resources::BuildSprites (const Handle(OpenGl_Workspace
       }
       glEndList();
     }
+  #endif
   }
 }
 

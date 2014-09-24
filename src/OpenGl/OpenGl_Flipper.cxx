@@ -67,6 +67,8 @@ void OpenGl_Flipper::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
   // Check if rendering is to be in immediate mode
   const Standard_Boolean isImmediate = (theWorkspace->NamedStatus & OPENGL_NS_IMMEDIATE) != 0;
   const Handle(OpenGl_Context)& aContext = theWorkspace->GetGlContext();
+
+#if !defined(GL_ES_VERSION_2_0)
   GLint aCurrMode = GL_MODELVIEW;
   glGetIntegerv (GL_MATRIX_MODE, &aCurrMode);
 
@@ -198,4 +200,5 @@ void OpenGl_Flipper::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
   {
     glMatrixMode (aCurrMode);
   }
+#endif
 }

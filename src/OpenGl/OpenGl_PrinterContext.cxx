@@ -29,7 +29,7 @@ OpenGl_PrinterContext::OpenGl_PrinterContext()
   myScaleY (1.0f),
   myLayerViewportX (0),
   myLayerViewportY (0)
-  
+
 {
   // identity projection matrix
   Standard_Real anInitValue = 0.0;
@@ -56,7 +56,9 @@ OpenGl_PrinterContext::~OpenGl_PrinterContext()
 // =======================================================================
 void OpenGl_PrinterContext::LoadProjTransformation()
 {
+#if !defined(GL_ES_VERSION_2_0)
   glLoadMatrixf ((GLfloat* )myProjMatrixGl);
+#endif
 }
 
 // =======================================================================

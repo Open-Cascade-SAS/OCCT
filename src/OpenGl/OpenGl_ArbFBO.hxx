@@ -33,15 +33,18 @@ struct OpenGl_ArbFBO : protected OpenGl_GlFunctions
   using OpenGl_GlFunctions::glDeleteFramebuffers;
   using OpenGl_GlFunctions::glGenFramebuffers;
   using OpenGl_GlFunctions::glCheckFramebufferStatus;
-  using OpenGl_GlFunctions::glFramebufferTexture1D;
   using OpenGl_GlFunctions::glFramebufferTexture2D;
-  using OpenGl_GlFunctions::glFramebufferTexture3D;
   using OpenGl_GlFunctions::glFramebufferRenderbuffer;
   using OpenGl_GlFunctions::glGetFramebufferAttachmentParameteriv;
   using OpenGl_GlFunctions::glGenerateMipmap;
+
+#if !defined(GL_ES_VERSION_2_0)
   using OpenGl_GlFunctions::glBlitFramebuffer;
-  using OpenGl_GlFunctions::glRenderbufferStorageMultisample;
+  using OpenGl_GlFunctions::glFramebufferTexture1D;
+  using OpenGl_GlFunctions::glFramebufferTexture3D;
   using OpenGl_GlFunctions::glFramebufferTextureLayer;
+  using OpenGl_GlFunctions::glRenderbufferStorageMultisample;
+#endif
 
 };
 

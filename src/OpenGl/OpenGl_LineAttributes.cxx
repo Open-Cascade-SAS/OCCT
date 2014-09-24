@@ -520,7 +520,9 @@ void OpenGl_LineAttributes::Release (OpenGl_Context* theGlCtx)
   {
     if (theGlCtx->IsValid())
     {
+    #if !defined(GL_ES_VERSION_2_0)
       glDeleteLists ((GLuint )myLinestyleBase, 5);
+    #endif
     }
     myLinestyleBase = 0;
   }
@@ -529,7 +531,9 @@ void OpenGl_LineAttributes::Release (OpenGl_Context* theGlCtx)
   {
     if (theGlCtx->IsValid())
     {
+    #if !defined(GL_ES_VERSION_2_0)
       glDeleteLists ((GLuint )myPatternBase, TEL_HS_USER_DEF_START);
+    #endif
     }
     myPatternBase = 0;
   }
@@ -547,6 +551,7 @@ void OpenGl_LineAttributes::Init (const Handle(OpenGl_Context)& theGlCtx)
     return;
   }
 
+#if !defined(GL_ES_VERSION_2_0)
   myLinestyleBase = theGlCtx->core11->glGenLists (5);
 
   // Line
@@ -575,6 +580,7 @@ void OpenGl_LineAttributes::Init (const Handle(OpenGl_Context)& theGlCtx)
     glPolygonStipple ((const GLubyte* )myInteriors[i < nbi ? i : 0]);
     glEndList();
   }
+#endif
 }
 
 // =======================================================================
@@ -583,6 +589,7 @@ void OpenGl_LineAttributes::Init (const Handle(OpenGl_Context)& theGlCtx)
 // =======================================================================
 void OpenGl_LineAttributes::SetTypeOfLine (const Aspect_TypeOfLine theType) const
 {
+#if !defined(GL_ES_VERSION_2_0)
   if (theType != Aspect_TOL_SOLID)
   {
     glCallList ((GLuint )myLinestyleBase + (GLuint )theType);
@@ -598,6 +605,7 @@ void OpenGl_LineAttributes::SetTypeOfLine (const Aspect_TypeOfLine theType) cons
     gl2psDisable (GL2PS_LINE_STIPPLE);
   #endif
   }
+#endif
 }
 
 // =======================================================================
@@ -606,6 +614,7 @@ void OpenGl_LineAttributes::SetTypeOfLine (const Aspect_TypeOfLine theType) cons
 // =======================================================================
 void OpenGl_LineAttributes::SetTypeOfHatch (const int theType) const
 {
+#if !defined(GL_ES_VERSION_2_0)
   if (theType != 0)
   {
     glCallList ((GLuint )myPatternBase + (GLuint )theType);
@@ -613,4 +622,5 @@ void OpenGl_LineAttributes::SetTypeOfHatch (const int theType) const
   }
   else
     glDisable (GL_POLYGON_STIPPLE);
+#endif
 }

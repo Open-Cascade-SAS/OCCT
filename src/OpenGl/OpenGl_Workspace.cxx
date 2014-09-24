@@ -188,6 +188,7 @@ OpenGl_Workspace::OpenGl_Workspace (const Handle(Aspect_DisplayConnection)& theD
 
   // General initialization of the context
 
+#if !defined(GL_ES_VERSION_2_0)
   // Eviter d'avoir les faces mal orientees en noir.
   // Pourrait etre utiliser pour detecter les problemes d'orientation
   glLightModeli ((GLenum )GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
@@ -197,6 +198,7 @@ OpenGl_Workspace::OpenGl_Workspace (const Handle(Aspect_DisplayConnection)& theD
   glHint (GL_POINT_SMOOTH_HINT,   GL_FASTEST);
   glHint (GL_LINE_SMOOTH_HINT,    GL_FASTEST);
   glHint (GL_POLYGON_SMOOTH_HINT, GL_FASTEST);
+#endif
 
   // AA mode
   const char* anAaEnv = ::getenv ("CALL_OPENGL_ANTIALIASING_MODE");
@@ -297,18 +299,22 @@ Handle(OpenGl_Texture) OpenGl_Workspace::DisableTexture()
     return myTextureBound;
   }
 
+#if !defined(GL_ES_VERSION_2_0)
   // reset texture matrix because some code may expect it is identity
   GLint aMatrixMode = GL_TEXTURE;
   glGetIntegerv (GL_MATRIX_MODE, &aMatrixMode);
   glMatrixMode (GL_TEXTURE);
   glLoadIdentity();
   glMatrixMode (aMatrixMode);
+#endif
 
   myTextureBound->Unbind (myGlContext);
   switch (myTextureBound->GetTarget())
   {
+  #if !defined(GL_ES_VERSION_2_0)
     case GL_TEXTURE_1D:
     {
+
       if (myTextureBound->GetParams()->GenMode() != GL_NONE)
       {
         glDisable (GL_TEXTURE_GEN_S);
@@ -316,8 +322,10 @@ Handle(OpenGl_Texture) OpenGl_Workspace::DisableTexture()
       glDisable (GL_TEXTURE_1D);
       break;
     }
+  #endif
     case GL_TEXTURE_2D:
     {
+    #if !defined(GL_ES_VERSION_2_0)
       if (myTextureBound->GetParams()->GenMode() != GL_NONE)
       {
         glDisable (GL_TEXTURE_GEN_S);
@@ -327,6 +335,7 @@ Handle(OpenGl_Texture) OpenGl_Workspace::DisableTexture()
           glDisable (GL_POINT_SPRITE);
         }
       }
+    #endif
       glDisable (GL_TEXTURE_2D);
       break;
     }
@@ -351,6 +360,7 @@ void OpenGl_Workspace::setTextureParams (Handle(OpenGl_Texture)&                
     return;
   }
 
+#if !defined(GL_ES_VERSION_2_0)
   GLint aMatrixMode = GL_TEXTURE;
   glGetIntegerv (GL_MATRIX_MODE, &aMatrixMode);
 
@@ -423,13 +433,15 @@ void OpenGl_Workspace::setTextureParams (Handle(OpenGl_Texture)&                
   {
     glTexEnvi (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, aParams->IsModulate() ? GL_MODULATE : GL_DECAL);
   }
+#endif
 
   // setup texture filtering and wrapping
   //if (theTexture->GetParams() != theParams)
   const GLenum aFilter   = (aParams->Filter() == Graphic3d_TOTF_NEAREST) ? GL_NEAREST : GL_LINEAR;
-  const GLenum aWrapMode = aParams->IsRepeat() ? GL_REPEAT : GL_CLAMP;
+  const GLenum aWrapMode = aParams->IsRepeat() ? GL_REPEAT : myGlContext->TextureWrapClamp();
   switch (theTexture->GetTarget())
   {
+  #if !defined(GL_ES_VERSION_2_0)
     case GL_TEXTURE_1D:
     {
       glTexParameteri (GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, aFilter);
@@ -437,6 +449,7 @@ void OpenGl_Workspace::setTextureParams (Handle(OpenGl_Texture)&                
       glTexParameteri (GL_TEXTURE_1D, GL_TEXTURE_WRAP_S,     aWrapMode);
       break;
     }
+  #endif
     case GL_TEXTURE_2D:
     {
       GLenum aFilterMin = aFilter;
@@ -494,6 +507,7 @@ void OpenGl_Workspace::setTextureParams (Handle(OpenGl_Texture)&                
 
   switch (theTexture->GetTarget())
   {
+  #if !defined(GL_ES_VERSION_2_0)
     case GL_TEXTURE_1D:
     {
       if (aParams->GenMode() != Graphic3d_TOTM_MANUAL)
@@ -503,20 +517,25 @@ void OpenGl_Workspace::setTextureParams (Handle(OpenGl_Texture)&                
       glEnable (GL_TEXTURE_1D);
       break;
     }
+  #endif
     case GL_TEXTURE_2D:
     {
+    #if !defined(GL_ES_VERSION_2_0)
       if (aParams->GenMode() != Graphic3d_TOTM_MANUAL)
       {
         glEnable (GL_TEXTURE_GEN_S);
         glEnable (GL_TEXTURE_GEN_T);
       }
+    #endif
       glEnable (GL_TEXTURE_2D);
       break;
     }
     default: break;
   }
 
+#if !defined(GL_ES_VERSION_2_0)
   glMatrixMode (aMatrixMode); // turn back active matrix
+#endif
   theTexture->SetParams (aParams);
 }
 
@@ -708,7 +727,11 @@ void OpenGl_Workspace::redraw1 (const Graphic3d_CView& theCView,
       glDisable (GL_DEPTH_TEST);
     }
 
+  #if !defined(GL_ES_VERSION_2_0)
     glClearDepth (1.0);
+  #else
+    glClearDepthf (1.0f);
+  #endif
     toClear |= GL_DEPTH_BUFFER_BIT;
   }
   else
@@ -761,10 +784,12 @@ void OpenGl_Workspace::redraw1 (const Graphic3d_CView& theCView,
 // =======================================================================
 void OpenGl_Workspace::copyBackToFront()
 {
+#if !defined(GL_ES_VERSION_2_0)
   glMatrixMode (GL_PROJECTION);
   glPushMatrix();
   glLoadIdentity();
   gluOrtho2D (0.0, (GLdouble )myWidth, 0.0, (GLdouble )myHeight);
+
   glMatrixMode (GL_MODELVIEW);
   glPushMatrix();
   glLoadIdentity();
@@ -786,6 +811,7 @@ void OpenGl_Workspace::copyBackToFront()
 
   glDrawBuffer (GL_BACK);
 
+#endif
   myIsImmediateDrawn = Standard_False;
 }
 
@@ -824,7 +850,9 @@ void OpenGl_Workspace::RedrawImmediate (const Graphic3d_CView& theCView,
   }
 
   GLboolean isDoubleBuffer = GL_FALSE;
+#if !defined(GL_ES_VERSION_2_0)
   glGetBooleanv (GL_DOUBLEBUFFER, &isDoubleBuffer);
+#endif
   if (myView->ImmediateStructures().IsEmpty())
   {
     if (theToForce

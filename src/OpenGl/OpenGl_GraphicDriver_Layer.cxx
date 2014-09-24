@@ -85,7 +85,9 @@ void InitLayerProp (const int theListId)
 void OpenGl_GraphicDriver::Layer (Aspect_CLayer2d& ACLayer)
 {
   ACLayer.ptrLayer = new CALL_DEF_PTRLAYER();
+#if !defined(GL_ES_VERSION_2_0)
   ACLayer.ptrLayer->listIndex = glGenLists(1);
+#endif
 }
 
 /*----------------------------------------------------------------------*/
@@ -96,7 +98,10 @@ void OpenGl_GraphicDriver::RemoveLayer (const Aspect_CLayer2d& ACLayer)
   if (!ACLayer.ptrLayer->listIndex) return;
   if (TheLayerProp.ListId == ACLayer.ptrLayer->listIndex)
     EndLayer();
+
+#if !defined(GL_ES_VERSION_2_0)
   glDeleteLists (ACLayer.ptrLayer->listIndex, 1);
+#endif
   ACLayer.ptrLayer->listIndex = 0;
   //szvgl: memory leak here?
   //free ( ACLayer.ptrLayer );
@@ -113,7 +118,9 @@ void OpenGl_GraphicDriver::BeginLayer (const Aspect_CLayer2d& ACLayer)
   InitLayerProp (ptrLayer->listIndex);
   if (!TheLayerProp.ListId) return;
 
+#if !defined(GL_ES_VERSION_2_0)
   glNewList (TheLayerProp.ListId, GL_COMPILE);
+#endif
   TheLayerIsOpen = Standard_True;
 }
 
@@ -121,14 +128,18 @@ void OpenGl_GraphicDriver::BeginPolygon2d ()
 {
   if (!TheLayerProp.ListId) return;
   TheLayerProp.NbPoints = 0;
+#if !defined(GL_ES_VERSION_2_0)
   glBegin (GL_POLYGON);
+#endif
 }
 
 void OpenGl_GraphicDriver::BeginPolyline2d ()
 {
   if (!TheLayerProp.ListId) return;
   TheLayerProp.NbPoints = 0;
+#if !defined(GL_ES_VERSION_2_0)
   glBegin (GL_LINE_STRIP);
+#endif
 }
 
 void OpenGl_GraphicDriver::ClearLayer (const Aspect_CLayer2d& ACLayer)
@@ -138,22 +149,28 @@ void OpenGl_GraphicDriver::ClearLayer (const Aspect_CLayer2d& ACLayer)
   InitLayerProp (ACLayer.ptrLayer->listIndex);
   if (!TheLayerProp.ListId) return;
 
+#if !defined(GL_ES_VERSION_2_0)
   glNewList (TheLayerProp.ListId, GL_COMPILE);
   glEndList ();
+#endif
 }
 
 void OpenGl_GraphicDriver::Draw (const Standard_ShortReal X, const Standard_ShortReal Y)
 {
   if (!TheLayerProp.ListId) return;
   TheLayerProp.NbPoints++;
+#if !defined(GL_ES_VERSION_2_0)
   glVertex3f (X, Y, 0.F);
+#endif
 }
 
 void OpenGl_GraphicDriver::Edge (const Standard_ShortReal X, const Standard_ShortReal Y)
 {
   if (!TheLayerProp.ListId) return;
   TheLayerProp.NbPoints++;
+#if !defined(GL_ES_VERSION_2_0)
   glVertex3f (X, Y, 0.F);
+#endif
 }
 
 void OpenGl_GraphicDriver::EndLayer ()
@@ -161,7 +178,9 @@ void OpenGl_GraphicDriver::EndLayer ()
   if (!TheLayerProp.ListId) return;
   if (TheLayerIsOpen)
   {
+  #if !defined(GL_ES_VERSION_2_0)
     glEndList();
+  #endif
     TheLayerIsOpen = Standard_False;
   }
   TheLayerProp.ListId = 0;
@@ -170,13 +189,17 @@ void OpenGl_GraphicDriver::EndLayer ()
 void OpenGl_GraphicDriver::EndPolygon2d ()
 {
   if (!TheLayerProp.ListId) return;
+#if !defined(GL_ES_VERSION_2_0)
   glEnd ();
+#endif
 }
 
 void OpenGl_GraphicDriver::EndPolyline2d ()
 {
   if (!TheLayerProp.ListId) return;
+#if !defined(GL_ES_VERSION_2_0)
   glEnd ();
+#endif
 }
 
 void OpenGl_GraphicDriver::Move (const Standard_ShortReal X, const Standard_ShortReal Y)
@@ -184,18 +207,24 @@ void OpenGl_GraphicDriver::Move (const Standard_ShortReal X, const Standard_Shor
   if (!TheLayerProp.ListId) return;
   if (TheLayerProp.NbPoints)
   {
+  #if !defined(GL_ES_VERSION_2_0)
     glEnd ();
-    TheLayerProp.NbPoints = 0;
     glBegin (GL_LINE_STRIP);
+  #endif
+    TheLayerProp.NbPoints = 0;
   }
   TheLayerProp.NbPoints++;
+#if !defined(GL_ES_VERSION_2_0)
   glVertex3f (X, Y, 0.F);
+#endif
 }
 
 void OpenGl_GraphicDriver::Rectangle (const Standard_ShortReal X, const Standard_ShortReal Y, const Standard_ShortReal Width, const Standard_ShortReal Height)
 {
   if (!TheLayerProp.ListId) return;
+#if !defined(GL_ES_VERSION_2_0)
   glRectf (X, Y, X + Width, Y + Height);
+#endif
 }
 
 void OpenGl_GraphicDriver::SetColor (const Standard_ShortReal R, const Standard_ShortReal G, const Standard_ShortReal B)
@@ -204,23 +233,29 @@ void OpenGl_GraphicDriver::SetColor (const Standard_ShortReal R, const Standard_
   TheLayerProp.Color.rgb[0] = R;
   TheLayerProp.Color.rgb[1] = G;
   TheLayerProp.Color.rgb[2] = B;
+#if !defined(GL_ES_VERSION_2_0)
   glColor3fv (TheLayerProp.Color.rgb);
+#endif
 }
 
 void OpenGl_GraphicDriver::SetTransparency (const Standard_ShortReal ATransparency)
 {
   if (!TheLayerProp.ListId) return;
   TheLayerProp.Color.rgb[3] = ATransparency;
+#if !defined(GL_ES_VERSION_2_0)
   glEnable (GL_BLEND);
   glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   glColor4fv (TheLayerProp.Color.rgb);
+#endif
 }
 
 void OpenGl_GraphicDriver::UnsetTransparency ()
 {
   if (!TheLayerProp.ListId) return;
   TheLayerProp.Color.rgb[3] = 1.F;
+#if !defined(GL_ES_VERSION_2_0)
   glDisable (GL_BLEND);
+#endif
 }
 
 void OpenGl_GraphicDriver::SetLineAttributes (const Standard_Integer   theType,

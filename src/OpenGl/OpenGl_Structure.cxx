@@ -67,6 +67,7 @@ public:
   //! Render presentation
   virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const
   {
+  #if !defined(GL_ES_VERSION_2_0)
     // Apply line aspect
     const OpenGl_AspectLine*     anAspectLine = theWorkspace->AspectLine (Standard_True);
     const Handle(OpenGl_Texture) aPrevTexture = theWorkspace->DisableTexture();
@@ -78,7 +79,7 @@ public:
     }
 
     // Use highlight colors
-    glColor3fv ((theWorkspace->NamedStatus & OPENGL_NS_HIGHLIGHT) ? theWorkspace->HighlightColor->rgb : anAspectLine->Color().rgb);
+    theWorkspace->GetGlContext()->core11->glColor3fv ((theWorkspace->NamedStatus & OPENGL_NS_HIGHLIGHT) ? theWorkspace->HighlightColor->rgb : anAspectLine->Color().rgb);
 
     glEnableClientState (GL_VERTEX_ARRAY);
     glVertexPointer (3, GL_FLOAT, 0, (GLfloat* )&myVerts);
@@ -90,6 +91,7 @@ public:
     {
       theWorkspace->EnableTexture (aPrevTexture);
     }
+  #endif
   }
 
   //! Release graphical resources
@@ -644,10 +646,12 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
   const OpenGl_Matrix *local_trsf = NULL;
   if (myTransformation)
   {
+  #if !defined(GL_ES_VERSION_2_0)
     if (isImmediate)
     {
       Tmatrix3 aModelWorld;
       call_util_transpose_mat (*aModelWorld, myTransformation->mat);
+
       glGetIntegerv (GL_MATRIX_MODE, &matrix_mode);
 
       if (!aCtx->ShaderManager()->IsEmpty())
@@ -675,6 +679,7 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
 
       local_trsf = AWorkspace->SetStructureMatrix (myTransformation);
     }
+  #endif
   }
 
   // Apply transform persistence
@@ -793,6 +798,7 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
   // Restore local transformation
   if (myTransformation)
   {
+  #if !defined(GL_ES_VERSION_2_0)
     if (isImmediate)
     {
       glPopMatrix ();
@@ -812,6 +818,7 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
       glMatrixMode (GL_MODELVIEW);
       glPopMatrix();
     }
+  #endif
   }
 
   // Apply highlight box

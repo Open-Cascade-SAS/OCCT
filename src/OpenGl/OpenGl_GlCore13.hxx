@@ -24,15 +24,18 @@ struct OpenGl_GlCore13Fwd : public OpenGl_GlCore12Fwd
 
 public: //! @name OpenGL 1.3 additives to 1.2
 
-  using OpenGl_GlFunctions::glActiveTexture;
-  using OpenGl_GlFunctions::glSampleCoverage;
+#if !defined(GL_ES_VERSION_2_0)
   using OpenGl_GlFunctions::glCompressedTexImage3D;
-  using OpenGl_GlFunctions::glCompressedTexImage2D;
   using OpenGl_GlFunctions::glCompressedTexImage1D;
   using OpenGl_GlFunctions::glCompressedTexSubImage3D;
-  using OpenGl_GlFunctions::glCompressedTexSubImage2D;
   using OpenGl_GlFunctions::glCompressedTexSubImage1D;
   using OpenGl_GlFunctions::glGetCompressedTexImage;
+#endif
+
+  using OpenGl_GlFunctions::glActiveTexture;
+  using OpenGl_GlFunctions::glSampleCoverage;
+  using OpenGl_GlFunctions::glCompressedTexImage2D;
+  using OpenGl_GlFunctions::glCompressedTexSubImage2D;
 
 };
 
@@ -42,15 +45,20 @@ struct OpenGl_GlCore13 : public OpenGl_GlCore12
 
 public: //! @name OpenGL 1.3 additives to 1.2
 
-  using OpenGl_GlFunctions::glActiveTexture;
-  using OpenGl_GlFunctions::glSampleCoverage;
+#if !defined(GL_ES_VERSION_2_0)
   using OpenGl_GlFunctions::glCompressedTexImage3D;
-  using OpenGl_GlFunctions::glCompressedTexImage2D;
   using OpenGl_GlFunctions::glCompressedTexImage1D;
   using OpenGl_GlFunctions::glCompressedTexSubImage3D;
-  using OpenGl_GlFunctions::glCompressedTexSubImage2D;
   using OpenGl_GlFunctions::glCompressedTexSubImage1D;
   using OpenGl_GlFunctions::glGetCompressedTexImage;
+#endif
+
+  using OpenGl_GlFunctions::glActiveTexture;
+  using OpenGl_GlFunctions::glSampleCoverage;
+  using OpenGl_GlFunctions::glCompressedTexImage2D;
+  using OpenGl_GlFunctions::glCompressedTexSubImage2D;
+
+#if !defined(GL_ES_VERSION_2_0)
 
 public: //! @name Begin/End primitive specification (removed since 3.1)
 
@@ -95,6 +103,8 @@ public: //! @name Matrix operations (removed since 3.1)
   using OpenGl_GlFunctions::glLoadTransposeMatrixd;
   using OpenGl_GlFunctions::glMultTransposeMatrixf;
   using OpenGl_GlFunctions::glMultTransposeMatrixd;
+
+#endif
 
 };
 

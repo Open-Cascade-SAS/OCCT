@@ -17,12 +17,17 @@
 #include <OpenGl_GlCore11.hxx>
 #include <OpenGl_Workspace.hxx>
 
+#if defined(GL_ES_VERSION_2_0)
+  // id does not matter for GLSL-based clipping, just for consistency
+  #define GL_CLIP_PLANE0 0x3000
+#endif
+
 // =======================================================================
 // function : OpenGl_ClippingState
 // purpose  :
 // =======================================================================
 OpenGl_Clipping::OpenGl_Clipping ()
-: myEmptyPlaneIds (new Aspect_GenId (GL_CLIP_PLANE0, GL_CLIP_PLANE5)),
+: myEmptyPlaneIds (new Aspect_GenId (GL_CLIP_PLANE0, GL_CLIP_PLANE0 + 5)),
   myNbClipping (0),
   myNbCapping  (0)
 {}
@@ -50,6 +55,7 @@ void OpenGl_Clipping::Add (Graphic3d_SequenceOfHClipPlane& thePlanes,
                            const EquationCoords& theCoordSpace,
                            const Handle(OpenGl_Workspace)& theWS)
 {
+#if !defined(GL_ES_VERSION_2_0)
   GLint aMatrixMode;
   glGetIntegerv (GL_MATRIX_MODE, &aMatrixMode);
 
@@ -77,6 +83,9 @@ void OpenGl_Clipping::Add (Graphic3d_SequenceOfHClipPlane& thePlanes,
   {
     glMatrixMode (aMatrixMode);
   }
+#else
+  Add (thePlanes, theCoordSpace);
+#endif
 }
 
 // =======================================================================
@@ -99,8 +108,10 @@ void OpenGl_Clipping::Add (Graphic3d_SequenceOfHClipPlane& thePlanes, const Equa
     myPlanes.Append (aPlane);
     myPlaneStates.Bind (aPlane, PlaneProps (theCoordSpace, anID, Standard_True));
 
-    glEnable ((GLenum)anID);
-    glClipPlane ((GLenum)anID, aPlane->GetEquation());
+  #if !defined(GL_ES_VERSION_2_0)
+    ::glEnable ((GLenum)anID);
+    ::glClipPlane ((GLenum)anID, aPlane->GetEquation());
+  #endif
     if (aPlane->IsCapping())
     {
       ++myNbCapping;
@@ -141,7 +152,9 @@ void OpenGl_Clipping::Remove (const Graphic3d_SequenceOfHClipPlane& thePlanes)
     PlaneProps& aProps = myPlaneStates.ChangeFind (aPlane);
     if (aProps.IsEnabled)
     {
+    #if !defined(GL_ES_VERSION_2_0)
       glDisable ((GLenum)anID);
+    #endif
       if (aPlane->IsCapping())
       {
         --myNbCapping;
@@ -190,10 +203,14 @@ void OpenGl_Clipping::SetEnabled (const Handle(Graphic3d_ClipPlane)& thePlane,
     return;
   }
 
+#if !defined(GL_ES_VERSION_2_0)
   GLenum anID = (GLenum)aProps.ContextID;
+#endif
   if (theIsEnabled)
   {
+  #if !defined(GL_ES_VERSION_2_0)
     glEnable (anID);
+  #endif
     if (thePlane->IsCapping())
     {
       ++myNbCapping;
@@ -205,7 +222,9 @@ void OpenGl_Clipping::SetEnabled (const Handle(Graphic3d_ClipPlane)& thePlane,
   }
   else
   {
+  #if !defined(GL_ES_VERSION_2_0)
     glDisable (anID);
+  #endif
     if (thePlane->IsCapping())
     {
       --myNbCapping;

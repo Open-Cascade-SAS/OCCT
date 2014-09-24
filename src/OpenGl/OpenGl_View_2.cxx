@@ -64,6 +64,7 @@ struct OPENGL_CLIP_PLANE
 * Fonctions privees
 */
 
+#if !defined(GL_ES_VERSION_2_0)
 /*-----------------------------------------------------------------*/
 /*
 *  Set des lumieres
@@ -153,11 +154,13 @@ static void bind_light (const OpenGl_Light& theLight,
 
   glEnable (theLightGlId++);
 }
+#endif
 
 /*----------------------------------------------------------------------*/
 
 void OpenGl_View::DrawBackground (OpenGl_Workspace& theWorkspace)
 {
+#if !defined(GL_ES_VERSION_2_0)
   if ( (theWorkspace.NamedStatus & OPENGL_NS_WHITEBACK) == 0 &&
        ( myBgTexture.TexId != 0 || myBgGradient.type != Aspect_GFM_NONE ) )
   {
@@ -344,6 +347,7 @@ void OpenGl_View::DrawBackground (OpenGl_Workspace& theWorkspace)
       glEnable (GL_DEPTH_TEST);
     }
   }
+#endif
 }
 
 /*----------------------------------------------------------------------*/
@@ -361,6 +365,7 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
 
   const Handle(OpenGl_Context)& aContext = theWorkspace->GetGlContext();
 
+#if !defined(GL_ES_VERSION_2_0)
   // Store and disable current clipping planes
   Standard_Integer aMaxPlanes = aContext->MaxClipPlanes();
 
@@ -382,6 +387,7 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
       aPtrPlane->isEnabled = GL_FALSE;
     }
   }
+#endif
 
   Standard_Boolean isProjectionMatUpdateNeeded  = Standard_False;
   Standard_Boolean isOrientationMatUpdateNeeded = Standard_False;
@@ -458,8 +464,10 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
     DrawBackground (*theWorkspace);
   }
 
+#if !defined(GL_ES_VERSION_2_0)
   // Switch off lighting by default
   glDisable(GL_LIGHTING);
+#endif
 
   // =================================
   //      Step 3: Draw underlayer
@@ -485,6 +493,7 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
       glDisable( GL_CULL_FACE );
   }
 
+#if !defined(GL_ES_VERSION_2_0)
   // if the view is scaled normal vectors are scaled to unit
   // length for correct displaying of shaded objects
   const gp_Pnt anAxialScale = myCamera->AxialScale();
@@ -516,7 +525,7 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
     {
       myFog.Front = (Standard_ShortReal )(aFogFrontConverted - myCamera->Distance());
       myFog.Back = (Standard_ShortReal )(aFogBackConverted - myCamera->Distance());
-    }    
+    }
 
     glFogi(GL_FOG_MODE, GL_LINEAR);
     glFogf(GL_FOG_START, (Standard_ShortReal )aFogFrontConverted);
@@ -529,6 +538,7 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
 
   // Apply InteriorShadingMethod
   glShadeModel( myIntShadingMethod == TEL_SM_FLAT ? GL_FLAT : GL_SMOOTH );
+#endif
 
   // Apply AntiAliasing
   if (myAntiAliasing)
@@ -572,7 +582,7 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
     }
     // safely switch to right Eye buffer
     aContext->SetDrawBufferRight();
-    
+
     // redraw right Eye
     RedrawScene (thePrintContext, theWorkspace, aRProj, aOrient);
 
@@ -637,6 +647,7 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
   // ===============================
 
   // Restore clipping planes
+#if !defined(GL_ES_VERSION_2_0)
   aClipPlaneId = GL_CLIP_PLANE0;
   aPtrPlane = aOldPlanes;
 
@@ -650,6 +661,7 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
   }
 
   delete[] aOldPlanes;
+#endif
 
   // ==============================================================
   //      Step 8: Keep shader manager informed about last View
@@ -678,27 +690,35 @@ void OpenGl_View::RenderStructs (const Handle(OpenGl_Workspace) &AWorkspace)
   if ( myZLayers.NbStructures() <= 0 )
     return;
 
+#if !defined(GL_ES_VERSION_2_0)
   glPushAttrib ( GL_DEPTH_BUFFER_BIT );
+#endif
 
   //TsmPushAttri(); /* save previous graphics context */
 
   if ( (AWorkspace->NamedStatus & OPENGL_NS_2NDPASSNEED) == 0 )
   {
+  #if !defined(GL_ES_VERSION_2_0)
     const int antiAliasingMode = AWorkspace->AntiAliasingMode();
+  #endif
 
     if ( !myAntiAliasing )
     {
+    #if !defined(GL_ES_VERSION_2_0)
       glDisable(GL_POINT_SMOOTH);
       glDisable(GL_LINE_SMOOTH);
       if( antiAliasingMode & 2 ) glDisable(GL_POLYGON_SMOOTH);
+    #endif
       glBlendFunc (GL_ONE, GL_ZERO);
       glDisable (GL_BLEND);
     }
     else
     {
+    #if !defined(GL_ES_VERSION_2_0)
       glEnable(GL_POINT_SMOOTH);
       glEnable(GL_LINE_SMOOTH);
       if( antiAliasingMode & 2 ) glEnable(GL_POLYGON_SMOOTH);
+    #endif
       glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
       glEnable (GL_BLEND);
     }
@@ -706,8 +726,10 @@ void OpenGl_View::RenderStructs (const Handle(OpenGl_Workspace) &AWorkspace)
 
   myZLayers.Render (AWorkspace);
 
+#if !defined(GL_ES_VERSION_2_0)
   //TsmPopAttri(); /* restore previous graphics context; before update lights */
   glPopAttrib();
+#endif
 }
 
 /*----------------------------------------------------------------------*/
@@ -717,6 +739,7 @@ void OpenGl_View::RedrawLayer2d (const Handle(OpenGl_PrinterContext)& thePrintCo
                                  const Graphic3d_CView&               ACView,
                                  const Aspect_CLayer2d&               ACLayer)
 {
+#if !defined(GL_ES_VERSION_2_0)
   if (&ACLayer == NULL
    || ACLayer.ptrLayer == NULL
    || ACLayer.ptrLayer->listIndex == 0) return;
@@ -841,6 +864,7 @@ void OpenGl_View::RedrawLayer2d (const Handle(OpenGl_PrinterContext)& thePrintCo
     glViewport (0, 0, (GLsizei) ACView.DefWindow.dx, (GLsizei) ACView.DefWindow.dy);
 
   glFlush ();
+#endif
 }
 
 /*----------------------------------------------------------------------*/
@@ -924,9 +948,12 @@ void OpenGl_View::CreateBackgroundTexture (const Standard_CString  theFilePath,
   glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
 
   const GLenum aDataFormat = (anImage.Format() == Image_PixMap::ImgRGB) ? GL_RGB : GL_RGBA;
+
+#if !defined(GL_ES_VERSION_2_0)
   gluBuild2DMipmaps (GL_TEXTURE_2D, 3/*4*/,
                      GLint(anImage.SizeX()), GLint(anImage.SizeY()),
                      aDataFormat, GL_UNSIGNED_BYTE, anImage.Data());
+#endif
 
   myBgTexture.TexId  = aTextureId;
   myBgTexture.Width  = (Standard_Integer )anImage.SizeX();
@@ -1172,6 +1199,7 @@ void OpenGl_View::RedrawScene (const Handle(OpenGl_PrinterContext)& thePrintCont
     }
   }
 
+#if !defined(GL_ES_VERSION_2_0)
   // Setup view projection
   glMatrixMode (GL_PROJECTION);
 
@@ -1195,12 +1223,14 @@ void OpenGl_View::RedrawScene (const Handle(OpenGl_PrinterContext)& thePrintCont
     aContext->ShaderManager()->UpdateProjectionStateTo (&aResultProjection);
 
     // force shader uniform restore on next frame
-    myProjectionState = 0; 
+    myProjectionState = 0;
   }
+#endif
 
   // Setup view orientation
   theWorkspace->SetViewMatrix (theOrientation);
 
+#if !defined(GL_ES_VERSION_2_0)
   // Apply Lights
   {
     // setup lights
@@ -1229,6 +1259,7 @@ void OpenGl_View::RedrawScene (const Handle(OpenGl_PrinterContext)& thePrintCont
       glDisable (aLightGlId);
     }
   }
+#endif
 
   // Clear status bitfields
   theWorkspace->NamedStatus &= ~(OPENGL_NS_2NDPASSNEED | OPENGL_NS_2NDPASSDO);
@@ -1265,13 +1296,15 @@ void OpenGl_View::RedrawScene (const Handle(OpenGl_PrinterContext)& thePrintCont
         theWorkspace->EnableTexture (myTextureEnv);
 
         // Remember OpenGl properties
-        GLint aSaveBlendDst, aSaveBlendSrc;
+        GLint aSaveBlendDst = GL_ONE_MINUS_SRC_ALPHA, aSaveBlendSrc = GL_SRC_ALPHA;
         GLint aSaveZbuffFunc;
         GLboolean aSaveZbuffWrite;
         glGetBooleanv (GL_DEPTH_WRITEMASK, &aSaveZbuffWrite);
         glGetIntegerv (GL_DEPTH_FUNC, &aSaveZbuffFunc);
+      #if !defined(GL_ES_VERSION_2_0)
         glGetIntegerv (GL_BLEND_DST, &aSaveBlendDst);
         glGetIntegerv (GL_BLEND_SRC, &aSaveBlendSrc);
+      #endif
         GLboolean wasZbuffEnabled = glIsEnabled (GL_DEPTH_TEST);
         GLboolean wasBlendEnabled = glIsEnabled (GL_BLEND);
 

@@ -112,6 +112,7 @@ namespace
     char aPsFont[64];
     getGL2PSFontName (theAspect.FontName().ToCString(), aPsFont);
 
+  #if !defined(GL_ES_VERSION_2_0)
     if (theIs2d)
     {
       glRasterPos2f (0.0f, 0.0f);
@@ -123,6 +124,7 @@ namespace
 
     GLubyte aZero = 0;
     glBitmap (1, 1, 0, 0, 0, 0, &aZero);
+  #endif
 
     // Standard GL2PS's alignment isn't used, because it doesn't work correctly
     // for all formats, therefore alignment is calculated manually relative
@@ -438,11 +440,12 @@ void OpenGl_Text::Render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
 // purpose  :
 // =======================================================================
 void OpenGl_Text::setupMatrix (const Handle(OpenGl_PrinterContext)& thePrintCtx,
-                               const Handle(OpenGl_Context)&        /*theCtx*/,
+                               const Handle(OpenGl_Context)&        theCtx,
                                const OpenGl_AspectText&             theTextAspect,
                                const OpenGl_Vec3                    theDVec) const
 {
   // setup matrix
+#if !defined(GL_ES_VERSION_2_0)
   if (myIs2d)
   {
     glLoadIdentity();
@@ -462,8 +465,8 @@ void OpenGl_Text::setupMatrix (const Handle(OpenGl_PrinterContext)& thePrintCtx,
                   &anObjX, &anObjY, &anObjZ);
 
     glLoadIdentity();
-    glTranslated (anObjX, anObjY, anObjZ);
-    glRotated (theTextAspect.Angle(), 0.0, 0.0, 1.0);
+    theCtx->core11->glTranslated (anObjX, anObjY, anObjZ);
+    theCtx->core11->glRotated (theTextAspect.Angle(), 0.0, 0.0, 1.0);
     if (!theTextAspect.IsZoomable())
     {
     #ifdef _WIN32
@@ -477,12 +480,13 @@ void OpenGl_Text::setupMatrix (const Handle(OpenGl_PrinterContext)& thePrintCtx,
         // text should be scaled in all directions with same
         // factor to save its proportions, so use height (y) scaling
         // as it is better for keeping text/3d graphics proportions
-        glScalef (aTextScaley, aTextScaley, aTextScaley);
+        theCtx->core11->glScaled ((GLfloat )aTextScaley, (GLfloat )aTextScaley, (GLfloat )aTextScaley);
       }
     #endif
-      glScaled (myScaleHeight, myScaleHeight, myScaleHeight);
+      theCtx->core11->glScaled (myScaleHeight, myScaleHeight, myScaleHeight);
     }
   }
+#endif
 }
 
 // =======================================================================
@@ -577,14 +581,18 @@ Handle(OpenGl_Font) OpenGl_Text::FindFont (const Handle(OpenGl_Context)& theCtx,
     }
 
     Handle(OpenGl_Context) aCtx = theCtx;
+  #if !defined(GL_ES_VERSION_2_0)
     glPushAttrib (GL_TEXTURE_BIT);
+  #endif
     aFont = new OpenGl_Font (aFontFt, theKey);
     if (!aFont->Init (aCtx))
     {
       //glPopAttrib();
       //return aFont; // out of resources?
     }
+  #if !defined(GL_ES_VERSION_2_0)
     glPopAttrib(); // texture bit
+  #endif
 
     aCtx->ShareResource (theKey, aFont);
   }
@@ -643,6 +651,7 @@ void OpenGl_Text::render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
   myExportHeight = 1.0f;
   myScaleHeight  = 1.0f;
 
+#if !defined(GL_ES_VERSION_2_0)
   glMatrixMode (GL_MODELVIEW);
   glPushMatrix();
   if (!myIs2d)
@@ -690,6 +699,7 @@ void OpenGl_Text::render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
     glDisable (GL_DEPTH_TEST);
   }
 
+
   // setup alpha test
   GLint aTexEnvParam = GL_REPLACE;
   glGetTexEnviv (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, &aTexEnvParam);
@@ -723,7 +733,7 @@ void OpenGl_Text::render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
     }
     case Aspect_TODT_SUBTITLE:
     {
-      glColor3fv  (theColorSubs.rgb);
+      theCtx->core11->glColor3fv (theColorSubs.rgb);
       setupMatrix (thePrintCtx, theCtx, theTextAspect, OpenGl_Vec3 (0.0f, 0.0f, 0.00001f));
 
       glBindTexture (GL_TEXTURE_2D, 0);
@@ -737,7 +747,7 @@ void OpenGl_Text::render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
     }
     case Aspect_TODT_DEKALE:
     {
-      glColor3fv  (theColorSubs.rgb);
+      theCtx->core11->glColor3fv  (theColorSubs.rgb);
       setupMatrix (thePrintCtx, theCtx, theTextAspect, OpenGl_Vec3 (+1.0f, +1.0f, 0.00001f));
       drawText    (thePrintCtx, theCtx, theTextAspect);
       setupMatrix (thePrintCtx, theCtx, theTextAspect, OpenGl_Vec3 (-1.0f, -1.0f, 0.00001f));
@@ -756,7 +766,7 @@ void OpenGl_Text::render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
   }
 
   // main draw call
-  glColor3fv  (theColorText.rgb);
+  theCtx->core11->glColor3fv (theColorText.rgb);
   setupMatrix (thePrintCtx, theCtx, theTextAspect, OpenGl_Vec3 (0.0f, 0.0f, 0.0f));
   drawText    (thePrintCtx, theCtx, theTextAspect);
 
@@ -798,4 +808,5 @@ void OpenGl_Text::render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
   // revert OpenGL state
   glPopAttrib(); // enable bit
   glPopMatrix(); // model view matrix was modified
+#endif
 }

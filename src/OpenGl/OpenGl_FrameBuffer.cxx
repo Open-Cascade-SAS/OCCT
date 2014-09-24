@@ -92,8 +92,15 @@ Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlCo
   theGlContext->arbFBO->glBindFramebuffer (GL_FRAMEBUFFER, myGlFBufferId);
   theGlContext->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
                                                 GL_TEXTURE_2D, myColorTexture->TextureId(), 0);
+#ifdef GL_DEPTH_STENCIL_ATTACHMENT
   theGlContext->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT,
                                                 GL_TEXTURE_2D, myDepthStencilTexture->TextureId(), 0);
+#else
+  theGlContext->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
+                                                GL_TEXTURE_2D, myDepthStencilTexture->TextureId(), 0);
+  theGlContext->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT,
+                                                GL_TEXTURE_2D, myDepthStencilTexture->TextureId(), 0);
+#endif
   if (theGlContext->arbFBO->glCheckFramebufferStatus (GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
   {
     Release (theGlContext.operator->());

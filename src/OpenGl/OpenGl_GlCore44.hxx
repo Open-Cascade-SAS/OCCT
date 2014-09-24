@@ -25,6 +25,8 @@ struct OpenGl_TmplCore44 : public theBaseClass_t
 
 public: //! @name OpenGL 4.4 additives to 4.3
 
+#if !defined(GL_ES_VERSION_2_0)
+
   using theBaseClass_t::glBufferStorage;
   using theBaseClass_t::glClearTexImage;
   using theBaseClass_t::glClearTexSubImage;
@@ -34,6 +36,8 @@ public: //! @name OpenGL 4.4 additives to 4.3
   using theBaseClass_t::glBindSamplers;
   using theBaseClass_t::glBindImageTextures;
   using theBaseClass_t::glBindVertexBuffers;
+
+#endif
 
 };
 

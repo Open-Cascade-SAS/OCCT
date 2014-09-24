@@ -31,6 +31,15 @@ Standard_Boolean OpenGl_CappingAlgo::myIsInit = Standard_False;
 
 namespace
 {
+
+#if !defined(GL_ES_VERSION_2_0)
+  static const GLint THE_FILLPRIM_FROM = GL_TRIANGLES;
+  static const GLint THE_FILLPRIM_TO   = GL_POLYGON;
+#else
+  static const GLint THE_FILLPRIM_FROM = GL_TRIANGLES;
+  static const GLint THE_FILLPRIM_TO   = GL_TRIANGLE_FAN;
+#endif
+
   static const OpenGl_Vec4 THE_CAPPING_PLN_VERTS[12] =
     { OpenGl_Vec4 ( 0.0f, 0.0f, 0.0f, 1.0f),
       OpenGl_Vec4 ( 1.0f, 0.0f, 0.0f, 0.0f),
@@ -45,7 +54,7 @@ namespace
       OpenGl_Vec4 ( 0.0f, 0.0f,-1.0f, 0.0f),
       OpenGl_Vec4 ( 1.0f, 0.0f, 0.0f, 0.0f) };
 
-  static const OpenGl_Vec4 THE_CAPPING_PLN_TCOORD[12] = 
+  static const OpenGl_Vec4 THE_CAPPING_PLN_TCOORD[12] =
     { OpenGl_Vec4 ( 0.0f, 0.0f, 0.0f, 1.0f),
       OpenGl_Vec4 ( 1.0f, 0.0f, 0.0f, 0.0f),
       OpenGl_Vec4 ( 0.0f, 1.0f, 0.0f, 0.0f),
@@ -58,7 +67,7 @@ namespace
       OpenGl_Vec4 ( 0.0f, 0.0f, 0.0f, 1.0f),
       OpenGl_Vec4 ( 0.0f,-1.0f, 0.0f, 0.0f),
       OpenGl_Vec4 ( 1.0f, 0.0f, 0.0f, 0.0f) };
-};
+}
 
 // =======================================================================
 // function : RenderCapping
@@ -222,7 +231,7 @@ void OpenGl_CappingAlgo::RenderPlane (const Handle(OpenGl_Workspace)& theWorkspa
 
   // set identity model matrix
   const OpenGl_Matrix* aModelMatrix = theWorkspace->SetStructureMatrix (&OpenGl_IdentityMatrix);
-
+#if !defined(GL_ES_VERSION_2_0)
   glMultMatrixf ((const GLfloat*)aPlaneRes->Orientation());
   glNormal3f (0.0f, 1.0f, 0.0f);
   glEnableClientState (GL_VERTEX_ARRAY);
@@ -232,6 +241,7 @@ void OpenGl_CappingAlgo::RenderPlane (const Handle(OpenGl_Workspace)& theWorkspa
   glDrawArrays (GL_TRIANGLES, 0, 12);
   glDisableClientState (GL_VERTEX_ARRAY);
   glDisableClientState (GL_TEXTURE_COORD_ARRAY);
+#endif
 
   theWorkspace->SetStructureMatrix (aModelMatrix, true);
   theWorkspace->SetAspectFace (aFaceAspect);
@@ -268,6 +278,6 @@ Standard_Boolean OpenGl_CappingAlgoFilter::CanRender (const OpenGl_Element* theE
 {
   const OpenGl_PrimitiveArray* aPArray = dynamic_cast<const OpenGl_PrimitiveArray*> (theElement);
   return aPArray != NULL
-      && aPArray->DrawMode() >= GL_TRIANGLES
-      && aPArray->DrawMode() <= GL_POLYGON;
+      && aPArray->DrawMode() >= THE_FILLPRIM_FROM
+      && aPArray->DrawMode() <= THE_FILLPRIM_TO;
 }

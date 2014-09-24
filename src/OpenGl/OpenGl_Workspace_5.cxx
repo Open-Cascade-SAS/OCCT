@@ -51,6 +51,7 @@ static void TelUpdatePolygonOffsets (const TEL_POFFSET_PARAM& theOffsetData)
     glDisable (GL_POLYGON_OFFSET_FILL);
   }
 
+#if !defined(GL_ES_VERSION_2_0)
   if ((theOffsetData.mode & Aspect_POM_Line) == Aspect_POM_Line)
   {
     glEnable (GL_POLYGON_OFFSET_LINE);
@@ -68,6 +69,7 @@ static void TelUpdatePolygonOffsets (const TEL_POFFSET_PARAM& theOffsetData)
   {
     glDisable (GL_POLYGON_OFFSET_POINT);
   }
+#endif
 
   glPolygonOffset (theOffsetData.factor, theOffsetData.units);
 }
@@ -147,11 +149,13 @@ void OpenGl_Workspace::updateMaterial (const int theFlag)
   // reset material
   if (NamedStatus & OPENGL_NS_RESMAT)
   {
+  #if !defined(GL_ES_VERSION_2_0)
     glMaterialfv (aFace, GL_AMBIENT,   myMatTmp.Ambient.GetData());
     glMaterialfv (aFace, GL_DIFFUSE,   myMatTmp.Diffuse.GetData());
     glMaterialfv (aFace, GL_SPECULAR,  myMatTmp.Specular.GetData());
     glMaterialfv (aFace, GL_EMISSION,  myMatTmp.Emission.GetData());
     glMaterialf  (aFace, GL_SHININESS, myMatTmp.Shine());
+  #endif
 
     if (theFlag == TEL_FRONT_MATERIAL)
     {
@@ -171,7 +175,7 @@ void OpenGl_Workspace::updateMaterial (const int theFlag)
   OpenGl_Material& anOld = (theFlag == TEL_FRONT_MATERIAL)
                          ? myMatFront
                          : myMatBack;
-
+#if !defined(GL_ES_VERSION_2_0)
   if (myMatTmp.Ambient.r() != anOld.Ambient.r()
    || myMatTmp.Ambient.g() != anOld.Ambient.g()
    || myMatTmp.Ambient.b() != anOld.Ambient.b())
@@ -201,6 +205,7 @@ void OpenGl_Workspace::updateMaterial (const int theFlag)
   {
     glMaterialf (aFace, GL_SHININESS, myMatTmp.Shine());
   }
+#endif
   anOld = myMatTmp;
   if (aFace == GL_FRONT_AND_BACK)
   {
@@ -291,10 +296,11 @@ const void OpenGl_Workspace::UpdateModelViewMatrix()
 {
   OpenGl_Matrix aStructureMatT;
   OpenGl_Transposemat3( &aStructureMatT, StructureMatrix_applied);
-
-  glMatrixMode (GL_MODELVIEW);
   OpenGl_Multiplymat3 (&myModelViewMatrix, &aStructureMatT, ViewMatrix_applied);
+#if !defined(GL_ES_VERSION_2_0)
+  glMatrixMode (GL_MODELVIEW);
   glLoadMatrixf ((const GLfloat* )&myModelViewMatrix.mat);
+#endif
 }
 
 /*----------------------------------------------------------------------*/
@@ -303,7 +309,10 @@ const OpenGl_AspectLine * OpenGl_Workspace::AspectLine(const Standard_Boolean Wi
 {
   if ( WithApply && (AspectLine_set != AspectLine_applied) )
   {
-    glColor3fv(AspectLine_set->Color().rgb);
+    const GLfloat* anRgb = AspectLine_set->Color().rgb;
+  #if !defined(GL_ES_VERSION_2_0)
+    glColor3fv(anRgb);
+  #endif
 
     if ( !AspectLine_applied || (AspectLine_set->Type() != AspectLine_applied->Type() ) )
     {
@@ -380,6 +389,7 @@ const OpenGl_AspectFace* OpenGl_Workspace::AspectFace (const Standard_Boolean th
     return AspectFace_set;
   }
 
+#if !defined(GL_ES_VERSION_2_0)
   const Aspect_InteriorStyle anIntstyle = AspectFace_set->InteriorStyle();
   if (AspectFace_applied == NULL || AspectFace_applied->InteriorStyle() != anIntstyle)
   {
@@ -420,6 +430,7 @@ const OpenGl_AspectFace* OpenGl_Workspace::AspectFace (const Standard_Boolean th
       myLineAttribs->SetTypeOfHatch (hatchstyle);
     }
   }
+#endif
 
   // Aspect_POM_None means: do not change current settings
   if ((AspectFace_set->PolygonOffset().mode & Aspect_POM_None) != Aspect_POM_None)
@@ -480,9 +491,11 @@ const OpenGl_AspectMarker* OpenGl_Workspace::AspectMarker (const Standard_Boolea
   {
     if (!AspectMarker_applied || (AspectMarker_set->Scale() != AspectMarker_applied->Scale()))
     {
+    #if !defined(GL_ES_VERSION_2_0)
       glPointSize (AspectMarker_set->Scale());
     #ifdef HAVE_GL2PS
       gl2psPointSize (AspectMarker_set->Scale());
+    #endif
     #endif
     }
     AspectMarker_applied = AspectMarker_set;

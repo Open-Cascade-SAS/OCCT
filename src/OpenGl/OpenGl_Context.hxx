@@ -260,13 +260,21 @@ public:
   //! Return true if active mode is GL_RENDER (cached state)
   Standard_Boolean IsRender() const
   {
+  #if !defined(GL_ES_VERSION_2_0)
     return myRenderMode == GL_RENDER;
+  #else
+    return Standard_True;
+  #endif
   }
 
   //! Return true if active mode is GL_FEEDBACK (cached state)
   Standard_Boolean IsFeedback() const
   {
+  #if !defined(GL_ES_VERSION_2_0)
     return myRenderMode == GL_FEEDBACK;
+  #else
+    return Standard_False;
+  #endif
   }
 
   //! This function retrieves information from GL about free GPU memory that is:
@@ -341,6 +349,9 @@ public:
 
 public:
 
+  //! Either GL_CLAMP_TO_EDGE (1.2+) or GL_CLAMP (1.1).
+  Standard_Integer TextureWrapClamp() const { return myTexClamp; }
+
   //! @return maximum degree of anisotropy texture filter
   Standard_EXPORT Standard_Integer MaxDegreeOfAnisotropy() const;
 
@@ -386,7 +397,11 @@ public:
   //! right rendering buffers.
   Standard_Boolean HasStereoBuffers() const
   {
+  #if !defined(GL_ES_VERSION_2_0)
     return myIsStereoBuffers;
+  #else
+    return Standard_False;
+  #endif
   }
 
 public: //! @name methods to alter or retrieve current state
@@ -456,18 +471,20 @@ public: //! @name core profiles
 
 public: //! @name extensions
 
-  Standard_Boolean arbNPTW; //!< GL_ARB_texture_non_power_of_two
-  Standard_Boolean arbTexRG;//!< GL_ARB_texture_rg
-  OpenGl_ArbTBO*   arbTBO;  //!< GL_ARB_texture_buffer_object
-  OpenGl_ArbIns*   arbIns;  //!< GL_ARB_draw_instanced
-  OpenGl_ArbDbg*   arbDbg;  //!< GL_ARB_debug_output
-  OpenGl_ArbFBO*   arbFBO;  //!< GL_ARB_framebuffer_object
-  OpenGl_ExtGS*    extGS;   //!< GL_EXT_geometry_shader4
-  Standard_Boolean extBgra; //!< GL_EXT_bgra
-  Standard_Boolean extAnis; //!< GL_EXT_texture_filter_anisotropic
-  Standard_Boolean extPDS;  //!< GL_EXT_packed_depth_stencil
-  Standard_Boolean atiMem;  //!< GL_ATI_meminfo
-  Standard_Boolean nvxMem;  //!< GL_NVX_gpu_memory_info
+  Standard_Boolean hasHighp;    //!< highp in GLSL ES fragment shader is supported
+  Standard_Boolean hasTexRGBA8; //!< always available on desktop; on OpenGL ES - since 3.0 or as extension GL_OES_rgb8_rgba8
+  Standard_Boolean arbNPTW;     //!< GL_ARB_texture_non_power_of_two
+  Standard_Boolean arbTexRG;    //!< GL_ARB_texture_rg
+  OpenGl_ArbTBO*   arbTBO;      //!< GL_ARB_texture_buffer_object
+  OpenGl_ArbIns*   arbIns;      //!< GL_ARB_draw_instanced
+  OpenGl_ArbDbg*   arbDbg;      //!< GL_ARB_debug_output
+  OpenGl_ArbFBO*   arbFBO;      //!< GL_ARB_framebuffer_object
+  OpenGl_ExtGS*    extGS;       //!< GL_EXT_geometry_shader4
+  Standard_Boolean extBgra;     //!< GL_EXT_bgra or GL_EXT_texture_format_BGRA8888 on OpenGL ES
+  Standard_Boolean extAnis;     //!< GL_EXT_texture_filter_anisotropic
+  Standard_Boolean extPDS;      //!< GL_EXT_packed_depth_stencil
+  Standard_Boolean atiMem;      //!< GL_ATI_meminfo
+  Standard_Boolean nvxMem;      //!< GL_NVX_gpu_memory_info
 
 private: // system-dependent fields
 
@@ -506,6 +523,7 @@ private: // context info
   NCollection_Handle<OpenGl_GlFunctions>
                    myFuncs;           //!< mega structure for all GL functions
   Standard_Integer myAnisoMax;        //!< maximum level of anisotropy texture filter
+  Standard_Integer myTexClamp;        //!< either GL_CLAMP_TO_EDGE (1.2+) or GL_CLAMP (1.1)
   Standard_Integer myMaxTexDim;       //!< value for GL_MAX_TEXTURE_SIZE
   Standard_Integer myMaxClipPlanes;   //!< value for GL_MAX_CLIP_PLANES
   Standard_Integer myGlVerMajor;      //!< cached GL version major number

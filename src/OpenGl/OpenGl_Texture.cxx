@@ -32,7 +32,9 @@ struct OpenGl_UnpackAlignmentSentry
   void Reset()
   {
     glPixelStorei (GL_UNPACK_ALIGNMENT,  1);
+  #if !defined(GL_ES_VERSION_2_0)
     glPixelStorei (GL_UNPACK_ROW_LENGTH, 0);
+  #endif
   }
 
   ~OpenGl_UnpackAlignmentSentry()
@@ -197,8 +199,8 @@ bool OpenGl_Texture::GetDataFormat (const Handle(OpenGl_Context)& theCtx,
       {
         return false;
       }
-      theTextFormat = GL_RGBA8; // GL_RGBA32F
-      thePixelFormat = GL_BGRA; // equals to GL_BGRA_EXT
+      theTextFormat  = GL_RGBA8;    // GL_RGBA32F
+      thePixelFormat = GL_BGRA_EXT; // equals to GL_BGRA
       theDataType    = GL_FLOAT;
       return true;
     }
@@ -211,10 +213,14 @@ bool OpenGl_Texture::GetDataFormat (const Handle(OpenGl_Context)& theCtx,
     }
     case Image_PixMap::ImgBGRF:
     {
-      theTextFormat = GL_RGB8; // GL_RGB32F
+    #if !defined(GL_ES_VERSION_2_0)
+      theTextFormat  = GL_RGB8; // GL_RGB32F
       thePixelFormat = GL_BGR;  // equals to GL_BGR_EXT
       theDataType    = GL_FLOAT;
       return true;
+    #else
+      return false;
+    #endif
     }
     case Image_PixMap::ImgRGBA:
     {
@@ -229,8 +235,8 @@ bool OpenGl_Texture::GetDataFormat (const Handle(OpenGl_Context)& theCtx,
       {
         return false;
       }
-      theTextFormat = GL_RGBA8;
-      thePixelFormat = GL_BGRA; // equals to GL_BGRA_EXT
+      theTextFormat  = GL_RGBA8;
+      thePixelFormat = GL_BGRA_EXT; // equals to GL_BGRA
       theDataType    = GL_UNSIGNED_BYTE;
       return true;
     }
@@ -247,8 +253,8 @@ bool OpenGl_Texture::GetDataFormat (const Handle(OpenGl_Context)& theCtx,
       {
         return false;
       }
-      theTextFormat = GL_RGB8;
-      thePixelFormat = GL_BGRA; // equals to GL_BGRA_EXT
+      theTextFormat  = GL_RGB8;
+      thePixelFormat = GL_BGRA_EXT; // equals to GL_BGRA
       theDataType    = GL_UNSIGNED_BYTE;
       return true;
     }
@@ -261,6 +267,7 @@ bool OpenGl_Texture::GetDataFormat (const Handle(OpenGl_Context)& theCtx,
     }
     case Image_PixMap::ImgBGR:
     {
+    #if !defined(GL_ES_VERSION_2_0)
       if (!theCtx->IsGlGreaterEqual (1, 2) && !theCtx->extBgra)
       {
         return false;
@@ -269,6 +276,9 @@ bool OpenGl_Texture::GetDataFormat (const Handle(OpenGl_Context)& theCtx,
       thePixelFormat = GL_BGR; // equals to GL_BGR_EXT
       theDataType    = GL_UNSIGNED_BYTE;
       return true;
+    #else
+      return false;
+    #endif
     }
     case Image_PixMap::ImgGray:
     {
@@ -316,8 +326,10 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
   const GLsizei aWidthOut  = toForceP2 ? OpenGl_Context::GetPowerOfTwo (aWidth,  aMaxSize) : Min (aWidth,  aMaxSize);
   const GLsizei aHeightOut = toForceP2 ? OpenGl_Context::GetPowerOfTwo (aHeight, aMaxSize) : Min (aHeight, aMaxSize);
 
+#if !defined(GL_ES_VERSION_2_0)
   GLint aTestWidth  = 0;
   GLint aTestHeight = 0;
+#endif
   GLvoid* aDataPtr = (theImage != NULL) ? (GLvoid* )theImage->Data() : NULL;
 
   // setup the alignment
@@ -327,16 +339,19 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
     const GLint anAligment = Min ((GLint )theImage->MaxRowAligmentBytes(), 8); // OpenGL supports alignment upto 8 bytes
     glPixelStorei (GL_UNPACK_ALIGNMENT, anAligment);
 
+  #if !defined(GL_ES_VERSION_2_0)
     // notice that GL_UNPACK_ROW_LENGTH is not available on OpenGL ES 2.0 without GL_EXT_unpack_subimage extension
     const GLint anExtraBytes = GLint(theImage->RowExtraBytes());
     const GLint aPixelsWidth = GLint(theImage->SizeRowBytes() / theImage->SizePixelBytes());
     glPixelStorei (GL_UNPACK_ROW_LENGTH, (anExtraBytes >= anAligment) ? aPixelsWidth : 0);
+  #endif
   }
 
   switch (theType)
   {
     case Graphic3d_TOT_1D:
     {
+    #if !defined(GL_ES_VERSION_2_0)
       myTarget = GL_TEXTURE_1D;
       Bind (theCtx);
       glTexParameteri (GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -392,6 +407,9 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
 
       Unbind (theCtx);
       return true;
+    #else
+      return false;
+    #endif
     }
     case Graphic3d_TOT_2D:
     {
@@ -405,6 +423,7 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
       {
         if (aWidth != aWidthOut || aHeight != aHeightOut)
         {
+        #if !defined(GL_ES_VERSION_2_0)
           // scale texture
           glPixelStorei (GL_PACK_ALIGNMENT,  1);
           glPixelStorei (GL_PACK_ROW_LENGTH, 0);
@@ -420,9 +439,15 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
 
           aDataPtr = (GLvoid* )aCopy.Data();
           anUnpackSentry.Reset();
+        #else
+          Unbind (theCtx);
+          Release (theCtx.operator->());
+          return false;
+        #endif
         }
       }
 
+    #if !defined(GL_ES_VERSION_2_0)
       // use proxy to check texture could be created or not
       glTexImage2D (GL_PROXY_TEXTURE_2D, 0, myTextFormat,
                     aWidthOut, aHeightOut, 0,
@@ -436,6 +461,7 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
         Release (theCtx.operator->());
         return false;
       }
+    #endif
 
       glTexImage2D (GL_TEXTURE_2D, 0, myTextFormat,
                     aWidthOut, aHeightOut, 0,
@@ -464,6 +490,7 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
       if (theCtx->arbFBO != NULL
        && aWidth == aWidthOut && aHeight == aHeightOut)
       {
+      #if !defined(GL_ES_VERSION_2_0)
         // use proxy to check texture could be created or not
         glTexImage2D (GL_PROXY_TEXTURE_2D, 0, myTextFormat,
                       aWidthOut, aHeightOut, 0,
@@ -477,6 +504,7 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
           Release (theCtx.operator->());
           return false;
         }
+      #endif
 
         // upload main picture
         glTexImage2D (GL_TEXTURE_2D, 0, myTextFormat,
@@ -501,6 +529,7 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
       }
       else
       {
+      #if !defined(GL_ES_VERSION_2_0)
         bool isCreated = gluBuild2DMipmaps (GL_TEXTURE_2D, myTextFormat,
                                             aWidth, aHeight,
                                             thePixelFormat, theDataType, theImage->Data()) == 0;
@@ -512,6 +541,10 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
 
         Unbind (theCtx);
         return isCreated;
+      #else
+        Unbind (theCtx);
+        return false;
+      #endif
       }
     }
     default:
@@ -565,12 +598,13 @@ bool OpenGl_Texture::InitRectangle (const Handle(OpenGl_Context)& theCtx,
   {
     return false;
   }
-  
+
+#if !defined(GL_ES_VERSION_2_0)
   myTarget = GL_TEXTURE_RECTANGLE;
 
   const GLsizei aSizeX = Min (theCtx->MaxTextureSize(), theSizeX);
   const GLsizei aSizeY = Min (theCtx->MaxTextureSize(), theSizeY);
-  
+
   Bind (theCtx);
 
   if (myParams->Filter() == Graphic3d_TOTF_NEAREST)
@@ -631,4 +665,7 @@ bool OpenGl_Texture::InitRectangle (const Handle(OpenGl_Context)& theCtx,
 
   Unbind (theCtx);
   return true;
+#else
+  return false;
+#endif
 }

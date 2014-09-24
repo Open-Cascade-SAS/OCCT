@@ -27,6 +27,7 @@ struct OpenGl_TmplCore15 : public theBaseClass_t
 
 public: //! @name OpenGL 1.5 additives to 1.4
 
+#if !defined(GL_ES_VERSION_2_0)
   using theBaseClass_t::glGenQueries;
   using theBaseClass_t::glDeleteQueries;
   using theBaseClass_t::glIsQuery;
@@ -35,17 +36,20 @@ public: //! @name OpenGL 1.5 additives to 1.4
   using theBaseClass_t::glGetQueryiv;
   using theBaseClass_t::glGetQueryObjectiv;
   using theBaseClass_t::glGetQueryObjectuiv;
+
+  using theBaseClass_t::glMapBuffer;
+  using theBaseClass_t::glUnmapBuffer;
+  using theBaseClass_t::glGetBufferSubData;
+  using theBaseClass_t::glGetBufferPointerv;
+#endif
+
   using theBaseClass_t::glBindBuffer;
   using theBaseClass_t::glDeleteBuffers;
   using theBaseClass_t::glGenBuffers;
   using theBaseClass_t::glIsBuffer;
   using theBaseClass_t::glBufferData;
   using theBaseClass_t::glBufferSubData;
-  using theBaseClass_t::glGetBufferSubData;
-  using theBaseClass_t::glMapBuffer;
-  using theBaseClass_t::glUnmapBuffer;
   using theBaseClass_t::glGetBufferParameteriv;
-  using theBaseClass_t::glGetBufferPointerv;
 
 };
 

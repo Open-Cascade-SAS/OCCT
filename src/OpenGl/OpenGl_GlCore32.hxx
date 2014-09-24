@@ -23,6 +23,8 @@ template<typename theBaseClass_t>
 struct OpenGl_TmplCore32 : public theBaseClass_t
 {
 
+#if !defined(GL_ES_VERSION_2_0)
+
 public: //! @name GL_ARB_draw_elements_base_vertex (added to OpenGL 3.2 core)
 
   using theBaseClass_t::glDrawElementsBaseVertex;
@@ -56,6 +58,8 @@ public: //! @name OpenGL 3.2 additives to 3.1
   using theBaseClass_t::glGetInteger64i_v;
   using theBaseClass_t::glGetBufferParameteri64v;
   using theBaseClass_t::glFramebufferTexture;
+
+#endif
 
 };
 

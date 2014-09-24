@@ -58,7 +58,9 @@ void OpenGl_PointSprite::Release (OpenGl_Context* theGlCtx)
 
     if (theGlCtx->IsValid())
     {
+    #if !defined(GL_ES_VERSION_2_0)
       glDeleteLists (myBitmapList, 1);
+    #endif
     }
     myBitmapList = 0;
   }
@@ -86,6 +88,8 @@ void OpenGl_PointSprite::DrawBitmap (const Handle(OpenGl_Context)& ) const
 {
   if (myBitmapList != 0)
   {
+  #if !defined(GL_ES_VERSION_2_0)
     glCallList (myBitmapList);
+  #endif
   }
 }
