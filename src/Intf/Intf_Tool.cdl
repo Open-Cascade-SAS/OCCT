@@ -115,7 +115,10 @@ is      Create returns Tool from Intf;
 fields  nbSeg         : Integer from Standard;
     	beginOnCurve  : Real    from Standard [6];
     	endOnCurve    : Real    from Standard [6];
+      
+      -- Code of every side of BndBox. 
         bord          : Integer from Standard [12];
+        
         xint          : Real    from Standard [12];
         yint          : Real    from Standard [12];
         zint          : Real    from Standard [12];

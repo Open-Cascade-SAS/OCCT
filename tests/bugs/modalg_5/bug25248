@@ -1,0 +1,12 @@
+puts "========="
+puts "CR25248"
+puts "========="
+puts ""
+###############################
+## Curve-Surface intersection algorithm raises exception
+###############################
+
+restore [locate_data_file bug25248_c.draw] c
+restore [locate_data_file bug25111_s2.draw] s
+
+intersect i c s
