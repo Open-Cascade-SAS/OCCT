@@ -6,6 +6,8 @@ BOPAlgo_PaveFiller_5.cxx
 BOPAlgo_PaveFiller_6.cxx
 BOPAlgo_PaveFiller_7.cxx
 BOPAlgo_PaveFiller_8.cxx
+BOPAlgo_PaveFiller_9.cxx
+BOPAlgo_PaveFiller_10.cxx
 BOPAlgo_Builder_1.cxx
 BOPAlgo_Builder_2.cxx
 BOPAlgo_Builder_3.cxx
@@ -13,5 +15,5 @@ BOPAlgo_Builder_4.cxx
 BOPAlgo_BOP_1.cxx
 BOPAlgo_WireSplitter_1.cxx
 BOPAlgo_ListOfCheckResult.hxx
-BOPAlgo_CheckerSI_1.cxx
-BOPAlgo_PaveFiller_9.cxx
+
+

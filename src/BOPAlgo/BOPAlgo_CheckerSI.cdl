@@ -65,28 +65,14 @@ is
     PostTreat  (me:out)  
      is protected;       
     ---Purpose: Provides post-treatment actions   
-    
-    PerformVZ(me:out) 
-      is virtual protected; 
-       --Purpose: Computes Vertex/Solid interferences 
-       
-    PerformEZ(me:out) 
-      is virtual protected;  
-      --Purpose: Computes Edge/Solid interferences 
-     
-    PerformFZ(me:out) 
-      is virtual protected;   
-      --Purpose: Computes Face/Solid interferences 
-    PerformZZ(me:out) 
-      is virtual protected;  
-      --Purpose: Computes Solid/Solid interferences 
-  
+ 
     PrepareCopy(me:out) 
       is virtual protected;  
      
     PostTreatCopy (me:out)  
      is protected;       
     ---Purpose: Provides post-treatment actions for the copy  
+
  
 fields
     myLevelOfCheck: Integer from Standard is protected;

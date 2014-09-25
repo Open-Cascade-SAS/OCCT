@@ -300,7 +300,9 @@ void BOPAlgo_PaveFiller::PerformFF()
       aNbCurves=aCvsX.Length();
       aNbPoints=aPntsX.Length();
       //
-      myDS->AddInterf(nF1, nF2);
+      if (aNbCurves || aNbPoints) {
+        myDS->AddInterf(nF1, nF2);
+      } 
       //
       iX=aFFs.Append()-1;
       BOPDS_InterfFF& aFF=aFFs(iX);

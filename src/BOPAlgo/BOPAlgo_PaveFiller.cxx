@@ -243,4 +243,27 @@ void BOPAlgo_PaveFiller::PerformInternal()
   if (myErrorStatus) {
     return; 
   }
+  //
+  //modified by NIZNHY-PKV Fri Sep 12 07:06:50 2014f
+  // 03
+  PerformVZ();
+  if (myErrorStatus) {
+    return;
+  }
+  // 13
+  PerformEZ();
+  if (myErrorStatus) {
+    return;
+  }
+  // 23
+  PerformFZ();
+  if (myErrorStatus) {
+    return;
+  }
+  // 33
+  PerformZZ();
+  if (myErrorStatus) {
+    return;
+  }
+  //modified by NIZNHY-PKV Fri Sep 12 07:06:52 2014t
 } 

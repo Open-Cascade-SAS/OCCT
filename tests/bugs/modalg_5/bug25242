@@ -1,0 +1,23 @@
+puts "================"
+puts "OCC25242"
+puts "================"
+puts ""
+#################################
+# Wrong result of cut operation
+#################################
+
+box a 0 0 0 10 10 10
+box b 20 0 0 10 10 10
+
+bfuse r0 a b
+bcut result r0 a
+
+set nb_v_good 8
+set nb_e_good 12
+set nb_w_good 6
+set nb_f_good 6
+set nb_sh_good 1
+set nb_sol_good 1
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 35

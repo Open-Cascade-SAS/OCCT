@@ -39,6 +39,18 @@
 
 #include <BRep_Tool.hxx>
 #include <NCollection_IncAllocator.hxx>
+//
+#include <BOPTools_Set.hxx>
+#include <BOPTools_SetMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+
+typedef NCollection_DataMap  
+  <BOPTools_Set, 
+  TopoDS_Shape, 
+  BOPTools_SetMapHasher> BOPTools_DataMapOfSetShape; 
+//
+typedef BOPTools_DataMapOfSetShape::Iterator 
+  BOPTools_DataMapIteratorOfDataMapOfSetShape; 
 
 static
   TopAbs_ShapeEnum TypeToExplore(const Standard_Integer theDim);
@@ -479,7 +491,10 @@ void BOPAlgo_BOP::BuildRC()
   BRep_Builder aBB;
   TopExp_Explorer aExp;
   BOPCol_DataMapOfShapeShape aDMSSA;
-  BOPCol_ListIteratorOfListOfShape aItLS, aItIm;
+  BOPCol_ListIteratorOfListOfShape aItLS, aItIm; 
+  Standard_Boolean bHasInterf;
+  Standard_Integer iX;
+  BOPTools_DataMapOfSetShape aDMSTS;
   //
   myErrorStatus=0;
   //
@@ -531,6 +546,17 @@ void BOPAlgo_BOP::BuildRC()
       for (; aExp.More(); aExp.Next()) {
         const TopoDS_Shape aSIm=aExp.Current();
         aDMSSA.Bind(aSIm, aSIm);
+        if (aTmin==TopAbs_SOLID) {
+          iX=myDS->Index(aSIm);
+          bHasInterf=myDS->HasInterf(iX);
+          if (!bHasInterf) {
+            BOPTools_Set aST;
+            //
+            aST.Add(aSIm, TopAbs_FACE);
+            //
+            aDMSTS.Bind(aST, aSIm);
+          }
+        }
       }
     }
   } //for (; aItLS.More(); aItLS.Next())
@@ -569,7 +595,7 @@ void BOPAlgo_BOP::BuildRC()
           }
         }
       }
-    }
+    }// if (myImages.IsBound(aST)){
     else {
       aExp.Init(aST, aTmin);
       for (; aExp.More(); aExp.Next()) {
@@ -587,10 +613,32 @@ void BOPAlgo_BOP::BuildRC()
             const TopoDS_Shape& aSImA=aDMSSA.Find(aSIm);
             aBB.Add(aC, aSImA);
           }
+          else {
+             if (aTmin==TopAbs_SOLID) {
+               BOPTools_Set aST;
+               //
+               aST.Add(aSIm, TopAbs_FACE);
+               //
+               if (aDMSTS.IsBound(aST)) {
+                 const TopoDS_Shape& aSImA=aDMSTS.Find(aST);
+                 aBB.Add(aC, aSImA);
+               }
+             }
+          }
         }
         else {// ie cut or cut21
           if (!bIsBound) {
-            aBB.Add(aC, aSIm);
+            if (aTmin==TopAbs_SOLID) {
+              BOPTools_Set aST;
+              //
+              aST.Add(aSIm, TopAbs_FACE);
+              //
+              bIsBound=aDMSTS.IsBound(aST); 
+            }
+            //
+            if (!bIsBound) {
+              aBB.Add(aC, aSIm);
+            }
           }
         }
       }
@@ -739,7 +787,8 @@ void BOPAlgo_BOP::BuildShape()
 //=======================================================================
 void BOPAlgo_BOP::BuildSolid()
 {
-  Standard_Integer i, aNbF, aNbSx, iX, iErr;
+  Standard_Boolean bHasInterf, bHasSharedFaces;
+  Standard_Integer i, aNbF, aNbSx, iX, iErr, aNbZ;
   TopAbs_Orientation aOr, aOr1;
   TopoDS_Iterator aIt;
   TopoDS_Shape aRC;
@@ -749,13 +798,73 @@ void BOPAlgo_BOP::BuildSolid()
   BOPCol_IndexedDataMapOfShapeListOfShape aMFS, aMEF;
   BOPCol_ListIteratorOfListOfShape aItLS;
   BOPCol_ListOfShape aSFS;
-  BOPAlgo_BuilderSolid aSB;
+  BOPAlgo_BuilderSolid aSB; 
+  BOPCol_MapOfShape aMSA, aMZ;
+  BOPTools_DataMapOfSetShape aDMSTS;
+  BOPTools_DataMapIteratorOfDataMapOfSetShape aItDMSTS;
   //
   myErrorStatus=0;
+  //
+  // Map of of Solids of Arguments
+  for (i=0; i<2; ++i) {
+    const BOPCol_ListOfShape& aLSA=(i) ? myArguments : myTools;
+    aItLS.Initialize(aLSA);
+    for (; aItLS.More(); aItLS.Next()) {
+      const TopoDS_Shape& aSA=aItLS.Value();
+      aExp.Init(aSA, TopAbs_SOLID);
+      for (; aExp.More(); aExp.Next()) {
+        const TopoDS_Shape& aZA=aExp.Current();
+        aMSA.Add(aZA);
+        //
+        BOPTools::MapShapesAndAncestors(aZA, 
+                                        TopAbs_FACE, 
+                                        TopAbs_SOLID, 
+                                        aMFS);
+      }
+    }
+  }
+  //
+  aNbF=aMFS.Extent();
+  for (i=1; i<aNbF; ++i) {
+    //const TopoDS_Shape& aFA=aMFZA.FindKey(i);
+    const BOPCol_ListOfShape& aLZA=aMFS(i);
+    aNbZ=aLZA.Extent();
+    if (aNbZ > 1) {
+      aItLS.Initialize(aLZA);
+      for(; aItLS.More(); aItLS.Next()) {
+        const TopoDS_Shape& aZA=aItLS.Value();
+        aMZ.Add(aZA);
+      }
+    }
+  }
+  //
+  aMFS.Clear();
   //
   aIt.Initialize(myRC);
   for (; aIt.More(); aIt.Next()) {
     const TopoDS_Shape& aSx=aIt.Value(); 
+    if (aMSA.Contains(aSx)) {
+      iX=myDS->Index(aSx);
+      bHasInterf=myDS->HasInterf(iX);
+      bHasSharedFaces=aMZ.Contains(aSx);
+      //
+      if (!bHasInterf && !bHasSharedFaces) {
+        // It means that the solid aSx will be added
+        // to the result as is. 
+        // The solid aSx will not participate 
+        // in creation of a new solid(s).
+        BOPTools_Set aST;
+        //
+        aST.Add(aSx, TopAbs_FACE);
+        //
+        if (!aDMSTS.IsBound(aST)) {
+          aDMSTS.Bind(aST, aSx);
+        }
+        
+        continue; 
+      }
+    } 
+    //
     aExp.Init(aSx, TopAbs_FACE);
     for (; aExp.More(); aExp.Next()) {
       const TopoDS_Shape& aFx=aExp.Current();
@@ -783,7 +892,7 @@ void BOPAlgo_BOP::BuildSolid()
         }
       }
     }
-  }
+  } // for (; aIt.More(); aIt.Next()) {
   //faces that will be added in the end;
   BOPCol_ListOfShape aLF, aLFx; 
   // SFS
@@ -845,6 +954,13 @@ void BOPAlgo_BOP::BuildSolid()
     const TopoDS_Shape& aSR=aItLS.Value();
     aBB.Add(aRC, aSR);
   }
+  //
+  aItDMSTS.Initialize(aDMSTS);
+  for (; aItDMSTS.More(); aItDMSTS.Next()) {
+    const TopoDS_Shape& aSx=aItDMSTS.Value();
+    aBB.Add(aRC, aSx);
+  }
+  //
   myShape=aRC;
 }
 //=======================================================================

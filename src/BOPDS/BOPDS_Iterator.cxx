@@ -278,7 +278,7 @@ void BOPDS_Iterator::Intersect()
   //
   for (i=0; i<aNb; ++i) {
     const BOPDS_ShapeInfo& aSI=myDS->ShapeInfo(i);
-    bFlag=aSI.HasBRep();
+    bFlag=aSI.IsInterfering();
     //
     BOPDS_TSR& aTSR=aVTSR.Append1();
     //
@@ -308,7 +308,7 @@ void BOPDS_Iterator::Intersect()
     for (i=i1; i<=i2; ++i) {
       const BOPDS_ShapeInfo& aSI=myDS->ShapeInfo(i);
       //
-      if (!aSI.HasBRep()){
+      if (!aSI.IsInterfering()){
         continue;
       }
       //

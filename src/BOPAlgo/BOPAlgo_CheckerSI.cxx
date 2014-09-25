@@ -146,26 +146,6 @@ void BOPAlgo_CheckerSI::Perform()
     BOPAlgo_PaveFiller::Perform();
     iErr=myErrorStatus; 
     //
-    PerformVZ();
-    if (myErrorStatus) {
-      iErr=myErrorStatus; 
-    }
-    //
-    PerformEZ();
-    if (myErrorStatus) {
-      iErr=myErrorStatus; 
-    }
-    //
-    PerformFZ();
-    if (myErrorStatus) {
-      iErr=myErrorStatus; 
-    }
-    //
-    PerformZZ();
-    if (myErrorStatus) {
-      iErr=myErrorStatus; 
-    }
-    // 
     PostTreat();
     if (myErrorStatus) {
       iErr=myErrorStatus; 

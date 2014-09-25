@@ -1,9 +1,8 @@
 // Created by: Peter KURNEV
-// Copyright (c) 2010-2012 OPEN CASCADE SAS
+// Copyright (c) 2010-2014 OPEN CASCADE SAS
 // Copyright (c) 2007-2010 CEA/DEN, EDF R&D, OPEN CASCADE
 // Copyright (c) 2003-2007 OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN, CEDRAT,
 //                         EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
-//
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -16,27 +15,28 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BOPAlgo_CheckerSI.ixx>
+#include <BOPAlgo_PaveFiller.ixx>
+
+#include <gp_Pnt.hxx>
+
+#include <TopAbs_State.hxx>
+
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Solid.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepClass3d_SolidClassifier.hxx>
+
+#include <IntTools_Context.hxx>
 
 #include <BOPDS_DS.hxx>
 #include <BOPDS_IteratorSI.hxx>
-#include <IntTools_Context.hxx>
-
 #include <BOPDS_Interf.hxx>
-#include <TopoDS_Solid.hxx>
-#include <BRepClass3d_SolidClassifier.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <gp_Pnt.hxx>
-#include <TopAbs_State.hxx>
-#include <BRep_Tool.hxx>
-#include <BOPDS_VectorOfInterfVZ.hxx>
-
 
 //=======================================================================
 //function : PerformVZ
 //purpose  : 
 //=======================================================================
-void BOPAlgo_CheckerSI::PerformVZ()
+void BOPAlgo_PaveFiller::PerformVZ()
 {
   Standard_Boolean bJustAdd;
   Standard_Integer iSize, nV, nZ, i;
@@ -85,15 +85,14 @@ void BOPAlgo_CheckerSI::PerformVZ()
       myDS->AddInterf(nV, nZ);
     }
   }
-  //
 }
 //=======================================================================
 //function : PerformEZ
 //purpose  : 
 //=======================================================================
-void BOPAlgo_CheckerSI::PerformEZ()
+void BOPAlgo_PaveFiller::PerformEZ()
 {
-  Standard_Boolean bJustAdd, bHasInterf;
+   Standard_Boolean bJustAdd, bHasInterf;
   Standard_Integer iSize, nE, nZ, i;
   //
   myErrorStatus=0;
@@ -136,7 +135,7 @@ void BOPAlgo_CheckerSI::PerformEZ()
 //function : PerformFZ
 //purpose  : 
 //=======================================================================
-void BOPAlgo_CheckerSI::PerformFZ()
+void BOPAlgo_PaveFiller::PerformFZ()
 {
   Standard_Boolean bJustAdd, bHasInterf;
   Standard_Integer iSize, nF, nZ, i;
@@ -181,7 +180,7 @@ void BOPAlgo_CheckerSI::PerformFZ()
 //function : PerformZZ
 //purpose  : 
 //=======================================================================
-void BOPAlgo_CheckerSI::PerformZZ()
+void BOPAlgo_PaveFiller::PerformZZ()
 {
   Standard_Boolean bJustAdd, bHasInterf, bFlag;
   Standard_Integer iSize, nZ1, nZ, i;
