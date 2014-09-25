@@ -16,7 +16,7 @@
 #include <WNT_WClass.ixx>
 
 #include <Standard_PCharacter.hxx>
-#include <InterfaceGraphic_WNT.hxx>
+#include <InterfaceGraphic.hxx>
 
 #include <string.h>
 
@@ -43,7 +43,7 @@ WNT_WClass::WNT_WClass (
   wc.style         = aStyle;
   wc.lpfnWndProc   = ( aWndProc ) ? ( WNDPROC )aWndProc : DefWindowProc;
   wc.cbClsExtra    = aClassExtra;
-  wc.cbWndExtra    = aWindowExtra + sizeof ( WINDOW_DATA* );
+  wc.cbWndExtra    = aWindowExtra;
   wc.hInstance     = ( HINSTANCE )hInstance;
   wc.hIcon         = ( anIcon )  ? ( HICON )anIcon    :
                                   LoadIcon ( NULL, IDI_APPLICATION );

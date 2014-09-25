@@ -353,9 +353,9 @@ OpenGl_Window::OpenGl_Window (const Handle(Aspect_DisplayConnection)& theDisplay
 
   myGlContext->Init ((Aspect_Handle )aWindow, (Aspect_Handle )aWindowDC, (Aspect_RenderingContext )aGContext);
 #else
-  WINDOW aParent = (WINDOW )theCWindow.XWindow;
-  WINDOW aWindow = 0;
-  
+  Window aParent = (Window )theCWindow.XWindow;
+  Window aWindow = 0;
+
   Display*   aDisp     = theDisplayConnection->GetDisplay();
   GLXContext aGContext = (GLXContext )theGContext;
 

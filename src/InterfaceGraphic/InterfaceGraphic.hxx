@@ -15,12 +15,31 @@
 #ifndef __INTERFACE_GRAPHIC_HXX
 #define __INTERFACE_GRAPHIC_HXX
 
-#ifdef WNT
-  #include <InterfaceGraphic_WNT.hxx>
-#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
-  #include <InterfaceGraphic_Cocoa.hxx>
-#else
-  #include <InterfaceGraphic_X11.hxx>
+#if defined(_WIN32)
+
+#include <windows.h>
+
+#ifdef DrawText
+  #undef DrawText
+#endif
+
+#elif !defined(__ANDROID__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
+
+#include <stdio.h>
+
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <X11/Xatom.h>
+#include <GL/glx.h>
+
+// workaround name conflicts with OCCT methods (in class TopoDS_Shape for example)
+#ifdef Convex
+  #undef Convex
+#endif
+#ifdef Status
+  #undef Status
+#endif
+
 #endif
 
 #endif // __INTERFACE_GRAPHIC_HXX

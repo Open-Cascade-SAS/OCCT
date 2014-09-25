@@ -12,17 +12,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// GG RIC120302 Add a NEW HParentWindow method which enable
-//                      to retrieve the parent of the actual Hwindow handle.
+inline Standard_Boolean WNT_Window::DoMapping() const
+{
+  // DO nothing on WNT
+  return Standard_True;
+}
 
-inline Aspect_Handle WNT_Window :: HWindow () const {
+inline Aspect_Handle WNT_Window::HWindow() const
+{
+  return myHWindow;
+}
 
- return myHWindow;
-
-}  // end WNT_Window :: HWindow
-
-inline Aspect_Handle WNT_Window :: HParentWindow () const {
-
- return myHParentWindow;
-
-}  // end WNT_Window :: HWindow
+inline Aspect_Handle WNT_Window::HParentWindow() const
+{
+  return myHParentWindow;
+}

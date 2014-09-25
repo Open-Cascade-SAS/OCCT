@@ -444,12 +444,14 @@ Standard_Boolean Visual3d_ViewManager::ViewExists (const Handle(Aspect_Window)& 
   // Parse the list of views to find
   // a view with the specified window
 
-#if defined(_WIN32) || defined(__WIN32__)
+#if defined(_WIN32)
   const Handle(WNT_Window) THEWindow = Handle(WNT_Window)::DownCast (AWindow);
   Aspect_Handle TheSpecifiedWindowId = THEWindow->HWindow ();
 #elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
   const Handle(Cocoa_Window) THEWindow = Handle(Cocoa_Window)::DownCast (AWindow);
   NSView* TheSpecifiedWindowId = THEWindow->HView();
+#elif defined(__ANDROID__)
+  int TheSpecifiedWindowId = -1;
 #else
   const Handle(Xw_Window) THEWindow = Handle(Xw_Window)::DownCast (AWindow);
   int TheSpecifiedWindowId = int (THEWindow->XWindow ());
@@ -461,12 +463,14 @@ Standard_Boolean Visual3d_ViewManager::ViewExists (const Handle(Aspect_Window)& 
     {
       const Handle(Aspect_Window) AspectWindow = (MyDefinedView.Value(i))->Window();
 
-#if defined(_WIN32) || defined(__WIN32__)
+#if defined(_WIN32)
       const Handle(WNT_Window) theWindow = Handle(WNT_Window)::DownCast (AspectWindow);
       Aspect_Handle TheWindowIdOfView = theWindow->HWindow ();
 #elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
       const Handle(Cocoa_Window) theWindow = Handle(Cocoa_Window)::DownCast (AspectWindow);
       NSView* TheWindowIdOfView = theWindow->HView();
+#elif defined(__ANDROID__)
+      int TheWindowIdOfView = 0;
 #else
       const Handle(Xw_Window) theWindow = Handle(Xw_Window)::DownCast (AspectWindow);
       int TheWindowIdOfView = int (theWindow->XWindow ());

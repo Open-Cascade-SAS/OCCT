@@ -118,14 +118,13 @@ void Visual3d_View::SetWindow (const Handle(Aspect_Window)& theWindow)
   const Handle(WNT_Window) aWin   = Handle(WNT_Window)::DownCast (theWindow);
   MyCView.DefWindow.XWindow       = (HWND )(aWin->HWindow());
   MyCView.DefWindow.XParentWindow = (HWND )(aWin->HParentWindow());
-  WNT_WindowData* aWinData = (WNT_WindowData* )GetWindowLongPtr ((HWND )(aWin->HWindow()), GWLP_USERDATA);
-  aWinData->WNT_WDriver_Ptr = (void* )this;
-  aWinData->WNT_VMgr        = myViewManager;
 #elif (defined(__APPLE__) && !defined(MACOSX_USE_GLX))
   const Handle(Cocoa_Window) aWin = Handle(Cocoa_Window)::DownCast (theWindow);
   MyCView.DefWindow.XWindow       = (Aspect_Drawable )aWin->HView();
   MyCView.DefWindow.XParentWindow = NULL;
   //MyCView.DefWindow.XParentWindow = aWin->HParentWindow();
+#elif defined(__ANDROID__)
+  //
 #else
   const Handle(Xw_Window) aWin    = Handle(Xw_Window)::DownCast (theWindow);
   MyCView.DefWindow.XWindow       = aWin->XWindow();

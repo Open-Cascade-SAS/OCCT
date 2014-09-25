@@ -78,10 +78,6 @@ package WNT
     imported Uint;
         ---Category: Imported types
 
-    imported WindowData;
-        ---Category: Imported types
-
-
         ---------------------------------
         -- Category: Pointers
         ---------------------------------

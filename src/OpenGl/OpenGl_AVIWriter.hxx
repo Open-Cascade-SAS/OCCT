@@ -19,7 +19,7 @@
 #ifdef WNT
 #define THIS void 
 
-#include <InterfaceGraphic_WNT.hxx>
+#include <InterfaceGraphic.hxx>
 #include <stdlib.h>
 #include <vfw.h>
 #include <TCollection_AsciiString.hxx>

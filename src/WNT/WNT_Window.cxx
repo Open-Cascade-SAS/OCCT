@@ -15,8 +15,6 @@
 // include windows.h first to have all definitions available
 #include <windows.h>
 
-//                GG 07/03/00 Add MMSize() method
-
 #include <WNT_Window.ixx>
 
 #include <Image_AlienPixMap.hxx>
@@ -24,13 +22,10 @@
 
 #include <stdio.h>
 
-//************************************************************************//
-//***//
-// callback function to manage window's background
-extern LRESULT CALLBACK WNT_WndProc (
-                         HWND, UINT, WPARAM, LPARAM
-                        );
-
+// =======================================================================
+// function : WNT_Window
+// purpose  :
+// =======================================================================
 WNT_Window::WNT_Window (const Standard_CString           theTitle,
                         const Handle(WNT_WClass)&        theClass,
                         const WNT_Dword&                 theStyle,
@@ -47,9 +42,9 @@ WNT_Window::WNT_Window (const Standard_CString           theTitle,
   aYTop (thePxTop),
   aXRight (thePxLeft + thePxWidth),
   aYBottom (thePxTop + thePxHeight),
-  myWClass (theClass)
+  myWClass (theClass),
+  myIsForeign (Standard_False)
 {
-  ZeroMemory (&myExtraData, sizeof (WNT_WindowData));
   DWORD dwStyle = theStyle;
 
   if (thePxWidth <= 0 || thePxHeight <= 0)
@@ -96,121 +91,115 @@ WNT_Window::WNT_Window (const Standard_CString           theTitle,
 
   myHParentWindow = theParent;
   SetBackground (theBackColor);
-
-  myUsrData = (Standard_Address )SetWindowLongPtr ((HWND )myHWindow, GWLP_USERDATA, (LONG_PTR )&myExtraData);
-
-  myExtraData.WNT_Window_Ptr = (void* )this;
-
-  SetFlags (WDF_NOERASEBKGRND);
 }
 
-//***//
-//************************* Constructor **********************************//
-//***//
-WNT_Window :: WNT_Window (
-               const Aspect_Handle                aHandle,
-               const Quantity_NameOfColor         aBackColor
-              ) : Aspect_Window()
+// =======================================================================
+// function : WNT_Window
+// purpose  :
+// =======================================================================
+WNT_Window::WNT_Window (const Aspect_Handle        theHandle,
+                        const Quantity_NameOfColor theBackColor)
+: myIsForeign (Standard_True)
 {
-  doCreate (aHandle, aBackColor);
+  myHWindow        = theHandle;
+  myHParentWindow  = GetParent ((HWND )theHandle);
 
-  /* Bug OCC20596 */
-  SetFlags(WDF_NOERASEBKGRND);
+  SetBackground (theBackColor);
 
-}  // end constructor
-//***//
-//************************* Constructor **********************************//
-//***//
-WNT_Window :: WNT_Window (
-               const Standard_Integer             aPart1,
-               const Standard_Integer             aPart2,
-               const Quantity_NameOfColor         aBackColor
-              ) : Aspect_Window()
+  WINDOWPLACEMENT aPlace;
+  aPlace.length = sizeof (WINDOWPLACEMENT);
+  ::GetWindowPlacement ((HWND )myHWindow, &aPlace);
+
+  aXLeft   = aPlace.rcNormalPosition.left;
+  aYTop    = aPlace.rcNormalPosition.top;
+  aXRight  = aPlace.rcNormalPosition.right;
+  aYBottom = aPlace.rcNormalPosition.bottom;
+}
+
+// =======================================================================
+// function : Destroy
+// purpose  :
+// =======================================================================
+void WNT_Window::Destroy()
 {
-  Aspect_Handle aHandle = ( Aspect_Handle )(  ( aPart1 << 16 ) + aPart2  );
-
-  doCreate (aHandle, aBackColor);
-
-  /* Bug OCC20596 */
-  SetFlags(WDF_NOERASEBKGRND);
-
-}  // end constructor
-//***//
-//***************************** Destroy **********************************//
-//***//
-void WNT_Window :: Destroy ()
-{
-  if (myHWindow)
+  if (myHWindow == NULL
+   || myIsForeign)
   {
-    if (myUsrData != Standard_Address(-1))
-    {
-      SetWindowLongPtr ((HWND )myHWindow, GWLP_USERDATA, (LONG_PTR )myUsrData);
-    }
+    return;
+  }
 
-    if (!( myExtraData.dwFlags & WDF_FOREIGN))
-    {
-      DestroyWindow ((HWND )myHWindow);
-    }
-  }  // end if
-}  // end WNT_Window :: Destroy
+  DestroyWindow ((HWND )myHWindow);
+  myIsForeign = Standard_False;
+}
 
-//**************************** SetCursor *********************************//
-//***//
-void WNT_Window :: SetCursor ( const Aspect_Handle aCursor ) const {
- SetClassLongPtr ((HWND)myHWindow, GCLP_HCURSOR, (LONG_PTR)aCursor);
-}  // end WNT_Window :: SetCursor
+// =======================================================================
+// function : SetCursor
+// purpose  :
+// =======================================================================
+void WNT_Window::SetCursor (const Aspect_Handle theCursor) const
+{
+  ::SetClassLongPtr ((HWND )myHWindow, GCLP_HCURSOR, (LONG_PTR )theCursor);
+}
 
-//***//
-//***************************** IsMapped *********************************//
-//***//
-Standard_Boolean WNT_Window :: IsMapped () const {
-  if (IsVirtual()) {
+// =======================================================================
+// function : IsMapped
+// purpose  :
+// =======================================================================
+Standard_Boolean WNT_Window::IsMapped() const
+{
+  if (IsVirtual())
+  {
     return Standard_True;
   }
 
-  WINDOWPLACEMENT wp;
+  WINDOWPLACEMENT aPlace;
+  aPlace.length = sizeof (WINDOWPLACEMENT);
+  ::GetWindowPlacement ((HWND )myHWindow, &aPlace);
+  return !(aPlace.showCmd == SW_HIDE
+        || aPlace.showCmd == SW_MINIMIZE);
+}
 
-  wp.length = sizeof ( WINDOWPLACEMENT );
-  GetWindowPlacement (  ( HWND )myHWindow, &wp  );
+// =======================================================================
+// function : Map
+// purpose  :
+// =======================================================================
+void WNT_Window::Map() const
+{
+  if (!IsVirtual())
+  {
+    Map (SW_SHOW);
+  }
+}
 
-  return !(  wp.showCmd == SW_HIDE || wp.showCmd == SW_MINIMIZE );
-}  // WNT_Window :: IsMapped
-
-//***//
-//***************************** Map (1) **********************************//
-//***//
-void WNT_Window :: Map () const {
-  if (IsVirtual()) {
+// =======================================================================
+// function : Map
+// purpose  :
+// =======================================================================
+void WNT_Window::Map (const Standard_Integer theMapMode) const
+{
+  if (IsVirtual())
+  {
     return;
   }
-  Map ( SW_SHOW );
-}  // end WNT_Window :: Map
 
-//***//
-//***************************** Map (2) **********************************//
-//***//
-void WNT_Window :: Map ( const Standard_Integer aMapMode ) const {
-  if (IsVirtual()) {
-    return;
-  }
-  ShowWindow (  ( HWND )myHWindow, aMapMode  );
-  UpdateWindow (  ( HWND )myHWindow  );
+  ::ShowWindow   ((HWND )myHWindow, theMapMode);
+  ::UpdateWindow ((HWND )myHWindow);
+}
 
-}  // end WNT_Window :: Map
+// =======================================================================
+// function : Unmap
+// purpose  :
+// =======================================================================
+void WNT_Window::Unmap() const
+{
+  Map (SW_HIDE);
+}
 
-//***//
-//**************************** Unmap *************************************//
-//***//
-void WNT_Window :: Unmap () const {
-
- Map ( SW_HIDE );
-
-}  // end WNT_Window :: Unmap
-
-//***//
-//**************************** DoResize **********************************//
-//***//
-Aspect_TypeOfResize WNT_Window :: DoResize () const
+// =======================================================================
+// function : DoResize
+// purpose  :
+// =======================================================================
+Aspect_TypeOfResize WNT_Window::DoResize() const
 {
   int                 mask = 0;
   Aspect_TypeOfResize mode = Aspect_TOR_UNKNOWN;
@@ -266,144 +255,70 @@ Aspect_TypeOfResize WNT_Window :: DoResize () const
   }
 
   return mode;
-
-}  // end WNT_Window :: DoResize
-
-//***//
-//**************************** DoMapping **********************************//
-//***//
-Standard_Boolean WNT_Window :: DoMapping () const {
-// DO nothing on WNT.
-  return Standard_True;
 }
 
-//***//
-//******************************* Ratio **********************************//
-//***//
-Quantity_Ratio WNT_Window :: Ratio () const {
-
- RECT r;
-
- GetClientRect (  ( HWND )myHWindow, &r  );
-
- return ( Quantity_Ratio )(  ( Quantity_Ratio )r.right / ( Quantity_Ratio )r.bottom  );
-
-}  // end WNT_Window :: Ratio
-
-//***//
-//**************************** Position (2) ******************************//
-//***//
-void WNT_Window :: Position (
-                    Standard_Integer& X1, Standard_Integer& Y1,
-                    Standard_Integer& X2, Standard_Integer& Y2
-                   ) const {
-
- POINT ptl, ptr;
- RECT  r;
-
- GetClientRect (  ( HWND )myHWindow, &r  );
-
- ptl.x = ptl.y = 0;
- ClientToScreen (  ( HWND )myHWindow, &ptl  );
- ptr.x = r.right;
- ptr.y = r.bottom;
- ClientToScreen (  ( HWND )myHWindow, &ptr  );
-
- if ( myHParentWindow ) {
-
-  ScreenToClient (      ( HWND )myHParentWindow, &ptl  );
-  ScreenToClient (  ( HWND )myHParentWindow, &ptr  );
-
- }  // end if
-
- X1 = ptl.x;
- X2 = ptr.x;
- Y1 = ptl.y;
- Y2 = ptr.y;
-
-}  // end WNT_Window :: Position
-
-//***//
-//******************************* Size (2) *******************************//
-//***//
-void WNT_Window :: Size (
-                    Standard_Integer& Width, Standard_Integer& Height
-                   ) const {
-
- RECT r;
-
- GetClientRect (  ( HWND )myHWindow, &r  );
-
- Width  = r.right;
- Height = r.bottom;
-
-}  // end WNT_Window :: Size
-
-//***//
-//******************************* SetPos *********************************//
-//***//
-void WNT_Window :: SetPos (
-                    const Standard_Integer X,  const Standard_Integer Y,
-                    const Standard_Integer X1, const Standard_Integer Y1
-                   ) {
-
- aXLeft   = X;
- aYTop    = Y;
- aXRight  = X1;
- aYBottom = Y1;
-
-}  // end WNT_Window :: SetPos
-
-//***//
-//**************************** SetFlags **********************************//
-//***//
-void WNT_Window :: SetFlags ( const Standard_Integer aFlags ) {
-
- myExtraData.dwFlags |= aFlags;
-
-}  // end WNT_Window :: SetFlags
-
-//***//
-//*************************** ResetFlags *********************************//
-//***//
-void WNT_Window :: ResetFlags ( const Standard_Integer aFlags ) {
-
- myExtraData.dwFlags &= ~aFlags;
-
-}  // end WNT_Window :: ResetFlags
-
-//***//
-//*************************** doCreate **********************************//
-//***//
-void WNT_Window :: doCreate (
-                    const Aspect_Handle                aHandle,
-                    const Quantity_NameOfColor         aBackColor
-                   )
+// =======================================================================
+// function : Ratio
+// purpose  :
+// =======================================================================
+Quantity_Ratio WNT_Window::Ratio() const
 {
-  ZeroMemory (&myExtraData, sizeof (WNT_WindowData));
+  RECT r;
+  GetClientRect ((HWND )myHWindow, &r);
+  return (Quantity_Ratio )((Quantity_Ratio )r.right / (Quantity_Ratio )r.bottom);
+}
 
-  myHWindow        = aHandle;
-  myHParentWindow  = GetParent ((HWND )aHandle);
-  LONG_PTR uData   = GetWindowLongPtr ((HWND )aHandle, GWLP_USERDATA);
-  myUsrData        = Standard_Address(-1);
+// =======================================================================
+// function : Position
+// purpose  :
+// =======================================================================
+void WNT_Window::Position (Standard_Integer& theX1, Standard_Integer& theY1,
+                           Standard_Integer& theX2, Standard_Integer& theY2) const
+{
+  RECT  aRect;
+  ::GetClientRect ((HWND )myHWindow, &aRect);
 
-  SetBackground (aBackColor);
+  POINT aPntLeft, aPntRight;
+  aPntLeft.x = aPntLeft.y = 0;
+  ::ClientToScreen ((HWND )myHWindow, &aPntLeft);
+  aPntRight.x = aRect.right;
+  aPntRight.y = aRect.bottom;
+  ::ClientToScreen ((HWND )myHWindow, &aPntRight);
 
-  myExtraData.WNT_Window_Ptr = (void* )this;
-
-  if (uData != (LONG_PTR )&myExtraData)
+  if (myHParentWindow != NULL)
   {
-    myUsrData = (Standard_Address )SetWindowLongPtr ((HWND )myHWindow, GWLP_USERDATA, (LONG_PTR )&myExtraData);
+    ::ScreenToClient ((HWND )myHParentWindow, &aPntLeft);
+    ::ScreenToClient ((HWND )myHParentWindow, &aPntRight);
   }
 
-  myExtraData.dwFlags = WDF_FOREIGN;
+  theX1 = aPntLeft.x;
+  theX2 = aPntRight.x;
+  theY1 = aPntLeft.y;
+  theY2 = aPntRight.y;
+}
 
-  WINDOWPLACEMENT wp;
-  wp.length = sizeof (WINDOWPLACEMENT);
-  GetWindowPlacement ((HWND )myHWindow, &wp);
+// =======================================================================
+// function : Size
+// purpose  :
+// =======================================================================
+void WNT_Window::Size (Standard_Integer& theWidth,
+                       Standard_Integer& theHeight) const
+{
+  RECT aRect;
+  ::GetClientRect ((HWND )myHWindow, &aRect);
+  theWidth  = aRect.right;
+  theHeight = aRect.bottom;
+}
 
-  aXLeft   = wp.rcNormalPosition.left;
-  aYTop    = wp.rcNormalPosition.top;
-  aXRight  = wp.rcNormalPosition.right;
-  aYBottom = wp.rcNormalPosition.bottom;
-}  // end WNT_Window :: doCreate
+// =======================================================================
+// function : SetPos
+// purpose  :
+// =======================================================================
+void WNT_Window::SetPos (const Standard_Integer theX,  const Standard_Integer theY,
+                         const Standard_Integer theX1, const Standard_Integer theY1)
+{
+  aXLeft   = theX;
+  aYTop    = theY;
+  aXRight  = theX1;
+  aYBottom = theY1;
+}

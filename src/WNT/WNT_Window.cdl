@@ -27,8 +27,7 @@ class Window from WNT inherits Window from Aspect
     Ratio              from Quantity,
     WClass             from WNT,
     Uint               from WNT,
-    Dword              from WNT,
-    WindowData         from WNT
+    Dword              from WNT
 
  raises
 
@@ -64,15 +63,6 @@ class Window from WNT inherits Window from Aspect
      	---Level:   Public
      	---Purpose: Creates a Window based on the existing window handle.
         --          This handle equals ( aPart1 << 16 ) + aPart2.
-
-    Create (
-     aPart1     : Integer       from Standard;
-     aPart2     : Integer       from Standard;
-     aBackColor : NameOfColor   from Quantity = Quantity_NOC_MATRAGRAY
-    )
-     returns Window from WNT;
-     	---Level:   Public
-     	---Purpose: Creates a Window based on the existing window <aHandle>.
 
     Destroy ( me : mutable )
      is virtual;
@@ -117,6 +107,7 @@ class Window from WNT inherits Window from Aspect
 
     DoMapping ( me ) returns Boolean from Standard
 	    raises WindowError from Aspect is virtual;
+    ---C++:     inline
    	---Level: Advanced
     	---Purpose: Apply the mapping change to the window <me>
     	-- and returns TRUE if the window is mapped at screen.
@@ -126,21 +117,6 @@ class Window from WNT inherits Window from Aspect
      is static;
         ---Level:   Internal
         ---Purpose: Changes variables due to window position.
-
-    SetFlags ( me : mutable; aFlags : Integer from Standard )
-     is static;
-     	---Level:   Public
-     	---Purpose: Sets user defined flags in the extra window data area.
-	--          Supported flags WDF_* are listed in InterfaceGraphic_WNT.hxx
-	--          In particular, the window backround can be turned off using this method.
-
-    ResetFlags ( me : mutable; aFlags : Integer from Standard )
-     is static;
-     	---Level:   Public
-    	---Purpose: Reset specified flags in the extra window data area.
-	--          Supported flags WDF_* are listed in InterfaceGraphic_WNT.hxx
-	--          In particular, the window backround can be turned on using this method.
-
 
  	----------------------------
 	-- Category: Inquire methods
@@ -190,14 +166,6 @@ class Window from WNT inherits Window from Aspect
 	---Purpose: Returns the Windows NT handle parent of the created window <me>.
         ---C++:     inline
 
-    doCreate (
-     me         : mutable;
-     aHandle    : Handle        from Aspect;
-     aBackColor : NameOfColor   from Quantity = Quantity_NOC_MATRAGRAY
-    ) is static private;
-     	---Level:   Private
-     	---Purpose: private method
-
  fields
 
     aXLeft          : Integer      from Standard is protected; -- Window coordinates
@@ -207,7 +175,6 @@ class Window from WNT inherits Window from Aspect
     myWClass        : WClass       from WNT      is protected; -- Window class
     myHWindow       : Handle       from Aspect   is protected; -- Window handle
     myHParentWindow : Handle       from Aspect   is protected; -- Parent window handle
-    myExtraData     : WindowData   from WNT      is protected; -- additional data
-    myUsrData       : Address      from Standard is protected;
+    myIsForeign     : Boolean      from Standard is protected;
 
 end Window;
