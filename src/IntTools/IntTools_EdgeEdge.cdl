@@ -126,15 +126,26 @@ is
     -- Computes Line/Line intersection.  
 
     FindSolutions(me:out;  
+        theRanges1 : out SequenceOfRanges from IntTools;
+        theRanges2 : out SequenceOfRanges from IntTools;
+        bSplit2    : out Boolean from Standard)
+    is protected;
+    ---Purpose:
+    -- Intermediate function
+ 
+    FindSolutions(me:out;  
         theR1, theR2 : Range from IntTools;
+        theBox2      : Box from Bnd;
         theRanges1   : out SequenceOfRanges from IntTools;
         theRanges2   : out SequenceOfRanges from IntTools)
-    is protected; 
+    is protected;
     ---Purpose:
     -- Looking for the exact intersection ranges
     
     MergeSolutions(me:out; 
-        theRanges1, theRanges2 : SequenceOfRanges from IntTools)
+        theRanges1 : SequenceOfRanges from IntTools;
+        theRanges2 : SequenceOfRanges from IntTools;
+        bSplit2    : Boolean from Standard)
     is protected; 
     ---Purpose:
     -- Merges found solutions

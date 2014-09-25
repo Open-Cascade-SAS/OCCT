@@ -34,9 +34,9 @@
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
 
-#include <IntTools_Tools.hxx>
 #include <IntTools_CommonPrt.hxx>
 
+#include <BOPCol_MapOfInteger.hxx>
 
 static 
   void BndBuildBox(const BRepAdaptor_Curve& theBAC,
@@ -94,6 +94,12 @@ static
 static
   Standard_Real CurveDeflection(const BRepAdaptor_Curve& theBAC,
                                 const IntTools_Range& theRange);
+static 
+  Standard_Integer IsClosed(const Handle(Geom_Curve)& theCurve,
+                            const Standard_Real aT1,
+                            const Standard_Real aT2,
+                            const Standard_Real theTol,
+                            const Standard_Real theRes);
 static 
   Standard_Integer TypeToInteger(const GeomAbs_CurveType theCType);
 
@@ -211,10 +217,66 @@ void IntTools_EdgeEdge::Perform()
   IntTools_SequenceOfRanges aRanges1, aRanges2;
   //
   //3.2. Find ranges containig solutions
-  FindSolutions(myRange1, myRange2, aRanges1, aRanges2);
+  Standard_Boolean bSplit2;
+  FindSolutions(aRanges1, aRanges2, bSplit2);
   //
   //4. Merge solutions and save common parts
-  MergeSolutions(aRanges1, aRanges2);
+  MergeSolutions(aRanges1, aRanges2, bSplit2);
+}
+
+//=======================================================================
+//function : FindSolutions
+//purpose  : 
+//=======================================================================
+void IntTools_EdgeEdge::FindSolutions(IntTools_SequenceOfRanges& theRanges1,
+                                      IntTools_SequenceOfRanges& theRanges2,
+                                      Standard_Boolean& bSplit2)
+{
+  Standard_Boolean bIsClosed2;
+  Standard_Real aT11, aT12, aT21, aT22;
+  Bnd_Box aB2;
+  //
+  bSplit2 = Standard_False;
+  myRange1.Range(aT11, aT12);
+  myRange2.Range(aT21, aT22);
+  //
+  bIsClosed2 = IsClosed(myGeom2, aT21, aT22, myTol2, myRes2);
+  //
+  if (bIsClosed2) {
+    Bnd_Box aB1;
+    BndBuildBox(myCurve1, aT11, aT12, myTol1, aB1);
+    //
+    gp_Pnt aP = myGeom2->Value(aT21);
+    bIsClosed2 = !aB1.IsOut(aP);
+  }
+  //
+  if (!bIsClosed2) {
+    BndBuildBox(myCurve2, aT21, aT22, myTol2, aB2);
+    FindSolutions(myRange1, myRange2, aB2, theRanges1, theRanges2);
+    return;
+  }
+  //
+  Standard_Integer i, j, aNb1, aNb2;
+  IntTools_SequenceOfRanges aSegments1, aSegments2;
+  //
+  aNb1 = IsClosed(myGeom1, aT11, aT12, myTol1, myRes1) ? 2 : 1;
+  aNb2 = 2;
+  //
+  SplitRangeOnSegments(aT11, aT12, myRes1, aNb1, aSegments1);
+  SplitRangeOnSegments(aT21, aT22, myRes2, aNb2, aSegments2);
+  //
+  aNb1 = aSegments1.Length();
+  aNb2 = aSegments2.Length();
+  for (i = 1; i <= aNb1; ++i) {
+    const IntTools_Range& aR1 = aSegments1(i);
+    for (j = 1; j <= aNb2; ++j) {
+      const IntTools_Range& aR2 = aSegments2(j);
+      BndBuildBox(myCurve2, aR2.First(), aR2.Last(), myTol2, aB2);
+      FindSolutions(aR1, aR2, aB2, theRanges1, theRanges2);
+    }
+  }
+  //
+  bSplit2 = aNb2 > 1;
 }
 
 //=======================================================================
@@ -223,7 +285,8 @@ void IntTools_EdgeEdge::Perform()
 //=======================================================================
 void IntTools_EdgeEdge::FindSolutions(const IntTools_Range& theR1,
                                       const IntTools_Range& theR2,
-                                      IntTools_SequenceOfRanges& theRanges1, 
+                                      const Bnd_Box& theBox2,
+                                      IntTools_SequenceOfRanges& theRanges1,
                                       IntTools_SequenceOfRanges& theRanges2)
 {
   Standard_Boolean bOut, bStop, bThin;
@@ -236,7 +299,7 @@ void IntTools_EdgeEdge::FindSolutions(const IntTools_Range& theR1,
   theR1.Range(aT11, aT12);
   theR2.Range(aT21, aT22);
   //
-  BndBuildBox(myCurve2, aT21, aT22, myTol2, aB2);
+  aB2 = theBox2;
   //
   bThin = Standard_False;
   bStop = Standard_False;
@@ -321,8 +384,8 @@ void IntTools_EdgeEdge::FindSolutions(const IntTools_Range& theR1,
       Standard_Real aT1, aT2;
       gp_Pnt aP1, aP2;
       //
-      aT1 = IntTools_Tools::IntermediatePoint(aT11, aT12);
-      aT2 = IntTools_Tools::IntermediatePoint(aT21, aT22);
+      aT1 = (aT11 + aT12) * .5;
+      aT2 = (aT21 + aT22) * .5;
       //
       myGeom1->D0(aT1, aP1);
       myGeom2->D0(aT2, aP2);
@@ -348,12 +411,13 @@ void IntTools_EdgeEdge::FindSolutions(const IntTools_Range& theR1,
   IntTools_SequenceOfRanges aSegments1;
   //
   IntTools_Range aR2(aT21, aT22);
+  BndBuildBox(myCurve2, aT21, aT22, myTol2, aB2);
   //
   SplitRangeOnSegments(aT11, aT12, myRes1, 3, aSegments1);
   aNb1 = aSegments1.Length();
   for (i = 1; i <= aNb1; ++i) {
     const IntTools_Range& aR1 = aSegments1(i);
-    FindSolutions(aR1, aR2, theRanges1, theRanges2);
+    FindSolutions(aR1, aR2, aB2, theRanges1, theRanges2);
   }
 }
 
@@ -457,48 +521,78 @@ Standard_Boolean IntTools_EdgeEdge::FindParameters(const BRepAdaptor_Curve& theB
 //purpose  : 
 //=======================================================================
 void IntTools_EdgeEdge::MergeSolutions(const IntTools_SequenceOfRanges& theRanges1, 
-                                       const IntTools_SequenceOfRanges& theRanges2)
+                                       const IntTools_SequenceOfRanges& theRanges2,
+                                       const Standard_Boolean bSplit2)
 {
+  Standard_Integer aNbCP = theRanges1.Length();
+  if (aNbCP == 0) {
+    return;
+  }
+  //
   IntTools_Range aRi1, aRi2, aRj1, aRj2;
-  Standard_Integer aNbCP, i, j;
+  Standard_Integer i, j;
   TopAbs_ShapeEnum aType;
   Standard_Real aTi11, aTi12, aTi21, aTi22,
-                aTj11, aTj12, aTj21, aTj22;
+                aTj11, aTj12, aTj21, aTj22, 
+                dTR1, dTR2;
+  BOPCol_MapOfInteger aMI;
   //
-  aNbCP = theRanges1.Length();
+  dTR1 = 20*myRes1;
+  dTR2 = (myRange2.Last() - myRange2.First()) / 2.;
   aType = TopAbs_VERTEX;
   //
-  for (i = 1; i <= aNbCP; ) {
+  for (i = 1; i <= aNbCP;) {
+    if (aMI.Contains(i)) {
+      ++i;
+      continue;
+    }
+    //
     aRi1 = theRanges1(i);
     aRi2 = theRanges2(i);
     //
     aRi1.Range(aTi11, aTi12);
     aRi2.Range(aTi21, aTi22);
     //
+    aMI.Add(i);
+    //
     for (j = i+1; j <= aNbCP; ++j) {
+      if (aMI.Contains(j)) {
+        continue;
+      }
+      //
       aRj1 = theRanges1(j);
       aRj2 = theRanges2(j);
       //
       aRj1.Range(aTj11, aTj12);
       aRj2.Range(aTj21, aTj22);
-      if (fabs(aTi12 - aTj11) < 10*myRes1 ||
-          fabs(aTi22 - aTj21) < 10*myRes2) {
+      if ((fabs(aTi12 - aTj11) < dTR1) &&
+          (fabs(aTi22 - aTj21) < dTR2)) {
         aTi11 = Min(aTi11, aTj11);
         aTi12 = Max(aTi12, aTj12);
         aTi21 = Min(aTi21, aTj21);
         aTi22 = Max(aTi22, aTj22);
-      } else {
+        aMI.Add(j);
+      }
+      else if (!bSplit2) {
+        i = j;
         break;
       }
     }
-    i = j;
     //
-    if (aTi11 == myRange1.First() && aTi12 == myRange1.Last() &&
-        aTi21 == myRange2.First() && aTi22 == myRange2.Last()) {
+    if ((aTi11 == myRange1.First() && aTi12 == myRange1.Last()) ||
+        (aTi21 == myRange2.First() && aTi22 == myRange2.Last())) {
       aType = TopAbs_EDGE;
+      myCommonParts.Clear();
     }
     //
     AddSolution(aTi11, aTi12, aTi21, aTi22, aType);
+    if (aType == TopAbs_EDGE) {
+      break;
+    }
+    //
+    if (bSplit2) {
+      ++i;
+    }
   }
 }
 
@@ -560,8 +654,8 @@ void IntTools_EdgeEdge::FindBestSolution(const Standard_Real aT11,
   GeomAPI_ProjectPointOnCurve aProj;
   IntTools_SequenceOfRanges aSeg1;
   //
-  aT1 = IntTools_Tools::IntermediatePoint(aT11, aT12);
-  aT2 = IntTools_Tools::IntermediatePoint(aT21, aT22);
+  aT1 = (aT11 + aT12) * .5;
+  aT2 = (aT21 + aT22) * .5;
   //
   aDMin = 100.;
   aD = 100.;
@@ -1103,12 +1197,12 @@ Standard_Integer TypeToInteger(const GeomAbs_CurveType theCType)
   case GeomAbs_Line:
     iRet=0;
     break;
-  case GeomAbs_Circle:
-  case GeomAbs_Ellipse:
-    iRet=1;
-    break;
   case GeomAbs_Hyperbola:
   case GeomAbs_Parabola:
+    iRet=1;
+    break;
+  case GeomAbs_Circle:
+  case GeomAbs_Ellipse:
     iRet=2;
     break;
   case GeomAbs_BezierCurve:
@@ -1244,3 +1338,30 @@ Standard_Real CurveDeflection(const BRepAdaptor_Curve& theBAC,
   return aDefl;
 }
 
+//=======================================================================
+//function : IsClosed
+//purpose  : 
+//=======================================================================
+Standard_Integer IsClosed(const Handle(Geom_Curve)& theCurve,
+                          const Standard_Real aT1,
+                          const Standard_Real aT2,
+                          const Standard_Real theTol,
+                          const Standard_Real theRes)
+{
+  Standard_Boolean bClosed;
+  Standard_Real aD;
+  gp_Pnt aP1, aP2;
+  //
+  bClosed = Standard_False;
+  if (Abs(aT1 - aT2) < theRes) {
+    return bClosed;
+  }
+  //
+  theCurve->D0(aT1, aP1);
+  theCurve->D0(aT2, aP2);
+  //
+  aD = aP1.Distance(aP2);
+  bClosed = aD < theTol;
+  //
+  return bClosed;
+}
