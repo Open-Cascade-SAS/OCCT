@@ -144,7 +144,7 @@ static Standard_Boolean PerformCurve (TColStd_SequenceOfReal& Parameters,
                                       const Standard_Real EPSILON,
                                       const GeomAbs_Shape Continuity)
 {
-  Standard_Integer Nbmin = 21;
+  Standard_Integer Nbmin = 2;
 
   gp_Pnt Pdeb;
   if (Continuity <= GeomAbs_G1)
