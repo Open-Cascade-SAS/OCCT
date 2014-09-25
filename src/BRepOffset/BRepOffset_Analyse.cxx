@@ -47,6 +47,15 @@
 #include <gp.hxx>
 
 
+static void CorrectOrientationOfTangent(gp_Vec& TangVec,
+                                        const TopoDS_Vertex& aVertex,
+                                        const TopoDS_Edge& anEdge)
+{
+  TopoDS_Vertex Vlast = TopExp::LastVertex(anEdge);
+  if (aVertex.IsSame(Vlast))
+    TangVec.Reverse();
+}
+
 //=======================================================================
 //function : BRepOffset_Analyse
 //purpose  : 
@@ -367,6 +376,7 @@ void BRepOffset_Analyse::TangentEdges(const TopoDS_Edge&    Edge  ,
   URef   = BRep_Tool::Parameter(Vertex,Edge);
   C3dRef = BRepAdaptor_Curve(Edge);
   VRef   = C3dRef.DN(URef,1);
+  CorrectOrientationOfTangent(VRef, Vertex, Edge);
   if (VRef.SquareMagnitude() < gp::Resolution()) return;
 
   Edges.Clear();
@@ -379,8 +389,9 @@ void BRepOffset_Analyse::TangentEdges(const TopoDS_Edge&    Edge  ,
     U   = BRep_Tool::Parameter(Vertex,CurE);
     C3d = BRepAdaptor_Curve(CurE);
     V   = C3d.DN(U,1);
+    CorrectOrientationOfTangent(V, Vertex, CurE);
     if (V.SquareMagnitude() < gp::Resolution()) continue;
-    if (V.IsParallel(VRef,angle)) {
+    if (V.IsOpposite(VRef,angle)) {
       Edges.Append(CurE);
     }
   }

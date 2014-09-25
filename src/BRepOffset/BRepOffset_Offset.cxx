@@ -73,6 +73,13 @@
 #include <GeomAPI_ProjectPointOnCurve.hxx>
 #include <GeomLib.hxx>
 
+#include <TopTools_IndexedMapOfShape.hxx>
+#include <BRepLib_MakeWire.hxx>
+#include <gce_MakePln.hxx>
+#include <ShapeFix_Shape.hxx>
+#include <GProp_GProps.hxx>
+#include <BRepGProp.hxx>
+
 #ifdef DEB
 static Standard_Boolean Affich = Standard_False;
 static Standard_Integer NbOFFSET = 0;
@@ -82,6 +89,32 @@ static Standard_Integer NbOFFSET = 0;
 #include <DBRep.hxx>
 #endif
 #include <stdio.h>
+
+
+static gp_Pnt GetFarestCorner(const TopoDS_Wire& aWire)
+{
+  TopTools_IndexedMapOfShape Vertices;
+  TopExp::MapShapes(aWire, TopAbs_VERTEX, Vertices);
+
+  Standard_Real MaxDist = 0.;
+  gp_Pnt thePoint;
+  for (Standard_Integer i = 1; i <= Vertices.Extent(); i++)
+    for (Standard_Integer j = 1; j <= Vertices.Extent(); j++)
+    {
+      const TopoDS_Vertex& V1 = TopoDS::Vertex(Vertices(i));
+      const TopoDS_Vertex& V2 = TopoDS::Vertex(Vertices(j));
+      gp_Pnt P1 = BRep_Tool::Pnt(V1);
+      gp_Pnt P2 = BRep_Tool::Pnt(V2);
+      Standard_Real aDist = P1.SquareDistance(P2);
+      if (aDist > MaxDist)
+      {
+        MaxDist = aDist;
+        thePoint = P1;
+      }
+    }
+
+  return thePoint;
+}
 
 //=======================================================================
 //function : UpdateEdge
@@ -1316,29 +1349,29 @@ void BRepOffset_Offset::Init(const TopoDS_Vertex&        Vertex,
   }
 #endif
 
+  gp_Pnt Origin = BRep_Tool::Pnt(Vertex);
 
-  it.Initialize(LEdge);
-  TopExp::Vertices(TopoDS::Edge(it.Value()), V1, V2);
-  P1 = BRep_Tool::Pnt(V1);
-  P2 = BRep_Tool::Pnt(V2);
+  //// Find the axis of the sphere to exclude
+  //// degenerated and seam edges from the face under construction
+  BRepLib_MakeWire MW;
+  MW.Add(LEdge);
+  TopoDS_Wire theWire = MW.Wire();
 
-  if ( !it.More()) {
-    Standard_ConstructionError::Raise("BRepOffset_Sphere");
-  }
-  it.Next();
-  TopExp::Vertices(TopoDS::Edge(it.Value()), V3, V4);
+  ShapeFix_Shape Fixer(theWire);
+  Fixer.Perform();
+  theWire = TopoDS::Wire(Fixer.Shape());
 
-  P3 = BRep_Tool::Pnt(V3);
-  Standard_Real eps = 1.e-8;
-  if ( P1.Distance(P3) < eps || P2.Distance(P3) < eps)
-    P3 = BRep_Tool::Pnt(V4);
+  GProp_GProps GlobalProps;
+  BRepGProp::LinearProperties(theWire, GlobalProps);
+  gp_Pnt BaryCenter = GlobalProps.CentreOfMass();
+  gp_Vec Xdir(BaryCenter, Origin);
+
+  gp_Pnt FarestCorner = GetFarestCorner(theWire);
+  gp_Pln thePlane = gce_MakePln(Origin, BaryCenter, FarestCorner);
+  gp_Dir Vdir = thePlane.Axis().Direction();
+
+  gp_Ax3 Axis(Origin, Vdir, Xdir);
   
-  P = BRep_Tool::Pnt(Vertex);
-  
-  gp_Vec X = gp_Vec(P1,P2) ^ gp_Vec(P1,P3);
-  if ( X * gp_Vec(P1,P) < 0.) X.Reverse();
-
-  gp_Ax3 Axis( P, gp_Dir(gp_Vec(P1,P2)), gp_Dir(X));
   Handle(Geom_Surface) S 
     = new Geom_SphericalSurface( Axis, Abs(Offset));
 

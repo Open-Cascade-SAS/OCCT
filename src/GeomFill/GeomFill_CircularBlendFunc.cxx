@@ -31,6 +31,8 @@
 static Standard_Integer NbSections = 0;
 #endif
 
+const Standard_Real TolAng = 1.e-6;
+
 GeomAbs_Shape GeomFillNextShape(const GeomAbs_Shape S)
 {
   switch (S) {
@@ -228,7 +230,8 @@ void GeomFill_CircularBlendFunc::Discret()
   ns1.SetXYZ( Center.XYZ() - P1.XYZ());
   ns2.SetXYZ( Center.XYZ() - P2.XYZ());     
 
-  myreverse = (DCenter.Dot(ns1.Crossed(ns2)) < 0);    
+  //myreverse = (DCenter.Dot(ns1.Crossed(ns2)) < 0);
+  myreverse = Standard_False;
 }
 
 
@@ -250,7 +253,7 @@ Standard_Boolean GeomFill_CircularBlendFunc::D0(const Standard_Real Param,
   myTCurve2->D0(Param, P2);
   ns1.SetXYZ( Center.XYZ() - P1.XYZ());
   ns2.SetXYZ( Center.XYZ() - P2.XYZ());
-  if (!ns1.IsParallel(ns2,1.e-9))  nplan = ns1.Crossed(ns2);
+  if (!ns1.IsParallel(ns2, TolAng))  nplan = ns1.Crossed(ns2);
   else {
     myTPath->D1(Param, Center, nplan);
     if (myreverse) nplan.Reverse();
@@ -316,7 +319,7 @@ Standard_Boolean GeomFill_CircularBlendFunc::D1(const Standard_Real Param,
   Dns1 = DCenter - DP1;
   Dns2 = DCenter - DP2;
  
-  if (!ns1.IsParallel(ns2,1.e-9)) {
+  if (!ns1.IsParallel(ns2, TolAng)) {
     nplan = ns1.Crossed(ns2);
     dnplan =  Dns1.Crossed(ns2).Added( ns1.Crossed(Dns2));
   }
@@ -404,7 +407,7 @@ Standard_Boolean GeomFill_CircularBlendFunc::D2(const Standard_Real Param,
   Dns2 = DCenter - DP2;
   D2ns2 =  D2Center - D2P2;
 
-  if (!ns1.IsParallel(ns2,1.e-9)) {
+  if (!ns1.IsParallel(ns2, TolAng)) {
     nplan = ns1.Crossed(ns2);
     dnplan = Dns1.Crossed(ns2).Added( ns1.Crossed(Dns2));
     d2nplan.SetLinearForm(1, D2ns1.Crossed(ns2),
