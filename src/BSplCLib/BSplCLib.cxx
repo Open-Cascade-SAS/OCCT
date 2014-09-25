@@ -1702,6 +1702,7 @@ Standard_Boolean  BSplCLib::PrepareInsertKnots
       ak++;
   }
   
+  Standard_Integer aLastKnotMult = Mults (Knots.Upper());
   Standard_Real au,oldau = AddKnots(ak),Eps;
   
   while (ak <= AddKnots.Upper()) {
@@ -1741,7 +1742,15 @@ Standard_Boolean  BSplCLib::PrepareInsertKnots
       }
       else if (amult > mult) {
 	if (amult > Degree) amult = Degree;
-	sigma += amult - mult;
+        if (k == Knots.Upper () && Periodic)
+        {
+          aLastKnotMult = Max (amult, mult);
+          sigma += 2 * (aLastKnotMult - mult);
+        }
+        else
+        {
+	  sigma += amult - mult;
+        }
       }
       /*
       // on periodic curves if this is the last knot
@@ -1779,7 +1788,7 @@ Standard_Boolean  BSplCLib::PrepareInsertKnots
     //instance);
     //respectively AddMults() must meet this requirement if AddKnots() contains
     //knot(s) coincident with first or last
-    NbPoles = sigma - Mults(Knots.Upper());
+    NbPoles = sigma - aLastKnotMult;
   }
   else {
     NbPoles = sigma - Degree - 1;
@@ -1968,7 +1977,8 @@ void BSplCLib::InsertKnots
       if (Periodic) {
 	// on periodic curve the first and last knot are delayed to the end
 	if (curk == Knots.Lower() || (curk == Knots.Upper())) {
-	  firstmult += depth;
+          if (firstmult == 0) // do that only once
+            firstmult += depth;
 	  depth = 0;
 	}
       }
