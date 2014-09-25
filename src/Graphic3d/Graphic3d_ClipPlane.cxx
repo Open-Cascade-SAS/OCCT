@@ -69,7 +69,8 @@ Graphic3d_ClipPlane::Graphic3d_ClipPlane(const Equation& theEquation)
 // purpose  :
 // =======================================================================
 Graphic3d_ClipPlane::Graphic3d_ClipPlane(const Graphic3d_ClipPlane& theOther)
-: myEquation (theOther.myEquation),
+: Standard_Transient(theOther),
+  myEquation (theOther.myEquation),
   myIsOn (theOther.myIsOn),
   myIsCapping (theOther.myIsCapping),
   myMaterial (theOther.myMaterial),

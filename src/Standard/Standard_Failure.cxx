@@ -78,9 +78,10 @@ Standard_Failure::Standard_Failure (const Standard_CString AString)
   myMessage = allocate_message(AString);
 }
 
-Standard_Failure::Standard_Failure (const Standard_Failure& aFailure) 
+Standard_Failure::Standard_Failure (const Standard_Failure& theFailure) 
+: Standard_Transient(theFailure)
 {
-  myMessage = copy_message(aFailure.myMessage);
+  myMessage = copy_message(theFailure.myMessage);
 }
 
 void Standard_Failure::Destroy()

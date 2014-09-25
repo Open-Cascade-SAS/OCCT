@@ -40,11 +40,11 @@
 //function :
 //purpose  : 
 //=======================================================================
-  inline BOPDS_PassKeyBoolean::BOPDS_PassKeyBoolean(const BOPDS_PassKeyBoolean& aOther)
+  inline BOPDS_PassKeyBoolean::BOPDS_PassKeyBoolean(const BOPDS_PassKeyBoolean& theOther)
+:
+  BOPDS_PassKey(theOther)
 {
-  myPtr=NULL;
-  BOPDS_PassKey::operator =(aOther);
-  myFlag=aOther.myFlag;
+  myFlag = theOther.myFlag;
 }
 //=======================================================================
 //function :~

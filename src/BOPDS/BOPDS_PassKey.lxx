@@ -46,23 +46,11 @@ static
 //function :
 //purpose  : 
 //=======================================================================
-  inline BOPDS_PassKey::BOPDS_PassKey(const BOPDS_PassKey& aOther)
+  inline BOPDS_PassKey::BOPDS_PassKey(const BOPDS_PassKey& theOther)
+:
+  myPtr(0)
 {
-  Standard_Integer i;
-  //
-  myPtr=NULL;
-  Clear();
-  //
-  myAllocator=aOther.myAllocator;
-  myNbIds=aOther.myNbIds;
-  mySum=aOther.mySum;
-  //
-  if (myNbIds) {
-    myPtr=Allocate(myNbIds);
-    for (i=0; i<myNbIds; ++i) {
-      myPtr[i]=aOther.myPtr[i];
-    }
-  }
+  (*this) = theOther;
 }
 //=======================================================================
 //function :operator =
@@ -70,8 +58,6 @@ static
 //=======================================================================
   inline BOPDS_PassKey& BOPDS_PassKey::operator =(const BOPDS_PassKey& aOther)
 {
-  Standard_Integer i;
-  //
   Clear();
   //
   myAllocator=aOther.myAllocator;
@@ -80,7 +66,7 @@ static
   //
   if (myNbIds) {
     myPtr=Allocate(myNbIds);
-    for (i=0; i<myNbIds; ++i) {
+    for (int i=0; i<myNbIds; ++i) {
       myPtr[i]=aOther.myPtr[i];
     }
   }
