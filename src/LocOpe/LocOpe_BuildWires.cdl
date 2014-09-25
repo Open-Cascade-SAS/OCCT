@@ -23,7 +23,7 @@ private class BuildWires from LocOpe
 
 -- Modified by skv - Mon May 31 12:53:04 2004 OCC5865 Begin
 uses ListOfShape from TopTools,
-     ProjectedWires from LocOpe
+     WiresOnShape from LocOpe
 -- Modified by skv - Mon May 31 12:53:05 2004 OCC5865 End
 
 raises NotDone from StdFail
@@ -37,7 +37,7 @@ is
 
 -- Modified by skv - Mon May 31 12:54:10 2004 OCC5865 Begin
     Create(Ledges: ListOfShape from TopTools;
-    	   PW    : ProjectedWires  from  LocOpe)
+    	   PW    : WiresOnShape  from  LocOpe)
 -- Modified by skv - Mon May 31 12:54:11 2004 OCC5865 End
     
     	returns BuildWires from LocOpe;
@@ -45,7 +45,7 @@ is
 
 -- Modified by skv - Mon May 31 12:54:10 2004 OCC5865 Begin
     Perform(me: in out; Ledges: ListOfShape from TopTools; 
-    	    	        PW    : ProjectedWires  from  LocOpe)
+    	    	        PW    : WiresOnShape  from  LocOpe)
 -- Modified by skv - Mon May 31 12:54:11 2004 OCC5865 End
     
     	is static;

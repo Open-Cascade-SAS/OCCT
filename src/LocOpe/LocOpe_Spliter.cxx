@@ -18,11 +18,13 @@
 
 #include <LocOpe_Spliter.ixx>
 
-#include <LocOpe_ProjectedWires.hxx>
+//#include <LocOpe_ProjectedWires.hxx>
 
 #include <TopTools_MapOfShape.hxx>
 #include <TopTools_DataMapOfShapeShape.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopTools_SequenceOfShape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_MapIteratorOfMapOfShape.hxx>
 #include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
@@ -56,7 +58,7 @@
 //  Modified by skv - Mon May 31 13:00:30 2004 OCC5865 Begin
 // static void RebuildWires(TopTools_ListOfShape&);
 static void RebuildWires(TopTools_ListOfShape&,
-			 const Handle(LocOpe_ProjectedWires)&);
+			 const Handle(LocOpe_WiresOnShape)&);
 //  Modified by skv - Mon May 31 13:00:31 2004 OCC5865 End
 
 static void Put(const TopoDS_Shape&,
@@ -71,7 +73,7 @@ static void Select(const TopoDS_Edge&,
 //purpose  : 
 //=======================================================================
 
-void LocOpe_Spliter::Perform(const Handle(LocOpe_ProjectedWires)& PW)
+void LocOpe_Spliter::Perform(const Handle(LocOpe_WiresOnShape)& PW)
 {
   if (myShape.IsNull()) {
     Standard_NullObject::Raise();
@@ -150,7 +152,7 @@ void LocOpe_Spliter::Perform(const Handle(LocOpe_ProjectedWires)& PW)
       const TopoDS_Vertex& vtx = TopoDS::Vertex(exp.Current());
       if (!mapV.Contains(vtx)) {
 	mapV.Add(vtx);
-	if (PW->OnEdge(vtx,Ed,prm)) {
+	if (PW->OnEdge(vtx,edg,Ed,prm)) {
 	  // on devrait verifier que le vtx n`existe pas deja sur l`edge
 	  if(!myMap.IsBound(Ed)) continue;
 	  Ed = TopoDS::Edge(myMap(Ed).First());
@@ -323,6 +325,69 @@ void LocOpe_Spliter::Perform(const Handle(LocOpe_ProjectedWires)& PW)
     myRes = theSubs.Copy(myRes).First();
   }
 
+  ////remove superfluous vertices on degenerated edges
+  theSubs.Clear();
+  TopTools_IndexedMapOfShape Emap;
+  TopExp::MapShapes(myRes, TopAbs_EDGE, Emap);
+  TopTools_SequenceOfShape DegEdges;
+  Standard_Integer i, j;
+  for (i = 1; i <= Emap.Extent(); i++)
+  {
+    const TopoDS_Edge& anEdge = TopoDS::Edge(Emap(i));
+    if (BRep_Tool::Degenerated(anEdge))
+      DegEdges.Append(anEdge);
+  }
+  
+  TopTools_SequenceOfShape DegWires;
+  for (;;)
+  {
+    if (DegEdges.IsEmpty())
+      break;
+    TopoDS_Wire aDegWire;
+    BB.MakeWire(aDegWire);
+    BB.Add(aDegWire, DegEdges(1));
+    DegEdges.Remove(1);
+    TopoDS_Vertex Vfirst, Vlast;
+    for (;;)
+    {
+      TopExp::Vertices(aDegWire, Vfirst, Vlast);
+      Standard_Boolean found = Standard_False;
+      for (i = 1; i <= DegEdges.Length(); i++)
+      {
+        const TopoDS_Edge& anEdge = TopoDS::Edge(DegEdges(i));
+        TopoDS_Vertex V1, V2;
+        TopExp::Vertices(anEdge, V1, V2);
+        if (V1.IsSame(Vfirst) || V1.IsSame(Vlast) || V2.IsSame(Vfirst) || V2.IsSame(Vlast))
+        {
+          BB.Add(aDegWire, anEdge);
+          DegEdges.Remove(i);
+          found = Standard_True;
+          break;
+        }
+      }
+      if (!found)
+        break;
+    }
+    DegWires.Append(aDegWire);
+  }
+
+  for (i = 1; i <= DegWires.Length(); i++)
+  {
+    TopTools_IndexedMapOfShape Vmap;
+    TopExp::MapShapes(DegWires(i), TopAbs_VERTEX, Vmap);
+    TopTools_ListOfShape LV;
+    LV.Append(Vmap(1).Oriented(TopAbs_FORWARD));
+    for (j = 2; j <= Vmap.Extent(); j++)
+    {
+      if (!Vmap(j).IsSame(Vmap(1)))
+        theSubs.Substitute(Vmap(j), LV);
+    }
+  }
+  theSubs.Build(myRes);
+  if (theSubs.IsCopied(myRes))
+    myRes = theSubs.Copy(myRes).First();
+  ////
+
   myDLeft.Clear();
   myLeft.Clear();
   mapV.Clear();
@@ -483,7 +548,7 @@ const TopTools_ListOfShape& LocOpe_Spliter::Left() const
 //  Modified by skv - Mon May 31 12:31:39 2004 OCC5865 Begin
 //static void RebuildWires(TopTools_ListOfShape& ledge)
 static void RebuildWires(TopTools_ListOfShape& ledge,
-			 const Handle(LocOpe_ProjectedWires)& PW)
+			 const Handle(LocOpe_WiresOnShape)& PW)
 {
   LocOpe_BuildWires theBuild(ledge, PW);
 //  Modified by skv - Mon May 31 12:31:40 2004 OCC5865 End

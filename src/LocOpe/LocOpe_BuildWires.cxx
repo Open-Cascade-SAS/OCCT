@@ -60,7 +60,7 @@ LocOpe_BuildWires::LocOpe_BuildWires () : myDone(Standard_False)
 
 //  Modified by skv - Mon May 31 12:58:27 2004 OCC5865 Begin
 LocOpe_BuildWires::LocOpe_BuildWires (const TopTools_ListOfShape& L,
-				      const Handle(LocOpe_ProjectedWires)& PW)
+				      const Handle(LocOpe_WiresOnShape)& PW)
 {
   Perform(L, PW);
 }
@@ -74,7 +74,7 @@ LocOpe_BuildWires::LocOpe_BuildWires (const TopTools_ListOfShape& L,
 
 //  Modified by skv - Mon May 31 12:59:09 2004 OCC5865 Begin
 void LocOpe_BuildWires::Perform(const TopTools_ListOfShape& L,
-				const Handle(LocOpe_ProjectedWires)& PW)
+				const Handle(LocOpe_WiresOnShape)& PW)
 {
 //  Modified by skv - Mon May 31 12:59:10 2004 OCC5865 End
   myDone = Standard_False;

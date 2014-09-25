@@ -14,7 +14,7 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-class WiresOnShape from LocOpe inherits ProjectedWires from LocOpe
+class WiresOnShape from LocOpe inherits TShared from MMgt
 
 	---Purpose: 
 
@@ -124,6 +124,18 @@ is
 
 
     OnEdge(me: mutable; V: Vertex from TopoDS;
+                        E: out Edge from TopoDS;
+			P: out Real from Standard)
+	---Purpose: If the vertex <V> lies on  an edge of the original
+	--          shape,  returns     <Standard_True> and   sets the
+	--          concerned edge in  <E>,  and the parameter on  the
+	--          edge in <P>.
+	--          Else returns <Standard_False>.
+	returns Boolean from Standard
+	;
+	
+    OnEdge(me: mutable; V: Vertex from TopoDS;
+    	    	    	EdgeFrom: Edge from TopoDS;
                         E: out Edge from TopoDS;
 			P: out Real from Standard)
 	---Purpose: If the vertex <V> lies on  an edge of the original

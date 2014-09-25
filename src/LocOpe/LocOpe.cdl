@@ -41,7 +41,7 @@ is
 
     class SplitShape;
 
-    deferred class ProjectedWires;      -- inherits TShared from MMgt
+    --deferred class ProjectedWires;      -- inherits TShared from MMgt
     
     class WiresOnShape;                 -- inherits ProjectedWires from LocOpe
 

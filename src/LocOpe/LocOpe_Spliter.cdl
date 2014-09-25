@@ -20,7 +20,7 @@ class Spliter from LocOpe
 
 uses Shape                     from TopoDS,
      Face                      from TopoDS,
-     ProjectedWires            from LocOpe,
+     WiresOnShape              from LocOpe,
      ListOfShape               from TopTools,
      DataMapOfShapeListOfShape from TopTools
 
@@ -50,7 +50,7 @@ is
     	is static;
 
 
-    Perform(me: in out; PW: ProjectedWires from LocOpe)
+    Perform(me: in out; PW: WiresOnShape from LocOpe)
 			
 	raises NullObject from Standard		
     	is static;
