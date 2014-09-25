@@ -503,11 +503,22 @@ void Convert_ConicToBSplineCurve::BuildCosAndSin(
       alpha_2 = alpha * 0.5e0 ;
       p_param = - 1.0e0 / (alpha_2 * alpha_2) ;
      
-      if (alpha_2 <  M_PI * 0.5e0) {
-	tan_alpha_2 = Tan(alpha_2) ;
-	value1 = 3.0e0 * (tan_alpha_2 - alpha_2) ;
-        value1 = alpha_2 / value1 ;
-        p_param += value1 ;
+      if (alpha_2 <  M_PI * 0.5e0) 
+      {
+        if (alpha_2 < 1.0e-7)
+        {
+          // Fixed degenerate case, when obtain 0 / 0 uncertainty.
+          // According to Taylor aprroximation:
+          // b (gamma) = -6.0 / 15.0 + o(gamma^2)
+          p_param = -6.0 / 15.0;
+        }
+        else
+        {
+          tan_alpha_2 = Tan(alpha_2) ;
+          value1 = 3.0e0 * (tan_alpha_2 - alpha_2) ;
+          value1 = alpha_2 / value1 ;
+          p_param += value1 ;
+        }
       }
       q_param = (1.0e0 / 3.0e0)  + p_param ;
       

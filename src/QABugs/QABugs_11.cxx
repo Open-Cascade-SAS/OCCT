@@ -88,7 +88,7 @@
 #include <BRepFeat_SplitShape.hxx>
 #include <BRepAlgoAPI_Section.hxx>
 
-#if ! defined(WNT)
+#if ! defined(_WIN32)
 extern ViewerTest_DoubleMapOfInteractiveAndName& GetMapOfAIS();
 #else
 Standard_EXPORT ViewerTest_DoubleMapOfInteractiveAndName& GetMapOfAIS();
@@ -2357,7 +2357,8 @@ static Standard_Integer OCC5698 (Draw_Interpretor& di, Standard_Integer argc, co
   return 0;
 }
 
-#ifdef WNT
+// stack overflow can be successfully handled only on 32-bit Windows
+#if defined(_WIN32) && !defined(_WIN64)
 static int StackOverflow (int i = -1)
 {
   char arr[2000];
@@ -2366,8 +2367,10 @@ static int StackOverflow (int i = -1)
     StackOverflow(i-1);
   return i;
 }
+#endif
 
 // this code does not work with optimize mode on Windows
+#ifdef _WIN32
 #pragma optimize( "", off )
 #endif
 static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
@@ -2394,7 +2397,7 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
       di << " 4 / 0 = " << res << "  Does not Caught... KO"<< "\n";
       Succes = Standard_False;
     }
-#if defined(SOLARIS) || defined(WNT)
+#if defined(SOLARIS) || defined(_WIN32)
     catch(Standard_DivideByZero)
 #else
     catch(Standard_NumericError)
@@ -2427,16 +2430,17 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
       di << "\n";
       Standard_Real res, a= 4.0, b=0.0;
       res = a / b;
-      di << " 4.0 / 0.0 = " << res << "  Does not Caught... KO"<< "\n";
-      Succes = Standard_False;
+      di << " 4.0 / 0.0 = " << res << "  Does not Caught... OK"<< "\n";
     }
     catch(Standard_DivideByZero) // Solaris, Windows w/o SSE2
     {
-      di << " Ok" << "\n";
+      di << " KO" << "\n";
+      Succes = Standard_False;
     }
     catch(Standard_NumericError) // Linux, Windows with SSE2
     {
-      di << " Ok" << "\n";
+      di << " KO" << "\n";
+      Succes = Standard_False;
     }
     catch(Standard_Failure) {
       //cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << endl;
@@ -2484,16 +2488,17 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
       
       (void)sin(1.); //this function tests FPU flags and raises signal (tested on LINUX).
 
-      di << "-- "<<res<<"="<<r<<"*"<<r<<"   Does not Caught... KO"<< "\n";
-      Succes = Standard_False;
+      di << "-- "<<res<<"="<<r<<"*"<<r<<"   Does not Caught... OK"<< "\n";
     }
     catch(Standard_Overflow) // Solaris, Windows w/o SSE2
     {
-      di << " Ok" << "\n";
+      di << " KO" << "\n";
+      Succes = Standard_False;
     }
     catch(Standard_NumericError) // Linux, Windows with SSE2
     {
-      di << " Ok" << "\n";
+      di << " KO" << "\n";
+      Succes = Standard_False;
     }
     catch(Standard_Failure) {
       //cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << endl;
@@ -2520,11 +2525,13 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
     }
     catch(Standard_Underflow) // could be on Solaris, Windows w/o SSE2
     {
-      di << " Ok" << "\n";
+      di << " KO" << "\n";
+      Succes = Standard_False;
     }
     catch(Standard_NumericError) // could be on Linux, Windows with SSE2
     {
-      di << " Ok" << "\n";
+      di << " KO" << "\n";
+      Succes = Standard_False;
     }
     catch(Standard_Failure) {
       //cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << endl;
@@ -2544,11 +2551,11 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
       di << "\n";
       Standard_Real res, r=-1;
       res = sqrt(r);
-      di<<" "<<res<<"=sqrt("<<r<<")  Does not Caught... KO"<<"\n";
-      Succes = Standard_False;
+      di<<" "<<res<<"=sqrt("<<r<<")  Does not Caught... OK"<<"\n";
     }
     catch(Standard_NumericError) {
-      di << " Ok"<< "\n";
+      di << " KO"<< "\n";
+      Succes = Standard_False;
     }
     catch(Standard_Failure) {
       //cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << endl;
@@ -2571,7 +2578,7 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
       di << "  Does not Caught... KO"<<"\n";
       Succes = Standard_False;
     }
-#ifdef WNT
+#ifdef _WIN32
     catch(OSD_Exception_ACCESS_VIOLATION)
 #else
     catch(OSD_SIGSEGV)
@@ -2587,7 +2594,7 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
     }
   }
 
-#ifdef WNT
+#if defined(_WIN32) && !defined(_WIN64)
   {//==== Test Stack Overflow ===============================================
     try {
       OCC_CATCH_SIGNALS
@@ -2620,7 +2627,7 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
 
   return 0;
 }
-#ifdef WNT
+#ifdef _WIN32
 #pragma optimize( "", on )
 #endif
 

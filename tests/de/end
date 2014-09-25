@@ -697,11 +697,15 @@ puts ""
 clear
 smallview
 if { $mist < 1 } {
-    if { [info exists res_2] && [isdraw res_2] } {
-	donly res_2
-    }
+  if { [info exists res_2] && [isdraw res_2] } {
+    donly res_2
+    isos res_2 0
+	fit
+	isos res_2 2
+  }
+} else {
+    fit
 }
-fit
 xwd $imagedir/${test_image}.png
 if { $mist < 1 } {
    if { [catch { Close D_Second } catch_result] } {

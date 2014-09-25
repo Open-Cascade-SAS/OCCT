@@ -248,7 +248,7 @@ void Draw_Appli(Standard_Integer argc, char** argv,const FDraw_InitAppli Draw_In
   // *****************************************************************
   // set signals
   // *****************************************************************
-  OSD::SetSignal();
+  OSD::SetSignal(Standard_False);
 
 #ifdef _WIN32
   // in interactive mode, force Windows to report dll loading problems interactively

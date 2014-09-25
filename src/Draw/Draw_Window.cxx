@@ -2079,7 +2079,7 @@ static DWORD WINAPI tkLoop(VOID)
 #endif //#ifdef _TK
 
   // set signal handler in the new thread
-  OSD::SetSignal();
+  OSD::SetSignal(Standard_False);
 
   // inform the others that we have started
   isTkLoopStarted = true;
