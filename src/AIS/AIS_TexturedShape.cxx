@@ -374,7 +374,7 @@ void AIS_TexturedShape::Compute (const Handle(PrsMgr_PresentationManager3d)& /*t
       }
       else
       {
-        AIS_Shape::DisplayBox (thePrs, BoundingBox(), myDrawer);
+        StdPrs_WFDeflectionRestrictedFace::AddBox (thePrs, BoundingBox(), myDrawer);
       }
       break;
     }

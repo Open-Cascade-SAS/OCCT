@@ -15,6 +15,7 @@
 #include <Graphic3d_ArrayOfPoints.ixx>
 
 Graphic3d_ArrayOfPoints::Graphic3d_ArrayOfPoints (const Standard_Integer theMaxVertexs,
-                                                  const Standard_Boolean theHasVColors)
-: Graphic3d_ArrayOfPrimitives (Graphic3d_TOPA_POINTS, theMaxVertexs, 0, 0, Standard_False, theHasVColors, Standard_False, Standard_False)
+                                                  const Standard_Boolean theHasVColors,
+                                                  const Standard_Boolean theHasVNormals)
+: Graphic3d_ArrayOfPrimitives (Graphic3d_TOPA_POINTS, theMaxVertexs, 0, 0, theHasVNormals, theHasVColors, Standard_False, Standard_False)
 {}

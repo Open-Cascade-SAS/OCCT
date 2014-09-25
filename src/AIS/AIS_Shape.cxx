@@ -77,37 +77,6 @@
 
 static Standard_Boolean myFirstCompute;
 
-void AIS_Shape::DisplayBox(const Handle(Prs3d_Presentation)& aPrs,
-                           const Bnd_Box& B,
-                           const Handle(Prs3d_Drawer)& aDrawer)
-{
-  static const Standard_Integer Indx[][3] =
-  { { 0, 0, 0 }, { 1, 0, 0 }, { 1, 0, 1 }, { 0, 0, 1 },
-    { 0, 1, 1 }, { 1, 1, 1 }, { 1, 1, 0 }, { 0, 1, 0 },
-    { 0, 0, 0 }, { 0, 0, 1 }, { 1, 0, 1 }, { 1, 1, 1 },
-    { 0, 1, 1 }, { 0, 1, 0 }, { 1, 1, 0 }, { 1, 0, 0 } };
-
-  if ( B.IsVoid() )
-    return; // nothing to show
-
-  Standard_Real X[2],Y[2],Z[2];
-  B.Get(X[0], Y[0], Z[0], X[1], Y[1], Z[1]);
-
-  Handle(Graphic3d_Group) G = Prs3d_Root::CurrentGroup(aPrs);
-  Quantity_Color Q;
-  Aspect_TypeOfLine A;
-  Standard_Real W;
-  aDrawer->LineAspect()->Aspect()->Values(Q,A,W);
-
-  G->SetGroupPrimitivesAspect(new Graphic3d_AspectLine3d(Q,Aspect_TOL_DOTDASH,W));
-
-  Handle(Graphic3d_ArrayOfPolylines) aPolyline = new Graphic3d_ArrayOfPolylines(16);
-  Standard_Integer i(0);
-  for(;i<16;i++)
-    aPolyline->AddVertex(X[Indx[i][0]],Y[Indx[i][1]],Z[Indx[i][2]]);
-  G->AddPrimitiveArray(aPolyline);
-}
-
 static Standard_Boolean IsInList(const TColStd_ListOfInteger& LL, const Standard_Integer aMode)
 {
   TColStd_ListIteratorOfListOfInteger It(LL);
@@ -238,7 +207,7 @@ void AIS_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentat
     {
       // bounding box
       if (IsInfinite()) StdPrs_WFDeflectionShape::Add(aPrs,myshape,myDrawer);
-      else DisplayBox(aPrs,BoundingBox(),myDrawer);
+      else StdPrs_WFDeflectionRestrictedFace::AddBox (aPrs, BoundingBox(), myDrawer);
     }
   } // end switch
   aPrs->ReCompute(); // for hidden line recomputation if necessary...

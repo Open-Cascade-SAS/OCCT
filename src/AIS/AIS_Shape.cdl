@@ -290,11 +290,7 @@ uses
     	    aProjector           : Projector from Prs3d;
             aPresentation        : Presentation from Prs3d;
     	    ashape               : Shape from TopoDS) is static private;
-		
-    DisplayBox(myclass; aPrs : Presentation from Prs3d;
-		       	aBox : Box from Bnd;
-		       	aDrawer : Drawer from Prs3d) is protected;
-    		
+
     setColor (me;
               theDrawer : Drawer from AIS;
               theColor  : Color  from Quantity)

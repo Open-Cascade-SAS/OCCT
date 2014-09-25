@@ -21,3 +21,5 @@ AIS_DiameterDimension.hxx
 AIS_DiameterDimension.cxx
 AIS_RadiusDimension.hxx
 AIS_RadiusDimension.cxx
+AIS_PointCloud.hxx
+AIS_PointCloud.cxx

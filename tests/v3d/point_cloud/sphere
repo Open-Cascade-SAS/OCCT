@@ -1,0 +1,30 @@
+puts "========"
+puts "Point cloud object from triangulated sphere"
+puts "========"
+
+# create sphere
+sphere ss 10
+mkface s ss
+incmesh s 0.01
+
+# draw sphere
+vinit View1
+vclear
+vsetdispmode 1
+vaxo
+vpointcloud p s -nonormals
+vaspects p -setcolor GREEN
+vfit
+vrotate 0.2 0.0 0.0
+vdump $::imagedir/${::casename}_green.png
+
+# random colors mode
+vpointcloud p s -randcolors
+vdump $::imagedir/${::casename}_rand.png
+
+# mode with normals
+vpointcloud p s -normals
+vsetmaterial p COPPER
+vdump $::imagedir/${::casename}_copper.png
+
+vmoveto 200 200

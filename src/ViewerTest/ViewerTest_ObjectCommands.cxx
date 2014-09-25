@@ -33,6 +33,7 @@
 
 #include <AIS_Shape.hxx>
 #include <AIS_DisplayMode.hxx>
+#include <AIS_PointCloud.hxx>
 #include <TColStd_MapOfInteger.hxx>
 #include <AIS_MapOfInteractive.hxx>
 #include <ViewerTest_AutoUpdater.hxx>
@@ -5367,6 +5368,228 @@ static int VVertexMode (Draw_Interpretor& theDI,
 }
 
 //=======================================================================
+//function : VPointCloud
+//purpose  : Create interactive object for arbitary set of points.
+//=======================================================================
+static Standard_Integer VPointCloud (Draw_Interpretor& theDI,
+                                     Standard_Integer  theArgNum,
+                                     const char**      theArgs)
+{
+  Handle(AIS_InteractiveContext) anAISContext = ViewerTest::GetAISContext();
+  if (anAISContext.IsNull())
+  {
+    std::cerr << "Error: no active view!\n";
+    return 1;
+  }
+
+  // command to execute
+  enum Command
+  {
+    CloudForShape, // generate point cloud for shape
+    CloudSphere,   // generate point cloud for generic sphere
+    Unknow
+  };
+
+  // count number of non-optional command arguments
+  Command aCmd = Unknow;
+  Standard_Integer aCmdArgs = 0;
+  for (Standard_Integer anArgIter = 1; anArgIter < theArgNum; ++anArgIter)
+  {
+    Standard_CString anArg = theArgs[anArgIter];
+    TCollection_AsciiString aFlag (anArg);
+    aFlag.LowerCase();
+    if (aFlag.IsRealValue() || aFlag.Search ("-") != 1)
+    {
+      aCmdArgs++;
+    }
+  }
+  switch (aCmdArgs)
+  {
+    case 2  : aCmd = CloudForShape; break;
+    case 7  : aCmd = CloudSphere; break;
+    default :
+      std::cout << "Error: wrong number of arguments! See usage:\n";
+      theDI.PrintHelp (theArgs[0]);
+      return 1;
+  }
+
+  // parse options
+  Standard_Boolean toRandColors = Standard_False;
+  Standard_Boolean hasNormals   = Standard_True;
+  Standard_Boolean isSetArgNorm = Standard_False;
+  for (Standard_Integer anArgIter = 1; anArgIter < theArgNum; ++anArgIter)
+  {
+    Standard_CString anArg = theArgs[anArgIter];
+    TCollection_AsciiString aFlag (anArg);
+    aFlag.LowerCase();
+    if (aFlag == "-randcolors"
+     || aFlag == "-randcolor")
+    {
+      if (isSetArgNorm && hasNormals)
+      {
+        std::cout << "Error: wrong syntax - normals can not be enabled with colors at the same time\n";
+        return 1;
+      }
+      toRandColors = Standard_True;
+      hasNormals   = Standard_False;
+    }
+    else if (aFlag == "-normals"
+          || aFlag == "-normal")
+    {
+      if (toRandColors)
+      {
+        std::cout << "Error: wrong syntax - normals can not be enabled with colors at the same time\n";
+        return 1;
+      }
+      isSetArgNorm = Standard_True;
+      hasNormals   = Standard_True;
+    }
+    else if (aFlag == "-nonormals"
+          || aFlag == "-nonormal")
+    {
+      isSetArgNorm = Standard_True;
+      hasNormals   = Standard_False;
+    }
+  }
+
+  Standard_CString aName = theArgs[1];
+
+  // generate arbitrary set of points
+  Handle(Graphic3d_ArrayOfPoints) anArrayPoints;
+  if (aCmd == CloudForShape)
+  {
+    Standard_CString aShapeName = theArgs[2];
+    TopoDS_Shape     aShape     = DBRep::Get (aShapeName);
+
+    if (aShape.IsNull())
+    {
+      std::cout << "Error: no shape with name '" << aShapeName << "' found\n";
+      return 1;
+    }
+
+    // calculate number of points
+    TopLoc_Location  aLocation;
+    Standard_Integer aNbPoints = 0;
+    for (TopExp_Explorer aFaceIt (aShape, TopAbs_FACE); aFaceIt.More(); aFaceIt.Next())
+    {
+      const TopoDS_Face& aFace = TopoDS::Face (aFaceIt.Current());
+      Handle(Poly_Triangulation) aTriangulation = StdPrs_ToolShadedShape::Triangulation (aFace, aLocation);
+      if (!aTriangulation.IsNull())
+      {
+        aNbPoints += aTriangulation->NbNodes();
+      }
+    }
+    if (aNbPoints < 3)
+    {
+      std::cout << "Error: shape should be triangulated!\n";
+      return 1;
+    }
+
+    anArrayPoints = new Graphic3d_ArrayOfPoints (aNbPoints, toRandColors, hasNormals);
+    for (TopExp_Explorer aFaceIt (aShape, TopAbs_FACE); aFaceIt.More(); aFaceIt.Next())
+    {
+      const TopoDS_Face& aFace = TopoDS::Face (aFaceIt.Current());
+      Handle(Poly_Triangulation) aTriangulation = StdPrs_ToolShadedShape::Triangulation (aFace, aLocation);
+      if (aTriangulation.IsNull())
+      {
+        continue;
+      }
+
+      const TColgp_Array1OfPnt& aNodes = aTriangulation->Nodes();
+      const gp_Trsf&            aTrsf  = aLocation.Transformation();
+
+      // extract normals from nodes
+      TColgp_Array1OfDir aNormals (aNodes.Lower(), hasNormals ? aNodes.Upper() : aNodes.Lower());
+      if (hasNormals)
+      {
+        Poly_Connect aPolyConnect (aTriangulation);
+        StdPrs_ToolShadedShape::Normal (aFace, aPolyConnect, aNormals);
+      }
+
+      for (Standard_Integer aNodeIter = aNodes.Lower(); aNodeIter <= aNodes.Upper(); ++aNodeIter)
+      {
+        gp_Pnt aPoint = aNodes (aNodeIter);
+        if (!aLocation.IsIdentity())
+        {
+          aPoint.Transform (aTrsf);
+          if (hasNormals)
+          {
+            aNormals (aNodeIter).Transform (aTrsf);
+          }
+        }
+
+        // add vertex into array of points
+        const Standard_Integer anIndexOfPoint = anArrayPoints->AddVertex (aPoint);
+        if (toRandColors)
+        {
+          Quantity_Color aColor (360.0 * Standard_Real(anIndexOfPoint) / Standard_Real(aNbPoints),
+                                 1.0, 0.5, Quantity_TOC_HLS);
+          anArrayPoints->SetVertexColor (anIndexOfPoint, aColor);
+        }
+
+        if (hasNormals)
+        {
+          anArrayPoints->SetVertexNormal (anIndexOfPoint, aNormals (aNodeIter));
+        }
+      }
+    }
+  }
+  else if (aCmd == CloudSphere)
+  {
+    Standard_Real aCenterX       = Draw::Atof (theArgs[2]);
+    Standard_Real aCenterY       = Draw::Atof (theArgs[3]);
+    Standard_Real aCenterZ       = Draw::Atof (theArgs[4]);
+    Standard_Real aRadius        = Draw::Atof (theArgs[5]);
+    Standard_Integer aNbPoints   = Draw::Atoi (theArgs[6]);
+
+    TCollection_AsciiString aDistribution = TCollection_AsciiString(theArgs[7]);
+    aDistribution.LowerCase();
+    if ( aDistribution != "surface" && aDistribution != "volume" )
+    {
+      std::cout << "Error: wrong arguments! See usage:\n";
+      theDI.PrintHelp (theArgs[0]);
+      return 1;
+    }
+    Standard_Boolean isSurface = aDistribution == "surface";
+
+    gp_Pnt aCenter(aCenterX, aCenterY, aCenterZ);
+
+    anArrayPoints = new Graphic3d_ArrayOfPoints (aNbPoints, toRandColors, hasNormals);
+    for (Standard_Integer aPntIt = 0; aPntIt < aNbPoints; ++aPntIt)
+    {
+      Standard_Real anAlpha   = (Standard_Real (rand() % 2000) / 1000.0) * M_PI;
+      Standard_Real aBeta     = (Standard_Real (rand() % 2000) / 1000.0) * M_PI;
+      Standard_Real aDistance = isSurface ?
+        aRadius : (Standard_Real (rand() % aNbPoints) / aNbPoints) * aRadius;
+
+      gp_Dir aDir (Cos (anAlpha) * Sin (aBeta),
+                   Sin (anAlpha),
+                   Cos (anAlpha) * Cos (aBeta));
+      gp_Pnt aPoint = aCenter.Translated (aDir.XYZ() * aDistance);
+
+      const Standard_Integer anIndexOfPoint = anArrayPoints->AddVertex (aPoint);
+      if (toRandColors)
+      {
+        Quantity_Color aColor (360.0 * Standard_Real (anIndexOfPoint) / Standard_Real (aNbPoints),
+                               1.0, 0.5, Quantity_TOC_HLS);
+        anArrayPoints->SetVertexColor (anIndexOfPoint, aColor);
+      }
+
+      if (hasNormals)
+      {
+        anArrayPoints->SetVertexNormal (anIndexOfPoint, aDir);
+      }
+    }
+  }
+
+  // set array of points in point cloud object
+  Handle(AIS_PointCloud) aPointCloud = new AIS_PointCloud();
+  aPointCloud->SetPoints (anArrayPoints);
+  VDisplayAISObject (aName, aPointCloud);
+  return 0;
+}
+
+//=======================================================================
 //function : ObjectsCommands
 //purpose  :
 //=======================================================================
@@ -5562,4 +5785,21 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
                    "vvertexmode -set {isolated | all | inherited} - sets the default vertex draw mode and updates the mode for all displayed objects\n"
                    "vvertexmode -set {isolated | all | inherited} name1 name2 ... - sets the vertex draw mode for the specified object(s)\n",
                    __FILE__, VVertexMode, group);
+
+  theCommands.Add ("vpointcloud",
+                   "vpointcloud name shape [-randColor] [-normals] [-noNormals]"
+                   "\n\t\t: Create an interactive object for arbitary set of points"
+                   "\n\t\t: from triangulated shape."
+                   "\n"
+                   "vpointcloud name x y z r npts {surface|volume}\n"
+                   "            ... [-randColor] [-normals] [-noNormals]"
+                   "\n\t\t: Create arbitrary set of points (npts) randomly distributed"
+                   "\n\t\t: on spheric surface or within spheric volume (x y z r)."
+                   "\n\t\t:"
+                   "\n\t\t: Additional options:"
+                   "\n\t\t:  -randColor - generate random color per point"
+                   "\n\t\t:  -normals   - generate normal per point (default)"
+                   "\n\t\t:  -noNormals - do not generate normal per point"
+                   "\n",
+                   __FILE__, VPointCloud, group);
 }
