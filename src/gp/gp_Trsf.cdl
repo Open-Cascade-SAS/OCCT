@@ -317,11 +317,7 @@ is
   Multiplied (me; T : Trsf)   returns Trsf  is static;
         ---C++: inline
         ---C++: alias operator *
-
-  Multiply (me : in out; T : Trsf)          is static;
-        ---C++: alias operator *=
-        --- Purpose :
-        --  Computes the transformation composed with T and  <me>.
+        --  Computes the transformation composed from T and <me>.
         --  In a C++ implementation you can also write Tcomposed = <me> * T.
         --  Example :
         --      Trsf T1, T2, Tcomp; ...............
@@ -332,8 +328,12 @@ is
         --        Pnt P2 = P1.Transformed(Tcomp);    //using Tcomp
         --        Pnt P3 = P1.Transformed(T1);       //using T1 then T2
         --        P3.Transform(T2);                  // P3 = P2 !!!
+
+  Multiply (me : in out; T : Trsf)          is static;
+        ---C++: alias operator *=
+        --- Purpose :
         --  Computes the transformation composed with <me> and T.
-        --  <me> = T * <me>
+        --  <me> = <me> * T
 
   PreMultiply (me : in out; T : Trsf)  is static;
         --- Purpose :

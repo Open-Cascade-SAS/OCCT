@@ -207,9 +207,8 @@ is
 
 
 
-  Multiply (me : in out; T : GTrsf)          is static;
-
-        --- Purpose :
+  Multiplied (me; T : GTrsf)  returns GTrsf  is static;
+         --- Purpose :
         --  Computes the transformation composed from T and <me>.
         --  In a C++ implementation you can also write Tcomposed = <me> * T.
         --- Example :
@@ -223,17 +222,15 @@ is
         --        XYZ P2(P);
         --        T1.Transforms(P2);                  //using T1 then T2
         --        T2.Transforms(P2);                  // P1 = P2 !!!
-        -- C++: alias operator *=
-
-
-
-  Multiplied (me; T : GTrsf)  returns GTrsf  is static;
- 
-        --- Purpose :
-        --  Computes the transformation composed with <me> and T.
-        --  <me> = T * <me>
     	---C++: inline
         -- C++: alias operator *
+
+
+  Multiply (me : in out; T : GTrsf)          is static;
+        --- Purpose :
+        --  Computes the transformation composed with <me> and T.
+        --  <me> = <me> * T
+        -- C++: alias operator *=
 
   PreMultiply (me : in out; T : GTrsf)  is static;
 

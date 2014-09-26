@@ -184,13 +184,6 @@ is
         --  Raised an exception if the matrix of the transformation 
         --  is not inversible.
 
-
-
-
-
-  Multiply (me : in out; T : GTrsf2d)            is static;
-        ---C++: alias operator *=
-
   Multiplied (me; T : GTrsf2d)  returns GTrsf2d  is static;
     	---C++: inline
         ---C++: alias operator *
@@ -209,11 +202,13 @@ is
         --        T1.Transforms(P2);                  //using T1 then T2
         --        T2.Transforms(P2);                  // P1 = P2 !!!
 
- 
+  Multiply (me : in out; T : GTrsf2d)            is static;
+        ---C++: alias operator *=
+        -- Computes the product of the transformation T and this
+        -- transformation, and assigns the result to this transformation:
+        -- this = this * T
 
   PreMultiply (me : in out; T : GTrsf2d)    is static;
-
-
         --- Purpose :
         -- Computes the product of the transformation T and this
         -- transformation, and assigns the result to this transformation:
