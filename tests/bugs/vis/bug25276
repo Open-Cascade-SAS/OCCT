@@ -1,0 +1,40 @@
+puts "============"
+puts "OCC25276"
+puts "============"
+puts ""
+#######################################################################
+# Visualization - Lighting is broken if some kinds of transformation applied to a shape
+#######################################################################
+
+pload ALL
+vinit
+box b1 1 6 1
+vsetdispmode 1
+vdisplay b1
+vconnectto b2 6 0 0 b1
+box b3 7 1 1
+vdisplay b3
+vloctranslate b3 0 4 0
+vconnect z 0 0 0 b1 b2 b3
+
+vconnect z1 0 0 0 z
+vloctranslate z1 10 0 0
+
+vconnect z2 0 10 0 z
+vlocrotate z2 0 0 0 1 0 0 90
+
+vconnect z3 -10 0 0 z
+vlocscale z3 0 0 0 0.5
+
+vconnect z4 0 0 0 z
+vlocmove z4 z3
+
+psphere sp 3
+vdisplay sp
+vlocmove sp z3
+vlocreset sp
+
+vlocmirror z 0 -0.5 0 0 1 0
+vfit
+
+vdump $imagedir/${casename}.png

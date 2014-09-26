@@ -372,6 +372,13 @@ public:
        && !caps->vboDisable;
   }
 
+  //! @return cached state of GL_NORMALIZE.
+  Standard_Boolean IsGlNormalizeEnabled() const { return myIsGlNormalizeEnabled; }
+
+  //! Sets GL_NORMALIZE enabled or disabled.
+  //! @return old value of the flag
+  Standard_EXPORT Standard_Boolean SetGlNormalizeEnabled (Standard_Boolean isEnabled);
+
 public:
 
   //! @return messenger instance
@@ -527,17 +534,19 @@ private: // context info
 
   OpenGl_Clipping myClippingState; //!< state of clip planes
 
-  void*            myGlLibHandle;     //!< optional handle to GL library
+  void*            myGlLibHandle;          //!< optional handle to GL library
   NCollection_Handle<OpenGl_GlFunctions>
-                   myFuncs;           //!< mega structure for all GL functions
-  Standard_Integer myAnisoMax;        //!< maximum level of anisotropy texture filter
-  Standard_Integer myTexClamp;        //!< either GL_CLAMP_TO_EDGE (1.2+) or GL_CLAMP (1.1)
-  Standard_Integer myMaxTexDim;       //!< value for GL_MAX_TEXTURE_SIZE
-  Standard_Integer myMaxClipPlanes;   //!< value for GL_MAX_CLIP_PLANES
-  Standard_Integer myGlVerMajor;      //!< cached GL version major number
-  Standard_Integer myGlVerMinor;      //!< cached GL version minor number
-  Standard_Boolean myIsInitialized;   //!< flag indicates initialization state
-  Standard_Boolean myIsStereoBuffers; //!< context supports stereo buffering
+                   myFuncs;                //!< mega structure for all GL functions
+  Standard_Integer myAnisoMax;             //!< maximum level of anisotropy texture filter
+  Standard_Integer myTexClamp;             //!< either GL_CLAMP_TO_EDGE (1.2+) or GL_CLAMP (1.1)
+  Standard_Integer myMaxTexDim;            //!< value for GL_MAX_TEXTURE_SIZE
+  Standard_Integer myMaxClipPlanes;        //!< value for GL_MAX_CLIP_PLANES
+  Standard_Integer myGlVerMajor;           //!< cached GL version major number
+  Standard_Integer myGlVerMinor;           //!< cached GL version minor number
+  Standard_Boolean myIsInitialized;        //!< flag indicates initialization state
+  Standard_Boolean myIsStereoBuffers;      //!< context supports stereo buffering
+  Standard_Boolean myIsGlNormalizeEnabled; //!< GL_NORMALIZE flag
+                                           //!< Used to tell OpenGl that normals should be normalized
 
   Handle(OpenGl_ShaderManager) myShaderManager; //! support object for managing shader programs
 

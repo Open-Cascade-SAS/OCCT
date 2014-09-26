@@ -483,12 +483,16 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
   // if the view is scaled normal vectors are scaled to unit
   // length for correct displaying of shaded objects
   const gp_Pnt anAxialScale = myCamera->AxialScale();
-  if(anAxialScale.X() != 1.F ||
-     anAxialScale.Y() != 1.F ||
-     anAxialScale.Z() != 1.F)
-    glEnable(GL_NORMALIZE);
-  else if(glIsEnabled(GL_NORMALIZE))
-    glDisable(GL_NORMALIZE);
+  if (anAxialScale.X() != 1.F ||
+      anAxialScale.Y() != 1.F ||
+      anAxialScale.Z() != 1.F)
+  {
+    aContext->SetGlNormalizeEnabled (Standard_True);
+  }
+  else
+  {
+    aContext->SetGlNormalizeEnabled (Standard_False);
+  }
 
   // Apply Fog
   if ( myFog.IsOn )

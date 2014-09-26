@@ -149,6 +149,10 @@ namespace
         continue;
       }
       const gp_Trsf& aTrsf = aLoc.Transformation();
+
+      // Determinant of transform matrix less then 0 means that mirror transform applied.
+      Standard_Boolean isMirrored = aTrsf.VectorialPart().Determinant() < 0;
+
       Poly_Connect aPolyConnect (aT);
       // Extracts vertices & normals from nodes
       const TColgp_Array1OfPnt&   aNodes   = aT->Nodes();
@@ -170,7 +174,8 @@ namespace
         if (!aLoc.IsIdentity())
         {
           aPoint.Transform (aTrsf);
-          aNormals (aNodeIter).Transform (aTrsf);
+
+          aNormals (aNodeIter) = aNormals (aNodeIter).Transformed (aTrsf);
         }
 
         if (theHasTexels && aUVNodes.Upper() == aNodes.Upper())
@@ -190,7 +195,7 @@ namespace
       Standard_Integer anIndex[3];
       for (Standard_Integer aTriIter = 1; aTriIter <= aT->NbTriangles(); ++aTriIter)
       {
-        if (aFace.Orientation() == TopAbs_REVERSED)
+        if ((aFace.Orientation() == TopAbs_REVERSED) ^ isMirrored)
         {
           aTriangles (aTriIter).Get (anIndex[0], anIndex[2], anIndex[1]);
         }

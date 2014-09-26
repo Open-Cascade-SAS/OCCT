@@ -1616,7 +1616,7 @@ void Graphic3d_Structure::SetTransform (const TColStd_Array2OfReal&       theMat
     ReCompute();
   }
 
-  GraphicTransform (aNewTrsf);
+  myCStructure->UpdateTransformation();
   myStructureManager->SetTransform (this, aNewTrsf);
 
   Update();

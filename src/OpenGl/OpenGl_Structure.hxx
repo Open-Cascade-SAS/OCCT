@@ -250,6 +250,8 @@ protected:
 
   mutable Standard_Boolean         myIsCulled; //!< A status specifying is structure needs to be rendered after BVH tree traverse.
 
+  Standard_Boolean                 myIsMirrored; //!< Used to tell OpenGl to interpret polygons in clockwise order.
+
 public:
 
   DEFINE_STANDARD_RTTI(OpenGl_Structure) // Type definition

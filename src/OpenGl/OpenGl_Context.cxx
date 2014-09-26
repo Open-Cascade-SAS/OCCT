@@ -120,6 +120,7 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   myGlVerMinor (0),
   myIsInitialized (Standard_False),
   myIsStereoBuffers (Standard_False),
+  myIsGlNormalizeEnabled (Standard_False),
 #if !defined(GL_ES_VERSION_2_0)
   myRenderMode (GL_RENDER),
 #else
@@ -2125,4 +2126,33 @@ void OpenGl_Context::SetPointSize (const Standard_ShortReal theSize)
     }
   }
 #endif
+}
+
+// =======================================================================
+// function : SetGlNormalizeEnabled
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_Context::SetGlNormalizeEnabled (Standard_Boolean isEnabled)
+{
+  if (isEnabled == myIsGlNormalizeEnabled)
+  {
+    return myIsGlNormalizeEnabled;
+  }
+
+  Standard_Boolean anOldGlNormalize = myIsGlNormalizeEnabled;
+
+  myIsGlNormalizeEnabled = isEnabled;
+
+#if !defined(GL_ES_VERSION_2_0)
+  if (isEnabled)
+  {
+    glEnable (GL_NORMALIZE);
+  }
+  else
+  {
+    glDisable (GL_NORMALIZE);
+  }
+#endif
+
+  return anOldGlNormalize;
 }
