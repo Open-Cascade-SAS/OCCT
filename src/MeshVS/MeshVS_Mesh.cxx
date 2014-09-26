@@ -326,7 +326,7 @@ void MeshVS_Mesh::ComputeSelection ( const Handle(SelectMgr_Selection)& theSelec
           TColStd_MapIteratorOfPackedMapOfInteger anIterN( anAllNodesMap );
           for( ; anIterN.More(); anIterN.Next() )
             if( myDataSource->GetGeom( anIterN.Key(), Standard_False, aCoords, NbNodes, aType ) &&
-                !IsHiddenNode( anIterN.Key() ) )
+                IsSelectableNode( anIterN.Key() ) )
               theSelection->Add( new Select3D_SensitivePoint( myWholeMeshOwner, gp_Pnt ( aCoords(1), aCoords(2), aCoords(3) ) ) );
         }
         break;

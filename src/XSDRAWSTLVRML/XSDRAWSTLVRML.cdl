@@ -23,6 +23,8 @@ is
 
     class DataSource;
 
+    class DataSource3D;
+
     class DrawableMesh;
 
     class ElemNodesMap instantiates DataMap from TCollection

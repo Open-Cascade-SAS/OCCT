@@ -19,7 +19,9 @@ vdisplay a
 vfit
 vsetdispmode 1
 
-vselmode FACE ON
+# FACE ON
+vselmode 4 1
+
 set x 170
 set y 80
 vselect $x $y

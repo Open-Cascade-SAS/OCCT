@@ -1,0 +1,4 @@
+vclear
+meshfromstl m [locate_data_file bug24961_m.stl]
+meshdeform m -mode on -scale 20
+vdump $::imagedir/${::casename}.png

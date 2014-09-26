@@ -3,7 +3,7 @@ puts "Display/erase 1 MeshVS_Mesh"
 puts "Object haves shading mode"
 
 
-meshdispmode m 2
+vsetdispmode m 2
 
 dchrono tmr start
 

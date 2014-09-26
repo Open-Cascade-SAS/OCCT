@@ -4001,7 +4001,7 @@ static Standard_Integer VSetSelectionMode (Draw_Interpretor& /*di*/,
   Handle(AIS_InteractiveContext) anAISContext = ViewerTest::GetAISContext();
   if (anAISContext.IsNull())
   {
-    std::cerr << "Call vinit before!\n";
+    std::cerr << "Call vinit before!" << std::endl;
     return 1;
   }
 
@@ -4009,7 +4009,7 @@ static Standard_Integer VSetSelectionMode (Draw_Interpretor& /*di*/,
   if (theArgc != 3 && theArgc != 4)
   {
     std::cerr << "vselmode error : expects at least 2 arguments.\n"
-              << "Type help "<< theArgv[0] <<" for more information.";
+              << "Type help "<< theArgv[0] <<" for more information." << std::endl;
     return 1;
   }
 
@@ -4028,7 +4028,7 @@ static Standard_Integer VSetSelectionMode (Draw_Interpretor& /*di*/,
       Handle(AIS_InteractiveObject) anIO = Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2 (aNameIO));
       if (anIO.IsNull())
       {
-        std::cerr << "vselmode error : object name is used for non AIS viewer\n"; 
+        std::cerr << "vselmode error : object name is used for non AIS viewer" << std::endl;
         return 1;
       }
       aTargetIOs.Append (anIO);
@@ -4040,6 +4040,32 @@ static Standard_Integer VSetSelectionMode (Draw_Interpretor& /*di*/,
   if (aSelectionMode == 0 && anAISContext->HasOpenedContext())
   {
     anAISContext->CloseLocalContext();
+  }
+
+  if (aSelectionMode == 0)
+  {
+    if (toTurnOn)
+    {
+      for (AIS_ListIteratorOfListOfInteractive aTargetIt (aTargetIOs); aTargetIt.More(); aTargetIt.Next())
+      {
+        const Handle(AIS_InteractiveObject)& anIO = aTargetIt.Value();
+        if (!InList (anAISContext, anIO, aSelectionMode))
+        {
+          anAISContext->Activate (anIO);
+        }
+      }
+    }
+    else
+    {
+      for (AIS_ListIteratorOfListOfInteractive aTargetIt (aTargetIOs); aTargetIt.More(); aTargetIt.Next())
+      {
+        const Handle(AIS_InteractiveObject)& anIO = aTargetIt.Value();
+        if (InList (anAISContext, anIO, aSelectionMode))
+        {
+          anAISContext->Deactivate (anIO);
+        }
+      }
+    }
   }
 
   if (aSelectionMode != 0 && toTurnOn) // Turn on specified mode

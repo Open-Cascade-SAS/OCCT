@@ -122,7 +122,7 @@ proc check_picking { pick check name } {
 
 proc check_cross_picking { pick object name } {
 
-  vselmode 0 0
+  vselmode 0 1
 
   for {set i 1} {$i < 3} {incr i} {
     
@@ -154,7 +154,7 @@ proc check_cross_picking { pick object name } {
     }
     vselmode $object $i 0
   }
-  vselmode 0 0
+  vselmode 0 1
 }
 
 # pick coord { [flyout], dimension line, text }
@@ -235,7 +235,7 @@ set ymin -500
 set ymax  500
 set shift 0
 
-vselmode 0 0
+vselmode 0 1
 vselect $xmin $ymin $xmax $ymax $shift
 vdump $anImage1
 
@@ -245,7 +245,7 @@ vselect $xmin $ymin $xmax $ymax $shift
 vdump $anImage2
 
 vselect 0 0 0 0 0
-vselmode 0 0
+vselmode 0 1
 vselmode 2 1
 vselect $xmin $ymin $xmax $ymax $shift
 vdump $anImage3

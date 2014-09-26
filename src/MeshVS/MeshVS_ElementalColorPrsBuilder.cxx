@@ -289,10 +289,7 @@ void MeshVS_ElementalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& 
               aNbEdgePrimitives += aFaceNodes.Length();
             }
 
-            if (IsReflect) // add volumetric cell triangles
-            {
-              aNbVolmPrimitives += aFaceNodes.Length() - 2;
-            }
+            aNbVolmPrimitives += aFaceNodes.Length() - 2;
           }
         }
       }

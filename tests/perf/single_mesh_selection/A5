@@ -3,11 +3,11 @@ puts "Activation of FACE selection mode for MeshVS_Mesh"
 puts "Object haves wireframe mode"
 
 
-meshdispmode m 1
+vsetdispmode m 1
 
 dchrono tmr start
 
 for {set i 1} {$i < 100} {incr i} {
-    meshselmode m 8
-    meshselmode m -1
+    vselmode m 8 1
+    vselmode m 0 0
 }

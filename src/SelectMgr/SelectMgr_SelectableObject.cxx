@@ -224,7 +224,7 @@ void SelectMgr_SelectableObject::UpdateTransformations(const Handle(SelectMgr_Se
   Handle(Select3D_SensitiveEntity) SE;
   if(aSelfLocation.IsIdentity()) return;
   for(Sel->Init();Sel->More();Sel->Next()){
-    SE =  *((Handle(Select3D_SensitiveEntity)*) &(Sel->Sensitive()));
+    SE =  Handle(Select3D_SensitiveEntity)::DownCast(Sel->Sensitive());
     if(!SE.IsNull()){
       SE->UpdateLocation(aSelfLocation);
       const Handle(SelectBasics_EntityOwner)& aEOwner = SE->OwnerId();

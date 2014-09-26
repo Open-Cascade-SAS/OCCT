@@ -1,0 +1,11 @@
+vclear
+mesh3delem m
+vrotate 1.5 0 0
+vrotate 0 0.5 0
+vdump $::imagedir/${::casename}_crtd.png
+vsetdispmode m 2
+vdump $::imagedir/${::casename}_m2.png
+vsetdispmode m 3
+vdump $::imagedir/${::casename}_m3.png
+meshhide m
+vdump $::imagedir/${::casename}_hdn.png

@@ -9,10 +9,12 @@ puts ""
 pload XDE
 set BugNumber OCC6652
 
+vinit
+
 meshfromstl result [locate_data_file OCC6652.stl]
 
-meshdispmode result 3
-meshselmode result 8
+vsetdispmode result 3
+vselmode result 8 1
 
 vselect 5 5 400 400
 

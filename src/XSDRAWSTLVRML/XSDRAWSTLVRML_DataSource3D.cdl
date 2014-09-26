@@ -1,0 +1,98 @@
+-- Created on: 2014-08-04
+-- Created by: Artem NOVIKOV
+-- Copyright (c) 2014 OPEN CASCADE SAS
+--
+-- This file is part of Open CASCADE Technology software library.
+--
+-- This library is free software; you can redistribute it and/or modify it under
+-- the terms of the GNU Lesser General Public License version 2.1 as published
+-- by the Free Software Foundation, with special exception defined in the file
+-- OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+-- distribution for complete text of the license and disclaimer of any warranty.
+--
+-- Alternatively, this file may be used under the terms of Open CASCADE
+-- commercial license or contractual agreement.
+
+class DataSource3D from XSDRAWSTLVRML inherits DataSource from MeshVS
+
+    ---Purpose: The sample DataSource3D for working with STLMesh_Mesh
+
+uses
+  Mesh from StlMesh,
+
+  Integer from Standard,
+  Boolean from Standard,
+  Address from Standard,
+
+  Array1OfReal      from TColStd,
+  Array1OfInteger   from TColStd,
+  SequenceOfInteger from TColStd,
+  PackedMapOfInteger from TColStd,
+
+  EntityType from MeshVS,
+
+  HArray1OfInteger from TColStd,
+  HArray2OfInteger from TColStd,
+  HArray2OfReal from TColStd,
+
+  HArray1OfSequenceOfInteger from MeshVS,
+  DataMapOfHArray1OfSequenceOfInteger from MeshVS
+
+is
+
+  Create returns DataSource3D from XSDRAWSTLVRML;
+    ---Purpose: Constructor
+
+  GetGeom ( me; theID     : Integer;
+            theIsElement  : Boolean;
+            theCoords     : out Array1OfReal;
+            theNbNodes    : out Integer;
+            theType       : out EntityType ) returns Boolean;
+    ---Purpose: Returns geometry information about node ( if IsElement is False ) or element ( IsElement is True )
+        -- by co-ordinates. For element this method must return all its nodes co-ordinates in the strict order: X, Y, Z and
+    -- with nodes order is the same as in wire bounding the face or link. NbNodes is number of nodes of element.
+    -- It is recommended to return 1 for node. Type is an element type.
+
+  Get3DGeom ( me; theID    : Integer;
+              theNbNodes   : out Integer;
+              theData      : out HArray1OfSequenceOfInteger from MeshVS ) returns Boolean is redefined virtual;
+        ---Purpose: This method returns topology information about 3D-element
+        -- Returns false if element with ID isn't 3D or because other troubles
+
+  GetGeomType ( me; theID     : Integer;
+                theIsElement  : Boolean;
+                theType       : out EntityType ) returns Boolean;
+    ---Purpose: This method is similar to GetGeom, but returns only element or node type. This method is provided for
+        -- a fine performance.
+
+  GetAddr ( me; theID     : Integer;
+            theIsElement  : Boolean   ) returns Address;
+    ---Purpose: This method returns by number an address of any entity which represents element or node data structure.
+
+  GetNodesByElement ( me; theID  : Integer;
+                      theNodeIDs : out Array1OfInteger from TColStd;
+                      theNbNodes : out Integer ) returns Boolean is redefined;
+    ---Purpose: This method returns information about what node this element consist of.
+
+  GetAllNodes    ( me ) returns PackedMapOfInteger;
+    ---C++: return const &
+    ---Purpose: This method returns map of all nodes the object consist of.
+
+  GetAllElements ( me ) returns PackedMapOfInteger;
+    ---C++: return const &
+    ---Purpose: This method returns map of all elements the object consist of.
+
+  GetNormal ( me; theID               : Integer;
+                  theMax              : Integer;
+                  theNx, theNy, theNz : out Real ) returns Boolean is redefined virtual;
+    ---Purpose: This method calculates normal of face, which is using for correct reflection presentation.
+        --   There is default method, for advance reflection this method can be redefined.
+
+fields
+  myNodes                                   : PackedMapOfInteger from TColStd;
+  myElements                                : PackedMapOfInteger from TColStd;
+  myElemNbNodes                             : HArray1OfInteger from TColStd;
+  myNodeCoords                              : HArray2OfReal from TColStd;
+  myElemNodes                               : HArray2OfInteger from TColStd;
+
+end DataSource3D;

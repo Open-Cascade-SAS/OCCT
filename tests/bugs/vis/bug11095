@@ -10,6 +10,8 @@ set BugNumber OCC11095
 
 pload XDE
 
+vinit
+
 meshfromstl m [locate_data_file OMF6391_box.stl]
 
 set x_coord 157
@@ -21,7 +23,7 @@ set BLUE_R1  0
 
 vmoveto $x_coord $y_coord
 
-meshdispmode m 3
+vsetdispmode m 3
 puts "\nSet shrinked display mode\n"
 
 set x_coord 137

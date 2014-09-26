@@ -18,25 +18,8 @@ set List2 [meshfromstl result [locate_data_file bearing.stl]]
 
 set status 0
 
-if { ${List1} != ${List2}} {
-   set status 0
+if { ${List1} != ${List2} && [ regexp {Progress:} $List2 ] } {
+    puts "$BugNumber OK"
 } else {
-    set status 1
-}
-
-if { [ regexp {Progress:} $List2 ] } {
-    puts "${BugNumber} OK"
-    set status 0
-} else {
-    puts "${BugNumber} Faulty"
-    set status 1
-}
-if { $status != 0 } {
     puts  "Faulty $BugNumber"
-} else {
-    puts  "OK $BugNumber"
 }
-
-set 3dviewer 0
-
-

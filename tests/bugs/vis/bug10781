@@ -10,6 +10,8 @@ set BugNumber OCC10781
 
 pload XDE
 
+vinit
+
 meshfromstl m [locate_data_file OMF6391_box.stl]
 
 set x_coord 210
@@ -22,6 +24,6 @@ checkcolor $x_coord $y_coord 0 0 0
 mesh_edge_width m 20
 puts "\nSet big mesh edge width"
 
-checkcolor $x_coord $y_coord 1 1 1
+checkcolor $x_coord $y_coord 1 1 0
 
 set only_screen 1

@@ -3,8 +3,8 @@ puts "Interactive selection of whole MeshVS_Mesh object by point-and-click for M
 puts "Object haves shrink mode"
 
 
-meshdispmode m 3
-meshselmode m 0
+vsetdispmode m 3
+vselmode m 0 1
 
 dchrono tmr start
 

@@ -3,7 +3,7 @@ puts "Display/erase 1 MeshVS_Mesh"
 puts "Object haves shrink mode"
 
 
-meshdispmode m 3
+vsetdispmode m 3
 
 dchrono tmr start
 

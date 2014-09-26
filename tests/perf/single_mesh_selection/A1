@@ -3,7 +3,7 @@ puts "Display/erase 1 MeshVS_Mesh"
 puts "Object haves wireframe mode"
 
 
-meshdispmode m 1
+vsetdispmode m 1
 
 dchrono tmr start
 

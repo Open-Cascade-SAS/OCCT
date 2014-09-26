@@ -16,7 +16,9 @@ set only_screen 1
 
 meshfromstl m [locate_data_file shape.stl]
 
-meshdispmode m 34
+meshtext m
+
+vsetdispmode m 34
 
 set aFile $imagedir/${test_image}.pdf
 

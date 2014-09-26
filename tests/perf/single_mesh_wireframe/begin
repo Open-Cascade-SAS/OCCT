@@ -2,7 +2,7 @@ pload XSDRAW
 vinit
 meshfromstl m [locate_data_file b.stl]
 vtrihedron tri
-meshdispmode m 1
+vsetdispmode m 1
 
 vzoom 0.1
 
