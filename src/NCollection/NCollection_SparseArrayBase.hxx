@@ -237,10 +237,6 @@ protected:
   Standard_EXPORT Standard_Address setValue (const Standard_Size theIndex, 
                                              const Standard_Address theValue);
 
-  //! Modification access to the item; allocates necessary space
-  //! and marks the item as defined
-  Standard_EXPORT Standard_Address changeValue (const Standard_Size theIndex);
-
   //! Copy contents of theOther to this; 
   //! assumes that this and theOther have exactly the same type of arguments 
   Standard_EXPORT void assign (const NCollection_SparseArrayBase& theOther);

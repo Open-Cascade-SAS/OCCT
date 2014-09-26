@@ -131,14 +131,13 @@ public:
   //! Direct const access to the item 
   const TheItemType& Find (const Standard_Size theIndex) const 
   {
-    return *(TheItemType*)this->getValue(theIndex);
+    return Value(theIndex);
   }
 
-  //! Modification access to the item; allocates space if 
-  //! necessary and marks the item as defined
+  //! Modification access to the item
   TheItemType& ChangeFind (const Standard_Size theIndex) 
   {
-    return *(TheItemType*)(this->changeValue (theIndex));
+    return ChangeValue(theIndex);
   }
 
   //! Set a value as explicit method
