@@ -19,6 +19,8 @@
 #include <BRepMesh_Edge.hxx>
 #include <Bnd_Box.hxx>
 #include <BRepBndLib.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
 
 #include <gp_Pnt.hxx> //ied_modif_for_compil_Nov-20-1998
 
@@ -63,103 +65,141 @@ Standard_Real&  XSDRAWSTLVRML_ToVRML::Deflection ()         {  return myDeflecti
 //=======================================================================
 
 Standard_Boolean  XSDRAWSTLVRML_ToVRML::Write
-  (const TopoDS_Shape& aShape, const Standard_CString filename) const
+  (const TopoDS_Shape& theShape, const Standard_CString theFileName) const
 {
-  filebuf thefile;
-  ostream TheFileOut(&thefile);
+  filebuf aFile;
+  ostream anOut(&aFile);
 
-  if (thefile.open(filename,ios::out))
-    {
+  if ( aFile.open(theFileName,ios::out) )
+  {
+    // Creates facets from the shape
+    // Create (defle     : Real    from Standard;
+    //         shape     : Shape   from TopoDS;
+    //         angl      : Real    from Standard = 0.17;
+    //         withShare : Boolean from Standard = Standard_True;
+    //         inshape   : Boolean from Standard = Standard_False;
+    //         relative  : Boolean from Standard = Standard_False;
+    //         shapetrigu: Boolean from Standard = Standard_False)
+    //         returns mutable Discret from BRepMesh;
 
-      // Creates facets from the shape
-//      Create (defle     : Real    from Standard;
-//         shape     : Shape   from TopoDS;
-//            angl      : Real    from Standard= 0.17;
-//            withShare : Boolean from Standard=Standard_True;
-//            inshape   : Boolean from Standard=Standard_False;
-//            relative  : Boolean from Standard=Standard_False;
-//            shapetrigu: Boolean from Standard=Standard_False)
-//      returns mutable Discret from BRepMesh;
-      Bnd_Box B;
-      BRepBndLib::Add(aShape, B);
+    Bnd_Box aBox;
+    BRepBndLib::Add(theShape, aBox);
 
-      Handle(BRepMesh_FastDiscret)   TheDiscret = 
-  new BRepMesh_FastDiscret(aShape,
-           myDeflection,
-           0.17,
-           B,
-           Standard_True,
-           Standard_False,
-           Standard_True,
-           Standard_True);
+    Handle(BRepMesh_FastDiscret) aDiscret =
+      new BRepMesh_FastDiscret( theShape,
+                                myDeflection,
+                                0.17,
+                                aBox,
+                                Standard_True,
+                                Standard_False,
+                                Standard_True,
+                                Standard_True );
 
-      Standard_Integer i,j;
+      // Header of the VRML file
+      anOut << "#VRML V2.0 utf8" << endl;
+      anOut << "Group {" << endl;
+      anOut << "  children [ " << endl;
+      anOut << "    NavigationInfo {" << endl;
+      anOut << "      type \"EXAMINE\" " << endl;
+      anOut << "    }," << endl;
+      anOut << "    Shape {" << endl;
 
-      // header of the VRML file
-      TheFileOut << "#VRML V2.0 utf8" << endl;
-      TheFileOut << "Group {" << endl;
-      TheFileOut << " children [ " << endl;
-      TheFileOut << " NavigationInfo {" << endl;
-      TheFileOut << "       type \"EXAMINE\" " << endl;
-      TheFileOut << " }," << endl;
-      TheFileOut << "Shape {" << endl;
+      anOut << "      appearance Appearance {" << endl;
+      anOut << "        texture ImageTexture {" << endl;
+      anOut << "          url " << myTexture.ToCString() << endl;
+      anOut << "        }" << endl;
+      anOut << "        material Material {" << endl;
+      anOut << "          diffuseColor " << myDiffuseColorRed << " "
+                                         << myDiffuseColorGreen << " "
+                                         << myDiffuseColorBlue << " " << endl;
+      anOut << "          emissiveColor " << myEmissiveColorRed << " "
+                                          << myEmissiveColorGreen << " "
+                                          << myEmissiveColorBlue << " " << endl;
+      anOut << "          transparency " << myTransparency << endl;
+      anOut << "          ambientIntensity " << myAmbientIntensity << " " << endl;
+      anOut << "          specularColor " << mySpecularColorRed << " "
+                                          << mySpecularColorGreen << " "
+                                          << mySpecularColorBlue << " " << endl;
+      anOut << "          shininess " << myShininess << " " << endl;
+      anOut << "        }" << endl;
+      anOut << "      }" << endl;
 
-      TheFileOut << "   appearance Appearance {" << endl;
-      TheFileOut << "     texture ImageTexture {" << endl;
-      TheFileOut << "         url " << myTexture.ToCString() << endl;
-      TheFileOut << "         }" << endl;
-      TheFileOut << "     material Material { " << endl;
-      TheFileOut << "  diffuseColor " << myDiffuseColorRed << " " << myDiffuseColorGreen << " " << myDiffuseColorBlue << " " << endl;
-      TheFileOut << " emissiveColor " << myEmissiveColorRed << " "
-  << myEmissiveColorGreen << " " << myEmissiveColorBlue << " " << endl;
-      TheFileOut << " transparency " << myTransparency << endl;
-      TheFileOut << " ambientIntensity " << myAmbientIntensity << " " << endl;
-      TheFileOut << " specularColor " << mySpecularColorRed << " " << mySpecularColorGreen << " " << mySpecularColorBlue << " " << endl;
-      TheFileOut << " shininess " <<myShininess << " " << endl;
-      TheFileOut << "         }" << endl;
-      TheFileOut << "     }" << endl;
+      anOut << "      geometry IndexedFaceSet {" << endl;
+      anOut << "        coord Coordinate {" << endl;
+      anOut << "          point [" << endl;
 
-      TheFileOut << "   geometry IndexedFaceSet {" << endl;
-      TheFileOut << "     coord Coordinate {" << endl;
-      TheFileOut << "       point [" << endl;
-      
-      // puts the coordinates of all the vertices using the order
+      // Puts the coordinates of all the vertices using the order
       // given during the discretisation
-      for (i=1;i<=TheDiscret->NbVertices();i++)
-  {
-    gp_Pnt TheVertex=TheDiscret->Pnt(i);
-    TheFileOut << "          " 
-      <<  TheVertex.Coord().X() << " " 
-        << TheVertex.Coord().Y() <<  " " 
-    << TheVertex.Coord().Z() << "," << endl;
-  }
-      TheFileOut << "       ]" << endl;
-      TheFileOut << "     }" << endl;
-      
-      TheFileOut << "     coordIndex [" << endl;
-      
-      // retrieves all the triangles in order to draw the facets
-      for (j=1; j <= TheDiscret->NbTriangles(); j++)
-  {
-    Standard_Integer v[3];
-    TheDiscret->TriangleNodes(j, v);
-    
-    TheFileOut << "          " << v[0]-1  << ", " << v[1]-1 << ", "  << v[2]-1  << ", -1, " << endl;
-  }
-      
-      TheFileOut << "          ]" << endl;
-      TheFileOut << "     solid FALSE" << endl;      // it is not a closed solid
-      TheFileOut << " creaseAngle " << myCreaseAngle << " " << endl; // for smooth shading
-      TheFileOut << "     }" << endl;
-      TheFileOut << "   }" << endl;
-    TheFileOut << " ]" << endl;
-    TheFileOut << "} " << endl;
-      
-    }
-  else return Standard_False;  // failure when opening file
+      TopExp_Explorer aFaceIt(theShape, TopAbs_FACE);
+      for (; aFaceIt.More(); aFaceIt.Next())
+      {
+        Handle(BRepMesh_FaceAttribute) anAttribute;
+        const TopoDS_Face& aFace = TopoDS::Face(aFaceIt.Current());
+        if (!aDiscret->GetFaceAttribute(aFace, anAttribute) || !anAttribute->IsValid())
+          continue;
 
-  thefile.close();
+        Handle(BRepMesh_DataStructureOfDelaun)& aStructure =
+          anAttribute->ChangeStructure();
 
+        const Standard_Integer aNbVertices = aStructure->NbNodes();
+        for (Standard_Integer i = 1; i <= aNbVertices; ++i)
+        {
+          const BRepMesh_Vertex& aVertex = aStructure->GetNode(i);
+          const gp_Pnt&          aPoint  = anAttribute->GetPoint(aVertex);
+
+          anOut << "          "
+            << aPoint.Coord().X() << " "
+            << aPoint.Coord().Y() << " "
+            << aPoint.Coord().Z() << "," << endl;
+        }
+      }
+
+      anOut << "          ]" << endl;
+      anOut << "        }" << endl;
+      anOut << "        coordIndex [" << endl;
+
+      // Retrieves all the triangles in order to draw the facets
+      for (aFaceIt.Init(theShape, TopAbs_FACE); aFaceIt.More(); aFaceIt.Next())
+      {
+        Handle(BRepMesh_FaceAttribute) anAttribute;
+        const TopoDS_Face& aFace = TopoDS::Face(aFaceIt.Current());
+
+        if (!aDiscret->GetFaceAttribute(aFace, anAttribute) || !anAttribute->IsValid())
+          continue;
+
+        Handle(BRepMesh_DataStructureOfDelaun)& aStructure =
+          anAttribute->ChangeStructure();
+
+        const Standard_Integer aNbTriangles = aStructure->NbElements();
+        for ( Standard_Integer i = 1; i <= aNbTriangles; ++i )
+        {
+          const BRepMesh_Triangle& aTriangle = aStructure->GetElement(i);
+
+          Standard_Integer v[3];
+          aStructure->ElementNodes(aTriangle, v);
+
+          anOut << "          "
+                << v[0] - 1 << ", "
+                << v[1] - 1 << ", "
+                << v[2] - 1 << ", -1," << endl;
+        }
+      }
+
+      anOut << "        ]" << endl;
+      anOut << "        solid FALSE" << endl; // it is not a closed solid
+      anOut << "        creaseAngle " << myCreaseAngle << " " << endl; // for smooth shading
+      anOut << "      }" << endl;
+      anOut << "    }" << endl;
+      anOut << "  ]" << endl;
+      anOut << "}" << endl;
+  }
+  else
+  {
+    // Failure when opening file
+    return Standard_False;
+  }
+
+  aFile.close();
   return Standard_True;
 }
 

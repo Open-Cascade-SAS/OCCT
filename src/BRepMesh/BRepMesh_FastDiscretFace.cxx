@@ -15,7 +15,6 @@
 #include <BRepMesh_FastDiscretFace.hxx>
 
 #include <BRepMesh_PairOfPolygon.hxx>
-#include <BRepMesh_Classifier.hxx>
 #include <BRepMesh_ShapeTool.hxx>
 #include <Poly_PolygonOnTriangulation.hxx>
 #include <Poly_Triangulation.hxx>
@@ -30,7 +29,6 @@
 #include <BRep_TVertex.hxx>
 #include <BRep_Tool.hxx>
 
-#include <ElSLib.hxx>
 #include <GeomLib.hxx>
 #include <Geom_Surface.hxx>
 #include <Geom_BSplineSurface.hxx>
@@ -56,7 +54,7 @@
 #include <NCollection_Map.hxx>
 #include <Bnd_Box2d.hxx>
 
-#define UVDEFLECTION 1.e-05
+#include <algorithm>
 
 IMPLEMENT_STANDARD_HANDLE (BRepMesh_FastDiscretFace, Standard_Transient)
 IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_FastDiscretFace, Standard_Transient)
@@ -92,6 +90,52 @@ static Standard_Real FUN_CalcAverageDUV(TColStd_Array1OfReal& P, const Standard_
   return (n? (result / (Standard_Real) n) : -1.);
 }
 
+namespace {
+
+  //! Auxiliary class used to extract geometrical parameters of fixed TopoDS_Vertex.
+  class FixedVExplorer
+  {
+  public:
+
+    DEFINE_STANDARD_ALLOC
+
+    FixedVExplorer(const TopoDS_Vertex& theVertex)
+      : myVertex(theVertex)
+    {
+    }
+
+    const TopoDS_Vertex& Vertex() const
+    {
+      return myVertex;
+    }
+
+    Standard_Boolean IsSameUV() const
+    {
+      return Standard_False;
+    }
+
+    TopoDS_Vertex SameVertex() const
+    {
+      return TopoDS_Vertex();
+    }
+
+    virtual gp_Pnt Point() const
+    {
+      return BRep_Tool::Pnt(myVertex);
+    }
+
+  private:
+
+    void operator =(const FixedVExplorer& /*theOther*/)
+    {
+    }
+
+  private:
+    const TopoDS_Vertex& myVertex;
+  };
+}
+
+
 //=======================================================================
 //function : BRepMesh_FastDiscretFace
 //purpose  : 
@@ -99,7 +143,7 @@ static Standard_Real FUN_CalcAverageDUV(TColStd_Array1OfReal& P, const Standard_
 BRepMesh_FastDiscretFace::BRepMesh_FastDiscretFace
                           (const Standard_Real     theAngle,
                            const Standard_Boolean  theWithShare) : 
-  myAngle(theAngle), myWithShare(theWithShare), myNbLocat(0), 
+  myAngle(theAngle), myWithShare(theWithShare),
   myInternalVerticesMode(Standard_True)
 {
   myAllocator = new NCollection_IncAllocator(64000);
@@ -109,446 +153,188 @@ BRepMesh_FastDiscretFace::BRepMesh_FastDiscretFace
 //function : Add(face)
 //purpose  : 
 //=======================================================================
-
-void BRepMesh_FastDiscretFace::Add(const TopoDS_Face&                    theFace,
-                                   const Handle(BRepMesh_FaceAttribute)& theAttrib,
-                                   const TopTools_DataMapOfShapeReal&    theMapDefle,
-                                   const TopTools_MutexForShapeProvider& theMutexProvider)
+void BRepMesh_FastDiscretFace::Add(const Handle(BRepMesh_FaceAttribute)& theAttribute)
 {
-#ifndef DEB_MESH
-  try
+  if (!theAttribute->IsValid())
+    return;
+
+  myAttribute     = theAttribute;
+  myStructure     = myAttribute->ChangeStructure();
+  myVertexEdgeMap = myAttribute->ChangeVertexEdgeMap();
+  myClassifier    = myAttribute->ChangeClassifier();
+  mySurfacePoints = myAttribute->ChangeSurfacePoints();
+
+  Standard_Real aTolU = myAttribute->ToleranceU();
+  Standard_Real aTolV = myAttribute->ToleranceV();
+  Standard_Real uCellSize = 14.0 * aTolU;
+  Standard_Real vCellSize = 14.0 * aTolV;
+
+  const Handle(BRepAdaptor_HSurface)& gFace = myAttribute->Surface();
+  GeomAbs_SurfaceType thetype = gFace->GetType();
+
+  Standard_Integer i = 1;
+
+  //////////////////////////////////////////////////////////// 
+  //add internal vertices after self-intersection check
+  Standard_Integer nbVertices = 0;
+  if ( myInternalVerticesMode )
   {
-    OCC_CATCH_SIGNALS
-#endif
-    TopoDS_Face face = theFace;
-    TopLoc_Location loc;
+    TopExp_Explorer anExplorer(myAttribute->Face(), TopAbs_VERTEX, TopAbs_EDGE);
+    for ( ; anExplorer.More(); anExplorer.Next() )
+      add(TopoDS::Vertex(anExplorer.Current()));
+    nbVertices = myVertexEdgeMap->Extent();
+  }
 
-    const Handle(Poly_Triangulation)& aFaceTrigu = BRep_Tool::Triangulation(face, loc);
-    if ( aFaceTrigu.IsNull() )
-      return;
+  // essai de determination de la longueur vraie:
+  // akm (bug OCC16) : We must calculate these measures in non-singular
+  //     parts of face. Let`s try to compute average value of three
+  //     (umin, (umin+umax)/2, umax), and respectively for v.
+  //                 vvvvv
+  //Standard_Real longu = 0.0, longv = 0.0; //, last , first;
+  //gp_Pnt P11, P12, P21, P22, P31, P32;
 
-    myAttrib = theAttrib;
-    face.Orientation(TopAbs_FORWARD);
-    myStructure.Nullify();
-    Handle(NCollection_IncAllocator) anAlloc = Handle(NCollection_IncAllocator)::DownCast(myAllocator);
-    anAlloc->Reset(Standard_False);  
-    myStructure=new BRepMesh_DataStructureOfDelaun(anAlloc);
-    
-    Standard_Real umax   = myAttrib->GetUMax();
-    Standard_Real umin   = myAttrib->GetUMin();
-    Standard_Real vmax   = myAttrib->GetVMax();
-    Standard_Real vmin   = myAttrib->GetVMin();
+  const Standard_Real deltaX = myAttribute->GetDeltaX();
+  const Standard_Real deltaY = myAttribute->GetDeltaY();
 
-    Standard_Real aTolU = Max( Precision::PConfusion(), (umax - umin) * UVDEFLECTION );
-    Standard_Real aTolV = Max( Precision::PConfusion(), (vmax - vmin) * UVDEFLECTION );
-    Standard_Real uCellSize = 14 * aTolU;
-    Standard_Real vCellSize = 14 * aTolV;
+  BRepMeshCol::Array1OfInteger tabvert_corr(1, nbVertices);
 
-    myStructure->Data().SetCellSize ( uCellSize, vCellSize );
-    myStructure->Data().SetTolerance( aTolU, aTolV );
+  // Check the necessity to fill the map of parameters
+  const Standard_Boolean useUVParam = (thetype == GeomAbs_Torus         ||
+                                       thetype == GeomAbs_BezierSurface ||
+                                       thetype == GeomAbs_BSplineSurface);
+  myUParam.Clear(); 
+  myVParam.Clear();
 
+  BRepMesh_VertexTool aMoveNodes(nbVertices, myAllocator);
 
-    BRepAdaptor_Surface  BS(face, Standard_False);
-    Handle(BRepAdaptor_HSurface) gFace = new BRepAdaptor_HSurface(BS);
-    
-    GeomAbs_SurfaceType thetype;
-    thetype = BS.GetType();
-    
-    TopAbs_Orientation orFace = face.Orientation();
+  aMoveNodes.SetCellSize ( uCellSize / deltaX, vCellSize / deltaY);
+  aMoveNodes.SetTolerance( aTolU     / deltaX, aTolV     / deltaY);
 
-    if (!myWithShare)        
-      myVertices.Clear();
+  for ( i = 1; i <= myStructure->NbNodes(); ++i )
+  {
+    const BRepMesh_Vertex& v = myStructure->GetNode(i);
+    gp_XY aPnt2d = v.Coord();
 
-    myListver.Clear();
-    myVemap.Clear();
-    myLocation2d.Clear();
-    myInternaledges.Clear();
+    if (useUVParam)
+    {
+      myUParam.Add(aPnt2d.X());
+      myVParam.Add(aPnt2d.Y());
+    }
 
-    Standard_Integer i = 1;
-    Standard_Integer ipn = 0;
- 
-    TopoDS_Iterator exW(face);
-    for (; exW.More(); exW.Next()) {
-      const TopoDS_Shape& aWire = exW.Value();
-      if (aWire.ShapeType() != TopAbs_WIRE)
+    aPnt2d = myAttribute->Scale(aPnt2d, Standard_True);
+    BRepMesh_Vertex v_new(aPnt2d, v.Location3d(), v.Movability());
+    const BRepMeshCol::ListOfInteger& alist = myStructure->LinksConnectedTo(i);
+    aMoveNodes.Add(v_new, alist);
+    tabvert_corr(i) = i;
+  }
+  myStructure->ReplaceNodes(aMoveNodes);
+
+  Standard_Boolean rajout = 
+    (thetype == GeomAbs_Sphere || thetype == GeomAbs_Torus);
+
+  BRepMesh_Delaun trigu(myStructure, tabvert_corr);
+
+  //removed all free edges from triangulation
+  const Standard_Integer nbLinks = myStructure->NbLinks();
+  for( i = 1; i <= nbLinks; i++ ) 
+  {
+    if( myStructure->ElementsConnectedTo(i).Extent() < 1 )
+    {
+      BRepMesh_Edge& anEdge = (BRepMesh_Edge&)trigu.GetEdge(i);
+      if ( anEdge.Movability() == BRepMesh_Deleted )
         continue;
-      TopoDS_Iterator ex(aWire);
-      for(; ex.More(); ex.Next()) {
-        const TopoDS_Edge& edge = TopoDS::Edge(ex.Value());
-        if(edge.IsNull())
-          continue;
-        RestoreStructureFromTriangulation(edge, face, gFace, aFaceTrigu, 
-          theMapDefle(edge), loc, theMutexProvider);
-      }
+
+      anEdge.SetMovability(BRepMesh_Free);
+      myStructure->RemoveLink(i);
     }
-    
-    //////////////////////////////////////////////////////////// 
-    //add internal vertices after self-intersection check
-    Standard_Integer nbVertices = 0;
-    if(myInternalVerticesMode) {
-      for(TopExp_Explorer ex(face,TopAbs_VERTEX ,TopAbs_EDGE); ex.More(); ex.Next()) {
-        const TopoDS_Vertex& aVert = TopoDS::Vertex(ex.Current());
-        Add(aVert,face,gFace);
-      }
-      nbVertices = myVemap.Extent();
-    }
-    
-    // essai de determination de la longueur vraie:
-    // akm (bug OCC16) : We must calculate these measures in non-singular
-    //     parts of face. Let`s try to compute average value of three
-    //     (umin, (umin+umax)/2, umax), and respectively for v.
-    //                 vvvvv
-    //Standard_Real longu = 0.0, longv = 0.0; //, last , first;
-    //gp_Pnt P11, P12, P21, P22, P31, P32;
-
-    Standard_Real deltaX = myAttrib->GetDeltaX();
-    Standard_Real deltaY = myAttrib->GetDeltaY();
-    
-    BRepMeshCol::Array1OfInteger tabvert_corr(1, nbVertices);
-    gp_Pnt2d p2d;
-    
-    // Check the necessity to fill the map of parameters
-    const Standard_Boolean useUVParam = (thetype == GeomAbs_Torus ||
-                                         thetype == GeomAbs_BezierSurface ||
-                                         thetype == GeomAbs_BSplineSurface);
-    myUParam.Clear(); 
-    myVParam.Clear();
-  
-    BRepMesh_VertexTool aMoveNodes(myVemap.Extent(), myAllocator);
-    
-    aMoveNodes.SetCellSize ( uCellSize / deltaX, vCellSize / deltaY);
-    aMoveNodes.SetTolerance( aTolU     / deltaX, aTolV     / deltaY);
-
-    for (i = 1; i <= myStructure->NbNodes(); i++)
-    {
-      const BRepMesh_Vertex& v = myStructure->GetNode(i);
-      p2d = v.Coord();
-      if (useUVParam) {
-        myUParam.Add(p2d.X());
-        myVParam.Add(p2d.Y());
-      }
-      gp_XY res;
-      res.SetCoord((p2d.X() - umin ) / deltaX,
-                   (p2d.Y() - vmin ) / deltaY);
-      BRepMesh_Vertex v_new(res,v.Location3d(),v.Movability());
-      const BRepMeshCol::ListOfInteger& alist = myStructure->LinksConnectedTo(i);
-      aMoveNodes.Add(v_new, alist);
-      tabvert_corr(i) = i;
-    }
-    myStructure->ReplaceNodes(aMoveNodes);
-    
-    Standard_Boolean rajout;
-    
-    BRepMeshCol::HClassifier& classifier = theAttrib->GetClassifier();
-
-    switch (thetype)
-    {
-    case GeomAbs_Sphere:
-    case GeomAbs_Torus:
-      rajout = Standard_True;
-      break;
-    default:
-      rajout = Standard_False;
-    }  
-
-    BRepMesh_Delaun trigu(myStructure, tabvert_corr, orFace==TopAbs_FORWARD);
-    
-    //removed all free edges from triangulation
-    Standard_Integer nbLinks = myStructure->NbLinks();
-    for( i = 1; i <= nbLinks; i++ ) 
-    {
-      if( myStructure->ElementsConnectedTo(i).Extent() < 1 )
-      {
-        BRepMesh_Edge& anEdge = (BRepMesh_Edge&)trigu.GetEdge(i);
-        if ( anEdge.Movability() == BRepMesh_Deleted )
-          continue;
-
-        anEdge.SetMovability(BRepMesh_Free);
-        myStructure->RemoveLink(i);
-      }
-    }
-
-    Standard_Boolean isaline;
-    isaline = ((umax-umin) < UVDEFLECTION) || ((vmax-vmin) < UVDEFLECTION);
-    
-    Standard_Real aDef = -1;
-    if (!isaline && myStructure->ElementsOfDomain().Extent() > 0) {
-      BRepMeshCol::ListOfInteger badTri, nulTri;
-      
-      if(!rajout)
-      {
-        aDef = Control(gFace, theAttrib->GetDefFace(), myListver, badTri, nulTri, trigu, Standard_True);
-        if( aDef > theAttrib->GetDefFace() || aDef < 0.)
-          rajout = Standard_True;
-      }
-
-      if(!rajout) {
-        if(useUVParam) {
-          if(BS.IsUClosed()) {
-            if(myVParam.Extent() > 2) {
-              rajout = Standard_True;
-            }
-          }
-          if(BS.IsVClosed()) {
-            if(myUParam.Extent() > 2) {
-              rajout = Standard_True;
-            }
-          }
-        }
-      }
-
-      if(rajout){
-        InternalVertices(gFace, myListver, theAttrib->GetDefFace(), classifier);
-        
-        if (myListver.Extent() > 0) {
-          BRepMeshCol::Array1OfVertexOfDelaun verttab(1, myListver.Extent());
-          BRepMeshCol::ListOfVertex::Iterator itVer(myListver);
-          ipn = 1;
-          for (; itVer.More(); itVer.Next())
-            verttab(ipn++) = itVer.Value();
-          trigu.AddVertices(verttab);
-        }
-        //control internal points
-        BRepMeshCol::ListOfVertex vvlist;
-        aDef = Control(gFace, theAttrib->GetDefFace(), vvlist, badTri, nulTri, trigu, Standard_False);
-        myListver.Append(vvlist);
-      }
-    }
-
-    //modify myStructure back
-    aMoveNodes.SetCellSize ( uCellSize, vCellSize );
-    aMoveNodes.SetTolerance( aTolU    , aTolV     );
-    for (i = 1; i <= myStructure->NbNodes(); i++)
-    {
-      const BRepMesh_Vertex& v = myStructure->GetNode(i);
-      p2d = v.Coord();
-      gp_XY res;
-      res.SetCoord(p2d.X() * deltaX + umin, p2d.Y() * deltaY + vmin);
-      BRepMesh_Vertex v_new(res,v.Location3d(),v.Movability());
-      const BRepMeshCol::ListOfInteger& alist = myStructure->LinksConnectedTo(i);
-      aMoveNodes.Add(v_new, alist);
-    }
-    myStructure->ReplaceNodes(aMoveNodes);
-  
-    AddInShape(face, (aDef < 0.0)? theAttrib->GetDefFace() : aDef, theMutexProvider);
-#ifndef DEB_MESH
   }
-  catch(Standard_Failure)
+
+  const Standard_Real umax = myAttribute->GetUMax();
+  const Standard_Real umin = myAttribute->GetUMin();
+  const Standard_Real vmax = myAttribute->GetVMax();
+  const Standard_Real vmin = myAttribute->GetVMin();
+
+  Standard_Boolean isaline = 
+    ((umax - umin) < Precision::PConfusion() || 
+     (vmax - vmin) < Precision::PConfusion());
+
+  Standard_Real aDef = -1;
+  if ( !isaline && myStructure->ElementsOfDomain().Extent() > 0 )
   {
-    BRepMesh_ShapeTool::NullifyFace(theFace);
+    BRepMeshCol::ListOfVertex aNewVertices;
+    if ( !rajout )
+    {
+      aDef = control(aNewVertices, trigu, Standard_True);
+
+      if( aDef > myAttribute->GetDefFace() || aDef < 0.)
+        rajout = Standard_True;
+    }
+
+    if ( !rajout && useUVParam )
+    {
+      if ( myVParam.Extent() > 2 &&
+          (gFace->IsUClosed()    ||
+            gFace->IsVClosed()))
+      {
+        rajout = Standard_True;
+      }
+    }
+
+    if ( rajout )
+    {
+      insertInternalVertices(aNewVertices, trigu);
+
+      //control internal points
+      aDef = control(aNewVertices, trigu, Standard_False);
+    }
   }
-#endif // DEB_MESH
-  myStructure.Nullify();
-  myAttrib.Nullify();
+
+  //modify myStructure back
+  aMoveNodes.SetCellSize ( uCellSize, vCellSize );
+  aMoveNodes.SetTolerance( aTolU    , aTolV     );
+
+  for ( i = 1; i <= myStructure->NbNodes(); ++i )
+  {
+    const BRepMesh_Vertex& v = myStructure->GetNode(i);
+    gp_XY aPnt2d = myAttribute->Scale(v.Coord(), Standard_False);
+    BRepMesh_Vertex v_new(aPnt2d, v.Location3d(), v.Movability());
+    const BRepMeshCol::ListOfInteger& alist = myStructure->LinksConnectedTo(i);
+    aMoveNodes.Add(v_new, alist);
+
+    // Register internal nodes used in triangulation
+    if (!alist.IsEmpty() && myVertexEdgeMap->FindIndex(i) == 0)
+      myVertexEdgeMap->Add(i);
+  }
+  myStructure->ReplaceNodes(aMoveNodes);
+
+  if (!(aDef < 0.))
+    myAttribute->SetDefFace(aDef);
 }
 
 //=======================================================================
-//function : RestoreStructureFromTriangulation(edge)
-//purpose  : Restore structure of Delaun from triangulation on face
+//function : addVerticesToMesh
+//purpose  : 
 //=======================================================================
-Standard_Boolean BRepMesh_FastDiscretFace::RestoreStructureFromTriangulation
-                               (const TopoDS_Edge&                  theEdge,
-                                const TopoDS_Face&                  theFace,
-                                const Handle(BRepAdaptor_HSurface)& theSurf,
-                                const Handle(Poly_Triangulation)&   theTrigu,
-                                const Standard_Real                 theDefEdge,
-                                const TopLoc_Location&              theLoc,
-                                const TopTools_MutexForShapeProvider& theMutexProvider)
+Standard_Boolean BRepMesh_FastDiscretFace::addVerticesToMesh(
+  const BRepMeshCol::ListOfVertex& theVertices,
+  BRepMesh_Delaun&                 theMeshBuilder)
 {
-  // 2d vertex indices
-  TopAbs_Orientation orEdge = theEdge.Orientation();
-  // Get end points on 2d curve
-  gp_Pnt2d uvFirst, uvLast;
-  // oan: changes for right restoring of triangulation data from face & edges
-  Handle(Poly_PolygonOnTriangulation) Poly;
+  if (theVertices.IsEmpty())
+    return Standard_False;
 
-  {
-    // lock mutex during querying data from edge curves to prevent parallel change of the same data
-    Standard_Mutex* aMutex = theMutexProvider.GetMutex(theEdge);
-    Standard_Mutex::Sentry aSentry (aMutex);
+  BRepMeshCol::Array1OfVertexOfDelaun aArrayOfNewVertices(1, theVertices.Extent());
+  BRepMeshCol::ListOfVertex::Iterator aVertexIt(theVertices);
+  for (Standard_Integer aVertexId = 0; aVertexIt.More(); aVertexIt.Next())
+    aArrayOfNewVertices(++aVertexId) = aVertexIt.Value();
 
-    Poly = BRep_Tool::PolygonOnTriangulation(theEdge, theTrigu, theLoc);
-    if (Poly.IsNull() || !Poly->HasParameters())
-      return Standard_False;
-
-    BRep_Tool::UVPoints(theEdge, theFace, uvFirst, uvLast);
-  }
-
-  // Get vertices
-  TopoDS_Vertex pBegin, pEnd;
-  TopExp::Vertices(theEdge,pBegin,pEnd);
-
-  const Standard_Boolean sameUV =
-    uvFirst.IsEqual(uvLast, Precision::PConfusion());
-
-  const TColgp_Array1OfPnt2d&    UVNodes = theTrigu->UVNodes();
-  const TColgp_Array1OfPnt&      Nodes   = theTrigu->Nodes();
-  const TColStd_Array1OfInteger& Indices = Poly->Nodes();
-
-  const Standard_Integer nbnodes = Indices.Length();
-  TColStd_Array1OfInteger NewNodes(1, nbnodes);
-  
-  gp_Pnt  P3d;
-  gp_XY   anUV;
-
-  // Process first vertex
-  Standard_Integer ipf;
-  if (myVertices.IsBound(pBegin))
-  {
-    ipf = myVertices.Find(pBegin);
-  }
-  else
-  {
-    if (sameUV && myVertices.IsBound(pEnd))
-    {
-      ipf = myVertices.Find(pEnd);
-    }
-    else
-    {
-      P3d = Nodes(Indices(1));
-      if (!theLoc.IsIdentity())
-        P3d.Transform(theLoc.Transformation());
-      myNbLocat++;
-      myLocation3d.Bind(myNbLocat, P3d);
-      ipf = myNbLocat;
-    }
-    myVertices.Bind(pBegin,ipf);
-  } 
-    
- //Controle vertice tolerances
-  gp_Pnt pFirst = theSurf->Value(uvFirst.X(), uvFirst.Y());
-  gp_Pnt pLast  = theSurf->Value(uvLast.X(), uvLast.Y());
-  
-  Standard_Real mindist = 10. * Max(pFirst.Distance(BRep_Tool::Pnt(pBegin)), 
-                                    pLast.Distance(BRep_Tool::Pnt(pEnd)));
-
-  if (mindist < BRep_Tool::Tolerance(pBegin) ||
-      mindist < BRep_Tool::Tolerance(pEnd) ) mindist = theDefEdge;
-  
-  anUV = BRepMesh_ShapeTool::FindUV(ipf, uvFirst,
-    pBegin, mindist, myAttrib, theSurf, myLocation2d);
-
-  Standard_Integer iv1, isv1;
-  BRepMesh_Vertex vf(anUV, ipf, BRepMesh_Frontier);
-  iv1 = myStructure->AddNode(vf);
-  isv1 = myVemap.FindIndex(iv1);
-  if (isv1 == 0)
-    isv1 = myVemap.Add(iv1);
-  NewNodes(1) = isv1;
-
-  // Process last vertex
-  Standard_Integer ipl, ivl;
-  if (pEnd.IsSame(pBegin))
-  {
-    ipl = ipf;
-  }
-  else
-  {
-    if (myVertices.IsBound(pEnd))
-    {
-      ipl = myVertices.Find(pEnd);
-    }
-    else
-    {
-      if (sameUV)
-      {
-        ipl = ipf;
-        ivl = iv1;
-      }
-      else
-      {
-        P3d = Nodes(Indices(nbnodes));
-        if (!theLoc.IsIdentity())
-          P3d.Transform(theLoc.Transformation());
-        myNbLocat++;
-        myLocation3d.Bind(myNbLocat, P3d);
-        ipl = myNbLocat;
-      }
-      myVertices.Bind(pEnd,ipl);
-    }
-  }
-
-  anUV = BRepMesh_ShapeTool::FindUV(ipl, uvLast,
-    pEnd, mindist, myAttrib, theSurf, myLocation2d);
-
-  BRepMesh_Vertex vl(anUV, ipl, BRepMesh_Frontier);
-  
-  Standard_Integer isvl;
-  ivl = myStructure->AddNode(vl);
-  isvl = myVemap.FindIndex(ivl);
-  if (isvl == 0) 
-    isvl = myVemap.Add(ivl);
-  NewNodes(nbnodes) = isvl;
-      
-  BRepMesh_Vertex v;
-
-  Standard_Integer i;
-  for (i = 2; i < nbnodes; i++)
-  {
-    // Record 3d point
-    P3d = Nodes(Indices(i));
-    if (!theLoc.IsIdentity())
-      P3d.Transform(theLoc.Transformation());
-    myNbLocat++;
-    myLocation3d.Bind(myNbLocat, P3d);
-    
-    // Record 2d point
-    anUV = UVNodes(Indices(i)).Coord();
-
-    Standard_Integer iv2, isv;
-    v.Initialize(anUV, myNbLocat, BRepMesh_Frontier);
-    iv2 = myStructure->AddNode(v);
-    isv = myVemap.FindIndex(iv2);
-    if (isv == 0)
-      isv = myVemap.Add(iv2);
-    NewNodes(i) = isv;
-    
-    //add links
-    if (orEdge == TopAbs_FORWARD)
-      myStructure->AddLink(BRepMesh_Edge(iv1,iv2,BRepMesh_Frontier));
-    else if (orEdge == TopAbs_REVERSED)
-      myStructure->AddLink(BRepMesh_Edge(iv2,iv1,BRepMesh_Frontier));
-    else if (orEdge == TopAbs_INTERNAL)
-      myStructure->AddLink(BRepMesh_Edge(iv1,iv2,BRepMesh_Fixed));
-    iv1 = iv2;  
-  }
-  
-  // last point
-  if (iv1 != ivl) {
-    if (orEdge == TopAbs_FORWARD)
-      myStructure->AddLink(BRepMesh_Edge(iv1,ivl,BRepMesh_Frontier));
-    else if (orEdge == TopAbs_REVERSED)
-      myStructure->AddLink(BRepMesh_Edge(ivl,iv1,BRepMesh_Frontier));
-    else if (orEdge == TopAbs_INTERNAL)
-      myStructure->AddLink(BRepMesh_Edge(iv1,ivl,BRepMesh_Fixed));
-  }
-  
-  Handle(Poly_PolygonOnTriangulation) P1 =
-        new Poly_PolygonOnTriangulation(NewNodes, Poly->Parameters()->Array1());
-  P1->Deflection(theDefEdge);
-  if (myInternaledges.IsBound(theEdge))
-  {
-    BRepMesh_PairOfPolygon& pair = myInternaledges.ChangeFind(theEdge);
-    if (theEdge.Orientation() == TopAbs_REVERSED)
-      pair.Append(P1);
-    else
-      pair.Prepend(P1);
-  }
-  else
-  {
-    BRepMesh_PairOfPolygon pair1;
-    pair1.Append(P1);
-    myInternaledges.Bind(theEdge, pair1);
-  }
-
+  theMeshBuilder.AddVertices(aArrayOfNewVertices);
   return Standard_True;
 }
 
 //=======================================================================
-//function : InternalVertices
+//function : insertInternalVertices
 //purpose  : 
 //=======================================================================
-
 static void filterParameters(const BRepMeshCol::IMapOfReal& theParams,
                              const Standard_Real            theMinDist,
                              const Standard_Real            theFilterDist,
@@ -585,7 +371,7 @@ static void filterParameters(const BRepMeshCol::IMapOfReal& theParams,
   //add last point if required
   if(aParamArray(anInitLen)-theParams(aParamLength) > theMinDist)
   {
-    aParamTmp.Append(aParamArray(anInitLen));        
+    aParamTmp.Append(aParamArray(anInitLen));
     aParamLength++;
   }
   
@@ -643,1084 +429,784 @@ static void filterParameters(const BRepMeshCol::IMapOfReal& theParams,
   }
 }
 
-void BRepMesh_FastDiscretFace::InternalVertices(const Handle(BRepAdaptor_HSurface)& theCaro,
-                                                BRepMeshCol::ListOfVertex&          theInternalV,
-                                                const Standard_Real                 theDefFace,
-                                                const BRepMeshCol::HClassifier&       theClassifier)
+void BRepMesh_FastDiscretFace::insertInternalVertices(
+  BRepMeshCol::ListOfVertex&  theNewVertices,
+  BRepMesh_Delaun&            theMeshBuilder)
 {
-  BRepMesh_Vertex newV;
-  gp_Pnt2d p2d;
-  gp_Pnt p3d;
+  const Handle(BRepAdaptor_HSurface)& gFace = myAttribute->Surface();
+  switch (gFace->GetType())
+  {
+  case GeomAbs_Sphere:
+      insertInternalVerticesSphere(theNewVertices);
+      break;
+
+  case GeomAbs_Cylinder:
+      insertInternalVerticesCylinder(theNewVertices);
+      break;
+
+  case GeomAbs_Cone:
+    insertInternalVerticesCone(theNewVertices);
+    break;
+
+  case GeomAbs_Torus:
+    insertInternalVerticesTorus(theNewVertices);
+    break;
+
+  case GeomAbs_BezierSurface:
+  case GeomAbs_BSplineSurface:
+    insertInternalVerticesBSpline(theNewVertices);
+    break;
+
+  default:
+    insertInternalVerticesOther(theNewVertices);
+    break;
+  }
   
-  // work following the type of surface
-  const BRepAdaptor_Surface& BS = *(BRepAdaptor_Surface*)&(theCaro->Surface());
-  GeomAbs_SurfaceType thetype = theCaro->GetType();
-
-  Standard_Real umax = myAttrib->GetUMax();
-  Standard_Real umin = myAttrib->GetUMin();
-  Standard_Real vmax = myAttrib->GetVMax();
-  Standard_Real vmin = myAttrib->GetVMin();
-  Standard_Real deltaX = myAttrib->GetDeltaX();
-  Standard_Real deltaY = myAttrib->GetDeltaY();
-
-  if (thetype == GeomAbs_Sphere)
-  { 
-    gp_Sphere S = BS.Sphere(); 
-    const Standard_Real R = S.Radius();
-
-    // Calculate parameters for iteration in V direction
-    Standard_Real Dv = 1.0 - (theDefFace/R);
-    if (Dv < 0.0) Dv = 0.0;
-    Standard_Real oldDv = 2.0 * ACos (Dv);
-    Dv  =  .7 * oldDv; //.7 ~= sqrt(2.) - Dv is hypotenuse of triangle when oldDv is legs
-    const Standard_Real sv = vmax - vmin;
-    Dv = sv/((Standard_Integer)(sv/Dv) + 1);
-    const Standard_Real pasvmax = vmax-Dv*0.5;
-
-    //Du can be defined from relation: 2*r*Sin(Du/2) = 2*R*Sin(Dv/2), r = R*Cos(v)
-    //here approximate relation r*Du = R*Dv is used
-    
-    Standard_Real Du, pasu, pasv; //, ru;
-    const Standard_Real su = umax-umin;
-    Standard_Boolean Shift = Standard_False;
-    for (pasv = vmin + Dv; pasv < pasvmax; pasv += Dv)
-    {
-      // Calculate parameters for iteration in U direction
-      // 1.-.365*pasv*pasv is simple approximation of Cos(pasv)
-      // with condition that it gives ~.1 when pasv = pi/2
-      Du = Dv/(1.-.365*pasv*pasv);
-      Du = su/((Standard_Integer)(su/Du) + 1);
-      Shift = !Shift;
-      const Standard_Real d = (Shift)? Du*.5 : 0.;
-      const Standard_Real pasumax = umax-Du*0.5 + d;
-      for (pasu = umin + Du - d; pasu < pasumax; pasu += Du)
-      {
-        if (theClassifier->Perform(gp_Pnt2d(pasu, pasv)) == TopAbs_IN)
-        {
-          // Record 3d point
-#ifdef DEB_MESH_CHRONO
-          D0Internal++;
-#endif
-          ElSLib::D0(pasu, pasv, S, p3d);
-          myNbLocat++;
-          myLocation3d.Bind(myNbLocat, p3d);
-          // Record 2d point
-          p2d.SetCoord((pasu-umin)/deltaX, (pasv-vmin)/deltaY);
-          newV.Initialize(p2d.XY(), myNbLocat, BRepMesh_Free);
-          theInternalV.Append(newV);
-        }
-      }
-    }
-  }
-  else if (thetype == GeomAbs_Cylinder)
-  {
-    gp_Cylinder S = BS.Cylinder();
-    const Standard_Real R = S.Radius();
-
-    // Calculate parameters for iteration in U direction
-    Standard_Real Du = 1.0 - (theDefFace/R);
-    if (Du < 0.0) Du = 0.0;
-    Du = 2.0 * ACos (Du);
-    if (Du > myAngle) Du = myAngle;
-    const Standard_Real su = umax - umin;
-    const Standard_Integer nbU = (Standard_Integer)(su/Du);
-    Du = su/(nbU+1);
-
-    // Calculate parameters for iteration in V direction
-    const Standard_Real sv = vmax - vmin;
-    Standard_Integer nbV = (Standard_Integer)( nbU*sv/(su*R) );
-    nbV = Min(nbV, 100*nbU);
-    Standard_Real Dv = sv/(nbV+1);
-
-    Standard_Real pasu, pasv, pasvmax = vmax-Dv*0.5, pasumax = umax-Du*0.5;
-    for (pasv = vmin + Dv; pasv < pasvmax; pasv += Dv) {
-      for (pasu = umin + Du; pasu < pasumax; pasu += Du) {
-        if (theClassifier->Perform(gp_Pnt2d(pasu, pasv)) == TopAbs_IN)
-        {
-          // Record 3d point
-          ElSLib::D0(pasu, pasv, S, p3d);
-          myNbLocat++;
-          myLocation3d.Bind(myNbLocat, p3d);
-          // Record 2d point
-          p2d.SetCoord((pasu-umin)/deltaX, (pasv-vmin)/deltaY);
-          newV.Initialize(p2d.XY(), myNbLocat, BRepMesh_Free);
-          theInternalV.Append(newV);
-        }
-      }
-    }
-  }
-  else if (thetype == GeomAbs_Cone)
-  {
-    Standard_Real R, RefR, SAng;
-    gp_Cone C = BS.Cone();
-    RefR = C.RefRadius();
-    SAng = C.SemiAngle();
-    R = Max(Abs(RefR+vmin*Sin(SAng)), Abs(RefR+vmax*Sin(SAng)));
-    Standard_Real Du, Dv, pasu, pasv;
-    Du = Max(1.0e0 - (theDefFace/R),0.0e0);
-    Du  = (2.0 * ACos (Du));
-    Standard_Integer nbU = (Standard_Integer) ( (umax-umin)/Du );
-    Standard_Integer nbV = (Standard_Integer) ( nbU*(vmax-vmin)/((umax-umin)*R) );
-    Du = (umax-umin)/(nbU+1);
-    Dv = (vmax-vmin)/(nbV+1);
-
-    Standard_Real pasvmax = vmax-Dv*0.5, pasumax = umax-Du*0.5;
-    for (pasv = vmin + Dv; pasv < pasvmax; pasv += Dv) {
-      for (pasu = umin + Du; pasu < pasumax; pasu += Du) {
-        if (theClassifier->Perform(gp_Pnt2d(pasu, pasv)) == TopAbs_IN)
-        {
-          // Record 3d point
-          ElSLib::D0(pasu, pasv, C, p3d);
-          myNbLocat++;
-          myLocation3d.Bind(myNbLocat, p3d);
-          // Record 2d point
-          p2d.SetCoord((pasu-umin)/deltaX, (pasv-vmin)/deltaY);
-          newV.Initialize(p2d.XY(), myNbLocat, BRepMesh_Free);
-          theInternalV.Append(newV);
-        }
-      }
-    }
-  }
-  else if (thetype == GeomAbs_Torus)
-  {
-    gp_Torus T = BS.Torus();
-
-    Standard_Boolean insert;
-    Standard_Integer i, j, ParamULength, ParamVLength;
-    Standard_Real pp, pasu, pasv;
-    Standard_Real r = T.MinorRadius(), R = T.MajorRadius();
-
-    BRepMeshCol::SequenceOfReal ParamU, ParamV;
-
-    Standard_Real Du, Dv;//, pasu, pasv;
-    Dv = Max(1.0e0 - (theDefFace/r),0.0e0) ;
-    Standard_Real oldDv = 2.0 * ACos (Dv);
-    oldDv = Min(oldDv, myAngle);
-    Dv  =  0.9*oldDv; //TWOTHIRD * oldDv;
-    Dv = oldDv;
-    
-    Standard_Integer nbV = Max((Standard_Integer)((vmax-vmin)/Dv), 2);
-    Dv = (vmax-vmin)/(nbV+1);
-    Standard_Real ru = R + r;
-    if (ru > 1.e-16)
-    {
-      Du  = 2.0 * ACos(Max(1.0 - (theDefFace/ru),0.0));
-      if (myAngle < Du) Du = myAngle;
-      Standard_Real aa = sqrt(Du*Du + oldDv*oldDv);
-      if(aa < gp::Resolution())
-        return; 
-      Du *= Min(oldDv, Du) / aa;
-    }
-    else Du = Dv;     
-    
-    Standard_Integer nbU = Max((Standard_Integer)((umax-umin)/Du), 2);
-    nbU = Max(nbU , (int)(nbV*(umax-umin)*R/((vmax-vmin)*r)/5.));
-    Du = (umax-umin)/(nbU+1);
-    
-    if (R < r)
-    {
-      // As the points of edges are returned.
-      // in this case, the points are not representative.
-            
-      //-- Choose DeltaX and DeltaY so that to avoid skipping points on the grid
-           for (i = 0; i <= nbU; i++) ParamU.Append(umin + i* Du);
-    }//R<r
-    else //U if R > r
-    {
-      //--ofv: U
-      // Number of mapped U parameters
-      const Standard_Integer LenU = myUParam.Extent();
-      // Fill array of U parameters
-      TColStd_Array1OfReal Up(1,LenU);
-      for (j = 1; j <= LenU; j++) Up(j) = myUParam(j);
-      
-      // Calculate DU, leave array of parameters
-      Standard_Real aDU = FUN_CalcAverageDUV(Up,LenU);
-      aDU = Max(aDU, Abs(umax -  umin) / (Standard_Real) nbU / 2.);
-      Standard_Real dUstd = Abs(umax -  umin) / (Standard_Real) LenU;
-      if (aDU > dUstd) dUstd = aDU;
-      // Add U parameters
-      for (j = 1; j <= LenU; j++)
-      {
-        pp = Up(j);
-        insert = Standard_True;
-        ParamULength = ParamU.Length();
-        for (i = 1; i <= ParamULength && insert; i++)
-        {
-          insert = (Abs(ParamU.Value(i)-pp) > (0.5*dUstd));
-        }
-        if (insert) ParamU.Append(pp);
-      }
-    } 
-
-    //--ofv: V
-    // Number of mapped V parameters
-    const Standard_Integer LenV = myVParam.Extent();
-    // Fill array of V parameters
-    TColStd_Array1OfReal Vp(1,LenV);
-    for (j = 1; j <= LenV; j++) Vp(j) = myVParam(j);
-    // Calculate DV, sort array of parameters
-    Standard_Real aDV = FUN_CalcAverageDUV(Vp,LenV);
-    aDV = Max(aDV, Abs(vmax -  vmin) / (Standard_Real) nbV / 2.);
-
-    Standard_Real dVstd = Abs(vmax -  vmin) / (Standard_Real) LenV;
-    if (aDV > dVstd) dVstd = aDV;
-    // Add V parameters
-    for (j = 1; j <= LenV; j++)
-    {
-      pp = Vp(j);
-
-      insert = Standard_True;
-      ParamVLength = ParamV.Length();
-      for (i = 1; i <= ParamVLength && insert; i++)
-      {
-        insert = (Abs(ParamV.Value(i)-pp) > (dVstd*2./3.));
-      }
-      if (insert) ParamV.Append(pp);
-    }
-
-    Standard_Integer Lu = ParamU.Length(), Lv = ParamV.Length();
-    Standard_Real uminnew = umin+deltaY*0.1;
-    Standard_Real vminnew = vmin+deltaX*0.1;
-    Standard_Real umaxnew = umax-deltaY*0.1;
-    Standard_Real vmaxnew = vmax-deltaX*0.1;
-
-    for (i = 1; i <= Lu; i++)
-    {
-      pasu = ParamU.Value(i);
-      if (pasu >= uminnew && pasu < umaxnew)
-      {
-        for (j = 1; j <= Lv; j++)
-        {
-          pasv = ParamV.Value(j);
-          if (pasv >= vminnew && pasv < vmaxnew)
-          {
-            if (theClassifier->Perform(gp_Pnt2d(pasu, pasv)) == TopAbs_IN)
-            {
-              // Record 3d point
-              ElSLib::D0(pasu, pasv, T, p3d);
-              myNbLocat++;
-              myLocation3d.Bind(myNbLocat, p3d);
-              // Record 2d point
-              p2d.SetCoord((pasu-umin)/deltaX, (pasv-vmin)/deltaY);
-              newV.Initialize(p2d.XY(), myNbLocat, BRepMesh_Free);
-              theInternalV.Append(newV);
-            }
-          }
-        }
-      }
-    }
-  }
-  else if (thetype == GeomAbs_BezierSurface || thetype == GeomAbs_BSplineSurface)
-  {
-    //define resolutions
-    Standard_Real uRes = BS.UResolution(theDefFace);
-    Standard_Real vRes = BS.VResolution(theDefFace);
-
-    // Sort and filter sequence of parameters
-    Standard_Real aMinDu = Precision::PConfusion();
-    if(deltaX < 1.)
-      aMinDu/=deltaX;
-
-    Standard_Real aDuMaxLim = 0.1*(umax-umin);
-    Standard_Real ddu = Min(aDuMaxLim,Max(0.005*(umax-umin),2.*uRes));
-    BRepMeshCol::SequenceOfReal ParamU; 
-    filterParameters(myUParam,aMinDu,ddu,ParamU);
-    Standard_Integer ParamULength = ParamU.Length();
-   
-    Standard_Real aMinDv = Precision::PConfusion();
-    if(deltaY < 1)
-      aMinDv/=deltaY;
-
-    Standard_Real aDvMaxLim = 0.1*(vmax-vmin);
-    Standard_Real ddv = Min(aDvMaxLim,Max(0.005*(vmax-vmin),2.*vRes));
-    BRepMeshCol::SequenceOfReal ParamV; 
-    filterParameters(myVParam,aMinDv,ddv,ParamV);
-    Standard_Integer ParamVLength = ParamV.Length();
-
-    // check intermediate isolines
-    Handle(Geom_Surface) B;
-    if (thetype == GeomAbs_BezierSurface) {
-      B = BS.Bezier();
-    }
-    else {
-      B = BS.BSpline();
-    }
-
-    gp_Pnt P1, P2, PControl;
-    Standard_Real u, v, dist;
-
-    // precision for compare square distances
-    double dPreci = Precision::SquareConfusion();
-
-    // Insert V parameters by deflection criterion
-    Standard_Integer i,j;
-    Standard_Real V1, V2, U1, U2;
-    for (i = 1; i <= ParamULength; i++) {
-      Handle(Geom_Curve) IsoU = B->UIso(ParamU.Value(i));
-      V1 = ParamV.Value(1);
-      P1 = IsoU->Value(V1);
-      for (j = 2; j <= ParamVLength;) {
-        V2 = ParamV.Value(j);
-        P2 = IsoU->Value(V2);
-        v = 0.5*(V1+V2);
-        PControl = IsoU->Value(v);
-        // 23.03.2010 skl for OCC21645 - change precision for comparison
-        if( P1.SquareDistance(P2) > dPreci ) {
-          gp_Lin L (P1, gp_Dir(gp_Vec(P1, P2)));
-          dist = L.Distance(PControl);
-        }
-        else {
-          dist = P1.Distance(PControl);
-        }
-        if (dist > theDefFace) {
-          // insertion 
-          ParamV.InsertBefore(j, v);
-          ParamVLength++;
-        }
-        else {
-          //put regular grig for normals
-          gp_Dir N1(0,0,1),N2(0,0,1);
-          Standard_Boolean aSt1 = GeomLib::NormEstim(B, gp_Pnt2d(ParamU.Value(i),V1), Precision::Confusion(), N1);
-          Standard_Boolean aSt2 = GeomLib::NormEstim(B, gp_Pnt2d(ParamU.Value(i),v), Precision::Confusion(), N2);
-
-          Standard_Real anAngle1 = N2.Angle(N1);
-	  if(aSt1 < 1 && aSt2 < 1 && anAngle1 > myAngle ) {
-            // insertion 
-            ParamV.InsertBefore(j, v);
-            ParamVLength++;
-          }
-          else {
-            V1 = V2;
-            P1 = P2;
-            j++;
-          }
-        }
-      }
-    }
-
-    for (i = 2; i < ParamVLength; i++) {
-      v = ParamV.Value(i);
-      Handle(Geom_Curve) IsoV = B->VIso(v);
-      U1 = ParamU.Value(1);
-      P1 = IsoV->Value(U1);
-      for (j = 2; j <= ParamULength;) {
-        U2 = ParamU.Value(j);
-        P2 = IsoV->Value(U2);
-        u = 0.5*(U1+U2);
-        PControl = IsoV->Value(u);
-        // 23.03.2010 skl for OCC21645 - change precision for comparison
-        if( P1.SquareDistance(P2) > dPreci ) {
-          gp_Lin L (P1, gp_Dir(gp_Vec(P1, P2)));
-          dist = L.Distance(PControl);
-        }
-        else {
-          dist = P1.Distance(PControl);
-        }
-        if (dist > theDefFace) {
-          // insertion 
-          ParamU.InsertBefore(j, u);
-          ParamULength++;
-        }
-        else {
-          //check normal
-          //put regular grig for normals
-          gp_Dir N1(0,0,1),N2(0,0,1);
-          Standard_Boolean aSt1 = GeomLib::NormEstim(B, gp_Pnt2d(U1,v), Precision::Confusion(), N1);
-          Standard_Boolean aSt2 = GeomLib::NormEstim(B, gp_Pnt2d(u,v), Precision::Confusion(), N2);
-          
-          Standard_Real anAngle1 = N2.Angle(N1);
-	        if(aSt1 < 1 && aSt2 < 1 && anAngle1 > myAngle) {
-            // insertion 
-            ParamU.InsertBefore(j, u);
-            ParamULength++;
-          }
-          else {
-            U1 = U2;
-            P1 = P2;
-            if (j < ParamULength) {
-              // Classify intersection point
-              if (theClassifier->Perform(gp_Pnt2d(U1, v)) == TopAbs_IN)
-              {
-                // Record 3d point
-                myNbLocat++;
-                myLocation3d.Bind(myNbLocat, P1);
-                // Record 2d point
-                p2d.SetCoord((U1-umin)/deltaX, (v-vmin)/deltaY);
-                newV.Initialize(p2d.XY(), myNbLocat, BRepMesh_Free);
-                theInternalV.Append(newV);
-              }
-            }
-            j++;
-          }
-        }
-      }
-    }
-  }
-  else {
-    const Standard_Real anAngle = 0.35;
-
-    Standard_Integer i, j, nbpointsU = 10, nbpointsV = 10;
-    Adaptor3d_IsoCurve tabu[11], tabv[11];
-
-    BRepMeshCol::SequenceOfReal ParamU, ParamV;
-    Standard_Real u, v, du, dv;
-    Standard_Integer iu, iv;
-    Standard_Real f, l;
-
-    du = (umax-umin) / (nbpointsU+1); dv = (vmax-vmin) / (nbpointsV+1);
-
-    for (iu = 0; iu <= nbpointsU; iu++) {
-      u = umin + iu*du;
-      tabu[iu].Load(theCaro);
-      tabu[iu].Load(GeomAbs_IsoU, u);
-    }
-
-    for (iv = 0; iv <= nbpointsV; iv++) {
-      v = vmin + iv*dv;
-      tabv[iv].Load(theCaro);
-      tabv[iv].Load(GeomAbs_IsoV, v);
-    }
-
-    Standard_Integer imax = 1, MaxV = 0;
-    
-    GCPnts_TangentialDeflection* tabGU = new GCPnts_TangentialDeflection[nbpointsU+1];
-
-    for (i = 0; i <= nbpointsU; i++) {
-      f = Max(vmin, tabu[i].FirstParameter());
-      l = Min(vmax, tabu[i].LastParameter());
-      GCPnts_TangentialDeflection theDeflection(tabu[i], f, l, anAngle, 0.7*theDefFace, 2);
-      tabGU[i] = theDeflection;
-      if (tabGU[i].NbPoints() > MaxV) {
-        MaxV = tabGU[i].NbPoints();
-        imax = i;
-      }
-    }
-    
-    // return table of parameters V:
-    Standard_Integer NV = tabGU[imax].NbPoints();
-    for (i = 1; i <= NV; i++) {
-      ParamV.Append(tabGU[imax].Parameter(i));
-    }
-    delete [] tabGU;
-
-    imax = 1;
-    Standard_Integer MaxU = 0;
-
-    GCPnts_TangentialDeflection* tabGV = new GCPnts_TangentialDeflection[nbpointsV+1];
-
-    for (i = 0; i <= nbpointsV; i++) {
-      f = Max(umin, tabv[i].FirstParameter());
-      l = Min(umax, tabv[i].LastParameter());
-      GCPnts_TangentialDeflection thedeflection2(tabv[i], f, l, anAngle, 0.7*theDefFace, 2);
-      tabGV[i] = thedeflection2;
-      if (tabGV[i].NbPoints() > MaxU) {
-        MaxU = tabGV[i].NbPoints();
-        imax = i;
-      }
-    }
-    
-    // return table of parameters U:
-    Standard_Integer NU = tabGV[imax].NbPoints();
-    for (i = 1; i <= NU; i++) {
-      ParamU.Append(tabGV[imax].Parameter(i));
-    }
-    delete [] tabGV;
-    
-    if (ParamU.Length() == 2) {
-      ParamU.InsertAfter(1, (umax+umin)*0.5);
-    }
-    if (ParamV.Length() == 2) {
-      ParamV.InsertAfter(1, (vmax+vmin)*0.5);
-    }
-    
-    BRepMeshCol::SequenceOfReal InsertV, InsertU;
-    gp_Pnt P1;
-
-    Adaptor3d_IsoCurve IsoV;
-    IsoV.Load(theCaro);
-
-    Standard_Integer Lu = ParamU.Length(), Lv = ParamV.Length();
-    
-    for (i = 2; i < Lv; i++) {
-      v = ParamV.Value(i);
-      IsoV.Load(GeomAbs_IsoV, v);
-      for (j = 2; j < Lu; j++) {
-        u = ParamU.Value(j);
-        if (theClassifier->Perform(gp_Pnt2d(u, v)) == TopAbs_IN)
-        {
-          // Record 3d point
-          P1 = IsoV.Value(u);
-          myNbLocat++;
-          myLocation3d.Bind(myNbLocat, P1);
-          // Record 2d point
-          p2d.SetCoord((u-umin)/deltaX, (v-vmin)/deltaY);
-          newV.Initialize(p2d.XY(), myNbLocat, BRepMesh_Free);
-          theInternalV.Append(newV); 
-        }
-      }
-    } 
-  }
-#ifdef DEB_MESH_CHRONO
-  chInternal.Stop();
-#endif
+  addVerticesToMesh(theNewVertices, theMeshBuilder);
 }
-
-/**
-*  Internal class Couple, moved from MeshData package
-*/
-
-class BRepMesh_Couple
-{
- public:
-  BRepMesh_Couple() { myI1 = myI2 = 0; }
-  BRepMesh_Couple(const Standard_Integer I1,
-                  const Standard_Integer I2)
-  { myI1 = I1; myI2 = I2; }
-
-  Standard_Integer myI1;
-  Standard_Integer myI2;
-};
-
-inline Standard_Boolean IsEqual(const BRepMesh_Couple& one,
-                                const BRepMesh_Couple& other)
-{
-  if (one.myI1 == other.myI1 &&
-      one.myI2 == other.myI2) return Standard_True;
-  else return Standard_False;
-}
-
-inline Standard_Integer HashCode(const BRepMesh_Couple& one,
-                                 const Standard_Integer Upper)
-{
-  return ::HashCode((one.myI1+one.myI2), Upper);
-}
-
-typedef NCollection_Map<BRepMesh_Couple> BRepMesh_MapOfCouple;
 
 //=======================================================================
-//function : Control
+//function : insertInternalVerticesSphere
 //purpose  : 
 //=======================================================================
-Standard_Real BRepMesh_FastDiscretFace::Control(const Handle(BRepAdaptor_HSurface)& theCaro,
-                                                const Standard_Real                 theDefFace,
-                                                BRepMeshCol::ListOfVertex&          theInternalV,
-                                                BRepMeshCol::ListOfInteger&         theBadTriangles,
-                                                BRepMeshCol::ListOfInteger&         theNulTriangles,
-                                                BRepMesh_Delaun&                    theTrigu,
-                                                const Standard_Boolean              theIsFirst)
+void BRepMesh_FastDiscretFace::insertInternalVerticesSphere(
+  BRepMeshCol::ListOfVertex& theNewVertices)
 {
-  //IMPORTANT: Constants used in calculations
-  const Standard_Real MinimalArea2d = 1.e-9;
-  const Standard_Real MinimalSqLength3d = 1.e-12;
+  const Standard_Real umax = myAttribute->GetUMax();
+  const Standard_Real umin = myAttribute->GetUMin();
+  const Standard_Real vmax = myAttribute->GetVMax();
+  const Standard_Real vmin = myAttribute->GetVMin();
 
-  // Define the number of iterations
-  Standard_Integer myNbIterations = 11;
-  const Standard_Integer nbPasses = (theIsFirst? 1 : myNbIterations);
+  gp_Sphere S = myAttribute->Surface()->Sphere();
+  const Standard_Real R = S.Radius();
 
-  // Initialize stop condition
-  Standard_Boolean allDegenerated = Standard_False;
-  Standard_Integer nbInserted = 1;
+  // Calculate parameters for iteration in V direction
+  Standard_Real Dv = 1.0 - (myAttribute->GetDefFace() / R);
+  if (Dv < 0.0) Dv = 0.0;
+  Standard_Real oldDv = 2.0 * ACos(Dv);
+  Dv = .7 * oldDv; //.7 ~= sqrt(2.) - Dv is hypotenuse of triangle when oldDv is legs
+  const Standard_Real sv = vmax - vmin;
+  Dv = sv / ((Standard_Integer)(sv / Dv) + 1);
+  const Standard_Real pasvmax = vmax - Dv*0.5;
 
-  // Create map of links to skip already processed
-  Standard_Integer nbtriangles;
+  //Du can be defined from relation: 2*r*Sin(Du/2) = 2*R*Sin(Dv/2), r = R*Cos(v)
+  //here approximate relation r*Du = R*Dv is used
 
-  nbtriangles = myStructure->ElementsOfDomain().Extent();
-  if (nbtriangles <= 0) return -1.0;
-  BRepMesh_MapOfCouple theCouples(3*nbtriangles);
-
-  gp_XY mi2d;
-  gp_XYZ vecEd1, vecEd2, vecEd3;
-  gp_Pnt pDef;
-  Standard_Real dv = 0, defl = 0, maxdef = -1;
-  Standard_Integer pass = 1, nf = 0, nl = 0;
-  BRepMesh_Vertex InsVertex;
-  Standard_Boolean caninsert;
-
-  Standard_Real sqdefface = theDefFace * theDefFace;
-
-  GeomAbs_SurfaceType thetype = theCaro->GetType();
-  Handle(Geom_Surface) BSpl;
-  Standard_Boolean isSpline = Standard_False;
-  if (thetype == GeomAbs_BezierSurface || thetype == GeomAbs_BSplineSurface)
+  Standard_Real Du, pasu, pasv; //, ru;
+  const Standard_Real su = umax - umin;
+  Standard_Boolean Shift = Standard_False;
+  for (pasv = vmin + Dv; pasv < pasvmax; pasv += Dv)
   {
-    isSpline = Standard_True;
-    if (thetype == GeomAbs_BezierSurface) 
-      BSpl = theCaro->Bezier();
-    else 
-      BSpl = theCaro->BSpline();
+    // Calculate parameters for iteration in U direction
+    // 1.-.365*pasv*pasv is simple approximation of Cos(pasv)
+    // with condition that it gives ~.1 when pasv = pi/2
+    Du = Dv / (1. - .365*pasv*pasv);
+    Du = su / ((Standard_Integer)(su / Du) + 1);
+    Shift = !Shift;
+    const Standard_Real d = (Shift) ? Du*.5 : 0.;
+    const Standard_Real pasumax = umax - Du*0.5 + d;
+    for (pasu = umin + Du - d; pasu < pasumax; pasu += Du)
+    {
+      tryToInsertAnalyticVertex(gp_Pnt2d(pasu, pasv), S, theNewVertices);
+    }
+  }
+}
+
+//=======================================================================
+//function : insertInternalVerticesCylinder
+//purpose  : 
+//=======================================================================
+void BRepMesh_FastDiscretFace::insertInternalVerticesCylinder(
+  BRepMeshCol::ListOfVertex& theNewVertices)
+{
+  const Standard_Real umax = myAttribute->GetUMax();
+  const Standard_Real umin = myAttribute->GetUMin();
+  const Standard_Real vmax = myAttribute->GetVMax();
+  const Standard_Real vmin = myAttribute->GetVMin();
+
+  gp_Cylinder S = myAttribute->Surface()->Cylinder();
+  const Standard_Real R = S.Radius();
+
+  // Calculate parameters for iteration in U direction
+  Standard_Real Du = 1.0 - (myAttribute->GetDefFace() / R);
+  if (Du < 0.0) Du = 0.0;
+  Du = 2.0 * ACos(Du);
+  if (Du > myAngle) Du = myAngle;
+  const Standard_Real su = umax - umin;
+  const Standard_Integer nbU = (Standard_Integer)(su / Du);
+  Du = su / (nbU + 1);
+
+  // Calculate parameters for iteration in V direction
+  const Standard_Real sv = vmax - vmin;
+  Standard_Integer nbV = (Standard_Integer)(nbU*sv / (su*R));
+  nbV = Min(nbV, 100 * nbU);
+  Standard_Real Dv = sv / (nbV + 1);
+
+  Standard_Real pasu, pasv, pasvmax = vmax - Dv*0.5, pasumax = umax - Du*0.5;
+  for (pasv = vmin + Dv; pasv < pasvmax; pasv += Dv)
+  {
+    for (pasu = umin + Du; pasu < pasumax; pasu += Du)
+    {
+      tryToInsertAnalyticVertex(gp_Pnt2d(pasu, pasv), S, theNewVertices);
+    }
+  }
+}
+
+//=======================================================================
+//function : insertInternalVerticesCone
+//purpose  : 
+//=======================================================================
+void BRepMesh_FastDiscretFace::insertInternalVerticesCone(
+  BRepMeshCol::ListOfVertex& theNewVertices)
+{
+  const Standard_Real umax = myAttribute->GetUMax();
+  const Standard_Real umin = myAttribute->GetUMin();
+  const Standard_Real vmax = myAttribute->GetVMax();
+  const Standard_Real vmin = myAttribute->GetVMin();
+
+  Standard_Real R, RefR, SAng;
+  gp_Cone C = myAttribute->Surface()->Cone();
+  RefR = C.RefRadius();
+  SAng = C.SemiAngle();
+  R = Max(Abs(RefR + vmin*Sin(SAng)), Abs(RefR + vmax*Sin(SAng)));
+  Standard_Real Du, Dv, pasu, pasv;
+  Du = Max(1.0e0 - (myAttribute->GetDefFace() / R), 0.0e0);
+  Du = (2.0 * ACos(Du));
+  Standard_Integer nbU = (Standard_Integer)((umax - umin) / Du);
+  Standard_Integer nbV = (Standard_Integer)(nbU*(vmax - vmin) / ((umax - umin)*R));
+  Du = (umax - umin) / (nbU + 1);
+  Dv = (vmax - vmin) / (nbV + 1);
+
+  Standard_Real pasvmax = vmax - Dv*0.5, pasumax = umax - Du*0.5;
+  for (pasv = vmin + Dv; pasv < pasvmax; pasv += Dv)
+  {
+    for (pasu = umin + Du; pasu < pasumax; pasu += Du)
+    {
+      tryToInsertAnalyticVertex(gp_Pnt2d(pasu, pasv), C, theNewVertices);
+    }
+  }
+}
+
+//=======================================================================
+//function : insertInternalVerticesTorus
+//purpose  : 
+//=======================================================================
+void BRepMesh_FastDiscretFace::insertInternalVerticesTorus(
+  BRepMeshCol::ListOfVertex& theNewVertices)
+{
+  const Standard_Real umax     = myAttribute->GetUMax();
+  const Standard_Real umin     = myAttribute->GetUMin();
+  const Standard_Real vmax     = myAttribute->GetVMax();
+  const Standard_Real vmin     = myAttribute->GetVMin();
+  const Standard_Real deltaX   = myAttribute->GetDeltaX();
+  const Standard_Real deltaY   = myAttribute->GetDeltaY();
+  const Standard_Real aDefFace = myAttribute->GetDefFace();
+
+  gp_Torus T = myAttribute->Surface()->Torus();
+
+  Standard_Boolean insert;
+  Standard_Integer i, j, ParamULength, ParamVLength;
+  Standard_Real pp, pasu, pasv;
+  Standard_Real r = T.MinorRadius(), R = T.MajorRadius();
+
+  BRepMeshCol::SequenceOfReal ParamU, ParamV;
+
+  Standard_Real Du, Dv;//, pasu, pasv;
+  Dv = Max(1.0e0 - (aDefFace / r), 0.0e0);
+  Standard_Real oldDv = 2.0 * ACos(Dv);
+  oldDv = Min(oldDv, myAngle);
+  Dv = 0.9*oldDv; //TWOTHIRD * oldDv;
+  Dv = oldDv;
+
+  Standard_Integer nbV = Max((Standard_Integer)((vmax - vmin) / Dv), 2);
+  Dv = (vmax - vmin) / (nbV + 1);
+  Standard_Real ru = R + r;
+  if (ru > 1.e-16)
+  {
+    Du = 2.0 * ACos(Max(1.0 - (aDefFace / ru), 0.0));
+    if (myAngle < Du) Du = myAngle;
+    Standard_Real aa = sqrt(Du*Du + oldDv*oldDv);
+    if (aa < gp::Resolution())
+      return;
+    Du *= Min(oldDv, Du) / aa;
+  }
+  else Du = Dv;
+
+  Standard_Integer nbU = Max((Standard_Integer)((umax - umin) / Du), 2);
+  nbU = Max(nbU, (int)(nbV*(umax - umin)*R / ((vmax - vmin)*r) / 5.));
+  Du = (umax - umin) / (nbU + 1);
+
+  if (R < r)
+  {
+    // As the points of edges are returned.
+    // in this case, the points are not representative.
+
+    //-- Choose DeltaX and DeltaY so that to avoid skipping points on the grid
+    for (i = 0; i <= nbU; i++) ParamU.Append(umin + i* Du);
+  }//R<r
+  else //U if R > r
+  {
+    //--ofv: U
+    // Number of mapped U parameters
+    const Standard_Integer LenU = myUParam.Extent();
+    // Fill array of U parameters
+    TColStd_Array1OfReal Up(1, LenU);
+    for (j = 1; j <= LenU; j++) Up(j) = myUParam(j);
+
+    // Calculate DU, leave array of parameters
+    Standard_Real aDU = FUN_CalcAverageDUV(Up, LenU);
+    aDU = Max(aDU, Abs(umax - umin) / (Standard_Real)nbU / 2.);
+    Standard_Real dUstd = Abs(umax - umin) / (Standard_Real)LenU;
+    if (aDU > dUstd) dUstd = aDU;
+    // Add U parameters
+    for (j = 1; j <= LenU; j++)
+    {
+      pp = Up(j);
+      insert = Standard_True;
+      ParamULength = ParamU.Length();
+      for (i = 1; i <= ParamULength && insert; i++)
+      {
+        insert = (Abs(ParamU.Value(i) - pp) > (0.5*dUstd));
+      }
+      if (insert) ParamU.Append(pp);
+    }
   }
 
-  NCollection_DataMap<Standard_Integer,gp_Dir> aNorMap;
-  BRepMeshCol::MapOfIntegerInteger aStatMap;
+  //--ofv: V
+  // Number of mapped V parameters
+  const Standard_Integer LenV = myVParam.Extent();
+  // Fill array of V parameters
+  TColStd_Array1OfReal Vp(1, LenV);
+  for (j = 1; j <= LenV; j++) Vp(j) = myVParam(j);
+  // Calculate DV, sort array of parameters
+  Standard_Real aDV = FUN_CalcAverageDUV(Vp, LenV);
+  aDV = Max(aDV, Abs(vmax - vmin) / (Standard_Real)nbV / 2.);
+
+  Standard_Real dVstd = Abs(vmax - vmin) / (Standard_Real)LenV;
+  if (aDV > dVstd) dVstd = aDV;
+  // Add V parameters
+  for (j = 1; j <= LenV; j++)
+  {
+    pp = Vp(j);
+
+    insert = Standard_True;
+    ParamVLength = ParamV.Length();
+    for (i = 1; i <= ParamVLength && insert; i++)
+    {
+      insert = (Abs(ParamV.Value(i) - pp) > (dVstd*2. / 3.));
+    }
+    if (insert) ParamV.Append(pp);
+  }
+
+  Standard_Integer Lu = ParamU.Length(), Lv = ParamV.Length();
+  Standard_Real uminnew = umin + deltaY*0.1;
+  Standard_Real vminnew = vmin + deltaX*0.1;
+  Standard_Real umaxnew = umax - deltaY*0.1;
+  Standard_Real vmaxnew = vmax - deltaX*0.1;
+
+  for (i = 1; i <= Lu; i++)
+  {
+    pasu = ParamU.Value(i);
+    if (pasu >= uminnew && pasu < umaxnew)
+    {
+      for (j = 1; j <= Lv; j++)
+      {
+        pasv = ParamV.Value(j);
+        if (pasv >= vminnew && pasv < vmaxnew)
+        {
+          tryToInsertAnalyticVertex(gp_Pnt2d(pasu, pasv), T, theNewVertices);
+        }
+      }
+    }
+  }
+}
+
+//=======================================================================
+//function : insertInternalVerticesBSpline
+//purpose  : 
+//=======================================================================
+void BRepMesh_FastDiscretFace::insertInternalVerticesBSpline(
+  BRepMeshCol::ListOfVertex& theNewVertices)
+{
+  const Standard_Real aRange[2][2] = {
+      { myAttribute->GetUMax(), myAttribute->GetUMin() },
+      { myAttribute->GetVMax(), myAttribute->GetVMin() }
+  };
+
+  const Standard_Real aDelta[2] = { 
+    myAttribute->GetDeltaX(),
+    myAttribute->GetDeltaY()
+  };
+
+  const Standard_Real                 aDefFace = myAttribute->GetDefFace();
+  const Handle(BRepAdaptor_HSurface)& gFace    = myAttribute->Surface();
+
+  BRepMeshCol::SequenceOfReal aParams[2];
+  for (Standard_Integer i = 0; i < 2; ++i)
+  {
+    Standard_Boolean isU = (i == 0);
+    Standard_Real aRes = isU ?
+      gFace->UResolution(aDefFace) :
+      gFace->VResolution(aDefFace);
+
+    // Sort and filter sequence of parameters
+    Standard_Real aMinDiff = Precision::PConfusion();
+    if (aDelta[i] < 1.)
+      aMinDiff /= aDelta[i];
+
+    Standard_Real aRangeDiff = aRange[i][0] - aRange[i][1];
+    Standard_Real aDiffMaxLim = 0.1 * aRangeDiff;
+    Standard_Real aDiff = Min(aDiffMaxLim, Max(0.005 * aRangeDiff, 2. * aRes));
+    filterParameters(isU ? myUParam : myVParam, aMinDiff, aDiff, aParams[i]);
+  }
+
+  // check intermediate isolines
+  Handle(Geom_Surface) aBSpline;
+  GeomAbs_SurfaceType  aSurfType = gFace->GetType();
+  if (aSurfType == GeomAbs_BezierSurface)
+    aBSpline = gFace->Bezier();
+  else if (aSurfType == GeomAbs_BSplineSurface)
+    aBSpline = gFace->BSpline();
+
+  // precision for compare square distances
+  const Standard_Real aPrecision   = Precision::Confusion();
+  const Standard_Real aSqPrecision = aPrecision * aPrecision;
+  for (Standard_Integer k = 0; k < 2; ++k)
+  {
+    BRepMeshCol::SequenceOfReal& aParams1 = aParams[k];
+    BRepMeshCol::SequenceOfReal& aParams2 = aParams[(k + 1) % 2];
+    const Standard_Boolean isU = (k == 0);
+    Standard_Integer aStartIndex, aEndIndex; 
+    if (isU)
+    {
+      aStartIndex = 1;
+      aEndIndex   = aParams1.Length();
+    }
+    else
+    {
+      aStartIndex = 2;
+      aEndIndex   = aParams1.Length() - 1;
+    }
+
+    for (Standard_Integer i = aStartIndex; i <= aEndIndex; ++i)
+    {
+      const Standard_Real aParam1 = aParams1(i);
+      Handle(Geom_Curve) aIso = isU ?
+        aBSpline->UIso(aParam1) : aBSpline->VIso(aParam1);
+
+      Standard_Real aPrevParam2 = aParams2(1);
+      gp_Pnt aPrevPnt2 = aIso->Value(aPrevParam2);
+      for (Standard_Integer j = 2; j <= aParams2.Length();)
+      {
+        Standard_Real aParam2 = aParams2(j);
+        gp_Pnt aPnt2 = aIso->Value(aParam2);
+        Standard_Real aMidParam = 0.5 * (aPrevParam2 + aParam2);
+        gp_Pnt aMidPnt = aIso->Value(aMidParam);
+
+        // 23.03.2010 skl for OCC21645 - change precision for comparison
+        Standard_Real aDist;
+        if (aPrevPnt2.SquareDistance(aPnt2) > aSqPrecision)
+        {
+          gp_Lin aLin(aPrevPnt2, gp_Dir(gp_Vec(aPrevPnt2, aPnt2)));
+          aDist = aLin.Distance(aMidPnt);
+        }
+        else
+          aDist = aPrevPnt2.Distance(aMidPnt);
+
+        if (aDist > aDefFace)
+        {
+          // insertion 
+          aParams2.InsertBefore(j, aMidParam);
+        }
+        else
+        {
+          //put regular grig for normals
+          gp_Pnt2d aStPnt1, aStPnt2;
+          if (isU)
+          {
+            aStPnt1 = gp_Pnt2d(aParam1, aPrevParam2);
+            aStPnt2 = gp_Pnt2d(aParam1, aMidParam);
+          }
+          else
+          {
+            aStPnt1 = gp_Pnt2d(aPrevParam2, aParam1);
+            aStPnt2 = gp_Pnt2d(aMidParam,   aParam1);
+          }
+
+          gp_Dir N1(0, 0, 1), N2(0, 0, 1);
+          Standard_Boolean aSt1 = GeomLib::NormEstim(aBSpline, aStPnt1, aPrecision, N1);
+          Standard_Boolean aSt2 = GeomLib::NormEstim(aBSpline, aStPnt2, aPrecision, N2);
+
+          Standard_Real aAngle = N2.Angle(N1);
+          if (aSt1 < 1 && aSt2 < 1 && aAngle > myAngle)
+          {
+            // insertion 
+            aParams2.InsertBefore(j, aMidParam);
+          }
+          else
+          {
+            aPrevParam2 = aParam2;
+            aPrevPnt2   = aPnt2;
+
+            if (!isU && j < aParams2.Length())
+            {
+              // Update point parameter.
+              aStPnt1.SetX(aPrevParam2);
+
+              // Classify intersection point
+              if (myClassifier->Perform(aStPnt1) == TopAbs_IN)
+              {
+                insertVertex(aPrevPnt2, aStPnt1.Coord(), theNewVertices);
+              }
+            }
+
+            ++j;
+          }
+        }
+      }
+    }
+  }
+}
+
+//=======================================================================
+//function : insertInternalVerticesOther
+//purpose  : 
+//=======================================================================
+void BRepMesh_FastDiscretFace::insertInternalVerticesOther(
+  BRepMeshCol::ListOfVertex& theNewVertices)
+{
+  const Standard_Real aAngle = 0.35;
+  const Standard_Real aRange[2][2] = {
+      { myAttribute->GetUMax(), myAttribute->GetUMin() },
+      { myAttribute->GetVMax(), myAttribute->GetVMin() }
+  };
+
+  const Standard_Real                 aDefFace = myAttribute->GetDefFace();
+  const Handle(BRepAdaptor_HSurface)& gFace = myAttribute->Surface();
+
+  BRepMeshCol::SequenceOfReal aParams[2];
+  const Standard_Integer aIsoPointsNb = 11;
+  for (Standard_Integer k = 0; k < 2; ++k)
+  {
+    const Standard_Boolean isU = (k == 0);
+    const GeomAbs_IsoType  aIsoType = isU ? GeomAbs_IsoU : GeomAbs_IsoV;
+    const Standard_Integer aOtherParamsIndex = (k + 1) % 2;
+    const Standard_Real (&aRange1)[2] = aRange[k];
+    const Standard_Real (&aRange2)[2] = aRange[aOtherParamsIndex];
+
+    GCPnts_TangentialDeflection aDiscretIso[aIsoPointsNb];
+    const Standard_Real aStepWidth = (aRange1[0] - aRange1[1]) / aIsoPointsNb;
+
+    // Find the most curved Iso.
+    Standard_Integer aMaxIndex = 1, aMaxPointsNb = 0;
+    for (Standard_Integer aIsoIt = 0; aIsoIt < aIsoPointsNb; ++aIsoIt)
+    {
+      Standard_Real aParam = aRange1[1] + aIsoIt * aStepWidth;
+      Adaptor3d_IsoCurve aIso(gFace, aIsoType, aParam);
+
+      Standard_Real aFirstParam = Max(aRange2[1], aIso.FirstParameter());
+      Standard_Real aLastParam  = Min(aRange2[0], aIso.LastParameter());
+
+      aDiscretIso[aIsoIt].Initialize(aIso, aFirstParam, aLastParam, 
+        aAngle, 0.7 * aDefFace, 2);
+
+      const Standard_Integer aPointsNb = aDiscretIso[aIsoIt].NbPoints();
+      if (aPointsNb > aMaxPointsNb)
+      {
+        aMaxPointsNb = aPointsNb;
+        aMaxIndex    = aIsoIt;
+      }
+    }
+
+    BRepMeshCol::SequenceOfReal& aParams2 = aParams[aOtherParamsIndex];
+    GCPnts_TangentialDeflection& aDIso    = aDiscretIso[aMaxIndex];
+    for (Standard_Integer i = 1; i <= aMaxPointsNb; ++i)
+      aParams2.Append(aDIso.Parameter(i));
+
+    if (aParams2.Length() == 2)
+      aParams2.InsertAfter(1, 0.5 * (aRange2[1] + aRange2[0]));
+  }
+
+  Adaptor3d_IsoCurve aIsoV;
+  aIsoV.Load(gFace);
+
+  const Standard_Integer aUPointsNb = aParams[0].Length();
+  const Standard_Integer aVPointsNb = aParams[1].Length();
+  for (Standard_Integer i = 2; i < aVPointsNb; ++i)
+  {
+    const Standard_Real aV = aParams[1].Value(i);
+    aIsoV.Load(GeomAbs_IsoV, aV);
+
+    for (Standard_Integer j = 2; j < aUPointsNb; ++j)
+    {
+      const Standard_Real aU = aParams[0].Value(j);
+
+      const gp_Pnt2d aNewPoint(aU, aV);
+      if (myClassifier->Perform(aNewPoint) == TopAbs_IN)
+        insertVertex(aIsoV.Value(aU), aNewPoint.Coord(), theNewVertices);
+    }
+  }
+}
+
+//=======================================================================
+//function : control
+//purpose  : 
+//=======================================================================
+Standard_Real BRepMesh_FastDiscretFace::control(
+  BRepMeshCol::ListOfVertex&  theNewVertices,
+  BRepMesh_Delaun&            theTrigu,
+  const Standard_Boolean      theIsFirst)
+
+#define CHECK_DEF_AND_INSERT_CURRENT(isSkipped)                 \
+if (aSqDef > aMaxSqDef)                                         \
+  aMaxSqDef = aSqDef;                                           \
+                                                                \
+(isSkipped) = Standard_False;                                   \
+if (aSqDef > aSqDefFace)                                        \
+{                                                               \
+  (isSkipped) = theIsFirst;                                     \
+  if (!(isSkipped))                                             \
+    insertVertex(pDef, mi2d, theNewVertices);                   \
+}                                                               \
+
+{
+  Standard_Integer aTrianglesNb = myStructure->ElementsOfDomain().Extent();
+  if (aTrianglesNb < 1)
+    return -1.0;
+
+  //IMPORTANT: Constants used in calculations
+  const Standard_Real MinimalArea2d     = 1.e-9;
+  const Standard_Real MinimalSqLength3d = 1.e-12;
+  const Standard_Real aSqDefFace = myAttribute->GetDefFace() * myAttribute->GetDefFace();
+
+  const Handle(BRepAdaptor_HSurface)& gFace = myAttribute->Surface();
+
+  Handle(Geom_Surface) aBSpline;
+  GeomAbs_SurfaceType  aSurfType = gFace->GetType();
+  if (aSurfType == GeomAbs_BezierSurface)
+    aBSpline = gFace->Bezier();
+  else if (aSurfType == GeomAbs_BSplineSurface)
+    aBSpline = gFace->BSpline();
+
+  NCollection_DataMap<Standard_Integer, gp_Dir> aNorMap;
+  BRepMeshCol::MapOfIntegerInteger              aStatMap;
+  NCollection_Map<BRepMesh_OrientedEdge>        aCouples(3 * aTrianglesNb);
 
   // Perform refinement passes
-  for (; pass <= nbPasses && nbInserted && !allDegenerated; pass++)
+  // Define the number of iterations
+  Standard_Integer       aIterationsNb = 11;
+  const Standard_Integer aPassesNb = (theIsFirst ? 1 : aIterationsNb);
+  // Initialize stop condition
+  Standard_Real aMaxSqDef = -1.;
+  Standard_Integer aPass = 1, aInsertedNb = 1;
+  Standard_Boolean isAllDegenerated = Standard_False;
+  for (; aPass <= aPassesNb && aInsertedNb && !isAllDegenerated; ++aPass)
   {
-    theInternalV.Clear();
-    theBadTriangles.Clear();
-    
+    theNewVertices.Clear();
+
     // Reset stop condition
-    allDegenerated = Standard_True;
-    nbInserted = 0;
-    maxdef = -1.0;
+    aInsertedNb      = 0;
+    aMaxSqDef        = -1.;
+    isAllDegenerated = Standard_True;
 
-    // Do not insert nodes in last pass in non-SharedMode
-    caninsert = (myWithShare || pass < nbPasses);
-
-    // Read mesh size
-    nbtriangles = myStructure->ElementsOfDomain().Extent();
-    if (nbtriangles <= 0) break;
+    aTrianglesNb = myStructure->ElementsOfDomain().Extent();
+    if (aTrianglesNb < 1)
+      break;
 
     // Iterate on current triangles
-    BRepMeshCol::MapOfInteger::Iterator triDom;
-    const BRepMeshCol::MapOfInteger& TriMap = myStructure->ElementsOfDomain();
-    triDom.Initialize(TriMap);
-    Standard_Integer aNbPnt = 0;
-    Standard_Real umin = myAttrib->GetUMin();
-    Standard_Real vmin = myAttrib->GetVMin();
-    Standard_Real deltaX = myAttrib->GetDeltaX();
-    Standard_Real deltaY = myAttrib->GetDeltaY();
-    for (; triDom.More(); triDom.Next())
+    const BRepMeshCol::MapOfInteger& aTriangles = myStructure->ElementsOfDomain();
+    BRepMeshCol::MapOfInteger::Iterator aTriangleIt(aTriangles);
+    for (; aTriangleIt.More(); aTriangleIt.Next())
     {
-      Standard_Integer TriId = triDom.Key();
-      const BRepMesh_Triangle& curTri=Triangle(TriId);
-      if (curTri.Movability()==BRepMesh_Deleted) continue;
-      
+      const Standard_Integer aTriangleId = aTriangleIt.Key();
+      const BRepMesh_Triangle& aCurrentTriangle = myStructure->GetElement(aTriangleId);
+
+      if (aCurrentTriangle.Movability() == BRepMesh_Deleted)
+        continue;
+
       Standard_Integer v[3];
-      myStructure->ElementNodes(curTri, v);
+      myStructure->ElementNodes(aCurrentTriangle, v);
 
       Standard_Integer e[3];
       Standard_Boolean o[3];
-      curTri.Edges(e, o);
-      
-      Standard_Boolean m1 = (Edge(e[0]).Movability() == BRepMesh_Frontier);
-      Standard_Boolean m2 = (Edge(e[1]).Movability() == BRepMesh_Frontier);
-      Standard_Boolean m3 = (Edge(e[2]).Movability() == BRepMesh_Frontier);
+      aCurrentTriangle.Edges(e, o);
 
-      const BRepMesh_Vertex& vert1=Vertex(v[0]);
-      const BRepMesh_Vertex& vert2=Vertex(v[1]);
-      const BRepMesh_Vertex& vert3=Vertex(v[2]);
-
-      const gp_XYZ& p1=myLocation3d(vert1.Location3d()).Coord();
-      const gp_XYZ& p2=myLocation3d(vert2.Location3d()).Coord();
-      const gp_XYZ& p3=myLocation3d(vert3.Location3d()).Coord();
-
-      vecEd1 = p2 - p1;
-      vecEd2 = p3 - p2;
-      vecEd3 = p1 - p3;
-
-      // Check for degenerated triangle
-      if (vecEd1.SquareModulus() < MinimalSqLength3d ||
-          vecEd2.SquareModulus() < MinimalSqLength3d ||
-          vecEd3.SquareModulus() < MinimalSqLength3d) 
+      gp_XY xy[3];
+      gp_XYZ p[3];
+      Standard_Boolean m[3];
+      for (Standard_Integer i = 0; i < 3; ++i)
       {
-        theNulTriangles.Append(TriId);
-        continue;
+        m[i] = (myStructure->GetLink(e[i]).Movability() == BRepMesh_Frontier);
+
+        const BRepMesh_Vertex& aVertex = myStructure->GetNode(v[i]);
+        xy[i] = myAttribute->Scale(aVertex.Coord(), Standard_False);
+        p [i] = myAttribute->GetPoint(aVertex).Coord();
       }
 
-      allDegenerated = Standard_False;
+      gp_XYZ aLinkVec[3];
+      Standard_Boolean isDegeneratedTri = Standard_False;
+      for (Standard_Integer i = 0; i < 3 && !isDegeneratedTri; ++i)
+      {
+        aLinkVec[i] = p[(i + 1) % 3] - p[i];
+        isDegeneratedTri = (aLinkVec[i].SquareModulus() < MinimalSqLength3d);
+      }
 
-      gp_XY xy1(vert1.Coord().X()*deltaX+umin,vert1.Coord().Y()*deltaY+vmin);
-      gp_XY xy2(vert2.Coord().X()*deltaX+umin,vert2.Coord().Y()*deltaY+vmin);
-      gp_XY xy3(vert3.Coord().X()*deltaX+umin,vert3.Coord().Y()*deltaY+vmin);
+      if (isDegeneratedTri) 
+        continue;
+
+      isAllDegenerated = Standard_False;
 
       // Check triangle area in 2d
-      if (Abs((xy2-xy1)^(xy3-xy1)) < MinimalArea2d)
-      {
-        theNulTriangles.Append(TriId);
+      if (Abs((xy[1]-xy[0])^(xy[2]-xy[1])) < MinimalArea2d)
         continue;
-      }
 
       // Check triangle normal
-      gp_XYZ normal(vecEd1^vecEd2);
-      dv = normal.Modulus();
-      if (dv < Precision::Confusion())
+      gp_Pnt pDef;
+      Standard_Real aSqDef = -1.;
+      Standard_Boolean isSkipped = Standard_False;
+      gp_XYZ normal(aLinkVec[0] ^ aLinkVec[1]);
+      try
       {
-        theNulTriangles.Append(TriId);
+        OCC_CATCH_SIGNALS
+
+        normal.Normalize();
+
+        // Check deflection on triangle
+        gp_XY mi2d = (xy[0] + xy[1] + xy[2]) / 3.0;
+        gFace->D0(mi2d.X(), mi2d.Y(), pDef);
+        aSqDef = Abs(normal * (pDef.XYZ() - p[0]));
+        aSqDef *= aSqDef;
+
+        CHECK_DEF_AND_INSERT_CURRENT(isSkipped);
+        if (isSkipped)
+          break;
+      }
+      catch (Standard_Failure)
+      {
         continue;
       }
-      normal /= dv;
 
-      // Check deflection on triangle
-      mi2d = (xy1+xy2+xy3)/3.0;
-      theCaro->D0(mi2d.X(), mi2d.Y(), pDef);
-      defl = Abs(normal*(pDef.XYZ()-p1));
-      defl = defl*defl;     
-      /*mi2d = (xy1+xy2+xy3)/3.0;
-      theCaro->D0(mi2d.X(), mi2d.Y(), pDef);
-      defl = pDef.SquareDistance((p1+p2+p3)/3.);*/
-      if (defl > maxdef) maxdef = defl;
-      if (defl > sqdefface)
+      for (Standard_Integer i = 0; i < 3 && !isSkipped; ++i)
       {
-        if (theIsFirst) break;
-        if (caninsert)
-        {
-          // Record new vertex
-          aNbPnt++;
-          myNbLocat++;
-          myLocation3d.Bind(myNbLocat,pDef);
-          mi2d.SetCoord((mi2d.X()-umin)/deltaX,(mi2d.Y()-vmin)/deltaY);
-          InsVertex.Initialize(mi2d,myNbLocat,BRepMesh_Free);
-          theInternalV.Append(InsVertex);
-        }
-        theBadTriangles.Append(TriId);
-      }
-      
-      if (!m2) // Not a boundary
-      {
+        if (m[i]) // is a boundary
+          continue;
+
+        Standard_Integer j = (i + 1) % 3;
         // Check if this link was already processed
-        if (v[1] < v[2]) { nf = v[1]; nl = v[2]; } else { nf = v[2]; nl = v[1]; }
-        if (theCouples.Add(BRepMesh_Couple(nf,nl)))
+        Standard_Integer aFirstVertex, aLastVertex;
+        if (v[i] < v[j])
+        { 
+          aFirstVertex = v[i];
+          aLastVertex = v[j];
+        }
+        else
+        {
+          aFirstVertex = v[j];
+          aLastVertex = v[i];
+        }
+
+        if (aCouples.Add(BRepMesh_OrientedEdge(aFirstVertex, aLastVertex)))
         {
           // Check deflection on edge 1
-          mi2d = (xy2+xy3)*0.5;
-          theCaro->D0(mi2d.X(), mi2d.Y(), pDef);
-          gp_Lin L (p2, gp_Vec(p2, p3));
-          defl = L.SquareDistance(pDef);
-          if (defl > maxdef) maxdef = defl;
-          if (defl > sqdefface)
-          {
-            if (theIsFirst) break;
-            if (caninsert)
-            {
-              // Record new vertex
-              aNbPnt++;              
-              myNbLocat++;
-              myLocation3d.Bind(myNbLocat,pDef);
-              mi2d.SetCoord((mi2d.X()-umin)/deltaX,(mi2d.Y()-vmin)/deltaY);
-              InsVertex.Initialize(mi2d,myNbLocat,BRepMesh_Free);
-              theInternalV.Append(InsVertex);
-            }
-            theBadTriangles.Append(TriId);
-          }
+          gp_XY mi2d = (xy[i] + xy[j]) * 0.5;
+          gFace->D0(mi2d.X(), mi2d.Y(), pDef);
+          gp_Lin aLin(p[i], gp_Vec(p[i], p[j]));
+          aSqDef = aLin.SquareDistance(pDef);
+
+          CHECK_DEF_AND_INSERT_CURRENT(isSkipped);
         }
       }
 
-      if (!m3) // Not a boundary
-      {
-        // Check if this link was already processed
-        if (v[0] < v[2]) { nf = v[0]; nl = v[2]; } else { nf = v[2]; nl = v[0]; }
-        if (theCouples.Add(BRepMesh_Couple(nf,nl)))
-        {
-          // Check deflection on edge 2
-          mi2d = (xy3+xy1)*0.5;
-          theCaro->D0(mi2d.X(), mi2d.Y(), pDef);
-          gp_Lin L (p1, gp_Vec(p1, p3));
-          defl = L.SquareDistance(pDef);
-          if (defl > maxdef) maxdef = defl;
-          if (defl > sqdefface)
-          {
-            if (theIsFirst) break;
-            if (caninsert)
-            {
-              // Record new vertex
-              aNbPnt++;
-              myNbLocat++;
-              myLocation3d.Bind(myNbLocat,pDef);
-              mi2d.SetCoord((mi2d.X()-umin)/deltaX,(mi2d.Y()-vmin)/deltaY);
-              InsVertex.Initialize(mi2d,myNbLocat,BRepMesh_Free);
-              theInternalV.Append(InsVertex);
-            }
-            theBadTriangles.Append(TriId);
-          }
-        }
-      }
+      if (isSkipped)
+        break;
 
-      if (!m1) // Not a boundary
-      {
-        // Check if this link was already processed
-        if (v[0] < v[1]) { nf = v[0]; nl = v[1]; } else { nf = v[1]; nl = v[0]; }
-        if (theCouples.Add(BRepMesh_Couple(nf,nl)))
-        {
-          // Check deflection on edge 3
-          mi2d = (xy1+xy2)*0.5;
-          theCaro->D0(mi2d.X(), mi2d.Y(), pDef);
-          gp_Lin L (p1, gp_Vec(p1, p2));
-          defl = L.SquareDistance(pDef);
-          if (defl > maxdef) maxdef = defl;
-          if (defl > sqdefface)
-          {
-            if (theIsFirst) break;
-            if (caninsert)
-            {
-              // Record new vertex
-              aNbPnt++;
-              myNbLocat++;
-              myLocation3d.Bind(myNbLocat,pDef);
-              mi2d.SetCoord((mi2d.X()-umin)/deltaX,(mi2d.Y()-vmin)/deltaY);              
-              InsVertex.Initialize(mi2d,myNbLocat,BRepMesh_Free);
-              theInternalV.Append(InsVertex);
-            }
-            theBadTriangles.Append(TriId);
-          }
-        }
-      }
-      
       //check normal on bsplines
-      if(theIsFirst && isSpline && !BSpl.IsNull() )      
+      if (theIsFirst && !aBSpline.IsNull())
       {
-        gp_Dir N1(0,0,1), N2(0,0,1), N3(0,0,1);
-        Standard_Integer aSt1, aSt2, aSt3;
-        if(aNorMap.IsBound(v[0])) {
-          aSt1 = aStatMap.Find(v[0]);
-          N1 =aNorMap.Find(v[0]);
-        }
-        else {
-          aSt1 = GeomLib::NormEstim(BSpl, gp_Pnt2d(xy1), Precision::Confusion(), N1);
-          aStatMap.Bind(v[0],aSt1);
-          aNorMap.Bind(v[0],N1);
+        gp_Dir N[3] = { gp::DZ(), gp::DZ(), gp::DZ() };
+        Standard_Integer aSt[3];
+
+        for (Standard_Integer i = 0; i < 3; ++i)
+        {
+          if (aNorMap.IsBound(v[i]))
+          {
+            aSt[i] = aStatMap.Find(v[i]);
+            N[i] = aNorMap.Find(v[i]);
+          }
+          else
+          {
+            aSt[i] = GeomLib::NormEstim(aBSpline, gp_Pnt2d(xy[i]), Precision::Confusion(), N[i]);
+            aStatMap.Bind(v[i], aSt[i]);
+            aNorMap.Bind(v[i], N[i]);
+          }
         }
 
-        if(aNorMap.IsBound(v[1])) {
-          aSt2 = aStatMap.Find(v[1]);
-          N2 = aNorMap.Find(v[1]);
-        }
-        else {
-          aSt2 = GeomLib::NormEstim(BSpl, gp_Pnt2d(xy2), Precision::Confusion(), N2);
-          aStatMap.Bind(v[1],aSt2);
-          aNorMap.Bind(v[1],N2);
-        }
+        Standard_Real aAngle[3];
+        for (Standard_Integer i = 0; i < 3; ++i)
+          aAngle[i] = N[(i + 1) % 3].Angle(N[i]);
 
-        if(aNorMap.IsBound(v[2])) {
-          aSt3 = aStatMap.Find(v[2]);
-          N3 = aNorMap.Find(v[2]);
-        }
-        else {
-          aSt3 = GeomLib::NormEstim(BSpl, gp_Pnt2d(xy3), Precision::Confusion(), N3);
-          aStatMap.Bind(v[2],aSt3);
-          aNorMap.Bind(v[2],N3.XYZ());
-        }
-        
-        Standard_Real anAngle1 = N2.Angle(N1);
-        Standard_Real anAngle2 = N3.Angle(N2);
-        Standard_Real anAngle3 = N1.Angle(N3);
-        if(aSt1 < 1 && aSt2 < 1 && aSt3 < 1 && 
-            (anAngle1 > myAngle || anAngle2 > myAngle || anAngle3 > myAngle)) {
-
-            maxdef = -1;
+        if (aSt[0] < 1 && aSt[1] < 1 && aSt[2] < 1)
+        {
+          if (aAngle[0] > myAngle || aAngle[1] > myAngle || aAngle[2] > myAngle)
+          {
+            aMaxSqDef = -1.;
             break;
+          }
         }
       }
     }
-    
-    if (!theIsFirst && theInternalV.Extent() > 0) 
-    {
-      BRepMeshCol::Array1OfVertexOfDelaun verttab(1, theInternalV.Extent());
-      BRepMeshCol::ListOfVertex::Iterator itVer(theInternalV);
-      Standard_Integer ipn = 1;
-      for (; itVer.More(); itVer.Next())
-        verttab(ipn++) = itVer.Value();
-        
-      theTrigu.AddVertices(verttab);
-      nbInserted++;
-    }
+
+    if (theIsFirst)
+      continue;
+
+    if (addVerticesToMesh(theNewVertices, theTrigu))
+      ++aInsertedNb;
   }
 
-   if (maxdef < 0)
-    return maxdef;
-  return Sqrt(maxdef);
+  return (aMaxSqDef < 0) ? aMaxSqDef : Sqrt(aMaxSqDef);
 }
 
 //=======================================================================
-//function : AddInShape
+//function : add
 //purpose  : 
 //=======================================================================
-void BRepMesh_FastDiscretFace::AddInShape(const TopoDS_Face&  theFace,
-                                          const Standard_Real theDefFace,
-                                          const TopTools_MutexForShapeProvider& theMutexProvider)
+void BRepMesh_FastDiscretFace::add(const TopoDS_Vertex& theVertex)
 {
-  TopLoc_Location loc = theFace.Location();
-  Handle(Poly_Triangulation) TOld = BRep_Tool::Triangulation(theFace, loc);
-  Handle(Poly_PolygonOnTriangulation) NullPoly;
-
-  BRepMesh_ShapeTool::NullifyFace(theFace);
-
-  try{
-  BRepMeshCol::MapOfInteger::Iterator it;
-
-  Standard_Integer i, index;
-  TopAbs_Orientation orFace = theFace.Orientation();
-
-  const BRepMeshCol::MapOfInteger& TriMap = myStructure->ElementsOfDomain();
-  it.Initialize(TriMap);
-    
-  Standard_Integer nTri = TriMap.Extent();
-  if (nTri != 0) {
-    
-    Poly_Array1OfTriangle Tri(1, nTri);
-    
-    i = 1;
-    
-    for (; it.More(); it.Next())
-    {
-      const BRepMesh_Triangle& aCurElem = myStructure->GetElement(it.Key());
-
-      Standard_Integer v[3];
-      myStructure->ElementNodes(aCurElem, v);
-      
-      Standard_Integer iv1, iv2, iv3;
-      iv1 = myVemap.FindIndex(v[0]);
-      if (iv1 == 0) iv1 = myVemap.Add(v[0]);
-      iv2 = myVemap.FindIndex(v[1]);
-      if (iv2 == 0) iv2 = myVemap.Add(v[1]);
-      iv3 = myVemap.FindIndex(v[2]);
-      if (iv3 == 0) iv3 = myVemap.Add(v[2]);
-      
-      if (orFace == TopAbs_REVERSED) Tri(i++).Set(iv1, iv3, iv2);
-      else Tri(i++).Set(iv1, iv2, iv3);
-    }
-    
-    Standard_Integer nbVertices = myVemap.Extent();
-    Handle(Poly_Triangulation) T = new Poly_Triangulation(nbVertices, nTri, Standard_True);
-    Poly_Array1OfTriangle& Trian = T->ChangeTriangles();
-    Trian = Tri;
-    TColgp_Array1OfPnt&  Nodes = T->ChangeNodes();
-    TColgp_Array1OfPnt2d& Nodes2d = T->ChangeUVNodes();
-    
-    for (i = 1; i <= nbVertices; i++) {
-      index = myVemap.FindKey(i);
-      Nodes(i) = Pnt(index);
-      Nodes2d(i).SetXY(Vertex(index).Coord());
-    }
-    
-    T->Deflection(theDefFace);
-    BRepMesh_ShapeTool::AddInFace(theFace, T);
-
-    // implement polygons on triangulation in the face:
-    BRepMeshCol::DMapOfShapePairOfPolygon::Iterator It(myInternaledges);
-
-    for (; It.More(); It.Next()) {
-      const TopoDS_Edge& aEdge = TopoDS::Edge(It.Key());
-      const BRepMesh_PairOfPolygon& pair = It.Value();
-      const Handle(Poly_PolygonOnTriangulation)& NOD1 = pair.First();
-      const Handle(Poly_PolygonOnTriangulation)& NOD2 = pair.Last();
-
-      // lock mutex to prevent parallel change of the same data
-      Standard_Mutex* aMutex = theMutexProvider.GetMutex(It.Key());
-      Standard_Mutex::Sentry aSentry (aMutex);
-
-      if ( NOD1 == NOD2 ) {
-        BRepMesh_ShapeTool::NullifyEdge(aEdge, TOld, loc);
-        BRepMesh_ShapeTool::UpdateEdge(aEdge, NOD1, T, loc);
-      }
-      else {
-        BRepMesh_ShapeTool::NullifyEdge(aEdge, TOld, loc);
-        BRepMesh_ShapeTool::UpdateEdge(aEdge, NOD1, NOD2, T, loc);
-      }
-    }
-  }
- }
-
- catch(Standard_Failure)
- {
-   //   MESH_FAILURE(theFace);
- }
-}
-
-
-//=======================================================================
-//function : Triangle
-//purpose  : 
-//=======================================================================
-
-const BRepMesh_Triangle& BRepMesh_FastDiscretFace::Triangle(const Standard_Integer Index) const
-{
-  return myStructure->GetElement(Index);
-}
-
-//=======================================================================
-//function : NbEdges
-//purpose  : 
-//=======================================================================
-
-/*Standard_Integer BRepMesh_FastDiscretFace::NbEdges() const
-{
-  return myStructure->NbLinks();
-}*/
-
-//=======================================================================
-//function : Edge
-//purpose  : 
-//=======================================================================
-
-const BRepMesh_Edge& BRepMesh_FastDiscretFace::Edge(const Standard_Integer Index) const
-{
-  return myStructure->GetLink(Index);
-}
-
-
-//=======================================================================
-//function : Vertex
-//purpose  : 
-//=======================================================================
-
-const BRepMesh_Vertex& BRepMesh_FastDiscretFace::Vertex(const Standard_Integer Index) const
-{
-  return myStructure->GetNode(Index);
-}
-
-//=======================================================================
-//function : Pnt
-//purpose  : 
-//=======================================================================
-
-const gp_Pnt& BRepMesh_FastDiscretFace::Pnt(const Standard_Integer Index) const
-{
-  return myLocation3d(myStructure->GetNode(Index).Location3d());
-}
-
-static Standard_Boolean GetVertexParameters(const TopoDS_Vertex& theVert, 
-                                            const TopoDS_Face& theFace,
-                                            gp_Pnt2d& thePoint)
-{
-  TopLoc_Location L;
-  const Handle(Geom_Surface)& S = BRep_Tool::Surface(theFace,L);
-  L = L.Predivided(theVert.Location());
-  BRep_ListIteratorOfListOfPointRepresentation itpr =
-    ((*((Handle(BRep_TVertex)*) &theVert.TShape()))->Points());
-  // Check first if there are PointRepresentation (case non Manifold)
-
-  while (itpr.More()) {
-    if (itpr.Value()->IsPointOnSurface(S,L)) {
-      thePoint.SetCoord(itpr.Value()->Parameter(),
-                        itpr.Value()->Parameter2());
-      return Standard_True;
-    }
-    itpr.Next();
-  }
-  return Standard_False;
-}
-
-//=======================================================================
-//function : Add
-//purpose  : method intended to add internal myVertices in triangulation.
-//=======================================================================
-void BRepMesh_FastDiscretFace::Add(const TopoDS_Vertex&                theVert, 
-                                   const TopoDS_Face&                  theFace, 
-                                   const Handle(BRepAdaptor_HSurface)& thegFace)
-{
-  const TopAbs_Orientation anOrient = theVert.Orientation();
-  gp_Pnt2d uvXY;
-  if( anOrient != TopAbs_INTERNAL || !GetVertexParameters(theVert,theFace,uvXY))
+  if (theVertex.Orientation() != TopAbs_INTERNAL)
     return;
-  Standard_Integer indVert =0;
-  if (myVertices.IsBound(theVert))
-    indVert = myVertices.Find(theVert);
-  else
-  {
-    myNbLocat++;
-    myLocation3d.Bind(myNbLocat, BRep_Tool::Pnt(theVert));
-    indVert = myNbLocat;
-    myVertices.Bind(theVert, indVert);
-  }
-  Standard_Real mindist = BRep_Tool::Tolerance(theVert);
-  // gp_Pnt2d uvXY = BRep_Tool::Parameters(theVert,theFace);
-  gp_XY anUV = BRepMesh_ShapeTool::FindUV(indVert, uvXY,
-    theVert, mindist, myAttrib, thegFace, myLocation2d);
 
-  BRepMesh_Vertex vf(anUV, indVert, BRepMesh_Fixed);
-  Standard_Integer ivff = myStructure->AddNode(vf);
-  Standard_Integer isvf = myVemap.FindIndex(ivff);
-  if (isvf == 0) isvf = myVemap.Add(ivff);  
+  try
+  {
+    OCC_CATCH_SIGNALS
+
+    gp_Pnt2d aPnt2d = BRep_Tool::Parameters(theVertex, myAttribute->Face());
+
+    N_HANDLE<FixedVExplorer> aFixedVExplorer = new FixedVExplorer(theVertex);
+    Standard_Integer aIndex = myAttribute->GetVertexIndex(aFixedVExplorer);
+    gp_XY anUV = BRepMesh_ShapeTool::FindUV(aIndex, aPnt2d,
+      theVertex, BRep_Tool::Tolerance(theVertex), myAttribute);
+
+    Standard_Integer aTmpId1, aTmpId2;
+    myAttribute->AddNode(aIndex, anUV, BRepMesh_Fixed, aTmpId1, aTmpId2);
+  }
+  catch (Standard_Failure)
+  {
+  }
+}
+
+//=======================================================================
+//function : insertVertex
+//purpose  : 
+//=======================================================================
+void BRepMesh_FastDiscretFace::insertVertex(
+  const gp_Pnt&              thePnt3d,
+  const gp_XY&               theUV,
+  BRepMeshCol::ListOfVertex& theVertices)
+{
+  Standard_Integer aNbLocat = myAttribute->LastPointId();
+  mySurfacePoints->Bind(++aNbLocat, thePnt3d);
+
+  gp_XY aPnt2d  = myAttribute->Scale(theUV, Standard_True);
+  BRepMesh_Vertex aVertex(aPnt2d, aNbLocat, BRepMesh_Free);
+  theVertices.Append(aVertex);
 }

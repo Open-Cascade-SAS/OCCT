@@ -13,28 +13,27 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <XBRepMesh.hxx>
-#include <BRepMesh_PluginMacro.hxx>
-#include <BRepMesh_IncrementalMesh.hxx>
+#ifndef _XBRepMesh_HeaderFile
+#define _XBRepMesh_HeaderFile
 
-//=======================================================================
-//function : Discret
-//purpose  : 
-//=======================================================================
-Standard_Integer XBRepMesh::Discret(
-  const TopoDS_Shape&   theShape,
-  const Standard_Real   theDeflection,
-  const Standard_Real   theAngle,
-  BRepMesh_DiscretRoot* &theAlgo)
+#include <Standard.hxx>
+#include <Standard_DefineAlloc.hxx>
+#include <Standard_Macro.hxx>
+#include <BRepMesh_DiscretRoot.hxx>
+
+class TopoDS_Shape;
+
+class XBRepMesh
 {
-  Standard_Integer iErr;
-  //
-  iErr=0;
-  theAlgo=new BRepMesh_IncrementalMesh;
-  theAlgo->SetDeflection(theDeflection);
-  theAlgo->SetAngle(theAngle);
-  theAlgo->SetShape(theShape);
+public:
 
-  return iErr;
-}
-DISCRETPLUGIN(XBRepMesh)
+  DEFINE_STANDARD_ALLOC
+  
+  Standard_EXPORT static Standard_Integer Discret(
+    const TopoDS_Shape&    theShape,
+    const Standard_Real    theDeflection,
+    const Standard_Real    theAngle,
+    BRepMesh_DiscretRoot* &theAlgo);
+};
+
+#endif

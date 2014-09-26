@@ -54,8 +54,6 @@ is
       imported Circle from BRepMesh;
       imported DiscretRoot from BRepMesh; 
       imported DiscretFactory from BRepMesh;
-      --
-      pointer PDiscretRoot to DiscretRoot from BRepMesh;
       
       imported ShapeTool from BRepMesh;
       imported Collections from BRepMesh;
@@ -66,6 +64,10 @@ is
       imported WireInterferenceChecker from BRepMesh;
       imported EdgeChecker from BRepMesh;
       imported FaceChecker from BRepMesh;
+      imported EdgeParameterProvider from BRepMesh;
+      imported IEdgeTool from BRepMesh;
+      imported EdgeTessellationExtractor from BRepMesh;
+      imported EdgeTessellator from BRepMesh;
 
       primitive PluginEntryType;
 

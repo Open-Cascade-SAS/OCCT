@@ -23,7 +23,7 @@
 #include <BRepMesh_DiscretRoot.hxx>
 #include <BRepMesh_IncrementalMesh.hxx>
 #include <Bnd_Box.hxx>
-#include <BRepMesh_PDiscretRoot.hxx>
+#include <BRepMesh_DiscretRoot.hxx>
 #include <Draw.hxx>
 #include <DBRep.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>

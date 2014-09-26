@@ -21,13 +21,13 @@ extern "C" {                                                              \
   Standard_EXPORT Standard_Integer DISCRETALGO(const TopoDS_Shape& ,      \
                                                const Standard_Real,       \
                                                const Standard_Real,       \
-                                               BRepMesh_PDiscretRoot& );  \
+                                               BRepMesh_DiscretRoot* &);  \
 }                                                                         \
                                                                           \
-Standard_Integer DISCRETALGO(const TopoDS_Shape&     theShape,            \
-                             const Standard_Real     theLinDeflection,    \
-                             const Standard_Real     theAngDeflection,    \
-                             BRepMesh_PDiscretRoot&  theAlgo)             \
+Standard_Integer DISCRETALGO(const TopoDS_Shape&    theShape,             \
+                             const Standard_Real    theLinDeflection,     \
+                             const Standard_Real    theAngDeflection,     \
+                             BRepMesh_DiscretRoot* &theAlgo)              \
 {                                                                         \
   return name::Discret(theShape, theLinDeflection,                        \
     theAngDeflection, theAlgo);                                           \

@@ -18,7 +18,7 @@
 #include <OSD_SharedLibrary.hxx>
 #include <OSD_Function.hxx>
 #include <BRepMesh_IncrementalMesh.hxx>
-#include <BRepMesh_PDiscretRoot.hxx>
+#include <BRepMesh_DiscretRoot.hxx>
 
 namespace
 {
@@ -145,7 +145,7 @@ Standard_Boolean BRepMesh_DiscretFactory::SetDefault(
   }
 
   // try to create dummy tool
-  BRepMesh_PDiscretRoot anInstancePtr = NULL;
+  BRepMesh_DiscretRoot* anInstancePtr = NULL;
   Standard_Integer anErr = aFunc (TopoDS_Shape(), 0.001, 0.1, anInstancePtr);
   if (anErr != 0 || anInstancePtr == NULL)
   {
@@ -174,7 +174,7 @@ Handle(BRepMesh_DiscretRoot) BRepMesh_DiscretFactory::Discret(
   const Standard_Real theAngle)
 {
   Handle(BRepMesh_DiscretRoot) aDiscretRoot;
-  BRepMesh_PDiscretRoot anInstancePtr = NULL;
+  BRepMesh_DiscretRoot* anInstancePtr = NULL;
   if (myPluginEntry != NULL)
   {
     // use plugin

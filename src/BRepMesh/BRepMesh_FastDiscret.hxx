@@ -31,16 +31,19 @@
 #include <BRepMesh_Triangle.hxx>
 #include <BRepMesh_FaceAttribute.hxx>
 #include <BRepMesh_Collections.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepMesh_ShapeTool.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 
 class BRepMesh_DataStructureOfDelaun;
 class Bnd_Box;
 class TopoDS_Shape;
 class TopoDS_Face;
-class TopTools_IndexedDataMapOfShapeListOfShape;
 class TopoDS_Edge;
 class BRepAdaptor_HSurface;
 class Geom2d_Curve;
-class TopoDS_Vertex;
 class BRepMesh_Edge;
 class BRepMesh_Vertex;
 class gp_Pnt;
@@ -86,16 +89,17 @@ public:
                                        const Standard_Boolean shapetrigu = Standard_False,
                                        const Standard_Boolean isInParallel = Standard_False);
 
-  //! Build triangulation on the whole shape <br>
+  //! Build triangulation on the whole shape.
   Standard_EXPORT void Perform(const TopoDS_Shape& shape);
 
-  //! Record a face for further processing. <br>
-  Standard_EXPORT void Add(const TopoDS_Face& face,
-                           const TopTools_IndexedDataMapOfShapeListOfShape& ancestor) ;
+  //! Record a face for further processing.
+  //! @return status flags collected during discretization 
+  //! of boundaries of the given face.
+  Standard_EXPORT Standard_Integer Add(const TopoDS_Face& face);
 
-  //! Triangulate a face previously recorded for <br>
-  //! processing by call to Add(). Can be executed in <br>
-  //! parallel threads. <br>
+  //! Triangulate a face previously recorded for 
+  //! processing by call to Add(). Can be executed in 
+  //! parallel threads.
   Standard_EXPORT void Process(const TopoDS_Face& face) const;
 
   void operator ()(const TopoDS_Face& face) const
@@ -103,81 +107,21 @@ public:
     Process(face);
   }
   
-  Standard_EXPORT BRepMesh_Status CurrentFaceStatus() const;
-  
   //! Request algorithm to launch in multiple threads <br>
   //! to improve performance (should be supported by plugin). <br>
-  Standard_EXPORT void SetParallel(const Standard_Boolean theInParallel);
+  inline void SetParallel(const Standard_Boolean theInParallel)
+  {
+    myInParallel = theInParallel;
+  }
   
   //! Returns the multi-threading usage flag. <br>
-  Standard_EXPORT Standard_Boolean IsParallel() const;
-  
-  //! Creates mutexes for each sub-shape of type theType in theShape. <br>
-  //! Used to avoid data races. <br>
-  Standard_EXPORT void CreateMutexesForSubShapes(const TopoDS_Shape& theShape,
-                                                 const TopAbs_ShapeEnum theType);
-  
-  //! Removes all created mutexes <br>
-  Standard_EXPORT void RemoveAllMutexes();
-
-  //! Gives the number of built triangles. <br>
-  Standard_EXPORT Standard_Integer NbTriangles() const;
-
-  //! Gives the triangle of <Index>. <br>
-  Standard_EXPORT const BRepMesh_Triangle& Triangle(const Standard_Integer Index) const;
-
-  //! Gives the number of built Edges <br>
-  Standard_EXPORT Standard_Integer NbEdges() const;
-
-  //! Gives the edge of index <Index>. <br>
-  Standard_EXPORT const BRepMesh_Edge& Edge(const Standard_Integer Index) const;
-
-  //! Gives the number of built Vertices. <br>
-  Standard_EXPORT Standard_Integer NbVertices() const;
-
-  //! Gives the vertex of <Index>. <br>
-  Standard_EXPORT const BRepMesh_Vertex& Vertex(const Standard_Integer Index) const;
-
-  //! Gives the nodes of triangle with the given index.
-  Standard_EXPORT void TriangleNodes(const Standard_Integer theIndex,
-                                     Standard_Integer       (&theNodes)[3]) const
+  inline Standard_Boolean IsParallel() const
   {
-    myStructure->ElementNodes(Triangle(theIndex), theNodes);
+    return myInParallel;
   }
-
-  //! Gives the location3d of the vertex of <Index>. <br>
-  Standard_EXPORT const gp_Pnt& Pnt(const Standard_Integer Index) const;
-
+  
   //! Gives the list of indices of the vertices <br>
   Standard_EXPORT void VerticesOfDomain(BRepMeshCol::MapOfInteger& Indices) const;
-
-  //! Gives the list of indices of the edges <br>
-  inline void EdgesOfDomain(BRepMeshCol::MapOfInteger& Indices) const
-  { 
-    Indices = myStructure->LinksOfDomain();
-  }
-
-  //! Gives the list of indices of the triangles <br>
-  inline void TrianglesOfDomain(BRepMeshCol::MapOfInteger& Indices) const
-  { 
-    Indices = myStructure->ElementsOfDomain();
-  }
-
-  //! Gives the number of different location in 3d space.  
-  //! It is different of the number of vertices if there 
-  //! is more than one surface. <br>
-  //! Even for one surface, the number can be different
-  //! if an edge is shared. <br>
-  inline Standard_Integer NbPoint3d() const
-  {
-    return myNbLocat;
-  }
-
-  //! Gives the 3d space location of the vertex <Index>. <br>
-  inline const gp_Pnt& Point3d(const Standard_Integer Index) const
-  {
-    return myLocation3d(Index);
-  }
 
   //! returns the deflection value. <br>
   inline Standard_Real GetDeflection() const
@@ -206,82 +150,227 @@ public:
     return myShapetrigu;
   }
 
-  //! returns the face deflection value. <br>
-  Standard_EXPORT Standard_Boolean GetFaceAttribute(const TopoDS_Face& face,Handle(BRepMesh_FaceAttribute)& fattrib) const;
+  Standard_EXPORT void InitSharedFaces(const TopoDS_Shape& theShape);
 
-  //! remove face attribute as useless to free locate memory <br>
-  Standard_EXPORT void RemoveFaceAttribute(const TopoDS_Face& face);
-  
-  inline const TopTools_DataMapOfShapeReal& GetMapOfDefEdge() const
+  inline const TopTools_IndexedDataMapOfShapeListOfShape& SharedFaces() const
   {
-    return myMapdefle;
+    return mySharedFaces;
   }
 
+  //! Gives face attribute.
+  Standard_EXPORT Standard_Boolean GetFaceAttribute
+    ( const TopoDS_Face& theFace, Handle(BRepMesh_FaceAttribute)& theAttribute ) const;
+
+  //! Remove face attribute as useless to free locate memory.
+  Standard_EXPORT void RemoveFaceAttribute( const TopoDS_Face& theFace );
+
+  //! Returns number of boundary 3d points.
+  inline Standard_Integer NbBoundaryPoints() const
+  {
+    return myBoundaryPoints.Extent();
+  }
 
   DEFINE_STANDARD_RTTI(BRepMesh_FastDiscret)
 
-private: 
-  
-  void Add(const TopoDS_Edge& edge,
-           const TopoDS_Face& face,
-           const Handle(BRepAdaptor_HSurface)& S,
-           const Handle(Geom2d_Curve)& C,
-           const TopTools_IndexedDataMapOfShapeListOfShape& ancestor,
-           const Standard_Real defedge,
-           const Standard_Real first,
-           const Standard_Real last);
-  
-  void Add(const TopoDS_Vertex& theVert,
-           const TopoDS_Face& face,
-           const Handle(BRepAdaptor_HSurface)& S);
-  
-  Standard_Boolean Update(const TopoDS_Edge& Edge,
-                          const TopoDS_Face& Face,
-                          const Handle(Geom2d_Curve)& C,
-                          const Standard_Real defedge,
-                          const Standard_Real first,
-                          const Standard_Real last);
-  
-  void InternalVertices(const Handle(BRepAdaptor_HSurface)& caro,
-                        BRepMeshCol::ListOfVertex& inter,
-                        const Standard_Real defedge,
-                        const BRepMeshCol::HClassifier& classifier);
-  
-  Standard_Real Control(const Handle(BRepAdaptor_HSurface)& caro,
-                        const Standard_Real defface,
-                        BRepMeshCol::ListOfVertex& inter,
-                        BRepMeshCol::ListOfInteger& badTri,
-                        BRepMeshCol::ListOfInteger& nulTri,
-                        BRepMesh_Delaun& trigu,
-                        const Standard_Boolean isfirst);
-  
-  void AddInShape(const TopoDS_Face& face,
-                  const Standard_Real defedge);
+private:
+
+  //! Auxiliary class used to extract geometrical parameters of TopoDS_Vertex.
+  class TopoDSVExplorer
+  {
+  public:
+    TopoDSVExplorer(
+      const TopoDS_Vertex&   theVertex,
+      const Standard_Boolean isSameUV,
+      const TopoDS_Vertex&   theSameVertex)
+      : myVertex(theVertex),
+        myIsSameUV(isSameUV),
+        mySameVertex(theSameVertex)
+    {
+    }
+
+    const TopoDS_Vertex& Vertex() const
+    {
+      return myVertex;
+    }
+
+    Standard_Boolean IsSameUV() const
+    {
+      return myIsSameUV;
+    }
+
+    const TopoDS_Vertex& SameVertex() const
+    {
+      return mySameVertex;
+    }
+
+    virtual gp_Pnt Point() const
+    {
+      return BRep_Tool::Pnt(myVertex);
+    }
+
+  private:
+
+    void operator =(const TopoDSVExplorer& /*theOther*/)
+    {
+    }
+
+  private:
+    const TopoDS_Vertex& myVertex;
+    Standard_Boolean     myIsSameUV;
+    const TopoDS_Vertex& mySameVertex;
+  };
+
+
+  //! Auxiliary class used to extract polygonal parameters of TopoDS_Vertex.
+  class PolyVExplorer : public TopoDSVExplorer
+  {
+  public:
+    PolyVExplorer(
+      const TopoDS_Vertex&      theVertex,
+      const Standard_Boolean    isSameUV,
+      const TopoDS_Vertex&      theSameVertex,
+      const Standard_Integer    theVertexIndex,
+      const TColgp_Array1OfPnt& thePolygon,
+      const TopLoc_Location&    theLoc)
+      : TopoDSVExplorer(theVertex, isSameUV, theSameVertex),
+        myVertexIndex(theVertexIndex),
+        myPolygon(thePolygon),
+        myLoc(theLoc)
+    {
+    }
+
+    virtual gp_Pnt Point() const
+    {
+      return BRepMesh_ShapeTool::UseLocation(myPolygon(myVertexIndex), myLoc);
+    }
+
+  private:
+
+    void operator =(const PolyVExplorer& /*theOther*/)
+    {
+    }
+
+  private:
+    Standard_Integer          myVertexIndex;
+    const TColgp_Array1OfPnt& myPolygon;
+    const TopLoc_Location     myLoc;
+  };
+
+  //! Structure keeps common parameters of edge
+  //! used for tessellation.
+  struct EdgeAttributes
+  {
+    TopoDS_Vertex              FirstVertex;
+    TopoDS_Vertex              LastVertex;
+
+    Standard_Real              FirstParam;
+    Standard_Real              LastParam;
+
+    gp_Pnt2d                   FirstUV;
+    gp_Pnt2d                   LastUV;
+
+    Standard_Boolean           IsSameUV;
+    Standard_Real              MinDist;
+
+    N_HANDLE<TopoDSVExplorer>  FirstVExtractor;
+    N_HANDLE<TopoDSVExplorer>  LastVExtractor;
+  };
+
+  //! Structure keeps geometrical parameters of edge's PCurve.
+  //! Used for caching.
+  struct EdgePCurve
+  {
+    Handle(Geom2d_Curve) Curve2d;
+    Standard_Real        FirstParam;
+    Standard_Real        LastParam;
+  };
+
+  //! Fills structure of by attributes of the given edge.
+  //! @return TRUE on success, FALSE elsewhere.
+  Standard_Boolean getEdgeAttributes(
+    const TopoDS_Edge&  theEdge,
+    const EdgePCurve&   thePCurve,
+    const Standard_Real theDefEdge,
+    EdgeAttributes&     theAttributes) const;
+
+  //! Registers end vertices of the edge in mesh data 
+  //! structure of currently processed face.
+  void registerEdgeVertices(
+    EdgeAttributes&   theAttributes,
+    Standard_Integer& ipf,
+    Standard_Integer& ivf, 
+    Standard_Integer& isvf,
+    Standard_Integer& ipl,
+    Standard_Integer& ivl,
+    Standard_Integer& isvl);
+
+  //! Adds tessellated representation of the given edge to
+  //! mesh data structure of currently processed face.
+  void add(const TopoDS_Edge&  theEdge,
+           const EdgePCurve&   theCurve2D,
+           const Standard_Real theEdgeDeflection);
+
+  //! Updates tessellated representation of the given edge.
+  //! If edge already has a polygon which deflection satisfies
+  //! the given value, retrieves tessellation from polygon.
+  //! Computes tessellation using edge's geometry elsewhere.
+  void update(
+    const TopoDS_Edge&          theEdge,
+    const Handle(Geom2d_Curve)& theCurve2D,
+    const Standard_Real         theEdgeDeflection,
+    EdgeAttributes&             theAttributes);
+
+  //! Adds new link to the mesh data structure.
+  //! Movability of the link and order of nodes depend on orientation parameter.
+  void addLinkToMesh(const Standard_Integer   theFirstNodeId,
+                     const Standard_Integer   theLastNodeId,
+                     const TopAbs_Orientation theOrientation);
+
+  //! Stores polygonal model of the given edge.
+  //! @param theEdge edge which polygonal model is stored.
+  //! @param thePolygon polygonal model of the edge.
+  //! @param theDeflection deflection with which polygonalization is performed.
+  //! This value is stored inside the polygon.
+  void storePolygon(
+    const TopoDS_Edge&                         theEdge,
+    Handle(Poly_PolygonOnTriangulation)&       thePolygon,
+    const Standard_Real                        theDeflection);
+
+  //! Caches polygonal model of the given edge to be used in further.
+  //! @param theEdge edge which polygonal data is stored.
+  //! @param thePolygon shared polygonal data of the edge.
+  //! @param theDeflection deflection with which polygonalization is performed.
+  //! This value is stored inside the polygon.
+  void storePolygonSharedData(
+    const TopoDS_Edge&                         theEdge,
+    Handle(Poly_PolygonOnTriangulation)&       thePolygon,
+    const Standard_Real                        theDeflection);
 
 private:
 
-  Standard_Real                             myAngle;
-  Standard_Real                             myDeflection;
-  Standard_Real                             myDtotale;
-  Standard_Boolean                          myWithShare;
-  Standard_Boolean                          myInParallel;
-  BRepMeshCol::DMapOfVertexInteger          myVertices;
-  BRepMeshCol::DMapOfShapePairOfPolygon     myEdges;
-  BRepMeshCol::DMapOfShapePairOfPolygon     myInternaledges;
-  Standard_Integer                          myNbLocat;
-  BRepMeshCol::DMapOfIntegerPnt             myLocation3d;
-  Handle_BRepMesh_DataStructureOfDelaun     myStructure;
-  BRepMeshCol::DMapOfFaceAttribute          myMapattrib;
-  TColStd_IndexedMapOfInteger               myVemap;
-  BRepMeshCol::DMapOfIntegerListOfXY        myLocation2d;
-  Standard_Boolean                          myRelative;
-  Standard_Boolean                          myShapetrigu;
-  Standard_Boolean                          myInshape;
-  BRepMesh_Status                           myFacestate;
-  TopTools_DataMapOfShapeReal               myMapdefle;
-  TopTools_ListOfShape                      myNottriangulated;
-  BRepMeshCol::Allocator                    myAllocator;
-  TopTools_MutexForShapeProvider            myMutexProvider;
+  TopoDS_Face                                         myFace;
+  Standard_Real                                       myAngle;
+  Standard_Real                                       myDeflection;
+  Standard_Real                                       myDtotale;
+  Standard_Boolean                                    myWithShare;
+  Standard_Boolean                                    myInParallel;
+  BRepMeshCol::DMapOfShapePairOfPolygon               myEdges;
+  BRepMeshCol::DMapOfFaceAttribute                    myAttributes;
+  Standard_Boolean                                    myRelative;
+  Standard_Boolean                                    myShapetrigu;
+  Standard_Boolean                                    myInshape;
+  TopTools_DataMapOfShapeReal                         myMapdefle;
+
+  // Data shared for whole shape
+  BRepMeshCol::DMapOfVertexInteger                    myBoundaryVertices;
+  BRepMeshCol::DMapOfIntegerPnt                       myBoundaryPoints;
+
+  // Fast access to attributes of current face
+  Handle(BRepMesh_FaceAttribute)                      myAttribute;
+  Handle(BRepMesh_DataStructureOfDelaun)              myStructure;
+  BRepMeshCol::HIMapOfInteger                         myVertexEdgeMap;
+  BRepMeshCol::HDMapOfShapePairOfPolygon              myInternalEdges;
+  TopTools_IndexedDataMapOfShapeListOfShape           mySharedFaces;
 };
 
 DEFINE_STANDARD_HANDLE(BRepMesh_FastDiscret, Standard_Transient)

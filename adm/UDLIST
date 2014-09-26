@@ -182,7 +182,7 @@ p TopOpeBRepBuild
 p TopOpeBRepDS
 p TopOpeBRepTool
 p TopTrans
-p XBRepMesh
+n XBRepMesh
 t TKBO
 t TKBool
 t TKFeat

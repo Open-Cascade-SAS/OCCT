@@ -36,6 +36,14 @@ BRepMesh_EdgeChecker.hxx
 BRepMesh_FaceChecker.hxx
 BRepMesh_SelectorOfDataStructureOfDelaun.hxx
 BRepMesh_SelectorOfDataStructureOfDelaun.cxx
+BRepMesh_EdgeParameterProvider.hxx
+BRepMesh_EdgeParameterProvider.cxx
+BRepMesh_IEdgeTool.hxx
+BRepMesh_IEdgeTool.cxx
+BRepMesh_EdgeTessellationExtractor.hxx
+BRepMesh_EdgeTessellationExtractor.cxx
+BRepMesh_EdgeTessellator.hxx
+BRepMesh_EdgeTessellator.cxx
 BRepMesh_FastDiscretFace.hxx
 BRepMesh_FastDiscretFace.cxx
 BRepMesh_FastDiscret.hxx

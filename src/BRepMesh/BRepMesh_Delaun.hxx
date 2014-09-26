@@ -40,18 +40,15 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Creates the triangulation with an empty Mesh data structure.
-  Standard_EXPORT BRepMesh_Delaun (BRepMeshCol::Array1OfVertexOfDelaun& theVertices,
-                                   const Standard_Boolean               isPositive = Standard_True);
+  Standard_EXPORT BRepMesh_Delaun (BRepMeshCol::Array1OfVertexOfDelaun& theVertices);
 
   //! Creates the triangulation with an existent Mesh data structure.
   Standard_EXPORT BRepMesh_Delaun (const Handle(BRepMesh_DataStructureOfDelaun)& theOldMesh,
-                                   BRepMeshCol::Array1OfVertexOfDelaun&          theVertices,
-                                   const Standard_Boolean                        isPositive = Standard_True);
+                                   BRepMeshCol::Array1OfVertexOfDelaun&          theVertices);
 
   //! Creates the triangulation with an existant Mesh data structure.
   Standard_EXPORT BRepMesh_Delaun (const Handle(BRepMesh_DataStructureOfDelaun)& theOldMesh,
-                                   BRepMeshCol::Array1OfInteger&                 theVertexIndices,
-                                   const Standard_Boolean                        isPositive = Standard_True);
+                                   BRepMeshCol::Array1OfInteger&                 theVertexIndices);
 
   //! Initializes the triangulation with an array of vertices.
   Standard_EXPORT void Init (BRepMeshCol::Array1OfVertexOfDelaun& theVertices);
@@ -307,7 +304,6 @@ private:
 private:
 
   Handle(BRepMesh_DataStructureOfDelaun) myMeshData;
-  Standard_Boolean                       myIsPositiveOrientation;
   BRepMesh_CircleTool                    myCircles;
   Standard_Integer                       mySupVert[3];
   BRepMesh_Triangle                      mySupTrian;

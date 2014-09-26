@@ -24,6 +24,8 @@
 #include <TColgp_Array1OfPnt.hxx>
 #include <Poly_Triangulation.hxx>
 #include <BRep_Builder.hxx>
+#include <TopExp.hxx>
+#include <BRepAdaptor_Curve.hxx>
 
 namespace {
   //! Auxilary struct to take a tolerance of edge.
@@ -108,7 +110,7 @@ Standard_Real BRepMesh_ShapeTool::RelativeEdgeDeflection(
     return aDefEdge;
 
   Bnd_Box aBox;
-  BRepBndLib::Add(theEdge, aBox);
+  BRepBndLib::Add(theEdge, aBox, Standard_False);
   BoxMaxDimension(aBox, aDefEdge);
             
   // Adjust resulting value in relation to the total size
@@ -126,25 +128,25 @@ Standard_Real BRepMesh_ShapeTool::RelativeEdgeDeflection(
 //purpose  : 
 //=======================================================================
 gp_XY BRepMesh_ShapeTool::FindUV(
-    const Standard_Integer                theIndexOfPnt3d,
-    const gp_Pnt2d&                       thePnt2d,
-    const TopoDS_Vertex&                  theVertex,
-    const Standard_Real                   theMinDistance,
-    const Handle(BRepMesh_FaceAttribute)& theFaceAttribute,
-    const Handle(BRepAdaptor_HSurface)&   theSurface,
-    BRepMeshCol::DMapOfIntegerListOfXY&   theLocation2dMap)
+  const Standard_Integer                theIndexOfPnt3d,
+  const gp_Pnt2d&                       thePnt2d,
+  const TopoDS_Vertex&                  theVertex,
+  const Standard_Real                   theMinDistance,
+  const Handle(BRepMesh_FaceAttribute)& theFaceAttribute)
 {
   const gp_XY& aPnt2d = thePnt2d.Coord();
-  if (!theLocation2dMap.IsBound(theIndexOfPnt3d))
+  BRepMeshCol::DMapOfIntegerListOfXY& aLocation2D =
+    theFaceAttribute->ChangeLocation2D();
+
+  if (!aLocation2D.IsBound(theIndexOfPnt3d))
   {
     BRepMeshCol::ListOfXY aPoints2d;
     aPoints2d.Append(aPnt2d);
-    theLocation2dMap.Bind(theIndexOfPnt3d, aPoints2d);
+    aLocation2D.Bind(theIndexOfPnt3d, aPoints2d);
     return aPnt2d;
   }
 
-  BRepMeshCol::ListOfXY& aPoints2d = 
-    theLocation2dMap.ChangeFind(theIndexOfPnt3d);
+  BRepMeshCol::ListOfXY& aPoints2d = aLocation2D.ChangeFind(theIndexOfPnt3d);
 
   // Find the most closest 2d point to the given one.
   gp_XY aUV;
@@ -166,23 +168,15 @@ gp_XY BRepMesh_ShapeTool::FindUV(
     Min(2. * BRep_Tool::Tolerance(theVertex), theMinDistance);
 
   // Get face limits
-  Standard_Real aDiffU, aDiffV;
-  if (theFaceAttribute.IsNull())
-  {
-    aDiffU = theSurface->LastUParameter() - theSurface->FirstUParameter();
-    aDiffV = theSurface->LastVParameter() - theSurface->FirstVParameter();
-  }
-  else
-  {
-    aDiffU = theFaceAttribute->GetUMax() - theFaceAttribute->GetUMin();
-    aDiffV = theFaceAttribute->GetVMax() - theFaceAttribute->GetVMin();
-  }
+  Standard_Real aDiffU = theFaceAttribute->GetUMax() - theFaceAttribute->GetUMin();
+  Standard_Real aDiffV = theFaceAttribute->GetVMax() - theFaceAttribute->GetVMin();
 
   const Standard_Real Utol2d = .5 * aDiffU;
   const Standard_Real Vtol2d = .5 * aDiffV;
 
-  const gp_Pnt aPnt1 = theSurface->Value(   aUV.X(),    aUV.Y());
-  const gp_Pnt aPnt2 = theSurface->Value(aPnt2d.X(), aPnt2d.Y());
+  const Handle(BRepAdaptor_HSurface)& aSurface = theFaceAttribute->Surface();
+  const gp_Pnt aPnt1 = aSurface->Value(aUV.X(), aUV.Y());
+  const gp_Pnt aPnt2 = aSurface->Value(aPnt2d.X(), aPnt2d.Y());
 
   //! If selected point is too far from the given one in parametric space
   //! or their positions in 3d are different, add the given point as unique.
@@ -271,4 +265,66 @@ void BRepMesh_ShapeTool::UpdateEdge(
   BRep_Builder aBuilder;
   aBuilder.UpdateEdge(theEdge, thePolygon1, thePolygon2, 
     theTriangulation, theLocation);
+}
+
+//=======================================================================
+//function : UseLocation
+//purpose  : 
+//=======================================================================
+gp_Pnt BRepMesh_ShapeTool::UseLocation(const gp_Pnt&          thePnt,
+                                       const TopLoc_Location& theLoc)
+{
+  if (theLoc.IsIdentity())
+    return thePnt;
+
+  return thePnt.Transformed(theLoc.Transformation());
+}
+
+//=======================================================================
+//function : IsDegenerated
+//purpose  : 
+//=======================================================================
+Standard_Boolean BRepMesh_ShapeTool::IsDegenerated(
+  const TopoDS_Edge& theEdge,
+  const TopoDS_Face& theFace)
+{
+  // Get vertices
+  TopoDS_Vertex pBegin, pEnd;
+  TopExp::Vertices(theEdge, pBegin, pEnd);
+  if (pBegin.IsNull() || pEnd.IsNull())
+    return Standard_True;
+
+  if (BRep_Tool::Degenerated(theEdge))
+    return Standard_True;
+
+  if (!pBegin.IsSame(pEnd))
+    return Standard_False;
+
+  Standard_Real wFirst, wLast;
+  BRep_Tool::Range(theEdge, theFace, wFirst, wLast);
+
+  // calculation of the length of the edge in 3D
+  Standard_Real longueur = 0.0;
+  Standard_Real du = (wLast - wFirst) * 0.05;
+  gp_Pnt P1, P2;
+  BRepAdaptor_Curve BC(theEdge);
+  BC.D0(wFirst, P1);
+  Standard_Real tolV = BRep_Tool::Tolerance(pBegin);
+  Standard_Real tolV2 = 1.2 * tolV;
+
+  for (Standard_Integer l = 1; l <= 20; ++l)
+  {
+    BC.D0(wFirst + l * du, P2);
+    longueur += P1.Distance(P2);
+
+    if (longueur > tolV2)
+      break;
+
+    P1 = P2;
+  }
+
+  if (longueur < tolV2)
+    return Standard_True;
+
+  return Standard_False;
 }

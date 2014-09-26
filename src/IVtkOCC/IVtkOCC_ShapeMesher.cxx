@@ -21,7 +21,6 @@
 #include <BRepBndLib.hxx>
 #include <BRepMesh_DiscretFactory.hxx>
 #include <BRepMesh_DiscretRoot.hxx>
-#include <BRepMesh_PDiscretRoot.hxx>
 #include <BRepTools.hxx>
 #include <Hatch_Hatcher.hxx>
 #include <GCPnts_QuasiUniformDeflection.hxx>

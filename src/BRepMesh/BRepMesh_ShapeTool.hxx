@@ -43,18 +43,18 @@ public:
 
   //! Gets the maximum dimension of the given bounding box.
   //! If the given bounding box is void leaves the resulting value unchanged.
-  //! \param theBox bounding box to be processed.
-  //! \param theMaxDimension maximum dimension of the given box.
+  //! @param theBox bounding box to be processed.
+  //! @param theMaxDimension maximum dimension of the given box.
   Standard_EXPORT static void BoxMaxDimension(const Bnd_Box& theBox,
                                               Standard_Real& theMaxDimension);
 
   //! Returns relative deflection for edge with respect to shape size.
-  //! \param theEdge edge for which relative deflection should be computed.
-  //! \param theDeflection absolute deflection.
-  //! \param theMaxShapeSize maximum size of a shape.
-  //! \param theAdjustmentCoefficient coefficient of adjustment between maximum 
+  //! @param theEdge edge for which relative deflection should be computed.
+  //! @param theDeflection absolute deflection.
+  //! @param theMaxShapeSize maximum size of a shape.
+  //! @param theAdjustmentCoefficient coefficient of adjustment between maximum 
   //! size of shape and calculated relative deflection.
-  //! \return relative deflection for the edge.
+  //! @return relative deflection for the edge.
   Standard_EXPORT static Standard_Real RelativeEdgeDeflection(
     const TopoDS_Edge&  theEdge,
     const Standard_Real theDeflection,
@@ -63,24 +63,21 @@ public:
 
   //! Checks 2d representations of 3d point with the 
   //! given index for equality to avoid duplications.
-  //! \param theIndexOfPnt3d index of 3d point with which 2d 
+  //! @param theIndexOfPnt3d index of 3d point with which 2d 
   //! representation should be associated.
-  //! \param thePnt2d 2d representation of the point with the 
+  //! @param thePnt2d 2d representation of the point with the 
   //! given index.
-  //! \param theVertex vertex corresponded to 3d point with the 
+  //! @param theVertex vertex corresponded to 3d point with the 
   //! given index. Used to extract vertex tolerance in 3d space.
-  //! \param theMinDistance minimum distance between vertices 
+  //! @param theMinDistance minimum distance between vertices 
   //! regarding which they could be treated as distinct ones.
   //! This value is defined by mesher using parameters given by
   //! user in connection with shape metrics.
-  //! \param theFaceAttribute attributes contining data calculated
+  //! @param theFaceAttribute attributes contining data calculated
   //! according to face geomtry and define limits of face in parametric 
   //! space. If defined, will be used instead of surface parameter.
-  //! \param theSurface surface within which parametric space 
-  //! the 2d point is defined. Supposed to be used in case if face
-  //! attributes are not defined by the moment of method invocation.
-  //! \param theLocation2dMap map of 2d representations of 3d points.
-  //! \return given 2d point in case if 3d poind does not alredy have 
+  //! @param theLocation2dMap map of 2d representations of 3d points.
+  //! @return given 2d point in case if 3d poind does not alredy have 
   //! the similar representation, otherwice 2d point corresponding to 
   //! existing representation will be returned.
   Standard_EXPORT static gp_XY FindUV(
@@ -88,35 +85,33 @@ public:
     const gp_Pnt2d&                       thePnt2d,
     const TopoDS_Vertex&                  theVertex,
     const Standard_Real                   theMinDistance,
-    const Handle(BRepMesh_FaceAttribute)& theFaceAttribute,
-    const Handle(BRepAdaptor_HSurface)&   theSurface,
-    BRepMeshCol::DMapOfIntegerListOfXY&   theLocation2dMap);
+    const Handle(BRepMesh_FaceAttribute)& theFaceAttribute);
 
   //! Stores the given triangulation into the given face.
-  //! \param theFace face to be updated by triangulation.
-  //! \param theTriangulation triangulation to be stored into the face.
+  //! @param theFace face to be updated by triangulation.
+  //! @param theTriangulation triangulation to be stored into the face.
   Standard_EXPORT static void AddInFace(
     const TopoDS_Face&          theFace,
     Handle(Poly_Triangulation)& theTriangulation);
 
   //! Nullifies triangulation stored in the face.
-  //! \param theFace face to be updated by null triangulation.
+  //! @param theFace face to be updated by null triangulation.
   Standard_EXPORT static void NullifyFace(const TopoDS_Face& theFace);
 
   //! Nullifies polygon on triangulation stored in the edge.
-  //! \param theEdge edge to be updated by null polygon.
-  //! \param theTriangulation triangulation the given edge is associated to.
-  //! \param theLocation face location.
+  //! @param theEdge edge to be updated by null polygon.
+  //! @param theTriangulation triangulation the given edge is associated to.
+  //! @param theLocation face location.
   Standard_EXPORT static void NullifyEdge(
     const TopoDS_Edge&                theEdge,
     const Handle(Poly_Triangulation)& theTriangulation,
     const TopLoc_Location&            theLocation);
 
   //! Updates the given edge by the given tessellated representation.
-  //! \param theEdge edge to be updated.
-  //! \param thePolygon tessellated representation of the edge to be stored.
-  //! \param theTriangulation triangulation the given edge is associated to.
-  //! \param theLocation face location.
+  //! @param theEdge edge to be updated.
+  //! @param thePolygon tessellated representation of the edge to be stored.
+  //! @param theTriangulation triangulation the given edge is associated to.
+  //! @param theLocation face location.
   Standard_EXPORT static void UpdateEdge(
     const TopoDS_Edge&                         theEdge,
     const Handle(Poly_PolygonOnTriangulation)& thePolygon,
@@ -124,19 +119,34 @@ public:
     const TopLoc_Location&                     theLocation);
 
   //! Updates the given seam edge by the given tessellated representations.
-  //! \param theEdge edge to be updated.
-  //! \param thePolygon1 tessellated representation corresponding to
+  //! @param theEdge edge to be updated.
+  //! @param thePolygon1 tessellated representation corresponding to
   //! forward direction of the seam edge.
-  //! \param thePolygon2 tessellated representation corresponding to
+  //! @param thePolygon2 tessellated representation corresponding to
   //! reversed direction of the seam edge.
-  //! \param theTriangulation triangulation the given edge is associated to.
-  //! \param theLocation face location.
+  //! @param theTriangulation triangulation the given edge is associated to.
+  //! @param theLocation face location.
   Standard_EXPORT static void UpdateEdge(
     const TopoDS_Edge&                         theEdge,
     const Handle(Poly_PolygonOnTriangulation)& thePolygon1,
     const Handle(Poly_PolygonOnTriangulation)& thePolygon2,
     const Handle(Poly_Triangulation)&          theTriangulation,
     const TopLoc_Location&                     theLocation);
+
+  //! Applies location to the given point and return result.
+  //! @param thePnt point to be transformed.
+  //! @param theLoc location to be applied.
+  Standard_EXPORT static gp_Pnt UseLocation(const gp_Pnt&          thePnt,
+                                            const TopLoc_Location& theLoc);
+
+  //! Checks is the given edge degenerated.
+  //! Checks geometrical parameters in case if IsDegenerated flag is not set.
+  //! @param theEdge edge to be checked.
+  //! @param theFace face within which parametric space edge will be checked
+  //! for geometrical degenerativity.
+  Standard_EXPORT static Standard_Boolean IsDegenerated(
+    const TopoDS_Edge& theEdge,
+    const TopoDS_Face& theFace);
 };
 
 #endif

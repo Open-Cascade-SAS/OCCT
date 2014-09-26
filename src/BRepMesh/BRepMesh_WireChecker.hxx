@@ -87,8 +87,8 @@ public:
   Standard_EXPORT BRepMesh_WireChecker(
     const TopoDS_Face&                            theFace,
     const Standard_Real                           theTolUV,
-    const BRepMeshCol::DMapOfShapePairOfPolygon&  theEdges,
-    const TColStd_IndexedMapOfInteger&            theVertexMap,
+    const BRepMeshCol::HDMapOfShapePairOfPolygon& theEdges,
+    const BRepMeshCol::HIMapOfInteger&            theVertexMap,
     const Handle(BRepMesh_DataStructureOfDelaun)& theStructure,
     const Standard_Real                           theUmin,
     const Standard_Real                           theUmax,
@@ -129,8 +129,8 @@ private:
 private:
 
   const Standard_Real                           myTolUV;
-  const BRepMeshCol::DMapOfShapePairOfPolygon&  myEdges;
-  const TColStd_IndexedMapOfInteger&            myVertexMap;
+  const BRepMeshCol::HDMapOfShapePairOfPolygon& myEdges;
+  const BRepMeshCol::HIMapOfInteger&            myVertexMap;
   const Handle(BRepMesh_DataStructureOfDelaun)& myStructure;
   const Standard_Real                           myUmin;
   const Standard_Real                           myUmax;

@@ -40,6 +40,7 @@
 #include <BRepMesh_Circle.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <Handle_Poly_Triangulation.hxx>
+#include <TopoDS_Face.hxx>
 
 #include <vector>
 
@@ -48,7 +49,6 @@ class TopoDS_Shape;
 class TopoDS_Face;
 class TopoDS_Edge;
 class TopoDS_Vertex;
-class BRepMesh_FaceAttribute;
 class Handle_BRepMesh_FaceAttribute;
 class BRepMesh_VertexInspector;
 class BRepMesh_CircleInspector;
@@ -132,6 +132,9 @@ namespace BRepMeshCol
 
   //! Handles
   typedef N_HANDLE<MapOfInteger>                                                HMapOfInteger;
+  typedef N_HANDLE<IMapOfInteger>                                               HIMapOfInteger;
+  typedef N_HANDLE<DMapOfShapePairOfPolygon>                                    HDMapOfShapePairOfPolygon;
+  typedef N_HANDLE<DMapOfIntegerPnt>                                            HDMapOfIntegerPnt;
   typedef N_HANDLE<BRepMesh_Classifier>                                         HClassifier;
   typedef N_HANDLE<BndBox2dTree>                                                HBndBox2dTree;
   typedef N_HANDLE<Array1OfSegments>                                            HArray1OfSegments;

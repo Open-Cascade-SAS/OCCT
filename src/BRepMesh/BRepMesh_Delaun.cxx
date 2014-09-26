@@ -75,10 +75,9 @@ namespace {
 //function : BRepMesh_Delaun
 //purpose  : Creates the triangulation with an empty Mesh data structure
 //=======================================================================
-BRepMesh_Delaun::BRepMesh_Delaun( BRepMeshCol::Array1OfVertexOfDelaun& theVertices,
-                                  const Standard_Boolean               isPositive )
-: myIsPositiveOrientation( isPositive ),
-  myCircles( theVertices.Length(), new NCollection_IncAllocator() )
+BRepMesh_Delaun::BRepMesh_Delaun(
+  BRepMeshCol::Array1OfVertexOfDelaun& theVertices)
+: myCircles( theVertices.Length(), new NCollection_IncAllocator() )
 {
   if ( theVertices.Length() > 2 )
   {
@@ -92,11 +91,10 @@ BRepMesh_Delaun::BRepMesh_Delaun( BRepMeshCol::Array1OfVertexOfDelaun& theVertic
 //function : BRepMesh_Delaun
 //purpose  : Creates the triangulation with and existent Mesh data structure
 //=======================================================================
-BRepMesh_Delaun::BRepMesh_Delaun( const Handle( BRepMesh_DataStructureOfDelaun )& theOldMesh,
-                                  BRepMeshCol::Array1OfVertexOfDelaun&            theVertices,
-                                  const Standard_Boolean                          isPositive )
- : myIsPositiveOrientation( isPositive ),
-   myCircles( theVertices.Length(), theOldMesh->Allocator() )
+BRepMesh_Delaun::BRepMesh_Delaun(
+  const Handle( BRepMesh_DataStructureOfDelaun )& theOldMesh,
+  BRepMeshCol::Array1OfVertexOfDelaun&            theVertices)
+ : myCircles( theVertices.Length(), theOldMesh->Allocator() )
 {
   myMeshData = theOldMesh;
   if ( theVertices.Length() > 2 )
@@ -107,11 +105,10 @@ BRepMesh_Delaun::BRepMesh_Delaun( const Handle( BRepMesh_DataStructureOfDelaun )
 //function : BRepMesh_Delaun
 //purpose  : Creates the triangulation with and existent Mesh data structure
 //=======================================================================
-BRepMesh_Delaun::BRepMesh_Delaun( const Handle( BRepMesh_DataStructureOfDelaun )& theOldMesh, 
-                                  BRepMeshCol::Array1OfInteger&                   theVertexIndices,
-                                  const Standard_Boolean                          isPositive )
- : myIsPositiveOrientation( isPositive ),
-   myCircles( theVertexIndices.Length(), theOldMesh->Allocator() )
+BRepMesh_Delaun::BRepMesh_Delaun(
+  const Handle( BRepMesh_DataStructureOfDelaun )& theOldMesh, 
+  BRepMeshCol::Array1OfInteger&                   theVertexIndices)
+ : myCircles( theVertexIndices.Length(), theOldMesh->Allocator() )
 {
   myMeshData = theOldMesh;
   if ( theVertexIndices.Length() > 2 )
@@ -198,14 +195,6 @@ void BRepMesh_Delaun::superMesh( const Bnd_Box2d& theBox )
     
   mySupVert[2] = myMeshData->AddNode(
     BRepMesh_Vertex( aMaxX + aDelta, aMinY - aDeltaMin, BRepMesh_Free ) );
-
-  if ( !myIsPositiveOrientation )
-  {
-    Standard_Integer aTmp;
-    aTmp         = mySupVert[1];
-    mySupVert[1] = mySupVert[2];
-    mySupVert[2] = aTmp;
-  }
 
   Standard_Integer e[3];
   Standard_Boolean o[3];
@@ -354,13 +343,6 @@ void BRepMesh_Delaun::createTriangles ( const Standard_Integer            theVer
       continue;
     }
 
-    Standard_Boolean isSensOK;
-    if ( myIsPositiveOrientation )
-      isSensOK = ( aDist12 > 0. && aDist23 > 0.);
-    else
-      isSensOK = ( aDist12 < 0. && aDist23 < 0.);
-    
-
     BRepMesh_Edge aFirstLink( aNodes[1], aNodes[0], BRepMesh_Free );
     BRepMesh_Edge aLastLink ( aNodes[2], aNodes[1], BRepMesh_Free );
 
@@ -369,7 +351,8 @@ void BRepMesh_Delaun::createTriangles ( const Standard_Integer            theVer
       isPositive ? anEdgeId : -anEdgeId,
       myMeshData->AddLink( aLastLink ) };
 
-    if ( isSensOK )
+    Standard_Boolean isSensOK = (aDist12 > 0. && aDist23 > 0.);
+    if (isSensOK)
     {
       Standard_Integer anEdges[3];
       Standard_Boolean anEdgesOri[3];
@@ -935,8 +918,7 @@ Standard_Integer BRepMesh_Delaun::findNextPolygonLink(
 {
   // Find the next link having the greatest angle 
   // respect to a direction of a reference one
-  Standard_Real aMaxAngle = myIsPositiveOrientation ?
-    RealFirst() : RealLast();
+  Standard_Real aMaxAngle = RealFirst();
 
   Standard_Integer aNextLinkId = 0;
   BRepMeshCol::ListOfInteger::Iterator aLinkIt( myMeshData->LinksConnectedTo( thePivotNode ) );
@@ -996,11 +978,8 @@ Standard_Integer BRepMesh_Delaun::findNextPolygonLink(
       }
     }
 
-    if ( ( myIsPositiveOrientation && anAngle <= aMaxAngle ) ||
-         (!myIsPositiveOrientation && anAngle >= aMaxAngle ) )
-    {
+    if (anAngle <= aMaxAngle)
       continue;
-    }
 
     Standard_Boolean isCheckEndPoints = ( anOtherNode != theFirstNode );
 
@@ -1802,12 +1781,8 @@ void BRepMesh_Delaun::meshSimplePolygon( BRepMeshCol::SequenceOfInteger& thePoly
     Standard_Real aDist     = aRefEdgeDir ^ aDistanceDir;
     Standard_Real aAngle    = Abs( aRefEdgeDir.Angle(aDistanceDir) );
     Standard_Real anAbsDist = Abs( aDist );
-    if ( ( anAbsDist < Precision                 ) ||
-         ( myIsPositiveOrientation && aDist < 0. ) ||
-         (!myIsPositiveOrientation && aDist > 0. ) )
-    {
+    if (anAbsDist < Precision || aDist < 0.)
       continue;
-    }
 
     if ( ( anAbsDist >= aMinDist                             ) &&
          ( aAngle <= aOptAngle || aAngle > AngDeviation90Deg ) )

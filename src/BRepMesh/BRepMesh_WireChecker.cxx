@@ -22,7 +22,7 @@
 #include <BRepTools_WireExplorer.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Iterator.hxx>
+#include <TopExp_Explorer.hxx>
 #include <Poly_PolygonOnTriangulation.hxx>
 #include <BRepMesh_PairOfPolygon.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
@@ -129,8 +129,8 @@ Standard_Integer BRepMesh_WireChecker::BndBox2dTreeSelector::IndicesNb() const
 BRepMesh_WireChecker::BRepMesh_WireChecker(
   const TopoDS_Face&                            theFace,
   const Standard_Real                           theTolUV,
-  const BRepMeshCol::DMapOfShapePairOfPolygon&  theEdges,
-  const TColStd_IndexedMapOfInteger&            theVertexMap,
+  const BRepMeshCol::HDMapOfShapePairOfPolygon& theEdges,
+  const BRepMeshCol::HIMapOfInteger&            theVertexMap,
   const Handle(BRepMesh_DataStructureOfDelaun)& theStructure,
   const Standard_Real                           theUmin,
   const Standard_Real                           theUmax,
@@ -151,18 +151,16 @@ BRepMesh_WireChecker::BRepMesh_WireChecker(
   TopoDS_Face aFace = theFace;
   aFace.Orientation(TopAbs_FORWARD);
 
-  TopoDS_Iterator aFaceExplorer(aFace);
+  TopExp_Explorer aFaceExplorer(aFace, TopAbs_WIRE);
   for (; aFaceExplorer.More(); aFaceExplorer.Next())
   {
-    const TopoDS_Shape& aWire = aFaceExplorer.Value();
-    if (aWire.ShapeType() != TopAbs_WIRE)
-      continue;
+    const TopoDS_Wire& aWire = TopoDS::Wire(aFaceExplorer.Current());
 
     myWiresEdges.push_back(ListOfEdges());
     ListOfEdges& aEdges = myWiresEdges.back();
 
     // Start traversing the wires
-    BRepTools_WireExplorer aWireExplorer(TopoDS::Wire(aWire), aFace);
+    BRepTools_WireExplorer aWireExplorer(aWire, aFace);
     for (; aWireExplorer.More(); aWireExplorer.Next())
     {
       const TopoDS_Edge& aEdge   = aWireExplorer.Current();
@@ -264,13 +262,13 @@ Standard_Boolean BRepMesh_WireChecker::collectDiscretizedWires(
     {
       const TopoDS_Edge& aEdge   = aEdgeIt.Value();
       TopAbs_Orientation aOrient = aEdge.Orientation();
-      if (!myEdges.IsBound(aEdge))
+      if (!myEdges->IsBound(aEdge))
         continue;
 
       // Retrieve polygon
       // Define the direction for adding points to aSeqPnt2d
       Standard_Integer aStartId, aEndId, aIncrement;
-      const BRepMesh_PairOfPolygon& aPair = myEdges.Find(aEdge);
+      const BRepMesh_PairOfPolygon& aPair = myEdges->Find(aEdge);
       Handle(Poly_PolygonOnTriangulation) aNOD;
       if (aOrient == TopAbs_FORWARD)
       {
@@ -288,8 +286,8 @@ Standard_Boolean BRepMesh_WireChecker::collectDiscretizedWires(
       }
 
       const TColStd_Array1OfInteger& aIndices = aNOD->Nodes();
-      const Standard_Integer aFirstVertexId = myVertexMap.FindKey(aIndices(aStartId));
-      const Standard_Integer aLastVertexId  = myVertexMap.FindKey(aIndices(aEndId)  );
+      const Standard_Integer aFirstVertexId = myVertexMap->FindKey(aIndices(aStartId));
+      const Standard_Integer aLastVertexId  = myVertexMap->FindKey(aIndices(aEndId)  );
 
       if (aFirstVertexId == aLastVertexId && (aEndId - aStartId) == aIncrement)
       {
@@ -320,7 +318,7 @@ Standard_Boolean BRepMesh_WireChecker::collectDiscretizedWires(
       {
         Standard_Integer aIndex = ((i == aStartId) ? 
           aFirstVertexId : 
-          myVertexMap.FindKey(aIndices(i)));
+          myVertexMap->FindKey(aIndices(i)));
 
         aSeqPnt2d.Append(gp_Pnt2d(myStructure->GetNode(aIndex).Coord()));
       }

@@ -20,9 +20,7 @@
 #include <BRepMesh_FastDiscret.hxx>
 #include <TopTools_MapOfShape.hxx>
 #include <TopTools_DataMapOfShapeReal.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <BRepMesh_DiscretRoot.hxx>
-#include <BRepMesh_PDiscretRoot.hxx>
 #include <Handle_Poly_Triangulation.hxx>
 #include <BRepMesh_Collections.hxx>
 
@@ -116,7 +114,7 @@ public: //! \name plugin API
   Standard_EXPORT static Standard_Integer Discret(const TopoDS_Shape&    theShape,
                                                   const Standard_Real    theLinDeflection,
                                                   const Standard_Real    theAngDeflection,
-                                                  BRepMesh_PDiscretRoot& theAlgo);
+                                                  BRepMesh_DiscretRoot* &theAlgo);
   
   //! Returns multi-threading usage flag set by default in 
   //! Discret() static method (thus applied only to Mesh Factories).
@@ -126,6 +124,11 @@ public: //! \name plugin API
   //! Discret() static method (thus applied only to Mesh Factories).
   Standard_EXPORT static void SetParallelDefault(const Standard_Boolean isInParallel);
 
+  //! Returns mesh tool storing mesh data.
+  inline const Handle(BRepMesh_FastDiscret)& Mesh() const
+  {
+    return myMesh;
+  }
 
   DEFINE_STANDARD_RTTI(BRepMesh_IncrementalMesh)
 
@@ -183,18 +186,23 @@ private:
   Standard_Boolean toBeMeshed(const TopoDS_Face&     theFace,
                               const Standard_Boolean isWithCheck);
 
+  //! Stores mesh to the shape.
+  void commit();
+
+  //! Stores mesh to the face.
+  void commitFace(const TopoDS_Face& theFace);
+
 protected:
 
-  Standard_Boolean                            myRelative;
-  Standard_Boolean                            myInParallel;
-  BRepMeshCol::DMapOfEdgeListOfTriangulation  myEmptyEdges;
-  Handle(BRepMesh_FastDiscret)                myMesher;
-  Standard_Boolean                            myModified;
-  TopTools_DataMapOfShapeReal                 myEdgeDeflection;
-  TopTools_IndexedDataMapOfShapeListOfShape   mySharedFaces;
-  Standard_Real                               myMaxShapeSize;
-  Standard_Integer                            myStatus;
-  std::vector<TopoDS_Face>                    myFaces;
+  Standard_Boolean                                    myRelative;
+  Standard_Boolean                                    myInParallel;
+  BRepMeshCol::DMapOfEdgeListOfTriangulation          myEmptyEdges;
+  Handle(BRepMesh_FastDiscret)                        myMesh;
+  Standard_Boolean                                    myModified;
+  TopTools_DataMapOfShapeReal                         myEdgeDeflection;
+  Standard_Real                                       myMaxShapeSize;
+  Standard_Integer                                    myStatus;
+  std::vector<TopoDS_Face>                            myFaces;
 };
 
 DEFINE_STANDARD_HANDLE(BRepMesh_IncrementalMesh,BRepMesh_DiscretRoot)

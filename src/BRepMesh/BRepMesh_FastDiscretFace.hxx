@@ -26,6 +26,8 @@
 #include <Handle_Poly_Triangulation.hxx>
 #include <BRepMesh_Delaun.hxx>
 #include <BRepMesh_Triangle.hxx>
+#include <BRepMesh_Classifier.hxx>
+#include <ElSLib.hxx>
 
 class BRepMesh_DataStructureOfDelaun;
 class BRepMesh_FaceAttribute;
@@ -43,83 +45,113 @@ class BRepMesh_Vertex;
 class gp_Pnt;
 
 //! Algorithm to mesh a face with respect of the frontier 
-//! the deflection and by option the shared components. <br>
+//! the deflection and by option the shared components.
 class BRepMesh_FastDiscretFace : public Standard_Transient 
 {
 public:
 
-  
+
   Standard_EXPORT BRepMesh_FastDiscretFace(const Standard_Real theAngle,
                                            const Standard_Boolean theWithShare = Standard_True);
-  
-  Standard_EXPORT void Add(const TopoDS_Face& theFace,
-                           const Handle(BRepMesh_FaceAttribute)& theAttrib,
-                           const TopTools_DataMapOfShapeReal& theMapDefle,
-                           const TopTools_MutexForShapeProvider& theMutexProvider);
-  
-  Standard_EXPORT Standard_Real Control(const Handle(BRepAdaptor_HSurface)& theCaro,
-                                        const Standard_Real theDefFace,
-                                        BRepMeshCol::ListOfVertex& theInternalV,
-                                        BRepMeshCol::ListOfInteger& theBadTriangles,
-                                        BRepMeshCol::ListOfInteger& theNulTriangles,
-                                        BRepMesh_Delaun& theTrigu,
-                                        const Standard_Boolean theIsFirst);
+
+  Standard_EXPORT void Add(const Handle(BRepMesh_FaceAttribute)& theAttribute);
 
   //! Gives the triangle of <Index>. <br>
   Standard_EXPORT const BRepMesh_Triangle& Triangle(const Standard_Integer theIndex) const;
 
-  //! Gives the edge of index <Index>. <br>
-  Standard_EXPORT const BRepMesh_Edge& Edge(const Standard_Integer theIndex) const;
-
-  //! Gives the vertex of <Index>. <br>
-  Standard_EXPORT const BRepMesh_Vertex& Vertex(const Standard_Integer theIndex) const;
-
-  //! Gives the location3d of the vertex of <Index>. <br>
-  Standard_EXPORT const gp_Pnt& Pnt(const Standard_Integer theIndex) const;
-
   DEFINE_STANDARD_RTTI(BRepMesh_FastDiscretFace)
 
-protected:
- 
-  Standard_Boolean RestoreStructureFromTriangulation(const TopoDS_Edge& theEdge,
-                                                     const TopoDS_Face& theFace,
-                                                     const Handle(BRepAdaptor_HSurface)& theSurf,
-                                                     const Handle(Poly_Triangulation)& theTrigu,
-                                                     const Standard_Real theDefEdge,
-                                                     const TopLoc_Location& theLoc,
-                                                     const TopTools_MutexForShapeProvider& theMutexProvider);
+private:
 
-private: 
+  void add(const TopoDS_Vertex& theVertex);
+
+  Standard_Real control(BRepMeshCol::ListOfVertex&  theNewVertices,
+                        BRepMesh_Delaun&            theMeshBuilder,
+                        const Standard_Boolean      theIsFirst);
+
+  //! Registers the given nodes in mesh data structure and
+  //! performs refinement of existing mesh.
+  //! @param theVertices nodes to be inserted.
+  //! @param theMeshBuilder initialized tool refining mesh 
+  //! in respect to inserting nodes.
+  //! @return TRUE if vertices were been inserted, FALSE elewhere.
+  Standard_Boolean addVerticesToMesh(
+    const BRepMeshCol::ListOfVertex& theVertices,
+    BRepMesh_Delaun&                 theMeshBuilder);
+
+  //! Calculates nodes lying on face's surface and inserts them to a mesh.
+  //! @param theNewVertices list of vertices to be extended and added to mesh.
+  //! @param theMeshBuilder initialized tool refining mesh 
+  //! in respect to inserting nodes.
+  void insertInternalVertices(BRepMeshCol::ListOfVertex&  theNewVertices,
+                              BRepMesh_Delaun&            theMeshBuilder);
+
+  //! Calculates nodes lying on spherical surface.
+  //! @param theNewVertices list of vertices to be extended and added to mesh.
+  void insertInternalVerticesSphere(BRepMeshCol::ListOfVertex& theNewVertices);
+
+  //! Calculates nodes lying on cylindrical surface.
+  //! @param theNewVertices list of vertices to be extended and added to mesh.
+  void insertInternalVerticesCylinder(BRepMeshCol::ListOfVertex& theNewVertices);
+
+  //! Calculates nodes lying on conical surface.
+  //! @param theNewVertices list of vertices to be extended and added to mesh.
+  void insertInternalVerticesCone(BRepMeshCol::ListOfVertex& theNewVertices);
+
+  //! Calculates nodes lying on toroidal surface.
+  //! @param theNewVertices list of vertices to be extended and added to mesh.
+  void insertInternalVerticesTorus(BRepMeshCol::ListOfVertex& theNewVertices);
+
+  //! Calculates nodes lying on Bezier/BSpline surface.
+  //! @param theNewVertices list of vertices to be extended and added to mesh.
+  void insertInternalVerticesBSpline(BRepMeshCol::ListOfVertex& theNewVertices);
+
+  //! Calculates nodes lying on custom-type surface.
+  //! @param theNewVertices list of vertices to be extended and added to mesh.
+  void insertInternalVerticesOther(BRepMeshCol::ListOfVertex& theNewVertices);
   
-  void Add(const TopoDS_Vertex& theVert,
-           const TopoDS_Face& theFace,
-           const Handle(BRepAdaptor_HSurface)& theSFace);
-  
-  void InternalVertices(const Handle(BRepAdaptor_HSurface)& theCaro,
-                        BRepMeshCol::ListOfVertex& theInternalV,
-                        const Standard_Real theDefFace,
-                        const BRepMeshCol::HClassifier& theClassifier);
-  
-  void AddInShape(const TopoDS_Face& theFace,
-                  const Standard_Real theDefFace,
-                  const TopTools_MutexForShapeProvider& theMutexProvider);
+  //! Template method trying to insert new internal vertex corresponded to
+  //! the given 2d point. Calculates 3d position analytically using the given
+  //! surface.
+  //! @param thePnt2d 2d point to be inserted to the list.
+  //! @param theAnalyticSurface analytic surface to calculate 3d point.
+  //! @param[out] theVertices list of vertices to be updated.
+  template<class AnalyticSurface>
+  void tryToInsertAnalyticVertex(const gp_Pnt2d&            thePnt2d,
+                                 const AnalyticSurface&     theAnalyticSurface,
+                                 BRepMeshCol::ListOfVertex& theVertices)
+  {
+    if (!myClassifier->Perform(thePnt2d) == TopAbs_IN)
+      return;
+
+    gp_Pnt aPnt;
+    ElSLib::D0(thePnt2d.X(), thePnt2d.Y(), theAnalyticSurface, aPnt);
+    insertVertex(aPnt, thePnt2d.Coord(), theVertices);
+  }
+
+  //! Creates new vertex with the given parameters.
+  //! @param thePnt3d 3d point corresponded to the vertex.
+  //! @param theUV UV point corresponded to the vertex.
+  //! @param[out] theVertices list of vertices to be updated.
+  void insertVertex(const gp_Pnt&              thePnt3d,
+                    const gp_XY&               theUV,
+                    BRepMeshCol::ListOfVertex& theVertices);
 
 private:
+
   Standard_Real                             myAngle;
   Standard_Boolean                          myWithShare;
-  BRepMeshCol::DMapOfVertexInteger          myVertices;
-  BRepMeshCol::DMapOfShapePairOfPolygon     myInternaledges;
-  Standard_Integer                          myNbLocat;
-  BRepMeshCol::DMapOfIntegerPnt             myLocation3d;
-  Handle_BRepMesh_DataStructureOfDelaun     myStructure;
-  BRepMeshCol::ListOfVertex                 myListver;
-  BRepMeshCol::IMapOfInteger                myVemap;
-  BRepMeshCol::DMapOfIntegerListOfXY        myLocation2d;
-  Handle_BRepMesh_FaceAttribute             myAttrib;
   Standard_Boolean                          myInternalVerticesMode;
   BRepMeshCol::IMapOfReal                   myUParam;
   BRepMeshCol::IMapOfReal                   myVParam;
   BRepMeshCol::Allocator                    myAllocator;
+
+  // Fast access to attributes of current face
+  Handle(BRepMesh_FaceAttribute)            myAttribute;
+  Handle(BRepMesh_DataStructureOfDelaun)    myStructure;
+  BRepMeshCol::HIMapOfInteger               myVertexEdgeMap;
+  BRepMeshCol::HClassifier                  myClassifier;
+  BRepMeshCol::HDMapOfIntegerPnt            mySurfacePoints;
 };
 
 DEFINE_STANDARD_HANDLE (BRepMesh_FastDiscretFace, Standard_Transient)

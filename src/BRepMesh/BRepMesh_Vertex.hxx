@@ -110,8 +110,8 @@ public:
   //! \return TRUE if equal, FALSE if not.
   Standard_EXPORT Standard_Boolean IsEqual(const BRepMesh_Vertex& theOther) const
   {
-    if (myMovability          != BRepMesh_Deleted || 
-        theOther.myMovability != BRepMesh_Deleted)
+    if (myMovability          == BRepMesh_Deleted || 
+        theOther.myMovability == BRepMesh_Deleted)
     {
       return Standard_False;
     }
