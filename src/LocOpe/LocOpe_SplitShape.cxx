@@ -15,7 +15,7 @@
 // commercial license or contractual agreement.
 
 #include <LocOpe_SplitShape.ixx>
-
+#include <TopTools_IndexedMapOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
@@ -60,10 +60,16 @@ static Standard_Boolean IsInside(const TopoDS_Face&,
 static Standard_Boolean IsInside(const TopoDS_Face&,
                                  const TopoDS_Wire&);
 
+static void GetDirection(const TopoDS_Edge&,
+                         const TopoDS_Face&,
+                         Standard_Real&,
+                         gp_Pnt2d&,
+                         gp_Vec2d&);
+
 static void ChoixUV(const TopoDS_Edge&,
                     const TopoDS_Face&,
-                    const TopTools_MapOfShape&,
-                    TopTools_MapIteratorOfMapOfShape&,
+                    const TopTools_IndexedMapOfShape&,
+                    TopoDS_Edge&,
                     gp_Pnt2d&,
                     gp_Vec2d&,
                     const Standard_Real tol);
@@ -756,9 +762,8 @@ void LocOpe_SplitShape::AddOpenWire(const TopoDS_Wire& W,
       myDblE.Add(edg);
     }    
 
-    TopTools_MapOfShape PossE;
+    TopTools_IndexedMapOfShape PossE;
     TopTools_MapOfOrientedShape MapE;
-    TopTools_MapIteratorOfMapOfShape itm;
     TopoDS_Vertex vdeb,vfin;
     Standard_Integer nbPoss;
 
@@ -865,14 +870,15 @@ void LocOpe_SplitShape::AddOpenWire(const TopoDS_Wire& W,
         break;
       }
 
+      TopoDS_Edge aNextEdge;
       if (nbPoss == 1) {
-        itm.Initialize(PossE);
+        aNextEdge = TopoDS::Edge (PossE.FindKey (1));
         TopoDS_Shape aLocalFace  = FaceRef.Oriented(wfirst.Orientation());
-        C2d = BRep_Tool::CurveOnSurface(TopoDS::Edge(itm.Key()),
+        C2d = BRep_Tool::CurveOnSurface(aNextEdge,
                                         TopoDS::Face(aLocalFace), f, l);
         Standard_Real dpar = (l - f)*0.01;
 
-        if (itm.Key().Orientation() == TopAbs_FORWARD) {
+        if (aNextEdge.Orientation() == TopAbs_FORWARD) {
           C2d->D1(l,plast,dlast);
           if (dlast.Magnitude() < gp::Resolution())
           {
@@ -895,15 +901,21 @@ void LocOpe_SplitShape::AddOpenWire(const TopoDS_Wire& W,
         TopoDS_Shape aLocalFace  = FaceRef.Oriented(wfirst.Orientation());
         
         ChoixUV(LastEdge, TopoDS::Face(aLocalFace), PossE,
-                itm, plast, dlast, toll);
+                aNextEdge, plast, dlast, toll);
       }
 
       if (nbPoss >= 1) {
-        if (MapE.Contains(itm.Key())) 
+        if (aNextEdge.IsNull())
+        {
+          // loop is not closed. Split is not possible
+          Standard_ConstructionError::Raise("Split is not possible: split loop is not closed"); 
+        }
+
+        if (MapE.Contains(aNextEdge)) 
           break;
-        B.Add(newW1,itm.Key());
-        MapE.Add(itm.Key());        
-        LastEdge = TopoDS::Edge(itm.Key());
+        B.Add(newW1, aNextEdge);
+        MapE.Add(aNextEdge);        
+        LastEdge = aNextEdge;
         
         if (LastEdge.Orientation() == TopAbs_FORWARD) {
           Vlast = TopExp::LastVertex(LastEdge);
@@ -957,13 +969,13 @@ void LocOpe_SplitShape::AddOpenWire(const TopoDS_Wire& W,
       }
     }
     
-    newW1.Oriented(orfila);
-    newW2.Oriented(orfila);
+    //newW1.Oriented(orfila);
+    //newW2.Oriented(orfila);
     
     B.Add(newF1,newW1);
-    BRepTools::Write(newF1, "k:/queries/WrongBOP/NewF1.brep");
+    //BRepTools::Write(newF1, "k:/queries/WrongBOP/NewF1.brep");
     B.Add(newF2,newW2);
-    BRepTools::Write(newF2, "k:/queries/WrongBOP/NewF2.brep");
+    //BRepTools::Write(newF2, "k:/queries/WrongBOP/NewF2.brep");
     
     for (exp.ReInit(); exp.More(); exp.Next()) {
       const TopoDS_Wire& wir = TopoDS::Wire(exp.Current());
@@ -1357,6 +1369,51 @@ static Standard_Boolean IsInside(const TopoDS_Face& F,
   return Standard_True;
 }
 
+//=======================================================================
+//function : GetDirection
+//purpose  : 
+//=======================================================================
+static void GetDirection(const TopoDS_Edge& theEdge,
+                         const TopoDS_Face& theFace,
+                         Standard_Real& theTol,
+                         gp_Pnt2d& thePnt,
+                         gp_Vec2d& theDir)
+{
+  Standard_Real aFirst, aLast;
+  Handle(Geom2d_Curve) aC2d = BRep_Tool::CurveOnSurface (theEdge, theFace, aFirst, aLast);
+
+  TopAbs_Orientation anOr = theEdge.Orientation();
+  TopoDS_Vertex aVtx;
+  if (anOr == TopAbs_FORWARD)
+  {
+    aVtx = TopExp::FirstVertex (theEdge);
+    aC2d->D0 (aFirst, thePnt);
+  }
+  else
+  {
+    aVtx = TopExp::LastVertex (theEdge);
+    aC2d->D0 (aLast, thePnt);
+  }
+
+  BRepAdaptor_Surface aSurf (theFace, Standard_False);
+  theTol = BRep_Tool::Tolerance (aVtx);
+  Standard_Real aTol = Max (aSurf.UResolution (theTol), aSurf.VResolution (theTol));
+  aTol = Min (aTol, (aLast - aFirst)*0.1);
+
+  gp_Pnt2d aP2d;
+
+  if (anOr == TopAbs_FORWARD)
+  {
+      aFirst += aTol;
+      aC2d->D0 (aFirst, aP2d);
+  }
+  else
+  {
+      aLast -= aTol;
+      aC2d->D0 (aLast, aP2d);
+  }
+  theDir = gp_Vec2d (thePnt, aP2d);
+}
 
 //=======================================================================
 //function : ChoixUV
@@ -1365,8 +1422,8 @@ static Standard_Boolean IsInside(const TopoDS_Face& F,
 
 static void ChoixUV(const TopoDS_Edge& Last,
                     const TopoDS_Face& F,
-                    const TopTools_MapOfShape& Poss,
-                    TopTools_MapIteratorOfMapOfShape& It,
+                    const TopTools_IndexedMapOfShape& Poss,
+                    TopoDS_Edge& theResEdge,
                     gp_Pnt2d& plst,
                     gp_Vec2d& dlst,
                     const Standard_Real toll)
@@ -1382,8 +1439,6 @@ static void ChoixUV(const TopoDS_Edge& Last,
 
   Standard_Real tol;
 
-  TopoDS_Vertex vtx;
-
   gp_Dir2d ref2d(dlst);
 
   Handle(Geom2d_Curve) C2d;
@@ -1393,81 +1448,53 @@ static void ChoixUV(const TopoDS_Edge& Last,
   Standard_Real  angmax = -M_PI, dist, ang;
 
 
-  for (It.Initialize(Poss); It.More(); It.Next()) {
-    index++;
-    C2d = BRep_Tool::CurveOnSurface(TopoDS::Edge(It.Key()),F,f,l);
-    dpar = (l - f)*0.01;
-    if (It.Key().Orientation() == TopAbs_FORWARD) {
-      //      p2d = C2d->Value(f);
-      C2d->D1(f,p2d,v2d);
-      if (v2d.Magnitude() < gp::Resolution())
-      {
-        gp_Pnt2d NextPnt = C2d->Value(f + dpar);
-        v2d.SetXY(NextPnt.XY() - p2d.XY());
-      }
-      vtx = TopExp::FirstVertex(TopoDS::Edge(It.Key()));
-    }
-    else {
-      //      p2d = C2d->Value(l);
-      C2d->D1(l,p2d,v2d);
-      if (v2d.Magnitude() < gp::Resolution())
-      {
-        gp_Pnt2d PrevPnt = C2d->Value(l - dpar);
-        v2d.SetXY(p2d.XY() - PrevPnt.XY());
-      }
-      v2d.Reverse();
-      vtx = TopExp::LastVertex(TopoDS::Edge(It.Key()));
-    }
+  for (index = 1; index <= Poss.Extent(); index++) {
+    TopoDS_Edge anEdge = TopoDS::Edge (Poss.FindKey (index));
+    GetDirection (anEdge, F, tol, p2d, v2d);
 
     surf.D0 (p2d.X(), p2d.Y(), aPCur);
 
-    tol = BRep_Tool::Tolerance(vtx);
     tol = Max(toll, tol); tol *= tol;
 
     dist = aPCur.SquareDistance(aPlst);
 
-    if (!Last.IsSame(It.Key())) {
+    if (!Last.IsSame(anEdge)) {
       ang = ref2d.Angle(gp_Dir2d(v2d));
     }
     else {
       ang = -M_PI;
     }
 
-    //if ((dist < dmin - tol) ||
-    //(dist <= dmin+tol && ang > angmax)) {
     if ((dist < tol)  && (ang > angmax)) {
       imin = index;
-      //      dmin = dist;
       angmax = ang;
     }
   }
 
-  for (index = 1, It.Initialize(Poss); It.More(); It.Next()) {
-    if (index == imin) {
-      C2d = BRep_Tool::CurveOnSurface(TopoDS::Edge(It.Key()),F,f,l);
-      dpar = (l - f)*0.01;
-      if (It.Key().Orientation() == TopAbs_FORWARD) {
-        //	plst = C2d->Value(l);
-        C2d->D1(l,plst,dlst);
-        if (dlst.Magnitude() < gp::Resolution())
-        {
-          gp_Pnt2d PrevPnt = C2d->Value(l - dpar);
-          dlst.SetXY(plst.XY() - PrevPnt.XY());
-        }
+  if (imin)
+  {
+    theResEdge = TopoDS::Edge (Poss.FindKey (imin));
+    C2d = BRep_Tool::CurveOnSurface (theResEdge, F, f, l);
+    dpar = (l - f)*0.01;
+    if (theResEdge.Orientation() == TopAbs_FORWARD)
+    {
+      C2d->D1 (l, plst, dlst);
+      if (dlst.Magnitude() < gp::Resolution())
+      {
+        gp_Pnt2d PrevPnt = C2d->Value(l - dpar);
+        dlst.SetXY(plst.XY() - PrevPnt.XY());
       }
-      else {
-        //	plst = C2d->Value(f);
-        C2d->D1(f,plst,dlst);
-        if (dlst.Magnitude() < gp::Resolution())
-        {
-          gp_Pnt2d NextPnt = C2d->Value(f + dpar);
-          dlst.SetXY(NextPnt.XY() - plst.XY());
-        }
-        dlst.Reverse();
-      }
-      break;
     }
-    index++;
+    else
+    {
+      C2d->D1 (f, plst, dlst);
+      if (dlst.Magnitude() < gp::Resolution())
+      {
+        gp_Pnt2d NextPnt = C2d->Value(f + dpar);
+        dlst.SetXY(NextPnt.XY() - plst.XY());
+      }
+      dlst.Reverse();
+    }
   }
 
 }

@@ -175,9 +175,6 @@ void LocOpe_WiresOnShape::Bind(const TopoDS_Edge& E,
 void LocOpe_WiresOnShape::Bind(const TopoDS_Edge& Ewir,
 			       const TopoDS_Edge& Efac)
 {
-  if (Ewir.IsSame(Efac)) {
-    return;
-  }
   myMap.Bind(Ewir,Efac);
 }
 
