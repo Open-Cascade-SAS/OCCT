@@ -1,4 +1,4 @@
-Overview {#mainpage}
+﻿Overview {#mainpage}
 ========
 
 @tableofcontents
@@ -261,7 +261,7 @@ for which OCCT is certified to work.
 | Intel TBB (optional, for multithreaded algorithms) | TBB 3.x or 4.x http://www.threadingbuildingblocks.org/ |
 | OpenCL (optional, for ray tracing visualization) | OpenCL SDK (usually one provided by vendor of your graphic card) or OpenCL ICD Loader by Khronos group, http://www.khronos.org/registry/cl |
 
-* VC++ 9 32-bit is used for certification of contributions and for building 
+* VC++ 10 32-bit is used for certification of contributions and for building 
   binary package of official release of OCCT on Windows.
 
 @subsection OCCT_OVW_SECTION_5_3 MAC OS X
