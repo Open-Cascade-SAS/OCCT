@@ -813,8 +813,9 @@ BOPDS_ListOfPaveBlock& BOPDS_DS::ChangePaveBlocks
 //=======================================================================
 void BOPDS_DS::InitPaveBlocks(const Standard_Integer theI)
 {
-  Standard_Integer nV = 0, iRef, aNbV, nVSD, i;
+  Standard_Integer nV=0, iRef, aNbV, nVSD;
   Standard_Real aT;
+  TopAbs_Orientation aOrE;
   TopoDS_Vertex aV;
   BOPCol_ListIteratorOfListOfInteger aIt;
   BOPDS_Pave aPave;
@@ -822,6 +823,7 @@ void BOPDS_DS::InitPaveBlocks(const Standard_Integer theI)
   //
   BOPDS_ShapeInfo& aSI=ChangeShapeInfo(theI);
   const TopoDS_Edge& aE=*(TopoDS_Edge*)(&aSI.Shape());
+  aOrE=aE.Orientation();
   //
   const BOPCol_ListOfInteger& aLV=aSI.SubShapes();
   aNbV=aLV.Extent();
@@ -832,33 +834,49 @@ void BOPDS_DS::InitPaveBlocks(const Standard_Integer theI)
   aPB=new BOPDS_PaveBlock; 
   aPB->SetOriginalEdge(theI);
   //
-  aIt.Initialize(aLV);
-  for (i=0; aIt.More(); aIt.Next(), ++i) {
-    nV=aIt.Value();
-    //
-    const BOPDS_ShapeInfo& aSIV=ShapeInfo(nV);
-    aV=*(TopoDS_Vertex*)(&aSIV.Shape());
-    if (aSIV.HasFlag()) {
-      aT=ComputeParameter(aV, aE); 
+  if (aOrE!=TopAbs_INTERNAL) {
+    aIt.Initialize(aLV);
+    for (; aIt.More(); aIt.Next()) {
+      nV=aIt.Value();
+      //
+      const BOPDS_ShapeInfo& aSIV=ShapeInfo(nV);
+      aV=*(TopoDS_Vertex*)(&aSIV.Shape());
+      if (aSIV.HasFlag()) {
+        aT=ComputeParameter(aV, aE); 
+      }
+      else {
+        aT=BRep_Tool::Parameter(aV, aE);
+      } 
+      //
+      if (HasShapeSD(nV, nVSD)) {
+        nV=nVSD;
+      }
+      aPave.SetIndex(nV);
+      aPave.SetParameter(aT);
+      aPB->AppendExtPave(aPave);
     }
-    else {
+    //
+    if (aNbV==1) {
+      aV.Reverse();
       aT=BRep_Tool::Parameter(aV, aE);
-    } 
-    //
-    if (HasShapeSD(nV, nVSD)) {
-      nV=nVSD;
+      aPave.SetIndex(nV);
+      aPave.SetParameter(aT);
+      aPB->AppendExtPave1(aPave);
     }
-    aPave.SetIndex(nV);
-    aPave.SetParameter(aT);
-    aPB->AppendExtPave(aPave);
   }
   //
-  if (aNbV==1) {
-    aV.Reverse();
-    aT=BRep_Tool::Parameter(aV, aE);
-    aPave.SetIndex(nV);
-    aPave.SetParameter(aT);
-    aPB->AppendExtPave1(aPave);
+  else {
+    TopoDS_Iterator aItE;
+    //
+    aItE.Initialize(aE, Standard_False, Standard_True);
+    for (; aItE.More(); aItE.Next()) {
+      aV=*((TopoDS_Vertex*)&aItE.Value());
+      nV=Index(aV);
+      aT=BRep_Tool::Parameter(aV, aE);
+      aPave.SetIndex(nV);
+      aPave.SetParameter(aT);
+      aPB->AppendExtPave1(aPave);
+    }
   }
   //
   iRef = myPaveBlocksPool.Append() - 1;
