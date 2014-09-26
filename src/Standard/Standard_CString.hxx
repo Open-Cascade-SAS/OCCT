@@ -53,8 +53,8 @@ inline Standard_Integer HashCode (const Standard_CString,
                                   const Standard_Integer ,
                                   const Standard_Integer ,
                                   Standard_Integer& );
-Standard_Integer HashCodes (const Standard_CString ,
-                            const Standard_Integer  );
+__Standard_API Standard_Integer HashCodes (const Standard_CString,
+                                           const Standard_Integer);
 
 //! Equivalents of functions from standard C library that use always C locale
 __Standard_API double Atof    (const char* theStr);
