@@ -1,0 +1,28 @@
+puts "============"
+puts "OCC25232"
+puts "============"
+puts ""
+#########################################################################
+# Functionality to create solids from set of shapes
+#########################################################################
+
+box b1 10 10 10
+explode b1 f
+box b2 4 4 4 2 2 2
+explode b2 w
+mkvolume result b1_1 b1_2 b1_3 b1_4 b1_5 b1_6 b2_1 b2_2 b2_3 b2_4 b2_5 b2_6 -ni
+# 1 solid created
+
+set square 600
+
+set nb_v_good 16
+set nb_e_good 24
+set nb_w_good 6
+set nb_f_good 6
+set nb_sh_good 1
+set nb_sol_good 1
+set nb_compsol_good 0
+set nb_compound_good 0
+set nb_shape_good 54
+
+set 2dviewer 1

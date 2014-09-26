@@ -101,6 +101,20 @@ void BOPAlgo_Builder::AddArgument(const TopoDS_Shape& theShape)
   }
 }
 //=======================================================================
+//function : SetArguments
+//purpose  : 
+//=======================================================================
+void BOPAlgo_Builder::SetArguments(const BOPCol_ListOfShape& theShapes)
+{
+  BOPCol_ListIteratorOfListOfShape aIt;
+  //
+  aIt.Initialize(theShapes);
+  for (; aIt.More(); aIt.Next()) {
+    const TopoDS_Shape& aS = aIt.Value();
+    AddArgument(aS);
+  }
+}
+//=======================================================================
 //function : Arguments
 //purpose  : 
 //=======================================================================
@@ -221,6 +235,7 @@ void BOPAlgo_Builder::Perform()
   BOPAlgo_PaveFiller* pPF=new BOPAlgo_PaveFiller(aAllocator);
   //
   pPF->SetArguments(myArguments);
+  pPF->SetRunParallel(myRunParallel);
   //
   pPF->Perform();
   //

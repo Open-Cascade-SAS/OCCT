@@ -1,0 +1,36 @@
+puts "============"
+puts "OCC25232"
+puts "============"
+puts ""
+#########################################################################
+# Functionality to create solids from set of shapes
+#########################################################################
+
+compound b1
+compound b2
+compound b3
+set nbi 21
+set nbj 21
+set nbk 21
+for {set i 0} {$i < $nbi} {incr i} {plane p 0 0 [expr $i-10] 0 0 1; mkface f_$i p -10 10 -10 10; add f_$i b1;}
+for {set j 0} {$j < $nbj} {incr j} {plane p [expr $j-10] 0 0 1 0 0; mkface f_$j p -10 10 -10 10; add f_$j b2;}
+for {set k 0} {$k < $nbk} {incr k} {plane p 0 [expr $k-10] 0 0 1 0; mkface f_$k p -10 10 -10 10; add f_$k b3;}
+sphere s 0 0 0 10
+mkface f s
+
+mkvolume result b1 b2 b3 f
+# 9832 solids created
+
+set square 50513.3
+
+set nb_v_good 11037
+set nb_e_good 31880
+set nb_w_good 30668
+set nb_f_good 30668
+set nb_sh_good 9832
+set nb_sol_good 9832
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 123918
+
+set 2dviewer 1

@@ -229,8 +229,9 @@ class BOPAlgo_FaceSolid : public BOPAlgo_Algo {
     //
     BOPAlgo_Algo::UserBreak();
     //
-    aState=BOPTools_AlgoTools::ComputeState(myPnt, mySolid, 
-                                            1.e-14, myContext);
+    aState=BOPTools_AlgoTools::ComputeState(myPnt, mySolid,
+                                            Precision::Confusion(),
+                                            myContext);
     //
     myIsInternalFace=(aState==TopAbs_IN);
   }
@@ -1057,7 +1058,8 @@ Standard_Boolean IsInside(const TopoDS_Shape& theS1,
     BOPCol_IndexedMapOfShape aBounds;
     BOPTools::MapShapes(*pS2, TopAbs_EDGE, aBounds);
     const TopoDS_Face& aF = (*(TopoDS_Face*)(&aExp.Current()));
-    aState=BOPTools_AlgoTools::ComputeState(aF, *pS2, 1.e-14, 
+    aState=BOPTools_AlgoTools::ComputeState(aF, *pS2,
+                                            Precision::Confusion(),
                                             aBounds, theContext);
   }
   return (aState==TopAbs_IN);

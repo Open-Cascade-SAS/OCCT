@@ -1,0 +1,218 @@
+-- Created by: Eugeny MALTCHIKOV
+-- Copyright (c) 2014 OPEN CASCADE SAS
+--
+-- This file is part of Open CASCADE Technology software library.
+--
+-- This library is free software; you can redistribute it and/or modify it under
+-- the terms of the GNU Lesser General Public License version 2.1 as published
+-- by the Free Software Foundation, with special exception defined in the file
+-- OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+-- distribution for complete text of the license and disclaimer of any warranty.
+--
+-- Alternatively, this file may be used under the terms of Open CASCADE
+-- commercial license or contractual agreement.
+
+class MakerVolume from BOPAlgo
+    inherits Builder from BOPAlgo
+    ---Purpose: 
+    -- The algorithm is to build solids from set of shapes.
+    -- It uses the BOPAlgo_Builder algorithm to intersect the given shapes
+    -- and build the images of faces (if needed) and BOPAlgo_BuilderSolid
+    -- algorithm to build the solids.
+    --
+    -- Steps of the algorithm:
+    --  1. Collect all faces: intersect the shapes if necessary and collect
+    --     the images of faces, otherwise just collect the faces to the
+    --     <myFaces> list;
+    --     All faces on this step added twice, with orientation FORWARD
+    --     and REVERSED;
+    --
+    --  2. Create bounding box covering all the faces from <myFaces> and
+    --     create solid box from corner points of that bounding box
+    --     (myBBox, mySBox). Add faces from that box to <myFaces>;
+    --
+    --  3. Build solids from <myFaces> using BOPAlgo_BuilderSolid algorithm;
+    --
+    --  4. Treat the result: Eliminate solid containig faces from <mySBox>;
+    --
+    --  5. Fill internal shapes: add internal vertices and edges into
+    --     created solids;
+    --
+    --  6. Prepare the history.
+    --
+    -- Fields:
+    --  <myIntersect> - boolean flag. It defines whether intersect shapes
+    --                  from <myArguments> (if set to TRUE) or not (FALSE).
+    --                  The default value is TRUE. By setting it to FALSE
+    --                  the user should guarantee that shapes in <myArguments>
+    --                  do not interfere with each other, otherwise the result
+    --                  is unpredictable.
+    --
+    --  <myBBox>      - bounding box, covering all faces from <myFaces>.
+    --
+    --  <mySBox>      - Solid box created from the corner points of <myBBox>.
+    --
+    --  <myFaces>     - the list is to keep the "final" faces, that will be
+    --                  given to the BOPAlgo_BuilderSolid algorithm.
+    --                  If the shapes have been interfered it should contain
+    --                  the images of the source shapes, otherwise its just
+    --                  the original faces.
+    --                  It also contains the faces from <mySBox>.
+    --
+    --
+    -- Fields inherited from BOPAlgo_Builder:
+    --
+    --  <myArguments> - list of the source shapes. The source shapes can have
+    --                  any type, but each shape must not be self-interfered.
+    --
+    --  <myShape>     - Result shape:
+    --                  - empty compound - if no solids were created;
+    --                  - solid - if created only one solid;
+    --                  - compound of solids - if created more than one solid.
+    --
+    --
+    -- Fields inherited from BOPAlgo_Algo:
+    --
+    -- <myRunParallel> - Defines whether the parallel processing is
+    --                   switched on or not.
+    -- <myErrorStatus> - Error status of the operation:
+    --                   0   - operation successful;
+    --                   100 - no shapes to process;
+    --                   102 - BOPAlgo_PaveFiller algorithm has failed;
+    --                   103 - BOPAlgo_BuilderSolid algorithm has failed.
+    --
+    -- Example:
+    --
+    --  BOPAlgo_MakerVolume aMV;
+    --  //
+    --  aMV.SetArguments(aLS); //source shapes
+    --  aMV.SetRunParallel(bRunParallel); //parallel or single mode
+    --  aMV.SetIntersect(bIntersect); //intersect or not the shapes from <aLS>
+    --  //
+    --  aMV.Perform(); //perform the operation
+    --  if (aMV.ErrorStatus()) { //check error status
+    --    return;
+    --  }
+    --  //
+    --  const TopoDS_Shape& aResult = aMV.Shape();  //result of the operation
+    --
+
+uses
+    Shape from TopoDS,
+    BaseAllocator from BOPCol,
+    ListOfShape from BOPCol,
+    MapOfShape from BOPCol,
+    Box from Bnd,
+    Solid from TopoDS,
+    PaveFiller from BOPAlgo
+
+is
+
+    Create
+    returns MakerVolume from BOPAlgo;
+    ---C++: alias "virtual ~BOPAlgo_MakerVolume();"
+    ---C++: inline 
+    ---Purpose:  
+    -- Empty contructor.
+
+    Create(theAllocator: BaseAllocator from BOPCol)
+    returns MakerVolume from BOPAlgo;
+    ---C++: inline
+    ---Purpose:
+    -- Empty contructor.
+
+    Clear(me:out)
+    is redefined;
+    ---C++: inline
+    ---Purpose:
+    -- Clears the data.
+
+    SetIntersect(me:out;
+        bIntersect : Boolean from Standard);
+    ---C++: inline
+    ---Purpose:
+    -- Sets the flag myIntersect:
+    -- if <bIntersect> is TRUE the shapes from <myArguments> will be intersected.
+    -- if <bIntersect> is FALSE no intersection will be done.
+
+    IsIntersect(me)
+    returns Boolean from Standard;
+    ---C++: inline
+    ---Purpose:
+    -- Returns the flag <myIntersect>.
+
+    Box(me)
+    returns Solid from TopoDS;
+    ---C++: return  const&
+    ---C++: inline
+    ---Purpose:
+    -- Returns the solid box <mySBox>.
+
+    Faces(me)
+    returns ListOfShape from BOPCol;
+    ---C++: return  const&
+    ---C++: inline
+    ---Purpose:
+    -- Returns the processed faces <myFaces>.
+
+    CheckData(me:out)
+    is redefined protected;
+    ---Purpose:
+    -- Checks the data.
+
+    Perform(me:out)
+    is redefined;
+    ---Purpose:
+    -- Performs the operation.
+
+    PerformInternal1(me:out;
+        thePF: PaveFiller from BOPAlgo)
+    is redefined protected;
+    ---Purpose:
+    -- Performs the operation.
+
+    CollectFaces(me:out)
+    is protected;
+    ---Purpose:
+    -- Collects all faces.
+
+    MakeBox(me:out;
+        theBoxFaces : out MapOfShape from BOPCol)
+    is protected;
+    ---Purpose:
+    -- Makes solid box.
+
+    BuildSolids(me:out;
+        theLSR  : out ListOfShape from BOPCol)
+    is protected;
+    ---Purpose:
+    -- Builds solids.
+
+    RemoveBox(me:out;
+        theLSR      : out ListOfShape from BOPCol;
+        theBoxFaces : MapOfShape from BOPCol)
+    is protected;
+    ---Purpose:
+    -- Removes the covering box.
+
+    FillInternalShapes(me:out;
+        theLSR : ListOfShape from BOPCol)
+    is protected;
+    ---Purpose:
+    -- Fills the solids with internal shapes.
+
+    BuildShape(me:out;
+        theLSR : ListOfShape from BOPCol)
+    is protected;
+    ---Purpose:
+    -- Builds the result.
+
+fields
+
+    myIntersect : Boolean from Standard is protected;
+    myBBox      : Box from Bnd is protected;
+    mySBox      : Solid from TopoDS is protected;
+    myFaces     : ListOfShape from BOPCol is protected;
+
+end MakerVolume;
+

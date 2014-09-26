@@ -17,6 +17,8 @@
 //
 #include <BOPAlgo_Builder.hxx>
 //
+#include <Precision.hxx>
+//
 #include <NCollection_IncAllocator.hxx>
 #include <NCollection_UBTreeFiller.hxx>
 //
@@ -334,7 +336,9 @@ void BOPAlgo_Builder::FillIn3DParts
       //
       aMFDone.Add(aFP);
       //
-      iIsIN=BOPTools_AlgoTools::IsInternalFace(aFP, aSD, aMEF, 1.e-14, myContext);
+      iIsIN=BOPTools_AlgoTools::IsInternalFace(aFP, aSD, aMEF,
+                                               Precision::Confusion(),
+                                               myContext);
       //
       aLFP.Clear();
       aLFP.Append(aFP);

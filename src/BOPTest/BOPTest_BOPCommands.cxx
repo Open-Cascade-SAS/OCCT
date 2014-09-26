@@ -29,6 +29,7 @@
 #include <BOPAlgo_PaveFiller.hxx>
 #include <BOPAlgo_Operation.hxx>
 #include <BOPAlgo_BOP.hxx>
+#include <BOPAlgo_MakerVolume.hxx>
 #include <BOPDS_DS.hxx>
 #include <BOPTest_DrawableShape.hxx>
 #include <BOPCol_ListOfShape.hxx>
@@ -75,6 +76,8 @@ static Standard_Integer bcommon   (Draw_Interpretor&, Standard_Integer, const ch
 //
 static Standard_Integer bopcurves (Draw_Interpretor&, Standard_Integer, const char**);
 static Standard_Integer bopnews   (Draw_Interpretor&, Standard_Integer, const char**);
+//
+static Standard_Integer mkvolume   (Draw_Interpretor&, Standard_Integer, const char**);
 
 //=======================================================================
 //function : BOPCommands
@@ -105,6 +108,8 @@ static Standard_Integer bopnews   (Draw_Interpretor&, Standard_Integer, const ch
   //
   theCommands.Add("bopcurves", "use  bopcurves F1 F2 [-2d]", __FILE__, bopcurves, g);
   theCommands.Add("bopnews", "use  bopnews -v[e,f]"  , __FILE__, bopnews, g);
+  //
+  theCommands.Add("mkvolume", "make solids from set of shapes.\nmkvolume r b1 b2 ... [-ni (do not intersect)] [-s (run in non parallel mode)]", __FILE__, mkvolume , g);
 }
 
 //=======================================================================
@@ -686,3 +691,81 @@ Standard_Integer bopcurves (Draw_Interpretor& di,
   
   return 0;
 }
+
+//=======================================================================
+//function : mkvolume
+//purpose  : 
+//=======================================================================
+Standard_Integer mkvolume(Draw_Interpretor& di, Standard_Integer n, const char** a) 
+{
+  const char* usage = "Usage: mkvolume r b1 b2 ... [-ni (do not intersect)] [-s (run in non parallel mode)]\n";
+  if (n < 3) {
+    di << usage;
+    return 1;
+  }
+  //
+  Standard_Boolean bToIntersect, bRunParallel;
+  Standard_Integer i, aNb;
+  //
+  aNb = n;
+  bToIntersect = Standard_True;
+  bRunParallel = Standard_True;
+  //
+  if (!strcmp(a[n-1], "-ni")) {
+    bToIntersect = Standard_False;
+    aNb = n-1;
+  } 
+  else if (!strcmp(a[n-1], "-s")) {
+    bRunParallel = Standard_False;
+    aNb = n-1;
+  }
+  if (n > 3) {
+    if (!strcmp(a[n-2], "-ni")) {
+      bToIntersect = Standard_False;
+      aNb = n-2;
+    } 
+    else if (!strcmp(a[n-2], "-s")) {
+      bRunParallel = Standard_False;
+      aNb = n-2;
+    }
+  }
+  //
+  if (aNb < 3) {
+    di << "no shapes to process.\n";
+    di << usage;
+    return 1;
+  }
+  //
+  BOPCol_ListOfShape aLS;
+  TopoDS_Shape aS;
+  for (i = 2; i < aNb; ++i) {
+    aS = DBRep::Get(a[i]);
+    if (!aS.IsNull()) {
+      aLS.Append(aS);
+    }
+  }
+  //
+  if (aLS.IsEmpty()) {
+    di << "no shapes to process.\n";
+    di << usage;
+    return 1;
+  }
+  //
+  BOPAlgo_MakerVolume aMV;
+  aMV.SetArguments(aLS);
+  aMV.SetIntersect(bToIntersect);
+  aMV.SetRunParallel(bRunParallel);
+  //
+  aMV.Perform();
+  if (aMV.ErrorStatus()) {
+    di << "Error status: " << aMV.ErrorStatus();
+    return 1;
+  }
+  //
+  const TopoDS_Shape& aR = aMV.Shape();
+  //
+  DBRep::Set(a[1], aR);
+  //
+  return 0;
+}
+

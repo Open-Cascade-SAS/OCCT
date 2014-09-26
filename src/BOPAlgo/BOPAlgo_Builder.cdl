@@ -61,7 +61,11 @@ is
     AddArgument (me:out;  
         theShape: Shape from TopoDS) 
     is virtual; 
-     
+ 
+    SetArguments (me:out;
+        theShapes: ListOfShape from BOPCol)
+    is virtual;
+
     Arguments(me) 
     returns ListOfShape from BOPCol; 
     ---C++: return const & 

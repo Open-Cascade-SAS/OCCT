@@ -1,0 +1,26 @@
+puts "============"
+puts "OCC25232"
+puts "============"
+puts ""
+#########################################################################
+# Functionality to create solids from set of shapes
+#########################################################################
+
+restore [locate_data_file bug25232_BUG3_SPHERE_4_mc122-SCM-4-4.brep] b
+explode b f
+mkvolume result b_3 b_4 b_2 b_5 -s
+# 8 solids created
+
+set square 1.41057e+07
+
+set nb_v_good 12
+set nb_e_good 25
+set nb_w_good 18
+set nb_f_good 18
+set nb_sh_good 8
+set nb_sol_good 8
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 90
+
+set 2dviewer 1

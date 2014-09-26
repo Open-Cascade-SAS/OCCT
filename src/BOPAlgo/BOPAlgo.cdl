@@ -75,6 +75,7 @@ is
     class CheckerSI; 
     class ArgumentAnalyzer; 
     class CheckResult; 
+    class MakerVolume;
     --
     --  pointers
     --

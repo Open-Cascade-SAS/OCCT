@@ -1,0 +1,39 @@
+puts "============"
+puts "OCC25232"
+puts "============"
+puts ""
+#########################################################################
+# Functionality to create solids from set of shapes
+#########################################################################
+
+cylinder cyl 10
+trimv cyl cyl -20 20
+mkface fcyl cyl
+cone con 45 0
+trimv con1 con 0 15
+trimv con2 con -15 0
+mkface fcon1 con1
+mkface fcon2 con2
+plane pl 0 0 15 0 0 1
+mkface fp pl -15 15 -15 15
+sphere sph 0 0 0 12
+mkface fsph sph
+
+trimv con3 con 0 30
+mkface fcon3 con3
+mkvolume result fcon3 fp
+# 1 solid created
+
+set square 1706.51
+
+set nb_v_good 4
+set nb_e_good 5
+set nb_w_good 2
+set nb_f_good 2
+set nb_sh_good 1
+set nb_sol_good 1
+set nb_compsol_good 0
+set nb_compound_good 0
+set nb_shape_good 15
+
+set 2dviewer 1
