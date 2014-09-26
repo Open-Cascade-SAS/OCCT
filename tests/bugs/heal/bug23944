@@ -1,6 +1,3 @@
-puts "TODO DEBUG_OCC24121 Debian60-64 Windows:  iteration"
-puts "TODO DEBUG_OCC24121 Debian60-64 Windows: Faulty OCC23944"
-
 puts "============"
 puts "OCC23944"
 puts "============"
@@ -15,20 +12,15 @@ restore [locate_data_file bug23944_s.draw] s
 
 decho off
 mkface f s
-decho on
-
-decho off
-set info [bsplres result f 1e-4 1e-9 15 100 C1 C2 0 1]
+bsplres result f 1e-4 1e-9 15 100 C1 C2 0 1
+mksurface rsurf result
+set info [getsurfcontinuity rsurf]
 decho on
 
 # Resume
 puts ""
-if { [regexp {Debug mode} [dversion]] } {
-   if { [regexp {Surface is aproximated with continuity 0} $info] } {
-      puts "OK ${BugNumber}"
-   } else {
-      puts "Faulty ${BugNumber}"
-   }
+if { [regexp {rsurf has C0 continuity.} $info] } {
+  puts "OK ${BugNumber}"
 } else {
-   puts "Test for debug mode only"
+  puts "Faulty ${BugNumber}"
 }

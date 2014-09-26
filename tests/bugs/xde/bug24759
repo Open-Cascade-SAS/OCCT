@@ -1,5 +1,3 @@
-puts "TODO DEBUG_OCC24759 ALL: Warning: StepToGeom_MakeSurface"
-
 puts "================"
 puts "OCC24759"
 puts "================"

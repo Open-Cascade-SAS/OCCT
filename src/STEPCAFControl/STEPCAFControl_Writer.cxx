@@ -2006,7 +2006,12 @@ Standard_Boolean STEPCAFControl_Writer::WriteDGTs (const Handle(XSControl_WorkSe
   Handle(Interface_InterfaceModel) Model = WS->Model();
   Handle(XSControl_TransferWriter) TW = WS->TransferWriter();
   Handle(Transfer_FinderProcess) FP = TW->FinderProcess();
-  Interface_Graph aGraph = WS->HGraph()->Graph();
+
+  const Handle(Interface_HGraph) aHGraph = WS->HGraph();
+  if(aHGraph.IsNull())
+    return Standard_False;
+
+  Interface_Graph aGraph = aHGraph->Graph();
   Handle(XCAFDoc_DimTolTool) DGTTool = XCAFDoc_DocumentTool::DimTolTool( labels(1) );
   if(DGTTool.IsNull() ) return Standard_False;
 
@@ -2387,6 +2392,11 @@ Standard_Boolean STEPCAFControl_Writer::WriteMaterials (const Handle(XSControl_W
   Handle(Interface_InterfaceModel) Model = WS->Model();
   Handle(XSControl_TransferWriter) TW = WS->TransferWriter();
   Handle(Transfer_FinderProcess) FP = TW->FinderProcess();
+
+  const Handle(Interface_HGraph) aHGraph = WS->HGraph();
+  if(aHGraph.IsNull())
+    return Standard_False;
+
   Interface_Graph aGraph = WS->HGraph()->Graph();
   Handle(XCAFDoc_ShapeTool) ShTool = XCAFDoc_DocumentTool::ShapeTool( labels(1) );
   if(ShTool.IsNull() ) return Standard_False;

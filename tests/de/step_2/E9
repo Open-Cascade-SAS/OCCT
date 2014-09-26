@@ -2,7 +2,6 @@
 puts "TODO CR23096 ALL: TPSTAT : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 puts "TODO CR23096 ALL: LAYERS : Faulty" 
-puts "TODO DEBUG_OCC24121 Debian60-64 Windows: Error: STEPCAFControl_Reader"
 
 set filename bm4_db_punch_c.stp
 

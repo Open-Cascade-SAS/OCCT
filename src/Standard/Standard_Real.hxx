@@ -243,21 +243,6 @@ inline Standard_Real     Min (const Standard_Real Val1,
   return Val1 <= Val2 ? Val1 : Val2;
 }
 
-// ------------------------------------------------------------------
-// MinMax : Replaces  theParMIN = MIN(theParMIN, theParMAX),
-//                    theParMAX = MAX(theParMIN, theParMAX).
-// ------------------------------------------------------------------
-inline void MinMax(Standard_Real& theParMIN, Standard_Real& theParMAX)
-{
-  if(theParMIN > theParMAX)
-  {
-    const Standard_Real aux = theParMAX;
-    theParMAX = theParMIN;
-    theParMIN = aux;
-  }
-}
-
-
 //-------------------------------------------------------------------
 // Pow : Returns a real to a given power
 //-------------------------------------------------------------------

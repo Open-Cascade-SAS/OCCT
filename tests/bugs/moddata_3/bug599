@@ -1,6 +1,3 @@
-puts "TODO DEBUG_OCC24121 Debian60-64: Process killed by CPU limit"
-puts "TODO DEBUG_OCC24121 Debian60-64: TEST INCOMPLETE"
-
 puts "========================"
 puts " OCC599"
 puts "========================"
@@ -8,6 +5,8 @@ puts ""
 #########################################################
 ## Result of BOPFUSE operation is unclosed shape inspite of source solids are valid
 #########################################################
+
+cpulimit 1000
 
 restore [locate_data_file OCC600_1.brep] a
 checkshape a

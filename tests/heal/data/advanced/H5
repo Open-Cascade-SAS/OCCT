@@ -3,7 +3,6 @@ if {[string compare $command "ShapeConvertRev"] == 0 } {
 }
 if {[string compare $command "SplitAngle"] == 0 } {
     puts "TODO OCC23127 ALL: Faulty shapes in variables faulty_1 to faulty_"
-    puts "TODO ?DEBUG_OCC24121 Debian60-64 Windows: Error: Exception in ShapeUpgrade_FaceDivide"
 }
 restore [locate_data_file CTO900_ger60598c.rle] a
 

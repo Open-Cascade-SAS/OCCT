@@ -1,6 +1,5 @@
 SKIPPED /Tcl Exception: .*[fF]ile .* could not be found/ data file is missing
 IGNORE /Tcl Exception: [*][*] Exception [*][*]/ duplicate report on exception on Tcl level
-IGNORE /BRepCheck Wire: Closed2d/ Debug output of checkshape
 FAILED /\b[Ee]xception\b/ exception
 FAILED /\b[Ee][Rr][Rr][Oo][Rr]\b/ error
 FAILED /Process killed by CPU limit/ Killed by CPU limit

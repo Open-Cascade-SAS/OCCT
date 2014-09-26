@@ -1639,6 +1639,51 @@ static Standard_Integer intersection (Draw_Interpretor& di,
 }
 
 //=======================================================================
+//function : GetCurveContinuity
+//purpose  : Returns the continuity of the given curve
+//=======================================================================
+static Standard_Integer GetCurveContinuity( Draw_Interpretor& theDI,
+                                            Standard_Integer theNArg,
+                                            const char** theArgv)
+{
+  if(theNArg != 2)
+  {
+    theDI << "Use: getcurvcontinuity {curve or 2dcurve} \n";
+    return 1;
+  }
+
+  char aContName[7][3] = {"C0",   //0
+                          "G1",   //1
+                          "C1",   //2
+                          "G2",   //3
+                          "C2",   //4
+                          "C3",   //5
+                          "CN"};  //6
+
+  Handle(Geom2d_Curve) GC2d;
+  Handle(Geom_Curve) GC3d = DrawTrSurf::GetCurve(theArgv[1]);
+  if(GC3d.IsNull())
+  {
+    GC2d = DrawTrSurf::GetCurve2d(theArgv[1]);
+    if(GC2d.IsNull())
+    {
+      theDI << "Argument is not a 2D or 3D curve!\n";
+      return 1;
+    }
+    else
+    {
+      theDI << theArgv[1] << " has " << aContName[GC2d->Continuity()] << " continuity.\n";
+    }
+  }
+  else
+  {
+    theDI << theArgv[1] << " has " << aContName[GC3d->Continuity()] << " continuity.\n";
+  }
+
+  return 0;
+}
+
+//=======================================================================
 //function : CurveCommands
 //purpose  : 
 //=======================================================================
@@ -1739,6 +1784,12 @@ void  GeometryTest::CurveCommands(Draw_Interpretor& theCommands)
 		  "surfoints result surf deflection",
 		  __FILE__,
 		  surfpoints,g);
+
+  theCommands.Add("getcurvcontinuity",
+		  "getcurvcontinuity {curve or 2dcurve}: \n\tReturns the continuity of the given curve",
+		  __FILE__,
+		  GetCurveContinuity,g);
+
 
 }
 

@@ -1,6 +1,1 @@
 FAILED /\bFaulty\b/ bad shape
-IGNORE /Error: Number of intervals are not equal for 2d 3d. Ignored./ Debug mode message from DT_ShapeDivide
-IGNORE /Warning: GeomConvert_ApproxSurface Exception: try to decrease continuity/ DEbug mode message from DT_ToBspl
-IGNORE /Error: ShapeFix_ComposeShell::MakeFacesOnPatch: can[']t dispatch wires/ Debug mode output
-IGNORE /Warning: ShapeFix_WireSegment::DefineI[UV]M[ia][nx]: indexation error/ debug mode output on bad geometries
-IGNORE /error = [0-9eE.+-]+\s+spans = [0-9]+/ debug output of surface approximator

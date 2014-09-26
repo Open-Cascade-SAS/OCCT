@@ -371,8 +371,7 @@ BRepCheck_Status BRepCheck_Wire::Closed(const Standard_Boolean Update)
 //purpose  : Return Standard_True if distance between thePnt_f and
 //           thePnt_l is not more, than aTol3d
 //=======================================================================
-Standard_Boolean IsDistanceIn3DTolerance (const BRepAdaptor_Surface& /*aFaceSurface*/,
-                                          const gp_Pnt& thePnt_f,
+Standard_Boolean IsDistanceIn3DTolerance (const gp_Pnt& thePnt_f,
                                           const gp_Pnt& thePnt_l,
                                           const Standard_Real aTol3d)
   {
@@ -381,7 +380,7 @@ Standard_Boolean IsDistanceIn3DTolerance (const BRepAdaptor_Surface& /*aFaceSurf
   if (Dist < aTol3d)
     return Standard_True;
 
-#ifdef DEB
+#ifdef BREPCHECK_DEB
   cout << endl;
   cout << "--------Function IsDistanceIn3DTolerance(...)----------"												<< endl;
   cout << "--- BRepCheck Wire: Closed3d -> Error"																					<< endl;
@@ -422,7 +421,7 @@ Standard_Boolean IsDistanceIn2DTolerance (const BRepAdaptor_Surface& aFaceSurfac
     {
     cout << endl;
     cout << "--------Function IsDistanceIn2DTolerance(...)----------"								<< endl;
-    cout << "--- BRepCheck Wire: Not closed in 2d"																  << endl;
+    cout << "--- BRepCheck Wire: Not closed in 2D"																  << endl;
     cout << "*****************************************************"									<< endl;
     cout << "*dumin = " << dumin << "; dumax = " << dumax														<< endl;
     cout << "* dvmin = " << dvmin << "; dvmax = " << dvmax													<< endl;
@@ -639,7 +638,7 @@ BRepCheck_Status BRepCheck_Wire::Closed2d(const TopoDS_Face& theFace,
   if (!(IsDistanceIn2DTolerance(aFaceSurface, aP_first, aP_last, aTol3d)))
     aClosedStat = BRepCheck_NotClosed;
 
-  if(!IsDistanceIn3DTolerance(aFaceSurface, aPntRef, aPnt, aTol3d))
+  if(!IsDistanceIn3DTolerance(aPntRef, aPnt, aTol3d))
     aClosedStat = BRepCheck_NotClosed;
 
   if (Update) 
@@ -1060,7 +1059,7 @@ BRepCheck_Status BRepCheck_Wire::SelfIntersect(const TopoDS_Face& F,
 	      BRepCheck::Add(myMap(myShape),BRepCheck_SelfIntersectingWire);
 	      }
 	    delete [] tabDom;
-#ifdef DEB
+#ifdef BREPCHECK_DEB
 	    static Standard_Integer numpoint=0;
 	    cout<<"point p"<<++numpoint<<" "<<P3d.X()<<" "<<P3d.Y()<<" "<<P3d.Z()<<endl;cout.flush();
 #endif
@@ -1093,7 +1092,7 @@ BRepCheck_Status BRepCheck_Wire::SelfIntersect(const TopoDS_Face& F,
 	}
 	else {
 	  delete [] tabDom;
-#ifdef DEB
+#ifdef BREPCHECK_DEB
 	  cout<<"BRepCheck_NoCurveOnSurface or BRepCheck_InvalidRange"<<endl;cout.flush();
 #endif
 	  if(tabCur(j).IsNull()) {
@@ -1215,7 +1214,7 @@ BRepCheck_Status BRepCheck_Wire::SelfIntersect(const TopoDS_Face& F,
 	    //-- Check distance from edges to the curve joining 
 	    //-- the point of intersection with vertex (if exists)
 	    if (localok == Standard_False && !CommonVertices.IsEmpty()) {
-#ifdef DEB	
+#ifdef BREPCHECK_DEB
 	      cout << "\n------------------------------------------------------\n" <<endl;
 	      cout << "\n--- BRepCheck Wire: AutoIntersection Phase1 -> Erreur \n" <<endl;
 	      
@@ -1345,7 +1344,7 @@ BRepCheck_Status BRepCheck_Wire::SelfIntersect(const TopoDS_Face& F,
 	      if (Update) {
 		BRepCheck::Add(myMap(myShape),BRepCheck_SelfIntersectingWire);
 		}
-#ifdef DEB
+#ifdef BREPCHECK_DEB
 	      static Standard_Integer numpoint1=0;
 	      cout<<"point p"<<++numpoint1<<" "<<P3d.X()<<" "<<P3d.Y()<<" "<<P3d.Z()<<endl;
 	      cout.flush();
@@ -1479,7 +1478,7 @@ BRepCheck_Status BRepCheck_Wire::SelfIntersect(const TopoDS_Face& F,
 	      if (Update) {
 		BRepCheck::Add(myMap(myShape),BRepCheck_SelfIntersectingWire);
 	      }
-#ifdef DEB
+#ifdef BREPCHECK_DEB
 	      static Standard_Integer numpoint1=0;
 	      cout<<"point p"<<++numpoint1<<" "<<P3d.X()<<" "<<P3d.Y()<<" "<<P3d.Z()<<endl;
 	      cout.flush();
@@ -1711,7 +1710,7 @@ void ChoixUV(const TopoDS_Vertex& theVertex,
         gp_Pnt pEdg = bcEdg.Value(aParPiv);
         gp_Pnt pEFound = bcEvois.Value(aParam);
 
-        if(!IsDistanceIn3DTolerance(theFace, pEdg, pEFound, aTol3d))
+        if(!IsDistanceIn3DTolerance(pEdg, pEFound, aTol3d))
           IsFound = Standard_False;
         else
 //angle was not defined but points are close

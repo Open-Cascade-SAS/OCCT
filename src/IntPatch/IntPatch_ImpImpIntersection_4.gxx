@@ -30,6 +30,21 @@ static
 			       const gp_Cylinder& Cy2,
 			       const Standard_Real Tol);
 
+// ------------------------------------------------------------------
+// MinMax : Replaces  theParMIN = MIN(theParMIN, theParMAX),
+//                    theParMAX = MAX(theParMIN, theParMAX).
+// ------------------------------------------------------------------
+static inline void MinMax(Standard_Real& theParMIN, Standard_Real& theParMAX)
+{
+  if(theParMIN > theParMAX)
+  {
+    const Standard_Real aux = theParMAX;
+    theParMAX = theParMIN;
+    theParMIN = aux;
+  }
+}
+
+
 //=======================================================================
 //function : ProcessBounds
 //purpose  : 

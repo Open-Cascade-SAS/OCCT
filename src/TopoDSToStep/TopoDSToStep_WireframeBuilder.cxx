@@ -219,6 +219,10 @@ Standard_Boolean TopoDSToStep_WireframeBuilder::
     if (C->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
       C = Handle(Geom_TrimmedCurve)::DownCast(C)->BasisCurve();
     GeomToStep_MakeCurve  gtpC(C);
+
+    if(!gtpC.IsDone())
+      return Standard_False;
+
     Handle(StepGeom_Curve) pmsC = gtpC.Value();
 
     // trim the curve

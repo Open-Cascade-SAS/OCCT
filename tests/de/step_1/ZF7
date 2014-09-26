@@ -1,11 +1,6 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
 puts "TODO ?CR23096 ALL: TPSTAT : Faulty" 
-puts "TODO ?CR23096 ALL: STATSHAPE : Faulty" 
-puts "TODO DEBUG_OCC24121 Debian60-64: \\*\\* Exception \\*\\*.*"
-puts "TODO DEBUG_OCC24121 Debian60-64: An exception was caught"
-puts "TODO DEBUG_OCC24121 Debian60-64 Windows: Error: First - file was not written - exception"
-puts "TODO DEBUG_OCC24121 Debian60-64 Windows: Error : Here is writing problem"
-puts "TODO DEBUG_OCC24121 Debian60-64 Windows: Error : 3 differences with reference data found"
+puts "TODO ?CR23096 ALL: STATSHAPE : Faulty"
 
 set filename S4132-test.stp
 
@@ -13,7 +8,7 @@ set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
 TPSTAT      : Faulties = 0  ( 0 )  Warnings = 1  ( 0 )  Summary  = 1  ( 0 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 6  ( 0 )  Face     = 6  ( 6 )   Summary  = 79  ( 73 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 6  ( 0 )  Face     = 6  ( 6 )   Summary  = 78  ( 73 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 6  ( 0 )  Face     = 6  ( 6 )   FreeWire = 0  ( 0 )   FreeEdge  = 3 ( 4 )   SharedEdge = 27  ( 28 )
 TOLERANCE   : MaxTol   =         1e-007  (         1e-007 )  AvgTol   =          1e-007  (          1e-007 )
 LABELS      : N0Labels = 1  ( 1 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 1  ( 1 )   NameLabels = 1  ( 1 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )

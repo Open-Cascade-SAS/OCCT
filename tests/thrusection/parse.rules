@@ -1,2 +1,1 @@
 FAILED /\bFaulty\b/ bad shape
-IGNORE /Error 3d = [0-9.]+/ debug dump of approximator

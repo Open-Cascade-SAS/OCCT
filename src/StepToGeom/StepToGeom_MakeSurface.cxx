@@ -67,6 +67,9 @@ Standard_Boolean StepToGeom_MakeSurface::Convert (const Handle(StepGeom_Surface)
     }
     if (SS->IsKind(STANDARD_TYPE(StepGeom_ElementarySurface))) {
       const Handle(StepGeom_ElementarySurface) S1 = Handle(StepGeom_ElementarySurface)::DownCast(SS);
+      if(S1->Position().IsNull())
+        return Standard_False;
+
       return StepToGeom_MakeElementarySurface::Convert(S1,*((Handle(Geom_ElementarySurface)*)&CS));
     }
     if (SS->IsKind(STANDARD_TYPE(StepGeom_SweptSurface))) {

@@ -1,8 +1,5 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
-puts "TODO ?CR23096 ALL: LABELS : Faulty" 
-puts "TODO ?DEBUG_OCC24121 Debian60-64 Windows: Process killed by CPU limit"
-puts "TODO ?DEBUG_OCC24121 Debian60-64 Windows: TEST INCOMPLETE"
-
+puts "TODO CR23096 ALL: LABELS : Faulty" 
 
 set filename t_cat_424_002_sgi_hybdrw_vw_dosenhalter_standard.igs
 

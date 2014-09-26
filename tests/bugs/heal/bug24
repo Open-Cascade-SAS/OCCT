@@ -1,5 +1,3 @@
-puts "TODO DEBUG_OCC24121 Debian60-64 Windows: Error: ShapeProcess_Performer"
-
 pload QAcommands
 
 puts "======="

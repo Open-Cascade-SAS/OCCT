@@ -1454,7 +1454,7 @@ void Geom2dConvert::C0BSplineToC1BSplineCurve(Handle(Geom2d_BSplineCurve)& BS,
 
  BS->Knots(BSKnots);
  BS->Multiplicities(BSMults);
- for (i=BS->FirstUKnotIndex();i<=(BS->LastUKnotIndex()-1);i++){
+ for (i=BS->FirstUKnotIndex() + 1;i<=(BS->LastUKnotIndex()-1);i++){
    if (BSMults(i)==BS->Degree())
      nbcurveC1++;   
  }
@@ -1472,7 +1472,8 @@ void Geom2dConvert::C0BSplineToC1BSplineCurve(Handle(Geom2d_BSplineCurve)& BS,
    for (i=0;i<nbcurveC1;i++){
      U1=U2;
 
-     while (j < BS->LastUKnotIndex() && BSMults(j) < BS->Degree()) j++;
+     while (j < BS->LastUKnotIndex() && BSMults(j) < BS->Degree())
+       j++;
      
      U2=BSKnots(j);
      j++;

@@ -601,7 +601,7 @@ static void BuildFace(const Handle(Geom_Surface)& S,
       thePlane->UReverse();
     BRepLib_MakeFace MkF( thePlane, WW );
     if (MkF.Error() != BRepLib_FaceDone) {
-#if DEB
+#if BREPFILL_DEB
       BRepLib_FaceError Err = MkF.Error();
       cout << "Planar Face Error :" <<   Err << endl;
 #endif
@@ -1734,7 +1734,7 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
     }
   }
 
-#if DEB
+#if BREPFILL_DEB
   if (!issame) 
     cout<<"Sweep Warning : Edge not SameRange in the limits"<<endl;
 #endif

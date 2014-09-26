@@ -324,6 +324,42 @@ static Standard_Integer fillcurves(Draw_Interpretor& /*di*/,
   return 0;
 }
 
+
+//=======================================================================
+//function : GetSurfaceContinuity
+//purpose  : Returns the continuity of the given surface
+//=======================================================================
+static Standard_Integer GetSurfaceContinuity( Draw_Interpretor& theDI,
+                                              Standard_Integer theNArg,
+                                              const char** theArgv)
+{
+  if(theNArg != 2)
+  {
+    theDI << "Use: getsurfcontinuity surface\n";
+    return 1;
+  }
+
+  Handle(Geom_Surface) GS1 = DrawTrSurf::GetSurface(theArgv[1]);
+  if(GS1.IsNull())
+  {
+    theDI << "Argument is not a surface!\n";
+    return 1;
+  }
+
+  char aContName[7][3] = {"C0",   //0
+                          "G1",   //1
+                          "C1",   //2
+                          "G2",   //3
+                          "C2",   //4
+                          "C3",   //5
+                          "CN"};  //6
+
+  theDI << theArgv[1] << " has " << aContName[GS1->Continuity()] << " continuity.\n";
+
+  return 0;
+}
+
+
 //=======================================================================
 //function : SurfaceCommands
 //purpose  : 
@@ -371,6 +407,12 @@ void  GeometryTest::SurfaceCommands(Draw_Interpretor& theCommands)
 		  "fillcurves result C1 C2 C3 C4 [style 1/2/3]: \n\tCreate a surface filling frame of 4 curves",
 		  __FILE__,
 		  fillcurves,g);
+
+ theCommands.Add("getsurfcontinuity",
+		  "getsurfcontinuity surface: \n\tReturns the continuity of the given surface",
+		  __FILE__,
+		  GetSurfaceContinuity,g);
+
 
 }
 

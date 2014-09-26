@@ -1,5 +1,3 @@
-puts "TODO DEBUG_OCC24121 Debian60-64 Windows: Faulty OCC11081"
-
 puts "========================"
 puts "OCC11081"
 puts "========================"
@@ -10,19 +8,18 @@ puts ""
 
 set BugNumber OCC11081
 
+set RefResult "\"distmini\" command returns:\ndd_val dd dd2 \nOutput is complete."
+
 # infinite line is used
 
 line ll 6834.93 -4100 500 0 0 1
 mkedge ee ll
 restore [locate_data_file OCC11081.brep] section4100
-distmini dd ee section4100
 set res_list [distmini dd ee section4100]
-set res_length [llength ${res_list}]
-puts "res_length = ${res_length}"
 
 # Resume
 puts ""
-if { ${res_length} != 3 } {
+if { [regexp $RefResult $res_list] != 1 } {
    puts "Faulty ${BugNumber}"
 } else {
    puts "OK ${BugNumber}"

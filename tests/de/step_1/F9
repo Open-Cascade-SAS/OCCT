@@ -1,6 +1,5 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
 puts "TODO CR23096 ALL: STATSHAPE : Faulty" 
-puts "TODO DEBUG_OCC24121 Debian60-64 Windows: Error : 1 differences with reference data found"
 
 set filename trj6_pm4-al-214.stp
 

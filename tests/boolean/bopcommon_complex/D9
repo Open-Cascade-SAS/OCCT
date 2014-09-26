@@ -1,7 +1,3 @@
-puts "TODO ?#22911 ALL: Error : The area of the resulting shape is"
-puts "TODO ?DEBUG_OCC24121 Debian60-64: Process killed by CPU limit"
-puts "TODO ?DEBUG_OCC24121 Debian60-64: TEST INCOMPLETE"
-
 cpulimit 1500
 
 restore [locate_data_file OCC228.brep] sh
@@ -10,4 +6,4 @@ explode sh
 bop sh_2 sh_1
 bopcommon result
 
-set square 0
+set square 66231.3

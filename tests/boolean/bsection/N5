@@ -1,9 +1,4 @@
-puts "TODO DEBUG_OCC24121 Debian60-64: Process killed by CPU limit"
-puts "TODO DEBUG_OCC24121 Debian60-64: TEST INCOMPLETE"
-puts "TODO ?DEBUG_OCC24121 Windows: Process killed by CPU limit"
-puts "TODO ?DEBUG_OCC24121 Windows: TEST INCOMPLETE"
-
-cpulimit 900
+cpulimit 1000
 
 restore [locate_data_file lh3d_px2.brep] a
 set i 1

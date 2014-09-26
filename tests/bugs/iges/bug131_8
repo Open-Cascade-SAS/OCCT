@@ -1,5 +1,4 @@
 puts "TODO OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty_"
-puts "TODO DEBUG_OCC24121 Debian60-64 Windows: --- BRepCheck Wire:"
 
 puts "========"
 puts "OCC131"

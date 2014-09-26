@@ -1,5 +1,3 @@
-puts "TODO DEBUG_OCC24121 Debian60-64: Elapsed time is more than 0.1 seconds"
-
 puts "============"
 puts "OCC23906"
 puts "============"

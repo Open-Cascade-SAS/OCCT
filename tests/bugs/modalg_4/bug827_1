@@ -1,13 +1,5 @@
-# Errors are different in Debug and Release mode
-puts "TODO ?#23910 ALL: Error : The square of result shape is"
-puts "TODO ?#23910 ALL: Faulty shapes in variables faulty_1 to faulty_"
-puts "TODO ?#23910 ALL: Faulty OCC827"
-
-# Debug on Windows
-puts "TODO ?#23910 ALL: Standard_Failure : Exception in REV Function"
-puts "TODO ?#23910 ALL: result is not a topological shape!!!"
-puts "TODO ?#23910 ALL: TEST INCOMPLETE"
-
+puts "TODO #23910 ALL: Faulty OCC827"
+puts "TODO #23910 ALL: Faulty shapes in variables faulty_1 to faulty_"
 pload QAcommands
 
 puts "========"
@@ -50,5 +42,5 @@ if { [ catch { set info_result [OCC827 a1 a2 a3 res1 res2 0] } ] } {
     }
     renamevar res2 result
 }
-set square 0
+set square 7046.01
 set 2dviewer 1

@@ -594,7 +594,7 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI,
     }
 
     catch(Standard_Failure) {
-#ifdef DEB
+#ifdef HLRBREP_DEB
       cout << "An exception was catched when hiding edge " << E;
       cout << " by the face " << FI << endl;
       Handle(Standard_Failure) fail = Standard_Failure::Caught();
