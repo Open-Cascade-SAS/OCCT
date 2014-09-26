@@ -1,3 +1,1 @@
-puts "TODO DEBUG_OCC24121 Debian60-64: BRepCheck_Analyzer"
-
 restore [locate_data_file CFI_pro90fjr.rle] a

@@ -4,8 +4,6 @@ puts "TODO CR23096 ALL: TOLERANCE : Faulty"
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 puts "TODO CR23096 ALL: COLORS : Faulty" 
 
-puts "TODO DEBUG_OCC24121 Debian60-64 Windows: Warning: ShapeAnalysis_Surface"
-
 set LinuxDiff 4
 set LinuxFaulties {STATSHAPE}
 set filename coque-sup.igs

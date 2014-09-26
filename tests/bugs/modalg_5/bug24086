@@ -1,5 +1,3 @@
-puts "TODO OCC24086 Debian60-64 Windows: Error: result shape is invalid"
-
 puts "============"
 puts "OCC24086"
 puts "============"
