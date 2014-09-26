@@ -292,6 +292,11 @@ static Standard_Integer dversion(Draw_Interpretor& di, Standard_Integer, const c
 #else
   di << "OpenCL disabled\n";
 #endif
+#ifdef HAVE_VTK
+  di << "VTK enabled (HAVE_VTK)\n";
+#else
+  di << "VTK disabled\n";
+#endif
 #ifdef No_Exception
   di << "Exceptions disabled (No_Exception)\n";
 #else
