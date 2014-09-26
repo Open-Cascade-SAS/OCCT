@@ -216,7 +216,7 @@ is
         --          
         --          The method Value(i,j) will return aij.
         --          Raises ConstructionError if the determinant of  the aij is null.
-        --          The matrix is orthogonalyzed before future using.
+        --          The matrix is orthogonalized before future using.
     raises
         ConstructionError from Standard
 

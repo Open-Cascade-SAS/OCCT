@@ -255,7 +255,7 @@ is
          --
          --         The method Value(i,j) will return aij.
          --         Raises ConstructionError if the determinant of the aij is null.
-         --         If the matrix as not a uniform scale it will be orthogonalyzed before future using.
+         --         If the matrix as not a uniform scale it will be orthogonalized before future using.
 
     raises
         ConstructionError from Standard
