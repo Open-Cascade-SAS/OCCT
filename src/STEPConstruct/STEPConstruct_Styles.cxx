@@ -116,7 +116,7 @@ Standard_Boolean STEPConstruct_Styles::Init (const Handle(XSControl_WorkSession)
 
 Standard_Integer STEPConstruct_Styles::NbStyles () const
 {
-  return myStyles.Length();
+  return myStyles.Extent();
 }
 
 
@@ -127,7 +127,7 @@ Standard_Integer STEPConstruct_Styles::NbStyles () const
 
 Handle(StepVisual_StyledItem) STEPConstruct_Styles::Style (const Standard_Integer i) const
 {
-  return Handle(StepVisual_StyledItem)::DownCast ( myStyles.Value(i) );
+  return Handle(StepVisual_StyledItem)::DownCast ( myStyles.FindKey(i) );
 }
 
 
@@ -150,7 +150,7 @@ void STEPConstruct_Styles::ClearStyles ()
 
 void STEPConstruct_Styles::AddStyle (const Handle(StepVisual_StyledItem) &style)
 {
-  myStyles.Append ( style );
+  myStyles.Add ( style );
 }
 
   
@@ -181,7 +181,7 @@ Handle(StepVisual_StyledItem) STEPConstruct_Styles::AddStyle (const Handle(StepR
     Style = OStyle;
   }
   
-  myStyles.Append ( Style );
+  myStyles.Add ( Style );
   // for future using
   myPSA.Append( PSA );
   
@@ -213,13 +213,13 @@ Handle(StepVisual_StyledItem) STEPConstruct_Styles::AddStyle (const TopoDS_Shape
 Standard_Boolean STEPConstruct_Styles::CreateMDGPR (const Handle(StepRepr_RepresentationContext) &Context,
                                                     Handle(StepVisual_MechanicalDesignGeometricPresentationRepresentation)& Repr)
 {
-  if ( myStyles.Length() <1 ) return Standard_False;
+  if ( myStyles.Extent() <1 ) return Standard_False;
   
   // create MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION
   Handle(StepRepr_HArray1OfRepresentationItem) elems = 
-    new StepRepr_HArray1OfRepresentationItem ( 1, myStyles.Length() );
-  for ( Standard_Integer i=1; i <= myStyles.Length(); i++ ) 
-    elems->SetValue ( i, Handle(StepRepr_RepresentationItem)::DownCast ( myStyles.Value(i) ) );
+    new StepRepr_HArray1OfRepresentationItem ( 1, myStyles.Extent() );
+  for ( Standard_Integer i=1; i <= myStyles.Extent(); i++ ) 
+    elems->SetValue ( i, Handle(StepRepr_RepresentationItem)::DownCast ( myStyles.FindKey(i) ) );
   // create new MDGPR
   Repr = new StepVisual_MechanicalDesignGeometricPresentationRepresentation;
   Handle(TCollection_HAsciiString) ReprName = new TCollection_HAsciiString ( "" );
@@ -356,21 +356,33 @@ Standard_Boolean STEPConstruct_Styles::LoadStyles ()
   Standard_Integer nb = model->NbEntities();
   Handle(Standard_Type) tMDGPR = STANDARD_TYPE(StepVisual_MechanicalDesignGeometricPresentationRepresentation);
   Handle(Standard_Type) tDM = STANDARD_TYPE(StepVisual_DraughtingModel);
-  for (Standard_Integer i = 1; i <= nb; i ++) {
+  Handle(Standard_Type) tSI = STANDARD_TYPE(StepVisual_StyledItem);
+  for (Standard_Integer i = 1; i <= nb; i ++)
+  {
     Handle(Standard_Transient) enti = model->Value(i);
-    if ( enti->DynamicType() != tMDGPR && enti->DynamicType() != tDM ) continue;
+    if ( enti->DynamicType() == tMDGPR || enti->DynamicType() == tDM )
+    {
+      Handle(StepRepr_Representation) container = Handle(StepRepr_Representation)::DownCast ( enti );
 
-    Handle(StepRepr_Representation) container = Handle(StepRepr_Representation)::DownCast ( enti );
-
-    Standard_Integer nbi = container->NbItems();
-    for ( Standard_Integer j=1; j <= nbi; j++ ) {
-      Handle(StepVisual_StyledItem) style = 
-	Handle(StepVisual_StyledItem)::DownCast ( container->ItemsValue(j) );
-      if ( style.IsNull() ) continue;
-      myStyles.Append ( style );
+      Standard_Integer nbi = container->NbItems();
+      for ( Standard_Integer j=1; j <= nbi; j++ )
+      {
+        Handle(StepVisual_StyledItem) style = 
+          Handle(StepVisual_StyledItem)::DownCast ( container->ItemsValue(j) );
+        if ( style.IsNull() ) continue;
+        myStyles.Add ( style );
+      }
+    }
+    else if (enti->DynamicType() == tSI)
+    {
+      Handle(StepVisual_StyledItem) aStyledItem = Handle(StepVisual_StyledItem)::DownCast (enti);
+      if (!myStyles.Contains (aStyledItem))
+      {
+        myStyles.Add (aStyledItem);
+      }
     }
   }
-  return myStyles.Length() >0;
+  return !myStyles.IsEmpty();
 }
 
 

@@ -41,6 +41,7 @@ uses
     StyledItem       from StepVisual,
     Colour           from StepVisual,
     Color            from Quantity,
+    IndexedMapOfTransient from TColStd,
     IndexedDataMapOfTransientTransient from TColStd,
     MechanicalDesignGeometricPresentationRepresentation from StepVisual,
     ContextDependentShapeRepresentation from StepShape,
@@ -176,7 +177,7 @@ is
 fields
 
     myMapOfStyles : IndexedDataMapOfTransientTransient from TColStd;
-    myStyles      : SequenceOfTransient from TColStd;
+    myStyles      : IndexedMapOfTransient from TColStd;
     myPSA         : SequenceOfTransient from TColStd;
 
 end Styles;
