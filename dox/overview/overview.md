@@ -399,7 +399,7 @@ The scripts are located in the OCCT root folder.
   * **MMGT_OPT** (optional) if set to 1, the memory manager performs optimizations as described below; if set to 2, 
     Intel (R) TBB optimized memory manager is used; if 0 (default), every memory block is allocated 
     in C memory heap directly (via malloc() and free() functions). 
-    In the latter case, all other options except MMGT_CLEAR  and MMGT_REENTRANT are ignored;
+    In the latter case, all other options except MMGT_CLEAR are ignored;
   * **MMGT_CLEAR** (optional) if set to 1 (default), every allocated memory block is cleared by zeros; 
     if set to 0, memory block is returned as it is;
   * **MMGT_CELLSIZE** (optional) defines the maximal size of blocks allocated in large pools of memory. Default is 200;

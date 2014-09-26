@@ -534,10 +534,7 @@ The configuration is defined by numeric values of the  following environment var
   * *MMGT_NBPAGES*: defines the size of memory chunks allocated for  small blocks in pages (operating-system dependent). Default is 1000.
   * *MMGT_THRESHOLD*: defines the maximal size of blocks that are  recycled internally instead of being returned to the heap. Default is 40000.
   * *MMGT_MMAP*: when set to 1 (default), large memory blocks are  allocated using memory mapping functions of the operating system; if set to 0,  they will be allocated in the C heap by *malloc()*.
-  * *MMGT_REENTRANT*: when set to 1 (default), all calls to the  optimized memory manager will be secured against possible simultaneous access  from different execution threads. This variable should be set in any  multithreaded application that uses an optimized memory manager (*MMGT_OPT=1*)  and has more than one thread potentially calling OCCT functions. If set to 0,  OCCT memory management and exception handling routines will skip the code protecting  from possible concurrency in multi-threaded environment. This can yield some  performance gain in some applications, but can lead to unpredictable results if  used in a multithreaded application.
-  
-**Note** it is  recommended to use options *MMGT_OPT=2* and *MMGT_REENTRANT=1* for applications that use OCCT  memory manager from more than one thread, on multiprocessor hardware.
- 
+
 @subsubsection occt_fcug_2_3_3 Implementation  details
 When *MMGT_OPT* is set to 1, the following optimization  techniques are used: 
   * Small blocks with a size less than *MMGT_CELLSIZE*, are not  allocated separately. Instead, a large pools of memory are allocated (the size  of each pool is *MMGT_NBPAGES* pages). Every new memory block is arranged in a  spare place of the current pool. When the current memory pool is completely  occupied, the next one is allocated, and so on.
@@ -564,7 +561,8 @@ Note that these overheads may be greater or less than  overheads induced by the 
 
 As a general rule, it is advisable to allocate memory  through significant blocks. In this way, you can work with blocks of contiguous  data, and processing is facilitated for the memory page manager. 
 
-In multithreaded mode <i>(MMGT_REENTRANT=1)</i>, the OCCT memory  manager uses mutex to lock access to free lists, therefore it may have less  performance than non-optimized mode in situations when different threads often  make simultaneous calls to the memory manager. The reason is that modern  implementations of *malloc()* and *free()* employ several allocation arenas and  thus avoid delays waiting mutex release, which are possible in such situations. 
+OCCT memory manager uses mutex to lock access to free lists, therefore it may have less  performance than non-optimized mode in situations when different threads often  make simultaneous calls to the memory manager.
+The reason is that modern  implementations of *malloc()* and *free()* employ several allocation arenas and  thus avoid delays waiting mutex release, which are possible in such situations. 
 
 @subsection occt_fcug_2_4 Exception  Handling
 Exception handling provides a means of transferring control  from a given point in a program being executed to an **exception handler** associated  with another point previously executed. 
