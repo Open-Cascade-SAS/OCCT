@@ -279,6 +279,15 @@ is
     	-- Standard_OutOfRange if AName in not known
     	-- in the Quantity_NameOfColor enumeration.
 
+  ColorFromName ( myclass;
+                  theName  : CString from Standard;
+                  theColor : out NameOfColor from Quantity )
+  returns Boolean from Standard;
+  ---Purpose: Finds color from predefined names.
+  -- For example, the name of the color which
+  -- corresponds to "BLACK" is Quantity_NOC_BLACK.
+  -- Returns false if name is unknown.
+
 	HlsRgb ( myclass;
 		 H, L, S	: Parameter from Quantity;
 		 R , G , B	: out Parameter from Quantity ) ;
@@ -339,7 +348,7 @@ is
 	---Purpose: Internal test
 	---Category: Private methods
 
---
+--
 
 fields
 

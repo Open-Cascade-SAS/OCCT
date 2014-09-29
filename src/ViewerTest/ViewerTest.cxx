@@ -97,16 +97,9 @@ extern int ViewerMainLoop(Standard_Integer argc, const char** argv);
 
 Quantity_NameOfColor ViewerTest::GetColorFromName (const Standard_CString theName)
 {
-  for (Standard_Integer anIter = Quantity_NOC_BLACK; anIter <= Quantity_NOC_WHITE; ++anIter)
-  {
-    Standard_CString aColorName = Quantity_Color::StringName (Quantity_NameOfColor (anIter));
-    if (strcasecmp (theName, aColorName) == 0)
-    {
-      return Quantity_NameOfColor (anIter);
-    }
-  }
-
-  return DEFAULT_COLOR;
+  Quantity_NameOfColor aColor = DEFAULT_COLOR;
+  Quantity_Color::ColorFromName (theName, aColor);
+  return aColor;
 }
 
 //=======================================================================
@@ -1515,8 +1508,50 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
       return 1;
     }
     aChangeSet->ToSetColor = 1;
-    aChangeSet->Color  = ViewerTest::GetColorFromName (aNames.Last().ToCString());
-    aNames.Remove (aNames.Length());
+
+    Quantity_NameOfColor aColor = Quantity_NOC_BLACK;
+    Standard_Boolean     isOk   = Standard_False;
+    if (Quantity_Color::ColorFromName (aNames.Last().ToCString(), aColor))
+    {
+      aChangeSet->Color = aColor;
+      aNames.Remove (aNames.Length());
+      isOk = Standard_True;
+    }
+    else if (aNames.Length() >= 3)
+    {
+      const TCollection_AsciiString anRgbStr[3] =
+      {
+        aNames.Value (aNames.Upper() - 2),
+        aNames.Value (aNames.Upper() - 1),
+        aNames.Value (aNames.Upper() - 0)
+      };
+      isOk = anRgbStr[0].IsRealValue()
+          && anRgbStr[1].IsRealValue()
+          && anRgbStr[2].IsRealValue();
+      if (isOk)
+      {
+        Graphic3d_Vec4d anRgb;
+        anRgb.x() = anRgbStr[0].RealValue();
+        anRgb.y() = anRgbStr[1].RealValue();
+        anRgb.z() = anRgbStr[2].RealValue();
+        if (anRgb.x() < 0.0 || anRgb.x() > 1.0
+         || anRgb.y() < 0.0 || anRgb.y() > 1.0
+         || anRgb.z() < 0.0 || anRgb.z() > 1.0)
+        {
+          std::cout << "Error: RGB color values should be within range 0..1!\n";
+          return 1;
+        }
+        aChangeSet->Color.SetValues (anRgb.x(), anRgb.y(), anRgb.z(), Quantity_TOC_RGB);
+        aNames.Remove (aNames.Length());
+        aNames.Remove (aNames.Length());
+        aNames.Remove (aNames.Length());
+      }
+    }
+    if (!isOk)
+    {
+      std::cout << "Error: not enough arguments!\n";
+      return 1;
+    }
   }
   else if (aCmdName == "vunsetcolor")
   {
@@ -1635,13 +1670,53 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
     }
     else if (anArg == "-setcolor")
     {
-      if (++anArgIter >= theArgNb)
+      Standard_Integer aNbComps  = 0;
+      Standard_Integer aCompIter = anArgIter + 1;
+      for (; aCompIter < theArgNb; ++aCompIter, ++aNbComps)
       {
-        std::cout << "Error: wrong syntax at " << anArg << "\n";
-        return 1;
+        if (theArgVec[aCompIter][0] == '-')
+        {
+          break;
+        }
+      }
+      switch (aNbComps)
+      {
+        case 1:
+        {
+          Quantity_NameOfColor aColor = Quantity_NOC_BLACK;
+          Standard_CString     aName  = theArgVec[anArgIter + 1];
+          if (!Quantity_Color::ColorFromName (aName, aColor))
+          {
+            std::cout << "Error: unknown color name '" << aName << "'\n";
+            return 1;
+          }
+          aChangeSet->Color = aColor;
+          break;
+        }
+        case 3:
+        {
+          Graphic3d_Vec3d anRgb;
+          anRgb.x() = Draw::Atof (theArgVec[anArgIter + 1]);
+          anRgb.y() = Draw::Atof (theArgVec[anArgIter + 2]);
+          anRgb.z() = Draw::Atof (theArgVec[anArgIter + 3]);
+          if (anRgb.x() < 0.0 || anRgb.x() > 1.0
+           || anRgb.y() < 0.0 || anRgb.y() > 1.0
+           || anRgb.z() < 0.0 || anRgb.z() > 1.0)
+          {
+            std::cout << "Error: RGB color values should be within range 0..1!\n";
+            return 1;
+          }
+          aChangeSet->Color.SetValues (anRgb.x(), anRgb.y(), anRgb.z(), Quantity_TOC_RGB);
+          break;
+        }
+        default:
+        {
+          std::cout << "Error: wrong syntax at " << anArg << "\n";
+          return 1;
+        }
       }
       aChangeSet->ToSetColor = 1;
-      aChangeSet->Color = ViewerTest::GetColorFromName (theArgVec[anArgIter]);
+      anArgIter += aNbComps;
     }
     else if (anArg == "-unsetcolor")
     {
@@ -4287,7 +4362,7 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
 
   theCommands.Add("vaspects",
               "vaspects [-noupdate|-update] [name1 [name2 [...]]]"
-      "\n\t\t:          [-setcolor ColorName] [-unsetcolor]"
+      "\n\t\t:          [-setcolor ColorName] [-setcolor R G B] [-unsetcolor]"
       "\n\t\t:          [-setmaterial MatName] [-unsetmaterial]"
       "\n\t\t:          [-settransparency Transp] [-unsettransparency]"
       "\n\t\t:          [-setwidth LineWidth] [-unsetwidth]"

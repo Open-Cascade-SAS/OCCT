@@ -37,6 +37,7 @@
 #include <Quantity_Color.ixx>
 #include <Quantity_Color_1.hxx>
 #include <Standard_OutOfRange.hxx>
+#include <TCollection_AsciiString.hxx>
 
 // for Test method (suite et fin)
 #include <string.h>
@@ -58,6 +59,28 @@ void call_rgbhls(float r, float g, float b, float& h, float& l, float& s);
 //-Destructors
 
 //-Methods, in order
+
+Standard_Boolean Quantity_Color::ColorFromName (const Standard_CString theName,
+                                                Quantity_NameOfColor&  theColor)
+{
+  TCollection_AsciiString aName (theName);
+  aName.UpperCase();
+  if (aName.Search("QUANTITY_NOC_") == 1)
+  {
+    aName = aName.SubString (14, aName.Length());
+  }
+
+  for (Standard_Integer anIter = Quantity_NOC_BLACK; anIter <= Quantity_NOC_WHITE; ++anIter)
+  {
+    Standard_CString aColorName = Quantity_Color::StringName (Quantity_NameOfColor (anIter));
+    if (aName == aColorName)
+    {
+      theColor = (Quantity_NameOfColor )anIter;
+      return Standard_True;
+    }
+  }
+  return Standard_False;
+}
 
 Quantity_Color::Quantity_Color () {
 
