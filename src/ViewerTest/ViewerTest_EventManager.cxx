@@ -17,7 +17,7 @@
 #include <ViewerTest_EventManager.ixx>
 #include <AIS_InteractiveContext.hxx>
 #include <Aspect_Grid.hxx>
-#include <NIS_View.hxx>
+#include <V3d_View.hxx>
 
 //=======================================================================
 //function : ViewerTest_EventManager
@@ -72,11 +72,6 @@ void ViewerTest_EventManager::MoveTo (const Standard_Integer theXPix,
 
   myX = theXPix;
   myY = theYPix;
-  const Handle(NIS_View) aView = Handle(NIS_View)::DownCast(myView);
-  if (!aView.IsNull())
-  {
-    aView->DynamicHilight (theXPix, theYPix);
-  }
 }
 
 //=======================================================================
@@ -124,17 +119,6 @@ void ViewerTest_EventManager::Select (const Standard_Integer theXPressed,
     }
   }
 
-  const Handle(NIS_View) aView = Handle(NIS_View)::DownCast (myView);
-  if (!aView.IsNull())
-  {
-    aView->Select (Min (theXPressed, theXMotion),
-                   Min (theYPressed, theYMotion),
-                   Max (theXPressed, theXMotion),
-                   Max (theYPressed, theYMotion),
-                   Standard_False,
-                   IS_FULL_INCLUSION,
-                   Standard_False);
-  }
   myView->Redraw();
 }
 
@@ -181,17 +165,6 @@ void ViewerTest_EventManager::ShiftSelect (const Standard_Integer theXPressed,
       myCtx->MainSelector()->AllowOverlapDetection (Standard_False);
     }
   }
-  const Handle(NIS_View) aView = Handle(NIS_View)::DownCast (myView);
-  if (!aView.IsNull())
-  {
-    aView->Select (Min (theXPressed, theXMotion),
-                   Min (theYPressed, theYMotion),
-                   Max (theXPressed, theXMotion),
-                   Max (theYPressed, theYMotion),
-                   Standard_True,
-                   IS_FULL_INCLUSION,
-                   Standard_False);
-  }
   myView->Redraw();
 }
 
@@ -211,11 +184,6 @@ void ViewerTest_EventManager::Select()
     myCtx->Select (Standard_False);
   }
 
-  const Handle(NIS_View) aView = Handle(NIS_View)::DownCast (myView);
-  if (!aView.IsNull())
-  {
-    aView->Select (myX, myY, Standard_False);
-  }
   myView->Redraw();
 }
 
@@ -235,11 +203,6 @@ void ViewerTest_EventManager::ShiftSelect()
     myCtx->ShiftSelect (Standard_False);
   }
 
-  const Handle(NIS_View) aView = Handle(NIS_View)::DownCast (myView);
-  if (!aView.IsNull())
-  {
-    aView->Select (myX, myY, Standard_False);
-  }
   myView->Redraw();
 }
 
@@ -259,16 +222,6 @@ void ViewerTest_EventManager::Select (const TColgp_Array1OfPnt2d& thePolyline)
     myCtx->Select (thePolyline, myView, Standard_False);
   }
 
-  const Handle(NIS_View) aView = Handle(NIS_View)::DownCast(myView);
-  if (!aView.IsNull())
-  {
-    NCollection_List<gp_XY> aPolylist;
-    for(Standard_Integer anIter = thePolyline.Lower(); anIter <= thePolyline.Upper(); ++anIter)
-    {
-      aPolylist.Append (gp_XY (thePolyline.Value (anIter).X(), thePolyline.Value (anIter).Y()));
-    }
-    aView->Select (aPolylist, Standard_False, Standard_False, Standard_False);
-  }
   myView->Redraw();
 }
 
@@ -288,16 +241,6 @@ void ViewerTest_EventManager::ShiftSelect (const TColgp_Array1OfPnt2d& thePolyli
     myCtx->ShiftSelect (thePolyline, myView, Standard_False);
   }
 
-  const Handle(NIS_View) aView = Handle(NIS_View)::DownCast (myView);
-  if (!aView.IsNull())
-  {
-    NCollection_List<gp_XY> aPolylist;
-    for (Standard_Integer anIter = thePolyline.Lower(); anIter <= thePolyline.Upper(); ++anIter)
-    {
-      aPolylist.Append (gp_XY (thePolyline.Value (anIter).X(), thePolyline.Value (anIter).Y()));
-    }
-    aView->Select (aPolylist, Standard_True, Standard_False, Standard_False);
-  }
   myView->Redraw();
 }
 

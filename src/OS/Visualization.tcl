@@ -19,7 +19,6 @@ proc Visualization:toolkits { } {
                      TKV3d \
                      TKOpenGl \
                      TKMeshVS \
-                     TKNIS \
                      TKVoxel]
 
     if { [info exists ::env(HAVE_VTK)] && "$::env(HAVE_VTK)" == "true" } {

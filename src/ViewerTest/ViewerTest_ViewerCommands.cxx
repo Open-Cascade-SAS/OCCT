@@ -45,9 +45,6 @@
 #include <NCollection_DoubleMap.hxx>
 #include <NCollection_List.hxx>
 #include <NCollection_Vector.hxx>
-#include <NIS_View.hxx>
-#include <NIS_Triangulated.hxx>
-#include <NIS_InteractiveContext.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <Draw_Interpretor.hxx>
 #include <Draw.hxx>
@@ -130,7 +127,6 @@ Standard_IMPORT Standard_Boolean Draw_VirtualWindows;
 Standard_IMPORT Standard_Boolean Draw_Interprete (const char* theCommand);
 
 Standard_EXPORT int ViewerMainLoop(Standard_Integer , const char** argv);
-extern const Handle(NIS_InteractiveContext)& TheNISContext();
 extern ViewerTest_DoubleMapOfInteractiveAndName& GetMapOfAIS();
 
 extern int VErase (Draw_Interpretor& theDI,
@@ -681,12 +677,12 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
 #endif
   VT_GetWindow()->SetVirtual (Draw_VirtualWindows);
 
-  // NIS setup
-  Handle(NIS_View) aView = new NIS_View (a3DViewer, VT_GetWindow());
+  // View setup
+  Handle(V3d_View) aView = a3DViewer->CreateView();
+  aView->SetWindow (VT_GetWindow());
 
   ViewerTest::CurrentView(aView);
   ViewerTest_myViews.Bind (aViewNames.GetViewName(), aView);
-  TheNISContext()->AttachView (aView);
 
   // Setup for X11 or NT
   OSWindowSetup();
@@ -1096,7 +1092,6 @@ void ViewerTest::RemoveView (const TCollection_AsciiString& theViewName, const S
   Handle(AIS_InteractiveContext) aCurrentContext = FindContextByView(aView);
 
   // Remove view resources
-  TheNISContext()->DetachView(Handle(NIS_View)::DownCast(aView));
   ViewerTest_myViews.UnBind1(theViewName);
   aView->Remove();
 
@@ -1336,7 +1331,6 @@ void VT_ProcessKeyPress (const char* buf_ret)
 {
   //cout << "KeyPress" << endl;
   const Handle(V3d_View) aView = ViewerTest::CurrentView();
-  const Handle(NIS_View) aNisView = Handle(NIS_View)::DownCast (aView);
   // Letter in alphabetic order
 
   if (!strcasecmp (buf_ret, "A"))
@@ -1352,10 +1346,7 @@ void VT_ProcessKeyPress (const char* buf_ret)
   else if (!strcasecmp (buf_ret, "F"))
   {
     // FitAll
-    if (aNisView.IsNull())
-      aView->FitAll();
-    else
-      aNisView->FitAll3d();
+    aView->FitAll();
   }
   else if (!strcasecmp (buf_ret, "H"))
   {
@@ -2478,10 +2469,8 @@ static void OSWindowSetup()
 static int VFit(Draw_Interpretor& , Standard_Integer , const char** )
 {
   const Handle(V3d_View) aView = ViewerTest::CurrentView();
-  Handle(NIS_View) V = Handle(NIS_View)::DownCast(aView);
-  if (V.IsNull() == Standard_False) {
-    V->FitAll3d();
-  } else if (aView.IsNull() == Standard_False) {
+  if (!aView.IsNull())
+  {
     aView->FitAll();
   }
   return 0;

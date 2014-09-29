@@ -20,7 +20,6 @@
 #include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>
 #include <AIS_InteractiveContext.hxx>
-#include <NIS_View.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_DoubleMap.hxx>
 

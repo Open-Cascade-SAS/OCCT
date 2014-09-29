@@ -87,6 +87,7 @@
 #include <V3d_View.hxx>
 #include <BRepFeat_SplitShape.hxx>
 #include <BRepAlgoAPI_Section.hxx>
+#include <TColStd_PackedMapOfInteger.hxx>
 
 #if ! defined(_WIN32)
 extern ViewerTest_DoubleMapOfInteractiveAndName& GetMapOfAIS();

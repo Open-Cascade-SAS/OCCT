@@ -202,7 +202,6 @@ p DsgPrs
 p Graphic3d
 p Image
 p MeshVS
-p NIS
 p OpenGl
 p Prs3d
 p PrsMgr
@@ -221,7 +220,6 @@ p Cocoa
 r Textures
 r Shaders
 t TKMeshVS
-t TKNIS
 t TKOpenGl
 t TKService
 t TKV3d

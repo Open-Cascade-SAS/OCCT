@@ -32,7 +32,6 @@
 #include <Handle_TColStd_HArray1OfTransient.hxx>
 #include <Handle_V3d_Viewer.hxx>
 #include <Handle_AIS_InteractiveContext.hxx>
-#include <NIS_InteractiveContext.hxx>
 #include <Handle_ViewerTest_EventManager.hxx>
 #include <Quantity_NameOfColor.hxx>
 
@@ -154,11 +153,7 @@ public:
 
   Standard_EXPORT static const Handle(AIS_InteractiveContext)& GetAISContext();
 
-  Standard_EXPORT static NIS_InteractiveContext& GetNISContext();
-
   Standard_EXPORT static void SetAISContext (const Handle(AIS_InteractiveContext)& aContext);
-
-  Standard_EXPORT static void SetNISContext (const NIS_InteractiveContext& aContext);
 
   Standard_EXPORT static const Handle(V3d_View)& CurrentView();
 

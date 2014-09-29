@@ -81,8 +81,6 @@
 #pragma warning (disable:4996)
 #endif
 
-#include <NIS_InteractiveContext.hxx>
-#include <NIS_Triangulated.hxx>
 extern int ViewerMainLoop(Standard_Integer argc, const char** argv);
 
 #include <Quantity_Color.hxx>
@@ -317,7 +315,7 @@ Standard_EXPORT Standard_Boolean VDisplayAISObject (const TCollection_AsciiStrin
 static TColStd_MapOfInteger theactivatedmodes(8);
 static TColStd_ListOfTransient theEventMgrs;
 
-static void VwrTst_InitEventMgr(const Handle(NIS_View)& aView,
+static void VwrTst_InitEventMgr(const Handle(V3d_View)& aView,
                                 const Handle(AIS_InteractiveContext)& Ctx)
 {
   theEventMgrs.Clear();
@@ -343,16 +341,6 @@ const Handle(V3d_View)& ViewerTest::CurrentView()
 void ViewerTest::CurrentView(const Handle(V3d_View)& V)
 {
   a3DView() = V;
-}
-
-Standard_EXPORT const Handle(NIS_InteractiveContext)& TheNISContext()
-{
-  static Handle(NIS_InteractiveContext) aContext;
-  if (aContext.IsNull()) {
-    aContext = new NIS_InteractiveContext;
-    aContext->SetSelectionMode (NIS_InteractiveContext::Mode_Normal);
-  }
-  return aContext;
 }
 
 const Handle(AIS_InteractiveContext)& ViewerTest::GetAISContext()
@@ -389,8 +377,7 @@ void ViewerTest::UnsetEventManager()
 
 void ViewerTest::ResetEventManager()
 {
-  const Handle(NIS_View) aView =
-    Handle(NIS_View)::DownCast(ViewerTest::CurrentView());
+  const Handle(V3d_View) aView = ViewerTest::CurrentView();
   VwrTst_InitEventMgr(aView, ViewerTest::GetAISContext());
 }
 
@@ -483,20 +470,12 @@ void ViewerTest::Clear()
     ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName it(GetMapOfAIS());
     while ( it.More() ) {
       cout << "Remove " << it.Key2() << endl;
-      if (it.Key1()->IsKind(STANDARD_TYPE(AIS_InteractiveObject))) {
-        const Handle(AIS_InteractiveObject) anObj =
-          Handle(AIS_InteractiveObject)::DownCast (it.Key1());
-        TheAISContext()->Remove(anObj,Standard_False);
-      } else if (it.Key1()->IsKind(STANDARD_TYPE(NIS_InteractiveObject))) {
-        const Handle(NIS_InteractiveObject) anObj =
-          Handle(NIS_InteractiveObject)::DownCast (it.Key1());
-        TheNISContext()->Remove(anObj);
-      }
+      const Handle(AIS_InteractiveObject) anObj = Handle(AIS_InteractiveObject)::DownCast (it.Key1());
+      TheAISContext()->Remove(anObj,Standard_False);
       it.Next();
     }
     TheAISContext()->RebuildSelectionStructs();
     TheAISContext()->UpdateCurrentViewer();
-//    TheNISContext()->UpdateViews();
     GetMapOfAIS().Clear();
   }
 }
@@ -2174,29 +2153,6 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
         aCtx->Redisplay (aColoredPrs, Standard_False);
       }
     }
-    else
-    {
-      Handle(NIS_InteractiveObject) aNisObj = Handle(NIS_InteractiveObject)::DownCast (aPrsIter.CurrentTrs());
-      Handle(NIS_Triangulated)      aNisTri = Handle(NIS_Triangulated)::DownCast (aNisObj);
-      if (!aNisObj.IsNull())
-      {
-        if (aChangeSet->ToSetTransparency != 0)
-        {
-          aNisObj->SetTransparency (aChangeSet->Transparency);
-        }
-      }
-      if (!aNisTri.IsNull())
-      {
-        if (aChangeSet->ToSetColor != 0)
-        {
-          aNisTri->SetColor (aChangeSet->Color);
-        }
-        if (aChangeSet->ToSetLineWidth != 0)
-        {
-          aNisTri->SetLineWidth (aChangeSet->LineWidth);
-        }
-      }
-    }
   }
   return 0;
 }
@@ -2255,18 +2211,12 @@ static int VDonly2 (Draw_Interpretor& ,
       TCollection_AsciiString aName = theArgVec[anArgIter];
       if (GetMapOfAIS().IsBound2 (aName))
       {
-        const Handle(Standard_Transient) anObj = GetMapOfAIS().Find2 (aName);
-        if (anObj->IsKind (STANDARD_TYPE(AIS_InteractiveObject)))
+        const Handle(AIS_InteractiveObject) aShape = Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2 (aName));
+        if (!aShape.IsNull())
         {
-          const Handle(AIS_InteractiveObject) aShape = Handle(AIS_InteractiveObject)::DownCast (anObj);
           aCtx->Display (aShape, Standard_False);
+          aDispSet.Add (aShape);
         }
-        else if (anObj->IsKind (STANDARD_TYPE(NIS_InteractiveObject)))
-        {
-          Handle(NIS_InteractiveObject) aShape = Handle(NIS_InteractiveObject)::DownCast (anObj);
-          TheNISContext()->Display (aShape);
-        }
-        aDispSet.Add (anObj);
       }
     }
   }
@@ -2279,15 +2229,10 @@ static int VDonly2 (Draw_Interpretor& ,
       continue;
     }
 
-    if (anIter.Key1()->IsKind (STANDARD_TYPE(AIS_InteractiveObject)))
+    const Handle(AIS_InteractiveObject) aShape = Handle(AIS_InteractiveObject)::DownCast (anIter.Key1());
+    if (aShape.IsNull())
     {
-      const Handle(AIS_InteractiveObject) aShape = Handle(AIS_InteractiveObject)::DownCast (anIter.Key1());
       aCtx->Erase (aShape, Standard_False);
-    }
-    else if (anIter.Key1()->IsKind (STANDARD_TYPE(NIS_InteractiveObject)))
-    {
-      const Handle(NIS_InteractiveObject) aShape = Handle(NIS_InteractiveObject)::DownCast (anIter.Key1());
-      TheNISContext()->Erase (aShape);
     }
   }
   return 0;
@@ -2385,57 +2330,31 @@ int VRemove (Draw_Interpretor& theDI,
         continue;
       }
 
-      const Handle(Standard_Transient)& aTransientObj = GetMapOfAIS().Find2 (aName);
-
-      const Handle(AIS_InteractiveObject) anIO = Handle(AIS_InteractiveObject)::DownCast (aTransientObj);
-      if (!anIO.IsNull())
+      const Handle(AIS_InteractiveObject) anIO = Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2 (aName));
+      if (anIO->GetContext() != aCtx)
       {
-        if (anIO->GetContext() != aCtx)
-        {
-          theDI << aName.ToCString() << " was not displayed in current context.\n";
-          theDI << "Please activate view with this object displayed and try again.\n";
-          continue;
-        }
-
-        anIONameList.Append (aName);
+        theDI << aName.ToCString() << " was not displayed in current context.\n";
+        theDI << "Please activate view with this object displayed and try again.\n";
         continue;
       }
 
-      const Handle(NIS_InteractiveObject) aNisIO = Handle(NIS_InteractiveObject)::DownCast (aTransientObj);
-      if (!aNisIO.IsNull())
-      {
-        anIONameList.Append (aName);
-      }
+      anIONameList.Append (aName);
+      continue;
     }
   }
-  else if (aCtx->NbCurrents() > 0
-        || TheNISContext()->GetSelected().Extent() > 0)
+  else if (aCtx->NbCurrents() > 0)
   {
     for (ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName anIter (GetMapOfAIS());
          anIter.More(); anIter.Next())
     {
       const Handle(AIS_InteractiveObject) anIO = Handle(AIS_InteractiveObject)::DownCast (anIter.Key1());
-      if (!anIO.IsNull())
+      if (!aCtx->IsCurrent (anIO))
       {
-        if (!aCtx->IsCurrent (anIO))
-        {
-          continue;
-        }
-
-        anIONameList.Append (anIter.Key2());
         continue;
       }
 
-      const Handle(NIS_InteractiveObject) aNisIO = Handle(NIS_InteractiveObject)::DownCast (anIter.Key1());
-      if (!aNisIO.IsNull())
-      {
-        if (!TheNISContext()->IsSelected (aNisIO))
-        {
-          continue;
-        }
-
-        anIONameList.Append (anIter.Key2());
-      }
+      anIONameList.Append (anIter.Key2());
+      continue;
     }
   }
 
@@ -2444,25 +2363,10 @@ int VRemove (Draw_Interpretor& theDI,
        anIter.More(); anIter.Next())
   {
     const Handle(AIS_InteractiveObject) anIO  = Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2 (anIter.Value()));
-    if (!anIO.IsNull())
+    aCtx->Remove (anIO, Standard_False);
+    if (toPrintInfo)
     {
-      aCtx->Remove (anIO, Standard_False);
-      if (toPrintInfo)
-      {
-        theDI << anIter.Value().ToCString() << " was removed\n";
-      }
-    }
-    else
-    {
-      const Handle(NIS_InteractiveObject) aNisIO = Handle(NIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2 (anIter.Value()));
-      if (!aNisIO.IsNull())
-      {
-        TheNISContext()->Remove (aNisIO);
-        if (toPrintInfo)
-        {
-          theDI << anIter.Value().ToCString() << " was removed\n";
-        }
-      }
+      theDI << anIter.Value().ToCString() << " was removed\n";
     }
     if (!isContextOnly)
     {
@@ -2569,14 +2473,6 @@ int VErase (Draw_Interpretor& theDI,
           aCtx->Erase (anIO, Standard_False);
         }
       }
-      else
-      {
-        const Handle(NIS_InteractiveObject) aNisIO = Handle(NIS_InteractiveObject)::DownCast (anObj);
-        if (!aNisIO.IsNull())
-        {
-          TheNISContext()->Erase (aNisIO);
-        }
-      }
     }
   }
   else if (!toEraseAll && aCtx->NbCurrents() > 0)
@@ -2617,14 +2513,6 @@ int VErase (Draw_Interpretor& theDI,
         else
         {
           aCtx->Erase (anIO, Standard_False);
-        }
-      }
-      else
-      {
-        const Handle(NIS_InteractiveObject) aNisIO = Handle(NIS_InteractiveObject)::DownCast (anIter.Key1());
-        if (!aNisIO.IsNull())
-        {
-          TheNISContext()->Erase (aNisIO);
         }
       }
     }
@@ -2689,31 +2577,15 @@ static int VDisplayAll (Draw_Interpretor& ,
   for (ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName anIter (GetMapOfAIS());
        anIter.More(); anIter.Next())
   {
-    if (anIter.Key1()->IsKind (STANDARD_TYPE(AIS_InteractiveObject)))
-    {
-      const Handle(AIS_InteractiveObject) aShape = Handle(AIS_InteractiveObject)::DownCast (anIter.Key1());
-      aCtx->Erase (aShape, Standard_False);
-    }
-    else if (anIter.Key1()->IsKind(STANDARD_TYPE(NIS_InteractiveObject)))
-    {
-      const Handle(NIS_InteractiveObject) aShape = Handle(NIS_InteractiveObject)::DownCast (anIter.Key1());
-      TheNISContext()->Erase (aShape);
-    }
+    const Handle(AIS_InteractiveObject) aShape = Handle(AIS_InteractiveObject)::DownCast (anIter.Key1());
+    aCtx->Erase (aShape, Standard_False);
   }
 
   for (ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName anIter (GetMapOfAIS());
        anIter.More(); anIter.Next())
   {
-    if (anIter.Key1()->IsKind (STANDARD_TYPE(AIS_InteractiveObject)))
-    {
-      const Handle(AIS_InteractiveObject) aShape = Handle(AIS_InteractiveObject)::DownCast (anIter.Key1());
-      aCtx->Display (aShape, Standard_False);
-    }
-    else if (anIter.Key1()->IsKind (STANDARD_TYPE(NIS_InteractiveObject)))
-    {
-      Handle(NIS_InteractiveObject) aShape = Handle(NIS_InteractiveObject)::DownCast (anIter.Key1());
-      TheNISContext()->Display (aShape);
-    }
+    const Handle(AIS_InteractiveObject) aShape = Handle(AIS_InteractiveObject)::DownCast (anIter.Key1());
+    aCtx->Display (aShape, Standard_False);
   }
   return 0;
 }
@@ -3520,85 +3392,76 @@ static int VDisplay2 (Draw_Interpretor& theDI,
       continue;
     }
 
-    Handle(Standard_Transient) anObj = GetMapOfAIS().Find2 (aName);
-    if (anObj->IsKind (STANDARD_TYPE (AIS_InteractiveObject)))
+    Handle(AIS_InteractiveObject) aShape = Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2 (aName));
+    if (isMutable != -1)
     {
-      Handle(AIS_InteractiveObject) aShape = Handle(AIS_InteractiveObject)::DownCast (anObj);
-      if (isMutable != -1)
-      {
-        aShape->SetMutable (isMutable == 1);
-      }
-      if (aZLayer != Graphic3d_ZLayerId_UNKNOWN)
-      {
-        aShape->SetZLayer (aZLayer);
-      }
-      if (toSetTrsfPers)
-      {
-        aShape->SetTransformPersistence (aTrsfPersFlags, aTPPosition);
-      }
-      if (anObjDispMode != -2)
-      {
-        aShape->SetDisplayMode (anObjDispMode);
-      }
-      if (anObjHighMode != -2)
-      {
-        aShape->SetHilightMode (anObjHighMode);
-      }
-      Standard_Integer aDispMode = aShape->HasDisplayMode()
-                                  ? aShape->DisplayMode()
-                                  : (aShape->AcceptDisplayMode (aCtx->DisplayMode())
-                                  ? aCtx->DisplayMode()
-                                  : 0);
-      Standard_Integer aSelMode = -1;
-      if ( isSelectable ==  1
-       || (isSelectable == -1
-        && aCtx->GetAutoActivateSelection()
-        && aShape->GetTransformPersistenceMode() == 0))
-      {
-        aSelMode = aShape->HasSelectionMode() ? aShape->SelectionMode() : -1;
-      }
-
-      if (aShape->Type() == AIS_KOI_Datum)
-      {
-        aCtx->Display (aShape, Standard_False);
-      }
-      else
-      {
-        theDI << "Display " << aName.ToCString() << "\n";
-
-        // update the Shape in the AIS_Shape
-        TopoDS_Shape      aNewShape = GetShapeFromName (aName.ToCString());
-        Handle(AIS_Shape) aShapePrs = Handle(AIS_Shape)::DownCast(aShape);
-        if (!aShapePrs.IsNull())
-        {
-          if (!aShapePrs->Shape().IsEqual (aNewShape))
-          {
-            toReDisplay = Standard_True;
-          }
-          aShapePrs->Set (aNewShape);
-        }
-        if (toReDisplay)
-        {
-          aCtx->Redisplay (aShape, Standard_False);
-        }
-
-        if (aSelMode == -1)
-        {
-          aCtx->Erase (aShape);
-        }
-        aCtx->Display (aShape, aDispMode, aSelMode,
-                       Standard_False, aShape->AcceptShapeDecomposition(),
-                       aDispStatus);
-        if (toDisplayInView)
-        {
-          aCtx->SetViewAffinity (aShape, ViewerTest::CurrentView(), Standard_True);
-        }
-      }
+      aShape->SetMutable (isMutable == 1);
     }
-    else if (anObj->IsKind (STANDARD_TYPE (NIS_InteractiveObject)))
+    if (aZLayer != Graphic3d_ZLayerId_UNKNOWN)
     {
-      Handle(NIS_InteractiveObject) aShape = Handle(NIS_InteractiveObject)::DownCast (anObj);
-      TheNISContext()->Display (aShape);
+      aShape->SetZLayer (aZLayer);
+    }
+    if (toSetTrsfPers)
+    {
+      aShape->SetTransformPersistence (aTrsfPersFlags, aTPPosition);
+    }
+    if (anObjDispMode != -2)
+    {
+      aShape->SetDisplayMode (anObjDispMode);
+    }
+    if (anObjHighMode != -2)
+    {
+      aShape->SetHilightMode (anObjHighMode);
+    }
+    Standard_Integer aDispMode = aShape->HasDisplayMode()
+                                ? aShape->DisplayMode()
+                                : (aShape->AcceptDisplayMode (aCtx->DisplayMode())
+                                ? aCtx->DisplayMode()
+                                : 0);
+    Standard_Integer aSelMode = -1;
+    if ( isSelectable ==  1
+     || (isSelectable == -1
+      && aCtx->GetAutoActivateSelection()
+      && aShape->GetTransformPersistenceMode() == 0))
+    {
+      aSelMode = aShape->HasSelectionMode() ? aShape->SelectionMode() : -1;
+    }
+
+    if (aShape->Type() == AIS_KOI_Datum)
+    {
+      aCtx->Display (aShape, Standard_False);
+    }
+    else
+    {
+      theDI << "Display " << aName.ToCString() << "\n";
+
+      // update the Shape in the AIS_Shape
+      TopoDS_Shape      aNewShape = GetShapeFromName (aName.ToCString());
+      Handle(AIS_Shape) aShapePrs = Handle(AIS_Shape)::DownCast(aShape);
+      if (!aShapePrs.IsNull())
+      {
+        if (!aShapePrs->Shape().IsEqual (aNewShape))
+        {
+          toReDisplay = Standard_True;
+        }
+        aShapePrs->Set (aNewShape);
+      }
+      if (toReDisplay)
+      {
+        aCtx->Redisplay (aShape, Standard_False);
+      }
+
+      if (aSelMode == -1)
+      {
+        aCtx->Erase (aShape);
+      }
+      aCtx->Display (aShape, aDispMode, aSelMode,
+                     Standard_False, aShape->AcceptShapeDecomposition(),
+                     aDispStatus);
+      if (toDisplayInView)
+      {
+        aCtx->SetViewAffinity (aShape, ViewerTest::CurrentView(), Standard_True);
+      }
     }
   }
 

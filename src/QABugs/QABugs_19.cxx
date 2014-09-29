@@ -48,6 +48,7 @@
 #include <BRepAlgo_Cut.hxx>
 #include <NCollection_Map.hxx>
 #include <NCollection_Handle.hxx>
+#include <NCollection_IncAllocator.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <GeomFill_Trihedron.hxx>
 #include <BRepOffsetAPI_MakePipe.hxx>

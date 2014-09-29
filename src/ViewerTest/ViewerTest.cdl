@@ -28,7 +28,6 @@ uses
     TopoDS,
     V3d,
     AIS,
-    NIS,
     MMgt,
     Quantity
 
