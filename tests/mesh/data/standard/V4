@@ -4,4 +4,4 @@ if { [string compare $command "shading"] != 0 } {
    set bug_freenodes "OCC23105"
    set nbfreenodes(ALL) 4
 }
-set nbwithouttri(All) 5
+set nbwithouttri(All) 7

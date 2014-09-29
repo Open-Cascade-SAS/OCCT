@@ -1,3 +1,5 @@
 set TheFileName shading_012.brep
-set bug_withouttri "OCC22687"
-set nbwithouttri(All) 1
+###set bug_withouttri "OCC22687"
+###set nbwithouttri(All) 1
+set bug_freelinks "OCC23106"
+set nbfree(All) 4
