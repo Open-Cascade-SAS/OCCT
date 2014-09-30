@@ -13,14 +13,14 @@ vsetdispmode 1
 
 # test vprintview work
 # make sure that the images with forced tiles and without are the same
-vchangecamera proj ortho
+vcamera -ortho
 vfit
 set aTitle "ortho"
 vprintview 512 512 $imagedir/${casename}_${aTitle}.png rgb
 set aTitle "ortho-tiles"
 vprintview 512 512 $imagedir/${casename}_${aTitle}.png rgb 1 256 256
 
-vchangecamera proj persp
+vcamera -persp
 vfit
 set aTitle "persp"
 vprintview 512 512 $imagedir/${casename}_${aTitle}.png rgb
@@ -29,17 +29,16 @@ vprintview 512 512 $imagedir/${casename}_${aTitle}.png rgb 1 256 256
 
 vshaderprog phong
 
-vchangecamera proj ortho
+vcamera -ortho
 vfit
 set aTitle "ortho-shader"
 vprintview 512 512 $imagedir/${casename}_${aTitle}.png rgb
 set aTitle "ortho-shader-tiles"
 vprintview 512 512 $imagedir/${casename}_${aTitle}.png rgb 1 256 256
 
-vchangecamera proj persp
+vcamera -persp
 vfit
 set aTitle "persp-shader"
 vprintview 512 512 $imagedir/${casename}_${aTitle}.png rgb
 set aTitle "persp-shader-tiles"
 vprintview 512 512 $imagedir/${casename}_${aTitle}.png rgb 1 256 256
-

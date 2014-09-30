@@ -4806,13 +4806,13 @@ static Standard_Integer VZClipping (Draw_Interpretor& di,
       Quantity_Length aDepth = 0., aWidth = 1.;
       if(argc == 3)
       {
-        aDepth = atof(argv[1]);
-        aWidth = atof(argv[2]);
+        aDepth = Draw::Atof (argv[1]);
+        aWidth = Draw::Atof (argv[2]);
       }
       else if(argc == 4)
       {
-        aDepth = atof(argv[2]);
-        aWidth = atof(argv[3]);
+        aDepth = Draw::Atof (argv[2]);
+        aWidth = Draw::Atof (argv[3]);
       }
 
       if(aDepth<0. || aDepth>1.)
@@ -4933,7 +4933,7 @@ static Standard_Integer VSetViewSize (Draw_Interpretor& di,
     di<<"Usage : " << argv[0] << " Size\n";
     return 1;
   }
-  Standard_Real aSize = atof(argv[1]);
+  Standard_Real aSize = Draw::Atof (argv[1]);
   if (aSize <= 0.)
   {
     di<<"Bad Size value  : " << aSize << "\n";
@@ -4964,13 +4964,13 @@ static Standard_Integer VMoveView (Draw_Interpretor& di,
     di<<"Usage : " << argv[0] << " Dx Dy Dz [Start = 1|0]\n";
     return 1;
   }
-  Standard_Real Dx = atof(argv[1]);
-  Standard_Real Dy = atof(argv[2]);
-  Standard_Real Dz = atof(argv[3]);
+  Standard_Real Dx = Draw::Atof (argv[1]);
+  Standard_Real Dy = Draw::Atof (argv[2]);
+  Standard_Real Dz = Draw::Atof (argv[3]);
   Standard_Boolean aStart = Standard_True;
   if (argc == 5)
   {
-      aStart = (atoi(argv[4]) > 0);
+      aStart = (Draw::Atoi (argv[4]) > 0);
   }
 
   Handle(V3d_View) aView = ViewerTest::CurrentView();
@@ -4997,13 +4997,13 @@ static Standard_Integer VTranslateView (Draw_Interpretor& di,
     di<<"Usage : " << argv[0] << " Dx Dy Dz [Start = 1|0]\n";
     return 1;
   }
-  Standard_Real Dx = atof(argv[1]);
-  Standard_Real Dy = atof(argv[2]);
-  Standard_Real Dz = atof(argv[3]);
+  Standard_Real Dx = Draw::Atof (argv[1]);
+  Standard_Real Dy = Draw::Atof (argv[2]);
+  Standard_Real Dz = Draw::Atof (argv[3]);
   Standard_Boolean aStart = Standard_True;
   if (argc == 5)
   {
-      aStart = (atoi(argv[4]) > 0);
+      aStart = (Draw::Atoi (argv[4]) > 0);
   }
 
   Handle(V3d_View) aView = ViewerTest::CurrentView();
@@ -5028,13 +5028,13 @@ static Standard_Integer VTurnView (Draw_Interpretor& di,
     di<<"Usage : " << argv[0] << " Ax Ay Az [Start = 1|0]\n";
     return 1;
   }
-  Standard_Real Ax = atof(argv[1]);
-  Standard_Real Ay = atof(argv[2]);
-  Standard_Real Az = atof(argv[3]);
+  Standard_Real Ax = Draw::Atof (argv[1]);
+  Standard_Real Ay = Draw::Atof (argv[2]);
+  Standard_Real Az = Draw::Atof (argv[3]);
   Standard_Boolean aStart = Standard_True;
   if (argc == 5)
   {
-      aStart = (atoi(argv[4]) > 0);
+      aStart = (Draw::Atoi (argv[4]) > 0);
   }
 
   Handle(V3d_View) aView = ViewerTest::CurrentView();
@@ -5423,10 +5423,10 @@ static int VClipPlane (Draw_Interpretor& theDi, Standard_Integer theArgsNb, cons
         return 1;
       }
 
-      Standard_Real aCoeffA = atof (theArgVec [4]);
-      Standard_Real aCoeffB = atof (theArgVec [5]);
-      Standard_Real aCoeffC = atof (theArgVec [6]);
-      Standard_Real aCoeffD = atof (theArgVec [7]);
+      Standard_Real aCoeffA = Draw::Atof (theArgVec [4]);
+      Standard_Real aCoeffB = Draw::Atof (theArgVec [5]);
+      Standard_Real aCoeffC = Draw::Atof (theArgVec [6]);
+      Standard_Real aCoeffD = Draw::Atof (theArgVec [7]);
       aClipPlane->SetEquation (gp_Pln (aCoeffA, aCoeffB, aCoeffC, aCoeffD));
     }
     else if (aChangeArg == "capping") // change capping aspects
@@ -5459,9 +5459,9 @@ static int VClipPlane (Draw_Interpretor& theDi, Standard_Integer theArgsNb, cons
           return 1;
         }
 
-        Standard_Real aRed = atof (theArgVec [5]);
-        Standard_Real aGrn = atof (theArgVec [6]);
-        Standard_Real aBlu = atof (theArgVec [7]);
+        Standard_Real aRed = Draw::Atof (theArgVec [5]);
+        Standard_Real aGrn = Draw::Atof (theArgVec [6]);
+        Standard_Real aBlu = Draw::Atof (theArgVec [7]);
 
         Graphic3d_MaterialAspect aMat = aClipPlane->CappingMaterial();
         Quantity_Color aColor (aRed, aGrn, aBlu, Quantity_TOC_RGB);
@@ -5639,8 +5639,8 @@ static int VZRange (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const c
 
   if (theArgsNb == 3)
   {
-    Standard_Real aNewZNear = atof (theArgVec[1]);
-    Standard_Real aNewZFar = atof (theArgVec[2]);
+    Standard_Real aNewZNear = Draw::Atof (theArgVec[1]);
+    Standard_Real aNewZFar  = Draw::Atof (theArgVec[2]);
 
     if (aNewZNear >= aNewZFar)
     {
@@ -5712,117 +5712,216 @@ static int VAutoZFit (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const
   return 0;
 }
 
+//! Auxiliary function to print projection type
+inline const char* projTypeName (Graphic3d_Camera::Projection theProjType)
+{
+  switch (theProjType)
+  {
+    case Graphic3d_Camera::Projection_Orthographic: return "orthographic";
+    case Graphic3d_Camera::Projection_Perspective:  return "perspective";
+    case Graphic3d_Camera::Projection_Stereo:       return "stereoscopic";
+    case Graphic3d_Camera::Projection_MonoLeftEye:  return "monoLeftEye";
+    case Graphic3d_Camera::Projection_MonoRightEye: return "monoRightEye";
+  }
+  return "UNKNOWN";
+}
+
 //===============================================================================================
-//function : VChangeCamera
+//function : VCamera
 //purpose  :
 //===============================================================================================
-static int VChangeCamera (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const char** theArgVec)
+static int VCamera (Draw_Interpretor& theDI,
+                    Standard_Integer  theArgsNb,
+                    const char**      theArgVec)
 {
-  if (ViewerTest::CurrentView().IsNull())
+  Handle(V3d_View) aView = ViewerTest::CurrentView();
+  if (aView.IsNull())
   {
-    theDi << theArgVec[0] << ": Call vinit before this command, please.\n";
+    std::cout << "Error: no active view.\n";
     return 1;
   }
 
-  const char anErrorMessage[] = ": wrong command arguments. Type help for more information.\n";
-  if (theArgsNb < 3)
+  Handle(Graphic3d_Camera) aCamera = aView->Camera();
+  if (theArgsNb < 2)
   {
-    theDi << theArgVec[0] << anErrorMessage;
-    return 1;
+    theDI << "ProjType:   " << projTypeName (aCamera->ProjectionType()) << "\n";
+    theDI << "FOVy:       " << aCamera->FOVy() << "\n";
+    theDI << "Distance:   " << aCamera->Distance() << "\n";
+    theDI << "IOD:        " << aCamera->IOD() << "\n";
+    theDI << "IODType:    " << (aCamera->GetIODType() == Graphic3d_Camera::IODType_Absolute   ? "absolute" : "relative") << "\n";
+    theDI << "ZFocus:     " << aCamera->ZFocus() << "\n";
+    theDI << "ZFocusType: " << (aCamera->ZFocusType() == Graphic3d_Camera::FocusType_Absolute ? "absolute" : "relative") << "\n";
+    return 0;
   }
 
-  Handle(Graphic3d_Camera) aCamera = ViewerTest::CurrentView()->Camera();
-
-  TCollection_AsciiString aCommand (theArgVec[1]);
-  TCollection_AsciiString aValue (theArgVec[2]);
-
-  aCommand.LowerCase();
-  aValue.LowerCase();
-
-  if (aCommand == "proj")
+  for (Standard_Integer anArgIter = 1; anArgIter < theArgsNb; ++anArgIter)
   {
-    if (aValue == "ortho")
+    Standard_CString        anArg = theArgVec[anArgIter];
+    TCollection_AsciiString anArgCase (anArg);
+    anArgCase.LowerCase();
+    if (anArgCase == "-proj"
+     || anArgCase == "-projection"
+     || anArgCase == "-projtype"
+     || anArgCase == "-projectiontype")
+    {
+      theDI << projTypeName (aCamera->ProjectionType()) << " ";
+    }
+    else if (anArgCase == "-ortho"
+          || anArgCase == "-orthographic")
     {
       aCamera->SetProjectionType (Graphic3d_Camera::Projection_Orthographic);
-    } 
-    else if (aValue == "persp")
+    }
+    else if (anArgCase == "-persp"
+          || anArgCase == "-perspective"
+          || anArgCase == "-perspmono"
+          || anArgCase == "-perspectivemono"
+          || anArgCase == "-mono")
     {
       aCamera->SetProjectionType (Graphic3d_Camera::Projection_Perspective);
     }
-    else if (aValue == "left")
-    {
-      aCamera->SetProjectionType (Graphic3d_Camera::Projection_MonoLeftEye);
-    }
-    else if (aValue == "right")
-    {
-      aCamera->SetProjectionType (Graphic3d_Camera::Projection_MonoRightEye);
-    }
-    else if (aValue == "stereo")
+    else if (anArgCase == "-stereo"
+          || anArgCase == "-stereoscopic"
+          || anArgCase == "-perspstereo"
+          || anArgCase == "-perspectivestereo")
     {
       aCamera->SetProjectionType (Graphic3d_Camera::Projection_Stereo);
     }
+    else if (anArgCase == "-left"
+          || anArgCase == "-lefteye"
+          || anArgCase == "-monoleft"
+          || anArgCase == "-monolefteye"
+          || anArgCase == "-perpsleft"
+          || anArgCase == "-perpslefteye")
+    {
+      aCamera->SetProjectionType (Graphic3d_Camera::Projection_MonoLeftEye);
+    }
+    else if (anArgCase == "-right"
+          || anArgCase == "-righteye"
+          || anArgCase == "-monoright"
+          || anArgCase == "-monorighteye"
+          || anArgCase == "-perpsright")
+    {
+      aCamera->SetProjectionType (Graphic3d_Camera::Projection_MonoRightEye);
+    }
+    else if (anArgCase == "-dist"
+          || anArgCase == "-distance")
+    {
+      Standard_CString anArgValue = (anArgIter + 1 < theArgsNb) ? theArgVec[anArgIter + 1] : NULL;
+      if (anArgValue != NULL
+      && *anArgValue != '-')
+      {
+        ++anArgIter;
+        aCamera->SetDistance (Draw::Atof (anArgValue));
+        continue;
+      }
+      theDI << aCamera->Distance() << " ";
+    }
+    else if (anArgCase == "-iod")
+    {
+      Standard_CString anArgValue = (anArgIter + 1 < theArgsNb) ? theArgVec[anArgIter + 1] : NULL;
+      if (anArgValue != NULL
+      && *anArgValue != '-')
+      {
+        ++anArgIter;
+        aCamera->SetIOD (aCamera->GetIODType(), Draw::Atof (anArgValue));
+        continue;
+      }
+      theDI << aCamera->IOD() << " ";
+    }
+    else if (anArgCase == "-iodtype")
+    {
+      Standard_CString        anArgValue = (anArgIter + 1 < theArgsNb) ? theArgVec[anArgIter + 1] : "";
+      TCollection_AsciiString anValueCase (anArgValue);
+      anValueCase.LowerCase();
+      if (anValueCase == "abs"
+       || anValueCase == "absolute")
+      {
+        ++anArgIter;
+        aCamera->SetIOD (Graphic3d_Camera::IODType_Absolute, aCamera->IOD());
+        continue;
+      }
+      else if (anValueCase == "rel"
+            || anValueCase == "relative")
+      {
+        ++anArgIter;
+        aCamera->SetIOD (Graphic3d_Camera::IODType_Relative, aCamera->IOD());
+        continue;
+      }
+      else if (*anArgValue != '-')
+      {
+        std::cout << "Error: unknown IOD type '" << anArgValue << "'\n";
+        return 1;
+      }
+      switch (aCamera->GetIODType())
+      {
+        case Graphic3d_Camera::IODType_Absolute: theDI << "absolute "; break;
+        case Graphic3d_Camera::IODType_Relative: theDI << "relative "; break;
+      }
+    }
+    else if (anArgCase == "-zfocus")
+    {
+      Standard_CString anArgValue = (anArgIter + 1 < theArgsNb) ? theArgVec[anArgIter + 1] : NULL;
+      if (anArgValue != NULL
+      && *anArgValue != '-')
+      {
+        ++anArgIter;
+        aCamera->SetZFocus (aCamera->ZFocusType(), Draw::Atof (anArgValue));
+        continue;
+      }
+      theDI << aCamera->ZFocus() << " ";
+    }
+    else if (anArgCase == "-zfocustype")
+    {
+      Standard_CString        anArgValue = (anArgIter + 1 < theArgsNb) ? theArgVec[anArgIter + 1] : "";
+      TCollection_AsciiString anValueCase (anArgValue);
+      anValueCase.LowerCase();
+      if (anValueCase == "abs"
+       || anValueCase == "absolute")
+      {
+        ++anArgIter;
+        aCamera->SetZFocus (Graphic3d_Camera::FocusType_Absolute, aCamera->ZFocus());
+        continue;
+      }
+      else if (anValueCase == "rel"
+            || anValueCase == "relative")
+      {
+        ++anArgIter;
+        aCamera->SetZFocus (Graphic3d_Camera::FocusType_Relative, aCamera->ZFocus());
+        continue;
+      }
+      else if (*anArgValue != '-')
+      {
+        std::cout << "Error: unknown ZFocus type '" << anArgValue << "'\n";
+        return 1;
+      }
+      switch (aCamera->ZFocusType())
+      {
+        case Graphic3d_Camera::FocusType_Absolute: theDI << "absolute "; break;
+        case Graphic3d_Camera::FocusType_Relative: theDI << "relative "; break;
+      }
+    }
+    else if (anArgCase == "-fov"
+          || anArgCase == "-fovy")
+    {
+      Standard_CString anArgValue = (anArgIter + 1 < theArgsNb) ? theArgVec[anArgIter + 1] : NULL;
+      if (anArgValue != NULL
+      && *anArgValue != '-')
+      {
+        ++anArgIter;
+        aCamera->SetFOVy (Draw::Atof (anArgValue));
+        continue;
+      }
+      theDI << aCamera->FOVy() << " ";
+    }
     else
     {
-      theDi << theArgVec[0] << anErrorMessage;
+      std::cout << "Error: unknown argument '" << anArg << "'\n";
       return 1;
     }
-  }
-  else if (aCommand == "dist")
-  {
-    aCamera->SetDistance (aValue.RealValue());
-  }
-  else if (aCommand == "iod")
-  {
-    aCamera->SetIOD (aCamera->GetIODType(), aValue.RealValue());
-  }
-  else if (aCommand == "zfocus")
-  {
-    aCamera->SetZFocus (aCamera->ZFocusType(), aValue.RealValue());
-  }
-  else if (aCommand == "fov")
-  {
-    aCamera->SetFOVy (aValue.RealValue());
-  }
-  else if (aCommand == "zfocustype")
-  {
-    if (aValue == "absolute")
-    {
-      aCamera->SetZFocus (Graphic3d_Camera::FocusType_Absolute, aCamera->ZFocus());
-    } 
-    else if (aValue == "relative")
-    {
-      aCamera->SetZFocus (Graphic3d_Camera::FocusType_Relative, aCamera->ZFocus());
-    }
-    else
-    {
-      theDi << theArgVec[0] << anErrorMessage;
-      return 1;
-    }
-  }
-  else if (aCommand == "iodtype")
-  {
-    if (aValue == "absolute")
-    {
-      aCamera->SetIOD (Graphic3d_Camera::IODType_Absolute, aCamera->IOD());
-    } 
-    else if (aValue == "relative")
-    {
-      aCamera->SetIOD (Graphic3d_Camera::IODType_Relative, aCamera->IOD());
-    }
-    else
-    {
-      theDi << theArgVec[0] << anErrorMessage;
-      return 1;
-    }
-  }
-  else
-  {
-    theDi << theArgVec[0] << anErrorMessage;
-    return 1;
   }
 
-  ViewerTest::CurrentView()->View()->AutoZFit();
-  ViewerTest::CurrentView()->Redraw();
+  aView->View()->AutoZFit();
+  aView->Redraw();
 
   return 0;
 }
@@ -6440,6 +6539,45 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
   }
 
   Graphic3d_RenderingParams& aParams = aView->ChangeRenderingParams();
+  TCollection_AsciiString aCmdName (theArgVec[0]);
+  aCmdName.LowerCase();
+  if (aCmdName == "vraytrace")
+  {
+    if (theArgNb == 1)
+    {
+      theDI << (aParams.Method == Graphic3d_RM_RAYTRACING ? "on" : "off") << " ";
+      return 0;
+    }
+    else if (theArgNb == 2)
+    {
+      TCollection_AsciiString aValue (theArgVec[1]);
+      aValue.LowerCase();
+      if (aValue == "on"
+       || aValue == "1")
+      {
+        aParams.Method = Graphic3d_RM_RAYTRACING;
+        aView->Redraw();
+        return 0;
+      }
+      else if (aValue == "off"
+            || aValue == "0")
+      {
+        aParams.Method = Graphic3d_RM_RASTERIZATION;
+        aView->Redraw();
+        return 0;
+      }
+      else
+      {
+        std::cout << "Error: unknown argument '" << theArgVec[1] << "'\n";
+        return 1;
+      }
+    }
+    else
+    {
+      std::cout << "Error: wrong number of arguments\n";
+      return 1;
+    }
+  }
 
   if (theArgNb < 2)
   {
@@ -7002,24 +7140,30 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     __FILE__,VZClipping,group);
   theCommands.Add ("vnbselected",
     "vnbselected", __FILE__, VNbSelected, group);
-  theCommands.Add ("vchangecamera",
-    " changes camera parameters \n"
-    "- vchangecamera [param_type] [value]\n"
-    "- vchangecamera proj {ortho/persp/left/right/stereo}\n"
-    "     Projection type including left and right stereo parts.\n"
-    "- vchangecamera dist [real]\n"
-    "     Sets distance from target point to camera eye (moving eye).\n"
-    "- vchangecamera iod [real]\n"
-    "     Intraocular distance value.\n"
-    "- vchangecamera zfocus [real]\n"
-    "     Stereographic focus value.\n"
-    "- vchangecamera fov [real]\n"
-    "     Field Of View value (in degrees).\n"
-    "- vchangecamera zfocustype {absolute/relative}\n"
-    "     Stereographic focus definition type (absolute value or coefficient).\n"
-    "- vchangecamera iodtype {absolute/relative}\n"
-    "     Intraocular distance definition type (absolute value or coefficient).\n", 
-    __FILE__, VChangeCamera, group);
+  theCommands.Add ("vcamera",
+              "vcamera [-ortho] [-projtype]"
+      "\n\t\t:         [-persp]"
+      "\n\t\t:         [-fovy   [Angle]] [-distance [Distance]]"
+      "\n\t\t:         [-stereo] [-leftEye] [-rightEye]"
+      "\n\t\t:         [-iod [Distance]] [-iodType    [absolute|relative]]"
+      "\n\t\t:         [-zfocus [Value]] [-zfocusType [absolute|relative]]"
+      "\n\t\t: Manage camera parameters."
+      "\n\t\t: Prints current value when option called without argument."
+      "\n\t\t: Orthographic camera:"
+      "\n\t\t:   -ortho      activate orthographic projection"
+      "\n\t\t: Perspective camera:"
+      "\n\t\t:   -persp      activate perspective  projection (mono)"
+      "\n\t\t:   -fovy       field of view in y axis, in degrees"
+      "\n\t\t:   -distance   distance of eye from camera center"
+      "\n\t\t: Stereoscopic camera:"
+      "\n\t\t:   -stereo     perspective  projection (stereo)"
+      "\n\t\t:   -leftEye    perspective  projection (left  eye)"
+      "\n\t\t:   -rightEye   perspective  projection (right eye)"
+      "\n\t\t:   -iod        intraocular distance value"
+      "\n\t\t:   -iodType    distance type, absolute or relative"
+      "\n\t\t:   -zfocus     stereographic focus value"
+      "\n\t\t:   -zfocusType focus type, absolute or relative",
+    __FILE__, VCamera, group);
   theCommands.Add ("vautozfit", "command to enable or disable automatic z-range adjusting\n"
     "- vautozfit [on={1|0}] [scale]\n"
     "    Prints or changes parameters of automatic z-fit mode:\n"
@@ -7126,6 +7270,12 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n\n        example: vlight add positional head 1 pos 0 1 1 color red"
     "\n        example: vlight change 0 direction 0 -1 0 linearAttenuation 0.2",
     __FILE__, VLight, group);
+  theCommands.Add("vraytrace",
+            "vraytrace [0|1]"
+    "\n\t\t: Turn on/off raytracing renderer."
+    "\n\t\t:   'vraytrace 0' alias for 'vrenderparams -raster'."
+    "\n\t\t:   'vraytrace 1' alias for 'vrenderparams -rayTrace'.",
+    __FILE__, VRenderParams, group);
   theCommands.Add("vrenderparams",
     "\n    Manages rendering parameters: "
     "\n      '-rayTrace'            Enables  GPU ray-tracing"

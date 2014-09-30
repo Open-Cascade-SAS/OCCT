@@ -27,7 +27,7 @@ for {set x 0} {$x<7} {incr x} {
 
 #prepare view
 vtop
-vchangecamera proj persp
+vcamera -persp
 vfit
 vback
 vtop

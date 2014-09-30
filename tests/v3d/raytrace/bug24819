@@ -58,7 +58,7 @@ foreach aFSAAMode {on off} {
 }
 
 # perspective projection
-vchangecamera proj persp
+vcamera -persp
 set aModeNum 0
 foreach aFSAAMode {on off} {
   foreach aReflMode {on off} {
@@ -69,4 +69,3 @@ foreach aFSAAMode {on off} {
     }
   }
 }
-

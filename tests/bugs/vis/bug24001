@@ -8,23 +8,19 @@ vinit
 vdisplay b
 
 # initialize camera parameters 
-vchangecamera fov 45
-vchangecamera iodtype relative
-vchangecamera iod 0.05
-vchangecamera zfocustype relative
-vchangecamera zfocus 1.0
+vcamera -fov 45 -iodType relative -iod 0.05 -zfocustype relative -zfocus 1.0
 
 # test vdump work
 # make sure that neither of 4 produced images match each other
-vchangecamera proj ortho
+vcamera -ortho
 vfit
 set aTitle "ortho"
 vdump $imagedir/${casename}_${aTitle}.png rgb 512 512
-vchangecamera proj persp
+vcamera -persp
 vfit
 set aTitle "persp"
 vdump $imagedir/${casename}_${aTitle}.png rgb 512 512
-vchangecamera proj stereo
+vcamera -stereo
 set aTitle "stereoR"
 vdump $imagedir/${casename}_${aTitle}.png rgb 512 512 R
 set aTitle "stereoL"
@@ -36,8 +32,7 @@ vstereo 1
 vclose all
 vinit
 vdisplay b
-vchangecamera proj stereo
+vcamera -stereo
 vfit
 set aTitle "afterSwitch"
 vdump $imagedir/${casename}_${aTitle}.png rgb 512 512 R
-
