@@ -1,10 +1,5 @@
-if {[array get env os_type] != "" } {
-    set os $env(os_type)
-}
-if { [string compare $os "windows"] == 0 } {
-    puts "TODO OCC23626 ALL: Tcl Exception"
-    puts "TODO OCC23626 ALL: TEST INCOMPLETE"
-}
+puts "TODO OCC23626 Windows: Tcl Exception"
+puts "TODO OCC23626 Windows: TEST INCOMPLETE"
 
 puts "================"
 puts "OCC63"

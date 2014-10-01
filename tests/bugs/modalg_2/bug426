@@ -2,9 +2,9 @@ if {[array get env os_type] != ""} {
     set os $env(os_type)
 }
 if {[string compare $os "windows"] != 0 } {
-    puts "TODO ?OCC12345 ALL: \\*\\* Exception"
-    puts "TODO ?OCC12345 ALL: An exception was caught"
-    puts "TODO ?OCC12345 ALL: TEST INCOMPLETE"
+    puts "TODO ?OCC12345 Debian60-64 MacOS: \\*\\* Exception"
+    puts "TODO ?OCC12345 Debian60-64 MacOS: An exception was caught"
+    puts "TODO ?OCC12345 Debian60-64 MacOS: TEST INCOMPLETE"
 }
 
 pload QAcommands

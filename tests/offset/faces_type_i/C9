@@ -1,5 +1,4 @@
 puts "TODO OCC23748 ALL: ERROR. offsetperform operation not done."
-puts "TODO OCC23748 ALL: Tcl Exception: ERROR. offsetperform operation not done."
 puts "TODO OCC23547 ALL: TEST INCOMPLETE"
 psphere s 15 270
 

@@ -2,9 +2,6 @@
 puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 
-
-puts "TODO CR23096 Mandriva2010: Error : 4 differences with reference data found :" 
-
 set LinuxDiff 4
 set filename y306351fM.igs
 

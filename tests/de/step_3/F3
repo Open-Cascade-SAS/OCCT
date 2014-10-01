@@ -3,9 +3,6 @@ puts "TODO CR23096 ALL: TPSTAT : Faulty"
 puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
 puts "TODO CR23096 ALL: STATSHAPE : Faulty" 
 puts "TODO CR23096 ALL: TOLERANCE : Faulty" 
-
-
-puts "TODO CR23096 Mandriva2010: Error : 2 differences with reference data found :" 
 puts "TODO CR23096 Debian60-64: Error : 2 differences with reference data found :" 
 
 set LinuxDiff 2

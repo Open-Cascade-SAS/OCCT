@@ -42,7 +42,7 @@ set chwi_Second 0; set chfa_Second 0; set chsh_Second 0; set chso_Second 0
 set ref_Compare 0
 set todo_msg ""
 set todo_mask "puts \"TODO CR23096 ALL: "
-set Mandriva_todo_mask "puts \"TODO CR23096 Mandriva2010:"
+set Mandriva_todo_mask "puts \"TODO CR23096 ALL:"
 set end_line "\" \n"
 ##################################################################
 

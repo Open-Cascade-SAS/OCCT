@@ -3,11 +3,6 @@ puts "TODO CR23096 ALL: CHECKSHAPE : Faulty"
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 puts "TODO CR23096 ALL: COLORS : Faulty" 
 
-
-puts "TODO CR23096 Mandriva2010: NBSHAPES : Faulty " 
-
-puts "TODO CR23096 Mandriva2010: Error : 2 differences with reference data found :" 
-
 set LinuxDiff 2
 set LinuxFaulties {NBSHAPES}
 set filename CTS18547.igs

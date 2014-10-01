@@ -2,7 +2,6 @@
 # Date : 
 
 # CR23404
-#puts "TODO OCC23099 Mandriva2010: Faulty shapes in variables faulty_1 to faulty_"
 
 restore [locate_data_file CTO900_pro12696a.rle] a
 restore [locate_data_file CTO900_pro12696b.rle] b

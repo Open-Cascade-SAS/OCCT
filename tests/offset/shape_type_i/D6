@@ -1,7 +1,6 @@
 puts "TODO OCC24156 MacOS: \\*\\* Exception \\*\\*.*"
 puts "TODO OCC24156 MacOS: An exception was caught"
 puts "TODO OCC24156 MacOS: TEST INCOMPLETE"
-puts "TODO OCC23068 Mandriva2010: Error : The volume of the resulting shape"
 
 ellipse w1 0 0 0 15 10
 mkedge w1 w1 0 pi/2

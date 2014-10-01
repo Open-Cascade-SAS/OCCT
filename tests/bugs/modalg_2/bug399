@@ -1,11 +1,3 @@
-if { [array get env os_type] != "" } {
-    set os $env(os_type)
-}
-if { [string compare $os "windows"] != 0 } {
-### by apn master 16.12.2012
-###   puts "TODO OCC12345 ALL: Error : The square of result shape is"
-}
-
 puts "========"
 puts "OCC399"
 puts "========"

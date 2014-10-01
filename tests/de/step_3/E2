@@ -2,11 +2,6 @@
 puts "TODO CR23096 ALL: TPSTAT : Faulty" 
 puts "TODO CR23096 ALL: STATSHAPE : Faulty" 
 
-
-puts "TODO CR23096 Mandriva2010: TOLERANCE : Faulty " 
-
-puts "TODO CR23096 Mandriva2010: Error : 3 differences with reference data found :" 
-
 set LinuxDiff 3
 set LinuxFaulties {TOLERANCE}
 set filename ct_exhaust-A.stp

@@ -1,13 +1,4 @@
-set os "ALL"
-
-if {[array get env os_type] != ""} {
-  set os $env(os_type)
-}
-
-if {[string compare $os "MacOS"] != 0} {
-  puts "TODO OCC25286 ALL: Error : The square of result shape is"
-}
-
+puts "TODO ?OCC12345 ALL: Error : The square of result shape is"
 puts "================"
 puts "OCC62"
 puts "BUC61001"

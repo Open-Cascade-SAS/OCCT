@@ -1,8 +1,6 @@
 # Original bug : ger60054
 # Date : 11mar98
 
-puts "TODO #22911 Mandriva2010: Faulty shapes in variables faulty_1 to faulty_2"
-
 restore [locate_data_file ger60054a.rle] a
 restore [locate_data_file CTO900_ger60054b.rle] b
 fsameparameter a

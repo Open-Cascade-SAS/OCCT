@@ -3,11 +3,6 @@ puts "TODO CR23096 ALL: STATSHAPE : Faulty"
 puts "TODO CR23096 ALL: TOLERANCE : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 
-
-puts "TODO CR23096 Mandriva2010: CHECKSHAPE : Faulty " 
-
-puts "TODO CR23096 Mandriva2010: Error : 5 differences with reference data found :" 
-
 set LinuxDiff 5
 set LinuxFaulties {CHECKSHAPE}
 set filename USA60022.igs

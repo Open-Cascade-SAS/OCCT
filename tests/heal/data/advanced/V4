@@ -1,19 +1,7 @@
 if { [string compare $command "ShapeConvertRev"] == 0 } {
    puts "TODO OCC23127 ALL: Error : The area of the resulting shape is"
 }
-if {[string compare $command "SplitAngle"] == 0 } {
-    set os "ALL"
-    if {[array get env os_type] != ""} {
-       set os $env(os_type)
-    }
-    if {
-	    [string compare $os "Debian40"] == 0
-	||  [string compare $os "Mandriva2008"] == 0
-	||  [string compare $os "Mandriva2010"] == 0
-       } {
-  puts "TODO OCC23127 $os: Faulty shapes in variables faulty_1 to faulty_2"
-    }
-}
+
 restore [locate_data_file BORNIER80.brep] a
 
 

@@ -5,9 +5,6 @@ puts "TODO CR23096 ALL: STATSHAPE : Faulty"
 puts "TODO CR23096 ALL: TOLERANCE : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 
-
-puts "TODO CR23096 Mandriva2010: Error : 3 differences with reference data found :" 
-
 set LinuxDiff 3
 set filename pe_turbine-A.stp
 

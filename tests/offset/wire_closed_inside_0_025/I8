@@ -4,10 +4,7 @@ if {[array get env os_type] != ""} {
 }
 
 if {
-        [string compare $os "Debian40"] == 0
-    ||  [string compare $os "Mandriva2008"] == 0
-    ||  [string compare $os "SUSE10-64"] == 0
-    ||  [string compare $os "Windows-64-VC8"] == 0
+        [string compare $os "Windows-64-VC8"] == 0
     ||  [string compare $os "Windows-64-VC9"] == 0
     ||  [string compare $os "Windows-64-VC10"] == 0
    } {

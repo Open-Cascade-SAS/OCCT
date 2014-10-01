@@ -2,9 +2,6 @@
 puts "TODO CR23096 ALL: STATSHAPE : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 
-
-puts "TODO CR23096 Mandriva2010: Error : 4 differences with reference data found :" 
-
 set LinuxDiff 4
 set filename bm4_id_punch_d.stp
 

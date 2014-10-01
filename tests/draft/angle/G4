@@ -1,5 +1,4 @@
 #F2----------------------------------------------
-puts "TODO #22988 Mandriva2010: Faulty shapes in variables faulty_1 to faulty_3"
 
 polyline p 0 0 7  0 0 0  10 0 0  10 0 7  
 beziercurve bc 4 10 0 7  7 0 8  3 0 7  0 0 7

@@ -1,15 +1,5 @@
 if {[string compare $command "SplitAngle"] == 0 } {
-    set os "ALL"
-    if {[array get env os_type] != ""} {
-       set os $env(os_type)
-    }
-    if {
-	[string compare $os "Mandriva2010"] == 0
-       } {
-  puts "TODO OCC23127 $os: Faulty shapes in variables faulty_1 to faulty_63"
-    } else {
   puts "TODO ?OCC23127 ALL: Faulty shapes in variables faulty_1 to faulty_61"
-    }
 }
 
 restore [locate_data_file BLENDE9699.brep] a
