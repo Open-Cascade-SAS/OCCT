@@ -2514,6 +2514,12 @@ void MyTextClass::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresent
 
   aPresentation->Clear();
 
+  if (!myDrawer->HasTextAspect())
+  {
+    myDrawer->SetTextAspect (new Prs3d_TextAspect());
+    *myDrawer->TextAspect()->Aspect() = *myDrawer->Link()->TextAspect()->Aspect();
+  }
+
   Handle(Prs3d_TextAspect) asp = myDrawer->TextAspect();
 
   asp->SetFont(aFont.ToCString());

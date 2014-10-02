@@ -1,0 +1,25 @@
+puts "============"
+puts "OCC23745"
+puts "============"
+puts ""
+######################################################
+# Draw Harness, ViewerText - vdrawtext command should not modify global text aspect
+######################################################
+
+pload QAcommands
+pload VISUALIZATION
+
+vinit
+vdrawtext "ANOTHERBUG" 100 100 100 255 0 0 0 0 0 1 50 0
+vtrihedron trihedron
+
+set x 239
+set y 216
+set R 1
+set G 1
+set B 0
+checkcolor ${x} ${y} ${R} ${G} ${B}
+
+vdump ${imagedir}/${casename}.png
+
+puts "TEST COMPLETED"

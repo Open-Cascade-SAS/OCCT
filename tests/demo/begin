@@ -1,0 +1,135 @@
+# File : begin
+
+# Procedure to check color in the point near default coordinate
+
+proc checkpoint {coord_x coord_y rd_ch gr_ch bl_ch} {
+    set x_start [expr ${coord_x} - 2]
+    set y_start [expr ${coord_y} - 2]
+    set mistake 0
+    set i 0
+    while { $mistake != 1 && $i <= 5 } {
+      set j 0
+      while { $mistake != 1 && $j <= 5 } {
+          set position_x [expr ${x_start} + $j]
+          set position_y [expr ${y_start} + $i]
+          puts $position_x
+          puts $position_y
+          global color2d
+          if { [info exists color2d] } {
+            set color [ QAAISGetPixelColor2d ${position_x} ${position_y} ]
+          } else {
+            set color [ QAGetPixelColor ${position_x} ${position_y} ]
+          }
+          regexp {RED +: +([-0-9.+eE]+)} $color full rd
+          regexp {GREEN +: +([-0-9.+eE]+)} $color full gr
+          regexp {BLUE +: +([-0-9.+eE]+)} $color full bl
+          set rd_int [expr int($rd * 1.e+05)]
+          set gr_int [expr int($gr * 1.e+05)]
+          set bl_int [expr int($bl * 1.e+05)]
+            
+          if { $rd_ch != 0 } {
+            set tol_rd [expr abs($rd_ch - $rd_int)/$rd_ch]
+          } else {
+            set tol_rd $rd_int
+          }
+          if { $gr_ch != 0 } {
+            set tol_gr [expr abs($gr_ch - $gr_int)/$gr_ch]
+          } else {
+            set tol_gr $gr_int
+          }
+          if { $bl_ch != 0 } {
+            set tol_bl [expr abs($bl_ch - $bl_int)/$bl_ch]
+          } else {
+            set tol_bl $bl_int
+          }
+
+          if { $tol_rd > 0.2 || $tol_gr > 0.2 || $tol_bl > 0.2 } {
+            puts "Warning : Point with true color was not found near default coordinates"
+            set mistake 0
+          } else {
+            set mistake 1
+          }
+          incr j
+      }
+      incr i
+    }
+    return $mistake
+}
+
+# Procedure to check color using command QAgetPixelColor with tolerance
+proc checkcolor { coord_x coord_y rd_get gr_get bl_get } {
+    puts "Coordinate x = $coord_x"
+    puts "Coordinate y = $coord_y"
+    puts "RED color of RGB is $rd_get"
+    puts "GREEN color of RGB is $gr_get"
+    puts "BLUE color of RGB is $bl_get"
+    
+    if { $coord_x <= 1 || $coord_y <= 1 } {
+      puts "Error : minimal coordinate is x = 2, y = 2. But we have x = $coord_x y = $coord_y"
+      return -1
+    }
+    global color2d
+    if { [info exists color2d] } {
+      set color [ QAAISGetPixelColor2d ${coord_x} ${coord_y} ]
+    } else {
+      set color [ QAGetPixelColor ${coord_x} ${coord_y} ]
+    }
+
+    regexp {RED +: +([-0-9.+eE]+)} $color full rd
+    regexp {GREEN +: +([-0-9.+eE]+)} $color full gr
+    regexp {BLUE +: +([-0-9.+eE]+)} $color full bl
+    set rd_int [expr int($rd * 1.e+05)]
+    set gr_int [expr int($gr * 1.e+05)]
+    set bl_int [expr int($bl * 1.e+05)]
+    set rd_ch [expr int($rd_get * 1.e+05)]
+    set gr_ch [expr int($gr_get * 1.e+05)]
+    set bl_ch [expr int($bl_get * 1.e+05)]
+    
+    if { $rd_ch != 0 } {
+      set tol_rd [expr abs($rd_ch - $rd_int)/$rd_ch]
+    } else {
+      set tol_rd $rd_int
+    }
+    if { $gr_ch != 0 } {
+      set tol_gr [expr abs($gr_ch - $gr_int)/$gr_ch]
+    } else {
+      set tol_gr $gr_int
+    }
+    if { $bl_ch != 0 } {
+      set tol_bl [expr abs($bl_ch - $bl_int)/$bl_ch]
+    } else {
+      set tol_bl $bl_int
+    }
+    set status 0
+    if { $tol_rd > 0.2 } {
+      puts "Warning : RED light of additive color model RGB is invalid"
+      set status 1
+    }
+    if { $tol_gr > 0.2 } {
+      puts "Warning : GREEN light of additive color model RGB is invalid"
+      set status 1
+    }
+    if { $tol_bl > 0.2 } {
+      puts "Warning : BLUE light of additive color model RGB is invalid"
+      set status 1
+    }
+
+    if { $status != 0 } {
+      puts "Warning : Colors of default coordinate are not equal"
+    }
+
+    global stat
+    if { $tol_rd > 0.2 || $tol_gr > 0.2 || $tol_bl > 0.2 } {
+      set info [checkpoint $coord_x $coord_y $rd_ch $gr_ch $bl_ch]
+      set stat [lindex $info end]
+      if { ${stat} != 1 } {
+          puts "Error : Colors are not equal in default coordinate and in the near coordinates too"
+          return $stat
+      } else {
+          puts "Point with valid color was found"
+          return $stat
+      }
+    } else {
+      set stat 1
+    }
+}
