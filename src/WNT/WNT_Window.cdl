@@ -21,6 +21,7 @@ class Window from WNT inherits Window from Aspect
  uses
 
     Handle             from Aspect,
+    Drawable           from Aspect,
     TypeOfResize       from Aspect,
     NameOfColor        from Quantity,
     Color              from Quantity,
@@ -165,6 +166,14 @@ class Window from WNT inherits Window from Aspect
 	---Level:   Public
 	---Purpose: Returns the Windows NT handle parent of the created window <me>.
         ---C++:     inline
+
+    NativeHandle ( me ) returns Drawable from Aspect is virtual;
+    ---Purpose: Returns native Window handle (HWND)
+    ---C++:     inline
+
+    NativeParentHandle ( me ) returns Drawable from Aspect is virtual;
+    ---Purpose: Returns parent of native Window handle (HWND on Windows, Window with Xlib, and so on)
+    ---C++:     inline
 
  fields
 

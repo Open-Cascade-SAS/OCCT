@@ -84,7 +84,7 @@ public:
   Standard_Size Increment() { return ++myCounter; }
 
 private:
-  
+
   Standard_Size myCounter;
 };
 
@@ -93,8 +93,11 @@ class OpenGl_GraphicDriver : public Graphic3d_GraphicDriver
 {
 public:
 
-  //! Constructor
-  Standard_EXPORT OpenGl_GraphicDriver (const Handle(Aspect_DisplayConnection)& theDisp);
+  //! Constructor.
+  //! @param theDisp connection to display, required on Linux but optional on other systems
+  //! @param theToStealActiveContext option to use OpenGL context currently bound to the thread rather than creating own one, currently implemented only for Android
+  Standard_EXPORT OpenGl_GraphicDriver (const Handle(Aspect_DisplayConnection)& theDisp,
+                                        const Standard_Boolean                  theToStealActiveContext = Standard_False);
 
   Standard_EXPORT Standard_Integer InquireLightLimit ();
   Standard_EXPORT Standard_Integer InquireViewLimit ();
@@ -319,11 +322,23 @@ public:
   //! marks primitive set for rebuild.
   Standard_EXPORT void InvalidateBVHData (Graphic3d_CView& theCView, const Standard_Integer theLayerId);
 
+#if defined(HAVE_EGL) || defined(__ANDROID__)
+  Aspect_Display          getRawGlDisplay() const { return myEglDisplay; }
+  Aspect_RenderingContext getRawGlContext() const { return myEglContext;  }
+  void*                   getRawGlConfig()  const { return myEglConfig; }
+#endif
+
 public:
 
   DEFINE_STANDARD_RTTI(OpenGl_GraphicDriver)
 
 private:
+
+#if defined(HAVE_EGL) || defined(__ANDROID__)
+  Aspect_Display          myEglDisplay; //!< EGL connection to the Display : EGLDisplay
+  Aspect_RenderingContext myEglContext; //!< EGL rendering context         : EGLContext
+  void*                   myEglConfig;  //!< EGL configuration             : EGLConfig
+#endif
 
   Handle(OpenGl_Caps)                                             myCaps;
   NCollection_DataMap<Standard_Integer, Handle(OpenGl_View)>      myMapOfView;

@@ -20,6 +20,7 @@ inherits
 
 uses
         Background         from Aspect,
+        Drawable           from Aspect,
         GradientBackground from Aspect,
         TypeOfResize       from Aspect,
         FillMethod         from Aspect,
@@ -159,6 +160,12 @@ is
         ---Level: Public
         ---Purpose: Returns The Window SIZE in PIXEL
         ---Category: Inquire methods
+
+        NativeHandle ( me ) returns Drawable from Aspect is deferred;
+        ---Purpose: Returns native Window handle (HWND on Windows, Window with Xlib, and so on)
+
+        NativeParentHandle ( me ) returns Drawable from Aspect is deferred;
+        ---Purpose: Returns parent of native Window handle (HWND on Windows, Window with Xlib, and so on)
 
 fields
         MyBackground : Background from Aspect is protected;

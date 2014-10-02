@@ -133,12 +133,12 @@ void OpenGl_Material::Init (const OPENGL_SURF_PROP& theProp)
 // function : OpenGl_Workspace
 // purpose  :
 // =======================================================================
-OpenGl_Workspace::OpenGl_Workspace (const Handle(Aspect_DisplayConnection)& theDisplayConnection,
+OpenGl_Workspace::OpenGl_Workspace (const Handle(OpenGl_GraphicDriver)& theDriver,
                                     const CALL_DEF_WINDOW&        theCWindow,
                                     Aspect_RenderingContext       theGContext,
                                     const Handle(OpenGl_Caps)&    theCaps,
                                     const Handle(OpenGl_Context)& theShareCtx)
-: OpenGl_Window (theDisplayConnection, theCWindow, theGContext, theCaps, theShareCtx),
+: OpenGl_Window (theDriver, theCWindow, theGContext, theCaps, theShareCtx),
   NamedStatus (0),
   HighlightColor (&THE_WHITE_COLOR),
   //
@@ -589,7 +589,7 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
   // fetch OpenGl context state
   aGlCtx->FetchState();
 
-  Tint toSwap = (aGlCtx->IsRender()); // swap buffers
+  Tint toSwap = (aGlCtx->IsRender() && !aGlCtx->caps->buffersNoSwap) ? 1 : 0; // swap buffers
   GLint aViewPortBack[4];
   OpenGl_FrameBuffer* aFrameBuffer = (OpenGl_FrameBuffer* )theCView.ptrFBO;
   if (aFrameBuffer != NULL)

@@ -131,7 +131,7 @@ class OpenGl_Workspace : public OpenGl_Window
 public:
 
   //! Main constructor - prepare GL context for specified window.
-  OpenGl_Workspace (const Handle(Aspect_DisplayConnection)& theDisplayConnection,
+  OpenGl_Workspace (const Handle(OpenGl_GraphicDriver)& theDriver,
                     const CALL_DEF_WINDOW&        theCWindow,
                     Aspect_RenderingContext       theGContext,
                     const Handle(OpenGl_Caps)&    theCaps,

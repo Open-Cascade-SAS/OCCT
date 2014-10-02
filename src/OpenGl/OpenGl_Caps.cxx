@@ -26,6 +26,7 @@ OpenGl_Caps::OpenGl_Caps()
 : vboDisable        (Standard_False),
   pntSpritesDisable (Standard_False),
   keepArrayData     (Standard_False),
+  buffersNoSwap     (Standard_False),
   contextStereo     (Standard_False),
 #ifdef DEB
   contextDebug      (Standard_True),
@@ -47,6 +48,7 @@ OpenGl_Caps& OpenGl_Caps::operator= (const OpenGl_Caps& theCopy)
   vboDisable        = theCopy.vboDisable;
   pntSpritesDisable = theCopy.pntSpritesDisable;
   keepArrayData     = theCopy.keepArrayData;
+  buffersNoSwap     = theCopy.buffersNoSwap;
   contextStereo     = theCopy.contextStereo;
   contextDebug      = theCopy.contextDebug;
   contextNoAccel    = theCopy.contextNoAccel;

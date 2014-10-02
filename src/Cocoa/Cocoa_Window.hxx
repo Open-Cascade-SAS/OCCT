@@ -101,6 +101,18 @@ public:
   //! Setup new NSView.
   Standard_EXPORT void SetHView (NSView* theView);
 
+  //! @return native Window handle
+  virtual Aspect_Drawable NativeHandle() const
+  {
+    return (Aspect_Drawable )HView();
+  }
+
+  //! @return parent of native Window handle
+  virtual Aspect_Drawable NativeParentHandle() const
+  {
+    return 0;
+  }
+
 protected:
 
   NSWindow*        myHWindow;

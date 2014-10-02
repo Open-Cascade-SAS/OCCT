@@ -20,10 +20,15 @@
 #include <OpenGl_Window.hxx>
 
 #include <OpenGl_Context.hxx>
+#include <OpenGl_GraphicDriver.hxx>
 
 #include <Aspect_GraphicDeviceDefinitionError.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
+
+#if defined(HAVE_EGL) || defined(__ANDROID__)
+  #include <EGL/egl.h>
+#endif
 
 IMPLEMENT_STANDARD_HANDLE(OpenGl_Window,MMgt_TShared)
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Window,MMgt_TShared)
@@ -34,7 +39,9 @@ namespace
 {
   static const TEL_COLOUR THE_DEFAULT_BG_COLOR = { { 0.F, 0.F, 0.F, 1.F } };
 
-#if defined(_WIN32)
+#if defined(HAVE_EGL) || defined(__ANDROID__)
+  //
+#elif defined(_WIN32)
 
   // WGL_ARB_pixel_format
 #ifndef WGL_NUMBER_PIXEL_FORMATS_ARB
@@ -126,7 +133,7 @@ namespace
 // function : OpenGl_Window
 // purpose  :
 // =======================================================================
-OpenGl_Window::OpenGl_Window (const Handle(Aspect_DisplayConnection)& theDisplayConnection,
+OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
                               const CALL_DEF_WINDOW&        theCWindow,
                               Aspect_RenderingContext       theGContext,
                               const Handle(OpenGl_Caps)&    theCaps,
@@ -141,8 +148,47 @@ OpenGl_Window::OpenGl_Window (const Handle(Aspect_DisplayConnection)& theDisplay
   myBgColor.rgb[1] = theCWindow.Background.g;
   myBgColor.rgb[2] = theCWindow.Background.b;
 
-#if defined(_WIN32)
-  (void )theDisplayConnection;
+#if defined(HAVE_EGL) || defined(__ANDROID__)
+  EGLDisplay anEglDisplay = (EGLDisplay )theDriver->getRawGlDisplay();
+  EGLContext anEglContext = (EGLContext )theDriver->getRawGlContext();
+  EGLConfig  anEglConfig  = (EGLConfig  )theDriver->getRawGlConfig();
+  if (anEglDisplay == EGL_NO_DISPLAY
+   || anEglContext == EGL_NO_CONTEXT
+   || anEglConfig == NULL)
+  {
+    Aspect_GraphicDeviceDefinitionError::Raise ("OpenGl_Window, EGL does not provide compatible configurations!");
+    return;
+  }
+
+  EGLSurface anEglSurf = EGL_NO_SURFACE;
+  if (theGContext == (EGLContext )EGL_NO_CONTEXT)
+  {
+    // create new surface
+    anEglSurf = eglCreateWindowSurface (anEglDisplay, anEglConfig, (EGLNativeWindowType )theCWindow.XWindow, NULL);
+    if (anEglSurf == EGL_NO_SURFACE)
+    {
+      Aspect_GraphicDeviceDefinitionError::Raise ("OpenGl_Window, EGL is unable to create surface for window!");
+      return;
+    }
+  }
+  else if (theGContext != anEglContext)
+  {
+    Aspect_GraphicDeviceDefinitionError::Raise ("OpenGl_Window, EGL is used in unsupported combination!");
+    return;
+  }
+  else
+  {
+    anEglSurf = eglGetCurrentSurface(EGL_DRAW);
+    if (anEglSurf == EGL_NO_SURFACE)
+    {
+      Aspect_GraphicDeviceDefinitionError::Raise ("OpenGl_Window, EGL is unable to retrieve current surface!");
+      return;
+    }
+  }
+
+  myGlContext->Init ((Aspect_Drawable )anEglSurf, (Aspect_Display )anEglDisplay, (Aspect_RenderingContext )anEglContext);
+#elif defined(_WIN32)
+  (void )theDriver;
   HWND  aWindow   = (HWND )theCWindow.XWindow;
   HDC   aWindowDC = GetDC (aWindow);
   HGLRC aGContext = (HGLRC )theGContext;
@@ -356,7 +402,7 @@ OpenGl_Window::OpenGl_Window (const Handle(Aspect_DisplayConnection)& theDisplay
   Window aParent = (Window )theCWindow.XWindow;
   Window aWindow = 0;
 
-  Display*   aDisp     = theDisplayConnection->GetDisplay();
+  Display*   aDisp     = theDriver->GetDisplayConnection()->GetDisplay();
   GLXContext aGContext = (GLXContext )theGContext;
 
   XWindowAttributes wattr;
@@ -538,7 +584,8 @@ OpenGl_Window::OpenGl_Window (const Handle(Aspect_DisplayConnection)& theDisplay
 // =======================================================================
 OpenGl_Window::~OpenGl_Window()
 {
-  if (!myOwnGContext)
+  if (!myOwnGContext
+   ||  myGlContext.IsNull())
   {
     myGlContext.Nullify();
     return;
@@ -547,7 +594,13 @@ OpenGl_Window::~OpenGl_Window()
   // release "GL" context if it is owned by window
   // Mesa implementation can fail to destroy GL context if it set for current thread.
   // It should be safer to unset thread GL context before its destruction.
-#if defined(_WIN32)
+#if defined(HAVE_EGL) || defined(__ANDROID__)
+  if ((EGLSurface )myGlContext->myWindow != EGL_NO_SURFACE)
+  {
+    eglDestroySurface ((EGLDisplay )myGlContext->myDisplay,
+                       (EGLSurface )myGlContext->myWindow);
+  }
+#elif defined(_WIN32)
   HWND  aWindow          = (HWND  )myGlContext->myWindow;
   HDC   aWindowDC        = (HDC   )myGlContext->myWindowDC;
   HGLRC aWindowGContext  = (HGLRC )myGlContext->myGContext;
@@ -603,7 +656,7 @@ Standard_Boolean OpenGl_Window::Activate()
 // =======================================================================
 void OpenGl_Window::Resize (const CALL_DEF_WINDOW& theCWindow)
 {
-#if !defined(_WIN32)
+#if !defined(_WIN32) && !defined(HAVE_EGL) && !defined(__ANDROID__)
   Display* aDisp = (Display* )myGlContext->myDisplay;
   if (aDisp == NULL)
     return;
@@ -616,7 +669,7 @@ void OpenGl_Window::Resize (const CALL_DEF_WINDOW& theCWindow)
   myWidth  = (Standard_Integer )theCWindow.dx;
   myHeight = (Standard_Integer )theCWindow.dy;
 
-#if !defined(_WIN32)
+#if !defined(_WIN32) && !defined(HAVE_EGL) && !defined(__ANDROID__)
   XResizeWindow (aDisp, myGlContext->myWindow, (unsigned int )myWidth, (unsigned int )myHeight);
   XSync (aDisp, False);
 #endif
@@ -675,7 +728,10 @@ void OpenGl_Window::Init()
   if (!Activate())
     return;
 
-#if defined(_WIN32)
+#if defined(HAVE_EGL) || defined(__ANDROID__)
+ eglQuerySurface ((EGLDisplay )myGlContext->myDisplay, (EGLSurface )myGlContext->myWindow, EGL_WIDTH,  &myWidth);
+ eglQuerySurface ((EGLDisplay )myGlContext->myDisplay, (EGLSurface )myGlContext->myWindow, EGL_HEIGHT, &myHeight);
+#elif defined(_WIN32)
   RECT cr;
   GetClientRect ((HWND )myGlContext->myWindow, &cr);
   myWidth  = cr.right - cr.left;

@@ -114,22 +114,8 @@ void Visual3d_View::SetWindow (const Handle(Aspect_Window)& theWindow)
   MyWindow = theWindow;
   MyCView.WsId = MyCView.ViewId;
   MyCView.DefWindow.IsDefined = 1;
-#if defined(_WIN32)
-  const Handle(WNT_Window) aWin   = Handle(WNT_Window)::DownCast (theWindow);
-  MyCView.DefWindow.XWindow       = (HWND )(aWin->HWindow());
-  MyCView.DefWindow.XParentWindow = (HWND )(aWin->HParentWindow());
-#elif (defined(__APPLE__) && !defined(MACOSX_USE_GLX))
-  const Handle(Cocoa_Window) aWin = Handle(Cocoa_Window)::DownCast (theWindow);
-  MyCView.DefWindow.XWindow       = (Aspect_Drawable )aWin->HView();
-  MyCView.DefWindow.XParentWindow = NULL;
-  //MyCView.DefWindow.XParentWindow = aWin->HParentWindow();
-#elif defined(__ANDROID__)
-  //
-#else
-  const Handle(Xw_Window) aWin    = Handle(Xw_Window)::DownCast (theWindow);
-  MyCView.DefWindow.XWindow       = aWin->XWindow();
-  //MyCView.DefWindow.XParentWindow = aWin->XParentWindow();
-#endif
+  MyCView.DefWindow.XWindow       = theWindow->NativeHandle();
+  MyCView.DefWindow.XParentWindow = theWindow->NativeParentHandle();
 
   Standard_Integer Width, Height;
   theWindow->Size (Width, Height);

@@ -27,3 +27,13 @@ inline Aspect_Handle WNT_Window::HParentWindow() const
 {
   return myHParentWindow;
 }
+
+inline Aspect_Drawable WNT_Window::NativeHandle() const
+{
+  return (Aspect_Drawable )myHWindow;
+}
+
+inline Aspect_Drawable WNT_Window::NativeParentHandle() const
+{
+  return (Aspect_Drawable )myHParentWindow;
+}

@@ -499,7 +499,7 @@ Standard_Boolean OpenGl_GraphicDriver::View (Graphic3d_CView& theCView)
   }
 
   Handle(OpenGl_Context)   aShareCtx = GetSharedContext();
-  Handle(OpenGl_Workspace) aWS       = new OpenGl_Workspace (myDisplayConnection, theCView.DefWindow, theCView.GContext, myCaps, aShareCtx);
+  Handle(OpenGl_Workspace) aWS       = new OpenGl_Workspace (this, theCView.DefWindow, theCView.GContext, myCaps, aShareCtx);
   Handle(OpenGl_View)      aView     = new OpenGl_View (theCView.Context, &myStateCounter);
   myMapOfWS  .Bind (theCView.WsId,   aWS);
   myMapOfView.Bind (theCView.ViewId, aView);

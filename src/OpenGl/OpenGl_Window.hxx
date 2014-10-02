@@ -22,7 +22,7 @@
 
 #include <Handle_OpenGl_Context.hxx>
 #include <Handle_OpenGl_Window.hxx>
-#include <Aspect_DisplayConnection.hxx>
+#include <Handle_OpenGl_GraphicDriver.hxx>
 
 #include <MMgt_TShared.hxx>
 
@@ -33,7 +33,7 @@ class OpenGl_Window : public MMgt_TShared
 public:
 
   //! Main constructor - prepare GL context for specified window.
-  OpenGl_Window (const Handle(Aspect_DisplayConnection)& theDisplayConnection,
+  OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
                  const CALL_DEF_WINDOW&        theCWindow,
                  Aspect_RenderingContext       theGContext,
                  const Handle(OpenGl_Caps)&    theCaps,
