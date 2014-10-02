@@ -67,16 +67,15 @@ static Standard_Real CrossProd(const Handle(Geom2d_Geometry)& Geom1,
 			       const Handle(Geom2d_Geometry)& Geom2,
 			             Standard_Real&           DotProd);
 
-static Standard_Boolean IsSharpCorner (const Handle(Geom2d_Geometry)& Geom1,
-				       const Handle(Geom2d_Geometry)& Geom2,
-				       const Standard_Real&           Direction);
 
 //=============================================================================
 //function : Constructor
 //purpose :
 //=============================================================================
-MAT2d_Circuit::MAT2d_Circuit(const Standard_Boolean IsOpenResult)
+MAT2d_Circuit::MAT2d_Circuit(const GeomAbs_JoinType aJoinType,
+                             const Standard_Boolean IsOpenResult)
 {
+  myJoinType = aJoinType;
   myIsOpenResult = IsOpenResult;
 }
 
@@ -202,6 +201,133 @@ void  MAT2d_Circuit::Perform
   // Construction du Circuit.
   //-------------------------
   ConstructCircuit(FigItem,IndRefLine,Road);
+}
+
+//=======================================================================
+//function : IsSharpCorner
+//purpose  : Return True Si le point commun entre <Geom1> et <Geom2> est 
+//           une cassure saillante par rapport <Direction>
+//=======================================================================
+
+Standard_Boolean MAT2d_Circuit::IsSharpCorner(const Handle(Geom2d_Geometry)& Geom1,
+                                              const Handle(Geom2d_Geometry)& Geom2,
+                                              const Standard_Real Direction) const
+{
+  Standard_Real    DotProd;
+  Standard_Real    ProVec = CrossProd (Geom1,Geom2,DotProd);
+  Standard_Integer NbTest = 1;
+  Standard_Real    DU = Precision::Confusion();
+  Handle(Geom2d_TrimmedCurve) C1,C2;
+
+  C1= Handle(Geom2d_TrimmedCurve)::DownCast(Geom1);
+  C2= Handle(Geom2d_TrimmedCurve)::DownCast(Geom2);
+//  Modified by Sergey KHROMOV - Thu Oct 24 19:02:46 2002 Begin
+// Add the same criterion as it is in MAT2d_Circuit::InitOpen(..)
+//  Standard_Real  TolAng = 1.E-5;
+  Standard_Real  TolAng = 1.E-8;
+//  Modified by Sergey KHROMOV - Thu Oct 24 19:02:47 2002 End
+
+  if (myJoinType == GeomAbs_Arc)
+  {
+    while (NbTest <= 10) {
+      if      ((ProVec)*Direction < -TolAng)                 
+        return Standard_True;                // Saillant.
+      if      ((ProVec)*Direction >  TolAng)
+        return Standard_False;              // Rentrant.
+      else { 
+        if (DotProd > 0) {
+          return Standard_False;            // Plat.
+        }
+        TolAng = 1.E-8;
+        Standard_Real U1 = C1->LastParameter()  - NbTest*DU;
+        Standard_Real U2 = C2->FirstParameter() + NbTest*DU;
+        gp_Dir2d Dir1(C1->DN(U1,1));
+        gp_Dir2d Dir2(C2->DN(U2,1));
+        DotProd = Dir1.Dot(Dir2);
+        ProVec  =  Dir1^Dir2;
+        NbTest++;
+      } 
+    }
+    
+    
+    
+    // Rebroussement.
+    // on calculde des paralleles aux deux courbes du cote du domaine
+    // de calcul
+    // Si pas dintersection => saillant.
+    // Sinon                => rentrant.
+    Standard_Real D ;
+    Standard_Real Tol   = Precision::Confusion();
+    Standard_Real MilC1 = (C1->LastParameter() + C1->FirstParameter())*0.5;
+    Standard_Real MilC2 = (C2->LastParameter() + C2->FirstParameter())*0.5;
+    gp_Pnt2d      P     = C1->Value(C1->LastParameter());
+    gp_Pnt2d      P1    = C1->Value(MilC1);
+    gp_Pnt2d      P2    = C2->Value(MilC2);
+    
+    D = Min(P1.Distance(P),P2.Distance(P));
+    D /= 10;
+    
+    if (Direction > 0.) D = -D;
+    
+    Handle(Geom2dAdaptor_HCurve) HC1 = new Geom2dAdaptor_HCurve(C1);
+    Handle(Geom2dAdaptor_HCurve) HC2 = new Geom2dAdaptor_HCurve(C2);
+    Adaptor3d_OffsetCurve OC1(HC1,D,MilC1,C1->LastParameter());
+    Adaptor3d_OffsetCurve OC2(HC2,D,C2->FirstParameter(),MilC2);
+    Geom2dInt_GInter Intersect; 
+    Intersect.Perform(OC1,OC2,Tol,Tol);
+    
+#ifdef DEB
+    static Standard_Boolean Affich = 0;
+    if (Affich) {
+#ifdef DRAW
+      Standard_Real DU1 = (OC1.LastParameter() - OC1.FirstParameter())/9.;
+      Standard_Real DU2 = (OC2.LastParameter() - OC2.FirstParameter())/9.;
+      for (Standard_Integer ki = 0; ki <= 9; ki++) {
+        gp_Pnt2d P1 = OC1.Value(OC1.FirstParameter()+ki*DU1);
+        gp_Pnt2d P2 = OC2.Value(OC2.FirstParameter()+ki*DU2);
+        Handle(Draw_Marker2D) dr1 = new Draw_Marker2D(P1,Draw_Plus,Draw_vert);
+        Handle(Draw_Marker2D) dr2 = new Draw_Marker2D(P2,Draw_Plus,Draw_rouge); 
+        dout << dr1;
+        dout << dr2;
+      }
+      dout.Flush();
+#endif
+    }
+#endif
+    
+    if (Intersect.IsDone() && !Intersect.IsEmpty()) {
+      return Standard_False;
+    }
+    else {
+      return Standard_True;
+    }
+  } //end of if (myJoinType == GeomAbs_Arc)
+  else if (myJoinType == GeomAbs_Intersection)
+  {
+    if (Abs(ProVec) <= TolAng &&
+        DotProd < 0)
+    {
+      while (NbTest <= 10)
+      {
+        Standard_Real U1 = C1->LastParameter()  - NbTest*DU;
+        Standard_Real U2 = C2->FirstParameter() + NbTest*DU;
+        gp_Dir2d Dir1(C1->DN(U1,1));
+        gp_Dir2d Dir2(C2->DN(U2,1));
+        DotProd = Dir1.Dot(Dir2);
+        ProVec  =  Dir1^Dir2;
+        if      ((ProVec)*Direction < -TolAng)                 
+          return Standard_True;                // Saillant.
+        if      ((ProVec)*Direction >  TolAng)
+          return Standard_False;              // Rentrant.
+        
+        NbTest++;
+      }
+      return Standard_False;
+    }
+    else
+      return Standard_False;
+  }
+  return Standard_False;
 }
 
 //=======================================================================
@@ -736,103 +862,6 @@ static Standard_Real CrossProd(const Handle(Geom2d_Geometry)& Geom1,
 }
 
 
-//=======================================================================
-//function : IsSharpCorner
-//purpose  : Return True Si le point commun entre <Geom1> et <Geom2> est 
-//           une cassure saillante par rapport <Direction>
-//=======================================================================
-
-static Standard_Boolean IsSharpCorner (const Handle(Geom2d_Geometry)& Geom1,
-				       const Handle(Geom2d_Geometry)& Geom2,
-				       const Standard_Real&           Direction)
-{    
-  Standard_Real    DotProd;
-  Standard_Real    ProVec = CrossProd (Geom1,Geom2,DotProd);
-  Standard_Integer NbTest = 1;
-  Standard_Real    DU = Precision::Confusion();
-  Handle(Geom2d_TrimmedCurve) C1,C2;
-
-  C1= Handle(Geom2d_TrimmedCurve)::DownCast(Geom1);
-  C2= Handle(Geom2d_TrimmedCurve)::DownCast(Geom2);
-//  Modified by Sergey KHROMOV - Thu Oct 24 19:02:46 2002 Begin
-// Add the same criterion as it is in MAT2d_Circuit::InitOpen(..)
-//  Standard_Real  TolAng = 1.E-5;
-  Standard_Real  TolAng = 1.E-8;
-//  Modified by Sergey KHROMOV - Thu Oct 24 19:02:47 2002 End
-
-  while (NbTest <= 10) {
-    if      ((ProVec)*Direction < -TolAng)                 
-      return Standard_True;                // Saillant.
-    if      ((ProVec)*Direction >  TolAng)
-      return Standard_False;              // Rentrant.
-    else { 
-      if (DotProd > 0) {
-	return Standard_False;            // Plat.
-      }
-      TolAng = 1.E-8;
-      Standard_Real U1 = C1->LastParameter()  - NbTest*DU;
-      Standard_Real U2 = C2->FirstParameter() + NbTest*DU;
-      gp_Dir2d Dir1(C1->DN(U1,1));
-      gp_Dir2d Dir2(C2->DN(U2,1));
-      DotProd = Dir1.Dot(Dir2);
-      ProVec  =  Dir1^Dir2;
-      NbTest++;
-    } 
-  }
-  
-
-  
-  // Rebroussement.
-  // on calculde des paralleles aux deux courbes du cote du domaine
-  // de calcul
-  // Si pas dintersection => saillant.
-  // Sinon                => rentrant.
-  Standard_Real D ;
-  Standard_Real Tol   = Precision::Confusion();
-  Standard_Real MilC1 = (C1->LastParameter() + C1->FirstParameter())*0.5;
-  Standard_Real MilC2 = (C2->LastParameter() + C2->FirstParameter())*0.5;
-  gp_Pnt2d      P     = C1->Value(C1->LastParameter());
-  gp_Pnt2d      P1    = C1->Value(MilC1);
-  gp_Pnt2d      P2    = C2->Value(MilC2);
-  
-  D = Min(P1.Distance(P),P2.Distance(P));
-  D /= 10;
-
-  if (Direction > 0.) D = -D;
-  
-  Handle(Geom2dAdaptor_HCurve) HC1 = new Geom2dAdaptor_HCurve(C1);
-  Handle(Geom2dAdaptor_HCurve) HC2 = new Geom2dAdaptor_HCurve(C2);
-  Adaptor3d_OffsetCurve OC1(HC1,D,MilC1,C1->LastParameter());
-  Adaptor3d_OffsetCurve OC2(HC2,D,C2->FirstParameter(),MilC2);
-  Geom2dInt_GInter Intersect; 
-  Intersect.Perform(OC1,OC2,Tol,Tol);
-  
-#ifdef DEB
-  static Standard_Boolean Affich = 0;
-  if (Affich) {
-#ifdef DRAW
-    Standard_Real DU1 = (OC1.LastParameter() - OC1.FirstParameter())/9.;
-    Standard_Real DU2 = (OC2.LastParameter() - OC2.FirstParameter())/9.;
-    for (Standard_Integer ki = 0; ki <= 9; ki++) {
-      gp_Pnt2d P1 = OC1.Value(OC1.FirstParameter()+ki*DU1);
-      gp_Pnt2d P2 = OC2.Value(OC2.FirstParameter()+ki*DU2);
-      Handle(Draw_Marker2D) dr1 = new Draw_Marker2D(P1,Draw_Plus,Draw_vert);
-      Handle(Draw_Marker2D) dr2 = new Draw_Marker2D(P2,Draw_Plus,Draw_rouge); 
-      dout << dr1;
-      dout << dr2;
-    }
-    dout.Flush();
-#endif
-  }
-#endif
-  
-  if (Intersect.IsDone() && !Intersect.IsEmpty()) {
-    return Standard_False;
-  }
-  else {
-    return Standard_True;
-  }
-}
 
 
 

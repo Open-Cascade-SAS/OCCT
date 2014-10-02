@@ -58,6 +58,7 @@ BRepMAT2d_BisectingLocus::BRepMAT2d_BisectingLocus()
 void BRepMAT2d_BisectingLocus::Compute(BRepMAT2d_Explorer&        anExplo,
                                        const Standard_Integer IndexLine,
                                        const MAT_Side         aSide,
+                                       const GeomAbs_JoinType aJoinType,
                                        const Standard_Boolean IsOpenResult)
 {
   MAT2d_Mat2d                        TheMAT;
@@ -87,7 +88,7 @@ void BRepMAT2d_BisectingLocus::Compute(BRepMAT2d_Explorer&        anExplo,
   //----------------------------------------------------------
   // Construction du circuit sur lequel est calcule la carte.
   //----------------------------------------------------------
-  Handle(MAT2d_Circuit) ACircuit = new MAT2d_Circuit(IsOpenResult);
+  Handle(MAT2d_Circuit) ACircuit = new MAT2d_Circuit(aJoinType, IsOpenResult);
 //  Modified by Sergey KHROMOV - Wed Mar  6 17:43:47 2002 Begin
 //   ACircuit->Perform(Figure,IndexLine,(aSide == MAT_Left));
   ACircuit->Perform(Figure,anExplo.GetIsClosed(), IndexLine,(aSide == MAT_Left));
@@ -97,6 +98,7 @@ void BRepMAT2d_BisectingLocus::Compute(BRepMAT2d_Explorer&        anExplo,
   // Initialistion du Tool.
   // -----------------------
   theTool.Sense(aSide);
+  theTool.SetJoinType(aJoinType);
   theTool.InitItems(ACircuit);
 
   // --------------------------------------------

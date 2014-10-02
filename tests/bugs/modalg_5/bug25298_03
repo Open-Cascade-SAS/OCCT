@@ -1,0 +1,36 @@
+puts "============"
+puts "OCC25298"
+puts "============"
+puts ""
+#######################################################################
+# New option of BRepOffsetAPI_MakeOffset algorithm: processing of sharp corners in mode GeomAbs_Intersection
+#######################################################################
+
+restore [locate_data_file bug25225_2869_open.brep] a
+
+smallview
+display a
+fit
+
+if [catch { mkoffset resoffset a 1 10 i } ] {
+  puts "Error : mkoffset is wrong"
+} else {
+  renamevar resoffset_1 result
+
+  set length 416.777
+
+  set nb_v_good 7
+  set nb_e_good 7
+  set nb_w_good 1
+  set nb_f_good 0
+  set nb_sh_good 0
+  set nb_sol_good 0
+  set nb_compsol_good 0
+  set nb_compound_good 0
+  set nb_shape_good 15
+
+  display result
+  fit
+}
+
+set only_screen_axo 1

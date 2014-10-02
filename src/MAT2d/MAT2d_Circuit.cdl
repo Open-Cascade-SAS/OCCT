@@ -26,7 +26,7 @@ inherits
 	--           
 
 uses
-
+    JoinType                         from GeomAbs,
     SequenceOfInteger                from TColStd,
     Geometry                         from Geom2d,
     SequenceOfGeometry               from TColGeom2d,
@@ -41,7 +41,8 @@ uses
 
 is
 
-    Create(IsOpenResult : Boolean from Standard = Standard_False)
+    Create(aJoinType    : JoinType from GeomAbs  = GeomAbs_Arc;
+    	   IsOpenResult : Boolean  from Standard = Standard_False)
     returns Circuit from MAT2d;
 
 ---Category:  Computation
@@ -52,6 +53,11 @@ is
             IndRefLine  :        Integer;
             Trigo       :        Boolean)
     is static;	    
+    
+    IsSharpCorner(me; Geom1, Geom2 : Geometry from Geom2d;
+    	    	      Direction : Real from Standard)
+    returns Boolean
+    is static private;
     
     PassByLast(me ; C1,C2 : Connexion from MAT2d) 
     returns Boolean
@@ -130,7 +136,8 @@ fields
     connexionMap : DataMapOfIntegerConnexion       from MAT2d;
     linkRefEqui  : DataMapOfBiIntSequenceOfInteger from MAT2d;
     linesLength  : SequenceOfInteger               from TColStd; 
-    myIsOpenResult : Boolean from Standard;
+    myJoinType     : JoinType from GeomAbs;
+    myIsOpenResult : Boolean  from Standard;
     
 end Circuit;
 

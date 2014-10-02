@@ -25,10 +25,15 @@ uses
     Shape       from TopoDS,
     JoinType    from GeomAbs,
     ListOfShape from TopTools,
+    SequenceOfShape from TopTools,
+    SequenceOfPnt from TColgp,
     DataMapOfShapeShape               from TopTools,
     IndexedDataMapOfOrientedShapeListOfShape from BRepFill,  
+    DataMapOfOrientedShapeListOfShape from BRepFill,  
     BisectingLocus                    from BRepMAT2d, 
-    LinkTopoBilo                      from BRepMAT2d
+    LinkTopoBilo                      from BRepMAT2d,
+    Bisec from Bisector,
+    TrimEdgeTool from BRepFill
     
 raises
     ConstructionError from Standard,
@@ -114,6 +119,16 @@ is
 
     Add(me : in out; Other : OffsetWire from BRepFill)
 	---Purpose: Add the OffsetWire <Other> to <me> and update <myMap>
+    is static private;
+    
+    UpdateDetromp (me; Detromp : in out DataMapOfOrientedShapeListOfShape from BRepFill;
+    	    	       Shape1, Shape2 : Shape from TopoDS;
+		       Vertices : SequenceOfShape from TopTools;
+		       Params   : SequenceOfPnt   from TColgp;
+		       Bisec    : Bisec from Bisector;
+		       SOnE     : Boolean from Standard;
+		       EOnE     : Boolean from Standard;
+		       Trim     : TrimEdgeTool from BRepFill)
     is static private;
     
     MakeWires (me : in  out)

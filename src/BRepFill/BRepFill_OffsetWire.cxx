@@ -168,15 +168,6 @@ static void EdgeVertices (const TopoDS_Edge&   E,
   }
 }
 				      
-static void UpdateDetromp (TopTools_ListOfShape&           Detromp1, 
-			   TopTools_ListOfShape&           Detromp2, 
-			   const TopTools_SequenceOfShape& Vertices, 
-			   const TColgp_SequenceOfPnt&     Params, 
-			   const Bisector_Bisec&           Bisec,
-			   const Standard_Boolean          SOnE,
-			   const Standard_Boolean          EOnE,
-			   const BRepFill_TrimEdgeTool&    Trim);
-
 static Standard_Boolean VertexFromNode
 (const Handle(MAT_Node)&      aNode, 
  const Standard_Real          Offset,
@@ -377,9 +368,6 @@ void BRepFill_OffsetWire::Init(const TopoDS_Face&     Spine,
 			       const GeomAbs_JoinType Join,
                                const Standard_Boolean IsOpenResult)
 {
-  Standard_NotImplemented_Raise_if(Join > GeomAbs_Arc,
-				   "Only GeomAbs_Arc is implemented");
-
   myIsDone   = Standard_False;
   TopoDS_Shape aLocalShape = Spine.Oriented(TopAbs_FORWARD);
   mySpine    = TopoDS::Face(aLocalShape);
@@ -420,8 +408,8 @@ void BRepFill_OffsetWire::Init(const TopoDS_Face&     Spine,
 //   static BRepMAT2d_Explorer Exp;
 //  Modified by Sergey KHROMOV - Tue Nov 26 17:39:03 2002 End
   Exp.Perform(myWorkSpine);
-  myBilo.Compute(Exp,1,MAT_Left,myIsOpenResult);
-  myLink.Perform(Exp,myBilo);
+  myBilo.Compute(Exp, 1 ,MAT_Left, myJoinType, myIsOpenResult);
+  myLink.Perform(Exp, myBilo);
 }
 
 
@@ -648,7 +636,7 @@ void BRepFill_OffsetWire::Perform (const Standard_Real Offset,
         newExp.Perform(myWorkSpine);
         BRepMAT2d_BisectingLocus newBilo;
         BRepMAT2d_LinkTopoBilo newLink;
-        newBilo.Compute(newExp,1,MAT_Left,myIsOpenResult);
+        newBilo.Compute(newExp, 1, MAT_Left, myJoinType, myIsOpenResult);
 
         if(!newBilo.IsDone())
         {
@@ -748,9 +736,6 @@ void BRepFill_OffsetWire::PerformWithBiLo
  const GeomAbs_JoinType          Join,
  const Standard_Real             Alt)
 {
-  Standard_NotImplemented_Raise_if (Join > GeomAbs_Arc,
-				    "Only GeomAbs_Arc is implemented");
-
   myIsDone     = Standard_False;
   TopoDS_Shape aLocalShape = Spine.Oriented(TopAbs_FORWARD);
   myWorkSpine  = TopoDS::Face(aLocalShape);
@@ -983,7 +968,7 @@ void BRepFill_OffsetWire::PerformWithBiLo
     if (!Detromp.IsBound(S[1])) Detromp.Bind(S[1],EmptyList);
 
     
-    UpdateDetromp (Detromp(S[0]), Detromp(S[1]), Vertices, Params, 
+    UpdateDetromp (Detromp, S[0], S[1], Vertices, Params, 
 		   Bisec, StartOnEdge, EndOnEdge, Trim);
     //----------------------------------------------
     // Storage of vertices on parallel edges.
@@ -1257,6 +1242,102 @@ void BRepFill_OffsetWire::PrepareSpine()
   }
 #endif
 
+}
+
+//=======================================================================
+//function : UpdateDetromp
+//purpose  : For each interval on bissectrice defined by parameters
+//           test if the medium point is at a distance > offset	
+//           in this case vertices corresponding to the extremities of the interval
+//           are ranked in the proofing.
+//           => If the same vertex appears in the proofing, the 
+//           border of the zone of proximity is tangent to the offset .
+//=======================================================================
+
+void BRepFill_OffsetWire::UpdateDetromp (BRepFill_DataMapOfOrientedShapeListOfShape& Detromp,
+                                         const TopoDS_Shape& Shape1,
+                                         const TopoDS_Shape& Shape2,
+                                         const TopTools_SequenceOfShape& Vertices, 
+                                         const TColgp_SequenceOfPnt&     Params, 
+                                         const Bisector_Bisec&           Bisec,
+                                         const Standard_Boolean          SOnE,
+                                         const Standard_Boolean          EOnE,
+                                         const BRepFill_TrimEdgeTool&    Trim) const
+{
+  if (myJoinType == GeomAbs_Intersection &&
+      Vertices.Length() == 1 &&
+      !EOnE)
+  {
+    TopTools_IndexedMapOfShape Vmap1, Vmap2;
+    TopExp::MapShapes(Shape1, TopAbs_VERTEX, Vmap1);
+    TopExp::MapShapes(Shape2, TopAbs_VERTEX, Vmap2);
+    Standard_Boolean Adjacent = Standard_False;
+    for (Standard_Integer i = 1; i <= Vmap1.Extent(); i++)
+      for (Standard_Integer j = 1; j <= Vmap2.Extent(); j++)
+        if (Vmap1(i).IsSame(Vmap2(j)))
+        {
+          Adjacent = Standard_True;
+          break;
+        }
+    if (Adjacent)
+    {
+      Detromp(Shape1).Append(Vertices.First());
+      Detromp(Shape2).Append(Vertices.First());
+      return;
+    }
+  }
+  
+  Standard_Integer ii = 1;
+  Standard_Real    U1,U2;
+  TopoDS_Vertex    V1,V2;
+
+  Handle(Geom2d_Curve) Bis = Bisec.Value();
+
+  U1 = Bis->FirstParameter();
+  
+  if (SOnE) { 
+    // the first point of the bissectrice is on the offset
+    V1 = TopoDS::Vertex(Vertices.Value(ii));
+    ii++; 
+  }
+
+  while (ii <= Vertices.Length()) {
+    U2 = Params.Value(ii).X();
+    V2 = TopoDS::Vertex(Vertices.Value(ii));
+
+    gp_Pnt2d P = Bis->Value((U2 + U1)*0.5);  
+    if (!Trim.IsInside(P)) {
+      if (!V1.IsNull()) {
+        Detromp(Shape1).Append(V1);
+        Detromp(Shape2).Append(V1);
+      }
+      Detromp(Shape1).Append(V2);
+      Detromp(Shape2).Append(V2);
+    }
+    U1 = U2;
+    V1 = V2;
+    ii ++;
+  }
+
+  // test medium point between the last parameter and the end of the bissectrice.
+  U2 = Bis->LastParameter();
+  if (!EOnE) {
+    if (!Precision::IsInfinite(U2)) {
+      gp_Pnt2d P = Bis->Value((U2 + U1)*0.5);  
+      if (!Trim.IsInside(P)) {
+	if (!V1.IsNull()) {
+	  Detromp(Shape1).Append(V1);
+	  Detromp(Shape2).Append(V1);
+	}
+      }
+    }
+    else {
+      if (!V1.IsNull()) {
+	Detromp(Shape1).Append(V1);
+	Detromp(Shape2).Append(V1);
+      }
+    }
+  }    
 }
 
 //=======================================================================
@@ -1994,77 +2075,6 @@ void MakeOffset (const TopoDS_Edge&        E,
   }
 }  
 
-//=======================================================================
-//function : UpdateDetromp
-//purpose  : For each interval on bissectrice defined by parameters
-//           test if the medium point is at a distance > offset	
-//           in this case vertices corresponding to the extremities of the interval
-//           are ranked in the proofing.
-//           => If the same vertex appears in the proofing, the 
-//           border of the zone of proximity is tangent to the offset .
-//=======================================================================
-
-void UpdateDetromp (TopTools_ListOfShape&           Detromp1,
-		    TopTools_ListOfShape&           Detromp2, 
-		    const TopTools_SequenceOfShape& Vertices, 
-		    const TColgp_SequenceOfPnt&     Params, 
-		    const Bisector_Bisec&           Bisec,
-		    const Standard_Boolean          SOnE,
-		    const Standard_Boolean          EOnE,
-		    const BRepFill_TrimEdgeTool&    Trim)
-{
-  Standard_Integer ii = 1;
-  Standard_Real    U1,U2;
-  TopoDS_Vertex    V1,V2;
-
-  Handle(Geom2d_Curve) Bis = Bisec.Value();
-
-  U1 = Bis->FirstParameter();
-  
-  if (SOnE) { 
-    // the first point of the bissectrice is on the offset
-    V1 = TopoDS::Vertex(Vertices.Value(ii));
-    ii++; 
-  }
-
-  while (ii <= Vertices.Length()) {
-    U2 = Params.Value(ii).X();
-    V2 = TopoDS::Vertex(Vertices.Value(ii));
-
-    gp_Pnt2d P = Bis->Value((U2 + U1)*0.5);  
-    if (!Trim.IsInside(P)) {
-      if (!V1.IsNull()) {
-	  Detromp1.Append(V1);
-	  Detromp2.Append(V1);
-      }
-      Detromp1.Append(V2);
-      Detromp2.Append(V2);
-    }
-    U1 = U2;
-    V1 = V2;
-    ii ++;
-  }
-
-  // test medium point between the last parameter and the end of the bissectrice.
-  U2 = Bis->LastParameter();
-  if (!EOnE) {
-    if (!Precision::IsInfinite(U2)) {
-      gp_Pnt2d P = Bis->Value((U2 + U1)*0.5);  
-      if (!Trim.IsInside(P)) {
-	if (!V1.IsNull()) {
-	  Detromp1.Append(V1);
-	  Detromp2.Append(V1);
-	}
-      }
-    }
-    else {
-      if (!V1.IsNull()) {
-	Detromp1.Append(V1);
-	Detromp2.Append(V1);
-      }
-    }
-  }    
-}
 
 //=======================================================================
 //function : VertexFromNode

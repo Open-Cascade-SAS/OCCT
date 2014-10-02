@@ -20,7 +20,7 @@ package MAT2d
         --           Set of geometrys from Geom2d.
 
 uses
-
+    GeomAbs,
     MMgt,
     gp,
     Geom2d,

@@ -21,7 +21,7 @@ class Tool2d from MAT2d
 
 
 uses
-
+    JoinType                  from GeomAbs,
     Bisec                     from Bisector,
     Side                      from MAT,
     Bisector                  from MAT,
@@ -45,6 +45,9 @@ is
     
     Sense(me : in out ; aside : Side from MAT)
     	--- Purpose :<aSide> defines the side of the computation of the map. 
+    is static;
+
+    SetJoinType(me : in out ; aJoinType : JoinType from GeomAbs)
     is static;
 
     InitItems(me          : in out                    ; 
@@ -220,6 +223,7 @@ is
 fields
 
     theDirection          : Real;
+    theJoinType           : JoinType from GeomAbs;
     theNumberOfBisectors  : Integer;
     theNumberOfPnts       : Integer;
     theNumberOfVecs       : Integer;

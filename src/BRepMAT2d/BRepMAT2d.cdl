@@ -19,6 +19,7 @@ package BRepMAT2d
 	---Purpose: 
 
 uses
+    GeomAbs,
     MAT2d,
     MAT,
     TCollection,

@@ -100,9 +100,17 @@ static Standard_Integer drawcont(Draw_Interpretor& , Standard_Integer , const ch
 //           calculate the map of locations bisector on the contour defined by 
 //           the explorer.
 //==========================================================================
-static Standard_Integer mat(Draw_Interpretor& , Standard_Integer, const char**)
+static Standard_Integer mat(Draw_Interpretor&, Standard_Integer n, const char** a)
 {
-  MapBiLo.Compute(anExplo,1,SideOfMat);
+  GeomAbs_JoinType theJoinType = GeomAbs_Arc;
+  if (n  >= 2 && strcmp(a[1], "i") == 0)
+    theJoinType = GeomAbs_Intersection;
+
+  Standard_Boolean IsOpenResult = Standard_False;
+  if (n == 3 && strcmp(a[2], "o") == 0)
+    IsOpenResult = Standard_True;
+  
+  MapBiLo.Compute(anExplo, 1, SideOfMat, theJoinType, IsOpenResult);
   LinkComputed = Standard_False;
 
   return 0;
@@ -266,7 +274,7 @@ void BRepTest::MatCommands (Draw_Interpretor& theCommands)
 {
   theCommands.Add("topoload","load face",__FILE__,topoload);
   theCommands.Add("drawcont","display current contour",__FILE__,drawcont);
-  theCommands.Add("mat","computes the mat",__FILE__,mat);
+  theCommands.Add("mat","computes the mat: mat [a/i [o]]",__FILE__,mat);
   theCommands.Add("side","side left/right",__FILE__,side);
   theCommands.Add("result","result",__FILE__,result);
   theCommands.Add("zone","zone edge or vertex",__FILE__,zone);

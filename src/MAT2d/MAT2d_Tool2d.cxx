@@ -100,6 +100,7 @@ static Standard_Real MAT2d_TOLCONF = 1.e-7;
 MAT2d_Tool2d::MAT2d_Tool2d()
 {
   theDirection         = 1.;
+  theJoinType = GeomAbs_Arc; //default
   theNumberOfBisectors = 0;
   theNumberOfVecs      = 0;
   theNumberOfPnts      = 0;
@@ -130,6 +131,15 @@ void MAT2d_Tool2d::Sense(const MAT_Side aside)
 {
   if(aside == MAT_Left) theDirection =  1.;
   else                  theDirection = -1.;
+}
+
+//=============================================================================
+//function : SetJoinType
+//purpose  :
+//=============================================================================
+void MAT2d_Tool2d::SetJoinType(const GeomAbs_JoinType aJoinType)
+{
+  theJoinType = aJoinType;
 }
 
 //=============================================================================
@@ -637,6 +647,9 @@ Standard_Boolean MAT2d_Tool2d::IsSameDistance (
   Standard_Real EpsDist = MAT2d_TOLCONF*100. ;
   Distance = Dist(1);
   for (Standard_Integer i = 1; i <= 4; i++){
+    if (theJoinType == GeomAbs_Intersection &&
+        Precision::IsInfinite(Dist(i)))
+      continue;
     if (Abs(Dist(i) - Distance) > EpsDist) {
       Distance = Precision::Infinite();
       return Standard_False;
