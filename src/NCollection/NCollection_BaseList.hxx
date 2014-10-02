@@ -114,6 +114,11 @@ public:
   Standard_Boolean IsEmpty (void) const
   { return (myFirst == NULL); }
 
+  // ******** Allocator
+  //! Returns attached allocator
+  const Handle(NCollection_BaseAllocator)& Allocator() const 
+  { return myAllocator; }
+
  protected:
   // --------- PROTECTED METHODS ----------
 

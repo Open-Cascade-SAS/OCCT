@@ -1,5 +1,7 @@
 NCollection_TypeDef.hxx
 
+NCollection_AccAllocator.hxx
+NCollection_AccAllocator.cxx
 NCollection_BaseAllocator.hxx
 NCollection_BaseAllocator.cxx
 NCollection_IncAllocator.hxx
@@ -9,6 +11,8 @@ NCollection_AlignedAllocator.cxx
 NCollection_HeapAllocator.hxx
 NCollection_HeapAllocator.cxx
 NCollection_StdAllocator.hxx
+NCollection_WinHeapAllocator.hxx
+NCollection_WinHeapAllocator.cxx
 
 NCollection_ListNode.hxx
 NCollection_BaseList.hxx

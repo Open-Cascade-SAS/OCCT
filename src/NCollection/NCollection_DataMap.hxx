@@ -204,7 +204,9 @@ class NCollection_DataMap : public NCollection_BaseMap
     }
   }
 
-  //! Bind
+  //! Bind binds Item to Key in map. Returns Standard_True if Key was not
+  //! exist in the map. If the Key was already bound, the Item will be rebinded
+  //! and Standard_False will be returned.
   Standard_Boolean Bind (const TheKeyType& theKey, const TheItemType& theItem)
   {
     if (Resizable()) 
@@ -226,23 +228,36 @@ class NCollection_DataMap : public NCollection_BaseMap
     return Standard_True;
   }
 
+  //! Bound binds Item to Key in map. Returns modifiable Item 
+  TheItemType* Bound (const TheKeyType& theKey, const TheItemType& theItem)
+  {
+    if (Resizable()) 
+      ReSize(Extent());
+    DataMapNode** data = (DataMapNode**)myData1;
+    Standard_Integer k = Hasher::HashCode (theKey, NbBuckets());
+    DataMapNode* p = data[k];
+    while (p)
+    {
+      if (Hasher::IsEqual(p->Key(), theKey))
+      {
+        p->ChangeValue() = theItem;
+        return &p->ChangeValue();
+      }
+      p = (DataMapNode*)p->Next();
+    }
+    data[k] = new (this->myAllocator) DataMapNode (theKey, theItem, data[k]);
+    Increment();
+    return &data[k]->ChangeValue();
+  }
+
   //! IsBound
   Standard_Boolean IsBound(const TheKeyType& K) const
   {
-    if (IsEmpty()) 
-      return Standard_False;
-    DataMapNode** data = (DataMapNode**) myData1;
-    DataMapNode* p = data[Hasher::HashCode(K,NbBuckets())];
-    while (p) 
-    {
-      if (Hasher::IsEqual(p->Key(),K)) 
-        return Standard_True;
-      p = (DataMapNode *) p->Next();
-    }
-    return Standard_False;
+    DataMapNode* p;
+    return lookup(K, p);
   }
 
-  //! UnBind
+  //! UnBind removes Item Key pair from map
   Standard_Boolean UnBind(const TheKeyType& K)
   {
     if (IsEmpty()) 
@@ -270,61 +285,59 @@ class NCollection_DataMap : public NCollection_BaseMap
     return Standard_False;
   }
 
-  //! Find
-  const TheItemType& Find(const TheKeyType& theKey) const
+  //! Seek returns pointer to Item by Key. Returns
+  //! NULL is Key was not bound.
+  const TheItemType* Seek(const TheKeyType& theKey) const
   {
-    Standard_NoSuchObject_Raise_if (IsEmpty(), "NCollection_DataMap::Find");
-    DataMapNode* p = (DataMapNode*) myData1[Hasher::HashCode(theKey,NbBuckets())];
-    while (p) 
-    {
-      if (Hasher::IsEqual(p->Key(),theKey)) 
-        return p->Value();
-      p = (DataMapNode*) p->Next();
-    }
-    Standard_NoSuchObject::Raise("NCollection_DataMap::Find");
-    return p->Value(); // This for compiler
+    DataMapNode* p = 0;
+    if (!lookup(theKey, p))
+      return 0L;
+    return &p->Value();
   }
 
-  //! Find value for key with copying.
+  //! Find returns the Item for Key. Raises if Key was not bound
+  const TheItemType& Find(const TheKeyType& theKey) const
+  {
+    DataMapNode* p = 0;
+    if (!lookup(theKey, p))
+      Standard_NoSuchObject::Raise("NCollection_DataMap::Find");
+    return p->Value();
+  }
+
+  //! Find Item for key with copying.
   //! @return true if key was found
   Standard_Boolean Find (const TheKeyType& theKey,
                          TheItemType&      theValue) const
   {
-    if (IsEmpty())
-    {
+    DataMapNode* p = 0;
+    if (!lookup(theKey, p))
       return Standard_False;
-    }
 
-    for (DataMapNode* aNodeIter = (DataMapNode* )myData1[Hasher::HashCode (theKey, NbBuckets())];
-         aNodeIter != NULL;
-         aNodeIter = (DataMapNode* )aNodeIter->Next())
-    {
-      if (Hasher::IsEqual (aNodeIter->Key(), theKey))
-      {
-        theValue = aNodeIter->Value();
-        return Standard_True;
-      }
-    }
-    return Standard_False;
+    theValue = p->Value();
+    return Standard_True;
   }
 
   //! operator ()
   const TheItemType& operator() (const TheKeyType& theKey) const
   { return Find(theKey); }
 
-  //! ChangeFind
+  //! ChangeSeek returns modifiable pointer to Item by Key. Returns
+  //! NULL is Key was not bound.
+  TheItemType* ChangeSeek(const TheKeyType& theKey)
+  {
+    DataMapNode* p = 0;
+    if (!lookup(theKey, p))
+      return 0L;
+    return &p->ChangeValue();
+  }
+
+  //! ChangeFind returns mofifiable Item by Key. Raises if Key was not bound
   TheItemType& ChangeFind (const TheKeyType& theKey)
   {
-    Standard_NoSuchObject_Raise_if (IsEmpty(), "NCollection_DataMap::Find");
-    DataMapNode*  p = (DataMapNode*) myData1[Hasher::HashCode(theKey,NbBuckets())];
-    while (p) 
-    {
-      if (Hasher::IsEqual(p->Key(),theKey)) 
-        return p->ChangeValue();
-      p = (DataMapNode*) p->Next();
-    }
-    Standard_NoSuchObject::Raise("NCollection_DataMap::Find");
-    return p->ChangeValue(); // This for compiler
+    DataMapNode* p = 0;
+    if (!lookup(theKey, p))
+      Standard_NoSuchObject::Raise("NCollection_DataMap::Find");
+    return p->ChangeValue();
   }
 
   //! operator ()
@@ -351,6 +364,26 @@ class NCollection_DataMap : public NCollection_BaseMap
   //! Size
   Standard_Integer Size(void) const
   { return Extent(); }
+
+  
+ protected:
+  // ---------- PROTECTED METHODS ----------
+  //! Lookup for particular key in map. Returns true if key is found and
+  //! thepNode points to binded node. Returns false if key is not found,
+  //! thehNode value is this case is not usable.
+  Standard_Boolean lookup(const TheKeyType& theKey,DataMapNode*& thepNode) const
+  {
+    if (IsEmpty())
+      return Standard_False; // Not found
+    for (thepNode = (DataMapNode*)myData1[Hasher::HashCode(theKey, NbBuckets())];
+         thepNode; thepNode = (DataMapNode*)thepNode->Next())
+    {
+      if (Hasher::IsEqual(thepNode->Key(), theKey)) 
+        return Standard_True;
+    }
+    return Standard_False; // Not found
+  }
+
 };
 
 #endif
