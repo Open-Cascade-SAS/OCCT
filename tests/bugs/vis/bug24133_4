@@ -14,8 +14,7 @@ vpoint diamP2 50 50 0
 vpoint diamP3 100 0 0
 vcircle circle diamP1 diamP2 diamP3 0
 verase diamP1 diamP2 diamP3
-vdimension diameter name=dim1 circle
-vdisplay dim1
+vdimension dim1 -diameter -shapes circle
 vfit
 vmoveto 208 205
 
@@ -30,8 +29,7 @@ if { $stat != 1 } {
 
 vinit Viewer2/View2
 vdisplay circle
-vdimension diameter name=dim2 text=3d circle
-vdisplay dim2
+vdimension dim2 -diameter -text 3d -shapes circle
 vfit
 vmoveto 208 205
 

@@ -68,6 +68,7 @@
 #include <TCollection_ExtendedString.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <Units.hxx>
 #include <Units_UnitsDictionary.hxx>
@@ -1020,6 +1021,48 @@ Standard_Boolean AIS_Dimension::CircleFromPlanarFace (const TopoDS_Face& theFace
 }
 
 //=======================================================================
+//function : CircleFromEdge
+//purpose  : if possible computes circle from edge
+//=======================================================================
+Standard_Boolean AIS_Dimension::CircleFromEdge (const TopoDS_Edge& theEdge,
+                                                gp_Circ&           theCircle,
+                                                gp_Pnt&            theFirstPoint,
+                                                gp_Pnt&            theLastPoint)
+{
+  BRepAdaptor_Curve anAdaptedCurve (theEdge);
+  switch (anAdaptedCurve.GetType())
+  {
+    case GeomAbs_Circle:
+    {
+      theCircle = anAdaptedCurve.Circle();
+      break;
+    }
+    case GeomAbs_Ellipse:
+    {
+      gp_Elips anEll = anAdaptedCurve.Ellipse();
+      if ((anEll.MinorRadius() - anEll.MajorRadius()) >= Precision::Confusion())
+      {
+        return Standard_False;
+      }
+      theCircle = gp_Circ(anEll.Position(),anEll.MinorRadius());
+      break;
+    }
+    case GeomAbs_Line:
+    case GeomAbs_Hyperbola:
+    case GeomAbs_Parabola:
+    case GeomAbs_BezierCurve:
+    case GeomAbs_BSplineCurve:
+    case GeomAbs_OtherCurve:
+    default:
+      return Standard_False;
+  }
+
+  theFirstPoint = anAdaptedCurve.Value (anAdaptedCurve.FirstParameter());
+  theLastPoint  = anAdaptedCurve.Value (anAdaptedCurve.LastParameter());
+  return Standard_True;
+}
+
+//=======================================================================
 //function : InitCircularDimension
 //purpose  : 
 //=======================================================================
@@ -1036,122 +1079,126 @@ Standard_Boolean AIS_Dimension::InitCircularDimension (const TopoDS_Shape& theSh
   Standard_Real aFirstParam = 0.0;
   Standard_Real aLastParam  = 0.0;
 
-  // discover circular geometry
-  if (theShape.ShapeType() == TopAbs_FACE)
+  // Discover circular geometry
+  switch (theShape.ShapeType())
   {
-    AIS::GetPlaneFromFace (TopoDS::Face (theShape), aPln, aBasisSurf, aSurfType, anOffset);
-
-    if (aSurfType == AIS_KOS_Plane)
+    case TopAbs_FACE:
     {
-      Handle(Geom_Curve) aCurve;
-      if (!CircleFromPlanarFace (TopoDS::Face (theShape), aCurve, aFirstPoint, aLastPoint))
-      {
-        return Standard_False;
-      }
+      AIS::GetPlaneFromFace (TopoDS::Face (theShape), aPln, aBasisSurf, aSurfType, anOffset);
 
-      theCircle = Handle(Geom_Circle)::DownCast (aCurve)->Circ();
-    }
-    else
-    {
-      gp_Pnt aCurPos;
-      BRepAdaptor_Surface aSurf1 (TopoDS::Face (theShape));
-      Standard_Real aFirstU = aSurf1.FirstUParameter();
-      Standard_Real aLastU  = aSurf1.LastUParameter();
-      Standard_Real aFirstV = aSurf1.FirstVParameter();
-      Standard_Real aLastV  = aSurf1.LastVParameter();
-      Standard_Real aMidU   = (aFirstU + aLastU) * 0.5;
-      Standard_Real aMidV   = (aFirstV + aLastV) * 0.5;
-      aSurf1.D0 (aMidU, aMidV, aCurPos);
-      Handle (Adaptor3d_HCurve) aBasisCurve;
-      Standard_Boolean isExpectedType = Standard_False;
-      if (aSurfType == AIS_KOS_Cylinder)
+      if (aSurfType == AIS_KOS_Plane)
       {
-        isExpectedType = Standard_True;
-      }
-      else
-      {
-        if (aSurfType == AIS_KOS_Revolution)
+        Handle(Geom_Curve) aCurve;
+        if (!CircleFromPlanarFace (TopoDS::Face (theShape), aCurve, aFirstPoint, aLastPoint))
         {
-          aBasisCurve = aSurf1.BasisCurve();
-          if (aBasisCurve->GetType() == GeomAbs_Line)
-          {
-            isExpectedType = Standard_True;
-          }
+          return Standard_False;
         }
-        else if (aSurfType == AIS_KOS_Extrusion)
-        {
-          aBasisCurve = aSurf1.BasisCurve();
-          if (aBasisCurve->GetType() == GeomAbs_Circle)
-          {
-            isExpectedType = Standard_True;
-          }
-        }
-      }
 
-      if (!isExpectedType)
-      {
-        return Standard_False;
-      }
-
-      Handle(Geom_Curve) aCurve;
-      aCurve = aBasisSurf->VIso(aMidV);
-      if (aCurve->DynamicType() == STANDARD_TYPE (Geom_Circle))
-      {
         theCircle = Handle(Geom_Circle)::DownCast (aCurve)->Circ();
       }
-      else if (aCurve->DynamicType() == STANDARD_TYPE (Geom_TrimmedCurve))
-      {
-        Handle(Geom_TrimmedCurve) aTrimmedCurve = Handle(Geom_TrimmedCurve)::DownCast (aCurve);
-        aFirstU = aTrimmedCurve->FirstParameter();
-        aLastU  = aTrimmedCurve->LastParameter();
-        if (aTrimmedCurve->BasisCurve()->DynamicType() == STANDARD_TYPE (Geom_Circle))
-        {
-          theCircle = Handle(Geom_Circle)::DownCast(aTrimmedCurve->BasisCurve())->Circ();
-        }
-      }
       else
       {
-        // Compute a circle from 3 points on "aCurve"
-        gp_Pnt aP1, aP2;
-        aSurf1.D0 (aFirstU, aMidV, aP1);
-        aSurf1.D0 (aLastU, aMidV, aP2);
-        GC_MakeCircle aMkCirc (aP1, aCurPos, aP2);
-        theCircle = aMkCirc.Value()->Circ();
-      }
+        gp_Pnt aCurPos;
+        BRepAdaptor_Surface aSurf1 (TopoDS::Face (theShape));
+        Standard_Real aFirstU = aSurf1.FirstUParameter();
+        Standard_Real aLastU  = aSurf1.LastUParameter();
+        Standard_Real aFirstV = aSurf1.FirstVParameter();
+        Standard_Real aLastV  = aSurf1.LastVParameter();
+        Standard_Real aMidU   = (aFirstU + aLastU) * 0.5;
+        Standard_Real aMidV   = (aFirstV + aLastV) * 0.5;
+        aSurf1.D0 (aMidU, aMidV, aCurPos);
+        Handle (Adaptor3d_HCurve) aBasisCurve;
+        Standard_Boolean isExpectedType = Standard_False;
+        if (aSurfType == AIS_KOS_Cylinder)
+        {
+          isExpectedType = Standard_True;
+        }
+        else
+        {
+          if (aSurfType == AIS_KOS_Revolution)
+          {
+            aBasisCurve = aSurf1.BasisCurve();
+            if (aBasisCurve->GetType() == GeomAbs_Line)
+            {
+              isExpectedType = Standard_True;
+            }
+          }
+          else if (aSurfType == AIS_KOS_Extrusion)
+          {
+            aBasisCurve = aSurf1.BasisCurve();
+            if (aBasisCurve->GetType() == GeomAbs_Circle)
+            {
+              isExpectedType = Standard_True;
+            }
+          }
+        }
 
-      aFirstPoint = ElCLib::Value (aFirstU, theCircle);
-      aLastPoint = ElCLib::Value (aLastU,  theCircle);
+        if (!isExpectedType)
+        {
+          return Standard_False;
+        }
+
+        Handle(Geom_Curve) aCurve = aBasisSurf->VIso(aMidV);
+        if (aCurve->DynamicType() == STANDARD_TYPE (Geom_Circle))
+        {
+          theCircle = Handle(Geom_Circle)::DownCast (aCurve)->Circ();
+        }
+        else if (aCurve->DynamicType() == STANDARD_TYPE (Geom_TrimmedCurve))
+        {
+          Handle(Geom_TrimmedCurve) aTrimmedCurve = Handle(Geom_TrimmedCurve)::DownCast (aCurve);
+          aFirstU = aTrimmedCurve->FirstParameter();
+          aLastU  = aTrimmedCurve->LastParameter();
+          if (aTrimmedCurve->BasisCurve()->DynamicType() == STANDARD_TYPE (Geom_Circle))
+          {
+            theCircle = Handle(Geom_Circle)::DownCast(aTrimmedCurve->BasisCurve())->Circ();
+          }
+        }
+        else
+        {
+          // Compute a circle from 3 points on "aCurve"
+          gp_Pnt aP1, aP2;
+          aSurf1.D0 (aFirstU, aMidV, aP1);
+          aSurf1.D0 (aLastU, aMidV, aP2);
+          GC_MakeCircle aMkCirc (aP1, aCurPos, aP2);
+          theCircle = aMkCirc.Value()->Circ();
+        }
+
+        aFirstPoint = ElCLib::Value (aFirstU, theCircle);
+        aLastPoint = ElCLib::Value (aLastU,  theCircle);
+      }
+      break;
     }
-  }
-  else // TopAbs_EDGE | TopAbs_WIRE
-  {
-    TopoDS_Edge anEdge;
-    if (theShape.ShapeType() == TopAbs_WIRE)
+    case TopAbs_WIRE:
     {
+      TopoDS_Edge anEdge;
       TopExp_Explorer anIt (theShape, TopAbs_EDGE);
       if (anIt.More())
       {
         anEdge = TopoDS::Edge (anIt.Current());
       }
+      if (!AIS_Dimension::CircleFromEdge (anEdge, theCircle, aFirstPoint, aLastPoint))
+      {
+        return Standard_False;
+      }
+      break;
     }
-    else if (theShape.ShapeType() == TopAbs_EDGE)
+    case TopAbs_EDGE:
     {
-      anEdge = TopoDS::Edge (theShape);
+      TopoDS_Edge anEdge = TopoDS::Edge (theShape);
+      if (!AIS_Dimension::CircleFromEdge (anEdge, theCircle, aFirstPoint, aLastPoint))
+      {
+        return Standard_False;
+      }
+      break;
     }
-    else // Unexpected type of shape
-    {
+    case TopAbs_COMPOUND:
+    case TopAbs_COMPSOLID:
+    case TopAbs_SOLID:
+    case TopAbs_SHELL:
+    case TopAbs_VERTEX:
+    case TopAbs_SHAPE:
+    default:
       return Standard_False;
-    }
-
-    BRepAdaptor_Curve anAdaptedCurve (anEdge);
-    if (anAdaptedCurve.GetType() != GeomAbs_Circle)
-    {
-      return Standard_False;
-    }
-
-    theCircle   = anAdaptedCurve.Circle();
-    aFirstPoint = anAdaptedCurve.Value (anAdaptedCurve.FirstParameter());
-    aLastPoint  = anAdaptedCurve.Value (anAdaptedCurve.LastParameter());
   }
 
   theIsClosed = aFirstPoint.IsEqual (aLastPoint, Precision::Confusion());

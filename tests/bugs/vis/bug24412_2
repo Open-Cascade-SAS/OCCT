@@ -15,8 +15,7 @@ vinit Viewer1/View1
 vpoint  ang_p1 0  0 30
 vpoint  ang_p2 30 0  0
 vpoint  ang_p3 60 0 30
-vdimension angle name=ang ang_p1 ang_p2 ang_p3
-vdisplay ang
+vdimension ang -angle -shapes ang_p1 ang_p2 ang_p3
 vmovedim ang 5 0 5
 vfit
 
@@ -32,7 +31,7 @@ vdump $anImage1
 
 
 # Update dimension parameters and set automatic text positioning
-vdimparam ang flyout=-5
+vdimparam ang -flyout -5
 vfit
 
 # Check that text position was changed according to flyout

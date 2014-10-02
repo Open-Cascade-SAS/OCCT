@@ -17,8 +17,7 @@ vpoint  circ_p2 30 10  0
 vpoint  circ_p3 60 10 30
 vcircle circ circ_p1 circ_p2 circ_p3 0
 vdisplay circ
-vdimension diameter name=diam circ
-vdisplay diam
+vdimension diam -diameter -shapes circ
 # Change text position
 vmovedim diam 15 15 15
 vfit
@@ -34,7 +33,7 @@ if { $stat != 1 } {
 vdump $anImage1
 
 # Update dimension parameters and set automatic text positioning
-vdimparam diam flyout=-5
+vdimparam diam -flyout -5
 vfit
 
 # Check that text position was changed according to flyout

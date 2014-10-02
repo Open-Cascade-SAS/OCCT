@@ -37,6 +37,7 @@
 #include <Standard.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <TColgp_HSequenceOfPnt.hxx>
+#include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <NCollection_Sequence.hxx>
@@ -451,16 +452,6 @@ protected:
                                              const gp_Pnt& theFirstPoint,
                                              const gp_Pnt& theSecondPoint);
 
-  //! If it is possible extracts circle from planar face.
-  //! @param theFace [in] the planar face.
-  //! @param theCurve [out] the circular curve.
-  //! @param theFirstPoint [out] the point of the first parameter of the circlular curve.
-  //! @param theSecondPoint [out] the point of the last parameter of the circlular curve.
-  //! @return TRUE in case of successful circle extraction.
-  Standard_EXPORT  Standard_Boolean CircleFromPlanarFace (const TopoDS_Face& theFace,
-                                                          Handle(Geom_Curve)& theCurve,
-                                                          gp_Pnt& theFirstPoint,
-                                                          gp_Pnt& theLastPoint);
 
   //! Performs initialization of circle and middle arc point from the passed
   //! shape which is assumed to contain circular geometry.
@@ -531,6 +522,30 @@ protected:
                                                               Standard_Real& theFlyout,
                                                               gp_Pln& thePlane,
                                                               Standard_Boolean& theIsPlaneOld) const;
+
+protected: //! @name Static auxilliary methods for geometry extraction
+
+  //! If it is possible extracts circle from planar face.
+  //! @param theFace        [in] the planar face
+  //! @param theCurve       [out] the circular curve
+  //! @param theFirstPoint  [out] the point of the first parameter of the circlular curve
+  //! @param theSecondPoint [out] the point of the last parameter of the circlular curve
+  //! @return TRUE in case of successful circle extraction
+  static Standard_Boolean CircleFromPlanarFace (const TopoDS_Face&  theFace,
+                                                Handle(Geom_Curve)& theCurve,
+                                                gp_Pnt&             theFirstPoint,
+                                                gp_Pnt&             theLastPoint);
+
+  //! If it is possible extracts circle from the edge.
+  //! @param theEdge        [in] input edge to extract circle from
+  //! @param theCircle      [out] circle
+  //! @param theFirstPoint  [out] the point of the first parameter of the circlular curve
+  //! @param theSecondPoint [out] the point of the last parameter of the circlular curve
+  //! @return TRUE in case of successful circle extraction.
+  static Standard_Boolean CircleFromEdge (const TopoDS_Edge& theEdge,
+                                          gp_Circ&           theCircle,
+                                          gp_Pnt&            theFirstPoint,
+                                          gp_Pnt&            theLastPoint);
 
 protected: //! @name Behavior to implement
 

@@ -14,8 +14,7 @@ vpoint radP2 50 50 0
 vpoint radP3 100 0 0
 vcircle circle radP1 radP2 radP3 0
 verase radP1 radP2 radP3
-vdimension radius name=dim1 circle
-vdisplay dim1
+vdimension dim1 -radius -shapes circle
 vfit
 vmoveto 123 158
 
@@ -30,8 +29,7 @@ if { $stat != 1 } {
 
 vinit Viewer2/View2
 vdisplay circle
-vdimension radius name=dim2 text=3d circle
-vdisplay dim2
+vdimension dim2 -radius -text 3d -shapes circle
 vfit
 vmoveto 191 196
 

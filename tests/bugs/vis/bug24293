@@ -8,8 +8,7 @@ puts ""
 vinit View1
 vpoint lengthP1 0 0 0
 vpoint lengthP2 10 10 10
-vdimension length name=dim1 plane=xoy lengthP1 lengthP2
-vdisplay dim1
+vdimension dim1 -length -plane xoy -shapes lengthP1 lengthP2
 vfit
 vmoveto 202 191
 

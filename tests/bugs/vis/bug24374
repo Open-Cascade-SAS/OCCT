@@ -9,8 +9,7 @@ box b 100 100 100
 explode b e
 vdisplay b
 vdisplay b_9
-vdimension length name=dim1 b_9 text=3d plane=zox
-vdisplay dim1
+vdimension dim1 -length -shapes b_9 -text 3d -plane zox
 vselmode b 2 1
 vselmode dim1 2 1
 vfit

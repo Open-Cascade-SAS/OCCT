@@ -22,30 +22,29 @@ vpoint  circle1_p1 0  0 30
 vpoint  circle1_p2 30 0  0
 vpoint  circle1_p3 60 0 30
 vcircle circle1 circle1_p1 circle1_p2 circle1_p3 0
-vdimension diameter name=diam1 text=3d plane=zox label=hfit flyout=0 arrows=internal circle1
+vdimension diam1 -diameter -shapes circle1 -text 3d -plane zox -label hfit -flyout 0 -arrow internal
 
 # test forced external arrow orientation
 vpoint  circle2_p1 100 0 30
 vpoint  circle2_p2 130 0  0
 vpoint  circle2_p3 160 0 30
 vcircle circle2 circle2_p1 circle2_p2 circle2_p3 0
-vdimension diameter name=diam2 text=3d plane=zox label=hfit flyout=0 arrows=external circle2
+vdimension diam2 -diameter -shapes circle2 -text 3d -plane zox -label hfit -flyout 0 -arrow external
 
 # test that auto-fit for arrow places them externally for small geometry
 vpoint  circle3_p1 0  0 102
 vpoint  circle3_p2 22 0  80
 vpoint  circle3_p3 44 0 102
 vcircle circle3 circle3_p1 circle3_p2 circle3_p3 0
-vdimension diameter name=diam3 text=3d plane=zox label=hcenter flyout=0 label=hfit arrows=fit circle3
+vdimension diam3 -diameter -shapes circle3 -text 3d -plane zox -label hcenter -flyout 0 -label hfit -arrow fit
 
 # test that auto-fit for text places the label externally for small geometry
 vpoint  circle4_p1 100 0 92
 vpoint  circle4_p2 112 0 80
 vpoint  circle4_p3 124 0 92
 vcircle circle4 circle4_p1 circle4_p2 circle4_p3 0
-vdimension diameter name=diam4 text=3d plane=zox label=hfit flyout=0 label=hfit arrows=fit circle4
+vdimension diam4 -diameter -shapes circle4 -text 3d -plane zox -label hfit -flyout 0 -label hfit -arrow fit
 
-vdisplay diam1 diam2 diam3 diam4
 vfit
 
 # ------------------------------------------------
@@ -71,7 +70,7 @@ for {set r 0} {$r < 3} {incr r} {
 
     set dimension d_$idx
 
-    vdimension diameter name=$dimension text=3d plane=zox label=[lindex $hpos $c],[lindex $vpos $r] arrows=external flyout=0.0 $circle
+    vdimension $dimension -diameter -shapes $circle -text 3d -plane zox -label [lindex $hpos $c] [lindex $vpos $r] -arrow external -flyout 0.0
     vdisplay $dimension
 
     incr idx

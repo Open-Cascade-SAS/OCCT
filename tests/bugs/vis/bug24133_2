@@ -12,8 +12,7 @@ vinit
 vpoint angleP1 0 0 0
 vpoint angleP2 50 50 50
 vpoint angleP3 50 50 100
-vdimension angle name=dim1 angleP1 angleP2 angleP3
-vdisplay dim1
+vdimension dim1 -angle -shapes angleP1 angleP2 angleP3
 vfit
 vmoveto 249 206
 
@@ -27,8 +26,7 @@ if { $stat != 1 } {
 }
 vinit Viewer2/View2
 vdisplay angleP1 angleP2 angleP3
-vdimension angle name=dim2 text=3d angleP1 angleP2 angleP3
-vdisplay dim2
+vdimension dim2 -angle -text 3d -shapes angleP1 angleP2 angleP3
 vfit
 vmoveto 263 251
 

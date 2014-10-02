@@ -1,0 +1,4 @@
+source $env(CASROOT)/samples/tcl/dimensions.tcl
+vdump $imagedir/${test_image}.png
+
+puts "TEST COMPLETED"

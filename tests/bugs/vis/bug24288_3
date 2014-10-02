@@ -17,8 +17,7 @@ vpoint radP3 100 0 0
 vcircle circle radP1 radP2 radP3 0
 vrotate 0 -$m_pi2 0
 verase radP1 radP2 radP3
-vdimension radius name=dim text=3d circle
-vdisplay dim
+vdimension dim -radius -text 3d -shapes circle
 vfit
 vmoveto 110 111
 

@@ -44,7 +44,7 @@ Prs3d_DimensionAspect::Prs3d_DimensionAspect()
   myTextAspect->SetVerticalJustification (Graphic3d_VTA_CENTER);
   myArrowAspect = new Prs3d_ArrowAspect;
   myArrowAspect->SetColor (Quantity_NOC_LAWNGREEN);
-  myArrowAspect->SetAngle (M_PI * 20.0 / 180.0);
+  myArrowAspect->SetAngle (M_PI * 12.0 / 180.0);
   myArrowAspect->SetLength (6.0);
   myExtensionSize      = 6.0;
   myArrowTailSize      = 6.0;

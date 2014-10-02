@@ -30,18 +30,17 @@ vpoint arrow_p7  0 0 50
 vpoint arrow_p8 10 0 50
 
 # test forced internal arrow orientation
-vdimension length name=arrow_d1 text=3d plane=zox label=hfit flyout=10.0 arrows=internal arrow_p1 arrow_p2
+vdimension arrow_d1 -length -shapes arrow_p1 arrow_p2 -text 3d -plane zox -label hfit -flyout 10.0 -arrow internal
 
 # test forced external arrow orientation
-vdimension length name=arrow_d2 text=3d plane=zox label=hfit flyout=10.0 arrows=external arrow_p3 arrow_p4
+vdimension arrow_d2 -length -shapes arrow_p3 arrow_p4 -text 3d -plane zox -label hfit -flyout 10.0 -arrow external
 
 # test that auto-fit for arrow places them externally for small geometry
-vdimension length name=arrow_d3 text=3d plane=zox label=hcenter flyout=10.0 arrows=fit arrow_p5 arrow_p6
+vdimension arrow_d3 -length -shapes arrow_p5 arrow_p6 -text 3d -plane zox -label hcenter -flyout 10.0 -arrow fit
 
 # test that auto-fit for text places the label externally for small geometry
-vdimension length name=arrow_d4 text=3d plane=zox label=hfit flyout=10.0 arrows=fit arrow_p7 arrow_p8
+vdimension arrow_d4 -length -shapes arrow_p7 arrow_p8 -text 3d -plane zox -label hfit -flyout 10.0 -arrow fit
 
-vdisplay arrow_d1 arrow_d2 arrow_d3 arrow_d4
 vfit
 
 # ------------------------------------------------
@@ -63,7 +62,7 @@ for {set r 0} {$r < 3} {incr r} {
 
     set dimension d_$idx
 
-    vdimension length name=$dimension text=3d plane=zox label=[lindex $hpos $c],[lindex $vpos $r] arrows=external flyout=10.0 $point1 $point2
+    vdimension $dimension -length -shapes $point1 $point2 -text 3d -plane zox -label [lindex $hpos $c] [lindex $vpos $r] -arrow external -flyout 10.0
     vdisplay $dimension
 
     incr idx
