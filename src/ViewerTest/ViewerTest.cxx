@@ -29,7 +29,9 @@
 #include <TopLoc_Location.hxx>
 #include <TopTools_HArray1OfShape.hxx>
 #include <TColStd_HArray1OfTransient.hxx>
+#include <TColStd_SequenceOfAsciiString.hxx>
 #include <TColStd_HSequenceOfAsciiString.hxx>
+#include <TColStd_MapOfTransient.hxx>
 #include <OSD_Timer.hxx>
 #include <Geom_Axis2Placement.hxx>
 #include <Geom_Axis1Placement.hxx>
@@ -2040,15 +2042,14 @@ int VRemove (Draw_Interpretor& theDI,
   ViewerTest_AutoUpdater anUpdateTool (aCtx, ViewerTest::CurrentView());
   if (aCtx.IsNull())
   {
-    std::cout << "Error: no active view!\n";
+    std::cerr << "Error: no active view!\n";
     return 1;
   }
-
-  aCtx->CloseAllContexts (Standard_False);
 
   Standard_Boolean isContextOnly = Standard_False;
   Standard_Boolean toRemoveAll   = Standard_False;
   Standard_Boolean toPrintInfo   = Standard_True;
+  Standard_Boolean toRemoveLocal = Standard_False;
 
   Standard_Integer anArgIter = 1;
   for (; anArgIter < theArgNb; ++anArgIter)
@@ -2067,7 +2068,15 @@ int VRemove (Draw_Interpretor& theDI,
     {
       toPrintInfo = Standard_False;
     }
-    else if (!anUpdateTool.parseRedrawMode (anArg))
+    else if (anArg == "-local")
+    {
+      toRemoveLocal = Standard_True;
+    }
+    else if (anUpdateTool.parseRedrawMode (anArg))
+    {
+      continue;
+    }
+    else
     {
       break;
     }
@@ -2075,8 +2084,18 @@ int VRemove (Draw_Interpretor& theDI,
   if (toRemoveAll
    && anArgIter < theArgNb)
   {
-    std::cout << "Error: wrong syntax!\n";
+    std::cerr << "Error: wrong syntax!\n";
     return 1;
+  }
+
+  if (toRemoveLocal && !aCtx->HasOpenedContext())
+  {
+    std::cerr << "Error: local selection context is not open.\n";
+    return 1;
+  }
+  else if (!toRemoveLocal && aCtx->HasOpenedContext())
+  {
+    aCtx->CloseAllContexts (Standard_False);
   }
 
   NCollection_List<TCollection_AsciiString> anIONameList;
@@ -2183,6 +2202,15 @@ int VRemove (Draw_Interpretor& theDI,
       GetMapOfAIS().UnBind2 (anIter.Value());
     }
   }
+
+  // Close local context if it is empty
+  TColStd_MapOfTransient aLocalIO;
+  if (aCtx->HasOpenedContext()
+   && !aCtx->LocalContext()->DisplayedObjects (aLocalIO))
+  {
+    aCtx->CloseAllContexts (Standard_False);
+  }
+
   return 0;
 }
 
@@ -2199,34 +2227,55 @@ int VErase (Draw_Interpretor& theDI,
   ViewerTest_AutoUpdater anUpdateTool (aCtx, ViewerTest::CurrentView());
   if (aCtx.IsNull())
   {
-    std::cout << "Error: no active view!\n";
+    std::cerr << "Error: no active view!\n";
     return 1;
   }
-  aCtx->CloseAllContexts (Standard_False);
 
   const Standard_Boolean toEraseAll = TCollection_AsciiString (theArgNb > 0 ? theArgVec[0] : "") == "veraseall";
 
   Standard_Integer anArgIter = 1;
+  Standard_Boolean toEraseLocal = Standard_False;
+  TColStd_SequenceOfAsciiString aNamesOfEraseIO;
   for (; anArgIter < theArgNb; ++anArgIter)
   {
-    if (!anUpdateTool.parseRedrawMode (theArgVec[anArgIter]))
+    TCollection_AsciiString anArgCase (theArgVec[anArgIter]);
+    anArgCase.LowerCase();
+    if (anUpdateTool.parseRedrawMode (anArgCase))
     {
-      break;
+      continue;
+    }
+    else if (anArgCase == "-local")
+    {
+      toEraseLocal = Standard_True;
+    }
+    else
+    {
+      aNamesOfEraseIO.Append (theArgVec[anArgIter]);
     }
   }
 
-  if (anArgIter < theArgNb)
+  if (!aNamesOfEraseIO.IsEmpty() && toEraseAll)
   {
-    if (toEraseAll)
-    {
-      std::cerr << "Error: wrong syntax, " << theArgVec[0] << " too much arguments.\n";
-      return 1;
-    }
+    std::cerr << "Error: wrong syntax, " << theArgVec[0] << " too much arguments.\n";
+    return 1;
+  }
 
-    // has a list of names
-    for (; anArgIter < theArgNb; ++anArgIter)
+  if (toEraseLocal && !aCtx->HasOpenedContext())
+  {
+    std::cerr << "Error: local selection context is not open.\n";
+    return 1;
+  }
+  else if (!toEraseLocal && aCtx->HasOpenedContext())
+  {
+    aCtx->CloseAllContexts (Standard_False);
+  }
+
+  if (!aNamesOfEraseIO.IsEmpty())
+  {
+    // Erase named objects
+    for (Standard_Integer anIter = 1; anIter <= aNamesOfEraseIO.Length(); ++anIter)
     {
-      TCollection_AsciiString aName = theArgVec[anArgIter];
+      TCollection_AsciiString aName = aNamesOfEraseIO.Value (anIter);
       if (!GetMapOfAIS().IsBound2 (aName))
       {
         continue;
@@ -2249,10 +2298,9 @@ int VErase (Draw_Interpretor& theDI,
       }
     }
   }
-  else if (!toEraseAll
-        && aCtx->NbCurrents() > 0)
+  else if (!toEraseAll && aCtx->NbCurrents() > 0)
   {
-    // remove all currently selected objects
+    // Erase selected objects
     for (ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName anIter (GetMapOfAIS());
          anIter.More(); anIter.Next())
     {
@@ -2267,7 +2315,7 @@ int VErase (Draw_Interpretor& theDI,
   }
   else
   {
-    // erase entire viewer
+    // Erase all objects
     for (ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName anIter (GetMapOfAIS());
          anIter.More(); anIter.Next())
     {
@@ -2286,6 +2334,7 @@ int VErase (Draw_Interpretor& theDI,
       }
     }
   }
+
   return 0;
 }
 
@@ -2303,14 +2352,25 @@ static int VDisplayAll (Draw_Interpretor& ,
   ViewerTest_AutoUpdater anUpdateTool (aCtx, ViewerTest::CurrentView());
   if (aCtx.IsNull())
   {
-    std::cout << "Error: no active view!\n";
+    std::cerr << "Error: no active view!\n";
     return 1;
   }
 
   Standard_Integer anArgIter = 1;
+  Standard_Boolean toDisplayLocal = Standard_False;
   for (; anArgIter < theArgNb; ++anArgIter)
   {
-    if (!anUpdateTool.parseRedrawMode (theArgVec[anArgIter]))
+    TCollection_AsciiString anArgCase (theArgVec[anArgIter]);
+    anArgCase.LowerCase();
+    if (anArgCase == "-local")
+    {
+      toDisplayLocal = Standard_True;
+    }
+    else if (anUpdateTool.parseRedrawMode (anArgCase))
+    {
+      continue;
+    }
+    else
     {
       break;
     }
@@ -2321,9 +2381,14 @@ static int VDisplayAll (Draw_Interpretor& ,
     return 1;
   }
 
-  if (aCtx->HasOpenedContext())
+  if (toDisplayLocal && !aCtx->HasOpenedContext())
   {
-    aCtx->CloseLocalContext();
+    std::cerr << "Error: local selection context is not open.\n";
+    return 1;
+  }
+  else if (!toDisplayLocal && aCtx->HasOpenedContext())
+  {
+    aCtx->CloseLocalContext (Standard_False);
   }
 
   for (ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName anIter (GetMapOfAIS());
@@ -2825,27 +2890,24 @@ static int VDisplay2 (Draw_Interpretor& theDI,
                       Standard_Integer  theArgNb,
                       const char**      theArgVec)
 {
-  Handle(AIS_InteractiveContext) aCtx = ViewerTest::GetAISContext();
   if (theArgNb < 2)
   {
-    std::cout << theArgVec[0] << "Error: wrong syntax!\n";
+    std::cerr << theArgVec[0] << "Error: wrong number of arguments.\n";
     return 1;
   }
-  else if (aCtx.IsNull())
+
+  Handle(AIS_InteractiveContext) aCtx = ViewerTest::GetAISContext();
+  if (aCtx.IsNull())
   {
     ViewerTest::ViewerInit();
-    std::cout << "Command vinit should be called before!\n";
-    // return 1;
     aCtx = ViewerTest::GetAISContext();
   }
 
+  // Parse input arguments
   ViewerTest_AutoUpdater anUpdateTool (aCtx, ViewerTest::CurrentView());
-  if (aCtx->HasOpenedContext())
-  {
-    aCtx->CloseLocalContext();
-  }
-
   Standard_Integer isMutable = -1;
+  Standard_Boolean toDisplayLocal = Standard_False;
+  TColStd_SequenceOfAsciiString aNamesOfDisplayIO;
   for (Standard_Integer anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
   {
     const TCollection_AsciiString aName     = theArgVec[anArgIter];
@@ -2858,9 +2920,39 @@ static int VDisplay2 (Draw_Interpretor& theDI,
     else if (aNameCase == "-mutable")
     {
       isMutable = 1;
-      continue;
     }
-    else if (!GetMapOfAIS().IsBound2 (aName))
+    else if (aNameCase == "-local")
+    {
+      toDisplayLocal = Standard_True;
+    }
+    else
+    {
+      aNamesOfDisplayIO.Append (aName);
+    }
+  }
+
+  if (aNamesOfDisplayIO.IsEmpty())
+  {
+    std::cerr << theArgVec[0] << "Error: wrong number of arguments.\n";
+    return 1;
+  }
+
+  // Prepare context for display
+  if (toDisplayLocal && !aCtx->HasOpenedContext())
+  {
+    aCtx->OpenLocalContext (Standard_False);
+  }
+  else if (!toDisplayLocal && aCtx->HasOpenedContext())
+  {
+    aCtx->CloseAllContexts (Standard_False);
+  }
+
+  // Display interactive objects
+  for (Standard_Integer anIter = 1; anIter <= aNamesOfDisplayIO.Length(); ++anIter)
+  {
+    const TCollection_AsciiString& aName = aNamesOfDisplayIO.Value(anIter);
+
+    if (!GetMapOfAIS().IsBound2 (aName))
     {
       // create the AIS_Shape from a name
       const Handle(AIS_InteractiveObject) aShape = GetAISShapeFromName (aName.ToCString());
@@ -2911,6 +3003,7 @@ static int VDisplay2 (Draw_Interpretor& theDI,
       TheNISContext()->Display (aShape);
     }
   }
+
   return 0;
 }
 
@@ -4261,16 +4354,19 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
 
   // display
   theCommands.Add("visos",
-                  "visos [name1 ...] [nbUIsos nbVIsos IsoOnPlane(0|1)]\n"
-                  "\tIf last 3 optional parameters are not set prints numbers of U-, V- isolines and IsoOnPlane.\n",
-		  __FILE__, visos, group);
+      "visos [name1 ...] [nbUIsos nbVIsos IsoOnPlane(0|1)]\n"
+      "\tIf last 3 optional parameters are not set prints numbers of U-, V- isolines and IsoOnPlane.\n",
+      __FILE__, visos, group);
 
   theCommands.Add("vdisplay",
-		  "vdisplay [-noupdate|-update] [-mutable] name1 [name2] ... [name n]"
+      "vdisplay [-noupdate|-update] [-local] [-mutable] name1 [name2] ... [name n]"
       "\n\t\t: Displays named objects."
+      "\n\t\t: Option -local enables displaying of objects in local"
+      "\n\t\t: selection context. Local selection context will be opened"
+      "\n\t\t: if there is not any."
       "\n\t\t: Option -noupdate suppresses viewer redraw call."
-      "\n\t\t: Option -mutable enables optimizations for mutable objects."
-		  __FILE__,VDisplay2,group);
+      "\n\t\t: Option -mutable enables optimizations for mutable objects.",
+      __FILE__, VDisplay2, group);
 
   theCommands.Add ("vupdate",
       "vupdate name1 [name2] ... [name n]"
@@ -4278,17 +4374,22 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
       __FILE__, VUpdate, group);
 
   theCommands.Add("verase",
-      "verase [-noupdate|-update] [name1] ...  [name n]"
+      "verase [-noupdate|-update] [-local] [name1] ...  [name n]"
       "\n\t\t: Erases selected or named objects."
-      "\n\t\t: If there are no selected or named objects the whole viewer is erased.",
-		  __FILE__, VErase, group);
+      "\n\t\t: If there are no selected or named objects the whole viewer is erased."
+      "\n\t\t: Option -local enables erasing of selected or named objects without"
+      "\n\t\t: closing local selection context.",
+      __FILE__, VErase, group);
 
   theCommands.Add("vremove",
-    "vremove [-noupdate|-update] [-context] [-all] [-noinfo] [name1] ...  [name n]"
-    "or vremove [-context] -all to remove all objects"
+      "vremove [-noupdate|-update] [-context] [-all] [-noinfo] [name1] ...  [name n]"
+      "or vremove [-context] -all to remove all objects"
       "\n\t\t: Removes selected or named objects."
       "\n\t\t  If -context is in arguments, the objects are not deleted"
       "\n\t\t  from the map of objects and names."
+      "\n\t\t: Option -local enables removing of selected or named objects without"
+      "\n\t\t: closing local selection context. Empty local selection context will be"
+      "\n\t\t: closed."
       "\n\t\t: Option -noupdate suppresses viewer redraw call."
       "\n\t\t: Option -noinfo suppresses displaying the list of removed objects.",
       __FILE__, VRemove, group);
@@ -4299,18 +4400,23 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
 		  __FILE__,VDonly2,group);
 
   theCommands.Add("vdisplayall",
-		  "Displays all erased interactive objects (see vdir and vstate)",
-		  __FILE__,VDisplayAll,group);
+      "vidsplayall [-local]"
+      "\n\t\t: Displays all erased interactive objects (see vdir and vstate)."
+      "\n\t\t: Option -local enables displaying of the objects in local"
+      "\n\t\t: selection context.",
+      __FILE__, VDisplayAll, group);
 
   theCommands.Add("veraseall",
-		  "Erases all objects displayed in the viewer",
-		  __FILE__, VErase, group);
+      "veraseall [-local]"
+      "\n\t\t: Erases all objects displayed in the viewer."
+      "\n\t\t: Option -local enables erasing of the objects in local"
+      "\n\t\t: selection context.",
+      __FILE__, VErase, group);
 
   theCommands.Add("verasetype",
-		  "verasetype <Type>"
+      "verasetype <Type>"
       "\n\t\t: Erase all the displayed objects of one given kind (see vtypes)",
-		  __FILE__,VEraseType,group);
-
+      __FILE__, VEraseType, group);
   theCommands.Add("vbounding",
               "vbounding [-noupdate|-update] [-mode] name1 [name2 [...]]"
       "\n\t\t:           [-print] [-hide]"
