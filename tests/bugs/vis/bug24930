@@ -1,0 +1,64 @@
+puts "============"
+puts "OCC24930"
+puts "============"
+puts ""
+
+pload QAcommands
+
+box b 10 10 10
+vinit
+vdisplay b
+vsetdispmode b 1
+vfit
+
+#
+set anImage_1 ${imagedir}/${casename}_1.png
+vdump ${anImage_1}
+#
+
+# Enable texture
+vtexture b 0
+
+#
+set anImage_2 ${imagedir}/${casename}_2.png
+vdump ${anImage_2}
+#
+
+# Set new color
+vsetcolor b GREEN
+# Check pixel color
+checkcolor 205 180 0 0.64705884456634521 0
+
+#
+set anImage_3 ${imagedir}/${casename}_3.png
+vdump ${anImage_3}
+#
+# Reset color
+vunsetcolor b
+# Check pixel color
+checkcolor 205 180 0.608 0.431 0.071
+
+#
+set anImage_4 ${imagedir}/${casename}_4.png
+vdump ${anImage_4}
+#
+
+# Set new material
+vsetmaterial b silver
+# Check pixel color
+checkcolor 205 180 0.380 0.380 0.380
+
+#
+set anImage_5 ${imagedir}/${casename}_5.png
+vdump ${anImage_5}
+#
+
+# Unset material
+vunsetmaterial b
+# Check pixel color
+checkcolor 205 180 0.608 0.431 0.706
+
+#
+set anImage_6 ${imagedir}/${casename}_6.png
+vdump ${anImage_6}
+#

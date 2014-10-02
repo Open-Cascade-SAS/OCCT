@@ -16,6 +16,7 @@
 #include <AIS_TexturedShape.hxx>
 
 #include <AIS_Drawer.hxx>
+#include <AIS_GraphicTool.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <BRepTools.hxx>
 #include <gp_Pnt2d.hxx>
@@ -25,7 +26,9 @@
 #include <Graphic3d_Texture2Dmanual.hxx>
 #include <Precision.hxx>
 #include <Prs3d_Presentation.hxx>
+#include <PrsMgr_ModedPresentation.hxx>
 #include <Prs3d_Root.hxx>
+#include <Prs3d_LineAspect.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 #include <PrsMgr_PresentationManager3d.hxx>
 #include <Standard_ErrorHandler.hxx>
@@ -197,12 +200,95 @@ void AIS_TexturedShape::SetColor (const Quantity_Color& theColor)
 {
   AIS_Shape::SetColor (theColor);
 
-  if (!GetContext().IsNull())
+  for (Standard_Integer aPrsIt = 1; aPrsIt <= Presentations().Length(); ++aPrsIt)
   {
-    if (GetContext()->MainPrsMgr()->HasPresentation (this, 3))
+    const PrsMgr_ModedPresentation& aPrsModed = Presentations().Value (aPrsIt);
+
+    if (aPrsModed.Mode() != 3)
+      continue;
+
+    updateAttributes (aPrsModed.Presentation()->Presentation());
+  }
+}
+
+//=======================================================================
+//function : UnsetColor
+//purpose  :
+//=======================================================================
+
+void AIS_TexturedShape::UnsetColor()
+{
+  AIS_Shape::UnsetColor();
+
+  for (Standard_Integer aPrsIt = 1; aPrsIt <= Presentations().Length(); ++aPrsIt)
+  {
+    const PrsMgr_ModedPresentation& aPrsModed = Presentations().Value (aPrsIt);
+
+    if (aPrsModed.Mode() != 3)
+      continue;
+    
+    Handle(Prs3d_Presentation) aPrs = aPrsModed.Presentation()->Presentation();
+    Handle(Graphic3d_Group)    aGroup = Prs3d_Root::CurrentGroup (aPrs);
+
+    Handle(Graphic3d_AspectFillArea3d) anAreaAsp = myDrawer->Link()->ShadingAspect()->Aspect();
+    Handle(Graphic3d_AspectLine3d)     aLineAsp  = myDrawer->Link()->LineAspect()->Aspect();
+    Quantity_Color aColor;
+    AIS_GraphicTool::GetInteriorColor (myDrawer->Link(), aColor);
+    anAreaAsp->SetInteriorColor (aColor);
+    aPrs->SetPrimitivesAspect (anAreaAsp);
+    aPrs->SetPrimitivesAspect (aLineAsp);
+    // Check if aspect of given type is set for the group, 
+    // because setting aspect for group with no already set aspect
+    // can lead to loss of presentation data
+    if (aGroup->IsGroupPrimitivesAspectSet (Graphic3d_ASPECT_FILL_AREA))
     {
-      updateAttributes (GetContext()->MainPrsMgr()->Presentation (this, 3)->Presentation());
+      aGroup->SetGroupPrimitivesAspect (anAreaAsp);
     }
+    if (aGroup->IsGroupPrimitivesAspectSet (Graphic3d_ASPECT_LINE))
+    {
+      aGroup->SetGroupPrimitivesAspect (aLineAsp);
+    }
+
+    updateAttributes (aPrs);
+  }
+}
+
+//=======================================================================
+//function : SetMaterial
+//purpose  : 
+//=======================================================================
+
+void AIS_TexturedShape::SetMaterial (const Graphic3d_MaterialAspect& theMat)
+{
+  AIS_Shape::SetMaterial (theMat);
+
+  for (Standard_Integer aPrsIt = 1; aPrsIt <= Presentations().Length(); ++aPrsIt)
+  {
+    const PrsMgr_ModedPresentation& aPrsModed = Presentations().Value (aPrsIt);
+    
+    if (aPrsModed.Mode() != 3)
+      continue;
+    
+    updateAttributes (aPrsModed.Presentation()->Presentation());
+  }
+}
+
+//=======================================================================
+//function : UnsetMaterial
+//purpose  : 
+//=======================================================================
+void AIS_TexturedShape::UnsetMaterial()
+{
+  AIS_Shape::UnsetMaterial();
+
+  for (Standard_Integer aPrsIt = 1; aPrsIt <= Presentations().Length(); ++aPrsIt)
+  {
+    const PrsMgr_ModedPresentation& aPrsModed = Presentations().Value (aPrsIt);
+
+    if (aPrsModed.Mode() != 3)
+      continue;
+
+    updateAttributes (aPrsModed.Presentation()->Presentation());
   }
 }
 
@@ -281,9 +367,15 @@ void AIS_TexturedShape::updateAttributes (const Handle(Prs3d_Presentation)& theP
     myAspect->AllowBackFace();
   }
 
-  if (!thePrs.IsNull())
+  // Go through all groups to change fill aspect for all primitives
+  for (Graphic3d_SequenceOfGroup::Iterator aGroupIt (thePrs->Groups()); aGroupIt.More(); aGroupIt.Next())
   {
-    Prs3d_Root::CurrentGroup (thePrs)->SetGroupPrimitivesAspect (myAspect);
+    const Handle(Graphic3d_Group)& aGroup = aGroupIt.Value();
+
+    if (aGroup->IsGroupPrimitivesAspectSet (Graphic3d_ASPECT_FILL_AREA))
+    {
+      aGroup->SetGroupPrimitivesAspect (myAspect);
+    }
   }
 }
 
