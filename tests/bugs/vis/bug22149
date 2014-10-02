@@ -11,6 +11,6 @@ set BugNumber OCC22149
 vfont add [locate_data_file bug22149_mona.ttf] Mona
 vinit
 vdrawtext HELLO 0 0 0 0 255 0 0 0 0 0 50 1
-vdrawtext \x30\x42 0 0 200 255 0 0 0 0 0 0 50 0 Mona 1
+vdrawtext [encoding convertfrom unicode \x42\x30] 0 0 200 255 0 0 0 0 0 0 50 0 Mona 1
 
 set only_screen 1
