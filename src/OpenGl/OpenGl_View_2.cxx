@@ -366,25 +366,24 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
   const Handle(OpenGl_Context)& aContext = theWorkspace->GetGlContext();
 
 #if !defined(GL_ES_VERSION_2_0)
-  // Store and disable current clipping planes
-  Standard_Integer aMaxPlanes = aContext->MaxClipPlanes();
-
-  OPENGL_CLIP_PLANE *aOldPlanes = new OPENGL_CLIP_PLANE[aMaxPlanes];
-  OPENGL_CLIP_PLANE *aPtrPlane = aOldPlanes;
-
-  GLenum aClipPlaneId = GL_CLIP_PLANE0;
-  const GLenum aClipLastId = GL_CLIP_PLANE0 + aMaxPlanes;
-  for (; aClipPlaneId < aClipLastId; aClipPlaneId++, aPtrPlane++)
+  // store and disable current clipping planes
+  const Standard_Integer aMaxPlanes = aContext->MaxClipPlanes();
+  NCollection_Array1<OPENGL_CLIP_PLANE> aOldPlanes (GL_CLIP_PLANE0, GL_CLIP_PLANE0 + aMaxPlanes - 1);
+  if (aContext->core11 != NULL)
   {
-    glGetClipPlane (aClipPlaneId, aPtrPlane->Equation);
-    if (aPtrPlane->isEnabled)
+    for (Standard_Integer aClipPlaneId = aOldPlanes.Lower(); aClipPlaneId <= aOldPlanes.Upper(); ++aClipPlaneId)
     {
-      glDisable (aClipPlaneId);
-      aPtrPlane->isEnabled = GL_TRUE;
-    }
-    else
-    {
-      aPtrPlane->isEnabled = GL_FALSE;
+      OPENGL_CLIP_PLANE& aPlane = aOldPlanes.ChangeValue (aClipPlaneId);
+      aContext->core11->glGetClipPlane (aClipPlaneId, aPlane.Equation);
+      if (aPlane.isEnabled)
+      {
+        aContext->core11fwd->glDisable (aClipPlaneId);
+        aPlane.isEnabled = GL_TRUE;
+      }
+      else
+      {
+        aPlane.isEnabled = GL_FALSE;
+      }
     }
   }
 #endif
@@ -403,7 +402,8 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
   }
 
   // Set OCCT state uniform variables
-  const Handle(OpenGl_ShaderManager) aManager = aContext->ShaderManager();
+  const Handle(OpenGl_ShaderManager) aManager   = aContext->ShaderManager();
+  const Standard_Boolean             isSameView = aManager->IsSameView (this); // force camera state update when needed
   if (!aManager->IsEmpty())
   {
     if (StateInfo (myCurrLightSourceState, aManager->LightSourceState().Index()) != myLastLightSourceState)
@@ -412,13 +412,15 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
       myLastLightSourceState = StateInfo (myCurrLightSourceState, aManager->LightSourceState().Index());
     }
 
-    if (myProjectionState != myCamera->ProjectionState())
+    if (myProjectionState != myCamera->ProjectionState()
+    || !isSameView)
     {
       myProjectionState = myCamera->ProjectionState();
       aManager->UpdateProjectionStateTo ((const Tmatrix3*)myCamera->ProjectionMatrixF().GetData());
     }
 
-    if (myModelViewState != myCamera->ModelViewState())
+    if (myModelViewState != myCamera->ModelViewState()
+    || !isSameView)
     {
       myModelViewState = myCamera->ModelViewState();
       aManager->UpdateWorldViewStateTo ((const Tmatrix3*)myCamera->OrientationMatrixF().GetData());
@@ -432,19 +434,6 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
                                     { 0.f, 0.f, 0.f, 1.f } };
 
       aContext->ShaderManager()->UpdateModelWorldStateTo (&aModelWorldState);
-    }
-  }
-
-  if (!aManager.IsNull())
-  {
-    if (!aManager->IsSameView (this))
-    {
-      // Force update camera states
-      myProjectionState = myCamera->ProjectionState();
-      aManager->UpdateProjectionStateTo ((const Tmatrix3*)myCamera->ProjectionMatrixF().GetData());
-
-      myModelViewState = myCamera->ModelViewState();
-      aManager->UpdateWorldViewStateTo ((const Tmatrix3*)myCamera->OrientationMatrixF().GetData());
     }
   }
 
@@ -537,8 +526,11 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
     glDisable(GL_FOG);
 
   // Apply InteriorShadingMethod
-  glShadeModel( myIntShadingMethod == TEL_SM_FLAT ? GL_FLAT : GL_SMOOTH );
+  aContext->core11->glShadeModel (myShadingModel == Visual3d_TOM_FACET
+                               || myShadingModel == Visual3d_TOM_NONE ? GL_FLAT : GL_SMOOTH);
 #endif
+
+  aManager->SetShadingModel (myShadingModel);
 
   // Apply AntiAliasing
   if (myAntiAliasing)
@@ -646,21 +638,20 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
   //      Step 7: Finalize
   // ===============================
 
-  // Restore clipping planes
 #if !defined(GL_ES_VERSION_2_0)
-  aClipPlaneId = GL_CLIP_PLANE0;
-  aPtrPlane = aOldPlanes;
-
-  for (; aClipPlaneId < aClipLastId; aClipPlaneId++, aPtrPlane++)
+  // restore clipping planes
+  if (aContext->core11 != NULL)
   {
-    glClipPlane (aClipPlaneId, aPtrPlane->Equation);
-    if (aPtrPlane->isEnabled)
-      glEnable (aClipPlaneId);
-    else
-      glDisable (aClipPlaneId);
+    for (Standard_Integer aClipPlaneId = aOldPlanes.Lower(); aClipPlaneId <= aOldPlanes.Upper(); ++aClipPlaneId)
+    {
+      const OPENGL_CLIP_PLANE& aPlane = aOldPlanes.ChangeValue (aClipPlaneId);
+      aContext->core11->glClipPlane (aClipPlaneId, aPlane.Equation);
+      if (aPlane.isEnabled)
+        aContext->core11fwd->glEnable (aClipPlaneId);
+      else
+        aContext->core11fwd->glDisable (aClipPlaneId);
+    }
   }
-
-  delete[] aOldPlanes;
 #endif
 
   // ==============================================================

@@ -227,6 +227,7 @@ public:
   Standard_EXPORT Handle(OpenGl_Texture) DisableTexture();
   Standard_EXPORT Handle(OpenGl_Texture) EnableTexture (const Handle(OpenGl_Texture)&          theTexture,
                                                         const Handle(Graphic3d_TextureParams)& theParams = NULL);
+  const Handle(OpenGl_Texture)& ActiveTexture() const { return myTextureBound; }
 
   //! Set filter for restricting rendering of particular elements.
   //! Filter can be applied for rendering passes used by recursive

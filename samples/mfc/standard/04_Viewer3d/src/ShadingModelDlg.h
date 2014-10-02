@@ -40,6 +40,7 @@ protected:
 	afx_msg void OnShadingmodelColor();
 	afx_msg void OnShadingmodelFlat();
 	afx_msg void OnShadingmodelGouraud();
+	afx_msg void OnShadingmodelPhong();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 

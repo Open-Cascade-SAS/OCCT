@@ -36,6 +36,7 @@
 #include <Graphic3d_SequenceOfHClipPlane.hxx>
 #include <Graphic3d_ZLayerSettings.hxx>
 #include <Visual3d_TypeOfSurfaceDetail.hxx>
+#include <Visual3d_TypeOfModel.hxx>
 
 #include <OpenGl_BVHTreeSelector.hxx>
 #include <OpenGl_LayerList.hxx>
@@ -257,7 +258,7 @@ protected:
 
   //View_LABViewContext
   int myVisualization;
-  int myIntShadingMethod;
+  Visual3d_TypeOfModel       myShadingModel;  //!< lighting shading model
 
   //View_LABLight
   OpenGl_ListOfLight myLights;

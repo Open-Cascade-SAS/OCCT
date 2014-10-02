@@ -455,7 +455,7 @@ const OpenGl_AspectFace* OpenGl_Workspace::AspectFace (const Standard_Boolean th
   {
     if (AspectFace_set->DoTextureMap())
     {
-      EnableTexture (AspectFace_set->TextureRes (this),
+      EnableTexture (AspectFace_set->TextureRes (myGlContext),
                      AspectFace_set->TextureParams());
     }
     else

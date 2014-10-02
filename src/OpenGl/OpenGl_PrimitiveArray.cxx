@@ -27,51 +27,6 @@
 
 namespace
 {
-  template<class T>
-  const Handle(OpenGl_ShaderProgram)& bindProgram (const Handle(OpenGl_Workspace)& theWS,
-                                                   const T*                        theAspect)
-  {
-    const Handle(OpenGl_Context)&       aCtx     = theWS->GetGlContext();
-    const Handle(OpenGl_ShaderProgram)& aProgram = theAspect->ShaderProgramRes (theWS);
-    aCtx->BindProgram (aProgram);
-    if (aProgram.IsNull())
-    {
-      return aCtx->ActiveProgram();
-    }
-
-    aProgram->ApplyVariables (aCtx);
-
-    const OpenGl_MaterialState* aMaterialState = aCtx->ShaderManager()->MaterialState (aProgram);
-    if (aMaterialState == NULL || aMaterialState->Aspect() != theAspect)
-    {
-      aCtx->ShaderManager()->UpdateMaterialStateTo (aProgram, theAspect);
-    }
-
-    aCtx->ShaderManager()->PushState (aProgram);
-    return aProgram;
-  }
-
-  inline const Handle(OpenGl_ShaderProgram)& bindProgram (const Handle(OpenGl_Workspace)& theWorkspace,
-                                                          const OpenGl_AspectFace*        theAspectFace,
-                                                          const OpenGl_AspectLine*        theAspectLine,
-                                                          const OpenGl_AspectMarker*      theAspectMarker,
-                                                          const GLint                     theDrawMode)
-  {
-    if (!theWorkspace->GetGlContext()->IsGlGreaterEqual (2, 0))
-    {
-      return theWorkspace->GetGlContext()->ActiveProgram();
-    }
-    switch (theDrawMode)
-    {
-      case GL_POINTS:
-        return bindProgram (theWorkspace, theAspectMarker);
-      case GL_LINES:
-      case GL_LINE_STRIP:
-        return bindProgram (theWorkspace, theAspectLine);
-    }
-    return bindProgram (theWorkspace, theAspectFace);
-  }
-
   //! Convert index data type from size
   inline GLenum toGlIndexType (const Standard_Integer theStride)
   {
@@ -407,11 +362,12 @@ Standard_Boolean OpenGl_PrimitiveArray::buildVBO (const Handle(OpenGl_Context)& 
 // purpose  :
 // =======================================================================
 void OpenGl_PrimitiveArray::drawArray (const Handle(OpenGl_Workspace)& theWorkspace,
-                                       const Graphic3d_Vec4*           theFaceColors) const
+                                       const Graphic3d_Vec4*           theFaceColors,
+                                       const Standard_Boolean          theHasVertColor) const
 {
   const Handle(OpenGl_Context)& aGlContext  = theWorkspace->GetGlContext();
   const bool                    toHilight   = (theWorkspace->NamedStatus & OPENGL_NS_HIGHLIGHT) != 0;
-  bool                          hasVColors  = false;
+  bool                          hasVColors  = theHasVertColor && !toHilight;
   if (myVboAttribs.IsNull())
   {
   #if !defined(GL_ES_VERSION_2_0)
@@ -425,17 +381,10 @@ void OpenGl_PrimitiveArray::drawArray (const Handle(OpenGl_Workspace)& theWorksp
   }
 
   myVboAttribs->BindAllAttributes (aGlContext);
-  if (myVboAttribs->HasColorAttribute())
+  if (theHasVertColor && toHilight)
   {
-    if (toHilight)
-    {
-      // disable per-vertex colors
-      OpenGl_VertexBuffer::unbindAttribute (aGlContext, Graphic3d_TOA_COLOR);
-    }
-    else
-    {
-      hasVColors = true;
-    }
+    // disable per-vertex color
+    OpenGl_VertexBuffer::unbindAttribute (aGlContext, Graphic3d_TOA_COLOR);
   }
   if (!myVboIndices.IsNull())
   {
@@ -448,9 +397,7 @@ void OpenGl_PrimitiveArray::drawArray (const Handle(OpenGl_Workspace)& theWorksp
       for (Standard_Integer aGroupIter = 0; aGroupIter < myBounds->NbBounds; ++aGroupIter)
       {
         const GLint aNbElemsInGroup = myBounds->Bounds[aGroupIter];
-      #if !defined(GL_ES_VERSION_2_0)
-        if (theFaceColors != NULL) glColor3fv (theFaceColors[aGroupIter].GetData());
-      #endif
+        if (theFaceColors != NULL) aGlContext->SetColor4fv (theFaceColors[aGroupIter]);
         glDrawElements (myDrawMode, aNbElemsInGroup, myVboIndices->GetDataType(), anOffset);
         anOffset += aStride * aNbElemsInGroup;
       }
@@ -468,9 +415,7 @@ void OpenGl_PrimitiveArray::drawArray (const Handle(OpenGl_Workspace)& theWorksp
     for (Standard_Integer aGroupIter = 0; aGroupIter < myBounds->NbBounds; ++aGroupIter)
     {
       const GLint aNbElemsInGroup = myBounds->Bounds[aGroupIter];
-    #if !defined(GL_ES_VERSION_2_0)
-      if (theFaceColors != NULL) glColor3fv (theFaceColors[aGroupIter].GetData());
-    #endif
+      if (theFaceColors != NULL) aGlContext->SetColor4fv (theFaceColors[aGroupIter]);
       glDrawArrays (myDrawMode, aFirstElem, aNbElemsInGroup);
       aFirstElem += aNbElemsInGroup;
     }
@@ -525,7 +470,7 @@ void OpenGl_PrimitiveArray::drawEdges (const TEL_COLOUR*               theEdgeCo
 
   if (aGlContext->IsGlGreaterEqual (2, 0))
   {
-    bindProgram (theWorkspace, anAspect);
+    aGlContext->ShaderManager()->BindProgram (anAspect, NULL, Standard_False, Standard_False, anAspect->ShaderProgramRes (aGlContext));
   }
 
   /// OCC22236 NOTE: draw edges for all situations:
@@ -533,9 +478,7 @@ void OpenGl_PrimitiveArray::drawEdges (const TEL_COLOUR*               theEdgeCo
   /// 2) draw elements from vertex array, when bounds defines count of primitive's vertices.
   /// 3) draw primitive's edges by vertexes if no edges and bounds array is specified
   myVboAttribs->BindPositionAttribute (aGlContext);
-#if !defined(GL_ES_VERSION_2_0)
-  glColor3fv (theEdgeColour->rgb);
-#endif
+  aGlContext->SetColor4fv (*(const OpenGl_Vec4* )theEdgeColour->rgb);
   if (!myVboIndices.IsNull())
   {
     myVboIndices->Bind (aGlContext);
@@ -577,14 +520,11 @@ void OpenGl_PrimitiveArray::drawEdges (const TEL_COLOUR*               theEdgeCo
   // unbind buffers
   myVboAttribs->UnbindAttribute (aGlContext, Graphic3d_TOA_POS);
 
-  if (myDrawMode > GL_LINE_STRIP)
-  {
-    // Restore line context
-    theWorkspace->SetAspectLine (anAspectLineOld);
-  #if !defined(GL_ES_VERSION_2_0)
-    glPopAttrib();
-  #endif
-  }
+  // restore line context
+#if !defined(GL_ES_VERSION_2_0)
+  glPopAttrib();
+#endif
+  theWorkspace->SetAspectLine (anAspectLineOld);
 }
 
 // =======================================================================
@@ -595,74 +535,39 @@ void OpenGl_PrimitiveArray::drawMarkers (const Handle(OpenGl_Workspace)& theWork
 {
   const OpenGl_AspectMarker* anAspectMarker     = theWorkspace->AspectMarker (Standard_True);
   const Handle(OpenGl_Context)&     aCtx        = theWorkspace->GetGlContext();
-  const Handle(OpenGl_PointSprite)& aSpriteNorm = anAspectMarker->SpriteRes (theWorkspace);
-  const Standard_Boolean            isHilight   = (theWorkspace->NamedStatus & OPENGL_NS_HIGHLIGHT);
-  if (aCtx->IsGlGreaterEqual (2, 0)
-   && !aSpriteNorm.IsNull() && !aSpriteNorm->IsDisplayList())
+  const Handle(OpenGl_PointSprite)& aSpriteNorm = anAspectMarker->SpriteRes (aCtx);
+  if (!aSpriteNorm.IsNull()
+   && !aSpriteNorm->IsDisplayList())
   {
     // Textured markers will be drawn with the point sprites
+    aCtx->SetPointSize (anAspectMarker->MarkerSize());
   #if !defined(GL_ES_VERSION_2_0)
-    glPointSize (anAspectMarker->MarkerSize());
+    aCtx->core11fwd->glEnable (GL_ALPHA_TEST);
+    aCtx->core11fwd->glAlphaFunc (GL_GEQUAL, 0.1f);
   #endif
 
-    Handle(OpenGl_Texture) aTextureBack;
-    if (anAspectMarker->Type() != Aspect_TOM_POINT)
-    {
-      const Handle(OpenGl_PointSprite)& aSprite = (isHilight && anAspectMarker->SpriteHighlightRes (theWorkspace)->IsValid())
-                                                ? anAspectMarker->SpriteHighlightRes (theWorkspace)
-                                                : aSpriteNorm;
-      aTextureBack = theWorkspace->EnableTexture (aSprite);
+    aCtx->core11fwd->glEnable (GL_BLEND);
+    aCtx->core11fwd->glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    #if !defined(GL_ES_VERSION_2_0)
-      glEnable (GL_ALPHA_TEST);
-      glAlphaFunc (GL_GEQUAL, 0.1f);
-    #endif
+    aCtx->core11fwd->glDrawArrays (myDrawMode, 0, !myVboAttribs.IsNull() ? myVboAttribs->GetElemsNb() : myAttribs->NbElements);
 
-      glEnable (GL_BLEND);
-      glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    }
-
-    glDrawArrays (myDrawMode, 0, !myVboAttribs.IsNull() ? myVboAttribs->GetElemsNb() : myAttribs->NbElements);
-
-    glDisable (GL_BLEND);
+    aCtx->core11fwd->glDisable (GL_BLEND);
   #if !defined(GL_ES_VERSION_2_0)
-    glDisable (GL_ALPHA_TEST);
+    aCtx->core11fwd->glDisable (GL_ALPHA_TEST);
   #endif
-    if (anAspectMarker->Type() != Aspect_TOM_POINT)
-    {
-      theWorkspace->EnableTexture (aTextureBack);
-    }
-  #if !defined(GL_ES_VERSION_2_0)
-    glPointSize (1.0f);
-  #endif
+    aCtx->SetPointSize (1.0f);
     return;
   }
-
-  // Textured markers will be drawn with the glBitmap
-  if (anAspectMarker->Type() == Aspect_TOM_POINT
-   || anAspectMarker->Type() == Aspect_TOM_O_POINT)
+  else if (anAspectMarker->Type() == Aspect_TOM_POINT)
   {
-    const GLfloat aPntSize = anAspectMarker->Type() == Aspect_TOM_POINT
-                           ? anAspectMarker->MarkerSize()
-                           : 0.0f;
-  #if !defined(GL_ES_VERSION_2_0)
-    if (aPntSize > 0.0f)
-    {
-      glPointSize (aPntSize);
-    }
-  #endif
-    glDrawArrays (myDrawMode, 0, !myVboAttribs.IsNull() ? myVboAttribs->GetElemsNb() : myAttribs->NbElements);
-  #if !defined(GL_ES_VERSION_2_0)
-    if (aPntSize > 0.0f)
-    {
-      glPointSize (1.0f);
-    }
-  #endif
+    aCtx->SetPointSize (anAspectMarker->MarkerSize());
+    aCtx->core11fwd->glDrawArrays (myDrawMode, 0, !myVboAttribs.IsNull() ? myVboAttribs->GetElemsNb() : myAttribs->NbElements);
+    aCtx->SetPointSize (1.0f);
   }
-
 #if !defined(GL_ES_VERSION_2_0)
-  if (anAspectMarker->Type() != Aspect_TOM_POINT
-   && !aSpriteNorm.IsNull())
+  // Textured markers will be drawn with the glBitmap
+  else if (anAspectMarker->Type() != Aspect_TOM_POINT
+       && !aSpriteNorm.IsNull())
   {
     /**if (!isHilight && (myPArray->vcolours != NULL))
     {
@@ -677,7 +582,7 @@ void OpenGl_PrimitiveArray::drawMarkers (const Handle(OpenGl_Workspace)& theWork
     {
       for (Standard_Integer anIter = 0; anIter < myAttribs->NbElements; anIter++)
       {
-        glRasterPos3fv (myAttribs->Value<Graphic3d_Vec3> (anIter).GetData());
+        aCtx->core11->glRasterPos3fv (myAttribs->Value<Graphic3d_Vec3> (anIter).GetData());
         aSpriteNorm->DrawBitmap (theWorkspace->GetGlContext());
       }
     }
@@ -807,8 +712,8 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
   {
     // compatibility - keep data to draw markers using display lists
     const Standard_Boolean toKeepData = myDrawMode == GL_POINTS
-                                    && !anAspectMarker->SpriteRes (theWorkspace).IsNull()
-                                    &&  anAspectMarker->SpriteRes (theWorkspace)->IsDisplayList();
+                                    && !anAspectMarker->SpriteRes (aCtx).IsNull()
+                                    &&  anAspectMarker->SpriteRes (aCtx)->IsDisplayList();
     buildVBO (aCtx, toKeepData);
     myIsVboInit = Standard_True;
   }
@@ -825,18 +730,14 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
     aFrontLightingModel = 0;
   }
 
+  const Standard_Boolean hasColorAttrib = !myVboAttribs.IsNull()
+                                        && myVboAttribs->HasColorAttribute();
+  const Standard_Boolean isLightOn = aFrontLightingModel != 0
+                                 && !myVboAttribs.IsNull()
+                                 &&  myVboAttribs->HasNormalAttribute();
 #if !defined(GL_ES_VERSION_2_0)
-  // Temporarily disable environment mapping
-  if (myDrawMode <= GL_LINE_STRIP)
-  {
-    glPushAttrib (GL_ENABLE_BIT);
-    glDisable (GL_TEXTURE_1D);
-    glDisable (GL_TEXTURE_2D);
-  }
   // manage FFP lighting
-  if (aFrontLightingModel == 0
-  ||  myVboAttribs.IsNull()
-  || !myVboAttribs->HasNormalAttribute())
+  if (!isLightOn)
   {
     glDisable (GL_LIGHTING);
   }
@@ -845,10 +746,12 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
     glEnable (GL_LIGHTING);
   }
 #endif
-
-  bindProgram (theWorkspace,
-               anAspectFace, anAspectLine, anAspectMarker,
-               myDrawMode);
+  // Temporarily disable environment mapping
+  Handle(OpenGl_Texture) aTextureBack;
+  if (myDrawMode <= GL_LINE_STRIP)
+  {
+    aTextureBack = theWorkspace->DisableTexture();
+  }
 
   if ((myDrawMode >  GL_LINE_STRIP && anAspectFace->InteriorStyle() != Aspect_IS_EMPTY) ||
       (myDrawMode <= GL_LINE_STRIP))
@@ -857,14 +760,53 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
     const Graphic3d_Vec4* aFaceColors = !myBounds.IsNull() && !toHilight && anAspectFace->InteriorStyle() != Aspect_IS_HIDDENLINE
                                       ?  myBounds->Colors
                                       :  NULL;
-  #if !defined(GL_ES_VERSION_2_0)
-    glColor3fv (myDrawMode <= GL_LINE_STRIP ? aLineColor->rgb : anInteriorColor->rgb);
-  #endif
+    const Standard_Boolean hasVertColor = hasColorAttrib && !toHilight;
+    if (aCtx->IsGlGreaterEqual (2, 0))
+    {
+      switch (myDrawMode)
+      {
+        case GL_POINTS:
+        {
+          const Handle(OpenGl_PointSprite)& aSpriteNorm = anAspectMarker->SpriteRes (aCtx);
+          if (!aSpriteNorm.IsNull()
+           && !aSpriteNorm->IsDisplayList())
+          {
+            const Handle(OpenGl_PointSprite)& aSprite = (toHilight && anAspectMarker->SpriteHighlightRes (aCtx)->IsValid())
+                                                      ? anAspectMarker->SpriteHighlightRes (aCtx)
+                                                      : aSpriteNorm;
+            theWorkspace->EnableTexture (aSprite);
+            aCtx->ShaderManager()->BindProgram (anAspectMarker, aSprite, isLightOn, hasVertColor, anAspectMarker->ShaderProgramRes (aCtx));
+          }
+          else
+          {
+            aCtx->ShaderManager()->BindProgram (anAspectMarker, NULL, isLightOn, hasVertColor, anAspectMarker->ShaderProgramRes (aCtx));
+          }
+          break;
+        }
+        case GL_LINES:
+        case GL_LINE_STRIP:
+        {
+          aCtx->ShaderManager()->BindProgram (anAspectLine, NULL, isLightOn, hasVertColor, anAspectLine->ShaderProgramRes (aCtx));
+          break;
+        }
+        default:
+        {
+          aCtx->ShaderManager()->BindProgram (anAspectFace, theWorkspace->ActiveTexture(), isLightOn, hasVertColor, anAspectFace->ShaderProgramRes (aCtx));
+          break;
+        }
+      }
+    }
 
-    drawArray (theWorkspace, aFaceColors);
+    aCtx->SetColor4fv (*(const OpenGl_Vec4* )(myDrawMode <= GL_LINE_STRIP ? aLineColor->rgb : anInteriorColor->rgb));
+
+    drawArray (theWorkspace, aFaceColors, hasColorAttrib);
   }
 
-  if (myDrawMode > GL_LINE_STRIP)
+  if (myDrawMode <= GL_LINE_STRIP)
+  {
+    theWorkspace->EnableTexture (aTextureBack);
+  }
+  else
   {
     if (anAspectFace->Edge()
      || anAspectFace->InteriorStyle() == Aspect_IS_HIDDENLINE)
@@ -873,11 +815,5 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
     }
   }
 
-#if !defined(GL_ES_VERSION_2_0)
-  if (myDrawMode <= GL_LINE_STRIP)
-  {
-    glPopAttrib();
-  }
-#endif
   aCtx->BindProgram (NULL);
 }

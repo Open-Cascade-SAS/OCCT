@@ -20,7 +20,7 @@
 #include <Standard_Transient.hxx>
 #include <Handle_Standard_Transient.hxx>
 
-//! Class to define graphich driver capabilities.
+//! Class to define graphic driver capabilities.
 //! Notice that these options will be ignored if particular functionality does not provided by GL driver
 class OpenGl_Caps : public Standard_Transient
 {
@@ -30,6 +30,7 @@ public: //! @name flags to disable particular functionality, should be used only
   Standard_Boolean vboDisable;        //!< flag permits VBO usage, will significantly affect performance (OFF by default)
   Standard_Boolean pntSpritesDisable; //!< flag permits Point Sprites usage, will significantly affect performance (OFF by default)
   Standard_Boolean keepArrayData;     //!< Disables freeing CPU memory after building VBOs (OFF by default)
+  Standard_Boolean ffpEnable;         //!< Enables FFP (fixed-function pipeline), do not use built-in GLSL programs (ON by default on desktop OpenGL and OFF on OpenGL ES)
 
 public: //! @name context creation parameters
 

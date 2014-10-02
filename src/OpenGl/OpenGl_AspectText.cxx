@@ -117,11 +117,10 @@ void OpenGl_AspectText::Release (OpenGl_Context* theContext)
 // function : BuildShader
 // purpose  :
 // =======================================================================
-void OpenGl_AspectText::Resources::BuildShader (const Handle(OpenGl_Workspace)&        theWS,
+void OpenGl_AspectText::Resources::BuildShader (const Handle(OpenGl_Context)&          theCtx,
                                                 const Handle(Graphic3d_ShaderProgram)& theShader)
 {
-  const Handle(OpenGl_Context)& aContext = theWS->GetGlContext();
-  if (!aContext->IsGlGreaterEqual (2, 0))
+  if (!theCtx->IsGlGreaterEqual (2, 0))
   {
     return;
   }
@@ -129,7 +128,7 @@ void OpenGl_AspectText::Resources::BuildShader (const Handle(OpenGl_Workspace)& 
   // release old shader program resources
   if (!ShaderProgram.IsNull())
   {
-    aContext->ShaderManager()->Unregister (ShaderProgramId, ShaderProgram);
+    theCtx->ShaderManager()->Unregister (ShaderProgramId, ShaderProgram);
     ShaderProgramId.Clear();
     ShaderProgram.Nullify();
   }
@@ -138,5 +137,5 @@ void OpenGl_AspectText::Resources::BuildShader (const Handle(OpenGl_Workspace)& 
     return;
   }
 
-  aContext->ShaderManager()->Create (theShader, ShaderProgramId, ShaderProgram);
+  theCtx->ShaderManager()->Create (theShader, ShaderProgramId, ShaderProgram);
 }

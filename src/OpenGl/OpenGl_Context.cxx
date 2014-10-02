@@ -2061,8 +2061,13 @@ void OpenGl_Context::ReleaseDelayed()
 // function : BindProgram
 // purpose  :
 // =======================================================================
-void OpenGl_Context::BindProgram (const Handle(OpenGl_ShaderProgram)& theProgram)
+Standard_Boolean OpenGl_Context::BindProgram (const Handle(OpenGl_ShaderProgram)& theProgram)
 {
+  if (core20fwd == NULL)
+  {
+    return Standard_False;
+  }
+
   if (theProgram.IsNull()
   || !theProgram->IsValid())
   {
@@ -2071,9 +2076,53 @@ void OpenGl_Context::BindProgram (const Handle(OpenGl_ShaderProgram)& theProgram
       core20fwd->glUseProgram (OpenGl_ShaderProgram::NO_PROGRAM);
       myActiveProgram.Nullify();
     }
-    return;
+    return Standard_False;
   }
 
   myActiveProgram = theProgram;
   core20fwd->glUseProgram (theProgram->ProgramId());
+  return Standard_True;
+}
+
+// =======================================================================
+// function : SetColor4fv
+// purpose  :
+// =======================================================================
+void OpenGl_Context::SetColor4fv (const OpenGl_Vec4& theColor)
+{
+  if (!myActiveProgram.IsNull())
+  {
+    myActiveProgram->SetUniform (this, myActiveProgram->GetStateLocation (OpenGl_OCCT_COLOR), theColor);
+  }
+#if !defined(GL_ES_VERSION_2_0)
+  else if (core11 != NULL)
+  {
+    core11->glColor4fv (theColor.GetData());
+  }
+#endif
+}
+
+// =======================================================================
+// function : SetPointSize
+// purpose  :
+// =======================================================================
+void OpenGl_Context::SetPointSize (const Standard_ShortReal theSize)
+{
+  if (!myActiveProgram.IsNull())
+  {
+    myActiveProgram->SetUniform (this, myActiveProgram->GetStateLocation (OpenGl_OCCT_POINT_SIZE), theSize);
+  #if !defined(GL_ES_VERSION_2_0)
+    //myContext->core11fwd->glEnable (GL_VERTEX_PROGRAM_POINT_SIZE);
+  #endif
+  }
+#if !defined(GL_ES_VERSION_2_0)
+  //else
+  {
+    core11fwd->glPointSize (theSize);
+    if (core20fwd != NULL)
+    {
+      //myContext->core11fwd->glDisable (GL_VERTEX_PROGRAM_POINT_SIZE);
+    }
+  }
+#endif
 }

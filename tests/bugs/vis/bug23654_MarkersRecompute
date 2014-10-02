@@ -28,7 +28,7 @@ set aCustom3 [locate_data_file images/marker_dot.png]
 # draw box in advance which should fit all our markers
 box b -8 -8 0 16 16 2
 
-vcaps sprites=1
+vcaps -sprites
 set aV "Driver1/Viewer1/View1"
 vinit name=$aV l=32 t=32 w=512 h=512
 vactivate $aV

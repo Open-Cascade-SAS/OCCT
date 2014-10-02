@@ -72,15 +72,14 @@ is
         end TypeOfView ;
         ---Purpose: Defines the type of projection of the view.
 
-        enumeration TypeOfShadingModel is COLOR,MULTICOLOR,FLAT,GOURAUD,HIDDEN
+        enumeration TypeOfShadingModel is COLOR,FLAT,GOURAUD,PHONG
               end TypeOfShadingModel ;
         ---Purpose:
         -- Defines the type of shading for the graphic object:
-        -- -   V3d_COLOR: simple surface color,
-        -- -   V3d_MULTICOLOR: interpolated colors,
-        -- -   V3d_FLAT: flat shading,
-        -- -   V3d_GOURAUD: Gouraud shading,
-        -- -   V3d_HIDDEN: hidden line removal.
+        -- -   V3d_COLOR: simple surface color (Visual3d_TOM_NONE),
+        -- -   V3d_FLAT: flat shading (Visual3d_TOM_FACET),
+        -- -   V3d_GOURAUD: Gouraud shading (Visual3d_TOM_VERTEX),
+        -- -   V3d_PHONG: Phong shading (Visual3d_TOM_FRAGMENT).
 
         enumeration  TypeOfSurfaceDetail  is  TEX_NONE, TEX_ENVIRONMENT, TEX_ALL
                end TypeOfSurfaceDetail;

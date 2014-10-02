@@ -59,7 +59,10 @@ Standard_CString OpenGl_ShaderProgram::PredefinedKeywords[] =
   "occTextureEnable",      // OpenGl_OCCT_TEXTURE_ENABLE
   "occDistinguishingMode", // OpenGl_OCCT_DISTINGUISH_MODE
   "occFrontMaterial",      // OpenGl_OCCT_FRONT_MATERIAL
-  "occBackMaterial"        // OpenGl_OCCT_BACK_MATERIAL
+  "occBackMaterial",       // OpenGl_OCCT_BACK_MATERIAL
+  "occColor",              // OpenGl_OCCT_COLOR
+
+  "occPointSize"           // OpenGl_OCCT_POINT_SIZE
 
 };
 
@@ -208,9 +211,23 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
     }
 
     TCollection_AsciiString aSource = aDeclarations + anIter.Value()->Source();
-    if (anIter.Value()->Type() == Graphic3d_TOS_VERTEX)
+    switch (anIter.Value()->Type())
     {
-      aSource = TCollection_AsciiString ("#define VERTEX_SHADER\n") + aSource;
+      case Graphic3d_TOS_VERTEX:
+      {
+        aSource = TCollection_AsciiString ("#define VERTEX_SHADER\n") + aSource;
+        break;
+      }
+      case Graphic3d_TOS_FRAGMENT:
+      {
+      #if defined(GL_ES_VERSION_2_0)
+        TCollection_AsciiString aPrefix (theCtx->hasHighp
+                                       ? "precision highp float;\n"
+                                       : "precision mediump float;\n");
+        aSource = aPrefix + aSource;
+      #endif
+        break;
+      }
     }
 
     if (!aShader->LoadSource (theCtx, aSource))
@@ -267,7 +284,7 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
   SetAttributeName (theCtx, Graphic3d_TOA_POS,   "occVertex");
   SetAttributeName (theCtx, Graphic3d_TOA_NORM,  "occNormal");
   SetAttributeName (theCtx, Graphic3d_TOA_UV,    "occTexCoord");
-  SetAttributeName (theCtx, Graphic3d_TOA_COLOR, "occColor");
+  SetAttributeName (theCtx, Graphic3d_TOA_COLOR, "occVertColor");
 
   if (!Link (theCtx))
   {

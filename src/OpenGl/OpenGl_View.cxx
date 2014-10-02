@@ -68,7 +68,7 @@ OpenGl_View::OpenGl_View (const CALL_DEF_VIEWCONTEXT &AContext,
   myTrihedron(NULL),
   myGraduatedTrihedron(NULL),
   myVisualization(AContext.Visualization),
-  myIntShadingMethod(TEL_SM_GOURAUD),
+  myShadingModel ((Visual3d_TypeOfModel )AContext.Model),
   myAntiAliasing(Standard_False),
   myTransPers(&myDefaultTransPers),
   myIsTransPers(Standard_False),
@@ -77,21 +77,7 @@ OpenGl_View::OpenGl_View (const CALL_DEF_VIEWCONTEXT &AContext,
   myStateCounter (theCounter),
   myLastLightSourceState (0, 0)
 {
-
-  // Shading method
-  switch (AContext.Model)
-  {
-    case 1 : /* VISUAL3D_TOM_INTERP_COLOR */
-    case 3 : /* VISUAL3D_TOM_VERTEX */
-      myIntShadingMethod = TEL_SM_GOURAUD;
-      break;
-    default :
-      myIntShadingMethod = TEL_SM_FLAT;
-      break;
-  }
-
   myCurrLightSourceState = myStateCounter->Increment();
-
   myModificationState = 1; // initial state
 }
 
@@ -177,17 +163,7 @@ void OpenGl_View::SetLights (const CALL_DEF_VIEWCONTEXT& theViewCtx)
 void OpenGl_View::SetVisualisation (const CALL_DEF_VIEWCONTEXT &AContext)
 {
   myVisualization = AContext.Visualization;
-  // Shading method
-  switch (AContext.Model)
-  {
-    case 1 : /* VISUAL3D_TOM_INTERP_COLOR */
-    case 3 : /* VISUAL3D_TOM_VERTEX */
-      myIntShadingMethod = TEL_SM_GOURAUD;
-      break;
-    default :
-      myIntShadingMethod = TEL_SM_FLAT;
-      break;
-  }
+  myShadingModel  = (Visual3d_TypeOfModel )AContext.Model;
 }
 
 /*----------------------------------------------------------------------*/

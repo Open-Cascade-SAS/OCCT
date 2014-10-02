@@ -69,9 +69,6 @@ typedef enum
 
 #define TEL_HS_USER_DEF_START      15
 
-#define TEL_SM_FLAT    1
-#define TEL_SM_GOURAUD 2
-
 /* Standard Lighting Models */
 #define  TEL_FRONT_BACK_LM  1
 

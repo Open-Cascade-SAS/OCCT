@@ -35,9 +35,10 @@ void CShadingModelDlg::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CShadingModelDlg, CDialog)
 	//{{AFX_MSG_MAP(CShadingModelDlg)
-	ON_BN_CLICKED(IDC_SHADINGMODEL_COLOR, OnShadingmodelColor)
-	ON_BN_CLICKED(IDC_SHADINGMODEL_FLAT, OnShadingmodelFlat)
+	ON_BN_CLICKED(IDC_SHADINGMODEL_COLOR,   OnShadingmodelColor)
+	ON_BN_CLICKED(IDC_SHADINGMODEL_FLAT,    OnShadingmodelFlat)
 	ON_BN_CLICKED(IDC_SHADINGMODEL_GOURAUD, OnShadingmodelGouraud)
+	ON_BN_CLICKED(IDC_SHADINGMODEL_PHONG,   OnShadingmodelPhong)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -62,3 +63,8 @@ void CShadingModelDlg::OnShadingmodelGouraud()
 	myCurrent_V3d_View->Update();	
 }
 
+void CShadingModelDlg::OnShadingmodelPhong()
+{
+	myCurrent_V3d_View->SetShadingModel(V3d_PHONG);
+	myCurrent_V3d_View->Update();
+}

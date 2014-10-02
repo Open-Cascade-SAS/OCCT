@@ -19,14 +19,11 @@
 #define THE_MAX_CLIP_PLANES 8
 
 // Vertex attributes
-// Note: At the moment, we just 'rename' the default OpenGL
-// vertex attributes from compatibility profile. In the next
-// release old functionality will be removed from shader API.
 #ifdef VERTEX_SHADER
   attribute vec4 occVertex;
   attribute vec3 occNormal;
   attribute vec4 occTexCoord;
-  attribute vec4 occColor;
+  attribute vec4 occVertColor;
 #endif
 
 // Matrix state
@@ -73,7 +70,7 @@ vec4  occFrontMaterial_Specular(void);     //!< Specular reflection
 float occFrontMaterial_Shininess(void);    //!< Specular exponent
 float occFrontMaterial_Transparency(void); //!< Transparency coefficient
 
-// Front material properties accessors
+// Back material properties accessors
 vec4  occBackMaterial_Emission(void);      //!< Emission color
 vec4  occBackMaterial_Ambient(void);       //!< Ambient  reflection
 vec4  occBackMaterial_Diffuse(void);       //!< Diffuse  reflection
@@ -81,9 +78,11 @@ vec4  occBackMaterial_Specular(void);      //!< Specular reflection
 float occBackMaterial_Shininess(void);     //!< Specular exponent
 float occBackMaterial_Transparency(void);  //!< Transparency coefficient
 
+uniform vec4      occColor;                //!< color value (in case of disabled lighting)
 uniform int       occDistinguishingMode;   //!< Are front and back faces distinguished?
 uniform int       occTextureEnable;        //!< Is texture enabled?
 uniform sampler2D occActiveSampler;        //!< Current active sampler
+uniform float     occPointSize;            //!< point size
 
 // clipping planes state
 const int OccEquationCoords_View  = 0; //!< view-space  clipping plane

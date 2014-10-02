@@ -126,21 +126,15 @@ is
     --      TOLS_SPOT       spot light
 
     enumeration TypeOfModel is  TOM_NONE,
-                    TOM_INTERP_COLOR,
                     TOM_FACET,
-                    TOM_VERTEX
+                    TOM_VERTEX,
+                    TOM_FRAGMENT
     end TypeOfModel;
     ---Purpose: Definition of the rendering (colour shading) model
-    --  TOM_NONE        No interpolation, constant shading
-    --              (FLAT Shading)
-    --  TOM_INTERP_COLOR    Linear interpolation of color
-    --              (Gouraud Shading)
-    --  TOM_FACET       Interpolation of color based on
-    --              dot products
-    --              (Quick Phong Shading)
-    --  TOM_VERTEX      Interpolation of color based on
-    --              normals
-    --              (Phong Shading)
+    --  Visual3d_TOM_NONE     No lighting, only white ambient light
+    --  Visual3d_TOM_FACET    No interpolation, constant shading      (Flat    Shading)
+    --  Visual3d_TOM_VERTEX   Interpolation of color based on normals (Gouraud Shading)
+    --  Visual3d_TOM_FRAGMENT Interpolation of color based on normals (Phong   Shading)
     ---Category: The enumerations
 
     enumeration TypeOfOrder is  TOO_TOPFIRST,

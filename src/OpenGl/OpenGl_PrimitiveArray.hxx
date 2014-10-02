@@ -83,7 +83,8 @@ private:
 
   //! Main procedure to draw array
   void drawArray (const Handle(OpenGl_Workspace)& theWorkspace,
-                  const Graphic3d_Vec4*           theFaceColors) const;
+                  const Graphic3d_Vec4*           theFaceColors,
+                  const Standard_Boolean          theHasVertColor) const;
 
   //! Auxiliary procedures
   void drawEdges (const TEL_COLOUR*               theEdgeColour,

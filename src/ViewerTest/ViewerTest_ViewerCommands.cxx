@@ -29,6 +29,7 @@
 #include <Graphic3d_TypeOfTextureFilter.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <ViewerTest.hxx>
+#include <ViewerTest_AutoUpdater.hxx>
 #include <ViewerTest_EventManager.hxx>
 #include <ViewerTest_DoubleMapOfInteractiveAndName.hxx>
 #include <ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName.hxx>
@@ -95,6 +96,26 @@
   #include <X11/Xutil.h>
   #include <tk.h>
 #endif
+
+inline Standard_Boolean parseOnOff (Standard_CString  theArg,
+                                    Standard_Boolean& theIsOn)
+{
+  TCollection_AsciiString aFlag (theArg);
+  aFlag.LowerCase();
+  if (aFlag == "on"
+   || aFlag == "1")
+  {
+    theIsOn = Standard_True;
+    return Standard_True;
+  }
+  else if (aFlag == "off"
+        || aFlag == "0")
+  {
+    theIsOn = Standard_False;
+    return Standard_True;
+  }
+  return Standard_False;
+}
 
 // Auxiliary definitions
 static const char THE_KEY_DELETE = 127;
@@ -4121,10 +4142,10 @@ static int VCaps (Draw_Interpretor& theDI,
 {
   OpenGl_Caps* aCaps = &ViewerTest_myDefaultCaps;
   Handle(OpenGl_GraphicDriver)   aDriver;
-  Handle(AIS_InteractiveContext) aContextAIS = ViewerTest::GetAISContext();
-  if (!aContextAIS.IsNull())
+  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
+  if (!aContext.IsNull())
   {
-    aDriver = Handle(OpenGl_GraphicDriver)::DownCast (aContextAIS->CurrentViewer()->Driver());
+    aDriver = Handle(OpenGl_GraphicDriver)::DownCast (aContext->CurrentViewer()->Driver());
     aCaps   = &aDriver->ChangeOptions();
   }
 
@@ -4133,27 +4154,76 @@ static int VCaps (Draw_Interpretor& theDI,
     theDI << "VBO:     " << (aCaps->vboDisable        ? "0" : "1") << "\n";
     theDI << "Sprites: " << (aCaps->pntSpritesDisable ? "0" : "1") << "\n";
     theDI << "SoftMode:" << (aCaps->contextNoAccel    ? "1" : "0") << "\n";
+    theDI << "FFP:     " << (aCaps->ffpEnable         ? "1" : "0") << "\n";
     return 0;
   }
 
+  ViewerTest_AutoUpdater anUpdateTool (aContext, ViewerTest::CurrentView());
   for (Standard_Integer anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
   {
-    const TCollection_AsciiString anArg (theArgVec[anArgIter]);
-    if (anArg.Search ("vbo=") > -1)
+    Standard_CString        anArg     = theArgVec[anArgIter];
+    TCollection_AsciiString anArgCase (anArg);
+    anArgCase.LowerCase();
+    if (anUpdateTool.parseRedrawMode (anArg))
     {
-      aCaps->vboDisable        = anArg.Token ("=", 2).IntegerValue() == 0;
+      continue;
     }
-    else if (anArg.Search ("sprites=") > -1)
+    else if (anArgCase == "-ffp")
     {
-      aCaps->pntSpritesDisable = anArg.Token ("=", 2).IntegerValue() == 0;
+      Standard_Boolean toEnable = Standard_True;
+      if (++anArgIter < theArgNb
+      && !parseOnOff (theArgVec[anArgIter], toEnable))
+      {
+        --anArgIter;
+      }
+      aCaps->ffpEnable = toEnable;
     }
-    else if (anArg.Search ("soft=") > -1)
+    else if (anArgCase == "-vbo")
     {
-      aCaps->contextNoAccel = anArg.Token ("=", 2).IntegerValue() != 0;
+      Standard_Boolean toEnable = Standard_True;
+      if (++anArgIter < theArgNb
+      && !parseOnOff (theArgVec[anArgIter], toEnable))
+      {
+        --anArgIter;
+      }
+      aCaps->vboDisable = !toEnable;
+    }
+    else if (anArgCase == "-sprite"
+          || anArgCase == "-sprites")
+    {
+      Standard_Boolean toEnable = Standard_True;
+      if (++anArgIter < theArgNb
+      && !parseOnOff (theArgVec[anArgIter], toEnable))
+      {
+        --anArgIter;
+      }
+      aCaps->pntSpritesDisable = !toEnable;
+    }
+    else if (anArgCase == "-softmode")
+    {
+      Standard_Boolean toEnable = Standard_True;
+      if (++anArgIter < theArgNb
+      && !parseOnOff (theArgVec[anArgIter], toEnable))
+      {
+        --anArgIter;
+      }
+      aCaps->contextNoAccel = toEnable;
+    }
+    else if (anArgCase == "-accel"
+          || anArgCase == "-acceleration")
+    {
+      Standard_Boolean toEnable = Standard_True;
+      if (++anArgIter < theArgNb
+      && !parseOnOff (theArgVec[anArgIter], toEnable))
+      {
+        --anArgIter;
+      }
+      aCaps->contextNoAccel = !toEnable;
     }
     else
     {
-      std::cerr << "Unknown argument: " << anArg << "\n";
+      std::cout << "Error: unknown argument '" << anArg << "'\n";
+      return 1;
     }
   }
   if (aCaps != &ViewerTest_myDefaultCaps)
@@ -6504,24 +6574,6 @@ static int VLight (Draw_Interpretor& theDi,
   return 0;
 }
 
-inline Standard_Boolean parseOnOff (Standard_CString  theArg,
-                                    Standard_Boolean& theIsOn)
-{
-  TCollection_AsciiString aFlag (theArg);
-  aFlag.LowerCase();
-  if (aFlag == "on")
-  {
-    theIsOn = Standard_True;
-    return Standard_True;
-  }
-  else if (aFlag == "off")
-  {
-    theIsOn = Standard_False;
-    return Standard_True;
-  }
-  return Standard_False;
-}
-
 //=======================================================================
 //function : VRenderParams
 //purpose  : Enables/disables rendering features
@@ -6588,24 +6640,39 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
       case Graphic3d_RM_RAYTRACING:    theDI << "raytrace ";      break;
     }
     theDI << "\n";
-    theDI << "fsaa:        " << (aParams.IsAntialiasingEnabled      ? "on" : "off") << "\n";
-    theDI << "shadows:     " << (aParams.IsShadowEnabled            ? "on" : "off") << "\n";
-    theDI << "reflections: " << (aParams.IsReflectionEnabled        ? "on" : "off") << "\n";
-    theDI << "rayDepth:    " <<  aParams.RaytracingDepth                            << "\n";
-    theDI << "gleam:       " << (aParams.IsTransparentShadowEnabled ? "on" : "off") << "\n";
+    theDI << "fsaa:         " << (aParams.IsAntialiasingEnabled      ? "on" : "off") << "\n";
+    theDI << "shadows:      " << (aParams.IsShadowEnabled            ? "on" : "off") << "\n";
+    theDI << "reflections:  " << (aParams.IsReflectionEnabled        ? "on" : "off") << "\n";
+    theDI << "rayDepth:     " <<  aParams.RaytracingDepth                            << "\n";
+    theDI << "gleam:        " << (aParams.IsTransparentShadowEnabled ? "on" : "off") << "\n";
+    theDI << "shadingModel: ";
+    switch (aView->ShadingModel())
+    {
+      case V3d_COLOR:   theDI << "color";   break;
+      case V3d_FLAT:    theDI << "flat";    break;
+      case V3d_GOURAUD: theDI << "gouraud"; break;
+      case V3d_PHONG:   theDI << "phong";   break;
+    }
+    theDI << "\n";
     return 0;
   }
 
   Standard_Boolean toPrint = Standard_False;
+  ViewerTest_AutoUpdater anUpdateTool (ViewerTest::GetAISContext(), aView);
   for (Standard_Integer anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
   {
     Standard_CString        anArg (theArgVec[anArgIter]);
     TCollection_AsciiString aFlag (anArg);
     aFlag.LowerCase();
-    if (aFlag == "-echo"
-     || aFlag == "-print")
+    if (anUpdateTool.parseRedrawMode (aFlag))
+    {
+      continue;
+    }
+    else if (aFlag == "-echo"
+          || aFlag == "-print")
     {
       toPrint = Standard_True;
+      anUpdateTool.Invalidate();
     }
     else if (aFlag == "-mode"
           || aFlag == "-rendermode"
@@ -6740,14 +6807,64 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
       }
       aParams.IsTransparentShadowEnabled = toEnable;
     }
+    else if (aFlag == "-shademodel"
+          || aFlag == "-shadingmodel"
+          || aFlag == "-shading")
+    {
+      if (toPrint)
+      {
+        switch (aView->ShadingModel())
+        {
+          case V3d_COLOR:   theDI << "color ";   break;
+          case V3d_FLAT:    theDI << "flat ";    break;
+          case V3d_GOURAUD: theDI << "gouraud "; break;
+          case V3d_PHONG:   theDI << "phong ";   break;
+        }
+        continue;
+      }
+
+      if (++anArgIter >= theArgNb)
+      {
+        std::cerr << "Error: wrong syntax at argument '" << anArg << "'\n";
+      }
+
+      TCollection_AsciiString aMode (theArgVec[anArgIter]);
+      aMode.LowerCase();
+      if (aMode == "color"
+       || aMode == "none")
+      {
+        aView->SetShadingModel (V3d_COLOR);
+      }
+      else if (aMode == "flat"
+            || aMode == "facet")
+      {
+        aView->SetShadingModel (V3d_FLAT);
+      }
+      else if (aMode == "gouraud"
+            || aMode == "vertex"
+            || aMode == "vert")
+      {
+        aView->SetShadingModel (V3d_GOURAUD);
+      }
+      else if (aMode == "phong"
+            || aMode == "fragment"
+            || aMode == "frag"
+            || aMode == "pixel")
+      {
+        aView->SetShadingModel (V3d_PHONG);
+      }
+      else
+      {
+        std::cout << "Error: unknown shading model '" << aMode << "'\n";
+        return 1;
+      }
+    }
     else
     {
       std::cout << "Error: wrong syntax, unknown flag '" << anArg << "'\n";
       return 1;
     }
   }
-
-  aView->Redraw();
   return 0;
 }
 
@@ -7088,7 +7205,20 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\nvstereo [{0|1}] : turn stereo usage On/Off; affects only newly displayed objects",
     __FILE__, VStereo, group);
   theCommands.Add ("vcaps",
-    "vcaps [vbo={0|1}] [sprites={0|1}] [soft={0|1}] : modify particular graphic driver options",
+            "vcaps [-vbo {0|1}] [-sprites {0|1}] [-ffp {0|1}]"
+    "\n\t\t:       [-softMode {0|1}] [-noupdate|-update]"
+    "\n\t\t: Modify particular graphic driver options:"
+    "\n\t\t:  FFP      - use fixed-function pipeline instead of"
+    "\n\t\t:             built-in GLSL programs"
+    "\n\t\t:  VBO      - use Vertex Buffer Object (copy vertex"
+    "\n\t\t:             arrays to GPU memory)"
+    "\n\t\t:  sprite   - use textured sprites instead of bitmaps"
+    "\n\t\t:  softMode - use software OpenGL implementation,"
+    "\n\t\t:             should be set BEFORE viewer creation"
+    "\n\t\t: Unlike vrenderparams, these parameters control alternative"
+    "\n\t\t: rendering paths producing the same visual result when"
+    "\n\t\t: possible."
+    "\n\t\t: Command is intended for testing old hardware compatibility.",
     __FILE__, VCaps, group);
   theCommands.Add ("vmemgpu",
     "vmemgpu [f]: print system-dependent GPU memory information if available;"
@@ -7278,13 +7408,18 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     __FILE__, VRenderParams, group);
   theCommands.Add("vrenderparams",
     "\n    Manages rendering parameters: "
-    "\n      '-rayTrace'            Enables  GPU ray-tracing"
-    "\n      '-raster'              Disables GPU ray-tracing"
-    "\n      '-rayDepth    0..10'   Defines maximum ray-tracing depth"
-    "\n      '-shadows     on|off'  Enables/disables shadows rendering"
-    "\n      '-reflections on|off'  Enables/disables specular reflections"
-    "\n      '-fsaa        on|off'  Enables/disables adaptive anti-aliasing"
-    "\n      '-gleam       on|off'  Enables/disables transparency shadow effects",
+    "\n      '-rayTrace'             Enables  GPU ray-tracing"
+    "\n      '-raster'               Disables GPU ray-tracing"
+    "\n      '-rayDepth     0..10'   Defines maximum ray-tracing depth"
+    "\n      '-shadows      on|off'  Enables/disables shadows rendering"
+    "\n      '-reflections  on|off'  Enables/disables specular reflections"
+    "\n      '-fsaa         on|off'  Enables/disables adaptive anti-aliasing"
+    "\n      '-gleam        on|off'  Enables/disables transparency shadow effects"
+    "\n      '-shadingModel model'   Controls shading model from enumeration"
+    "\n                              color, flat, gouraud, phong"
+    "\n    Unlike vcaps, these parameters dramatically change visual properties."
+    "\n    Command is intended to control presentation quality depending on"
+    "\n    hardware capabilities and performance.",
     __FILE__, VRenderParams, group);
   theCommands.Add("vfrustumculling",
     "vfrustumculling [toEnable]: enables/disables objects clipping",

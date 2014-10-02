@@ -64,6 +64,9 @@ enum OpenGl_StateVariable
   OpenGl_OCCT_DISTINGUISH_MODE,
   OpenGl_OCCT_FRONT_MATERIAL,
   OpenGl_OCCT_BACK_MATERIAL,
+  OpenGl_OCCT_COLOR,
+
+  OpenGl_OCCT_POINT_SIZE,
 
   // DON'T MODIFY THIS ITEM (insert new items before it)
   OpenGl_OCCT_NUMBER_OF_STATE_VARIABLES
@@ -502,8 +505,7 @@ protected:
 
 protected:
 
-  //! Defines last modification for variables of each state type.
-  Standard_Size myCurrentState[MaxStateTypes];
+  Standard_Size myCurrentState[MaxStateTypes];  //!< defines last modification for variables of each state type
 
   //! Stores locations of OCCT state uniform variables.
   GLint myStateLocations[OpenGl_OCCT_NUMBER_OF_STATE_VARIABLES];

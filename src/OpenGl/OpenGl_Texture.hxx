@@ -195,8 +195,8 @@ public:
     return myTextureId;
   }
 
-  //! @return texture format
-  inline GLint GetFormat() const
+  //! @return texture format (not sized)
+  inline GLenum GetFormat() const
   {
     return myTextFormat;
   }
@@ -262,7 +262,7 @@ protected:
   GLenum           myTarget;     //!< GL_TEXTURE_1D/GL_TEXTURE_2D
   GLsizei          mySizeX;      //!< texture width
   GLsizei          mySizeY;      //!< texture height
-  GLint            myTextFormat; //!< texture format - GL_RGB, GL_RGBA,...
+  GLenum           myTextFormat; //!< texture format - GL_RGB, GL_RGBA,...
   Standard_Boolean myHasMipmaps; //!< flag indicates that texture was uploaded with mipmaps
 
   Handle(Graphic3d_TextureParams) myParams; //!< texture parameters

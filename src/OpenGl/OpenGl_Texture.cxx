@@ -54,7 +54,7 @@ OpenGl_Texture::OpenGl_Texture (const Handle(Graphic3d_TextureParams)& theParams
   myTarget (GL_TEXTURE_2D),
   mySizeX (0),
   mySizeY (0),
-  myTextFormat (GL_FLOAT),
+  myTextFormat (GL_RGBA),
   myHasMipmaps (Standard_False),
   myParams     (theParams)
 {
@@ -313,7 +313,13 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
     return false;
   }
   myHasMipmaps             = Standard_False;
-  myTextFormat             = theTextFormat;
+  myTextFormat             = thePixelFormat;
+#if !defined(GL_ES_VERSION_2_0)
+  const GLint anIntFormat  = theTextFormat;
+#else
+  // ES does not support sized formats and format conversions - them detected from data type
+  const GLint anIntFormat  = thePixelFormat;
+#endif
   const GLsizei aWidth     = theSizeX;
   const GLsizei aHeight    = theSizeY;
   const GLsizei aMaxSize   = theCtx->MaxTextureSize();
@@ -380,7 +386,7 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
       }
 
       // use proxy to check texture could be created or not
-      glTexImage1D (GL_PROXY_TEXTURE_1D, 0, myTextFormat,
+      glTexImage1D (GL_PROXY_TEXTURE_1D, 0, anIntFormat,
                     aWidthOut, 0,
                     thePixelFormat, theDataType, NULL);
       glGetTexLevelParameteriv (GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &aTestWidth);
@@ -392,7 +398,7 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
         return false;
       }
 
-      glTexImage1D (GL_TEXTURE_1D, 0, myTextFormat,
+      glTexImage1D (GL_TEXTURE_1D, 0, anIntFormat,
                     aWidthOut, 0,
                     thePixelFormat, theDataType, aDataPtr);
       if (glGetError() != GL_NO_ERROR)
@@ -449,7 +455,7 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
 
     #if !defined(GL_ES_VERSION_2_0)
       // use proxy to check texture could be created or not
-      glTexImage2D (GL_PROXY_TEXTURE_2D, 0, myTextFormat,
+      glTexImage2D (GL_PROXY_TEXTURE_2D, 0, anIntFormat,
                     aWidthOut, aHeightOut, 0,
                     thePixelFormat, theDataType, NULL);
       glGetTexLevelParameteriv (GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_WIDTH,  &aTestWidth);
@@ -463,7 +469,7 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
       }
     #endif
 
-      glTexImage2D (GL_TEXTURE_2D, 0, myTextFormat,
+      glTexImage2D (GL_TEXTURE_2D, 0, anIntFormat,
                     aWidthOut, aHeightOut, 0,
                     thePixelFormat, theDataType, aDataPtr);
       if (glGetError() != GL_NO_ERROR)
@@ -492,7 +498,7 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
       {
       #if !defined(GL_ES_VERSION_2_0)
         // use proxy to check texture could be created or not
-        glTexImage2D (GL_PROXY_TEXTURE_2D, 0, myTextFormat,
+        glTexImage2D (GL_PROXY_TEXTURE_2D, 0, anIntFormat,
                       aWidthOut, aHeightOut, 0,
                       thePixelFormat, theDataType, NULL);
         glGetTexLevelParameteriv (GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_WIDTH,  &aTestWidth);
@@ -507,7 +513,7 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
       #endif
 
         // upload main picture
-        glTexImage2D (GL_TEXTURE_2D, 0, myTextFormat,
+        glTexImage2D (GL_TEXTURE_2D, 0, anIntFormat,
                       aWidthOut, aHeightOut, 0,
                       thePixelFormat, theDataType, theImage->Data());
         if (glGetError() != GL_NO_ERROR)
@@ -530,7 +536,7 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
       else
       {
       #if !defined(GL_ES_VERSION_2_0)
-        bool isCreated = gluBuild2DMipmaps (GL_TEXTURE_2D, myTextFormat,
+        bool isCreated = gluBuild2DMipmaps (GL_TEXTURE_2D, anIntFormat,
                                             aWidth, aHeight,
                                             thePixelFormat, theDataType, theImage->Data()) == 0;
         if (isCreated)
@@ -618,11 +624,12 @@ bool OpenGl_Texture::InitRectangle (const Handle(OpenGl_Context)& theCtx,
     glTexParameteri (myTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   }
 
-  myTextFormat = theFormat.Internal();
+  const GLint anIntFormat = theFormat.Internal();
+  myTextFormat = theFormat.Format();
 
   glTexImage2D (GL_PROXY_TEXTURE_RECTANGLE,
                 0,
-                myTextFormat,
+                anIntFormat,
                 aSizeX,
                 aSizeY,
                 0,
@@ -646,7 +653,7 @@ bool OpenGl_Texture::InitRectangle (const Handle(OpenGl_Context)& theCtx,
 
   glTexImage2D (myTarget,
                 0,
-                myTextFormat,
+                anIntFormat,
                 aSizeX,
                 aSizeY,
                 0,

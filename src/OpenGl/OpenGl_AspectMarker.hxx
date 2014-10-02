@@ -62,11 +62,11 @@ public:
 
   //! Init and return OpenGl point sprite resource.
   //! @return point sprite texture.
-  const Handle(OpenGl_PointSprite)& SpriteRes (const Handle(OpenGl_Workspace)& theWorkspace) const
+  const Handle(OpenGl_PointSprite)& SpriteRes (const Handle(OpenGl_Context)& theCtx) const
   {
     if (!myResources.IsSpriteReady())
     {
-      myResources.BuildSprites (theWorkspace, myMarkerImage, myType, myScale, myColor, myMarkerSize);
+      myResources.BuildSprites (theCtx, myMarkerImage, myType, myScale, myColor, myMarkerSize);
       myResources.SetSpriteReady();
     }
 
@@ -75,11 +75,11 @@ public:
 
   //! Init and return OpenGl highlight point sprite resource.
   //! @return point sprite texture for highlight.
-  const Handle(OpenGl_PointSprite)& SpriteHighlightRes (const Handle(OpenGl_Workspace)& theWorkspace) const
+  const Handle(OpenGl_PointSprite)& SpriteHighlightRes (const Handle(OpenGl_Context)& theCtx) const
   {
     if (!myResources.IsSpriteReady())
     {
-      myResources.BuildSprites (theWorkspace, myMarkerImage, myType, myScale, myColor, myMarkerSize);
+      myResources.BuildSprites (theCtx, myMarkerImage, myType, myScale, myColor, myMarkerSize);
       myResources.SetSpriteReady();
     }
 
@@ -88,11 +88,11 @@ public:
 
   //! Init and return OpenGl shader program resource.
   //! @return shader program resource.
-  const Handle(OpenGl_ShaderProgram)& ShaderProgramRes (const Handle(OpenGl_Workspace)& theWorkspace) const
+  const Handle(OpenGl_ShaderProgram)& ShaderProgramRes (const Handle(OpenGl_Context)& theCtx) const
   {
     if (!myResources.IsShaderReady())
     {
-      myResources.BuildShader (theWorkspace, myShaderProgram);
+      myResources.BuildShader (theCtx, myShaderProgram);
       myResources.SetShaderReady();
     }
 
@@ -131,14 +131,14 @@ protected: //! @name OpenGl resources
     void ResetSpriteReadiness() { myIsSpriteReady = Standard_False; }
     void ResetShaderReadiness() { myIsShaderReady = Standard_False; }
 
-    Standard_EXPORT void BuildSprites (const Handle(OpenGl_Workspace)&      theWS,
+    Standard_EXPORT void BuildSprites (const Handle(OpenGl_Context)&        theCtx,
                                        const Handle(Graphic3d_MarkerImage)& theMarkerImage,
                                        const Aspect_TypeOfMarker            theType,
                                        const Standard_ShortReal             theScale,
                                        const TEL_COLOUR&                    theColor,
                                        Standard_ShortReal&                  theMarkerSize);
 
-    Standard_EXPORT void BuildShader (const Handle(OpenGl_Workspace)&        theWS,
+    Standard_EXPORT void BuildShader (const Handle(OpenGl_Context)&          theCtx,
                                       const Handle(Graphic3d_ShaderProgram)& theShader);
 
     Standard_EXPORT void SpriteKeys (const Handle(Graphic3d_MarkerImage)& theMarkerImage,

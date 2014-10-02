@@ -15,6 +15,8 @@
 
 #include <OpenGl_Caps.hxx>
 
+#include <OpenGl_GlCore20.hxx>
+
 IMPLEMENT_STANDARD_HANDLE (OpenGl_Caps, Standard_Transient)
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Caps, Standard_Transient)
 
@@ -26,6 +28,11 @@ OpenGl_Caps::OpenGl_Caps()
 : vboDisable        (Standard_False),
   pntSpritesDisable (Standard_False),
   keepArrayData     (Standard_False),
+#if !defined(GL_ES_VERSION_2_0)
+  ffpEnable         (Standard_True),
+#else
+  ffpEnable         (Standard_False),
+#endif
   buffersNoSwap     (Standard_False),
   contextStereo     (Standard_False),
 #ifdef DEB
@@ -48,6 +55,7 @@ OpenGl_Caps& OpenGl_Caps::operator= (const OpenGl_Caps& theCopy)
   vboDisable        = theCopy.vboDisable;
   pntSpritesDisable = theCopy.pntSpritesDisable;
   keepArrayData     = theCopy.keepArrayData;
+  ffpEnable         = theCopy.ffpEnable;
   buffersNoSwap     = theCopy.buffersNoSwap;
   contextStereo     = theCopy.contextStereo;
   contextDebug      = theCopy.contextDebug;

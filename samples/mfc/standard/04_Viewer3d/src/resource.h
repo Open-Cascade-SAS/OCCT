@@ -63,6 +63,7 @@
 #define IDC_ISOV                        1005
 #define IDC_SHADINGMODEL_GOURAUD        1006
 #define IDC_EDIT_ISOV                   1006
+#define IDC_SHADINGMODEL_PHONG          1007
 #define IDC_CHECK_MODELCLIPPINGONOFF    1008
 #define IDC_SLIDER_OFFSETFACTOR         1010
 #define IDC_SLIDER_OFFSETUNITS          1011

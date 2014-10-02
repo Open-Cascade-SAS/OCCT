@@ -32,7 +32,7 @@ puts "hI"
 for { set aMode 0 } { $aMode <= 1 } { incr aMode } {
   set aTitle "bitmaps"
   if { $aMode == 1 } { set aTitle "sprites" }
-  vcaps sprites=$aMode
+  vcaps -sprites $aMode
   set aV "Driver${aMode}/Viewer1/View1"
   vinit name=$aV l=32 t=32 w=512 h=512
   vactivate $aV

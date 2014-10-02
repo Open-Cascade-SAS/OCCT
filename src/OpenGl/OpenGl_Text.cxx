@@ -384,7 +384,7 @@ void OpenGl_Text::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
 
   if (aCtx->IsGlGreaterEqual (2, 0))
   {
-    const Handle(OpenGl_ShaderProgram)& aProgram = aTextAspect->ShaderProgramRes (theWorkspace);
+    const Handle(OpenGl_ShaderProgram)& aProgram = aTextAspect->ShaderProgramRes (aCtx);
     aCtx->BindProgram (aProgram);
     if (!aProgram.IsNull())
     {

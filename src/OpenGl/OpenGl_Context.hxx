@@ -29,6 +29,7 @@
 #include <NCollection_List.hxx>
 #include <Message.hxx>
 #include <OpenGl_Caps.hxx>
+#include <OpenGl_Vec.hxx>
 #include <OpenGl_Resource.hxx>
 #include <Standard_Transient.hxx>
 #include <TCollection_AsciiString.hxx>
@@ -435,7 +436,14 @@ public: //! @name methods to alter or retrieve current state
 
   //! Bind specified program to current context,
   //! or unbind previous one when NULL specified.
-  Standard_EXPORT void BindProgram (const Handle(OpenGl_ShaderProgram)& theProgram);
+  //! @return true if some program is bound to context
+  Standard_EXPORT Standard_Boolean BindProgram (const Handle(OpenGl_ShaderProgram)& theProgram);
+
+  //! Setup current color.
+  Standard_EXPORT void SetColor4fv (const OpenGl_Vec4& theColor);
+
+  //! Setup point size.
+  Standard_EXPORT void SetPointSize (const Standard_ShortReal theSize);
 
 private:
 

@@ -422,23 +422,21 @@ void OpenGl_AspectFace::Release (OpenGl_Context* theContext)
 // function : BuildTexture
 // purpose  :
 // =======================================================================
-void OpenGl_AspectFace::Resources::BuildTexture (const Handle(OpenGl_Workspace)& theWS,
+void OpenGl_AspectFace::Resources::BuildTexture (const Handle(OpenGl_Context)&       theCtx,
                                                  const Handle(Graphic3d_TextureMap)& theTexture)
 {
-  const Handle(OpenGl_Context)& aContext = theWS->GetGlContext();
-
   // release old texture resource
   if (!Texture.IsNull())
   {
     if (TextureId.IsEmpty())
     {
-      aContext->DelayedRelease (Texture);
+      theCtx->DelayedRelease (Texture);
       Texture.Nullify();
     }
     else
     {
       Texture.Nullify(); // we need nullify all handles before ReleaseResource() call
-      aContext->ReleaseResource (TextureId, Standard_True);
+      theCtx->ReleaseResource (TextureId, Standard_True);
     }
   }
 
@@ -446,17 +444,17 @@ void OpenGl_AspectFace::Resources::BuildTexture (const Handle(OpenGl_Workspace)&
 
   if (!theTexture.IsNull())
   {
-    if (TextureId.IsEmpty() || !aContext->GetResource<Handle(OpenGl_Texture)> (TextureId, Texture))
+    if (TextureId.IsEmpty() || !theCtx->GetResource<Handle(OpenGl_Texture)> (TextureId, Texture))
     {
       Texture = new OpenGl_Texture (theTexture->GetParams());
       Handle(Image_PixMap) anImage = theTexture->GetImage();
       if (!anImage.IsNull())
       {
-        Texture->Init (aContext, *anImage.operator->(), theTexture->Type());
+        Texture->Init (theCtx, *anImage.operator->(), theTexture->Type());
       }
       if (!TextureId.IsEmpty())
       {
-        aContext->ShareResource (TextureId, Texture);
+        theCtx->ShareResource (TextureId, Texture);
       }
     }
   }
@@ -466,11 +464,10 @@ void OpenGl_AspectFace::Resources::BuildTexture (const Handle(OpenGl_Workspace)&
 // function : BuildShader
 // purpose  :
 // =======================================================================
-void OpenGl_AspectFace::Resources::BuildShader (const Handle(OpenGl_Workspace)&        theWS,
+void OpenGl_AspectFace::Resources::BuildShader (const Handle(OpenGl_Context)&          theCtx,
                                                 const Handle(Graphic3d_ShaderProgram)& theShader)
 {
-  const Handle(OpenGl_Context)& aContext = theWS->GetGlContext();
-  if (!aContext->IsGlGreaterEqual (2, 0))
+  if (!theCtx->IsGlGreaterEqual (2, 0))
   {
     return;
   }
@@ -478,7 +475,7 @@ void OpenGl_AspectFace::Resources::BuildShader (const Handle(OpenGl_Workspace)& 
   // release old shader program resources
   if (!ShaderProgram.IsNull())
   {
-    aContext->ShaderManager()->Unregister (ShaderProgramId, ShaderProgram);
+    theCtx->ShaderManager()->Unregister (ShaderProgramId, ShaderProgram);
     ShaderProgramId.Clear();
     ShaderProgram.Nullify();
   }
@@ -487,5 +484,5 @@ void OpenGl_AspectFace::Resources::BuildShader (const Handle(OpenGl_Workspace)& 
     return;
   }
 
-  aContext->ShaderManager()->Create (theShader, ShaderProgramId, ShaderProgram);
+  theCtx->ShaderManager()->Create (theShader, ShaderProgramId, ShaderProgram);
 }

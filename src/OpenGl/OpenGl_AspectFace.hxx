@@ -187,11 +187,11 @@ public:
   }
 
   //! @return texture map.
-  const Handle(OpenGl_Texture)& TextureRes (const Handle(OpenGl_Workspace)& theWorkspace) const
+  const Handle(OpenGl_Texture)& TextureRes (const Handle(OpenGl_Context)& theCtx) const
   {
     if (!myResources.IsTextureReady())
     {
-      myResources.BuildTexture (theWorkspace, myTexture);
+      myResources.BuildTexture (theCtx, myTexture);
       myResources.SetTextureReady();
     }
 
@@ -200,11 +200,11 @@ public:
 
   //! Init and return OpenGl shader program resource.
   //! @return shader program resource.
-  const Handle(OpenGl_ShaderProgram)& ShaderProgramRes (const Handle(OpenGl_Workspace)& theWorkspace) const 
+  const Handle(OpenGl_ShaderProgram)& ShaderProgramRes (const Handle(OpenGl_Context)& theCtx) const
   {
     if (!myResources.IsShaderReady())
     {
-      myResources.BuildShader (theWorkspace, myShaderProgram);
+      myResources.BuildShader (theCtx, myShaderProgram);
       myResources.SetShaderReady();
     }
 
@@ -250,9 +250,9 @@ protected:
     void ResetTextureReadiness() { myIsTextureReady = Standard_False; }
     void ResetShaderReadiness () { myIsShaderReady  = Standard_False; }
 
-    Standard_EXPORT void BuildTexture (const Handle(OpenGl_Workspace)&        theWS,
+    Standard_EXPORT void BuildTexture (const Handle(OpenGl_Context)&          theCtx,
                                        const Handle(Graphic3d_TextureMap)&    theTexture);
-    Standard_EXPORT void BuildShader  (const Handle(OpenGl_Workspace)&        theWS,
+    Standard_EXPORT void BuildShader  (const Handle(OpenGl_Context)&          theCtx,
                                        const Handle(Graphic3d_ShaderProgram)& theShader);
 
     Handle(OpenGl_Texture)       Texture;

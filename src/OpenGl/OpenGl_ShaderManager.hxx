@@ -24,6 +24,12 @@
 #include <Handle_OpenGl_ShaderManager.hxx>
 #include <OpenGl_ShaderProgram.hxx>
 #include <OpenGl_ShaderStates.hxx>
+#include <OpenGl_AspectFace.hxx>
+#include <OpenGl_AspectLine.hxx>
+#include <OpenGl_AspectText.hxx>
+#include <OpenGl_AspectMarker.hxx>
+#include <OpenGl_Texture.hxx>
+#include <Visual3d_TypeOfModel.hxx>
 
 class OpenGl_View;
 
@@ -32,6 +38,17 @@ typedef NCollection_Sequence<Handle(OpenGl_ShaderProgram)> OpenGl_ShaderProgramL
 
 //! Map to declare per-program states of OCCT materials.
 typedef NCollection_DataMap<Handle(OpenGl_ShaderProgram), OpenGl_MaterialState> OpenGl_MaterialStates;
+
+//! Standard GLSL program combination bits.
+enum OpenGl_ProgramOptions
+{
+  OpenGl_PO_ClipPlanes = 0x01, //!< handle clipping planes
+  OpenGl_PO_Point      = 0x02, //!< point marker
+  OpenGl_PO_VertColor  = 0x04, //!< per-vertex color
+  OpenGl_PO_TextureRGB = 0x08, //!< handle RGB   texturing
+  OpenGl_PO_TextureA   = 0x10, //!< handle Alpha texturing
+  OpenGl_PO_NB         = 0x20  //!< overall number of combinations
+};
 
 //! This class is responsible for managing shader programs.
 class OpenGl_ShaderManager : public Standard_Transient
@@ -50,9 +67,10 @@ public:
   //! @param theProxy    [IN]  program definition
   //! @param theShareKey [OUT] sharing key
   //! @param theProgram  [OUT] OpenGL program
-  Standard_EXPORT void Create (const Handle(Graphic3d_ShaderProgram)& theProxy,
-                               TCollection_AsciiString&               theShareKey,
-                               Handle(OpenGl_ShaderProgram)&          theProgram);
+  //! @return true on success
+  Standard_EXPORT Standard_Boolean Create (const Handle(Graphic3d_ShaderProgram)& theProxy,
+                                           TCollection_AsciiString&               theShareKey,
+                                           Handle(OpenGl_ShaderProgram)&          theProgram);
 
   //! Unregisters specified shader program.
   Standard_EXPORT void Unregister (TCollection_AsciiString&      theShareKey,
@@ -64,16 +82,76 @@ public:
   //! Returns true if no program objects are registered in the manager.
   Standard_EXPORT Standard_Boolean IsEmpty() const;
 
-  DEFINE_STANDARD_RTTI (OpenGl_ShaderManager)
+  //! Bind program for filled primitives rendering
+  Standard_Boolean BindProgram (const OpenGl_AspectFace*            theAspect,
+                                const Handle(OpenGl_Texture)&       theTexture,
+                                const Standard_Boolean              theToLightOn,
+                                const Standard_Boolean              theHasVertColor,
+                                const Handle(OpenGl_ShaderProgram)& theCustomProgram)
+  {
+    if (!theCustomProgram.IsNull()
+     || myContext->caps->ffpEnable)
+    {
+      return bindProgramWithState (theCustomProgram, theAspect);
+    }
 
-protected:
+    const Standard_Integer        aBits    = getProgramBits (theTexture, theHasVertColor);
+    Handle(OpenGl_ShaderProgram)& aProgram = getStdProgram (theToLightOn, aBits);
+    return bindProgramWithState (aProgram, theAspect);
+  }
 
-  OpenGl_MaterialStates   myMaterialStates;   //!< Per-program state of OCCT material
-  OpenGl_ProjectionState  myProjectionState;  //!< State of OCCT projection transformation
-  OpenGl_ModelWorldState  myModelWorldState;  //!< State of OCCT model-world transformation
-  OpenGl_WorldViewState   myWorldViewState;   //!< State of OCCT world-view transformation
-  OpenGl_LightSourceState myClippingState;    //!< State of OCCT clipping planes
-  OpenGl_LightSourceState myLightSourceState; //!< State of OCCT light sources
+  //! Bind program for line rendering
+  Standard_Boolean BindProgram (const OpenGl_AspectLine*            theAspect,
+                                const Handle(OpenGl_Texture)&       theTexture,
+                                const Standard_Boolean              theToLightOn,
+                                const Standard_Boolean              theHasVertColor,
+                                const Handle(OpenGl_ShaderProgram)& theCustomProgram)
+  {
+    if (!theCustomProgram.IsNull()
+     || myContext->caps->ffpEnable)
+    {
+      return bindProgramWithState (theCustomProgram, theAspect);
+    }
+
+    const Standard_Integer        aBits    = getProgramBits (theTexture, theHasVertColor);
+    Handle(OpenGl_ShaderProgram)& aProgram = getStdProgram (theToLightOn, aBits);
+    return bindProgramWithState (aProgram, theAspect);
+  }
+
+  //! Bind program for point rendering
+  Standard_Boolean BindProgram (const OpenGl_AspectMarker*          theAspect,
+                                const Handle(OpenGl_Texture)&       theTexture,
+                                const Standard_Boolean              theToLightOn,
+                                const Standard_Boolean              theHasVertColor,
+                                const Handle(OpenGl_ShaderProgram)& theCustomProgram)
+  {
+    if (!theCustomProgram.IsNull()
+     || myContext->caps->ffpEnable)
+    {
+      return bindProgramWithState (theCustomProgram, theAspect);
+    }
+
+    const Standard_Integer        aBits    = getProgramBits (theTexture, theHasVertColor) | OpenGl_PO_Point;
+    Handle(OpenGl_ShaderProgram)& aProgram = getStdProgram (theToLightOn, aBits);
+    return bindProgramWithState (aProgram, theAspect);
+  }
+
+  //! Bind program for rendering alpha-textured font.
+  Standard_Boolean BindProgram (const OpenGl_AspectText*            theAspect,
+                                const Handle(OpenGl_ShaderProgram)& theCustomProgram)
+  {
+    if (!theCustomProgram.IsNull()
+     || myContext->caps->ffpEnable)
+    {
+      return bindProgramWithState (theCustomProgram, theAspect);
+    }
+
+    if (myFontProgram.IsNull())
+    {
+      prepareStdProgramFont();
+    }
+    return bindProgramWithState (myFontProgram, theAspect);
+  }
 
 public:
 
@@ -167,6 +245,15 @@ public:
     myContext = theCtx;
   }
 
+  //! Sets shading model.
+  void SetShadingModel(const Visual3d_TypeOfModel theModel)
+  {
+    myLightPrograms = theModel == Visual3d_TOM_FRAGMENT
+                    ? myLightPrograms = myPhongPrograms
+                    : myLightPrograms = myGouraudPrograms;
+    myShadingModel = theModel;
+  }
+
   //! Sets last view manger used with.
   //! Helps to handle matrix states in multi-view configurations.
   void SetLastView (const OpenGl_View* theLastView)
@@ -182,12 +269,106 @@ public:
 
 protected:
 
-  OpenGl_ShaderProgramList myProgramList;  //!< The list of shader programs
-  OpenGl_Context*          myContext;      //!< The OpenGL context
+  //! Define program bits.
+  Standard_Integer getProgramBits (const Handle(OpenGl_Texture)& theTexture,
+                                   const Standard_Boolean        theHasVertColor)
+  {
+    Standard_Integer aBits = 0;
+    if (myContext->Clipping().IsClippingOrCappingOn())
+    {
+      aBits |= OpenGl_PO_ClipPlanes;
+    }
+    if (!theTexture.IsNull())
+    {
+      // GL_RED to be handled
+      aBits |= theTexture->GetFormat() == GL_ALPHA ? OpenGl_PO_TextureA : OpenGl_PO_TextureRGB;
+    }
+    if (theHasVertColor)
+    {
+      aBits |= OpenGl_PO_VertColor;
+    }
+    return aBits;
+  }
+
+  //! Prepare standard GLSL program.
+  Handle(OpenGl_ShaderProgram)& getStdProgram (const Standard_Boolean theToLightOn,
+                                               const Standard_Integer theBits)
+  {
+    if (theToLightOn)
+    {
+      Handle(OpenGl_ShaderProgram)& aProgram = myLightPrograms[theBits];
+      if (aProgram.IsNull())
+      {
+        prepareStdProgramLight (aProgram, theBits);
+      }
+      return aProgram;
+    }
+
+    Handle(OpenGl_ShaderProgram)& aProgram = myFlatPrograms[theBits];
+    if (aProgram.IsNull())
+    {
+      prepareStdProgramFlat (aProgram, theBits);
+    }
+    return aProgram;
+  }
+
+  //! Prepare standard GLSL program for textured font.
+  Standard_EXPORT Standard_Boolean prepareStdProgramFont();
+
+  //! Prepare standard GLSL program without lighting.
+  Standard_EXPORT Standard_Boolean prepareStdProgramFlat (Handle(OpenGl_ShaderProgram)& theProgram,
+                                                          const Standard_Integer        theBits);
+
+  //! Prepare standard GLSL program with lighting.
+  Standard_Boolean prepareStdProgramLight (Handle(OpenGl_ShaderProgram)& theProgram,
+                                           const Standard_Integer        theBits)
+  {
+    return myShadingModel == Visual3d_TOM_FRAGMENT
+         ? prepareStdProgramPhong   (theProgram, theBits)
+         : prepareStdProgramGouraud (theProgram, theBits);
+  }
+
+  //! Prepare standard GLSL program with per-vertex lighting.
+  Standard_EXPORT Standard_Boolean prepareStdProgramGouraud (Handle(OpenGl_ShaderProgram)& theProgram,
+                                                             const Standard_Integer        theBits);
+
+  //! Prepare standard GLSL program with per-pixel lighting.
+  Standard_EXPORT Standard_Boolean prepareStdProgramPhong (Handle(OpenGl_ShaderProgram)& theProgram,
+                                                           const Standard_Integer        theBits);
+
+  //! Bind specified program to current context and apply state.
+  Standard_EXPORT Standard_Boolean bindProgramWithState (const Handle(OpenGl_ShaderProgram)& theProgram,
+                                                         const OpenGl_Element*               theAspect);
+
+protected:
+
+  Visual3d_TypeOfModel          myShadingModel;                  //!< lighting shading model
+  OpenGl_ShaderProgramList      myProgramList;                   //!< The list of shader programs
+  Handle(OpenGl_ShaderProgram)* myLightPrograms;                 //!< pointer to active lighting programs matrix, depending on shading model and lights configuration
+  Handle(OpenGl_ShaderProgram)  myGouraudPrograms[OpenGl_PO_NB]; //!< matrix with per-vertex   lighting programs
+  Handle(OpenGl_ShaderProgram)  myPhongPrograms  [OpenGl_PO_NB]; //!< matrix with per-fragment lighting programs
+  Handle(OpenGl_ShaderProgram)  myFlatPrograms   [OpenGl_PO_NB]; //!< programs matrix without  lighting
+  Handle(OpenGl_ShaderProgram)  myFontProgram;                   //!< standard program for textured text
+
+  OpenGl_Context*               myContext;                       //!< OpenGL context
+
+protected:
+
+  OpenGl_MaterialStates         myMaterialStates;                //!< Per-program state of OCCT material
+  OpenGl_ProjectionState        myProjectionState;               //!< State of OCCT projection  transformation
+  OpenGl_ModelWorldState        myModelWorldState;               //!< State of OCCT model-world transformation
+  OpenGl_WorldViewState         myWorldViewState;                //!< State of OCCT world-view  transformation
+  OpenGl_LightSourceState       myClippingState;                 //!< State of OCCT clipping planes
+  OpenGl_LightSourceState       myLightSourceState;              //!< State of OCCT light sources
 
 private:
 
-  const OpenGl_View*       myLastView;     //!< Pointer to the last view shader manager used with.
+  const OpenGl_View*            myLastView;                      //!< Pointer to the last view shader manager used with
+
+public:
+
+  DEFINE_STANDARD_RTTI (OpenGl_ShaderManager)
+
 };
 
 #endif // _OpenGl_ShaderManager_HeaderFile

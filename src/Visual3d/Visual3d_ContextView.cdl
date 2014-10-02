@@ -180,14 +180,7 @@ is
 		   AModel	: TypeOfModel from Visual3d )
 		is static;
 	---Level: Public
-	---Purpose: Modifies the shading model when the type of
-	--	    visualization is TOV_SHADING
-	--
-	--	    TypeOfModel	: TOM_NONE
-	--			  TOM_INTERP_COLOR
-	--			  TOM_FACET
-	--			  TOM_VERTEX
-	--
+	---Purpose: Modifies the shading model when the type of visualization is TOV_SHADING
 	---Category: Methods to modify the class definition
 
 	SetVisualization ( me		: in out;
