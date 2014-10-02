@@ -323,10 +323,21 @@ void BOPTools_AlgoTools2D::AdjustPCurveOnFace
   // du
   du = 0.;
   if (aBAS.IsUPeriodic()) {
-    Standard_Real newu;
+    Standard_Real u2x;
     aUPeriod = aBAS.UPeriod(); 
     //
-    GeomInt::AdjustPeriodic(u2, UMin, UMax, aUPeriod, newu, du);
+    // A. drive u2 into the stall [Umin, Umin+aUPeriod] -> u2x
+    GeomInt::AdjustPeriodic(u2, UMin, UMax, aUPeriod, u2x, du, 0.);
+    //
+    // b. try to clarify u2 using the precision (aDelta)
+    if (fabs(u2x-UMin) < aDelta) {
+        u2=UMin;
+      }
+    else if (fabs(u2x-UMin-aUPeriod) < aDelta) {
+      u2=UMin+aUPeriod;
+    }
+    // C. compute du again using clarified value of u2
+    GeomInt::AdjustPeriodic(u2, UMin, UMax, aUPeriod, u2x, du, 0.);
     //
     if (du==0.) {
       if (aBAS.GetType()==GeomAbs_Cylinder) {
