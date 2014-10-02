@@ -2489,9 +2489,13 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
           if (VEdge(isec, ipath).IsNull())
             VEdge(isec, ipath) = aNewFirstEdge;
           else //rebuild first edge
+          {
             RebuildTopOrBottomEdge(aNewFirstEdge,
                                    TopoDS::Edge(VEdge(isec, ipath)),
                                    ReversedEdges);
+            if (ReversedEdges.Contains(VEdge(isec, ipath)))
+              StartEdges(isec).Reverse();
+          }
         }
 	
 	else UpdateEdge(TopoDS::Edge(VEdge(isec, ipath)), 
@@ -2660,7 +2664,7 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
       for (j = 1; j <= NbPath; j++)
         Tapes(StartEdges(isec))->SetValue(6, j, myFaces->Value(isec, j));
       TopoDS_Vertex Vfirst, Vlast;
-      TopExp::Vertices(TopoDS::Edge(StartEdges(isec)), Vfirst, Vlast);
+      TopExp::Vertices(TopoDS::Edge(StartEdges(isec)), Vfirst, Vlast, Standard_True); //with orientation
       if (!Rails.IsBound(Vfirst))
       {
         Handle(TopTools_HArray2OfShape) anArray = new TopTools_HArray2OfShape(1, 2, 1, NbPath+1);
