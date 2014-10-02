@@ -1,4 +1,4 @@
-Draw Test Harness  {#occt_user_guides__test_harness}
+Draw Test Harness  {#occt_user_guides__test_harness}
 ===============================
 
 @tableofcontents
@@ -6265,7 +6265,31 @@ sr is a shape COMPOUND FORWARD Free Modified
 The new algorithm of Boolean operations avoids a large number of weak points and limitations presented in the old boolean operation algorithm. 
 
 
-@subsubsection occt_draw_7_7_1  bop, bopfuse, bopcut, boptuc, bopcommon,
+@subsubsection occt_draw_7_7_1  bparallelmode
+
+* **bparallelmode** enable or disable parallel mode for boolean operations. Sequential computing is used by default.
+
+Syntax: 
+~~~~~
+bparallelmode [1/0]
+
+~~~~~
+
+Without arguments, bparallelmode shows current state of parallel mode for boolean operations.
+
+* *0* Disable parallel mode, 
+* *1* Enable parallel mode 
+
+**Example:**
+~~~~~
+# Enable parallel mode for boolean operations.
+bparallelmode 1
+
+# Show state of parallel mode for boolean operations.
+bparallelmode
+~~~~~
+
+@subsubsection occt_draw_7_7_2  bop, bopfuse, bopcut, boptuc, bopcommon
 
 * **bop** defines *shape1* and *shape2* subject to ulterior Boolean operations 
 * **bopfuse** creates a new shape by a boolean operation on two existing shapes. The new shape contains both originals intact. 
@@ -6337,7 +6361,7 @@ bcommon s14 b c
 ttranslate s14 0 -40 100 
 ~~~~~
 
-@subsubsection occt_draw_7_7_2  bopsection
+@subsubsection occt_draw_7_7_3  bopsection
 
 Syntax:      
 ~~~~~
@@ -6372,7 +6396,7 @@ bopsection s
 bsection s2 b c 
 ~~~~~
 
-@subsubsection occt_draw_7_7_3  bopcheck, bopargshape
+@subsubsection occt_draw_7_7_4  bopcheck, bopargshape
 
 Syntax:      
 ~~~~~

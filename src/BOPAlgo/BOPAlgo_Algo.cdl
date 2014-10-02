@@ -30,8 +30,14 @@ is
     ---C++: alias "Standard_EXPORT virtual ~BOPAlgo_Algo();"  
      
     Initialize (theAllocator: BaseAllocator from BOPCol) 
-        returns Algo from BOPAlgo;  
-     
+        returns Algo from BOPAlgo;
+
+    GetParallelMode(myclass)
+      returns Boolean;
+
+    SetParallelMode(myclass;
+                    theNewMode: Boolean from Standard);
+
     Perform(me:out) 
         is deferred;      
          

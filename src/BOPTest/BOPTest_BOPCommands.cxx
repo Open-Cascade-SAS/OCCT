@@ -77,6 +77,8 @@ static Standard_Integer bcommon   (Draw_Interpretor&, Standard_Integer, const ch
 static Standard_Integer bopcurves (Draw_Interpretor&, Standard_Integer, const char**);
 static Standard_Integer bopnews   (Draw_Interpretor&, Standard_Integer, const char**);
 //
+static Standard_Integer bparallelmode(Draw_Interpretor&, Standard_Integer, const char**);
+//
 static Standard_Integer mkvolume   (Draw_Interpretor&, Standard_Integer, const char**);
 
 //=======================================================================
@@ -108,7 +110,7 @@ static Standard_Integer mkvolume   (Draw_Interpretor&, Standard_Integer, const c
   //
   theCommands.Add("bopcurves", "use  bopcurves F1 F2 [-2d]", __FILE__, bopcurves, g);
   theCommands.Add("bopnews", "use  bopnews -v[e,f]"  , __FILE__, bopnews, g);
-  //
+  theCommands.Add("bparallelmode", "bparallelmode [1/0] : show / set parallel mode for boolean operations", __FILE__, bparallelmode, g);
   theCommands.Add("mkvolume", "make solids from set of shapes.\nmkvolume r b1 b2 ... [-ni (do not intersect)] [-s (run in non parallel mode)]", __FILE__, mkvolume , g);
 }
 
@@ -689,6 +691,35 @@ Standard_Integer bopcurves (Draw_Interpretor& di,
 
   di << "\n";
   
+  return 0;
+}
+
+//=======================================================================
+//function : bparallelmode
+//purpose  : 
+//=======================================================================
+Standard_Integer bparallelmode(Draw_Interpretor& di, Standard_Integer n, const char** a)
+{
+  if (n == 2)
+  {
+    Standard_Boolean isParallelOn = Draw::Atoi (a[1]) == 1;
+    if (isParallelOn == 1)
+    {
+      BOPAlgo_Algo::SetParallelMode(Standard_True);
+      di << "Parallel mode for boolean operations has been enabled";
+    }
+    else
+    {
+      BOPAlgo_Algo::SetParallelMode(Standard_False);
+      di << "Parallel mode for boolean operations has been disabled";
+    }
+  }
+  else
+  {
+    di << "Parallel mode state for boolean operations: "
+       << (BOPAlgo_Algo::GetParallelMode()? "enabled" : "disabled");
+  }
+
   return 0;
 }
 
