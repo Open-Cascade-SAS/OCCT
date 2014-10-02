@@ -444,6 +444,7 @@ void OSD_Error::Perror() {
 #define STRICT
 #include <OSD_Error.hxx>
 #include <OSD_ErrorList.hxx>
+#include <TCollection_ExtendedString.hxx>
 
 #include <windows.h>
 
@@ -578,83 +579,84 @@ void OSD_Error :: Perror () {
 
  if ( fPrefix ) {
  
-  lstrcpy (  buff, TEXT( "Error ( " )  );
+  lstrcpy (  buff, "Error ( "  );
 
   switch ( myCode ) {
   
    case OSD_WDirectoryIterator:
 
-    ptr = TEXT( "OSD_DirectoryIterator" );
+    ptr = "OSD_DirectoryIterator";
 
    break;
 
    case OSD_WDirectory:
 
-    ptr = TEXT( "OSD_Directory" );
+    ptr = "OSD_Directory";
 
    break;
 
    case OSD_WFileIterator:
 
-    ptr = TEXT( "OSD_FileIterator" );
+    ptr = "OSD_FileIterator";
 
    break;
 
    case OSD_WFile:
   
-    ptr = TEXT( "OSD_File" );
+    ptr = "OSD_File";
 
    break;
 
    case OSD_WFileNode:
 
-    ptr = TEXT( "OSD_FileNode" );
+    ptr = "OSD_FileNode";
 
    break;
 
    case OSD_WHost:
 
-    ptr = TEXT( "OSD_Host" );
+    ptr = "OSD_Host";
 
    break;
 
    case OSD_WProcess:
 
-    ptr = TEXT( "OSD_Environment" );
+    ptr = "OSD_Environment";
 
    break;
 
    case OSD_WEnvironmentIterator:
 
-    ptr = TEXT( "OSD_EnvironmentIterator" );
+    ptr = "OSD_EnvironmentIterator";
 
    break;
 
    case OSD_WEnvironment:
 
-    ptr = TEXT( "OSD_Environment" );
+    ptr = "OSD_Environment";
 
    break;
 
    case OSD_WDisk:
 
-    ptr = TEXT( "OSD_Disk" );
+    ptr = "OSD_Disk";
 
    break;
 
    default:
 
-    ptr = TEXT( "Unknown" );
+    ptr = "Unknown";
 
   }  // end switch
 
   lstrcat ( buff, ptr );
-  lstrcat (  buff, TEXT( " )" )  );
+  lstrcat (  buff, " )"  );
   ( *errorStream ) << buff;
  
  }  // end if ( fPrefix . . . )
 
- ( *errorStream ) << TEXT( ": " ) << myMessage.ToCString () << endl << flush;
+ TCollection_ExtendedString aMessageW(myMessage);
+ ( *errorStream ) << L": " << (const wchar_t*)aMessageW.ToExtString () << endl << flush;
 
 }  // end OSD_Error :: Perror
 

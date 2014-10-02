@@ -62,7 +62,7 @@ static Standard_Boolean fCtrlBrk;
 // used to forbid simultaneous execution of setting / executing handlers
 static Standard_Mutex THE_SIGNAL_MUTEX;
 
-static LONG __fastcall _osd_raise ( DWORD, LPTSTR );
+static LONG __fastcall _osd_raise ( DWORD, LPSTR );
 static BOOL WINAPI     _osd_ctrl_break_handler ( DWORD );
 
 static LONG _osd_debug   ( void );
@@ -82,7 +82,7 @@ static LONG CallHandler (DWORD dwExceptionCode,
 #if !defined(__CYGWIN32__) && !defined(__MINGW32__)
 
  Standard_Mutex::Sentry aSentry (THE_SIGNAL_MUTEX); // lock the mutex to prevent simultaneous handling
- static TCHAR         buffer[ 2048 ];
+ static char          buffer[ 2048 ];
  int                  flterr = 0;
 
  buffer[0] = '\0' ;
@@ -92,108 +92,108 @@ static LONG CallHandler (DWORD dwExceptionCode,
  
   case EXCEPTION_FLT_DENORMAL_OPERAND:
 //      cout << "CallHandler : EXCEPTION_FLT_DENORMAL_OPERAND:" << endl ;
-      lstrcpy (  buffer, TEXT( "FLT DENORMAL OPERAND" )  );
+      lstrcpyA (  buffer, "FLT DENORMAL OPERAND"  );
       flterr = 1 ;
       break ;
   case EXCEPTION_FLT_DIVIDE_BY_ZERO:
 //      cout << "CallHandler : EXCEPTION_FLT_DIVIDE_BY_ZERO:" << endl ;
-      lstrcpy (  buffer, TEXT( "FLT DIVIDE BY ZERO" )  );
+      lstrcpyA (  buffer, "FLT DIVIDE BY ZERO"  );
       flterr = 1 ;
       break ;
   case EXCEPTION_FLT_INEXACT_RESULT:
 //      cout << "CallHandler : EXCEPTION_FLT_INEXACT_RESULT:" << endl ;
-      lstrcpy (  buffer, TEXT( "FLT INEXACT RESULT" )  );
+      lstrcpyA (  buffer, "FLT INEXACT RESULT"  );
       flterr = 1 ;
       break ;
   case EXCEPTION_FLT_INVALID_OPERATION:
 //      cout << "CallHandler : EXCEPTION_FLT_INVALID_OPERATION:" << endl ;
-      lstrcpy (  buffer, TEXT( "FLT INVALID OPERATION" )  );
+      lstrcpyA (  buffer, "FLT INVALID OPERATION"  );
       flterr = 1 ;
       break ;
   case EXCEPTION_FLT_OVERFLOW:
 //      cout << "CallHandler : EXCEPTION_FLT_OVERFLOW:" << endl ;
-      lstrcpy (  buffer, TEXT( "FLT OVERFLOW" )  );
+      lstrcpyA (  buffer, "FLT OVERFLOW"  );
       flterr = 1 ;
       break ;
   case EXCEPTION_FLT_STACK_CHECK:
 //      cout << "CallHandler : EXCEPTION_FLT_STACK_CHECK:" << endl ;
-      lstrcpy (  buffer, TEXT( "FLT STACK CHECK" )  );
+      lstrcpyA (  buffer, "FLT STACK CHECK"  );
       flterr = 1 ;
       break ;
   case EXCEPTION_FLT_UNDERFLOW:
 //      cout << "CallHandler : EXCEPTION_FLT_UNDERFLOW:" << endl ;
-      lstrcpy (  buffer, TEXT( "FLT UNDERFLOW" )  );
+      lstrcpyA (  buffer, "FLT UNDERFLOW"  );
       flterr = 1 ;
       break ;
   case STATUS_FLOAT_MULTIPLE_TRAPS:
 //      cout << "CallHandler : EXCEPTION_FLT_UNDERFLOW:" << endl ;
-      lstrcpy (  buffer, TEXT( "FLT MULTIPLE TRAPS (possible overflow in conversion of double to integer)" )  );
+      lstrcpyA (  buffer, "FLT MULTIPLE TRAPS (possible overflow in conversion of double to integer)"  );
       flterr = 1 ;
       break ;
   case STATUS_FLOAT_MULTIPLE_FAULTS:
 //      cout << "CallHandler : EXCEPTION_FLT_UNDERFLOW:" << endl ;
-      lstrcpy (  buffer, TEXT( "FLT MULTIPLE FAULTS" )  );
+      lstrcpyA (  buffer, "FLT MULTIPLE FAULTS"  );
       flterr = 1 ;
       break ;
 
   case STATUS_NO_MEMORY:
 //      cout << "CallHandler : STATUS_NO_MEMORY:" << endl ;
       OSD_Exception_STATUS_NO_MEMORY ::
-      Raise (  TEXT( "MEMORY ALLOCATION ERROR ( no room in the process heap )" )  );
+      Raise (  "MEMORY ALLOCATION ERROR ( no room in the process heap )"  );
 
   case EXCEPTION_ACCESS_VIOLATION:
 //      cout << "CallHandler : EXCEPTION_ACCESS_VIOLATION:" << endl ;
-      wsprintf ( buffer, TEXT( "%s%s%s0x%.8p%s%s%s" ), TEXT( "ACCESS VIOLATION" ),
-                 fMsgBox ? "\n" : " ", TEXT( "at address " ),
+      wsprintf ( buffer, "%s%s%s0x%.8p%s%s%s", "ACCESS VIOLATION",
+                 fMsgBox ? "\n" : " ", "at address ",
                  ExceptionInformation1 ,
-                 TEXT( " during '" ),
-                 ExceptionInformation0 ? TEXT( "WRITE" ) : TEXT( "READ" ),
-                 TEXT( "' operation" ));
+                 " during '",
+                 ExceptionInformation0 ? "WRITE" : "READ",
+                 "' operation");
   break;
 
   case EXCEPTION_ARRAY_BOUNDS_EXCEEDED:
 //      cout << "CallHandler : EXCEPTION_ARRAY_BOUNDS_EXCEEDED:" << endl ;
-      lstrcpy (  buffer, TEXT( "ARRAY BOUNDS EXCEEDED" )  );
+      lstrcpyA (  buffer, "ARRAY BOUNDS EXCEEDED"  );
   break;
 
   case EXCEPTION_DATATYPE_MISALIGNMENT:
 //      cout << "CallHandler : EXCEPTION_DATATYPE_MISALIGNMENT:" << endl ;
-      lstrcpy (  buffer, TEXT( "DATATYPE MISALIGNMENT" )  );
+      lstrcpyA (  buffer, "DATATYPE MISALIGNMENT"  );
   break;
 
   case EXCEPTION_ILLEGAL_INSTRUCTION:
 //      cout << "CallHandler : EXCEPTION_ILLEGAL_INSTRUCTION:" << endl ;
-      lstrcpy (  buffer, TEXT( "ILLEGAL INSTRUCTION" )  );
+      lstrcpyA (  buffer, "ILLEGAL INSTRUCTION"  );
   break;
 
   case EXCEPTION_IN_PAGE_ERROR:
 //      cout << "CallHandler : EXCEPTION_IN_PAGE_ERROR:" << endl ;
-      lstrcpy (  buffer, TEXT( "IN_PAGE ERROR" )  );
+      lstrcpyA (  buffer, "IN_PAGE ERROR"  );
   break;
 
   case EXCEPTION_INT_DIVIDE_BY_ZERO:
 //      cout << "CallHandler : EXCEPTION_INT_DIVIDE_BY_ZERO:" << endl ;
-      lstrcpy (  buffer, TEXT( "INTEGER DIVISION BY ZERO" )  );
+      lstrcpyA (  buffer, "INTEGER DIVISION BY ZERO"  );
   break;
 
   case EXCEPTION_INT_OVERFLOW:
 //      cout << "CallHandler : EXCEPTION_INT_OVERFLOW:" << endl ;
-      lstrcpy (  buffer, TEXT( "INTEGER OVERFLOW" )  );
+      lstrcpyA (  buffer, "INTEGER OVERFLOW"  );
   break;
 
   case EXCEPTION_INVALID_DISPOSITION:
 //      cout << "CallHandler : EXCEPTION_INVALID_DISPOSITION:" << endl ;
-      lstrcpy (  buffer, TEXT( "INVALID DISPOSITION" )  );
+      lstrcpyA (  buffer, "INVALID DISPOSITION"  );
   break;
 
   case EXCEPTION_NONCONTINUABLE_EXCEPTION:
 //      cout << "CallHandler : EXCEPTION_NONCONTINUABLE_EXCEPTION:" << endl ;
-      lstrcpy (  buffer, TEXT( "NONCONTINUABLE EXCEPTION" )  );
+      lstrcpyA (  buffer, "NONCONTINUABLE EXCEPTION"  );
   break;
 
   case EXCEPTION_PRIV_INSTRUCTION:
 //      cout << "CallHandler : EXCEPTION_PRIV_INSTRUCTION:" << endl ;
-      lstrcpy (  buffer, TEXT( "PRIVELEGED INSTRUCTION ENCOUNTERED" )  );
+      lstrcpyA (  buffer, "PRIVELEGED INSTRUCTION ENCOUNTERED"  );
   break;
 
   case EXCEPTION_STACK_OVERFLOW:
@@ -201,20 +201,20 @@ static LONG CallHandler (DWORD dwExceptionCode,
 #if defined( _MSC_VER ) && ( _MSC_VER >= 1300 )
     // try recovering from stack overflow: available in MS VC++ 7.0
     if (!_resetstkoflw())
-      lstrcpy (  buffer, TEXT( "Unrecoverable STACK OVERFLOW" )  );
+      lstrcpyA (  buffer, "Unrecoverable STACK OVERFLOW"  );
     else
 #endif
-      lstrcpy (  buffer, TEXT( "STACK OVERFLOW" )  );
+      lstrcpyA (  buffer, "STACK OVERFLOW"  );
   break;
  
   default:
-    wsprintf( buffer, TEXT("unknown exception code 0x%x, params 0x%p 0x%p"),
+    wsprintf( buffer, "unknown exception code 0x%x, params 0x%p 0x%p",
 	      dwExceptionCode, ExceptionInformation1, ExceptionInformation0 );
 
  }  // end switch
 
  // provide message to the user with possibility to stop
- int idx = lstrlen ( buffer );
+ int idx = lstrlenA ( buffer );
  if ( idx && fMsgBox && dwExceptionCode != EXCEPTION_NONCONTINUABLE_EXCEPTION ) {
      // reset FP operations before message box, otherwise it may fail to show up
     _fpreset();
@@ -437,9 +437,9 @@ static BOOL WINAPI _osd_ctrl_break_handler ( DWORD dwCode ) {
 //==== _osd_raise 
 //============================================================================
 
-static LONG __fastcall _osd_raise ( DWORD dwCode, LPTSTR msg ) 
+static LONG __fastcall _osd_raise ( DWORD dwCode, LPSTR msg ) 
 {
-  if (msg[0] == TEXT('\x03')) ++msg;
+  if (msg[0] == '\x03') ++msg;
 
   switch (dwCode)
   {

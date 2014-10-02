@@ -103,7 +103,7 @@ void BinLDrivers_DocumentRetrievalDriver::Read
     return;
   }
 
-  TCollection_AsciiString aFileName (theFileName,'?');
+  TCollection_AsciiString aFileName (theFileName);
 
   // 1. Read the information section
   Handle(Storage_HeaderData) aHeaderData;
@@ -124,12 +124,12 @@ void BinLDrivers_DocumentRetrievalDriver::Read
   Standard_Integer aFileVer = aHeaderData->StorageVersion().IntegerValue();
   Standard_Integer aCurrVer = BinLDrivers::StorageVersion().IntegerValue();
   // maintain one-way compatibility starting from version 2+
-  if (aFileVer < 2 || aFileVer > aCurrVer) {
+  if (!CheckDocumentVersion(aFileVer, aCurrVer)) {
+    myReaderStatus = PCDM_RS_NoVersion;
     // file was written with another version
     WriteMessage (aMethStr + "error: wrong file version: " +
 		  aHeaderData->StorageVersion() + " while current is " +
 		  BinLDrivers::StorageVersion());
-    myReaderStatus = PCDM_RS_NoVersion;
     return;
   }
 
@@ -179,8 +179,8 @@ void BinLDrivers_DocumentRetrievalDriver::Read
   }
 
   // Open the file stream
-#ifdef WNT
-  ifstream anIS (aFileName.ToCString(), ios::in | ios::binary);
+#ifdef _WIN32
+  ifstream anIS ((const wchar_t*) theFileName.ToExtString(), ios::in | ios::binary);
 #else
   ifstream anIS (aFileName.ToCString());
 #endif
@@ -511,3 +511,19 @@ void BinLDrivers_DocumentRetrievalDriver::PropagateDocumentVersion(const Standar
 {
   BinMDataStd::SetDocumentVersion(theDocVersion);
 }
+
+//=======================================================================
+//function : CheckDocumentVersion
+//purpose  : 
+//=======================================================================
+Standard_Boolean BinLDrivers_DocumentRetrievalDriver::CheckDocumentVersion(
+                                                          const Standard_Integer theFileVersion,
+                                                          const Standard_Integer theCurVersion)
+{
+  if (theFileVersion < 2 || theFileVersion > theCurVersion) {
+    // file was written with another version
+    return Standard_False;
+  }
+  return Standard_True;
+}
+

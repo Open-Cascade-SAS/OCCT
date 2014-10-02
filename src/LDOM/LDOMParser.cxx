@@ -23,6 +23,7 @@
 #include <LDOM_XmlReader.hxx>
 #include <LDOM_BasicText.hxx>
 #include <LDOM_CharReference.hxx>
+#include <TCollection_ExtendedString.hxx>
 
 #include <fcntl.h>
 #ifdef WNT
@@ -134,7 +135,12 @@ Standard_Boolean LDOMParser::parse (const char * const aFileName)
   myError.Clear ();
 
   // Open the file
+#ifdef _WIN32
+  TCollection_ExtendedString aFileNameW(aFileName, Standard_True);
+  int aFile = _wopen ((const wchar_t*) aFileNameW.ToExtString(), O_RDONLY);
+#else
   int aFile = open (aFileName, O_RDONLY);
+#endif
   if (aFile < 0) {
     myError = "Fatal XML error: Cannot open XML file";
     return Standard_True;

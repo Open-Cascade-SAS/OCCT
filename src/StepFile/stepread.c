@@ -19,10 +19,11 @@
 */ 
 /**
 */ 
-# include <stdlib.h>
-# include <stdio.h>
-# include <string.h>
-# include "recfile.ph"
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include "recfile.ph"
 
 /*    StepFile_Error.c
 
@@ -83,7 +84,13 @@ FILE* stepread_setinput (char* nomfic)
 {
   FILE* newin ;
   if (strlen(nomfic) == 0) return stepin ;
+#ifdef _WIN32
+  // file name is treated as UTF-8 string
+  // nomfic is prepared UTF-8 string
+  newin = _wfopen((const wchar_t*)nomfic, L"r") ;
+#else
   newin = fopen(nomfic,"r") ;
+#endif
   if (newin == NULL) {
     return NULL ;
   } else {

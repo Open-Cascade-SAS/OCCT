@@ -9,7 +9,9 @@ puts ""
 set BugNumber OCC22796
 
 vfont add [locate_data_file bug22149_mona.ttf] Mona
-vdrawtext "\x30\x42\x00\x09\x30\x79\x00\x0A\x30\x6F" 0 0 0 255 255 255 0 0 0 1 50 0 Mona 1
+set s [encoding convertfrom unicode "\x42\x30\x09\x00\x79\x30\x0A\x00\x6F\x30\x42\x26"]
+#vdrawtext "\x30\x42\x00\x09\x30\x79\x00\x0A\x30\x6F" 0 0 0 255 255 255 0 0 0 1 50 0 Mona 1
+vdrawtext $s 0 0 0 255 255 255 0 0 0 1 50 0 Mona 1
 
 set only_screen 1
 

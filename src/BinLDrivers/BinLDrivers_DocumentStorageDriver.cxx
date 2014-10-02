@@ -86,7 +86,7 @@ void BinLDrivers_DocumentStorageDriver::Write
   }
   else {
     // Open the file
-    TCollection_AsciiString aFileName (theFileName,'?');
+    TCollection_AsciiString aFileName (theFileName);
 
     // First pass: collect empty labels, assign IDs to the types
     if (myDrivers.IsNull())
@@ -103,7 +103,9 @@ void BinLDrivers_DocumentStorageDriver::Write
         return;
     }
 
-#if !defined(IRIX) // 10.10.2005
+#if defined(_WIN32)
+    ofstream anOS ((const wchar_t*) theFileName.ToExtString(), ios::in | ios::binary | ios::ate);
+#elif !defined(IRIX) // 10.10.2005
     ofstream anOS (aFileName.ToCString(), ios::in | ios::binary | ios::ate);
 #else
     ofstream anOS (aFileName.ToCString(), ios::ate);

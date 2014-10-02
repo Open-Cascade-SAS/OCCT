@@ -177,7 +177,7 @@ static Standard_Integer DDataStd_SetComment (Draw_Interpretor& di,
     if (!DDF::GetDF(arg[1],DF)) return 1;
     TDF_Label L;
     DDF::AddLabel(DF, arg[2], L);
-    TDataStd_Comment::Set(L,arg[3]);  
+    TDataStd_Comment::Set(L,TCollection_ExtendedString(arg[3],Standard_True));  
     return 0;
   }
   di << "DDataStd_SetComment : Error" << "\n";
@@ -270,7 +270,7 @@ static Standard_Integer DDataStd_GetComment (Draw_Interpretor& di,
     Handle(TDataStd_Comment) A;
     if (!DDF::Find(DF,arg[2],TDataStd_Comment::GetID(),A)) return 1;
     TCollection_AsciiString s(A->Get(),'?');
-    di << s.ToCString();
+    di << A->Get().ToExtString();
     return 0;
   }
   di << "DDataStd_GetComment : Error" << "\n";

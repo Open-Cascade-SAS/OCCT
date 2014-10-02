@@ -87,8 +87,7 @@ is
     ---Purpose: Creation by converting an extended string to an ascii string.
     --          If replaceNonAscii is non-null charecter, it will be used 
     --          in place of any non-ascii character found in the source string.
-    --          Otherwise, raises OutOfRange exception if at least one character
-    --          in the source string is not in the "Ascii range".
+    --          Otherwise, creates UTF-8 unicode string.
     returns AsciiString from TCollection
     raises OutOfRange from Standard;
           

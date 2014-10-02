@@ -255,8 +255,9 @@ Standard_Integer OSD_FileIterator::Error()const{
 #include <windows.h>
 
 #include <OSD_FileIterator.ixx>
+#include <TCollection_ExtendedString.hxx>
 
-#define _FD (  ( PWIN32_FIND_DATA )myData  )
+#define _FD (  ( PWIN32_FIND_DATAW )myData  )
 
 void _osd_wnt_set_error ( OSD_Error&, OSD_WhoAmI, ... );
 
@@ -270,7 +271,7 @@ OSD_FileIterator :: OSD_FileIterator (
 
  where.SystemName ( myPlace );
 
- if (  myPlace.Length () == 0  ) myPlace = TEXT( "." );
+ if (  myPlace.Length () == 0  ) myPlace = ".";
 
  myMask = Mask;
  myData = NULL;
@@ -291,13 +292,15 @@ Standard_Boolean OSD_FileIterator :: More () {
 
  if (  myHandle == INVALID_HANDLE_VALUE  ) {
  
-  TCollection_AsciiString wc = myPlace + TEXT( "/" ) + myMask;
+  TCollection_AsciiString wc = myPlace + "/" + myMask;
 
   myData = HeapAlloc (
-            GetProcessHeap (), HEAP_GENERATE_EXCEPTIONS, sizeof ( WIN32_FIND_DATA )
+            GetProcessHeap (), HEAP_GENERATE_EXCEPTIONS, sizeof ( WIN32_FIND_DATAW )
            );
 
-  myHandle = FindFirstFile (wc.ToCString (), (PWIN32_FIND_DATA)myData);
+  // make wchar_t string from UTF-8
+  TCollection_ExtendedString wcW(wc);
+  myHandle = FindFirstFileW ((const wchar_t*)wcW.ToExtString(), (PWIN32_FIND_DATAW)myData);
 
   if (  myHandle == INVALID_HANDLE_VALUE  )
   
@@ -331,7 +334,7 @@ void OSD_FileIterator :: Next () {
  
   do {
   
-   if (   !FindNextFile (  ( HANDLE )myHandle, _FD  )   ) {
+   if (   !FindNextFileW (  ( HANDLE )myHandle, _FD  )   ) {
    
     myFlag = Standard_False;
 
@@ -349,7 +352,10 @@ void OSD_FileIterator :: Next () {
 
 OSD_File OSD_FileIterator :: Values () {
 
- TheIterator.SetPath (   OSD_Path ( _FD -> cFileName  )   );
+ // make UTF-8 string
+ TCollection_AsciiString aFileName
+   (TCollection_ExtendedString( (Standard_ExtString) _FD -> cFileName) );
+ TheIterator.SetPath (   OSD_Path ( aFileName  )   );
 
  return TheIterator;
 

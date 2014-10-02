@@ -15,7 +15,6 @@
 // commercial license or contractual agreement.
 
 #include <PCDM_ReadWriter.ixx>
-#include <UTL.hxx>
 #include <PCDM_ReadWriter_1.hxx>
 #include <Storage_Schema.hxx>
 #include <Standard_ErrorHandler.hxx>
@@ -106,7 +105,8 @@ TCollection_ExtendedString PCDM_ReadWriter::FileFormat
   
   PCDM_BaseDriverPointer theFileDriver;
 
-  TCollection_AsciiString theFileName (UTL::CString(aFileName));
+  // conversion to UTF-8 is done inside
+  TCollection_AsciiString theFileName (aFileName);
   if (PCDM::FileDriverType (theFileName, theFileDriver) == PCDM_TOFD_Unknown)
     return ::TryXmlDriverType (theFileName);
 
@@ -125,7 +125,8 @@ TCollection_ExtendedString PCDM_ReadWriter::FileFormat
     for (Standard_Integer i =1; !found && i<=  refUserInfo.Length() ; i++) {
       if(refUserInfo(i).Search(FILE_FORMAT) != -1) {
         found=Standard_True;
-        theFormat=UTL::ExtendedString(refUserInfo(i).Token(" ",2));
+        theFormat=TCollection_ExtendedString(refUserInfo(i).Token(" ",2).ToCString(),
+                                             Standard_True);
       }
     }
     if(!found) theFormat=s->ReadTypeSection(*theFileDriver)->Types()->Value(1);

@@ -81,6 +81,18 @@ Storage_Error FSD_BinaryFile::Open(const TCollection_AsciiString& aName,const St
   SetName(aName);
 
   if (OpenMode() == Storage_VSNone) {
+#ifdef _WIN32
+    TCollection_ExtendedString aWName(aName);
+    if (aMode == Storage_VSRead) {
+      myStream = _wfopen((const wchar_t*)aWName.ToExtString(),L"rb");
+    }
+    else if (aMode == Storage_VSWrite) {
+      myStream = _wfopen((const wchar_t*)aWName.ToExtString(),L"wb");
+    }
+    else if (aMode == Storage_VSReadWrite) {
+      myStream = _wfopen((const wchar_t*)aWName.ToExtString(),L"w+b");
+    }
+#else
     if (aMode == Storage_VSRead) {
       myStream = fopen(aName.ToCString(),"rb");
     }
@@ -90,6 +102,7 @@ Storage_Error FSD_BinaryFile::Open(const TCollection_AsciiString& aName,const St
     else if (aMode == Storage_VSReadWrite) {
       myStream = fopen(aName.ToCString(),"w+b");
     }
+#endif
     
     if (myStream == 0L) {
       result = Storage_VSOpenError;

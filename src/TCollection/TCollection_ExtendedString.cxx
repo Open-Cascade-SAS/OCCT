@@ -35,10 +35,11 @@ Standard_EXPORT short NULL_EXTSTRING[1] = {0};
 inline Standard_ExtCharacter ConvertToUnicode2B (unsigned char *p)
 {
   // *p, *(p+1)
+  // little endian
   union {
     struct {
-      unsigned char  h;
       unsigned char  l;
+      unsigned char  h;
     } hl;
     Standard_ExtCharacter chr;
   } EL;
@@ -61,10 +62,11 @@ inline Standard_ExtCharacter ConvertToUnicode2B (unsigned char *p)
 inline Standard_ExtCharacter ConvertToUnicode3B (unsigned char *p)
 {
   // *p, *(p+1), *(p+2) =>0 , 1, 2
+  // little endian
   union {
     struct {
-      unsigned char  h;
       unsigned char  l;
+      unsigned char  h;
     } hl;
     Standard_ExtCharacter chr;
   } EL;
@@ -143,9 +145,11 @@ TCollection_ExtendedString::TCollection_ExtendedString
       mystring = Allocate( (mylength+1)*2 );
       if(!ConvertToUnicode (astring))
       {
-#ifdef DEB
-        cout <<"UTF8 decoding failure..." <<endl;
-#endif
+        mylength = (int)strlen( astring );
+        mystring = Reallocate(mystring, (mylength+1)*2);
+        for (int i = 0 ; i < mylength ; i++)
+          mystring[i] = ToExtCharacter(astring[i]); 
+        mystring[mylength] =  '\0';
       }
     }
   }
@@ -268,11 +272,16 @@ TCollection_ExtendedString::TCollection_ExtendedString
 TCollection_ExtendedString::TCollection_ExtendedString
                                 (const TCollection_AsciiString& astring) 
 {
-  mylength = astring.Length();
+  mylength = nbSymbols(astring.ToCString());
   mystring = Allocate((mylength+1)*2);
-  Standard_CString aCString = astring.ToCString() ;
-  for (Standard_Integer i = 0; i <= mylength ; i++)
-    mystring[i] = ToExtCharacter( aCString[i] ); 
+  if(!ConvertToUnicode (astring.ToCString()))
+  {
+    mylength = astring.Length();
+    mystring = Reallocate(mystring, (mylength+1)*2);
+    Standard_CString aCString = astring.ToCString();
+    for (Standard_Integer i = 0; i <= mylength ; i++)
+      mystring[i] = ToExtCharacter( aCString[i] );
+  }
 }
 
 // ----------------------------------------------------------------------------

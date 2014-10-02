@@ -87,7 +87,18 @@ Storage_Error FSD_CmpFile::Open(const TCollection_AsciiString& aName,const Stora
 
   if (OpenMode() == Storage_VSNone) {
 
-#if !defined(IRIX) && !defined(DECOSF1)
+#if defined(_WNT32)
+    TCollection_ExtendedString aWName(aName);
+    if (aMode == Storage_VSRead) {
+      myStream.open((const wchar_t*)aWName.ToExtString(),ios::in|ios::binary); // ios::nocreate is not portable
+    }
+    else if (aMode == Storage_VSWrite) {
+      myStream.open((const wchar_t*)aWName.ToExtString(),ios::out|ios::binary);
+    }
+    else if (aMode == Storage_VSReadWrite) {
+      myStream.open((const wchar_t*)aWName.ToExtString(),ios::in|ios::out|ios::binary);
+    }
+#elif !defined(IRIX) && !defined(DECOSF1)
     if (aMode == Storage_VSRead) {
       myStream.open(aName.ToCString(),ios::in|ios::binary); // ios::nocreate is not portable
     }

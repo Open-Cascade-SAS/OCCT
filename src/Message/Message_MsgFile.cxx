@@ -214,7 +214,13 @@ Standard_Boolean Message_MsgFile::LoadFile (const Standard_CString theFileName)
   if (theFileName == NULL || * theFileName == '\0') return Standard_False;
 
   //    Open the file
+#ifdef _WIN32
+  // file name is treated as UTF-8 string
+  TCollection_ExtendedString aFileNameW(theFileName, Standard_True);
+  FILE *anMsgFile = _wfopen ((const wchar_t*)aFileNameW.ToExtString(), L"rb");
+#else
   FILE *anMsgFile = fopen (theFileName, "rb");
+#endif
   if (!anMsgFile) return Standard_False;
 
   //    Read the file into memory

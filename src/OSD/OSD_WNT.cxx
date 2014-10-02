@@ -23,7 +23,7 @@
 /***/
 #include <OSD_WNT_1.hxx>
 
-#include <tchar.h>
+#include <wchar.h>
 #include <stdlib.h>
 /***/
 static void Init ( void );
@@ -448,7 +448,7 @@ PSID NullSid ( void ) {
 #define __leave return retVal
 #endif
 
-PSECURITY_DESCRIPTOR GetFileSecurityEx ( LPCTSTR fileName, SECURITY_INFORMATION si ) {
+PSECURITY_DESCRIPTOR GetFileSecurityEx ( LPCWSTR fileName, SECURITY_INFORMATION si ) {
 
  DWORD                errVal;
  DWORD                dwSize;
@@ -463,7 +463,7 @@ PSECURITY_DESCRIPTOR GetFileSecurityEx ( LPCTSTR fileName, SECURITY_INFORMATION 
    dwSize = dwSizeNeeded;
    errVal = ERROR_SUCCESS;
 
-   if (  !GetFileSecurity (
+   if (  !GetFileSecurityW (
            fileName, si,
            retVal, dwSize, &dwSizeNeeded
           )
@@ -540,7 +540,7 @@ void FreeFileSecurity ( PSECURITY_DESCRIPTOR pSD ) {
 #define __leave return retVal
 #endif
 
-BOOL LookupAccountSidEx ( PSID pSID, LPTSTR* name, LPTSTR* domain ) {
+BOOL LookupAccountSidEx ( PSID pSID, LPWSTR* name, LPWSTR* domain ) {
 
  DWORD        errVal;
  DWORD        dwSizeName   = 0;
@@ -554,15 +554,15 @@ BOOL LookupAccountSidEx ( PSID pSID, LPTSTR* name, LPTSTR* domain ) {
 
    errVal = ERROR_SUCCESS;
 
-   if (  !LookupAccountSid (
+   if (  !LookupAccountSidW (
            NULL, pSID, *name, &dwSizeName, *domain, &dwSizeDomain, &eUse
           )
    ) {
    
     if (   (  errVal = GetLastError ()  ) != ERROR_INSUFFICIENT_BUFFER   ) __leave;
 
-    if (   (  *name   = ( LPTSTR )HeapAlloc ( hHeap, 0, dwSizeName   )  ) == NULL ||
-           (  *domain = ( LPTSTR )HeapAlloc ( hHeap, 0, dwSizeDomain )  ) == NULL
+    if (   (  *name   = ( LPWSTR )HeapAlloc ( hHeap, 0, dwSizeName   )  ) == NULL ||
+           (  *domain = ( LPWSTR )HeapAlloc ( hHeap, 0, dwSizeDomain )  ) == NULL
     ) __leave;
    
    }  /* end if */
@@ -605,7 +605,7 @@ leave: ;        // added for VisualAge
 /*            'LookupAccountSidEx' function                                 */
 /******************************************************************************/
 /***/
-void FreeAccountNames ( LPTSTR lpszName, LPTSTR lpszDomain ) {
+void FreeAccountNames ( LPWSTR lpszName, LPWSTR lpszDomain ) {
 
  HeapFree (  hHeap, 0, ( PVOID )lpszDomain  );
  HeapFree (  hHeap, 0, ( PVOID )lpszName    );
@@ -887,7 +887,7 @@ void FreeAce ( PVOID pACE ) {
 
 }  /* end FreeAce */
 
-#define WILD_CARD     TEXT( "/*.*" )
+#define WILD_CARD     L"/*.*"
 #define WILD_CARD_LEN (  sizeof ( WILD_CARD )  )
 
 /***/
@@ -897,19 +897,19 @@ void FreeAce ( PVOID pACE ) {
 /* Returns  : TRUE on success, FALSE otherwise                              */
 /******************************************************************************/
 /***/
-BOOL MoveDirectory ( LPCTSTR oldDir, LPCTSTR newDir ) {
+BOOL MoveDirectory ( LPCWSTR oldDir, LPCWSTR newDir ) {
 
- PWIN32_FIND_DATA    pFD;
- LPTSTR              pName;
- LPTSTR              pFullNameSrc;
- LPTSTR              pFullNameDst;
- LPTSTR              driveSrc, driveDst;
- LPTSTR              pathSrc,  pathDst;
- HANDLE              hFindFile;
- BOOL                fFind;
- BOOL                retVal = FALSE;
- DIR_RESPONSE        response;
- DWORD               level;
+ PWIN32_FIND_DATAW    pFD;
+ LPWSTR               pName;
+ LPWSTR               pFullNameSrc;
+ LPWSTR               pFullNameDst;
+ LPWSTR               driveSrc, driveDst;
+ LPWSTR               pathSrc,  pathDst;
+ HANDLE               hFindFile;
+ BOOL                 fFind;
+ BOOL                 retVal = FALSE;
+ DIR_RESPONSE         response;
+ DWORD                level;
 
  if (   (  level = ( DWORD )TlsGetValue ( dwLevel )  ) == NULL   ) {
 
@@ -919,20 +919,20 @@ BOOL MoveDirectory ( LPCTSTR oldDir, LPCTSTR newDir ) {
   fFind = FALSE;
   driveSrc = driveDst = pathSrc = pathDst = NULL;
  
-  if (   (  driveSrc = ( LPTSTR )HeapAlloc ( hHeap, 0, _MAX_DRIVE )  ) != NULL &&
-         (  driveDst = ( LPTSTR )HeapAlloc ( hHeap, 0, _MAX_DRIVE )  ) != NULL &&
-         (  pathSrc  = ( LPTSTR )HeapAlloc ( hHeap, 0, _MAX_DIR   )  ) != NULL &&
-         (  pathDst  = ( LPTSTR )HeapAlloc ( hHeap, 0, _MAX_DIR   )  ) != NULL
+  if (   (  driveSrc = ( LPWSTR )HeapAlloc ( hHeap, 0, _MAX_DRIVE * sizeof(WCHAR) )  ) != NULL &&
+         (  driveDst = ( LPWSTR )HeapAlloc ( hHeap, 0, _MAX_DRIVE * sizeof(WCHAR) )  ) != NULL &&
+         (  pathSrc  = ( LPWSTR )HeapAlloc ( hHeap, 0, _MAX_DIR * sizeof(WCHAR)   )  ) != NULL &&
+         (  pathDst  = ( LPWSTR )HeapAlloc ( hHeap, 0, _MAX_DIR * sizeof(WCHAR)   )  ) != NULL
   ) {
   
-   _tsplitpath ( oldDir, driveSrc, pathSrc, NULL, NULL );
-   _tsplitpath ( newDir, driveDst, pathDst, NULL, NULL );
+   _wsplitpath ( oldDir, driveSrc, pathSrc, NULL, NULL );
+   _wsplitpath ( newDir, driveDst, pathDst, NULL, NULL );
 
-   if (  _tcscmp ( driveSrc, driveDst ) == 0 &&
-         _tcscmp ( pathSrc,  pathDst  ) == 0
+   if (  wcscmp ( driveSrc, driveDst ) == 0 &&
+         wcscmp ( pathSrc,  pathDst  ) == 0
    ) {
 retry:   
-    retVal = MoveFileEx (
+    retVal = MoveFileExW (
               oldDir, newDir, MOVEFILE_REPLACE_EXISTING | MOVEFILE_COPY_ALLOWED
              );
     fFind  = TRUE;
@@ -987,55 +987,55 @@ retry:
  hFindFile    = INVALID_HANDLE_VALUE;
  retVal       = FALSE;
 
- retVal = CreateDirectory ( newDir, NULL );
+ retVal = CreateDirectoryW ( newDir, NULL );
 
  if (   retVal || (  !retVal && GetLastError () == ERROR_ALREADY_EXISTS  )   ) {
 
-  if (   (  pFD = ( PWIN32_FIND_DATA )HeapAlloc (
-                                       hHeap, 0, sizeof ( WIN32_FIND_DATA )
+  if (   (  pFD = ( PWIN32_FIND_DATAW )HeapAlloc (
+                                       hHeap, 0, sizeof ( WIN32_FIND_DATAW )
                                       )
          ) != NULL &&
-         (  pName = ( LPTSTR )HeapAlloc (
-                               hHeap, 0, lstrlen ( oldDir ) + WILD_CARD_LEN +
-                               sizeof (  TEXT( '\x00' )  )
+         (  pName = ( LPWSTR )HeapAlloc (
+                               hHeap, 0, lstrlenW ( oldDir ) + WILD_CARD_LEN +
+                               sizeof (  L'\x00'  )
                               )
          ) != NULL
   ) {
 
-   lstrcpy ( pName, oldDir    );
-   lstrcat ( pName, WILD_CARD );
+   lstrcpyW ( pName, oldDir    );
+   lstrcatW ( pName, WILD_CARD );
 
    retVal = TRUE;
-   fFind  = (  hFindFile = FindFirstFile ( pName, pFD )  ) != INVALID_HANDLE_VALUE;
+   fFind  = (  hFindFile = FindFirstFileW ( pName, pFD )  ) != INVALID_HANDLE_VALUE;
 
    while ( fFind ) {
   
-    if (  pFD -> cFileName[ 0 ] != TEXT( '.' ) ||
-          pFD -> cFileName[ 0 ] != TEXT( '.' ) &&
-          pFD -> cFileName[ 1 ] != TEXT( '.' )
+    if (  pFD -> cFileName[ 0 ] != L'.' ||
+          pFD -> cFileName[ 0 ] != L'.' &&
+          pFD -> cFileName[ 1 ] != L'.'
     ) {
   
-     if (   ( pFullNameSrc = ( LPTSTR )HeapAlloc (
+     if (   ( pFullNameSrc = ( LPWSTR )HeapAlloc (
                                         hHeap, 0,
-                                        lstrlen ( oldDir ) + lstrlen ( pFD -> cFileName ) +
-                                        sizeof (  TEXT( '/' )  ) + sizeof (  TEXT( '\x00' )  )
+                                        lstrlenW ( oldDir ) + lstrlenW ( pFD -> cFileName ) +
+                                        sizeof (  L'/'  ) + sizeof ( L'\x00'  )
                                        )
             ) == NULL ||
-            ( pFullNameDst = ( LPTSTR )HeapAlloc (
+            ( pFullNameDst = ( LPWSTR )HeapAlloc (
                                         hHeap, 0,
-                                        lstrlen ( newDir ) + lstrlen ( pFD -> cFileName ) +
-                                        sizeof (  TEXT( '/' )  ) + sizeof (  TEXT( '\x00' )  )
+                                        lstrlenW ( newDir ) + lstrlenW ( pFD -> cFileName ) +
+                                        sizeof (  L'/'  ) + sizeof (  L'\x00'  )
                                        )
             ) == NULL
      ) break;
   
-     lstrcpy ( pFullNameSrc, oldDir );
-     lstrcat (  pFullNameSrc, TEXT( "/" )  );
-     lstrcat ( pFullNameSrc, pFD -> cFileName );
+     lstrcpyW ( pFullNameSrc, oldDir );
+     lstrcatW ( pFullNameSrc, L"/"  );
+     lstrcatW ( pFullNameSrc, pFD -> cFileName );
 
-     lstrcpy ( pFullNameDst, newDir );
-     lstrcat (  pFullNameDst, TEXT( "/" )  );
-     lstrcat ( pFullNameDst, pFD -> cFileName );
+     lstrcpyW ( pFullNameDst, newDir );
+     lstrcatW ( pFullNameDst, L"/"  );
+     lstrcatW ( pFullNameDst, pFD -> cFileName );
 
      if ( pFD -> dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY ) {
 
@@ -1044,8 +1044,8 @@ retry:
    
      } else {
 retry_1:   
-      retVal = MoveFileEx (pFullNameSrc, pFullNameDst,
-                           MOVEFILE_REPLACE_EXISTING | MOVEFILE_COPY_ALLOWED);
+      retVal = MoveFileExW (pFullNameSrc, pFullNameDst,
+                            MOVEFILE_REPLACE_EXISTING | MOVEFILE_COPY_ALLOWED);
       if (! retVal) {
       
        if ( _response_dir_proc != NULL ) {
@@ -1082,7 +1082,7 @@ retry_1:
 
     }  /* end if */
 
-    fFind = FindNextFile ( hFindFile, pFD );
+    fFind = FindNextFileW ( hFindFile, pFD );
 
    }  /* end while */
 
@@ -1099,7 +1099,7 @@ retry_1:
 
  if ( retVal ) {
 retry_2:  
-  retVal = RemoveDirectory ( oldDir );
+  retVal = RemoveDirectoryW ( oldDir );
 
   if ( !retVal ) {
   
@@ -1134,66 +1134,66 @@ retry_2:
 /* Returns  : TRUE on success, FALSE otherwise                              */
 /******************************************************************************/
 /***/
-BOOL CopyDirectory ( LPCTSTR dirSrc, LPCTSTR dirDst ) {
+BOOL CopyDirectory ( LPCWSTR dirSrc, LPCWSTR dirDst ) {
 
- PWIN32_FIND_DATA    pFD = NULL;
- LPTSTR              pName = NULL;
- LPTSTR              pFullNameSrc = NULL;
- LPTSTR              pFullNameDst = NULL;
- HANDLE              hFindFile = INVALID_HANDLE_VALUE;
- BOOL                fFind;
- BOOL                retVal = FALSE;
- DIR_RESPONSE        response;
+ PWIN32_FIND_DATAW    pFD = NULL;
+ LPWSTR               pName = NULL;
+ LPWSTR               pFullNameSrc = NULL;
+ LPWSTR               pFullNameDst = NULL;
+ HANDLE               hFindFile = INVALID_HANDLE_VALUE;
+ BOOL                 fFind;
+ BOOL                 retVal = FALSE;
+ DIR_RESPONSE         response;
 
- retVal = CreateDirectory ( dirDst, NULL );
+ retVal = CreateDirectoryW ( dirDst, NULL );
 
  if (   retVal || (  !retVal && GetLastError () == ERROR_ALREADY_EXISTS  )   ) {
 
-  if (   (  pFD = ( PWIN32_FIND_DATA )HeapAlloc (
-                                       hHeap, 0, sizeof ( WIN32_FIND_DATA )
+  if (   (  pFD = ( PWIN32_FIND_DATAW )HeapAlloc (
+                                       hHeap, 0, sizeof ( WIN32_FIND_DATAW )
                                       )
          ) != NULL &&
-         (  pName = ( LPTSTR )HeapAlloc (
-                               hHeap, 0, lstrlen ( dirSrc ) + WILD_CARD_LEN +
-                               sizeof (  TEXT( '\x00' )  )
+         (  pName = ( LPWSTR )HeapAlloc (
+                               hHeap, 0, lstrlenW ( dirSrc ) + WILD_CARD_LEN +
+                               sizeof (  L'\x00'  )
                               )
          ) != NULL
   ) {
 
-   lstrcpy ( pName, dirSrc    );
-   lstrcat ( pName, WILD_CARD );
+   lstrcpyW ( pName, dirSrc    );
+   lstrcatW ( pName, WILD_CARD );
 
    retVal = TRUE;
-   fFind  = (  hFindFile = FindFirstFile ( pName, pFD )  ) != INVALID_HANDLE_VALUE;
+   fFind  = (  hFindFile = FindFirstFileW ( pName, pFD )  ) != INVALID_HANDLE_VALUE;
 
    while ( fFind ) {
   
-    if (  pFD -> cFileName[ 0 ] != TEXT( '.' ) ||
-          pFD -> cFileName[ 0 ] != TEXT( '.' ) &&
-          pFD -> cFileName[ 1 ] != TEXT( '.' )
+    if (  pFD -> cFileName[ 0 ] != L'.' ||
+          pFD -> cFileName[ 0 ] != L'.' &&
+          pFD -> cFileName[ 1 ] != L'.'
     ) {
   
-     if (   ( pFullNameSrc = ( LPTSTR )HeapAlloc (
+     if (   ( pFullNameSrc = ( LPWSTR )HeapAlloc (
                                         hHeap, 0,
-                                        lstrlen ( dirSrc ) + lstrlen ( pFD -> cFileName ) +
-                                        sizeof (  TEXT( '/' )  ) + sizeof (  TEXT( '\x00' )  )
+                                        lstrlenW ( dirSrc ) + lstrlenW ( pFD -> cFileName ) +
+                                        sizeof (  L'/'  ) + sizeof (  L'\x00'  )
                                        )
             ) == NULL ||
-            ( pFullNameDst = ( LPTSTR )HeapAlloc (
+            ( pFullNameDst = ( LPWSTR )HeapAlloc (
                                         hHeap, 0,
-                                        lstrlen ( dirDst ) + lstrlen ( pFD -> cFileName ) +
-                                        sizeof (  TEXT( '/' )  ) + sizeof (  TEXT( '\x00' )  )
+                                        lstrlenW ( dirDst ) + lstrlenW ( pFD -> cFileName ) +
+                                        sizeof (  L'/'  ) + sizeof (  L'\x00'  )
                                        )
             ) == NULL
      ) break;
   
-     lstrcpy ( pFullNameSrc, dirSrc );
-     lstrcat (  pFullNameSrc, TEXT( "/" )  );
-     lstrcat ( pFullNameSrc, pFD -> cFileName );
+     lstrcpyW ( pFullNameSrc, dirSrc );
+     lstrcatW ( pFullNameSrc, L"/"  );
+     lstrcatW ( pFullNameSrc, pFD -> cFileName );
 
-     lstrcpy ( pFullNameDst, dirDst );
-     lstrcat (  pFullNameDst, TEXT( "/" )  );
-     lstrcat ( pFullNameDst, pFD -> cFileName );
+     lstrcpyW ( pFullNameDst, dirDst );
+     lstrcatW ( pFullNameDst, L"/"  );
+     lstrcatW ( pFullNameDst, pFD -> cFileName );
 
      if ( pFD -> dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY ) {
 
@@ -1202,7 +1202,7 @@ BOOL CopyDirectory ( LPCTSTR dirSrc, LPCTSTR dirDst ) {
    
      } else {
 retry:   
-      retVal = CopyFile ( pFullNameSrc, pFullNameDst, FALSE );
+      retVal = CopyFileW ( pFullNameSrc, pFullNameDst, FALSE );
       if ( ! retVal ) {
       
        if ( _response_dir_proc != NULL ) {
@@ -1239,7 +1239,7 @@ retry:
 
     }  /* end if */
 
-    fFind = FindNextFile ( hFindFile, pFD );
+    fFind = FindNextFileW ( hFindFile, pFD );
 
    }  /* end while */
 

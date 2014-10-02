@@ -120,7 +120,12 @@ Standard_Integer StepFile_Read
 
   checkread->Clear();
   recfile_modeprint ( (modepr > 0 ? modepr-1 : 0) );
+#ifdef _WIN32
+  TCollection_ExtendedString aFileNameW(ficnom, Standard_True);
+  FILE* newin = stepread_setinput((char*)aFileNameW.ToExtString());
+#else
   FILE* newin = stepread_setinput(ficnom);
+#endif
   if (!newin) return -1;
 #ifdef CHRONOMESURE
   Standard_Integer n ; 

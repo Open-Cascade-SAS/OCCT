@@ -231,10 +231,10 @@ TCollection_AsciiString::TCollection_AsciiString(const TCollection_ExtendedStrin
     mystring[mylength] = '\0';
   }
   else {
-    Standard_SStream amsg;
-    amsg << "It's not an ascii string : " ;
-    astring.Print(amsg);
-    Standard_OutOfRange::Raise(amsg);
+    // create UTF-8 string
+    mylength = astring.LengthOfCString();
+    mystring = Allocate(mylength+1);
+    astring.ToUTF8CString(mystring);
   }
 }
 

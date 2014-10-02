@@ -49,48 +49,6 @@
 #define TCL_USES_UTF8
 #endif
 
-//
-// Auxiliary tool to convert strings in command arguments from UTF-8 
-// (Tcl internal encoding since Tcl 8.1) to system local encoding, 
-// normally extended Ascii as expected by OCC commands
-//
-class TclUTFToLocalStringSentry {
- public:
-
-#ifdef TCL_USES_UTF8
-  TclUTFToLocalStringSentry (int argc, const char **argv) :
-    nb(0),
-    TclArgv(new Tcl_DString[argc]),
-    Argv(new char*[argc])
-  {
-    for (; nb < argc; nb++ ) {
-      Tcl_UtfToExternalDString ( NULL, argv[nb], -1, &TclArgv[nb] );
-      Argv[nb] = Tcl_DStringValue ( &TclArgv[nb] );
-    }
-  }
-  
-  ~TclUTFToLocalStringSentry () 
-  {
-    delete[] Argv;
-    while ( nb-- >0 ) Tcl_DStringFree ( &TclArgv[nb] );
-    delete[] TclArgv;
-  }
-#else
-  TclUTFToLocalStringSentry (int, const char **argv) : 
-	   nb(0),
-       TclArgv(NULL),
-	   Argv((char**)argv)
-  {}
-#endif
-
-  const char **GetArgv () const { return (const char **)Argv; }
-  
- private:
-  int nb;
-  Tcl_DString *TclArgv;
-  char **Argv;
-};
-
 // logging helpers
 namespace {
   void dumpArgs (Standard_OStream& os, int argc, const char *argv[])
@@ -217,10 +175,9 @@ static Standard_Integer CommandCmd
     // get exception if control-break has been pressed 
     OSD::ControlBreak();
 
-    // OCC63: Convert strings from UTF-8 to local encoding, normally expected by OCC commands
-    TclUTFToLocalStringSentry anArgs ( argc, (const char**)argv );
+    // OCC680: Transfer UTF-8 directly to OCC commands without locale usage
       
-    Standard_Integer fres = aCallback->Invoke ( di, argc, anArgs.GetArgv() );
+    Standard_Integer fres = aCallback->Invoke ( di, argc, argv /*anArgs.GetArgv()*/ );
     if (fres != 0) 
       code = TCL_ERROR;
   }

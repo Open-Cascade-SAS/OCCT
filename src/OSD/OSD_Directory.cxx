@@ -85,6 +85,7 @@ TCollection_AsciiString aString (name);
 #include <OSD_Directory.hxx>
 #include <OSD_Protection.hxx>
 #include <Standard_ProgramError.hxx>
+#include <TCollection_ExtendedString.hxx>
 
 #include <OSD_WNT_1.hxx>
 
@@ -122,8 +123,8 @@ void OSD_Directory :: Build (const OSD_Protection& Protect ) {
   Standard_ProgramError :: Raise (
                             TEXT( "OSD_Directory :: Build (): incorrect call - no directory name" )
                            );
-
- if (  Exists () || CreateDirectory ( dirName.ToCString (), NULL )  )
+ TCollection_ExtendedString dirNameW(dirName);
+ if (  Exists () || CreateDirectoryW ( (const wchar_t*) dirNameW.ToExtString (), NULL )  )
 
   SetProtection ( Protect );
 

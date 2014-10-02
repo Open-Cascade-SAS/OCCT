@@ -41,7 +41,12 @@ is
     Create( astring : CString; isMultiByte : Boolean = Standard_False)
             returns ExtendedString from TCollection
             raises NullObject;
-    ---Purpose: Creation by converting a CString to an extended string. 
+    ---Purpose: Creation by converting a CString to an extended
+    --          string.  If <isMultiByte> is true then the string is
+    --          treated as having UTF-8 coding.  If it is not a UTF-8
+    --          then <isMultiByte> is ignored and each character is
+    --          copied to ExtCharacter.
+    
 	
     Create( astring : ExtString)
             returns ExtendedString from TCollection
@@ -73,7 +78,9 @@ is
 
     Create( astring : AsciiString from TCollection)
             returns ExtendedString from TCollection;
-    ---Purpose: Creation by converting a normal Ascii string to an extended string. 
+    ---Purpose: Creation by converting an Ascii string to an extended
+    --          string. The string is treated as having UTF-8 coding.
+    --          If it is not a UTF-8 then each character is copied to ExtCharacter.
 	
    AssignCat (me : out ; other : ExtendedString from TCollection)
    is static;

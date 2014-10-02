@@ -30,7 +30,6 @@
 #include <PCDM_ReadWriter.hxx>
 #include <Resource_Manager.hxx>
 #include <Standard_ErrorHandler.hxx>
-#include <UTL.hxx>
 #include <PCDM.hxx>
 #include <Storage_HSeqOfRoot.hxx>
 #include <locale.h>
@@ -38,7 +37,9 @@
 void PCDM_RetrievalDriver::RaiseIfUnknownTypes(const Handle(Storage_Schema)& aSchema, const TCollection_ExtendedString& aFileName) {
 
   PCDM_BaseDriverPointer theFileDriver;
-  if(PCDM::FileDriverType(TCollection_AsciiString(UTL::CString(aFileName)), theFileDriver) == PCDM_TOFD_Unknown) return;
+  TCollection_AsciiString aFileNameU(aFileName);
+  if(PCDM::FileDriverType(aFileNameU, theFileDriver) == PCDM_TOFD_Unknown)
+    return;
   
   PCDM_ReadWriter::Open(*theFileDriver,aFileName,Storage_VSRead);
   
@@ -94,7 +95,8 @@ void PCDM_RetrievalDriver::Read(const TCollection_ExtendedString& theFileName,
   }
 
   PCDM_BaseDriverPointer theFileDriver;
-  if(PCDM::FileDriverType(TCollection_AsciiString(UTL::CString(theFileName)), theFileDriver) == PCDM_TOFD_Unknown) {
+  TCollection_AsciiString aFileNameU(theFileName);
+  if(PCDM::FileDriverType(aFileNameU, theFileDriver) == PCDM_TOFD_Unknown) {
     myReaderStatus = PCDM_RS_UnknownFileDriver;
     return;
   }

@@ -119,7 +119,7 @@ static TCollection_AsciiString AbsolutePath(
 }
 
 static TCollection_AsciiString GetDirFromFile(const TCollection_ExtendedString& aFileName) {
-  TCollection_AsciiString theCFile=UTL::CString(aFileName);
+  TCollection_AsciiString theCFile(aFileName);
   TCollection_AsciiString theDirectory;
   Standard_Integer i=theCFile.SearchFromEnd("/");
 #ifdef WNT    
@@ -172,13 +172,13 @@ void PCDM_ReadWriter_1::WriteReferences(const Handle(Storage_Data)& aData, const
       ligne += TCollection_ExtendedString(it.Document()->Modifications());
       ligne += " ";
 
-      TCollection_AsciiString thePath=UTL::CString(it.Document()->MetaData()->FileName());
+      TCollection_AsciiString thePath(it.Document()->MetaData()->FileName());
       TCollection_AsciiString theRelativePath;
       if(!theAbsoluteDirectory.IsEmpty()) {
 	theRelativePath=OSD_Path::RelativePath(theAbsoluteDirectory,thePath);
 	if(!theRelativePath.IsEmpty()) thePath=theRelativePath;
       }
-      ligne +=  UTL::ExtendedString(thePath);
+      ligne +=  TCollection_ExtendedString(thePath);
       UTL::AddToUserInfo(aData,ligne);
     }
     aData->AddToUserInfo(END_REF);
@@ -226,7 +226,9 @@ Standard_Integer PCDM_ReadWriter_1::ReadReferenceCounter(const TCollection_Exten
   static Standard_Integer i ;
 
   PCDM_BaseDriverPointer theFileDriver;
-  if(PCDM::FileDriverType(TCollection_AsciiString(UTL::CString(aFileName)), theFileDriver) == PCDM_TOFD_Unknown) return theReferencesCounter;
+  TCollection_AsciiString aFileNameU(aFileName);
+  if(PCDM::FileDriverType(aFileNameU, theFileDriver) == PCDM_TOFD_Unknown)
+    return theReferencesCounter;
   
   static Standard_Boolean theFileIsOpen ;
   theFileIsOpen=Standard_False;
@@ -290,7 +292,7 @@ void PCDM_ReadWriter_1::ReadReferences(const TCollection_ExtendedString& aFileNa
       theFileName=theRest.Split(pos2);
       theDocumentVersion=UTL::IntegerValue(theRest);
       
-      TCollection_AsciiString thePath=UTL::CString(theFileName);
+      TCollection_AsciiString thePath(theFileName);
       TCollection_AsciiString theAbsolutePath;
       if(!theAbsoluteDirectory.IsEmpty()) {
 	theAbsolutePath=AbsolutePath(theAbsoluteDirectory,thePath);
@@ -302,7 +304,8 @@ void PCDM_ReadWriter_1::ReadReferences(const TCollection_ExtendedString& aFileNa
 	aMsg = aMsg.Cat("reference found; ReferenceIdentifier:  ").Cat(theReferenceIdentifier).Cat("; File:").Cat(thePath).Cat(", version:").Cat(theDocumentVersion).Cat("\0");
 	theMsgDriver->Write(aMsg.ToExtString());
       }
-      theReferences.Append(PCDM_Reference (theReferenceIdentifier,UTL::ExtendedString(thePath),theDocumentVersion));
+      TCollection_ExtendedString aPathW(thePath);
+      theReferences.Append(PCDM_Reference (theReferenceIdentifier,aPathW,theDocumentVersion));
     
     }
   }
@@ -333,7 +336,9 @@ void PCDM_ReadWriter_1::ReadUserInfo(const TCollection_ExtendedString& aFileName
 
   static Standard_Integer i ;
   PCDM_BaseDriverPointer theFileDriver;
-  if(PCDM::FileDriverType(TCollection_AsciiString(UTL::CString(aFileName)), theFileDriver) == PCDM_TOFD_Unknown) return;
+  TCollection_AsciiString aFileNameU(aFileName);
+  if(PCDM::FileDriverType(aFileNameU, theFileDriver) == PCDM_TOFD_Unknown)
+    return;
 
   PCDM_ReadWriter::Open(*theFileDriver,aFileName,Storage_VSRead);
   Handle(Storage_Schema) s = new Storage_Schema;
@@ -349,7 +354,8 @@ void PCDM_ReadWriter_1::ReadUserInfo(const TCollection_ExtendedString& aFileName
   }
   if(debut != 0) {
     for (i=debut+1 ; i<fin; i++) {
-      theUserInfo.Append(UTL::ExtendedString(refUserInfo(i)));
+      TCollection_ExtendedString aInfoW(refUserInfo(i));
+      theUserInfo.Append(aInfoW);
     }
   }
   theFileDriver->Close();
@@ -367,7 +373,9 @@ Standard_Integer PCDM_ReadWriter_1::ReadDocumentVersion(const TCollection_Extend
   theVersion=-1;
 
   PCDM_BaseDriverPointer theFileDriver;
-  if(PCDM::FileDriverType(TCollection_AsciiString(UTL::CString(aFileName)), theFileDriver) == PCDM_TOFD_Unknown) return theVersion;
+  TCollection_AsciiString aFileNameU(aFileName);
+  if(PCDM::FileDriverType(aFileNameU, theFileDriver) == PCDM_TOFD_Unknown)
+    return theVersion;
 
   static Standard_Boolean theFileIsOpen ;
   theFileIsOpen =Standard_False;

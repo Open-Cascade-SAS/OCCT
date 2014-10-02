@@ -96,6 +96,17 @@ is
 	 
     PropagateDocumentVersion(me: mutable; theVersion : Integer from Standard) 
     	is virtual protected; 
+
+    CheckDocumentVersion(me: mutable; 
+                     theFileVersion : Integer from Standard;
+                     theCurVersion : Integer from Standard) 
+        returns Boolean from Standard
+    	is virtual protected; 
+        ---Purpose: Check a file version(in which file was written) with a current version. 
+        --          Redefining this method is a chance for application to read files
+        --          written by newer applications.
+        --          The default implementation: if the version of the file is greater than the
+        --          current or lesser than 2, then return false, else true
 	
     WriteMessage(me: mutable; theMessage : ExtendedString from TCollection)
         is protected;
