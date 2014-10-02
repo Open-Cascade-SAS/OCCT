@@ -98,6 +98,8 @@ is
       BadOrientation,
       BadOrientationOfSubshape,
       
+      InvalidPolygonOnTriangulation,
+
       InvalidToleranceValue,
 
       -- for exception

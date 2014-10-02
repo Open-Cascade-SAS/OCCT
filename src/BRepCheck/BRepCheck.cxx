@@ -175,6 +175,13 @@ void BRepCheck::Print(const BRepCheck_Status stat,
   case BRepCheck_CheckFail:
     OS << "BRepCheck_CheckFail\n";
     break;
+  case BRepCheck_InvalidPolygonOnTriangulation:
+    OS << "BRepCheck_InvalidPolygonOnTriangulation\n";
+    break;
+  case BRepCheck_InvalidToleranceValue:
+    OS << "BRepCheck_InvalidToleranceValue\n";
+    break;
+
   default:
     break;
   }

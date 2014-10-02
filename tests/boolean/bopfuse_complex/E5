@@ -2,6 +2,10 @@ puts "TODO DEBUG_OCC24121 Debian60-64: Process killed by CPU limit"
 puts "TODO DEBUG_OCC24121 Debian60-64: TEST INCOMPLETE"
 
 restore [locate_data_file OCC62.brep] sh
+
+#Delete invalid (in terms of bug#25109) triangulation
+tclean sh
+
 explode sh
 
 bop sh_1 sh_3

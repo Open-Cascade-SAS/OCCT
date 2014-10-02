@@ -1500,6 +1500,17 @@ BRepCheck_Status BRepCheck_Wire::SelfIntersect(const TopoDS_Face& F,
   //
   return (BRepCheck_NoError);
 }
+
+//=======================================================================
+//function :   SetStatus
+//purpose  : 
+//=======================================================================
+
+void BRepCheck_Wire::SetStatus(const BRepCheck_Status theStatus)
+{
+    BRepCheck::Add(myMap(myShape),theStatus);
+}
+
 //=======================================================================
 //function : GeometricControls
 //purpose  : 

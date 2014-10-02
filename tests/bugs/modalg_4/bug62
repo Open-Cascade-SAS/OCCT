@@ -4,12 +4,8 @@ if {[array get env os_type] != ""} {
   set os $env(os_type)
 }
 
-if {[string compare $os "MacOS"] == 0} {
-  #puts "TODO #23828 MacOS: Tcl Exception: sh is not a topological shape!!!"
-  #puts "TODO #23828 MacOS: TEST INCOMPLETE"
-} else {
-  #puts "TODO OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty_"
-  puts "TODO ?OCC12345 ALL: Error : The square of result shape is"
+if {[string compare $os "MacOS"] != 0} {
+  puts "TODO OCC25286 ALL: Error : The square of result shape is"
 }
 
 puts "================"
@@ -19,6 +15,9 @@ puts "================"
 
 cpulimit 1400
 restore [locate_data_file OCC62.brep] sh 
+
+#Delete invalid (in terms of bug#25109) triangulation
+tclean sh
 
 explode sh 
 checkshape sh

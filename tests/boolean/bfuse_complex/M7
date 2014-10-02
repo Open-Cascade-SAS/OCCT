@@ -4,6 +4,9 @@
 restore [locate_data_file CTO904_cts20176a.rle] a 
 restore [locate_data_file cts20176b.rle] b
 
+#Delete invalid (in terms of bug#25109) triangulation
+tclean a
+
 bfuse result a b
 
 set square 70265.2

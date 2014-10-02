@@ -494,6 +494,15 @@ void BRepCheck_Face::SetUnorientable()
   BRepCheck::Add(myMap(myShape),BRepCheck_UnorientableShape);
 }
 
+//=======================================================================
+//function :   SetStatus
+//purpose  : 
+//=======================================================================
+
+void BRepCheck_Face::SetStatus(const BRepCheck_Status theStatus)
+{
+    BRepCheck::Add(myMap(myShape),theStatus);
+}
 
 //=======================================================================
 //function : IsUnorientable

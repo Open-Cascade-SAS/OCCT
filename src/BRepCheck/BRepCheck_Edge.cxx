@@ -16,6 +16,10 @@
 
 #include <BRepCheck_Edge.ixx>
 #include <TColStd_Array1OfTransient.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+
+#include <BRepAdaptor_Curve.hxx>
+#include <Bnd_Box.hxx>
 
 #include <BRepCheck_ListOfStatus.hxx>
 #include <BRepCheck_ListIteratorOfListOfStatus.hxx>
@@ -28,6 +32,8 @@
 #include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
 #include <BRep_GCurve.hxx>
 #include <BRep_CurveOnSurface.hxx>
+
+#include <BRep_PolygonOnTriangulation.hxx>
 
 #include <BRep_Tool.hxx>
 
@@ -57,6 +63,8 @@
 #include <TopoDS_Face.hxx>
 #include <Precision.hxx>
 
+#include <Poly_PolygonOnTriangulation.hxx>
+#include <Poly_Triangulation.hxx>
 
 //modified by NIZNHY-PKV Thu May 05 09:01:57 2011f
 static 
@@ -83,7 +91,7 @@ static
 //				 const Standard_Boolean);
 //modified by NIZNHY-PKV Thu May 05 09:02:01 2011t
 
-#define NCONTROL 23
+static const Standard_Integer NCONTROL=23;
 
 //=======================================================================
 //function : BRepCheck_Edge
@@ -236,7 +244,13 @@ void BRepCheck_Edge::InContext(const TopoDS_Shape& S)
     return;
   }
   
-  switch (styp) {
+  switch (styp) 
+  {
+  case TopAbs_WIRE:
+    {
+    }
+    break;
+
   case TopAbs_FACE:
     if (!myCref.IsNull()) {
       
@@ -273,8 +287,8 @@ void BRepCheck_Edge::InContext(const TopoDS_Shape& S)
           // gka OCC
 //  Modified by skv - Tue Apr 27 11:50:35 2004 Begin
 // 	  if (SameRange && (fabs(f-First) > Precision::PConfusion() || fabs(l-Last)> Precision::PConfusion())) { //f != First || l != Last)) { gka OCC
-	  if (fabs(f-First) > Precision::PConfusion() ||
-	      fabs(l-Last)  > Precision::PConfusion()) {
+	  if (Abs(f-First) > Precision::PConfusion() ||
+	      Abs(l-Last)  > Precision::PConfusion()) {
 	    BRepCheck::Add(lst,BRepCheck_InvalidSameRangeFlag);
 	    BRepCheck::Add(lst,BRepCheck_InvalidSameParameterFlag);
 // 	    if (SameParameter) {
@@ -449,7 +463,14 @@ Standard_Boolean BRepCheck_Edge::GeometricControls() const
   return myGctrl;
 }
 
-
+//=======================================================================
+//function :   SetStatus
+//purpose  : 
+//=======================================================================
+void BRepCheck_Edge::SetStatus(const BRepCheck_Status theStatus)
+{
+    BRepCheck::Add(myMap(myShape),theStatus);
+}
 
 
 //=======================================================================
@@ -547,6 +568,114 @@ Standard_Real BRepCheck_Edge::Tolerance()
   return sqrt(tolCal)*1.05;
 }
 
+
+//=======================================================================
+//function : CheckPolygonOnTriangulation
+//purpose  : 
+//=======================================================================
+BRepCheck_Status BRepCheck_Edge::
+              CheckPolygonOnTriangulation(const TopoDS_Edge& theEdge)
+{
+  BRep_ListOfCurveRepresentation& aListOfCR = 
+          (*((Handle(BRep_TEdge)*) &theEdge.TShape()))->ChangeCurves();
+  BRep_ListIteratorOfListOfCurveRepresentation anITCR(aListOfCR);
+
+  BRepAdaptor_Curve aBC;
+  aBC.Initialize(theEdge);
+
+  if(!aBC.Is3DCurve())
+    return BRepCheck_NoError;
+
+  while (anITCR.More())
+  {
+    if(!anITCR.Value()->IsPolygonOnTriangulation())
+    {
+      anITCR.Next();
+      continue;
+    }
+
+    const Handle(BRep_CurveRepresentation) aCR = anITCR.Value();
+    const Handle(BRep_PolygonOnTriangulation)& aPT = 
+              Handle(BRep_PolygonOnTriangulation)::DownCast(aCR);
+
+    const TopLoc_Location aLL = theEdge.Location() * aPT->Location();
+
+    const Handle(Poly_Triangulation) aTriang =  aCR->Triangulation();
+    const Handle(Poly_PolygonOnTriangulation) aPOnTriag = 
+                                    aCR->IsPolygonOnClosedTriangulation() ? 
+                                    aCR->PolygonOnTriangulation2() : 
+                                    aCR->PolygonOnTriangulation();
+    const TColStd_Array1OfInteger& anIndices = aPOnTriag->Nodes();
+    const TColgp_Array1OfPnt& Nodes = aTriang->Nodes();
+    const Standard_Integer aNbNodes = anIndices.Length();
+
+    const Standard_Real aTol = aPOnTriag->Deflection() +
+                                  BRep_Tool::Tolerance(theEdge);
+
+    if(aPOnTriag->HasParameters())
+    {
+      for(Standard_Integer i = aPOnTriag->Parameters()->Lower();
+                            i <= aPOnTriag->Parameters()->Upper(); i++)
+      {
+        const Standard_Real aParam = aPOnTriag->Parameters()->Value(i);
+        const gp_Pnt  aPE(aBC.Value(aParam)), 
+                      aPT(Nodes(anIndices(i)).Transformed(aLL));
+
+        const Standard_Real aSQDist = aPE.SquareDistance(aPT);
+        if(aSQDist > aTol*aTol)
+        {
+          return BRepCheck_InvalidPolygonOnTriangulation;
+        }
+      }
+    }
+    else
+    {
+      //If aPOnTriag does not have any parameters we will check if it
+      //inscribes into Bounding box, which is built on the edge triangulation.
+
+      Bnd_Box aB;
+
+      for (Standard_Integer i = 1; i <= aNbNodes; i++)
+      {
+        if (aLL.IsIdentity())
+          aB.Add(Nodes(anIndices(i)));
+        else
+          aB.Add(Nodes(anIndices(i)).Transformed(aLL));
+      }
+
+      aB.Enlarge(aTol);
+
+      Standard_Real aFP = aBC.FirstParameter();
+      Standard_Real aLP = aBC.LastParameter();
+
+      const Standard_Real aStep = (aLP - aFP)/IntToReal(NCONTROL);
+      gp_Pnt aP;
+      Standard_Real aPar = aFP;
+
+      for(Standard_Integer i = 1; i < NCONTROL; i ++)
+      {
+        aBC.D0(aPar, aP);
+        if(aB.IsOut(aP))
+        {
+          return BRepCheck_InvalidPolygonOnTriangulation;
+        }
+
+        aPar += aStep;
+      }
+
+      aBC.D0(aLP, aP);
+      if(aB.IsOut(aP))
+      {
+        return BRepCheck_InvalidPolygonOnTriangulation;
+      }
+    }
+
+    anITCR.Next();
+  }
+
+  return BRepCheck_NoError;
+}
+
 //=======================================================================
 //function : Validate
 //purpose  : 
@@ -564,12 +693,13 @@ Standard_Boolean Validate(const Adaptor3d_Curve& CRef,
   Error = 0.;
   First = CRef.FirstParameter();
   Last  = CRef.LastParameter();
-  //
+  
   aPC=Precision::PConfusion();
   proj = (!SameParameter || 
-	  fabs(Other.FirstParameter()-First) > aPC || 
-	  fabs( Other.LastParameter()-Last) > aPC);
-  if (!proj) {
+	  Abs(Other.FirstParameter()-First) > aPC || 
+	  Abs( Other.LastParameter()-Last) > aPC);
+  if (!proj)
+  {
     Standard_Integer i;
     Standard_Real Tol2, prm, dD;
     gp_Pnt pref, pother;
@@ -581,7 +711,7 @@ Standard_Boolean Validate(const Adaptor3d_Curve& CRef,
     //Tol2=Tol*Tol;
     //modified by NIZNHY-PKV Thu May 05 09:06:47 2011t
     
-    for (i = 0; i< NCONTROL; ++i) {
+    for (i = 0; i < NCONTROL; ++i) {
       prm = ((NCONTROL-1-i)*First + i*Last)/(NCONTROL-1);
       pref = CRef.Value(prm);
       pother = Other.Value(prm);
@@ -659,18 +789,6 @@ Standard_Boolean Validate(const Adaptor3d_Curve& CRef,
       }
     }
   }
-  //FINISH :
-/*
-#ifdef DEB
-    if (! Status) {
-      cout << " **** probleme de SameParameter au point :" << endl;
-      cout << "         " << problematic_point.Coord(1) << " " 
-	   << problematic_point.Coord(2) << " " 
-	   << problematic_point.Coord(3) << endl ;
-      cout << "   Erreur detectee :" << Error << " Tolerance :" << Tol << endl;
-    }
-#endif
-*/
 
   return Status ;
   

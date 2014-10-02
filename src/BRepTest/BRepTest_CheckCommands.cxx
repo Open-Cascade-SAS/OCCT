@@ -69,6 +69,11 @@
 
 #include <stdio.h>
 
+//Number of BRepCheck_Statuses in BRepCheck_Status.hxx file
+//(BRepCheck_NoError is not considered, i.e. general status 
+//is smaller by one specified in file)
+static const Standard_Integer NumberOfStatus = 34;
+
 static char* checkfaultyname = NULL;
 Standard_EXPORT void BRepTest_CheckCommands_SetFaultyName(const char* name)
 {
@@ -205,6 +210,7 @@ static void Print(Standard_OStream& OS,
       OS << "On Shape " << Name << " :\n";
 	
       for (;itl.More(); itl.Next()) {
+        if (itl.Value() != BRepCheck_NoError)
 	BRepCheck::Print(itl.Value(),OS);
       }
     }
@@ -216,6 +222,10 @@ static void Print(Standard_OStream& OS,
 
   switch (styp) {
   case TopAbs_EDGE:
+    PrintSub(OS,Ana,S,TopAbs_VERTEX);
+    break;
+  case TopAbs_WIRE:
+    PrintSub(OS,Ana,S,TopAbs_EDGE);
     PrintSub(OS,Ana,S,TopAbs_VERTEX);
     break;
   case TopAbs_FACE:
@@ -473,74 +483,14 @@ void ContextualDump(Draw_Interpretor& theCommands,
 static void FillProblems(const BRepCheck_Status stat,
                          Handle(TColStd_HArray1OfInteger)& NbProblems)
 {
-  switch (stat) {
-  case BRepCheck_InvalidPointOnCurve:
-    NbProblems->SetValue(1,NbProblems->Value(1)+1); break;
-  case BRepCheck_InvalidPointOnCurveOnSurface:
-    NbProblems->SetValue(2,NbProblems->Value(2)+1); break;
-  case BRepCheck_InvalidPointOnSurface:
-    NbProblems->SetValue(3,NbProblems->Value(3)+1); break;
-  case BRepCheck_No3DCurve:
-    NbProblems->SetValue(4,NbProblems->Value(4)+1); break;
-  case BRepCheck_Multiple3DCurve:
-    NbProblems->SetValue(5,NbProblems->Value(5)+1); break;
-  case BRepCheck_Invalid3DCurve:
-    NbProblems->SetValue(6,NbProblems->Value(6)+1); break;
-  case BRepCheck_NoCurveOnSurface:
-    NbProblems->SetValue(7,NbProblems->Value(7)+1); break;
-  case BRepCheck_InvalidCurveOnSurface:
-    NbProblems->SetValue(8,NbProblems->Value(8)+1); break;
-  case BRepCheck_InvalidCurveOnClosedSurface:
-    NbProblems->SetValue(9,NbProblems->Value(9)+1); break;
-  case BRepCheck_InvalidSameRangeFlag:
-    NbProblems->SetValue(10,NbProblems->Value(10)+1); break;
-  case BRepCheck_InvalidSameParameterFlag:
-    NbProblems->SetValue(11,NbProblems->Value(11)+1); break;
-  case BRepCheck_InvalidDegeneratedFlag:
-    NbProblems->SetValue(12,NbProblems->Value(12)+1); break;
-  case BRepCheck_FreeEdge:
-    NbProblems->SetValue(13,NbProblems->Value(13)+1); break;
-  case BRepCheck_InvalidMultiConnexity:
-    NbProblems->SetValue(14,NbProblems->Value(14)+1); break;
-  case BRepCheck_InvalidRange:
-    NbProblems->SetValue(15,NbProblems->Value(15)+1); break;
-  case BRepCheck_EmptyWire:
-    NbProblems->SetValue(16,NbProblems->Value(16)+1); break;
-  case BRepCheck_RedundantEdge:
-    NbProblems->SetValue(17,NbProblems->Value(17)+1); break;
-  case BRepCheck_SelfIntersectingWire:
-    NbProblems->SetValue(18,NbProblems->Value(18)+1); break;
-  case BRepCheck_NoSurface:
-    NbProblems->SetValue(19,NbProblems->Value(19)+1); break;
-  case BRepCheck_InvalidWire:
-    NbProblems->SetValue(20,NbProblems->Value(20)+1); break;
-  case BRepCheck_RedundantWire:
-    NbProblems->SetValue(21,NbProblems->Value(21)+1); break;
-  case BRepCheck_IntersectingWires:
-    NbProblems->SetValue(22,NbProblems->Value(22)+1); break;
-  case BRepCheck_InvalidImbricationOfWires:
-    NbProblems->SetValue(23,NbProblems->Value(23)+1); break;
-  case BRepCheck_EmptyShell:
-    NbProblems->SetValue(24,NbProblems->Value(24)+1); break;
-  case BRepCheck_RedundantFace:
-    NbProblems->SetValue(25,NbProblems->Value(25)+1); break;
-  case BRepCheck_UnorientableShape:
-    NbProblems->SetValue(26,NbProblems->Value(26)+1); break;
-  case BRepCheck_NotClosed:
-    NbProblems->SetValue(27,NbProblems->Value(27)+1); break;
-  case BRepCheck_NotConnected:
-    NbProblems->SetValue(28,NbProblems->Value(28)+1); break;
-  case BRepCheck_SubshapeNotInShape:
-    NbProblems->SetValue(29,NbProblems->Value(29)+1); break;
-  case BRepCheck_BadOrientation:
-    NbProblems->SetValue(30,NbProblems->Value(30)+1); break;
-  case BRepCheck_BadOrientationOfSubshape:
-    NbProblems->SetValue(31,NbProblems->Value(31)+1); break;
-  case BRepCheck_CheckFail:
-    NbProblems->SetValue(32,NbProblems->Value(32)+1); break;
-  default:
-    break;
-  }
+
+  const Standard_Integer anID = static_cast<Standard_Integer> (stat);
+
+  if((NbProblems->Upper() < anID) || (NbProblems->Lower() > anID))
+    return;
+
+  NbProblems->SetValue(anID, NbProblems->Value(anID)+1);
+
 }
 
 
@@ -663,114 +613,151 @@ void StructuralDump(Draw_Interpretor& theCommands,
   theCommands<<"  Check                                    Count"<<"\n";
   theCommands<<" ------------------------------------------------"<<"\n";
 
-  Handle(TColStd_HArray1OfInteger) NbProblems = new TColStd_HArray1OfInteger(1,32);
-  for(i=1; i<=32; i++) NbProblems->SetValue(i,0);
+  Handle(TColStd_HArray1OfInteger) NbProblems = new 
+                              TColStd_HArray1OfInteger(1,NumberOfStatus);
+  for(i=1; i<=NumberOfStatus; i++) NbProblems->SetValue(i,0);
   Handle(TopTools_HSequenceOfShape) sl,slv,sle,slw,slf,sls,slo;
   sl = new TopTools_HSequenceOfShape();
   theMap.Clear();
   GetProblemShapes(theAna, theShape, sl, NbProblems);
   theMap.Clear();
   
-  if(NbProblems->Value(1)>0)
-    theCommands<<"  Invalid Point on Curve ................... "<<NbProblems->Value(1)<<"\n";
-    //cout<<"  Invalid Point on Curve ................... "<<NbProblems->Value(1)<<endl;
-  if(NbProblems->Value(2)>0)
-    theCommands<<"  Invalid Point on CurveOnSurface .......... "<<NbProblems->Value(2)<<"\n";
-    //cout<<"  Invalid Point on CurveOnSurface .......... "<<NbProblems->Value(2)<<endl;
-  if(NbProblems->Value(3)>0)
-    theCommands<<"  Invalid Point on Surface ................. "<<NbProblems->Value(3)<<"\n";
-    //cout<<"  Invalid Point on Surface ................. "<<NbProblems->Value(3)<<endl;
-  if(NbProblems->Value(4)>0)
-    theCommands<<"  No 3D Curve .............................. "<<NbProblems->Value(4)<<"\n";
-    //cout<<"  No 3D Curve .............................. "<<NbProblems->Value(4)<<endl;
-  if(NbProblems->Value(5)>0)
-    theCommands<<"  Multiple 3D Curve ........................ "<<NbProblems->Value(5)<<"\n";
-    //cout<<"  Multiple 3D Curve ........................ "<<NbProblems->Value(5)<<endl;
-  if(NbProblems->Value(6)>0)
-    theCommands<<"  Invalid 3D Curve ......................... "<<NbProblems->Value(6)<<"\n";
-    //cout<<"  Invalid 3D Curve ......................... "<<NbProblems->Value(6)<<endl;
-  if(NbProblems->Value(7)>0)
-    theCommands<<"  No Curve on Surface ...................... "<<NbProblems->Value(7)<<"\n";
-    //cout<<"  No Curve on Surface ...................... "<<NbProblems->Value(7)<<endl;
-  if(NbProblems->Value(8)>0)
-    theCommands<<"  Invalid Curve on Surface ................. "<<NbProblems->Value(8)<<"\n";
-    //cout<<"  Invalid Curve on Surface ................. "<<NbProblems->Value(8)<<endl;
-  if(NbProblems->Value(9)>0)
-    theCommands<<"  Invalid Curve on closed Surface .......... "<<NbProblems->Value(9)<<"\n";
-    //cout<<"  Invalid Curve on closed Surface .......... "<<NbProblems->Value(9)<<endl;
-  if(NbProblems->Value(10)>0)
-    theCommands<<"  Invalid SameRange Flag ................... "<<NbProblems->Value(10)<<"\n";
-    //cout<<"  Invalid SameRange Flag ................... "<<NbProblems->Value(10)<<endl;
-  if(NbProblems->Value(11)>0)
-    theCommands<<"  Invalid SameParameter Flag ............... "<<NbProblems->Value(11)<<"\n";
-    //cout<<"  Invalid SameParameter Flag ............... "<<NbProblems->Value(11)<<endl;
-  if(NbProblems->Value(12)>0)
-    theCommands<<"  Invalid Degenerated Flag ................. "<<NbProblems->Value(12)<<"\n";
-    //cout<<"  Invalid Degenerated Flag ................. "<<NbProblems->Value(12)<<endl;
-  if(NbProblems->Value(13)>0)
-    theCommands<<"  Free Edge ................................ "<<NbProblems->Value(13)<<"\n";
-    //cout<<"  Free Edge ................................ "<<NbProblems->Value(13)<<endl;
-  if(NbProblems->Value(14)>0)
-    theCommands<<"  Invalid MultiConnexity ................... "<<NbProblems->Value(14)<<"\n";
-    //cout<<"  Invalid MultiConnexity ................... "<<NbProblems->Value(14)<<endl;
-  if(NbProblems->Value(15)>0)
-    theCommands<<"  Invalid Range ............................ "<<NbProblems->Value(15)<<"\n";
-    //cout<<"  Invalid Range ............................ "<<NbProblems->Value(15)<<endl;
-  if(NbProblems->Value(16)>0)
-    theCommands<<"  Empty Wire ............................... "<<NbProblems->Value(16)<<"\n";
-    //cout<<"  Empty Wire ............................... "<<NbProblems->Value(16)<<endl;
-  if(NbProblems->Value(17)>0)
-    theCommands<<"  Redundant Edge ........................... "<<NbProblems->Value(17)<<"\n";
-    //cout<<"  Redundant Edge ........................... "<<NbProblems->Value(17)<<endl;
-  if(NbProblems->Value(18)>0)
-    theCommands<<"  Self Intersecting Wire ................... "<<NbProblems->Value(18)<<"\n";
-    //cout<<"  Self Intersecting Wire ................... "<<NbProblems->Value(18)<<endl;
-  if(NbProblems->Value(19)>0)
-    theCommands<<"  No Surface ............................... "<<NbProblems->Value(19)<<"\n";
-    //cout<<"  No Surface ............................... "<<NbProblems->Value(19)<<endl;
-  if(NbProblems->Value(20)>0)
-    theCommands<<"  Invalid Wire ............................. "<<NbProblems->Value(20)<<"\n";
-    //cout<<"  Invalid Wire ............................. "<<NbProblems->Value(20)<<endl;
-  if(NbProblems->Value(21)>0)
-    theCommands<<"  Redundant Wire ........................... "<<NbProblems->Value(21)<<"\n";
-    //cout<<"  Redundant Wire ........................... "<<NbProblems->Value(21)<<endl;
-  if(NbProblems->Value(22)>0)
-    theCommands<<"  Intersecting Wires ....................... "<<NbProblems->Value(22)<<"\n";
-    //cout<<"  Intersecting Wires ....................... "<<NbProblems->Value(22)<<endl;
-  if(NbProblems->Value(23)>0)
-    theCommands<<"  Invalid Imbrication of Wires ............. "<<NbProblems->Value(23)<<"\n";
-    //cout<<"  Invalid Imbrication of Wires ............. "<<NbProblems->Value(23)<<endl;
-  if(NbProblems->Value(24)>0)
-    theCommands<<"  Empty Shell .............................. "<<NbProblems->Value(24)<<"\n";
-    //cout<<"  Empty Shell .............................. "<<NbProblems->Value(24)<<endl;
-  if(NbProblems->Value(25)>0)
-    theCommands<<"  Redundant Face ........................... "<<NbProblems->Value(25)<<"\n";
-    //cout<<"  Redundant Face ........................... "<<NbProblems->Value(25)<<endl;
-  if(NbProblems->Value(26)>0)
-    theCommands<<"  Unorientable Shape ....................... "<<NbProblems->Value(26)<<"\n";
-    //cout<<"  Unorientable Shape ....................... "<<NbProblems->Value(26)<<endl;
-  if(NbProblems->Value(27)>0)
-    theCommands<<"  Not Closed ............................... "<<NbProblems->Value(27)<<"\n";
-    //cout<<"  Not Closed ............................... "<<NbProblems->Value(27)<<endl;
-  if(NbProblems->Value(28)>0)
-    theCommands<<"  Not Connected ............................ "<<NbProblems->Value(28)<<"\n";
-    //cout<<"  Not Connected ............................ "<<NbProblems->Value(28)<<endl;
-  if(NbProblems->Value(29)>0)
-    theCommands<<"  Subshape not in Shape .................... "<<NbProblems->Value(29)<<"\n";
-    //cout<<"  Subshape not in Shape .................... "<<NbProblems->Value(29)<<endl;
-  if(NbProblems->Value(30)>0)
-    theCommands<<"  Bad Orientation .......................... "<<NbProblems->Value(30)<<"\n";
-    //cout<<"  Bad Orientation .......................... "<<NbProblems->Value(30)<<endl;
-  if(NbProblems->Value(31)>0)
-    theCommands<<"  Bad Orientation of Subshape .............. "<<NbProblems->Value(31)<<"\n";
-    //cout<<"  Bad Orientation of Subshape .............. "<<NbProblems->Value(31)<<endl;
-  if(NbProblems->Value(32)>0)
-    theCommands<<"  checkshape failure......... .............. "<<NbProblems->Value(32)<<"\n";
-    //cout<<"  checkshape failure......... .............. "<<NbProblems->Value(32)<<endl;
+  Standard_Integer aProblemID = static_cast<Standard_Integer>(BRepCheck_InvalidPointOnCurve);
+  if(NbProblems->Value(aProblemID) > 0)
+    theCommands<<"  Invalid Point on Curve ................... "<<NbProblems->Value(aProblemID)<<"\n";
 
-  //cout<<" ------------------------------------------------"<<endl;
-  //cout<<"*** Shapes with problems : "<<sl->Length()<<endl;
-  //cout<<endl;
+  aProblemID = static_cast<Standard_Integer>(BRepCheck_InvalidPointOnCurveOnSurface);
+  if(NbProblems->Value(aProblemID)>0)
+    theCommands<<"  Invalid Point on CurveOnSurface .......... "<<NbProblems->Value(aProblemID)<<"\n";
+
+  aProblemID = static_cast<Standard_Integer>(BRepCheck_InvalidPointOnSurface);
+  if(NbProblems->Value(aProblemID)>0)
+    theCommands<<"  Invalid Point on Surface ................. "<<NbProblems->Value(aProblemID)<<"\n";
+
+  aProblemID = static_cast<Standard_Integer>(BRepCheck_No3DCurve);
+  if(NbProblems->Value(aProblemID)>0)
+    theCommands<<"  No 3D Curve .............................. "<<NbProblems->Value(aProblemID)<<"\n";
+
+  aProblemID = static_cast<Standard_Integer>(BRepCheck_Multiple3DCurve);
+  if(NbProblems->Value(aProblemID)>0)
+    theCommands<<"  Multiple 3D Curve ........................ "<<NbProblems->Value(aProblemID)<<"\n";
+
+  aProblemID = static_cast<Standard_Integer>(BRepCheck_Invalid3DCurve);
+  if(NbProblems->Value(aProblemID)>0)
+    theCommands<<"  Invalid 3D Curve ......................... "<<NbProblems->Value(aProblemID)<<"\n";
+
+  aProblemID = static_cast<Standard_Integer>(BRepCheck_NoCurveOnSurface);
+  if(NbProblems->Value(aProblemID)>0)
+    theCommands<<"  No Curve on Surface ...................... "<<NbProblems->Value(aProblemID)<<"\n";
+
+  aProblemID = static_cast<Standard_Integer>(BRepCheck_InvalidCurveOnSurface);
+  if(NbProblems->Value(aProblemID)>0)
+    theCommands<<"  Invalid Curve on Surface ................. "<<NbProblems->Value(aProblemID)<<"\n";
+
+  aProblemID = static_cast<Standard_Integer>(BRepCheck_InvalidCurveOnClosedSurface);
+  if(NbProblems->Value(aProblemID)>0)
+    theCommands<<"  Invalid Curve on closed Surface .......... "<<NbProblems->Value(aProblemID)<<"\n";
+  
+  aProblemID = static_cast<Standard_Integer>(BRepCheck_InvalidSameRangeFlag);
+  if(NbProblems->Value(aProblemID)>0)
+    theCommands<<"  Invalid SameRange Flag ................... "<<NbProblems->Value(aProblemID)<<"\n";
+  
+  aProblemID = static_cast<Standard_Integer>(BRepCheck_InvalidSameParameterFlag);
+  if(NbProblems->Value(aProblemID)>0)
+    theCommands<<"  Invalid SameParameter Flag ............... "<<NbProblems->Value(aProblemID)<<"\n";
+  
+  aProblemID = static_cast<Standard_Integer>(BRepCheck_InvalidDegeneratedFlag);
+  if(NbProblems->Value(aProblemID)>0)
+    theCommands<<"  Invalid Degenerated Flag ................. "<<NbProblems->Value(aProblemID)<<"\n";
+  
+  aProblemID = static_cast<Standard_Integer>(BRepCheck_FreeEdge);
+  if(NbProblems->Value(aProblemID)>0)
+    theCommands<<"  Free Edge ................................ "<<NbProblems->Value(aProblemID)<<"\n";
+  
+  aProblemID = static_cast<Standard_Integer>(BRepCheck_InvalidMultiConnexity);
+  if(NbProblems->Value(aProblemID)>0)
+    theCommands<<"  Invalid MultiConnexity ................... "<<NbProblems->Value(aProblemID)<<"\n";
+  
+  aProblemID = static_cast<Standard_Integer>(BRepCheck_InvalidRange);
+  if(NbProblems->Value(aProblemID)>0)
+    theCommands<<"  Invalid Range ............................ "<<NbProblems->Value(aProblemID)<<"\n";
+  
+  aProblemID = static_cast<Standard_Integer>(BRepCheck_EmptyWire);
+  if(NbProblems->Value(aProblemID)>0)
+    theCommands<<"  Empty Wire ............................... "<<NbProblems->Value(aProblemID)<<"\n";
+
+  aProblemID = static_cast<Standard_Integer>(BRepCheck_RedundantEdge);
+  if(NbProblems->Value(aProblemID)>0)
+    theCommands<<"  Redundant Edge ........................... "<<NbProblems->Value(aProblemID)<<"\n";
+
+  aProblemID = static_cast<Standard_Integer>(BRepCheck_SelfIntersectingWire);
+  if(NbProblems->Value(aProblemID)>0)
+    theCommands<<"  Self Intersecting Wire ................... "<<NbProblems->Value(aProblemID)<<"\n";
+
+  aProblemID = static_cast<Standard_Integer>(BRepCheck_NoSurface);
+  if(NbProblems->Value(aProblemID)>0)
+    theCommands<<"  No Surface ............................... "<<NbProblems->Value(aProblemID)<<"\n";
+
+  aProblemID = static_cast<Standard_Integer>(BRepCheck_InvalidWire);
+  if(NbProblems->Value(aProblemID)>0)
+    theCommands<<"  Invalid Wire ............................. "<<NbProblems->Value(aProblemID)<<"\n";
+
+  aProblemID = static_cast<Standard_Integer>(BRepCheck_RedundantWire);
+  if(NbProblems->Value(aProblemID)>0)
+    theCommands<<"  Redundant Wire ........................... "<<NbProblems->Value(aProblemID)<<"\n";
+
+  aProblemID = static_cast<Standard_Integer>(BRepCheck_IntersectingWires);
+  if(NbProblems->Value(aProblemID)>0)
+    theCommands<<"  Intersecting Wires ....................... "<<NbProblems->Value(aProblemID)<<"\n";
+
+  aProblemID = static_cast<Standard_Integer>(BRepCheck_InvalidImbricationOfWires);
+  if(NbProblems->Value(aProblemID)>0)
+    theCommands<<"  Invalid Imbrication of Wires ............. "<<NbProblems->Value(aProblemID)<<"\n";
+
+  aProblemID = static_cast<Standard_Integer>(BRepCheck_EmptyShell);
+  if(NbProblems->Value(aProblemID)>0)
+    theCommands<<"  Empty Shell .............................. "<<NbProblems->Value(aProblemID)<<"\n";
+
+  aProblemID = static_cast<Standard_Integer>(BRepCheck_RedundantFace);
+  if(NbProblems->Value(aProblemID)>0)
+    theCommands<<"  Redundant Face ........................... "<<NbProblems->Value(aProblemID)<<"\n";
+
+  aProblemID = static_cast<Standard_Integer>(BRepCheck_UnorientableShape);
+  if(NbProblems->Value(aProblemID)>0)
+    theCommands<<"  Unorientable Shape ....................... "<<NbProblems->Value(aProblemID)<<"\n";
+
+  aProblemID = static_cast<Standard_Integer>(BRepCheck_NotClosed);
+  if(NbProblems->Value(aProblemID)>0)
+    theCommands<<"  Not Closed ............................... "<<NbProblems->Value(aProblemID)<<"\n";
+
+  aProblemID = static_cast<Standard_Integer>(BRepCheck_NotConnected);
+  if(NbProblems->Value(aProblemID)>0)
+    theCommands<<"  Not Connected ............................ "<<NbProblems->Value(aProblemID)<<"\n";
+
+  aProblemID = static_cast<Standard_Integer>(BRepCheck_SubshapeNotInShape);
+  if(NbProblems->Value(aProblemID)>0)
+    theCommands<<"  Subshape not in Shape .................... "<<NbProblems->Value(aProblemID)<<"\n";
+
+  aProblemID = static_cast<Standard_Integer>(BRepCheck_BadOrientation);
+  if(NbProblems->Value(aProblemID)>0)
+    theCommands<<"  Bad Orientation .......................... "<<NbProblems->Value(aProblemID)<<"\n";
+
+  aProblemID = static_cast<Standard_Integer>(BRepCheck_BadOrientationOfSubshape);
+  if(NbProblems->Value(aProblemID)>0)
+    theCommands<<"  Bad Orientation of Subshape .............. "<<NbProblems->Value(aProblemID)<<"\n";
+
+  aProblemID = static_cast<Standard_Integer>(BRepCheck_InvalidToleranceValue);
+  if(NbProblems->Value(aProblemID)>0)
+    theCommands<<"  Invalid tolerance value................... "<<NbProblems->Value(aProblemID)<<"\n";
+
+  aProblemID = static_cast<Standard_Integer>(BRepCheck_InvalidPolygonOnTriangulation);
+  if(NbProblems->Value(aProblemID)>0)
+    theCommands<<"  Invalid polygon on triangulation.......... "<<NbProblems->Value(aProblemID)<<"\n";
+
+  aProblemID = static_cast<Standard_Integer>(BRepCheck_CheckFail);
+  if(NbProblems->Value(aProblemID)>0)
+    theCommands<<"  checkshape failure........................ "<<NbProblems->Value(aProblemID)<<"\n";
+
   theCommands<<" ------------------------------------------------"<<"\n";
   theCommands<<"*** Shapes with problems : "<<sl->Length()<<"\n";
 

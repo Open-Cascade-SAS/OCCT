@@ -21,7 +21,8 @@ class Edge from BRepCheck inherits Result from BRepCheck
 uses Shape               from TopoDS,
      Edge                from TopoDS,
      CurveRepresentation from BRep,
-     HCurve              from Adaptor3d
+     HCurve              from Adaptor3d,
+     Status              from BRepCheck
 
 is
 
@@ -54,6 +55,18 @@ is
     Tolerance(me: mutable) returns Real from Standard 
 
     	is static;
+
+    SetStatus(me: mutable;
+              theStatus:Status from BRepCheck)
+
+          --- Purpose: Sets status of Edge;
+	is static;
+
+    CheckPolygonOnTriangulation(me: mutable; theEdge: Edge from TopoDS)
+	  --- Purpose: Checks, if polygon on triangulation of heEdge
+     -- is out of 3D-curve of this edge.
+        returns Status from BRepCheck
+	is static;
 
 fields
 

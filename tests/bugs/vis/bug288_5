@@ -1,9 +1,11 @@
 puts "============ OCC288 (case 5) ==============="
 
 restore [locate_data_file OCC288e.brep] result 
+
+#Delete invalid (in terms of bug#25109) triangulation
+tclean result
 checkshape result
 
-tclean result
 vinit
 vdisplay result
 vsetdispmode result 1

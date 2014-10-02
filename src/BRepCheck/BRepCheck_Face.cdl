@@ -66,6 +66,13 @@ is
     
     	is static;
 
+    SetStatus(me: mutable;
+              theStatus:Status from BRepCheck)
+
+          --- Purpose: Sets status of Face;
+	is static;
+
+
 
     IsUnorientable(me)
     
