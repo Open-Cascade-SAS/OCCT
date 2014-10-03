@@ -39,7 +39,7 @@ namespace
 // function : OpenGl_Window
 // purpose  :
 // =======================================================================
-OpenGl_Window::OpenGl_Window (const Handle(Aspect_DisplayConnection)& /*theDisplayConnection*/,
+OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
                               const CALL_DEF_WINDOW&        theCWindow,
                               Aspect_RenderingContext       theGContext,
                               const Handle(OpenGl_Caps)&    theCaps,
