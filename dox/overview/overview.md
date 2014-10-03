@@ -620,3 +620,16 @@ There is also another C# example with the same functionality, which demonstrates
 
 See \subpage samples_csharp_direct3d "Readme" for details.
 
+@subsubsection OCCT_OVW_SECTION_7_3_4 Android
+
+There are two samples are representing usage OCCT framework on Android mobile platform. They represent an OCCT-based 3D-viewer with CAD import support in formats BREP, STEP and IGES: jniviewer (java) and AndroidQt (qt+qml)
+
+jniviewer
+@image html /overview/images/samples_java_android_occt.jpg
+@image latex /overview/images/samples_java_android_occt.jpg
+Java - See \subpage samples_java_android_occt "Readme" for details.
+
+AndroidQt
+@image html /overview/images/samples_qml_android_occt.jpg
+@image latex /overview/images/samples_qml_android_occt.jpg
+Qt - See \subpage samples_qml_android_occt "Readme" for details.

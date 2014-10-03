@@ -11,6 +11,9 @@ overview/overview.md
 ../samples/CSharp/ReadMe.md
 ../samples/CSharp/ReadMe_D3D.md
 
+../samples/qt/AndroidQt/ReadMe.md
+../samples/java/jniviewer/ReadMe.md
+
 tutorial/tutorial.md
 
 technical_overview/technical_overview.md
