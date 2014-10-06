@@ -1,4 +1,6 @@
 # Sample: creation of simple twist drill bit
+#Category: Modeling
+#Title: Drill
 
 pload MODELING VISUALIZATION
 

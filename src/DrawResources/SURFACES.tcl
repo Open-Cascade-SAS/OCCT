@@ -26,3 +26,4 @@ addmenu Surfaces "Sphere"     {dialanasurf sphere s {radius 1}}
 addmenu Surfaces "Torus"      {dialanasurf torus t {radii {1 0.8}}}
 addmenu Surfaces "Revolution" {dialbox revsur name r basis . origin {0 0 0} axis {0 0 1}}
 addmenu Surfaces "Extrusion"  {dialbox extsurf name e basis . direction {0 0 1}}
+redrawhelp

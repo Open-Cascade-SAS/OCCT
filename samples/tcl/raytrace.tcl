@@ -1,5 +1,8 @@
 # Script demonstrating ray tracing in 3d view
 
+#Category: Visualization
+#Title: Ray tracing
+
 # make bottle by calling another script
 source [file join [file dirname [info script]] bottle.tcl]
 

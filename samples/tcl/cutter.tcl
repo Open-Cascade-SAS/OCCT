@@ -1,4 +1,6 @@
 # Sample: creation of milling cutter
+#Category: Modeling
+#Title: Milling cutter
 
 pload MODELING VISUALIZATION
 

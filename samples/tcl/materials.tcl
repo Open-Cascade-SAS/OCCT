@@ -1,5 +1,8 @@
 # Script displays properties of different materials available in OCCT
 
+#Category: Visualization
+#Title: Material properties in viewer
+
 set THE_MATERIALS {brass bronze copper gold jade neon_phc pewter obsidian plaster plastic satin silver steel stone chrome aluminium water glass diamond charcoal}
 set THE_COLORS    {default red green blue1}
 set THE_ROW_DIST  35

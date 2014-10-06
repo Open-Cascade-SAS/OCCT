@@ -29,3 +29,4 @@ addmenu Curves "Hyperbola"  {
 addmenu Curves "Parabola"  {
     dialbox parabola name b center {0 0 0} normal {0 0 1} xdir {1 0 0} focus 1
 }
+redrawhelp

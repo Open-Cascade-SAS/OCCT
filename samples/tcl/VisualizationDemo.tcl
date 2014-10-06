@@ -1,5 +1,8 @@
 # Copyright (c) 1999-2014 OPEN CASCADE SAS
 #
+#Category: Demos
+#Title: Displaying 3d viewer
+#
 # This file is part of Open CASCADE Technology software library.
 #
 # This library is free software; you can redistribute it and / or modify it

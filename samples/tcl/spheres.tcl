@@ -1,6 +1,9 @@
 # test performance of display of heavy scene involving multiple interactive
 # objects, on example of 1000 spheres
 
+#Category: Visualization
+#Title: Display of complex scene and animation
+
 pload MODELING
 pload VISUALIZATION
 

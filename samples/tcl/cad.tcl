@@ -1,5 +1,7 @@
 # This script creates a model described at
 # http://www.caddd.org/2010/04/opencascade-challenge.html
+#Category: Modeling
+#Title: CAD shape
 
 pload MODELING VISUALIZATION
 

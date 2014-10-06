@@ -1,4 +1,6 @@
 # Script reproducing creation of bottle model as described in OCCT Tutorial
+#Category: Modeling
+#Title: OCCT Tutorial bottle shape
 
 pload MODELING VISUALIZATION
 
