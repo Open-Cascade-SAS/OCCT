@@ -37,6 +37,12 @@ class TColStd_PackedMapOfInteger : private TCollection_BasicMap
     : TCollection_BasicMap (NbBuckets, Standard_True),
       myExtent             (0) {}
 
+  /// Copy constructor
+  inline TColStd_PackedMapOfInteger (const TColStd_PackedMapOfInteger& theOther)
+    : TCollection_BasicMap (1, Standard_True),
+      myExtent             (0)
+  { Assign(theOther); }
+
   inline TColStd_PackedMapOfInteger&
                           operator =  (const TColStd_PackedMapOfInteger& Other) 
   { return Assign(Other); }
@@ -210,11 +216,6 @@ public:
 
 
  private:
-  // ----------- PRIVATE (PROHIBITED) methods
-  /// Copy constructor - prohibited.
-  TColStd_PackedMapOfInteger (const TColStd_PackedMapOfInteger& theOther);
-
-
   // ---------- PRIVATE FIELDS ----------
 
   size_t                myExtent;

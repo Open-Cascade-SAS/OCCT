@@ -70,11 +70,8 @@ is
     	    	-- assignment operator (operator=).
  		---C++: inline
 
-	Create(Other : Sequence) returns Sequence from TCollection
+	Create(Other : Sequence) returns Sequence from TCollection;
 		---Purpose: Creation by copy of existing Sequence.
-		--  Warning: This constructor prints a warning message.
-		-- We recommand to use the operator =.
-	is private;
 		
 	Clear(me : in out);
 		---Purpose: Removes all element(s) of the sequence <me>

@@ -24,6 +24,16 @@ inline TCollection_Sequence::TCollection_Sequence()
 }
 
 //=======================================================================
+//function : Copy constructor
+//purpose  : 
+//=======================================================================
+
+inline TCollection_Sequence::TCollection_Sequence(const TCollection_Sequence& theOther)
+{
+  Assign(theOther);
+}
+
+//=======================================================================
 //function : Append 
 //purpose  : Appends a Sequence to myself
 //=======================================================================
