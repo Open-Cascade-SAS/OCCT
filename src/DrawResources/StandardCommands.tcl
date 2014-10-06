@@ -39,44 +39,52 @@ proc help {{command ""} {helpstring ""} {group "Procedures"}} {
 
     if {$command == ""} {
 
-	# help general
-	foreach h [lsort [array names Draw_Groups]] {
-	    puts ""
-	    puts ""
-	    puts $h
-	    set i 0
-	    foreach f [lsort $Draw_Groups($h)] {
-		if {$i == 0} {
-		    puts ""
-		    puts -nonewline "  "
-		}
-		puts -nonewline $f
-		for {set j [string length $f]} {$j < 15} {incr j} {
-		    puts -nonewline " "
-		}
-		incr i
-		if {$i == 4} {set i 0}
-	    }
-	    puts ""
-	}
+    # help general
+    foreach h [lsort [array names Draw_Groups]] {
+        puts ""
+        puts ""
+        puts $h
+        set i 0
+        foreach f [lsort $Draw_Groups($h)] {
+        if {$i == 0} {
+            puts ""
+            puts -nonewline "  "
+        }
+        puts -nonewline $f
+        for {set j [string length $f]} {$j < 15} {incr j} {
+            puts -nonewline " "
+        }
+        incr i
+        if {$i == 4} {set i 0}
+        }
+        puts ""
+    }
     } elseif {$helpstring == ""} {
 
-	# help fonction
-	append command "*"
-	foreach f [lsort [array names Draw_Helps]] {
-	    if {[string match $command $f]} {
-		puts -nonewline $f
-		for {set j [string length $f]} {$j < 15} {incr j} {
-		    puts -nonewline " "
-		}
-		puts " : $Draw_Helps($f)"
-	    }
-	}
+    # help function
+    set isfound 0
+    foreach f [lsort [array names Draw_Helps]] {
+        if {[string match $command $f]} {
+        puts -nonewline $f
+        for {set j [string length $f]} {$j < 15} {incr j} {
+            puts -nonewline " "
+        }
+        puts " : $Draw_Helps($f)"
+        set isfound 1
+        }
+    }
+    if {!$isfound} {
+        if {[string first * $command] != -1} {
+            puts "No matching commands found!"
+        } else {
+            puts "No help found for '$command'! Please try 'help $command*' to find matching commands."
+        }
+    }
     } else {
 
-	# set help
-	lappend Draw_Groups($group) $command
-	set Draw_Helps($command) $helpstring
+    # set help
+    lappend Draw_Groups($group) $command
+    set Draw_Helps($command) $helpstring
     }
     
     flush stdout
