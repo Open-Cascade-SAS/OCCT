@@ -1896,9 +1896,15 @@ void V3d_View::ConvertWithProj(const Standard_Integer Xp,
 
   aResult = myCamera->UnProject (gp_Pnt (anX, anY, aZ - 10.0));
 
-  Dx = X - aResult.X();
-  Dy = Y - aResult.Y();
-  Dz = Z - aResult.Z();
+  Graphic3d_Vec3d aNormDir;
+  aNormDir.x() = X - aResult.X();
+  aNormDir.y() = Y - aResult.Y();
+  aNormDir.z() = Z - aResult.Z();
+  aNormDir.Normalize();
+
+  Dx = aNormDir.x();
+  Dy = aNormDir.y();
+  Dz = aNormDir.z();
 
   if( MyViewer->Grid()->IsActive() ) {
     Graphic3d_Vertex aNewVrp = Compute (aVrp) ;
