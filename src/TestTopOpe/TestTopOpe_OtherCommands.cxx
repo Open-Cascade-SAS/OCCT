@@ -187,6 +187,7 @@ Standard_Integer MKSOLSHE(Draw_Interpretor&, Standard_Integer narg, const char**
     if (S.IsNull()) continue;
     if (S.ShapeType() == TopAbs_FACE) {
       BB.Add(she,S);
+      she.Closed (BRep_Tool::IsClosed (she));
       yaface = Standard_True;
     }
   }

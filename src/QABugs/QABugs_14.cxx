@@ -260,6 +260,7 @@ static Standard_Integer BUC60854 (Draw_Interpretor& /*di*/, Standard_Integer arg
   BB.MakeShell(TopoDS::Shell(aShell));
   TopTools_ListIteratorOfListOfShape anIter(aLeftPart);
   for(; anIter.More(); anIter.Next()) BB.Add(aShell, anIter.Value());
+  aShell.Closed (BRep_Tool::IsClosed (aShell));
   DBRep::Set(argv[1],aShell);
   return 0;
 }

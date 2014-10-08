@@ -150,6 +150,7 @@ void LocOpe_BuildShape::Perform(const TopTools_ListOfShape& L)
 	B.Add(newSh,FaceRef);
 	Propagate(FaceRef,newSh,mapF,mapIf);
       }
+      newSh.Closed (BRep_Tool::IsClosed (newSh));
       if (!Manifold) {
 	lshell.Append(newSh.Oriented(TopAbs_INTERNAL));
       }

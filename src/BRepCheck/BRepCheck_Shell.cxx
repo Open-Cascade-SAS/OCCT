@@ -919,10 +919,11 @@ Standard_Integer BRepCheck_Shell::NbConnectedSet(TopTools_ListOfShape& theSets)
 	    }
 	  }
 	  if (!newCur) {
-	   theSets.Append(CurShell);
-	   CurShell.Nullify();
-	   newCur=Standard_True;
-	   BRB.MakeShell(CurShell);
+            CurShell.Closed (BRep_Tool::IsClosed (CurShell));
+            theSets.Append(CurShell);
+            CurShell.Nullify();
+            newCur=Standard_True;
+            BRB.MakeShell(CurShell);
 	  }
 	}
 	if (theFaces.IsEmpty()) break;

@@ -831,6 +831,7 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape& Sbase,
   if(Sliding) {
     TopoDS_Face F;
     BB.MakeFace(F, myPln, myTol);
+    w.Closed (BRep_Tool::IsClosed (w));
     BB.Add(F, w);
     mySkface = F;
     myPbase  = mySkface;
@@ -914,6 +915,7 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape& Sbase,
 	break;
       } 
     }
+    Wiwiwi.Closed (BRep_Tool::IsClosed (Wiwiwi));
     
     BRepLib_MakeFace newbndface(myPln->Pln(), Wiwiwi, Standard_True);
     TopoDS_Face NewBndFace = TopoDS::Face(newbndface.Shape());
@@ -993,6 +995,7 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape& Sbase,
     for(; it.More(); it.Next()) {
       BB.Add(comp, it.Value());
     }
+    comp.Closed (BRep_Tool::IsClosed (comp));
     
     mySUntil = comp;
    

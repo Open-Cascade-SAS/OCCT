@@ -269,11 +269,12 @@ static  Standard_Boolean GetShells(TopTools_SequenceOfShape& Lface,
       }
       j++;
       B.Add(nshell,F1);
+      nshell.Closed (BRep_Tool::IsClosed (nshell));
       aMapFaceShells.Bind(F1,nshell);
       Lface.Remove(i);
       
       // if closed shell is obtained it adds to sequence of shells and new shell begin to construct.
-      if(isMultiConnex && BRep_Tool::IsClosed(nshell)) {
+      if(isMultiConnex && nshell.Closed()) {
         aSeqShells.Append(nshell);
         TopoDS_Shell nshellnext;
         B.MakeShell(nshellnext);

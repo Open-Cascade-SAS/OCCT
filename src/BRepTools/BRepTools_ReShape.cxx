@@ -371,9 +371,14 @@ TopoDS_Shape BRepTools_ReShape::Apply (const TopoDS_Shape& shape,
 	B.Add (S,newsh);
       }
     }
+
     if ( (modif < 0 && buildmode < 2) || (modif == 0 && buildmode < 1) )
       return C;
-    else return S;
+    else
+    {
+      S.Closed (BRep_Tool::IsClosed (S));
+      return S;
+    }
   }
 
   if (st == TopAbs_SHELL) {
@@ -406,7 +411,11 @@ TopoDS_Shape BRepTools_ReShape::Apply (const TopoDS_Shape& shape,
     }
     if ( (modif < 0 && buildmode < 2) || (modif == 0 && buildmode < 1) )
       return C;
-    else return S;
+    else
+    {
+      S.Closed (BRep_Tool::IsClosed (S));
+      return S;
+    }
   }
   cout<<"BRepTools_ReShape::Apply NOT YET IMPLEMENTED"<<endl;
   return shape;
@@ -543,8 +552,10 @@ TopoDS_Shape BRepTools_ReShape::Apply (const TopoDS_Shape& shape,
   }
 
   result.Orientation(orien);
+  result.Closed (BRep_Tool::IsClosed (result));
   myStatus = locStatus;
   Replace ( shape, result );
+
   return result;
 }
 

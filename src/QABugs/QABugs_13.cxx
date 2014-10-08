@@ -301,6 +301,7 @@ static Standard_Integer OCC332bug (Draw_Interpretor& di, Standard_Integer argc, 
 
   B.Add(TubeShell,Face1.Reversed());
   B.Add(TubeShell,Face2);
+  TubeShell.Closed (BRep_Tool::IsClosed (TubeShell));
 
   B.MakeSolid(wallSolid);
   B.Add(wallSolid,TubeShell);

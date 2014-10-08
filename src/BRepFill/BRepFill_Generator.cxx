@@ -381,13 +381,9 @@ void CreateKPart(const TopoDS_Edge& Edge1,const TopoDS_Edge& Edge2,
   }
 
   // create the new surface
-  TopoDS_Shell shell;
   TopoDS_Face face;
   TopoDS_Wire W;
   TopoDS_Edge edge1, edge2, edge3, edge4, couture;
-
-  BRep_Builder B;
-  B.MakeShell(shell);
 
   TopoDS_Wire newW1, newW2;
   BRep_Builder BW1, BW2;

@@ -658,7 +658,10 @@ void BRepAlgo_Loop::Perform()
       }
 
     if (VF.IsSame(CV) && SamePnt2d(VF,EF,CE,myFace))
+    {
+      NW.Closed (Standard_True);
       myNewWires.Append (NW);
+    }
 #ifdef DEBUG_ALGO
     else {
       cout <<"BRepAlgo_Loop: Open Wire"<<endl;

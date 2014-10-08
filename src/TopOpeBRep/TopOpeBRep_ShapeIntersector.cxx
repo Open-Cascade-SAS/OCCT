@@ -1283,6 +1283,7 @@ static TopoDS_Solid GetNewSolid(const TopoDS_Shape& S, TopoDS_Face& F)
   newShellBuilder.MakeShell( newShell );
   newShellBuilder.Add( newShell, hsFace );
   newShellBuilder.Add( newShell, infFace );
+  newShell.Closed (BRep_Tool::IsClosed (newShell));
 
   BRep_Builder newSolidBuilder;
   newSolidBuilder.MakeSolid( newSolid );

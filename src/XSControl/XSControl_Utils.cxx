@@ -429,6 +429,7 @@ static const Standard_ExtString   voidext = { 0 };
     TopoDS_Shell S;
     B.MakeShell (S);
     B.Add (S,shape);  // ne passe pas ! : TopoDS::Face(shape));
+    S.Closed (BRep_Tool::IsClosed (S));
     return S;
   }
 

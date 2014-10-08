@@ -170,6 +170,7 @@ void StepToTopoDS_TranslatePolyLoop::Init(const Handle(StepShape_PolyLoop)& PL, 
       GP1 = GP2;
       V1  = V2;
     }
+    W.Closed (BRep_Tool::IsClosed (W));
     aTool.Bind(PL, W);
     myResult = W;
     myError  = StepToTopoDS_TranslatePolyLoopDone;

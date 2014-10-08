@@ -465,6 +465,7 @@ static TopoDS_Shape ShapeWithType(const TopoDS_Shape     theShape,
       TopoDS_Shell aShell;
       aShellBuilder.MakeShell(aShell);
       for(;aListIter.More();aListIter.Next()) aShellBuilder.Add(aShell,TopoDS::Face(aListIter.Value()));
+      aShell.Closed (BRep_Tool::IsClosed (aShell));
       if (theType == TopAbs_SHELL) return aShell;
       aShapes.Clear(); // don't break: we can do something more of it
       aShapes.Append(aShell);

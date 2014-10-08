@@ -40,9 +40,6 @@
 
 //
 static
-  Standard_Boolean IsClosedShell(const TopoDS_Shell& );
-//
-static
   void MakeShell(const BOPCol_ListOfShape& , 
                  TopoDS_Shell& );
 //
@@ -444,12 +441,14 @@ void BOPAlgo_ShellSplitter::SplitBlock(BOPTools_ConnexityBlock& aCB)
       } // for (; aExp.More(); aExp.Next()) {
     } // for (; aItS.More(); aItS.Next()) {
     //
-    if (IsClosedShell(aShell)) {
+    if (BRep_Tool::IsClosed(aShell)) {
+      aShell.Closed (Standard_True);
       myLoops.Append(aShell);
     }
     else {
       RefineShell(aShell);
-      if (IsClosedShell(aShell)) {
+      if (BRep_Tool::IsClosed(aShell)) {
+        aShell.Closed (Standard_True);
         myLoops.Append(aShell);
       }
     }
@@ -556,48 +555,7 @@ void RefineShell(TopoDS_Shell& theShell)
     aBB.Remove(theShell, aFB);
   }
 }
-//=======================================================================
-//function : IsClosedShell
-//purpose  : 
-//=======================================================================
-Standard_Boolean IsClosedShell(const TopoDS_Shell& theShell)
-{
-  Standard_Integer i, aNbE;
-  Standard_Boolean bRet;
-  TopoDS_Iterator aIt;
-  TopExp_Explorer aExp;
-  BOPCol_MapOfShape aM;
-  // 
-  bRet=Standard_False;
-  //
-  aIt.Initialize(theShell);
-  for(i=0; aIt.More(); aIt.Next(), ++i) {
-    const TopoDS_Shape& aF=aIt.Value();
-    //
-    aExp.Init(aF, TopAbs_EDGE);
-    for (; aExp.More(); aExp.Next()) {
-      const TopoDS_Edge& aE=(*(TopoDS_Edge*)(&aExp.Current()));
-      if (BRep_Tool::Degenerated(aE)) {
-        continue;
-      }
-      //
-      if (aE.Orientation()==TopAbs_INTERNAL) {
-        continue;
-      }
-      if (!aM.Add(aE)) {
-        aM.Remove(aE);
-      }
-    }
-  }
-  //
-  if(i) {
-    aNbE=aM.Extent();
-    if (!aNbE) {
-      bRet=!bRet; 
-    }
-  }
-  return bRet;
-}
+
 //=======================================================================
 //function : MakeShells
 //purpose  : 
@@ -622,7 +580,7 @@ void BOPAlgo_ShellSplitter::MakeShells()
       //
       const BOPCol_ListOfShape& aLF=aCB.Shapes();
       MakeShell(aLF, aShell);
-      aShell.TShape()->Closed(Standard_True);
+      aShell.Closed(Standard_True);
       myShells.Append(aShell);
     }
     else {
@@ -641,8 +599,8 @@ void BOPAlgo_ShellSplitter::MakeShells()
     const BOPCol_ListOfShape& aLS=aCB.Loops();
     aIt.Initialize(aLS);
     for (; aIt.More(); aIt.Next()) {
-      const TopoDS_Shape& aShell=aIt.Value();
-      aShell.TShape()->Closed(Standard_True);
+      TopoDS_Shape& aShell=aIt.ChangeValue();
+      aShell.Closed(Standard_True);
       myShells.Append(aShell);
     }
   }

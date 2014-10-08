@@ -614,6 +614,7 @@ void StepToTopoDS_Builder::Init (const Handle(StepShape_EdgeBasedWireframeModel)
       B.Add ( W, E );
     }
     if ( W.IsNull() ) continue;
+    W.Closed (BRep_Tool::IsClosed (W));
     B.Add ( C, W );
     if ( myResult.IsNull() ) myResult = W;
     else myResult = C;
@@ -675,6 +676,7 @@ void StepToTopoDS_Builder::Init (const Handle(StepShape_FaceBasedSurfaceModel)& 
       B.Add ( S, F );
     }
     if ( S.IsNull() ) continue;
+    S.Closed (BRep_Tool::IsClosed (S));
     B.Add ( C, S );
     if ( myResult.IsNull() ) myResult = S;
     else myResult = C;

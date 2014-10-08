@@ -616,6 +616,7 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
       TopoDS_Shell S;
       B.MakeShell(S);
       B.Add(S, StopShape);
+      S.Closed (BRep_Tool::IsClosed (S));
       B.MakeSolid(Sol2);
       B.Add(Sol2, S); // shell => solid (for fusion)
       break;

@@ -63,6 +63,7 @@ BRepLib_MakeSolid::BRepLib_MakeSolid(const TopoDS_CompSolid& S)
   for(; aFaceIter.More(); aFaceIter.Next()) {
     B.Add(aShell, aFaceIter.Key());
   }
+  aShell.Closed (BRep_Tool::IsClosed (aShell));
 
   B.Add(myShape,aShell);
 

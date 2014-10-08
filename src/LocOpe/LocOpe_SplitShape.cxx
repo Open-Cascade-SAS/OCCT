@@ -1233,6 +1233,7 @@ Standard_Boolean LocOpe_SplitShape::Rebuild(const TopoDS_Shape& S)
         B.Add(result,itr.Value().Oriented(orient));
       }
     }
+    result.Closed (BRep_Tool::IsClosed(result));
     myMap(S).Append(result);
   }
   else {

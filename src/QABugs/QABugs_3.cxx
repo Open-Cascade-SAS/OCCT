@@ -734,6 +734,7 @@ static Standard_Integer BUC60811(Draw_Interpretor& di, Standard_Integer argc, co
   TopoDS_Shell shell;
   B.MakeShell(shell);
   B.Add(shell, bzf1); 
+  shell.Closed (BRep_Tool::IsClosed (shell));
   B.MakeSolid(solid);
   B.Add(solid,shell); 
   gp_Dir D(0, 0, 1.0f); 
@@ -1775,6 +1776,7 @@ static Standard_Integer BUC60951_(Draw_Interpretor& di, Standard_Integer argc, c
     TopoDS_Face face = TopoDS::Face(list.FindKey(i));
     builder.Add(shell, face);
   }
+  shell.Closed (BRep_Tool::IsClosed (shell));
 
   BRepPrimAPI_MakeHalfSpace half(shell, gp_Pnt(0, 0, 20));
   TopoDS_Solid sol = half.Solid();

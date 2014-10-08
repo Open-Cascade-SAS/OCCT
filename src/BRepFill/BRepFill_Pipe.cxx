@@ -589,6 +589,7 @@ TopoDS_Shape BRepFill_Pipe::MakeShape(const TopoDS_Shape& S,
 	W.Closed(LastShape.Closed());
 	TheLast = W;
       }
+      result.Closed (BRep_Tool::IsClosed (result));
       break;
     }
 	  
@@ -603,6 +604,7 @@ TopoDS_Shape BRepFill_Pipe::MakeShape(const TopoDS_Shape& S,
       if ( !mySpine.Closed() && !TheFirst.IsNull()) {
 	 B.Add(result, TheFirst.Reversed());
       }
+      result.Closed (BRep_Tool::IsClosed (result));
       break;
     }
 

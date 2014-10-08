@@ -103,6 +103,7 @@ void StepToTopoDS_TranslateShell::Init
 	TP->AddWarning(StepFace," Face is not of FaceSurface Type; not mapped to TopoDS");
       }
     }
+    Sh.Closed (BRep_Tool::IsClosed (Sh));
     myResult = Sh;
     aTool.Bind(CFS, myResult);
     myError  = StepToTopoDS_TranslateShellDone;

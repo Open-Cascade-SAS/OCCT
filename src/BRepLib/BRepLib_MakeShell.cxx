@@ -353,6 +353,7 @@ void BRepLib_MakeShell::Init(const Handle(Geom_Surface)& S,
   // codage des courbes 3d et regularites.
   BRepLib::BuildCurves3d(myShape,tol);
   BRepLib::EncodeRegularity(myShape);
+  myShape.Closed (BRep_Tool::IsClosed (myShape));
   
   myError = BRepLib_ShellDone;
   Done();

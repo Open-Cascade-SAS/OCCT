@@ -688,8 +688,9 @@ static Standard_Integer invert(Draw_Interpretor& ,
   
   BRep_Builder B;
   TopoDS_Shape NS = S.EmptyCopied();
-  TopoDS_Iterator itr(S);
+  NS.Closed (S.Closed());
 
+  TopoDS_Iterator itr(S);
   while (itr.More()) {
     B.Add(NS,itr.Value().Reversed());
     itr.Next();

@@ -250,6 +250,7 @@ Standard_Boolean XCAFPrs::DispatchStyles (const TopoDS_Shape &shape,
   // iterate on subshapes
   BRep_Builder B;
   TopoDS_Shape copy = shape.EmptyCopied();
+  copy.Closed (shape.Closed());
   Standard_Boolean suboverride = Standard_False;
   Standard_Integer nbDef = 0;
   for ( TopoDS_Iterator it(shape); it.More(); it.Next() ) {

@@ -714,13 +714,17 @@ void ShapeUpgrade_WireDivide::Perform ()
 	V1 = V;
       }
       if(numE)
+      {
+        resWire.Closed (BRep_Tool::IsClosed (resWire));
 	Context()->Replace(E,resWire);
+      }
       else
 	Context()->Remove(E);
     }
   }
   if ( Status ( ShapeExtend_DONE ) ) {
 //smh#8
+    newWire.Closed (BRep_Tool::IsClosed (newWire));
     TopoDS_Shape tmpW = Context()->Apply ( newWire ).Oriented(myWire.Orientation());
     myWire = TopoDS::Wire (tmpW );
   }

@@ -291,6 +291,7 @@ const TopoDS_Shell& BRepPrim_OneAxis::Shell()
       myBuilder.AddShellFace(myShell,EndFace());
     }
 
+    myShell.Closed (BRep_Tool::IsClosed (myShell));
     myBuilder.CompleteShell(myShell);
     ShellBuilt = Standard_True;
   }

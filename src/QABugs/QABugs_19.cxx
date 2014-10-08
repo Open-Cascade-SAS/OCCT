@@ -2778,6 +2778,89 @@ static Standard_Integer OCC23010 (Draw_Interpretor& di, Standard_Integer argc, c
   return 0;
 }
 
+//=======================================================================
+//function : OCC25202
+//purpose  :
+//=======================================================================
+#include <ShapeBuild_ReShape.hxx>
+static Standard_Integer OCC25202 ( Draw_Interpretor& theDI,
+				   Standard_Integer theArgN,
+				   const char** theArgVal)
+{
+  //  0      1    2     3     4     5     6 
+  //reshape res shape numF1 face1 numF2 face2
+  if(theArgN < 7)
+    {
+      theDI << "Use: reshape res shape numF1 face1 numF2 face2\n";
+      return 1;
+    }
+
+  TopoDS_Shape aShape = DBRep::Get(theArgVal[2]);
+  const Standard_Integer  aNumOfRE1 = Draw::Atoi(theArgVal[3]),
+                          aNumOfRE2 = Draw::Atoi(theArgVal[5]);
+  TopoDS_Face aShapeForRepl1 = TopoDS::Face(DBRep::Get(theArgVal[4])),
+              aShapeForRepl2 = TopoDS::Face(DBRep::Get(theArgVal[6]));
+
+  if(aShape.IsNull())
+  {
+    theDI << theArgVal[2] << " is null shape\n";
+    return 1;
+  }
+
+  if(aShapeForRepl1.IsNull())
+  {
+    theDI << theArgVal[4] << " is not a replaced type\n";
+    return 1;
+  }
+
+  if(aShapeForRepl2.IsNull())
+  {
+    theDI << theArgVal[6] << " is not a replaced type\n";
+    return 1;
+  }
+
+
+  TopoDS_Shape aReplacedShape;
+  ShapeBuild_ReShape aReshape;
+
+  //////////////////// explode (begin)
+  TopTools_MapOfShape M;
+  M.Add(aShape);
+  Standard_Integer aNbShapes = 0;
+  for (TopExp_Explorer ex(aShape,TopAbs_FACE); ex.More(); ex.Next())
+    {
+      const TopoDS_Shape& Sx = ex.Current();
+      Standard_Boolean added = M.Add(Sx);
+      if (added)
+	{
+	  aNbShapes++;
+	  if(aNbShapes == aNumOfRE1)
+	    {
+	      aReplacedShape = Sx;
+
+	      aReshape.Replace(aReplacedShape, aShapeForRepl1);
+	    }
+
+	  if(aNbShapes == aNumOfRE2)
+	    {
+	      aReplacedShape = Sx;
+
+	      aReshape.Replace(aReplacedShape, aShapeForRepl2);
+	    }
+	}
+    }
+  //////////////////// explode (end)
+
+  if(aReplacedShape.IsNull())
+    {
+      theDI << "There is not any shape for replacing.\n";
+    }
+
+  DBRep::Set (theArgVal[1],aReshape.Apply (aShape,TopAbs_WIRE,2));
+
+  return 0;
+}
+
 /*****************************************************************************/
 
 void QABugs::Commands_19(Draw_Interpretor& theCommands) {
@@ -2834,5 +2917,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC23010", "OCC23010 STEP_file", __FILE__, OCC23010, group);
   theCommands.Add ("OCC25043", "OCC25043 shape", __FILE__, OCC25043, group);
   theCommands.Add ("OCC24606", "OCC24606 : Tests ::FitAll for V3d view ('vfit' is for NIS view)", __FILE__, OCC24606, group);
+  theCommands.Add ("OCC25202", "OCC25202 res shape numF1 face1 numF2 face2", __FILE__, OCC25202, group);
   return;
 }

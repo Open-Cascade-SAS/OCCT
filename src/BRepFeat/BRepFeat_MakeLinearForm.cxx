@@ -707,6 +707,7 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape& Sbase,
   if(Sliding) {
     TopoDS_Face F;
     BB.MakeFace(F, myPln, myTol);
+    w.Closed (BRep_Tool::IsClosed (w));
     BB.Add(F, w);
 //    BRepLib_MakeFace F(myPln->Pln(),w, Standard_True);
     mySkface = F;
@@ -768,6 +769,7 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape& Sbase,
     for(; it.More(); it.Next()) {
       BB.Add(comp, it.Value());
     }
+    comp.Closed (BRep_Tool::IsClosed (comp));
     
     mySUntil = comp;
 

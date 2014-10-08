@@ -32,6 +32,7 @@
 #include <BRep_PolygonOnClosedTriangulation.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Iterator.hxx>
+#include <TopoDS_Wire.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopExp.hxx>
 #include <TopTools_MapOfShape.hxx>
@@ -51,6 +52,10 @@
 #include <Poly_Polygon3D.hxx>
 #include <Poly_Polygon2D.hxx>
 #include <Poly_PolygonOnTriangulation.hxx>
+
+#include <NCollection_Map.hxx>
+#include <NCollection_IncAllocator.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 
 //modified by NIZNHY-PKV Fri Oct 17 14:13:29 2008f
 static 
@@ -1446,24 +1451,37 @@ gp_Pnt2d  BRep_Tool::Parameters(const TopoDS_Vertex& V,
 }
 //=======================================================================
 //function : IsClosed
-//purpose  : Returns <True>  if S if flaged Closed, if S is a
-//           Solid,Shell or Compound  returns <True> is S has no free boundaries.
+//purpose  : 
 //=======================================================================
-Standard_Boolean BRep_Tool::IsClosed(const TopoDS_Shape& S)
+Standard_Boolean BRep_Tool::IsClosed (const TopoDS_Shape& theShape)
 {
-  if (S.ShapeType() == TopAbs_SHELL || S.ShapeType() == TopAbs_SOLID ||
-      S.ShapeType() == TopAbs_COMPOUND) {
-    TopTools_MapOfShape M;
-    TopExp_Explorer exp;
-    for (exp.Init(S,TopAbs_EDGE); exp.More(); exp.Next()) {
-//    for (TopExp_Explorer exp(S,TopAbs_EDGE); exp.More(); exp.Next()) {
+  if (theShape.ShapeType() == TopAbs_SHELL || theShape.ShapeType() == TopAbs_SOLID)
+  {
+    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMap (101, new NCollection_IncAllocator);
+    for (TopExp_Explorer exp (theShape, TopAbs_EDGE); exp.More(); exp.Next())
+    {
       const TopoDS_Edge& E = TopoDS::Edge(exp.Current());
-      if (BRep_Tool::Degenerated(E)) continue;
-      if (!M.Add(E)) M.Remove(E);
+      if (BRep_Tool::Degenerated(E) || E.Orientation() == TopAbs_INTERNAL || E.Orientation() == TopAbs_EXTERNAL)
+        continue;
+      if (!aMap.Add(E))
+        aMap.Remove(E);
     }
-    if ( M.IsEmpty()) return 1;
+    return aMap.IsEmpty();
   }
-  return (S.Closed());
+  else if (theShape.ShapeType() == TopAbs_WIRE)
+  {
+    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMap (101, new NCollection_IncAllocator);
+    for (TopExp_Explorer exp (theShape, TopAbs_VERTEX); exp.More(); exp.Next())
+    {
+      const TopoDS_Shape& V = exp.Current();
+      if (V.Orientation() == TopAbs_INTERNAL || V.Orientation() == TopAbs_EXTERNAL)
+        continue;
+      if (!aMap.Add(V))
+        aMap.Remove(V);
+    }
+    return aMap.IsEmpty();
+  }
+  return theShape.Closed();
 }
 
 //modified by NIZNHY-PKV Fri Oct 17 14:09:58 2008 f 
@@ -1495,3 +1513,4 @@ Standard_Boolean IsPlane(const Handle(Geom_Surface)& aS)
   //
   return bRet;
 }
+

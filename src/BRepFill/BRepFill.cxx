@@ -122,6 +122,7 @@ static void MakeWire(const TopTools_Array1OfShape& Edges,
     }
   }
   newwire.Orientation(TopAbs_FORWARD);
+  newwire.Closed (Standard_True);
 }
 
 static void CutEdge(const TopoDS_Edge&    CurrentEdge,
@@ -349,6 +350,7 @@ TopoDS_Face BRepFill::Face(const TopoDS_Edge& Edge1,
   B.Add(W,Edge4);
   B.Add(W,Edge2.Reversed());
   B.Add(W,Edge3);
+  W.Closed (Standard_True);
 
   B.Add(Face,W);
 
@@ -562,6 +564,7 @@ TopoDS_Shell BRepFill::Shell(const TopoDS_Wire& Wire1,
     B.Add(W,Edge4);
     B.Add(W,Edge2.Reversed());
     B.Add(W,Edge3);
+    W.Closed (Standard_True);
     
     B.Add(Face,W);
     
@@ -617,6 +620,7 @@ TopoDS_Shell BRepFill::Shell(const TopoDS_Wire& Wire1,
     B.SameRange(Edge4,Standard_False);
   }
   
+  Shell.Closed (BRep_Tool::IsClosed (Shell));
   BRepLib::SameParameter(Shell);
   return Shell;
 }

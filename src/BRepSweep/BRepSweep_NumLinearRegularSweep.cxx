@@ -337,6 +337,7 @@ TopoDS_Shape BRepSweep_NumLinearRegularSweep::Shape (const TopoDS_Shape& aGenS,
 	SetContinuity(aGenS,aDirS);
       }	
       if (aGenSType==TopAbs_FACE){
+        newShell.Closed (BRep_Tool::IsClosed (newShell));
 	TopoDS_Shape temp = SplitShell(newShell);
 	TopAbs_Orientation Or = DirectSolid(aGenS,aDirS);
 	Lt.Init(temp);
@@ -392,6 +393,7 @@ TopoDS_Shape BRepSweep_NumLinearRegularSweep::Shape (const TopoDS_Shape& aGenS,
     }
     myBuiltShapes(iGenS,iDirS) = Standard_True;
   }
+  myShapes(iGenS,iDirS).Closed (BRep_Tool::IsClosed (myShapes(iGenS,iDirS)));
   return myShapes(iGenS,iDirS);
 }
 

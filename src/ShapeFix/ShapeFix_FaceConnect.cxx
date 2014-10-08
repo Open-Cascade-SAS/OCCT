@@ -543,6 +543,7 @@ ShapeFix_FaceConnect::ShapeFix_FaceConnect() {}
 	  if (SFF->FixOrientation(MapWires)) EmpFace = SFF->Face();
 	  theBuilder.Add(theShell,EmpFace);
 	}
+        theShell.Closed (BRep_Tool::IsClosed (theShell));
 	result = theShell;
 
 	if (!theRepVertices.IsEmpty()) {

@@ -2297,6 +2297,7 @@ Standard_Boolean BRepFeat_RibSlot::NoSlidingProfile(TopoDS_Face& Prof,
     BB.Add(w, e);
   }
   
+  w.Closed (BRep_Tool::IsClosed (w));
   BRepLib_MakeFace fa(myPln->Pln(), w, Standard_True);
   TopoDS_Face fac = TopoDS::Face(fa.Shape());
   

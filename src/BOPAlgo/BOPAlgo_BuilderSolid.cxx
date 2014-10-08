@@ -559,6 +559,7 @@ void BOPAlgo_BuilderSolid::PerformLoops()
         }
       }
     }
+    aShell.Closed (BRep_Tool::IsClosed (aShell));
     myLoopsInternal.Append(aShell);
   }
 }
@@ -1018,6 +1019,7 @@ void MakeInternalShells(const BOPCol_MapOfShape& theMF,
         }
       }
     }
+    aShell.Closed (BRep_Tool::IsClosed (aShell));
     theShells.Append(aShell);
   }
 }

@@ -190,11 +190,9 @@ Standard_Boolean ShapeUpgrade_RemoveLocations::MakeNewShape(const TopoDS_Shape& 
        aNewShape.Location(aL);
      }
      if(shtype != TopAbs_EDGE) {
-       
        theNewShape = aNewShape;
-    
-      return Standard_True;
-    }
+       return Standard_True;
+     }
   }
   
   
@@ -251,8 +249,12 @@ Standard_Boolean ShapeUpgrade_RemoveLocations::MakeNewShape(const TopoDS_Shape& 
   //Removing location from sub-shapes in dependance of LevelRemoving and re-building shape.
   
   if(!isBound) {
-    if(!aRebuild) 
-       aNewShape = theShape.EmptyCopied();
+    if(!aRebuild)
+    {
+      aNewShape = theShape.EmptyCopied();
+      // it is safe to simply copy Closed flag since this operation does not change topology
+      aNewShape.Closed (theShape.Closed());
+    }
     TopLoc_Location oldLoc,nullloc;
     oldLoc = theShape.Location();
     if(!oldLoc.IsIdentity())
@@ -266,19 +268,18 @@ Standard_Boolean ShapeUpgrade_RemoveLocations::MakeNewShape(const TopoDS_Shape& 
       Standard_Boolean isDoneSubShape = MakeNewShape(subshape,anAncShape,anewsubshape,isRemoveLoc);
       isDone = (isDone || isDoneSubShape);
       aB.Add(aNewShape,anewsubshape);
-      
     }
     if(isDone) 
       aNewShape.Orientation(orient);
-    else   aNewShape = aShape;
+    else
+      aNewShape = aShape;
     myMapNewShapes.Bind(aShape,aNewShape);
     if(!theRemoveLoc && !oldLoc.IsIdentity())
       aNewShape.Location(oldLoc);
     
   }
   theNewShape = aNewShape;
-  
-  
+
   return (isDone || isBound);
 }
 

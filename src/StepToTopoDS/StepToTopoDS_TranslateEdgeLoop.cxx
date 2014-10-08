@@ -675,6 +675,7 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
     TP->AddFail(EL,"At least one edge failed : wire not done");
     return;
   }
+  W.Closed (BRep_Tool::IsClosed (W));
   aTool.Bind(EL, W);
   
   // ----------------------------------------------

@@ -285,6 +285,7 @@ void BRepFill_TrimShellCorner::Perform()
     for(ii = myFaces->LowerRow(); ii <= myFaces->UpperRow(); ii++) {
       aBB.Add(aShell, myFaces->Value(ii, jj));
     }
+    aShell.Closed (BRep_Tool::IsClosed (aShell));
 
     if(jj == myFaces->LowerCol()) {
       myShape1 = aShell;

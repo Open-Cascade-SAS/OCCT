@@ -475,6 +475,7 @@ void BOPAlgo_Builder::BuildDraftSolid(const TopoDS_Shape& theSolid,
     } //for (; aIt2.More(); aIt2.Next()) {
     //
     if (iFlag) {
+      aShD.Closed (BRep_Tool::IsClosed (aShD));
       aBB.Add(theDraftSolid, aShD);
     }
   } //for (; aIt1.More(); aIt1.Next()) {

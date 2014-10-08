@@ -369,6 +369,7 @@ Standard_Boolean AIS_ColoredShape::dispatchColors (const TopoDS_Shape&        th
   // iterate on sub-shapes
   BRep_Builder aBBuilder;
   TopoDS_Shape aShapeCopy = theSubshapeToParse.EmptyCopied();
+  aShapeCopy.Closed (theSubshapeToParse.Closed());
   Standard_Boolean isSubOverride = Standard_False;
   Standard_Integer nbDef = 0;
   for (TopoDS_Iterator it (theSubshapeToParse); it.More(); it.Next())

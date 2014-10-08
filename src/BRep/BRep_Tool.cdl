@@ -53,10 +53,10 @@ is
     -----------------------------------------------------------
     -----------------------------------------------------------
     IsClosed (myclass; S : Shape from TopoDS) returns Boolean from Standard;
-    
-    	---Purpose: Returns <True>  if S if flaged Closed, if S is a
-    	--          Solid,Shell or Compound  returns <True> is S has no free boundaries.
-
+    	---Purpose: If S is Solid or Shell, returns True if it has no free boundaries (edges).
+		--          If S is Wire, returns True if it has no free ends (vertices).
+		--          (Internal and External sub-shepes are ignored in this check.)
+		--          For other shape types returns S.Closed().
     	
     -----------------------------------------------------------
     -----------------------------------------------------------
@@ -602,8 +602,6 @@ is
 	---Purpose: Returns the parameters of the vertex on the face.
     raises
     	NullObject from Standard;
-
-    
 
 end Tool;
 

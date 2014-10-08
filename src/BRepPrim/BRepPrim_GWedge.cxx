@@ -318,6 +318,7 @@ const TopoDS_Shell& BRepPrim_GWedge::Shell() {
     if (HasFace(BRepPrim_ZMax))
       myBuilder.AddShellFace(myShell,Face(BRepPrim_ZMax));
 
+    myShell.Closed (BRep_Tool::IsClosed (myShell));
     myBuilder.CompleteShell(myShell);
     ShellBuilt = Standard_True;
   }

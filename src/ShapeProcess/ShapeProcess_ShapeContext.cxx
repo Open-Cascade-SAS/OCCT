@@ -208,7 +208,11 @@ static void RecModif (const TopoDS_Shape &S,
 	}
 	else B.Add ( result, sh );
       }
-      if ( modif ) res = result;
+      if ( modif )
+      {
+        result.Closed (BRep_Tool::IsClosed (result));
+        res = result;
+      }
     }
     
     if ( res != r ) map.Bind ( S.Located(aNullLoc), res );

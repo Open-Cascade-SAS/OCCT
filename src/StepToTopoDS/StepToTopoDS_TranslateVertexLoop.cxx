@@ -89,6 +89,7 @@ void StepToTopoDS_TranslateVertexLoop::Init(const Handle(StepShape_VertexLoop)& 
     B.Degenerated(E, Standard_True);
 
     B.MakeWire(W);
+    W.Closed (Standard_True);
     B.Add(W, E);
     aTool.Bind(VL, W);
     myResult = W;

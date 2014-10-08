@@ -708,21 +708,6 @@ static Standard_Boolean MergeEdges(const TopTools_SequenceOfShape& SeqEdges,
       cout<<"can not make analitical union => make approximation"<<endl;
 #endif
       TopoDS_Edge E = GlueEdgesWithPCurves(aChain, VF, VL);
-      /*
-      TopoDS_Wire W;
-      B.MakeWire(W);
-      for(j=1; j<=aChain.Length(); j++) {
-        TopoDS_Edge edge = TopoDS::Edge(aChain.Value(j));
-        B.Add(W,edge);
-      }
-      Handle(BRepAdaptor_HCompCurve) Adapt = new BRepAdaptor_HCompCurve(W);
-      Approx_Curve3d Conv(Adapt,Tol,GeomAbs_C1,9,1000);
-      Handle(Geom_BSplineCurve) bc = Conv.Curve();
-      TopoDS_Edge E;
-      B.MakeEdge (E,bc,Precision::Confusion());
-      B.Add (E,VF);
-      B.Add (E,VL);
-      */
       aChain.SetValue(1,E);
     }
     else {
@@ -936,10 +921,9 @@ void ShapeUpgrade_UnifySameDomain::UnifyFaces()
           } while (isNewFound);
 
           // sorting any type of edges
-          //aWire = TopoDS::Wire(aContext->Apply(aWire));
+          aWire.Closed (BRep_Tool::IsClosed (aWire));
           aWire = TopoDS::Wire(myContext->Apply(aWire));
 
-          //TopoDS_Face tmpF = TopoDS::Face(aContext->Apply(faces(1).Oriented(TopAbs_FORWARD)));
           TopoDS_Face tmpF = TopoDS::Face(myContext->Apply(faces(1).Oriented(TopAbs_FORWARD)));
           Handle(ShapeFix_Wire) sfw = new ShapeFix_Wire(aWire,tmpF,Precision::Confusion());
           sfw->FixReorder();
@@ -1021,6 +1005,7 @@ void ShapeUpgrade_UnifySameDomain::UnifyFaces()
             TopoDS_Wire aW;
             B.MakeWire(aW);
             B.Add(aW,E);
+            aW.Closed (Standard_True);
             B.Add(aResult,aW);
           }
         }
@@ -1091,6 +1076,7 @@ void ShapeUpgrade_UnifySameDomain::UnifyFaces()
             B.MakeShell ( S );
             for ( i=1; i <= parts.Length(); i++ )
               B.Add ( S, parts(i) );
+            S.Closed (BRep_Tool::IsClosed (S));
             CompRes = S;
           }
           else CompRes = parts(1);

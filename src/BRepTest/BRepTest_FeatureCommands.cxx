@@ -433,6 +433,7 @@ static Standard_Integer PRW(Draw_Interpretor& theCommands,
     for (it.Initialize(lleft);it.More();it.Next()) {
       B.Add(Sh,TopoDS::Face(it.Value()));
     }
+    Sh.Closed (BRep_Tool::IsClosed (Sh));
     thePFace.Init(S,Sh,F,V,fuse,Standard_True);
     ToPrism = Sh;
   }
@@ -590,6 +591,7 @@ static Standard_Integer PRF(Draw_Interpretor& theCommands,
 	B.Add(She,F);
       }
     }
+    She.Closed (BRep_Tool::IsClosed (She));
     thePFace.Init(S,She,TopoDS_Face(),V,fuse,Standard_False);
     ToPrism = She;
   }
@@ -1197,6 +1199,7 @@ static Standard_Integer ROW(Draw_Interpretor& theCommands,
     for (it.Initialize(lleft);it.More();it.Next()) {
       B.Add(Sh,TopoDS::Face(it.Value()));
     }
+    Sh.Closed (BRep_Tool::IsClosed (Sh));
     theRFace.Init(S,Sh,F,theAxis,fuse,Standard_True);
     ToRotate = Sh;
   }
@@ -1341,6 +1344,7 @@ static Standard_Integer ROF(Draw_Interpretor& theCommands,
 	B.Add(She,F);
       }
     }
+    She.Closed (BRep_Tool::IsClosed (She));
     theRFace.Init(S,She,TopoDS_Face(),theAxis,fuse,Standard_False);
     ToRotate = She;
   }
