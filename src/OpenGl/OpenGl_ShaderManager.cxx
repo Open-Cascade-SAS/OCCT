@@ -25,6 +25,9 @@
 #include <OpenGl_ShaderProgram.hxx>
 #include <OpenGl_Workspace.hxx>
 
+IMPLEMENT_STANDARD_HANDLE (OpenGl_SetOfShaderPrograms, Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(OpenGl_SetOfShaderPrograms, Standard_Transient)
+
 IMPLEMENT_STANDARD_HANDLE (OpenGl_ShaderManager, Standard_Transient)
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_ShaderManager, Standard_Transient)
 
@@ -48,45 +51,6 @@ const char THE_FUNC_lightDef[] =
   EOL"vec3 Ambient;"   //!< Ambient  contribution of light sources
   EOL"vec3 Diffuse;"   //!< Diffuse  contribution of light sources
   EOL"vec3 Specular;"; //!< Specular contribution of light sources
-
-//! Computes illumination from light sources
-const char THE_FUNC_computeLighting[] =
-  EOL"vec4 computeLighting (in vec3 theNormal,"
-  EOL"                      in vec3 theView,"
-  EOL"                      in vec4 thePoint,"
-  EOL"                      in bool theIsFront)"
-  EOL"{"
-  // clear the light intensity accumulators
-  EOL"  Ambient  = occLightAmbient.rgb;"
-  EOL"  Diffuse  = vec3 (0.0);"
-  EOL"  Specular = vec3 (0.0);"
-  EOL"  vec3 aPoint = thePoint.xyz / thePoint.w;"
-  EOL"  for (int anIndex = 0; anIndex < occLightSourcesCount; ++anIndex)"
-  EOL"  {"
-  EOL"    int aType = occLight_Type (anIndex);"
-  EOL"    if (aType == OccLightType_Direct)"
-  EOL"    {"
-  EOL"      directionalLight (anIndex, theNormal, theView, theIsFront);"
-  EOL"    }"
-  EOL"    else if (aType == OccLightType_Point)"
-  EOL"    {"
-  EOL"      pointLight (anIndex, theNormal, theView, aPoint, theIsFront);"
-  EOL"    }"
-  EOL"    else if (aType == OccLightType_Spot)"
-  EOL"    {"
-  EOL"      spotLight (anIndex, theNormal, theView, aPoint, theIsFront);"
-  EOL"    }"
-  EOL"  }"
-  EOL
-  EOL"  vec4 aMaterialAmbient  = theIsFront ? occFrontMaterial_Ambient()  : occBackMaterial_Ambient();"
-  EOL"  vec4 aMaterialDiffuse  = theIsFront ? occFrontMaterial_Diffuse()  : occBackMaterial_Diffuse();"
-  EOL"  vec4 aMaterialSpecular = theIsFront ? occFrontMaterial_Specular() : occBackMaterial_Specular();"
-  EOL"  vec4 aMaterialEmission = theIsFront ? occFrontMaterial_Emission() : occBackMaterial_Emission();"
-  EOL"  return vec4 (Ambient,  1.0) * aMaterialAmbient"
-  EOL"       + vec4 (Diffuse,  1.0) * aMaterialDiffuse"
-  EOL"       + vec4 (Specular, 1.0) * aMaterialSpecular"
-  EOL"                              + aMaterialEmission;"
-  EOL"}";
 
 //! Function computes contribution of isotropic point light source
 const char THE_FUNC_pointLight[] =
@@ -240,7 +204,7 @@ OpenGl_ShaderManager::OpenGl_ShaderManager (OpenGl_Context* theContext)
   myContext  (theContext),
   myLastView (NULL)
 {
-  myLightPrograms = myGouraudPrograms;
+  //
 }
 
 // =======================================================================
@@ -346,6 +310,42 @@ Standard_Boolean OpenGl_ShaderManager::IsEmpty() const
 }
 
 // =======================================================================
+// function : switchLightPrograms
+// purpose  :
+// =======================================================================
+void OpenGl_ShaderManager::switchLightPrograms()
+{
+  TCollection_AsciiString aKey (myShadingModel == Visual3d_TOM_FRAGMENT ? "p_" : "g_");
+  const OpenGl_ListOfLight* aLights = myLightSourceState.LightSources();
+  if (aLights != NULL)
+  {
+    for (OpenGl_ListOfLight::Iterator aLightIter (*aLights); aLightIter.More(); aLightIter.Next())
+    {
+      switch (aLightIter.Value().Type)
+      {
+        case Visual3d_TOLS_AMBIENT:
+          break; // skip ambient
+        case Visual3d_TOLS_DIRECTIONAL:
+          aKey += "d";
+          break;
+        case Visual3d_TOLS_POSITIONAL:
+          aKey += "p";
+          break;
+        case Visual3d_TOLS_SPOT:
+          aKey += "s";
+          break;
+      }
+    }
+  }
+
+  if (!myMapOfLightPrograms.Find (aKey, myLightPrograms))
+  {
+    myLightPrograms = new OpenGl_SetOfShaderPrograms();
+    myMapOfLightPrograms.Bind (aKey, myLightPrograms);
+  }
+}
+
+// =======================================================================
 // function : UpdateLightSourceStateTo
 // purpose  : Updates state of OCCT light sources
 // =======================================================================
@@ -353,6 +353,17 @@ void OpenGl_ShaderManager::UpdateLightSourceStateTo (const OpenGl_ListOfLight* t
 {
   myLightSourceState.Set (theLights);
   myLightSourceState.Update();
+  switchLightPrograms();
+}
+
+// =======================================================================
+// function : SetShadingModel
+// purpose  :
+// =======================================================================
+void OpenGl_ShaderManager::SetShadingModel (const Visual3d_TypeOfModel theModel)
+{
+  myShadingModel = theModel;
+  switchLightPrograms();
 }
 
 // =======================================================================
@@ -1116,6 +1127,78 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramFlat (Handle(OpenGl_Shad
 }
 
 // =======================================================================
+// function : stdComputeLighting
+// purpose  :
+// =======================================================================
+TCollection_AsciiString OpenGl_ShaderManager::stdComputeLighting()
+{
+  bool aLightsMap[Visual3d_TOLS_SPOT + 1] = { false, false, false, false };
+  TCollection_AsciiString aLightsFunc, aLightsLoop;
+  const OpenGl_ListOfLight* aLights = myLightSourceState.LightSources();
+  if (aLights != NULL)
+  {
+    Standard_Integer anIndex = 0;
+    for (OpenGl_ListOfLight::Iterator aLightIter (*aLights); aLightIter.More(); aLightIter.Next(), ++anIndex)
+    {
+      switch (aLightIter.Value().Type)
+      {
+        case Visual3d_TOLS_AMBIENT:
+          --anIndex;
+          break; // skip ambient
+        case Visual3d_TOLS_DIRECTIONAL:
+          aLightsLoop = aLightsLoop + EOL"    directionalLight (" + anIndex + ", theNormal, theView, theIsFront);";
+          break;
+        case Visual3d_TOLS_POSITIONAL:
+          aLightsLoop = aLightsLoop + EOL"    pointLight (" + anIndex + ", theNormal, theView, aPoint, theIsFront);";
+          break;
+        case Visual3d_TOLS_SPOT:
+          aLightsLoop = aLightsLoop + EOL"    spotLight (" + anIndex + ", theNormal, theView, aPoint, theIsFront);";
+          break;
+      }
+
+      bool& aTypeBit = aLightsMap[aLightIter.Value().Type];
+      if (aTypeBit)
+      {
+        continue;
+      }
+
+      aTypeBit = true;
+      switch (aLightIter.Value().Type)
+      {
+        case Visual3d_TOLS_AMBIENT:     break;
+        case Visual3d_TOLS_DIRECTIONAL: aLightsFunc += THE_FUNC_directionalLight; break;
+        case Visual3d_TOLS_POSITIONAL:  aLightsFunc += THE_FUNC_pointLight;       break;
+        case Visual3d_TOLS_SPOT:        aLightsFunc += THE_FUNC_spotLight;        break;
+      }
+    }
+  }
+
+  return TCollection_AsciiString()
+    + THE_FUNC_lightDef
+    + aLightsFunc
+    + EOL
+      EOL"vec4 computeLighting (in vec3 theNormal,"
+      EOL"                      in vec3 theView,"
+      EOL"                      in vec4 thePoint,"
+      EOL"                      in bool theIsFront)"
+      EOL"{"
+      EOL"  Ambient  = occLightAmbient.rgb;"
+      EOL"  Diffuse  = vec3 (0.0);"
+      EOL"  Specular = vec3 (0.0);"
+      EOL"  vec3 aPoint = thePoint.xyz / thePoint.w;"
+    + aLightsLoop
+    + EOL"  vec4 aMaterialAmbient  = theIsFront ? occFrontMaterial_Ambient()  : occBackMaterial_Ambient();"
+      EOL"  vec4 aMaterialDiffuse  = theIsFront ? occFrontMaterial_Diffuse()  : occBackMaterial_Diffuse();"
+      EOL"  vec4 aMaterialSpecular = theIsFront ? occFrontMaterial_Specular() : occBackMaterial_Specular();"
+      EOL"  vec4 aMaterialEmission = theIsFront ? occFrontMaterial_Emission() : occBackMaterial_Emission();"
+      EOL"  return vec4 (Ambient,  1.0) * aMaterialAmbient"
+      EOL"       + vec4 (Diffuse,  1.0) * aMaterialDiffuse"
+      EOL"       + vec4 (Specular, 1.0) * aMaterialSpecular"
+      EOL"                              + aMaterialEmission;"
+      EOL"}";
+}
+
+// =======================================================================
 // function : prepareStdProgramGouraud
 // purpose  :
 // =======================================================================
@@ -1144,15 +1227,11 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramGouraud (Handle(OpenGl_S
     aSrcFragExtraMain += THE_FRAG_CLIP_PLANES;
   }
 
+  const TCollection_AsciiString aLights = stdComputeLighting();
   aSrcVert = TCollection_AsciiString()
     + THE_FUNC_transformNormal
     + EOL
-    + THE_FUNC_lightDef
-    + THE_FUNC_pointLight
-    + THE_FUNC_spotLight
-    + THE_FUNC_directionalLight
-    + EOL
-    + THE_FUNC_computeLighting
+    + aLights
     + EOL
       EOL"varying vec4 FrontColor;"
       EOL"varying vec4 BackColor;"
@@ -1230,18 +1309,14 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramPhong (Handle(OpenGl_Sha
     + EOL"  gl_Position = occProjectionMatrix * occWorldViewMatrix * occModelWorldMatrix * occVertex;"
       EOL"}";
 
+  const TCollection_AsciiString aLights = stdComputeLighting();
   aSrcFrag = TCollection_AsciiString()
     + EOL"varying vec4 PositionWorld;"
       EOL"varying vec4 Position;"
       EOL"varying vec3 Normal;"
       EOL"varying vec3 View;"
     + EOL
-    + THE_FUNC_lightDef
-    + THE_FUNC_pointLight
-    + THE_FUNC_spotLight
-    + THE_FUNC_directionalLight
-    + EOL
-    + THE_FUNC_computeLighting
+    + aLights
     + EOL
       EOL"void main()"
       EOL"{"

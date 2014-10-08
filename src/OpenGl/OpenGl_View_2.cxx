@@ -404,37 +404,34 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
   // Set OCCT state uniform variables
   const Handle(OpenGl_ShaderManager) aManager   = aContext->ShaderManager();
   const Standard_Boolean             isSameView = aManager->IsSameView (this); // force camera state update when needed
-  if (!aManager->IsEmpty())
+  if (StateInfo (myCurrLightSourceState, aManager->LightSourceState().Index()) != myLastLightSourceState)
   {
-    if (StateInfo (myCurrLightSourceState, aManager->LightSourceState().Index()) != myLastLightSourceState)
-    {
-      aManager->UpdateLightSourceStateTo (&myLights);
-      myLastLightSourceState = StateInfo (myCurrLightSourceState, aManager->LightSourceState().Index());
-    }
+    aManager->UpdateLightSourceStateTo (&myLights);
+    myLastLightSourceState = StateInfo (myCurrLightSourceState, aManager->LightSourceState().Index());
+  }
 
-    if (myProjectionState != myCamera->ProjectionState()
-    || !isSameView)
-    {
-      myProjectionState = myCamera->ProjectionState();
-      aManager->UpdateProjectionStateTo ((const Tmatrix3*)myCamera->ProjectionMatrixF().GetData());
-    }
+  if (myProjectionState != myCamera->ProjectionState()
+  || !isSameView)
+  {
+    myProjectionState = myCamera->ProjectionState();
+    aManager->UpdateProjectionStateTo ((const Tmatrix3*)myCamera->ProjectionMatrixF().GetData());
+  }
 
-    if (myModelViewState != myCamera->ModelViewState()
-    || !isSameView)
-    {
-      myModelViewState = myCamera->ModelViewState();
-      aManager->UpdateWorldViewStateTo ((const Tmatrix3*)myCamera->OrientationMatrixF().GetData());
-    }
+  if (myModelViewState != myCamera->ModelViewState()
+  || !isSameView)
+  {
+    myModelViewState = myCamera->ModelViewState();
+    aManager->UpdateWorldViewStateTo ((const Tmatrix3*)myCamera->OrientationMatrixF().GetData());
+  }
 
-    if (aManager->ModelWorldState().Index() == 0)
-    {
-      Tmatrix3 aModelWorldState = { { 1.f, 0.f, 0.f, 0.f },
-                                    { 0.f, 1.f, 0.f, 0.f },
-                                    { 0.f, 0.f, 1.f, 0.f },
-                                    { 0.f, 0.f, 0.f, 1.f } };
+  if (aManager->ModelWorldState().Index() == 0)
+  {
+    Tmatrix3 aModelWorldState = { { 1.f, 0.f, 0.f, 0.f },
+                                  { 0.f, 1.f, 0.f, 0.f },
+                                  { 0.f, 0.f, 1.f, 0.f },
+                                  { 0.f, 0.f, 0.f, 1.f } };
 
-      aContext->ShaderManager()->UpdateModelWorldStateTo (&aModelWorldState);
-    }
+    aContext->ShaderManager()->UpdateModelWorldStateTo (&aModelWorldState);
   }
 
   if (isProjectionMatUpdateNeeded

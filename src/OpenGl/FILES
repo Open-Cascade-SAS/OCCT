@@ -136,6 +136,7 @@ OpenGl_ShaderObject.hxx
 OpenGl_ShaderObject.cxx
 OpenGl_ShaderProgram.hxx
 OpenGl_ShaderProgram.cxx
+OpenGl_SetOfShaderPrograms.hxx
 OpenGl_ShaderManager.hxx
 OpenGl_ShaderManager.cxx
 OpenGl_ShaderStates.hxx
