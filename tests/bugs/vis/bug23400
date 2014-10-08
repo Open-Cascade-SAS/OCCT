@@ -1,0 +1,16 @@
+puts "============"
+puts "OCC23400"
+puts "============"
+puts ""
+#######################################################################
+# Triangulation of thin ring contains gap
+#######################################################################
+
+restore [locate_data_file bug23400_thinring.brep] a
+vinit
+vsetdispmode 1
+vdisplay a
+vtop
+vfit
+
+set only_screen 1
