@@ -1122,10 +1122,14 @@ TopoDS_Shape AIS_InteractiveContext::SelectedShape() const
 {
   if (!HasOpenedContext())
   {
-    TopoDS_Shape sh;
-    Handle(AIS_Shape) shape = Handle(AIS_Shape)::DownCast(SelectedInteractive());
-    if (!shape.IsNull()) sh = shape->Shape().Located (SelectedInteractive()->Transformation());
-    return sh;
+    TopoDS_Shape aResShape;
+    Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast (SelectedInteractive());
+    if (!aShape.IsNull())
+    {
+      aResShape = aShape->Shape().Located (TopLoc_Location (SelectedInteractive()->Transformation()) * aShape->Shape().Location());
+    }
+
+    return aResShape;
   } 
   else
   {

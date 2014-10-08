@@ -1,0 +1,24 @@
+puts "================"
+puts "OCC25335"
+puts "================"
+puts ""
+#######################################################################################
+# Visualization - method ::SelectedShape() in AIS_LocalContext and AIS_InteractiveContext overrides shape transformation
+#######################################################################################
+
+vinit
+
+box b 1 1 1
+vdisplay b
+btranslate b 1 0 0
+vselmode 2 1
+vfit
+vselect 299 352
+vpickselected
+vsetlocation b 0 1 0
+vzfit
+vselect 233 188
+vpickselected
+vsetlocation b -2 2 0
+vfit
+

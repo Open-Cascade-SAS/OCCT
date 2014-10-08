@@ -379,10 +379,6 @@ void AIS_Shape::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
   static TopAbs_ShapeEnum TypOfSel;
   TypOfSel = AIS_Shape::SelectionType(aMode);
   TopoDS_Shape shape = myshape;
-  if( HasTransformation() ) {
-    gp_Trsf trsf = Transformation();
-    shape = shape.Located(TopLoc_Location(trsf)*shape.Location());
-  }
 
 // POP protection against crash in low layers
 

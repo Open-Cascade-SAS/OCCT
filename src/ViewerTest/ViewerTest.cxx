@@ -4080,6 +4080,54 @@ static int VPickShape( Draw_Interpretor& di, Standard_Integer argc, const char**
 }
 
 //=======================================================================
+//function : VPickSelected
+//purpose  :
+//=======================================================================
+static int VPickSelected (Draw_Interpretor& , Standard_Integer theArgNb, const char** theArgs)
+{
+  static Standard_Integer aCount = 0;
+  TCollection_AsciiString aName = "PickedShape_";
+
+  if (theArgNb > 1)
+  {
+    aName = theArgs[1];
+  }
+  else
+  {
+    aName = aName + aCount++ + "_";
+  }
+
+  Standard_Integer anIdx = 0;
+  for (TheAISContext()->InitSelected(); TheAISContext()->MoreSelected(); TheAISContext()->NextSelected(), ++anIdx)
+  {
+    TopoDS_Shape aShape;
+    if (TheAISContext()->HasSelectedShape())
+    {
+      aShape = TheAISContext()->SelectedShape();
+    }
+    else
+    {
+      Handle(AIS_InteractiveObject) IO = TheAISContext()->SelectedInteractive();
+      aShape = (*((Handle(AIS_Shape)*) &IO))->Shape();
+    }
+
+    TCollection_AsciiString aCurrentName = aName;
+    if (anIdx > 0)
+    {
+      aCurrentName += anIdx;
+    }
+
+    DBRep::Set ((aCurrentName).ToCString(), aShape);
+
+    Handle(AIS_Shape) aNewShape = new AIS_Shape (aShape);
+    GetMapOfAIS().Bind (aNewShape, aCurrentName);
+    TheAISContext()->Display (aNewShape);
+  }
+
+  return 0;
+}
+
+//=======================================================================
 //function : list of known objects
 //purpose  :
 //=======================================================================
@@ -4635,6 +4683,9 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
 
   theCommands.Add("vr", "vr : reading of the shape",
 		  __FILE__,vr, group);
+
+  theCommands.Add("vpickselected", "vpickselected [name]: extract selected shape.",
+    __FILE__, VPickSelected, group);
 
 }
 

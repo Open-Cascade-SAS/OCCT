@@ -776,15 +776,14 @@ HasShape() const
 //==================================================
 TopoDS_Shape AIS_LocalContext::SelectedShape() const 
 {
-  static TopoDS_Shape aSh;
-  Handle(Standard_Transient) Tr = AIS_Selection::CurrentSelection()->Value();
-  Handle(SelectMgr_EntityOwner) EO = *((Handle(SelectMgr_EntityOwner)*)&Tr);
-  Handle(StdSelect_BRepOwner) BRO = Handle(StdSelect_BRepOwner)::DownCast(EO);
-  if( BRO.IsNull() ) 
+  Handle(Standard_Transient) aTr = AIS_Selection::CurrentSelection()->Value();
+  Handle(SelectMgr_EntityOwner) anEO = *((Handle(SelectMgr_EntityOwner)*)&aTr);
+  Handle(StdSelect_BRepOwner) aBRO = Handle(StdSelect_BRepOwner)::DownCast(anEO);
+  if( aBRO.IsNull() ) 
   {
-    return aSh;
+    return TopoDS_Shape();
   }
-  return BRO->Shape().Located (BRO->Location());
+  return aBRO->Shape().Located (aBRO->Location() * aBRO->Shape().Location());
 }
 
 //==================================================
