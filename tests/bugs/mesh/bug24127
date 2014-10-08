@@ -1,0 +1,39 @@
+puts "================"
+puts "CR24127"
+puts "================"
+puts ""
+###############################################
+## Mesh generated with BRepMesh_FastDiscret does not reflect a deflection setting
+###############################################
+
+bsplinesurf s 2 4 0.0 3 0.34 1 0.67 1 1.0 3 1 2 0.0 2 1.0 2 10 0 0 1 6 0 0 1 4 0 0 1 2 0 0 1 0 0 0 1 10 5 0 1 6 5 0 1 4 5 0 1 1.5 9 0 1 0 5 0 1
+
+mkface f s
+
+incmesh f 1
+
+trinfo f
+
+set trinfo_s [trinfo f]
+regexp {([0-9]+) triangles} ${trinfo_s} str nbtri_s
+regexp {([0-9]+) nodes} ${trinfo_s} str nbnod_s
+regexp {deflection ([0-9.+e-]+)} ${trinfo_s} str defl_s
+
+if { ${nbtri_s} != 90 } {
+   puts "Error: triangle number is bad"
+}
+
+if { ${nbnod_s} != 54 } {
+   puts "Error: node number is bad"
+}
+
+set expected_defl_s 0.59663444648536101
+set tol_abs_defl_s 1.e-3
+set tol_rel_defl_s 0.01
+checkreal "Deflection" ${defl_s} ${expected_defl_s} ${tol_abs_defl_s} ${tol_rel_defl_s}
+
+vinit
+vdisplay f
+vfit
+
+set only_screen 1
