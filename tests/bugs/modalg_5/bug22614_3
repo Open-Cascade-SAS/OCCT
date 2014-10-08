@@ -1,0 +1,29 @@
+puts "========================"
+puts "OCC22614"
+puts "========================" 
+puts ""
+#######################################################################
+# Scaling fails with linear (p-)curves
+#######################################################################
+
+cylinder c 50
+
+mkface f c 0 5 0 10
+
+tscale f 0 0 0 0.001
+
+renamevar f result
+
+set square 0.0025
+
+set nb_v_good 4
+set nb_e_good 4
+set nb_w_good 1
+set nb_f_good 1
+set nb_sh_good 0
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good  0
+set nb_shape_good 10
+
+set 2dviewer 1
