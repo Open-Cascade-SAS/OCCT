@@ -704,7 +704,7 @@ void BRepBlend_SurfRstLineBuilder::InternalPerform(Blend_SurfRstFunction&  Func,
       }
       else{
 	// Failed reframing. Leave with PointsConfondus
-#if DEB
+#if BREPBLEND_DEB
 	cout<<"SurfRstLineBuilder : failed reframing"<<endl;
 #endif
 	State = Blend_SamePoints;
@@ -759,7 +759,7 @@ void BRepBlend_SurfRstLineBuilder::InternalPerform(Blend_SurfRstFunction&  Func,
 	  Arrive = Standard_True;
 	  if (line->NbPoints()>=2) {
 	    // Indicate that one stops during the processing
-#if DEB
+#if BREPBLEND_DEB
 	    cout<<"SurfRstLineBuilder : No advancement in the processing"<<endl;
 #endif
 	  }
@@ -865,7 +865,7 @@ void BRepBlend_SurfRstLineBuilder::InternalPerform(Blend_SurfRstFunction&  Func,
     case Blend_SamePoints :
       {
 	// Stop
-#if DEB
+#if BREPBLEND_DEB
 	cout << "SurfRstLineBuilder Points mixed in the processing" << endl;
 #endif
 	previousP.ParametersOnS(U,V);
@@ -938,7 +938,7 @@ Standard_Boolean BRepBlend_SurfRstLineBuilder::Recadre(Blend_SurfCurvFuncInv&   
   rsnld.Perform(FinvC,Solinv,infb,supb);
 
   if (!rsnld.IsDone()) {
-#if DEB
+#if BREPBLEND_DEB
     cout << "SurfRstLineBuilder : RSNLD not done "<< endl << endl;
 #endif
   }
@@ -977,7 +977,7 @@ Standard_Boolean BRepBlend_SurfRstLineBuilder::Recadre(Blend_SurfCurvFuncInv&   
     rsnld.Perform(FinvC,Solinv,infb,supb);
 
     if (!rsnld.IsDone()) {
-#if DEB
+#if BREPBLEND_DEB
       cout << "SurfRstLineBuilder : RSNLD not done "<< endl << endl;
 #endif
     }
@@ -1038,7 +1038,7 @@ Standard_Boolean BRepBlend_SurfRstLineBuilder::Recadre(Blend_SurfRstFunction&   
   math_FunctionSetRoot rsnld(Finv,toler,30);
   rsnld.Perform(Finv,Solinv,infb,supb);
   if (!rsnld.IsDone()) {
-#if DEB
+#if BREPBLEND_DEB
     cout << "SurfRstLineBuilder :RSNLD not done "<< endl;
 #endif
     return Standard_False;
@@ -1122,7 +1122,7 @@ Standard_Boolean BRepBlend_SurfRstLineBuilder::Recadre(Blend_SurfPointFuncInv&  
   math_FunctionSetRoot rsnld(FinvP,toler,30);
   rsnld.Perform(FinvP,Solinv,infb,supb);
   if (!rsnld.IsDone()) {
-#if DEB
+#if BREPBLEND_DEB
     cout << "SurfRstLineBuilder :RSNLD not done "<< endl;
 #endif
     return Standard_False;

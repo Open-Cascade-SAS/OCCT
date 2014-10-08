@@ -559,7 +559,7 @@ void LocOpe_SplitShape::Add(const TopoDS_Wire& W,
       AddClosedWire(W,F);
     }
   } catch (Standard_Failure ) {
-#ifdef DEB
+#ifdef LOCOPE_DEB
     cout << "Warning: SpliShape internal problem detected, some faces may be lost. Check input edges/wires" <<endl;
 #endif
     return;
@@ -1168,7 +1168,7 @@ const TopTools_ListOfShape& LocOpe_SplitShape::DescendantShapes
     Rebuild(myShape);
     myDone = Standard_True;
   }
-#ifdef DEB
+#ifdef LOCOPE_DEB
   if (!myDblE.IsEmpty()) {
     cout << "Le shape comporte des faces invalides" << endl;
   }
@@ -1286,7 +1286,7 @@ static Standard_Boolean IsInside(const TopoDS_Face& F,
   Standard_Real f,l;
   Handle(Geom2d_Curve) C2d = BRep_Tool::CurveOnSurface(edg,F,f,l);
   if(C2d.IsNull()) {
-#ifdef DEB
+#ifdef LOCOPE_DEB
 	  cout << "Edge is not on surface" <<endl;
 #endif
       return Standard_False;

@@ -187,7 +187,7 @@ void TopOpeBRepBuild_Builder::GFillCurveTopologyWES(const TopOpeBRepDS_CurveIter
       
       myBuildTool.PCurve(WESF,E,C2D);
 
-#ifdef DEB
+#ifdef TOPOPEBREPBUILD_DEB
       EhasPConWESF = FC2D_HasCurveOnSurface(E,WESF);
       if (!EhasPConWESF) cout<<"TopOpeBRepBuild_Builder::GFillCurveTopologyWES : Null PCurve on F"<<iWESF<<endl;
 #endif

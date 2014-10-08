@@ -137,7 +137,7 @@ void TNaming_Localizer::FindFeaturesInAncestors
 	FindFeaturesInAncestors (AS, Context, AncInFeature);
       }
       else {
-#ifdef DEB
+#ifdef TNAMING_DEB
 	cout <<" TNaming_Localization : Failure in the research of ancetres in TDF"<<endl;
 #endif
       }
@@ -145,7 +145,7 @@ void TNaming_Localizer::FindFeaturesInAncestors
     
   }
   else {
-#ifdef DEB
+#ifdef TNAMING_DEB
     cout <<" TNaming_Localization : S n est pas dans le solide"<<endl;//S is not in the solid
 #endif
   }
@@ -213,7 +213,7 @@ const TopTools_IndexedDataMapOfShapeListOfShape& TNaming_Localizer::Ancestors
       TopTools_IndexedDataMapOfShapeListOfShape& Anc = itA.Value();
 
       TopExp_Explorer exp(In,TS);
-#ifdef DEB
+#ifdef TNAMING_DEB
       if (!exp.More())   cout <<" TNaming_Localization : Construction ancetres impossible"<<endl;
 #endif
       const TopoDS_Shape& SS = exp.Current();
@@ -232,7 +232,7 @@ const TopTools_IndexedDataMapOfShapeListOfShape& TNaming_Localizer::Ancestors
 	  TopExp::MapShapesAndAncestors(In, TS, TA, Anc);
 	}
 	else {
-#ifdef DEB
+#ifdef TNAMING_DEB
 	  cout <<" TNaming_Localization : Construction ancetres impossible"<<endl;
 #endif
 	}
@@ -256,7 +256,7 @@ const TopTools_IndexedDataMapOfShapeListOfShape& TNaming_Localizer::Ancestors
     TopExp::MapShapesAndAncestors(In, TS, TA, myAncestors.First());
   }
   else {
-#ifdef DEB
+#ifdef TNAMING_DEB
     cout <<" TNaming_Localization : Construction ancetres impossible"<<endl;
 #endif
   }
@@ -280,7 +280,7 @@ Standard_Boolean TNaming_Localizer::IsNew (const TopoDS_Shape&    S,
       return Standard_True;
     }
   }
-#ifdef DEB
+#ifdef TNAMING_DEB
   cout <<"TNaming_Localizer:IsNewInLab : Shape n est pas dans le Label."<<endl;
 #endif
   return Standard_False;
@@ -334,7 +334,7 @@ void TNaming_Localizer::GoBack (const TopoDS_Shape&         S,
           LBNS.Append (TNaming_Tool::NamedShape(it.Shape(),Lab));
         }
         else {
-#ifdef DEB
+#ifdef TNAMING_DEB
           cout <<"TNaming_Localizer: Shape modifie sans avoir ete cree"<<endl;
 #endif
         }

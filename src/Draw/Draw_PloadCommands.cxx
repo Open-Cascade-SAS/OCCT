@@ -48,7 +48,7 @@ static Standard_Boolean FindPluginFile (TCollection_AsciiString& thePluginName, 
   // check if the file name has been specified and use default value if not
   if (thePluginName.IsEmpty()) {
     thePluginName += "DrawPlugin";
-#ifdef DEB
+#ifdef DRAW_DEB
     cout << "Plugin file name has not been specified. Defaults to " << thePluginName.ToCString() << endl;
 #endif
   }
@@ -82,7 +82,7 @@ static Standard_Boolean FindPluginFile (TCollection_AsciiString& thePluginName, 
       if (aToSetCSFVariable) {
         OSD_Environment aCSFVarEnv ( aCSFVariable, aPluginDir );
         aCSFVarEnv.Build();
-#ifdef DEB
+#ifdef DRAW_DEB
         cout << "Variable " << aCSFVariable.ToCString() << " has not been explicitly defined. Set to " << aPluginDir.ToCString() << endl;
 #endif
         if ( aCSFVarEnv.Failed() ) {
@@ -115,7 +115,7 @@ static void Parse (Draw_MapOfAsciiString& theMap)
       const TCollection_AsciiString& aKey = theMap.FindKey(j);
       TCollection_AsciiString aResource = aKey;
       if(myResources->Find(aResource.ToCString())) {
-#ifdef DEB
+#ifdef DRAW_DEB
 	cout << "Parse Value ==> " << myResources->Value(aResource.ToCString()) << endl;
 #endif
 	TCollection_AsciiString aValue(myResources->Value(aResource.ToCString()));
@@ -123,7 +123,7 @@ static void Parse (Draw_MapOfAsciiString& theMap)
 	Standard_Integer i=1;
 	for(;;) {
 	  TCollection_AsciiString aCurKey = aValue.Token(" \t,", i++);
-#ifdef DEB
+#ifdef DRAW_DEB
 	  cout << "Parse aCurKey = " << aCurKey.ToCString() << endl;
 #endif
 	  if(aCurKey.IsEmpty()) break;
@@ -211,12 +211,12 @@ static Standard_Integer Pload (Draw_Interpretor& di,
   for(j = 1; j <= aMapExtent; j++) {
     const TCollection_AsciiString& aKey = aMap.FindKey(j);
     TCollection_AsciiString aResource = aKey;
-#ifdef DEB
+#ifdef DRAW_DEB
       cout << "aResource = " << aResource << endl;
 #endif
     if(myResources->Find(aResource.ToCString())) {
       const TCollection_AsciiString& aValue = myResources->Value(aResource.ToCString()); 
-#ifdef DEB
+#ifdef DRAW_DEB
       cout << "Value ==> " << aValue << endl;
 #endif
 	
@@ -234,12 +234,12 @@ static Standard_Integer Pload (Draw_Interpretor& di,
       OSD_File aTclScriptFile ( aTclScriptFileName );
       OSD_File aTclScriptFileDefaults ( aTclScriptFileNameDefaults );
       if (!aTclScriptDir.IsEmpty() && aTclScriptFile.Exists()) {
-#ifdef DEB
+#ifdef DRAW_DEB
 	cout << "Load " << aTclScriptFileName << " TclScript" << endl;
 #endif
 	di.EvalFile( aTclScriptFileName.ToCString() );
       } else if (!aPluginDir.IsEmpty() && aTclScriptFileDefaults.Exists()) {
-#ifdef DEB
+#ifdef DRAW_DEB
 	cout << "Load " << aTclScriptFileNameDefaults << " TclScript" << endl;
 #endif
 	di.EvalFile( aTclScriptFileNameDefaults.ToCString() );

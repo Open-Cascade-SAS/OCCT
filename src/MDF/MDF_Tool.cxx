@@ -147,7 +147,7 @@ void MDF_Tool::WriteLabels
 
     // Label array REsizing.
     if (labAlloc < theLabels->Upper()) {
-#ifdef DEB
+#ifdef MDF_DEB
       cout<<"MDF_Tool::WriteLabels LABEL array resizing from "<<theLabels->Upper()<<" to "<<labAlloc<<endl;
 #endif
       Handle(PColStd_HArray1OfInteger) newLabels =
@@ -160,7 +160,7 @@ void MDF_Tool::WriteLabels
 
     // Attribute array REsizing.
     if (attAlloc < theAttributes->Upper()) {
-#ifdef DEB
+#ifdef MDF_DEB
       cout<<"MDF_Tool::WriteLabels ATTRIBUTES array resizing from "<<theAttributes->Upper()<<" to "<<attAlloc<<endl;
 #endif
       Handle(PDF_HAttributeArray1) newAttributes =
@@ -444,7 +444,7 @@ void MDF_Tool::ReadAttributes
   }
 
   if (!noDeadLock) {
-#ifdef DEB
+#ifdef MDF_DEB
     cout<<"AfterRetrieval(): dead lock between these attributes:"<<endl;
     for (itr2.Initialize(attList); itr2.More(); itr2.Next())
       cout<<"Attribute type = "<<itr2.Value()->DynamicType()->Name()<<endl;;

@@ -561,7 +561,7 @@ static Standard_Boolean MergeEdges(const TopTools_SequenceOfShape& SeqEdges,
     }
   }
   if(aChain.Length()<SeqEdges.Length()) {
-#ifdef DEB
+#ifdef SHAPEUPGRADE_DEB
     cout<<"can not create correct chain..."<<endl;
 #endif
     return Standard_False;
@@ -679,7 +679,7 @@ static Standard_Boolean MergeEdges(const TopTools_SequenceOfShape& SeqEdges,
     }
   }
   if (j < aChain.Length()) {
-#ifdef DEB
+#ifdef SHAPEUPGRADE_DEB
     cout<<"null curve3d in edge..."<<endl;
 #endif
     return Standard_False;
@@ -704,14 +704,14 @@ static Standard_Boolean MergeEdges(const TopTools_SequenceOfShape& SeqEdges,
       break;
     }
     if(NeedUnion) {
-#ifdef DEB
+#ifdef SHAPEUPGRADE_DEB
       cout<<"can not make analitical union => make approximation"<<endl;
 #endif
       TopoDS_Edge E = GlueEdgesWithPCurves(aChain, VF, VL);
       aChain.SetValue(1,E);
     }
     else {
-#ifdef DEB
+#ifdef SHAPEUPGRADE_DEB
       cout<<"can not make approximation for such types of curves"<<endl;
 #endif
       return Standard_False;

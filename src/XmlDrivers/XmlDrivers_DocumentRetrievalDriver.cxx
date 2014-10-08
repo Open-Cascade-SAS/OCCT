@@ -48,9 +48,6 @@ Handle(XmlMDF_ADriverTable) XmlDrivers_DocumentRetrievalDriver::AttributeDrivers
 void XmlDrivers_DocumentRetrievalDriver::PropagateDocumentVersion(
                                    const Standard_Integer theDocVersion )
 {
-#ifdef DEB
-//    cout << "DocCurVersion =" << theDocVersion <<endl;
-#endif
   XmlMDataStd::SetDocumentVersion(theDocVersion);
   XmlMNaming::SetDocumentVersion(theDocVersion);
 }

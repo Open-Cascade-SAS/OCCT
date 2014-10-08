@@ -76,7 +76,7 @@ bool Font_FTFont::Init (const NCollection_String& theFontPath,
   myPointSize = thePointSize;
   if (!myFTLib->IsValid())
   {
-    std::cerr << "FreeType library is unavailable!\n";
+    //std::cerr << "FreeType library is unavailable!\n";
     Release();
     return false;
   }

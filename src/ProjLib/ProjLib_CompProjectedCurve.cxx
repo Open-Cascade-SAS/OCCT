@@ -709,7 +709,7 @@ void ProjLib_CompProjectedCurve::Init()
           if(!ExactBound(Triple, t - Step, Tol, 
             myTolU, myTolV, myCurve, mySurface)) 
           {
-#if DEB
+#if PROJLIB_DEB
             cout<<"There is a problem with ExactBound computation"<<endl;
 #endif
             DichExactBound(Triple, t - Step, Tol, myTolU, myTolV, 
@@ -782,7 +782,7 @@ void ProjLib_CompProjectedCurve::Init()
           if(!ExactBound(Triple, t, Tol, myTolU, myTolV, 
             myCurve, mySurface)) 
           {
-#if DEB
+#if PROJLIB_DEB
             cout<<"There is a problem with ExactBound computation"<<endl;
 #endif
             DichExactBound(Triple, t, Tol, myTolU, myTolV, 

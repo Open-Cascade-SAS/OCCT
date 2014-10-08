@@ -1184,7 +1184,7 @@ static Standard_Integer OneShapeIsHalfSpace(const TopoDS_Shape& S1,const TopoDS_
 	  // so this suggestion must be developed carefully. while we don't classify it!
 	  // *****************************************************************************
 	}
-#ifdef DEB
+#ifdef TOPOPEBREP_DEB
       if( result != 0 )
 	cout << "# one of the SOLIDs probably is a HALF SPACE" << endl;
 #endif

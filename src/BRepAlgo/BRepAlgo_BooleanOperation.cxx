@@ -154,7 +154,7 @@ extern void FDSSDM_Close();// see TopOpeBRepDS_samdom.cxx
     }
   }
   myBuilderCanWork = (esp || tede) ;
-#ifdef DEB
+#ifdef BREPALGO_DEB
   if (!esp) cout<<"BRepAlgo_BooleanOperation(DEB) some edges not SameParameter"<<endl;
 #endif  
   if (!myBuilderCanWork) return;

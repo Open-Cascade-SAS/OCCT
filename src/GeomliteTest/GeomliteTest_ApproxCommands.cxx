@@ -419,7 +419,7 @@ static Standard_Integer smoothing (Draw_Interpretor& di,Standard_Integer n, cons
     if (Tolerance>0) { Variation.SetWithMinMax(Standard_True);}
     Variation.Approximate();
 
-#  ifdef DEB
+#  ifdef GEOMLITETEST_DEB
     //Variation.Dump(cout);
     Standard_SStream aSStream;
     Variation.Dump(aSStream);
@@ -464,7 +464,7 @@ static Standard_Integer smoothing (Draw_Interpretor& di,Standard_Integer n, cons
     Variation.SetTolerance( Abs(Tolerance));
     if (Tolerance>0) { Variation.SetWithMinMax(Standard_True);}
     Variation.Approximate();
-#     ifdef DEB
+#     ifdef GEOMLITETEST_DEB
     //Variation.Dump(cout);
     Standard_SStream aSStream;
     Variation.Dump(aSStream);

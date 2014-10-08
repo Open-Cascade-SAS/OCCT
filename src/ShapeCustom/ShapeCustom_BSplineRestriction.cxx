@@ -454,7 +454,7 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertSurface(const Handle(Geo
         if(ConvertCurve(BasCurve,ResCurve,Standard_False,Max(VF,BasCurve->FirstParameter()),Min(VL,BasCurve->LastParameter()),TolS,Standard_False)) {
           Handle(Geom_SurfaceOfRevolution) newRevol = new Geom_SurfaceOfRevolution(ResCurve,Surface->Axis());
           aSurf = newRevol;
-#ifdef DEB
+#ifdef SHAPECUSTOM_DEB
           cout <<" Revolution on offset converted" << endl;
 #endif
         }
@@ -655,7 +655,7 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertSurface(const Handle(Geo
           if (anApprox.MaxError() <= myTol3d && Done) {
 
             nbOfSpan = (anApprox.Surface()->NbUKnots()-1)*(anApprox.Surface()->NbVKnots()-1);
-#ifdef DEB
+#ifdef SHAPECUSTOM_DEB
             if((imax-i+1)!=1) {
               cout << " iteration = " << i
                 <<    "\terror = " << anApprox.MaxError()
@@ -696,17 +696,13 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertSurface(const Handle(Geo
             return Standard_True;
           }
           else {
-            //#ifdef DEB    
-            //	      cout<< " iteration = " << imax-i+1
-            //		<<    "\terror = " << anApprox.MaxError() <<endl;
-            //#endif
             break;
           }
 
         }
 
         catch (Standard_Failure) {
-#ifdef DEB 
+#ifdef SHAPECUSTOM_DEB 
           cout << "Warning: GeomConvert_ApproxSurface Exception: try to decrease continuity ";
           Standard_Failure::Caught()->Print(cout); cout << endl;
 #endif
@@ -733,7 +729,7 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertSurface(const Handle(Geo
         else continue;
       }
       else { 
-#ifdef DEB
+#ifdef SHAPECUSTOM_DEB
         cout<<" Approximation iteration out. Surface is not aproximated." << endl;
 #endif
         return Standard_False;
@@ -743,7 +739,7 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertSurface(const Handle(Geo
       if(MaxDeg < myParameters->GMaxDegree())
       { MaxDeg = myParameters->GMaxDegree(); continue;}
       else {
-#ifdef DEB	
+#ifdef SHAPECUSTOM_DEB	
         cout<<" Approximation iteration out. Surface is not aproximated." << endl;
 #endif
         return Standard_False;
@@ -996,7 +992,7 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertCurve(Handle(Geom_Curve)
                 (anApprox.MaxError() >= Max(TolCur,myTol3d)))) {
                   if(MaxSeg < myParameters->GMaxSeg()) { MaxSeg = myParameters->GMaxSeg(); aC =aC1; continue;}
                   else {
-#ifdef DEB 
+#ifdef SHAPECUSTOM_DEB
                     cout << "Curve is not aproxed with continuity  "<< aCont<<endl;
 #endif	      
                     if(IsConvert) {
@@ -1012,7 +1008,7 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertCurve(Handle(Geom_Curve)
                     MaxDeg = myParameters->GMaxDegree(); aC = aC1; continue;
                   }
                   else {
-#ifdef DEB	      
+#ifdef SHAPECUSTOM_DEB
                     cout << "Curve is not aproxed with continuity  "<< aCont<<endl;
 #endif
                     if(IsConvert) {
@@ -1029,7 +1025,7 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertCurve(Handle(Geom_Curve)
             }
         }
         catch (Standard_Failure) {
-#ifdef DEB 
+#ifdef SHAPECUSTOM_DEB
           cout << "Warning: GeomConvert_ApproxCurve Exception: Wrong Coefficient : Decrease continuity    ";
           Standard_Failure::Caught()->Print(cout); cout << endl;
 #endif
@@ -1304,7 +1300,7 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertCurve2d(Handle(Geom2d_Cu
             if(myDeg && ((DegC > MaxDeg)  || !Done || ( anApprox.MaxError() >= Max(myTol2d,TolCur)))) {
               if(MaxSeg < myParameters->GMaxSeg()) { MaxSeg = myParameters->GMaxSeg(); aC =aC1; continue;}
               else {
-#ifdef DEB	    
+#ifdef SHAPECUSTOM_DEB
                 cout << "Curve is not aproxed with continuity  "<< aCont<<endl;
 #endif
                 if(IsConvert) {
@@ -1320,7 +1316,7 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertCurve2d(Handle(Geom2d_Cu
                 MaxDeg = myParameters->GMaxDegree(); aC =aC1; continue;
               }
               else {
-#ifdef DEB	    
+#ifdef SHAPECUSTOM_DEB
                 cout << "Curve is not aproxed with continuity  "<< aCont<<endl;
 #endif
                 if(IsConvert) {
@@ -1337,7 +1333,7 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertCurve2d(Handle(Geom2d_Cu
           }
         }
         catch (Standard_Failure) {
-#ifdef DEB 
+#ifdef SHAPECUSTOM_DEB
           cout << "Warning: Geom2dConvert_ApproxCurve Exception: Wrong Cofficient :Decrease Continuity    ";
           Standard_Failure::Caught()->Print(cout); cout << endl;
 #endif

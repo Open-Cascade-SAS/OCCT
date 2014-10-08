@@ -1140,7 +1140,7 @@ void BRepOffset_Offset::Init(const TopoDS_Edge&     Path,
     Edge3 = TopoDS::Edge(aLocalEdge);
 //    Edge3 = TopoDS::Edge(FirstEdge.Oriented(TopAbs_FORWARD));
     TopExp::Vertices(Edge3,VVf,VVl);
-#ifdef DEB
+#ifdef BREPOFFSET_DEB
     // si firstedge n est pas nul, il faut que les vertex soient partages
     if ( !VVf.IsSame(V1f) && !VVf.IsSame(V2f) ) {
       cout << "Attention Vertex non partages !!!!!!" << endl;
@@ -1204,7 +1204,7 @@ void BRepOffset_Offset::Init(const TopoDS_Edge&     Path,
       Edge4 = TopoDS::Edge(aLocalEdge);
 //      Edge4 = TopoDS::Edge(LastEdge.Oriented(TopAbs_FORWARD));
       TopExp::Vertices(Edge4,VVf,VVl);
-#ifdef DEB
+#ifdef BREPOFFSET_DEB
       // si lastedge n est pas nul, il faut que les vertex soient partages
       if ( !VVf.IsSame(V1l) && !VVf.IsSame(V2l) ) {
 	cout << "Attention Vertex non partages !!!!!!" << endl;

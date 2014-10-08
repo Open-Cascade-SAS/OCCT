@@ -108,7 +108,7 @@ void TDF_Delta::BeforeOrAfterApply(const Standard_Boolean before) const
   }
 
   if (!noDeadLock) {
-#ifdef DEB
+#ifdef TDF_DEB
     if (before) cout<<"Before"; else cout<<"After";
     cout<<"Undo(): dead lock between these attributes:"<<endl;
     for (itr.Initialize(ADlist); itr.More(); itr.Next()) {

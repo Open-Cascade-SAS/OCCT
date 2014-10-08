@@ -62,9 +62,7 @@ Standard_Boolean BinMDataStd_RealArrayDriver::Paste
   TColStd_Array1OfReal& aTargetArray = anAtt->Array()->ChangeArray1();
   if(!theSource.GetRealArray (&aTargetArray(aFirstInd), aLength))
     return Standard_False;
-#ifdef DEB
-  //cout << "CurDocVersion = " << BinMDataStd::DocumentVersion() <<endl;
-#endif
+
   Standard_Boolean aDelta(Standard_False);
   if(BinMDataStd::DocumentVersion() > 2) {
     Standard_Byte aDeltaValue;

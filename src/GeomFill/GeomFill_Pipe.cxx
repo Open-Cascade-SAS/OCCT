@@ -498,7 +498,7 @@ void GeomFill_Pipe::Init(const Handle(Geom_Curve)& Path,
     }
 
   case GeomFill_IsDarboux :
-#if DEB
+#if GEOMFILL_DEB
     {
       cout << "Option Darboux: non realisable" << endl; 
     }
@@ -875,7 +875,7 @@ void GeomFill_Pipe::Perform(const Standard_Real Tol,
 		 myAdpPath->LastParameter(),
 		 Tol, Tol, 0., 0.01,
 		 TheConti, DegMax, NbMaxSegment);
-#if DEB
+#if GEOMFILL_DEB
    cout << "Tuyau : ";
    App.Dump(cout);
    cout << endl;

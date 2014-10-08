@@ -1814,7 +1814,7 @@ void ProjectIntersectAndEstLim(const gp_Lin&        theLine,
 {
   ProjLib_Plane aLineProj( thePln, theLine );
   if (!aLineProj.IsDone()) {
-#ifdef DEB
+#ifdef INTCURVESURFACE_DEB
   cout
   << "Info: IntCurveSurface_Inter::ProjectIntersectAndEstLim(), !aLineProj.IsDone()"
   << endl;
@@ -1941,7 +1941,7 @@ void EstLimForInfRevl(const gp_Lin&   Line,
     return; // not infinite curve
   }
   if (!aBasCurvProj.IsDone()) {
-#ifdef DEB
+#ifdef INTCURVESURFACE_DEB
     cout << "Info: IntCurveSurface_Inter::EstLimForInfRevl(), !aBasCurvProj.IsDone()" << endl;
 #endif
     return;

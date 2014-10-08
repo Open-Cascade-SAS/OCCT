@@ -1253,7 +1253,7 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face& F,
       for (itl.Initialize(itdmsls.Value());itl.More(); itl.Next()) {
 	if (theSubs.IsCopied(itl.Value())) {
 	  if (theSubs.Copy(itl.Value()).Extent() != 1) {
-#ifdef DEB
+#ifdef LOCOPE_DEB
 	    cout << "Invalid number of descendant" << endl;
 #endif
 	    return;

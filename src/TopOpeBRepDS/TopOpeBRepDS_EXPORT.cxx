@@ -390,7 +390,7 @@ Standard_EXPORT Standard_Real FDS_Parameter(const Handle(TopOpeBRepDS_Interferen
   else if ( I->IsKind(STANDARD_TYPE(TopOpeBRepDS_CurvePointInterference)) )
     p = Handle(TopOpeBRepDS_CurvePointInterference)::DownCast(I)->Parameter();
   else {
-#ifdef DEB
+#ifdef TOPOPEBREPDS_DEB
     cout<<"EdgeInterference : mauvais type d'interference"<<endl;
 #endif
     Standard_Failure::Raise("FDS_Parameter");

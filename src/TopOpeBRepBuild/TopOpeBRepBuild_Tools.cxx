@@ -447,7 +447,7 @@ const Standard_Real PAR_T = 0.43213918;
       if (!anAvoidSubshMap.Contains (aSubshMap(i)) )
         aSubsh = aSubshMap(i);
     if (aSubsh.IsNull()) {
-#ifdef DEB
+#ifdef TOPOPEBREPBUILD_DEB
       cout<<"FindStateThroughVertex: warning: all vertices are avoided"<<endl;
 #endif
       return TopAbs_UNKNOWN;    // failure

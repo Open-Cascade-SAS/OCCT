@@ -34,7 +34,7 @@
 static void FUN_Raise()
 {
   Standard_ProgramError::Raise("Edge3dInterferenceTool");
-#ifdef DEB
+#ifdef TOPOPEBREPDS_DEB
   cout <<" ************** Failure in Edge3dInterferenceTool"<<endl;
 #endif
 }

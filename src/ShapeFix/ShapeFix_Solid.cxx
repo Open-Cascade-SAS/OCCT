@@ -223,7 +223,7 @@ static void CollectSolids(const TopTools_SequenceOfShape& aSeqShells ,
       }
     }
     catch(Standard_Failure) {
-#ifdef DEB 
+#ifdef SHAPEFIX_DEB
       cout << "Warning: ShapeFix_Solid::SolidFromShell: Exception: ";
       Standard_Failure::Caught()->Print(cout); cout << endl;
 #endif
@@ -294,7 +294,7 @@ static Standard_Boolean CreateSolids(const TopoDS_Shape aShape,TopTools_IndexedM
       infinstatus = bsc3d.State();
       }
     catch(Standard_Failure) {
-#ifdef DEB 
+#ifdef SHAPEFIX_DEB
       cout << "Warning: ShapeFix_Solid::SolidFromShell: Exception: ";
       Standard_Failure::Caught()->Print(cout); cout << endl;
 #endif
@@ -553,7 +553,7 @@ TopoDS_Solid ShapeFix_Solid::SolidFromShell (const TopoDS_Shell& shell)
     }
   }
   catch(Standard_Failure) {
-#ifdef DEB 
+#ifdef SHAPEFIX_DEB
     cout << "Warning: ShapeFix_Solid::SolidFromShell: Exception: ";
     Standard_Failure::Caught()->Print(cout); cout << endl;
 #endif

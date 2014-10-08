@@ -4721,14 +4721,14 @@ static Standard_Boolean IsValid(const TopTools_ListOfShape& theArgs,
   TCollection_AsciiString checkValid = check.Value();
   Standard_Boolean ToCheck = Standard_True;
   if (!checkValid.IsEmpty()) {
-#ifdef DEB
+#ifdef VIEWERTEST_DEB
     cout <<"DONT_SWITCH_IS_VALID positionnee a :"<<checkValid.ToCString()<<"\n";
 #endif
     if ( checkValid=="true" || checkValid=="TRUE" ) {
       ToCheck= Standard_False;
     }
   } else {
-#ifdef DEB
+#ifdef VIEWERTEST_DEB
     cout <<"DONT_SWITCH_IS_VALID non positionne"<<"\n";
 #endif
   }

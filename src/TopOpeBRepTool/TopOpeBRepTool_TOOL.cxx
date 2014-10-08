@@ -1266,7 +1266,7 @@ static Standard_Boolean FUN_ngF(const gp_Pnt2d& uv, const TopoDS_Face& F, gp_Vec
 	ngF = ng; return Standard_True;
       }
     }
-#ifdef DEB
+#ifdef TOPOPEBREPTOOL_DEB
     cout<<"FUN_tool_nggeomF NYI"<<endl;
 #endif
     return Standard_False;

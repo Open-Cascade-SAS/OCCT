@@ -662,9 +662,11 @@ void BRepFill_OffsetWire::Perform (const Standard_Real Offset,
   {
     myShape.Nullify();
     myIsDone = Standard_False;
+#ifdef BREPFILL_DEB
     cout<<"An exception was caught in BRepFill_OffsetWire::Perform : ";
     Standard_Failure::Caught()->Print(cout);
     cout<<endl;
+#endif
 
     return;
   }

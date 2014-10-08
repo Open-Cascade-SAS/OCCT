@@ -91,7 +91,7 @@ static void DecodeMakeEdgeError(const BRepLib_MakeEdge&   ME,
 //      (TP,tobind, MakeEdge(myCurve,V1,V2,U1,U2,BRepAPI::Precision()) );
 //    aTool.Bind (tobind,E);  SURTOUT PAS : noter pour debug/erreur
 //  }
-#ifdef DEBUG
+#ifdef STEPTOTOPODS_DEB
   cout << "------------------------------------" << endl;
   cout << "MakeEdge Error  : " << ME.Error()<<" - ";
 #endif
@@ -120,7 +120,7 @@ static void DecodeMakeEdgeError(const BRepLib_MakeEdge&   ME,
       TP->AddFail(orig," Line through identic Points");
       break;
     }
-#ifdef DEBUG
+#ifdef STEPTOTOPODS_DEB
   cout << "Original Type   : " << orig->DynamicType() << endl;
   cout << "3D Curve Type   : " << myCurve->DynamicType() << endl;
   cout << "First Parameter : " << U1 << endl;

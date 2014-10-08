@@ -124,7 +124,7 @@ void RWStepShape_RWFaceBound::Check
 	
 	Standard_Boolean sharOE2 = aShto.IsShared(theOE2);
 	if(!sharOE2){
-#ifdef DEB
+#ifdef RWSTEPSHAPE_DEB
 	  cout << "OrientedEdge2 not shared" <<endl;
 #endif
 	}
@@ -136,7 +136,7 @@ void RWStepShape_RWFaceBound::Check
 	    Handle(StepShape_EdgeLoop)::DownCast(myShRef.Value());
 	  Standard_Boolean sharEL2 = aShto.IsShared(theEL2);
 	  if(!sharEL2){
-#ifdef DEB
+#ifdef RWSTEPSHAPE_DEB
 	    cout << "EdgeLoop2 not shared" <<endl;
 #endif
 	  }
@@ -150,7 +150,7 @@ void RWStepShape_RWFaceBound::Check
 	      theFBOri2 = theFB2->Orientation();
 	    }
 	    else {
-#ifdef DEB
+#ifdef RWSTEPSHAPE_DEB
 	      cout << "EdgeLoop not referenced by FaceBound" << endl;
 #endif
 	    }
@@ -173,7 +173,7 @@ void RWStepShape_RWFaceBound::Check
     } //end for(i=1; i<=nbEdg; ...)
   } //end if(!theEL1.IsNull)
   else {
-#ifdef DEB
+#ifdef RWSTEPSHAPE_DEB
     cout << "no EdgeLoop in FaceBound" << endl;
 #endif
   }

@@ -108,14 +108,14 @@ Geom2dHatch_Hatcher (Geom2dHatch_Intersector (IntersectorConfusion,
 
     if (PCurve.IsNull())
     {
-#ifdef DEB
+#ifdef DBREP_DEB
       cout << "DBRep_IsoBuilder : PCurve is null\n";
 #endif
       return;
     }
     else if (U1 == U2)
     {
-#ifdef DEB
+#ifdef DBREP_DEB
       cout << "DBRep_IsoBuilder PCurve : U1==U2\n";
 #endif
       return;
@@ -140,7 +140,7 @@ Geom2dHatch_Hatcher (Geom2dHatch_Intersector (IntersectorConfusion,
             U2 - TrimPCurve->BasisCurve()->LastParameter()  > Precision::PConfusion())
           {
             AddElement (PCurve, TopologicalEdge.Orientation());
-#ifdef DEB
+#ifdef DBREP_DEB
             cout << "DBRep_IsoBuilder TrimPCurve : parameters out of range\n";
             cout << "    U1(" << U1 << "), Umin(" << PCurve->FirstParameter()
               << "), U2("  << U2 << "), Umax(" << PCurve->LastParameter() << ")\n";
@@ -152,7 +152,7 @@ Geom2dHatch_Hatcher (Geom2dHatch_Intersector (IntersectorConfusion,
         {
           if (PCurve->FirstParameter() - U1 > Precision::PConfusion())
           {
-#ifdef DEB
+#ifdef DBREP_DEB
             cout << "DBRep_IsoBuilder PCurve : parameters out of range\n";
             cout << "    U1(" << U1 << "), Umin(" << PCurve->FirstParameter() << ")\n";
 #endif
@@ -160,7 +160,7 @@ Geom2dHatch_Hatcher (Geom2dHatch_Intersector (IntersectorConfusion,
           }
           if (PCurve->FirstParameter() - U2 > Precision::PConfusion())
           {
-#ifdef DEB
+#ifdef DBREP_DEB
             cout << "DBRep_IsoBuilder PCurve : parameters out of range\n";
             cout << "    U2(" << U2 << "), Umin(" << PCurve->FirstParameter() << ")\n";
 #endif
@@ -168,7 +168,7 @@ Geom2dHatch_Hatcher (Geom2dHatch_Intersector (IntersectorConfusion,
           }
           if (U1 - PCurve->LastParameter() > Precision::PConfusion())
           {
-#ifdef DEB
+#ifdef DBREP_DEB
             cout << "DBRep_IsoBuilder PCurve : parameters out of range\n";
             cout << "    U1(" << U1 << "), Umax(" << PCurve->LastParameter() << ")\n";
 #endif
@@ -176,7 +176,7 @@ Geom2dHatch_Hatcher (Geom2dHatch_Intersector (IntersectorConfusion,
           }
           if (U2 - PCurve->LastParameter() > Precision::PConfusion())
           {
-#ifdef DEB
+#ifdef DBREP_DEB
             cout << "DBRep_IsoBuilder PCurve : parameters out of range\n";
             cout << "    U2(" << U2 << "), Umax(" << PCurve->LastParameter() << ")\n";
 #endif

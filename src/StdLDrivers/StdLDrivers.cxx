@@ -31,7 +31,7 @@ static Standard_GUID StdLSchemaID          ("bd696002-5b34-11d1-b5ba-00a0c906436
 Handle(Standard_Transient) StdLDrivers::Factory(const Standard_GUID& aGUID) {
 
   if(aGUID == StdLSchemaID) {    
-#ifdef DEB
+#ifdef STDLDRIVERS_DEB
     cout << "StdLSchema : Plugin" << endl;
 #endif
     static Handle(StdLSchema) model_ss = new StdLSchema;
@@ -44,14 +44,14 @@ Handle(Standard_Transient) StdLDrivers::Factory(const Standard_GUID& aGUID) {
   }
 
   if(aGUID == StdLStorageDriver)  {
-#ifdef DEB
+#ifdef STDLDRIVERS_DEB
     cout << "StdLDrivers : Storage Plugin" << endl;
 #endif
     static Handle(StdLDrivers_DocumentStorageDriver) model_sd = new StdLDrivers_DocumentStorageDriver;
     return model_sd;
   }
   if(aGUID == StdLRetrievalDriver) {  
-#ifdef DEB
+#ifdef STDLDRIVERS_DEB
     cout << "StdLDrivers : Retrieval Plugin" << endl;
 #endif
     static Handle(StdLDrivers_DocumentRetrievalDriver) model_rd = new StdLDrivers_DocumentRetrievalDriver;

@@ -221,7 +221,7 @@ Handle(Geom_Surface) IGESToBRep_BasicSurface::TransferBasicSurface
 
   } //:36
   catch(Standard_Failure) {
-#ifdef DEB
+#ifdef IGESTOBREP_DEB
     cout << "\n** Exception in IGESToBRep_BasicSurface::TransferBasicSurface : "; 
     Standard_Failure::Caught()->Print(cout);
 #endif

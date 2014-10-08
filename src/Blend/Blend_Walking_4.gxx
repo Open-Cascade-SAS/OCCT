@@ -316,7 +316,7 @@ void Blend_Walking::InternalPerform(Blend_Function& Func,
 	if (stepw > 2*tolgui) State = Blend_StepTooLarge;
 	// Sinon echec recadrage. On sort avec PointsConfondus
 	else {
-#if DEB
+#if BLEND_DEB
 	  cout << "Echec recadrage" << endl;
 #endif	  
 	  State = Blend_SamePoints;
@@ -521,7 +521,7 @@ void Blend_Walking::InternalPerform(Blend_Function& Func,
     case Blend_SamePoints :
       {
 	// On arrete
-#if DEB
+#if BLEND_DEB
 	cout << " Points confondus dans le cheminement" << endl;
 #endif
 	Ext1.SetValue(previousP.PointOnS1(),

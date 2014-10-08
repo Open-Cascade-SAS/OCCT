@@ -644,7 +644,7 @@ Storage_Error DDF_IOStream::BeginReadInfoSection()
   ReadChar(l,len);
   
   if (strncmp(DDF_IOStream::MagicNumber(),l.ToCString(),len) != 0) {
-#ifdef DEB
+#ifdef DDF_DEB
     cout<<"BeginReadInfoSection: format error"<<endl;
 #endif
     s = Storage_VSFormatError;
@@ -1344,7 +1344,7 @@ Storage_Error DDF_IOStream::IsGoodFileType(istream* anIStream)
     f.Close();
 
     if (strncmp(DDF_IOStream::MagicNumber(),l.ToCString(),len) != 0) {
-#ifdef DEB
+#ifdef DDF_DEB
     cout<<"IsGoodFileType: format error"<<endl;
 #endif
       s = Storage_VSFormatError;

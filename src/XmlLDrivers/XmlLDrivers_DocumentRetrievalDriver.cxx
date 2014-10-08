@@ -500,9 +500,6 @@ static void take_time (const Standard_Integer isReset, const char * aHeader,
 void XmlLDrivers_DocumentRetrievalDriver::PropagateDocumentVersion(
                                    const Standard_Integer theDocVersion )
 {
-#ifdef DEB
-//    cout << "DocCurVersion =" << theDocVersion <<endl;
-#endif
   XmlMDataStd::SetDocumentVersion(theDocVersion);
 }
 

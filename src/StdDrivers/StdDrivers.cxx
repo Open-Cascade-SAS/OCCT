@@ -32,14 +32,14 @@ static Standard_GUID StdSchemaID          ("ad696002-5b34-11d1-b5ba-00a0c9064368
 Handle(Standard_Transient) StdDrivers::Factory(const Standard_GUID& aGUID) {
 
   if(aGUID == StdSchemaID) {    
-#ifdef DEB
+#ifdef STDDRIVERS_DEB
     cout << "StdSchema : Plugin" << endl;
 #endif
     static Handle(StdLSchema) model_ss = new StdLSchema;
     static Standard_Boolean aNeedNested = Standard_True;
     if(aNeedNested) {
       aNeedNested = Standard_False;
-#ifdef DEB
+#ifdef STDDRIVERS_DEB
       cout << "StdSchema: Adding nested schema" << endl;
 #endif
       Handle(StdSchema) aSchema = new StdSchema;
@@ -53,14 +53,14 @@ Handle(Standard_Transient) StdDrivers::Factory(const Standard_GUID& aGUID) {
   }
 
   if(aGUID == StdStorageDriver)  {
-#ifdef DEB
+#ifdef STDDRIVERS_DEB
     cout << "StdDrivers : Storage Plugin" << endl;
 #endif
     static Handle(StdDrivers_DocumentStorageDriver) model_sd = new StdDrivers_DocumentStorageDriver;
     return model_sd;
   }
   if(aGUID == StdRetrievalDriver) {  
-#ifdef DEB
+#ifdef STDDRIVERS_DEB
     cout << "StdDrivers : Retrieval Plugin" << endl;
 #endif
     static Handle(StdDrivers_DocumentRetrievalDriver) model_rd = new StdDrivers_DocumentRetrievalDriver;

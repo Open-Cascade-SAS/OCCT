@@ -99,7 +99,7 @@ void ShapeFix_EdgeProjAux::Compute (const Standard_Real preci)
     Standard_Real U1 = FirstParam();
     Standard_Real U2 = LastParam();
     if (U1>=U2) {
-#ifdef DEBUG
+#ifdef SHAPEFIX_DEB
       cout << "Parametres inverses ... " << endl;
 #endif
       Standard_Real tmp = U1;
@@ -209,7 +209,7 @@ static Standard_Boolean FindParameterWithExt (const gp_Pnt& Pt1,
     else return Standard_False;
   }  // end try
   catch(Standard_Failure) {
-#ifdef DEB //:s5
+#ifdef SHAPEFIX_DEB //:s5
     cout << "Warning: ShapeFix_EdgeProjAux, FindParameterWithExt(): Exception: ";
     Standard_Failure::Caught()->Print(cout); cout << endl;
 #endif
@@ -264,7 +264,7 @@ void ShapeFix_EdgeProjAux::Init2d (const Standard_Real preci)
             return;
         }
       } 
-#ifdef DEBUG
+#ifdef SHAPEFIX_DEB
       else cout <<"Other type of deg curve"<<endl;
 #endif
 
@@ -335,7 +335,7 @@ void ShapeFix_EdgeProjAux::Init2d (const Standard_Real preci)
         cf=-10000;
         cl= 10000;
         //pdn not cutted by bounds
-#ifdef DEBUG
+#ifdef SHAPEFIX_DEB
         cout<<"Infinite Surface"<<endl;
 #endif	
       }
@@ -344,7 +344,7 @@ void ShapeFix_EdgeProjAux::Init2d (const Standard_Real preci)
       //pdn not linear case not managed
       cf=-10000;
       cl= 10000;
-#ifdef DEBUG     
+#ifdef SHAPEFIX_DEB
       cout<<"Some infinite curve"<<endl;
 #endif 
     }
@@ -391,7 +391,7 @@ void ShapeFix_EdgeProjAux::Init2d (const Standard_Real preci)
     myFirstParam = theCurve2d->ReversedParameter(Usup);
     myLastParam  = theCurve2d->ReversedParameter(Uinf);
     theCurve2d->Reverse();
-#ifdef DEB
+#ifdef SHAPEFIX_DEB
     cout << "Warning: ShapeFix_EdgeProjAux: pcurve reversed" << endl;
 #endif
     return;
@@ -432,7 +432,7 @@ void ShapeFix_EdgeProjAux::Init2d (const Standard_Real preci)
         UpdateParam2d(theCurve2d);
       else {
         myLastParam+=period;
-#ifdef DEBUG
+#ifdef SHAPEFIX_DEB
         cout <<" Added"<<endl;
 #endif	
       }
@@ -441,7 +441,7 @@ void ShapeFix_EdgeProjAux::Init2d (const Standard_Real preci)
       if(w1 > wmid) {
         myLastParam -=period;
         UpdateParam2d(theCurve2d);
-#ifdef DEBUG
+#ifdef SHAPEFIX_DEB
         cout <<" Added & Inverted"<<endl;
 #endif	
       } else if (w2 < wmid) {
@@ -554,7 +554,7 @@ void ShapeFix_EdgeProjAux::UpdateParam2d (const Handle(Geom2d_Curve)& theCurve2d
     if      ( Abs ( myFirstParam - cl ) <= preci2d ) myFirstParam = cf;
     else if ( Abs ( myLastParam  - cf ) <= preci2d ) myLastParam  = cl;
     else {
-#ifdef DEBUG
+#ifdef SHAPEFIX_DEB
       cout << "Error : curve 2d range crossing non periodic curve origin";
       cout <<  endl;
 #endif
@@ -572,7 +572,7 @@ void ShapeFix_EdgeProjAux::UpdateParam2d (const Handle(Geom2d_Curve)& theCurve2d
     }
   }
   else {
-#ifdef DEBUG
+#ifdef SHAPEFIX_DEB
     cout << "Warning : non increasing parameters for 2d curve." << endl;
     cout << "          update parameter 2d uncertain." << endl;
 #endif

@@ -885,7 +885,7 @@ TNaming_Iterator::TNaming_Iterator(const TDF_Label&       Lab,
   }
   else {
     myNode = 0L;
-#ifdef DEB
+#ifdef TNAMING_DEB
     cout <<"TNaming_Iterator : No Shape for this label"<<endl;
 #endif
   }

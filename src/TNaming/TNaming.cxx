@@ -756,7 +756,7 @@ Standard_OStream& TNaming::Print (const TNaming_NameType NAME,  Standard_OStream
 Standard_OStream& TNaming::Print (const TDF_Label& ACCESS,  Standard_OStream& s) {
   Handle(TNaming_UsedShapes) US;
   if (!ACCESS.Root().FindAttribute(TNaming_UsedShapes::GetID(), US)) {
-#ifdef DEB
+#ifdef TNAMING_DEB
     cout<<"TNaming::Print(US): Bad access"<<endl;
 #endif
     return s;

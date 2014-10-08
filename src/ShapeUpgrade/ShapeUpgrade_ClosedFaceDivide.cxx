@@ -176,7 +176,7 @@ Standard_Boolean ShapeUpgrade_ClosedFaceDivide::SplitSurface()
 	    split->Append(val);
 	  isUSplit = Standard_True;
 	}
-#ifdef DEB
+#ifdef SHAPEUPGRADE_DEB
 	else cout << "Warning: SU_ClosedFaceDivide: Thin face, not splitted" << endl;
 #endif
       }
@@ -197,7 +197,7 @@ Standard_Boolean ShapeUpgrade_ClosedFaceDivide::SplitSurface()
 	    split->Append(val);
 	  isUSplit = Standard_False;
 	}
-#ifdef DEB
+#ifdef SHAPEUPGRADE_DEB
 	else cout << "Warning: SU_ClosedFaceDivide: Thin face, not splitted" << endl;
 #endif
       }

@@ -714,7 +714,7 @@ void  TopOpeBRepDS_BuildTool::ApproxCurves
   Standard_Real newtol,newparmin,newparmax;
   // MSV Nov 12, 2001: if approx failed than leave old curves of degree 1
   if (!approxMade) {
-#ifdef DEB
+#ifdef TOPOPEBREPDS_DEB
     cout<<"TopOpeBRepDS_BuildTool::ApproxCurves : approx failed, leave curves of degree 1"
       <<endl;
 #endif

@@ -3481,7 +3481,7 @@ void  BSplCLib::TangExtendToConstraint
  Standard_Real&                        KnotsResult, 
  Standard_Real&                        PolesResult) 
 {
-#if DEB
+#if BSPLCLIB_DEB
   if (CDegree<Continuity+1) {
     cout<<"The BSpline degree must be greater than the order of continuity"<<endl;
   }

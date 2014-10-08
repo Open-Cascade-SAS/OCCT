@@ -1376,7 +1376,7 @@ void Draft_Modification::Perform ()
 	  GeomAPI_ProjectPointOnCurve Projector( vtori, Einf1.Geometry() ); //patch
 	  pvt = Projector.NearestPoint();
 
-#ifdef DEB
+#ifdef DRAFT_DEB
 	  static Standard_Integer VertexRecomp = 1;
 	  if (VertexRecomp!=0) {
 	    cout << "pori :" << vtori.X() << " " << vtori.Y() << " " << vtori.Z() << endl;
@@ -1395,7 +1395,7 @@ void Draft_Modification::Perform ()
 	    gp_Pnt opvt;
 	    Einf2.Geometry()->D0(Vinf.Parameter(Edg2), opvt);
 
-#ifdef DEB
+#ifdef DRAFT_DEB
 	  if (VertexRecomp!=0) {
 	    cout << "  Edg 2 :" << Vinf.Parameter(Vinf.Edge()) << endl;
 	    cout << "opvt " << opvt.X() << " " << opvt.Y() << " " << opvt.Z() << endl;
@@ -1609,7 +1609,7 @@ Handle(Geom_Surface) Draft_Modification::NewSurface
   else if (TypeS == STANDARD_TYPE(Geom_CylindricalSurface)) {
     Standard_Real testdir = Direction.Dot(NeutralPlane.Axis().Direction());
     if (Abs(testdir) <= 1.-Precision::Angular()) {	
-#ifdef DEB
+#ifdef DRAFT_DEB
     cout << "NewSurfaceCyl:Draft_Direction_and_Neutral_Perpendicular" << endl;
 #endif
       return NewS;	
@@ -1617,7 +1617,7 @@ Handle(Geom_Surface) Draft_Modification::NewSurface
     gp_Cylinder Cy = Handle(Geom_CylindricalSurface)::DownCast(S)->Cylinder();     
     testdir = Direction.Dot(Cy.Axis().Direction());
     if (Abs(testdir) <= 1.-Precision::Angular()) {
-#ifdef DEB
+#ifdef DRAFT_DEB
     cout << "NewSurfaceCyl:Draft_Direction_and_Cylinder_Perpendicular" << endl;
 #endif
       return NewS;
@@ -1637,7 +1637,7 @@ Handle(Geom_Surface) Draft_Modification::NewSurface
       }
 
       if (!isIntDone || i2s.TypeInter() != IntAna_Circle) {
-#ifdef DEB
+#ifdef DRAFT_DEB
     cout << "NewSurfaceCyl:Draft_Intersection_Neutral_Cylinder_NotDone" << endl;
 #endif
 	return NewS;
@@ -1674,7 +1674,7 @@ Handle(Geom_Surface) Draft_Modification::NewSurface
     
     Standard_Real testdir = Direction.Dot(NeutralPlane.Axis().Direction());
     if (Abs(testdir) <= 1.-Precision::Angular()) {	
-#ifdef DEB
+#ifdef DRAFT_DEB
     cout << "NewSurfaceCone:Draft_Direction_and_Neutral_Perpendicular" << endl;
 #endif
       return NewS;	
@@ -1684,7 +1684,7 @@ Handle(Geom_Surface) Draft_Modification::NewSurface
     
     testdir = Direction.Dot(Co1.Axis().Direction());
     if (Abs(testdir) <= 1.-Precision::Angular()) {
-#ifdef DEB
+#ifdef DRAFT_DEB
     cout << "NewSurfaceCone:Draft_Direction_and_Cone_Perpendicular" << endl;
 #endif
       return NewS;
@@ -1694,7 +1694,7 @@ Handle(Geom_Surface) Draft_Modification::NewSurface
     IntAna_QuadQuadGeo i2s;
     i2s.Perform(NeutralPlane,Co1,Precision::Angular(),Precision::Confusion());
     if (!i2s.IsDone() || i2s.TypeInter() != IntAna_Circle) {
-#ifdef DEB
+#ifdef DRAFT_DEB
     cout << "NewSurfaceCone:Draft_Intersection_Neutral_Conical_NotDone" << endl;
 #endif
       return NewS;
@@ -1735,7 +1735,7 @@ Handle(Geom_Surface) Draft_Modification::NewSurface
     }
   }
   else {
-#ifdef DEB
+#ifdef DRAFT_DEB
     cout << "NewSurface:Draft_SurfNotYetImplemented" << endl;
 #endif
   }

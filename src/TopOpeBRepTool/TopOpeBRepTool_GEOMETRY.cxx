@@ -154,7 +154,7 @@ Standard_EXPORT gp_Dir FUN_tool_ngS(const gp_Pnt2d& p2d,const Handle(Geom_Surfac
 	return ng;
       }
     }
-#ifdef DEB
+#ifdef TOPOPEBREPTOOL_DEB
     cout<<"FUN_tool_nggeomF NYI"<<endl;
 #endif
     return gp_Dir(0,0,1);

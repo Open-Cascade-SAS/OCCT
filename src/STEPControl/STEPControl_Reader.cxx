@@ -150,7 +150,7 @@ Standard_Integer STEPControl_Reader::NbRootsForTransfer()
             break;
         }
         if (iSexclude) {
-#ifdef DEB
+#ifdef STEPCONTROL_DEB
           cout << "Warning: STEPControl_Reader::NbRootsForTransfer exclude PDWAD from roots" << endl;
 #endif
           continue;

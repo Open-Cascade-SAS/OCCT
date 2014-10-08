@@ -290,7 +290,9 @@ Handle(Poly_Triangulation) Poly::ReadTriangulation(Standard_IStream& IS)
   char line[100];
   IS >> line;
   if (strcmp(line,"Poly_Triangulation")) {
+#ifdef POLY_DEB
     cout << "Not a Triangulation in the file" << endl;
+#endif
     return Handle(Poly_Triangulation)();
   }
 
@@ -354,7 +356,9 @@ Handle(Poly_Polygon3D) Poly::ReadPolygon3D(Standard_IStream& IS)
   char line[100];
   IS >> line;
   if (strcmp(line,"Poly_Polygon3D")) {
+#ifdef POLY_DEB
     cout << "Not a Polygon3D in the file" << endl;
+#endif
     return Handle(Poly_Polygon3D)();
   }
 
@@ -407,7 +411,9 @@ Handle(Poly_Polygon2D) Poly::ReadPolygon2D(Standard_IStream& IS)
   char line[100];
   IS >> line;
   if (strcmp(line,"Poly_Polygon2D")) {
+#ifdef POLY_DEB
     cout << "Not a Polygon2D in the file" << endl;
+#endif
     return Handle(Poly_Polygon2D)();
   }
 

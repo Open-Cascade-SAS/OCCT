@@ -473,7 +473,7 @@ static Handle(Geom_Curve) ComputeIso
   }
   catch(Standard_Failure) {
     iso.Nullify();
-#ifdef DEB //:s5
+#ifdef SHAPEANALYSIS_DEB //:s5
     cout << "\nWarning: ShapeAnalysis_Surface, ComputeIso(): Exception in UVIso(): "; 
     Standard_Failure::Caught()->Print(cout); cout << endl;
 #endif
@@ -968,12 +968,12 @@ gp_Pnt2d ShapeAnalysis_Surface::ValueOfUV(const gp_Pnt& P3D,const Standard_Real 
 	gp_Pnt2d prev(S,T);
 	gp_Pnt2d solution;
 	if (SurfaceNewton(prev,P3D,preci,solution)) {
-#ifdef DEBUG
+#ifdef SHAPEANALYSIS_DEB
 	  cout <<"Newton found point on conic extrusion"<<endl;
 #endif
 	  return solution;
 	}
-#ifdef DEBUG
+#ifdef SHAPEANALYSIS_DEB
 	cout <<"Newton failed point on conic extrusion"<<endl;
 #endif
 	uf = -500;
@@ -1089,7 +1089,7 @@ gp_Pnt2d ShapeAnalysis_Surface::ValueOfUV(const gp_Pnt& P3D,const Standard_Real 
 
       }
       else {
-#ifdef DEB
+#ifdef SHAPEANALYSIS_DEB
 	cout << "Warning: ShapeAnalysis_Surface::ValueOfUV(): Extrema failed, doing Newton" << endl;
 #endif
 	// on essai sur les bords
@@ -1127,7 +1127,7 @@ gp_Pnt2d ShapeAnalysis_Surface::ValueOfUV(const gp_Pnt& P3D,const Standard_Real 
     //szv#4:S4163:12Mar99 optimized
     S = (Precision::IsInfinite(uf))? 0 : (uf+ul) / 2.;
     T = (Precision::IsInfinite(vf))? 0 : (vf+vl) / 2.;
-#ifdef DEB //:s5
+#ifdef SHAPEANALYSIS_DEB //:s5
     cout << "\nWarning: ShapeAnalysis_Surface::ValueOfUV(): Exception: "; 
     Standard_Failure::Caught()->Print(cout); cout << endl;
 #endif
@@ -1325,7 +1325,7 @@ Standard_Real ShapeAnalysis_Surface::UVFromIso(const gp_Pnt& P3d,const Standard_
   }  // fin try RAJOUT
   catch(Standard_Failure) {
     theMin = RealLast();    // theMin de depart
-#ifdef DEB //:s5
+#ifdef SHAPEANALYSIS_DEB //:s5
     cout << "\nWarning: ShapeAnalysis_Curve::UVFromIso(): Exception: "; 
     Standard_Failure::Caught()->Print(cout); cout << endl;
 #endif

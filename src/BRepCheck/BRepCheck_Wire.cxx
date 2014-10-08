@@ -1320,7 +1320,7 @@ BRepCheck_Status BRepCheck_Wire::SelfIntersect(const TopoDS_Face& F,
 		    localok = Standard_False;
 		  }
 		}
-#ifdef DEB
+#ifdef BREPCHECK_DEB
 		if(localok) { 
 		  printf("--- BRepCheck Wire: AutoIntersection Phase2 -> Bon \n");
 		  printf("--- distance Point Vertex : %10.7g (tol %10.7g)\n",distauvtxleplusproche,tolvtt);

@@ -2039,7 +2039,7 @@ static Standard_Boolean ShellIN(const TDF_Label&                L,
   }
   return aResult;
 }
-#ifdef DEB
+#ifdef TNAMING_DEB
 //=======================================================================
 static  Standard_CString NameTypeToString (const TNaming_NameType Type)
 {
@@ -2146,7 +2146,7 @@ case TNaming_SHELLIN:
     }
   }
 } catch (...) {
-#ifdef DEB  
+#ifdef TNAMING_DEB
   cout << "Name::Solve: EXCEPTION==> NameType = " << NameTypeToString(myType) << "  ";
   PrintEntry(aLab);
 #endif

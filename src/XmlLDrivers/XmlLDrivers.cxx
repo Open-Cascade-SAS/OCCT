@@ -40,7 +40,9 @@ Handle(Standard_Transient) XmlLDrivers::Factory(const Standard_GUID& theGUID)
 {
   if (theGUID == XmlLStorageDriver)
   {
+#ifdef XMLLDRIVERS_DEB
     cout << "XmlLDrivers : Storage Plugin" << endl;
+#endif
     static Handle(XmlLDrivers_DocumentStorageDriver) model_sd =
       new XmlLDrivers_DocumentStorageDriver
         ("Copyright: Open Cascade, 2001-2002"); // default copyright
@@ -49,7 +51,9 @@ Handle(Standard_Transient) XmlLDrivers::Factory(const Standard_GUID& theGUID)
 
   if (theGUID == XmlLRetrievalDriver)
   {
+#ifdef XMLLDRIVERS_DEB
     cout << "XmlLDrivers : Retrieval Plugin" << endl;
+#endif
     static Handle (XmlLDrivers_DocumentRetrievalDriver) model_rd =
       new XmlLDrivers_DocumentRetrievalDriver ();
     return model_rd;
@@ -71,12 +75,20 @@ TCollection_AsciiString XmlLDrivers::CreationDate ()
   struct tm *nowstruct;
 
   if (time(&nowbin) == (time_t) - 1)
+  {
+#ifdef XMLLDRIVERS_DEB
     cerr << "Storage ERROR : Could not get time of day from time()" << endl;
+#endif
+  }
   
   nowstruct = localtime(&nowbin);
   
   if (strftime(nowstr, SLENGTH, "%Y-%m-%d", nowstruct) == (size_t) 0)
+  {
+#ifdef XMLLDRIVERS_DEB
     cerr << "Storage ERROR : Could not get string from strftime()" << endl;
+#endif
+  }
 
   return nowstr;
 }

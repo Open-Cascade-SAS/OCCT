@@ -223,7 +223,7 @@ void StepToTopoDS_TranslateFace::Init
 
   for (Standard_Integer i = 1; i <= NbBnd; i ++) {
 
-#ifdef DEBUG
+#ifdef STEPTOTOPODS_DEB
     cout << "    Processing Wire : " << i << endl;
 #endif    
     FaceBound = FS->BoundsValue(i);
@@ -368,7 +368,7 @@ void StepToTopoDS_TranslateFace::Init
     else { 
       // Type not yet implemented or non sens
       TP->AddFail(Loop," Type of loop not yet implemented");
-#ifdef DEBUG
+#ifdef STEPTOTOPODS_DEB
       cout << Loop->DynamicType() << endl;
 #endif
       continue;

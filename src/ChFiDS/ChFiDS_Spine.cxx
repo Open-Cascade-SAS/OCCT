@@ -174,7 +174,7 @@ Standard_Real  ChFiDS_Spine::LastParameter() const
 
 void ChFiDS_Spine::SetFirstParameter(const Standard_Real Par) 
 {
-#ifdef DEB
+#ifdef CHFIDS_DEB
   if(Par >= Precision::Confusion()) 
     cout<<"Interior extension at the start of guideline"<<endl;
   if(IsPeriodic())
@@ -192,7 +192,7 @@ void ChFiDS_Spine::SetFirstParameter(const Standard_Real Par)
 
 void ChFiDS_Spine::SetLastParameter(const Standard_Real Par) 
 {
-#ifdef DEB
+#ifdef CHFIDS_DEB
   Standard_Real lll = abscissa->Value(abscissa->Upper());
   if((Par - lll) <= -Precision::Confusion()) 
     cout<<"Interior extension at the end of guideline"<<endl;
@@ -347,7 +347,7 @@ void  ChFiDS_Spine::SetFirstTgt(const Standard_Real W)
 {
   if(IsPeriodic()) Standard_Failure::Raise
     ("No extension by tangent on periodic contours"); 
-#ifdef DEB
+#ifdef CHFIDS_DEB
   if(W >= Precision::Confusion()) 
     cout<<"Interior extension at start of the guideline"<<endl;
 #endif
@@ -371,7 +371,7 @@ void  ChFiDS_Spine::SetLastTgt(const Standard_Real W)
   if(IsPeriodic()) Standard_Failure::Raise
     ("No extension by tangent periodic contours"); 
 
-#ifdef DEB
+#ifdef CHFIDS_DEB
   Standard_Real L = W - abscissa->Value(abscissa->Upper());
   if(L <= -Precision::Confusion()) 
     cout<<"Interior extension at the end of guideline"<<endl;
@@ -491,7 +491,7 @@ void  ChFiDS_Spine::UnsetReference()
 void  ChFiDS_Spine::Load()
 {
   if(!abscissa.IsNull()){
-#ifdef DEB
+#ifdef CHFIDS_DEB
     cout<<"new load of CE"<<endl;
 #endif
   }

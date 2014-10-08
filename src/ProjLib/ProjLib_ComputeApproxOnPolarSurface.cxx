@@ -1717,7 +1717,7 @@ Handle(Geom2d_BSplineCurve)
       OK = OK && Dummy->RemoveKnot(ij,MaxDeg-1,Tol3d);  //OCC217
       //OK = OK && Dummy->RemoveKnot(ij,MaxDeg-1,myTolerance);
     }
-#ifdef DEB
+#ifdef PROJLIB_DEB
     if (!OK) {
       cout << "ProjLib_ComputeApproxOnPolarSurface : Smoothing echoue"<<endl;
     }

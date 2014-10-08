@@ -177,14 +177,14 @@ void MDocStd::AddRetrievalDrivers(const Handle(MDF_ARDriverHSequence)& aDriverSe
 Handle(Standard_Transient) MDocStd::Factory(const Standard_GUID& aGUID) {
 
   if(aGUID == StandardStorageDriver)  {
-#ifdef DEB
+#ifdef MDOCSTD_DEB
     cout << "MDocStd : Storage Plugin" << endl;
 #endif
     static Handle(MDocStd_DocumentStorageDriver) standard_sd = new MDocStd_DocumentStorageDriver;
     return standard_sd;
   }
   if(aGUID == StandardRetrievalDriver) {  
-#ifdef DEB
+#ifdef MDOCSTD_DEB
     cout << "MDocStd : Retrieval Plugin" << endl;
 #endif
     static Handle (MDocStd_DocumentRetrievalDriver) standard_rd = new MDocStd_DocumentRetrievalDriver;

@@ -448,7 +448,7 @@ void TopOpeBRep_FacesFiller::ProcessVPnotonR(const TopOpeBRep_VPointInter& VP)
   Standard_Boolean CPIfound = GetGeometry(itCPIL,VP,PVIndex,PVKind);
   if ( !CPIfound ) {
     if (iVP != iINON1 && iVP != iINONn) {
-#ifdef DEB
+#ifdef TOPOPEBREP_DEB
       cout<<"VP "<<iVP<<" on "<<0<<" : point d'intersection anormal : rejet"<<endl;
 #endif
       return;
@@ -743,7 +743,7 @@ void TopOpeBRep_FacesFiller::ProcessRLine()
     Standard_Integer obOO   = TopOpeBRepTool_TOOL::OnBoundary(OOpar,OOE);     //vertex can be missed
 
     if ((obRest == EXTERNAL)||(obOO == EXTERNAL)){
-#ifdef DEB
+#ifdef TOPOPEBREP_DEB
       if(obRest==EXTERNAL) cout<<"***********ProcessRLine : faulty parameter on Erest"<<endl;
       if(obOO==EXTERNAL)   cout<<"***********ProcessRLine : faulty parameter on OOE"<<endl;
 #endif

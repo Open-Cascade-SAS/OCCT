@@ -71,7 +71,7 @@ static Standard_Integer DFBrowse (Draw_Interpretor& di,
   aTclScript.AssignCat ( "/dftree.tcl" );
   OSD_File aTclScriptFile (aTclScript);
   if (aTclScriptFile.Exists()) {
-#ifdef DEB
+#ifdef DDF_DEB
     cout << "Load " << aTclScript << endl;
 #endif
     di.EvalFile( aTclScript.ToCString() );

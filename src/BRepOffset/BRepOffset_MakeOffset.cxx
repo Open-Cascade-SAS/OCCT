@@ -796,14 +796,14 @@ void BRepOffset_MakeOffset::MakeThickSolid()
         YaResult = 1;
         Glue.Add (exp.Current().Reversed());
         }
-#ifdef DEB
+#ifdef BREPOFFSET_DEB
       if(YaResult == 0)
         {
         cout << "OffsetShape does not contain a FACES." << endl;
         }
 #endif
       }
-#ifdef DEB
+#ifdef BREPOFFSET_DEB
     else
       {
       cout << "OffsetShape is null!" << endl;

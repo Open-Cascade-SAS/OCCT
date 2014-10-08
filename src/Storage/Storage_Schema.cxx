@@ -1536,12 +1536,20 @@ TCollection_AsciiString Storage_Schema::ICreationDate()
   time_t nowbin;
   struct tm *nowstruct;
   if (time(&nowbin) == (time_t)-1)
+  {
+#ifdef STORAGE_DEB
     cerr << "Storage ERROR : Could not get time of day from time()" << endl;
+#endif
+  }
 
   nowstruct = localtime(&nowbin);
 
   if (strftime(nowstr, SLENGTH, "%m/%d/%Y", nowstruct) == (size_t) 0)
+  {
+#ifdef STORAGE_DEB
     cerr << "Storage ERROR : Could not get string from strftime()" << endl;
+#endif
+  }
 
   TCollection_AsciiString t(nowstr);
   return t;

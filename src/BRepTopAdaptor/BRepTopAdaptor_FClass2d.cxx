@@ -339,7 +339,7 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace,const 
 	    }//if(nbpoints>3
 	  else
 	    { 
-#ifdef DEB  
+#ifdef BREPTOPADAPTOR_DEB  
 	      cout << endl;
 	      cout << "*** BRepTopAdaptor_Fclass2d  ** Wire Probably FALSE **" << endl;
 	      cout << "*** The sample wire contains less than 3 points" << endl;
@@ -684,7 +684,9 @@ void BRepTopAdaptor_FClass2d::Destroy() {
 
 //const BRepTopAdaptor_FClass2d &  BRepTopAdaptor_FClass2d::Copy(const BRepTopAdaptor_FClass2d& Other) const { 
 const BRepTopAdaptor_FClass2d &  BRepTopAdaptor_FClass2d::Copy(const BRepTopAdaptor_FClass2d& ) const { 
+#ifdef BREPTOPADAPTOR_DEB
   cerr<<"Copy not allowed in BRepTopAdaptor_FClass2d"<<endl;
+#endif
   Standard_ConstructionError::Raise();
   return(*this);
 }

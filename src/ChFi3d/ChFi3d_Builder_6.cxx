@@ -274,7 +274,7 @@ static void CompParam(Geom2dAdaptor_Curve  Carc,
   }
   else {
     //(2) Intersection
-#ifdef DEB
+#ifdef CHFI3D_DEB
     cout<< "CompParam : bad intersection parameters"<<endl; 
 #endif
     IntRes2d_IntersectionPoint int2d;
@@ -289,7 +289,7 @@ static void CompParam(Geom2dAdaptor_Curve  Carc,
       if (!Intersection.IsEmpty()){
 	nbseg = Intersection.NbSegments();
 	if ( nbseg > 0 ){ 
-#ifdef DEB
+#ifdef CHFI3D_DEB
 	  cout<< "segments of intersection on the restrictions"<<endl; 
 #endif  
 	}
@@ -311,7 +311,7 @@ static void CompParam(Geom2dAdaptor_Curve  Carc,
   
   if(!found){
     // (3) Projection...
-#ifdef DEB
+#ifdef CHFI3D_DEB
     cout<<"CompParam : failed intersection PC, projection is created."<<endl;
 #endif
     parc = prefarc;
@@ -321,7 +321,7 @@ static void CompParam(Geom2dAdaptor_Curve  Carc,
       // This happens in some cases when there is a vertex 
       // at the end of spine...
       ptg = preftg; 
-#ifdef DEB
+#ifdef CHFI3D_DEB
       cout<<"CompParam : failed proj p2d/c2d, the extremity is taken!" <<endl;
 #endif
     }
@@ -542,12 +542,12 @@ Standard_Boolean ChFi3d_Builder::CompleteData
 			       tolappangle, // Contact G1 
 			       myConti, Degmax, Segmax);  
   if (!approx.IsDone()) {
-#ifdef DEB
+#ifdef CHFI3D_DEB
     cout << "Approximation non faite !!!" << endl;
 #endif
     return Standard_False;
   }
-#ifdef DEB
+#ifdef CHFI3D_DEB
   approx.Dump(cout);
 #endif
   return StoreData( Data, approx, lin, S1, S2, Or1, Gd1, Gd2, Gf1, Gf2, Reversed);
@@ -578,12 +578,12 @@ Standard_Boolean ChFi3d_Builder::CompleteData
 			       tolappangle, // Contact G1 
 			       myConti);  
  if (!approx.IsDone()) {
-#ifdef DEB
+#ifdef CHFI3D_DEB
     cout << "Approximation is not done!" << endl;
 #endif  
     return Standard_False;
   }
-#ifdef DEB
+#ifdef CHFI3D_DEB
   approx.Dump(cout);
 #endif
 
@@ -615,12 +615,12 @@ Standard_Boolean ChFi3d_Builder::CompleteData
 			       tolappangle, // Contact G1 
 			       myConti);  
  if (!approx.IsDone()) {
-#ifdef DEB
+#ifdef CHFI3D_DEB
     cout << "Approximation non faite !!!" << endl;
 #endif  
     return Standard_False;
   }
-#ifdef DEB
+#ifdef CHFI3D_DEB
   approx.Dump(cout);
 #endif
 
@@ -726,7 +726,7 @@ Standard_Boolean ChFi3d_Builder::StoreData(Handle(ChFiDS_SurfData)& Data,
    chc.Load(Crv3d1,par1,par2);
    
  if(!ChFi3d_CheckSameParameter(checkcurve,PCurveOnFace,S1,tolC1,tolcheck)){
-#ifdef DEB
+#ifdef CHFI3D_DEB
    cout<<"aaproximate tolerance under-valued : "<<tolC1<<" for "<<tolcheck<<endl;
 #endif 
     tolC1 = tolcheck;
@@ -779,7 +779,7 @@ Standard_Boolean ChFi3d_Builder::StoreData(Handle(ChFiDS_SurfData)& Data,
 					   approx.Curves2dDegree());
     chc.Load(Crv3d2,par1,par2);
    if(!ChFi3d_CheckSameParameter(checkcurve,PCurveOnFace,S2,tolC2,tolcheck)){
-#ifdef DEB
+#ifdef CHFI3D_DEB
       cout<<"approximate tolerance under-evaluated : "<<tolC2<<" for "<<tolcheck<<endl;
 #endif 
       tolC2 = tolcheck;
@@ -959,7 +959,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
     if(!TheWalk.PerformFirstSection(Func,FInv,FInvP,FInvC,PFirst,Target,Soldep,
 				    tolesp,TolGuide,RecRst,RecP,RecS,
 				    NewFirst,ParSol)){
-#ifdef DEB
+#ifdef CHFI3D_DEB
       cout<<"ChFi3d_Builder::ComputeData : calculation fail first section"<<endl;
 #endif
       return Standard_False;
@@ -974,7 +974,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
 		     MS,TolGuide,ParSol,tolesp,Fleche,Appro);
 
     if (!TheWalk.IsDone()) {
-#ifdef DEB
+#ifdef CHFI3D_DEB
       cout << "Path not created" << endl;
 #endif  
       return Standard_False;
@@ -982,7 +982,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
   
     if (reverse) {
       if (!TheWalk.Complete(Func,FInv,FInvP,FInvC,SpLast)) {
-#ifdef DEB
+#ifdef CHFI3D_DEB
 	cout << "Not completed" << endl;
 #endif
       }
@@ -993,14 +993,14 @@ Standard_Boolean ChFi3d_Builder::ComputeData
     Nbpnt = Lin->NbPoints();
     if (Nbpnt <= 1 && again == 0)  {
       again++;
-#ifdef DEB
+#ifdef CHFI3D_DEB
       cout <<"one point of the path MS/50 is attempted."<<endl;
 #endif  
       MS = MS/50.; Target = Targetsov;
     }
     else if (Nbpnt<=nbptmin && again == 0)  {
       again++;
-#ifdef DEB
+#ifdef CHFI3D_DEB
       cout <<"Number of points is too small, the step is reduced"<<endl;
 #endif  
       Standard_Real u1 = Lin->Point(1).Parameter();
@@ -1010,7 +1010,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
       Target = Targetsov;
     }
     else if(Nbpnt<=nbptmin){
-#ifdef DEB
+#ifdef CHFI3D_DEB
       cout <<"Number of points is still too small, quit"<<endl;
 #endif  
       return Standard_False;
@@ -1091,7 +1091,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
     if (!TheWalk.PerformFirstSection(Func, FInv1, FInvP1, FInv2, FInvP2, PFirst, Target, Soldep,
 	  			     tolesp, TolGuide, RecRst1, RecP1, RecRst2, RecP2,
 				     NewFirst, ParSol)){
-#ifdef DEB
+#ifdef CHFI3D_DEB
       cout<<"ChFi3d_Builder::ComputeData : fail calculation first section"<<endl;
 #endif
       return Standard_False;
@@ -1106,7 +1106,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
 		     MS, TolGuide, ParSol, tolesp, Fleche, Appro);
 
     if (!TheWalk.IsDone()) {
-#ifdef DEB
+#ifdef CHFI3D_DEB
       cout << "Path not done" << endl;
 #endif  
       return Standard_False;
@@ -1114,7 +1114,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
   
     if (reverse) {
       if (!TheWalk.Complete(Func, FInv1, FInvP1, FInv2, FInvP2, SpLast)) {
-#ifdef DEB
+#ifdef CHFI3D_DEB
 	cout << "Not completed" << endl;
 #endif
       }
@@ -1125,14 +1125,14 @@ Standard_Boolean ChFi3d_Builder::ComputeData
     Nbpnt = Lin->NbPoints();
     if (Nbpnt <= 1 && again == 0)  {
       again++;
-#ifdef DEB
+#ifdef CHFI3D_DEB
       cout <<"one point of path MS/50 is attempted."<<endl;
 #endif  
       MS = MS/50.; Target = Targetsov;
     }
     else if (Nbpnt<=nbptmin && again == 0)  {
       again++;
-#ifdef DEB
+#ifdef CHFI3D_DEB
       cout <<"Number of points is too small, the step is reduced"<<endl;
 #endif  
       Standard_Real u1 = Lin->Point(1).Parameter();
@@ -1141,7 +1141,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
       Target = Targetsov;
     }
     else if(Nbpnt<=nbptmin){
-#ifdef DEB
+#ifdef CHFI3D_DEB
       cout <<"Number of points is still too small, quit"<<endl;
 #endif  
       return Standard_False;
@@ -1221,7 +1221,7 @@ Standard_Boolean ChFi3d_Builder::SimulData
     if(!TheWalk.PerformFirstSection(Func,FInv,FInvP,FInvC,PFirst,Target,Soldep,
 				    tolesp,TolGuide,RecRst,RecP,RecS,
 				    NewFirst,ParSol)){
-#ifdef DEB
+#ifdef CHFI3D_DEB
 
       cout<<"ChFi3d_Builder::SimulData : fail calculate first section"<<endl;
 #endif
@@ -1236,14 +1236,14 @@ Standard_Boolean ChFi3d_Builder::SimulData
     TheWalk.Perform (Func,FInv,FInvP,FInvC,NewFirst,Last,
 		     MS,TolGuide,ParSol,tolesp,Fleche,Appro);
     if (!TheWalk.IsDone()) {
-#ifdef DEB
+#ifdef CHFI3D_DEB
       cout << "Path not done" << endl;
 #endif
       return Standard_False;
     }
     if (reverse) {
       if (!TheWalk.Complete(Func,FInv,FInvP,FInvC,SpLast)) {
-#ifdef DEB
+#ifdef CHFI3D_DEB
 	cout << "Not completed" << endl;
 #endif
       }
@@ -1252,14 +1252,14 @@ Standard_Boolean ChFi3d_Builder::SimulData
     Nbpnt = Lin->NbPoints();
     if (Nbpnt <= 1 && again == 0)  {
       again++;
-#ifdef DEB
+#ifdef CHFI3D_DEB
       cout <<"one point of path MS/50 is attempted."<<endl;
 #endif
       MS = MS/50.; Target = Targetsov;
     }
     else if (Nbpnt <= NbSecMin && again == 0)  {
       again++;
-#ifdef DEB
+#ifdef CHFI3D_DEB
       cout <<"Number of points is too small, the step is reduced"<<endl;
 #endif
       Standard_Real u1 = Lin->Point(1).Parameter();
@@ -1268,7 +1268,7 @@ Standard_Boolean ChFi3d_Builder::SimulData
       Target = Targetsov;
     }
     else if(Nbpnt<=NbSecMin){
-#ifdef DEB
+#ifdef CHFI3D_DEB
       cout <<"Number of points is still too small, quit"<<endl;
 #endif
       return Standard_False;
@@ -1347,7 +1347,7 @@ Standard_Boolean ChFi3d_Builder::SimulData
     if(!TheWalk.PerformFirstSection(Func, FInv1, FInvP1, FInv2, FInvP2, PFirst, Target, Soldep,
 	  			    tolesp, TolGuide, RecRst1, RecP1, RecRst2, RecP2,
 				    NewFirst,ParSol)){
-#ifdef DEB
+#ifdef CHFI3D_DEB
 
       cout<<"ChFi3d_Builder::SimulData : calculation fail first section"<<endl;
 #endif
@@ -1362,14 +1362,14 @@ Standard_Boolean ChFi3d_Builder::SimulData
     TheWalk.Perform (Func, FInv1, FInvP1, FInv2, FInvP2, NewFirst, Last,
 		     MS, TolGuide, ParSol, tolesp, Fleche, Appro);
     if (!TheWalk.IsDone()) {
-#ifdef DEB
+#ifdef CHFI3D_DEB
       cout << "Path not created" << endl;
 #endif
       return Standard_False;
     }
     if (reverse) {
       if (!TheWalk.Complete(Func, FInv1, FInvP1, FInv2, FInvP2, SpLast)) {
-#ifdef DEB
+#ifdef CHFI3D_DEB
 	cout << "Not completed" << endl;
 #endif
       }
@@ -1378,14 +1378,14 @@ Standard_Boolean ChFi3d_Builder::SimulData
     Nbpnt = Lin->NbPoints();
     if (Nbpnt <= 1 && again == 0)  {
       again++;
-#ifdef DEB
+#ifdef CHFI3D_DEB
       cout <<"only one point of path MS/50 is attempted."<<endl;
 #endif
       MS = MS/50.; Target = Targetsov;
     }
     else if (Nbpnt <= NbSecMin && again == 0)  {
       again++;
-#ifdef DEB
+#ifdef CHFI3D_DEB
       cout <<"Number of points is too small, the step is reduced"<<endl;
 #endif
       Standard_Real u1 = Lin->Point(1).Parameter();
@@ -1394,7 +1394,7 @@ Standard_Boolean ChFi3d_Builder::SimulData
       Target = Targetsov;
     }
     else if(Nbpnt<=NbSecMin){
-#ifdef DEB
+#ifdef CHFI3D_DEB
       cout <<"Number of points is still too small, quit"<<endl;
 #endif
       return Standard_False;
@@ -1543,7 +1543,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
     if(!TheWalk.PerformFirstSection(Func,FInv,PFirst,Target,Soldep,
 				    tolesp,TolGuide,RecOnS1,RecOnS2,
 				    NewFirst,ParSol)){
-#ifdef DEB
+#ifdef CHFI3D_DEB
       cout<<"ChFi3d_Builder::ComputeData : calculation fail first section"<<endl;
 #endif
       return Standard_False;
@@ -1576,7 +1576,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
     TheWalk.Perform(Func,FInv,NewFirst,Target,MS,TolGuide,
 		    ParSol,TolEsp,Fleche,Appro);
     if (!TheWalk.IsDone()) {
-#ifdef DEB
+#ifdef CHFI3D_DEB
       cout << "Path is not created" << endl;
 #endif
       return Standard_False;
@@ -1592,7 +1592,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
     Standard_Boolean complmnt = Standard_True;
     if (Inside)  complmnt = TheWalk.Complete(Func,FInv,SpLast);
     if(!complmnt){
-#ifdef DEB
+#ifdef CHFI3D_DEB
       cout << "Not completed" << endl;
 #endif
       return Standard_False;
@@ -1603,7 +1603,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
     //- if one has gone far enough.
     Nbpnt = Lin->NbPoints();
     if (Nbpnt == 0){
-#ifdef DEB
+#ifdef CHFI3D_DEB
       cout <<"0 point of path, quit."<<endl;
 #endif
       return Standard_False;
@@ -1628,7 +1628,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
       //It drags, the controls are extended, it is  expected to evaluate a
       //satisfactory maximum step. If it already done, quit.
       if(tchernobyl){
-#ifdef DEB
+#ifdef CHFI3D_DEB
 	cout <<"If it drags without control, quit."<<endl;
 #endif
 	return Standard_False;
@@ -1636,14 +1636,14 @@ Standard_Boolean ChFi3d_Builder::ComputeData
       tchernobyl = Standard_True;
       TheWalk.Check(0);
       if (Nbpnt == 1){
-#ifdef DEB
+#ifdef CHFI3D_DEB
 	cout <<"only one point of path MS/100 is attempted"<<endl;
 	cout <<"and the controls are extended."<<endl;
 #endif
 	MS *= 0.01;
       }
       else{
-#ifdef DEB
+#ifdef CHFI3D_DEB
 	cout <<"It drags, the controls are extended."<<endl;
 #endif
 	MS = (lpointpar-fpointpar)/Nbpnt; //EvalStep(Lin);
@@ -1651,7 +1651,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
     }
     else if (Nbpnt < nbptmin){
       if(again == 0){
-#ifdef DEB
+#ifdef CHFI3D_DEB
 	cout <<"Number of points is too small, the step is reduced"<<endl;
 #endif
 	u1sov = fpointpar;
@@ -1661,13 +1661,13 @@ Standard_Boolean ChFi3d_Builder::ComputeData
       else if(again == 1){
 	if(Abs(fpointpar-u1sov)>=TolGuide || 
 	   Abs(lpointpar-u2sov)>=TolGuide){
-#ifdef DEB
+#ifdef CHFI3D_DEB
 	  cout <<"Number of points is still too small, the step is reduced"<<endl;
 #endif  
 	  MS = (lpointpar - fpointpar) * factor;
 	}
 	else{
-#ifdef DEB
+#ifdef CHFI3D_DEB
 	  cout <<"Number of points is still too small, quit"<<endl;
 #endif  
 	  return Standard_False;
@@ -1682,13 +1682,13 @@ Standard_Boolean ChFi3d_Builder::ComputeData
 
   if(TheWalk.TwistOnS1()){
     Data->TwistOnS1(Standard_True);
-#ifdef DEB
+#ifdef CHFI3D_DEB
     cout<<"Path completed, but TWIST on S1"<<endl;
 #endif
   }
   if(TheWalk.TwistOnS2()){
     Data->TwistOnS2(Standard_True);
-#ifdef DEB
+#ifdef CHFI3D_DEB
     cout<<"Parh completed, but TWIST on S2"<<endl;
 #endif
   }
@@ -2094,7 +2094,7 @@ Standard_Boolean ChFi3d_Builder::SimulData
     if(!TheWalk.PerformFirstSection(Func,FInv,PFirst,Target,Soldep,
 				    tolesp,TolGuide,RecOnS1,RecOnS2,
 				    NewFirst,ParSol)){
-#ifdef DEB
+#ifdef CHFI3D_DEB
       cout<<"ChFi3d_Builder::SimulData : calculation fail first section"<<endl;
 #endif
       return Standard_False;
@@ -2117,7 +2117,7 @@ Standard_Boolean ChFi3d_Builder::SimulData
 		    ParSol,TolEsp,Fleche,Appro);
     
     if (!TheWalk.IsDone()) {
-#ifdef DEB
+#ifdef CHFI3D_DEB
       cout << "Path not created" << endl;
 #endif
       return Standard_False;
@@ -2133,7 +2133,7 @@ Standard_Boolean ChFi3d_Builder::SimulData
       Standard_Boolean complmnt = Standard_True;
       if (Inside)  complmnt = TheWalk.Complete(Func,FInv,SpLast);
       if(!complmnt){
-#ifdef DEB
+#ifdef CHFI3D_DEB
 	cout << "Not completed" << endl;
 #endif
 	return Standard_False;
@@ -2142,14 +2142,14 @@ Standard_Boolean ChFi3d_Builder::SimulData
     Nbpnt = Lin->NbPoints();
     Standard_Real factor =  1./(NbSecMin + 1);
     if (Nbpnt == 0){
-#ifdef DEB
+#ifdef CHFI3D_DEB
       cout <<"0 point of path, quit."<<endl;
 #endif
       return Standard_False;
     }
     else if (Nbpnt == 1 && again == 0)  {
       again++;
-#ifdef DEB
+#ifdef CHFI3D_DEB
       cout <<"only one point of path, MS/100 is attempted."<<endl;
 #endif
       MS *= 0.01; Target = Targetsov;
@@ -2157,7 +2157,7 @@ Standard_Boolean ChFi3d_Builder::SimulData
     }
     else if (Nbpnt< NbSecMin && again == 0)  {
       again++;
-#ifdef DEB
+#ifdef CHFI3D_DEB
       cout <<"Number of points is too small, the step is reduced"<<endl;
 #endif
       Standard_Real u1 = u1sov = Lin->Point(1).Parameter();
@@ -2170,21 +2170,21 @@ Standard_Boolean ChFi3d_Builder::SimulData
       Standard_Real u2 = Lin->Point(Nbpnt).Parameter();
       if(Abs(u1-u1sov)>=TolGuide || Abs(u2-u2sov)>=TolGuide){
 	again++;
-#ifdef DEB
+#ifdef CHFI3D_DEB
 	cout <<"Number of points is still too small, the step is reduced"<<endl;
 #endif
 	MS /= 100;
 	Target = Targetsov;
       }
       else{
-#ifdef DEB
+#ifdef CHFI3D_DEB
 	cout <<"Number of points is still too small, quit"<<endl;
 #endif
 	return Standard_False;
       }
     }
     else if(Nbpnt < NbSecMin){
-#ifdef DEB
+#ifdef CHFI3D_DEB
       cout <<"Number of points is still too small, quit"<<endl;
 #endif
       return Standard_False;

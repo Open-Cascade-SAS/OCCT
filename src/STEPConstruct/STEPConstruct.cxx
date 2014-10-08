@@ -52,7 +52,7 @@ Handle(StepRepr_RepresentationItem) STEPConstruct::FindEntity (const Handle(Tran
   Handle(StepRepr_RepresentationItem) item;
   Handle(TransferBRep_ShapeMapper) mapper = TransferBRep::ShapeMapper ( FinderProcess, Shape );
   FinderProcess->FindTypedTransient (mapper,STANDARD_TYPE(StepRepr_RepresentationItem), item);
-#ifdef DEB
+#ifdef STEPCONSTRUCT_DEB
   if ( item.IsNull() ) cout << Shape.TShape()->DynamicType()->Name() << ": RepItem not found" << endl;
   else cout << Shape.TShape()->DynamicType()->Name() << ": RepItem found: " << item->DynamicType()->Name() << endl;
 #endif
@@ -79,7 +79,7 @@ Handle(StepRepr_RepresentationItem) STEPConstruct::FindEntity (const Handle(Tran
       mapper = TransferBRep::ShapeMapper ( FinderProcess, S );
       FinderProcess->FindTypedTransient (mapper,STANDARD_TYPE(StepRepr_RepresentationItem), item);
   }
-#ifdef DEB
+#ifdef STEPCONSTRUCT_DEB
   if ( item.IsNull() ) cout << Shape.TShape()->DynamicType()->Name() << ": RepItem not found" << endl;
   else if ( Loc != Shape.Location() ) cout << Shape.TShape()->DynamicType()->Name() << ": RepItem found for shape without location: " << item->DynamicType()->Name() << endl;
   else cout << Shape.TShape()->DynamicType()->Name() << ": RepItem found: " << item->DynamicType()->Name() << endl;

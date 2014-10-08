@@ -81,9 +81,7 @@ Standard_Boolean BinMDataStd_IntPackedMapDriver::Paste
     }
     aTagAtt->ChangeMap(aHMap);
   }
-#ifdef DEB
-  //cout << "CurDocVersion = " << BinMDataStd::DocumentVersion() <<endl;
-#endif  
+
   Standard_Boolean aDelta(Standard_False);
   if(BinMDataStd::DocumentVersion() > 2) {
     Standard_Byte aDeltaValue;

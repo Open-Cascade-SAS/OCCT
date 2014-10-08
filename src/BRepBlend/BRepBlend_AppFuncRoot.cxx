@@ -328,7 +328,7 @@ Standard_Boolean BRepBlend_AppFuncRoot::SearchPoint(Blend_AppFunction& Func,
   rsnld.Perform(Func, XInit, X1, X2);
   
   if (!rsnld.IsDone()) {
-# ifdef DEB
+# ifdef BREPBLEND_DEB
     cout << "AppFunc : RNLD Not done en t = " <<  Param  << endl;
 # endif 
     return Standard_False;
@@ -340,7 +340,7 @@ Standard_Boolean BRepBlend_AppFuncRoot::SearchPoint(Blend_AppFunction& Func,
 
   // (4) Insertion of the point if the calculation seems long.
   if ((!Trouve)&&(rsnld.NbIterations()>3)) {
-#ifdef DEB
+#ifdef BREPBLEND_DEB
     cout << "Evaluation in t = " <<  Param << "given" << endl;
     rsnld.Dump(cout);
 #endif

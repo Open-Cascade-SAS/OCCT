@@ -150,7 +150,7 @@ void BRepTools_ReShape::Replace (const TopoDS_Shape& ashape,
     shape.Location ( nullLoc );
   }
 
-#ifdef DEB
+#ifdef BREPTOOLS_DEB
   if ( IsRecorded ( shape ) && ((myConsiderLocation && ! Value ( shape ).IsPartner ( newshape )) ||
                                  (!myConsiderLocation && ! Value ( shape ).IsSame ( newshape )))) 
     cout << "Warning: BRepTools_ReShape::Replace: shape already recorded" << endl;

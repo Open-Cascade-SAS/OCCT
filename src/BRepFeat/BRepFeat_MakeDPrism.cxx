@@ -1191,7 +1191,7 @@ static Standard_Real HeightMax(const TopoDS_Shape& theSbase,  // shape initial
 //#else
 //  Standard_Real par = Max(  Max( abs(c[1] - c[0]), abs(c[3] - c[2]) ), abs(c[5] - c[4]) );
 //#endif
-#ifdef DEB
+#ifdef BREPFEAT_DEB
   cout << "Height = > " <<  par  << endl;
 #endif
   return par;

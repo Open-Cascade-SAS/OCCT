@@ -791,7 +791,9 @@ Handle(Geom_Curve)  MgtGeom::Translate(const Handle(PGeom_Curve)& PObj)
     return MgtGeom::Translate(TOffsetCurve);
   }
   else {
+#ifdef MGTGEOM_DEB
     cout << "MgtGeom : Unknown curve type ???? : " << endl;
+#endif
     Standard_NullObject::Raise("No mapping for the current Persistent Curve");
   }
 // POP pour NT
@@ -855,7 +857,9 @@ Handle(PGeom_Curve)  MgtGeom::Translate(const Handle(Geom_Curve)& TObj)
     return MgtGeom::Translate(POffsetCurve);
   }
   else {
+#ifdef MGTGEOM_DEB
     cout << "MgtGeom : Unknown curve type ????"<<endl;
+#endif
     Standard_NullObject::Raise("No mapping for the current Transient Curve");
 
   }
@@ -1270,7 +1274,9 @@ Handle(Geom_Surface)  MgtGeom::Translate(const Handle(PGeom_Surface)& PObj)
     return MgtGeom::Translate(TOffsetSurface);
   }
   else {
+#ifdef MGTGEOM_DEB
     cout << "MgtGeom : Unknown surface type ????"<<endl;
+#endif
     Standard_NullObject::Raise("No mapping for the current Persistent Surface");
 
   }
@@ -1345,7 +1351,9 @@ Handle(PGeom_Surface)  MgtGeom::Translate(const Handle(Geom_Surface)& TObj)
     return MgtGeom::Translate(POffsetSurface);
   }
   else {
+#ifdef MGTGEOM_DEB
     cout << "MgtGeom : Unknown surface type ????"<<endl;
+#endif
     Standard_NullObject::Raise("No mapping for the current Transient Surface");
   }
 // POP pour NT

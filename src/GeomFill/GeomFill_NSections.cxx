@@ -50,7 +50,7 @@
 #include <gp_Lin.hxx>
 #include <gp_Circ.hxx>
 
-#ifdef DEB
+#ifdef GEOMFILL_DEB
 # ifdef DRAW
 #  include <DrawTrSurf.hxx>
 # endif
@@ -58,7 +58,7 @@ static Standard_Boolean Affich = 0;
 static Standard_Integer NbSurf = 0;
 #endif
 
-#ifdef DEB
+#ifdef GEOMFILL_DEB
 // verification des fonctions de derivation D1 et D2 par differences finies
 Standard_Boolean verifD1(const TColgp_Array1OfPnt& P1,
 			 const TColStd_Array1OfReal& W1,
@@ -362,7 +362,7 @@ GeomFill_NSections::GeomFill_NSections(const TColGeom_SequenceOfCurve& NC,
   if (NullWeight) return Standard_False;
 
   // verif par diff finies sous debug sauf pour les surfaces periodiques
-#ifdef DEB
+#ifdef GEOMFILL_DEB
   if (!mySurface->IsVPeriodic()) {
     Standard_Real pas = 1.e-6, wTol = 1.e-4, pTol = 1.e-3;
     Standard_Real V1,V2;
@@ -456,7 +456,7 @@ GeomFill_NSections::GeomFill_NSections(const TColGeom_SequenceOfCurve& NC,
   if (NullWeight) return Standard_False;
 
   // verif par diff finies sous debug sauf pour les surfaces periodiques
-#ifdef DEB
+#ifdef GEOMFILL_DEB
   if (!mySurface->IsVPeriodic()) {
     Standard_Real V1,V2;
     Standard_Boolean ok1,ok2;
@@ -611,7 +611,7 @@ GeomFill_NSections::GeomFill_NSections(const TColGeom_SequenceOfCurve& NC,
   if (mySurface->VDegree()<2) {
     mySurface->IncreaseDegree(mySurface->UDegree(),2);
   }
-#ifdef DEB
+#ifdef GEOMFILL_DEB
   NbSurf++;
   if (Affich) {
 #ifdef DRAW

@@ -179,7 +179,7 @@ void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face& aFace,
   const TopoDS_Wire theOuterWire = BRepTools::OuterWire(ForwardFace);
   
   if (theOuterWire.IsNull()) {
-#ifdef DEBUG
+#ifdef TOPODSTOSTEP_DEB
     cout<< "Warning : Face without wire not mapped";
 #endif
     FP->AddWarning(errShape, " Face without wire not mapped");
@@ -277,7 +277,7 @@ void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face& aFace,
       MkWire.Init(CurrentWire, aTool, FP);
       if (MkWire.IsDone()) Loop = Handle(StepShape_Loop)::DownCast(MkWire.Value());
       else {
-#ifdef DEBUG
+#ifdef TOPODSTOSTEP_DEB
 	cout << TopoDSToStep::DecodeWireError(MkWire.Error()) << endl;
 #endif
 	FP->AddWarning(errShape, " a Wire not mapped");

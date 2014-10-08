@@ -97,8 +97,5 @@ Standard_Boolean StepToGeom_MakeTrimmedCurve2d::Convert (const Handle(StepGeom_T
     CC = Geom2dConvert::CurveToBSplineCurve(theTrimmed);
     return Standard_True;
   }
-//#ifdef DEB
-//  else cout << "Warning: TrimmedCurve2d not translated" << endl;
-//#endif
   return Standard_False;
 }

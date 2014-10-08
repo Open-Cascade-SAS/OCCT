@@ -1233,11 +1233,6 @@ void IntPatch_RstInt::PutVertexOnLine (Handle(IntPatch_Line)& L,
     wlin->ComputeVertexParameters(Tol, hasBeenAdded);
   }
   else {
-#ifdef DEB
-    //if(rlin->NbVertex()==0) { 
-    //  cout<<" \n *** IntPatch RstInt.gxx  : nbvtx = 0 sur rline *** \n"<<endl;
-    //}
-#endif
     rlin->ComputeVertexParameters(Tol);
   }
 }

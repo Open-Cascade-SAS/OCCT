@@ -73,7 +73,9 @@ Message_PrinterOStream::Message_PrinterOStream (const Standard_CString theFileNa
   {
     delete aFile;
     myStream = &std::cout;
+#ifdef MESSAGE_DEB
     std::cerr << "Error opening " << theFileName << std::endl << std::flush;
+#endif
   }
 }
 

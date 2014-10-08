@@ -156,11 +156,6 @@ void Blend_Walking::Perform(Blend_Function& Func,
 
   InternalPerform(Func,FuncInv,Pmax);
 
-#ifdef DEB
-//  cout <<"Perform : "<<nbcomputedsection<<" sections calculees"<<endl;
-//  cout <<line->NbPoints()<<" sections gardees"<<endl;
-#endif
-
   done = Standard_True;
 }
 
@@ -554,11 +549,6 @@ Standard_Boolean Blend_Walking::Complete(Blend_Function& Func,
   previousP.ParametersOnS2(sol(3),sol(4));
 
   InternalPerform(Func,FuncInv,Pmin);
-
-#ifdef DEB
-//  cout <<"Complete : "<<nbcomputedsection<<" sections calculees"<<endl;
-//  cout <<line->NbPoints()<<" sections gardees"<<endl;
-#endif
 
   iscomplete = Standard_True;
   return Standard_True;

@@ -74,16 +74,10 @@ Standard_Boolean BinMDataStd_ExtStringArrayDriver::Paste
   }
 
   if(ok) {
-//#ifdef DEB
-//  cout << "CurDocVersion = " << BinMDataStd::DocumentVersion() <<endl;
-//#endif
     Standard_Boolean aDelta(Standard_False);
     if(BinMDataStd::DocumentVersion() > 2) {
       Standard_Byte aDeltaValue;
 	  if (! (theSource >> aDeltaValue)) {
-//#ifdef DEB
-//      cout <<"DeltaValue = " << (Standard_Integer)aDeltaValue <<endl;
-//#endif
 	    return Standard_False;
 	  }
       else

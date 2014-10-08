@@ -83,7 +83,7 @@ Handle(Resource_Manager) ShapeProcess_Context::LoadResourceManager (const Standa
     }
   }
   if ( sRC.IsNull() ) {
-#ifdef DEB
+#ifdef SHAPEPROCESS_DEB
     cout << "Info: ShapeProcess_Context: Reload Resource_Manager: " 
          << name.ToCString() << " -> " << file << endl;
 #endif
@@ -166,7 +166,7 @@ Standard_Boolean ShapeProcess_Context::GetString (const Standard_CString param,
   if ( myRC.IsNull() ) return Standard_False;
   Handle(TCollection_HAsciiString) pname = MakeName ( myScope, param );
   if ( ! myRC->Find ( pname->ToCString() ) ) {
-#ifdef DEB 
+#ifdef SHAPEPROCESS_DEB
     cout << "Warning: ShapeProcess_Context::GetInteger(): Parameter " << pname->ToCString() << " is not defined" << endl;
 #endif
     return Standard_False;
@@ -200,7 +200,7 @@ Standard_Boolean ShapeProcess_Context::GetReal (const Standard_CString param,
     ref.LeftAdjust();
     ref.RightAdjust();
     if ( ! myRC->Find ( ref.ToCString() ) ) {
-#ifdef DEB 
+#ifdef SHAPEPROCESS_DEB
       cout << "Warning: ShapeProcess_Context::GetInteger(): Parameter " << ref.ToCString() << " is not defined" << endl;
 #endif
       return Standard_False;
@@ -211,7 +211,7 @@ Standard_Boolean ShapeProcess_Context::GetReal (const Standard_CString param,
       return Standard_True;
     }
   }
-#ifdef DEB 
+#ifdef SHAPEPROCESS_DEB
   cout << "Warning: ShapeProcess_Context::GetInteger(): Parameter " << param << " is neither Real nor reference to Real";
 #endif
   return Standard_False;
@@ -242,7 +242,7 @@ Standard_Boolean ShapeProcess_Context::GetInteger (const Standard_CString param,
     ref.LeftAdjust();
     ref.RightAdjust();
     if ( ! myRC->Find ( ref.ToCString() ) ) {
-#ifdef DEB 
+#ifdef SHAPEPROCESS_DEB
       cout << "Warning: ShapeProcess_Context::GetInteger(): Parameter " << ref.ToCString() << " is not defined" << endl;
 #endif
       return Standard_False;
@@ -253,7 +253,7 @@ Standard_Boolean ShapeProcess_Context::GetInteger (const Standard_CString param,
       return Standard_True;
     }
   }
-#ifdef DEB 
+#ifdef SHAPEPROCESS_DEB
   cout << "Warning: ShapeProcess_Context::GetInteger(): Parameter " << param << " is neither Integer nor reference to Integer";
 #endif
   return Standard_False;
@@ -274,7 +274,7 @@ Standard_Boolean ShapeProcess_Context::GetBoolean (const Standard_CString param,
     return Standard_True;
   }
   catch (Standard_Failure) {
-#ifdef DEB 
+#ifdef SHAPEPROCESS_DEB
     cout << "Warning: ShapeProcess_Context::GetInteger(): " << param << ": ";
     Standard_Failure::Caught()->Print(cout); cout << endl;
 #endif
@@ -332,7 +332,7 @@ Standard_CString ShapeProcess_Context::StringVal (const Standard_CString param,
     return myRC->Value ( MakeName ( myScope, param )->ToCString() );
   }
   catch (Standard_Failure) {
-#ifdef DEB 
+#ifdef SHAPEPROCESS_DEB
     cout << "Warning: ShapeProcess_Context::GetInteger(): " << param << ": ";
     Standard_Failure::Caught()->Print(cout); cout << endl;
 #endif

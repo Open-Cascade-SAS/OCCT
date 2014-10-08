@@ -290,7 +290,7 @@ void BRepAlgo_NormalProjection::SetDefaultParams()
       
       for(k = 1; k <= Projector.NbCurves(); k++){
 	if(Projector.IsSinglePnt(k, P2d)){
-#ifdef DEBUG
+#ifdef BREPALGO_DEB
 	  cout << "Projection of edge "<<i<<" on face "<<j;
 	  cout << " is punctual"<<endl<<endl;
 #endif
@@ -308,7 +308,7 @@ void BRepAlgo_NormalProjection::SetDefaultParams()
 	  
 	  /**************************************************************/
 	  if (Projector.IsUIso(k, UIso)) {
-#ifdef DEBUG
+#ifdef BREPALGO_DEB
 	    cout << "Projection of edge "<<i<<" on face "<<j;
 	    cout << " is U-isoparametric"<<endl<<endl;
 #endif
@@ -325,7 +325,7 @@ void BRepAlgo_NormalProjection::SetDefaultParams()
 	    Only3d = Standard_True;
 	  }
 	  else if (Projector.IsVIso(k, VIso)) {
-#ifdef DEBUG
+#ifdef BREPALGO_DEB
 	    cout << "Projection of edge "<<i<<" on face "<<j;
 	    cout << " is V-isoparametric"<<endl<<endl;
 #endif
@@ -438,7 +438,7 @@ void BRepAlgo_NormalProjection::SetDefaultParams()
                  }             
               }
 	      if (Degenerated) {
-#ifdef DEBUG
+#ifdef BREPALGO_DEB
 	          cout << "Projection of edge "<<i<<" on face "<<j;
 	          cout << " is degenerated "<<endl<<endl;
 #endif
@@ -487,7 +487,7 @@ void BRepAlgo_NormalProjection::SetDefaultParams()
 	         LS = HB->Splits(prj, TopAbs_IN);
 	       Iter.Initialize(LS);
 	       if(Iter.More()) {
-#ifdef DEBUG
+#ifdef BREPALGO_DEB
                   cout << " BooleanOperations :"  << Iter.More()<<" solutions " << endl; 
 #endif
 	          for(; Iter.More(); Iter.Next()) {
@@ -517,7 +517,7 @@ void BRepAlgo_NormalProjection::SetDefaultParams()
 	       }
             }
             else {
-#ifdef DEB
+#ifdef BREPALGO_DEB
                  cout << " BooleanOperations : no solution " << endl;
 #endif
 

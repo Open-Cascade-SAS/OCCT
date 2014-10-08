@@ -1241,21 +1241,10 @@ void BinTools_ShapeSet::ReadPolygonOnTriangulation(Standard_IStream& IS)
   Handle(Poly_PolygonOnTriangulation) Poly;
   IS >> nbpol;
   IS.get();//remove LF 
-#ifdef DEB
-//  cout << "ReadPolygonOnTriangulation: NbPoles = "<< nbpol<< endl;
-#endif
   try {
     OCC_CATCH_SIGNALS
     for (i=1; i<=nbpol; i++) {
-#ifdef DEB
-//    streampos pos = IS.tellg();
-//    cout << "ReadPolygonOnTriangulation: Pos = "<< pos << endl;
-#endif
       BinTools::GetInteger(IS, nbnodes);
-
-#ifdef DEB
-//    cout << "ReadPolygonOnTriangulation: PoleIndx = "<< i << " NbOfNodes = "<< nbnodes <<endl;
-#endif
 
       TColStd_Array1OfInteger Nodes(1, nbnodes);
       for (j = 1; j <= nbnodes; j++) {
@@ -1348,7 +1337,7 @@ void BinTools_ShapeSet::ReadPolygon3D(Standard_IStream& IS)
 
   if (IS.fail() || strstr(buffer,"Polygon3D") == NULL) {
     aMsg << "BinTools_ShapeSet::ReadPolygon3D: Not a Polygon3D section" <<endl;
-#ifdef DEB
+#ifdef BINTOOLS_DEB
     cout <<"Buffer: " << buffer << endl;
 #endif
     Standard_Failure::Raise(aMsg);

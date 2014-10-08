@@ -44,7 +44,9 @@ Handle(Standard_Transient) XmlDrivers::Factory(const Standard_GUID& theGUID)
 {
   if (theGUID == XmlStorageDriver)
   {
+#ifdef XMLDRIVERS_DEB
     cout << "XmlDrivers : Storage Plugin" << endl;
+#endif
     static Handle(XmlDrivers_DocumentStorageDriver) model_sd =
       new XmlDrivers_DocumentStorageDriver
         ("Copyright: Open Cascade, 2001-2002"); // default copyright
@@ -53,7 +55,9 @@ Handle(Standard_Transient) XmlDrivers::Factory(const Standard_GUID& theGUID)
 
   if (theGUID == XmlRetrievalDriver)
   {
+#ifdef XMLDRIVERS_DEB
     cout << "XmlDrivers : Retrieval Plugin" << endl;
+#endif
     static Handle (XmlDrivers_DocumentRetrievalDriver) model_rd =
       new XmlDrivers_DocumentRetrievalDriver ();
     return model_rd;

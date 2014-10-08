@@ -284,7 +284,7 @@ Handle(Units_Token) Units_Token::Divide (const Handle(Units_Token)& atoken)
      const
 {
   if(fabs(atoken->Value())<1.e-40) {
-#ifdef DEB
+#ifdef UNITS_DEB
     cout<<"Warning: division on token with value=0 => return initial token."<<endl;
 #endif
     return this;

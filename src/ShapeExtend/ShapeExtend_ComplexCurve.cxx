@@ -123,7 +123,7 @@ ShapeExtend_ComplexCurve::ShapeExtend_ComplexCurve()
     ok &= Curve (i)->Value (Curve(i)->LastParameter()).IsEqual
       (Curve (i + 1)->Value (Curve(i + 1)->FirstParameter()), Preci);
   }
-#ifdef DEB
+#ifdef SHAPEEXTEND_DEB
   if (!ok) cout << "Warning: ShapeExtend_ComplexCurve: not connected in 3d" << endl;
 #endif
   return ok;

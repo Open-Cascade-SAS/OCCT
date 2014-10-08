@@ -34,7 +34,9 @@ Handle(Standard_Transient) BinTObjDrivers::Factory(const Standard_GUID& aGUID)
 {
   if(aGUID == BinStorageDriver)
   {
+#ifdef BINTOBJDRIVERS_DEB
     cout << "BinTObjDrivers : Storage Plugin" << endl;
+#endif
     static Handle(BinTObjDrivers_DocumentStorageDriver) model_sd
       = new BinTObjDrivers_DocumentStorageDriver;
     return model_sd;
@@ -42,7 +44,9 @@ Handle(Standard_Transient) BinTObjDrivers::Factory(const Standard_GUID& aGUID)
 
   if(aGUID == BinRetrievalDriver)
   {  
+#ifdef BINTOBJDRIVERS_DEB
     cout << "BinTObjDrivers : Retrieval Plugin" << endl;
+#endif
     static Handle (BinTObjDrivers_DocumentRetrievalDriver) model_rd
       = new BinTObjDrivers_DocumentRetrievalDriver;
     return model_rd;

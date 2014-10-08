@@ -45,7 +45,7 @@
 #include <DrawTrSurf.hxx>
 #endif
 
-#if DEB
+#if GEOMFILL_DEB
 static void TracePlan(const Handle(Geom_Surface)& /*Plan*/)
 {
   cout << "Pas d'intersection Guide/Plan" << endl;	
@@ -142,7 +142,7 @@ GeomFill_GuideTrihedronPlan::GeomFill_GuideTrihedronPlan (const Handle(Adaptor3d
 
       Int.Perform(myTrimG, Pl); // intersection plan / guide 
       if (Int.NbPoints() == 0) {
-#if DEB
+#if GEOMFILL_DEB
 	TracePlan(Plan);
 #endif
         w = (fabs(myGuide->LastParameter() -w) > fabs(myGuide->FirstParameter()-w) ? myGuide->FirstParameter() : myGuide->LastParameter());
@@ -179,7 +179,7 @@ GeomFill_GuideTrihedronPlan::GeomFill_GuideTrihedronPlan (const Handle(Adaptor3d
           }
         }
         
-#if DEB		
+#if GEOMFILL_DEB		
         if (Abs(Diff) > DeltaG) {
           cout << "Trihedron Plan Diff on Guide : " << 
             Diff << endl;
@@ -254,7 +254,7 @@ void GeomFill_GuideTrihedronPlan::SetCurve(const Handle(Adaptor3d_HCurve)& C)
       BiNormal.Normalized();   
     }
   else { // Erreur...
-#if DEB
+#if GEOMFILL_DEB
     cout << "D0 :";
     // plan ortho a la trajectoire pour determiner Pprime
     Handle(Geom_Plane) Plan = new (Geom_Plane)(P, Tangent);
@@ -349,7 +349,7 @@ void GeomFill_GuideTrihedronPlan::SetCurve(const Handle(Adaptor3d_HCurve)& C)
 			      DTangent.Crossed(Normal));
     }
   else {// Erreur...
-#if DEB
+#if GEOMFILL_DEB
     cout << "D1 :";
     // plan ortho a la trajectoire
     Handle(Geom_Plane) Plan = new (Geom_Plane)(P, Tangent);

@@ -779,7 +779,7 @@ void TopOpeBRepBuild_Builder::MergeKPartisdisj()
 	return;
       }    
       else {
-#ifdef DEB
+#ifdef TOPOPEBREPBUILD_DEB
 	cout<<"TopOpeBRepBuild_MergeKPart soldisj : ires = "<<ires<<endl;
 #endif
 	return;

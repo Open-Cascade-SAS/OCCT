@@ -231,7 +231,7 @@ Standard_Boolean IGESCAFControl_Reader::Transfer (Handle(TDocStd_Document) &doc)
         else {
           Handle(IGESGraph_Color) color = Handle(IGESGraph_Color)::DownCast ( ent->Color() );
           if ( color.IsNull() ) {
-#ifdef DEB
+#ifdef IGESCAFCONTROL_DEB
             cout << "Error: Unrecognized type of color definition" << endl;
 #endif
             IsColor = Standard_False;

@@ -103,7 +103,7 @@ Standard_Boolean TopOpeBRepDS_Check::ChkIntg()
     bI = bI && ChkIntgInterf(LI);
   }
   
-#ifdef DEB
+#ifdef TOPOPEBREPDS_DEB
   PrintIntg(cout);
 #endif
 //  CheckEdgeParameter();
@@ -145,7 +145,7 @@ Standard_Boolean TopOpeBRepDS_Check::CheckDS(const Standard_Integer I,
   case TopOpeBRepDS_SURFACE :
     {
       if(myHDS->NbSurfaces() < I) {
-#ifdef DEB
+#ifdef TOPOPEBREPDS_DEB
 	cout<<"Surpassed index of TopOpeBRepDS_SURFACE. actual index : "<<I;
 	cout<<". Index max : "<<myHDS->NbSurfaces();
 #endif
@@ -161,7 +161,7 @@ Standard_Boolean TopOpeBRepDS_Check::CheckDS(const Standard_Integer I,
   case TopOpeBRepDS_CURVE :
     {
       if(myHDS->NbCurves() < I) {
-#ifdef DEB
+#ifdef TOPOPEBREPDS_DEB
 	cout<<"Surpassed index of TopOpeBRepDS_CURVE. actual index : "<<I;
 	cout<<". Index max : "<<myHDS->NbCurves();
 #endif
@@ -178,7 +178,7 @@ Standard_Boolean TopOpeBRepDS_Check::CheckDS(const Standard_Integer I,
   case TopOpeBRepDS_POINT :
     {
       if(myHDS->NbPoints() < I) {
-#ifdef DEB
+#ifdef TOPOPEBREPDS_DEB
 	cout<<"Surpassed index of TopOpeBRepDS_POINT : actual index : "<<I;
 	cout<<". Index max : "<<myHDS->NbPoints()<<endl;
 #endif
@@ -198,7 +198,7 @@ Standard_Boolean TopOpeBRepDS_Check::CheckDS(const Standard_Integer I,
 
   // topology
   if(myHDS->NbShapes() < I) {
-#ifdef DEB
+#ifdef TOPOPEBREPDS_DEB
     cout<<"Surpassed index of TopOpeBRepDS_Shape_. actual index : "<<I;
     cout<<". Index max : "<<myHDS->NbShapes();
 #endif
@@ -222,7 +222,7 @@ Standard_Boolean TopOpeBRepDS_Check::CheckDS(const Standard_Integer I,
     break ;
   }
   if(S.ShapeType() != se) {
-#ifdef DEB
+#ifdef TOPOPEBREPDS_DEB
     cout<<"Error :  Shape "<<I<<" is a ";
     TopOpeBRepDS::Print(TopOpeBRepDS::ShapeToKind(S.ShapeType()), cout);
     cout<<" and not a ";
@@ -254,7 +254,7 @@ Standard_Boolean TopOpeBRepDS_Check::ChkIntgSamDom()
     const TopoDS_Shape& Sind = myHDS->Shape(i);
     const TopTools_ListOfShape& losi = BDS.ShapeSameDomain(Sind);
     if(!CheckShapes(losi)) {
-#ifdef DEB
+#ifdef TOPOPEBREPDS_DEB
       cout<<"Shape of ShapeSameDomain (n*n "<<i;
       cout<<") is not defined in the DS"<<endl;
 #endif
@@ -265,7 +265,7 @@ Standard_Boolean TopOpeBRepDS_Check::ChkIntgSamDom()
     Curr = BDS.SameDomainRef(i);
     Loc = BDS.SameDomainRef(Curr);
     if(Curr && (Curr != Loc)) {
-#ifdef DEB
+#ifdef TOPOPEBREPDS_DEB
       cout<<"SameDomaineRef of Shape "<<i<<" = "<<Curr;
       cout<<". SameDomaineRef of Shape "<<Curr<<" = "<<Loc<<endl;
 #endif
@@ -276,7 +276,7 @@ Standard_Boolean TopOpeBRepDS_Check::ChkIntgSamDom()
       // Verification du type des differents Shapes SameDomain
       const TopoDS_Shape& Sref = myHDS->Shape(Curr);
       if(Sind.ShapeType() != Sref.ShapeType()) {
-#ifdef DEB
+#ifdef TOPOPEBREPDS_DEBDEB
 	cout<<"Shapes n*n "<<i<<" and "<<Curr<<" are SameDomain."<<endl;
 	cout<<"Type of Shape n*n "<<i<<" = ";
 	PrintShape(Sind.ShapeType(),cout);
@@ -302,7 +302,7 @@ Standard_Boolean TopOpeBRepDS_Check::ChkIntgSamDom()
 	  liolos.Next();
 	}
 	if(!bb) {
-#ifdef DEB
+#ifdef TOPOPEBREPDS_DEB
 	  cout<<"Shapes n*n "<<i<<" and  "<<Curr<<" are SameDomain. ";
 	  cout<<"The reference of "<<i<<", is "<<Curr<<"."<<endl;
 	  cout<<"However, Shape n*n "<<i;
@@ -372,7 +372,7 @@ Standard_Boolean TopOpeBRepDS_Check::OneVertexOnPnt(){
       Dist = P1.Distance(P2);
       if(Dist <= tol1 + tol2) {
 	if(sdr1 != sdr2) {
-#ifdef DEB
+#ifdef TOPOPEBREPDS_DEB
 	  cout<<"Pb Vertex n+n"<<Curr1<<" and n*n"<<Curr2;
 	  cout<<" : same place, not SameDomain"<<endl;
 	  cout<<"  Tol of Vertex n*n"<<Curr1<<" = "<<tol1<<endl;
@@ -383,7 +383,7 @@ Standard_Boolean TopOpeBRepDS_Check::OneVertexOnPnt(){
 	}
       }
       else if(sdr1 == sdr2) {
-#ifdef DEB
+#ifdef TOPOPEBREPDS_DEB
 	cout<<"Pb Vertex "<<Curr1<<" and "<<Curr2;
 	cout<<" : SameDomain, not same place"<<endl;
 	cout<<"  Tol of Vertex n*n"<<Curr1<<" = "<<tol1<<endl;
@@ -402,7 +402,7 @@ Standard_Boolean TopOpeBRepDS_Check::OneVertexOnPnt(){
       const gp_Pnt& Pnt2 = TopOpeBRepTool_ShapeTool::Pnt(S1);
       Dist = Pnt1.Distance(Pnt2);
       if(Dist <= tol1 + tol2) {
-#ifdef DEB
+#ifdef TOPOPEBREPDS_DEB
 	cout<<"Attention : Vertex "<<Curr1<<" and Point "<<PE.Index();
 	cout<<" are confused"<<endl;
 	cout<<"  Tol of Vertex n*n"<<Curr1<<" = "<<tol1<<endl;
@@ -420,7 +420,7 @@ Standard_Boolean TopOpeBRepDS_Check::OneVertexOnPnt(){
       for(j = i+1;j < NbPo;j++) {
 	const TopOpeBRepDS_Point& dsPnt2 = myHDS->Point(j);
 	if(dsPnt1.IsEqual(dsPnt2)) {
-#ifdef DEB
+#ifdef TOPOPEBREPDS_DEB
 	  cout<<"Attention : points "<<i<<" and "<<j<<" are confused"<<endl;
 	  cout<<"  Tol of Point n*n"<<i<<" = "<<dsPnt1.Tolerance()<<endl;
 	  cout<<"  Tol of Point n*n"<<j<<" = "<<dsPnt1.Tolerance()<<endl;

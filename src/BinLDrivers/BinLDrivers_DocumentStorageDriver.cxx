@@ -111,7 +111,7 @@ void BinLDrivers_DocumentStorageDriver::Write
     ofstream anOS (aFileName.ToCString(), ios::ate);
     //ofstream anOS (aFileName.ToCString(), ios::out| ios::binary | ios::ate);
 #endif
-#ifdef DEB
+#ifdef BINLDRIVERS_DEB
     const Standard_Integer aP = (Standard_Integer) anOS.tellp();
     cout << "POS = " << aP <<endl;
 #endif
@@ -437,7 +437,7 @@ void BinLDrivers_DocumentStorageDriver::WriteInfoSection
 #endif
     SetIsError(Standard_True);
   }
-#ifdef DEB
+#ifdef BINLDRIVERS_DEB
     const Standard_Integer aP = (Standard_Integer) aFileDriver.Tell();
     cout << "POS = " << aP <<endl;
 #endif

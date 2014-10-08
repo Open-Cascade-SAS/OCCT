@@ -78,8 +78,10 @@ void AIS_TexturedShape::SetTextureFileName (const TCollection_AsciiString& theTe
     }
     else
     {
+#ifdef AIS_DEB
       std::cout << "Texture " << theTextureFileName << " doesn't exist\n";
       std::cout << "Using Texture 0 instead ...\n";
+#endif
       myPredefTexture = Graphic3d_NameOfTexture2D (0);
     }
     myTextureFile = "";
@@ -342,7 +344,9 @@ void AIS_TexturedShape::updateAttributes (const Handle(Prs3d_Presentation)& theP
   myAspect->SetTextureMap (myTexture);
   if (!myTexture->IsDone())
   {
+#ifdef AIS_DEB
     std::cout << "An error occurred while building texture\n";
+#endif
     myAspect->SetTextureMapOff();
     return;
   }
@@ -468,7 +472,9 @@ void AIS_TexturedShape::Compute (const Handle(PrsMgr_PresentationManager3d)& /*t
       }
       catch (Standard_Failure)
       {
+#ifdef AIS_DEB
         std::cout << "AIS_TexturedShape::Compute() in ShadingMode failed \n";
+#endif
         StdPrs_WFShape::Add (thePrs, myshape, myDrawer);
       }
       break;

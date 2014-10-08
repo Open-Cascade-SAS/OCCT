@@ -720,7 +720,7 @@ void  BinTools_CurveSet::Read(Standard_IStream& IS)
   if (IS.fail() || strcmp(buffer,"Curves")) {
     Standard_SStream aMsg;
     aMsg << "BinTools_CurveSet::Read:  Not a Curve table"<<endl;
-#ifdef DEB
+#ifdef BINTOOLS_DEB
     cout <<"CurveSet buffer: " << buffer << endl;
 #endif
     Standard_Failure::Raise(aMsg);

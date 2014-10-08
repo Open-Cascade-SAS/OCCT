@@ -958,7 +958,7 @@ void TopOpeBRepDS_DataStructure::FillShapesSameDomain(const TopoDS_Shape& S1,
   else if ( r1 != iS1 && r2 != iS2 ) { 
     if (r1 != r2) {
       //      Standard_ProgramError::Raise("FacesFiller::Insert SD 1");
-#ifdef DEB
+#ifdef TOPOPEBREPDS_DEB
       cout<<"FacesFiller::Insert SD 1"<<endl;
 #endif
     }
@@ -1180,7 +1180,7 @@ TopOpeBRepDS_Curve& TopOpeBRepDS_DataStructure::ChangeCurve(const Standard_Integ
 const TopOpeBRepDS_Point& TopOpeBRepDS_DataStructure::Point(const Standard_Integer I)const 
 {
   if ( I < 1 || I > myNbPoints ) {
-#ifdef DEB
+#ifdef TOPOPEBREPDS_DEB
     cout<<"acces au POINT "<<I<<" incorrect "<<myNbPoints<<" max"<<endl;
 #endif
     Standard_ProgramError::Raise("TopOpeBRepDS_DataStructure::Point");
@@ -1199,7 +1199,7 @@ const TopOpeBRepDS_Point& TopOpeBRepDS_DataStructure::Point(const Standard_Integ
 TopOpeBRepDS_Point& TopOpeBRepDS_DataStructure::ChangePoint(const Standard_Integer I)
 {
   if ( I < 1 || I > myNbPoints ) {
-#ifdef DEB
+#ifdef TOPOPEBREPDS_DEB
     cout<<"acces au POINT "<<I<<" incorrect "<<myNbPoints<<" max"<<endl;
 #endif
     Standard_ProgramError::Raise("TopOpeBRepDS_DataStructure::Point");

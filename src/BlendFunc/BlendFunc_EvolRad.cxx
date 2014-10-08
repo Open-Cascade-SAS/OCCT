@@ -348,14 +348,14 @@ Standard_Boolean BlendFunc_EvolRad::ComputeValues(const math_Vector& X,
  if (invnorm1 > Eps) invnorm1 = ((Standard_Real) 1) /invnorm1;
   else {
     invnorm1 = 1; // Unsatisfactory, but it is not necessary to stop
-#if DEB
+#if BLENDFUNC_DEB
     cout << " EvolRad : Surface singuliere " << endl;
 #endif
   }
   if (invnorm2 > Eps) invnorm2 = ((Standard_Real) 1) /invnorm2;
   else {
     invnorm2 = 1; // Unsatisfactory, but it is not necessary to stop
-#if DEB
+#if BLENDFUNC_DEB
     cout << " EvolRad : Surface singuliere " << endl;
 #endif
   }
@@ -947,7 +947,7 @@ Standard_Boolean BlendFunc_EvolRad::IsSolution(const math_Vector& Sol,
 	 Abs(controle(2)) > tolerances(2) ||
 	 Abs(controle(3)) > tolerances(3) ||
 	 Abs(controle(4)) > tolerances(4)){
-#ifdef DEB
+#ifdef BLENDFUNC_DEB
 	cout<<"Cheminement : echec calcul des derivees"<<endl;
 #endif
 	istangent = Standard_True;
@@ -1072,7 +1072,7 @@ void BlendFunc_EvolRad::Tangent(const Standard_Real U1,
       (U2!=xval(3)) || (V2!=xval(4))) {
     gp_Vec d1u,d1v;
     gp_Pnt bid;
-#if DEB
+#if BLENDFUNC_DEB
     cout << " erreur de tengent !!!!!!!!!!!!!!!!!!!!" << endl;
 #endif
     surf1->D1(U1,V1,bid,d1u,d1v);  
@@ -1447,13 +1447,13 @@ void BlendFunc_EvolRad::Section(const Blend_Point& P,
   norm2 = nplan.Crossed(ns2).Magnitude();
   if (norm1 < Eps) {
     norm1 = 1; // Unsatisfactory, but it is not necessary to stop
-#if DEB
+#if BLENDFUNC_DEB
     cout << " EvolRad : Surface singuliere " << endl;
 #endif
   }
   if (norm2 < Eps) {
     norm2 = 1; // Unsatisfactory, but it is not necessary to stop
-#if DEB
+#if BLENDFUNC_DEB
     cout << " EvolRad : Surface singuliere " << endl;
 #endif
   }
@@ -1580,13 +1580,13 @@ Standard_Boolean BlendFunc_EvolRad::Section
   norm2 = nplan.Crossed(ns2).Magnitude();
   if (norm1 < Eps)  {
     norm1 = 1; // Unsatisfactory, but it is not necessary to stop
-#if DEB
+#if BLENDFUNC_DEB
     cout << " EvolRad : Surface singuliere " << endl;
 #endif
   }
   if (norm2 < Eps) {
     norm2 = 1; // Unsatisfactory, but it is not necessary to stop
-#if DEB
+#if BLENDFUNC_DEB
     cout << " EvolRad : Surface singuliere " << endl;
 #endif
   }
@@ -1926,13 +1926,13 @@ Standard_Boolean BlendFunc_EvolRad::Section
   norm2 = nplan.Crossed(ns2).Magnitude();
   if (norm1 < Eps)  {
     norm1 = 1; // Unsatisfactory, but it is not necessary to stop
-#if DEB
+#if BLENDFUNC_DEB
     cout << " EvolRad : Surface singuliere " << endl;
 #endif
   }
   if (norm2 < Eps)  {
     norm2 = 1; // Unsatisfactory, but it is not necessary to stop
-#if DEB
+#if BLENDFUNC_DEB
     cout << " EvolRad : Surface singuliere " << endl;
 #endif
   }

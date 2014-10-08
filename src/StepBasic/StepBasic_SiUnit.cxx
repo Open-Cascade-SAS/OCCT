@@ -78,7 +78,7 @@ void StepBasic_SiUnit::SetDimensions(const Handle(StepBasic_DimensionalExponents
 {
   // WARNING : the field is redefined.
   // field set up forbidden.
-#ifdef DEB
+#ifdef STEPBASIC_DEB
   cout << "Field is redefined, SetUp Forbidden" << endl;
 #endif
 }

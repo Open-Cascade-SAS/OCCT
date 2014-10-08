@@ -105,7 +105,7 @@ static void NormalD0(const Standard_Real U, const Standard_Real V, const Handle(
                   NStatus,Normal,OrderU,OrderV);
     
     if (NStatus != CSLib_Defined) {
-#if DEB
+#if GEOMFILL_DEB
       cout << U << ", " << V<< endl;
       for(i=0;i<=MaxOrder;i++)
 	for(j=0;j<=MaxOrder;j++){

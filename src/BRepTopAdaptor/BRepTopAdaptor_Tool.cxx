@@ -70,7 +70,9 @@ Handle(BRepTopAdaptor_TopolTool) BRepTopAdaptor_Tool::GetTopolTool() {
     return(myTopolTool);
   }
   else { 
+#ifdef BREPTOPADAPTOR_DEB
     cout<<"\n*** Error ds Handle(BRepTopAdaptor_TopolTool) BRepTopAdaptor_Tool::GetTopolTool()\n"<<endl;
+#endif
     return(myTopolTool);
   }
 }
@@ -80,7 +82,9 @@ Handle(Adaptor3d_HSurface)  BRepTopAdaptor_Tool::GetSurface() {
     return(myHSurface);
   }
   else { 
+#ifdef BREPTOPADAPTOR_DEB
     cout<<"\n*** Error ds Handle(BRepTopAdaptor_TopolTool) BRepTopAdaptor_Tool::GetSurface()\n"<<endl;
+#endif
     return(myHSurface);
   }
 }

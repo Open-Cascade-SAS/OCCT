@@ -32,7 +32,7 @@ void  IGESData_ReadWriteModule::Read
    const Handle(Interface_FileReaderData)& , const Standard_Integer ,
    Handle(Interface_Check)& , const Handle(Standard_Transient)& ) const 
 {
-#ifdef DEB
+#ifdef IGESDATA_DEB
   cout<<"IGESData_ReadWriteModule, Read called"<<endl;
 #endif
 }

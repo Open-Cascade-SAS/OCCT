@@ -1177,7 +1177,7 @@ static void MergeWLinesIfAllSegmentsAlongRestriction(IntPatch_SequenceOfLine&   
      
       Handle(IntPatch_WLine) anWLine = NULL;
       anWLine = GetMergedWLineOnRestriction(theSlin,TolVrtx,aLineOn2S);
-#ifdef DEB
+#ifdef TOPOPEBREP_DEB
 	  cout << "*** TopOpeBRep_FaceIntersector: Merge WLines on Restriction S1 to WLine ***" << endl;
 #endif
       theSlin.Clear();
@@ -1193,7 +1193,7 @@ static void MergeWLinesIfAllSegmentsAlongRestriction(IntPatch_SequenceOfLine&   
 
       Handle(IntPatch_WLine) anWLine = NULL;
       anWLine = GetMergedWLineOnRestriction(theSlin,TolVrtx,aLineOn2S);
-#ifdef DEB
+#ifdef TOPOPEBREP_DEB
 	  cout << "*** TopOpeBRep_FaceIntersector: Merge WLines on Restriction S2 to WLine***" << endl;
 #endif
       theSlin.Clear();

@@ -55,7 +55,7 @@ void QANewBRepNaming_Cut::Load(BRepAlgoAPI_BooleanOperation& MS) const {
   const TopAbs_ShapeEnum& TypeSh = ShapeType(ObjSh);
 
   if (ResSh.IsNull()) {
-#ifdef DEB
+#ifdef QANEWBREPNAMING_DEB
     cout<<"QANewBRepNaming_Cut::Load(): The result of the boolean operation is null"<<endl;
 #endif
     return;
@@ -63,7 +63,7 @@ void QANewBRepNaming_Cut::Load(BRepAlgoAPI_BooleanOperation& MS) const {
 
   // If the shapes are the same - select the result and exit:
   if (IsResultChanged(MS)) {
-#ifdef DEB
+#ifdef QANEWBREPNAMING_DEB
     cout<<"QANewBRepNaming_Cut::Load(): The object and the result of CUT operation are the same"<<endl;
 #endif
     if (MS.Shape().ShapeType() == TopAbs_COMPOUND) {

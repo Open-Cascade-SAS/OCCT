@@ -525,7 +525,7 @@ static void CalculBatten (const Handle (GeomAdaptor_HSurface) ASurf,
     FairCurve_AnalysisCode Iana; 
     Standard_Boolean Ok;
     Ok = Bat.Compute(Iana,25,1.e-2);
-#if DEB
+#if CHFI3D_DEB
     if (!Ok) { 
       cout<<"no batten :";
       Bat.Dump(cout);
@@ -1330,7 +1330,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
     isOnSameDiff = isOnSame && isOnDiff;
   }
   if ( isOnSameDiff ) {
-#ifdef DEB
+#ifdef CHFI3D_DEB
     cout << "OnSame + OnDiff, PerformMoreThreeCorner() calls PerformOneCorner()" << endl;
 #endif
     PerformOneCorner (Jndex, Standard_True);

@@ -120,7 +120,7 @@ void TestTopOpe::Factory(Draw_Interpretor& theDI)
 
   SWDRAW::Init (theDI);
 
-#ifdef DEB
+#ifdef TESTTOPOPE_DEB
       cout << "Draw Plugin : All topological operations kernel commands are loaded" << endl;
 #endif
 }

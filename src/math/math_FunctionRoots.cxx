@@ -190,7 +190,7 @@ static void  Solve(math_FunctionWithDerivative& F,
     F.Value(b,fb);
     fb-=K;
   }
-#ifdef DEB
+#ifdef MATH_DEB
   cout<<" Non Convergence dans math_FunctionRoots.cxx "<<endl;
 #endif
 }

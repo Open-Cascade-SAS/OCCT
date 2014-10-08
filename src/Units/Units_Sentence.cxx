@@ -86,7 +86,7 @@ Units_Sentence::Units_Sentence(const Handle(Units_Lexicon)& alexicon,
       if(!LastWord.IsIntegerValue()) {
         // unknown expression - not create sentene
         thesequenceoftokens->Clear();
-#ifdef DEB
+#ifdef UNITS_DEB
         cout<<"Warning: can not create correct sentence from string: "<<astring<<endl;
 #endif
         return;
@@ -107,7 +107,7 @@ Units_Sentence::Units_Sentence(const Handle(Units_Lexicon)& alexicon,
           ( token->Mean()=="0" && ( PrevMean=="M" || PrevMean=="U" || PrevMean=="MU" ) ) )  {
         // incorrect situation
         thesequenceoftokens->Clear();
-#ifdef DEB
+#ifdef UNITS_DEB
         cout<<"Warning: can not create correct sentence from string: "<<astring<<endl;
 #endif
         return;

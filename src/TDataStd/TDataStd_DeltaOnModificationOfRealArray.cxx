@@ -38,7 +38,7 @@ TDataStd_DeltaOnModificationOfRealArray::
     Handle(TColStd_HArray1OfReal) Arr1, Arr2;
     Arr1 = OldAtt->Array();
     Arr2 = CurrAtt->Array();
-#ifdef DEB
+#ifdef TDATASTD_DEB
     if(Arr1.IsNull())
       cout <<"DeltaOnModificationOfRealArray:: Old Array is Null" <<endl;
     if(Arr2.IsNull())
@@ -76,7 +76,7 @@ TDataStd_DeltaOnModificationOfRealArray::
       }
     }
     OldAtt->RemoveArray();
-#ifdef DEB
+#ifdef TDATASTD_DEB
     if(OldAtt->Array().IsNull())
       cout << "BackUp Arr is Nullified" << endl;
 #endif
@@ -95,7 +95,7 @@ void TDataStd_DeltaOnModificationOfRealArray::Apply()
   Handle(TDF_Attribute) TDFAttribute = Attribute();
   Handle(TDataStd_RealArray) BackAtt = (*((Handle(TDataStd_RealArray)*)&TDFAttribute));
   if(BackAtt.IsNull()) {
-#ifdef DEB
+#ifdef TDATASTD_DEB
     cout << "DeltaOnModificationOfRealArray::Apply: OldAtt is Null" <<endl;
 #endif
     return;
@@ -108,7 +108,7 @@ void TDataStd_DeltaOnModificationOfRealArray::Apply()
   }
 
   if(aCurAtt.IsNull()) {
-#ifdef DEB
+#ifdef TDATASTD_DEB
     cout << "DeltaOnModificationOfRealArray::Apply: CurAtt is Null" <<endl;
 #endif
     return;
@@ -149,7 +149,7 @@ void TDataStd_DeltaOnModificationOfRealArray::Apply()
       realArr->SetValue(i, aRealArr->Value(i));
     if(!myIndxes.IsNull() && !myValues.IsNull())
       for(i = 1; i <= myIndxes->Upper();i++) {
-#ifdef DEB  
+#ifdef TDATASTD_DEB
 	cout << "i = " << i << "  myIndxes->Upper = " << myIndxes->Upper() << endl;
 	cout << "myIndxes->Value(i) = " << myIndxes->Value(i) << endl;
 	cout << "myValues->Value(i) = " << myValues->Value(i) << endl;
@@ -160,7 +160,7 @@ void TDataStd_DeltaOnModificationOfRealArray::Apply()
   }
     
 
-#ifdef DEB    
+#ifdef TDATASTD_DEB
   cout << " << RealArray Dump after Delta Apply >>" <<endl;
   Handle(TColStd_HArray1OfReal) aRArr = aCurAtt->Array();
   for(i=aRArr->Lower(); i<=aRArr->Upper() && i <= MAXUP;i++)

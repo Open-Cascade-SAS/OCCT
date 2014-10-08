@@ -309,7 +309,7 @@ Handle(StepRepr_RepresentationContext) STEPConstruct_Styles::FindContext (const 
   Handle(TransferBRep_ShapeMapper) mapper = TransferBRep::ShapeMapper ( FinderProcess(), Shape );
   Handle(StepShape_ShapeRepresentation) sr;
   if ( FinderProcess()->FindTypedTransient (mapper,STANDARD_TYPE(StepShape_ShapeRepresentation), sr) ) {
-#ifdef DEB
+#ifdef STEPCONSTRUCT_DEB
 //    cout << "Context of " << Shape.TShape()->DynamicType()->Name() << ": SR found: " << sr->DynamicType()->Name() << endl;
 #endif
     Context = sr->ContextOfItems();
@@ -317,12 +317,12 @@ Handle(StepRepr_RepresentationContext) STEPConstruct_Styles::FindContext (const 
   else {
     Handle(StepGeom_GeometricRepresentationItem) item;
     if ( FinderProcess()->FindTypedTransient (mapper,STANDARD_TYPE(StepGeom_GeometricRepresentationItem), item) ) {
-#ifdef DEB
+#ifdef STEPCONSTRUCT_DEB
 //      cout << "Context of " << Shape.TShape()->DynamicType()->Name() << ": GeomRepItem found: " << item->DynamicType()->Name() << endl;
 #endif
       Interface_EntityIterator subs = Graph().Sharings(item);
       for (subs.Start(); Context.IsNull() && subs.More(); subs.Next()) {
-#ifdef DEB
+#ifdef STEPCONSTRUCT_DEB
 //	cout << "Parsing back refs: found " << subs.Value()->DynamicType()->Name() << endl;
 #endif
 	if ( ! subs.Value()->IsKind(STANDARD_TYPE(StepShape_ShapeRepresentation)) ) continue;
@@ -331,7 +331,7 @@ Handle(StepRepr_RepresentationContext) STEPConstruct_Styles::FindContext (const 
       }
     }
   }
-#ifdef DEB
+#ifdef STEPCONSTRUCT_DEB
   if ( Context.IsNull() ) {
     cout << Shape.TShape()->DynamicType()->Name() << ": Cannot find context" << endl;
   }
@@ -492,7 +492,7 @@ Handle(StepVisual_PresentationStyleAssignment) STEPConstruct_Styles::MakeColorPS
   }
   
   if ( items.Length() <1 ) {
-#ifdef DEB
+#ifdef STEPCONSTRUCT_DEB
     cout << "Error: no color is supplied" << endl;
 #endif
     return PSA;
@@ -719,7 +719,7 @@ Standard_Boolean STEPConstruct_Styles::DecodeColor (const Handle(StepVisual_Colo
     else if ( name.IsEqual ( "black"   ) ) Col.SetValues ( Quantity_NOC_BLACK );
     else if ( name.IsEqual ( "white"   ) ) Col.SetValues ( Quantity_NOC_WHITE );
     else {
-#ifdef DEB
+#ifdef STEPCONSTRUCT_DEB
       cout << "Error: color name \"" << name << "\" is not recognized" << endl;
 #endif
       return Standard_False;

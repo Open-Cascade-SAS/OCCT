@@ -1032,7 +1032,9 @@ void OSD_File :: Read (
                  ) {
 
  if ( OSD_File::KindOfFile ( ) == OSD_DIRECTORY ) { 
+#ifdef OSD_DEB
    cout << " OSD_File::Read : it is a directory " << endl;
+#endif
    return ;
 //   Standard_ProgramError::Raise("OSD_File::Read : it is a directory");
  }

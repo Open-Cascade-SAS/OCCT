@@ -348,7 +348,7 @@ static Standard_Boolean SplitWire(const TopoDS_Face &face, const TopoDS_Wire& wi
   }
 
   if(aResWires.Length()>1) {
-#ifdef DEBUG
+#ifdef SHAPEFIX_DEB
     cout<<"Wire was splitted on "<<aResWires.Length()<<" wires"<< endl;
 #endif
   }
@@ -992,7 +992,7 @@ Standard_Boolean ShapeFix_Face::FixAddNaturalBound()
   BRepTools::Update(myFace);
   
 /**/
-#ifdef DEBUG
+#ifdef SHAPEFIX_DEB
   cout<<"Natural bound on sphere or torus with holes added"<<endl; // mise au point !
 #endif
   SendWarning ( myFace, Message_Msg ( "FixAdvFace.FixOrientation.MSG0" ) );// Face created with natural bounds
@@ -1103,7 +1103,7 @@ Standard_Boolean ShapeFix_Face::FixOrientation(TopTools_DataMapOfShapeListOfShap
       ws.SetValue ( 1, sbdw->Wire() );
       SendWarning ( sbdw->Wire(), Message_Msg ( "FixAdvFace.FixOrientation.MSG5" ) );// Wire on face was reversed
       done = Standard_True;
-#ifdef DEBUG
+#ifdef SHAPEFIX_DEB
       cout<<"Wire reversed"<<endl; // mise au point !
 #endif
     }
@@ -1390,7 +1390,7 @@ Standard_Boolean ShapeFix_Face::FixOrientation(TopTools_DataMapOfShapeListOfShap
     Standard_Integer k =1;
     for( ; k <= aSeqReversed.Length(); k++ )
     {
-#ifdef DEBUG
+#ifdef SHAPEFIX_DEB
       cout<<"Wire no "<<aSeqReversed.Value(k)<<" of "<<nb<<" reversed"<<endl; // mise au point !
 #endif
     }
@@ -1554,18 +1554,18 @@ Standard_Boolean ShapeFix_Face::FixMissingSeam()
         }
         else {
           w2.Reverse();
-#ifdef DEB
+#ifdef SHAPEFIX_DEB
           if ( ! isdeg2 ) cout << "Warning: ShapeFix_Face::FixMissingSeam(): wire reversed" << endl;
 #endif
         }
       }
-#ifdef DEB
+#ifdef SHAPEFIX_DEB
       else cout << "Warning: ShapeFix_Face::FixMissingSeam(): incompatible open wires" << endl;
 #endif
     }
 //    else return Standard_False; //  abort
     else {
-#ifdef DEB
+#ifdef SHAPEFIX_DEB
       cout << "Warning: ShapeFix_Face::FixMissingSeam(): more than two open wires detected!" << endl;
 #endif
       //:abv 30.08.09: if more than one open wires and more than two of them are
@@ -1575,7 +1575,7 @@ Standard_Boolean ShapeFix_Face::FixMissingSeam()
         w1.Nullify();
         w2.Nullify();
         i = 0;
-#ifdef DEB
+#ifdef SHAPEFIX_DEB
         cout << "Warning: ShapeFix_Face::FixMissingSeam(): open degenerated wire removed" << endl;
 #endif
         continue;
@@ -1875,12 +1875,12 @@ Standard_Boolean ShapeFix_Face::FixSmallAreaWire()
   if ( nbRemoved <=0 ) return Standard_False;
   
   if ( nbWires <=0 ) {
-#ifdef DEB
+#ifdef SHAPEFIX_DEB
     cout << "Warning: ShapeFix_Face: All wires on a face have small area; left untouched" << endl;
 #endif
     return Standard_False;
   }
-#ifdef DEB
+#ifdef SHAPEFIX_DEB
   cout << "Warning: ShapeFix_Face: " << nbRemoved << " small area wire(s) removed" << endl;
 #endif
   if ( ! Context().IsNull() ) Context()->Replace ( myFace, face );
@@ -2095,7 +2095,7 @@ Standard_Boolean ShapeFix_Face::FixLoopWire(TopTools_SequenceOfShape& aResWires)
   Standard_Boolean isDone =(aResWires.Length() && isClosed);
   if(isDone && aResWires.Length() >1)
   {
-#ifdef DEBUG
+#ifdef SHAPEFIX_DEB
     cout<<"Wire was splitted on "<<aResWires.Length()<<" wires"<< endl;
 #endif
   }

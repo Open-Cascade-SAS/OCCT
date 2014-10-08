@@ -146,7 +146,9 @@ static void SetLabelNameByLink(const TDF_Label L)
   Handle(TDataStd_TreeNode) Node;
   if (! L.FindAttribute(XCAFDoc::ShapeRefGUID(), Node) ||
       ! Node->HasFather()) {
+#ifdef XCAFDOC_DEB
     cout<<"Error: XCAFDoc_ShapeTool, SetLabelNameByLink(): NO NODE"<<endl;
+#endif
     return;
   }
   TCollection_AsciiString Entry;

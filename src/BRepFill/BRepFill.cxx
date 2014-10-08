@@ -862,7 +862,7 @@ void BRepFill::SearchOrigin(TopoDS_Wire & W,
       }
     }
   } 
-#if DEB
+#if BREPFILL_DEB
   else {
     cout << "BRepFill::SearchOrigine : Echec Distance" << endl;
   }

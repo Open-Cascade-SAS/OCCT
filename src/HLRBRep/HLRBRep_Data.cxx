@@ -200,7 +200,7 @@ public:
   }
   //-- ============================================================
   void SetDim(const Standard_Integer n) {
-#ifdef DEB
+#ifdef HLRBREP_DEB
     cout<<"\n@#@#@#@#@# SetDim "<<n<<endl;
 #endif
     if(UV) 
@@ -1353,7 +1353,7 @@ void HLRBRep_Data::NextInterference ()
 		  }
 		  else {
 		    myNbPoints = myNbSegments = 0;
-#ifdef DEB
+#ifdef HLRBREP_DEB
 		    cout << "HLRBRep_Data::NextInterference : "; 
 		    if (myLE == myFE) 
 		      cout << "Edge " << myLE 
@@ -1519,7 +1519,7 @@ void HLRBRep_Data::EdgeState (const Standard_Real p1,
     else {
       stbef = TopAbs_OUT;
       staft = TopAbs_OUT;
-#ifdef DEB
+#ifdef HLRBREP_DEB
     cout << "HLRBRep_Data::EdgeState : undefined" << endl;
 #endif
     }
@@ -1527,7 +1527,7 @@ void HLRBRep_Data::EdgeState (const Standard_Real p1,
   else {
     stbef = TopAbs_OUT;
     staft = TopAbs_OUT; 
-#ifdef DEB
+#ifdef HLRBREP_DEB
     cout << "HLRBRep_Data::EdgeState : undefined" << endl;
 #endif
   }
@@ -1592,7 +1592,7 @@ HLRBRep_Data::HidingStartLevel (const Standard_Integer E,
     else if (p > param + tolpar)
       Loop = Standard_False;
     else {
-#ifdef DEB  
+#ifdef HLRBREP_DEB  
       cout << "HLRBRep_Data::HidingStartLevel : ";
       cout << "Bad Parameter." << endl;
 #endif
@@ -1621,12 +1621,10 @@ TopAbs_State HLRBRep_Data::Compare (const Standard_Integer E,
 //=======================================================================
 
 
-#ifdef DEB
 Standard_Boolean HLRBRep_Data::OrientOutLine (const Standard_Integer I, HLRBRep_FaceData& FD)
-#else
-Standard_Boolean HLRBRep_Data::OrientOutLine (const Standard_Integer, HLRBRep_FaceData& FD)
-#endif
 {
+  (void)I; // avoid compiler warning
+
   const Handle(HLRAlgo_WiresBlock)& wb = FD.Wires();
   Standard_Integer nw = wb->NbWires();
   Standard_Integer iw1,ie1,ne1;
@@ -1678,7 +1676,7 @@ Standard_Boolean HLRBRep_Data::OrientOutLine (const Standard_Integer, HLRBRep_Fa
 	    (iFaceGeom,pu,pv,V);
 	  gp_Vec Nm = mySLProps.Normal();
 	  if (curv == 0) {
-#ifdef DEB  
+#ifdef HLRBREP_DEB  
 	    cout << "HLRBRep_Data::OrientOutLine " << I;
 	    cout << " Edge " << myFE << " : ";
 	    cout << "CurvatureValue == 0." << endl;
@@ -1691,7 +1689,7 @@ Standard_Boolean HLRBRep_Data::OrientOutLine (const Standard_Integer, HLRBRep_Fa
 	  Nm.Transform(T);
 	  Nm.Cross(Tg);
 	  if (Tg.Magnitude() < gp::Resolution()) {
-#ifdef DEB  
+#ifdef HLRBREP_DEB  
 	    cout << "HLRBRep_Data::OrientOutLine " << I;
 	    cout << " Edge " << myFE << " : ";
 	    cout << "Tg.Magnitude() == 0." << endl;
@@ -1713,7 +1711,7 @@ Standard_Boolean HLRBRep_Data::OrientOutLine (const Standard_Integer, HLRBRep_Fa
 	  eb1->Orientation(ie1,myFEOri);
 	}
 	else {
-#ifdef DEB  
+#ifdef HLRBREP_DEB  
 	  cout << "HLRBRep_Data::OrientOutLine " << I;
 	  cout << " Edge " << myFE << " : ";
 	  cout << "UVPoint not found, OutLine not Oriented" << endl;

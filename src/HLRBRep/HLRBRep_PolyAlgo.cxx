@@ -1280,7 +1280,7 @@ InitBiPointsWithConnexity (const Standard_Integer e,
 	ZTI2 = Z2 = Nod12PntZ;
 	if      (Nod12Edg1 ==  (Standard_Boolean) e) U2 = Nod12PCu1;
 	else if (Nod12Edg2 ==  (Standard_Boolean) e) U2 = Nod12PCu2;
-#ifdef DEB
+#ifdef HLRBREP_DEB
 	else {
 	  cout << " HLRBRep_PolyAlgo::InitBiPointsWithConnexity : ";
 	  cout << "Parameter error on Node " << i1p2 << endl;
@@ -1332,7 +1332,7 @@ InitBiPointsWithConnexity (const Standard_Integer e,
 	    ZTI2 = Z2 = Nod12PntZ;
 	    if      (Nod12Edg1 ==  (Standard_Boolean) e) U2 = Nod12PCu1;
 	    else if (Nod12Edg2 ==  (Standard_Boolean) e) U2 = Nod12PCu2;
-#ifdef DEB
+#ifdef HLRBREP_DEB
 	    else {
 	      cout << " HLRBRep_PolyAlgo::InitBiPointsWithConnexity : ";
 	      cout << "Parameter error on Node " << i1p2 << endl;
@@ -1450,7 +1450,7 @@ InitBiPointsWithConnexity (const Standard_Integer e,
 	ZTI2 = Z2 = Nod12PntZ;
 	if      (Nod12Edg1 == (Standard_Boolean) e) U2 = Nod12PCu1;
 	else if (Nod12Edg2 == (Standard_Boolean) e) U2 = Nod12PCu2;
-#ifdef DEB
+#ifdef HLRBREP_DEB
 	else {
 	  cout << " HLRBRep_PolyAlgo::InitBiPointsWithConnexity : ";
 	  cout << "Parameter error on Node " << i1p2 << endl;
@@ -1899,7 +1899,7 @@ MoveOrInsertPoint (HLRAlgo_ListOfBPoint& List,
       Nod11PntZ = Z3;
       if      (Nod11Edg1 == (Standard_Boolean) e) Nod11PCu1 = U3;
       else if (Nod11Edg2 == (Standard_Boolean) e) Nod11PCu2 = U3;
-#ifdef DEB
+#ifdef HLRBREP_DEB
       else {
 	cout << " HLRBRep_PolyAlgo::MoveOrInsertPoint : ";
 	cout << "Parameter error on Node " << i1p1 << endl;
@@ -1937,7 +1937,7 @@ MoveOrInsertPoint (HLRAlgo_ListOfBPoint& List,
       Nod12PntZ = Z3;
       if      (Nod12Edg1 == (Standard_Boolean) e) Nod12PCu1 = U3;
       else if (Nod12Edg2 == (Standard_Boolean) e) Nod12PCu2 = U3;
-#ifdef DEB
+#ifdef HLRBREP_DEB
       else {
 	cout << " HLRBRep_PolyAlgo::MoveOrInsertPoint : ";
 	cout << "Parameter error on Node " << i1p2 << endl;
@@ -2062,7 +2062,7 @@ MoveOrInsertPoint (HLRAlgo_ListOfBPoint& List,
       Nod11PntZ = Z3;
       if      (Nod11Edg1 == (Standard_Boolean) e) Nod11PCu1 = U3;
       else if (Nod11Edg2 == (Standard_Boolean) e) Nod11PCu2 = U3;
-#ifdef DEB
+#ifdef HLRBREP_DEB
       else {
 	cout << " HLRBRep_PolyAlgo::MoveOrInsertPoint : ";
 	cout << "Parameter error on Node " << i1p1 << endl;
@@ -2076,7 +2076,7 @@ MoveOrInsertPoint (HLRAlgo_ListOfBPoint& List,
       Nod21PntZ  = Z3;
       if      (Nod21Edg1 == (Standard_Boolean) e) Nod21PCu1 = U3;
       else if (Nod21Edg2 == (Standard_Boolean) e) Nod21PCu2 = U3;
-#ifdef DEB
+#ifdef HLRBREP_DEB
       else {
 	cout << " HLRBRep_PolyAlgo::MoveOrInsertPoint : ";
 	cout << "Parameter error on Node " << i2p1 << endl;
@@ -2119,7 +2119,7 @@ MoveOrInsertPoint (HLRAlgo_ListOfBPoint& List,
       Nod12PntZ = Z3;
       if      (Nod12Edg1 == (Standard_Boolean) e) Nod12PCu1 = U3;
       else if (Nod12Edg2 == (Standard_Boolean) e) Nod12PCu2 = U3;
-#ifdef DEB
+#ifdef HLRBREP_DEB
       else {
 	cout << " HLRBRep_PolyAlgo::MoveOrInsertPoint : ";
 	cout << "Parameter error on Node " << i1p2 << endl;
@@ -2133,7 +2133,7 @@ MoveOrInsertPoint (HLRAlgo_ListOfBPoint& List,
       Nod22PntZ  = Z3;
       if      (Nod22Edg1 == (Standard_Boolean) e) Nod22PCu1 = U3;
       else if (Nod22Edg2 == (Standard_Boolean) e) Nod22PCu2 = U3;
-#ifdef DEB
+#ifdef HLRBREP_DEB
       else {
 	cout << " HLRBRep_PolyAlgo::MoveOrInsertPoint : ";
 	cout << "Parameter error on Node " << i2p2 << endl;
@@ -2283,7 +2283,7 @@ MoveOrInsertPoint (HLRAlgo_ListOfBPoint& List,
       Nod11PntZ = Z3;
       if      (Nod11Edg1 == (Standard_Boolean) e) Nod11PCu1 = U3;
       else if (Nod11Edg2 == (Standard_Boolean) e) Nod11PCu2 = U3;
-#ifdef DEB
+#ifdef HLRBREP_DEB
       else {
 	cout << " HLRBRep_PolyAlgo::MoveOrInsertPoint : ";
 	cout << "Parameter error on Node " << i1p1 << endl;
@@ -2297,7 +2297,7 @@ MoveOrInsertPoint (HLRAlgo_ListOfBPoint& List,
       Nod21PntZ  = Z3;
       if      (Nod21Edg1 == (Standard_Boolean) e) Nod21PCu1 = U3;
       else if (Nod21Edg2 == (Standard_Boolean) e) Nod21PCu2 = U3;
-#ifdef DEB
+#ifdef HLRBREP_DEB
       else {
 	cout << " HLRBRep_PolyAlgo::MoveOrInsertPoint : ";
 	cout << "Parameter error on Node " << i2p1 << endl;
@@ -2340,7 +2340,7 @@ MoveOrInsertPoint (HLRAlgo_ListOfBPoint& List,
       Nod12PntZ = Z4;
       if      (Nod12Edg1 == (Standard_Boolean) e) Nod12PCu1 = U4;
       else if (Nod12Edg2 == (Standard_Boolean) e) Nod12PCu2 = U4;
-#ifdef DEB
+#ifdef HLRBREP_DEB
       else {
 	cout << " HLRBRep_PolyAlgo::MoveOrInsertPoint : ";
 	cout << "Parameter error on Node " << i1p2 << endl;
@@ -2354,7 +2354,7 @@ MoveOrInsertPoint (HLRAlgo_ListOfBPoint& List,
       Nod22PntZ  = Z4;
       if      (Nod22Edg1 == (Standard_Boolean) e) Nod22PCu1 = U4;
       else if (Nod22Edg2 == (Standard_Boolean) e) Nod22PCu2 = U4;
-#ifdef DEB
+#ifdef HLRBREP_DEB
       else {
 	cout << " HLRBRep_PolyAlgo::MoveOrInsertPoint : ";
 	cout << "Parameter error on Node " << i2p2 << endl;

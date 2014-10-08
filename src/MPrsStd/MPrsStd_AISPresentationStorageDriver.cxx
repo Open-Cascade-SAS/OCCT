@@ -82,7 +82,7 @@ void MPrsStd_AISPresentationStorageDriver::Paste(const Handle(TDF_Attribute)& So
 
    T->SetMode(S->Mode());
 
-#ifdef DEB
+#ifdef MPRSSTD_DEB
   cout << "AISPresentationStorageDriver "  << "storaged DriverGUID ==> "   << guid->Convert() << endl;
 #endif
 }

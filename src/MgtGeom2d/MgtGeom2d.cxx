@@ -462,7 +462,9 @@ Handle(Geom2d_Curve)  MgtGeom2d::Translate(const Handle(PGeom2d_Curve)& PObj)
     return MgtGeom2d::Translate(TOffsetCurve);
   }
   else {
+#ifdef MGTGEOM2D_DEB
     cout << "Unknown Geom2d curve type ???? " << endl;
+#endif
     Standard_NullObject::Raise("No mapping for the current Persistent Curve");
   }
 // POP pour NT
@@ -526,7 +528,9 @@ Handle(PGeom2d_Curve)  MgtGeom2d::Translate(const Handle(Geom2d_Curve)& TObj)
     return MgtGeom2d::Translate(POffsetCurve);
   }
   else {
+#ifdef MGTGEOM2D_DEB
     cout << "Unknown Geom2d curve type ???? " << endl;
+#endif
     Standard_NullObject::Raise("No mapping for the current Transient Curve");
   }
 // POP pour NT

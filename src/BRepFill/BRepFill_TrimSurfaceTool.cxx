@@ -273,7 +273,7 @@ static void EvalParameters(const TopoDS_Edge&          Edge,
     NbSegments = Intersector.NbSegments();
     
     if (NbSegments > 0) {
-#ifdef DEB
+#ifdef BREPFILL_DEB
       cout << " IntersectWith : " << NbSegments  
 	   << " Segments of intersection" << endl;
 #endif
@@ -468,11 +468,8 @@ Standard_Real BRepFill_TrimSurfaceTool::ProjOn(const gp_Pnt2d& Point,
 
   // evaluate the projection of the point on the curve.
   Geom2dAPI_ProjectPointOnCurve Projector(Point, C2d);
-#ifdef DEB  
-  Standard_Real Dist = 
-#endif
-    Projector.LowerDistance();
-#ifdef DEB
+#ifdef BREPFILL_DEB  
+  Standard_Real Dist = Projector.LowerDistance();
   if ( Dist > Precision::Confusion() ) {
     cout << " *** WARNING  TrimSurfaceTool:  *** " << endl;
     cout << "      --> the point is not on the edge" <<endl;

@@ -922,7 +922,7 @@ TColStd_Array1OfReal& DWeigths)
   norm = ncrossns.Magnitude();
   if (norm < Eps)  {
     norm = 1; // Not enough, but it is not necessary to stop
-#if DEB
+#if BREPBLEND_DEB
     cout << " SurfRstEvolRad : Surface single " << endl;
 #endif
   }

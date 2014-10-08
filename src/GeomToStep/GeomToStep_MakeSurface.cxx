@@ -68,7 +68,7 @@ GeomToStep_MakeSurface::GeomToStep_MakeSurface ( const Handle(Geom_Surface)& S)
   }
   else {
     done = Standard_False;
-#ifdef DEB
+#ifdef GEOMTOSTEP_DEB
     cout << " unknown type " << S->DynamicType()->Name() << endl;
 #endif
   }

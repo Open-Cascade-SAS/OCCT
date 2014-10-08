@@ -486,7 +486,7 @@ static Standard_Integer Identify(const TopoDS_Face& theFace, const gp_Ax1& theAx
   gp_Pnt aPoint = aGProp.CentreOfMass();
   gp_Vec aV1(theAx.Direction());
   gp_Vec aV2(theAx.Location(), aPoint);
-#ifdef DEB
+#ifdef QANEWBREPNAMING_DEB
   gp_Vec v1 = aV1.Crossed(aV2);
   cout <<" Z of V1 = " << v1.XYZ().Z() << endl;
 #endif
@@ -528,7 +528,7 @@ void QANewBRepNaming_BooleanOperationFeat::LoadModified11 (BRepAlgoAPI_BooleanOp
 	const TopoDS_Shape& newShape = ShapesIterator.Value ();
 	if (!Root.IsSame (newShape)) {
 	  //put shapes with evolution 1:1 (may be Compound)
-#ifdef DEB
+#ifdef QANEWBREPNAMING_DEB
 	  TCollection_AsciiString entry;
 	  TDF_Tool::Entry(Builder.NamedShape()->Label(), entry);
 	  cout << "Add shape to Compound at Label = "<< entry <<endl;
@@ -980,7 +980,7 @@ static void SortEdges4(const TopTools_Array1OfShape& theArS, const TColgp_Array1
 
   if(!IsDirectionPositive(theAx, aCP2, theArP.Value(i3))) {//first must be positive direction
     // change i3 <=> i4
-#ifdef DEB
+#ifdef QANEWBREPNAMING_DEB
   cout << "SortEdges4: i3 = "<<i3<< "i4 = "<< i4 << endl;
 #endif
     Standard_Integer aN = i4; i4 = i3;
@@ -988,7 +988,7 @@ static void SortEdges4(const TopTools_Array1OfShape& theArS, const TColgp_Array1
   }
 
 // 4. final order i1, i2, i3, i4 - Ok
-#ifdef DEB
+#ifdef QANEWBREPNAMING_DEB
   cout << "SortEdges4: i1 = " <<i1<<" i2 = "<<i2<< " i3 = "<<i3<< "i4 = "<< i4 << endl;
 #endif
   theArI.SetValue(1, i1); 
@@ -1033,7 +1033,7 @@ static void SortEdges5 (const TopTools_Array1OfShape& theArS, const TColgp_Array
 	const TopoDS_Shape& aV22 = TopExp::LastVertex(TopoDS::Edge(theArS.Value(j)));
 	if(aV12.IsSame(aV21) || aV12.IsSame(aV22)) {
 	  aV2 = aV12; J2 = j;
-#ifdef DEB
+#ifdef QANEWBREPNAMING_DEB
 	  if(I != i) cout << "WARNING:: I != i, I = " << I << ", i = " << i <<endl; 
 #endif
 	  found = Standard_True;
@@ -1322,7 +1322,7 @@ static void SortEdges(const TopTools_ListOfShape& theListE, const gp_Ax1& theAx,
   }
   
   for(i=1;i<=ArI.Upper();i++) {
-#ifdef DEB
+#ifdef QANEWBREPNAMING_DEB
     cout << "SortEdges: i = " <<i<<" ArI.Value(i) = " <<ArI.Value(i)<< endl;
 #endif   
     theARS.SetValue(i, ArS.Value(ArI.Value(i)));  

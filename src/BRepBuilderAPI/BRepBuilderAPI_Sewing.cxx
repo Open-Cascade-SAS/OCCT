@@ -1775,7 +1775,7 @@ void BRepBuilderAPI_Sewing::Add(const TopoDS_Shape& aShape)
 //purpose  : 
 //=======================================================================
 
-#ifdef DEB
+#ifdef BREPBUILDERAPI_DEB
 #include <OSD_Timer.hxx>
 #endif
 
@@ -1783,7 +1783,7 @@ void BRepBuilderAPI_Sewing::Perform(const Handle(Message_ProgressIndicator)& the
 {
   const Standard_Integer aNumberOfStages = myAnalysis + myCutting + mySewing + 2;
   Message_ProgressSentry aPS (thePI, "Sewing", 0, aNumberOfStages, 1);
-#ifdef DEB
+#ifdef BREPBUILDERAPI_DEB
   Standard_Real t_total = 0., t_analysis = 0., t_assembling = 0., t_cutting = 0., t_merging = 0.;
   OSD_Chronometer chr_total, chr_local;
   chr_total.Reset();
@@ -1793,7 +1793,7 @@ void BRepBuilderAPI_Sewing::Perform(const Handle(Message_ProgressIndicator)& the
   // face analysis
   if (myAnalysis)
   {
-#if DEB
+#if BREPBUILDERAPI_DEB
     cout << "Begin face analysis..." << endl;
     chr_local.Reset();
     chr_local.Start();
@@ -1802,7 +1802,7 @@ void BRepBuilderAPI_Sewing::Perform(const Handle(Message_ProgressIndicator)& the
     if (!aPS.More())
       return;
     aPS.Next();
-#if DEB
+#if BREPBUILDERAPI_DEB
     chr_local.Stop();
     chr_local.Show(t_analysis);
     cout << "Face analysis finished after " << t_analysis << " s" << endl;
@@ -1817,7 +1817,7 @@ void BRepBuilderAPI_Sewing::Perform(const Handle(Message_ProgressIndicator)& the
     if (myBoundFaces.Extent())
     {
 
-#if DEB
+#if BREPBUILDERAPI_DEB
       cout << "Begin vertices assembling..." << endl;
       chr_local.Reset();
       chr_local.Start();
@@ -1826,14 +1826,14 @@ void BRepBuilderAPI_Sewing::Perform(const Handle(Message_ProgressIndicator)& the
       if (!aPS.More())
         return;
       aPS.Next();
-#if DEB
+#if BREPBUILDERAPI_DEB
       chr_local.Stop();
       chr_local.Show(t_assembling);
       cout << "Vertices assembling finished after " << t_assembling << " s" << endl;
 #endif
       if (myCutting)
       {
-#if DEB
+#if BREPBUILDERAPI_DEB
         cout << "Begin cutting..." << endl;
         chr_local.Reset();
         chr_local.Start();
@@ -1842,13 +1842,13 @@ void BRepBuilderAPI_Sewing::Perform(const Handle(Message_ProgressIndicator)& the
         if (!aPS.More())
           return;
         aPS.Next();
-#if DEB
+#if BREPBUILDERAPI_DEB
         chr_local.Stop();
         chr_local.Show(t_cutting);
         cout << "Cutting finished after " << t_cutting << " s" << endl;
 #endif
       }
-#if DEB
+#if BREPBUILDERAPI_DEB
       cout << "Begin merging..." << endl;
       chr_local.Reset();
       chr_local.Start();
@@ -1857,7 +1857,7 @@ void BRepBuilderAPI_Sewing::Perform(const Handle(Message_ProgressIndicator)& the
       if (!aPS.More())
         return;
       aPS.Next();
-#if DEB
+#if BREPBUILDERAPI_DEB
       chr_local.Stop();
       chr_local.Show(t_merging);
       cout << "Merging finished after " << t_merging << " s" << endl;
@@ -1876,7 +1876,7 @@ void BRepBuilderAPI_Sewing::Perform(const Handle(Message_ProgressIndicator)& the
     if (mySewing)
     {
 
-#if DEB
+#if BREPBUILDERAPI_DEB
       cout << "Creating sewed shape..." << endl;
 #endif
       // examine the multiple edges if any and process sameparameter for edges if necessary
@@ -1896,7 +1896,7 @@ void BRepBuilderAPI_Sewing::Perform(const Handle(Message_ProgressIndicator)& the
         mySewedShape.Nullify();
         return;
       }
-#if DEB
+#if BREPBUILDERAPI_DEB
       cout << "Sewed shape created" << endl;
 #endif
     }
@@ -1909,7 +1909,7 @@ void BRepBuilderAPI_Sewing::Perform(const Handle(Message_ProgressIndicator)& the
       return;
     }
   }
-#if DEB
+#if BREPBUILDERAPI_DEB
   chr_total.Stop();
   chr_total.Show(t_total);
   cout << "Sewing finished!" << endl;

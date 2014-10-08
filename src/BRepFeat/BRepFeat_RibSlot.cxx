@@ -195,7 +195,7 @@ void BRepFeat_RibSlot::LFPerform()
         (!myFuse && ope != LocOpe_CUT) ||
         (!Collage)) {
       theOpe = 2;
-#ifdef DEB
+#ifdef BREPFEAT_DEB
       cout << "Passage to topological operations" << endl;
 #endif
     }
@@ -216,7 +216,7 @@ void BRepFeat_RibSlot::LFPerform()
     }
     else {
       theOpe = 2;
-#ifdef DEB
+#ifdef BREPFEAT_DEB
       cout << "Passage to topologic operation" << endl;
 #endif
     }

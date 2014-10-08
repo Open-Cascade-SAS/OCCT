@@ -330,7 +330,7 @@ void TopOpeBRepBuild_Builder::MergeKPartiskole()
   } // === fin RESNEWSHE 
   
   else {
-#ifdef DEB
+#ifdef TOPOPEBREPBUILD_DEB
     cout<<"MergeKPartiskole : ires = "<<ires<<endl;
 #endif
   }

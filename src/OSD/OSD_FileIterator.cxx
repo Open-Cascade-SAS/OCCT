@@ -186,7 +186,7 @@ char full_name[255];
 
      sprintf(full_name,"%s/%s",myPlace.ToCString(),
 	     ((struct dirent *)myEntry)->d_name);		 // LD debug
-#ifdef DEBUG
+#ifdef OSD_DEB
      cout << "Place : " << myPlace << endl;
      cout << "FName : " << full_name << endl;
 #endif

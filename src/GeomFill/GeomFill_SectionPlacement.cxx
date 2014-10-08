@@ -581,7 +581,7 @@ void GeomFill_SectionPlacement::Perform(const Handle(Adaptor3d_HCurve)& Path,
 	   }
 	   }
     */
-#if DEB
+#if GEOMFILL_DEB
 	if (Intersector.NbPoints() == 0) {
 	  Intersector.Dump();
 	} 

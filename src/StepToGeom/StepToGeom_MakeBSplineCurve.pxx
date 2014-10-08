@@ -76,7 +76,7 @@
     {
       if (i == 1)       aFMulDiff = aCurrentVal - Deg - 1;
       if (i == NbKnots) aLMulDiff = aCurrentVal - Deg - 1;
-#ifdef DEB
+#ifdef STEPTOGEOM_DEB
       cout << "\nWrong multiplicity " << aCurrentVal <<  " on " << i 
            << " knot!" << "\nChanged to " << Deg + 1 << endl;
 #endif
@@ -134,9 +134,6 @@
   // force periodicity on closed curves
   if ( SC->ClosedCurve() && CC->Degree() >1 && CC->IsClosed() ) {
     CC->SetPeriodic();
-//#ifdef DEB
-//    cout << "Warning: "__FILE__": Closed curve made periodic" << endl;
-//#endif
   }
   return Standard_True;
 }

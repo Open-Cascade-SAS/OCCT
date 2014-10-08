@@ -250,7 +250,7 @@ void TopOpeBRepBuild_Builder::End()
       gp_Pnt P2(aXmax, aYmax, aZmax);
       Standard_Real d = P1.Distance(P2);
       if (d > newtol) {
-#ifdef DEB
+#ifdef TOPOPEBREPBUILD_DEB
         cout<<"\npoint P"<<iv<<" "<<Pv.X()<<" "<<Pv.Y()<<" "<<Pv.Z()<<endl;
         cout<<"TopOpeBRepBuild_Builder::End BOX newtol "<<newtol<<" -> "<<d<<endl;
 #endif

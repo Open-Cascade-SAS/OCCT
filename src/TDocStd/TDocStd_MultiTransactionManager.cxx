@@ -99,7 +99,7 @@ void TDocStd_MultiTransactionManager::Redo() {
 
 void TDocStd_MultiTransactionManager::OpenCommand() {
   if (myOpenTransaction) {
-#ifdef DEB
+#ifdef TDOCSTD_DEB
     cout << "TDocStd_MultiTransactionManager::OpenCommand(): "
             "Can't start new application transaction while a "
             "previous one is not commited or aborted" << endl;

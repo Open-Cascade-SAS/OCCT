@@ -497,7 +497,9 @@ Standard_Boolean OpenGl_Context::CheckExtension (const char* theExtName) const
 {
   if (theExtName  == NULL)
   {
+#ifdef OPENGL_DEB
     std::cerr << "CheckExtension called with NULL string!\n";
+#endif
     return Standard_False;
   }
 

@@ -385,7 +385,7 @@ ShapeFix_Wireframe::ShapeFix_Wireframe(const TopoDS_Shape& shape)
   }
   catch ( Standard_Failure ) 
   {
-#ifdef DEB 
+#ifdef SHAPEFIX_DEB
     cout<<"Error: ShapeFix_Wireframe::FixSmallEdges: JoinEdges: Exception in GeomConvert_CompCurveToBSplineCurve: ";
     Standard_Failure::Caught()->Print(cout); cout<<endl;
 #endif

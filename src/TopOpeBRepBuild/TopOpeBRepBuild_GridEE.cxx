@@ -784,7 +784,7 @@ Standard_Boolean TopOpeBRepBuild_Builder::GParamOnReference(const TopoDS_Vertex&
   Handle(Geom_Surface) su = BRep_Tool::Surface(myFaceReference);
   Handle(Geom_Plane) suplan = Handle(Geom_Plane)::DownCast(su);
   if ( suplan.IsNull() ) { 
-#ifdef DEB
+#ifdef TOPOPEBREPBUILD_DEB
     cout<<"NYI : GParamOnReference : not planar"<<endl;
 #endif
     return Standard_False;
@@ -810,7 +810,7 @@ Standard_Boolean TopOpeBRepBuild_Builder::GParamOnReference(const TopoDS_Vertex&
   case GeomAbs_Parabola:
     P = ElCLib::Parameter(AC.Parabola(),p2); break;
     default : 
-#ifdef DEB
+#ifdef TOPOPEBREPBUILD_DEB
       cout<<"NYI : GParamOnReference : OtherCurve on planar surface"<<endl;
 #endif
     return Standard_False;

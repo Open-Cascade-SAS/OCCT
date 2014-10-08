@@ -35,7 +35,7 @@ void ShapeExtend_MsgRegistrator::Send(const Handle(Standard_Transient)& object,
 				      const Message_Gravity) 
 {
   if (object.IsNull()) {
-#ifdef DEB
+#ifdef SHAPEEXTEND_DEB
     cout << "Warning: ShapeExtend_MsgRegistrator::Send: null object" << endl;
 #endif
     return;
@@ -61,7 +61,7 @@ void ShapeExtend_MsgRegistrator::Send(const Handle(Standard_Transient)& object,
 				       const Message_Gravity) 
 {
   if (shape.IsNull()) {
-#ifdef DEB
+#ifdef SHAPEEXTEND_DEB
     cout << "Warning: ShapeExtend_MsgRegistrator::Send: null shape" << endl;
 #endif
     return;

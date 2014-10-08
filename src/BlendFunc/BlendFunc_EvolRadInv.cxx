@@ -212,15 +212,9 @@ Standard_Boolean BlendFunc_EvolRadInv::Value(const math_Vector& X,
 
   if (norm1 < Eps) {
     norm1 = 1.;
-//#if DEB
-//    cout << "EvolRadInv : Surface singuliere " << endl;
-//#endif
   }
   if (norm2 < Eps) {
     norm2 = 1.;
-//#if DEB
-//    cout << "EvolRadInv : Surface singuliere " << endl;
-//#endif
   }
 
   gp_Vec resul;
@@ -323,15 +317,9 @@ Standard_Boolean BlendFunc_EvolRadInv::Values(const math_Vector& X,
   Standard_Real norm2 = ncrossns2.Magnitude();
   if (norm1 < Eps) {
     norm1 = 1.;
-//#if DEB
-//    cout << "EvolRadInv : Surface singuliere " << endl;
-//#endif
   }
   if (norm2 < Eps) {
     norm2 = 1.;
-//#if DEB
-//    cout << "EvolRadInv : Surface singuliere " << endl;
-//#endif
   }
 
   gp_Vec resul1,resul2;

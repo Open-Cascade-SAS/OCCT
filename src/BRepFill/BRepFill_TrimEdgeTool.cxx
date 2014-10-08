@@ -362,7 +362,7 @@ void BRepFill_TrimEdgeTool::IntersectWith(const TopoDS_Edge& Edge1,
 	 && ( Points2.Length() != Params.Length() || 
 	     (Points2.Length() == 0 && Params.Length() == 0) ) ) {
 
-#ifdef DEB
+#ifdef BREPFILL_DEB
     cout << "BRepFill_TrimEdgeTool: incoherent intersection. Try with a greater tolerance" << endl;
 #endif
 
@@ -376,7 +376,7 @@ void BRepFill_TrimEdgeTool::IntersectWith(const TopoDS_Edge& Edge1,
     SeanceDeRattrapage++;
   }
 
-#ifdef DEB
+#ifdef BREPFILL_DEB
   if(SeanceDeRattrapage != 0) cout << "SeanceDeRattrapage = " << SeanceDeRattrapage << endl;
   if(SeanceDeRattrapage == nn) { 
     cout << "BRepFill_TrimEdgeTool: incoherent intersection" << endl;
@@ -452,11 +452,11 @@ void BRepFill_TrimEdgeTool::IntersectWith(const TopoDS_Edge& Edge1,
     Standard_Real P1xP2x=Abs( P1.X() - P2.X());
 
     if ( P1xP2x > Tol ) {
-#ifdef DEB
+#ifdef BREPFILL_DEB
       cout << "BRepFill_TrimEdgeTool: no same parameter on the bissectrice" << endl;
 #endif
       if(P1xP2x>TolInit) { 
-#ifdef DEB
+#ifdef BREPFILL_DEB
       cout << "BRepFill_TrimEdgeTool: Continue somehow" << endl;
 #endif	
       i++;
@@ -523,7 +523,7 @@ const
   }
   
   if (ToProj) {
-#ifdef DEB
+#ifdef BREPFILL_DEB
     cout << " project extremity bissectrice on parallel."<<endl;
 #endif
 
@@ -537,25 +537,25 @@ const
     Geom2dAPI_ProjectPointOnCurve Projector2(PBis,C2,f2,l2);
 
     if (Projector1.NbPoints() == 0) {
-#ifdef DEB
+#ifdef BREPFILL_DEB
       cout << "Failed projection in BRepFill_TrimEdgeTool::AddOrConfuse"<<endl;
 #endif
       return;
     }
     if (!Projector1.NearestPoint().IsEqual(PBis,Tol)) {
-#ifdef DEB
+#ifdef BREPFILL_DEB
       cout <<"Incorrect solution in BRepFill_TrimEdgeTool::AddOrConfuse"<<endl;
 #endif
       return;
     }
     if (Projector2.NbPoints() == 0) {
-#ifdef DEB
+#ifdef BREPFILL_DEB
       cout << "Failed projection in BRepFill_TrimEdgeTool::AddOrConfuse"<<endl;
 #endif
       return;
     }
     if (!Projector2.NearestPoint().IsEqual(PBis,Tol)) {
-#ifdef DEB
+#ifdef BREPFILL_DEB
       cout <<" Mauvaisesolution dans BRepFill_TrimEdgeTool::AddOrConfuse"<<endl;
 #endif
       return;

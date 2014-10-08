@@ -555,7 +555,7 @@ void TopOpeBRepTool_ShapeClassifier::StateP2DReference
 //	else if (o == TopAbs_INTERNAL) myState == TopAbs_IN;
 	else if (o == TopAbs_INTERNAL) myState = TopAbs_IN;
 	else {
-#ifdef DEB
+#ifdef TOPOPEBREPTOOL_DEB
 	  cout<<"StateP2DReference o<>E,I"<<endl;
 #endif
 	  break;

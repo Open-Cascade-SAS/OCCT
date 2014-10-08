@@ -269,14 +269,14 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
 	  myWire = MW.Wire();
 	}
 	else {
-#if DEB
+#if BREPFILL_DEB
 	  cout << "Error in MakeWire" << endl;
 #endif 
 	  Standard_ConstructionError::Raise("BRepFill_Draft");
 	}
       }
       else {
-#if DEB
+#if BREPFILL_DEB
 	  cout << "No Free Borders !" << endl;
 #endif 
 	  Standard_ConstructionError::Raise("BRepFill_Draft");
@@ -828,7 +828,7 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
       myShape = solid;
     }    
   }
-#if DEB
+#if BREPFILL_DEB
   else cout << "Draft : No assembly !" << endl;
 #endif
   return Ok;

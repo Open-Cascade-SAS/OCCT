@@ -35,7 +35,9 @@ static Standard_GUID XCAFSchemaID     ("ed8793fa-3142-11d4-b9b5-0060b0ee281b");
 Handle(Standard_Transient) XCAFDrivers::Factory(const Standard_GUID& aGUID) {
   
   if(aGUID == XCAFSchemaID) {    
+#ifdef XCAFDRIVERS_DEB
     cout << "XCAFSchema : Plugin" << endl;
+#endif
     static Handle(XCAFSchema)  model_ss;
     static Standard_Boolean IsInitialized = Standard_False;
     if (! IsInitialized)
@@ -55,14 +57,18 @@ Handle(Standard_Transient) XCAFDrivers::Factory(const Standard_GUID& aGUID) {
 
   if(aGUID == XSStorageDriver)  
   {
+#ifdef XCAFDRIVERS_DEB
     cout << "XCAFDrivers : Storage Plugin" << endl;
+#endif
     static Handle(XCAFDrivers_DocumentStorageDriver) model_sd 
       = new XCAFDrivers_DocumentStorageDriver;
     return model_sd;
   }
   if(aGUID == XSRetrievalDriver) 
   {  
+#ifdef XCAFDRIVERS_DEB
     cout << "XCAFDrivers : Retrieval Plugin" << endl;
+#endif
     static Handle (XCAFDrivers_DocumentRetrievalDriver) model_rd 
       = new XCAFDrivers_DocumentRetrievalDriver;
     return model_rd;

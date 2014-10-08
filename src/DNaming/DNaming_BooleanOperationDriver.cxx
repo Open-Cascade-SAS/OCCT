@@ -104,7 +104,7 @@ Standard_Integer DNaming_BooleanOperationDriver::Execute(TFunction_Logbook& theL
   Handle(TNaming_NamedShape) anObjectNS;
   aLab.FindAttribute(TNaming_NamedShape::GetID(), anObjectNS);
   if (anObjectNS.IsNull() || anObjectNS->IsEmpty()) {
-#ifdef DEB
+#ifdef DNAMING_DEB
     cout<<"BooleanOperationDriver:: Object is empty"<<endl;
 #endif
     aFunction->SetFailure(WRONG_ARGUMENT);
@@ -115,7 +115,7 @@ Standard_Integer DNaming_BooleanOperationDriver::Execute(TFunction_Logbook& theL
   Handle(TNaming_NamedShape) aToolNS = DNaming::GetObjectValue(aToolObj);
 
   if (aToolNS.IsNull() || aToolNS->IsEmpty()) {
-#ifdef DEB
+#ifdef DNAMING_DEB
     cout<<"BooleanOperationDriver:: Tool is empty"<<endl;
 #endif
     aFunction->SetFailure(WRONG_ARGUMENT);
@@ -125,7 +125,7 @@ Standard_Integer DNaming_BooleanOperationDriver::Execute(TFunction_Logbook& theL
   TopoDS_Shape aTOOL = aToolNS->Get();
   TopoDS_Shape anOBJECT = anObjectNS->Get();
   if (aTOOL.IsNull() || anOBJECT.IsNull()) {
-#ifdef DEB
+#ifdef DNAMING_DEB
     cout<<"BooleanOperationDriver:: Tool is null"<<endl;
 #endif
     aFunction->SetFailure(WRONG_ARGUMENT);
@@ -262,7 +262,7 @@ void DNaming_BooleanOperationDriver::LoadNamingDS (const TDF_Label& theResultLab
   const TopoDS_Shape& ObjSh = MS.Shape1();
   const TopoDS_Shape& ToolSh = MS.Shape2();
  if (ResSh.IsNull()) {
-#ifdef DEB
+#ifdef DNAMING_DEB
    cout<<"LoadFuseNamingDS: The result of the boolean operation is null"<<endl;
 #endif
     return;
@@ -337,7 +337,7 @@ void DNaming_BooleanOperationDriver::LoadSectionNDS (const TDF_Label& theResultL
   const TopoDS_Shape& ObjSh = MS.Shape1();
   const TopoDS_Shape& ToolSh = MS.Shape2();
  if (ResSh.IsNull()) {
-#ifdef DEB
+#ifdef DNAMING_DEB
    cout<<"LoadSectionNamingDS: The result of the boolean operation is null"<<endl;
 #endif
     return;

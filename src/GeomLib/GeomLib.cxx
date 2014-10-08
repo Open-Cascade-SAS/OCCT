@@ -1748,7 +1748,7 @@ void GeomLib::ExtendSurfByLength(Handle(Geom_BoundedSurface)& Surface,
     }
 
     if (NullWeight) {
-#if DEB
+#if GEOMLIB_DEB
       cout << "Echec de l'Extension rationnelle" << endl;    
 #endif
       lambmin /= 3.;
@@ -1848,7 +1848,7 @@ void GeomLib::Inertia(const TColgp_Array1OfPnt& Points,
 
   math_Jacobi J(M);
   if (!J.IsDone()) {
-#if DEB
+#if GEOMLIB_DEB
     cout << "Erreur dans Jacobbi" << endl;
     M.Dump(cout);
 #endif

@@ -120,7 +120,7 @@
 // Purpose: Use it in DEB mode to dump your shapes
 // ============================================================================
 
-#ifdef DEB
+#ifdef STEPCONTROL_DEB
 static void DumpWhatIs(const TopoDS_Shape& S) {
 
   TopTools_MapOfShape aMapOfShape;
@@ -194,7 +194,7 @@ static Standard_Boolean IsManifoldShape(const TopoDS_Shape& theShape) {
       aBrepBuilder.Add(aDirectShapes, aDirectChild);
   }  
 
-  #ifdef DEB
+  #ifdef STEPCONTROL_DEB
   DumpWhatIs(aDirectShapes);
   #endif
 
@@ -202,7 +202,7 @@ static Standard_Boolean IsManifoldShape(const TopoDS_Shape& theShape) {
   TopExp::MapShapesAndAncestors(aDirectShapes, TopAbs_EDGE, TopAbs_FACE, aMapEdgeFaces);
 
   Standard_Integer aNbEdges = aMapEdgeFaces.Extent();
-  #ifdef DEB
+  #ifdef STEPCONTROL_DEB
   cout << "Checking whether the topology passed is manifold..." << endl;
   #endif
 
@@ -218,7 +218,7 @@ static Standard_Boolean IsManifoldShape(const TopoDS_Shape& theShape) {
     }
   }
 
-  #ifdef DEB
+  #ifdef STEPCONTROL_DEB
   cout << "Check result: "
        << (aResult ? "TRUE" : "FALSE") << endl;
   #endif
@@ -279,13 +279,13 @@ Handle(StepShape_NonManifoldSurfaceShapeRepresentation) STEPControl_ActorWrite::
   }
 
   if ( aResult.IsNull() ) {
-    #ifdef DEB
+    #ifdef STEPCONTROL_DEB
     cout << "\nNew NMSSR created" << endl;
     #endif
     aResult = new StepShape_NonManifoldSurfaceShapeRepresentation;
     isNMSSRCreated = Standard_True;
   } else {
-    #ifdef DEB
+    #ifdef STEPCONTROL_DEB
     cout << "\nExisting NMSSR is used" << endl;
     #endif
     isNMSSRCreated = Standard_False;
@@ -628,7 +628,7 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferShape (const Handle(Tran
     //:abv 20.05.02: writing box & face from it (shared) in one compound 
     // as assembly - while face already translated, it should be 
     // re-translated to break sharing
-#ifdef DEB
+#ifdef STEPCONTROL_DEB
     cout << "Warning: STEPControl_ActorWrite::TransferShape(): shape already translated" << endl;
 #endif
 //    return binder;
@@ -1294,7 +1294,7 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferCompound (const Handle(T
   BRep_Builder aB;
   aB.MakeCompound(aCompOfVrtx);
  
-  #ifdef DEB
+  #ifdef STEPCONTROL_DEB
   if (!isManifold)
     cout << "Exploding Solids to Shells if any..." << endl;
   #endif

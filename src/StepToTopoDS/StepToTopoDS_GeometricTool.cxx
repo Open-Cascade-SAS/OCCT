@@ -237,25 +237,25 @@ Standard_Boolean  StepToTopoDS_GeometricTool::UpdateParam3d
 
   if (theCurve->IsKind(STANDARD_TYPE(Geom_BoundedCurve)) && !theCurve->IsClosed()) {
     if (w1 < cf) {
-#ifdef DEBUG
+#ifdef STEPTOTOPODS_DEB
       cout << "Update Edge First Parameter to Curve First Parameter" << endl;
 #endif
       w1 = cf;
     }
     else if (w1 > cl) {
-#ifdef DEBUG
+#ifdef STEPTOTOPODS_DEB
       cout << "Update Edge First Parameter to Curve Last Parameter" << endl;
 #endif
       w1 = cl;
     }
     if (w2 < cf) {
-#ifdef DEBUG
+#ifdef STEPTOTOPODS_DEB
       cout << "Update Edge Last Parameter to Curve First Parameter" << endl;
 #endif
       w2 = cf;
     }
     else if (w2 > cl) {
-#ifdef DEBUG
+#ifdef STEPTOTOPODS_DEB
       cout << "Update Edge Last Parameter to Curve Last Parameter" << endl;
 #endif
       w2 = cl;
@@ -284,7 +284,7 @@ Standard_Boolean  StepToTopoDS_GeometricTool::UpdateParam3d
       if ( theCurve->Value(w1).Distance(theCurve->Value(cf)) < preci ) w1 = cf;
       if ( theCurve->Value(w2).Distance(theCurve->Value(cl)) < preci ) w2 = cl;
       if ( w1 > w2 ) {
-#ifdef DEBUG
+#ifdef STEPTOTOPODS_DEB
 	cout << "Warning : parameter range of edge crossing non periodic curve origin" << endl;
 #endif
 	Standard_Real tmp = w1;
@@ -312,7 +312,7 @@ Standard_Boolean  StepToTopoDS_GeometricTool::UpdateParam3d
       // illegal sur une courbe fermee non periodique
       // on inverse quand meme les parametres !!!!!!
       else {
-#ifdef DEBUG
+#ifdef STEPTOTOPODS_DEB
 	cout << "Warning : parameter range of edge crossing non periodic curve origin" << endl;
 #endif
 	Standard_Real tmp = w1;
@@ -322,7 +322,7 @@ Standard_Boolean  StepToTopoDS_GeometricTool::UpdateParam3d
     }
     //abv 15.03.00 #72 bm1_pe_t4 protection of exceptions in draw
     else if ( w1 > w2 ) {
-#ifdef DEBUG
+#ifdef STEPTOTOPODS_DEB
       cout << "Warning: parameter range is bad; curve reversed" << endl;
 #endif
       w1 = theCurve->ReversedParameter ( w1 );
@@ -336,7 +336,7 @@ Standard_Boolean  StepToTopoDS_GeometricTool::UpdateParam3d
     }
   }
   else {
-#ifdef DEBUG
+#ifdef STEPTOTOPODS_DEB
     cout << "UpdateParam3d Failed" << endl;
     cout << "  - Curve Type : " << theCurve->DynamicType() << endl;
     cout << "  - Param 1    : " << w1 << endl;
@@ -344,7 +344,7 @@ Standard_Boolean  StepToTopoDS_GeometricTool::UpdateParam3d
 #endif
     //abv 15.03.00 #72 bm1_pe_t4 protection of exceptions in draw
     if ( w1 > w2 ) {
-#ifdef DEBUG
+#ifdef STEPTOTOPODS_DEB
       cout << "Warning: parameter range is bad; curve reversed" << endl;
 #endif
       w1 = theCurve->ReversedParameter ( w1 );

@@ -96,9 +96,6 @@ Standard_Boolean StepToGeom_MakeBoundedSurface::Convert (const Handle(StepGeom_B
 	return StepToGeom_MakeBSplineSurface::Convert(BSPL,*((Handle(Geom_BSplineSurface)*)&CS));
   }
   if (SS->IsKind(STANDARD_TYPE(StepGeom_UniformSurface))) {
-//#ifdef DEBUG
-//    cout << "Warning : converting UniformSurface onto BSplineSurfaceWithKnots" << endl;
-//#endif
     const Handle(StepGeom_UniformSurface) US = Handle(StepGeom_UniformSurface)::DownCast(SS);
     const Handle(StepGeom_BSplineSurfaceWithKnots) BSPL = new StepGeom_BSplineSurfaceWithKnots;
     BSPL->SetUDegree(US->UDegree());
@@ -131,9 +128,6 @@ Standard_Boolean StepToGeom_MakeBoundedSurface::Convert (const Handle(StepGeom_B
 	return StepToGeom_MakeBSplineSurface::Convert(BSPL,*((Handle(Geom_BSplineSurface)*)&CS));
   }
   if (SS->IsKind(STANDARD_TYPE(StepGeom_QuasiUniformSurface))) {
-//#ifdef DEBUG
-//    cout << "Warning : converting QuasiUniformSurface onto BSplineSurfaceWithKnots" << endl;
-//#endif
     const Handle(StepGeom_QuasiUniformSurface) QUS = 
       Handle(StepGeom_QuasiUniformSurface)::DownCast(SS);
     const Handle(StepGeom_BSplineSurfaceWithKnots) BSPL = new StepGeom_BSplineSurfaceWithKnots;
@@ -171,9 +165,6 @@ Standard_Boolean StepToGeom_MakeBoundedSurface::Convert (const Handle(StepGeom_B
 	return StepToGeom_MakeBSplineSurface::Convert(BSPL,*((Handle(Geom_BSplineSurface)*)&CS));
   }
   if (SS->IsKind(STANDARD_TYPE(StepGeom_UniformSurfaceAndRationalBSplineSurface))) {
-//#ifdef DEBUG
-//    cout << "Warning : converting Rational UniformSurface onto BSplineSurfaceWithKnots" << endl;
-//#endif
     const Handle(StepGeom_UniformSurfaceAndRationalBSplineSurface) RUS = 
       Handle(StepGeom_UniformSurfaceAndRationalBSplineSurface)::DownCast(SS);
     const Handle(StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface) RBSPL = 
@@ -203,9 +194,6 @@ Standard_Boolean StepToGeom_MakeBoundedSurface::Convert (const Handle(StepGeom_B
 	return StepToGeom_MakeBSplineSurface::Convert(RBSPL,*((Handle(Geom_BSplineSurface)*)&CS));
   }
   if (SS->IsKind(STANDARD_TYPE(StepGeom_QuasiUniformSurfaceAndRationalBSplineSurface))) {
-//#ifdef DEBUG
-//    cout << "Warning : converting Rational QuasiUniformSurface onto BSplineSurfaceWithKnots" << endl;
-//#endif
     const Handle(StepGeom_QuasiUniformSurfaceAndRationalBSplineSurface) RQUS = 
       Handle(StepGeom_QuasiUniformSurfaceAndRationalBSplineSurface)::DownCast(SS);
     const Handle(StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface) RBSPL = 

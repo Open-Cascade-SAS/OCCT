@@ -126,7 +126,9 @@ TopoDS_Shape DNaming::CurrentShape (const Standard_CString  LabelName,
   TDF_Label Label; 
   Standard_Boolean Found =  DDF::AddLabel (DF, LabelName, Label);
   if (!Found) {
+#ifdef DNAMING_DEB
     cout <<"no labels"<<endl;
+#endif
     return S;
   }
   if (Found) { 
@@ -134,7 +136,9 @@ TopoDS_Shape DNaming::CurrentShape (const Standard_CString  LabelName,
     Label.FindAttribute(TNaming_NamedShape::GetID(),NS);
     S =  TNaming_Tool::CurrentShape(NS);
     if (S.IsNull())
+#ifdef DNAMING_DEB
       cout <<"current shape from "<< LabelName <<" is deleted"<<endl;
+#endif
     return S;
   }
   return S;
@@ -561,13 +565,7 @@ void DNaming::SetObjectArg (const Handle(TFunction_Function)& theFunction,
 Handle(TNaming_NamedShape) DNaming::GetObjectValue(const Handle(TDataStd_UAttribute)& theObject)
 {
   Handle(TNaming_NamedShape) aNS;
-#ifdef DEB
-//  cout <<"DNaming::GetObjectValue : Obj is NULL = " << theObject.IsNull() <<endl;
-//  cout << "Object = " << theObject->DynamicType()->Name() <<endl;
-//  Standard_CString aStrGUID = "00000000-0000-0000-0000-000000000000"; 
-//  Standard_GUID aGd = theObject->ID();
-//  aGd.ShallowDump(cout);
-#endif
+
   if(!theObject.IsNull() && theObject->ID() == GEOMOBJECT_GUID) {
     
     Handle(TDF_Reference) aReference;

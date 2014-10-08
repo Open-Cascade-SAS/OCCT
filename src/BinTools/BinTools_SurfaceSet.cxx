@@ -276,29 +276,16 @@ static Standard_OStream& operator <<(Standard_OStream& OS, const Handle(Geom_Bez
   Standard_Integer i,j,udegree,vdegree;
   udegree = S->UDegree();
   vdegree = S->VDegree();
-#ifdef DEB
-//  cout << "\tudegree  = " << udegree << ", vdegree = "<< vdegree<<endl;
-#endif
   BinTools::PutExtChar(OS, (Standard_ExtCharacter)udegree);
   BinTools::PutExtChar(OS, (Standard_ExtCharacter)vdegree);
   for (i = 1; i <= udegree+1; i++) {
     for (j = 1; j <= vdegree+1; j++) {
       OS << S->Pole(i,j); //Pnt
-#ifdef DEB
-//      cout << "Bezier Surface: Pole Pnt: X = " << S->Pole(i,j).X()<< " Y = " << S->Pole(i,j).Y()<<" Z = " << S->Pole(i,j).Z()<<endl;
-#endif      
       if (urational || vrational) {
 	BinTools::PutReal(OS, S->Weight(i,j));//Real
-#ifdef DEB
-//	cout << "Bezier Surface: Put Real" << endl;
-#endif
       }
     }
   }
-#ifdef DEB
-//  const Standard_Integer aPos = OS.tellp();
-//  cout << "\tEnd of Bezier surface pos = " << aPos << endl;
-#endif
   return OS;
 }
 
@@ -776,9 +763,6 @@ Standard_IStream& BinTools_SurfaceSet::ReadSurface(Standard_IStream& IS,
   try {
     OCC_CATCH_SIGNALS
     const Standard_Byte stype = (Standard_Byte) IS.get();
-#ifdef DEB
-//    cout << "ReadSurface: Surface type = " << (Standard_Integer)stype <<endl;
-#endif
     switch (stype) {
 
     case PLANE :
@@ -900,7 +884,7 @@ void  BinTools_SurfaceSet::Read(Standard_IStream& IS)
   if (IS.fail() || strcmp(buffer,"Surfaces")) {
     Standard_SStream aMsg;
     aMsg << "BinTools_SurfaceSet::Read:  Not a surface table"<<endl;
-#ifdef DEB
+#ifdef BINTOOLS_DEB
     cout <<"SurfaceSet buffer: " << buffer << endl;
 #endif
     Standard_Failure::Raise(aMsg);

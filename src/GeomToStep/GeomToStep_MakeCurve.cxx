@@ -73,7 +73,7 @@ GeomToStep_MakeCurve::GeomToStep_MakeCurve ( const Handle(Geom_Curve)& C)
       B = BZ;
     }
     else {
-#ifdef DEB
+#ifdef GEOMTOSTEP_DEB
       cout<<"GeomToStep_MakeCurve, TrimmedCurve, BasisCurve is transferred not trimmed"<<endl;
       cout<<"BasisCurve Type : "<<B->DynamicType()->Name()<<endl;
 #endif
@@ -114,7 +114,7 @@ GeomToStep_MakeCurve::GeomToStep_MakeCurve ( const Handle(Geom2d_Curve)& C)
       Handle(Geom2d_Circle) theC2d = Handle(Geom2d_Circle)::DownCast(C);
       gp_Circ2d C2d = theC2d->Circ2d();
       if (!C2d.IsDirect()) {
-#ifdef DEB
+#ifdef GEOMTOSTEP_DEB
 	cout << "Warning : Circle converted to BSpline." << endl;
 #endif
 	Handle(Geom2d_BSplineCurve) aBSplineCurve2d = 
@@ -132,7 +132,7 @@ GeomToStep_MakeCurve::GeomToStep_MakeCurve ( const Handle(Geom2d_Curve)& C)
       Handle(Geom2d_Ellipse) theE2d = Handle(Geom2d_Ellipse)::DownCast(C);
       gp_Elips2d E2d = theE2d->Elips2d();
       if (!E2d.IsDirect()) {
-#ifdef DEB
+#ifdef GEOMTOSTEP_DEB
 	cout << "Warning : Ellipse converted to BSpline." << endl;
 #endif
 	Handle(Geom2d_BSplineCurve) aBSplineCurve2d = 

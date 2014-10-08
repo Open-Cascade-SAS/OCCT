@@ -228,10 +228,6 @@ Standard_Boolean STEPConstruct_ExternRefs::LoadExternRefs ()
     // search for Document file
     Handle(StepBasic_DocumentFile) DocFile;
     if ( aPDWAD.IsNull() ) { // shoudnot be begin from TRJ11
-// #ifdef DEB
-//       cout << "Warning: Cannot find PDWAD corresponding to ADR to search Document File. " << endl;
-//       cout << "Info: Looking for Document File direct from ARD" << endl;
-// #endif
       // lookinf from ADR
       subs4 = Graph().Shareds(ADR);
     } else 
@@ -344,10 +340,6 @@ const Standard_CString STEPConstruct_ExternRefs::FileName (const Standard_Intege
     // search for Document file
     Interface_EntityIterator subs4;
     if ( aPDWAD.IsNull() ) { // shoudnot be begin from TRJ11
-// #ifdef DEB
-//       cout << "Warning: Cannot find PDWAD corresponding to ADR to search Document File. " << endl;
-//       cout << "Info: Looking for DocumentFile direct from ARD" << endl;
-// #endif
       // lookinf from ADR
       subs4 = Graph().Shareds(ADR);
     } else 

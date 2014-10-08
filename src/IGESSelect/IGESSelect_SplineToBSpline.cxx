@@ -44,7 +44,7 @@ Standard_Boolean  IGESSelect_SplineToBSpline::Perform
     Standard_Integer it = ent->TypeNumber();
     if (it == 112 || it == 126) {
       thefound = Standard_True;
-#ifdef DEB
+#ifdef IGESSELECT_DEB
       cout<<"IGESSelect_SplineToBSpline : n0."<<i
 	<< (it == 112 ? ", Curve" : ", Surface")<<" to convert"<<endl;
 #endif

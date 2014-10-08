@@ -677,7 +677,7 @@ void IntWalk_IWalking::TestArretCadre
 	      }
 	      Line->SetTangentVector(previousd3d,j-1);
 	    }
-#ifdef DEB
+#ifdef INTWALK_DEB
 	    else { 
 	      cout<<" IntWalk_IWalking_2.gxx : bizarrerie 30 10 97 "<<endl;
 	    }

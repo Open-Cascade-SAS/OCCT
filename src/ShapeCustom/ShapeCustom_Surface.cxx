@@ -205,7 +205,7 @@ Handle(Geom_Surface) ShapeCustom_Surface::ConvertToAnalytical (const Standard_Re
     //  CKY  3-FEV-1997 : verification du sens de description
     //gp_Dir AXY = aAx3.YDirection(); // AXY not used (skl)
     if (aAx3.YDirection().Dot (origD1U) < 0) {
-#ifdef DEBUG
+#ifdef SHAPECUSTOM_DEB
       cout<<" Surface Analytique : sens a inverser"<<endl;
 #endif
       aAx3.YReverse();    //  mais X reste !
@@ -304,7 +304,7 @@ Handle(Geom_Surface) ShapeCustom_Surface::ConvertToAnalytical (const Standard_Re
 	  new Geom_ToroidalSurface(aAx3, RR1, RR2);
 	if (j==2) anObject->UReverse();
 	anObject->D1 (0.,0.,resPnt,resD1U,resD1V);
-#ifdef DEBUG
+#ifdef SHAPECUSTOM_DEB
 	if (resD1U.Dot(origD1U) < 0 && j != 2)
 	  cout<<" Tore a inverser !"<<endl;
 #endif
@@ -510,7 +510,7 @@ Handle(Geom_Surface) ShapeCustom_Surface::ConvertToPeriodic (const Standard_Bool
     }
   }
   
-#ifdef DEBUG
+#ifdef SHAPECUSTOM_DEB
   cout << "Warning: ShapeCustom_Surface: Closed BSplineSurface is caused to be periodic" << endl;
 #endif
   if ( ! converted ) return newSurf;

@@ -373,7 +373,7 @@ void BRepFill_ShapeLaw::Init(const Standard_Boolean Build)
 			 Standard_False, 20);
 	if (!Bof) Bof = Concat.Add(TC, 200*epsV,
 				   Standard_True, Standard_False, 20);
-#if DEB
+#if BREPFILL_DEB
 	if (!Bof) 
 	  cout << "BRepFill_ShapeLaw::ConcatenedLaw INCOMPLET !!!" 
 	  << endl;

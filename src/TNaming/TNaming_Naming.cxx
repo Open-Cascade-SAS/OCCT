@@ -617,7 +617,7 @@ static Standard_Boolean IsMultipleCase(const TopoDS_Shape&        S,
       if(aMS.Extent())
 	aDMM.Bind(it.Key(), aMS);
     } else {
-#ifdef DEB
+#ifdef TNAMING_DEB
       cout << "Key is not BOUND!" <<endl;
 #endif
       return Standard_False;
@@ -716,7 +716,7 @@ static Standard_Boolean Filter (const TDF_Label&                  F,
   
 
   if (Neighbourg.IsEmpty()) {
-#ifdef DEB
+#ifdef TNAMING_DEB
     cout <<"FindNeighbourg: impossible"<<endl;
 #endif
     return 0;  

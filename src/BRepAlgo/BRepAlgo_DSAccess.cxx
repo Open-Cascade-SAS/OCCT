@@ -546,7 +546,7 @@ void BRepAlgo_DSAccess::ChangeEdgeSet
       // It is necessary to change Interferences => take the complement
       iC = myHB->GetDSCurveFromSectEdge(Edge);
       if (!iC) {
-#if DEB
+#if BREPALGO_DEB
 	cout << "Warning DSAccess: Modifications of Edge are not implemented" << endl;
 #endif
       }

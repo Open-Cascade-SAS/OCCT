@@ -72,7 +72,9 @@ void Units_UnitsDictionary::Creates(const Standard_CString afilename)
   
   ifstream file(afilename, ios::in);
   if(!file) {
+#ifdef UNITS_DEB
     cout<<"unable to open "<<afilename<<" for input"<<endl;
+#endif
     return;
   }
   
@@ -174,16 +176,6 @@ void Units_UnitsDictionary::Creates(const Standard_CString afilename)
 
       Handle(Units_Dimensions) dimensions = 
         new Units_Dimensions (M, L, T, I, t, N, J, P, S);
-
-#ifdef DEB
-      /*cout << " Name of Dimension : " << name << endl ;
-	  cout << MM << " " << LL << " " << TT << " " 
-		   << II << " " << tt << " " << NN << " " 
-		   << JJ << " " << PP << " " << SS << endl;
-	  cout << M << " " << L << " " << T << " " 
-		   << I << " " << t << " " << N << " " 
-		   << J << " " << P << " " << S << endl;*/
-#endif
 
       numberofunits = 0;
       theunitssequence = new Units_UnitsSequence();
@@ -351,7 +343,9 @@ TCollection_AsciiString Units_UnitsDictionary::ActiveUnit(const Standard_CString
       if(unitssequence->Length())
         return unitssequence->Value(1)->SymbolsSequence()->Value(1)->String();
       else {
+#ifdef UNITS_DEB
         cout<<" Pas d'unite active pour "<<aquantity<<endl;
+#endif
         return "";
       }
     }

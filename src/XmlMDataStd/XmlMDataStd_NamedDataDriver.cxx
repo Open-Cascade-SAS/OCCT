@@ -489,12 +489,6 @@ Standard_Boolean XmlMDataStd_NamedDataDriver::Paste(const XmlObjMgt_Persistent& 
 	TCollection_AsciiString aVal(aValueStr,'?');
 	Standard_Integer aLen = aVal.IntegerValue();
 	
-#ifdef DEB
-//      XmlObjMgt_DOMString aValStr = aCurElement->getAttribute(::Value()); 
-//      const char* aS = aValStr.GetString();
-//      cout << " Key = " << TCollection_AsciiString(aKey, '?') << " aValue = " << aS <<  endl;
-#endif      
-	
 	TCollection_AsciiString aValueString = aCurElement->getAttribute(::Value()); 
 	Handle(TColStd_HArray1OfInteger) aValue = BuildIntArray(aValueString, aLen);
 	if(aValue.IsNull()) {
@@ -519,11 +513,6 @@ Standard_Boolean XmlMDataStd_NamedDataDriver::Paste(const XmlObjMgt_Persistent& 
       }
       TCollection_AsciiString aVal(aValueStr,'?');
       Standard_Integer aLen = aVal.IntegerValue();
-#ifdef DEB
-//    XmlObjMgt_DOMString aValStr = aCurElement->getAttribute(::Value());  
-//    const char* aS = aValStr.GetString();
-//    cout << " Key = " << TCollection_AsciiString(aKey, '?') << " aValue = " <<aS<<endl;
-#endif
       TCollection_AsciiString aValueString = aCurElement->getAttribute(::Value());
       Handle(TColStd_HArray1OfInteger) aValue = BuildIntArray(aValueString, aLen);
       if(aValue.IsNull()) {

@@ -86,7 +86,7 @@ TopoDS_Shape BRepAlgo_Tool::Deboucle3D(const TopoDS_Shape& S,
       }
       if (NbSub == 0)
         {
-#ifdef DEB
+#ifdef BREPALGO_DEB
         cout << "No subhape in shape!" << endl;
 #endif
         SS = TopoDS_Shape();

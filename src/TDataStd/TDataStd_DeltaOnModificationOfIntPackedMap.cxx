@@ -81,7 +81,7 @@ void TDataStd_DeltaOnModificationOfIntPackedMap::Apply()
   Handle(TDF_Attribute) aTDFAttribute = Attribute();
   Handle(TDataStd_IntPackedMap) aBackAtt = (*((Handle(TDataStd_IntPackedMap)*)&aTDFAttribute));
   if(aBackAtt.IsNull()) {
-#ifdef DEB
+#ifdef TDATASTD_DEB
     cout << "DeltaOnModificationOfIntPAckedMap::Apply: OldAtt is Null" <<endl;
 #endif
     return;
@@ -94,7 +94,7 @@ void TDataStd_DeltaOnModificationOfIntPackedMap::Apply()
   }
 
   if(aCurAtt.IsNull()) {
-#ifdef DEB
+#ifdef TDATASTD_DEB
     cout << "DeltaOnModificationOfIntAPckedMAp::Apply: CurAtt is Null" <<endl;
 #endif
     return;

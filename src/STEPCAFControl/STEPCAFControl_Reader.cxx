@@ -498,14 +498,14 @@ Standard_Boolean STEPCAFControl_Reader::Transfer (STEPControl_Reader &reader,
       static Handle(TCollection_HAsciiString) ap214 = new TCollection_HAsciiString ( "STEP AP214" );
       if ( ! format->IsSameString ( ap203, Standard_False ) && 
 	   ! format->IsSameString ( ap214, Standard_False ) ) {
-#ifdef DEB
+#ifdef STEPCAFCONTROL_DEB
 	cout << "Warning: STEPCAFControl_Reader::Transfer: Extern document is neither STEP AP203 nor AP214" << endl;
 #else
 	continue;
 #endif
       }
     }
-#ifdef DEB
+#ifdef STEPCAFCONTROL_DEB
     else cout << "Warning: STEPCAFControl_Reader::Transfer: Extern document format not defined" << endl;
 #endif
     
@@ -515,7 +515,7 @@ Standard_Boolean STEPCAFControl_Reader::Transfer (STEPControl_Reader &reader,
 cout<<"filename="<<filename<<endl;
 
     if ( ! filename || ! filename[0] ) {
-#ifdef DEB
+#ifdef STEPCAFCONTROL_DEB
       cout << "Warning: STEPCAFControl_Reader::Transfer: Extern reference file name is empty" << endl;
 #endif
       continue; // not a valid extern ref
@@ -658,7 +658,7 @@ TDF_Label STEPCAFControl_Reader::AddShape (const TopoDS_Shape &S,
 	  return EF->GetLabel();
 	}
       }
-#ifdef DEB
+#ifdef STEPCAFCONTROL_DEB
       if ( ! EF->GetLabel().IsNull() )
         cout << "Warning: STEPCAFControl_Reader::AddShape: Non-empty shape with external ref; ref is ignored" << endl;
       else if ( nbComponents <=0 ) 
@@ -707,7 +707,7 @@ Handle(STEPCAFControl_ExternFile) STEPCAFControl_Reader::ReadExternFile (const S
     return myFiles->Item ( file );
   }
 
-#ifdef DEB
+#ifdef STEPCAFCONTROL_DEB
   cout << "Reading extern file: " << fullname << endl;
 #endif
  
@@ -788,7 +788,7 @@ Standard_Boolean STEPCAFControl_Reader::ReadColors (const Handle(XSControl_WorkS
 {
   STEPConstruct_Styles Styles ( WS );
   if ( ! Styles.LoadStyles() ) {
-#ifdef DEB
+#ifdef STEPCAFCONTROL_DEB
     cout << "Warning: no styles are found in the model" << endl;
 #endif
     return Standard_False;
@@ -963,7 +963,7 @@ TDF_Label STEPCAFControl_Reader::FindInstance (const Handle(StepRepr_NextAssembl
   Handle(Transfer_TransientProcess) TP = Tool.TransientProcess();
   Handle(Transfer_Binder) binder = TP->Find(NAUO);
   if ( binder.IsNull() || ! binder->HasResult() ) {
-#ifdef DEB
+#ifdef STEPCAFCONTROL_DEB
     cout << "Error: STEPCAFControl_Reader::FindInstance: NAUO is not mapped to shape" << endl;
 #endif
     return L;
@@ -971,7 +971,7 @@ TDF_Label STEPCAFControl_Reader::FindInstance (const Handle(StepRepr_NextAssembl
   
   TopoDS_Shape S = TransferBRep::ShapeResult ( TP, binder );
   if ( S.IsNull() ) {
-#ifdef DEB
+#ifdef STEPCAFCONTROL_DEB
     cout << "Error: STEPCAFControl_Reader::FindInstance: NAUO is not mapped to shape" << endl;
 #endif
     return L;
@@ -1149,7 +1149,7 @@ Standard_Boolean STEPCAFControl_Reader::ReadValProps (const Handle(XSControl_Wor
   TColStd_SequenceOfTransient props;
   STEPConstruct_ValidationProps Props ( WS );
   if ( ! Props.LoadProps ( props ) ) {
-#ifdef DEB
+#ifdef STEPCAFCONTROL_DEB
     cout << "Warning: no validation props found in the model" << endl;
 #endif
     return Standard_False;
@@ -1310,7 +1310,7 @@ Standard_Boolean STEPCAFControl_Reader::ReadLayers (const Handle(XSControl_WorkS
     Interface_EntityIterator subs = WS->Graph().Sharings(SVPLA);
     for (subs.Start(); subs.More(); subs.Next()) {
       if ( ! subs.Value()->IsKind(STANDARD_TYPE(StepVisual_Invisibility)) ) continue;
-#ifdef DEB
+#ifdef STEPCAFCONTROL_DEB
       cout<< "\tLayer \"" << aLayerName << "\" is invisible"<<endl;
 #endif
       //TDF_Label InvLayerLab = LTool->FindLayer(aLayerName);
@@ -1387,7 +1387,7 @@ static TDF_Label setSHUOintoDoc (const Handle(XSControl_WorkSession) &WS,
   Handle(StepRepr_NextAssemblyUsageOccurrence) NUNAUO =
     Handle(StepRepr_NextAssemblyUsageOccurrence)::DownCast(SHUO->NextUsage());
   if ( UUNAUO.IsNull() || NUNAUO.IsNull() ) {
-#ifdef DEB
+#ifdef STEPCAFCONTROL_DEB
     cout << "Warning: " << __FILE__ <<": Upper_usage or Next_usage of styled SHUO is null. Skip it" << endl;
 #endif
     return aMainLabel;
@@ -1446,7 +1446,7 @@ Standard_Boolean STEPCAFControl_Reader::ReadSHUOs (const Handle(XSControl_WorkSe
   
   STEPConstruct_Styles Styles ( WS );
   if ( ! Styles.LoadStyles() ) {
-#ifdef DEB
+#ifdef STEPCAFCONTROL_DEB
     cout << "Warning: no styles are found in the model" << endl;
 #endif
     return Standard_False;
@@ -1466,7 +1466,7 @@ Standard_Boolean STEPCAFControl_Reader::ReadSHUOs (const Handle(XSControl_WorkSe
       if ( style != aHSeqOfInvisStyle->Value( si ) )
         continue;
       // found that current style is invisible.
-#ifdef DEB
+#ifdef STEPCAFCONTROL_DEB
       cout << "Warning: item No " << i << "(" << style->Item()->DynamicType()->Name() << ") is invisible" << endl;
 #endif
       IsVisible = Standard_False;
@@ -1505,7 +1505,7 @@ Standard_Boolean STEPCAFControl_Reader::ReadSHUOs (const Handle(XSControl_WorkSe
       // set the SHUO structure to the document
       TDF_Label aLabelForStyle = setSHUOintoDoc( WS, SHUO, STool, PDFileMap, ShapeLabelMap );
       if ( aLabelForStyle.IsNull() ) {
-#ifdef DEB
+#ifdef STEPCAFCONTROL_DEB
         cout << "Warning: " << __FILE__ <<": coudnot create SHUO structure in the document" << endl;
 #endif
         continue;

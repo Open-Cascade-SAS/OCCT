@@ -423,7 +423,7 @@ void Blend_Walking::Transition(const Standard_Boolean OnFirst,
 		  TheSurfaceTool::LastVParameter(surf),
 		  stat, thenormal, iu, iv);
     normale.SetXYZ(thenormal.XYZ());
-#if DEB
+#if BLEND_DEB
     if (stat == CSLib_InfinityOfSolutions)
       cout << "Blend_Walking::Transition : Infinite de Normal" << endl;
 #endif 

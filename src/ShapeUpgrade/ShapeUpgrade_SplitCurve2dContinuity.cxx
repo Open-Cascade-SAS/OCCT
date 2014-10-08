@@ -105,7 +105,7 @@ void ShapeUpgrade_SplitCurve2dContinuity::Compute()
       case GeomAbs_C1 : BasCriterion = GeomAbs_C2; break;
       case GeomAbs_C2 : BasCriterion = GeomAbs_C3; break;
       case GeomAbs_C3 : //if (ShapeUpgrade::Debug()) cout<<". this criterion is not suitable for a Offset curve"<<endl; 
-#ifdef DEB
+#ifdef SHAPEUPGRADE_DEB
 			cout << "Warning: ShapeUpgrade_SplitCurve2dContinuity: criterion C3 for Offset curve" << endl; 
 #endif
       case GeomAbs_CN : BasCriterion = GeomAbs_CN; break;

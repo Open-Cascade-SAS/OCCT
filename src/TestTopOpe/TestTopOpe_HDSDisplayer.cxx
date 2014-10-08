@@ -131,7 +131,7 @@ Standard_Boolean TestTopOpe_HDSDisplayer::SubShape(const TopoDS_Shape& S,const S
     return r;
   }
 
-#ifdef DEB
+#ifdef TESTTOPOPE_DEB
   Standard_Integer iS = myHDS->Shape(S,FindKeep);
   cout<<endl<<"***** shape "<<iS<<" has no ancestor index : use shapemaps"<<endl;
 #endif

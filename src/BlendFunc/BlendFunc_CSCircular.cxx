@@ -203,9 +203,6 @@ Standard_Boolean BlendFunc_CSCircular::IsSolution(const math_Vector& Sol, const 
     norm = ncrossns.Magnitude();
     if (norm < Eps) {
       norm = 1.;
-//#if DEB
-//      cout << "CSCircular : Surface singuliere !" << endl;
-//#endif
     }
 
     temp.SetXYZ(pts.XYZ() - ptc.XYZ());
@@ -279,9 +276,6 @@ Standard_Boolean BlendFunc_CSCircular::Value(const math_Vector& X, math_Vector& 
   Standard_Real norm = nplan.Crossed(ns).Magnitude();
   if (norm < Eps) {
     norm = 1.;
-//#if DEB
-//    cout << "CSCircular : Surface singuliere !" << endl;
-//#endif
   }
 
   ns.SetLinearForm(nplan.Dot(ns)/norm,nplan, -1./norm,ns);
@@ -318,9 +312,6 @@ Standard_Boolean BlendFunc_CSCircular::Derivatives(const math_Vector& X, math_Ma
   norm = ncrossns.Magnitude();
   if (norm < Eps) {
     norm = 1.;
-//#if DEB
-//    cout << "CSCircular : Surface singuliere !" << endl;
-//#endif
   }
 
   ndotns = nplan.Dot(ns);
@@ -374,9 +365,6 @@ Standard_Boolean BlendFunc_CSCircular::Values(const math_Vector& X, math_Vector&
   norm = ncrossns.Magnitude();
   if (norm < Eps) {
     norm = 1.;
-//#if DEB
-//    cout << "CSCircular : Surface singuliere !" << endl;
-//#endif
   }
 
   ndotns = nplan.Dot(ns);

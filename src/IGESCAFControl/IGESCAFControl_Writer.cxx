@@ -368,11 +368,8 @@ static void AttachLayer (const Handle(Transfer_FinderProcess) &FP,
     Handle(TransferBRep_ShapeMapper) mapper = TransferBRep::ShapeMapper ( FP, localShape );
     if ( FP->FindTypedTransient ( mapper, STANDARD_TYPE(IGESData_IGESEntity), Igesent ) ) {
       Igesent->InitLevel( 0, localIntName );
-// #ifdef DEB
-//       cout << "Init layer " << localIntName << " for "<< localShape.TShape()->DynamicType()->Name() << endl;
-// #endif
     }
-#ifdef DEB
+#ifdef IGESCAFCONTROL_DEB
     else cout << "Warning: Can't find entity for shape in mapper" << endl;
 #endif
   }

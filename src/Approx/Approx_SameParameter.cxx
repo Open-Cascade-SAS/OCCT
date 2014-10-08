@@ -563,7 +563,7 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
       if(!projok)
       {
         //Projector
-#ifdef DEB
+#ifdef APPROX_DEB
         // JAG
         cout << "Projection not done" << endl;
 #endif
@@ -578,7 +578,7 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
 
   if(!extrok) { // If not already SameP and tangent to mill, abandon.
     mySameParameter = Standard_False;
-#ifdef DEB
+#ifdef APPROX_DEB
     cout<<"SameParameter problem  : zero tangent to extremities"<<endl;
 #endif
     return;
@@ -739,7 +739,7 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
           }
         }
         else {
-#ifdef DEB 
+#ifdef APPROX_DEB 
           // JAG
           cout << "Projection not done" << endl;
 #endif
@@ -769,7 +769,7 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
 
     if (Precision::IsInfinite(algtol)) {
       mySameParameter = Standard_False;
-#ifdef DEB
+#ifdef APPROX_DEB
       cout<<"SameParameter problem  : function of interpolation of parametration at mills !!"<<endl;
 #endif
       return;
@@ -869,7 +869,7 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
           }
         }
         else {
-#ifdef DEB 
+#ifdef APPROX_DEB 
           // JAG
           cout << "Projection not done" << endl;
 #endif

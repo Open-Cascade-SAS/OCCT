@@ -100,7 +100,7 @@ Tint TelGetPolygonNormal(tel_point pnts, Tint* indexs, Tint npnt, Tfloat *norm )
       }
     }
   }
-#ifdef DEB
+#ifdef OPENGL_DEB
   if( !status )
     printf(" *** OpenGl_TelGetPolygonNormal.has found confused or aligned points\n");
 #endif
@@ -121,7 +121,7 @@ Tint TelGetNormal(Tfloat *data1, Tfloat *data2, Tfloat *data3, Tfloat *norm ) {
     d = vecnrmd( norm, d );
     status = (d > 0.) ? 1 : 0;
   }
-#ifdef DEB
+#ifdef OPENGL_DEB
   if( !status )
     printf(" *** OpenGl_TelGetNormal.has found confused or aligned points\n");
 #endif

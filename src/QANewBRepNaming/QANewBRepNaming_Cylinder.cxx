@@ -146,7 +146,7 @@ void QANewBRepNaming_Cylinder::Load (BRepPrimAPI_MakeCylinder& mkCylinder,
   if (Type == QANewBRepNaming_SOLID) Builder.Generated (mkCylinder.Solid());
   else if (Type == QANewBRepNaming_SHELL) Builder.Generated (mkCylinder.Shell());
   else {
-#ifdef DEB
+#ifdef QANEWBREPNAMING_DEB
     cout<<"QANewBRepNaming_Cylinder::Load(): Unexpected type of result"<<endl;
     Builder.Generated (mkCylinder.Shape());
 #endif

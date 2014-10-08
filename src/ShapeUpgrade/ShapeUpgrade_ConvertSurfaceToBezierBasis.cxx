@@ -184,7 +184,7 @@ void ShapeUpgrade_ConvertSurfaceToBezierBasis::Compute(const Standard_Boolean Se
       else
 	VFilteredJoints.Append(VJoints(i));
 
-#ifdef DEB 
+#ifdef SHAPEUPGRADE_DEB
     if(NbVFiltered || NbUFiltered)
       cout<<"Warning: ShapeUpgrade_ConvertSurfaceToBezierBasis: thin patches dropped."<<endl;
 #endif
@@ -451,7 +451,7 @@ static Handle(Geom_Surface) GetSegment(const Handle(Geom_Surface) surf,
       bezier->Segment(V1,V2);    
     }
     else {
-#ifdef DEB
+#ifdef SHAPEUPGRADE_DEB
       cout <<"Warning: Resulting path is not surface of revolution basis on bezier curve"<<endl;
 #endif
     }

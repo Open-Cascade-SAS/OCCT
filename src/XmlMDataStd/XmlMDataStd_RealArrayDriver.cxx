@@ -118,9 +118,6 @@ Standard_Boolean XmlMDataStd_RealArrayDriver::Paste
       aRealArray->SetValue(ind, aValue);
     }
   }
-#ifdef DEB
-  //cout << "CurDocVersion = " << XmlMDataStd::DocumentVersion() <<endl;
-#endif
   Standard_Boolean aDelta(Standard_False);
   
   if(XmlMDataStd::DocumentVersion() > 2) {
@@ -137,7 +134,7 @@ Standard_Boolean XmlMDataStd_RealArrayDriver::Paste
     else
       aDelta = (Standard_Boolean)aDeltaValue;
   }
-#ifdef DEB
+#ifdef XMLMDATASTD_DEB
   else if(XmlMDataStd::DocumentVersion() == -1)
     cout << "Current DocVersion field is not initialized. "  <<endl;
 #endif

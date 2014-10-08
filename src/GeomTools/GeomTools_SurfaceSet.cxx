@@ -1041,7 +1041,7 @@ Standard_IStream& GeomTools_SurfaceSet::ReadSurface(Standard_IStream& IS,
     }
   }
   catch(Standard_Failure) {
-#ifdef DEB
+#ifdef GEOMTOOLS_DEB
     Handle(Standard_Failure) anExc = Standard_Failure::Caught();
     cout <<"EXCEPTION in GeomTools_SurfaceSet::ReadSurface(..)!!!" << endl;
     cout << anExc << endl;

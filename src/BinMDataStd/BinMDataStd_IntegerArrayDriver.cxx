@@ -63,9 +63,6 @@ Standard_Boolean BinMDataStd_IntegerArrayDriver::Paste
   if(!theSource.GetIntArray (&aTargetArray(aFirstInd), aLength))
     return Standard_False;
   Standard_Boolean aDelta(Standard_False);
-#ifdef DEB
-  //cout << "CurDocVersion = " << BinMDataStd::DocumentVersion() <<endl;
-#endif
   if(BinMDataStd::DocumentVersion() > 2) {
     Standard_Byte aDeltaValue;
     if (! (theSource >> aDeltaValue))
@@ -73,7 +70,7 @@ Standard_Boolean BinMDataStd_IntegerArrayDriver::Paste
     else
       aDelta = (Standard_Boolean)aDeltaValue;
   }
-#ifdef DEB
+#ifdef BINMDATASTD_DEB
   else if(BinMDataStd::DocumentVersion() == -1)
     cout << "Current DocVersion field is not initialized. "  <<endl;
 #endif

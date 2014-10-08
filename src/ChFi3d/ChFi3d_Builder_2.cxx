@@ -1327,7 +1327,7 @@ Standard_Boolean  ChFi3d_Builder::SearchFace
   TopoDS_Edge E;
   if (Pc.IsVertex()){
     // attention it is necessary to analyze all faces that turn around of the vertex
-#if DEB
+#if CHFI3D_DEB
     cout<<"Commonpoint on vertex, the process hangs up"<<endl;
 #endif
     if (Pc.HasVector()) { //General processing
@@ -1372,7 +1372,7 @@ Standard_Boolean  ChFi3d_Builder::SearchFace
 	  FindFace = Standard_False;
 	  if (Spine.IsNull()) {
 	    //La Spine peut etre nulle (ThreeCorner)
-#if DEB
+#if CHFI3D_DEB
 	    cout << "FindFace sur vertex avec spine nulle! QUEZAKO ?" << endl;
 #endif
 	    return Standard_False;
@@ -1592,7 +1592,7 @@ static void ChFi3d_MakeExtremities(Handle(ChFiDS_Stripe)&      Stripe,
       if (CV1.IsVertex()) { 
 	ChFi3d_SingularExtremity(Stripe, DStr, CV1.Vertex(), tol3d, tol2d);
       }
-# if DEB
+# if CHFI3D_DEB
       else { cout << "MakeExtremities : Singularity out of Vertex !!" << endl; }
 # endif
     }
@@ -1657,7 +1657,7 @@ static void ChFi3d_MakeExtremities(Handle(ChFiDS_Stripe)&      Stripe,
       if (cpdeb1.IsVertex()) { 
 	ChFi3d_SingularExtremity(Stripe, DStr, cpdeb1.Vertex(), tol3d, tol2d);
       }
-# if DEB
+# if CHFI3D_DEB
       else { cout << "MakeExtremities : Singularity out of Vertex !!" << endl; }
 # endif
     }
@@ -1719,7 +1719,7 @@ static void ChFi3d_MakeExtremities(Handle(ChFiDS_Stripe)&      Stripe,
       if (cpfin1.IsVertex()) { 
 	ChFi3d_SingularExtremity(Stripe, DStr, cpfin1.Vertex(), tol3d, tol2d);
       }
-# if DEB
+# if CHFI3D_DEB
       else { cout << "MakeExtremities : Singularity out of Vertex !!" << endl; }
 # endif
     }
@@ -1743,7 +1743,7 @@ static void ChFi3d_Purge (Handle(ChFiDS_Stripe)&    Stripe,
   Standard_Integer opp = 3-ons;
   if (!SD->Vertex(isfirst,opp).IsOnArc() || 
       SD->TwistOnS1() || SD->TwistOnS2() ) {
-#ifdef DEB
+#ifdef CHFI3D_DEB
     cout<<"ChFi3d_Purge : No output on extension."<<endl;
 #endif
     ChFiDS_SequenceOfSurfData& Seq = 
@@ -2335,12 +2335,12 @@ void ChFi3d_Builder::PerformSetOfKPart(Handle(ChFiDS_Stripe)& Stripe,
       ChFiDS_SequenceOfSurfData LSD;
       
       if(!ChFiKPart_ComputeData::Compute(DStr,SD,HS1,HS2,Or1,Or2,Spine,iedge)){
-#ifdef DEB
+#ifdef CHFI3D_DEB
 	cout<<"failed calculation KPart"<<endl;
 #endif
       }
       else if(!SplitKPart(SD,LSD,Spine,iedge,HS1,It1,HS2,It2,intf,intl)){
-#ifdef DEB
+#ifdef CHFI3D_DEB
 	cout<<"failed calculation KPart"<<endl;
 #endif
 	LSD.Clear();
@@ -2874,7 +2874,7 @@ void ChFi3d_Builder::PerformSetOfKGen(Handle(ChFiDS_Stripe)& Stripe,
       }
       else if(IF < IL){
 	TColStd_Array1OfReal wv(IF,IL - 1);
-#ifdef  DEB
+#ifdef  CHFI3D_DEB
 	cout<<"length of the trajectory : "<<(WL-WF)<<endl;
 #endif
 	for(i = IF; i < IL; i++){
@@ -2883,7 +2883,7 @@ void ChFi3d_Builder::PerformSetOfKGen(Handle(ChFiDS_Stripe)& Stripe,
 	  Standard_Real wi = Spine->LastParameter(iloc);
 	  if(periodic) wi = ElCLib::InPeriod(wi,WF,WF+period);
 	  gp_Pnt pv = Spine->Value(wi);
-#ifdef DEB
+#ifdef CHFI3D_DEB
 	  gp_Pnt pelsapp = curels.Value(wi);
 	  Standard_Real distinit = pv.Distance(pelsapp);
 	  cout<<"distance psp/papp : "<<distinit<<endl;
@@ -2894,7 +2894,7 @@ void ChFi3d_Builder::PerformSetOfKGen(Handle(ChFiDS_Stripe)& Stripe,
 	    wv(i) = ext.Point().Parameter(); 
 	  }
 	  else {
-#ifdef DEB
+#ifdef CHFI3D_DEB
 	    cout<<"fail of projection vertex ElSpine!!!"<<endl;
 #endif
 	  }

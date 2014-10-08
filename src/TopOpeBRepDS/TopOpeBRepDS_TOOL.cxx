@@ -28,7 +28,7 @@
 
 static void FUN_Raise()
 {
-#ifdef DEB
+#ifdef TOPOPEBREPDS_DEB
   cout<<"****************************** TopOpeBRepDS_TOOL"<<endl;
 #endif
 }

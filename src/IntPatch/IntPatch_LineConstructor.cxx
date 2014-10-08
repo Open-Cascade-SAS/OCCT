@@ -895,7 +895,7 @@ static Standard_Boolean TestIfWLineIsRestriction(const IntPatch_SequenceOfLine& 
       break;
   }
   if(allon1==NbPnts || allon2==NbPnts) {
-#ifdef DEB
+#ifdef INTPATCH_DEB
     cout<<" IntPatch_LineConstructor.gxx :  CC**ONS"<<(allon1==NbPnts?1:2)<<"** Traitement WLIne + ARC CLASS "<<endl;
 #endif
     Standard_Real tol2d = Max(tol2d1,tol2d2);
@@ -1056,7 +1056,7 @@ static void TestWLineToRLine(const IntPatch_SequenceOfLine& slinref,
 	  if (!arc1.IsNull() && arc1 == arc) iv2 = iv;
 	}
 	if (!iv1 || !iv2) {
-#ifdef DEB
+#ifdef INTPATCH_DEB
 	  cout<<" Pb getting vertices linked with arc"<<endl;
 #endif
 	  continue;
@@ -1067,7 +1067,7 @@ static void TestWLineToRLine(const IntPatch_SequenceOfLine& slinref,
 	Standard_Real par2 = (arcsResolved(iv2).IsNull()
 			      ? (WLine->Vertex(iv2).*pParOnArc)()
 			      : paramsResolved(iv2));
-#ifdef DEB
+#ifdef INTPATCH_DEB
 	cout<<"****** Parameters on arc on S"<<is+1<<": "<<par1<<" "<<par2<<endl;
 #endif
 
@@ -1081,7 +1081,7 @@ static void TestWLineToRLine(const IntPatch_SequenceOfLine& slinref,
 	}
 	Standard_Real par,dist;
 	if (!ProjectOnArc(utst,vtst,arc,surf,TolArc,par,dist)) {
-#ifdef DEB
+#ifdef INTPATCH_DEB
 	  cout<<" Pb en projection ds IntPatch_LineConstructor"<<endl;
 #endif
 	  continue;
@@ -1519,9 +1519,6 @@ void IntPatch_LineConstructor::Perform(const IntPatch_SequenceOfLine& slinref,
       //if(nbvtx) { 
       //	TabIndex[nbvtx]=TabIndex[1]=++numline;
       //	AddLine(L,1,nbvtx,typs1,typs2,TabIndex,slin);
-#if DEB
-      //cout<<"\nIntPatch_LineConstructor : Cas de ligne ou firstp==lastp"<<endl;
-#endif
       //}
     }
     //-- -------------------------------------------------------------------

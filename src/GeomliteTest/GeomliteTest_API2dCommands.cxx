@@ -282,7 +282,9 @@ static Standard_Integer intersect(Draw_Interpretor& di, Standard_Integer n, cons
 {
   if( n < 2) 
   {
+#ifdef GEOMLITETEST_DEB
     cout<< "2dintersect curve curve [Tol]"<<endl;
+#endif
     return 1;
   }
   Standard_Integer k = 1;

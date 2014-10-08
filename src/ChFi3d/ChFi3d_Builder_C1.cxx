@@ -1737,7 +1737,7 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
     if (Ishape1 > 0) {
       trafil1 = DStr.Shape(Ishape1).Orientation();
     }
-#ifdef DEB
+#ifdef CHFI3D_DEB
     else {
       cout<<"erreur"<<endl;
     }
@@ -1746,7 +1746,7 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
 
     trafil1 = TopAbs::Compose(TopAbs::Reverse(Fi1.Transition()),trafil1);
   }
-#ifdef DEB
+#ifdef CHFI3D_DEB
   else cout<<"erreur"<<endl;
 #endif
   // eap, Apr 22 2002, occ 293
@@ -3623,7 +3623,7 @@ Standard_Boolean ChFi3d_Builder::FindFace(const TopoDS_Vertex& V,
 					  const TopoDS_Face& Favoid) const
 {
   if (P1.IsVertex() || P2.IsVertex()) {
-#ifdef DEB
+#ifdef CHFI3D_DEB
     cout<<"change of face on vertex"<<endl;
 #endif
   }

@@ -848,7 +848,7 @@ Standard_IStream& GeomTools_CurveSet::ReadCurve(Standard_IStream& IS,
     }
   }
   catch(Standard_Failure) {
-#ifdef DEB
+#ifdef GEOMTOOLS_DEB
     Handle(Standard_Failure) anExc = Standard_Failure::Caught();
     cout <<"EXCEPTION in GeomTools_CurveSet::ReadCurve(..)!!!" << endl;
     cout << anExc << endl;

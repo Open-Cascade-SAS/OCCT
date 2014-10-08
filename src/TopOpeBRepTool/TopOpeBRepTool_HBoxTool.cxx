@@ -224,7 +224,7 @@ const TopOpeBRepTool_IndexedDataMapOfShapeBox& TopOpeBRepTool_HBoxTool::IMS() co
 //purpose  : 
 //=======================================================================
 void TopOpeBRepTool_HBoxTool::DumpB 
-#ifdef DEB
+#ifdef TOPOPEBREPTOOL_DEB
 (const Bnd_Box& B)
 {
   if      (B.IsVoid()) cout<<"# IsVoid";

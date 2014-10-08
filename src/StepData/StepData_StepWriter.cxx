@@ -117,7 +117,7 @@ void StepData_StepWriter::SetScope (const Standard_Integer numscope,
     thescopenext = new TColStd_HArray1OfInteger (1,nb); thescopenext->Init(0);
   }
   else if (thescopenext->Value(numin) != 0) {
-#ifdef DEB
+#ifdef STEPDATA_DEB
     cout << "StepWriter : SetScope (scope : " << numscope << " entity : "
       << numin << "), Entity already in a Scope"<<endl;
 #endif

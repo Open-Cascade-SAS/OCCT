@@ -46,7 +46,7 @@ void TDF_DeltaOnForget::Apply()
   // Undo = Resume.
   Label().ResumeAttribute(Attribute());
   Attribute()->mySavedTransaction = 0;
-#ifdef DEB
+#ifdef TDF_DEB
   cout<<"Resume attribute"<<endl;
 #endif
 }

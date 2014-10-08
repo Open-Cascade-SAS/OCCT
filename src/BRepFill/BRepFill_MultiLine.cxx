@@ -622,7 +622,7 @@ static gp_Pnt2d ValueOnFace(const Standard_Real        U,
 	Dist = TheU.Circle().Radius();
       }
       else {
-#ifdef DEB
+#ifdef BREPFILL_DEB
 	cout << "MultiLine : D1 = D2 and the Curve is not a circle" << endl;
 	cout << "  ---> ValueOnFace failed at parameter U = " << U << endl;
 #endif
@@ -675,7 +675,7 @@ static gp_Pnt2d ValueOnFace(const Standard_Real        U,
     Geom2dInt_GInter Intersector(Cu1,Cu2,TolConf,Tol);
 
     if ( !Intersector.IsDone()) {
-#ifdef DEB
+#ifdef BREPFILL_DEB
       cout << "Intersector not done" << endl;
       cout << "  ---> ValueonFace failed at parameter U = " << U << endl;
 #endif
@@ -695,7 +695,7 @@ static gp_Pnt2d ValueOnFace(const Standard_Real        U,
 	VV = Alp*(VS2 - VS1) + VS1;
       }
       else {
-#ifdef DEB
+#ifdef BREPFILL_DEB
 	cout << "Intersector done, but no points found" << endl;
 	cout << "  ---> ValueonFace failed at parameter U = " << U << endl;
 #endif

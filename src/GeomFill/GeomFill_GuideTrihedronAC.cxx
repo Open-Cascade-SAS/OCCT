@@ -121,7 +121,7 @@ GeomFill_GuideTrihedronAC::GeomFill_GuideTrihedronAC(const Handle(Adaptor3d_HCur
   Standard_Real Norm = n.Magnitude();
   if (Norm < 1.e-12) {
     Norm = 1;
-#if DEB
+#if GEOMFILL_DEB
     cout << "GuideTrihedronAC : Normal indefinie" << endl;
 #endif
   }

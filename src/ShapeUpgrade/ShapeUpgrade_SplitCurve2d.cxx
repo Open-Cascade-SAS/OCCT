@@ -76,13 +76,13 @@ ShapeUpgrade_SplitCurve2d::ShapeUpgrade_SplitCurve2d()
     if(Abs(lastPar-lP) < precision)
       lastPar = lP;
     if(firstPar < fP){
-#ifdef DEB
+#ifdef SHAPEUPGRADE_DEB
       cout <<"Warning: The range of the edge exceeds the curve domain" <<endl;
 #endif
       firstPar = fP;
     }
     if(lastPar > lP){
-#ifdef DEB
+#ifdef SHAPEUPGRADE_DEB
       cout <<"Warning: The range of the edge exceeds the curve domain" <<endl;
 #endif
       lastPar = lP;
@@ -171,7 +171,7 @@ ShapeUpgrade_SplitCurve2d::ShapeUpgrade_SplitCurve2d()
 	    Handle(Geom2d_BezierCurve)::DownCast(theNewCurve)->Segment (First, Last);
 	}
 	catch (Standard_Failure) {
-#ifdef DEB 
+#ifdef SHAPEUPGRADE_DEB
 	  cout << "Warning: ShapeUpgrade_Split2dCurve::Build(): Exception in Segment      :";
 	  Standard_Failure::Caught()->Print(cout); cout << endl;
 #endif
@@ -224,7 +224,7 @@ ShapeUpgrade_SplitCurve2d::ShapeUpgrade_SplitCurve2d()
 	  myStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE3 );
 	}
 	catch (Standard_Failure) {
-#ifdef DEB 
+#ifdef SHAPEUPGRADE_DEB
 	  cout << "Warning: ShapeUpgrade_Split2dCurve::Build(): Exception in Segment      :";
 	  Standard_Failure::Caught()->Print(cout); cout << endl;
 #endif

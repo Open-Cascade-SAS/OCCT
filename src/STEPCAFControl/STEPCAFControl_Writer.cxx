@@ -267,7 +267,7 @@ IFSelect_ReturnStatus STEPCAFControl_Writer::Write (const Standard_CString filen
     // construct extern file name
     TCollection_AsciiString fname = OSD_Path::AbsolutePath ( dpath, EF->GetName()->String() );
     if ( fname.Length() <= 0 ) fname = EF->GetName()->String();
-#ifdef DEB
+#ifdef STEPCAFCONTROL_DEB
     cout << "Writing external file: " << fname.ToCString() << endl;
 #endif
     
@@ -418,9 +418,6 @@ Standard_Boolean STEPCAFControl_Writer::Transfer (STEPControl_Writer &writer,
     Handle(STEPCAFControl_ActorWrite)::DownCast ( writer.WS()->NormAdaptor()->ActorWrite() );
 
   // translate free top-level shapes of the DECAF document
-#ifdef DEB // includes Transfer_ActorOfFinderProcess
-//  cout << "Actor is " << writer.WS()->NormAdaptor()->ActorWrite()->DynamicType()->Name() << endl;
-#endif
   Standard_Integer ap = Interface_Static::IVal ("write.step.schema");
   TDF_LabelSequence sublabels;
   for ( Standard_Integer i=1; i <= labels.Length(); i++ ) {
@@ -694,7 +691,7 @@ Standard_Boolean STEPCAFControl_Writer::WriteExternRefs (const Handle(XSControl_
     Handle(StepShape_ShapeDefinitionRepresentation) SDR;
     Handle(TransferBRep_ShapeMapper) mapper = TransferBRep::ShapeMapper ( FP, S );
     if ( ! FP->FindTypedTransient ( mapper, STANDARD_TYPE(StepShape_ShapeDefinitionRepresentation), SDR ) ) {
-#ifdef DEB
+#ifdef STEPCAFCONTROL_DEB
       cout << "Warning: Cannot find SDR for " << S.TShape()->DynamicType()->Name() << endl;
 #endif
       continue;
@@ -706,7 +703,7 @@ Standard_Boolean STEPCAFControl_Writer::WriteExternRefs (const Handle(XSControl_
     StepRepr_RepresentedDefinition RD = SDR->Definition();
     Handle(StepRepr_PropertyDefinition) aPropDef = RD.PropertyDefinition();
     if (aPropDef.IsNull()) {
-#ifdef DEB
+#ifdef STEPCAFCONTROL_DEB
       cout << "Warning: STEPCAFControl_Writer::WriteExternRefs StepRepr_PropertyDefinition is null for " << S.TShape()->DynamicType()->Name() << endl;
 #endif
       continue;
@@ -714,7 +711,7 @@ Standard_Boolean STEPCAFControl_Writer::WriteExternRefs (const Handle(XSControl_
     StepRepr_CharacterizedDefinition CharDef = aPropDef->Definition();
     Handle(StepBasic_ProductDefinition) PD = CharDef.ProductDefinition();
     if (PD.IsNull()) {
-#ifdef DEB
+#ifdef STEPCAFCONTROL_DEB
       cout << "Warning: STEPCAFControl_Writer::WriteExternRefs StepBasic_ProductDefinition is null for " << S.TShape()->DynamicType()->Name() << endl;
 #endif
       continue;
@@ -943,7 +940,7 @@ static void MakeSTEPStyles (STEPConstruct_Styles &Styles,
       TopLoc_Location L;
       TColStd_SequenceOfTransient seqRI;
       Standard_Integer nb = FindEntities ( Styles.FinderProcess(), S, L, seqRI );
-#ifdef DEB
+#ifdef STEPCAFCONTROL_DEB
       if ( nb <=0 ) cout << "Warning: Cannot find RI for " << S.TShape()->DynamicType()->Name() << endl;
 #endif
       //Get overridden style gka 10.06.03
@@ -1037,7 +1034,7 @@ Standard_Boolean STEPCAFControl_Writer::WriteColors (const Handle(XSControl_Work
     // Skip assemblies: colors assigned to assemblies and their instances
     // are not supported (it is not clear how to encode that in STEP)
     if ( XCAFDoc_ShapeTool::IsAssembly ( L ) ) {
-#ifdef DEB
+#ifdef STEPCAFCONTROL_DEB
       cout << "Warning: Cannot write color  for Assembly" << endl;
       cout << "Info: Check for colors assigned to components in assembly" << endl;
 #endif
@@ -1119,7 +1116,7 @@ Standard_Boolean STEPCAFControl_Writer::WriteColors (const Handle(XSControl_Work
 
     if (!isComponent) {
       if ( myMapCompMDGPR.IsBound( aTopSh )) {
-#ifdef DEB
+#ifdef STEPCAFCONTROL_DEB
         cerr << "Error: Current Top-Level shape have MDGPR already " << endl;
 #endif
       }
@@ -1233,7 +1230,7 @@ Standard_Boolean STEPCAFControl_Writer::WriteNames (const Handle(XSControl_WorkS
     Handle(StepShape_ShapeDefinitionRepresentation) SDR;
     Handle(TransferBRep_ShapeMapper) mapper = TransferBRep::ShapeMapper ( FP, S );
     if ( ! FP->FindTypedTransient ( mapper, STANDARD_TYPE(StepShape_ShapeDefinitionRepresentation), SDR ) ) {
-#ifdef DEB
+#ifdef STEPCAFCONTROL_DEB
       cout << "Warning: Cannot find SDR for " << S.TShape()->DynamicType()->Name() << endl;
 #endif
       continue;
@@ -1481,7 +1478,7 @@ Standard_Boolean STEPCAFControl_Writer::WriteLayers (const Handle(XSControl_Work
     Standard_Boolean isLinv = Standard_False;
     if (L.FindAttribute(XCAFDoc::InvisibleGUID(), aUAttr)) {
       descr = new TCollection_HAsciiString ("invisible");
-#ifdef DEB
+#ifdef STEPCAFCONTROL_DEB
       FP->Messenger() << "\tLayer \"" << hName->String().ToCString() << "\" is invisible"<<endl;
 #endif
       isLinv = Standard_True;
@@ -1649,7 +1646,7 @@ static Standard_Boolean writeSHUO (const Handle(XCAFDoc_GraphNode)& theSHUO,
 //   Handle(XCAFDoc_GraphNode) NuSHUO;
   if ( aNextUsageLabs.Length() > 0) {
     // store SHUO recursive
-#ifdef DEB
+#ifdef STEPCAFCONTROL_DEB
     if ( aNextUsageLabs.Length() > 1 )
       cout << "Warning: store only one next_usage of current SHUO"  << endl;
 #endif    
@@ -1669,7 +1666,7 @@ static Standard_Boolean writeSHUO (const Handle(XCAFDoc_GraphNode)& theSHUO,
     Handle(StepRepr_NextAssemblyUsageOccurrence) UUNAUO, NUNAUO;
     if (!getProDefinitionOfNAUO( WS, aUUSh, nullPD, UUNAUO, Standard_True ) ||
         !getProDefinitionOfNAUO( WS, aNUSh, aRelatedPD, NUNAUO, Standard_False )) {
-#ifdef DEB
+#ifdef STEPCAFCONTROL_DEB
       cout << "Warning: cannot get related or relating PD" << endl;
 #endif
       return Standard_False;
@@ -1753,7 +1750,7 @@ static Standard_Boolean createSHUOStyledItem (const XCAFPrs_Style& style,
   TopLoc_Location L;
   TColStd_SequenceOfTransient seqRI;
   FindEntities ( FP, Sh, L, seqRI );
-#ifdef DEB
+#ifdef STEPCAFCONTROL_DEB
   if ( seqRI.Length() <=0 ) 
     FP->Messenger() << "Warning: Cannot find RI for " << Sh.TShape()->DynamicType()->Name() << endl;
 #endif
@@ -1770,7 +1767,7 @@ static Standard_Boolean createSHUOStyledItem (const XCAFPrs_Style& style,
   // do it by additing styled item to the MDGPR
   if ( !aTopSh.IsNull() &&  !myMapCompMDGPR.IsBound( aTopSh ) ) {
     // create MDGPR and record it in model
-#ifdef DEB
+#ifdef STEPCAFCONTROL_DEB
     cout << "Warning: " << __FILE__ << ": Create new MDGPR for SHUO instance"  << endl;
 #endif
     Handle(StepVisual_MechanicalDesignGeometricPresentationRepresentation) aMDGPR;
@@ -1801,7 +1798,7 @@ static Standard_Boolean createSHUOStyledItem (const XCAFPrs_Style& style,
   }
   else {
     WS->Model()->AddWithRefs ( STEPstyle ); // add as root to the model, but it is not good
-#ifdef DEB
+#ifdef STEPCAFCONTROL_DEB
     cout << "Warning: " << __FILE__ << ": adds styled item of SHUO as root, casue cannot find MDGPR" << endl;
 #endif
   }
@@ -1878,7 +1875,7 @@ Standard_Boolean STEPCAFControl_Writer::WriteSHUOs (const Handle(XSControl_WorkS
           // check if it is styled SHUO
           XCAFPrs_Style SHUOstyle;
           if ( !getSHUOstyle ( aSHUOlab, CTool, SHUOstyle ) ) {
-#ifdef DEB
+#ifdef STEPCAFCONTROL_DEB
             cout << "Warning: " << __FILE__ << ": do not store SHUO without any style to the STEP model" << endl;
 #endif
             continue;
@@ -1891,13 +1888,13 @@ Standard_Boolean STEPCAFControl_Writer::WriteSHUOs (const Handle(XSControl_WorkS
           // create the top SHUO and all other.
           writeSHUO( aSHUO, CTool->ShapeTool(), WS, anEntOfSHUO, NAUOShape, aRelatingPD, isDeepest );
           if ( anEntOfSHUO.IsNull() || NAUOShape.IsNull() ) {
-#ifdef DEB
+#ifdef STEPCAFCONTROL_DEB
             cout << "Warning: " << __FILE__ << ": Cannot store SHUO" << endl;
 #endif
             continue;
           }
           // create new Product Definition Shape for TOP SHUO
-#ifdef DEB
+#ifdef STEPCAFCONTROL_DEB
             cout << "Info: " << __FILE__ << ": Create NEW PDS for current SHUO " << endl;
 #endif
           Handle(StepRepr_ProductDefinitionShape) PDS = new StepRepr_ProductDefinitionShape;

@@ -287,7 +287,7 @@ static
 	Standard_Real par1 = CPI1->Parameter();
 	Standard_Real par2; Standard_Boolean ok = FUN_tool_parE(e1,par1,e2,par2);
 	if (!ok) {
-#ifdef DEB
+#ifdef TOPOPEBREP_DEB
 	  cout<<"**********TopOpeBRep FUN_shareNOG**********"<<endl;
 #endif
 	  return Standard_False;
@@ -882,7 +882,7 @@ Standard_Boolean TopOpeBRep_DSFiller::IsMadeOf1d(const TopoDS_Shape& aS) const
 Standard_Boolean TopOpeBRep_DSFiller::IsContext1d(const TopoDS_Shape& aS) const 
 {
   Standard_Boolean is1d = IsMadeOf1d(aS);
-#ifdef DEB
+#ifdef TOPOPEBREP_DEB
   if ( is1d ) cout<<"TopOpeBRep_DSFiller : 1d"<<endl;
 #endif
   if ( !is1d ) return Standard_False;
@@ -940,7 +940,7 @@ void TopOpeBRep_DSFiller::Insert1d
 Standard_Boolean TopOpeBRep_DSFiller::CheckInsert(const TopoDS_Shape& aS1,const TopoDS_Shape& aS2) const 
 {
   if (aS1.IsEqual(aS2)) {
-#ifdef DEB
+#ifdef TOPOPEBREP_DEB
     cout<<"TopOpeBRep_DSFiller : CheckInsert : S1 == S2"<<endl;
 #endif
     return Standard_False;

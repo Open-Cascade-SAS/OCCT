@@ -80,7 +80,7 @@ TDataStd_DeltaOnModificationOfByteArray::TDataStd_DeltaOnModificationOfByteArray
       }
     }
     OldAtt->RemoveArray();
-#ifdef DEB
+#ifdef TDATASTD_DEB
     if(OldAtt->InternalArray().IsNull())
       cout << "BackUp Arr is Nullified" << endl;
 #endif
@@ -99,7 +99,7 @@ void TDataStd_DeltaOnModificationOfByteArray::Apply()
   Handle(TDF_Attribute) TDFAttribute = Attribute();
   Handle(TDataStd_ByteArray) BackAtt = (*((Handle(TDataStd_ByteArray)*)&TDFAttribute));
   if(BackAtt.IsNull()) {
-#ifdef DEB
+#ifdef TDATASTD_DEB
     cout << "DeltaOnModificationOfByteArray::Apply: OldAtt is Null" <<endl;
 #endif
     return;
@@ -112,7 +112,7 @@ void TDataStd_DeltaOnModificationOfByteArray::Apply()
   }
 
   if(aCurAtt.IsNull()) {
-#ifdef DEB
+#ifdef TDATASTD_DEB
     cout << "DeltaOnModificationOfByteArray::Apply: CurAtt is Null" <<endl;
 #endif
     return;
@@ -153,7 +153,7 @@ void TDataStd_DeltaOnModificationOfByteArray::Apply()
       byteArr->SetValue(i, BArr->Value(i));
     if(!myIndxes.IsNull() && !myValues.IsNull())
       for(i = 1; i <= myIndxes->Upper();i++) {
-#ifdef DEB  
+#ifdef TDATASTD_DEB
 	cout << "i = " << i << "  myIndxes->Upper = " << myIndxes->Upper() << endl;
 	cout << "myIndxes->Value(i) = " << myIndxes->Value(i) << endl;
 	cout << "myValues->Value(i) = " << myValues->Value(i) << endl;
@@ -163,7 +163,7 @@ void TDataStd_DeltaOnModificationOfByteArray::Apply()
     aCurAtt->myValue = byteArr;
   }
   
-#ifdef DEB
+#ifdef TDATASTD_DEB
   cout << " << Array Dump after Delta Apply >>" <<endl;
   Handle(TColStd_HArray1OfByte) BArr2 = aCurAtt->InternalArray();
   for(i=BArr2->Lower(); i<=BArr2->Upper() && i<= MAXUP;i++)

@@ -116,7 +116,7 @@ TopoDS_Shape XSAlgo_AlgoContainer::ProcessShape (const TopoDS_Shape& shape,
   TCollection_AsciiString str ( seq );
   str += ".exec.op";
   if ( ! rsc->Find ( str.ToCString() ) ) {
-#ifdef DEB
+#ifdef XSALGO_DEB
     {
       static Standard_Integer time = 0;
       if ( ! time )
@@ -146,7 +146,7 @@ TopoDS_Shape XSAlgo_AlgoContainer::ProcessShape (const TopoDS_Shape& shape,
 	}
       }
       catch (Standard_Failure) {
-#ifdef DEB
+#ifdef XSALGO_DEB
 	cout << "Error: XSAlgo_AlgoContainer::ProcessShape(): Exception in ShapeFix::Shape" << endl;
         Standard_Failure::Caught()->Print(cout); cout << endl;
 #endif
@@ -298,7 +298,7 @@ Standard_Boolean XSAlgo_AlgoContainer::CheckPCurve (const TopoDS_Edge& E,
   Standard_Real DV = Abs (PUV1.Y() - PUV2.Y());
   if ( DU/8. > (UL/6. - UF/6.) || DV/8. > (VL/6. - VF/6.) ) {
     ShapeBuild_Edge().RemovePCurve(E,face);
-#ifdef DEBUG
+#ifdef XSALGO_DEB
     cout<<"Removing pcuve periodic"<<endl;
 #endif      
     return Standard_False;
@@ -323,7 +323,7 @@ Standard_Boolean XSAlgo_AlgoContainer::CheckPCurve (const TopoDS_Edge& E,
     
   if (!((Dist11 <= preci) && (Dist22 <= preci))) {
     ShapeBuild_Edge().RemovePCurve(E,face);
-#ifdef DEBUG      
+#ifdef XSALGO_DEB
     cout<<"Removing pcurve points"<<endl;
 #endif      
     return Standard_False;
@@ -496,7 +496,7 @@ void XSAlgo_AlgoContainer::MergeTransferInfo(const Handle(Transfer_FinderProcess
 	else if ( TransientListBinder->NbTransients() > 1 ) {
           resBinder->AddResult(TransientListBinder);
 //	  resBinder->SetNext(TransientListBinder, Standard_True);
-#ifdef DEB
+#ifdef XSALGO_DEB
 	  cout<<"Info: TransientListBinder created for splitted shape"<<endl;
 	} 
 	else {

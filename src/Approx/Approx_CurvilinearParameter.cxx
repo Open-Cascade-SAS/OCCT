@@ -659,7 +659,7 @@ void Approx_CurvilinearParameter::ToleranceComputation(const Handle(Adaptor2d_HC
   TolV = Tol / (4.*Max_dS_dv);
   TolW = Tol / (4.*Max_dS_dw);
 
-#ifdef DEB
+#ifdef APPROX_DEB
   cout << "TolV = " << TolV << endl;
   cout << "TolW = " << TolW << endl;
 #endif

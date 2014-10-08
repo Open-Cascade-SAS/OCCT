@@ -178,7 +178,7 @@ void StlTransfer::BuildIncrementalMesh (const TopoDS_Shape&  Shape,
     }
     catch(Standard_Failure)
       {
-#ifdef DEB
+#ifdef STLTRANSFER_DEB
 	cout << "Fail in StlTransfer::BuildIncrementalMesh"   << endl;
 #endif
       }

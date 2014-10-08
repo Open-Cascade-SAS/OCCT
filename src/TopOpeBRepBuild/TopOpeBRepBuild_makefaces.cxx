@@ -317,7 +317,6 @@ void TopOpeBRepBuild_Builder::GFABUMakeFaces(const TopoDS_Shape& FF,TopOpeBRepBu
     cout<<endl;GdumpSHA(FF,(char *) "#--- GFABUMakeFaces ");cout<<endl;
     GdumpFABU(FABU);debgfabu(iF);
   }
-  Standard_Boolean strange = TopOpeBRepDS_GettraceSTRANGE();
 #endif
   
   TopTools_ListOfShape lnewFace;
@@ -560,8 +559,9 @@ void TopOpeBRepBuild_Builder::GFABUMakeFaces(const TopoDS_Shape& FF,TopOpeBRepBu
 
     Standard_Boolean topurge = FUN_purgeFon1nonoriE(newFace);
     if (topurge) {
-#ifdef DEB      
-      if (strange) cout<<"Builder::GFABUMakeFaces -> purgeFon1nonoriE\n";
+#ifdef TOPOPEBREPBUILD_DEB
+      if (TopOpeBRepDS_GettraceSTRANGE())
+        cout<<"Builder::GFABUMakeFaces -> purgeFon1nonoriE\n";
 #endif
       continue;
     }

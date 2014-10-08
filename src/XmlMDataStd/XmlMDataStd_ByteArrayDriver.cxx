@@ -109,9 +109,6 @@ Standard_Boolean XmlMDataStd_ByteArrayDriver::Paste(const XmlObjMgt_Persistent& 
   }
   aByteArray->ChangeArray(hArr);
   
-#ifdef DEB
-  //cout << "CurDocVersion = " << XmlMDataStd::DocumentVersion() <<endl;
-#endif
   Standard_Boolean aDelta(Standard_False);
   
   if(XmlMDataStd::DocumentVersion() > 2) {
@@ -128,7 +125,7 @@ Standard_Boolean XmlMDataStd_ByteArrayDriver::Paste(const XmlObjMgt_Persistent& 
     else
       aDelta = (Standard_Boolean)aDeltaValue;
   }
-#ifdef DEB
+#ifdef XMLMDATASTD_DEB
   else if(XmlMDataStd::DocumentVersion() == -1)
     cout << "Current DocVersion field is not initialized. "  <<endl;
 #endif

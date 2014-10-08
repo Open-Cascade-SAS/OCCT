@@ -111,7 +111,7 @@ Standard_Integer DNaming_TransformationDriver::Execute(TFunction_Logbook& theLog
   Handle(TNaming_NamedShape) aContextNS;
   aLab.FindAttribute(TNaming_NamedShape::GetID(), aContextNS);
   if (aContextNS.IsNull() || aContextNS->IsEmpty()) {
-#ifdef DEB
+#ifdef DNAMING_DEB
     cout<<"TransformationDriver:: Context is empty"<<endl;
 #endif
     aFunction->SetFailure(WRONG_CONTEXT);
@@ -342,7 +342,7 @@ void DNaming_TransformationDriver::LoadNamingDS (const TDF_Label& theResultLabel
     return;
   const TopoDS_Shape& aSrcShape  = theSourceNS->Get();
   if (aSrcShape.IsNull()) {
-#ifdef DEB
+#ifdef DNAMING_DEB
     cout<<"DNaming_TransformationDriver::LoadNamingDS: The result of the Transform operation is null"<<endl;
 #endif
     return;

@@ -139,7 +139,7 @@ Standard_Boolean TDF_CopyLabel::ExternalReferences(const TDF_Label& L,
 }
 
 //=======================================================================
-#ifdef DEB
+#ifdef TDF_DEB
 static void PrintEntry(const TDF_Label&       label, const Standard_Boolean allLevels)
 {
   TCollection_AsciiString entry;
@@ -168,7 +168,7 @@ void TDF_CopyLabel::Perform()
      !TDF_Tool::IsSelfContained(mySL)) return;
 #endif
   else {
-#ifdef DEB
+#ifdef TDF_DEB
     cout << "THE SAME Data" <<endl;
 #endif
   }
@@ -187,7 +187,7 @@ void TDF_CopyLabel::Perform()
     for (TDF_MapIteratorOfAttributeMap attMItr(myMapOfExt);attMItr.More(); attMItr.Next()) {
       Handle(TDF_Attribute) att = attMItr.Key();
       myRT->SetRelocation(att, att);
-#ifdef DEB      
+#ifdef TDF_DEB      
       PrintEntry(att->Label(), Standard_True);
 #endif
     }

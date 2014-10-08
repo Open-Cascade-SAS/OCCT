@@ -162,7 +162,7 @@ void TopOpeBRepBuild_Builder::MergeShapes(const TopoDS_Shape& S1,const TopAbs_St
 {
   Standard_Boolean lesmemes = S1.IsEqual(S2);
   if (lesmemes) {
-#ifdef DEB
+#ifdef TOPOPEBREPBUILD_DEB
     cout<<"TopOpeBRepBuild : S1 == S2"<<endl;
 #endif
     return;

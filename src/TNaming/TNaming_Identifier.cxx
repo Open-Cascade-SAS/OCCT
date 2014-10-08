@@ -305,7 +305,7 @@ Standard_Boolean IsImported(const Handle(TNaming_NamedShape)& NS)
   if (!it.More()) return 0;
   it.Next();  if (!it.More()) return 0;
   //plus d un shape.
-#ifdef DEB
+#ifdef TNAMING_DEB
   cout <<"WARNING IMPORTED"<<endl;
 #endif
   return 1;

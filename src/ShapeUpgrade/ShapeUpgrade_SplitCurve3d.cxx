@@ -76,13 +76,13 @@ ShapeUpgrade_SplitCurve3d::ShapeUpgrade_SplitCurve3d()
     if(Abs(lastPar-lP) < precision)
       lastPar = lP;
     if(firstPar < fP){
-#ifdef DEB
+#ifdef SHAPEUPGRADE_DEB
       cout <<"Warning: The range of the edge exceeds the curve domain" <<endl;
 #endif
       firstPar = fP;
     }
     if(lastPar > lP){
-#ifdef DEB
+#ifdef SHAPEUPGRADE_DEB
       cout <<"Warning: The range of the edge exceeds the curve domain" <<endl;
 #endif
       lastPar = lP;
@@ -163,14 +163,14 @@ ShapeUpgrade_SplitCurve3d::ShapeUpgrade_SplitCurve3d()
     if(Abs(Last-lastPar) < precision)
       Last = lastPar;
     if(First < firstPar){
-#ifdef DEB
+#ifdef SHAPEUPGRADE_DEB
       cout <<"Warning: The range of the edge exceeds the curve domain" <<endl;
 #endif
       First = firstPar;
       mySplitValues->SetValue(1,First);
     }
     if(Last > lastPar){
-#ifdef DEB
+#ifdef SHAPEUPGRADE_DEB
       cout <<"Warning: The range of the edge exceeds the curve domain" <<endl;
 #endif
       Last = lastPar;
@@ -248,7 +248,7 @@ ShapeUpgrade_SplitCurve3d::ShapeUpgrade_SplitCurve3d()
 	  myStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE3 );
 	}
 	catch (Standard_Failure) {
-#ifdef DEB 
+#ifdef SHAPEUPGRADE_DEB
 	  cout << "Warning: ShapeUpgrade_Split3dCurve::Build(): Exception in Segment      :";
 	  Standard_Failure::Caught()->Print(cout); cout << endl;
 #endif

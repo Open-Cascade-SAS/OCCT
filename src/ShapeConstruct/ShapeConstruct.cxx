@@ -80,7 +80,7 @@ Handle(Geom_BSplineCurve) ShapeConstruct::ConvertCurveToBSpline(const Handle(Geo
 	aBSpline = GeomConvert::CurveToBSplineCurve(C3D,Convert_QuasiAngular);
     }
     catch (Standard_Failure) {
-#ifdef DEB 
+#ifdef SHAPECONSTRUCT_DEB
 	    cout << "Warning: GeomConvert_ApproxSurface Exception:  ";
 	    Standard_Failure::Caught()->Print(cout); cout << endl;
 #endif 
@@ -211,7 +211,7 @@ Handle(Geom_BSplineSurface) ShapeConstruct::ConvertSurfaceToBSpline(const Handle
       Handle(Geom_BSplineCurve) bspl = ConvertCurveToBSpline(basis, VF, VL, Tol3d, cnt, MaxSegments, MaxDegree);
       gp_Ax1 axis = revol->Axis();
       Handle(Geom_SurfaceOfRevolution) newRevol = new Geom_SurfaceOfRevolution(bspl,axis);
-#ifdef DEB
+#ifdef SHAPECONSTRUCT_DEB
       cout <<" Revolution on offset converted" << endl;
 #endif
       S = newRevol;
@@ -228,7 +228,7 @@ Handle(Geom_BSplineSurface) ShapeConstruct::ConvertSurfaceToBSpline(const Handle
       Standard_Boolean Done = anApprox.IsDone();
       if (anApprox.MaxError() <= Tol3d && Done) {
 	
-#ifdef DEB	    
+#ifdef SHAPECONSTRUCT_DEB
 	Standard_Integer nbOfSpan = (anApprox.Surface()->NbUKnots()-1)*(anApprox.Surface()->NbVKnots()-1);
 	cout << "\terror = " << anApprox.MaxError() << "\tspans = " << nbOfSpan << endl;
 	cout << " Surface is aproximated with continuity " << (GeomAbs_Shape)cnt <<endl;
@@ -240,7 +240,7 @@ Handle(Geom_BSplineSurface) ShapeConstruct::ConvertSurfaceToBSpline(const Handle
       else {
 	if(anApprox.HasResult()) 
 	  errSpl = Handle(Geom_BSplineSurface)::DownCast(anApprox.Surface());
-#ifdef DEB    
+#ifdef SHAPECONSTRUCT_DEB
 	cout << "\terror = " << anApprox.MaxError() <<endl;
 #endif
 	break;
@@ -248,7 +248,7 @@ Handle(Geom_BSplineSurface) ShapeConstruct::ConvertSurfaceToBSpline(const Handle
     }
 	
     catch (Standard_Failure) {
-#ifdef DEB 
+#ifdef SHAPECONSTRUCT_DEB
       cout << "Warning: GeomConvert_ApproxSurface Exception: try to decrease continuity ";
       Standard_Failure::Caught()->Print(cout); cout << endl;
 #endif
@@ -352,7 +352,7 @@ Standard_Boolean ShapeConstruct::JoinPCurves(const Handle(TopTools_HSequenceOfSh
     return (i <= edges->Length());
   }
   catch ( Standard_Failure ) {
-#ifdef DEB 
+#ifdef SHAPECONSTRUCT_DEB
     cout<<"Error: ShapeConstruct::JoinPCurves Exception in GeomConvert_CompCurveToBSplineCurve: ";
     Standard_Failure::Caught()->Print(cout); cout<<endl;
 #endif

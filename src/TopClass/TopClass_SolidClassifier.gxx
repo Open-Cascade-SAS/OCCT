@@ -104,7 +104,7 @@ void TopClass_SolidClassifier::Perform(TheSolidExplorer& SolidExplorer,
 		      myState = 4; //-- OUT --
 		    }
 		    else {
-#ifdef DEB
+#ifdef TOPCLASS_DEB
 		      cout<<"*Probleme ds TopClass_SolidClassifier.gxx"<<endl;
 #endif
 		    }
@@ -123,7 +123,7 @@ void TopClass_SolidClassifier::Perform(TheSolidExplorer& SolidExplorer,
 		      myState = 4; //-- OUT --
 		    }
 		    else { 
-#ifdef DEB
+#ifdef TOPCLASS_DEB
 		      cout<<"*Probleme ds TopClass_SolidClassifier.gxx "<<endl;
 #endif
 		    }

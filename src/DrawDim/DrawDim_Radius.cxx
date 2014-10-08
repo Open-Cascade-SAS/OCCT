@@ -78,8 +78,9 @@ void DrawDim_Radius::DrawOn(Draw_Display& dis) const
 
 //void AIS_RadiusDimension::ComputeOneFaceRadius(const Handle(Prs3d_Presentation)& aPresentation)
 //{
-
+#ifdef DRAWDIM_DEB
   cout << "entree dans computeonefaceradius"<< endl;
+#endif
   BRepAdaptor_Surface surfAlgo (TopoDS::Face(myFShape));
   Standard_Real uFirst, uLast, vFirst, vLast;
   uFirst = surfAlgo.FirstUParameter();

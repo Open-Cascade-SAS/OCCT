@@ -79,7 +79,7 @@ Standard_Boolean ShapeExtend_CompositeSurface::Init (const Handle(TColGeom_HArra
   if ( ! SetUJointValues ( UJoints ) || ! SetVJointValues ( VJoints ) ) {
     ok = Standard_False;
     ComputeJointValues ( ShapeExtend_Natural );
-#ifdef DEB
+#ifdef SHAPEEXTEND_DEB
     cout << "Warning: ShapeExtend_CompositeSurface::Init: bad joint values" << endl;
 #endif
   }
@@ -826,7 +826,7 @@ Standard_Boolean ShapeExtend_CompositeSurface::CheckConnectivity (const Standard
     else if ( maxdist2 > Prec*Prec ) ok = Standard_False;
   }
 
-#ifdef DEB
+#ifdef SHAPEEXTEND_DEB
   if ( ! ok ) cout << "Warning: ShapeExtend_CompositeSurface: not connected in 3d" << endl;
 #endif
   return ok;

@@ -154,15 +154,13 @@ void TopOpeBRep_EdgesFiller::Insert(const TopoDS_Shape& E1,const TopoDS_Shape& E
     if (!found) MakeGeometry(P2D,G,K);
 
     Standard_Boolean foundpoint  = (found)  && (K == TopOpeBRepDS_POINT);
-#ifdef DEB
-    Standard_Boolean foundvertex = (found)  && (K == TopOpeBRepDS_VERTEX);
-#endif
     Standard_Boolean isnewpoint  = (!found) && (K == TopOpeBRepDS_POINT);
     Standard_Boolean isnewvertex = (!found) && (K == TopOpeBRepDS_VERTEX);
 
     Standard_Boolean faulty =  (isvertex && isnewpoint) || (!isvertex && isnewvertex);
     if (faulty) {
-#ifdef DEB
+#ifdef TOPOPEBREP_DEB
+      Standard_Boolean foundvertex = (found)  && (K == TopOpeBRepDS_VERTEX);
       cout<<"- - - faulty EdgesFiller : G "<<G<<" K ";TopOpeBRepDS::Print(K,cout);cout.flush();
       cout<<" isvertex="<<isvertex;cout.flush();
       cout<<" isop="<<foundpoint<<" isov="<<foundvertex;cout.flush();

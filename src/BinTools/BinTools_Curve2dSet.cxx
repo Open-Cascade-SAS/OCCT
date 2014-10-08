@@ -699,15 +699,12 @@ Standard_IStream& BinTools_Curve2dSet::ReadCurve2d(Standard_IStream& IS,
 void  BinTools_Curve2dSet::Read(Standard_IStream& IS)
 {
   char buffer[255];
-#ifdef DEB
-//    const Standard_Integer aPos = IS.tellg();
-//    cout << "\tPosition of Curves2d section = " << aPos << endl;
-#endif 
+
   IS >> buffer;
   if (IS.fail() || strcmp(buffer,"Curve2ds")) {
     Standard_SStream aMsg;
     aMsg << "BinTools_Curve2dSet::Read:  Not a Curve2d table"<<endl;
-#ifdef DEB
+#ifdef BINTOOLS_DEB
     cout <<"Curve2dSet buffer: " << buffer << endl;
 #endif
     Standard_Failure::Raise(aMsg);

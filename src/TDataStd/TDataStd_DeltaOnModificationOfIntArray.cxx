@@ -38,7 +38,7 @@ TDataStd_DeltaOnModificationOfIntArray::TDataStd_DeltaOnModificationOfIntArray(c
       Handle(TColStd_HArray1OfInteger) Arr1, Arr2;
       Arr1 = OldAtt->Array();
       Arr2 = CurrAtt->Array();
-#ifdef DEB
+#ifdef TDATASTD_DEB
       if(Arr1.IsNull())
 	cout <<"DeltaOnModificationOfIntArray:: Old IntArray is Null" <<endl;
       if(Arr2.IsNull())
@@ -77,7 +77,7 @@ TDataStd_DeltaOnModificationOfIntArray::TDataStd_DeltaOnModificationOfIntArray(c
       }
     }
     OldAtt->RemoveArray();
-#ifdef DEB
+#ifdef TDATASTD_DEB
     if(OldAtt->Array().IsNull())
       cout << "BackUp Arr is Nullified" << endl;
 #endif
@@ -96,7 +96,7 @@ void TDataStd_DeltaOnModificationOfIntArray::Apply()
   Handle(TDF_Attribute) TDFAttribute = Attribute();
   Handle(TDataStd_IntegerArray) BackAtt = (*((Handle(TDataStd_IntegerArray)*)&TDFAttribute));
   if(BackAtt.IsNull()) {
-#ifdef DEB
+#ifdef TDATASTD_DEB
     cout << "DeltaOnModificationOfIntArray::Apply: OldAtt is Null" <<endl;
 #endif
     return;
@@ -109,7 +109,7 @@ void TDataStd_DeltaOnModificationOfIntArray::Apply()
   }
 
   if(aCurAtt.IsNull()) {
-#ifdef DEB
+#ifdef TDATASTD_DEB
     cout << "DeltaOnModificationOfIntArray::Apply: CurAtt is Null" <<endl;
 #endif
     return;
@@ -150,7 +150,7 @@ void TDataStd_DeltaOnModificationOfIntArray::Apply()
       intArr->SetValue(i, IntArr->Value(i));
     if(!myIndxes.IsNull() && !myValues.IsNull())
       for(i = 1; i <= myIndxes->Upper();i++) {
-#ifdef DEB  
+#ifdef TDATASTD_DEB
 	cout << "i = " << i << "  myIndxes->Upper = " << myIndxes->Upper() << endl;
 	cout << "myIndxes->Value(i) = " << myIndxes->Value(i) << endl;
 	cout << "myValues->Value(i) = " << myValues->Value(i) << endl;
@@ -160,7 +160,7 @@ void TDataStd_DeltaOnModificationOfIntArray::Apply()
     aCurAtt->myValue = intArr;
   }
   
-#ifdef DEB    
+#ifdef TDATASTD_DEB
   cout << " << Array Dump after Delta Apply >>" <<endl;
   Handle(TColStd_HArray1OfInteger) IntArr2 = aCurAtt->Array();
   for(i=IntArr2->Lower(); i<=IntArr2->Upper() && i <= MAXUP;i++)

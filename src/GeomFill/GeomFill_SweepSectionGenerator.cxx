@@ -353,7 +353,9 @@ void GeomFill_SweepSectionGenerator::Perform(const Standard_Boolean Polynomial)
       }
       else
 	if (D1Ref.IsOpposite(D1, Precision::Angular()))
+#ifdef GEOMFILL_DEB
 	  cout <<"Que fais-je ???? " << endl;
+#endif
 
       // TR is the transformation between (i-1) section and the i-th.
       TR = Rot * Trans;

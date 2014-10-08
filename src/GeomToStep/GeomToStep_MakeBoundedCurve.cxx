@@ -67,7 +67,7 @@ GeomToStep_MakeBoundedCurve::GeomToStep_MakeBoundedCurve ( const Handle(Geom_Bou
     }
   }
   else {
-#ifdef DEB
+#ifdef GEOMTOSTEP_DEB
     cout<<"MakeBoundedCurve, type : "<<C->DynamicType()->Name()<<" not processed"<<endl;
 #endif
     done = Standard_False;

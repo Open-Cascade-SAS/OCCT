@@ -355,7 +355,7 @@ static void EdgeInter(const TopoDS_Face&              F,
 	  Standard_Real aT2 = ResParamsOnE2(i); //ponc2.Parameter();
 	  if (Precision::IsInfinite(aT1) || Precision::IsInfinite(aT2))
 	    {
-#ifdef DEB
+#ifdef BREPOFFSET_DEB
 	      cout << "Inter2d : Solution rejected due to infinite parameter"<<endl;
 #endif
 	      continue;
@@ -376,7 +376,7 @@ static void EdgeInter(const TopoDS_Face&              F,
 	  dist1 = Max( dist1, dist3 );
 	  B.UpdateVertex( aNewVertex, dist1 );
 	  
-#ifdef DEB
+#ifdef BREPOFFSET_DEB
 	  if (aT1 < f[1]-Tol  || aT1 > l[1]+Tol)
 	    {
 	      cout << "out of limit"<<endl;
@@ -412,7 +412,7 @@ static void EdgeInter(const TopoDS_Face&              F,
 	      if (E1.Orientation() == TopAbs_REVERSED) V1or.Reverse();
 	      if (E2.Orientation() == TopAbs_REVERSED) V2or.Reverse();
 	      Standard_Real CrossProd = V2or ^ V1;
-#ifdef DEB
+#ifdef BREPOFFSET_DEB
 	      if (Abs(CrossProd) <= gp::Resolution())
 		cout<<endl<<"CrossProd = "<<CrossProd<<endl;
 #endif
@@ -623,7 +623,7 @@ static void RefEdgeInter(const TopoDS_Face&              F,
       Standard_Real aT2 = ResParamsOnE2(i); //ponc2.Parameter();
       if (Precision::IsInfinite(aT1) || Precision::IsInfinite(aT2))
 	{
-#ifdef DEB
+#ifdef BREPOFFSET_DEB
 	  cout << "Inter2d : Solution rejected due to infinite parameter"<<endl;
 #endif
 	  continue;
@@ -644,7 +644,7 @@ static void RefEdgeInter(const TopoDS_Face&              F,
       dist1 = Max( dist1, dist3 );
       B.UpdateVertex( aNewVertex, dist1 );
       
-#ifdef DEB
+#ifdef BREPOFFSET_DEB
       if (aT1 < f[1]-Tol  || aT1 > l[1]+Tol)
 	{
 	  cout << "out of limit"<<endl;
@@ -680,7 +680,7 @@ static void RefEdgeInter(const TopoDS_Face&              F,
 	  if (E1.Orientation() == TopAbs_REVERSED) V1or.Reverse();
 	  if (E2.Orientation() == TopAbs_REVERSED) V2or.Reverse();
 	  Standard_Real CrossProd = V2or ^ V1;
-#ifdef DEB
+#ifdef BREPOFFSET_DEB
 	  if (Abs(CrossProd) <= gp::Resolution())
 	    cout<<endl<<"CrossProd = "<<CrossProd<<endl;
 #endif
@@ -1146,7 +1146,7 @@ static void ExtentEdge(const TopoDS_Edge& E,TopoDS_Edge& NE, const Standard_Real
 		  Projector.Init( P1, C3d );
 		  if (Projector.NbPoints() > 0)
 		    f = Projector.LowerDistanceParameter();
-#ifdef DEB
+#ifdef BREPOFFSET_DEB
 		  else
 		    cout<<"ProjectPointOnCurve not done"<<endl;
 #endif
@@ -1159,7 +1159,7 @@ static void ExtentEdge(const TopoDS_Edge& E,TopoDS_Edge& NE, const Standard_Real
 		  Projector.Init( P2, C3d );
 		  if (Projector.NbPoints() > 0)
 		    l = Projector.LowerDistanceParameter();
-#ifdef DEB
+#ifdef BREPOFFSET_DEB
 		  else
 		    cout<<"ProjectPointOnCurve not done"<<endl;
 #endif

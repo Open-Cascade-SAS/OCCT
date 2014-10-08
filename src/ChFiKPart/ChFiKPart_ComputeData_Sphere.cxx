@@ -84,7 +84,7 @@ Standard_Boolean ChFiKPart_Sphere(TopOpeBRepDS_DataStructure& DStr,
 		 pp.Z()-delta*di.Z());
     dz = gp_Dir(gp_Vec(p1,cen));
     if(Abs(ds1.Dot(dz)-1.)>ptol){
-#ifdef DEB
+#ifdef CHFIKPART_DEB
       cout<<"center of the spherical corner not found"<<endl;
 #endif
       return Standard_False;

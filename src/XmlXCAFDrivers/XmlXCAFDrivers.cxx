@@ -29,7 +29,9 @@ Handle(Standard_Transient) XmlXCAFDrivers::Factory(const Standard_GUID& aGUID)
 {
   if(aGUID == XSStorageDriver)  
   {
+#ifdef XMLXCAFDRIVERS_DEB
     cout << "XmlXCAFDrivers : Storage Plugin" << endl;
+#endif
     static Handle(XmlXCAFDrivers_DocumentStorageDriver) model_sd 
       = new XmlXCAFDrivers_DocumentStorageDriver
         ("Copyright: Open Cascade, 2001-2002"); // default copyright
@@ -37,7 +39,9 @@ Handle(Standard_Transient) XmlXCAFDrivers::Factory(const Standard_GUID& aGUID)
   }
   if(aGUID == XSRetrievalDriver) 
   {  
+#ifdef XMLXCAFDRIVERS_DEB
     cout << "XmlXCAFDrivers : Retrieval Plugin" << endl;
+#endif
     static Handle (XmlXCAFDrivers_DocumentRetrievalDriver) model_rd 
       = new XmlXCAFDrivers_DocumentRetrievalDriver;
     return model_rd;

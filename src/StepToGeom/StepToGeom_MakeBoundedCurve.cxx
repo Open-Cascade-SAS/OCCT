@@ -81,9 +81,6 @@ Standard_Boolean StepToGeom_MakeBoundedCurve::Convert
 	return StepToGeom_MakeBSplineCurve::Convert(BSPL,*((Handle(Geom_BSplineCurve)*)&CC));
   }
   if (SC->IsKind(STANDARD_TYPE(StepGeom_UniformCurve))) {
-//#ifdef DEBUG
-//    cout << "Warning : converting UniformCurve onto BSplineCurveWithKnots" << endl;
-//#endif
     const Handle(StepGeom_UniformCurve) UC = Handle(StepGeom_UniformCurve)::DownCast(SC);
     const Handle(StepGeom_BSplineCurveWithKnots) BSPL = new StepGeom_BSplineCurveWithKnots;
     BSPL->SetDegree(UC->Degree());
@@ -104,9 +101,6 @@ Standard_Boolean StepToGeom_MakeBoundedCurve::Convert
 	return StepToGeom_MakeBSplineCurve::Convert(BSPL,*((Handle(Geom_BSplineCurve)*)&CC));
   }
   if (SC->IsKind(STANDARD_TYPE(StepGeom_QuasiUniformCurve))) {
-//#ifdef DEBUG
-//    cout << "Warning : converting QuasiUniformCurve onto BSplineCurveWithKnots" << endl;
-//#endif
     const Handle(StepGeom_QuasiUniformCurve) QUC = 
       Handle(StepGeom_QuasiUniformCurve)::DownCast(SC);
     const Handle(StepGeom_BSplineCurveWithKnots) BSPL = new StepGeom_BSplineCurveWithKnots;
@@ -130,9 +124,6 @@ Standard_Boolean StepToGeom_MakeBoundedCurve::Convert
 	return StepToGeom_MakeBSplineCurve::Convert(BSPL,*((Handle(Geom_BSplineCurve)*)&CC));
   }
   if (SC->IsKind(STANDARD_TYPE(StepGeom_UniformCurveAndRationalBSplineCurve))) {
-//#ifdef DEBUG
-//    cout << "Warning : converting Rational UniformCurve onto BSplineCurveWithKnots" << endl;
-//#endif
     const Handle(StepGeom_UniformCurveAndRationalBSplineCurve) RUC = 
       Handle(StepGeom_UniformCurveAndRationalBSplineCurve)::DownCast(SC);
     const Handle(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve) RBSPL = 
@@ -152,9 +143,6 @@ Standard_Boolean StepToGeom_MakeBoundedCurve::Convert
 	return StepToGeom_MakeBSplineCurve::Convert(RBSPL,*((Handle(Geom_BSplineCurve)*)&CC));
   }
   if (SC->IsKind(STANDARD_TYPE(StepGeom_QuasiUniformCurveAndRationalBSplineCurve))) {
-//#ifdef DEBUG
-//    cout << "Warning : converting Rational QuasiUniformCurve onto BSplineCurveWithKnots" << endl;
-//#endif
     const Handle(StepGeom_QuasiUniformCurveAndRationalBSplineCurve) RQUC = 
       Handle(StepGeom_QuasiUniformCurveAndRationalBSplineCurve)::DownCast(SC);
     const Handle(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve) RBSPL = 

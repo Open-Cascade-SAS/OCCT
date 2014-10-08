@@ -290,7 +290,7 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
     // 3 concavities identic.
     pivot = SearchPivot(sens,p,tol2d);
     if(pivot < 0){ 
-#ifdef DEB
+#ifdef CHFI3D_DEB
       cout<<"pivot not found, plate is called"<<endl;
 #endif
       PerformMoreThreeCorner(Jndex, 3);
@@ -312,14 +312,14 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
   ifacdeb = CD[deb]->ChangeSetOfSurfData()->Value(i[deb][pivot])->Index(3-jf[deb][pivot]);
   ifacfin = CD[fin]->ChangeSetOfSurfData()->Value(i[fin][pivot])->Index(3-jf[fin][pivot]);
   if(ifacfin != ifacdeb){
-#ifdef DEB
+#ifdef CHFI3D_DEB
     cout<<"several base faces, plate is called"<<endl;
 #endif
     PerformMoreThreeCorner(Jndex, 3);
     return;
   }
   if(i[pivot][deb] != i[pivot][fin]){
-#ifdef DEB
+#ifdef CHFI3D_DEB
     cout<<"load surfdata on the pivot, plate is called"<<endl;
 #endif
     PerformMoreThreeCorner(Jndex, 3);
