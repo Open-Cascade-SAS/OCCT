@@ -142,15 +142,25 @@ namespace {
 //=======================================================================
 BRepMesh_FastDiscretFace::BRepMesh_FastDiscretFace
                           (const Standard_Real     theAngle,
-                           const Standard_Boolean  theWithShare) : 
-  myAngle(theAngle), myWithShare(theWithShare),
+                           const Standard_Boolean  theWithShare)
+: myAngle(theAngle), myWithShare(theWithShare),
   myInternalVerticesMode(Standard_True)
 {
   myAllocator = new NCollection_IncAllocator(64000);
 }
 
 //=======================================================================
-//function : Add(face)
+//function : Perform
+//purpose  : 
+//=======================================================================
+void BRepMesh_FastDiscretFace::Perform(const Handle(BRepMesh_FaceAttribute)& theAttribute)
+{
+  Add(theAttribute);
+  commitSurfaceTriangulation();
+}
+
+//=======================================================================
+//function : Add
 //purpose  : 
 //=======================================================================
 void BRepMesh_FastDiscretFace::Add(const Handle(BRepMesh_FaceAttribute)& theAttribute)
@@ -1209,4 +1219,70 @@ void BRepMesh_FastDiscretFace::insertVertex(
   gp_XY aPnt2d  = myAttribute->Scale(theUV, Standard_True);
   BRepMesh_Vertex aVertex(aPnt2d, aNbLocat, BRepMesh_Free);
   theVertices.Append(aVertex);
+}
+
+//=======================================================================
+//function : commitSurfaceTriangulation
+//purpose  : 
+//=======================================================================
+void BRepMesh_FastDiscretFace::commitSurfaceTriangulation()
+{
+  if (myAttribute.IsNull() || !myAttribute->IsValid())
+    return;
+
+  TopoDS_Face aFace = myAttribute->Face();
+  BRepMesh_ShapeTool::NullifyFace(aFace);
+
+  Handle(BRepMesh_DataStructureOfDelaun)& aStructure = myAttribute->ChangeStructure();
+  const BRepMesh::MapOfInteger&           aTriangles = aStructure->ElementsOfDomain();
+
+  if (aTriangles.IsEmpty())
+    return;
+
+  BRepMesh::HIMapOfInteger& aVetrexEdgeMap = myAttribute->ChangeVertexEdgeMap();
+
+  // Store triangles
+  Standard_Integer aVerticesNb  = aVetrexEdgeMap->Extent();
+  Standard_Integer aTrianglesNb = aTriangles.Extent();
+  Handle(Poly_Triangulation) aNewTriangulation =
+    new Poly_Triangulation(aVerticesNb, aTrianglesNb, Standard_True);
+
+  Poly_Array1OfTriangle& aPolyTrianges = aNewTriangulation->ChangeTriangles();
+
+  Standard_Integer aTriangeId = 1;
+  BRepMesh::MapOfInteger::Iterator aTriIt(aTriangles);
+  for (; aTriIt.More(); aTriIt.Next())
+  {
+    const BRepMesh_Triangle& aCurElem = aStructure->GetElement(aTriIt.Key());
+
+    Standard_Integer aNode[3];
+    aStructure->ElementNodes(aCurElem, aNode);
+
+    Standard_Integer aNodeId[3];
+    for (Standard_Integer i = 0; i < 3; ++i)
+      aNodeId[i] = aVetrexEdgeMap->FindIndex(aNode[i]);
+
+    aPolyTrianges(aTriangeId++).Set(aNodeId[0], aNodeId[1], aNodeId[2]);
+  }
+
+  // Store mesh nodes
+  TColgp_Array1OfPnt&   aNodes   = aNewTriangulation->ChangeNodes();
+  TColgp_Array1OfPnt2d& aNodes2d = aNewTriangulation->ChangeUVNodes();
+
+  for (Standard_Integer i = 1; i <= aVerticesNb; ++i)
+  {
+    Standard_Integer       aVertexId = aVetrexEdgeMap->FindKey(i);
+    const BRepMesh_Vertex& aVertex   = aStructure->GetNode(aVertexId);
+    const gp_Pnt&          aPoint    = myAttribute->GetPoint(aVertex);
+
+    aNodes(i)   = aPoint;
+    aNodes2d(i) = aVertex.Coord();
+  }
+
+  aNewTriangulation->Deflection(myAttribute->GetDefFace());
+  BRepMesh_ShapeTool::AddInFace(aFace, aNewTriangulation);
+
+  // Delete unused data
+  myStructure.Nullify();
+  myAttribute->Clear(Standard_True);
 }

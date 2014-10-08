@@ -20,6 +20,8 @@
 #include <Draw_ColorKind.hxx>
 #include <Draw_Color.hxx>
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <Poly_Triangulation.hxx>
 #include <Standard_RangeError.hxx>
 #include <BRepMesh_DegreeOfFreedom.hxx>
 #include <BRepMesh_Edge.hxx>
@@ -30,6 +32,16 @@
 
 IMPLEMENT_STANDARD_HANDLE (MeshTest_DrawableMesh, Draw_Drawable3D)
 IMPLEMENT_STANDARD_RTTIEXT(MeshTest_DrawableMesh, Draw_Drawable3D)
+
+typedef NCollection_Map<BRepMesh_Edge> BRepMesh_MapOfLinks;
+
+static inline void addLink(const Standard_Integer theIndex1,
+                           const Standard_Integer theIndex2,
+                           BRepMesh_MapOfLinks&   theMap)
+{
+  BRepMesh_Edge anEdge(theIndex1, theIndex2, BRepMesh_Free);
+  theMap.Add(anEdge);
+}
 
 //=======================================================================
 //function : MeshTest_DrawableMesh
@@ -221,28 +233,40 @@ void MeshTest_DrawableMesh::Dump(Standard_OStream&) const
 //=======================================================================
 void MeshTest_DrawableMesh::Whatis(Draw_Interpretor& theStream) const 
 {
+  const TopoDS_Shape& aShape                = myMesher->Shape();
   const Handle(BRepMesh_FastDiscret)& aMesh = myMesher->Mesh();
+
   Standard_Integer aPointsNb    = aMesh->NbBoundaryPoints();
   Standard_Integer aTrianglesNb = 0;
   Standard_Integer aEdgesNb     = 0;
 
-  const TopoDS_Shape& aShape = myMesher->Shape();
+  TopLoc_Location aLocation;
+  Handle(Poly_Triangulation) aTriangulation;
+
   TopExp_Explorer aFaceIt(aShape, TopAbs_FACE);
   for (; aFaceIt.More(); aFaceIt.Next())
   {
     const TopoDS_Face& aFace = TopoDS::Face(aFaceIt.Current());
 
-    Handle(BRepMesh_FaceAttribute) aAtrribure;
-    if (!aMesh->GetFaceAttribute(aFace, aAtrribure) || !aAtrribure->IsValid())
+    aTriangulation = BRep_Tool::Triangulation(aFace, aLocation);
+    if (aTriangulation.IsNull())
       continue;
 
-    aPointsNb   += aAtrribure->ChangeSurfacePoints()->Extent();
+    // Count number of links
+    BRepMesh_MapOfLinks aMap;
+    const Poly_Array1OfTriangle& aTriangles = aTriangulation->Triangles();
+    for (Standard_Integer i = 1, v[3]; i <= aTriangles.Length(); ++i)
+    {
+      aTriangles(i).Get(v[0], v[1], v[2]);
 
-    Handle(BRepMesh_DataStructureOfDelaun)& aStructure =
-      aAtrribure->ChangeStructure();
+      addLink(v[0], v[1], aMap);
+      addLink(v[1], v[2], aMap);
+      addLink(v[2], v[0], aMap);
+    }
 
-    aTrianglesNb += aStructure->ElementsOfDomain().Extent();
-    aEdgesNb     += aStructure->LinksOfDomain().Extent();
+    aPointsNb    += aTriangulation->NbNodes();
+    aTrianglesNb += aTriangulation->NbTriangles();
+    aEdgesNb     += aMap.Extent();
   }
 
   theStream << " 3d mesh\n";

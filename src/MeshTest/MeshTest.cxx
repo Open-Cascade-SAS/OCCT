@@ -433,19 +433,22 @@ static Standard_Integer triangule(Draw_Interpretor& di, Standard_Integer nbarg, 
 
 
   Bnd_Box aBox;
-  const Handle(BRepMesh_FastDiscret)& aFastDiscret = aDMesh->Mesher()->Mesh();
 
   TopExp_Explorer aFaceIt(aShape, TopAbs_FACE);
   for (; aFaceIt.More(); aFaceIt.Next())
   {
     const TopoDS_Face& aFace = TopoDS::Face(aFaceIt.Current());
 
-    Handle(BRepMesh_FaceAttribute) anAttribute;
-    if (aFastDiscret->GetFaceAttribute(aFace, anAttribute) && anAttribute->IsValid())
+    TopLoc_Location aLoc = aFace.Location();
+    Handle(Poly_Triangulation) aTriangulation =
+      BRep_Tool::Triangulation(aFace, aLoc);
+
+    if (!aTriangulation.IsNull())
     {
-      const Standard_Integer aNbPnts = anAttribute->LastPointId();
-      for (Standard_Integer i = 1; i < aNbPnts; ++i)
-        aBox.Add(anAttribute->GetPoint(i));
+      const Standard_Integer    aLength = aTriangulation->NbNodes();
+      const TColgp_Array1OfPnt& aNodes  = aTriangulation->Nodes();
+      for (Standard_Integer i = 1; i <= aLength; ++i)
+        aBox.Add(aNodes(i));
     }
   }
 

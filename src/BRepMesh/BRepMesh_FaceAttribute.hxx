@@ -189,6 +189,11 @@ public: //! @name main geometrical properties.
 
 public: //! @name auxiliary structures
 
+  //! Clear face attribute.
+  //! @param isClearSurfaceDataOnly clears only surface attributes if true value is set.
+  Standard_EXPORT void Clear(
+    const Standard_Boolean isClearSurfaceDataOnly = Standard_False);
+
   //! Resets mesh data structure.
   //! @returns reset data structure.
   Standard_EXPORT Handle(BRepMesh_DataStructureOfDelaun)& ResetStructure();
@@ -330,7 +335,8 @@ private:
     const Standard_Real theLastParam) const;
 
   //! Clears internal data structures local to face.
-  void clearLocal();
+  void clearLocal(
+    const Standard_Boolean isClearSurfaceDataOnly = Standard_False);
 
   //! Returns index of the given vertex if it exists in cache.
   //! @param theVertex vertex which index should be retrieved.

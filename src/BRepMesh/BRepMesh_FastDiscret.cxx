@@ -194,7 +194,7 @@ void BRepMesh_FastDiscret::Process(const TopoDS_Face& theFace) const
       OCC_CATCH_SIGNALS
 
       BRepMesh_FastDiscretFace aTool(GetAngle(), WithShare());
-      aTool.Add(anAttribute);
+      aTool.Perform(anAttribute);
     }
     catch (Standard_Failure)
     {
@@ -224,9 +224,10 @@ Standard_Integer BRepMesh_FastDiscret::Add(const TopoDS_Face& theFace)
       myAttributes.Bind(theFace, myAttribute);
     }
 
-    myStructure     = myAttribute->ResetStructure();
     myVertexEdgeMap = myAttribute->ChangeVertexEdgeMap();
     myInternalEdges = myAttribute->ChangeInternalEdges();
+    Handle(BRepMesh_DataStructureOfDelaun)& aStructure =
+      myAttribute->ResetStructure();
 
     if (!myWithShare)
     {
@@ -346,7 +347,7 @@ Standard_Integer BRepMesh_FastDiscret::Add(const TopoDS_Face& theFace)
       Standard_Integer i1 = 1;
       for ( i1 = 1; i1 <= myVertexEdgeMap->Extent(); ++i1 )
       {
-        const BRepMesh_Vertex& aVertex = myStructure->GetNode(myVertexEdgeMap->FindKey(i1));
+        const BRepMesh_Vertex& aVertex = aStructure->GetNode(myVertexEdgeMap->FindKey(i1));
 
         ++ipn;
 
@@ -420,7 +421,7 @@ Standard_Integer BRepMesh_FastDiscret::Add(const TopoDS_Face& theFace)
       {
         BRepMesh::HClassifier& aClassifier = myAttribute->ChangeClassifier();
         BRepMesh_WireChecker aDFaceChecker(aFace, Precision::PConfusion(),
-          myInternalEdges, myVertexEdgeMap, myStructure,
+          myInternalEdges, myVertexEdgeMap, aStructure,
           myumin, myumax, myvmin, myvmax, myInParallel );
 
         aDFaceChecker.ReCompute(aClassifier);
@@ -435,7 +436,7 @@ Standard_Integer BRepMesh_FastDiscret::Add(const TopoDS_Face& theFace)
             ++nbmaill;
 
             // Clear the structure of links
-            myStructure = myAttribute->ResetStructure();
+            aStructure = myAttribute->ResetStructure();
 
             
             for (Standard_Integer j = 1; j <= aFaceEdges.Length(); ++j)
@@ -610,12 +611,15 @@ void BRepMesh_FastDiscret::addLinkToMesh(
   const Standard_Integer   theLastNodeId,
   const TopAbs_Orientation theOrientation)
 {
+  Handle(BRepMesh_DataStructureOfDelaun)& aStructure =
+    myAttribute->ChangeStructure();
+
   if (theOrientation == TopAbs_FORWARD)
-    myStructure->AddLink(BRepMesh_Edge(theFirstNodeId, theLastNodeId, BRepMesh_Frontier));
+    aStructure->AddLink(BRepMesh_Edge(theFirstNodeId, theLastNodeId, BRepMesh_Frontier));
   else if (theOrientation == TopAbs_REVERSED)
-    myStructure->AddLink(BRepMesh_Edge(theLastNodeId, theFirstNodeId, BRepMesh_Frontier));
+    aStructure->AddLink(BRepMesh_Edge(theLastNodeId, theFirstNodeId, BRepMesh_Frontier));
   else if (theOrientation == TopAbs_INTERNAL)
-    myStructure->AddLink(BRepMesh_Edge(theFirstNodeId, theLastNodeId, BRepMesh_Fixed));
+    aStructure->AddLink(BRepMesh_Edge(theFirstNodeId, theLastNodeId, BRepMesh_Fixed));
 }
 
 //=======================================================================

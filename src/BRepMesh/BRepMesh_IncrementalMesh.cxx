@@ -481,16 +481,16 @@ void BRepMesh_IncrementalMesh::commit()
 {
   std::vector<TopoDS_Face>::iterator aFaceIt(myFaces.begin());
   for (; aFaceIt != myFaces.end(); aFaceIt++)
-    commitFace(*aFaceIt);
+    commitEdges(*aFaceIt);
 
   discretizeFreeEdges();
 }
 
 //=======================================================================
-//function : commitFace
+//function : commitEdges
 //purpose  : 
 //=======================================================================
-void BRepMesh_IncrementalMesh::commitFace(const TopoDS_Face& theFace)
+void BRepMesh_IncrementalMesh::commitEdges(const TopoDS_Face& theFace)
 {
   TopoDS_Face aFace = theFace;
   aFace.Orientation(TopAbs_FORWARD);
@@ -499,8 +499,6 @@ void BRepMesh_IncrementalMesh::commitFace(const TopoDS_Face& theFace)
   if (!myMesh->GetFaceAttribute(aFace, aFaceAttribute))
     return;
 
-  BRepMesh_ShapeTool::NullifyFace(aFace);
-
   if (!aFaceAttribute->IsValid())
   {
     myStatus |= aFaceAttribute->GetStatus();
@@ -508,59 +506,17 @@ void BRepMesh_IncrementalMesh::commitFace(const TopoDS_Face& theFace)
   }
 
   TopLoc_Location            aLoc = aFace.Location();
-  Handle(Poly_Triangulation) aOldTriangulation = BRep_Tool::Triangulation(aFace, aLoc);
+  Handle(Poly_Triangulation) aTriangulation = BRep_Tool::Triangulation(aFace, aLoc);
+
+  if (aTriangulation.IsNull())
+  {
+    aFaceAttribute->Clear();
+    return;
+  }
 
   try
   {
     OCC_CATCH_SIGNALS
-
-    Handle(BRepMesh_DataStructureOfDelaun)& aStructure = aFaceAttribute->ChangeStructure();
-    const BRepMesh::MapOfInteger&           aTriangles = aStructure->ElementsOfDomain();
-    if (aTriangles.IsEmpty())
-      return;
-
-    BRepMesh::HIMapOfInteger& aVetrexEdgeMap = aFaceAttribute->ChangeVertexEdgeMap();
-
-    // Store triangles
-    Standard_Integer aVerticesNb  = aVetrexEdgeMap->Extent();
-    Standard_Integer aTrianglesNb = aTriangles.Extent();
-    Handle(Poly_Triangulation) aNewTriangulation =
-      new Poly_Triangulation(aVerticesNb, aTrianglesNb, Standard_True);
-
-    Poly_Array1OfTriangle& aPolyTrianges = aNewTriangulation->ChangeTriangles();
-
-    Standard_Integer aTriangeId = 1;
-    BRepMesh::MapOfInteger::Iterator aTriIt(aTriangles);
-    for (; aTriIt.More(); aTriIt.Next())
-    {
-      const BRepMesh_Triangle& aCurElem = aStructure->GetElement(aTriIt.Key());
-
-      Standard_Integer aNode[3];
-      aStructure->ElementNodes(aCurElem, aNode);
-
-      Standard_Integer aNodeId[3];
-      for (Standard_Integer i = 0; i < 3; ++i)
-        aNodeId[i] = aVetrexEdgeMap->FindIndex(aNode[i]);
-
-      aPolyTrianges(aTriangeId++).Set(aNodeId[0], aNodeId[1], aNodeId[2]);
-    }
-
-    // Store mesh nodes
-    TColgp_Array1OfPnt&   aNodes   = aNewTriangulation->ChangeNodes();
-    TColgp_Array1OfPnt2d& aNodes2d = aNewTriangulation->ChangeUVNodes();
-
-    for (Standard_Integer i = 1; i <= aVerticesNb; ++i)
-    {
-      Standard_Integer       aVertexId = aVetrexEdgeMap->FindKey(i);
-      const BRepMesh_Vertex& aVertex   = aStructure->GetNode(aVertexId);
-      const gp_Pnt&          aPoint    = aFaceAttribute->GetPoint(aVertex);
-
-      aNodes(i)   = aPoint;
-      aNodes2d(i) = aVertex.Coord();
-    }
-
-    aNewTriangulation->Deflection(aFaceAttribute->GetDefFace());
-    BRepMesh_ShapeTool::AddInFace(aFace, aNewTriangulation);
 
     // Store discretization of edges
     BRepMesh::HDMapOfShapePairOfPolygon& aInternalEdges = aFaceAttribute->ChangeInternalEdges();
@@ -572,12 +528,13 @@ void BRepMesh_IncrementalMesh::commitFace(const TopoDS_Face& theFace)
       const Handle(Poly_PolygonOnTriangulation)& aPolygon1 = aPolyPair.First();
       const Handle(Poly_PolygonOnTriangulation)& aPolygon2 = aPolyPair.Last();
 
-      BRepMesh_ShapeTool::NullifyEdge(aEdge, aOldTriangulation, aLoc);
       if (aPolygon1 == aPolygon2)
-        BRepMesh_ShapeTool::UpdateEdge(aEdge, aPolygon1, aNewTriangulation, aLoc);
+        BRepMesh_ShapeTool::UpdateEdge(aEdge, aPolygon1, aTriangulation, aLoc);
       else
-        BRepMesh_ShapeTool::UpdateEdge(aEdge, aPolygon1, aPolygon2, aNewTriangulation, aLoc);
+        BRepMesh_ShapeTool::UpdateEdge(aEdge, aPolygon1, aPolygon2, aTriangulation, aLoc);
     }
+
+    aFaceAttribute->Clear();
   }
   catch (Standard_Failure)
   {

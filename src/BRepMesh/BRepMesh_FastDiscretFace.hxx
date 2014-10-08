@@ -55,6 +55,7 @@ public:
     const Standard_Boolean theWithShare = Standard_True);
 
   Standard_EXPORT void Add(const Handle(BRepMesh_FaceAttribute)& theAttribute);
+  Standard_EXPORT void Perform(const Handle(BRepMesh_FaceAttribute)& theAttribute);
 
   DEFINE_STANDARD_RTTI(BRepMesh_FastDiscretFace)
 
@@ -133,6 +134,9 @@ private:
   void insertVertex(const gp_Pnt&           thePnt3d,
                     const gp_XY&            theUV,
                     BRepMesh::ListOfVertex& theVertices);
+
+  //! Stores mesh into the face (without internal edges).
+  void commitSurfaceTriangulation();
 
 private:
 

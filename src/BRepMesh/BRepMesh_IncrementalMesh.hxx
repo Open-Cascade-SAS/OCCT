@@ -189,8 +189,8 @@ private:
   //! Stores mesh to the shape.
   void commit();
 
-  //! Stores mesh to the face.
-  void commitFace(const TopoDS_Face& theFace);
+  //! Stores mesh of internal edges to the face.
+  void commitEdges(const TopoDS_Face& theFace);
 
 protected:
 

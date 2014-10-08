@@ -364,7 +364,6 @@ private:
 
   // Fast access to attributes of current face
   Handle(BRepMesh_FaceAttribute)                   myAttribute;
-  Handle(BRepMesh_DataStructureOfDelaun)           myStructure;
   BRepMesh::HIMapOfInteger                         myVertexEdgeMap;
   BRepMesh::HDMapOfShapePairOfPolygon              myInternalEdges;
   TopTools_IndexedDataMapOfShapeListOfShape        mySharedFaces;

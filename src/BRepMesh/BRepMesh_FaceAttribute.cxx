@@ -70,12 +70,7 @@ BRepMesh_FaceAttribute::BRepMesh_FaceAttribute(
 //=======================================================================
 BRepMesh_FaceAttribute::~BRepMesh_FaceAttribute()
 {
-  clearLocal();
-
-  mySurfaceVertices.Clear();
-  mySurfacePoints->Clear();
-
-  myClassifier.Nullify();
+  Clear();
   myAllocator.Nullify();
 }
 
@@ -103,18 +98,38 @@ void BRepMesh_FaceAttribute::init()
 }
 
 //=======================================================================
+//function : Clear
+//purpose  : 
+//=======================================================================
+void BRepMesh_FaceAttribute::Clear(
+  const Standard_Boolean isClearSurfaceDataOnly)
+{
+  clearLocal(isClearSurfaceDataOnly);
+
+  mySurfaceVertices.Clear();
+  mySurfacePoints->Clear();
+
+  mySurface.Nullify();
+  myClassifier.Nullify();
+}
+
+//=======================================================================
 //function : clearLocal
 //purpose  : 
 //=======================================================================
-void BRepMesh_FaceAttribute::clearLocal()
+void BRepMesh_FaceAttribute::clearLocal(
+  const Standard_Boolean isClearSurfaceDataOnly)
 {
-  myStructure.Nullify();
-
   myLocation2D.Clear();
   myVertexEdgeMap->Clear();
-  myInternalEdges->Clear();
 
-  myAllocator->Reset(Standard_False);
+  if (!isClearSurfaceDataOnly)
+  {
+    myInternalEdges->Clear();
+  }
+
+  myStructure.Nullify();
+  myAllocator->Reset(isClearSurfaceDataOnly);
 }
 
 //=======================================================================
