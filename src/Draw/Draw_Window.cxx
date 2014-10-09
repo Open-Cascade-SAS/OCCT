@@ -23,13 +23,34 @@
 
 #include <tcl.h>
 #include <Draw_Interpretor.hxx>
+#include <Draw_Window.hxx>
 #include <Draw_Appli.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <Image_AlienPixMap.hxx>
+#include <NCollection_List.hxx>
 
 extern Draw_Interpretor theCommands;
 extern Standard_Boolean Draw_VirtualWindows;
 static Tcl_Interp *interp;        /* Interpreter for this application. */
+static NCollection_List<Draw_Window::FCallbackBeforeTerminate> MyCallbacks;
+
+void Draw_Window::AddCallbackBeforeTerminate(FCallbackBeforeTerminate theCB)
+{
+  MyCallbacks.Append(theCB);
+}
+
+void Draw_Window::RemoveCallbackBeforeTerminate(FCallbackBeforeTerminate theCB)
+{
+  NCollection_List<Draw_Window::FCallbackBeforeTerminate>::Iterator Iter(MyCallbacks);
+  for(; Iter.More(); Iter.Next())
+  {
+    if (Iter.Value() == theCB)
+    {
+      MyCallbacks.Remove(Iter);
+      break;
+    }
+  }
+}
 
 /*
  *----------------------------------------------------------------------
@@ -1041,6 +1062,11 @@ void Run_Appli(Standard_Boolean (*interprete) (const char*))
     }
 
 #endif
+  NCollection_List<Draw_Window::FCallbackBeforeTerminate>::Iterator Iter(MyCallbacks);
+  for(; Iter.More(); Iter.Next())
+  {
+      (*Iter.Value())();
+  }
 }
 
 //======================================================
@@ -2023,6 +2049,11 @@ static DWORD WINAPI readStdinThreadFunc(VOID)
 \*--------------------------------------------------------*/
 void exitProc(ClientData /*dc*/)
 {
+  NCollection_List<Draw_Window::FCallbackBeforeTerminate>::Iterator Iter(MyCallbacks);
+  for(; Iter.More(); Iter.Next())
+  {
+      (*Iter.Value())();
+  }
   HANDLE proc = GetCurrentProcess();
   TerminateProcess(proc, 0);
 }

@@ -62,8 +62,26 @@ typedef struct Event
 //====================================
 class Draw_Window
 {
-
   public :
+
+    /**
+     * Type of the callback function that is to be passed to the method
+     * AddCallbackBeforeTerminate().
+     */
+    typedef void (*FCallbackBeforeTerminate)();
+
+    /**
+     * This method registers a callback function that will be called just before exit.
+     * This is usefull especially for Windows platform, on which Draw is normally 
+     * self-terminated instead of exiting.
+     */
+    Standard_EXPORT static void AddCallbackBeforeTerminate(FCallbackBeforeTerminate theCB);
+
+    /**
+     * Just in case method for un-registering a callback previously registered by
+     * AddCallbackBeforeTerminate()
+     */
+    Standard_EXPORT static void RemoveCallbackBeforeTerminate(FCallbackBeforeTerminate theCB);
 
     Draw_Window (); // the window is not initialized
     Draw_Window (const char* title,
@@ -218,6 +236,25 @@ class Draw_Window
 {
   public :
 
+  /**
+   * Type of the callback function that is to be passed to the method
+   * AddCallbackBeforeTerminate().
+   */
+  typedef void (*FCallbackBeforeTerminate)();
+
+  /**
+   * This method registers a callback function that will be called just before exit.
+   * This is usefull especially for Windows platform, on which Draw is normally 
+   * self-terminated instead of exiting.
+   */
+  Standard_EXPORT static void AddCallbackBeforeTerminate(FCallbackBeforeTerminate theCB);
+
+  /**
+   * Just in case method for un-registering a callback previously registered by
+   * AddCallbackBeforeTerminate()
+   */
+  Standard_EXPORT static void RemoveCallbackBeforeTerminate(FCallbackBeforeTerminate theCB);
+
   Draw_Window (); // the window is not initialized
   Draw_Window (Standard_CString        theTitle,
                const Standard_Integer& theXLeft = 0,  const Standard_Integer& theYTop   = 0,
@@ -359,6 +396,26 @@ class DrawWindow
 {
   //constructeur
 public:
+
+  /**
+   * Type of the callback function that is to be passed to the method
+   * AddCallbackBeforeTerminate().
+   */
+  typedef void (*FCallbackBeforeTerminate)();
+
+  /**
+   * This method registers a callback function that will be called just before exit.
+   * This is usefull especially for Windows platform, on which Draw is normally 
+   * self-terminated instead of exiting.
+   */
+  Standard_EXPORT static void AddCallbackBeforeTerminate(FCallbackBeforeTerminate theCB);
+
+  /**
+   * Just in case method for un-registering a callback previously registered by
+   * AddCallbackBeforeTerminate()
+   */
+  Standard_EXPORT static void RemoveCallbackBeforeTerminate(FCallbackBeforeTerminate theCB);
+
   __Draw_API DrawWindow();
   __Draw_API DrawWindow(char*, Standard_Integer, Standard_Integer,
 			Standard_Integer, Standard_Integer);
