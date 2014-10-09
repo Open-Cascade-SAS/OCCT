@@ -207,16 +207,11 @@ void BVH_BinnedBuilder<T, N, Bins>::BuildNode (BVH_Set<T, N>*         theSet,
     }
   }
 
-  if (aMinSplitAxis == -1)
-  {
-    return;
-  }
-
   theBVH->SetInner (theNode);
 
   Standard_Integer aMiddle = -1;
 
-  if (aMinSplitNumLft == 0 || aMinSplitNumRgh == 0) // case of objects with the same center
+  if (aMinSplitNumLft == 0 || aMinSplitNumRgh == 0 || aMinSplitAxis == -1) // case of objects with the same center
   {
     aMinSplitBoxLft.Clear();
     aMinSplitBoxRgh.Clear();

@@ -1,0 +1,31 @@
+puts "============"
+puts "OCC25251"
+puts "============"
+puts ""
+####################################################################################
+# Visualization - Vertex disappearing from the view after switching display mode
+####################################################################################
+
+set check_x 204
+set check_y 204
+
+set x 100
+set y 100
+
+vinit
+
+vertex v 0 0 0
+vdisplay v
+checkcolor ${check_x} ${check_y} 1 1 0
+
+vmoveto ${check_x} ${check_y}
+checkcolor ${check_x} ${check_y} 0 1 1
+
+vsetdispmode 1
+vmoveto ${check_x} ${check_y}
+checkcolor ${check_x} ${check_y} 1 1 0
+
+vmoveto ${x} ${y}
+checkcolor ${check_x} ${check_y} 1 1 0
+
+vdump ${imagedir}/${casename}.png
