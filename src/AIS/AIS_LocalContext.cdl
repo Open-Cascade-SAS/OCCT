@@ -327,14 +327,20 @@ is
                         theOwner       : EntityOwner from SelectMgr;
                         toUpdateViewer : Boolean from Standard = Standard_True);
 
+    ClearSelected (me             : mutable;
+                   toUpdateViewer : Boolean from Standard = Standard_True);
+    ---Purpose: Clears local context selection.
+    --          @param toUpdateViewer [in] if TRUE the viewer will be updated.
 
+    ClearSelected (me                            : mutable;
+                   theIO                         : InteractiveObject from AIS;
+                   toUpdateViewer                : Boolean from Standard = Standard_True);
+    ---Purpose: Removes an interactive object from the local context selection.
+    --          Method deselects all associated entity owners.
+    --          @param theIO [in] the interactive object.
+    --          @param toUpdateViewer [in] if TRUE the viewer will be updated.
 
-    ClearSelected(me:mutable;updateviewer : Boolean from Standard=Standard_True);
-    ---Purpose: 
-
-                    
                     ---Category: GET THE DETECTED
-
 
     HasDetected     (me) returns Boolean from Standard;
     ---C++: inline

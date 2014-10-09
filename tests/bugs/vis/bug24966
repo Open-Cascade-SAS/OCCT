@@ -1,0 +1,33 @@
+puts "============"
+puts "OCC24966"
+puts "============"
+puts ""
+####################################################################################
+# Visualization - Problem in local selection mode with selected objects staying
+# in the viewer after erase
+# Selected entity owners coming from decomposition are not erased in local selection
+# context
+####################################################################################
+
+vinit View1
+pload ALL
+vinit
+
+vertex p1 100 100 0
+vertex p2 150 300 0
+edge e1 p1 p2
+
+vdisplay e1
+vselmode e1 2 1
+vselmode e1 1 1
+vselect 0 0 2500 2500
+verase -local
+
+set x_coord 261
+set y_coord 204
+checkcolor $x_coord $y_coord 0 0 0
+if { $stat != 1 } {
+   puts "Error : Selection is not erased."
+}
+
+vdump ${imagedir}/${casename}.png

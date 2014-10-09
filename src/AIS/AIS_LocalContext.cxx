@@ -320,12 +320,22 @@ Erase(const Handle(AIS_InteractiveObject)& anInteractive)
     if(myMainPM->IsDisplayed(anInteractive,STAT->HilightMode()))
       myMainPM->SetVisibility (anInteractive, STAT->HilightMode(), Standard_False);
   }
-  //selection step
-  
-  TColStd_ListIteratorOfListOfInteger It(STAT->SelectionModes());
-  for(;It.More();It.Next())
-    mySM->Deactivate(anInteractive,It.Value(),myMainVS);
-  //  STAT->ClearSelectionModes();
+
+  // Deactivate selectable entities of interactive object
+  if (mySM->Contains (anInteractive))
+  {
+    TColStd_ListIteratorOfListOfInteger aModeIter (STAT->SelectionModes());
+    for (; aModeIter.More(); aModeIter.Next())
+    {
+      mySM->Deactivate (anInteractive, aModeIter.Value(), myMainVS);
+    }
+  }
+
+  UpdateSort();
+
+  // Remove object from current selection of local context
+  ClearSelected (anInteractive, Standard_False);
+
   return status;
 }
 
@@ -485,68 +495,16 @@ Standard_Boolean AIS_LocalContext::Remove(const Handle(AIS_InteractiveObject)& a
     AddOrRemoveSelected(aSelectable);
   myActiveObjects.UnBind(aSelectable);
 
-  //Last detected object keeps for lastindex initialization.
-  Handle(SelectMgr_EntityOwner) aLastPicked = myMainVS->OnePicked();
+  // Remove the interactive object from selection manager
+  if (mySM->Contains (aSelectable))
+  {
+    mySM->Remove (aSelectable);
+  }
 
   UpdateSort();
 
-  //Object removes from SelectMgr
-  if( mySM->Contains(aSelectable) )
-    mySM->Remove(aSelectable);
-
-  //Object removes from Detected sequence
-  AIS_SequenceOfInteractive detectAIS;
-
-  Standard_Integer i = 1;
-  for(i = 1 ; i < myAISDetectedSeq.Length(); i++)
-  {
-    Handle(AIS_InteractiveObject) anObj = DetectedCurrentObject();
-    if( !anObj.IsNull() && anObj != aSelectable )
-      myAISDetectedSeq.Remove( i );
-  }
-
-  Standard_Integer aHM = aSelectable->HasHilightMode() ? aSelectable->HilightMode() : 0;
-
-  //EntityOwners remove from AIS_Selection
-  Handle(AIS_Selection) aSel = AIS_Selection::Selection(mySelName.ToCString());
-  AIS_NListTransient::Iterator anIter(aSel->Objects()); 
-  AIS_NListTransient removeEntites;
-  for(; anIter.More(); anIter.Next()){
-    const Handle(Standard_Transient)& Tr = anIter.Value();
-    if (!Tr.IsNull()){
-      const Handle(SelectMgr_EntityOwner)& anOwnr = *((const Handle(SelectMgr_EntityOwner)*) &Tr);
-      if(anOwnr->Selectable() == aSelectable){
-        removeEntites.Append(Tr);
-        if(IsSelected(anOwnr))
-          anOwnr->Unhilight(myMainPM, aHM);//Unhilight selected
-      }
-    }
-  }
-  AIS_NListTransient::Iterator anIterRemove(removeEntites); 
-  for(; anIterRemove.More(); anIterRemove.Next())
-    aSel->Select(anIterRemove.Value());//EntityOwner removes from the selection data
-
-  //EntityOwners remove from myMapOfOwner
-  SelectMgr_IndexedMapOfOwner ownersToKeep; 
-  const Handle(V3d_Viewer)& aViewer = myCTX->CurrentViewer();
-  for(i = 1; i <= myMapOfOwner.Extent(); i++){
-    const Handle(SelectMgr_EntityOwner)& anOwner = myMapOfOwner(i) ;
-    if(!anOwner.IsNull()) {
-      if(anOwner->Selectable() != aSelectable)
-        ownersToKeep.Add(anOwner);
-      else
-      {
-        if(anOwner->IsHilighted(myMainPM, aHM))
-        {
-          for(aViewer->InitActiveViews(); aViewer->MoreActiveViews(); aViewer->NextActiveViews())
-            Unhilight(anOwner, aViewer->ActiveView());
-        }
-      }
-    }
-  }
-  myMapOfOwner.Clear();
-  myMapOfOwner.Assign(ownersToKeep);
-  mylastindex = myMapOfOwner.FindIndex(aLastPicked);
+  // Remove object from current selection of local context
+  ClearSelected (aSelectable, Standard_False);
 
   return Standard_True;
 }

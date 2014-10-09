@@ -915,6 +915,85 @@ void AIS_LocalContext::ClearSelected (const Standard_Boolean updateviewer)
   mylastindex = 0;
 }
 
+//==================================================
+// Function: ClearSelected
+// Purpose :
+//==================================================
+void AIS_LocalContext::ClearSelected (const Handle(AIS_InteractiveObject)& theIO,
+                                      const Standard_Boolean toUpdateViewer)
+{
+  // Keep last detected object for lastindex initialization.
+  Handle(SelectMgr_EntityOwner) aLastPicked = myMainVS->OnePicked();
+
+  // Remove the interactive object from detected sequence
+  for (Standard_Integer anIdx = 1; anIdx <= myAISDetectedSeq.Length(); ++anIdx)
+  {
+    Handle(AIS_InteractiveObject) aDetectedIO = myAISDetectedSeq.Value (anIdx);
+    if (!aDetectedIO.IsNull() && aDetectedIO == theIO)
+    {
+      myAISDetectedSeq.Remove (anIdx--);
+    }
+  }
+
+  Standard_Integer aHilightMode = theIO->HasHilightMode() ? theIO->HilightMode() : 0;
+
+  // Remove entity owners from AIS_Selection
+  Handle(AIS_Selection) aSelection = AIS_Selection::Selection (mySelName.ToCString());
+  AIS_NListTransient::Iterator anIter (aSelection->Objects());
+  AIS_NListTransient aRemoveEntites;
+  for (; anIter.More(); anIter.Next())
+  {
+    Handle(SelectMgr_EntityOwner) anOwner = Handle(SelectMgr_EntityOwner)::DownCast (anIter.Value());
+    if (anOwner.IsNull() || anOwner->Selectable() != theIO)
+    {
+      continue;
+    }
+
+    aRemoveEntites.Append (anOwner);
+
+    if (IsSelected (anOwner))
+    {
+      anOwner->Unhilight (myMainPM, aHilightMode);
+    }
+  }
+  AIS_NListTransient::Iterator anIterRemove (aRemoveEntites);
+  for (; anIterRemove.More(); anIterRemove.Next())
+  {
+    aSelection->Select (anIterRemove.Value());
+  }
+
+  // Remove entity owners from myMapOfOwner
+  SelectMgr_IndexedMapOfOwner anOwnersToKeep;
+  const Handle(V3d_Viewer)& aViewer = myCTX->CurrentViewer();
+  for (Standard_Integer anIdx = 1; anIdx <= myMapOfOwner.Extent(); anIdx++)
+  {
+    Handle(SelectMgr_EntityOwner) anOwner = myMapOfOwner (anIdx);
+    if (anOwner.IsNull())
+    {
+      continue;
+    }
+
+    if (anOwner->Selectable() != theIO)
+    {
+      anOwnersToKeep.Add (anOwner);
+    }
+    else
+    {
+      for (aViewer->InitActiveViews(); aViewer->MoreActiveViews(); aViewer->NextActiveViews())
+      {
+        Unhilight (anOwner, aViewer->ActiveView());
+      }
+    }
+  }
+  myMapOfOwner.Clear();
+  myMapOfOwner.Assign (anOwnersToKeep);
+  mylastindex = myMapOfOwner.FindIndex (aLastPicked);
+
+  if (toUpdateViewer)
+  {
+    aViewer->Update();
+  }
+}
 
 //=======================================================================
 //function : SetSelected
