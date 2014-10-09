@@ -1,0 +1,30 @@
+puts "============"
+puts "OCC24717"
+puts "============"
+puts ""
+####################################################################################
+# TKOpenGl - globally defined clipping planes blink when operating with view
+# Test checks that state of clippings always corresponds to a state of viewed
+# scene.
+####################################################################################
+
+set check_x 204
+set check_y 204
+
+vinit View1
+vsetdispmode 1
+box b 1 1 1
+vdisplay b
+vmoveto $check_x $check_y
+vclipplane create pln1
+vclipplane set pln1 view Driver1/Viewer1/View1
+vclipplane change pln1 equation 0 1 0 0
+vfit
+
+checkcolor $check_x $check_y 0 1 1
+
+if {$stat != 1} {
+    puts "Error : Viewer clipping is broken."
+}
+
+vdump ${imagedir}/${casename}.png

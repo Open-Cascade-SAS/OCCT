@@ -1145,7 +1145,7 @@ void OpenGl_View::RedrawScene (const Handle(OpenGl_PrinterContext)& thePrintCont
       aPlaneFront = new Graphic3d_ClipPlane (aFrontEquation);
     }
 
-    // do some "memory allocation"-wise optimization
+    // Specify slicing planes with identity transformation
     if (!aPlaneBack.IsNull() || !aPlaneFront.IsNull())
     {
       Graphic3d_SequenceOfHClipPlane aSlicingPlanes;
@@ -1161,32 +1161,6 @@ void OpenGl_View::RedrawScene (const Handle(OpenGl_PrinterContext)& thePrintCont
 
       // add planes at loaded view matrix state
       aContext->ChangeClipping().AddView (aSlicingPlanes, theWorkspace);
-    }
-  }
-
-  // Apply user clipping planes
-  if (!myClipPlanes.IsEmpty())
-  {
-    Graphic3d_SequenceOfHClipPlane aUserPlanes;
-    Graphic3d_SequenceOfHClipPlane::Iterator aClippingIt (myClipPlanes);
-    for (; aClippingIt.More(); aClippingIt.Next())
-    {
-      const Handle(Graphic3d_ClipPlane)& aClipPlane = aClippingIt.Value();
-      if (aClipPlane->IsOn())
-      {
-        aUserPlanes.Append (aClipPlane);
-      }
-    }
-
-    if (!aUserPlanes.IsEmpty())
-    {
-      // add planes at actual matrix state.
-      aContext->ChangeClipping().AddWorld (aUserPlanes);
-    }
-
-    if (!aContext->ShaderManager()->IsEmpty())
-    {
-      aContext->ShaderManager()->UpdateClippingState();
     }
   }
 
@@ -1220,6 +1194,31 @@ void OpenGl_View::RedrawScene (const Handle(OpenGl_PrinterContext)& thePrintCont
 
   // Setup view orientation
   theWorkspace->SetViewMatrix (theOrientation);
+
+  // Specify clipping planes in view transformation space
+  if (!myClipPlanes.IsEmpty())
+  {
+    Graphic3d_SequenceOfHClipPlane aUserPlanes;
+    Graphic3d_SequenceOfHClipPlane::Iterator aClippingIt (myClipPlanes);
+    for (; aClippingIt.More(); aClippingIt.Next())
+    {
+      const Handle(Graphic3d_ClipPlane)& aClipPlane = aClippingIt.Value();
+      if (aClipPlane->IsOn())
+      {
+        aUserPlanes.Append (aClipPlane);
+      }
+    }
+
+    if (!aUserPlanes.IsEmpty())
+    {
+      aContext->ChangeClipping().AddWorld (aUserPlanes);
+    }
+
+    if (!aContext->ShaderManager()->IsEmpty())
+    {
+      aContext->ShaderManager()->UpdateClippingState();
+    }
+  }
 
 #if !defined(GL_ES_VERSION_2_0)
   // Apply Lights
