@@ -9,12 +9,12 @@
 #pragma once
 #endif // _MSC_VER >= 1000
 
-#include "OCC_BaseDoc.h"
+#include "OCC_3dBaseDoc.h"
 #include "ResultDialog.h"
 
 class Handle_AIS_Point;
 
-class CGeometryDoc : public OCC_BaseDoc
+class CGeometryDoc : public OCC_3dBaseDoc
 {
 public:
   void Put2DOnTop(bool isMax = true);
@@ -25,32 +25,41 @@ public:
   void simplify(const TopoDS_Shape& aShape);
 
 
-  static void Fit();
+  //-------------------- 2D -------------------//
 
-  //              2D
   void DragEvent2D       (const Standard_Integer  x       ,
                           const Standard_Integer  y       ,
                           const Standard_Integer  TheState,
                           const Handle_V3d_View& aView   );
   void InputEvent2D      (const Standard_Integer  x       ,
                           const Standard_Integer  y       ,
-                          const Handle_V3d_View& aView   );  
+                          const Handle_V3d_View& aView   );
   void MoveEvent2D       (const Standard_Integer  x       ,
                           const Standard_Integer  y       ,
-                          const Handle_V3d_View& aView   ); 
+                          const Handle_V3d_View& aView   );
   void ShiftMoveEvent2D  (const Standard_Integer  x       ,
                           const Standard_Integer  y       ,
-                          const Handle_V3d_View& aView   ); 
+                          const Handle_V3d_View& aView   );
   void ShiftDragEvent2D  (const Standard_Integer  x       ,
                           const Standard_Integer  y       ,
                           const Standard_Integer  TheState,
-                          const Handle_V3d_View& aView   ); 
+                          const Handle_V3d_View& aView   );
   void ShiftInputEvent2D (const Standard_Integer  x       ,
                           const Standard_Integer  y       ,
-                          const Handle_V3d_View& aView   ); 
+                          const Handle_V3d_View& aView   );
   void Popup2D           (const Standard_Integer  x       ,
                           const Standard_Integer  y       ,
-                          const Handle_V3d_View& aView   ); 
+                          const Handle_V3d_View& aView   );
+
+  //-------------------- 3D -------------------//
+
+  virtual void Popup (const Standard_Integer theMouseX,
+                        const Standard_Integer theMouseY,
+                        const Handle(V3d_View)& theView);
+
+  virtual void InputEvent (const Standard_Integer theMouseX,
+                          const Standard_Integer theMouseY,
+                          const Handle(V3d_View)& theView);
 
   Handle_AIS_InteractiveObject drawSurface
     (const Handle_Geom_Surface& theSurface,
@@ -211,10 +220,6 @@ protected:
   //}}AFX_MSG
   DECLARE_MESSAGE_MAP()
 
-private:
-  Handle_V3d_Viewer myViewer2D;
-  Handle_AIS_InteractiveContext myAISContext2D;
-
 public:
   int Current;
   void Minimize3D();
@@ -223,8 +228,13 @@ public:
   Handle_AIS_InteractiveContext& GetISessionContext() { return myAISContext2D; };
   BOOL FitMode;
 
-public :
+public:
   CResultDialog myCResultDialog;
+
+private:
+  Handle_V3d_Viewer myViewer2D;
+  Handle_AIS_InteractiveContext myAISContext2D;
+
 
 };
 

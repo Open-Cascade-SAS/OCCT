@@ -104,10 +104,10 @@ BOOL CSelectionDialog::OnInitDialog()
   // get the View Window position to managed mouse move
   CRect BoxRect,ViewRect;
   GetWindowRect (BoxRect);
-  CWnd * TheViewerWindow = GetDlgItem (IDC_DUMMYBUTTON);
+  CWnd * TheViewerWindow = GetDlgItem (IDC_HlrDlgView);
   TheViewerWindow->GetWindowRect (ViewRect);
   myPosMinX = ViewRect.TopLeft().x - BoxRect.TopLeft().x;
-  myPosMaxX = ViewRect.Width()+myPosMinX;
+  myPosMaxX = ViewRect.Width() + myPosMinX;
   myPosMinY = ViewRect.TopLeft().y - BoxRect.TopLeft().y;
   myPosMaxY = myPosMinY + ViewRect.Height();
 
@@ -121,10 +121,12 @@ BOOL CSelectionDialog::OnInitDialog()
 
 void CSelectionDialog::OnDisplay (bool isFit)
 {
-  GetDlgItem(IDC_DUMMYBUTTON)->SetRedraw (true);
+  // GetDlgItem(IDC_HlrDlgView)->SetRedraw() wrapping of this method makes view blinking,
+  // but displaying of big models may be faster.
+  //GetDlgItem(IDC_HlrDlgView)->SetRedraw(true);
   if (!myIsDisplayed)
   {
-    Handle(Graphic3d_GraphicDriver) aGraphicDriver = 
+    Handle(Graphic3d_GraphicDriver) aGraphicDriver =
       ((CHLRApp*)AfxGetApp())->GetGraphicDriver();
 
     myActiveViewer = new V3d_Viewer (aGraphicDriver, (short *) "Visu3D");
@@ -132,7 +134,7 @@ void CSelectionDialog::OnDisplay (bool isFit)
     myActiveViewer->SetLightOn();
     myActiveView = myActiveViewer->CreateView();
 
-    Handle(WNT_Window) aWNTWindow = new WNT_Window (GetDlgItem (IDC_DUMMYBUTTON)->GetSafeHwnd(),
+    Handle(WNT_Window) aWNTWindow = new WNT_Window (GetDlgItem (IDC_HlrDlgView)->GetSafeHwnd(),
                                                     Quantity_NOC_GRAY);
     myActiveView->SetComputedMode (m_HlrModeIsOn);
     myActiveView->SetWindow(aWNTWindow);
@@ -144,6 +146,7 @@ void CSelectionDialog::OnDisplay (bool isFit)
     myTrihedron = new AIS_Trihedron (aTrihedronAxis);
 
     myInteractiveContext->Display (myTrihedron);
+    myIsDisplayed = Standard_True;
   }
   if(isFit)
   {
@@ -152,8 +155,7 @@ void CSelectionDialog::OnDisplay (bool isFit)
   }
 
   myActiveView->Redraw();
-  myIsDisplayed = Standard_True;
-  GetDlgItem (IDC_DUMMYBUTTON)->SetRedraw (false);
+  //GetDlgItem (IDC_HlrDlgView)->SetRedraw (false);
 }
 
 
@@ -551,6 +553,5 @@ void CSelectionDialog::OnOK()
 
 void CSelectionDialog::OnPaint() 
 {
-  CPaintDC dc(this); // device context for painting
   OnDisplay(false);
 }

@@ -345,7 +345,6 @@ void OCC_3dView::OnLButtonUp(UINT nFlags, CPoint point)
       }
       break;
     case CurAction3d_DynamicZooming :
-      // SetCursor(AfxGetApp()->LoadStandardCursor());         
       myCurrentMode = CurAction3d_Nothing;
       break;
     case CurAction3d_WindowZooming :
@@ -445,9 +444,11 @@ void OCC_3dView::OnMouseMove(UINT nFlags, CPoint point)
       switch (myCurrentMode)
       {
       case CurAction3d_Nothing :
-        myXmax = point.x;  myYmax = point.y;
         DrawRectangle(myXmin,myYmin,myXmax,myYmax,Standard_False);
-        if (nFlags & MK_SHIFT)		
+        myXmax = point.x;
+        myYmax = point.y;
+
+        if (nFlags & MK_SHIFT)
           GetDocument()->ShiftDragEvent(myXmax,myYmax,0,myView);
         else
           GetDocument()->DragEvent(myXmax,myYmax,0,myView);

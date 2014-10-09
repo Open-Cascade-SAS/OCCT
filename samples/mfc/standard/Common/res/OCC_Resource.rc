@@ -683,7 +683,7 @@ END
 STRINGTABLE 
 BEGIN
     ID_OBJECT_DIMENSIONS    "Add dimensions"
-    ID_LOCALCONTEXT_ADDDIMENSION "Add new dimension for selected objetcs"
+    ID_LOCALCONTEXT_ADDDIMENSION "Add new dimension for selected objects"
 END
 
 STRINGTABLE 

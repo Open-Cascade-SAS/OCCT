@@ -69,7 +69,10 @@ void CRadiusParamsPage::OnBnClickedObjectBtn()
   Standard_Boolean isAttachPoint = Standard_False;
   Standard_Real aFirstPar = 0, aLastPar = 0;
 
-  TopoDS_Shape aSelShape = myAISContext->LocalContext()->SelectedShape();
+   // Workaround for AIS_LocalContext::SelectedShape()
+  TopoDS_Shape aSelShape = CDimensionDlg::SelectedShape();
+  //TopoDS_Shape aSelShape = myAISContext->LocalContext()->SelectedShape();
+
   if (aSelShape.ShapeType() != TopAbs_EDGE &&
       aSelShape.ShapeType() != TopAbs_FACE &&
       aSelShape.ShapeType() != TopAbs_WIRE)
@@ -113,7 +116,7 @@ void CRadiusParamsPage::OnBnClickedObjectBtn()
   anAspect->TextAspect()->SetHeight (aDimDlg->GetFontHeight());
   anAspect->MakeTextShaded (aDimDlg->IsText3dShaded());
   anAspect->SetCommonColor (aDimDlg->GetDimensionColor());
-  aDim->DimensionAspect()->MakeUnitsDisplayed (aDimDlg->IsUnitsDisplayed());
+  anAspect->MakeUnitsDisplayed (aDimDlg->IsUnitsDisplayed());
   if (aDimDlg->IsUnitsDisplayed())
   {
     aDim->SetDisplayUnits (aDimDlg->GetUnits());

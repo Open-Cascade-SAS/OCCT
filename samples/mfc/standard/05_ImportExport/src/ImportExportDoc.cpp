@@ -22,9 +22,9 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // CImportExportDoc
 
-IMPLEMENT_DYNCREATE(CImportExportDoc, CDocument)
+IMPLEMENT_DYNCREATE(CImportExportDoc, OCC_3dDoc)
 
-BEGIN_MESSAGE_MAP(CImportExportDoc, OCC_3dBaseDoc)
+BEGIN_MESSAGE_MAP(CImportExportDoc, OCC_3dDoc)
 	//{{AFX_MSG_MAP(CImportExportDoc)
 	ON_COMMAND(ID_FILE_IMPORT_BREP, OnFileImportBrep)
 	ON_COMMAND(ID_FILE_IMPORT_CSFDB, OnFileImportCSFDB)
@@ -48,23 +48,8 @@ END_MESSAGE_MAP()
 // CImportExportDoc construction/destruction
 
 CImportExportDoc::CImportExportDoc()
+: OCC_3dDoc (false)
 {
-	/*
-	Handle(Graphic3d_WNTGraphicDevice) theGraphicDevice = 
-		((CImportExportApp*)AfxGetApp())->GetGraphicDevice();
-
-    TCollection_ExtendedString a3DName("Visu3D");
-	myViewer = new V3d_Viewer(theGraphicDevice,a3DName.ToExtString(),"", 1000.0, 
-                              V3d_XposYnegZpos, Quantity_NOC_GRAY30,
-                              V3d_ZBUFFER,V3d_GOURAUD,V3d_WAIT, 
-                              Standard_True, Standard_False);
-
-	myViewer->SetDefaultLights();
-	myViewer->SetLightOn();
-
-	myAISContext =new AIS_InteractiveContext(myViewer);
-
-	*/
 /*
     // TRIHEDRON
 	Handle(AIS_Trihedron) aTrihedron;

@@ -142,15 +142,16 @@ void CAngleParamsVerticesPage::OnBnClickedVertex3Btn()
   anAspect->TextAspect()->SetHeight (aDimDlg->GetFontHeight());
   anAspect->MakeTextShaded (aDimDlg->IsText3dShaded());
   anAspect->SetCommonColor (aDimDlg->GetDimensionColor());
-  anAngleDim->DimensionAspect()->MakeUnitsDisplayed (aDimDlg->IsUnitsDisplayed());
+  anAspect->MakeUnitsDisplayed (aDimDlg->IsUnitsDisplayed());
   if (aDimDlg->IsUnitsDisplayed())
   {
     anAngleDim->SetDisplayUnits (aDimDlg->GetUnits());
     if ((anAngleDim->GetDisplayUnits().IsEqual (TCollection_AsciiString ("deg"))))
     {
-      anAngleDim->DimensionAspect()->MakeUnitsDisplayed (Standard_False);
+      // No units - for degree is special symbol that is enabled by default
+      anAspect->MakeUnitsDisplayed (Standard_False);
     }
-    else
+    else // radians - no special symbol
     {
       anAngleDim->SetDisplaySpecialSymbol (AIS_DSS_No);
     }

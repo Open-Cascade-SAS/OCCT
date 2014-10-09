@@ -15,6 +15,7 @@
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
 #include <TColStd_ListOfInteger.hxx>
 #include <AIS_LocalContext.hxx>
+#include <AIS_Selection.hxx>
 #include <Quantity_Color.hxx>
 
 BEGIN_MESSAGE_MAP(CDimensionDlg, CDialog)
@@ -761,4 +762,12 @@ void CDimensionDlg::OnClose()
     myAISContext->CloseAllContexts();
   }
   CDialog::OnClose();
+}
+
+TopoDS_Shape CDimensionDlg::SelectedShape()
+{
+  Handle(Standard_Transient) aSelection = AIS_Selection::CurrentSelection()->Value();
+  Handle(SelectMgr_EntityOwner) anOwner = *((Handle(SelectMgr_EntityOwner)*)&aSelection);
+  Handle(StdSelect_BRepOwner) aBrepOwner = Handle(StdSelect_BRepOwner)::DownCast(anOwner);
+  return aBrepOwner->Shape().Located (aBrepOwner->Location() * aBrepOwner->Shape().Location());
 }

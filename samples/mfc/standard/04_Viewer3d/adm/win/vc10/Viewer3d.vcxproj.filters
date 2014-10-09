@@ -68,7 +68,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="..\..\..\src\Viewer3d.rc">
+    <ResourceCompile Include="..\..\..\res\Viewer3d.rc">
       <Filter>Source Files</Filter>
     </ResourceCompile>
   </ItemGroup>
@@ -91,7 +91,7 @@
     <ClInclude Include="..\..\..\src\offsetdlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\resource.h">
+    <ClInclude Include="..\..\..\res\resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\scaledlg.h">
@@ -129,13 +129,13 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\src\resource.hm">
+    <None Include="..\..\..\res\resource.hm">
       <Filter>Header Files</Filter>
     </None>
     <None Include="..\..\..\res\AIS_TB.bmp">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\..\..\src\AISToolbar.bmp">
+    <None Include="..\..\..\res\AISToolbar.bmp">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="..\..\..\res\Toolbar.bmp">

@@ -117,7 +117,7 @@ void CLengthParamsVerticesPage::OnBnClickedVertex2Btn()
   anAspect->MakeText3d (aDimDlg->GetTextType());
   anAspect->TextAspect()->SetHeight (aDimDlg->GetFontHeight());
   anAspect->MakeTextShaded (aDimDlg->IsText3dShaded());
-  aLenDim->DimensionAspect()->MakeUnitsDisplayed (aDimDlg->IsUnitsDisplayed());
+  anAspect->MakeUnitsDisplayed (aDimDlg->IsUnitsDisplayed());
   if (aDimDlg->IsUnitsDisplayed())
   {
     aLenDim->SetDisplayUnits (aDimDlg->GetUnits ());

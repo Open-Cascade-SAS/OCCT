@@ -51,7 +51,10 @@ void CParamsFacesPage::OnBnClickedFacesbtn1()
     return;
   }
 
-  myFirstFace = TopoDS::Face (myAISContext->LocalContext()->SelectedShape());
+  // Workaround for AIS_LocalContext::SelectedShape()
+  myFirstFace = TopoDS::Face (CDimensionDlg::SelectedShape());
+  //myFirstFace = TopoDS::Face (myAISContext->LocalContext()->SelectedShape());
+
   myAISContext->LocalContext()->ClearSelected();
 }
 
@@ -66,7 +69,9 @@ void CParamsFacesPage::OnBnClickedFacesbtn2()
     return;
   }
 
-  mySecondFace = TopoDS::Face (myAISContext->LocalContext()->SelectedShape());
+  // Workaround for AIS_LocalContext::SelectedShape()
+  mySecondFace = TopoDS::Face (CDimensionDlg::SelectedShape());
+  //mySecondFace = TopoDS::Face (myAISContext->LocalContext()->SelectedShape());
   myAISContext->LocalContext()->ClearSelected();
 
   CDimensionDlg *aDimDlg = (CDimensionDlg*)(GetParentOwner());
@@ -79,12 +84,13 @@ void CParamsFacesPage::OnBnClickedFacesbtn2()
   anAspect->TextAspect()->SetHeight (aDimDlg->GetFontHeight());
   anAspect->MakeTextShaded (aDimDlg->IsText3dShaded());
   anAspect->SetCommonColor (aDimDlg->GetDimensionColor());
+  anAspect->MakeUnitsDisplayed (aDimDlg->IsUnitsDisplayed());
   if (myIsAngleDimension)
   {
     // Build an angle dimension between two non-parallel edges
     Handle(AIS_AngleDimension) anAngleDim = new AIS_AngleDimension (myFirstFace, mySecondFace);
     anAngleDim->SetDimensionAspect (anAspect);
-    anAngleDim->DimensionAspect()->MakeUnitsDisplayed (aDimDlg->IsUnitsDisplayed());
+
     if (aDimDlg->IsUnitsDisplayed())
     {
       anAngleDim->SetDisplayUnits (aDimDlg->GetUnits ());
@@ -105,7 +111,7 @@ void CParamsFacesPage::OnBnClickedFacesbtn2()
   {
     Handle(AIS_LengthDimension) aLenDim = new AIS_LengthDimension (myFirstFace, mySecondFace);
     aLenDim->SetDimensionAspect (anAspect);
-    aLenDim->DimensionAspect()->MakeUnitsDisplayed (aDimDlg->IsUnitsDisplayed());
+
     if (aLenDim->DimensionAspect()->IsUnitsDisplayed())
     {
       aLenDim->SetFlyout (aDimDlg->GetFlyout());

@@ -60,6 +60,7 @@ CButton* CLengthParamsEdgePage::GetButton()
   return (CButton*)GetDlgItem (IDC_ChooseEdgeBtn);
 }
 
+#include <AIS_Selection.hxx>
 //=======================================================================
 //function : OnBnClickedChooseEdgeBtn
 //purpose  :
@@ -75,28 +76,32 @@ void CLengthParamsEdgePage::OnBnClickedChooseEdgeBtn()
     return;
   }
 
-  TopoDS_Edge anEdge = TopoDS::Edge(myAISContext->LocalContext()->SelectedShape());
+  // Workaround for AIS_LocalContext::SelectedShape()
+  //TopoDS_Shape aSelShape = myAISContext->LocalContext()->SelectedShape();
+  TopoDS_Shape aSelShape = CDimensionDlg::SelectedShape();
+  const TopoDS_Edge& anEdge = TopoDS::Edge (aSelShape);
+
   myAISContext->LocalContext()->ClearSelected();
   TopoDS_Vertex aFirstVertex, aSecondVertex;
-  TopExp::Vertices (anEdge, aFirstVertex, aSecondVertex);
+  TopExp::Vertices (TopoDS::Edge (anEdge), aFirstVertex, aSecondVertex);
 
-  gp_Pnt aP1=BRep_Tool::Pnt (aFirstVertex);
-  gp_Pnt aP2=BRep_Tool::Pnt (aSecondVertex);
-  gp_Pnt aP3(aP2.X()+10, aP2.Y()+10, aP2.Z()+10);
+  gp_Pnt aP1 = BRep_Tool::Pnt (aFirstVertex);
+  gp_Pnt aP2 = BRep_Tool::Pnt (aSecondVertex);
+  gp_Pnt aP3 (aP2.X() + 10, aP2.Y() + 10, aP2.Z() + 10);
 
   GC_MakePlane aMkPlane (aP1,aP2,aP3);
-  Handle(Geom_Plane) aPlane = aMkPlane.Value ();
+  Handle(Geom_Plane) aPlane = aMkPlane.Value();
 
   CDimensionDlg *aDimDlg = (CDimensionDlg*)(GetParentOwner());
 
-  Handle(AIS_LengthDimension) aLenDim = new AIS_LengthDimension (anEdge, aPlane->Pln());
+  Handle(AIS_LengthDimension) aLenDim = new AIS_LengthDimension (TopoDS::Edge (anEdge), aPlane->Pln());
   Handle(Prs3d_DimensionAspect) anAspect = new Prs3d_DimensionAspect();
   anAspect->MakeArrows3d (Standard_False);
   anAspect->MakeText3d (aDimDlg->GetTextType());
   anAspect->TextAspect()->SetHeight (aDimDlg->GetFontHeight());
   anAspect->MakeTextShaded (aDimDlg->IsText3dShaded());
   anAspect->SetCommonColor (aDimDlg->GetDimensionColor());
-  aLenDim->DimensionAspect()->MakeUnitsDisplayed (aDimDlg->IsUnitsDisplayed());
+  anAspect->MakeUnitsDisplayed (aDimDlg->IsUnitsDisplayed());
   if (aDimDlg->IsUnitsDisplayed())
   {
     aLenDim->SetDisplayUnits (aDimDlg->GetUnits());

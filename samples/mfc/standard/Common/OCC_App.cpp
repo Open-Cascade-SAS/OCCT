@@ -136,7 +136,7 @@ BOOL CAboutDlgStd::OnInitDialog(){
 
   CWnd* aReadmeEdit = GetDlgItem(IDC_README);
   CFile aFile;
-  CString aHelpFilePath = CString (((OCC_App*)AfxGetApp())->GetInitDataDir()) + "\\README.txt";
+  CString aHelpFilePath = CString (((OCC_App*)AfxGetApp())->GetInitDataDir()) + L"\\README.txt";
   if(aFile.Open (aHelpFilePath, CFile::modeRead))
   {
     aReadmeEdit->ShowWindow(TRUE);
@@ -145,9 +145,8 @@ BOOL CAboutDlgStd::OnInitDialog(){
     aFile.Read(buffer,aFileLength);
     ReadmeText = buffer;
     delete[] buffer;
-    ReadmeText.SetAt (aFileLength, '\0');
     ReadmeText.Replace (L"\n", L"\r\n");
-    UpdateData(FALSE);
+    UpdateData (FALSE);
   }
   else
   {

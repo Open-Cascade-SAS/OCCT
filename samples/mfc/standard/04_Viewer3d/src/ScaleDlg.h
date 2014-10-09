@@ -7,7 +7,7 @@
 // ScaleDlg.h : header file
 //
 
-#include "resource.h"
+#include "..\res\resource.h"
 #include "Viewer3dView.h"
 
 /////////////////////////////////////////////////////////////////////////////

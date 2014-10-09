@@ -10,9 +10,10 @@
 #endif // _MSC_VER >= 1000
 
 #include <ColoredShapes.h>
-#include <OCC_3dBaseDoc.h>
+#include <OCC_3dDoc.h>
 
-class CImportExportDoc : public OCC_3dBaseDoc{
+class CImportExportDoc : public OCC_3dDoc
+{
 	DECLARE_DYNCREATE(CImportExportDoc)
 public:
 	CImportExportDoc();

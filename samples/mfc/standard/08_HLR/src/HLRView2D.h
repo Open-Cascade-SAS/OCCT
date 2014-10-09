@@ -21,6 +21,10 @@ protected: // create from serialization only
   CHLRView2D();
   DECLARE_DYNCREATE(CHLRView2D)
 
+  // Override MouseMove event to exclude rectangle selection emulation as
+  // no selection is supported in DragEvent2D for this view.
+  afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+  DECLARE_MESSAGE_MAP()
 
   // Overrides
   // ClassWizard generated virtual function overrides
@@ -51,17 +55,6 @@ public:
   virtual void AssertValid() const;
   virtual void Dump(CDumpContext& dc) const;
 #endif
-
-protected:
-
-// Generated message map functions
-protected:
-  //{{AFX_MSG(CHLRView2D)
-  // NOTE - the ClassWizard will add and remove member functions here.
-  //    DO NOT EDIT what you see in these blocks of generated code !
-  //}}AFX_MSG
-  DECLARE_MESSAGE_MAP()
-
 };
 /////////////////////////////////////////////////////////////////////////////
 

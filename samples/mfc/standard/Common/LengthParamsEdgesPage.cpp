@@ -78,7 +78,10 @@ void CLengthParamsEdgesPage::OnBnClickedEdge1Btn()
     return;
   }
 
-  myFirstEdge = TopoDS::Edge (myAISContext->LocalContext()->SelectedShape());
+  // Workaround for AIS_LocalContext::SelectedShape()
+  myFirstEdge = TopoDS::Edge (CDimensionDlg::SelectedShape());
+  //myFirstEdge =  TopoDS::Edge (myAISContext->LocalContext()->SelectedShape());
+
   myAISContext->LocalContext()->ClearSelected();
 }
 
@@ -97,7 +100,10 @@ void CLengthParamsEdgesPage::OnBnClickedEdge2Btn()
     return;
   }
 
-  mySecondEdge = TopoDS::Edge (myAISContext->LocalContext()->SelectedShape());
+  // Workaround for AIS_LocalContext::SelectedShape()
+  mySecondEdge = TopoDS::Edge (CDimensionDlg::SelectedShape());
+  //mySecondEdge = TopoDS::Edge (myAISContext->LocalContext()->SelectedShape());
+
   myAISContext->LocalContext()->ClearSelected();
 
   // Build plane through three points
@@ -122,6 +128,7 @@ void CLengthParamsEdgesPage::OnBnClickedEdge2Btn()
   anAspect->TextAspect()->SetHeight (aDimDlg->GetFontHeight());
   anAspect->MakeTextShaded (aDimDlg->IsText3dShaded());
   anAspect->SetCommonColor (aDimDlg->GetDimensionColor());
+  anAspect->MakeUnitsDisplayed (aDimDlg->IsUnitsDisplayed());
   if (myIsAngleDimension)
   {
     // Build an angle dimension between two non-parallel edges
@@ -148,10 +155,9 @@ void CLengthParamsEdgesPage::OnBnClickedEdge2Btn()
   {
     Handle(AIS_LengthDimension) aLenDim = new AIS_LengthDimension (myFirstEdge, mySecondEdge, aPlane->Pln());
     aLenDim->SetDimensionAspect (anAspect);
-    aLenDim->DimensionAspect()->MakeUnitsDisplayed (aDimDlg->IsUnitsDisplayed());
+    aLenDim->SetFlyout (aDimDlg->GetFlyout());
     if (aDimDlg->IsUnitsDisplayed())
     {
-      aLenDim->SetFlyout (aDimDlg->GetFlyout());
       aLenDim->SetDisplayUnits (aDimDlg->GetUnits());
     }
 

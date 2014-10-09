@@ -104,7 +104,7 @@
 #define ID_Update2D                     1522
 #define IDC_HlrModeIsOn                 1523
 #define IDC_TopView                     1529
-#define IDC_DUMMYBUTTON                 1530
+#define IDC_HlrDlgView                  1530
 #define IDC_BottomView                  1531
 #define IDC_LeftView                    1532
 #define IDC_RightView                   1533

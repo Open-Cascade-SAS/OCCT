@@ -51,42 +51,8 @@ public:
 protected:
   //{{AFX_MSG(CGeometryView)
   afx_msg void OnFileExportImage();
-  afx_msg void OnSize(UINT nType, int cx, int cy);
-  afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
-  afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
-  afx_msg void OnMButtonDown(UINT nFlags, CPoint point);
-  afx_msg void OnMButtonUp(UINT nFlags, CPoint point);
-  afx_msg void OnMouseMove(UINT nFlags, CPoint point);
-  afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
-  afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
-  afx_msg void OnUpdateBUTTONHlrOff(CCmdUI* pCmdUI);
-  afx_msg void OnUpdateBUTTONHlrOn(CCmdUI* pCmdUI);
-  afx_msg void OnUpdateBUTTONPanGlo(CCmdUI* pCmdUI);
-  afx_msg void OnUpdateBUTTONPan(CCmdUI* pCmdUI);
-  afx_msg void OnUpdateBUTTONZoomProg(CCmdUI* pCmdUI);
-  afx_msg void OnUpdateBUTTONZoomWin(CCmdUI* pCmdUI);
-  afx_msg void OnUpdateBUTTONRot(CCmdUI* pCmdUI);
   //}}AFX_MSG
   DECLARE_MESSAGE_MAP()
-
-private:
-  void DragEvent      (const Standard_Integer  x       ,
-                      const Standard_Integer  y       ,
-                      const Standard_Integer  TheState);
-  void InputEvent     (const Standard_Integer  x       ,
-                      const Standard_Integer  y       );  
-  void MoveEvent      (const Standard_Integer  x       ,
-                      const Standard_Integer  y       ); 
-  void ShiftMoveEvent (const Standard_Integer  x       ,
-                      const Standard_Integer  y       ); 
-  void ShiftDragEvent (const Standard_Integer  x       ,
-                      const Standard_Integer  y       ,
-                      const Standard_Integer  TheState); 
-  void ShiftInputEvent(const Standard_Integer  x       ,
-                      const Standard_Integer  y       ); 
-  void Popup          (const Standard_Integer  x       ,
-                      const Standard_Integer  y       ); 
-
 };
 
 #ifndef _DEBUG  // debug version in GeometryView.cpp

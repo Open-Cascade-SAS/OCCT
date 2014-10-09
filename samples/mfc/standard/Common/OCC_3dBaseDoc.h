@@ -15,9 +15,6 @@
 
 class AFX_EXT_CLASS OCC_3dBaseDoc : public OCC_BaseDoc
 {
-protected:
-  CDimensionDlg myDimensionDlg;
-  int myPopupMenuNumber;
 public:
 
   OCC_3dBaseDoc();
@@ -83,11 +80,13 @@ protected:
   afx_msg void OnUpdateObjectDisplayall(CCmdUI* pCmdUI);
   afx_msg void OnObjectRemove();
   afx_msg void OnUpdateObjectRemove(CCmdUI* pCmdUI);
-  afx_msg void OnObjectAddDimensions();
-  afx_msg void OnUpdateObjectAddDimensions(CCmdUI* pCmdUI);
 
   //}}AFX_MSG
   DECLARE_MESSAGE_MAP()
+
+protected:
+
+  int myPopupMenuNumber;
 };
 
 #endif // !defined(AFX_OCC_3dBaseDoc_H__02CE7BD9_39BE_11D7_8611_0060B0EE281E__INCLUDED_)

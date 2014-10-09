@@ -481,15 +481,15 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="..\..\..\src\Viewer3d.rc">
+    <ResourceCompile Include="..\..\..\res\Viewer3d.rc">
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
@@ -499,7 +499,7 @@
     <ClInclude Include="..\..\..\src\ModelClippingDlg.h" />
     <ClInclude Include="..\..\..\src\OCCDemo_Presentation.h" />
     <ClInclude Include="..\..\..\src\offsetdlg.h" />
-    <ClInclude Include="..\..\..\src\resource.h" />
+    <ClInclude Include="..\..\..\res\resource.h" />
     <ClInclude Include="..\..\..\src\scaledlg.h" />
     <ClInclude Include="..\..\..\src\ShadingModelDlg.h" />
     <ClInclude Include="..\..\..\src\State.h" />
@@ -513,9 +513,9 @@
     <ClInclude Include="..\..\..\src\ZCueingDlg.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\src\resource.hm" />
+    <None Include="..\..\..\res\resource.hm" />
     <None Include="..\..\..\res\AIS_TB.bmp" />
-    <None Include="..\..\..\src\AISToolbar.bmp" />
+    <None Include="..\..\..\res\AISToolbar.bmp" />
     <None Include="..\..\..\res\Toolbar.bmp" />
   </ItemGroup>
   <ItemGroup>

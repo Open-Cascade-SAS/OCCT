@@ -32,8 +32,7 @@ IMPLEMENT_DYNCREATE(CHLRView2D, OCC_2dView)
 
 BEGIN_MESSAGE_MAP(CHLRView2D, OCC_2dView)
   //{{AFX_MSG_MAP(CHLRView2D)
-  // NOTE - the ClassWizard will add and remove mapping macros here.
-  //    DO NOT EDIT what you see in these blocks of generated code!
+  ON_WM_MOUSEMOVE()
   //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -119,7 +118,6 @@ void CHLRView2D::MultiDragEvent2D(const Standard_Integer /*x*/,
 {
 }
 
-
 //-----------------------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------------------
@@ -128,6 +126,84 @@ void CHLRView2D::MultiInputEvent2D(const Standard_Integer /*x*/,
 {
 }
 
+//-----------------------------------------------------------------------------------------
+//
+//-----------------------------------------------------------------------------------------
+void CHLRView2D::OnMouseMove(UINT nFlags, CPoint point)
+{
+  if ( (nFlags & MK_LBUTTON) &! (nFlags & MK_RBUTTON) ) // Left + Right is specific
+  {
+    if ( nFlags & CASCADESHORTCUTKEY )
+    {
+      // move with MB1 and CASCADESHORTCUTKEY : on the dynamic zooming
+      // Do the zoom in function of mouse's coordinates
+      myV2dView->Zoom(myXmax,myYmax,point.x,point.y);
+      myXmax = point.x;
+      myYmax = point.y;
+    }
+    else // if ( CASCADESHORTCUTKEY )
+    {
+      switch (myCurrentMode)
+      {
+      case CurAction2d_Nothing :
+        myXmax = point.x;
+        myYmax = point.y;
+        DragEvent2D(myXmax,myYmax,0);
+        break;
+      case CurAction2d_DynamicZooming :
+        myV2dView->Zoom(myXmax,myYmax,point.x,point.y);
+        myXmax=point.x;
+        myYmax=point.y;
+        break;
+      case CurAction2d_WindowZooming :
+        myXmax = point.x;
+        myYmax = point.y;
+        break;
+      case CurAction2d_DynamicPanning :
+        myV2dView->Pan(point.x-myXmax,myYmax-point.y); // Realize the panning
+        myXmax = point.x;
+        myYmax = point.y;
+        break;
+      case CurAction2d_GlobalPanning :
+        break;
+      default :
+        Standard_Failure::Raise(" incompatible Current Mode ");
+        break;
+      }
+    }
+  } else if ( nFlags & MK_MBUTTON)
+  {
+    if ( nFlags & CASCADESHORTCUTKEY )
+    {
+      myV2dView->Pan (point.x-myXmax,myYmax-point.y);
+      myXmax = point.x;
+      myYmax = point.y;
+    }
+  } else if ( (nFlags & MK_RBUTTON) &! (nFlags & MK_LBUTTON) )
+  {
+  }
+  else if ( (nFlags & MK_RBUTTON) && (nFlags & MK_LBUTTON) )
+  {
+    if ( nFlags & CASCADESHORTCUTKEY ) 
+    {
+      myV2dView->Pan(point.x-myXmax,myYmax-point.y); // Realize the panning
+      myXmax = point.x; myYmax = point.y;	
+    }
+  }
+  else
+  {  // No buttons
+    myXmax = point.x;
+    myYmax = point.y;
+    if (nFlags & MULTISELECTIONKEY)
+    {
+      MultiMoveEvent2D(point.x,point.y);
+    }
+    else
+    {
+      MoveEvent2D(point.x,point.y);
+    }
+  }
+}
 
 #ifdef _DEBUG
 void CHLRView2D::AssertValid() const

@@ -38,8 +38,6 @@ BEGIN_MESSAGE_MAP(OCC_3dBaseDoc, OCC_BaseDoc)
   ON_UPDATE_COMMAND_UI(ID_OBJECT_DISPLAYALL, OnUpdateObjectDisplayall)
   ON_COMMAND(ID_OBJECT_REMOVE, OnObjectRemove)
   ON_UPDATE_COMMAND_UI(ID_OBJECT_REMOVE, OnUpdateObjectRemove)
-  ON_COMMAND(ID_OBJECT_DIM, OnObjectAddDimensions)
-  ON_UPDATE_COMMAND_UI(ID_OBJECT_DIM, OnUpdateObjectAddDimensions)
 
   //}}AFX_MSG_MAP
   ON_COMMAND_EX_RANGE(ID_OBJECT_MATERIAL_BRASS,ID_OBJECT_MATERIAL_DEFAULT, OnObjectMaterialRange)
@@ -52,20 +50,16 @@ END_MESSAGE_MAP()
 //////////////////////////////////////////////////////////////////////
 
 OCC_3dBaseDoc::OCC_3dBaseDoc()
-:myPopupMenuNumber(0),
- myDimensionDlg()
+:myPopupMenuNumber(0)
 {
   AfxInitRichEdit();
 
-  Handle(Graphic3d_GraphicDriver) aGraphicDriver = 
-    ((OCC_App*)AfxGetApp())->GetGraphicDriver();
+  Handle(Graphic3d_GraphicDriver) aGraphicDriver = ((OCC_App*)AfxGetApp())->GetGraphicDriver();
 
   myViewer = new V3d_Viewer (aGraphicDriver, Standard_ExtString("Visu3D") );
   myViewer->SetDefaultLights();
   myViewer->SetLightOn();
   myAISContext = new AIS_InteractiveContext (myViewer);
-  myDimensionDlg.SetContext (myAISContext);
-  myDimensionDlg.Create(CDimensionDlg::IDD, NULL);
 }
 
 OCC_3dBaseDoc::~OCC_3dBaseDoc()
@@ -87,20 +81,27 @@ void OCC_3dBaseDoc::DragEvent (const Standard_Integer theMouseX,
   static Standard_Integer aStartDragX = 0;
   static Standard_Integer aStartDragY = 0;
 
-  if (theState == -1)
+  switch (theState)
   {
-    // button down
-    aStartDragX = theMouseX;
-    aStartDragY = theMouseY;
-  }
-
-  if (theState == 1)
-  {
-    // button up
-    myAISContext->Select (aStartDragX, aStartDragY,
-                          theMouseX, theMouseY,
-                          theView);
-  }
+  case -1:
+    {
+      aStartDragX = theMouseX;
+      aStartDragY = theMouseY;
+      break;
+    }
+  case 0:
+    {
+      myAISContext->UpdateCurrentViewer();
+      break;
+    }
+  case 1:
+    {
+      myAISContext->Select (aStartDragX, aStartDragY,
+                            theMouseX, theMouseY,
+                            theView);
+      break;
+    }
+  };
 }
 
 //-----------------------------------------------------------------------------------------
@@ -423,18 +424,3 @@ void OCC_3dBaseDoc::SetMaterial(Graphic3d_NameOfMaterial Material)
     myAISContext->SetMaterial (myAISContext->Current(),
     (Graphic3d_NameOfMaterial)(Material));
 }
-
-void OCC_3dBaseDoc::OnObjectAddDimensions() 
-{
-  //Add dimentions dialog is opened here
-  myDimensionDlg.ShowWindow(SW_SHOW);
-  myDimensionDlg.UpdateStandardMode ();
-}
-
-void OCC_3dBaseDoc::OnUpdateObjectAddDimensions(CCmdUI* /*pCmdUI*/) 
-{
-  // Check if local context is opened
-  //pCmdUI->Enable (myAISContext->HasOpenedContext());
-}
-
-

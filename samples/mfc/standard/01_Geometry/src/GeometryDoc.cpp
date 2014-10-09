@@ -29,9 +29,9 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // CGeometryDoc
 
-IMPLEMENT_DYNCREATE(CGeometryDoc, CDocument)
+IMPLEMENT_DYNCREATE(CGeometryDoc, OCC_3dBaseDoc)
 
-BEGIN_MESSAGE_MAP(CGeometryDoc, CDocument)
+BEGIN_MESSAGE_MAP(CGeometryDoc, OCC_3dBaseDoc)
   //{{AFX_MSG_MAP(CGeometryDoc)
   ON_COMMAND(ID_WINDOW_NEW2D, OnWindowNew2d)
   ON_COMMAND(ID_BUTTON_Test_1, OnBUTTONTest1)
@@ -143,28 +143,21 @@ END_MESSAGE_MAP()
 // CGeometryDoc construction/destruction
 
 CGeometryDoc::CGeometryDoc()
+: OCC_3dBaseDoc()
 {
   FitMode = false;
   AfxInitRichEdit();
 
-  // TODO: add one-time construction code here
-  Handle(Graphic3d_GraphicDriver) aGraphicDriver = 
-    ((CGeometryApp*)AfxGetApp())->GetGraphicDriver();
-
-  TCollection_ExtendedString a3DName("Visu3D");
-  myViewer = new V3d_Viewer(aGraphicDriver,a3DName.ToExtString());
-  myViewer->SetDefaultLights();
-  myViewer->SetLightOn();
-
-  myAISContext =new AIS_InteractiveContext(myViewer);
   myAISContext->DefaultDrawer()->UIsoAspect()->SetNumber(11);
   myAISContext->DefaultDrawer()->VIsoAspect()->SetNumber(11);
 
+  Handle(Graphic3d_GraphicDriver) aGraphicDriver = ((OCC_App*)AfxGetApp())->GetGraphicDriver();
   TCollection_ExtendedString a2DName("Visu2D");
   myViewer2D = new V3d_Viewer(aGraphicDriver,a2DName.ToExtString());
   myViewer2D->SetCircularGridValues(0,0,1,8,0);
   myViewer2D->SetRectangularGridValues(0,0,1,1,0);
-  //set view projection
+
+  // Set view projection
   myViewer2D->SetDefaultViewProj(V3d_Zpos);
   myAISContext2D = new AIS_InteractiveContext(myViewer2D);	
   myCResultDialog.Create(CResultDialog::IDD,NULL);
@@ -200,9 +193,7 @@ BOOL CGeometryDoc::OnNewDocument()
   return TRUE;
 }
 
-
-
-void CGeometryDoc::OnWindowNew2d() 
+void CGeometryDoc::OnWindowNew2d()
 {
   ((CGeometryApp*)AfxGetApp())->CreateView2D(this);
 }
@@ -330,6 +321,48 @@ void  CGeometryDoc::Popup2D(const Standard_Integer x,
     AfxGetMainWnd());
 }
 
+
+//-----------------------------------------------------------------------------------------
+//
+//-----------------------------------------------------------------------------------------
+void  CGeometryDoc::Popup (const Standard_Integer theMouseX,
+                           const Standard_Integer theMouseY,
+                           const Handle(V3d_View)& theView) 
+{ 
+  Standard_Integer PopupMenuNumber=0;
+  GetAISContext()->InitCurrent();
+  if (GetAISContext()->MoreCurrent())
+  {
+    PopupMenuNumber=1;
+  }
+
+  CMenu menu;
+  VERIFY(menu.LoadMenu(IDR_Popup3D));
+  CMenu* pPopup = menu.GetSubMenu(PopupMenuNumber);
+  ASSERT(pPopup != NULL);
+
+  POINT winCoord = { theMouseX , theMouseY };
+  Handle(WNT_Window) aWNTWindow = Handle(WNT_Window)::DownCast(theView->Window());
+  ClientToScreen ( (HWND)(aWNTWindow->HWindow()), &winCoord );
+
+  pPopup->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON ,
+                         winCoord.x, winCoord.y , 
+                         AfxGetMainWnd());
+}
+
+//-----------------------------------------------------------------------------------------
+//
+//-----------------------------------------------------------------------------------------
+void CGeometryDoc::InputEvent (const Standard_Integer /*theMouseX*/,
+                                const Standard_Integer /*theMouseY*/,
+                                const Handle(V3d_View)& /*theView*/)
+{
+  myAISContext->Select();
+}
+
+//-----------------------------------------------------------------------------------------
+//
+//-----------------------------------------------------------------------------------------
 void CGeometryDoc::Put2DOnTop(bool isMax)
 {
   POSITION position = GetFirstViewPosition();
@@ -354,6 +387,9 @@ void CGeometryDoc::Put2DOnTop(bool isMax)
   }
 }
 
+//-----------------------------------------------------------------------------------------
+//
+//-----------------------------------------------------------------------------------------
 void CGeometryDoc::Minimize2D()
 {
   POSITION position = GetFirstViewPosition();
@@ -371,6 +407,9 @@ void CGeometryDoc::Minimize2D()
   }
 }
 
+//-----------------------------------------------------------------------------------------
+//
+//-----------------------------------------------------------------------------------------
 void CGeometryDoc::Fit2DViews()
 {
   POSITION position = GetFirstViewPosition();
@@ -385,6 +424,10 @@ void CGeometryDoc::Fit2DViews()
     }
   }
 }
+
+//-----------------------------------------------------------------------------------------
+//
+//-----------------------------------------------------------------------------------------
 void CGeometryDoc::Put3DOnTop(bool isMax)
 {
   POSITION position = GetFirstViewPosition();
@@ -409,6 +452,9 @@ void CGeometryDoc::Put3DOnTop(bool isMax)
   }
 }
 
+//-----------------------------------------------------------------------------------------
+//
+//-----------------------------------------------------------------------------------------
 void CGeometryDoc::Minimize3D()
 {
   POSITION position = GetFirstViewPosition();
@@ -426,6 +472,9 @@ void CGeometryDoc::Minimize3D()
   }
 }
 
+//-----------------------------------------------------------------------------------------
+//
+//-----------------------------------------------------------------------------------------
 void CGeometryDoc::Fit3DViews(Quantity_Coefficient Coef)
 {
   POSITION position = GetFirstViewPosition();
@@ -441,6 +490,9 @@ void CGeometryDoc::Fit3DViews(Quantity_Coefficient Coef)
   }
 }
 
+//-----------------------------------------------------------------------------------------
+//
+//-----------------------------------------------------------------------------------------
 void CGeometryDoc::Set3DViewsZoom(const Quantity_Factor& Coef)
 {
   POSITION position = GetFirstViewPosition();
@@ -456,6 +508,9 @@ void CGeometryDoc::Set3DViewsZoom(const Quantity_Factor& Coef)
   }
 }
 
+//-----------------------------------------------------------------------------------------
+//                                Buttons event handlers
+//-----------------------------------------------------------------------------------------
 void CGeometryDoc::OnBUTTONTest1() 
 {   Current = 1;
 GeomSources::gpTest1(this);      }
@@ -1013,15 +1068,6 @@ void CGeometryDoc::OnCloseDocument()
   CDocument::OnCloseDocument();
 }
 
-void CGeometryDoc::Fit()
-{
-  CMDIFrameWnd *pFrame =  (CMDIFrameWnd*)AfxGetApp()->m_pMainWnd;
-  CMDIChildWnd *pChild =  (CMDIChildWnd *) pFrame->GetActiveFrame();
-  OCC_3dView *pView = (OCC_3dView *) pChild->GetActiveView();
-  pView->FitAll();
-}
-
-
 void CGeometryDoc::OnCreateSol() 
 {
   // TODO: Add your command handler code here
@@ -1368,7 +1414,7 @@ void CGeometryDoc::simplify(const TopoDS_Shape& aShape)
       if(aPoints1(i).X() > aPntMax.X())
       {
         aIndex = i;
-        aPntMax = aPoints1(aIndex);      
+        aPntMax = aPoints1(aIndex);
       } 
     }
 

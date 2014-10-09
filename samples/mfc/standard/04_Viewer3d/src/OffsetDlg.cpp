@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "resource.h"
+#include "..\res\resource.h"
 #include "offsetdlg.h"
 #include "Viewer3dView.h"
 

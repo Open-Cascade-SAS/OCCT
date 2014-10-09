@@ -13,7 +13,7 @@
 #include <Aspect.hxx>
 #include <Quantity_NameOfColor.hxx>
 
-#include "resource.h"
+#include "..\res\resource.h"
 /////////////////////////////////////////////////////////////////////////////
 // CTrihedronDlg dialog
 

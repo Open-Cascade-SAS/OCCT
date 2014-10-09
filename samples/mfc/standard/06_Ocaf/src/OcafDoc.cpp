@@ -1100,40 +1100,39 @@ m_App->SaveAs(myOcafDoc,(TCollection_ExtendedString) TPath); \n\
 	myCResultDialog.SetText(text);
 }
 
-BOOL COcafDoc::OnOpenDocument(LPCTSTR lpszPathName) 
+BOOL COcafDoc::OnOpenDocument(LPCTSTR lpszPathName)
 {
-	if (!CDocument::OnOpenDocument(lpszPathName))
-		return FALSE;
-	
-	Handle(TOcaf_Application) m_App= ((COcafApp*)AfxGetApp())->GetApp();
+  if (!CDocument::OnOpenDocument(lpszPathName))
+  {
+    return FALSE;
+  }
 
-	CWaitCursor aWaitCursor;
-	PathName=lpszPathName;
+  Handle(TOcaf_Application) m_App= ((COcafApp*)AfxGetApp())->GetApp();
 
-	Standard_CString SPath = (Standard_CString) lpszPathName;
-	TCollection_ExtendedString TPath(SPath);
-	PathName=lpszPathName;
+  CWaitCursor aWaitCursor;
+  PathName = lpszPathName;
 
-  // open the document in the current application
+  const wchar_t* aPathName = lpszPathName;
+  TCollection_ExtendedString anOccPathName ((Standard_ExtString)aPathName);
+
+  // Open the document in the current application
   //PCDM_ReaderStatus RS = m_App->Open(TPath,myOcafDoc);
-  m_App->Open(TPath,myOcafDoc);
+  m_App->Open(anOccPathName, myOcafDoc);
   //CDF_RetrievableStatus RS = m_App->Open(TPath,myOcafDoc);
 
-	//connect the document CAF (myDoc) with the AISContext (myAISContext)
-  //TPrsStd_AISViewer::Has(myOcafDoc->Main());
-	TPrsStd_AISViewer::New(myOcafDoc->Main(),myViewer);
-	myOcafDoc->SetUndoLimit(10);
+  // Connect the document CAF (myDoc) with the AISContext (myAISContext)
+  TPrsStd_AISViewer::New (myOcafDoc->Main(), myViewer);
+  myOcafDoc->SetUndoLimit (10);
 
-	Handle(AIS_InteractiveContext) CTX;
-	TPrsStd_AISViewer::Find(myOcafDoc->Main(),CTX);
-	CTX->SetDisplayMode(AIS_Shaded);
+  Handle(AIS_InteractiveContext) aContext;
+  TPrsStd_AISViewer::Find (myOcafDoc->Main(), aContext);
+  aContext->SetDisplayMode (AIS_Shaded);
+  myAISContext = aContext;
 
-	myAISContext = CTX;
+  // Display the presentations (which was not stored in the document)
+  DisplayPrs();
 
-	// Display the presentations (which was not stored in the document)
-	DisplayPrs();
-	
-	TCollection_AsciiString Message = TCollection_AsciiString("\
+  TCollection_AsciiString Message = TCollection_AsciiString("\
 //  Retrieve a document \n\
  \n\
  Handle(TOcaf_Application) m_App= ((COcafApp*)AfxGetApp())->GetApp(); \n\
@@ -1149,11 +1148,11 @@ myOcafDoc->SetUndoLimit(10); \n\
  \n\
 \n");
 
-	myCResultDialog.SetTitle("Open a document");
-	CString text(Message.ToCString());
-	myCResultDialog.SetText(text);
+  myCResultDialog.SetTitle ("Open a document");
+  CString text (Message.ToCString());
+  myCResultDialog.SetText (text);
 
-	return TRUE;
+  return TRUE;
 
 }
 

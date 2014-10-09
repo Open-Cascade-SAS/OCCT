@@ -165,6 +165,7 @@ void CHLRDoc::OnBUTTONHLRDialog()
     myCSelectionDialogIsCreated = true;
   }
   myCSelectionDialog->ShowWindow(SW_RESTORE);
+  myCSelectionDialog->UpdateWindow();
 }
 
 void CHLRDoc::OnFileImportBrep() 
