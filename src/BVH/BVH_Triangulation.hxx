@@ -18,7 +18,9 @@
 
 #include <BVH_PrimitiveSet.hxx>
 
-//! Triangulation as an example of primitive set.
+//! Triangulation as an example of BVH primitive set.
+//! \tparam T Numeric data type
+//! \tparam N Vector dimension
 template<class T, int N>
 class BVH_Triangulation : public BVH_PrimitiveSet<T, N>
 {
@@ -28,10 +30,10 @@ public:
 
 public:
 
-  //! Creates new triangulation.
+  //! Creates empty triangulation.
   BVH_Triangulation();
 
-  //! Releases resources of geometric object.
+  //! Releases resources of triangulation.
   virtual ~BVH_Triangulation();
 
 public:
@@ -39,22 +41,22 @@ public:
   //! Array of vertex coordinates.
   typename BVH::ArrayType<T, N>::Type Vertices;
 
-  //! Array of indices of triangle indicies vertices.
+  //! Array of indices of triangle vertices.
   BVH_Array4i Elements;
 
 public:
 
-  //! Return total number of triangles.
+  //! Returns total number of triangles.
   virtual Standard_Integer Size() const;
 
-  //! Returns AABB of specified triangle.
+  //! Returns AABB of the given triangle.
   virtual BVH_Box<T, N> Box (const Standard_Integer theIndex) const;
 
-  //! Returns centroid position in specified axis.
+  //! Returns centroid position along the given axis.
   virtual T Center (const Standard_Integer theIndex,
                     const Standard_Integer theAxis) const;
 
-  //! Swaps indices of two specified triangles.
+  //! Performs transposing the two given triangles in the set.
   virtual void Swap (const Standard_Integer theIndex1,
                      const Standard_Integer theIndex2);
 

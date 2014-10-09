@@ -19,7 +19,14 @@
 #include <BVH_Object.hxx>
 #include <BVH_Builder.hxx>
 
-//! Set of abstract geometric primitives.
+//! Set of abstract geometric primitives organized with bounding
+//! volume hierarchy (BVH). Unlike an object set, this collection
+//! is designed for storing structural elements of a single object
+//! (such as triangles in the object triangulation). Because there
+//! may be a large number of such elements, the implementations of
+//! this interface should be sufficiently optimized.
+//! \tparam T Numeric data type
+//! \tparam N Vector dimension
 template<class T, int N>
 class BVH_PrimitiveSet : public BVH_Object<T, N>, public BVH_Set<T, N>
 {
@@ -40,13 +47,13 @@ public:
   //! Returns AABB of primitive set.
   virtual BVH_Box<T, N> Box() const;
 
-  //! Returns constructed BVH tree.
+  //! Returns BVH tree (and builds it if necessary).
   virtual const NCollection_Handle<BVH_Tree<T, N> >& BVH();
 
-  //! Returns the method (builder) to construct BVH.
+  //! Returns the method (builder) used to construct BVH.
   virtual const NCollection_Handle<BVH_Builder<T, N> >& Builder() const;
 
-  //! Sets the method (builder) to construct BVH.
+  //! Sets the method (builder) used to construct BVH.
   virtual void SetBuilder (NCollection_Handle<BVH_Builder<T, N> >& theBuilder);
 
 protected:

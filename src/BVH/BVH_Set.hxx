@@ -18,7 +18,10 @@
 
 #include <BVH_Box.hxx>
 
-//! Set of abstract entities to build BVH.
+//! Set of abstract entities (bounded by BVH boxes). This is
+//! the minimal geometry interface needed to construct BVH.
+//! \tparam T Numeric data type
+//! \tparam N Vector dimension
 template<class T, int N>
 class BVH_Set
 {
@@ -34,22 +37,22 @@ public:
   //! Releases resources of set of objects.
   virtual ~BVH_Set() = 0;
 
-  //! Returns AABB of entire set of objects.
+  //! Returns AABB of the entire set of objects.
   virtual BVH_Box<T, N> Box() const;
 
 public:
 
-  //! Return total number of objects.
+  //! Returns total number of objects.
   virtual Standard_Integer Size() const = 0;
 
-  //! Returns AABB of specified object.
+  //! Returns AABB of the given object.
   virtual BVH_Box<T, N> Box (const Standard_Integer theIndex) const = 0;
 
-  //! Returns centroid position in specified axis.
+  //! Returns centroid position along the given axis.
   virtual T Center (const Standard_Integer theIndex,
                     const Standard_Integer theAxis) const = 0;
 
-  //! Swaps indices of two specified objects in the set.
+  //! Performs transposing the two given objects in the set.
   virtual void Swap (const Standard_Integer theIndex1,
                      const Standard_Integer theIndex2) = 0;
 

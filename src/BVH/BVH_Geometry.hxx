@@ -19,7 +19,10 @@
 #include <BVH_ObjectSet.hxx>
 #include <BVH_Builder.hxx>
 
-//! BVH geometry as a set of abstract geometric objects.
+//! BVH geometry as a set of abstract geometric objects
+//! organized with bounding volume hierarchy (BVH).
+//! \tparam T Numeric data type
+//! \tparam N Vector dimension
 template<class T, int N>
 class BVH_Geometry : public BVH_ObjectSet<T, N>
 {
@@ -36,16 +39,16 @@ public:
   //! Marks geometry as outdated.
   virtual void MarkDirty();
 
-  //! Returns AABB of whole geometry.
+  //! Returns AABB of the whole geometry.
   virtual BVH_Box<T, N> Box() const;
 
-  //! Returns constructed BVH tree.
+  //! Returns BVH tree (and builds it if necessary).
   virtual const NCollection_Handle<BVH_Tree<T, N> >& BVH();
 
-  //! Returns the method (builder) to construct BVH.
+  //! Returns the method (builder) used to construct BVH.
   virtual const NCollection_Handle<BVH_Builder<T, N> >& Builder() const;
 
-  //! Sets the method (builder) to construct BVH.
+  //! Sets the method (builder) used to construct BVH.
   virtual void SetBuilder (NCollection_Handle<BVH_Builder<T, N> >& theBuilder);
 
 protected:

@@ -19,20 +19,20 @@
 #include <BVH_Set.hxx>
 #include <BVH_Object.hxx>
 
-#include <NCollection_Vector.hxx>
-
-//! Set of abstract geometric objects to build BVH.
+//! Array of abstract entities (bounded by BVH boxes) to built BVH.
+//! \tparam T Numeric data type
+//! \tparam N Vector dimension
 template<class T, int N>
 class BVH_ObjectSet : public BVH_Set<T, N>
 {
 public:
 
-  //! Type for array of geometric objects.
+  //! Type of array of geometric objects.
   typedef NCollection_Vector<NCollection_Handle<BVH_Object<T, N> > > BVH_ObjectList;
 
 public:
 
-  //! Creates set of geometric objects.
+  //! Creates new set of geometric objects.
   BVH_ObjectSet();
 
   //! Releases resources of set of geometric objects.
@@ -40,13 +40,13 @@ public:
 
 public:
 
-  //! Clears all geometric objects.
+  //! Removes all geometric objects.
   virtual void Clear();
 
-  //! Returns array of geometric objects.
+  //! Returns reference to the array of geometric objects.
   BVH_ObjectList& Objects();
 
-  //! Returns array of geometric objects.
+  //! Returns reference to the  array of geometric objects.
   const BVH_ObjectList& Objects() const;
 
 public:
@@ -54,13 +54,13 @@ public:
   //! Return total number of objects.
   virtual Standard_Integer Size() const;
 
-  //! Returns AABB of specified object.
+  //! Returns AABB of the given object.
   virtual BVH_Box<T, N> Box (const Standard_Integer theIndex) const;
 
-  //! Returns centroid position in specified axis.
+  //! Returns centroid position along the given axis.
   virtual T Center (const Standard_Integer theIndex, const Standard_Integer theAxis) const;
 
-  //! Swaps indices of two specified objects in the set.
+  //! Performs transposing the two given objects in the set.
   virtual void Swap (const Standard_Integer theIndex1, const Standard_Integer theIndex2);
 
 protected:

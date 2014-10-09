@@ -31,6 +31,5 @@ BVH_Tree.lxx
 BVH_Triangulation.hxx
 BVH_Triangulation.lxx
 BVH_Types.hxx
-BVH_Types.lxx
 BVH_QueueBuilder.hxx
 BVH_QueueBuilder.lxx

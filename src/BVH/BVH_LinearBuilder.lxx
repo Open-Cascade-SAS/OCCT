@@ -149,7 +149,7 @@ namespace BVH
 
       for (Standard_Integer aPrimIdx = aData.y(); aPrimIdx <= aData.z(); ++aPrimIdx)
       {
-        const typename BVH_Box<T, N> aBox = theSet->Box (aPrimIdx);
+        const BVH_Box<T, N> aBox = theSet->Box (aPrimIdx);
 
         if (aPrimIdx == aData.y())
         {
@@ -179,7 +179,7 @@ Standard_Integer BVH_LinearBuilder<T, N>::EmitHierachy (BVH_Tree<T, N>*         
                                                         std::vector<BVH_EncodedLink>::iterator theStart,
                                                         std::vector<BVH_EncodedLink>::iterator theFinal)
 {
-  if (theFinal - theStart > myLeafNodeSize && theBit >= 0)
+  if (theFinal - theStart > BVH_Builder<T, N>::myLeafNodeSize && theBit >= 0)
   {
     std::vector<BVH_EncodedLink>::iterator aPosition = std::lower_bound (
       theStart, theFinal, BVH_EncodedLink(), BVH::BitComparator (theBit));

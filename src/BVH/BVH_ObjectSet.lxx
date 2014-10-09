@@ -95,8 +95,8 @@ template<class T, int N>
 T BVH_ObjectSet<T, N>::Center (const Standard_Integer theIndex,
                                const Standard_Integer theAxis) const
 {
-  typename BVH_Set<T, N>::BVH_BoxNt aBox = myObjects.Value (theIndex)->Box();
-  return BVH::CenterAxis<T, N>::Center (aBox, theAxis);
+  // Note: general implementation, not optimal
+  return BVH::CenterAxis<T, N>::Center (myObjects.Value (theIndex)->Box(), theAxis);
 }
 
 // =======================================================================
@@ -107,9 +107,6 @@ template<class T, int N>
 void BVH_ObjectSet<T, N>::Swap (const Standard_Integer theIndex1,
                                 const Standard_Integer theIndex2)
 {
-  NCollection_Handle<BVH_Object<T, N> > anObject1 = myObjects.Value (theIndex1);
-  NCollection_Handle<BVH_Object<T, N> > anObject2 = myObjects.Value (theIndex2);
-
-  myObjects.ChangeValue (theIndex1) = anObject2;
-  myObjects.ChangeValue (theIndex2) = anObject1;
+  std::swap (myObjects.ChangeValue (theIndex1),
+             myObjects.ChangeValue (theIndex2));
 }

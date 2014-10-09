@@ -19,18 +19,18 @@
 // Use this macro to switch between STL and OCCT vector types
 #define _BVH_USE_STD_VECTOR_
 
+#include <vector>
+
+#include <NCollection_Mat4.hxx>
 #include <NCollection_Vec2.hxx>
 #include <NCollection_Vec3.hxx>
-#include <NCollection_Vec4.hxx>
 #include <NCollection_Vector.hxx>
-#include <NCollection_Mat4.hxx>
-#include <Standard_Type.hxx>
-
-#include <vector>
 
 namespace BVH
 {
-  //! Allows for fast switching between Eigen and NCollection vectors.
+  //! Tool class for selecting appropriate vector type (Eigen or NCollection).
+  //! \tparam T Numeric data type
+  //! \tparam N Component number
   template<class T, int N> struct VectorType
   {
     // Not implemented
@@ -56,16 +56,9 @@ namespace BVH
     typedef NCollection_Vec4<T> Type;
   };
 
-  template<class T, int N = 1> struct ArrayType
-  {
-  #ifndef _BVH_USE_STD_VECTOR_
-    typedef NCollection_Vector<typename VectorType<T, N>::Type> Type;
-  #else
-    typedef std::vector<typename VectorType<T, N>::Type> Type;
-  #endif
-  };
-
-  //! Allows to fast switching between Eigen and NCollection matrices.
+  //! Tool class for selecting appropriate matrix type (Eigen or NCollection).
+  //! \tparam T Numeric data type
+  //! \tparam N Matrix dimension
   template<class T, int N> struct MatrixType
   {
     // Not implemented
@@ -76,13 +69,17 @@ namespace BVH
     typedef NCollection_Mat4<T> Type;
   };
 
-  template<class T>
-  static inline Standard_Integer IntFloor (const T theValue)
+  //! Tool class for selecting type of array of vectors (STD or NCollection vector).
+  //! \tparam T Numeric data type
+  //! \tparam N Component number
+  template<class T, int N = 1> struct ArrayType
   {
-    const Standard_Integer aRes = static_cast<Standard_Integer> (theValue);
-    
-    return aRes - static_cast<Standard_Integer> (aRes > theValue);
-  }
+  #ifndef _BVH_USE_STD_VECTOR_
+    typedef NCollection_Vector<typename VectorType<T, N>::Type> Type;
+  #else
+    typedef std::vector<typename VectorType<T, N>::Type> Type;
+  #endif
+  };
 }
 
 //! 2D vector of integers.
@@ -133,6 +130,111 @@ typedef BVH::MatrixType<Standard_ShortReal, 4>::Type BVH_Mat4f;
 //! 4x4 matrix of double precision reals.
 typedef BVH::MatrixType<Standard_Real, 4>::Type BVH_Mat4d;
 
-#include <BVH_Types.lxx>
+namespace BVH
+{
+  //! Tool class for accessing specific vector component (by index).
+  //! \tparam T Numeric data type
+  //! \tparam N Component number
+  template<class T, int N> struct VecComp
+  {
+    // Not implemented
+  };
+
+  template<class T> struct VecComp<T, 2>
+  {
+    typedef typename BVH::VectorType<T, 2>::Type BVH_Vec2t;
+
+    static T Get (const BVH_Vec2t& theVec, const Standard_Integer theAxis)
+    {
+      return theAxis == 0 ? theVec.x() : theVec.y();
+    }
+  };
+
+  template<class T> struct VecComp<T, 3>
+  {
+    typedef typename BVH::VectorType<T, 3>::Type BVH_Vec3t;
+
+    static T Get (const BVH_Vec3t& theVec, const Standard_Integer theAxis)
+    {
+      return theAxis == 0 ? theVec.x() : ( theAxis == 1 ? theVec.y() : theVec.z() );
+    }
+  };
+
+  template<class T> struct VecComp<T, 4>
+  {
+    typedef typename BVH::VectorType<T, 4>::Type BVH_Vec4t;
+
+    static T Get (const BVH_Vec4t& theVec, const Standard_Integer theAxis)
+    {
+      return theAxis == 0 ? theVec.x() :
+        (theAxis == 1 ? theVec.y() : ( theAxis == 2 ? theVec.z() : theVec.w() ));
+    }
+  };
+
+  //! Tool class providing typical operations on the array. It allows
+  //! for interoperability between STD vector and NCollection vector.
+  //! \tparam T Numeric data type
+  //! \tparam N Component number
+  template<class T, int N = 1> struct Array
+  {
+    typedef typename BVH::ArrayType<T, N>::Type BVH_ArrayNt;
+
+    static inline const typename BVH::VectorType<T, N>::Type& Value (
+        const BVH_ArrayNt& theArray, const Standard_Integer theIndex)
+    {
+#ifdef _BVH_USE_STD_VECTOR_
+      return theArray[theIndex];
+#else
+      return theArray.Value (theIndex);
+#endif
+    }
+
+    static inline typename BVH::VectorType<T, N>::Type& ChangeValue (
+      BVH_ArrayNt& theArray, const Standard_Integer theIndex)
+    {
+#ifdef _BVH_USE_STD_VECTOR_
+      return theArray[theIndex];
+#else
+      return theArray.ChangeValue (theIndex);
+#endif
+    }
+
+    static inline void Append (BVH_ArrayNt& theArray,
+      const typename BVH::VectorType<T, N>::Type& theElement)
+    {
+#ifdef _BVH_USE_STD_VECTOR_
+      theArray.push_back (theElement);
+#else
+      theArray.Append (theElement);
+#endif
+    }
+
+    static inline Standard_Integer Size (const BVH_ArrayNt& theArray)
+    {
+#ifdef _BVH_USE_STD_VECTOR_
+      return static_cast<Standard_Integer> (theArray.size());
+#else
+      return static_cast<Standard_Integer> (theArray.Size());
+#endif
+    }
+
+    static inline void Clear (BVH_ArrayNt& theArray)
+    {
+#ifdef _BVH_USE_STD_VECTOR_
+      theArray.clear();
+#else
+      theArray.Clear();
+#endif
+    }
+  };
+
+  template<class T>
+  static inline Standard_Integer IntFloor (const T theValue)
+  {
+    const Standard_Integer aRes = static_cast<Standard_Integer> (theValue);
+
+    return aRes - static_cast<Standard_Integer> (aRes > theValue);
+  }
+}
 
 #endif // _BVH_Types_Header

@@ -19,31 +19,34 @@
 #include <BVH_Set.hxx>
 #include <BVH_Tree.hxx>
 
-namespace
+namespace BVH
 {
   //! Minimum node size to split.
   const Standard_Real THE_NODE_MIN_SIZE = 1e-5;
 }
 
-//! Performs building of BVH tree.
+//! Performs construction of BVH tree using bounding
+//! boxes (AABBs) of abstract objects.
+//! \tparam T Numeric data type
+//! \tparam N Vector dimension
 template<class T, int N>
 class BVH_Builder
 {
 public:
 
-  //! Creates abstract BVH builder.
+  //! Creates new abstract BVH builder.
   BVH_Builder (const Standard_Integer theLeafNodeSize,
                const Standard_Integer theMaxTreeDepth);
 
   //! Releases resources of BVH builder.
   virtual ~BVH_Builder();
 
-public:
-
-  //! Builds BVH using specified algorithm.
+  //! Builds BVH using specific algorithm.
   virtual void Build (BVH_Set<T, N>*       theSet,
                       BVH_Tree<T, N>*      theBVH,
                       const BVH_Box<T, N>& theBox) = 0;
+
+protected:
 
   //! Updates depth of constructed BVH tree.
   void UpdateDepth (BVH_Tree<T, N>*        theBVH,
@@ -57,8 +60,8 @@ public:
 
 protected:
 
-  Standard_Integer                     myMaxTreeDepth; //!< Maximum depth of constructed BVH
-  Standard_Integer                     myLeafNodeSize; //!< Maximum number of primitives per leaf
+  Standard_Integer myMaxTreeDepth; //!< Maximum depth of constructed BVH
+  Standard_Integer myLeafNodeSize; //!< Maximum number of objects per leaf
 
 };
 

@@ -21,7 +21,9 @@
 
 #include <NCollection_Handle.hxx>
 
-//! Abstract geometric object.
+//! Abstract geometric object bounded by BVH box.
+//! \tparam T Numeric data type
+//! \tparam N Vector dimension
 template<class T, int N>
 class BVH_Object
 {
@@ -35,21 +37,21 @@ public:
 
 public:
 
-  //! Returns AABB of geometric object.
+  //! Returns AABB of the geometric object.
   virtual BVH_Box<T, N> Box() const = 0;
 
-  //! Returns properties of geometric object.
+  //! Returns properties of the geometric object.
   virtual const NCollection_Handle<BVH_Properties>& Properties() const;
 
-  //! Sets properties of geometric object.
+  //! Sets properties of the geometric object.
   virtual void SetProperties (const NCollection_Handle<BVH_Properties>& theProperties);
 
-  //! Marks object state as outdated.
+  //! Marks object state as outdated (needs BVH rebuilding).
   virtual void MarkDirty();
 
 protected:
 
-  Standard_Boolean                   myIsDirty;    //!< Marks that internal object state need to be updated
+  Standard_Boolean                   myIsDirty;    //!< Marks internal object state as outdated
   NCollection_Handle<BVH_Properties> myProperties; //!< Generic properties assigned to the object
 
 };

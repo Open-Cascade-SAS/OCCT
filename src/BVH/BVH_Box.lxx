@@ -15,76 +15,6 @@
 
 #include <Standard_ShortReal.hxx>
 
-namespace BVH
-{
-  template<class T, int N>
-  struct CenterAxis {
-    // Not implemented
-  };
-
-  template<class T>
-  struct CenterAxis<T, 2>
-  {
-    static T Center (const BVH_Box<T, 2>&   theBox,
-                     const Standard_Integer theAxis)
-    {
-      if (theAxis == 0)
-      {
-        return (theBox.CornerMin().x() + theBox.CornerMax().x()) * static_cast<T> (0.5);
-      }
-      else if (theAxis == 1)
-      {
-        return (theBox.CornerMin().y() + theBox.CornerMax().y()) * static_cast<T> (0.5);
-      }
-      return static_cast<T> (0.0);
-    }
-  };
-
-  template<class T>
-  struct CenterAxis<T, 3>
-  {
-    static T Center (const BVH_Box<T, 3>&   theBox,
-                     const Standard_Integer theAxis)
-    {
-      if (theAxis == 0)
-      {
-        return (theBox.CornerMin().x() + theBox.CornerMax().x()) * static_cast<T> (0.5);
-      }
-      else if (theAxis == 1)
-      {
-        return (theBox.CornerMin().y() + theBox.CornerMax().y()) * static_cast<T> (0.5);
-      }
-      else if (theAxis == 2)
-      {
-        return (theBox.CornerMin().z() + theBox.CornerMax().z()) * static_cast<T> (0.5);
-      }
-      return static_cast<T> (0.0);
-    }
-  };
-
-  template<class T>
-  struct CenterAxis<T, 4>
-  {
-    static T Center (const BVH_Box<T, 4>&   theBox,
-                     const Standard_Integer theAxis)
-    {
-      if (theAxis == 0)
-      {
-        return (theBox.CornerMin().x() + theBox.CornerMax().x()) * static_cast<T> (0.5);
-      }
-      else if (theAxis == 1)
-      {
-        return (theBox.CornerMin().y() + theBox.CornerMax().y()) * static_cast<T> (0.5);
-      }
-      else if (theAxis == 2)
-      {
-        return (theBox.CornerMin().z() + theBox.CornerMax().z()) * static_cast<T> (0.5);
-      }
-      return static_cast<T> (0.0);
-    }
-  };
-}
-
 // =======================================================================
 // function : Clear
 // purpose  :
@@ -92,7 +22,7 @@ namespace BVH
 template<class T, int N>
 void BVH_Box<T, N>::Clear()
 {
-  myInitialized = Standard_False;
+  myIsInited = Standard_False;
 }
 
 // =======================================================================
@@ -102,7 +32,7 @@ void BVH_Box<T, N>::Clear()
 template<class T, int N>
 Standard_Boolean BVH_Box<T, N>::IsValid() const
 {
-  return myInitialized;
+  return myIsInited;
 }
 
 // =======================================================================
@@ -112,59 +42,18 @@ Standard_Boolean BVH_Box<T, N>::IsValid() const
 template<class T, int N>
 void BVH_Box<T, N>::Add (const BVH_VecNt& thePoint)
 {
-  if (!myInitialized)
+  if (!myIsInited)
   {
     myMinPoint = thePoint;
     myMaxPoint = thePoint;
 
-    myInitialized = Standard_True;
+    myIsInited = Standard_True;
   }
   else
   {
     myMinPoint = myMinPoint.cwiseMin (thePoint);
     myMaxPoint = myMaxPoint.cwiseMax (thePoint);
   }
-}
-
-namespace BVH
-{
-  template<class T, int N>
-  struct BoxMinMax
-  {
-    typedef typename BVH::VectorType<T, N>::Type BVH_VecNt;
-
-    static void CwiseMin (BVH_VecNt& theVec1, const BVH_VecNt& theVec2)
-    {
-      theVec1.x() = Min (theVec1.x(), theVec2.x());
-      theVec1.y() = Min (theVec1.y(), theVec2.y());
-      theVec1.z() = Min (theVec1.z(), theVec2.z());
-    }
-
-    static void CwiseMax (BVH_VecNt& theVec1, const BVH_VecNt& theVec2)
-    {
-      theVec1.x() = Max (theVec1.x(), theVec2.x());
-      theVec1.y() = Max (theVec1.y(), theVec2.y());
-      theVec1.z() = Max (theVec1.z(), theVec2.z());
-    }
-  };
-
-  template<class T>
-  struct BoxMinMax<T, 2>
-  {
-    typedef typename BVH::VectorType<T, 2>::Type BVH_VecNt;
-
-    static void CwiseMin (BVH_VecNt& theVec1, const BVH_VecNt& theVec2)
-    {
-      theVec1.x() = Min (theVec1.x(), theVec2.x());
-      theVec1.y() = Min (theVec1.y(), theVec2.y());
-    }
-
-    static void CwiseMax (BVH_VecNt& theVec1, const BVH_VecNt& theVec2)
-    {
-      theVec1.x() = Max (theVec1.x(), theVec2.x());
-      theVec1.y() = Max (theVec1.y(), theVec2.y());
-    }
-  };
 }
 
 // =======================================================================
@@ -174,14 +63,14 @@ namespace BVH
 template<class T, int N>
 void BVH_Box<T, N>::Combine (const BVH_Box& theBox)
 {
-  if (theBox.myInitialized)
+  if (theBox.myIsInited)
   {
-    if (!myInitialized)
+    if (!myIsInited)
     {
       myMinPoint = theBox.myMinPoint;
       myMaxPoint = theBox.myMaxPoint;
 
-      myInitialized = Standard_True;
+      myIsInited = Standard_True;
     }
     else
     {
@@ -191,46 +80,6 @@ void BVH_Box<T, N>::Combine (const BVH_Box& theBox)
   }
 }
 
-namespace BVH
-{
-  template<class T, int N>
-  struct SurfaceCalculator
-  {
-    // Not implemented
-  };
-
-  template<class T>
-  struct SurfaceCalculator<T, 2>
-  {
-    static T Area (const typename BVH_Box<T, 2>::BVH_VecNt& theSize)
-    {
-      return theSize.x() * theSize.y();
-    }
-  };
-
-  template<class T>
-  struct SurfaceCalculator<T, 3>
-  {
-    static T Area (const typename BVH_Box<T, 3>::BVH_VecNt& theSize)
-    {
-      return ( theSize.x() * theSize.y() +
-               theSize.x() * theSize.z() +
-               theSize.z() * theSize.y() ) * static_cast<T> (2.0);
-    }
-  };
-
-  template<class T>
-  struct SurfaceCalculator<T, 4>
-  {
-    static T Area (const typename BVH_Box<T, 4>::BVH_VecNt& theSize)
-    {
-      return ( theSize.x() * theSize.y() +
-               theSize.x() * theSize.z() +
-               theSize.z() * theSize.y() ) * static_cast<T> (2.0);
-    }
-  };
-}
-
 // =======================================================================
 // function : Area
 // purpose  :
@@ -238,8 +87,8 @@ namespace BVH
 template<class T, int N>
 T BVH_Box<T, N>::Area() const
 {
-  return !myInitialized ? static_cast<T> (0.0) :
-    BVHTools::SurfaceCalculator<T, N>::Area (myMaxPoint - myMinPoint);
+  return !myIsInited ? static_cast<T> (0.0) :
+    BVH::SurfaceCalculator<T, N>::Area (myMaxPoint - myMinPoint);
 }
 
 // =======================================================================
@@ -300,4 +149,14 @@ template<class T, int N>
 typename BVH_Box<T, N>::BVH_VecNt BVH_Box<T, N>::Center() const
 {
   return (myMinPoint + myMaxPoint) * static_cast<T> (0.5);
+}
+
+// =======================================================================
+// function : Center
+// purpose  :
+// =======================================================================
+template<class T, int N>
+T BVH_Box<T, N>::Center (const Standard_Integer theAxis) const
+{
+  return BVH::CenterAxis<T, N>::Center (*this, theAxis);
 }

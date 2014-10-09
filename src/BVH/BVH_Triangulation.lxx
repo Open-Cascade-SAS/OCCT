@@ -40,7 +40,7 @@ BVH_Triangulation<T, N>::~BVH_Triangulation()
 template<class T, int N>
 Standard_Integer BVH_Triangulation<T, N>::Size() const
 {
-  return BVH::ArrayOp<Standard_Integer, 4>::Size (Elements);
+  return BVH::Array<Standard_Integer, 4>::Size (Elements);
 }
 
 // =======================================================================
@@ -50,11 +50,11 @@ Standard_Integer BVH_Triangulation<T, N>::Size() const
 template<class T, int N>
 BVH_Box<T, N> BVH_Triangulation<T, N>::Box (const Standard_Integer theIndex) const
 {
-  const BVH_Vec4i& anIndex = BVH::ArrayOp<Standard_Integer, 4>::Value (Elements, theIndex);
+  const BVH_Vec4i& anIndex = BVH::Array<Standard_Integer, 4>::Value (Elements, theIndex);
 
-  const BVH_VecNt& aPoint0 = BVH::ArrayOp<T, N>::Value (Vertices, anIndex.x());
-  const BVH_VecNt& aPoint1 = BVH::ArrayOp<T, N>::Value (Vertices, anIndex.y());
-  const BVH_VecNt& aPoint2 = BVH::ArrayOp<T, N>::Value (Vertices, anIndex.z());
+  const BVH_VecNt& aPoint0 = BVH::Array<T, N>::Value (Vertices, anIndex.x());
+  const BVH_VecNt& aPoint1 = BVH::Array<T, N>::Value (Vertices, anIndex.y());
+  const BVH_VecNt& aPoint2 = BVH::Array<T, N>::Value (Vertices, anIndex.z());
   
   BVH_VecNt aMinPoint = aPoint0;
   BVH_VecNt aMaxPoint = aPoint0;
@@ -75,11 +75,11 @@ template<class T, int N>
 T BVH_Triangulation<T, N>::Center (const Standard_Integer theIndex,
                                    const Standard_Integer theAxis) const
 {
-  const BVH_Vec4i& anIndex = BVH::ArrayOp<Standard_Integer, 4>::Value (Elements, theIndex);
+  const BVH_Vec4i& anIndex = BVH::Array<Standard_Integer, 4>::Value (Elements, theIndex);
 
-  const BVH_VecNt& aPoint0 = BVH::ArrayOp<T, N>::Value (Vertices, anIndex.x());
-  const BVH_VecNt& aPoint1 = BVH::ArrayOp<T, N>::Value (Vertices, anIndex.y());
-  const BVH_VecNt& aPoint2 = BVH::ArrayOp<T, N>::Value (Vertices, anIndex.z());
+  const BVH_VecNt& aPoint0 = BVH::Array<T, N>::Value (Vertices, anIndex.x());
+  const BVH_VecNt& aPoint1 = BVH::Array<T, N>::Value (Vertices, anIndex.y());
+  const BVH_VecNt& aPoint2 = BVH::Array<T, N>::Value (Vertices, anIndex.z());
 
   return ( BVH::VecComp<T, N>::Get (aPoint0, theAxis) +
            BVH::VecComp<T, N>::Get (aPoint1, theAxis) +
@@ -94,8 +94,8 @@ template<class T, int N>
 void BVH_Triangulation<T, N>::Swap (const Standard_Integer theIndex1,
                                     const Standard_Integer theIndex2)
 {
-  BVH_Vec4i& anIndices1 = BVH::ArrayOp<Standard_Integer, 4>::ChangeValue (Elements, theIndex1);
-  BVH_Vec4i& anIndices2 = BVH::ArrayOp<Standard_Integer, 4>::ChangeValue (Elements, theIndex2);
+  BVH_Vec4i& anIndices1 = BVH::Array<Standard_Integer, 4>::ChangeValue (Elements, theIndex1);
+  BVH_Vec4i& anIndices2 = BVH::Array<Standard_Integer, 4>::ChangeValue (Elements, theIndex2);
 
   std::swap (anIndices1, anIndices2);
 }
