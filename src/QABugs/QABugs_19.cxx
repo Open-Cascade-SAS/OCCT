@@ -19,6 +19,7 @@
 #include <DBRep.hxx>
 #include <DrawTrSurf.hxx>
 #include <ViewerTest.hxx>
+#include <V3d_View.hxx>
 #include <TopoDS_Shape.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_TexturedShape.hxx>
@@ -2710,6 +2711,34 @@ static Standard_Integer OCC25043 (Draw_Interpretor& theDI,
 }
 
 //=======================================================================
+//function : OCC24606
+//purpose  :
+//=======================================================================
+static Standard_Integer OCC24606 (Draw_Interpretor& theDI,
+                                  Standard_Integer  theArgNb,
+                                  const char**      theArgVec)
+{
+  if (theArgNb > 1)
+  {
+    std::cerr << "Error: incorrect number of arguments.\n";
+    theDI << "Usage : " << theArgVec[0] << "\n";
+    return 1;
+  }
+
+  Handle(V3d_View) aView = ViewerTest::CurrentView();
+  if (aView.IsNull())
+  {
+    std::cerr << "Errro: no active view, please call 'vinit'.\n";
+    return 1;
+  }
+
+  aView->DepthFitAll();
+  aView->FitAll();
+
+  return 0;
+}
+
+//=======================================================================
 //function : OCC23010
 //purpose  :
 //=======================================================================
@@ -2804,5 +2833,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
                    __FILE__, OCC24925, group);
   theCommands.Add ("OCC23010", "OCC23010 STEP_file", __FILE__, OCC23010, group);
   theCommands.Add ("OCC25043", "OCC25043 shape", __FILE__, OCC25043, group);
+  theCommands.Add ("OCC24606", "OCC24606 : Tests ::FitAll for V3d view ('vfit' is for NIS view)", __FILE__, OCC24606, group);
   return;
 }

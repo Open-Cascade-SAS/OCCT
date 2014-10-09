@@ -1,0 +1,40 @@
+puts "============"
+puts "OCC24606"
+puts "============"
+puts ""
+####################################################################################
+# Tests ::FitDepth and ::FitAll implementation of V3d_View.
+####################################################################################
+
+set check_x 402
+set check_y 320
+
+restore [locate_data_file bug24606.brep] shape
+
+vinit View1
+vautozfit 0
+vsetdispmode 1
+vdisplay shape
+OCC24606
+vmoveto $check_x $check_y
+
+checkcolor $check_x $check_y 0 1 1
+
+if {$stat != 1} {
+    puts "Error : V3d view ::FitAll is broken."
+}
+vdump ${imagedir}/${casename}_1.png
+
+vinit View2
+vautozfit 1
+vsetdispmode 1
+vdisplay shape
+OCC24606
+vmoveto $check_x $check_y
+
+checkcolor $check_x $check_y 0 1 1
+
+if {$stat != 1} {
+    puts "Error : V3d view ::FitAll is broken."
+}
+vdump ${imagedir}/${casename}_2.png
