@@ -28,6 +28,7 @@ extern void ExprIntrp_ProductOperator();
 extern void ExprIntrp_DivideOperator();
 extern void ExprIntrp_ExpOperator();
 extern void ExprIntrp_UnaryMinusOperator();
+extern void ExprIntrp_UnaryPlusOperator();
 extern void ExprIntrp_VariableIdentifier();
 extern void ExprIntrp_NumValue();
 extern void ExprIntrp_EndFunction();
@@ -78,56 +79,57 @@ extern void ExprIntrp_EndOfEqual();
 %%
 
 exprentry          : GenExpr
-		   | Assignment  
+                   | Assignment  
                    | Deassignment
-		   | FunctionDefinition  {ExprIntrp_EndOfFuncDef();}
-		   | RelationList {ExprIntrp_EndOfRelation();}
-		   ;
+                   | FunctionDefinition  {ExprIntrp_EndOfFuncDef();}
+                   | RelationList {ExprIntrp_EndOfRelation();}
+                   ;
 
 Assignment         : IDENTIFIER {ExprIntrp_AssignVariable();} ASSIGNOP GenExpr {ExprIntrp_EndOfAssign();}
-		   ;
+                   ;
 
 Deassignment       : DEASSIGNKEY BRACKET IDENTIFIER {ExprIntrp_Deassign();} ENDBRACKET
                    ;
 
-GenExpr	           : GenExpr SUMOP  GenExpr {ExprIntrp_SumOperator();}
-                   | GenExpr MINUSOP GenExpr {ExprIntrp_MinusOperator();} 
-	           | GenExpr MULTOP GenExpr {ExprIntrp_ProductOperator();} 
-	           | GenExpr DIVIDEOP GenExpr {ExprIntrp_DivideOperator();} 
-	           | GenExpr EXPOP GenExpr {ExprIntrp_ExpOperator();} 
-	           | PARENTHESIS GenExpr ENDPARENTHESIS
-	           | BRACKET GenExpr ENDBRACKET
-	           | MINUSOP GenExpr {ExprIntrp_UnaryMinusOperator();}
-	           | SingleExpr
+GenExpr            : GenExpr SUMOP  GenExpr {ExprIntrp_SumOperator();}
+                   | GenExpr MINUSOP GenExpr {ExprIntrp_MinusOperator();}
+                   | GenExpr MULTOP GenExpr {ExprIntrp_ProductOperator();}
+                   | GenExpr DIVIDEOP GenExpr {ExprIntrp_DivideOperator();}
+                   | GenExpr EXPOP GenExpr {ExprIntrp_ExpOperator();}
+                   | PARENTHESIS GenExpr ENDPARENTHESIS
+                   | BRACKET GenExpr ENDBRACKET
+                   | MINUSOP GenExpr {ExprIntrp_UnaryMinusOperator();}
+                   | SUMOP GenExpr {ExprIntrp_UnaryPlusOperator();}
+                   | SingleExpr
                    | Derivation
                    | ConstantDefinition
                    | Sumator
                    | Productor
-	           ;
+                   ;
 
 SingleExpr         : Single
-		   | Function
-		   ;
+                   | Function
+                   ;
 
 
-Single	           : IDENTIFIER  {ExprIntrp_VariableIdentifier();}
-		   | VALUE  {ExprIntrp_NumValue();}
-		   ;
+Single             : IDENTIFIER  {ExprIntrp_VariableIdentifier();}
+                   | VALUE  {ExprIntrp_NumValue();}
+                   ;
 
 Function           : funcident PARENTHESIS ListGenExpr ENDPARENTHESIS {ExprIntrp_EndFunction();}
                    | DerFunctionId PARENTHESIS ListGenExpr ENDPARENTHESIS {ExprIntrp_EndDerFunction();}
                    | DiffFuncId {ExprIntrp_EndDifferential();} PARENTHESIS ListGenExpr ENDPARENTHESIS {ExprIntrp_EndDiffFunction();}
-		   ;
+                   ;
 
 ListGenExpr        : GenExpr {ExprIntrp_EndFuncArg();} 
-		   | GenExpr COMMA {ExprIntrp_NextFuncArg();} ListGenExpr 
-		   ;
+                   | GenExpr COMMA {ExprIntrp_NextFuncArg();} ListGenExpr 
+                   ;
 
 funcident          : IDENTIFIER  {ExprIntrp_StartFunction();}
-		   ;
+                   ;
 
 FunctionDefinition : FunctionDef {ExprIntrp_DefineFunction();} ASSIGNOP GenExpr
-		   ;
+                   ;
 
 DerFunctionId      : IDENTIFIER {ExprIntrp_StartDerivate();} DERIVATE {ExprIntrp_EndDerivate();}
                    ;
@@ -140,15 +142,15 @@ DiffId             : IDENTIFIER {ExprIntrp_StartDifferential();}
                    | DiffFuncId
                    ;
 
-FunctionDef	   : IDENTIFIER {ExprIntrp_StartFunction();} BRACKET ListArg ENDBRACKET
-		   ;
+FunctionDef        : IDENTIFIER {ExprIntrp_StartFunction();} BRACKET ListArg ENDBRACKET
+                   ;
 
-ListArg		   : unarg {ExprIntrp_EndFuncArg();}
-		   | unarg COMMA {ExprIntrp_NextFuncArg();} ListArg
-		   ;
+ListArg            : unarg {ExprIntrp_EndFuncArg();}
+                   | unarg COMMA {ExprIntrp_NextFuncArg();} ListArg
+                   ;
 
-unarg		   : IDENTIFIER {ExprIntrp_VariableIdentifier();}
-		   ;
+unarg              : IDENTIFIER {ExprIntrp_VariableIdentifier();}
+                   ;
 
 Derivation         : DERIVKEY BRACKET GenExpr COMMA IDENTIFIER {ExprIntrp_Derivation();} ENDBRACKET {ExprIntrp_EndDerivation();}
                    | DERIVKEY BRACKET GenExpr COMMA IDENTIFIER {ExprIntrp_Derivation();} COMMA VALUE {ExprIntrp_DerivationValue();} ENDBRACKET {ExprIntrp_EndDerivation();}
@@ -163,11 +165,11 @@ Sumator            : SUMKEY BRACKET GenExpr COMMA IDENTIFIER {ExprIntrp_Variable
 Productor          : PRODKEY BRACKET GenExpr COMMA IDENTIFIER {ExprIntrp_VariableIdentifier();} COMMA GenExpr COMMA GenExpr COMMA VALUE {ExprIntrp_NumValue();} ENDBRACKET {ExprIntrp_Productor();}
                    ;
 
-RelationList	   : SingleRelation 
-		   | SingleRelation RELSEPARATOR RelationList
-		   | SingleRelation '\n' RelationList
-		   ;
+RelationList       : SingleRelation 
+                   | SingleRelation RELSEPARATOR RelationList
+                   | SingleRelation '\n' RelationList
+                   ;
 
-SingleRelation	   : GenExpr EQUALOP GenExpr {ExprIntrp_EndOfEqual();}
-		   ;
+SingleRelation     : GenExpr EQUALOP GenExpr {ExprIntrp_EndOfEqual();}
+                   ;
 

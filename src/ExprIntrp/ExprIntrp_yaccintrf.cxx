@@ -430,6 +430,12 @@ extern "C" void ExprIntrp_UnaryMinusOperator()
   ExprIntrp_Recept.Push(res->ShallowSimplified());
 }
 
+extern "C" void ExprIntrp_UnaryPlusOperator()
+{
+  Handle(Expr_GeneralExpression) op = ExprIntrp_Recept.Pop();
+  ExprIntrp_Recept.Push(op);
+}
+
 extern "C" void ExprIntrp_VariableIdentifier()
 {
   const TCollection_AsciiString& thename = ExprIntrp_GetResult();
