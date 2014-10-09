@@ -189,8 +189,8 @@ The install folder contains the scripts to run *DRAWEXE* (*draw.bat* or *draw.sh
 * **samples** - tcl sample files
 * **src**     - all required source files for OCCT
 * **tests**   - OCCT test suite
-* **win32/vc10/bind**> - example relative directory tree of binary files (3rdparty and occt) (the abstract one is <system with bitness>/<compiler>/bin<build type>)
-* **win32/vc9/lib**>   - example relative directory tree of libraries (3rdparty and occt) (the abstract one is <system with bitness>/<compiler>/lib<build type>)
+* **win32/vc10/bind**> - example relative directory tree of binary files (3rdparty and occt)
+* **win32/vc9/lib**>   - example relative directory tree of libraries (3rdparty and occt)
 
 ### Windows (Visual studio)
 
@@ -228,4 +228,4 @@ On Windows you can also build binaries of MFC samples together with OCCT. For th
 @figure{/dev_guides/building/cmake/images/cmake_image007.png}
 
 Please take into account that MFC sample binaries will be installed  in the same folder as OCCT binaries during building of *INSTALL* project.
-To run an MFC sample use *sample.bat* launcher. The command format is: <i>sample.bat <SampleName></i> (e.g. <i>sample.bat ImportExport</i>).
+To run an MFC sample use *sample.bat* launcher. The command format is: <i>sample.bat *SampleName*</i> (e.g. <i>sample.bat ImportExport</i>).

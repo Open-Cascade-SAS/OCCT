@@ -32,6 +32,7 @@ user_guides/ocaf_functionmechanism_wp/ocaf_functionmechanism_wp.md
 user_guides/ocaf_tree_wp/ocaf_tree_wp.md
 user_guides/ocaf_wp/ocaf_wp.md
 user_guides/voxels_wp/voxels_wp.md
+user_guides/vis/vis.md
 
 dev_guides/dev_guides.md
 dev_guides/documentation/documentation.md

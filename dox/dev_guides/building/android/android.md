@@ -17,7 +17,7 @@ with following tools:
 Run GUI tool provided by CMake: cmake-gui
 
 ### Tools configuration
-   - Specify the root folder of OCCT (<i>$CASROOT</i>, which contains *CMakelists.txt* file) by clicking **Browse Source**.
+  - Specify the root folder of OCCT (<i>$CASROOT</i>, which contains *CMakelists.txt* file) by clicking **Browse Source**.
   - Specify the location (build folder) for Cmake generated project files by clicking **Browse Build**.
 
 @figure{/dev_guides/building/android/images/android_image001.png}
