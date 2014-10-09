@@ -286,6 +286,8 @@ ShapeAnalysis_FreeBounds::ShapeAnalysis_FreeBounds(const TopoDS_Shape& shape,
       TopoDS_Wire aCurW = TopoDS::Wire (arrwires->Value (lwire));
       Handle(ShapeExtend_WireData) acurwd = new 
         ShapeExtend_WireData ( TopoDS::Wire (arrwires->Value (lwire)), Standard_True, isUsedManifoldMode);
+      if( !acurwd->NbEdges())
+        continue;
       sewd->Add (acurwd, (tail ? 0 : 1));
     }
     else
@@ -369,21 +371,22 @@ ShapeAnalysis_FreeBounds::ShapeAnalysis_FreeBounds(const TopoDS_Shape& shape,
       // Recherche de la premier edge non traitee pour un autre wire.
       //Searching for first edge for next wire
       lwire = -1;
-      for (/*Standard_Integer*/ i = 1 ; i <= arrwires->Length() && lwire == -1; i++)
+      for (/*Standard_Integer*/ i = 1 ; i <= arrwires->Length(); i++)
       {
         if (!aSel.ContWire(i))
         {
           lwire = i; //szv#4:S4163:12Mar99 optimized
+          sewd->Add (TopoDS::Wire (arrwires->Value (lwire)));
+          aSel.LoadList(lwire);
+
+          if (sewd->NbEdges() > 0)
+            break;
+          sewd->Clear();
         }
       }
 
       if (lwire == -1)
         done = 1;
-      else
-      {
-        sewd->Add (TopoDS::Wire (arrwires->Value (lwire)));
-        aSel.LoadList(lwire);
-      }
     }
   }
 
