@@ -423,23 +423,26 @@ void AIS_TexturedShape::Compute (const Handle(PrsMgr_PresentationManager3d)& /*t
       break;
     }
     case AIS_Shaded:
+    case 3: // texture mapping on triangulation
     {
       Standard_Real prevangle;
       Standard_Real newangle;
       Standard_Real prevcoeff;
       Standard_Real newcoeff;
 
-      Standard_Boolean isOwnDeviationAngle = OwnDeviationAngle(newangle,prevangle);
+      Standard_Boolean isOwnDeviationAngle       = OwnDeviationAngle(newangle,prevangle);
       Standard_Boolean isOwnDeviationCoefficient = OwnDeviationCoefficient(newcoeff,prevcoeff);
       if (((Abs (newangle - prevangle) > Precision::Angular()) && isOwnDeviationAngle) ||
           ((Abs (newcoeff - prevcoeff) > Precision::Confusion()) && isOwnDeviationCoefficient)) {
         BRepTools::Clean (myshape);
       }
+
       if (myshape.ShapeType() > TopAbs_FACE)
       {
         StdPrs_WFDeflectionShape::Add (thePrs, myshape, myDrawer);
         break;
       }
+
       myDrawer->SetShadingAspectGlobal (Standard_False);
       if (IsInfinite())
       {
@@ -449,7 +452,19 @@ void AIS_TexturedShape::Compute (const Handle(PrsMgr_PresentationManager3d)& /*t
       try
       {
         OCC_CATCH_SIGNALS
-        StdPrs_ShadedShape::Add (thePrs, myshape, myDrawer);
+        if (theMode == AIS_Shaded)
+        {
+          StdPrs_ShadedShape::Add (thePrs, myshape, myDrawer);
+        }
+        else
+        {
+          StdPrs_ShadedShape::Add (thePrs, myshape, myDrawer,
+                                   Standard_True,
+                                   myIsCustomOrigin ? myUVOrigin : gp_Pnt2d (0.0, 0.0),
+                                   myUVRepeat,
+                                   myToScale        ? myUVScale  : gp_Pnt2d (1.0, 1.0));
+          updateAttributes (thePrs);
+        }
       }
       catch (Standard_Failure)
       {
@@ -467,28 +482,6 @@ void AIS_TexturedShape::Compute (const Handle(PrsMgr_PresentationManager3d)& /*t
       else
       {
         StdPrs_WFDeflectionRestrictedFace::AddBox (thePrs, BoundingBox(), myDrawer);
-      }
-      break;
-    }
-    case 3: // texture mapping on triangulation
-    {
-      BRepTools::Clean  (myshape);
-      BRepTools::Update (myshape);
-      try
-      {
-        OCC_CATCH_SIGNALS
-        StdPrs_ShadedShape::Add (thePrs, myshape, myDrawer,
-                                 Standard_True,
-                                 myIsCustomOrigin ? myUVOrigin : gp_Pnt2d (0.0, 0.0),
-                                 myUVRepeat,
-                                 myToScale        ? myUVScale  : gp_Pnt2d (1.0, 1.0));
-
-        updateAttributes (thePrs);
-      }
-      catch (Standard_Failure)
-      {
-        std::cout << "AIS_TexturedShape::Compute() in ShadingMode failed\n";
-        StdPrs_WFShape::Add (thePrs, myshape, myDrawer);
       }
       break;
     }

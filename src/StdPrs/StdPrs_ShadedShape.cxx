@@ -459,7 +459,6 @@ void StdPrs_ShadedShape::Tessellate (const TopoDS_Shape&          theShape,
   }
 
   // retrieve meshing tool from Factory
-  BRepTools::Clean (theShape);
   Handle(BRepMesh_DiscretRoot) aMeshAlgo = BRepMesh_DiscretFactory::Get().Discret (theShape,
                                                                                    aDeflection,
                                                                                    theDrawer->HLRAngle());
