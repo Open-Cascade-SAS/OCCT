@@ -398,47 +398,56 @@ Standard_Boolean ChFi2d_AnaFilletAlgo::Perform(const Standard_Real radius)
 
       // Limit the neighbours.
       // Left neighbour.
+      gp_Pnt p1, p2;
       shrinke1.Nullify();
+      if (e1.Orientation() == TopAbs_FORWARD)
+      {
+        p1 = AC1.Value(AC1.FirstParameter());
+        p2 = pstart;
+      }
+      else
+      {
+        p1 = pstart;
+        p2 = AC1.Value(AC1.LastParameter());
+      }
       if (segment1)
       {
         BRepBuilderAPI_MakeEdge mkSegment1;
-        if (e1.Orientation() == TopAbs_FORWARD)
-          mkSegment1.Init(AC1.Curve().Curve(), AC1.FirstParameter(), AC1.LastParameter() - start);
-        else
-          mkSegment1.Init(AC1.Curve().Curve(), AC1.FirstParameter() + start, AC1.LastParameter());
+        mkSegment1.Init(AC1.Curve().Curve(), p1, p2);
         if (mkSegment1.IsDone())
           shrinke1 = mkSegment1.Edge();
       }
       else
       {
         BRepBuilderAPI_MakeEdge mkCirc1;
-        if (e1.Orientation() == TopAbs_FORWARD)
-          mkCirc1.Init(AC1.Curve().Curve(), AC1.FirstParameter(), AC1.LastParameter() - start);
-        else
-          mkCirc1.Init(AC1.Curve().Curve(), AC1.FirstParameter() + start, AC1.LastParameter());
+        mkCirc1.Init(AC1.Curve().Curve(), p1, p2);
         if (mkCirc1.IsDone())
           shrinke1 = mkCirc1.Edge();
       }
-
+      
       // Right neighbour.
       shrinke2.Nullify();
+      if (e1.Orientation() == TopAbs_FORWARD)
+      {
+        p1 = pend;
+        p2 = AC2.Value(AC2.LastParameter());
+      }
+      else
+      {
+        p1 = AC2.Value(AC2.FirstParameter());
+        p2 = pend;
+      }
       if (segment2)
       {
         BRepBuilderAPI_MakeEdge mkSegment2;
-        if (e2.Orientation() == TopAbs_FORWARD)
-          mkSegment2.Init(AC2.Curve().Curve(), AC2.FirstParameter() + end, AC2.LastParameter());
-        else
-          mkSegment2.Init(AC2.Curve().Curve(), AC2.FirstParameter(), AC2.LastParameter() - end);
+        mkSegment2.Init(AC2.Curve().Curve(), p1, p2);
         if (mkSegment2.IsDone())
           shrinke2 = mkSegment2.Edge();
       }
       else
       {
         BRepBuilderAPI_MakeEdge mkCirc2;
-        if (e2.Orientation() == TopAbs_FORWARD)
-          mkCirc2.Init(AC2.Curve().Curve(), AC2.FirstParameter() + end, AC2.LastParameter());
-        else
-          mkCirc2.Init(AC2.Curve().Curve(), AC2.FirstParameter(), AC2.LastParameter() - end);
+        mkCirc2.Init(AC2.Curve().Curve(), p1, p2);
         if (mkCirc2.IsDone())
           shrinke2 = mkCirc2.Edge();
       }
