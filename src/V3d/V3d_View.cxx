@@ -1322,7 +1322,7 @@ void V3d_View::Reset( const Standard_Boolean update )
 
   SwitchSetFront = Standard_False;
 
-  if( !myImmediateUpdate && update ) Update();
+  if( myImmediateUpdate || update ) Update();
 }
 
 //=======================================================================
