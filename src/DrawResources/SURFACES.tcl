@@ -13,6 +13,12 @@
 
 if { [info commands addmenu] == "" } { return }
 
+global theMenus
+if [info exists theMenus(Surfaces)] {
+  destroy [string trimright $theMenus(Surfaces) ".menu"]
+  unset theMenus(Surfaces)
+}
+
 proc dialanasurf {command sname args} {
     set com "dialbox $command name $sname origin {0 0 0} normal {0 0 1} xdir {1 0 0} "
     foreach l $args {append com " $l"}

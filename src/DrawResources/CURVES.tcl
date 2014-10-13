@@ -13,6 +13,12 @@
 
 if { [info commands addmenu] == "" } { return }
 
+global theMenus
+if [info exists theMenus(Curves)] {
+  destroy [string trimright $theMenus(Curves) ".menu"]
+  unset theMenus(Curves)
+}
+
 addmenu Curves "Line"    {
     dialbox line name l origin {0 0 0} direction {1 0 0}
 }
