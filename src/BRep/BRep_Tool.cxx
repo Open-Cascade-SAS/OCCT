@@ -1458,28 +1458,34 @@ Standard_Boolean BRep_Tool::IsClosed (const TopoDS_Shape& theShape)
   if (theShape.ShapeType() == TopAbs_SHELL || theShape.ShapeType() == TopAbs_SOLID)
   {
     NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMap (101, new NCollection_IncAllocator);
-    for (TopExp_Explorer exp (theShape, TopAbs_EDGE); exp.More(); exp.Next())
+    TopExp_Explorer exp (theShape.Oriented(TopAbs_FORWARD), TopAbs_EDGE);
+    Standard_Boolean hasBound = Standard_False;
+    for (; exp.More(); exp.Next())
     {
       const TopoDS_Edge& E = TopoDS::Edge(exp.Current());
       if (BRep_Tool::Degenerated(E) || E.Orientation() == TopAbs_INTERNAL || E.Orientation() == TopAbs_EXTERNAL)
         continue;
+      hasBound = Standard_True;
       if (!aMap.Add(E))
         aMap.Remove(E);
     }
-    return aMap.IsEmpty();
+    return hasBound && aMap.IsEmpty();
   }
   else if (theShape.ShapeType() == TopAbs_WIRE)
   {
     NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMap (101, new NCollection_IncAllocator);
-    for (TopExp_Explorer exp (theShape, TopAbs_VERTEX); exp.More(); exp.Next())
+    TopExp_Explorer exp (theShape.Oriented(TopAbs_FORWARD), TopAbs_VERTEX);
+    Standard_Boolean hasBound = Standard_False;
+    for (; exp.More(); exp.Next())
     {
       const TopoDS_Shape& V = exp.Current();
       if (V.Orientation() == TopAbs_INTERNAL || V.Orientation() == TopAbs_EXTERNAL)
         continue;
+      hasBound = Standard_True;
       if (!aMap.Add(V))
         aMap.Remove(V);
     }
-    return aMap.IsEmpty();
+    return hasBound && aMap.IsEmpty();
   }
   return theShape.Closed();
 }
