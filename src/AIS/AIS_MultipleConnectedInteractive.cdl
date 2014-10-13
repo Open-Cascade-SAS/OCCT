@@ -107,7 +107,6 @@ is
     is redefined ;
 
     AcceptShapeDecomposition(me) returns Boolean from Standard is redefined virtual;
-        ---C++: inline
         ---Purpose:  Informs the graphic context that the interactive Object
         -- may be decomposed into sub-shapes for dynamic selection.
 
