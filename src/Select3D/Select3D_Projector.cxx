@@ -454,10 +454,10 @@ gp_Lin Select3D_Projector::Shoot (const Standard_Real theX, const Standard_Real 
       return gp_Lin();
     }
 
-    Graphic3d_Vec4d aVPnt1 = aProjInv * Graphic3d_Vec4d (theX, theY, 0.0, 1.0);
+    Graphic3d_Vec4d aVPnt1 = aProjInv * Graphic3d_Vec4d (theX, theY,  0.0, 1.0);
     Graphic3d_Vec4d aVPnt2 = aProjInv * Graphic3d_Vec4d (theX, theY, 10.0, 1.0);
     aVPnt1 /= aVPnt1.w();
-    aVPnt2 /= aVPnt1.w();
+    aVPnt2 /= aVPnt2.w();
 
     gp_Vec aViewDir (aVPnt2.x() - aVPnt1.x(), aVPnt2.y() - aVPnt1.y(), aVPnt2.z() - aVPnt1.z());
 
