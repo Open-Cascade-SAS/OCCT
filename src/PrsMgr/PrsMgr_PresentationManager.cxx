@@ -539,7 +539,7 @@ void PrsMgr_PresentationManager::Connect (const Handle(PrsMgr_PresentableObject)
   {
     AddPresentation (theOtherObject, theOtherMode);
   }
-  Presentation (thePrsObject, theMode)->Connect (Presentation (theOtherObject, theMode));
+  Presentation (thePrsObject, theMode)->Connect (Presentation (theOtherObject, theOtherMode));
 }
 
 // =======================================================================
