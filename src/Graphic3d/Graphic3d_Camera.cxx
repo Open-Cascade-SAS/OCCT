@@ -22,6 +22,8 @@
 #include <Standard_Atomic.hxx>
 #include <Standard_Assert.hxx>
 
+#include <NCollection_Sequence.hxx>
+
 IMPLEMENT_STANDARD_HANDLE(Graphic3d_Camera, Standard_Transient)
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_Camera, Standard_Transient)
 
@@ -983,17 +985,7 @@ void Graphic3d_Camera::ZFitAll (const Standard_Real theScaleFactor, const Bnd_Bo
   // should be computed using information on boundaries of primary application actors,
   // (e.g. representing the displayed model) - to ensure that they are not unreasonably clipped.
 
-  
-  Standard_Real aMinMax[6];    // applicative min max boundaries
-  theMinMax.Get (aMinMax[0], aMinMax[1], aMinMax[2], aMinMax[3], aMinMax[4], aMinMax[5]);
-
-  Standard_Real aGraphicBB[6]; // real graphical boundaries (not accounting infinite flag).
-  theGraphicBB.Get (aGraphicBB[0], aGraphicBB[1], aGraphicBB[2], aGraphicBB[3], aGraphicBB[4], aGraphicBB[5]);
-
-  // Check if anything can be adjusted
-  Standard_Real aLim = (ShortRealLast() - 1.0);
-  if (Abs (aGraphicBB[0]) > aLim || Abs (aGraphicBB[1]) > aLim || Abs (aGraphicBB[2]) > aLim ||
-    Abs (aGraphicBB[3]) > aLim || Abs (aGraphicBB[4]) > aLim || Abs (aGraphicBB[5]) > aLim)
+  if (theGraphicBB.IsVoid())
   {
     // ShortReal precision factor used to add meaningful tolerance to
     // ZNear, ZFar values in order to avoid equality after type conversion
@@ -1023,26 +1015,34 @@ void Graphic3d_Camera::ZFitAll (const Standard_Real theScaleFactor, const Bnd_Bo
   }
 
   // Measure depth of boundary points from camera eye
-  gp_Pnt aPntsToMeasure[16] =
-  {
-    gp_Pnt (aMinMax[0], aMinMax[1], aMinMax[2]),
-    gp_Pnt (aMinMax[0], aMinMax[1], aMinMax[5]),
-    gp_Pnt (aMinMax[0], aMinMax[4], aMinMax[2]),
-    gp_Pnt (aMinMax[0], aMinMax[4], aMinMax[5]),
-    gp_Pnt (aMinMax[3], aMinMax[1], aMinMax[2]),
-    gp_Pnt (aMinMax[3], aMinMax[1], aMinMax[5]),
-    gp_Pnt (aMinMax[3], aMinMax[4], aMinMax[2]),
-    gp_Pnt (aMinMax[3], aMinMax[4], aMinMax[5]),
+  NCollection_Sequence<gp_Pnt> aPntsToMeasure;
 
-    gp_Pnt (aGraphicBB[0], aGraphicBB[1], aGraphicBB[2]),
-    gp_Pnt (aGraphicBB[0], aGraphicBB[1], aGraphicBB[5]),
-    gp_Pnt (aGraphicBB[0], aGraphicBB[4], aGraphicBB[2]),
-    gp_Pnt (aGraphicBB[0], aGraphicBB[4], aGraphicBB[5]),
-    gp_Pnt (aGraphicBB[3], aGraphicBB[1], aGraphicBB[2]),
-    gp_Pnt (aGraphicBB[3], aGraphicBB[1], aGraphicBB[5]),
-    gp_Pnt (aGraphicBB[3], aGraphicBB[4], aGraphicBB[2]),
-    gp_Pnt (aGraphicBB[3], aGraphicBB[4], aGraphicBB[5])
-  };
+  Standard_Real aGraphicBB[6]; // real graphical boundaries (not accounting infinite flag).
+  theGraphicBB.Get (aGraphicBB[0], aGraphicBB[1], aGraphicBB[2], aGraphicBB[3], aGraphicBB[4], aGraphicBB[5]);
+
+  aPntsToMeasure.Append (gp_Pnt (aGraphicBB[0], aGraphicBB[1], aGraphicBB[2]));
+  aPntsToMeasure.Append (gp_Pnt (aGraphicBB[0], aGraphicBB[1], aGraphicBB[5]));
+  aPntsToMeasure.Append (gp_Pnt (aGraphicBB[0], aGraphicBB[4], aGraphicBB[2]));
+  aPntsToMeasure.Append (gp_Pnt (aGraphicBB[0], aGraphicBB[4], aGraphicBB[5]));
+  aPntsToMeasure.Append (gp_Pnt (aGraphicBB[3], aGraphicBB[1], aGraphicBB[2]));
+  aPntsToMeasure.Append (gp_Pnt (aGraphicBB[3], aGraphicBB[1], aGraphicBB[5]));
+  aPntsToMeasure.Append (gp_Pnt (aGraphicBB[3], aGraphicBB[4], aGraphicBB[2]));
+  aPntsToMeasure.Append (gp_Pnt (aGraphicBB[3], aGraphicBB[4], aGraphicBB[5]));
+
+  if (!theMinMax.IsVoid() && !theMinMax.IsWhole())
+  {
+    Standard_Real aMinMax[6]; // applicative min max boundaries
+    theMinMax.Get (aMinMax[0], aMinMax[1], aMinMax[2], aMinMax[3], aMinMax[4], aMinMax[5]);
+
+    aPntsToMeasure.Append (gp_Pnt (aMinMax[0], aMinMax[1], aMinMax[2]));
+    aPntsToMeasure.Append (gp_Pnt (aMinMax[0], aMinMax[1], aMinMax[5]));
+    aPntsToMeasure.Append (gp_Pnt (aMinMax[0], aMinMax[4], aMinMax[2]));
+    aPntsToMeasure.Append (gp_Pnt (aMinMax[0], aMinMax[4], aMinMax[5]));
+    aPntsToMeasure.Append (gp_Pnt (aMinMax[3], aMinMax[1], aMinMax[2]));
+    aPntsToMeasure.Append (gp_Pnt (aMinMax[3], aMinMax[1], aMinMax[5]));
+    aPntsToMeasure.Append (gp_Pnt (aMinMax[3], aMinMax[4], aMinMax[2]));
+    aPntsToMeasure.Append (gp_Pnt (aMinMax[3], aMinMax[4], aMinMax[5]));
+  }
 
   // Camera eye plane
   gp_Dir aCamDir = Direction();
@@ -1057,18 +1057,15 @@ void Graphic3d_Camera::ZFitAll (const Standard_Real theScaleFactor, const Bnd_Bo
   const gp_XYZ& anAxialScale = myAxialScale;
 
   // Get minimum and maximum distances to the eye plane
-  for (Standard_Integer aPntIt = 0; aPntIt < 16; ++aPntIt)
+  Standard_Integer aCounter = 0;
+  NCollection_Sequence<gp_Pnt>::Iterator aPntIt(aPntsToMeasure);
+  for (; aPntIt.More(); aPntIt.Next())
   {
-    gp_Pnt aMeasurePnt = aPntsToMeasure[aPntIt];
-
-    if (Abs (aMeasurePnt.X()) > aLim || Abs (aMeasurePnt.Y()) > aLim || Abs (aMeasurePnt.Z()) > aLim)
-    {
-      continue;
-    }
+    gp_Pnt aMeasurePnt = aPntIt.Value();
 
     aMeasurePnt = gp_Pnt (aMeasurePnt.X() * anAxialScale.X(),
-      aMeasurePnt.Y() * anAxialScale.Y(),
-      aMeasurePnt.Z() * anAxialScale.Z());
+                          aMeasurePnt.Y() * anAxialScale.Y(),
+                          aMeasurePnt.Z() * anAxialScale.Z());
 
     Standard_Real aDistance = aCamPln.Distance (aMeasurePnt);
 
@@ -1078,10 +1075,13 @@ void Graphic3d_Camera::ZFitAll (const Standard_Real theScaleFactor, const Bnd_Bo
       aDistance *= -1;
     }
 
-    Standard_Real& aChangeMinDist = aPntIt >= 8 ? aGraphicMinDist : aModelMinDist;
-    Standard_Real& aChangeMaxDist = aPntIt >= 8 ? aGraphicMaxDist : aModelMaxDist;
+    // the first eight points are from theGraphicBB, the last eight points are from theMinMax
+    // (they can be absent).
+    Standard_Real& aChangeMinDist = aCounter >= 8 ? aModelMinDist : aGraphicMinDist;
+    Standard_Real& aChangeMaxDist = aCounter >= 8 ? aModelMaxDist : aGraphicMaxDist;
     aChangeMinDist = Min (aDistance, aChangeMinDist);
     aChangeMaxDist = Max (aDistance, aChangeMaxDist);
+    aCounter++;
   }
 
   // Compute depth of bounding box center

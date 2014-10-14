@@ -111,13 +111,30 @@ is
     	-- increased by the same amount. 
     is static;
 
-    Get(me; aXmin, aYmin, aZmin, aXmax, aYmax, aZmax : out Real)
-	---Purpose: Returns the bounds of this bounding box. The gap is included.
-    	-- If this bounding box is infinite (i.e. "open"), returned values
-    	-- may be equal to +/- Precision::Infinite().
+    Get (me; theXmin, theYmin, theZmin, theXmax, theYmax, theZmax : out Real)
+    ---Purpose: Returns the bounds of this bounding box. The gap is included.
+    -- If this bounding box is infinite (i.e. "open"), returned values
+    -- may be equal to +/- Precision::Infinite().
+    -- Standard_ConstructionError exception will be thrown if the box is void.
     raises ConstructionError -- if IsVoid()
     is static;
-    
+
+    CornerMin(me) returns Pnt from gp
+    ---Purpose: Returns the lower corner of this bounding box. The gap is included.
+    -- If this bounding box is infinite (i.e. "open"), returned values
+    -- may be equal to +/- Precision::Infinite().
+    -- Standard_ConstructionError exception will be thrown if the box is void.
+    raises ConstructionError -- if IsVoid()
+    is static;
+
+    CornerMax(me) returns Pnt from gp
+    ---Purpose: Returns the upper corner of this bounding box. The gap is included.
+    -- If this bounding box is infinite (i.e. "open"), returned values
+    -- may be equal to +/- Precision::Infinite().
+    -- Standard_ConstructionError exception will be thrown if the box is void.
+    raises ConstructionError -- if IsVoid()
+    is static;
+
     OpenXmin(me : in out)
 	---Purpose: The   Box will be   infinitely   long  in the Xmin
 	--          direction.

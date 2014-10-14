@@ -106,17 +106,18 @@ void NIS_View::RemoveContext (NIS_InteractiveContext * theCtx)
 
 Standard_Boolean NIS_View::FitAll3d (const Quantity_Coefficient theCoef)
 {
-  Bnd_B3f aBox = GetBndBox();
+  Bnd_B3f aB3fBox = GetBndBox();
 
-  if (aBox.IsVoid() || MyView->IsDefined() == Standard_False)
+  if (aB3fBox.IsVoid() || MyView->IsDefined() == Standard_False)
   {
     return Standard_False;
   }
 
-  gp_XYZ aMin = aBox.CornerMin();
-  gp_XYZ aMax = aBox.CornerMax();
+  Bnd_Box aBox;
+  aBox.Add (gp_Pnt (aB3fBox.CornerMin()));
+  aBox.Add (gp_Pnt (aB3fBox.CornerMax()));
 
-  if (!FitMinMax (myCamera, aMin, aMax, theCoef, 0.0, Standard_False))
+  if (!FitMinMax (myCamera, aBox, theCoef, 0.0, Standard_False))
   {
     return Standard_False;
   }
@@ -150,11 +151,11 @@ Bnd_B3f NIS_View::GetBndBox() const
   }
 
   // Take the bounding box of AIS objects displayed in the view
-  Standard_Real aVal[6];
-  View()->MinMaxValues(aVal[0], aVal[1], aVal[2], aVal[3], aVal[4], aVal[5]);
-  if (aVal[3] < 0.5 * RealLast()) {
-    aBox.Add (gp_XYZ (aVal[0], aVal[1], aVal[2]));
-    aBox.Add (gp_XYZ (aVal[3], aVal[4], aVal[5]));
+  Bnd_Box aVal = View()->MinMaxValues();
+  if (!aVal.IsVoid())
+  {
+    aBox.Add (aVal.CornerMin());
+    aBox.Add (aVal.CornerMax());
   }
 
   return aBox;

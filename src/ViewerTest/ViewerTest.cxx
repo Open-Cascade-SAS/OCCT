@@ -2478,12 +2478,12 @@ inline void bndPresentation (Draw_Interpretor&                  theDI,
     }
     case BndAction_Print:
     {
-      Graphic3d_Vec3d aMin, aMax;
-      thePrs->Presentation()->MinMaxValues (aMin.x(), aMin.y(), aMin.z(),
-                                            aMax.x(), aMax.y(), aMax.z());
+      Bnd_Box aBox = thePrs->Presentation()->MinMaxValues();
+      gp_Pnt aMin = aBox.CornerMin();
+      gp_Pnt aMax = aBox.CornerMax();
       theDI << theName  << "\n"
-            << aMin.x() << " " << aMin.y() << " " << aMin.z() << " "
-            << aMax.x() << " " << aMax.y() << " " << aMax.z() << "\n";
+            << aMin.X() << " " << aMin.Y() << " " << aMin.Z() << " "
+            << aMax.X() << " " << aMax.Y() << " " << aMax.Z() << "\n";
       break;
     }
   }

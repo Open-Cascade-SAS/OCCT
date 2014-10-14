@@ -136,7 +136,8 @@ uses
         SequenceOfHClipPlane              from Graphic3d,
         RenderingMode                     from Graphic3d,
         RenderingParams                   from Graphic3d,
-        XYZ                               from gp
+        XYZ                               from gp,
+        Box                               from Bnd
 raises
 
         BadValue from V3d, TypeMismatch from Standard,
@@ -1531,8 +1532,7 @@ is
 
     FitMinMax (me;
                theCamera          : Camera_Handle from Graphic3d;
-               theMinCorner       : XYZ from gp;
-               theMaxCorner       : XYZ from gp;
+               theBox             : Box from Bnd;
                theMargin          : Real from Standard;
                theResolution      : Real from Standard = 0.0;
                theToEnlargeIfLine : Boolean from Standard = Standard_True)
@@ -1541,8 +1541,7 @@ is
     ---Purpose: Transform camera eye, center and scale to fit in the
     -- passed bounding box specified in WCS.
     -- @param theCamera [in] the camera.
-    -- @param theMinCorner [in] the minimal corner of bounding box.
-    -- @param theMaxCorner [in] the maximal corner of bounding box.
+    -- @param theBox [in] the bounding box.
     -- @param theMargin [in] the margin coefficient for view borders.
     -- @param theResolution [in] the minimum size of projection of
     --        bounding box in Xv or Yv direction when it considered to

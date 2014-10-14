@@ -1651,33 +1651,32 @@ void Graphic3d_Structure::Transform (TColStd_Array2OfReal& theMatrix) const
 //function : MinMaxValues
 //purpose  :
 //=============================================================================
-void Graphic3d_Structure::MinMaxValues (Standard_Real& theXMin,
-                                        Standard_Real& theYMin,
-                                        Standard_Real& theZMin,
-                                        Standard_Real& theXMax,
-                                        Standard_Real& theYMax,
-                                        Standard_Real& theZMax,
-                                        const Standard_Boolean theToIgnoreInfiniteFlag) const
+Bnd_Box Graphic3d_Structure::MinMaxValues (const Standard_Boolean theToIgnoreInfiniteFlag) const
 {
   Graphic3d_BndBox4d aBox;
+  Bnd_Box aResult;
   addTransformed (aBox, theToIgnoreInfiniteFlag);
-  if (!aBox.IsValid())
+  if (aBox.IsValid())
   {
-    theXMin = RealFirst();
-    theYMin = RealFirst();
-    theZMin = RealFirst();
-    theXMax = RealLast();
-    theYMax = RealLast();
-    theZMax = RealLast();
-    return;
-  }
+    aResult.Add (gp_Pnt (aBox.CornerMin().x(),
+                         aBox.CornerMin().y(),
+                         aBox.CornerMin().z()));
+    aResult.Add (gp_Pnt (aBox.CornerMax().x(),
+                         aBox.CornerMax().y(),
+                         aBox.CornerMax().z()));
 
-  theXMin = aBox.CornerMin().x();
-  theYMin = aBox.CornerMin().y();
-  theZMin = aBox.CornerMin().z();
-  theXMax = aBox.CornerMax().x();
-  theYMax = aBox.CornerMax().y();
-  theZMax = aBox.CornerMax().z();
+    Standard_Real aLimMin = ShortRealFirst() + 1.0;
+    Standard_Real aLimMax = ShortRealLast() - 1.0;
+    gp_Pnt aMin = aResult.CornerMin();
+    gp_Pnt aMax = aResult.CornerMax();
+    if (aMin.X() < aLimMin && aMin.Y() < aLimMin && aMin.Z() < aLimMin &&
+        aMax.X() > aLimMax && aMax.Y() > aLimMax && aMax.Z() > aLimMax)
+    {
+      //For structure which infinite in all three dimensions the Whole bounding box will be returned
+      aResult.SetWhole();
+    }
+  }
+  return aResult;
 }
 
 //=============================================================================

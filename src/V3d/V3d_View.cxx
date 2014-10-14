@@ -1509,12 +1509,7 @@ void V3d_View::FitAll (const Standard_Real theMargin, const Standard_Boolean the
     return;
   }
 
-  Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
-  MyView->MinMaxValues (aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
-  gp_XYZ aMin (aXmin, aYmin, aZmin);
-  gp_XYZ aMax (aXmax, aYmax, aZmax);
-
-  if (!FitMinMax (myCamera, aMin, aMax, theMargin, 10.0 * Precision::Confusion()))
+  if (!FitMinMax (myCamera, MyView->MinMaxValues(), theMargin, 10.0 * Precision::Confusion()))
   {
     return;
   }
@@ -1545,19 +1540,13 @@ void V3d_View::DepthFitAll(const Quantity_Coefficient Aspect,
     return ;
   }
 
-  MyView->MinMaxValues(Xmin,Ymin,Zmin,Xmax,Ymax,Zmax) ;
-
-  Standard_Real LIM = ShortRealLast() -1.;
-  if     (Abs(Xmin) > LIM || Abs(Ymin) > LIM || Abs(Zmin) > LIM
-    ||  Abs(Xmax) > LIM || Abs(Ymax) > LIM || Abs(Zmax) > LIM ) {
-      ImmediateUpdate();
-      return ;
-    }
-
-    if (Xmin == Xmax && Ymin == Ymax && Zmin == Zmax) {
-      ImmediateUpdate();
-      return ;
-    }
+  Bnd_Box aBox = MyView->MinMaxValues();
+  if (aBox.IsVoid())
+  {
+    ImmediateUpdate();
+    return ;
+  }
+    aBox.Get (Xmin,Ymin,Zmin,Xmax,Ymax,Zmax);
     MyView->Projects(Xmin,Ymin,Zmin,U,V,W) ;
     MyView->Projects(Xmax,Ymax,Zmax,U1,V1,W1) ;
     Umin = Min(U,U1) ; Umax = Max(U,U1) ;
@@ -2060,7 +2049,8 @@ Standard_Integer V3d_View::MinMax(Standard_Real& Umin,
   Standard_Integer Nstruct = MyView->NumberOfDisplayedStructures() ;
 
   if( Nstruct ) {
-    MyView->MinMaxValues(Xmin,Ymin,Zmin,Xmax,Ymax,Zmax) ;
+    Bnd_Box aBox = MyView->MinMaxValues();
+    aBox.Get (Xmin,Ymin,Zmin,Xmax,Ymax,Zmax);
     MyView->Projects(Xmin,Ymin,Zmin,Umin,Vmin,Wmin) ;
     MyView->Projects(Xmax,Ymax,Zmax,Umax,Vmax,Wmax) ;
     MyView->Projects(Xmin,Ymin,Zmax,U,V,W) ;
@@ -2107,7 +2097,8 @@ Standard_Integer V3d_View::MinMax(Standard_Real& Xmin,
   Standard_Integer Nstruct = MyView->NumberOfDisplayedStructures() ;
 
   if( Nstruct ) {
-    MyView->MinMaxValues(Xmin,Ymin,Zmin,Xmax,Ymax,Zmax) ;
+    Bnd_Box aBox = MyView->MinMaxValues();
+    aBox.Get (Xmin,Ymin,Zmin,Xmax,Ymax,Zmax);
   }
   return Nstruct ;
 }
@@ -2133,17 +2124,16 @@ Standard_Integer V3d_View::Gravity(Standard_Real& X, Standard_Real& Y, Standard_
     const Handle(Graphic3d_Structure)& aStruct = MyIterator.Key();
     if (!aStruct->IsEmpty())
     {
-      aStruct->MinMaxValues (Xmin, Ymin, Zmin, Xmax, Ymax, Zmax);
+      Bnd_Box aBox = aStruct->MinMaxValues();
 
       // Check bounding box for validness
-      Standard_Real aLim = (ShortRealLast() - 1.0);
-      if (Abs (Xmin) > aLim || Abs (Ymin) > aLim || Abs (Zmin) > aLim ||
-          Abs (Xmax) > aLim || Abs (Ymax) > aLim || Abs (Zmax) > aLim)
+      if (aBox.IsVoid())
       {
         continue;
       }
 
       // use camera projection to find gravity point
+      aBox.Get (Xmin,Ymin,Zmin,Xmax,Ymax,Zmax);
       gp_Pnt aPnts[8] = { 
         gp_Pnt (Xmin, Ymin, Zmin), gp_Pnt (Xmin, Ymin, Zmax),
         gp_Pnt (Xmin, Ymax, Zmin), gp_Pnt (Xmin, Ymax, Zmax),
@@ -3019,16 +3009,13 @@ const Handle(Graphic3d_Camera)& V3d_View::Camera() const
 // purpose  : Internal
 // =======================================================================
 Standard_Boolean V3d_View::FitMinMax (const Handle(Graphic3d_Camera)& theCamera,
-                                      const gp_XYZ& theMinCorner,
-                                      const gp_XYZ& theMaxCorner,
+                                      const Bnd_Box& theBox,
                                       const Standard_Real theMargin,
                                       const Standard_Real theResolution,
                                       const Standard_Boolean theToEnlargeIfLine) const
 {
   // Check bounding box for validness
-  Standard_Real aLim = (ShortRealLast() - 1.0);
-  if (Abs (theMinCorner.X()) > aLim || Abs (theMinCorner.Y()) > aLim || Abs (theMinCorner.Z()) > aLim ||
-      Abs (theMaxCorner.X()) > aLim || Abs (theMaxCorner.Y()) > aLim || Abs (theMaxCorner.Z()) > aLim)
+  if (theBox.IsVoid())
   {
     return Standard_False; // bounding box is out of bounds...
   }
@@ -3039,12 +3026,14 @@ Standard_Boolean V3d_View::FitMinMax (const Handle(Graphic3d_Camera)& theCamera,
   // option is to perform frustum plane adjustment algorithm in view camera space,
   // which will lead to a number of additional world-view space conversions and
   // loosing precision as well.
-  Standard_Real aXmin = theMinCorner.X() * theCamera->AxialScale().X();
-  Standard_Real aXmax = theMaxCorner.X() * theCamera->AxialScale().X();
-  Standard_Real aYmin = theMinCorner.Y() * theCamera->AxialScale().Y();
-  Standard_Real aYmax = theMaxCorner.Y() * theCamera->AxialScale().Y();
-  Standard_Real aZmin = theMinCorner.Z() * theCamera->AxialScale().Z();
-  Standard_Real aZmax = theMaxCorner.Z() * theCamera->AxialScale().Z();
+  gp_Pnt aMinCorner = theBox.CornerMin();
+  gp_Pnt aMaxCorner = theBox.CornerMax();
+  Standard_Real aXmin = aMinCorner.X() * theCamera->AxialScale().X();
+  Standard_Real aXmax = aMaxCorner.X() * theCamera->AxialScale().X();
+  Standard_Real aYmin = aMinCorner.Y() * theCamera->AxialScale().Y();
+  Standard_Real aYmax = aMaxCorner.Y() * theCamera->AxialScale().Y();
+  Standard_Real aZmin = aMinCorner.Z() * theCamera->AxialScale().Z();
+  Standard_Real aZmax = aMaxCorner.Z() * theCamera->AxialScale().Z();
 
   Bnd_Box aBBox;
   aBBox.Update (aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);

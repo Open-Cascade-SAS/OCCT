@@ -54,7 +54,8 @@ uses
     MMgt,
     WNT,
     OSD,
-    Font
+    Font,
+    Bnd
 
 is
 

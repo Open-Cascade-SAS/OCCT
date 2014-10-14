@@ -201,27 +201,74 @@ void Bnd_Box::Enlarge (const Standard_Real Tol)
 //purpose  : 
 //=======================================================================
 
-void Bnd_Box::Get (Standard_Real& x, 
-		   Standard_Real& y, 
-		   Standard_Real& z, 
-		   Standard_Real& X, 
-		   Standard_Real& Y, 
-		   Standard_Real& Z) const
+void Bnd_Box::Get (Standard_Real& theXmin,
+                   Standard_Real& theYmin,
+                   Standard_Real& theZmin,
+                   Standard_Real& theXmax,
+                   Standard_Real& theYmax,
+                   Standard_Real& theZmax) const
 {
+  if (VoidFlag())
+  {
+    Standard_ConstructionError::Raise ("Bnd_Box is void");
+  }
+
+  if (XminFlag())  theXmin = -Bnd_Precision_Infinite;
+  else             theXmin = Xmin - Gap;
+  if (XmaxFlag())  theXmax = Bnd_Precision_Infinite;
+  else             theXmax = Xmax + Gap;
+  if (YminFlag())  theYmin = -Bnd_Precision_Infinite;
+  else             theYmin = Ymin - Gap;
+  if (YmaxFlag())  theYmax = Bnd_Precision_Infinite;
+  else             theYmax = Ymax + Gap;
+  if (ZminFlag())  theZmin = -Bnd_Precision_Infinite;
+  else             theZmin = Zmin - Gap;
+  if (ZmaxFlag())  theZmax = Bnd_Precision_Infinite;
+  else             theZmax = Zmax + Gap;
+}
+
+//=======================================================================
+//function : CornerMin
+//purpose  :
+//=======================================================================
+
+gp_Pnt Bnd_Box::CornerMin() const
+{
+  gp_Pnt aCornerMin;
+  if (VoidFlag())
+  {
+    Standard_ConstructionError::Raise ("Bnd_Box is void");
+    return aCornerMin;
+  }
+  if (XminFlag())  aCornerMin.SetX (-Bnd_Precision_Infinite);
+  else             aCornerMin.SetX (Xmin - Gap);
+  if (YminFlag())  aCornerMin.SetY (-Bnd_Precision_Infinite);
+  else             aCornerMin.SetY (Ymin - Gap);
+  if (ZminFlag())  aCornerMin.SetZ (-Bnd_Precision_Infinite);
+  else             aCornerMin.SetZ (Zmin - Gap);
+  return aCornerMin;
+}
+
+//=======================================================================
+//function : CornerMax
+//purpose  :
+//=======================================================================
+
+gp_Pnt Bnd_Box::CornerMax() const
+{
+  gp_Pnt aCornerMax;
   if(VoidFlag())
-    Standard_ConstructionError::Raise("Bnd_Box is void");
-  if (XminFlag())  x = -Bnd_Precision_Infinite;
-  else             x = Xmin-Gap;
-  if (XmaxFlag())  X = Bnd_Precision_Infinite;
-  else             X = Xmax+Gap;
-  if (YminFlag())  y = -Bnd_Precision_Infinite;
-  else             y = Ymin-Gap;
-  if (YmaxFlag())  Y = Bnd_Precision_Infinite;
-  else             Y = Ymax+Gap;
-  if (ZminFlag())  z = -Bnd_Precision_Infinite;
-  else             z = Zmin-Gap;
-  if (ZmaxFlag())  Z = Bnd_Precision_Infinite;
-  else             Z = Zmax+Gap;
+  {
+    Standard_ConstructionError::Raise ("Bnd_Box is void");
+    return aCornerMax;
+  }
+  if (XmaxFlag())  aCornerMax.SetX (Bnd_Precision_Infinite);
+  else             aCornerMax.SetX (Xmax + Gap);
+  if (YminFlag())  aCornerMax.SetY (Bnd_Precision_Infinite);
+  else             aCornerMax.SetY (Ymax + Gap);
+  if (ZminFlag())  aCornerMax.SetZ (Bnd_Precision_Infinite);
+  else             aCornerMax.SetZ (Zmax + Gap);
+  return aCornerMax;
 }
 
 //=======================================================================

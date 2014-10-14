@@ -42,7 +42,8 @@ uses
         Image,
         gp,
         OSD,
-        Font
+        Font,
+        Bnd
 
 is
 

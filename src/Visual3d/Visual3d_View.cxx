@@ -1124,24 +1124,8 @@ void Visual3d_View::AutoZFit()
 // ========================================================================
 void Visual3d_View::ZFitAll (const Standard_Real theScaleFactor)
 {
-  Standard_Real aMinMax[6];    // applicative min max boundaries
-  MinMaxValues (aMinMax[0], aMinMax[1], aMinMax[2],
-    aMinMax[3], aMinMax[4], aMinMax[5],
-    Standard_False);
-
-  Standard_Real aGraphicBB[6]; // real graphical boundaries (not accounting infinite flag).
-  MinMaxValues (aGraphicBB[0], aGraphicBB[1], aGraphicBB[2],
-    aGraphicBB[3], aGraphicBB[4], aGraphicBB[5],
-    Standard_True);
-
-  Bnd_Box aMinMaxBox;
-  Bnd_Box aGraphicBox;
-
-  aMinMaxBox.Update (aMinMax[0], aMinMax[1], aMinMax[2],
-    aMinMax[3], aMinMax[4], aMinMax[5]);
-
-  aGraphicBox.Update (aGraphicBB[0], aGraphicBB[1], aGraphicBB[2],
-    aGraphicBB[3], aGraphicBB[4], aGraphicBB[5]);
+  Bnd_Box aMinMaxBox = MinMaxValues (Standard_False); // applicative min max boundaries
+  Bnd_Box aGraphicBox = MinMaxValues (Standard_True); // real graphical boundaries (not accounting infinite flag).
 
   const Handle(Graphic3d_Camera)& aCamera = MyCView.Context.Camera;
   aCamera->ZFitAll (theScaleFactor, aMinMaxBox, aGraphicBox);
@@ -1697,163 +1681,58 @@ Standard_Boolean Visual3d_View::ContainsFacet (const Graphic3d_MapOfStructure& t
 // function : MinMaxValues
 // purpose  :
 // ========================================================================
-void Visual3d_View::MinMaxValues (Standard_Real& theXMin,
-                                  Standard_Real& theYMin,
-                                  Standard_Real& theZMin,
-                                  Standard_Real& theXMax,
-                                  Standard_Real& theYMax,
-                                  Standard_Real& theZMax,
-                                  const Standard_Boolean theToIgnoreInfiniteFlag) const
+Bnd_Box Visual3d_View::MinMaxValues (const Standard_Boolean theToIgnoreInfiniteFlag) const
 {
-  MinMaxValues (myStructsDisplayed,
-                theXMin, theYMin, theZMin,
-                theXMax, theYMax, theZMax,
-                theToIgnoreInfiniteFlag);
+  return MinMaxValues (myStructsDisplayed,
+                       theToIgnoreInfiniteFlag);
 }
 
 // ========================================================================
 // function : MinMaxValues
 // purpose  :
 // ========================================================================
-void Visual3d_View::MinMaxValues (const Graphic3d_MapOfStructure& theSet,
-                                  Standard_Real& theXMin,
-                                  Standard_Real& theYMin,
-                                  Standard_Real& theZMin,
-                                  Standard_Real& theXMax,
-                                  Standard_Real& theYMax,
-                                  Standard_Real& theZMax,
-                                  const Standard_Boolean theToIgnoreInfiniteFlag) const
+Bnd_Box Visual3d_View::MinMaxValues (const Graphic3d_MapOfStructure& theSet,
+                                     const Standard_Boolean theToIgnoreInfiniteFlag) const
 {
+  Bnd_Box aResult;
   if (theSet.IsEmpty ())
   {
-    theXMin = RealFirst();
-    theYMin = RealFirst();
-    theZMin = RealFirst();
-
-    theXMax = RealLast();
-    theYMax = RealLast();
-    theZMax = RealLast();
+    // Return an empty box.
+    return aResult;
   }
-  else
+  Graphic3d_MapIteratorOfMapOfStructure anIterator (theSet);
+  for (anIterator.Initialize (theSet); anIterator.More(); anIterator.Next())
   {
-    Standard_Real aXm, aYm, aZm, aXM, aYM, aZM;
-    Graphic3d_MapIteratorOfMapOfStructure anIterator (theSet);
+    const Handle(Graphic3d_Structure)& aStructure = anIterator.Key();
 
-    theXMin = RealLast();
-    theYMin = RealLast();
-    theZMin = RealLast();
+    if (!aStructure->IsVisible())
+      continue;
 
-    theXMax = RealFirst ();
-    theYMax = RealFirst ();
-    theZMax = RealFirst ();
-
-    for (anIterator.Initialize (theSet); anIterator.More(); anIterator.Next())
+    if (aStructure->IsInfinite() && !theToIgnoreInfiniteFlag)
     {
-      const Handle(Graphic3d_Structure)& aStructure = anIterator.Key();
-
-      if (!aStructure->IsVisible())
-        continue;
-
-      if (aStructure->IsInfinite() && !theToIgnoreInfiniteFlag)
+      //XMin, YMin .... ZMax are initialized by means of infinite line data
+      Bnd_Box aBox = aStructure->MinMaxValues (Standard_False);
+      if (!aBox.IsWhole() && !aBox.IsVoid())
       {
-        //XMin, YMin .... ZMax are initialized by means of infinite line data
-        aStructure->MinMaxValues (aXm, aYm, aZm, aXM, aYM, aZM, Standard_False);
-        if (aXm != RealFirst() && aXm < theXMin)
-        {
-          theXMin = aXm;
-        }
-        if (aYm != RealFirst() && aYm < theYMin)
-        {
-          theYMin = aYm;
-        }
-        if (aZm != RealFirst() && aZm < theZMin)
-        {
-          theZMin = aZm;
-        }
-        if (aXM != RealLast() && aXM > theXMax)
-        {
-          theXMax = aXM;
-        }
-        if (aYM != RealLast() && aYM > theYMax)
-        {
-          theYMax = aYM;
-        }
-        if (aZM != RealLast() && aZM > theZMax)
-        {
-          theZMax = aZM;
-        }
-      }
-
-      // Only non-empty and non-infinite structures
-      // are taken into account for calculation of MinMax
-      if ((!aStructure->IsInfinite() || theToIgnoreInfiniteFlag) && !aStructure->IsEmpty())
-      {
-        aStructure->MinMaxValues (aXm, aYm, aZm, aXM, aYM, aZM, theToIgnoreInfiniteFlag);
-
-        /* ABD 29/10/04  Transform Persistence of Presentation( pan, zoom, rotate ) */
-        //"FitAll" operation ignores object with transform persitence parameter
-        if(aStructure->TransformPersistenceMode() == Graphic3d_TMF_None )
-        {
-          theXMin = Min (aXm, theXMin);
-          theYMin = Min (aYm, theYMin);
-          theZMin = Min (aZm, theZMin);
-          theXMax = Max (aXM, theXMax);
-          theYMax = Max (aYM, theYMax);
-          theZMax = Max (aZM, theZMax);
-        }
+        aResult.Add (aBox);
       }
     }
 
-    // The following cases are relevant
-    // For exemple if all structures are empty or infinite
-    if (theXMax < theXMin) { aXm = theXMin; theXMin = theXMax; theXMax = aXm; }
-    if (theYMax < theYMin) { aYm = theYMin; theYMin = theYMax; theYMax = aYm; }
-    if (theZMax < theZMin) { aZm = theZMin; theZMin = theZMax; theZMax = aZm; }
+    // Only non-empty and non-infinite structures
+    // are taken into account for calculation of MinMax
+    if ((!aStructure->IsInfinite() || theToIgnoreInfiniteFlag) && !aStructure->IsEmpty())
+    {
+      Bnd_Box aBox = aStructure->MinMaxValues (theToIgnoreInfiniteFlag);
+
+      /* ABD 29/10/04  Transform Persistence of Presentation( pan, zoom, rotate ) */
+      //"FitAll" operation ignores object with transform persitence parameter
+      if(aStructure->TransformPersistenceMode() == Graphic3d_TMF_None )
+      {
+          aResult.Add (aBox);
+      }
+    }
   }
-}
-
-// ========================================================================
-// function : MinMaxValues
-// purpose  :
-// ========================================================================
-void Visual3d_View::MinMaxValues (Standard_Real& theXMin,
-                                  Standard_Real& theYMin,
-                                  Standard_Real& theXMax,
-                                  Standard_Real& theYMax,
-                                  const Standard_Boolean theToIgnoreInfiniteFlag) const
-{
-  MinMaxValues (myStructsDisplayed,
-                theXMin, theYMin,
-                theXMax, theYMax,
-                theToIgnoreInfiniteFlag);
-}
-
-// ========================================================================
-// function : MinMaxValues
-// purpose  :
-// ========================================================================
-void Visual3d_View::MinMaxValues (const Graphic3d_MapOfStructure& theSet,
-                                  Standard_Real& theXMin,
-                                  Standard_Real& theYMin,
-                                  Standard_Real& theXMax,
-                                  Standard_Real& theYMax,
-                                  const Standard_Boolean theToIgnoreInfiniteFlag) const
-{
-  Standard_Real aXm, aYm, aZm, aXM, aYM, aZM;
-  Standard_Real aXp, aYp, aZp;
-
-  MinMaxValues (theSet, aXm, aYm, aZm, aXM, aYM, aZM, theToIgnoreInfiniteFlag);
-
-  Projects (aXm, aYm, aZm, aXp, aYp, aZp);
-  theXMin = aXp;
-  theYMin = aYp;
-
-  Projects (aXM, aYM, aZM, aXp, aYp, aZp);
-  theXMax = aXp;
-  theYMax = aYp;
-
-  if (theXMax < theXMin) { aXp = theXMax; theXMax = theXMin; theXMin = aXp; }
-  if (theYMax < theYMin) { aYp = theYMax; theYMax = theYMin; theYMin = aYp; }
+  return aResult;
 }
 
 // =======================================================================
@@ -2199,23 +2078,16 @@ void Visual3d_View::TriedronEcho (const Aspect_TypeOfTriedronEcho theType)
   myGraphicDriver->TriedronEcho (MyCView, theType);
 }
 
-static Standard_Boolean checkFloat (const Standard_Real theValue)
-{
-  return theValue > -FLT_MAX
-      && theValue <  FLT_MAX;
-}
-
 static void SetMinMaxValuesCallback (Visual3d_View* theView)
 {
-  Graphic3d_Vec3d aMin, aMax;
-  theView->MinMaxValues (aMin.x(), aMin.y(), aMin.z(),
-                         aMax.x(), aMax.y(), aMax.z());
-  if (checkFloat (aMin.x()) && checkFloat (aMin.y()) && checkFloat (aMin.z())
-   && checkFloat (aMax.x()) && checkFloat (aMax.y()) && checkFloat (aMax.z()))
+  Bnd_Box aBox = theView->MinMaxValues();
+  if (!aBox.IsVoid())
   {
+    gp_Pnt aMin = aBox.CornerMin();
+    gp_Pnt aMax = aBox.CornerMax();
     const Handle(Graphic3d_GraphicDriver)& aDriver = theView->GraphicDriver();
-    aDriver->GraduatedTrihedronMinMaxValues ((Standard_ShortReal )aMin.x(), (Standard_ShortReal )aMin.y(), (Standard_ShortReal )aMin.z(),
-                                             (Standard_ShortReal )aMax.x(), (Standard_ShortReal )aMax.y(), (Standard_ShortReal )aMax.z());
+    aDriver->GraduatedTrihedronMinMaxValues ((Standard_ShortReal )aMin.X(), (Standard_ShortReal )aMin.Y(), (Standard_ShortReal )aMin.Z(),
+                                             (Standard_ShortReal )aMax.X(), (Standard_ShortReal )aMax.Y(), (Standard_ShortReal )aMax.Z());
   }
 }
 

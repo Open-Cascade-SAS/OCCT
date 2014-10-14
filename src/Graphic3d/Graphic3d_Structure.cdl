@@ -73,7 +73,8 @@ uses
 	Pnt                     from gp,
     SequenceOfHClipPlane from Graphic3d,
     BndBox4f from Graphic3d,
-    BndBox4d from Graphic3d
+    BndBox4d from Graphic3d,
+    Box from Bnd
 
 raises
 
@@ -574,10 +575,8 @@ is
 	---Purpose: Returns the current group of graphic attributes used
     	-- for 3d marker primitives.
 
-    MinMaxValues (me;
-                  theXMin, theYMin, theZMin : out Real from Standard;
-                  theXMax, theYMax, theZMax : out Real from Standard;
-                  theToIgnoreInfiniteFlag   : Boolean from Standard = Standard_False)
+    MinMaxValues (me; theToIgnoreInfiniteFlag : Boolean from Standard = Standard_False)
+    returns Box from Bnd
     is static;
     ---Level: Public
     ---Purpose: Returns the coordinates of the boundary box of the structure <me>.
@@ -587,9 +586,8 @@ is
     --          of the structure. This approach generally used for application
     --          specific fit operation (e.g. fitting the model into screen,
     --          not taking into accout infinite helper elements).
-    --          Warning: If the structure <me> is empty or infinite then :
-    --            theXMin = theYMin = theZMin = RealFirst ().
-    --            theXMax = theYMax = theZMax = RealLast ().
+    --          Warning: If the structure <me> is empty then the empty box is returned,
+    --          If the structure <me> is infinite then the whole box is returned.
     ---Category: Inquire methods
 
 	PrimitivesAspect ( me;

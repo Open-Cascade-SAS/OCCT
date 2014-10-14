@@ -108,7 +108,8 @@ uses
     ExtendedString          from TCollection,
     CGraduatedTrihedron     from Graphic3d,
 
-    PixMap                  from Image
+    PixMap                  from Image,
+    Box                     from Bnd
 
 raises
     TransformError          from Visual3d,
@@ -670,9 +671,8 @@ is
 	---Category: Inquire methods
 
     MinMaxValues (me;
-                  theXMin, theYMin, theZMin : out Real from Standard;
-                  theXMax, theYMax, theZMax : out Real from Standard;
                   theToIgnoreInfiniteFlag   : Boolean from Standard = Standard_False)
+    returns Box from Bnd
     is static;
     ---Level: Public
     ---Purpose: Returns the coordinates of the boundary box of all
@@ -683,38 +683,12 @@ is
 
     MinMaxValues (me;
                   theSet : MapOfStructure from Graphic3d;
-                  theXMin, theYMin, theZMin : out Real from Standard;
-                  theXMax, theYMax, theZMax : out Real from Standard;
                   theToIgnoreInfiniteFlag   : Boolean from Standard = Standard_False)
+    returns Box from Bnd
     is static;
     ---Level: Public
     ---Purpose: Returns the coordinates of the boundary box of all
     --          structures in the set <theSet>.
-    --          If <theToIgnoreInfiniteFlag> is TRUE, then the boundary box
-    --          also includes minimum and maximum limits of graphical elements
-    --          forming parts of infinite structures.
-
-    MinMaxValues (me;
-                  theXMin, theYMin        : out Real from Standard;
-                  theXMax, theYMax        : out Real from Standard;
-                  theToIgnoreInfiniteFlag : Boolean from Standard = Standard_False)
-    is static;
-    ---Level: Public
-    ---Purpose: Returns the coordinates of the projection of the
-    --          boundary box of all structures displayed in the view <me>.
-    --          If <theToIgnoreInfiniteFlag> is TRUE, then the boundary box
-    --          also includes minimum and maximum limits of graphical elements
-    --          forming parts of infinite structures.
-
-    MinMaxValues (me;
-                  theSet                  : MapOfStructure from Graphic3d;
-                  theXMin, theYMin        : out Real from Standard;
-                  theXMax, theYMax        : out Real from Standard;
-                  theToIgnoreInfiniteFlag : Boolean from Standard = Standard_False)
-    is static;
-    ---Level: Public
-    ---Purpose: Returns the coordinates of the projection of the
-    --          boundary box of all structures in the set <ASet>.
     --          If <theToIgnoreInfiniteFlag> is TRUE, then the boundary box
     --          also includes minimum and maximum limits of graphical elements
     --          forming parts of infinite structures.

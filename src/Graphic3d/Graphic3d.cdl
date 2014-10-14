@@ -72,7 +72,8 @@ uses
     WNT,
     Image,
     gp,
-    Font
+    Font,
+    Bnd
 is
 
     -----------------------
