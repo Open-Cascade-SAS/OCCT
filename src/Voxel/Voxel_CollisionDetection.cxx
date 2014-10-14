@@ -271,7 +271,7 @@ void Voxel_CollisionDetection::Clear()
 {
   if (myVoxels)
   {
-    delete ((Voxel_BoolDS*)myVoxels);
+    delete[] ((Voxel_BoolDS*)myVoxels);
     myVoxels = 0;
   }
 }
