@@ -35,6 +35,7 @@
 #include <Precision.hxx>
 #include <AIS_Drawer.hxx>
 #include <TopAbs_ShapeEnum.hxx>
+#include <Standard_ProgramError.hxx>
 #include <StdPrs_WFDeflectionShape.hxx>
 #include <StdPrs_HLRPolyShape.hxx>
 #include <Prs3d_Drawer.hxx>
@@ -85,6 +86,10 @@ void AIS_ConnectedInteractive::Connect (const Handle(AIS_InteractiveObject)& the
   else if (theAnotherObj->HasOwnPresentations())
   {
     myReference = theAnotherObj;
+  }
+  else
+  {
+    Standard_ProgramError::Raise ("AIS_ConnectedInteractive::Connect() - object without own presentation can not be connected");
   }
 
   if (!myReference.IsNull())
