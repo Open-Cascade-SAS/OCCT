@@ -2884,6 +2884,43 @@ static Standard_Integer OCC7570 (Draw_Interpretor& di, Standard_Integer n, const
 
 /*****************************************************************************/
 
+#include <GeomAPI_IntSS.hxx>
+//=======================================================================
+//function : OCC25100
+//purpose  :
+//=======================================================================
+static Standard_Integer OCC25100 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
+{
+  if (argc < 2)
+  {
+    di << "the method requires a shape name\n";
+    return 1;
+  }
+
+  TopoDS_Shape S = DBRep::Get(argv[1]);
+  if ( S.IsNull() )
+  {
+    di << "Shape is empty" << "\n";
+    return 1;
+  }
+  
+  TopExp_Explorer aFaceExp(S, TopAbs_FACE);
+  const Handle(Geom_Surface)& aSurf = BRep_Tool::Surface(TopoDS::Face(aFaceExp.Current()));
+
+  GeomAPI_IntSS anIntersector(aSurf, aSurf, Precision::Confusion());
+
+  if (!anIntersector.IsDone())
+  {
+    di << "Error. Intersection is not done\n";
+    return 1;
+  }
+
+  di << "Test complete\n";
+
+  return 0;
+}
+
+
 void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -2940,5 +2977,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC24606", "OCC24606 : Tests ::FitAll for V3d view ('vfit' is for NIS view)", __FILE__, OCC24606, group);
   theCommands.Add ("OCC25202", "OCC25202 res shape numF1 face1 numF2 face2", __FILE__, OCC25202, group);
   theCommands.Add ("OCC7570", "OCC7570 shape", __FILE__, OCC7570, group);
+  theCommands.Add ("OCC25100", "OCC25100 shape", __FILE__, OCC25100, group);
   return;
 }

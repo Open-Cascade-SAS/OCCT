@@ -34,6 +34,8 @@
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
 #include <Bnd_BoundSortBox.hxx>
 
+#include <NCollection_LocalArray.hxx>
+
 static const int Pourcent3[9] = {0, 1, 2, 0, 1, 2, 0, 1, 2};
 
 //=======================================================================
@@ -556,8 +558,8 @@ void IntPatch_InterferencePolyhedron::Intersect
       }
     }
     
+    NCollection_LocalArray <Standard_Integer> id(Max(nbpiOT, 4));
 
-    Standard_Integer id[4];
     Standard_Integer ideb=-1;
     Standard_Integer ifin=-2;
 
@@ -567,7 +569,7 @@ void IntPatch_InterferencePolyhedron::Intersect
 // two triangles :
 
       gp_XYZ dir=ONor^TNor;
-      Standard_Real d[4];
+      NCollection_LocalArray <Standard_Real> d(nbpiOT);
       Standard_Integer iPi, iPs;
       for (iPi=0; iPi<nbpiOT; iPi++) {
 	d[iPi]=dir*piOT(iPi+1).Pnt().XYZ();
