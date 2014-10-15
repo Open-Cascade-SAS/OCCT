@@ -23,7 +23,7 @@
 #include <math_Vector.hxx>
 #include <math_MultipleVarFunctionWithHessian.hxx>
 
-//! This class implements function which calculate Eucluidean distance
+//! This class implements function which calculate square Eucluidean distance
 //! between point on curve and point on surface in case of continuity is C2.
 class Extrema_GlobOptFuncCS : public math_MultipleVarFunctionWithHessian
 {

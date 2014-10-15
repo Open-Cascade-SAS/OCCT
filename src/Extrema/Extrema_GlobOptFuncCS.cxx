@@ -21,9 +21,9 @@
 #include <Standard_Integer.hxx>
 #include <Standard_OutOfRange.hxx>
 
-//! F = Sqrt( (x1(cu) - x2(su,sv))^2
-//          + (y1(cu) - y2(su,sv))^2
-//          + (z1(cu) - z2(su,sv))^2 )
+//!F(cu, su, sv)=(C^{(x)}(cu)-S^{(x)}(su,sv))^{2}+
+//               (C^{(y)}(cu)-S^{(y)}(su,sv))^{2}+
+//               (C^{(z)}(cu)-S^{(z)}(su,sv))^{2}
 
 
 //=======================================================================
@@ -35,7 +35,7 @@ void Extrema_GlobOptFuncCS::value(Standard_Real cu,
                                   Standard_Real sv,
                                   Standard_Real &F)
 {
-  F = myC->Value(cu).Distance(myS->Value(su, sv));
+  F = myC->Value(cu).SquareDistance(myS->Value(su, sv));
 }
 
 //=======================================================================
@@ -85,33 +85,41 @@ void Extrema_GlobOptFuncCS::hessian(Standard_Real cu,
            + (CD0.X() - SD0.X()) * CD2.X()
            + (CD0.Y() - SD0.Y()) * CD2.Y()
            + (CD0.Z() - SD0.Z()) * CD2.Z();
+
   H(1,2) = - CD1.X() * SD1U.X()
            - CD1.Y() * SD1U.Y()
            - CD1.Z() * SD1U.Z();
+
   H(1,3) = - CD1.X() * SD1V.X()
            - CD1.Y() * SD1V.Y()
            - CD1.Z() * SD1V.Z();
+
   H(2,1) = H(1,2);
+
   H(2,2) = + SD1U.X() * SD1U.X()
            + SD1U.Y() * SD1U.Y()
            + SD1U.Z() * SD1U.Z()
            - (CD0.X() - SD0.X()) * SD2UU.X()
-           - (CD0.X() - SD0.X()) * SD2UU.Y()
-           - (CD0.X() - SD0.X()) * SD2UU.Z();
+           - (CD0.Y() - SD0.Y()) * SD2UU.Y()
+           - (CD0.Z() - SD0.Z()) * SD2UU.Z();
+
   H(2,3) = + SD1U.X() * SD1V.X()
            + SD1U.Y() * SD1V.Y()
            + SD1U.Z() * SD1V.Z()
            - (CD0.X() - SD0.X()) * SD2UV.X()
-           - (CD0.X() - SD0.X()) * SD2UV.Y()
-           - (CD0.X() - SD0.X()) * SD2UV.Z();
+           - (CD0.Y() - SD0.Y()) * SD2UV.Y()
+           - (CD0.Z() - SD0.Z()) * SD2UV.Z();
+
   H(3,1) = H(1,3);
+
   H(3,2) = H(2,3);
+
   H(3,3) = + SD1V.X() * SD1V.X()
            + SD1V.Y() * SD1V.Y()
            + SD1V.Z() * SD1V.Z()
            - (CD0.X() - SD0.X()) * SD2VV.X()
-           - (CD0.X() - SD0.X()) * SD2VV.Y()
-           - (CD0.X() - SD0.X()) * SD2VV.Z();
+           - (CD0.Y() - SD0.Y()) * SD2VV.Y()
+           - (CD0.Z() - SD0.Z()) * SD2VV.Z();
 }
 
 //=======================================================================

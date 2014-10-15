@@ -24,8 +24,8 @@
 #include <math_MultipleVarFunctionWithGradient.hxx>
 #include <math_MultipleVarFunctionWithHessian.hxx>
 
-//! This class implements function which operates with Eucluidean distance <br>
-//! between 2 curves in case of C1 and C2 continuity is C0.
+//! This class implements function which calculate Eucluidean distance
+//! between point on curve and point on other curve in case of C1 and C2 continuity is C0.
 class Extrema_GlobOptFuncCCC0 : public math_MultipleVarFunction
 {
 public:
@@ -53,8 +53,8 @@ private:
 };
 
 
-//! This class implements function which operates with Eucluidean distance <br>
-//! between 2 curves in case of C1 and C2 continuity is C1.
+//! This class implements function which calculate Eucluidean distance
+//! between point on curve and point on other curve in case of C1 and C2 continuity is C1.
 class Extrema_GlobOptFuncCCC1 : public math_MultipleVarFunctionWithGradient
 {
 public:
@@ -84,8 +84,8 @@ private:
 };
 
 
-//! This class implements function which operates with Eucluidean distance <br>
-//! between 2 curves in case of C1 and C2 continuity is C2 or more.
+//! This class implements function which calculate Eucluidean distance
+//! between point on curve and point on other curve in case of C1 and C2 continuity is C2.
 class Extrema_GlobOptFuncCCC2 : public math_MultipleVarFunctionWithHessian
 {
 public:

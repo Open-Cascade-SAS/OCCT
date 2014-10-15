@@ -85,7 +85,7 @@ void math_PSO::Perform(const math_Vector& theSteps,
   {
     myFunc->Value(aCurrPoint, aCurrValue);
 
-    if (aCurrValue * aCurrValue < aParticle->Distance)
+    if (aCurrValue < aParticle->Distance)
     {
       Standard_Integer aDimIdx;
       for(aDimIdx = 0; aDimIdx < myN; ++aDimIdx)
@@ -93,8 +93,8 @@ void math_PSO::Perform(const math_Vector& theSteps,
         aParticle->Position[aDimIdx] = aCurrPoint(aDimIdx + 1);
         aParticle->BestPosition[aDimIdx] = aCurrPoint(aDimIdx + 1);
       }
-      aParticle->Distance     = aCurrValue * aCurrValue;
-      aParticle->BestDistance = aCurrValue * aCurrValue;
+      aParticle->Distance     = aCurrValue;
+      aParticle->BestDistance = aCurrValue;
 
       aParticle = aPool.GetWorstParticle();
     }
@@ -199,7 +199,6 @@ void math_PSO::performPSOWithGivenParticles(math_PSOParticlesPool& theParticles,
       }
 
       myFunc->Value(aCurrPoint, aParticle->Distance);
-      aParticle->Distance *= aParticle->Distance;
       if(aParticle->Distance < aParticle->BestDistance)
       {
         aParticle->BestDistance = aParticle->Distance;
