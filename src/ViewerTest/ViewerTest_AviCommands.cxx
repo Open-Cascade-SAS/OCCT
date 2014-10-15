@@ -15,7 +15,9 @@
 
 #if (defined(_WIN32) || defined(__WIN32__)) && defined(HAVE_VIDEOCAPTURE)
   #include <windows.h>
+  #include <Aspect_Window.hxx>
   #include <OpenGl_AVIWriter.hxx>
+  #include <V3d_View.hxx>
 #endif
 
 #include <ViewerTest.hxx>
@@ -33,6 +35,13 @@ static Standard_Integer avi_record(Draw_Interpretor& /*di*/,
   Standard_Integer aResult = 1;
 #if (defined(_WIN32) || defined(__WIN32__))
   #ifdef HAVE_VIDEOCAPTURE
+    Handle(V3d_View) aView = ViewerTest::CurrentView ();
+    if (aView.IsNull())
+    {
+      std::cout << "Call vinit before!\n";
+      return 1;
+    }
+
     static OpenGl_AVIWriter * pAviWriter = 0L;
 
     if (strncmp(argv[1], "file", 5) == 0) {
@@ -52,7 +61,7 @@ static Standard_Integer avi_record(Draw_Interpretor& /*di*/,
       cout << "AVI Writer instance has not been initialized. Use command "
            << argv[0] << " file ..." << endl;
     } else if (strncmp(argv[1], "start", 6) == 0) {
-      pAviWriter->StartRecording();
+      pAviWriter->StartRecording (aView->Window()->NativeHandle());
       aResult = 0;
     } else if (strncmp(argv[1], "stop", 5) == 0) {
       pAviWriter->StopRecording();
