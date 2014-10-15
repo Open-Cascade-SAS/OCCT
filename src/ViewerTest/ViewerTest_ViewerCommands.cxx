@@ -2480,6 +2480,68 @@ static int VFit(Draw_Interpretor& , Standard_Integer , const char** )
   return 0;
 }
 
+//=======================================================================
+//function : VFitArea
+//purpose  : Fit view to show area located between two points
+//         : given in world 2D or 3D coordinates.
+//=======================================================================
+static int VFitArea (Draw_Interpretor& theDI, Standard_Integer  theArgNb, const char** theArgVec)
+{
+  Handle(V3d_View) aView = ViewerTest::CurrentView();
+  if (aView.IsNull())
+  {
+    std::cerr << theArgVec[0] << "Error: No active view.\n";
+    return 1;
+  }
+
+  // Parse arguments.
+  gp_Pnt aWorldPnt1 (0.0, 0.0, 0.0);
+  gp_Pnt aWorldPnt2 (0.0, 0.0, 0.0);
+
+  if (theArgNb == 5)
+  {
+    aWorldPnt1.SetX (Draw::Atof (theArgVec[1]));
+    aWorldPnt1.SetY (Draw::Atof (theArgVec[2]));
+    aWorldPnt2.SetX (Draw::Atof (theArgVec[3]));
+    aWorldPnt2.SetY (Draw::Atof (theArgVec[4]));
+  }
+  else if (theArgNb == 7)
+  {
+    aWorldPnt1.SetX (Draw::Atof (theArgVec[1]));
+    aWorldPnt1.SetY (Draw::Atof (theArgVec[2]));
+    aWorldPnt1.SetZ (Draw::Atof (theArgVec[3]));
+    aWorldPnt2.SetX (Draw::Atof (theArgVec[4]));
+    aWorldPnt2.SetY (Draw::Atof (theArgVec[5]));
+    aWorldPnt2.SetZ (Draw::Atof (theArgVec[6]));
+  }
+  else
+  {
+    std::cerr << theArgVec[0] << "Error: Invalid number of arguments.\n";
+    theDI.PrintHelp(theArgVec[0]);
+    return 1;
+  }
+
+  // Convert model coordinates to view space
+  Handle(Graphic3d_Camera) aCamera = aView->Camera();
+  gp_Pnt aViewPnt1 = aCamera->ConvertWorld2View (aWorldPnt1);
+  gp_Pnt aViewPnt2 = aCamera->ConvertWorld2View (aWorldPnt2);
+
+  // Determine fit area
+  gp_Pnt2d aMinCorner (Min (aViewPnt1.X(), aViewPnt2.X()), Min (aViewPnt1.Y(), aViewPnt2.Y()));
+  gp_Pnt2d aMaxCorner (Max (aViewPnt1.X(), aViewPnt2.X()), Max (aViewPnt1.Y(), aViewPnt2.Y()));
+
+  Standard_Real aDiagonal = aMinCorner.Distance (aMaxCorner);
+
+  if (aDiagonal < Precision::Confusion())
+  {
+    std::cerr << theArgVec[0] << "Error: view area is too small.\n";
+    return 1;
+  }
+
+  aView->FitAll (aMinCorner.X(), aMinCorner.Y(), aMaxCorner.X(), aMaxCorner.Y());
+  return 0;
+}
+
 //==============================================================================
 //function : VZFit
 //purpose  : ZFitall, no DRAW arguments
@@ -7102,6 +7164,12 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
   theCommands.Add("vfit"    ,
     "vfit or <F>         : vfit",
     __FILE__,VFit,group);
+  theCommands.Add ("vfitarea",
+    "vfitarea x1 y1 x2 y2"
+    "\n\t\t: vfitarea x1 y1 z1 x2 y2 z2"
+    "\n\t\t: Fit view to show area located between two points"
+    "\n\t\t: given in world 2D or 3D corrdinates.",
+    __FILE__, VFitArea, group);
   theCommands.Add ("vzfit", "vzfit [scale]\n"
     "   Matches Z near, Z far view volume planes to the displayed objects.\n"
     "   \"scale\" - specifies factor to scale computed z range.\n",
