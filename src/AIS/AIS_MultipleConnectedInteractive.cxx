@@ -182,10 +182,12 @@ Standard_Integer AIS_MultipleConnectedInteractive::Signature() const
 
 //=======================================================================
 //function : Connect
-//purpose  : 
+//purpose  :
 //=======================================================================
-void AIS_MultipleConnectedInteractive::Connect (const Handle(AIS_InteractiveObject)& theAnotherObj,
-                                                const gp_Trsf&                       theTransformation)
+Handle(AIS_InteractiveObject) AIS_MultipleConnectedInteractive::Connect (const Handle(AIS_InteractiveObject)& theAnotherObj,
+                                                                         const gp_Trsf&                       theTransformation,
+                                                                         const Graphic3d_TransModeFlags&      theTrsfPersFlag,
+                                                                         const gp_Pnt&                        theTrsfPersPoint)
 {
   Handle(AIS_InteractiveObject) anObjectToAdd;
 
@@ -219,16 +221,35 @@ void AIS_MultipleConnectedInteractive::Connect (const Handle(AIS_InteractiveObje
   }
 
   anObjectToAdd->SetLocalTransformation (theTransformation);
+  if (theTrsfPersFlag != Graphic3d_TMF_None)
+  {
+    anObjectToAdd->SetTransformPersistence (theTrsfPersFlag, theTrsfPersPoint);
+  }
   AddChild (anObjectToAdd);
+  return anObjectToAdd;
 }
 
 //=======================================================================
 //function : Connect
-//purpose  : 
+//purpose  :
 //=======================================================================
-void AIS_MultipleConnectedInteractive::Connect (const Handle(AIS_InteractiveObject)& theAnotherObj)
+Handle(AIS_InteractiveObject) AIS_MultipleConnectedInteractive::Connect (const Handle(AIS_InteractiveObject)& theAnotherObj)
 {
-  Connect (theAnotherObj, theAnotherObj->LocalTransformation());
+  return Connect (theAnotherObj, theAnotherObj->LocalTransformation(),
+                  theAnotherObj->GetTransformPersistenceMode(),
+                  theAnotherObj->GetTransformPersistencePoint());
+}
+
+//=======================================================================
+//function : Connect
+//purpose  :
+//=======================================================================
+Handle(AIS_InteractiveObject) AIS_MultipleConnectedInteractive::Connect (const Handle(AIS_InteractiveObject)& theAnotherObj,
+                                                                         const gp_Trsf&                       theTransformation)
+{
+  return Connect (theAnotherObj, theTransformation,
+                  theAnotherObj->GetTransformPersistenceMode(),
+                  theAnotherObj->GetTransformPersistencePoint());
 }
 
 //=======================================================================

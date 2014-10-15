@@ -38,26 +38,42 @@ uses
     Transformation        from Geom,
     Integer                from Standard,
     Selection              from SelectMgr,
-    Trsf                  from gp
+    Trsf                  from gp,
+    Pnt                   from gp,
+    TransModeFlags        from Graphic3d
 
 is 
-    
 
     Create
     returns  MultipleConnectedInteractive  from  AIS;
     ---Purpose: Initializes the Interactive Object with multiple
     -- connections to AIS_Interactive objects.
-    
-    Connect(me             : mutable; 
-    	    theInteractive : InteractiveObject from AIS);
-    ---Purpose: Adds instance of theInteractive to child list.
 
-    Connect(me:mutable;
-            anotherIobj: InteractiveObject from AIS;
-            aLocation : Trsf from gp) is virtual;
-        ---Purpose: Establishes the connection between the Connected
-        -- Interactive Object, anotherIobj, and its reference.
-        -- Locates instance in aLocation.
+    Connect (me             : mutable;
+             theInteractive : InteractiveObject from AIS)
+    returns InteractiveObject from AIS;
+    ---Purpose: Establishes the connection between the Connected Interactive Object, theInteractive, and its reference.
+    -- Copies local transformation and transformation persistence mode from theInteractive.
+    -- @return created instance object (AIS_ConnectedInteractive or AIS_MultipleConnectedInteractive)
+
+    Connect (me             : mutable;
+             theInteractive : InteractiveObject from AIS;
+             theLocation    : Trsf from gp)
+    returns InteractiveObject from AIS;
+    ---Purpose: Establishes the connection between the Connected Interactive Object, theInteractive, and its reference.
+    -- Locates instance in theLocation and copies transformation persistence mode from theInteractive.
+    -- @return created instance object (AIS_ConnectedInteractive or AIS_MultipleConnectedInteractive)
+
+    Connect (me               : mutable;
+             theInteractive   : InteractiveObject from AIS;
+             theLocation      : Trsf from gp;
+             theTrsfPersFlag  : TransModeFlags from Graphic3d;
+             theTrsfPersPoint : Pnt from gp )
+    returns InteractiveObject from AIS
+    is virtual;
+    ---Purpose: Establishes the connection between the Connected Interactive Object, theInteractive, and its reference.
+    -- Locates instance in theLocation and applies specified transformation persistence mode.
+    -- @return created instance object (AIS_ConnectedInteractive or AIS_MultipleConnectedInteractive)
 
     Type(me) returns KindOfInteractive from AIS
     is redefined virtual;	  
