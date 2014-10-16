@@ -24,6 +24,7 @@
 #include <Image_AlienPixMap.hxx>
 #include <gp.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
 #include <fstream>
 #include <algorithm>
 
@@ -244,7 +245,13 @@ void Image_AlienPixMap::Clear()
 bool Image_AlienPixMap::Load (const TCollection_AsciiString& theImagePath)
 {
   Clear();
+
+#ifdef _WIN32
+  const TCollection_ExtendedString aFileNameW (theImagePath.ToCString(), Standard_True);
+  FREE_IMAGE_FORMAT aFIF = FreeImage_GetFileTypeU ((const wchar_t* )aFileNameW.ToExtString(), 0);
+#else
   FREE_IMAGE_FORMAT aFIF = FreeImage_GetFileType (theImagePath.ToCString(), 0);
+#endif
   if (aFIF == FIF_UNKNOWN)
   {
     // no signature? try to guess the file format from the file extension
@@ -268,7 +275,11 @@ bool Image_AlienPixMap::Load (const TCollection_AsciiString& theImagePath)
     aLoadFlags = ICO_MAKEALPHA;
   }
 
-  FIBITMAP* anImage = FreeImage_Load (aFIF, theImagePath.ToCString(), aLoadFlags);
+#ifdef _WIN32
+  FIBITMAP* anImage = FreeImage_LoadU (aFIF, (const wchar_t* )aFileNameW.ToExtString(), aLoadFlags);
+#else
+  FIBITMAP* anImage = FreeImage_Load  (aFIF, theImagePath.ToCString(), aLoadFlags);
+#endif
   if (anImage == NULL)
   {
     return false;
@@ -311,7 +322,12 @@ bool Image_AlienPixMap::savePPM (const TCollection_AsciiString& theFileName) con
   }
 
   // Open file
+#ifdef _WIN32
+  const TCollection_ExtendedString aFileNameW (theFileName.ToCString(), Standard_True);
+  FILE* aFile = _wfopen ((const wchar_t* )aFileNameW.ToExtString(), L"wb");
+#else
   FILE* aFile = fopen (theFileName.ToCString(), "wb");
+#endif
   if (aFile == NULL)
   {
     return false;
@@ -354,7 +370,12 @@ bool Image_AlienPixMap::Save (const TCollection_AsciiString& theFileName)
     return false;
   }
 
+#ifdef _WIN32
+  const TCollection_ExtendedString aFileNameW (theFileName.ToCString(), Standard_True);
+  FREE_IMAGE_FORMAT anImageFormat = FreeImage_GetFIFFromFilenameU ((const wchar_t* )aFileNameW.ToExtString());
+#else
   FREE_IMAGE_FORMAT anImageFormat = FreeImage_GetFIFFromFilename (theFileName.ToCString());
+#endif
   if (anImageFormat == FIF_UNKNOWN)
   {
     std::cerr << "Image_PixMap, image format doesn't supported!\n";
@@ -483,7 +504,11 @@ bool Image_AlienPixMap::Save (const TCollection_AsciiString& theFileName)
     return false;
   }
 
-  bool isSaved = (FreeImage_Save (anImageFormat, anImageToDump, theFileName.ToCString()) != FALSE);
+#ifdef _WIN32
+  bool isSaved = (FreeImage_SaveU (anImageFormat, anImageToDump, (const wchar_t* )aFileNameW.ToExtString()) != FALSE);
+#else
+  bool isSaved = (FreeImage_Save  (anImageFormat, anImageToDump, theFileName.ToCString()) != FALSE);
+#endif
   if (anImageToDump != myLibImage)
   {
     FreeImage_Unload (anImageToDump);
@@ -505,14 +530,12 @@ bool Image_AlienPixMap::Save (const TCollection_AsciiString& theFileName)
 // function : AdjustGamma
 // purpose  :
 // =======================================================================
+bool Image_AlienPixMap::AdjustGamma (const Standard_Real theGammaCorr)
+{
 #ifdef HAVE_FREEIMAGE
-Standard_EXPORT bool Image_AlienPixMap::AdjustGamma (const Standard_Real theGammaCorr)
-{
   return FreeImage_AdjustGamma (myLibImage, theGammaCorr) != FALSE;
-}
 #else
-Standard_EXPORT bool Image_AlienPixMap::AdjustGamma (const Standard_Real)
-{
-    return false;
-}
+  (void )theGammaCorr;
+  return false;
 #endif
+}

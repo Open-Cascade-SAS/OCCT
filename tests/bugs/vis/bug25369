@@ -1,0 +1,21 @@
+puts "========"
+puts "OCC25369"
+puts "========"
+puts ""
+###################################################################################################
+#  Visualization, Image_AlienPixMap - handle UTF-8 names in image read/save operations on Windows
+###################################################################################################
+
+box b 1 2 3
+vinit View1
+vclear
+vsetdispmode 0
+vdisplay b
+vfit
+set s [encoding convertfrom unicode "\x3A\x04\x30\x04\x40\x04\x2E\x00\x70\x00\x6E\x00\x67\x00"]
+
+vdrawtext $s 0 0 0 255 255 255 0 0 0 0 50 0 Times 1
+vdump $::imagedir/$s
+vtexture b $::imagedir/$s
+
+set only_screen 1
