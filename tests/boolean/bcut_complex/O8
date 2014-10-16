@@ -1,3 +1,5 @@
+puts "TODO #25319 ALL: Error : The area of the resulting shape is"
+
 ## cts20461
 
 restore [locate_data_file cts20461.rle] a

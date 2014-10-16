@@ -65,6 +65,7 @@
 #include <BOPTools_Set.hxx>
 //
 #include <BOPAlgo_BuilderSolid.hxx>
+#include <NCollection_Array1.hxx>
 
 
 static
@@ -313,6 +314,14 @@ void BOPAlgo_Builder::FillIn3DParts
     aNbFP=aBBTree.Select(aSelector);
     //
     const BOPCol_ListOfInteger& aLIFP=aSelector.Indices();
+    //sort indices
+    NCollection_Array1<Standard_Integer> aIVec(1, aNbFP);
+    aItLI.Initialize(aLIFP);
+    for (k = 1; aItLI.More(); aItLI.Next(), ++k) {
+      nFP=aItLI.Value();
+      aIVec(k) = nFP;
+    }
+    std::sort(aIVec.begin(), aIVec.end());
     //
     // 2.5. Collect faces that are IN aSolid [ aLFIN ]
     BOPCol_ListOfShape aLFP(aAlr1);
@@ -322,9 +331,8 @@ void BOPAlgo_Builder::FillIn3DParts
     //
     BOPTools::MapShapes(aSD, TopAbs_EDGE, aME);
     //
-    aItLI.Initialize(aLIFP);
-    for (; aItLI.More(); aItLI.Next()) {
-      nFP=aItLI.Value();
+    for (k = 1; k <= aNbFP; ++k) {
+      nFP = aIVec(k);
       const BOPAlgo_ShapeBox& aSBF=aDMISB.Find(nFP);
       const TopoDS_Face& aFP=(*(TopoDS_Face*)&aSBF.Shape());
       if (aMF.Contains(aFP)) {

@@ -1,0 +1,31 @@
+puts "TODO OCC25319 ALL: Faulty shapes in variables faulty_1 to faulty_"
+
+puts "================"
+puts "OCC25319"
+puts "================"
+puts ""
+########################################################################
+# Bop Common produces strange results with same shapes.
+########################################################################
+
+restore [locate_data_file bug25319_S1.brep] b1
+restore [locate_data_file bug25319_S2.brep] b2
+
+explode b1 so; copy b1_1 b1
+explode b2 so; copy b2_3 b2
+
+bcommon result b1 b2
+
+set square 1690.81
+
+set nb_v_good 20
+set nb_e_good 31
+set nb_w_good 13
+set nb_f_good 13
+set nb_sh_good 1
+set nb_sol_good 1
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 80
+
+set 2dviewer 1
