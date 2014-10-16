@@ -2861,6 +2861,27 @@ static Standard_Integer OCC25202 ( Draw_Interpretor& theDI,
   return 0;
 }
 
+#include <ShapeFix_Wireframe.hxx>
+//=======================================================================
+//function : OCC7570
+//purpose  : 
+//=======================================================================
+static Standard_Integer OCC7570 (Draw_Interpretor& di, Standard_Integer n, const char** a)
+{
+  if (n != 2) {
+    di<<"Usage: "<<a[0]<<" invalid number of arguments"<<"\n";
+    return 1;
+  }
+  TopoDS_Shape in_shape (DBRep::Get (a[1]));
+  ShapeFix_Wireframe fix_tool (in_shape);
+  fix_tool.ModeDropSmallEdges () = Standard_True;
+  fix_tool.SetPrecision (1.e+6);
+  fix_tool.SetLimitAngle (0.01);
+  fix_tool.FixSmallEdges ();
+  TopoDS_Shape new_shape = fix_tool.Shape ();
+  return 0;
+}
+
 /*****************************************************************************/
 
 void QABugs::Commands_19(Draw_Interpretor& theCommands) {
@@ -2918,5 +2939,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC25043", "OCC25043 shape", __FILE__, OCC25043, group);
   theCommands.Add ("OCC24606", "OCC24606 : Tests ::FitAll for V3d view ('vfit' is for NIS view)", __FILE__, OCC24606, group);
   theCommands.Add ("OCC25202", "OCC25202 res shape numF1 face1 numF2 face2", __FILE__, OCC25202, group);
+  theCommands.Add ("OCC7570", "OCC7570 shape", __FILE__, OCC7570, group);
   return;
 }

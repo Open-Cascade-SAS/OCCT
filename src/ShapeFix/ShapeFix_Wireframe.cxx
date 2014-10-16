@@ -426,16 +426,21 @@ ShapeFix_Wireframe::ShapeFix_Wireframe(const TopoDS_Shape& shape)
       TopoDS_Shape res;
       if ( cont.IsBound ( shape1 ) )
       {
-	res = cont.Find ( shape1 ).Oriented ( shape1.Orientation() );
+        res = cont.Find ( shape1 ).Oriented ( shape1.Orientation() );
       }
       else 
       {
-	myShape = shape1;
-	FixSmallEdges();
-	res = Shape();
-	cont.Bind(myShape,res);
+        myShape = shape1;
+        FixSmallEdges();
+        res = Shape();
+        cont.Bind(myShape,res);
       }
       if ( ! res.IsSame ( shape1 ) ) locModified = Standard_True;
+
+      //check if resulting shape if not empty
+      if( res.IsNull())
+        continue;
+
       res.Location ( L );
       B.Add ( C, res );
       
