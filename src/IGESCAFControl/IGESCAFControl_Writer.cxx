@@ -43,6 +43,62 @@
 #include <IGESData_NameEntity.hxx>
 #include <TopTools_SequenceOfShape.hxx>
 #include <TColStd_HSequenceOfExtendedString.hxx>
+#include <NCollection_DataMap.hxx>
+
+namespace
+{
+  typedef NCollection_DataMap<TopoDS_Shape, TCollection_ExtendedString> DataMapOfShapeNames;
+
+  void  CollectShapeNames (const TDF_Label& theLabel,
+                           const TopLoc_Location& theLocation,
+                           const Handle(TDataStd_Name)& thePrevName,
+                           DataMapOfShapeNames& theMapOfShapeNames)
+  {
+    Standard_Boolean hasReferredShape = Standard_False;
+    Standard_Boolean hasComponents    = Standard_False;
+    TDF_Label aReferredLabel;
+
+    Handle(TDataStd_Name) aName;
+    theLabel.FindAttribute (TDataStd_Name::GetID(), aName);
+
+    if ( XCAFDoc_ShapeTool::GetReferredShape ( theLabel, aReferredLabel ) )
+    {
+      TopLoc_Location aSubLocation = theLocation.Multiplied ( XCAFDoc_ShapeTool::GetLocation ( theLabel ) );
+      CollectShapeNames (aReferredLabel, aSubLocation, aName, theMapOfShapeNames);
+      hasReferredShape = Standard_True;
+    }
+
+    TDF_LabelSequence aSeq;
+    if (XCAFDoc_ShapeTool::GetComponents (theLabel, aSeq))
+    {
+      for (Standard_Integer anIter = 1; anIter <= aSeq.Length(); anIter++)
+      {
+        CollectShapeNames (aSeq.Value (anIter), theLocation, aName, theMapOfShapeNames );
+      }
+      hasComponents = Standard_True;
+    }
+
+    aSeq.Clear();
+    if (XCAFDoc_ShapeTool::GetSubShapes (theLabel, aSeq))
+    {
+      for (Standard_Integer anIter = 1; anIter <= aSeq.Length(); anIter++)
+      {
+        TopoDS_Shape aShape;
+        if (!XCAFDoc_ShapeTool::GetShape (aSeq.Value (anIter), aShape)) continue;
+        if (!aSeq.Value (anIter).FindAttribute (TDataStd_Name::GetID(), aName)) continue;
+        theMapOfShapeNames.Bind (aShape, aName->Get());
+      }
+    }
+
+    if (!hasReferredShape && !hasComponents)
+    {
+      TopoDS_Shape aShape;
+      if (!XCAFDoc_ShapeTool::GetShape (theLabel, aShape)) return;
+      aShape.Move (theLocation);
+      theMapOfShapeNames.Bind (aShape, thePrevName->Get());
+    }
+  }
+}
 
 //=======================================================================
 //function : IGESCAFControl_Writer
@@ -399,37 +455,53 @@ Standard_Boolean IGESCAFControl_Writer::WriteLayers (const TDF_LabelSequence& la
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean IGESCAFControl_Writer::WriteNames (const TDF_LabelSequence& labels) 
+Standard_Boolean IGESCAFControl_Writer::WriteNames (const TDF_LabelSequence& theLabels)
 {
-  if ( labels.Length() <=0 ) return Standard_False;
-  Handle(XCAFDoc_ShapeTool) STool = XCAFDoc_DocumentTool::ShapeTool( labels(1) );
-  if ( STool.IsNull() ) return Standard_False;
-  TDF_ChildIterator labelShIt(STool->BaseLabel() , Standard_True);
-  for (; labelShIt.More(); labelShIt.Next() ) {
-    TDF_Label shLabel = labelShIt.Value();
+  if (theLabels.Length() <= 0) return Standard_False;
+
+  DataMapOfShapeNames aMapOfShapeNames;
+
+  for (Standard_Integer anIter = 1; anIter <= theLabels.Length(); anIter++ )
+  {
+    TDF_Label aLabel = theLabels.Value (anIter);
+
+    TopoDS_Shape aShape;
     Handle(TDataStd_Name) aName;
-    if ( !shLabel.FindAttribute( TDataStd_Name::GetID(), aName) ) continue;
-    TCollection_ExtendedString shName = aName->Get();
-    TopoDS_Shape Sh;
-    if ( !STool->GetShape(shLabel, Sh) ) continue;
-    Handle(Transfer_FinderProcess) FP = TransferProcess();
-    Handle(IGESData_IGESEntity) Igesent;
-    Handle(TransferBRep_ShapeMapper) mapper = TransferBRep::ShapeMapper ( FP, Sh );
-    if ( FP->FindTypedTransient ( mapper, STANDARD_TYPE(IGESData_IGESEntity), Igesent ) ) {
-      Handle(TCollection_HAsciiString) HAname = new TCollection_HAsciiString ( "        " );
-      Standard_Integer len = 8 - shName.Length();
-      if ( len <0 ) len = 0;
-      for ( Standard_Integer k=1; len <8; k++, len++ ) {
-	HAname->SetValue ( len+1, IsAnAscii(shName.Value(k)) ? (Standard_Character)shName.Value(k) : '?' );
-      }
-      Igesent->SetLabel( HAname );
-//       Handle(IGESData_NameEntity) aNameent = new IGESData_NameEntity;
-//       Igesent->AddProperty(aNameent);
-   }
+    if (!XCAFDoc_ShapeTool::GetShape (aLabel, aShape)) continue;
+    if (!aLabel.FindAttribute (TDataStd_Name::GetID(), aName)) continue;
+
+    aMapOfShapeNames.Bind (aShape, aName->Get());
+
+    // Collect names for subshapes
+    TopLoc_Location aLocation;
+    CollectShapeNames (aLabel, aLocation, aName, aMapOfShapeNames);
   }
+
+  for (DataMapOfShapeNames::Iterator anIter (aMapOfShapeNames);
+       anIter.More(); anIter.Next())
+  {
+    const TopoDS_Shape& aShape = anIter.Key();
+    const TCollection_ExtendedString& aName = anIter.Value();
+
+    Handle(Transfer_FinderProcess) aFinderProcess = TransferProcess();
+    Handle(IGESData_IGESEntity) anIGESEntity;
+    Handle(TransferBRep_ShapeMapper) aShapeMapper = TransferBRep::ShapeMapper (aFinderProcess, aShape);
+
+    if (aFinderProcess->FindTypedTransient (aShapeMapper, STANDARD_TYPE(IGESData_IGESEntity), anIGESEntity))
+    {
+      Handle(TCollection_HAsciiString) anAsciiName = new TCollection_HAsciiString ("        ");
+      Standard_Integer aNameLength = 8 - aName.Length();
+      if (aNameLength < 0) aNameLength = 0;
+      for (Standard_Integer aCharPos = 1; aNameLength < 8; aCharPos++, aNameLength++)
+      {
+        anAsciiName->SetValue (aNameLength+1, IsAnAscii (aName.Value (aCharPos)) ? (Standard_Character )aName.Value (aCharPos) : '?');
+      }
+      anIGESEntity->SetLabel (anAsciiName);
+    }
+  }
+
   return Standard_True;
 }
-
 
 //=======================================================================
 //function : SetColorMode
