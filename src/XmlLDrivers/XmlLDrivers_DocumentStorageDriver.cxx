@@ -127,6 +127,7 @@ void XmlLDrivers_DocumentStorageDriver::Write
 
     }else{
       SetIsError (Standard_True);
+      SetStoreStatus(PCDM_SS_WriteFailure);
       TCollection_ExtendedString aMsg =
         TCollection_ExtendedString("Error: the file ") + aFileName +
           " cannot be opened for writing";
@@ -295,12 +296,14 @@ Standard_Boolean XmlLDrivers_DocumentStorageDriver::WriteToDomDocument
     catch (Standard_Failure)
     {
       SetIsError (Standard_True);
+      SetStoreStatus(PCDM_SS_Failure);
       TCollection_ExtendedString anErrorString (Standard_Failure::Caught()->GetMessageString());
       aMessageDriver -> Write (anErrorString.ToExtString());
     }
   }
   if (anObjNb <= 0 && IsError() == Standard_False) {
     SetIsError (Standard_True);
+    SetStoreStatus(PCDM_SS_No_Obj);
     TCollection_ExtendedString anErrorString ("error occurred");
     aMessageDriver -> Write (anErrorString.ToExtString());
   }

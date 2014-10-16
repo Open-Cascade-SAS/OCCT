@@ -1,0 +1,35 @@
+puts "================"
+puts "OCC25317"
+puts "================"
+puts ""
+###################################################################################################
+# Failure on attempt to save an Ocaf document with a long double array attribute in a Xml file
+###################################################################################################
+
+set i 1
+set nb 50000
+
+set FileName $imagedir/${test_image}.xml
+file delete ${FileName}
+if [file exists ${FileName}] {
+  puts "Error: There is temporary ${FileName} file"
+}
+
+#Allocate a large array.
+NewDocument D XmlOcaf
+SetRealArray D 0:1 0 1 $nb
+
+#Fill-in the large array.
+repeat $nb {
+  SetRealArrayValue D 0:1 $i 1.234
+  incr i 1
+}
+
+#Save the document in XML format.
+SaveAs D ${FileName}
+
+if [file exists ${FileName}] {
+  puts "OK: There is ${FileName} file"
+} else {
+  puts "Error: There is not ${FileName} file"
+}

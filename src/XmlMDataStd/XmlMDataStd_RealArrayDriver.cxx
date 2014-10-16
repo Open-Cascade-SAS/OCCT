@@ -22,6 +22,8 @@
 #include <XmlMDataStd.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <NCollection_LocalArray.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_OutOfMemory.hxx>
 
 IMPLEMENT_DOMSTRING (FirstIndexString, "first")
 IMPLEMENT_DOMSTRING (LastIndexString, "last")
@@ -167,8 +169,29 @@ void XmlMDataStd_RealArrayDriver::Paste (const Handle(TDF_Attribute)& theSource,
   Standard_Integer iChar = 0;
   NCollection_LocalArray<Standard_Character> str;
   if (realArray.Length())
-    str.Allocate(25 * realArray.Length() + 1);
-
+  {
+    try
+    {
+      OCC_CATCH_SIGNALS
+      str.Allocate(25 * realArray.Length() + 1);
+    }
+    catch (Standard_OutOfMemory)
+    {
+      // If allocation of big space for the string of double array values failed,
+      // try to calculate the necessary space more accurate and allocate it.
+      // It may take some time... therefore it was not done initially and
+      // an attempt to use a simple 25 chars for a double value was used.
+      Standard_Character buf[25];
+      Standard_Integer i(aL), nbChars(0);
+      while (i <= anU)
+      {
+        nbChars += Sprintf(buf, "%.17g ", realArray.Value(i++)) + 1/*a space*/;
+      }
+      if (nbChars)
+        str.Allocate(nbChars);
+    }
+  }
+  
   Standard_Integer i = aL;
   for (;;) 
   {
