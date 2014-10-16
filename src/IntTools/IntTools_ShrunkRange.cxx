@@ -316,6 +316,10 @@ void IntTools_ShrunkRange::Perform()
         if(!bFound) {
           if(dt1 > (t2 - t1)) {
             dt1 = aBAC.Resolution(d1);
+            if (dt1 > (t2 - t1)) {
+              myErrorStatus = 7;
+              return;
+            }
           }
         }
       }
@@ -411,6 +415,10 @@ void IntTools_ShrunkRange::Perform()
         if(!bFound) {
           if(dt2 > (t2 - t1)) {
             dt2 = aBAC.Resolution(d2);
+            if(dt2 > (t2 - t1)) {
+              myErrorStatus = 7;
+              return;
+            }
           }
         }
       }
