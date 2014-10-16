@@ -1,0 +1,15 @@
+puts "================"
+puts "OCC25245"
+puts "================"
+puts ""
+#######################################################################
+# General Fuse operation regression
+#######################################################################
+
+restore [locate_data_file bug25245_Input_14.brep] s14
+restore [locate_data_file bug25245_Input_24.brep] s24
+
+explode s14 e; copy s14_4 e
+explode s24 f; copy s24_1 f
+
+bop f e

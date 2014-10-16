@@ -872,7 +872,18 @@ void BOPDS_DS::InitPaveBlocks(const Standard_Integer theI)
     for (; aItE.More(); aItE.Next()) {
       aV=*((TopoDS_Vertex*)&aItE.Value());
       nV=Index(aV);
-      aT=BRep_Tool::Parameter(aV, aE);
+      //
+      const BOPDS_ShapeInfo& aSIV=ShapeInfo(nV);
+      if (aSIV.HasFlag()) {
+        aT=ComputeParameter(aV, aE); 
+      }
+      else {
+        aT=BRep_Tool::Parameter(aV, aE);
+      }
+      //
+      if (HasShapeSD(nV, nVSD)) {
+        nV=nVSD;
+      }
       aPave.SetIndex(nV);
       aPave.SetParameter(aT);
       aPB->AppendExtPave1(aPave);
