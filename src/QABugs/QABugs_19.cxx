@@ -2882,6 +2882,22 @@ static Standard_Integer OCC7570 (Draw_Interpretor& di, Standard_Integer n, const
   return 0;
 }
 
+#include <AIS_TypeFilter.hxx>
+static Standard_Integer OCC25340 (Draw_Interpretor& /*theDI*/,
+                                 Standard_Integer  /*theArgNb*/,
+                                 const char** /*theArgVec*/)
+{
+  Handle(AIS_InteractiveContext) aCtx = ViewerTest::GetAISContext();
+  if (aCtx.IsNull())
+  {
+    std::cerr << "Error: No opened viewer!\n";
+    return 1;
+  }
+  Handle(AIS_TypeFilter) aFilter = new AIS_TypeFilter (AIS_KOI_Shape);
+  aCtx->AddFilter (aFilter);
+  return 0;
+}
+
 /*****************************************************************************/
 
 #include <GeomAPI_IntSS.hxx>
@@ -2978,5 +2994,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC25202", "OCC25202 res shape numF1 face1 numF2 face2", __FILE__, OCC25202, group);
   theCommands.Add ("OCC7570", "OCC7570 shape", __FILE__, OCC7570, group);
   theCommands.Add ("OCC25100", "OCC25100 shape", __FILE__, OCC25100, group);
+  theCommands.Add ("OCC25340", "OCC25340", __FILE__, OCC25340, group);
   return;
 }

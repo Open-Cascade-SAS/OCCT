@@ -157,6 +157,7 @@ AIS_StatusOfDetection AIS_InteractiveContext::MoveTo (const Standard_Integer  th
   // filling of myAISDetectedSeq sequence storing information about detected AIS objects
   // (the objects must be AIS_Shapes)
   const Standard_Integer aDetectedNb = myMainSel->NbPicked();
+  Standard_Integer aNewDetected = 0;
   for (Standard_Integer aDetIter = 1; aDetIter <= aDetectedNb; ++aDetIter)
   {
     Handle(SelectMgr_EntityOwner) anOwner = myMainSel->Picked (aDetIter);
@@ -166,6 +167,10 @@ AIS_StatusOfDetection AIS_InteractiveContext::MoveTo (const Standard_Integer  th
       continue;
     }
 
+    if (aNewDetected < 1)
+    {
+      aNewDetected = aDetIter;
+    }
     Handle(AIS_InteractiveObject) anObj = Handle(AIS_InteractiveObject)::DownCast (anOwner->Selectable());
     if (!anObj.IsNull())
     {
@@ -173,11 +178,11 @@ AIS_StatusOfDetection AIS_InteractiveContext::MoveTo (const Standard_Integer  th
     }
   }
 
-  myMainSel->Init();
-  if (myMainSel->More())
+  if (aNewDetected >= 1)
   {
     // does nothing if previously detected object is equal to the current one
-    if (myMainSel->OnePicked()->Selectable() == myLastPicked)
+    Handle(SelectMgr_EntityOwner) aNewPickedOwner = myMainSel->Picked (aNewDetected);
+    if (aNewPickedOwner->Selectable() == myLastPicked)
     {
       return myLastPicked->State() == 1
            ? AIS_SOD_Selected
@@ -205,7 +210,7 @@ AIS_StatusOfDetection AIS_InteractiveContext::MoveTo (const Standard_Integer  th
     }
 
     // initialize myLastPicked field with currently detected object
-    myLastPicked = Handle(AIS_InteractiveObject)::DownCast (myMainSel->OnePicked()->Selectable());
+    myLastPicked = Handle(AIS_InteractiveObject)::DownCast (aNewPickedOwner->Selectable());
     myLastinMain = myLastPicked;
 
     // highlight detected object if it is not selected or myToHilightSelected flag is true

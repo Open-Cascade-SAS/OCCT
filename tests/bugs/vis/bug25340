@@ -1,0 +1,36 @@
+puts "========"
+puts "OCC25340"
+puts "========"
+puts ""
+#############################################################################################
+# Visualization, AIS_InteractiveContext - properly apply selection filters at Neutral point
+#############################################################################################
+
+pload QAcommands
+
+vinit
+
+box b 1 2 3
+vdisplay b
+vfit
+vtrihedron t
+set color_1 [vreadpixel 87 25]
+
+OCC25340
+vselect 87 25
+set color_2 [vreadpixel 87 25]
+
+if {$color_2 != $color_1} {
+  puts "ERROR: OCC25340 is reproduced"
+  puts "       initial color of trihedron is: $color_1"
+  puts "       final color of trihedron is:   $color_2"
+}
+
+if {$color_2 != "0.43137255311012268 0.48235294222831726 0.54509806632995605 1"} {
+  puts "ERROR: OCC25340 is reproduced"
+  puts "       additional investigation is needed"
+  puts "       expected color is: 0.43137255311012268 0.48235294222831726 0.54509806632995605 1"
+  puts "       current color is:  $_color_2"
+}
+
+set only_screen 1
