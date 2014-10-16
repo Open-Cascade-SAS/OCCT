@@ -17,7 +17,7 @@ if { [string compare $command chamf_sequence] == 0 } {
     if {[string compare $os "Debian60-64"] == 0 } {
       if { [string compare $group dist_dist] == 0 } {
         set nf 2
-      } else if { [string compare $group equal_dist] == 0 } {
+      } elseif { [string compare $group equal_dist] == 0 } {
         set nf 4
       }
     }

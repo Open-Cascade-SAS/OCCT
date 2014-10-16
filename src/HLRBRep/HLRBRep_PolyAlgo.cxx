@@ -876,7 +876,7 @@ void HLRBRep_PolyAlgo::StoreShell (const TopoDS_Shape& Shape,
 	      NN++;
 	    }
 	  }
-#ifdef DEB
+#ifdef HLRBREP_DEB
 	  else if (DoError) {
 	    cout << " HLRBRep_PolyAlgo::StoreShell : Face ";
 	    cout << f << " non triangulated" << endl;
@@ -906,7 +906,7 @@ void HLRBRep_PolyAlgo::StoreShell (const TopoDS_Shape& Shape,
 	  }
 	}
       }
-#ifdef DEB
+#ifdef HLRBREP_DEB
       else if (DoError) {
 	cout << "HLRBRep_PolyAlgo::StoreShell : Face ";
 	cout << f << " deja stockee" << endl;
@@ -1044,7 +1044,7 @@ Normal (const Standard_Integer iNode,
     Nod1NrmX = 1;
     Nod1NrmY = 0;
     Nod1NrmZ = 0;
-#ifdef DEB
+#ifdef HLRBREP_DEB
     if (DoError) {
       cout << "HLRBRep_PolyAlgo::Normal : AverageNormal error";
       cout << endl;
@@ -1124,7 +1124,7 @@ HLRBRep_PolyAlgo::AverageNormal(const Standard_Integer iNode,
   Standard_Real d = sqrt (X * X + Y * Y + Z * Z);
   if (OK && d < 1.e-10) {
     OK = Standard_False;
-#ifdef DEB
+#ifdef HLRBREP_DEB
     if (DoError) {
       cout << "HLRAlgo_PolyInternalData:: inverted normals on ";
       cout << "node " << iNode << endl;
@@ -1308,7 +1308,7 @@ InitBiPointsWithConnexity (const Standard_Integer e,
 	      &(((HLRAlgo_Array1OfPINod*)PINod1)->ChangeValue(Pol1(iPol)));
 	    Nod12Indices = (*pi1p2)->Indices();
 	    Nod12RValues = (*pi1p2)->RValues();
-#ifdef DEB
+#ifdef HLRBREP_DEB
 	    if (DoError) {
 	      if (Nod11NrmX*Nod12NrmX +
 		  Nod11NrmY*Nod12NrmY +
@@ -1350,7 +1350,7 @@ InitBiPointsWithConnexity (const Standard_Integer e,
 	  }
 	}
       }
-#ifdef DEB
+#ifdef HLRBREP_DEB
       else if (DoError) {
 	cout << "HLRBRep_PolyAlgo::InitBiPointsWithConnexity : Edge ";
 	cout << e << " connex 1 sans PolygonOnTriangulation" << endl;
@@ -1491,7 +1491,7 @@ InitBiPointsWithConnexity (const Standard_Integer e,
 	      &(((HLRAlgo_Array1OfPINod*)PINod2)->ChangeValue(Pol2(iPol)));
 	    Nod22Indices = (*pi2p2)->Indices();
 	    Nod22RValues = (*pi2p2)->RValues();
-#ifdef DEB
+#ifdef HLRBREP_DEB
 	    if (DoError) {
 	      if (Nod11NrmX*Nod12NrmX +
 		  Nod11NrmY*Nod12NrmY +
@@ -1523,7 +1523,7 @@ InitBiPointsWithConnexity (const Standard_Integer e,
 	    ZTI2 = Z2 = Nod12PntZ;
 	    if      (Nod12Edg1 == (Standard_Boolean) e) U2 = Nod12PCu1;
 	    else if (Nod12Edg2 == (Standard_Boolean) e) U2 = Nod12PCu2;
-#ifdef DEB
+#ifdef HLRBREP_DEB
 	    else {
 	      cout << " HLRBRep_PolyAlgo::InitBiPointsWithConnexity : ";
 	      cout << "Parameter error on Node " << i1p2 << endl;

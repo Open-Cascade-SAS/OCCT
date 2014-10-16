@@ -233,12 +233,10 @@ void AIS_InteractiveContext::DisplayedObjects(AIS_ListOfInteractive& aListOfIO,
       if(It.Value()->GraphicStatus()==AIS_DS_Displayed)
         theMap.Add(It.Key());
     }
-#ifdef AIS_DEB
-    cout<<"\tFrom Neutral Point : "<<theMap.Extent()<<endl;
-#endif
 
     //parse all local contexts...
 #ifdef AIS_DEB
+    cout<<"\tFrom Neutral Point : "<<theMap.Extent()<<endl;
     Standard_Integer NbDisp;
     for(AIS_DataMapIteratorOfDataMapOfILC it1(myLocalContexts);it1.More();it1.Next()){
       const Handle(AIS_LocalContext)& LC = it1.Value();

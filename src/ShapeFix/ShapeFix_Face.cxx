@@ -2370,7 +2370,9 @@ Standard_Boolean ShapeFix_Face::FixSplitFace(const TopTools_DataMapOfShapeListOf
       V1=sae.FirstVertex(E1);
       V2=sae.LastVertex(E2);
       if(!V1.IsSame(V2)) {
+#ifdef SHAPEFIX_DEB
         cout<<"wire not closed --> stop split"<<endl;
+#endif
         return Standard_False;
       }
       // create face

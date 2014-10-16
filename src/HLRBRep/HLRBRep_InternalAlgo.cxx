@@ -137,10 +137,13 @@ void HLRBRep_InternalAlgo::Update ()
 	df = DS[i-1]->NbFaces   ();
       }
       catch(Standard_Failure) {
-	cout << "An exception was catched when preparing the Shape " << i;
-	cout << " and computing its OutLines " << endl;
-	Handle(Standard_Failure) fail = Standard_Failure::Caught();
-	cout << fail << endl;
+        if (myDebug)
+        {
+          cout << "An exception was catched when preparing the Shape " << i;
+          cout << " and computing its OutLines " << endl;
+          Handle(Standard_Failure) fail = Standard_Failure::Caught();
+          cout << fail << endl;
+        }
 	DS[i-1] = new HLRBRep_Data(0,0,0);
 	dv = 0;
 	de = 0;
@@ -760,17 +763,20 @@ void HLRBRep_InternalAlgo::HideSelected (const Standard_Integer I,
 	fd++;
       }
       
-      cout << endl;
-      cout << "Vertices  : " << setw(5) << myDS->NbVertices() << endl;
-      cout << "Edges     : " << setw(5) << myDS->NbEdges()    << " , ";
-      cout << "Selected  : " << setw(5) << nbSelEdges         << " , ";
-      cout << "Visibles  : " << setw(5) << nbVisEdges         << endl;
-      cout << "Faces     : " << setw(5) << myDS->NbFaces()    << " , ";
-      cout << "Selected  : " << setw(5) << nbSelFaces         << " , ";
-      cout << "Simple    : " << setw(5) << nbFSimp            << endl;
-      if (SideFace)
-	cout << "Side      : " << setw(5) << nbFSide            << " , ";
-      cout << "Cachantes : " << setw(5) << nbCache            << endl << endl;
+      if (myDebug)
+      {
+        cout << endl;
+        cout << "Vertices  : " << setw(5) << myDS->NbVertices() << endl;
+        cout << "Edges     : " << setw(5) << myDS->NbEdges()    << " , ";
+        cout << "Selected  : " << setw(5) << nbSelEdges         << " , ";
+        cout << "Visibles  : " << setw(5) << nbVisEdges         << endl;
+        cout << "Faces     : " << setw(5) << myDS->NbFaces()    << " , ";
+        cout << "Selected  : " << setw(5) << nbSelFaces         << " , ";
+        cout << "Simple    : " << setw(5) << nbFSimp            << endl;
+        if (SideFace)
+          cout << "Side      : " << setw(5) << nbFSide            << " , ";
+        cout << "Cachantes : " << setw(5) << nbCache            << endl << endl;
+      }
     }
 
     Standard_Integer QWE=0,QWEQWE;
@@ -786,7 +792,8 @@ void HLRBRep_InternalAlgo::HideSelected (const Standard_Integer I,
 	    if(TRACE10) { 
 	      if(++QWE>QWEQWE) { 
 		QWE=0; 
-		cout<<"*";
+                if (myDebug)
+                  cout<<"*";
 	      } 
 	    }
 	    else {  
@@ -907,7 +914,8 @@ void HLRBRep_InternalAlgo::HideSelected (const Standard_Integer I,
 	if (fd->Hiding()) {
 	  if(TRACE10 && TRACE==Standard_False) { 
 	    if(++QWE>QWEQWE) { 
-	      cout<<".";
+	      if (myDebug)
+                cout<<".";
 	      QWE=0;
 	    }
 	  }

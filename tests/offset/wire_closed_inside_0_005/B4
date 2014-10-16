@@ -1,7 +1,7 @@
-puts "TODO ?OCC23068 ALL: Error : big tolerance of shape result"
-puts "TODO ?OCC23068 ALL: Faulty shapes in variables faulty_1 to faulty_"
+#puts "TODO ?OCC23068 ALL: Error : big tolerance of shape result"
+#puts "TODO ?OCC23068 ALL: Faulty shapes in variables faulty_1 to faulty_"
 
-puts "TODO OCC23068 ALL: Standard_Failure: BRepFill_OffsetWire::FixHoles"
+#puts "TODO OCC23068 ALL: Standard_Failure: BRepFill_OffsetWire::FixHoles"
 puts "TODO OCC23068 ALL: Error: Offset is not done"
 puts "TODO OCC23068 ALL: Error : The offset cannot be built"
 

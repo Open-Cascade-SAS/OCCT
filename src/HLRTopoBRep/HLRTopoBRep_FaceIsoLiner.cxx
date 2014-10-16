@@ -55,6 +55,8 @@ void HLRTopoBRep_FaceIsoLiner::Perform (const Standard_Integer FI,
 					HLRTopoBRep_Data& DS,
 					const Standard_Integer nbIsos)
 {
+  (void)FI; // avoid compiler warning
+
   Standard_Real UMin, UMax, VMin, VMax, U1, U2;
   Standard_Integer ne = 0;
   //BRep_Builder Builder;
@@ -186,7 +188,8 @@ void HLRTopoBRep_FaceIsoLiner::Perform (const Standard_Integer FI,
       if (Hatcher.TrimDone (IndH) && !Hatcher.TrimFailed (IndH))
 	Hatcher.ComputeDomains (IndH);
       if (!Hatcher.IsDone (IndH)) {
-	cout << "HLRTopoBRep::MakeIsoLines : Face " << FI << endl;
+#ifdef HLRTOBREP_DEB
+        cout << "HLRTopoBRep::MakeIsoLines : Face " << FI << endl;
 	cout << "U iso of parameter: " << UPrm;
 	switch (Hatcher.Status (IndH)) {
 	case HatchGen_NoProblem          :
@@ -205,6 +208,7 @@ void HLRTopoBRep_FaceIsoLiner::Perform (const Standard_Integer FI,
 	  cout << " Incompatible States" << endl;
 	  break;
 	}
+#endif
 	Hatcher.RemHatching (IndH);
 	continue;
       }
@@ -277,6 +281,7 @@ void HLRTopoBRep_FaceIsoLiner::Perform (const Standard_Integer FI,
       if (Hatcher.TrimDone (IndH) && !Hatcher.TrimFailed (IndH))
 	Hatcher.ComputeDomains (IndH);
       if (!Hatcher.IsDone (IndH)) {
+#ifdef HLRTOBREP_DEB
 	cout << "HLRTopoBRep::MakeIsoLines : Face " << FI << endl;
 	cout << "V iso of parameter: " << VPrm;
 	switch (Hatcher.Status (IndH)) {
@@ -296,6 +301,7 @@ void HLRTopoBRep_FaceIsoLiner::Perform (const Standard_Integer FI,
 	  cout << " Incompatible States" << endl;
 	  break;
 	}
+#endif
 	Hatcher.RemHatching (IndH);
 	continue;
       }

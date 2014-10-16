@@ -813,7 +813,9 @@ void BRepBlend_RstRstLineBuilder::InternalPerform(Blend_RstRstFunction&   Func,
       }
       else{
 	// reframing failed. Leave with PointsConfondus
+#ifdef BREPBLEND_DEB
 	cout<<"reframing failed"<<endl;
+#endif
 	State = Blend_SamePoints;
       }
     }
@@ -864,10 +866,12 @@ void BRepBlend_RstRstLineBuilder::InternalPerform(Blend_RstRstFunction&   Func,
 			   previousP.ParameterOnC2(),
 			   previousP.Parameter(), tolesp);
 	  Arrive = Standard_True;
+#ifdef BREPBLEND_DEB
 	  if (line->NbPoints()>=2) {
 	    // Show that there is a stop during processing 
 	    cout<<"No more advancement in the processing"<<endl;
 	  }
+#endif
 	}
 	else {
 	  param = parprec + sens * stepw;  // there is no risk to exceed Bound.
@@ -972,7 +976,9 @@ void BRepBlend_RstRstLineBuilder::InternalPerform(Blend_RstRstFunction&   Func,
     case Blend_SamePoints :
       {
 	// Stop
+#ifdef BREPBLEND_DEB
 	cout << " Mixed points in the processing" << endl;
+#endif
 	Extrst1.SetValue(previousP.PointOnC1(),
 			 previousP.ParameterOnC1(),
 			 previousP.Parameter(), tolesp);
@@ -1021,7 +1027,9 @@ Standard_Boolean BRepBlend_RstRstLineBuilder::Recadre1(Blend_RstRstFunction&    
   math_FunctionSetRoot rsnld(Finv, toler, 30);
   rsnld.Perform(Finv, Solinv, infb, supb);
   if (!rsnld.IsDone()) {
+#ifdef BREPBLEND_DEB
     cout << "RSNLD not done "<< endl << endl;
+#endif
     return Standard_False;
   }
 
@@ -1101,7 +1109,9 @@ Standard_Boolean BRepBlend_RstRstLineBuilder::Recadre2(Blend_RstRstFunction&    
   math_FunctionSetRoot rsnld(Finv, toler, 30);
   rsnld.Perform(Finv, Solinv, infb, supb);
   if (!rsnld.IsDone()) {
+#ifdef BREPBLEND_DEB
     cout << "RSNLD not done "<< endl << endl;
+#endif
     return Standard_False;
   }
 
@@ -1185,7 +1195,9 @@ Standard_Boolean BRepBlend_RstRstLineBuilder::Recadre1(Blend_CurvPointFuncInv&  
   math_FunctionSetRoot rsnld(FinvP, toler, 30);
   rsnld.Perform(FinvP, Solinv, infb, supb);
   if (!rsnld.IsDone()) {
+#ifdef BREPBLEND_DEB
     cout << "RSNLD not done "<< endl << endl;
+#endif
     return Standard_False;
   }
   rsnld.Root(Solinv);
@@ -1251,7 +1263,9 @@ Standard_Boolean BRepBlend_RstRstLineBuilder::Recadre2(Blend_CurvPointFuncInv&  
   math_FunctionSetRoot rsnld(FinvP, toler, 30);
   rsnld.Perform(FinvP, Solinv, infb, supb);
   if (!rsnld.IsDone()) {
+#ifdef BREPBLEND_DEB
     cout << "RSNLD not done "<< endl << endl;
+#endif
     return Standard_False;
   }
   rsnld.Root(Solinv);

@@ -425,7 +425,7 @@ HLRAlgo_PolyInternalData::AddNode (const Standard_Address Nod1RValues,
     Nod3NrmX = 1;
     Nod3NrmY = 0;
     Nod3NrmZ = 0;
-#ifdef DEB
+#ifdef HLRALGO_DEB
     if (ERROR)
       cout << "HLRAlgo_PolyInternalData::AddNode" << endl;
 #endif
@@ -515,7 +515,7 @@ HLRAlgo_PolyInternalData::UpdateLinks (const Standard_Integer ip1,
   }
   if (find == 0) {
     myNbPISeg--;
-#ifdef DEB
+#ifdef HLRALGO_DEB
     if (ERROR) {
       cout << "HLRAlgo_PolyInternalData::UpdateLinks : segment error";
       cout << endl;
@@ -624,7 +624,7 @@ HLRAlgo_PolyInternalData::UpdateLinks (const Standard_Integer ip1,
 	  Nod3NdSg   = myNbPISeg;
 	  Nod4NdSg   = myNbPISeg;
 	}
-#ifdef DEB
+#ifdef HLRALGO_DEB
 	else if (ERROR) {
 	  cout << "HLRAlgo_PolyInternalData::UpdateLinks : triangle error ";
 	  cout << endl;

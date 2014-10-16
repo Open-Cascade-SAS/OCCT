@@ -269,7 +269,9 @@ Standard_Boolean Blend_Walking::Recadre(Blend_FuncInv& FuncInv,
     // Resolution...
     rsnld.Perform(FuncInv,solrst,infb,supb);  
     if (!rsnld.IsDone()) {
+#ifdef BLEND_DEB
       cout << "Walking::Recadre : RSNLD not done " << endl;
+#endif
       recadre = Standard_False;
     }
     else {
@@ -315,7 +317,9 @@ Standard_Boolean Blend_Walking::Recadre(Blend_FuncInv& FuncInv,
     rsnld.Perform(FuncInv,solrst,infb,supb);
   
     if (!rsnld.IsDone()) {
+#ifdef BLEND_DEB
       cout << "Walking::Recadre : RSNLD not done " << endl;
+#endif
       recadre = Standard_False;
     }
     else {

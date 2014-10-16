@@ -282,7 +282,9 @@ HLRBRep_CurveTool::Hyperbola (const Standard_Address C)
 inline Handle(Geom2d_BezierCurve)
      HLRBRep_CurveTool::Bezier (const Standard_Address /*C*/)
 {
+#ifdef HLRBREP_DEB
   cout<<"  HLRBRep_CurveTool::Bezier : Not Implemented "<<endl;
+#endif
   //-- return(((HLRBRep_Curve *)C)->Bezier());
   return(0);
 }
@@ -295,7 +297,9 @@ inline Handle(Geom2d_BezierCurve)
 inline Handle(Geom2d_BSplineCurve)
      HLRBRep_CurveTool::BSpline (const Standard_Address /*C*/)
 {
+#ifdef HLRBREP_DEB
   cout<<"  HLRBRep_CurveTool::BSpline : Not Implemented "<<endl;
+#endif
   //-- return(((HLRBRep_Curve *)C)->BSpline());
   return(0);
 }

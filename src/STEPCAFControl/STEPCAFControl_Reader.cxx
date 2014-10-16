@@ -512,7 +512,9 @@ Standard_Boolean STEPCAFControl_Reader::Transfer (STEPControl_Reader &reader,
     // get and check filename of the current extern ref
     const Standard_CString filename = ExtRefs.FileName(i);
 
-cout<<"filename="<<filename<<endl;
+#ifdef STEPCAFCONTROL_DEB
+    cout<<"filename="<<filename<<endl;
+#endif;
 
     if ( ! filename || ! filename[0] ) {
 #ifdef STEPCAFCONTROL_DEB

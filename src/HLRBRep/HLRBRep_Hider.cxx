@@ -231,7 +231,10 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI,
 	    case TopAbs_IN      :
 	      HLRBRep_EdgeIList::AddInterference(ILHidden,Int,EIT);
 	      ILOn.Remove(It);                            break;
-	    case TopAbs_UNKNOWN : cout << "UNKNOWN state staft" << endl;
+	    case TopAbs_UNKNOWN : 
+#ifdef HLRBREP_DEB
+              cout << "UNKNOWN state staft" << endl;
+#endif
 	    case TopAbs_ON      :
 	      It.Next();                                  break;
 	    }                                             break;
@@ -242,7 +245,10 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI,
 	    case TopAbs_IN      :
 	      HLRBRep_EdgeIList::AddInterference(ILHidden,Int,EIT);
 	      ILOn.Remove(It);                            break;
-	    case TopAbs_UNKNOWN : cout << "UNKNOWN state stbef" << endl;
+	    case TopAbs_UNKNOWN :
+#ifdef HLRBREP_DEB
+              cout << "UNKNOWN state stbef" << endl;
+#endif
 	    case TopAbs_ON      :
 	      It.Next();                                  break;
 	    }                                             break;
@@ -270,7 +276,9 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI,
 		HLRBRep_EdgeIList::AddInterference(ILHidden,Int,EIT);
 		ILOn.Remove(It);                          break;
 	      case TopAbs_UNKNOWN :
+#ifdef HLRBREP_DEB
 		cout << "UNKNOWN state after" << endl;
+#endif
 		It.Next();                                break;
 	      }                                           break;
 	    case TopAbs_ON :
@@ -288,7 +296,10 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI,
 	      case TopAbs_OUT     :
 		Int.Transition(TopAbs_REVERSED);          break;
 	      case TopAbs_UNKNOWN :
-		cout << "UNKNOWN state after" << endl;    break;
+#ifdef HLRBREP_DEB
+		cout << "UNKNOWN state after" << endl;
+#endif
+                break;
 	      }	    
 	      It.Next();                                  break;
 	    case TopAbs_OUT :
@@ -303,11 +314,16 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI,
 	      case TopAbs_OUT     :
 		ILOn.Remove(It);                          break;
 	      case TopAbs_UNKNOWN :
+#ifdef HLRBREP_DEB
 		cout << "UNKNOWN state after" << endl;
+#endif
 		It.Next();                                break;
 	      }                                           break;
 	    case TopAbs_UNKNOWN :
-	      cout << "UNKNOWN state stbef" << endl;      break;
+#ifdef HLRBREP_DEB
+	      cout << "UNKNOWN state stbef" << endl;
+#endif
+              break;
 	    }
 	  }
 	}

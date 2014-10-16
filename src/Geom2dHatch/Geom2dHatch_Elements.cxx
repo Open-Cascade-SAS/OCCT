@@ -29,7 +29,9 @@
 
 Geom2dHatch_Elements::Geom2dHatch_Elements(const Geom2dHatch_Elements& )
 {
+#ifdef GEOM2DHATCH_DEB
   cout<<" Magic Constructor in Geom2dHatch_Elements:: "<<endl;
+#endif
 }
 
 Geom2dHatch_Elements::Geom2dHatch_Elements()
