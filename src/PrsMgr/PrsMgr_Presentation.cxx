@@ -407,13 +407,7 @@ Handle(Prs3d_Projector) PrsMgr_Presentation::Projector (const Handle(Graphic3d_D
 //=======================================================================
 void PrsMgr_Presentation::Destroy()
 {
-  if (!myStructure.IsNull())
-  {
-    // Remove structure from the list of displayed structures.
-    myStructure->Erase();
-    myStructure->Clear();
-    myStructure.Nullify();
-  }
+  Erase();
 }
 
 //=======================================================================
