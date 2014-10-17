@@ -514,7 +514,7 @@ Standard_Boolean STEPCAFControl_Reader::Transfer (STEPControl_Reader &reader,
 
 #ifdef STEPCAFCONTROL_DEB
     cout<<"filename="<<filename<<endl;
-#endif;
+#endif
 
     if ( ! filename || ! filename[0] ) {
 #ifdef STEPCAFCONTROL_DEB
