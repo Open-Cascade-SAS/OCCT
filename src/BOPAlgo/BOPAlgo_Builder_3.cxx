@@ -67,6 +67,7 @@
 #include <BOPAlgo_BuilderSolid.hxx>
 #include <NCollection_Array1.hxx>
 
+#include <algorithm>
 
 static
   void OwnInternalShapes(const TopoDS_Shape& ,
