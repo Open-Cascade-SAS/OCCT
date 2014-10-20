@@ -19,6 +19,7 @@
 #include <BRepBndLib.hxx>
 #include <gp_Pnt.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
+#include <Graphic3d_AspectLine3d.hxx>
 #include <Handle_AIS_Drawer.hxx>
 #include <Prs3d_DimensionAspect.hxx>
 #include <Prs3d_IsoAspect.hxx>
@@ -184,30 +185,39 @@ void XCAFPrs_AISObject::SetColors (const Handle(AIS_Drawer)& theDrawer,
   if (!theDrawer->HasShadingAspect())
   {
     theDrawer->SetShadingAspect (new Prs3d_ShadingAspect());
+    *theDrawer->ShadingAspect()->Aspect() = *theDrawer->Link()->ShadingAspect()->Aspect();
   }
   if (!theDrawer->HasLineAspect())
   {
     theDrawer->SetLineAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
+    *theDrawer->LineAspect()->Aspect() = *theDrawer->Link()->LineAspect()->Aspect();
   }
   if (!theDrawer->HasWireAspect())
   {
     theDrawer->SetWireAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
+    *theDrawer->WireAspect()->Aspect() = *theDrawer->Link()->WireAspect()->Aspect();
   }
   if (!theDrawer->HasUIsoAspect())
   {
     theDrawer->SetUIsoAspect (new Prs3d_IsoAspect (Quantity_NOC_GRAY75, Aspect_TOL_SOLID, 0.5, 1));
+    *theDrawer->UIsoAspect()->Aspect() = *theDrawer->Link()->UIsoAspect()->Aspect();
+    theDrawer->UIsoAspect()->SetNumber (theDrawer->Link()->UIsoAspect()->Number());
   }
   if (!theDrawer->HasVIsoAspect())
   {
     theDrawer->SetVIsoAspect (new Prs3d_IsoAspect (Quantity_NOC_GRAY75, Aspect_TOL_SOLID, 0.5, 1));
+    *theDrawer->VIsoAspect()->Aspect() = *theDrawer->Link()->VIsoAspect()->Aspect();
+    theDrawer->VIsoAspect()->SetNumber (theDrawer->Link()->VIsoAspect()->Number());
   }
   if (!theDrawer->HasFreeBoundaryAspect())
   {
     theDrawer->SetFreeBoundaryAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
+    *theDrawer->FreeBoundaryAspect()->Aspect() = *theDrawer->Link()->FreeBoundaryAspect()->Aspect();
   }
   if (!theDrawer->HasUnFreeBoundaryAspect())
   {
     theDrawer->SetUnFreeBoundaryAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
+    *theDrawer->UnFreeBoundaryAspect()->Aspect() = *theDrawer->Link()->UnFreeBoundaryAspect()->Aspect();
   }
 
   theDrawer->UnFreeBoundaryAspect()->SetColor (theColorCurv);
