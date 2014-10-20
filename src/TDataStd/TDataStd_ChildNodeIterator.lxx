@@ -28,7 +28,7 @@ inline Standard_Boolean TDataStd_ChildNodeIterator::More() const
 //purpose  : 
 //=======================================================================
 
-inline Handle(TDataStd_TreeNode) TDataStd_ChildNodeIterator::Value() const
+inline const Handle(TDataStd_TreeNode)& TDataStd_ChildNodeIterator::Value() const
 { 
   return myNode;
 }

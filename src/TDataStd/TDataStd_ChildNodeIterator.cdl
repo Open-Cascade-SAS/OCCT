@@ -59,6 +59,7 @@ is
     
     Value(me) returns TreeNode from TDataStd;
     	---C++: inline
+        ---C++: return const &
 	---Purpose: Returns the current item; a null Step if there is
 	--          no one.
 
