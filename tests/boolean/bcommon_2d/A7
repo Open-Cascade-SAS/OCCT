@@ -4,8 +4,3 @@ bcommon result b a
 set length 942.478
 set nbsh_v 2
 set nbsh_e 2
-
-# OCC23698
-tcopy result r
-lprops result
-lprops r
