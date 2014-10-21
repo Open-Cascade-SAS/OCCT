@@ -12,13 +12,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//============================================================================
-//==== Titre: Standard_CString.hxx
-//==== Role : The headr file of primitve type "CString" from package "Standard"
-//====
-//==== Implementation:  This is a primitive type implementadef with typedef
-//====        typedef char* Standard_CString;
-//============================================================================
+//!@file Functions working with plain C strings
 
 #ifndef _Standard_CString_HeaderFile
 # define _Standard_CString_HeaderFile
@@ -27,7 +21,7 @@
 #  include <Standard_TypeDef.hxx>
 # endif
 
-# ifdef _MSC_VER
+# if defined(_MSC_VER) && ! defined(strcasecmp)
 #  define strcasecmp _stricmp
 # endif
 
@@ -38,10 +32,6 @@
 #  include <Standard_Integer.hxx>
 # endif
 
-
-class Handle_Standard_Type;
-
-inline  Standard_Integer Abs (const Standard_Integer);
 inline Standard_Boolean IsSimilar(const Standard_CString One
 				 ,const Standard_CString Two);
 __Standard_API Standard_Integer HashCode (const Standard_CString,
