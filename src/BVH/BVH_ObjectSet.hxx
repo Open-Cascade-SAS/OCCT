@@ -54,6 +54,9 @@ public:
   //! Return total number of objects.
   virtual Standard_Integer Size() const;
 
+  //! Returns AABB of entire set of objects.
+  using BVH_Set<T, N>::Box;
+
   //! Returns AABB of the given object.
   virtual BVH_Box<T, N> Box (const Standard_Integer theIndex) const;
 

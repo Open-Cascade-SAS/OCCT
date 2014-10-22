@@ -174,6 +174,21 @@ public:
   void SetMaterialIndex (Standard_Integer theMatID)
   {
     for (Standard_Size anIdx = 0; anIdx < Elements.size(); ++anIdx)
+      Elements[anIdx].w() = aMatID;
+  }
+
+  //! Returns AABB of the given object.
+  using BVH_Triangulation<Standard_ShortReal, 4>::Box;
+
+  //! Returns AABB of primitive set.
+  BVH_BoxNt Box() const
+  {
+    const BVH_Transform<Standard_ShortReal, 4>* aTransform = 
+      dynamic_cast<const BVH_Transform<Standard_ShortReal, 4>* > (Properties().operator->());
+ 
+    BVH_BoxNt aBox = BVH_PrimitiveSet<Standard_ShortReal, 4>::Box(); 
+ 
+    if (aTransform)
     {
       Elements[anIdx].w() = theMatID;
     }

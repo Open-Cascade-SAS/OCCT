@@ -39,6 +39,9 @@ public:
   //! Marks geometry as outdated.
   virtual void MarkDirty();
 
+  //! Returns AABB of the given object.
+  using BVH_ObjectSet<T, N>::Box;
+
   //! Returns AABB of the whole geometry.
   virtual BVH_Box<T, N> Box() const;
 

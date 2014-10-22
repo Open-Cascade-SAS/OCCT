@@ -49,6 +49,9 @@ public:
   //! Returns total number of triangles.
   virtual Standard_Integer Size() const;
 
+  //! Returns AABB of entire set of objects.
+  using BVH_PrimitiveSet<T, N>::Box;
+
   //! Returns AABB of the given triangle.
   virtual BVH_Box<T, N> Box (const Standard_Integer theIndex) const;
 
