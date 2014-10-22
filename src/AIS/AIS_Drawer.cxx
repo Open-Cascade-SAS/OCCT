@@ -27,7 +27,11 @@ AIS_Drawer::AIS_Drawer()
   myhasOwnHLRDeviationCoefficient (Standard_False),
   myhasOwnDeviationAngle (Standard_False),
   myhasOwnHLRDeviationAngle (Standard_False),
-  myHasOwnFaceBoundaryDraw (Standard_False)
+  myHasOwnFaceBoundaryDraw (Standard_False),
+  myHasOwnDimLengthModelUnits (Standard_False),
+  myHasOwnDimLengthDisplayUnits (Standard_False),
+  myHasOwnDimAngleModelUnits (Standard_False),
+  myHasOwnDimAngleDisplayUnits (Standard_False)
 {
   SetMaximalParameterValue (500000.0);
   myLink->SetMaximalParameterValue (500000.0);
@@ -265,7 +269,7 @@ const TCollection_AsciiString& AIS_Drawer::DimLengthModelUnits() const
 void AIS_Drawer::SetDimLengthModelUnits (const TCollection_AsciiString& theUnits)
 {
   myHasOwnDimLengthModelUnits = Standard_True;
-  Prs3d_Drawer::SetDimLengthDisplayUnits (theUnits);
+  Prs3d_Drawer::SetDimLengthModelUnits (theUnits);
 }
 
 // =======================================================================
@@ -275,7 +279,7 @@ void AIS_Drawer::SetDimLengthModelUnits (const TCollection_AsciiString& theUnits
 void AIS_Drawer::SetDimAngleModelUnits (const TCollection_AsciiString& theUnits)
 {
   myHasOwnDimAngleModelUnits = Standard_True;
-  Prs3d_Drawer::SetDimAngleDisplayUnits (theUnits);
+  Prs3d_Drawer::SetDimAngleModelUnits (theUnits);
 }
 
 // =======================================================================

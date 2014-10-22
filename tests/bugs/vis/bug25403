@@ -1,0 +1,18 @@
+puts "============"
+puts "CR25403"
+puts "============"
+puts ""
+#######################################################################
+# Wrong storage of model units in AIS_AngleDimension
+#######################################################################
+pload VISUALIZATION
+
+vinit
+vpoint angleP1 0 0 0
+vpoint angleP2 50 50 50
+vpoint angleP3 50 50 100
+vdimension dim1 -angle -value 300 -modelunits deg -shapes angleP1 angleP2 angleP3
+vdimension dim2 -length -value 10 -modelunits mm -showunits -plane yoz -shapes angleP1 angleP3
+vfit
+
+set only_screen 1

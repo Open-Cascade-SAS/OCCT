@@ -176,25 +176,31 @@ static Standard_Boolean Get3DPointAtMousePosition (const gp_Pnt& theFirstPoint,
 //           -arrowangle ArrowAngle(degrees)
 //           -plane xoy|yoz|zox
 //           -flyout FloatValue -extension FloatValue
+//           -value CustomNumberValue
+//           -dispunits DisplayUnitsString
+//           -modelunits ModelUnitsString
+//           -showunits
+//           -hideunits
 //
 // Warning! flyout is not an aspect value, it is for dimension parameter
-// likewise text position, but text position override other paramaters
-// For this use 'vmovedim'.
+// likewise text position, but text position override other paramaters.
+// For text position changing use 'vmovedim'.
 //=======================================================================
 static int ParseDimensionParams (Standard_Integer  theArgNum,
                                  const char**      theArgVec,
                                  Standard_Integer  theStartIndex,
                                  const Handle(Prs3d_DimensionAspect)& theAspect,
-                                 Standard_Boolean& theIsCustomPlane,
-                                 gp_Pln&           thePlane,
-                                 Standard_Boolean& theIsCustomFlyout,
-                                 Standard_Real&    theFlyoutSize,
+                                 Standard_Boolean& theIsCustomPlane, gp_Pln& thePlane,
+                                 NCollection_DataMap<TCollection_AsciiString, Standard_Real>& theRealParams,
+                                 NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>& theStringParams,
                                  NCollection_List<Handle(AIS_InteractiveObject)>* theShapeList = NULL)
 {
-  theIsCustomPlane  = Standard_False;
-  theIsCustomFlyout = Standard_False;
+  theRealParams.Clear();
+  theStringParams.Clear();
 
-  // Begin from the second parameter: the first on eis dimension name
+  theIsCustomPlane  = Standard_False;
+
+  // Begin from the second parameter: the first one is dimension name
   for (Standard_Integer anIt = theStartIndex; anIt < theArgNum; ++anIt)
   {
     TCollection_AsciiString aParam (theArgVec[anIt]);
@@ -202,6 +208,18 @@ static int ParseDimensionParams (Standard_Integer  theArgNum,
 
     if (aParam.Search ("-") == -1)
     {
+      continue;
+    }
+
+    // Boolean flags
+    if (aParam.IsEqual ("-showunits"))
+    {
+      theAspect->MakeUnitsDisplayed (Standard_True);
+      continue;
+    }
+    else if (aParam.IsEqual ("-hideunits"))
+    {
+      theAspect->MakeUnitsDisplayed (Standard_False);
       continue;
     }
 
@@ -330,6 +348,20 @@ static int ParseDimensionParams (Standard_Integer  theArgNum,
       }
       theAspect->ArrowAspect()->SetAngle (Draw::Atof (aValue.ToCString()));
     }
+    else if (aParam.IsEqual ("-color"))
+    {
+      theAspect->SetCommonColor (Quantity_Color (ViewerTest::GetColorFromName (theArgVec[++anIt])));
+    }
+    else if (aParam.IsEqual ("-extension"))
+    {
+      TCollection_AsciiString aParam (theArgVec[++anIt]);
+      if (!aParam.IsRealValue())
+      {
+        std::cerr << "Error: extension size for dimension should be real value.\n";
+        return 1;
+      }
+      theAspect->SetExtensionSize (Draw::Atof (aParam.ToCString()));
+    }
     else if (aParam.IsEqual ("-plane"))
     {
       TCollection_AsciiString aValue (theArgVec[++anIt]);
@@ -364,22 +396,30 @@ static int ParseDimensionParams (Standard_Integer  theArgNum,
         return 1;
       }
 
-      theIsCustomFlyout = Standard_True;
-      theFlyoutSize = Draw::Atoi (aParam.ToCString());
+      theRealParams.Bind ("flyout", Draw::Atof (aParam.ToCString()));
     }
-    else if (aParam.IsEqual ("-color"))
-    {
-      theAspect->SetCommonColor (Quantity_Color (ViewerTest::GetColorFromName (theArgVec[++anIt])));
-    }
-    else if (aParam.IsEqual ("-extension"))
+    else if (aParam.IsEqual ("-value"))
     {
       TCollection_AsciiString aParam (theArgVec[++anIt]);
       if (!aParam.IsRealValue())
       {
-        std::cerr << "Error: extension size for dimension should be real value.\n";
+        std::cerr << "Error: dimension value for dimension should be real value.\n";
         return 1;
       }
-      theAspect->SetExtensionSize (Draw::Atof (aParam.ToCString()));
+
+      theRealParams.Bind ("value", Draw::Atof (aParam.ToCString()));
+    }
+    else if (aParam.IsEqual ("-modelunits"))
+    {
+      TCollection_AsciiString aParam (theArgVec[++anIt]);
+
+      theStringParams.Bind ("modelunits", aParam);
+    }
+    else if (aParam.IsEqual ("-dispunits"))
+    {
+      TCollection_AsciiString aParam (theArgVec[++anIt]);
+
+      theStringParams.Bind ("dispunits", aParam);
     }
     else
     {
@@ -389,6 +429,35 @@ static int ParseDimensionParams (Standard_Integer  theArgNum,
   }
 
   return 0;
+}
+
+//=======================================================================
+//function : SetDimensionParams
+//purpose  : Sets parameters for dimension
+//=======================================================================
+static void SetDimensionParams (const Handle(AIS_Dimension)& theDim,
+                                const NCollection_DataMap<TCollection_AsciiString, Standard_Real>& theRealParams,
+                                const NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>& theStringParams)
+{
+  if (theRealParams.IsBound ("flyout"))
+  {
+    theDim->SetFlyout (theRealParams.Find ("flyout"));
+  }
+
+  if (theRealParams.IsBound ("value"))
+  {
+    theDim->SetCustomValue (theRealParams.Find ("value"));
+  }
+
+  if (theStringParams.IsBound ("modelunits"))
+  {
+    theDim->SetModelUnits (theStringParams.Find ("modelunits"));
+  }
+
+  if (theStringParams.IsBound ("dispunits"))
+  {
+    theDim->SetDisplayUnits (theStringParams.Find ("dispunits"));
+  }
 }
 
 //=======================================================================
@@ -413,8 +482,9 @@ static int VDimBuilder (Draw_Interpretor& /*theDi*/,
   Handle(Prs3d_DimensionAspect) anAspect = new Prs3d_DimensionAspect;
   Standard_Boolean isPlaneCustom = Standard_False;
   gp_Pln aWorkingPlane;
-  Standard_Boolean isCustomFlyout = Standard_False;
-  Standard_Real    aCustomFlyout  = 0.0;
+
+  NCollection_DataMap<TCollection_AsciiString, Standard_Real> aRealParams;
+  NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString> aStringParams;
 
   TCollection_AsciiString aDimType(theArgs[2]);
   aDimType.LowerCase();
@@ -442,9 +512,12 @@ static int VDimBuilder (Draw_Interpretor& /*theDi*/,
   }
 
 
-  ParseDimensionParams (theArgsNb, theArgs, 3,
-                        anAspect,isPlaneCustom,aWorkingPlane,
-                        isCustomFlyout,aCustomFlyout, &aShapes);
+  if (ParseDimensionParams (theArgsNb, theArgs, 3,
+                            anAspect,isPlaneCustom,aWorkingPlane,
+                            aRealParams, aStringParams, &aShapes))
+  {
+    return 1;
+  }
 
   // Build dimension
   Handle(AIS_Dimension) aDim;
@@ -621,10 +694,7 @@ static int VDimBuilder (Draw_Interpretor& /*theDi*/,
 
   aDim->SetDimensionAspect (anAspect);
 
-  if (isCustomFlyout)
-  {
-    aDim->SetFlyout (aCustomFlyout);
-  }
+  SetDimensionParams (aDim, aRealParams, aStringParams);
 
   VDisplayAISObject (aName,aDim);
 
@@ -2444,10 +2514,11 @@ static int VDimParam (Draw_Interpretor& theDi, Standard_Integer theArgNum, const
 
   TCollection_AsciiString aName (theArgVec[1]);
   gp_Pln aWorkingPlane;
-  Standard_Real aCustomFlyout = 0.0;
   Standard_Boolean isCustomPlane = Standard_False;
-  Standard_Boolean isCustomFlyout = Standard_False;
   Standard_Boolean toUpdate = Standard_True;
+
+  NCollection_DataMap<TCollection_AsciiString, Standard_Real> aRealParams;
+  NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString> aStringParams;
 
   if (!GetMapOfAIS().IsBound2 (aName))
   {
@@ -2465,19 +2536,19 @@ static int VDimParam (Draw_Interpretor& theDi, Standard_Integer theArgNum, const
   Handle(AIS_Dimension) aDim = Handle(AIS_Dimension)::DownCast (anObject);
   Handle(Prs3d_DimensionAspect) anAspect = aDim->DimensionAspect();
 
-  ParseDimensionParams (theArgNum, theArgVec, 2, anAspect,
-                        isCustomPlane, aWorkingPlane,
-                        isCustomFlyout, aCustomFlyout);
+  if (ParseDimensionParams (theArgNum, theArgVec, 2, anAspect,
+                            isCustomPlane, aWorkingPlane,
+                            aRealParams, aStringParams))
+  {
+    return 1;
+  }
 
   if (isCustomPlane)
   {
     aDim->SetCustomPlane (aWorkingPlane);
   }
 
-  if (isCustomFlyout)
-  {
-    aDim->SetFlyout (aCustomFlyout);
-  }
+  SetDimensionParams (aDim, aRealParams, aStringParams);
 
   if (!aDim->IsValid())
   {
@@ -2678,7 +2749,12 @@ void ViewerTest::RelationCommands(Draw_Interpretor& theCommands)
       "[-arrowangle ArrowAngle(degrees)]\n"
       "[-plane xoy|yoz|zox]\n"
       "[-flyout FloatValue -extension FloatValue]\n"
-      " -Builds angle, length, radius and diameter dimensions.\n",
+      "[-value CustomNumberValue]\n"
+      "[-dispunits DisplayUnitsString]\n"
+      "[-modelunits ModelUnitsString]\n"
+      "[-showunits | -hideunits]\n"
+      " -Builds angle, length, radius and diameter dimensions.\n"
+      " -See also: vdimparam, vmovedim.\n",
       __FILE__,VDimBuilder,group);
 
   theCommands.Add("vdimparam",
@@ -2689,7 +2765,12 @@ void ViewerTest::RelationCommands(Draw_Interpretor& theCommands)
     "[-arrowangle ArrowAngle(degrees)]\n"
     "[-plane xoy|yoz|zox]\n"
     "[-flyout FloatValue -extension FloatValue]\n"
-    " -Sets parameters for angle, length, radius and diameter dimensions.\n",
+    "[-value CustomNumberValue]\n"
+    "[-dispunits DisplayUnitsString]\n"
+    "[-modelunits ModelUnitsString]\n"
+    "[-showunits | -hideunits]\n"
+    " -Sets parameters for angle, length, radius and diameter dimensions.\n"
+    " -See also: vmovedim, vdimension.\n",
     __FILE__,VDimParam,group);
 
   theCommands.Add("vangledim",
