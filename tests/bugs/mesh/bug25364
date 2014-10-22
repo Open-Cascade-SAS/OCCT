@@ -72,6 +72,11 @@ set mem_delta_wsetpeak 180
 set mem_delta_virt 180
 set mem_delta_heap 80
 
+if { [regexp {Debug mode} [dversion]] } {
+   set mem_delta_swap 150
+   set mem_delta_swappeak 250
+}
+
 if { [expr ${mem_private_2} - ${mem_private_1}] > ${mem_delta_private}} {
     puts "Error : there is memory problem (private)"
 }

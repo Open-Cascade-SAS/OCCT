@@ -39,6 +39,7 @@
 #include <Interface_Check.hxx>
 
 #include <Interface_Macros.hxx>
+#include <OSD_OpenFile.hxx>
 #include <errno.h>
 
 static int deja = 0;
@@ -97,7 +98,7 @@ static  Handle(IGESData_FileProtocol) IGESProto;
 
   if (igesmod.IsNull() || prot.IsNull()) return Standard_False;
   ofstream fout;
-  fout.rdbuf()->open(ctx.FileName(),ios::out );
+  OSD_OpenStream(fout,ctx.FileName(),ios::out );
   if (!fout) {
     ctx.CCheck(0)->AddFail("IGES File could not be created");
     sout<<" - IGES File could not be created : " << ctx.FileName() << endl; return 0;

@@ -25,6 +25,7 @@
 #include <gp.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
+#include <OSD_OpenFile.hxx>
 #include <fstream>
 #include <algorithm>
 
@@ -322,12 +323,7 @@ bool Image_AlienPixMap::savePPM (const TCollection_AsciiString& theFileName) con
   }
 
   // Open file
-#ifdef _WIN32
-  const TCollection_ExtendedString aFileNameW (theFileName.ToCString(), Standard_True);
-  FILE* aFile = _wfopen ((const wchar_t* )aFileNameW.ToExtString(), L"wb");
-#else
-  FILE* aFile = fopen (theFileName.ToCString(), "wb");
-#endif
+  FILE* aFile = OSD_OpenFile (theFileName.ToCString(), "wb");
   if (aFile == NULL)
   {
     return false;

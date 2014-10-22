@@ -17,3 +17,5 @@ OSD_MAllocHook.cxx
 OSD_MAllocHook.hxx
 OSD_MemInfo.hxx
 OSD_MemInfo.cxx
+OSD_OpenFile.hxx
+OSD_OpenFile.cxx

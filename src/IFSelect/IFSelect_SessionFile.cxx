@@ -33,6 +33,8 @@
 #include <Interface_Macros.hxx>
 #include <stdio.h>
 
+#include <OSD_OpenFile.hxx>
+
 
 static int deja = 0;
 
@@ -91,7 +93,7 @@ static int deja = 0;
     Standard_Boolean  IFSelect_SessionFile::WriteFile
   (const Standard_CString filename)
 {
-  FILE* lefic = fopen(filename,"w");
+  FILE* lefic = OSD_OpenFile(filename,"w");
   Standard_Integer nbl = thelist.Length();
   for (Standard_Integer i = 1; i <= nbl; i ++)
     fprintf (lefic,"%s\n",thelist.Value(i).ToCString());
@@ -104,7 +106,7 @@ static int deja = 0;
   (const Standard_CString filename)
 {
   char ligne[201];
-  FILE* lefic = fopen(filename,"r");
+  FILE* lefic = OSD_OpenFile(filename,"r");
   if (!lefic) return Standard_False;
   ClearLines();
 //  read mode : lire les lignes

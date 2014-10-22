@@ -50,6 +50,7 @@
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
+#include <OSD_OpenFile.hxx>
 
 #include <errno.h>
 
@@ -611,8 +612,7 @@ Standard_Boolean  BRepTools::Write(const TopoDS_Shape& Sh,
                                    const Handle(Message_ProgressIndicator)& PR)
 {
   ofstream os;
-  //  if (!fic.open(File,output)) return Standard_False;
-  os.open(File, ios::out);
+  OSD_OpenStream(os, File, ios::out);
   if (!os.rdbuf()->is_open()) return Standard_False;
 
   Standard_Boolean isGood = (os.good() && !os.eof());
@@ -650,8 +650,9 @@ Standard_Boolean BRepTools::Read(TopoDS_Shape& Sh,
 {
   filebuf fic;
   istream in(&fic);
-  if (!fic.open(File, ios::in)) return Standard_False;
-
+  OSD_OpenFileBuf(fic,File,ios::in);
+  if(!fic.is_open()) return Standard_False;
+  
   BRepTools_ShapeSet SS(B);
   SS.SetProgress(PR);
   SS.Read(in);

@@ -30,6 +30,7 @@
 #include <Vrml_Instancing.hxx>
 #include <Vrml_Separator.hxx>
 #include <VrmlConverter_WFDeflectionShape.hxx>
+#include <OSD_OpenFile.hxx>
 
 VrmlAPI_Writer::VrmlAPI_Writer()
 {
@@ -216,7 +217,7 @@ void VrmlAPI_Writer::Write(const TopoDS_Shape& aShape,const Standard_CString aFi
   OSD_Path thePath(aFile);
   TCollection_AsciiString theFile;thePath.SystemName(theFile);
   ofstream outfile;
-  outfile.open(theFile.ToCString(),  ios::out);
+  OSD_OpenStream(outfile, theFile.ToCString(), ios::out);
   Handle(VrmlConverter_IsoAspect) ia = new VrmlConverter_IsoAspect;  // UIso
   Handle(VrmlConverter_IsoAspect) ia1 = new VrmlConverter_IsoAspect; //VIso
   ia->SetMaterial(myUisoMaterial);

@@ -38,6 +38,7 @@
 #include <Message_Messenger.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_Check.hxx>
+#include <OSD_OpenFile.hxx>
 
 StepSelect_WorkLibrary::StepSelect_WorkLibrary
   (const Standard_Boolean copymode)
@@ -84,7 +85,7 @@ Standard_Boolean  StepSelect_WorkLibrary::WriteFile
   if (stepmodel.IsNull() || stepro.IsNull()) return Standard_False;
 
   ofstream fout;
-  fout.open(ctx.FileName(),ios::out|ios::trunc);
+  OSD_OpenStream(fout,ctx.FileName(),ios::out|ios::trunc);
 
   if (!fout || !fout.rdbuf()->is_open()) {
     ctx.CCheck(0)->AddFail("Step File could not be created");

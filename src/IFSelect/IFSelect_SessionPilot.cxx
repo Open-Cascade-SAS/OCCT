@@ -23,6 +23,7 @@
 #include <Interface_Macros.hxx>
 #include <Message_Messenger.hxx>
 #include <Message.hxx>
+#include <OSD_OpenFile.hxx>
 
 #include <stdio.h>
 
@@ -225,7 +226,7 @@ static TCollection_AsciiString nulword;
 {
   FILE* fic; int lefic = 0;
   if (file != NULL && file[0] != '\0') {
-    fic = fopen (file,"r");
+    fic = OSD_OpenFile (file,"r");
     if (fic) lefic = 1;
     else { cout<<" ...   Script File "<<file<<" not found"<<endl; return IFSelect_RetFail; }
     cout << " ...   Reading Script File " << file << endl;

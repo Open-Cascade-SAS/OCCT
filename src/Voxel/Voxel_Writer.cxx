@@ -18,6 +18,7 @@
 
 #include <Precision.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <OSD_OpenFile.hxx>
 
 Voxel_Writer::Voxel_Writer():myFormat(Voxel_VFF_ASCII),myBoolVoxels(0),myColorVoxels(0),myFloatVoxels(0)
 {
@@ -85,7 +86,7 @@ Standard_Boolean Voxel_Writer::WriteBoolAsciiVoxels(const TCollection_ExtendedSt
     return Standard_False;
 
   // Open file for writing
-  FILE* f = fopen(TCollection_AsciiString(file, '?').ToCString(), "w+");
+  FILE* f = OSD_OpenFile(file, "w+");
   if (!f)
     return Standard_False;
 
@@ -144,7 +145,7 @@ Standard_Boolean Voxel_Writer::WriteColorAsciiVoxels(const TCollection_ExtendedS
     return Standard_False;
 
   // Open file for writing
-  FILE* f = fopen(TCollection_AsciiString(file, '?').ToCString(), "w+");
+  FILE* f = OSD_OpenFile(file, "w+");
   if (!f)
     return Standard_False;
 
@@ -203,7 +204,7 @@ Standard_Boolean Voxel_Writer::WriteFloatAsciiVoxels(const TCollection_ExtendedS
     return Standard_False;
 
   // Open file for writing
-  FILE* f = fopen(TCollection_AsciiString(file, '?').ToCString(), "w+");
+  FILE* f = OSD_OpenFile(file, "w+");
   if (!f)
     return Standard_False;
 
@@ -262,7 +263,7 @@ Standard_Boolean Voxel_Writer::WriteBoolBinaryVoxels(const TCollection_ExtendedS
     return Standard_False;
 
   // Open file for writing
-  FILE* f = fopen(TCollection_AsciiString(file, '?').ToCString(), "wb");
+  FILE* f = OSD_OpenFile(file, "wb");
   if (!f)
     return Standard_False;
 
@@ -322,7 +323,7 @@ Standard_Boolean Voxel_Writer::WriteColorBinaryVoxels(const TCollection_Extended
     return Standard_False;
 
   // Open file for writing
-  FILE* f = fopen(TCollection_AsciiString(file, '?').ToCString(), "wb");
+  FILE* f = OSD_OpenFile(file, "wb");
   if (!f)
     return Standard_False;
 
@@ -382,7 +383,7 @@ Standard_Boolean Voxel_Writer::WriteFloatBinaryVoxels(const TCollection_Extended
     return Standard_False;
 
   // Open file for writing
-  FILE* f = fopen(TCollection_AsciiString(file, '?').ToCString(), "wb");
+  FILE* f = OSD_OpenFile(file, "wb");
   if (!f)
     return Standard_False;
 

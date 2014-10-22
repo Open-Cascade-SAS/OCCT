@@ -29,6 +29,7 @@
 #include <gp.hxx>
 #include <stdio.h>
 #include <gp_Vec.hxx>
+#include <OSD_OpenFile.hxx>
 
 #include <BRepBuilderAPI_CellFilter.hxx>
 #include <BRepBuilderAPI_VertexInspector.hxx>
@@ -447,14 +448,13 @@ Handle(StlMesh_Mesh) RWStl::ReadAscii (const OSD_Path& thePath,
   thePath.SystemName (filename);
 
   // Open the file
-  FILE* file = fopen(filename.ToCString(),"r");
+  FILE* file = OSD_OpenFile(filename.ToCString(),"r");
 
   fseek(file,0L,SEEK_END);
 
   long filesize = ftell(file);
 
-  fclose(file);
-  file = fopen(filename.ToCString(),"r");
+  rewind(file);
 
   // count the number of lines
   for (ipos = 0; ipos < filesize; ++ipos) {
@@ -466,8 +466,6 @@ Handle(StlMesh_Mesh) RWStl::ReadAscii (const OSD_Path& thePath,
   nbTris = (nbLines / ASCII_LINES_PER_FACET);
 
   // go back to the beginning of the file
-//  fclose(file);
-//  file = fopen(filename.ToCString(),"r");
   rewind(file);
 
   // skip header

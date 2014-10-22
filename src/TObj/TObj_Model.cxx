@@ -41,6 +41,7 @@
 #include <TObj_TModel.hxx>
 #include <TObj_TNameContainer.hxx>
 #include <Message_Msg.hxx>
+#include <OSD_OpenFile.hxx>
 
 #ifdef WNT
   #include <io.h>
@@ -273,7 +274,7 @@ Standard_Boolean TObj_Model::SaveAs (const char* theFile)
   }
   */
   // checking write access permission
-  FILE *aF = fopen (theFile, "w");
+  FILE *aF = OSD_OpenFile (theFile, "w");
   if (aF == NULL) {
     Messenger()->Send (Message_Msg("TObj_M_NoWriteAccess") << (Standard_CString)theFile, 
 			      Message_Alarm);
@@ -763,7 +764,7 @@ Standard_Boolean TObj_Model::checkDocumentEmpty (const char* theFile)
   if ( !osdfile.Exists() )
     return Standard_True;
   
-  FILE* f = fopen( theFile, "r" );
+  FILE* f = OSD_OpenFile( theFile, "r" );
   if ( f )
   {
     Standard_Boolean isZeroLengh = Standard_False;

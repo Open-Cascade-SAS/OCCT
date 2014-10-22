@@ -16,6 +16,7 @@
 /*  Regroupement des sources "C" pour compilation   */ 
 #include <stdio.h>
 #include "igesread.h"
+#include <OSD_OpenFile.hxx>
 
 /*
 void IGESFile_Check21 (int mode,char * code, int num, char * str);
@@ -61,7 +62,8 @@ int igesread (char* nomfic, int lesect[6], int modefnes)
   int Dstat = 0; int Pstat = 0; char c_separ = ','; char c_fin = ';';
   iges_initfile();
   lefic = stdin; i0 = numsec = 0;  numl = 0;
-  if (nomfic[1] != '\0') lefic = fopen(nomfic,"r");
+  if (nomfic[0] != '\0') 
+    lefic = OSD_OpenFile(nomfic,"r");
   if (lefic == NULL) return -1;    /*  fichier pas pu etre ouvert  */
   for (i = 1; i < 6; i++) lesect[i] = 0;
   for (j = 0; j < 100; j++) ligne[j] = 0;

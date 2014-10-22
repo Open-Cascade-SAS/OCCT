@@ -21,6 +21,7 @@
 #include <Voxel_TypeDef.hxx>
 
 #include <TCollection_AsciiString.hxx>
+#include <OSD_OpenFile.hxx>
 
 Voxel_Reader::Voxel_Reader():myBoolVoxels(0),myColorVoxels(0),myFloatVoxels(0)
 {
@@ -30,7 +31,7 @@ Voxel_Reader::Voxel_Reader():myBoolVoxels(0),myColorVoxels(0),myFloatVoxels(0)
 Standard_Boolean Voxel_Reader::Read(const TCollection_ExtendedString& file)
 {
   // Open file in ASCII mode to read header
-  FILE* f = fopen(TCollection_AsciiString(file, '?').ToCString(), "r");
+  FILE* f = OSD_OpenFile(file, "r");
   if (!f)
     return Standard_False;
 
@@ -140,7 +141,7 @@ static Standard_Boolean has_slice(const Standard_CString line)
 Standard_Boolean Voxel_Reader::ReadBoolAsciiVoxels(const TCollection_ExtendedString& file)
 {
   // Open file for reading
-  FILE* f = fopen(TCollection_AsciiString(file, '?').ToCString(), "r");
+  FILE* f = OSD_OpenFile(file, "r");
   if (!f)
     return Standard_False;
   Standard_Character line[65], sx[33], sy[33], sz[33];
@@ -217,7 +218,7 @@ Standard_Boolean Voxel_Reader::ReadBoolAsciiVoxels(const TCollection_ExtendedStr
 Standard_Boolean Voxel_Reader::ReadColorAsciiVoxels(const TCollection_ExtendedString& file)
 {
   // Open file for reading
-  FILE* f = fopen(TCollection_AsciiString(file, '?').ToCString(), "r");
+  FILE* f = OSD_OpenFile(file, "r");
   if (!f)
     return Standard_False;
   Standard_Character line[65], sx[33], sy[33], sz[33];
@@ -294,7 +295,7 @@ Standard_Boolean Voxel_Reader::ReadColorAsciiVoxels(const TCollection_ExtendedSt
 Standard_Boolean Voxel_Reader::ReadFloatAsciiVoxels(const TCollection_ExtendedString& file)
 {
   // Open file for reading
-  FILE* f = fopen(TCollection_AsciiString(file, '?').ToCString(), "r");
+  FILE* f = OSD_OpenFile(file, "r");
   if (!f)
     return Standard_False;
   Standard_Character line[65], sx[33], sy[33], sz[33];
@@ -373,7 +374,7 @@ Standard_Boolean Voxel_Reader::ReadFloatAsciiVoxels(const TCollection_ExtendedSt
 Standard_Boolean Voxel_Reader::ReadBoolBinaryVoxels(const TCollection_ExtendedString& file)
 {
   // Open file for reading
-  FILE* f = fopen(TCollection_AsciiString(file, '?').ToCString(), "rb");
+  FILE* f = OSD_OpenFile(file, "r");
   if (!f)
     return Standard_False;
 
@@ -428,7 +429,7 @@ Standard_Boolean Voxel_Reader::ReadBoolBinaryVoxels(const TCollection_ExtendedSt
 Standard_Boolean Voxel_Reader::ReadColorBinaryVoxels(const TCollection_ExtendedString& file)
 {
   // Open file for reading
-  FILE* f = fopen(TCollection_AsciiString(file, '?').ToCString(), "rb");
+  FILE* f = OSD_OpenFile(file, "r");
   if (!f)
     return Standard_False;
 
@@ -483,7 +484,7 @@ Standard_Boolean Voxel_Reader::ReadColorBinaryVoxels(const TCollection_ExtendedS
 Standard_Boolean Voxel_Reader::ReadFloatBinaryVoxels(const TCollection_ExtendedString& file)
 {
   // Open file for reading
-  FILE* f = fopen(TCollection_AsciiString(file, '?').ToCString(), "rb");
+  FILE* f = OSD_OpenFile(file, "r");
   if (!f)
     return Standard_False;
 

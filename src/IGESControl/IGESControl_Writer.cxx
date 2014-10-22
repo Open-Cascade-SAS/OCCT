@@ -44,6 +44,7 @@
 #include <TopExp_Explorer.hxx>
 #include <Message_ProgressIndicator.hxx>
 #include <errno.h>
+#include <OSD_OpenFile.hxx>
 
 IGESControl_Writer::IGESControl_Writer ()
     :  theTP (new Transfer_FinderProcess(10000)) ,
@@ -267,7 +268,8 @@ Standard_Boolean IGESControl_Writer::Write
 Standard_Boolean IGESControl_Writer::Write
   (const Standard_CString file, const Standard_Boolean fnes)
 {
-  ofstream fout(file,ios::out);
+  ofstream fout;
+  OSD_OpenStream(fout,file,ios::out);
   if (!fout) return Standard_False;
 #ifdef OCCT_DEBUG
   cout<<" Ecriture fichier ("<< (fnes ? "fnes" : "IGES") <<"): "<<file<<endl;

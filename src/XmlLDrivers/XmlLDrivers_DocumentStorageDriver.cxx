@@ -43,6 +43,7 @@
 
 #include <OSD_File.hxx>
 #include <OSD_Environment.hxx>
+#include <OSD_OpenFile.hxx>
 
 #define STORAGE_VERSION      "STORAGE_VERSION: "
 #define REFERENCE_COUNTER    "REFERENCE_COUNTER: "
@@ -115,8 +116,7 @@ void XmlLDrivers_DocumentStorageDriver::Write
 
   if (WriteToDomDocument (theDocument, anElement, theFileName) == Standard_False) {
     // Write DOM_Document into XML file,
-    TCollection_AsciiString aFileName (theFileName, '?');
-    FILE * aFile = fopen(aFileName.ToCString(), "wt");
+    FILE * aFile = OSD_OpenFile(theFileName, "wt");
 
     if (aFile) {
       LDOM_XmlWriter aWriter (aFile);
@@ -129,7 +129,7 @@ void XmlLDrivers_DocumentStorageDriver::Write
       SetIsError (Standard_True);
       SetStoreStatus(PCDM_SS_WriteFailure);
       TCollection_ExtendedString aMsg =
-        TCollection_ExtendedString("Error: the file ") + aFileName +
+        TCollection_ExtendedString("Error: the file ") + theFileName +
           " cannot be opened for writing";
       aMessageDriver -> Write (aMsg.ToExtString());
         Standard_Failure::Raise("File cannot be opened for writing");
