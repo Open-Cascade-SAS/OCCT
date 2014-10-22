@@ -90,7 +90,8 @@ static Standard_Real FUN_CalcAverageDUV(TColStd_Array1OfReal& P, const Standard_
   return (n? (result / (Standard_Real) n) : -1.);
 }
 
-namespace {
+namespace
+{
 
   //! Auxiliary class used to extract geometrical parameters of fixed TopoDS_Vertex.
   class FixedVExplorer
@@ -119,7 +120,7 @@ namespace {
       return TopoDS_Vertex();
     }
 
-    virtual gp_Pnt Point() const
+    gp_Pnt Point() const
     {
       return BRep_Tool::Pnt(myVertex);
     }
@@ -138,12 +139,11 @@ namespace {
 
 //=======================================================================
 //function : BRepMesh_FastDiscretFace
-//purpose  : 
+//purpose  :
 //=======================================================================
 BRepMesh_FastDiscretFace::BRepMesh_FastDiscretFace
-                          (const Standard_Real     theAngle,
-                           const Standard_Boolean  theWithShare)
-: myAngle(theAngle), myWithShare(theWithShare),
+                          (const Standard_Real     theAngle)
+: myAngle(theAngle),
   myInternalVerticesMode(Standard_True)
 {
   myAllocator = new NCollection_IncAllocator(64000);

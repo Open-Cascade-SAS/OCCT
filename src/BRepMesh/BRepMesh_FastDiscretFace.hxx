@@ -51,8 +51,7 @@ class BRepMesh_FastDiscretFace : public Standard_Transient
 public:
   
   Standard_EXPORT BRepMesh_FastDiscretFace(
-    const Standard_Real    theAngle,
-    const Standard_Boolean theWithShare = Standard_True);
+    const Standard_Real theAngle);
 
   Standard_EXPORT void Add(const Handle(BRepMesh_FaceAttribute)& theAttribute);
   Standard_EXPORT void Perform(const Handle(BRepMesh_FaceAttribute)& theAttribute);
@@ -119,7 +118,7 @@ private:
                                  const AnalyticSurface&  theAnalyticSurface,
                                  BRepMesh::ListOfVertex& theVertices)
   {
-    if (!myClassifier->Perform(thePnt2d) == TopAbs_IN)
+    if (myClassifier->Perform(thePnt2d) != TopAbs_IN)
       return;
 
     gp_Pnt aPnt;
@@ -141,7 +140,6 @@ private:
 private:
 
   Standard_Real                          myAngle;
-  Standard_Boolean                       myWithShare;
   Standard_Boolean                       myInternalVerticesMode;
   BRepMesh::IMapOfReal                   myUParam;
   BRepMesh::IMapOfReal                   myVParam;

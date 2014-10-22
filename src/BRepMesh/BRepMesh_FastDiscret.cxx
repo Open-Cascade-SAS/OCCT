@@ -193,7 +193,7 @@ void BRepMesh_FastDiscret::Process(const TopoDS_Face& theFace) const
     {
       OCC_CATCH_SIGNALS
 
-      BRepMesh_FastDiscretFace aTool(GetAngle(), WithShare());
+      BRepMesh_FastDiscretFace aTool(GetAngle());
       aTool.Perform(anAttribute);
     }
     catch (Standard_Failure)
