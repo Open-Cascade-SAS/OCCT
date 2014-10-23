@@ -78,6 +78,38 @@ Standard_MMgrFactory::Standard_MMgrFactory()
   char* aVar;
   aVar = getenv ("MMGT_OPT");
   Standard_Integer anAllocId   = (aVar ?  atoi (aVar): OCCT_MMGT_OPT_DEFAULT);
+
+#if defined(_WIN32) && !defined(_WIN64)
+  static const DWORD _SSE2_FEATURE_BIT(0x04000000);
+  if ( anAllocId == 2 )
+  {
+    // CR25396: Check if SSE2 instructions are supported, if not then use MMgrRaw
+    // instead of MMgrTBBalloc. It is to avoid runtime crash when running on a 
+    // CPU that supports SSE but does not support SSE2 (some modifications of
+    // AMD Sempron).
+    DWORD volatile dwFeature;
+    _asm
+    {
+      push eax
+      push ebx
+      push ecx
+      push edx
+
+      // get the CPU feature bits
+      mov eax, 1
+      cpuid
+      mov dwFeature, edx
+
+      pop edx
+      pop ecx
+      pop ebx
+      pop eax
+    }
+    if ((dwFeature & _SSE2_FEATURE_BIT) == 0)
+      anAllocId = 0;
+  }
+#endif
+
   aVar = getenv ("MMGT_CLEAR");
   Standard_Boolean toClear     = (aVar ? (atoi (aVar) != 0) : Standard_True);
 
