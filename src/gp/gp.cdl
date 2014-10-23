@@ -34,8 +34,24 @@ is
   exception VectorWithNullMagnitude inherits DomainError;
 
   enumeration TrsfForm is 
-  Identity, Rotation, Translation, PntMirror, Ax1Mirror, Ax2Mirror, Scale, 
-  CompoundTrsf, Other
+  Identity,
+    -- Transformation matrix is identity.
+  Rotation,
+    -- "Rotation" transformation was applied
+  Translation,
+    -- "Translation" with given vector or "from point - to point" was applied
+  PntMirror,
+    -- central symmetry
+  Ax1Mirror,
+    -- rotational symmetry
+  Ax2Mirror,
+    -- bilateral symmetry
+  Scale, 
+    -- "Scale" transformation was applied
+  CompoundTrsf,
+    -- All cases which is not enumerated here 
+  Other
+    -- Transformation with not-orthogonal matrix
   end TrsfForm;
   ---Purpose: Identifies the type of a geometric transformation.
 

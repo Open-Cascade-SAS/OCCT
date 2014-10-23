@@ -273,10 +273,10 @@ void gp_Trsf::SetScaleFactor (const Standard_Real S)
   scale = S;
   As = scale - 1.;
   if (As < 0) As = - As;
-  Standard_Boolean unit  = As <= gp::Resolution();
+  Standard_Boolean unit  = As <= gp::Resolution(); // = (scale == 1)
   As = scale + 1.;
   if (As < 0) As = - As;
-  Standard_Boolean munit = As <= gp::Resolution();
+  Standard_Boolean munit = As <= gp::Resolution(); // = (scale == -1)
   
   switch (shape) {
   case gp_Identity :

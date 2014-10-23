@@ -23,32 +23,31 @@
 void gp_Trsf2d::SetMirror (const gp_Ax2d& A)
 {
   shape = gp_Ax1Mirror;
+  scale = - 1.0;
   const gp_Dir2d& V = A.Direction ();
   const gp_Pnt2d& P = A.Location ();
   Standard_Real VX = V.X();
   Standard_Real VY = V.Y();
   Standard_Real X0 = P.X();
   Standard_Real Y0 = P.Y();
+  matrix.SetCol (1, gp_XY (1.0 - 2.0 * VX * VX, -2.0 * VX * VY));
+  matrix.SetCol (2, gp_XY (-2.0 * VX * VY, 1.0 - 2.0 * VY * VY));
 
-  SetValues(1.0-2.0*VX*VX, -2.0*VX*VY, -2.0*((VX * VX - 1.0)*X0 + (VX*VY*Y0)), 
-            -2.0*VX*VY, 1.0-2.0*VY*VY, -2.0*((VX*VY*X0)+(VY*VY-1.0)*Y0));
-
-  scale = - 1.0;
+  loc.SetCoord  (-2.0 * ((VX * VX - 1.0) * X0 + (VX * VY * Y0)),
+                 -2.0 * ((VX * VY * X0) + (VY * VY - 1.0) * Y0));
 }
 
 void gp_Trsf2d::SetTransformation (const gp_Ax2d& FromA1,
 				   const gp_Ax2d& ToA2)
 {
   shape = gp_CompoundTrsf;
+  scale = 1.0;
   //matrix from XOY to A2 :
   const gp_XY& V1 = ToA2.Direction().XY();
   gp_XY V2 (-V1.Y(), V1.X());
-
-  SetValues(V1.X(), V2.X(), ToA2.Location().X(),
-            V1.Y(), V2.Y(), ToA2.Location().Y());
-
-  scale = 1.0;
-
+  matrix.SetCol (1, V1);
+  matrix.SetCol (2, V2);
+  loc = ToA2.Location().XY();
   matrix.Transpose();
   loc.Multiply (matrix);
   loc.Reverse();
@@ -66,14 +65,12 @@ void gp_Trsf2d::SetTransformation (const gp_Ax2d& FromA1,
 void gp_Trsf2d::SetTransformation (const gp_Ax2d& A)
 {
   shape = gp_CompoundTrsf;
+  scale = 1.0;
   const gp_XY& V1 = A.Direction().XY();
   gp_XY V2 (-V1.Y(), V1.X());
-
-  SetValues(V1.X(), V2.X(), A.Location().X(),
-            V1.Y(), V2.Y(), A.Location().Y());
-
-  scale = 1.0;
-
+  matrix.SetCol (1, V1);
+  matrix.SetCol (2, V2);
+  loc = A.Location().XY();
   matrix.Transpose();
   loc.Multiply (matrix);
   loc.Reverse();
