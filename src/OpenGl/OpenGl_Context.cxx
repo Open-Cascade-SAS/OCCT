@@ -24,7 +24,9 @@
 #include <OpenGl_ArbDbg.hxx>
 #include <OpenGl_ArbFBO.hxx>
 #include <OpenGl_ExtGS.hxx>
+#include <OpenGl_ArbTexBindless.hxx>
 #include <OpenGl_GlCore20.hxx>
+#include <OpenGl_Sampler.hxx>
 #include <OpenGl_ShaderManager.hxx>
 
 #include <Message_Messenger.hxx>
@@ -79,6 +81,8 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   core20fwd  (NULL),
   core32     (NULL),
   core32back (NULL),
+  core33     (NULL),
+  core33back (NULL),
   core41     (NULL),
   core41back (NULL),
   core42     (NULL),
@@ -95,8 +99,11 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   hasHighp   (Standard_True),
   hasTexRGBA8(Standard_True),
 #endif
-  arbNPTW(Standard_False),
+  arbNPTW  (Standard_False),
+  arbTexRG (Standard_False),
+  arbTexBindless (NULL),
   arbTBO (NULL),
+  arbTboRGB32 (Standard_False),
   arbIns (NULL),
   arbDbg (NULL),
   arbFBO (NULL),
@@ -169,6 +176,12 @@ OpenGl_Context::~OpenGl_Context()
   }
   mySharedResources.Nullify();
   myDelayed.Nullify();
+
+  // release sampler object
+  if (!myTexSampler.IsNull())
+  {
+    myTexSampler->Release (this);
+  }
 
 #if !defined(GL_ES_VERSION_2_0)
   if (arbDbg != NULL
@@ -844,6 +857,8 @@ void OpenGl_Context::init()
   core20fwd  = NULL;
   core32     = NULL;
   core32back = NULL;
+  core33     = NULL;
+  core33back = NULL;
   core41     = NULL;
   core41back = NULL;
   core42     = NULL;
@@ -853,6 +868,7 @@ void OpenGl_Context::init()
   core44     = NULL;
   core44back = NULL;
   arbTBO     = NULL;
+  arbTboRGB32 = Standard_False;
   arbIns     = NULL;
   arbDbg     = NULL;
   arbFBO     = NULL;
@@ -1723,6 +1739,7 @@ void OpenGl_Context::init()
   {
     arbTBO = (OpenGl_ArbTBO* )(&(*myFuncs));
   }
+  arbTboRGB32 = CheckExtension ("GL_ARB_texture_buffer_object_rgb32");
 
   // initialize hardware instancing extension (ARB)
   if (!has31
@@ -1745,6 +1762,28 @@ void OpenGl_Context::init()
    && FindProcShort (glProgramParameteriEXT))
   {
     extGS = (OpenGl_ExtGS* )(&(*myFuncs));
+  }
+
+  // initialize bindless texture extension (ARB)
+  if (CheckExtension ("GL_ARB_bindless_texture")
+   && FindProcShort (glGetTextureHandleARB)
+   && FindProcShort (glGetTextureSamplerHandleARB)
+   && FindProcShort (glMakeTextureHandleResidentARB)
+   && FindProcShort (glMakeTextureHandleNonResidentARB)
+   && FindProcShort (glGetImageHandleARB)
+   && FindProcShort (glMakeImageHandleResidentARB)
+   && FindProcShort (glMakeImageHandleNonResidentARB)
+   && FindProcShort (glUniformHandleui64ARB)
+   && FindProcShort (glUniformHandleui64vARB)
+   && FindProcShort (glProgramUniformHandleui64ARB)
+   && FindProcShort (glProgramUniformHandleui64vARB)
+   && FindProcShort (glIsTextureHandleResidentARB)
+   && FindProcShort (glIsImageHandleResidentARB)
+   && FindProcShort (glVertexAttribL1ui64ARB)
+   && FindProcShort (glVertexAttribL1ui64vARB)
+   && FindProcShort (glGetVertexAttribLui64vARB))
+  {
+    arbTexBindless = (OpenGl_ArbTexBindless* )(&(*myFuncs));
   }
 
   if (!has12)
@@ -1822,6 +1861,12 @@ void OpenGl_Context::init()
     myGlVerMinor = 2;
     return;
   }
+  core33     = (OpenGl_GlCore33*     )(&(*myFuncs));
+  core33back = (OpenGl_GlCore33Back* )(&(*myFuncs));
+
+  // initialize sampler object
+  myTexSampler = new OpenGl_Sampler();
+  myTexSampler->Init (*this);
 
   if (!has40)
   {
@@ -1829,6 +1874,7 @@ void OpenGl_Context::init()
     myGlVerMinor = 3;
     return;
   }
+  arbTboRGB32 = Standard_True; // in core since OpenGL 4.0
 
   if (!has41)
   {

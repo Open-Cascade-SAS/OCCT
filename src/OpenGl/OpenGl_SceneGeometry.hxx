@@ -19,6 +19,8 @@
 #include <BVH_Geometry.hxx>
 #include <BVH_Triangulation.hxx>
 #include <NCollection_StdAllocator.hxx>
+#include <OpenGl_TextureBufferArb.hxx>
+#include <OpenGl_Texture.hxx>
 
 class  OpenGl_Element;
 struct OpenGl_ElementNode;
@@ -66,6 +68,9 @@ public:
 
   //! Material transparency.
   BVH_Vec4f Transparency;
+
+  //! Texture transformation matrix.
+  BVH_Mat4f TextureTransform;
 
 public:
 
@@ -125,7 +130,7 @@ public:
 };
 
 //! Triangulation of single OpenGL primitive array.
-class OpenGl_TriangleSet : public BVH_Triangulation<Standard_ShortReal, 4>
+class OpenGl_TriangleSet : public BVH_Triangulation<Standard_ShortReal, 3>
 {
 public:
 
@@ -136,11 +141,11 @@ public:
 
   //! Creates new OpenGL element triangulation.
   OpenGl_TriangleSet (const Standard_Size theArrayID)
-  : BVH_Triangulation<Standard_ShortReal, 4>(),
+  : BVH_Triangulation<Standard_ShortReal, 3> (),
     myArrayID (theArrayID)
-   {
-     //
-   }
+  {
+    //
+  }
 
   //! Releases resources of OpenGL element triangulation.
   ~OpenGl_TriangleSet()
@@ -158,38 +163,31 @@ public:
   Standard_Integer MaterialIndex() const
   {
     if (Elements.size() == 0)
+    {
       return INVALID_MATERIAL;
+    }
 
     return Elements.front().w();
   }
 
   //! Sets material index for entire triangle set.
-  void SetMaterialIndex (Standard_Integer aMatID)
+  void SetMaterialIndex (Standard_Integer theMatID)
   {
     for (Standard_Size anIdx = 0; anIdx < Elements.size(); ++anIdx)
-      Elements[anIdx].w() = aMatID;
+    {
+      Elements[anIdx].w() = theMatID;
+    }
   }
 
   //! Returns AABB of primitive set.
-  BVH_BoxNt Box() const
-  {
-    const BVH_Transform<Standard_ShortReal, 4>* aTransform = 
-      dynamic_cast<const BVH_Transform<Standard_ShortReal, 4>* > (Properties().operator->());
- 
-    BVH_BoxNt aBox = BVH_PrimitiveSet<Standard_ShortReal, 4>::Box(); 
- 
-    if (aTransform)
-    {
-      return aTransform->Apply (aBox);
-    }
- 
-    return aBox;
-  }
+  BVH_BoxNt Box() const;
 
 public:
 
-  BVH_Array4f Normals; //!< Array of vertex normals.
- 
+  BVH_Array3f Normals; //!< Array of vertex normals.
+
+  BVH_Array2f TexCrds; //!< Array of vertex UV coords.
+
 private:
 
   Standard_Size myArrayID; //!< Id of associated primitive array.
@@ -197,12 +195,18 @@ private:
 };
 
 //! Stores geometry of ray-tracing scene.
-class OpenGl_RaytraceGeometry : public BVH_Geometry<Standard_ShortReal, 4>
+class OpenGl_RaytraceGeometry : public BVH_Geometry<Standard_ShortReal, 3>
 {
 public:
 
   //! Value of invalid offset to return in case of errors.
   static const Standard_Integer INVALID_OFFSET = -1;
+
+  //! Maximum number of textures used in ray-tracing shaders.
+  //! This is not restriction of the solution implemented, but
+  //! rather the reasonable limit of the number of textures in
+  //! various applications (can be increased if needed).
+  static const Standard_Integer MAX_TEX_NUMBER = 32;
 
 public:
 
@@ -221,7 +225,7 @@ public:
 
   //! Creates uninitialized ray-tracing geometry.
   OpenGl_RaytraceGeometry()
-  : BVH_Geometry<Standard_ShortReal, 4>(),
+  : BVH_Geometry<Standard_ShortReal, 3>(),
     myHighLevelTreeDepth (0),
     myBottomLevelTreeDepth (0)
   {
@@ -234,19 +238,21 @@ public:
     //
   }
 
-  //! Clears ray-tracing geometry.
-  void Clear();
-
   //! Clears only ray-tracing materials.
   void ClearMaterials()
   {
     std::vector<OpenGl_RaytraceMaterial,
       NCollection_StdAllocator<OpenGl_RaytraceMaterial> > anEmptyMaterials;
- 
+
     Materials.swap (anEmptyMaterials);
+
+    myTextures.Clear();
   }
 
-public:
+  //! Clears ray-tracing geometry.
+  void Clear();
+
+public: //! @name methods related to acceleration structure
 
   //! Performs post-processing of high-level scene BVH.
   Standard_Boolean ProcessAcceleration();
@@ -271,6 +277,34 @@ public:
   //! @note Can be used after processing acceleration structure.
   OpenGl_TriangleSet* TriangleSet (Standard_Integer theNodeIdx);
 
+public: //! @name methods related to texture management
+
+  //! Adds new OpenGL texture to the scene and returns its index.
+  Standard_Integer AddTexture (const Handle(OpenGl_Texture)& theTexture);
+
+  //! Updates unique 64-bit texture handles to use in shaders.
+  Standard_Boolean UpdateTextureHandles (const Handle(OpenGl_Context)& theContext);
+
+  //! Makes the OpenGL texture handles resident (must be called before using).
+  Standard_Boolean AcquireTextures (const Handle(OpenGl_Context)& theContext) const;
+
+  //! Makes the OpenGL texture handles non-resident (must be called after using).
+  Standard_Boolean ReleaseTextures (const Handle(OpenGl_Context)& theContext) const;
+
+  //! Returns array of texture handles.
+  const std::vector<GLuint64>& TextureHandles() const
+  {
+    return myTextureHandles;
+  }
+
+  //! Checks if scene contains textured objects.
+  Standard_Integer HasTextures() const
+  {
+    return !myTextures.IsEmpty();
+  }
+
+public: //! @name auxiliary methods
+
   //! Returns depth of high-level scene BVH from last build.
   Standard_Integer HighLevelTreeDepth() const
   {
@@ -285,8 +319,10 @@ public:
 
 protected:
 
-  Standard_Integer myHighLevelTreeDepth;   //!< Depth of high-level scene BVH from last build
-  Standard_Integer myBottomLevelTreeDepth; //!< Maximum depth of bottom-level scene BVHs from last build
+  NCollection_Vector<Handle(OpenGl_Texture)> myTextures;             //!< Array of texture maps shared between rendered objects
+  std::vector<GLuint64>                      myTextureHandles;       //!< Array of unique 64-bit texture handles obtained from OpenGL
+  Standard_Integer                           myHighLevelTreeDepth;   //!< Depth of high-level scene BVH from last build
+  Standard_Integer                           myBottomLevelTreeDepth; //!< Maximum depth of bottom-level scene BVHs from last build
 
 };
 

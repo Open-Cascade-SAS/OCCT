@@ -95,7 +95,7 @@ struct OpenGl_Material
 
 DEFINE_STANDARD_HANDLE (OpenGl_RaytraceFilter, OpenGl_RenderFilter)
 
-//! Graphical raytracing filter.
+//! Graphical ray-tracing filter.
 //! Filters out all raytracable structures.
 class OpenGl_RaytraceFilter : public OpenGl_RenderFilter
 {
@@ -307,29 +307,26 @@ protected:
     OpenGl_RT_uOriginLB,
     OpenGl_RT_uOriginRT,
     OpenGl_RT_uOriginRB,
-
     OpenGl_RT_uDirectLT,
     OpenGl_RT_uDirectLB,
     OpenGl_RT_uDirectRT,
     OpenGl_RT_uDirectRB,
-    OpenGl_RT_uInvModelProj,
-    
+    OpenGl_RT_uUnviewMat,
+
     OpenGl_RT_uSceneRad,
     OpenGl_RT_uSceneEps,
-
     OpenGl_RT_uLightAmbnt,
     OpenGl_RT_uLightCount,
 
     OpenGl_RT_uShadEnabled,
     OpenGl_RT_uReflEnabled,
-    
-    OpenGl_RT_uInputTexture,
+    OpenGl_RT_uEnvMapEnable,
 
     OpenGl_RT_uOffsetX,
     OpenGl_RT_uOffsetY,
     OpenGl_RT_uSamples,
 
-    OpenGl_RT_uEnvironmentEnable,
+    OpenGl_RT_uTextures,
 
     OpenGl_RT_NbVariables // special field
   };
@@ -347,19 +344,20 @@ protected:
 
     OpenGl_RT_GeometryVertexTexture = 6,
     OpenGl_RT_GeometryNormalTexture = 7,
-    OpenGl_RT_GeometryTriangTexture = 8,
+    OpenGl_RT_GeometryTexCrdTexture = 8,
+    OpenGl_RT_GeometryTriangTexture = 9,
 
-    OpenGl_RT_EnvironmentMapTexture = 9,
+    OpenGl_RT_EnvironmentMapTexture = 10,
 
-    OpenGl_RT_RaytraceMaterialTexture = 10,
-    OpenGl_RT_RaytraceLightSrcTexture = 11,
+    OpenGl_RT_RaytraceMaterialTexture = 11,
+    OpenGl_RT_RaytraceLightSrcTexture = 12,
 
-    OpenGl_RT_FSAAInputTexture = 12,
+    OpenGl_RT_FSAAInputTexture = 13,
 
-    OpenGl_RT_SceneTransformTexture = 13,
+    OpenGl_RT_SceneTransformTexture = 14,
 
-    OpenGl_RT_OpenGlColorTexture = 14,
-    OpenGl_RT_OpenGlDepthTexture = 15
+    OpenGl_RT_OpenGlColorTexture = 15,
+    OpenGl_RT_OpenGlDepthTexture = 16
   };
 
   //! Tool class for management of shader sources.
@@ -407,7 +405,7 @@ protected:
   };
 
   //! Default ray-tracing depth.
-  static const Standard_Integer THE_DEFAULT_RAY_DEPTH = 3;
+  static const Standard_Integer THE_DEFAULT_NB_BOUNCES = 3;
 
   //! Default size of traversal stack.
   static const Standard_Integer THE_DEFAULT_STACK_SIZE = 24;
@@ -419,7 +417,7 @@ protected:
     Standard_Integer StackSize;
 
     //! Actual ray-tracing depth (number of ray bounces).
-    Standard_Integer TraceDepth;
+    Standard_Integer NbBounces;
 
     //! Sets light propagation through transparent media.
     Standard_Boolean TransparentShadows;
@@ -427,7 +425,7 @@ protected:
     //! Creates default compile-time ray-tracing parameters.
     RaytracingParams()
     : StackSize (THE_DEFAULT_STACK_SIZE),
-      TraceDepth (THE_DEFAULT_RAY_DEPTH),
+      NbBounces (THE_DEFAULT_NB_BOUNCES),
       TransparentShadows (Standard_False)
     {
       //
@@ -442,8 +440,11 @@ protected: //! @name methods related to ray-tracing
   //! Checks to see if the structure is modified.
   Standard_Boolean CheckRaytraceStructure (const OpenGl_Structure* theStructure);
 
+  //! Creates ray-tracing material properties.
+  Standard_Boolean CreateMaterial (const OpenGl_AspectFace* theAspect, OpenGl_RaytraceMaterial& theMaterial);
+
   //! Updates 3D scene light sources for ray-tracing.
-  Standard_Boolean UpdateRaytraceLightSources (const GLdouble theInvModelView[16]);
+  Standard_Boolean UpdateRaytraceLightSources (const OpenGl_Mat4& theInvModelView);
 
   //! Updates environment map for ray-tracing.
   Standard_Boolean UpdateRaytraceEnvironmentMap();
@@ -458,7 +459,7 @@ protected: //! @name methods related to ray-tracing
 
   //! Adds OpenGL primitive array to ray-traced scene geometry.
   OpenGl_TriangleSet* AddRaytracePrimitiveArray (
-    const OpenGl_PrimitiveArray* theArray, int theMatID, const Standard_ShortReal* theTrans);
+    const OpenGl_PrimitiveArray* theArray, int theMatID, const OpenGl_Mat4* theTrans);
 
   //! Adds vertex indices from OpenGL primitive array to ray-traced scene geometry.
   Standard_Boolean AddRaytraceVertexIndices (OpenGl_TriangleSet&          theSet,
@@ -515,6 +516,9 @@ protected: //! @name methods related to ray-tracing
   //! Performs safe exit when shaders initialization fails.
   Standard_Boolean SafeFailBack (const TCollection_ExtendedString& theMessage);
 
+  //! Generates shader prefix based on current ray-tracing options.
+  TCollection_AsciiString GenerateShaderPrefix();
+
   //! Initializes OpenGL/GLSL shader programs.
   Standard_Boolean InitRaytraceResources (const Graphic3d_CView& theCView);
 
@@ -529,11 +533,19 @@ protected: //! @name methods related to ray-tracing
                                           const Standard_Integer theSizeY);
 
   //! Generates viewing rays for corners of screen quad.
-  void UpdateCamera (const NCollection_Mat4<GLdouble>& theOrientation,
-                     const NCollection_Mat4<GLdouble>& theViewMapping,
-                     OpenGl_Vec3                       theOrigins[4],
-                     OpenGl_Vec3                       theDirects[4],
-                     NCollection_Mat4<GLdouble>&       theInvModelProj);
+  void UpdateCamera (const OpenGl_Mat4& theOrientation,
+                     const OpenGl_Mat4& theViewMapping,
+                     OpenGl_Vec3        theOrigins[4],
+                     OpenGl_Vec3        theDirects[4],
+                     OpenGl_Mat4&       theInvModelProj);
+
+  //! Sets uniform state for the given ray-tracing shader program.
+  Standard_Boolean SetUniformState (const Graphic3d_CView&        theCView,
+                                    const OpenGl_Vec3*            theOrigins,
+                                    const OpenGl_Vec3*            theDirects,
+                                    const OpenGl_Mat4&            theUnviewMat,
+                                    const Standard_Integer        theProgramIndex,
+                                    Handle(OpenGl_ShaderProgram)& theRaytraceProgram);
 
   //! Runs ray-tracing shader programs.
   Standard_Boolean RunRaytraceShaders (const Graphic3d_CView& theCView,
@@ -541,7 +553,7 @@ protected: //! @name methods related to ray-tracing
                                        const Standard_Integer theSizeY,
                                        const OpenGl_Vec3      theOrigins[4],
                                        const OpenGl_Vec3      theDirects[4],
-                                       const OpenGl_Matrix&   theInvModelProj,
+                                       const OpenGl_Mat4&     theUnviewMat,
                                        OpenGl_FrameBuffer*    theFrameBuffer);
 
   //! Redraws the window using OpenGL/GLSL ray-tracing.
@@ -560,6 +572,9 @@ protected: //! @name fields related to ray-tracing
 
   //! Is geometry data valid?
   Standard_Boolean myIsRaytraceDataValid;
+
+  //! Warning about missing extension GL_ARB_bindless_texture has been displayed?
+  Standard_Boolean myIsRaytraceWarnTextures;
 
   //! 3D scene geometry data for ray-tracing.
   OpenGl_RaytraceGeometry myRaytraceGeometry;
@@ -607,9 +622,11 @@ protected: //! @name fields related to ray-tracing
   Handle(OpenGl_TextureBufferArb) myGeometryVertexTexture;
   //! Texture buffer of vertex normals.
   Handle(OpenGl_TextureBufferArb) myGeometryNormalTexture;
+  //! Texture buffer of vertex UV coords.
+  Handle(OpenGl_TextureBufferArb) myGeometryTexCrdTexture;
   //! Texture buffer of triangle indices.
   Handle(OpenGl_TextureBufferArb) myGeometryTriangTexture;
-  
+
   //! Texture buffer of material properties.
   Handle(OpenGl_TextureBufferArb) myRaytraceMaterialTexture;
   //! Texture buffer of light source properties.
@@ -639,10 +656,10 @@ protected: //! @name fields related to ray-tracing
   //! Cached locations of frequently used uniform variables.
   Standard_Integer myUniformLocations[2][OpenGl_RT_NbVariables];
 
-  //! Graphical raytracing filter to filter out all raytracable structures.
+  //! Graphical ray-tracing filter to filter out all raytracable structures.
   Handle(OpenGl_RaytraceFilter) myRaytraceFilter;
 
-  //! Redraw the scene using OpenGL rasterization or raytracing?
+  //! Redraw the scene using OpenGL rasterization or ray-tracing?
   Standard_Boolean myToRedrawGL;
 
 protected: //! @name protected fields

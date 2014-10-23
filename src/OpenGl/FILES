@@ -153,3 +153,7 @@ OpenGl_BVHTreeSelector.hxx
 OpenGl_BVHTreeSelector.cxx
 OpenGl_BVHClipPrimitiveSet.cxx
 OpenGl_BVHClipPrimitiveSet.hxx
+OpenGl_ArbTexBindless.hxx
+Handle_OpenGl_Sampler.hxx
+OpenGl_Sampler.hxx
+OpenGl_Sampler.cxx

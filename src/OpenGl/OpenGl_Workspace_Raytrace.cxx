@@ -15,16 +15,13 @@
 
 #include <OpenGl_Workspace.hxx>
 
-#include <NCollection_Mat4.hxx>
-#include <OpenGl_ArbFBO.hxx>
+#include <Graphic3d_TextureParams.hxx>
 #include <OpenGl_FrameBuffer.hxx>
 #include <OpenGl_PrimitiveArray.hxx>
-#include <OpenGl_Texture.hxx>
 #include <OpenGl_VertexBuffer.hxx>
 #include <OpenGl_View.hxx>
 #include <OSD_File.hxx>
 #include <OSD_Protection.hxx>
-#include <Standard_Assert.hxx>
 
 using namespace OpenGl_Raytrace;
 
@@ -34,24 +31,6 @@ using namespace OpenGl_Raytrace;
 #ifdef RAY_TRACE_PRINT_INFO
   #include <OSD_Timer.hxx>
 #endif
-
-// =======================================================================
-// function : MatVecMult
-// purpose  : Multiples 4x4 matrix by 4D vector
-// =======================================================================
-template<typename T>
-BVH_Vec4f MatVecMult (const T m[16], const BVH_Vec4f& v)
-{
-  return BVH_Vec4f (
-    static_cast<float> (m[ 0] * v.x() + m[ 4] * v.y() +
-                        m[ 8] * v.z() + m[12] * v.w()),
-    static_cast<float> (m[ 1] * v.x() + m[ 5] * v.y() +
-                        m[ 9] * v.z() + m[13] * v.w()),
-    static_cast<float> (m[ 2] * v.x() + m[ 6] * v.y() +
-                        m[10] * v.z() + m[14] * v.w()),
-    static_cast<float> (m[ 3] * v.x() + m[ 7] * v.y() +
-                        m[11] * v.z() + m[15] * v.w()));
-}
 
 // =======================================================================
 // function : UpdateRaytraceGeometry
@@ -148,7 +127,7 @@ Standard_Boolean OpenGl_Workspace::UpdateRaytraceGeometry (GeomUpdateMode theMod
 
   if (theMode == OpenGl_GUM_PREPARE)
   {
-    BVH_ObjectSet<Standard_ShortReal, 4>::BVH_ObjectList anUnchangedObjects;
+    BVH_ObjectSet<Standard_ShortReal, 3>::BVH_ObjectList anUnchangedObjects;
 
     // Leave only unchanged objects in myRaytraceGeometry so only their transforms and materials will be updated
     // Objects which not in myArrayToTrianglesMap will be built from scratch.
@@ -203,7 +182,7 @@ Standard_Boolean OpenGl_Workspace::UpdateRaytraceGeometry (GeomUpdateMode theMod
 
     myRaytraceSceneRadius = 2.f /* scale factor */ * Max (aMinRadius, aMaxRadius);
 
-    const BVH_Vec4f aSize = myRaytraceGeometry.Box().Size();
+    const BVH_Vec3f aSize = myRaytraceGeometry.Box().Size();
 
     myRaytraceSceneEpsilon = Max (1e-6f, 1e-4f * sqrtf (
       aSize.x() * aSize.x() + aSize.y() * aSize.y() + aSize.z() * aSize.z()));
@@ -242,53 +221,129 @@ Standard_Boolean OpenGl_Workspace::CheckRaytraceStructure (const OpenGl_Structur
 }
 
 // =======================================================================
+// function : BuildTexTransform
+// purpose  : Constructs texture transformation matrix
+// =======================================================================
+void BuildTexTransform (const Handle(Graphic3d_TextureParams)& theParams, BVH_Mat4f& theMatrix)
+{
+  theMatrix.InitIdentity();
+
+  // Apply scaling
+  const Graphic3d_Vec2& aScale = theParams->Scale();
+
+  theMatrix.ChangeValue (0, 0) *= aScale.x();
+  theMatrix.ChangeValue (1, 0) *= aScale.x();
+  theMatrix.ChangeValue (2, 0) *= aScale.x();
+  theMatrix.ChangeValue (3, 0) *= aScale.x();
+
+  theMatrix.ChangeValue (0, 1) *= aScale.y();
+  theMatrix.ChangeValue (1, 1) *= aScale.y();
+  theMatrix.ChangeValue (2, 1) *= aScale.y();
+  theMatrix.ChangeValue (3, 1) *= aScale.y();
+
+  // Apply translation
+  const Graphic3d_Vec2 aTrans = -theParams->Translation();
+
+  theMatrix.ChangeValue (0, 3) = theMatrix.GetValue (0, 0) * aTrans.x() +
+                                 theMatrix.GetValue (0, 1) * aTrans.y();
+
+  theMatrix.ChangeValue (1, 3) = theMatrix.GetValue (1, 0) * aTrans.x() +
+                                 theMatrix.GetValue (1, 1) * aTrans.y();
+
+  theMatrix.ChangeValue (2, 3) = theMatrix.GetValue (2, 0) * aTrans.x() +
+                                 theMatrix.GetValue (2, 1) * aTrans.y();
+
+  // Apply rotation
+  const Standard_ShortReal aSin = std::sin (
+    -theParams->Rotation() * static_cast<Standard_ShortReal> (M_PI / 180.0));
+  const Standard_ShortReal aCos = std::cos (
+    -theParams->Rotation() * static_cast<Standard_ShortReal> (M_PI / 180.0));
+
+  BVH_Mat4f aRotationMat;
+  aRotationMat.SetValue (0, 0,  aCos);
+  aRotationMat.SetValue (1, 1,  aCos);
+  aRotationMat.SetValue (0, 1, -aSin);
+  aRotationMat.SetValue (1, 0,  aSin);
+
+  theMatrix = theMatrix * aRotationMat;
+}
+
+// =======================================================================
 // function : CreateMaterial
 // purpose  : Creates ray-tracing material properties
 // =======================================================================
-void CreateMaterial (const OPENGL_SURF_PROP& theProp, OpenGl_RaytraceMaterial& theMaterial)
+Standard_Boolean OpenGl_Workspace::CreateMaterial (const OpenGl_AspectFace* theAspect, OpenGl_RaytraceMaterial& theMaterial)
 {
-  const float* aSrcAmb = theProp.isphysic ? theProp.ambcol.rgb : theProp.matcol.rgb;
-  theMaterial.Ambient = BVH_Vec4f (aSrcAmb[0] * theProp.amb,
-                                   aSrcAmb[1] * theProp.amb,
-                                   aSrcAmb[2] * theProp.amb,
-                                   1.0f);
+  const OPENGL_SURF_PROP& aProperties = theAspect->IntFront();
 
-  const float* aSrcDif = theProp.isphysic ? theProp.difcol.rgb : theProp.matcol.rgb;
-  theMaterial.Diffuse = BVH_Vec4f (aSrcDif[0] * theProp.diff,
-                                   aSrcDif[1] * theProp.diff,
-                                   aSrcDif[2] * theProp.diff,
-                                   1.0f);
+  const Standard_ShortReal* aSrcAmbient =
+    aProperties.isphysic ? aProperties.ambcol.rgb : aProperties.matcol.rgb;
 
-  const float aDefSpecCol[4] = {1.0f, 1.0f, 1.0f, 1.0f};
-  const float* aSrcSpe = theProp.isphysic ? theProp.speccol.rgb : aDefSpecCol;
-  theMaterial.Specular = BVH_Vec4f (aSrcSpe[0] * theProp.spec,
-                                    aSrcSpe[1] * theProp.spec,
-                                    aSrcSpe[2] * theProp.spec,
-                                    theProp.shine);
+  theMaterial.Ambient = BVH_Vec4f (aSrcAmbient[0] * aProperties.amb,
+                                   aSrcAmbient[1] * aProperties.amb,
+                                   aSrcAmbient[2] * aProperties.amb,
+                                   1.f);
 
-  const float* aSrcEms = theProp.isphysic ? theProp.emscol.rgb : theProp.matcol.rgb;
-  theMaterial.Emission = BVH_Vec4f (aSrcEms[0] * theProp.emsv,
-                                    aSrcEms[1] * theProp.emsv,
-                                    aSrcEms[2] * theProp.emsv,
-                                    1.0f);
+  const Standard_ShortReal* aSrcDiffuse =
+    aProperties.isphysic ? aProperties.difcol.rgb : aProperties.matcol.rgb;
+
+  theMaterial.Diffuse = BVH_Vec4f (aSrcDiffuse[0] * aProperties.diff,
+                                   aSrcDiffuse[1] * aProperties.diff,
+                                   aSrcDiffuse[2] * aProperties.diff,
+                                   -1.f /* no texture */);
+
+  theMaterial.Specular = BVH_Vec4f (
+    (aProperties.isphysic ? aProperties.speccol.rgb[0] : 1.f) * aProperties.spec,
+    (aProperties.isphysic ? aProperties.speccol.rgb[1] : 1.f) * aProperties.spec,
+    (aProperties.isphysic ? aProperties.speccol.rgb[2] : 1.f) * aProperties.spec,
+    aProperties.shine);
+
+  const Standard_ShortReal* aSrcEmission =
+    aProperties.isphysic ? aProperties.emscol.rgb : aProperties.matcol.rgb;
+
+  theMaterial.Emission = BVH_Vec4f (aSrcEmission[0] * aProperties.emsv,
+                                    aSrcEmission[1] * aProperties.emsv,
+                                    aSrcEmission[2] * aProperties.emsv,
+                                    1.f);
 
   // Note: Here we use sub-linear transparency function
   // to produce realistic-looking transparency effect
-  theMaterial.Transparency = BVH_Vec4f (powf (theProp.trans, 0.75f),
-                                        1.f - theProp.trans,
-                                        theProp.index == 0 ? 1.f : theProp.index,
-                                        theProp.index == 0 ? 1.f : 1.f / theProp.index);
+  theMaterial.Transparency = BVH_Vec4f (powf (aProperties.trans, 0.75f),
+                                        1.f - aProperties.trans,
+                                        aProperties.index == 0 ? 1.f : aProperties.index,
+                                        aProperties.index == 0 ? 1.f : 1.f / aProperties.index);
 
-  const float aMaxRefl = Max (theMaterial.Diffuse.x() + theMaterial.Specular.x(),
-                         Max (theMaterial.Diffuse.y() + theMaterial.Specular.y(),
-                              theMaterial.Diffuse.z() + theMaterial.Specular.z()));
+  const Standard_ShortReal aMaxRefl = Max (theMaterial.Diffuse.x() + theMaterial.Specular.x(),
+                                      Max (theMaterial.Diffuse.y() + theMaterial.Specular.y(),
+                                           theMaterial.Diffuse.z() + theMaterial.Specular.z()));
 
-  const float aReflectionScale = 0.75f / aMaxRefl;
+  const Standard_ShortReal aReflectionScale = 0.75f / aMaxRefl;
 
-  theMaterial.Reflection = BVH_Vec4f (theProp.speccol.rgb[0] * theProp.spec * aReflectionScale,
-                                      theProp.speccol.rgb[1] * theProp.spec * aReflectionScale,
-                                      theProp.speccol.rgb[2] * theProp.spec * aReflectionScale,
-                                      0.f);
+  theMaterial.Reflection = BVH_Vec4f (
+    aProperties.speccol.rgb[0] * aProperties.spec * aReflectionScale,
+    aProperties.speccol.rgb[1] * aProperties.spec * aReflectionScale,
+    aProperties.speccol.rgb[2] * aProperties.spec * aReflectionScale,
+    0.f);
+
+  if (theAspect->DoTextureMap())
+  {
+    if (myGlContext->arbTexBindless != NULL)
+    {
+      BuildTexTransform (theAspect->TextureParams(), theMaterial.TextureTransform);
+      theMaterial.Diffuse.w() = static_cast<Standard_ShortReal> (
+        myRaytraceGeometry.AddTexture (theAspect->TextureRes (myGlContext)));
+    }
+    else if (!myIsRaytraceWarnTextures)
+    {
+      myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
+                                GL_DEBUG_TYPE_PORTABILITY_ARB, 0, GL_DEBUG_SEVERITY_HIGH_ARB,
+                                "Warning: texturing in Ray-Trace requires GL_ARB_bindless_texture extension which is missing. "
+                                "Textures will be ignored.");
+      myIsRaytraceWarnTextures = Standard_True;
+    }
+  }
+
+  return Standard_True;
 }
 
 // =======================================================================
@@ -313,7 +368,7 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceStructure (const OpenGl_Structure*
     aStructMatID = static_cast<Standard_Integer> (myRaytraceGeometry.Materials.size());
 
     OpenGl_RaytraceMaterial aStructMaterial;
-    CreateMaterial (theStructure->AspectFace()->IntFront(), aStructMaterial);
+    CreateMaterial (theStructure->AspectFace(), aStructMaterial);
 
     myRaytraceGeometry.Materials.push_back (aStructMaterial);
   }
@@ -362,7 +417,7 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceGroups (const OpenGl_Structure*   
       aGroupMatID = static_cast<Standard_Integer> (myRaytraceGeometry.Materials.size());
 
       OpenGl_RaytraceMaterial aGroupMaterial;
-      CreateMaterial (aGroupIter.Value()->AspectFace()->IntFront(), aGroupMaterial);
+      CreateMaterial (aGroupIter.Value()->AspectFace(), aGroupMaterial);
 
       myRaytraceGeometry.Materials.push_back (aGroupMaterial);
     }
@@ -385,7 +440,7 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceGroups (const OpenGl_Structure*   
         aMatID = static_cast<Standard_Integer> (myRaytraceGeometry.Materials.size());
 
         OpenGl_RaytraceMaterial aMaterial;
-        CreateMaterial (anAspect->IntFront(), aMaterial);
+        CreateMaterial (anAspect, aMaterial);
 
         myRaytraceGeometry.Materials.push_back (aMaterial);
       }
@@ -400,7 +455,7 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceGroups (const OpenGl_Structure*   
           if (aSetIter != myArrayToTrianglesMap.end())
           {
             OpenGl_TriangleSet* aSet = aSetIter->second;
- 
+
             BVH_Transform<Standard_ShortReal, 4>* aTransform = new BVH_Transform<Standard_ShortReal, 4>();
 
             if (theTransform != NULL)
@@ -410,14 +465,14 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceGroups (const OpenGl_Structure*   
           
             aSet->SetProperties (aTransform);
 
-            if (aSet->MaterialIndex() != OpenGl_TriangleSet::INVALID_MATERIAL && aSet->MaterialIndex() != aMatID )
+            if (aSet->MaterialIndex() != OpenGl_TriangleSet::INVALID_MATERIAL && aSet->MaterialIndex() != aMatID)
             {
               aSet->SetMaterialIndex (aMatID);
             }
           }
           else
           {
-            NCollection_Handle<BVH_Object<Standard_ShortReal, 4> > aSet =
+            NCollection_Handle<BVH_Object<Standard_ShortReal, 3> > aSet =
               AddRaytracePrimitiveArray (aPrimArray, aMatID, 0);
 
             if (!aSet.IsNull())
@@ -448,7 +503,7 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceGroups (const OpenGl_Structure*   
 // =======================================================================
 OpenGl_TriangleSet* OpenGl_Workspace::AddRaytracePrimitiveArray (const OpenGl_PrimitiveArray* theArray,
                                                                  Standard_Integer             theMatID,
-                                                                 const Standard_ShortReal*    theTransform)
+                                                                 const OpenGl_Mat4*           theTransform)
 {
   const Handle(Graphic3d_IndexBuffer)& anIndices = theArray->Indices();
   const Handle(Graphic3d_Buffer)&      anAttribs = theArray->Attributes();
@@ -478,10 +533,22 @@ OpenGl_TriangleSet* OpenGl_Workspace::AddRaytracePrimitiveArray (const OpenGl_Pr
   }
 #endif
 
+  OpenGl_Mat4 aNormalMatrix;
+
+  if (theTransform != NULL)
+  {
+    Standard_ASSERT_RETURN (theTransform->Inverted (aNormalMatrix),
+      "Error: Failed to compute normal transformation matrix", NULL);
+
+    aNormalMatrix.Transpose();
+  }
+
   OpenGl_TriangleSet* aSet = new OpenGl_TriangleSet (theArray->GetUID());
   {
     aSet->Vertices.reserve (anAttribs->NbElements);
     aSet->Normals .reserve (anAttribs->NbElements);
+    aSet->TexCrds .reserve (anAttribs->NbElements);
+
     const size_t aVertFrom = aSet->Vertices.size();
     for (Standard_Integer anAttribIter = 0; anAttribIter < anAttribs->NbAttributes; ++anAttribIter)
     {
@@ -494,8 +561,8 @@ OpenGl_TriangleSet* OpenGl_Workspace::AddRaytracePrimitiveArray (const OpenGl_Pr
         {
           for (Standard_Integer aVertIter = 0; aVertIter < anAttribs->NbElements; ++aVertIter)
           {
-            const Graphic3d_Vec3& aVert = *reinterpret_cast<const Graphic3d_Vec3* >(anAttribs->value (aVertIter) + anOffset);
-            aSet->Vertices.push_back (BVH_Vec4f (aVert.x(), aVert.y(), aVert.z(), 1.0f));
+            aSet->Vertices.push_back (
+              *reinterpret_cast<const Graphic3d_Vec3* >(anAttribs->value (aVertIter) + anOffset));
           }
         }
         else if (anAttrib.DataType == Graphic3d_TOD_VEC2)
@@ -503,7 +570,7 @@ OpenGl_TriangleSet* OpenGl_Workspace::AddRaytracePrimitiveArray (const OpenGl_Pr
           for (Standard_Integer aVertIter = 0; aVertIter < anAttribs->NbElements; ++aVertIter)
           {
             const Graphic3d_Vec2& aVert = *reinterpret_cast<const Graphic3d_Vec2* >(anAttribs->value (aVertIter) + anOffset);
-            aSet->Vertices.push_back (BVH_Vec4f (aVert.x(), aVert.y(), 0.0f, 1.0f));
+            aSet->Vertices.push_back (BVH_Vec3f (aVert.x(), aVert.y(), 0.0f));
           }
         }
       }
@@ -514,8 +581,19 @@ OpenGl_TriangleSet* OpenGl_Workspace::AddRaytracePrimitiveArray (const OpenGl_Pr
         {
           for (Standard_Integer aVertIter = 0; aVertIter < anAttribs->NbElements; ++aVertIter)
           {
-            const Graphic3d_Vec3& aNorm = *reinterpret_cast<const Graphic3d_Vec3* >(anAttribs->value (aVertIter) + anOffset);
-            aSet->Normals.push_back (BVH_Vec4f (aNorm.x(), aNorm.y(), aNorm.z(), 0.0f));
+            aSet->Normals.push_back (
+              *reinterpret_cast<const Graphic3d_Vec3* >(anAttribs->value (aVertIter) + anOffset));
+          }
+        }
+      }
+      else if (anAttrib.Id == Graphic3d_TOA_UV)
+      {
+        if (anAttrib.DataType == Graphic3d_TOD_VEC2)
+        {
+          for (Standard_Integer aVertIter = 0; aVertIter < anAttribs->NbElements; ++aVertIter)
+          {
+            aSet->TexCrds.push_back (
+              *reinterpret_cast<const Graphic3d_Vec2* >(anAttribs->value (aVertIter) + anOffset));
           }
         }
       }
@@ -525,21 +603,37 @@ OpenGl_TriangleSet* OpenGl_Workspace::AddRaytracePrimitiveArray (const OpenGl_Pr
     {
       for (Standard_Integer aVertIter = 0; aVertIter < anAttribs->NbElements; ++aVertIter)
       {
-        aSet->Normals.push_back (BVH_Vec4f());
+        aSet->Normals.push_back (BVH_Vec3f());
       }
     }
 
-    if (theTransform)
+    if (aSet->TexCrds.size() != aSet->Vertices.size())
+    {
+      for (Standard_Integer aVertIter = 0; aVertIter < anAttribs->NbElements; ++aVertIter)
+      {
+        aSet->TexCrds.push_back (BVH_Vec2f());
+      }
+    }
+
+    if (theTransform != NULL)
     {
       for (size_t aVertIter = aVertFrom; aVertIter < aSet->Vertices.size(); ++aVertIter)
       {
-        BVH_Vec4f& aVertex = aSet->Vertices[aVertIter];
-        aVertex = MatVecMult (theTransform, aVertex);
+        BVH_Vec3f& aVertex = aSet->Vertices[aVertIter];
+
+        BVH_Vec4f aTransVertex =
+          *theTransform * BVH_Vec4f (aVertex.x(), aVertex.y(), aVertex.z(), 1.f);
+
+        aVertex = BVH_Vec3f (aTransVertex.x(), aTransVertex.y(), aTransVertex.z());
       }
       for (size_t aVertIter = aVertFrom; aVertIter < aSet->Normals.size(); ++aVertIter)
       {
-        BVH_Vec4f& aNorm = aSet->Normals[aVertIter];
-        aNorm = MatVecMult (theTransform, aNorm);
+        BVH_Vec3f& aNormal = aSet->Normals[aVertIter];
+
+        BVH_Vec4f aTransNormal =
+          aNormalMatrix * BVH_Vec4f (aNormal.x(), aNormal.y(), aNormal.z(), 0.f);
+
+        aNormal = BVH_Vec3f (aTransNormal.x(), aTransNormal.y(), aTransNormal.z());
       }
     }
 
@@ -864,7 +958,7 @@ Standard_Boolean OpenGl_Workspace::AddRaytracePolygonArray (OpenGl_TriangleSet& 
 // function : UpdateRaytraceLightSources
 // purpose  : Updates 3D scene light sources for ray-tracing
 // =======================================================================
-Standard_Boolean OpenGl_Workspace::UpdateRaytraceLightSources (const GLdouble theInvModelView[16])
+Standard_Boolean OpenGl_Workspace::UpdateRaytraceLightSources (const OpenGl_Mat4& theInvModelView)
 {
   myRaytraceGeometry.Sources.clear();
 
@@ -902,9 +996,10 @@ Standard_Boolean OpenGl_Workspace::UpdateRaytraceLightSources (const GLdouble th
     }
 
     if (aLight.IsHeadlight)
-      aPosition = MatVecMult (theInvModelView, aPosition);
+    {
+      aPosition = theInvModelView * aPosition;
+    }
 
-    
     myRaytraceGeometry.Sources.push_back (OpenGl_RaytraceLight (aDiffuse, aPosition));
   }
 
@@ -963,12 +1058,12 @@ Standard_Boolean OpenGl_Workspace::UpdateRaytraceEnvironmentMap()
           myGlContext, GL_TEXTURE0 + OpenGl_RT_EnvironmentMapTexture);
 
         aProgram->SetUniform (myGlContext,
-          myUniformLocations[anIdx][OpenGl_RT_uEnvironmentEnable], 1);
+          myUniformLocations[anIdx][OpenGl_RT_uEnvMapEnable], 1);
       }
       else
       {
         aProgram->SetUniform (myGlContext,
-          myUniformLocations[anIdx][OpenGl_RT_uEnvironmentEnable], 0);
+          myUniformLocations[anIdx][OpenGl_RT_uEnvMapEnable], 0);
       }
     }
   }
@@ -1116,6 +1211,32 @@ Standard_Boolean OpenGl_Workspace::SafeFailBack (const TCollection_ExtendedStrin
 }
 
 // =======================================================================
+// function : GenerateShaderPrefix
+// purpose  : Generates shader prefix based on current ray-tracing options
+// =======================================================================
+TCollection_AsciiString OpenGl_Workspace::GenerateShaderPrefix()
+{
+  TCollection_AsciiString aPrefixString =
+    TCollection_AsciiString ("#define STACK_SIZE ") + TCollection_AsciiString (myRaytraceParameters.StackSize) + "\n" +
+    TCollection_AsciiString ("#define NB_BOUNCES ") + TCollection_AsciiString (myRaytraceParameters.NbBounces);
+
+  if (myRaytraceParameters.TransparentShadows)
+  {
+    aPrefixString += TCollection_AsciiString ("\n#define TRANSPARENT_SHADOWS");
+  }
+
+  // If OpenGL driver supports bindless textures
+  // activate texturing in ray-tracing mode
+  if (myGlContext->arbTexBindless != NULL)
+  {
+    aPrefixString += TCollection_AsciiString ("\n#define USE_TEXTURES") +
+      TCollection_AsciiString ("\n#define MAX_TEX_NUMBER ") + TCollection_AsciiString (OpenGl_RaytraceGeometry::MAX_TEX_NUMBER);
+  }
+
+  return aPrefixString;
+}
+
+// =======================================================================
 // function : InitRaytraceResources
 // purpose  : Initializes OpenGL/GLSL shader programs
 // =======================================================================
@@ -1149,9 +1270,9 @@ Standard_Boolean OpenGl_Workspace::InitRaytraceResources (const Graphic3d_CView&
       }
     }
 
-    if (theCView.RenderParams.RaytracingDepth != myRaytraceParameters.TraceDepth)
+    if (theCView.RenderParams.RaytracingDepth != myRaytraceParameters.NbBounces)
     {
-      myRaytraceParameters.TraceDepth = theCView.RenderParams.RaytracingDepth;
+      myRaytraceParameters.NbBounces = theCView.RenderParams.RaytracingDepth;
       aToRebuildShaders = Standard_True;
     }
 
@@ -1170,14 +1291,7 @@ Standard_Boolean OpenGl_Workspace::InitRaytraceResources (const Graphic3d_CView&
       // Change state to force update all uniforms
       ++myViewModificationStatus;
 
-      TCollection_AsciiString aPrefixString =
-        TCollection_AsciiString ("#define STACK_SIZE ") + TCollection_AsciiString (myRaytraceParameters.StackSize) + "\n" +
-        TCollection_AsciiString ("#define TRACE_DEPTH ") + TCollection_AsciiString (myRaytraceParameters.TraceDepth);
-
-      if (myRaytraceParameters.TransparentShadows)
-      {
-        aPrefixString += TCollection_AsciiString ("\n#define TRANSPARENT_SHADOWS");
-      }
+      TCollection_AsciiString aPrefixString = GenerateShaderPrefix();
 
 #ifdef RAY_TRACE_PRINT_INFO
       std::cout << "GLSL prefix string:" << std::endl << aPrefixString << std::endl;
@@ -1212,15 +1326,20 @@ Standard_Boolean OpenGl_Workspace::InitRaytraceResources (const Graphic3d_CView&
   {
     if (!myGlContext->IsGlGreaterEqual (3, 1))
     {
-      const TCollection_ExtendedString aMessage = "Ray-tracing requires OpenGL 3.1 and higher";
-
       myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
-        GL_DEBUG_TYPE_ERROR_ARB, 0, GL_DEBUG_SEVERITY_HIGH_ARB, aMessage);
-
+                                GL_DEBUG_TYPE_ERROR_ARB, 0, GL_DEBUG_SEVERITY_HIGH_ARB,
+                                "Ray-tracing requires OpenGL 3.1 and higher");
+      return Standard_False;
+    }
+    else if (!myGlContext->arbTboRGB32)
+    {
+      myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
+                                GL_DEBUG_TYPE_ERROR_ARB, 0, GL_DEBUG_SEVERITY_HIGH_ARB,
+                                "Ray-tracing requires OpenGL 4.0+ or GL_ARB_texture_buffer_object_rgb32 extension");
       return Standard_False;
     }
 
-    myRaytraceParameters.TraceDepth = theCView.RenderParams.RaytracingDepth;
+    myRaytraceParameters.NbBounces = theCView.RenderParams.RaytracingDepth;
 
     TCollection_AsciiString aFolder = Graphic3d_ShaderProgram::ShadersFolder();
 
@@ -1240,14 +1359,7 @@ Standard_Boolean OpenGl_Workspace::InitRaytraceResources (const Graphic3d_CView&
         myRaytraceGeometry.HighLevelTreeDepth() + myRaytraceGeometry.BottomLevelTreeDepth());
     }
 
-    TCollection_AsciiString aPrefixString =
-      TCollection_AsciiString ("#define STACK_SIZE ") + TCollection_AsciiString (myRaytraceParameters.StackSize) + "\n" +
-      TCollection_AsciiString ("#define TRACE_DEPTH ") + TCollection_AsciiString (myRaytraceParameters.TraceDepth);
-
-    if (myRaytraceParameters.TransparentShadows)
-    {
-      aPrefixString += TCollection_AsciiString ("\n#define TRANSPARENT_SHADOWS");
-    }
+    TCollection_AsciiString aPrefixString  = GenerateShaderPrefix();
 
 #ifdef RAY_TRACE_PRINT_INFO
     std::cout << "GLSL prefix string:" << std::endl << aPrefixString << std::endl;
@@ -1394,15 +1506,17 @@ Standard_Boolean OpenGl_Workspace::InitRaytraceResources (const Graphic3d_CView&
       aShaderProgram->SetSampler (myGlContext,
         "uGeometryNormalTexture", OpenGl_RT_GeometryNormalTexture);
       aShaderProgram->SetSampler (myGlContext,
+        "uGeometryTexCrdTexture", OpenGl_RT_GeometryTexCrdTexture);
+      aShaderProgram->SetSampler (myGlContext,
         "uGeometryTriangTexture", OpenGl_RT_GeometryTriangTexture);
-      aShaderProgram->SetSampler (myGlContext,
-        "uRaytraceMaterialTexture", OpenGl_RT_RaytraceMaterialTexture);
-      aShaderProgram->SetSampler (myGlContext,
-        "uRaytraceLightSrcTexture", OpenGl_RT_RaytraceLightSrcTexture);
       aShaderProgram->SetSampler (myGlContext, 
         "uSceneTransformTexture", OpenGl_RT_SceneTransformTexture);
       aShaderProgram->SetSampler (myGlContext,
         "uEnvironmentMapTexture", OpenGl_RT_EnvironmentMapTexture);
+      aShaderProgram->SetSampler (myGlContext,
+        "uRaytraceMaterialTexture", OpenGl_RT_RaytraceMaterialTexture);
+      aShaderProgram->SetSampler (myGlContext,
+        "uRaytraceLightSrcTexture", OpenGl_RT_RaytraceLightSrcTexture);
 
       aShaderProgram->SetSampler (myGlContext,
         "uOpenGlColorTexture", OpenGl_RT_OpenGlColorTexture);
@@ -1434,23 +1548,17 @@ Standard_Boolean OpenGl_Workspace::InitRaytraceResources (const Graphic3d_CView&
         aShaderProgram->GetUniformLocation (myGlContext, "uDirectLT");
       myUniformLocations[anIndex][OpenGl_RT_uDirectRT] =
         aShaderProgram->GetUniformLocation (myGlContext, "uDirectRT");
-      myUniformLocations[anIndex][OpenGl_RT_uInvModelProj] =
-        aShaderProgram->GetUniformLocation (myGlContext, "uInvModelProj");
-
-      myUniformLocations[anIndex][OpenGl_RT_uLightCount] =
-        aShaderProgram->GetUniformLocation (myGlContext, "uLightCount");
-      myUniformLocations[anIndex][OpenGl_RT_uLightAmbnt] =
-        aShaderProgram->GetUniformLocation (myGlContext, "uGlobalAmbient");
+      myUniformLocations[anIndex][OpenGl_RT_uUnviewMat] =
+        aShaderProgram->GetUniformLocation (myGlContext, "uUnviewMat");
 
       myUniformLocations[anIndex][OpenGl_RT_uSceneRad] =
         aShaderProgram->GetUniformLocation (myGlContext, "uSceneRadius");
       myUniformLocations[anIndex][OpenGl_RT_uSceneEps] =
         aShaderProgram->GetUniformLocation (myGlContext, "uSceneEpsilon");
-
-      myUniformLocations[anIndex][OpenGl_RT_uShadEnabled] =
-        aShaderProgram->GetUniformLocation (myGlContext, "uShadowsEnable");
-      myUniformLocations[anIndex][OpenGl_RT_uReflEnabled] =
-        aShaderProgram->GetUniformLocation (myGlContext, "uReflectionsEnable");
+      myUniformLocations[anIndex][OpenGl_RT_uLightCount] =
+        aShaderProgram->GetUniformLocation (myGlContext, "uLightCount");
+      myUniformLocations[anIndex][OpenGl_RT_uLightAmbnt] =
+        aShaderProgram->GetUniformLocation (myGlContext, "uGlobalAmbient");
 
       myUniformLocations[anIndex][OpenGl_RT_uOffsetX] =
         aShaderProgram->GetUniformLocation (myGlContext, "uOffsetX");
@@ -1459,7 +1567,14 @@ Standard_Boolean OpenGl_Workspace::InitRaytraceResources (const Graphic3d_CView&
       myUniformLocations[anIndex][OpenGl_RT_uSamples] =
         aShaderProgram->GetUniformLocation (myGlContext, "uSamples");
 
-      myUniformLocations[anIndex][OpenGl_RT_uEnvironmentEnable] =
+      myUniformLocations[anIndex][OpenGl_RT_uTextures] =
+        aShaderProgram->GetUniformLocation (myGlContext, "uTextureSamplers");
+
+      myUniformLocations[anIndex][OpenGl_RT_uShadEnabled] =
+        aShaderProgram->GetUniformLocation (myGlContext, "uShadowsEnable");
+      myUniformLocations[anIndex][OpenGl_RT_uReflEnabled] =
+        aShaderProgram->GetUniformLocation (myGlContext, "uReflectionsEnable");
+      myUniformLocations[anIndex][OpenGl_RT_uEnvMapEnable] =
         aShaderProgram->GetUniformLocation (myGlContext, "uEnvironmentEnable");
     }
 
@@ -1535,6 +1650,7 @@ void OpenGl_Workspace::ReleaseRaytraceResources()
 
   NullifyResource (myGlContext, myGeometryVertexTexture);
   NullifyResource (myGlContext, myGeometryNormalTexture);
+  NullifyResource (myGlContext, myGeometryTexCrdTexture);
   NullifyResource (myGlContext, myGeometryTriangTexture);
   NullifyResource (myGlContext, mySceneTransformTexture);
 
@@ -1557,6 +1673,22 @@ Standard_Boolean OpenGl_Workspace::UploadRaytraceData()
     std::cout << "Error: OpenGL version is less than 3.1" << std::endl;
 #endif
     return Standard_False;
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+  // Prepare OpenGL textures
+
+  if (myGlContext->arbTexBindless != NULL)
+  {
+    // If OpenGL driver supports bindless textures we need
+    // to get unique 64- bit handles for using on the GPU
+    if (!myRaytraceGeometry.UpdateTextureHandles (myGlContext))
+    {
+#ifdef RAY_TRACE_PRINT_INFO
+      std::cout << "Error: Failed to get OpenGL texture handles" << std::endl;
+#endif
+      return Standard_False;
+    }
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -1588,8 +1720,8 @@ Standard_Boolean OpenGl_Workspace::UploadRaytraceData()
     myObjectMaxPointTexture = new OpenGl_TextureBufferArb;
 
     if (!myObjectNodeInfoTexture->Create (myGlContext)
-      || !myObjectMinPointTexture->Create (myGlContext)
-      || !myObjectMaxPointTexture->Create (myGlContext))
+     || !myObjectMinPointTexture->Create (myGlContext)
+     || !myObjectMaxPointTexture->Create (myGlContext))
     {
 #ifdef RAY_TRACE_PRINT_INFO
       std::cout << "Error: Failed to create buffers for bottom-level scene BVH" << std::endl;
@@ -1602,11 +1734,13 @@ Standard_Boolean OpenGl_Workspace::UploadRaytraceData()
   {
     myGeometryVertexTexture = new OpenGl_TextureBufferArb;
     myGeometryNormalTexture = new OpenGl_TextureBufferArb;
+    myGeometryTexCrdTexture = new OpenGl_TextureBufferArb;
     myGeometryTriangTexture = new OpenGl_TextureBufferArb;
 
     if (!myGeometryVertexTexture->Create (myGlContext)
-      || !myGeometryNormalTexture->Create (myGlContext)
-      || !myGeometryTriangTexture->Create (myGlContext))
+     || !myGeometryNormalTexture->Create (myGlContext)
+     || !myGeometryTexCrdTexture->Create (myGlContext)
+     || !myGeometryTriangTexture->Create (myGlContext))
     {
 #ifdef RAY_TRACE_PRINT_INFO
       std::cout << "Error: Failed to create buffers for triangulation data" << std::endl;
@@ -1631,16 +1765,16 @@ Standard_Boolean OpenGl_Workspace::UploadRaytraceData()
   /////////////////////////////////////////////////////////////////////////////
   // Write top-level BVH buffers
 
-  const NCollection_Handle<BVH_Tree<Standard_ShortReal, 4> >& aBVH = myRaytraceGeometry.BVH();
+  const NCollection_Handle<BVH_Tree<Standard_ShortReal, 3> >& aBVH = myRaytraceGeometry.BVH();
 
   bool aResult = true;
   if (!aBVH->NodeInfoBuffer().empty())
   {
     aResult &= mySceneNodeInfoTexture->Init (myGlContext, 4, GLsizei (aBVH->NodeInfoBuffer().size()),
                                              reinterpret_cast<const GLuint*> (&aBVH->NodeInfoBuffer().front()));
-    aResult &= mySceneMinPointTexture->Init (myGlContext, 4, GLsizei (aBVH->MinPointBuffer().size()),
+    aResult &= mySceneMinPointTexture->Init (myGlContext, 3, GLsizei (aBVH->MinPointBuffer().size()),
                                              reinterpret_cast<const GLfloat*> (&aBVH->MinPointBuffer().front()));
-    aResult &= mySceneMaxPointTexture->Init (myGlContext, 4, GLsizei (aBVH->MaxPointBuffer().size()),
+    aResult &= mySceneMaxPointTexture->Init (myGlContext, 3, GLsizei (aBVH->MaxPointBuffer().size()),
                                              reinterpret_cast<const GLfloat*> (&aBVH->MaxPointBuffer().front()));
   }
   if (!aResult)
@@ -1655,7 +1789,6 @@ Standard_Boolean OpenGl_Workspace::UploadRaytraceData()
   // Write transform buffer
 
   BVH_Mat4f* aNodeTransforms = new BVH_Mat4f[myRaytraceGeometry.Size()];
-  BVH_Mat4f anIdentity;
 
   for (Standard_Integer anElemIndex = 0; anElemIndex < myRaytraceGeometry.Size(); ++anElemIndex)
   {
@@ -1669,13 +1802,12 @@ Standard_Boolean OpenGl_Workspace::UploadRaytraceData()
       "OpenGl_TriangleSet does not contain transform", Standard_False);
 
     aNodeTransforms[anElemIndex] = aTransform->Inversed();
-
   }
 
   aResult &= mySceneTransformTexture->Init (myGlContext, 4,
     myRaytraceGeometry.Size() * 4, reinterpret_cast<const GLfloat*> (aNodeTransforms));
 
-  delete[] aNodeTransforms;
+  delete [] aNodeTransforms;
 
   /////////////////////////////////////////////////////////////////////////////
   // Write geometry and bottom-level BVH buffers
@@ -1703,9 +1835,12 @@ Standard_Boolean OpenGl_Workspace::UploadRaytraceData()
 
   if (aTotalBVHNodesNb != 0)
   {
-    aResult &= myObjectNodeInfoTexture->Init (myGlContext, 4, GLsizei (aTotalBVHNodesNb), static_cast<const GLuint*>  (NULL));
-    aResult &= myObjectMinPointTexture->Init (myGlContext, 4, GLsizei (aTotalBVHNodesNb), static_cast<const GLfloat*> (NULL));
-    aResult &= myObjectMaxPointTexture->Init (myGlContext, 4, GLsizei (aTotalBVHNodesNb), static_cast<const GLfloat*> (NULL));
+    aResult &= myObjectNodeInfoTexture->Init (
+      myGlContext, 4, GLsizei (aTotalBVHNodesNb), static_cast<const GLuint*>  (NULL));
+    aResult &= myObjectMinPointTexture->Init (
+      myGlContext, 3, GLsizei (aTotalBVHNodesNb), static_cast<const GLfloat*> (NULL));
+    aResult &= myObjectMaxPointTexture->Init (
+      myGlContext, 3, GLsizei (aTotalBVHNodesNb), static_cast<const GLfloat*> (NULL));
   }
 
   if (!aResult)
@@ -1718,13 +1853,18 @@ Standard_Boolean OpenGl_Workspace::UploadRaytraceData()
 
   if (aTotalElementsNb != 0)
   {
-    aResult &= myGeometryTriangTexture->Init (myGlContext, 4, GLsizei (aTotalElementsNb), static_cast<const GLuint*> (NULL));
+    aResult &= myGeometryTriangTexture->Init (
+      myGlContext, 4, GLsizei (aTotalElementsNb), static_cast<const GLuint*> (NULL));
   }
 
   if (aTotalVerticesNb != 0)
   {
-    aResult &= myGeometryVertexTexture->Init (myGlContext, 4, GLsizei (aTotalVerticesNb), static_cast<const GLfloat*> (NULL));
-    aResult &= myGeometryNormalTexture->Init (myGlContext, 4, GLsizei (aTotalVerticesNb), static_cast<const GLfloat*> (NULL));
+    aResult &= myGeometryVertexTexture->Init (
+      myGlContext, 3, GLsizei (aTotalVerticesNb), static_cast<const GLfloat*> (NULL));
+    aResult &= myGeometryNormalTexture->Init (
+      myGlContext, 3, GLsizei (aTotalVerticesNb), static_cast<const GLfloat*> (NULL));
+    aResult &= myGeometryTexCrdTexture->Init (
+      myGlContext, 2, GLsizei (aTotalVerticesNb), static_cast<const GLfloat*> (NULL));
   }
 
   if (!aResult)
@@ -1778,6 +1918,8 @@ Standard_Boolean OpenGl_Workspace::UploadRaytraceData()
     {
       aResult &= myGeometryNormalTexture->SubData (myGlContext, aVerticesOffset, GLsizei (aTriangleSet->Normals.size()),
                                                    reinterpret_cast<const GLfloat*> (&aTriangleSet->Normals.front()));
+      aResult &= myGeometryTexCrdTexture->SubData (myGlContext, aVerticesOffset, GLsizei (aTriangleSet->TexCrds.size()),
+                                                   reinterpret_cast<const GLfloat*> (&aTriangleSet->TexCrds.front()));
       aResult &= myGeometryVertexTexture->SubData (myGlContext, aVerticesOffset, GLsizei (aTriangleSet->Vertices.size()),
                                                    reinterpret_cast<const GLfloat*> (&aTriangleSet->Vertices.front()));
     }
@@ -1802,10 +1944,14 @@ Standard_Boolean OpenGl_Workspace::UploadRaytraceData()
     }
   }
 
+  /////////////////////////////////////////////////////////////////////////////
+  // Write material buffer
+
   if (myRaytraceGeometry.Materials.size() != 0)
   {
-    const GLfloat* aDataPtr = myRaytraceGeometry.Materials.front().Packed();
-    aResult &= myRaytraceMaterialTexture->Init (myGlContext, 4, GLsizei (myRaytraceGeometry.Materials.size() * 7), aDataPtr);
+    aResult &= myRaytraceMaterialTexture->Init (myGlContext, 4,
+      GLsizei (myRaytraceGeometry.Materials.size() * 11),  myRaytraceGeometry.Materials.front().Packed());
+
     if (!aResult)
     {
 #ifdef RAY_TRACE_PRINT_INFO
@@ -1827,26 +1973,28 @@ Standard_Boolean OpenGl_Workspace::UploadRaytraceData()
       myRaytraceGeometry.Objects().ChangeValue (anElemIdx).operator->());
 
     aMemUsed += static_cast<Standard_ShortReal> (
-      aTriangleSet->Vertices.size() * sizeof (BVH_Vec4f));
+      aTriangleSet->Vertices.size() * sizeof (BVH_Vec3f));
     aMemUsed += static_cast<Standard_ShortReal> (
-      aTriangleSet->Normals.size() * sizeof (BVH_Vec4f));
+      aTriangleSet->Normals.size() * sizeof (BVH_Vec3f));
+    aMemUsed += static_cast<Standard_ShortReal> (
+      aTriangleSet->TexCrds.size() * sizeof (BVH_Vec2f));
     aMemUsed += static_cast<Standard_ShortReal> (
       aTriangleSet->Elements.size() * sizeof (BVH_Vec4i));
 
     aMemUsed += static_cast<Standard_ShortReal> (
       aTriangleSet->BVH()->NodeInfoBuffer().size() * sizeof (BVH_Vec4i));
     aMemUsed += static_cast<Standard_ShortReal> (
-      aTriangleSet->BVH()->MinPointBuffer().size() * sizeof (BVH_Vec4f));
+      aTriangleSet->BVH()->MinPointBuffer().size() * sizeof (BVH_Vec3f));
     aMemUsed += static_cast<Standard_ShortReal> (
-      aTriangleSet->BVH()->MaxPointBuffer().size() * sizeof (BVH_Vec4f));
+      aTriangleSet->BVH()->MaxPointBuffer().size() * sizeof (BVH_Vec3f));
   }
 
   aMemUsed += static_cast<Standard_ShortReal> (
     myRaytraceGeometry.BVH()->NodeInfoBuffer().size() * sizeof (BVH_Vec4i));
   aMemUsed += static_cast<Standard_ShortReal> (
-    myRaytraceGeometry.BVH()->MinPointBuffer().size() * sizeof (BVH_Vec4f));
+    myRaytraceGeometry.BVH()->MinPointBuffer().size() * sizeof (BVH_Vec3f));
   aMemUsed += static_cast<Standard_ShortReal> (
-    myRaytraceGeometry.BVH()->MaxPointBuffer().size() * sizeof (BVH_Vec4f));
+    myRaytraceGeometry.BVH()->MaxPointBuffer().size() * sizeof (BVH_Vec3f));
 
   std::cout << "GPU Memory Used (MB): ~" << aMemUsed / 1048576 << std::endl;
 
@@ -1876,11 +2024,11 @@ Standard_Boolean OpenGl_Workspace::ResizeRaytraceBuffers (const Standard_Integer
 // function : UpdateCamera
 // purpose  : Generates viewing rays for corners of screen quad
 // =======================================================================
-void OpenGl_Workspace::UpdateCamera (const NCollection_Mat4<GLdouble>& theOrientation,
-                                     const NCollection_Mat4<GLdouble>& theViewMapping,
-                                     OpenGl_Vec3                       theOrigins[4],
-                                     OpenGl_Vec3                       theDirects[4],
-                                     NCollection_Mat4<GLdouble>&       theInvModelProj)
+void OpenGl_Workspace::UpdateCamera (const OpenGl_Mat4& theOrientation,
+                                     const OpenGl_Mat4& theViewMapping,
+                                     OpenGl_Vec3        theOrigins[4],
+                                     OpenGl_Vec3        theDirects[4],
+                                     OpenGl_Mat4&       theInvModelProj)
 {
   // compute inverse model-view-projection matrix
   (theViewMapping * theOrientation).Inverted (theInvModelProj);
@@ -1892,10 +2040,10 @@ void OpenGl_Workspace::UpdateCamera (const NCollection_Mat4<GLdouble>& theOrient
   {
     for (Standard_Integer aX = -1; aX <= 1; aX += 2)
     {
-      OpenGl_Vec4d aOrigin (GLdouble(aX),
-                            GLdouble(aY),
-                           -1.0,
-                            1.0);
+      OpenGl_Vec4 aOrigin (GLfloat(aX),
+                           GLfloat(aY),
+                          -1.0f,
+                           1.0f);
 
       aOrigin = theInvModelProj * aOrigin;
 
@@ -1903,10 +2051,10 @@ void OpenGl_Workspace::UpdateCamera (const NCollection_Mat4<GLdouble>& theOrient
       aOrigin.y() = aOrigin.y() / aOrigin.w();
       aOrigin.z() = aOrigin.z() / aOrigin.w();
 
-      OpenGl_Vec4d aDirect (GLdouble(aX),
-                            GLdouble(aY),
-                            1.0,
-                            1.0);
+      OpenGl_Vec4 aDirect (GLfloat(aX),
+                           GLfloat(aY),
+                           1.0f,
+                           1.0f);
 
       aDirect = theInvModelProj * aDirect;
 
@@ -1932,6 +2080,80 @@ void OpenGl_Workspace::UpdateCamera (const NCollection_Mat4<GLdouble>& theOrient
 }
 
 // =======================================================================
+// function : SetUniformState
+// purpose  : Sets uniform state for the given ray-tracing shader program
+// =======================================================================
+Standard_Boolean OpenGl_Workspace::SetUniformState (const Graphic3d_CView&        theCView,
+                                                    const OpenGl_Vec3*            theOrigins,
+                                                    const OpenGl_Vec3*            theDirects,
+                                                    const OpenGl_Mat4&            theUnviewMat,
+                                                    const Standard_Integer        theProgramIndex,
+                                                    Handle(OpenGl_ShaderProgram)& theRaytraceProgram)
+{
+  if (theRaytraceProgram.IsNull())
+  {
+    return Standard_False;
+  }
+
+  Standard_Integer aLightSourceBufferSize =
+    static_cast<Standard_Integer> (myRaytraceGeometry.Sources.size());
+
+  Standard_Boolean aResult = Standard_True;
+
+  // Set camera state
+  aResult &= theRaytraceProgram->SetUniform (myGlContext,
+    myUniformLocations[theProgramIndex][OpenGl_RT_uOriginLB], theOrigins[0]);
+  aResult &= theRaytraceProgram->SetUniform (myGlContext,
+    myUniformLocations[theProgramIndex][OpenGl_RT_uOriginRB], theOrigins[1]);
+  aResult &= theRaytraceProgram->SetUniform (myGlContext,
+    myUniformLocations[theProgramIndex][OpenGl_RT_uOriginLT], theOrigins[2]);
+  aResult &= theRaytraceProgram->SetUniform (myGlContext,
+    myUniformLocations[theProgramIndex][OpenGl_RT_uOriginRT], theOrigins[3]);
+  aResult &= theRaytraceProgram->SetUniform (myGlContext,
+    myUniformLocations[theProgramIndex][OpenGl_RT_uDirectLB], theDirects[0]);
+  aResult &= theRaytraceProgram->SetUniform (myGlContext,
+    myUniformLocations[theProgramIndex][OpenGl_RT_uDirectRB], theDirects[1]);
+  aResult &= theRaytraceProgram->SetUniform (myGlContext,
+    myUniformLocations[theProgramIndex][OpenGl_RT_uDirectLT], theDirects[2]);
+  aResult &= theRaytraceProgram->SetUniform (myGlContext,
+    myUniformLocations[theProgramIndex][OpenGl_RT_uDirectRT], theDirects[3]);
+  aResult &= theRaytraceProgram->SetUniform (myGlContext,
+    myUniformLocations[theProgramIndex][OpenGl_RT_uUnviewMat], theUnviewMat);
+
+  // Set scene parameters
+  aResult &= theRaytraceProgram->SetUniform (myGlContext,
+    myUniformLocations[theProgramIndex][OpenGl_RT_uSceneRad], myRaytraceSceneRadius);
+  aResult &= theRaytraceProgram->SetUniform (myGlContext,
+    myUniformLocations[theProgramIndex][OpenGl_RT_uSceneEps], myRaytraceSceneEpsilon);
+  aResult &= theRaytraceProgram->SetUniform (myGlContext,
+    myUniformLocations[theProgramIndex][OpenGl_RT_uLightCount], aLightSourceBufferSize);
+  aResult &= theRaytraceProgram->SetUniform (myGlContext,
+    myUniformLocations[theProgramIndex][OpenGl_RT_uLightAmbnt], myRaytraceGeometry.Ambient);
+
+  // Set rendering options
+  aResult &= theRaytraceProgram->SetUniform (myGlContext,
+    myUniformLocations[theProgramIndex][OpenGl_RT_uShadEnabled], theCView.RenderParams.IsShadowEnabled ? 1 : 0);
+  aResult &= theRaytraceProgram->SetUniform (myGlContext,
+    myUniformLocations[theProgramIndex][OpenGl_RT_uReflEnabled], theCView.RenderParams.IsReflectionEnabled ? 1 : 0);
+
+  // Set array of 64-bit texture handles
+  if (myGlContext->arbTexBindless != NULL && myRaytraceGeometry.HasTextures())
+  {
+    aResult &= theRaytraceProgram->SetUniform (myGlContext, "uTextureSamplers",
+      static_cast<GLsizei> (myRaytraceGeometry.TextureHandles().size()), &myRaytraceGeometry.TextureHandles()[0]);
+  }
+
+  if (!aResult)
+  {
+#ifdef RAY_TRACE_PRINT_INFO
+    std::cout << "Error: Failed to set uniform state for ray-tracing program" << theProgramIndex << std::endl;
+#endif
+  }
+
+  return aResult;
+}
+
+// =======================================================================
 // function : RunRaytraceShaders
 // purpose  : Runs ray-tracing shader programs
 // =======================================================================
@@ -1940,7 +2162,7 @@ Standard_Boolean OpenGl_Workspace::RunRaytraceShaders (const Graphic3d_CView& th
                                                        const Standard_Integer theSizeY,
                                                        const OpenGl_Vec3      theOrigins[4],
                                                        const OpenGl_Vec3      theDirects[4],
-                                                       const OpenGl_Matrix&   theInvModelProj,
+                                                       const OpenGl_Mat4&     theUnviewMat,
                                                        OpenGl_FrameBuffer*    theFrameBuffer)
 {
   mySceneMinPointTexture->BindTexture (myGlContext, GL_TEXTURE0 + OpenGl_RT_SceneMinPointTexture);
@@ -1951,6 +2173,7 @@ Standard_Boolean OpenGl_Workspace::RunRaytraceShaders (const Graphic3d_CView& th
   myObjectNodeInfoTexture->BindTexture (myGlContext, GL_TEXTURE0 + OpenGl_RT_ObjectNodeInfoTexture);
   myGeometryVertexTexture->BindTexture (myGlContext, GL_TEXTURE0 + OpenGl_RT_GeometryVertexTexture);
   myGeometryNormalTexture->BindTexture (myGlContext, GL_TEXTURE0 + OpenGl_RT_GeometryNormalTexture);
+  myGeometryTexCrdTexture->BindTexture (myGlContext, GL_TEXTURE0 + OpenGl_RT_GeometryTexCrdTexture);
   myGeometryTriangTexture->BindTexture (myGlContext, GL_TEXTURE0 + OpenGl_RT_GeometryTriangTexture);
   mySceneTransformTexture->BindTexture (myGlContext, GL_TEXTURE0 + OpenGl_RT_SceneTransformTexture);
   myRaytraceMaterialTexture->BindTexture (myGlContext, GL_TEXTURE0 + OpenGl_RT_RaytraceMaterialTexture);
@@ -1968,39 +2191,12 @@ Standard_Boolean OpenGl_Workspace::RunRaytraceShaders (const Graphic3d_CView& th
 
   myGlContext->BindProgram (myRaytraceProgram);
 
-  Standard_Integer aLightSourceBufferSize =
-    static_cast<Standard_Integer> (myRaytraceGeometry.Sources.size());
-
-  myRaytraceProgram->SetUniform (myGlContext,
-    myUniformLocations[0][OpenGl_RT_uOriginLB], theOrigins[0]);
-  myRaytraceProgram->SetUniform (myGlContext,
-    myUniformLocations[0][OpenGl_RT_uOriginRB], theOrigins[1]);
-  myRaytraceProgram->SetUniform (myGlContext,
-    myUniformLocations[0][OpenGl_RT_uOriginLT], theOrigins[2]);
-  myRaytraceProgram->SetUniform (myGlContext,
-    myUniformLocations[0][OpenGl_RT_uOriginRT], theOrigins[3]);
-  myRaytraceProgram->SetUniform (myGlContext,
-    myUniformLocations[0][OpenGl_RT_uDirectLB], theDirects[0]);
-  myRaytraceProgram->SetUniform (myGlContext,
-    myUniformLocations[0][OpenGl_RT_uDirectRB], theDirects[1]);
-  myRaytraceProgram->SetUniform (myGlContext,
-    myUniformLocations[0][OpenGl_RT_uDirectLT], theDirects[2]);
-  myRaytraceProgram->SetUniform (myGlContext,
-    myUniformLocations[0][OpenGl_RT_uDirectRT], theDirects[3]);
-  myRaytraceProgram->SetUniform (myGlContext,
-    myUniformLocations[0][OpenGl_RT_uInvModelProj], theInvModelProj);
-  myRaytraceProgram->SetUniform (myGlContext,
-    myUniformLocations[0][OpenGl_RT_uSceneRad], myRaytraceSceneRadius);
-  myRaytraceProgram->SetUniform (myGlContext,
-    myUniformLocations[0][OpenGl_RT_uSceneEps], myRaytraceSceneEpsilon);
-  myRaytraceProgram->SetUniform (myGlContext,
-    myUniformLocations[0][OpenGl_RT_uLightCount], aLightSourceBufferSize);
-  myRaytraceProgram->SetUniform (myGlContext,
-    myUniformLocations[0][OpenGl_RT_uLightAmbnt], myRaytraceGeometry.Ambient);
-  myRaytraceProgram->SetUniform (myGlContext,
-    myUniformLocations[0][OpenGl_RT_uShadEnabled], theCView.RenderParams.IsShadowEnabled ? 1 : 0);
-  myRaytraceProgram->SetUniform (myGlContext,
-    myUniformLocations[0][OpenGl_RT_uReflEnabled], theCView.RenderParams.IsReflectionEnabled ? 1 : 0);
+  SetUniformState (theCView,
+                   theOrigins,
+                   theDirects,
+                   theUnviewMat,
+                   0, // ID of RT program
+                   myRaytraceProgram);
 
   myGlContext->core20fwd->glEnableVertexAttribArray (Graphic3d_TOA_POS);
   {
@@ -2008,7 +2204,7 @@ Standard_Boolean OpenGl_Workspace::RunRaytraceShaders (const Graphic3d_CView& th
     myGlContext->core15fwd->glDrawArrays (GL_TRIANGLES, 0, 6);
   }
   myGlContext->core20fwd->glDisableVertexAttribArray (Graphic3d_TOA_POS);
-  
+
   if (!theCView.RenderParams.IsAntialiasingEnabled)
   {
     myGlContext->BindProgram (NULL);
@@ -2023,10 +2219,11 @@ Standard_Boolean OpenGl_Workspace::RunRaytraceShaders (const Graphic3d_CView& th
     myObjectNodeInfoTexture->UnbindTexture     (myGlContext, GL_TEXTURE0 + OpenGl_RT_ObjectNodeInfoTexture);
     myGeometryVertexTexture->UnbindTexture     (myGlContext, GL_TEXTURE0 + OpenGl_RT_GeometryVertexTexture);
     myGeometryNormalTexture->UnbindTexture     (myGlContext, GL_TEXTURE0 + OpenGl_RT_GeometryNormalTexture);
+    myGeometryTexCrdTexture->UnbindTexture     (myGlContext, GL_TEXTURE0 + OpenGl_RT_GeometryTexCrdTexture);
     myGeometryTriangTexture->UnbindTexture     (myGlContext, GL_TEXTURE0 + OpenGl_RT_GeometryTriangTexture);
+    mySceneTransformTexture->UnbindTexture     (myGlContext, GL_TEXTURE0 + OpenGl_RT_SceneTransformTexture);
     myRaytraceMaterialTexture->UnbindTexture   (myGlContext, GL_TEXTURE0 + OpenGl_RT_RaytraceMaterialTexture);
     myRaytraceLightSrcTexture->UnbindTexture   (myGlContext, GL_TEXTURE0 + OpenGl_RT_RaytraceLightSrcTexture);
-    mySceneTransformTexture->UnbindTexture     (myGlContext, GL_TEXTURE0 + OpenGl_RT_SceneTransformTexture);
 
     myGlContext->core15fwd->glActiveTexture (GL_TEXTURE0);
 
@@ -2037,36 +2234,12 @@ Standard_Boolean OpenGl_Workspace::RunRaytraceShaders (const Graphic3d_CView& th
 
   myGlContext->BindProgram (myPostFSAAProgram);
 
-  myPostFSAAProgram->SetUniform (myGlContext,
-    myUniformLocations[1][OpenGl_RT_uOriginLB], theOrigins[0]);
-  myPostFSAAProgram->SetUniform (myGlContext,
-    myUniformLocations[1][OpenGl_RT_uOriginRB], theOrigins[1]);
-  myPostFSAAProgram->SetUniform (myGlContext,
-    myUniformLocations[1][OpenGl_RT_uOriginLT], theOrigins[2]);
-  myPostFSAAProgram->SetUniform (myGlContext,
-    myUniformLocations[1][OpenGl_RT_uOriginRT], theOrigins[3]);
-  myPostFSAAProgram->SetUniform (myGlContext,
-    myUniformLocations[1][OpenGl_RT_uDirectLB], theDirects[0]);
-  myPostFSAAProgram->SetUniform (myGlContext,
-    myUniformLocations[1][OpenGl_RT_uDirectRB], theDirects[1]);
-  myPostFSAAProgram->SetUniform (myGlContext,
-    myUniformLocations[1][OpenGl_RT_uDirectLT], theDirects[2]);
-  myPostFSAAProgram->SetUniform (myGlContext,
-    myUniformLocations[1][OpenGl_RT_uDirectRT], theDirects[3]);
-  myRaytraceProgram->SetUniform (myGlContext,
-    myUniformLocations[1][OpenGl_RT_uInvModelProj], theInvModelProj);
-  myPostFSAAProgram->SetUniform (myGlContext,
-    myUniformLocations[1][OpenGl_RT_uSceneRad], myRaytraceSceneRadius);
-  myPostFSAAProgram->SetUniform (myGlContext,
-    myUniformLocations[1][OpenGl_RT_uSceneEps], myRaytraceSceneEpsilon);
-  myPostFSAAProgram->SetUniform (myGlContext,
-    myUniformLocations[1][OpenGl_RT_uLightCount], aLightSourceBufferSize);
-  myPostFSAAProgram->SetUniform (myGlContext,
-    myUniformLocations[1][OpenGl_RT_uLightAmbnt], myRaytraceGeometry.Ambient);
-  myPostFSAAProgram->SetUniform (myGlContext,
-    myUniformLocations[1][OpenGl_RT_uShadEnabled], theCView.RenderParams.IsShadowEnabled ? 1 : 0);
-  myPostFSAAProgram->SetUniform (myGlContext,
-    myUniformLocations[1][OpenGl_RT_uReflEnabled], theCView.RenderParams.IsReflectionEnabled ? 1 : 0);
+  SetUniformState (theCView,
+                   theOrigins,
+                   theDirects,
+                   theUnviewMat,
+                   1, // ID of FSAA program
+                   myPostFSAAProgram);
 
   const Standard_ShortReal aMaxOffset = 0.559017f;
   const Standard_ShortReal aMinOffset = 0.186339f;
@@ -2136,10 +2309,11 @@ Standard_Boolean OpenGl_Workspace::RunRaytraceShaders (const Graphic3d_CView& th
   myObjectNodeInfoTexture->UnbindTexture     (myGlContext, GL_TEXTURE0 + OpenGl_RT_ObjectNodeInfoTexture);
   myGeometryVertexTexture->UnbindTexture     (myGlContext, GL_TEXTURE0 + OpenGl_RT_GeometryVertexTexture);
   myGeometryNormalTexture->UnbindTexture     (myGlContext, GL_TEXTURE0 + OpenGl_RT_GeometryNormalTexture);
+  myGeometryTexCrdTexture->UnbindTexture     (myGlContext, GL_TEXTURE0 + OpenGl_RT_GeometryTexCrdTexture);
   myGeometryTriangTexture->UnbindTexture     (myGlContext, GL_TEXTURE0 + OpenGl_RT_GeometryTriangTexture);
+  mySceneTransformTexture->UnbindTexture     (myGlContext, GL_TEXTURE0 + OpenGl_RT_SceneTransformTexture);
   myRaytraceMaterialTexture->UnbindTexture   (myGlContext, GL_TEXTURE0 + OpenGl_RT_RaytraceMaterialTexture);
   myRaytraceLightSrcTexture->UnbindTexture   (myGlContext, GL_TEXTURE0 + OpenGl_RT_RaytraceLightSrcTexture);
-  mySceneTransformTexture->UnbindTexture     (myGlContext, GL_TEXTURE0 + OpenGl_RT_SceneTransformTexture);
 
   myGlContext->core15fwd->glActiveTexture (GL_TEXTURE0);
 
@@ -2168,24 +2342,13 @@ Standard_Boolean OpenGl_Workspace::Raytrace (const Graphic3d_CView& theCView,
     return Standard_False;
 
   // Get model-view and projection matrices
-  TColStd_Array2OfReal theOrientation (0, 3, 0, 3);
-  TColStd_Array2OfReal theViewMapping (0, 3, 0, 3);
+  OpenGl_Mat4 aOrientationMatrix;
+  OpenGl_Mat4 aViewMappingMatrix;
 
-  myView->GetMatrices (theOrientation, theViewMapping);
+  myView->GetMatrices (aOrientationMatrix,
+                       aViewMappingMatrix);
 
-  NCollection_Mat4<GLdouble> aOrientationMatrix;
-  NCollection_Mat4<GLdouble> aViewMappingMatrix;
-
-  for (Standard_Integer j = 0; j < 4; ++j)
-  {
-    for (Standard_Integer i = 0; i < 4; ++i)
-    {
-      aOrientationMatrix [4 * j + i] = theOrientation (i, j);
-      aViewMappingMatrix [4 * j + i] = theViewMapping (i, j);
-    }
-  }
-  
-  NCollection_Mat4<GLdouble> aInvOrientationMatrix;
+  OpenGl_Mat4 aInvOrientationMatrix;
   aOrientationMatrix.Inverted (aInvOrientationMatrix);
 
   if (!UpdateRaytraceLightSources (aInvOrientationMatrix))
@@ -2193,22 +2356,13 @@ Standard_Boolean OpenGl_Workspace::Raytrace (const Graphic3d_CView& theCView,
 
   OpenGl_Vec3 aOrigins[4];
   OpenGl_Vec3 aDirects[4];
-  NCollection_Mat4<GLdouble> anInvModelProj;
+  OpenGl_Mat4 anUnviewMat;
 
   UpdateCamera (aOrientationMatrix,
                 aViewMappingMatrix,
                 aOrigins,
                 aDirects,
-                anInvModelProj);
-
-  OpenGl_Matrix anInvModelProjMatrix;
-  for (Standard_Integer j = 0; j < 4; ++j)
-  {
-    for (Standard_Integer i = 0; i < 4; ++i)
-    {
-      anInvModelProjMatrix.mat[j][i] = static_cast<GLfloat>(anInvModelProj.GetValue(i,j));
-    }
-  }
+                anUnviewMat);
 
   Standard_Boolean wasBlendingEnabled = glIsEnabled (GL_BLEND);
   Standard_Boolean wasDepthTestEnabled = glIsEnabled (GL_DEPTH_TEST);
@@ -2256,13 +2410,29 @@ Standard_Boolean OpenGl_Workspace::Raytrace (const Graphic3d_CView& theCView,
   {
     myRaytraceScreenQuad.Bind (myGlContext);
 
+    if (!myRaytraceGeometry.AcquireTextures (myGlContext))
+    {
+      const TCollection_ExtendedString aMessage = "Error: Failed to acquire OpenGL image textures";
+
+      myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
+        GL_DEBUG_TYPE_ERROR_ARB, 0, GL_DEBUG_SEVERITY_MEDIUM_ARB, aMessage);
+    }
+
     RunRaytraceShaders (theCView,
                         theSizeX,
                         theSizeY,
                         aOrigins,
                         aDirects,
-                        anInvModelProjMatrix,
+                        anUnviewMat,
                         theFrameBuffer);
+
+    if (!myRaytraceGeometry.ReleaseTextures (myGlContext))
+    {
+      const TCollection_ExtendedString aMessage = "Error: Failed to release OpenGL image textures";
+
+      myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
+        GL_DEBUG_TYPE_ERROR_ARB, 0, GL_DEBUG_SEVERITY_MEDIUM_ARB, aMessage);
+    }
 
     myRaytraceScreenQuad.Unbind (myGlContext);
   }

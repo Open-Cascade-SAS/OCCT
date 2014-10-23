@@ -438,19 +438,10 @@ const TEL_TRANSFORM_PERSISTENCE* OpenGl_View::BeginTransformPersistence (const H
 
 /*----------------------------------------------------------------------*/
 
-void OpenGl_View::GetMatrices (TColStd_Array2OfReal&  theMatOrient,
-                               TColStd_Array2OfReal&  theMatMapping) const
+void OpenGl_View::GetMatrices (OpenGl_Mat4& theOrientation,
+                               OpenGl_Mat4& theViewMapping) const
 {
-  const Graphic3d_Mat4d& aProj   = myCamera->ProjectionMatrix();
-  const Graphic3d_Mat4d& aOrient = myCamera->OrientationMatrix();
-
-  for (Standard_Integer aRow = 0; aRow < 4; ++aRow)
-  {
-    for (Standard_Integer aCol = 0; aCol < 4; ++aCol)
-    {
-      theMatOrient  (aRow, aCol) = aOrient.GetValue (aRow, aCol);
-      theMatMapping (aRow, aCol) = aProj  .GetValue (aRow, aCol);
-    }
-  }
+  theViewMapping = myCamera->ProjectionMatrixF();
+  theOrientation = myCamera->OrientationMatrixF();
 }
 /*----------------------------------------------------------------------*/

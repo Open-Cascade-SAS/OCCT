@@ -19,6 +19,7 @@
 #include <OpenGl_ShaderManager.hxx>
 #include <OpenGl_ShaderProgram.hxx>
 #include <OpenGl_ShaderStates.hxx>
+#include <OpenGl_Sampler.hxx>
 #include <OpenGl_Text.hxx>
 #include <OpenGl_Workspace.hxx>
 
@@ -377,10 +378,14 @@ void OpenGl_Text::StringSize (const Handle(OpenGl_Context)& theCtx,
 // =======================================================================
 void OpenGl_Text::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
-  const OpenGl_AspectText* aTextAspect = theWorkspace->AspectText (Standard_True);
-  const Handle(OpenGl_Texture) aPrevTexture = theWorkspace->DisableTexture();
-
-  const Handle(OpenGl_Context)& aCtx = theWorkspace->GetGlContext();
+  const OpenGl_AspectText*      aTextAspect  = theWorkspace->AspectText (Standard_True);
+  const Handle(OpenGl_Texture)  aPrevTexture = theWorkspace->DisableTexture();
+  const Handle(OpenGl_Context)& aCtx         = theWorkspace->GetGlContext();
+  const Handle(OpenGl_Sampler)& aSampler     = aCtx->TextureSampler();
+  if (!aSampler.IsNull())
+  {
+    aSampler->Unbind (*aCtx);
+  }
 
   if (aCtx->IsGlGreaterEqual (2, 0))
   {
@@ -418,6 +423,10 @@ void OpenGl_Text::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
   }
 
   // restore aspects
+  if (!aSampler.IsNull())
+  {
+    aSampler->Bind (*aCtx);
+  }
   if (!aPrevTexture.IsNull())
   {
     theWorkspace->EnableTexture (aPrevTexture);
@@ -722,6 +731,13 @@ void OpenGl_Text::render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
     theCtx->core15fwd->glActiveTexture (GL_TEXTURE0);
   }
 
+  // unbind current OpenGL sampler
+  const Handle(OpenGl_Sampler)& aSampler = theCtx->TextureSampler();
+  if (!aSampler.IsNull() && aSampler->IsValid())
+  {
+    aSampler->Unbind (*theCtx);
+  }
+
   // extra drawings
   switch (theTextAspect.DisplayType())
   {
@@ -808,5 +824,11 @@ void OpenGl_Text::render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
   // revert OpenGL state
   glPopAttrib(); // enable bit
   glPopMatrix(); // model view matrix was modified
+
+  // revert custom OpenGL sampler
+  if (!aSampler.IsNull() && aSampler->IsValid())
+  {
+    aSampler->Bind (*theCtx);
+  }
 #endif
 }

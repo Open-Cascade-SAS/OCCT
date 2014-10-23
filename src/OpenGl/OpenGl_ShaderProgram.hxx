@@ -352,6 +352,30 @@ public:
 
 public:
 
+  //! Specifies the value of the 64-bit unsigned integer uniform variable.
+  Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
+                                               const GLchar*                 theName,
+                                               GLuint64                      theValue);
+
+  //! Specifies the value of the 64-bit unsigned integer uniform variable.
+  Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
+                                               GLint                         theLocation,
+                                               GLuint64                      theValue);
+
+  //! Specifies the value of the 64-bit unsigned integer uniform array.
+  Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
+                                               const GLchar*                 theName,
+                                               const GLsizei                 theCount,
+                                               const GLuint64*               theValue);
+
+  //! Specifies the value of the 64-bit unsigned integer uniform array.
+  Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
+                                               GLint                         theLocation,
+                                               const GLsizei                 theCount,
+                                               const GLuint64*               theValue);
+
+public:
+
   //! Specifies the value of the float uniform variable.
   Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
                                                const GLchar*                 theName,
@@ -393,6 +417,18 @@ public:
                                                const OpenGl_Vec4&            theValue);
 
 public:
+
+  //! Specifies the value of the float uniform 4x4 matrix.
+  Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
+                                               const GLchar*                 theName,
+                                               const OpenGl_Mat4&            theValue,
+                                               GLboolean                     theTranspose = GL_FALSE);
+
+  //! Specifies the value of the float uniform 4x4 matrix.
+  Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
+                                               GLint                         theLocation,
+                                               const OpenGl_Mat4&            theValue,
+                                               GLboolean                     theTranspose = GL_FALSE);
 
   //! Specifies the value of the float uniform 4x4 matrix.
   Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,

@@ -1,3 +1,7 @@
+#ifdef USE_TEXTURES
+  #extension GL_ARB_bindless_texture : require
+#endif
+
 //! Normalized pixel coordinates.
 in vec2 vPixel;
 
@@ -20,7 +24,8 @@ uniform vec3 uDirectRT;
 uniform vec3 uDirectRB;
 
 //! Inverse model-view-projection matrix.
-uniform mat4 uInvModelProj;
+uniform mat4 uUnviewMat;
+
 //! Texture buffer of data records of high-level BVH nodes.
 uniform isamplerBuffer uSceneNodeInfoTexture;
 //! Texture buffer of minimum points of high-level BVH nodes.
@@ -41,6 +46,10 @@ uniform samplerBuffer uObjectMaxPointTexture;
 uniform samplerBuffer uGeometryVertexTexture;
 //! Texture buffer of vertex normals.
 uniform samplerBuffer uGeometryNormalTexture;
+#ifdef USE_TEXTURES
+  //! Texture buffer of per-vertex UV-coordinates.
+  uniform samplerBuffer uGeometryTexCrdTexture;
+#endif
 //! Texture buffer of triangle indices.
 uniform isamplerBuffer uGeometryTriangTexture;
 
@@ -72,6 +81,11 @@ uniform int uReflectionsEnable;
 uniform float uSceneRadius;
 //! Scene epsilon to prevent self-intersections.
 uniform float uSceneEpsilon;
+
+#ifdef USE_TEXTURES
+  //! Unique 64-bit handles of OpenGL textures.
+  uniform sampler2D uTextureSamplers[MAX_TEX_NUMBER];
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////
 // Specific data types
@@ -107,7 +121,6 @@ struct SIntersect
 #define AXIS_X vec3 (1.0f, 0.0f, 0.0f)
 #define AXIS_Y vec3 (0.0f, 1.0f, 0.0f)
 #define AXIS_Z vec3 (0.0f, 0.0f, 1.0f)
-
 
 // =======================================================================
 // function : MatrixRowMultiplyDir
@@ -171,7 +184,6 @@ SRay GenerateRay (in vec2 thePixel)
   vec3 aDirection = normalize (mix (aD0, aD1, thePixel.y));
 
   return SRay (mix (aP0, aP1, thePixel.y), aDirection);
-
 }
 
 // =======================================================================
@@ -187,7 +199,7 @@ float ComputeOpenGlDepth (in SRay theRay)
                       2.0f * vPixel.y - 1.0f,
                       2.0f * anOpenGlDepth - 1.0f,
                       1.0f);
-  vec4 aFinal = uInvModelProj * aPoint;
+  vec4 aFinal = uUnviewMat * aPoint;
   aFinal.xyz *= 1.f / aFinal.w;
 
   return (anOpenGlDepth < 1.f) ? length (aFinal.xyz - theRay.Origin) : MAXFLOAT;
@@ -334,7 +346,7 @@ ivec4 ObjectNearestHit (in int theBVHOffset, in int theVrtOffset, in int theTrgO
         {
           if (aHead == theSentinel)
             return aTriIndex;
-            
+
           aNode = Stack[aHead--];
         }
       }
@@ -377,13 +389,16 @@ ivec4 ObjectNearestHit (in int theBVHOffset, in int theVrtOffset, in int theTrgO
   return aTriIndex;
 }
 
-#define MATERIAL_AMBN(index) (7 * index + 0)
-#define MATERIAL_DIFF(index) (7 * index + 1)
-#define MATERIAL_SPEC(index) (7 * index + 2)
-#define MATERIAL_EMIS(index) (7 * index + 3)
-#define MATERIAL_REFL(index) (7 * index + 4)
-#define MATERIAL_REFR(index) (7 * index + 5)
-#define MATERIAL_TRAN(index) (7 * index + 6)
+#define MATERIAL_AMBN(index) (11 * index + 0)
+#define MATERIAL_DIFF(index) (11 * index + 1)
+#define MATERIAL_SPEC(index) (11 * index + 2)
+#define MATERIAL_EMIS(index) (11 * index + 3)
+#define MATERIAL_REFL(index) (11 * index + 4)
+#define MATERIAL_REFR(index) (11 * index + 5)
+#define MATERIAL_TRAN(index) (11 * index + 6)
+#define MATERIAL_TRS1(index) (11 * index + 7)
+#define MATERIAL_TRS2(index) (11 * index + 8)
+#define MATERIAL_TRS3(index) (11 * index + 9)
 
 // =======================================================================
 // function : ObjectAnyHit
@@ -408,7 +423,7 @@ float ObjectAnyHit (in int theBVHOffset, in int theVrtOffset, in int theTrgOffse
       float aTimeOut;
       float aTimeLft;
       float aTimeRgh;
-      
+
       aData.y += theBVHOffset;
       aData.z += theBVHOffset;
   
@@ -469,7 +484,7 @@ float ObjectAnyHit (in int theBVHOffset, in int theVrtOffset, in int theTrgOffse
     {
       vec3 aNormal;
       vec2 aParams;
-      
+
       for (int anIdx = aData.y; anIdx <= aData.z; ++anIdx)
       {
         ivec4 aTriangle = texelFetch (uGeometryTriangTexture, anIdx + theTrgOffset);
@@ -495,7 +510,7 @@ float ObjectAnyHit (in int theBVHOffset, in int theVrtOffset, in int theTrgOffse
           return 0.0f;
 #endif
       }
-      
+
 #ifdef TRANSPARENT_SHADOWS
       if (aHead == theSentinel || aFactor < 0.1f)
         return aFactor;
@@ -534,12 +549,12 @@ ivec4 SceneNearestHit (in SRay theRay, in vec3 theInverse, inout SIntersect theH
     {
       vec3 aNodeMin = texelFetch (uSceneMinPointTexture, aNode).xyz;
       vec3 aNodeMax = texelFetch (uSceneMaxPointTexture, aNode).xyz;
-      
+
       vec3 aTime0 = (aNodeMin - theRay.Origin) * theInverse;
       vec3 aTime1 = (aNodeMax - theRay.Origin) * theInverse;
-      
+
       vec3 aTimes = min (aTime0, aTime1);
-      
+
       if (max (aTimes.x, max (aTimes.y, aTimes.z)) < theHit.Time)
       {
         // fetch object transformation
@@ -576,7 +591,7 @@ ivec4 SceneNearestHit (in SRay theRay, in vec3 theInverse, inout SIntersect theH
       
       if (aHead < 0)
         return aHitObject;
-            
+
       aNode = Stack[aHead--];
     }
     else // if inner node
@@ -684,11 +699,11 @@ float SceneAnyHit (in SRay theRay, in vec3 theInverse, in float theDistance)
 #else
       bool isShadow = 0.0f == ObjectAnyHit (
         aData.y, aData.z, aData.w, aTrsfRay, aTrsfInverse, theDistance, aHead);
-        
+
       if (aHead < 0 || isShadow)
         return isShadow ? 0.0f : 1.0f;
 #endif
-            
+
       aNode = Stack[aHead--];
     }
     else // if inner node
@@ -751,7 +766,7 @@ float SceneAnyHit (in SRay theRay, in vec3 theInverse, in float theDistance)
       }
     }
   }
-  
+
 #ifdef TRANSPARENT_SHADOWS
   return aFactor;
 #else
@@ -768,9 +783,9 @@ float SceneAnyHit (in SRay theRay, in vec3 theInverse, in float theDistance)
 vec2 Latlong (in vec3 thePoint, in float theRadius)
 {
   float aPsi = acos (-thePoint.z / theRadius);
-  
+
   float aPhi = atan (thePoint.y, thePoint.x) + PI;
-  
+
   return vec2 (aPhi * 0.1591549f,
                aPsi * 0.3183098f);
 }
@@ -784,11 +799,28 @@ vec3 SmoothNormal (in vec2 theUV, in ivec4 theTriangle)
   vec3 aNormal0 = texelFetch (uGeometryNormalTexture, theTriangle.x).xyz;
   vec3 aNormal1 = texelFetch (uGeometryNormalTexture, theTriangle.y).xyz;
   vec3 aNormal2 = texelFetch (uGeometryNormalTexture, theTriangle.z).xyz;
-  
+
   return normalize (aNormal1 * theUV.x +
                     aNormal2 * theUV.y +
                     aNormal0 * (1.0f - theUV.x - theUV.y));
 }
+
+// =======================================================================
+// function : SmoothUV
+// purpose  : Interpolates UV coordinates across the triangle
+// =======================================================================
+#ifdef USE_TEXTURES
+vec2 SmoothUV (in vec2 theUV, in ivec4 theTriangle)
+{
+  vec2 aTexCrd0 = texelFetch (uGeometryTexCrdTexture, theTriangle.x).st;
+  vec2 aTexCrd1 = texelFetch (uGeometryTexCrdTexture, theTriangle.y).st;
+  vec2 aTexCrd2 = texelFetch (uGeometryTexCrdTexture, theTriangle.z).st;
+
+  return aTexCrd1 * theUV.x +
+         aTexCrd2 * theUV.y +
+         aTexCrd0 * (1.0f - theUV.x - theUV.y);
+}
+#endif
 
 // =======================================================================
 // function : Refract
@@ -799,21 +831,21 @@ vec3 Refract (in vec3 theInput,
               in float theRefractIndex,
               in float theInvRefractIndex)
 {
-  float aNdotI  = dot (theInput, theNormal);
-  
+  float aNdotI = dot (theInput, theNormal);
+
   float anIndex = aNdotI < 0.0f
                 ? theInvRefractIndex
                 : theRefractIndex;
-                
+
   float aSquare = anIndex * anIndex * (1.0f - aNdotI * aNdotI);
-  
+
   if (aSquare > 1.0f)
   {
     return reflect (theInput, theNormal);
   }
-  
+
   float aNdotT = sqrt (1.0f - aSquare);
-  
+
   return normalize (anIndex * theInput -
     (anIndex * aNdotI + (aNdotI < 0.0f ? aNdotT : -aNdotT)) * theNormal);
 }
@@ -828,7 +860,7 @@ vec3 Refract (in vec3 theInput,
 
 // =======================================================================
 // function : Radiance
-// purpose  : Computes color of specified ray
+// purpose  : Computes color along the given ray
 // =======================================================================
 vec4 Radiance (in SRay theRay, in vec3 theInverse)
 {
@@ -839,9 +871,7 @@ vec4 Radiance (in SRay theRay, in vec3 theInverse)
 
   float anOpenGlDepth = ComputeOpenGlDepth (theRay);
 
-  vec3 aViewDir = theRay.Direct;
-
-  for (int aDepth = 0; aDepth < TRACE_DEPTH; ++aDepth)
+  for (int aDepth = 0; aDepth < NB_BOUNCES; ++aDepth)
   {
     SIntersect aHit = SIntersect (MAXFLOAT, vec2 (ZERO), ZERO);
 
@@ -849,81 +879,80 @@ vec4 Radiance (in SRay theRay, in vec3 theInverse)
 
     if (aTriIndex.x == -1)
     {
+      vec4 aColor = vec4 (0.0f, 0.0f, 0.0f, 1.0f);
+
       if (aWeight.w != 0.0f)
       {
-        if (anOpenGlDepth < MAXFLOAT)
-        {
-          vec4 anOpenGlColor = ComputeOpenGlColor (theRay);
-          aResult.xyz += aWeight.xyz * anOpenGlColor.xyz;
-          aWeight.w   *= anOpenGlColor.w;
-        }
-        return vec4 (aResult.x,
-                     aResult.y,
-                     aResult.z,
-                     aWeight.w);
+        if (anOpenGlDepth != MAXFLOAT)
+          aColor = ComputeOpenGlColor (theRay);
       }
-
-      if (bool(uEnvironmentEnable))
+      else if (bool(uEnvironmentEnable))
       {
         float aTime = IntersectSphere (theRay, uSceneRadius);
-        
-        aResult.xyz += aWeight.xyz * textureLod (uEnvironmentMapTexture,
-          Latlong (theRay.Direct * aTime + theRay.Origin, uSceneRadius), 0.0f).xyz;
+
+        aColor = textureLod (uEnvironmentMapTexture, Latlong (
+          theRay.Direct * aTime + theRay.Origin, uSceneRadius), 0.0f);
       }
-      
-      return vec4 (aResult.x,
-                   aResult.y,
-                   aResult.z,
-                   aWeight.w);
+
+      return vec4 (aResult.xyz + aWeight.xyz * aColor.xyz, aWeight.w * aColor.w);
     }
 
     aHit.Normal = normalize (aHit.Normal);
-
-    if (anOpenGlDepth != MAXFLOAT)
-    {
-      float aDepthSlope = dot (theRay.Direct, aHit.Normal);
-      
-      // For polygons that are parallel to the screen plane, the depth slope
-      // is equal to 1, resulting in small polygon offset. For polygons that
-      // that are at a large angle to the screen, the depth slope tends to 1,
-      // resulting in a larger polygon offset
-      float aPolygonOffset = uSceneEpsilon * EPS_SCALE / max (MIN_SLOPE, abs (aDepthSlope));
     
-      if (anOpenGlDepth - aPolygonOffset < aHit.Time)
-      {
-        vec4 aColor = ComputeOpenGlColor (theRay);
-        
-        aResult.xyz += aWeight.xyz * aColor.xyz;
-        aWeight     *= aColor.w;
-        
-        if (all (lessThanEqual (aWeight.xyz, THRESHOLD)))
-        {
-          return vec4 (aResult.x,
-                       aResult.y,
-                       aResult.z,
-                       aWeight.w);
-        }
-      }
+    // For polygons that are parallel to the screen plane, the depth slope
+    // is equal to 1, resulting in small polygon offset. For polygons that
+    // that are at a large angle to the screen, the depth slope tends to 1,
+    // resulting in a larger polygon offset
+    float aPolygonOffset = uSceneEpsilon * min (
+      EPS_SCALE / abs (dot (theRay.Direct, aHit.Normal)), EPS_SCALE / MIN_SLOPE);
+
+    if (anOpenGlDepth - aPolygonOffset < aHit.Time)
+    {
+      vec4 aColor = ComputeOpenGlColor (theRay);
+
+      aResult += aWeight.xyz * aColor.xyz;
+      aWeight *= aColor.w;
     }
 
     vec3 aPoint = theRay.Direct * aHit.Time + theRay.Origin;
-    
+
     vec3 aAmbient  = texelFetch (
       uRaytraceMaterialTexture, MATERIAL_AMBN (aTriIndex.w)).rgb;
-    vec3 aDiffuse  = texelFetch (
-      uRaytraceMaterialTexture, MATERIAL_DIFF (aTriIndex.w)).rgb;
+    vec4 aDiffuse  = texelFetch (
+      uRaytraceMaterialTexture, MATERIAL_DIFF (aTriIndex.w));
     vec4 aSpecular = texelFetch (
       uRaytraceMaterialTexture, MATERIAL_SPEC (aTriIndex.w));
     vec4 aOpacity  = texelFetch (
       uRaytraceMaterialTexture, MATERIAL_TRAN (aTriIndex.w));
     vec3 aEmission = texelFetch (
       uRaytraceMaterialTexture, MATERIAL_EMIS (aTriIndex.w)).rgb;
-    
-    vec3 aNormal = SmoothNormal (aHit.UV, aTriIndex);
+
+#ifdef USE_TEXTURES
+    if (aDiffuse.w >= 0.f)
+    {
+      vec4 aTexCoord = vec4 (SmoothUV (aHit.UV, aTriIndex), 0.f, 1.f);
+
+      vec4 aTrsfRow1 = texelFetch (
+        uRaytraceMaterialTexture, MATERIAL_TRS1 (aTriIndex.w));
+      vec4 aTrsfRow2 = texelFetch (
+        uRaytraceMaterialTexture, MATERIAL_TRS2 (aTriIndex.w));
+
+      aTexCoord.st = vec2 (dot (aTrsfRow1, aTexCoord),
+                           dot (aTrsfRow2, aTexCoord));
+
+      vec3 aTexColor = textureLod (
+        uTextureSamplers[int(aDiffuse.w)], aTexCoord.st, 0.f).rgb;
+
+      aDiffuse.rgb *= aTexColor;
+      aAmbient.rgb *= aTexColor;
+    }
+#endif
 
     vec4 aInvTransf0 = texelFetch (uSceneTransformTexture, anObjectId * 4 + 0);
     vec4 aInvTransf1 = texelFetch (uSceneTransformTexture, anObjectId * 4 + 1);
     vec4 aInvTransf2 = texelFetch (uSceneTransformTexture, anObjectId * 4 + 2);
+
+    vec3 aNormal = SmoothNormal (aHit.UV, aTriIndex);
 
     aNormal = normalize (MatrixRowMultiplyDir (
       aNormal, aInvTransf0, aInvTransf1, aInvTransf2));
@@ -952,11 +981,11 @@ vec4 Radiance (in SRay theRay, in vec3 theInverse)
       if (bool(uShadowsEnable))
       {
         vec3 aInverse = 1.0f / max (abs (aLight.xyz), SMALL);
-        
+
         aInverse.x = aLight.x < 0.0f ? -aInverse.x : aInverse.x;
         aInverse.y = aLight.y < 0.0f ? -aInverse.y : aInverse.y;
         aInverse.z = aLight.z < 0.0f ? -aInverse.z : aInverse.z;
-        
+
         aVisibility = SceneAnyHit (aShadow, aInverse, aDistance);
       }
       
@@ -964,27 +993,25 @@ vec4 Radiance (in SRay theRay, in vec3 theInverse)
       {
         vec3 aIntensity = vec3 (texelFetch (
           uRaytraceLightSrcTexture, LIGHT_PWR (aLightIdx)));
- 
+
         float aLdotN = dot (aShadow.Direct, aNormal);
-        
+
         if (aOpacity.y > 0.0f)   // force two-sided lighting
           aLdotN = abs (aLdotN); // for transparent surfaces
-          
+
         if (aLdotN > 0.0f)
         {
           float aRdotV = dot (reflect (aShadow.Direct, aNormal), theRay.Direct);
-          
+
           aResult.xyz += aWeight.xyz * (aOpacity.x * aVisibility) * aIntensity *
-            (aDiffuse * aLdotN + aSpecular.xyz * pow (max (0.0f, aRdotV), aSpecular.w));
+            (aDiffuse.rgb * aLdotN + aSpecular.xyz * pow (max (0.0f, aRdotV), aSpecular.w));
         }
       }
     }
-    
-    aResult.xyz += aWeight.xyz * uGlobalAmbient.xyz *
-      aAmbient * aOpacity.x * max (abs (dot (aNormal, theRay.Direct)), 0.5f);
 
-    aResult.xyz += aWeight.xyz * aOpacity.x * aEmission;
-    
+    aResult.xyz += aWeight.xyz * aOpacity.x * (uGlobalAmbient.xyz *
+      aAmbient * max (abs (dot (aNormal, theRay.Direct)), 0.5f) + aEmission);
+
     if (aOpacity.x != 1.0f)
     {
       aWeight *= aOpacity.y;
@@ -994,13 +1021,13 @@ vec4 Radiance (in SRay theRay, in vec3 theInverse)
         theRay.Direct = Refract (theRay.Direct, aNormal, aOpacity.z, aOpacity.w);
 
         theInverse = 1.0f / max (abs (theRay.Direct), SMALL);
-      
+
         theInverse.x = theRay.Direct.x < 0.0f ? -theInverse.x : theInverse.x;
         theInverse.y = theRay.Direct.y < 0.0f ? -theInverse.y : theInverse.y;
         theInverse.z = theRay.Direct.z < 0.0f ? -theInverse.z : theInverse.z;
-      
+
         aPoint += aHit.Normal * (dot (aHit.Normal, theRay.Direct) >= 0.0f ? uSceneEpsilon : -uSceneEpsilon);
-        
+
         // Disable combining image with OpenGL output
         anOpenGlDepth = MAXFLOAT;
       }
@@ -1013,26 +1040,26 @@ vec4 Radiance (in SRay theRay, in vec3 theInverse)
     {
       aWeight *= bool(uReflectionsEnable) ?
         texelFetch (uRaytraceMaterialTexture, MATERIAL_REFL (aTriIndex.w)) : vec4 (0.0f);
-      
+
       theRay.Direct = reflect (theRay.Direct, aNormal);
-      
+
       if (dot (theRay.Direct, aHit.Normal) < 0.0f)
       {
         theRay.Direct = reflect (theRay.Direct, aHit.Normal);
       }
 
       theInverse = 1.0f / max (abs (theRay.Direct), SMALL);
-      
+
       theInverse.x = theRay.Direct.x < 0.0f ? -theInverse.x : theInverse.x;
       theInverse.y = theRay.Direct.y < 0.0f ? -theInverse.y : theInverse.y;
       theInverse.z = theRay.Direct.z < 0.0f ? -theInverse.z : theInverse.z;
-      
+
       aPoint += aHit.Normal * (dot (aHit.Normal, theRay.Direct) >= 0.0f ? uSceneEpsilon : -uSceneEpsilon);
 
       // Disable combining image with OpenGL output
       anOpenGlDepth = MAXFLOAT;
     }
-    
+
     if (all (lessThanEqual (aWeight.xyz, THRESHOLD)))
     {
       return vec4 (aResult.x,
@@ -1040,7 +1067,7 @@ vec4 Radiance (in SRay theRay, in vec3 theInverse)
                    aResult.z,
                    aWeight.w);
     }
-    
+
     theRay.Origin = theRay.Direct * uSceneEpsilon + aPoint;
   }
 

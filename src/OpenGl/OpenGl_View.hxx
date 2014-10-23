@@ -204,8 +204,9 @@ class OpenGl_View : public MMgt_TShared
   //! marks primitive set for rebuild.
   void InvalidateBVHData (const Standard_Integer theLayerId);
 
-  void GetMatrices (TColStd_Array2OfReal&  theMatOrient,
-                    TColStd_Array2OfReal&  theMatMapping) const;
+  //! Returns view-mapping and orientation matrices.
+  void GetMatrices (OpenGl_Mat4& theOrientation,
+                    OpenGl_Mat4& theViewMapping) const;
 
   //! Returns list of immediate structures rendered on top of main presentation
   const OpenGl_SequenceOfStructure& ImmediateStructures() const

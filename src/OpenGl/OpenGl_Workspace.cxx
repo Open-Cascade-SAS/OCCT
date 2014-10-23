@@ -25,6 +25,7 @@
 #include <OpenGl_Element.hxx>
 #include <OpenGl_FrameBuffer.hxx>
 #include <OpenGl_Structure.hxx>
+#include <OpenGl_Sampler.hxx>
 #include <OpenGl_Texture.hxx>
 #include <OpenGl_View.hxx>
 #include <OpenGl_Workspace.hxx>
@@ -144,6 +145,7 @@ OpenGl_Workspace::OpenGl_Workspace (const Handle(OpenGl_GraphicDriver)& theDrive
   //
   myComputeInitStatus (OpenGl_RT_NONE),
   myIsRaytraceDataValid (Standard_False),
+  myIsRaytraceWarnTextures (Standard_False),
   myViewModificationStatus (0),
   myLayersModificationStatus (0),
   //
@@ -435,6 +437,9 @@ void OpenGl_Workspace::setTextureParams (Handle(OpenGl_Texture)&                
   }
 #endif
 
+  // get active sampler object to override default texture parameters
+  const Handle(OpenGl_Sampler)& aSampler = myGlContext->TextureSampler();
+
   // setup texture filtering and wrapping
   //if (theTexture->GetParams() != theParams)
   const GLenum aFilter   = (aParams->Filter() == Graphic3d_TOTF_NEAREST) ? GL_NEAREST : GL_LINEAR;
@@ -444,9 +449,19 @@ void OpenGl_Workspace::setTextureParams (Handle(OpenGl_Texture)&                
   #if !defined(GL_ES_VERSION_2_0)
     case GL_TEXTURE_1D:
     {
-      glTexParameteri (GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, aFilter);
-      glTexParameteri (GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, aFilter);
-      glTexParameteri (GL_TEXTURE_1D, GL_TEXTURE_WRAP_S,     aWrapMode);
+      if (aSampler.IsNull() || !aSampler->IsValid())
+      {
+        glTexParameteri (GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, aFilter);
+        glTexParameteri (GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, aFilter);
+        glTexParameteri (GL_TEXTURE_1D, GL_TEXTURE_WRAP_S,     aWrapMode);
+      }
+      else
+      {
+        aSampler->SetParameter (*myGlContext, GL_TEXTURE_MAG_FILTER, aFilter);
+        aSampler->SetParameter (*myGlContext, GL_TEXTURE_MIN_FILTER, aFilter);
+        aSampler->SetParameter (*myGlContext, GL_TEXTURE_WRAP_S,     aWrapMode);
+      }
+
       break;
     }
   #endif
@@ -469,37 +484,58 @@ void OpenGl_Workspace::setTextureParams (Handle(OpenGl_Texture)&                
         {
           // setup degree of anisotropy filter
           const GLint aMaxDegree = myGlContext->MaxDegreeOfAnisotropy();
+          GLint aDegree;
           switch (aParams->AnisoFilter())
           {
             case Graphic3d_LOTA_QUALITY:
             {
-              glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, aMaxDegree);
+              aDegree = aMaxDegree;
               break;
             }
             case Graphic3d_LOTA_MIDDLE:
             {
-
-              glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, (aMaxDegree <= 4) ? 2 : (aMaxDegree / 2));
+              aDegree = (aMaxDegree <= 4) ? 2 : (aMaxDegree / 2);
               break;
             }
             case Graphic3d_LOTA_FAST:
             {
-              glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 2);
+              aDegree = 2;
               break;
             }
             case Graphic3d_LOTA_OFF:
             default:
             {
-              glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 1);
+              aDegree = 1;
               break;
             }
           }
+
+          if (aSampler.IsNull() || !aSampler->IsValid())
+          {
+            glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, aDegree);
+          }
+          else
+          {
+            aSampler->SetParameter (*myGlContext, GL_TEXTURE_MAX_ANISOTROPY_EXT, aDegree);
+          }
         }
       }
-      glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, aFilterMin);
-      glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, aFilter);
-      glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,     aWrapMode);
-      glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,     aWrapMode);
+
+      if (aSampler.IsNull() || !aSampler->IsValid())
+      {
+        glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, aFilterMin);
+        glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, aFilter);
+        glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,     aWrapMode);
+        glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,     aWrapMode);
+      }
+      else
+      {
+        aSampler->SetParameter (*myGlContext, GL_TEXTURE_MIN_FILTER, aFilterMin);
+        aSampler->SetParameter (*myGlContext, GL_TEXTURE_MAG_FILTER, aFilter);
+        aSampler->SetParameter (*myGlContext, GL_TEXTURE_WRAP_S,     aWrapMode);
+        aSampler->SetParameter (*myGlContext, GL_TEXTURE_WRAP_T,     aWrapMode);
+      }
+
       break;
     }
     default: break;
@@ -562,6 +598,15 @@ Handle(OpenGl_Texture) OpenGl_Workspace::EnableTexture (const Handle(OpenGl_Text
   myTextureBound = theTexture;
   myTextureBound->Bind (myGlContext);
   setTextureParams (myTextureBound, theParams);
+
+  // If custom sampler object is available it will be
+  // used for overriding default texture parameters
+  const Handle(OpenGl_Sampler)& aSampler = myGlContext->TextureSampler();
+
+  if (!aSampler.IsNull() && aSampler->IsValid())
+  {
+    aSampler->Bind (*myGlContext);
+  }
 
   return aPrevTexture;
 }
