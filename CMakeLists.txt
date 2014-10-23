@@ -41,6 +41,7 @@ if (APPLE)
 endif()
 
 set (USE_FREEIMAGE OFF CACHE BOOL "Is freeimage used or not")
+set (USE_VTK OFF CACHE BOOL "Is VTK used or not")
 
 if (NOT DEFINED ANDROID)
   set (USE_GL2PS OFF CACHE BOOL "Is gl2ps used or not")
@@ -106,12 +107,6 @@ else()
   OCCT_CHECK_AND_UNSET ("3RDPARTY_TK_LIBRARY_DIR")
 endif()
 
-# GLX
-if (USE_GLX)
-  add_definitions (-DMACOSX_USE_GLX)
-  OCCT_INCLUDE_CMAKE_FILE ("adm/templates/glx")
-endif()
-
 # search for CSF_FREETYPE variable in EXTERNLIB of each being used toolkit
 OCCT_IS_PRODUCT_REQUIRED(CSF_FREETYPE USE_FREETYPE)
 
@@ -126,10 +121,21 @@ else()
   OCCT_CHECK_AND_UNSET ("3RDPARTY_FREETYPE_LIBRARY_DIR")
 endif()
 
+# VTK
+if (USE_VTK)
+  add_definitions (-DHAVE_VTK)
+  OCCT_INCLUDE_CMAKE_FILE ("adm/templates/vtk")
+endif()
+
+# GLX
+if (USE_GLX)
+  add_definitions (-DMACOSX_USE_GLX)
+  OCCT_INCLUDE_CMAKE_FILE ("adm/templates/glx")
+endif()
+
 # FREEIMAGE
 if (USE_FREEIMAGE)
   add_definitions (-DHAVE_FREEIMAGE)
-  message (STATUS "Info: freeimage is used by OCCT")
   OCCT_INCLUDE_CMAKE_FILE ("adm/templates/freeimage")
   OCCT_INCLUDE_CMAKE_FILE ("adm/templates/freeimageplus")
 else()
@@ -142,7 +148,6 @@ endif()
 # GL2PS
 if (USE_GL2PS)
   add_definitions (-DHAVE_GL2PS)
-  message (STATUS "Info: gl2ps is used by OCCT")
   OCCT_INCLUDE_CMAKE_FILE ("adm/templates/gl2ps")
 else()
   OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_GL2PS")
@@ -152,7 +157,6 @@ endif()
 # OPENCL
 if (USE_OPENCL)
   add_definitions (-DHAVE_OPENCL)
-  message (STATUS "Info: OpenCL is used by OCCT")
   OCCT_INCLUDE_CMAKE_FILE ("adm/templates/opencl")
 else()
   OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_OPENCL")
@@ -164,7 +168,6 @@ endif()
 # TBB
 if (USE_TBB)
   ADD_DEFINITIONS(-DHAVE_TBB)
-  message (STATUS "Info: tbb is used by OCCT")
   OCCT_INCLUDE_CMAKE_FILE ("adm/templates/tbb")
 else()
   OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_TBB")

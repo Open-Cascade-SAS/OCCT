@@ -8,6 +8,7 @@ if "%VCVER%" == "@COMPILER@" (
       set "FREEIMAGE_DIR=@3RDPARTY_FREEIMAGE_DLL_DIR@"
       set "GL2PS_DIR=@3RDPARTY_GL2PS_DLL_DIR@"
       set "TBB_DIR=@3RDPARTY_TBB_DLL_DIR@"
+	  set "VTK_DIR=@3RDPARTY_VTK_DLL_DIR@"
     )
   ) 
 )
