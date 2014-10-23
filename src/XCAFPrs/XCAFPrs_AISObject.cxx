@@ -155,6 +155,7 @@ void XCAFPrs_AISObject::Compute (const Handle(PrsMgr_PresentationManager3d)& the
   {
     Handle(AIS_ColoredDrawer) aDrawer = CustomAspects (anIter.Key());
     const XCAFPrs_Style& aStyle = anIter.Value();
+    aDrawer->SetHidden (!aStyle.IsVisible());
 
     aColorCurv = aStyle.IsSetColorCurv() ? aStyle.GetColorCurv() : aDefStyle.GetColorCurv();
     aColorSurf = aStyle.IsSetColorSurf() ? aStyle.GetColorSurf() : aDefStyle.GetColorSurf();

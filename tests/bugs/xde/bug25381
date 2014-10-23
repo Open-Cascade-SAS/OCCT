@@ -1,0 +1,23 @@
+puts "============"
+puts "CR25381"
+puts "============"
+puts ""
+######################################################
+# Visualization - XCAFPrs_AISObject ignores visibility flag for sub-shapes
+######################################################
+
+pload QAcommands
+
+ReadStep D [locate_data_file bug25381_test_assembly_invisible.step]
+XShow D
+vfit
+
+decho off
+if { [catch { QAGetPixelColor 198 172 1 1 1 }] != 0 } {
+   decho on
+   puts "OK : XCAFPrs_AISObject get visibility flag for sub-shapes"
+} else {
+   puts "Error : XCAFPrs_AISObject ignores visibility flag for sub-shapes"
+}
+
+set only_screen 1
