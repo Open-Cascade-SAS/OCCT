@@ -1,0 +1,27 @@
+puts "================"
+puts "OCC25406"
+puts "================"
+puts ""
+##################################
+# BRepOffset_MakeOffset algorithm fails on the face with two degenerated edges on u-iso null curves
+##################################
+
+restore [locate_data_file bug25406_offset_shape.brep] a
+
+offsetshape result a 10
+
+set length 1875.31
+
+set nb_v_good 2
+set nb_e_good 4
+set nb_w_good 1
+set nb_f_good 1
+set nb_sh_good 1
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 0
+set nb_shape_good 9
+
+smallview
+fit
+set only_screen_axo 1

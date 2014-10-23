@@ -1850,58 +1850,58 @@ void BRepOffset_MakeOffset::CorrectConicalFaces()
   //TopTools_DataMapOfShapeShape DegEdges;
   TopExp_Explorer Explo( myOffsetShape, TopAbs_FACE );
   if (myJoin == GeomAbs_Arc)
+  {
+    for (; Explo.More(); Explo.Next())
     {
-      for (; Explo.More(); Explo.Next())
-	{
-	  TopoDS_Face aFace = TopoDS::Face( Explo.Current() );
-	  Handle(Geom_Surface) aSurf = BRep_Tool::Surface( aFace );
-	  //if (aSurf->DynamicType() == STANDARD_TYPE(Geom_OffsetSurface))
-	  //aSurf = (Handle(Geom_OffsetSurface)::DownCast(aSurf))->BasisSurface(); //???
-	  
-	  TopTools_IndexedMapOfShape Emap;
-	  TopExp::MapShapes( aFace, TopAbs_EDGE, Emap );
-	  for (i = 1; i <= Emap.Extent(); i++)
-	    {
-	      TopoDS_Edge anEdge = TopoDS::Edge( Emap(i) );
-	      //Standard_Real f, l;
-	      //Handle(Geom_Curve) theCurve = BRep_Tool::Curve( anEdge, f, l );
-	      //Handle(BRep_TEdge)& TE = *((Handle(BRep_TEdge)*) &anEdge.TShape());
-	      if (BRep_Tool::Degenerated(anEdge))
-		{
-		  //Check if anEdge is a really degenerated edge or not
-		  BRepAdaptor_Curve BACurve(anEdge, aFace);
-		  gp_Pnt Pfirst, Plast, Pmid;
-		  Pfirst = BACurve.Value(BACurve.FirstParameter());
-		  Plast  = BACurve.Value(BACurve.LastParameter());
-		  Pmid   = BACurve.Value((BACurve.FirstParameter()+BACurve.LastParameter())/2.);
-		  if (Pfirst.Distance(Plast) <= TolApex &&
-		      Pfirst.Distance(Pmid)  <= TolApex)
-		    continue;
-		  //Cones.Append( aFace );
-		  //Circs.Append( anEdge );
-		  //TopoDS_Vertex Vdeg = TopExp::FirstVertex( anEdge );
-		  TopoDS_Edge OrEdge = 
-		    TopoDS::Edge( myInitOffsetEdge.Root( anEdge) );
-		  TopoDS_Vertex VF = TopExp::FirstVertex( OrEdge );
-		  if ( FacesOfCone.IsBound(VF) )
-		    {
-		      //add a face to the existing list
-		      TopTools_ListOfShape& aFaces = FacesOfCone.ChangeFind(VF);
-		      aFaces.Append (aFace);
-		      //DegEdges.Bind(aFace, anEdge);
-		    }
-		  else
-		    {
-		      //the vertex is not in the map => create a new key and items
-		      TopTools_ListOfShape aFaces;
-		      aFaces.Append (aFace);
-		      FacesOfCone.Bind(VF, aFaces);
-		      //DegEdges.Bind(aFace, anEdge);
-		    }
-		}
-	    } //for (i = 1; i <= Emap.Extent(); i++)
-	} //for (; fexp.More(); fexp.Next())
-    } //if (myJoin == GeomAbs_Arc)
+      TopoDS_Face aFace = TopoDS::Face( Explo.Current() );
+      Handle(Geom_Surface) aSurf = BRep_Tool::Surface( aFace );
+      //if (aSurf->DynamicType() == STANDARD_TYPE(Geom_OffsetSurface))
+      //aSurf = (Handle(Geom_OffsetSurface)::DownCast(aSurf))->BasisSurface(); //???
+      
+      TopTools_IndexedMapOfShape Emap;
+      TopExp::MapShapes( aFace, TopAbs_EDGE, Emap );
+      for (i = 1; i <= Emap.Extent(); i++)
+      {
+        TopoDS_Edge anEdge = TopoDS::Edge( Emap(i) );
+        //Standard_Real f, l;
+        //Handle(Geom_Curve) theCurve = BRep_Tool::Curve( anEdge, f, l );
+        //Handle(BRep_TEdge)& TE = *((Handle(BRep_TEdge)*) &anEdge.TShape());
+        if (BRep_Tool::Degenerated(anEdge))
+        {
+          //Check if anEdge is a really degenerated edge or not
+          BRepAdaptor_Curve BACurve(anEdge, aFace);
+          gp_Pnt Pfirst, Plast, Pmid;
+          Pfirst = BACurve.Value(BACurve.FirstParameter());
+          Plast  = BACurve.Value(BACurve.LastParameter());
+          Pmid   = BACurve.Value((BACurve.FirstParameter()+BACurve.LastParameter())/2.);
+          if (Pfirst.Distance(Plast) <= TolApex &&
+              Pfirst.Distance(Pmid)  <= TolApex)
+            continue;
+          //Cones.Append( aFace );
+          //Circs.Append( anEdge );
+          //TopoDS_Vertex Vdeg = TopExp::FirstVertex( anEdge );
+          TopoDS_Edge OrEdge = 
+            TopoDS::Edge( myInitOffsetEdge.Root( anEdge) );
+          TopoDS_Vertex VF = TopExp::FirstVertex( OrEdge );
+          if ( FacesOfCone.IsBound(VF) )
+          {
+            //add a face to the existing list
+            TopTools_ListOfShape& aFaces = FacesOfCone.ChangeFind(VF);
+            aFaces.Append (aFace);
+            //DegEdges.Bind(aFace, anEdge);
+          }
+          else
+          {
+            //the vertex is not in the map => create a new key and items
+            TopTools_ListOfShape aFaces;
+            aFaces.Append (aFace);
+            FacesOfCone.Bind(VF, aFaces);
+            //DegEdges.Bind(aFace, anEdge);
+          }
+        }
+      } //for (i = 1; i <= Emap.Extent(); i++)
+    } //for (; fexp.More(); fexp.Next())
+  } //if (myJoin == GeomAbs_Arc)
 
   TopTools_DataMapIteratorOfDataMapOfShapeListOfShape Cone(FacesOfCone);
   BRep_Builder BB;
@@ -1918,218 +1918,218 @@ void BRepOffset_MakeOffset::CorrectConicalFaces()
     gp_Pnt FirstPoint;
     TopoDS_Vertex theFirstVertex, CurFirstVertex;
     for (; itFaces.More(); itFaces.Next())
+    {
+      TopoDS_Face aFace = TopoDS::Face(itFaces.Value()); //TopoDS::Face(Faces.First());
+      TopoDS_Edge DegEdge; // = TopoDS::Edge(DegEdges(aFace));
+      for (Explo.Init(aFace, TopAbs_EDGE); Explo.More(); Explo.Next())
       {
-	TopoDS_Face aFace = TopoDS::Face(itFaces.Value()); //TopoDS::Face(Faces.First());
-	TopoDS_Edge DegEdge; // = TopoDS::Edge(DegEdges(aFace));
-	for (Explo.Init(aFace, TopAbs_EDGE); Explo.More(); Explo.Next())
-	  {
-	    DegEdge = TopoDS::Edge(Explo.Current());
-	    if (BRep_Tool::Degenerated(DegEdge))
-	      {
-		TopoDS_Edge OrEdge = TopoDS::Edge( myInitOffsetEdge.Root( DegEdge) );
-		TopoDS_Vertex VF = TopExp::FirstVertex( OrEdge );
-		if (VF.IsSame(anApex))
-		  break;
-	      }
-	  }
-	TopoDS_Shape aLocalDegShape = DegEdge.Oriented(TopAbs_FORWARD);
-	TopoDS_Edge CurEdge = TopoDS::Edge(aLocalDegShape);
-	BB.Degenerated(CurEdge, Standard_False);
-	BB.SameRange(CurEdge, Standard_False);
-	BB.SameParameter(CurEdge, Standard_False);
-	gp_Pnt fPnt, lPnt, mPnt;
-	GetEdgePoints(CurEdge, aFace, fPnt, mPnt, lPnt);
-	Standard_Real f, l;
-	BRep_Tool::Range(CurEdge, f, l);
-	if (isFirstFace)
-	  {
-	    gp_Vec aVec1(fPnt, mPnt);
-	    gp_Vec aVec2(fPnt, lPnt);
-	    gp_Vec aNorm = aVec1.Crossed(aVec2);
-	    gp_Pnt theApex = BRep_Tool::Pnt(anApex);
-	    gp_Vec ApexToFpnt(theApex, fPnt);
-	    gp_Vec Ydir = aNorm ^ ApexToFpnt;
-	    gp_Vec Xdir = Ydir ^ aNorm;
-	    //Xdir.Rotate(gp_Ax1(theApex, aNorm), -f);
-	    gp_Ax2 anAx2(theApex, gp_Dir(aNorm), gp_Dir(Xdir));
-	    theSphere.SetRadius(myOffset);
-	    theSphere.SetPosition(gp_Ax3(anAx2) /*gp_Ax3(theApex, gp_Dir(aNorm))*/);
-	    aSphSurf = new Geom_SphericalSurface(theSphere);
-	    FirstPoint = fPnt;
-	    theFirstVertex = BRepLib_MakeVertex(fPnt);
-	    CurFirstVertex = theFirstVertex;
-	  }
-
-	TopoDS_Vertex v1, v2, FirstVert, EndVert;
-	TopExp::Vertices(CurEdge, v1, v2);
-	FirstVert = CurFirstVertex;
-	if (lPnt.Distance(FirstPoint) <= Precision::Confusion())
-	  EndVert = theFirstVertex;
-	else
-	  EndVert = BRepLib_MakeVertex(lPnt);
-	CurEdge.Free( Standard_True );
-	BB.Remove(CurEdge, v1);
-	BB.Remove(CurEdge, v2);
-	BB.Add(CurEdge, FirstVert.Oriented(TopAbs_FORWARD));
-	BB.Add(CurEdge, EndVert.Oriented(TopAbs_REVERSED));
-	//take the curve from sphere an put it to the edge
-	Standard_Real Uf, Vf, Ul, Vl;
-	ElSLib::Parameters( theSphere, fPnt, Uf, Vf );
-	ElSLib::Parameters( theSphere, lPnt, Ul, Vl );
-	if (Abs(Ul) <= Precision::Confusion())
-	  Ul = 2.*M_PI;
-	Handle(Geom_Curve) aCurv = aSphSurf->VIso(Vf);
-	/*
-	if (!isFirstFace)
-	  {
-	    gp_Circ aCircle = (Handle(Geom_Circle)::DownCast(aCurv))->Circ();
-	    if (Abs(Uf - f) > Precision::Confusion())
-	      {
-		aCircle.Rotate(aCircle.Axis(), f - Uf);
-		aCurv = new Geom_Circle(aCircle);
-	      }
-	  }
-	*/
-	Handle(Geom_TrimmedCurve) aTrimCurv = new Geom_TrimmedCurve(aCurv, Uf, Ul);
-	BB.UpdateEdge(CurEdge, aTrimCurv, Precision::Confusion());
-	BB.Range(CurEdge, Uf, Ul, Standard_True);
-	Handle(Geom2d_Line) theLin2d = new Geom2d_Line( gp_Pnt2d( 0., Vf ), gp::DX2d() );
-	Handle(Geom2d_TrimmedCurve) theTrimLin2d = new Geom2d_TrimmedCurve(theLin2d, Uf, Ul);
-	BB.UpdateEdge(CurEdge, theTrimLin2d, aSphSurf, L, Precision::Confusion());
-	BB.Range(CurEdge, aSphSurf, L, Uf, Ul);
-	BRepLib::SameParameter(CurEdge);
-	BB.Add(SphereWire, CurEdge);
-	//Modifying correspondent edges in aFace: substitute vertices common with CurEdge
-	BRepAdaptor_Curve2d BAc2d(CurEdge, aFace);
-	gp_Pnt2d fPnt2d, lPnt2d;
-	fPnt2d = BAc2d.Value(BAc2d.FirstParameter());
-	lPnt2d = BAc2d.Value(BAc2d.LastParameter());
-	TopTools_IndexedMapOfShape Emap;
-	TopExp::MapShapes(aFace, TopAbs_EDGE, Emap);
-	TopoDS_Edge EE [2];
-	Standard_Integer j = 0, k;
-	for (k = 1; k <= Emap.Extent(); k++)
-	  {
-	    const TopoDS_Edge& anEdge = TopoDS::Edge(Emap(k));
-	    if (!BRep_Tool::Degenerated(anEdge))
-	      {
-		TopoDS_Vertex V1, V2;
-		TopExp::Vertices(anEdge, V1, V2);
-		if (V1.IsSame(v1) || V2.IsSame(v1))
-		  EE[j++] = anEdge;
-	      }
-	  }
-	for (k = 0; k < j; k++)
-	  {
-	    TopoDS_Shape aLocalShape = EE[k].Oriented(TopAbs_FORWARD);
-	    TopoDS_Edge Eforward = TopoDS::Edge(aLocalShape);
-	    Eforward.Free(Standard_True);
-	    TopoDS_Vertex V1, V2;
-	    TopExp::Vertices( Eforward, V1, V2 );
-	    BRepAdaptor_Curve2d EEc( Eforward, aFace );
-	    gp_Pnt2d p2d1, p2d2;
-	    p2d1 = EEc.Value(EEc.FirstParameter());
-	    p2d2 = EEc.Value(EEc.LastParameter());
-	    if (V1.IsSame(v1))
-	      {
-		TopoDS_Vertex NewV = (p2d1.Distance(fPnt2d) <= Precision::Confusion())?
-		  FirstVert : EndVert;
-		BB.Remove( Eforward, V1 );
-		BB.Add( Eforward, NewV.Oriented(TopAbs_FORWARD) );
-	      }
-	    else
-	      {
-		TopoDS_Vertex NewV = (p2d2.Distance(fPnt2d) <= Precision::Confusion())?
-		  FirstVert : EndVert;
-		BB.Remove( Eforward, V2 );
-		BB.Add( Eforward, NewV.Oriented(TopAbs_REVERSED) );
-	      }
-	  }
-
-	isFirstFace = Standard_False;
-	CurFirstVertex = EndVert;
+        DegEdge = TopoDS::Edge(Explo.Current());
+        if (BRep_Tool::Degenerated(DegEdge))
+        {
+          TopoDS_Edge OrEdge = TopoDS::Edge( myInitOffsetEdge.Root( DegEdge) );
+          TopoDS_Vertex VF = TopExp::FirstVertex( OrEdge );
+          if (VF.IsSame(anApex))
+            break;
+        }
       }
+      TopoDS_Shape aLocalDegShape = DegEdge.Oriented(TopAbs_FORWARD);
+      TopoDS_Edge CurEdge = TopoDS::Edge(aLocalDegShape);
+      BB.Degenerated(CurEdge, Standard_False);
+      BB.SameRange(CurEdge, Standard_False);
+      BB.SameParameter(CurEdge, Standard_False);
+      gp_Pnt fPnt, lPnt, mPnt;
+      GetEdgePoints(CurEdge, aFace, fPnt, mPnt, lPnt);
+      Standard_Real f, l;
+      BRep_Tool::Range(CurEdge, f, l);
+      if (isFirstFace)
+      {
+        gp_Vec aVec1(fPnt, mPnt);
+        gp_Vec aVec2(fPnt, lPnt);
+        gp_Vec aNorm = aVec1.Crossed(aVec2);
+        gp_Pnt theApex = BRep_Tool::Pnt(anApex);
+        gp_Vec ApexToFpnt(theApex, fPnt);
+        gp_Vec Ydir = aNorm ^ ApexToFpnt;
+        gp_Vec Xdir = Ydir ^ aNorm;
+        //Xdir.Rotate(gp_Ax1(theApex, aNorm), -f);
+        gp_Ax2 anAx2(theApex, gp_Dir(aNorm), gp_Dir(Xdir));
+        theSphere.SetRadius(myOffset);
+        theSphere.SetPosition(gp_Ax3(anAx2) /*gp_Ax3(theApex, gp_Dir(aNorm))*/);
+        aSphSurf = new Geom_SphericalSurface(theSphere);
+        FirstPoint = fPnt;
+        theFirstVertex = BRepLib_MakeVertex(fPnt);
+        CurFirstVertex = theFirstVertex;
+      }
+      
+      TopoDS_Vertex v1, v2, FirstVert, EndVert;
+      TopExp::Vertices(CurEdge, v1, v2);
+      FirstVert = CurFirstVertex;
+      if (lPnt.Distance(FirstPoint) <= Precision::Confusion())
+        EndVert = theFirstVertex;
+      else
+        EndVert = BRepLib_MakeVertex(lPnt);
+      CurEdge.Free( Standard_True );
+      BB.Remove(CurEdge, v1);
+      BB.Remove(CurEdge, v2);
+      BB.Add(CurEdge, FirstVert.Oriented(TopAbs_FORWARD));
+      BB.Add(CurEdge, EndVert.Oriented(TopAbs_REVERSED));
+      //take the curve from sphere an put it to the edge
+      Standard_Real Uf, Vf, Ul, Vl;
+      ElSLib::Parameters( theSphere, fPnt, Uf, Vf );
+      ElSLib::Parameters( theSphere, lPnt, Ul, Vl );
+      if (Abs(Ul) <= Precision::Confusion())
+        Ul = 2.*M_PI;
+      Handle(Geom_Curve) aCurv = aSphSurf->VIso(Vf);
+      /*
+	if (!isFirstFace)
+        {
+        gp_Circ aCircle = (Handle(Geom_Circle)::DownCast(aCurv))->Circ();
+        if (Abs(Uf - f) > Precision::Confusion())
+        {
+        aCircle.Rotate(aCircle.Axis(), f - Uf);
+        aCurv = new Geom_Circle(aCircle);
+        }
+        }
+      */
+      Handle(Geom_TrimmedCurve) aTrimCurv = new Geom_TrimmedCurve(aCurv, Uf, Ul);
+      BB.UpdateEdge(CurEdge, aTrimCurv, Precision::Confusion());
+      BB.Range(CurEdge, Uf, Ul, Standard_True);
+      Handle(Geom2d_Line) theLin2d = new Geom2d_Line( gp_Pnt2d( 0., Vf ), gp::DX2d() );
+      Handle(Geom2d_TrimmedCurve) theTrimLin2d = new Geom2d_TrimmedCurve(theLin2d, Uf, Ul);
+      BB.UpdateEdge(CurEdge, theTrimLin2d, aSphSurf, L, Precision::Confusion());
+      BB.Range(CurEdge, aSphSurf, L, Uf, Ul);
+      BRepLib::SameParameter(CurEdge);
+      BB.Add(SphereWire, CurEdge);
+      //Modifying correspondent edges in aFace: substitute vertices common with CurEdge
+      BRepAdaptor_Curve2d BAc2d(CurEdge, aFace);
+      gp_Pnt2d fPnt2d, lPnt2d;
+      fPnt2d = BAc2d.Value(BAc2d.FirstParameter());
+      lPnt2d = BAc2d.Value(BAc2d.LastParameter());
+      TopTools_IndexedMapOfShape Emap;
+      TopExp::MapShapes(aFace, TopAbs_EDGE, Emap);
+      TopoDS_Edge EE [2];
+      Standard_Integer j = 0, k;
+      for (k = 1; k <= Emap.Extent(); k++)
+      {
+        const TopoDS_Edge& anEdge = TopoDS::Edge(Emap(k));
+        if (!BRep_Tool::Degenerated(anEdge))
+        {
+          TopoDS_Vertex V1, V2;
+          TopExp::Vertices(anEdge, V1, V2);
+          if (V1.IsSame(v1) || V2.IsSame(v1))
+            EE[j++] = anEdge;
+        }
+      }
+      for (k = 0; k < j; k++)
+      {
+        TopoDS_Shape aLocalShape = EE[k].Oriented(TopAbs_FORWARD);
+        TopoDS_Edge Eforward = TopoDS::Edge(aLocalShape);
+        Eforward.Free(Standard_True);
+        TopoDS_Vertex V1, V2;
+        TopExp::Vertices( Eforward, V1, V2 );
+        BRepAdaptor_Curve2d EEc( Eforward, aFace );
+        gp_Pnt2d p2d1, p2d2;
+        p2d1 = EEc.Value(EEc.FirstParameter());
+        p2d2 = EEc.Value(EEc.LastParameter());
+        if (V1.IsSame(v1))
+        {
+          TopoDS_Vertex NewV = (p2d1.Distance(fPnt2d) <= Precision::Confusion())?
+            FirstVert : EndVert;
+          BB.Remove( Eforward, V1 );
+          BB.Add( Eforward, NewV.Oriented(TopAbs_FORWARD) );
+        }
+        else
+        {
+          TopoDS_Vertex NewV = (p2d2.Distance(fPnt2d) <= Precision::Confusion())?
+            FirstVert : EndVert;
+          BB.Remove( Eforward, V2 );
+          BB.Add( Eforward, NewV.Oriented(TopAbs_REVERSED) );
+        }
+      }
+      
+      isFirstFace = Standard_False;
+      CurFirstVertex = EndVert;
+    }
     //Building new spherical face
     Standard_Real Ufirst = RealLast(), Ulast = RealFirst();
     gp_Pnt2d p2d1, p2d2;
     TopTools_ListOfShape EdgesOfWire;
     TopoDS_Iterator itw(SphereWire);
     for (; itw.More(); itw.Next())
-      {
-	const TopoDS_Edge& anEdge = TopoDS::Edge(itw.Value());
-	EdgesOfWire.Append(anEdge);
-	Standard_Real f, l;
-	Handle(Geom2d_Curve) aC2d = BRep_Tool::CurveOnSurface(anEdge, aSphSurf, L, f, l);
-	p2d1 = aC2d->Value(f);
-	p2d2 = aC2d->Value(l);
-	if (p2d1.X() < Ufirst)
-	  Ufirst = p2d1.X();
-	if (p2d1.X() > Ulast)
-	  Ulast = p2d1.X();
-	if (p2d2.X() < Ufirst)
-	  Ufirst = p2d2.X();
-	if (p2d2.X() > Ulast)
-	  Ulast = p2d2.X();
-      }
+    {
+      const TopoDS_Edge& anEdge = TopoDS::Edge(itw.Value());
+      EdgesOfWire.Append(anEdge);
+      Standard_Real f, l;
+      Handle(Geom2d_Curve) aC2d = BRep_Tool::CurveOnSurface(anEdge, aSphSurf, L, f, l);
+      p2d1 = aC2d->Value(f);
+      p2d2 = aC2d->Value(l);
+      if (p2d1.X() < Ufirst)
+        Ufirst = p2d1.X();
+      if (p2d1.X() > Ulast)
+        Ulast = p2d1.X();
+      if (p2d2.X() < Ufirst)
+        Ufirst = p2d2.X();
+      if (p2d2.X() > Ulast)
+        Ulast = p2d2.X();
+    }
     TopTools_ListOfShape NewEdges;
     TopoDS_Edge FirstEdge;
     TopTools_ListIteratorOfListOfShape itl(EdgesOfWire);
     for (; itl.More(); itl.Next())
+    {
+      FirstEdge = TopoDS::Edge(itl.Value());
+      Standard_Real f, l;
+      Handle(Geom2d_Curve) aC2d = BRep_Tool::CurveOnSurface(FirstEdge, aSphSurf, L, f, l);
+      p2d1 = aC2d->Value(f);
+      p2d2 = aC2d->Value(l);
+      if (Abs(p2d1.X() - Ufirst) <= Precision::Confusion())
       {
-	FirstEdge = TopoDS::Edge(itl.Value());
-	Standard_Real f, l;
-	Handle(Geom2d_Curve) aC2d = BRep_Tool::CurveOnSurface(FirstEdge, aSphSurf, L, f, l);
-	p2d1 = aC2d->Value(f);
-	p2d2 = aC2d->Value(l);
-	if (Abs(p2d1.X() - Ufirst) <= Precision::Confusion())
-	  {
-	    EdgesOfWire.Remove(itl);
-	    break;
-	  }
+        EdgesOfWire.Remove(itl);
+        break;
       }
+    }
     NewEdges.Append(FirstEdge);
     TopoDS_Vertex Vf1, CurVertex;
     TopExp::Vertices(FirstEdge, Vf1, CurVertex);
     itl.Initialize(EdgesOfWire);
     while (itl.More())
+    {
+      const TopoDS_Edge& anEdge = TopoDS::Edge(itl.Value());
+      TopoDS_Vertex V1, V2;
+      TopExp::Vertices(anEdge, V1, V2);
+      if (V1.IsSame(CurVertex) || V2.IsSame(CurVertex))
       {
-	const TopoDS_Edge& anEdge = TopoDS::Edge(itl.Value());
-	TopoDS_Vertex V1, V2;
-	TopExp::Vertices(anEdge, V1, V2);
-	if (V1.IsSame(CurVertex) || V2.IsSame(CurVertex))
-	  {
-	    NewEdges.Append(anEdge);
-	    CurVertex = (V1.IsSame(CurVertex))? V2 : V1;
-	    EdgesOfWire.Remove(itl);
-	  }
-	else
-	  itl.Next();
+        NewEdges.Append(anEdge);
+        CurVertex = (V1.IsSame(CurVertex))? V2 : V1;
+        EdgesOfWire.Remove(itl);
       }
-
+      else
+        itl.Next();
+    }
+    
     Standard_Real Vfirst, Vlast;
     if (p2d1.Y() > 0.)
-      {
-	Vfirst = p2d1.Y(); Vlast = M_PI/2.;
-      }
+    {
+      Vfirst = p2d1.Y(); Vlast = M_PI/2.;
+    }
     else
-      {
-	Vfirst = -M_PI/2.; Vlast = p2d1.Y();
-      }
+    {
+      Vfirst = -M_PI/2.; Vlast = p2d1.Y();
+    }
     TopoDS_Face NewSphericalFace = BRepLib_MakeFace(aSphSurf, Ufirst, Ulast, Vfirst, Vlast, Precision::Confusion());
     TopoDS_Edge OldEdge;
     for (Explo.Init(NewSphericalFace, TopAbs_EDGE); Explo.More(); Explo.Next())
+    {
+      OldEdge = TopoDS::Edge(Explo.Current());
+      if (!BRep_Tool::Degenerated(OldEdge))
       {
-	OldEdge = TopoDS::Edge(Explo.Current());
-	if (!BRep_Tool::Degenerated(OldEdge))
-	  {
-	    BRepAdaptor_Curve2d BAc2d(OldEdge, NewSphericalFace);
-	    p2d1 = BAc2d.Value(BAc2d.FirstParameter());
-	    p2d2 = BAc2d.Value(BAc2d.LastParameter());
-	    if (Abs(p2d1.X() - Ufirst) <= Precision::Confusion() &&
-		Abs(p2d2.X() - Ulast)  <= Precision::Confusion())
-	      break;
-	  }
+        BRepAdaptor_Curve2d BAc2d(OldEdge, NewSphericalFace);
+        p2d1 = BAc2d.Value(BAc2d.FirstParameter());
+        p2d2 = BAc2d.Value(BAc2d.LastParameter());
+        if (Abs(p2d1.X() - Ufirst) <= Precision::Confusion() &&
+            Abs(p2d2.X() - Ulast)  <= Precision::Confusion())
+          break;
       }
+    }
     TopoDS_Vertex V1, V2;
     TopExp::Vertices(OldEdge, V1, V2);
     TopTools_ListOfShape LV1, LV2;
@@ -2142,11 +2142,11 @@ void BRepOffset_MakeOffset::CorrectConicalFaces()
     theSubstitutor.Substitute(OldEdge, NewEdges);
     theSubstitutor.Build(NewSphericalFace);
     if (theSubstitutor.IsCopied(NewSphericalFace))
-      {
-	const TopTools_ListOfShape& listSh = theSubstitutor.Copy(NewSphericalFace);
-	NewSphericalFace = TopoDS::Face(listSh.First());
-      }
-
+    {
+      const TopTools_ListOfShape& listSh = theSubstitutor.Copy(NewSphericalFace);
+      NewSphericalFace = TopoDS::Face(listSh.First());
+    }
+    
     //Adding NewSphericalFace to the shell
     Explo.Init( myOffsetShape, TopAbs_SHELL );
     TopoDS_Shape theShell = Explo.Current();
@@ -2154,415 +2154,39 @@ void BRepOffset_MakeOffset::CorrectConicalFaces()
     BB.Add( theShell, NewSphericalFace );
   }
 
-  Explo.Init( myOffsetShape, TopAbs_SHELL );
-
-  if (Explo.More()) {
-    TopoDS_Shape theShell = Explo.Current();
-    theShell.Closed( Standard_True );
+  if (myShape.ShapeType() == TopAbs_SOLID || myThickening)
+  {
+    Explo.Init( myOffsetShape, TopAbs_SHELL );
+    
+    if (Explo.More()) {
+      TopoDS_Shape theShell = Explo.Current();
+      theShell.Closed( Standard_True );
+    }
+    
+    Standard_Integer            NbShell = 0;
+    TopoDS_Compound             NC;
+    TopoDS_Shape                S1;
+    BB.MakeCompound (NC);
+    
+    for (Explo.Init(myOffsetShape,TopAbs_SHELL); Explo.More(); Explo.Next()) {
+      const TopoDS_Shell& Sh = TopoDS::Shell(Explo.Current());
+      NbShell++;
+      if (Sh.Closed()) {
+        TopoDS_Solid  Sol;
+        BB.MakeSolid  (Sol);
+        BB.Add        (Sol,Sh);
+        Sol.Closed(Standard_True);
+        BB.Add (NC,Sol);
+        if (NbShell == 1) S1 = Sol;
+      }
+      else {
+        BB.Add (NC,Sh);
+        if (NbShell == 1) S1 = Sh;
+      }
+    }
+    if (NbShell == 1) myOffsetShape = S1;
+    else              myOffsetShape = NC;
   }
-
-/*
-  //Reconstructing
-  BRep_Builder BB;
-  for (i = 1; i <= Cones.Length(); i++)
-    {
-      TopoDS_Face Cone = TopoDS::Face( Cones(i) );
-      TopoDS_Edge Circ = TopoDS::Edge( Circs(i) );
-      TopoDS_Edge Seam = TopoDS::Edge( Seams(i) );
-      if (Circ.IsNull()) //case 1 with big offset
-	{
-	  //ExtraFace is absent
-	  
-	  Handle(Geom_Surface) aSurf = BRep_Tool::Surface( Cone ), OffSurf = aSurf;
-
-	  if (aSurf->DynamicType() == STANDARD_TYPE(Geom_OffsetSurface))
-	    aSurf = (Handle(Geom_OffsetSurface)::DownCast(aSurf))->BasisSurface();
-	  gp_Cone theCone = (Handle(Geom_ConicalSurface)::DownCast(aSurf))->Cone();
-	  gp_Pnt apex = theCone.Apex();
-	  Standard_Real Uapex, Vapex;
-	  ElSLib::Parameters( theCone, apex, Uapex, Vapex );
-	  if (aSurf->DynamicType() == STANDARD_TYPE(Geom_OffsetSurface))
-	    apex = OffSurf->Value( Uapex, Vapex );
-
-	  //Making new degenerated edge
-	  Handle(Geom2d_Line) theLine = GCE2d_MakeLine( gp_Pnt2d( 0., Vapex ), gp_Pnt2d( 2.*M_PI, Vapex ) );
-	  TopoDS_Edge NewEdge;
-	  BB.MakeEdge( NewEdge );
-	  NewEdge.Orientation(TopAbs_FORWARD);
-	  BB.UpdateEdge( NewEdge, theLine, Cone, Precision::Confusion() );
-	  BB.Range( NewEdge, 0., 2.*M_PI );
-	  BB.SameParameter( NewEdge, Standard_True );
-	  BB.SameRange( NewEdge, Standard_True );
-	  BB.Degenerated( NewEdge, Standard_True );
-	  TopoDS_Vertex Apex = BRepLib_MakeVertex( apex );
-	  BB.Add( NewEdge, Apex.Oriented(TopAbs_FORWARD) );
-	  BB.Add( NewEdge, Apex.Oriented(TopAbs_REVERSED) );
-
-	  //Reconstructing Seam
-	  Standard_Real f, l, par, cpar;
-	  Handle(Geom2d_Curve) theCurve = BRep_Tool::CurveOnSurface( Seam, Cone, f, l );
-	  gp_Lin2d aLine = (Handle(Geom2d_Line)::DownCast(theCurve))->Lin2d();
-	  par = ElCLib::Parameter( aLine, gp_Pnt2d( Uapex, Vapex ) );
-	  TopoDS_Shape aLocalShape = Seam.Oriented(TopAbs_FORWARD);
-	  TopoDS_Vertex cver = TopExp::LastVertex( TopoDS::Edge(aLocalShape) );
-	  cpar = BRep_Tool::Parameter( cver, Seam, Cone );
-	  if (Abs(f-cpar) < Abs(l-cpar))
-	    BB.Range( Seam, par, l );
-	  else
-	    BB.Range( Seam, f, par );
-	  Seam.Free( Standard_True );
-	  TopoDS_Shape cver1;
-	  TopoDS_Iterator iter( Seam );
-	  for (; iter.More(); iter.Next())
-	    {
-	      cver1 = iter.Value();
-	      if (cver1.IsSame(cver))
-		break;
-	    }
-	  BB.Remove( Seam, cver1 );
-	  if (Abs(f-cpar) < Abs(l-cpar))
-	    BB.Add( Seam, Apex.Oriented( TopAbs::Compose(Seam.Orientation(),TopAbs_FORWARD) ) );
-	  else
-	    BB.Add( Seam, Apex.Oriented( TopAbs::Compose(Seam.Orientation(),TopAbs_REVERSED) ) );
-
-	  //Adding NewEdge into Cone
-	  TopoDS_Shape theWire;
-	  for (fexp.Init( Cone, TopAbs_WIRE ); fexp.More(); fexp.Next())
-	    {
-	      theWire = fexp.Current();
-	      Standard_Boolean found = Standard_False;
-	      for (iter.Initialize( theWire ); iter.More(); iter.Next())
-		{
-		  if (Seam.IsSame( iter.Value() ))
-		    {
-		      found = Standard_True;
-		      break;
-		    }
-		}
-	      if (found)
-		break;
-	    }
-	  theWire.Free( Standard_True );
-	  NewEdge.Orientation( TopAbs::Compose(theWire.Orientation(),TopAbs_REVERSED) );
-	  BB.Add( theWire, NewEdge );
-	} //end of case 1 with big offset
-      else
-	{
-	  Handle(BRep_TEdge)& TE = *((Handle(BRep_TEdge)*) &Circ.TShape());
-	  if (! TE->Degenerated()) //case 1
-	    {
-	      //Find ExtraFace
-	      TopoDS_Face ExtraFace;
-	      for (fexp.Init( myOffsetShape, TopAbs_FACE ); fexp.More(); fexp.Next())
-		{
-		  ExtraFace = TopoDS::Face( fexp.Current() );
-		  if (ExtraFace.IsSame( Cone ))
-		    continue;
-		  Standard_Boolean found = Standard_False;
-		  TopExp_Explorer eexp( ExtraFace, TopAbs_EDGE );
-		  for (; eexp.More(); eexp.Next())
-		    if (Circ.IsSame( eexp.Current() ))
-		      {
-			found = Standard_True;
-			break;
-		      }
-		  if (found)
-		    break;
-		}
-	      
-	      Handle(Geom_Surface) aSurf = BRep_Tool::Surface( Cone ), OffSurf = aSurf;
-	      if (aSurf->DynamicType() == STANDARD_TYPE(Geom_OffsetSurface))
-		aSurf = (Handle(Geom_OffsetSurface)::DownCast(aSurf))->BasisSurface();
-	      gp_Cone theCone = (Handle(Geom_ConicalSurface)::DownCast(aSurf))->Cone();
-	      gp_Pnt apex = theCone.Apex();
-	      Standard_Real Uapex, Vapex;
-	      ElSLib::Parameters( theCone, apex, Uapex, Vapex );
-	      if (aSurf->DynamicType() == STANDARD_TYPE(Geom_OffsetSurface))
-		apex = OffSurf->Value( Uapex, Vapex );
-	      
-	      //Making new degenerated edge
-	      Handle(Geom2d_Line) theLine = GCE2d_MakeLine( gp_Pnt2d( 0., Vapex ), gp_Pnt2d( 2.*M_PI, Vapex ) );
-	      TopoDS_Edge NewEdge;
-	      BB.MakeEdge( NewEdge );
-	      NewEdge.Orientation(TopAbs_FORWARD);
-	      BB.UpdateEdge( NewEdge, theLine, Cone, BRep_Tool::Tolerance( Circ ) );
-	      BB.Range( NewEdge, 0., 2.*M_PI );
-	      BB.SameParameter( NewEdge, Standard_True );
-	      BB.SameRange( NewEdge, Standard_True );
-	      BB.Degenerated( NewEdge, Standard_True );
-	      TopoDS_Vertex Apex = BRepLib_MakeVertex( apex );
-	      BB.Add( NewEdge, Apex.Oriented(TopAbs_FORWARD) );
-	      BB.Add( NewEdge, Apex.Oriented(TopAbs_REVERSED) );
-	      
-	      TopoDS_Vertex cver = TopExp::FirstVertex( Circ );
-	      
-	      //Reconstructing Seam
-	      Standard_Real f, l, par, cpar;
-	      Handle(Geom2d_Curve) theCurve = BRep_Tool::CurveOnSurface( Seam, Cone, f, l );
-	      gp_Lin2d aLine = (Handle(Geom2d_Line)::DownCast(theCurve))->Lin2d();
-	      par = ElCLib::Parameter( aLine, gp_Pnt2d( Uapex, Vapex ) );
-	      cpar = BRep_Tool::Parameter( cver, Seam, Cone );
-	      if (Abs(f-cpar) < Abs(l-cpar))
-		BB.Range( Seam, par, l );
-	      else
-		BB.Range( Seam, f, par );
-	      Seam.Free( Standard_True );
-	      TopoDS_Shape cver1;
-	      TopoDS_Iterator iter( Seam );
-	      for (; iter.More(); iter.Next())
-		{
-		  cver1 = iter.Value();
-		  if (cver1.IsSame(cver))
-		    break;
-		}
-	      BB.Remove( Seam, cver1 );
-	      if (Abs(f-cpar) < Abs(l-cpar))
-		BB.Add( Seam, Apex.Oriented( TopAbs::Compose(Seam.Orientation(),TopAbs_FORWARD) ) );
-	      else
-		BB.Add( Seam, Apex.Oriented( TopAbs::Compose(Seam.Orientation(),TopAbs_REVERSED) ) );
-	      
-	      //Removing ExtraFace from the shell
-	      fexp.Init( myOffsetShape, TopAbs_SHELL );
-	      TopoDS_Shape theShell = fexp.Current();
-	      theShell.Free( Standard_True );
-	      TopoDS_Shape ExtraFace1;
-	      for (iter.Initialize( theShell ); iter.More(); iter.Next())
-		{
-		  ExtraFace1 = iter.Value();
-		  if (ExtraFace1.IsSame(ExtraFace))
-		    break;
-		}
-	      BB.Remove( theShell, ExtraFace1 );
-	      
-	      //Substitute Circ by NewEdge in Cone
-	      TopoDS_Shape theWire;
-	      TopoDS_Shape Circ1;
-	      for (fexp.Init( Cone, TopAbs_WIRE ); fexp.More(); fexp.Next())
-		{
-		  theWire = fexp.Current();
-		  Standard_Boolean found = Standard_False;
-		  for (iter.Initialize( theWire ); iter.More(); iter.Next())
-		    {
-		      Circ1 = iter.Value();
-		      if (Circ1.IsSame(Circ))
-			{
-			  found = Standard_True;
-			  break;
-			}
-		    }
-		  if (found)
-		    break;
-		}
-	      TopAbs_Orientation Or = Circ1.Orientation();
-	      theWire.Free( Standard_True );
-	      BB.Remove( theWire, Circ1 );
-	      BB.Add( theWire, NewEdge.Oriented(Or) );
-	    } //end of case 1
-	  else // Circ is degenerated
-	    {
-	      if (myOffset > 0. && myJoin == GeomAbs_Arc) //case 2
-		{
-		  TopoDS_Vertex cver = TopExp::FirstVertex( Circ );
-		  
-		  TopoDS_Face OrCone = TopoDS::Face( myInitOffsetFace.Root( Cone ) );
-		  Handle(Geom_Surface) aSurf = BRep_Tool::Surface( OrCone ), OffSurf = aSurf;
-		  if (aSurf->DynamicType() == STANDARD_TYPE(Geom_OffsetSurface))
-		    aSurf = (Handle(Geom_OffsetSurface)::DownCast(aSurf))->BasisSurface();
-		  gp_Cone theCone = (Handle(Geom_ConicalSurface)::DownCast(aSurf))->Cone();
-		  gp_Pnt apex = theCone.Apex();
-		  if (aSurf->DynamicType() == STANDARD_TYPE(Geom_OffsetSurface))
-		    {
-		      Standard_Real Uapex, Vapex;
-		      ElSLib::Parameters( theCone, apex, Uapex, Vapex );
-		      apex = OffSurf->Value( Uapex, Vapex );
-		    }
-
-		  Standard_Real f, l;
-		  Handle(Geom_Curve) ccur = BRep_Tool::Curve( Circ, f, l );
-		  gp_Ax2 Axe2 = (Handle(Geom_Circle)::DownCast(ccur))->Circ().Position();
-		  gp_Ax3 Axe3( Axe2 );
-		  Axe3.SetLocation( apex );
-		  gp_Sphere theSphere( Axe3, myOffset );
-
-		  gp_Pnt OrPnt = BRep_Tool::Pnt(cver);
-		  Standard_Real Uor, Vor;
-		  ElSLib::Parameters( theSphere, OrPnt, Uor, Vor );
-		  TopoDS_Face NewFace;
-		  if (Vor > 0.)
-		    NewFace = BRepLib_MakeFace( theSphere, 0., 2.*M_PI, Vor, M_PI/2. );
-		  else
-		    NewFace = BRepLib_MakeFace( theSphere, 0., 2.*M_PI, -M_PI/2., Vor );
-		  
-		  //Updating the bound of NewFace
-		  TopoDS_Edge Bound;
-		  TopExp_Explorer eexp( NewFace, TopAbs_EDGE );
-		  for (; eexp.More(); eexp.Next())
-		    {
-		      Bound = TopoDS::Edge( eexp.Current() );
-		      Handle(BRep_TEdge)& TE = *((Handle(BRep_TEdge)*) &Bound.TShape());
-		      if (!TE->Degenerated() && !BRepTools::IsReallyClosed( Bound, NewFace ))
-			break;
-		    }
-		  Handle(Geom2d_Curve) pcurve = BRep_Tool::CurveOnSurface( Circ, Cone, f, l );
-		  BB.UpdateEdge( Bound, pcurve, Cone, BRep_Tool::Tolerance(Circ) );
-		  TopoDS_Vertex bver = TopExp::FirstVertex( Bound );
-		  BB.UpdateVertex( bver, BRep_Tool::Tolerance(cver) );
-		  
-		  //Updating cver in Seam
-		  TopoDS_Vertex cver1;
-		  TopoDS_Iterator iter( Seam );
-		  for (; iter.More(); iter.Next())
-		    {
-		      cver1 = TopoDS::Vertex( iter.Value() );
-		      if (cver1.IsSame(cver))
-			break;
-		    }
-		  TopAbs_Orientation Or = cver1.Orientation();
-		  Seam.Free( Standard_True );
-		  BB.Remove( Seam, cver1 );
-		  BB.Add( Seam, bver.Oriented(Or) );
-		  
-		  //Substitute Circ by Bound in Cone
-		  TopoDS_Shape theWire;
-		  TopoDS_Shape Circ1;
-		  for (fexp.Init( Cone, TopAbs_WIRE ); fexp.More(); fexp.Next())
-		    {
-		      theWire = fexp.Current();
-		      Standard_Boolean found = Standard_False;
-		      for (iter.Initialize( theWire ); iter.More(); iter.Next())
-			{
-			  Circ1 = iter.Value();
-			  if (Circ1.IsSame(Circ))
-			    {
-			      found = Standard_True;
-			      break;
-			    }
-			}
-		      if (found)
-			break;
-		    }
-		  Or = Circ1.Orientation();
-		  theWire.Free( Standard_True );
-		  BB.Remove( theWire, Circ1 );
-		  BB.Add( theWire, Bound.Oriented(Or) );
-		  
-		  //Adding NewFace to the shell
-		  fexp.Init( myOffsetShape, TopAbs_SHELL );
-		  TopoDS_Shape theShell = fexp.Current();
-		  theShell.Free( Standard_True );
-		  BB.Add( theShell, NewFace );
-		  
-		  theShell.Closed( Standard_True );
-		} //end of case 2
-	      else // if ((myOffset > 0. && myJoin == GeomAbs_Intersection) || myOffset < 0.) //case 3, 4
-		{
-		  Handle(Geom_Surface) aSurf = BRep_Tool::Surface( Cone ), OffSurf = aSurf;
-		  if (aSurf->DynamicType() == STANDARD_TYPE(Geom_OffsetSurface))
-		    aSurf = (Handle(Geom_OffsetSurface)::DownCast(aSurf))->BasisSurface();
-		  gp_Cone theCone = (Handle(Geom_ConicalSurface)::DownCast(aSurf))->Cone();
-		  gp_Pnt apex = theCone.Apex();
-		  Standard_Real Uapex, Vapex;
-		  ElSLib::Parameters( theCone, apex, Uapex, Vapex );
-		  if (aSurf->DynamicType() == STANDARD_TYPE(Geom_OffsetSurface))
-		    apex = OffSurf->Value( Uapex, Vapex );
-		  
-		  //Making new degenerated edge
-		  Handle(Geom2d_Line) theLine = GCE2d_MakeLine( gp_Pnt2d( 0., Vapex ), gp_Pnt2d( 2.*M_PI, Vapex ) );
-		  TopoDS_Edge NewEdge;
-		  BB.MakeEdge( NewEdge );
-		  NewEdge.Orientation(TopAbs_FORWARD);
-		  BB.UpdateEdge( NewEdge, theLine, Cone, BRep_Tool::Tolerance( Circ ) );
-		  BB.Range( NewEdge, 0., 2.*M_PI );
-		  BB.SameParameter( NewEdge, Standard_True );
-		  BB.SameRange( NewEdge, Standard_True );
-		  BB.Degenerated( NewEdge, Standard_True );
-		  TopoDS_Vertex Apex = BRepLib_MakeVertex( apex );
-		  BB.Add( NewEdge, Apex.Oriented(TopAbs_FORWARD) );
-		  BB.Add( NewEdge, Apex.Oriented(TopAbs_REVERSED) );
-		  
-		  TopoDS_Vertex cver = TopExp::FirstVertex( Circ );
-		  
-		  //Reconstructing Seam
-		  Standard_Real f, l, par, cpar;
-		  Handle(Geom2d_Curve) theCurve = BRep_Tool::CurveOnSurface( Seam, Cone, f, l );
-		  gp_Lin2d aLine = (Handle(Geom2d_Line)::DownCast(theCurve))->Lin2d();
-		  par = ElCLib::Parameter( aLine, gp_Pnt2d( Uapex, Vapex ) );
-		  cpar = BRep_Tool::Parameter( cver, Seam, Cone );
-		  if (Abs(f-cpar) < Abs(l-cpar))
-		    BB.Range( Seam, par, l );
-		  else
-		    BB.Range( Seam, f, par );
-		  Seam.Free( Standard_True );
-		  TopoDS_Shape cver1;
-		  TopoDS_Iterator iter( Seam );
-		  for (; iter.More(); iter.Next())
-		    {
-		      cver1 = iter.Value();
-		      if (cver1.IsSame(cver))
-			break;
-		    }
-		  BB.Remove( Seam, cver1 );
-		  if (Abs(f-cpar) < Abs(l-cpar))
-		    BB.Add( Seam, Apex.Oriented( TopAbs::Compose(Seam.Orientation(),TopAbs_FORWARD) ) );
-		  else
-		    BB.Add( Seam, Apex.Oriented( TopAbs::Compose(Seam.Orientation(),TopAbs_REVERSED) ) );
-		  
-		  //Substitute Circ by NewEdge in Cone
-		  TopoDS_Shape theWire;
-		  TopoDS_Shape Circ1;
-		  for (fexp.Init( Cone, TopAbs_WIRE ); fexp.More(); fexp.Next())
-		    {
-		      theWire = fexp.Current();
-		      Standard_Boolean found = Standard_False;
-		      for (iter.Initialize( theWire ); iter.More(); iter.Next())
-			{
-			  Circ1 = iter.Value();
-			  if (Circ1.IsSame(Circ))
-			    {
-			      found = Standard_True;
-			      break;
-			    }
-			}
-		      if (found)
-			break;
-		    }
-		  TopAbs_Orientation Or = Circ1.Orientation();
-		  theWire.Free( Standard_True );
-		  BB.Remove( theWire, Circ1 );
-		  BB.Add( theWire, NewEdge.Oriented(Or) );
-		  
-		  fexp.Init( myOffsetShape, TopAbs_SHELL );
-		  TopoDS_Shape theShell = fexp.Current();
-		  theShell.Closed( Standard_True );
-		} //end of case 3, 4
-	    }
-	} //else (! Circ.IsNull())
-    }
-*/
-
-  Standard_Integer            NbShell = 0;
-  TopoDS_Compound             NC;
-  TopoDS_Shape                S1;
-  BB.MakeCompound (NC);
-  
-  for (Explo.Init(myOffsetShape,TopAbs_SHELL); Explo.More(); Explo.Next()) {
-    const TopoDS_Shell& Sh = TopoDS::Shell(Explo.Current());
-    NbShell++;
-    if (Sh.Closed()) {
-      TopoDS_Solid  Sol;
-      BB.MakeSolid  (Sol);
-      BB.Add        (Sol,Sh);
-      Sol.Closed(Standard_True);
-      BB.Add (NC,Sol);
-      if (NbShell == 1) S1 = Sol;
-    }
-    else {
-      BB.Add (NC,Sh);
-      if (NbShell == 1) S1 = Sh;
-    }
-  }
-  if (NbShell == 1) myOffsetShape = S1;
-  else              myOffsetShape = NC;
 }
 
 
