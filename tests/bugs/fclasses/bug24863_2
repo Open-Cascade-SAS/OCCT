@@ -12,7 +12,6 @@ if {$is_ok != $check_ok} {
     puts "Error : results of command \"whatis\" are different"
 }
 
-set check_puts [puts $b]
-if {$check_puts != ""} {
-    puts "Error : result of command \"puts\" is wrong"
+if {$b != "b"} {
+    puts "Error : tcl variable doesn't point to same-named draw variable"
 }

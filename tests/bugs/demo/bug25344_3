@@ -1,0 +1,32 @@
+puts "========"
+puts "OCC25344"
+puts "========"
+puts ""
+#######################################################
+# Draw variables do not follow the scope of TCL level
+#######################################################
+
+proc boxproc {shape} {
+  upvar $shape local_shape
+  box local_shape 1 1 1
+}
+
+boxproc mybox
+
+if {[dtyp mybox] == ""} {
+  puts "ERROR: box mybox is not created"
+} else {
+  puts "SUCCESS: mybox is created"
+  if {[lsearch [directory] mybox] == -1} {
+    puts "ERRROR: but it is absent among TCL variables"
+  } else {
+    puts "SUCCESS: and it is present among TCL variables"
+  }
+}
+
+if {[dtyp local_shape] != ""} {
+  puts "Box local_shape is created"
+  if {[lsearch [directory] local_shape] == -1} {
+    puts "ERROR: but it is absent among TCL variables"
+  }
+}

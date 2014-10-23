@@ -275,9 +275,10 @@ help datadir {datadir [directory]} "DRAW Variables management"
 
 proc save {name {file ""}} {
     if {$file == ""} {set file $name}
-    if {![isdraw $name]} {error "save : $name is not a Draw variable"}
+    upvar $name n
+    if {![isdraw n]} {error "save : $name is not a Draw variable"}
     global Draw_DataDir
-    bsave $name [file join $Draw_DataDir $file]
+    bsave n [file join $Draw_DataDir $file]
     return [file join $Draw_DataDir $file]
 }
 
@@ -289,7 +290,8 @@ proc restore {file {name ""}} {
         set name [file rootname [file tail $file]]
     }
     global Draw_DataDir
-    uplevel #0 "brestore [file join $Draw_DataDir $file ] $name"
+    upvar $name n
+    brestore [file join $Draw_DataDir $file ] n
     return $name
 }
 

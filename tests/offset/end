@@ -115,7 +115,7 @@ if { [isdraw result] && $mist == 0} {
 	}
 	#check for bsection
 	if { [info exists GlobFaces] && [llength $GlobFaces] == 0 } {
-	    puts [ bsection re $result $s ]
+	    puts [ bsection re result s ]
 	    if { [ isdraw re ] } {
 		regexp {Mass +: +([-0-9.+eE]+)} [lprops $re] full remass 
 		if { $remass != 0 } {

@@ -29,7 +29,7 @@
 #include <Draw_SequenceOfDrawable3D.hxx>
 #include <Draw_ProgressIndicator.hxx>
 
-#include <NCollection_DataMap.hxx>
+#include <NCollection_Map.hxx>
 
 #include <ios>
 
@@ -55,7 +55,7 @@ extern Draw_Interpretor theCommands;
 // The Integer Value is the content of the TCl variable 
 //===============================================
 
-static NCollection_DataMap<TCollection_AsciiString,Handle(Draw_Drawable3D)> theVariables;
+static NCollection_Map<Handle(Draw_Drawable3D)> theVariables;
 
 //=======================================================================
 //function : FindVariable
@@ -305,9 +305,9 @@ static Standard_Integer erase(Draw_Interpretor& di, Standard_Integer n, const ch
     
     // sauvegarde des proteges visibles
     Draw_SequenceOfDrawable3D prot;
-    NCollection_DataMap<TCollection_AsciiString,Handle(Draw_Drawable3D)>::Iterator aMapIt (theVariables);
+    NCollection_Map<Handle(Draw_Drawable3D)>::Iterator aMapIt (theVariables);
     for (; aMapIt.More(); aMapIt.Next()) {
-      const Handle(Draw_Drawable3D)& D = aMapIt.Value();
+      const Handle(Draw_Drawable3D)& D = aMapIt.Key();
       if (!D.IsNull()) {
 	if (D->Protected() && D->Visible())
 	  prot.Append(D);
@@ -719,30 +719,32 @@ void Draw::Set(const Standard_CString name,
 }
 
 // MKV 29.03.05
-static char* tracevar(ClientData, Tcl_Interp*,const char* name,const char*, Standard_Integer)
+static char* tracevar(ClientData CD, Tcl_Interp*,const char* name,const char*, int)
 {
   // protect if the map was destroyed before the interpretor
   if (theVariables.IsEmpty()) return NULL;
-  // MKV 29.03.05
-  Handle(Draw_Drawable3D)& D = theVariables(name);
+
+  // MSV 9.10.14 CR25344
+  Handle(Draw_Drawable3D) D(reinterpret_cast<Draw_Drawable3D*>(CD));
   if (D.IsNull()) {
-    theVariables.UnBind(name);
+    Tcl_UntraceVar(theCommands.Interp(),name,TCL_TRACE_UNSETS | TCL_TRACE_WRITES,
+                   tracevar,CD);
     return NULL;
   }
   if (D->Protected()) {
     D->Name(Tcl_SetVar(theCommands.Interp(),name,name,0));
     return (char*) "variable is protected";
   } else {
-    Tcl_UntraceVar(theCommands.Interp(),name,TCL_TRACE_UNSETS | TCL_TRACE_WRITES,tracevar,NULL);
     if (D->Visible()) {
       dout.RemoveDrawable(D);
       if (D->Is3D()) 
-	repaint3d = Standard_True;
+          repaint3d = Standard_True;
       else
-	repaint2d = Standard_True;
+          repaint2d = Standard_True;
     }
-    D.Nullify();
-    theVariables.UnBind(name);
+    Tcl_UntraceVar(theCommands.Interp(),name,TCL_TRACE_UNSETS | TCL_TRACE_WRITES,
+                   tracevar,CD);
+    theVariables.Remove(D);
     return NULL;
   }
 }
@@ -752,8 +754,8 @@ static char* tracevar(ClientData, Tcl_Interp*,const char* name,const char*, Stan
 //purpose  : 
 //=======================================================================
 void Draw::Set(const Standard_CString name, 
-	       const Handle(Draw_Drawable3D)& D,
-	       const Standard_Boolean displ)
+               const Handle(Draw_Drawable3D)& D,
+               const Standard_Boolean displ)
 {
   if ((name[0] == '.') && (name[1] == '\0')) {
     if (!D.IsNull()) {
@@ -762,27 +764,34 @@ void Draw::Set(const Standard_CString name,
     }
   }
   else {
-    if (theVariables.IsBound(name)) {
-      if (theVariables(name)->Protected()) {
+    // Check if the variable with the same name exists
+    ClientData aCD =
+      Tcl_VarTraceInfo(theCommands.Interp(),name,TCL_TRACE_UNSETS | TCL_TRACE_WRITES,
+                       tracevar, NULL);
+    Handle(Draw_Drawable3D) anOldD(reinterpret_cast<Draw_Drawable3D*>(aCD));
+    if (!anOldD.IsNull()) {
+      if (theVariables.Contains(anOldD) && anOldD->Protected()) {
         cout << "variable is protected" << endl;
         return;
       }
+      anOldD.Nullify();
     }
+
+    Tcl_UnsetVar(theCommands.Interp(),name,0);
+
     if (!D.IsNull()) {
-      Tcl_UnsetVar(theCommands.Interp(),name,0);
-      theVariables.Bind(name,D);
-      // MKV 29.03.05
+      theVariables.Add(D);
       D->Name(Tcl_SetVar(theCommands.Interp(),name,name,0));
+    
       // set the trace function
-      Tcl_TraceVar(theCommands.Interp(),name,TCL_TRACE_UNSETS | TCL_TRACE_WRITES,tracevar,NULL);
+      Tcl_TraceVar(theCommands.Interp(),name,TCL_TRACE_UNSETS | TCL_TRACE_WRITES,
+                   tracevar,reinterpret_cast<ClientData>(D.operator->()));
       if (displ) {
-	if (!D->Visible())
-	  dout << D;
+        if (!D->Visible())
+          dout << D;
       }
       else if (D->Visible())
-	dout.RemoveDrawable(D);
-    } else {
-      Tcl_UnsetVar(theCommands.Interp(),name,0);
+        dout.RemoveDrawable(D);
     }
   }
 }
@@ -827,8 +836,12 @@ Handle(Draw_Drawable3D) Draw::Get(Standard_CString& name,
     }
   }
   else {
-    // MKV 29.03.05
-    theVariables.Find(name,D);
+    ClientData aCD =
+      Tcl_VarTraceInfo(theCommands.Interp(),name,TCL_TRACE_UNSETS | TCL_TRACE_WRITES,
+                       tracevar, NULL);
+    D = reinterpret_cast<Draw_Drawable3D*>(aCD);
+    if (!theVariables.Contains(D))
+      D.Nullify();
 #if 0
     if (D.IsNull() && complain)
       cout <<name<<" does not exist"<<endl;

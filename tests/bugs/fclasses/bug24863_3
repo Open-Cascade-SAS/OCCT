@@ -8,9 +8,8 @@ if {![catch {set b aaaaa}]} {
      puts "Error : variable was changed"
 }
 
-set check_puts [puts $b]
-if {$check_puts != ""} {
-    puts "Error : result of command \"puts\" is wrong"
+if {$b != "b"} {
+    puts "Error : tcl variable doesn't point to same-named draw variable"
 }
 
 set check_ok [whatis b]
