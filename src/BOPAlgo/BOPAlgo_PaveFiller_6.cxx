@@ -698,7 +698,6 @@ Standard_Integer BOPAlgo_PaveFiller::PostTreatFF
   aPF.Perform();
   iErr=aPF.ErrorStatus();
   if (iErr) {
-    //iRet=1; //PKVft
     return iRet;
   }
   aPDS=aPF.PDS();
@@ -940,6 +939,9 @@ void BOPAlgo_PaveFiller::UpdateFaceInfo
     for (j=0; j<aNbP; ++j) {
       const BOPDS_Point& aNP=aVNP(j);
       nV1=aNP.Index();
+      if (nV1<0) {
+        continue;
+      }
       aFI1.ChangeVerticesSc().Add(nV1);
       aFI2.ChangeVerticesSc().Add(nV1);
     }

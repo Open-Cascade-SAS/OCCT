@@ -62,7 +62,8 @@ is
     deferred class BuilderShape; 
     class PaveFiller;
     class Builder; 
-    class BOP; 
+    class BOP;   
+    class Section;   
     --	
     deferred class BuilderArea;
     class BuilderFace;
@@ -80,7 +81,8 @@ is
     --  pointers
     --
     pointer PPaveFiller to PaveFiller from BOPAlgo; 
-    pointer PWireEdgeSet to WireEdgeSet from BOPAlgo; 
+    pointer PWireEdgeSet to WireEdgeSet from BOPAlgo;  
+    pointer PSection to Section from BOPAlgo;   
     pointer PBOP to BOP from BOPAlgo;  
     pointer PBuilder to Builder from BOPAlgo;  
     pointer PArgumentAnalyzer to ArgumentAnalyzer from BOPAlgo;  

@@ -175,8 +175,9 @@ TopoDS_Shape QANewModTopOpe_Tools::NewVertex(const BOPAlgo_PPaveFiller& theDSFil
 // function: HasDomain
 // purpose:
 // ========================================================================================
-Standard_Boolean QANewModTopOpe_Tools::HasSameDomain(const BOPAlgo_PBOP& theBuilder, 
-                                                     const TopoDS_Shape& theFace) 
+Standard_Boolean QANewModTopOpe_Tools::HasSameDomain
+  (const BOPAlgo_PBuilder& theBuilder, 
+   const TopoDS_Shape& theFace) 
 {
   Standard_Integer bRet;
   bRet = Standard_False;
@@ -212,9 +213,10 @@ Standard_Boolean QANewModTopOpe_Tools::HasSameDomain(const BOPAlgo_PBOP& theBuil
 // function: SameDomain
 // purpose:
 // ========================================================================================
-void QANewModTopOpe_Tools::SameDomain(const BOPAlgo_PBOP&   theBuilder, 
-                                      const TopoDS_Shape&   theFace,
-                                      TopTools_ListOfShape& theResultList) 
+void QANewModTopOpe_Tools::SameDomain
+  (const BOPAlgo_PBuilder&   theBuilder, 
+   const TopoDS_Shape&   theFace,
+   TopTools_ListOfShape& theResultList) 
 {
   theResultList.Clear();
 

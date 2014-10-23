@@ -30,6 +30,7 @@
 #include <BOPAlgo_PaveFiller.hxx>
 #include <BOPAlgo_Operation.hxx>
 #include <BOPAlgo_BOP.hxx>
+#include <BOPAlgo_Section.hxx>
 //
 #include <BOPTest_DrawableShape.hxx>
 #include <BOPTest_Objects.hxx>
@@ -241,7 +242,6 @@ Standard_Integer bbuild(Draw_Interpretor& di,
   DBRep::Set(a[1], aR);
   return 0;
 }
-
 //=======================================================================
 //function : bbop
 //purpose  : 
@@ -288,30 +288,43 @@ Standard_Integer bbop(Draw_Interpretor& di,
   //
   BOPAlgo_PaveFiller& aPF=BOPTest_Objects::PaveFiller();
   //
-  BOPAlgo_BOP& aBOP=BOPTest_Objects::BOP();
-  aBOP.Clear();
+  BOPAlgo_Builder *pBuilder=NULL;
+  
+  if (aOp!=BOPAlgo_SECTION) { 
+    pBuilder=&BOPTest_Objects::BOP();
+  } 
+  else {
+    pBuilder=&BOPTest_Objects::Section();
+  }
+  //
+  pBuilder->Clear();
   //
   BOPCol_ListOfShape& aLSObj=BOPTest_Objects::Shapes();
   aIt.Initialize(aLSObj);
   for (; aIt.More(); aIt.Next()) {
     const TopoDS_Shape& aS=aIt.Value();
-    aBOP.AddArgument(aS);
+    pBuilder->AddArgument(aS);
   }
   //
-  BOPCol_ListOfShape& aLSTools=BOPTest_Objects::Tools();
-  aIt.Initialize(aLSTools);
-  for (; aIt.More(); aIt.Next()) {
-    const TopoDS_Shape& aS=aIt.Value();
-    aBOP.AddTool(aS);
+  if (aOp!=BOPAlgo_SECTION) {
+    BOPAlgo_BOP *pBOP=(BOPAlgo_BOP *)pBuilder;
+    //
+    BOPCol_ListOfShape& aLSTools=BOPTest_Objects::Tools();
+    aIt.Initialize(aLSTools);
+    for (; aIt.More(); aIt.Next()) {
+      const TopoDS_Shape& aS=aIt.Value();
+      pBOP->AddTool(aS);
+    }
+    //
+    pBOP->SetOperation(aOp);
   }
   //
-  aBOP.SetOperation(aOp);
-  aBOP.SetRunParallel(bRunParallel);
+  pBuilder->SetRunParallel(bRunParallel);
   //
   aChrono.Start();
   //
-  aBOP.PerformWithFiller(aPF);
-  iErr=aBOP.ErrorStatus();
+  pBuilder->PerformWithFiller(aPF);
+  iErr=pBuilder->ErrorStatus();
   if (iErr) {
     Sprintf(buf, " error: %d\n",  iErr);
     di << buf;
@@ -328,7 +341,7 @@ Standard_Integer bbop(Draw_Interpretor& di,
     di << buf;
   }
   //
-  const TopoDS_Shape& aR=aBOP.Shape();
+  const TopoDS_Shape& aR=pBuilder->Shape();
   if (aR.IsNull()) {
     di << " null shape\n";
     return 0;

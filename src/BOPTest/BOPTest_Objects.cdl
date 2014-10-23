@@ -14,20 +14,22 @@
 
 class Objects from BOPTest 
 
-	---Purpose: 
+ ---Purpose: 
 
 uses  
-    ListOfShape from BOPCol,
+    ListOfShape from BOPCol, 
+    PDS from BOPDS,
     PaveFiller from BOPAlgo,
     Builder from BOPAlgo, 
     PBuilder from BOPAlgo, 
     BOP from BOPAlgo, 
-    PDS from BOPDS
+    Section from BOPAlgo  
+ 
 --raises
 
 is 
     PaveFiller(myclass) 
-    	returns PaveFiller from BOPAlgo;  
+     returns PaveFiller from BOPAlgo;  
     ---C++: return &   
 
     Init(myclass); 
@@ -35,26 +37,30 @@ is
     Clear(myclass); 
 
     PDS(myclass) 
-    	returns PDS from BOPDS; 
-	 
+     returns PDS from BOPDS; 
+  
     Builder(myclass) 
-    	returns Builder from BOPAlgo; 
+     returns Builder from BOPAlgo; 
     ---C++: return & 
     
     BOP(myclass) 
-    	returns BOP from BOPAlgo; 
+     returns BOP from BOPAlgo; 
     ---C++: return & 
-
+ 
+    Section(myclass) 
+     returns Section from BOPAlgo;  
+    ---C++: return &  
+ 
     Shapes(myclass)   
-    	returns ListOfShape from BOPCol; 
+     returns ListOfShape from BOPCol; 
     ---C++: return &  
      
     Tools(myclass)   
-    	returns ListOfShape from BOPCol; 
+     returns ListOfShape from BOPCol; 
     ---C++: return &  
     -- 
     SetBuilder(myclass; 
-    	    theBuilder:PBuilder from BOPAlgo); 
+         theBuilder:PBuilder from BOPAlgo); 
   
     SetBuilderDefault(myclass); 
  

@@ -45,6 +45,7 @@
 #include <BRepAlgoAPI_Fuse.hxx>
 #include <BRepAlgoAPI_Cut.hxx>
 #include <BRepAlgoAPI_Section.hxx>
+#include <BOPAlgo_Section.hxx>
 
 //
 static BOPAlgo_PaveFiller* pPF=NULL;
@@ -193,14 +194,6 @@ Standard_Integer boptuc(Draw_Interpretor& di, Standard_Integer n, const char** a
   return bopsmt(di, n, a, BOPAlgo_CUT21);
 }
 //=======================================================================
-//function : bopsection
-//purpose  : 
-//=======================================================================
-Standard_Integer bopsection(Draw_Interpretor& di, Standard_Integer n, const char** a)
-{
-  return bopsmt(di, n, a, BOPAlgo_SECTION);
-}
-//=======================================================================
 //function : bopsmt
 //purpose  : 
 //=======================================================================
@@ -242,6 +235,62 @@ Standard_Integer bopsmt(Draw_Interpretor& di,
   aBOP.AddArgument(aS1);
   aBOP.AddTool(aS2);
   aBOP.SetOperation(aOp);
+  //
+  aBOP.PerformWithFiller(*pPF);
+  iErr=aBOP.ErrorStatus();
+  if (iErr) {
+    Sprintf(buf, " ErrorStatus : %d\n",  iErr);
+    di << buf;
+    return 0;
+  }
+  //
+  const TopoDS_Shape& aR=aBOP.Shape();
+  if (aR.IsNull()) {
+    di << " null shape\n";
+    return 0;
+  }
+  //
+  DBRep::Set(a[1], aR);
+  return 0;
+}
+//=======================================================================
+//function : bopsection
+//purpose  : 
+//=======================================================================
+Standard_Integer bopsection(Draw_Interpretor& di, Standard_Integer n, const char** a)
+{
+  if (n<2) {
+    di << " use bopsmt r\n";
+    return 0;
+  }
+  //
+  if (!pPF) {
+    di << " prepare PaveFiller first\n";
+    return 0;
+  }
+  //
+  if (pPF->ErrorStatus()) {
+    di << " PaveFiller has not been done\n";
+    return 0;
+  }
+  //
+  char buf[64];
+  Standard_Integer aNb, iErr;
+  BOPAlgo_Section aBOP;
+  //
+  const BOPCol_ListOfShape& aLC=pPF->Arguments();
+  aNb=aLC.Extent();
+  if (aNb!=2) {
+    Sprintf (buf, " wrong number of arguments %s\n", aNb);
+    di << buf;
+    return 0;
+  }
+  //
+  const TopoDS_Shape& aS1=aLC.First();
+  const TopoDS_Shape& aS2=aLC.Last();
+  //
+  aBOP.AddArgument(aS1);
+  aBOP.AddArgument(aS2);
   //
   aBOP.PerformWithFiller(*pPF);
   iErr=aBOP.ErrorStatus();
@@ -327,7 +376,10 @@ Standard_Integer  bsection(Draw_Interpretor& di,
     const char* key2 = (n > 5) ? a[5] : NULL;
     const char* pcurveconf = NULL;
 
-    if (key1 && (!strcasecmp(key1,"-n2d") || !strcasecmp(key1,"-n2d1") || !strcasecmp(key1,"-n2d2"))) {
+    if (key1 && 
+        (!strcasecmp(key1,"-n2d") || 
+         !strcasecmp(key1,"-n2d1") || 
+         !strcasecmp(key1,"-n2d2"))) {
       pcurveconf = key1;
     }
     else {

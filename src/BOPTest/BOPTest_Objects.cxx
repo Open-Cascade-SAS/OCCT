@@ -178,6 +178,15 @@ BOPAlgo_BOP& BOPTest_Objects::BOP()
   return sBOP;
 }
 //=======================================================================
+//function : Section
+//purpose  : 
+//=======================================================================
+BOPAlgo_Section& BOPTest_Objects::Section()
+{
+  static BOPAlgo_Section sSection(Allocator1());
+  return sSection;
+}
+//=======================================================================
 //function : Shapes
 //purpose  : 
 //=======================================================================

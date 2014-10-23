@@ -12,7 +12,6 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement. 
 
---BOPAlgo_BOP.cdl
  
 class BOP from BOPAlgo  
     inherits Builder from BOPAlgo
@@ -71,13 +70,13 @@ is
     ---Purpose:  Provides preparing actions 
 
     PerformInternal1(me:out; 
-        thePF:PaveFiller from BOPAlgo) 
+            thePF:PaveFiller from BOPAlgo) 
         is redefined protected;   
     ---Purpose:  Performs calculations using prepared Filler 
     --           object <thePF>          	 
      
     BuildResult(me:out; 
-        theType: ShapeEnum from TopAbs) 
+            theType: ShapeEnum from TopAbs) 
         is redefined protected;     
      
     BuildShape(me:out) 
@@ -88,26 +87,13 @@ is
  
     BuildSolid(me:out) 
         is protected; 
-	 
-    BuildSection(me:out) 
-        is protected;  
  
     IsBoundSplits(me:out; 
             theS:Shape from TopoDS; 
             theMEF:out IndexedDataMapOfShapeListOfShape from BOPCol)  
         returns Boolean from Standard
         is protected;
-
-    Generated (me:out;  
-            theS : Shape from TopoDS) 
-        returns ListOfShape from TopTools
-        is redefined; 
-    ---C++: return const & 
-    ---Purpose: Returns the  list of shapes generated from the
-    --          shape theS. 
-   
-      
-
+ 
 fields 
     myOperation : Operation from BOPAlgo   is protected; 
     myDims      : Integer from Standard[2] is protected;  

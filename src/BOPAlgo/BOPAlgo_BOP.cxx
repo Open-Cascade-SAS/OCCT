@@ -140,15 +140,26 @@ void BOPAlgo_BOP::CheckData()
   //
   myErrorStatus=0;
   //
+  if (!(myOperation==BOPAlgo_COMMON ||
+        myOperation==BOPAlgo_FUSE || 
+        myOperation==BOPAlgo_CUT|| 
+        myOperation==BOPAlgo_CUT21)) {
+    // non-licit operation
+    myErrorStatus=14;
+    return;
+  }
+  //
   aNbArgs=myArguments.Extent();
   if (!aNbArgs) {
-    myErrorStatus=100; // invalid number of Arguments
+    // invalid number of Arguments
+    myErrorStatus=100; 
     return;
   }
   //
   aNbTools=myTools.Extent();
-  if (!aNbTools) {
-    myErrorStatus=100; // invalid number of Tools
+  if (!aNbTools) { 
+    // invalid number of Tools
+    myErrorStatus=100;
     return;
   }
   //
@@ -162,6 +173,9 @@ void BOPAlgo_BOP::CheckData()
     return;
   }
   //
+  // myDims
+  myDims[0]=-1;
+  myDims[1]=-1;
   for (i=0; i<2; ++i) {
     const BOPCol_ListOfShape& aLS=(!i)? myArguments : myTools;
     aItLS.Initialize(aLS);
@@ -174,7 +188,8 @@ void BOPAlgo_BOP::CheckData()
       //
       iDim=BOPTools_AlgoTools::Dimension(aS);
       if (iDim<0) {
-        myErrorStatus=13; // non-homogenious argument
+        // non-homogenious argument
+        myErrorStatus=13; 
         return;
       }
       //
@@ -183,28 +198,27 @@ void BOPAlgo_BOP::CheckData()
         continue;
       }
       //
-      if (iDim!=myDims[i]) {
-        myErrorStatus=13; // non-homogenious argument
+      if (iDim!=myDims[i]) { 
+        // non-homogenious argument
+        myErrorStatus=13;
         return;
       }
     }
   }
   //
-  if (myOperation==BOPAlgo_UNKNOWN) {
-    myErrorStatus=14; // non-licit operation
-    return;
-  }
-  else if (myDims[0]<myDims[1]) {
+  if (myDims[0]<myDims[1]) {
     if (myOperation==BOPAlgo_FUSE ||
-        myOperation==BOPAlgo_CUT21) {
-      myErrorStatus=14; // non-licit operation for the arguments
+        myOperation==BOPAlgo_CUT21) { 
+      // non-licit operation for the arguments
+      myErrorStatus=14;
       return;
     }
   }
   else if (myDims[0]>myDims[1]) {
     if (myOperation==BOPAlgo_FUSE ||
         myOperation==BOPAlgo_CUT) {
-      myErrorStatus=14; // non-licit operation for the arguments
+      // non-licit operation for the arguments
+      myErrorStatus=14; 
       return;
     }
   }
@@ -258,8 +272,6 @@ void BOPAlgo_BOP::Prepare()
       }
         break;
         //
-      case BOPAlgo_COMMON:
-      case BOPAlgo_SECTION:
       default:
         break;
       }
@@ -388,31 +400,23 @@ void BOPAlgo_BOP::PerformInternal1(const BOPAlgo_PaveFiller& theFiller)
   if (myErrorStatus) {
     return;
   }
-  
+  //
   BuildResult(TopAbs_EDGE);
   if (myErrorStatus) {
     return;
   }
-  //-------------------------------- SECTION 
-  if (myOperation==BOPAlgo_SECTION) {
-    BuildSection();
-    PrepareHistory();
-    PostTreat();
-    return;
-  }
-  //-------------------------------- 
   //
   // 3.3 Wires
   FillImagesContainers(TopAbs_WIRE);
   if (myErrorStatus) {
     return;
   }
-  
+  //
   BuildResult(TopAbs_WIRE);
   if (myErrorStatus) {
     return;
   }
-  
+  //
   // 3.4 Faces
   FillImagesFaces();
   if (myErrorStatus) {
@@ -423,43 +427,46 @@ void BOPAlgo_BOP::PerformInternal1(const BOPAlgo_PaveFiller& theFiller)
   if (myErrorStatus) {
     return;
   }
+  //
   // 3.5 Shells
-  
   FillImagesContainers(TopAbs_SHELL);
   if (myErrorStatus) {
     return;
   }
-  
+  //
   BuildResult(TopAbs_SHELL);
   if (myErrorStatus) {
     return;
   }
+  //
   // 3.6 Solids
   FillImagesSolids();
   if (myErrorStatus) {
     return;
   }
-  
+  //
   BuildResult(TopAbs_SOLID);
   if (myErrorStatus) {
     return;
   }
+  //
   // 3.7 CompSolids
   FillImagesContainers(TopAbs_COMPSOLID);
   if (myErrorStatus) {
     return;
   }
-  
+  //
   BuildResult(TopAbs_COMPSOLID);
   if (myErrorStatus) {
     return;
   }
+  //
   // 3.8 Compounds
   FillImagesCompounds();
   if (myErrorStatus) {
     return;
   }
-  
+  //
   BuildResult(TopAbs_COMPOUND);
   if (myErrorStatus) {
     return;
@@ -964,7 +971,7 @@ void BOPAlgo_BOP::BuildSolid()
   myShape=aRC;
 }
 //=======================================================================
-//function : IsBoundImages
+//function : IsBoundSplits
 //purpose  : 
 //=======================================================================
 Standard_Boolean BOPAlgo_BOP::IsBoundSplits

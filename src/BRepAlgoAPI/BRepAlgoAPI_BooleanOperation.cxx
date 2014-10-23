@@ -24,17 +24,21 @@
 #include <TopTools_MapOfShape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 
+#include <BOPDS_DS.hxx>
+
 #include <BOPAlgo_PaveFiller.hxx>
 #include <BOPAlgo_BOP.hxx>
-#include <BOPDS_DS.hxx>
+#include <BOPAlgo_Section.hxx>
+
 
 //=======================================================================
 //function : BRepAlgoAPI_BooleanOperation
 //purpose  : 
 //=======================================================================
-  BRepAlgoAPI_BooleanOperation::BRepAlgoAPI_BooleanOperation(const TopoDS_Shape& aS1, 
-                                                             const TopoDS_Shape& aS2,
-                                                             const BOPAlgo_Operation anOp)
+BRepAlgoAPI_BooleanOperation::BRepAlgoAPI_BooleanOperation
+  (const TopoDS_Shape& aS1, 
+   const TopoDS_Shape& aS2,
+   const BOPAlgo_Operation anOp)
 : 
   myS1(aS1),
   myS2(aS2),
@@ -268,11 +272,21 @@ const TopTools_ListOfShape& BRepAlgoAPI_BooleanOperation::Modified(const TopoDS_
   }
   //
   myShape.Nullify();
-
-  myBuilder=new BOPAlgo_BOP;
-  myBuilder->AddArgument(aS1);
-  myBuilder->AddTool(aS2);
-  myBuilder->SetOperation(myOperation);
+  //
+  if (myOperation==BOPAlgo_SECTION) {
+    myBuilder=new BOPAlgo_Section;
+    myBuilder->AddArgument(aS1);
+    myBuilder->AddArgument(aS2);
+  }
+  else {
+    BOPAlgo_BOP *pBOP;
+    //
+    pBOP=new BOPAlgo_BOP;
+    myBuilder=pBOP;
+    pBOP->AddArgument(aS1);
+    pBOP->AddTool(aS2);
+    pBOP->SetOperation(myOperation);
+  }
   //
   myBuilder->PerformWithFiller(*myDSFiller);
   iErr = myBuilder->ErrorStatus();
@@ -285,7 +299,12 @@ const TopTools_ListOfShape& BRepAlgoAPI_BooleanOperation::Modified(const TopoDS_
       BRepAlgoAPI_Check aCheckRes(myShape);
       isDumpRes = !aCheckRes.IsValid();
       if (isDumpArgs || isDumpRes) {
-        BRepAlgoAPI::DumpOper(aPath, aS1, aS2, myShape, myOperation, isDumpArgs);
+        BRepAlgoAPI::DumpOper(aPath, 
+                              aS1, 
+                              aS2, 
+                              myShape, 
+                              myOperation, 
+                              isDumpArgs);
       }
     }
     //
