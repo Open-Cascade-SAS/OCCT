@@ -75,13 +75,15 @@ is
 	--            Returns the index of this point in <theGeomPnts>.    
     returns Integer is static;
     
-    TangentBefore(me : in out ; anitem : Integer) 
+    TangentBefore(me : in out ; anitem : Integer;
+    	    	    	    	IsOpenResult : Boolean)
     	--- Purpose : Creates the Tangent at the end of the Item defined
     	--            by <anitem>. Returns the index of this vector in
     	--            <theGeomVecs>
     returns Integer is static;
     
-    TangentAfter(me : in out ; anitem : Integer) 
+    TangentAfter(me : in out ; anitem : Integer;
+    	    	    	       IsOpenResult : Boolean)
     	--- Purpose : Creates the Reversed Tangent at the origin of the Item 
     	--            defined by <anitem>. Returns the index of this vector in
     	--            <theGeomVecs>

@@ -1523,7 +1523,7 @@ Standard_Integer mkoffset(Draw_Interpretor& di,
   else
   {
     Base.Orientation(TopAbs_FORWARD);
-    Paral.Init(TopoDS::Face(Base));
+    Paral.Init(TopoDS::Face(Base), theJoinType);
   }
 
   Standard_Real U, dU;
@@ -1569,22 +1569,34 @@ Standard_Integer openoffset(Draw_Interpretor& di,
   if (n < 5) return 1;
   char name[100];
 
-  TopoDS_Shape Base = DBRep::Get(a[2], TopAbs_WIRE);
-
+  BRepOffsetAPI_MakeOffset Paral;
   GeomAbs_JoinType theJoinType = GeomAbs_Arc;
   if (n == 6 && strcmp(a[5], "i") == 0)
     theJoinType = GeomAbs_Intersection;
-  
-  BRepOffsetAPI_MakeOffset Paral(TopoDS::Wire(Base), theJoinType, Standard_True);
+  Paral.Init(theJoinType, Standard_True);
+  TopoDS_Shape Base = DBRep::Get(a[2] ,TopAbs_FACE);
+
+  if ( Base.IsNull())
+  {
+    Base = DBRep::Get(a[2], TopAbs_WIRE);
+    if (Base.IsNull()) return 1;
+    Paral.AddWire(TopoDS::Wire(Base));
+  }
+  else
+  {
+    Base.Orientation(TopAbs_FORWARD);
+    Paral.Init(TopoDS::Face(Base), theJoinType, Standard_True);
+  }
 
   Standard_Real U, dU;
   Standard_Integer Nb;
   dU = Draw::Atof(a[4]);
   Nb = Draw::Atoi(a[3]);
 
-  Standard_Integer Compt = 1;
-  
   Standard_Real Alt = 0.;
+
+  Standard_Integer Compt = 1;
+
   for ( Standard_Integer i = 1; i <= Nb; i++)
   {
     U = i * dU;
@@ -1872,7 +1884,7 @@ void  BRepTest::CurveCommands(Draw_Interpretor& theCommands)
     mkoffset);
 
   theCommands.Add("openoffset",
-    "openoffset result wire nboffset stepoffset [jointype(a/i)]",__FILE__,
+    "openoffset result face/wire nboffset stepoffset [jointype(a/i)]",__FILE__,
     openoffset);
 
   theCommands.Add("mkedge",

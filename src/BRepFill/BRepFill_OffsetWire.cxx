@@ -265,22 +265,34 @@ static Standard_Boolean KPartCircle
 
   TopoDS_Vertex V1,V2;
   TopExp::Vertices(E,V1,V2);
-  if (!V1.IsSame(V2)) //may be case of line
+  if (!V1.IsSame(V2) || //open result or closed circle
+      C->IsKind(STANDARD_TYPE(Geom_Circle))) 
   {
-    if (!C->IsKind(STANDARD_TYPE(Geom_Line))) return Standard_False;
-    Handle(Geom_Line) LE = Handle(Geom_Line)::DownCast(C);
     Standard_Real anOffset = myOffset;
     if (E.Orientation() == TopAbs_REVERSED) anOffset *= -1;
     
-    Handle(Geom2d_Curve) aPCurve;
-    Handle(Geom_Surface) aSurf;
-    TopLoc_Location aLoc;
-    BRep_Tool::CurveOnSurface(E, aPCurve, aSurf, aLoc, f, l);
+    Handle(Geom2d_Curve) aPCurve = BRep_Tool::CurveOnSurface(E, mySpine, f, l);
     Handle(Geom2dAdaptor_HCurve) AHC = new Geom2dAdaptor_HCurve(aPCurve, f, l);
-    Adaptor3d_OffsetCurve Off(AHC,anOffset);
-    Handle(Geom2d_Line) OLC = new Geom2d_Line(Off.Line());
+    Handle(Geom2d_Curve) OC;
+    if (AHC->GetType() == GeomAbs_Line)
+    {
+      Adaptor3d_OffsetCurve Off(AHC,anOffset);
+      OC = new Geom2d_Line(Off.Line());
+    }
+    else if (AHC->GetType() == GeomAbs_Circle)
+    {
+      gp_Circ2d theCirc = AHC->Circle();
+      if (anOffset < 0. || Abs(anOffset) < theCirc.Radius())
+        OC = new Geom2d_Circle (theCirc.Position(), theCirc.Radius() - anOffset);
+    }
+    else
+    {
+      Handle(Geom2d_TrimmedCurve) G2dT = new Geom2d_TrimmedCurve(aPCurve, f, l);
+      OC = new Geom2d_OffsetCurve( G2dT, anOffset);
+    }
+    Handle(Geom_Surface) aSurf = BRep_Tool::Surface(mySpine);
     Handle(Geom_Plane) aPlane = Handle(Geom_Plane)::DownCast(aSurf);
-    myShape = BRepLib_MakeEdge(OLC, aPlane, f, l);
+    myShape = BRepLib_MakeEdge(OC, aPlane, f, l);
     BRepLib::BuildCurve3d(TopoDS::Edge(myShape));
     
     myShape.Orientation(E.Orientation());
@@ -305,34 +317,8 @@ static Standard_Boolean KPartCircle
     myIsDone = Standard_True;
     return Standard_True;
   }
-  
-  if (!C->IsKind(STANDARD_TYPE(Geom_Circle))) return Standard_False;
-  Handle(Geom_Circle) CE = Handle(Geom_Circle)::DownCast(C);
-  Standard_Real anOffset = myOffset;
-  if (E.Orientation() == TopAbs_REVERSED) anOffset *= -1;
-  
-  if (anOffset < 0. || Abs(anOffset) < CE->Radius()) {
-    Handle(Geom_Circle) OC = new Geom_Circle (CE->Position(),CE->Radius() - anOffset);
-    myShape = BRepLib_MakeEdge(OC,f,l);
 
-    myShape.Orientation(E.Orientation());
-    myShape.Location(L);
-    if (Alt != 0.) {
-      BRepAdaptor_Surface S(mySpine,0);
-      gp_Ax1 Nor = S.Plane().Axis();
-      gp_Trsf T;
-      gp_Vec Trans(Nor.Direction());
-      Trans = Alt*Trans;
-      T.SetTranslation(Trans);
-      myShape.Move(TopLoc_Location(T));
-    }
-    
-    TopTools_ListOfShape LL;
-    LL.Append(myShape);
-    myMap.Add(E,LL);
-  }
-  myIsDone = Standard_True;
-  return Standard_True;
+  return Standard_False;
 }
 
 //=======================================================================
@@ -529,7 +515,7 @@ void BRepFill_OffsetWire::Perform (const Standard_Real Offset,
   {
     OCC_CATCH_SIGNALS
       myCallGen = Standard_False;
-    if (KPartCircle(mySpine,Offset,Alt,myShape,myMap,myIsDone)) return;
+    if (KPartCircle(myWorkSpine,Offset,Alt,myShape,myMap,myIsDone)) return;
 
     TopoDS_Face oldWorkSpain = myWorkSpine;
 
@@ -763,7 +749,7 @@ void BRepFill_OffsetWire::PerformWithBiLo
   //********************************
   // Calculate for a non null offset 
   //********************************
-  if (KPartCircle(mySpine,Offset,Alt,myShape,myMap,myIsDone))
+  if (KPartCircle(myWorkSpine,Offset,Alt,myShape,myMap,myIsDone))
     return;
 
   BRep_Builder myBuilder;
@@ -815,8 +801,9 @@ void BRepFill_OffsetWire::PerformWithBiLo
     for (Standard_Integer ie = 1; ie <= Locus.NumberOfElts(ic); ie++) {
       const TopoDS_Shape& SE = Link.GeneratingShape(Locus.BasicElt(ic,ie));
       if (SE.ShapeType() == TopAbs_VERTEX) {
-	MakeCircle (TopoDS::Edge(PE),TopoDS::Vertex(SE),
-		    myWorkSpine,myOffset,myMap,RefPlane);
+        if (!SE.IsSame(Ends[0]) && !SE.IsSame(Ends[1]))
+          MakeCircle (TopoDS::Edge(PE),TopoDS::Vertex(SE),
+                      myWorkSpine,myOffset,myMap,RefPlane);
       }
       else {
 	MakeOffset (TopoDS::Edge(SE),myWorkSpine,myOffset,myMap,RefPlane,

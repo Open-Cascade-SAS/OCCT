@@ -480,16 +480,12 @@ void MAT2d_Circuit::InitOpen (TColGeom2d_SequenceOfGeometry& Line) const
   Handle(Geom2d_TrimmedCurve) Curve;
   Standard_Real               DotProd;
 
-  if (!myIsOpenResult)
-  {
-    Curve = Handle(Geom2d_TrimmedCurve)::DownCast(Line.First());
-    Line.InsertBefore(1,new Geom2d_CartesianPoint(Curve->StartPoint()));
-    Curve = Handle(Geom2d_TrimmedCurve)::DownCast(Line.Last());
-    Line.Append(new Geom2d_CartesianPoint(Curve->EndPoint()));
-  }
-
-  Standard_Integer addition = (myIsOpenResult)? 1 : 2;
-  for ( Standard_Integer i = addition; i <= Line.Length() - addition; i++) {
+  Curve = Handle(Geom2d_TrimmedCurve)::DownCast(Line.First());
+  Line.InsertBefore(1,new Geom2d_CartesianPoint(Curve->StartPoint()));
+  Curve = Handle(Geom2d_TrimmedCurve)::DownCast(Line.Last());
+  Line.Append(new Geom2d_CartesianPoint(Curve->EndPoint()));
+  
+  for ( Standard_Integer i = 2; i <= Line.Length() - 2; i++) {
     if ( Abs(CrossProd(Line.Value(i),Line.Value(i+1),DotProd)) > 1.E-8 ||
 	 DotProd < 0. ) {
       Curve = Handle(Geom2d_TrimmedCurve)::DownCast(Line.Value(i));

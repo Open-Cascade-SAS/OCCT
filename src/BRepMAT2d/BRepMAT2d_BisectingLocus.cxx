@@ -61,7 +61,7 @@ void BRepMAT2d_BisectingLocus::Compute(BRepMAT2d_Explorer&        anExplo,
                                        const GeomAbs_JoinType aJoinType,
                                        const Standard_Boolean IsOpenResult)
 {
-  MAT2d_Mat2d                        TheMAT;
+  MAT2d_Mat2d                        TheMAT( IsOpenResult );
   Handle(MAT_ListOfBisector)         TheRoots = new MAT_ListOfBisector();
   MAT2d_SequenceOfSequenceOfGeometry Figure;
   Standard_Integer                   i;
@@ -104,7 +104,10 @@ void BRepMAT2d_BisectingLocus::Compute(BRepMAT2d_Explorer&        anExplo,
   // --------------------------------------------
   // Initialisation et execution de l algorithme.
   // --------------------------------------------
-  TheMAT.CreateMat(theTool);
+  if (IsOpenResult)
+    TheMAT.CreateMatOpen(theTool);
+  else
+    TheMAT.CreateMat(theTool);
 
   isDone = TheMAT.IsDone(); if (!isDone) return;
 

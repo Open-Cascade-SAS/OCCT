@@ -1,6 +1,3 @@
-puts "TODO OCC12345 ALL: Faulty OCC745"
-puts "TODO OCC12345 ALL: Error : The length of result shape is"
-
 puts "========"
 puts "OCC745"
 puts "========"
@@ -23,5 +20,5 @@ if { [regexp {WIRE} $list] == 0 } {
 
 renamevar result_1 result
 
-set length 0
-set 2dviewer 0
+set length 320.442
+set 2dviewer 1

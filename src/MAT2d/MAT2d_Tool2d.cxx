@@ -199,13 +199,17 @@ Standard_Integer MAT2d_Tool2d::FirstPoint(const Standard_Integer anitem,
 //function : TangentBefore
 //purpose  :
 //=============================================================================
-Standard_Integer MAT2d_Tool2d::TangentBefore(const Standard_Integer anitem) 
+Standard_Integer MAT2d_Tool2d::TangentBefore(const Standard_Integer anitem,
+                                             const Standard_Boolean IsOpenResult)
 {
   Standard_Integer     item;
   Handle(Geom2d_Curve) curve;
   theNumberOfVecs++;
-  
-  item  = (anitem == theCircuit->NumberOfItems()) ? 1 : (anitem + 1);
+
+  if (!IsOpenResult)
+    item  = (anitem == theCircuit->NumberOfItems()) ? 1 : (anitem + 1);
+  else
+    item = (anitem == theCircuit->NumberOfItems()) ? (anitem - 1) : (anitem + 1);
   if (theCircuit->ConnexionOn(item)){
     Standard_Real x1,y1,x2,y2;
     theCircuit->Connexion(item)->PointOnFirst().Coord(x1,y1);
@@ -222,7 +226,9 @@ Standard_Integer MAT2d_Tool2d::TangentBefore(const Standard_Integer anitem)
   }
   else {
     curve = Handle(Geom2d_Curve)::DownCast(theCircuit->Value(item));
-    theGeomVecs.Bind(theNumberOfVecs,curve->DN(curve->FirstParameter(),1));
+    Standard_Real param = (IsOpenResult && anitem == theCircuit->NumberOfItems())?
+      curve->LastParameter() : curve->FirstParameter();
+    theGeomVecs.Bind(theNumberOfVecs,curve->DN(param,1));
   }
 
   return theNumberOfVecs;
@@ -232,7 +238,8 @@ Standard_Integer MAT2d_Tool2d::TangentBefore(const Standard_Integer anitem)
 //function : TangentAfter
 //purpose  :
 //=============================================================================
-Standard_Integer MAT2d_Tool2d::TangentAfter(const Standard_Integer anitem)
+Standard_Integer MAT2d_Tool2d::TangentAfter(const Standard_Integer anitem,
+                                            const Standard_Boolean IsOpenResult)
 {
   Standard_Integer     item;
   Handle(Geom2d_Curve) curve;
@@ -254,9 +261,14 @@ Standard_Integer MAT2d_Tool2d::TangentAfter(const Standard_Integer anitem)
     thevector = curve->DN(curve->FirstParameter(),1);
   }
   else {
-    item      = (anitem == 1) ? theCircuit->NumberOfItems() : (anitem - 1);
+    if (!IsOpenResult)
+      item      = (anitem == 1) ? theCircuit->NumberOfItems() : (anitem - 1);
+    else
+      item = (anitem == 1) ? 2 : (anitem - 1);
     curve     = Handle(Geom2d_Curve)::DownCast(theCircuit->Value(item));
-    thevector = curve->DN(curve->LastParameter(),1);
+    Standard_Real param = (IsOpenResult && anitem == 1)?
+      curve->FirstParameter() : curve->LastParameter();
+    thevector = curve->DN(param,1);
   }
   theGeomVecs.Bind(theNumberOfVecs,thevector.Reversed());
   return theNumberOfVecs;
