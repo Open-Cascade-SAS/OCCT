@@ -129,6 +129,29 @@ OpenGl_RaytraceLight::OpenGl_RaytraceLight (const BVH_Vec4f& theDiffuse,
 }
 
 // =======================================================================
+// function : Center
+// purpose  : Returns centroid position along the given axis
+// =======================================================================
+Standard_ShortReal OpenGl_TriangleSet::Center (
+  const Standard_Integer theIndex, const Standard_Integer theAxis) const
+{
+  // Note: Experiments show that the use of the box centroid (instead
+  // of the triangle centroid) increases render performance up to 12%
+
+  const BVH_Vec4i& aTriangle = Elements[theIndex];
+
+  const Standard_ShortReal aVertex0 =
+    BVH::VecComp<Standard_ShortReal, 3>::Get (Vertices[aTriangle.x()], theAxis);
+  const Standard_ShortReal aVertex1 =
+    BVH::VecComp<Standard_ShortReal, 3>::Get (Vertices[aTriangle.y()], theAxis);
+  const Standard_ShortReal aVertex2 =
+    BVH::VecComp<Standard_ShortReal, 3>::Get (Vertices[aTriangle.z()], theAxis);
+
+  return (Min (Min (aVertex0, aVertex1), aVertex2) +
+          Max (Max (aVertex0, aVertex1), aVertex2)) * 0.5f;
+}
+
+// =======================================================================
 // function : Box
 // purpose  : Returns AABB of primitive set
 // =======================================================================

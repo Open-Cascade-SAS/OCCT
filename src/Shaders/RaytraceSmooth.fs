@@ -4,11 +4,6 @@ uniform sampler2D uFSAAInputTexture;
 //! Number of accumulated FSAA samples.
 uniform int uSamples;
 
-//! Sub-pixel offset in X direction for FSAA.
-uniform float uOffsetX;
-//! Sub-pixel offset in Y direction for FSAA.
-uniform float uOffsetY;
-
 //! Output pixel color.
 out vec4 OutColor;
 
@@ -24,6 +19,10 @@ void main (void)
 {
   int aPixelX = int (gl_FragCoord.x);
   int aPixelY = int (gl_FragCoord.y);
+
+  // Adjust FLIPTRI pattern used for adaptive FSAA
+  float anOffsetX = mix (uOffsetX, -uOffsetX, float (aPixelX % 2));
+  float anOffsetY = mix (uOffsetY, -uOffsetY, float (aPixelY % 2));
 
   vec4 aClr0 = texelFetch (uFSAAInputTexture, ivec2 (aPixelX + 0, aPixelY + 0), 0);
   vec4 aClr1 = texelFetch (uFSAAInputTexture, ivec2 (aPixelX + 0, aPixelY - 1), 0);
@@ -47,7 +46,7 @@ void main (void)
                  abs (aClr6.w - aClr0.w) > LUM_DIFFERENCE ||
                  abs (aClr7.w - aClr0.w) > LUM_DIFFERENCE ||
                  abs (aClr8.w - aClr0.w) > LUM_DIFFERENCE;
-  
+
   if (!aRender)
   {
     aRender = abs (dot (LUMA, aClr1.xyz) - aLum) > LUM_DIFFERENCE ||
@@ -61,19 +60,19 @@ void main (void)
   }
 
   vec4 aColor = aClr0;
-                 
+
   if (aRender)
   {
-    SRay aRay = GenerateRay (vPixel + vec2 (uOffsetX, uOffsetY));
-        
+    SRay aRay = GenerateRay (vPixel + vec2 (anOffsetX, anOffsetY));
+
     vec3 aInvDirect = 1.f / max (abs (aRay.Direct), SMALL);
-        
+
     aInvDirect = vec3 (aRay.Direct.x < 0.f ? -aInvDirect.x : aInvDirect.x,
                        aRay.Direct.y < 0.f ? -aInvDirect.y : aInvDirect.y,
                        aRay.Direct.z < 0.f ? -aInvDirect.z : aInvDirect.z);
-                           
+
     aColor = mix (aClr0, clamp (Radiance (aRay, aInvDirect), 0.f, 1.f), 1.f / uSamples);
   }
-  
+
   OutColor = aColor;
 }

@@ -5,6 +5,11 @@
 //! Normalized pixel coordinates.
 in vec2 vPixel;
 
+//! Sub-pixel offset in X direction for FSAA.
+uniform float uOffsetX = 0.f;
+//! Sub-pixel offset in Y direction for FSAA.
+uniform float uOffsetY = 0.f;
+
 //! Origin of viewing ray in left-top corner.
 uniform vec3 uOriginLT;
 //! Origin of viewing ray in left-bottom corner.

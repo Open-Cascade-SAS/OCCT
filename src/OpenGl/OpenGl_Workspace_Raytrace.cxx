@@ -2241,38 +2241,42 @@ Standard_Boolean OpenGl_Workspace::RunRaytraceShaders (const Graphic3d_CView& th
                    1, // ID of FSAA program
                    myPostFSAAProgram);
 
-  const Standard_ShortReal aMaxOffset = 0.559017f;
-  const Standard_ShortReal aMinOffset = 0.186339f;
-
   myGlContext->core20fwd->glEnableVertexAttribArray (Graphic3d_TOA_POS);
   myGlContext->core20fwd->glVertexAttribPointer (Graphic3d_TOA_POS, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 
-  // Perform multi-pass adaptive FSAA using ping-pong technique
-  // rotated grid AA always uses 4 samples
-  for (Standard_Integer anIt = 0; anIt < 4; ++anIt)
+  // Perform multi-pass adaptive FSAA using ping-pong technique.
+  // We use 'FLIPTRI' sampling pattern changing for every pixel
+  // (3 additional samples per pixel, the 1st sample is already
+  // available from initial ray-traced image).
+  for (Standard_Integer anIt = 1; anIt < 4; ++anIt)
   {
     GLfloat aOffsetX = 1.f / theSizeX;
     GLfloat aOffsetY = 1.f / theSizeY;
 
-    if (anIt < 2)
+    if (anIt == 1)
     {
-      aOffsetX *= anIt < 1 ? aMinOffset : -aMaxOffset;
-      aOffsetY *= anIt < 1 ? aMaxOffset :  aMinOffset;
+      aOffsetX *= -0.55f;
+      aOffsetY *=  0.55f;
     }
-    else
+    else if (anIt == 2)
     {
-      aOffsetX *= anIt > 2 ?  aMaxOffset : -aMinOffset;
-      aOffsetY *= anIt > 2 ? -aMinOffset : -aMaxOffset;
+      aOffsetX *=  0.00f;
+      aOffsetY *= -0.55f;
     }
-    
+    else if (anIt == 3)
+    {
+      aOffsetX *= 0.55f;
+      aOffsetY *= 0.00f;
+    }
+
     myPostFSAAProgram->SetUniform (myGlContext,
-      myUniformLocations[1][OpenGl_RT_uSamples], anIt + 2);
+      myUniformLocations[1][OpenGl_RT_uSamples], anIt + 1);
     myPostFSAAProgram->SetUniform (myGlContext,
       myUniformLocations[1][OpenGl_RT_uOffsetX], aOffsetX);
     myPostFSAAProgram->SetUniform (myGlContext,
       myUniformLocations[1][OpenGl_RT_uOffsetY], aOffsetY);
 
-    Handle(OpenGl_FrameBuffer)& aFramebuffer = anIt % 2 ? myRaytraceFBO1 : myRaytraceFBO2;
+    Handle(OpenGl_FrameBuffer)& aFramebuffer = anIt % 2 ? myRaytraceFBO2 : myRaytraceFBO1;
 
     if (anIt == 3) // disable FBO on last iteration
     {
@@ -2285,7 +2289,7 @@ Standard_Boolean OpenGl_Workspace::RunRaytraceShaders (const Graphic3d_CView& th
     {
       aFramebuffer->BindBuffer (myGlContext);
     }
-    
+
     myGlContext->core15fwd->glDrawArrays (GL_TRIANGLES, 0, 6);
 
     if (anIt != 3) // set input for the next pass

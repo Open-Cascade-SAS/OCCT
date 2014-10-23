@@ -141,7 +141,7 @@ public:
 
   //! Creates new OpenGL element triangulation.
   OpenGl_TriangleSet (const Standard_Size theArrayID)
-  : BVH_Triangulation<Standard_ShortReal, 3> (),
+  : BVH_Triangulation<Standard_ShortReal, 3>(),
     myArrayID (theArrayID)
   {
     //
@@ -185,6 +185,9 @@ public:
   //! Returns AABB of primitive set.
   BVH_BoxNt Box() const;
 
+  //! Returns centroid position along the given axis.
+  Standard_ShortReal Center (const Standard_Integer theIndex, const Standard_Integer theAxis) const;
+
 public:
 
   BVH_Array3f Normals; //!< Array of vertex normals.
@@ -193,7 +196,7 @@ public:
 
 private:
 
-  Standard_Size myArrayID; //!< Id of associated primitive array.
+  Standard_Size myArrayID; //!< ID of associated primitive array.
 
 };
 
