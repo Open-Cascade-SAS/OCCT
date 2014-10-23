@@ -157,7 +157,7 @@ is
 		   AColor	: Color from Quantity )
 		is static;
 	---Level: Public
-	---Purpose: Modifies the ambient colour of the surface.
+	---Purpose: Modifies the ambient and diffuse colour of the surface.
 	--  Category: Methods to modify the class definition
 	
 	SetAmbientColor ( me		: in out;
@@ -260,7 +260,7 @@ is
 		is static;
   ---C++: return const&
 	---Level: Public
-	---Purpose: Returns the ambient colour of the surface.
+	---Purpose: Returns the diffuse colour of the surface.
 	---Category: Inquire methods
 
 	AmbientColor ( me )

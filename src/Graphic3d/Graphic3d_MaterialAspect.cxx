@@ -20,7 +20,8 @@
 // purpose  :
 // =======================================================================
 Graphic3d_MaterialAspect::Graphic3d_MaterialAspect()
-: myAmbientColor (0.2, 0.2, 0.2, Quantity_TOC_RGB)
+: myDiffuseColor (0.2, 0.2, 0.2, Quantity_TOC_RGB),
+  myAmbientColor (0.2, 0.2, 0.2, Quantity_TOC_RGB)
 {
   myRequestedMaterialName = Graphic3d_NOM_DEFAULT;
   Init (myRequestedMaterialName);
@@ -31,7 +32,8 @@ Graphic3d_MaterialAspect::Graphic3d_MaterialAspect()
 // purpose  :
 // =======================================================================
 Graphic3d_MaterialAspect::Graphic3d_MaterialAspect (const Graphic3d_NameOfMaterial theName)
-: myAmbientColor (0.2, 0.2, 0.2, Quantity_TOC_RGB)
+: myDiffuseColor (0.2, 0.2, 0.2, Quantity_TOC_RGB),
+  myAmbientColor (0.2, 0.2, 0.2, Quantity_TOC_RGB)
 {
   myRequestedMaterialName = theName;
   Init (myRequestedMaterialName);
@@ -56,7 +58,7 @@ void Graphic3d_MaterialAspect::Init (const Graphic3d_NameOfMaterial theName)
   myEmissiveCoef     = 0.0f;
   myEnvReflexion     = 0.0f;
   myShininess        = 0.039f;
-  myDiffuseColor .SetValues (0.0, 0.0, 0.0, Quantity_TOC_RGB);
+  myDiffuseColor .SetValues (0.2, 0.2, 0.2, Quantity_TOC_RGB);
   mySpecularColor.SetValues (1.0, 1.0, 1.0, Quantity_TOC_RGB);
   myMaterialName     = theName;
 
@@ -668,7 +670,9 @@ void Graphic3d_MaterialAspect::SetRefractionIndex (const Standard_Real theValue)
 // =======================================================================
 const Quantity_Color& Graphic3d_MaterialAspect::Color() const
 {
-  return myAmbientColor;
+  // It is generally accepted to consider diffuse color as
+  // "general" color of a material when light shines on it
+  return myDiffuseColor;
 }
 
 // =======================================================================
