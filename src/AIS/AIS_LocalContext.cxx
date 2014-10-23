@@ -333,8 +333,7 @@ Erase(const Handle(AIS_InteractiveObject)& anInteractive)
 
   UpdateSort();
 
-  // Remove object from current selection of local context
-  ClearSelected (anInteractive, Standard_False);
+  ClearOutdatedSelection (anInteractive, Standard_True);
 
   return status;
 }
@@ -503,8 +502,7 @@ Standard_Boolean AIS_LocalContext::Remove(const Handle(AIS_InteractiveObject)& a
 
   UpdateSort();
 
-  // Remove object from current selection of local context
-  ClearSelected (aSelectable, Standard_False);
+  ClearOutdatedSelection (aSelectable, Standard_True);
 
   return Standard_True;
 }

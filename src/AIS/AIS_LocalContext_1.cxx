@@ -72,6 +72,8 @@
 
 #include <AIS_LocalContext.jxx>
 #include <StdSelect_BRepOwner.hxx>
+#include <TColStd_ListOfInteger.hxx>
+#include <TColStd_ListIteratorOfListOfInteger.hxx>
 #include <TColStd_MapOfTransient.hxx>
 #include <TColStd_MapIteratorOfMapOfTransient.hxx>
 #include <Prs3d_Presentation.hxx>
@@ -915,28 +917,78 @@ void AIS_LocalContext::ClearSelected (const Standard_Boolean updateviewer)
 }
 
 //==================================================
-// Function: ClearSelected
+// Function: ClearOutdatedSelection
 // Purpose :
 //==================================================
-void AIS_LocalContext::ClearSelected (const Handle(AIS_InteractiveObject)& theIO,
-                                      const Standard_Boolean toUpdateViewer)
+void AIS_LocalContext::ClearOutdatedSelection (const Handle(AIS_InteractiveObject)& theIO,
+                                               const Standard_Boolean toClearDeactivated)
 {
-  // Keep last detected object for lastindex initialization.
-  Handle(SelectMgr_EntityOwner) aLastPicked = myMainVS->OnePicked();
+  // 1. Collect selectable entities
+  SelectMgr_IndexedMapOfOwner aValidOwners;
 
-  // Remove the interactive object from detected sequence
-  for (Standard_Integer anIdx = 1; anIdx <= myAISDetectedSeq.Length(); ++anIdx)
+  const TColStd_ListOfInteger& aModes = SelectionModes (theIO);
+
+  TColStd_ListIteratorOfListOfInteger aModeIter (aModes);
+  for (; aModeIter.More(); aModeIter.Next())
   {
-    Handle(AIS_InteractiveObject) aDetectedIO = myAISDetectedSeq.Value (anIdx);
-    if (!aDetectedIO.IsNull() && aDetectedIO == theIO)
+    int aMode = aModeIter.Value();
+    if (!theIO->HasSelection(aMode))
     {
-      myAISDetectedSeq.Remove (anIdx--);
+      continue;
+    }
+
+    if (toClearDeactivated && !mySM->IsActivated (theIO, myMainVS, aMode))
+    {
+      continue;
+    }
+
+    Handle(SelectMgr_Selection) aSelection = theIO->Selection(aMode);
+    for (aSelection->Init(); aSelection->More(); aSelection->Next())
+    {
+      Handle(SelectBasics_SensitiveEntity) anEntity = aSelection->Sensitive();
+      if (anEntity.IsNull())
+      {
+        continue;
+      }
+
+      Handle(SelectMgr_EntityOwner) anOwner =
+        Handle(SelectMgr_EntityOwner)::DownCast (anEntity->OwnerId());
+
+      if (anOwner.IsNull())
+      {
+        continue;
+      }
+
+      aValidOwners.Add(anOwner);
     }
   }
 
-  Standard_Integer aHilightMode = theIO->HasHilightMode() ? theIO->HilightMode() : 0;
+  // 2. Refresh context's detection and selection and keep only active owners
+  // Keep last detected object for lastindex initialization.
+  Handle(SelectMgr_EntityOwner) aLastPicked = myMainVS->OnePicked();
 
-  // Remove entity owners from AIS_Selection
+  // Remove entity owners from detected sequences
+  for (Standard_Integer anIdx = 1; anIdx <= myDetectedSeq.Length(); ++anIdx)
+  {
+    Handle(SelectMgr_EntityOwner) anOwner = myMainVS->Picked (myDetectedSeq (anIdx));
+    if (anOwner.IsNull() || anOwner->Selectable() != theIO || aValidOwners.Contains (anOwner))
+    {
+      continue;
+    }
+
+    myDetectedSeq.Remove (anIdx--);
+
+    if (anIdx < myCurDetected)
+    {
+      myCurDetected--;
+    }
+  }
+  myCurDetected = Max (myCurDetected, 1);
+
+  Standard_Boolean isAISRemainsDetected = Standard_False;
+
+  // 3. Remove entity owners from AIS_Selection
+  const Handle(V3d_Viewer)& aViewer = myCTX->CurrentViewer();
   Handle(AIS_Selection) aSelection = AIS_Selection::Selection (mySelName.ToCString());
   AIS_NListTransient::Iterator anIter (aSelection->Objects());
   AIS_NListTransient aRemoveEntites;
@@ -948,22 +1000,27 @@ void AIS_LocalContext::ClearSelected (const Handle(AIS_InteractiveObject)& theIO
       continue;
     }
 
-    aRemoveEntites.Append (anOwner);
-
-    if (IsSelected (anOwner))
+    if (aValidOwners.Contains (anOwner))
     {
-      anOwner->Unhilight (myMainPM, aHilightMode);
+      isAISRemainsDetected = Standard_True;
+    }
+
+    aRemoveEntites.Append (anOwner);
+    anOwner->SetSelected (Standard_False);
+    for (aViewer->InitActiveViews(); aViewer->MoreActiveViews(); aViewer->NextActiveViews())
+    {
+      Unhilight (anOwner, aViewer->ActiveView());
     }
   }
+
   AIS_NListTransient::Iterator anIterRemove (aRemoveEntites);
   for (; anIterRemove.More(); anIterRemove.Next())
   {
     aSelection->Select (anIterRemove.Value());
   }
 
-  // Remove entity owners from myMapOfOwner
+  // 4. Remove entity owners from myMapOfOwner
   SelectMgr_IndexedMapOfOwner anOwnersToKeep;
-  const Handle(V3d_Viewer)& aViewer = myCTX->CurrentViewer();
   for (Standard_Integer anIdx = 1; anIdx <= myMapOfOwner.Extent(); anIdx++)
   {
     Handle(SelectMgr_EntityOwner) anOwner = myMapOfOwner (anIdx);
@@ -972,7 +1029,7 @@ void AIS_LocalContext::ClearSelected (const Handle(AIS_InteractiveObject)& theIO
       continue;
     }
 
-    if (anOwner->Selectable() != theIO)
+    if (anOwner->Selectable() != theIO || aValidOwners.Contains (anOwner))
     {
       anOwnersToKeep.Add (anOwner);
     }
@@ -988,9 +1045,25 @@ void AIS_LocalContext::ClearSelected (const Handle(AIS_InteractiveObject)& theIO
   myMapOfOwner.Assign (anOwnersToKeep);
   mylastindex = myMapOfOwner.FindIndex (aLastPicked);
 
-  if (toUpdateViewer)
+  if (!isAISRemainsDetected)
   {
-    aViewer->Update();
+    // Remove the interactive object from detected sequences
+    for (Standard_Integer anIdx = 1; anIdx <= myAISDetectedSeq.Length(); ++anIdx)
+    {
+      Handle(AIS_InteractiveObject) aDetectedIO = myAISDetectedSeq.Value (anIdx);
+      if (aDetectedIO.IsNull() || aDetectedIO != theIO)
+      {
+        continue;
+      }
+
+      myAISDetectedSeq.Remove (anIdx--);
+
+      if (anIdx < myAISCurDetected)
+      {
+        myAISCurDetected--;
+      }
+    }
+    myAISCurDetected = Max (myAISCurDetected, 1);
   }
 }
 
@@ -1361,7 +1434,7 @@ Standard_Integer AIS_LocalContext::HilightNextDetected (const Handle(V3d_View)& 
   {
     myCurDetected = 1;
   }
-  Handle(SelectMgr_EntityOwner) anOwner = myMainVS->Picked (myCurDetected);
+  Handle(SelectMgr_EntityOwner) anOwner = myMainVS->Picked (myDetectedSeq (myCurDetected));
   if (anOwner.IsNull())
   {
     return 0;
@@ -1386,7 +1459,7 @@ Standard_Integer AIS_LocalContext::HilightPreviousDetected (const Handle(V3d_Vie
   {
     myCurDetected = 1;
   }
-  Handle(SelectMgr_EntityOwner) anOwner = myMainVS->Picked (myCurDetected);
+  Handle(SelectMgr_EntityOwner) anOwner = myMainVS->Picked (myDetectedSeq (myCurDetected));
   if (anOwner.IsNull())
   {
     return 0;

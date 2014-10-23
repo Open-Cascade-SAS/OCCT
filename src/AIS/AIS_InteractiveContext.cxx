@@ -1241,26 +1241,36 @@ void AIS_InteractiveContext::RecomputePrsOnly(const Handle(AIS_InteractiveObject
 //function : RecomputeSelectionOnly
 //purpose  : 
 //=======================================================================
-void AIS_InteractiveContext::RecomputeSelectionOnly(const Handle(AIS_InteractiveObject)& anIObj)
+void AIS_InteractiveContext::RecomputeSelectionOnly (const Handle(AIS_InteractiveObject)& theIO)
 {
-  if(anIObj.IsNull()) return;
-  mgrSelector->RecomputeSelection(anIObj);
+  if (theIO.IsNull())
+  {
+    return;
+  }
 
+  mgrSelector->RecomputeSelection (theIO);
 
-
-  TColStd_ListOfInteger LI;
-  TColStd_ListIteratorOfListOfInteger Lit;
-  ActivatedModes(anIObj,LI);
-  if(!HasOpenedContext()){
-    if(!myObjects.IsBound(anIObj)) return;
-
-    if (myObjects(anIObj)->GraphicStatus() == AIS_DS_Displayed)
+  if (HasOpenedContext())
+  {
+    for (Standard_Integer aContextIdx = 1; aContextIdx <= myLocalContexts.Extent(); aContextIdx++)
     {
-      for(Lit.Initialize(LI);Lit.More();Lit.Next())
-      {
-        mgrSelector->Activate(anIObj,Lit.Value(),myMainSel);
-      }
+      myLocalContexts (aContextIdx)->ClearOutdatedSelection (theIO, Standard_False);
     }
+    return;
+  }
+
+  if (!myObjects.IsBound (theIO) ||
+      myObjects (theIO)->GraphicStatus() != AIS_DS_Displayed)
+  {
+    return;
+  }
+
+  TColStd_ListOfInteger aModes;
+  ActivatedModes (theIO, aModes);
+  TColStd_ListIteratorOfListOfInteger aModesIter (aModes);
+  for (; aModesIter.More(); aModesIter.Next())
+  {
+    mgrSelector->Activate (theIO, aModesIter.Value(), myMainSel);
   }
 }
 
@@ -1286,6 +1296,11 @@ void AIS_InteractiveContext::Update (const Handle(AIS_InteractiveObject)& theIOb
   }
 
   mgrSelector->Update(theIObj);
+
+  for (Standard_Integer aContextIdx = 1; aContextIdx <= myLocalContexts.Extent(); aContextIdx++)
+  {
+    myLocalContexts (aContextIdx)->ClearOutdatedSelection (theIObj, Standard_False);
+  }
 
   if (theUpdateViewer)
   {

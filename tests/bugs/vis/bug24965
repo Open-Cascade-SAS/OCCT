@@ -1,0 +1,62 @@
+puts "============"
+puts "OCC24966"
+puts "============"
+puts ""
+####################################################################################
+# Problem in local selection mode with selected objects staying in the viewer
+# Outdated entity owners remain selected after recompute of presentation in
+# local context.
+# The following cases are tested:
+# o Recompute should not clear per-object selection (neutral selection context).
+# o Recompute should clear per-owner selection (local selection context).
+####################################################################################
+
+set check_recomputed_x 227
+set check_recomputed_y 269
+set check_untouched_x 239
+set check_untouched_y 309
+
+vinit View1
+vpoint p1 100 100 0
+vpoint p2 150 150 0
+vpoint p3 100 150 0
+vplane pln1 p1 p2 p3
+veraseall
+vdisplay pln1 p1 p2 p3
+vselect 0 0 2500 2500
+vchangeplane pln1 x=100 y=100 z=200 dx=0.707 dy=0.707 dz=0.707
+vfit
+
+checkcolor $check_recomputed_x $check_recomputed_y 0.8 0.8 0.8
+if { $stat != 1 } {
+   puts "Error : Neutral selection of updated object is erased."
+}
+
+checkcolor $check_untouched_x $check_untouched_y 0.8 0.8 0.8
+if { $stat != 1 } {
+   puts "Error : Neutral selection of unmodified object is erased."
+}
+
+vinit View2
+vpoint p4 100 100 0
+vpoint p5 150 150 0
+vpoint p6 100 150 0
+vplane pln2 p4 p5 p6
+veraseall
+vdisplay -local pln2 p4 p5 p6 
+vselect 0 0 2500 2500
+vchangeplane pln2 x=100 y=100 z=200 dx=0.707 dy=0.707 dz=0.707
+vfit
+
+checkcolor $check_recomputed_x $check_recomputed_y 0 1 0
+if { $stat != 1 } {
+   puts "Error : Local (renewed) selection of updated object is not updated."
+}
+
+checkcolor $check_untouched_x $check_untouched_y 0.8 0.8 0.8
+if { $stat != 1 } {
+   puts "Error : Local selection of unmodified object is erased."
+}
+
+vdump ${imagedir}/${casename}_View1.png
+vdump ${imagedir}/${casename}_View2.png

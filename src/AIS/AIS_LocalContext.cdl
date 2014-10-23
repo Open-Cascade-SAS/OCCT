@@ -332,13 +332,17 @@ is
     ---Purpose: Clears local context selection.
     --          @param toUpdateViewer [in] if TRUE the viewer will be updated.
 
-    ClearSelected (me                            : mutable;
-                   theIO                         : InteractiveObject from AIS;
-                   toUpdateViewer                : Boolean from Standard = Standard_True);
-    ---Purpose: Removes an interactive object from the local context selection.
-    --          Method deselects all associated entity owners.
+    ClearOutdatedSelection (me                 : mutable;
+                            theIO              : InteractiveObject from AIS;
+                            toClearDeactivated : Boolean from Standard);
+    ---Purpose: Clears outdated selection and detection of owners for the
+    --          interactive object. Use this method if selection structures
+    --          of the interactive object have changed. The method unhilights
+    --          and removes outdated entity owners from lists of selected
+    --          and detected owners.
     --          @param theIO [in] the interactive object.
-    --          @param toUpdateViewer [in] if TRUE the viewer will be updated.
+    --          @param toClearDeactivated [in] pass TRUE to treat deactivated
+    --                 entity owners as 'outdated' when clearing the selection.
 
                     ---Category: GET THE DETECTED
 
