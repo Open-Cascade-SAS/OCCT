@@ -1172,30 +1172,31 @@ TDF_Label XCAFDoc_ShapeTool::BaseLabel () const
 //purpose  : recursive part of Dump()
 //=======================================================================
 
-static void DumpAssembly(const TDF_Label L,
+static void DumpAssembly(Standard_OStream& theDumpLog,
+			 const TDF_Label L,
 			 const Standard_Integer level,
 			 const Standard_Boolean deep)
 {
   for (Standard_Integer i=0; i<level; i++)
-    cout<<"\t";
+    theDumpLog<<"\t";
   
   TCollection_AsciiString Entry;
   TDF_Tool::Entry(L, Entry);
 
-  cout<<"ASSEMBLY "<<Entry;
+  theDumpLog<<"ASSEMBLY "<<Entry;
   Handle(TDataStd_Name) Name;
   if (L.FindAttribute(TDataStd_Name::GetID(), Name))
-    cout<<" "<<Name->Get();
+    theDumpLog<<" "<<Name->Get();
   
   if (deep) {
     TopoDS_Shape S;
     XCAFDoc_ShapeTool::GetShape(L, S);
-    cout<<"("<<*(void**)&S.TShape();
+    theDumpLog<<"("<<*(void**)&S.TShape();
     if (! S.Location().IsIdentity())
-      cout<<", "<< *(void**)&S.Location();
-    cout<<") ";
+      theDumpLog<<", "<< *(void**)&S.Location();
+    theDumpLog<<") ";
   }
-  cout<<endl;
+  theDumpLog<<endl;
   
   Handle(TDataStd_TreeNode) Node;
   TDF_ChildIDIterator NodeIterator(L, XCAFDoc::ShapeRefGUID());
@@ -1203,10 +1204,10 @@ static void DumpAssembly(const TDF_Label L,
     Node = Handle(TDataStd_TreeNode)::DownCast(NodeIterator.Value());
     if (Node->HasFather()) {
       if (Node->Father()->Label().HasChild())
-	DumpAssembly(Node->Father()->Label(), level+1, deep);
+	DumpAssembly(theDumpLog, Node->Father()->Label(), level+1, deep);
       else {
-	XCAFDoc_ShapeTool::DumpShape(Node->Father()->Label(), level+1, deep);
-	  cout<<endl;
+	XCAFDoc_ShapeTool::DumpShape(theDumpLog, Node->Father()->Label(), level+1, deep);
+	  theDumpLog<<endl;
 	}
     }
   }
@@ -1217,25 +1218,25 @@ static void DumpAssembly(const TDF_Label L,
 //purpose  : 
 //=======================================================================
 
-void XCAFDoc_ShapeTool::Dump(const Standard_Boolean deep) const
+void XCAFDoc_ShapeTool::Dump(Standard_OStream& theDumpLog, const Standard_Boolean deep) const
 {
   Standard_Integer level = 0;
 //   TopTools_SequenceOfShape SeqShapes;
   TDF_LabelSequence SeqLabels;
   GetShapes( SeqLabels);
 
-  if (SeqLabels.Length()>0) cout<<endl;
+  if (SeqLabels.Length()>0) theDumpLog<<endl;
   Standard_Integer i;
   for (i=1; i<=SeqLabels.Length(); i++) {
-    DumpAssembly(SeqLabels.Value(i), level, deep);
+    DumpAssembly(theDumpLog, SeqLabels.Value(i), level, deep);
   }
 
   SeqLabels.Clear();
   GetFreeShapes(SeqLabels);
-  cout<<endl<<"Free Shapes: "<<SeqLabels.Length()<<endl;
+  theDumpLog<<endl<<"Free Shapes: "<<SeqLabels.Length()<<endl;
   for (i = 1; i<=SeqLabels.Length(); i++) {
-    DumpShape(SeqLabels.Value(i), level, deep);
-    cout<<endl;
+    DumpShape(theDumpLog, SeqLabels.Value(i), level, deep);
+    theDumpLog<<endl;
   }
 }
 
@@ -1244,29 +1245,29 @@ void XCAFDoc_ShapeTool::Dump(const Standard_Boolean deep) const
 //purpose  : 
 //=======================================================================
 
-void XCAFDoc_ShapeTool::DumpShape(const TDF_Label& L,const Standard_Integer level,const Standard_Boolean deep) 
+void XCAFDoc_ShapeTool::DumpShape(Standard_OStream& theDumpLog, const TDF_Label& L,const Standard_Integer level,const Standard_Boolean deep)
 {
   TopoDS_Shape S;
   if(! XCAFDoc_ShapeTool::GetShape(L, S) ) return;
   for (Standard_Integer i=0; i<level; i++)
-    cout<<"\t";
+    theDumpLog<<"\t";
   
-  if (S.ShapeType() == TopAbs_COMPOUND) cout<<"ASSEMBLY";
-  else TopAbs::Print(S.ShapeType(), cout);
+  if (S.ShapeType() == TopAbs_COMPOUND) theDumpLog<<"ASSEMBLY";
+  else TopAbs::Print(S.ShapeType(), theDumpLog);
   
   TCollection_AsciiString Entry;
   TDF_Tool::Entry(L, Entry);
-  cout<<"  "<<Entry;
+  theDumpLog<<"  "<<Entry;
   //cout<<endl;
   Handle(TDataStd_Name) Name;
   if (L.FindAttribute(TDataStd_Name::GetID(),Name)) 
-    cout<<" "<<Name->Get();
+    theDumpLog<<" "<<Name->Get();
   
   if (deep) {
-    cout<<"("<<*(void**)&S.TShape();
+    theDumpLog<<"("<<*(void**)&S.TShape();
     if (! S.Location().IsIdentity())
-      cout<<", "<< *(void**)&S.Location();
-    cout<<") ";
+      theDumpLog<<", "<< *(void**)&S.Location();
+    theDumpLog<<") ";
   }
 }
 

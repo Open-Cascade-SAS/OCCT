@@ -91,8 +91,8 @@ uses
     SequenceOfHAsciiString from TColStd,
     GraphNode from XCAFDoc,
     AttributeSequence from TDF,
-    DataMapOfShapeLabel from XCAFDoc
-    
+    DataMapOfShapeLabel from XCAFDoc,
+    OStream from Standard
 is
     GetID (myclass)   
     ---C++: return const &  
@@ -369,12 +369,13 @@ is
     BaseLabel(me) returns Label from TDF;
     	---Purpose: returns the label under which shapes are stored
     
-    Dump(me; deep : Boolean from Standard = Standard_False);
+    Dump(me; theDumpLog: out OStream from Standard; deep : Boolean from Standard = Standard_False);
     
-    DumpShape(myclass; L:  Label from TDF;
+    DumpShape(myclass; theDumpLog: out OStream from Standard;
+		       L:  Label from TDF;
 		       level :Integer from Standard = 0;
 		       deep : Boolean from Standard = Standard_False);
-    ---Purpose: Print in cout type of shape found on <L> label
+    ---Purpose: Print to ostream <theDumpLog> type of shape found on <L> label
     --          and the entry of <L>, with <level> tabs before.
     --          If <deep>, print also TShape and Location addresses
         

@@ -225,7 +225,9 @@ static Standard_Integer dump (Draw_Interpretor& di, Standard_Integer argc, const
   Handle(XCAFDoc_ShapeTool) myAssembly = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
   Standard_Boolean deep = Standard_False;
   if ( (argc==3) && (Draw::Atoi(argv[2])==1) ) deep = Standard_True;
-  myAssembly->Dump(deep);
+  Standard_SStream aDumpLog;
+  myAssembly->Dump(aDumpLog, deep);
+  di<<aDumpLog;
   return 0;
 }
 
