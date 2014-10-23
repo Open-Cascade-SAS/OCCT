@@ -150,13 +150,14 @@ class NCollection_IndexedMap : public NCollection_BaseMap
     this->exchangeMapsData (theOther);
   }
 
-  //! Assign
+  //! Assign.
+  //! This method does not change the internal allocator.
   NCollection_IndexedMap& Assign (const NCollection_IndexedMap& theOther)
   { 
     if (this == &theOther)
       return *this;
 
-    Clear(theOther.myAllocator);
+    Clear();
     ReSize (theOther.Extent()-1);
     Standard_Integer i, iLength=theOther.Extent();
     for (i=1; i<=iLength; i++)

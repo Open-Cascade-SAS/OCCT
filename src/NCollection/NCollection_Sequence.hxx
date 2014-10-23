@@ -170,12 +170,13 @@ public:
       this->myAllocator = theAllocator;
   }
   
-  //! Replace this sequence by the items of theOther
+  //! Replace this sequence by the items of theOther.
+  //! This method does not change the internal allocator.
   NCollection_Sequence& Assign (const NCollection_Sequence& theOther)
   { 
     if (this == &theOther) 
       return *this;
-    Clear (theOther.myAllocator);
+    Clear ();
     Node * pCur = (Node *) theOther.myFirstItem;
     while (pCur) {
       Node* pNew = new (this->myAllocator) Node (pCur->Value());

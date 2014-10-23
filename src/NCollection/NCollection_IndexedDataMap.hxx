@@ -180,13 +180,14 @@ class NCollection_IndexedDataMap : public NCollection_BaseMap
     this->exchangeMapsData (theOther);
   }
 
-  //! Assignment
+  //! Assignment.
+  //! This method does not change the internal allocator.
   NCollection_IndexedDataMap& Assign (const NCollection_IndexedDataMap& theOther)
   { 
     if (this == &theOther)
       return *this;
 
-    Clear(theOther.myAllocator);
+    Clear();
     ReSize (theOther.Extent()-1);
     Standard_Integer i;
     for (i=1; i<=theOther.Extent(); i++)
@@ -207,7 +208,7 @@ class NCollection_IndexedDataMap : public NCollection_BaseMap
 
   //! Assignment operator
   NCollection_IndexedDataMap& operator= (const NCollection_IndexedDataMap& theOther)
-  { 
+  {
     return Assign (theOther);
   }
 

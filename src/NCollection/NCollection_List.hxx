@@ -73,20 +73,21 @@ public:
   Standard_Integer Size (void) const
   { return Extent(); }
 
-  //! Replace this list by the items of another list (theOther parameter)
-  void Assign (const NCollection_List& theOther)
+  //! Replace this list by the items of another list (theOther parameter).
+  //! This method does not change the internal allocator.
+  NCollection_List& Assign (const NCollection_List& theOther)
   {
     if (this != &theOther) {
-      Clear(theOther.myAllocator);
+      Clear();
       appendList(theOther.PFirst());
     }
+    return *this;
   }
 
   //! Replacement operator
   NCollection_List& operator= (const NCollection_List& theOther)
   {
-    Assign (theOther);
-    return *this;
+    return Assign (theOther);
   }
 
   //! Clear this list

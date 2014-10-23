@@ -1,0 +1,11 @@
+puts "========"
+puts "OCC25348"
+puts "========"
+puts ""
+#######################################################################################
+# Method Assign of NCollection containers must not change own allocator of the target
+#######################################################################################
+
+pload QAcommands
+
+OCC25348

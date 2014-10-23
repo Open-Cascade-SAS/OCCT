@@ -151,13 +151,14 @@ class NCollection_DataMap : public NCollection_BaseMap
     this->exchangeMapsData (theOther);
   }
 
-  //! Assignment
+  //! Assignment.
+  //! This method does not change the internal allocator.
   NCollection_DataMap& Assign (const NCollection_DataMap& theOther)
   { 
     if (this == &theOther)
       return *this;
 
-    Clear(theOther.myAllocator);
+    Clear();
     ReSize (theOther.Extent()-1);
     Iterator anIter(theOther);
     for (; anIter.More(); anIter.Next())

@@ -139,13 +139,14 @@ class NCollection_Map : public NCollection_BaseMap
     this->exchangeMapsData (theOther);
   }
 
-  //! Assign
+  //! Assign.
+  //! This method does not change the internal allocator.
   NCollection_Map& Assign (const NCollection_Map& theOther)
   { 
     if (this == &theOther)
       return *this;
 
-    Clear(theOther.myAllocator);
+    Clear();
     ReSize (theOther.Extent()-1);
     Iterator anIter(theOther);
     for (; anIter.More(); anIter.Next())
@@ -155,7 +156,7 @@ class NCollection_Map : public NCollection_BaseMap
 
   //! Assign operator
   NCollection_Map& operator= (const NCollection_Map& theOther)
-  { 
+  {
     return Assign(theOther);
   }
 
