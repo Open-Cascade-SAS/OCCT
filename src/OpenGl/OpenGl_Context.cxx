@@ -135,7 +135,7 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
 #endif
   myDrawBuffer (0)
 {
-#if defined(MAC_OS_X_VERSION_10_3) && !defined(MACOSX_USE_GLX)
+#if defined(__APPLE__) && !defined(MACOSX_USE_GLX)
   // Vendors can not extend functionality on this system
   // and developers are limited to OpenGL support provided by Mac OS X SDK.
   // We retrieve function pointers from system library
