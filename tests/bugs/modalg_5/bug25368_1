@@ -1,0 +1,29 @@
+puts "=========="
+puts "OCC25368"
+puts "=========="
+puts ""
+################################################
+# BREPExtrma DistShapeShape gives wrong result for Sphere and Line
+################################################
+
+sphere s 0 0 0 5
+line l 0 0 0.2 1 1 0
+trim l l 0 10
+
+set extrema_res [extrema l s]
+set extrema_length [llength ${extrema_res} ]
+
+#Amount Check
+if {${extrema_length} != 10 } {
+   puts "Error: Invalid extrema number in extrema output"
+}
+regexp {Extrema 1 is point : +([-0-9.+eE]+) +([-0-9.+eE]+) +([-0-9.+eE]+)} $extrema_res full x y z
+
+# Point check
+set good_x 3.5327043465311383
+set good_y 3.5327043465311383
+set good_z 0.20
+checkreal "Intersection point x:" ${x} ${good_x} 0.01 0.01
+checkreal "Intersection point y:" ${y} ${good_y} 0.01 0.01
+checkreal "Intersection point z:" ${z} ${good_z} 0.01 0.01
+

@@ -72,7 +72,7 @@ Extrema_ExtElCS::Extrema_ExtElCS(const gp_Lin& C,
 
 
 void Extrema_ExtElCS::Perform(const gp_Lin& C,
-			      const gp_Cylinder& S)
+                              const gp_Cylinder& S)
 {
   myDone = Standard_False;
   myNbExt = 0;
@@ -85,6 +85,7 @@ void Extrema_ExtElCS::Perform(const gp_Lin& C,
   Standard_Real radius = S.Radius();
   Extrema_ExtElC Extrem(gp_Lin(Pos.Axis()), C, Precision::Angular());
   if (Extrem.IsParallel()) {
+    // Line direction is similar to cylinder axis of rotation.
     mySqDist = new TColStd_HArray1OfReal(1, 1);
     myPoint1 = new Extrema_HArray1OfPOnCurv(1, 1);
     myPoint2 = new Extrema_HArray1OfPOnSurf(1, 1);
@@ -117,42 +118,28 @@ void Extrema_ExtElCS::Perform(const gp_Lin& C,
     myIsPar = Standard_True;
   }
   else {
-    Standard_Integer i;
-    
+    Standard_Integer i, aStartIdx = 0;
+
     Extrema_POnCurv myPOnC1, myPOnC2;
     Extrem.Points(1, myPOnC1, myPOnC2);
     gp_Pnt PonAxis = myPOnC1.Value();
     gp_Pnt PC = myPOnC2.Value();
 
-    // line is tangent or outside of the cylunder -- single solution
-    if (radius - PonAxis.Distance(PC) < Precision::PConfusion())
-    {
-      Extrema_ExtPElS ExPS(PC, S, Precision::Confusion());
-      if (ExPS.IsDone()) {
-        myNbExt = ExPS.NbExt();
-        mySqDist = new TColStd_HArray1OfReal(1, myNbExt);
-        myPoint1 = new Extrema_HArray1OfPOnCurv(1, myNbExt);
-        myPoint2 = new Extrema_HArray1OfPOnSurf(1, myNbExt);
-        for (i = 1; i <= myNbExt; i++) {
-          myPoint1->SetValue(i, myPOnC2);
-          myPoint2->SetValue(i, ExPS.Point(i));
-          mySqDist->SetValue(i,(myPOnC2.Value()).SquareDistance(ExPS.Point(i).Value()));
-        }
-      }
-    }
     // line intersects the cylinder
-    else
+    if (radius - PonAxis.Distance(PC) > Precision::PConfusion())
     {
       IntAna_Quadric theQuadric(S);
       IntAna_IntConicQuad Inters(C, theQuadric);
       if (Inters.IsDone())
       {
         myNbExt = Inters.NbPoints();
+        aStartIdx = myNbExt;
         if (myNbExt > 0)
         {
-          mySqDist = new TColStd_HArray1OfReal(1, myNbExt);
-          myPoint1 = new Extrema_HArray1OfPOnCurv(1, myNbExt);
-          myPoint2 = new Extrema_HArray1OfPOnSurf(1, myNbExt);
+          // Not more than 2 additional points from perpendiculars.
+          mySqDist = new TColStd_HArray1OfReal(1, myNbExt + 2);
+          myPoint1 = new Extrema_HArray1OfPOnCurv(1, myNbExt + 2);
+          myPoint2 = new Extrema_HArray1OfPOnSurf(1, myNbExt + 2);
           Standard_Real u, v, w;
           for (i = 1; i <= myNbExt; i++)
           {
@@ -168,6 +155,27 @@ void Extrema_ExtElCS::Perform(const gp_Lin& C,
         }
       }
     }
+
+    // line is tangent or outside of the cylinder
+    Extrema_ExtPElS ExPS(PC, S, Precision::Confusion());
+      if (ExPS.IsDone())
+      {
+        if (aStartIdx == 0)
+        {
+          myNbExt = ExPS.NbExt();
+          mySqDist = new TColStd_HArray1OfReal(1, myNbExt);
+          myPoint1 = new Extrema_HArray1OfPOnCurv(1, myNbExt);
+          myPoint2 = new Extrema_HArray1OfPOnSurf(1, myNbExt);
+        }
+        else
+          myNbExt += ExPS.NbExt();
+
+        for (i = aStartIdx + 1; i <= myNbExt; i++) {
+          myPoint1->SetValue(i, myPOnC2);
+          myPoint2->SetValue(i, ExPS.Point(i - aStartIdx));
+          mySqDist->SetValue(i,(myPOnC2.Value()).SquareDistance(ExPS.Point(i - aStartIdx).Value()));
+        }
+      }
     myDone = Standard_True;
   }
 
@@ -203,33 +211,75 @@ Extrema_ExtElCS::Extrema_ExtElCS(const gp_Lin& C,
 
 
 void Extrema_ExtElCS::Perform(const gp_Lin& C,
-			      const gp_Sphere& S)
+                              const gp_Sphere& S)
 {
+  // In case of intersection - return four points:
+  // 2 intersection points and 2 perpendicular.
+  // No intersection - only min and max.
+
   myDone = Standard_False;
   myNbExt = 0;
   myIsPar = Standard_False;
+  Standard_Integer aStartIdx = 0;
 
-  gp_Pnt O = S.Location();
+  gp_Pnt aCenter = S.Location();
 
-  Extrema_ExtPElC Extrem(O, C, Precision::Angular(), RealFirst(), RealLast());
+  Extrema_ExtPElC Extrem(aCenter, C, Precision::Angular(), RealFirst(), RealLast());
 
   Standard_Integer i;
-  if (Extrem.IsDone()) {
+  if (Extrem.IsDone() &&
+      Extrem.NbExt() > 0)
+  {
     Extrema_POnCurv myPOnC1 =  Extrem.Point(1);
+    if (myPOnC1.Value().Distance(aCenter) <= S.Radius())
+    {
+      IntAna_IntConicQuad aLinSphere(C, S);
+      if (aLinSphere.IsDone())
+      {
+        myNbExt = aLinSphere.NbPoints();
+        aStartIdx = myNbExt;
+        // Not more than 2 additional points from perpendiculars.
+        mySqDist = new TColStd_HArray1OfReal(1, myNbExt + 2);
+        myPoint1 = new Extrema_HArray1OfPOnCurv(1, myNbExt + 2);
+        myPoint2 = new Extrema_HArray1OfPOnSurf(1, myNbExt + 2);
+
+        for (i = 1; i <= myNbExt; i++)
+        {
+          Extrema_POnCurv aCPnt(aLinSphere.ParamOnConic(i), aLinSphere.Point(i));
+
+          Standard_Real u,v;
+          ElSLib::Parameters(S, aLinSphere.Point(i), u, v);
+          Extrema_POnSurf aSPnt(u, v, aLinSphere.Point(i));
+
+          myPoint1->SetValue(i, aCPnt);
+          myPoint2->SetValue(i, aSPnt);
+          mySqDist->SetValue(i,(aCPnt.Value()).SquareDistance(aSPnt.Value()));
+        }
+      }
+    }
+
     Extrema_ExtPElS ExPS(myPOnC1.Value(), S, Precision::Confusion());
-    if (ExPS.IsDone()) {
-      myNbExt = ExPS.NbExt();
-      mySqDist = new TColStd_HArray1OfReal(1, myNbExt);
-      myPoint1 = new Extrema_HArray1OfPOnCurv(1, myNbExt);
-      myPoint2 = new Extrema_HArray1OfPOnSurf(1, myNbExt);
-      for (i = 1; i <= myNbExt; i++) {
-	myPoint1->SetValue(i, myPOnC1);
-	myPoint2->SetValue(i, ExPS.Point(i));
-	mySqDist->SetValue(i,(myPOnC1.Value()).SquareDistance(ExPS.Point(i).Value()));
-	myDone = Standard_True;
+    if (ExPS.IsDone())
+    {
+      if (aStartIdx == 0)
+      {
+        myNbExt = ExPS.NbExt();
+        mySqDist = new TColStd_HArray1OfReal(1, myNbExt);
+        myPoint1 = new Extrema_HArray1OfPOnCurv(1, myNbExt);
+        myPoint2 = new Extrema_HArray1OfPOnSurf(1, myNbExt);
+      }
+      else
+        myNbExt += ExPS.NbExt();
+
+      for (i = aStartIdx + 1; i <= myNbExt; i++)
+      {
+        myPoint1->SetValue(i, myPOnC1);
+        myPoint2->SetValue(i, ExPS.Point(i - aStartIdx));
+        mySqDist->SetValue(i,(myPOnC1.Value()).SquareDistance(ExPS.Point(i - aStartIdx).Value()));
       }
     }
   }
+  myDone = Standard_True;
 }
 
 
