@@ -1,3 +1,7 @@
+puts "TODO ?OFF22926 ALL: The offset is not valid"
+puts "TODO ?OCC23068 ALL: result is not a topological shape"
+puts "TODO ?OCC24156 ALL: TEST INCOMPLETE"
+
 ## ======================================
 ## Grid    : CCV002
 ## Test    : A1
@@ -9,5 +13,4 @@ explode s F
 offsetcompshape result s -10 s_1
 
 #real volume of result shape is unknow yet
-puts "TODO OFF22926 ALL: The offset is not valid"
 set volume 0

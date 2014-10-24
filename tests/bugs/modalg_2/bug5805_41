@@ -1,8 +1,11 @@
-puts "TODO OCC11111 ALL: Error : Result shape is WRONG"
-puts "TODO OCC11111 ALL: Error : The square of result shape is"
+puts "TODO ?OCC11111 ALL: Error : Result shape is WRONG"
+puts "TODO ?OCC11111 ALL: Error : The square of result shape is"
 puts "TODO ?OCC11111 ALL: Faulty shapes in variables faulty_1 to faulty_"
 puts "TODO ?OCC11111 ALL: Faulty OCC5805 : result is not Closed shape"
 puts "TODO ?OCC11111 ALL: Error : The command is not valid"
+puts "TODO ?OCC25406 ALL: result is not a topological shape"
+puts "TODO ?OCC25406 ALL: TEST INCOMPLETE"
+
 puts "============"
 puts "OCC5805"
 puts "============"

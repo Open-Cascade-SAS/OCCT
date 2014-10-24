@@ -1,4 +1,7 @@
-puts "TODO OCC23068 ALL: Error : The offset is not valid"
+puts "TODO ?OCC23068 ALL: Error : The offset is not valid"
+puts "TODO ?OCC23068 ALL: result is not a topological shape"
+puts "TODO ?OCC24156 ALL: TEST INCOMPLETE"
+
 cpulimit 500
 
 pcone s 9 4 15 270
