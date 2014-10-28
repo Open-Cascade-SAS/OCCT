@@ -117,7 +117,7 @@
 
 static
   void RefineVector(gp_Vec2d& aV2D);
-#ifdef DEB_DUMPWLINE
+#ifdef OCCT_DEBUG_DUMPWLINE
 static
   void DumpWLine(const Handle(IntPatch_WLine)& aWLine);
 #endif
@@ -4868,7 +4868,7 @@ Standard_Integer IndexType(const GeomAbs_SurfaceType aType)
   } 
   return aIndex;
 }
-#ifdef DEB_DUMPWLINE
+#ifdef OCCT_DEBUG_DUMPWLINE
 //=======================================================================
 //function : DumpWLine
 //purpose  : 

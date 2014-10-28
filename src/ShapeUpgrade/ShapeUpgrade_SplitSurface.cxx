@@ -435,7 +435,7 @@ void ShapeUpgrade_SplitSurface::Build(const Standard_Boolean Segment)
 	  myStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE3 );
 	}
 	catch (Standard_Failure) {
-#ifdef SHAPEUPGRADE_DEB
+#ifdef OCCT_DEBUG
 	  cout << "Warning: ShapeUpgrade_SplitSurface::Build(): Exception in Segment      :";
 	  Standard_Failure::Caught()->Print(cout); cout << endl;
 #endif

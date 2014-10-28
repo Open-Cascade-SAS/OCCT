@@ -69,7 +69,7 @@
 #define BUC60925
 #define OCC352
 
-#ifdef DEB_DBGTOOLS_WRITE
+#ifdef OCCT_DEBUG_DBGTOOLS_WRITE
 //#define OCC355
 #define MDTV_DEB
 #define MDTV_DEB_OR
@@ -82,12 +82,12 @@
 #define MDTV_DEB_ARG
 #define MDTV_DEB_SHELL
 #endif
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
 #include <TCollection_AsciiString.hxx>
 #include <TDF_Tool.hxx>
 #include <BRepTools.hxx>
 #endif
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #include <TCollection_AsciiString.hxx>
 #include <TDF_Tool.hxx>
 #include <TDF_ChildIterator.hxx>
@@ -110,7 +110,7 @@ void PrintEntries(const TDF_LabelMap& map)
       cout << "LabelEntry = "<< entry << endl;
     }
 }
-#ifdef DEB_DBGTOOLS_WRITE
+#ifdef OCCT_DEBUG_DBGTOOLS_WRITE
 //=======================================================================
 static void DbgTools_Write(const TopoDS_Shape& shape,
 		      const Standard_CString filename) 
@@ -176,14 +176,14 @@ static Standard_Boolean ValidArgs(const TNaming_ListOfNamedShape& Args)
   for (;it.More();it.Next()) {
     const Handle(TNaming_NamedShape)& aNS = it.Value();
     if(aNS.IsNull()) {
-#ifdef MDTV_DEB_ARG 
+#ifdef OCCT_DEBUG_ARG 
       cout << "ValidArgs:: NS (Naming argument) is NULL" <<endl;
 #endif	
       return Standard_False;
     }
     else 
       if(aNS->IsEmpty()) {
-#ifdef MDTV_DEB_ARG
+#ifdef OCCT_DEBUG_ARG
 	TCollection_AsciiString entry;
 	TDF_Tool::Entry(aNS->Label(), entry);
 	cout << "ValidArgs:: Empty NS, Label = " << entry <<endl;
@@ -192,7 +192,7 @@ static Standard_Boolean ValidArgs(const TNaming_ListOfNamedShape& Args)
     }
       else  
 	if(!aNS->IsValid()) {
-#ifdef MDTV_DEB_ARG 
+#ifdef OCCT_DEBUG_ARG 
 	  TCollection_AsciiString entry;
 	  TDF_Tool::Entry(aNS->Label(), entry);
 	  cout << "ValidArgs::Not valid NS Label = " << entry <<endl;
@@ -508,14 +508,14 @@ static Standard_Boolean FindModifUntil (TNaming_NewShapeIterator&         it,
 					const TopoDS_Shape&               S,
 					const Handle(TNaming_NamedShape)& Context)
 { 
-#ifdef MDTV_DEB_MODUN
+#ifdef OCCT_DEBUG_MODUN
   if(!Context.IsNull())
     PrintEntry(Context->Label());
 #endif
   Standard_Boolean found = Standard_False;
   for (; it.More(); it.Next()) {
     if (!it.Shape().IsNull()) {
-#ifdef MDTV_DEB_MODUN
+#ifdef OCCT_DEBUG_MODUN
       if(!it.NamedShape().IsNull())
         PrintEntry(it.NamedShape()->Label());
 #endif
@@ -543,7 +543,7 @@ static void SearchModifUntil (const TDF_LabelMap&               /*Valid*/,
 			      TopTools_MapOfShape&              theMS)
 {
 
-#ifdef MDTV_DEB_MODUN
+#ifdef OCCT_DEBUG_MODUN
    DbgTools_WriteNSOnLabel(Target, "SMUntil_"); // Target <== generated
   Standard_Integer i = 0;
   TCollection_AsciiString aGen1("Gens_New_"), aGen2("Gented_Old_"), Und("_");
@@ -552,7 +552,7 @@ static void SearchModifUntil (const TDF_LabelMap&               /*Valid*/,
   Standard_Boolean found = Standard_False;
   for (TNaming_ListIteratorOfListOfNamedShape it(theListOfGenerators); it.More(); it.Next()) {
     const Handle(TNaming_NamedShape)& aNS = it.Value();
-#ifdef MDTV_DEB_MODUN  
+#ifdef OCCT_DEBUG_MODUN  
     i++;
     Standard_Integer j = 0;
 #endif
@@ -560,7 +560,7 @@ static void SearchModifUntil (const TDF_LabelMap&               /*Valid*/,
       const TopoDS_Shape& S = itL.NewShape();
       found = Standard_False;
       
-#ifdef MDTV_DEB_MODUN
+#ifdef OCCT_DEBUG_MODUN
       j++;
       Standard_Integer k = 0;
       TCollection_AsciiString aNam1 = aGen1 + i + Und + j + ".brep";
@@ -570,7 +570,7 @@ static void SearchModifUntil (const TDF_LabelMap&               /*Valid*/,
       TNaming_Iterator itC (Target);
       for  (; itC.More(); itC.Next()) {  // <- generated
 	const TopoDS_Shape& OS = itC.OldShape();
-#ifdef MDTV_DEB_MODUN
+#ifdef OCCT_DEBUG_MODUN
 	k++;
 	TCollection_AsciiString aNam2 = aGen2 + i + Und + j + Und + k + ".brep";
 	DbgTools_Write(OS, aNam2.ToCString());
@@ -579,7 +579,7 @@ static void SearchModifUntil (const TDF_LabelMap&               /*Valid*/,
 	if (OS.IsSame(S)) {
 	  theMS.Add(S);
 	  found = Standard_True;
-#ifdef MDTV_DEB_MODUN
+#ifdef OCCT_DEBUG_MODUN
 	  cout << aNam2 << " is Same with " << aNam1 <<endl;
 #endif
 	  break;
@@ -617,7 +617,7 @@ static Standard_Boolean ModifUntil (const TDF_Label&                  L,
 #endif
   TNaming_NamingTool::BuildDescendants (Stop, Forbiden); // fills Forbidden from Stop
 
-#ifdef MDTV_DEB_GEN  
+#ifdef OCCT_DEBUG_GEN  
   cout <<"Regenerating ModifUntil => ";
   PrintEntry(L);
   DbgTools_WriteNSOnLabel(Args.Last(), "ModifUntil-");
@@ -625,7 +625,7 @@ static Standard_Boolean ModifUntil (const TDF_Label&                  L,
 #endif
   // all last modifications of the last argument
   TNaming_NamingTool::CurrentShape  (Valid, Forbiden,Args.Last(),MS); 
-#ifdef MDTV_DEB_GEN  
+#ifdef OCCT_DEBUG_GEN  
   Standard_Integer i(0);
   TopTools_MapIteratorOfMapOfShape it(MS);
   TCollection_AsciiString aNam("ModifUnti_MS_");
@@ -635,7 +635,7 @@ static Standard_Boolean ModifUntil (const TDF_Label&                  L,
   for (TopTools_MapIteratorOfMapOfShape itM(MS); itM.More(); itM.Next()) {
     const TopoDS_Shape& S = itM.Key();
     B.Select(S,S);
-#ifdef MDTV_DEB_GEN  
+#ifdef OCCT_DEBUG_GEN  
     TCollection_AsciiString aName = aNam + ++i + ext;
     DbgTools_Write(S, aName.ToCString()) ;
     cout << aName.ToCString() << " TS = " << S.TShape()->This() <<endl;
@@ -717,7 +717,7 @@ static Standard_Boolean Intersection (const TDF_Label&                  L,
   TopTools_MapOfShape MS; 
   TDF_LabelMap        Forbiden;
 
-#ifdef MDTV_DEB_INT
+#ifdef OCCT_DEBUG_INT
   if(!Stop.IsNull() && !Stop->Get().IsNull()) {
     DbgTools_Write(Stop->Get(), "Ints_Stop.brep");
     PrintEntry(Stop->Label());
@@ -729,7 +729,7 @@ static Standard_Boolean Intersection (const TDF_Label&                  L,
 
   TNaming_NamingTool::BuildDescendants (Stop, Forbiden); // <==<1>
 
-#ifdef MDTV_DEB_INT
+#ifdef OCCT_DEBUG_INT
   cout << "Intersection:: Valid Map: "<<endl;
   PrintEntries(Valid);
   cout << "Intersection:: Forbidden Map: "<<endl;
@@ -740,7 +740,7 @@ static Standard_Boolean Intersection (const TDF_Label&                  L,
   TopoDS_Shape  CS = MakeShape(MS);
   TNaming_ShapesSet S(CS,ShapeType); // <==<2>
   aListOfAnc.Append(CS);
-#ifdef MDTV_DEB_INT
+#ifdef OCCT_DEBUG_INT
   if(!CS.IsNull())
     DbgTools_Write(CS, "Int_CS_1.brep");
   Standard_Integer i=2;
@@ -754,7 +754,7 @@ static Standard_Boolean Intersection (const TDF_Label&                  L,
     TNaming_NamingTool::CurrentShape (Valid,Forbiden,it.Value(),MS);
     CS = MakeShape(MS);
     aListOfAnc.Append(CS);
-#ifdef MDTV_DEB_INT
+#ifdef OCCT_DEBUG_INT
     TCollection_AsciiString aName = aNam + i++ + ext;      
     DbgTools_Write(CS, aName.ToCString()) ;
     cout <<"Argument " << i << " at ";
@@ -763,7 +763,7 @@ static Standard_Boolean Intersection (const TDF_Label&                  L,
 
     TNaming_ShapesSet OS(CS,ShapeType);
     S.Filter(OS); //<<===<3.2>
-#ifdef MDTV_DEB_INT
+#ifdef OCCT_DEBUG_INT
     Standard_Integer j = 1;
     TCollection_AsciiString aNam2("SSMap_"), aName3;
     TopTools_MapIteratorOfMapOfShape itm(S.Map());
@@ -774,7 +774,7 @@ static Standard_Boolean Intersection (const TDF_Label&                  L,
 #endif 
   }
 
-#ifdef MDTV_DEB_INT
+#ifdef OCCT_DEBUG_INT
   aNam = "Int_S_";
   i =1;
 #endif
@@ -797,7 +797,7 @@ static Standard_Boolean Intersection (const TDF_Label&                  L,
 	break;
       }      
     }
-#ifdef MDTV_DEB_INT
+#ifdef OCCT_DEBUG_INT
     cout <<"Kept: indxE = " << indxE  <<" maxENum = " << nbE << " indxW = " <<indxW << " nbW = " <<nbW<<endl;
 #endif      
     Standard_Integer aNbW(0), aCaseW(0);
@@ -838,14 +838,14 @@ static Standard_Boolean Intersection (const TDF_Label&                  L,
     }   
   } 
   if(!isOK)
-#ifdef MDTV_DEB_INT
+#ifdef OCCT_DEBUG_INT
     for (TopTools_MapIteratorOfMapOfShape itM(S.Map()); itM.More(); itM.Next(),i++) {
 #else
       
     for (TopTools_MapIteratorOfMapOfShape itM(S.Map()); itM.More(); itM.Next()) {
 #endif
       const TopoDS_Shape& S1 = itM.Key();
-#ifdef MDTV_DEB_INT
+#ifdef OCCT_DEBUG_INT
       TCollection_AsciiString aName = aNam + i + ext;      
       DbgTools_Write(S1, aName.ToCString()) ;
 #endif  
@@ -943,7 +943,7 @@ static Standard_Boolean Union (const TDF_Label&                  L,
   if(isOr)
     KeepInList(CS,ShapeType,aListS);
   TNaming_ShapesSet S(CS,ShapeType);//fill internal map of shapeset by shapes of the specified type
-#ifdef MDTV_DEB_UNN
+#ifdef OCCT_DEBUG_UNN
   TCollection_AsciiString entry; 
   TDF_Tool::Entry(it.Value()->Label(), entry);
   TCollection_AsciiString Nam("Arg_");
@@ -953,7 +953,7 @@ static Standard_Boolean Union (const TDF_Label&                  L,
 #endif
   it.Next();
   for (; it.More(); it.Next()) {
-#ifdef MDTV_DEB_UNN  
+#ifdef OCCT_DEBUG_UNN  
     TDF_Tool::Entry(it.Value()->Label(), entry);
 #endif
       MS.Clear();
@@ -964,7 +964,7 @@ static Standard_Boolean Union (const TDF_Label&                  L,
       TNaming_ShapesSet OS(CS,ShapeType);
       S.Add(OS); //concatenate both shapesets
  
-#ifdef MDTV_DEB_UNN 
+#ifdef OCCT_DEBUG_UNN 
     ii++;
     TCollection_AsciiString aNm = Nam + entry + "_" + ii + ".brep";
     DbgTools_Write(CS, aNm.ToCString());
@@ -983,7 +983,7 @@ static Standard_Boolean Union (const TDF_Label&                  L,
       MS.Clear();
       TNaming_NamingTool::CurrentShape (Valid, Forbiden, CNS, MS);
       aContext = MakeShape(MS);
-#ifdef MDTV_DEB_UNN 
+#ifdef OCCT_DEBUG_UNN 
       TCollection_AsciiString anEntry;
       TDF_Tool::Entry(ContextLabel, anEntry);
       cout << "UNION: Context Label = " <<  anEntry << endl;
@@ -1000,7 +1000,7 @@ static Standard_Boolean Union (const TDF_Label&                  L,
     TopExp_Explorer anExpl(aContext, ShapeType);
     for(;anExpl.More(); anExpl.Next()) 
       aList.Append(anExpl.Current());
-#ifdef MDTV_DEB_UNN
+#ifdef OCCT_DEBUG_UNN
     cout <<"UNION: ShapeType = " << ShapeType << " List ext = " << aList.Extent()<<endl;
     TopAbs_ShapeEnum aTyp = TopAbs_SHAPE;
     TopTools_MapIteratorOfMapOfShape it1 (S.Map());
@@ -1018,7 +1018,7 @@ static Standard_Boolean Union (const TDF_Label&                  L,
     TopTools_ListIteratorOfListOfShape itl(aList);
     for(;itl.More();itl.Next()) {
       aCand = itl.Value(); 
-#ifdef MDTV_DEB_UNN 
+#ifdef OCCT_DEBUG_UNN 
       DbgTools_Write(aCand, "Cand.brep");
 #endif
       Standard_Integer num = S.Map().Extent();
@@ -1036,7 +1036,7 @@ static Standard_Boolean Union (const TDF_Label&                  L,
   }
 
   TNaming_Builder B(L);
-#ifdef MDTV_DEB_UNN
+#ifdef OCCT_DEBUG_UNN
   if(!ContextLabel.IsNull()) {
     if(found) cout << "UNION: Shape is found in Context" <<endl;
     else cout << "UNION: Shape is NOT found in Context" <<endl;
@@ -1058,7 +1058,7 @@ static Standard_Boolean Union (const TDF_Label&                  L,
 	aCompoundBuilder.Add(aCompound,itL.Value());
       }
     TopoDS_Shape aShape = ShapeWithType(aCompound,ShapeType);
-#ifdef MDTV_DEB_UNN 
+#ifdef OCCT_DEBUG_UNN 
     DbgTools_Write(aShape, "Union_Selected.brep");
     DbgTools_Write(aCompound, "Union_Compound.brep");
 #endif
@@ -1139,7 +1139,7 @@ static Standard_Boolean  Generated (const TDF_Label&                L,
 #endif
 
   TDF_Label   LabelOfGeneration = Args.First()->Label();
-#ifdef MDTV_DEB_GEN
+#ifdef OCCT_DEBUG_GEN
       DbgTools_Write(Args.First()->Get(),  "Generated.brep") ;
 #endif
   // Nouvell valeurs des generateurs dans l attribut de generation
@@ -1147,7 +1147,7 @@ static Standard_Boolean  Generated (const TDF_Label&                L,
   TNaming_ListOfNamedShape aGenerators; 
   aGenerators.Assign(Args); 
   aGenerators.RemoveFirst(); 
-#ifdef MDTV_DEB_GEN
+#ifdef OCCT_DEBUG_GEN
       DbgTools_Write(aGenerators.First()->Get(),  "Generators.brep") ;
 #endif
   SearchModifUntil (Valid, Args.First(), aGenerators, aMS);
@@ -1156,7 +1156,7 @@ static Standard_Boolean  Generated (const TDF_Label&                L,
   L.FindAttribute(TNaming_Naming::GetID(),aNaming);
   if(!aNaming.IsNull()) 
     aSelection = aNaming->GetName().Shape();
-#ifdef MDTV_DEB_GEN
+#ifdef OCCT_DEBUG_GEN
   DbgTools_Write(aSelection,  "G_Selection.brep") ;
   cout << "Generated::SearchModifUntil aMS.Extent() = " << aMS.Extent() <<endl;
   DbgTools_Write(aMS, "SearchModifUntil_Result");
@@ -1167,7 +1167,7 @@ static Standard_Boolean  Generated (const TDF_Label&                L,
    if(!anOldNS.IsNull()) 
      aVer = anOldNS->Version();
 
-#ifdef MDTV_DEB_GEN
+#ifdef OCCT_DEBUG_GEN
   Standard_Integer i = 0, j=1;
   TCollection_AsciiString aNam2("Gen_New_");
   TCollection_AsciiString aNam1("Gen_Old_");
@@ -1178,7 +1178,7 @@ static Standard_Boolean  Generated (const TDF_Label&                L,
   TNaming_DataMapOfShapeMapOfShape aDM; 
   for (TopTools_MapIteratorOfMapOfShape itMS(aMS); itMS.More(); itMS.Next()) {
     const TopoDS_Shape& OS = itMS.Key();
-#ifdef MDTV_DEB_GEN
+#ifdef OCCT_DEBUG_GEN
     TCollection_AsciiString aName = aNam1 + ++i + ext;      
     DbgTools_Write(OS, aName.ToCString()) ;
     Standard_Integer j=0;
@@ -1188,7 +1188,7 @@ static Standard_Boolean  Generated (const TDF_Label&                L,
       if (itNew.Label() == LabelOfGeneration) {
 	aMapDM.Add(itNew.Shape());
 	aList.Append(itNew.Shape());//szy 21.10.03
-#ifdef MDTV_DEB_GEN
+#ifdef OCCT_DEBUG_GEN
 	TCollection_AsciiString aName = aNam2 + i +  "_" + ++j + ext;      
 	DbgTools_Write(itNew.Shape(), aName.ToCString()) ;
 #endif
@@ -1232,16 +1232,16 @@ static Standard_Boolean  Generated (const TDF_Label&                L,
 
       Standard_Boolean found = Standard_False;
       TopoDS_Shape aShape = FindShape(aDM);
-#ifdef MDTV_DEB_GEN
+#ifdef OCCT_DEBUG_GEN
       if(!aShape.IsNull())
 	DbgTools_Write(aShape,  "G_FindShape.brep") ;
 #endif
       if(!aShape.IsNull()) found = Standard_True;
-#ifdef MDTV_DEB_GEN
+#ifdef OCCT_DEBUG_GEN
       cout << "Generated ==>aGenerators.Extent() = " <<aGenerators.Extent() <<" aMS.Extent()= " <<aMS.Extent()<<endl;
 #endif
       if(found) {
-#ifdef MDTV_DEB_GEN
+#ifdef OCCT_DEBUG_GEN
       cout << "Generated ==> Shape is found!" <<endl;
 #endif
 	TopTools_ListOfShape aLM;
@@ -1249,7 +1249,7 @@ static Standard_Boolean  Generated (const TDF_Label&                L,
 	Standard_Boolean a1NB = Standard_False;
 	if(aGenerators.Extent() != aMS.Extent()) { //missed generators
 	  aHas = Standard_True;//has lost generatos
-#ifdef MDTV_DEB_GEN
+#ifdef OCCT_DEBUG_GEN
       cout << "Generated ==> has lost generatos!" <<endl;
 #endif
 	  for (TNaming_ListIteratorOfListOfNamedShape itg(aGenerators); itg.More(); itg.Next()) {
@@ -1309,7 +1309,7 @@ static Standard_Boolean  Generated (const TDF_Label&                L,
 	}
     } else 
       {	//not found
-#ifdef MDTV_DEB_GEN
+#ifdef OCCT_DEBUG_GEN
 	cout << "Generated ==> Shape is NOT found! Probably Compound will be built" <<endl;
 #endif
 
@@ -1347,7 +1347,7 @@ static Standard_Boolean Identity (const TDF_Label&                L,
   TopTools_MapOfShape MS;
   TDF_LabelMap        Forbiden;
   TNaming_NamingTool::CurrentShape (Valid,Forbiden,A,MS);
-#ifdef MDTV_DEB_SOL2
+#ifdef OCCT_DEBUG_SOL2
   //TCollection_AsciiString entry;
   //TDF_Tool::Entry(L, entry);
   //TDF_Tool::Entry(A->Label(), entry);
@@ -1359,7 +1359,7 @@ static Standard_Boolean Identity (const TDF_Label&                L,
 #else
     const TopoDS_Shape& S = itM.Key();
 #endif
-#ifdef MDTV_DEB_SOL2
+#ifdef OCCT_DEBUG_SOL2
     //TopAbs_Orientation Or = S.Orientation();
 #endif
     B.Select(S,S);
@@ -1395,7 +1395,7 @@ static Standard_Boolean  FilterByNeighbourgs (const TDF_Label&                L,
   //----------------------------------------
   Handle(TNaming_NamedShape) Cand  = Args.First(); //collection of candidates
    
-#ifdef MDTV_DEB_FNB
+#ifdef OCCT_DEBUG_FNB
   Standard_Integer i = 1;
   TCollection_AsciiString aNam("Cand_");
   TCollection_AsciiString ext(".brep");
@@ -1409,7 +1409,7 @@ static Standard_Boolean  FilterByNeighbourgs (const TDF_Label&                L,
   TopTools_MapOfShape    SCand;
   TNaming_NamingTool::CurrentShape  (Valid, Forbiden,Cand,SCand);//fills SCand with last modifications of Cand. CandNS should be at the same level (before) as NS of FilterByNBS
 
-#ifdef MDTV_DEB_FNB
+#ifdef OCCT_DEBUG_FNB
   TCollection_AsciiString aNam2("SCand");
   DbgTools_Write(SCand, aNam2.ToCString());  
   cout <<"SCand Extent = " << SCand.Extent() << " Expected ShapeType = " << ShapeType << endl;
@@ -1423,7 +1423,7 @@ static Standard_Boolean  FilterByNeighbourgs (const TDF_Label&                L,
   if (ShapeType == TopAbs_EDGE) TC = TopAbs_VERTEX;
   if (ShapeType == TopAbs_VERTEX) TC = TopAbs_VERTEX; // szy 31.03.10 - to process case when Candidate is of type Vertex
  
-#ifdef MDTV_DEB_FNB
+#ifdef OCCT_DEBUG_FNB
   i=1;
   aNam = "Boundaries";
 #endif
@@ -1447,7 +1447,7 @@ static Standard_Boolean  FilterByNeighbourgs (const TDF_Label&                L,
     else  //#
       for (TopExp_Explorer exp(S,TC); exp.More(); exp.Next()) { //put boundaries of each candidate (from SCand) to the Boundaries map
 	Boundaries.Add (exp.Current());
-#ifdef MDTV_DEB_FNB
+#ifdef OCCT_DEBUG_FNB
 	TCollection_AsciiString aName = aNam + i++ + ext;      
 	DbgTools_Write(exp.Current(),  aName.ToCString()) ;
 #endif
@@ -1456,7 +1456,7 @@ static Standard_Boolean  FilterByNeighbourgs (const TDF_Label&                L,
     TNaming_ListIteratorOfListOfNamedShape it(Args); 
     it.Next(); 
     Standard_Boolean Keep = 1;
-#ifdef MDTV_DEB_FNB
+#ifdef OCCT_DEBUG_FNB
     cout <<"Args number = " << Args.Extent() <<endl;
     i=1;
     aNam = "Boundaries";
@@ -1469,14 +1469,14 @@ static Standard_Boolean  FilterByNeighbourgs (const TDF_Label&                L,
       // of each neighbor.
       const Handle(TNaming_NamedShape)& NSVois = it.Value();  //neighbor 
 
-#ifdef MDTV_DEB_FNB
+#ifdef OCCT_DEBUG_FNB
       DbgTools_WriteNSOnLabel(NSVois, "Next_Neighbor_") ;
 #endif
       
       TopTools_MapOfShape    SVois;
       TNaming_NamingTool::CurrentShape  (Valid, Forbiden,NSVois,SVois); // fills SVois with last modifications of NSVois
 
-#ifdef MDTV_DEB_FNB
+#ifdef OCCT_DEBUG_FNB
       TCollection_AsciiString aNam2("SVois");
       DbgTools_Write(SVois, aNam2.ToCString());
 #endif 
@@ -1486,7 +1486,7 @@ static Standard_Boolean  FilterByNeighbourgs (const TDF_Label&                L,
 	for (TopExp_Explorer exp1(Vois,TC); exp1.More(); exp1.Next()) { //7
 	  if (Boundaries.Contains(exp1.Current())) {
 	    Connected = Standard_True; // has common boundaries with candidate shape
-#ifdef MDTV_DEB_FNB
+#ifdef OCCT_DEBUG_FNB
 	    DbgTools_Write(Vois, "Neighbor_Connected.brep");
 #endif
 	    break;
@@ -1502,7 +1502,7 @@ static Standard_Boolean  FilterByNeighbourgs (const TDF_Label&                L,
     if (Keep) {
       B.Select (S,S);
 	  isDone = Standard_True;
-#ifdef MDTV_DEB_FNB
+#ifdef OCCT_DEBUG_FNB
       DbgTools_Write(S,  "FilterByNbs_Sel.brep") ;
 #endif
     }
@@ -1513,7 +1513,7 @@ static Standard_Boolean  FilterByNeighbourgs (const TDF_Label&                L,
 //=======================================================================
 static const TopoDS_Shape FindSubShapeInAncestor(const TopoDS_Shape& Selection, const TopoDS_Shape& Context )
 {
-#ifdef MDTV_DEB_OR_AG
+#ifdef OCCT_DEBUG_OR_AG
   DbgTools_Write(Selection, "Orientation_Selection.brep");
   DbgTools_Write(Context, "Orientation_Context.brep");
   TopExp_Explorer expl1(Context, Selection.ShapeType());
@@ -1531,7 +1531,7 @@ static const TopoDS_Shape FindSubShapeInAncestor(const TopoDS_Shape& Selection, 
   if(Selection.ShapeType() != TopAbs_COMPOUND) {
     TopExp_Explorer anExpl(Context, Selection.ShapeType());
     for(;anExpl.More(); anExpl.Next()) {
-#ifdef MDTV_DEB_OR_AG
+#ifdef OCCT_DEBUG_OR_AG
       cout <<"FindSubShape:  = " <<anExpl.Current().ShapeType() << " TS = " <<anExpl.Current().TShape()->This() << endl;
       DbgTools_Write(anExpl.Current(), "Orientation_Current.brep");
 #endif    
@@ -1608,7 +1608,7 @@ static Standard_Boolean ORientation (const TDF_Label&                L,
     else {
       isSplit = Standard_True;
       S = MakeShape(MS);
-#ifdef MDTV_DEB_OR
+#ifdef OCCT_DEBUG_OR
       for(Standard_Integer i=1;it.More();it.Next(), i++) {
 	TCollection_AsciiString aNam("OR_Selection_");
 	TCollection_AsciiString aName = aNam + i + ".brep";
@@ -1621,7 +1621,7 @@ static Standard_Boolean ORientation (const TDF_Label&                L,
   TNaming_Builder B(L);
   if(S.IsNull()) 
     return Standard_False;
-#ifdef MDTV_DEB_OR
+#ifdef OCCT_DEBUG_OR
   DbgTools_Write(S, "Orientation_S.brep");
 #endif
 
@@ -1636,7 +1636,7 @@ static Standard_Boolean ORientation (const TDF_Label&                L,
   TopTools_MapOfShape MSC; 
   if(aSList.Extent() == 0) {
     const Handle(TNaming_NamedShape)& Anc = Args.Last();
-#ifdef MDTV_DEB_OR
+#ifdef OCCT_DEBUG_OR
     cout << "### ORIENTATION: Ancestor ";
     PrintEntry(Anc->Label());
 #endif
@@ -1656,7 +1656,7 @@ static Standard_Boolean ORientation (const TDF_Label&                L,
 	      if(i == Index && it.Value().IsSame(S)) {
 		CS = it.Value();
 		found = Standard_True;
-#ifdef MDTV_DEB_OR
+#ifdef OCCT_DEBUG_OR
 		cout << "ORIENTATION => ORDER = " << i <<endl;
 #endif
 		break;
@@ -1667,7 +1667,7 @@ static Standard_Boolean ORientation (const TDF_Label&                L,
 	} else
 	  CS =  FindSubShapeInAncestor(S, AS);
 // <=== end 21.10.2009
-#ifdef MDTV_DEB_OR
+#ifdef OCCT_DEBUG_OR
 	cout << "ORIENTATION: Selection" <<" TShape = " <<CS.TShape() <<" Orientation = " << CS.Orientation() <<endl;
 	cout << "ORIENTATION: Context " << "ShapeType = "<<AS.ShapeType() << " TShape = " <<AS.TShape() <<endl;
 	DbgTools_Write(AS, "Orientation_Cnt.brep");
@@ -1723,7 +1723,7 @@ static Standard_Boolean ORientation (const TDF_Label&                L,
 	  return Standard_False;
       } 
       else {
-#ifdef MDTV_DEB_OR
+#ifdef OCCT_DEBUG_OR
 	DbgTools_Write(Arr->Value(1,2), "Ancestor.brep");
 #endif
 	if(!Aggregation(S, Arr->Value(1,2), B)) { 
@@ -1743,7 +1743,7 @@ static Standard_Boolean ORientation (const TDF_Label&                L,
 	    return Standard_False;
 	}
 	else {
-#ifdef MDTV_DEB_OR
+#ifdef OCCT_DEBUG_OR
 	  DbgTools_Write(AC, "Aggregation.brep");
 #endif
 	  if(!Aggregation(S, AC, B)) { 
@@ -1778,7 +1778,7 @@ static Standard_Boolean WireIN(const TDF_Label&                L,
   if (MS.Extent() != 1) return aResult;
   TopTools_MapIteratorOfMapOfShape itM(MS); 
   const TopoDS_Shape& aCF = itM.Key()   ;
-#ifdef MDTV_DEB_WIN
+#ifdef OCCT_DEBUG_WIN
   cout <<"MS Extent = " <<MS.Extent() <<endl;
   DbgTools_Write(aCF, "Context_Face.brep");
 #endif
@@ -1804,7 +1804,7 @@ static Standard_Boolean WireIN(const TDF_Label&                L,
     TopoDS_Shape  CS = MakeShape(MS);
 
     TNaming_ShapesSet aSet(CS,TopAbs_EDGE);//fill internal map of shapeset by shapes of the specified type
-#ifdef MDTV_DEB_WIN
+#ifdef OCCT_DEBUG_WIN
     TCollection_AsciiString entry; 
     TDF_Tool::Entry(it.Value()->Label(), entry);
     TCollection_AsciiString Nam("Arg_");
@@ -1814,7 +1814,7 @@ static Standard_Boolean WireIN(const TDF_Label&                L,
 #endif
     it.Next();
     for (; it.More(); it.Next()) {
-#ifdef MDTV_DEB_WIN 
+#ifdef OCCT_DEBUG_WIN 
       TDF_Tool::Entry(it.Value()->Label(), entry);
 #endif
       MS.Clear();
@@ -1823,7 +1823,7 @@ static Standard_Boolean WireIN(const TDF_Label&                L,
       TNaming_ShapesSet OS(CS,TopAbs_EDGE);
       aSet.Add(OS); //concatenate both shapesets
  
-#ifdef MDTV_DEB_WIN
+#ifdef OCCT_DEBUG_WIN
       ii++;
       TCollection_AsciiString aNm = Nam + entry + "_" + ii + ".brep";
       DbgTools_Write(CS, aNm.ToCString());
@@ -1831,7 +1831,7 @@ static Standard_Boolean WireIN(const TDF_Label&                L,
 #endif
 	}
 
-#ifdef MDTV_DEB_WIN
+#ifdef OCCT_DEBUG_WIN
     cout <<"WIREIN: " << " Internal Map ext = " << aSet.Map().Extent()<<endl;
     TopTools_MapIteratorOfMapOfShape it1 (aSet.Map());
     for (int i=1;it1.More();it1.Next(),i++) {
@@ -1849,7 +1849,7 @@ static Standard_Boolean WireIN(const TDF_Label&                L,
   for (TopoDS_Iterator itF(aCF); itF.More(); itF.Next()) {// find the expected wire in the face
     const TopoDS_Shape& S = itF.Value();//wire
 	if(!S.IsNull()) {
-#ifdef MDTV_DEB_WIN    
+#ifdef OCCT_DEBUG_WIN    
       DbgTools_Write(S, "WireIN_S.brep");
       cout <<"WIREIN: ShapeType = " << S.ShapeType() << " TS = " << S.TShape()->This() <<endl;
 #endif       
@@ -1915,7 +1915,7 @@ static Standard_Boolean ShellIN(const TDF_Label&                L,
   if (MS.Extent() != 1) return aResult;
   TopTools_MapIteratorOfMapOfShape itM(MS); 
   const TopoDS_Shape& aCSO = itM.Key()   ;
-#ifdef MDTV_DEB_SHELL
+#ifdef OCCT_DEBUG_SHELL
   cout <<"MS Extent = " <<MS.Extent() <<endl;
   DbgTools_Write(aCSO, "Context_Solid.brep");
 #endif
@@ -1926,7 +1926,7 @@ static Standard_Boolean ShellIN(const TDF_Label&                L,
 	if(!anOuterShell.IsNull()) {
       B.Select(anOuterShell, anOuterShell);
 	  aResult = Standard_True;
-#ifdef MDTV_DEB_SHELL      
+#ifdef OCCT_DEBUG_SHELL      
 	  cout << "Outer Shell case" <<endl;
       PrintEntry(L);
 	  DbgTools_Write(anOuterShell, "ShellOut_S.brep");
@@ -1950,7 +1950,7 @@ static Standard_Boolean ShellIN(const TDF_Label&                L,
     TopoDS_Shape  CS = MakeShape(MS);
 
     TNaming_ShapesSet aSet(CS,TopAbs_FACE);//fill internal map of shapeset by shapes of the specified type
-#ifdef MDTV_DEB_SHELL
+#ifdef OCCT_DEBUG_SHELL
     TCollection_AsciiString entry; 
     TDF_Tool::Entry(it.Value()->Label(), entry);
     TCollection_AsciiString Nam("Arg_");
@@ -1960,7 +1960,7 @@ static Standard_Boolean ShellIN(const TDF_Label&                L,
 #endif
     it.Next();
     for (; it.More(); it.Next()) {
-#ifdef MDTV_DEB_SHELL 
+#ifdef OCCT_DEBUG_SHELL 
       TDF_Tool::Entry(it.Value()->Label(), entry);
 #endif
       MS.Clear();
@@ -1969,7 +1969,7 @@ static Standard_Boolean ShellIN(const TDF_Label&                L,
       TNaming_ShapesSet OS(CS,TopAbs_FACE);
       aSet.Add(OS); //concatenate both shapesets
  
-#ifdef MDTV_DEB_SHELL
+#ifdef OCCT_DEBUG_SHELL
       ii++;
       TCollection_AsciiString aNm = Nam + entry + "_" + ii + ".brep";
       DbgTools_Write(CS, aNm.ToCString());
@@ -1977,7 +1977,7 @@ static Standard_Boolean ShellIN(const TDF_Label&                L,
 #endif
 	}
 
-#ifdef MDTV_DEB_SHELL
+#ifdef OCCT_DEBUG_SHELL
     cout <<"SHELLIN: " << " Internal Map ext = " << aSet.Map().Extent()<<endl;
     TopTools_MapIteratorOfMapOfShape it1 (aSet.Map());
     for (int i=1;it1.More();it1.Next(),i++) {
@@ -1995,7 +1995,7 @@ static Standard_Boolean ShellIN(const TDF_Label&                L,
   for (TopoDS_Iterator itS(aCSO); itS.More(); itS.Next()) {// find the expected shell in the solid
     const TopoDS_Shape& S = itS.Value();//shell
 	if(!S.IsNull()) {
-#ifdef MDTV_DEB_SHELL    
+#ifdef OCCT_DEBUG_SHELL    
       DbgTools_Write(S, "ShellIN_S.brep");
       cout <<"SHELLIN: ShapeType = " << S.ShapeType() << " TS = " << S.TShape()->This() <<endl;
 #endif       
@@ -2039,7 +2039,7 @@ static Standard_Boolean ShellIN(const TDF_Label&                L,
   }
   return aResult;
 }
-#ifdef TNAMING_DEB
+#ifdef OCCT_DEBUG
 //=======================================================================
 static  Standard_CString NameTypeToString (const TNaming_NameType Type)
 {
@@ -2071,7 +2071,7 @@ Standard_Boolean TNaming_Name::Solve(const TDF_Label&    aLab,
 				     const TDF_LabelMap& Valid) const
 {
   Standard_Boolean Done = 0;
-#ifdef MDTV_DEB_WIN
+#ifdef OCCT_DEBUG_WIN
   PrintEntry(aLab);
 #endif
   try {
@@ -2128,7 +2128,7 @@ Standard_Boolean TNaming_Name::Solve(const TDF_Label&    aLab,
     }
   case TNaming_WIREIN: 
     {
-#ifdef MDTV_DEB_WIN  
+#ifdef OCCT_DEBUG_WIN  
       cout << "Name::Solve: NameType = " << myType << "  ";
   PrintEntry(aLab);
 #endif
@@ -2137,7 +2137,7 @@ Standard_Boolean TNaming_Name::Solve(const TDF_Label&    aLab,
     }
 case TNaming_SHELLIN: 
     {
-#ifdef MDTV_DEB_SHELL
+#ifdef OCCT_DEBUG_SHELL
       cout << "Name::Solve: NameType = " << myType << "  ";
       PrintEntry(aLab);
 #endif
@@ -2146,7 +2146,7 @@ case TNaming_SHELLIN:
     }
   }
 } catch (...) {
-#ifdef TNAMING_DEB
+#ifdef OCCT_DEBUG
   cout << "Name::Solve: EXCEPTION==> NameType = " << NameTypeToString(myType) << "  ";
   PrintEntry(aLab);
 #endif

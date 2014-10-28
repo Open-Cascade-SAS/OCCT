@@ -48,12 +48,6 @@ void BinDrivers_DocumentStorageDriver::WriteShapeSection
                                (BinLDrivers_DocumentSection&   theSection,
                                 Standard_OStream&              theOS)
 {
-
-#if defined(_DEBUG) || defined(DEB)
-  TCollection_ExtendedString aMethStr ("BinDrivers_DocumentStorageDriver, ");
-#else
-  TCollection_ExtendedString aMethStr;
-#endif
   const Standard_Size aShapesSectionOffset = (Standard_Size) theOS.tellp();
   
   Handle(BinMNaming_NamedShapeDriver) aNamedShapeDriver;
@@ -65,7 +59,7 @@ void BinDrivers_DocumentStorageDriver::WriteShapeSection
       TCollection_ExtendedString anErrorStr ("Error: ");
       Handle(Standard_Failure) aFailure = Standard_Failure::Caught();
       TCollection_ExtendedString aStr = 
-	anErrorStr + aMethStr + "Shape Section :";
+	anErrorStr + "BinDrivers_DocumentStorageDriver, Shape Section :";
       WriteMessage (aStr  + aFailure->GetMessageString());
     }
   }

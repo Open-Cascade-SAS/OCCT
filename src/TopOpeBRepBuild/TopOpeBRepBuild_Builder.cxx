@@ -42,7 +42,7 @@
 #include <TopOpeBRepDS_Reducer.hxx>
 #include <TopOpeBRepBuild_define.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepBuild_GettraceCU();
 extern Standard_Boolean TopOpeBRepBuild_GettraceCUV();
 extern Standard_Boolean TopOpeBRepBuild_GettraceSPF();
@@ -120,7 +120,7 @@ Handle(TopOpeBRepDS_HDataStructure) TopOpeBRepBuild_Builder::DataStructure() con
 //=======================================================================
 void TopOpeBRepBuild_Builder::Perform(const Handle(TopOpeBRepDS_HDataStructure)& HDS)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   GdumpSHASETreset();
 #endif
   Clear();
@@ -160,7 +160,7 @@ void TopOpeBRepBuild_Builder::AddIntersectionEdges
   TopOpeBRepDS_CurveIterator FCurves = myDataStructure->FaceCurves(aFace);
   for (; FCurves.More(); FCurves.Next()) {
     Standard_Integer iC = FCurves.Current();
-#ifdef DEB
+#ifdef OCCT_DEBUG
     Standard_Boolean tCU = TopOpeBRepBuild_GettraceCU();
     Standard_Boolean NtCUV = !TopOpeBRepBuild_GettraceCUV();
     if(tCU) {cout<<endl;myDataStructure->Curve(iC).Dump(cout,iC,NtCUV);}
@@ -294,7 +294,7 @@ Standard_Boolean TopOpeBRepBuild_Builder::ToSplit(const TopoDS_Shape& S,const To
   Standard_Boolean hassame = myDataStructure->HasSameDomain(S);
   Standard_Boolean tosplit = (!issplit) && (hasgeom || hassame);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer iS; Standard_Boolean tSPS = GtraceSPS(S,iS);
   if (tSPS) { 
     cout<<"tosplit "<<tosplit<<" : "<<"!issplit "<<(!issplit);
@@ -322,7 +322,7 @@ void TopOpeBRepBuild_Builder::MarkSplit(const TopoDS_Shape& S,const TopAbs_State
   TopOpeBRepDS_ListOfShapeOn1State& losos = (*p).ChangeFind(S);
   losos.Split(Bval);
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer iS; Standard_Boolean tSPS = GtraceSPS(S,iS);
   if(tSPS){
     GdumpSHA(S, (char *) "MarkSplit ");
@@ -349,7 +349,7 @@ Standard_Boolean TopOpeBRepBuild_Builder::IsSplit(const TopoDS_Shape& S,const To
   if ((*p).IsBound(S)) {
     const TopOpeBRepDS_ListOfShapeOn1State& losos = (*p).Find(S);
     res = losos.IsSplit();
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //    Standard_Integer n = losos.ListOnState().Extent();
 #endif
   }
@@ -382,7 +382,7 @@ const TopTools_ListOfShape& TopOpeBRepBuild_Builder::Splits(const TopoDS_Shape& 
 //=======================================================================
 TopTools_ListOfShape& TopOpeBRepBuild_Builder::ChangeSplit(const TopoDS_Shape& S,const TopAbs_State ToBuild)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer iS; Standard_Boolean tSPS = GtraceSPS(S,iS);
   if(tSPS){
     GdumpSHA(S, (char *) "ChangeSplit ");
@@ -422,7 +422,7 @@ TopAbs_State TopOpeBRepBuild_Builder::ShapePosition(const TopoDS_Shape& S, const
 
   for (TopTools_ListIteratorOfListOfShape Iti(LS); Iti.More(); Iti.Next()) {
     const TopoDS_Shape& SLS = Iti.Value();
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //    TopAbs_ShapeEnum tSLS = SLS.ShapeType();
 #endif
     state = myShapeClassifier.StateShapeShape(S,(*PLOS),SLS);
@@ -514,13 +514,13 @@ void TopOpeBRepBuild_Builder::FindSameDomain(TopTools_ListOfShape& L1,TopTools_L
     TopTools_ListIteratorOfListOfShape it1(L1);
     for (i=1 ; i<=nl1; i++) {
       const TopoDS_Shape& S1 = it1.Value();
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //      Standard_Integer iS1 = myDataStructure->Shape(S1);  // DEB
 #endif
       TopTools_ListIteratorOfListOfShape itsd(myDataStructure->SameDomain(S1));
       for (; itsd.More(); itsd.Next() ) {
 	const TopoDS_Shape& S2 = itsd.Value();
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //	Standard_Integer iS2 = myDataStructure->Shape(S2);// DEB
 #endif
 	Standard_Boolean found = Contains(S2,L2);
@@ -536,13 +536,13 @@ void TopOpeBRepBuild_Builder::FindSameDomain(TopTools_ListOfShape& L1,TopTools_L
     TopTools_ListIteratorOfListOfShape it2(L2);
     for (i=1 ; i<=nl2; i++) {
       const TopoDS_Shape& S2 = it2.Value();
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //      Standard_Integer iS2 = myDataStructure->Shape(S2);// DEB
 #endif
       TopTools_ListIteratorOfListOfShape itsd(myDataStructure->SameDomain(S2));
       for (; itsd.More(); itsd.Next() ) {
 	const TopoDS_Shape& S1 = itsd.Value();
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //	Standard_Integer iS1 = myDataStructure->Shape(S1);// DEB
 #endif
 	Standard_Boolean found = Contains(S1,L1);
@@ -571,7 +571,7 @@ void TopOpeBRepBuild_Builder::FindSameDomainSameOrientation(TopTools_ListOfShape
   if ( !it.More() ) return;
 
   const TopoDS_Shape& sref = it.Value();
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //  Standard_Integer  iref = myDataStructure->SameDomainReference(sref);
 #endif
   TopOpeBRepDS_Config oref = myDataStructure->SameDomainOrientation(sref);

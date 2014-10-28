@@ -27,7 +27,7 @@
 #include <BRep_Tool.hxx>
 #include <TopoDS.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #define DEBSHASET(sarg,meth,shaset,str) TCollection_AsciiString sarg((meth));(sarg)=(sarg)+(shaset).DEBNumber()+(str);
 Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GetcontextNOFUFA();
 Standard_EXPORT void debffsfs(const Standard_Integer i){cout<<"+++ debffsfs "<<i<<endl;}
@@ -50,7 +50,7 @@ Standard_EXPORT void FUNBUILD_ANCESTORRANKGET(TopOpeBRepBuild_Builder& B,const T
 
 static Standard_Integer FUN_getAncestorFsp(TopOpeBRepBuild_Builder& B,TopOpeBRepTool_ShapeClassifier& SC,const TopTools_ListOfShape& LF,const TopoDS_Shape& fsp,Standard_Boolean& p3ddef,gp_Pnt& p3d);
 static Standard_Integer FUN_getAncestorFsp(TopOpeBRepBuild_Builder& B,TopOpeBRepTool_ShapeClassifier& SC,const TopTools_ListOfShape& LF1,const TopTools_ListOfShape& LF2,const TopoDS_Shape& fsp);
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //static void FUN_getAncestorFsp(const Handle(TopOpeBRepDS_HDataStructure)& HDS,TopOpeBRepTool_ShapeClassifier& SC,const TopTools_ListOfShape& LF1,const TopTools_ListOfShape& LF2,const TopTools_ListOfShape& spFOR,
 //			       TopTools_DataMapOfShapeInteger* SplitAnc);
 #endif
@@ -165,19 +165,19 @@ void TopOpeBRepBuild_Builder::GFillFaceSFS(const TopoDS_Shape& FOR,const TopTool
 {
   TopAbs_State TB1,TB2; Gin.StatesON(TB1,TB2);
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer iF; Standard_Boolean tSPS = GtraceSPS(FOR,iF);
   if(tSPS)cout<<endl;
 #endif
   const TopOpeBRepDS_DataStructure& BDS = myDataStructure->DS();
   Standard_Boolean tosplit = GToSplit(FOR,TB1);
   Standard_Boolean tomerge = GToMerge(FOR);
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //  Standard_Integer iFOR = BDS.Shape(FOR);
 #endif
   Standard_Integer rkFOR = BDS.AncestorRank(FOR);
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if(tSPS){
     GdumpSHASTA(FOR,TB1,"--- GFillFaceSFS START ");
     cout<<" tosplit "<<tosplit<<" tomerge "<<tomerge<<endl;
@@ -205,7 +205,7 @@ void TopOpeBRepBuild_Builder::GFillFaceSFS(const TopoDS_Shape& FOR,const TopTool
     
     if (makemerge) {
       
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if(tSPS) {
 	GdumpSHASTA(FOR,TB1,"[[[[[[[[[[[[[[[[[[[[[[[[[[ GFillFaceSFS makemerge START ");
 	cout<<endl;
@@ -213,7 +213,7 @@ void TopOpeBRepBuild_Builder::GFillFaceSFS(const TopoDS_Shape& FOR,const TopTool
 #endif
 
       Standard_Boolean performfufa = Standard_True;
-#ifdef DEB
+#ifdef OCCT_DEBUG
       performfufa = !TopOpeBRepBuild_GetcontextNOFUFA();
 #endif	  
       if (performfufa) {	
@@ -256,7 +256,7 @@ void TopOpeBRepBuild_Builder::GFillFaceSFS(const TopoDS_Shape& FOR,const TopTool
       GM = Gin;
       GM.ChangeConfig(TopOpeBRepDS_SAMEORIENTED,TopOpeBRepDS_SAMEORIENTED);
       if (dodo) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	if(tSPS){
 	  GdumpSAMDOM(LF1, (char *) "LF1 (LFSO1) : ");
 	  GdumpSAMDOM(LF2, (char *) "LF2 (LFSO2) : ");
@@ -302,7 +302,7 @@ void TopOpeBRepBuild_Builder::GFillFaceSFS(const TopoDS_Shape& FOR,const TopTool
       GM.ChangeConfig(TopOpeBRepDS_SAMEORIENTED,TopOpeBRepDS_DIFFORIENTED);
       FUN_setmotherope(GM); // +12/07
       if (dodo) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	if(tSPS){
 	  TopAbs_State TB11,TB21; GM.StatesON(TB11,TB21);
 	  cout<<endl;
@@ -361,7 +361,7 @@ void TopOpeBRepBuild_Builder::GFillFaceSFS(const TopoDS_Shape& FOR,const TopTool
 	GM.ChangeConfig(TopOpeBRepDS_SAMEORIENTED,TopOpeBRepDS_DIFFORIENTED);
 	FUN_setmotherope(GM); // +12/07
 	if (dodo) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	  if(tSPS){
 	    TopAbs_State TB12,TB22; GM.StatesON(TB12,TB22);
 	    cout<<endl;
@@ -389,7 +389,7 @@ void TopOpeBRepBuild_Builder::GFillFaceSFS(const TopoDS_Shape& FOR,const TopTool
       
       FUN_unsetmotherope(); // +12/07
       
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if(tSPS) { 
 	GdumpSHASTA(FOR,TB1,"]]]]]]]]]]]]]]]]]]]]]]]]]] GFillFaceSFS makemerge END ");
 	cout<<endl;
@@ -401,14 +401,14 @@ void TopOpeBRepBuild_Builder::GFillFaceSFS(const TopoDS_Shape& FOR,const TopTool
       // FuseFace
       SFS.ChangeStartShapes().Extent();
       if (performfufa) {	
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	if(tSPS) debffflo(iF);
 #endif
 //	const TopTools_ListOfShape& lou = Splits(FF,TopAbs_OUT); Standard_Integer nou = lou.Extent();
 //	const TopTools_ListOfShape& lin = Splits(FF,TopAbs_IN);  Standard_Integer nin = lin.Extent();
 //	GCopyList(lou,*GLOBAL_lfr1);
 //	GCopyList(lin,*GLOBAL_lfr1);	
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //	Standard_Integer nlfr1 = GLOBAL_lfr1->Extent();
 #endif
 
@@ -418,7 +418,7 @@ void TopOpeBRepBuild_Builder::GFillFaceSFS(const TopoDS_Shape& FOR,const TopTool
 	fufa.PerformFace();
 	Standard_Boolean isdone = fufa.IsDone();
 	if (!isdone) return;
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //	Standard_Boolean ismodified = fufa.IsModified();
 #endif
 	const TopTools_ListOfShape& lfr2 = fufa.LFuseFace();
@@ -428,7 +428,7 @@ void TopOpeBRepBuild_Builder::GFillFaceSFS(const TopoDS_Shape& FOR,const TopTool
 	for (TopTools_ListIteratorOfListOfShape itlfr2(lfr2);itlfr2.More();itlfr2.Next()) {
 	  const TopoDS_Shape& flfr2 = itlfr2.Value();
 	  
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	  if(tSPS){
 	    DEBSHASET(ss,"--- FillFaceSFS apres fufa",SFS," AddStartElement SFS+ face ");  
 	    GdumpSHA(flfr2,(Standard_Address)ss.ToCString());
@@ -453,7 +453,7 @@ void TopOpeBRepBuild_Builder::GFillFaceSFS(const TopoDS_Shape& FOR,const TopTool
   
   myEdgeAvoid.Clear();
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if(tSPS){
     GdumpSHASTA(FOR,TB1,"--- GFillFaceSFS END ");cout<<endl;
   }

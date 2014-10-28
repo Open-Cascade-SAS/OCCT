@@ -127,7 +127,7 @@ void TNaming_CopyShape::Translate( const TopoDS_Shape& aShape,
   aResult.Orientation(aShape.Orientation());
   aResult.Location(TNaming_CopyShape::Translate(aShape.Location(), aMap));
   TrTool->UpdateShape(aShape,aResult);
-// #ifdef DEB
+// #ifdef OCCT_DEBUG
 //     if(fShar) {
 //       cout << "=== Shareable shape ===" << endl;
 //       cout << "aShape Type = " <<(aShape.TShape())->DynamicType() << endl;

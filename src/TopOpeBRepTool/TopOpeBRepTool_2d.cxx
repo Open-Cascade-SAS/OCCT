@@ -42,7 +42,7 @@
 #include <TopOpeBRepTool_DRAW.hxx>
 #endif
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 void debc2dnull(void) {}
 Standard_EXPORT Standard_Boolean TopOpeBRepTool_GettraceC2D();
 #endif
@@ -211,7 +211,7 @@ static Handle(Geom2d_Curve) FC2D_make2d(const TopoDS_Edge& E,const TopoDS_Face& 
     f2d = f; l2d = l;
   }
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepTool_GettraceC2D() && C2D.IsNull()) {
     cout<<"#FC2D_make2d1 --> PCurve IsNull"<<endl;
   }
@@ -350,7 +350,7 @@ static Handle(Geom2d_Curve) FC2D_make2d(const TopoDS_Edge& E,const TopoDS_Face& 
     FC2D_translate(C2D,E,F,EF);
   }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepTool_GettraceC2D() && C2D.IsNull()) {
     cout<<"#FC2D_make2d2 --> PCurve IsNull"<<endl;
   }

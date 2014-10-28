@@ -52,23 +52,6 @@
 
 #include <DDataStd_DrawPresentation.hxx>
 
-// Unused :
-#ifdef BLABLA_DEB
-static void Location (Standard_Integer nb, const char** arg, gp_Ax2& Loc) {
-
-  if (nb == 9) {
-    Standard_Real X  = Draw::Atof(arg[3]);
-    Standard_Real Y  = Draw::Atof(arg[4]);
-    Standard_Real Z  = Draw::Atof(arg[5]);
-    Standard_Real DX = Draw::Atof(arg[6]);
-    Standard_Real DY = Draw::Atof(arg[7]);
-    Standard_Real DZ = Draw::Atof(arg[8]);
-    Loc = gp_Ax2 (gp_Pnt(X,Y,Z), gp_Dir(DX,DY,DZ));
-  }  
-}
-#endif
-
-
 //=======================================================================
 //function : DDataStd_SetPoint
 //purpose  : SetPoint (DF, entry, [drawpoint])
@@ -160,58 +143,6 @@ static Standard_Integer DDataStd_SetPlane (Draw_Interpretor& di,
   DDataStd_DrawPresentation::Display (L);
   return 0;
 }
-
-
-//=======================================================================
-//function : DDataStd_SetMove
-//purpose  : 
-//=======================================================================
-
-// static Standard_Integer DDataStd_SetMove (Draw_Interpretor&,
-//                                        Standard_Integer nb, 
-//                                        const char** arg) 
-// {  
-//   if (nb < 3) return 1;
-//   TDF_Label L;
-//   Handle(TDF_Data) DF;
-//   if (!DDF::GetDF (arg[1], DF)) return 1;
-//   if (!DDF::FindLabel(DF, arg[2], L)) return 1;
-
-//   TopLoc_Location Loc;
-//   if (nb == 4) {
-//     TopoDS_Shape S = DBRep::Get(arg[3]);
-//     if (S.IsNull()) return 1;
-//     Loc = S.Location();
-//   }
-  
-//   else {
-//     if (nb < 6) return 1;
-    
-//     gp_Trsf T;
-//     Standard_Real x = Draw::Atof(arg[3]);
-//     Standard_Real y = Draw::Atof(arg[4]);
-//     Standard_Real z = Draw::Atof(arg[5]);
-    
-//     if (nb == 6) {
-//       T.SetTranslation(gp_Vec(x,y,z));
-//     }
-//     else if (nb < 10)
-//       return 1;
-//     else {
-//       Standard_Real dx = Draw::Atof(arg[6]);
-//       Standard_Real dy = Draw::Atof(arg[7]);
-//       Standard_Real dz = Draw::Atof(arg[8]);
-//       Standard_Real ang = Draw::Atof(arg[9]);
-//       T.SetRotation(gp_Ax1(gp_Pnt(x,y,z),
-//                         gp_Vec(dx,dy,dz)),
-//                  ang * (M_PI / 180.0));
-//     }
-//     Loc = T;
-//   }
-//   TDataStd_CoordSys::Move(L,Loc);
-//   return 0;
-// }
-
 
 
 //=======================================================================

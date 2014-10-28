@@ -74,7 +74,7 @@
 //#include <GeomLib_IsIso.hxx>
 //#include <GeomLib_CheckSameParameter.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #ifdef DRAW
 #include <DrawTrSurf.hxx>
 #endif
@@ -1302,7 +1302,7 @@ Handle(Adaptor2d_HCurve2d)
     //////////////////////////////////////////
     Geom2dAdaptor_Curve GAC(myBSpline);
     Handle(Adaptor2d_HCurve2d) IC2d = new Geom2dAdaptor_HCurve(GAC);
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //    char name [100];
 //    sprintf(name,"%s_%d","build",compteur++);
 //    DrawTrSurf::Set(name,myBSpline);
@@ -1598,7 +1598,7 @@ Handle(Geom2d_BSplineCurve)
   ProjLib_PolarFunction F(Curve, Surf, InitCurve2d, Tol3d) ;  //OCC217
   //ProjLib_PolarFunction F(Curve, Surf, InitCurve2d, myTolerance) ;
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer Nb = 50;
   
   Standard_Real U, U1, U2;
@@ -1717,7 +1717,7 @@ Handle(Geom2d_BSplineCurve)
       OK = OK && Dummy->RemoveKnot(ij,MaxDeg-1,Tol3d);  //OCC217
       //OK = OK && Dummy->RemoveKnot(ij,MaxDeg-1,myTolerance);
     }
-#ifdef PROJLIB_DEB
+#ifdef OCCT_DEBUG
     if (!OK) {
       cout << "ProjLib_ComputeApproxOnPolarSurface : Smoothing echoue"<<endl;
     }

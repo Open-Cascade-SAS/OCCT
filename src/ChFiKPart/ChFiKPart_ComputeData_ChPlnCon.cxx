@@ -86,7 +86,7 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure& DStr,
   gp_Pnt Or = Con.Location();
   Standard_Real u,v;
   ElSLib::PlaneParameters(PosPl,Or,u,v);
-#ifdef DEB
+#ifdef OCCT_DEBUG
   gp_Pnt2d pt2dPln(u,v);
 #endif
   ElSLib::PlaneD0(u,v,PosPl,Or);
@@ -94,7 +94,7 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure& DStr,
   gp_Pnt PtSp;
   gp_Vec DSp;
   ElCLib::D1(First,Spine,PtSp,DSp);
-#ifdef DEB
+#ifdef OCCT_DEBUG
   gp_Dir Dx(gp_Vec(Or,PtSp));
 #endif
   //compute the normal to the cone in PtSp
@@ -188,7 +188,7 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure& DStr,
     ChamfRad = Spine.Radius() - Dis1;
     if ( Abs(ChamfRad)<=Precision::Confusion() ) pointu = Standard_True;
     if( ChamfRad < 0 ) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
       cout<<"le chanfrein ne passe pas"<<endl;
 #endif
       return Standard_False;

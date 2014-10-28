@@ -149,7 +149,7 @@ static void CheckPCurves (TopoDS_Wire& aWire, const TopoDS_Face& aFace,
     
     if (w1 == w2) {
       RemoveSinglePCurve(myEdge,aFace);
-#ifdef STEPTOTOPODS_DEB
+#ifdef OCCT_DEBUG
       cout<<"Removing pcuve w1=w2"<<endl;
 #endif      
       continue;
@@ -420,7 +420,7 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
 
     Standard_Boolean ThereIsLikeSeam = Standard_False;
     
-#ifdef STEPTOTOPODS_DEB
+#ifdef OCCT_DEBUG
     cout << "      Processing Edge :" << j << endl;
 #endif
 
@@ -695,7 +695,7 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
       }
       else {
         RemoveSinglePCurve(edge, Face);
-#ifdef STEPTOTOPODS_DEB
+#ifdef OCCT_DEBUG
         cout <<"Removing after prj"<<endl;
 #endif
       }

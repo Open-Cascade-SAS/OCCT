@@ -17,7 +17,7 @@
 #include <TNaming_Builder.hxx>
 #include <Standard_NullObject.hxx>
 #include <TopoDS_Solid.hxx>
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
 #include <TDataStd_Name.hxx>
 #endif
 
@@ -53,7 +53,7 @@ void QANewBRepNaming_Cylinder::Init(const TDF_Label& ResultLabel) {
 //=======================================================================
 
 TDF_Label QANewBRepNaming_Cylinder::Bottom() const {
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
   TDataStd_Name::Set(ResultLabel().FindChild(1, Standard_True), "Bottom");
 #endif
   return ResultLabel().FindChild(1, Standard_True);
@@ -65,7 +65,7 @@ TDF_Label QANewBRepNaming_Cylinder::Bottom() const {
 //=======================================================================
 
 TDF_Label QANewBRepNaming_Cylinder::Top() const {
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
   TDataStd_Name::Set(ResultLabel().FindChild(2, Standard_True), "Top");
 #endif
   return ResultLabel().FindChild(2, Standard_True);
@@ -77,7 +77,7 @@ TDF_Label QANewBRepNaming_Cylinder::Top() const {
 //=======================================================================
 
 TDF_Label QANewBRepNaming_Cylinder::Lateral() const {
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
   TDataStd_Name::Set(ResultLabel().FindChild(3, Standard_True), "Lateral");
 #endif
   return ResultLabel().FindChild(3, Standard_True);
@@ -89,7 +89,7 @@ TDF_Label QANewBRepNaming_Cylinder::Lateral() const {
 //=======================================================================
 
 TDF_Label QANewBRepNaming_Cylinder::StartSide() const {
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
   TDataStd_Name::Set(ResultLabel().FindChild(4, Standard_True), "StartSide");
 #endif
   return ResultLabel().FindChild(4, Standard_True);
@@ -101,7 +101,7 @@ TDF_Label QANewBRepNaming_Cylinder::StartSide() const {
 //=======================================================================
 
 TDF_Label QANewBRepNaming_Cylinder::EndSide() const {
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
   TDataStd_Name::Set(ResultLabel().FindChild(5, Standard_True), "EndSide");
 #endif
   return ResultLabel().FindChild(5, Standard_True);
@@ -146,7 +146,7 @@ void QANewBRepNaming_Cylinder::Load (BRepPrimAPI_MakeCylinder& mkCylinder,
   if (Type == QANewBRepNaming_SOLID) Builder.Generated (mkCylinder.Solid());
   else if (Type == QANewBRepNaming_SHELL) Builder.Generated (mkCylinder.Shell());
   else {
-#ifdef QANEWBREPNAMING_DEB
+#ifdef OCCT_DEBUG
     cout<<"QANewBRepNaming_Cylinder::Load(): Unexpected type of result"<<endl;
     Builder.Generated (mkCylinder.Shape());
 #endif

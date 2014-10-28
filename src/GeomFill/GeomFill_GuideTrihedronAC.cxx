@@ -121,7 +121,7 @@ GeomFill_GuideTrihedronAC::GeomFill_GuideTrihedronAC(const Handle(Adaptor3d_HCur
   Standard_Real Norm = n.Magnitude();
   if (Norm < 1.e-12) {
     Norm = 1;
-#if GEOMFILL_DEB
+#ifdef OCCT_DEBUG
     cout << "GuideTrihedronAC : Normal indefinie" << endl;
 #endif
   }
@@ -246,7 +246,7 @@ GeomFill_GuideTrihedronAC::GeomFill_GuideTrihedronAC(const Handle(Adaptor3d_HCur
 
 
 //derivee seconde du triedre
-#ifdef DEB
+#ifdef OCCT_DEBUG
   gp_Vec DTDN = DTo.Crossed(DNormal);
 #else
   DTo.Crossed(DNormal);

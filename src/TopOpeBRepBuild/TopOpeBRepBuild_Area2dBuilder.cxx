@@ -17,7 +17,7 @@
 #include <TopOpeBRepBuild_Area2dBuilder.ixx>
 #include <TopOpeBRepBuild_Loop.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepBuild_GettraceAREA();
 #endif
 
@@ -203,7 +203,7 @@ void TopOpeBRepBuild_Area2dBuilder::InitAreaBuilder
   
   if ( ! boundaryloops.IsEmpty() ) {
     if ( myArea.IsEmpty() )  {
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if (TopOpeBRepBuild_GettraceAREA())
 	cout<<"---"<<endl<<"--- purge"<<endl<<"---"<<endl;
 #endif

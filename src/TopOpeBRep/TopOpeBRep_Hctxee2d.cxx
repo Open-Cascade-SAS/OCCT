@@ -27,7 +27,7 @@
 #include <TopoDS.hxx>
 #include <BRep_Tool.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #include <GeomTools_SurfaceSet.hxx>
 #include <GeomTools_CurveSet.hxx>
 #include <GeomTools_Curve2dSet.hxx>
@@ -68,7 +68,7 @@ void TopOpeBRep_Hctxee2d::SetEdges(const TopoDS_Edge& E1,const TopoDS_Edge& E2,
   tole = BRep_Tool::Tolerance(myEdge1);
   myDomain1.SetValues(pfirst,first,tole,plast,last,tole);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = Standard_False;
   if (trc) {
     cout<<"ed1 on fa1 : {pfirst=("<<pfirst.X()<<" "<<pfirst.Y()<<"),first="<<first<<"\n";
@@ -89,7 +89,7 @@ void TopOpeBRep_Hctxee2d::SetEdges(const TopoDS_Edge& E1,const TopoDS_Edge& E2,
     tole = BRep_Tool::Tolerance(myEdge2);
     myDomain2.SetValues(pfirst,first,tole,plast,last,tole);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (trc) {
       cout<<"ed2 on fa1 : {pfirst=("<<pfirst.X()<<" "<<pfirst.Y()<<"),first="<<first<<"\n";
       cout<<"              plast =("<<plast.X()<<" "<<plast.Y()<<"),last="<<last<<"}"<<endl;
@@ -141,7 +141,7 @@ void TopOpeBRep_Hctxee2d::SetEdges(const TopoDS_Edge& E1,const TopoDS_Edge& E2,
       PC2on1->D0(first,pfirst);
       PC2on1->D0(last,plast);
       myDomain2.SetValues(pfirst,first,tole,plast,last,tole);
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if ( TopOpeBRep_GettracePROEDG() ) {
         cout<<"------------ projection de curve"<<endl;
         cout<<"--- Curve : "<<endl;GeomTools_CurveSet::PrintCurve(NC,cout);

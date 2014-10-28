@@ -246,11 +246,9 @@ void NIS_SurfaceDrawer::Draw (const Handle(NIS_InteractiveObject)& theObj,
                               const NIS_DrawList&)
 {
   // Assertion for the type of the drawn object
-#ifdef _DEBUG
-  static const Handle(Standard_Type) ThisType = STANDARD_TYPE(NIS_Surface);
-  Standard_ProgramError_Raise_if (theObj->IsKind(ThisType) == Standard_False,
+  Standard_ProgramError_Raise_if (! theObj->IsKind(STANDARD_TYPE(NIS_Surface)),
                                   "NIS_Surface::Draw: irrelevant object type");
-#endif
+
   const NIS_Surface * pObject =
     static_cast <const NIS_Surface *> (theObj.operator->());
   glVertexPointer (3, GL_FLOAT, 0, pObject->Node(0));

@@ -166,14 +166,14 @@ Standard_Boolean Image_Diff::Init (const Handle(Image_PixMap)& theImageRef,
    || theImageRef->SizeY()   != theImageNew->SizeY()
    || theImageRef->Format()  != theImageNew->Format())
   {
-#ifdef IMAGE_DEB
+#ifdef OCCT_DEBUG
     std::cerr << "Images has different format or dimensions\n";
 #endif
     return Standard_False;
   }
   else if (!isSupportedFormat (theImageRef->Format()))
   {
-#ifdef IMAGE_DEB
+#ifdef OCCT_DEBUG
     std::cerr << "Images has unsupported pixel format\n";
 #endif
     return Standard_False;
@@ -181,7 +181,7 @@ Standard_Boolean Image_Diff::Init (const Handle(Image_PixMap)& theImageRef,
   else if (theImageRef->SizeX() >= 0xFFFF
         || theImageRef->SizeY() >= 0xFFFF)
   {
-#ifdef IMAGE_DEB
+#ifdef OCCT_DEBUG
     std::cerr << "Image too large\n";
 #endif
     return Standard_False;
@@ -229,7 +229,7 @@ Standard_Boolean Image_Diff::Init (const TCollection_AsciiString& theImgPathRef,
   if (!anImgRef->Load (theImgPathRef)
    || !anImgNew->Load (theImgPathNew))
   {
-#ifdef IMAGE_DEB
+#ifdef OCCT_DEBUG
     std::cerr << "Failed to load image(s) file(s)\n";
 #endif
     return Standard_False;

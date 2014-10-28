@@ -48,7 +48,7 @@
 
 #include <Standard_GUID.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #include <Standard_ConstructionError.hxx>
 #endif
 
@@ -147,7 +147,7 @@ void MDF_Tool::WriteLabels
 
     // Label array REsizing.
     if (labAlloc < theLabels->Upper()) {
-#ifdef MDF_DEB
+#ifdef OCCT_DEBUG
       cout<<"MDF_Tool::WriteLabels LABEL array resizing from "<<theLabels->Upper()<<" to "<<labAlloc<<endl;
 #endif
       Handle(PColStd_HArray1OfInteger) newLabels =
@@ -160,7 +160,7 @@ void MDF_Tool::WriteLabels
 
     // Attribute array REsizing.
     if (attAlloc < theAttributes->Upper()) {
-#ifdef MDF_DEB
+#ifdef OCCT_DEBUG
       cout<<"MDF_Tool::WriteLabels ATTRIBUTES array resizing from "<<theAttributes->Upper()<<" to "<<attAlloc<<endl;
 #endif
       Handle(PDF_HAttributeArray1) newAttributes =
@@ -226,7 +226,7 @@ void MDF_Tool::WriteLabels
     if (childLabIndex < labAlloc) ++count;
   }
 
-#ifdef DEB_MDF_TOOL
+#ifdef OCCT_DEBUG_MDF_TOOL
   aSourceLab.EntryDump(cout);
   cout<<" Count="<<count<<" attIndex="<<attIndex<<" attAlloc="<<attAlloc;
 #endif
@@ -236,11 +236,11 @@ void MDF_Tool::WriteLabels
   else {
     labAlloc -= 2;
     theLabels->SetValue(labAlloc--,0); // To clean the tag value.
-#ifdef DEB_MDF_TOOL
+#ifdef OCCT_DEBUG_MDF_TOOL
     cout<<"    <== Cleared";
 #endif
   }
-#ifdef DEB_MDF_TOOL
+#ifdef OCCT_DEBUG_MDF_TOOL
   cout<<endl;
 #endif
 }
@@ -387,7 +387,7 @@ void MDF_Tool::ReadAttributes
       const Handle(Standard_Type)& type = pAtt->DynamicType();
 	  
 	  if(!strcmp (type->Name(), "PNaming_Naming_1") ) {
-#ifdef DEB_ORIENT
+#ifdef OCCT_DEBUG_ORIENT
 		  cout << "TYPE = " << type->Name() << endl;
 #endif
 		  isName1 = Standard_True;
@@ -444,7 +444,7 @@ void MDF_Tool::ReadAttributes
   }
 
   if (!noDeadLock) {
-#ifdef MDF_DEB
+#ifdef OCCT_DEBUG
     cout<<"AfterRetrieval(): dead lock between these attributes:"<<endl;
     for (itr2.Initialize(attList); itr2.More(); itr2.Next())
       cout<<"Attribute type = "<<itr2.Value()->DynamicType()->Name()<<endl;;

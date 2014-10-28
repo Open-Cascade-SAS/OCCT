@@ -546,7 +546,7 @@ void BRepAlgo_DSAccess::ChangeEdgeSet
       // It is necessary to change Interferences => take the complement
       iC = myHB->GetDSCurveFromSectEdge(Edge);
       if (!iC) {
-#if BREPALGO_DEB
+#ifdef OCCT_DEBUG
 	cout << "Warning DSAccess: Modifications of Edge are not implemented" << endl;
 #endif
       }
@@ -1367,7 +1367,7 @@ void BRepAlgo_DSAccess::RemoveEdgeFromFace
   TopExp_Explorer exp(DSFace, TopAbs_EDGE), exp2;
   for(; exp.More(); exp.Next()) {
     const TopoDS_Shape& Edge = exp.Current();
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //    Standard_Integer iEdge2 = DS.Shape(Edge, FindKeep);
 //    Standard_Integer iEdge3 = DS.Shape(Edge);
 #endif
@@ -1376,7 +1376,7 @@ void BRepAlgo_DSAccess::RemoveEdgeFromFace
       continue;
     exp2.Init(Edge, TopAbs_VERTEX);
     for(; exp2.More(); exp2.Next()) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //      Standard_Integer iEdge5 = DS.Shape(Vertex, FindKeep);
 //      Standard_Integer iEdge4 = DS.Shape(Vertex);
 //      Standard_Integer iEdge6 = DS.Shape(exp2.Current(), FindKeep);
@@ -1387,7 +1387,7 @@ void BRepAlgo_DSAccess::RemoveEdgeFromFace
 	if(!DS.HasGeometry(Edge)) {
 	  const TopTools_ListOfShape& los = DS.ShapeSameDomain(Edge);
 	  if(los.IsEmpty()) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //	    Standard_Integer iEdge = DS.Shape(Edge);
 #endif
 	    DS.ChangeKeepShape(Edge, FindKeep);
@@ -1416,7 +1416,7 @@ void BRepAlgo_DSAccess::PntVtxOnCurve
   TopOpeBRepDS_Kind pvk; 
   Standard_Integer ipv, iMother = C.Mother(), igoodC = iCurve, comp = 0;
   if(iMother) igoodC = iMother;
-//#ifndef DEB
+//#ifndef OCCT_DEBUG
   TopOpeBRepDS_PointIterator PII = myHDS->CurvePoints(igoodC);
   TopOpeBRepDS_PointIterator& PIt = PII; // skl : I change "M_PI" to "PIt"
 //#else

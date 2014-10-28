@@ -59,7 +59,7 @@ GeomToStep_MakeConic::GeomToStep_MakeConic ( const Handle(Geom_Conic)& C)
     theConic = MkParabola.Value();
   }
   else {
-#ifdef GEOMTOSTEP_DEB
+#ifdef OCCT_DEBUG
     cout << "3D Curve Type   : " << C->DynamicType() << endl;
 #endif
     done = Standard_False;
@@ -96,7 +96,7 @@ GeomToStep_MakeConic::GeomToStep_MakeConic ( const Handle(Geom2d_Conic)& C)
   else {
     // Attention : Other 2d conics shall be implemented ...
     //             To be performed later !
-#ifdef GEOMTOSTEP_DEB
+#ifdef OCCT_DEBUG
     cout << "2D conic not yet implemented" << endl;
 #endif
     done = Standard_False;

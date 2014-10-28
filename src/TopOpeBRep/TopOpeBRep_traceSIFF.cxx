@@ -14,7 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 
 #include <TopOpeBRep_traceSIFF.hxx>
 #include <stdio.h>
@@ -127,5 +127,5 @@ Standard_EXPORT Standard_Boolean TopOpeBRep_GettraceSIFF()
   return b;
 }
 
-// #ifdef DEB
+// #ifdef OCCT_DEBUG
 #endif

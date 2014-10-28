@@ -55,7 +55,7 @@
 #include <ElCLib.hxx>
 #include <Precision.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepBuild_GettraceFUFA();
 #endif
 
@@ -79,7 +79,7 @@ void TopOpeBRepBuild_FuseFace::Init(const TopTools_ListOfShape& LIF,
 				    const TopTools_ListOfShape& LRF,
 				    const Standard_Integer CXM)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = TopOpeBRepBuild_GettraceFUFA();
   if (trc) cout << "TopOpeBRepBuild_FuseFace::Init" << endl;
 #endif
@@ -91,7 +91,7 @@ void TopOpeBRepBuild_FuseFace::Init(const TopTools_ListOfShape& LIF,
   else if(CXM == 2) {
     myInternal = Standard_True;
   } // CXM
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (trc) {
     if (myInternal) {
       cout << " TopOpeBRepBuild_FuseFace::Init : Keep internal connections" << endl;
@@ -124,7 +124,7 @@ void TopOpeBRepBuild_FuseFace::Init(const TopTools_ListOfShape& LIF,
 
 void TopOpeBRepBuild_FuseFace::PerformFace()
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = TopOpeBRepBuild_GettraceFUFA();
   if (trc) cout << "TopOpeBRepBuild_FuseFace::PerformFace()" << endl;
 #endif
@@ -132,7 +132,7 @@ void TopOpeBRepBuild_FuseFace::PerformFace()
   myModified = Standard_False;
   myLFF.Clear();
   if (myLRF.IsEmpty()) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (trc) cout<<" TopOpeBRepBuild_FuseFace::PerformFace : Empty list of reconstructed faces"<<endl;
 #endif
     myModified = Standard_False;
@@ -143,7 +143,7 @@ void TopOpeBRepBuild_FuseFace::PerformFace()
 
   Standard_Integer number = myLRF.Extent();
   if (number == 1) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (trc) cout<<" TopOpeBRepBuild_FuseFace::PerformFace : only 1 reconstructed face"<<endl;
 #endif
     myModified = Standard_False;
@@ -171,7 +171,7 @@ void TopOpeBRepBuild_FuseFace::PerformFace()
     BRepCheck_Analyzer ana(fac);
     if (!ana.IsValid(fac)) {
 //    if (!BRepCheck_Analyzer::IsValid(fac)) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if (trc) cout<<" TopOpeBRepBuild_FuseFace::PerformFace : Invalid reconstructed face"<<endl;
 #endif
       myModified = Standard_False;
@@ -185,7 +185,7 @@ void TopOpeBRepBuild_FuseFace::PerformFace()
 
 // Orientation 3d de l'espace limite par la face
   if (Ori3dForward && Ori3dReversed) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (trc) cout<<" TopOpeBRepBuild_FuseFace::PerformFace : Bad faces 3d orientation"<<endl;
 #endif
     myModified = Standard_False;
@@ -200,7 +200,7 @@ void TopOpeBRepBuild_FuseFace::PerformFace()
   TopTools_DataMapOfShapeListOfShape mapFacLFac;
   GroupShape(mylist,Keep_Edge,mapFacLFac);
   if (mapFacLFac.IsEmpty()) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (trc) cout<<" TopOpeBRepBuild_FuseFace::PerformFace : Empty list of faces"<<endl;
 #endif
     myModified = Standard_False;
@@ -211,7 +211,7 @@ void TopOpeBRepBuild_FuseFace::PerformFace()
   Standard_Integer n1 = myLRF.Extent();
   Standard_Integer n2 = mapFacLFac.Extent();
   if (n1 == n2) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (trc) cout<<" TopOpeBRepBuild_FuseFace::PerformFace : No connection"<<endl;
 #endif
     myModified = Standard_False;
@@ -245,7 +245,7 @@ void TopOpeBRepBuild_FuseFace::PerformFace()
       TopTools_DataMapOfShapeListOfShape mapWirLWir;
       GroupShape(LWir,Keep_Edge,mapWirLWir);
       if (mapWirLWir.IsEmpty()) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	if (trc) cout<<" TopOpeBRepBuild_FuseFace::PerformFace : Empty list of wires"<<endl;
 #endif
 	myModified = Standard_False;
@@ -278,7 +278,7 @@ void TopOpeBRepBuild_FuseFace::PerformFace()
 	  TopTools_DataMapOfShapeListOfShape mapEdgLEdg;
 	  GroupShape(LEdg,Keep_Edge,mapEdgLEdg);
 	  if (mapEdgLEdg.IsEmpty()) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	    if (trc) cout<<" TopOpeBRepBuild_FuseFace::PerformFace : Empty list of edges"<<endl;
 #endif
 	    myModified = Standard_False;
@@ -302,7 +302,7 @@ void TopOpeBRepBuild_FuseFace::PerformFace()
 	      ori1 = edg1.Orientation();
 	      if (ori1 == TopAbs_REVERSED) {
 		if (OriReversed) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 		  if (trc) cout<<" TopOpeBRepBuild_FuseFace::PerformFace : Bad faces orientation"<<endl;
 #endif
 		  myModified = Standard_False;
@@ -314,7 +314,7 @@ void TopOpeBRepBuild_FuseFace::PerformFace()
 	      }
 	      else if (ori1 == TopAbs_FORWARD) {
 		if (OriForward) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 		  if (trc) cout<<" TopOpeBRepBuild_FuseFace::PerformFace : Bad faces orientation"<<endl;
 #endif
 		  myModified = Standard_False;
@@ -376,7 +376,7 @@ void TopOpeBRepBuild_FuseFace::PerformFace()
 	    BRepLib_MakeWire MW;
 	    MW.Add(myWireLE);
 	    if (!MW.IsDone()) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	      if (trc) cout<<" TopOpeBRepBuild_FuseFace::PerformFace : Failure in making wire"<<endl;
 #endif
 	      myModified = Standard_False;
@@ -464,7 +464,7 @@ void TopOpeBRepBuild_FuseFace::PerformFace()
       }
 
       if (!MF.IsDone()) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	if (trc) cout<<" TopOpeBRepBuild_FuseFace::PerformFace : Failure in making face"<<endl;
 #endif
 	myModified = Standard_False;
@@ -484,7 +484,7 @@ void TopOpeBRepBuild_FuseFace::PerformFace()
   } // mapFacLFac
  
   if (myLFF.IsEmpty()) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (trc) cout<<" TopOpeBRepBuild_FuseFace::PerformFace : Empty list of fusionned faces"<<endl;
 #endif
     myModified = Standard_False;
@@ -496,7 +496,7 @@ void TopOpeBRepBuild_FuseFace::PerformFace()
   myModified = Standard_True;
   myDone = Standard_True;
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (trc) cout << " TopOpeBRepBuild_FuseFace::PerformFace() : Done" << endl;
 #endif
 }
@@ -509,7 +509,7 @@ void TopOpeBRepBuild_FuseFace::PerformFace()
 
 void TopOpeBRepBuild_FuseFace::PerformEdge()
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = TopOpeBRepBuild_GettraceFUFA();
   if (trc) cout << "TopOpeBRepBuild_FuseFace::PerformEdge()" << endl;
 #endif
@@ -581,7 +581,7 @@ void TopOpeBRepBuild_FuseFace::PerformEdge()
   myModified = Standard_True;
   myDone = Standard_True;
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (trc) cout << " TopOpeBRepBuild_FuseFace::PerformEdge() : Done" << endl;
 #endif
 }
@@ -593,7 +593,7 @@ void TopOpeBRepBuild_FuseFace::PerformEdge()
 
 void TopOpeBRepBuild_FuseFace::ClearEdge()
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = TopOpeBRepBuild_GettraceFUFA();
   if (trc) cout << "TopOpeBRepBuild_FuseFace::ClearEdge()" << endl;
 #endif
@@ -637,7 +637,7 @@ void TopOpeBRepBuild_FuseFace::ClearEdge()
 	BRepLib_MakeWire MW;
 	MW.Add(myWireLE);
 	if (!MW.IsDone()) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	  if (trc) cout<<" TopOpeBRepBuild_FuseFace::ClearEdge : Failure in making wire"<<endl;
 #endif
 	  myModified = Standard_False;
@@ -657,7 +657,7 @@ void TopOpeBRepBuild_FuseFace::ClearEdge()
 //  Fin Niveau 2
 //  Reconstrution de 1 face de LRF
     if (myFaceLW.IsEmpty()) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if (trc) cout<<" TopOpeBRepBuild_FuseFace::ClearEdge : Empty list of wires"<<endl;
 #endif
       myModified = Standard_False;
@@ -676,7 +676,7 @@ void TopOpeBRepBuild_FuseFace::ClearEdge()
       MF.Add(wir1);
     }
     if (!MF.IsDone()) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if (trc) cout<<" TopOpeBRepBuild_FuseFace::ClearEdge : Failure in making face"<<endl;
 #endif
       myModified = Standard_False;
@@ -689,7 +689,7 @@ void TopOpeBRepBuild_FuseFace::ClearEdge()
   }
 //Fin Niveau 1 
   if (myLFFnew.IsEmpty()) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (trc) cout<<" TopOpeBRepBuild_FuseFace::ClearEdge : Empty list of fusionned faces"<<endl;
 #endif
     myModified = Standard_False;
@@ -702,7 +702,7 @@ void TopOpeBRepBuild_FuseFace::ClearEdge()
   myModified = Standard_True;
   myDone = Standard_True;
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (trc) cout << " TopOpeBRepBuild_FuseFace::ClearEdge() : Done" << endl;
 #endif
 }
@@ -714,12 +714,12 @@ void TopOpeBRepBuild_FuseFace::ClearEdge()
 
 void TopOpeBRepBuild_FuseFace::ClearVertex()
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = TopOpeBRepBuild_GettraceFUFA();
   if (trc) cout << "TopOpeBRepBuild_FuseFace::ClearVertex()" << endl;
 #endif
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (trc) cout << " TopOpeBRepBuild_FuseFace::ClearVertex() : Done" << endl;
 #endif
 }
@@ -928,7 +928,7 @@ static void GroupEdge(TopTools_DataMapOfShapeListOfShape& mymapVerLEdg, TopTools
 
 static void MakeEdge(TopTools_DataMapOfShapeListOfShape& mymapEdgLEdg)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = TopOpeBRepBuild_GettraceFUFA();
 #endif
 
@@ -978,7 +978,7 @@ static void MakeEdge(TopTools_DataMapOfShapeListOfShape& mymapEdgLEdg)
     }
     Standard_Integer number = myEdgeLV.Extent();
     if (!(number == 2)){
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if (trc) cout<<" TopOpeBRepBuild_FuseFace::MakeEdge : Failure in reconstructing new edge"<<endl;
 #endif
       return;
@@ -1023,7 +1023,7 @@ static void MakeEdge(TopTools_DataMapOfShapeListOfShape& mymapEdgLEdg)
 Standard_Boolean SameSupport(const TopoDS_Edge& E1,
 			     const TopoDS_Edge& E2)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = TopOpeBRepBuild_GettraceFUFA();
 #endif
 
@@ -1070,7 +1070,7 @@ Standard_Boolean SameSupport(const TopoDS_Edge& E1,
       typC1 != STANDARD_TYPE(Geom_Ellipse) &&
       typC1 != STANDARD_TYPE(Geom_BSplineCurve) && 
       typC1 != STANDARD_TYPE(Geom_BezierCurve)) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (trc) cout << " TopOpeBRepBuild_FuseFace : Type de Support non traite" << endl;
 #endif
     return Standard_False;

@@ -16,9 +16,7 @@
 #include <NIS_TriangulatedDrawer.hxx>
 #include <NIS_InteractiveObject.hxx>
 #include <NIS_Triangulated.hxx>
-#ifdef _DEBUG
 #include <Standard_ProgramError.hxx>
-#endif
 
 #include <OpenGl_GlCore11.hxx>
 
@@ -229,12 +227,9 @@ void NIS_TriangulatedDrawer::Draw (const Handle(NIS_InteractiveObject)& theObj,
                                    const NIS_DrawList&)
 {
   // Assertion for the type of the drawn object
-#ifdef _DEBUG
-  static const Handle(Standard_Type) ThisType = STANDARD_TYPE(NIS_Triangulated);
-  if (theObj->IsKind(ThisType) == Standard_False)
-    Standard_ProgramError::Raise ("NIS_Triangulated::Draw: "
-                                  "irrelevant object type");
-#endif
+  Standard_ProgramError_Raise_if (! theObj->IsKind(STANDARD_TYPE(NIS_Triangulated)),
+                                  "NIS_Triangulated::Draw: irrelevant object type");
+
   const NIS_Triangulated * pObject =
     static_cast <const NIS_Triangulated *> (theObj.operator->());
   glVertexPointer (pObject->myNodeCoord, GL_FLOAT, 0, pObject->Node(0));

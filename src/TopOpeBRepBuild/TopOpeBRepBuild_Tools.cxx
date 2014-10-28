@@ -447,7 +447,7 @@ const Standard_Real PAR_T = 0.43213918;
       if (!anAvoidSubshMap.Contains (aSubshMap(i)) )
         aSubsh = aSubshMap(i);
     if (aSubsh.IsNull()) {
-#ifdef TOPOPEBREPBUILD_DEB
+#ifdef OCCT_DEBUG
       cout<<"FindStateThroughVertex: warning: all vertices are avoided"<<endl;
 #endif
       return TopAbs_UNKNOWN;    // failure
@@ -666,7 +666,7 @@ Standard_Boolean TopOpeBRepBuild_Tools::GetTangentToEdgeEdge (const TopoDS_Face&
   aCopyCurve -> Transform(aTrsf);
 
   GeomAPI_ProjectPointOnCurve aPP(aP, aCopyCurve, aCopyCurve->FirstParameter(), aCopyCurve->LastParameter());
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //  gp_Pnt aNP = aPP.NearestPoint();
 #endif
   parOri = aPP.LowerDistanceParameter();

@@ -65,7 +65,7 @@
 #endif
 
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #define DEBSHASET(sarg,meth,shaset,str) TCollection_AsciiString sarg((meth));(sarg)=(sarg)+(shaset).DEBNumber()+(str);
 extern Standard_Boolean TopOpeBRepDS_GettraceSTRANGE();
 Standard_EXPORT void debsplitf(const Standard_Integer i){cout<<"++ debsplitf "<<i<<endl;}
@@ -134,7 +134,7 @@ static Standard_Boolean FUN_EPIforEvisoONperiodicF
   if (!ok) return Standard_False; // nyi FUN_Raise
   Standard_Integer iEinterf=0; Standard_Integer iG = FUN_getG(p3d,EPIlist,HDS,iEinterf);
   if (iG == 0) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     Standard_Boolean strange = TopOpeBRepDS_GettraceSTRANGE();
     if (strange) cout<<"strange : FUN_EPIforEvisoONperiodicF"<<endl;
 #endif
@@ -188,7 +188,7 @@ static Standard_Boolean FUN_EPIforEvisoONperiodicF
   Handle(Geom2d_TrimmedCurve) PCsup2pi = new Geom2d_TrimmedCurve(L2d,paronE,pl); 
   TopOpeBRepDS_SetThePCurve(BB,Esup2pi,F,oriE,PCsup2pi);
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = Standard_False;
 #ifdef DRAW
   if (trc) {TCollection_AsciiString aa("PCinf");FUN_tool_draw(aa,Einf2pi,F,0);}
@@ -238,7 +238,7 @@ void TopOpeBRepBuild_Builder::GMergeSolids(const TopTools_ListOfShape& LSO1,cons
   TopAbs_State TB1,TB2; G1.StatesON(TB1,TB2);
   
   const TopoDS_Shape& SO1 = LSO1.First();
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer iSO; Standard_Boolean tSPS = GtraceSPS(SO1,iSO);
   if(tSPS){
     cout<<endl;
@@ -309,7 +309,7 @@ void TopOpeBRepBuild_Builder::GFillSolidsSFS(const TopTools_ListOfShape& LS1,con
   for(; it.More(); it.Next()) {
     const TopoDS_Shape& S = it.Value();
     Standard_Boolean tomerge = !IsMerged(S,TB);
-#ifdef DEB
+#ifdef OCCT_DEBUG
     Standard_Integer iS; Standard_Boolean tSPS = GtraceSPS(S,iS);
     if(tSPS){
       cout<<endl;
@@ -325,7 +325,7 @@ void TopOpeBRepBuild_Builder::GFillSolidsSFS(const TopTools_ListOfShape& LS1,con
   for (; it.More(); it.Next()) {
     const TopoDS_Shape& S = it.Value();
     Standard_Boolean tomerge = !IsMerged(S,TB);
-#ifdef DEB
+#ifdef OCCT_DEBUG
     Standard_Integer iS; Standard_Boolean tSPS = GtraceSPS(S,iS);
     if(tSPS){
       cout<<endl;
@@ -351,7 +351,7 @@ void TopOpeBRepBuild_Builder::GFillSolidSFS(const TopoDS_Shape& SO1,const TopToo
   TopAbs_State TB1,TB2; G1.StatesON(TB1,TB2);
   Standard_Boolean RevOri1 = G1.IsToReverse1();
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer iSO; Standard_Boolean tSPS = GtraceSPS(SO1,iSO);
   if(tSPS){
     cout<<endl;
@@ -376,7 +376,7 @@ void TopOpeBRepBuild_Builder::GFillSolidSFS(const TopoDS_Shape& SO1,const TopToo
 	TopAbs_Orientation neworiSH = Orient(oriSH,RevOri1);
 	SH.Orientation(neworiSH);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if(tSPS){
 	DEBSHASET(ss,"--- GFillSolidSFS ",SFS," AddShape SFS+ shell ");  
 	GdumpSHA(SH,(Standard_Address)ss.ToCString());
@@ -399,7 +399,7 @@ void TopOpeBRepBuild_Builder::GFillSolidSFS(const TopoDS_Shape& SO1,const TopToo
 //function : GFillSurfaceTopologySFS
 //purpose  : 
 //=======================================================================
-#ifdef DEB
+#ifdef OCCT_DEBUG
 void TopOpeBRepBuild_Builder::GFillSurfaceTopologySFS(const TopoDS_Shape& SO1,
 #else
 void TopOpeBRepBuild_Builder::GFillSurfaceTopologySFS(const TopoDS_Shape&,
@@ -410,11 +410,11 @@ void TopOpeBRepBuild_Builder::GFillSurfaceTopologySFS(const TopoDS_Shape&,
   TopAbs_State TB1,TB2; G1.StatesON(TB1,TB2);
   TopAbs_ShapeEnum t1,t2;
   G1.Type(t1,t2);
-#ifdef DEB
+#ifdef OCCT_DEBUG
   TopAbs_ShapeEnum ShapeInterf = t1;
 #endif
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer iSO; Standard_Boolean tSPS = GtraceSPS(SO1,iSO);
   if(tSPS){
     cout<<endl;
@@ -443,7 +443,7 @@ void TopOpeBRepBuild_Builder::GFillSurfaceTopologySFS
     else if (TB1 == TopAbs_IN ) TB = TopAbs_OUT;
   }
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer iSO; Standard_Boolean tSPS = GtraceSPS(SFS.Solid(),iSO);
   Standard_Integer iref = myDataStructure->Shape(mySolidReference);
   Standard_Integer ifil = myDataStructure->Shape(mySolidToFill);
@@ -463,7 +463,7 @@ void TopOpeBRepBuild_Builder::GFillSurfaceTopologySFS
     TopAbs_Orientation ori = SSit.Orientation(TB);
     F.Orientation(ori);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (tSPS){
       DEBSHASET(ss,"--- GFillSurfaceTopologySFS ",SFS," AddElement SFS+ face ");  
       GdumpSHA(F,(Standard_Address)ss.ToCString());
@@ -488,7 +488,7 @@ void TopOpeBRepBuild_Builder::GFillShellSFS(const TopoDS_Shape& SH,
 {  
   TopAbs_State TB1,TB2; G1.StatesON(TB1,TB2);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer ish; Standard_Boolean tSPS = GtraceSPS(SH,ish);
   if(tSPS){
       cout<<endl;
@@ -507,7 +507,7 @@ void TopOpeBRepBuild_Builder::GFillShellSFS(const TopoDS_Shape& SH,
     } // hsd
   } // exFace.More()
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (tSPS) {
     SFS.DumpSS();
   }
@@ -672,12 +672,12 @@ void TopOpeBRepBuild_Builder::GSplitFaceSFS
   TopAbs_Orientation oriF = FOR.Orientation();
   TopAbs_Orientation neworiF = Orient(oriF,RevOri1);
   const TopOpeBRepDS_DataStructure& BDS = myDataStructure->DS();
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer iFOR =
 #endif  
              BDS.Shape(FOR);
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer iiFOR; Standard_Boolean tSPS = GtraceSPS(FOR,iiFOR);
   if(tSPS){
     cout<<endl;
@@ -714,7 +714,7 @@ void TopOpeBRepBuild_Builder::GSplitFaceSFS
 
 	  Standard_Integer rkAnc = BDS.AncestorRank(iAnc);
 	  TopAbs_Orientation oAnc = BDS.Shape(iAnc).Orientation(); 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	  Standard_Integer iFanc; Standard_Boolean tSPSa = GtraceSPS(BDS.Shape(iAnc),iFanc);
 	  if (tSPSa) debspanc(iAnc);
 #endif	  
@@ -760,7 +760,7 @@ void TopOpeBRepBuild_Builder::GSplitFaceSFS
 	GLOBAL_lfr1->Append(newF);
       }
       else {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	if(tSPS){
 	  DEBSHASET(ss,"--- GSplitFaceSFS ",SFS," AddStartElement SFS+ face ");  
 	  GdumpSHA(newF,(Standard_Address)ss.ToCString());
@@ -791,7 +791,7 @@ void TopOpeBRepBuild_Builder::GSplitFaceSFS
       TopoDS_Shape F = FOR;
       F.Orientation(neworiF);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if(tSPS){
 	DEBSHASET(ss,"--- GSplitFaceSFS ",SFS," AddElement SFS+ face ");  
 	GdumpSHA(F,(Standard_Address)ss.ToCString());
@@ -814,7 +814,7 @@ void TopOpeBRepBuild_Builder::GMergeFaceSFS
 (const TopoDS_Shape& FOR,const TopOpeBRepBuild_GTopo& G1,
  TopOpeBRepBuild_ShellFaceSet& SFS)
 {  
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer iFOR; Standard_Boolean tSPS = GtraceSPS(FOR,iFOR);
   if(tSPS){
     cout<<endl;
@@ -847,7 +847,7 @@ void TopOpeBRepBuild_Builder::GMergeFaceSFS
   GFindSameRank(LFSO,rankF,LFSO1); GFindSameRank(LFDO,rankF,LFDO1);
   GFindSameRank(LFSO,rankX,LFSO2); GFindSameRank(LFDO,rankX,LFDO2);
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if(tSPS){
     cout<<"--------- merge FACE "<<iFOR<<endl;
     GdumpSAMDOM(LFSO1, (char *) "LFSO1 : "); 
@@ -871,7 +871,7 @@ void TopOpeBRepBuild_Builder::GMergeFaceSFS
     if (performcom) { PtrLF1 = &LFSO1; PtrLF2 = &LFDO2; }
   }
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if(tSPS) {
     cout<<"performcom : "<<performcom<<" ";
     cout<<"makecomsam : "<<makecomsam<<" makcomdif : "<<makecomdif<<" ";
@@ -907,7 +907,7 @@ void TopOpeBRepBuild_Builder::GMergeFaceSFS
 	TopoDS_Shape newF = it.Value();
 	newF.Orientation(neworiF);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if(tSPS){
 	DEBSHASET(ss,"--- GMergeFaceSFS ",SFS," AddStartElement SFS+ face ");  
 	GdumpSHA(newF,(Standard_Address)ss.ToCString());
@@ -920,7 +920,7 @@ void TopOpeBRepBuild_Builder::GMergeFaceSFS
     }
   } // performcom
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if(tSPS){cout<<"--------- end merge FACE "<<iFOR<<endl;}
 #endif
   
@@ -950,7 +950,7 @@ static Standard_Boolean FUN_SplitEvisoONperiodicF(const Handle(TopOpeBRepDS_HDat
     TopOpeBRepDS_Kind GT,ST;Standard_Integer GI,SI;FDS_data(SSI,GT,GI,ST,SI);
       
     const TopoDS_Face& FS = TopoDS::Face( HDS->Shape(SI)); 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     Standard_Integer iFS =
 #endif
               HDS->Shape(FS); 
@@ -959,7 +959,7 @@ static Standard_Boolean FUN_SplitEvisoONperiodicF(const Handle(TopOpeBRepDS_HDat
     if (!FSper) continue;
     
     const TopoDS_Edge& EG = TopoDS::Edge(HDS->Shape(GI));
-#ifdef DEB
+#ifdef OCCT_DEBUG
     Standard_Integer iEG =
 #endif
               HDS->Shape(EG);    
@@ -994,7 +994,7 @@ static Standard_Boolean FUN_SplitEvisoONperiodicF(const Handle(TopOpeBRepDS_HDat
     TopOpeBRepDS_DataStructure& BDS = HDS->ChangeDS();
     TopOpeBRepDS_ListOfInterference EPIlist; FUN_getEPIonEds(FS,HDS,EPIlist); 
     TopOpeBRepDS_ListOfInterference loCPI;
-#ifdef DEB
+#ifdef OCCT_DEBUG
     Standard_Boolean recadre =
 #endif
                   FUN_EPIforEvisoONperiodicF(EG,FS,EPIlist, HDS,loCPI);
@@ -1002,7 +1002,7 @@ static Standard_Boolean FUN_SplitEvisoONperiodicF(const Handle(TopOpeBRepDS_HDat
     TopOpeBRepDS_ListOfInterference& lIEG = BDS.ChangeShapeInterferences(EG);
     lIEG.Append(loCPI);
     
-#ifdef DEB
+#ifdef OCCT_DEBUG
     Standard_Boolean trc = TopOpeBRepDS_GettraceSTRANGE();
     if (trc) {cout<<"!! recadre is "; if (!recadre) cout<<"not ";
 	      cout<<"done on face FS "<<iFS<<" for edge "<<iEG<<endl;}
@@ -1066,7 +1066,7 @@ void TopOpeBRepBuild_Builder::GSplitFace
   // work on a FORWARD face <FForward>
   TopoDS_Shape FF = FOR; FF.Orientation(TopAbs_FORWARD);
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer iF; Standard_Boolean tSPS = GtraceSPS(FOR,iF);
   if(tSPS){
     cout<<endl;GdumpSHASTA(FOR,TB1,"--- GSplitFace ");
@@ -1079,7 +1079,7 @@ void TopOpeBRepBuild_Builder::GSplitFace
   
   // Add ON parts (edges ON solid)
   GFillONPartsWES(FOR,G1,LSclass,WES);
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer n0 = WES.StartElements().Extent();
   if(tSPS) cout <<"--> GSplitFace , after GFillONPartsWES nstartelWES = "<<n0<<endl; 
 #endif
@@ -1097,14 +1097,14 @@ void TopOpeBRepBuild_Builder::GSplitFace
   // split the edges of FF : add split edges to WES
   GFillFaceWES(FF,LSclass,G1,WES);
   Standard_Integer n1 = WES.StartElements().Extent();
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if(tSPS) cout <<"--> GSplitFace , after GFillFaceWES nstartelWES = "<<n1<<endl; 
 #endif
   
   // add edges built on curves supported by FF
   GFillCurveTopologyWES(FF,G1,WES);
   Standard_Integer n2 = WES.StartElements().Extent();
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if(tSPS) cout <<"--> GSplitFace , after GFillCurveTopologyWES nstartelWES = "<<n2<<endl; 
 #endif
   

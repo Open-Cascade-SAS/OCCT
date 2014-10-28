@@ -47,7 +47,7 @@
 #include <TopTools_IndexedMapOfShape.hxx>
 
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepTool_GetcontextNOSEW();
 #endif
 
@@ -64,7 +64,7 @@ static void Sub_Classify(TopExp_Explorer& Ex,
 			 TopoDS_Shape& myShape); 
 
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 Standard_IMPORT Standard_Integer TopOpeBRepTool_BOOOPE_CHECK_DEB;
 #endif
 
@@ -117,7 +117,7 @@ extern void FDSSDM_Close();// see TopOpeBRepDS_samdom.cxx
     HDS->ChangeDS().Init();
   }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   TopOpeBRepDS_SettraceSPSX_HDS(HDS);
 #endif
 
@@ -154,7 +154,7 @@ extern void FDSSDM_Close();// see TopOpeBRepDS_samdom.cxx
     }
   }
   myBuilderCanWork = (esp || tede) ;
-#ifdef BREPALGO_DEB
+#ifdef OCCT_DEBUG
   if (!esp) cout<<"BRepAlgo_BooleanOperation(DEB) some edges not SameParameter"<<endl;
 #endif  
   if (!myBuilderCanWork) return;
@@ -651,7 +651,7 @@ extern void FDSSDM_Close();// see TopOpeBRepDS_samdom.cxx
   TopTools_ListOfShape theOldShell, theNewShell;
   Standard_Boolean modif =Standard_False;
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean nosew = TopOpeBRepTool_GetcontextNOSEW();
   if (nosew) sewing = Standard_False;
 #endif

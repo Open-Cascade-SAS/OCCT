@@ -33,7 +33,7 @@
 #include <Precision.hxx>
 #include <Extrema_ExtPC.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #ifdef DRAW
 #include <DrawTrSurf.hxx>
 #endif
@@ -207,7 +207,7 @@ static Standard_Boolean Check(const TColStd_Array1OfReal& FlatKnots,
   Standard_Integer extrap_mode[2] ;
   extrap_mode[0] = extrap_mode[1] = 3;
   Standard_Integer i;
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (Voir) {
     cout<<endl;
     cout<<"Control the change of variable : "<<endl;
@@ -230,7 +230,7 @@ static Standard_Boolean Check(const TColStd_Array1OfReal& FlatKnots,
     if(temp >= glis) glis = temp;
   }
   dglis = sqrt(dglis);
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if ( Voir) {
     cout<<"shift of parameter to the imposed points : "<<glis<<endl;
     cout<<"shift distance at the imposed points : "<<dglis<<endl;
@@ -248,7 +248,7 @@ static Standard_Boolean Check(const TColStd_Array1OfReal& FlatKnots,
     if(temp >= dglis) dglis = temp;
   }
   dglis = sqrt(dglis);
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (Voir)
     cout<<"distance de glissement en milieu d intervals : "<<dglis<<endl;
 #endif
@@ -285,7 +285,7 @@ static Standard_Boolean Check(const TColStd_Array1OfReal& FlatKnots,
     if(temp > d2) d2 = temp;
   }
   tol = sqrt(d2);
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (Voir)
     cout<<"distance max on "<<nn<<" points : "<<tol<<endl<<endl;
 #endif
@@ -411,7 +411,7 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
   //Take a multiple of the sample pof CheckShape,
   //at least the control points will be correct. No comment!!!
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer nbcoups = 0;
 #endif
 
@@ -563,7 +563,7 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
       if(!projok)
       {
         //Projector
-#ifdef APPROX_DEB
+#ifdef OCCT_DEBUG
         // JAG
         cout << "Projection not done" << endl;
 #endif
@@ -578,7 +578,7 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
 
   if(!extrok) { // If not already SameP and tangent to mill, abandon.
     mySameParameter = Standard_False;
-#ifdef APPROX_DEB
+#ifdef OCCT_DEBUG
     cout<<"SameParameter problem  : zero tangent to extremities"<<endl;
 #endif
     return;
@@ -587,7 +587,7 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
   pcons[count] = lcons;
   pc3d[count]  = lc3d;
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (AffichFw) {
     char Name[17];
     Name[0]='\0';
@@ -648,7 +648,7 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
     }
 
     //-------------------------------------------
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (AffichFw) {
       nbcoups ++;
       char Name[17];
@@ -739,7 +739,7 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
           }
         }
         else {
-#ifdef APPROX_DEB 
+#ifdef OCCT_DEBUG
           // JAG
           cout << "Projection not done" << endl;
 #endif
@@ -769,7 +769,7 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
 
     if (Precision::IsInfinite(algtol)) {
       mySameParameter = Standard_False;
-#ifdef APPROX_DEB
+#ifdef OCCT_DEBUG
       cout<<"SameParameter problem  : function of interpolation of parametration at mills !!"<<endl;
 #endif
       return;
@@ -781,7 +781,7 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
 
     if(interpolok) {
       Standard_Real besttol = sqrt(besttol2);
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if (Voir) {
         if(algtol > besttol){
           cout<<"SameParameter : Tol can't be reached before approx"<<endl;
@@ -834,7 +834,7 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
     
     if(!interpolok)
     {
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if (Voir)
         cout<<"SameParameter : Not enough points, enrich"<<endl;
 #endif
@@ -869,7 +869,7 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
           }
         }
         else {
-#ifdef APPROX_DEB 
+#ifdef OCCT_DEBUG
           // JAG
           cout << "Projection not done" << endl;
 #endif

@@ -1886,13 +1886,13 @@ void AppDef_Variational::SplitCurve(const Handle(FEmTool_Curve)& InCurve,
   Standard_Integer NbElmOld = InCurve->NbElements(); 
 
   if(NbElmOld >= myMaxSegment) {iscut = Standard_False; return;}
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer MaxDegree = 
 #endif
     InCurve->Base()->WorkDegree();
   Standard_Integer NbElm = NbElmOld;
   TColStd_Array1OfReal NewKnots(NbElm + 1, myMaxSegment);
-#ifndef DEB 
+#ifndef OCCT_DEBUG
   GettingKnots(Ti, InCurve, InCurve->Base()->WorkDegree(), NbElm, NewKnots);
   GettingKnots(Ti, InCurve, InCurve->Base()->WorkDegree() - 1, NbElm, NewKnots);
 #else

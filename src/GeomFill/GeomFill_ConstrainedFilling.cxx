@@ -45,7 +45,7 @@
 static Standard_Boolean dodraw = 0;
 static Standard_Real drawfac = 0.1;
 #endif
-#ifdef DEB
+#ifdef OCCT_DEBUG
 Standard_IMPORT void Law_draw1dcurve(const TColStd_Array1OfReal&    pol,
 			    const TColStd_Array1OfReal&    knots,
 			    const TColStd_Array1OfInteger& mults,
@@ -217,7 +217,7 @@ static void coonscnd(const Standard_Integer     nb,
 	if(scal1 > tolang) {
 	  Standard_Real killfactor = tolang/scal1;
 	  stat[i].DoKill(killfactor);
-#ifdef GEOMFILL_DEB
+#ifdef OCCT_DEBUG
 	  cout<<"pb coons cnd coin : "<<i<<" fact = "<<killfactor<<endl; 
 #endif
 	}
@@ -248,11 +248,11 @@ static void killcorners(const Standard_Integer     nb,
       fnul = stat[inext].IsToKill(fscal);
     }
     if(fnul || lnul){
-#ifdef DEB
+#ifdef OCCT_DEBUG
       parclock.Start();
 #endif
       bound[i]->Reparametrize(0.,1.,fnul,lnul,fscal,lscal,rev[i]);
-#ifdef DEB
+#ifdef OCCT_DEBUG
       parclock.Stop();
 #endif
       if(bound[i]->HasNormals() && tga[i]->IsScalable()) {
@@ -322,7 +322,7 @@ void GeomFill_ConstrainedFilling::Init(const Handle(GeomFill_Boundary)& B1,
 				       const Handle(GeomFill_Boundary)& B3,
 				       const Standard_Boolean           NoCheck)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   totclock.Reset();
   parclock.Reset();
   appclock.Reset();
@@ -340,13 +340,13 @@ void GeomFill_ConstrainedFilling::Init(const Handle(GeomFill_Boundary)& B1,
   rev[2] = !rev[2];
   
   // on reparamettre tout le monde entre 0. et 1.
-#ifdef DEB
+#ifdef OCCT_DEBUG
   parclock.Start();
 #endif
   for (i = 0; i <= 2; i++){
     bound[i]->Reparametrize(0.,1.,0,0,1.,1.,rev[i]);
   }
-#ifdef DEB
+#ifdef OCCT_DEBUG
   parclock.Stop();
 #endif
 
@@ -417,7 +417,7 @@ void GeomFill_ConstrainedFilling::Init(const Handle(GeomFill_Boundary)& B1,
 				       const Handle(GeomFill_Boundary)& B4,
 				       const Standard_Boolean           NoCheck)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   totclock.Reset();
   parclock.Reset();
   appclock.Reset();
@@ -436,13 +436,13 @@ void GeomFill_ConstrainedFilling::Init(const Handle(GeomFill_Boundary)& B1,
   rev[3] = !rev[3];
   
   // on reparamettre tout le monde entre 0. et 1.
-#ifdef DEB
+#ifdef OCCT_DEBUG
   parclock.Start();
 #endif
   for (i = 0; i <= 3; i++){
     bound[i]->Reparametrize(0.,1.,0,0,1.,1.,rev[i]);
   }
-#ifdef DEB
+#ifdef OCCT_DEBUG
   parclock.Stop();
 #endif
 
@@ -561,23 +561,23 @@ void GeomFill_ConstrainedFilling::Build()
       }
       nbd3 += ctr[ii];
     }
-#ifdef GEOMFILL_DEB
+#ifdef OCCT_DEBUG
     appclock.Start();
 #endif
     if(nbd3) PerformApprox();
-#ifdef GEOMFILL_DEB
+#ifdef OCCT_DEBUG
     appclock.Stop();
 #endif
   }
   appdone = Standard_True;
-#ifdef GEOMFILL_DEB
+#ifdef OCCT_DEBUG
   cstclock.Start();
 #endif
   MatchKnots();
   PerformS0();
   PerformS1();
   PerformSurface();
-#ifdef GEOMFILL_DEB
+#ifdef OCCT_DEBUG
   cstclock.Stop();
   totclock.Stop();
   Standard_Real tottime, apptime, partime, csttime;

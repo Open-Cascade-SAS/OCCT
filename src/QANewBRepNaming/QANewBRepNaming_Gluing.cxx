@@ -46,7 +46,7 @@
 
 #include <QANewModTopOpe_Glue.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #include <TDataStd_Name.hxx>
 #endif
 
@@ -87,14 +87,14 @@ void QANewBRepNaming_Gluing::Load(QANewModTopOpe_Glue& theMkGluing) {
   const TopoDS_Shape& anObjShape = theMkGluing.Shape1();
 
   if (aResShape.IsNull()) {
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
     cout<<"QANewBRepNaming_Gluing::Load(): The result of the Gluing operation is null"<<endl;
 #endif
     return;
   }
   // If the shapes are the same - select the result and exit:
   if (IsResultChanged(theMkGluing)) {
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
     cout<<"QANewBRepNaming_Gluing::Load(): The object and the result of the operation are the same"<<endl;
 #endif
     if (aResShape.ShapeType() == TopAbs_COMPOUND) {
@@ -208,7 +208,7 @@ Standard_Boolean QANewBRepNaming_Gluing::IsResultChanged(QANewModTopOpe_Glue& th
 void QANewBRepNaming_Gluing::LoadModifiedShapes(QANewModTopOpe_Glue& theMkGluing) const {
   const Standard_Integer aNumTypes = 1;
   const TopAbs_ShapeEnum aTypes[] = {TopAbs_FACE/*,TopAbs_EDGE,TopAbs_VERTEX*/};
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
   const char aNames[][20] = {"ModifiedFaces"/*,"ModifiedEdges","ModifiedVertexes"*/};
 #endif
   Standard_Integer aShapeNum;
@@ -220,7 +220,7 @@ void QANewBRepNaming_Gluing::LoadModifiedShapes(QANewModTopOpe_Glue& theMkGluing
     aLabel = aLabel.Father().FindChild(aLabel.Tag()+1,Standard_True);
   }
   for(Standard_Integer a=0;a<aNumTypes;a++) { // argument-shapes types cycle
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
     TDataStd_Name::Set(aLabel,TCollection_ExtendedString(Standard_CString(aNames[a])));
 #endif
     TNaming_Builder aBuilder(aLabel);
@@ -354,7 +354,7 @@ void QANewBRepNaming_Gluing::RecomputeUnique(QANewModTopOpe_Glue& theMkGluing) {
     aNext--;
   }
 
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
   cout<<"QANewBRepNaming_Gluing::RecomputeUnique found "<<myUnique.Extent()<<" shapes"<<endl;
 #endif
 }
@@ -364,7 +364,7 @@ void QANewBRepNaming_Gluing::RecomputeUnique(QANewModTopOpe_Glue& theMkGluing) {
 //purpose  : 
 //=======================================================================
 void QANewBRepNaming_Gluing::LoadSourceShapes(TopTools_DataMapOfShapeInteger& theSources) const {
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
   cout<<"********** QANewBRepNaming_Gluing::LoadSourceShapes the valid map:"<<endl;
   TDF_MapIteratorOfLabelMap anIter(myLog);
   for(;anIter.More();anIter.Next()) {
@@ -417,7 +417,7 @@ void QANewBRepNaming_Gluing::LoadSourceShapes(TopTools_DataMapOfShapeInteger& th
 	  aShapes.Remove(aShape);
 	  TNaming_Selector aSelector(aLabel);
 	  if (!aSelector.Select(aShape,myContext)) {
-#ifdef MDTV_DEB	  
+#ifdef OCCT_DEBUG	  
 	    cout<<"Can't do naming"<<endl;
 #endif
 	  }
@@ -490,7 +490,7 @@ void QANewBRepNaming_Gluing::LoadUniqueShapes(QANewModTopOpe_Glue& /*theMkGluing
 //purpose  : 
 //=======================================================================
 TDF_Label QANewBRepNaming_Gluing::Content() const {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   const TDF_Label& ContentLabel = ResultLabel().NewChild();
   TDataStd_Name::Set(ContentLabel, "Content");
   return ContentLabel;

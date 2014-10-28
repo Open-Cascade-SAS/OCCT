@@ -125,7 +125,7 @@ Standard_Boolean StepToGeom_MakeSurface::Convert (const Handle(StepGeom_Surface)
   }
   catch(Standard_Failure) {
 //   ShapeTool_DB ?
-#ifdef STEPTOGEOM_DEB //:s5
+#ifdef OCCT_DEBUG //:s5
     cout<<"Warning: StepToGeom_MakeSurface: Exception:"; 
     Standard_Failure::Caught()->Print(cout); cout << endl;
 #endif

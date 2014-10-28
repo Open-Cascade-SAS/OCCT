@@ -14,7 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #include <TopOpeBRepTool_KRO.hxx>
 Standard_IMPORT TOPKRO KRO_DSFILLER_TOTAL;
 Standard_IMPORT TOPKRO KRO_DSFILLER_INTFF;

@@ -23,7 +23,7 @@ Standard_EXPORT void FBOX_Prepare()
 {
   Handle(TopOpeBRepTool_HBoxTool) hbt = FBOX_GetHBoxTool();
   hbt->Clear();
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepTool_GettraceBOX()) {
     cout<<endl<<"TOOLBOX : Prepare"<<endl;
   }
@@ -43,7 +43,7 @@ Standard_EXPORT const Bnd_Box& FBOX_Box(const TopoDS_Shape& S)
 {
   Handle(TopOpeBRepTool_HBoxTool) hbt = FBOX_GetHBoxTool();
   const Bnd_Box& b = hbt->Box(S);
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepTool_GettraceBOX()) {
     Standard_Integer i = hbt->Index(S);
     Standard_Integer n = hbt->Extent();

@@ -128,7 +128,7 @@ Standard_Boolean OSD::IsDivisible(const Standard_Real theDividend,const Standard
   // you may divide by infinity
   //
   if (! finite(theDivisor)) return Standard_True;
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //   Standard_Integer aExp1,  aExp2;
 //   Standard_Real aMant1 = frexp(theDividend, &aExp1);
 //   Standard_Real aMant2 = frexp(theDivisor, &aExp2);

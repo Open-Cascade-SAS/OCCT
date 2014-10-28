@@ -27,7 +27,7 @@
 #include <TDF_ChildIterator.hxx>
 
 //#define MDTV_DEB_IDF
-#ifdef MDTV_DEB_IDF
+#ifdef OCCT_DEBUG_IDF
 #include <TCollection_AsciiString.hxx>
 #include <TDF_Tool.hxx>
 #include <BRepTools.hxx>
@@ -111,7 +111,7 @@ void TNaming_Identifier::Init(const TopoDS_Shape&     Context)
     AncestorIdentification(Localizer, Context);
     return;
   }
-#ifdef MDTV_DEB_IDF
+#ifdef OCCT_DEBUG_IDF
   TCollection_AsciiString entry;
   TDF_Tool::Entry(NS->Label(), entry);
   cout << "Identifier:: (S) Label = " << entry <<endl;
@@ -305,7 +305,7 @@ Standard_Boolean IsImported(const Handle(TNaming_NamedShape)& NS)
   if (!it.More()) return 0;
   it.Next();  if (!it.More()) return 0;
   //plus d un shape.
-#ifdef TNAMING_DEB
+#ifdef OCCT_DEBUG
   cout <<"WARNING IMPORTED"<<endl;
 #endif
   return 1;

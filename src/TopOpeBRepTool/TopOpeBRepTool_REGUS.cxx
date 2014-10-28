@@ -43,7 +43,7 @@
 #define EXTERNAL (4)
 #define CLOSING  (5)
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepTool_GettraceREGUSO(); 
 static TopTools_IndexedMapOfShape STATIC_mape, STATIC_mapf, STATIC_mapw, STATIC_mapsh;
 static Standard_Integer FUN_adds(const TopoDS_Shape& s) {
@@ -63,7 +63,7 @@ static Standard_Integer FUN_adds(const TopoDS_Shape& s) {
 
 static void FUN_Raise()
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = TopOpeBRepTool_GettraceREGUSO(); 
   if (trc) cout<<"***** Failure in REGUS **********"<<endl;
 //  Standard_Failure::Raise("REGUS");
@@ -165,7 +165,7 @@ void TopOpeBRepTool_REGUS::GetOshNsh(TopTools_DataMapOfShapeListOfShape& OshNsh)
 
 Standard_Boolean TopOpeBRepTool_REGUS::MapS()
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = TopOpeBRepTool_GettraceREGUSO();
   Standard_Integer ish = FUN_adds(S());
   if (trc) cout<<"**    MAPPING    ** shape"<<ish<<endl;
@@ -194,7 +194,7 @@ Standard_Boolean TopOpeBRepTool_REGUS::MapS()
     const TopTools_ListOfShape& lof  = itm.Value();
     Standard_Integer nf = lof.Extent();
     if (nf > 2) mymapemult.Add(e);
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (trc) {
       cout <<"co(e"<<FUN_adds(e)<<")= ";
       TopTools_ListIteratorOfListOfShape it(lof);
@@ -212,7 +212,7 @@ Standard_Boolean TopOpeBRepTool_REGUS::MapS()
 
 Standard_Boolean TopOpeBRepTool_REGUS::WireToFace(const TopoDS_Face& Fanc, const TopTools_ListOfShape& nWs, TopTools_ListOfShape& nFs)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = TopOpeBRepTool_GettraceREGUSO();
 #endif
   nFs.Clear();
@@ -224,7 +224,7 @@ Standard_Boolean TopOpeBRepTool_REGUS::WireToFace(const TopoDS_Face& Fanc, const
 
   Standard_Boolean classifok = classi.Classilist(nWs,mapWlow);
   if (!classifok) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (trc) cout<<"** classif fails"<<endl;
 #endif
     return Standard_False;
@@ -232,7 +232,7 @@ Standard_Boolean TopOpeBRepTool_REGUS::WireToFace(const TopoDS_Face& Fanc, const
     
   Standard_Boolean facesbuilt = TopOpeBRepTool_TOOL::WireToFace(Fanc, mapWlow, nFs); 
   if (!facesbuilt) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (trc) cout<<"** facesbuilt fails"<<endl;
 #endif
     return Standard_False; 
@@ -340,7 +340,7 @@ Standard_Boolean TopOpeBRepTool_REGUS::SplitF(const TopoDS_Face& Fanc, TopTools_
 
 Standard_Boolean TopOpeBRepTool_REGUS::SplitFaces()
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = TopOpeBRepTool_GettraceREGUSO();
   Standard_Integer ish = FUN_adds(S());
   if (trc) cout<<"**    SPLITTING FACES    ** shape"<<ish<<endl;
@@ -381,7 +381,7 @@ Standard_Boolean TopOpeBRepTool_REGUS::SplitFaces()
       }//exe(fsp)
     }//itf(lfsp)
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (trc)  {
       cout <<"split(f"<<FUN_adds(f)<<")= ";
       TopTools_ListIteratorOfListOfShape it(lfsp);
@@ -427,7 +427,7 @@ static void FUN_update(const TopoDS_Shape& fcur, TopTools_MapOfShape& edstoconne
 
 Standard_Boolean TopOpeBRepTool_REGUS::REGU()
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = TopOpeBRepTool_GettraceREGUSO();
   Standard_Integer ishe = FUN_adds(myS);
   if (trc) cout<<"**    REGU    **"<<ishe<<endl;
@@ -458,7 +458,7 @@ Standard_Boolean TopOpeBRepTool_REGUS::REGU()
     Standard_Boolean startBlock = mylFinBlock.IsEmpty();
     Standard_Boolean endBlock = myedstoconnect.IsEmpty() && (!startBlock);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     Standard_Boolean tr=Standard_False;
     if (tr) {
       TopTools_MapIteratorOfMapOfShape it(myedstoconnect);
@@ -475,7 +475,7 @@ Standard_Boolean TopOpeBRepTool_REGUS::REGU()
       Standard_Integer nFcur = mylFinBlock.Extent();
       Standard_Boolean unchanged = (nFcur==myoldnF) && (mynF==myoldnF);
       if (unchanged) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	if (trc) cout<<"#** shell"<<ishe<<" valid\n";
 #endif
 	return Standard_False; // nyi analysis if we should raise or not  
@@ -483,7 +483,7 @@ Standard_Boolean TopOpeBRepTool_REGUS::REGU()
       else {
 	TopoDS_Shell newShe; TopOpeBRepTool_TOOL::MkShell(mylFinBlock,newShe);
 	Splits.Append(newShe);
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	if (trc) {cout<<"#** shell "<<ishe<<" gives new shell "<<FUN_adds(newShe)<<endl;
 		  for (TopTools_ListIteratorOfListOfShape it(mylFinBlock); it.More(); it.Next()) cout <<";dins f"<<FUN_adds(it.Value());
 		  cout<<endl<<endl;}
@@ -556,7 +556,7 @@ Standard_Boolean TopOpeBRepTool_REGUS::InitBlock()
     const TopTools_ListOfShape& lof = mymapeFs.Find(e);
     if (lof.IsEmpty()) {mymapeFs.UnBind(e); continue;}
     myf = lof.First(); 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     Standard_Boolean trc = TopOpeBRepTool_GettraceREGUSO(); 
     if (trc) cout<<"* Block : first face = f"<<FUN_adds(myf)<<endl;
 #endif 
@@ -572,7 +572,7 @@ Standard_Boolean TopOpeBRepTool_REGUS::InitBlock()
 
 Standard_Boolean TopOpeBRepTool_REGUS::NextinBlock()
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = TopOpeBRepTool_GettraceREGUSO(); 
 #endif
   // we try to connect first edge of <myf> bound in <myedstoconnect> 
@@ -641,7 +641,7 @@ Standard_Boolean TopOpeBRepTool_REGUS::NextinBlock()
     const TopTools_ListOfShape& lof = mymapeFs.Find(e); Standard_Integer nf = lof.Extent();
     if (nf == 0) {myedstoconnect.Remove(e); mymapeFs.UnBind(e);
 		  continue;}
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (trc) {cout<<"e"<<FUN_adds(e)<<" on "<<nf<<" untouched f:"<<endl;}
 #endif
     if (nf == 1) myf = lof.First();
@@ -650,7 +650,7 @@ Standard_Boolean TopOpeBRepTool_REGUS::NextinBlock()
       if (!ok) return Standard_False;
       myf = ffound;
     }
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (trc) cout<<"->myf = f"<<FUN_adds(myf)<<endl;
 #endif
     return Standard_True;
@@ -689,7 +689,7 @@ Standard_Boolean TopOpeBRepTool_REGUS::NearestF(const TopoDS_Edge& e, const TopT
 // NYIXPU!!!!!!!! if (xx1 tg xx2) -> use curvatures
 //
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = TopOpeBRepTool_GettraceREGUSO(); 
 #endif
   ffound.Nullify();
@@ -722,7 +722,7 @@ Standard_Boolean TopOpeBRepTool_REGUS::NearestF(const TopoDS_Edge& e, const TopT
     if (!ok) {FUN_Raise(); return Standard_False;}
 
     Standard_Boolean oppo = TopOpeBRepTool_TOOL::Matter(x,y,xxfound,ntfound,tola, angfound);
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (trc&&!oppo) cout<<"   f"<<FUN_adds(fref)<<",f"<<FUN_adds(ffound)<<" not oppo"<<endl;
 #endif
     if (!oppo) {ffound.Nullify(); continue;}
@@ -734,7 +734,7 @@ Standard_Boolean TopOpeBRepTool_REGUS::NearestF(const TopoDS_Edge& e, const TopT
       ok = TopOpeBRepTool_TOOL::MatterKPtg(fref,ffound,e,angfound);
       if (!ok) {FUN_Raise(); return Standard_False;}
     }
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (trc) cout<<"   ang("<<"f"<<FUN_adds(fref)<<",f"<<FUN_adds(ffound)<<")="<<angfound<<endl;
 #endif
     break;
@@ -753,7 +753,7 @@ Standard_Boolean TopOpeBRepTool_REGUS::NearestF(const TopoDS_Edge& e, const TopT
         
     Standard_Real angi = 0; 
     Standard_Boolean oppo = TopOpeBRepTool_TOOL::Matter(x,y,xxi,nti,tola, angi);
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (trc&&!oppo) cout<<"   f"<<FUN_adds(fref)<<",f"<<FUN_adds(fi)<<" not oppo"<<endl;
 #endif
     if (!oppo) continue;    
@@ -765,7 +765,7 @@ Standard_Boolean TopOpeBRepTool_REGUS::NearestF(const TopoDS_Edge& e, const TopT
       ok = TopOpeBRepTool_TOOL::MatterKPtg(fref,fi,e,angi);
       if (!ok) {FUN_Raise(); return Standard_False;}
     }
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (trc) cout<<"   ang("<<"f"<<FUN_adds(fref)<<",f"<<FUN_adds(fi)<<")="<<angi<<endl;
 #endif
     if (angi > angfound) continue; 

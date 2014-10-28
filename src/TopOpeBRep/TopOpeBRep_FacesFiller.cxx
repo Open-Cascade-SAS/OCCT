@@ -56,7 +56,7 @@ Standard_EXPORT Standard_Boolean FUN_projPonL(const gp_Pnt& P,const TopOpeBRep_L
   return paramLdef;
 }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepDS_GettraceDSF(); 
 extern Standard_Boolean TopOpeBRepDS_GettraceDSFK(); 
 extern Standard_Boolean TopOpeBRepDS_GettraceDSNC(); 
@@ -80,7 +80,7 @@ static void FUN_MakeERL(TopOpeBRep_FacesIntersector& FI,TopTools_ListOfShape& ER
 TopOpeBRep_FacesFiller::TopOpeBRep_FacesFiller() : myPShapeClassifier(NULL)
 { 
   myexF1 = myexF2 = 0;
-#ifdef DEB
+#ifdef OCCT_DEBUG
   myHFFD = new TopOpeBRep_FFDumper(this);
 #endif
 }
@@ -116,7 +116,7 @@ void TopOpeBRep_FacesFiller::Insert(const TopoDS_Shape& S1,const TopoDS_Shape& S
   myDS = &(HDS->ChangeDS());
   if (myPShapeClassifier == NULL) myPShapeClassifier = new TopOpeBRepTool_ShapeClassifier();
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer exF1,exF2; GetTraceIndex(exF1,exF2);
   myFacesIntersector->InitLine();
   for (; myFacesIntersector->MoreLine(); myFacesIntersector->NextLine()) myFacesIntersector->CurrentLine().SetTraceIndex(exF1,exF2);
@@ -207,14 +207,14 @@ Standard_Boolean TopOpeBRep_FacesFiller::CheckLine(TopOpeBRep_LineInter& L) cons
   TopOpeBRep_TypeLineCurve t = L.TypeLineCurve();
   Standard_Integer nbvp = L.NbVPoint();
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean TDSF = TopOpeBRepDS_GettraceDSF();
   if (TDSF) { cout<<"CheckLine ";TopOpeBRep::Print(t,cout);cout<<" "<<nbvp<<" points"<<endl; }
 #endif
   
   if ( t == TopOpeBRep_WALKING ) {
     if ( nbvp < 2 ) {
-#ifdef TOPOPEBREP_DEB
+#ifdef OCCT_DEBUG
       cout<<"\n=== Nb de IntPatch_Point sur WL incorrect : "<<nbvp<<" ===\n";
 #endif
       check = Standard_False;
@@ -253,7 +253,7 @@ Standard_Boolean TopOpeBRep_FacesFiller::CheckLine(TopOpeBRep_LineInter& L) cons
     if (isBV1) V2 = B.VertexOnS1();
     if (isBV2) V2 = B.VertexOnS2();
     
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (TDSF) {
       cout<<"CheckLine : isAV1 isAV2 isBV1 isBV2 ";
       cout<<isAV1<<" "<<isAV2<<" "<<isBV1<<" "<<isBV2<<endl;
@@ -261,7 +261,7 @@ Standard_Boolean TopOpeBRep_FacesFiller::CheckLine(TopOpeBRep_LineInter& L) cons
 #endif
     
     if ( !V1.IsNull() && ( V1.IsSame(V2) ) ) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
       Standard_Real parA = A.ParameterOnLine();    
       Standard_Real parB = B.ParameterOnLine();    
       if (TDSF) {
@@ -346,7 +346,7 @@ Standard_Boolean TopOpeBRep_FacesFiller::CheckLine(TopOpeBRep_LineInter& L) cons
     }
   }
   
-#ifdef TOPOPEBREP_DEB
+#ifdef OCCT_DEBUG
   if (!check) { cout<<"# DEB CheckLine : rejet de ";TopOpeBRep::Print(t,cout);cout<<" a "<<nbvp<<" points"<<endl; }
 #endif
 
@@ -386,7 +386,7 @@ void TopOpeBRep_FacesFiller::VP_Position(TopOpeBRep_FacesIntersector& )
 void TopOpeBRep_FacesFiller::VP_Position(TopOpeBRep_LineInter& L)
 {
   myLine = &L;
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepDS_GettraceDSFK()) {
     cout<<endl<<"VP_Position on line "<<L.Index()<<" ";L.DumpType();cout<<endl;
   }
@@ -398,7 +398,7 @@ void TopOpeBRep_FacesFiller::VP_Position(TopOpeBRep_LineInter& L)
   
   L.SetVPBounds();
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepDS_GettraceDSFK()) {
     Standard_Integer VPF,VPL,VPN; L.VPBounds(VPF,VPL,VPN);
     cout<<"SetVPBounds : VPF,VPL,VPN = "<<VPF<<","<<VPL<<","<<VPN;
@@ -507,7 +507,7 @@ void TopOpeBRep_FacesFiller::VP_PositionOnR(TopOpeBRep_LineInter& L)
       }
     }
     
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (TopOpeBRepDS_GettraceDSFK()) {
       cout<<"VP "<<VP.Index()<<" on "<<Esi<<" : ";
       TopAbs::Print(VP.State(Esi),cout);
@@ -547,7 +547,7 @@ void TopOpeBRep_FacesFiller::VP_Position(TopOpeBRep_VPointInter& VP,TopOpeBRep_V
   if (c1) VPC.VPointPosition(myF1,VP,1,myPointClassifier,AssumeINON,tol);
   if (c2) VPC.VPointPosition(myF2,VP,2,myPointClassifier,AssumeINON,tol);
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepDS_GettraceDSFK()) {
     cout<<"VP "<<VP.Index()<<" on "<<si<<" : ";
     if (c1) { TopAbs::Print(VP.State(1),cout);cout<<"/1 "; }

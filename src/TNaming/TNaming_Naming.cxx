@@ -76,15 +76,12 @@ typedef TNaming_DataMapOfShapeMapOfShape::Iterator TNaming_DataMapIteratorOfData
 //#define MDTV_DEB_NBS
 //#define MDTV_DEB_71
 //#define MDTV_DEB_WIN
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
 #include <TDF_MapIteratorOfLabelMap.hxx> 
 #include <TCollection_AsciiString.hxx>
 #include <TDF_Tool.hxx>
 #include <BRepTools.hxx>
 #include <TNaming_Tool.hxx>
-#include <DbgTools.hxx>
-#endif
-#ifdef DEB
 #include <TDF_Tool.hxx>
 #include <TDF_MapIteratorOfLabelMap.hxx>
 
@@ -156,7 +153,7 @@ Standard_Boolean  TNaming_Naming::Solve (TDF_LabelMap& Valid)
 { 
   Handle(TNaming_Naming) subname;
   for (TDF_ChildIterator it (Label(),Standard_False); it.More(); it.Next()) {
-#ifdef MDTV_DEB_NBS
+#ifdef OCCT_DEBUG_NBS
     TCollection_AsciiString anEntry;
     TDF_Tool::Entry(it.Value(), anEntry);
     cout << "TNaming_Naming::Solve: Label to be solved = " << anEntry << endl;
@@ -167,7 +164,7 @@ Standard_Boolean  TNaming_Naming::Solve (TDF_LabelMap& Valid)
       }
     }
   }
-#ifdef MDTV_DEB_CC
+#ifdef OCCT_DEBUG_CC
   TDF_MapIteratorOfLabelMap anItr(Valid);
   cout << "TNaming_Naming::Solve:: Valid label Map" << endl;
   for (; anItr.More(); anItr.Next()) {
@@ -277,7 +274,7 @@ static Standard_Boolean GetShapeEvolutions(const TopoDS_Shape&               the
 {
   Handle(TNaming_NamedShape) aTarget = TNaming_Tool::NamedShape(theTarget,theSource->Label());
   if (!aTarget.IsNull()) {
-#ifdef MDTV_DEB_71
+#ifdef OCCT_DEBUG_71
     cout <<"GetShapeEvolutions: target NS = ";
     Print_Entry(aTarget->Label());
     cout <<"GetShapeEvolutions: Source NS = ";
@@ -290,7 +287,7 @@ static Standard_Boolean GetShapeEvolutions(const TopoDS_Shape&               the
 
   TNaming_Iterator anIter(aTarget);
   for(;anIter.More();anIter.Next()) { // check all appropriate old shapes of target
-#ifdef MDTV_DEB_71
+#ifdef OCCT_DEBUG_71
     if(!anIter.OldShape().IsNull()) {
       Write(anIter.OldShape(), "Target_OldS.brep");
       cout <<"Target OldS TS =" <<anIter.OldShape().TShape()->This() <<endl;
@@ -320,7 +317,7 @@ static Handle(TNaming_NamedShape) CompareInModification (const Handle(TNaming_Na
 {
   Handle(TNaming_NamedShape) aResult;
   if (S.IsNull() || NS.IsNull()) return aResult;
-#ifdef MDTV_DEB_71
+#ifdef OCCT_DEBUG_71
   cout <<"CompareInModification: parent NS = ";
   Print_Entry(NS->Label());
   Write(S, "CompareInM_S.brep");
@@ -332,7 +329,7 @@ static Handle(TNaming_NamedShape) CompareInModification (const Handle(TNaming_Na
   for(;anIt.More() && aSource.IsNull();anIt.Next()) {
     if (!anIt.NewShape().IsNull()) {
       aSource = TNaming_Tool::NamedShape(anIt.NewShape(),NS->Label());
-#ifdef MDTV_DEB_71
+#ifdef OCCT_DEBUG_71
       TCollection_AsciiString aNam("CompareInM_Source");
       WriteNSOnLabel(aSource,aNam);
 #endif
@@ -381,7 +378,7 @@ static Standard_Boolean FillSMap(const TopoDS_Shape& S, TopTools_MapOfShape& MS)
   TopoDS_Iterator it(S);
   for (; it.More(); it.Next()) {
     const TopAbs_ShapeEnum aType = it.Value().ShapeType();      
-#ifdef MDTV_DEB_CC
+#ifdef OCCT_DEBUG_CC
     cout <<"TestSolution_FillMap: S_Type = :" << it.Value().ShapeType() <<" TShape = " << it.Value().TShape()->This() <<endl;
 #endif
     if(aType > TopAbs_COMPSOLID) {
@@ -416,7 +413,7 @@ static Standard_Boolean Compare (const Handle(TNaming_NamedShape)& NS,
   TopTools_MapOfShape MS;
   if (!Stop.IsNull()) TNaming_NamingTool::BuildDescendants(Stop,Forbiden);
   TNaming_NamingTool::CurrentShape(MDF.GetValid(),Forbiden,NS,MS);
-#ifdef MDTV_DEB_NBS
+#ifdef OCCT_DEBUG_NBS
   Write(S, "Compare_S.brep");
   cout <<  "S: TShape = " <<S.TShape()->This() <<endl;
   Standard_Integer i =1;
@@ -447,7 +444,7 @@ static Standard_Boolean TestSolution(const TNaming_Scope&      MDF,
   if (NS.IsNull()) return Standard_False;
   TopoDS_Shape Res = MDF.CurrentShape(NS);// last modification of NS taken into account Valid map
   if(S.IsNull() || Res.IsNull()) return Standard_False;
-#ifdef MDTV_DEB_CC
+#ifdef OCCT_DEBUG_CC
   Write(S, "TSol_S.brep");
   Write(Res, "TSol_Res.brep");
 #endif  
@@ -617,7 +614,7 @@ static Standard_Boolean IsMultipleCase(const TopoDS_Shape&        S,
       if(aMS.Extent())
 	aDMM.Bind(it.Key(), aMS);
     } else {
-#ifdef TNAMING_DEB
+#ifdef OCCT_DEBUG
       cout << "Key is not BOUND!" <<endl;
 #endif
       return Standard_False;
@@ -678,7 +675,7 @@ static Standard_Boolean Filter (const TDF_Label&                  F,
   Standard_Integer aLev(Lev);
   TopTools_MapOfShape Neighbourg;
   Localizer.FindNeighbourg (Context,S,Neighbourg);
-#ifdef MDTV_DEB_NBS
+#ifdef OCCT_DEBUG_NBS
   //DbgTools::DisplayShape(Context, F, Quantity_NOC_GREEN);
   //DbgTools::DisplayShape(S, F, Quantity_NOC_BLUE1);  
   Write(Context, "FNBS_Context.brep");
@@ -690,7 +687,7 @@ static Standard_Boolean Filter (const TDF_Label&                  F,
   Standard_Boolean isIn = Standard_False;
   TNaming_Iterator anIter(NS);
   for(;anIter.More();anIter.Next()) {
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
 	  //DbgTools::DisplayShape(anIter.NewShape(), F, Quantity_NOC_RED);
 #endif
     if (anIter.NewShape().IsSame(S)) {
@@ -716,12 +713,12 @@ static Standard_Boolean Filter (const TDF_Label&                  F,
   
 
   if (Neighbourg.IsEmpty()) {
-#ifdef TNAMING_DEB
+#ifdef OCCT_DEBUG
     cout <<"FindNeighbourg: impossible"<<endl;
 #endif
     return 0;  
   } else {
-#ifdef MDTV_DEB_NBS
+#ifdef OCCT_DEBUG_NBS
     Write(Neighbourg, "Neighbourgs");
 #endif
     aLev++;
@@ -751,7 +748,7 @@ static Standard_Boolean Filter (const TDF_Label&                  F,
 	    TNaming_ListIteratorOfListOfNamedShape itA(aName.Arguments()); 
 	    for (; itA.More(); itA.Next(), ij++) {
 	      const TopoDS_Shape& aFace = TNaming_Tool::CurrentShape(itA.Value());
-#ifdef MDTV_DEB_MOD
+#ifdef OCCT_DEBUG_MOD
 	      Write(aFace, "First_Face.brep");
 	      cout <<"Selection TS = " << S.TShape()->This() <<endl;
 #endif
@@ -760,7 +757,7 @@ static Standard_Boolean Filter (const TDF_Label&                  F,
 	      TopoDS_Iterator it(aFace);
 	      for (;it.More();it.Next(),i++) {
 		nbW++;
-#ifdef MDTV_DEB_MOD
+#ifdef OCCT_DEBUG_MOD
 		Write(it.Value(), "First_Wire.brep");
 #endif
 		if(!isFound) {
@@ -768,7 +765,7 @@ static Standard_Boolean Filter (const TDF_Label&                  F,
 		  TopoDS_Iterator it2(it.Value());
 		  for (;it2.More();it2.Next(),j++) {
 		    nbE++;
-#ifdef MDTV_DEB_MOD
+#ifdef OCCT_DEBUG_MOD
 		    Write(it2.Value(), "First_Wire.brep");
 		    cout <<"Edge TS = " << it2.Value().TShape()->This() <<endl;
 #endif
@@ -820,7 +817,7 @@ static Standard_Boolean Filter (const TDF_Label&                  F,
   theName.Type(TNaming_FILTERBYNEIGHBOURGS);
   theName.Append(NS);
   theName.StopNamedShape (Until);
-#ifdef MDTV_DEB_NBS
+#ifdef OCCT_DEBUG_NBS
   cout << "FilterByNBS: ";
   Print_Entry(NF->Label());
   cout <<"AppendNS = " ;
@@ -836,7 +833,7 @@ static Standard_Boolean Filter (const TDF_Label&                  F,
     const TopoDS_Shape& aS = itN.Key();	  
     Handle (TNaming_NamedShape) aNS = 
       BuildName(NF->Label(), MDF, aS, Context, Stop, 1);	  
-#ifdef MDTV_DEB_NBS
+#ifdef OCCT_DEBUG_NBS
     const TopoDS_Shape& aS2 = aNS->Get(); 
     if(!aS.IsNull())
       cout << "Shape arg type = " << aS.ShapeType() <<" TSH = " << aS.TShape()->This()<<endl;
@@ -857,7 +854,7 @@ static Standard_Boolean Filter (const TDF_Label&                  F,
     if(allowChild && !aSNS.IsNull() && aS.ShapeType() != aSNS.ShapeType() && 
        aSNS.ShapeType() == TopAbs_COMPOUND)
       { // aLev < 3 
-#ifdef MDTV_DEB_NBS
+#ifdef OCCT_DEBUG_NBS
 	cout <<"Father label = ";
 	Print_Entry(aNS->Label().Father());
 	Write(aS,"SelectionS.brep");
@@ -892,7 +889,7 @@ static Standard_Boolean Filter (const TDF_Label&                  F,
   // Check du filtre.
   //-----------------
   if (Compare (NS,MDF,Stop,S)) return 1;
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
   cout <<"TNaming_Naming::Name Filter insufficient"<<endl;
 #endif
   return 0;
@@ -931,7 +928,7 @@ static Handle(TNaming_NamedShape) BuildNameInNS (const TDF_Label&               
 // <Context> is Ident.NamedShapeOfGeneration() ==
     TDF_Label Father = Context->Label().Father();
     Father.FindAttribute(TNaming_NamedShape::GetID(),NewStop);
-#ifdef MDTV_DEB_INNS
+#ifdef OCCT_DEBUG_INNS
     if(!Stop.IsNull())
       {cout <<" Stop NS : "; Print_Entry( Stop->Label());}
     if(!NewStop.IsNull())
@@ -940,7 +937,7 @@ static Handle(TNaming_NamedShape) BuildNameInNS (const TDF_Label&               
     cout <<"Father      : "; Print_Entry( Father);
 #endif
   }
-#ifdef MDTV_DEB_INNS
+#ifdef OCCT_DEBUG_INNS
   if(NewStop.IsNull())
     cout <<"BuildNameInNS:: NewStop shape is  NULL" << endl;  
 #endif 
@@ -965,7 +962,7 @@ static Handle(TNaming_NamedShape) BuildName (const TDF_Label&                  F
   // Create an identifier
   Standard_Boolean OnlyOne      = !Geom;
   Standard_Boolean IsGeneration = Standard_False;
-#ifdef MDTV_DEB_MOD
+#ifdef OCCT_DEBUG_MOD
   cout <<"BuildName: F =>  ";
   Print_Entry(F);
   cout <<" Selection type = " << Selection.ShapeType() << " TS = " << Selection.TShape()->This() << endl;
@@ -1000,7 +997,7 @@ static Handle(TNaming_NamedShape) BuildName (const TDF_Label&                  F
     theName.Shape(Selection);
 	theName.Orientation(Selection.Orientation());
     theName.Type(Ident.Type());
-#ifdef MDTV_DEB_MOD
+#ifdef OCCT_DEBUG_MOD
     cout <<"BuildName: Inserted Naming Att at ";
     Print_Entry(Naming->Label());
     cout <<" NameType = " << theName.Type() <<endl;		
@@ -1019,7 +1016,7 @@ static Handle(TNaming_NamedShape) BuildName (const TDF_Label&                  F
     // Renseignement du NamedShape d arret.
     //------------------------------------
     theName.StopNamedShape (Stop);
-#ifdef MDTV_DEB_MOD
+#ifdef OCCT_DEBUG_MOD
     if(!Stop.IsNull()) {
         TCollection_AsciiString Es;
       TDF_Tool::Entry(Stop->Label(), Es);
@@ -1033,7 +1030,7 @@ static Handle(TNaming_NamedShape) BuildName (const TDF_Label&                  F
     for (Ident.InitArgs(); Ident.MoreArgs(); Ident.NextArg()) {
       if (Ident.ArgIsFeature()) {
 	theName.Append(Ident.FeatureArg());
-#ifdef MDTV_DEB_MOD
+#ifdef OCCT_DEBUG_MOD
 	if(!Ident.FeatureArg().IsNull()) {
 	  TCollection_AsciiString E;
 	  TDF_Tool::Entry(Ident.FeatureArg()->Label(), E);
@@ -1042,7 +1039,7 @@ static Handle(TNaming_NamedShape) BuildName (const TDF_Label&                  F
 #endif 
       }
       else {
-#ifdef MDTV_DEB_MOD
+#ifdef OCCT_DEBUG_MOD
 	  cout <<"BuildName: NameType = " <<theName.Type() << " NS ";
 	  Print_Entry(Naming->Label());
 	  cout <<"Ident.ShapeArg() type = " << Ident.ShapeArg().ShapeType() << " TS = " << Ident.ShapeArg().TShape()->This() << endl;	
@@ -1059,7 +1056,7 @@ static Handle(TNaming_NamedShape) BuildName (const TDF_Label&                  F
     // Reconstruction of Name
     //------------------------
     Naming->Regenerate(MDF.ChangeValid()); 
-#ifdef MDTV_DEB_MOD
+#ifdef OCCT_DEBUG_MOD
     TCollection_AsciiString E2;
     TDF_Tool::Entry(Naming->Label(), E2);
     cout <<"Regenerated Naming Att at Label = "<< E2 << endl;
@@ -1067,7 +1064,7 @@ static Handle(TNaming_NamedShape) BuildName (const TDF_Label&                  F
     Naming->Label().FindAttribute(TNaming_NamedShape::GetID(),NS);
     if(NS.IsNull()) return NS; 
     if (MDF.WithValid()) MDF.Valid(NS->Label());
-#ifdef MDTV_DEB_MOD
+#ifdef OCCT_DEBUG_MOD
     if(!NS.IsNull()) {
       TCollection_AsciiString E;
       TDF_Tool::Entry(NS->Label(), E);
@@ -1106,7 +1103,7 @@ static Handle(TNaming_NamedShape) BuildName (const TDF_Label&                  F
 	}
       } else if (Ident.Type() == TNaming_MODIFUNTIL ||
 		 (Ident.Type() == TNaming_INTERSECTION && Naming->ChangeName().Arguments().Extent() == 1)) {
-#ifdef MDTV_DEB_MOD
+#ifdef OCCT_DEBUG_MOD
 	cout <<"BuildName(CompareInModification): NameType = " <<Ident.Type() << " NS ";
 	Print_Entry(Ident.Type() == TNaming_MODIFUNTIL ? NS->Label() : Naming->ChangeName().Arguments().First()->Label());
 	cout <<"Selection type = " << Selection.ShapeType() << " TS = " << Selection.TShape()->This() << endl;	
@@ -1155,7 +1152,7 @@ static Handle(TNaming_NamedShape) BuildName (const TDF_Label&                  F
     }
   }
   if (MDF.WithValid()) MDF.Valid(NS->Label());
-#ifdef MDTV_DEB_MOD
+#ifdef OCCT_DEBUG_MOD
     if(!NS.IsNull()) {
       TCollection_AsciiString E;
       TDF_Tool::Entry(NS->Label(), E);
@@ -1378,20 +1375,20 @@ static Standard_Boolean IsOneIn (const TopoDS_Shape& S, const TopoDS_Shape& Cont
 //=======================================================================
 static Standard_Boolean IsAllIn (const TopoDS_Shape& S, const TopoDS_Shape& Context)
 {
-#ifdef MDTV_DEB_CC
+#ifdef OCCT_DEBUG_CC
   Write(S, "IsAllIn_Sel.brep");
 #endif
   Standard_Boolean found(Standard_False);
   if(S.IsNull() || Context.IsNull()) return found;
   Standard_Integer num1(0), num2(0);
   for(TopoDS_Iterator it(S);it.More();it.Next(),num1++) {
-#ifdef MDTV_DEB_CC
+#ifdef OCCT_DEBUG_CC
   cout <<"S sub-shape type = " << it.Value().ShapeType() <<endl;
   Write (it.Value(), "Sel_ItValue.brep");
 #endif
   if(it.Value().ShapeType() != TopAbs_COMPOUND)
     for (TopExp_Explorer exp(Context,it.Value().ShapeType()); exp.More(); exp.Next()) {
-#ifdef MDTV_DEB_CC
+#ifdef OCCT_DEBUG_CC
   cout <<"Context sub-shape type = " << exp.Current().ShapeType() <<endl;
   Write(exp.Current(), "Contex_Curnt.brep");
 #endif
@@ -1407,7 +1404,7 @@ static Standard_Boolean IsAllIn (const TopoDS_Shape& S, const TopoDS_Shape& Cont
   }
   if(num1 == num2)
     found = Standard_True;
-#ifdef MDTV_DEB_CC
+#ifdef OCCT_DEBUG_CC
   else
     cout <<"Compound case : selected num1 = " << num1 << " context contains num2 = " << num2 << endl;
 #endif
@@ -1445,7 +1442,7 @@ static Standard_Integer RepeatabilityInContext(const TopoDS_Shape& Selection,
       }
     } 
   }
-#ifdef MDTV_DEB_OR
+#ifdef OCCT_DEBUG_OR
       cout <<"RepeatabilityInContext: = " <<aNum <<endl;
 #endif 
   return aNum;
@@ -1471,7 +1468,7 @@ static Standard_Boolean HasAncSolid(const TopoDS_Shape& Context,
 	      hasSolid = Standard_True;
 		  TopoDS_Shell anOuterShell;		
 		  if(TNaming::OuterShell(TopoDS::Solid(Solid), anOuterShell)) {
-#ifdef MDTV_DEB_TSOL
+#ifdef OCCT_DEBUG_TSOL
 	        Write(anOuterShell, "OuterShell.brep");
 #endif
 		    if(!anOuterShell.IsNull() && anOuterShell.IsEqual(Sh))
@@ -1520,7 +1517,7 @@ static Handle(TNaming_NamedShape) BuildNameShell (const TDF_Label& F,
 
 	if(Context.ShapeType() == TopAbs_SOLID) {
 		for (TopoDS_Iterator it(Context) ; it.More(); it.Next()) {
-#ifdef MDTV_DEB_TSOL
+#ifdef OCCT_DEBUG_TSOL
           Write(it.Value(), "Shell_inSo.brep");
 #endif
 		if(it.Value().IsEqual(Selection)) {
@@ -1549,7 +1546,7 @@ static Handle(TNaming_NamedShape) BuildNameShell (const TDF_Label& F,
 	// context is not SOLID
 		//theName.Append(BuildName (Naming->Label(),MDF,aSolid,Context,Stop,Geom));//###########		
 		if(isOuter) {
-#ifdef MDTV_DEB_TSOL
+#ifdef OCCT_DEBUG_TSOL
           Write(aSolid, "foundSolid.brep");
 #endif
 		  theName.Index(1);
@@ -1628,7 +1625,7 @@ static void BuildAggregationName (const TDF_Label&                  F,
     theName.Shape(S); 
 	theName.Orientation(S.Orientation());
   } 
-#ifdef MDTV_DEB_CC
+#ifdef OCCT_DEBUG_CC
   cout <<"BuildAggregationName ==> ";
   Print_Entry(Naming->Label());
 #endif
@@ -1675,7 +1672,7 @@ static void BuildAggregationName (const TDF_Label&                  F,
 	  }
 	}
       } else {
-#ifdef MDTV_DEB_CC
+#ifdef OCCT_DEBUG_CC
 	cout << "atomic type is NOT defined ... ==> Aggregation" <<endl;
 #endif
 	BuildAggregationName(aNaming->Label(),MDF, aS, Context,Stop,Geom);
@@ -1711,7 +1708,7 @@ Handle(TNaming_NamedShape) TNaming_Naming::Name (const TDF_Label&       F,
 {
   Handle(TNaming_NamedShape) NS;
   if (KeepOrientation) {
-#ifdef MDTV_DEB_INNS
+#ifdef OCCT_DEBUG_INNS
     cout <<"KeepOR = 1: "; Print_Entry(F);
 #endif
     Standard_Integer aNum = RepeatabilityInContext(S, Context);
@@ -1723,7 +1720,7 @@ Handle(TNaming_NamedShape) TNaming_Naming::Name (const TDF_Label&       F,
       Handle(TopTools_HArray1OfShape) Arr;
       if (UC.IsNull() && S.ShapeType() == TopAbs_COMPOUND) {
 	UC = TNaming::FindUniqueContextSet(S, Context, Arr);
-#ifdef MDTV_DEB_CC
+#ifdef OCCT_DEBUG_CC
 	Write(UC, "UniqueContextSet.brep");
 	Write(S,  "InitialSelection.brep");
 	if(S.ShapeType()==TopAbs_COMPOUND) {

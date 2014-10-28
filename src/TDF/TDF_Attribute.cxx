@@ -292,7 +292,7 @@ Handle(TDF_Attribute) TDF_Attribute::BackupCopy() const
 
 void TDF_Attribute::RemoveBackup()
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (myBackup.IsNull())
     Standard_DomainError::Raise("Impossible to remove a nonexistent backup.");
 #endif

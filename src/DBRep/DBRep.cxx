@@ -337,7 +337,7 @@ static Standard_Integer triangles(Draw_Interpretor& ,
 
   if (n == 1) {
     disptriangles = !disptriangles;
-#ifdef DBREP_DEB
+#ifdef OCCT_DEBUG
     if (disptriangles) cout <<"Triangulations are always displayed"<<endl;
     else cout <<"Triangulations are displayed only if there is no geometric representation"<<endl;
 #endif
@@ -387,7 +387,7 @@ static Standard_Integer polygons(Draw_Interpretor& ,
 
   if (n == 1) {
     disppolygons = !disppolygons;
-#ifdef DBREP_DEB
+#ifdef OCCT_DEBUG
     if (disppolygons) cout <<"Polygons are always displayed"<<endl;
     else cout <<"Polygons are displayed only if there is no geometric representation"<<endl;
 #endif

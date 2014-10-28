@@ -105,7 +105,7 @@ void Blend_CSWalking::Perform(Blend_CSFunction& Func,
   if (State!=Blend_OK) {
     return;
   }
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (Blend_GettraceDRAWSECT()){
     Drawsect(surf,curv,param,Func);
   }

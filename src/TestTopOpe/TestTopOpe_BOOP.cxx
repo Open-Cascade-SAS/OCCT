@@ -50,7 +50,7 @@ Standard_IMPORT Draw_Viewer dout;
 
 extern Standard_Integer TOPOPE_SeeShape(char *name);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #include <TopOpeBRepTool_KRO.hxx>
 extern Standard_Boolean TopOpeBRepTool_GettraceKRO();
 extern void PrintKRO_PREPA();
@@ -124,7 +124,7 @@ Standard_Integer TestTopOpe_BOOP::LoadnewHB()
 Standard_Integer TestTopOpe_BOOP::Builder_Perform()
 {
   myHB->Perform(myHDS,myS1,myS2);
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if ( TopOpeBRepTool_GettraceKRO() ) PrintKRO_PREPA();
 #endif
   myESP = myHDS->EdgesSameParameter();

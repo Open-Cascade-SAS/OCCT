@@ -1657,7 +1657,7 @@ static int VLenghtDimension(Draw_Interpretor& di, Standard_Integer argc, const c
       TopExp::Vertices(anEdgeFromA, aVertex1, aVertex2);
       gp_Pnt A=BRep_Tool::Pnt(aVertex1);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
       gp_Pnt C = BRep_Tool::Pnt(aVertex2);
 #endif
 

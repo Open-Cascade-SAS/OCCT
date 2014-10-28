@@ -194,7 +194,7 @@ Standard_Real IntCurveSurface_Polygon::ApproxParamOnCurve(const Standard_Integer
 {
   //ddout << "IntCurveSurface_Polygon::ApproxParamOnCurve" << endl;
   if(TheParamOnLine < 0.0 || TheParamOnLine >1.0) { 
-#ifdef INTCURVESURFACE_DEB
+#ifdef OCCT_DEBUG
     cout<<" ParamOnLine  =  "<<TheParamOnLine<<"  avec Index = "
       <<TheIndex<<"  dans IntCurveSurface_Polygon::ApproxParamOnCurve"<<endl;
 #endif
@@ -203,7 +203,7 @@ Standard_Real IntCurveSurface_Polygon::ApproxParamOnCurve(const Standard_Integer
 
   Standard_Integer Index = TheIndex;
   Standard_Real    ParamOnLine = TheParamOnLine;
-#ifdef INTCURVESURFACE_DEB
+#ifdef OCCT_DEBUG
   if (Index > NbPntIn) {
     cout << "OutOfRange Polygon::ApproxParamOnCurve " <<endl;
   }

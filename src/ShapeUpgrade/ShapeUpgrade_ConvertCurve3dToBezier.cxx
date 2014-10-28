@@ -138,14 +138,14 @@ void ShapeUpgrade_ConvertCurve3dToBezier::Compute()
     if(Abs(Last-bl) < precision)
       Last = bl;
     if(First < bf){
-#ifdef SHAPEUPGRADE_DEB
+#ifdef OCCT_DEBUG
       cout <<"Warning: The range of the edge exceeds the curve domain" <<endl;
 #endif
       First = bf;
       mySplitValues->SetValue(1,First);
     }
     if(Last > bl){
-#ifdef SHAPEUPGRADE_DEB
+#ifdef OCCT_DEBUG
       cout <<"Warning: The range of the edge exceeds the curve domain" <<endl;
 #endif
       Last = bl;

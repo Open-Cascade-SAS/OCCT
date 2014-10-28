@@ -167,7 +167,7 @@ void MNaming_NamingRetrievalDriver_1::Paste (
   // Orientation processing
   Handle(TNaming_NamedShape) aNS;
   if(F->Label().FindAttribute(TNaming_NamedShape::GetID(), aNS)) {
-#ifdef DEB_ORIENT
+#ifdef OCCT_DEBUG_ORIENT
     const TDF_Label& aLab = aNS->Label();
 	TCollection_AsciiString entry;
 	TDF_Tool::Entry(aLab, entry);
@@ -182,7 +182,7 @@ void MNaming_NamingRetrievalDriver_1::Paste (
           if (itL.More() && itL.NewShape().ShapeType() != TopAbs_VERTEX &&
 	        !itL.OldShape().IsNull() && itL.OldShape().ShapeType() == TopAbs_VERTEX ) {//OR-N
             TopAbs_Orientation OrientationToApply = itL.OldShape().Orientation();
-#ifdef DEB_ORIENT
+#ifdef OCCT_DEBUG_ORIENT
 			cout <<"Retrieved Orientation = " << OrientationToApply <<endl;
 #endif 
             F->ChangeName().Orientation(OrientationToApply);

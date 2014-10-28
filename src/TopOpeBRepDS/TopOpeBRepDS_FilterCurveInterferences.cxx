@@ -21,7 +21,7 @@
 #include <TopOpeBRepDS_ListIteratorOfListOfInterference.hxx>
 #include <TopOpeBRepDS_ProcessInterferencesTool.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepDS_GettracePI();
 extern Standard_Boolean TopOpeBRepDS_GettracePCI();
 static Standard_Boolean TRCC() {
@@ -66,7 +66,7 @@ void TopOpeBRepDS_Filter::ProcessCurveInterferences
 	//             do NOT delete CPIREV!!
 	Standard_Boolean remove = (GT2 == GT1) && (G2 == G1) && (O1 == O2);
 	if ( remove ) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	  if ( TRCC() ){
 	    cout<<"remove ";I2->Dump(cout);cout<<" from C "<<CIX<<endl;
 	  }

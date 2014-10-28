@@ -37,7 +37,7 @@
 #include <Standard_ProgramError.hxx>
 #include <TopOpeBRepDS_define.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepDS_GettraceISTO();
 extern Standard_Boolean TopOpeBRepDS_GettraceEDSF(); 
 extern Standard_Boolean TopOpeBRepDS_GettraceDSF(); 
@@ -694,7 +694,7 @@ Standard_Boolean TopOpeBRepDS_HDataStructure::GetGeometry
   return found;
 }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepDS_GettraceSTRANGE();
 extern Standard_Boolean TopOpeBRepDS_GettraceSPSX(const Standard_Integer);
 static Standard_Boolean TRC(const Standard_Integer SIX) {
@@ -712,13 +712,13 @@ void debstore(const Standard_Integer /*i*/) {}
 //=======================================================================
 void TopOpeBRepDS_HDataStructure::StoreInterference
 (const Handle(TopOpeBRepDS_Interference)& I,TopOpeBRepDS_ListOfInterference& LI,
-#ifdef DEB
+#ifdef OCCT_DEBUG
  const TCollection_AsciiString& str)
 #else
  const TCollection_AsciiString& )
 #endif
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   const TopOpeBRepDS_Transition& T = I->Transition();
 
   TopAbs_ShapeEnum sb = T.ShapeBefore();
@@ -763,7 +763,7 @@ void TopOpeBRepDS_HDataStructure::StoreInterference
   // append I to list LI
   LI.Append(I);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean appendtoG = Standard_False;
 #endif
   Standard_Integer G = I->Geometry();
@@ -778,14 +778,14 @@ void TopOpeBRepDS_HDataStructure::StoreInterference
     break;
     
   case TopOpeBRepDS_SURFACE :
-#ifdef DEB
+#ifdef OCCT_DEBUG
     appendtoG = Standard_True;
 #endif
     myDS.ChangeSurfaceInterferences(G).Append(I);
     break;
     
   case TopOpeBRepDS_CURVE :
-#ifdef DEB
+#ifdef OCCT_DEBUG
     appendtoG = Standard_True;
 #endif
     myDS.ChangeCurveInterferences(G).Append(I);
@@ -799,7 +799,7 @@ void TopOpeBRepDS_HDataStructure::StoreInterference
     break;
   }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = ::traceSTORE();
   if (trc) {
     cout<<str<<"append "; I->Dump(cout);
@@ -815,7 +815,7 @@ void TopOpeBRepDS_HDataStructure::StoreInterference
 //=======================================================================
 void TopOpeBRepDS_HDataStructure::StoreInterference
 (const Handle(TopOpeBRepDS_Interference)& I,const TopoDS_Shape& S,
-#ifdef DEB
+#ifdef OCCT_DEBUG
  const TCollection_AsciiString& str)
 #else
  const TCollection_AsciiString& )
@@ -827,7 +827,7 @@ void TopOpeBRepDS_HDataStructure::StoreInterference
     return;
   }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = ::traceSTORE();
   TopOpeBRepDS_Kind ks = TopOpeBRepDS::ShapeToKind(S.ShapeType());
   Standard_Integer is = myDS.Shape(S);
@@ -845,7 +845,7 @@ void TopOpeBRepDS_HDataStructure::StoreInterference
 void TopOpeBRepDS_HDataStructure::StoreInterference
 (const Handle(TopOpeBRepDS_Interference)& I,
  const Standard_Integer IS,
-#ifdef DEB
+#ifdef OCCT_DEBUG
  const TCollection_AsciiString& str)
 #else
  const TCollection_AsciiString& )
@@ -857,7 +857,7 @@ void TopOpeBRepDS_HDataStructure::StoreInterference
     return;
   }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = ::traceSTORE();
   const TopoDS_Shape& S = Shape(IS);
   TopOpeBRepDS_Kind ks = TopOpeBRepDS::ShapeToKind(S.ShapeType());

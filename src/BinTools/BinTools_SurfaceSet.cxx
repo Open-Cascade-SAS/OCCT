@@ -884,7 +884,7 @@ void  BinTools_SurfaceSet::Read(Standard_IStream& IS)
   if (IS.fail() || strcmp(buffer,"Surfaces")) {
     Standard_SStream aMsg;
     aMsg << "BinTools_SurfaceSet::Read:  Not a surface table"<<endl;
-#ifdef BINTOOLS_DEB
+#ifdef OCCT_DEBUG
     cout <<"SurfaceSet buffer: " << buffer << endl;
 #endif
     Standard_Failure::Raise(aMsg);

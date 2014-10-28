@@ -139,7 +139,7 @@ void BRepCheck_Analyzer::Perform(const TopoDS_Shape& S)
       }
       catch(Standard_Failure)
       {
-#ifdef DEB
+#ifdef OCCT_DEBUG
         cout<<"BRepCheck_Analyzer : ";
         Standard_Failure::Caught()->Print(cout);  
         cout<<endl;
@@ -169,7 +169,7 @@ void BRepCheck_Analyzer::Perform(const TopoDS_Shape& S)
         }
         catch(Standard_Failure)
         {
-#ifdef BREPCHECK_DEB
+#ifdef OCCT_DEBUG
           cout<<"BRepCheck_Analyzer : ";
           Standard_Failure::Caught()->Print(cout);  
           cout<<endl;
@@ -207,7 +207,7 @@ void BRepCheck_Analyzer::Perform(const TopoDS_Shape& S)
         }
         catch(Standard_Failure)
         {
-#ifdef BREPCHECK_DEB
+#ifdef OCCT_DEBUG
           cout<<"BRepCheck_Analyzer : ";
           Standard_Failure::Caught()->Print(cout);  
           cout<<endl;
@@ -267,7 +267,7 @@ void BRepCheck_Analyzer::Perform(const TopoDS_Shape& S)
         }
         catch(Standard_Failure)
         {
-#ifdef BREPCHECK_DEB
+#ifdef OCCT_DEBUG
           cout<<"BRepCheck_Analyzer : ";
           Standard_Failure::Caught()->Print(cout);  
           cout<<endl;
@@ -320,7 +320,7 @@ void BRepCheck_Analyzer::Perform(const TopoDS_Shape& S)
         }
         catch(Standard_Failure)
         {
-#ifdef BREPCHECK_DEB
+#ifdef OCCT_DEBUG
           cout<<"BRepCheck_Analyzer : ";
           Standard_Failure::Caught()->Print(cout);  
           cout<<endl;
@@ -367,7 +367,7 @@ void BRepCheck_Analyzer::Perform(const TopoDS_Shape& S)
       }
       catch(Standard_Failure)
       {
-#ifdef BREPCHECK_DEB
+#ifdef OCCT_DEBUG
         cout<<"BRepCheck_Analyzer : ";
         Standard_Failure::Caught()->Print(cout);  
         cout<<endl;
@@ -410,7 +410,7 @@ void BRepCheck_Analyzer::Perform(const TopoDS_Shape& S)
       }
         catch(Standard_Failure)
         {
-#ifdef BREPCHECK_DEB
+#ifdef OCCT_DEBUG
 	cout<<"BRepCheck_Analyzer : ";
 	Standard_Failure::Caught()->Print(cout);  
 	cout<<endl;

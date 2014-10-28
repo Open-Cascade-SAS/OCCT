@@ -71,7 +71,7 @@
 #include <Geom2d_BSplineCurve.hxx>
 #include <BSplCLib.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepBuild_GettraceFE();
 #endif
 
@@ -227,11 +227,11 @@ TopoDS_Shape& TopOpeBRepTool_FuseEdges::Shape()
 void TopOpeBRepTool_FuseEdges::BuildListEdges()
 {
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean tFE = TopOpeBRepBuild_GettraceFE();
 #endif
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (tFE) cout<<endl<<"FuseEdges : BuildListEdges  "<<endl;
 #endif
 
@@ -281,11 +281,11 @@ void TopOpeBRepTool_FuseEdges::BuildListEdges()
 void TopOpeBRepTool_FuseEdges::BuildListResultEdges()
 {
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean tFE = TopOpeBRepBuild_GettraceFE();
 #endif
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (tFE) cout<<endl<<"FuseEdges : BuildListResultEdges  "<<endl;
 #endif
 
@@ -303,7 +303,7 @@ void TopOpeBRepTool_FuseEdges::BuildListResultEdges()
     for (itLstEdg.Initialize(myMapLstEdg); itLstEdg.More(); itLstEdg.Next()) {
       const Standard_Integer& iLst = itLstEdg.Key();
       const TopTools_ListOfShape& LmapEdg = myMapLstEdg.Find(iLst);
-#ifdef DEB
+#ifdef OCCT_DEBUG
       TopTools_ListIteratorOfListOfShape itEdg; 
 #endif
 
@@ -329,7 +329,7 @@ void TopOpeBRepTool_FuseEdges::BuildListResultEdges()
 	C = (*((Handle(Geom_TrimmedCurve)*)&C))->BasisCurve();
       }
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (tFE) cout<<endl<<"FuseEdges : Creating New Edge "<<endl;
 #endif
 
@@ -340,7 +340,7 @@ void TopOpeBRepTool_FuseEdges::BuildListResultEdges()
 	// the curve which is not infinite and limited to old vertices
 	// we try to use ExtendCurveToPoint, then rebuild the NewEdge
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	if (tFE) cout<<endl<<"FuseEdges : MakeEdge failed. Trying to Extend Curve "<<endl;
 #endif
 	Handle(Geom_BoundedCurve) ExtC = Handle(Geom_BoundedCurve)::DownCast(C->Copy());
@@ -360,7 +360,7 @@ void TopOpeBRepTool_FuseEdges::BuildListResultEdges()
 
       NewEdge = ME.Edge();
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if (tFE) cout<<endl<<"FuseEdges : Updating pcurve "<<endl;
 #endif
       if (UpdatePCurve(OldEdge,NewEdge,LmapEdg))
@@ -380,7 +380,7 @@ void TopOpeBRepTool_FuseEdges::BuildListResultEdges()
 void TopOpeBRepTool_FuseEdges::Perform()
 {
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean tFE = TopOpeBRepBuild_GettraceFE();
 #endif
 
@@ -388,7 +388,7 @@ void TopOpeBRepTool_FuseEdges::Perform()
     BuildListResultEdges();
   }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (tFE) cout<<endl<<"FuseEdges : Perform  "<<endl;
 #endif
 
@@ -423,7 +423,7 @@ void TopOpeBRepTool_FuseEdges::Perform()
       }      
     }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (tFE) cout<<endl<<"FuseEdges : Building New Shape  "<<endl;
 #endif
 
@@ -444,7 +444,7 @@ void TopOpeBRepTool_FuseEdges::Perform()
       myShape=(Bsub.Copy(myShape)).First();
     }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (tFE) cout<<endl<<"FuseEdges : "<< NbVertices() <<" vertices removed"<<endl;
 #endif
 
@@ -651,7 +651,7 @@ Standard_Boolean TopOpeBRepTool_FuseEdges::SameSupport(const TopoDS_Edge& E1,
       typC1 != STANDARD_TYPE(Geom_Ellipse) &&
       typC1 != STANDARD_TYPE(Geom_BSplineCurve) && 
       typC1 != STANDARD_TYPE(Geom_BezierCurve)) {
-#ifdef TOPOPEBREPTOOL_DEB
+#ifdef OCCT_DEBUG
     cout << " TopOpeBRepTool_FuseEdge : Type de Support non traite" << endl;
 #endif
     return Standard_False;

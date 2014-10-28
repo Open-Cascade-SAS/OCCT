@@ -79,7 +79,7 @@ void* NCollection_AccAllocator::Allocate(const size_t theSize)
   }
 
   void* anAddress = aBlock->Allocate(aSize);
-#ifdef DEB_FINDBLOCK
+#ifdef OCCT_DEBUG_FINDBLOCK
   Key aKey;
   Standard_ASSERT_VOID(aBlock == findBlock(anAddress, aKey),
                        "improper work of NCollection_AccAllocator::findBlock");
@@ -181,7 +181,7 @@ NCollection_AccAllocator::allocateNewBlock(const Standard_Size theSize)
                   mypLastBlock,
                   0};
   mypLastBlock = myBlocks.Bound(getKey(anAddress), aBlock);
-#ifdef DEB_FINDBLOCK
+#ifdef OCCT_DEBUG_FINDBLOCK
   Key aKey;
   Standard_ASSERT_VOID(mypLastBlock == findBlock((Standard_Byte*)aBlock.allocStart-1, aKey),
                        "improper work of NCollection_AccAllocator::findBlock");

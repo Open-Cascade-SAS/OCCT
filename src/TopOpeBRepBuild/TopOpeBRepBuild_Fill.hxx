@@ -48,7 +48,7 @@ void TopOpeBRepBuild_Builder::FillShape(const TopoDS_Shape& S1,
     TopOpeBRepDS_Config ssc = myDataStructure->SameDomainOrientation(S1);
     if ( ssc == TopOpeBRepDS_DIFFORIENTED ) {
       RevOri = ! RevOri;
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //      Standard_Integer iFace = myDataStructure->Shape(S1);
 //      cout<<endl<<"********** ";
 //      cout<<"retournement d'orientation de ";TopAbs::Print(t,cout);
@@ -98,7 +98,7 @@ void TopOpeBRepBuild_Builder::FillFace(const TopoDS_Shape& F1,
 				       TopOpeBRepBuild_WireEdgeSet& WES,
 				       const Standard_Boolean RevOri)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean tSPF = TopOpeBRepBuild_GettraceSPF();
 //  Standard_Integer iFace = myDataStructure->Shape(F1);
   if(tSPF){cout<<endl;}
@@ -170,7 +170,7 @@ void TopOpeBRepBuild_Builder::FillVertexSetOnValue
     PVS.Append(PV);
   }
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   const TopoDS_Edge& EDEB = PVS.Edge();
   Standard_Integer iE; Standard_Boolean tSPS = GtraceSPS(EDEB,iE);
   if (tSPS) {

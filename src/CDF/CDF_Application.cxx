@@ -101,7 +101,7 @@ Handle(CDM_Document)  CDF_Application::Retrieve(const TCollection_ExtendedString
 				     const TCollection_ExtendedString& aName,
 				     const TCollection_ExtendedString& aVersion,
 				     const Standard_Boolean UseStorageConfiguration) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   CDF_Timer theTimer;
 #endif
 
@@ -112,21 +112,21 @@ Handle(CDM_Document)  CDF_Application::Retrieve(const TCollection_ExtendedString
   else 
     theMetaData=theMetaDataDriver->MetaData(aFolder,aName,aVersion);
 
-#ifdef DEB  
+#ifdef OCCT_DEBUG
   theTimer.ShowAndRestart("Getting MetaData: ");
 #endif
 
   CDF_TypeOfActivation theTypeOfActivation=TypeOfActivation(theMetaData);
   Handle(CDM_Document) theDocument=Retrieve(theMetaData,UseStorageConfiguration,Standard_False);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   theTimer.ShowAndRestart("Creating Transient: ");
 #endif
 
   CDF_Session::CurrentSession()->Directory()->Add(theDocument);
   Activate(theDocument,theTypeOfActivation);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   theTimer.ShowAndStop("Activate: ");
 #endif
 
@@ -151,7 +151,7 @@ PCDM_ReaderStatus CDF_Application::CanRetrieve(const TCollection_ExtendedString&
 //=======================================================================
 PCDM_ReaderStatus CDF_Application::CanRetrieve(const TCollection_ExtendedString&  aFolder, const TCollection_ExtendedString&  aName, const TCollection_ExtendedString&  aVersion) {
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   CDF_Timer theTimer;
 #endif
 
@@ -160,13 +160,13 @@ PCDM_ReaderStatus CDF_Application::CanRetrieve(const TCollection_ExtendedString&
   else if (!theMetaDataDriver->HasReadPermission(aFolder,aName,aVersion))
     return PCDM_RS_PermissionDenied;
   else {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     theTimer.ShowAndRestart("theMetaDataDriver->Find: ");
 #endif
 
     Handle(CDM_MetaData) theMetaData = theMetaDataDriver->MetaData(aFolder,aName,aVersion);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     theTimer.ShowAndStop("Getting MetaData: ");
 #endif
 

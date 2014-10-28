@@ -58,7 +58,7 @@ void QANewBRepNaming_Limitation::Load(QANewModTopOpe_Limitation& MS) const {
   const TopAbs_ShapeEnum& ObjType = ShapeType(ObjSh);
 
   if (ResSh.IsNull()) {
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
     cout<<"QANewBRepNaming_Limitation::Load(): The result of the boolean operation is null"<<endl;
 #endif
     return;
@@ -75,7 +75,7 @@ void QANewBRepNaming_Limitation::Load(QANewModTopOpe_Limitation& MS) const {
   } 
   if(MS.Shape1().IsSame(ResSh)) {
 // If the shapes are the same - select the result and exit:
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
     cout<<"QANewBRepNaming_Limitation::Load(): The object and the result of LIMITATION operation are the same"<<endl;
 #endif
     TNaming_Builder aBuilder(ResultLabel());
@@ -187,7 +187,7 @@ void QANewBRepNaming_Limitation::LoadDegenerated(QANewModTopOpe_Limitation& MS) 
       if (MS.IsDeleted(allEdges.FindKey(i))) {
 	TNaming_Builder DegeneratedBuilder(DeletedDegeneratedEdges()); 
 	DegeneratedBuilder.Generated(allEdges.FindKey(i));
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
 	TDataStd_Name::Set(DegeneratedBuilder.NamedShape()->Label(), "DeletedDegenerated");
 #endif
       }      

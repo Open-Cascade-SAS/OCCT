@@ -22,7 +22,7 @@
 #include <GCPnts_AbscissaPoint.hxx>
 #include <Precision.hxx>
 
-#ifdef __OCC_DEBUG_CHRONO
+#ifdef OCCT_DEBUG_CHRONO
 #include <OSD_Timer.hxx>
 static OSD_Chronometer chr_uparam;
 Standard_EXPORT Standard_Integer uparam_count;
@@ -447,7 +447,7 @@ Standard_Real Approx_CurvlinFunc::GetUParameter(Adaptor3d_Curve& C,
   Standard_Real deltaS, base, U, Length;
   Standard_Integer NbInt, NInterval, i;
   Handle(TColStd_HArray1OfReal) InitUArray, InitSArray;
-#ifdef __OCC_DEBUG_CHRONO
+#ifdef OCCT_DEBUG_CHRONO
   InitChron(chr_uparam);
 #endif
   if(S < 0 || S > 1) Standard_ConstructionError::Raise("Approx_CurvlinFunc::GetUParameter");
@@ -497,7 +497,7 @@ Standard_Real Approx_CurvlinFunc::GetUParameter(Adaptor3d_Curve& C,
   const_cast<Approx_CurvlinFunc*>(this)->myPrevS = S;
   const_cast<Approx_CurvlinFunc*>(this)->myPrevU = U;
 
-#ifdef __OCC_DEBUG_CHRONO
+#ifdef OCCT_DEBUG_CHRONO
   ResultChron(chr_uparam, t_uparam);
   uparam_count++;
 #endif

@@ -520,7 +520,7 @@ void TObjDRAW::Factory(Draw_Interpretor& theDI)
 {
   TObjDRAW::Init(theDI);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
       theDI << "Draw Plugin : All TKTObjDRAW commands are loaded" << "\n";
 #endif
 }

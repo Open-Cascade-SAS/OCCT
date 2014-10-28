@@ -43,7 +43,7 @@
 #define MGhc3 Handle(Geom_Curve)
 #define MGhc2 Handle(Geom2d_Curve)
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepBuild_GettraceSPS();
 extern Standard_Boolean TopOpeBRepDS_GettraceDSNC();
 Standard_EXPORT void debsplitse(const Standard_Integer) {}
@@ -238,7 +238,7 @@ void TopOpeBRepBuild_Builder::SplitSectionEdges()
   const TopOpeBRepDS_DataStructure& BDS = myDataStructure->DS();
   Standard_Integer i,n = BDS.NbSectionEdges();
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepDS_GettraceDSNC() && !mySplitSectionEdgesDone) 
     cout<<"TopOpeBRepBuild_Builder::SSE : compute "<<n<<" section edges"<<endl;
 #endif
@@ -258,7 +258,7 @@ void TopOpeBRepBuild_Builder::SplitSectionEdges()
     Standard_Integer iE = myDataStructure->Shape(E); 
     Standard_Integer rE = BDS.AncestorRank(E);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     Standard_Boolean tSPS = GtraceSPS(E,iE); if (tSPS) debsplitsemess(iE); Standard_Integer DEBiESD = 1;
 #endif
 
@@ -281,7 +281,7 @@ void TopOpeBRepBuild_Builder::SplitSectionEdges()
       Standard_Integer iESD = myDataStructure->Shape(ESD);
       const TopTools_ListOfShape& LESDspon = Splits(ESD,TopAbs_ON);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if (tSPS) {
 	TCollection_AsciiString str("# edge ");str=str+iE+" sd3d edge "+iESD;
 	TCollection_AsciiString stru(str.Length(),'-');
@@ -351,7 +351,7 @@ void TopOpeBRepBuild_Builder::SplitSectionEdges()
         TopOpeBRepBuild_ListOfShapeListOfShape thelist;
 	if (!E1b) MEIN.Bind(E1, thelist);
 	TopOpeBRepBuild_ListOfShapeListOfShape& LE1loslos = MEIN.ChangeFind(E1);
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //	Standard_Integer nLE1 = LE1loslos.Extent();
 #endif
 	
@@ -359,7 +359,7 @@ void TopOpeBRepBuild_Builder::SplitSectionEdges()
         TopOpeBRepBuild_ListOfShapeListOfShape thelist2;
 	if (!E2b) MEIN.Bind(E2,thelist2);
 	TopOpeBRepBuild_ListOfShapeListOfShape& LE2loslos = MEIN.ChangeFind(E2);
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //	Standard_Integer nLE2 = LE2loslos.Extent();
 #endif
 	
@@ -417,7 +417,7 @@ void TopOpeBRepBuild_Builder::SplitSectionEdges()
   for (i = 1; i <= n; i++) { // 3
     const TopoDS_Edge& E = TopoDS::Edge(BDS.SectionEdge(i));
     if(E.IsNull()) continue;
-#ifdef DEB
+#ifdef OCCT_DEBUG
     Standard_Integer iE = myDataStructure->Shape(E);
 //    Standard_Integer rE = GShapeRank(E);
     Standard_Boolean tSPS = GtraceSPS(E,iE); 
@@ -439,7 +439,7 @@ void TopOpeBRepBuild_Builder::SplitSectionEdges()
     
     if (isbMEOUT) {
       const TopTools_ListOfShape& LEOUT = MEOUT.Find(E);
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //      Standard_Integer nOUT = LEOUT.Extent();
 #endif
       GCopyList(LEOUT,LEspon);
@@ -447,12 +447,12 @@ void TopOpeBRepBuild_Builder::SplitSectionEdges()
 
     if (isbMEIN) {
       const TopOpeBRepBuild_ListOfShapeListOfShape& loslos = MEIN.Find(E);
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //      Standard_Integer nloslos = loslos.Extent();
 #endif
       for (TopOpeBRepBuild_ListIteratorOfListOfShapeListOfShape it(loslos); it.More(); it.Next()) {
 	const TopTools_ListOfShape& los = it.Value().List();
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //	Standard_Integer nlos = los.Extent();
 #endif
 	GCopyList(los,LEspon);
@@ -463,14 +463,14 @@ void TopOpeBRepBuild_Builder::SplitSectionEdges()
   BRep_Builder BB;
   for (i = 1; i <= n; i++) { // 4
     const TopoDS_Edge& E = TopoDS::Edge(BDS.SectionEdge(i)); if(E.IsNull()) continue;
-#ifdef DEB
+#ifdef OCCT_DEBUG
     Standard_Integer idebE; Standard_Boolean tSPS = GtraceSPS(E,idebE); if (tSPS) debsplitsemess(idebE);
 #endif
     const TopTools_ListOfShape& lesd = BDS.ShapeSameDomain(E);
     if (lesd.IsEmpty()) continue;
     
     Standard_Integer iE = BDS.Shape(E);
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //    Standard_Integer rE = BDS.AncestorRank(E); 
 #endif
     Standard_Integer RE = BDS.SameDomainRef(E);
@@ -479,13 +479,13 @@ void TopOpeBRepBuild_Builder::SplitSectionEdges()
     TopTools_ListOfShape lF; TopTools_ListIteratorOfListOfShape itlesd;
     for(itlesd.Initialize(lesd);itlesd.More();itlesd.Next()) {
       const TopoDS_Edge& esd = TopoDS::Edge(itlesd.Value());
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //      Standard_Integer iesd = BDS.Shape(esd);
 #endif
       const TopTools_ListOfShape& lf = FDSCNX_EdgeConnexitySameShape(esd,myDataStructure);
       GCopyList(lf,lF);
     }
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //    Standard_Integer nlF = lF.Extent();
 #endif
     
@@ -515,7 +515,7 @@ void TopOpeBRepBuild_Builder::SplitSectionEdges()
 	TopoDS_Edge& eon = TopoDS::Edge(itlon.Value());
 	Standard_Real f,l; Standard_Boolean hasPC = FC2D_HasCurveOnSurface(eon,F);
 	if (hasPC) continue;
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	if (TopOpeBRepTool_GettraceC2D()) {
 	  cout<<"\n#TopOpeBRepBuild_Builder::SSE : hasPC = 0 ES"<<i<<" E"<<idebE<<" sur F"<<iF<<endl;
 	  cout<<"tsee s "<<iF<<" "<<idebE<<";"<<endl;
@@ -537,7 +537,7 @@ void TopOpeBRepBuild_Builder::SplitSectionEdges()
     Standard_Boolean isface = (FOR.ShapeType() == TopAbs_FACE); 
     if (!isface) continue;
     const TopoDS_Face& FF = TopoDS::Face(FOR);
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //    Standard_Integer iFF = BDS.Shape(FF);
 #endif
     const TopOpeBRepDS_ListOfInterference& LI = BDS.ShapeInterferences(FF); Standard_Integer nLI = LI.Extent(); 
@@ -551,18 +551,18 @@ void TopOpeBRepBuild_Builder::SplitSectionEdges()
       TopAbs_ShapeEnum shab = TFE.ShapeBefore(),shaa = TFE.ShapeAfter();
       if (shaa != TopAbs_FACE || shab != TopAbs_FACE) continue;
       const TopoDS_Face& FS = TopoDS::Face( myDataStructure->Shape(SI)); 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //      Standard_Integer iFS = myDataStructure->Shape(FS);       
 #endif
       Standard_Boolean FSisper = FUN_periodicS(FS);
       if (!FSisper) continue;
 
       const TopoDS_Edge& EG = TopoDS::Edge(myDataStructure->Shape(GI)); 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //      Standard_Integer iEG = myDataStructure->Shape(EG);    
 #endif
       Standard_Boolean isrest = myDataStructure->DS().IsSectionEdge(EG); if (!isrest) continue;
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //      Standard_Real tolE = BRep_Tool::Tolerance(EG);
 #endif
       Standard_Boolean haspc = FC2D_HasCurveOnSurface(EG,FS); if (haspc) continue;
@@ -580,7 +580,7 @@ void TopOpeBRepBuild_Builder::SplitSectionEdges()
     Standard_Boolean isface = (FOR.ShapeType() == TopAbs_FACE); 
     if (!isface) continue;
     const TopoDS_Face& FF = TopoDS::Face(FOR);
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //    Standard_Integer iFF = BDS.Shape(FF); 
 #endif
     Standard_Boolean FFuper,FFvper; Standard_Boolean FFisper = FUN_periodic(FF,FFuper,FFvper);
@@ -597,7 +597,7 @@ void TopOpeBRepBuild_Builder::SplitSectionEdges()
       if (GB == 1) continue;
       
       const TopoDS_Edge& EG = TopoDS::Edge(myDataStructure->Shape(GI)); 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //      Standard_Integer iEG = myDataStructure->Shape(EG);    
 #endif
       Standard_Boolean isrest = myDataStructure->DS().IsSectionEdge(EG); if (!isrest) continue;
@@ -661,7 +661,7 @@ Standard_EXPORT Standard_Integer GLOBAL_hassd = 0; //++
 //=======================================================================
 void TopOpeBRepBuild_Builder::SplitSectionEdge(const TopoDS_Shape& EA)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer iE; Standard_Boolean tSPS = GtraceSPS(EA,iE);
   if (tSPS) debsplitsemess(iE);
 #endif
@@ -676,7 +676,7 @@ void TopOpeBRepBuild_Builder::SplitSectionEdge(const TopoDS_Shape& EA)
   Standard_Boolean hg = myDataStructure->HasGeometry(EOR);
   Standard_Boolean hsd3d = FDS_HasSameDomain3d(BDS,EOR);
   Standard_Boolean hsd2d = FDS_HasSameDomain2d(BDS,EOR);
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean issplit = IsSplit(EOR,TopAbs_ON);
 #endif
 
@@ -687,7 +687,7 @@ void TopOpeBRepBuild_Builder::SplitSectionEdge(const TopoDS_Shape& EA)
   if(hsd2d) GLOBAL_hassd=2; //++
 
   if (mySplitSectionEdgesDone) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if(tSPS) {
       GdumpSHA(EF, (char *) "SplitSectionEdges done : ");
       if (issplit) cout<<" "<<Splits(EOR,TopAbs_ON).Extent()<<" edges splitON"<<endl;
@@ -697,7 +697,7 @@ void TopOpeBRepBuild_Builder::SplitSectionEdge(const TopoDS_Shape& EA)
     return;
   }
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if(tSPS)GdumpSHASTA(EF,TopAbs_ON,"--- SplitSectionEdges ");
   if(tSPS)cout<<" (hg="<<hg<<"||hsd3d="<<hsd3d<<")="<<cond<<endl;
 #endif   
@@ -731,7 +731,7 @@ void TopOpeBRepBuild_Builder::SplitSectionEdge(const TopoDS_Shape& EA)
   if (mke) {
     MarkSplit(EOR,TopAbs_ON);
     TopTools_ListOfShape& LON = ChangeSplit(EOR,TopAbs_ON);
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //    Standard_Integer non = LON.Extent(); // DEB
 #endif
 
@@ -768,7 +768,7 @@ void TopOpeBRepBuild_Builder::SplitSectionEdge(const TopoDS_Shape& EA)
 
   TopTools_ListOfShape LESD1,LESD2; GFindSamDom(EOR,LESD1,LESD2);
  
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if(tSPS)GdumpSHASTA(EF,TopAbs_ON,"--- SplitSectionEdges ");
   if(tSPS){ 
     cout<<" (hg="<<hg<<"||hsd3d="<<hsd3d<<")="<<cond<<endl;
@@ -780,7 +780,7 @@ void TopOpeBRepBuild_Builder::SplitSectionEdge(const TopoDS_Shape& EA)
 #endif
 
   {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (tSPS) debspseon(iE);
 #endif
     TopOpeBRepBuild_GTopo G = TopOpeBRepBuild_GTool::GComUnsh(TopAbs_FACE,TopAbs_FACE);
@@ -825,7 +825,7 @@ void TopOpeBRepBuild_Builder::SplitSectionEdge(const TopoDS_Shape& EA)
 //modified by NIZHNY-MZV  Mon Apr 17 16:25:53 2000  else if (rankEF == 2) losOO.Append(GLOBALDS_shape1);
 
   {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (tSPS) debspsein(iE);
 #endif
     TopOpeBRepBuild_GTopo G = TopOpeBRepBuild_GTool::GCutUnsh(TopAbs_FACE,TopAbs_FACE);
@@ -858,7 +858,7 @@ void TopOpeBRepBuild_Builder::SplitSectionEdge(const TopoDS_Shape& EA)
   }
 
   {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (tSPS) debspseou(iE);
 #endif
     TopOpeBRepBuild_GTopo G = TopOpeBRepBuild_GTool::GCutUnsh(TopAbs_FACE,TopAbs_FACE);
@@ -967,7 +967,7 @@ void TopOpeBRepBuild_Builder::SectionEdges(TopTools_ListOfShape& LSE)
     Standard_Boolean issplitON = IsSplit(es,TopAbs_ON);
     TopAbs_State staspl=(issplitON)?TopAbs_ON:(issplitIN)?TopAbs_IN:TopAbs_UNKNOWN;
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     Standard_Integer iii; Standard_Boolean tSPS = GtraceSPS(es,iii);
     if (tSPS) {
       GdumpSHA(es, (char *) "--- Section ");

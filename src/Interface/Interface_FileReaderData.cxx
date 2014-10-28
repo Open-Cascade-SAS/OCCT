@@ -223,7 +223,7 @@ void Interface_FileReaderData::BindEntity
    (const Standard_Integer num, const Handle(Standard_Transient)& ent)
 //      {  theents.SetValue(num,ent);  }
 {
-//  #ifdef DEB
+//  #ifdef OCCT_DEBUG
 //    if (ent.IsImmutable())
 //      cout << "Bind IMMUTABLE:"<<num<<endl;
 //  #endif

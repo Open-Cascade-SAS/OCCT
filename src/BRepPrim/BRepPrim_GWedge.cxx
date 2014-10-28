@@ -567,7 +567,7 @@ Standard_Boolean BRepPrim_GWedge::HasWire (const BRepPrim_Direction d1) const
     dd3 = BRepPrim_YMax;
     dd4 = BRepPrim_XMin;
     break;
-#ifndef DEB
+#ifndef OCCT_DEBUG
   default:
     break;
 #endif

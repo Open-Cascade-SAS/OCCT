@@ -20,7 +20,7 @@
 #include <TColStd_HPackedMapOfInteger.hxx>
 #include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #define MAXUP 1000
 #endif
 
@@ -39,7 +39,7 @@ TDataStd_DeltaOnModificationOfIntPackedMap::TDataStd_DeltaOnModificationOfIntPac
     Handle(TColStd_HPackedMapOfInteger) aMap1, aMap2;
     aMap1 = OldAtt->GetHMap();
     aMap2 = CurrAtt->GetHMap();
-#ifdef DEB_disable
+#ifdef OCCT_DEBUG_disable
     if (aMap1.IsNull())
       cout <<"DeltaOnModificationOfIntPackedMap:: Old Map is Null" <<endl;
     if (aMap2.IsNull())
@@ -81,7 +81,7 @@ void TDataStd_DeltaOnModificationOfIntPackedMap::Apply()
   Handle(TDF_Attribute) aTDFAttribute = Attribute();
   Handle(TDataStd_IntPackedMap) aBackAtt = (*((Handle(TDataStd_IntPackedMap)*)&aTDFAttribute));
   if(aBackAtt.IsNull()) {
-#ifdef TDATASTD_DEB
+#ifdef OCCT_DEBUG
     cout << "DeltaOnModificationOfIntPAckedMap::Apply: OldAtt is Null" <<endl;
 #endif
     return;
@@ -94,7 +94,7 @@ void TDataStd_DeltaOnModificationOfIntPackedMap::Apply()
   }
 
   if(aCurAtt.IsNull()) {
-#ifdef TDATASTD_DEB
+#ifdef OCCT_DEBUG
     cout << "DeltaOnModificationOfIntAPckedMAp::Apply: CurAtt is Null" <<endl;
 #endif
     return;
@@ -119,7 +119,7 @@ void TDataStd_DeltaOnModificationOfIntPackedMap::Apply()
       IntMap->ChangeMap().Unite(myAddition->Map());
   }
   
-#ifdef DEB_disable
+#ifdef OCCT_DEBUG_disable
   cout << " << Map Dump after Delta Apply >>" <<endl;
   Handle(TColStd_HPackedMapOfInteger) aIntMap = aCurAtt->GetHMap();
   TColStd_MapIteratorOfPackedMapOfInteger it(aIntMap->Map());

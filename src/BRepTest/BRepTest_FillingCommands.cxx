@@ -102,7 +102,7 @@
 #include <gp_Pnt.hxx>
 
 // pour mes tests
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #include <OSD_Chronometer.hxx>
 #include <Geom_Line.hxx>
 #endif
@@ -450,7 +450,7 @@ static Standard_Integer approxplate (Draw_Interpretor & di,Standard_Integer n,co
 
 static Standard_Integer filling( Draw_Interpretor & di, Standard_Integer n, const char** a )
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   // Chronmetrage
   OSD_Chronometer Chrono;
   Chrono.Reset();
@@ -584,7 +584,7 @@ static Standard_Integer filling( Draw_Interpretor & di, Standard_Integer n, cons
   TopoDS_Face ResFace= TopoDS::Face( MakeFilling.Shape() );
   DBRep::Set( a[1], ResFace );
 
-#ifdef DEB  
+#ifdef OCCT_DEBUG
   Chrono.Stop();
   Standard_Real Tps;
   Chrono.Show(Tps);

@@ -60,12 +60,12 @@ void BREP_mergePDS(const Handle(TopOpeBRepDS_HDataStructure)& HDS)
     TopOpeBRepDS_ListIteratorOfListOfInterference itI;itI.Initialize(BDS.ChangeCurveInterferences(ic));if (!itI.More()) continue;
     
     const TopoDS_Face& f1 = TopoDS::Face(c.Shape1());
-#ifdef DEB
+#ifdef OCCT_DEBUG
     Standard_Integer if1 =
 #endif
               BDS.Shape(f1);
     const TopoDS_Face& f2 = TopoDS::Face(c.Shape2());
-#ifdef DEB
+#ifdef OCCT_DEBUG
     Standard_Integer if2 =
 #endif
               BDS.Shape(f2);
@@ -110,7 +110,7 @@ void BREP_mergePDS(const Handle(TopOpeBRepDS_HDataStructure)& HDS)
 	else if (ivp2) { CPI->GeometryType(k2); CPI->Geometry(iv2); }
       }
             
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if (editITF) {
 	if (ivp1 != 0) {
 	  cout<<TopOpeBRepDS::SPrint(TopOpeBRepDS_CURVE,ic,"# BREP_mergePDS "," : ");

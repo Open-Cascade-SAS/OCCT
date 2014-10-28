@@ -25,7 +25,7 @@
 #include <DBRep.hxx>
 
 extern void suppressarg(Standard_Integer& na,const char** a,const Standard_Integer d);
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern void TopOpeBRepTool_SettraceEND(const Standard_Boolean);
 extern Standard_Boolean TopOpeBRepTool_GettraceEND();
 #endif
@@ -220,7 +220,7 @@ Standard_Integer TOPOC(Draw_Interpretor& interpretor,Standard_Integer na,const c
 
       if (esa) { 
 	TCollection_AsciiString s;
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	TopTools_ListIteratorOfListOfShape ils;
 #endif
 	if (outdraw) { 
@@ -311,7 +311,7 @@ Standard_Integer TOPOC(Draw_Interpretor& interpretor,Standard_Integer na,const c
 } // TOPO
 
 // ----------------------------------------------------------------------
-#ifdef DEB
+#ifdef OCCT_DEBUG
 Standard_Integer BOOPCHK(Draw_Interpretor& ,Standard_Integer na,const char** a)
 {
   if (!strcmp(a[0],"tchk")) { 
@@ -558,7 +558,7 @@ Standard_Integer TOPOCOMMANDS(TestTopOpe_BOOP& PT,Standard_Integer na,const char
   if (na == 1) return 0; 
   err = SETTOPOPREP(PT,na,a); if (err) return err;
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean tend = TopOpeBRepTool_GettraceEND();
   TopOpeBRepTool_SettraceEND(PT.ChangeVarsTopo().GetVerbose());
 #endif
@@ -584,7 +584,7 @@ Standard_Integer TOPOCOMMANDS(TestTopOpe_BOOP& PT,Standard_Integer na,const char
     if (err) return err;
   }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   TopOpeBRepTool_SettraceEND(tend);
 #endif
   return 0;

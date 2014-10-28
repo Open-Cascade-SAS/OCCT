@@ -81,7 +81,7 @@ Standard_Boolean DNaming_PrismDriver::MustExecute(const TFunction_Logbook&) cons
   return Standard_True;
 }
 
-#ifdef OCC_DEB
+#ifdef OCCT_DEBUG
 #include <BRepTools.hxx>
 static void Write(const TopoDS_Shape& shape,
 		      const Standard_CString filename) 
@@ -175,7 +175,7 @@ Standard_Integer DNaming_PrismDriver::Execute(TFunction_Logbook& theLog) const {
   BRepCheck_Analyzer aCheck(aResult);
   if (!aCheck.IsValid(aResult)) {
     aFunction->SetFailure(RESULT_NOT_VALID);
-#ifdef OCC_DEB
+#ifdef OCCT_DEBUG
     Standard_CString aFileName = "PrismResult.brep";
     Write(aResult, aFileName);
 #endif

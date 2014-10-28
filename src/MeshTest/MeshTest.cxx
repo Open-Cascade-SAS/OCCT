@@ -105,7 +105,7 @@ Standard_IMPORT Draw_Viewer dout;
 #define ONETHIRD 0.333333333333333333333333333333333333333333333333333333333333
 #define TWOTHIRD 0.666666666666666666666666666666666666666666666666666666666666
 
-#ifdef DEB_MESH_CHRONO
+#ifdef OCCT_DEBUG_MESH_CHRONO
 #include <OSD_Chronometer.hxx>
 Standard_Integer D0Control, D0Internal, D0Unif, D0Edges, NbControls;
 OSD_Chronometer chTotal, chInternal, chControl, chUnif, chAddPoint;
@@ -887,7 +887,7 @@ static Standard_Integer trianglesinfo(Draw_Interpretor& di, Standard_Integer n, 
   di<<"                    " <<nbnodes    <<" nodes."<<"\n";
   di<<"Maximal deflection " <<MaxDeflection<<"\n";
   di<<"\n";
-#ifdef DEB_MESH_CHRONO
+#ifdef OCCT_DEBUG_MESH_CHRONO
   Standard_Real tot, addp, unif, contr, inter;
   Standard_Real edges, mailledges, etuinter, lastcontrol, stock;
   Standard_Real add11, add12, add2, upda, pointvalid;

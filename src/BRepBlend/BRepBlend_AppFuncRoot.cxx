@@ -340,7 +340,7 @@ Standard_Boolean BRepBlend_AppFuncRoot::SearchPoint(Blend_AppFunction& Func,
 
   // (4) Insertion of the point if the calculation seems long.
   if ((!Trouve)&&(rsnld.NbIterations()>3)) {
-#ifdef BREPBLEND_DEB
+#ifdef OCCT_DEBUG
     cout << "Evaluation in t = " <<  Param << "given" << endl;
     rsnld.Dump(cout);
 #endif

@@ -126,7 +126,7 @@ TopoDS_Shape DNaming::CurrentShape (const Standard_CString  LabelName,
   TDF_Label Label; 
   Standard_Boolean Found =  DDF::AddLabel (DF, LabelName, Label);
   if (!Found) {
-#ifdef DNAMING_DEB
+#ifdef OCCT_DEBUG
     cout <<"no labels"<<endl;
 #endif
     return S;
@@ -136,7 +136,7 @@ TopoDS_Shape DNaming::CurrentShape (const Standard_CString  LabelName,
     Label.FindAttribute(TNaming_NamedShape::GetID(),NS);
     S =  TNaming_Tool::CurrentShape(NS);
     if (S.IsNull())
-#ifdef DNAMING_DEB
+#ifdef OCCT_DEBUG
       cout <<"current shape from "<< LabelName <<" is deleted"<<endl;
 #endif
     return S;
@@ -891,7 +891,7 @@ Standard_Boolean DNaming::ComputeSweepDir (const TopoDS_Shape& theShape,
 
   if (theShape.ShapeType() == TopAbs_FACE) {
     Handle(Geom_Surface) aSurf = BRep_Tool::Surface(TopoDS::Face(theShape));
-#ifdef OCC_DEB
+#ifdef OCCT_DEBUG
     Standard_CString s = aSurf->DynamicType()->Name();
     cout<<"Surface Dynamic TYPE = "<<s<<endl;
 #endif

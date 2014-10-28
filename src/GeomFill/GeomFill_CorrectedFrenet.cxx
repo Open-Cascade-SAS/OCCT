@@ -40,7 +40,7 @@
 #include <TColgp_HArray1OfPnt.hxx>
 
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 static Standard_Boolean Affich=0;
 #endif
 
@@ -143,7 +143,7 @@ static void smoothlaw(Handle(Law_BSpline)& Law,
     if (Ok) 
       tol = (Tol-tol)/2;
     else {
-#if GEOMFILL_DEB
+#ifdef OCCT_DEBUG
       cout << "smooth law echec" << endl;
 #endif
       return; // Echec
@@ -171,14 +171,14 @@ static void smoothlaw(Handle(Law_BSpline)& Law,
       Ok = (tol <= Tol);
     }
     if (!Ok) {
-#if GEOMFILL_DEB
+#ifdef OCCT_DEBUG
       cout << "smooth law echec" << endl;
 #endif
     } 
   }
   if (Ok) Law = BS;
 
-#if DEB
+#ifdef OCCT_DEBUG
   if (Affich) {
     cout << "Knots Law : " << endl;
     for (ii=1; ii<=BS->NbKnots(); ii++) {
@@ -580,7 +580,7 @@ Handle(GeomFill_TrihedronLaw) GeomFill_CorrectedFrenet::Copy() const
       angleATarr->ChangeValue(i) = EvolAT(i);
     }
 
-#if DEB
+#ifdef OCCT_DEBUG
     if (Affich) {
       cout<<"NormalEvolution"<<endl; 
       for (i = 1; i <= Length; i++) {

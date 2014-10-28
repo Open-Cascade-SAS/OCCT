@@ -41,7 +41,7 @@
 #include <Standard_Failure.hxx>
 #include <TopOpeBRepTool_PURGE.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //Standard_EXPORT Standard_Integer STATIC_PURGE_iwi = 0;
 //Standard_EXPORT TopTools_IndexedMapOfShape STATIC_PURGE_mapw, STATIC_PURGE_mapv;
 //Standard_EXPORT TopTools_IndexedMapOfOrientedShape STATIC_PURGE_mapeds, STATIC_CORR_mapeds;
@@ -214,7 +214,7 @@ Standard_Boolean TopOpeBRepTool::PurgeClosingEdges(const TopoDS_Face& Fin, const
   // elsewhere : we have to get this information using geometric 
   //             criteriums (TopOpeBRepTool_TOOL::IsonCLO)
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc =  TopOpeBRepTool_GettracePURGE();
   if (trc) cout<<"\n* PurgeClosingEdges:\n\n";
 #endif
@@ -263,7 +263,7 @@ Standard_Boolean TopOpeBRepTool::PurgeClosingEdges(const TopoDS_Face& Fin, const
       MshNOK.Add(FF);
     }
     
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (trc && topurge) cout<<"found FAULTY edge = ed"<<endl;
 #endif
   } // exw
@@ -364,7 +364,7 @@ static Standard_Boolean FUN_correctDegeneratedE
   Standard_Boolean ok = (fEin && fe1 && fe2);
   if (!ok) return Standard_False;
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   debcorrUV(); // call Draw_Call("av2d;dy fyf;fit;ppcu fyf")
 #endif
 
@@ -409,7 +409,7 @@ static Standard_Boolean FUN_correctDegeneratedE
   }
   else {
     // redefinition des parametres de v1,v2 de Ein tels que des parametres de 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (TopOpeBRepTool_GettraceCORRISO()) {
       cout<<"FUN_correctDegeneratedE : !mmd NYI"<<endl;
     }
@@ -599,7 +599,7 @@ static Standard_Boolean FUN_connexX(const Standard_Boolean onU, TopOpeBRepTool_C
 Standard_Boolean TopOpeBRepTool::CorrectONUVISO(const TopoDS_Face& Fin, TopoDS_Face& Fsp)
 // <Fref> is x-periodic 
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = TopOpeBRepTool_GettraceCORRISO();
   if (trc) cout<<"\n####    CorrectONUVISO    ####\n\n";
   debcorrUV();
@@ -702,7 +702,7 @@ Standard_Boolean TopOpeBRepTool::CorrectONUVISO(const TopoDS_Face& Fin, TopoDS_F
     return Standard_True;
   }
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (trc) {
     cout<<"CorrectONUVISO ";
     cout<<"iso faulty "<<tocorrectisoe<<" deg faulty "<<tocorrectdege<<endl;;

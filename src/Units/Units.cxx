@@ -121,7 +121,7 @@ Handle(Units_Quantity) Units::Quantity(const Standard_CString aquantity)
       if(quantity->Name() == aquantity) return quantity;
     }
 
-#ifdef UNITS_DEB
+#ifdef OCCT_DEBUG
   cout<<"Warning: BAD Quantity = Units::Quantity(quantity('" << aquantity << "'))" << endl;
 #endif
   return nullquantity;
@@ -163,7 +163,7 @@ Standard_CString Units::FirstQuantity(const Standard_CString aunit)
     }
   }
 
-#ifdef UNITS_DEB
+#ifdef OCCT_DEBUG
   cout<<"Warning: BAD Quantity = Units::Quantity(unit('" << symbol << "'))" << endl;
 #endif
   return NULL;
@@ -266,7 +266,7 @@ Standard_Real Units::ToSI(const Standard_Real aData,
     lastunit = TCollection_AsciiString(aUnit);
     Units_UnitSentence unitsentence(aUnit);
     if(!unitsentence.IsDone()) {
-#ifdef UNITS_DEB
+#ifdef OCCT_DEBUG
       cout<<"can not convert - incorrect unit => return 0.0"<<endl;
 #endif
       return 0.0;
@@ -315,7 +315,7 @@ Standard_Real Units::FromSI(const Standard_Real aData,
     lastunit = TCollection_AsciiString(aUnit);
     Units_UnitSentence unitsentence(aUnit);
     if(!unitsentence.IsDone()) {
-#ifdef UNITS_DEB
+#ifdef OCCT_DEBUG
       cout<<"Warning: can not convert - incorrect unit => return 0.0"<<endl;
 #endif
       return 0.0;

@@ -107,7 +107,7 @@ static Standard_Integer DDataStd_AppendNode (Draw_Interpretor& di,
     }
     child = TDataStd_TreeNode::Set(L,ID);
     if (!father->Append(child)) return 1;
-#ifdef DEB
+#ifdef OCCT_DEBUG
     di<<"AppendNode: OK"<<"\n";
 #endif
     return 0;
@@ -153,7 +153,7 @@ static Standard_Integer DDataStd_PrependNode (Draw_Interpretor& di,
     }
     child = TDataStd_TreeNode::Set(L,ID);
     if (!father->Prepend(child)) return 1;
-#ifdef DEB
+#ifdef OCCT_DEBUG
     di<<"PrependNode: OK"<<"\n";
 #endif
     return 0;

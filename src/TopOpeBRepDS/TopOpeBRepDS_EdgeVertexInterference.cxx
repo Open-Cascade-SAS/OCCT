@@ -85,7 +85,7 @@ void  TopOpeBRepDS_EdgeVertexInterference::Parameter(const Standard_Real P)
 Standard_OStream& TopOpeBRepDS_EdgeVertexInterference::Dump
   (Standard_OStream& OS) const
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   OS<<"EVI"<<" ";
   TopOpeBRepDS_ShapeShapeInterference::Dump(OS);
   OS<<" "<<myParam<<" ";

@@ -332,7 +332,7 @@ void Bisector_Inter::NeighbourPerform(const Handle(Bisector_BisecCC)&  Bis1,
   // Change guiedline on Bis2.
   BisTemp      = Bis2->ChangeGuide();
   Guide        = Bis2->Curve(2);
-#ifdef DEB
+#ifdef OCCT_DEBUG
   gp_Pnt2d P2S = Bis2->ValueAndDist(D2.FirstParameter(),U1,UMax,Dist);
   gp_Pnt2d P2E = Bis2->ValueAndDist(D2.LastParameter() ,U1,UMin,Dist);
 #else

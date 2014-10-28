@@ -117,13 +117,6 @@ Standard_Boolean STEPConstruct_ValidationProps::FindTarget (const TopoDS_Shape &
   Handle(TransferBRep_ShapeMapper) mapper = TransferBRep::ShapeMapper ( FinderProcess(), Shape );
   Handle(Transfer_Binder) binder = FinderProcess()->Find ( mapper );
   
-#ifdef STEPCONSTRUCT_DEB
-//  cout << "\n>========------" << endl;
-//  cout << "Binders for " << Shape.TShape()->DynamicType()->Name() << " " << *(void**)&Shape.TShape() << ", Loc = " << *(void**)&Shape.Location() << endl;
-//  cout << "mapper = " << *(void**)&mapper << ", binder = " << *(void**)&binder << endl;
-//  DumpBinder ( binder );
-#endif
-  
   // if requested, try to find instance of assembly
   if ( instance ) {
 /*
@@ -149,11 +142,11 @@ Standard_Boolean STEPConstruct_ValidationProps::FindTarget (const TopoDS_Shape &
         target.SetValue ( CDSR->RepresentedProductRelation() );
         Context = CDSR->RepresentationRelation()->Rep2()->ContextOfItems();
       }
-#ifdef STEPCONSTRUCT_DEB
+#ifdef OCCT_DEBUG
       else cout << "INSTANCE: CDRS from NAUO NOT found" << endl;
 #endif
     }
-#ifdef STEPCONSTRUCT_DEB
+#ifdef OCCT_DEBUG
     else cout << "INSTANCE: NAUO NOT found" << endl;
 #endif
 */
@@ -169,12 +162,12 @@ Standard_Boolean STEPConstruct_ValidationProps::FindTarget (const TopoDS_Shape &
         PDS = Handle(StepRepr_ProductDefinitionShape)::DownCast(subs1.Value());
       }
       target.SetValue ( PDS );
-#ifdef STEPCONSTRUCT_DEB
+#ifdef OCCT_DEBUG
 //      cout << "COMPOUND: SDR found: " << sdr->DynamicType()->Name() << endl;
 #endif
     }
     else {
-#ifdef STEPCONSTRUCT_DEB
+#ifdef OCCT_DEBUG
       cout << "COMPOUND: ProdDef NOT found" << endl;
 #endif
       Handle(StepShape_ShapeRepresentation) SR;
@@ -220,14 +213,14 @@ Standard_Boolean STEPConstruct_ValidationProps::FindTarget (const TopoDS_Shape &
   else {
     Handle(StepGeom_GeometricRepresentationItem) item;
     if ( FinderProcess()->FindTypedTransient (mapper,STANDARD_TYPE(StepGeom_GeometricRepresentationItem), item) ) {
-#ifdef STEPCONSTRUCT_DEB
+#ifdef OCCT_DEBUG
 //      cout << Shape.TShape()->DynamicType()->Name() << ": GeomRepItem found: " << item->DynamicType()->Name() << endl;
 #endif
       // find PDS (GRI <- SR <- SDR -> PDS)
       Handle(StepRepr_ProductDefinitionShape) PDS;
       Interface_EntityIterator subs = Graph().Sharings(item);
       for (subs.Start(); PDS.IsNull() && subs.More(); subs.Next()) {
-#ifdef STEPCONSTRUCT_DEB
+#ifdef OCCT_DEBUG
 //	cout << "Parsing back refs: found " << subs.Value()->DynamicType()->Name() << endl;
 #endif
         if ( ! subs.Value()->IsKind(STANDARD_TYPE(StepShape_ShapeRepresentation)) ) continue;
@@ -262,7 +255,7 @@ Standard_Boolean STEPConstruct_ValidationProps::FindTarget (const TopoDS_Shape &
         if ( aspect.IsNull() ) {
 //	if ( ! FinderProcess()->FindTypedTransient (mapper,STANDARD_TYPE(StepRepr_ShapeAspect), aspect ) ||
 //	     aspect->OfShape() != PDS )
-#ifdef STEPCONSTRUCT_DEB
+#ifdef OCCT_DEBUG
           cout << Shape.TShape()->DynamicType()->Name() << ": SHAPE_ASPECT NOT found, creating" << endl;
 #endif
 	  // create aspect and all related data
@@ -299,7 +292,7 @@ Standard_Boolean STEPConstruct_ValidationProps::FindTarget (const TopoDS_Shape &
         }
 	// SHAPE_ASPECT found, but we also need context: FIND IT !!!!
         else { 
-#ifdef STEPCONSTRUCT_DEB
+#ifdef OCCT_DEBUG
           cout << Shape.TShape()->DynamicType()->Name() << ": SHAPE_ASPECT found" << endl;
 #endif
           Handle(StepRepr_ProductDefinitionShape) aPDS = aspect->OfShape();
@@ -314,11 +307,11 @@ Standard_Boolean STEPConstruct_ValidationProps::FindTarget (const TopoDS_Shape &
   
         if ( ! aspect.IsNull() ) target.SetValue ( aspect );
       }
-#ifdef STEPCONSTRUCT_DEB
+#ifdef OCCT_DEBUG
       else  cout << Shape.TShape()->DynamicType()->Name() << ": PDS NOT found, fail to create SHAPE_ASPECT" << endl;
 #endif
     }
-#ifdef STEPCONSTRUCT_DEB
+#ifdef OCCT_DEBUG
     else cout << Shape.TShape()->DynamicType()->Name() << ": GeomRepItem NOT found" << endl;
 #endif
   }
@@ -521,7 +514,7 @@ Handle(StepBasic_ProductDefinition) STEPConstruct_ValidationProps::GetPropPD (co
   if ( PDS.IsNull() ) {
     Handle(StepRepr_ShapeAspect) SA = CD.ShapeAspect();
     if ( SA.IsNull() ) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
       Handle(Message_Messenger) sout = Message::DefaultMessenger();
       sout << "Error: Cannot find target entity (SA) for geometric_validation_property "; 
       Model()->PrintLabel ( PD, sout ); 
@@ -545,7 +538,7 @@ Handle(StepBasic_ProductDefinition) STEPConstruct_ValidationProps::GetPropPD (co
       ProdDef = Handle(StepBasic_ProductDefinition)::DownCast ( subs.Value() );
     }
   }
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if ( ProdDef.IsNull() ) {
     Handle(Message_Messenger) sout = Message::DefaultMessenger();
     sout << "Error: Cannot find target entity (SDR) for geometric_validation_property "; 
@@ -598,7 +591,7 @@ TopoDS_Shape STEPConstruct_ValidationProps::GetPropShape (const Handle(StepBasic
   //    }
   //  }
   //}
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if ( S.IsNull() ) {
     Handle(Message_Messenger) sout = Message::DefaultMessenger();
     sout << "Warning: Entity "; 
@@ -673,7 +666,7 @@ Standard_Boolean STEPConstruct_ValidationProps::GetPropReal (const Handle(StepRe
   if ( Name == "AREA_MEASURE" ) isArea = Standard_True;
   else if ( Name == "VOLUME_MEASURE" ) isArea = Standard_False; 
   else {
-#ifdef STEPCONSTRUCT_DEB
+#ifdef OCCT_DEBUG
     cout << "Warning: Measure " << Model()->StringLabel ( M ) << " is neither area not volume" << endl;
 #endif
     return Standard_False;
@@ -696,7 +689,7 @@ Standard_Boolean STEPConstruct_ValidationProps::GetPropPnt (const Handle(StepRep
   
   Handle(StepGeom_CartesianPoint) P = Handle(StepGeom_CartesianPoint)::DownCast ( item );
   if ( P.IsNull() || P->NbCoordinates() != 3 ) {
-#ifdef STEPCONSTRUCT_DEB
+#ifdef OCCT_DEBUG
     cout << "Warning: Point " << Model()->StringLabel ( P ) << " is not valid for centroid" << endl;
 #endif
     return Standard_False;;

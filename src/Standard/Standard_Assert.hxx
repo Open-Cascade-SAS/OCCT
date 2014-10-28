@@ -45,7 +45,7 @@
 //! evaluated to zero (false).
 //! The first argument is evaluated by all macros except Standard_ASSERT_VOID
 //! which does not evaluate first argument when in Release mode.
-//! The mode is triggered by preprocessor macro DEB: if it is defined,
+//! The mode is triggered by preprocessor macro _DEBUG: if it is defined,
 //! Debug mode is assumed, Release otherwise.
 //!
 //! In debug mode, if condition is not satisfied the macros call 
@@ -70,7 +70,7 @@
 inline void Standard_ASSERT_DO_NOTHING() {}
 
 // User messages are activated in debug mode only
-#ifdef DEB
+#ifdef _DEBUG
   #if (defined(_WIN32) || defined(__WIN32__))
     #if defined(_MSC_VER)
       // VS-specific intrinsic
@@ -86,7 +86,7 @@ inline void Standard_ASSERT_DO_NOTHING() {}
     #define Standard_ASSERT_DBGBREAK_() raise(SIGTRAP)
   #endif
 
-  #if defined(_MSC_VER) && defined(_DEBUG)
+  #if defined(_MSC_VER)
     #include <crtdbg.h>
     // use debug CRT built-in function that show up message box to user
     // with formatted assert description and 3 possible actions

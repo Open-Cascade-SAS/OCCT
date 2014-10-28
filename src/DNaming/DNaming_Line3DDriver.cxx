@@ -49,27 +49,7 @@
 #include <TFunction_Function.hxx>
 #include <DNaming.hxx>
 #include <ModelDefinitions.hxx>
-
-#ifdef WNT
-#define EXCEPTION ...
-#else
-#define EXCEPTION Standard_Failure
-#endif
-//#define MDTV_DEB 1
-
-#ifdef MDTV_DEB
-#include <TDF_Tool.hxx>
-#include <BRepTools.hxx>
-static void Write(const TopoDS_Shape& shape,
-                      const Standard_CString filename)
-{
-  ofstream save;
-  save.open(filename);
-  save << "DBRep_DrawableShape" << endl << endl;
-  if(!shape.IsNull()) BRepTools::Write(shape, save);
-  save.close();
-}
-#endif
+#include <TDataStd_Name.hxx>
 
 //=======================================================================
 //function : DNaming_Line3DDriver
@@ -131,7 +111,7 @@ Standard_Integer DNaming_Line3DDriver::Execute(TFunction_Logbook& theLog) const
     aNS1 = DNaming::GetObjectValue(aRefP1);
     Handle(TDataStd_UAttribute) aRefP2 = DNaming::GetObjectArg(aFunction, (LINE3D_TYPE + aCounter +1));
     aNS2 =  DNaming::GetObjectValue(aRefP2);
-#ifdef MDTV_DEB 
+#ifdef OCCT_DEBUG
     if(!aNS1->IsEmpty()) {
       aShape1 = aNS1->Get();
       gp_Pnt aDebPoint = BRep_Tool::Pnt(TopoDS::Vertex(aShape1));
@@ -152,7 +132,7 @@ Standard_Integer DNaming_Line3DDriver::Execute(TFunction_Logbook& theLog) const
     }
     aShape1 = aNS1->Get();
     aShape2 = aNS2->Get();
-#ifdef MDTV_DEB 
+#ifdef OCCT_DEBUG
     gp_Pnt aDebPoint = BRep_Tool::Pnt(TopoDS::Vertex(aShape1));
     //      cout << aCounter << " X = " <<  aDebPoint.X() << " Y = " <<  aDebPoint.Y() << " Z = " <<  aDebPoint.Z() << endl;
     aDebPoint = BRep_Tool::Pnt(TopoDS::Vertex(aShape2));
@@ -194,7 +174,7 @@ Standard_Integer DNaming_Line3DDriver::Execute(TFunction_Logbook& theLog) const
   try {  
     LoadNamingDS(aResultLabel, aWire, anArV, isClosed);
 
-  } catch (EXCEPTION) {
+  } catch (Standard_Failure) {
     aFunction->SetFailure(NAMING_FAILED);
     return -1;
   }
@@ -222,7 +202,7 @@ void DNaming_Line3DDriver::LoadNamingDS (const TDF_Label& theResultLabel,
 //Wire
   TNaming_Builder aWBuilder(theResultLabel);
   aWBuilder.Generated(theWire);
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
   TDataStd_Name::Set(theResultLabel, "Line3DCurve");
 #endif
   Standard_Integer aLength = theArV.Length();

@@ -17,7 +17,7 @@
 #ifndef _TopOpeBRep_traceSIFF_HeaderFile
 #define _TopOpeBRep_traceSIFF_HeaderFile
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 
 #include <TopOpeBRepTool_define.hxx>
 #include <Standard_OStream.hxx>
@@ -55,7 +55,7 @@ private:
   Standard_Boolean myopen;
 };
 
-// #ifdef DEB
+// #ifdef OCCT_DEBUG
 #endif
 // #define _TopOpeBRep_traceSIFF_HeaderFile
 #endif

@@ -24,7 +24,7 @@
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
 
-#ifndef DEB
+#ifndef OCCT_DEBUG
 #define No_Standard_RangeError
 #define No_Standard_OutOfRange
 #endif

@@ -1354,7 +1354,7 @@ Standard_Boolean Storage_Schema::CheckTypeMigration(
 	      aFile.Close();
 	      break;
 	    }
-#ifdef DATATYPE_MIGRATION_DEB
+#ifdef OCCT_DEBUG
 	    cout << "Storage_Sheme:: Line: = " << aLine <<endl;
 #endif
 	    TCollection_AsciiString aKey, aValue;
@@ -1364,7 +1364,7 @@ Standard_Boolean Storage_Schema::CheckTypeMigration(
 	  }
 	}
       }
-#ifdef DATATYPE_MIGRATION_DEB
+#ifdef OCCT_DEBUG
       cout << "Storage_Sheme:: aDataMap.Size = " << aDMap.Extent() <<endl;
 #endif
     }
@@ -1375,7 +1375,7 @@ Standard_Boolean Storage_Schema::CheckTypeMigration(
       newName.Clear();
       newName = aDMap.Find(oldName);
       aMigration = Standard_True;
-#ifdef DATATYPE_MIGRATION_DEB
+#ifdef OCCT_DEBUG
       cout << " newName = " << newName << endl;
 #endif
     }
@@ -1413,7 +1413,7 @@ static Standard_Boolean         result;
 #ifdef DATATYPE_MIGRATION
 	TCollection_AsciiString  newName;	
 	if(CheckTypeMigration(typeName, newName)) {
-#ifdef DATATYPE_MIGRATION_DEB
+#ifdef OCCT_DEBUG
 	  cout << "CheckTypeMigration:OldType = " <<typeName << " Len = "<<typeName.Length()<<endl;
 	  cout << "CheckTypeMigration:NewType = " <<newName  << " Len = "<< newName.Length()<<endl;
 #endif
@@ -1537,7 +1537,7 @@ TCollection_AsciiString Storage_Schema::ICreationDate()
   struct tm *nowstruct;
   if (time(&nowbin) == (time_t)-1)
   {
-#ifdef STORAGE_DEB
+#ifdef OCCT_DEBUG
     cerr << "Storage ERROR : Could not get time of day from time()" << endl;
 #endif
   }
@@ -1546,7 +1546,7 @@ TCollection_AsciiString Storage_Schema::ICreationDate()
 
   if (strftime(nowstr, SLENGTH, "%m/%d/%Y", nowstruct) == (size_t) 0)
   {
-#ifdef STORAGE_DEB
+#ifdef OCCT_DEBUG
     cerr << "Storage ERROR : Could not get string from strftime()" << endl;
 #endif
   }

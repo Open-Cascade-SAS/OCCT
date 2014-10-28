@@ -1160,7 +1160,7 @@ void XDEDRAW::Factory(Draw_Interpretor& theDI)
 
   XDEDRAW::Init(theDI);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
       theDI << "Draw Plugin : All TKXDEDRAW commands are loaded" << "\n";
 #endif
 }

@@ -130,7 +130,7 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 # ifdef DRAW
 #include <OSD_Chronometer.hxx>
 #include <DrawTrSurf.hxx>
@@ -570,7 +570,7 @@ void ChFi3d_Builder::PerformOneCorner(const Standard_Integer Index,
 {
   TopOpeBRepDS_DataStructure& DStr = myDS->ChangeDS();
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   OSD_Chronometer ch;// init perf for PerformSetOfKPart
 #endif
   // the top,
@@ -640,7 +640,7 @@ void ChFi3d_Builder::PerformOneCorner(const Standard_Integer Index,
   Fop = TopoDS::Face(DStr.Shape(Fd->Index(IFopArc)));
   TopExp_Explorer ex;
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   ChFi3d_InitChron(ch); // init perf condition  if (onsame)
 #endif
 
@@ -807,7 +807,7 @@ void ChFi3d_Builder::PerformOneCorner(const Standard_Integer Index,
   }
 
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
  ChFi3d_ResultChron(ch,t_same); // result perf condition if (same)
  ChFi3d_InitChron(ch); // init perf condition if (inters)
 #endif
@@ -949,7 +949,7 @@ void ChFi3d_Builder::PerformOneCorner(const Standard_Integer Index,
 
   }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   ChFi3d_ResultChron(ch ,t_inter); //result perf condition if (inter)
   ChFi3d_InitChron(ch); // init perf condition  if (onsame && inters)
 #endif
@@ -1411,7 +1411,7 @@ void ChFi3d_Builder::PerformOneCorner(const Standard_Integer Index,
   if (!CV2.IsVertex())
     ChFi3d_SetPointTolerance(DStr,box2,stripe->IndexPoint(isfirst,2));
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   ChFi3d_ResultChron(ch, t_sameinter);//result perf condition if (same &&inter)
 #endif
 }
@@ -1579,7 +1579,7 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
   // - top has 3 edges and fillet on one of edges touches
   //   more than one face
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   OSD_Chronometer ch;// init perf
 #endif
 
@@ -1737,7 +1737,7 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
     if (Ishape1 > 0) {
       trafil1 = DStr.Shape(Ishape1).Orientation();
     }
-#ifdef CHFI3D_DEB
+#ifdef OCCT_DEBUG
     else {
       cout<<"erreur"<<endl;
     }
@@ -1746,7 +1746,7 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
 
     trafil1 = TopAbs::Compose(TopAbs::Reverse(Fi1.Transition()),trafil1);
   }
-#ifdef CHFI3D_DEB
+#ifdef OCCT_DEBUG
   else cout<<"erreur"<<endl;
 #endif
   // eap, Apr 22 2002, occ 293
@@ -3623,7 +3623,7 @@ Standard_Boolean ChFi3d_Builder::FindFace(const TopoDS_Vertex& V,
 					  const TopoDS_Face& Favoid) const
 {
   if (P1.IsVertex() || P2.IsVertex()) {
-#ifdef CHFI3D_DEB
+#ifdef OCCT_DEBUG
     cout<<"change of face on vertex"<<endl;
 #endif
   }
@@ -3640,7 +3640,7 @@ Standard_Boolean ChFi3d_Builder::FindFace(const TopoDS_Vertex& V,
       }
     }
   }
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean ContainsV = Standard_False;
   if (Found) {
     for(It.Initialize(myVFMap(V));It.More();It.Next()) {
@@ -3752,7 +3752,7 @@ void ChFi3d_Builder::IntersectMoreCorner(const Standard_Integer Index)
 {
   TopOpeBRepDS_DataStructure& DStr = myDS->ChangeDS();
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   OSD_Chronometer ch;// init perf pour PerformSetOfKPart
 #endif
   // The fillet is returned,
@@ -3819,7 +3819,7 @@ void ChFi3d_Builder::IntersectMoreCorner(const Standard_Integer Index)
   Fop = TopoDS::Face(DStr.Shape(Fd->Index(IFopArc)));
   TopExp_Explorer ex;
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   ChFi3d_InitChron(ch); // init perf condition
 #endif
   {
@@ -3979,7 +3979,7 @@ void ChFi3d_Builder::IntersectMoreCorner(const Standard_Integer Index)
     pced->ChangeCurve2d().Initialize(CPadArc.Arc(),Fv);
     Update(HBs,pced,HGs,FiadArc,CPadArc,isfirst);
   }
-#ifdef DEB
+#ifdef OCCT_DEBUG
   ChFi3d_ResultChron(ch,t_same); // result perf condition if (same)
   ChFi3d_InitChron(ch); // init perf condition if (inters)
 #endif
@@ -4120,7 +4120,7 @@ void ChFi3d_Builder::IntersectMoreCorner(const Standard_Integer Index)
 
   }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   ChFi3d_ResultChron(ch ,t_inter); //result perf condition if (inter)
   ChFi3d_InitChron(ch); // init perf condition  if ( inters)
 #endif
@@ -4350,7 +4350,7 @@ void ChFi3d_Builder::IntersectMoreCorner(const Standard_Integer Index)
   if (!CV2.IsVertex())
     ChFi3d_SetPointTolerance(DStr,box2,stripe->IndexPoint(isfirst,2));
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
    ChFi3d_ResultChron(ch, t_sameinter);//result perf condition if (same &&inter)
 #endif
 }

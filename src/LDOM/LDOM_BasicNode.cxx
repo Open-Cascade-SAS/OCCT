@@ -44,7 +44,7 @@ const LDOM_BasicNode * LDOM_BasicNode::GetSibling () const
   return mySibling;
 }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #ifndef WNT
 //=======================================================================
 // Debug Function for DBX: use "print -p <Variable> or pp <Variable>"

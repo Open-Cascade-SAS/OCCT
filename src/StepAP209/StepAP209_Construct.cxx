@@ -814,14 +814,14 @@ Standard_Boolean StepAP209_Construct::CreateAnalysStructure (const Handle(StepBa
 Standard_Boolean StepAP209_Construct::CreateFeaStructure (const Handle(StepBasic_Product) &Prod) const
 {
   if(Prod.IsNull()) {
-#ifdef STEPAP209_DEB
+#ifdef OCCT_DEBUG
     cout<<"Prod.IsNull()"<<endl;
 #endif
     return Standard_False;
   }
   Handle(StepShape_ShapeRepresentation) AnaSR = IdealShape(Prod);
   if(AnaSR.IsNull()) {
-#ifdef STEPAP209_DEB
+#ifdef OCCT_DEBUG
     cout<<"AnaSR.IsNull()"<<endl;
 #endif
     return Standard_False;

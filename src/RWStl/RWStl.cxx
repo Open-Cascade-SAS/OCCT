@@ -334,7 +334,7 @@ Handle(StlMesh_Mesh) RWStl::ReadFile (const OSD_Path& thePath,
       IsAscii = Standard_False;
     }
   }
-#ifdef RWSTL_DEB
+#ifdef OCCT_DEBUG
   cout << (IsAscii ? "ascii\n" : "binary\n");
 #endif
   file.Close();
@@ -472,7 +472,7 @@ Handle(StlMesh_Mesh) RWStl::ReadAscii (const OSD_Path& thePath,
 
   // skip header
   while (getc(file) != '\n');
-#ifdef RWSTL_DEB
+#ifdef OCCT_DEBUG
   cout << "start mesh\n";
 #endif
   ReadMesh = new StlMesh_Mesh();
@@ -524,7 +524,7 @@ Handle(StlMesh_Mesh) RWStl::ReadAscii (const OSD_Path& thePath,
     if (++iTri % IND_THRESHOLD == 0)
       aPS.Next();
   }
-#ifdef RWSTL_DEB
+#ifdef OCCT_DEBUG
   cout << "end mesh\n";
 #endif
   fclose(file);

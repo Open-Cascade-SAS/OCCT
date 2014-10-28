@@ -70,7 +70,7 @@ void MPrsStd_AISPresentationRetrievalDriver_1::Paste(const Handle(PDF_Attribute)
 
   T->SetMode(S->Mode());
   
-#ifdef MPRSSTD_DEB
+#ifdef OCCT_DEBUG
   cout << "AISPresentationRetrievalDriver "  << "retrieved DriverGUID ==> ";
   guid.ShallowDump(cout);
   cout << endl;

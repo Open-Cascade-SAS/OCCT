@@ -235,7 +235,7 @@ void Prs3d_WFShape::Add (const Handle (Prs3d_Presentation)& thePresentation,
             }
             catch (Standard_Failure)
             {
-            #ifdef DEB
+            #ifdef OCCT_DEBUG
               const TopoDS_Face& aFace = aSurface.Face();
               std::cout << "Problem with the face " << (void* ) &(*(aFace).TShape()) << std::endl;
             #endif
@@ -268,7 +268,7 @@ void Prs3d_WFShape::Add (const Handle (Prs3d_Presentation)& thePresentation,
             }
             catch (Standard_Failure)
             {
-            #ifdef DEB
+            #ifdef OCCT_DEBUG
               const TopoDS_Face& aFace = aSurface.Face();
               std::cout << "Problem with the face " << (void* ) &(*(aFace).TShape()) << std::endl;
             #endif
@@ -449,7 +449,7 @@ void Prs3d_WFShape::Add (const Handle (Prs3d_Presentation)& thePresentation,
       }
       catch (Standard_Failure)
       {
-      #ifdef DEB
+      #ifdef OCCT_DEBUG
         std::cout << "probleme sur aLocation'edge " << (void* ) &(*(anEdge).TShape()) << std::endl;
       #endif
       }
@@ -485,7 +485,7 @@ void Prs3d_WFShape::Add (const Handle (Prs3d_Presentation)& thePresentation,
         }
         catch (Standard_Failure)
         {
-        #ifdef DEB
+        #ifdef OCCT_DEBUG
           std::cout << "probleme sur aLocation'edge " << (void* ) &(*(anEdge).TShape()) << std::endl;
         #endif
         }
@@ -519,7 +519,7 @@ void Prs3d_WFShape::Add (const Handle (Prs3d_Presentation)& thePresentation,
       }
       catch (Standard_Failure)
       {
-      #ifdef DEB
+      #ifdef OCCT_DEBUG
         std::cout << "probleme sur aLocation'edge " << (void* ) &(*(anEdge).TShape()) << std::endl;
       #endif
       }

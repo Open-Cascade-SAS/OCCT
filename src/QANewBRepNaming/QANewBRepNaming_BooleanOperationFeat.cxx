@@ -52,11 +52,11 @@
 
 #include <QANewBRepNaming_Loader.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #include <TDataStd_Name.hxx>
 #endif
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #include <TCollection_AsciiString.hxx>
 #include <TDF_Tool.hxx>
 #include <BRepTools.hxx>
@@ -104,7 +104,7 @@ void QANewBRepNaming_BooleanOperationFeat::Init(const TDF_Label& ResultLabel) {
 //=======================================================================
 
 TDF_Label QANewBRepNaming_BooleanOperationFeat::ModifiedFaces() const {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   const TDF_Label& ModifiedFacesLabel = ResultLabel().NewChild();
   TDataStd_Name::Set(ModifiedFacesLabel, "ModifiedFaces");
   return ModifiedFacesLabel;
@@ -119,7 +119,7 @@ TDF_Label QANewBRepNaming_BooleanOperationFeat::ModifiedFaces() const {
 //=======================================================================
 
 TDF_Label QANewBRepNaming_BooleanOperationFeat::ModifiedEdges() const {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   const TDF_Label& ModifiedEdgesLabel = ResultLabel().NewChild();
   TDataStd_Name::Set(ModifiedEdgesLabel, "ModifiedEdges");
   return ModifiedEdgesLabel;
@@ -134,7 +134,7 @@ TDF_Label QANewBRepNaming_BooleanOperationFeat::ModifiedEdges() const {
 //=======================================================================
 
 TDF_Label QANewBRepNaming_BooleanOperationFeat::DeletedFaces() const {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   const TDF_Label& DeletedFacesLabel = ResultLabel().NewChild();
   TDataStd_Name::Set(DeletedFacesLabel, "DeletedFaces");
   return DeletedFacesLabel;
@@ -149,7 +149,7 @@ TDF_Label QANewBRepNaming_BooleanOperationFeat::DeletedFaces() const {
 //=======================================================================
 
 TDF_Label QANewBRepNaming_BooleanOperationFeat::DeletedEdges() const {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   const TDF_Label& DeletedEdgesLabel = ResultLabel().NewChild();
   TDataStd_Name::Set(DeletedEdgesLabel, "DeletedEdges");
   return DeletedEdgesLabel;
@@ -164,7 +164,7 @@ TDF_Label QANewBRepNaming_BooleanOperationFeat::DeletedEdges() const {
 //=======================================================================
 
 TDF_Label QANewBRepNaming_BooleanOperationFeat::DeletedVertices() const {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   const TDF_Label& DeletedVerticesLabel = ResultLabel().NewChild();
   TDataStd_Name::Set(DeletedVerticesLabel, "DeletedVertices");
   return DeletedVerticesLabel;
@@ -179,7 +179,7 @@ TDF_Label QANewBRepNaming_BooleanOperationFeat::DeletedVertices() const {
 //=======================================================================
 
 TDF_Label QANewBRepNaming_BooleanOperationFeat::NewShapes() const {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   const TDF_Label& NewShapesLabel = ResultLabel().NewChild();
   TDataStd_Name::Set(NewShapesLabel, "NewShapes");
   return NewShapesLabel;
@@ -194,7 +194,7 @@ TDF_Label QANewBRepNaming_BooleanOperationFeat::NewShapes() const {
 //=======================================================================
 
 TDF_Label QANewBRepNaming_BooleanOperationFeat::Content() const {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   const TDF_Label& ContentLabel = ResultLabel().NewChild();
   TDataStd_Name::Set(ContentLabel, "Content");
   return ContentLabel;
@@ -209,7 +209,7 @@ TDF_Label QANewBRepNaming_BooleanOperationFeat::Content() const {
 //=======================================================================
 
 TDF_Label QANewBRepNaming_BooleanOperationFeat::DeletedDegeneratedEdges() const {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   const TDF_Label& DegeneratedLabel = ResultLabel().NewChild();
   TDataStd_Name::Set(DegeneratedLabel, "DeletedDegeneratedEdges");
   return DegeneratedLabel;
@@ -363,7 +363,7 @@ void QANewBRepNaming_BooleanOperationFeat::LoadDegenerated(BRepAlgoAPI_BooleanOp
       if (MS.IsDeleted(allEdges.FindKey(i))) {
 	TNaming_Builder DegeneratedBuilder(DeletedDegeneratedEdges()); 
 	DegeneratedBuilder.Generated(allEdges.FindKey(i));
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	TDataStd_Name::Set(DegeneratedBuilder.NamedShape()->Label(), "DeletedDegenerated");
 #endif
       }      
@@ -408,7 +408,7 @@ static Standard_Boolean IsValidSurfType(const TopoDS_Face& theFace) {
     if (aBasisCurve->GetType() == GeomAbs_Circle || aBasisCurve->GetType() == GeomAbs_Ellipse)
       return Standard_True;
   }
-#ifdef DEB
+#ifdef OCCT_DEBUG
   ModDbgTools_Write(theFace, "Surf");
 #endif
   return Standard_False;
@@ -486,7 +486,7 @@ static Standard_Integer Identify(const TopoDS_Face& theFace, const gp_Ax1& theAx
   gp_Pnt aPoint = aGProp.CentreOfMass();
   gp_Vec aV1(theAx.Direction());
   gp_Vec aV2(theAx.Location(), aPoint);
-#ifdef QANEWBREPNAMING_DEB
+#ifdef OCCT_DEBUG
   gp_Vec v1 = aV1.Crossed(aV2);
   cout <<" Z of V1 = " << v1.XYZ().Z() << endl;
 #endif
@@ -528,7 +528,7 @@ void QANewBRepNaming_BooleanOperationFeat::LoadModified11 (BRepAlgoAPI_BooleanOp
 	const TopoDS_Shape& newShape = ShapesIterator.Value ();
 	if (!Root.IsSame (newShape)) {
 	  //put shapes with evolution 1:1 (may be Compound)
-#ifdef QANEWBREPNAMING_DEB
+#ifdef OCCT_DEBUG
 	  TCollection_AsciiString entry;
 	  TDF_Tool::Entry(Builder.NamedShape()->Label(), entry);
 	  cout << "Add shape to Compound at Label = "<< entry <<endl;
@@ -803,7 +803,7 @@ static Standard_Boolean IsDirectionPositive (const gp_Ax1& theAx, const gp_Pnt t
   Standard_Boolean isPositive;
   gp_Vec aVec1(theAx.Direction());
   gp_Vec aVec2(thePnt1, thePnt2);
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //  gp_Vec v1 = aVec1.Crossed(aVec2);
 //  cout <<" Z of V1 = " << v1.XYZ().Z() << endl;
 #endif
@@ -980,7 +980,7 @@ static void SortEdges4(const TopTools_Array1OfShape& theArS, const TColgp_Array1
 
   if(!IsDirectionPositive(theAx, aCP2, theArP.Value(i3))) {//first must be positive direction
     // change i3 <=> i4
-#ifdef QANEWBREPNAMING_DEB
+#ifdef OCCT_DEBUG
   cout << "SortEdges4: i3 = "<<i3<< "i4 = "<< i4 << endl;
 #endif
     Standard_Integer aN = i4; i4 = i3;
@@ -988,7 +988,7 @@ static void SortEdges4(const TopTools_Array1OfShape& theArS, const TColgp_Array1
   }
 
 // 4. final order i1, i2, i3, i4 - Ok
-#ifdef QANEWBREPNAMING_DEB
+#ifdef OCCT_DEBUG
   cout << "SortEdges4: i1 = " <<i1<<" i2 = "<<i2<< " i3 = "<<i3<< "i4 = "<< i4 << endl;
 #endif
   theArI.SetValue(1, i1); 
@@ -1033,7 +1033,7 @@ static void SortEdges5 (const TopTools_Array1OfShape& theArS, const TColgp_Array
 	const TopoDS_Shape& aV22 = TopExp::LastVertex(TopoDS::Edge(theArS.Value(j)));
 	if(aV12.IsSame(aV21) || aV12.IsSame(aV22)) {
 	  aV2 = aV12; J2 = j;
-#ifdef QANEWBREPNAMING_DEB
+#ifdef OCCT_DEBUG
 	  if(I != i) cout << "WARNING:: I != i, I = " << I << ", i = " << i <<endl; 
 #endif
 	  found = Standard_True;
@@ -1322,7 +1322,7 @@ static void SortEdges(const TopTools_ListOfShape& theListE, const gp_Ax1& theAx,
   }
   
   for(i=1;i<=ArI.Upper();i++) {
-#ifdef QANEWBREPNAMING_DEB
+#ifdef OCCT_DEBUG
     cout << "SortEdges: i = " <<i<<" ArI.Value(i) = " <<ArI.Value(i)<< endl;
 #endif   
     theARS.SetValue(i, ArS.Value(ArI.Value(i)));  
@@ -1359,7 +1359,7 @@ void QANewBRepNaming_BooleanOperationFeat::LoadSymmetricalEdges (BRepAlgoAPI_Boo
     const TopoDS_Shape& aShape = It.Value (); //1-st solid/shell
     TopTools_ListOfShape aList;
     aList.Clear();
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //    ModDbgTools_Write(aShape, "S0");
 #endif
     if(aShape.ShapeType() != TopAbs_FACE) {
@@ -1587,7 +1587,7 @@ void QANewBRepNaming_BooleanOperationFeat::LoadWRCase(BRepAlgoAPI_BooleanOperati
 	    const TDF_Label& WRE2Label = ResultLabel().NewChild();
 	    const TDF_Label& WRV1Label = ResultLabel().NewChild();
 	    const TDF_Label& WRV2Label = ResultLabel().NewChild();
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	    TDataStd_Name::Set(WRE1Label, "WorkAroundEdge1");
 	    TDataStd_Name::Set(WRE2Label, "WorkAroundEdge2");
 	    TDataStd_Name::Set(WRV1Label, "WorkAroundVertex1");

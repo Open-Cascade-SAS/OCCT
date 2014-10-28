@@ -14,7 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef DEB
+#ifndef OCCT_DEBUG
 #define No_Standard_RangeError
 #define No_Standard_OutOfRange
 #endif
@@ -146,11 +146,11 @@ Standard_Boolean FairCurve_MinimalVariation::Compute(const gp_Vec2d& DeltaP1,
    Standard_Integer L = 2 + NewConstraintOrder1 + NewConstraintOrder2,
                     kk, ii;
 //                    NbP1 = Poles->Length()-1, kk, ii;
-#ifdef DEB
+#ifdef OCCT_DEBUG
    Standard_Integer NbP1 = 
 #endif
                            Poles->Length() ;
-#ifdef DEB
+#ifdef OCCT_DEBUG
    NbP1 = NbP1 - 1 ;
 #endif
    TColStd_Array1OfReal knots (1,2);

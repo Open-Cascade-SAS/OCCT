@@ -900,7 +900,7 @@ void MeshVS_Mesh::HilightSelected ( const Handle(PrsMgr_PresentationManager3d)& 
   //   It is very important to call this parent method, because it check whether
   // mySelectionPrs is created and if not, create it.
 
-#ifdef _DEBUG
+#ifdef OCCT_DEBUG
   OSD_Timer gTimer;
   gTimer.Reset();
   gTimer.Start();
@@ -997,7 +997,7 @@ void MeshVS_Mesh::HilightSelected ( const Handle(PrsMgr_PresentationManager3d)& 
     aSelectionPrs->Display();
   }
 
-#ifdef _DEBUG
+#ifdef OCCT_DEBUG
     Standard_Real sec, cpu;
     Standard_Integer min, hour;
 

@@ -557,8 +557,8 @@ void  BinTools_ShapeSet::WriteGeometry(const TopoDS_Shape& S,
       BinTools::PutReal(OS, BRep_Tool::Tolerance(V));
       gp_Pnt p = BRep_Tool::Pnt(V);
       OS << p;
-#ifdef MDTV_DEB
-      Standard_Integer aPos;
+#ifdef OCCT_DEBUG_POS
+      std::streamoff aPos;
 #endif
       Handle(BRep_TVertex) TV = Handle(BRep_TVertex)::DownCast(S.TShape());
       BRep_ListIteratorOfListOfPointRepresentation itrp(TV->Points());
@@ -566,7 +566,7 @@ void  BinTools_ShapeSet::WriteGeometry(const TopoDS_Shape& S,
 	const Handle(BRep_PointRepresentation)& PR = itrp.Value();
 //	BinTools::PutReal(OS, PR->Parameter());
 	if (PR->IsPointOnCurve()) {
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG_POS
 	  aPos = OS.tellp();
 #endif
 	  OS << (Standard_Byte)1; // 1
@@ -575,7 +575,7 @@ void  BinTools_ShapeSet::WriteGeometry(const TopoDS_Shape& S,
 	}
 
 	else if (PR->IsPointOnCurveOnSurface()) {
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG_POS
 	  aPos = OS.tellp();
 #endif
 	  OS << (Standard_Byte)2;// 2
@@ -585,7 +585,7 @@ void  BinTools_ShapeSet::WriteGeometry(const TopoDS_Shape& S,
 	}
 
 	else if (PR->IsPointOnSurface()) {
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG_POS
 	  aPos = OS.tellp();
 #endif
 	  OS << (Standard_Byte)3;// 3
@@ -795,7 +795,7 @@ void  BinTools_ShapeSet::ReadGeometry(const TopAbs_ShapeEnum T,
 	BRep_ListOfPointRepresentation& lpr = TV->ChangePoints();
 	TopLoc_Location L;
 	Standard_Boolean aNewF = (myFormatNb > 2) ? Standard_True : Standard_False;
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
 	gp_Pnt aPnt = gp_Pnt(X,Y,Z);
 #endif
 	do {
@@ -807,7 +807,7 @@ void  BinTools_ShapeSet::ReadGeometry(const TopAbs_ShapeEnum T,
         streampos aPos = IS.tellg();
 	    BinTools::GetReal(IS, p1); 	    
 	    val = (Standard_Integer)IS.get();//case {0|1|2|3}
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
 	    cout << "\nVal = " << val <<endl;   
 #endif	  
 	    if(val != 1 && val !=2 && val !=3){
@@ -1337,7 +1337,7 @@ void BinTools_ShapeSet::ReadPolygon3D(Standard_IStream& IS)
 
   if (IS.fail() || strstr(buffer,"Polygon3D") == NULL) {
     aMsg << "BinTools_ShapeSet::ReadPolygon3D: Not a Polygon3D section" <<endl;
-#ifdef BINTOOLS_DEB
+#ifdef OCCT_DEBUG
     cout <<"Buffer: " << buffer << endl;
 #endif
     Standard_Failure::Raise(aMsg);

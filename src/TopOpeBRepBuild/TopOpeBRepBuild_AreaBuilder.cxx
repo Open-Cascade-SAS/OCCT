@@ -25,7 +25,7 @@
 #include <Standard_DomainError.hxx>
 #include <TopAbs.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepDS_GettraceSTRANGE();
 #endif
 
@@ -113,7 +113,7 @@ void TopOpeBRepBuild_AreaBuilder::Atomize(TopAbs_State& state,
 				  "AreaBuilder : Position Unknown");
   }
   else {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if ( TopOpeBRepDS_GettraceSTRANGE() ) { 
       cout<<"AreaBuilder : state "; TopAbs::Print(state,cout);
       cout<<" taken as "; TopAbs::Print(newstate,cout); cout<<endl;

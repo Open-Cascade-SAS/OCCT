@@ -178,7 +178,7 @@ Standard_Integer ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
   Standard_Boolean isfirst2 = (Sens2 == 1);
   Stat1 = Corner1->Spine()->Status(isfirst1);
   Stat2 = Corner2->Spine()->Status(isfirst2);
-/*#ifdef DEB
+/*#ifdef OCCT_DEBUG
   Standard_Boolean evolcoin = ((Stat1 == ChFiDS_OnSame && Stat2 == ChFiDS_OnDiff) || 
 			       (Stat2 == ChFiDS_OnSame && Stat1 == ChFiDS_OnDiff));
 #endif*/
@@ -190,7 +190,7 @@ Standard_Integer ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
 			       UIntPC1,UIntPC2,FaCo,SameSide,
 			       IFaCo1,IFaCo2,Okvisavis,Vtx,Standard_True);
   if (!Okvisavis) {
-#if CHFI3D_DEB
+#ifdef OCCT_DEBUG
     cout<<"TwoCorner : pas de face commune"<<endl;
 #endif
     done=Standard_False;
@@ -205,14 +205,14 @@ Standard_Integer ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
   }
   
   if (!Okvisavis) {
-#if CHFI3D_DEB
+#ifdef OCCT_DEBUG
     cout<<"TwoCorner : no common face"<<endl;
 #endif
     done=Standard_False;
     return done;
   }   
   if (!OkinterCC) {
-#if CHFI3D_DEB
+#ifdef OCCT_DEBUG
     cout<<"biseau : failed intersection of tangency lines on common face"<<endl;
 #endif
     done=Standard_False;
@@ -227,7 +227,7 @@ Standard_Integer ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
   ChFiDS_CommonPoint& CP2 = Fd2->ChangeVertex(isfirst2,IFaArc2);
 
   if (!CP1.IsOnArc() || !CP2.IsOnArc()) {
-#if CHFI3D_DEB
+#ifdef OCCT_DEBUG
     cout<<"fail 1 of 2 fillets are not on arc"<<endl;
 #endif
     done=Standard_False;
@@ -235,7 +235,7 @@ Standard_Integer ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
   }
   if ( ! CP1.Arc().IsSame( CP2.Arc()) ) {
     // look like OnSame + OnDiff case (eap, Arp 9 2002, occ266)
-#if CHFI3D_DEB
+#ifdef OCCT_DEBUG
     cout<<"PerformTwoCornerbyInter(): fillets are not on the same arc"<<endl;
 #endif
     done = Standard_True;
@@ -279,7 +279,7 @@ Standard_Integer ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
     }
   }
   if(!ok1 || !ok2){
-#if CHFI3D_DEB
+#ifdef OCCT_DEBUG
     cout<<"fail one of surfaces has no common base face with the pivot edge"<<endl;
 #endif
     done=Standard_False;
@@ -326,7 +326,7 @@ Standard_Integer ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
     if (IFaCo1 == 1 && 
 	!ChFi3d_ComputeCurves(HS1,HS2,Pardeb,Parfin,Gc,
 			      PGc1,PGc2,tolesp,tol2d,tolreached)) {
-#if CHFI3D_DEB
+#ifdef OCCT_DEBUG
       cout<<"failed to calculate bevel error interSS"<<endl;
 #endif
       done=Standard_False;
@@ -335,7 +335,7 @@ Standard_Integer ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
     else if (IFaCo1 == 2 && 
 	     !ChFi3d_ComputeCurves(HS1,HS2,Parfin,Pardeb,Gc,
 				   PGc1,PGc2,tolesp,tol2d,tolreached)) {
-#if CHFI3D_DEB
+#ifdef OCCT_DEBUG
       cout<<"failed to calculate bevel error interSS"<<endl;
 #endif
       done=Standard_False;
@@ -471,7 +471,7 @@ Standard_Integer ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
       Reduce(UIntPCSma,UIntPCBig,Hctg);
     }
     if(!ChFi3d_IntCS(BigHS,Hctg,UVi,wi)){
-#if CHFI3D_DEB
+#ifdef OCCT_DEBUG
       cout<<"bevel : failed inter C S"<<endl;
 #endif
       done=Standard_False;
@@ -485,7 +485,7 @@ Standard_Integer ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
     Standard_Real tolreached;
     if (!ChFi3d_ComputeCurves(SmaHS,BigHS,Pardeb,Parfin,Gc,
 			      PGc1,PGc2,tolesp,tol2d,tolreached)) {
-#if CHFI3D_DEB
+#ifdef OCCT_DEBUG
       cout<<"failed to calculate bevel failed interSS"<<endl;
 #endif
       done=Standard_False;
@@ -574,7 +574,7 @@ Standard_Integer ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
     Adaptor3d_CurveOnSurface consf(c2df,HF);
     Handle(Adaptor3d_HCurveOnSurface) Hconsf = new Adaptor3d_HCurveOnSurface(consf);
     if(!ChFi3d_IntCS(BigHS,Hconsf,UVi,wi)) {
-#if CHFI3D_DEB
+#ifdef OCCT_DEBUG
       cout<<"bevel : failed inter C S"<<endl;
 #endif
       done=Standard_False;
@@ -607,7 +607,7 @@ Standard_Integer ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
 
     if (!ChFi3d_ComputeCurves(HF,BigHS,Pardeb,Parfin,Gc,
 			      PGc1,PGc2,tolesp,tol2d,tolreached)) {
-#if CHFI3D_DEB
+#ifdef OCCT_DEBUG
       cout<<"fail calculation bevel fail interSS"<<endl;
 #endif
       done=Standard_False;

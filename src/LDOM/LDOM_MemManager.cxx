@@ -234,7 +234,7 @@ LDOM_MemManager::LDOM_MemManager (const Standard_Integer aBlockSize)
 
 LDOM_MemManager::~LDOM_MemManager ()
 {
-#ifdef LDOM_DEB
+#ifdef OCCT_DEBUG
   Standard_Integer aSomme = 0, aCount = 0;
   MemBlock * aBlock = myFirstBlock;
 //FILE * out = fopen ("/tmp/dump","w");

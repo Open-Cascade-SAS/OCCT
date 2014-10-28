@@ -262,7 +262,7 @@ Standard_Integer GETP3D(Draw_Interpretor& di, Standard_Integer /*narg*/, const c
   di<<pV.X()<<" "<<pV.Y()<<" "<<pV.Z()<<"\n";
   return 0;
 }
-#ifdef DEB 
+#ifdef OCCT_DEBUG
 #include <Draw_Chronometer.hxx>
 Standard_IMPORT Standard_Boolean Draw_Chrono;
 Standard_Integer CHROBOOP(Draw_Interpretor& di, Standard_Integer n, const char** a)
@@ -338,7 +338,7 @@ void TestTopOpe::OtherCommands(Draw_Interpretor& theCommands)
   theCommands.Add("mksol","make a solid [1] with [2] ...",__FILE__,MKSOLSHE,g);
   theCommands.Add("mkshe","make a shell [1] with [2] ...",__FILE__,MKSOLSHE,g);
   theCommands.Add("getp3d","getp3d vertex",__FILE__,GETP3D,g);
-#ifdef DEB
+#ifdef OCCT_DEBUG
   theCommands.Add("chroboop","",__FILE__,CHROBOOP,g);
 #endif
 }

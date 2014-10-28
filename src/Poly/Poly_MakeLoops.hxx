@@ -227,7 +227,7 @@ protected:
       aLink.Reverse();
     return aLink;
   }
-#ifdef _DEBUG
+#ifdef OCCT_DEBUG
   void showBoundaryBreaks() const;
 #endif
 

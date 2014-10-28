@@ -174,7 +174,7 @@ static Standard_Integer DPrsStd_AISSet (Draw_Interpretor& di,
     if (!DDF::FindLabel(D->GetData(),arg[2],L)) return 1; 
     Standard_GUID guid;
     TCollection_ExtendedString str = arg[3];
-#ifdef DPRSSTD_DEB
+#ifdef OCCT_DEBUG
     cout << "Inputed parameter > " << str   << endl;
 #endif
     if ( str == "A" )  //axis
@@ -195,7 +195,7 @@ static Standard_Integer DPrsStd_AISSet (Draw_Interpretor& di,
 //      guid = TSketchStd_Edge::GetID();           //"b3aac90a-5b78-11d1-8940-080009dc3333"
 
     Handle(TPrsStd_AISPresentation) prs= TPrsStd_AISPresentation::Set(L, guid);
-#ifdef DPRSSTD_DEB
+#ifdef OCCT_DEBUG
     cout << "Driver GUID = ";
     prs->GetDriverGUID().ShallowDump(cout);
     cout << "\n";
@@ -240,7 +240,7 @@ static Standard_Integer DPrsStd_AISDriver (Draw_Interpretor& di,
       }
       else {
 	TCollection_ExtendedString str = arg[3];
-#ifdef DPRSSTD_DEB
+#ifdef OCCT_DEBUG
 	cout << "Inputed parameter > " << str   << endl;
 #endif
 	if ( str == "A" )  //axis

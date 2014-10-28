@@ -27,7 +27,7 @@
 #include <TopOpeBRepTool_define.hxx>
 #include <Precision.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #define TBOX TopOpeBRepTool_GettraceBOX()
 #endif
 
@@ -69,7 +69,7 @@ void TopOpeBRepTool_HBoxTool::AddBoxes(const TopoDS_Shape& S,const TopAbs_ShapeE
 //=======================================================================
 void TopOpeBRepTool_HBoxTool::AddBox(const TopoDS_Shape& S)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   TopAbs_ShapeEnum t = 
 #endif
     S.ShapeType();
@@ -79,7 +79,7 @@ void TopOpeBRepTool_HBoxTool::AddBox(const TopoDS_Shape& S)
   Bnd_Box B;
   ComputeBox(S,B);
   myIMS.Add(S,B);
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TBOX) {
     DumpB(Box(S));cout<<"; # HBT::AddBox "<<Index(S)<<" : ";TopAbs::Print(t,cout);cout<<"\n";cout<<endl;
   }
@@ -224,7 +224,7 @@ const TopOpeBRepTool_IndexedDataMapOfShapeBox& TopOpeBRepTool_HBoxTool::IMS() co
 //purpose  : 
 //=======================================================================
 void TopOpeBRepTool_HBoxTool::DumpB 
-#ifdef TOPOPEBREPTOOL_DEB
+#ifdef OCCT_DEBUG
 (const Bnd_Box& B)
 {
   if      (B.IsVoid()) cout<<"# IsVoid";

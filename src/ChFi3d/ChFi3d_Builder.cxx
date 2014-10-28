@@ -66,7 +66,7 @@
 #include <TestTopOpeTools.hxx>
 #include <TestTopOpe.hxx>
 #endif
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #include <OSD_Chronometer.hxx>
 
 
@@ -190,7 +190,7 @@ void ChFi3d_Builder::ExtentAnalyse ()
 void  ChFi3d_Builder::Compute()
 {
   
-#ifdef DEB   //perf 
+#ifdef OCCT_DEBUG   //perf 
   t_total=0;t_extent=0; t_perfsetofsurf=0;t_perffilletonvertex=0;
   t_filds=0;t_reconstruction=0;t_setregul=0;
   t_perfsetofkpart=0; t_perfsetofkgen=0;t_makextremities=0;
@@ -236,7 +236,7 @@ void  ChFi3d_Builder::Compute()
   ExtentAnalyse();
   
   
-#ifdef DEB //perf 
+#ifdef OCCT_DEBUG //perf 
   ChFi3d_ResultChron(cl_extent,t_extent);
   ChFi3d_InitChron(cl_perfsetofsurf);
 #endif
@@ -250,7 +250,7 @@ void  ChFi3d_Builder::Compute()
     }
     catch(Standard_Failure) {
       Handle(Standard_Failure) exc = Standard_Failure::Caught();
-#ifdef CHFI3D_DEB
+#ifdef OCCT_DEBUG
       cout <<"EXCEPTION Stripe compute " << exc << endl;
 #endif
       badstripes.Append(itel.Value());
@@ -263,7 +263,7 @@ void  ChFi3d_Builder::Compute()
   }
   done = (badstripes.IsEmpty());
   
-#ifdef DEB //perf 
+#ifdef OCCT_DEBUG //perf 
   ChFi3d_ResultChron(cl_perfsetofsurf,t_perfsetofsurf);
   ChFi3d_InitChron(cl_perffilletonvertex);
 #endif 
@@ -281,7 +281,7 @@ void  ChFi3d_Builder::Compute()
       catch(Standard_Failure)
       {
         Handle(Standard_Failure) exc = Standard_Failure::Caught();
-#ifdef CHFI3D_DEB
+#ifdef OCCT_DEBUG
         cout <<"EXCEPTION Corner compute " << exc << endl;
 #endif
         badvertices.Append(myVDataMap.FindKey(j));
@@ -295,7 +295,7 @@ void  ChFi3d_Builder::Compute()
   }
   
 
-#ifdef DEB //perf 
+#ifdef OCCT_DEBUG //perf 
   ChFi3d_ResultChron(cl_perffilletonvertex,t_perffilletonvertex);
   ChFi3d_InitChron(cl_filds);
 #endif
@@ -336,7 +336,7 @@ void  ChFi3d_Builder::Compute()
 	}
 	catch(Standard_Failure) {
 	  Handle(Standard_Failure) exc = Standard_Failure::Caught();
-#ifdef CHFI3D_DEB
+#ifdef OCCT_DEBUG
 	  cout <<"EXCEPTION Fillets compute " << exc << endl;
 #endif
 	  badstripes.Append(itel.Value());
@@ -351,7 +351,7 @@ void  ChFi3d_Builder::Compute()
       if (!done) break;
     }
     
-#ifdef DEB //perf 
+#ifdef OCCT_DEBUG //perf 
     ChFi3d_ResultChron(cl_filds,t_filds);
     ChFi3d_InitChron(cl_reconstruction);
 #endif
@@ -466,7 +466,7 @@ void  ChFi3d_Builder::Compute()
 	}
       }
       }
-#ifdef DEB //perf 
+#ifdef OCCT_DEBUG //perf 
       ChFi3d_ResultChron(cl_reconstruction ,t_reconstruction);
       ChFi3d_InitChron(cl_setregul);
 #endif
@@ -475,19 +475,19 @@ void  ChFi3d_Builder::Compute()
       SetRegul();
       
       
-#ifdef DEB //perf 
+#ifdef OCCT_DEBUG //perf 
  ChFi3d_ResultChron(cl_setregul ,t_setregul);
 #endif
     }
   }
-#ifdef DEB //perf 
+#ifdef OCCT_DEBUG //perf 
   ChFi3d_ResultChron(cl_total,t_total);
 #endif
       
   
   // display of time for perfs 
   
-#ifdef DEB  
+#ifdef OCCT_DEBUG
   if(ChFi3d_GettraceCHRON()){
     cout<<endl; 
     cout<<"COMPUTE: temps total "<<t_total<<"s  dont :"<<endl;
@@ -700,22 +700,22 @@ void ChFi3d_Builder::PerformFilletOnVertex
       {
 	if(sp->Status(isfirst) == ChFiDS_FreeBoundary) return; 
 	if(nba>3) {
-#ifdef DEB //perf    
+#ifdef OCCT_DEBUG //perf    
 	  ChFi3d_InitChron(cl_performatend);
 #endif
 	  PerformIntersectionAtEnd(Index);
-#ifdef DEB    
+#ifdef OCCT_DEBUG
 	  ChFi3d_ResultChron(cl_performatend,t_performatend);
 #endif 
 	}
 	else { 
-#ifdef DEB //perf    
+#ifdef OCCT_DEBUG //perf    
 	  ChFi3d_InitChron(cl_perform1corner);
 #endif
           if (MoreSurfdata(Index))
              PerformMoreSurfdata(Index);
 	  else PerformOneCorner(Index);
-#ifdef DEB //perf 
+#ifdef OCCT_DEBUG //perf 
 	  ChFi3d_ResultChron(cl_perform1corner,t_perform1corner);
 #endif  
 	}
@@ -724,20 +724,20 @@ void ChFi3d_Builder::PerformFilletOnVertex
     case 2 : 
       {
 	if(nba>3){
-#ifdef DEB //perf 
+#ifdef OCCT_DEBUG //perf 
 	  ChFi3d_InitChron(cl_performmore3corner);
 #endif
 	  PerformMoreThreeCorner(Index, i);
-#ifdef DEB //perf 
+#ifdef OCCT_DEBUG //perf 
 	  ChFi3d_ResultChron(cl_performmore3corner,t_performmore3corner);
 #endif
 	}
 	else { 
-#ifdef DEB //perf 
+#ifdef OCCT_DEBUG //perf 
 	  ChFi3d_InitChron(cl_perform2corner);
 #endif
 	  PerformTwoCorner(Index);
-#ifdef DEB //perf 
+#ifdef OCCT_DEBUG //perf 
 	  ChFi3d_ResultChron(cl_perform2corner,t_perform2corner);
 #endif
 	}
@@ -746,31 +746,31 @@ void ChFi3d_Builder::PerformFilletOnVertex
     case 3 : 
       {
 	if(nba>3){
-#ifdef DEB //perf 
+#ifdef OCCT_DEBUG //perf 
 	  ChFi3d_InitChron(cl_performmore3corner);
 #endif
 	  PerformMoreThreeCorner(Index, i);
-#ifdef DEB //perf 
+#ifdef OCCT_DEBUG //perf 
 	  ChFi3d_ResultChron(cl_performmore3corner,t_performmore3corner);
 #endif
 	}
 	else {
-#ifdef DEB //perf 
+#ifdef OCCT_DEBUG //perf 
 	  ChFi3d_InitChron(cl_perform3corner);
 #endif
 	  PerformThreeCorner(Index);
-#ifdef DEB //perf 
+#ifdef OCCT_DEBUG //perf 
 	  ChFi3d_ResultChron(cl_perform3corner,t_perform3corner);
 #endif
 	}
       }
       break;
       default : {
-#ifdef DEB //perf 
+#ifdef OCCT_DEBUG //perf 
 	ChFi3d_InitChron(cl_performmore3corner);
 #endif
 	PerformMoreThreeCorner(Index, i);
-#ifdef DEB //perf 
+#ifdef OCCT_DEBUG //perf 
 	ChFi3d_ResultChron(cl_performmore3corner,t_performmore3corner);
 #endif
       }

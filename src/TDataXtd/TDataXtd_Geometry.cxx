@@ -389,7 +389,7 @@ TDataXtd_GeometryEnum  TDataXtd_Geometry::Type (const Handle(TNaming_NamedShape)
 	}
 	break;
       }
-#ifdef DEB      
+#ifdef OCCT_DEBUG
       else {
 	Standard_Failure::Raise("curve Null dans TDataXtd_Geometry");
       }
@@ -410,7 +410,7 @@ TDataXtd_GeometryEnum  TDataXtd_Geometry::Type (const Handle(TNaming_NamedShape)
 	  type = TDataXtd_PLANE;
 	}
       } 
-#ifdef DEB      
+#ifdef OCCT_DEBUG
       else {
 	Standard_Failure::Raise("surface Null dans TDataXtd_Geometry");
       }

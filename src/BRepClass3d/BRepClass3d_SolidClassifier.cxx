@@ -17,7 +17,7 @@
 #define MARCHEPASSIUNESEULEFACE 0
 
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #define LBRCOMPT 0
 #else 
 #define LBRCOMPT 0

@@ -24,7 +24,7 @@
 // avec un shell qui a ete deja ete place dans le solide interne du 
 // TopOpeBRepTool_SolidClassifier par LoadShell.
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //static Standard_Integer dddjyl = 0;
 //static Standard_Integer dddebi = 0;
 //static Standard_Integer dddebi2 = 0;

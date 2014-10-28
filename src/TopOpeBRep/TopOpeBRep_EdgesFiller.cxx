@@ -31,7 +31,7 @@
 
 #include <TopOpeBRep_define.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #include <TopOpeBRepDS_reDEB.hxx>
 extern Standard_Boolean TopOpeBRepDS_GettraceEDSF();
 extern Standard_Boolean TopOpeBRepDS_GettraceDSF();
@@ -69,7 +69,7 @@ void TopOpeBRep_EdgesFiller::Insert(const TopoDS_Shape& E1,const TopoDS_Shape& E
   myLI2.Clear();
   myHDS = HDS;
  
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = TopOpeBRepDS_GettraceDSF();
   trc = trc || TopOpeBRepDS_GettraceEDSF();
   trc = trc || TopOpeBRep_GettraceEEFF();
@@ -104,11 +104,11 @@ void TopOpeBRep_EdgesFiller::Insert(const TopoDS_Shape& E1,const TopoDS_Shape& E
     if ( ! myF1.IsNull() ) myPDS->AddShape(myF1,1);
     if ( ! myF2.IsNull() ) myPDS->AddShape(myF2,2);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     Standard_Boolean pointofsegment = P2D.IsPointOfSegment();
 #endif
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (trc) {
       if      (pointofsegment &&  esd) debposesd();
       else if (pointofsegment && !esd) debposnesd();
@@ -126,7 +126,7 @@ void TopOpeBRep_EdgesFiller::Insert(const TopoDS_Shape& E1,const TopoDS_Shape& E
     TopoDS_Vertex V2; if (isvertex2) V2 = P2D.Vertex(2);
     Standard_Boolean isvertex = isvertex1 || isvertex2;
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (isvertex1 && isvertex2) {
       gp_Pnt P3D1 = BRep_Tool::Pnt(V1);
       gp_Pnt P3D2 = BRep_Tool::Pnt(V2);
@@ -159,7 +159,7 @@ void TopOpeBRep_EdgesFiller::Insert(const TopoDS_Shape& E1,const TopoDS_Shape& E
 
     Standard_Boolean faulty =  (isvertex && isnewpoint) || (!isvertex && isnewvertex);
     if (faulty) {
-#ifdef TOPOPEBREP_DEB
+#ifdef OCCT_DEBUG
       Standard_Boolean foundvertex = (found)  && (K == TopOpeBRepDS_VERTEX);
       cout<<"- - - faulty EdgesFiller : G "<<G<<" K ";TopOpeBRepDS::Print(K,cout);cout.flush();
       cout<<" isvertex="<<isvertex;cout.flush();
@@ -185,7 +185,7 @@ void TopOpeBRep_EdgesFiller::Insert(const TopoDS_Shape& E1,const TopoDS_Shape& E
 	  Standard_Boolean condcpi = ((ki==TopOpeBRepDS_POINT) && (gi==G) && iscpi);
 	  if (condcpi) { // remplacer G,K de I par le vertex courant
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	    rototo();
 #endif
 	    Handle(TopOpeBRepDS_CurvePointInterference) epi = Handle(TopOpeBRepDS_CurvePointInterference)::DownCast(I);
@@ -205,7 +205,7 @@ void TopOpeBRep_EdgesFiller::Insert(const TopoDS_Shape& E1,const TopoDS_Shape& E
 	    const TopOpeBRepDS_Kind& kevi = epi->SupportType();
 	    evi->SupportType(kevi);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	    TopOpeBRepDS::Print(K,G,cout,"TopOpeBRep_EdgesFiller : remplacer "," ");
 	    TopOpeBRepDS::Print(TopOpeBRepDS_VERTEX,gevi,cout,"par "," dans les courbes NYI\n");
 #endif
@@ -462,7 +462,7 @@ void TopOpeBRep_EdgesFiller::RecomputeInterferences(const TopoDS_Edge& E,TopOpeB
 
   TopOpeBRepDS_TKI tki; tki.FillOnGeometry(LI);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer EIX = myPDS->Shape(E); Standard_Boolean TRC=DSREDUEDGETRCE(EIX);
   if (TRC) cout<<endl<<"RecomputeInterferences E"<<EIX<<" <- "<<LI.Extent()<<endl;
   if (TRC) tki.DumpTKIIterator("","\n");
@@ -475,7 +475,7 @@ void TopOpeBRep_EdgesFiller::RecomputeInterferences(const TopoDS_Edge& E,TopOpeB
     Standard_Integer nloi = loi.Extent();
     if (nloi == 0) continue;
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (nloi > 1) {cout<<"TopOpeBRep_EdgesFiller : > 1 I on UNUN/F on E"<<EIX<<" A FAIRE"<<endl;}
 #endif
 
@@ -484,7 +484,7 @@ void TopOpeBRep_EdgesFiller::RecomputeInterferences(const TopoDS_Edge& E,TopOpeB
     Standard_Integer ifb = TU.IndexBefore();
     const TopoDS_Face& fb = TopoDS::Face(myPDS->Shape(ifb));
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     Standard_Integer ifa = TU.IndexAfter();
     if (ifb != ifa) {cout<<"TopOpeBRep_EdgesFiller : ifb != ifa on E"<<EIX<<" NYI"<<endl;}
 #endif
@@ -493,12 +493,12 @@ void TopOpeBRep_EdgesFiller::RecomputeInterferences(const TopoDS_Edge& E,TopOpeB
     TN.ShapeBefore(TU.ShapeBefore());TN.IndexBefore(TU.IndexBefore());
     TN.ShapeAfter(TU.ShapeAfter());TN.IndexAfter(TU.IndexAfter());
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     Standard_Boolean ok =
 #endif
     FDS_stateEwithF2d(*myPDS,E,pE,K,G,fb,TN);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (TRC) {
       TopOpeBRepDS_ListOfInterference l1;l1.Append(iloi);
       TopOpeBRepDS_TKI dt;dt.FillOnGeometry(l1);dt.DumpTKIIterator("","");

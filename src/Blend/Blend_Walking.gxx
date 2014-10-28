@@ -23,7 +23,7 @@
 #include <CSLib_NormalStatus.hxx>
 #include <Precision.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>

@@ -20,7 +20,7 @@
 #include <TopOpeBRepBuild_WireEdgeSet.hxx>
 #include <TopOpeBRepBuild_FaceBuilder.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 Standard_EXPORT void debspf(const Standard_Integer i) {cout<<"++  debspf"<<i<<endl;}
 #endif
 
@@ -33,7 +33,7 @@ void TopOpeBRepBuild_Builder::SplitFace(const TopoDS_Shape& Foriented,
 					const TopAbs_State ToBuild1,
 					const TopAbs_State ToBuild2)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if(TopOpeBRepBuild_GetcontextSF2()){
     SplitFace2(Foriented,ToBuild1,ToBuild2);
     return;
@@ -88,7 +88,7 @@ void TopOpeBRepBuild_Builder::SplitFace1(const TopoDS_Shape& Foriented,
   // ----------------------------------------------
   TopOpeBRepBuild_WireEdgeSet WES(Fforward,this);
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean tSPF=TopOpeBRepBuild_GettraceSPF();
   Standard_Integer iFace=myDataStructure->Shape(Foriented);
   if(tSPF){cout<<endl;GdumpSHASTA(Foriented,ToBuild1,"=== SplitFace ");}
@@ -114,7 +114,7 @@ void TopOpeBRepBuild_Builder::SplitFace1(const TopoDS_Shape& Foriented,
   // -----------------------------------------
   AddIntersectionEdges(Fforward,ToBuild1,RevOri1,WES);
    
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer iF; Standard_Boolean tSPS = GtraceSPS(Fforward,iF);
   if(tSPS) WES.DumpSS();
 #endif
@@ -185,7 +185,7 @@ void TopOpeBRepBuild_Builder::SplitFace2(const TopoDS_Shape& Foriented,
   Standard_Integer n1 = LF1.Extent();
   Standard_Integer n2 = LF2.Extent();
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean tSPF = TopOpeBRepBuild_GettraceSPF();
 //  Standard_Integer iFace = myDataStructure->Shape(Foriented);
   if (tSPF) {
@@ -221,7 +221,7 @@ void TopOpeBRepBuild_Builder::SplitFace2(const TopoDS_Shape& Foriented,
   FindSameRank(LFSO,rankX,LFSO2);
   FindSameRank(LFOO,rankX,LFOO2);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if ( tSPF ) {
     GdumpSAMDOM(LFSO1, (char *) "LFSO1 : ");
     GdumpSAMDOM(LFOO1, (char *) "LFOO1 : ");
@@ -403,7 +403,7 @@ void TopOpeBRepBuild_Builder::SplitFaceOK(const TopoDS_Shape& Foriented,
   // ---------------------------------------------
   TopOpeBRepBuild_WireEdgeSet WES(Fforward,this);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean tSPF = TopOpeBRepBuild_GettraceSPF();
   Standard_Integer iFace = myDataStructure->Shape(Foriented);
   if(tSPF){cout<<endl;GdumpSHASTA(Foriented,ToBuild1,"=== SplitFaceOK ");}

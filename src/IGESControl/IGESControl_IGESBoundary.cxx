@@ -305,7 +305,7 @@ static Standard_Boolean Connect (const Handle(ShapeAnalysis_Wire)& theSAW,
 	  TopoDS_Edge edge3d = Lsewd3d->Edge (iedge), edge2d = Lsewd2d->Edge (iedge);
 	  if (!IGESToBRep::TransferPCurve (edge2d, edge3d, myface)) continue;
 	  if (sfe->FixReversed2d (edge3d, myface)) {
-#ifdef IGESCONTROL_DEB
+#ifdef OCCT_DEBUG
 	    cout << "Warning: IGESToBRep_IGESBoundary: 2D curve of edge was reversed" << endl;
 #endif
 	  }
@@ -325,19 +325,19 @@ static Standard_Boolean Connect (const Handle(ShapeAnalysis_Wire)& theSAW,
 	  Standard_Real maxdev = BRep_Tool::Tolerance (edge3d);
 	  //pdn 08.04.99 S4135 recomputing only if deviation is greater than maxtol
 	  if (maxdev > maxtol) { //:e2
-#ifdef IGESCONTROL_DEB
+#ifdef OCCT_DEBUG
 	    cout << "Warning: IGESToBRep_IGESBoundary: Deviation = " << maxdev << endl;
 #endif
 	    ShapeFix_ShapeTolerance().SetTolerance (edge3d, Precision::Confusion());
 	    for (Standard_Integer ie = 1; ie <= iedge; ie++)
 	      ShapeBuild_Edge().RemovePCurve (Lsewd3d->Edge (ie), myface);
 	    if (Preferred3d) {
-#ifdef IGESCONTROL_DEB
+#ifdef OCCT_DEBUG
 	      cout << "Warning: IGESToBRep_IGESBoundary: 3D and 2D curves are inconsistent; 2D is ignored" << endl;
 #endif
 	    }
 	    else {
-#ifdef IGESCONTROL_DEB
+#ifdef OCCT_DEBUG
 	      cout << "Warning: IGESToBRep_IGESBoundary: 3D and 2D curves are inconsistent; 3D is ignored" << endl;
 #endif
 	      Lsewd = Lsewd2d;
@@ -348,7 +348,7 @@ static Standard_Boolean Connect (const Handle(ShapeAnalysis_Wire)& theSAW,
       }
       okCurve = okCurve && ShapeAlgo::AlgoContainer()->ConnectNextWire (saw, Lsewd, maxtol, distmin, revsewd, revnextsewd);
       if (!okCurve) {
-#ifdef IGESCONTROL_DEB
+#ifdef OCCT_DEBUG
 	cout << "Warning: IGESToBRep_IGESBoundary: Curves " << i - 1 << " and " << i << " cannot be connected" << endl;
 #endif
         Gsewd3d = new ShapeExtend_WireData;

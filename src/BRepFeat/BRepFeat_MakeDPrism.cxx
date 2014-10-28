@@ -78,7 +78,7 @@
 #include <BRepFeat.hxx>
 #include <TopAbs.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean BRepFeat_GettraceFEAT();
 #endif
 
@@ -116,7 +116,7 @@ void BRepFeat_MakeDPrism::Init(const TopoDS_Shape&    Sbase,
 			       const Standard_Boolean Modify)
 	
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
   if (trc) cout << "BRepFeat_MakeDPrism::Init" << endl;
 #endif
@@ -161,7 +161,7 @@ void BRepFeat_MakeDPrism::Init(const TopoDS_Shape&    Sbase,
     myMap(exp.Current()).Append(exp.Current());
   }
   myAngle = Angle;
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (trc) {
     if (myJustFeat)  cout << " Just Feature" << endl;
     if (myFuse)  cout << " Fuse" << endl;
@@ -181,7 +181,7 @@ void BRepFeat_MakeDPrism::Init(const TopoDS_Shape&    Sbase,
 void BRepFeat_MakeDPrism::Add(const TopoDS_Edge& E,
 			     const TopoDS_Face& F)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
   if (trc) cout << "BRepFeat_MakeDPrism::Add(Edge,face)" << endl;
 #endif
@@ -227,7 +227,7 @@ void BRepFeat_MakeDPrism::Add(const TopoDS_Edge& E,
 
 void BRepFeat_MakeDPrism::Perform(const Standard_Real Height)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
   if (trc) cout << "BRepFeat_MakeDPrism::Perform(Height)" << endl;
 #endif
@@ -338,7 +338,7 @@ void BRepFeat_MakeDPrism::Perform(const Standard_Real Height)
 
 void BRepFeat_MakeDPrism::Perform(const TopoDS_Shape& Until)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
   if (trc) cout << "BRepFeat_MakeDPrism::Perform(Until)" << endl;
 #endif
@@ -474,7 +474,7 @@ void BRepFeat_MakeDPrism::Perform(const TopoDS_Shape& Until)
 void BRepFeat_MakeDPrism::Perform(const TopoDS_Shape& From,
 				  const TopoDS_Shape& Until)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
   if (trc) cout << "BRepFeat_MakeDPrism::Perform(From,Until)" << endl;
 #endif
@@ -658,7 +658,7 @@ void BRepFeat_MakeDPrism::Perform(const TopoDS_Shape& From,
 
 void BRepFeat_MakeDPrism::PerformUntilEnd()
 {  
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
   if (trc) cout << "BRepFeat_MakeDPrism::PerformUntilEnd()" << endl;
 #endif 
@@ -692,7 +692,7 @@ void BRepFeat_MakeDPrism::PerformUntilEnd()
 
 void BRepFeat_MakeDPrism::PerformFromEnd(const TopoDS_Shape& Until)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
   if (trc) cout << "BRepFeat_MakeDPrism::PerformFromEnd(From,Until)" << endl;
 #endif
@@ -851,7 +851,7 @@ void BRepFeat_MakeDPrism::PerformFromEnd(const TopoDS_Shape& Until)
 
 void BRepFeat_MakeDPrism::PerformThruAll()
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
   if (trc) cout << "BRepFeat_MakeDPrism::PerformThruAll()" << endl;
 #endif
@@ -909,7 +909,7 @@ void BRepFeat_MakeDPrism::PerformThruAll()
 void BRepFeat_MakeDPrism::PerformUntilHeight(const TopoDS_Shape& Until,
 					     const Standard_Real Height)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
   if (trc) cout << "BRepFeat_MakeDPrism::PerformUntilHeight(Until,Height)" << endl;
 #endif
@@ -1040,7 +1040,7 @@ void BRepFeat_MakeDPrism::Curves(TColGeom_SequenceOfCurve& scur)
 //============================================================================
 void BRepFeat_MakeDPrism::BossEdges (const Standard_Integer signature) 
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
   if (trc) cout << "BRepFeat_MakeDPrism::BossEdges (integer)" << endl;
 #endif
@@ -1186,12 +1186,12 @@ static Standard_Real HeightMax(const TopoDS_Shape& theSbase,  // shape initial
 //  }
 //  Standard_Real Height = abs(2.*(parmax - parmin));
 //  return(2.*Height);
-//#ifndef DEB
+//#ifndef OCCT_DEBUG
   Standard_Real par = Max(  Max( fabs(c[1] - c[0]), fabs(c[3] - c[2]) ), fabs(c[5] - c[4]) );
 //#else
 //  Standard_Real par = Max(  Max( abs(c[1] - c[0]), abs(c[3] - c[2]) ), abs(c[5] - c[4]) );
 //#endif
-#ifdef BREPFEAT_DEB
+#ifdef OCCT_DEBUG
   cout << "Height = > " <<  par  << endl;
 #endif
   return par;

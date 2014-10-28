@@ -127,7 +127,7 @@ static Standard_Integer NDEP(Draw_Interpretor& theCommands,
       return 1;
     }
 
-//#ifdef DEB
+//#ifdef OCCT_DEBUG
 //    Flag = Draw::Atof(a[9*ii+7]); // BUG?? Real -> Boolean ???
 //#else
     Flag = (Standard_Boolean ) Draw::Atof(a[9*ii+7]);

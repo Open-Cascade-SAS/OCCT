@@ -72,12 +72,12 @@ TopOpeBRepDS_Dumper::TopOpeBRepDS_Dumper(const Handle(TopOpeBRepDS_HDataStructur
 //=======================================================================
 
 Standard_OStream& TopOpeBRepDS_Dumper::PrintType(const Handle(Geom_Curve)&
-#ifdef DEB
+#ifdef OCCT_DEBUG
                                                                            C
 #endif
                                                  ,Standard_OStream& OS)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (C.IsNull()) {
     OS<<"NULL CURVE";
     return OS;
@@ -107,12 +107,12 @@ Standard_OStream& TopOpeBRepDS_Dumper::PrintType(const Handle(Geom_Curve)&
 //=======================================================================
 
 Standard_OStream& TopOpeBRepDS_Dumper::PrintType(const Handle(Geom2d_Curve)&
-#ifdef DEB
+#ifdef OCCT_DEBUG
                                                                              C
 #endif
                                                  ,Standard_OStream& OS)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (C.IsNull()) {
     OS<<"NULL CURVE2d";
     return OS;
@@ -142,12 +142,12 @@ Standard_OStream& TopOpeBRepDS_Dumper::PrintType(const Handle(Geom2d_Curve)&
 //=======================================================================
 
 Standard_OStream& TopOpeBRepDS_Dumper::Print(const gp_Pnt&
-#ifdef DEB
+#ifdef OCCT_DEBUG
                                                            P
 #endif
                                              ,Standard_OStream& OS)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   OS<<P.X()<<" "<<P.Y()<<" "<<P.Z()<<" ";
 #endif
   
@@ -161,12 +161,12 @@ Standard_OStream& TopOpeBRepDS_Dumper::Print(const gp_Pnt&
 //=======================================================================
 
 Standard_OStream& TopOpeBRepDS_Dumper::Print(const gp_Pnt2d&
-#ifdef DEB
+#ifdef OCCT_DEBUG
                                                              P
 #endif
                                              ,Standard_OStream& OS)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   OS<<P.X()<<" "<<P.Y()<<" ";
 #endif
   
@@ -180,17 +180,17 @@ Standard_OStream& TopOpeBRepDS_Dumper::Print(const gp_Pnt2d&
 //=======================================================================
 
 Standard_OStream& TopOpeBRepDS_Dumper::Print(const Handle(Geom_BSplineCurve)&
-#ifdef DEB
+#ifdef OCCT_DEBUG
                                                                             B
 #endif
                                              ,Standard_OStream& OS
                                              ,const Standard_Boolean
-#ifdef DEB
+#ifdef OCCT_DEBUG
                                                                      compact
 #endif
                                              )
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer i,l,lb = 0,n;
   
   Standard_Integer degree   = B->Degree();
@@ -255,17 +255,17 @@ Standard_OStream& TopOpeBRepDS_Dumper::Print(const Handle(Geom_BSplineCurve)&
 //=======================================================================
 
 Standard_OStream& TopOpeBRepDS_Dumper::Print(const Handle(Geom2d_BSplineCurve)&
-#ifdef DEB
+#ifdef OCCT_DEBUG
                                                                                 B
 #endif
                                              ,Standard_OStream& OS
                                              ,const Standard_Boolean
-#ifdef DEB
+#ifdef OCCT_DEBUG
                                                                      compact
 #endif
                                              )
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer i,l,lb=-1,n;
   
   Standard_Integer degree   = B->Degree();
@@ -330,17 +330,17 @@ Standard_OStream& TopOpeBRepDS_Dumper::Print(const Handle(Geom2d_BSplineCurve)&
 //=======================================================================
 
 Standard_OStream& TopOpeBRepDS_Dumper::Print(const Handle(Geom_Curve)&
-#ifdef DEB
+#ifdef OCCT_DEBUG
                                                                        C
 #endif
                                              ,Standard_OStream& OS
                                              ,const Standard_Boolean
-#ifdef DEB
+#ifdef OCCT_DEBUG
                                                                       compact
 #endif
                                              )
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #define DBSP3D(tut) (*((Handle(Geom_BSplineCurve)*)&(tut)))
   if (!C.IsNull()) {
     if (C->DynamicType() == STANDARD_TYPE(Geom_BSplineCurve))
@@ -359,7 +359,7 @@ Standard_OStream& TopOpeBRepDS_Dumper::Print(const Handle(Geom_Curve)&
 //purpose  : 
 //=======================================================================
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 Standard_OStream& TopOpeBRepDS_Dumper::Print(const Handle(Geom2d_Curve)& C,
 				Standard_OStream& OS,const Standard_Boolean compact)
 {
@@ -378,7 +378,7 @@ Standard_OStream& TopOpeBRepDS_Dumper::Print(const Handle(Geom2d_Curve)& C,
 // DUMP OF HDATASTRUCTURE
 
 //-----------------------------------------------------------------------
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //unreferenced function, commented
 /*static void souligne(const TCollection_AsciiString& t,Standard_OStream& OS,const char c = '-') 
 { for(char i=0;i<t.Length();i++)OS<<c; }*/
@@ -411,16 +411,16 @@ static TCollection_AsciiString& Print(const TopOpeBRepDS_Kind k,TCollection_Asci
 
 Standard_OStream& TopOpeBRepDS_Dumper::Dump(Standard_OStream& OS
                                             ,const Standard_Boolean
-#ifdef DEB
+#ifdef OCCT_DEBUG
                                                                     findkeep
 #endif
                                             ,const Standard_Boolean
-#ifdef DEB
+#ifdef OCCT_DEBUG
                                                                     compact
 #endif
                                             ) const
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   OS<<endl<<"==== HDS start filling resume"<<endl;
   DumpGeometry(OS,findkeep,compact);
   DumpTopology(OS);
@@ -436,16 +436,16 @@ Standard_OStream& TopOpeBRepDS_Dumper::Dump(Standard_OStream& OS
 //=======================================================================
 Standard_OStream& TopOpeBRepDS_Dumper::DumpGeometry(Standard_OStream& OS
                                                     ,const Standard_Boolean
-#ifdef DEB
+#ifdef OCCT_DEBUG
                                                                             findkeep
 #endif
                                                     ,const Standard_Boolean
-#ifdef DEB
+#ifdef OCCT_DEBUG
                                                                             compact
 #endif
                                                     ) const
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   DumpGeometry(TopOpeBRepDS_POINT,OS,findkeep,compact);
   DumpGeometry(TopOpeBRepDS_CURVE,OS,findkeep,compact);
   DumpGeometry(TopOpeBRepDS_SURFACE,OS,findkeep,compact);
@@ -461,21 +461,21 @@ Standard_OStream& TopOpeBRepDS_Dumper::DumpGeometry(Standard_OStream& OS
 
 Standard_OStream& TopOpeBRepDS_Dumper::DumpGeometry
                                        (const TopOpeBRepDS_Kind
-#ifdef DEB
+#ifdef OCCT_DEBUG
                                                                 K
 #endif
                                         ,Standard_OStream& OS
                                         ,const Standard_Boolean
-#ifdef DEB
+#ifdef OCCT_DEBUG
                                                                 findkeep
 #endif
                                         ,const Standard_Boolean
-#ifdef DEB
+#ifdef OCCT_DEBUG
                                                                 compact
 #endif
                                         ) const
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if ( ! TopOpeBRepDS::IsGeometry(K) ) return OS;
   Standard_Integer nt = myHDS->NbGeometry(K);
   if (!nt) return OS;
@@ -498,25 +498,25 @@ Standard_OStream& TopOpeBRepDS_Dumper::DumpGeometry
 //=======================================================================
 
 Standard_OStream& TopOpeBRepDS_Dumper::DumpGeometry(const TopOpeBRepDS_Kind
-#ifdef DEB
+#ifdef OCCT_DEBUG
                                                                             K
 #endif
                                                     ,const Standard_Integer
-#ifdef DEB
+#ifdef OCCT_DEBUG
                                                                             I
 #endif
                                                     ,Standard_OStream& OS,
 				                    const Standard_Boolean
-#ifdef DEB
+#ifdef OCCT_DEBUG
                                                                            findkeep
 #endif
                                                     ,const Standard_Boolean
-#ifdef DEB
+#ifdef OCCT_DEBUG
                                                                             compact
 #endif
                                                      ) const
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if ( ! TopOpeBRepDS::IsGeometry(K) ) return OS;
   
   if      ( K == TopOpeBRepDS_POINT ) {
@@ -615,7 +615,7 @@ Standard_OStream& TopOpeBRepDS_Dumper::DumpGeometry(const TopOpeBRepDS_Kind
 //=======================================================================
 Standard_OStream& TopOpeBRepDS_Dumper::DumpTopology(Standard_OStream& OS) const
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   DumpTopology(TopOpeBRepDS_VERTEX,OS);
   DumpTopology(TopOpeBRepDS_EDGE,OS);
   DumpTopology(TopOpeBRepDS_WIRE,OS);
@@ -632,12 +632,12 @@ Standard_OStream& TopOpeBRepDS_Dumper::DumpTopology(Standard_OStream& OS) const
 //purpose  : 
 //=======================================================================
 Standard_OStream& TopOpeBRepDS_Dumper::DumpTopology(const TopOpeBRepDS_Kind
-#ifdef DEB
+#ifdef OCCT_DEBUG
                                                                             K
 #endif
                                                     ,Standard_OStream& OS) const
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if ( ! TopOpeBRepDS::IsTopology(K) ) return OS;
   Standard_Integer nk = myHDS->NbTopology(K);
   if ( ! nk ) return OS;
@@ -656,12 +656,12 @@ Standard_OStream& TopOpeBRepDS_Dumper::DumpTopology(const TopOpeBRepDS_Kind
 //purpose  : 
 //=======================================================================
 Standard_OStream& TopOpeBRepDS_Dumper::DumpTopology(const TopAbs_ShapeEnum
-#ifdef DEB
+#ifdef OCCT_DEBUG
                                                                            T
 #endif
                                                     ,Standard_OStream& OS) const
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   DumpTopology(TopOpeBRepDS::ShapeToKind(T),OS);
 #endif
   return OS;
@@ -673,12 +673,12 @@ Standard_OStream& TopOpeBRepDS_Dumper::DumpTopology(const TopAbs_ShapeEnum
 //=======================================================================
 
 Standard_OStream& TopOpeBRepDS_Dumper::DumpSectionEdge(const TopOpeBRepDS_Kind
-#ifdef DEB
+#ifdef OCCT_DEBUG
                                                                                K
 #endif
                                                        ,Standard_OStream& OS) const
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer nse = myHDS->DS().NbSectionEdges();
   if ( ! nse ) return OS;
   
@@ -718,16 +718,16 @@ Standard_EXPORT Standard_Integer TopOpeBRepDS_GLOBALHDSinterfselector = 0; // NY
 //purpose  : 
 //=======================================================================
 Standard_OStream& TopOpeBRepDS_Dumper::DumpTopology(const TopOpeBRepDS_Kind
-#ifdef DEB
+#ifdef OCCT_DEBUG
                                                                             K
 #endif
                                                     ,const Standard_Integer
-#ifdef DEB
+#ifdef OCCT_DEBUG
                                                                             I
 #endif
                                                     ,Standard_OStream& OS) const
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean fk = Standard_False;
   const TopOpeBRepDS_DataStructure& DS = myHDS->DS();
   if ( ! TopOpeBRepDS::IsTopology(K) ) return OS;
@@ -793,16 +793,16 @@ Standard_OStream& TopOpeBRepDS_Dumper::DumpTopology(const TopOpeBRepDS_Kind
 //purpose  : 
 //=======================================================================
 Standard_OStream& TopOpeBRepDS_Dumper::DumpTopology(const TopAbs_ShapeEnum
-#ifdef DEB
+#ifdef OCCT_DEBUG
                                                                            T
 #endif
                                                     ,const Standard_Integer
-#ifdef DEB
+#ifdef OCCT_DEBUG
                                                                             I
 #endif
                                                     ,Standard_OStream& OS) const
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   DumpTopology(TopOpeBRepDS::ShapeToKind(T),I,OS);
 #endif
   return OS;
@@ -849,16 +849,16 @@ TCollection_AsciiString TopOpeBRepDS_Dumper::SDumpRefOri(const TopoDS_Shape& S) 
 //=======================================================================
 
 Standard_OStream& TopOpeBRepDS_Dumper::DumpRefOri(const TopOpeBRepDS_Kind
-#ifdef DEB
+#ifdef OCCT_DEBUG
                                                                           K
 #endif
                                                   ,const Standard_Integer
-#ifdef DEB
+#ifdef OCCT_DEBUG
                                                                           I
 #endif
                                                   ,Standard_OStream& OS) const
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   OS<<SDumpRefOri(K,I);OS.flush();
 #endif
   return OS;
@@ -870,12 +870,12 @@ Standard_OStream& TopOpeBRepDS_Dumper::DumpRefOri(const TopOpeBRepDS_Kind
 //=======================================================================
 
 Standard_OStream& TopOpeBRepDS_Dumper::DumpRefOri(const TopoDS_Shape&
-#ifdef DEB
+#ifdef OCCT_DEBUG
                                                                       S
 #endif
                                                   ,Standard_OStream& OS) const
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   OS<<SDumpRefOri(S);OS.flush();
 #endif
   return OS;
@@ -888,17 +888,17 @@ Standard_OStream& TopOpeBRepDS_Dumper::DumpRefOri(const TopoDS_Shape&
 
 Standard_OStream& TopOpeBRepDS_Dumper::DumpLOI(
                                 const TopOpeBRepDS_ListOfInterference&
-#ifdef DEB
+#ifdef OCCT_DEBUG
                                                                        L
 #endif
                                 ,Standard_OStream& OS,
                                 const TCollection_AsciiString&
-#ifdef DEB
+#ifdef OCCT_DEBUG
                                                                str
 #endif
                                                                    ) const
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   OS<<str;
   TopOpeBRepDS_InterferenceIterator IT(L); if (!IT.More()) { OS<<"NO INTERFERENCE"<<endl; return OS; }
   OS<<endl;
@@ -918,21 +918,21 @@ Standard_OStream& TopOpeBRepDS_Dumper::DumpLOI(
 //=======================================================================
 Standard_OStream& TopOpeBRepDS_Dumper::DumpI(
                                 const Handle(TopOpeBRepDS_Interference)&
-#ifdef DEB
+#ifdef OCCT_DEBUG
                                                                          I
 #endif
                                 ,Standard_OStream& OS
 				,const TCollection_AsciiString&
-#ifdef DEB
+#ifdef OCCT_DEBUG
 				                                str1
 #endif
                                 ,const TCollection_AsciiString&
-#ifdef DEB
+#ifdef OCCT_DEBUG
 				                                str2
 #endif
                                                                      ) const
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean fk = Standard_False;
   OS<<str1;  
   if (I.IsNull()) { OS<<"NULL INTERFERENCE"<<str2; return OS; }

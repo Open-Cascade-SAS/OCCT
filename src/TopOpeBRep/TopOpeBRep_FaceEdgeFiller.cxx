@@ -27,7 +27,7 @@
 #include <TopoDS_Edge.hxx>
 #include <gp_Pnt2d.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern void FEINT_DUMPPOINTS(TopOpeBRep_FaceEdgeIntersector& FEINT,
 			     const TopOpeBRepDS_DataStructure& BDS);
 extern Standard_Boolean TopOpeBRepDS_GettraceDSF(); 
@@ -57,7 +57,7 @@ void TopOpeBRep_FaceEdgeFiller::Insert
   const TopoDS_Face& FF = TopoDS::Face(F);
   const TopoDS_Edge& EE = TopoDS::Edge(E);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepDS_GettraceDSF()) {
     FEINT_DUMPPOINTS(FEINT,HDS->DS());
   }
@@ -87,7 +87,7 @@ void TopOpeBRep_FaceEdgeFiller::Insert
     gp_Pnt2d      pUV; FEINT.UVPoint(pUV);
     Standard_Real parE = FEINT.Parameter();
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     TopOpeBRepDS_Transition TFF =
 #endif
                                   FEINT.Transition(1,EEori); //  EEori bidon = EXTERNAL
@@ -256,7 +256,7 @@ void TopOpeBRep_FaceEdgeFiller::StoreInterference
   // append I to list LI
   LI.Append(I);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean appendtoG = Standard_False;
 #endif
   Standard_Integer G = I->Geometry();
@@ -271,14 +271,14 @@ void TopOpeBRep_FaceEdgeFiller::StoreInterference
     break;
     
   case TopOpeBRepDS_SURFACE :
-#ifdef DEB
+#ifdef OCCT_DEBUG
     appendtoG = Standard_True;
 #endif
     BDS.ChangeSurfaceInterferences(G).Append(I);
     break;
     
   case TopOpeBRepDS_CURVE :
-#ifdef DEB
+#ifdef OCCT_DEBUG
     appendtoG = Standard_True;
 #endif
     BDS.ChangeCurveInterferences(G).Append(I);
@@ -292,7 +292,7 @@ void TopOpeBRep_FaceEdgeFiller::StoreInterference
     break;
   }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepDS_GettraceDSF()) {
     cout<<"append "; I->Dump(cout); 
     if (appendtoG) cout<<" and to G"<<G<<" list";

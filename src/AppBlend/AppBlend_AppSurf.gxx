@@ -36,10 +36,8 @@
 #include <AppDef_Variational.hxx>
 
 static   Standard_Boolean scal = 1;
-#ifdef DEB
 extern Standard_Boolean AppBlend_GetContextSplineApprox(); 
 extern Standard_Boolean AppBlend_GetContextApproxWithNoTgt(); 
-#endif
 
 //  modified by EAP (Edward AGAPOV) Fri Jan 4 2002, bug OCC9
 //  --- keep pipe parametrized like path
@@ -244,11 +242,7 @@ void AppBlend_AppSurf::InternalPerform(const Handle(TheLine)& Lin,
   withderiv = F.Section(Lin->Point(1),tabAppP,tabAppV,tabP2d,tabV2d,
 			tabW,tabDW);
 
-#if DEB
-//  SpApprox = AppBlend_GetContextSplineApprox();
   if(AppBlend_GetContextApproxWithNoTgt()) withderiv = Standard_False;
-#endif
-
 
   for (j=1; j<=NbPoles2d; j++) {
     tabAppP2d(j) = tabP2d(j);
@@ -297,9 +291,7 @@ void AppBlend_AppSurf::InternalPerform(const Handle(TheLine)& Lin,
     else {
       withderiv = F.Section(Lin->Point(i),tabAppP,tabAppV,tabP2d,tabV2d,
 			    tabW,tabDW);
-#if DEB
       if(AppBlend_GetContextApproxWithNoTgt()) withderiv = Standard_False;
-#endif
       
       for (j=1; j<=NbPoles2d; j++) {
 	tabAppP2d(j) = tabP2d(j);
@@ -331,9 +323,7 @@ void AppBlend_AppSurf::InternalPerform(const Handle(TheLine)& Lin,
   
   withderiv = F.Section(Lin->Point(NbPoint),tabAppP,tabAppV,tabP2d,tabV2d,
 			tabW,tabDW);
-#if DEB
-      if(AppBlend_GetContextApproxWithNoTgt()) withderiv = Standard_False;
-#endif
+  if(AppBlend_GetContextApproxWithNoTgt()) withderiv = Standard_False;
 
   for (j=1; j<=NbPoles2d; j++) {
     tabAppP2d(j) = tabP2d(j);
@@ -399,7 +389,7 @@ void AppBlend_AppSurf::InternalPerform(const Handle(TheLine)& Lin,
       mytol3d = Max(TheTol3d, mytol3d);
       mytol2d = Max(TheTol2d, mytol2d);
     }
-#ifdef APPBLEND_DEB
+#ifdef OCCT_DEBUG
     cout << " Tolerances obtenues  --> 3d : "<< mytol3d << endl;
     cout << "                      --> 2d : "<< mytol2d << endl;
 #endif
@@ -444,7 +434,7 @@ void AppBlend_AppSurf::InternalPerform(const Handle(TheLine)& Lin,
       }
       theapprox.Perform(multL);
       theapprox.Error(mytol3d,mytol2d);
-#ifdef APPBLEND_DEB
+#ifdef OCCT_DEBUG
       cout << " Tolerances obtenues  --> 3d : "<< mytol3d << endl;
       cout << "                      --> 2d : "<< mytol2d << endl;
 #endif    
@@ -506,7 +496,7 @@ void AppBlend_AppSurf::InternalPerform(const Handle(TheLine)& Lin,
 
       mytol3d = Variation.MaxError();
       mytol2d = 0.;
-#ifdef APPBLEND_DEB
+#ifdef OCCT_DEBUG
       cout << " Tolerances obtenues  --> 3d : "<< mytol3d << endl;
       cout << "                      --> 2d : "<< mytol2d << endl;
 #endif    
@@ -710,9 +700,7 @@ void AppBlend_AppSurf::Perform(const Handle(TheLine)& Lin,
       Standard_Real x,y,z;
       withderiv = F.Section(Lin->Point(iLin),tabAppP,tabAppV,tabP2d,tabV2d,
 			    tabW,tabDW);
-#if DEB
       if(AppBlend_GetContextApproxWithNoTgt()) withderiv = Standard_False;
-#endif
       
       for (j=1; j<=NbPoles2d; j++) {
 	tabP2d(j).Coord(x,y);
@@ -826,7 +814,7 @@ void AppBlend_AppSurf::Perform(const Handle(TheLine)& Lin,
     }
 //  modified by EAP Thu Jan  3 15:45:27 2002 ___END___
   }
-#ifdef APPBLEND_DEB
+#ifdef OCCT_DEBUG
   cout << "   Tolerances obtenues  --> 3d : "<< mytol3d << endl;
   cout << "                        --> 2d : "<< mytol2d << endl;
 #endif
@@ -851,7 +839,7 @@ void AppBlend_AppSurf::Perform(const Handle(TheLine)& Lin,
 			      F.Parameter(Lin->Point(Lin->NbPoints())),
 			      tabVKnots->ChangeArray1()
 			      );
-#ifdef APPBLEND_DEB
+#ifdef OCCT_DEBUG
       cout << "Warning: AppBlend_AppSurf::Perform(), bad length of aParamSeq: " <<
 	aParamSeq.Length() << " instead of " << tabVKnots->Length() << endl;
 #endif

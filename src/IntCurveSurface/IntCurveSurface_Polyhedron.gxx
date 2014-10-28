@@ -25,9 +25,7 @@
 
 #include <Standard_ConstructionError.hxx>
 
-//#if  defined (WNT) || !defined (DEB) 
 #include <stdio.h>
-//#endif
 
 #define CHECKBOUNDS 0
 
@@ -190,7 +188,7 @@ void IntCurveSurface_Polyhedron::Init(const ThePSurface&     Surface,
 
 //  Modified by Sergey KHROMOV - Fri Dec  7 11:23:34 2001 End
 
-  #ifdef DEBUGDUMP 
+  #ifdef OCCT_DEBUG_DUMP 
     Dump();
   #endif
 }
@@ -281,7 +279,7 @@ void IntCurveSurface_Polyhedron::Init(const ThePSurface&     Surface,
 
 //  Modified by Sergey KHROMOV - Fri Dec  7 11:23:34 2001 End
 
-  #ifdef DEBUGDUMP 
+  #ifdef OCCT_DEBUG_DUMP 
     Dump();
   #endif
 }

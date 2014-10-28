@@ -92,7 +92,7 @@
 #include <ChFi3d.hxx>
 #include <ChFi3d_Builder_0.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #ifdef DRAW
 #include <DrawTrSurf.hxx>
 #endif
@@ -608,7 +608,7 @@ CallPerformSurf(Handle(ChFiDS_Stripe)&              Stripe,
                 Handle(BRepAdaptor_HSurface)&       Surf1,
 		Handle(BRepAdaptor_HSurface)&       Surf2) 
 {
-#ifdef DEB   
+#ifdef OCCT_DEBUG
   OSD_Chronometer ch1;
 #endif 
   Handle(BRepAdaptor_HSurface) HSon1, HSon2;
@@ -638,7 +638,7 @@ CallPerformSurf(Handle(ChFiDS_Stripe)&              Stripe,
   }
   else{
 	
-#ifdef DEB  
+#ifdef OCCT_DEBUG
     ChFi3d_InitChron(ch1);//initial perform for PerformSurf
 #endif
 	
@@ -646,7 +646,7 @@ CallPerformSurf(Handle(ChFiDS_Stripe)&              Stripe,
                          MaxStep,Fleche,tolesp,
                          First,Last,Inside,Inside,forward,
                          RecOnS1,RecOnS2,Soldep,intf,intl);
-#ifdef DEB   
+#ifdef OCCT_DEBUG
     ChFi3d_ResultChron(ch1,t_performsurf);// result perf for PerformSurf   
 #endif
   }
@@ -684,7 +684,7 @@ CallPerformSurf(Handle(ChFiDS_Stripe)&              Stripe,
      }
      else{
 	
-#ifdef DEB  
+#ifdef OCCT_DEBUG
        ChFi3d_InitChron(ch1);//init perf for PerformSurf
 #endif
 	
@@ -692,7 +692,7 @@ CallPerformSurf(Handle(ChFiDS_Stripe)&              Stripe,
                             MaxStep,Fleche,tolesp,
                             First,Last,Inside,Inside,forward,
                             RecOnS1,RecOnS2,Soldep,intf,intl);
-#ifdef DEB   
+#ifdef OCCT_DEBUG
        ChFi3d_ResultChron(ch1,t_performsurf);// result perf for PerformSurf   
 #endif
      }
@@ -1327,7 +1327,7 @@ Standard_Boolean  ChFi3d_Builder::SearchFace
   TopoDS_Edge E;
   if (Pc.IsVertex()){
     // attention it is necessary to analyze all faces that turn around of the vertex
-#if CHFI3D_DEB
+#ifdef OCCT_DEBUG
     cout<<"Commonpoint on vertex, the process hangs up"<<endl;
 #endif
     if (Pc.HasVector()) { //General processing
@@ -1372,7 +1372,7 @@ Standard_Boolean  ChFi3d_Builder::SearchFace
 	  FindFace = Standard_False;
 	  if (Spine.IsNull()) {
 	    //La Spine peut etre nulle (ThreeCorner)
-#if CHFI3D_DEB
+#ifdef OCCT_DEBUG
 	    cout << "FindFace sur vertex avec spine nulle! QUEZAKO ?" << endl;
 #endif
 	    return Standard_False;
@@ -1743,7 +1743,7 @@ static void ChFi3d_Purge (Handle(ChFiDS_Stripe)&    Stripe,
   Standard_Integer opp = 3-ons;
   if (!SD->Vertex(isfirst,opp).IsOnArc() || 
       SD->TwistOnS1() || SD->TwistOnS2() ) {
-#ifdef CHFI3D_DEB
+#ifdef OCCT_DEBUG
     cout<<"ChFi3d_Purge : No output on extension."<<endl;
 #endif
     ChFiDS_SequenceOfSurfData& Seq = 
@@ -1853,7 +1853,7 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine
  Handle(BRepTopAdaptor_TopolTool)& It2,
  const Standard_Boolean            Simul)
 { 
-#ifdef DEB   
+#ifdef OCCT_DEBUG
   OSD_Chronometer ch1;
 #endif 
   
@@ -1907,13 +1907,13 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine
     //sinon solution approchee.
     Inside = Standard_True;
     
-#ifdef DEB  
+#ifdef OCCT_DEBUG
     ChFi3d_InitChron(ch1);// init perf for StartSol 
 #endif
     
     StartSol(Stripe,HGuide,HS1,HS2,It1,It2,pp1,pp2,First);
     
-#ifdef DEB 
+#ifdef OCCT_DEBUG
     ChFi3d_ResultChron(ch1,t_startsol); // result perf for StartSol  
 #endif 
     
@@ -1937,7 +1937,7 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine
       First = wl; Last = Guide.FirstParameter();
     }
     
-#ifdef DEB  
+#ifdef OCCT_DEBUG
     ChFi3d_InitChron(ch1);// init perf for startsol 
 #endif
     
@@ -1951,7 +1951,7 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine
     HC1.Nullify(); 
     HC2.Nullify();
     
-#ifdef DEB   
+#ifdef OCCT_DEBUG
     ChFi3d_ResultChron(ch1,t_startsol); // result perf for startsol  
 #endif
     
@@ -2010,7 +2010,7 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine
     if(intl && forward) Vref = Spine->LastVertex();
     if(!ref.IsNull()){
       
-#ifdef DEB  
+#ifdef OCCT_DEBUG
       ChFi3d_InitChron(ch1);// init perf for StartSol 
 #endif
       
@@ -2021,7 +2021,7 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine
 		     HSref2,HCref2, RecP2,RecS2,RecRst2,obstacleon2,
 		     HS4,pp4,decroch2,Vref);
       
-#ifdef DEB   
+#ifdef OCCT_DEBUG
       ChFi3d_ResultChron(ch1,t_startsol); // result perf for StartSol  
 #endif 
       
@@ -2072,7 +2072,7 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine
 		  RecP1,RecRst1,RecP2,RecRst2,SoldepCC);
       }
       else{
-#ifdef DEB   
+#ifdef OCCT_DEBUG
 	ChFi3d_InitChron(ch1); // init perf for PerformSurf 
 #endif
 	PerformSurf(SeqSD,HGuide,Spine,Choix,
@@ -2080,7 +2080,7 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine
 		    HS2,It2,HC2,HSref2,HCref2,decroch2,Or2,
 		    MaxStep,locfleche,tolesp,First,Last,Inside,Inside,forward,
 		    RecP1,RecRst1,RecP2,RecRst2,SoldepCC);
-#ifdef DEB  
+#ifdef OCCT_DEBUG
 	ChFi3d_ResultChron(ch1,t_performsurf); //result  perf for PerformSurf 
 #endif 
       }
@@ -2103,13 +2103,13 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine
 		  Inside,Inside,forward,RecP1,RecS2,RecRst1,SoldepCS);
       }
       else{
-#ifdef DEB  
+#ifdef OCCT_DEBUG
 	ChFi3d_InitChron(ch1); // init perf for PerformSurf
 #endif
 	PerformSurf(SeqSD,HGuide,Spine,Choix,HS1,It1,HC1,HSref1,HCref1,decroch1,
 		    HS2,It2,Or2,MaxStep,locfleche,tolesp,First,Last,
 		    Inside,Inside,forward,RecP1,RecS2,RecRst1,SoldepCS);
-#ifdef DEB  
+#ifdef OCCT_DEBUG
 	ChFi3d_ResultChron(ch1,t_performsurf);//result  perf for PerformSurf  
 #endif 
       }
@@ -2131,13 +2131,13 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine
 		  First,Last,Inside,Inside,forward,RecP2,RecS1,RecRst2,SoldepCS);
       }
       else{
-#ifdef DEB   
+#ifdef OCCT_DEBUG
 	ChFi3d_InitChron(ch1); // init perf for PerformSurf 
 #endif
 	PerformSurf(SeqSD,HGuide,Spine,Choix,HS1,It1,Or1,
 		    HS2,It2,HC2,HSref2,HCref2,decroch2,MaxStep,locfleche,tolesp,
 		    First,Last,Inside,Inside,forward,RecP2,RecS1,RecRst2,SoldepCS);
-#ifdef DEB  
+#ifdef OCCT_DEBUG
 	ChFi3d_ResultChron(ch1,t_performsurf); //result  perf for PerformSurf 
 #endif 
       }
@@ -2335,12 +2335,12 @@ void ChFi3d_Builder::PerformSetOfKPart(Handle(ChFiDS_Stripe)& Stripe,
       ChFiDS_SequenceOfSurfData LSD;
       
       if(!ChFiKPart_ComputeData::Compute(DStr,SD,HS1,HS2,Or1,Or2,Spine,iedge)){
-#ifdef CHFI3D_DEB
+#ifdef OCCT_DEBUG
 	cout<<"failed calculation KPart"<<endl;
 #endif
       }
       else if(!SplitKPart(SD,LSD,Spine,iedge,HS1,It1,HS2,It2,intf,intl)){
-#ifdef CHFI3D_DEB
+#ifdef OCCT_DEBUG
 	cout<<"failed calculation KPart"<<endl;
 #endif
 	LSD.Clear();
@@ -2466,11 +2466,11 @@ void ChFi3d_Builder::PerformSetOfKPart(Handle(ChFiDS_Stripe)& Stripe,
   ChFiDS_ListOfHElSpine& ll = Spine->ChangeElSpines();
   ChFiDS_ListIteratorOfListOfHElSpine ILES(ll);
   for ( ; ILES.More(); ILES.Next()) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if(ChFi3d_GettraceCHRON()) elspine.Start();
 #endif
     ChFi3d_PerformElSpine(ILES.Value(),Spine,myConti,tolesp);
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if(ChFi3d_GettraceCHRON()) { elspine.Stop(); }
 #endif
   }
@@ -2501,11 +2501,11 @@ void ChFi3d_Builder::PerformSetOfKGen(Handle(ChFiDS_Stripe)& Stripe,
   ChFiDS_ListOfHElSpine& ll = Spine->ChangeElSpines();
   ChFiDS_ListIteratorOfListOfHElSpine ILES(ll);
   for ( ; ILES.More(); ILES.Next()) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if(ChFi3d_GettraceCHRON()) { chemine.Start(); }
 #endif
     PerformSetOfSurfOnElSpine(ILES.Value(),Stripe,It1,It2,Simul);
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if(ChFi3d_GettraceCHRON()) chemine.Stop();
 #endif
   }
@@ -2743,7 +2743,7 @@ void ChFi3d_Builder::PerformSetOfKGen(Handle(ChFiDS_Stripe)& Stripe,
       ChFi3d_ReparamPcurv(0.,1.,PC1);
       ChFi3d_ReparamPcurv(0.,1.,PC2);
       Handle(Geom_Surface) newsurf = fil.Surface();
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #ifdef DRAW
       //POP for NT
       char* pops = "newsurf";
@@ -2874,7 +2874,7 @@ void ChFi3d_Builder::PerformSetOfKGen(Handle(ChFiDS_Stripe)& Stripe,
       }
       else if(IF < IL){
 	TColStd_Array1OfReal wv(IF,IL - 1);
-#ifdef  CHFI3D_DEB
+#ifdef OCCT_DEBUG
 	cout<<"length of the trajectory : "<<(WL-WF)<<endl;
 #endif
 	for(i = IF; i < IL; i++){
@@ -2883,7 +2883,7 @@ void ChFi3d_Builder::PerformSetOfKGen(Handle(ChFiDS_Stripe)& Stripe,
 	  Standard_Real wi = Spine->LastParameter(iloc);
 	  if(periodic) wi = ElCLib::InPeriod(wi,WF,WF+period);
 	  gp_Pnt pv = Spine->Value(wi);
-#ifdef CHFI3D_DEB
+#ifdef OCCT_DEBUG
 	  gp_Pnt pelsapp = curels.Value(wi);
 	  Standard_Real distinit = pv.Distance(pelsapp);
 	  cout<<"distance psp/papp : "<<distinit<<endl;
@@ -2894,7 +2894,7 @@ void ChFi3d_Builder::PerformSetOfKGen(Handle(ChFiDS_Stripe)& Stripe,
 	    wv(i) = ext.Point().Parameter(); 
 	  }
 	  else {
-#ifdef CHFI3D_DEB
+#ifdef OCCT_DEBUG
 	    cout<<"fail of projection vertex ElSpine!!!"<<endl;
 #endif
 	  }
@@ -2940,7 +2940,7 @@ void ChFi3d_Builder::PerformSetOfSurf(Handle(ChFiDS_Stripe)& Stripe,
 {
   TopOpeBRepDS_DataStructure& DStr = myDS->ChangeDS();
   
-#ifdef DEB   
+#ifdef OCCT_DEBUG
   OSD_Chronometer ch;
   ChFi3d_InitChron(ch);// init perf for PerformSetOfKPart
 #endif
@@ -2950,21 +2950,21 @@ void ChFi3d_Builder::PerformSetOfSurf(Handle(ChFiDS_Stripe)& Stripe,
   Stripe->SetSolidIndex(SI);
   if(!sp->SplitDone()) PerformSetOfKPart(Stripe,Simul);
   
-#ifdef DEB   
+#ifdef OCCT_DEBUG
   ChFi3d_ResultChron(ch ,t_perfsetofkpart); // result perf PerformSetOfKPart(
   ChFi3d_InitChron(ch); // init perf for  PerformSetOfKGen
 #endif
   
   PerformSetOfKGen(Stripe,Simul);
   
-#ifdef DEB   
+#ifdef OCCT_DEBUG
   ChFi3d_ResultChron(ch, t_perfsetofkgen);//result perf PerformSetOfKGen 
   ChFi3d_InitChron(ch); // init perf for ChFi3d_MakeExtremities
 #endif
   
   if(!Simul) ChFi3d_MakeExtremities(Stripe,DStr,myEFMap,tolesp,tol2d);
   
-#ifdef DEB   
+#ifdef OCCT_DEBUG
   ChFi3d_ResultChron(ch, t_makextremities); // result perf t_makextremities
 #endif
 }

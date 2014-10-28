@@ -121,7 +121,7 @@
 
 #include <DBRep.hxx>
 #endif
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #include <OSD_Chronometer.hxx>
 //#define DEB_VERB
   Standard_Boolean AffichInt2d = Standard_False;       
@@ -796,14 +796,14 @@ void BRepOffset_MakeOffset::MakeThickSolid()
         YaResult = 1;
         Glue.Add (exp.Current().Reversed());
         }
-#ifdef BREPOFFSET_DEB
+#ifdef OCCT_DEBUG
       if(YaResult == 0)
         {
         cout << "OffsetShape does not contain a FACES." << endl;
         }
 #endif
       }
-#ifdef BREPOFFSET_DEB
+#ifdef OCCT_DEBUG
     else
       {
       cout << "OffsetShape is null!" << endl;
@@ -943,7 +943,7 @@ static void TrimEdge (TopoDS_Edge&                  NE,
 //=======================================================================
 void BRepOffset_MakeOffset::BuildOffsetByInter()
 {
-#ifdef  DEB
+#ifdef OCCT_DEBUG
   if ( ChronBuild) {
     cout << " CONSTRUCTION OF OFFSETS :" << endl;
     Clock.Reset();
@@ -1128,7 +1128,7 @@ void BRepOffset_MakeOffset::BuildOffsetByInter()
   //-------------------------------
   myMakeLoops.Build(LFE  ,AsDes,IMOE);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   TopTools_IndexedMapOfShape COES;
 #endif
   //---------------------------
@@ -1364,7 +1364,7 @@ void BRepOffset_MakeOffset::BuildOffsetByInter()
     }
   }
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   DEBVerticesControl (COES,myAsDes);
   if ( ChronBuild) Clock.Show();
 #endif
@@ -1377,7 +1377,7 @@ void BRepOffset_MakeOffset::BuildOffsetByInter()
 //=======================================================================
 void BRepOffset_MakeOffset::BuildOffsetByArc()
 {
-#ifdef  DEB
+#ifdef OCCT_DEBUG
   if ( ChronBuild) {
     cout << " CONSTRUCTION OF OFFSETS :" << endl;
     Clock.Reset();
@@ -1613,7 +1613,7 @@ void BRepOffset_MakeOffset::BuildOffsetByArc()
     }
   }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if ( ChronBuild) Clock.Show();
 #endif
 }
@@ -1627,7 +1627,7 @@ void BRepOffset_MakeOffset::BuildOffsetByArc()
 
 void BRepOffset_MakeOffset::SelfInter(TopTools_MapOfShape& /*Modif*/)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if ( ChronBuild) {
     cout << " AUTODEBOUCLAGE:" << endl;
     Clock.Reset();
@@ -1637,7 +1637,7 @@ void BRepOffset_MakeOffset::SelfInter(TopTools_MapOfShape& /*Modif*/)
 
   Standard_NotImplemented::Raise();
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if ( ChronBuild) Clock.Show();
 #endif
 }
@@ -2197,7 +2197,7 @@ void BRepOffset_MakeOffset::CorrectConicalFaces()
 
 void BRepOffset_MakeOffset::Intersection3D(BRepOffset_Inter3d& Inter)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (ChronBuild) {
     cout << " INTERSECTION 3D:" << endl;
     Clock.Reset();
@@ -2231,7 +2231,7 @@ void BRepOffset_MakeOffset::Intersection3D(BRepOffset_Inter3d& Inter)
     //--------------------------------
     Inter.ConnexIntByArc(OffsetFaces,myShape,myAnalyse,myInitOffsetFace);
   }
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if ( ChronBuild) Clock.Show();
 #endif
 }
@@ -2244,7 +2244,7 @@ void BRepOffset_MakeOffset::Intersection3D(BRepOffset_Inter3d& Inter)
 void BRepOffset_MakeOffset::Intersection2D(const TopTools_IndexedMapOfShape& Modif,
 					   const TopTools_IndexedMapOfShape& NewEdges)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (ChronBuild) {
     cout << " INTERSECTION 2D:" << endl;
     Clock.Reset();
@@ -2265,7 +2265,7 @@ void BRepOffset_MakeOffset::Intersection2D(const TopTools_IndexedMapOfShape& Mod
     BRepOffset_Inter2d::Compute(myAsDes,F,NewEdges,myTol);
   }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (AffichInt2d) {
     DEBVerticesControl (NewEdges,myAsDes);
   }
@@ -2281,7 +2281,7 @@ void BRepOffset_MakeOffset::Intersection2D(const TopTools_IndexedMapOfShape& Mod
 
 void BRepOffset_MakeOffset::MakeLoops(TopTools_IndexedMapOfShape& Modif)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (ChronBuild) {
      cout << " DEBOUCLAGE 2D:" << endl;
      Clock.Reset();
@@ -2310,7 +2310,7 @@ void BRepOffset_MakeOffset::MakeLoops(TopTools_IndexedMapOfShape& Modif)
   if (myOffset > 0 ) InSide = 0;
   myMakeLoops.BuildOnContext(LC,myAnalyse,myAsDes,myImageOffset,InSide);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if ( ChronBuild) Clock.Show();
 #endif
 }
@@ -2323,7 +2323,7 @@ void BRepOffset_MakeOffset::MakeLoops(TopTools_IndexedMapOfShape& Modif)
 
 void BRepOffset_MakeOffset::MakeFaces(TopTools_IndexedMapOfShape& /*Modif*/)
 {
-#ifdef DEb
+#ifdef OCCT_DEBUG
   if (ChronBuild) {  
     cout << " RECONSTRUCTION OF FACES:" << endl;
     Clock.Reset();
@@ -2342,7 +2342,7 @@ void BRepOffset_MakeOffset::MakeFaces(TopTools_IndexedMapOfShape& /*Modif*/)
   }
   myMakeLoops.BuildFaces(LOF,myAsDes,myImageOffset);
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if ( ChronBuild) Clock.Show();
 #endif
 }
@@ -2764,7 +2764,7 @@ void BRepOffset_MakeOffset::MakeMissingWalls ()
 
 void BRepOffset_MakeOffset::MakeShells ()
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (ChronBuild) {  
     cout << " RECONSTRUCTION OF SHELLS:" << endl;
     Clock.Reset();
@@ -2923,7 +2923,7 @@ const TopTools_IndexedMapOfShape& BRepOffset_MakeOffset::ClosingFaces () const
 
 void BRepOffset_MakeOffset::EncodeRegularity ()
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (ChronBuild) {  
     cout << " CODING OF REGULARITIES:" << endl;
     Clock.Reset();
@@ -2951,7 +2951,7 @@ void BRepOffset_MakeOffset::EncodeRegularity ()
     const TopTools_ListOfShape& LofOF    = myAsDes->Ascendant(ROE);
     
     if (LofOF.Extent() != 2) {
-#ifdef DEB_VERB
+#ifdef OCCT_DEBUG_VERB
     cout << " Edge shared by " << LofOF.Extent() << " Faces" << endl;
 #endif
       continue;
@@ -3094,7 +3094,7 @@ void BRepOffset_MakeOffset::EncodeRegularity ()
     }
   }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if ( ChronBuild) Clock.Show();
 #endif
 }

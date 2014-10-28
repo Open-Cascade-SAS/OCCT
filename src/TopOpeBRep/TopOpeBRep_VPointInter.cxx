@@ -33,7 +33,7 @@
 #include <Precision.hxx>
 #include <TopOpeBRep_define.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepDS_GettraceDSFK(); 
 static TCollection_AsciiString PRODINP("dinp ");
 #endif
@@ -301,20 +301,20 @@ Standard_Boolean TopOpeBRep_VPointInter::ParonE(const TopoDS_Edge& E,Standard_Re
 Standard_OStream& TopOpeBRep_VPointInter::Dump(const Standard_Integer I,const TopoDS_Face& F,Standard_OStream& OS) const
 {
   const TopoDS_Edge& E = TopoDS::Edge(Edge(I)); 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Real Epar =
 #endif
              EdgeParameter(I); 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   TopAbs_Orientation O =
 #endif
            E.Orientation();
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean closingedge = 
 #endif
                     TopOpeBRepTool_ShapeTool::Closed(E,F);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (closingedge) OS<<"on closing edge "; else OS<<"on edge "; TopAbs::Print(O,cout);
   cout<<" of "<<I<<" : par : "<<Epar<<endl;
   TopOpeBRepDS_Transition T = TopOpeBRep_FFTransitionTool::ProcessLineTransition(*this,I,O);
@@ -330,7 +330,7 @@ Standard_OStream& TopOpeBRep_VPointInter::Dump(const Standard_Integer I,const To
 //function : Dump
 //purpose  : 
 //=======================================================================
-#ifdef DEB
+#ifdef OCCT_DEBUG
 Standard_OStream& TopOpeBRep_VPointInter::Dump(const TopoDS_Face& FF1,const TopoDS_Face& FF2,Standard_OStream& OS) const
 {
   const TopoDS_Face& F1 = TopoDS::Face(FF1);

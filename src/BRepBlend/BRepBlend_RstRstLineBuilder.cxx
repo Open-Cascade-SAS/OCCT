@@ -26,7 +26,7 @@
 #include <gp_Vec2d.hxx>
 #include <gp_Vec.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
@@ -40,7 +40,7 @@
 static Standard_Integer IndexOfSection = 0;
 extern Standard_Boolean Blend_GettraceDRAWSECT(); 
 
-#ifdef DEB_BBPP_N_TRDERIV
+#ifdef OCCT_DEBUG_BBPP_N_TRDERIV
 //-----------------------------------------------------
 // For debug : visualisation of the section
 static Standard_Boolean BBPP(const Standard_Real param,
@@ -235,7 +235,7 @@ void BRepBlend_RstRstLineBuilder::Perform(Blend_RstRstFunction&   Func,
   if (State != Blend_OK) {
     return;
   }
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (Blend_GettraceDRAWSECT()){
     Drawsect(param, Func);
   }
@@ -576,7 +576,7 @@ void BRepBlend_RstRstLineBuilder::InternalPerform(Blend_RstRstFunction&   Func,
 
   while (!Arrive) {
     Standard_Boolean bonpoint = 1;
-#ifdef DEB_BBPP_N_TRDERIV
+#ifdef OCCT_DEBUG_BBPP_N_TRDERIV
     //debdebdebdebdebdeb
     Func.Set(param);
     rsnld.Perform(Func, parinit, infbound, supbound);
@@ -813,7 +813,7 @@ void BRepBlend_RstRstLineBuilder::InternalPerform(Blend_RstRstFunction&   Func,
       }
       else{
 	// reframing failed. Leave with PointsConfondus
-#ifdef BREPBLEND_DEB
+#ifdef OCCT_DEBUG
 	cout<<"reframing failed"<<endl;
 #endif
 	State = Blend_SamePoints;
@@ -823,7 +823,7 @@ void BRepBlend_RstRstLineBuilder::InternalPerform(Blend_RstRstFunction&   Func,
     switch (State) {
     case Blend_OK :
       {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	if (Blend_GettraceDRAWSECT()){
 	  Drawsect(param, Func);
 	}
@@ -866,7 +866,7 @@ void BRepBlend_RstRstLineBuilder::InternalPerform(Blend_RstRstFunction&   Func,
 			   previousP.ParameterOnC2(),
 			   previousP.Parameter(), tolesp);
 	  Arrive = Standard_True;
-#ifdef BREPBLEND_DEB
+#ifdef OCCT_DEBUG
 	  if (line->NbPoints()>=2) {
 	    // Show that there is a stop during processing 
 	    cout<<"No more advancement in the processing"<<endl;
@@ -881,7 +881,7 @@ void BRepBlend_RstRstLineBuilder::InternalPerform(Blend_RstRstFunction&   Func,
       
     case Blend_StepTooSmall :
       {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	if (Blend_GettraceDRAWSECT()){
 	  Drawsect(param,Func);
 	}
@@ -916,7 +916,7 @@ void BRepBlend_RstRstLineBuilder::InternalPerform(Blend_RstRstFunction&   Func,
       
     case Blend_OnRst1  :
       {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	if (Blend_GettraceDRAWSECT()){
 	  Drawsect(param, Func);
 	}
@@ -935,7 +935,7 @@ void BRepBlend_RstRstLineBuilder::InternalPerform(Blend_RstRstFunction&   Func,
       
     case Blend_OnRst2  :
       {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	if (Blend_GettraceDRAWSECT()){
 	  Drawsect(param, Func);
 	}
@@ -955,7 +955,7 @@ void BRepBlend_RstRstLineBuilder::InternalPerform(Blend_RstRstFunction&   Func,
       
     case Blend_OnRst12  :
       {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	if (Blend_GettraceDRAWSECT()){
 	  Drawsect(param, Func);
 	}
@@ -976,7 +976,7 @@ void BRepBlend_RstRstLineBuilder::InternalPerform(Blend_RstRstFunction&   Func,
     case Blend_SamePoints :
       {
 	// Stop
-#ifdef BREPBLEND_DEB
+#ifdef OCCT_DEBUG
 	cout << " Mixed points in the processing" << endl;
 #endif
 	Extrst1.SetValue(previousP.PointOnC1(),
@@ -1027,7 +1027,7 @@ Standard_Boolean BRepBlend_RstRstLineBuilder::Recadre1(Blend_RstRstFunction&    
   math_FunctionSetRoot rsnld(Finv, toler, 30);
   rsnld.Perform(Finv, Solinv, infb, supb);
   if (!rsnld.IsDone()) {
-#ifdef BREPBLEND_DEB
+#ifdef OCCT_DEBUG
     cout << "RSNLD not done "<< endl << endl;
 #endif
     return Standard_False;
@@ -1109,7 +1109,7 @@ Standard_Boolean BRepBlend_RstRstLineBuilder::Recadre2(Blend_RstRstFunction&    
   math_FunctionSetRoot rsnld(Finv, toler, 30);
   rsnld.Perform(Finv, Solinv, infb, supb);
   if (!rsnld.IsDone()) {
-#ifdef BREPBLEND_DEB
+#ifdef OCCT_DEBUG
     cout << "RSNLD not done "<< endl << endl;
 #endif
     return Standard_False;
@@ -1195,7 +1195,7 @@ Standard_Boolean BRepBlend_RstRstLineBuilder::Recadre1(Blend_CurvPointFuncInv&  
   math_FunctionSetRoot rsnld(FinvP, toler, 30);
   rsnld.Perform(FinvP, Solinv, infb, supb);
   if (!rsnld.IsDone()) {
-#ifdef BREPBLEND_DEB
+#ifdef OCCT_DEBUG
     cout << "RSNLD not done "<< endl << endl;
 #endif
     return Standard_False;
@@ -1263,7 +1263,7 @@ Standard_Boolean BRepBlend_RstRstLineBuilder::Recadre2(Blend_CurvPointFuncInv&  
   math_FunctionSetRoot rsnld(FinvP, toler, 30);
   rsnld.Perform(FinvP, Solinv, infb, supb);
   if (!rsnld.IsDone()) {
-#ifdef BREPBLEND_DEB
+#ifdef OCCT_DEBUG
     cout << "RSNLD not done "<< endl << endl;
 #endif
     return Standard_False;

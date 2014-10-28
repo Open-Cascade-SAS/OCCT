@@ -376,7 +376,7 @@ pararg2(1,16)
               gp_Pnt2d Center(Intp.Point(i).Value());
               cirsol(NbrSol) = gp_Circ2d(gp_Ax2d(Center,dirx),Radius);
               //             =======================================================
-#ifdef DEB
+#ifdef OCCT_DEBUG
               gp_Dir2d dir1(Center.XY()-center1.XY());
 #else
               Center.XY() ;
@@ -859,7 +859,7 @@ pararg2(1,16)
       Adaptor3d_OffsetCurve C1(HCu1,cote1(jcote1));
       firstparam = Max(Geom2dGcc_CurveToolGeo::FirstParameter(C1),thefirst);
       lastparam  = Min(Geom2dGcc_CurveToolGeo::LastParameter(C1),thelast);
-#ifdef DEB
+#ifdef OCCT_DEBUG
       IntRes2d_Domain D2(Geom2dGcc_CurveToolGeo::Value(C1,firstparam),firstparam,Tol,
         Geom2dGcc_CurveToolGeo::Value(C1,lastparam),lastparam,Tol);
 #else
@@ -871,7 +871,7 @@ pararg2(1,16)
         Adaptor3d_OffsetCurve C2(HCu2,cote2(jcote2));
         firstparam = Max(Geom2dGcc_CurveToolGeo::FirstParameter(C2),thefirst);
         lastparam  = Min(Geom2dGcc_CurveToolGeo::LastParameter(C2),thelast);
-#ifdef DEB
+#ifdef OCCT_DEBUG
         IntRes2d_Domain D2(Geom2dGcc_CurveToolGeo::Value(C2,firstparam),firstparam,Tol,
           Geom2dGcc_CurveToolGeo::Value(C2,lastparam),lastparam,Tol);
 #else

@@ -78,7 +78,7 @@ Standard_Integer DNaming_CylinderDriver::Execute(TFunction_Logbook& theLog) cons
   Handle(TDataStd_UAttribute) anObject = DNaming::GetObjectArg(aFunction,CYL_AXIS);
   Handle(TNaming_NamedShape) aNSAxis = DNaming::GetObjectValue(anObject);
   if (aNSAxis->IsEmpty()) {
-#ifdef DNAMING_DEB
+#ifdef OCCT_DEBUG
     cout<<"CylinderDriver:: Axis is empty"<<endl;
 #endif
     aFunction->SetFailure(WRONG_AXIS);
@@ -86,7 +86,7 @@ Standard_Integer DNaming_CylinderDriver::Execute(TFunction_Logbook& theLog) cons
   }
   TopoDS_Shape aTopoDSAxis = aNSAxis->Get();
   if (aTopoDSAxis.IsNull()) {
-#ifdef DNAMING_DEB
+#ifdef OCCT_DEBUG
     cout<<"CylinderDriver:: Axis is null"<<endl;
 #endif
     aFunction->SetFailure(WRONG_AXIS);
@@ -94,7 +94,7 @@ Standard_Integer DNaming_CylinderDriver::Execute(TFunction_Logbook& theLog) cons
   }
   // Creation of gp axis (gp_Ax2):
   if (aTopoDSAxis.ShapeType() != TopAbs_EDGE && aTopoDSAxis.ShapeType() != TopAbs_WIRE) {
-#ifdef DNAMING_DEB
+#ifdef OCCT_DEBUG
     cout<<"CylinderDriver:: Wrong axis, ShapeType = " << aTopoDSAxis.ShapeType() <<endl;
 #endif    
     aFunction->SetFailure(WRONG_AXIS);
@@ -118,7 +118,7 @@ Standard_Integer DNaming_CylinderDriver::Execute(TFunction_Logbook& theLog) cons
       anAxis.SetLocation(aP1);
     }
   } else {
-#ifdef DNAMING_DEB
+#ifdef OCCT_DEBUG
     cout<<"CylinderDriver:: I don't support wires for a while"<<endl;
 #endif    
     aFunction->SetFailure(WRONG_AXIS);

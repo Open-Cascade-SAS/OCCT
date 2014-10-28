@@ -14,7 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef DEB
+#ifndef OCCT_DEBUG
 #define No_Standard_RangeError
 #define No_Standard_OutOfRange
 #endif

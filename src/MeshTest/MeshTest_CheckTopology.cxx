@@ -56,7 +56,7 @@ void MeshTest_CheckTopology::Perform (Draw_Interpretor& di)
     Handle(Poly_PolygonOnTriangulation) aPoly1 =
       BRep_Tool::PolygonOnTriangulation(aEdge, aT1, aLoc1);
     if (aPoly1.IsNull() || aT1.IsNull()) {
-#ifdef MESHTEST_DEB
+#ifdef OCCT_DEBUG
       cout<<"problem getting PolygonOnTriangulation of edge "<<ie<<endl;
 #endif
       continue;
@@ -73,7 +73,7 @@ void MeshTest_CheckTopology::Perform (Draw_Interpretor& di)
       Handle(Poly_PolygonOnTriangulation) aPoly2 =
 	BRep_Tool::PolygonOnTriangulation(aEdge, aT2, aLoc2);
       if (aPoly2.IsNull() || aT2.IsNull()) {
-#ifdef MESHTEST_DEB
+#ifdef OCCT_DEBUG
 	cout<<"problem getting PolygonOnTriangulation of edge "<<ie<<endl;
 #endif
 	continue;

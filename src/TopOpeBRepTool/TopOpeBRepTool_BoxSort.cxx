@@ -31,7 +31,7 @@
 #include <TopOpeBRepTool_define.hxx>
 #include <Standard_ProgramError.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #define TBOX TopOpeBRepTool_GettraceBOX()
 #endif
 
@@ -113,7 +113,7 @@ void TopOpeBRepTool_BoxSort::AddBoxes(const TopoDS_Shape& S,const TopAbs_ShapeEn
 //=======================================================================
 void TopOpeBRepTool_BoxSort::MakeHAB(const TopoDS_Shape& S,const TopAbs_ShapeEnum TS,const TopAbs_ShapeEnum TA)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   TopAbs_ShapeEnum t =
 #endif
                        S.ShapeType();
@@ -137,7 +137,7 @@ void TopOpeBRepTool_BoxSort::MakeHAB(const TopoDS_Shape& S,const TopAbs_ShapeEnu
     AB.ChangeValue(i) = B;
   }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TBOX) {
     cout<<"# BS::MakeHAB : ";TopAbs::Print(t,cout);cout<<" : "<<n<<"\n";
     cout.flush();
@@ -196,7 +196,7 @@ void TopOpeBRepTool_BoxSort::MakeCOB(const TopoDS_Shape& S,const TopAbs_ShapeEnu
   MakeHAB(S,TS,TA);
   MakeHABCOB(myHAB,myCOB);
   myBSB.Initialize(myCOB,myHAB);
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TBOX) {myHBT->DumpB(myCOB);cout<<";# BS::MakeCOB"<<endl;}
 #endif
 }
@@ -262,7 +262,7 @@ const MTClioloi& TopOpeBRepTool_BoxSort::Compare(const TopoDS_Shape &S)
   else L = &myBSB.Compare(myLastCompareShapeBox);
   myIterator.Initialize(*L);
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TBOX) {
     Standard_Integer nl = (*L).Extent();
     cout<<"#------------------------"<<endl;

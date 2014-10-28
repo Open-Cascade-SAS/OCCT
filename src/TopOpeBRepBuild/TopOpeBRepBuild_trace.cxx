@@ -14,7 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 
 #include <Standard_Type.hxx>
 
@@ -175,5 +175,5 @@ static Standard_Boolean TopOpeBRepBuild_traceFE = Standard_False;  // trace Fuse
 Standard_EXPORT void TopOpeBRepBuild_SettraceFE(const Standard_Boolean b) { TopOpeBRepBuild_traceFE = b; }
 Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GettraceFE() { return TopOpeBRepBuild_traceFE; }
 
-// #ifdef DEB
+// #ifdef OCCT_DEBUG
 #endif

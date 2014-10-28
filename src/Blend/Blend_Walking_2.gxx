@@ -46,7 +46,7 @@ Blend_Status Blend_Walking::TestArret(Blend_Function& Function,
   if ( !TestSolu) tolsolu *= 1000; //Ca doit toujours etre bon
   if (Function.IsSolution(sol,tolsolu)) {
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     sectioncalculee = 1;
 #endif
     Standard_Boolean curpointistangent = Function.IsTangencyPoint();

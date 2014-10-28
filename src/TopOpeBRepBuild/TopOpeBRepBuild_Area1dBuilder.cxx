@@ -23,7 +23,7 @@
 #include <TopAbs_Orientation.hxx>
 #include <TopAbs.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepBuild_GettraceAREA();
 extern Standard_Boolean TopOpeBRepDS_GettraceSTRANGE();
 #endif
@@ -33,7 +33,7 @@ extern Standard_Boolean TopOpeBRepDS_GettraceSTRANGE();
 //purpose  : 
 //=======================================================================
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 void TopOpeBRepBuild_Area1dBuilder::DumpList(const TopOpeBRepBuild_ListOfLoop& LOL)
 {
   Standard_Integer iLOL;
@@ -99,7 +99,7 @@ void TopOpeBRepBuild_Area1dBuilder::InitAreaBuilder
     const Handle(TopOpeBRepBuild_Loop)& L = LS.Loop();
     Standard_Boolean boundaryL = L->IsShape();
                 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (TopOpeBRepBuild_GettraceAREA()) {
       cout<<"++++ new loop : "; L->Dump();
       if (boundaryL) cout<<" is bound"; else cout<<" is not bound";
@@ -237,7 +237,7 @@ void TopOpeBRepBuild_Area1dBuilder::InitAreaBuilder
     } // end of block loop
   } // end of LoopSet LS scan
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepBuild_GettraceAREA()) {
     if ( ! myArea.IsEmpty() ) {
       cout<<"------- Areas -------"<<endl;
@@ -260,14 +260,14 @@ void TopOpeBRepBuild_Area1dBuilder::ADD_Loop_TO_LISTOFLoop
 (const Handle(TopOpeBRepBuild_Loop)& L,
  TopOpeBRepBuild_ListOfLoop& LOL,
  const Standard_Address
-#ifdef DEB
+#ifdef OCCT_DEBUG
   ss
 #endif
   ) const
 {
   LOL.Append(L);
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepBuild_GettraceAREA()) {
     cout<<"--------------------- add area loop to area : ";
     L->Dump(); cout<<endl;
@@ -286,7 +286,7 @@ void TopOpeBRepBuild_Area1dBuilder::ADD_Loop_TO_LISTOFLoop
 void TopOpeBRepBuild_Area1dBuilder::REM_Loop_FROM_LISTOFLoop
 (TopOpeBRepBuild_ListIteratorOfListOfLoop& ITA,
  TopOpeBRepBuild_ListOfLoop& A,
-#ifdef DEB
+#ifdef OCCT_DEBUG
  const Standard_Address ss) const
 {
   char* s = (char*)ss;
@@ -295,7 +295,7 @@ const Standard_Address) const
 {
 #endif
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepBuild_GettraceAREA()) {
     if (ITA.More()) {
       cout<<"--------------------- remove area loop from area : ";
@@ -307,7 +307,7 @@ const Standard_Address) const
   
   A.Remove(ITA);
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepBuild_GettraceAREA()) {
     DumpList(A);
     cout<<"---------------------"<<endl;
@@ -323,7 +323,7 @@ const Standard_Address) const
 void TopOpeBRepBuild_Area1dBuilder::ADD_LISTOFLoop_TO_LISTOFLoop
 (TopOpeBRepBuild_ListOfLoop& A1,
  TopOpeBRepBuild_ListOfLoop& A2,
- #ifdef DEB
+ #ifdef OCCT_DEBUG
  const Standard_Address ss,
  const Standard_Address ss1,
  const Standard_Address ss2) const
@@ -333,7 +333,7 @@ void TopOpeBRepBuild_Area1dBuilder::ADD_LISTOFLoop_TO_LISTOFLoop
  const Standard_Address) const
 #endif
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   char* s  = (char*)ss;
   char* s1 = (char*)ss1;
   char* s2 = (char*)ss2;
@@ -348,7 +348,7 @@ void TopOpeBRepBuild_Area1dBuilder::ADD_LISTOFLoop_TO_LISTOFLoop
   
   A2.Append(A1);
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepBuild_GettraceAREA()) {
     cout<<"2 : "; if (s2 != NULL) cout<<s2; cout<<endl;
     DumpList(A2);

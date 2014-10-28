@@ -40,7 +40,7 @@
 
 
 
-#ifdef DEB_MESH
+#ifdef OCCT_DEBUG_MESH
 #include <OSD_Chronometer.hxx>
 extern OSD_Chronometer FFaceTimer1,FFaceTimer2,FFaceTimer3,FFaceTimer4;
 #endif
@@ -108,7 +108,7 @@ void StdPrs_WFDeflectionRestrictedFace::Add
    const Handle(Prs3d_Drawer)& aDrawer,
    Prs3d_NListOfSequenceOfPnt& Curves) {
 
-#ifdef DEB_MESH
+#ifdef OCCT_DEBUG_MESH
   FFaceTimer1.Start();
 #endif
 
@@ -181,7 +181,7 @@ void StdPrs_WFDeflectionRestrictedFace::Add
 	    }
 	  }
 	}
-#ifdef STDPRS_DEB
+#ifdef OCCT_DEBUG
 	else {
 	  cout << "Cannot evaluate curve on surface"<<endl;
 	}
@@ -232,7 +232,7 @@ void StdPrs_WFDeflectionRestrictedFace::Add
   }
 
 
-#ifdef DEB_MESH
+#ifdef OCCT_DEBUG_MESH
   FFaceTimer1.Stop();
 
   FFaceTimer2.Start();
@@ -277,7 +277,7 @@ void StdPrs_WFDeflectionRestrictedFace::Add
     }
   }
 
-#ifdef DEB_MESH
+#ifdef OCCT_DEBUG_MESH
   FFaceTimer2.Stop();
   FFaceTimer3.Start();
 #endif
@@ -289,7 +289,7 @@ void StdPrs_WFDeflectionRestrictedFace::Add
   }
 
 
-#ifdef DEB_MESH  
+#ifdef OCCT_DEBUG_MESH  
   FFaceTimer3.Stop();
   FFaceTimer4.Start();
 #endif
@@ -349,7 +349,7 @@ void StdPrs_WFDeflectionRestrictedFace::Add
       }
     }
   }
-#ifdef DEB_MESH
+#ifdef OCCT_DEBUG_MESH
   FFaceTimer4.Stop();
 #endif
 }
@@ -456,7 +456,7 @@ Standard_Boolean StdPrs_WFDeflectionRestrictedFace::Match
 	  }
 	}
       }
-#ifdef STDPRS_DEB
+#ifdef OCCT_DEBUG
       else {
 	cout << "Cannot evaluate curve on surface"<<endl;
       }

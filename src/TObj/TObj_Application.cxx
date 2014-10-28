@@ -139,7 +139,7 @@ Standard_Boolean TObj_Application::LoadDocument
     }
     catch (Standard_Failure)
     {
-#if defined(_DEBUG) || defined(DEB)
+#ifdef OCCT_DEBUG
       ErrorMessage (Message_Msg("TObj_Appl_Exception") << 
                     Standard_Failure::Caught()->GetMessageString());
 #endif

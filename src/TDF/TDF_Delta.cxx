@@ -28,7 +28,7 @@
 #include <TDF_ListIteratorOfLabelList.hxx>
 #include <TDF_MapIteratorOfLabelMap.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #include <Standard_ConstructionError.hxx>
 #endif
 
@@ -108,7 +108,7 @@ void TDF_Delta::BeforeOrAfterApply(const Standard_Boolean before) const
   }
 
   if (!noDeadLock) {
-#ifdef TDF_DEB
+#ifdef OCCT_DEBUG
     if (before) cout<<"Before"; else cout<<"After";
     cout<<"Undo(): dead lock between these attributes:"<<endl;
     for (itr.Initialize(ADlist); itr.More(); itr.Next()) {
@@ -156,13 +156,13 @@ void TDF_Delta::Labels(TDF_LabelList& aLabelList) const
 {
   TDF_LabelMap labMap;
   // If <aLabelList> is not empty...
-#ifdef DEB_DELTA
+#ifdef OCCT_DEBUG_DELTA
   Standard_Boolean inList;
   if (aLabelList.Extent() > 0) cout<<"Previously added as modified label(s) ";
 #endif
   for (TDF_ListIteratorOfLabelList it1(aLabelList);
        it1.More(); it1.Next()) {
-#ifdef DEB_DELTA
+#ifdef OCCT_DEBUG_DELTA
     const TDF_Label& lab1 = it1.Value();
     inList = labMap.Add(lab1);
     if (!inList) {
@@ -170,18 +170,18 @@ void TDF_Delta::Labels(TDF_LabelList& aLabelList) const
     }
 #endif
   }
-#ifdef DEB_DELTA
+#ifdef OCCT_DEBUG_DELTA
   cout<<endl;
 #endif
 
   // New labels to add.
-#ifdef DEB_DELTA
+#ifdef OCCT_DEBUG_DELTA
   if (myAttDeltaList.Extent() > 0) cout<<"New added as modified label(s) ";
 #endif
   for (TDF_ListIteratorOfAttributeDeltaList it2(myAttDeltaList);
        it2.More();
        it2.Next()) {
-#ifdef DEB_DELTA
+#ifdef OCCT_DEBUG_DELTA
     const TDF_Label& lab1 = it2.Value()->Label();
     inList = labMap.Add(lab1);
     if (!inList) {
@@ -189,7 +189,7 @@ void TDF_Delta::Labels(TDF_LabelList& aLabelList) const
     }
 #endif
   }
-#ifdef DEB_DELTA
+#ifdef OCCT_DEBUG_DELTA
   cout<<endl;
 #endif
 

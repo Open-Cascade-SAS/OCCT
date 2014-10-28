@@ -269,7 +269,7 @@ TCollection_AsciiString Units_UnitsSystem::ActiveUnit(const Standard_CString aqu
       if(index2)
         return unitssequence->Value(index2)->SymbolsSequence()->Value(1)->String();
       else {
-#ifdef UNITS_DEB
+#ifdef OCCT_DEBUG
         cout<<" Pas d'unite active pour "<<aquantity<<endl;
 #endif
         return TCollection_AsciiString() ;

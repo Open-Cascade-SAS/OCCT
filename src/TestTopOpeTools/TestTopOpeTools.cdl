@@ -35,7 +35,7 @@ package TestTopOpeTools
 --          
 --  All of the Trace controls in top.ope. kernel
 --  are enclosed by the C conditional compilation statements :
---  #ifdef DEB  ...  #endif
+--  #ifdef OCCT_DEBUG  ...  #endif
 --          
 --  The "Traced" packages of topological operation kernel are :
 --     - TopBuild

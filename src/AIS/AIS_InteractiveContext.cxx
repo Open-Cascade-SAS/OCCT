@@ -215,7 +215,7 @@ Standard_CString AIS_InteractiveContext::DomainOfMainViewer() const
 void AIS_InteractiveContext::DisplayedObjects(AIS_ListOfInteractive& aListOfIO,
                                               const Standard_Boolean OnlyFromNeutral) const 
 {
-#ifdef AIS_DEB
+#ifdef OCCT_DEBUG
   cout<<"AIS_IC::DisplayedObjects"<<endl;
 #endif
 
@@ -235,7 +235,7 @@ void AIS_InteractiveContext::DisplayedObjects(AIS_ListOfInteractive& aListOfIO,
     }
 
     //parse all local contexts...
-#ifdef AIS_DEB
+#ifdef OCCT_DEBUG
     cout<<"\tFrom Neutral Point : "<<theMap.Extent()<<endl;
     Standard_Integer NbDisp;
     for(AIS_DataMapIteratorOfDataMapOfILC it1(myLocalContexts);it1.More();it1.Next()){
@@ -1195,7 +1195,7 @@ void AIS_InteractiveContext::Redisplay(const AIS_KindOfInteractive KOI,
     Handle(AIS_InteractiveObject) IO = It.Key();
     // ENDCLE
     if(IO->Type()== KOI){ 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //      Standard_Boolean good = (Sign==-1)? Standard_True : 
 //        ((IO->Signature()==Sign)? Standard_True:Standard_False);
 #endif
@@ -1683,13 +1683,13 @@ void AIS_InteractiveContext::SetColor(const Handle(AIS_InteractiveObject)& anIOb
           NbDisp++;
         }
       anIObj->SetRecomputeOk();
-#ifdef AIS_DEB
+#ifdef OCCT_DEBUG
       cout<<"nb of modes to recalculate : "<<NbDisp<<endl;
 #endif
     }
 
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //   // pour isg
 //   if(anIObj->Type()==AIS_KOI_Datum && anIObj->Signature()==3){
 //     Handle(AIS_Trihedron) Tr = *((Handle(AIS_Trihedron)*)&anIObj);
@@ -1758,7 +1758,7 @@ void AIS_InteractiveContext::SetDeviationCoefficient(
           NbDisp++;
         }
       anIObj->SetRecomputeOk();
-#ifdef AIS_DEB
+#ifdef OCCT_DEBUG
       cout<<"nb of modes to recalculate : "<<NbDisp<<endl;
 #endif
     }
@@ -1802,7 +1802,7 @@ void AIS_InteractiveContext::SetHLRDeviationCoefficient(
           NbDisp++;
         }
       anIObj->SetRecomputeOk();
-#ifdef AIS_DEB
+#ifdef OCCT_DEBUG
       cout<<"nb of modes to recalculate : "<<NbDisp<<endl;
 #endif
     }
@@ -1845,7 +1845,7 @@ void AIS_InteractiveContext::SetDeviationAngle(
           NbDisp++;
         }
       anIObj->SetRecomputeOk();
-#ifdef AIS_DEB
+#ifdef OCCT_DEBUG
       cout<<"nb of modes to recalculate : "<<NbDisp<<endl;
 #endif
     }
@@ -1916,7 +1916,7 @@ void AIS_InteractiveContext::SetHLRAngleAndDeviation(
           NbDisp++;
         }
       anIObj->SetRecomputeOk();
-#ifdef AIS_DEB
+#ifdef OCCT_DEBUG
       cout<<"nb of modes to recalculate : "<<NbDisp<<endl;
 #endif
     }
@@ -1958,7 +1958,7 @@ void AIS_InteractiveContext::SetHLRDeviationAngle(
           NbDisp++;
         }
       anIObj->SetRecomputeOk();
-#ifdef AIS_DEB
+#ifdef OCCT_DEBUG
       cout<<"nb of modes to recalculate : "<<NbDisp<<endl;
 #endif
     }
@@ -1986,7 +1986,7 @@ void AIS_InteractiveContext::UnsetColor(const Handle(AIS_InteractiveObject)& anI
           anIObj->Update(ITI.Value(),Standard_False);
           NbDisp++;
         }
-#ifdef AIS_DEB
+#ifdef OCCT_DEBUG
       cout<<"nb of modes to recalculate : "<<NbDisp<<endl;
 #endif
       anIObj->SetRecomputeOk();
@@ -2057,7 +2057,7 @@ void AIS_InteractiveContext::SetWidth(const Handle(AIS_InteractiveObject)& anIOb
           anIObj->Update(ITI.Value(),Standard_False);
           NbDisp++;
         }
-#ifdef AIS_DEB
+#ifdef OCCT_DEBUG
       cout<<"nb of modes to recalculate : "<<NbDisp<<endl;
 #endif
       anIObj->SetRecomputeOk();

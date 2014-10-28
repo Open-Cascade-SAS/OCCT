@@ -19,7 +19,7 @@
 //--          If the intersection is not a conic, 
 //--          analytical methods must be called.
 //----------------------------------------------------------------------
-#ifndef DEB
+#ifndef OCCT_DEBUG
 #define No_Standard_RangeError
 #define No_Standard_OutOfRange
 #endif

@@ -128,7 +128,7 @@ void FUN_draw(const TCollection_AsciiString aa,const TopoDS_Shape& s)
 void FUN_cout(const gp_Pnt2d& p2d, Draw_Interpretor& di)
 {di <<" = ("<<p2d.X()<<" "<<p2d.Y()<<") ";}
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 Standard_IMPORT void FUN_tool_coutsta(const Standard_Integer& sta, const Standard_Integer& i1, const Standard_Integer& i2);
 #endif
 
@@ -605,21 +605,21 @@ static Standard_Integer classifBnd2d(Draw_Interpretor& di, Standard_Integer n, c
 
   if (w1.IsNull() || w2.IsNull() || Fref.IsNull()) return 1;
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer sta =
 #endif
     classi.ClassiBnd2d(w1,w2,toluv,Standard_True);
   di <<"wires classification : checklarge=true ";
-#ifdef DEB
+#ifdef OCCT_DEBUG
   FUN_tool_coutsta(sta,1,2);
 #endif
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   sta =
 #endif
     classi.ClassiBnd2d(w1,w2,toluv,Standard_False);
   di <<"wires classification : checklarge=false ";
-#ifdef DEB
+#ifdef OCCT_DEBUG
   FUN_tool_coutsta(sta,1,2);
 #endif
   
@@ -812,7 +812,7 @@ static Standard_Integer normal(Draw_Interpretor& di, Standard_Integer n, const c
 
   Standard_Real dist=0.; gp_Pnt2d uv; Standard_Boolean ok = FUN_tool_projPonF(p,f,uv,dist);
   if (!ok) {di<<"projection failed"<<"\n"; return 1;}
-#ifdef DEB
+#ifdef OCCT_DEBUG
   gp_Vec ngf =
 #endif
                FUN_tool_nggeomF(uv,f);

@@ -146,7 +146,7 @@ void AIS_InteractiveObject::SetContext(const Handle(AIS_InteractiveContext)& aCt
     return;
   if (myDrawer.IsNull()) {
     myDrawer = new AIS_Drawer;
-#ifdef AIS_DEB
+#ifdef OCCT_DEBUG
     cout << "AIS_InteractiveObject::SetContext DRAWER NUL!" << endl;
 #endif
   }

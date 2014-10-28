@@ -65,7 +65,7 @@ Visual3d_Layer::Visual3d_Layer (const Handle(Visual3d_ViewManager)& AManager, co
   MyGraphicDriver->Layer (MyCLayer);
   MyCLayer.ptrLayer->layerData = this;
 
-#ifdef VISUAL3D_DEB
+#ifdef OCCT_DEBUG
   cout << "Visual3d_Layer::Visual3d_Layer" << endl;
   call_def_ptrLayer ptrLayer;
   ptrLayer = (call_def_ptrLayer) MyCLayer.ptrLayer;
@@ -105,7 +105,7 @@ void Visual3d_Layer::End () {
 #ifdef TRACE_CALL
   cout << "Visual3d_Layer::End" << endl;
 #endif
-#ifdef VISUAL3D_DEB
+#ifdef OCCT_DEBUG
   cout << "Visual3d_Layer::End" << endl;
   call_def_ptrLayer ptrLayer;
   ptrLayer = (call_def_ptrLayer) MyCLayer.ptrLayer;
@@ -121,7 +121,7 @@ void Visual3d_Layer::End () {
   // Flush all graphics
   MyGraphicDriver->EndLayer ();
   theLayerState = Standard_False;
-#ifdef VISUAL3D_DEB
+#ifdef OCCT_DEBUG
   cout << "Visual3d_Layer::End" << endl;
   ptrLayer = (call_def_ptrLayer) MyCLayer.ptrLayer;
   if (ptrLayer == NULL)
@@ -384,7 +384,7 @@ Aspect_CLayer2d Visual3d_Layer::CLayer () const {
 #ifdef TRACE_CALL
   cout << "Visual3d_Layer::CLayer" << endl;
 #endif
-#ifdef VISUAL3D_DEB
+#ifdef OCCT_DEBUG
   cout << "Visual3d_Layer::CLayer" << endl;
   call_def_ptrLayer ptrLayer;
   ptrLayer = (call_def_ptrLayer) MyCLayer.ptrLayer;

@@ -21,7 +21,7 @@
 #include <TopoDS.hxx>
 #include <TopOpeBRepBuild_define.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepBuild_GettraceCU();
 #endif
 
@@ -31,7 +31,7 @@ extern Standard_Boolean TopOpeBRepBuild_GettraceCU();
 //=======================================================================
 void TopOpeBRepBuild_Builder::BuildEdges(const Standard_Integer iC,const Handle(TopOpeBRepDS_HDataStructure)& HDS)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepBuild_GettraceCU()) cout<<"\nBuildEdges on C "<<iC<<endl;
 #endif
   const TopOpeBRepDS_Curve& C = HDS->Curve(iC);
@@ -115,7 +115,7 @@ void TopOpeBRepBuild_Builder::BuildEdges(const Handle(TopOpeBRepDS_HDataStructur
   Standard_Integer ip, np = HDS->NbPoints();
   TColStd_HArray1OfInteger tp(0,np,0);
   for (cex.Init(BDS); cex.More(); cex.Next()) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //    const TopOpeBRepDS_Curve& C = cex.Curve();
 #endif
     Standard_Integer ic = cex.Index();

@@ -29,7 +29,7 @@
 
 Geom2dHatch_Elements::Geom2dHatch_Elements(const Geom2dHatch_Elements& )
 {
-#ifdef GEOM2DHATCH_DEB
+#ifdef OCCT_DEBUG
   cout<<" Magic Constructor in Geom2dHatch_Elements:: "<<endl;
 #endif
 }

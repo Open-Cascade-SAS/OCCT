@@ -17,7 +17,7 @@
 // pmn 10/06/97 refonte totale du traitement des bords + ajustement des init 
 // et des tolerances pour brent...
 
-//#ifndef DEB
+//#ifndef OCCT_DEBUG
 #define No_Standard_RangeError
 #define No_Standard_OutOfRange
 #define No_Standard_DimensionError

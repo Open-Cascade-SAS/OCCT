@@ -36,7 +36,7 @@
 #define MDSke TopOpeBRepDS_EDGE
 #define MDSkf TopOpeBRepDS_FACE
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 void debrededg(const Standard_Integer I) {cout<<"+++ debrededg f"<<I<<endl;}
 void debredfac(const Standard_Integer I) {cout<<"+++ debredfac f"<<I<<endl;}
 void FUN_dumploiS(const TopoDS_Shape& SG,const TopOpeBRepDS_ListOfInterference& loi,const TopOpeBRepDS_DataStructure& BDS,TCollection_AsciiString str) 
@@ -55,7 +55,7 @@ void FUN_dumpmosd(TopOpeBRepDS_MapOfShapeData& mosd,const TopOpeBRepDS_DataStruc
 }
 #endif
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepDS_GettraceSTRANGE();
 extern Standard_Boolean TopOpeBRepDS_GettracePEI();
 extern Standard_Boolean TopOpeBRepDS_GettracePFI();
@@ -158,24 +158,24 @@ Standard_Boolean FUN_findPonF(const TopoDS_Edge& E,const TopOpeBRepDS_DataStruct
 
 // --------------------------------------------------------
 static void FDS_DUMPTRANSITION(const Standard_Boolean
-#ifdef DEB
+#ifdef OCCT_DEBUG
                                                       TRCF
 #endif 
                                ,const TCollection_AsciiString&
-#ifdef DEB
+#ifdef OCCT_DEBUG
                                                       str
 #endif 
                                ,const Standard_Integer
-#ifdef DEB
+#ifdef OCCT_DEBUG
                                                       iFI
 #endif 
                                ,TopOpeBRepDS_FaceInterferenceTool&
-#ifdef DEB
+#ifdef OCCT_DEBUG
                                                                    FITool
 #endif 
                                )
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TRCF) {
     cout<<str<<iFI<<endl;
     Handle(TopOpeBRepDS_Interference) IBID = new TopOpeBRepDS_Interference();
@@ -188,15 +188,15 @@ static void FDS_DUMPTRANSITION(const Standard_Boolean
 // --------------------------------------------------------
 static void FDS_ADDEDGE
 (const Standard_Boolean
-#ifdef DEB
+#ifdef OCCT_DEBUG
                         TRCF
 #endif 
  ,const TCollection_AsciiString&
-#ifdef DEB
+#ifdef OCCT_DEBUG
                                  str
 #endif 
  ,const Standard_Integer
-#ifdef DEB
+#ifdef OCCT_DEBUG
                         iFI // DEB args
 #endif 
  ,TopOpeBRepDS_FaceInterferenceTool& FITool
@@ -207,11 +207,11 @@ static void FDS_ADDEDGE
  ,const Handle(TopOpeBRepDS_Interference)& I
 )
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TRCF) {TCollection_AsciiString cr("\n"),s=str+iFI+cr;I->Dump(cout,s,cr);}
 #endif 
   FITool.Add(FI,F,Ecpx,isEGsp,I);
-#ifdef DEB
+#ifdef OCCT_DEBUG
   FDS_DUMPTRANSITION(TRCF,"--> resultat partiel sur face ",iFI,FITool);
 #endif
 }
@@ -224,7 +224,7 @@ void FUN_reduceEDGEgeometry1
  const TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State& )
 {
   Standard_Boolean TRCF = Standard_False;
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean TRCE = Standard_False;
   TRCE = FTRCE(iEG);if (TRCE) debrededg(iEG);
   TRCF = FTRCF(iFI);if (TRCF) debredfac(iFI);
@@ -287,7 +287,7 @@ void FUN_reduceEDGEgeometry1
 	 
 //	TopOpeBRepDS_Transition T1 = I1->Transition(); TopAbs_Orientation O1 = T1.Orientation(TopAbs_IN); // xpu :090498	
 //	Standard_Boolean revT1 = toreverse && (M_FORWARD(O1) || M_REVERSED(O1));      // xpu :090498	
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //	if ((TRCE || TRCF) && revT1) cout<<"-> REVERSE T"<<endl;
 #endif
 //	if (revT1) I1->ChangeTransition() = T1.Complement();  //xpu :090498
@@ -298,7 +298,7 @@ void FUN_reduceEDGEgeometry1
     
 //      TopOpeBRepDS_Transition T2 = I2->Transition(); TopAbs_Orientation O2 = T2.Orientation(TopAbs_IN);  // xpu :090498 
 //      Standard_Boolean revT2 = toreverse && (M_FORWARD(O2) || M_REVERSED(O2));       // xpu :090498       
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //	if ((TRCE || TRCF) && revT2) cout<<"-> REVERSE T"<<endl;
 #endif 
 //      if (revT2) I2->ChangeTransition() = T2.Complement();  //xpu :090498
@@ -360,7 +360,7 @@ const TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State& MEsp)
   TopOpeBRepDS_MapOfShapeData mosd; 
   FUN_GmapS(LI,BDS,mosd);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean TRC = FTRCF(iFI); 
   if (TRC) FUN_dumpmosd(mosd,BDS,iFI,"");
   if (TRC) debredfac(iFI);
@@ -381,7 +381,7 @@ const TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State& MEsp)
     Standard_Boolean egissect = BDS.IsSectionEdge(TopoDS::Edge(EG));
     Standard_Boolean eghasesd = (! esdeg.IsEmpty());
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //    Standard_Integer egiref = BDS.SameDomainRef(iEG);
 //    Standard_Integer egisref = (iEG == egiref);
 //    TopOpeBRepDS_Config egc = BDS.SameDomainOri(iEG);
@@ -392,7 +392,7 @@ const TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State& MEsp)
     // LIEG = toutes les interferences dont le Support() est une 
     // face possedant une interference dont la Geometry() est EG.
     
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (TRC) FUN_dumploiS(EG,LIEG,BDS,"   ");
 #endif
     
@@ -523,18 +523,18 @@ void TopOpeBRepDS_FIR::ProcessFaceInterferences
 {
   TopOpeBRepDS_DataStructure& BDS = myHDS->ChangeDS();
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean TRC = FTRCF(SIX);
   if (TRC) debredfac(SIX);
 #endif
   // F is the Face, LI is list of interferences to compact
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //  const TopoDS_Shape& F = BDS.Shape(SIX);
 #endif
   TopOpeBRepDS_ListOfInterference& LI = BDS.ChangeShapeInterferences(SIX);
   TopOpeBRepDS_ListOfInterference lw, lE, lFE, lFEF, lF; lw.Assign(LI);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer nF, nFE, nFEF, nE;
 #endif
 
@@ -543,7 +543,7 @@ void TopOpeBRepDS_FIR::ProcessFaceInterferences
   ::FUN_selectSKinterference(lFE,MDSkf,lFEF);
   ::FUN_selectTRASHAinterference(lw,TopAbs_EDGE,lE);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   nF = lF.Extent();
   nFE = lFE.Extent();
   nFEF = lFEF.Extent();
@@ -559,7 +559,7 @@ void TopOpeBRepDS_FIR::ProcessFaceInterferences
 
   FUN_reduceEDGEgeometry(lFEF,BDS,SIX,MEsp);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   nF = lF.Extent();
   nFE = lFE.Extent();
   nFEF = lFEF.Extent();

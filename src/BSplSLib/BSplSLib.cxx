@@ -3156,7 +3156,7 @@ void BSplSLib::Resolution(const TColgp_Array2OfPnt&      Poles,
   }
   else { 
     UTolerance=VTolerance=0.0;
-#ifdef DEB
+#ifdef OCCT_DEBUG
     cout<<"ElSLib.cxx : maxderivative = 0.0 "<<endl;
 #endif
   }

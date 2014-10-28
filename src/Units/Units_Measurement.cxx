@@ -60,7 +60,7 @@ Units_Measurement::Units_Measurement(const Standard_Real avalue,
   themeasurement=avalue;
   Units_UnitSentence unit(aunit);
   if(!unit.IsDone()) {
-#ifdef UNITS_DEB
+#ifdef OCCT_DEBUG
     cout<<"can not create Units_Measurement - incorrect unit"<<endl;
 #endif
     myHasToken = Standard_False;
@@ -98,7 +98,7 @@ void Units_Measurement::Convert(const Standard_CString aunit)
     themeasurement = oldtoken->Multiplied(themeasurement);
     themeasurement = newtoken->Divided(themeasurement);
   }
-#ifdef UNITS_DEB
+#ifdef OCCT_DEBUG
   else {
     cout<<" The units don't have the same physical dimensions"<<endl;
   }

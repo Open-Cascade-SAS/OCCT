@@ -910,7 +910,7 @@ Standard_Boolean BRepBlend_SurfRstConstRad::Section
   norm = ncrossns.Magnitude();
   if (norm < Eps)  {
     norm = 1; // Not enough, but it is not necessary to stop
-#if BREPBLEND_DEB
+#ifdef OCCT_DEBUG
     cout << " SurfRstConstRad : Singular Surface " << endl;
 #endif
   }  

@@ -369,7 +369,7 @@ static void AttachLayer (const Handle(Transfer_FinderProcess) &FP,
     if ( FP->FindTypedTransient ( mapper, STANDARD_TYPE(IGESData_IGESEntity), Igesent ) ) {
       Igesent->InitLevel( 0, localIntName );
     }
-#ifdef IGESCAFCONTROL_DEB
+#ifdef OCCT_DEBUG
     else cout << "Warning: Can't find entity for shape in mapper" << endl;
 #endif
   }

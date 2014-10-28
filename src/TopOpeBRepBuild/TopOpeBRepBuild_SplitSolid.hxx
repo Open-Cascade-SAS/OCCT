@@ -21,7 +21,7 @@
 #include <TopOpeBRepBuild_SolidBuilder.hxx>
 #include <TopOpeBRepBuild_define.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #define DEBSHASET(sarg,meth,shaset,str) TCollection_AsciiString sarg((meth));(sarg)=(sarg)+(shaset).DEBNumber()+(str);
 Standard_EXPORT Standard_Boolean TopOpeBRepDS_GettraceSTRANGE();
 Standard_EXPORT void debsplitf(const Standard_Integer i);
@@ -79,7 +79,7 @@ void TopOpeBRepBuild_Builder::SplitSolid(const TopoDS_Shape& S1oriented,
   // -----------------------------------------
   TopOpeBRepBuild_ShellFaceSet SFS;
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean tSPS = TopOpeBRepBuild_GettraceSPS();
 //  Standard_Integer iSolid = myDataStructure->Shape(S1oriented);
   if (tSPS) {
@@ -117,7 +117,7 @@ void TopOpeBRepBuild_Builder::SplitSolid(const TopoDS_Shape& S1oriented,
 	TopAbs_Orientation ori = SSurfaces.Orientation(ToBuild1);
 	myBuildTool.Orientation(aFace,ori);
 	
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	if (tSPS){
 	  DEBSHASET(ss,"--- SplitSolid ",SFS," AddElement SFS+ face ");  
 	  GdumpSHA(aFace,(Standard_Address)ss.ToCString());

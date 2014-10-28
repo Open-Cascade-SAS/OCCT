@@ -40,7 +40,7 @@ Handle(Standard_Transient) XmlLDrivers::Factory(const Standard_GUID& theGUID)
 {
   if (theGUID == XmlLStorageDriver)
   {
-#ifdef XMLLDRIVERS_DEB
+#ifdef OCCT_DEBUG
     cout << "XmlLDrivers : Storage Plugin" << endl;
 #endif
     static Handle(XmlLDrivers_DocumentStorageDriver) model_sd =
@@ -51,7 +51,7 @@ Handle(Standard_Transient) XmlLDrivers::Factory(const Standard_GUID& theGUID)
 
   if (theGUID == XmlLRetrievalDriver)
   {
-#ifdef XMLLDRIVERS_DEB
+#ifdef OCCT_DEBUG
     cout << "XmlLDrivers : Retrieval Plugin" << endl;
 #endif
     static Handle (XmlLDrivers_DocumentRetrievalDriver) model_rd =
@@ -76,7 +76,7 @@ TCollection_AsciiString XmlLDrivers::CreationDate ()
 
   if (time(&nowbin) == (time_t) - 1)
   {
-#ifdef XMLLDRIVERS_DEB
+#ifdef OCCT_DEBUG
     cerr << "Storage ERROR : Could not get time of day from time()" << endl;
 #endif
   }
@@ -85,7 +85,7 @@ TCollection_AsciiString XmlLDrivers::CreationDate ()
   
   if (strftime(nowstr, SLENGTH, "%Y-%m-%d", nowstruct) == (size_t) 0)
   {
-#ifdef XMLLDRIVERS_DEB
+#ifdef OCCT_DEBUG
     cerr << "Storage ERROR : Could not get string from strftime()" << endl;
 #endif
   }

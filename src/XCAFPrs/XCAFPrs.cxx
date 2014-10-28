@@ -169,7 +169,7 @@ void XCAFPrs::CollectStyleSettings (const TDF_Label &L,
           continue;
       
       // set style for all component from Next Usage Occurrence.
-#ifdef XCAFPRS_DEB
+#ifdef OCCT_DEBUG
         cout << "Set the style for SHUO next_usage-occurrance" << endl;
 #endif
         /* 

@@ -94,7 +94,7 @@ static void  AttributeWeightWatcher(const TDF_Label& LabS,
 {
   TCollection_AsciiString STR;
   TDF_Tool::Entry(LabS,STR);
-#ifdef DEB
+#ifdef OCCT_DEBUG
   cout << "Label to process: "<<STR<<endl;
 #endif
   Handle(TNaming_NamedShape) NS;
@@ -177,14 +177,14 @@ void MDocStd::AddRetrievalDrivers(const Handle(MDF_ARDriverHSequence)& aDriverSe
 Handle(Standard_Transient) MDocStd::Factory(const Standard_GUID& aGUID) {
 
   if(aGUID == StandardStorageDriver)  {
-#ifdef MDOCSTD_DEB
+#ifdef OCCT_DEBUG
     cout << "MDocStd : Storage Plugin" << endl;
 #endif
     static Handle(MDocStd_DocumentStorageDriver) standard_sd = new MDocStd_DocumentStorageDriver;
     return standard_sd;
   }
   if(aGUID == StandardRetrievalDriver) {  
-#ifdef MDOCSTD_DEB
+#ifdef OCCT_DEBUG
     cout << "MDocStd : Retrieval Plugin" << endl;
 #endif
     static Handle (MDocStd_DocumentRetrievalDriver) standard_rd = new MDocStd_DocumentRetrievalDriver;

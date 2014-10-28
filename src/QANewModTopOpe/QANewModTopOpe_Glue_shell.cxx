@@ -1494,7 +1494,7 @@ QANewModTopOpe_Glue::SectionInsideFace(const TopoDS_Face& theFace,
       myMapGener(theFace).Append (aListGener);
     }
   }
-#ifdef QANEWODTOPOPE_DEB
+#ifdef OCCT_DEBUG
   else if (!aListW.IsEmpty()) {
     cout<<"QANewModTopOpe_Glue::SectionInsideFace : can't connect edges"<<endl;
   }

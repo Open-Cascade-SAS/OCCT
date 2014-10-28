@@ -157,7 +157,7 @@ Derivatives (const math_Vector& X     ,
                InitDerivative(X,Point1,Point2,Vect11,Vect21,Vect12,Vect22);
                Standard_Real NormeD11 = Vect11.Magnitude();
                Standard_Real NormeD21 = Vect21.Magnitude();
-#ifdef DEB
+#ifdef OCCT_DEBUG
                gp_Vec2d V2V1(Vect11.XY(),Vect21.XY());
 #else
                Vect11.XY();
@@ -193,7 +193,7 @@ Values (const math_Vector& X     ,
           InitDerivative(X,Point1,Point2,Vect11,Vect21,Vect12,Vect22);
           Standard_Real NormeD11 = Vect11.Magnitude();
           Standard_Real NormeD21 = Vect21.Magnitude();
-#ifdef DEB
+#ifdef OCCT_DEBUG
           gp_Vec2d V2V1(Vect11.XY(),Vect21.XY());
 #else
           Vect11.XY();

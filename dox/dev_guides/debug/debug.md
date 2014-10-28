@@ -3,6 +3,26 @@ Debugging tools and hints {#occt_dev_guides__debug}
 
 @tableofcontents
 
+@section occt_debug_macro Compiler macro to enable extended debug messages
+
+Many OCCT algorithms can produce extended debug messages, usually printed to cout.
+These include messages on internal errors and special cases encountered, timing etc.
+In OCCT versions prior to 6.8.0 most of these messages were activated by compiler macro *DEB*, enabled by default in debug builds.
+Since version 6.8.0 this is disabled by default but can be enabled by defining compiler macro *OCCT_DEBUG*.
+
+To enable this macro on Windows when building with Visual Studio projects, edit file custom.bat and add the line:
+
+    set CSF_DEFINES=OCCT_DEBUG
+
+Some algorithms use specific macros for yet more verbose messages, usually started with OCCT_DEBUG_.
+These messages can be enabled in the same way, by defining corresponding macro.
+
+Note that some header files are modified when *OCCT_DEBUG* is enabled, hence binaries built with it enabled are not compatible with client code built without this option; this is not intended for production use.
+
+@section occt_debug_exceptions Calling JIT debugger on exception
+
+On Windows platform when using Visual Studio compiler there is a possibility to start the debugger automatically if an exception is caught in a program running OCCT. For this, set environment variable *CSF_DEBUG* to any value. Note that this feature works only if you enable OCCT exception handler in your application by calling *OSD::SetSignal()*.
+
 @section occt_debug_intro Introduction
 
 This manual describes facilities included in OCCT to support debugging, and provides some hints for more efficient debug.
@@ -14,10 +34,6 @@ In real-world applications modeling operations are often performed in a long seq
 This feature can be activated by defining environment variable *CSF_DEBUG_BOP*, which should specify an existing writeable directory.
 
 The diagnostic code checks validity of the input arguments and the result of each Boolean operation. When an invalid situation is detected, the report consisting of argument shapes and a DRAW script to reproduce the problematic operation is saved to the directory pointed by *CSF_DEBUG_BOP*.
-
-@section occt_debug_exceptions Calling JIT debugger on exception
-
-On Windows platform when using Visual Studio compiler there is a possibility to start the debugger automatically if an exception is caught in a program running OCCT. For this, set environment variable *CSF_DEBUG* to any value. Note that this feature works only if you enable OCCT exception handler in your application by calling *OSD::SetSignal()*.
 
 @section occt_debug_call Functions for calling from debugger
 

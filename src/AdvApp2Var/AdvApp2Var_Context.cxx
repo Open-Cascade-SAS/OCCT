@@ -44,7 +44,7 @@ static Standard_Boolean lesparam(const Standard_Integer iordre,
   //  else if (*ndgjac < 61) { nbpnt = 61;} Bug Uneven number
   else {
     nbpnts = 50;
-#if ADVAPP2VAR_DEB
+#ifdef OCCT_DEBUG
     cout << "F(U, V) : Not enough points of discretization" << endl; 
 #endif
   }

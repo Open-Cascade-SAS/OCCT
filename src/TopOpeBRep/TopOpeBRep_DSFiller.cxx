@@ -42,7 +42,7 @@ extern void BREP_sortonparameter(const Handle(TopOpeBRepDS_HDataStructure)& HDS)
 extern void BREP_mergePDS(const Handle(TopOpeBRepDS_HDataStructure)& HDS);
 
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 Standard_EXPORT void debcomplete(){};
 Standard_EXPORT void debcompleteds(){};
 static int Vdebfillerds=0;void debfillerds(void){Vdebfillerds++;}
@@ -287,7 +287,7 @@ static
 	Standard_Real par1 = CPI1->Parameter();
 	Standard_Real par2; Standard_Boolean ok = FUN_tool_parE(e1,par1,e2,par2);
 	if (!ok) {
-#ifdef TOPOPEBREP_DEB
+#ifdef OCCT_DEBUG
 	  cout<<"**********TopOpeBRep FUN_shareNOG**********"<<endl;
 #endif
 	  return Standard_False;
@@ -320,7 +320,7 @@ void TopOpeBRep_DSFiller::Insert(const TopoDS_Shape& aS1,
 {
   InsertIntersection(aS1,aS2,HDS,orientFORWARD);
   Complete(HDS);
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepTool_GettraceEND()) cout<<"DSFiller::Insert"<<endl;
 #endif
 } // Insert
@@ -340,7 +340,7 @@ void TopOpeBRep_DSFiller::InsertIntersection(const TopoDS_Shape& aS1,
   if (myPShapeClassifier == NULL) myPShapeClassifier = new TopOpeBRepTool_ShapeClassifier();
   myFacesFiller.SetPShapeClassifier(myPShapeClassifier);
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean tsiff = TopOpeBRep_GettraceSIFF();
   Standard_Boolean tkro = TopOpeBRepTool_GettraceKRO();
   if (tsiff) SIFF.Start("DSFiller debut tsif ",cout);
@@ -377,7 +377,7 @@ void TopOpeBRep_DSFiller::InsertIntersection(const TopoDS_Shape& aS1,
     }
   }
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   debfillerreset(); // debug
 #endif
 
@@ -434,7 +434,7 @@ void TopOpeBRep_DSFiller::InsertIntersection(const TopoDS_Shape& aS1,
   myShapeIntersector.InitIntersection(S1,S2);
   while (myShapeIntersector.MoreIntersection()) {
     
-#ifdef DEB
+#ifdef OCCT_DEBUG
     Standard_Integer i1deb = myShapeIntersector.Index(1);
     Standard_Integer i2deb = myShapeIntersector.Index(2);
     Standard_Boolean b1deb = TopOpeBRep_GettraceSHA(i1deb);
@@ -462,7 +462,7 @@ void TopOpeBRep_DSFiller::InsertIntersection(const TopoDS_Shape& aS1,
     }
     
     if      (isFF) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if (tsiff) SIFF.Add(i1deb,i2deb); debfillerff();
 #endif
       TopOpeBRep_FacesIntersector& FF=myShapeIntersector.ChangeFacesIntersector();
@@ -473,7 +473,7 @@ void TopOpeBRep_DSFiller::InsertIntersection(const TopoDS_Shape& aS1,
 	lFF2 = FF.Face(2);
       }
       
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if (isFFsamdom) debfillerffsd(); // debug
       Standard_Integer exf1 = myShapeIntersector.Index(1);
       Standard_Integer exf2 = myShapeIntersector.Index(2);
@@ -483,17 +483,17 @@ void TopOpeBRep_DSFiller::InsertIntersection(const TopoDS_Shape& aS1,
     }
     
     else if ((t1 == TopAbs_EDGE) && (t2 == TopAbs_EDGE)) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
       debfilleree(); // debug
 #endif
       TopOpeBRep_EdgesIntersector& EE = 
 	myShapeIntersector.ChangeEdgesIntersector();
       EE.Dimension(2);
-#ifdef DEB
+#ifdef OCCT_DEBUG
       Standard_Boolean EEsamedomain =
 #endif
                          EE.SameDomain();
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if (EEsamedomain) debfillereesd(); // debug
 #endif
       if ( islFFsamdom ) {
@@ -504,7 +504,7 @@ void TopOpeBRep_DSFiller::InsertIntersection(const TopoDS_Shape& aS1,
     }
     
     else if ((t1 == TopAbs_FACE) && (t2 == TopAbs_EDGE)) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
       debfillerfe(); // debug
 #endif
       TopOpeBRep_FaceEdgeIntersector& FE = 
@@ -513,7 +513,7 @@ void TopOpeBRep_DSFiller::InsertIntersection(const TopoDS_Shape& aS1,
     }
     
     else if ((t1 == TopAbs_EDGE) && (t2 == TopAbs_FACE)) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
       debfilleref(); // debug
 #endif
       TopOpeBRep_FaceEdgeIntersector& FE = 
@@ -548,10 +548,10 @@ void TopOpeBRep_DSFiller::InsertIntersection(const TopoDS_Shape& aS1,
   FDSCNX_Prepare(aS1,aS2,HDS);
   FDSSDM_prepare(HDS);
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (tkro) KRO_DSFILLER_TOTAL.Stop();if (tsiff) SIFF.End("DSFiller fin tsif ",cout);
 #endif
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepTool_GettraceEND()) cout<<"DSFiller::InsertIntersection"<<endl;
 #endif
   
@@ -563,7 +563,7 @@ void TopOpeBRep_DSFiller::InsertIntersection(const TopoDS_Shape& aS1,
 //=======================================================================
 void TopOpeBRep_DSFiller::Complete(const Handle(TopOpeBRepDS_HDataStructure)& HDS)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   debcomplete();
 #endif
   GapFiller(HDS);
@@ -572,7 +572,7 @@ void TopOpeBRep_DSFiller::Complete(const Handle(TopOpeBRepDS_HDataStructure)& HD
   Reducer(HDS);
   RemoveUnsharedGeometry(HDS);
   Checker(HDS);
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepTool_GettraceEND()) cout<<"DSFiller::Complete"<<endl;
 #endif
 } // Complete
@@ -584,7 +584,7 @@ void TopOpeBRep_DSFiller::Complete(const Handle(TopOpeBRepDS_HDataStructure)& HD
 void TopOpeBRep_DSFiller::GapFiller(const Handle(TopOpeBRepDS_HDataStructure)& HDS) const
 {
   TopOpeBRepDS_GapFiller GF(HDS); GF.Perform();
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepTool_GettraceEND()) cout<<"DSFiller::GapFiller"<<endl;
 #endif
 }
@@ -595,7 +595,7 @@ void TopOpeBRep_DSFiller::GapFiller(const Handle(TopOpeBRepDS_HDataStructure)& H
 //=======================================================================
 void TopOpeBRep_DSFiller::CompleteDS(const Handle(TopOpeBRepDS_HDataStructure)& HDS) const
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   debcompleteds();
 #endif
   const TopoDS_Shape& S1 = myShapeIntersector.Shape(1);
@@ -620,7 +620,7 @@ void TopOpeBRep_DSFiller::CompleteDS(const Handle(TopOpeBRepDS_HDataStructure)& 
   FUN_ds_completeforE7(HDS); // xpu130898,
   FUN_ds_completeforSE9(HDS); // xpu011098
   FUN_ds_complete1dForSESDM(HDS); // MSV 25.03.2002 : OCC251
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepTool_GettraceEND()) cout<<"DSFiller::CompleteDS"<<endl;
 #endif
 } // CompleteDS
@@ -634,7 +634,7 @@ void TopOpeBRep_DSFiller::Filter(const Handle(TopOpeBRepDS_HDataStructure)& HDS)
   TopOpeBRepDS_Filter F(HDS);
   F.ProcessEdgeInterferences();
   F.ProcessCurveInterferences();
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepTool_GettraceEND()) cout<<"DSFiller::Filter"<<endl;
 #endif
 } // Filter
@@ -647,7 +647,7 @@ void TopOpeBRep_DSFiller::Reducer(const Handle(TopOpeBRepDS_HDataStructure)& HDS
 {
   TopOpeBRepDS_Reducer R(HDS);
   R.ProcessEdgeInterferences();
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepTool_GettraceEND()) cout<<"DSFiller::Reducer"<<endl;
 #endif
 } // Reducer
@@ -659,7 +659,7 @@ void TopOpeBRep_DSFiller::Reducer(const Handle(TopOpeBRepDS_HDataStructure)& HDS
 void TopOpeBRep_DSFiller::RemoveUnsharedGeometry(const Handle(TopOpeBRepDS_HDataStructure)& HDS)
 {
   Standard_Boolean processNOG = Standard_True;
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRep_GetcontextNONOG()) processNOG = Standard_False;
 #endif
   if (!processNOG) return;
@@ -690,7 +690,7 @@ void TopOpeBRep_DSFiller::RemoveUnsharedGeometry(const Handle(TopOpeBRepDS_HData
       }
     }
   }
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepTool_GettraceEND()) cout<<"DSFiller::RemoveUnsharedGeometry"<<endl;
 #endif
 } // RemoveUnsharedGeometry
@@ -702,7 +702,7 @@ void TopOpeBRep_DSFiller::RemoveUnsharedGeometry(const Handle(TopOpeBRepDS_HData
 void TopOpeBRep_DSFiller::Checker(const Handle(TopOpeBRepDS_HDataStructure)& /*HDS*/) const
 {
   // TopOpeBRepDS_Checker C(HDS); // NYI
-  //#ifdef DEB
+  //#ifdef OCCT_DEBUG
   //  if (TopOpeBRepTool_GettraceEND()) cout<<"DSFiller::Checker"<<endl;
   //#endif
 }
@@ -717,7 +717,7 @@ void TopOpeBRep_DSFiller::Insert2d
 {
   InsertIntersection2d(aS1,aS2,HDS);
   CompleteDS2d(HDS);
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepTool_GettraceEND()) cout<<"DSFiller::Insert2d"<<endl;
 #endif
 } // Insert
@@ -803,7 +803,7 @@ void TopOpeBRep_DSFiller::InsertIntersection2d
   BREP_correctgbound(HDS);
   BREP_mergePDS(HDS);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepTool_GettraceEND()) cout<<"DSFiller::InsertIntersection2d"<<endl;
 #endif
 
@@ -829,7 +829,7 @@ void TopOpeBRep_DSFiller::CompleteDS2d(const Handle(TopOpeBRepDS_HDataStructure)
   TopOpeBRepDS_Reducer R(HDS);
   R.ProcessEdgeInterferences();
   // TopOpeBRepDS_Checker C(HDS); // NYI
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepTool_GettraceEND()) cout<<"DSFiller::CompleteDS2d"<<endl;
 #endif
 } // CompleteDS2d
@@ -882,7 +882,7 @@ Standard_Boolean TopOpeBRep_DSFiller::IsMadeOf1d(const TopoDS_Shape& aS) const
 Standard_Boolean TopOpeBRep_DSFiller::IsContext1d(const TopoDS_Shape& aS) const 
 {
   Standard_Boolean is1d = IsMadeOf1d(aS);
-#ifdef TOPOPEBREP_DEB
+#ifdef OCCT_DEBUG
   if ( is1d ) cout<<"TopOpeBRep_DSFiller : 1d"<<endl;
 #endif
   if ( !is1d ) return Standard_False;
@@ -940,7 +940,7 @@ void TopOpeBRep_DSFiller::Insert1d
 Standard_Boolean TopOpeBRep_DSFiller::CheckInsert(const TopoDS_Shape& aS1,const TopoDS_Shape& aS2) const 
 {
   if (aS1.IsEqual(aS2)) {
-#ifdef TOPOPEBREP_DEB
+#ifdef OCCT_DEBUG
     cout<<"TopOpeBRep_DSFiller : CheckInsert : S1 == S2"<<endl;
 #endif
     return Standard_False;

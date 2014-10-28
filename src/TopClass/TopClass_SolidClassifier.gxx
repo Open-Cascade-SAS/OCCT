@@ -14,7 +14,7 @@
 
 //-- TopClass_SolidClassifier.gxx
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 Standard_EXPORT Standard_Boolean TopClass_GettraceFC();
 #endif
 
@@ -38,7 +38,7 @@ TopClass_SolidClassifier::TopClass_SolidClassifier(TheSolidExplorer& S,
 void TopClass_SolidClassifier::Perform(TheSolidExplorer& SolidExplorer,
 				       const gp_Pnt&  P,
 				       const Standard_Real Tol) { 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trace = TopClass_GettraceFC();
 #endif
 
@@ -79,7 +79,7 @@ void TopClass_SolidClassifier::Perform(TheSolidExplorer& SolidExplorer,
  
 		  parmin = Intersector.WParameter();
 		  if(Abs(parmin)<=Tol) { 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 		    if (trace) {
 		      //-- #########################################
 		      cout<<" parmin = "<<parmin<< " avec Par = "<<Par;
@@ -104,7 +104,7 @@ void TopClass_SolidClassifier::Perform(TheSolidExplorer& SolidExplorer,
 		      myState = 4; //-- OUT --
 		    }
 		    else {
-#ifdef TOPCLASS_DEB
+#ifdef OCCT_DEBUG
 		      cout<<"*Probleme ds TopClass_SolidClassifier.gxx"<<endl;
 #endif
 		    }
@@ -123,11 +123,11 @@ void TopClass_SolidClassifier::Perform(TheSolidExplorer& SolidExplorer,
 		      myState = 4; //-- OUT --
 		    }
 		    else { 
-#ifdef TOPCLASS_DEB
+#ifdef OCCT_DEBUG
 		      cout<<"*Probleme ds TopClass_SolidClassifier.gxx "<<endl;
 #endif
 		    }
-#ifdef DEB
+#ifdef OCCT_DEBUG
 		    //-- #########################################
 //		    cout<<" Intersector.State() == TopAbs_ON";
 //		    cout<<" ds TopClass_SolidClassifier.gxx "<<endl;
@@ -162,7 +162,7 @@ void TopClass_SolidClassifier::Perform(TheSolidExplorer& SolidExplorer,
       }
     } //-- Exploration of the shells
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     //#################################################
     SolidExplorer.DumpSegment(P,L,parmin,State());
     //#################################################

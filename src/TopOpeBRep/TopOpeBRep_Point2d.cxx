@@ -84,7 +84,7 @@ TopOpeBRepDS_Transition& TopOpeBRep_Point2d::ChangeTransition(const Standard_Int
 //function : Dump
 //purpose  : 
 //=======================================================================
-#ifdef DEB
+#ifdef OCCT_DEBUG
 void TopOpeBRep_Point2d::Dump(const Standard_Integer E1index,const Standard_Integer E2index) const
 {
   Standard_Real par1 = Parameter(1);

@@ -17,7 +17,7 @@
 #ifndef _TopOpeBRepDS_traceDSX_HeaderFile
 #define _TopOpeBRepDS_traceDSX_HeaderFile
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 
 #include <TopOpeBRepDS_define.hxx>
 #include <TColStd_HArray1OfBoolean.hxx>
@@ -57,7 +57,7 @@ private:
   Standard_Integer myns;
 };
 
-// #ifdef DEB
+// #ifdef OCCT_DEBUG
 #endif
 
 // #define _TopOpeBRepDS_traceDSX_HeaderFile

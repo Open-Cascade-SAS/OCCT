@@ -24,7 +24,7 @@
 #include <TDF_Transaction.ixx>
 
 #undef DEB_TRANSACTION
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #define DEB_TRANSACTION
 #endif
 #undef DEB_TRANSACTION_DUMP
@@ -88,7 +88,7 @@ void TDF_Transaction::Initialize(const Handle(TDF_Data)& aDF)
 
 Standard_Integer TDF_Transaction::Open()
 {
-#ifdef DEB_TRANSACTION
+#ifdef OCCT_DEBUG_TRANSACTION
   cout<<"Transaction "<<myName<<" opens #"<<myDF->Transaction()+1<<endl;
 #endif
   if (IsOpen())
@@ -106,27 +106,27 @@ Standard_Integer TDF_Transaction::Open()
 
 Handle(TDF_Delta) TDF_Transaction::Commit(const Standard_Boolean withDelta)
 {
-#ifdef DEB_TRANSACTION
+#ifdef OCCT_DEBUG_TRANSACTION
   cout<<"Transaction "<<myName<<" commits ";
 #endif
   Handle(TDF_Delta) delta;
   if (IsOpen()) {
-#ifdef DEB_TRANSACTION
+#ifdef OCCT_DEBUG_TRANSACTION
     cout<<"from #"<<myDF->Transaction()<<" until #"<<myUntilTransaction<<" while current is #"<<myDF->Transaction()<<endl;
 #endif
-#ifdef DEB_TRANSACTION_DUMP
+#ifdef OCCT_DEBUG_TRANSACTION_DUMP
     cout<<"DF before commit"<<endl;
     TDF_Tool::DeepDump(cout,myDF);
 #endif
     Standard_Integer until = myUntilTransaction;
     myUntilTransaction = 0;
     delta = myDF->CommitUntilTransaction(until, withDelta);
-#ifdef DEB_TRANSACTION_DUMP
+#ifdef OCCT_DEBUG_TRANSACTION_DUMP
     cout<<"DF after commit"<<endl;
     TDF_Tool::DeepDump(cout,myDF);
 #endif
   }
-#ifdef DEB_TRANSACTION
+#ifdef OCCT_DEBUG_TRANSACTION
   else cout<<"but this transaction is not open!"<<endl;
 #endif
   return delta;
@@ -141,16 +141,16 @@ Handle(TDF_Delta) TDF_Transaction::Commit(const Standard_Boolean withDelta)
 void TDF_Transaction::Abort()
 {
   if (IsOpen()) {
-#ifdef DEB_TRANSACTION
+#ifdef OCCT_DEBUG_TRANSACTION
     cout<<"Transaction "<<myName<<" aborts from #"<<myDF->Transaction()<<" until #"<<myUntilTransaction<<" while current is #"<<myDF->Transaction()<<endl;
 #endif
-#ifdef DEB_TRANSACTION_DUMP
+#ifdef OCCT_DEBUG_TRANSACTION_DUMP
     cout<<"DF before abort"<<endl;
     TDF_Tool::DeepDump(cout,myDF);
 #endif
     myDF->AbortUntilTransaction(myUntilTransaction);
     myUntilTransaction = 0;
-#ifdef DEB_TRANSACTION_DUMP
+#ifdef OCCT_DEBUG_TRANSACTION_DUMP
     cout<<"DF after abort"<<endl;
     TDF_Tool::DeepDump(cout,myDF);
 #endif

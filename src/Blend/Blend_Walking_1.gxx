@@ -120,14 +120,14 @@ void Blend_Walking::Perform(Blend_Function& Func,
     sol = ParDep;
   }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   sectioncalculee = 0;
 #endif
   State = TestArret(Func, Blend_OK, Standard_False);
   if (State!=Blend_OK) {
     return;
   }
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (Blend_GettraceDRAWSECT()){
     Drawsect(surf1,surf2,sol,param,Func);
   }
@@ -200,7 +200,7 @@ Standard_Boolean Blend_Walking::PerformFirstSection(Blend_Function&     Func,
   }
 
   TestArret(Func, Blend_OK, Standard_False);
-  #ifdef DEB
+  #ifdef OCCT_DEBUG
     if (Blend_GettraceDRAWSECT())
     {
      Drawsect(surf1, surf2, sol, param, Func);
@@ -386,7 +386,7 @@ Standard_Boolean Blend_Walking::PerformFirstSection (Blend_Function& Func,
   {
   case Blend_OnRst1:
     {
-      #ifdef DEB
+      #ifdef OCCT_DEBUG
         if (Blend_GettraceDRAWSECT())
         {
           Drawsect(surf1, surf2, sol, param, Func);
@@ -399,7 +399,7 @@ Standard_Boolean Blend_Walking::PerformFirstSection (Blend_Function& Func,
 
   case Blend_OnRst2:
     {
-      #ifdef DEB
+      #ifdef OCCT_DEBUG
         if (Blend_GettraceDRAWSECT())
         {
           Drawsect(surf1, surf2, sol, param, Func);
@@ -412,7 +412,7 @@ Standard_Boolean Blend_Walking::PerformFirstSection (Blend_Function& Func,
 
   case Blend_OnRst12 :
     {
-      #ifdef DEB
+      #ifdef OCCT_DEBUG
       if (Blend_GettraceDRAWSECT())
       {
         Drawsect(surf1, surf2, sol, param, Func);

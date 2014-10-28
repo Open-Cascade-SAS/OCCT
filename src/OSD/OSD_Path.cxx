@@ -360,7 +360,7 @@ OSD_Path::OSD_Path(const TCollection_AsciiString& aDependentName,
      MacExtract(aDependentName,myDisk,myTrek,myName,myExtension);
      break;
   default:
-#ifdef OSD_DEB
+#ifdef OCCT_DEBUG
        cout << " WARNING WARNING : OSD Path for an Unknown SYSTEM : " << (Standard_Integer)todo << endl;
 #endif 
      break ;

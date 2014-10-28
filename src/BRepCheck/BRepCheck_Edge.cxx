@@ -878,7 +878,7 @@ Standard_Real PrecSurface(const Adaptor3d_CurveOnSurface& aACS)
 //function : PrintProblematicPoint
 //purpose  : 
 //=======================================================================
-#ifdef DEB
+#ifdef OCCT_DEBUG
 void PrintProblematicPoint(const gp_Pnt& problematic_point,
 			   const Standard_Real Error,
 			   const Standard_Real Tol)

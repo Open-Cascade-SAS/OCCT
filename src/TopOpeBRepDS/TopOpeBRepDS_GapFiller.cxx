@@ -38,7 +38,7 @@
 
 #include <Geom2d_Curve.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepDS_GettraceGAP();
 extern Standard_Boolean TopOpeBRepDS_GetcontextNOGAP();
 #endif
@@ -64,7 +64,7 @@ TopOpeBRepDS_GapFiller::TopOpeBRepDS_GapFiller(const Handle(TopOpeBRepDS_HDataSt
 void TopOpeBRepDS_GapFiller::Perform() 
 {
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepDS_GetcontextNOGAP () != 0) return;
 #endif
 
@@ -122,7 +122,7 @@ void TopOpeBRepDS_GapFiller::FindAssociatedPoints(const Handle(TopOpeBRepDS_Inte
     if (myAsso->HasAssociation(itSI.Value())) return;
   }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepDS_GettraceGAP() == 1) {
     cout<<endl;
     cout<<"-----------------------------------------------------"<<endl;
@@ -193,7 +193,7 @@ void TopOpeBRepDS_GapFiller::FindAssociatedPoints(const Handle(TopOpeBRepDS_Inte
     LI.Append(I);
   }
    
-#ifdef DEB
+#ifdef OCCT_DEBUG
    if (TopOpeBRepDS_GettraceGAP() != 0) {  
      TopOpeBRepDS_ListIteratorOfListOfInterference it(LI);
      for  (it.Initialize(LI); it.More(); it.Next()) {
@@ -443,7 +443,7 @@ void TopOpeBRepDS_GapFiller::FilterByIncidentDistance(const TopoDS_Face& F,
   LI.Clear();
   if (!ISol.IsNull()) {
     LI.Append(ISol);
-#ifdef DEB  
+#ifdef OCCT_DEBUG
     if (TopOpeBRepDS_GettraceGAP() == 1){
       cout << " Distance Minimum :"<<DistMin<<endl; 
     }
@@ -457,7 +457,7 @@ void TopOpeBRepDS_GapFiller::FilterByIncidentDistance(const TopoDS_Face& F,
 //=======================================================================
 //unreferenced function, commented    
 /*
-#ifdef DEB  
+#ifdef OCCT_DEBUG
 static void BuildNewPoint (const TColgp_SequenceOfPnt& LP,
 			   const Standard_Real&    TolMax,
 			   TopOpeBRepDS_Point& Point) 
@@ -496,7 +496,7 @@ void TopOpeBRepDS_GapFiller::ReBuildGeom(const Handle(TopOpeBRepDS_Interference)
   TopOpeBRepDS_ListOfInterference& LI = myAsso->Associated(I);
   TopOpeBRepDS_ListIteratorOfListOfInterference it(LI);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepDS_GettraceGAP() == 1) {
     cout <<"Points ";
     for  (it.Initialize(LI); it.More(); it.Next()) {
@@ -521,7 +521,7 @@ void TopOpeBRepDS_GapFiller::ReBuildGeom(const Handle(TopOpeBRepDS_Interference)
     }
     myGapTool->EdgeSupport(it.Value(),CE);
     if (!CE.IsSame(E)) {
-#ifdef DEB   
+#ifdef OCCT_DEBUG
       if (TopOpeBRepDS_GettraceGAP() == 1){
 	cout <<"GapFiller : points pas sur la meme edge -> cas non traite"<<endl;
       }
@@ -535,7 +535,7 @@ void TopOpeBRepDS_GapFiller::ReBuildGeom(const Handle(TopOpeBRepDS_Interference)
 
   // Mise a jour.
   Standard_Integer IP = myHDS->ChangeDS().AddPoint(P);
-#ifdef DEB
+#ifdef OCCT_DEBUG
  if (TopOpeBRepDS_GettraceGAP() == 1) {
    cout <<" New Point : "<<IP<<endl;
  }

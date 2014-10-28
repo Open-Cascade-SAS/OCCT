@@ -42,7 +42,7 @@ static Handle(IFSelect_Profile) thealiases;
   if (thedico.IsNull()) thedico = new Dico_DictionaryOfInteger;
   Standard_Integer& num = thedico->NewItem(command,deja,Standard_True);
   if (deja) {
-#ifdef IFSELECT_DEB
+#ifdef OCCT_DEBUG
     cout<<"****  XSTEP commands, name conflict on "<<command<<" first defined remains  ****"<<endl;
 //    Standard_DomainError::Raise("IFSelect_Activator : Add");
 #endif

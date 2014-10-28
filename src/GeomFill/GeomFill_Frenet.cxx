@@ -296,7 +296,7 @@ Handle(GeomFill_TrihedronLaw) GeomFill_Frenet::Copy() const
         mySnglLen->ChangeValue(i) = Min(Sqrt(2*NullTol/norm), MaxSingular);
       else mySnglLen->ChangeValue(i) = MaxSingular;
     }
-#if GEOMFILL_DEB
+#ifdef OCCT_DEBUG
     for(i = 1; i <= mySngl->Length(); i++) {
       cout<<"Sngl("<<i<<") = "<<mySngl->Value(i)<<" Length = "<<mySnglLen->Value(i)<<endl;
     }
@@ -323,7 +323,7 @@ Handle(GeomFill_TrihedronLaw) GeomFill_Frenet::Copy() const
       mySnglLen->ChangeValue(i) = tmpSeq(i).Y();
     }
   }    
-#if GEOMFILL_DEB
+#ifdef OCCT_DEBUG
     cout<<"After merging"<<endl;
     for(i = 1; i <= mySngl->Length(); i++) {
       cout<<"Sngl("<<i<<") = "<<mySngl->Value(i)<<" Length = "<<mySnglLen->Value(i)<<endl;
@@ -511,7 +511,7 @@ Standard_Boolean
 
       if(RotateTrihedron(Tangent,Normal,BiNormal,aTn) == Standard_False)
         {
-#ifdef GEOMFILL_DEB
+#ifdef OCCT_DEBUG
         cout << "Cannot coincide two tangents." << endl;
 #endif
         return Standard_False;

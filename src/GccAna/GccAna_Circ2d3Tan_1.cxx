@@ -86,7 +86,7 @@ GccAna_Circ2d3Tan::
   Standard_Real R1 = C1.Radius();
   Standard_Real R2 = C2.Radius();
   gp_Pnt2d center1(C1.Location());
-#ifdef DEB
+#ifdef OCCT_DEBUG
   gp_Pnt2d center2(C2.Location());
 #else
   C2.Location() ;

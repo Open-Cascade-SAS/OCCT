@@ -71,7 +71,7 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TopTools_Array1OfShape.hxx>
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #include <OSD_Chronometer.hxx>
 extern OSD_Chronometer simul,elspine,chemine;
 #endif

@@ -68,7 +68,7 @@ static Standard_Integer Affich = 0;
 //function : TraceRevol
 //purpose  : Trace la surface de revolution (Debug)
 //=======================================================================
-#if GEOMFILL_DEB
+#ifdef OCCT_DEBUG
 static void TraceRevol(const Standard_Real t,
                        const Standard_Real s,
 		       const Handle(GeomFill_TrihedronWithGuide)& Law,
@@ -343,7 +343,7 @@ static void InGoodPeriod(const Standard_Real Prec,
     Standard_Real theU = 0., theV = 0.;
     
     if (!DistMini.IsDone() || DistMini.NbExt() == 0) {
-#if GEOMFILL_DEB
+#ifdef OCCT_DEBUG
       cout <<"LocationGuide : Pas d'intersection"<<endl;
       TraceRevol(t, U, myLaw, mySec, myCurve, Trans);
 #endif 
@@ -362,7 +362,7 @@ static void InGoodPeriod(const Standard_Real Prec,
 	
 	if (Result.IsDone() && 
 	    (Result.FunctionSetErrors().Norm() < TolRes(1)*TolRes(1)) ) {
-#if GEOMFILL_DEB
+#ifdef OCCT_DEBUG
 	  cout << "Ratrappage Reussi !" << endl;
 #endif
 	  SOS = Standard_True;
@@ -373,7 +373,7 @@ static void InGoodPeriod(const Standard_Real Prec,
           theV = PInt.V();
 	}  
 	else {
-#if GEOMFILL_DEB
+#ifdef OCCT_DEBUG
 	  cout << "Echec du Ratrappage !" << endl;
 #endif
 	}
@@ -419,7 +419,7 @@ static void InGoodPeriod(const Standard_Real Prec,
 	}
       }
       
-#if GEOMFILL_DEB		
+#ifdef OCCT_DEBUG
       if (Abs(Diff) > DeltaG) {
 	cout << "Location :: Diff on Guide : " << 
 	  Diff << endl;
@@ -435,7 +435,7 @@ static void InGoodPeriod(const Standard_Real Prec,
 	  InGoodPeriod (OldAngle, 2*M_PI, Angle);
 	  Diff = Angle - OldAngle;
 	}
-#if GEOMFILL_DEB
+#ifdef OCCT_DEBUG
       if (Abs(Diff) > M_PI/4) {
 	cout << "Diff d'angle trop grand !!" << endl;
       } 
@@ -451,7 +451,7 @@ static void InGoodPeriod(const Standard_Real Prec,
 	InGoodPeriod (myPoles2d->Value(2, ii-1).Y(), UPeriod, v);
       }
       Diff = v -  myPoles2d->Value(2, ii-1).Y();
-#if GEOMFILL_DEB
+#ifdef OCCT_DEBUG
       if (Abs(Diff) > (Ul-Uf)/(2+NbKnots)) {
 	cout << "Diff sur section trop grand !!" << endl;
       } 
@@ -630,7 +630,7 @@ static void InGoodPeriod(const Standard_Real Prec,
       M.SetCols(n, b, t);
     }
     else {
-#if GEOMFILL_DEB
+#ifdef OCCT_DEBUG
       cout << "LocationGuide::D0 : No Result !"<<endl;
       TraceRevol(Param, U, myLaw, mySec, myCurve, Trans);
 #endif
@@ -702,7 +702,7 @@ static void InGoodPeriod(const Standard_Real Prec,
       M.SetCols(n, b, t);
     }
     else {
-#if GEOMFILL_DEB
+#ifdef OCCT_DEBUG
       Standard_Real U = myFirstS + ratio*(Param-myCurve->FirstParameter());
       cout << "LocationGuide::D0 : No Result !"<<endl;
       TraceRevol(Param, U, myLaw, mySec, myCurve, Trans);
@@ -754,7 +754,7 @@ static void InGoodPeriod(const Standard_Real Prec,
   if (rotation) {  
     return Standard_False;
  /*   
-#ifdef DEB
+#ifdef OCCT_DEBUG
     Standard_Real U = myFirstS + ratio*(Param-myCurve->FirstParameter());
 #else
     myCurve->FirstParameter() ;
@@ -801,7 +801,7 @@ static void InGoodPeriod(const Standard_Real Prec,
 	      Ga.Solve (DEDT.Opposite(), DSDT);// resolution du syst. 
 	    }//if
 	  else {
-#if GEOMFILL_DEB
+#ifdef OCCT_DEBUG
 	    cout << "DEDX = " << DEDX << endl;
 	    cout << "DEDT = " << DEDT << endl;
 #endif
@@ -832,7 +832,7 @@ static void InGoodPeriod(const Standard_Real Prec,
 	  Standard_Real A = R(2);
 	  Standard_Real Aprim = DSDT(2);  
 
-#ifdef DEB	  
+#ifdef OCCT_DEBUG	  
 	  gp_Mat M2 (Cos(A), -Sin(A),0,  // rotation autour de T
 		     Sin(A), Cos(A),0,
 		     0,0,1);	  
@@ -865,7 +865,7 @@ static void InGoodPeriod(const Standard_Real Prec,
 	}//if_Result
 
       else {
-#if GEOMFILL_DEB
+#ifdef OCCT_DEBUG
 	cout << "LocationGuide::D1 : No Result !!"<<endl;
 	TraceRevol(Param, U, myLaw, mySec, myCurve, Trans);
 #endif
@@ -1116,7 +1116,7 @@ Standard_Boolean GeomFill_LocationGuide::D2(const Standard_Real Param,
 
 	}//if_result
       else {
-#if GEOMFILL_DEB
+#ifdef OCCT_DEBUG
 	cout << "LocationGuide::D2 : No Result !!" <<endl;
 	TraceRevol(Param, U, myLaw, mySec, myCurve, Trans);
 #endif

@@ -60,7 +60,7 @@
 #include <Geom_RectangularTrimmedSurface.hxx>
 #include <BRep_Tool.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #include <TopOpeBRepTool_KRO.hxx>
 TOPKRO KRO_CURVETOOL_APPRO("approximation");
 extern Standard_Boolean TopOpeBRepTool_GettraceKRO();
@@ -318,7 +318,7 @@ Standard_Boolean  TopOpeBRepTool_CurveTool::MakeCurves
   myGeomTool.GetTolerances(tol3d,tol2d,RelativeTol);
   Standard_Integer NbPntMax = myGeomTool.NbPntMax();
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepTool_GettraceKRO()) KRO_CURVETOOL_APPRO.Start();
 #endif
 
@@ -682,7 +682,7 @@ Standard_Boolean  TopOpeBRepTool_CurveTool::MakeCurves
     GeomLib_CheckBSplineCurve cbsc(Curve, 1.e-7, 0.1);
     cbsc.NeedTangentFix(bf, bl);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (TopOpeBRepTool_GettraceCHKBSPL()) {
       if(bf || bl) {
 	cout<<"Problem orientation GeomLib_CheckBSplineCurve : First = "<<bf;
@@ -697,7 +697,7 @@ Standard_Boolean  TopOpeBRepTool_CurveTool::MakeCurves
   if(!Curve2df.IsNull()) {
     GeomLib_Check2dBSplineCurve cbsc2df(Curve2df, 1.e-7, 0.1);
     cbsc2df.NeedTangentFix(bf, bl);
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (TopOpeBRepTool_GettraceCHKBSPL()) {
       if(bf || bl) {
 	cout<<"Problem orientation GeomLib_CheckBSplineCurve : First = "<<bf;
@@ -712,7 +712,7 @@ Standard_Boolean  TopOpeBRepTool_CurveTool::MakeCurves
   if(!Curve2ds.IsNull()) {
     GeomLib_Check2dBSplineCurve cbsc2ds(Curve2ds, 1.e-7, 0.1);
     cbsc2ds.NeedTangentFix(bf, bl);
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (TopOpeBRepTool_GettraceCHKBSPL()) {
       if(bf || bl) {
 	cout<<"Problem orientation GeomLib_CheckBSplineCurve : First = "<<bf;
@@ -723,7 +723,7 @@ Standard_Boolean  TopOpeBRepTool_CurveTool::MakeCurves
     cbsc2ds.FixTangent(bf, bl);
   }
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepTool_GettraceKRO()) KRO_CURVETOOL_APPRO.Stop();
 #endif
 //  cout << "MakeCurves end" << endl;
@@ -858,7 +858,7 @@ Standard_Boolean TopOpeBRepTool_CurveTool::IsProjectable
     }
   }
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepTool_GettracePCURV()) {
     cout<<"--- IsProjectable : "; 
     if (projectable) cout<<"projectable"<<endl;

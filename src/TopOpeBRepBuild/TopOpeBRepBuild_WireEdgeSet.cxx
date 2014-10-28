@@ -43,7 +43,7 @@ static TCollection_AsciiString PRODINS("dins ");
 #include <TopOpeBRepBuild_define.hxx>
 #include <TopOpeBRepTool_2d.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRep_GettraceSHA(const Standard_Integer i);
 extern Standard_Boolean TopOpeBRepBuild_GettraceSS();
 extern Standard_Boolean TopOpeBRepBuild_GetcontextSSCONNEX();
@@ -111,7 +111,7 @@ void TopOpeBRepBuild_WireEdgeSet::AddShape(const TopoDS_Shape& S)
 //=======================================================================
 void TopOpeBRepBuild_WireEdgeSet::AddStartElement(const TopoDS_Shape& S)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   
 #endif
   Standard_Boolean tocheck = Standard_True;
@@ -495,7 +495,7 @@ void TopOpeBRepBuild_WireEdgeSet::LocalD1(const TopoDS_Shape& SF,const TopoDS_Sh
 //=======================================================================
 Standard_Boolean TopOpeBRepBuild_WireEdgeSet::IsClosed(const TopoDS_Shape& E) const
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer ista=myOMSS.FindIndex(E);Standard_Boolean tsh=(ista)?TopOpeBRep_GettraceSHA(ista):Standard_False;
   if (tsh) debwesclo(ista);
 #endif

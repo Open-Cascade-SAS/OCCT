@@ -25,7 +25,7 @@
 #include <TopTools_DataMapOfShapeShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #include <stdio.h>
 Standard_Boolean Affich;
 #endif
@@ -159,7 +159,7 @@ static void Update (   TopTools_DataMapOfShapeListOfShape& Mod,
     }
   }
 }
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //=======================================================================
 //function : DEBControl
 //purpose  : 
@@ -214,7 +214,7 @@ void BRepBuilderAPI_Collect::Add (const TopoDS_Shape& SI,
   Update (myMod,myGen,ModBack,GenBack,SI,MKS,TopAbs_EDGE);
   Update (myMod,myGen,ModBack,GenBack,SI,MKS,TopAbs_VERTEX);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (Affich) {
     DEBControl (myGen);
     DEBControl (myMod);
@@ -323,7 +323,7 @@ static void FilterByShape(TopTools_DataMapOfShapeListOfShape& MG,
       else if (itl.More()) itl.Next();
     }
   }
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (Affich) {
     DEBControl (MG);
   }

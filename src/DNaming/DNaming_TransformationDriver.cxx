@@ -60,7 +60,7 @@
 #define VERTEX_TAG 3
 
 //#define MDTV_DEB_TRSF
-#ifdef  MDTV_DEB_TRSF
+#ifdef OCCT_DEBUG_TRSF
 #include <TCollection_AsciiString.hxx>
 #include <BRepTools.hxx>
 #include <TDF_Tool.hxx>
@@ -111,7 +111,7 @@ Standard_Integer DNaming_TransformationDriver::Execute(TFunction_Logbook& theLog
   Handle(TNaming_NamedShape) aContextNS;
   aLab.FindAttribute(TNaming_NamedShape::GetID(), aContextNS);
   if (aContextNS.IsNull() || aContextNS->IsEmpty()) {
-#ifdef DNAMING_DEB
+#ifdef OCCT_DEBUG
     cout<<"TransformationDriver:: Context is empty"<<endl;
 #endif
     aFunction->SetFailure(WRONG_CONTEXT);
@@ -342,7 +342,7 @@ void DNaming_TransformationDriver::LoadNamingDS (const TDF_Label& theResultLabel
     return;
   const TopoDS_Shape& aSrcShape  = theSourceNS->Get();
   if (aSrcShape.IsNull()) {
-#ifdef DNAMING_DEB
+#ifdef OCCT_DEBUG
     cout<<"DNaming_TransformationDriver::LoadNamingDS: The result of the Transform operation is null"<<endl;
 #endif
     return;
@@ -350,7 +350,7 @@ void DNaming_TransformationDriver::LoadNamingDS (const TDF_Label& theResultLabel
   Standard_Boolean isPrimitive(Standard_False);
   if(theSourceNS->Evolution() == TNaming_PRIMITIVE) isPrimitive = Standard_True;
   const TDF_Label& aSrcLabel     = theSourceNS->Label();
-#ifdef MDTV_DEB_TRSF
+#ifdef OCCT_DEBUG_TRSF
   cout <<"TransformationDriver: ";
   PrintE(aSrcLabel);
 #endif

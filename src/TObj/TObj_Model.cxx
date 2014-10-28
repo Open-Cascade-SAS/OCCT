@@ -190,7 +190,7 @@ Standard_Boolean TObj_Model::Load (const char* theFile)
       }
       catch (Standard_Failure)
       {
-#if defined(_DEBUG) || defined(DEB)
+#ifdef OCCT_DEBUG
         Handle(Standard_Failure) anExc = Standard_Failure::Caught();
         TCollection_ExtendedString aString(anExc->DynamicType()->Name());
         aString = aString + ": " + anExc->GetMessageString();

@@ -17,7 +17,7 @@
 #include <TopOpeBRepDS_reDEB.hxx>
 #include <TopOpeBRepDS_define.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 Standard_EXPORT Standard_Boolean DSREDUEDGETRCE(const Standard_Integer EIX) {
   Standard_Boolean b1 = TopOpeBRepDS_GettracePEI();
   Standard_Boolean b2 = TopOpeBRepDS_GettracePI();

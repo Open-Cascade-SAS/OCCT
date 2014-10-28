@@ -33,7 +33,7 @@ de Gauss.
 
 */
 
-//#ifndef DEB
+//#ifndef OCCT_DEBUG
 #define No_Standard_RangeError
 #define No_Standard_OutOfRange
 #define No_Standard_DimensionError

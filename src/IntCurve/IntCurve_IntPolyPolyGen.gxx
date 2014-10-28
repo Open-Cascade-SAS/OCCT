@@ -17,7 +17,7 @@
 //  Modified by skv - Tue Mar  1 14:22:09 2005 OCC8169
 
 
-#ifndef DEB
+#ifndef OCCT_DEBUG
 #define No_Standard_RangeError
 #define No_Standard_OutOfRange
 #endif

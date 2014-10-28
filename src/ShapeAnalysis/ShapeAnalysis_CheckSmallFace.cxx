@@ -929,7 +929,7 @@ Standard_Boolean  ShapeAnalysis_CheckSmallFace::CheckTwisted (const TopoDS_Face&
       }
       catch (Standard_Failure)
 	{
-#ifdef SHAPEANALYSIS_DEB
+#ifdef OCCT_DEBUG
           cout << "Couldn't compute angle between derivative vectors"  <<endl;
 #endif
 	  return Standard_False;

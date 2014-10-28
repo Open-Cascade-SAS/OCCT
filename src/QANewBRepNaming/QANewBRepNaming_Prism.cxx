@@ -32,7 +32,7 @@
 #include <BRep_Tool.hxx>
 #include <TopoDS.hxx>
 
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
 #include <TDataStd_Name.hxx>
 #endif
 
@@ -68,7 +68,7 @@ void QANewBRepNaming_Prism::Init(const TDF_Label& Label) {
 
 TDF_Label QANewBRepNaming_Prism::Bottom() const {
   const TDF_Label& L = ResultLabel().NewChild();
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
   TDataStd_Name::Set(L, "Bottom");
 #endif
   return L;
@@ -81,7 +81,7 @@ TDF_Label QANewBRepNaming_Prism::Bottom() const {
 
 TDF_Label QANewBRepNaming_Prism::Top() const {
   const TDF_Label& L = ResultLabel().NewChild();
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
   TDataStd_Name::Set(L, "Top");
 #endif
   return L;
@@ -94,7 +94,7 @@ TDF_Label QANewBRepNaming_Prism::Top() const {
 
 TDF_Label QANewBRepNaming_Prism::Lateral() const {
   const TDF_Label& L = ResultLabel().NewChild();
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
   TDataStd_Name::Set(L, "Lateral");
 #endif
   return L;
@@ -107,7 +107,7 @@ TDF_Label QANewBRepNaming_Prism::Lateral() const {
 
 TDF_Label QANewBRepNaming_Prism::Degenerated() const {
   const TDF_Label& L = ResultLabel().NewChild();
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
   TDataStd_Name::Set(L, "Degenerated");
 #endif
   return L;
@@ -120,7 +120,7 @@ TDF_Label QANewBRepNaming_Prism::Degenerated() const {
 
 TDF_Label QANewBRepNaming_Prism::Dangle() const {
   const TDF_Label& L = ResultLabel().NewChild();
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
   TDataStd_Name::Set(L, "Dangle");
 #endif
   return L;
@@ -133,7 +133,7 @@ TDF_Label QANewBRepNaming_Prism::Dangle() const {
 
 TDF_Label QANewBRepNaming_Prism::Content() const {
   const TDF_Label& L = ResultLabel().NewChild();
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
   TDataStd_Name::Set(L, "Content");
 #endif
   return L;

@@ -187,7 +187,7 @@ class VrmlData_Node : public Standard_Transient
 
   const VrmlData_Scene  * myScene; 
   const char            * myName;       ///< name of the node
-#ifdef _DEBUG
+#ifdef OCCT_DEBUG
   Standard_Integer      myLineCount;
 #endif
 

@@ -553,7 +553,7 @@ static gp_Pnt GetValue(const Standard_Real U,
 //function : GetU
 //purpose  : 
 //=======================================================================
-//#ifdef DEB
+//#ifdef OCCT_DEBUG
 //static Standard_Real GetU(const gp_Vec& vec,
 //			  const gp_Pnt& P,
 //			  const Handle(Adaptor3d_HCurve)& C)

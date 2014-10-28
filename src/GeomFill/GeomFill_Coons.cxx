@@ -182,7 +182,7 @@ void  GeomFill_Coons::Init(const TColgp_Array1OfPnt&   P1,
   Standard_Integer NPolU = W1.Length();
   Standard_Integer NPolV = W2.Length();
 
-//#ifdef DEB
+//#ifdef OCCT_DEBUG
   Standard_Real NU = NPolU - 1;
   Standard_Real NV = NPolV - 1;
 //#endif

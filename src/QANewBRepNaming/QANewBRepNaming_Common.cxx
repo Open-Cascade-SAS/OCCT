@@ -47,7 +47,7 @@ QANewBRepNaming_Common::QANewBRepNaming_Common(const TDF_Label& ResultLabel)
 void QANewBRepNaming_Common::Load(BRepAlgoAPI_BooleanOperation& MS) const {
   TopoDS_Shape ResSh = MS.Shape();
   if (ResSh.IsNull()) {
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
     cout<<"QANewBRepNaming_Common::Load(): The result of the Common is null"<<endl;
 #endif
     return;
@@ -70,7 +70,7 @@ void QANewBRepNaming_Common::Load(BRepAlgoAPI_BooleanOperation& MS) const {
 
   // If the shapes are the same - select the result and exit:
   if (IsResultChanged(MS)) {
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
     cout<<"QANewBRepNaming_Common::Load(): The object and the result of COMMON operation are the same"<<endl;
 #endif
     if (ResType == TopAbs_COMPOUND) {
@@ -129,7 +129,7 @@ void QANewBRepNaming_Common::Load(BRepAlgoAPI_BooleanOperation& MS) const {
 
   if( anArg == UNEXPECTED) 
     {
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
       cout <<"QANewBRepNaming_Common:: Unexpected Use Case" << endl;
 #endif
       return;
@@ -188,7 +188,7 @@ void QANewBRepNaming_Common::Load(BRepAlgoAPI_BooleanOperation& MS) const {
     }
   }
   else { //Solid
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
 //    cout <<"Solid case - modified = " << MS.HasModified()<< endl;
 #endif
     TNaming_Builder ModBuilder(ModifiedFaces());    

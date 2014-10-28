@@ -76,7 +76,7 @@
     {
       if (i == 1)       aFMulDiff = aCurrentVal - Deg - 1;
       if (i == NbKnots) aLMulDiff = aCurrentVal - Deg - 1;
-#ifdef STEPTOGEOM_DEB
+#ifdef OCCT_DEBUG
       cout << "\nWrong multiplicity " << aCurrentVal <<  " on " << i 
            << " knot!" << "\nChanged to " << Deg + 1 << endl;
 #endif

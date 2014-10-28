@@ -96,7 +96,7 @@ Standard_Boolean IntersectionWithAnArc(gp_Pnt& PSurf,
 				       const Standard_Real u1alin,
 				       Standard_Real& actualdist) { 
   Standard_Real dtheta,theta;
-#ifdef DEB
+#ifdef OCCT_DEBUG
   //Standard_Real u,v,A,B,C,cost,sint,sign;
 #endif
   //-- recherche bete du point le plus proche de thearc->Value(...)
@@ -1081,7 +1081,7 @@ Standard_Boolean FindLine (gp_Pnt& Psurf,
 	  //-- le point n a pas ete trouve par bete projection.
 	  //-- on essaie l intersection avec la restriction en 2d
 	  Standard_Real theparamonarc = theparameteronarc;
-//#ifdef DEB
+//#ifdef OCCT_DEBUG
 //	  Standard_Real anpara=para;
 //#endif
 	  gp_Pnt CopiePsurf=Psurf;
@@ -1687,7 +1687,7 @@ void ProcessRLine (IntPatch_SequenceOfLine& slin,
   gp_Vec2d d2d;
   gp_Vec d1u,d1v,tgrest,tgarc,norm;
   IntSurf_Transition TRest,TArc;
-#ifndef DEB
+#ifndef OCCT_DEBUG
   Standard_Real U =0.,V =0.;
 #else
   Standard_Real U,V;

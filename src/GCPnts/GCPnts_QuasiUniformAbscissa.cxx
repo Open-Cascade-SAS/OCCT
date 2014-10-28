@@ -27,7 +27,7 @@
 #include <TColgp_Array1OfPnt.hxx>
 #include <gp_Pnt.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //#include <DrawTrSurf.hxx>
 
 //static Standard_Integer compteur = 0;

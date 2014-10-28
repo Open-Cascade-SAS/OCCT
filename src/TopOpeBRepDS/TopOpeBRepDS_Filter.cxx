@@ -21,7 +21,7 @@
 #include <TopOpeBRepDS_ListOfInterference.hxx>
 #include <TopOpeBRepDS_ListIteratorOfListOfInterference.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepDS_GettracePEI();
 extern Standard_Boolean TopOpeBRepDS_GettracePI();
 extern Standard_Boolean TopOpeBRepDS_GettraceSPSX(const Standard_Integer);

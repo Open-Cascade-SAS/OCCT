@@ -4721,14 +4721,14 @@ static Standard_Boolean IsValid(const TopTools_ListOfShape& theArgs,
   TCollection_AsciiString checkValid = check.Value();
   Standard_Boolean ToCheck = Standard_True;
   if (!checkValid.IsEmpty()) {
-#ifdef VIEWERTEST_DEB
+#ifdef OCCT_DEBUG
     cout <<"DONT_SWITCH_IS_VALID positionnee a :"<<checkValid.ToCString()<<"\n";
 #endif
     if ( checkValid=="true" || checkValid=="TRUE" ) {
       ToCheck= Standard_False;
     }
   } else {
-#ifdef VIEWERTEST_DEB
+#ifdef OCCT_DEBUG
     cout <<"DONT_SWITCH_IS_VALID non positionne"<<"\n";
 #endif
   }
@@ -4886,7 +4886,7 @@ void ViewerTest::Factory(Draw_Interpretor& theDI)
   ViewerTest::Commands(theDI);
   ViewerTest::AviCommands(theDI);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
       theDI << "Draw Plugin : OCC V2d & V3d commands are loaded" << "\n";
 #endif
 }

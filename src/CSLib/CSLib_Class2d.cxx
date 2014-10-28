@@ -300,7 +300,7 @@ Standard_Integer CSLib_Class2d::InternalSiDansOuOn(const Standard_Real Px,
 //=======================================================================
 const CSLib_Class2d& CSLib_Class2d::Copy(const CSLib_Class2d& ) const 
 { 
-#ifdef CSLIB_DEB
+#ifdef OCCT_DEBUG
   cerr<<"Copy not allowed in CSLib_Class2d"<<endl;
 #endif
   Standard_ConstructionError::Raise();

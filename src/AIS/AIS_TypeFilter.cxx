@@ -25,7 +25,7 @@ Standard_Boolean AIS_TypeFilter::IsOk(const Handle(SelectMgr_EntityOwner)& anObj
   if(Handle(AIS_InteractiveObject)::DownCast(anObj->Selectable()).IsNull()) 
     return Standard_False;
   
-//#ifndef DEB
+//#ifndef OCCT_DEBUG
   Handle(SelectMgr_SelectableObject) aSelectableObject = anObj->Selectable() ;
   return ((Handle(AIS_InteractiveObject)&) aSelectableObject)->Type()== myKind;
 //#else

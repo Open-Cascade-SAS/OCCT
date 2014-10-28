@@ -41,7 +41,7 @@ TopOpeBRepDS_FaceEdgeInterference::TopOpeBRepDS_FaceEdgeInterference
 Standard_OStream& TopOpeBRepDS_FaceEdgeInterference::Dump
 (Standard_OStream& OS) const
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   OS<<"FEI ";
   TopOpeBRepDS_ShapeShapeInterference::Dump(OS);
 #endif

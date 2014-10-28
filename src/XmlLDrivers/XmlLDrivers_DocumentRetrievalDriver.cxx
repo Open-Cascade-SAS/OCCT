@@ -402,7 +402,7 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument
   try
   {
     OCC_CATCH_SIGNALS
-#if defined(DEB) && !defined(TAKE_TIMES)
+#ifdef OCCT_DEBUG
     TCollection_ExtendedString aMessage ("PasteDocument");
     aMsgDriver -> Write (aMessage.ToExtString());
 #endif

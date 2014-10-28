@@ -500,9 +500,6 @@ Standard_Boolean GeomPlate_BuildAveragePlane::HalfSpace( const TColgp_SequenceOf
 	return Standard_False;
 
       Cross.Normalize();
-#if DEB
-      GeomPlate_Aij A1( 1, 2, Cross );
-#endif
       Bset.Append( GeomPlate_Aij( 1, 2, Cross ) );
       Bset.Append( GeomPlate_Aij( 2, 1, -Cross) );
       Normals.Append( NewNormals(1) );

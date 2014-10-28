@@ -1727,7 +1727,7 @@ void IntPatch_PrmPrmIntersection::Perform(const Handle(Adaptor3d_HSurface)&    S
 
   //    Standard_Real nIncrement=Increment;
   //    if(MaxOscill>10) { 
-  //  #ifdef DEB 
+  //  #ifdef OCCT_DEBUG
   //      cout<<"\n IntPatch_PrmPrmIntersection.gxx : Increment:"<<Increment<<" -> "<<Increment/(0.5*MaxOscill)<<endl;
   //  #endif
   //      nIncrement/=0.5*MaxOscill;

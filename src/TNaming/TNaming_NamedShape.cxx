@@ -256,7 +256,7 @@ static void RemoveNode(Standard_Boolean                   MapExist ,
 void TNaming_NamedShape::Clear()
 {
   if (Label().IsNull()) {
-#ifdef DEB_BUILDER
+#ifdef OCCT_DEBUG_BUILDER
     cout << "attention etat fantomatique" << endl;
 #endif
     return;
@@ -665,7 +665,7 @@ void TNaming_Builder::Generated(const TopoDS_Shape& newShape)
   TNaming_RefShape* pns;
   
   if (myShapes->myMap.IsBound(newShape)) {
-#ifdef DEB_BUILDER
+#ifdef OCCT_DEBUG_BUILDER
     cout <<"TNaming_Builder::Generate : the shape is already in the attribute"<<endl;
 #endif
     pns = myShapes->myMap.ChangeFind(newShape);
@@ -706,7 +706,7 @@ void TNaming_Builder::Delete(const TopoDS_Shape& oldShape)
   if (myShapes->myMap.IsBound(oldShape)) 
     pos = myShapes->myMap.ChangeFind(oldShape); 
   else {
-#ifdef DEB_BUILDER
+#ifdef OCCT_DEBUG_BUILDER
     cout <<"TNaming_Builder::Delete : the shape is not in the data"<<endl;
 #endif
     pos = new TNaming_RefShape(oldShape);  
@@ -732,7 +732,7 @@ void TNaming_Builder::Generated(const TopoDS_Shape& oldShape,
   }
 
   if (oldShape.IsSame(newShape)) {
-#ifdef DEB_BUILDER
+#ifdef OCCT_DEBUG_BUILDER
     cout <<"TNaming_Builder::Generate : oldShape IsSame newShape"<<endl;
 #endif
     return;
@@ -775,7 +775,7 @@ void TNaming_Builder::Modify(const TopoDS_Shape& oldShape,
   }
 
   if (oldShape.IsSame(newShape)) {
-#ifdef DEB_BUILDER
+#ifdef OCCT_DEBUG_BUILDER
     cout <<"TNaming_Builder::Modify : oldShape IsSame newShape"<<endl;
 #endif
     return;
@@ -885,7 +885,7 @@ TNaming_Iterator::TNaming_Iterator(const TDF_Label&       Lab,
   }
   else {
     myNode = 0L;
-#ifdef TNAMING_DEB
+#ifdef OCCT_DEBUG
     cout <<"TNaming_Iterator : No Shape for this label"<<endl;
 #endif
   }
@@ -1457,7 +1457,7 @@ Standard_Boolean TNaming_Tool::HasLabel (const TDF_Label&    access,
   if (access.Root().FindAttribute(TNaming_UsedShapes::GetID(),US)) {
     return (US->Map().IsBound(S));
   }
-#ifdef MDTV_DEB_HASL
+#ifdef OCCT_DEBUG_HASL
   cout << "##==> Sub-Shape has no Label!" <<endl;
 #endif
   return Standard_False;

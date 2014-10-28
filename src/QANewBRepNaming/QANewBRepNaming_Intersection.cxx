@@ -20,7 +20,7 @@
 #include <TopOpeBRepBuild_HBuilder.hxx>
 #include <TopoDS_Iterator.hxx>
 
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
 #include <TDataStd_Name.hxx>
 #include <TNaming_NamedShape.hxx>
 #endif
@@ -59,7 +59,7 @@ QANewBRepNaming_Intersection::QANewBRepNaming_Intersection(const TDF_Label& Resu
 void QANewBRepNaming_Intersection::Load(BRepAlgoAPI_BooleanOperation& MS) const {
   TopoDS_Shape ResSh = MS.Shape();
   if (ResSh.IsNull()) {
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
     cout<<"QANewBRepNaming_Intersection::Load(): The result of the Intersection is null"<<endl;
 #endif
     return;
@@ -71,7 +71,7 @@ void QANewBRepNaming_Intersection::Load(BRepAlgoAPI_BooleanOperation& MS) const 
 
   // If the shapes are the same - select the result and exit:
   if (IsResultChanged(MS)) {
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
     cout<<"QANewBRepNaming_Intersection::Load(): The object and the result of INTERSECTION operation are the same"<<endl;
     // Not modified!
 #endif
@@ -148,7 +148,7 @@ void QANewBRepNaming_Intersection::Load(BRepAlgoAPI_BooleanOperation& MS) const 
     }
 
   if(anArg == UNEXPECTED) {
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
       cout <<"QANewBRepNaming_Intersection:: Unexpected Use Case" << endl;
 #endif
       return;

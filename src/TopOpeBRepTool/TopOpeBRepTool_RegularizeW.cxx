@@ -40,7 +40,7 @@
 #define M_INTERNAL(sta) (sta == TopAbs_INTERNAL)
 #define M_EXTERNAL(sta) (sta == TopAbs_EXTERNAL)
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepTool_GettraceREGUFA(); 
 static TopTools_IndexedMapOfShape STATIC_mapw,STATIC_mapf;
 static Standard_Integer FUN_adds(const TopoDS_Shape& s) {
@@ -192,7 +192,7 @@ Standard_Boolean TopOpeBRepTool::Regularize(const TopoDS_Face& theFace,
     //      (Umin(i), Vmin(i), Umax(i), Vmax(i))
     B(i).Get(UV(i,1), UV(i,3), UV(i,2), UV(i,4));
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = Standard_False;
   if (trc) {
     for (Standard_Integer i = 1; i <= 2; i++)
@@ -337,7 +337,7 @@ Standard_EXPORT Standard_Boolean FUN_tool_ClassifW(const TopoDS_Face& F,
 {
   // NYI : create maps to store Bnd_Box2d, and faces.
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = TopOpeBRepTool_GettraceREGUFA();
   if (trc) cout<<"** ClassifW :"<<endl;
   STATIC_mapw.Clear();    
@@ -405,7 +405,7 @@ Standard_EXPORT Standard_Boolean FUN_tool_ClassifW(const TopoDS_Face& F,
 	Standard_Integer sta = FUN_tool_classiBnd2d(Bnd2d);
 	nite++;
 	if ((sta == SAME)||(sta == UNKNOWN)) sta = FUN_tool_classiwithp2d(wi);
-#ifdef DEB	
+#ifdef OCCT_DEBUG	
 	if (trc) {cout<<"#wi :";FUN_tool_coutsta(sta,FUN_adds(wi(1)),FUN_adds(wi(2)));}
 #endif		
 	if ((sta == SAME)||(sta == UNKNOWN)) return Standard_False;    	 
@@ -490,7 +490,7 @@ Standard_EXPORT Standard_Boolean FUN_tool_ClassifW(const TopoDS_Face& F,
       // Classifying Ow<i> with Ow<j> :
       osta = FUN_tool_classiBnd2d(OBnd2d);
       if ((osta == SAME)||(osta == UNKNOWN)) osta = FUN_tool_classiwithp2d(Owi);
-#ifdef DEB	
+#ifdef OCCT_DEBUG	
       if (trc) {cout<<"wi : "; FUN_tool_coutsta(osta,FUN_adds(Owi(1)),FUN_adds(Owi(2)));}
 #endif		
       if ((osta == SAME)||(osta == UNKNOWN)) return Standard_False;      
@@ -540,7 +540,7 @@ Standard_EXPORT Standard_Boolean FUN_tool_ClassifW(const TopoDS_Face& F,
 
 	  // Classifying wi(1)  with wi(2) :
 	  sta = FUN_tool_classiBnd2d(Bnd2d); 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	  if (trc) {cout<<"wi : "; FUN_tool_coutsta(sta,STATIC_mapw.FindIndex(wi(1)),
 						    STATIC_mapw.FindIndex(wi(2)));}
 #endif
@@ -577,7 +577,7 @@ Standard_EXPORT Standard_Boolean FUN_tool_MakeFaces(const TopoDS_Face& theFace,
 				       TopTools_DataMapOfShapeListOfShape& mapWlow,
 				       TopTools_ListOfShape& aListOfFaces)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = TopOpeBRepTool_GettraceREGUFA();
   if (trc) cout<<"** MakeFaces :"<<endl;
 #endif
@@ -601,7 +601,7 @@ Standard_EXPORT Standard_Boolean FUN_tool_MakeFaces(const TopoDS_Face& theFace,
     aListOfFaces.Append(FF);
   }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (trc) {
     cout<<"sp(fa"<<FUN_adds(theFace)<<")=";
     TopTools_ListIteratorOfListOfShape it(aListOfFaces);
@@ -617,7 +617,7 @@ Standard_EXPORT Standard_Boolean FUN_tool_ClassifW(const TopoDS_Face& F,
 				      const TopTools_DataMapOfShapeListOfShape& mapOwNw,
 				      TopTools_DataMapOfShapeListOfShape& mapWlow)
 {  
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = TopOpeBRepTool_GettraceREGUFA();
   if (trc) cout<<"** ClassifW :"<<endl;
 #endif  
@@ -697,13 +697,13 @@ Standard_EXPORT Standard_Boolean FUN_tool_ClassifW(const TopoDS_Face& F,
       TopTools_ListOfShape ldone; FUN_addOwlw(Ow1,lw1,ldone);
       TopTools_ListIteratorOfListOfShape itw(ldone);
       for (; itw.More(); itw.Next()) mapdone.Add(itw.Value());
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if (trc) cout<<"old wires :wi"<<FUN_adds(Ow1)<<" is OUT all old wires"<<endl;
 #endif      
       lOws.RemoveFirst();
     }//OUTall    
     else {
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if (trc) {cout<<"old wires :wi -> ";
 		FUN_tool_coutsta(sta12,FUN_adds(Ow1),FUN_adds(Ow2));
 		cout<<endl;}
@@ -732,7 +732,7 @@ Standard_EXPORT Standard_Boolean FUN_tool_ClassifW(const TopoDS_Face& F,
 	
 	  Standard_Integer stabnd2d = CLASSI.ClassiBnd2d(wsma,wgre,toluv,Standard_True);
 	  Standard_Integer sta = CLASSI.Classip2d(wsma,wgre, stabnd2d);
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if (trc) {cout<<" wires :wi -> ";
 		FUN_tool_coutsta(sta,FUN_adds(wsma),FUN_adds(wgre));
 		cout<<endl;}

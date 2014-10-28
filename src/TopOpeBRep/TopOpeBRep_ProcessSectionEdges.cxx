@@ -30,7 +30,7 @@
 #include <TopOpeBRep_define.hxx>
 #include <TopTools_MapOfShape.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepDS_GettraceDSF();
 extern Standard_Boolean TopOpeBRepDS_GettraceDSFK();
 extern Standard_Boolean TopOpeBRepDS_GettraceDSNC();
@@ -51,7 +51,7 @@ Standard_EXPORT Standard_Boolean FUN_EqualPonR(const TopOpeBRep_LineInter& Lrest
 void TopOpeBRep_FacesFiller::GetESL(TopTools_ListOfShape& LES)
 {
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean b22 = TopOpeBRepDS_GettraceDSNC();
   Standard_Boolean trRL=Standard_False;
 #endif
@@ -70,7 +70,7 @@ void TopOpeBRep_FacesFiller::GetESL(TopTools_ListOfShape& LES)
     if (isrest) {
       const TopoDS_Edge& E = TopoDS::Edge(L.Arc());
       
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if (trRL) {
 	TopOpeBRep_VPointInterIterator VPI;VPI.Init(L);
 	cout<<endl<<"------------ Dump Rline  --------------------"<<endl;
@@ -88,7 +88,7 @@ void TopOpeBRep_FacesFiller::GetESL(TopTools_ListOfShape& LES)
         LES.Append(E);
       }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if (b22) {
 	if (add) cout<<" : add restriction edge of line ";
 	else cout<<" rejection of restriction edge of line ";
@@ -107,7 +107,7 @@ void TopOpeBRep_FacesFiller::GetESL(TopTools_ListOfShape& LES)
 Standard_Boolean TopOpeBRep_FacesFiller::KeepRLine
 (const TopOpeBRep_LineInter& L,const Standard_Boolean checkkeep) const
 { 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   //Standard_Boolean trc = (TopOpeBRepDS_GettraceDSF() || TopOpeBRepDS_GettraceDSNC());
 #endif
 
@@ -222,7 +222,7 @@ Standard_Boolean TopOpeBRep_FacesFiller::KeepRLine
   TopAbs_State stVPbip = StBipVPonF(vpf,vpl,L,isedge1);
   keeprline = (stVPbip == TopAbs_IN);
   keeprline = keeprline||(stVPbip==TopAbs_ON); // REST1
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //  if (trc) {
 //    cout<<" bip("<<vpf.Index()<<","<<vpl.Index()<<") of line restriction ";
 //    cout<<L.Index()<<" is ";TopAbs::Print(stVPbip,cout);
@@ -280,7 +280,7 @@ Standard_EXPORT Standard_Boolean FUN_brep_sdmRE(const TopoDS_Edge& E1, const Top
 //=======================================================================
 void TopOpeBRep_FacesFiller::ProcessSectionEdges()
 {
-#ifdef DEB   
+#ifdef OCCT_DEBUG
   Standard_Boolean DSNC = TopOpeBRepDS_GettraceDSNC();
   if (DSNC) cout<<endl<<"--- Section Edges Processing : ---"<<endl;
 #endif
@@ -298,19 +298,19 @@ void TopOpeBRep_FacesFiller::ProcessSectionEdges()
     Standard_Boolean isdg = BRep_Tool::Degenerated(E); //xpu290698
     if (isdg) continue;                   //xpu290698
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     Standard_Integer iSE =
 #endif
               myDS->AddSectionEdge(E);
-#ifdef DEB
+#ifdef OCCT_DEBUG
     Standard_Integer iE =
 #endif
               myDS->Shape(E);
-#ifdef DEB
+#ifdef OCCT_DEBUG
     Standard_Integer rE =
 #endif
               myDS->AncestorRank(E);
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (DSNC) cout<<"add section edge "<<iSE<<" : "<<iE<<"("<<rE<<")"<<endl;
 #endif
   }
@@ -378,7 +378,7 @@ void TopOpeBRep_FacesFiller::ProcessSectionEdges()
 
   TopTools_DataMapIteratorOfDataMapOfShapeListOfShape itmapELE;
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (DSNC) {
     for (itmapELE.Initialize(mapELE); itmapELE.More(); itmapELE.Next()) {
       const TopoDS_Edge& E1 = TopoDS::Edge(itmapELE.Key());

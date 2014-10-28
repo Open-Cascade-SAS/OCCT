@@ -163,7 +163,7 @@ Standard_Boolean StepToTopoDS_Tool::IsVertexBound(const Handle(StepGeom_Cartesia
 void StepToTopoDS_Tool::BindVertex(const Handle(StepGeom_CartesianPoint)& P, const TopoDS_Vertex& V)
 {
   myVertexMap.Bind(P, V);
-#ifdef DEBUG
+#ifdef OCCT_DEBUG
   TransferBRep::SetShapeResult (myTransProc,P,V);
 #endif
 }

@@ -40,7 +40,7 @@
 #include <Standard_ProgramError.hxx>
 #include <Standard_NotImplemented.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRep_GetcontextALWLNBP(Standard_Integer&);
 extern Standard_Boolean TopOpeBRep_GettraceCONIC();
 extern Standard_Boolean TopOpeBRepDS_GettraceDSF();
@@ -78,7 +78,7 @@ static Handle(IntPatch_WLine) FUN_ALINETOWLINE
   const Standard_Real deflectionmax = 0.01;
   const Standard_Real pasUVmax = 0.05;
   Standard_Integer nbpointsmax = 200;
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer newnbp;
   if (TopOpeBRep_GetcontextALWLNBP(newnbp)) nbpointsmax = newnbp;
 #endif
@@ -469,7 +469,7 @@ Handle(Geom_Curve) TopOpeBRep_LineInter::Curve
   // Build the trimmed 3d curve
   Handle(Geom_Curve) C3D = Curve();
   Handle(Geom_TrimmedCurve) TC3D = new Geom_TrimmedCurve(C3D,parmin,parmax);
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if ( TopOpeBRep_GettraceCONIC() ) {
     cout<<"TopOpeBRep_LineInter::Curve on a ";
     TopOpeBRep::Print(myTypeLineCurve,cout);cout<<endl;
@@ -575,7 +575,7 @@ const TopOpeBRepDS_Transition& TopOpeBRep_LineInter::FaceFaceTransition
 
 void TopOpeBRep_LineInter::DumpType()const
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   TopOpeBRep::Print(myTypeLineCurve,cout);
 #endif
 }
@@ -586,7 +586,7 @@ void TopOpeBRep_LineInter::DumpType()const
 //=======================================================================
 
 void TopOpeBRep_LineInter::DumpVPoint
-#ifndef DEB
+#ifndef OCCT_DEBUG
 (const Standard_Integer ,
  const TCollection_AsciiString& ,
  const TCollection_AsciiString& ) const
@@ -612,7 +612,7 @@ void TopOpeBRep_LineInter::DumpVPoint
 //=======================================================================
 
 void TopOpeBRep_LineInter::DumpBipoint
-#ifndef DEB
+#ifndef OCCT_DEBUG
 (const TopOpeBRep_Bipoint& ,
  const TCollection_AsciiString& ,
  const TCollection_AsciiString& ) const
@@ -637,7 +637,7 @@ void TopOpeBRep_LineInter::DumpBipoint
 
 void TopOpeBRep_LineInter::SetOK(const Standard_Boolean B)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepDS_GettraceDSF() || TopOpeBRepDS_GettraceDSNC()) {
     if (myOK != B) {
       cout<<"line "<<myIndex<<" (";
@@ -680,7 +680,7 @@ void TopOpeBRep_LineInter::GetTraceIndex(Standard_Integer& exF1,
 //=======================================================================
 Standard_OStream& TopOpeBRep_LineInter::DumpLineTransitions(Standard_OStream& OS) const
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   OS<<"transition from f1 / f2 "; TopAbs::Print(myF2.Orientation(),OS);
   OS<<" : "; myLineTonF1.Dump(OS); OS<<endl;
   OS<<"transition from f2 / f1 "; TopAbs::Print(myF1.Orientation(),OS);

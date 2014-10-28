@@ -29,6 +29,7 @@
 #include <BRep_Tool.hxx>
 
 #include <TDF_Label.hxx>
+#include <TDataStd_Name.hxx>
 
 #include <Standard_NullObject.hxx>
 
@@ -100,7 +101,7 @@ TDF_Label QANewBRepNaming_Revol::Lateral () const
 TDF_Label QANewBRepNaming_Revol::Degenerated() const {
   //const TDF_Label& L = ResultLabel().NewChild();
   const TDF_Label& L = ResultLabel().FindChild(4, Standard_True);
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
   TDataStd_Name::Set(L, "Degenerated");
 #endif
   return L;
@@ -115,7 +116,7 @@ TDF_Label QANewBRepNaming_Revol::Degenerated() const {
 TDF_Label QANewBRepNaming_Revol::Content() const {
   //const TDF_Label& L = ResultLabel().NewChild();
   const TDF_Label& L = ResultLabel().FindChild(5, Standard_True);
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
   TDataStd_Name::Set(L, "Content");
 #endif
   return L;

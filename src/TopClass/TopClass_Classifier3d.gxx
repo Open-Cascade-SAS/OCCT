@@ -36,7 +36,7 @@ void TopClass_Classifier3d::Reset(const gp_Lin&       L,
 void TopClass_Classifier3d::Compare(const TopoDS_Face&        Face,
 				    const TopAbs_Orientation) {  
   if(!isSet) { 
-#ifdef TOPCLASS_DEB
+#ifdef OCCT_DEBUG
     cout<<" Call to TopClass_Classifier3d::Compare  without a Reset ! ";
 #endif
     return;
@@ -52,7 +52,7 @@ void TopClass_Classifier3d::Compare(const TopoDS_Face&        Face,
 	myFace  = myIntersector.Face(); 
 	if(Abs(myParam)<=myTolerance) { 
 	  //-- #########################################
-#ifdef TOPCLASS_DEB
+#ifdef OCCT_DEBUG
 	  cout<<" myParam = "<<myParam<<" ds TopClass_Classifier3d.gxx  "<<endl;
 #endif
 	  //-- #########################################
@@ -68,7 +68,7 @@ void TopClass_Classifier3d::Compare(const TopoDS_Face&        Face,
 	  else if(myIntersector.Transition() == IntCurveSurface_In) { 
 	    myState = TopAbs_OUT;
 	  }
-#ifdef TOPCLASS_DEB
+#ifdef OCCT_DEBUG
     else { 
 	    cout<<" -------- Probleme ds TopClass_Classifier3d.gxx "<<endl;
     }

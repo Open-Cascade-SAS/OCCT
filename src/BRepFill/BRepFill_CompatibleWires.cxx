@@ -63,7 +63,7 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_SequenceOfReal.hxx>
 
-#ifdef DEB_EFV
+#ifdef OCCT_DEBUG_EFV
 static void EdgesFromVertex (const TopoDS_Wire&   W,
 			     const TopoDS_Vertex& V, 
 			     TopoDS_Edge& E1, 
@@ -468,7 +468,7 @@ static Standard_Boolean EdgeIntersectOnWire (const gp_Pnt& P1,
 	isol = iss;
       }
     }
-#ifdef DEB
+#ifdef OCCT_DEBUG
     gp_Pnt Psol = 
 #endif
       DSS.PointOnShape2(isol);
@@ -1700,7 +1700,7 @@ void BRepFill_CompatibleWires::ComputeOrigin(const  Standard_Boolean /*polar*/ )
       newwire.Orientation( TopAbs_FORWARD );
       myWork(i) = newwire;
     }
-#ifdef DEB_EFV
+#ifdef OCCT_DEBUG_EFV
 
   for ( i=ideb; i<=myWork.Length(); i++) {
     
@@ -1852,7 +1852,7 @@ void BRepFill_CompatibleWires::ComputeOrigin(const  Standard_Boolean /*polar*/ )
 	EdgesFromVertex(wire,Vmini,E1,E2);
 	
 	TopExp::Vertices(E1,V1,V2,Standard_True);
-#ifndef DEB
+#ifndef OCCT_DEBUG
 	Standard_Real U1=0, U2=0;
 #else
 	Standard_Real U1, U2;

@@ -20,7 +20,7 @@
 #include <TopoDS_Shape.hxx>
 #include <TopOpeBRepTool_HBoxTool.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 Standard_EXPORT Standard_Boolean TopOpeBRepTool_GettraceBOX();
 #endif
 

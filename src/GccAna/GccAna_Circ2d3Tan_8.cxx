@@ -86,7 +86,7 @@ GccAna_Circ2d3Tan::
      gp_Lin2d linint1(Bis1.ThisSolution());
      Handle(GccInt_Bisec) Sol2 = Bis2.ThisSolution();
      GccInt_IType typ2 = Sol2->ArcType();
-#ifdef DEB
+#ifdef OCCT_DEBUG
      gp_Lin2d linintb(Bis1.ThisSolution());
 #else
      Bis1.ThisSolution() ;

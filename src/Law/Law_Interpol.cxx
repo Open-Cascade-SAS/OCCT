@@ -21,7 +21,7 @@
 #include <gp_Vec2d.hxx>
 #include <Law_Interpolate.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #ifdef DRAW
 
 // Pour le dessin.
@@ -121,7 +121,7 @@ void Law_Interpol::Set(const TColgp_Array1OfPnt2d& ParAndRad,
   Law_Interpolate inter(rad,par,Periodic,Precision::Confusion());
   inter.Perform();
   SetCurve(inter.Curve()); 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #ifdef DRAW
   if (Affich) {
     gp_Vec2d veve(0.,0.);
@@ -158,7 +158,7 @@ void Law_Interpol::SetInRelative(const TColgp_Array1OfPnt2d& ParAndRad,
   Law_Interpolate inter(rad,par,Periodic,Precision::Confusion());
   inter.Perform();
   SetCurve(inter.Curve()); 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #ifdef DRAW
   if (Affich) {
     gp_Vec2d veve(0.,0.);

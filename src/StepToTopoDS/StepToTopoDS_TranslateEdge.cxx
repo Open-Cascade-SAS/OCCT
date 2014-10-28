@@ -80,18 +80,20 @@ static void DecodeMakeEdgeError(const BRepLib_MakeEdge&   ME,
 				const Handle(Geom_Curve)& myCurve,
 				const TopoDS_Vertex&      V1,
 				const TopoDS_Vertex&      V2,
-				const Standard_Real&    /*U1*/,
-				const Standard_Real&    /*U2*/,
+				const Standard_Real&      U1,
+				const Standard_Real&      U2,
 				StepToTopoDS_Tool&   aTool,
 				const Handle(StepShape_TopologicalRepresentationItem)& /*tobind*/)
 {
+  (void)U1, (void)U2; // avoid compiler warning
+
   Handle(Transfer_TransientProcess) TP = aTool.TransientProcess();
 //  if (!myCurve.IsNull() && !tobind.IsNull()) {
 //    TransferBRep::SetShapeResult
 //      (TP,tobind, MakeEdge(myCurve,V1,V2,U1,U2,BRepAPI::Precision()) );
 //    aTool.Bind (tobind,E);  SURTOUT PAS : noter pour debug/erreur
 //  }
-#ifdef STEPTOTOPODS_DEB
+#ifdef OCCT_DEBUG
   cout << "------------------------------------" << endl;
   cout << "MakeEdge Error  : " << ME.Error()<<" - ";
 #endif
@@ -120,7 +122,7 @@ static void DecodeMakeEdgeError(const BRepLib_MakeEdge&   ME,
       TP->AddFail(orig," Line through identic Points");
       break;
     }
-#ifdef STEPTOTOPODS_DEB
+#ifdef OCCT_DEBUG
   cout << "Original Type   : " << orig->DynamicType() << endl;
   cout << "3D Curve Type   : " << myCurve->DynamicType() << endl;
   cout << "First Parameter : " << U1 << endl;

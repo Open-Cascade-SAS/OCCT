@@ -481,7 +481,7 @@ void TopOpeBRepTool_ShapeClassifier::StateEdgeReference()
 	  Standard_Real p = (1-t)*f2d + t*l2d;
 	  P2D = C2D->Value(p);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	  C3D = BRep_Tool::Curve(myEdge,f3d,l3d);
 	  if(!C3D.IsNull())
 	    P3D = C3D->Value(p);
@@ -555,7 +555,7 @@ void TopOpeBRepTool_ShapeClassifier::StateP2DReference
 //	else if (o == TopAbs_INTERNAL) myState == TopAbs_IN;
 	else if (o == TopAbs_INTERNAL) myState = TopAbs_IN;
 	else {
-#ifdef TOPOPEBREPTOOL_DEB
+#ifdef OCCT_DEBUG
 	  cout<<"StateP2DReference o<>E,I"<<endl;
 #endif
 	  break;

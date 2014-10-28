@@ -29,10 +29,6 @@
 #include <Standard_NoSuchObject.hxx>
 #include <TColStd_MapIteratorOfMapOfInteger.hxx>
 
-#ifdef DEB
-#include <TDataStd_Name.hxx>
-#endif // DEB
-
 //=======================================================================
 //function : NewFunction
 //purpose  : Static method to create a new function.
@@ -129,21 +125,6 @@ Standard_Boolean TFunction_IFunction::UpdateDependencies(const TDF_Label& Access
     const TDF_Label& L = itrm.Key2();
     TFunction_IFunction iFunction(L);
 
-#ifdef DEB
-    /*
-    TCollection_AsciiString fname;
-    Handle(TDataStd_Name) name;
-    if (L.FindAttribute(TDataStd_Name::GetID(), name))
-    {
-      fname = name->Get();
-    }
-    else if (L.Father().FindAttribute(TDataStd_Name::GetID(), name))
-    {
-      fname = name->Get();
-    }
-    */
-#endif // DEB
-    
     // Take the driver.
     Handle(TFunction_Driver) driver = iFunction.GetDriver();
 
@@ -168,21 +149,6 @@ Standard_Boolean TFunction_IFunction::UpdateDependencies(const TDF_Label& Access
     const TDF_Label& L = itrm.Key2();
     TFunction_IFunction iFunction(L);
 
-#ifdef DEB
-    /*
-    TCollection_AsciiString fname;
-    Handle(TDataStd_Name) name;
-    if (L.FindAttribute(TDataStd_Name::GetID(), name))
-    {
-      fname = name->Get();
-    }
-    else if (L.Father().FindAttribute(TDataStd_Name::GetID(), name))
-    {
-      fname = name->Get();
-    }
-    */
-#endif // DEB
-
     // Take the driver.
     Handle(TFunction_Driver) driver = iFunction.GetDriver();
 
@@ -206,21 +172,6 @@ Standard_Boolean TFunction_IFunction::UpdateDependencies(const TDF_Label& Access
       if (L == anotherL)
 	continue;
       const TDF_LabelList& anotherRes = itrd.Value();
-
-#ifdef DEB
-      /*
-      TCollection_AsciiString afname;
-      Handle(TDataStd_Name) aname;
-      if (anotherL.FindAttribute(TDataStd_Name::GetID(), aname))
-      {
-	afname = aname->Get();
-      }
-      else if (anotherL.Father().FindAttribute(TDataStd_Name::GetID(), aname))
-      {
-	afname = aname->Get();
-      }
-      */
-#endif // DEB
 
       for (itrl.Initialize(anotherRes); itrl.More(); itrl.Next())
       {

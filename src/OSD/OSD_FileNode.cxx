@@ -215,7 +215,7 @@ TCollection_AsciiString second_name;
  myPath.SystemName ( aBuffer );
  status =  copy_file(aBuffer.ToCString(), second_name.ToCString());
  if (status != 0) myError.SetValue (-1, Iam, "Copy failed") ;// (LD)
-#ifdef DEBUG
+#ifdef OCCT_DEBUG
  printf("Status %d : errno # %d\n",status,errno);
 #endif
 }

@@ -244,7 +244,7 @@ Standard_Boolean TopOpeBRepTool_ShapeTool::Closed(const TopoDS_Shape& S1,
 }
 
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepTool_GettraceVC();
 extern Standard_Boolean TopOpeBRepTool_GettraceNYI();
 #endif
@@ -334,7 +334,7 @@ Standard_Real TopOpeBRepTool_ShapeTool::PeriodizeParameter
       periopar = ADJUST(par,Vfirst,Vlast,tol);
     }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (TopOpeBRepTool_GettraceVC()) {
       cout<<"TopOpeBRepTool_ShapeTool PC on edge is ";
       if      (isoU) cout<<"isoU f,l "<<Ufirst<<" "<<Ulast<<endl;
@@ -449,7 +449,7 @@ Standard_Boolean TopOpeBRepTool_ShapeTool::SurfacesSameOriented
   else { 
     // prendre u1,v1 et projeter sur 2 pour calcul des normales
     // au meme point 3d.
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (TopOpeBRepTool_GettraceNYI()) {
       cout<<"TopOpeBRepTool_ShapeTool::SurfacesSameOriented surfaces non traitees : NYI";
       cout<<endl;
@@ -513,7 +513,7 @@ Standard_Boolean TopOpeBRepTool_ShapeTool::CurvesSameOriented
   else { 
     // prendre p1 et projeter sur 2 pour calcul des normales
     // au meme point 3d.
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (TopOpeBRepTool_GettraceNYI()) { 
       cout<<"TopOpeBRepTool_ShapeTool::CurvesSameOriented non lineaires : NYI";
       cout<<endl;

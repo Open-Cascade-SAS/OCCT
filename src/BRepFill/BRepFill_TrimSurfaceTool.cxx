@@ -65,7 +65,7 @@
 #include <DrawTrSurf.hxx>
 #include <DBRep.hxx>
 #endif
-#ifdef DEB
+#ifdef OCCT_DEBUG
 static Standard_Boolean Affich       = Standard_False;
 static Standard_Integer NBCALL  = 1;
 #endif
@@ -96,7 +96,7 @@ myInv1(Inv1),
 myInv2(Inv2),
 myBis  (Bis)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if ( Affich) {
     cout << " ---------->TrimSurfaceTool : NBCALL = " << NBCALL << endl;
     
@@ -273,7 +273,7 @@ static void EvalParameters(const TopoDS_Edge&          Edge,
     NbSegments = Intersector.NbSegments();
     
     if (NbSegments > 0) {
-#ifdef BREPFILL_DEB
+#ifdef OCCT_DEBUG
       cout << " IntersectWith : " << NbSegments  
 	   << " Segments of intersection" << endl;
 #endif
@@ -468,7 +468,7 @@ Standard_Real BRepFill_TrimSurfaceTool::ProjOn(const gp_Pnt2d& Point,
 
   // evaluate the projection of the point on the curve.
   Geom2dAPI_ProjectPointOnCurve Projector(Point, C2d);
-#ifdef BREPFILL_DEB  
+#ifdef OCCT_DEBUG
   Standard_Real Dist = Projector.LowerDistance();
   if ( Dist > Precision::Confusion() ) {
     cout << " *** WARNING  TrimSurfaceTool:  *** " << endl;

@@ -26,7 +26,7 @@
 #include <BRep_Tool.hxx>
 #include <Standard_ProgramError.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 Standard_EXPORT void debfctwes(const Standard_Integer /*i*/) {}
 Standard_EXPORT void debfctwesmess(const Standard_Integer i,const TCollection_AsciiString& s = "")
 {cout<<"+ + + debfctwes "<<s<<"F"<<i<<endl;debfctwes(i);}
@@ -52,7 +52,7 @@ void TopOpeBRepBuild_Builder::GFillCurveTopologyWES(const TopoDS_Shape& F1,const
   TopAbs_State TB1,TB2; G1.StatesON(TB1,TB2);
   TopAbs_ShapeEnum t1,t2,ShapeInterf; G1.Type(t1,t2); ShapeInterf = t1;
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer iF; Standard_Boolean tSPS = GtraceSPS(F1,iF);
   if(tSPS) GdumpSHASTA(iF,TB1,WES,"--- GFillCurveTopologyWES");
   if(tSPS) {cout<<" ShapeInterf ";TopAbs::Print(ShapeInterf,cout);cout<<endl;}
@@ -119,11 +119,11 @@ void TopOpeBRepBuild_Builder::GFillCurveTopologyWES(const TopOpeBRepDS_CurveIter
 
   TopoDS_Face& WESF = *((TopoDS_Face*)((void*)&WES.Face()));
   TopoDS_Face& FTF = *((TopoDS_Face*)((void*)&myFaceToFill));
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //  Standard_Boolean FTFeqWESF = myFaceReference.IsEqual(WESF);
 #endif
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer iWESF = myDataStructure->Shape(WESF);
   Standard_Integer iref = myDataStructure->Shape(myFaceReference);
   Standard_Integer ifil = myDataStructure->Shape(myFaceToFill);
@@ -139,7 +139,7 @@ void TopOpeBRepBuild_Builder::GFillCurveTopologyWES(const TopOpeBRepDS_CurveIter
     neworiE = TopAbs::Complement(neworiE);
   }
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean tSPS = GtraceSPS(iWESF);
   if(tSPS){
     cout<<"ifil : "<<ifil<<" iref : "<<iref<<" iwes : "<<iWESF<<endl;
@@ -181,19 +181,19 @@ void TopOpeBRepBuild_Builder::GFillCurveTopologyWES(const TopOpeBRepDS_CurveIter
       Standard_Real f2,l2,tolpc; Handle(Geom2d_Curve) C2D;
       C2D = FC2D_CurveOnSurface(E,WESF,f2,l2,tolpc);
       if (C2D.IsNull()) Standard_ProgramError::Raise("GFillCurveTopologyWES");
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //      Standard_Real tol = Max(tolE,tolpc);
 #endif
       
       myBuildTool.PCurve(WESF,E,C2D);
 
-#ifdef TOPOPEBREPBUILD_DEB
+#ifdef OCCT_DEBUG
       EhasPConWESF = FC2D_HasCurveOnSurface(E,WESF);
       if (!EhasPConWESF) cout<<"TopOpeBRepBuild_Builder::GFillCurveTopologyWES : Null PCurve on F"<<iWESF<<endl;
 #endif
     }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (tSPS) debaddpwes(iWESF,TB,iG,neworiE,(TopOpeBRepBuild_Builder* const)this,&WES,"GFillCurveTopology " ,"WES+ EofC ");
 #endif
 

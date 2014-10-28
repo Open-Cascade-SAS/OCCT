@@ -34,7 +34,7 @@
 #include <TopOpeBRep_define.hxx>
 #include <IntPatch_GLine.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepDS_GettraceDSNC(); 
 extern Standard_Boolean TopOpeBRepDS_GettraceDSF(); 
 extern Standard_Boolean TopOpeBRepDS_GettraceDSFK(); 
@@ -45,7 +45,7 @@ static TCollection_AsciiString PRODINP("dinp ");
 //function : TopOpeBRep_FFDumper
 //purpose  : 
 //=======================================================================
-#ifndef DEB
+#ifndef OCCT_DEBUG
 TopOpeBRep_FFDumper::TopOpeBRep_FFDumper(const TopOpeBRep_PFacesFiller& )
 {
 #else
@@ -59,7 +59,7 @@ TopOpeBRep_FFDumper::TopOpeBRep_FFDumper(const TopOpeBRep_PFacesFiller& PFF)
 //function : Init
 //purpose  : 
 //=======================================================================
-#ifndef DEB
+#ifndef OCCT_DEBUG
 void TopOpeBRep_FFDumper::Init(const TopOpeBRep_PFacesFiller& )
 {
 #else
@@ -88,7 +88,7 @@ void TopOpeBRep_FFDumper::Init(const TopOpeBRep_PFacesFiller& PFF)
 //function : DumpLine
 //purpose  : 
 //=======================================================================
-#ifndef DEB
+#ifndef OCCT_DEBUG
 void TopOpeBRep_FFDumper::DumpLine(const Standard_Integer )
 {
 #else
@@ -103,7 +103,7 @@ void TopOpeBRep_FFDumper::DumpLine(const Standard_Integer I)
 //function : DumpLine
 //purpose  : 
 //=======================================================================
-#ifndef DEB
+#ifndef OCCT_DEBUG
 void TopOpeBRep_FFDumper::DumpLine(const TopOpeBRep_LineInter& )
 {
 #else
@@ -180,7 +180,7 @@ void TopOpeBRep_FFDumper::DumpLine(const TopOpeBRep_LineInter& LI)
 //function : DumpVP
 //purpose  : 
 //=======================================================================
-#ifndef DEB
+#ifndef OCCT_DEBUG
 void TopOpeBRep_FFDumper::DumpVP(const TopOpeBRep_VPointInter& )
 {
 #else
@@ -217,7 +217,7 @@ void TopOpeBRep_FFDumper::DumpVP(const TopOpeBRep_VPointInter& VP)
 //function : DumpVP
 //purpose  : 
 //=======================================================================
-#ifndef DEB
+#ifndef OCCT_DEBUG
 void TopOpeBRep_FFDumper::DumpVP(const TopOpeBRep_VPointInter& ,const Standard_Integer )
 {
 #else
@@ -250,7 +250,7 @@ void TopOpeBRep_FFDumper::DumpVP(const TopOpeBRep_VPointInter& VP,const Standard
 //function : ExploreIndex
 //purpose  : 
 //=======================================================================
-#ifndef DEB
+#ifndef OCCT_DEBUG
 Standard_Integer TopOpeBRep_FFDumper::ExploreIndex(const TopoDS_Shape& , const Standard_Integer ) const
 {
     return 0;
@@ -269,7 +269,7 @@ Standard_Integer TopOpeBRep_FFDumper::ExploreIndex(const TopoDS_Shape& S, const 
 //function : DumpDSP
 //purpose  : 
 //=======================================================================
-#ifndef DEB
+#ifndef OCCT_DEBUG
 void TopOpeBRep_FFDumper::DumpDSP(const TopOpeBRep_VPointInter& ,const TopOpeBRepDS_Kind ,const Standard_Integer ,
 				  const Standard_Boolean ) const
 {

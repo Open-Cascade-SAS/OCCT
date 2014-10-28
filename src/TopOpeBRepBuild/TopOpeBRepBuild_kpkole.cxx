@@ -32,7 +32,7 @@
 #include <TopOpeBRepBuild_kpresu.hxx>
 #include <Standard_ProgramError.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepBuild_GettraceKPB();
 void debiskole() {}
 #endif
@@ -50,7 +50,7 @@ Standard_EXPORT void FUNKP_KPmakefaces(const TopOpeBRepBuild_Builder& BU, const 
 
 void TopOpeBRepBuild_Builder::MergeKPartiskole()
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean TKPB = TopOpeBRepBuild_GettraceKPB();
   if (TKPB) KPreturn(myIsKPart);
   debiskole();
@@ -83,7 +83,7 @@ void TopOpeBRepBuild_Builder::MergeKPartiskole()
   itm1.Initialize(myKPMAPf1f2);
   if ( ! itm1.More() ) return;
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TKPB) {
     cout<<""<<endl;
     for (; itm1.More();itm1.Next()) {
@@ -125,7 +125,7 @@ void TopOpeBRepBuild_Builder::MergeKPartiskole()
   if ( pfOU==NULL) return;
   if ( pfIN==NULL) return;
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer ifOU; Standard_Boolean tSPS = GtraceSPS(*pfOU,ifOU);
   if(tSPS || TKPB) { 
 //    Standard_Integer iOU = myDataStructure->Shape(*pfOU);
@@ -188,7 +188,7 @@ void TopOpeBRepBuild_Builder::MergeKPartiskole()
   ChangeMerged(she1,myState1);
   ChangeMerged(she2,myState2);
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TKPB) { cout<<"stsol1 ";TopAbs::Print(stsol1,cout); cout<<" "; }
   if (TKPB) { cout<<"stsol2 ";TopAbs::Print(stsol2,cout); cout<<endl; }
   debiskole();
@@ -254,7 +254,7 @@ void TopOpeBRepBuild_Builder::MergeKPartiskole()
       it2.Initialize(lf2);
       const TopoDS_Shape& f2 = it2.Value();
       
-/*#ifdef DEB
+/*#ifdef OCCT_DEBUG
       Standard_Integer ii1 = myDataStructure->Shape(f1);
       Standard_Integer ii2 = myDataStructure->Shape(f2);
 #endif*/
@@ -330,7 +330,7 @@ void TopOpeBRepBuild_Builder::MergeKPartiskole()
   } // === fin RESNEWSHE 
   
   else {
-#ifdef TOPOPEBREPBUILD_DEB
+#ifdef OCCT_DEBUG
     cout<<"MergeKPartiskole : ires = "<<ires<<endl;
 #endif
   }
@@ -356,7 +356,7 @@ void TopOpeBRepBuild_Builder::MergeKPartiskole()
 	loshe1.Append(shecur);
       }
     }
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //    Standard_Integer nshe1 = loshe1.Extent();
 #endif
     TopTools_ListIteratorOfListOfShape itloshe1;
@@ -381,7 +381,7 @@ void TopOpeBRepBuild_Builder::MergeKPartiskole()
 	loshe2.Append(shecur);
       }
     }
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //    Standard_Integer nshe2 = loshe2.Extent();
 #endif
     TopTools_ListIteratorOfListOfShape itloshe2;
@@ -437,17 +437,17 @@ Standard_Integer TopOpeBRepBuild_Builder::KPiskole()
        itlf1.More();itlf1.Next()) {
     
     const TopoDS_Shape& f1 = itlf1.Value();
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //    Standard_Boolean isb1 = myKPMAPf1f2.IsBound(f1); // DEB
 #endif
     lf1.Clear(); lf1.Append(f1);
     lf2.Clear(); KPSameDomain(lf1,lf2);
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //    Standard_Integer n1 = lf1.Extent();
 //    Standard_Integer n2 = lf2.Extent();
 #endif
     
-#ifdef DEB
+#ifdef OCCT_DEBUG
     Standard_Integer iF1; Standard_Boolean tSPS1 = GtraceSPS(f1,iF1);
     if(tSPS1) { 
       GdumpSHA(f1, (char *) "KPiskole ");cout<<endl;
@@ -459,7 +459,7 @@ Standard_Integer TopOpeBRepBuild_Builder::KPiskole()
 	 itlf2.More(); itlf2.Next() ) {
       
       const TopoDS_Shape& f2 = itlf2.Value();
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //      Standard_Boolean isb2 = myKPMAPf1f2.IsBound(f2); // DEB
 #endif
       TopAbs_State state1,state2;
@@ -566,7 +566,7 @@ void TopOpeBRepBuild_Builder::KPiskoleanalyse(const TopAbs_State Stfac1, const T
     }
   }
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean TKPB = TopOpeBRepBuild_GettraceKPB();
   if (TKPB) cout<<"ires = "<<ires<<" icla1 "<<icla1<<" icla2 "<<icla2<<endl;
 #endif
@@ -588,7 +588,7 @@ Standard_EXPORT void FUNKP_KPmakefaces(const TopOpeBRepBuild_Builder& BU,
   Standard_Integer rankIN = 0;
   TopTools_ListOfShape LFSO,LFDO;
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer iF1; Standard_Boolean tSPS = BU.GtraceSPS(Fac1,iF1);
   if(tSPS) { BU.GdumpSHA(Fac1, (char *) "KPmakeFace ");cout<<endl; }
 #endif
@@ -613,7 +613,7 @@ Standard_EXPORT void FUNKP_KPmakefaces(const TopOpeBRepBuild_Builder& BU,
   BU.GFindSameRank(LFSO,rankIN,LFIN);
   BU.GFindSameRank(LFDO,rankIN,LFIN);
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if(tSPS) { 
     BU.GdumpSAMDOM(LFSO, (char *) "LESO : ");
     BU.GdumpSAMDOM(LFDO, (char *) "LEDO : ");
@@ -646,7 +646,7 @@ Standard_EXPORT void FUNKP_KPmakefaces(const TopOpeBRepBuild_Builder& BU,
   
   const TopoDS_Face& F1 = TopoDS::Face(Fac1);
   wtof.MakeFaces(F1,Lres);
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //  Standard_Integer nlres = Lres.Extent(); // DEB
 #endif
   
@@ -672,7 +672,7 @@ TopoDS_Shape TopOpeBRepBuild_Builder::KPmakeface(const TopoDS_Shape& Fac1,
   Standard_Integer rankIN = 0;
   TopTools_ListOfShape LFSO,LFDO;
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer iF1;
   Standard_Boolean tSPS = GtraceSPS(Fac1,iF1);
   if(tSPS) {
@@ -703,7 +703,7 @@ TopoDS_Shape TopOpeBRepBuild_Builder::KPmakeface(const TopoDS_Shape& Fac1,
   GFindSameRank(LFSO,rankIN,LFIN);
   GFindSameRank(LFDO,rankIN,LFIN);
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if(tSPS) { 
     GdumpSAMDOM(LFSO, (char *) "LESO : ");
     GdumpSAMDOM(LFDO, (char *) "LEDO : ");
@@ -779,14 +779,14 @@ Standard_Boolean TopOpeBRepBuild_Builder::KPiskolesh(const TopoDS_Shape& Sarg,
                                                      TopTools_ListOfShape& lShsd,
                                                      TopTools_ListOfShape& lfhsd) const 
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean TKPB = TopOpeBRepBuild_GettraceKPB();
 #endif
   const TopOpeBRepDS_DataStructure& BDS = myDataStructure->DS();
   Standard_Boolean iskolesh = FUNKP_KPiskolesh(*this,BDS,Sarg,lShsd,lfhsd);
   if (!iskolesh) return Standard_False;
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer nfhsd =
 #endif
               KPlhsd(Sarg,TopAbs_FACE,lfhsd);
@@ -803,7 +803,7 @@ Standard_Boolean TopOpeBRepBuild_Builder::KPiskolesh(const TopoDS_Shape& Sarg,
     Standard_Integer nehg = KPlhg(fac,TopAbs_EDGE,lehg);
     if ( nehg != 0 ) return Standard_False;
     
-#ifdef DEB
+#ifdef OCCT_DEBUG
     Standard_Integer isol = myDataStructure->Shape(Sarg);
     Standard_Integer ifac = myDataStructure->Shape(fac); 
     if(TKPB){cout<<"isol "<<isol<<endl;}

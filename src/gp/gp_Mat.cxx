@@ -14,7 +14,7 @@
 
 //  10/09/97 : PMN : Correction BUC40192 (pb avec les matrices negatives)
 
-#ifndef DEB
+#ifndef OCCT_DEBUG
 #define No_Standard_OutOfRange
 #define No_Standard_ConstructionError
 #endif

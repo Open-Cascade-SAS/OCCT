@@ -75,7 +75,7 @@
 #include <gp_Pln.hxx>
 #include <Geom_Plane.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean BRepFeat_GettraceFEAT();
 #endif
 
@@ -112,7 +112,7 @@ void BRepFeat_MakePrism::Init(const TopoDS_Shape& Sbase,
 			      const Standard_Integer Mode,
 			      const Standard_Boolean Modify)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
   if (trc) cout << "BRepFeat_MakePrism::Init" << endl;
 #endif
@@ -158,7 +158,7 @@ void BRepFeat_MakePrism::Init(const TopoDS_Shape& Sbase,
     myMap.Bind(exp.Current(), thelist);
     myMap(exp.Current()).Append(exp.Current());
   }
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (trc) {
     if (myJustFeat)  cout << " Just Feature" << endl;
     if (myFuse)  cout << " Fuse" << endl;
@@ -177,7 +177,7 @@ void BRepFeat_MakePrism::Init(const TopoDS_Shape& Sbase,
 void BRepFeat_MakePrism::Add(const TopoDS_Edge& E,
 			     const TopoDS_Face& F)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
   if (trc) cout << "BRepFeat_MakePrism::Add(Edge,face)" << endl;
 #endif
@@ -224,7 +224,7 @@ void BRepFeat_MakePrism::Add(const TopoDS_Edge& E,
 
 void BRepFeat_MakePrism::Perform(const Standard_Real Length)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
   if (trc) cout << "BRepFeat_MakePrism::Perform(Length)" << endl;
 #endif
@@ -334,7 +334,7 @@ void BRepFeat_MakePrism::Perform(const Standard_Real Length)
 
 void BRepFeat_MakePrism::Perform(const TopoDS_Shape& Until)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
   if (trc) cout << "BRepFeat_MakePrism::Perform(Until)" << endl;
 #endif
@@ -480,7 +480,7 @@ void BRepFeat_MakePrism::Perform(const TopoDS_Shape& Until)
 void BRepFeat_MakePrism::Perform(const TopoDS_Shape& From,
 				 const TopoDS_Shape& Until)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
   if (trc) cout << "BRepFeat_MakePrism::Perform(From,Until)" << endl;
 #endif
@@ -695,7 +695,7 @@ void BRepFeat_MakePrism::Perform(const TopoDS_Shape& From,
 
 void BRepFeat_MakePrism::PerformUntilEnd()
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
   if (trc) cout << "BRepFeat_MakePrism::PerformUntilEnd()" << endl;
 #endif
@@ -746,7 +746,7 @@ void BRepFeat_MakePrism::PerformUntilEnd()
 
 void BRepFeat_MakePrism::PerformFromEnd(const TopoDS_Shape& Until)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
   if (trc) cout << "BRepFeat_MakePrism::PerformFromEnd(From,Until)" << endl;
 #endif
@@ -891,7 +891,7 @@ void BRepFeat_MakePrism::PerformFromEnd(const TopoDS_Shape& Until)
 
 void BRepFeat_MakePrism::PerformThruAll()
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
   if (trc) cout << "BRepFeat_MakePrism::PerformThruAll()" << endl;
 #endif
@@ -949,7 +949,7 @@ void BRepFeat_MakePrism::PerformThruAll()
 void BRepFeat_MakePrism::PerformUntilHeight(const TopoDS_Shape& Until,
 					     const Standard_Real Length)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
   if (trc) cout << "BRepFeat_MakePrism::PerformUntilHeight(Until,Length)" << endl;
 #endif
@@ -1124,7 +1124,7 @@ static Standard_Real HeightMax(const TopoDS_Shape& theSbase,
     if(c[i] > parmax) parmax = c[i];
     if(c[i] < parmin ) parmin = c[i];    
   }
-//#ifndef DEB
+//#ifndef OCCT_DEBUG
   Standard_Real Height = fabs(2.*(parmax - parmin));
 //#else
 //  Standard_Real Height = abs(2.*(parmax - parmin));

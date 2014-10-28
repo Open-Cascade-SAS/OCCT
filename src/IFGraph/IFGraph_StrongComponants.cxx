@@ -36,18 +36,18 @@ IFGraph_StrongComponants::IFGraph_StrongComponants
     GetFromEntity (G.Entity(i),Standard_False);
   }
 #else
-#ifdef PRINTDEB
+#ifdef OCCT_DEBUG
   cout<<"StrongComponants :"<<endl;
 #endif
   for (IFGraph_SortedStrongs res(G); res.More(); res.Next()) {
     Standard_Integer nb = res.NbVertices();
-#ifdef PRINTDEB
+#ifdef OCCT_DEBUG
     cout<<"  Iteration, Vertices:"<<nb<<" :";
 #endif
     if (nb == 0) continue;
     AddPart();
     for (Standard_Integer i = 1; i <= nb; i ++)
-#ifdef PRINTDEB
+#ifdef OCCT_DEBUG
       {
 	Handle(Standard_Transient) oneres = res.Value(i);
 	cout<<" "<<G.EntityNumber(oneres);

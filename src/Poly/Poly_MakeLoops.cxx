@@ -19,7 +19,7 @@
 #include <gp_Dir.hxx>
 #include <gp_Dir2d.hxx>
 
-#ifdef _DEBUG
+#ifdef OCCT_DEBUG
 static Standard_Integer doDebug = 0;
 #endif
 
@@ -66,7 +66,7 @@ void Poly_MakeLoops::AddLink(const Link& theLink)
   Standard_Integer aInd = myMapLink.Add(theLink);
   Link& aLink = const_cast<Link&>(myMapLink(aInd));
   aLink.flags |= theLink.flags;
-#ifdef _DEBUG
+#ifdef OCCT_DEBUG
   myHelper->OnAddLink (aInd, aLink);
 #endif
 }
@@ -89,7 +89,7 @@ void Poly_MakeLoops::ReplaceLink(const Link& theLink, const Link& theNewLink)
     aLink = theNewLink;
     // and now put there the final value of link
     myMapLink.Substitute(aInd, aLink);
-#ifdef _DEBUG
+#ifdef OCCT_DEBUG
     myHelper->OnAddLink (aInd, aLink);
 #endif
   }
@@ -111,7 +111,7 @@ Poly_MakeLoops::LinkFlag Poly_MakeLoops::SetLinkOrientation
     Link& aLink = const_cast<Link&>(myMapLink(aInd));
     aOri = (LinkFlag) (aLink.flags & LF_Both);
     aLink.flags = theOrient;
-#ifdef _DEBUG
+#ifdef OCCT_DEBUG
     myHelper->OnAddLink (aInd, aLink);
 #endif
   }
@@ -151,7 +151,7 @@ Standard_Integer Poly_MakeLoops::Perform()
       myStartIndices.Add(-i);
   }
 
-#ifdef _DEBUG
+#ifdef OCCT_DEBUG
   if (doDebug)
     showBoundaryBreaks();
 #endif
@@ -174,7 +174,7 @@ Standard_Integer Poly_MakeLoops::Perform()
       aTempAlloc->Reset();
       NCollection_IndexedMap<Standard_Integer> aContour (100, aTempAlloc);
       Standard_Integer aStartNumber = findContour (aIndexS, aContour, aTempAlloc, aTempAlloc1);
-#ifdef _DEBUG
+#ifdef OCCT_DEBUG
       if (aStartNumber > 1)
         if (doDebug)
         {
@@ -221,7 +221,7 @@ Standard_Integer Poly_MakeLoops::Perform()
         myStartIndices.Add(it.Key());
     }
   }
-#ifdef _DEBUG
+#ifdef OCCT_DEBUG
   if (doDebug && nbLoopsOnPass2)
     cout << "MakeLoops: " << nbLoopsOnPass2
       << " contours accepted on the second pass" << endl;
@@ -485,7 +485,7 @@ Standard_Boolean Poly_MakeLoops::canLinkBeTaken(Standard_Integer theIndexS) cons
 //purpose  : 
 //=======================================================================
 
-#ifdef _DEBUG
+#ifdef OCCT_DEBUG
 void Poly_MakeLoops::showBoundaryBreaks() const
 {
   // collect nodes of boundary links

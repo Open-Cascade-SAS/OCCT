@@ -38,9 +38,9 @@
 #include <TopExp_Explorer.hxx>
 
 #define OCC351
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //#define MDTV_DEB_SC
-#ifdef MDTV_DEB_SC
+#ifdef OCCT_DEBUG_SC
 #include <TDF_Tool.hxx>
 #include <TDF_MapIteratorOfLabelMap.hxx>
 
@@ -110,7 +110,7 @@ void TNaming_Localizer::FindFeaturesInAncestors
  const TopoDS_Shape&                        Context,
  TopTools_MapOfShape&                       AncInFeature)
 {
-#ifdef MDTV_DEB_SC
+#ifdef OCCT_DEBUG_SC
   LWrite(S, "Localizer_S.brep");
   LWrite(Context, "Localizer_Context.brep");
 #endif
@@ -118,14 +118,14 @@ void TNaming_Localizer::FindFeaturesInAncestors
   const TopTools_IndexedDataMapOfShapeListOfShape& Anc = Ancestors(Context,S.ShapeType());
   
   if (Anc.Contains(S)) {
-#ifdef MDTV_DEB_SC
+#ifdef OCCT_DEBUG_SC
     cout <<"Localizer: S in ancestor" <<endl;
 #endif
     const TopTools_ListOfShape& L = Anc.FindFromKey(S);
     TopTools_ListIteratorOfListOfShape itL(L);
     for (; itL.More(); itL.Next()) {
       const TopoDS_Shape& AS = itL.Value();
-#ifdef MDTV_DEB_SC
+#ifdef OCCT_DEBUG_SC
       LWrite(AS, "Localizer_AS.brep");
 #endif      
       Handle(TNaming_NamedShape) NS = TNaming_Tool::NamedShape(AS,myUS->Label());
@@ -137,7 +137,7 @@ void TNaming_Localizer::FindFeaturesInAncestors
 	FindFeaturesInAncestors (AS, Context, AncInFeature);
       }
       else {
-#ifdef TNAMING_DEB
+#ifdef OCCT_DEBUG
 	cout <<" TNaming_Localization : Failure in the research of ancetres in TDF"<<endl;
 #endif
       }
@@ -145,7 +145,7 @@ void TNaming_Localizer::FindFeaturesInAncestors
     
   }
   else {
-#ifdef TNAMING_DEB
+#ifdef OCCT_DEBUG
     cout <<" TNaming_Localization : S n est pas dans le solide"<<endl;//S is not in the solid
 #endif
   }
@@ -213,7 +213,7 @@ const TopTools_IndexedDataMapOfShapeListOfShape& TNaming_Localizer::Ancestors
       TopTools_IndexedDataMapOfShapeListOfShape& Anc = itA.Value();
 
       TopExp_Explorer exp(In,TS);
-#ifdef TNAMING_DEB
+#ifdef OCCT_DEBUG
       if (!exp.More())   cout <<" TNaming_Localization : Construction ancetres impossible"<<endl;
 #endif
       const TopoDS_Shape& SS = exp.Current();
@@ -232,7 +232,7 @@ const TopTools_IndexedDataMapOfShapeListOfShape& TNaming_Localizer::Ancestors
 	  TopExp::MapShapesAndAncestors(In, TS, TA, Anc);
 	}
 	else {
-#ifdef TNAMING_DEB
+#ifdef OCCT_DEBUG
 	  cout <<" TNaming_Localization : Construction ancetres impossible"<<endl;
 #endif
 	}
@@ -256,7 +256,7 @@ const TopTools_IndexedDataMapOfShapeListOfShape& TNaming_Localizer::Ancestors
     TopExp::MapShapesAndAncestors(In, TS, TA, myAncestors.First());
   }
   else {
-#ifdef TNAMING_DEB
+#ifdef OCCT_DEBUG
     cout <<" TNaming_Localization : Construction ancetres impossible"<<endl;
 #endif
   }
@@ -280,7 +280,7 @@ Standard_Boolean TNaming_Localizer::IsNew (const TopoDS_Shape&    S,
       return Standard_True;
     }
   }
-#ifdef TNAMING_DEB
+#ifdef OCCT_DEBUG
   cout <<"TNaming_Localizer:IsNewInLab : Shape n est pas dans le Label."<<endl;
 #endif
   return Standard_False;
@@ -334,7 +334,7 @@ void TNaming_Localizer::GoBack (const TopoDS_Shape&         S,
           LBNS.Append (TNaming_Tool::NamedShape(it.Shape(),Lab));
         }
         else {
-#ifdef TNAMING_DEB
+#ifdef OCCT_DEBUG
           cout <<"TNaming_Localizer: Shape modifie sans avoir ete cree"<<endl;
 #endif
         }
@@ -482,7 +482,7 @@ void TNaming_Localizer::Backward (const Handle(TNaming_NamedShape)& NS,
 //purpose  : 
 //=======================================================================
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 /*static Standard_Boolean StoreValid (const TopoDS_Shape&        S,
 				    const TopTools_MapOfShape& ShapeOfSol,
 				    TopAbs_ShapeEnum           TargetType,
@@ -553,7 +553,7 @@ void TNaming_Localizer::FindNeighbourg (const TopoDS_Shape&      Sol,
   const TopTools_IndexedDataMapOfShapeListOfShape& Anc = Ancestors(Sol,TS); 
 // szy 30.03.10 to process case when Candidate is of type Vertex
 //  if (TA == TopAbs_VERTEX) {
-//#ifdef DEB
+//#ifdef OCCT_DEBUG
 //    cout <<"construction voisins des vertex impossible"<<endl;
 //#endif
 //    return;
@@ -605,7 +605,7 @@ void TNaming_Localizer::Init(const Handle(TNaming_UsedShapes)& US,
 //purpose  : 
 //=======================================================================
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 /*static void Explode (TNaming_ShapesSet& Res,
 		     TopAbs_ShapeEnum   TS,
 		     TNaming_ShapesSet& ResGoodType) 
@@ -734,7 +734,7 @@ void TNaming_Localizer::FindShapeContext (const Handle(TNaming_NamedShape)& NS,
 					        TopoDS_Shape&               SC)
      
 { 
-#ifdef MDTV_DEB_SC
+#ifdef OCCT_DEBUG_SC
     LWrite(S, "FSC_Sel.brep"); LPrintEntry( NS->Label());
 #endif
   TopTools_ListOfShape aList;
@@ -748,7 +748,7 @@ void TNaming_Localizer::FindShapeContext (const Handle(TNaming_NamedShape)& NS,
   Standard_Boolean found = 0;
   for(;it.More();it.Next()) {
     SC = it.Value();
-#ifdef MDTV_DEB_SC
+#ifdef OCCT_DEBUG_SC
     LWrite(SC, "FSC_OldShape.brep");
 #endif
     if (SC.IsNull()) continue;
@@ -757,7 +757,7 @@ void TNaming_Localizer::FindShapeContext (const Handle(TNaming_NamedShape)& NS,
 	for (TopExp_Explorer exp(SC,S.ShapeType()); exp.More(); exp.Next()) {
 	  if (exp.Current().IsSame(S)) {
 	    found = 1;
-#ifdef MDTV_DEB_SC
+#ifdef OCCT_DEBUG_SC
 	    cout << "Find Context shape = " << SC.TShape() << "ShapeType = " << SC.ShapeType() <<endl;
 #endif	    
 	    break;
@@ -772,12 +772,12 @@ void TNaming_Localizer::FindShapeContext (const Handle(TNaming_NamedShape)& NS,
   if (!SC.IsNull()) {
     Handle(TNaming_NamedShape) aNS = TNaming_Tool::NamedShape(SC,Father);
     if (!aNS.IsNull()) {
-#ifdef MDTV_DEB_SC
+#ifdef OCCT_DEBUG_SC
       cout << "FindShapeContext: ";LPrintEntry(aNS->Label());
 #endif
       if (aNS->Label().Father().FindAttribute(TNaming_NamedShape::GetID(),aNS)) {
 	TopoDS_Shape aShape;
-#ifdef MDTV_DEB_SC
+#ifdef OCCT_DEBUG_SC
 	LWriteNSOnLabel(aNS, "FSC");
 #endif
 	TNaming_Iterator anIter(aNS->Label());

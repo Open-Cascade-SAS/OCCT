@@ -30,7 +30,7 @@
 static TCollection_AsciiString PRODINS("dins ");
 #endif
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepBuild_GettraceCHK();
 extern Standard_Boolean TopOpeBRepBuild_GettraceCHKOK();
 extern Standard_Boolean TopOpeBRepBuild_GettraceCHKNOK();
@@ -63,7 +63,7 @@ void TopOpeBRepBuild_ShapeSet::Delete()
 void TopOpeBRepBuild_ShapeSet::AddShape(const TopoDS_Shape& S)
 {
   Standard_Boolean chk = CheckShape(S);
-#ifdef DEB
+#ifdef OCCT_DEBUG
   DumpCheck(cout," AddShape",S,chk);
 #endif
 
@@ -78,7 +78,7 @@ void TopOpeBRepBuild_ShapeSet::AddShape(const TopoDS_Shape& S)
 void TopOpeBRepBuild_ShapeSet::AddStartElement(const TopoDS_Shape& S)
 {
   Standard_Boolean chk = CheckShape(S);
-#ifdef DEB
+#ifdef OCCT_DEBUG
   DumpCheck(cout," AddStartElement",S,chk);
 #endif
 
@@ -93,7 +93,7 @@ void TopOpeBRepBuild_ShapeSet::AddStartElement(const TopoDS_Shape& S)
 void TopOpeBRepBuild_ShapeSet::AddElement(const TopoDS_Shape& S)
 {
   Standard_Boolean chk = CheckShape(S);
-#ifdef DEB
+#ifdef OCCT_DEBUG
   DumpCheck(cout," AddElement",S,chk);
 #endif
 
@@ -353,7 +353,7 @@ void TopOpeBRepBuild_ShapeSet::CheckShape(const Standard_Boolean checkshape)
 {
   myCheckShape = checkshape;
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepBuild_GettraceCHK() && !myCheckShape) {
     DumpName(cout,"no checkshape set on ");cout<<endl;
   }
@@ -401,7 +401,7 @@ void TopOpeBRepBuild_ShapeSet::DumpName(Standard_OStream& OS,const TCollection_A
 //purpose  : 
 //=======================================================================
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 void TopOpeBRepBuild_ShapeSet::DumpCheck(Standard_OStream& OS,
                                          const TCollection_AsciiString& str,
                                          const TopoDS_Shape& S, 
@@ -416,7 +416,7 @@ void TopOpeBRepBuild_ShapeSet::DumpCheck(Standard_OStream&,
 { 
   if (!myCheckShape) return;
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   TopAbs_ShapeEnum t = S.ShapeType();
   if (!chk) {
     if (TopOpeBRepBuild_GettraceCHK() ||

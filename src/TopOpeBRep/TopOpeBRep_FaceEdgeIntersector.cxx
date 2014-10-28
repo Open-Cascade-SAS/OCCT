@@ -28,7 +28,7 @@
 #include <Precision.hxx>
 #include <Standard_ProgramError.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #include <TopAbs.hxx>
 extern Standard_Boolean TopOpeBRep_GettraceFITOL();
 extern Standard_Boolean TopOpeBRep_GettraceSAVFF();
@@ -83,14 +83,14 @@ void TopOpeBRep_FaceEdgeIntersector::Perform(const TopoDS_Shape& SF,
   ResetIntersection();
   if (!myForceTolerance) ShapeTolerances(SF,SE);
   myTol = BRep_Tool::Tolerance(TopoDS::Edge(SE));
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRep_GettraceFITOL()) cout<<"Perform : myTol = "<<myTol<<endl;
 #endif
   
   myFace = TopoDS::Face(SF); myFace.Orientation(TopAbs_FORWARD);
   myEdge = TopoDS::Edge(SE); myEdge.Orientation(TopAbs_FORWARD);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRep_GettraceSAVFF()) SAVFE(myFace,myEdge);
 #endif
   
@@ -103,14 +103,14 @@ void TopOpeBRep_FaceEdgeIntersector::Perform(const TopoDS_Shape& SF,
   myCurve.Load(*PGCao1,f,l);
 
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepTool_GettraceKRO()) KRO_DSFILLER_INTFE.Start();
 #endif
 
   BRepIntCurveSurface_Inter FEINT;
   FEINT.Init(myFace,myCurve,myTol);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepTool_GettraceKRO()) KRO_DSFILLER_INTFE.Stop();
 #endif
 
@@ -163,7 +163,7 @@ void TopOpeBRep_FaceEdgeIntersector::ForceTolerance(const Standard_Real Tol)
   myTol = Tol;
   myForceTolerance = Standard_True;
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRep_GettraceFITOL())
     cout<<"ForceTolerance : myTol = "<<myTol<<endl;
 #endif
@@ -382,7 +382,7 @@ Standard_Boolean TopOpeBRep_FaceEdgeIntersector::IsVertex
 
 Standard_Integer TopOpeBRep_FaceEdgeIntersector::Index() const 
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   return myPointIndex;
 #else
   return 0;
@@ -401,7 +401,7 @@ void TopOpeBRep_FaceEdgeIntersector::ShapeTolerances(const TopoDS_Shape& S1,
   myTol = Max(ToleranceMax(S1,TopAbs_EDGE),ToleranceMax(S2,TopAbs_EDGE));
   myForceTolerance = Standard_False;
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRep_GettraceFITOL()) {
     cout<<"ShapeTolerances on S1 = ";TopAbs::Print(S1.ShapeType(),cout);
     cout<<" S2 = ";TopAbs::Print(S2.ShapeType(),cout);

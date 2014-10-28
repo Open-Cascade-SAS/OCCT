@@ -14,7 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 
 #include <Standard_Type.hxx>
 
@@ -108,5 +108,5 @@ Standard_Boolean b) { TopOpeBRepTool_contextNOSEW = b; }
 Standard_EXPORT Standard_Boolean TopOpeBRepTool_GetcontextNOSEW() {
 return TopOpeBRepTool_contextNOSEW; }
 
-// #ifdef DEB
+// #ifdef OCCT_DEBUG
 #endif

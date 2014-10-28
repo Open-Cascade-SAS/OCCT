@@ -122,7 +122,7 @@ void Blend_CSWalking::InternalPerform(Blend_CSFunction& Func,
     switch (State) {
     case Blend_OK :
       {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	if (Blend_GettraceDRAWSECT()){
 	  Drawsect(surf,curv,param,Func);
 	}
@@ -190,7 +190,7 @@ void Blend_CSWalking::InternalPerform(Blend_CSFunction& Func,
       
     case Blend_StepTooSmall :
       {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	if (Blend_GettraceDRAWSECT()){
 	  Drawsect(surf,curv,param,Func);
 	}
@@ -230,7 +230,7 @@ void Blend_CSWalking::InternalPerform(Blend_CSFunction& Func,
       
     case Blend_OnRst1  :
       {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	if (Blend_GettraceDRAWSECT()){
 	  Drawsect(surf,curv,param,Func);
 	}

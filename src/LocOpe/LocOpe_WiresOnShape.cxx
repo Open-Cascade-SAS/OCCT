@@ -513,7 +513,7 @@ Standard_Boolean Project(const TopoDS_Vertex& V,
     BRep_Builder B;
     B.UpdateVertex(V, Max(dmin, BRep_Tool::Tolerance(V)));
   }
-#ifdef DEB_MESH
+#ifdef OCCT_DEBUG_MESH
   else {
     cout <<"LocOpe_WiresOnShape::Project --> le vertex projete est a une "; 
     cout <<"distance / la face = "<<dmin <<" superieure a la tolerance = "<<ttol<<endl;

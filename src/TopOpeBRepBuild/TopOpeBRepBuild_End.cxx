@@ -36,7 +36,7 @@
 #include <Bnd_Box.hxx>
 #include <TopOpeBRepTool_FuseEdges.hxx>
 #include <Standard_ProgramError.hxx>
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepBuild_GetcontextNOFE();
 #endif
 
@@ -147,7 +147,7 @@ void TopOpeBRepBuild_Builder::End()
     const TopTools_ListOfShape& lmergesha1 = Merged(myShape1,myState1);
     TopTools_ListIteratorOfListOfShape it(lmergesha1); for(;it.More();it.Next()) B.Add(R,it.Value());
     const TopTools_ListOfShape& LOES = Section();
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //    Standard_Integer nLOES = LOES.Extent();
 #endif
         
@@ -163,7 +163,7 @@ void TopOpeBRepBuild_Builder::End()
       if ( !isbe ) continue;
 
       const TopTools_ListOfShape& loe1 = idmovloe.FindFromIndex(iv); 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //      Standard_Integer nloe1 = loe1.Extent();
 #endif
       TopTools_MapOfShape mose; //une seule fois chaque arete
@@ -174,7 +174,7 @@ void TopOpeBRepBuild_Builder::End()
 	Standard_Boolean isb = mose.Contains(E); if (isb) continue;
 	mose.Add(E);loe.Append(E);
       }
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //      Standard_Integer nloe = loe.Extent();
 #endif
       
@@ -197,7 +197,7 @@ void TopOpeBRepBuild_Builder::End()
           TP(++nP2) = Pv;
         }
 	const TopTools_ListOfShape& lof = idmoelof.FindFromKey(E);
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //	Standard_Integer nlof = lof.Extent();
 #endif
 	for (TopTools_ListIteratorOfListOfShape ilof(lof);ilof.More();ilof.Next()) {
@@ -250,7 +250,7 @@ void TopOpeBRepBuild_Builder::End()
       gp_Pnt P2(aXmax, aYmax, aZmax);
       Standard_Real d = P1.Distance(P2);
       if (d > newtol) {
-#ifdef TOPOPEBREPBUILD_DEB
+#ifdef OCCT_DEBUG
         cout<<"\npoint P"<<iv<<" "<<Pv.X()<<" "<<Pv.Y()<<" "<<Pv.Z()<<endl;
         cout<<"TopOpeBRepBuild_Builder::End BOX newtol "<<newtol<<" -> "<<d<<endl;
 #endif
@@ -261,7 +261,7 @@ void TopOpeBRepBuild_Builder::End()
   }
 
   Standard_Boolean makeFE = Standard_True;
-#ifdef DEB
+#ifdef OCCT_DEBUG
   makeFE = !TopOpeBRepBuild_GetcontextNOFE();
 #endif
 

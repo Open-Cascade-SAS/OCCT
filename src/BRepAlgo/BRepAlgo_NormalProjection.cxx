@@ -50,7 +50,7 @@
 #include <Geom2d_BSplineCurve.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 
-#ifdef __OCC_DEBUG_CHRONO
+#ifdef OCCT_DEBUG_CHRONO
 #include <OSD_Timer.hxx>
 
 OSD_Chronometer chr_total, chr_init, chr_approx, chr_booltool;
@@ -195,7 +195,7 @@ void BRepAlgo_NormalProjection::SetDefaultParams()
 
  void BRepAlgo_NormalProjection::Build() 
 {
-#ifdef __OCC_DEBUG_CHRONO
+#ifdef OCCT_DEBUG_CHRONO
   Standard_Integer init_count = 0, approx_count = 0, booltool_count = 0;
   t_total = 0;
   t_init = 0;
@@ -266,12 +266,12 @@ void BRepAlgo_NormalProjection::SetDefaultParams()
       TolU = hsur->UResolution(myTol3d)/20;
       TolV = hsur->VResolution(myTol3d)/20;
       // Projection
-#ifdef __OCC_DEBUG_CHRONO
+#ifdef OCCT_DEBUG_CHRONO
       InitChron(chr_init);
 #endif
       Projector = 
 	ProjLib_CompProjectedCurve(hsur, hcur, TolU, TolV, myMaxDist);
-#ifdef __OCC_DEBUG_CHRONO
+#ifdef OCCT_DEBUG_CHRONO
       ResultChron(chr_init,t_init);
       init_count++;
 #endif
@@ -290,7 +290,7 @@ void BRepAlgo_NormalProjection::SetDefaultParams()
       
       for(k = 1; k <= Projector.NbCurves(); k++){
 	if(Projector.IsSinglePnt(k, P2d)){
-#ifdef BREPALGO_DEB
+#ifdef OCCT_DEBUG
 	  cout << "Projection of edge "<<i<<" on face "<<j;
 	  cout << " is punctual"<<endl<<endl;
 #endif
@@ -308,7 +308,7 @@ void BRepAlgo_NormalProjection::SetDefaultParams()
 	  
 	  /**************************************************************/
 	  if (Projector.IsUIso(k, UIso)) {
-#ifdef BREPALGO_DEB
+#ifdef OCCT_DEBUG
 	    cout << "Projection of edge "<<i<<" on face "<<j;
 	    cout << " is U-isoparametric"<<endl<<endl;
 #endif
@@ -325,7 +325,7 @@ void BRepAlgo_NormalProjection::SetDefaultParams()
 	    Only3d = Standard_True;
 	  }
 	  else if (Projector.IsVIso(k, VIso)) {
-#ifdef BREPALGO_DEB
+#ifdef OCCT_DEBUG
 	    cout << "Projection of edge "<<i<<" on face "<<j;
 	    cout << " is V-isoparametric"<<endl<<endl;
 #endif
@@ -359,13 +359,13 @@ void BRepAlgo_NormalProjection::SetDefaultParams()
             BB.UpdateVertex(TopExp::LastVertex(TopoDS::Edge(prj)),myTol3d);
 	  }
 	  else {
-#ifdef __OCC_DEBUG_CHRONO
+#ifdef OCCT_DEBUG_CHRONO
 	    InitChron(chr_approx);
 #endif
 	    Approx_CurveOnSurface appr(HPCur, hsur, Udeb, Ufin, myTol3d, 
 				       myContinuity, myMaxDegree, myMaxSeg, 
 				       Only3d, Only2d);
-#ifdef __OCC_DEBUG_CHRONO
+#ifdef OCCT_DEBUG_CHRONO
 	    ResultChron(chr_approx,t_approx);
 	    approx_count++;
 	    
@@ -438,7 +438,7 @@ void BRepAlgo_NormalProjection::SetDefaultParams()
                  }             
               }
 	      if (Degenerated) {
-#ifdef BREPALGO_DEB
+#ifdef OCCT_DEBUG
 	          cout << "Projection of edge "<<i<<" on face "<<j;
 	          cout << " is degenerated "<<endl<<endl;
 #endif
@@ -471,7 +471,7 @@ void BRepAlgo_NormalProjection::SetDefaultParams()
 	  if(myFaceBounds) {
 	    // Trimming edges by face bounds 
             // if the solution is degenerated, use of BoolTool is avoided
-#ifdef __OCC_DEBUG_CHRONO
+#ifdef OCCT_DEBUG_CHRONO
 	    InitChron(chr_booltool);
 #endif
             if(!Degenerated){
@@ -487,7 +487,7 @@ void BRepAlgo_NormalProjection::SetDefaultParams()
 	         LS = HB->Splits(prj, TopAbs_IN);
 	       Iter.Initialize(LS);
 	       if(Iter.More()) {
-#ifdef BREPALGO_DEB
+#ifdef OCCT_DEBUG
                   cout << " BooleanOperations :"  << Iter.More()<<" solutions " << endl; 
 #endif
 	          for(; Iter.More(); Iter.Next()) {
@@ -517,7 +517,7 @@ void BRepAlgo_NormalProjection::SetDefaultParams()
 	       }
             }
             else {
-#ifdef BREPALGO_DEB
+#ifdef OCCT_DEBUG
                  cout << " BooleanOperations : no solution " << endl;
 #endif
 
@@ -536,7 +536,7 @@ void BRepAlgo_NormalProjection::SetDefaultParams()
 		 myAncestorMap.Bind(prj, Edges->Value(i));   
 		 myCorresp.Bind(prj, Faces->Value(j));
 	      }
-#ifdef __OCC_DEBUG_CHRONO
+#ifdef OCCT_DEBUG_CHRONO
 	       ResultChron(chr_booltool,t_booltool);
 	       booltool_count++;
 #endif
@@ -561,7 +561,7 @@ void BRepAlgo_NormalProjection::SetDefaultParams()
   
   myIsDone = Standard_True; 
   
-#ifdef __OCC_DEBUG_CHRONO
+#ifdef OCCT_DEBUG_CHRONO
   ResultChron(chr_total,t_total);
   
   cout<<"Build - Total time  : "<<t_total<<" includes:" <<endl;

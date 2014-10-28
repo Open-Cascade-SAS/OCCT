@@ -126,7 +126,7 @@ void LocOpe_Spliter::Perform(const Handle(LocOpe_WiresOnShape)& PW)
     for (; itdesc.More(); itdesc.Next()) {
       if (theSubs.IsCopied(itdesc.Key())) {
 	const TopTools_ListOfShape& lsub = theSubs.Copy(itdesc.Key());
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	if (lsub.Extent() != 1) {
 	  Standard_ConstructionError::Raise();
 	}
@@ -293,7 +293,7 @@ void LocOpe_Spliter::Perform(const Handle(LocOpe_WiresOnShape)& PW)
       theSubs.Substitute(ebase.Oriented(TopAbs_FORWARD),lsubs);
     }
     else {
-#ifdef LOCOPE_DEB
+#ifdef OCCT_DEBUG
       cout << "Pb pour substitution" << endl;
 #endif
     }
@@ -307,7 +307,7 @@ void LocOpe_Spliter::Perform(const Handle(LocOpe_WiresOnShape)& PW)
     for (itl.Initialize(ldesc); itl.More(); itl.Next()) {
       if (theSubs.IsCopied(itl.Value())) {
 	const TopTools_ListOfShape& lsub = theSubs.Copy(itl.Value());
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	if (lsub.Extent() != 1) {
 	  Standard_ConstructionError::Raise();
 	}

@@ -100,7 +100,7 @@ static void FUN_getSTA(const Standard_Real Ang, const Standard_Real tola,
       j = (diff < 0.) ? 1 : 2; 
   }
 }*/
-#ifndef DEB
+#ifndef OCCT_DEBUG
 #define M_Unknown   (-100)
 #else
 #define M_Unknown   (-100.)

@@ -22,7 +22,7 @@
 #include <Bnd_Box.hxx>
 #include <TopOpeBRepTool_box.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRep_GettraceSI(); 
 extern Standard_Boolean TopOpeBRep_GetcontextFFOR();
 #endif
@@ -129,7 +129,7 @@ Standard_Boolean TopOpeBRep_ShapeIntersector2d::MoreIntersection() const
 {
   Standard_Boolean res = myIntersectionDone;
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRep_GettraceSI() && res) {
     if      ( myFFDone )   cout<<"FF : ";
     else if ( myEEFFDone ) cout<<"    EE : ";
@@ -147,7 +147,7 @@ Standard_Boolean TopOpeBRep_ShapeIntersector2d::MoreIntersection() const
 //purpose  : 
 //=======================================================================
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 void TopOpeBRep_ShapeIntersector2d::DumpCurrent(const Standard_Integer K) const
 {
   if      ( myFFDone ) {
@@ -169,7 +169,7 @@ void TopOpeBRep_ShapeIntersector2d::DumpCurrent(const Standard_Integer) const
 //purpose  : 
 //=======================================================================
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 Standard_Integer TopOpeBRep_ShapeIntersector2d::Index
 (const Standard_Integer K)const
 {
@@ -266,7 +266,7 @@ void TopOpeBRep_ShapeIntersector2d::FindFFIntersection()
     const TopoDS_Shape& GS1 = myFaceScanner.Current();
     const TopoDS_Shape& GS2 = myFaceExplorer.Current();
     
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (TopOpeBRep_GettraceSI()) {
       cout<<"?? FF : ";
       myFaceScanner.DumpCurrent(cout); 
@@ -336,7 +336,7 @@ void TopOpeBRep_ShapeIntersector2d::InitEEFFIntersection()
   TopoDS_Shape face1 = myFaceScanner.Current(); // -26-08-96
   TopoDS_Shape face2 = myFaceExplorer.Current(); // -26-08-96
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRep_GetcontextFFOR()) {
     face1.Orientation(TopAbs_FORWARD); //-05/07
     face2.Orientation(TopAbs_FORWARD); //-05/07
@@ -370,7 +370,7 @@ void TopOpeBRep_ShapeIntersector2d::FindEEFFIntersection()
     const TopoDS_Shape& GS2 = myEdgeExplorer.Current();
     myEEIntersector.Perform(GS1,GS2);
     
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (TopOpeBRep_GettraceSI() && myEEIntersector.IsEmpty()) {
       cout<<"    EE : ";
       myEdgeScanner.DumpCurrent(cout);

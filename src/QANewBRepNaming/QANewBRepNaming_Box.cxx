@@ -83,7 +83,7 @@ void QANewBRepNaming_Box::Load (BRepPrimAPI_MakeBox& MS, const QANewBRepNaming_T
   if (Type == QANewBRepNaming_SOLID) Builder.Generated (MS.Solid());
   else if (Type == QANewBRepNaming_SHELL) Builder.Generated (MS.Shell());
   else {
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
     cout<<"QANewBRepNaming_Box::Load(): Unexpected type of result"<<endl;
     Builder.Generated (MS.Shape());
 #endif

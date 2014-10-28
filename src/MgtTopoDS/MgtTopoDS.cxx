@@ -189,7 +189,7 @@ void MgtTopoDS::Translate
   if (aHShape->TShape().IsNull()) return;
 
   // Translate the top-level shape
-#ifndef DEB // Linux porting - to avoid warnings
+#ifndef OCCT_DEBUG // Linux porting - to avoid warnings
   if ( aMap.IsBound(aHShape->TShape()) ) {
 #else
   Standard_Boolean translated = aMap.IsBound(aHShape->TShape());
@@ -273,7 +273,7 @@ void MgtTopoDS::Translate
     // count the number of <sub-shape> of the Shape's TShape
     // Is there any sub-shape 
     if (!aHShape->TShape()->Shapes().IsNull()) {
-#ifndef DEB // Linux porting - to avoid warnings
+#ifndef OCCT_DEBUG // Linux porting - to avoid warnings
       for (Standard_Integer i = 1 ; i<= aHShape->TShape()->Shapes()->Length(); i++) {
 #else
       Standard_Integer nbElem = aHShape->TShape()->Shapes()->Length();

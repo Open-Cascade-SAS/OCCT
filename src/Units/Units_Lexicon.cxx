@@ -55,7 +55,7 @@ void Units_Lexicon::Creates(const Standard_CString afilename)
 {
   ifstream file(afilename, ios::in);
   if(!file) {
-#ifdef UNITS_DEB
+#ifdef OCCT_DEBUG
     cout<<"unable to open "<<afilename<<" for input"<<endl;
 #endif
     return;

@@ -26,7 +26,7 @@
 #include <Standard_ProgramError.hxx>
 #include <TopOpeBRepDS_define.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepBuild_GetcontextNOREGUSO();
 extern Standard_Boolean TopOpeBRepBuild_GetcontextREGUXPU();
 extern Standard_Boolean TopOpeBRepBuild_GettraceSAVSREGU();
@@ -52,12 +52,12 @@ void TopOpeBRepBuild_Builder::RegularizeSolids
     const TopoDS_Shape& newSolid = itl.Value();
     TopTools_ListOfShape newSolidLOSO;
     RegularizeSolid(SO,newSolid,newSolidLOSO);
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //    Standard_Integer nnewSolidLOSO = newSolidLOSO.Extent(); // DEB
 #endif
     LOSO.Append(newSolidLOSO);
   }
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //  Standard_Integer nLOSO = LOSO.Extent(); // DEB
 #endif
   Standard_Integer nr = myMemoSplit.Extent();
@@ -83,7 +83,7 @@ void TopOpeBRepBuild_Builder::RegularizeSolids
       
       TopTools_ListOfShape newlspf;
       TopTools_ListOfShape& lspf = ChangeSplit(f,staf);
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //      Standard_Integer nlspf = lspf.Extent(); // DEB
 #endif
       for (TopTools_ListIteratorOfListOfShape itl1(lspf);itl1.More();itl1.Next()) {
@@ -123,7 +123,7 @@ void TopOpeBRepBuild_Builder::RegularizeSolid
   Standard_Boolean toregu = Standard_True;
   Standard_Boolean usestos = Standard_True;
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer iS;Standard_Boolean tSPS=GtraceSPS(SS,iS);
 //  Standard_Boolean savsregu = TopOpeBRepBuild_GettraceSAVSREGU();
   if (TopOpeBRepBuild_GetcontextNOREGUSO()) toregu = Standard_False;
@@ -193,7 +193,7 @@ void TopOpeBRepBuild_Builder::RegularizeSolid
     return;
   }
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (tSPS) {
     cout<<"RegularizeSolid "<<iS<<endl;
     debreguso(iS);
@@ -227,13 +227,13 @@ void TopOpeBRepBuild_Builder::RegularizeSolid
   TopTools_ListIteratorOfListOfShape itlssdSS(lssdSS);
   for (; itlssdSS.More(); itlssdSS.Next()) {
     const TopoDS_Shape& ssdSS = itlssdSS.Value();
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //    Standard_Integer issdSS = myDataStructure->Shape(ssdSS); // DEB
 #endif
     
     Standard_Integer rankssdSS = GShapeRank(ssdSS);
     TopAbs_State stassdSS = (rankssdSS == 1) ? myState1 : myState2;
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //    Standard_Boolean issplitssdSS = IsSplit(ssdSS,stassdSS);
 //    const TopTools_ListOfShape& lspssdSS = Splits(ssdSS,stassdSS);
 //    Standard_Integer nlspssdSS = lspssdSS.Extent();
@@ -245,7 +245,7 @@ void TopOpeBRepBuild_Builder::RegularizeSolid
       //ssdSSf : 1 face de ssdSS = 1 solid SameDomain de Ss
       const TopoDS_Shape& ssdSSf = x.Current();
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
       Standard_Integer issdSSf = 0;Standard_Boolean tSPSssdSSf=GtraceSPS(ssdSSf,issdSSf);
       if (tSPSssdSSf) debreguso(issdSSf);
 #endif    
@@ -253,7 +253,7 @@ void TopOpeBRepBuild_Builder::RegularizeSolid
       TopAbs_State stassdSSf = stassdSS;
       
       TopTools_ListOfShape& lspssdSSf = ChangeSplit(ssdSSf,stassdSSf);
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //      Standard_Boolean issplitssdSSf = IsSplit(ssdSSf,stassdSSf);
 //      Standard_Integer nlspssdSSf = lspssdSSf.Extent();
 #endif    

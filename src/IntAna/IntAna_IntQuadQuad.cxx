@@ -18,7 +18,7 @@
 
 #include <Standard_Stream.hxx>
 
-#ifndef DEB
+#ifndef OCCT_DEBUG
 #define No_Standard_RangeError
 #define No_Standard_OutOfRange
 #endif

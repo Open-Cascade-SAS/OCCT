@@ -402,7 +402,7 @@ Handle(Geom_Curve) MakeCurve (const BiTgte_CurveOnEdge& HC)
 {
   Handle(Geom_Curve) C;
 
-#if BITGTE_DEB
+#ifdef OCCT_DEBUG
    OSD_Chronometer ch;
    ChFi3d_InitChron(ch);
 #endif
@@ -451,7 +451,7 @@ Handle(Geom_Curve) MakeCurve (const BiTgte_CurveOnEdge& HC)
 			       Conv.Degree());
   }
 
-#if BITGTE_DEB
+#ifdef OCCT_DEBUG
   ChFi3d_ResultChron(ch, t_mkcurve);
 #endif
 
@@ -975,7 +975,7 @@ void BiTgte_Blend::Perform(const Standard_Boolean BuildShape)
   myShape = SewedShape;
 // end Sewing for false free borders.
 
-#if BITGTE_DEB
+#ifdef OCCT_DEBUG
   OSD_Chronometer cl_total, ch;
   Standard_Real   t_total, t_center, t_surface, t_shape;
 
@@ -1007,39 +1007,39 @@ void BiTgte_Blend::Perform(const Standard_Boolean BuildShape)
   // ----------------------------------------------
   // Calculate lines of centers and of surfaces
   // ----------------------------------------------
-#if BITGTE_DEB
+#ifdef OCCT_DEBUG
   ChFi3d_InitChron(ch);
 #endif  
 
   ComputeCenters();
   
-#if BITGTE_DEB
+#ifdef OCCT_DEBUG
   ChFi3d_ResultChron(ch, t_center);
 #endif 
 
   // -----------------------------
   // Calculate connection Surfaces
   // -----------------------------
-#if BITGTE_DEB
+#ifdef OCCT_DEBUG
   ChFi3d_InitChron(ch);
 #endif
 
   ComputeSurfaces();
 
-#if BITGTE_DEB
+#ifdef OCCT_DEBUG
   ChFi3d_ResultChron(ch, t_surface);
 #endif 
 
   // ----------------------------------
   // Calculate the generated shape if required
   // ----------------------------------
-#if BITGTE_DEB
+#ifdef OCCT_DEBUG
   ChFi3d_InitChron(ch);
 #endif  
 
   if ( myBuildShape) ComputeShape();
 
-#if BITGTE_DEB
+#ifdef OCCT_DEBUG
   ChFi3d_ResultChron(ch, t_shape);
 #endif 
 
@@ -1047,7 +1047,7 @@ void BiTgte_Blend::Perform(const Standard_Boolean BuildShape)
   // since the partition is provided ( A Priori);
   BRepLib::BuildCurves3d(myResult, Precision::Confusion());
 
-#ifdef BITGTE_DEB
+#ifdef OCCT_DEBUG
   ChFi3d_ResultChron(cl_total, t_total);
   cout<<endl; 
   cout<<"Blend_PERFORM: temps total "<<t_total<<" s  dont :"<<endl;
@@ -1829,7 +1829,7 @@ void BiTgte_Blend::ComputeCenters()
     }
   }
 
-#ifdef BITGTE_DEB
+#ifdef OCCT_DEBUG
   if ( myResult.IsNull()) {
     cout << " No Lines of Generated Centers" << endl;
   }
@@ -1992,7 +1992,7 @@ void BiTgte_Blend::ComputeSurfaces()
       Handle(Geom2d_Curve) PC2 = 
 	BRep_Tool::CurveOnSurface(CurCutE,F2,f2,l2);
       if ( PC1.IsNull() || PC2.IsNull()) {
-#ifdef BITGTE_DEB
+#ifdef OCCT_DEBUG
 	cout << "No PCurves on Intersections : No tubes constructed";
 	cout << endl;
 #endif	
@@ -2589,7 +2589,7 @@ Standard_Boolean BiTgte_Blend::Intersect
       InitShape2.ShapeType() == TopAbs_EDGE &&
 	myStopFaces.Contains(InitShape2);
 
-#ifdef BITGTE_DEB
+#ifdef OCCT_DEBUG
     if ( F1surBordLibre && F2surBordLibre) {
       cout << "Rejection : 2 tubes on free border are not intersected";
       cout << endl;
@@ -2628,7 +2628,7 @@ Standard_Boolean BiTgte_Blend::Intersect
 	if ( Done.Add(V1)) {
 	  Standard_Boolean IsOnR1 = IsOnRestriction(V1,CurE,Face,E1);
 	  Standard_Boolean IsOnR2 = IsOnRestriction(V1,CurE,F2,E2);
-#ifdef BITGTE_DEB
+#ifdef OCCT_DEBUG
 	  if (IsOnR1 && IsOnR2) {
 	    cout << "Leave in the same tps on 2 faces, ";
 	    cout << "propagation only on free border";
@@ -2657,7 +2657,7 @@ Standard_Boolean BiTgte_Blend::Intersect
 	  // Leave in the same tps on 2 faces, propagate only on 
 	  // free borders.
 	  // A priori, only facet is closed.
-#ifdef BITGTE_DEB
+#ifdef OCCT_DEBUG
 	  if (IsOnR1 && IsOnR2) {
 	    cout << "Leave with the same tps on 2 faces, ";
 	    cout << "propagate only if the border is free";

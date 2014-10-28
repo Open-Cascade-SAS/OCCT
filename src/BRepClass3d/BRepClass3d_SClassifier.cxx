@@ -330,7 +330,7 @@ void BRepClass3d_SClassifier::Perform(BRepClass3d_SolidExplorer& SolidExplorer,
 
 		      IntCurveSurface_TransitionOnCurve tran = Intersector3d.Transition(i);
 		      if (tran == IntCurveSurface_Tangent) {
-#ifdef BREPCLASS3D_DEB
+#ifdef OCCT_DEBUG
 			cout<<"*Problem ds BRepClass3d_SClassifier.cxx"<<endl;
 #endif
 			continue; // ignore this point
@@ -381,7 +381,7 @@ void BRepClass3d_SClassifier::Perform(BRepClass3d_SolidExplorer& SolidExplorer,
     }
     //  Modified by skv - Thu Sep  4 11:42:03 2003 OCC578 End
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     //#################################################
     SolidExplorer.DumpSegment(P,L,parmin,State());
     //#################################################

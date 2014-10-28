@@ -27,7 +27,7 @@
 #include <TopTools_ListOfShape.hxx>
 #include <BRepCheck_Shell.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
-#ifdef DEB
+#ifdef OCCT_DEBUG
 static Standard_Integer AffichEps = 0;
 #endif
 
@@ -58,7 +58,7 @@ void  BRepGProp::LinearProperties(const TopoDS_Shape& S, GProp_GProps& SProps){
 
 static Standard_Real surfaceProperties(const TopoDS_Shape& S, GProp_GProps& Props, const Standard_Real Eps){
   Standard_Integer i;
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer iErrorMax = 0;
 #endif
   Standard_Real ErrorMax = 0.0, Error;
@@ -78,7 +78,7 @@ static Standard_Real surfaceProperties(const TopoDS_Shape& S, GProp_GProps& Prop
       Error = G.GetEpsilon();
       if(ErrorMax < Error) {
         ErrorMax = Error;
-#ifdef DEB
+#ifdef OCCT_DEBUG
         iErrorMax = i;
 #endif
       }
@@ -87,11 +87,11 @@ static Standard_Real surfaceProperties(const TopoDS_Shape& S, GProp_GProps& Prop
       else G.Perform(BF, BD);
     }
     Props.Add(G);
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if(AffichEps) cout<<"\n"<<i<<":\tEpsArea = "<< G.GetEpsilon();
 #endif
   }
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if(AffichEps) cout<<"\n-----------------\n"<<iErrorMax<<":\tMaxError = "<<ErrorMax<<"\n";
 #endif
   return ErrorMax;
@@ -118,7 +118,7 @@ Standard_Real BRepGProp::SurfaceProperties(const TopoDS_Shape& S, GProp_GProps& 
 
 static Standard_Real volumeProperties(const TopoDS_Shape& S, GProp_GProps& Props, const Standard_Real Eps){
   Standard_Integer i;
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer iErrorMax = 0;
 #endif
   Standard_Real ErrorMax = 0.0, Error = 0.0;
@@ -139,7 +139,7 @@ static Standard_Real volumeProperties(const TopoDS_Shape& S, GProp_GProps& Props
 	Error = G.GetEpsilon();
 	if(ErrorMax < Error) {
 	  ErrorMax = Error;
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	  iErrorMax = i;
 #endif
 	}
@@ -149,12 +149,12 @@ static Standard_Real volumeProperties(const TopoDS_Shape& S, GProp_GProps& Props
 	else G.Perform(BF, BD);
       }
       Props.Add(G);
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if(AffichEps) cout<<"\n"<<i<<":\tEpsVolume = "<< G.GetEpsilon();
 #endif
     }
   }
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if(AffichEps) cout<<"\n-----------------\n"<<iErrorMax<<":\tMaxError = "<<ErrorMax<<"\n";
 #endif
   return ErrorMax;
@@ -184,7 +184,7 @@ Standard_Real BRepGProp::VolumeProperties(const TopoDS_Shape& S, GProp_GProps& P
   gp_Pnt P(0,0,0);  P.Transform(S.Location());
   Props = GProp_GProps(P);
   Standard_Integer i;
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer iErrorMax = 0;
 #endif
   Standard_Real ErrorMax = 0.0, Error = 0.0;
@@ -196,14 +196,14 @@ Standard_Real BRepGProp::VolumeProperties(const TopoDS_Shape& S, GProp_GProps& P
 	Error = volumeProperties(Sh,Props,Eps);
 	if(ErrorMax < Error) {
 	  ErrorMax = Error;
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	  iErrorMax = i;
 #endif
 	}
       }
     }
   } else ErrorMax = volumeProperties(S,Props,Eps);
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if(AffichEps) cout<<"\n\n==================="<<iErrorMax<<":\tMaxEpsVolume = "<<ErrorMax<<"\n";
 #endif
   return ErrorMax;

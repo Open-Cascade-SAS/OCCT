@@ -63,7 +63,7 @@
 
 #include <Standard_ConstructionError.hxx>
 #include <Standard_Failure.hxx>
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean ChFi3d_GettraceCHRON();
 extern Standard_Real  t_computedata ,t_completedata; 
                     
@@ -87,7 +87,7 @@ static Standard_Real MaxRad(const Handle(ChFiDS_FilSpine)& fsp,
  Handle(ChFiDS_HElSpine) HGuide = fsp->ElSpine(IE);
  Standard_Real la = HGuide->LastParameter(), fi = HGuide->FirstParameter();
  Standard_Real longueur = la - fi,  temp, w;
-//#ifndef DEB
+//#ifndef OCCT_DEBUG
  Standard_Real radiussect = 0.;
 //#else
 // Standard_Real radiussect;
@@ -439,7 +439,7 @@ void ChFi3d_FilBuilder::SetLaw(const Standard_Integer      IC,
 
 void ChFi3d_FilBuilder::Simulate (const Standard_Integer IC)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if(ChFi3d_GettraceCHRON()){
     simul.Reset();elspine.Reset();chemine.Reset();
     simul.Start();
@@ -453,7 +453,7 @@ void ChFi3d_FilBuilder::Simulate (const Standard_Integer IC)
       break;
     }
   }
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if(ChFi3d_GettraceCHRON()){
     simul.Stop();
     cout<<"Total simulation time : ";
@@ -615,7 +615,7 @@ ChFi3d_FilBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            Data,
   if(fsp.IsNull()) Standard_ConstructionError::Raise
     ("SimulSurf : this is not the spine of the fillet");
   Handle(BRepBlend_Line) lin;
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //  TopAbs_Orientation Or = S1->ChangeSurface().Face().Orientation();
 #endif
   // Flexible parameters!!!
@@ -1240,7 +1240,7 @@ ChFi3d_FilBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          SeqData,
 			       Standard_Boolean&                   intf,
 			       Standard_Boolean&                   intl)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   OSD_Chronometer ch;
 #endif
   Handle(ChFiDS_SurfData) Data = SeqData(1);
@@ -1260,7 +1260,7 @@ ChFi3d_FilBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          SeqData,
     FInv.Set(fsp->Radius(),Choix);
     Func.Set(myShape);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
         ChFi3d_InitChron(ch); //init perf ComputeData
 #endif
 
@@ -1269,19 +1269,19 @@ ChFi3d_FilBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          SeqData,
 		       Inside,Appro,Forward,Soldep,intf,intl,
 		       gd1,gd2,gf1,gf2,RecOnS1,RecOnS2);
 
-#ifdef DEB  
+#ifdef OCCT_DEBUG
         ChFi3d_ResultChron(ch , t_computedata);// result perf ComputeData
 #endif 
 
     if(!done) return Standard_False; // recovery is possible PMN 14/05/1998
 
-#ifdef DEB 
+#ifdef OCCT_DEBUG
           ChFi3d_InitChron(ch);// init  perf  CompleteData
 #endif
 
     done = CompleteData(Data,Func,lin,S1,S2,Or,gd1,gd2,gf1,gf2);
 
-#ifdef DEB 
+#ifdef OCCT_DEBUG
          ChFi3d_ResultChron(ch , t_completedata);// result perf CompleteData
 #endif 
 
@@ -1295,7 +1295,7 @@ ChFi3d_FilBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          SeqData,
     FInv.Set(Choix);
     Func.Set(myShape);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
           ChFi3d_InitChron(ch);// init perf ComputeData
 #endif
 
@@ -1303,19 +1303,19 @@ ChFi3d_FilBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          SeqData,
 		       PFirst,MaxStep,Fleche,TolGuide,First,Last,
 		       Inside,Appro,Forward,Soldep,intf,intl,
 		       gd1,gd2,gf1,gf2,RecOnS1,RecOnS2);
-#ifdef DEB  
+#ifdef OCCT_DEBUG
          ChFi3d_ResultChron(ch , t_computedata); //result perf ComputeData
 #endif 
 
     if(!done) return Standard_False;
 
-#ifdef DEB 
+#ifdef OCCT_DEBUG
           ChFi3d_InitChron(ch);// init perf CompleteData
 #endif
 
     done = CompleteData(Data,Func,lin,S1,S2,Or,gd1,gd2,gf1,gf2);
 
-#ifdef DEB 
+#ifdef OCCT_DEBUG
          ChFi3d_ResultChron(ch , t_completedata);// result perf CompleteData
 #endif 
 

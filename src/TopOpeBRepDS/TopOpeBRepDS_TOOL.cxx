@@ -28,7 +28,7 @@
 
 static void FUN_Raise()
 {
-#ifdef TOPOPEBREPDS_DEB
+#ifdef OCCT_DEBUG
   cout<<"****************************** TopOpeBRepDS_TOOL"<<endl;
 #endif
 }
@@ -85,7 +85,7 @@ Standard_Integer TopOpeBRepDS_TOOL::EShareG(const Handle(TopOpeBRepDS_HDataStruc
   
   TopTools_MapOfShape mapesd;
   TopOpeBRepDS_ListOfInterference l1gb0,l1gb1,l1gbsd; FDS_sortGb(HDS,L1d,l1gb0,l1gb1,l1gbsd);
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //  Standard_Integer ngb0 = l1gb0.Extent();
 //  Standard_Integer ngb1 = l1gb1.Extent();
 //  Standard_Integer ngbsd = l1gbsd.Extent();

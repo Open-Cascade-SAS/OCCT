@@ -125,7 +125,7 @@ void BRepFill_ApproxSeewing::Perform(const BRepFill_MultiLine& ML)
 //  Standard_Integer MaxDeg = 0;
   
   if ( NbCurves == 0) {
-#ifdef DEBUG_EVOLVED
+#ifdef OCCT_DEBUG
     cout << " TrimSurfaceTool : Approx echoue, on met les polygones" << endl;
 #endif
 

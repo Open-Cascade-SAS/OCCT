@@ -109,7 +109,7 @@
 #define Nod4PCu1 ((Standard_Real*)Nod4RValues)[ 8]
 #define Nod4PCu2 ((Standard_Real*)Nod4RValues)[ 9]
 #define Nod4Scal ((Standard_Real*)Nod4RValues)[10]
-#ifdef DEB
+#ifdef OCCT_DEBUG
 static Standard_Integer TRACE = Standard_False;
 static Standard_Integer ERROR = Standard_False;
 #endif
@@ -425,7 +425,7 @@ HLRAlgo_PolyInternalData::AddNode (const Standard_Address Nod1RValues,
     Nod3NrmX = 1;
     Nod3NrmY = 0;
     Nod3NrmZ = 0;
-#ifdef HLRALGO_DEB
+#ifdef OCCT_DEBUG
     if (ERROR)
       cout << "HLRAlgo_PolyInternalData::AddNode" << endl;
 #endif
@@ -515,7 +515,7 @@ HLRAlgo_PolyInternalData::UpdateLinks (const Standard_Integer ip1,
   }
   if (find == 0) {
     myNbPISeg--;
-#ifdef HLRALGO_DEB
+#ifdef OCCT_DEBUG
     if (ERROR) {
       cout << "HLRAlgo_PolyInternalData::UpdateLinks : segment error";
       cout << endl;
@@ -624,7 +624,7 @@ HLRAlgo_PolyInternalData::UpdateLinks (const Standard_Integer ip1,
 	  Nod3NdSg   = myNbPISeg;
 	  Nod4NdSg   = myNbPISeg;
 	}
-#ifdef HLRALGO_DEB
+#ifdef OCCT_DEBUG
 	else if (ERROR) {
 	  cout << "HLRAlgo_PolyInternalData::UpdateLinks : triangle error ";
 	  cout << endl;
@@ -797,7 +797,7 @@ IncTData (Standard_Address& TData1,
 	  Standard_Address& TData2)
 {
   if (myNbTData >= myMxTData) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (TRACE) 
       cout << "HLRAlgo_PolyInternalData::IncTData : " << myMxTData << endl;
 #endif
@@ -846,7 +846,7 @@ IncPISeg (Standard_Address& PISeg1,
 	  Standard_Address& PISeg2)
 { 
   if (myNbPISeg >= myMxPISeg) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (TRACE) 
       cout << "HLRAlgo_PolyInternalData::IncPISeg : " << myMxPISeg << endl;
 #endif
@@ -896,7 +896,7 @@ IncPINod (Standard_Address& PINod1,
 	  Standard_Address& PINod2)
 {
   if (myNbPINod >= myMxPINod) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (TRACE) 
       cout << "HLRAlgo_PolyInternalData::IncPINod : " << myMxPINod << endl;
 #endif

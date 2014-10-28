@@ -215,7 +215,7 @@ Standard_Boolean ShapeFix::SameParameter(const TopoDS_Shape& shape,
   }
 
   if (!status) {
-#ifdef SHAPEFIX_DEB
+#ifdef OCCT_DEBUG
     cout<<"** SameParameter not complete. On "<<numedge<<" Edges:";
     if (nbfail > 0) cout<<"  "<<nbfail<<" Failed";
     cout<<endl;
@@ -252,7 +252,7 @@ static void EncodeRegularity (const TopoDS_Shape& shape,
     BRepLib::EncodeRegularity ( S, tolang );
   }
   catch(Standard_Failure) {
-#ifdef SHAPEFIX_DEB
+#ifdef OCCT_DEBUG
     cout << "Warning: Exception in ShapeFix::EncodeRegularity(): ";
     Standard_Failure::Caught()->Print ( cout );
     cout << endl;

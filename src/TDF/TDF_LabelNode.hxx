@@ -171,7 +171,7 @@ class TDF_LabelNode {
 #ifdef KEEP_LOCAL_ROOT
   TDF_Data *             myData;
 #endif
-#ifdef DEB
+#ifdef OCCT_DEBUG
   TCollection_AsciiString myDebugEntry;
 #endif
 };

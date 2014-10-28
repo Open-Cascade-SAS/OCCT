@@ -48,7 +48,7 @@
 #include <TopOpeBRepBuild_Builder.hxx>
 #include <TopOpeBRepBuild_define.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #define TSTRA TopOpeBRepDS_GettraceSTRANGE()
 static TCollection_AsciiString PRODINS("dins ");
 extern Standard_Boolean TopOpeBRepDS_GettraceSTRANGE();
@@ -146,7 +146,7 @@ TopAbs_State TopOpeBRepBuild_WireEdgeClassifier::Compare
     } //UNKNOWN
 
     if (state == TopAbs_UNKNOWN) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if (TSTRA) cout<<"TopOpeBRepBuild_Builder::WES::Compare UNKNOWN -> ShapeClassifier "<<endl;
 #endif
     }
@@ -233,7 +233,7 @@ TopAbs_State  TopOpeBRepBuild_WireEdgeClassifier::CompareShapes
   // et que si ils ne se touchent pas, on ne passe pas par le WEC.
   // INCOMPLET!!!
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //  TopAbs_ShapeEnum t1 = B1.ShapeType();
 //  TopAbs_ShapeEnum t2 = B2.ShapeType();
 #endif
@@ -402,7 +402,7 @@ void  TopOpeBRepBuild_WireEdgeClassifier::ResetElement(const TopoDS_Shape& EE)
   Standard_Real t = 0.397891143689; Standard_Real par = ((1-t)*f2 + t*l2);
   myPoint2d = C2D->Value(par);
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Real f3,l3; Handle(Geom_Curve) C3D = BRep_Tool::Curve(E,f3,l3);
   gp_Pnt P3D; if (!C3D.IsNull()) P3D = C3D->Value(par);
 #endif
@@ -437,7 +437,7 @@ Standard_Boolean TopOpeBRepBuild_WireEdgeClassifier::CompareElement(const TopoDS
     Standard_Real t = 0.33334567; Standard_Real par = ((1-t)*f2 + t*l2);
     gp_Pnt2d p2d = C2D->Value(par);
     
-#ifdef DEB
+#ifdef OCCT_DEBUG
     Standard_Real f3,l3; Handle(Geom_Curve) C3D = BRep_Tool::Curve(E,f3,l3);
     gp_Pnt P3D; if (!C3D.IsNull()) P3D = C3D->Value(par);
 #endif
@@ -455,7 +455,7 @@ Standard_Boolean TopOpeBRepBuild_WireEdgeClassifier::CompareElement(const TopoDS
   myBCEdge.Edge() = E;
   TopAbs_Orientation Eori = E.Orientation();
   myFPC.Compare(myBCEdge,Eori);
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //  TopAbs_State state = myFPC.State();
 #endif
   return bRet;

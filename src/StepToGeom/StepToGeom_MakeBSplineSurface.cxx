@@ -157,12 +157,6 @@ Standard_Boolean StepToGeom_MakeBSplineSurface::Convert
 	   ((SumMult - UMult.Value(1))== NUPoles)) {
     shouldBeUPeriodic = Standard_True;
   }
-  /*else {  // --- What is that ??? ---
-    shouldBeUPeriodic = Standard_False;
-#ifdef DEBUG
-    cout << "Strange BSpline Surface Descriptor" << endl;
-#endif
-  }*/
   
   // --- V Periodic ? ---
   
@@ -180,12 +174,6 @@ Standard_Boolean StepToGeom_MakeBSplineSurface::Convert
 	   ((SumMult - VMult.Value(1)) == NVPoles)) {
     shouldBeVPeriodic = Standard_True;
   }
-  /*else {  // --- What is that ??? ---
-    shouldBeVPeriodic = Standard_False;
-#ifdef DEBUG
-    cout << "Strange BSpline Surface Descriptor" << endl;
-#endif
-  }*/
   
   if (SS->IsKind(STANDARD_TYPE(StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface))) {
     const Handle(TColStd_HArray2OfReal)& aWeight = BSR->WeightsData();

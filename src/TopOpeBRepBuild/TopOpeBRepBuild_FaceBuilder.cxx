@@ -55,7 +55,7 @@
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
 #endif
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepBuild_GettracePURGE();
 extern Standard_Boolean TopOpeBRepDS_GettraceSTRANGE();
 #include <TopOpeBRepDS_DSX.hxx>
@@ -90,7 +90,7 @@ TopOpeBRepBuild_FaceBuilder::TopOpeBRepBuild_FaceBuilder(TopOpeBRepBuild_WireEdg
 void TopOpeBRepBuild_FaceBuilder::InitFaceBuilder(TopOpeBRepBuild_WireEdgeSet& WES,const TopoDS_Shape& F,const Standard_Boolean ForceClass) 
 {
   myFace = TopoDS::Face(F);
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean deb = TopOpeBRepDS_GettraceSPSX(myFace);
   if (deb) debifb();
 #endif
@@ -371,7 +371,7 @@ void TopOpeBRepBuild_FaceBuilder::CorrectGclosedWire(const TopTools_IndexedDataM
 			       const TopTools_IndexedDataMapOfShapeShape& mapVon1Edge)
 {
   // prequesitory : edges described by <mapVon1Edge> are not closed,not degenerated
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = TopOpeBRepDS_GettraceSTRANGE();
   if (TopOpeBRepBuild_GettracePURGE()) {
     cout<<endl<<"* CorrectGclosedWire :"<<endl<<endl;
@@ -395,7 +395,7 @@ void TopOpeBRepBuild_FaceBuilder::CorrectGclosedWire(const TopTools_IndexedDataM
     TopoDS_Vertex newVref = TopoDS::Vertex(aLocalShape);
 //    TopoDS_Vertex newVref = TopoDS::Vertex(Vref.Oriented(V.Orientation()));
     BB.Add(E,newVref);
-#ifdef DEB
+#ifdef OCCT_DEBUG
     Standard_Integer iV = i,iVref = mapVVref.FindIndex(Vref),iE = mapVon1Edge.FindIndex(V);
     if (trc) cout << " replacing V "<<iV<<" with V "<<iVref<<" on edge "<<iE<<endl;
 #endif
@@ -618,7 +618,7 @@ const TopoDS_Shape& TopOpeBRepBuild_FaceBuilder::Edge() const
 //=======================================================================
 Standard_Integer TopOpeBRepBuild_FaceBuilder::EdgeConnexity(const TopoDS_Shape& /*E*/) const
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_ProgramError::Raise("FaceBuilder::EdgeConnexity management disactivated");
 #endif
   return 0;

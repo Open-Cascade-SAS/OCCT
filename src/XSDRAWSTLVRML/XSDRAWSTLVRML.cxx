@@ -1259,7 +1259,7 @@ void XSDRAWSTLVRML::Factory(Draw_Interpretor& theDI)
   XSDRAWSTEP::InitCommands(theDI);
   XSDRAWSTLVRML::InitCommands(theDI);
   XSDRAW::LoadDraw(theDI);
-#ifdef DEB
+#ifdef OCCT_DEBUG
   theDI << "Draw Plugin : All TKXSDRAW commands are loaded" << "\n";
 #endif
 }

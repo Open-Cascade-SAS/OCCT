@@ -41,7 +41,7 @@
 // purpose:
 //==================================================================
 //unused
-/*#ifdef DEB
+/*#ifdef OCCT_DEBUG
 static void FindLimits(const Adaptor3d_Curve& aCurve,
 		       const Standard_Real  aLimit,
 		       gp_Pnt& P1,

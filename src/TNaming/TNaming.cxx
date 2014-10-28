@@ -54,39 +54,6 @@
 #include <TNaming_TranslateTool.hxx>
 #include <TopLoc_Datum3D.hxx>
 
-#define BUC60862
-#ifdef DEB
-//#define MDTV_DEB
-//#define MDTV_DEB_FSET
-#endif
-#ifdef MDTV_DEB
-#include <BRepTools.hxx>
-#include <TCollection_AsciiString.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfOrientedShapeShape.hxx>
-static void WriteS(const TopoDS_Shape& shape,
-		      const Standard_CString filename) 
-{
-  char buf[256];
-  if(strlen(filename) > 256) return;
-#if defined WNT 
-  strcpy_s (buf, filename);
-#else
-  strcpy (buf, filename);
-#endif
-  char* p = buf;
-  while (*p) {
-    if(*p == ':')
-      *p = '-';
-    p++;
-  }
-  ofstream save (buf);
-  if(!save) 
-    cout << "File " << buf << " was not created: rdstate = " << save.rdstate() << endl;
-  save << "DBRep_DrawableShape" << endl << endl;
-  if(!shape.IsNull()) BRepTools::Write(shape, save);
-  save.close();
-}
-#endif
 //=======================================================================
 //function : MapShapes
 //purpose  : TNaming
@@ -746,8 +713,6 @@ Standard_OStream& TNaming::Print (const TNaming_NameType NAME,  Standard_OStream
   return s;
 }
 
-#ifdef BUC60862
-
 //=======================================================================
 //function : Print
 //purpose  : Prints UsedShapes.
@@ -756,15 +721,13 @@ Standard_OStream& TNaming::Print (const TNaming_NameType NAME,  Standard_OStream
 Standard_OStream& TNaming::Print (const TDF_Label& ACCESS,  Standard_OStream& s) {
   Handle(TNaming_UsedShapes) US;
   if (!ACCESS.Root().FindAttribute(TNaming_UsedShapes::GetID(), US)) {
-#ifdef TNAMING_DEB
+#ifdef OCCT_DEBUG
     cout<<"TNaming::Print(US): Bad access"<<endl;
 #endif
     return s;
   }
   return US->Dump(s);
 }
-
-#endif
 
 //=======================================================================
 //function : BuildMapIn
@@ -779,7 +742,7 @@ static void BuildMapIn(const TopoDS_Shape& Context, const TopAbs_ShapeEnum StopT
   else
     aType = (TopAbs_ShapeEnum)(Context.ShapeType()+1);
   for (TopExp_Explorer exp(Context,aType); exp.More(); exp.Next()) {
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
     if(!Map.Bind(exp.Current(), Context))
       cout << "Not bind = " <<exp.Current().ShapeType() <<endl; 
     else 
@@ -812,7 +775,7 @@ static void BuildMapC0(const TopoDS_Shape& Context, const TopoDS_Shape& C0, cons
   TopoDS_Iterator anIt(Context);
   while(anIt.More()) {
     const TopoDS_Shape& aKey = anIt.Value();
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
     if(!Map.Bind(aKey, C0)) 
       cout << "Not bind = " <<aKey.ShapeType() <<endl;      
 #else
@@ -836,14 +799,10 @@ static void BuildMapC0(const TopoDS_Shape& Context, const TopoDS_Shape& C0, cons
 static void BuildMap(const TopoDS_Shape& Context, const TopAbs_ShapeEnum StopType, 
 		     TopTools_DataMapOfOrientedShapeShape& Map)
 {
-#ifdef MDTV_DEB
-  TCollection_AsciiString Nam("Cnt_");
-  Standard_Integer i = 0;
-#endif
   TopoDS_Iterator anIt(Context);
   while(anIt.More()) {
     const TopoDS_Shape& aKey = anIt.Value();
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
     if(!Map.Bind(aKey, Context)) 
       cout << "Not bind = " <<aKey.ShapeType() <<endl;      
 #else
@@ -866,7 +825,7 @@ TopoDS_Shape TNaming::FindUniqueContext(const TopoDS_Shape& Selection, const Top
 {
   TopTools_DataMapOfOrientedShapeShape aMap; 
   BuildMap(Context, Selection.ShapeType(), aMap);
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
   TopTools_DataMapIteratorOfDataMapOfOrientedShapeShape it (aMap);
   for (;it.More();it.Next()) {
     cout <<"FindUniqueContext: Key - " <<it.Key().ShapeType()<< " " << it.Key().TShape() <<" OR = " <<it.Key().Orientation() <<
@@ -934,7 +893,7 @@ TopoDS_Shape TNaming::FindUniqueContextSet(const TopoDS_Shape& Selection, const 
 	    aCmp = it.Value();
 	}
 	if(n == 1) {
-#ifdef MDTV_DEB_FSET
+#ifdef OCCT_DEBUG_FSET
 	  cout << "FindUniqueContextSet: n = " << n <<endl;
 #endif
 	  return aCmp;

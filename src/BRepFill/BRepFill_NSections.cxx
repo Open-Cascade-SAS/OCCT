@@ -59,7 +59,7 @@
 
 #include <Precision.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 static Standard_Boolean Affich = 0;
 #endif
 
@@ -374,7 +374,7 @@ BRepFill_NSections::BRepFill_NSections(const TopTools_SequenceOfShape& S,
 				       const Standard_Boolean Build)
 
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if ( Affich) {
 #ifdef DRAW
     Standard_Integer NBSECT = 0;

@@ -18,7 +18,7 @@
 # include <strings.h>
 #endif
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 
 #include <Standard_Type.hxx>
 
@@ -117,5 +117,5 @@ Standard_Boolean TopOpeBRep_GetcontextALWLNBP(Standard_Integer& n)
   return b;
 }
 
-// #ifdef DEB
+// #ifdef OCCT_DEBUG
 #endif

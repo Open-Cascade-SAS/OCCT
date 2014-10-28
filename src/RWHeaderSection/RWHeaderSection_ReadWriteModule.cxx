@@ -58,7 +58,7 @@ return 0;
 }
 
 	// --- External Mapping Case Recognition ---
-#ifdef DEB
+#ifdef OCCT_DEBUG
 Standard_Integer RWHeaderSection_ReadWriteModule::CaseStep (const TColStd_SequenceOfAsciiString& types) const
 {
   Standard_Integer NbComp = types.Length();

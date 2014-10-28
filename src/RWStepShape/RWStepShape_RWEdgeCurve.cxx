@@ -187,7 +187,7 @@ void RWStepShape_RWEdgeCurve::Check
       
       Standard_Boolean sharOE1 = aShto.IsShared(theOE1);
       if(!sharOE1){
-#ifdef RWSTEPSHAPE_DEB
+#ifdef OCCT_DEBUG
 	cout << "OrientedEdge1 not shared" <<endl;
 #endif
       }
@@ -201,14 +201,14 @@ void RWStepShape_RWEdgeCurve::Check
 	    Handle(StepShape_EdgeLoop)::DownCast(myShRef.Value());
 	  Standard_Boolean sharEL1 = aShto.IsShared(theEL1);
 	  if(!sharEL1) {
-#ifdef RWSTEPSHAPE_DEB
+#ifdef OCCT_DEBUG
 	    cout << "EdgeLoop1 not shared" <<endl;
 #endif
 	  }
 	  else {
 	    myShRef = aShto.Sharings(theEL1);
 	    myShRef.SelectType (STANDARD_TYPE(StepShape_FaceBound),Standard_True);
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	    nbRef = 
 #endif
 	      myShRef.NbEntities();
@@ -218,7 +218,7 @@ void RWStepShape_RWEdgeCurve::Check
 	      theFBOri1 = theFOB1->Orientation();
 	    }
 	    else {
-#ifdef RWSTEPSHAPE_DEB
+#ifdef OCCT_DEBUG
 	      cout << "EdgeLoop not referenced by FaceBound" << endl;
 #endif
 	    }
@@ -226,14 +226,14 @@ void RWStepShape_RWEdgeCurve::Check
 	}
 	else {
 	  if (nbRef == 0) {
-#ifdef RWSTEPSHAPE_DEB
+#ifdef OCCT_DEBUG
 	    cout << "OrientedEdge not referenced" << endl;
 #endif
           }
 	  else {
 	    if (aShto.NbTypedSharings(theOE1,
 				      STANDARD_TYPE(StepShape_EdgeLoop)) > 1) {
-#ifdef RWSTEPSHAPE_DEB
+#ifdef OCCT_DEBUG
 	      cout << "OrientedEdge referenced more than once" << endl;
 #endif
             }
@@ -245,13 +245,13 @@ void RWStepShape_RWEdgeCurve::Check
 
       Standard_Boolean sharOE2 = aShto.IsShared(theOE2);
       if(!sharOE2){
-#ifdef RWSTEPSHAPE_DEB
+#ifdef OCCT_DEBUG
 	cout << "OrientedEdge2 not shared" <<endl;
 #endif
       }
       else {
 	myShRef = aShto.Sharings(theOE2);
-#ifdef DEB
+#ifdef OCCT_DEBUG
 // 	Standard_Integer nbRef = 
 #endif
 // unused	  myShRef.NbEntities();	
@@ -260,7 +260,7 @@ void RWStepShape_RWEdgeCurve::Check
 	  Handle(StepShape_EdgeLoop)::DownCast(myShRef.Value());
 	Standard_Boolean sharEL2 = aShto.IsShared(theEL2);
 	if(!sharEL2){
-#ifdef RWSTEPSHAPE_DEB
+#ifdef OCCT_DEBUG
 	  cout << "EdgeLoop2 not shared" <<endl;
 #endif
 	}
@@ -273,7 +273,7 @@ void RWStepShape_RWEdgeCurve::Check
 	    theFBOri2 = theFOB2->Orientation();
 	  }
 	  else {
-#ifdef RWSTEPSHAPE_DEB
+#ifdef OCCT_DEBUG
 	    cout << "EdgeLoop not referenced by FaceBound" << endl;
 #endif
 	  }

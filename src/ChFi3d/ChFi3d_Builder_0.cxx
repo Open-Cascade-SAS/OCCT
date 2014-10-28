@@ -157,7 +157,7 @@
 
 #include <ChFi3d_Builder_0.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #include <OSD_Chronometer.hxx>
 extern Standard_Boolean ChFi3d_GetcontextFORCEBLEND(); 
 extern Standard_Boolean ChFi3d_GettraceDRAWINT();

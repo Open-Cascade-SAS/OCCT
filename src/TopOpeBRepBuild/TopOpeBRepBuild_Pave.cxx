@@ -136,7 +136,7 @@ const TopoDS_Shape& TopOpeBRepBuild_Pave::Shape() const
 
 void TopOpeBRepBuild_Pave::Dump() const 
 {
-#ifdef TOPOPEBREPBUILD_DEB
+#ifdef OCCT_DEBUG
   cout<<Parameter()<<" ";TopAbs::Print(Vertex().Orientation(),cout);
 #endif
 }

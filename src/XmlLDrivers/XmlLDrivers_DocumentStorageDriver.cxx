@@ -191,7 +191,7 @@ Standard_Boolean XmlLDrivers_DocumentStorageDriver::WriteToDomDocument
       aResourceDir += "/src/XmlOcafResource" ;
       aToSetCSFVariable = Standard_True; //CSF variable to be set later
     }
-#ifdef DEB
+#ifdef OCCT_DEBUG
     else {
       TCollection_ExtendedString aWarn = FAILSTR "Neither ";
       aWarn = (aWarn + aCSFVariable[0] + ", nor " + aCSFVariable[1]
@@ -209,7 +209,7 @@ Standard_Boolean XmlLDrivers_DocumentStorageDriver::WriteToDomDocument
       if (aToSetCSFVariable) {
         OSD_Environment aCSFVarEnv ( aCSFVariable[0], aResourceDir );
         aCSFVarEnv.Build();
-#ifdef DEB
+#ifdef OCCT_DEBUG
         TCollection_ExtendedString aWarn1 = "Variable ";
         aWarn1 = (aWarn1 + aCSFVariable[0]
                   + " has not been explicitly defined. Set to " + aResourceDir);
@@ -222,7 +222,7 @@ Standard_Boolean XmlLDrivers_DocumentStorageDriver::WriteToDomDocument
         }
       }
     }
-#ifdef DEB
+#ifdef OCCT_DEBUG
     else {
       TCollection_ExtendedString aWarn = FAILSTR "Schema definition file ";
       aWarn += (aResourceFileName + " was not found");
@@ -349,13 +349,13 @@ Standard_Integer XmlLDrivers_DocumentStorageDriver::MakeDocument
 
 //      Retrieve from DOM_Document
     XmlMDF::FromTo (aTDF, theElement, myRelocTable, myDrivers); 
-#if defined(DEB) && !defined(TAKE_TIMES)
+#ifdef OCCT_DEBUG
     aMessage = "First step successfull";
     aMessageDriver -> Write (aMessage.ToExtString());
 #endif
     return myRelocTable.Extent();
   }
-#ifdef XMLLDRIVERS_DEB
+#ifdef OCCT_DEBUG
   cout << "First step failed" << endl;  // No MessageDriver available
 #endif
   return -1; // error

@@ -44,7 +44,7 @@
 #include <TopOpeBRepDS_Dumper.hxx>
 #include <Standard_ProgramError.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GetcontextNOSG();
 #endif
 
@@ -66,7 +66,7 @@ void TopOpeBRepBuild_Builder::GMergeEdges(const TopTools_ListOfShape& LE1,const 
   TopAbs_State TB1,TB2; G1.StatesON(TB1,TB2);
   
   const TopoDS_Shape& E1 = LE1.First();
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer iE; Standard_Boolean tSPS1 = GtraceSPS(E1,iE);
   if(tSPS1){
     cout<<endl;cout<<"--- GMergeEdges "<<endl;
@@ -125,7 +125,7 @@ void TopOpeBRepBuild_Builder::GFillEdgesPVS(const TopTools_ListOfShape& LE1,cons
     const TopoDS_Shape& E11 = it1.Value();
     Standard_Boolean ismerged = IsMerged(E11,TB1);
     
-#ifdef DEB
+#ifdef OCCT_DEBUG
     Standard_Integer i1; Standard_Boolean tSPS1 = GtraceSPS(E11,i1);
     if(tSPS1){
       cout<<endl;cout<<"--- GFillEdgesPVS ";GdumpSHA(E11);
@@ -143,7 +143,7 @@ void TopOpeBRepBuild_Builder::GFillEdgesPVS(const TopTools_ListOfShape& LE1,cons
     const TopoDS_Shape& E2 = it2.Value();
     Standard_Boolean ismerged = IsMerged(E2,TB2);
     
-#ifdef DEB
+#ifdef OCCT_DEBUG
     Standard_Integer i2; Standard_Boolean tSPS2 = GtraceSPS(E2,i2);
     if(tSPS2){
       cout<<endl;
@@ -203,7 +203,7 @@ static Standard_Boolean FUN_MoreSHAINT(TopOpeBRepDS_PointIterator& EPit,
 }
 
 // Unused :
-/*#ifdef DEB
+/*#ifdef OCCT_DEBUG
 static Standard_Integer FUN_getTRASHA(const Standard_Integer geti,
 			  const TopOpeBRepDS_ListOfInterference& lFOR, const Standard_Integer FOR,
 			  const TopOpeBRepDS_ListOfInterference& lREV, const Standard_Integer REV,
@@ -222,7 +222,7 @@ static Standard_Integer FUN_getTRASHA(const Standard_Integer geti,
 }
 #endif*/
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 void debfillp(const Standard_Integer i) {cout <<"+ + debfillp "<<i<<endl;}
 void debfillpon(const Standard_Integer i) {cout <<"+ + debfillpon "<<i<<endl;}
 void debfillpin(const Standard_Integer i) {cout <<"+ + debfillpin "<<i<<endl;}
@@ -272,7 +272,7 @@ void TopOpeBRepBuild_Builder::GFillPointTopologyPVS(const TopoDS_Shape& E,
                                                     const TopOpeBRepBuild_GTopo& G,
                                                     TopOpeBRepBuild_PaveSet& PVS)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //  TopAbs_State TB1,TB2; 
 //  G.StatesON(TB1,TB2);
 //  TopOpeBRepDS_Config GConf1 = G.Config1();
@@ -283,7 +283,7 @@ void TopOpeBRepBuild_Builder::GFillPointTopologyPVS(const TopoDS_Shape& E,
   ShapeInterf = t1;
   const TopOpeBRepDS_DataStructure& BDS = myDataStructure->DS();
   const Standard_Integer iEDS = BDS.Shape(E);
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //  Standard_Integer rkE = BDS.AncestorRank(E); 
 #endif
   Standard_Boolean isSE = BDS.IsSectionEdge(TopoDS::Edge(E));
@@ -291,12 +291,12 @@ void TopOpeBRepBuild_Builder::GFillPointTopologyPVS(const TopoDS_Shape& E,
   Standard_Boolean isEd;
 
   isEd = BRep_Tool::Degenerated(TopoDS::Edge(E));
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //  Standard_Boolean hsd = myDataStructure->HasSameDomain(E); //xpu170498
 #endif
   Standard_Boolean isfafa = BDS.Isfafa(); //xpu120598
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean tSPSE=GtraceSPS(iEDS);
   TCollection_AsciiString striE=TopOpeBRepDS::SPrint(TopAbs_EDGE,iEDS);
   const TopoDS_Shape& EPVS=PVS.Edge();Standard_Integer iEPVS;Standard_Boolean tSPSEPVS=GtraceSPS(EPVS,iEPVS);
@@ -314,7 +314,7 @@ void TopOpeBRepBuild_Builder::GFillPointTopologyPVS(const TopoDS_Shape& E,
   Standard_Boolean isspin=(GLOBAL_issp==TheIN), isspou=(GLOBAL_issp==TheOUT), isspon=(GLOBAL_issp==TheON);
   if (isSE && (GLOBAL_issp == 0)) return; // splits done in process ProcessSectionEdges
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //  Standard_Integer iefil = BDS.Shape(E);
 //  Standard_Integer iffil = BDS.Shape(myFaceToFill);
 //  Standard_Integer ieref = BDS.Shape(myEdgeReference);
@@ -405,7 +405,7 @@ void TopOpeBRepBuild_Builder::GFillPointTopologyPVS(const TopoDS_Shape& E,
     const TopOpeBRepDS_ListOfInterference& LICur = tki.Value(Kcur,Gcur);
     Standard_Boolean point  = (Kcur == TopOpeBRepDS_POINT); //xpu170498
     Standard_Boolean vertex = (Kcur == TopOpeBRepDS_VERTEX);//xpu170498
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //    Standard_Integer nLICur = LICur.Extent();
     Standard_Boolean trcI = Standard_False;
     if(trcI) {TopOpeBRepDS_Dumper DSD(myDataStructure); TCollection_AsciiString aa("lI");
@@ -497,7 +497,7 @@ void TopOpeBRepBuild_Builder::GFillPointTopologyPVS(const TopoDS_Shape& E,
       
       TopOpeBRepDS_ListOfInterference li; li.Append(newI); TopOpeBRepDS_PointIterator itCur(li);
       GFillPointTopologyPVS(E,itCur,G,PVS);
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if(tSPS) {newI->Dump(cout,"\nnewinterf ","\n\n"); debfillp2(iEDS);}
 #endif
       {tki.Next(); continue;}
@@ -518,7 +518,7 @@ void TopOpeBRepBuild_Builder::GFillPointTopologyPVS(const TopoDS_Shape& E,
       TopAbs_ShapeEnum SB1,SA1;Standard_Integer IB1,IA1;TopOpeBRepDS_Kind GT1,ST1;Standard_Integer G1,S1;
       FDS_Idata(I1,SB1,IB1,SA1,IA1,GT1,G1,ST1,S1);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if(tSPS) {I1->Dump(cout,"\n? keepinterf ","\n\n"); debfillp2(iEDS);}
 #endif
 
@@ -534,17 +534,15 @@ void TopOpeBRepBuild_Builder::GFillPointTopologyPVS(const TopoDS_Shape& E,
 	  // e27 possede des I de nature 2d et 3d en V8
 	  // on privilegie l'info 3d 
 	  if (has2d3d && !isSE) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	    const Handle(TopOpeBRepDS_Interference)& i2d =
 #endif
                                l2dFEcur.First();
 	    const Handle(TopOpeBRepDS_Interference)& i3d = l3dFcur.First();
 	    Standard_Boolean id3d = (I1 == i3d);
-#ifdef DEB
-	    Standard_Boolean id2d = (I1 == i2d);
-#endif
 	    keepinterf1 = id3d;
-#ifdef DEB
+#ifdef OCCT_DEBUG
+	    Standard_Boolean id2d = (I1 == i2d);
 	    if (tSPS) {
 	      cout<<"DEB : GFillPointTopologyPVS E"<<iEDS<<" has2d3d"<<endl;
 	      i2d->Dump(cout,"2d : ","\n");
@@ -598,7 +596,7 @@ void TopOpeBRepBuild_Builder::GFillPointTopologyPVS(const TopoDS_Shape& E,
   const Handle(TopOpeBRepDS_Interference)& I1=EPit.Value();
   TopOpeBRepDS_Kind ST1 = I1->SupportType();
     
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer iE; Standard_Boolean tSPSE = GtraceSPS(E,iE);
   Standard_Integer iEPVS; Standard_Boolean tSPSEPVS = GtraceSPS(EPVS,iEPVS);
   Standard_Boolean tSPS = tSPSE || tSPSEPVS;
@@ -637,17 +635,17 @@ void TopOpeBRepBuild_Builder::GFillPointTopologyPVS(const TopoDS_Shape& E,
   Standard_Real      par = EPit.Parameter();
   TopAbs_Orientation ori = EPit.Orientation(TB);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if ( tSPS ) debfillp(iE);
 #endif
 
   Standard_Boolean samegeom = ::TopOpeBRepBuild_FUN_aresamegeom(E,EPVS);
   if (Conf == TopOpeBRepDS_DIFFORIENTED) ori = TopAbs::Complement(ori);
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (!TopOpeBRepBuild_GetcontextNOSG()) {
 #endif
     if (!samegeom) ori = TopAbs::Complement(ori);
-#ifdef DEB
+#ifdef OCCT_DEBUG
   }
 #endif
 
@@ -657,7 +655,7 @@ void TopOpeBRepBuild_Builder::GFillPointTopologyPVS(const TopoDS_Shape& E,
     Standard_Real parref = par;
     const TopoDS_Edge& EE = TopoDS::Edge(E);
     GParamOnReference(VPV,EE,parref);
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if(tSPS){
       cout<<"par "<<par<<" / ";GdumpSHA(E);cout<<" --> parref "<<parref<<" / ";GdumpSHA(EPVS);
       cout<<endl;
@@ -669,7 +667,7 @@ void TopOpeBRepBuild_Builder::GFillPointTopologyPVS(const TopoDS_Shape& E,
   Standard_Boolean kpbound = Standard_False;
   {
     TopoDS_Vertex vclo; Standard_Boolean Eclosed = TopOpeBRepTool_TOOL::ClosedE(myEdgeReference,vclo);
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //    Standard_Integer ivclo = myDataStructure->Shape(vclo);
 #endif
     TopAbs_Orientation oriI = EPit.Orientation(TopAbs_IN);
@@ -704,7 +702,7 @@ void TopOpeBRepBuild_Builder::GFillPointTopologyPVS(const TopoDS_Shape& E,
     PVS.Append(PV);
     
     
-#ifdef DEB
+#ifdef OCCT_DEBUG
     gp_Pnt P = BRep_Tool::Pnt(VPV);
     if(tSPS){cout<<"+";if(ispoint)cout<<" PDS ";else cout<<" VDS ";}
     if(tSPS){cout<<iG<<" : ";GdumpORIPARPNT(ori,par,P);cout<<endl;}
@@ -737,7 +735,7 @@ void TopOpeBRepBuild_Builder::GFillPointTopologyPVS(const TopoDS_Shape& E,
     PVF -> InterferenceType() = ST1;
     PVS.Append(PVF);
     
-#ifdef DEB
+#ifdef OCCT_DEBUG
     gp_Pnt PF = BRep_Tool::Pnt(VPV);
     if(tSPS){cout<<"+";if(ispoint)cout<<" PDS ";else cout<<" VDS ";}
     if(tSPS){cout<<iG<<" : ";GdumpORIPARPNT(ovpv,parf,PF);cout<<endl;}
@@ -757,7 +755,7 @@ void TopOpeBRepBuild_Builder::GFillPointTopologyPVS(const TopoDS_Shape& E,
     //modified by NIZHNY-MZV  Mon Feb 21 14:48:37 2000
     PVR -> InterferenceType() = ST1;
     PVS.Append(PVR);
-#ifdef DEB
+#ifdef OCCT_DEBUG
     gp_Pnt PR = BRep_Tool::Pnt(VPV);
     if(tSPS){cout<<"+";if(ispoint)cout<<" PDS ";else cout<<" VDS ";}
     if(tSPS){cout<<iG<<" : ";GdumpORIPARPNT(ovpv,parl,PR);cout<<endl;}
@@ -784,7 +782,7 @@ Standard_Boolean TopOpeBRepBuild_Builder::GParamOnReference(const TopoDS_Vertex&
   Handle(Geom_Surface) su = BRep_Tool::Surface(myFaceReference);
   Handle(Geom_Plane) suplan = Handle(Geom_Plane)::DownCast(su);
   if ( suplan.IsNull() ) { 
-#ifdef TOPOPEBREPBUILD_DEB
+#ifdef OCCT_DEBUG
     cout<<"NYI : GParamOnReference : not planar"<<endl;
 #endif
     return Standard_False;
@@ -810,7 +808,7 @@ Standard_Boolean TopOpeBRepBuild_Builder::GParamOnReference(const TopoDS_Vertex&
   case GeomAbs_Parabola:
     P = ElCLib::Parameter(AC.Parabola(),p2); break;
     default : 
-#ifdef TOPOPEBREPBUILD_DEB
+#ifdef OCCT_DEBUG
       cout<<"NYI : GParamOnReference : OtherCurve on planar surface"<<endl;
 #endif
     return Standard_False;

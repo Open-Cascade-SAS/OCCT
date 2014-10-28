@@ -38,14 +38,14 @@ IFGraph_SCRoots::IFGraph_SCRoots
   complist.GetFromIter(Loaded());
 //  Interface_Graph G(Model());
   Interface_Graph G(thegraph);
-#ifdef PRINTDEB
+#ifdef OCCT_DEBUG
   cout<<" SCRoots:"<<endl;
 #endif
   G.ResetStatus();
   for (complist.Start(); complist.More(); complist.Next()) {
     Handle(Standard_Transient) ent = complist.FirstEntity();
     Standard_Integer num = G.EntityNumber(ent);
-#ifdef PRINTDEB
+#ifdef OCCT_DEBUG
     cout<<"   Iteration,num="<<num<<(G.IsPresent(num) ? " Pris" : " A prendre")<<endl;
 #endif
     if (!G.IsPresent(num)) {        //  enregistrer pour suivants

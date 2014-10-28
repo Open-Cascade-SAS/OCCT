@@ -483,13 +483,13 @@ void DsgPrs::ComputeFilletRadiusPresentation( const Standard_Real /*ArrowLength*
       FilletCirc.SetRadius( Center.Distance( FirstPoint ) ); //***
       gp_Vec vec1( dir1 );
       vec1 *= FilletCirc.Radius();
-#ifdef DEB
+#ifdef OCCT_DEBUG
       gp_Pnt p1 =
 #endif
                   Center.Translated( vec1 );
       gp_Vec vec2( dir2 );
       vec2 *= FilletCirc.Radius();
-#ifdef DEB
+#ifdef OCCT_DEBUG
       gp_Pnt p2 =
 #endif
                   Center.Translated( vec2 );
@@ -537,7 +537,7 @@ void DsgPrs::ComputeFilletRadiusPresentation( const Standard_Real /*ArrowLength*
       FirstParCirc = ElCLib::Parameter( FilletCirc, FirstPoint );
       LastParCirc  = ElCLib::Parameter( FilletCirc, SecondPoint );
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #endif
     }
   else //Angle equal 0 or PI or R = 0

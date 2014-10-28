@@ -14,7 +14,7 @@
 
 //-- IntWalk_IWalking_2.gxx
 
-#ifndef DEB
+#ifndef OCCT_DEBUG
 #define No_Standard_RangeError
 #define No_Standard_OutOfRange
 #endif
@@ -677,7 +677,7 @@ void IntWalk_IWalking::TestArretCadre
 	      }
 	      Line->SetTangentVector(previousd3d,j-1);
 	    }
-#ifdef INTWALK_DEB
+#ifdef OCCT_DEBUG
 	    else { 
 	      cout<<" IntWalk_IWalking_2.gxx : bizarrerie 30 10 97 "<<endl;
 	    }

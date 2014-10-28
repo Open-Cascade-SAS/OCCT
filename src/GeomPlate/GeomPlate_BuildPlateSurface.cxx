@@ -76,17 +76,11 @@
 #include <GeomPlate_SequenceOfAij.hxx>
 #include <GeomPlate_MakeApprox.hxx>
 
-// pour mes tests
-#ifdef PLATE_DEB
-#include <OSD_Chronometer.hxx>
-#endif
-
 #ifdef DRAW
 #include <DrawTrSurf.hxx>
 #include <Draw_Marker3D.hxx>
 #include <Draw_Marker2D.hxx>
 #include <Draw.hxx>
-static Standard_Integer Affich=0;
 // 0 : Pas de display
 // 1 : Display des Geometries et controle intermediaire
 // 2 : Display du nombre de contrainte par courbe + Intersection
@@ -95,6 +89,12 @@ static Standard_Integer NbPlan = 0;
 //static Standard_Integer NbCurv2d = 0;
 static Standard_Integer NbMark = 0;
 static Standard_Integer NbProj = 0;
+#endif
+
+// pour mes tests
+#ifdef OCCT_DEBUG
+#include <OSD_Chronometer.hxx>
+static Standard_Integer Affich=0;
 #endif
 
 //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//
@@ -290,7 +290,7 @@ Handle(Geom2d_Curve)  GeomPlate_BuildPlateSurface::ProjectCurve(const Handle(Ada
      else
        {
 	 Curve2d.Nullify(); // Pas de solution continue
-#if PLATE_DEB
+#ifdef OCCT_DEBUG
 	 cout << "BuildPlateSurace :: Pas de projection continue" << endl;
 #endif
        }
@@ -335,7 +335,7 @@ Handle(Adaptor2d_HCurve2d)  GeomPlate_BuildPlateSurface::ProjectedCurve( Handle(
  if (Projector.NbCurves() != 1) {
      
      HProjector.Nullify(); // Pas de solution continue
-#if PLATE_DEB
+#ifdef OCCT_DEBUG
      cout << "BuildPlateSurace :: Pas de projection continue" << endl;
 #endif
    }
@@ -357,7 +357,7 @@ Handle(Adaptor2d_HCurve2d)  GeomPlate_BuildPlateSurface::ProjectedCurve( Handle(
      else
      {
          HProjector.Nullify(); // Pas de solution continue
-#if PLATE_DEB
+#ifdef OCCT_DEBUG
          cout << "BuildPlateSurace :: Pas de projection complete" << endl;
 #endif
      }
@@ -455,7 +455,7 @@ void GeomPlate_BuildPlateSurface::
 //---------------------------------------------------------
 void GeomPlate_BuildPlateSurface::Perform()
 { 
-#ifdef PLATE_DEB
+#ifdef OCCT_DEBUG
   // Chronmetrage
   OSD_Chronometer Chrono;
   Chrono.Reset();
@@ -490,7 +490,7 @@ void GeomPlate_BuildPlateSurface::Perform()
 	    myInitOrder->SetValue(l,l);
 	  if (!CourbeJointive(myTol3d)) 
 	    {//    Standard_Failure::Raise("Curves are not joined"); 
-#ifdef PLATE_DEB
+#ifdef OCCT_DEBUG
 	      cout<<"WARNING : Courbes non jointives a "<<myTol3d<<" pres"<<endl;
 #endif	  
 	    }
@@ -614,7 +614,7 @@ void GeomPlate_BuildPlateSurface::Perform()
 
   do 
     {
-#if PLATE_DEB
+#ifdef OCCT_DEBUG
       if (Affich && NbBoucle) {   
 	cout<<"Resultats boucle"<< NbBoucle << endl;
 	cout<<"DistMax="<<myG0Error<<endl;
@@ -657,7 +657,7 @@ void GeomPlate_BuildPlateSurface::Perform()
 	  Fini = VerifSurface(NbBoucle);
 	  if ((NbBoucle >= myNbIter)&&(!Fini))
 	    { 
-#ifdef PLATE_DEB
+#ifdef OCCT_DEBUG
 	      cout<<"Warning objectif non atteint"<<endl;
 #endif
 	      Fini = Standard_True;
@@ -685,7 +685,7 @@ void GeomPlate_BuildPlateSurface::Perform()
           VerifPoints(di,an,cu);
 	}
     } while (!Fini); // Fin boucle pour meilleur surface
-#ifdef PLATE_DEB
+#ifdef OCCT_DEBUG
   if (NTLinCont != 0)
     { cout<<"======== Resultats globaux ==========="<<endl;
       cout<<"DistMax="<<myG0Error<<endl;
@@ -803,8 +803,8 @@ void GeomPlate_BuildPlateSurface::
                   Disc2dContour ( const Standard_Integer /*nbp*/,
                                   TColgp_SequenceOfXY& Seq2d)
 {
-#ifdef PLATE_DEB
-  if (nbp!=4)
+#ifdef OCCT_DEBUG
+  if (Seq2d.Length()!=4)
     cout<<"nbp doit etre egal a 4 pour Disc2dContour"<<endl;
 #endif
   //  initialisation
@@ -940,8 +940,8 @@ Disc3dContour (const Standard_Integer /*nbp*/,
                const Standard_Integer iordre,
                TColgp_SequenceOfXYZ& Seq3d)
 {
-#ifdef PLATE_DEB
-  if (nbp!=4)
+#ifdef OCCT_DEBUG
+  if (Seq3d.Length()!=4)
     cout<<"nbp doit etre egal a 4 pour Disc3dContour"<<endl;
   if (iordre!=0&&iordre!=1)
     cout<<"iordre incorrect pour Disc3dContour"<<endl;
@@ -1487,7 +1487,7 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit()
 	} //if (isHalfSpace)
       if (!isHalfSpace)
 	{
-#ifdef PLATE_DEB
+#ifdef OCCT_DEBUG
 	  cout<<endl<<"Normals are not in half space"<<endl<<endl;
 #endif
 	  myIsLinear = Standard_False;
@@ -1504,7 +1504,7 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit()
 	nopt = 1;  //Calcul par la methode du plan d'inertie
       else if (!CourbeJoint || NTLinCont != myNbBounds)
 	{//    Standard_Failure::Raise("Curves are not joined"); 
-#ifdef PLATE_DEB	    
+#ifdef OCCT_DEBUG	    
 	  cout<<"WARNING : Courbes non jointives a "<<myTol3d<<" pres"<<endl;
 #endif	  
 	  nopt = 1;
@@ -1567,7 +1567,7 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit()
       Handle( Geom_Surface ) InitPlane = 
 	(Handle( Geom_RectangularTrimmedSurface )::DownCast(mySurfInit))->BasisSurface();
       
-      Standard_Real Ratio, R1 = 2., R2 = 0.6; //R1 = 3, R2 = 0.5;//R1 = 1.4, R2 = 0.8; //R1 = 5., R2 = 0.2; 
+      Standard_Real Ratio = 0., R1 = 2., R2 = 0.6; //R1 = 3, R2 = 0.5;//R1 = 1.4, R2 = 0.8; //R1 = 5., R2 = 0.2; 
       Handle( GeomAdaptor_HSurface ) hsur = 
 	new GeomAdaptor_HSurface( InitPlane );
       Standard_Integer NbPoint = 20;
@@ -1613,7 +1613,7 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit()
 		}
 	    }
 	}
-#if PLATE_DEB
+#ifdef OCCT_DEBUG
       if (! myIsLinear)
 	cout <<"Metrics are too different :"<< Ratio<<endl;
 #endif
@@ -1760,7 +1760,7 @@ Intersect(Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
 		{ int2d = Intersection.Point(k);
 		  myLinCont->Value(i)->D0(int2d.ParamOnFirst(),P1);
 		  myLinCont->Value(j)->D0(int2d.ParamOnSecond(),P2);
-#if PLATE_DEB
+#ifdef OCCT_DEBUG
 		  if (Affich> 1)
 		    {
 		      cout << " Intersection "<< k << " entre " << i 
@@ -1815,7 +1815,7 @@ Intersect(Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
 			      if (A1>(M_PI/2))
 				A1= M_PI - A1;
 			      if (Abs(Abs(A1)-M_PI)<myTolAng) Tol = 100000 * myTol3d;
-#if PLATE_DEB
+#ifdef OCCT_DEBUG
 			      if (Affich) cout <<"Angle entre Courbe "<<i<<","<<j
 				<<" "<<Abs(Abs(A1)-M_PI)<<endl;
 #endif
@@ -1869,7 +1869,7 @@ Intersect(Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
 			      if (A1 > M_PI/2)
 				A1= M_PI - A1;
 			      if (Abs(Abs(A1) - M_PI) < myTolAng) Tol = 100000 * myTol3d;
-#if PLATE_DEB
+#ifdef OCCT_DEBUG
 			      if (Affich) cout <<"Angle entre Courbe "<<i<<","<<j
 				<<" "<<Abs(Abs(A1)-M_PI)<<endl;
 #endif
@@ -1877,7 +1877,7 @@ Intersect(Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
 				{
 				  coin = Ci.Resolution(Tol);
 				  coin *=  Angle / myTolAng * 10.;
-#if PLATE_DEB
+#ifdef OCCT_DEBUG
 				  cout<<endl<<"coin = "<<coin<<endl;
 #endif
 				  Standard_Real Par1 = int2d.ParamOnFirst() - coin;
@@ -1890,7 +1890,7 @@ Intersect(Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
 				{
 				  coin = Cj.Resolution(Tol);
 				  coin *= Angle / myTolAng * 10.;
-#if PLATE_DEB
+#ifdef OCCT_DEBUG
 				  cout<<endl<<"coin = "<<coin<<endl;
 #endif
 				  Standard_Real Par1 = int2d.ParamOnSecond() - coin;
@@ -1924,7 +1924,7 @@ Intersect(Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
 			  Append( int2d.ParamOnSecond() + tolint);
 		      }		       
 		    
-#ifdef PLATE_DEB
+#ifdef OCCT_DEBUG
 		    cout<<"Attention: Deux points 3d ont la meme projection dist="
 		      <<Dist<<endl;
 #endif	
@@ -2020,7 +2020,7 @@ Discretise(const Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
     NbPtInter= PntInter->Value(i).Length();
     NbPtG1G1= PntG1G1->Value(i).Length();
 
-#if PLATE_DEB
+#ifdef OCCT_DEBUG
     if (Affich > 1) {
       cout << "Courbe : " << i << endl;
       cout << "  NbPnt, NbPtInter, NbPtG1G1 :" << NbPnt_i << ", " 

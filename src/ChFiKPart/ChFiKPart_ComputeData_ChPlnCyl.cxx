@@ -131,7 +131,7 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure& DStr,
     Rad = Cyl.Radius()- Dis1;
     if ( Abs(Rad) <= Precision::Confusion() ) pointu = Standard_True;
     if(Rad < 0 ) {
-#ifdef CHFIKPART_DEB
+#ifdef OCCT_DEBUG
       cout<<"the chamfer can't pass"<<endl;
 #endif
       return Standard_False;

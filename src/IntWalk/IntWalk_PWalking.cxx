@@ -1103,9 +1103,8 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
             if(Arrive==Standard_False && Status==IntWalk_ArretSurPoint)
             {
               Arrive=Standard_True;
-#ifdef DEB
-              cout << "Compile with option DEB : if problems with intersection : ";
-              cout << "IntWalk_PWalking_1.gxx (lbr le 1erdec98)"<<endl;
+#ifdef OCCT_DEBUG
+              cout << "IntWalk_PWalking_1.gxx: Problems with intersection"<<endl;
 #endif
             }
 
@@ -1472,9 +1471,8 @@ Standard_Boolean IntWalk_PWalking::ExtendLineInCommonZone(const IntImp_ConstIsop
     nbIterWithoutAppend++;
 
     if((nbIterWithoutAppend > 20) || (nbEqualPoints > 20)) {
-#ifdef DEB
-      cout<<"Compile with option DEB:";
-      cout<<"Infinite loop has detected. Stop iterations (IntWalk_PWalking_1.gxx)" << endl;
+#ifdef OCCT_DEBUG
+      cout<<"Infinite loop detected. Stop iterations (IntWalk_PWalking_1.gxx)" << endl;
 #endif
       bStop = Standard_True;
       break;

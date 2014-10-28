@@ -44,7 +44,7 @@
 #include <ShapeAnalysis_Edge.hxx>
 #include <ShapeAnalysis_WireOrder.hxx>
 #include <Geom2d_Curve.hxx>
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #include <TopTools_MapOfShape.hxx>
 #endif
 
@@ -167,7 +167,7 @@ ShapeFix_FaceConnect::ShapeFix_FaceConnect() {}
   // Clear the temporary map of free edges
   theFreeEdges.Clear();
 
-#ifdef SHAPEFIX_DEB
+#ifdef OCCT_DEBUG
   //-------------------------------
   //szv debug - preparation results
   //-------------------------------
@@ -245,7 +245,7 @@ ShapeFix_FaceConnect::ShapeFix_FaceConnect() {}
 	  
 	      // Process second face for the pair of different faces only
 	      if (theFirstFace.IsSame(theSecondFace)) {
-#ifdef SHAPEFIX_DEB
+#ifdef OCCT_DEBUG
 		cout<<"Warning: ShapeFix_FaceConnect::Build: Self-connected face"<<endl;
 #endif
 	      }
@@ -343,7 +343,7 @@ ShapeFix_FaceConnect::ShapeFix_FaceConnect() {}
     // Clear the temporary map of processed faces
     theProcessed.Clear();
 
-#ifdef SHAPEFIX_DEB
+#ifdef OCCT_DEBUG
     //-------------------------------
     //szv debug - sewing results
     //-------------------------------
@@ -476,12 +476,12 @@ ShapeFix_FaceConnect::ShapeFix_FaceConnect() {}
       TopoDS_Shape tmpReShape = theReShape->Apply(result);
       result = TopoDS::Shell(tmpReShape);
       if (theReShape->Status(ShapeExtend_OK)) {
-#ifdef SHAPEFIX_DEB
+#ifdef OCCT_DEBUG
 	cout<<"Warning: ShapeFix_FaceConnect::Build: Edges not replaced by ReShape"<<endl;
 #endif	
       }
       else if (theReShape->Status(ShapeExtend_FAIL1)) {
-#ifdef SHAPEFIX_DEB
+#ifdef OCCT_DEBUG
 	cout<<"Error: ShapeFix_FaceConnect::Build: ReShape failed on edges"<<endl;
 #endif	
       }
@@ -631,13 +631,13 @@ ShapeFix_FaceConnect::ShapeFix_FaceConnect() {}
 	  result = TopoDS::Shell(tmpshape);
 
 	  if (theReShape->Status(ShapeExtend_FAIL1)) {
-#ifdef SHAPEFIX_DEB
+#ifdef OCCT_DEBUG
 	    cout<<"Error: ShapeFix_FaceConnect::Build: ReShape failed on vertices"<<endl;
 #endif	
 	  }
 	}
 
-#ifdef SHAPEFIX_DEB
+#ifdef OCCT_DEBUG
 	//-------------------------------
 	//szv debug - reshape results
 	//-------------------------------

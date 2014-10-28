@@ -34,7 +34,7 @@
 #include <BRepCheck.hxx>
 #include <BRepCheck_Result.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepBuild_GettraceSPS();
 #endif
 //------------
@@ -162,13 +162,13 @@ void TopOpeBRepBuild_Builder::MergeShapes(const TopoDS_Shape& S1,const TopAbs_St
 {
   Standard_Boolean lesmemes = S1.IsEqual(S2);
   if (lesmemes) {
-#ifdef TOPOPEBREPBUILD_DEB
+#ifdef OCCT_DEBUG
     cout<<"TopOpeBRepBuild : S1 == S2"<<endl;
 #endif
     return;
   }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   GdumpSHASETreset();
 #endif
 
@@ -197,7 +197,7 @@ void TopOpeBRepBuild_Builder::MergeShapes(const TopoDS_Shape& S1,const TopAbs_St
   // -----------------------------------------
   TopOpeBRepBuild_ShellFaceSet SFS;
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   SFS.DEBNumber(GdumpSHASETindex());
 #endif
   
@@ -387,7 +387,7 @@ void TopOpeBRepBuild_Builder::MakeShells(TopOpeBRepBuild_SolidBuilder& SOBU,TopT
 
 void TopOpeBRepBuild_Builder::MakeFaces(const TopoDS_Shape& aFace,TopOpeBRepBuild_FaceBuilder& FABU,TopTools_ListOfShape& L)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer iF = 0; Standard_Boolean tSPS = GtraceSPS(aFace,iF);
   if(tSPS){GdumpFABU(FABU);}
 #endif
@@ -452,7 +452,7 @@ void TopOpeBRepBuild_Builder::MakeFaces(const TopoDS_Shape& aFace,TopOpeBRepBuil
 
 void TopOpeBRepBuild_Builder::MakeEdges(const TopoDS_Shape& anEdge,TopOpeBRepBuild_EdgeBuilder& EDBU,TopTools_ListOfShape& L)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer iE; Standard_Boolean tSPS = GtraceSPS(anEdge,iE);
   Standard_Integer ne = 0;
 #endif
@@ -521,7 +521,7 @@ void TopOpeBRepBuild_Builder::MakeEdges(const TopoDS_Shape& anEdge,TopOpeBRepBui
       }
     } // loop on vertices of new edge newEdge
     
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if(tSPS){cout<<endl;}
     if(tSPS){cout<<"V of new edge "<<++ne<<endl;}
     if(tSPS){GdumpEDG(newEdge);} 

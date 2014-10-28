@@ -239,7 +239,7 @@ void TDocStd_Document::Update(const Handle(CDM_Document)& /*aToDocument*/,
 
 void TDocStd_Document::NewCommand()
 {
-#ifdef DEB_TRANS
+#ifdef OCCT_DEBUG_TRANS
   if (myUndoTransaction.IsOpen() && myData->Transaction() > 1) {
     Standard_DomainError::Raise ("NewCommand : many open transactions");
   }
@@ -248,7 +248,7 @@ void TDocStd_Document::NewCommand()
   CommitTransaction();
   OpenTransaction();
 
-#ifdef DEB_TRANS
+#ifdef OCCT_DEBUG_TRANS
   cout<<"End NewCommand"<<endl;
 #endif
 }
@@ -572,14 +572,14 @@ Standard_Boolean TDocStd_Document::Undo()
 
     // Apply the Undo
     // should test the applicability before.
-#ifdef DEB_DELTA
+#ifdef OCCT_DEBUG_DELTA
     cout<<"DF before Undo =================================="<<endl; TDF_Tool::DeepDump(cout,myData);
 #endif
     Handle(TDF_Delta) D = myData->Undo(myUndos.Last(),Standard_True);
 #ifdef BUC60836 
     D->SetName(myUndos.Last()->Name());
 #endif
-#ifdef DEB_DELTA
+#ifdef OCCT_DEBUG_DELTA
     cout<<"DF after Undo =================================="<<endl; TDF_Tool::DeepDump(cout,myData);
 #endif
     // Push the redo
@@ -633,14 +633,14 @@ Standard_Boolean TDocStd_Document::Redo()
     myData->AllowModification(Standard_True);
 
     // Apply the Redo
-#ifdef DEB_DELTA
+#ifdef OCCT_DEBUG_DELTA
     cout<<"DF before Redo =================================="<<endl; TDF_Tool::DeepDump(cout,myData);
 #endif
     Handle(TDF_Delta) D = myData->Undo(myRedos.First(),Standard_True);
 #ifdef BUC60836
     D->SetName(myRedos.First()->Name());
 #endif
-#ifdef DEB_DELTA
+#ifdef OCCT_DEBUG_DELTA
     cout<<"DF after Redo =================================="<<endl; TDF_Tool::DeepDump(cout,myData);
 #endif
     // Push the redo of the redo as an undo (got it !)

@@ -65,7 +65,7 @@
 #include <BRepFeat_Builder.hxx>
 //modified by NIZNHY-PKV Thu Mar 21 17:30:29 2002 t
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean BRepFeat_GettraceFEAT();
 #endif
 
@@ -80,14 +80,14 @@ static void Descendants(const TopoDS_Shape&,
   void BRepFeat_Form::GlobalPerform () 
 {
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
   if (trc) cout << "BRepFeat_Form::GlobalPerform ()" << endl;
 #endif
 
   if (!mySbOK || !myGSOK || !mySFOK || !mySUOK || !myGFOK || 
       !mySkOK || !myPSOK) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (trc) cout << " Fields not initialized in BRepFeat_Form" << endl;
 #endif
     myStatusError = BRepFeat_NotInitialized;
@@ -101,7 +101,7 @@ static void Descendants(const TopoDS_Shape&,
   TopTools_DataMapIteratorOfDataMapOfShapeShape itm;
 
   if(myJustFeat && !myFuse) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (trc) cout << " Invalid option : myJustFeat + Cut" << endl;
 #endif
     myStatusError = BRepFeat_InvOption;
@@ -131,7 +131,7 @@ static void Descendants(const TopoDS_Shape&,
       }
       if (!exp.More()) {
         FromInShape = Standard_False;
-#ifdef DEB
+#ifdef OCCT_DEBUG
         if (trc) cout << " From not in Shape" << endl;
 #endif
         break;
@@ -150,7 +150,7 @@ static void Descendants(const TopoDS_Shape&,
       }
       if (!exp.More()) {
         UntilInShape = Standard_False;
-#ifdef DEB
+#ifdef OCCT_DEBUG
         if (trc) cout << " Until not in Shape" << endl;
 #endif
         break;
@@ -320,7 +320,7 @@ static void Descendants(const TopoDS_Shape&,
 //--- case of gluing
 
   if (theOpe == 1) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (trc) cout << " Gluer" << endl;
 #endif
     Standard_Boolean Collage = Standard_True;  
@@ -534,7 +534,7 @@ static void Descendants(const TopoDS_Shape&,
 //--- if the gluing is always applicable
 
   if (theOpe == 1) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (trc) cout << " still Gluer" << endl;
 #endif
     theGlue.Perform();
@@ -545,7 +545,7 @@ static void Descendants(const TopoDS_Shape&,
         UpdateDescendants(theGlue);
         myNewEdges = theGlue.Edges();
         myTgtEdges = theGlue.TgtEdges();
-#ifdef DEB
+#ifdef OCCT_DEBUG
           if (trc) cout << " Gluer result" << endl;
 #endif
         Done();
@@ -566,7 +566,7 @@ static void Descendants(const TopoDS_Shape&,
 //--- case without gluing + Tool with proper dimensions
 
   if (theOpe == 2 && ChangeOpe && myJustGluer) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (trc) cout << " Gluer failure" << endl;
 #endif
     myJustGluer = Standard_False;
@@ -578,12 +578,12 @@ static void Descendants(const TopoDS_Shape&,
 //--- case without gluing
 
   if (theOpe == 2) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (trc) cout << " No Gluer" << endl;
 #endif
     TopoDS_Shape theGShape = myGShape;
     if (ChangeOpe) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if (trc) cout << " Passage to topological operations" << endl;
 #endif
     }    
@@ -988,7 +988,7 @@ static void Descendants(const TopoDS_Shape&,
 
 // Case when no part of the tool is preserved
         if (!KeepParts) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
           if (trc) cout << " No parts of tool kept" << endl;
 #endif
           myStatusError = BRepFeat_NoParts;
@@ -1200,7 +1200,7 @@ const TopTools_ListOfShape& BRepFeat_Form::TgtEdges() const
 
 Standard_Boolean BRepFeat_Form::TransformShapeFU(const Standard_Integer flag)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
 #endif
   Standard_Boolean Trf = Standard_False;
@@ -1215,7 +1215,7 @@ Standard_Boolean BRepFeat_Form::TransformShapeFU(const Standard_Integer flag)
 
   TopExp_Explorer exp(shapefu, TopAbs_FACE);
   if (!exp.More()) { // no faces... It is necessary to return an error
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (trc) cout << " BRepFeat_Form::TransformShapeFU : invalid Shape" << endl;
 #endif
     return Trf;
@@ -1272,7 +1272,7 @@ Standard_Boolean BRepFeat_Form::TransformShapeFU(const Standard_Integer flag)
       myMap(fac).Append(fac);
     }
   }
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (trc) {
     if (Trf && (flag == 0)) cout << " TransformShapeFU From" << endl;
     if (Trf && (flag == 1)) cout << " TransformShapeFU Until" << endl;

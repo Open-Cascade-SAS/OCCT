@@ -239,7 +239,7 @@ Standard_Boolean BinMNaming_NamingDriver::Paste
 	TCollection_AsciiString entry;
 	ok = theSource >> entry;
 	if(ok) {
-#ifdef BINMNAMING_DEB
+#ifdef OCCT_DEBUG
 	  cout << "NamingDriver:: Retrieved Context Label = " << entry << " Ok = " << theSource.IsOK()  <<endl;
 #endif
 	 
@@ -277,7 +277,7 @@ Standard_Boolean BinMNaming_NamingDriver::Paste
       if(ok) {
         OrientationToApply = (TopAbs_Orientation)anIndx;
 		aName.Orientation(OrientationToApply);
-#ifdef BINMNAMING_DEB
+#ifdef OCCT_DEBUG
 	    cout << "NamingDriver:: Retrieved Orientation = " << OrientationToApply << " Ok = " << theSource.IsOK()  <<endl;
 #endif
 	  } else {
@@ -287,7 +287,7 @@ Standard_Boolean BinMNaming_NamingDriver::Paste
 	  }
 	}
 	}
-#ifdef BINMNAMING_DEB
+#ifdef OCCT_DEBUG
       else if(BinMNaming::DocumentVersion() == -1)
 	cout << "Current DocVersion field is not initialized. "  <<endl;
       else 

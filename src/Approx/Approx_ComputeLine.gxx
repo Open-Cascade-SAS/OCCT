@@ -35,7 +35,7 @@
 
 #include <stdio.h>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 static Standard_Boolean mydebug = Standard_False;
 
 #include <Geom_BezierCurve.hxx>
@@ -514,7 +514,7 @@ Approx_ComputeLine::Approx_ComputeLine
 
 void Approx_ComputeLine::Perform(const MultiLine& Line)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (mydebug) DUMP(Line);
 #endif
   if (!myIsClear)
@@ -560,7 +560,7 @@ void Approx_ComputeLine::Perform(const MultiLine& Line)
     TheMultiCurve = AppParCurves_MultiCurve();
     alldone = Compute(Line, myfirstpt, mylastpt, TheParam, thetol3d, thetol2d);
     if(!alldone && TheMultiCurve.NbCurves() > 0) {
-#ifdef DEB 
+#ifdef OCCT_DEBUG
       if (mydebug) DUMP(TheMultiCurve);
 #endif
       myMultiCurves.Append(TheMultiCurve);
@@ -674,7 +674,7 @@ void Approx_ComputeLine::Perform(const MultiLine& Line)
 		myMultiCurves.Clear();
 		return;
 	      }
-#ifdef DEB 
+#ifdef OCCT_DEBUG
       if (mydebug) DUMP(TheMultiCurve);
 #endif
 	      myMultiCurves.Append(TheMultiCurve);
@@ -710,7 +710,7 @@ void Approx_ComputeLine::Perform(const MultiLine& Line)
 	    myMultiCurves.Clear();
 	    return;
 	  }
-#ifdef DEB 
+#ifdef OCCT_DEBUG
       if (mydebug) DUMP(TheMultiCurve);
 #endif
 	  myMultiCurves.Append(TheMultiCurve);
@@ -946,7 +946,7 @@ Standard_Boolean Approx_ComputeLine::Compute(const MultiLine& Line,
       if (TheTol3d <= mytol3d && TheTol2d <= mytol2d) {
 	// Stockage de la multicurve approximee.
 	tolreached = Standard_True;
-#ifdef DEB 
+#ifdef OCCT_DEBUG
       if (mydebug) DUMP(mySCU);
 #endif
 	myMultiCurves.Append(mySCU);
@@ -992,7 +992,7 @@ Standard_Boolean  Approx_ComputeLine::ComputeCurve(const MultiLine& Line,
   gp_Pnt P1, P2;
   gp_Pnt2d P12d, P22d;
   Standard_Boolean Tangent1, Tangent2, mydone= Standard_False;
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean Parallel;
 #endif
   Standard_Integer myfirstpt = firstpt, mylastpt = lastpt;
@@ -1039,7 +1039,7 @@ Standard_Boolean  Approx_ComputeLine::ComputeCurve(const MultiLine& Line,
   if (nbp == 2) {
     // S il n y a que 2 points, on verifie quand meme que les tangentes sont 
     // alignees.
-#ifdef DEB
+#ifdef OCCT_DEBUG
     Parallel = Standard_True;
 #endif
     if (Tangent1) {
@@ -1047,7 +1047,7 @@ Standard_Boolean  Approx_ComputeLine::ComputeCurve(const MultiLine& Line,
 	gp_Vec PVec(tabP1(i), tabP2(i));
 	V13d = tabV1(i);
 	if (!PVec.IsParallel(V13d, Precision::Angular())) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	  Parallel = Standard_False;
 #endif
 	  break;
@@ -1057,7 +1057,7 @@ Standard_Boolean  Approx_ComputeLine::ComputeCurve(const MultiLine& Line,
 	gp_Vec2d PVec2d(tabP12d(i), tabP22d(i));
 	V12d = tabV12d(i);
 	if (!PVec2d.IsParallel(V12d, Precision::Angular())) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	  Parallel = Standard_False;
 #endif
 	  break;
@@ -1070,7 +1070,7 @@ Standard_Boolean  Approx_ComputeLine::ComputeCurve(const MultiLine& Line,
 	gp_Vec PVec(tabP1(i), tabP2(i));
 	V23d = tabV2(i);
 	if (!PVec.IsParallel(V23d, Precision::Angular())) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	  Parallel = Standard_False;
 #endif
 	  break;
@@ -1080,7 +1080,7 @@ Standard_Boolean  Approx_ComputeLine::ComputeCurve(const MultiLine& Line,
 	gp_Vec2d PVec2d(tabP12d(i), tabP22d(i));
 	V22d = tabV22d(i);
 	if (!PVec2d.IsParallel(V22d, Precision::Angular())) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	  Parallel = Standard_False;
 #endif
 	  break;
@@ -1088,7 +1088,7 @@ Standard_Boolean  Approx_ComputeLine::ComputeCurve(const MultiLine& Line,
       }
     }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (!Parallel) {
       if (mydebug) cout <<"droite mais tangentes pas vraiment paralleles!!"<< endl;
     }
@@ -1148,7 +1148,7 @@ Standard_Boolean  Approx_ComputeLine::ComputeCurve(const MultiLine& Line,
     mydone = Standard_True;
     // Stockage de la multicurve approximee.
     tolreached = Standard_True;
-#ifdef DEB 
+#ifdef OCCT_DEBUG
       if (mydebug) DUMP(mySCU);
 #endif
     myMultiCurves.Append(mySCU);
@@ -1191,7 +1191,7 @@ Standard_Boolean  Approx_ComputeLine::ComputeCurve(const MultiLine& Line,
 
     // Stockage de la multicurve approximee.
     tolreached = Standard_True;
-#ifdef DEB 
+#ifdef OCCT_DEBUG
       if (mydebug) DUMP(mySCU);
 #endif
     myMultiCurves.Append(mySCU);

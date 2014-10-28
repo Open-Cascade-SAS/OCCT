@@ -14,7 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//#ifndef DEB
+//#ifndef OCCT_DEBUG
 //#define No_Standard_RangeError
 //#define No_Standard_OutOfRange
 //#endif
@@ -1068,7 +1068,7 @@ void IntCurveSurface_Inter::PerformConicSurf(const gp_Lin&   Line,
 	Standard_Integer nbp = intlintorus.NbPoints();
 	Standard_Real fi,theta,w;
 	for(Standard_Integer i = 1; i<= nbp; i++) { 
-#ifndef DEB
+#ifndef OCCT_DEBUG
 	  gp_Pnt P;
 	  P = intlintorus.Value(i);
 #else
@@ -1814,7 +1814,7 @@ void ProjectIntersectAndEstLim(const gp_Lin&        theLine,
 {
   ProjLib_Plane aLineProj( thePln, theLine );
   if (!aLineProj.IsDone()) {
-#ifdef INTCURVESURFACE_DEB
+#ifdef OCCT_DEBUG
   cout
   << "Info: IntCurveSurface_Inter::ProjectIntersectAndEstLim(), !aLineProj.IsDone()"
   << endl;
@@ -1941,7 +1941,7 @@ void EstLimForInfRevl(const gp_Lin&   Line,
     return; // not infinite curve
   }
   if (!aBasCurvProj.IsDone()) {
-#ifdef INTCURVESURFACE_DEB
+#ifdef OCCT_DEBUG
     cout << "Info: IntCurveSurface_Inter::EstLimForInfRevl(), !aBasCurvProj.IsDone()" << endl;
 #endif
     return;

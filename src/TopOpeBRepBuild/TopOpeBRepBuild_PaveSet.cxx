@@ -27,7 +27,7 @@
 #include <TopExp.hxx>
 #include <gp_Pnt.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepTool_GettraceVC();
 #include <TopOpeBRepBuild_Builder.hxx>
 #include <gp_Pnt.hxx>
@@ -161,7 +161,7 @@ void  TopOpeBRepBuild_PaveSet::Prepare()
     return;
   }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = Standard_False;
   trc = trc || TopOpeBRepTool_GettraceVC();
   Standard_Integer iv=0;//,nv=myVertices.Extent();
@@ -272,7 +272,7 @@ void  TopOpeBRepBuild_PaveSet::Prepare()
     SortPave(List,myVertices);
   }
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if ( TopOpeBRepTool_GettraceVC() ) {
     myVerticesIt.Initialize(myVertices);
     if ( MoreLoop() ) cout<<"--- PaveSet : Prepare"<<endl;
@@ -377,7 +377,7 @@ Standard_Boolean  TopOpeBRepBuild_PaveSet::HasEqualParameters()
 
       p2 = it2.Value()->Parameter();
       Standard_Real d = Abs(p1-p2);
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if (TopOpeBRepTool_GettraceVC()) {
 	cout<<"VertexSet : p1,p2  d "<<p1<<","<<p2<<"  "<<d<<endl;
       }
@@ -401,7 +401,7 @@ Standard_Boolean  TopOpeBRepBuild_PaveSet::HasEqualParameters()
       for (it1.Initialize(myVertices); 
 	   (! myHasEqualParameters ) && it1.More();
 	   it1.Next()) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //	const TopoDS_Shape& v1 = it1.Value()->Vertex();
 #endif
 	p1 = it1.Value()->Parameter();
@@ -409,7 +409,7 @@ Standard_Boolean  TopOpeBRepBuild_PaveSet::HasEqualParameters()
 	if (d < Precision::PConfusion()) { 
 	  myHasEqualParameters = Standard_True;
 	  myEqualParameters = f;
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	  if (TopOpeBRepTool_GettraceVC()) {
 	    cout<<"=*=*=*=*=*=*=*=*=*=*=*=*=*=*"<<endl;
 	    cout<<"PaveSet : p1,f  d "<<p1<<","<<f<<"  "<<d<<endl;

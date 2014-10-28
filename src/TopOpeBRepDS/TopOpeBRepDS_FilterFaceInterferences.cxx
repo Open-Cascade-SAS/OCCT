@@ -25,7 +25,7 @@
 #include <TopOpeBRepDS_ListOfShapeOn1State.hxx>
 #include <TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepDS_GetcontextNOPFI();
 extern Standard_Boolean TopOpeBRepDS_GettracePFI();
 extern Standard_Boolean TopOpeBRepDS_GettracePI();
@@ -45,7 +45,7 @@ Standard_EXPORT void FUN_resolveFUNKNOWN
  const TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State& MEsp,
  TopOpeBRepTool_PShapeClassifier pClassif);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 void debfilfac(const Standard_Integer I) {cout<<"+ + + + debfilfac "<<I<<endl;}
 void debpfi(const Standard_Integer I) {cout<<"+ + + + debpfi "<<I<<endl;}
 #endif
@@ -53,26 +53,26 @@ void debpfi(const Standard_Integer I) {cout<<"+ + + + debpfi "<<I<<endl;}
 // -------------------------------------------------------
 void FUN_FilterFace
 // -------------------------------------------------------
-#ifdef DEB
+#ifdef OCCT_DEBUG
 (TopOpeBRepDS_ListOfInterference& LI,const TopOpeBRepDS_DataStructure& /*BDS*/,const Standard_Integer SIX)
 #else
 (TopOpeBRepDS_ListOfInterference& ,const TopOpeBRepDS_DataStructure& ,const Standard_Integer )
 #endif
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean TRC=TRCF(SIX);
   Standard_Integer nI = 0;
   if (TRC) debfilfac(SIX);
 #endif
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   nI = LI.Extent();
   if (TRC) cout <<"before FUN_FilterFace on "<<SIX<<" nI = "<<nI<<endl;
 #endif
 
 //  ::FUN_unkeepFdoubleGBoundinterferences(LI,BDS,SIX);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   nI = LI.Extent();
   if (TRC) cout <<"after unkeepFinterferences nI = "<<nI<<endl;
 #endif
@@ -87,7 +87,7 @@ void TopOpeBRepDS_Filter::ProcessFaceInterferences
 {
   TopOpeBRepDS_DataStructure& BDS = myHDS->ChangeDS();
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean TRC=TRCF(SIX); 
   Standard_Integer nI = 0;
   if (TRC) debpfi(SIX);
@@ -97,14 +97,14 @@ void TopOpeBRepDS_Filter::ProcessFaceInterferences
   TopOpeBRepDS_ListOfInterference& LI = BDS.ChangeShapeInterferences(SIX);
   ::FUN_reducedoublons(LI,BDS,SIX);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   nI = LI.Extent();
   if (TRC) cout <<"after reducedoublons nI = "<<nI<<endl;
 #endif
 
   TopOpeBRepDS_ListOfInterference lw, lE, lFE, lFEF, lF, lUU, lall; lall.Assign(LI);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer nUU =
 #endif
             ::FUN_selectTRAUNKinterference(lall,lUU);
@@ -112,7 +112,7 @@ void TopOpeBRepDS_Filter::ProcessFaceInterferences
   lw.Append(lall);
   lw.Append(lUU);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer nF, nFE, nFEF, nE;
 #endif
 
@@ -121,7 +121,7 @@ void TopOpeBRepDS_Filter::ProcessFaceInterferences
   ::FUN_selectSKinterference(lFE,TopOpeBRepDS_FACE,lFEF);
   ::FUN_selectTRASHAinterference(lw,TopAbs_EDGE,lE);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   nF = lF.Extent();
   nFE = lFE.Extent();
   nFEF = lFEF.Extent();
@@ -138,7 +138,7 @@ void TopOpeBRepDS_Filter::ProcessFaceInterferences
 
   ::FUN_FilterFace(lFEF,BDS,SIX);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   nF = lF.Extent();
   nFE = lFE.Extent();
   nFEF = lFEF.Extent();

@@ -561,7 +561,7 @@ Draw_Interpretor::~Draw_Interpretor()
     Tcl_Exit(0);
   }
   catch (Standard_Failure) {
-#ifdef DRAW_DEB
+#ifdef OCCT_DEBUG
     cout <<"Tcl_Exit have an exeption" << endl;
 #endif
   }

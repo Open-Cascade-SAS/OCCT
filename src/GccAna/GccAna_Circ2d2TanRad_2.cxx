@@ -192,7 +192,7 @@ GccAna_Circ2d2TanRad::
 	      else { qualifier1(NbrSol) = GccEnt_enclosing; }
 	      qualifier2(NbrSol) = GccEnt_noqualifier;
 	      dir1 = gp_Dir2d(Center.XY()-center1.XY());
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	      gp_Dir2d dir2(Center.XY()-Point2.XY());
 #endif
 	      if ((Center.Distance(center1) > C1.Radius()) &&

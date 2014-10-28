@@ -64,7 +64,7 @@ void  TopOpeBRepDS_CurvePointInterference::Parameter(const Standard_Real P)
 Standard_OStream& TopOpeBRepDS_CurvePointInterference::Dump
   (Standard_OStream& OS) const
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   TopOpeBRepDS_Kind supporttype = SupportType();
   if      (supporttype == TopOpeBRepDS_EDGE)  OS<<"EPI";
   else if (supporttype == TopOpeBRepDS_CURVE) OS<<"CPI";

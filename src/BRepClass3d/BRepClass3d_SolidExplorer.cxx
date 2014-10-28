@@ -575,7 +575,7 @@ Standard_Integer BRepClass3d_SolidExplorer::OtherSegment(const gp_Pnt& P,
     if(NbFacesInSolid==0) { 
       _Par=0.0;
       myReject=Standard_True;
-#if BREPCLASS3D_DEB
+#ifdef OCCT_DEBUG
       cout<<"\nWARNING : BRepClass3d_SolidExplorer.cxx  (Solid without face)"<<endl;
 #endif  
       return 0;
@@ -780,7 +780,7 @@ void BRepClass3d_SolidExplorer::InitShape(const TopoDS_Shape& S)
     myReject=Standard_False;  //-- at least one face in the solid 
   }
   
-#if BREPCLASS3D_DEB
+#ifdef OCCT_DEBUG
   if(myReject) { 
     cout<<"\nWARNING : BRepClass3d_SolidExplorer.cxx  (Solid without face)"<<endl;
   }
@@ -902,7 +902,7 @@ Standard_Boolean BRepClass3d_SolidExplorer::RejectFace(const gp_Lin& ) const
   return(Standard_False); 
 }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #include <TopAbs_State.hxx>
 #endif
 
@@ -952,7 +952,7 @@ void BRepClass3d_SolidExplorer::DumpSegment(const gp_Pnt&,
                                             const Standard_Real,
                                             const TopAbs_State) const
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
  
 #endif
 }

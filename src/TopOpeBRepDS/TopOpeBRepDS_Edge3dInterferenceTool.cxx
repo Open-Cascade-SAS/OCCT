@@ -34,7 +34,7 @@
 static void FUN_Raise()
 {
   Standard_ProgramError::Raise("Edge3dInterferenceTool");
-#ifdef TOPOPEBREPDS_DEB
+#ifdef OCCT_DEBUG
   cout <<" ************** Failure in Edge3dInterferenceTool"<<endl;
 #endif
 }
@@ -92,7 +92,7 @@ static Standard_Boolean FUN_paronOOE
     Standard_Real tol1 = BRep_Tool::Tolerance(OOE);
     Standard_Real tol2 = tol1*1.e3;
     Standard_Real tol = tol2; if (tol > 1.e-2) tol = 1.e-2;
-#ifdef DEBDEB
+#ifdef OCCT_DEBUG
     cout<<"$$$$$$$$$$$$$$$$$$$$$$$$ FUN_paronOOE : dist "<<dist<<" tol1 "<<tol1<<endl;
     cout<<"$$$$$$$$$$$$$$$$$$$$$$$$ FUN_paronOOE : dist "<<dist<<" tol "<<tol<<endl;
 #endif

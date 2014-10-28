@@ -28,7 +28,7 @@
 #include <ModelDefinitions.hxx>
 
 //#define SEL_DEB 1
-#ifdef SEL_DEB
+#ifdef OCCT_DEBUG
 #include <TDF_Tool.hxx>
 #include <TDF_MapIteratorOfLabelMap.hxx>
 #endif
@@ -55,7 +55,7 @@ Standard_Boolean DNaming_SelectionDriver::MustExecute(const TFunction_Logbook& )
   return Standard_True;
 }
 
-#ifdef SEL_DEB
+#ifdef OCCT_DEBUG
 #include <BRepTools.hxx>
 static void Write(const TopoDS_Shape& shape,
 		      const Standard_CString filename) 
@@ -104,7 +104,7 @@ Standard_Integer DNaming_SelectionDriver::Execute(TFunction_Logbook& theLog) con
 
   TDF_LabelMap aMap;
   aMap = theLog.ChangeValid();
-#ifdef SEL_DEB
+#ifdef OCCT_DEBUG
   cout <<"#E_DNaming_SelectionDriver:: Valid Label Map:"<<endl;
   TDF_MapIteratorOfLabelMap anItr(aMap);
   for (; anItr.More(); anItr.Next()) {
@@ -138,7 +138,7 @@ Standard_Integer DNaming_SelectionDriver::Execute(TFunction_Logbook& theLog) con
 	  aNS->Label().EntryDump(cout); cout << endl;
 	  
 	} else {
-#ifdef SEL_DEB
+#ifdef OCCT_DEBUG
 	  Write(aNS->Get(), "Selection_Result.brep");
 	  Handle(TopoDS_TShape) aTS = aNS->Get().TShape();
 	  cout << "TShape = " << (Standard_Address)aTS <<endl;
@@ -153,7 +153,7 @@ Standard_Integer DNaming_SelectionDriver::Execute(TFunction_Logbook& theLog) con
 	    if(aPrevShapeType == aNS->Get().ShapeType()) {
 	      aFunction->SetFailure(DONE);
 	    } else {
-#ifdef SEL_DEB	    
+#ifdef OCCT_DEBUG	    
 	      cout <<"%%%WARNING: DNaming_SelectionDriver::Execute: The Shape after solving changed type = "<<aNS->Get().ShapeType()<< endl;
 #endif
 	      aFunction->SetFailure(DONE);

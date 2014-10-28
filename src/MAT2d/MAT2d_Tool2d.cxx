@@ -70,7 +70,7 @@
 #ifdef DRAW
   static Handle(DrawTrSurf_Curve2d) draw;
 #endif
-#ifdef DEB
+#ifdef OCCT_DEBUG
   static void MAT2d_DrawCurve(const Handle(Geom2d_Curve)& aCurve,
 			      const Standard_Integer      Indice);
   static Standard_Boolean Store = Standard_False;
@@ -325,7 +325,7 @@ void MAT2d_Tool2d::CreateBisector(const Handle(MAT_Bisector)& abisector)
     item2 = Handle(Geom2d_Curve)::DownCast(elt2);
   }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean Affich = Standard_False;
   if (Affich) {
     cout<<endl; 
@@ -390,7 +390,7 @@ void MAT2d_Tool2d::CreateBisector(const Handle(MAT_Bisector)& abisector)
   abisector->BisectorNumber(theNumberOfBisectors);
   abisector->Sense(1);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean AffichDraw = Standard_False;
   if (AffichDraw) Dump(abisector->BisectorNumber(),1);
   if (Store) {    
@@ -487,7 +487,7 @@ Standard_Boolean MAT2d_Tool2d::TrimBisector
 {
   Standard_Real param = abisector->FirstParameter();
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean Affich = Standard_False;
   if (Affich) cout<<"TRIM de "<<abisector->BisectorNumber()<<endl;
 #endif
@@ -534,7 +534,7 @@ Standard_Boolean MAT2d_Tool2d::TrimBisector
   if(Bisector->LastParameter()  <  Param)return Standard_False;
   Bisector->SetTrim(Bisector->FirstParameter(),Param);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean Affich = Standard_False;
   if (Affich) MAT2d_DrawCurve(Bisector,2);
 #endif  
@@ -648,7 +648,7 @@ Standard_Boolean MAT2d_Tool2d::IsSameDistance (
   else if (IEdge4 == IEdge2) Dist(4)  = Dist(2);  
   else                       Projection(IEdge4,PCom,Dist(4));
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean Affich = Standard_False;
   if (Affich)
     for (Standard_Integer j = 1; j <= 4;j++){
@@ -730,7 +730,7 @@ Standard_Real MAT2d_Tool2d::IntersectBisector (
   if (Domain2.LastParameter() - Domain2.FirstParameter()  < Tolerance) 
      return Precision::Infinite();
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean Affich = Standard_False;
   if (Affich) {
     cout<<endl;
@@ -929,7 +929,7 @@ Standard_Real MAT2d_Tool2d::IntersectBisector (
   BisectorOne->SecondParameter(Param1);
   BisectorTwo->FirstParameter (Param2);
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (Affich) {
     cout<<"   coordonnees    : "<<GeomPnt  (IntPnt).X()<<" "
                                 <<GeomPnt  (IntPnt).Y()<<endl;
@@ -963,7 +963,7 @@ Standard_Real MAT2d_Tool2d::Distance(const Handle(MAT_Bisector)& Bis,
 //function : Dump
 //purpose  :
 //=============================================================================
-#ifndef DEB
+#ifndef OCCT_DEBUG
 void MAT2d_Tool2d::Dump(const Standard_Integer ,
 			const Standard_Integer ) const
 {
@@ -1220,7 +1220,7 @@ IntRes2d_Domain  Domain(const Handle(Geom2d_TrimmedCurve)& Bisector1,
   return Domain1;
 }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //==========================================================================
 //function : MAT2d_DrawCurve
 //purpose  : Affichage d une courbe <aCurve> de Geom2d. dans une couleur

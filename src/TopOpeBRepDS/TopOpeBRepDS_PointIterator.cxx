@@ -79,7 +79,7 @@ TopAbs_Orientation  TopOpeBRepDS_PointIterator::Orientation
 Standard_Real  TopOpeBRepDS_PointIterator::Parameter()const 
 {
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //  cout<<"PointIterator : I = "; Value()->Dump(cout); cout<<endl;
 #endif
 

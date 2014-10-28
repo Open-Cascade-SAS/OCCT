@@ -416,7 +416,7 @@ void QANewBRepNaming_Loader::LoadDangleShapes(const TopoDS_Shape& theShape,
     const TopoDS_Shape& aDangle = itr.Key();
     if (ignored.Contains(aDangle)) continue;
     TNaming_Builder aBuilder(theLabelGenerator.NewChild());
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
     TDataStd_Name::Set(aBuilder.NamedShape()->Label(), "NewShapes");
 #endif
     aBuilder.Generated(aDangle);

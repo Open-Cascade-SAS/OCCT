@@ -34,7 +34,7 @@
 
 #include <TopOpeBRepDS_define.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepDS_GettraceDSF(); 
 extern Standard_Boolean TopOpeBRep_GetcontextNEWKP();
 #endif
@@ -122,7 +122,7 @@ static Standard_Boolean FUNBREP_SameUV(const TopOpeBRep_VPointInter& VP1,
   return sameuv;
 }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //-------------------------------------------------------------------
 void FUNBREP_topokpartDEB 
 (const Handle(TopOpeBRepDS_Interference)& /*Ifound*/,
@@ -209,7 +209,7 @@ Standard_Boolean FUNBREP_topowalki_new
  TopOpeBRepDS_Transition& transLine)
 //----------------------------------------------------------------------
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = TopOpeBRepDS_GettraceDSF();
 #endif
   
@@ -264,7 +264,7 @@ Standard_Boolean FUNBREP_topowalki_new
       Standard_Boolean samevponcouture = samepar && keep;    
       if (samevponcouture) {
 	keep = Standard_False;      
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	if (trc) cout<<"is same vp on couture";
 #endif
       }
@@ -298,7 +298,7 @@ Standard_Boolean FUNBREP_topowalki_new
   return keep;
 } // FUNBREP_topowalki_new 
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean GLOBAL_bvpr;
 Standard_EXPORT void debvpr2(void) {}
 #endif
@@ -320,7 +320,7 @@ Standard_Boolean FUNBREP_topowalki
  TopOpeBRepDS_Transition& transLine)
 //----------------------------------------------------------------------
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = TopOpeBRepDS_GettraceDSF();
 #endif
   
@@ -329,7 +329,7 @@ Standard_Boolean FUNBREP_topowalki
     return Standard_False;
   }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean newkp = TopOpeBRep_GetcontextNEWKP();
   if (newkp) {
     Standard_Boolean keep = FUNBREP_topowalki_new(Ifound,DSCIL,L,VP,E,samepar,couture,transLine);
@@ -426,13 +426,13 @@ Standard_Boolean FUNBREP_topowalki
     if (keep && samevponcouture) {
       keep = Standard_False;
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if (trc) cout<<"is same vp on couture";
 #endif
     }
 
     if (keep) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if (GLOBAL_bvpr) debvpr2(); 
 #endif
 
@@ -603,7 +603,7 @@ static Standard_Boolean FUNBREP_topogline
     return Standard_False;
   }
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean newkp = TopOpeBRep_GetcontextNEWKP();
   if (newkp) {
     Standard_Boolean keep = FUNBREP_topogline_new(DSCIL,L,VP,BDS,toluv,samepar,couture,parline,transLine);
@@ -761,7 +761,7 @@ Standard_EXPORT Standard_Boolean FUNBREP_topokpart
 
   TopOpeBRepDS_Transition lasttransLine;
   if (!DSCIL.IsEmpty()) lasttransLine = DSCIL.Last()->Transition(); // xpu12-12-97
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepDS_GettraceDSF()) {
     FUNBREP_topokpartDEB(Ifound,DSCIL,L,VP,lasttransLine,BDS,E,F,toluv,
 			 CPIfound,samepar,couture,parline,transLine);

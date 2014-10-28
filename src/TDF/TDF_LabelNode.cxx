@@ -39,7 +39,7 @@ TDF_LabelNode::TDF_LabelNode
   myData            (aDataPtr)
 #endif
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   myDebugEntry = '0';
 #endif
 }
@@ -68,7 +68,7 @@ TDF_LabelNode::TDF_LabelNode
     myData = aFather -> Data();
 #endif
   }
-#ifdef DEB
+#ifdef OCCT_DEBUG
   myDebugEntry = myFather->myDebugEntry;
   myDebugEntry += ':';
   myDebugEntry += aTag;

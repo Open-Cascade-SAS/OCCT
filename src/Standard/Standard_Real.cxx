@@ -236,7 +236,7 @@ Standard_Real     ATanh(const Standard_Real Value)
 { 
   if ( (Value <= -1.) || (Value >= 1.) ){
     Standard_NumericError::Raise("Illegal agument in ATanh");
-#ifdef STANDARD_DEB
+#ifdef OCCT_DEBUG
     cout << "Illegal agument in ATanh" << endl ;
 #endif
   } 
@@ -250,7 +250,7 @@ Standard_Real     ACosh (const Standard_Real Value)
 { 
   if ( Value < 1. ){
     Standard_NumericError::Raise("Illegal agument in ACosh");
-#ifdef STANDARD_DEB
+#ifdef OCCT_DEBUG
     cout << "Illegal agument in ACosh" << endl ;
 #endif
   } 
@@ -263,7 +263,7 @@ Standard_Real     ACosh (const Standard_Real Value)
 Standard_Real     Log (const Standard_Real Value) 
 {   if ( Value <= 0. ){
     Standard_NumericError::Raise("Illegal agument in Log");
-#ifdef STANDARD_DEB
+#ifdef OCCT_DEBUG
     cout << "Illegal agument in Log" << endl ;
 #endif
   } 
@@ -276,7 +276,7 @@ Standard_Real     Sqrt (const Standard_Real Value)
 { 
   if (  Value < 0. ){
     Standard_NumericError::Raise("Illegal agument in Sqrt");
-#ifdef STANDARD_DEB
+#ifdef OCCT_DEBUG
     cout << "Illegal agument in Sqrt" << endl ;
 #endif
   } 

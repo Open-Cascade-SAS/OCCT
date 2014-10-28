@@ -25,7 +25,7 @@
 #include <Precision.hxx>
 #include <TopExp.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepTool_GettraceVC();
 extern Standard_Boolean TopOpeBRepTool_GettraceCLOV();
 #endif
@@ -72,7 +72,7 @@ TopOpeBRepBuild_PaveClassifier::TopOpeBRepBuild_PaveClassifier
       }
     }
     
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (TopOpeBRepTool_GettraceVC()) {
       cout<<endl;
       if (myEdgePeriodic) {
@@ -122,7 +122,7 @@ TopAbs_State  TopOpeBRepBuild_PaveClassifier::CompareOnNonPeriodic()
     }
   }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepTool_GettraceVC()) {
     cout<<"VC_NP : ";
     if      (myP1 == myP2) cout<<" p1 = p2";
@@ -181,7 +181,7 @@ void TopOpeBRepBuild_PaveClassifier::AdjustOnPeriodic()
 {
   if ( ! ToAdjustOnPeriodic() ) return;
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Real p1 = myP1, p2 = myP2;
 #endif
 
@@ -196,7 +196,7 @@ void TopOpeBRepBuild_PaveClassifier::AdjustOnPeriodic()
     if (myO2 == TopAbs_FORWARD) myP1 = AdjustCase(myP1,myO1,myP2,myPeriod,tol,myCas1);
   }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepTool_GettraceVC()) {
     cout<<"p1 "<<p1<<" ";TopAbs::Print(myO1,cout);cout<<" --> "<<myP1<<endl;
     cout<<"p2 "<<p2<<" ";TopAbs::Print(myO2,cout);cout<<" --> "<<myP2<<endl;
@@ -241,7 +241,7 @@ TopAbs_State  TopOpeBRepBuild_PaveClassifier::CompareOnPeriodic()
     myCas1 = myCas2 = 7;
   }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepTool_GettraceVC()) {
     cout<<"VC_P : cas "<<myCas1<<"__"<<myCas2;
     cout<<" --> state "; TopAbs::Print(state,cout); cout<<endl;
@@ -272,7 +272,7 @@ TopAbs_State  TopOpeBRepBuild_PaveClassifier::Compare
   myP1 = PV1->Parameter();
   myP2 = PV2->Parameter();
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepTool_GettraceVC()) {  
     cout<<endl<<"VC : "<<myP1<<" "<<myP2<<" ";
     TopAbs::Print(myO1,cout); cout<<" "; TopAbs::Print(myO2,cout);
@@ -291,7 +291,7 @@ TopAbs_State  TopOpeBRepBuild_PaveClassifier::Compare
   else
     state = CompareOnNonPeriodic();
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepTool_GettraceVC()) { 
     cout<<"VC : --> final state "; TopAbs::Print(state,cout); cout<<endl;
   }
@@ -311,7 +311,7 @@ void TopOpeBRepBuild_PaveClassifier::SetFirstParameter
   myFirst = P;
   mySameParameters = Standard_True;
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepTool_GettraceVC())
     cout<<endl<<"VC : set first parameter "<<myFirst<<endl;
 #endif
@@ -327,7 +327,7 @@ void TopOpeBRepBuild_PaveClassifier::ClosedVertices
   (const Standard_Boolean Closed)
 {
   myClosedVertices = Closed;
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepTool_GettraceCLOV()) {
     myEdgePeriodic = Closed;
     cout<<"::::::::::::::::::::::::"<<endl;

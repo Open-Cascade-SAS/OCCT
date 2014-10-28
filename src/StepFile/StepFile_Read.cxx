@@ -48,9 +48,11 @@ extern "C" void recfile_modeprint (int mode);  // controle trace recfile
 #include <Message_Messenger.hxx>
 #include <Message.hxx>
 
+#ifdef OCCT_DEBUG
 #define CHRONOMESURE
 #ifdef CHRONOMESURE
 # include <OSD_Timer.hxx>
+#endif
 #endif
 
 //  ##  ##  ##  ##    ON SAURA AU MOINS TRAITER UndefinedEntity  ##  ##  ##  ##
@@ -140,9 +142,11 @@ Standard_Integer StepFile_Read
     if (stepread () != 0) {  lir_file_fin(3);  stepread_endinput (newin,ficnom);  return 1;  }
   }
   catch (Standard_Failure) {
+#ifdef OCCT_DEBUG
     sout << " ...  Exception Raised while reading Step File : " << ficnom << ":\n" << endl;
     sout << Standard_Failure::Caught()->GetMessageString();  
     sout << "    ..." << endl;
+#endif
     lir_file_fin(3);  
     stepread_endinput (newin,ficnom);  
     return 1;
@@ -230,7 +234,9 @@ Standard_Integer StepFile_Read
 
 void StepFile_Interrupt (char* mess)
 {
+#ifdef OCCT_DEBUG
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
   sout << "    ****    StepFile Error : " << mess << "    ****" << endl;
+#endif
   checkread->AddFail(mess);
 }

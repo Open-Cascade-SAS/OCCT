@@ -102,7 +102,7 @@
 #include <BRepFeat_Builder.hxx>
 
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean BRepFeat_GettraceFEAT();
 extern Standard_Boolean BRepFeat_GettraceFEATRIB();
 #endif
@@ -114,13 +114,13 @@ extern Standard_Boolean BRepFeat_GettraceFEATRIB();
 
 void BRepFeat_RibSlot::LFPerform()
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
   if (trc) cout << "BRepFeat_RibSlot::LFPerform()" << endl;
 #endif
   if (mySbase.IsNull() || myPbase.IsNull() || mySkface.IsNull() 
       || myGShape.IsNull() || myLFMap.IsEmpty()) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     cout << "Topological reconstruction is impossible" << endl;
     if (trc) cout << " Fields not initialized" << endl;
 #endif
@@ -195,7 +195,7 @@ void BRepFeat_RibSlot::LFPerform()
         (!myFuse && ope != LocOpe_CUT) ||
         (!Collage)) {
       theOpe = 2;
-#ifdef BREPFEAT_DEB
+#ifdef OCCT_DEBUG
       cout << "Passage to topological operations" << endl;
 #endif
     }
@@ -216,7 +216,7 @@ void BRepFeat_RibSlot::LFPerform()
     }
     else {
       theOpe = 2;
-#ifdef BREPFEAT_DEB
+#ifdef OCCT_DEBUG
       cout << "Passage to topologic operation" << endl;
 #endif
     }
@@ -283,7 +283,7 @@ Standard_Boolean BRepFeat_RibSlot::IsDeleted(const TopoDS_Shape& F)
 const TopTools_ListOfShape& BRepFeat_RibSlot::Modified
    (const TopoDS_Shape& F)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
   if (trc) cout << "BRepFeat_RibSlot::Modified" << endl;
 #endif
@@ -309,7 +309,7 @@ const TopTools_ListOfShape& BRepFeat_RibSlot::Modified
 const TopTools_ListOfShape& BRepFeat_RibSlot::Generated
    (const TopoDS_Shape& S)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
   if (trc) cout << "BRepFeat_RibSlot::Generated" << endl;
 #endif
@@ -542,7 +542,7 @@ gp_Pnt BRepFeat_RibSlot::CheckPoint(const TopoDS_Edge& e,
                                     const Handle(Geom_Plane)& Pln) 
 
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEATRIB();
   if (trc) cout << "BRepFeat_RibSlot::CheckPoint" << endl;
 #endif
@@ -575,7 +575,7 @@ gp_Pnt BRepFeat_RibSlot::CheckPoint(const TopoDS_Edge& e,
 gp_Dir BRepFeat_RibSlot::Normal(const TopoDS_Face& F,const gp_Pnt& P)
 
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEATRIB();
   if (trc) cout << "BRepFeat_RibSlot::Normal" << endl;
 #endif 
@@ -662,7 +662,7 @@ void BRepFeat_RibSlot::EdgeExtention(TopoDS_Edge& e,
                                      const Standard_Real bnd,
                                      const Standard_Boolean FirstLast)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
   if (trc) cout << "BRepFeat_RibSlot::EdgeExtention" << endl;
 #endif
@@ -725,7 +725,7 @@ TopoDS_Face BRepFeat_RibSlot::ChoiceOfFaces(TopTools_ListOfShape& faces,
                                             const Handle(Geom_Plane)& Pln)
 
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEATRIB();
   if (trc) cout << "BRepFeat_RibSlot::ChoiceOfFaces" << endl;
 #endif
@@ -783,7 +783,7 @@ Standard_Real BRepFeat_RibSlot::HeightMax(const TopoDS_Shape& theSbase,
                                           gp_Pnt& p1, 
                                           gp_Pnt& p2)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEATRIB();
   if (trc) cout << "BRepFeat_RibSlot::HeightMax" << endl;
 #endif
@@ -825,7 +825,7 @@ Standard_Boolean BRepFeat_RibSlot::ExtremeFaces(const Standard_Boolean RevolRib,
                                                 TopoDS_Edge& OnLastEdge)
 
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
   if (trc) cout << "BRepFeat_RibSlot::ExtremeFaces" << endl;
 #endif
@@ -854,7 +854,7 @@ Standard_Boolean BRepFeat_RibSlot::ExtremeFaces(const Standard_Boolean RevolRib,
 
 // ---the wire includes only one edge
   if(NumberOfEdges == 1) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (trc) cout << " One Edge" << endl;
 #endif
     exp.ReInit();
@@ -1000,7 +1000,7 @@ Standard_Boolean BRepFeat_RibSlot::ExtremeFaces(const Standard_Boolean RevolRib,
     }
 
 //--- FirstFace or LastFace was not found
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (trc) cout << " FirstFace or LastFace null" << endl;
 #endif
     LocOpe_CSIntersector ASI(mySbase);
@@ -1042,7 +1042,7 @@ Standard_Boolean BRepFeat_RibSlot::ExtremeFaces(const Standard_Boolean RevolRib,
       }
     }
     else {
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if (trc) cout << " Less than 2 intersection points" << endl;
 #endif
       Data = Standard_False;
@@ -1062,13 +1062,13 @@ Standard_Boolean BRepFeat_RibSlot::ExtremeFaces(const Standard_Boolean RevolRib,
     }
 
     if(FirstFace.IsNull() || LastFace.IsNull()) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if (trc) cout << " First or Last Faces still null" << endl;
 #endif
       Data = Standard_False;
     }
     else {
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if (trc) cout << " FirstFace and LastFace OK" << endl;
 #endif
       Data = Standard_True;
@@ -1078,7 +1078,7 @@ Standard_Boolean BRepFeat_RibSlot::ExtremeFaces(const Standard_Boolean RevolRib,
   }
 // ---The wire consists of several edges
   else {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (trc) cout << " Multiple Edges" << endl;
 #endif
     BRepTools_WireExplorer ex(myWire);
@@ -1089,7 +1089,7 @@ Standard_Boolean BRepFeat_RibSlot::ExtremeFaces(const Standard_Boolean RevolRib,
       f = f - bnd/10000; l = l +bnd/10000;
       Handle(Geom_TrimmedCurve) curve;
       curve = new Geom_TrimmedCurve(Cur, f, l, Standard_True);
-#ifdef DEB
+#ifdef OCCT_DEBUG
       gp_Pnt P1 = 
 #endif
         BRep_Tool::Pnt(TopExp::FirstVertex(E,Standard_True));
@@ -1258,7 +1258,7 @@ Standard_Boolean BRepFeat_RibSlot::ExtremeFaces(const Standard_Boolean RevolRib,
       return Standard_True;
     }
     else {
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if (trc) cout << " First or Last not OK" << endl;
 #endif
       return Standard_False;
@@ -1284,7 +1284,7 @@ void BRepFeat_RibSlot::PtOnEdgeVertex(const Standard_Boolean RevolRib,
                                       TopoDS_Vertex& OnVertex)
      
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEATRIB();
   if (trc) cout << "BRepFeat_RibSlot::PtOnEdgeVertex" << endl;
 #endif
@@ -1359,7 +1359,7 @@ Standard_Boolean BRepFeat_RibSlot::SlidingProfile(TopoDS_Face& Prof,
                                                   const TopoDS_Edge& LastEdge)
      
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
   if (trc) cout << "BRepFeat_RibSlot::SlidingProfile" << endl;
 #endif
@@ -1477,7 +1477,7 @@ Standard_Boolean BRepFeat_RibSlot::SlidingProfile(TopoDS_Face& Prof,
     }
     
     if(BndEdge1.IsNull() || BndEdge2.IsNull())  {
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if (trc) cout << " Null bounding edge" << endl;
 #endif
       ProfileOK = Standard_False;
@@ -1606,7 +1606,7 @@ Standard_Boolean BRepFeat_RibSlot::SlidingProfile(TopoDS_Face& Prof,
   TopoDS_Face fac = TopoDS::Face(f.Shape());
     
   if (!BRepAlgo::IsValid(fac)) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (trc) cout << " Invalid Face" << endl;
 #endif
     ProfileOK = Standard_False;
@@ -1643,7 +1643,7 @@ Standard_Boolean BRepFeat_RibSlot::SlidingProfile(TopoDS_Face& Prof,
   }
   
   if (!BRepAlgo::IsValid(Prof)) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (trc) cout << " Invalid Face Profile" << endl;
 #endif
     ProfileOK = Standard_False;
@@ -1674,7 +1674,7 @@ Standard_Boolean BRepFeat_RibSlot::NoSlidingProfile(TopoDS_Face& Prof,
                                                     const Standard_Boolean OnLastFace)
      
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
   if (trc) cout << "BRepFeat_RibSlot::NoSlidingProfile" << endl;
 #endif
@@ -1812,7 +1812,7 @@ Standard_Boolean BRepFeat_RibSlot::NoSlidingProfile(TopoDS_Face& Prof,
     }
     
     if(BndEdge1.IsNull() || BndEdge2.IsNull())  {
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if (trc) cout << " Null bounding edge" << endl;
 #endif
       ProfileOK = Standard_False;
@@ -2302,7 +2302,7 @@ Standard_Boolean BRepFeat_RibSlot::NoSlidingProfile(TopoDS_Face& Prof,
   TopoDS_Face fac = TopoDS::Face(fa.Shape());
   
   if (!BRepAlgo::IsValid(fac)) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (trc) cout << " Invalid Face" << endl;
 #endif
     ProfileOK = Standard_False;
@@ -2338,7 +2338,7 @@ Standard_Boolean BRepFeat_RibSlot::NoSlidingProfile(TopoDS_Face& Prof,
   }  
 
   if (!BRepAlgo::IsValid(Prof)) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (trc) cout << " Invalid Face Profile" << endl;
 #endif
     ProfileOK = Standard_False;

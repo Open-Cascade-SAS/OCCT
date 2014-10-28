@@ -367,7 +367,7 @@ void ShapeUpgrade_WireDivide::Perform ()
 	  Handle(TColStd_HSequenceOfReal) revKnots2d = theSplit2dTool->SplitValues();
 	  if(revKnots2d->Length()!=theKnots2d->Length()) {
 	    isSeam = Standard_False;
-#ifdef SHAPEUPGRADE_DEB
+#ifdef OCCT_DEBUG
 	    cout << "Error: ShapeUpgrade_WireDivide: seam has different splitting values on pcurvesd" << endl;
 #endif
 	  }
@@ -447,7 +447,7 @@ void ShapeUpgrade_WireDivide::Perform ()
 	if ( !theSegments2d.IsNull() ) {
 	  Standard_Integer nbc2d = theSegments2d->Length();
 	  if (nbc!=nbc2d) {
-#ifdef SHAPEUPGRADE_DEB
+#ifdef OCCT_DEBUG
 	    cout<<"Error: Number of intervals are not equal for 2d 3d. Ignored."<<endl;
 #endif
 	    nbc = Min( nbc,nbc2d);

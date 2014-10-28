@@ -79,7 +79,7 @@ Standard_Integer DNaming_FilletDriver::Execute(TFunction_Logbook& theLog) const
   Handle(TNaming_NamedShape) aContextNS;
   aLab.FindAttribute(TNaming_NamedShape::GetID(), aContextNS);
   if (aContextNS.IsNull() || aContextNS->IsEmpty()) {
-#ifdef DNAMING_DEB
+#ifdef OCCT_DEBUG
     cout<<"FilletDriver:: Context is empty"<<endl;
 #endif
     aFunction->SetFailure(WRONG_ARGUMENT);
@@ -92,7 +92,7 @@ Standard_Integer DNaming_FilletDriver::Execute(TFunction_Logbook& theLog) const
 
   if(aRadius < Precision::Confusion()) {
     aFunction->SetFailure(WRONG_ARGUMENT);
-#ifdef DNAMING_DEB
+#ifdef OCCT_DEBUG
     cout << "FilletDriver:: Radius < Precision::Confusion" << endl;
 #endif
     return -1;
@@ -102,7 +102,7 @@ Standard_Integer DNaming_FilletDriver::Execute(TFunction_Logbook& theLog) const
   Handle(TDataStd_UAttribute) aPathObj = DNaming::GetObjectArg(aFunction,FILLET_PATH);
   Handle(TNaming_NamedShape) aPathNS = DNaming::GetObjectValue(aPathObj);
   if (aPathNS.IsNull() || aPathNS->IsEmpty()) {
-#ifdef DNAMING_DEB
+#ifdef OCCT_DEBUG
     cout<<"FilletDriver:: Path is empty"<<endl;
 #endif
     aFunction->SetFailure(WRONG_ARGUMENT);
@@ -112,7 +112,7 @@ Standard_Integer DNaming_FilletDriver::Execute(TFunction_Logbook& theLog) const
   TopoDS_Shape aPATH = aPathNS->Get();
   TopoDS_Shape aCONTEXT = aContextNS->Get();
   if (aPATH.IsNull() || aCONTEXT.IsNull()) {
-#ifdef DNAMING_DEB
+#ifdef OCCT_DEBUG
     cout<<"FilletDriver:: Path or Context is null"<<endl;
 #endif
     aFunction->SetFailure(WRONG_ARGUMENT);

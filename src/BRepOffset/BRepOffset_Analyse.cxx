@@ -159,7 +159,7 @@ static void EdgeAnalyse(const TopoDS_Edge&         E,
     }
     else  {                   
       //Mixed not finished!
-#ifdef BREPOFFSET_DEB
+#ifdef OCCT_DEBUG
       cout <<" faces locally mixed"<<endl;
 #endif
       I.Type(BRepOffset_Convex);
@@ -266,7 +266,7 @@ void BRepOffset_Analyse::Perform (const TopoDS_Shape& S,
 	mapEdgeType(E).Append(Inter);
       }
       else {  
-#ifdef BREPOFFSET_DEB                   
+#ifdef OCCT_DEBUG
 	cout <<"edge shared by more than two faces"<<endl;
 #endif	
       }

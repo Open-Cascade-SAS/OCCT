@@ -179,7 +179,7 @@ void TopOpeBRepTool_SolidClassifier::LoadSolid(const TopoDS_Solid& SOL)
   else {
     myPClassifier = &myClassifierMap.ChangeFromKey(SOL);
   }
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer i =
 #endif
                        myClassifierMap.FindIndex(SOL); // DEB
@@ -202,7 +202,7 @@ void TopOpeBRepTool_SolidClassifier::LoadShell(const TopoDS_Shell& SHE)
   else {
     myPClassifier = &myClassifierMap.ChangeFromKey(SHE);
   }
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer i =
 #endif
                        myClassifierMap.FindIndex(SHE); // DEB

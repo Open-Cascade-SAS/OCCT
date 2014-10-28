@@ -352,7 +352,7 @@ Standard_Boolean TopOpeBRepDS_Transition::IsUnknown() const
 //=======================================================================
 Standard_OStream& TopOpeBRepDS_Transition::DumpB(Standard_OStream& OS) const
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   TopOpeBRepDS::Print(myStateBefore,OS);
   TopOpeBRepDS::Print(TopOpeBRepDS::ShapeToKind(myShapeBefore),myIndexBefore,OS);
 #endif
@@ -365,7 +365,7 @@ Standard_OStream& TopOpeBRepDS_Transition::DumpB(Standard_OStream& OS) const
 //=======================================================================
 Standard_OStream& TopOpeBRepDS_Transition::DumpA(Standard_OStream& OS) const
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   TopOpeBRepDS::Print(myStateAfter,OS);
   TopOpeBRepDS::Print(TopOpeBRepDS::ShapeToKind(myShapeAfter),myIndexAfter,OS);
 #endif
@@ -378,7 +378,7 @@ Standard_OStream& TopOpeBRepDS_Transition::DumpA(Standard_OStream& OS) const
 //=======================================================================
 Standard_OStream& TopOpeBRepDS_Transition::Dump(Standard_OStream& OS) const
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   OS<<"("; DumpB(OS); OS<<","; DumpA(OS); OS<<")";
 #endif
   return OS;

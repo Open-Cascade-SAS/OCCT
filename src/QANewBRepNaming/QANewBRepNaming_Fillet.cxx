@@ -201,7 +201,7 @@ void QANewBRepNaming_Fillet::Load(const TopoDS_Shape& theContext,
 	  gp_Vec aMainVec(P1, P2);
 	  gp_Vec aV1(P1, EP1);
 	  gp_Vec aV2(P1, EP2);
-#ifdef QANEWBREPNAMING_DEB
+#ifdef OCCT_DEBUG
 	  cout << "P1=" << P1.X() << " " << P1.Y() << " " << P1.Z() << endl;
 	  cout << "P2=" << P2.X() << " " << P2.Y() << " " << P2.Z() << endl;
 	  cout << "EP1=" << EP1.X() << " " << EP1.Y() << " " << EP1.Z() << endl;

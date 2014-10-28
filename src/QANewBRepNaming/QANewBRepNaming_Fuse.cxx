@@ -49,7 +49,7 @@ void QANewBRepNaming_Fuse::Load(BRepAlgoAPI_BooleanOperation& MS) const {
   const TopoDS_Shape& ToolSh = MS.Shape2();
 
   if (ResSh.IsNull()) {
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
     cout<<"QANewBRepNaming_Fuse::Load(): The result of the boolean operation is null"<<endl;
 #endif
     return;

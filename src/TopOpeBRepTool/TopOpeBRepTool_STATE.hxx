@@ -17,7 +17,7 @@
 #ifndef _TopOpeBRepTool_STATE_HeaderFile
 #define _TopOpeBRepTool_STATE_HeaderFile
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 
 #include <Standard_Type.hxx>
 #include <TopAbs_State.hxx>
@@ -45,8 +45,6 @@ class TopOpeBRepTool_STATE {
 
 };
 
-// #define DEB
-#endif
+#endif /* OCCT_DEBUG */
 
-// #define _TopOpeBRepTool_STATE_HeaderFile
-#endif
+#endif /* _TopOpeBRepTool_STATE_HeaderFile */

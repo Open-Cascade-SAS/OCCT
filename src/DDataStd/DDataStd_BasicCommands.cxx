@@ -1307,7 +1307,7 @@ static Standard_Integer DDataStd_GetUTFtoFile (Draw_Interpretor& di,
 #endif
     if (!anOS) {
       // A problem with the stream
-#ifdef DDATASTD_DEB
+#ifdef OCCT_DEBUG
       cout << "Error: problem with the file stream, rdstate = " <<anOS.rdstate() <<endl;
 #endif
     }

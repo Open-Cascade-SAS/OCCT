@@ -35,7 +35,7 @@ OpenGl_Caps::OpenGl_Caps()
 #endif
   buffersNoSwap     (Standard_False),
   contextStereo     (Standard_False),
-#ifdef DEB
+#ifdef OCCT_DEBUG
   contextDebug      (Standard_True),
 #else
   contextDebug      (Standard_False),

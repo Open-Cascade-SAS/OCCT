@@ -41,7 +41,7 @@ TopOpeBRepDS_SolidSurfaceInterference::TopOpeBRepDS_SolidSurfaceInterference
 Standard_OStream& TopOpeBRepDS_SolidSurfaceInterference::Dump
   (Standard_OStream& OS) const
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   OS<<"SSI ";TopOpeBRepDS_Interference::Dump(OS);
 #endif
   return OS;

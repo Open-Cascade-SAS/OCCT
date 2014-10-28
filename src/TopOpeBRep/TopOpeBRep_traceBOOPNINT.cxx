@@ -14,7 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
@@ -143,5 +143,5 @@ Standard_EXPORT Standard_Boolean TopOpeBRep_GettraceSHA(const Standard_Integer i
   Standard_Boolean b = BOOPSHA.Get(1,t);return b;
 }
 
-// #ifdef DEB
+// #ifdef OCCT_DEBUG
 #endif

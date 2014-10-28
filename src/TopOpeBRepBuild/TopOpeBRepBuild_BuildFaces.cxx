@@ -22,7 +22,7 @@
 #include <BRep_Tool.hxx>
 #include <BRep_Builder.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepBuild_GettraceCU();
 extern Standard_Boolean TopOpeBRepBuild_GettraceCUV();
 extern Standard_Boolean TopOpeBRepBuild_GettraceSPF();
@@ -53,7 +53,7 @@ void TopOpeBRepBuild_Builder::BuildFaces(const Standard_Integer iS,
   //
   TopOpeBRepBuild_WireEdgeSet WES(aFace, this);
   //
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean tSE = TopOpeBRepBuild_GettraceSPF();
   Standard_Boolean tCU = TopOpeBRepBuild_GettraceCU();
   Standard_Boolean NtCUV = !TopOpeBRepBuild_GettraceCUV();
@@ -63,7 +63,7 @@ void TopOpeBRepBuild_Builder::BuildFaces(const Standard_Integer iS,
   for (;  SCurves.More(); SCurves.Next()) {
     Standard_Integer iC = SCurves.Current();
     const TopOpeBRepDS_Curve& CDS = HDS->Curve(iC);
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (tSE) cout<<endl<<"BuildFaces : C "<<iC<<" on S "<<iS<<endl;
     if (tCU) { CDS.Dump(cout,iC,NtCUV); cout<<endl; }
 #endif

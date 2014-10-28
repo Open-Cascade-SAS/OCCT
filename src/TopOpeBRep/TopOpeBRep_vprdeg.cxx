@@ -60,7 +60,7 @@ static Standard_Boolean local_FindVertex(const TopOpeBRep_VPointInter& theVP,
 					 TopoDS_Vertex& theVertex);
 // modified by NIZHNY-MKK  Tue Nov 21 17:30:27 2000.END
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepDS_GettraceDEGEN();
 extern Standard_Boolean TopOpeBRepDS_GettraceDSF();
 Standard_EXPORT Standard_Boolean FUN_debnull(const TopoDS_Shape& s);
@@ -389,7 +389,7 @@ static Standard_Integer FUN_parondgEONFi
   else                                    y = ngFi.Reversed();
   gp_Vec z(x^y);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = Standard_False;
   if (trc) {
     gp_Pnt p = BRep_Tool::Pnt(ve);
@@ -483,7 +483,7 @@ static Standard_Integer FUN_parondgEINFi(const TopOpeBRep_VPointInter& VP,
   else                                    y = ngFi.Reversed();
   gp_Vec z(x^y);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = Standard_False;
   if (trc) {
     gp_Pnt p = BRep_Tool::Pnt(v);
@@ -558,7 +558,7 @@ static Standard_Integer FUN_putInterfonDegenEd
   //   Ed append EVI of transition(FACE Fi) on G=(VERTEX,V), S=(FACE,Fi) par = paronEd2  
   // with Ed the degenerated edge, Ei of Fi interfers with Ed at vertex V.
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean traceDSF = TopOpeBRepDS_GettraceDSF();
   Standard_Boolean traceDEGEN = TopOpeBRepDS_GettraceDEGEN();
   Standard_Boolean trace = traceDSF || traceDEGEN;
@@ -646,7 +646,7 @@ static Standard_Integer FUN_putInterfonDegenEd
   else          Fi = F2;
   Standard_Integer iv = 0;
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (FUN_debnull(Fe)) cout<<"Fe is null"<<endl;
   if (FUN_debnull(Fi)) cout<<"Fi is null"<<endl;
   if (FUN_debnull(Ec)) cout<<"Ec is null"<<endl;
@@ -691,7 +691,7 @@ static Standard_Integer FUN_putInterfonDegenEd
     TopoDS_Edge tmpOOEi; Standard_Real tmpparonOOEi; TopOpeBRepDS_Transition tmpTOOEi;
     for (;itloei.More(); itloei.Next()) {
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if (FUN_debnull(itloei.Value())) cout<<"Ei is null"<<endl;
 #ifdef DRAW
       if (trace3d) {TCollection_AsciiString aa("ecur");FUN_brep_draw(aa,itloei.Value());}
@@ -1113,7 +1113,7 @@ Standard_Boolean TopOpeBRep_FacesFiller::ProcessVPondgE
  Standard_Boolean& EPIfound, Handle(TopOpeBRepDS_Interference)& IEPI, // out 
  Standard_Boolean& CPIfound, Handle(TopOpeBRepDS_Interference)& ICPI) // out
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean traceDSF = TopOpeBRepDS_GettraceDSF();
   Standard_Boolean traceDEGEN = TopOpeBRepDS_GettraceDEGEN();
 #endif
@@ -1174,14 +1174,14 @@ Standard_Boolean TopOpeBRep_FacesFiller::ProcessVPondgE
   if (rankFi == 1) Fi = myF1;
   else             Fi = myF2;
   Standard_Integer iFi = myDS->AddShape(Fi,rankFi);
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer iEd =
 #endif
             myDS->AddShape(dgEd,rankdg);
   Standard_Integer iOOEi = 0;
   if (hasOOEi) iOOEi = myDS->AddShape(OOEi,rankFi);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trace = traceDSF || traceDEGEN;
   if (trace) cout<<" VP is on degenerated edge "<<iEd<<" :"<<endl;
 #endif

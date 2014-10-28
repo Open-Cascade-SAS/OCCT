@@ -55,7 +55,7 @@
 #include <Standard_NotImplemented.hxx>
 #include <Standard_DomainError.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean ChFi3d_GettraceCHRON();
 #endif
 
@@ -641,7 +641,7 @@ void  ChFi3d_ChBuilder::ResetContour(const Standard_Integer IC)
 
 void ChFi3d_ChBuilder::Simulate (const Standard_Integer IC)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if(ChFi3d_GettraceCHRON()){
     simul.Reset();elspine.Reset();chemine.Reset();
     simul.Start();
@@ -655,7 +655,7 @@ void ChFi3d_ChBuilder::Simulate (const Standard_Integer IC)
       break;
     }
   }
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if(ChFi3d_GettraceCHRON()){
     simul.Stop();
     cout<<"Total simulation time : ";

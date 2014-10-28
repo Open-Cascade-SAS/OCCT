@@ -26,7 +26,7 @@
 #include <gp_Vec2d.hxx>
 #include <gp_Vec.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
@@ -39,7 +39,7 @@
 #endif
 static Standard_Integer IndexOfSection = 0;
 extern Standard_Boolean Blend_GettraceDRAWSECT(); 
-#ifdef DEB_BBPP_N_TRDERIV
+#ifdef OCCT_DEBUG_BBPP_N_TRDERIV
 // for debug : visualisation of the section
 static Standard_Boolean BBPP(const Standard_Real param,
 			     Blend_SurfRstFunction& Func,
@@ -271,7 +271,7 @@ void BRepBlend_SurfRstLineBuilder::Perform(Blend_SurfRstFunction&  Func,
   if (State!=Blend_OK) {
     return;
   }
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (Blend_GettraceDRAWSECT()){
     Drawsect(param,Func);
   }
@@ -538,7 +538,7 @@ void BRepBlend_SurfRstLineBuilder::InternalPerform(Blend_SurfRstFunction&  Func,
 
   while (!Arrive) {
     Standard_Boolean bonpoint = 1;
-#ifdef DEB_BBPP_N_TRDERIV
+#ifdef OCCT_DEBUG_BBPP_N_TRDERIV
     //debdebdebdebdebdeb
     Func.Set(param);
     rsnld.Perform(Func,parinit,infbound,supbound);
@@ -704,7 +704,7 @@ void BRepBlend_SurfRstLineBuilder::InternalPerform(Blend_SurfRstFunction&  Func,
       }
       else{
 	// Failed reframing. Leave with PointsConfondus
-#if BREPBLEND_DEB
+#ifdef OCCT_DEBUG
 	cout<<"SurfRstLineBuilder : failed reframing"<<endl;
 #endif
 	State = Blend_SamePoints;
@@ -714,7 +714,7 @@ void BRepBlend_SurfRstLineBuilder::InternalPerform(Blend_SurfRstFunction&  Func,
     switch (State) {
     case Blend_OK :
       {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	if (Blend_GettraceDRAWSECT()){
 	  Drawsect(param,Func);
 	}
@@ -759,7 +759,7 @@ void BRepBlend_SurfRstLineBuilder::InternalPerform(Blend_SurfRstFunction&  Func,
 	  Arrive = Standard_True;
 	  if (line->NbPoints()>=2) {
 	    // Indicate that one stops during the processing
-#if BREPBLEND_DEB
+#ifdef OCCT_DEBUG
 	    cout<<"SurfRstLineBuilder : No advancement in the processing"<<endl;
 #endif
 	  }
@@ -772,7 +772,7 @@ void BRepBlend_SurfRstLineBuilder::InternalPerform(Blend_SurfRstFunction&  Func,
       
     case Blend_StepTooSmall :
       {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	if (Blend_GettraceDRAWSECT()){
 	  Drawsect(param,Func);
 	}
@@ -806,7 +806,7 @@ void BRepBlend_SurfRstLineBuilder::InternalPerform(Blend_SurfRstFunction&  Func,
       
     case Blend_OnRst1  :
       {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	if (Blend_GettraceDRAWSECT()){
 	  Drawsect(param,Func);
 	}
@@ -825,7 +825,7 @@ void BRepBlend_SurfRstLineBuilder::InternalPerform(Blend_SurfRstFunction&  Func,
       
     case Blend_OnRst2  :
       {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	if (Blend_GettraceDRAWSECT()){
 	  Drawsect(param,Func);
 	}
@@ -845,7 +845,7 @@ void BRepBlend_SurfRstLineBuilder::InternalPerform(Blend_SurfRstFunction&  Func,
       
     case Blend_OnRst12  :
       {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	if (Blend_GettraceDRAWSECT()){
 	  Drawsect(param,Func);
 	}
@@ -865,7 +865,7 @@ void BRepBlend_SurfRstLineBuilder::InternalPerform(Blend_SurfRstFunction&  Func,
     case Blend_SamePoints :
       {
 	// Stop
-#if BREPBLEND_DEB
+#ifdef OCCT_DEBUG
 	cout << "SurfRstLineBuilder Points mixed in the processing" << endl;
 #endif
 	previousP.ParametersOnS(U,V);
@@ -938,7 +938,7 @@ Standard_Boolean BRepBlend_SurfRstLineBuilder::Recadre(Blend_SurfCurvFuncInv&   
   rsnld.Perform(FinvC,Solinv,infb,supb);
 
   if (!rsnld.IsDone()) {
-#if BREPBLEND_DEB
+#ifdef OCCT_DEBUG
     cout << "SurfRstLineBuilder : RSNLD not done "<< endl << endl;
 #endif
   }
@@ -977,7 +977,7 @@ Standard_Boolean BRepBlend_SurfRstLineBuilder::Recadre(Blend_SurfCurvFuncInv&   
     rsnld.Perform(FinvC,Solinv,infb,supb);
 
     if (!rsnld.IsDone()) {
-#if BREPBLEND_DEB
+#ifdef OCCT_DEBUG
       cout << "SurfRstLineBuilder : RSNLD not done "<< endl << endl;
 #endif
     }
@@ -1038,7 +1038,7 @@ Standard_Boolean BRepBlend_SurfRstLineBuilder::Recadre(Blend_SurfRstFunction&   
   math_FunctionSetRoot rsnld(Finv,toler,30);
   rsnld.Perform(Finv,Solinv,infb,supb);
   if (!rsnld.IsDone()) {
-#if BREPBLEND_DEB
+#ifdef OCCT_DEBUG
     cout << "SurfRstLineBuilder :RSNLD not done "<< endl;
 #endif
     return Standard_False;
@@ -1122,7 +1122,7 @@ Standard_Boolean BRepBlend_SurfRstLineBuilder::Recadre(Blend_SurfPointFuncInv&  
   math_FunctionSetRoot rsnld(FinvP,toler,30);
   rsnld.Perform(FinvP,Solinv,infb,supb);
   if (!rsnld.IsDone()) {
-#if BREPBLEND_DEB
+#ifdef OCCT_DEBUG
     cout << "SurfRstLineBuilder :RSNLD not done "<< endl;
 #endif
     return Standard_False;

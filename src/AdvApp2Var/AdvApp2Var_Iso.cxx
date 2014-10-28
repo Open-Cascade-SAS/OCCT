@@ -163,7 +163,7 @@ void AdvApp2Var_Iso::MakeApprox(const AdvApp2Var_Context& Conditions,
     NDGJAC = Conditions.VJacDeg();
     NCFLIM = Conditions.VLimit();
     break;
-    //#ifndef DEB
+    //#ifndef OCCT_DEBUG
     //pkv f
   case GeomAbs_NoneIso:
     //pkv t
@@ -236,7 +236,7 @@ void AdvApp2Var_Iso::MakeApprox(const AdvApp2Var_Context& Conditions,
   Standard_Real *EMXAPP = new Standard_Real[NBSESP];
   Handle (TColStd_HArray2OfReal) HERRMOY  =  
     new TColStd_HArray2OfReal(1,NBSESP,1,IDERIV+1);
-  //#ifdef DEB
+  //#ifdef OCCT_DEBUG
   //Standard_Real *ERRMOY =
   //#endif
   //  (Standard_Real *) &HERRMOY->ChangeArray2()(HERRMOY ->LowerRow(),HERRMOY ->LowerCol());

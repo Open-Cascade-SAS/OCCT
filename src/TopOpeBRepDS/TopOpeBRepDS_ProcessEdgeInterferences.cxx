@@ -34,7 +34,7 @@
 #include <TopOpeBRepDS_connex.hxx>
 #include <TopOpeBRepTool_SC.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepDS_GettracePEI();
 extern Standard_Boolean TopOpeBRepDS_GettracePI();
 extern Standard_Boolean TopOpeBRepDS_GettraceSPSX(const Standard_Integer);
@@ -102,7 +102,7 @@ static Standard_Boolean FUN_keepEinterference
     // EVI rejetee si OUT FACE before et after
     // et si le vertex-geometrie de l'interference collisionne avec
     // un des vertex de l'arete (E) accedant l'interference (I)
-#ifdef DEB
+#ifdef OCCT_DEBUG
   //  Standard_Boolean k4I = (((shab == TopAbs_FACE) && (stab == TopAbs_OUT)) &&
 //		((shaa == TopAbs_FACE) && (staa == TopAbs_OUT))); 
 #endif
@@ -115,7 +115,7 @@ static Standard_Boolean FUN_keepEinterference
 	else if ( Vsd.IsSame(Vr) ) { break; }
       }
     }
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //    Standard_Boolean k4 = ! ( k4I && k4C ); 
 #endif
     //    res = res && k4;
@@ -144,7 +144,7 @@ Standard_EXPORT Standard_Integer FUN_unkeepEinterferences
 //------------------------------------------------------
 (TopOpeBRepDS_ListOfInterference& LI,const TopOpeBRepDS_DataStructure& BDS,const Standard_Integer SIX)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean TRC=TRCE(SIX);
 #endif
   
@@ -152,7 +152,7 @@ Standard_EXPORT Standard_Integer FUN_unkeepEinterferences
   Standard_Boolean isEd;
   isEd = BRep_Tool::Degenerated(TopoDS::Edge(E));
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TRC) {cout<<"FUN_unkeepEinterferences on "<<SIX<<" nI = "<<LI.Extent()<<endl;}
 #endif
   
@@ -166,7 +166,7 @@ Standard_EXPORT Standard_Integer FUN_unkeepEinterferences
     Standard_Boolean k1 = ::FUN_keepEinterference(BDS,I1,E);
     if ( !k1 ) {
       
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if(TRC) {cout<<endl<<"rejet d'interference "<<SIX<<endl;I1->Dump(cout);cout<<endl;}
 #endif
       
@@ -179,7 +179,7 @@ Standard_EXPORT Standard_Integer FUN_unkeepEinterferences
   }
   Standard_Integer n = LI.Extent();
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TRC) cout<<"FUN_unkeepEinterferences on "<<SIX<<" returns nI = "<<n<<endl;
 #endif
   
@@ -192,7 +192,7 @@ Standard_EXPORT void FUN_changeFOUT
 //------------------------------------------------------
 (TopOpeBRepDS_ListOfInterference& LF,const TopOpeBRepDS_ListOfInterference& LE,const TopOpeBRepDS_DataStructure& BDS,const Standard_Integer SIX)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean TRC=TRCE(SIX);
   if (TRC) cout<<"FUN_changeFOUT on "<<SIX<<" nI = "<<LE.Extent()<<endl;
 #endif
@@ -262,7 +262,7 @@ Standard_EXPORT void FUN_changeFOUT
     }
     it1.Next();
   }
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TRC) cout<<"  FUN_changeFOUT on "<<SIX<<"returns nI = "<<LE.Extent()<<endl;
 #endif
   
@@ -276,7 +276,7 @@ Standard_EXPORT void FUN_unkeepEsymetrictransitions
 // incidentes en un vertex. (cas d'un shell fait de deux faces partageant une arete.)
 (TopOpeBRepDS_ListOfInterference& LI,const TopOpeBRepDS_DataStructure& BDS,const Standard_Integer SIX)		     
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean TRC=TRCE(SIX);
 #endif
   
@@ -285,7 +285,7 @@ Standard_EXPORT void FUN_unkeepEsymetrictransitions
   Standard_Boolean isEd;
   isEd = BRep_Tool::Degenerated(TopoDS::Edge(E));
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TRC) {
     cout<<"FUN_unkeepEsymetrictransitions on "<<SIX<<" nI = "<<LI.Extent()<<endl;
     ::FDS_dumpLI(LI,"debut : ");
@@ -338,7 +338,7 @@ Standard_EXPORT void FUN_unkeepEsymetrictransitions
 	else sym = idshape && !idstate;
 	
 	if ( sym ) { // les 2 interferences ne different que leurs etats (symetriques)
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //	  cout<<"TopOpeBRepDS FUN_unkeepEsymetrictransitions on edge "<<SIX<<endl;
 	  if(TRC){
 	    cout<<"edge "<<SIX<<" : symetrique ";I1->Dump(cout);cout<<endl;
@@ -360,7 +360,7 @@ Standard_EXPORT void FUN_unkeepEsymetrictransitions
     }
   } // it1.More()
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if(TRC) { 
     ::FDS_dumpLI(LI,"apres elim. des sym. : ");
     cout<<"FUN_unkeepEsymetrictransitions on "<<SIX<<" returns nI = "<<LI.Extent()<<endl;
@@ -368,7 +368,7 @@ Standard_EXPORT void FUN_unkeepEsymetrictransitions
 #endif  
 }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 void deborderFF(const Standard_Integer) {};
 void deborderFF1(const Standard_Integer) {};
 void deborderFF2(const Standard_Integer) {};
@@ -383,13 +383,13 @@ Standard_EXPORT void FUN_orderFFsamedomain
 // L = L1 + L2;
   (TopOpeBRepDS_ListOfInterference& LI,
    const Handle(TopOpeBRepDS_HDataStructure)& HDS,
-#ifdef DEB
+#ifdef OCCT_DEBUG
    const Standard_Integer SIX)    
 #else
    const Standard_Integer )    
 #endif
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean TRC=TRCE(SIX); 
   if (TRC) deborderFF(SIX);
   Standard_Boolean modif = Standard_False;
@@ -407,7 +407,7 @@ Standard_EXPORT void FUN_orderFFsamedomain
     TopAbs_ShapeEnum tsb1,tsa1; Standard_Integer isb1,isa1; FDS_Tdata(I1,tsb1,isb1,tsa1,isa1);
 //    I1->Transition();
     
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (TRC) deborderFF1(SIX);
 #endif
     
@@ -431,13 +431,13 @@ Standard_EXPORT void FUN_orderFFsamedomain
   LI.Append(LIffsd);
   LI.Append(LIother);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if(TRC && modif){ FDS_dumpLI(LI,"apres groupage fsd : "); }
 #endif  
 } // FUN_orderFFsamedomain
 
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 void deborderSTATETRANS(const Standard_Integer) {};
 #endif
 
@@ -450,13 +450,13 @@ Standard_EXPORT void FUN_orderSTATETRANSonG
 // L2/ = les autres interfs
 // L = L1 + L2;
 (TopOpeBRepDS_ListOfInterference& LI,const Handle(TopOpeBRepDS_HDataStructure)& /*HDS*/,
-#ifdef DEB
+#ifdef OCCT_DEBUG
  const Standard_Integer SIX)    
 #else
  const Standard_Integer)
 #endif
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean TRC=TRCE(SIX); 
   if (TRC) deborderSTATETRANS(SIX);
   Standard_Boolean modif = Standard_False;
@@ -485,7 +485,7 @@ Standard_EXPORT void FUN_orderSTATETRANSonG
   LI.Clear();
   LI.Append(L1);
   LI.Append(L2);
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if(TRC && modif){ FDS_dumpLI(LI,"apres groupage STATETRANS : "); }
 #endif  
 } // FUN_orderSTATETRANSonG
@@ -499,7 +499,7 @@ Standard_EXPORT void FUN_orderSTATETRANS
 // L = L1 + L2;
 (TopOpeBRepDS_ListOfInterference& LI,const Handle(TopOpeBRepDS_HDataStructure)& HDS,const Standard_Integer SIX)    
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean TRC=TRCE(SIX); 
   if (TRC) deborderSTATETRANS(SIX);
 #endif
@@ -525,7 +525,7 @@ Standard_EXPORT void FUN_resolveEUNKNOWN
 //------------------------------------------------------
 (TopOpeBRepDS_ListOfInterference& LI,TopOpeBRepDS_DataStructure& BDS,const Standard_Integer SIX)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean TRC=TRCE(SIX); if (TRC) debredunke(SIX);
   Standard_Boolean modif = Standard_False;
 #endif
@@ -544,7 +544,7 @@ Standard_EXPORT void FUN_resolveEUNKNOWN
     Standard_Boolean isunk = T1.IsUnknown();
     if (!isunk) continue;
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     modif = Standard_True;
     if(TRC){debredunke(SIX);TCollection_AsciiString s="E";s=s+SIX+" T UNKNOWN ";I1->Dump(cout,s,"\n");}
 #endif
@@ -557,7 +557,7 @@ Standard_EXPORT void FUN_resolveEUNKNOWN
     Standard_Boolean etgf = idt && idi; // edge tangent a une face en 1 point
     if (!etgf) continue;
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if(TRC){debredunke(SIX);TCollection_AsciiString s="E";s=s+SIX+" etgf ";I1->Dump(cout,s,"\n");}
 #endif
 
@@ -588,19 +588,19 @@ Standard_EXPORT void FUN_resolveEUNKNOWN
     TopOpeBRepDS_Transition& newT1 = I1->ChangeTransition();
     newT1.Set(stateb,statea,tsb1,tsa1);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if(TRC){debredunke(SIX);TCollection_AsciiString s="E";s=s+SIX+" T corrected ";I1->Dump(cout,s,"\n");}
 #endif
 
   }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if(TRC && modif){ FDS_dumpLI(LI,"apres correction UNKNOWN : "); }
 #endif  
 
   FUN_unkeepUNKNOWN(LI,BDS,SIX);
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if(TRC && modif){ FDS_dumpLI(LI,"sans suppression UNKNOWN residuels : "); }
 #endif  
 }
@@ -609,7 +609,7 @@ Standard_EXPORT void FUN_resolveEUNKNOWN
 Standard_EXPORT void FUN_purgeDSonSE(const Handle(TopOpeBRepDS_HDataStructure)& HDS,const Standard_Integer EIX,TopOpeBRepDS_ListOfInterference& LI)
 // ----------------------------------------------------------------------
 {
-#ifdef DEB    
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = TopOpeBRepDS_GettraceSPSX(EIX);
   if (trc) {cout<<endl<<"FUN_purgeDSonSE on "<<EIX<<" nI = "<<LI.Extent()<<endl;}
 #endif
@@ -629,7 +629,7 @@ Standard_EXPORT void FUN_purgeDSonSE(const Handle(TopOpeBRepDS_HDataStructure)& 
   Standard_Boolean isse = BDS.IsSectionEdge(SE);
   if (!isse) return;
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (trc) debpurse(EIX);
 #endif
 
@@ -654,7 +654,7 @@ Standard_EXPORT void FUN_purgeDSonSE(const Handle(TopOpeBRepDS_HDataStructure)& 
   for (tki.Init(); tki.More(); tki.Next()) {  
   
     TopOpeBRepDS_Kind Kcur; Standard_Integer Gcur; TopOpeBRepDS_ListOfInterference& loi = tki.ChangeValue(Kcur,Gcur);  
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //    Standard_Boolean hasfsdmFanc = Standard_False; 
 #endif 
     TopOpeBRepDS_ListIteratorOfListOfInterference it(loi);
@@ -688,7 +688,7 @@ Standard_EXPORT void FUN_purgeDSonSE(const Handle(TopOpeBRepDS_HDataStructure)& 
       else         newLI.Append(I);
     }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (trc)
       for (TopOpeBRepDS_ListIteratorOfListOfInterference itt(LIface); itt.More(); itt.Next())
 	{cout<<"rejet d'interference "<<EIX<<" ";itt.Value()->Dump(cout);cout<<endl;}
@@ -699,7 +699,7 @@ Standard_EXPORT void FUN_purgeDSonSE(const Handle(TopOpeBRepDS_HDataStructure)& 
   LI.Clear();
   LI.Append(newLI);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (trc) cout<<"FUN_purgeDSonSE on "<<EIX<<" returns nI = "<<LI.Extent()<<endl;
 #endif
 }

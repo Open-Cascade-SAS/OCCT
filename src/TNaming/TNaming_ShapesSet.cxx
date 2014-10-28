@@ -33,7 +33,7 @@ TNaming_ShapesSet::TNaming_ShapesSet (const TopoDS_Shape&    CS,
 				      const TopAbs_ShapeEnum Type)
 {
   if (CS.IsNull()) return;
-#ifdef MDTV_DEB_INT
+#ifdef OCCT_DEBUG_INT
   cout << "ShapeSet: CS TShape = " <<CS.TShape() << " Type = " << Type <<endl;
 #endif	
   if (Type == TopAbs_SHAPE) { 
@@ -56,7 +56,7 @@ TNaming_ShapesSet::TNaming_ShapesSet (const TopoDS_Shape&    CS,
     if (Type > CS.ShapeType()) {
       for (TopExp_Explorer exp(CS,Type) ; exp.More(); exp.Next()) {
 	Add(exp.Current());
-#ifdef MDTV_DEB_INT
+#ifdef OCCT_DEBUG_INT
 	cout << "ShapeSet: sub-shape TShape = " <<exp.Current().TShape() <<endl;
 #endif	
       }

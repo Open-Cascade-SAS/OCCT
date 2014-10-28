@@ -102,7 +102,7 @@ void TopOpeBRep_Hctxff2d::SetHSurfacesPrivate()
   mySurfacesSameOriented = TopOpeBRepTool_ShapeTool::SurfacesSameOriented(S1,S2);
   myFacesSameOriented = TopOpeBRepTool_ShapeTool::FacesSameOriented(myFace1,myFace2);
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer DEBi = 0;
   if ( DEBi ) {
     cout<<"TopOpeBRep_Hctxff2d::SetSurfacesPrivate : ";

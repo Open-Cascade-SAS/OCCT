@@ -258,7 +258,7 @@ Standard_Integer STEPConstruct_UnitContext::ComputeFactors(const Handle(StepRepr
   lengthDone = planeAngleDone = solidAngleDone = Standard_False;
   
   if (aContext.IsNull()) {
-#ifdef STEPCONSTRUCT_DEB
+#ifdef OCCT_DEBUG
     cout<<" -- STEPConstruct_UnitContext:ComputeFactor, Context undefined -> default"<<endl;
 #endif
     return 1;
@@ -271,7 +271,7 @@ Standard_Integer STEPConstruct_UnitContext::ComputeFactors(const Handle(StepRepr
   for (Standard_Integer i = 1; i <= nbU; i++) {
     Handle(StepBasic_NamedUnit) theNamedUnit = aContext->UnitsValue(i);
     status = ComputeFactors(theNamedUnit);
-#ifdef STEPCONSTRUCT_DEB
+#ifdef OCCT_DEBUG
     if(status == -1)
       cout << " -- STEPConstruct_UnitContext:ComputeFactor: Unit item no." << i << " is not recognized" << endl;
 #endif    
@@ -342,7 +342,7 @@ Standard_Integer STEPConstruct_UnitContext::ComputeFactors(const Handle(StepBasi
     }
     else {
       status = 14;
-#ifdef STEPCONSTRUCT_DEB
+#ifdef OCCT_DEBUG
       cout << "Error in the file : parameter double defined" << endl;
 #endif
     }
@@ -367,7 +367,7 @@ Standard_Integer STEPConstruct_UnitContext::ComputeFactors(const Handle(StepBasi
     }
     else {
       status = 14;
-#ifdef STEPCONSTRUCT_DEB
+#ifdef OCCT_DEBUG
       cout << "Error in the file : parameter double defined" << endl;
 #endif
     }
@@ -375,7 +375,7 @@ Standard_Integer STEPConstruct_UnitContext::ComputeFactors(const Handle(StepBasi
   
   // Defining a type of unit
   if(!parameterDone) {
-#ifdef STEPCONSTRUCT_DEB
+#ifdef OCCT_DEBUG
     cout << "Unit Type not implemented" << endl;
 #endif 
     return 0;
@@ -392,7 +392,7 @@ Standard_Integer STEPConstruct_UnitContext::ComputeFactors(const Handle(StepBasi
       lengthDone = Standard_True;
     else {
       status = 14;
-#ifdef STEPCONSTRUCT_DEB
+#ifdef OCCT_DEBUG
       cout << "Error in the file : LengthFactor double defined" << endl;
 #endif    
     }
@@ -453,7 +453,7 @@ Standard_Integer STEPConstruct_UnitContext::ComputeTolerance
   for (Standard_Integer un = 1 ; un <= nbUncertainty ; un ++) {
     Handle(StepBasic_UncertaintyMeasureWithUnit) aUMWU = aContext->UncertaintyValue(un);
     if (aUMWU.IsNull()) {
-#ifdef STEPCONSTRUCT_DEB
+#ifdef OCCT_DEBUG
       cout<<"BAD Uncertainty Measure with Units, n0."<<un<<endl;
 #endif
       continue;
@@ -483,7 +483,7 @@ Standard_Integer STEPConstruct_UnitContext::ComputeTolerance
     }
   }
 
-#ifdef STEPCONSTRUCT_DEB
+#ifdef OCCT_DEBUG
   if (hasUncertainty) cout << "UNCERTAINTY read as " << theUncertainty << endl;
 #endif
   return status;

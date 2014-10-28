@@ -51,7 +51,7 @@
 #include <TopOpeBRep_DRAW.hxx>
 #endif
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 Standard_EXPORT void debrest(const Standard_Integer i)   {cout<<"+ debrest "<<i<<endl;}
 Standard_EXPORT void debrline()   {cout<<"+ debrline"<<endl;}
 
@@ -363,7 +363,7 @@ void TopOpeBRep_FacesFiller::ProcessLine()
   if (reject) return;
   ResetDSC();
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer ili = myLine->Index(),nli = myFacesIntersector->NbLines();
   Standard_Boolean tcx = TopOpeBRepDS_GettraceCX(ili);
   Standard_Boolean tDSF = TopOpeBRepDS_GettraceDSF();
@@ -382,7 +382,7 @@ void TopOpeBRep_FacesFiller::ProcessLine()
   
   myHDS->SortOnParameter(myDSCIL);
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   TopOpeBRepDS_Dumper Dumper(myHDS);
   if (tDSF||traceDSNC) Dumper.DumpLOI(myDSCIL,cout,"current curve : ");
 #endif
@@ -416,7 +416,7 @@ void TopOpeBRep_FacesFiller::ProcessVPInotonR(TopOpeBRep_VPointInterIterator& VP
 //=======================================================================
 void TopOpeBRep_FacesFiller::ProcessVPnotonR(const TopOpeBRep_VPointInter& VP)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean traceDSF = TopOpeBRepDS_GettraceDSF();
   Standard_Boolean traceDSP = TopOpeBRepDS_GettraceDSP();
   Standard_Boolean traceISTO = TopOpeBRepDS_GettraceISTO();
@@ -426,7 +426,7 @@ void TopOpeBRep_FacesFiller::ProcessVPnotonR(const TopOpeBRep_VPointInter& VP)
   Standard_Integer ShapeIndex = 0;
   Standard_Integer iVP = VP.Index();
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer ili=myLine->Index(),ivp=iVP,isi=ShapeIndex;
   if(traceDSF || traceDSP){
     cout<<"trc tnvp 1   "<<myexF1<<" "<<myexF2<<" "<<ili<<" "<<ivp<<" "<<isi;
@@ -448,7 +448,7 @@ void TopOpeBRep_FacesFiller::ProcessVPnotonR(const TopOpeBRep_VPointInter& VP)
   Standard_Boolean CPIfound = GetGeometry(itCPIL,VP,PVIndex,PVKind);
   if ( !CPIfound ) {
     if (iVP != iINON1 && iVP != iINONn) {
-#ifdef TOPOPEBREP_DEB
+#ifdef OCCT_DEBUG
       cout<<"VP "<<iVP<<" on "<<0<<" : point d'intersection anormal : rejet"<<endl;
 #endif
       return;
@@ -539,7 +539,7 @@ static Standard_Boolean FUN_brep_ONfirstP(const TopOpeBRep_VPointInter& vpf, con
 //=======================================================================
 void TopOpeBRep_FacesFiller::ProcessRLine()
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean tDSF = TopOpeBRepDS_GettraceDSF();
 #endif
   
@@ -560,7 +560,7 @@ void TopOpeBRep_FacesFiller::ProcessRLine()
   Standard_Integer rank = myDS->AncestorRank(iErest);
   Standard_Integer OOrank = (rank == 1)? 2: 1;
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (tDSF) {cout<<"+ edge restriction "<<myDS->SectionEdge(Erest);
 	     cout<<" (DS "<<iErest<<")"<<endl;}
   Standard_Boolean trce = TopOpeBRepDS_GettraceSPSX(iErest); if(trce) debrest(iErest);
@@ -576,12 +576,12 @@ void TopOpeBRep_FacesFiller::ProcessRLine()
   Standard_Boolean T1unk = T1.IsUnknown();
   Standard_Boolean T2unk = T2.IsUnknown();
   Standard_Boolean processUNK = Standard_False;
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean nopunk = TopOpeBRep_GetcontextNOPUNK();
   if (nopunk) processUNK = Standard_False;
 #endif
   if (processUNK && (T1unk || T2unk)) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     Standard_Boolean trc = TopOpeBRepDS_GettraceSTRANGE(); trc = trc || tDSF;
     if (trc) cout<<"T UNKNOWN FEI F"<<iF1<<" F"<<iF2<<" on Erest"<<iErest<<endl;
 #endif
@@ -598,7 +598,7 @@ void TopOpeBRep_FacesFiller::ProcessRLine()
       if (OOTok) {
 	if (OOrank == 1) FDS_SetT(T1,T);
 	else             FDS_SetT(T2,T);
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	if (trc) {
 	  cout<<"F"<<iOOF<<" + new FEI(";TopAbs::Print(T.Before(),cout);cout<<",";
 	  TopAbs::Print(T.After(),cout);cout<<" (F"<<iF<<") (E"<<iErest<<"))\n";
@@ -613,7 +613,7 @@ void TopOpeBRep_FacesFiller::ProcessRLine()
       if (Tok) {
 	if (rank == 1)  FDS_SetT(T1,T);
 	else            FDS_SetT(T2,T);
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	if (trc) {cout<<"F"<<iF<<" + new FEI(";TopAbs::Print(T.Before(),cout);cout<<",";
 		  TopAbs::Print(T.After(),cout);cout<<" (F"<<iOOF<<") (E"<<iErest<<"))\n";}
 #endif
@@ -637,7 +637,7 @@ void TopOpeBRep_FacesFiller::ProcessRLine()
   VPI.Init((*myLine));  
   Standard_Real tola = Precision::Angular()*1.e5;//NYIXPUTOL
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (tDSF) {
     debrline();
     cout<<endl<<"------------ Rline processing --------------------"<<endl;
@@ -647,7 +647,7 @@ void TopOpeBRep_FacesFiller::ProcessRLine()
   const TopOpeBRep_VPointInter& vpf = VPI.CurrentVP();
   for (; VPI.More(); VPI.Next()) {
     const TopOpeBRep_VPointInter& VP = VPI.CurrentVP();
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (tDSF) {cout<<endl;myHFFD->DumpVP(VP);}
 #endif
     Standard_Integer absindex = VP.ShapeIndex(); // 0,1,2,3
@@ -743,7 +743,7 @@ void TopOpeBRep_FacesFiller::ProcessRLine()
     Standard_Integer obOO   = TopOpeBRepTool_TOOL::OnBoundary(OOpar,OOE);     //vertex can be missed
 
     if ((obRest == EXTERNAL)||(obOO == EXTERNAL)){
-#ifdef TOPOPEBREP_DEB
+#ifdef OCCT_DEBUG
       if(obRest==EXTERNAL) cout<<"***********ProcessRLine : faulty parameter on Erest"<<endl;
       if(obOO==EXTERNAL)   cout<<"***********ProcessRLine : faulty parameter on OOE"<<endl;
 #endif
@@ -845,7 +845,7 @@ void TopOpeBRep_FacesFiller::ProcessRLine()
 	  if (!ok) continue;
 	  transEdge.Before(Tr.Before()); transEdge.After(Tr.After());  
 	}
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	if (tDSF) {cout<<"*-> new transEdge (edge"<<SIedgeIndex<<",face"<<iOOFace<<")=";
 		   TopAbs::Print(transEdge.Before(),cout);
 		   cout<<" ";TopAbs::Print(transEdge.After(),cout);cout<<endl;}
@@ -921,7 +921,7 @@ static Standard_Boolean FUN_haslastvpon0(const TopOpeBRep_LineInter& L)
 //=======================================================================
 void TopOpeBRep_FacesFiller::FillLineVPonR()
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean tDSF = TopOpeBRepDS_GettraceDSF();
   Standard_Boolean trline = Standard_False;
 #endif
@@ -935,7 +935,7 @@ void TopOpeBRep_FacesFiller::FillLineVPonR()
   mykeptVPnbr = 0; 
   
   if (myLine->TypeLineCurve() == TopOpeBRep_RESTRICTION) { 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (trline) FUN_traceRLine(*myLine);
 #endif
     ProcessRLine();
@@ -948,7 +948,7 @@ void TopOpeBRep_FacesFiller::FillLineVPonR()
     return; 
   }
    
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (trline) FUN_traceGLine(*myLine);
 #endif
   myLineIsonEdge = LSameDomainERL(*myLine, myERL);
@@ -956,7 +956,7 @@ void TopOpeBRep_FacesFiller::FillLineVPonR()
   // walking (case mouch1a 1 1) : line (vpfirst on 3,vplast on 0,nvpkept = 2) => kept
   myLastVPison0 = ::FUN_haslastvpon0(*myLine);
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (tDSF) {
     if (myLineIsonEdge) cout<<" geometric line is on edge"<<endl;
     else cout <<" geometric line not on edge"<<endl;
@@ -967,7 +967,7 @@ void TopOpeBRep_FacesFiller::FillLineVPonR()
   // sharing same domain with the current geometric line are computed here
   //----------------------------------------------------------------------
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #ifdef DRAW
   Standard_Boolean trcd = Standard_False;
   if (trcd) FUN_DrawMap(myDataforDegenEd);
@@ -992,7 +992,7 @@ void TopOpeBRep_FacesFiller::FillLineVPonR()
 //=======================================================================
 void TopOpeBRep_FacesFiller::FillLine()
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean tDSF = TopOpeBRepDS_GettraceDSF();
 #endif
   
@@ -1009,7 +1009,7 @@ void TopOpeBRep_FacesFiller::FillLine()
     const TopOpeBRep_VPointInter& VP = VPI.CurrentVP();
     if ( ! VP.Keep() ) continue;
     
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (tDSF) cout<<endl;
 #endif    
     
@@ -1110,7 +1110,7 @@ void TopOpeBRep_FacesFiller::AddShapesLine()
     if (onsampt) id = Standard_True;
   }
  
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepDS_GettraceDSF()) {
     cout<<endl<<"minmax "<<pmin<<","<<pmax;
     if (id) cout<<" --> rejet";
@@ -1176,7 +1176,7 @@ void TopOpeBRep_FacesFiller::StoreCurveInterference(const Handle(TopOpeBRepDS_In
     TopOpeBRepDS_Curve DSC;
     myDSCIndex = myDS->AddCurve(DSC);
     
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (TopOpeBRepDS_GettraceDSF() || TopOpeBRepDS_GettraceDSNC()) 
       cout<<"new DSC "<<myDSCIndex<<endl;
     if (TopOpeBRepDS_GettraceDSLT()) myLine->DumpLineTransitions(cout);
@@ -1195,7 +1195,7 @@ Standard_Boolean TopOpeBRep_FacesFiller::GetGeometry(TopOpeBRepDS_ListIteratorOf
 {
   TopOpeBRepDS_Point DSP = TopOpeBRep_PointGeomTool::MakePoint(VP);
   Standard_Boolean b = myHDS->GetGeometry(IT,DSP,G,K);
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = TopOpeBRepDS_GettraceDSF() || TopOpeBRepDS_GettraceDSP();
   if (b && trc) { 
     Standard_Boolean newinDS = Standard_False; myHFFD->DumpDSP(VP,K,G,newinDS);
@@ -1223,7 +1223,7 @@ Standard_Integer TopOpeBRep_FacesFiller::MakeGeometry(const TopOpeBRep_VPointInt
     K = TopOpeBRepDS_POINT;
   }
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = TopOpeBRepDS_GettraceDSF() || TopOpeBRepDS_GettraceDSP();
   if (trc) {
     Standard_Boolean newinDS = Standard_True; myHFFD->DumpDSP(VP,K,G,newinDS);

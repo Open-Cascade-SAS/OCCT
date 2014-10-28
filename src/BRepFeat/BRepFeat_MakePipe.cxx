@@ -53,7 +53,7 @@
 #include <TopExp.hxx>
 #include <BRepBndLib.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean BRepFeat_GettraceFEAT();
 #endif
 
@@ -75,7 +75,7 @@ void BRepFeat_MakePipe::Init(const TopoDS_Shape& Sbase,
 			     const Standard_Integer Mode,
 			     const Standard_Boolean Modify)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
   if (trc) cout << "BRepFeat_MakePipe::Init" << endl;
 #endif
@@ -118,7 +118,7 @@ void BRepFeat_MakePipe::Init(const TopoDS_Shape& Sbase,
     myMap.Bind(exp.Current(), thelist);
     myMap(exp.Current()).Append(exp.Current());
   }
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (trc) {
     if (myJustFeat)  cout << " Just Feature" << endl;
     if (myFuse)  cout << " Fuse" << endl;
@@ -137,7 +137,7 @@ void BRepFeat_MakePipe::Init(const TopoDS_Shape& Sbase,
 void BRepFeat_MakePipe::Add(const TopoDS_Edge& E,
 			     const TopoDS_Face& F)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
   if (trc) cout << "BRepFeat_MakePipe::Add(Edge,face)" << endl;
 #endif
@@ -183,7 +183,7 @@ void BRepFeat_MakePipe::Add(const TopoDS_Edge& E,
 
 void BRepFeat_MakePipe::Perform()
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
   if (trc) cout << "BRepFeat_MakePipe::Perform()" << endl;
 #endif
@@ -249,7 +249,7 @@ void BRepFeat_MakePipe::Perform()
 
 void BRepFeat_MakePipe::Perform(const TopoDS_Shape& Until)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
   if (trc) cout << "BRepFeat_MakePipe::Perform(Until)" << endl;
 #endif
@@ -293,7 +293,7 @@ void BRepFeat_MakePipe::Perform(const TopoDS_Shape& Until)
 void BRepFeat_MakePipe::Perform(const TopoDS_Shape& From,
 				const TopoDS_Shape& Until)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
   if (trc) cout << "BRepFeat_MakePipe::Perform(From,Until)" << endl;
 #endif

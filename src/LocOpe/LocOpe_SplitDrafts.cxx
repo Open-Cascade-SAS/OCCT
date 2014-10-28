@@ -907,7 +907,7 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face& F,
 	MapW(edg) = GenF;
       }
       else {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	cout << "Pb d'analyse" << endl;
 #endif
 	return;
@@ -1253,7 +1253,7 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face& F,
       for (itl.Initialize(itdmsls.Value());itl.More(); itl.Next()) {
 	if (theSubs.IsCopied(itl.Value())) {
 	  if (theSubs.Copy(itl.Value()).Extent() != 1) {
-#ifdef LOCOPE_DEB
+#ifdef OCCT_DEBUG
 	    cout << "Invalid number of descendant" << endl;
 #endif
 	    return;
@@ -1725,7 +1725,7 @@ static TopoDS_Edge  NewEdge(const TopoDS_Edge& edg,
 	  }
 	}
       }
-#ifdef DEB
+#ifdef OCCT_DEBUG
       Standard_Real ptol = Precision::PConfusion();
       if (prmf < imf - ptol || prmf > iml + ptol ||
 	  prml < imf - ptol || prml > iml + ptol) {

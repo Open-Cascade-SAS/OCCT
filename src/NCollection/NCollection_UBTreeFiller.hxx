@@ -113,7 +113,7 @@ template <class TheObjType, class TheBndType> class NCollection_UBTreeFiller
   ~NCollection_UBTreeFiller ()
   {
     if (mySeqPtr.Length() > 0)
-#ifdef DEB_UBTREE
+#ifdef OCCT_DEBUG_UBTREE
       cout << "~NCollection_UBTreeFiller: " << Fill()
            << " objects added to the tree" << endl;
 #else

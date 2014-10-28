@@ -713,7 +713,7 @@ void HLRBRep_InternalAlgo::HideSelected (const Standard_Integer I,
   Standard_Integer e,f,j,nbVisEdges,nbSelEdges,nbSelFaces,nbCache;
   Standard_Integer nbFSide,nbFSimp;
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (myDebug) {
     nbPtIntersection = 0;
     nbSegIntersection = 0;
@@ -930,7 +930,7 @@ void HLRBRep_InternalAlgo::HideSelected (const Standard_Integer I,
       }
     }
     
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (myDebug) {
       fd = &(myDS->FDataArray().ChangeValue(1));
       nbFSimp = 0;

@@ -86,18 +86,6 @@ Standard_Boolean DNaming_RevolutionDriver::MustExecute(const TFunction_Logbook&)
   return Standard_True;
 }
 
-#ifdef OCC_DEB
-#include <BRepTools.hxx>
-static void Write(const TopoDS_Shape& shape,
-		      const Standard_CString filename)
-{
-  ofstream save;
-  save.open(filename);
-  save << "DBRep_DrawableShape" << endl << endl;
-  if(!shape.IsNull()) BRepTools::Write(shape, save);
-  save.close();
-}
-#endif
 //=======================================================================
 //function : Execute
 //purpose  : Executes the function
@@ -180,7 +168,7 @@ Standard_Integer DNaming_RevolutionDriver::Execute(TFunction_Logbook& theLog) co
       }
     }
     if(!anAxisOK) {
-#ifdef OCC_DEB
+#ifdef OCCT_DEBUG
       cout<<"RevolutionDriver:: Axis is not correct"<<endl;
 #endif
       aFunction->SetFailure(WRONG_ARGUMENT);
@@ -430,7 +418,7 @@ void DNaming_RevolutionDriver::LoadNamingDS (const TDF_Label& theResultLabel,
 	    TNaming_Builder aBuilder(theResultLabel.NewChild());
 	    aBuilder.Generated (Vfirst, it.Value());
 	  }
-#ifdef OCC_DEB
+#ifdef OCCT_DEBUG
 	  else {
 	    if(MS.HasDegenerated())
 	      cout <<"mkRevol has degenerated" <<endl;
@@ -447,7 +435,7 @@ void DNaming_RevolutionDriver::LoadNamingDS (const TDF_Label& theResultLabel,
 	    TNaming_Builder aBuilder(theResultLabel.NewChild());
 	    aBuilder.Generated (Vlast, it.Value());
 	  }
-#ifdef OCC_DEB
+#ifdef OCCT_DEBUG
 	  else {
 	    if(MS.HasDegenerated())
 	      cout <<"mkRevol has degenerated" <<endl;
@@ -516,7 +504,7 @@ void DNaming_RevolutionDriver::LoadNamingDS (const TDF_Label& theResultLabel,
 	    TNaming_Builder aBuilder(theResultLabel.NewChild());
 	    aBuilder.Generated (Vfirst, it.Value());
 	  }
-#ifdef OCC_DEB
+#ifdef OCCT_DEBUG
 	  else {
 	    if(MS.HasDegenerated())
 	      cout <<"mkRevol has degenerated" <<endl;
@@ -532,7 +520,7 @@ void DNaming_RevolutionDriver::LoadNamingDS (const TDF_Label& theResultLabel,
 	    TNaming_Builder aBuilder(theResultLabel.NewChild());
 	    aBuilder.Generated (Vlast, it.Value());
 	  }
-#ifdef OCC_DEB
+#ifdef OCCT_DEBUG
 	  else {
 	    if(MS.HasDegenerated())
 	      cout <<"mkRevol has degenerated" <<endl;

@@ -19,7 +19,7 @@
 #include <Standard_OutOfRange.hxx>
 #include <TopOpeBRepDS_CurvePointInterference.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepDS_GettraceGAP();
 #endif
 
@@ -112,7 +112,7 @@ Standard_Boolean TopOpeBRepDS_GapTool::Curve(const Handle(TopOpeBRepDS_Interfere
       }
     }
   }
-#ifdef DEB 
+#ifdef OCCT_DEBUG
   if (TopOpeBRepDS_GettraceGAP()) {
     cout <<"TopOpeBRepDS_GapTool::Curve Point "<<I->Geometry()<<" -> Pas sur Courbe "<<endl;
   }

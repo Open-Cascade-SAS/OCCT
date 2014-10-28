@@ -232,7 +232,7 @@ const LDOM_BasicNode * LDOM_BasicElement::AddAttribute
   //  Check attribute hash value against the current mask
   const unsigned int anAttrMaskValue = aHash & (8*sizeof(myAttributeMask) - 1);
   const unsigned long anAttributeMask = (1 << anAttrMaskValue);
-#ifdef DEBUG_MASK
+#ifdef OCCT_DEBUG_MASK
   anAttributeMask = 0xffffffff;
 #endif
   if ((myAttributeMask & anAttributeMask) == 0) {
@@ -276,7 +276,7 @@ const LDOM_BasicNode * LDOM_BasicElement::RemoveAttribute
     LDOM_MemManager::Hash (aNameStr, (Standard_Integer)strlen(aNameStr));
   const unsigned int anAttrMaskValue = aHash & (8*sizeof(myAttributeMask) - 1);
   const unsigned long anAttributeMask = (1 << anAttrMaskValue);
-#ifdef DEBUG_MASK
+#ifdef OCCT_DEBUG_MASK
   anAttributeMask = 0xffffffff;
 #endif
   if ((myAttributeMask & anAttributeMask) == 0) {

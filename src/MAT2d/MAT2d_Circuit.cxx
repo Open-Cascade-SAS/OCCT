@@ -19,7 +19,7 @@
 #include <DrawTrSurf_Curve2d.hxx>
 #include <Draw_Marker2D.hxx>
 #endif
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #include <GCE2d_MakeSegment.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_Parabola.hxx>
@@ -55,7 +55,7 @@
   static Handle(DrawTrSurf_Curve2d) draw;
   Standard_EXPORT Draw_Viewer dout;
 #endif
-#ifdef DEB
+#ifdef OCCT_DEBUG
   static void MAT2d_DrawCurve(const Handle(Geom2d_Curve)& aCurve,
 			      const Standard_Integer      Indice);
   static Standard_Boolean AffichCircuit = 0;
@@ -185,7 +185,7 @@ void  MAT2d_Circuit::Perform
   //------------------------
   Road.RunOnConnexions();
 
-#ifdef DEB 
+#ifdef OCCT_DEBUG
   if (AffichCircuit) {
     Standard_Integer NbConnexions = Road.Path().Length();
     for (i = 1; i <= NbConnexions; i++) {
@@ -276,7 +276,7 @@ Standard_Boolean MAT2d_Circuit::IsSharpCorner(const Handle(Geom2d_Geometry)& Geo
     Geom2dInt_GInter Intersect; 
     Intersect.Perform(OC1,OC2,Tol,Tol);
     
-#ifdef DEB
+#ifdef OCCT_DEBUG
     static Standard_Boolean Affich = 0;
     if (Affich) {
 #ifdef DRAW
@@ -458,7 +458,7 @@ void  MAT2d_Circuit::ConstructCircuit
     }
   }
 
-#ifdef DEB   
+#ifdef OCCT_DEBUG
   if (AffichCircuit) {
     ILastItem = geomElements.Length();
     for (i = 1; i <= ILastItem; i++) {
@@ -623,7 +623,7 @@ const
         Corres(i) = Corres(2*NbItems - i);
     }
     
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (AffichCircuit) {
       for (i = 1; i <= 2*NbItems - 2; i++) {
         cout<< "Correspondance "<< i<<" -> "<<Corres(i)<<endl;
@@ -661,7 +661,7 @@ void  MAT2d_Circuit::InsertCorner (TColGeom2d_SequenceOfGeometry& Line) const
     isuiv  = (i == Line.Length()) ? 1 : i + 1;
     Insert = IsSharpCorner(Line.Value(i),Line.Value(isuiv),direction);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (AffichCircuit) {
     if (Insert) {
       Curve      = Handle(Geom2d_TrimmedCurve)::DownCast(Line.Value(isuiv));
@@ -861,7 +861,7 @@ static Standard_Real CrossProd(const Handle(Geom2d_Geometry)& Geom1,
 
 
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //==========================================================================
 //function : MAT2d_DrawCurve
 //purpose  : Affichage d une courbe <aCurve> de Geom2d. dans une couleur

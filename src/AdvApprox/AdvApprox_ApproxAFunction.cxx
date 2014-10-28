@@ -56,7 +56,7 @@
 #include <PLib_JacobiPolynomial.hxx>
 
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 
 static Standard_Boolean AdvApprox_Debug = 0;
 
@@ -431,7 +431,7 @@ void AdvApprox_ApproxAFunction::Approximation(
 {
 //  Standard_Real EpsPar =  Precision::Confusion();
   Standard_Integer IDIM, NUPIL,TheDeg;
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer NDIMEN = TotalDimension;
 #endif
   Standard_Boolean isCut = Standard_False;
@@ -598,7 +598,7 @@ void AdvApprox_ApproxAFunction::Approximation(
 	  CoefficientArray.SetValue(j, Coefficients.Value(i));
          }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
  // Test des derives par difference finis
 	Standard_Integer IORDRE = ContinuityOrder;
  

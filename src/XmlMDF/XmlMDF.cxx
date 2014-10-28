@@ -101,7 +101,7 @@ Standard_Integer XmlMDF::WriteSubTree
       //    Paste
       aDriver -> Paste (tAtt, pAtt, theRelocTable);
     }
-#ifdef XMLMDF_DEB
+#ifdef OCCT_DEBUG
     else if (!UnsuppTypesMap().Contains (aType))
     {
       cout << "attribute driver for type "<< aType -> Name()<< " not found"<< endl;
@@ -215,7 +215,7 @@ Standard_Integer XmlMDF::ReadSubTree (const XmlObjMgt_Element&    theElement,
 #ifdef DATATYPE_MIGRATION
 	TCollection_AsciiString  newName;	
 	if(Storage_Schema::CheckTypeMigration(aName, newName)) {
-#ifdef DATATYPE_MIGRATION_DEB
+#ifdef OCCT_DEBUG
 	  cout << "CheckTypeMigration:OldType = " <<aName.GetString() << " Len = "<<strlen(aName.GetString())<<endl;
 	  cout << "CheckTypeMigration:NewType = " <<newName  << " Len = "<< newName.Length()<<endl;
 #endif
@@ -260,7 +260,7 @@ Standard_Integer XmlMDF::ReadSubTree (const XmlObjMgt_Element&    theElement,
           else if (isBound == Standard_False)
             theRelocTable.Bind (anID, tAtt);
         }
-#ifdef XMLMDATASTD_DEB
+#ifdef OCCT_DEBUG
         else
         {
           const TCollection_AsciiString anAsciiName = aName;

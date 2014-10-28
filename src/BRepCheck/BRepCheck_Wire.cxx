@@ -380,7 +380,7 @@ Standard_Boolean IsDistanceIn3DTolerance (const gp_Pnt& thePnt_f,
   if (Dist < aTol3d)
     return Standard_True;
 
-#ifdef BREPCHECK_DEB
+#ifdef OCCT_DEBUG
   cout << endl;
   cout << "--------Function IsDistanceIn3DTolerance(...)----------"												<< endl;
   cout << "--- BRepCheck Wire: Closed3d -> Error"																					<< endl;
@@ -402,7 +402,7 @@ Standard_Boolean IsDistanceIn2DTolerance (const BRepAdaptor_Surface& aFaceSurfac
                                           const gp_Pnt2d& thePnt,
                                           const gp_Pnt2d& thePntRef,
                                           const Standard_Real aTol3d,
-#ifdef DEB
+#ifdef OCCT_DEBUG
                                           const Standard_Boolean PrintWarnings = Standard_True)
 #else
                                           const Standard_Boolean = Standard_True)
@@ -416,7 +416,7 @@ Standard_Boolean IsDistanceIn2DTolerance (const BRepAdaptor_Surface& aFaceSurfac
   if((dumin < dumax) && (dvmin < dvmax))
     return Standard_True;
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if(PrintWarnings)
     {
     cout << endl;
@@ -451,7 +451,7 @@ Standard_Boolean IsDistanceIn2DTolerance (const BRepAdaptor_Surface& aFaceSurfac
 
   Standard_Real aTol2d = 2*Max(	dumax, dvmax);
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if((aTol2d <= 0.0) && (PrintWarnings))
     {
     cout<<"BRepCheck_Wire : UResolution and VResolution = 0.0 (Face too small ?)"<<endl;
@@ -465,7 +465,7 @@ Standard_Boolean IsDistanceIn2DTolerance (const BRepAdaptor_Surface& aFaceSurfac
   if (Dist < aTol2d)
     return Standard_True;
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if(PrintWarnings)
     {
     cout << endl;
@@ -1059,7 +1059,7 @@ BRepCheck_Status BRepCheck_Wire::SelfIntersect(const TopoDS_Face& F,
 	      BRepCheck::Add(myMap(myShape),BRepCheck_SelfIntersectingWire);
 	      }
 	    delete [] tabDom;
-#ifdef BREPCHECK_DEB
+#ifdef OCCT_DEBUG
 	    static Standard_Integer numpoint=0;
 	    cout<<"point p"<<++numpoint<<" "<<P3d.X()<<" "<<P3d.Y()<<" "<<P3d.Z()<<endl;cout.flush();
 #endif
@@ -1092,7 +1092,7 @@ BRepCheck_Status BRepCheck_Wire::SelfIntersect(const TopoDS_Face& F,
 	}
 	else {
 	  delete [] tabDom;
-#ifdef BREPCHECK_DEB
+#ifdef OCCT_DEBUG
 	  cout<<"BRepCheck_NoCurveOnSurface or BRepCheck_InvalidRange"<<endl;cout.flush();
 #endif
 	  if(tabCur(j).IsNull()) {
@@ -1214,7 +1214,7 @@ BRepCheck_Status BRepCheck_Wire::SelfIntersect(const TopoDS_Face& F,
 	    //-- Check distance from edges to the curve joining 
 	    //-- the point of intersection with vertex (if exists)
 	    if (localok == Standard_False && !CommonVertices.IsEmpty()) {
-#ifdef BREPCHECK_DEB
+#ifdef OCCT_DEBUG
 	      cout << "\n------------------------------------------------------\n" <<endl;
 	      cout << "\n--- BRepCheck Wire: AutoIntersection Phase1 -> Erreur \n" <<endl;
 	      
@@ -1319,7 +1319,7 @@ BRepCheck_Status BRepCheck_Wire::SelfIntersect(const TopoDS_Face& F,
 		    localok = Standard_False;
 		  }
 		}
-#ifdef BREPCHECK_DEB
+#ifdef OCCT_DEBUG
 		if(localok) { 
 		  printf("--- BRepCheck Wire: AutoIntersection Phase2 -> Bon \n");
 		  printf("--- distance Point Vertex : %10.7g (tol %10.7g)\n",distauvtxleplusproche,tolvtt);
@@ -1344,7 +1344,7 @@ BRepCheck_Status BRepCheck_Wire::SelfIntersect(const TopoDS_Face& F,
 	      if (Update) {
 		BRepCheck::Add(myMap(myShape),BRepCheck_SelfIntersectingWire);
 		}
-#ifdef BREPCHECK_DEB
+#ifdef OCCT_DEBUG
 	      static Standard_Integer numpoint1=0;
 	      cout<<"point p"<<++numpoint1<<" "<<P3d.X()<<" "<<P3d.Y()<<" "<<P3d.Z()<<endl;
 	      cout.flush();
@@ -1478,7 +1478,7 @@ BRepCheck_Status BRepCheck_Wire::SelfIntersect(const TopoDS_Face& F,
 	      if (Update) {
 		BRepCheck::Add(myMap(myShape),BRepCheck_SelfIntersectingWire);
 	      }
-#ifdef BREPCHECK_DEB
+#ifdef OCCT_DEBUG
 	      static Standard_Integer numpoint1=0;
 	      cout<<"point p"<<++numpoint1<<" "<<P3d.X()<<" "<<P3d.Y()<<" "<<P3d.Z()<<endl;
 	      cout.flush();

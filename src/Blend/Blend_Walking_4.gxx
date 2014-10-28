@@ -116,7 +116,7 @@ void Blend_Walking::InternalPerform(Blend_Function& Func,
 
   while (!Arrive) {
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     sectioncalculee = 0;
     nbcomputedsection++;
 #endif
@@ -296,7 +296,7 @@ void Blend_Walking::InternalPerform(Blend_Function& Func,
 	}
 
 	Standard_Boolean testdefl = 1;
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	testdefl = !Blend_GetcontextNOTESTDEFL();
 #endif	
 	if (recad1 || recad2) {
@@ -316,7 +316,7 @@ void Blend_Walking::InternalPerform(Blend_Function& Func,
 	if (stepw > 2*tolgui) State = Blend_StepTooLarge;
 	// Sinon echec recadrage. On sort avec PointsConfondus
 	else {
-#if BLEND_DEB
+#ifdef OCCT_DEBUG
 	  cout << "Echec recadrage" << endl;
 #endif	  
 	  State = Blend_SamePoints;
@@ -324,7 +324,7 @@ void Blend_Walking::InternalPerform(Blend_Function& Func,
       }
     }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (Blend_GettraceDRAWSECT()){
       Drawsect(surf1,surf2,sol,param,Func, State);
     }
@@ -521,7 +521,7 @@ void Blend_Walking::InternalPerform(Blend_Function& Func,
     case Blend_SamePoints :
       {
 	// On arrete
-#if BLEND_DEB
+#ifdef OCCT_DEBUG
 	cout << " Points confondus dans le cheminement" << endl;
 #endif
 	Ext1.SetValue(previousP.PointOnS1(),
@@ -537,7 +537,7 @@ void Blend_Walking::InternalPerform(Blend_Function& Func,
 	Arrive = Standard_True;
       }
       break;
-#ifndef DEB
+#ifndef OCCT_DEBUG
     default:
       break;
 #endif

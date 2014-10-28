@@ -527,7 +527,7 @@ void TNaming_Tool::Collect(const Handle(TNaming_NamedShape)& NS,
 
 
 // Pour DEBUGGER 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 
 //=======================================================================
 //function : TNamingTool_Label
@@ -572,7 +572,7 @@ void TNaming_Tool::FindShape(const TDF_LabelMap&               Valid,
   // Which type of shape is being expected?
   Handle(TNaming_Naming) aNaming;
   if (!Arg->FindAttribute(TNaming_Naming::GetID(), aNaming)) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //    cout<<"TNaming_Tool::FindShape(): Naming attribute hasn't been found attached at the Argument label"<<endl;
 #endif
     return;
@@ -582,7 +582,7 @@ void TNaming_Tool::FindShape(const TDF_LabelMap&               Valid,
   TopTools_MapOfShape subShapes;
   TopExp_Explorer anExpl(Arg->Get(), (TopAbs_ShapeEnum)((int)(aNaming->GetName().ShapeType()) + 1));
   for (; anExpl.More(); anExpl.Next()) subShapes.Add(anExpl.Current());
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //  cout<<"TNaming_Tool::FindShape(): Nb of sub shapes = "<<subShapes.Extent()<<endl;
 #endif
 
@@ -591,21 +591,21 @@ void TNaming_Tool::FindShape(const TDF_LabelMap&               Valid,
   TDF_AttributeMap outRefs;
   TDF_Tool::OutReferences(Arg->Label(), outRefs);
   if (outRefs.IsEmpty()) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //    cout<<"TNaming_Tool::FindShape(): No out references have been found"<<endl;
 #endif
     return;
   }
   for (TDF_MapIteratorOfAttributeMap itr(outRefs); itr.More(); itr.Next()) {
     if (itr.Key()->DynamicType() == STANDARD_TYPE(TNaming_NamedShape)) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //      Standard_Integer nbExtArgs = extArgs.Extent();
 #endif
       const Handle(TNaming_NamedShape)& anExtArg = Handle(TNaming_NamedShape)::DownCast(itr.Key());
       const Handle(TNaming_NamedShape)& aCurrentExtArg = TNaming_Tool::CurrentNamedShape(anExtArg);
       if (!aCurrentExtArg.IsNull() && !aCurrentExtArg->IsEmpty())
 	extArgs.Append(aCurrentExtArg);
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //      if (extArgs.Extent() - 1 == nbExtArgs) {
 //	cout<<"TNaming_Tool::FindShape(): An external reference has been found at ";
 //	itr.Key()->Label().EntryDump(cout); cout<<endl;
@@ -624,13 +624,13 @@ void TNaming_Tool::FindShape(const TDF_LabelMap&               Valid,
     if (anExtArg->Label().Father().IsNull() ||
 	!anExtArg->Label().Father().FindAttribute(TNaming_NamedShape::GetID(), aContextNS)) {
       aContextNS = anExtArg;
-// #ifdef DEB
+// #ifdef OCCT_DEBUG
 //       cout<<"TNaming_Tool::FindShape(): A context shape hasn't been found at the father label of the external argument"<<endl;
 // #endif
 //       continue;
     }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //    cout<<"TNaming_Tool::FindShape(): Searching in the external reference ";
 //    aContextNS->Label().EntryDump(cout); cout<<"  ";
 #endif
@@ -655,7 +655,7 @@ void TNaming_Tool::FindShape(const TDF_LabelMap&               Valid,
 	}
       }
       if (DoesCoincide == subShapes.Extent()) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //	cout<<"TNaming_Tool::FindShape(): Found! ";
 #endif
 	S = possibleResult;
@@ -664,13 +664,13 @@ void TNaming_Tool::FindShape(const TDF_LabelMap&               Valid,
     }
 
     if (!S.IsNull()) break;
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //    cout<<endl;
 #endif
 
   }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (S.IsNull()) {
     cout<<"TNaming_Tool::FindShape(): There hasn't been found a sub shape of the context shape coinciding with the sub shapes of naming"<<endl;
   }

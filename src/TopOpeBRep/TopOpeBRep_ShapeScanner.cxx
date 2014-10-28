@@ -136,7 +136,7 @@ Standard_Integer TopOpeBRep_ShapeScanner::Index()const
 //=======================================================================
 Standard_OStream& TopOpeBRep_ShapeScanner::DumpCurrent(Standard_OStream& OS)const 
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if ( More() ) { 
     const TopoDS_Shape&     S = Current();
     TopAbs_ShapeEnum    T = S.ShapeType();

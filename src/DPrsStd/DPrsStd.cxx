@@ -133,7 +133,7 @@ void DPrsStd::Factory(Draw_Interpretor& theDI)
   DDataStd::AllCommands(theDI);  
   DPrsStd::AllCommands(theDI);
   DDocStd::AllCommands(theDI);
-#ifdef DPRSSTD_DEB
+#ifdef OCCT_DEBUG
   cout << "Draw Plugin : All DF commands are loaded" << endl;
 #endif
 }

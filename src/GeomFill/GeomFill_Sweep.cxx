@@ -282,7 +282,7 @@ GeomFill_Sweep::GeomFill_Sweep(const Handle(GeomFill_LocationLaw)& Location,
   if (Approx.IsDone()) {
     Ok = Standard_True;
 
-#if GEOMFILL_DEB
+#ifdef OCCT_DEBUG
     Approx.Dump(cout);
 #endif
     
@@ -452,7 +452,7 @@ GeomFill_Sweep::GeomFill_Sweep(const Handle(GeomFill_LocationLaw)& Location,
 				   Segmax, 
 				   eval,
 				   Preferentiel);
-#if GEOMFILL_DEB
+#ifdef OCCT_DEBUG
   Approx.Dump(cout);
 #endif
 
@@ -1034,7 +1034,7 @@ static Standard_Boolean IsSweepParallelSpine (const Handle(GeomFill_LocationLaw)
       mySurface = new (Geom_RectangularTrimmedSurface)
 	(S,UFirst, ULast, Standard_True);
 
-#if GEOMFILL_DEB
+#ifdef OCCT_DEBUG
   if (isUPeriodic && !mySurface->IsUPeriodic()) 
     cout<<"Pb de periodicite en U" << endl;
   if (isUPeriodic && !mySurface->IsUClosed())

@@ -120,7 +120,7 @@
 #include <BRepLib_MakeFace.hxx> 
 #include <Precision.hxx>
 // performances 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #include <OSD_Chronometer.hxx>
 extern Standard_Real  t_plate ,t_approxplate,t_batten; 
 extern void ChFi3d_InitChron(OSD_Chronometer& ch);
@@ -525,7 +525,7 @@ static void CalculBatten (const Handle (GeomAdaptor_HSurface) ASurf,
     FairCurve_AnalysisCode Iana; 
     Standard_Boolean Ok;
     Ok = Bat.Compute(Iana,25,1.e-2);
-#if CHFI3D_DEB
+#ifdef OCCT_DEBUG
     if (!Ok) { 
       cout<<"no batten :";
       Bat.Dump(cout);
@@ -664,7 +664,7 @@ static void PerformTwoCornerSameExt(TopOpeBRepDS_DataStructure& DStr,
   ChFiDS_CommonPoint& Com12= stripe1->SetOfSurfData()->Value(index1)->ChangeVertex (isfirst,2);
   isfirst=sens2==1;
   ChFiDS_CommonPoint& Com21= stripe2->SetOfSurfData()->Value(index2)->ChangeVertex (isfirst,1);
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //  ChFiDS_CommonPoint& Com22= 
 //    stripe2->SetOfSurfData()->Value(index2)->ChangeVertex (isfirst,2);
 #endif
@@ -988,7 +988,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
 //    ========================================
 //             Initialisations
 //     ========================================
-#ifdef DEB
+#ifdef OCCT_DEBUG
   OSD_Chronometer ch;
 #endif 
   TopOpeBRepDS_DataStructure& DStr=myDS->ChangeDS();  
@@ -1063,7 +1063,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
   Standard_Integer num;
   TopoDS_Edge Ecur; 
   TopTools_ListIteratorOfListOfShape ItF;
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //  Standard_Integer nface=ChFi3d_nbface(myVFMap(V1));
 #endif
   TopoDS_Face F1,F2;
@@ -1330,7 +1330,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
     isOnSameDiff = isOnSame && isOnDiff;
   }
   if ( isOnSameDiff ) {
-#ifdef CHFI3D_DEB
+#ifdef OCCT_DEBUG
     cout << "OnSame + OnDiff, PerformMoreThreeCorner() calls PerformOneCorner()" << endl;
 #endif
     PerformOneCorner (Jndex, Standard_True);
@@ -2298,7 +2298,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
           Standard_Boolean contraint1=Standard_True,
                             contraint2=Standard_True;
           if (raccordbatten) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	    ChFi3d_InitChron(ch);// initial performances for  battens  
 #endif  
             Standard_Boolean inverseic,inverseicplus;
@@ -2324,7 +2324,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
             contraint2=Standard_False;
 	    CalculBatten(Asurf,TopoDS::Face(Fvive(ic,icplus)),xdir,ydir,p2d1,p2d2,contraint1,contraint2,curv2d1,curv2d2,p.Value(ic,icplus),
 			 p.Value(icplus,ic),inverseic,inverseicplus,pcurve);
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	    ChFi3d_ResultChron( ch,t_batten);  // resulting performances for battens 
 #endif 
           }
@@ -2596,19 +2596,19 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
       }
   } 
  
-#ifdef DEB
+#ifdef OCCT_DEBUG
   ChFi3d_InitChron(ch); // init performances for plate 
 #endif
 
   PSurf.Perform();
 
-#ifdef DEB  
+#ifdef OCCT_DEBUG
   ChFi3d_ResultChron(ch, t_plate); //result performances for plate 
 #endif 
 
   // call of approx  
  
-#ifdef DEB
+#ifdef OCCT_DEBUG
   ChFi3d_InitChron(ch);  // init performances for approxplate
 #endif
   if (PSurf.IsDone()) {
@@ -2630,14 +2630,14 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
     Standard_Real coef = 1.1 ,apperror;
     apperror=Mapp.CriterionError()*coef;
 
-#ifdef DEB  
+#ifdef OCCT_DEBUG
   ChFi3d_ResultChron(ch, t_approxplate); // result performances for approxplate
 #endif
   
 //  Storage of the surface plate and corresponding curves in the DS 
 
     TopAbs_Orientation orplate,orsurfdata,orpcurve,orien;
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //    Standard_Real ang1=PSurf.G1Error();
 #endif
 //     gp_Vec n1,n2,du,dv,du1,dv1;

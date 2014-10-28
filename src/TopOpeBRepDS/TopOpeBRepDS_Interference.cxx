@@ -238,7 +238,7 @@ const
 
 Standard_OStream& TopOpeBRepDS_Interference::DumpS(Standard_OStream& OS) const
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   TopOpeBRepDS::Print(mySupportType,mySupport,OS,"S=","");
   OS.flush();
 #endif
@@ -253,7 +253,7 @@ Standard_OStream& TopOpeBRepDS_Interference::DumpS(Standard_OStream& OS) const
 
 Standard_OStream& TopOpeBRepDS_Interference::DumpG(Standard_OStream& OS) const
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   TopOpeBRepDS::Print(myGeometryType,myGeometry,OS,"G=","");
 #endif
   return OS;
@@ -268,7 +268,7 @@ Standard_OStream& TopOpeBRepDS_Interference::DumpG(Standard_OStream& OS) const
 Standard_OStream& TopOpeBRepDS_Interference::Dump
 (Standard_OStream& OS) const
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   myTransition.Dump(OS); OS<<" "; DumpG(OS); OS<<" on "; DumpS(OS);
 #endif
   return OS;
@@ -278,7 +278,7 @@ Standard_OStream& TopOpeBRepDS_Interference::Dump
 //function : Dump
 //purpose  : 
 //=======================================================================
-#ifdef DEB
+#ifdef OCCT_DEBUG
 Standard_OStream& TopOpeBRepDS_Interference::Dump
 (Standard_OStream& OS,
  const TCollection_AsciiString& s1,

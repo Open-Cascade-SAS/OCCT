@@ -31,7 +31,7 @@
 #include <BRepLProp_SurfaceTool.hxx>
 #include <BRepLProp_SLProps.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GetcontextEINTERNAL();
 Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GetcontextEEXTERNAL();
 Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GetcontextNOSG();
@@ -57,7 +57,7 @@ Standard_EXPORT Standard_Boolean DEBTEFOR(const TopOpeBRepBuild_Builder& B,const
 {return B.GtraceSPS(iFOR,GI); }
 #endif
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 Standard_EXPORT void FUN_RaiseON()
 {Standard_Failure::Raise("BuilderON");}
 static void FUN_cout(const TopoDS_Shape& eON)
@@ -109,7 +109,7 @@ void TopOpeBRepBuild_BuilderON::Perform(const TopOpeBRepBuild_PBuilder& PB,const
   myPLSclass = PLSclass;
   myPWES = PWES;
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer iFOR;Standard_Boolean tFOR=myPB->GtraceSPS(FOR,iFOR);
   if (tFOR) debfillonf(iFOR);
 #endif
@@ -135,15 +135,15 @@ Standard_Boolean TopOpeBRepBuild_BuilderON::GFillONCheckI(const Handle(TopOpeBRe
 
   TopOpeBRepDS_Kind GT,ST;Standard_Integer GI,SI;FDS_data(SSI,GT,GI,ST,SI);
   if (GT != TopOpeBRepDS_EDGE || ST != TopOpeBRepDS_FACE) return Standard_False;
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //  Standard_Integer iFOR=BDS.Shape(myFace);
 #endif
   const TopoDS_Edge& EG=TopoDS::Edge(BDS.Shape(GI, Standard_False));
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //  Standard_Integer iEG=BDS.Shape(EG, Standard_False);
 #endif
   const TopoDS_Shape& FS=BDS.Shape(SI, Standard_False);
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //  Standard_Integer iFS=BDS.Shape(FS, Standard_False);
 #endif
   TopAbs_ShapeEnum ShapeInterf=TopAbs_FACE;
@@ -159,7 +159,7 @@ Standard_Boolean TopOpeBRepBuild_BuilderON::GFillONCheckI(const Handle(TopOpeBRe
   const TopTools_ListOfShape& lEspON=myPB->Splits(EG,TopAbs_ON);
   if (lEspON.Extent() == 0) return Standard_False;
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //  const TopoDS_Shape& EspON=lEspON.First();
 #endif
   Standard_Integer rankFS=myPB->GShapeRank(FS);
@@ -176,7 +176,7 @@ Standard_Boolean TopOpeBRepBuild_BuilderON::GFillONCheckI(const Handle(TopOpeBRe
 void TopOpeBRepBuild_BuilderON::GFillONPartsWES1(const Handle(TopOpeBRepDS_Interference)& I)
 {
   const TopOpeBRepDS_DataStructure& BDS=myPB->DataStructure()->DS();
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer iFOR=
 #endif
            BDS.Shape(myFace);
@@ -187,18 +187,18 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES1(const Handle(TopOpeBRepDS_Inter
 
   const TopoDS_Edge& EG=TopoDS::Edge(BDS.Shape(GI));
 //  const TopoDS_Shape& FS=BDS.Shape(SI);
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //  Standard_Integer iEG=BDS.Shape(EG);
 //  Standard_Integer iFS=BDS.Shape(FS);
 #endif
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean tEFOR=DEBTEFOR(*myPB,iFOR,GI);
   if (tEFOR) debfillonfemess(iFOR,GI,myPB,myPWES,"--- GFillONPartsWES1");
 #endif
 
   const TopTools_ListOfShape& lEspON=myPB->Splits(EG,TopAbs_ON);
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //  Standard_Integer nEspON=lEspON.Extent();
 #endif
   for(TopTools_ListIteratorOfListOfShape it(lEspON);it.More();it.Next()) {
@@ -207,7 +207,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES1(const Handle(TopOpeBRepDS_Inter
   }
 } // GFillONPartsWES1
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 Standard_EXPORT void FUN_coutmess(const TCollection_AsciiString& m)
 {
     cout<<m;
@@ -219,7 +219,7 @@ Standard_EXPORT void FUN_coutmess(const TCollection_AsciiString&)
 #endif
 
 //------------------------------------------------------
-#ifdef DEB
+#ifdef OCCT_DEBUG
 Standard_Boolean FUN_keepEON(const TopOpeBRepBuild_Builder& B,
 #else
 Standard_Boolean FUN_keepEON(const TopOpeBRepBuild_Builder&,
@@ -227,7 +227,7 @@ Standard_Boolean FUN_keepEON(const TopOpeBRepBuild_Builder&,
                              const TopoDS_Shape& sEG,
                              const TopoDS_Shape& sFOR,
                              const TopoDS_Shape& sFS,
-#ifdef DEB
+#ifdef OCCT_DEBUG
                              const Standard_Boolean EGBoundFOR,
 #else
                              const Standard_Boolean,
@@ -247,7 +247,7 @@ Standard_Boolean FUN_keepEON(const TopOpeBRepBuild_Builder&,
   TopoDS_Face FF=TopoDS::Face(sFOR);FF.Orientation(TopAbs_FORWARD);
   TopoDS_Face FS=TopoDS::Face(sFS);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer iEG;/*Standard_Boolean tEG=*/B.GtraceSPS(EG,iEG);
   Standard_Integer iFF;/*Standard_Boolean tFF=*/B.GtraceSPS(FF,iFF);
   Standard_Integer iFS;/*Standard_Boolean tFS=*/B.GtraceSPS(FS,iFS);
@@ -255,14 +255,14 @@ Standard_Boolean FUN_keepEON(const TopOpeBRepBuild_Builder&,
   Standard_Boolean tFSEG=DEBTEFOR(B,iFS,iEG);if (tFSEG) debfillonfemess(iFS,iEG);
 #endif
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean keep1=Standard_True;
   Standard_Boolean keep2=Standard_True;
 #endif
   Standard_Boolean keep3=Standard_True;
   Standard_Boolean isclosedFF=BRep_Tool::IsClosed(EG,FF);
   if (isclosedFF) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     keep1=Standard_True;
     keep2=Standard_True;
 #endif
@@ -272,7 +272,7 @@ Standard_Boolean FUN_keepEON(const TopOpeBRepBuild_Builder&,
     TopAbs_Orientation oEGFF=TopAbs_FORWARD;
     FUN_tool_orientEinF(EG,FF,oEGFF);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     TopAbs_Orientation omatFS1=TFE.Orientation(TB1);
     if (oEGFF == TopAbs_REVERSED) omatFS1=TopAbs::Complement(omatFS1);
     keep1=(omatFS1 == TopAbs_FORWARD);
@@ -289,7 +289,7 @@ Standard_Boolean FUN_keepEON(const TopOpeBRepBuild_Builder&,
     else if (oEGFF == TopAbs_INTERNAL) keep3=(tfea == TB1 || tfeb == TB1);
   }
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (tFFEG || tFSEG) {
     if ( keep1 != keep2 || keep1 != keep3 || keep2 != keep3 ) {
       cout<<"\nkeepEON : EGB "<<EGBoundFOR<<" EG "<<iEG<<" FOR "<<iFF<<" FS "<<iFS;
@@ -406,7 +406,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
   const TopoDS_Face& FOR=TopoDS::Face(myFace); Standard_Integer iFOR=BDS.Shape(FOR);
   const TopoDS_Edge& eON=TopoDS::Edge(EspON);
   const TopoDS_Edge& EG=TopoDS::Edge(BDS.Shape(GI));
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer iEG=
 #endif
           BDS.Shape(EG);
@@ -421,7 +421,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
   Standard_Boolean isclosedFS=FUN_tool_IsClosingE(EG,FS,FS); //xpu240898
   Standard_Boolean isclosed=(isclosedFF || isclosedFS);
   Standard_Boolean isrest=BDS.IsSectionEdge(EG);
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //  Standard_Boolean issplit=myPB->IsSplit(EG,TopAbs_ON);
 #endif
   Standard_Integer rankFS=myPB->GShapeRank(FS);
@@ -430,7 +430,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
   TopAbs_Orientation OTFE = TFE.Orientation(TopAbs_IN);
   TopAbs_State TFEbef = TFE.Before();
   TopAbs_State TFEaft = TFE.After();
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //  Standard_Boolean EGboundFOR =
 //    Handle(TopOpeBRepDS_ShapeShapeInterference)::DownCast(I)->GBound();
 #endif
@@ -455,7 +455,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
 
   Standard_Boolean opeFus = myPB->Opefus();
   Standard_Boolean opec12 = myPB->Opec12();
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //  Standard_Boolean opec21 = myPB->Opec21();
 #endif
   Standard_Boolean opeCut = myPB->Opec12() || myPB->Opec21();
@@ -464,7 +464,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
 
   TopAbs_State TBFOR = FUN_build_TB(myPB,rankFOR);  
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean tFOR=myPB->GtraceSPS(iFOR);Standard_Boolean tE=myPB->GtraceSPS(GI);
   Standard_Boolean tEFOR=DEBTEFOR(*myPB,iFOR,GI);
   if (tFOR) debON(iFOR);
@@ -576,7 +576,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
   
   //=========================================
   if ( yap00 ) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (tEFOR) debfillonfemess(iFOR,iEG,myPB,myPWES,"yap0 GFillON");
     if (tE) {cout<<"yap00(FOR"<<iFOR<<" FS"<<iFS<<" EG"<<GI<<") ";
 	     cout<<"TB1=";TopAbs::Print(TB1,cout);cout<<" TB2=";TopAbs::Print(TB2,cout);cout<<endl;}
@@ -606,7 +606,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
     
     TopoDS_Shape newE = EspON; 
     newE.Orientation(neworiE);
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (tEFOR) debaddpwes(iFOR,TB1,iEG,neworiE,myPB,myPWES,"yap00 GFillON","WES+ EspON ");
     if (tE) FUN_cout(newE);
 #endif
@@ -616,7 +616,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
   
   //=========================================
   if ( yap0 ) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (tEFOR) debfillonfemess(iFOR,iEG,myPB,myPWES,"yap0 GFillON");
     if (tE) {cout<<"yap0(FOR"<<iFOR<<" FS"<<iFS<<" EG"<<GI<<") ";
 	     cout<<"TB1=";TopAbs::Print(TB1,cout);cout<<" TB2=";TopAbs::Print(TB2,cout);cout<<endl;}
@@ -777,7 +777,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
     } // hsdFOR
 
     newE.Orientation(neworiE);
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (tEFOR) debaddpwes(iFOR,TB1,iEG,neworiE,myPB,myPWES,"yap0 GFillON","WES+ EspON ");
     if (tE) FUN_cout(newE);
 #endif
@@ -787,7 +787,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
   
   //=========================================
   if ( yapc1 ) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (tEFOR) debfillonfemess(iFOR,iEG,myPB,myPWES,"yapc1 GFillON");
     if (tE) {cout<<"yapc1(FOR"<<iFOR<<" FS"<<iFS<<" EG"<<GI<<") ";
 	     cout<<"TB1=";TopAbs::Print(TB1,cout);cout<<" TB2=";TopAbs::Print(TB2,cout);cout<<endl;}
@@ -804,11 +804,11 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
     if (!ok) return; //nyiRAISE
     Standard_Boolean samegeom; ok = FUN_tool_curvesSO(EG,parEG,e3d,samegeom);
     if (!ok) return; //nyiRAISE
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (!TopOpeBRepBuild_GetcontextNOSG()) {
 #endif
       if (!samegeom) oe3dk = TopAbs::Complement(oe3dk);
-#ifdef DEB
+#ifdef OCCT_DEBUG
     }
 #endif
 
@@ -818,7 +818,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
     else if (oe3dk == TopAbs_INTERNAL) keep3d = Standard_True;
     else if (oe3dk == TopAbs_EXTERNAL) keep3d = Standard_False;
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //    if(tEFOR) {cout<<endl<<"yapc1 keep3d : "<<keep3d<<endl;debfillonfemess3d(iFOR,iEG);}
 #endif
 
@@ -828,7 +828,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
       TopoDS_Shape newE = EspON;
       newE.Orientation(neworiE);
       
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if (tEFOR) debaddpwes(iFOR,TB1,iEG,neworiE,myPB,myPWES,"yapc1 GFillON","WES+ EspON ");
       if (tE) FUN_cout(newE);
 #endif
@@ -840,7 +840,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
 
   //=========================================
   if ( yapc2 ) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (tEFOR) debfillonfemess(iFOR,iEG,myPB,myPWES,"yapc2 GFillON");
     if (tE) {cout<<"yapc2(FOR"<<iFOR<<" FS"<<iFS<<" EG"<<GI<<") ";
 	     cout<<"TB1=";TopAbs::Print(TB1,cout);cout<<" TB2=";TopAbs::Print(TB2,cout);cout<<endl;}
@@ -871,7 +871,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
     else if (M_INTERNAL(neworiE))                       addFORREV = Standard_True;
     newE.Orientation(neworiEk);    
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (tEFOR) {
       if      (!isclosedFF) 
 	debaddpwes(iFOR,TB1,iEG,neworiE,myPB,myPWES,"yapc2 GFillON","WES+ EspON not closed");
@@ -909,7 +909,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
 
   //=========================================
   if ( yapc3 ) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (tEFOR) debfillonfemess(iFOR,iEG,myPB,myPWES,"yapc3 GFillON");
     if (tE) {cout<<"yapc3(FOR"<<iFOR<<" FS"<<iFS<<" EG"<<GI<<") ";
 	     cout<<"TB1=";TopAbs::Print(TB1,cout);cout<<" TB2=";TopAbs::Print(TB2,cout);cout<<endl;}
@@ -969,11 +969,11 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
       Standard_Boolean samegeom; Standard_Boolean ok = FUN_tool_curvesSO(eON,EG,samegeom);
       if (!ok) return; // nyiRAISE
       Standard_Boolean reverse = (!samegeom);
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if (TopOpeBRepBuild_GetcontextNOSG()) 
         // MSV 21.03.2002: restore the genaral behaviour, since the function
         //                 FUN_UNKFstasta was corrected.
-	reverse = Standard_False; //we exclude this line from #ifdef DEB because 
+	reverse = Standard_False; //we exclude this line from #ifdef OCCT_DEBUG because 
       //in optimised mode this line will never be included , and that follows to regressions
       //MZV-12-05-2000
 #endif
@@ -982,7 +982,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
       newE.Orientation(neworiEk);
     }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (tEFOR) {
       if      (!addFORREV)
 	debaddpwes(iFOR,TB1,iEG,neworiEk,myPB,myPWES,"yapc3 GFillON","WES+ EspON ");
@@ -1042,7 +1042,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
   TopAbs_Orientation orefFCX = BDS.Shape(irefFCX).Orientation();
   Standard_Boolean FCXisref = (irefFCX == iFCX);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //  Standard_Real tolFCX = factor*BRep_Tool::Tolerance(FCX); //NYITOLXPU
 #endif
     
@@ -1101,7 +1101,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
   yap6b = yap6b && eONFS; //xpu240898
   yap6b = yap6b && !eghassd3d;//  yap6b = yap6b && !eghassd3dON; 
   if (yap6b) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //    FUN_RaiseON();
 #endif
     yap2 = Standard_True;
@@ -1147,7 +1147,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
   TopAbs_State staFOR = TB1;
   TopAbs_State staFS = (rankFS == rankFOR) ? TB1 : TB2;
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //  if(tEFOR) cout<<endl<<"yap1 yap2 yap3 yap4 = ";
 //  if(tEFOR) cout<<yap1<<" "<<yap2<<" "<<yap3<<" "<<yap4<<endl<<endl;
 //  if(tEFOR) debfillonfemess(iFOR,iEG);
@@ -1155,7 +1155,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
   
   //=========================================
   if ( yap1 ) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (tEFOR) debfillonfemess(iFOR,iEG,myPB,myPWES,"yap1 GFillON");
     if (tE) {cout<<"yap1(FOR"<<iFOR<<" FCX"<<iFCX<<" EG"<<GI<<") ";
 	     cout<<"TB1=";TopAbs::Print(TB1,cout);cout<<" TB2=";TopAbs::Print(TB2,cout);cout<<endl;}
@@ -1292,7 +1292,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
     TopoDS_Shape newE = EspON;
     newE.Orientation(neworiE);
     
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (tEFOR) debaddpwes(iFOR,TB1,iEG,neworiE,myPB,myPWES,"yap1 GFillON","WES+ EspON ");
     if (tE) FUN_cout(newE);
 #endif
@@ -1303,7 +1303,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
 
   //=========================================
   if ( yap2 ) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (tEFOR) debfillonfemess(iFOR,iEG,myPB,myPWES,"yap2 GFillON");
     if (tE) {cout<<"yap2(FOR"<<iFOR<<" FCX"<<iFCX<<" EG"<<GI<<") ";
 	     cout<<"TB1=";TopAbs::Print(TB1,cout);cout<<" TB2=";TopAbs::Print(TB2,cout);cout<<endl;}
@@ -1344,7 +1344,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
       else if (oegFCXF == TopAbs_REVERSED) b2d = (Tbef == TopAbs_IN);
       else    FUN_coutmess("DEBUG GFillONPartsWES2_4 orientation != F,R\n");
     }    
-//#ifdef DEB
+//#ifdef OCCT_DEBUG
 //    if(tEFOR) {cout<<endl<<"yap2 : b3d,b2d "<<b3d<<","<<b2d<<endl;debfillonfemess(iFOR,iEG);}
 //#endif
     
@@ -1427,7 +1427,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
 	  }
 	}
       }
-//#ifdef DEB
+//#ifdef OCCT_DEBUG
 //      if(tEFOR) {cout<<endl<<"yap2 : keep "<<keep<<endl;debfillonfemess(iFOR,iEG);}
 //#endif
       if (!keep) return;
@@ -1497,7 +1497,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
     TopoDS_Shape newE = EspON;
     newE.Orientation(neworiE);
     
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (tEFOR) debaddpwes(iFOR,TB1,iEG,neworiE,myPB,myPWES,"yap2 GFillON","WES+ EspON ");
     if (tE) FUN_cout(newE);
 #endif    
@@ -1508,7 +1508,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
     
   //=========================================
   if ( yap6 ) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (tEFOR) debfillonfemess(iFOR,iEG,myPB,myPWES,"yap6 GFillON");
     if (tE) {cout<<"yap6(FOR"<<iFOR<<" FCX"<<iFCX<<" EG"<<GI<<") ";
 	     cout<<"TB1=";TopAbs::Print(TB1,cout);cout<<" TB2=";TopAbs::Print(TB2,cout);cout<<endl;}
@@ -1526,7 +1526,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
     Standard_Boolean SO = FFinSDSO;//(FFinSDSO && (oFOR == oFCX)) || (FFinSDDO && (oFOR != oFCX));
     Standard_Boolean DO = FFinSDDO;//(FFinSDSO && (oFOR != oFCX)) || (FFinSDDO && (oFOR == oFCX));
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //    Standard_Integer rkToFill = BDS.AncestorRank(myFace);
 #endif
 //    Standard_Boolean samerk = (rankEG == rkToFill);
@@ -1636,7 +1636,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
 	    gp_Vec ntOOFOR = FUN_tool_nggeomF(uv,OOFOR);
 	    if (OOFOR.Orientation() == TopAbs_REVERSED) ntOOFOR.Reverse();
 	    // xxFCX :
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //	    Standard_Real t1 =factor*BRep_Tool::Tolerance(Esd);
 #endif
 	    Standard_Real parEG; ok = FUN_tool_parE(Esd,parEsd,EG,parEG);
@@ -1688,7 +1688,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
 
     TopoDS_Shape newE = EspON;
     newE.Orientation(neworiE);    
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (tEFOR) debaddpwes(iFOR,TB1,iEG,neworiE,myPB,myPWES,"yap6 GFillON","WES+ EspON ");
     if (tE) FUN_cout(newE);
 #endif    
@@ -1716,7 +1716,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
     if (addtwice) {
       neworiE = TopAbs::Complement(neworiE);
       newE.Orientation(neworiE);    
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if (tEFOR) debaddpwes(iFOR,TB1,iEG,neworiE,myPB,myPWES,"yap6 GFillON","WES+ EspON ");
       if (tE) FUN_cout(newE);
 #endif    
@@ -1727,7 +1727,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
     
   //=========================================
   if ( yap3 ) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (tEFOR) debfillonfemess(iFOR,iEG,myPB,myPWES,"yap3 GFillON");
     if (tE) {cout<<"yap3(FOR"<<iFOR<<" FCX"<<iFCX<<" EG"<<GI<<") ";
 	     cout<<"TB1=";TopAbs::Print(TB1,cout);cout<<" TB2=";TopAbs::Print(TB2,cout);cout<<endl;}
@@ -1746,11 +1746,11 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
     if (!ok) return; //nyiRAISE
     Standard_Boolean samegeom; ok = FUN_tool_curvesSO(EG,parEG,e3d,samegeom);
     if (!ok) return; //nyiRAISE
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (!TopOpeBRepBuild_GetcontextNOSG()) {
 #endif
       if (!samegeom) oe3dk = TopAbs::Complement(oe3dk);
-#ifdef DEB
+#ifdef OCCT_DEBUG
     }
 #endif
 
@@ -1761,7 +1761,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
     else if (oe3dk == TopAbs_INTERNAL) keep3d = Standard_True;
     else if (oe3dk == TopAbs_EXTERNAL) keep3d = Standard_False;
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if(tEFOR) {cout<<endl<<"yap3 keep3d : "<<keep3d<<endl;debfillonfemess3d(iFOR,iEG);}
 #endif
     
@@ -1771,7 +1771,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
       TopoDS_Shape newE = EspON;
       newE.Orientation(neworiE);
       
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if (tEFOR) debaddpwes(iFOR,TB1,iEG,neworiE,myPB,myPWES,"yap3 GFillON","WES+ EspON ");
       if (tE) FUN_cout(newE);
 #endif
@@ -1783,7 +1783,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
 
   //=========================================
   if ( yap5 ) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (tEFOR) debfillonfemess(iFOR,iEG,myPB,myPWES,"yap5 GFillON");
     if (tE) {cout<<"yap5(FOR"<<iFOR<<" FCX"<<iFCX<<" EG"<<GI<<") ";
 	     cout<<"TB1=";TopAbs::Print(TB1,cout);cout<<" TB2=";TopAbs::Print(TB2,cout);cout<<endl;}
@@ -1800,11 +1800,11 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
     if (!ok) return; // nyiRAISE
     Standard_Boolean samegeom; ok = FUN_tool_curvesSO(EG,parEG,e2d,samegeom);
     if (!ok) return; // nyiRAISE
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (!TopOpeBRepBuild_GetcontextNOSG()) {
 #endif
       if (!samegeom) oe2dk = TopAbs::Complement(oe2dk);
-#ifdef DEB
+#ifdef OCCT_DEBUG
     }
 #endif
 
@@ -1821,7 +1821,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
       TopoDS_Shape newE = EspON;
       newE.Orientation(neworiE);
       
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if (tEFOR) debaddpwes(iFOR,TB1,iEG,neworiE,myPB,myPWES,"yap5 GFillON","WES+ EspON ");
       if (tE) FUN_cout(newE);
 #endif
@@ -1833,7 +1833,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
   
   //=========================================
   if ( yap4 ) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (tEFOR) debfillonfemess(iFOR,iEG,myPB,myPWES,"yap4 GFillON");
     if (tE) {cout<<"yap4(FOR"<<iFOR<<" FCX"<<iFCX<<" EG"<<GI<<") ";
 	     cout<<"TB1=";TopAbs::Print(TB1,cout);cout<<" TB2=";TopAbs::Print(TB2,cout);cout<<endl;}
@@ -1844,7 +1844,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
     TopAbs_Orientation neworiE = oTFE;
     TopoDS_Shape newE = EspON;
     newE.Orientation(neworiE);
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (tEFOR) debaddpwes(iFOR,TB1,iEG,neworiE,myPB,myPWES,"yap4 GFillON","WES+ EspON ");
     if (tE) FUN_cout(newE);
 #endif
@@ -1856,7 +1856,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
   //=========================================
   if ( yap7 ) {
     // xpu290598 : CTS20212
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (tEFOR) debfillonfemess(iFOR,iEG,myPB,myPWES,"yap7 GFillON");
     if (tE) {cout<<"yap7(FOR"<<iFOR<<" FCX"<<iFCX<<" EG"<<GI<<") ";
 	     cout<<"TB1=";TopAbs::Print(TB1,cout);cout<<" TB2=";TopAbs::Print(TB2,cout);cout<<endl;}
@@ -1894,7 +1894,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
     
     TopoDS_Shape newE = EspON;
     newE.Orientation(neworiE);
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (tEFOR) debaddpwes(iFOR,TB1,iEG,neworiE,myPB,myPWES,"yap7 GFillON","WES+ EspON ");
     if (tE) FUN_cout(newE);
 #endif

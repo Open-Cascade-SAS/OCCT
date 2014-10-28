@@ -783,7 +783,7 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve  ,
   }
 
   type = curve->DynamicType();
-#ifdef DEB
+#ifdef OCCT_DEBUG
   gp_Pnt2d Point(asecondpoint->Pnt2d());
 #else
   asecondpoint->Pnt2d();
@@ -915,7 +915,7 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve  ,
     case 2 : {
       GccAna_LinPnt2dBisec Bisector(line,asecondpoint->Pnt2d());
       
-#ifdef DEB
+#ifdef OCCT_DEBUG
       gp_Vec2d V(line.Direction());
 #else
       line.Direction();

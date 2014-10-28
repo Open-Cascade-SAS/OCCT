@@ -704,7 +704,7 @@ void  BinTools_Curve2dSet::Read(Standard_IStream& IS)
   if (IS.fail() || strcmp(buffer,"Curve2ds")) {
     Standard_SStream aMsg;
     aMsg << "BinTools_Curve2dSet::Read:  Not a Curve2d table"<<endl;
-#ifdef BINTOOLS_DEB
+#ifdef OCCT_DEBUG
     cout <<"Curve2dSet buffer: " << buffer << endl;
 #endif
     Standard_Failure::Raise(aMsg);

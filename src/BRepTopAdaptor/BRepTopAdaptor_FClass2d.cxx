@@ -47,7 +47,7 @@
 #endif
 
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #define LBRCOMPT 0
 #else
 #define LBRCOMPT 0
@@ -191,7 +191,7 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace,const 
 	      //-- and the last point registered in SeqPnt2d
 	      //-- Try to remote the first point of the current edge 
 	      //-- from the last saved point
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	      gp_Pnt2d Pnt2dDebutEdgeCourant=
 #endif
 	      C.Value(u);
@@ -260,7 +260,7 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace,const 
       if(NbEdges)
 	{ //-- on compte ++ with a normal explorer and with the Wire Explorer
 /*
-#ifdef DEB  
+#ifdef OCCT_DEBUG
 
 	  cout << endl;
 	  cout << "*** BRepTopAdaptor_Fclass2d  ** Wire Probablement FAUX **" << endl;
@@ -327,7 +327,7 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace,const 
 //		{
 //		  BadWire=1;
 //		  TabOrien.Append(-1);
-//#ifdef DEB  
+//#ifdef OCCT_DEBUG
 //		  cout << endl;
 //		  cout << "*** BRepTopAdaptor_Fclass2d  ** Wire Probably FALSE **" << endl;
 //		  cout << "*** Total rotation angle of the wire : " << angle << endl;
@@ -339,7 +339,7 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace,const 
 	    }//if(nbpoints>3
 	  else
 	    { 
-#ifdef BREPTOPADAPTOR_DEB  
+#ifdef OCCT_DEBUG
 	      cout << endl;
 	      cout << "*** BRepTopAdaptor_Fclass2d  ** Wire Probably FALSE **" << endl;
 	      cout << "*** The sample wire contains less than 3 points" << endl;
@@ -684,7 +684,7 @@ void BRepTopAdaptor_FClass2d::Destroy() {
 
 //const BRepTopAdaptor_FClass2d &  BRepTopAdaptor_FClass2d::Copy(const BRepTopAdaptor_FClass2d& Other) const { 
 const BRepTopAdaptor_FClass2d &  BRepTopAdaptor_FClass2d::Copy(const BRepTopAdaptor_FClass2d& ) const { 
-#ifdef BREPTOPADAPTOR_DEB
+#ifdef OCCT_DEBUG
   cerr<<"Copy not allowed in BRepTopAdaptor_FClass2d"<<endl;
 #endif
   Standard_ConstructionError::Raise();

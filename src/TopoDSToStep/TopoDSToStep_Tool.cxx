@@ -101,7 +101,7 @@ Standard_Boolean TopoDSToStep_Tool::Faceted() const
 
 void TopoDSToStep_Tool::SetCurrentShell(const TopoDS_Shell& S)
 {
-#ifdef TOPODSTOSTEP_DEB
+#ifdef OCCT_DEBUG
   cout << "Process a Shell which is ";
   switch(S.Orientation())
     {
@@ -141,7 +141,7 @@ const TopoDS_Shell& TopoDSToStep_Tool::CurrentShell() const
 
 void TopoDSToStep_Tool::SetCurrentFace(const TopoDS_Face& F)
 {
-#ifdef TOPODSTOSTEP_DEB
+#ifdef OCCT_DEBUG
   cout << "  Process a Face which is ";
   switch(F.Orientation())
     {
@@ -184,7 +184,7 @@ const TopoDS_Face& TopoDSToStep_Tool::CurrentFace() const
 
 void TopoDSToStep_Tool::SetCurrentWire(const TopoDS_Wire& W)
 {
-#ifdef TOPODSTOSTEP_DEB
+#ifdef OCCT_DEBUG
   cout << "    Process a Wire which is ";
   switch(W.Orientation())
     {
@@ -224,7 +224,7 @@ const TopoDS_Wire& TopoDSToStep_Tool::CurrentWire() const
 
 void TopoDSToStep_Tool::SetCurrentEdge(const TopoDS_Edge& E)
 {
-#ifdef TOPODSTOSTEP_DEB
+#ifdef OCCT_DEBUG
   cout << "      Process Edge which is ";
   switch(E.Orientation())
     {

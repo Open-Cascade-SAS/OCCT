@@ -84,7 +84,7 @@
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColGeom_SequenceOfCurve.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 static Standard_Boolean Affich = Standard_False;
 static Standard_Integer NbSections = 0;
 #endif
@@ -498,7 +498,7 @@ void GeomFill_Pipe::Init(const Handle(Geom_Curve)& Path,
     }
 
   case GeomFill_IsDarboux :
-#if GEOMFILL_DEB
+#ifdef OCCT_DEBUG
     {
       cout << "Option Darboux: non realisable" << endl; 
     }
@@ -875,7 +875,7 @@ void GeomFill_Pipe::Perform(const Standard_Real Tol,
 		 myAdpPath->LastParameter(),
 		 Tol, Tol, 0., 0.01,
 		 TheConti, DegMax, NbMaxSegment);
-#if GEOMFILL_DEB
+#ifdef OCCT_DEBUG
    cout << "Tuyau : ";
    App.Dump(cout);
    cout << endl;
@@ -1064,7 +1064,7 @@ void GeomFill_Pipe::ApproxSurf(const Standard_Boolean WithParameters) {
 
   Section.Perform(myPolynomial);
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if ( Affich) {
     Standard_Integer NbPoles,NbKnots,Degree,NbPoles2d;
     Section.GetShape(NbPoles,NbKnots,Degree,NbPoles2d);
@@ -1100,7 +1100,7 @@ void GeomFill_Pipe::ApproxSurf(const Standard_Boolean WithParameters) {
   App.Perform( Line, Section, 30);
 
   if ( !App.IsDone()) {
-#ifdef DEB    
+#ifdef OCCT_DEBUG
     // on affiche les sections sous debug
     Standard_Integer NbPoles,NbKnots,Degree,NbPoles2d;
     Section.GetShape(NbPoles,NbKnots,Degree,NbPoles2d);

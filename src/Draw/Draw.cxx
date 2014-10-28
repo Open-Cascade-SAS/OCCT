@@ -516,7 +516,7 @@ void Draw::Load(Draw_Interpretor& theDI, const TCollection_AsciiString& theKey,
       aMsg << aPluginResource->Value(theKey.ToCString());
       aMsg << "; reason: ";
       aMsg << error.ToCString();
-#ifdef DRAW_DEB
+#ifdef OCCT_DEBUG
       cout << "could not open: "  << aPluginResource->Value(theKey.ToCString())<< " ; reason: "<< error.ToCString() << endl;
 #endif
       Draw_Failure::Raise(aMsg);

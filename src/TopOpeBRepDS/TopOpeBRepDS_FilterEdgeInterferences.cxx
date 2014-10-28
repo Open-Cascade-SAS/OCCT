@@ -23,7 +23,7 @@
 #include <TopOpeBRepDS_ProcessInterferencesTool.hxx>
 #include <TopOpeBRepDS_define.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepDS_GettracePEI();
 extern Standard_Boolean TopOpeBRepDS_GettracePI();
 extern Standard_Boolean TopOpeBRepDS_GettraceSPSX(const Standard_Integer);
@@ -52,7 +52,7 @@ static void FUN_FilterEdge
 {
   TopOpeBRepDS_DataStructure& BDS = HDS->ChangeDS();
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean TRC=TRCE(SIX); 
   if (TRC) debfilter(SIX);
   if (TRC) cout<<"FUN_FilterEdge on "<<SIX<<" nI = "<<LI.Extent()<<endl;
@@ -63,7 +63,7 @@ static void FUN_FilterEdge
   FUN_unkeepEinterferences(LI,BDS,SIX);
   FUN_reducedoublons(LI,BDS,SIX);
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TRC) cout<<"FUN_FilterEdge on "<<SIX<<" returns nI = "<<LI.Extent()<<endl;
 #endif
   
@@ -79,7 +79,7 @@ void TopOpeBRepDS_Filter::ProcessEdgeInterferences
 {
   TopOpeBRepDS_DataStructure& BDS = myHDS->ChangeDS();
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean TRC=TRCE(SIX);if (TRC) debfilterPEI(SIX);
 #endif
   
@@ -93,7 +93,7 @@ void TopOpeBRepDS_Filter::ProcessEdgeInterferences
   FUN_purgeDSonSE(myHDS,SIX,lall);
   // xpu : 270398 (pro1260, edge 49,ftrasha 93)
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   //Standard_Integer nUU =
 #endif
             ::FUN_selectTRAUNKinterference(lall,lUU);
@@ -101,16 +101,16 @@ void TopOpeBRepDS_Filter::ProcessEdgeInterferences
   lw.Append(lall);
   lw.Append(lUU);
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer nF =
 #endif
            ::FUN_selectTRASHAinterference(lw,TopAbs_FACE,lF);
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer nE =
 #endif
            ::FUN_selectTRASHAinterference(lw,TopAbs_EDGE,lE);
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if(TRC){
     if(nE||nF){cout<<endl;cout<<"-----------------------"<<endl;}
     if(nF){cout<<"EDGE "<<SIX<<" (FACE) : "<<nF<<endl;::FDS_dumpLI(lF,"  ");}
@@ -120,17 +120,17 @@ void TopOpeBRepDS_Filter::ProcessEdgeInterferences
   }
 #endif
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TRC) cout <<"  on lF :"<<endl; 
 #endif
   ::FUN_FilterEdge(lF,myHDS,SIX);
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TRC) cout <<"  on lF :"<<endl;  
 #endif
 //  ::FUN_unkeepEsymetrictransitions(lF,BDS,SIX);
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TRC) cout <<"  on lE :"<<endl;  
 #endif
   ::FUN_FilterEdge(lE,myHDS,SIX);
@@ -139,7 +139,7 @@ void TopOpeBRepDS_Filter::ProcessEdgeInterferences
   LI.Append(lF);
   LI.Append(lE);
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TRC) {
     cout<<"Filter::ProcessEdgeInterferences on "<<SIX;
     cout<<" returns nlF = "<<nF<<" nlE = "<<nE<<endl;

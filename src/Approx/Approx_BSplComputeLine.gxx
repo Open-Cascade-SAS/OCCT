@@ -34,7 +34,7 @@
 #include <AppParCurves_ConstraintCouple.hxx>
 #include Approx_BSpParLeastSquareOfMyBSplGradient_hxx
 
-#if defined( DEB ) && defined( DRAW ) && !defined( WNT )
+#if defined(OCCT_DEBUG) && defined( DRAW ) && !defined( WNT )
 
 static Standard_Boolean mydebug = Standard_False;
 
@@ -625,7 +625,7 @@ Approx_BSplComputeLine::Approx_BSplComputeLine
 void Approx_BSplComputeLine::Perform(const MultiLine& Line)
 {
 
-#if defined( DEB ) && defined( DRAW ) && !defined( WNT )
+#if defined(OCCT_DEBUG) && defined( DRAW ) && !defined( WNT )
   if (mydebug) DUMP(Line);
 #endif
     
@@ -751,7 +751,7 @@ void Approx_BSplComputeLine::Perform(const MultiLine& Line)
     }
   }
 
-#if defined( DEB ) && defined( DRAW ) && !defined( WNT )
+#if defined(OCCT_DEBUG) && defined( DRAW ) && !defined( WNT )
   if (mydebug) DUMP(TheMultiBSpCurve);
 #endif
 

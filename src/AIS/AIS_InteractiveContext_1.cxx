@@ -586,7 +586,7 @@ void AIS_InteractiveContext::SetCurrentObject(const Handle(AIS_InteractiveObject
       UpdateCurrentViewer();
   }
   else{
-#ifdef AIS_DEB
+#ifdef OCCT_DEBUG
     cout<<"Nothing Done : Opened Local Context"<<endl;
 #endif
   }
@@ -626,7 +626,7 @@ AddOrRemoveCurrentObject(const Handle(AIS_InteractiveObject)& anIObj,
       UpdateCurrentViewer();
   }
   else{
-#ifdef AIS_DEB
+#ifdef OCCT_DEBUG
     cout<<"Nothing Done : Opened Local Context"<<endl;
 #endif
   }
@@ -887,7 +887,7 @@ void AIS_InteractiveContext::SetSelectedCurrent()
 {
 
 
-#ifdef AIS_DEB
+#ifdef OCCT_DEBUG
   cout<<"Not Yet Implemented"<<endl;
 #endif
 }
@@ -944,7 +944,7 @@ void AIS_InteractiveContext::AddOrRemoveSelected(const TopoDS_Shape& aShap,
 				            const Standard_Boolean updateviewer)
 { 
   if(!HasOpenedContext()) {
-#ifdef AIS_DEB
+#ifdef OCCT_DEBUG
     cout<<" Attempt to remove a selected shape with no opened local context"<<endl;
 #endif
     return;
@@ -963,7 +963,7 @@ void AIS_InteractiveContext::AddOrRemoveSelected(const Handle(SelectMgr_EntityOw
 						 const Standard_Boolean updateviewer)
 { 
   if(!HasOpenedContext()) {
-#ifdef AIS_DEB
+#ifdef OCCT_DEBUG
     cout<<" Attempt to remove a selected ownr with no opened local context"<<endl;
 #endif
     return;

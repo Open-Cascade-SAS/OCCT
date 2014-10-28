@@ -12,7 +12,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//#ifndef DEB
+//#ifndef OCCT_DEBUG
 #define No_Standard_RangeError
 #define No_Standard_OutOfRange
 #define No_Standard_DimensionError
@@ -33,10 +33,10 @@
 #define EPSEPS 2e-14
 #define MAXBIS 100
 
-# ifdef DEB
+#ifdef OCCT_DEBUG
 static Standard_Boolean myDebug = 0;
 static Standard_Integer nbsolve = 0;
-# endif
+#endif
 
 static void  AppendRoot(TColStd_SequenceOfReal& Sol,
 			TColStd_SequenceOfInteger& NbStateSol,
@@ -48,7 +48,7 @@ static void  AppendRoot(TColStd_SequenceOfReal& Sol,
 
   Standard_Integer n=Sol.Length();
   Standard_Real t;
-#ifdef DEB
+#ifdef OCCT_DEBUG
  if (myDebug) {
    cout << "   Ajout de la solution numero : " << n+1 << endl;
    cout << "   Valeur de la racine :" << X << endl;
@@ -98,7 +98,7 @@ static void  Solve(math_FunctionWithDerivative& F,
 		   const Standard_Real dX,
 		   TColStd_SequenceOfReal& Sol,
 		   TColStd_SequenceOfInteger& NbStateSol) { 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (myDebug) {
     cout <<"--> Resolution :" << ++nbsolve << endl;
     cout <<"   x1 =" << x1 << " y1 =" << y1 << endl;
@@ -190,7 +190,7 @@ static void  Solve(math_FunctionWithDerivative& F,
     F.Value(b,fb);
     fb-=K;
   }
-#ifdef MATH_DEB
+#ifdef OCCT_DEBUG
   cout<<" Non Convergence dans math_FunctionRoots.cxx "<<endl;
 #endif
 }
@@ -210,7 +210,7 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
 				       const Standard_Real EpsNull,
 				       const Standard_Real K ) 
 { 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (myDebug) {
     cout << "---- Debut de math_FunctionRoots ----" << endl;
     nbsolve = 0;

@@ -186,7 +186,7 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
   r = V.Magnitude()/l;
  
   Standard_Integer ii, Ind;
-//#ifndef DEB
+//#ifndef OCCT_DEBUG
   Standard_Integer Nb = (Standard_Integer) (4+(10*r));
 //#else
 //  Standard_Integer Nb = 4+(10*r);
@@ -269,14 +269,14 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
 	  myWire = MW.Wire();
 	}
 	else {
-#if BREPFILL_DEB
+#ifdef OCCT_DEBUG
 	  cout << "Error in MakeWire" << endl;
 #endif 
 	  Standard_ConstructionError::Raise("BRepFill_Draft");
 	}
       }
       else {
-#if BREPFILL_DEB
+#ifdef OCCT_DEBUG
 	  cout << "No Free Borders !" << endl;
 #endif 
 	  Standard_ConstructionError::Raise("BRepFill_Draft");
@@ -828,7 +828,7 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
       myShape = solid;
     }    
   }
-#if BREPFILL_DEB
+#ifdef OCCT_DEBUG
   else cout << "Draft : No assembly !" << endl;
 #endif
   return Ok;

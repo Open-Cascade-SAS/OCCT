@@ -17,9 +17,7 @@
 #include <Expr_NumericValue.ixx>
 #include <Standard_OutOfRange.hxx>
 
-//#if defined (WNT) || !defined (DEB)
 # include <stdio.h>
-//#endif  // WNT || !DEB
 
 Expr_NumericValue::Expr_NumericValue(const Standard_Real val)
 {

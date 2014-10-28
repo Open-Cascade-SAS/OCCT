@@ -373,7 +373,7 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord
           myError = "Improper element tag termination";
         else {
           myPtr += 2;
-#ifdef DEB
+#ifdef OCCT_DEBUG
           theData.Clear();
           theData << myElement->GetTagName();
 #endif
@@ -386,7 +386,7 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord
           return XML_UNKNOWN;
         }
         ++ myPtr;
-#ifdef DEB
+#ifdef OCCT_DEBUG
         theData.Clear();
         theData << myElement->GetTagName();
 #endif

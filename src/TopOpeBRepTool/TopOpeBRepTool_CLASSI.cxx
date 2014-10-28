@@ -137,7 +137,7 @@ Standard_Integer TopOpeBRepTool_CLASSI::ClassiBnd2d(const TopoDS_Shape& S1,const
     //      (Umin(i), Vmin(i), Umax(i), Vmax(i))
     B(i).Get(UV(i,1), UV(i,3), UV(i,2), UV(i,4));
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trc = Standard_False;
   if (trc) {
     for (Standard_Integer i = 1; i <= 2; i++)

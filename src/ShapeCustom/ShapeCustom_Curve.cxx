@@ -104,7 +104,7 @@ Handle(Geom_Curve) ShapeCustom_Curve::ConvertToPeriodic (const Standard_Boolean 
       converted = Standard_True;
     }
   }
-#ifdef SHAPECUSTOM_DEB
+#ifdef OCCT_DEBUG
   cout << "Warning: ShapeCustom_Surface: Closed BSplineSurface is caused to be periodic" << endl;
 #endif
   if ( ! converted ) return newCurve;

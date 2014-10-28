@@ -31,7 +31,7 @@
 
 #define FuncTol 1.e-10
 
-#ifdef __OCC_DEBUG_CHRONO
+#ifdef OCCT_DEBUG_CHRONO
 #include <OSD_Timer.hxx>
 
 static OSD_Chronometer chr_init_point, chr_dicho_bound;
@@ -406,7 +406,7 @@ static void DichExactBound(gp_Pnt& Sol,
   const Handle(Adaptor3d_HCurve)& Curve, 
   const Handle(Adaptor3d_HSurface)& Surface)
 {
-#ifdef __OCC_DEBUG_CHRONO
+#ifdef OCCT_DEBUG_CHRONO
   InitChron(chr_dicho_bound);
 #endif
 
@@ -434,7 +434,7 @@ static void DichExactBound(gp_Pnt& Sol,
     }
     else aNotSol = t; 
   }
-#ifdef __OCC_DEBUG_CHRONO
+#ifdef OCCT_DEBUG_CHRONO
   ResultChron(chr_dicho_bound,t_dicho_bound);
   dicho_bound_count++;
 #endif
@@ -640,11 +640,11 @@ void ProjLib_CompProjectedCurve::Init()
       if (!initpoint) 
       {        
         myCurve->D0(t,CPoint);
-#ifdef __OCC_DEBUG_CHRONO
+#ifdef OCCT_DEBUG_CHRONO
         InitChron(chr_init_point);
 #endif
         initpoint=InitialPoint(CPoint, t,myCurve,mySurface, myTolU, myTolV, U, V);
-#ifdef __OCC_DEBUG_CHRONO
+#ifdef OCCT_DEBUG_CHRONO
         ResultChron(chr_init_point,t_init_point);
         init_point_count++;
 #endif
@@ -709,7 +709,7 @@ void ProjLib_CompProjectedCurve::Init()
           if(!ExactBound(Triple, t - Step, Tol, 
             myTolU, myTolV, myCurve, mySurface)) 
           {
-#if PROJLIB_DEB
+#ifdef OCCT_DEBUG
             cout<<"There is a problem with ExactBound computation"<<endl;
 #endif
             DichExactBound(Triple, t - Step, Tol, myTolU, myTolV, 
@@ -782,7 +782,7 @@ void ProjLib_CompProjectedCurve::Init()
           if(!ExactBound(Triple, t, Tol, myTolU, myTolV, 
             myCurve, mySurface)) 
           {
-#if PROJLIB_DEB
+#ifdef OCCT_DEBUG
             cout<<"There is a problem with ExactBound computation"<<endl;
 #endif
             DichExactBound(Triple, t, Tol, myTolU, myTolV, 

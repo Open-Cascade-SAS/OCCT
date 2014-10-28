@@ -69,7 +69,7 @@ static Standard_Integer distmini(Draw_Interpretor& di, Standard_Integer n, const
 
   if (dst.IsDone()) 
   { 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     //dst.Dump(cout);
     di << "*** Dump of \"BRepExtrema_DistShapeShape\" in DEBUG mode (begin) *****\n";
     Standard_SStream aSStream;

@@ -48,7 +48,7 @@ AddInterference(HLRAlgo_InterferenceList& IL,
 //function : ProcessComplex
 //purpose  : 
 //=======================================================================
-#ifdef DEB_SI
+#ifdef OCCT_DEBUG_SI
 static Standard_Boolean SimilarInterference(const HLRAlgo_Interference& I1,
 					    const HLRAlgo_Interference& I2)
 {
@@ -85,7 +85,7 @@ ProcessComplex(HLRAlgo_InterferenceList& IL,
     It2.Next();
     if (It2.More()) {
       if (T.SameInterferences(It1.Value(),It2.Value())
-#ifdef DEB_SI
+#ifdef OCCT_DEBUG_SI
           || SimilarInterference(It1.Value(),It2.Value())
 #endif
           )
@@ -102,7 +102,7 @@ ProcessComplex(HLRAlgo_InterferenceList& IL,
 
 	while (It2.More()) {
 	  if (!(T.SameInterferences(It1.Value(),It2.Value())
-#ifdef DEB_SI
+#ifdef OCCT_DEBUG_SI
           || SimilarInterference(It1.Value(),It2.Value())
 #endif
      )) break;

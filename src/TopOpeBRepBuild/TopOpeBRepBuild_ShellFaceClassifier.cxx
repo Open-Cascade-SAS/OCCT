@@ -26,7 +26,7 @@
 #include <Standard_ProgramError.hxx>
 #include <BRepAdaptor_Surface.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepBuild_GettraceCHK();
 #endif
 
@@ -60,7 +60,7 @@ void TopOpeBRepBuild_ShellFaceClassifier::Clear()
 TopAbs_State  TopOpeBRepBuild_ShellFaceClassifier::CompareShapes
 (const TopoDS_Shape& B1, const TopoDS_Shape& B2)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //  const TopAbs_ShapeEnum t1 = B1.ShapeType();
 //  const TopAbs_ShapeEnum t2 = B2.ShapeType();
 #endif
@@ -82,7 +82,7 @@ TopAbs_State  TopOpeBRepBuild_ShellFaceClassifier::CompareShapes
 TopAbs_State  TopOpeBRepBuild_ShellFaceClassifier::CompareElementToShape
 (const TopoDS_Shape& F, const TopoDS_Shape& SHE)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //  const TopAbs_ShapeEnum t1 = F.ShapeType();
 //  const TopAbs_ShapeEnum t2 = SHE.ShapeType();
 #endif
@@ -103,7 +103,7 @@ TopAbs_State  TopOpeBRepBuild_ShellFaceClassifier::CompareElementToShape
 
 void  TopOpeBRepBuild_ShellFaceClassifier::ResetShape(const TopoDS_Shape& SHE)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //  const TopAbs_ShapeEnum t1 = SHE.ShapeType();
 #endif
 
@@ -151,7 +151,7 @@ void  TopOpeBRepBuild_ShellFaceClassifier::ResetElement(const TopoDS_Shape& F)
 
 Standard_Boolean TopOpeBRepBuild_ShellFaceClassifier::CompareElement(const TopoDS_Shape& F)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //  const TopAbs_ShapeEnum t = F.ShapeType();
 #endif
   Standard_Boolean bRet = Standard_True;
@@ -187,7 +187,7 @@ Standard_Boolean TopOpeBRepBuild_ShellFaceClassifier::CompareElement(const TopoD
   return bRet;
 }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #include <BRepTools.hxx>
 #include <BRep_Builder.hxx>
 #include <TCollection_AsciiString.hxx>
@@ -204,7 +204,7 @@ TopAbs_State TopOpeBRepBuild_ShellFaceClassifier::State()
   TopAbs_State state;
   Standard_Real tol3d = Precision::Confusion();
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepBuild_GettraceCHK()) {
     STATIC_ishell++;
     TCollection_AsciiString home("/home/wb/mdl/gti/prod/TTOPOPE/src/test/data/");

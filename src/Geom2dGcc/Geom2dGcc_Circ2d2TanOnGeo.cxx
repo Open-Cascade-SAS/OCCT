@@ -386,7 +386,7 @@ parcen3(1,8)
               NbrSol++;
               cirsol(NbrSol) = gp_Circ2d(gp_Ax2d(Center,dirx),Radius);
               //            =======================================================
-#ifdef DEB
+#ifdef OCCT_DEBUG
               gp_Dir2d dc1(center1.XY()-Center.XY());
 #endif
               gp_Dir2d dc2(origin2.XY()-Center.XY());

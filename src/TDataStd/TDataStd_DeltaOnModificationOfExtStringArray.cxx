@@ -22,7 +22,7 @@
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
 #include <TDF_AttributeIterator.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #define MAXUP 1000
 #endif
 //=======================================================================
@@ -39,7 +39,7 @@ TDataStd_DeltaOnModificationOfExtStringArray::TDataStd_DeltaOnModificationOfExtS
       Handle(TColStd_HArray1OfExtendedString) Arr1, Arr2;
       Arr1 = OldAtt->Array();
       Arr2 = CurrAtt->Array();
-#ifdef TDATASTD_DEB
+#ifdef OCCT_DEBUG
       if(Arr1.IsNull())
 	cout <<"DeltaOnModificationOfExtStringArray:: Old IntArray is Null" <<endl;
       if(Arr2.IsNull())
@@ -79,7 +79,7 @@ TDataStd_DeltaOnModificationOfExtStringArray::TDataStd_DeltaOnModificationOfExtS
       }
     }
     OldAtt->RemoveArray();
-#ifdef TDATASTD_DEB
+#ifdef OCCT_DEBUG
     if(OldAtt->Array().IsNull())
       cout << "BackUp Arr is Nullified" << endl;
 #endif
@@ -98,7 +98,7 @@ void TDataStd_DeltaOnModificationOfExtStringArray::Apply()
   Handle(TDF_Attribute) TDFAttribute = Attribute();
   Handle(TDataStd_ExtStringArray) BackAtt = (*((Handle(TDataStd_ExtStringArray)*)&TDFAttribute));
   if(BackAtt.IsNull()) {
-#ifdef TDATASTD_DEB
+#ifdef OCCT_DEBUG
     cout << "DeltaOnModificationOfExtStringArray::Apply: OldAtt is Null" <<endl;
 #endif
     return;
@@ -111,7 +111,7 @@ void TDataStd_DeltaOnModificationOfExtStringArray::Apply()
   }
 
   if(aCurAtt.IsNull()) {
-#ifdef TDATASTD_DEB
+#ifdef OCCT_DEBUG
     cout << "DeltaOnModificationOfExtStringArray::Apply: CurAtt is Null" <<endl;
 #endif
     return;
@@ -155,7 +155,7 @@ void TDataStd_DeltaOnModificationOfExtStringArray::Apply()
       strArr->SetValue(i, aStrArr->Value(i));
     if(!myIndxes.IsNull() && !myValues.IsNull())
       for(i = 1; i <= myIndxes->Upper();i++) {
-#ifdef TDATASTD_DEB
+#ifdef OCCT_DEBUG
 	cout << "i = " << i << "  myIndxes->Upper = " << myIndxes->Upper() << endl;
 	cout << "myIndxes->Value(i) = " << myIndxes->Value(i) << endl;
 	cout << "myValues->Value(i) = " << myValues->Value(i) << endl;
@@ -166,7 +166,7 @@ void TDataStd_DeltaOnModificationOfExtStringArray::Apply()
   }
 
   
-#ifdef TDATASTD_DEB
+#ifdef OCCT_DEBUG
   cout << " << Array Dump after Delta Apply >>" <<endl;
   Handle(TColStd_HArray1OfExtendedString) aStrArr2 = aCurAtt->Array();
   for(i=aStrArr2->Lower(); i<= aStrArr2->Upper() && i<= MAXUP;i++)

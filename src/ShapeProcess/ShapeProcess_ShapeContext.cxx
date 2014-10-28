@@ -151,7 +151,7 @@ void ShapeProcess_ShapeContext::SetResult (const TopoDS_Shape &res)
 //=======================================================================
 
 /*
-#ifdef DEB
+#ifdef OCCT_DEBUG
 static void DumpMap (const TopTools_DataMapOfShapeShape &map)
 {
   cout << "----" << endl;
@@ -230,7 +230,7 @@ void ShapeProcess_ShapeContext::RecordModification (const TopTools_DataMapOfShap
   if ( repl.Extent() <=0 ) return;
   RecModif ( myShape, repl, myMap, myUntil );
   if ( myMap.IsBound(myShape) ) myResult = myMap.Find ( myShape );
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //  cout << "Modifier: " << endl; DumpMap (myMap);
 #endif
 }
@@ -303,7 +303,7 @@ void ShapeProcess_ShapeContext::RecordModification (const Handle(ShapeBuild_ReSh
     myResult = myMap.Find ( myShape );
     myResult.Location(myShape.Location());
   }
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //  cout << "ReShape: " << endl; DumpMap (myMap);
 #endif
 }

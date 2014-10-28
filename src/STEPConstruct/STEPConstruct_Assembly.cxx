@@ -188,7 +188,7 @@ Standard_Boolean STEPConstruct_Assembly::CheckSRRReversesNAUO(const Handle(Inter
     Handle(StepRepr_NextAssemblyUsageOccurrence)::DownCast 
 	  ( CDSR->RepresentedProductRelation()->Definition().ProductDefinitionRelationship() );
   if ( nauo.IsNull() ) {
-#ifdef STEPCONSTRUCT_DEB
+#ifdef OCCT_DEBUG
     cout << "Warning: No NAUO found in CDSR !" << endl;
 #endif
     return Standard_False;
@@ -223,7 +223,7 @@ Standard_Boolean STEPConstruct_Assembly::CheckSRRReversesNAUO(const Handle(Inter
     return Standard_True;
   }
 
-#ifdef STEPCONSTRUCT_DEB
+#ifdef OCCT_DEBUG
   cout << "Warning: SRR and NAUO are incompatible" << endl;
 //  cout << "NAUO = " << Model->StringLabel(nauo)->ToCString() << 
 //       ",\tCDSR = " << Model->StringLabel(CDSR)->ToCString() << endl;

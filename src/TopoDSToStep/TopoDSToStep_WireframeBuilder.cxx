@@ -160,7 +160,7 @@ Standard_Boolean TopoDSToStep_WireframeBuilder::
 {
   if (theEdge.Orientation() == TopAbs_INTERNAL  ||
       theEdge.Orientation() == TopAbs_EXTERNAL ) {
-#ifdef TOPODSTOSTEP_DEB
+#ifdef OCCT_DEBUG
     cout <<"Warning: TopoDSToStep_WireframeBuilder::GetTrimmedCurveFromEdge: Edge is internal or external; dropped" << endl;
 #endif
     return Standard_False;
@@ -267,7 +267,7 @@ Standard_Boolean TopoDSToStep_WireframeBuilder::
 	Gpms = MakeTrimmedCurve (gtpL.Value(), pmsP1, pmsP2, 0, length, Standard_True );
 //				 (anEdge.Orientation() == TopAbs_FORWARD));
       }
-#ifdef TOPODSTOSTEP_DEB
+#ifdef OCCT_DEBUG
       else cout << "Warning: TopoDSToStep_WireframeBuilder::GetTrimmedCurveFromEdge: Null-length curve not mapped" << endl;
 #endif
     }
@@ -360,7 +360,7 @@ Standard_Boolean TopoDSToStep_WireframeBuilder::
       for (;It.More();It.Next()) {
 	TopoDS_Face curFace = TopoDS::Face(It.Value());
 	if (GetTrimmedCurveFromFace(curFace, aMap, aCurveList)) result = Standard_True;
-#ifdef TOPODSTOSTEP_DEB
+#ifdef OCCT_DEBUG
 	if(!result) {
 	  cout << "ERROR extracting trimmedCurve from Face" << endl;
 	  //BRepTools::Dump(curFace,cout);  cout<<endl;

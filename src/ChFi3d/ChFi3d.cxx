@@ -152,7 +152,7 @@ Standard_Integer ChFi3d::ConcaveSide(const BRepAdaptor_Surface& S1,
         }
       }
       else {
-#ifdef CHFI3D_DEB
+#ifdef OCCT_DEBUG
         cout<<"ConcaveSide : no concave face"<<endl;
 #endif
 	//This 10 shows that the face at end is in the extension of one of two base faces
@@ -163,7 +163,7 @@ Standard_Integer ChFi3d::ConcaveSide(const BRepAdaptor_Surface& S1,
       //here it turns back, the points are taken in faces
       //neither too close nor too far as much as possible.
       Standard_Real u,v;
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //      Standard_Real deport = 1000*BRep_Tool::Tolerance(E);
 #endif
       ChFi3d_Coefficient(dint1,DU1,DV1,u,v);

@@ -39,7 +39,7 @@
 #include <DBRep.hxx>
 #endif
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 OSD_Chronometer simul,elspine,chemine;
 #endif
 

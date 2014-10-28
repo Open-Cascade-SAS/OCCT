@@ -188,12 +188,12 @@ Standard_Boolean XmlMNaming_NamingDriver::Paste
 	if (anEntry.Length() > 0) {
 	  TDF_Tool::Label(aNg->Label().Data(), anEntry, tLab, Standard_True);
 	    aNgName.ContextLabel(tLab);
-#ifdef XMLMNAMING_DEB
+#ifdef OCCT_DEBUG
 	    cout << "Retrieving Context Label = " << anEntry.ToCString() <<endl;
 #endif
 	  }
       }
-#ifdef XMLMNAMING_DEB
+#ifdef OCCT_DEBUG
     else
       cout << "Retrieving Context Label is NULL" <<endl;
 #endif
@@ -231,7 +231,7 @@ Standard_Boolean XmlMNaming_NamingDriver::Paste
     }
     // or. end
   }
-#ifdef XMLMNAMING_DEB
+#ifdef OCCT_DEBUG
   else if(XmlMNaming::DocumentVersion() == -1)
     cout << "Current DocVersion field is not initialized. "  <<endl;
   else 
@@ -304,7 +304,7 @@ void XmlMNaming_NamingDriver::Paste
   XmlObjMgt_DOMString aDOMString;
   XmlObjMgt::SetTagEntryString (aDOMString, anEntry);
   anElem.setAttribute(::ContextLabelString(), aDOMString);
-#ifdef XMLMNAMING_DEB
+#ifdef OCCT_DEBUG
   cout << "XmlMNaming_NamingDriver::Store: ContextLabel Entry = " << anEntry << endl;
   if (aDOMString != NULL)
   {

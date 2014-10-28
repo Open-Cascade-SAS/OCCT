@@ -46,7 +46,7 @@ Handle(TPrsStd_DriverTable) TPrsStd_DriverTable::Get()
   if ( drivertable.IsNull() )
   {
     drivertable = new TPrsStd_DriverTable;
-#ifdef TPRSSTD_DEB
+#ifdef OCCT_DEBUG
     cout << "The new TPrsStd_DriverTable was created" << endl;
 #endif
   }

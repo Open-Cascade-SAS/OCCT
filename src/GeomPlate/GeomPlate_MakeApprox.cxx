@@ -14,9 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// PMN : 7/07/1997 : cout en #if DEB ... #endif
-
-
 #include <GeomPlate_MakeApprox.ixx>
 #include <GeomPlate_Surface.hxx>
 #include <GeomPlate_PlateG0Criterion.hxx>
@@ -302,7 +299,7 @@ GeomPlate_MakeApprox::GeomPlate_MakeApprox(const Handle(GeomPlate_Surface)& Surf
   mySurface = AppPlate.Surface(1);
   myAppError = AppPlate.MaxError(3,1);
   myCritError = AppPlate.CritError(3,1);
-#if PLATE_DEB
+#ifdef OCCT_DEBUG
   cout<<"Approximation results"<<endl;
   cout<<"  Approximation error : "<<myAppError<<endl;
   cout<<"  Criterium error : "<<myCritError<<endl;
@@ -366,13 +363,13 @@ GeomPlate_MakeApprox::GeomPlate_MakeApprox(const Handle(GeomPlate_Surface)& Surf
   Standard_Real seuil = Tol3d;
   if (CritOrder==0&&Tol3d<10*dmax) {
     seuil=10*dmax;
-#if PLATE_DEB
+#ifdef OCCT_DEBUG
     cout<<"Seuil G0 choisi trop faible par rapport au contour. On prend "<<seuil<<endl;
 #endif
   }
   if (CritOrder==1&&Tol3d<10*dmax) {
     seuil=10*dmax;
-#if PLATE_DEB
+#ifdef OCCT_DEBUG
     cout<<"Seuil G1 choisi trop faible par rapport au contour. On prend "<<seuil<<endl;
 #endif
   }
@@ -411,7 +408,7 @@ GeomPlate_MakeApprox::GeomPlate_MakeApprox(const Handle(GeomPlate_Surface)& Surf
     mySurface = AppPlate.Surface(1);
     myAppError = AppPlate.MaxError(3,1);
     myCritError = 0.;
-#if PLATE_DEB
+#ifdef OCCT_DEBUG
     cout<<"Approximation results"<<endl;
     cout<<"  Approximation error : "<<myAppError<<endl;
 #endif
@@ -433,7 +430,7 @@ GeomPlate_MakeApprox::GeomPlate_MakeApprox(const Handle(GeomPlate_Surface)& Surf
     mySurface = AppPlate.Surface(1);
     myAppError = AppPlate.MaxError(3,1);
     myCritError = AppPlate.CritError(3,1);
-#if PLATE_DEB
+#ifdef OCCT_DEBUG
     cout<<"Approximation results"<<endl;
     cout<<"  Approximation error : "<<myAppError<<endl;
     cout<<"  Criterium error : "<<myCritError<<endl;
@@ -456,7 +453,7 @@ GeomPlate_MakeApprox::GeomPlate_MakeApprox(const Handle(GeomPlate_Surface)& Surf
     mySurface = AppPlate.Surface(1);
     myAppError = AppPlate.MaxError(3,1);
     myCritError = AppPlate.CritError(3,1);
-#if PLATE_DEB
+#ifdef OCCT_DEBUG
     cout<<"Approximation results"<<endl;
     cout<<"  Approximation error : "<<myAppError<<endl;
     cout<<"  Criterium error : "<<myCritError<<endl;

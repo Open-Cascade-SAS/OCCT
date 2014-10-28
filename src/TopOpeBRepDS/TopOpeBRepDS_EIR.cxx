@@ -30,7 +30,7 @@
 #include <TopOpeBRepDS_repvg.hxx>
 #include <TopOpeBRepDS_connex.hxx>
 #include <TopOpeBRepTool_TOOL.hxx>
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #include <TopOpeBRepDS_reDEB.hxx>
 Standard_EXPORT void debredpnc(const Standard_Integer ie){cout<<"+++ debredpnc e"<<ie<<endl;}
 extern Standard_Boolean TopOpeBRepDS_GetcontextNOPNC();
@@ -52,13 +52,13 @@ static Standard_Boolean CheckInterferenceIsValid(const Handle(TopOpeBRepDS_Inter
 static void FDS_reduceONFACEinterferences(TopOpeBRepDS_ListOfInterference& LI,
                                           const TopOpeBRepDS_DataStructure& /*BDS*/,
                                           const Standard_Integer
-#ifdef DEB
+#ifdef OCCT_DEBUG
                                                                   EIX
 #endif
                                           )
 //------------------------------------------------------
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean TRC=DSREDUEDGETRCE(EIX);
   TRC = Standard_False; //MOINSTRACE
   if (TRC) cout<<endl<<"reduceONFACEinterferences on "<<EIX<<" <- "<<LI.Extent()<<endl;
@@ -75,7 +75,7 @@ static void FDS_reduceONFACEinterferences(TopOpeBRepDS_ListOfInterference& LI,
     }
   }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if(TRC){if( hasONFACE)cout<<"egde "<<EIX<<" has (ON,FACE)"<<endl;}
   if(TRC){if(!hasONFACE)cout<<"egde "<<EIX<<" has no (ON,FACE)"<<endl;}
 #endif
@@ -97,7 +97,7 @@ static void FDS_reduceONFACEinterferences(TopOpeBRepDS_ListOfInterference& LI,
     }
   }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TRC) cout<<"reduceONFACEinterferences E"<<EIX<<" -> "<<LI.Extent()<<endl<<endl;
 #endif
 }
@@ -111,7 +111,7 @@ static void FUN_ReducerEdge3d(const Standard_Integer SIX, TopOpeBRepDS_DataStruc
 // <LI> -> <reducedLI> + <LI>
 {
   reducedLI.Clear();
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean TRC=DSREDUEDGETRCE(SIX); 
   TRC = Standard_False; //MOINSTRACE
   if(TRC) {cout<<endl; debreducer3d(SIX);}
@@ -232,7 +232,7 @@ static void FUN_ReducerEdge3d(const Standard_Integer SIX, TopOpeBRepDS_DataStruc
 
       Standard_Boolean sdm = FUN_ds_sdm(BDS,E,E1);
       if (sdm) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	  if (TRC) cout<<"  NO I3d : e"<<SIX<<" same domain with e"<<S1<<endl;
 #endif
 	it2.Next(); continue;
@@ -256,18 +256,18 @@ static void FUN_ReducerEdge3d(const Standard_Integer SIX, TopOpeBRepDS_DataStruc
 	isComplex = Standard_True;
 	EFITool.Init(E,E1,F1,I1); 
 	EFITool.Add(E,E1,F1,I1);
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	if(TRC){cout<<endl<<"complex T3d E"<<SIX<<endl;I1->Dump(cout,"init :","\n");} 
 #endif	
       } // !isComplex
       
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if(TRC) I2->Dump(cout,"add : ","\n");
 #endif	  
       EFITool.Add(E,E2,F2,I2);
       LI.Remove(it2);
       
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if(TRC){cout<<"resulting : "; Handle(TopOpeBRepDS_Interference) IBID = new TopOpeBRepDS_Interference();
 	      EFITool.Transition(IBID);IBID->Transition().Dump(cout);cout<<endl;}
 #endif	
@@ -291,7 +291,7 @@ static void FUN_ReducerEdge3d(const Standard_Integer SIX, TopOpeBRepDS_DataStruc
 	newI = new TopOpeBRepDS_CurvePointInterference(T,TopOpeBRepDS_FACE,IB1,TopOpeBRepDS_POINT,G1,CPI->Parameter());		
       }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if (TRC){cout<<"reduced T E"<<SIX<<" ";newI->Dump(cout);cout<<endl;}
 #endif
       if (!newI.IsNull()) {
@@ -303,7 +303,7 @@ static void FUN_ReducerEdge3d(const Standard_Integer SIX, TopOpeBRepDS_DataStruc
       it1.Next();
   } // it1
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TRC) {
     cout<<"ReducerEdge3d E"<<SIX<<" -> nIreduced "<<reducedLI.Extent();
     cout<<" + nInonreduced "<<LI.Extent()<<endl<<endl;
@@ -316,7 +316,7 @@ static void FUN_ReducerEdge(const Standard_Integer SIX,const TopOpeBRepDS_DataSt
 			    TopOpeBRepDS_ListOfInterference& LI,TopOpeBRepDS_ListOfInterference& reducedLI)
 //------------------------------------------------------
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean TRC=DSREDUEDGETRCE(SIX);
 //  TRC = Standard_False; //MOINSTRACE
   if (TRC) cout<<endl<<"ReducerEdge E"<<SIX<<" <- nI "<<LI.Extent()<<endl;
@@ -326,7 +326,7 @@ static void FUN_ReducerEdge(const Standard_Integer SIX,const TopOpeBRepDS_DataSt
   FDS_reduceONFACEinterferences(LI,BDS,SIX);
   FDS_repvg(BDS,SIX,TopOpeBRepDS_POINT,LI,reducedLI);
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TRC) cout<<"ReducerEdge E"<<SIX<<" -> nI "<<LI.Extent()<<endl<<endl;
 #endif
 }
@@ -338,7 +338,7 @@ static void FUN_ReducerSDEdge(const Standard_Integer SIX,const TopOpeBRepDS_Data
 {
   reducedLI.Clear();
   Standard_Integer nI = LI.Extent();
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean TRC=DSREDUEDGETRCE(SIX);
   TRC = Standard_False; //MOINSTRACE
   if (TRC) cout<<endl<<"ReducerSDEdge E"<<SIX<<" <- nI "<<nI<<endl;  
@@ -400,7 +400,7 @@ static void FUN_ReducerSDEdge(const Standard_Integer SIX,const TopOpeBRepDS_Data
   
   LI.Clear(); LI.Append(newLI);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TRC) cout<<"ReducerSDEdge E"<<SIX<<" -> nI "<<LI.Extent()<<endl<<endl;
 #endif
 }
@@ -415,13 +415,13 @@ static void FUN_reclSE2(const Standard_Integer SIX,const TopOpeBRepDS_DataStruct
 //  I2 = (IN/OU(SE),VG,SE))} -> Ir = (IN/IN(SE),VG,SE)
 {
   reducedLI.Clear();
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer nI = LI.Extent(); // DEB
 #endif
 
   const TopoDS_Edge& E = TopoDS::Edge(BDS.Shape(SIX));
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean TRC=DSREDUEDGETRCE(SIX);
   TRC = Standard_False; //MOINSTRACE
   if (TRC) cout<<endl<<"reclSE2 E"<<SIX<<" <- nI "<<nI<<endl;
@@ -458,7 +458,7 @@ static void FUN_reclSE2(const Standard_Integer SIX,const TopOpeBRepDS_DataStruct
 	if (O2 != cO1) {it2.Next(); continue;}
 	
 	LI.Remove(it2);
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	nI = LI.Extent(); // DEB
 #endif
 	hascO = Standard_True; break;
@@ -467,14 +467,14 @@ static void FUN_reclSE2(const Standard_Integer SIX,const TopOpeBRepDS_DataStruct
       if (hascO) {
 	I1->ChangeTransition().Set(TopAbs_INTERNAL);
 	reducedLI.Append(I1); LI.Remove(it1);
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	nI = LI.Extent(); // DEB
 #endif
       }
       else it1.Next();
     } //it1
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TRC) cout<<"reclSE2 E"<<SIX<<" -> nI "<<LI.Extent()<<endl<<endl;
 #endif
 } // FUN_reclSE2
@@ -485,7 +485,7 @@ Standard_EXPORT void FUN_reclSE(const Standard_Integer EIX,const TopOpeBRepDS_Da
 //------------------------------------------------------
 {
   TopOpeBRepDS_TKI tki; tki.FillOnGeometry(LOI);
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean TRC=DSREDUEDGETRCE(EIX);
   TRC = Standard_False; //MOINSTRACE
   if (TRC) cout<<endl<<"reclSE E"<<EIX<<" <- "<<LOI.Extent()<<endl;
@@ -497,7 +497,7 @@ Standard_EXPORT void FUN_reclSE(const Standard_Integer EIX,const TopOpeBRepDS_Da
     TopOpeBRepDS_Kind K; Standard_Integer G; tki.Value(K,G);
     if (K != TopOpeBRepDS_VERTEX) continue; 
     
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (TRC) {tki.DumpTKI(K,G,"","\n");}
 #endif
     TopOpeBRepDS_ListOfInterference& loi = tki.ChangeValue(K,G); TopOpeBRepDS_ListOfInterference Rloi;
@@ -510,7 +510,7 @@ Standard_EXPORT void FUN_reclSE(const Standard_Integer EIX,const TopOpeBRepDS_Da
     }
   }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TRC) cout<<"reclSE E"<<EIX<<" -> reste "<<LOI.Extent()<<" + reduit "<<RLOI.Extent()<<endl<<endl;
 #endif
 } // FUN_reclSE
@@ -521,7 +521,7 @@ static void FUN_unkeepEVIonGb1(const TopOpeBRepDS_DataStructure& BDS,const Stand
 // LI = {I attached to <E> = (T,G,S)}, unkeep I = EVI with G = vertex of <E>
 {
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean TRC=DSREDUEDGETRCE(EIX);
   TRC = Standard_False; //MOINSTRACE
   if (TRC) {cout<<endl;debreducerE(EIX);}
@@ -540,7 +540,7 @@ static void FUN_unkeepEVIonGb1(const TopOpeBRepDS_DataStructure& BDS,const Stand
     const TopoDS_Vertex& V = TopoDS::Vertex(BDS.Shape(G));
     Standard_Integer o = FUN_tool_orientVinE(V,E);
     if (o == 0){it.Next(); continue;}
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (TRC) {cout<<"-> rejet EVI on Gb 1 on "<<EIX<<" : ";I->Dump(cout);cout<<endl;}
 #endif
     LI.Remove(it);
@@ -549,7 +549,7 @@ static void FUN_unkeepEVIonGb1(const TopOpeBRepDS_DataStructure& BDS,const Stand
 
 // ---------------------------------------------------------
 //unreferenced function, commented
-/*#ifdef DEB
+/*#ifdef OCCT_DEBUG
 static void FUN_reorder(const Standard_Integer EIX, const Handle(TopOpeBRepDS_HDataStructure)& HDS,TopOpeBRepDS_ListOfInterference& LIR, TopOpeBRepDS_ListOfInterference& LI, TopOpeBRepDS_ListOfInterference& LIend)
 // ---------------------------------------------------------
 // at same G :in <LI>  I  =(T, G, S)
@@ -579,30 +579,30 @@ static void FUN_reorder(const Standard_Integer EIX, const Handle(TopOpeBRepDS_HD
 
     TopOpeBRepDS_ListOfInterference& loiR = tkiR.ChangeValue(K,G);
     TopOpeBRepDS_ListOfInterference& loi = tki.ChangeValue(K,G);
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (TRC) {TCollection_AsciiString bb("lIreduced");bb += TCollection_AsciiString(G);DSD.DumpLOI(loiR,cout,bb);
 	      TCollection_AsciiString aa("lI");aa+=TCollection_AsciiString(G);DSD.DumpLOI(loi,cout,aa);}
 #endif
     loiR.Append(loi);
   }
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (TRC) cout<<"-> ordered :"<<endl;
 #endif
   for (tkiR.Init(); tkiR.More(); tkiR.Next()) {
     TopOpeBRepDS_Kind K; Standard_Integer G; TopOpeBRepDS_ListOfInterference& loi = tkiR.ChangeValue(K,G);
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (TRC) {TCollection_AsciiString aa("lI");aa+=TCollection_AsciiString(G);DSD.DumpLOI(loi,cout,aa);}
 #endif
     LIend.Append(loi);
   }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (TRC) cout<<"-> residual :"<<endl;
 #endif
   for (tki.Init(); tki.More(); tki.Next()) {
     TopOpeBRepDS_Kind K; Standard_Integer G; TopOpeBRepDS_ListOfInterference& loi = tki.ChangeValue(K,G);
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (TRC) {TCollection_AsciiString aa("lI");aa+=TCollection_AsciiString(G);DSD.DumpLOI(loi,cout,aa);}
 #endif
     LIend.Append(loi);
@@ -612,11 +612,11 @@ static void FUN_reorder(const Standard_Integer EIX, const Handle(TopOpeBRepDS_HD
 */
 
 static void FUN_keepl3dF(const Standard_Integer
-#ifdef DEB
+#ifdef OCCT_DEBUG
                                                 SIX
 #endif
                          ,const Handle(TopOpeBRepDS_HDataStructure)&
-#ifdef DEB
+#ifdef OCCT_DEBUG
                                                 HDS
 #endif
 			 ,const TopOpeBRepDS_ListOfInterference& l3dF
@@ -625,7 +625,7 @@ static void FUN_keepl3dF(const Standard_Integer
 //purpose : soit I de l3dF, on cherche IR interf dans LR3dFE de meme geometrie
 //          si on n'en trouve pas, l3dFkeep += I
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean TRC=DSREDUEDGETRCE(SIX);
   TRC = Standard_False; //MOINSTRACE
   if (TRC) cout<<endl<<"keepl3dF E"<<SIX<<endl;
@@ -645,7 +645,7 @@ static void FUN_keepl3dF(const Standard_Integer
     Standard_Boolean isbound = tkiR.IsBound(K,G);
     if (!isbound) {l3dFkeep.Append(loi);}
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (TRC) {TCollection_AsciiString bb("l3dFkeep");bb += TCollection_AsciiString(G);DSD.DumpLOI(loi,cout,bb);cout<<endl;}
 #endif
   }  
@@ -731,11 +731,11 @@ void TopOpeBRepDS_EIR::ProcessEdgeInterferences()
 }
 static void FUN_ProcessEdgeInterferences(const Standard_Integer EIX
                                          , const TopOpeBRepDS_Kind
-#ifdef DEB
+#ifdef OCCT_DEBUG
                                                                  K
 #endif
                                          ,const Standard_Integer
-#ifdef DEB
+#ifdef OCCT_DEBUG
                                                                  G
 #endif
                                          , const Handle(TopOpeBRepDS_HDataStructure)& HDS, 
@@ -743,7 +743,7 @@ static void FUN_ProcessEdgeInterferences(const Standard_Integer EIX
 {
   TopOpeBRepDS_DataStructure& BDS = HDS->ChangeDS();
   const TopoDS_Shape& E = BDS.Shape(EIX);
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean TRC=DSREDUEDGETRCE(EIX);
   if (TRC) {
     cout<<endl;debreducerE(EIX);cout<<"EIR E"<<EIX;
@@ -761,7 +761,7 @@ static void FUN_ProcessEdgeInterferences(const Standard_Integer EIX
   TopOpeBRepDS_ListOfInterference lFE; FUN_selectSKinterference(lF,TopOpeBRepDS_EDGE,lFE);
   TopOpeBRepDS_ListOfInterference lE; FUN_selectTRASHAinterference(LI,TopAbs_EDGE,lE);
 
-#ifdef DEB 
+#ifdef OCCT_DEBUG
   TopOpeBRepDS_Dumper DSD(HDS);	      
   Standard_Boolean trcl = TRC;
 //  trcl = Standard_False; // MOINSTRACE
@@ -777,14 +777,14 @@ static void FUN_ProcessEdgeInterferences(const Standard_Integer EIX
     // lF  -> lF
     // lFE -> lI2dFE + [lFE] / lI2dFE={FEI=(T(FTRASHA),G,SE) : no FFI=(T(FTRASHA),G,FTRASHA)}
     FUN_selectpure2dI(lF,lFE,lI2dFE);
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (trcl) {
       cout<<endl<<"lI2dFE -> lRI2dFE + lI2dFE"<<endl;
       TCollection_AsciiString aa("lI2dFE  :"); DSD.DumpLOI(lI2dFE,cout,aa);
     }
 #endif    
     ::FUN_reducepure2dI(lI2dFE,lRI2dFE); // lI2dFE -> lRI2dFE + lI2dFE
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (trcl) { TCollection_AsciiString bb("lRI2dFE  :"); DSD.DumpLOI(lRI2dFE,cout,bb);}
 #endif
     lFE.Append(lI2dFE); lFE.Append(lRI2dFE);
@@ -809,7 +809,7 @@ static void FUN_ProcessEdgeInterferences(const Standard_Integer EIX
   TopOpeBRepDS_ListOfInterference l1dE; FUN_select2dI(EIX,BDS,TopAbs_EDGE,lE,l1dE);
   TopOpeBRepDS_ListOfInterference l1dEsd; FUN_select1dI(EIX,BDS,lE,l1dEsd);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (trcl) {
     cout<<"lFE("<<EIX<<") -> l3dFE (S=EDGE) [+l3dFEresi] + l2dFE  + [lFE +lFEresi]"<<endl;
     TCollection_AsciiString oo("lFE :");DSD.DumpLOI(lFE,cout,oo);
@@ -830,7 +830,7 @@ static void FUN_ProcessEdgeInterferences(const Standard_Integer EIX
   // ----------
   // l3dFE -> lR3dFE [+l3dFE (non reduced 3dI)]
   TopOpeBRepDS_ListOfInterference lR3dFE; FUN_ReducerEdge3d(EIX,BDS,l3dFE,lR3dFE);
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (trcl) { cout<<"l3dFE("<<EIX<<") -> lR3dFE + l3dFE"<<endl;
 	      TCollection_AsciiString aa("lR3dFE :");DSD.DumpLOI(lR3dFE,cout,aa);
 	      TCollection_AsciiString bb("l3dFE :"); DSD.DumpLOI(l3dFE,cout,bb);}
@@ -893,7 +893,7 @@ static void FUN_ProcessEdgeInterferences(const Standard_Integer EIX
   }
 //FUN_unkeepEVIonGb1(BDS,EIX,LI);  // filter : 
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TRC){TCollection_AsciiString aa("reduced->");DSD.DumpLOI(LI,cout,aa);}
 #endif
 } // ProcessEdgeInterferences
@@ -906,7 +906,7 @@ void TopOpeBRepDS_EIR::ProcessEdgeInterferences(const Standard_Integer EIX)
 {
   TopOpeBRepDS_DataStructure& BDS = myHDS->ChangeDS();
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   TopOpeBRepDS_Dumper DSD(myHDS);	
   Standard_Boolean TRC=DSREDUEDGETRCE(EIX);
   if (TRC) {cout<<endl;debreducerE(EIX);}
@@ -944,7 +944,7 @@ void TopOpeBRepDS_EIR::ProcessEdgeInterferences(const Standard_Integer EIX)
 	Standard_Real par = FDS_Parameter(I);
 	Handle(TopOpeBRepDS_Interference) newI = MakeEPVInterference(I->Transition(),S,OOG,par,K,ST,Standard_False);
 	newloi.Append(newI);
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	if (TRC) {cout<<"on e"<<EIX;I->Dump(cout);cout<<"gives ";newI->Dump(cout);cout<<endl;}
 #endif
       }
@@ -970,7 +970,7 @@ void TopOpeBRepDS_EIR::ProcessEdgeInterferences(const Standard_Integer EIX)
   LI.Append(LInew);
 
   Standard_Boolean performPNC = Standard_False; // JYL 28/09/98 : temporaire
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepDS_GetcontextNOPNC()) performPNC = Standard_False;
   if (TRC) debredpnc(EIX);
 #endif
@@ -994,7 +994,7 @@ void TopOpeBRepDS_EIR::ProcessEdgeInterferences(const Standard_Integer EIX)
       }
 
       const TopTools_ListOfShape& lfx = FDSCNX_EdgeConnexitySameShape(E,myHDS);
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //      Standard_Integer nlfx = lfx.Extent();
 #endif
 
@@ -1033,14 +1033,14 @@ void TopOpeBRepDS_EIR::ProcessEdgeInterferences(const Standard_Integer EIX)
 	if (curvefound) break;
       } // itlfx.More()
       
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //      Standard_Integer nLI = LI.Extent();
 #endif
       if (curvefound) {
 	LI.Append(loi);
       } 
       else {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //	if (TRC) {
 //	  debredpnc(EIX);
 	  TCollection_AsciiString ss = "\n--- TopOpeBRepDS_EIR::ProcessEdgeInterferences : suppress pnc of E"; ss = ss + EIX;

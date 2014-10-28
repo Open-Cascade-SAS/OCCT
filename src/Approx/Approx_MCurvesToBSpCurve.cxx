@@ -25,7 +25,7 @@
 #include <BSplCLib.hxx>
 #include <PLib.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 static void DEBUG(const AppParCurves_MultiCurve& MC) {
   Standard_Integer i, j;
   Standard_Integer nbcu = MC.NbCurves();
@@ -84,7 +84,7 @@ void Approx_MCurvesToBSpCurve::Perform
   Standard_Integer nbcu = TheSeq.Length();
   AppParCurves_MultiCurve CU;
   Standard_Integer nbpolesspl=0, nbknots=0;
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean debug = Standard_False;
 #endif  
 
@@ -228,7 +228,7 @@ void Approx_MCurvesToBSpCurve::Perform
     
     mySpline = AppParCurves_MultiBSpCurve(tabMU, TheKnots, TheMults);
   }
-#ifdef DEB
+#ifdef OCCT_DEBUG
 if(debug) DEBUG(mySpline);
 #endif
 

@@ -49,7 +49,7 @@ void TopOpeBRepBuild_Builder::SplitShapes(TopOpeBRepTool_ShapeExplorer& Ex,
 
     TopAbs_ShapeEnum t = aShape.ShapeType();
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (TopOpeBRepBuild_GettraceSHEX()) GdumpEXP(Ex);
 #endif
 
@@ -79,7 +79,7 @@ void TopOpeBRepBuild_Builder::SplitShapes(TopOpeBRepTool_ShapeExplorer& Ex,
       for (; It.More(); It.Next()) {
 	newShape = It.Value();
 	myBuildTool.Orientation(newShape,newori);
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //	TopAbs_ShapeEnum tns = TopType(newShape);
 #endif
 	//----------------------- IFV

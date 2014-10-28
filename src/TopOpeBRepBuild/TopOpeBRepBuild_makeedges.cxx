@@ -23,7 +23,7 @@
 #include <TopOpeBRepDS_EXPORT.hxx>
 #include <TopOpeBRepBuild_define.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern void debfillp(const Standard_Integer i);
 extern void debedbu(const Standard_Integer i) {cout<<"++ debedbu "<<i<<endl;}
 #endif
@@ -39,7 +39,7 @@ extern void debedbu(const Standard_Integer i) {cout<<"++ debedbu "<<i<<endl;}
 void TopOpeBRepBuild_Builder::GPVSMakeEdges
 (const TopoDS_Shape& EF,TopOpeBRepBuild_PaveSet& PVS,TopTools_ListOfShape& LOE) const 
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer iE; Standard_Boolean tSPS = GtraceSPS(EF,iE);
   if (tSPS) debfillp(iE);
 #endif
@@ -50,7 +50,7 @@ void TopOpeBRepBuild_Builder::GPVSMakeEdges
   
   PVS.InitLoop();
   Standard_Boolean novertex = ( ! PVS.MoreLoop() );
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if(tSPS&&novertex)cout<<"#--- GPVSMakeEdges : no vertex from edge "<<iE<<endl;
 #endif
   if (novertex) return;
@@ -69,7 +69,7 @@ void TopOpeBRepBuild_Builder::GPVSMakeEdges
 void TopOpeBRepBuild_Builder::GEDBUMakeEdges
 (const TopoDS_Shape& EF,TopOpeBRepBuild_EdgeBuilder& EDBU,TopTools_ListOfShape& LOE) const
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer iE; Standard_Boolean tSPS = GtraceSPS(EF,iE);
   if(tSPS){cout<<endl;GdumpSHA(EF, (char *) "#--- GEDBUMakeEdges ");cout<<endl;}
   if(tSPS){GdumpEDBU(EDBU);}

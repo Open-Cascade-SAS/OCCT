@@ -14,10 +14,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _TopOpeBRepDS_reDEB_HeaderFile
+#ifndef OCCT_DEBUG_HeaderFile
 #define _TopOpeBRepDS_reDEB_HeaderFile
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #include <TopOpeBRepDS_define.hxx>
 Standard_EXPORT Standard_Boolean TopOpeBRepDS_GettracePEI();
 Standard_EXPORT Standard_Boolean TopOpeBRepDS_GettracePI();

@@ -43,7 +43,7 @@
 
 #define BUC60879
 
-#ifdef DEB_DELTA
+#ifdef OCCT_DEBUG_DELTA
 #define TDF_Data_DebugModified(ACTION) \
   cout<<"After "<<ACTION<<" #"<<myTransaction+1<<", DF "<<this<<" had "<<myNbTouchedAtt<<" attribute(s) touched. Time = "<<myTime<<endl; \
 if (!myTransaction) { \
@@ -63,7 +63,7 @@ if (!myTransaction) { \
 #define TDF_Data_DebugModified(ACTION)
 #endif
 
-#ifdef DEB_DELTA_CREATION
+#ifdef OCCT_DEBUG_DELTA_CREATION
 #define TDF_DataDebugDeltaCreation(DELTATYPE) \
 { \
 TCollection_AsciiString entry; \
@@ -134,7 +134,7 @@ Handle(TDF_Delta) TDF_Data::CommitTransaction
   Handle(TDF_Delta) delta;
   if (myTransaction>0) {
     if (withDelta) delta = new TDF_Delta();
-#ifdef DEB_DELTA
+#ifdef OCCT_DEBUG_DELTA
     cout<<"TDF_Data::Begin Commit #"<<myTransaction<<endl;    
 #endif
 #ifdef TDF_DATA_COMMIT_OPTIMIZED
@@ -149,14 +149,14 @@ Handle(TDF_Delta) TDF_Data::CommitTransaction
     if (withDelta) {
       if (!delta->IsEmpty()) {
         delta->Validity(myTimes.First(),myTime);
-#ifdef DEB_DELTA
+#ifdef OCCT_DEBUG_DELTA
         if (myTransaction == 0) {
           cout<<"TDF_Data::Commit generated this delta in t=0:"<<endl;
           delta->Dump(cout);
         }
 #endif
       }
-#ifdef DEB_DELTA
+#ifdef OCCT_DEBUG_DELTA
       else {
         if (myTransaction == 0)
           cout<<"TDF_Data::Commit generated NO delta."<<endl;
@@ -381,7 +381,7 @@ Handle(TDF_Delta) TDF_Data::Undo
   if (!aDelta.IsNull ()) {
     if (aDelta->IsApplicable(myTime)) {
       if (withDelta) OpenTransaction();
-#ifdef DEB_DELTA
+#ifdef OCCT_DEBUG_DELTA
       cout<<"TDF_Data::Undo applies this delta:"<<endl;
       aDelta->Dump(cout);
 #endif
@@ -392,7 +392,7 @@ Handle(TDF_Delta) TDF_Data::Undo
       if (withDelta) {
         newDelta = CommitTransaction(Standard_True);
         newDelta->Validity(aDelta->EndTime(),aDelta->BeginTime());
-#ifdef DEB_DELTA
+#ifdef OCCT_DEBUG_DELTA
         cout<<"TDF_Data::Undo, after validity correction, Delta is now available from time \t#"<<newDelta->BeginTime()<<" to time \t#"<<newDelta->EndTime()<<endl;
 #endif
       }

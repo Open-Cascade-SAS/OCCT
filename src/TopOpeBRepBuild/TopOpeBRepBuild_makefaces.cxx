@@ -39,7 +39,7 @@
 #include <TopOpeBRepTool_2d.hxx>
 
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepBuild_GetcontextNOPURGE();
 extern Standard_Boolean TopOpeBRepBuild_GetcontextNOCORRISO();
 extern Standard_Boolean TopOpeBRepBuild_GettraceCHK();
@@ -62,7 +62,7 @@ extern void* GFABUMAKEFACEPWES_DEB;
 
 Standard_EXPORT Standard_Boolean FUN_tool_ClosedW(const TopoDS_Wire& W);
 // Unused :
-/*#ifdef DEB
+/*#ifdef OCCT_DEBUG
 static void FUN_Raise(){cout<<"--------- ERROR in GWESMakeFaces ---------"<<endl;}
 #endif*/
 
@@ -73,7 +73,7 @@ static void FUN_Raise(){cout<<"--------- ERROR in GWESMakeFaces ---------"<<endl
 void TopOpeBRepBuild_Builder::GWESMakeFaces
 (const TopoDS_Shape& FF,TopOpeBRepBuild_WireEdgeSet& WES,TopTools_ListOfShape& LOF)  
 {
-#ifdef DEB  
+#ifdef OCCT_DEBUG
   Standard_Integer iF; Standard_Boolean tSPS = GtraceSPS(FF,iF);
   DEBSHASET(s,"#--- GWESMakeFaces ",WES," ");
   if(tSPS){ GdumpSHA(FF,(Standard_Address)s.ToCString());cout<<endl; WES.DumpSS();}
@@ -90,7 +90,7 @@ void TopOpeBRepBuild_Builder::GWESMakeFaces
   // This can occur when the face has a closing edge. To avoid this,
   // we delete the lonesome closing edge from the wire.
   Standard_Boolean topurge = Standard_True;
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepBuild_GetcontextNOPURGE()) topurge = Standard_False;
 #endif
 
@@ -190,7 +190,7 @@ void TopOpeBRepBuild_Builder::GWESMakeFaces
     if (!puok) Standard_Failure::Raise("TopOpeBRepBuild::GWESMakeFaces");
     topurge = !MshNOK.IsEmpty();
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (tSPS) DEBpurclo = Standard_False;
 #endif
   } // topurge
@@ -206,7 +206,7 @@ void TopOpeBRepBuild_Builder::GWESMakeFaces
   //  translates edge's pcurve to have it in F's UVbounds  
   //  translates edge's pcurve to have it connexed to others in UV space 
   Standard_Boolean corronISO = Standard_True;
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepBuild_GetcontextNOCORRISO()) corronISO = Standard_False;
   if (tSPS) debcorriso(iF);
 #endif
@@ -311,7 +311,7 @@ static Standard_Integer FUN_CheckORI(TopAbs_Orientation O1,
 void TopOpeBRepBuild_Builder::GFABUMakeFaces(const TopoDS_Shape& FF,TopOpeBRepBuild_FaceBuilder& FABU,
 			  TopTools_ListOfShape& LOF,TopTools_DataMapOfShapeInteger& MWisOld)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer iF;Standard_Boolean tSPS=GtraceSPS(FF,iF);
   if(tSPS) {
     cout<<endl;GdumpSHA(FF,(char *) "#--- GFABUMakeFaces ");cout<<endl;
@@ -526,7 +526,7 @@ void TopOpeBRepBuild_Builder::GFABUMakeFaces(const TopoDS_Shape& FF,TopOpeBRepBu
 	    } // !isold
 	  //--ofv.
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if ( tSPS ) cout<<"#--- GFABUMakeFaces "<<iF<<" : "<<ne<<" edges"<<endl; 
 #endif	  
 
@@ -559,7 +559,7 @@ void TopOpeBRepBuild_Builder::GFABUMakeFaces(const TopoDS_Shape& FF,TopOpeBRepBu
 
     Standard_Boolean topurge = FUN_purgeFon1nonoriE(newFace);
     if (topurge) {
-#ifdef TOPOPEBREPBUILD_DEB
+#ifdef OCCT_DEBUG
       if (TopOpeBRepDS_GettraceSTRANGE())
         cout<<"Builder::GFABUMakeFaces -> purgeFon1nonoriE\n";
 #endif
@@ -588,7 +588,7 @@ void TopOpeBRepBuild_Builder::GFABUMakeFaces(const TopoDS_Shape& FF,TopOpeBRepBu
 
   } // FABU.MoreFace()
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if(tSPS) {
     cout<<endl;GdumpSHA(FF, (char *) "#--- GFABUMakeFaces avant regularize");cout<<endl;
     GdumpFABU(FABU);debgfabu(iF);

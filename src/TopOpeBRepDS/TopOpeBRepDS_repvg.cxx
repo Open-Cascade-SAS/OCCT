@@ -37,7 +37,7 @@
 #define MDSdmoiloi TopOpeBRepDS_DataMapOfIntegerListOfInterference
 #define MDSdmiodmoiloi TopOpeBRepDS_DataMapIteratorOfDataMapOfIntegerListOfInterference
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #include <TopOpeBRepDS_reDEB.hxx>
 extern Standard_Boolean TopOpeBRepDS_GetcontextMKTONREG();
 #endif
@@ -47,7 +47,7 @@ Standard_EXPORT void FDS_repvg2
 (const TopOpeBRepDS_DataStructure& BDS,const Standard_Integer EIX,const TopOpeBRepDS_Kind GT,TopOpeBRepDS_ListOfInterference& LI,TopOpeBRepDS_ListOfInterference& RLI)
 //------------------------------------------------------
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean TRC=DSREDUEDGETRCE(EIX);
   TRC = Standard_False; //xpu170898
 #endif
@@ -55,7 +55,7 @@ Standard_EXPORT void FDS_repvg2
   Standard_Boolean isEd = BRep_Tool::Degenerated(E);
   if (isEd) return;
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TRC) cout<<endl<<"repvg1 E"<<EIX<<" <- "<<LI.Extent()<<endl;
   if (TRC) debredpvg(EIX);
 #endif
@@ -106,7 +106,7 @@ Standard_EXPORT void FDS_repvg2
 
       Standard_Boolean cond = (G1 == G2); if (!cond) { it2.Next(); continue; }
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if (TRC && isvertex && DSREDUEDGETRCE(BDS.Shape(VDS))) debreducerEV(EIX,BDS.Shape(VDS));
 #endif
       
@@ -119,7 +119,7 @@ Standard_EXPORT void FDS_repvg2
 
       if (!isComplex && memeS) {
 	Standard_Boolean mktone = Standard_False;
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	// NYI XPU : corriger la sequence suivante (avec mkTonE) qui produit une
 	// NYI transition (ON,ON) dans le cas cto 009 B4 pour l'arete 6* / face *21
 	// NYI aux PDS 1 et 5, au lieu de (IN,IN).
@@ -147,7 +147,7 @@ Standard_EXPORT void FDS_repvg2
 	  Standard_Boolean ok = FDS_stateEwithF2d(BDS,E,pE,GT1,G1,F1,TrmemeS); if (!ok) {it2.Next();continue;}
 	}
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	if(TRC){cout<<"memeS result ";TrmemeS.Dump(cout);cout<<endl;}
 #endif
 	LI.Remove(it2);
@@ -158,7 +158,7 @@ Standard_EXPORT void FDS_repvg2
 	EITool.Init(E,I1);
 	if      (ispoint)  EITool.Add(E,PDS,I1);
 	else if (isvertex) EITool.Add(E1,VDS,I1);
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	if (TRC){cout<<endl<<"complex T2d E"<<EIX<<endl;I1->Dump(cout);cout<<endl;}
 	if (TRC){cout<<"init ";Handle(TopOpeBRepDS_Interference) IBID = new TopOpeBRepDS_Interference();
 		 EITool.Transition(IBID);IBID->Transition().Dump(cout);cout<<endl;}
@@ -166,13 +166,13 @@ Standard_EXPORT void FDS_repvg2
       } // !isComplex && !memeS
       
       if (isComplex && !memeS) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	if(TRC) I2->Dump(cout,"add ","\n");
 #endif      
 	if      (ispoint)  EITool.Add(E,PDS,I2);      
 	else if (isvertex) EITool.Add(E2,VDS,I2); 
 	LI.Remove(it2);
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	if(TRC){cout<<"result ";Handle(TopOpeBRepDS_Interference) IBID = new TopOpeBRepDS_Interference();
 		EITool.Transition(IBID);IBID->Transition().Dump(cout);cout<<endl;}
 #endif
@@ -180,7 +180,7 @@ Standard_EXPORT void FDS_repvg2
 
       if (isComplex && memeS) {
 	it2.Next();
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #endif      
       } // (isComplex && memeS)
 
@@ -201,7 +201,7 @@ Standard_EXPORT void FDS_repvg2
 
   } // it1
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TRC) cout<<"repvg2 E"<<EIX<<" -> reste "<<LI.Extent()<<" + reduit "<<RLI.Extent()<<endl<<endl;
 #endif
 }  // FDS_repvg2
@@ -212,7 +212,7 @@ Standard_EXPORT void FDS_repvg
 //------------------------------------------------------
 {
   TopOpeBRepDS_TKI tki; tki.FillOnGeometry(LOI);
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean TRC=DSREDUEDGETRCE(EIX);
   TRC = Standard_False; //xpu170898
   if (TRC) cout<<endl<<"repvg E"<<EIX<<" <- "<<LOI.Extent()<<endl;
@@ -249,7 +249,7 @@ Standard_EXPORT void FDS_repvg
   /*LOI.Clear();
   for (tki.Init(); tki.More(); tki.Next()) {
     TopOpeBRepDS_Kind K; Standard_Integer G; tki.Value(K,G);
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (TRC) {tki.DumpTKI(K,G,"","\n");debredpvg(EIX);}
 #endif
     TopOpeBRepDS_ListOfInterference& loi = tki.ChangeValue(K,G); TopOpeBRepDS_ListOfInterference Rloi;
@@ -262,7 +262,7 @@ Standard_EXPORT void FDS_repvg
     }
   }*/
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TRC) cout<<"repvg E"<<EIX<<" -> reste "<<LOI.Extent()<<" + reduit "<<RLOI.Extent()<<endl<<endl;
 #endif
 }

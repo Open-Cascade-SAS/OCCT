@@ -56,7 +56,7 @@
 #include <TopOpeBRepTool_EXPORT.hxx>
 #include <TopOpeBRepTool_SC.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #include <TopOpeBRep_FFDumper.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <Geom_Line.hxx>
@@ -106,7 +106,7 @@ TopAbs_State TopOpeBRep_FacesFiller::StBipVPonF
   //      if the Rline is describing the portion on curve (vpl,vpf),
   //      we have to commutate these bounds.
   if (isperiodic) { 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //    TopOpeBRep_FFDumper FFD(*this); 
 //    cout <<"vpf :"; FFD.DumpVP(vpf,cout);
 //    cout <<"vpl :"; FFD.DumpVP(vpl,cout);
@@ -116,7 +116,7 @@ TopAbs_State TopOpeBRep_FacesFiller::StBipVPonF
     if (Lrest.ArcIsEdge(1)) IArc = 1; 
     if (Lrest.ArcIsEdge(2)) IArc = 2; 
     if (IArc == 0) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
       Standard_Failure::Raise("StBipVPonF");
 #endif
       return TopAbs_UNKNOWN;
@@ -160,7 +160,7 @@ TopAbs_State TopOpeBRep_FacesFiller::StBipVPonF
   Standard_Real x = 0.789; Standard_Real parmil = (1-x)*uf + x*ul; //xpu170898
   gp_Pnt pmil = BC.Value(parmil);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #ifdef DRAW
   Standard_Boolean trc = TopOpeBRep_GettraceBIPS();
   if (trc) {TCollection_AsciiString aa("pmil"); FUN_brep_draw(aa,pmil);}

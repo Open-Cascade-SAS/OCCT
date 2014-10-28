@@ -156,7 +156,7 @@ void AIS_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentat
   case 0:{
     try { OCC_CATCH_SIGNALS  StdPrs_WFDeflectionShape::Add(aPrs,myshape,myDrawer); }
     catch (Standard_Failure) { 
-#ifdef AIS_DEB
+#ifdef OCCT_DEBUG
       cout << "AIS_Shape::Compute()  failed"<< endl;
       cout << "a Shape should be incorrect : No Compute can be maked on it  "<< endl;     
 #endif
@@ -189,7 +189,7 @@ void AIS_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentat
               StdPrs_ShadedShape::Add(aPrs,myshape,myDrawer);
             }
             catch (Standard_Failure) {
-#ifdef AIS_DEB
+#ifdef OCCT_DEBUG
               cout << "AIS_Shape::Compute() in ShadingMode failed"<< endl;
 #endif
               StdPrs_WFShape::Add(aPrs,myshape,myDrawer);
@@ -268,7 +268,7 @@ void AIS_Shape::Compute(const Handle(Prs3d_Projector)& aProjector,
   Standard_Boolean isOwnHLRDeviationCoefficient = OwnHLRDeviationCoefficient(newcoeff,prevcoeff);
   if (((Abs (newangle - prevangle) > Precision::Angular()) && isOwnHLRDeviationAngle) ||
       ((Abs (newcoeff - prevcoeff) > Precision::Confusion()) && isOwnHLRDeviationCoefficient)) {
-#ifdef AIS_DEB
+#ifdef OCCT_DEBUG
       cout << "AIS_Shape : compute"<<endl;
       cout << "newangle  : " << newangle << " # de " << "prevangl  : " << prevangle << " OU "<<endl;
       cout << "newcoeff  : " << newcoeff << " # de " << "prevcoeff : " << prevcoeff << endl;
@@ -290,7 +290,7 @@ void AIS_Shape::Compute(const Handle(Prs3d_Projector)& aProjector,
       }
     }
     catch (Standard_Failure) {
-#ifdef AIS_DEB
+#ifdef OCCT_DEBUG
       cout <<"AIS_Shape::Compute(Proj) HLR Algorithm failed" << endl;
 #endif
       StdPrs_WFShape::Add(aPresentation,SH,myDrawer);

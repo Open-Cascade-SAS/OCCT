@@ -17,7 +17,7 @@
 #ifndef _TopOpeBRepDS_tsx_HeaderFile
 #define _TopOpeBRepDS_tsx_HeaderFile
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #include <TopOpeBRepDS_define.hxx>
 
 Standard_EXPORT void TopOpeBRepDS_SettraceSPSX(const Standard_Boolean b,Standard_Integer n,char** a);

@@ -283,14 +283,14 @@ Standard_Boolean BlendFunc_ConstRad::ComputeValues(const math_Vector& X,
  if (invnorm1 > Eps) invnorm1 = ((Standard_Real) 1) /invnorm1;
  else {
    invnorm1 = 1; // Unsatisfactory, but it is not necessary to crash
-#if BLENDFUNC_DEB
+#ifdef OCCT_DEBUG
    cout << " ConstRad : Surface singuliere " << endl;
 #endif
  }
  if (invnorm2 > Eps) invnorm2 = ((Standard_Real) 1) /invnorm2;
  else {
    invnorm2 = 1; //  Unsatisfactory, but it is not necessary to crash
-#if BLENDFUNC_DEB
+#ifdef OCCT_DEBUG
    cout << " ConstRad : Surface singuliere " << endl;
 #endif
  }
@@ -878,7 +878,7 @@ Standard_Boolean BlendFunc_ConstRad::IsSolution(const math_Vector& Sol, const St
 	   Abs(controle(2)) > tolerances(2) ||
 	   Abs(controle(3)) > tolerances(3) ||
 	   Abs(controle(4)) > tolerances(4)){
-#ifdef BLENDFUNC_DEB
+#ifdef OCCT_DEBUG
 	cout<<"Cheminement : echec calcul des derivees"<<endl;
 #endif
 	  istangent = Standard_True;
@@ -1471,13 +1471,13 @@ Standard_Boolean BlendFunc_ConstRad::Section
   norm2 = nplan.Crossed(ns2).Magnitude();
   if (norm1 < Eps) {
     norm1 = 1; // Unsatisfactory, but it is not necessary to stop
-#if BLENDFUNC_DEB
+#ifdef OCCT_DEBUG
     cout << " ConstRad : Surface singuliere " << endl;
 #endif
   }
   if (norm2 < Eps) {
    norm2 = 1; // Unsatisfactory, but it is not necessary to stop
-#if BLENDFUNC_DEB
+#ifdef OCCT_DEBUG
    cout << " ConstRad : Surface singuliere " << endl;
 #endif
  }
@@ -1568,7 +1568,7 @@ Standard_Boolean BlendFunc_ConstRad::Section
   P.ParametersOnS2(X(3), X(4));
 
 /*  Pour debuger par des D.F
-#if DEB
+#ifdef OCCT_DEBUG
   Standard_Real deltat = 1.e-7;
   if (prm==tcurv->LastParameter()){deltat *= -1;} //Pour les discont
   Standard_Real deltaX = 1.e-7;
@@ -1614,7 +1614,7 @@ Standard_Boolean BlendFunc_ConstRad::Section
   distmin = Min (distmin, pts1.Distance(pts2));
 
 /*
-#if DEB
+#ifdef OCCT_DEBUG
   MDiff = (M - DEDX)*(1/deltat);
   VDiff = (V - DEDT)*(1/deltat);
 
@@ -1813,13 +1813,13 @@ Standard_Boolean BlendFunc_ConstRad::Section
   norm2 = nplan.Crossed(ns2).Magnitude();
   if (norm1 < Eps) {
     norm1 = 1; // Unsatisfactory, but it is not necessary to stop
-#if BLENDFUNC_DEB
+#ifdef OCCT_DEBUG
     cout << " ConstRad : Surface singuliere " << endl;
 #endif
   }
   if (norm2 < Eps) {
     norm2 = 1; // Unsatisfactory, but it is not necessary to stop
-#if BLENDFUNC_DEB
+#ifdef OCCT_DEBUG
     cout << " ConstRad : Surface singuliere " << endl;
 #endif
  }

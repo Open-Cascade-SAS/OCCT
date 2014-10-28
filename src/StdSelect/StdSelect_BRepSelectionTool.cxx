@@ -653,7 +653,7 @@ Standard_Boolean StdSelect_BRepSelectionTool
     BRep_Tool::Range (aWireExplorer.Current(), wf, wl);
     if (Abs (wf - wl) <= Precision::Confusion())
     {
-    #ifdef STDSELECT_DEB
+    #ifdef OCCT_DEBUG
       cout<<" StdSelect_BRepSelectionTool : Curve where ufirst = ulast ...."<<endl;
     #endif
     }

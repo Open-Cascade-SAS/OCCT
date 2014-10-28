@@ -44,7 +44,7 @@
 #include <TColStd_Array1OfInteger.hxx>
 #include <Precision.hxx>
 
-#if DEB
+#ifdef OCCT_DEBUG
 static Standard_Boolean myDebug = Standard_False;
 #endif
 
@@ -296,7 +296,7 @@ BRepFill_SectionPlacement(const Handle(BRepFill_LocationLaw)& Law,
   Standard_Real theParam = Place.ParameterOnPath(), 
                 eps = Precision::PConfusion();
 
-#if DEB
+#ifdef OCCT_DEBUG
   if (myDebug) {
     gp_Pnt P_Path;
     P_Path = adpPath->Value(theParam);

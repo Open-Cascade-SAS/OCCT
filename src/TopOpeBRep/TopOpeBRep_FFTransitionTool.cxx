@@ -31,7 +31,7 @@
 #include <GeomAPI_ProjectPointOnCurve.hxx>
 #include <gp_Vec.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepDS_GettraceDSF();
 #endif
 
@@ -63,7 +63,7 @@ static Standard_Boolean TransitionToOrientation
     case IntSurf_Outside : result = TopAbs_EXTERNAL; break;
     case IntSurf_Unknown :
     Odefined = Standard_False;
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //    if ( TopOpeBRepDS_GettraceDSF() ) { 
 //      cout<<"TopOpeBRepDS:TransitionToOrientation : unknown situation"<<endl;
 //    }
@@ -74,7 +74,7 @@ static Standard_Boolean TransitionToOrientation
 
   case IntSurf_Undecided :
   Odefined = Standard_False;
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //  if ( TopOpeBRepDS_GettraceDSF() ) { 
 //    cout<<"TopOpeBRepDS:TransitionToOrientation : undecided transition"<<endl;
 //  }
@@ -239,7 +239,7 @@ TopOpeBRepDS_Transition TopOpeBRep_FFTransitionTool::ProcessFaceTransition
       case IntSurf_Unknown :
 
 	Odefined = Standard_False;
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	if ( TopOpeBRepDS_GettraceDSF() ) { 
 	  cout<<"ProcessFaceTransition : unknown situation"<<endl;
 	}
@@ -252,7 +252,7 @@ TopOpeBRepDS_Transition TopOpeBRep_FFTransitionTool::ProcessFaceTransition
     case IntSurf_Undecided :
 
     Odefined = Standard_False;
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if ( TopOpeBRepDS_GettraceDSF() ) { 
       cout<<"ProcessFaceTransition : undecided transition"<<endl;
     }
@@ -297,7 +297,7 @@ static Standard_Boolean FUN_ProjectPoint(const gp_Pnt& P1,
       res = Standard_True;
     }
   }
-//#ifdef DEB
+//#ifdef OCCT_DEBUG
 //  return res; // BUG ???
 //#else
   return (Standard_Boolean ) res ;

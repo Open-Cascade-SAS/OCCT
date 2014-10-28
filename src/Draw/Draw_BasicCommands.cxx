@@ -269,7 +269,9 @@ static Standard_Integer dversion(Draw_Interpretor& di, Standard_Integer, const c
 {
   // print OCCT version and OCCTY-specific macros used
   di << "Open CASCADE Technology " << OCC_VERSION_STRING_EXT << "\n";
-#if defined(DEB) || defined(_DEBUG)
+#ifdef OCCT_DEBUG
+  di << "Extended debug mode\n";
+#elif defined(_DEBUG)
   di << "Debug mode\n";
 #endif
 #ifdef HAVE_TBB

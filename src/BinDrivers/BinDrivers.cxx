@@ -38,7 +38,7 @@ Handle(Standard_Transient) BinDrivers::Factory(const Standard_GUID& theGUID)
 {
   if (theGUID == BinStorageDriver)
   {
-#ifdef BINDRIVERS_DEB
+#ifdef OCCT_DEBUG
     cout << "BinDrivers : Storage Plugin" << endl;
 #endif
     static Handle(BinDrivers_DocumentStorageDriver) model_sd =
@@ -48,7 +48,7 @@ Handle(Standard_Transient) BinDrivers::Factory(const Standard_GUID& theGUID)
 
   if (theGUID == BinRetrievalDriver)
   {
-#ifdef BINDRIVERS_DEB
+#ifdef OCCT_DEBUG
     cout << "BinDrivers : Retrieval Plugin" << endl;
 #endif
     static Handle(BinDrivers_DocumentRetrievalDriver) model_rd =

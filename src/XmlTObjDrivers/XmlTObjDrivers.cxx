@@ -35,7 +35,7 @@ Handle(Standard_Transient) XmlTObjDrivers::Factory(const Standard_GUID& aGUID)
 {
   if(aGUID == XmlStorageDriver)
   {
-#ifdef XMLTOBJDRIVERS_DEB
+#ifdef OCCT_DEBUG
     cout << "XmlTObjDrivers : Storage Plugin" << endl;
 #endif
     static Handle(XmlTObjDrivers_DocumentStorageDriver) model_sd
@@ -46,7 +46,7 @@ Handle(Standard_Transient) XmlTObjDrivers::Factory(const Standard_GUID& aGUID)
 
   if(aGUID == XmlRetrievalDriver)
   {  
-#ifdef XMLTOBJDRIVERS_DEB
+#ifdef OCCT_DEBUG
     cout << "XmlTObjDrivers : Retrieval Plugin" << endl;
 #endif
     static Handle (XmlTObjDrivers_DocumentRetrievalDriver) model_rd

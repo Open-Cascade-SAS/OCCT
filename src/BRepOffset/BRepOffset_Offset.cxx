@@ -80,7 +80,7 @@
 #include <GProp_GProps.hxx>
 #include <BRepGProp.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 static Standard_Boolean Affich = Standard_False;
 static Standard_Integer NbOFFSET = 0;
 #endif
@@ -941,7 +941,7 @@ void BRepOffset_Offset::Init(const TopoDS_Face&                  Face,
 	  if (BRep_Tool::Degenerated(E)) {
 	    myBuilder.Degenerated(OE, Standard_True);
 	    /*
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	    gp_Pnt        P1,P2;
 	    gp_Pnt2d      P2d;
 	    P2d = C2d->Value(f); TheSurf->D0(P2d.X(),P2d.Y(),P1);
@@ -1243,7 +1243,7 @@ void BRepOffset_Offset::Init(const TopoDS_Edge&     Path,
     Edge3 = TopoDS::Edge(aLocalEdge);
 //    Edge3 = TopoDS::Edge(FirstEdge.Oriented(TopAbs_FORWARD));
     TopExp::Vertices(Edge3,VVf,VVl);
-#ifdef BREPOFFSET_DEB
+#ifdef OCCT_DEBUG
     // si firstedge n est pas nul, il faut que les vertex soient partages
     if ( !VVf.IsSame(V1f) && !VVf.IsSame(V2f) ) {
       cout << "Attention Vertex non partages !!!!!!" << endl;
@@ -1307,7 +1307,7 @@ void BRepOffset_Offset::Init(const TopoDS_Edge&     Path,
       Edge4 = TopoDS::Edge(aLocalEdge);
 //      Edge4 = TopoDS::Edge(LastEdge.Oriented(TopAbs_FORWARD));
       TopExp::Vertices(Edge4,VVf,VVl);
-#ifdef BREPOFFSET_DEB
+#ifdef OCCT_DEBUG
       // si lastedge n est pas nul, il faut que les vertex soient partages
       if ( !VVf.IsSame(V1l) && !VVf.IsSame(V2l) ) {
 	cout << "Attention Vertex non partages !!!!!!" << endl;
@@ -1432,7 +1432,7 @@ void BRepOffset_Offset::Init(const TopoDS_Vertex&        Vertex,
   TopoDS_Vertex V1, V2, V3, V4;
 
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   char* name = new char[100];
   if (Affich) {
     NbOFFSET++;

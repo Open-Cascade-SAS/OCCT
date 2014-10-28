@@ -62,7 +62,7 @@ void TestTopOpe::Shapes(const TopoDS_Shape& S1,const TopoDS_Shape& S2)
 { 
   if (PHDSD != NULL) { PHDSD->SetShape1(S1);PHDSD->SetShape2(S2); }
   if (PBOOP != NULL) { PBOOP->SetShape1(S1);PBOOP->SetShape2(S2); }
-#ifdef DEB
+#ifdef OCCT_DEBUG
   TopOpeBRepDS_SettraceSPSX_SS(S1,S2);
 #endif
 }
@@ -75,12 +75,12 @@ void TestTopOpe::CurrentDS(const Handle(TopOpeBRepDS_HDataStructure)& HDS)
 {
   if (PHDSD != NULL) { PHDSD->SetCurrentHDS(HDS); }
   if (PBOOP != NULL) { PBOOP->SetCurrentHDS(HDS); }
-#ifdef DEB
+#ifdef OCCT_DEBUG
   TopOpeBRepDS_SettraceSPSX_HDS(HDS);
 #endif
 }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 Standard_EXPORT void debloi(const TopOpeBRepDS_ListOfInterference& L)
 {
   if (PBOOP == NULL) return;
@@ -120,7 +120,7 @@ void TestTopOpe::Factory(Draw_Interpretor& theDI)
 
   SWDRAW::Init (theDI);
 
-#ifdef TESTTOPOPE_DEB
+#ifdef OCCT_DEBUG
       cout << "Draw Plugin : All topological operations kernel commands are loaded" << endl;
 #endif
 }

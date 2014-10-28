@@ -14,7 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 
 #include <Standard_Type.hxx>
 #include <TopOpeBRepTool_STATE.hxx>
@@ -56,5 +56,5 @@ Standard_EXPORT Standard_Boolean TopOpeBRepTool_GettraceCL2DPR(const TopAbs_Stat
 Standard_EXPORT Standard_Boolean TopOpeBRepTool_GettraceCL2DPR() 
 { return TopOpeBRepTool_CL2DPR.Get(); }
 
-// #ifdef DEB
+// #ifdef OCCT_DEBUG
 #endif

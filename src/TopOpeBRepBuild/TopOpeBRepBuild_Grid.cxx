@@ -20,7 +20,7 @@
 #include <TopoDS.hxx>
 #include <TopOpeBRepBuild_define.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepBuild_GetcontextSPEON();
 #endif
 
@@ -36,7 +36,7 @@ Standard_Boolean TopOpeBRepBuild_Builder::GToSplit(const TopoDS_Shape& S,const T
   Standard_Boolean hassame = myDataStructure->HasSameDomain(S);
   Standard_Boolean tosplit = (!issplit) && (facshap || hasgeom || hassame);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer iS; Standard_Boolean tSPS = GtraceSPS(S,iS);
   if (tSPS) { 
     cout<<"GToSplit ";GdumpSHA(S);cout<<" ";TopAbs::Print(TB,cout);
@@ -47,7 +47,7 @@ Standard_Boolean TopOpeBRepBuild_Builder::GToSplit(const TopoDS_Shape& S,const T
   }
 #endif
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepBuild_GetcontextSPEON()) { //CONTEXT
     tSPS = Standard_True; //CONTEXT
     Standard_Boolean hasON = Standard_False; //CONTEXT
@@ -86,7 +86,7 @@ Standard_Boolean TopOpeBRepBuild_Builder::GToMerge(const TopoDS_Shape& S) const
   Standard_Boolean hassame = myDataStructure->HasSameDomain(S);
   Standard_Boolean tomerge = (!ismerged && hassame);
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer iS; Standard_Boolean tSPS = GtraceSPS(S,iS);
   if(tSPS){cout<<"GToMerge ";GdumpSHA(S);cout<<" ";TopAbs::Print(TB,cout);}
   if(tSPS){cout<<" "<<tomerge<<" : !ismerged "<<(!ismerged)<<" && hassame "<<hassame<<endl;}
@@ -154,13 +154,13 @@ void TopOpeBRepBuild_Builder::GFindSamDom(TopTools_ListOfShape& L1,TopTools_List
     TopTools_ListIteratorOfListOfShape it1(L1);
     for (i=1 ; i<=nl1; i++) {
       const TopoDS_Shape& S1 = it1.Value();
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //      Standard_Integer iS1 = myDataStructure->Shape(S1);
 #endif
       TopTools_ListIteratorOfListOfShape itsd(myDataStructure->SameDomain(S1));
       for (; itsd.More(); itsd.Next() ) {
 	const TopoDS_Shape& S2 = itsd.Value();
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //	Standard_Integer iS2 = myDataStructure->Shape(S2);
 #endif
 	Standard_Boolean found = GContains(S2,L2);
@@ -176,13 +176,13 @@ void TopOpeBRepBuild_Builder::GFindSamDom(TopTools_ListOfShape& L1,TopTools_List
     TopTools_ListIteratorOfListOfShape it2(L2);
     for (i=1 ; i<=nl2; i++) {
       const TopoDS_Shape& S2 = it2.Value();
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //      Standard_Integer iS2 = myDataStructure->Shape(S2);
 #endif
       TopTools_ListIteratorOfListOfShape itsd(myDataStructure->SameDomain(S2));
       for (; itsd.More(); itsd.Next() ) {
 	const TopoDS_Shape& S1 = itsd.Value();
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //	Standard_Integer iS1 = myDataStructure->Shape(S1);
 #endif
 	Standard_Boolean found = GContains(S1,L1);
@@ -221,14 +221,14 @@ void TopOpeBRepBuild_Builder::GFindSamDomSODO(TopTools_ListOfShape& LSO,TopTools
   it.Initialize(LSO);
   if ( ! it.More() ) return;
   const TopoDS_Shape& sref = it.Value();
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //  Standard_Integer  iref = myDataStructure->SameDomainReference(sref);
 #endif
   TopOpeBRepDS_Config oref = myDataStructure->SameDomainOrientation(sref);
   
   GFindSamDom(LSO,LDO);
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer iS; Standard_Boolean tSPS = GtraceSPS(sref,iS);
   if(tSPS) {
     TCollection_AsciiString ss("GFindSamDom result on ");  
@@ -243,7 +243,7 @@ void TopOpeBRepBuild_Builder::GFindSamDomSODO(TopTools_ListOfShape& LSO,TopTools
   for (it.Initialize(LSO); it.More(); it.Next() ) {
     const TopoDS_Shape& s = it.Value();
     TopOpeBRepDS_Config o = myDataStructure->SameDomainOrientation(s);
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //    Standard_Integer iS = myDataStructure->Shape(s);
 #endif
     if      ( o == oref && !GContains(s,LLSO) ) LLSO.Append(s);
@@ -253,7 +253,7 @@ void TopOpeBRepBuild_Builder::GFindSamDomSODO(TopTools_ListOfShape& LSO,TopTools
   for (it.Initialize(LDO); it.More(); it.Next() ) {
     const TopoDS_Shape& s = it.Value();
     TopOpeBRepDS_Config o = myDataStructure->SameDomainOrientation(s);
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //    Standard_Integer iS = myDataStructure->Shape(s);
 #endif
     if      ( o == oref && !GContains(s,LLSO) ) LLSO.Append(s);
@@ -296,7 +296,7 @@ void TopOpeBRepBuild_Builder::GFindSameRank
 {
   for (  TopTools_ListIteratorOfListOfShape it1(L1); it1.More(); it1.Next() ) {
     const TopoDS_Shape& s = it1.Value();
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //    Standard_Integer iS = myDataStructure->Shape(s);
 #endif
     Standard_Integer r = GShapeRank(s);

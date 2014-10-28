@@ -117,10 +117,10 @@
 
 // ============================================================================
 // Function: DumpWhatIs   
-// Purpose: Use it in DEB mode to dump your shapes
+// Purpose: Use it in debug mode to dump your shapes
 // ============================================================================
 
-#ifdef STEPCONTROL_DEB
+#ifdef OCCT_DEBUG
 static void DumpWhatIs(const TopoDS_Shape& S) {
 
   TopTools_MapOfShape aMapOfShape;
@@ -194,7 +194,7 @@ static Standard_Boolean IsManifoldShape(const TopoDS_Shape& theShape) {
       aBrepBuilder.Add(aDirectShapes, aDirectChild);
   }  
 
-  #ifdef STEPCONTROL_DEB
+  #ifdef OCCT_DEBUG
   DumpWhatIs(aDirectShapes);
   #endif
 
@@ -202,7 +202,7 @@ static Standard_Boolean IsManifoldShape(const TopoDS_Shape& theShape) {
   TopExp::MapShapesAndAncestors(aDirectShapes, TopAbs_EDGE, TopAbs_FACE, aMapEdgeFaces);
 
   Standard_Integer aNbEdges = aMapEdgeFaces.Extent();
-  #ifdef STEPCONTROL_DEB
+  #ifdef OCCT_DEBUG
   cout << "Checking whether the topology passed is manifold..." << endl;
   #endif
 
@@ -218,33 +218,13 @@ static Standard_Boolean IsManifoldShape(const TopoDS_Shape& theShape) {
     }
   }
 
-  #ifdef STEPCONTROL_DEB
+  #ifdef OCCT_DEBUG
   cout << "Check result: "
        << (aResult ? "TRUE" : "FALSE") << endl;
   #endif
 
   return aResult;
 }
-
-/* this is a start of a comment! */ 
-#ifdef DEB
-void DumpBinder (const Handle(Transfer_Binder) &binder)
-{
-  Handle(Transfer_Binder) bbb = binder;
-  while ( ! bbb.IsNull() ) {
-    Handle(Transfer_SimpleBinderOfTransient) bx = 
-      Handle(Transfer_SimpleBinderOfTransient)::DownCast ( bbb );
-    cout << (void*)&bx;
-    if ( ! bx.IsNull() ) {
-      cout << "--> " << bx->ResultTypeName() << " " << *(void**)&bx->Result() << endl;
-    }
-    else cout << "--> ???" << endl;
-    bbb = bbb->NextResult();
-  }
-  cout << endl;
-}
-#endif
-/* this is a end of a comment */
   
 //=======================================================================
 //function : STEPControl_ActorWrite
@@ -279,13 +259,13 @@ Handle(StepShape_NonManifoldSurfaceShapeRepresentation) STEPControl_ActorWrite::
   }
 
   if ( aResult.IsNull() ) {
-    #ifdef STEPCONTROL_DEB
+    #ifdef OCCT_DEBUG
     cout << "\nNew NMSSR created" << endl;
     #endif
     aResult = new StepShape_NonManifoldSurfaceShapeRepresentation;
     isNMSSRCreated = Standard_True;
   } else {
-    #ifdef STEPCONTROL_DEB
+    #ifdef OCCT_DEBUG
     cout << "\nExisting NMSSR is used" << endl;
     #endif
     isNMSSRCreated = Standard_False;
@@ -628,7 +608,7 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferShape (const Handle(Tran
     //:abv 20.05.02: writing box & face from it (shared) in one compound 
     // as assembly - while face already translated, it should be 
     // re-translated to break sharing
-#ifdef STEPCONTROL_DEB
+#ifdef OCCT_DEBUG
     cout << "Warning: STEPControl_ActorWrite::TransferShape(): shape already translated" << endl;
 #endif
 //    return binder;
@@ -1294,7 +1274,7 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferCompound (const Handle(T
   BRep_Builder aB;
   aB.MakeCompound(aCompOfVrtx);
  
-  #ifdef STEPCONTROL_DEB
+  #ifdef OCCT_DEBUG
   if (!isManifold)
     cout << "Exploding Solids to Shells if any..." << endl;
   #endif

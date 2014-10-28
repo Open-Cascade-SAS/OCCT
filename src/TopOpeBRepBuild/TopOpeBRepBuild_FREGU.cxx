@@ -28,7 +28,7 @@
 #include <Standard_ProgramError.hxx>
 #include <TopOpeBRepDS_define.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepBuild_GetcontextNOREGUFA();
 extern Standard_Boolean TopOpeBRepBuild_GetcontextREGUXPU();
 extern Standard_Boolean TopOpeBRepBuild_GettraceSAVFREGU();
@@ -57,12 +57,12 @@ void TopOpeBRepBuild_Builder::RegularizeFaces
     const TopoDS_Shape& newFace = itl.Value();
     TopTools_ListOfShape newFaceLOF;
     RegularizeFace(FF,newFace,newFaceLOF);
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //    Standard_Integer nnewFaceLOF = newFaceLOF.Extent(); // DEB
 #endif
     LOF.Append(newFaceLOF);
   }
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //  Standard_Integer nLOF = LOF.Extent(); // DEB
 #endif
 
@@ -83,7 +83,7 @@ void TopOpeBRepBuild_Builder::RegularizeFaces
     for (x.Init(fsdFF,TopAbs_EDGE);x.More();x.Next()) {
 //    for (TopExp_Explorer x(fsdFF,TopAbs_EDGE);x.More();x.Next()) {
       const TopoDS_Shape& e = x.Current();
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //      Standard_Integer ie = myDataStructure->Shape(e); //DEB
 //      Standard_Boolean issect = myDataStructure->DS().IsSectionEdge(TopoDS::Edge(e));
 #endif
@@ -100,7 +100,7 @@ void TopOpeBRepBuild_Builder::RegularizeFaces
 	if (!issplite) continue;
 	
 	TopTools_ListOfShape& lspe = ChangeSplit(e,stae);
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //	Standard_Integer nlspe = lspe.Extent(); // DEB
 #endif
 	TopTools_ListOfShape newlspe;
@@ -158,7 +158,7 @@ void TopOpeBRepBuild_Builder::RegularizeFace
   Standard_Boolean toregu = Standard_True;
   Standard_Boolean usewtof = Standard_True;
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer iF;Standard_Boolean tSPSFF=GtraceSPS(FF,iF);
 //  Standard_Boolean savfregu = TopOpeBRepBuild_GettraceSAVFREGU();
   if (TopOpeBRepBuild_GetcontextNOREGUFA()) toregu = Standard_False;
@@ -209,7 +209,7 @@ void TopOpeBRepBuild_Builder::RegularizeFace
       }
     }
     wtof.MakeFaces(newFace,newfaces);
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //    Standard_Integer nnewfaces = newfaces.Extent(); // DEB
 #endif
     rf = (newfaces.Extent() != 0);
@@ -223,7 +223,7 @@ void TopOpeBRepBuild_Builder::RegularizeFace
     return;
   }
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (tSPSFF) { cout<<"RegularizeFace "<<iF<<endl; debregufa(iF); }
 #endif
   
@@ -252,18 +252,18 @@ void TopOpeBRepBuild_Builder::RegularizeFace
   for (; itlfsdFF.More(); itlfsdFF.Next()) {
     const TopoDS_Shape& fsdFF = itlfsdFF.Value();
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     Standard_Integer ifsdFF=0;Standard_Boolean tSPSfsdFF=GtraceSPS(fsdFF,ifsdFF);
     if (tSPSfsdFF) debregufa(ifsdFF);
 #endif    
 
     Standard_Integer rankfsdFF = GShapeRank(fsdFF);
     TopAbs_State stafsdFF = (rankfsdFF == 1) ? myState1 : myState2;
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //    Standard_Boolean issplitfsdFF = IsSplit(fsdFF,stafsdFF);
 #endif
 
-/*#ifdef DEB
+/*#ifdef OCCT_DEBUG
     const TopTools_ListOfShape& lspfsdFF = Splits(fsdFF,stafsdFF);
     Standard_Integer nlspfsdFF = lspfsdFF.Extent();
 #endif*/
@@ -274,7 +274,7 @@ void TopOpeBRepBuild_Builder::RegularizeFace
       //fsdFFe : 1 edge de fsdFF = 1 face SameDomain de FF
       const TopoDS_Shape& fsdFFe = x.Current(); 
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
       Standard_Integer ifsdFFe = 0;Standard_Boolean tSPSfsdFFe=GtraceSPS(fsdFFe,ifsdFFe);
       if (tSPSfsdFFe) debregufa(ifsdFFe);
 #endif    
@@ -286,7 +286,7 @@ void TopOpeBRepBuild_Builder::RegularizeFace
 	if (iiista == 2) stafsdFFe = TopAbs_ON;
 	
 	TopTools_ListOfShape& lspfsdFFe = ChangeSplit(fsdFFe,stafsdFFe);
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //	Standard_Boolean issplitfsdFFe = IsSplit(fsdFFe,stafsdFFe);
 //	Standard_Integer nlspfsdFFe = lspfsdFFe.Extent();
 #endif    

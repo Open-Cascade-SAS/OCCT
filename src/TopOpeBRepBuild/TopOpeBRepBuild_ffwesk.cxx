@@ -23,7 +23,7 @@
 #include <TopOpeBRepTool_EXPORT.hxx>
 #include <TopOpeBRepTool_2d.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 Standard_EXPORT void debfctwesmess(const Standard_Integer i,const TCollection_AsciiString& s = "");
 Standard_EXPORT void debffwesON(const Standard_Integer i);
 Standard_EXPORT void debffwesk(const Standard_Integer i) {cout<<"++ debffwesk "<<i<<endl;}
@@ -51,14 +51,14 @@ void TopOpeBRepBuild_Builder::GFillFacesWESK(const TopTools_ListOfShape& LS1,con
 
   const TopoDS_Shape& F1 = LS1.First();
   myFaceReference = TopoDS::Face(F1);
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer iF1 =
 #endif
             BDS.Shape(F1);
   Standard_Integer iref = BDS.SameDomainRef(F1);
   TopAbs_Orientation oref = BDS.Shape(iref).Orientation();
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean tSPS = GtraceSPS(F1,iF1);
   if(tSPS) cout<<"\n%%%%%%%%%%%%% K = "<<Kfill<<" %%%%%%%%%%%%% ";
   if(tSPS) GdumpSHASTA(iF1,TB1,WES,"GFillFacesWESK","myFaceReference");
@@ -75,7 +75,7 @@ void TopOpeBRepBuild_Builder::GFillFacesWESK(const TopTools_ListOfShape& LS1,con
   TB = TB1;
   it.Initialize(LS1); 
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if(tSPS){
     cout<<"\n^^^^^^^^ GFillFacesWESK : traitement de 1/2";
     TopAbs_State TB11,TB21; G.StatesON(TB11,TB21);
@@ -125,13 +125,13 @@ void TopOpeBRepBuild_Builder::GFillFacesWESK(const TopTools_ListOfShape& LS1,con
       GFillFaceWES(S,LS2,G,WES);
     }
     else if (Kfill == 2) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if (tSPS) debfctwesmess(iF1);
 #endif
       GFillCurveTopologyWES(S,G,WES);
     }
     else if (Kfill == 3) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if (tSPS) debffwesON(iF1);
 #endif
       GFillONPartsWES(S,G,LS2,WES);
@@ -147,7 +147,7 @@ void TopOpeBRepBuild_Builder::GFillFacesWESK(const TopTools_ListOfShape& LS1,con
   TB = TB2;
   it.Initialize(LS2);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if(tSPS){
     cout<<"\n^^^^^^^^ GFillFacesWESK : traitement de 2/1";
     TopAbs_State TB12,TB22; G.StatesON(TB12,TB22);
@@ -192,7 +192,7 @@ void TopOpeBRepBuild_Builder::GFillFacesWESK(const TopTools_ListOfShape& LS1,con
       GFillCurveTopologyWES(S,G,WES);
     }
     else if (Kfill == 3) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if(tSPS) debffwesON(iF1);
 #endif
       GFillONPartsWES(S,G,LS1,WES);

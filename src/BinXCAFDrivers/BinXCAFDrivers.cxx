@@ -33,7 +33,7 @@ Handle(Standard_Transient) BinXCAFDrivers::Factory(const Standard_GUID& theGUID)
 
   if (theGUID == BinXCAFStorageDriver)
   {
-#ifdef BINXCAFDRIVERS_DEB
+#ifdef OCCT_DEBUG
     cout << "BinXCAFDrivers : Storage Plugin" << endl;
 #endif
     static Handle(BinXCAFDrivers_DocumentStorageDriver) model_sd =
@@ -43,7 +43,7 @@ Handle(Standard_Transient) BinXCAFDrivers::Factory(const Standard_GUID& theGUID)
 
   if (theGUID == BinXCAFRetrievalDriver)
   {
-#ifdef BINXCAFDRIVERS_DEB
+#ifdef OCCT_DEBUG
     cout << "BinXCAFDrivers : Retrieval Plugin" << endl;
 #endif
     static Handle(BinXCAFDrivers_DocumentRetrievalDriver) model_rd =

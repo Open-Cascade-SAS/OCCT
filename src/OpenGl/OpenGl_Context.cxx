@@ -527,7 +527,7 @@ Standard_Boolean OpenGl_Context::CheckExtension (const char* theExtName) const
 {
   if (theExtName  == NULL)
   {
-#ifdef OPENGL_DEB
+#ifdef OCCT_DEBUG
     std::cerr << "CheckExtension called with NULL string!\n";
 #endif
     return Standard_False;
@@ -1022,7 +1022,7 @@ void OpenGl_Context::init()
     {
       // setup default callback
       arbDbg->glDebugMessageCallbackARB (debugCallbackWrap, this);
-    #ifdef DEB
+    #ifdef OCCT_DEBUG
       glEnable (GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB);
     #endif
     }

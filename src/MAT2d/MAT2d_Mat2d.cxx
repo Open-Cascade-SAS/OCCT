@@ -251,7 +251,7 @@ void MAT2d_Mat2d::CreateMatOpen(MAT2d_Tool2d& atool)
       atool.CreateBisector(bisectormap(i));
       thenumberofbisectors++;
       
-#ifdef DEBUG_Mat
+#ifdef OCCT_DEBUG_Mat
       atool.Dump(bisectormap(i)->BisectorNumber(),1);
 #ifdef ICONTINUE
       cin>>Icontinue;
@@ -346,7 +346,7 @@ void MAT2d_Mat2d::CreateMatOpen(MAT2d_Tool2d& atool)
 
 	for(;;){
 
-#ifdef DEBUG_Mat
+#ifdef OCCT_DEBUG_Mat
 	  atool.Dump(bisectortoremove->BisectorNumber(),0);
 #endif
 	  // ----------------------------------
@@ -378,7 +378,7 @@ void MAT2d_Mat2d::CreateMatOpen(MAT2d_Tool2d& atool)
 	    
 	    currentedge->FirstBisector(currentbisector);
 	    previousedge->SecondBisector(currentbisector);
-#ifdef DEBUG_Mat		      
+#ifdef OCCT_DEBUG_Mat		      
 	    atool.Dump(currentbisector->BisectorNumber(),0);
 #endif
 
@@ -392,7 +392,7 @@ void MAT2d_Mat2d::CreateMatOpen(MAT2d_Tool2d& atool)
 		      
 	    atool.TrimBisector(currentbisector);
 	    
-#ifdef DEBUG_Mat
+#ifdef OCCT_DEBUG_Mat
 	    atool.Dump(currentbisector->BisectorNumber(),1);
 #endif
 	    currentedge->Distance(-1.);
@@ -525,14 +525,14 @@ void MAT2d_Mat2d::CreateMatOpen(MAT2d_Tool2d& atool)
       //  lastarea[i]  : indice dernier edge de la portion i.
       //-----------------------------------------------------------------
 
-#ifdef DEBUG_Mat
+#ifdef OCCT_DEBUG_Mat
       cout <<" Test sur les parametres pour elimination"<<endl;
       cout << " Edge number :"<<theedgelist->Current()->EdgeNumber()<<endl;
 #endif
 
       if(paramb[0] > 0 && parama[1] > 0) {
 
-#ifdef DEBUG_Mat
+#ifdef OCCT_DEBUG_Mat
       cout <<" A ELIMINER "<<endl;
 #endif	
 	if(narea < 0) {
@@ -600,14 +600,14 @@ void MAT2d_Mat2d::CreateMatOpen(MAT2d_Tool2d& atool)
       edgetoremove->FirstBisector()->EndPoint(edgetoremove
 					      ->IntersectionPoint());
       
-#ifdef DEBUG_Mat
+#ifdef OCCT_DEBUG_Mat
       atool.Dump(edgetoremove->FirstBisector()->BisectorNumber(),0);
 #endif
 
       edgetoremove->FirstBisector()->FirstParameter
 	(edgetoremove->FirstBisector()->SecondParameter());
 	  
-#ifdef DEBUG_Mat
+#ifdef OCCT_DEBUG_Mat
       if(atool.TrimBisector(edgetoremove->FirstBisector()))
 	atool.Dump(edgetoremove->FirstBisector()->BisectorNumber(),1);
 #else
@@ -628,7 +628,7 @@ void MAT2d_Mat2d::CreateMatOpen(MAT2d_Tool2d& atool)
 	theedgelist->Next();
 	shift++;
 
-#ifdef DEBUG_Mat
+#ifdef OCCT_DEBUG_Mat
 	cout<<" Suppression de l'arete : "<<edgetoremove->EdgeNumber()<<endl;
 #endif
 
@@ -639,13 +639,13 @@ void MAT2d_Mat2d::CreateMatOpen(MAT2d_Tool2d& atool)
 	edgetoremove->SecondBisector()->EndPoint(edgetoremove
 						 ->IntersectionPoint());
 
-#ifdef DEBUG_Mat
+#ifdef OCCT_DEBUG_Mat
 	atool.Dump(edgetoremove->SecondBisector()->BisectorNumber(),0);
 #endif
 
 	edgetoremove->SecondBisector()->SecondParameter
 	  (edgetoremove->SecondBisector()->FirstParameter());
-#ifdef DEBUG_Mat
+#ifdef OCCT_DEBUG_Mat
 	if(atool.TrimBisector(edgetoremove->SecondBisector()))
 	  atool.Dump(edgetoremove->SecondBisector()->BisectorNumber(),1);
 #else
@@ -909,7 +909,7 @@ void MAT2d_Mat2d::CreateMat(MAT2d_Tool2d& atool)
       atool.CreateBisector(bisectormap(i));
       thenumberofbisectors++;
       
-#ifdef DEBUG_Mat
+#ifdef OCCT_DEBUG_Mat
       atool.Dump(bisectormap(i)->BisectorNumber(),1);
 #ifdef ICONTINUE
       cin>>Icontinue;
@@ -1003,7 +1003,7 @@ void MAT2d_Mat2d::CreateMat(MAT2d_Tool2d& atool)
 
 	for(;;){
 
-#ifdef DEBUG_Mat
+#ifdef OCCT_DEBUG_Mat
 	  atool.Dump(bisectortoremove->BisectorNumber(),0);
 #endif
 	  // ----------------------------------
@@ -1035,7 +1035,7 @@ void MAT2d_Mat2d::CreateMat(MAT2d_Tool2d& atool)
 	    
 	    currentedge->FirstBisector(currentbisector);
 	    previousedge->SecondBisector(currentbisector);
-#ifdef DEBUG_Mat		      
+#ifdef OCCT_DEBUG_Mat		      
 	    atool.Dump(currentbisector->BisectorNumber(),0);
 #endif
 
@@ -1049,7 +1049,7 @@ void MAT2d_Mat2d::CreateMat(MAT2d_Tool2d& atool)
 		      
 	    atool.TrimBisector(currentbisector);
 	    
-#ifdef DEBUG_Mat
+#ifdef OCCT_DEBUG_Mat
 	    atool.Dump(currentbisector->BisectorNumber(),1);
 #endif
 	    currentedge->Distance(-1.);
@@ -1181,14 +1181,14 @@ void MAT2d_Mat2d::CreateMat(MAT2d_Tool2d& atool)
       //  lastarea[i]  : indice dernier edge de la portion i.
       //-----------------------------------------------------------------
 
-#ifdef DEBUG_Mat
+#ifdef OCCT_DEBUG_Mat
       cout <<" Test sur les parametres pour elimination"<<endl;
       cout << " Edge number :"<<theedgelist->Current()->EdgeNumber()<<endl;
 #endif
 
       if(paramb[0] > 0 && parama[1] > 0) {
 
-#ifdef DEBUG_Mat
+#ifdef OCCT_DEBUG_Mat
       cout <<" A ELIMINER "<<endl;
 #endif	
 	if(narea < 0) {
@@ -1255,14 +1255,14 @@ void MAT2d_Mat2d::CreateMat(MAT2d_Tool2d& atool)
       edgetoremove->FirstBisector()->EndPoint(edgetoremove
 					      ->IntersectionPoint());
       
-#ifdef DEBUG_Mat
+#ifdef OCCT_DEBUG_Mat
       atool.Dump(edgetoremove->FirstBisector()->BisectorNumber(),0);
 #endif
 
       edgetoremove->FirstBisector()->FirstParameter
 	(edgetoremove->FirstBisector()->SecondParameter());
 	  
-#ifdef DEBUG_Mat
+#ifdef OCCT_DEBUG_Mat
       if(atool.TrimBisector(edgetoremove->FirstBisector()))
 	atool.Dump(edgetoremove->FirstBisector()->BisectorNumber(),1);
 #else
@@ -1283,7 +1283,7 @@ void MAT2d_Mat2d::CreateMat(MAT2d_Tool2d& atool)
 	theedgelist->Next();
 	shift++;
 
-#ifdef DEBUG_Mat
+#ifdef OCCT_DEBUG_Mat
 	cout<<" Suppression de l'arete : "<<edgetoremove->EdgeNumber()<<endl;
 #endif
 
@@ -1294,13 +1294,13 @@ void MAT2d_Mat2d::CreateMat(MAT2d_Tool2d& atool)
 	edgetoremove->SecondBisector()->EndPoint(edgetoremove
 						 ->IntersectionPoint());
 
-#ifdef DEBUG_Mat
+#ifdef OCCT_DEBUG_Mat
 	atool.Dump(edgetoremove->SecondBisector()->BisectorNumber(),0);
 #endif
 
 	edgetoremove->SecondBisector()->SecondParameter
 	  (edgetoremove->SecondBisector()->FirstParameter());
-#ifdef DEBUG_Mat
+#ifdef OCCT_DEBUG_Mat
 	if(atool.TrimBisector(edgetoremove->SecondBisector()))
 	  atool.Dump(edgetoremove->SecondBisector()->BisectorNumber(),1);
 #else
@@ -1481,7 +1481,7 @@ void MAT2d_Mat2d::LoadBisectorsToRemove
     }
     
     if(found != -1) {
-#ifdef DEBUG_Mat
+#ifdef OCCT_DEBUG_Mat
       cout<<" first last bisector to remove :"<<
 	firstbisectortoremove[index]->BisectorNumber()<<" "<<
 	  lastbisectortoremove[index]->BisectorNumber()<<endl;

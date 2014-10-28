@@ -30,7 +30,7 @@
 #include <BRep_Tool.hxx>
 #include <TNaming_NamedShape.hxx>
 
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
 #include <TDataStd_Name.hxx>
 #endif
 
@@ -67,7 +67,7 @@ void QANewBRepNaming_Sphere::Init(const TDF_Label& ResultLabel) {
 
 TDF_Label QANewBRepNaming_Sphere::Bottom() const {
   const TDF_Label& BottomL = ResultLabel().NewChild();
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
   TDataStd_Name::Set(BottomL, "Bottom");
 #endif
   return BottomL;
@@ -80,7 +80,7 @@ TDF_Label QANewBRepNaming_Sphere::Bottom() const {
 
 TDF_Label QANewBRepNaming_Sphere::Top() const {
   const TDF_Label& TopL = ResultLabel().NewChild();
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
   TDataStd_Name::Set(TopL, "Top");
 #endif
   return TopL;
@@ -93,7 +93,7 @@ TDF_Label QANewBRepNaming_Sphere::Top() const {
 
 TDF_Label QANewBRepNaming_Sphere::Lateral() const {
   const TDF_Label& LateralL = ResultLabel().NewChild();
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
   TDataStd_Name::Set(LateralL, "Lateral");
 #endif
   return LateralL;
@@ -106,7 +106,7 @@ TDF_Label QANewBRepNaming_Sphere::Lateral() const {
 
 TDF_Label QANewBRepNaming_Sphere::StartSide() const {
   const TDF_Label& StartSideL = ResultLabel().NewChild();
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
   TDataStd_Name::Set(StartSideL, "StartSide");
 #endif
   return StartSideL;
@@ -119,7 +119,7 @@ TDF_Label QANewBRepNaming_Sphere::StartSide() const {
 
 TDF_Label QANewBRepNaming_Sphere::EndSide() const {
   const TDF_Label& EndSideL = ResultLabel().NewChild();
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
   TDataStd_Name::Set(EndSideL, "EndSide");
 #endif
   return EndSideL;
@@ -132,7 +132,7 @@ TDF_Label QANewBRepNaming_Sphere::EndSide() const {
 
 TDF_Label QANewBRepNaming_Sphere::Meridian() const {
   const TDF_Label& MeridianL = ResultLabel().NewChild();
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
   TDataStd_Name::Set(MeridianL, "Meridian");
 #endif
   return MeridianL;
@@ -145,7 +145,7 @@ TDF_Label QANewBRepNaming_Sphere::Meridian() const {
 
 TDF_Label QANewBRepNaming_Sphere::Degenerated() const {
   const TDF_Label& DegeneratedL = ResultLabel().NewChild();
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
   TDataStd_Name::Set(DegeneratedL, "Degenerated");
 #endif
   return DegeneratedL;
@@ -169,7 +169,7 @@ void QANewBRepNaming_Sphere::Load (BRepPrimAPI_MakeSphere& mkSphere,
   if (Type == QANewBRepNaming_SOLID) Builder.Generated (mkSphere.Solid());
   else if (Type == QANewBRepNaming_SHELL) Builder.Generated (mkSphere.Shell());
   else {
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
     cout<<"QANewBRepNaming_Sphere::Load(): Unexpected type of result"<<endl;
     Builder.Generated (mkSphere.Shape());
 #endif

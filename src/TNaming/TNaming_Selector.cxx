@@ -35,7 +35,7 @@
 #define OCC351
 
 //#define MDTV_DEB_SEL
-#ifdef MDTV_DEB_SEL
+#ifdef OCCT_DEBUG_SEL
 //#define MDTV_DEB_BNP
 #include <TopExp_Explorer.hxx>
 #include <TCollection_AsciiString.hxx>
@@ -137,7 +137,7 @@ static Standard_Boolean IsSpecificCase(const  TDF_Label& F, const TopoDS_Shape& 
   TopTools_MapOfOrientedShape shapesOfContext;
   MapOfOrientedShapes(Context,shapesOfContext);
   Handle(TNaming_NamedShape) CNS = TNaming_Tool::NamedShape(Context, F);
-#ifdef MDTV_DEB_BNP
+#ifdef OCCT_DEBUG_BNP
   PrintEntry (CNS->Label(),0);
 #endif
   if(!CNS.IsNull()) {
@@ -147,7 +147,7 @@ static Standard_Boolean IsSpecificCase(const  TDF_Label& F, const TopoDS_Shape& 
       // Naming data structure is empty - no sub-shapes under resulting shape
       const Handle(TNaming_NamedShape) aNS = FindPrevNDS(CNS); //look to old shape data structure if exist
       if(!aNS.IsNull()) {
-#ifdef MDTV_DEB_BNP
+#ifdef OCCT_DEBUG_BNP
 	PrintEntry (aNS->Label(),0);
 #endif
 	cit.Initialize(aNS->Label(), TNaming_NamedShape::GetID(), Standard_False);
@@ -160,7 +160,7 @@ static Standard_Boolean IsSpecificCase(const  TDF_Label& F, const TopoDS_Shape& 
       if(!NS.IsNull()) {  
 	TopoDS_Shape aS = TNaming_Tool::CurrentShape(NS);
 	if(aS.IsNull()) continue;
-#ifdef MDTV_DEB_BNP
+#ifdef OCCT_DEBUG_BNP
 	PrintEntry(NS->Label(), 0);
 	cout <<"ShapeType =" << aS.ShapeType() <<endl;
 	Write (aS, "BNProblem.brep");
@@ -177,7 +177,7 @@ static Standard_Boolean IsSpecificCase(const  TDF_Label& F, const TopoDS_Shape& 
 	  TopTools_MapIteratorOfMapOfOrientedShape it(M);
 	  for(;it.More();it.Next()) {	      
 	    if(!shapesOfContext.Contains(it.Key())) {
-#ifdef MDTV_DEB_BNP
+#ifdef OCCT_DEBUG_BNP
 	      cout <<"BNProblem: ShapeType in AtomicMap = " << it.Key().ShapeType() << " TShape = " <<it.Key().TShape() <<" OR = " <<it.Key().Orientation()  <<endl;
 	      Write (it.Key(), "BNProblem_AtomicMap_Item.brep");	      
 	      TopTools_MapIteratorOfMapOfOrientedShape itC(shapesOfContext);
@@ -204,7 +204,7 @@ static Standard_Boolean IsSpecificCase2(const  TDF_Label& F, const TopoDS_Shape&
   if(Selection.ShapeType() == TopAbs_EDGE) {
     Handle(TNaming_NamedShape) aNS = TNaming_Tool::NamedShape(Selection, F);
     if(!aNS.IsNull()) { //presented in DF
-#ifdef MDTV_DEB_BNP
+#ifdef OCCT_DEBUG_BNP
       PrintEntry (aNS->Label(),0);
 #endif
       const TopoDS_Shape& aS = TNaming_Tool::CurrentShape(aNS);
@@ -347,7 +347,7 @@ Standard_Boolean TNaming_Selector::Select (const TopoDS_Shape& Selection,
    selection = Selection;
   */
 
-#ifdef MDTV_DEB_SEL
+#ifdef OCCT_DEBUG_SEL
   cout << "SELECTION ORIENTATION = " << Selection.Orientation() <<", TShape = " << Selection.TShape() <<endl;
   //cout << "SELECTION ORIENTATION = " << selection.Orientation() <<", TShape = " << selection.TShape() <<endl;
   PrintEntry(myLabel, 0);
@@ -376,7 +376,7 @@ Standard_Boolean TNaming_Selector::Select (const TopoDS_Shape& Selection,
   // mpv: if oldShape for selection is some shape from used map of shapes,
   //      then naming structure becomes more complex, can be cycles
   const TopoDS_Shape& aSelection = TNaming_Tool::CurrentShape(NS); //szy
-#ifdef MDTV_DEB_CHECK_TYPE
+#ifdef OCCT_DEBUG_CHECK_TYPE
   if(!Selection.IsSame(aSelection) && Selection.ShapeType() != TopAbs_COMPOUND) {
     TCollection_AsciiString entry;
     TDF_Tool::Entry(NS->Label(), entry);
@@ -430,7 +430,7 @@ Standard_Boolean TNaming_Selector::Select (const TopoDS_Shape& Selection,
 Standard_Boolean TNaming_Selector::Solve (TDF_LabelMap& Valid) const
 {
   Handle(TNaming_Naming) name;
-#ifdef MDTV_DEB_SEL
+#ifdef OCCT_DEBUG_SEL
 	cout <<"TNaming_Selector::Solve==> "; 
 	PrintEntry(myLabel,0);
 #endif

@@ -143,7 +143,7 @@ Standard_Boolean FillValidMap(const TDF_Label& theLabel, TDF_LabelMap& theValidM
 {
   Standard_Boolean extRefFound = Standard_False;
   TDF_AttributeMap anExtMap;
-#ifdef DEB_SELN
+#ifdef OCCT_DEBUG_SELN
 	  TCollection_AsciiString entr1;
       TDF_Tool::Entry(theLabel, entr1);  
       cout<<"\tNaming Attribute at = "<< entr1 <<endl;
@@ -155,14 +155,14 @@ Standard_Boolean FillValidMap(const TDF_Label& theLabel, TDF_LabelMap& theValidM
 	  if(!aLabel.IsNull()) 
 		  aLabel.FindAttribute(TNaming_Naming::GetID(), aNaming);
 	  if(aNaming.IsNull()) continue;
-#ifdef DEB_SELN	  
+#ifdef OCCT_DEBUG_SELN	  
       TDF_Tool::Entry(aLabel, entr1);  
       cout<<"\tNaming Attribute at = "<< entr1 <<endl;
 #endif
 	  TDF_Tool::OutReferences(aLabel,anExtMap);
 	  for (TDF_MapIteratorOfAttributeMap attMItr(anExtMap);attMItr.More(); attMItr.Next()) {
         Handle(TDF_Attribute) att = attMItr.Key();
-#ifdef DEB_SELN
+#ifdef OCCT_DEBUG_SELN
         TDF_Tool::Entry(att->Label(), entr1);
 	    cout<<"## References attribute dynamic type = "<<att->DynamicType()<<" at Label = "<<entr1 <<endl;
 #endif	
@@ -201,7 +201,7 @@ static Standard_Integer DNaming_SolveSelection (Draw_Interpretor& di, Standard_I
 	TDF_LabelMap aValidMap;
     if(!FillValidMap(L,aValidMap)) 
 		di << "Valid map is empty" << "\n";
-#ifdef DEB_SELN
+#ifdef OCCT_DEBUG_SELN
 	cout<<"== Valid Label map =="<<endl;
 	for (TDF_MapIteratorOfLabelMap mapItr(aValidMap);mapItr.More(); mapItr.Next()) {
       const TDF_Label& aLab = mapItr.Key();

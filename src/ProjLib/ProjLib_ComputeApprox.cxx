@@ -47,7 +47,7 @@
 #ifdef DRAW
 #include <DrawTrSurf.hxx>
 #endif
-#ifdef DEB
+#ifdef OCCT_DEBUG
 static Standard_Boolean AffichValue = Standard_False;
 #endif    
 
@@ -889,7 +889,7 @@ ProjLib_ComputeApprox::ProjLib_ComputeApprox
   else {
     ProjLib_Function F( C, S);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if ( AffichValue) {
       Standard_Integer Nb = 20;
       Standard_Real U1, U2, dU, U;

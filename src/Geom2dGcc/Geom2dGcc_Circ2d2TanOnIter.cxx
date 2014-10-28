@@ -389,7 +389,7 @@ Geom2dGcc_Circ2d2TanOnIter (const GccEnt_QualifiedCirc& Qualified1 ,
                                 gp_Vec2d Tan1,Tan2,Nor2;
                                 ElCLib::D2(Ufirst(1),C1,point1,Tan1,Nor2);
                                 Geom2dGcc_CurveTool::D1(Cu2,Ufirst(2),point2,Tan2);
-#ifdef DEB
+#ifdef OCCT_DEBUG
                                 gp_Vec2d Tan3(OnLine.Direction().XY());
 #else
                                 OnLine.Direction().XY();
@@ -496,7 +496,7 @@ Geom2dGcc_Circ2d2TanOnIter (const GccEnt_QualifiedCirc& Qualified1 ,
                                 gp_Vec2d Tan1,Tan2;
                                 ElCLib::D1(Ufirst(1),C1,point1,Tan1);
                                 Geom2dGcc_CurveTool::D1(Cu2,Ufirst(2),point2,Tan2);
-#ifdef DEB
+#ifdef OCCT_DEBUG
                                 gp_Vec2d Tan3(-Sin(Ufirst(3)),Cos(Ufirst(3)));
 #endif
                                 point3 = ElCLib::Value(Ufirst(3),OnCirc);
@@ -600,7 +600,7 @@ Geom2dGcc_Circ2d2TanOnIter (const GccEnt_QualifiedLin&  Qualified1 ,
                                 gp_Vec2d Tan1,Tan2;
                                 ElCLib::D1(Ufirst(1),L1,point1,Tan1);
                                 Geom2dGcc_CurveTool::D1(Cu2,Ufirst(2),point2,Tan2);
-#ifdef DEB
+#ifdef OCCT_DEBUG
                                 gp_Vec2d Tan3(-Sin(Ufirst(3)),Cos(Ufirst(3)));
 #endif
                                 point3 = ElCLib::Value(Ufirst(3),OnCirc);
@@ -704,7 +704,7 @@ Geom2dGcc_Circ2d2TanOnIter (const Geom2dGcc_QCurve& Qualified1 ,
                                 gp_Vec2d Tan1,Tan2;
                                 Geom2dGcc_CurveTool::D1(Cu1,Ufirst(1),point1,Tan1);
                                 Geom2dGcc_CurveTool::D1(Cu2,Ufirst(2),point2,Tan2);
-#ifdef DEB
+#ifdef OCCT_DEBUG
                                 gp_Vec2d Tan3(-Sin(Ufirst(3)),Cos(Ufirst(3)));
 #endif
                                 point3 = gp_Pnt2d(OnCirc.Location().XY()+

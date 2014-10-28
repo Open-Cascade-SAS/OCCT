@@ -89,7 +89,7 @@ GccAna_Circ2d3Tan::
      Standard_Integer nbsolution1 = Bis1.NbSolutions();
      Handle(GccInt_Bisec) Sol2 = Bis2.ThisSolution();
      for (Standard_Integer i = 1 ; i <=  nbsolution1; i++) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
        gp_Lin2d Sol1(Bis1.ThisSolution(i));
 #else
        Bis1.ThisSolution(i) ;

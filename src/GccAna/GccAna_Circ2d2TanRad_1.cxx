@@ -394,7 +394,7 @@ GccAna_Circ2d2TanRad::
 		gp_Ax2d axe(Center,dirx);
 		cirsol(NbrSol) = gp_Circ2d(axe,Radius);
 //              ======================================
-#ifdef DEB
+#ifdef OCCT_DEBUG
 		gp_Dir2d dc1(center1.XY()-Center.XY());
 #endif
 		gp_Dir2d dc2(origin2.XY()-Center.XY());

@@ -106,7 +106,7 @@ ShapeFix_Solid::ShapeFix_Solid(const TopoDS_Solid& solid)
  //  B.Add(mySolid,TopoDS::Shell(iter.Value()));
   myShape = solid;
 }
-#ifdef DEB_GET_MIDDLE_POINT
+#ifdef OCCT_DEBUG_GET_MIDDLE_POINT
 //=======================================================================
 //function : GetMiddlePoint
 //purpose  : 
@@ -207,7 +207,7 @@ static void CollectSolids(const TopTools_SequenceOfShape& aSeqShells ,
         }
         
         if(numon == 3 && pointstatus ==TopAbs_ON) {
-#ifdef DEB_GET_MIDDLE_POINT
+#ifdef OCCT_DEBUG_GET_MIDDLE_POINT
           gp_Pnt pmid;
           GetMiddlePoint(aShell2,pmid);
           bsc3d.Perform(pmid,Precision::Confusion());
@@ -223,7 +223,7 @@ static void CollectSolids(const TopTools_SequenceOfShape& aSeqShells ,
       }
     }
     catch(Standard_Failure) {
-#ifdef SHAPEFIX_DEB
+#ifdef OCCT_DEBUG
       cout << "Warning: ShapeFix_Solid::SolidFromShell: Exception: ";
       Standard_Failure::Caught()->Print(cout); cout << endl;
 #endif
@@ -294,7 +294,7 @@ static Standard_Boolean CreateSolids(const TopoDS_Shape aShape,TopTools_IndexedM
       infinstatus = bsc3d.State();
       }
     catch(Standard_Failure) {
-#ifdef SHAPEFIX_DEB
+#ifdef OCCT_DEBUG
       cout << "Warning: ShapeFix_Solid::SolidFromShell: Exception: ";
       Standard_Failure::Caught()->Print(cout); cout << endl;
 #endif
@@ -553,7 +553,7 @@ TopoDS_Solid ShapeFix_Solid::SolidFromShell (const TopoDS_Shell& shell)
     }
   }
   catch(Standard_Failure) {
-#ifdef SHAPEFIX_DEB
+#ifdef OCCT_DEBUG
     cout << "Warning: ShapeFix_Solid::SolidFromShell: Exception: ";
     Standard_Failure::Caught()->Print(cout); cout << endl;
 #endif

@@ -18,7 +18,7 @@
 // Implementation de la classe resolvant les equations en cosinus-sinus.
 // Equation de la forme a*cos(x)*cos(x)+2*b*cos(x)*sin(x)+c*cos(x)+d*sin(x)+e
 
-//#ifndef DEB
+//#ifndef OCCT_DEBUG
 #define No_Standard_RangeError
 #define No_Standard_OutOfRange
 #define No_Standard_DimensionError
@@ -305,7 +305,7 @@ void math_TrigonometricFunctionRoots::Perform(const Standard_Real A,
 	  if(Abs(va)>Eps) { 
 	    bko=Standard_True;
 	    nbko++;
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	    //if(nbko==1) { 
 	    //  cout<<"Pb ds math_TrigonometricFunctionRoots CC="
 	    //	<<A<<" CS="<<B<<" C="<<C<<" S="<<D<<" Cte="<<E<<endl;

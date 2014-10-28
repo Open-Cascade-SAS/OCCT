@@ -351,7 +351,7 @@ void  BRepLib_MakeWire::Add(const TopoDS_Edge& E)
       if (V1.IsSame(myVertex)) VRef = V2;
       else if (V2.IsSame(myVertex)) VRef = V1;
       else {
-#if BREPLIB_DEB
+#ifdef OCCT_DEBUG
 	cout << "MakeWire : There is a PROBLEM !!" << endl;
 #endif
 	myError = BRepLib_NonManifoldWire;
@@ -359,7 +359,7 @@ void  BRepLib_MakeWire::Add(const TopoDS_Edge& E)
       
       if (VF.IsSame(VL)) {
 	// Particular case: it is required to control the orientation
-#if BREPLIB_DEB
+#ifdef OCCT_DEBUG
 	if (!VF.IsSame(myVertex))
 	  cout << "MakeWire : There is a PROBLEM !!" << endl;
 #endif
@@ -369,7 +369,7 @@ void  BRepLib_MakeWire::Add(const TopoDS_Edge& E)
 	if (VF.IsSame(myVertex)) VF = VRef;
 	else if (VL.IsSame(myVertex)) VL = VRef;
 	else {
-#if BREPLIB_DEB
+#ifdef OCCT_DEBUG
 	  cout << "MakeWire : Y A UN PROBLEME !!" << endl;
 #endif
 	  myError = BRepLib_NonManifoldWire;

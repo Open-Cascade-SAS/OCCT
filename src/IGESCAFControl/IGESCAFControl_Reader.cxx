@@ -231,7 +231,7 @@ Standard_Boolean IGESCAFControl_Reader::Transfer (Handle(TDocStd_Document) &doc)
         else {
           Handle(IGESGraph_Color) color = Handle(IGESGraph_Color)::DownCast ( ent->Color() );
           if ( color.IsNull() ) {
-#ifdef IGESCAFCONTROL_DEB
+#ifdef OCCT_DEBUG
             cout << "Error: Unrecognized type of color definition" << endl;
 #endif
             IsColor = Standard_False;
@@ -574,7 +574,7 @@ Standard_Boolean IGESCAFControl_Reader::ReadLayers (Handle(TDocStd_Document)& /*
     case IGESData_DefOne : {
       TCollection_ExtendedString aLayerName ( ent->Level() );
       LTool->SetLayer( L, aLayerName );
-#ifdef DEB
+#ifdef OCCT_DEBUG
 // 	cout << "Added layer " << aLayerName << endl;
 #endif
       break;
@@ -585,7 +585,7 @@ Standard_Boolean IGESCAFControl_Reader::ReadLayers (Handle(TDocStd_Document)& /*
       for ( Standard_Integer ilev = 1; ilev <= layerNb; ilev++ ) {
 	TCollection_ExtendedString aLayerName ( aLevelList->LevelNumber(ilev) );
 	LTool->SetLayer( L, aLayerName );
-#ifdef DEB
+#ifdef OCCT_DEBUG
 // 	cout << "Added layer " << aLayerName << endl;
 #endif
       }

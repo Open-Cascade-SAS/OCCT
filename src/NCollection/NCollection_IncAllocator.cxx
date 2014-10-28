@@ -40,7 +40,7 @@ namespace
 
   #define IMEM_FREE(p_bl) (size_t(p_bl->p_end_block - p_bl->p_free_space))
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   // auxiliary dummy function used to get a place where break point can be set
   inline void place_for_breakpoint() {}
 #endif
@@ -82,7 +82,7 @@ Standard_EXPORT void IncAllocator_SetDebugFlag(const Standard_Boolean theDebug)
   IS_DEBUG = theDebug;
 }
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 
 //=======================================================================
 /**
@@ -127,7 +127,7 @@ static void Debug_Destroy(Standard_Address theAlloc)
   aMutex.Unlock();
 }
 
-#endif /* DEB */
+#endif /* OCCT_DEBUG */
 
 //=======================================================================
 //function : IncAllocator_PrintAlive
@@ -182,7 +182,7 @@ NCollection_IncAllocator::NCollection_IncAllocator (const size_t theBlockSize)
 #ifdef ALLOC_TRACK_USAGE
   printf ("\n..NCollection_IncAllocator: Created (%x)\n",this);
 #endif
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (IS_DEBUG)
     Debug_Create(this);
 #endif
@@ -207,7 +207,7 @@ NCollection_IncAllocator::NCollection_IncAllocator (const size_t theBlockSize)
 
 NCollection_IncAllocator::~NCollection_IncAllocator ()
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (IS_DEBUG)
     Debug_Destroy(this);
 #endif

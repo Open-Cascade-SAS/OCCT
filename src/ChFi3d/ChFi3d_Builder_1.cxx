@@ -56,7 +56,7 @@
 #include <LocalAnalysis_SurfaceContinuity.hxx>
 #include <TopOpeBRepTool_TOOL.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean ChFi3d_GetcontextFORCEBLEND(); 
 #endif
 
@@ -563,7 +563,7 @@ void ChFi3d_Builder::PerformExtremity (const Handle(ChFiDS_Spine)& Spine)
 	    E[i] = Ec;
 	  }
 	  else{
-#ifdef CHFI3D_DEB
+#ifdef OCCT_DEBUG
 	    cout<<"top has more than 3 edges"<<endl;
 #endif
 	    sommetpourri = Standard_True;
@@ -594,7 +594,7 @@ void ChFi3d_Builder::PerformExtremity (const Handle(ChFiDS_Spine)& Spine)
     }
     if(nbf>3) {
       Spine->SetFirstStatus(ChFiDS_BreakPoint);
-#if CHFI3D_DEB
+#ifdef OCCT_DEBUG
       cout<<"top has : "<<nbf<<" faces."<<endl;
 #endif
     }
@@ -610,7 +610,7 @@ void ChFi3d_Builder::PerformExtremity (const Handle(ChFiDS_Spine)& Spine)
     }
     if(nbf>3) {
       Spine->SetLastStatus(ChFiDS_BreakPoint);
-#if CHFI3D_DEB
+#ifdef OCCT_DEBUG
       cout<<"top has : "<<nbf<<" faces."<<endl;
 #endif
     }

@@ -20,7 +20,7 @@
 #include <TopTools_Array1OfShape.hxx>
 #include <gp_Pnt2d.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern void FUN_REINIT();
 extern Standard_Integer FUN_addepc(const TopoDS_Shape& ed,const TopoDS_Shape& f);
 extern Standard_Integer FUN_addcheckepc(const TopoDS_Shape& ed,const TopoDS_Shape& f);

@@ -186,7 +186,7 @@ static Standard_Boolean splitangle (const Handle(ShapeProcess_Context)& context)
   SDA.SetMaxTolerance ( ctx->RealVal ( "MaxTolerance", 1. ) );
   
   if ( ! SDA.Perform() && SDA.Status (ShapeExtend_FAIL) ) {
-#ifdef SHAPEPROCESS_DEB
+#ifdef OCCT_DEBUG
     cout<<"ShapeDivideAngle failed"<<endl;
 #endif
     return Standard_False;
@@ -342,7 +342,7 @@ static Standard_Boolean shapetobezier (const Handle(ShapeProcess_Context)& conte
   if ( ctx->GetBoolean ( "EdgeMode", EdgeMode ) ) SCB.SetEdgeMode(EdgeMode);
  
   if ( ! SCB.Perform() && SCB.Status (ShapeExtend_FAIL) ) { 
-#ifdef SHAPEPROCESS_DEB
+#ifdef OCCT_DEBUG
     cout<<"Shape::ShapeConvertToBezier failed"<<endl; // !!!!
 #endif
     return Standard_False;
@@ -407,7 +407,7 @@ static Standard_Boolean splitcontinuity (const Handle(ShapeProcess_Context)& con
   if ( ctx->GetReal ( "MaxTolerance", maxTol ) ) tool.SetMaxTolerance(maxTol);
   
   if ( ! tool.Perform() && tool.Status (ShapeExtend_FAIL) ) { 
-#ifdef SHAPEPROCESS_DEB
+#ifdef OCCT_DEBUG
     cout<<"SplitContinuity failed"<<endl; 
 #endif
     return Standard_False; 
@@ -444,7 +444,7 @@ static Standard_Boolean splitclosedfaces (const Handle(ShapeProcess_Context)& co
   tool.SetNbSplitPoints(num);
   tool.SetSurfaceSegmentMode(hasSeg);
   if ( ! tool.Perform() && tool.Status (ShapeExtend_FAIL) ) { 
-#ifdef SHAPEPROCESS_DEB
+#ifdef OCCT_DEBUG
     cout<<"Splitting of closed faces failed"<<endl; 
 #endif
     return Standard_False; 
@@ -666,7 +666,7 @@ static Standard_Boolean spltclosededges (const Handle(ShapeProcess_Context)& con
   tool.SetNbSplitPoints(nbSplits);
   
   if ( ! tool.Perform() && tool.Status (ShapeExtend_FAIL) ) { 
-#ifdef SHAPEPROCESS_DEB
+#ifdef OCCT_DEBUG
     cout<<"Splitting of closed edges failed"<<endl; 
 #endif
     return Standard_False; 

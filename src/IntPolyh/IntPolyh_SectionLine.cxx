@@ -84,18 +84,8 @@ void IntPolyh_SectionLine::IncrementNbStartPoints() {
 //purpose  : 
 //=======================================================================
 
-// # ifdef DEB
-//   #define BORNES1
-// # endif
-const IntPolyh_StartPoint& IntPolyh_SectionLine::Value(const Standard_Integer Index) const { 
-//   IntPolyh_StartPoint *ptrstpoint = (IntPolyh_StartPoint *)ptr;
-// #if BORNES
-//   if(Index<0 || Index>=n) { 
-//     cerr<<" Erreur1 "<<endl; 
-//     printf("Value() from IntPolyh_SectionLine.cxx : ERROR : value out of array\n");
-//   } 
-// #endif
-//   return(ptrstpoint[Index]);
+const IntPolyh_StartPoint& IntPolyh_SectionLine::Value(const Standard_Integer Index) const
+{ 
   return mySeqOfSPoints(Index+1);
 }
 
@@ -104,15 +94,8 @@ const IntPolyh_StartPoint& IntPolyh_SectionLine::Value(const Standard_Integer In
 //purpose  : 
 //=======================================================================
 
-IntPolyh_StartPoint& IntPolyh_SectionLine::ChangeValue(const Standard_Integer Index) { 
-//   IntPolyh_StartPoint *ptrstpoint = (IntPolyh_StartPoint *)ptr;
-// #if BORNES
-//     if(Index<0 || Index>=n) { 
-//       cerr<<" Erreur1 "<<endl; 
-//       printf("ChangeValue() from IntPolyh_SectionLine.cxx : ERROR : value out of array\n");
-//     } 
-// #endif
-//     return(ptrstpoint[Index]); 
+IntPolyh_StartPoint& IntPolyh_SectionLine::ChangeValue(const Standard_Integer Index)
+{
   return mySeqOfSPoints(Index+1);
 }
 

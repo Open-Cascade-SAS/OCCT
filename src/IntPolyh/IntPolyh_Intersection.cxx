@@ -24,19 +24,8 @@
 #include <IntPolyh_Couple.hxx>
 #include <IntPolyh_Triangle.hxx>
 
-#ifdef DEB
-  # define MYDEBUG DEB 
-#else
-  # define MYDEBUG 0
-#endif
-
 Standard_Integer MYDISPLAY = 0;
 Standard_Integer MYPRINT   = 0;
-
-# if MYDEBUG
-//  # include "visudebug.hxx"
-# endif
-
 
 IntPolyh_Intersection::IntPolyh_Intersection(const Handle(Adaptor3d_HSurface)& S1,
 					     const Handle(Adaptor3d_HSurface)& S2)

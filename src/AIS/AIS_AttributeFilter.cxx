@@ -41,7 +41,7 @@ Standard_Boolean AIS_AttributeFilter::IsOk(const Handle(SelectMgr_EntityOwner)& 
   if (Handle(AIS_InteractiveObject)::DownCast(anObj->Selectable()).IsNull()) return Standard_False;
   Standard_Boolean okstat = Standard_True;
 
-//#ifndef DEB
+//#ifndef OCCT_DEBUG
   Handle(SelectMgr_SelectableObject) aSelectable = anObj->Selectable() ;
   if( hasC && ((Handle(AIS_InteractiveObject)&) aSelectable)->HasColor() )
 //#else
@@ -49,7 +49,7 @@ Standard_Boolean AIS_AttributeFilter::IsOk(const Handle(SelectMgr_EntityOwner)& 
 //#endif
     okstat =  (myCol == ((Handle(AIS_InteractiveObject)&) anObj)->Color());
 
-//#ifndef DEB
+//#ifndef OCCT_DEBUG
   aSelectable = anObj->Selectable() ;
   if( hasW && ((Handle(AIS_InteractiveObject)&) aSelectable)->HasWidth() )
 //#else

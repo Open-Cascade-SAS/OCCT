@@ -34,7 +34,7 @@
 #include <TransferBRep_ShapeMapper.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #define DEBUG
 #endif
 
@@ -83,7 +83,7 @@ TopoDSToStep_MakeBrepWithVoids::
 	    if (!aOShell.IsNull()) {
 	      aCShell = new StepShape_ClosedShell;
 	      aCShell->Init (aOShell->Name(),aOShell->CfsFaces());
-#ifdef TOPODSTOSTEP_DEB
+#ifdef OCCT_DEBUG
 	      cout<<"Warning: MakeBRepWithVoids: Open shell in the solid; treated as closed"<<endl;
 #endif
 	    }
@@ -94,11 +94,11 @@ TopoDSToStep_MakeBrepWithVoids::
 	    else 
 	      S.Append(aCShell);
 	  }
-#ifdef TOPODSTOSTEP_DEB
+#ifdef OCCT_DEBUG
 	  else cout<<"*** MakeBRepWithVoids : Shell not mapped"<<endl;
 #endif
 	}
-#ifdef TOPODSTOSTEP_DEB
+#ifdef OCCT_DEBUG
 	else cout << "Shell not mapped" << endl;
 #endif
 /* //:d7 
@@ -114,7 +114,7 @@ TopoDSToStep_MakeBrepWithVoids::
 	      S.Append(aCShell);
 	  }
 	  else {
-#ifdef DEBUG
+#ifdef OCCT_DEBUG
 	    cout << "Shell not mapped" << endl;
 #endif
 	    done = Standard_False;

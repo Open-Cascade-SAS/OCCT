@@ -79,7 +79,7 @@ void MDataStd_NamedDataRetrievalDriver::Paste(const Handle(PDF_Attribute)& Sourc
   Handle(TDataStd_NamedData) T = Handle(TDataStd_NamedData)::DownCast (Target);
   if(S.IsNull() || T.IsNull()) return;
   Standard_Integer i;
-#ifdef MDTV_DEB
+#ifdef OCCT_DEBUG
   cout << "Start: " <<S->LowerI() << " " <<S->UpperI()<<"\t"<<S->LowerR() << " " <<S->UpperR();
   cout << "\t"<<S->LowerS() << " " <<S->UpperS()<< "\t"<<S->LowerB() << " " <<S->UpperB();
   cout << "\t"<<S->LowerAI() << " " <<S->UpperAI()<<"\t"<<S->LowerAR() << " " <<S->UpperAR()<<endl;

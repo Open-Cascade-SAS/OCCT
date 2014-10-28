@@ -57,7 +57,7 @@ void  TopOpeBRepTool_ShapeExplorer::Init(const TopoDS_Shape& S,
 {
   myExplorer.Init(S,ToFind,ToAvoid);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   myIndex = myNbShapes = 0;
   for (;More();Next()) myNbShapes++;
   myExplorer.ReInit();
@@ -85,7 +85,7 @@ Standard_Boolean  TopOpeBRepTool_ShapeExplorer::More()const
 void  TopOpeBRepTool_ShapeExplorer::Next()
 {
   myExplorer.Next();
-#ifdef DEB
+#ifdef OCCT_DEBUG
   myIndex++;
 #endif
 }
@@ -110,7 +110,7 @@ const TopoDS_Shape&  TopOpeBRepTool_ShapeExplorer::Current()const
 Standard_Integer TopOpeBRepTool_ShapeExplorer::NbShapes()const 
 {
   Standard_Integer n = 0;
-#ifdef DEB
+#ifdef OCCT_DEBUG
   n = myNbShapes;
 #endif
   return n;
@@ -125,7 +125,7 @@ Standard_Integer TopOpeBRepTool_ShapeExplorer::NbShapes()const
 Standard_Integer TopOpeBRepTool_ShapeExplorer::Index()const 
 {
   Standard_Integer n = 0;
-#ifdef DEB
+#ifdef OCCT_DEBUG
   n = myIndex;
 #endif
   return n;
@@ -139,7 +139,7 @@ Standard_Integer TopOpeBRepTool_ShapeExplorer::Index()const
 Standard_OStream& TopOpeBRepTool_ShapeExplorer::DumpCurrent
 (Standard_OStream& OS)const 
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if ( More() ) { 
     const TopoDS_Shape& S = Current();
     TopAbs_ShapeEnum    T = S.ShapeType();

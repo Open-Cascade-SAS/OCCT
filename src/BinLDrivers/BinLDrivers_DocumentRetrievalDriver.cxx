@@ -96,7 +96,7 @@ void BinLDrivers_DocumentRetrievalDriver::Read
   Handle(TDocStd_Document) aDoc =
     Handle(TDocStd_Document)::DownCast(theNewDocument);
   if (aDoc.IsNull()) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     WriteMessage (aMethStr + "error: null document");
 #endif
     myReaderStatus = PCDM_RS_NoDocument;
@@ -150,7 +150,7 @@ void BinLDrivers_DocumentRetrievalDriver::Read
 #ifdef DATATYPE_MIGRATION
 	TCollection_AsciiString  newName;	
 	if(Storage_Schema::CheckTypeMigration(aStr, newName)) {
-#ifdef DATATYPE_MIGRATION_DEB
+#ifdef OCCT_DEBUG
 	  cout << "CheckTypeMigration:OldType = " <<aStr << " Len = "<<aStr.Length()<<endl;
 	  cout << "CheckTypeMigration:NewType = " <<newName  << " Len = "<< newName.Length()<<endl;
 #endif
@@ -253,7 +253,7 @@ void BinLDrivers_DocumentRetrievalDriver::Read
 #if DO_INVERSE
       aShapeSectionPos = InverseInt (aShapeSectionPos);
 #endif
-#ifdef DATATYPE_MIGRATION_DEB      
+#ifdef OCCT_DEBUG
       cout <<"aShapeSectionPos = " <<aShapeSectionPos <<endl;
 #endif
       if(aShapeSectionPos) { 
@@ -493,7 +493,7 @@ void BinLDrivers_DocumentRetrievalDriver::CheckShapeSection(
   if (!IS.eof())
   {
     const std::streamoff endPos = IS.rdbuf()->pubseekoff(0L, std::ios_base::end, std::ios_base::in);
-#ifdef DATATYPE_MIGRATION_DEB
+#ifdef OCCT_DEBUG
     cout << "endPos = " << endPos <<endl;
 #endif
     if(ShapeSectionPos != endPos) {

@@ -91,7 +91,7 @@
 #define MinSeg      ((Standard_Integer*)Indices)[7]
 #define MaxSeg      ((Standard_Integer*)Indices)[8]
 #define SegFlags    ((Standard_Integer*)Indices)[9]
-#ifdef DEB
+#ifdef OCCT_DEBUG
 static Standard_Integer ERROR = Standard_False;
 #endif
 //=======================================================================
@@ -473,7 +473,7 @@ HideByOneTriangle (const Standard_Address Coordinates,
 	o[npi] = n1 == -1;
 	m[npi] = Multiple;
       }
-#ifdef HLRALGO_DEB
+#ifdef OCCT_DEBUG
       else if (ERROR) {
 	cout << " error : HLRAlgo_PolyData::HideByOneTriangle " << endl;
 	cout << " ( more than 2 points )." << endl;
@@ -618,7 +618,7 @@ HideByOneTriangle (const Standard_Address Coordinates,
 	o[npi] = n1 == -1;
 	m[npi] = Multiple;
       }
-#ifdef HLRALGO_DEB
+#ifdef OCCT_DEBUG
       else if (ERROR) {
 	cout << " error : HLRAlgo_PolyData::HideByOneTriangle " << endl;
 	cout << " ( more than 2 points )." << endl;
@@ -763,7 +763,7 @@ HideByOneTriangle (const Standard_Address Coordinates,
 	o[npi] = n1 == -1;
 	m[npi] = Multiple;
       }
-#ifdef HLRALGO_DEB
+#ifdef OCCT_DEBUG
       else if (ERROR) {
 	cout << " error : HLRAlgo_PolyData::HideByOneTriangle " << endl;
 	cout << " ( more than 2 points )." << endl;

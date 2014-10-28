@@ -62,7 +62,7 @@
 #include <BRepTools.hxx>
 #include <Standard_ConstructionError.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean BRepFeat_GettraceFEAT();
 #endif
 
@@ -709,7 +709,7 @@ Handle(Geom_Curve) LocOpe_DPrism::BarycCurve() const
     Normale.Reverse();
   }
   if (mySpine.Orientation() == TopAbs_REVERSED) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     Standard_Boolean trc = BRepFeat_GettraceFEAT();
     if (trc) {
       cout << "LocOpe_DPrism::BarycCurve()" << endl;

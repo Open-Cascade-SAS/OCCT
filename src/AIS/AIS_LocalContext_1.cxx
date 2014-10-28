@@ -1504,7 +1504,7 @@ Handle(SelectMgr_EntityOwner) AIS_LocalContext::FindSelectedOwnerFromIO
   
   Handle(AIS_Selection) Sel = AIS_Selection::Selection(mySelName.ToCString());
   if(Sel.IsNull()) {
-#ifdef AIS_DEB
+#ifdef OCCT_DEBUG
     cout<<"\t\tAIS_LocalCOntext::FindSelectedOwnerFromShape : Selection "
         <<mySelName<<" Nulle "<<endl;
 #endif
@@ -1553,7 +1553,7 @@ Handle(SelectMgr_EntityOwner) AIS_LocalContext::FindSelectedOwnerFromShape(const
   
   Handle(AIS_Selection) Sel = AIS_Selection::Selection(mySelName.ToCString());
   if(Sel.IsNull()) {
-#ifdef AIS_DEB
+#ifdef OCCT_DEBUG
     cout<<"\t\tAIS_LocalCOntext::FindSelectedOwnerFromShape : Selection "<<mySelName<<" Nulle "<<endl;
 #endif
     return EO;

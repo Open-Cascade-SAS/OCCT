@@ -301,7 +301,7 @@ Standard_CString  Interface_Static::CVal  (const Standard_CString name)
 {
   Handle(Interface_Static) item = Interface_Static::Static(name);
   if (item.IsNull()) {
-#ifdef INTERFACE_DEB
+#ifdef OCCT_DEBUG
     cout << "Warning: Interface_Static::CVal: incorrect parameter " << name << endl;
 #endif
     return "";
@@ -314,7 +314,7 @@ Standard_Integer  Interface_Static::IVal  (const Standard_CString name)
 {
   Handle(Interface_Static) item = Interface_Static::Static(name);
   if (item.IsNull()) {
-#ifdef INTERFACE_DEB
+#ifdef OCCT_DEBUG
     cout << "Warning: Interface_Static::IVal: incorrect parameter " << name << endl;
 #endif
     return 0;
@@ -327,7 +327,7 @@ Standard_Real Interface_Static::RVal (const Standard_CString name)
 {
   Handle(Interface_Static) item = Interface_Static::Static(name);
   if (item.IsNull()) {
-#ifdef INTERFACE_DEB
+#ifdef OCCT_DEBUG
     cout << "Warning: Interface_Static::RVal: incorrect parameter " << name << endl;
 #endif
     return 0.0;

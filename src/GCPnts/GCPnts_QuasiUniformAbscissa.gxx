@@ -71,7 +71,7 @@ void GCPnts_QuasiUniformAbscissa::Initialize(TheCurve& C,
       myParams = new TColStd_HArray1OfReal(1,myNbPoints);
       for( i = 1 ; i <= myNbPoints ; i++ ) 
 	myParams->SetValue(i,UA.Parameter(i));
-#ifdef DEB
+#ifdef OCCT_DEBUG
 
 //      char name [100];
 //      for( i = 1 ; i <= NbPoints ; i++ ) {

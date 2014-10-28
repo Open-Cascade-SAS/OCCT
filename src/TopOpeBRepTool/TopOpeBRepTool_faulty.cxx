@@ -33,7 +33,7 @@
 #include <TopOpeBRepTool_DRAW.hxx>
 #endif
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern TopTools_IndexedMapOfShape STATIC_PURGE_mapv;
 extern TopTools_IndexedMapOfOrientedShape STATIC_PURGE_mapeds;
 extern Standard_Boolean TopOpeBRepTool_GettracePURGE();

@@ -332,14 +332,14 @@ void IGESToBRep::WriteShape(const TopoDS_Shape& shape,
 	  olda = a; oldb = b; oldpcurve = newpcurve;
 	}
 	else {
-#ifdef IGESTOBREP_DEB
+#ifdef OCCT_DEBUG
 	  cout << "Warning: IGESToBRep::TransferPCurve: pcurves are not SameRange" << endl;
 #endif
 	  result = Standard_False;
 	}
       }
       catch(Standard_Failure) {
-#ifdef IGESTOBREP_DEB
+#ifdef OCCT_DEBUG
 	cout << "\n**IGESToBRep::TransferPCurve: Exception in SameRange : "; 
 	Standard_Failure::Caught()->Print(cout);
 #endif

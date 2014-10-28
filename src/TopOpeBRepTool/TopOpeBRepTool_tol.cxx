@@ -137,7 +137,7 @@ Standard_EXPORT void FTOL_FaceTolerances
 // non ! laisser MMAXUV a 0.01
 //  MMAXUV=DP;
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //  printf("\n FaceTolerances3d : TOL1 = %5.5eg TOL2=%5.5eg DEFL=%5.5eg MAXUV=%5.5eg\n",MTOL1,MTOL2,MDEFLECTION,0.01);
 #endif
 
@@ -147,7 +147,7 @@ Standard_EXPORT void FTOL_FaceTolerances
   if(MMAXUV>0.01) MMAXUV=0.01;
   if(MDEFLECTION>0.1) MDEFLECTION = 0.1;
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //  printf("TOL1 = %5.5eg TOL2=%5.5eg DEFL=%5.5eg MAXUV=%5.5eg\n",MTOL1,MTOL2,MDEFLECTION,MMAXUV);
 #endif
 

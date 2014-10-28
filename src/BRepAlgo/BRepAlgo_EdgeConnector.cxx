@@ -116,7 +116,7 @@ TopTools_ListOfShape& BRepAlgo_EdgeConnector::MakeBlock()
   myBlockB.MakeBlock(SS);
   BRep_Builder WireB;
   for(myBlockB.InitBlock();myBlockB.MoreBlock();myBlockB.NextBlock()) {
-//#ifndef DEB
+//#ifndef OCCT_DEBUG
     TopOpeBRepBuild_BlockIterator BI = myBlockB.BlockIterator();
 //#else
 //    TopOpeBRepBuild_BlockIterator& BI = myBlockB.BlockIterator();

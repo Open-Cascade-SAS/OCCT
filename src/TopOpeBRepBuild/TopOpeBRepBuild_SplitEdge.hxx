@@ -26,7 +26,7 @@ void TopOpeBRepBuild_Builder::SplitEdge(const TopoDS_Shape& E,
 					const TopAbs_State ToBuild1,
 					const TopAbs_State ToBuild2)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if ( TopOpeBRepBuild_GetcontextSF2() ) {
     SplitEdge2(E,ToBuild1,ToBuild2);
     return;
@@ -52,7 +52,7 @@ void TopOpeBRepBuild_Builder::SplitEdge1(const TopoDS_Shape& Eoriented,
 
   Standard_Boolean tosplit = ToSplit(Eoriented,ToBuild1);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer iEdge; Standard_Boolean tSPS = GtraceSPS(Eoriented,iEdge);
   if(tSPS){
     cout<<endl;
@@ -73,7 +73,7 @@ void TopOpeBRepBuild_Builder::SplitEdge1(const TopoDS_Shape& Eoriented,
   LE1.Append(Eforward);
   FindSameDomain(LE1,LE2);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if(tSPS){GdumpSAMDOM(LE1, (char *) "1 : ");}
   if(tSPS){GdumpSAMDOM(LE2, (char *) "2 : ");}
   if(tSPS){cout<<endl;}
@@ -104,7 +104,7 @@ void TopOpeBRepBuild_Builder::SplitEdge1(const TopoDS_Shape& Eoriented,
   
   PVS.InitLoop();
   if ( !PVS.MoreLoop() ) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if(tSPS) {
       cout<<"NO VERTEX split "; TopAbs::Print(ToBuild1,cout);cout<<endl;
     }
@@ -158,7 +158,7 @@ void TopOpeBRepBuild_Builder::SplitEdge2(const TopoDS_Shape& Eoriented,
   TopoDS_Shape Eforward = Eoriented;
   myBuildTool.Orientation(Eforward,TopAbs_FORWARD);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer iEdge; Standard_Boolean tSPS = GtraceSPS(Eoriented,iEdge);
   if(tSPS){cout<<endl;}
   if(tSPS){GdumpSHASTA(Eoriented,ToBuild1,"--- SplitEdge2 ");}
@@ -183,7 +183,7 @@ void TopOpeBRepBuild_Builder::SplitEdge2(const TopoDS_Shape& Eoriented,
   
   PVS.InitLoop();
   if ( !PVS.MoreLoop() ) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if(tSPS) {cout<<"NO VERTEX split ";TopAbs::Print(ToBuild1,cout);cout<<endl;}
 #endif
     return;

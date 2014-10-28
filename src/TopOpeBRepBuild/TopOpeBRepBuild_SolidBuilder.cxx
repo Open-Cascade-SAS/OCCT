@@ -190,7 +190,7 @@ void TopOpeBRepBuild_SolidBuilder::NextFace()
 
 const TopoDS_Shape& TopOpeBRepBuild_SolidBuilder::Face() const
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //  const Standard_Integer i = myBlockIterator.Value(); // DEB
 #endif
   const TopoDS_Shape& F = myBlockBuilder.Element(myBlockIterator);

@@ -25,7 +25,7 @@ static TCollection_AsciiString PRODINS("dins ");
 #include <TopOpeBRepBuild_define.hxx>
 #include <TopoDS.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepBuild_GettraceCHK();
 #endif
 
@@ -37,7 +37,7 @@ extern Standard_Boolean TopOpeBRepBuild_GettraceCHK();
 TopOpeBRepBuild_ShellFaceSet::TopOpeBRepBuild_ShellFaceSet() :
 TopOpeBRepBuild_ShapeSet(TopAbs_EDGE)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   myDEBName = "SFS";
 #endif
 }
@@ -48,7 +48,7 @@ TopOpeBRepBuild_ShapeSet(TopAbs_EDGE)
 //=======================================================================
 
 TopOpeBRepBuild_ShellFaceSet::TopOpeBRepBuild_ShellFaceSet
-#ifdef DEB
+#ifdef OCCT_DEBUG
 (const TopoDS_Shape& S,const Standard_Address A) : // DEB
 #else
 (const TopoDS_Shape& S,const Standard_Address) : // DEB
@@ -57,7 +57,7 @@ TopOpeBRepBuild_ShapeSet(TopAbs_EDGE)
 {
   mySolid = TopoDS::Solid(S);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   myDEBName = "SFS";
   if (A != NULL) {
     TopOpeBRepBuild_Builder* pB = ((TopOpeBRepBuild_Builder*)((void*)A));
@@ -117,7 +117,7 @@ const TopoDS_Solid& TopOpeBRepBuild_ShellFaceSet::Solid() const
 
 void TopOpeBRepBuild_ShellFaceSet::DumpSS()
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   TopOpeBRepBuild_ShapeSet::DumpSS();
 #endif
 }

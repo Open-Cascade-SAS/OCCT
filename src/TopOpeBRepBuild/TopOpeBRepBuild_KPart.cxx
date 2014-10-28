@@ -42,12 +42,12 @@
 #include <TopOpeBRepBuild_kpresu.hxx>
 #include <Standard_ProgramError.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepBuild_GettraceKPB();
 #endif
 
 static void FUN_Raise() {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   cout<<"******************************ERROR"<<endl;
   Standard_ProgramError::Raise("KPart.cxx");
 #endif
@@ -98,7 +98,7 @@ Standard_Integer TopOpeBRepBuild_Builder::FindIsKPart()
 {
   KPClearMaps();
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean TKPB = TopOpeBRepBuild_GettraceKPB();
   if(TKPB){cout<<endl<<"--- IsKPart ? ---"<<endl;}
 #endif
@@ -240,7 +240,7 @@ static void FUN_sortplcy(const TopTools_ListOfShape& lof, TopTools_ListOfShape& 
 
 static void FUN_addf(const TopAbs_State sta, const TopoDS_Shape& ftoadd, TopTools_DataMapOfShapeShape& map)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //  Standard_Boolean isadded = map.IsBound(ftoadd);
 #endif
   TopoDS_Shape fori = ftoadd;
@@ -419,7 +419,7 @@ static Standard_Boolean FUN_rebuildfc(const TopOpeBRepBuild_Builder& BU, const H
 //         with {fcFk} = faces of shape k connexed to Owk
 //         fcFk has edges {edk}
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //  const TopOpeBRepDS_DataStructure& BDS = HDS->DS();
 //  Standard_Integer rFk = BDS.AncestorRank(Fk);
 #endif
@@ -446,7 +446,7 @@ static Standard_Boolean FUN_rebuildfc(const TopOpeBRepBuild_Builder& BU, const H
   return Standard_True;
 } // FUN_rebuildfc
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 Standard_EXPORT void debiskoletge() {}
 #endif
 
@@ -457,7 +457,7 @@ Standard_EXPORT void debiskoletge() {}
 
 void TopOpeBRepBuild_Builder::MergeKPartiskoletge()
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean TKPB = TopOpeBRepBuild_GettraceKPB();
   if (TKPB) KPreturn(myIsKPart);
   debiskoletge();
@@ -492,16 +492,16 @@ void TopOpeBRepBuild_Builder::MergeKPartiskoletge()
   TopTools_ListOfShape lplhsd2, lcyhsd2; ::FUN_sortplcy(lfhsd2,lplhsd2,lcyhsd2);
   const TopoDS_Face& fac1 = TopoDS::Face(lplhsd1.First());
   const TopoDS_Face& fac2 = TopoDS::Face(lplhsd2.First()); 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer iF1 =
 #endif
             myDataStructure->Shape(fac1); //DEB
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer iF2 =
 #endif
             myDataStructure->Shape(fac2); //DEB
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TKPB) {cout<<""<<endl;cout<<"face "<<iF1<<" : ";cout<<iF2<<endl;}
 #endif
     
@@ -662,7 +662,7 @@ void TopOpeBRepBuild_Builder::MergeKPartiskoletge()
 
 void TopOpeBRepBuild_Builder::MergeKPartisdisj()
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean TKPB = TopOpeBRepBuild_GettraceKPB();
   if (TKPB) KPreturn(myIsKPart);
 #endif
@@ -779,7 +779,7 @@ void TopOpeBRepBuild_Builder::MergeKPartisdisj()
 	return;
       }    
       else {
-#ifdef TOPOPEBREPBUILD_DEB
+#ifdef OCCT_DEBUG
 	cout<<"TopOpeBRepBuild_MergeKPart soldisj : ires = "<<ires<<endl;
 #endif
 	return;
@@ -818,7 +818,7 @@ void TopOpeBRepBuild_Builder::MergeKPartisdisj()
 
 void TopOpeBRepBuild_Builder::MergeKPartisfafa()
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean TKPB = TopOpeBRepBuild_GettraceKPB();
   if (TKPB) KPreturn(myIsKPart);
 #endif
@@ -866,7 +866,7 @@ void TopOpeBRepBuild_Builder::MergeKPartisfafa()
 
 void TopOpeBRepBuild_Builder::MergeKPartissoso()
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean TKPB = TopOpeBRepBuild_GettraceKPB();
   if (TKPB) KPreturn(myIsKPart);
 #endif
@@ -965,7 +965,7 @@ static Standard_Boolean allIonsectionedges(const Handle(TopOpeBRepDS_HDataStruct
 
 Standard_Integer TopOpeBRepBuild_Builder::KPiskoletge()
 {  
-/*#ifdef DEB
+/*#ifdef OCCT_DEBUG
   Standard_Boolean TKPB = TopOpeBRepBuild_GettraceKPB();
 #endif*/
   
@@ -996,16 +996,16 @@ Standard_Integer TopOpeBRepBuild_Builder::KPiskoletge()
   // ------------------------------------
 
   const TopoDS_Face& f1 = TopoDS::Face(lplhsd1.First());  
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //  Standard_Boolean isb1 = myKPMAPf1f2.IsBound(f1); // DEB
 #endif
 
   const TopoDS_Face& f2 = TopoDS::Face(lplhsd2.First()); 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //  Standard_Boolean isb2 = myKPMAPf1f2.IsBound(f2); // DEB
 #endif
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer iF1,iF2; 
   Standard_Boolean tSPS1 = GtraceSPS(f1,iF1);
   Standard_Boolean tSPS2 = GtraceSPS(f2,iF2);
@@ -1058,7 +1058,7 @@ Standard_Integer TopOpeBRepBuild_Builder::KPiskoletge()
 
 Standard_Integer TopOpeBRepBuild_Builder::KPisdisj()
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean TKPB = TopOpeBRepBuild_GettraceKPB();
 #endif
   
@@ -1073,7 +1073,7 @@ Standard_Integer TopOpeBRepBuild_Builder::KPisdisj()
   Standard_Integer isdisj1 = KPisdisjsh(myShape1);
   Standard_Integer isdisj2 = KPisdisjsh(myShape2);
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TKPB) {
     cout<<"isdisj : "<<isdisj1<<" "<<isdisj2<<endl;
   }
@@ -1090,7 +1090,7 @@ Standard_Integer TopOpeBRepBuild_Builder::KPisdisj()
 
 Standard_Integer TopOpeBRepBuild_Builder::KPisfafa()
 {  
-/*#ifdef DEB
+/*#ifdef OCCT_DEBUG
   Standard_Boolean TKPB = TopOpeBRepBuild_GettraceKPB();
 #endif*/
   
@@ -1110,7 +1110,7 @@ Standard_Integer TopOpeBRepBuild_Builder::KPisfafa()
 
 Standard_Integer TopOpeBRepBuild_Builder::KPissoso()
 {  
-/*#ifdef DEB
+/*#ifdef OCCT_DEBUG
   Standard_Boolean TKPB = TopOpeBRepBuild_GettraceKPB();
 #endif*/
   
@@ -1221,7 +1221,7 @@ TopAbs_State TopOpeBRepBuild_Builder::KPclasSS(const TopoDS_Shape& S1,const TopT
   TopAbs_State state = TopAbs_UNKNOWN;
   state = myShapeClassifier.StateShapeShape(S1,exLS1,S2);
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepBuild_GettraceKPB()) {
     const gp_Pnt& P1 = myShapeClassifier.P3D();
     cout<<"point P1 "<<P1.X()<<" "<<P1.Y()<<" "<<P1.Z();
@@ -1245,7 +1245,7 @@ TopAbs_State TopOpeBRepBuild_Builder::KPclasSS(const TopoDS_Shape& S1,const Topo
 {
   TopAbs_State state = myShapeClassifier.StateShapeShape(S1,exS1,S2);
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepBuild_GettraceKPB()) {
     const gp_Pnt& P1 = myShapeClassifier.P3D();
     cout<<"point P1 "<<P1.X()<<" "<<P1.Y()<<" "<<P1.Z();
@@ -1279,14 +1279,14 @@ TopAbs_State TopOpeBRepBuild_Builder::KPclasSS(const TopoDS_Shape& S1,const Topo
 
 Standard_Boolean TopOpeBRepBuild_Builder::KPiskoletgesh(const TopoDS_Shape& Sarg,TopTools_ListOfShape& lShsd,TopTools_ListOfShape& lfhsd) const 
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean TKPB = TopOpeBRepBuild_GettraceKPB();
 #endif
   const TopOpeBRepDS_DataStructure& BDS = myDataStructure->DS();
   Standard_Boolean iskolesh = FUNKP_KPiskolesh((*this),BDS,Sarg,lShsd,lfhsd);
   if (!iskolesh) return Standard_False;
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer nfhsd =
 #endif
               KPlhsd(Sarg,TopAbs_FACE,lfhsd);
@@ -1313,7 +1313,7 @@ Standard_Boolean TopOpeBRepBuild_Builder::KPiskoletgesh(const TopoDS_Shape& Sarg
     }
 //    if (ne > 1) return Standard_False;
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     Standard_Integer isol = myDataStructure->Shape(Sarg); Standard_Integer ifac = myDataStructure->Shape(fac); 
     if(TKPB){cout<<"isol "<<isol<<endl;}
     if(TKPB){cout<<"nfhsd  "<<nfhsd<<endl;}
@@ -1346,13 +1346,13 @@ void TopOpeBRepBuild_Builder::KPSameDomain(TopTools_ListOfShape& L1, TopTools_Li
     TopTools_ListIteratorOfListOfShape it1(L1);
     for (i=1 ; i<=nl1; i++) {
       const TopoDS_Shape& S1 = it1.Value();
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //      Standard_Integer iS1 = myDataStructure->Shape(S1);
 #endif
       TopTools_ListIteratorOfListOfShape itsd(myDataStructure->SameDomain(S1));
       for (; itsd.More(); itsd.Next() ) {
 	const TopoDS_Shape& S2 = itsd.Value();
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //	Standard_Integer iS2 = myDataStructure->Shape(S2);
 #endif
 	Standard_Boolean found = KPContains(S2,L2);
@@ -1368,13 +1368,13 @@ void TopOpeBRepBuild_Builder::KPSameDomain(TopTools_ListOfShape& L1, TopTools_Li
     TopTools_ListIteratorOfListOfShape it2(L2);
     for (i=1 ; i<=nl2; i++) {
       const TopoDS_Shape& S2 = it2.Value();
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //      Standard_Integer iS2 = myDataStructure->Shape(S2);
 #endif
       TopTools_ListIteratorOfListOfShape itsd(myDataStructure->SameDomain(S2));
       for (; itsd.More(); itsd.Next() ) {
 	const TopoDS_Shape& S1 = itsd.Value();
-#ifdef DEB
+#ifdef OCCT_DEBUG
 //	Standard_Integer iS1 = myDataStructure->Shape(S1);
 #endif
 	Standard_Boolean found = KPContains(S1,L1);
@@ -1599,7 +1599,7 @@ void TopOpeBRepBuild_Builder::KPiskoletgeanalyse(const TopOpeBRepDS_Config confi
       ires = RESSHAPE2;
   } // SameOriented
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean TKPB = TopOpeBRepBuild_GettraceKPB();
   if (TKPB) cout<<"ires = "<<ires<<endl;
 #endif
@@ -1661,7 +1661,7 @@ void TopOpeBRepBuild_Builder::KPisdisjanalyse(const TopAbs_State Stsol1, const T
     }
   }
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean TKPB = TopOpeBRepBuild_GettraceKPB();
   if (TKPB) cout<<"ires = "<<ires<<" icla1 "<<icla1<<" icla2 "<<icla2<<endl;
 #endif
@@ -1740,7 +1740,7 @@ void TopOpeBRepBuild_Builder::KPclassFF(const TopoDS_Shape& F1,const TopoDS_Shap
   St1 = KPclassF(F1,F2);
   St2 = KPclassF(F2,F1);
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepBuild_GettraceKPB()) { 
     cout<<"Stf1 ";TopAbs::Print(St1,cout); cout<<" ";
     cout<<"Stf2 ";TopAbs::Print(St2,cout); cout<<endl;
@@ -1757,7 +1757,7 @@ void TopOpeBRepBuild_Builder::KPclassFF(const TopoDS_Shape& F1,const TopoDS_Shap
 
 Standard_Boolean TopOpeBRepBuild_Builder::KPiskoleFF(const TopoDS_Shape& F1,const TopoDS_Shape& F2,TopAbs_State& St1,TopAbs_State& St2)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer iF1; 
   Standard_Boolean tSPS1 = GtraceSPS(F1,iF1);
   Standard_Integer iF2; 
@@ -1799,7 +1799,7 @@ Standard_Boolean TopOpeBRepBuild_Builder::KPContains(const TopoDS_Shape& S,const
 
 Standard_Integer TopOpeBRepBuild_Builder::KPreturn(const Standard_Integer b)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRepBuild_GettraceKPB()) {
     cout<<"--- IsKPart "<<b;
     if ( b == 1 ) cout<<" iskole";

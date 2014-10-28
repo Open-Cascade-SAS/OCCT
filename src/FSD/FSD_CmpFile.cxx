@@ -587,14 +587,14 @@ Storage_BaseDriver& FSD_CmpFile::GetReal(Standard_Real& aValue)
 
   realbuffer[0] = '\0';
   if (!(myStream >> realbuffer)) {
-#ifdef FSD_DEB
+#ifdef OCCT_DEBUG
     cerr << "%%%ERROR: read error of double at offset " << myStream.tellg() << endl;
     cerr << "\t buffer is" << realbuffer<< endl;
 #endif
     Storage_StreamTypeMismatchError::Raise();
   }
   if (!OSD::CStringToReal(realbuffer,aValue)) {
-#ifdef FSD_DEB
+#ifdef OCCT_DEBUG
     cerr << "%%%ERROR: read error of double at offset " << myStream.tellg() << endl;
     cerr << "\t buffer is" << realbuffer<< endl;
 #endif

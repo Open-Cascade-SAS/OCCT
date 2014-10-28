@@ -507,7 +507,7 @@ static Handle(MAT_Arc) MakeArc(const Handle(MAT_Bisector)&     aBisector,
   Handle(MAT_ListOfBisector)   BisectorList;
   Standard_Real                DistExt;
   
-#ifdef DEBUG_Graph
+#ifdef OCCT_DEBUG_Graph
   cout<<"Construction Arc : Index"<<aBisector->IndexNumber()<<endl;
   cout<<"Construction Arc : Bisector"<<aBisector->BisectorNumber()<<endl;
 #endif
@@ -520,7 +520,7 @@ static Handle(MAT_Arc) MakeArc(const Handle(MAT_Bisector)&     aBisector,
   DistExt   = aBisector->DistIssuePoint();
   if (DistExt == Precision::Infinite()) {
     DistExt = 1.0;
-#ifdef DEBUG_Graph
+#ifdef OCCT_DEBUG_Graph
     cout<<"PB:RECUPERATION DISTANCE SUR ISSUEPOINT."<<endl;
 #endif
   }
@@ -558,7 +558,7 @@ static Handle(MAT_Arc) MakeArc(const Handle(MAT_Bisector)&     aBisector,
     NextArc   ->SetNeighbour(MAT_Right,Extremite,CurrentArc);
   }
   
-#ifdef DEBUG_Graph
+#ifdef OCCT_DEBUG_Graph
   cout<<"IndTabArcs = "<<IndTabArcs<<endl;
   cout<<"ArcIndex   = "<<CurrentArc->ArcIndex()<<endl;
 #endif  

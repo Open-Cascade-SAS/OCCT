@@ -21,7 +21,7 @@
 #include <TopOpeBRepTool_box.hxx>
 #include <TopOpeBRep_define.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRep_GettraceSI(); 
 extern Standard_Boolean TopOpeBRep_GetcontextFFOR();
 extern Standard_Integer SAVFFi1; // FacesIntersector
@@ -387,7 +387,7 @@ Standard_Boolean TopOpeBRep_ShapeIntersector::MoreIntersection() const
 {
   Standard_Boolean res = myIntersectionDone;
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRep_GettraceSI() && res) {
     if      ( myFFDone )   cout<<"FF : ";
     else if ( myEEFFDone ) cout<<"    EE : ";
@@ -419,7 +419,7 @@ Standard_Boolean TopOpeBRep_ShapeIntersector::MoreIntersection() const
 //purpose  : 
 //=======================================================================
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 void TopOpeBRep_ShapeIntersector::DumpCurrent(const Standard_Integer K) const
 {
   if      ( myFFDone ) {
@@ -452,7 +452,7 @@ void TopOpeBRep_ShapeIntersector::DumpCurrent(const Standard_Integer) const {}
 //purpose  : 
 //=======================================================================
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 Standard_Integer TopOpeBRep_ShapeIntersector::Index
 (const Standard_Integer K)const
 {
@@ -595,7 +595,7 @@ void TopOpeBRep_ShapeIntersector::FindFFIntersection()
     const TopoDS_Shape& GS1 = myFaceScanner.Current();
     const TopoDS_Shape& GS2 = myFaceExplorer.Current();
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     SAVFFi1 = myFaceScanner.Index(); SAVFFi2 = myFaceExplorer.Index(); 
     if (TopOpeBRep_GettraceSI()) {
       cout<<"?? FF : ";
@@ -693,7 +693,7 @@ void TopOpeBRep_ShapeIntersector::InitEEFFIntersection()
   TopoDS_Shape face1 = myFaceScanner.Current(); // -26-08-96
   TopoDS_Shape face2 = myFaceExplorer.Current(); // -26-08-96
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
   if (TopOpeBRep_GetcontextFFOR()) {
     face1.Orientation(TopAbs_FORWARD); //-05/07
     face2.Orientation(TopAbs_FORWARD); //-05/07
@@ -730,7 +730,7 @@ void TopOpeBRep_ShapeIntersector::FindEEFFIntersection()
     const TopoDS_Shape& GS2 = myEdgeExplorer.Current();
     myEEIntersector.Perform(GS1,GS2);
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
     if (TopOpeBRep_GettraceSI() && myEEIntersector.IsEmpty()) {
       cout<<"    EE : ";
       myEdgeScanner.DumpCurrent(cout);
@@ -1184,7 +1184,7 @@ static Standard_Integer OneShapeIsHalfSpace(const TopoDS_Shape& S1,const TopoDS_
 	  // so this suggestion must be developed carefully. while we don't classify it!
 	  // *****************************************************************************
 	}
-#ifdef TOPOPEBREP_DEB
+#ifdef OCCT_DEBUG
       if( result != 0 )
 	cout << "# one of the SOLIDs probably is a HALF SPACE" << endl;
 #endif

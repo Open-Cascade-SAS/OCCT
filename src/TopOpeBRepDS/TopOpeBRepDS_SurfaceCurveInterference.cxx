@@ -16,7 +16,7 @@
 
 #include <TopOpeBRepDS_SurfaceCurveInterference.ixx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 #include <TopOpeBRepDS_Dumper.hxx>
 #endif
 
@@ -88,14 +88,14 @@ void  TopOpeBRepDS_SurfaceCurveInterference::PCurve
 
 Standard_OStream& TopOpeBRepDS_SurfaceCurveInterference::DumpPCurve
   (Standard_OStream& OS,
-#ifdef DEB
+#ifdef OCCT_DEBUG
    const Standard_Boolean compact
 #else
    const Standard_Boolean
 #endif
    )const
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Dump(OS); OS<<endl;
 
   OS<<"PCurve ";
@@ -116,7 +116,7 @@ Standard_OStream& TopOpeBRepDS_SurfaceCurveInterference::DumpPCurve
 Standard_OStream& TopOpeBRepDS_SurfaceCurveInterference::Dump
   (Standard_OStream& OS) const
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   OS<<"SCI ";TopOpeBRepDS_Dumper::PrintType(myPCurve,OS);OS<<" ";
   TopOpeBRepDS_Interference::Dump(OS);
 #endif

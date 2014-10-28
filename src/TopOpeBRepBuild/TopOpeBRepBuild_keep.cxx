@@ -17,7 +17,7 @@
 #include <TopOpeBRepBuild_Builder.ixx>
 #include <TopOpeBRepDS_define.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Integer GLOBAL_iexE;
 extern Standard_Integer GLOBAL_iexF;
 Standard_Boolean STATIC_trace_iexE = Standard_False;
@@ -57,7 +57,7 @@ Standard_Boolean TopOpeBRepBuild_Builder::GKeepShape1
     pos = ShapePosition(S,LSclass);
     if ( pos != TB ) keep = Standard_False;
   }
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer iS; Standard_Boolean tSPS = GtraceSPS(S,iS);
   Standard_Integer iface = 0, isoli = 0; 
   Standard_Boolean tSPSface = Standard_False;
@@ -96,19 +96,19 @@ Standard_Boolean TopOpeBRepBuild_Builder::GKeepShape1
 // S is used for trace only
 //=======================================================================
 void TopOpeBRepBuild_Builder::GKeepShapes
-#ifdef DEB
+#ifdef OCCT_DEBUG
 (const TopoDS_Shape& S,
 #else
 (const TopoDS_Shape&,
 #endif
  const TopTools_ListOfShape& LSclass,const TopAbs_State TB,const TopTools_ListOfShape& Lin,TopTools_ListOfShape& Lou)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer iS; Standard_Boolean tSPS = GtraceSPS(S,iS);
   if (tSPS) debkeep(iS);
 #endif
   
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer n = 0;
 #endif
   TopTools_ListIteratorOfListOfShape it(Lin);
@@ -121,7 +121,7 @@ void TopOpeBRepBuild_Builder::GKeepShapes
       if ( pos != TB ) keep = Standard_False;
     }
     
-#ifdef DEB
+#ifdef OCCT_DEBUG
     TopAbs_ShapeEnum t = SL.ShapeType();
     if(tSPS){cout<<"GKeepShapes : ";}
     if(tSPS){cout<<"new ";TopAbs::Print(t,cout);cout<<" "<<++n;}

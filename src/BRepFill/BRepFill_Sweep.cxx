@@ -352,7 +352,7 @@ static Standard_Boolean SameParameter(TopoDS_Edge&    E,
   Approx_SameParameter sp( HC3d, Pcurv, S, tol3d );
   if(sp.IsDone() && !sp.IsSameParameter()) Pcurv = sp.Curve2d();
   else if(!sp.IsDone() && !sp.IsSameParameter()){
-#ifdef BREPFILL_DEB
+#ifdef OCCT_DEBUG
     cout<<"echec SameParameter"<<endl;
 #endif  
     return Standard_False;
@@ -360,7 +360,7 @@ static Standard_Boolean SameParameter(TopoDS_Edge&    E,
 
   ResTol = sp.TolReached();
   if(ResTol > tolreached ){
-#ifdef BREPFILL_DEB
+#ifdef OCCT_DEBUG
     cout<<"SameParameter : Tolerance not reached!"<<endl;
     cout<<"tol visee : "<<tol3d<<" tol obtained : "<<ResTol<<endl;
 #endif  
@@ -601,7 +601,7 @@ static void BuildFace(const Handle(Geom_Surface)& S,
       thePlane->UReverse();
     BRepLib_MakeFace MkF( thePlane, WW );
     if (MkF.Error() != BRepLib_FaceDone) {
-#if BREPFILL_DEB
+#ifdef OCCT_DEBUG
       BRepLib_FaceError Err = MkF.Error();
       cout << "Planar Face Error :" <<   Err << endl;
 #endif
@@ -1034,12 +1034,12 @@ static Standard_Boolean Filling(const TopoDS_Shape& EF,
 				  GeomAbs_C1, GeomAbs_C1,
 				  8, 8, 2*NbInt, 0);
     if (!App.HasResult()) {
-#if DEB
+#ifdef OCCT_DEBUG
       cout << "Filling_Approx : Pas de resultat" << endl;
 #endif      
       return Standard_False;
     }
-#if DEB
+#ifdef OCCT_DEBUG
     cout <<  "Filling_Approx Error 3d = " << 
       App.MaxError() << endl;
 #endif
@@ -1234,7 +1234,7 @@ static void SetCommonEdgeInFace(BRepTools_Substitution& aSubstitute,
       Substitute( aSubstitute, OldEdge, NewEdge );
     }
   }
-#if DEB
+#ifdef OCCT_DEBUG
   if (!done) cout << "Substitution of Edge failed" << endl;
 #endif  
 }
@@ -1705,7 +1705,7 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
   LastShape  = Last; 
 
   // It is necessary to check the SameRange on its (PRO13551)
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean issame = Standard_True;
 #endif
   BRep_Builder B;
@@ -1715,7 +1715,7 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
       if (!BRepLib::CheckSameRange(wexp.Current())) {
 	B.SameRange(wexp.Current(), Standard_False);
 	B.SameParameter(wexp.Current(), Standard_False);
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	issame = Standard_False;
 #endif
       }
@@ -1727,14 +1727,14 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
       if (!BRepLib::CheckSameRange(wexp.Current())) {
 	B.SameRange(wexp.Current(), Standard_False); 
 	B.SameParameter(wexp.Current(), Standard_False);
-#ifdef DEB
+#ifdef OCCT_DEBUG
 	issame = Standard_False;
 #endif
       }
     }
   }
 
-#if BREPFILL_DEB
+#ifdef OCCT_DEBUG
   if (!issame) 
     cout<<"Sweep Warning : Edge not SameRange in the limits"<<endl;
 #endif
@@ -2412,7 +2412,7 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
 					   Max(myTol3d, TabErr(isec,ipath)));
       }
       if (Degenerated(isec, ipath)) { 
-#if BREPFILL_DEB
+#ifdef OCCT_DEBUG
 	cout << "Sweep : Degenerated case" << endl;
 #endif
 	hasdegen = Standard_True;
@@ -2984,7 +2984,7 @@ void BRepFill_Sweep::Build(TopTools_MapOfShape& ReversedEdges,
     t2 = M.Column(3);
 
     if (t1.Angle(t2) < myAngMin) {
-#if BREPFILL_DEB
+#ifdef OCCT_DEBUG
       cout << "BRepFill_Sweep::PerformCorner : This is not a corner !" << endl;
 #endif
       return;
@@ -3077,7 +3077,7 @@ void BRepFill_Sweep::Build(TopTools_MapOfShape& ReversedEdges,
   }
   else if ((TheTransition == BRepFill_Right) ||
 	   aTrim.HasSection() ) { 
-#if BREPFILL_DEB
+#ifdef OCCT_DEBUG
     cout << "Fail of TrimCorner" << endl;
 #endif
     return; // Nothing is touched
@@ -3145,7 +3145,7 @@ void BRepFill_Sweep::Build(TopTools_MapOfShape& ReversedEdges,
 	  if (ii==1) BordFirst = Bord1;
 	}
       }
-#if BREPFILL_DEB
+#ifdef OCCT_DEBUG
       else cout << "PerformCorner : Unsymmetry of free border" << endl;
 #endif
     }

@@ -175,7 +175,7 @@ static Standard_Integer DDataStd_GetName (Draw_Interpretor& di,
 //     str.Remove(str.Length());       //remove last ":"
 //     di << str.ToCString(); 
 //   }  
-// #ifndef DEB
+// #ifndef OCCT_DEBUG
 //   return 0 ;
 // #endif
 // }

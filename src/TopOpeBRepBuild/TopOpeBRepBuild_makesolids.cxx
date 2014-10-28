@@ -29,7 +29,7 @@
 #include <TopOpeBRepTool.hxx>
 #include <TopOpeBRepBuild_define.hxx>
 
-#ifdef DEB
+#ifdef OCCT_DEBUG
 extern Standard_Boolean TopOpeBRepDS_GettraceSTRANGE();
 Standard_EXPORT void debgsobu(const Standard_Integer /*iSO*/) {}
 #endif
@@ -41,7 +41,7 @@ Standard_EXPORT void debgsobu(const Standard_Integer /*iSO*/) {}
 void TopOpeBRepBuild_Builder::GSFSMakeSolids      
 (const TopoDS_Shape& SOF,TopOpeBRepBuild_ShellFaceSet& SFS,TopTools_ListOfShape& LOSO)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Integer iSO; Standard_Boolean tSPS = GtraceSPS(SOF,iSO);
   if(tSPS){GdumpSHA(SOF, (char *) "#--- GSFSMakeSolids ");cout<<endl;}
 #endif
@@ -60,7 +60,7 @@ void TopOpeBRepBuild_Builder::GSFSMakeSolids
 void TopOpeBRepBuild_Builder::GSOBUMakeSolids
 (const TopoDS_Shape& SOF,TopOpeBRepBuild_SolidBuilder& SOBU,TopTools_ListOfShape& LOSO)
 {
-#ifdef DEB
+#ifdef OCCT_DEBUG
   Standard_Boolean trcso = TopOpeBRepDS_GettraceSTRANGE();
   Standard_Integer iSO; Standard_Boolean tSPS = GtraceSPS(SOF,iSO);
   if(tSPS){GdumpSHA(SOF, (char *) "#--- GSOBUMakeSolids ");cout<<endl;}
@@ -119,7 +119,7 @@ void TopOpeBRepBuild_Builder::GSOBUMakeSolids
     TopExp_Explorer ex(newSolid,TopAbs_VERTEX);
     Standard_Boolean isempty = ex.More();    
     if (!isempty) {
-#ifdef DEB
+#ifdef OCCT_DEBUG
       if (trcso) cout <<"TopOpeBRepBuild_Builder::GSOBUMakeSolids ->EMPTY SOLID\n";
 #endif
       continue;
