@@ -1,0 +1,14 @@
+puts "============"
+puts "OCC22872"
+puts "============"
+puts ""
+###########################################################
+# BRepClass3d_SolidClassifier::PerformInfinitePoint fails
+###########################################################
+
+restore [locate_data_file bug22872_solid.brep] result
+solidorientation result
+
+set volume 24101.9
+
+set 2dviewer 1
