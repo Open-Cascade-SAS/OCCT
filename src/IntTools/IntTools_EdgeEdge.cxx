@@ -175,8 +175,8 @@ void IntTools_EdgeEdge::Prepare()
     myResCoeff1 = ResolutionCoeff(myCurve1, myRange1);
     myResCoeff2 = ResolutionCoeff(myCurve2, myRange2);
     //
-    myRes1 = Resolution(myCurve1.Curve().Curve(), myCurve1.GetType(), myResCoeff1, myTol);
-    myRes2 = Resolution(myCurve2.Curve().Curve(), myCurve2.GetType(), myResCoeff2, myTol);
+    myRes1 = Resolution(myCurve1.Curve().Curve(), myCurve1.GetType(), myResCoeff1, myTol1);
+    myRes2 = Resolution(myCurve2.Curve().Curve(), myCurve2.GetType(), myResCoeff2, myTol2);
     //
     myPTol1 = 5.e-13;
     aTM = Max(fabs(myRange1.First()), fabs(myRange1.Last()));
@@ -256,6 +256,12 @@ void IntTools_EdgeEdge::FindSolutions(IntTools_SequenceOfRanges& theRanges1,
     return;
   }
   //
+  if (!CheckCoincidence(aT11, aT12, aT21, aT22, myTol, myRes1)) {
+    theRanges1.Append(myRange1);
+    theRanges2.Append(myRange2);
+    return;
+  }
+  //
   Standard_Integer i, j, aNb1, aNb2;
   IntTools_SequenceOfRanges aSegments1, aSegments2;
   //
@@ -292,7 +298,7 @@ void IntTools_EdgeEdge::FindSolutions(const IntTools_Range& theR1,
   Standard_Boolean bOut, bStop, bThin;
   Standard_Real aT11, aT12, aT21, aT22;
   Standard_Real aTB11, aTB12, aTB21, aTB22;
-  Standard_Real aTol, aSmallStep1, aSmallStep2;
+  Standard_Real aSmallStep1, aSmallStep2;
   Standard_Integer iCom;
   Bnd_Box aB1, aB2;
   //
@@ -303,7 +309,6 @@ void IntTools_EdgeEdge::FindSolutions(const IntTools_Range& theR1,
   //
   bThin = Standard_False;
   bStop = Standard_False;
-  aTol  = 2*myTol;
   iCom  = 1;
   //
   do {
@@ -321,7 +326,7 @@ void IntTools_EdgeEdge::FindSolutions(const IntTools_Range& theR1,
     }
     //
     bThin = ((aT12 - aT11) < myRes1) ||
-      (aB1.IsXThin(aTol) && aB1.IsYThin(aTol) && aB1.IsZThin(aTol));    
+      (aB1.IsXThin(myTol) && aB1.IsYThin(myTol) && aB1.IsZThin(myTol));
     //
     bOut = !FindParameters(myCurve2, aTB21, aTB22, myRes2, myPTol2, 
                            myResCoeff2, aB1, aT21, aT22);
@@ -337,8 +342,8 @@ void IntTools_EdgeEdge::FindSolutions(const IntTools_Range& theR1,
       break;
     }
     //
-    bThin = ((aT22 - aT21) < myRes2) || 
-      (aB2.IsXThin(aTol) && aB2.IsYThin(aTol) && aB2.IsZThin(aTol));
+    bThin = ((aT22 - aT21) < myRes2) ||
+      (aB2.IsXThin(myTol) && aB2.IsYThin(myTol) && aB2.IsZThin(myTol));
     //
     bOut = !FindParameters(myCurve1, aTB11, aTB12, myRes1, myPTol1, 
                            myResCoeff1, aB2, aT11, aT12);
@@ -381,16 +386,31 @@ void IntTools_EdgeEdge::FindSolutions(const IntTools_Range& theR1,
   if (bThin) {
     if (iCom != 0) {
       //check intermediate points
-      Standard_Real aT1, aT2;
-      gp_Pnt aP1, aP2;
+      Standard_Boolean bSol;
+      Standard_Real aT1;
+      gp_Pnt aP1;
+      GeomAPI_ProjectPointOnCurve aProjPC;
       //
       aT1 = (aT11 + aT12) * .5;
-      aT2 = (aT21 + aT22) * .5;
-      //
       myGeom1->D0(aT1, aP1);
-      myGeom2->D0(aT2, aP2);
       //
-      if (!aP1.IsEqual(aP2, myTol)) {
+      aProjPC.Init(myGeom2, aT21, aT22);
+      aProjPC.Perform(aP1);
+      //
+      if (aProjPC.NbPoints()) {
+        bSol = aProjPC.LowerDistance() <= myTol;
+      }
+      else {
+        Standard_Real aT2;
+        gp_Pnt aP2;
+        //
+        aT2 = (aT21 + aT22) * .5;
+        myGeom2->D0(aT2, aP2);
+        //
+        bSol = aP1.IsEqual(aP2, myTol);
+      }
+      //
+      if (!bSol) {
         return;
       }
     }
@@ -530,15 +550,24 @@ void IntTools_EdgeEdge::MergeSolutions(const IntTools_SequenceOfRanges& theRange
   }
   //
   IntTools_Range aRi1, aRi2, aRj1, aRj2;
+  Standard_Boolean bCond;
   Standard_Integer i, j;
   TopAbs_ShapeEnum aType;
-  Standard_Real aTi11, aTi12, aTi21, aTi22,
-                aTj11, aTj12, aTj21, aTj22, 
-                dTR1, dTR2;
+  Standard_Real aT11, aT12, aT21, aT22;
+  Standard_Real aTi11, aTi12, aTi21, aTi22;
+  Standard_Real aTj11, aTj12, aTj21, aTj22;
+  Standard_Real aRes1, aRes2, dTR1, dTR2;
   BOPCol_MapOfInteger aMI;
   //
-  dTR1 = 20*myRes1;
-  dTR2 = (myRange2.Last() - myRange2.First()) / 2.;
+  aRes1 = Resolution(myCurve1.Curve().Curve(), 
+                     myCurve1.GetType(), myResCoeff1, myTol);
+  aRes2 = Resolution(myCurve2.Curve().Curve(), 
+                     myCurve2.GetType(), myResCoeff2, myTol);
+  //
+  myRange1.Range(aT11, aT12);
+  myRange2.Range(aT21, aT22);
+  dTR1 = 20*aRes1;
+  dTR2 = 20*aRes2;
   aType = TopAbs_VERTEX;
   //
   for (i = 1; i <= aNbCP;) {
@@ -565,8 +594,15 @@ void IntTools_EdgeEdge::MergeSolutions(const IntTools_SequenceOfRanges& theRange
       //
       aRj1.Range(aTj11, aTj12);
       aRj2.Range(aTj21, aTj22);
-      if ((fabs(aTi12 - aTj11) < dTR1) &&
-          (fabs(aTi22 - aTj21) < dTR2)) {
+      //
+      bCond = (fabs(aTi12 - aTj11) < dTR1) ||
+        (bSplit2 && (fabs(aTj12 - aTi11) < dTR1));
+      if (bCond && bSplit2) {
+        bCond = (fabs((Max(aTi22, aTj22) - Min(aTi21, aTj21)) - 
+                      ((aTi22 - aTi21) + (aTj22 - aTj21))) < dTR2);
+      }
+      //
+      if (bCond) {
         aTi11 = Min(aTi11, aTj11);
         aTi12 = Max(aTi12, aTj12);
         aTi21 = Min(aTi21, aTj21);
@@ -579,8 +615,8 @@ void IntTools_EdgeEdge::MergeSolutions(const IntTools_SequenceOfRanges& theRange
       }
     }
     //
-    if ((aTi11 == myRange1.First() && aTi12 == myRange1.Last()) ||
-        (aTi21 == myRange2.First() && aTi22 == myRange2.Last())) {
+    if (((fabs(aT11 - aTi11) < myRes1) && (fabs(aT12 - aTi12) < myRes1)) ||
+        ((fabs(aT21 - aTi21) < myRes2) && (fabs(aT22 - aTi22) < myRes2))) {
       aType = TopAbs_EDGE;
       myCommonParts.Clear();
     }
@@ -649,7 +685,7 @@ void IntTools_EdgeEdge::FindBestSolution(const Standard_Real aT11,
                                          Standard_Real& aT2)
 {
   Standard_Integer i, aNbS, iErr;
-  Standard_Real aDMin, aD, aCrit;
+  Standard_Real aDMin, aD, aCrit, aRes1;
   Standard_Real aT1x, aT2x, aT1p, aT2p;
   GeomAPI_ProjectPointOnCurve aProj;
   IntTools_SequenceOfRanges aSeg1;
@@ -661,8 +697,10 @@ void IntTools_EdgeEdge::FindBestSolution(const Standard_Real aT11,
   aD = 100.;
   aCrit = 0.;//1.e-16;
   //
+  aRes1 = Resolution(myCurve1.Curve().Curve(), 
+                     myCurve1.GetType(), myResCoeff1, myTol);
   aNbS = 10;
-  SplitRangeOnSegments(aT11, aT12, 3*myRes1, aNbS, aSeg1);
+  SplitRangeOnSegments(aT11, aT12, 3*aRes1, aNbS, aSeg1);
   aNbS = aSeg1.Length();
   //
   aProj.Init(myGeom2, aT21, aT22);
