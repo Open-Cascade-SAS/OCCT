@@ -1,0 +1,31 @@
+puts "=========="
+puts "OCC24746"
+puts "=========="
+puts ""
+#######################
+# Bug in BRepAlgoAPI
+#######################
+
+pload XDE
+
+ReadStep doc [locate_data_file bug24746_ENI.stp]
+XGetShape c doc 0:1:1:1
+explode c f
+explode c_2 e
+bop c_1 c_2
+bopcommon res1
+nbshapes res1
+bop c_1 c_2_4
+bopcommon result
+
+set nb_v_good 2
+set nb_e_good 1
+set nb_w_good 1
+set nb_f_good 0
+set nb_sh_good 0
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 5
+
+set 2dviewer 1
