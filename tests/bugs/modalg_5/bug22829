@@ -1,0 +1,19 @@
+puts "=========="
+puts "OCC22829"
+puts "=========="
+puts ""
+###############################################
+# Incorrect result of boolean Fuse operation
+###############################################
+
+restore [locate_data_file bug22829_Solid_3.brep] a
+checkshape a
+
+restore [locate_data_file bug22829_Solid_7.brep] b
+checkshape b
+
+bop a b
+bopfuse result
+
+set square 420.355
+set 2dviewer 1
