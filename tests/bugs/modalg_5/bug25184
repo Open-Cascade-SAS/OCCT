@@ -1,0 +1,41 @@
+puts "================"
+puts "OCC25184"
+puts "================"
+puts ""
+#######################################################################
+# Non-deterministic order of wires in the result of General Fuse
+#######################################################################
+
+restore [locate_data_file bug25184_Input_0.brep] b0
+restore [locate_data_file bug25184_Input_1.brep] b1
+restore [locate_data_file bug25184_Input_2.brep] b2
+restore [locate_data_file bug25184_Input_3.brep] b3
+restore [locate_data_file bug25184_Input_4.brep] b4
+
+bclearobjects
+bcleartools
+baddobjects b0 b1 b2 b3 b4
+
+bfillds
+
+bbuild r 
+explode r w
+regexp {Mass +: +([-0-9.+eE]+)} [lprops r_43] full m0
+puts "Length(0) = $m0"
+
+set N 10
+for {set i 1} {$i < $N} {incr i} {
+  bbuild r 
+  explode r w
+  regexp {Mass +: +([-0-9.+eE]+)} [lprops r_43] full mi
+  puts "Length($i) = $mi"
+  if { $mi != $m0 } {
+    set N 0
+    break
+  }
+}
+if { $N == 0 } {
+  puts "Error: Bad order of wires in the result of General Fuse"
+} else {
+  puts "OK: Good order of wires in the result of General Fuse"
+} 

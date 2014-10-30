@@ -126,13 +126,15 @@ class BOPAlgo_ShapeBox2D {
   Bnd_Box2d myBox2D;
 };
 //
-typedef NCollection_DataMap\
-  <Standard_Integer, BOPAlgo_ShapeBox2D, TColStd_MapIntegerHasher> \
-  BOPAlgo_DataMapOfIntegerShapeBox2D; 
-//
-typedef BOPAlgo_DataMapOfIntegerShapeBox2D::Iterator \
-  BOPAlgo_DataMapIteratorOfDataMapOfIntegerShapeBox2D; 
-//
+typedef NCollection_IndexedDataMap 
+  <Standard_Integer, 
+  BOPAlgo_ShapeBox2D, 
+  TColStd_MapIntegerHasher>  BOPAlgo_IndexedDataMapOfIntegerShapeBox2D; 
+
+typedef NCollection_IndexedDataMap 
+  <TopoDS_Shape, 
+  TopoDS_Shape, 
+  TopTools_ShapeMapHasher> BOPCol_IndexedDataMapOfShapeShape; 
 //
 //=======================================================================
 //function : 
@@ -442,8 +444,6 @@ void BOPAlgo_BuilderFace::PerformLoops()
     myLoopsInternal.Append(aW);
   }//for (; aItM.More(); aItM.Next()) {
 }
-//
-
 //=======================================================================
 //function : PerformAreas
 //purpose  : 
@@ -451,22 +451,18 @@ void BOPAlgo_BuilderFace::PerformLoops()
 void BOPAlgo_BuilderFace::PerformAreas()
 {
   Standard_Boolean bIsGrowth, bIsHole;
-  Standard_Integer k,aNbHoles;
+  Standard_Integer k, aNbHoles, aNbDMISB, m, aNbMSH, aNbInOutMap;;
   Standard_Real aTol;
   TopLoc_Location aLoc;
   Handle(Geom_Surface) aS;
   BRep_Builder aBB;
   TopoDS_Face aFace;
-  //
   BOPCol_ListIteratorOfListOfInteger aItLI;
   BOPCol_IndexedMapOfShape aMHE;
-  BOPCol_DataMapOfShapeShape aInOutMap;
-  BOPCol_DataMapIteratorOfDataMapOfShapeShape aItDMSS;
-  BOPCol_DataMapOfShapeListOfShape aMSH;
-  BOPCol_DataMapIteratorOfDataMapOfShapeListOfShape aItMSH;
   BOPCol_ListIteratorOfListOfShape aIt1;
-  BOPAlgo_DataMapOfIntegerShapeBox2D aDMISB(100);
-  BOPAlgo_DataMapIteratorOfDataMapOfIntegerShapeBox2D aItDMISB;
+  BOPCol_IndexedDataMapOfShapeListOfShape aMSH;
+  BOPCol_IndexedDataMapOfShapeShape aInOutMap;
+  BOPAlgo_IndexedDataMapOfIntegerShapeBox2D aDMISB(100);
   //
   BOPCol_Box2DBndTreeSelector aSelector;
   BOPCol_Box2DBndTree aBBTree;
@@ -516,14 +512,14 @@ void BOPAlgo_BuilderFace::PerformAreas()
     aSB2D.SetBox2D(aBox2D);
     aSB2D.SetIsHole(bIsHole);
     //
-    aDMISB.Bind(k, aSB2D);
-  }
+    aDMISB.Add(k, aSB2D);
+  }// for (k=0 ; aIt1.More(); aIt1.Next(), ++k) {
   //
   // 2. Prepare TreeFiller
-  aItDMISB.Initialize(aDMISB);
-  for (; aItDMISB.More(); aItDMISB.Next()) {
-    k=aItDMISB.Key();
-    const BOPAlgo_ShapeBox2D& aSB2D=aItDMISB.Value();
+  aNbDMISB=aDMISB.Extent();
+  for (m=1; m<=aNbDMISB; ++m) { 
+    k=aDMISB.FindKey(m);
+    const BOPAlgo_ShapeBox2D& aSB2D=aDMISB.FindFromIndex(m);
     //
     bIsHole=aSB2D.IsHole();
     if (bIsHole) {
@@ -537,10 +533,8 @@ void BOPAlgo_BuilderFace::PerformAreas()
   //
   // 4. Find outer growth shell that is most close 
   //    to each hole shell
-  aItDMISB.Initialize(aDMISB);
-  for (; aItDMISB.More(); aItDMISB.Next()) {
-    k=aItDMISB.Key();
-    const BOPAlgo_ShapeBox2D& aSB2D=aItDMISB.Value();
+  for (m=1; m<=aNbDMISB; ++m) {
+    const BOPAlgo_ShapeBox2D& aSB2D=aDMISB.FindFromIndex(m);
     bIsHole=aSB2D.IsHole();
     if (bIsHole) {
       continue;
@@ -559,49 +553,48 @@ void BOPAlgo_BuilderFace::PerformAreas()
     aItLI.Initialize(aLI);
     for (; aItLI.More(); aItLI.Next()) {
       k=aItLI.Value();
-      const BOPAlgo_ShapeBox2D& aSB2Dk=aDMISB.Find(k);
+      const BOPAlgo_ShapeBox2D& aSB2Dk=aDMISB.FindFromKey(k);
       const TopoDS_Shape& aHole=aSB2Dk.Shape();
       //
       if (!IsInside(aHole, aF, myContext)){
         continue;
       }
       //
-      if (aInOutMap.IsBound (aHole)){
-        const TopoDS_Shape& aF2=aInOutMap(aHole);
+      if (aInOutMap.Contains(aHole)){
+        TopoDS_Shape& aF2=aInOutMap.ChangeFromKey(aHole);
         if (IsInside(aF, aF2, myContext)) {
-          aInOutMap.UnBind(aHole);
-          aInOutMap.Bind (aHole, aF);
+          aF2=aF;
         }
       }
       else{
-        aInOutMap.Bind(aHole, aF);
+        aInOutMap.Add(aHole, aF);
       }
     }
-  }
+  }// for (m=1; m<=aNbDMISB; ++m)
   //
   // 5. Map [Face/Holes] -> aMSH 
-  aItDMSS.Initialize(aInOutMap);
-  for (; aItDMSS.More(); aItDMSS.Next()) {
-    const TopoDS_Shape& aHole=aItDMSS.Key();
-    const TopoDS_Shape& aF=aItDMSS.Value();
+  aNbInOutMap=aInOutMap.Extent();
+  for (m=1; m<=aNbInOutMap; ++m) {
+    const TopoDS_Shape& aHole=aInOutMap.FindKey(m);
+    const TopoDS_Shape& aF=aInOutMap.FindFromIndex(m);
     //
-    if (aMSH.IsBound(aF)) {
-      BOPCol_ListOfShape& aLH=aMSH.ChangeFind(aF);
+    if (aMSH.Contains(aF)) {
+      BOPCol_ListOfShape& aLH=aMSH.ChangeFromKey(aF);
       aLH.Append(aHole);
     }
     else {
       BOPCol_ListOfShape aLH;
       aLH.Append(aHole);
-      aMSH.Bind(aF, aLH);
+      aMSH.Add(aF, aLH);
     }
   }
   //
-  // 6. Add aHoles to Faces, 
-  aItMSH.Initialize(aMSH);
-  for (; aItMSH.More(); aItMSH.Next()) {
-    TopoDS_Face aF=(*(TopoDS_Face *)(&aItMSH.Key()));
+  // 6. Add aHoles to Faces
+  aNbMSH=aMSH.Extent();
+  for (m=1; m<=aNbMSH; ++m) {
+    TopoDS_Face aF=(*(TopoDS_Face *)(&aMSH.FindKey(m)));
+    const BOPCol_ListOfShape& aLH=aMSH.FindFromIndex(m);
     //
-    const BOPCol_ListOfShape& aLH=aItMSH.Value();
     aIt1.Initialize(aLH);
     for (; aIt1.More(); aIt1.Next()) {
       TopoDS_Shape aWHole;
@@ -620,9 +613,8 @@ void BOPAlgo_BuilderFace::PerformAreas()
   // 7. Fill myAreas
   //    NB:These aNewFaces are draft faces that 
   //    do not contain any internal shapes
-  aItDMISB.Initialize(aDMISB);
-  for (; aItDMISB.More(); aItDMISB.Next()) {
-    const BOPAlgo_ShapeBox2D& aSB2D=aItDMISB.Value();
+  for (m=1; m<=aNbDMISB; ++m) {
+    const BOPAlgo_ShapeBox2D& aSB2D=aDMISB.FindFromIndex(m);
     bIsHole=aSB2D.IsHole();
     if (!bIsHole) {
       const TopoDS_Shape aF=aSB2D.Shape();
