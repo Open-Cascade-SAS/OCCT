@@ -203,139 +203,93 @@ void Extrema_GenExtCS::Perform (const Adaptor3d_Curve& C,
   TUVsup(1) = mytsup;
   TUVsup(2) = trimusup;
   TUVsup(3) = trimvsup;
-  // 18/02/02 akm vvv : (OCC163) bad extremas - extrusion surface versus the line.
-  //                    Try to preset the initial solution as extrema between
-  //                    extrusion direction and the curve.
-  if (myS->GetType() == GeomAbs_SurfaceOfExtrusion)
+
+  // Number of particles used in PSO algorithm (particle swarm optimization).
+  const Standard_Integer aNbParticles = 32;
+
+  math_PSOParticlesPool aParticles(aNbParticles, 3);
+
+  math_Vector aMinTUV(1,3);
+  aMinTUV = TUVinf + (TUVsup - TUVinf) / aBorderDivisor;
+
+  math_Vector aMaxTUV(1,3); 
+  aMaxTUV = TUVsup - (TUVsup - TUVinf) / aBorderDivisor;
+
+  Standard_Real aStepCU = (aMaxTUV(1) - aMinTUV(1)) / mytsample;
+  Standard_Real aStepSU = (aMaxTUV(2) - aMinTUV(2)) / myusample;
+  Standard_Real aStepSV = (aMaxTUV(3) - aMinTUV(3)) / myvsample;
+
+  // Correct number of curve samples in case of low resolution
+  Standard_Real aScaleFactor = 5.0;
+  Standard_Real aResolutionCU = aStepCU / C.Resolution (1.0);
+
+  Standard_Real aMinResolution = aScaleFactor * Min (aResolutionCU,
+    Min (aStepSU / myS->UResolution (1.0), aStepSV / myS->VResolution (1.0)));
+
+  if (aMinResolution > Epsilon (1.0))
   {
-    gp_Dir aDir = myS->Direction();
-    Handle(Adaptor3d_HCurve) aCurve = myS->BasisCurve();
-    Standard_Real dfUFirst = aCurve->FirstParameter();
-    // Create iso line of U=U0
-    GeomAdaptor_Curve anAx(new Geom_Line(aCurve->Value(dfUFirst), aDir),
-      trimvmin, trimvsup);
-    Extrema_ExtCC aLocator(C, anAx);
-    if (aLocator.IsDone() && aLocator.NbExt()>0)
+    if (aResolutionCU > aMinResolution)
     {
-      Standard_Integer iExt;
-      // Try to find all extremas
-      Extrema_POnCurv aP1, aP2;
-      for (iExt=1; iExt<=aLocator.NbExt(); iExt++)
-      {
-        aLocator.Points (iExt, aP1, aP2);
-        // Parameter on curve
-        TUV(1) = aP1.Parameter();
-        // To find parameters on surf, try ExtPS
-        Extrema_ExtPS aPreciser (aP1.Value(), *myS, mytol2, mytol2);
-        if (aPreciser.IsDone())
-        {
-          // Managed to find extremas between point and surface
-          Standard_Integer iPExt;
-          for (iPExt=1; iPExt<=aPreciser.NbExt(); iPExt++)
-          {
-            aPreciser.Point(iPExt).Parameter(TUV(2),TUV(3));
-            math_FunctionSetRoot S1 (myF,TUV,Tol,TUVinf,TUVsup);
-          }
-        }
-        else
-        {
-          // Failed... try the point on iso line
-          TUV(2) = dfUFirst;
-          TUV(3) = aP2.Parameter();
-          math_FunctionSetRoot S1 (myF,TUV,Tol,TUVinf,TUVsup);
-        }
-      } // for (iExt=1; iExt<=aLocator.NbExt(); iExt++)
-    } // if (aLocator.IsDone() && aLocator.NbExt()>0)
-  } // if (myS.Type() == GeomAbs_ExtrusionSurface)
-  else
-  {
-    // Number of particles used in PSO algorithm (particle swarm optimization).
-    const Standard_Integer aNbParticles = 32;
+      const Standard_Integer aMaxNbNodes = 50;
 
-    math_PSOParticlesPool aParticles(aNbParticles, 3);
+      mytsample = Min(aMaxNbNodes,
+        RealToInt(mytsample * aResolutionCU / aMinResolution));
 
-    math_Vector aMinTUV(1,3);
-    aMinTUV = TUVinf + (TUVsup - TUVinf) / aBorderDivisor;
-
-    math_Vector aMaxTUV(1,3); 
-    aMaxTUV = TUVsup - (TUVsup - TUVinf) / aBorderDivisor;
-
-    Standard_Real aStepCU = (aMaxTUV(1) - aMinTUV(1)) / mytsample;
-    Standard_Real aStepSU = (aMaxTUV(2) - aMinTUV(2)) / myusample;
-    Standard_Real aStepSV = (aMaxTUV(3) - aMinTUV(3)) / myvsample;
-
-    // Correct number of curve samples in case of low resolution
-    Standard_Real aScaleFactor = 5.0;
-    Standard_Real aResolutionCU = aStepCU / C.Resolution (1.0);
-
-    Standard_Real aMinResolution = aScaleFactor * Min (aResolutionCU,
-      Min (aStepSU / myS->UResolution (1.0), aStepSV / myS->VResolution (1.0)));
-
-    if (aMinResolution > Epsilon (1.0))
-    {
-      if (aResolutionCU > aMinResolution)
-      {
-        const Standard_Integer aMaxNbNodes = 50;
-
-        mytsample = Min(aMaxNbNodes,
-                        RealToInt(mytsample * aResolutionCU / aMinResolution));
-
-        aStepCU = (aMaxTUV(1) - aMinTUV(1)) / mytsample;
-      }
+      aStepCU = (aMaxTUV(1) - aMinTUV(1)) / mytsample;
     }
-
-    // Pre-compute curve sample points.
-    TColgp_HArray1OfPnt aCurvPnts (0, mytsample);
-
-    Standard_Real aCU = aMinTUV(1);
-    for (Standard_Integer aCUI = 0; aCUI <= mytsample; aCUI++, aCU += aStepCU)
-      aCurvPnts.SetValue (aCUI, C.Value (aCU));
-
-    PSO_Particle* aParticle = aParticles.GetWorstParticle();
-    // Select specified number of particles from pre-computed set of samples
-    Standard_Real aSU = aMinTUV(2);
-    for (Standard_Integer aSUI = 0; aSUI <= myusample; aSUI++, aSU += aStepSU)
-    {
-      Standard_Real aSV = aMinTUV(3);
-      for (Standard_Integer aSVI = 0; aSVI <= myvsample; aSVI++, aSV += aStepSV)
-      {
-        Standard_Real aCU = aMinTUV(1);
-        for (Standard_Integer aCUI = 0; aCUI <= mytsample; aCUI++, aCU += aStepCU)
-        {
-          Standard_Real aSqDist = mySurfPnts->Value(aSUI, aSVI).SquareDistance(aCurvPnts.Value(aCUI)); 
-
-          if (aSqDist < aParticle->Distance)
-          {
-            aParticle->Position[0] = aCU;
-            aParticle->Position[1] = aSU;
-            aParticle->Position[2] = aSV;
-
-            aParticle->BestPosition[0] = aCU;
-            aParticle->BestPosition[1] = aSU;
-            aParticle->BestPosition[2] = aSV;
-
-            aParticle->Distance     = aSqDist;
-            aParticle->BestDistance = aSqDist;
-
-            aParticle = aParticles.GetWorstParticle();
-          }
-        }
-      }
-    }
-
-    math_Vector aStep(1,3);
-    aStep(1) = aStepCU;
-    aStep(2) = aStepSU;
-    aStep(3) = aStepSV;
-
-    // Find min approximation
-    Standard_Real aValue;
-    Extrema_GlobOptFuncCS aFunc(&C, myS);
-    math_PSO aPSO(&aFunc, TUVinf, TUVsup, aStep);
-    aPSO.Perform(aParticles, aNbParticles, aValue, TUV);
-
-    math_FunctionSetRoot anA (myF, TUV, Tol, TUVinf, TUVsup, 100, Standard_False);
   }
+
+  // Pre-compute curve sample points.
+  TColgp_HArray1OfPnt aCurvPnts (0, mytsample);
+
+  Standard_Real aCU = aMinTUV(1);
+  for (Standard_Integer aCUI = 0; aCUI <= mytsample; aCUI++, aCU += aStepCU)
+    aCurvPnts.SetValue (aCUI, C.Value (aCU));
+
+  PSO_Particle* aParticle = aParticles.GetWorstParticle();
+  // Select specified number of particles from pre-computed set of samples
+  Standard_Real aSU = aMinTUV(2);
+  for (Standard_Integer aSUI = 0; aSUI <= myusample; aSUI++, aSU += aStepSU)
+  {
+    Standard_Real aSV = aMinTUV(3);
+    for (Standard_Integer aSVI = 0; aSVI <= myvsample; aSVI++, aSV += aStepSV)
+    {
+      Standard_Real aCU = aMinTUV(1);
+      for (Standard_Integer aCUI = 0; aCUI <= mytsample; aCUI++, aCU += aStepCU)
+      {
+        Standard_Real aSqDist = mySurfPnts->Value(aSUI, aSVI).SquareDistance(aCurvPnts.Value(aCUI)); 
+
+        if (aSqDist < aParticle->Distance)
+        {
+          aParticle->Position[0] = aCU;
+          aParticle->Position[1] = aSU;
+          aParticle->Position[2] = aSV;
+
+          aParticle->BestPosition[0] = aCU;
+          aParticle->BestPosition[1] = aSU;
+          aParticle->BestPosition[2] = aSV;
+
+          aParticle->Distance     = aSqDist;
+          aParticle->BestDistance = aSqDist;
+
+          aParticle = aParticles.GetWorstParticle();
+        }
+      }
+    }
+  }
+
+  math_Vector aStep(1,3);
+  aStep(1) = aStepCU;
+  aStep(2) = aStepSU;
+  aStep(3) = aStepSV;
+
+  // Find min approximation
+  Standard_Real aValue;
+  Extrema_GlobOptFuncCS aFunc(&C, myS);
+  math_PSO aPSO(&aFunc, TUVinf, TUVsup, aStep);
+  aPSO.Perform(aParticles, aNbParticles, aValue, TUV);
+
+  math_FunctionSetRoot anA (myF, TUV, Tol, TUVinf, TUVsup, 100, Standard_False);
 
   myDone = Standard_True;
 }
