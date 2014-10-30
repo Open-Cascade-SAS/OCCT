@@ -1,0 +1,83 @@
+puts "========="
+puts "OCC24404"
+puts "========="
+puts ""
+######################################################################
+# The function BRepTools::UVBounds gives wrong result for the face
+######################################################################
+
+# case 1
+box b1 1500 1500 1500
+explode b1 f
+copy b1_4 b1
+don b1
+regexp {([-0-9.+eE]+)\n([-0-9.+eE]+)\n([-0-9.+eE]+)\n([-0-9.+eE]+)} [xbounds b1] dump x1 y1 x2 y2
+if { $x1 > 1.e-10 || $y1 != 1500 || $x2 > 1.e-10 || $y2 != 1500} {
+  puts "Error: Case1: Wrong boundaries of the face"
+} else {
+  puts "OK: Case1: Correct boundaries of the face"
+}
+
+# case 2
+circle c1 1361.60462531413 1500 275.105307765905 0 1 0 182.781239888725
+mkedge e c1
+wire w e
+mkplane b2 w
+bcut b1 b1 b2
+explode b1 f
+copy b1_1 b1
+don b1
+regexp {([-0-9.+eE]+)\n([-0-9.+eE]+)\n([-0-9.+eE]+)\n([-0-9.+eE]+)} [xbounds b1] dump x1 y1 x2 y2
+if { $x1 > 1.e-10 || $y1 != 1500 || $x2 > 1.e-10 || $y2 != 1500} {
+  puts "Error: Case2: Wrong boundaries of the face"
+} else {
+  puts "OK: Case2: Correct boundaries of the face"
+}
+
+# case 3
+circle c2 398.623694869499 1500 5.77182937332096 0 1 0 181.948898616306
+mkedge e c2
+wire w e
+mkplane b2 w
+bcut b1 b1 b2
+explode b1 f
+copy b1_1 b1
+don b1
+regexp {([-0-9.+eE]+)\n([-0-9.+eE]+)\n([-0-9.+eE]+)\n([-0-9.+eE]+)} [xbounds b1] dump x1 y1 x2 y2
+if { $x1 > 1.e-10 || $y1 != 1500 || $x2 > 1.e-10 || $y2 != 1500} {
+  puts "Error: Case3: Wrong boundaries of the face"
+} else {
+  puts "OK: Case3: Correct boundaries of the face"
+}
+
+# case 4
+circle c3 66.2457890511211 1500 832.500519113239 0 1 0 176.393473166564
+mkedge e c3
+wire w e
+mkplane b2 w
+bcut b1 b1 b2
+explode b1 f
+copy b1_1 b1
+don b1
+regexp {([-0-9.+eE]+)\n([-0-9.+eE]+)\n([-0-9.+eE]+)\n([-0-9.+eE]+)} [xbounds b1] dump x1 y1 x2 y2
+if { $x1 > 1.e-10 || $y1 != 1500 || $x2 > 1.e-10 || $y2 != 1500} {
+  puts "Error: Case4: Wrong boundaries of the face"
+} else {
+  puts "OK: Case4: Correct boundaries of the face"
+}
+
+# case 5
+circle c4 1177.73545803307 1500 1406.03245550006 0 1 0 150.768085993996
+mkedge e c4
+wire w e
+mkplane b2 w
+bcut b1 b1 b2
+explode b1 f
+copy b1_1 b1
+don b1
+regexp {([-0-9.+eE]+)\n([-0-9.+eE]+)\n([-0-9.+eE]+)\n([-0-9.+eE]+)} [xbounds b1] dump x1 y1 x2 y2
+if { $x1 > 1.e-10 || $y1 != 1500 || $x2 > 1.e-10 || $y2 != 1500} {
+  puts "Error: Case4: Wrong boundaries of the face"
+} else {
+  puts "OK: Case4: Correct boundaries of the face"
+}
