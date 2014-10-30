@@ -781,6 +781,7 @@
     <None Include="..\..\..\..\Common\res\coloredm.bmp" />
     <None Include="..\..\..\..\Common\res\MainFrame.ico" />
     <None Include="..\..\..\..\Common\res\occ_logo.bmp" />
+    <None Include="..\..\..\..\Common\res\ToolbarRayTracing.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

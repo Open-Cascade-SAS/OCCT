@@ -31,6 +31,9 @@ public:
 
 	DECLARE_MESSAGE_MAP()
 
+//Attributes
+protected:
+	CToolBar m_RTToolBar;
 };
 
 #endif // !defined(AFX_OCC_3DCHILDFRAME_H__84879CFC_7EE3_11D7_8632_0060B0EE281E__INCLUDED_)

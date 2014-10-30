@@ -67,6 +67,7 @@ IDR_2dCHILDFRAME        BITMAP                  "2dChildFrameTB.bmp"
 IDR_3dCHILDFRAME        BITMAP                  "3dChildFrameTB.bmp"
 IDR_TB_AIS              BITMAP                  "AIS_TB.bmp"
 IDB_coloredmesh         BITMAP                  "coloredm.bmp"
+IDR_RAY_TRACING         BITMAP                  "ToolbarRayTracing.bmp"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -280,6 +281,7 @@ BEGIN
     PUSHBUTTON      "Change dimension color",IDC_DimensionColor,105,156,63,24,BS_MULTILINE
     CONTROL         "",IDC_Flyout,"msctls_trackbar32",TBS_TOP | TBS_TOOLTIPS | WS_TABSTOP,73,112,100,20
 END
+
 IDD_DIALOG_STEREO DIALOGEX 0, 0, 166, 177
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Configure stereo"
@@ -384,6 +386,14 @@ BEGIN
     SEPARATOR
     BUTTON      ID_OBJECT_REMOVE
     BUTTON      ID_OBJECT_DIM
+END
+
+IDR_RAY_TRACING TOOLBAR  20, 20
+BEGIN
+    BUTTON      ID_OBJECT_RAY_TRACING
+    BUTTON      ID_OBJECT_SHADOWS
+    BUTTON      ID_OBJECT_REFLECTIONS
+    BUTTON      ID_OBJECT_ANTI_ALIASING
 END
 
 

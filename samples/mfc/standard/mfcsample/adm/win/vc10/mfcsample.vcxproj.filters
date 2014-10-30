@@ -285,5 +285,8 @@
     <None Include="..\..\..\..\Common\res\occ_logo.bmp">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="..\..\..\..\Common\res\ToolbarRayTracing.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

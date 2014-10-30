@@ -25,6 +25,7 @@
 #define IDR_TB_AIS                      149
 #define IDD_GrilleRectangulaire         150
 #define IDD_GrilleCirculaire            151
+#define IDR_RAY_TRACING                 182
 #define IDD_COLORMESH                   552
 #define IDB_coloredmesh                 554
 #define IDC_RICHEDIT_ResultDialog       1001
@@ -126,6 +127,10 @@
 #define ID_BUTTON2DGridRectPoints       32779
 #define ID_BUTTON2DGridCircLines        32780
 #define ID_OBJECT_REMOVE                32796
+#define ID_OBJECT_RAY_TRACING           32898
+#define ID_OBJECT_SHADOWS               32899
+#define ID_OBJECT_REFLECTIONS           32900
+#define ID_OBJECT_ANTI_ALIASING         32902
 #define ID_BUTTONZoomAll                40000
 #define ID_OBJECT_ERASE                 40001
 #define ID_BUTTONZoomWin                40002

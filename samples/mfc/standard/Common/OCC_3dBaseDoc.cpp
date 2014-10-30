@@ -42,6 +42,17 @@ BEGIN_MESSAGE_MAP(OCC_3dBaseDoc, OCC_BaseDoc)
   //}}AFX_MSG_MAP
   ON_COMMAND_EX_RANGE(ID_OBJECT_MATERIAL_BRASS,ID_OBJECT_MATERIAL_DEFAULT, OnObjectMaterialRange)
   ON_UPDATE_COMMAND_UI_RANGE(ID_OBJECT_MATERIAL_BRASS,ID_OBJECT_MATERIAL_DEFAULT, OnUpdateObjectMaterialRange)
+
+  //RayTracing
+  ON_COMMAND(ID_OBJECT_RAY_TRACING,OnObjectRayTracing)
+  ON_COMMAND(ID_OBJECT_SHADOWS,OnObjectShadows)
+  ON_COMMAND(ID_OBJECT_REFLECTIONS,OnObjectReflections)
+  ON_COMMAND(ID_OBJECT_ANTI_ALIASING,OnObjectAntiAliasing)
+
+  ON_UPDATE_COMMAND_UI(ID_OBJECT_RAY_TRACING, OnUpdateV3dButtons)
+  ON_UPDATE_COMMAND_UI(ID_OBJECT_SHADOWS, OnUpdateV3dButtons)
+  ON_UPDATE_COMMAND_UI(ID_OBJECT_REFLECTIONS, OnUpdateV3dButtons)
+  ON_UPDATE_COMMAND_UI(ID_OBJECT_ANTI_ALIASING, OnUpdateV3dButtons)
 END_MESSAGE_MAP()
 
 
@@ -60,6 +71,11 @@ OCC_3dBaseDoc::OCC_3dBaseDoc()
   myViewer->SetDefaultLights();
   myViewer->SetLightOn();
   myAISContext = new AIS_InteractiveContext (myViewer);
+
+  myRayTracingIsOn            = false;
+  myRaytracedShadowsIsOn      = true;
+  myRaytracedReflectionsIsOn  = false;
+  myRaytracedAntialiasingIsOn = false;
 }
 
 OCC_3dBaseDoc::~OCC_3dBaseDoc()
@@ -423,4 +439,66 @@ void OCC_3dBaseDoc::SetMaterial(Graphic3d_NameOfMaterial Material)
   for (myAISContext->InitCurrent();myAISContext->MoreCurrent ();myAISContext->NextCurrent ())
     myAISContext->SetMaterial (myAISContext->Current(),
     (Graphic3d_NameOfMaterial)(Material));
+}
+
+
+// RayTracing
+void OCC_3dBaseDoc::OnObjectRayTracing()
+{
+  myRayTracingIsOn = !myRayTracingIsOn;
+  if(!myRayTracingIsOn)
+  {
+    myRaytracedShadowsIsOn = false;
+    myRaytracedReflectionsIsOn = false;
+    myRaytracedAntialiasingIsOn = false;
+  }
+  OnObjectRayTracingAction();
+}
+// Shadows
+void OCC_3dBaseDoc::OnObjectShadows()
+{
+  myRaytracedShadowsIsOn = !myRaytracedShadowsIsOn;
+  OnObjectRayTracingAction();
+}
+// Reflections
+void OCC_3dBaseDoc::OnObjectReflections()
+{
+  myRaytracedReflectionsIsOn = !myRaytracedReflectionsIsOn;
+  OnObjectRayTracingAction();
+}
+// Anti-aliasing
+void OCC_3dBaseDoc::OnObjectAntiAliasing()
+{
+  myRaytracedAntialiasingIsOn = !myRaytracedAntialiasingIsOn;
+  OnObjectRayTracingAction();
+}
+void OCC_3dBaseDoc::OnUpdateV3dButtons (CCmdUI* pCmdUI)
+{
+  if (pCmdUI->m_nID == ID_OBJECT_RAY_TRACING)
+  {
+    pCmdUI->SetCheck(myRayTracingIsOn);
+  } else {
+    pCmdUI->Enable(myRayTracingIsOn);
+    if (pCmdUI->m_nID == ID_OBJECT_SHADOWS)
+      pCmdUI->SetCheck(myRaytracedShadowsIsOn);
+    if (pCmdUI->m_nID == ID_OBJECT_REFLECTIONS)
+      pCmdUI->SetCheck(myRaytracedReflectionsIsOn);
+    if (pCmdUI->m_nID == ID_OBJECT_ANTI_ALIASING)
+      pCmdUI->SetCheck(myRaytracedAntialiasingIsOn);
+  }
+}
+// Common function to change raytracing params and redraw view
+void OCC_3dBaseDoc::OnObjectRayTracingAction()
+{
+  myAISContext->CurrentViewer()->InitActiveViews();
+  Handle(V3d_View) aView = myAISContext->CurrentViewer()->ActiveView();
+  Graphic3d_RenderingParams& aParams = aView->ChangeRenderingParams();
+  if (myRayTracingIsOn)
+    aParams.Method = Graphic3d_RM_RAYTRACING;
+  else
+    aParams.Method = Graphic3d_RM_RASTERIZATION;
+  aParams.IsShadowEnabled = myRaytracedShadowsIsOn;
+  aParams.IsReflectionEnabled = myRaytracedReflectionsIsOn;
+  aParams.IsAntialiasingEnabled = myRaytracedAntialiasingIsOn;
+  myAISContext->UpdateCurrentViewer();
 }

@@ -57,6 +57,8 @@ public:
 
   int  OnFileImportBrep_WithInitDir (const wchar_t* InitialDir);
 
+  void OnObjectRayTracingAction();
+
   // Generated message map functions
 protected:
   //{{AFX_MSG(OCC_3dBaseDoc)
@@ -81,11 +83,20 @@ protected:
   afx_msg void OnObjectRemove();
   afx_msg void OnUpdateObjectRemove(CCmdUI* pCmdUI);
 
+  afx_msg void OnUpdateV3dButtons(CCmdUI* pCmdUI);
+  afx_msg void OnObjectRayTracing();
+  afx_msg void OnObjectShadows();
+  afx_msg void OnObjectReflections();
+  afx_msg void OnObjectAntiAliasing();
+
   //}}AFX_MSG
   DECLARE_MESSAGE_MAP()
 
 protected:
-
+  bool myRayTracingIsOn;
+  bool myRaytracedShadowsIsOn;
+  bool myRaytracedReflectionsIsOn;
+  bool myRaytracedAntialiasingIsOn;
   int myPopupMenuNumber;
 };
 

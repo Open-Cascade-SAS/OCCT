@@ -1957,6 +1957,10 @@
 				RelativePath="..\..\..\..\Common\res\occ_logo.bmp"
 				>
 			</File>
+			<File
+				RelativePath="..\..\..\..\Common\res\ToolbarRayTracing.bmp"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

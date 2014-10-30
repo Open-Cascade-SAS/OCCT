@@ -47,5 +47,17 @@ int OCC_3dChildFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
   EnableDocking(CBRS_ALIGN_ANY);
   DockControlBar(&m_wndToolBar);
 
+  // Create toolbar for RayTracing functionality
+  if (!m_RTToolBar.Create(this) || !m_RTToolBar.LoadToolBar(IDR_RAY_TRACING))
+  {
+    TRACE0("Failed to create toolbar\n");
+    return -1; // fail to create
+  }
+
+  m_RTToolBar.SetBarStyle(m_RTToolBar.GetBarStyle() | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC);
+  m_RTToolBar.EnableDocking(CBRS_ALIGN_ANY);
+  EnableDocking(CBRS_ALIGN_ANY);
+  DockControlBar(&m_RTToolBar);
+
   return 0;
 }
