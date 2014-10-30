@@ -1,0 +1,40 @@
+puts "================"
+puts "OCC25408"
+puts "================"
+puts ""
+#######################################################################
+# Wrong result obtained by General Fuse operator.
+#######################################################################
+
+restore [locate_data_file bug25408_bride_cut.brep] b1
+restore [locate_data_file bug25408_goujon_part_tool2_cut.brep] b4
+restore [locate_data_file bug25408_RevolPart.brep] b5
+
+#
+explode b4 f
+copy b4_1 b4
+#
+explode b5 f
+copy b5_1 b5
+#
+
+bclearobjects
+bcleartools
+baddobjects b1 b4 b5
+
+bfillds
+bbuild result
+
+set square 57200.9
+
+set nb_v_good 54
+set nb_e_good 129
+set nb_w_good 95
+set nb_f_good 95
+set nb_sh_good 22
+set nb_sol_good 22
+set nb_compsol_good 0
+set nb_compound_good 2
+set nb_shape_good 419
+
+set 3dviewer 1
