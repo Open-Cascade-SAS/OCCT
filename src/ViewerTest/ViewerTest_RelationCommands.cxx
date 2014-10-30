@@ -325,20 +325,24 @@ static int ParseDimensionParams (Standard_Integer  theArgNum,
     }
     else if (aParam.IsEqual ("-arrow"))
     {
-      do
-      {
-        anIt++;
-        TCollection_AsciiString aParam (theArgVec[anIt]);
-        aParam.LowerCase();
+      TCollection_AsciiString aParam (theArgVec[++anIt]);
+      aParam.LowerCase();
 
-        if (aParam == "external") { theAspect->SetArrowOrientation (Prs3d_DAO_External); }
-        if (aParam == "internal") { theAspect->SetArrowOrientation (Prs3d_DAO_Internal); }
-        if (aParam == "fit")      { theAspect->SetArrowOrientation (Prs3d_DAO_Fit); }
-        if (aParam.IsRealValue()) { theAspect->ArrowAspect()->SetLength (Draw::Atof (aParam.ToCString())); }
-      }
-      while (anIt + 1 < theArgNum && theArgVec[anIt + 1][0] != '-');
+      if (aParam == "external") { theAspect->SetArrowOrientation (Prs3d_DAO_External); }
+      if (aParam == "internal") { theAspect->SetArrowOrientation (Prs3d_DAO_Internal); }
+      if (aParam == "fit")      { theAspect->SetArrowOrientation (Prs3d_DAO_Fit); }
     }
-    else if (aParam.IsEqual ("-arrowangle"))
+    else if (aParam.IsEqual ("-arrowlength") || aParam.IsEqual ("-arlen"))
+    {
+      TCollection_AsciiString aValue (theArgVec[++anIt]);
+      if (!aValue.IsRealValue())
+      {
+        std::cerr << "Error: arrow lenght should be float degree value.\n";
+        return 1;
+      }
+      theAspect->ArrowAspect()->SetLength (Draw::Atof (aValue.ToCString()));
+    }
+    else if (aParam.IsEqual ("-arrowangle") || aParam.IsEqual ("-arangle"))
     {
       TCollection_AsciiString aValue (theArgVec[++anIt]);
       if (!aValue.IsRealValue())
@@ -542,8 +546,10 @@ static int VDimBuilder (Draw_Interpretor& /*theDi*/,
         TopoDS_Edge anEdge = TopoDS::Edge ((Handle(AIS_Shape)::DownCast(aShapes.First()))->Shape());
         TopoDS_Vertex aFirst, aSecond;
         TopExp::Vertices (anEdge, aFirst, aSecond);
-        aWorkingPlane.SetLocation (BRep_Tool::Pnt(aFirst));
         aDim = new AIS_LengthDimension (anEdge, aWorkingPlane);
+
+        // Move standard plane (XOY, YOZ or ZOX) to the first point to make it working for dimension
+        aWorkingPlane.SetLocation (Handle(AIS_LengthDimension)::DownCast (aDim)->FirstPoint());
       }
       else if (aShapes.Extent() == 2)
       {
@@ -688,7 +694,7 @@ static int VDimBuilder (Draw_Interpretor& /*theDi*/,
   if (!aDim->IsValid())
   {
     std::cerr << theArgs[0] << ":dimension geometry is invalid, " << aDimType.ToCString()
-      << " dimension can't be build on input shapes.\n";
+      << " dimension can't be built on input shapes.\n";
     return 1;
   }
 
@@ -2743,10 +2749,11 @@ void ViewerTest::RelationCommands(Draw_Interpretor& theCommands)
 
   theCommands.Add("vdimension",
       "vdimension name {-angle|-length|-radius|-diameter} -shapes shape1 [shape2 [shape3]]\n"
-      "[-text 3d|2d,wf|sh|wireframe|shading,Size]\n"
-      "[-label left|right|hcenter|hfit,top|bottom|vcenter|vfit]\n"
-      "[-arrow external|internal|fit,Length(int)]\n"
-      "[-arrowangle ArrowAngle(degrees)]\n"
+      "[-text 3d|2d wf|sh|wireframe|shading IntegerSize]\n"
+      "[-label left|right|hcenter|hfit top|bottom|vcenter|vfit]\n"
+      "[-arrow external|internal|fit]\n"
+      "[{-arrowlength|-arlen} RealArrowLength]\n"
+      "[{-arrowangle|-arangle} ArrowAngle(degrees)]\n"
       "[-plane xoy|yoz|zox]\n"
       "[-flyout FloatValue -extension FloatValue]\n"
       "[-value CustomNumberValue]\n"
@@ -2759,10 +2766,11 @@ void ViewerTest::RelationCommands(Draw_Interpretor& theCommands)
 
   theCommands.Add("vdimparam",
     "vdimparam name"
-    "[-text 3d|2d,wf|sh|wireframe|shading,Size]\n"
-    "[-label left|right|hcenter|hfit,top|bottom|vcenter|vfit]\n"
-    "[-arrow external|internal|fit,Length(int)]\n"
-    "[-arrowangle ArrowAngle(degrees)]\n"
+    "[-text 3d|2d wf|sh|wireframe|shading IntegerSize]\n"
+    "[-label left|right|hcenter|hfit top|bottom|vcenter|vfit]\n"
+    "[-arrow external|internal|fit]\n"
+    "[{-arrowlength|-arlen} RealArrowLength]\n"
+    "[{-arrowangle|-arangle} ArrowAngle(degrees)]\n"
     "[-plane xoy|yoz|zox]\n"
     "[-flyout FloatValue -extension FloatValue]\n"
     "[-value CustomNumberValue]\n"
