@@ -492,13 +492,25 @@ void OpenGl_GraphicDriver::InvalidateBVHData (Graphic3d_CView& theCView, const S
 
 Standard_Boolean OpenGl_GraphicDriver::View (Graphic3d_CView& theCView)
 {
-  if (myMapOfView.IsBound (theCView.ViewId)
-   || myMapOfWS  .IsBound (theCView.WsId))
+  Handle(OpenGl_Context) aShareCtx = GetSharedContext();
+  if (myMapOfView.IsBound (theCView.ViewId))
   {
-    return Standard_False;
+    OpenGl_CView* aCView = (OpenGl_CView* )theCView.ptrView;
+    if (!myMapOfWS.IsBound (theCView.WsId)
+     || aCView == NULL)
+    {
+      return Standard_False;
+    }
+
+    Handle(OpenGl_Workspace) aWS = new OpenGl_Workspace (this, theCView.DefWindow, theCView.GContext, myCaps, aShareCtx);
+    aCView->WS = aWS;
+    aWS->SetActiveView (aCView->View);
+
+    myMapOfWS.UnBind (theCView.WsId);
+    myMapOfWS.Bind   (theCView.WsId, aWS);
+    return Standard_True;
   }
 
-  Handle(OpenGl_Context)   aShareCtx = GetSharedContext();
   Handle(OpenGl_Workspace) aWS       = new OpenGl_Workspace (this, theCView.DefWindow, theCView.GContext, myCaps, aShareCtx);
   Handle(OpenGl_View)      aView     = new OpenGl_View (theCView.Context, &myStateCounter);
   myMapOfWS  .Bind (theCView.WsId,   aWS);
@@ -508,6 +520,7 @@ Standard_Boolean OpenGl_GraphicDriver::View (Graphic3d_CView& theCView)
   aCView->View = aView;
   aCView->WS   = aWS;
   theCView.ptrView = aCView;
+  aWS->SetActiveView (aCView->View);
 
   return Standard_True;
 }

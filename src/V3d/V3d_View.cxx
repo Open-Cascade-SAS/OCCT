@@ -94,9 +94,6 @@ To solve the problem (for lack of a better solution) I make 2 passes.
 #define BUC60952  //GG Enable to rotate around the view axis
 //      and the required view point
 
-#define RIC120302 //GG Add a NEW SetWindow method which enable
-//      to connect a graphic widget and context to OGL.
-
 #define IMP260302 //GG To avoid conflicting in Window destructor
 //      nullify this handle in Remove method
 
@@ -333,14 +330,8 @@ void V3d_View::SetMagnify(const Handle(Aspect_Window)& TheWindow,
 //=============================================================================
 void V3d_View::SetWindow(const Handle(Aspect_Window)& TheWindow)
 {
-  Standard_MultiplyDefined_Raise_if( MyView->IsDefined(),
-    "V3d_View::SetWindow, window of view already defined");
-
   MyView->SetWindow(TheWindow) ;
-  // AGV: Method V3d_View::SetWindow() should assign the field MyWindow before
-  // calling Redraw(). Otherwise it is impossible to call certain methods of
-  // V3d_View like Convert() inside the context of Redraw(),
-  // particularly in class NIS_View.
+  // method V3d_View::SetWindow() should assign the field MyWindow before calling Redraw()
   MyWindow = TheWindow;
   // SetWindow carries out SetRatio and modifies
   MyView->SetContext(MyViewContext) ;
@@ -358,13 +349,7 @@ void V3d_View::SetWindow(const Handle(Aspect_Window)&      aWindow,
                          const Aspect_GraphicCallbackProc& aDisplayCB,
                          const Standard_Address            aClientData)
 {
-  Standard_MultiplyDefined_Raise_if( MyView->IsDefined(),
-    "V3d_View::SetWindow, "
-    "window of view already defined");
-  // AGV: Method V3d_View::SetWindow() should assign the field MyWindow before
-  // calling Redraw(). Otherwise it is impossible to call certain methods of
-  // V3d_View like Convert() inside the context of Redraw(),
-  // particularly in class NIS_View.
+  // method V3d_View::SetWindow() should assign the field MyWindow before calling Redraw()
   MyWindow = aWindow;
   MyView->SetWindow(aWindow, aContext, aDisplayCB, aClientData) ;
   MyView->SetContext(MyViewContext) ;

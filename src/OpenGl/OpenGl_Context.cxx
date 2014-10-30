@@ -200,6 +200,23 @@ OpenGl_Context::~OpenGl_Context()
 }
 
 // =======================================================================
+// function : forcedRelease
+// purpose  :
+// =======================================================================
+void OpenGl_Context::forcedRelease()
+{
+  ReleaseDelayed();
+  for (NCollection_DataMap<TCollection_AsciiString, Handle(OpenGl_Resource)>::Iterator anIter (*mySharedResources);
+       anIter.More(); anIter.Next())
+  {
+    anIter.Value()->Release (this);
+  }
+  mySharedResources->Clear();
+  myShaderManager->clear();
+  myShaderManager->SetContext (NULL);
+}
+
+// =======================================================================
 // function : MaxDegreeOfAnisotropy
 // purpose  :
 // =======================================================================
@@ -878,8 +895,12 @@ void OpenGl_Context::init()
 
   hasTexRGBA8 = IsGlGreaterEqual (3, 0)
              || CheckExtension ("GL_OES_rgb8_rgba8");
-  arbNPTW     = IsGlGreaterEqual (3, 0)
-             || CheckExtension ("GL_OES_texture_npot");
+  // NPOT textures has limited support within OpenGL ES 2.0
+  // which are relaxed by OpenGL ES 3.0 or some extensions
+  //arbNPTW     = IsGlGreaterEqual (3, 0)
+  //           || CheckExtension ("GL_OES_texture_npot")
+  //           || CheckExtension ("GL_NV_texture_npot_2D_mipmap");
+  arbNPTW     = Standard_True;
   arbTexRG    = IsGlGreaterEqual (3, 0)
              || CheckExtension ("GL_EXT_texture_rg");
   extBgra     = CheckExtension ("GL_EXT_texture_format_BGRA8888");

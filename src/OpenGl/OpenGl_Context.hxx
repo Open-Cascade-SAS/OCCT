@@ -168,6 +168,9 @@ public:
   //! Destructor.
   Standard_EXPORT virtual ~OpenGl_Context();
 
+  //! Release all resources, including shared ones
+  Standard_EXPORT void forcedRelease();
+
   //! Share GL context resources.
   //! theShareCtx - handle to context to retrieve handles to shared resources.
   Standard_EXPORT void Share (const Handle(OpenGl_Context)& theShareCtx);

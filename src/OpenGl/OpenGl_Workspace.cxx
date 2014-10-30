@@ -337,8 +337,8 @@ Handle(OpenGl_Texture) OpenGl_Workspace::DisableTexture()
           glDisable (GL_POINT_SPRITE);
         }
       }
-    #endif
       glDisable (GL_TEXTURE_2D);
+    #endif
       break;
     }
     default: break;
@@ -562,8 +562,8 @@ void OpenGl_Workspace::setTextureParams (Handle(OpenGl_Texture)&                
         glEnable (GL_TEXTURE_GEN_S);
         glEnable (GL_TEXTURE_GEN_T);
       }
-    #endif
       glEnable (GL_TEXTURE_2D);
+    #endif
       break;
     }
     default: break;

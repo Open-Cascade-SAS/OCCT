@@ -485,6 +485,14 @@ public:
   //! Please note that this method is used for rendering for <i>Projection_Stereo</i>.
   Standard_EXPORT const Graphic3d_Mat4& ProjectionStereoRightF() const;
 
+  //! Invalidate state of projection matrix.
+  //! The matrix will be updated on request.
+  Standard_EXPORT void InvalidateProjection();
+
+  //! Invalidate orientation matrix.
+  //! The matrix will be updated on request.
+  Standard_EXPORT void InvalidateOrientation();
+
 //! @name Managing projection and orientation cache
 private:
 
@@ -499,14 +507,6 @@ private:
   template <typename Elem_t>
   Standard_EXPORT
     TransformMatrices<Elem_t>& UpdateOrientation (TransformMatrices<Elem_t>& theMatrices) const;
-
-  //! Invalidate state of projection matrix.
-  //! The matrix will be updated on request.
-  void InvalidateProjection();
-
-  //! Invalidate orientation matrix.
-  //! The matrix will be updated on request.
-  void InvalidateOrientation();
 
 private:
 

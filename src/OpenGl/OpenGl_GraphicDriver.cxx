@@ -51,8 +51,9 @@ namespace
 // purpose  :
 // =======================================================================
 OpenGl_GraphicDriver::OpenGl_GraphicDriver (const Handle(Aspect_DisplayConnection)& theDisp,
-                                            const Standard_Boolean                  theToStealActiveContext)
+                                            const Standard_Boolean                  theToInitialize)
 : Graphic3d_GraphicDriver (theDisp),
+  myIsOwnContext (Standard_False),
 #if defined(HAVE_EGL) || defined(__ANDROID__)
   myEglDisplay ((Aspect_Display )EGL_NO_DISPLAY),
   myEglContext ((Aspect_RenderingContext )EGL_NO_CONTEXT),
@@ -82,77 +83,134 @@ OpenGl_GraphicDriver::OpenGl_GraphicDriver (const Handle(Aspect_DisplayConnectio
   int aDummy;
   if (!XQueryExtension (aDisplay, "GLX", &aDummy, &aDummy, &aDummy))
   {
-  #ifdef DEBUG
-    std::cerr << "This system doesn't appear to support OpenGL\n";
-  #endif
+    ::Message::DefaultMessenger()->Send ("OpenGl_GraphicDriver, this system doesn't appear to support OpenGL!", Message_Warning);
   }
 #endif
 #endif
+  if (theToInitialize
+  && !InitContext())
+  {
+    Aspect_GraphicDeviceDefinitionError::Raise ("OpenGl_GraphicDriver: default context can not be initialized!");
+  }
+}
+
+// =======================================================================
+// function : ~OpenGl_GraphicDriver
+// purpose  :
+// =======================================================================
+OpenGl_GraphicDriver::~OpenGl_GraphicDriver()
+{
+  ReleaseContext();
+}
+
+// =======================================================================
+// function : ReleaseContext
+// purpose  :
+// =======================================================================
+void OpenGl_GraphicDriver::ReleaseContext()
+{
+  Handle(OpenGl_Context) aCtxShared;
+  for (NCollection_DataMap<Standard_Integer, Handle(OpenGl_Workspace)>::Iterator aWindowIter (myMapOfWS);
+       aWindowIter.More(); aWindowIter.Next())
+  {
+    const Handle(OpenGl_Workspace)& aWindow = aWindowIter.ChangeValue();
+    const Handle(OpenGl_Context)&   aCtx    = aWindow->GetGlContext();
+    if (aCtx->MakeCurrent()
+     && aCtxShared.IsNull())
+    {
+      aCtxShared = aCtx;
+    }
+  }
+
+  if (!aCtxShared.IsNull())
+  {
+    aCtxShared->MakeCurrent();
+  }
+  for (NCollection_DataMap<Standard_Integer, Handle(OpenGl_View)>::Iterator aViewIter (myMapOfView);
+       aViewIter.More(); aViewIter.Next())
+  {
+    const Handle(OpenGl_View)& aView = aViewIter.ChangeValue();
+    aView->ReleaseGlResources (aCtxShared);
+  }
+
+  for (NCollection_DataMap<Standard_Integer, OpenGl_Structure*>::Iterator aStructIt (myMapOfStructure);
+       aStructIt.More (); aStructIt.Next())
+  {
+    OpenGl_Structure* aStruct = aStructIt.ChangeValue();
+    aStruct->ReleaseGlResources (aCtxShared);
+  }
+  myTempText->Release (aCtxShared.operator->());
+  myDeviceLostFlag = myDeviceLostFlag || !myMapOfStructure.IsEmpty();
+
+  for (NCollection_DataMap<Standard_Integer, Handle(OpenGl_Workspace)>::Iterator aWindowIter (myMapOfWS);
+       aWindowIter.More(); aWindowIter.Next())
+  {
+    const Handle(OpenGl_Workspace)& aWindow = aWindowIter.ChangeValue();
+    const Handle(OpenGl_Context)&   aCtx    = aWindow->GetGlContext();
+    aCtx->forcedRelease();
+  }
 
 #if defined(HAVE_EGL) || defined(__ANDROID__)
-  if (theToStealActiveContext)
+  if (myIsOwnContext)
   {
-    myEglDisplay = (Aspect_Display )eglGetCurrentDisplay();
-    myEglContext = (Aspect_RenderingContext )eglGetCurrentContext();
-    EGLSurface aEglSurf = eglGetCurrentSurface(EGL_DRAW);
-    if ((EGLDisplay )myEglDisplay == EGL_NO_DISPLAY
-     || (EGLContext )myEglContext == EGL_NO_CONTEXT)
+    if (myEglContext != (Aspect_RenderingContext )EGL_NO_CONTEXT)
     {
-      Aspect_GraphicDeviceDefinitionError::Raise ("OpenGl_GraphicDriver: no active EGL context to steal!");
-      return;
+      if (eglMakeCurrent ((EGLDisplay )myEglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT) != EGL_TRUE)
+      {
+        ::Message::DefaultMessenger()->Send ("OpenGl_GraphicDriver, FAILED to release OpenGL context!", Message_Warning);
+      }
+      eglDestroyContext ((EGLDisplay )myEglDisplay, (EGLContext )myEglContext);
     }
 
-    TCollection_AsciiString anEglInfo = TCollection_AsciiString()
-      + "EGL info"
-      + "\n  Version:     " + eglQueryString ((EGLDisplay )myEglDisplay, EGL_VERSION)
-      + "\n  Vendor:      " + eglQueryString ((EGLDisplay )myEglDisplay, EGL_VENDOR)
-      + "\n  Client APIs: " + eglQueryString ((EGLDisplay )myEglDisplay, EGL_CLIENT_APIS)
-      + "\n  Extensions:  " + eglQueryString ((EGLDisplay )myEglDisplay, EGL_EXTENSIONS);
-    ::Message::DefaultMessenger()->Send (anEglInfo, Message_Info);
-
-    EGLint aCfgId = 0;
-    eglQuerySurface((EGLDisplay )myEglDisplay, aEglSurf, EGL_CONFIG_ID, &aCfgId);
-    const EGLint aConfigAttribs[] =
+    if (myEglDisplay != (Aspect_Display )EGL_NO_DISPLAY)
     {
-      EGL_CONFIG_ID, aCfgId,
-      EGL_NONE
-    };
-
-    EGLint aNbConfigs = 0;
-    if (eglChooseConfig ((EGLDisplay )myEglDisplay, aConfigAttribs, &myEglConfig, 1, &aNbConfigs) != EGL_TRUE)
-    {
-      Aspect_GraphicDeviceDefinitionError::Raise ("OpenGl_GraphicDriver: EGL does not provide compatible configurations!");
+      if (eglTerminate ((EGLDisplay )myEglDisplay) != EGL_TRUE)
+      {
+        ::Message::DefaultMessenger()->Send ("OpenGl_GraphicDriver, EGL, eglTerminate FAILED!", Message_Warning);
+      }
     }
-    return;
   }
 
+  myEglDisplay = (Aspect_Display )EGL_NO_DISPLAY;
+  myEglContext = (Aspect_RenderingContext )EGL_NO_CONTEXT;
+  myEglConfig  = NULL;
+#endif
+  myIsOwnContext = Standard_False;
+}
+
+// =======================================================================
+// function : InitContext
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_GraphicDriver::InitContext()
+{
+  ReleaseContext();
+#if defined(HAVE_EGL) || defined(__ANDROID__)
+
 #if !defined(_WIN32) && !defined(__ANDROID__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
+  if (myDisplayConnection.IsNull())
+  {
+    return Standard_False;
+  }
+  Display* aDisplay = myDisplayConnection->GetDisplay();
   myEglDisplay = (Aspect_Display )eglGetDisplay (aDisplay);
 #else
   myEglDisplay = (Aspect_Display )eglGetDisplay (EGL_DEFAULT_DISPLAY);
 #endif
   if ((EGLDisplay )myEglDisplay == EGL_NO_DISPLAY)
   {
-    Aspect_GraphicDeviceDefinitionError::Raise ("OpenGl_GraphicDriver: no EGL display!");
-    return;
+    ::Message::DefaultMessenger()->Send ("Error: no EGL display!", Message_Fail);
+    return Standard_False;
   }
 
   EGLint aVerMajor = 0; EGLint aVerMinor = 0;
   if (eglInitialize ((EGLDisplay )myEglDisplay, &aVerMajor, &aVerMinor) != EGL_TRUE)
   {
-    Aspect_GraphicDeviceDefinitionError::Raise ("OpenGl_GraphicDriver: EGL display is unavailable!");
-    return;
+    ::Message::DefaultMessenger()->Send ("Error: EGL display is unavailable!", Message_Fail);
+    return Standard_False;
   }
 
-  TCollection_AsciiString anEglInfo = TCollection_AsciiString()
-    + "EGL info"
-    + "\n  Version:     " + aVerMajor + "." + aVerMinor + " (" + eglQueryString ((EGLDisplay )myEglDisplay, EGL_VERSION)
-    + "\n  Vendor:      " + eglQueryString ((EGLDisplay )myEglDisplay, EGL_VENDOR)
-    + "\n  Client APIs: " + eglQueryString ((EGLDisplay )myEglDisplay, EGL_CLIENT_APIS)
-    + "\n  Extensions:  " + eglQueryString ((EGLDisplay )myEglDisplay, EGL_EXTENSIONS);
-  ::Message::DefaultMessenger()->Send (anEglInfo, Message_Info);
-
-  const EGLint aConfigAttribs[] =
+  EGLint aConfigAttribs[] =
   {
     EGL_RED_SIZE,     8,
     EGL_GREEN_SIZE,   8,
@@ -169,25 +227,18 @@ OpenGl_GraphicDriver::OpenGl_GraphicDriver (const Handle(Aspect_DisplayConnectio
   };
 
   EGLint aNbConfigs = 0;
-  if (eglChooseConfig ((EGLDisplay )myEglDisplay, aConfigAttribs, &myEglConfig, 1, &aNbConfigs) != EGL_TRUE)
+  if (eglChooseConfig ((EGLDisplay )myEglDisplay, aConfigAttribs, &myEglConfig, 1, &aNbConfigs) != EGL_TRUE
+   || myEglConfig == NULL)
   {
-    Aspect_GraphicDeviceDefinitionError::Raise ("OpenGl_GraphicDriver: EGL does not provide compatible configurations!");
-    return;
+    eglGetError();
+    aConfigAttribs[4 * 2 + 1] = 16; // try config with smaller depth buffer
+    if (eglChooseConfig ((EGLDisplay )myEglDisplay, aConfigAttribs, &myEglConfig, 1, &aNbConfigs) != EGL_TRUE
+     || myEglConfig == NULL)
+    {
+      ::Message::DefaultMessenger()->Send ("Error: EGL does not provide compatible configurations!", Message_Fail);
+      return Standard_False;
+    }
   }
-
-#if defined(GL_ES_VERSION_2_0)
-  if (eglBindAPI (EGL_OPENGL_ES_API) != EGL_TRUE)
-  {
-    Aspect_GraphicDeviceDefinitionError::Raise ("OpenGl_GraphicDriver: EGL does not provide OpenGL ES client!");
-    return;
-  }
-#else
-  if (eglBindAPI (EGL_OPENGL_API) != EGL_TRUE)
-  {
-    Aspect_GraphicDeviceDefinitionError::Raise ("OpenGl_GraphicDriver: EGL does not provide OpenGL client!");
-    return;
-  }
-#endif
 
 #if defined(GL_ES_VERSION_2_0)
   EGLint anEglCtxAttribs[] =
@@ -195,26 +246,65 @@ OpenGl_GraphicDriver::OpenGl_GraphicDriver (const Handle(Aspect_DisplayConnectio
     EGL_CONTEXT_CLIENT_VERSION, 2,
     EGL_NONE
   };
+  if (eglBindAPI (EGL_OPENGL_ES_API) != EGL_TRUE)
+  {
+    ::Message::DefaultMessenger()->Send ("Error: EGL does not provide OpenGL ES client!", Message_Fail);
+    return Standard_False;
+  }
 #else
   EGLint* anEglCtxAttribs = NULL;
+  if (eglBindAPI (EGL_OPENGL_API) != EGL_TRUE)
+  {
+    ::Message::DefaultMessenger()->Send ("Error: EGL does not provide OpenGL client!", Message_Fail);
+    return Standard_False;
+  }
 #endif
 
   myEglContext = (Aspect_RenderingContext )eglCreateContext ((EGLDisplay )myEglDisplay, myEglConfig, EGL_NO_CONTEXT, anEglCtxAttribs);
   if ((EGLContext )myEglContext == EGL_NO_CONTEXT)
   {
-    Aspect_GraphicDeviceDefinitionError::Raise ("OpenGl_GraphicDriver: EGL is unable to create OpenGL context!");
-    return;
+    ::Message::DefaultMessenger()->Send ("Error: EGL is unable to create OpenGL context!", Message_Fail);
+    return Standard_False;
   }
   if (eglMakeCurrent ((EGLDisplay )myEglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, (EGLContext )myEglContext) != EGL_TRUE)
   {
-    Aspect_GraphicDeviceDefinitionError::Raise ("OpenGl_GraphicDriver: EGL is unable bind OpenGL context!");
-    return;
+    ::Message::DefaultMessenger()->Send ("Error: EGL is unable bind OpenGL context!", Message_Fail);
+    return Standard_False;
   }
-#else
-  // not yet implemented
-  (void )theToStealActiveContext;
 #endif
+  myIsOwnContext = Standard_True;
+  return Standard_True;
 }
+
+#if defined(HAVE_EGL) || defined(__ANDROID__)
+// =======================================================================
+// function : InitEglContext
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_GraphicDriver::InitEglContext (Aspect_Display          theEglDisplay,
+                                                       Aspect_RenderingContext theEglContext,
+                                                       void*                   theEglConfig)
+{
+  ReleaseContext();
+#if !defined(_WIN32) && !defined(__ANDROID__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
+  if (myDisplayConnection.IsNull())
+  {
+    return Standard_False;
+  }
+#endif
+
+  if ((EGLDisplay )theEglDisplay == EGL_NO_DISPLAY
+   || (EGLContext )theEglContext == EGL_NO_CONTEXT
+   || theEglConfig == NULL)
+  {
+    return Standard_False;
+  }
+  myEglDisplay = theEglDisplay;
+  myEglContext = theEglContext;
+  myEglConfig  = theEglConfig;
+  return Standard_True;
+}
+#endif
 
 // =======================================================================
 // function : InquireLightLimit

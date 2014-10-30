@@ -217,6 +217,20 @@ OpenGl_ShaderManager::~OpenGl_ShaderManager()
 }
 
 // =======================================================================
+// function : clear
+// purpose  :
+// =======================================================================
+void OpenGl_ShaderManager::clear()
+{
+  myProgramList.Clear();
+  myLightPrograms.Nullify();
+  myFlatPrograms = OpenGl_SetOfShaderPrograms();
+  myMapOfLightPrograms.Clear();
+  myFontProgram.Nullify();
+  switchLightPrograms();
+}
+
+// =======================================================================
 // function : Create
 // purpose  : Creates new shader program
 // =======================================================================
@@ -996,7 +1010,7 @@ void OpenGl_ShaderManager::PushState (const Handle(OpenGl_ShaderProgram)& thePro
   PushMaterialState    (theProgram);
   PushWorldViewState   (theProgram);
   PushModelWorldState  (theProgram);
-  PushProjectionState  (theProgram);  
+  PushProjectionState  (theProgram);
   PushLightSourceState (theProgram);
 }
 

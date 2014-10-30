@@ -95,9 +95,28 @@ public:
 
   //! Constructor.
   //! @param theDisp connection to display, required on Linux but optional on other systems
-  //! @param theToStealActiveContext option to use OpenGL context currently bound to the thread rather than creating own one, currently implemented only for Android
+  //! @param theToInitialize perform initialization of default OpenGL context on construction
   Standard_EXPORT OpenGl_GraphicDriver (const Handle(Aspect_DisplayConnection)& theDisp,
-                                        const Standard_Boolean                  theToStealActiveContext = Standard_False);
+                                        const Standard_Boolean                  theToInitialize = Standard_True);
+
+  //! Destructor.
+  Standard_EXPORT virtual ~OpenGl_GraphicDriver();
+
+  //! Release default context.
+  Standard_EXPORT void ReleaseContext();
+
+  //! Perform initialization of default OpenGL context.
+  Standard_EXPORT Standard_Boolean InitContext();
+
+#if defined(HAVE_EGL) || defined(__ANDROID__)
+  //! Initialize default OpenGL context using existing one.
+  //! @param theEglDisplay EGL connection to the Display
+  //! @param theEglContext EGL rendering context
+  //! @param theEglConfig  EGL configuration
+  Standard_EXPORT Standard_Boolean InitEglContext (Aspect_Display          theEglDisplay,
+                                                   Aspect_RenderingContext theEglContext,
+                                                   void*                   theEglConfig);
+#endif
 
   Standard_EXPORT Standard_Integer InquireLightLimit ();
   Standard_EXPORT Standard_Integer InquireViewLimit ();
@@ -334,10 +353,11 @@ public:
 
 private:
 
+  Standard_Boolean        myIsOwnContext; //!< indicates that shared context has been created within OpenGl_GraphicDriver
 #if defined(HAVE_EGL) || defined(__ANDROID__)
-  Aspect_Display          myEglDisplay; //!< EGL connection to the Display : EGLDisplay
-  Aspect_RenderingContext myEglContext; //!< EGL rendering context         : EGLContext
-  void*                   myEglConfig;  //!< EGL configuration             : EGLConfig
+  Aspect_Display          myEglDisplay;   //!< EGL connection to the Display : EGLDisplay
+  Aspect_RenderingContext myEglContext;   //!< EGL rendering context         : EGLContext
+  void*                   myEglConfig;    //!< EGL configuration             : EGLConfig
 #endif
 
   Handle(OpenGl_Caps)                                             myCaps;

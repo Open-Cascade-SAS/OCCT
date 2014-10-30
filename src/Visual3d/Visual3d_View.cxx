@@ -85,10 +85,6 @@ void Visual3d_View::SetWindow (const Handle(Aspect_Window)&      theWindow,
   {
     return;
   }
-  else if (IsDefined())
-  {
-    Visual3d_ViewDefinitionError::Raise ("Window already defined");
-  }
 
   MyCView.GContext    = theContext;
   MyCView.GDisplayCB  = theDisplayCB;
@@ -105,10 +101,6 @@ void Visual3d_View::SetWindow (const Handle(Aspect_Window)& theWindow)
   if (IsDeleted())
   {
     return;
-  }
-  else if (IsDefined())
-  {
-    Visual3d_ViewDefinitionError::Raise ("Window already defined");
   }
 
   MyWindow = theWindow;
@@ -159,6 +151,14 @@ void Visual3d_View::SetWindow (const Handle(Aspect_Window)& theWindow)
   // In fact, association view-window is done, but the
   // display is produced only if the view is activated (Activate).
   SetRatio();
+
+  // invalidate camera
+  const Handle(Graphic3d_Camera)& aCamera = MyCView.Context.Camera;
+  if (!aCamera.IsNull())
+  {
+    aCamera->InvalidateProjection();
+    aCamera->InvalidateOrientation();
+  }
 }
 
 // =======================================================================

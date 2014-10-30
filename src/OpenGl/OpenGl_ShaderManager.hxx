@@ -52,6 +52,9 @@ public:
   //! Releases resources of shader manager.
   Standard_EXPORT virtual ~OpenGl_ShaderManager();
 
+  //! Release all resources.
+  Standard_EXPORT void clear();
+
   //! Creates new shader program or re-use shared instance.
   //! @param theProxy    [IN]  program definition
   //! @param theShareKey [OUT] sharing key
@@ -222,7 +225,7 @@ public:
   Standard_EXPORT const OpenGl_MaterialState* MaterialState (const Handle(OpenGl_ShaderProgram)& theProgram) const;
 
 public:
-  
+
   //! Pushes current state of OCCT graphics parameters to specified program.
   Standard_EXPORT void PushState (const Handle(OpenGl_ShaderProgram)& theProgram) const;
 
