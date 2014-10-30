@@ -783,7 +783,43 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
     SvParam[2]=Param(3);
     SvParam[3]=Param(4);
     //
-    ChoixIso= myIntersectionOn2S.Perform(Param, Rsnld, ChoixIso);                  
+    Standard_Integer aTryNumber = 0;
+    Standard_Real    isBadPoint = Standard_False;
+    IntImp_ConstIsoparametric aBestIso = ChoixIso;
+    do
+    {
+      isBadPoint = Standard_False;
+
+      ChoixIso= myIntersectionOn2S.Perform(Param, Rsnld, aBestIso);
+
+      if (myIntersectionOn2S.IsDone() && !myIntersectionOn2S.IsEmpty())
+      {
+        Standard_Real aNewPnt[4], anAbsParamDist[4];
+        myIntersectionOn2S.Point().Parameters(aNewPnt[0], aNewPnt[1], aNewPnt[2], aNewPnt[3]);
+
+        if (aNewPnt[0] < u1min || aNewPnt[0] > u1max ||
+            aNewPnt[1] < v1min || aNewPnt[1] > v1max ||
+            aNewPnt[2] < u2min || aNewPnt[2] > u2max ||
+            aNewPnt[3] < v2min || aNewPnt[3] > v2max)
+        {
+          break; // Out of borders, handle this later.
+        }
+
+        anAbsParamDist[0] = Abs(Param(1) - dP1 - aNewPnt[0]);
+        anAbsParamDist[1] = Abs(Param(2) - dP2 - aNewPnt[1]);
+        anAbsParamDist[2] = Abs(Param(3) - dP3 - aNewPnt[2]);
+        anAbsParamDist[3] = Abs(Param(4) - dP4 - aNewPnt[3]);
+        if (anAbsParamDist[0] < ResoU1 &&
+            anAbsParamDist[1] < ResoV1 &&
+            anAbsParamDist[2] < ResoU2 &&
+            anAbsParamDist[3] < ResoV2 &&
+            Status != IntWalk_PasTropGrand)
+        {
+          isBadPoint = Standard_True;
+          aBestIso = IntImp_ConstIsoparametric((aBestIso + 1) % 4);
+        }
+      }
+    } while (isBadPoint && ++aTryNumber <= 4);
     //
     if (!myIntersectionOn2S.IsDone())
     {
