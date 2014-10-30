@@ -30,6 +30,35 @@
 #include <stdio.h>
 #include <gp_Vec.hxx>
 
+#include <BRepBuilderAPI_CellFilter.hxx>
+#include <BRepBuilderAPI_VertexInspector.hxx>
+
+// A static method adding nodes to a mesh and keeping coincident (sharing) nodes.
+static Standard_Integer AddVertex(Handle(StlMesh_Mesh)& mesh,
+                                  BRepBuilderAPI_CellFilter& filter, 
+                                  BRepBuilderAPI_VertexInspector& inspector,
+                                  const gp_XYZ& p)
+{
+  Standard_Integer index;
+  inspector.SetCurrent(p);
+  gp_XYZ minp = inspector.Shift(p, -Precision::Confusion());
+  gp_XYZ maxp = inspector.Shift(p, +Precision::Confusion());
+  filter.Inspect(minp, maxp, inspector);
+  const TColStd_ListOfInteger& indices = inspector.ResInd();
+  if (indices.IsEmpty() == Standard_False)
+  {
+    index = indices.First(); // it should be only one
+    inspector.ClearResList();
+  }
+  else
+  {
+    index = mesh->AddVertex(p.X(), p.Y(), p.Z());
+    filter.Add(index, p);
+    inspector.Add(p);
+  }
+  return index;
+}
+
 // constants
 static const size_t HEADER_SIZE           =  84;
 static const size_t SIZEOF_STL_FACET      =  50;
@@ -357,6 +386,10 @@ Handle(StlMesh_Mesh) RWStl::ReadBinary (const OSD_Path& thePath,
   Handle(StlMesh_Mesh) ReadMesh = new StlMesh_Mesh ();
   ReadMesh->AddDomain ();
 
+  // Filter unique vertices to share the nodes of the mesh.
+  BRepBuilderAPI_CellFilter uniqueVertices(Precision::Confusion());
+  BRepBuilderAPI_VertexInspector inspector(Precision::Confusion());
+  
   for (ifacet=1; ifacet<=NBFACET; ++ifacet) {
     // read normal coordinates
     fx = ReadFloat2Double(theFile);
@@ -378,9 +411,12 @@ Handle(StlMesh_Mesh) RWStl::ReadBinary (const OSD_Path& thePath,
     fy3 = ReadFloat2Double(theFile);
     fz3 = ReadFloat2Double(theFile);
 
-    i1 = ReadMesh->AddOnlyNewVertex (fx1,fy1,fz1);
-    i2 = ReadMesh->AddOnlyNewVertex (fx2,fy2,fz2);
-    i3 = ReadMesh->AddOnlyNewVertex (fx3,fy3,fz3);
+    // Add vertices.
+    i1 = AddVertex(ReadMesh, uniqueVertices, inspector, gp_XYZ(fx1, fy1, fz1));
+    i2 = AddVertex(ReadMesh, uniqueVertices, inspector, gp_XYZ(fx2, fy2, fz2));
+    i3 = AddVertex(ReadMesh, uniqueVertices, inspector, gp_XYZ(fx3, fy3, fz3));
+
+    // Add triangle.
     ReadMesh->AddTriangle (i1,i2,i3,fx,fy,fz);
 
     // skip extra bytes
@@ -389,8 +425,8 @@ Handle(StlMesh_Mesh) RWStl::ReadBinary (const OSD_Path& thePath,
 
   theFile.Close ();
   return ReadMesh;
-
 }
+
 //=======================================================================
 //function : ReadAscii
 //Design   :
@@ -442,6 +478,10 @@ Handle(StlMesh_Mesh) RWStl::ReadAscii (const OSD_Path& thePath,
   ReadMesh = new StlMesh_Mesh();
   ReadMesh->AddDomain();
 
+  // Filter unique vertices to share the nodes of the mesh.
+  BRepBuilderAPI_CellFilter uniqueVertices(Precision::Confusion());
+  BRepBuilderAPI_VertexInspector inspector(Precision::Confusion());
+  
   // main reading
   Message_ProgressSentry aPS (theProgInd, "Triangles", 0, (nbTris - 1) * 1.0 / IND_THRESHOLD, 1);
   for (iTri = 0; iTri < nbTris && aPS.More();)
@@ -469,9 +509,9 @@ Handle(StlMesh_Mesh) RWStl::ReadAscii (const OSD_Path& thePath,
 
     // here the facet must be built and put in the mesh datastructure
 
-    i1 = ReadMesh->AddOnlyNewVertex (aV1.X(), aV1.Y(), aV1.Z());
-    i2 = ReadMesh->AddOnlyNewVertex (aV2.X(), aV2.Y(), aV2.Z());
-    i3 = ReadMesh->AddOnlyNewVertex (aV3.X(), aV3.Y(), aV3.Z());
+    i1 = AddVertex(ReadMesh, uniqueVertices, inspector, aV1);
+    i2 = AddVertex(ReadMesh, uniqueVertices, inspector, aV2);
+    i3 = AddVertex(ReadMesh, uniqueVertices, inspector, aV3);
     ReadMesh->AddTriangle (i1, i2, i3, aN.X(), aN.Y(), aN.Z());
 
     // skip the keywords "endloop"

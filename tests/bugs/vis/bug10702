@@ -36,7 +36,8 @@ checkcolor $x_coord $y_coord 0 0 0.36
 meshcolors m nodal 0
 puts "\nDisplay nodal color presentation"
 
-checkcolor $x_coord $y_coord 0.46 0.12 0.37
+#checkcolor $x_coord $y_coord 0.46 0.12 0.37
+checkcolor $x_coord $y_coord 0.72 0.72 0.70
 
 set only_screen 1
 

@@ -37,8 +37,7 @@ class BRepBuilderAPI_VertexInspector : public NCollection_CellFilter_InspectorXY
 public:
   typedef Standard_Integer Target;
   //! Constructor; remembers the tolerance
-  BRepBuilderAPI_VertexInspector (const Standard_Real theTol)
-                                  : myTol(theTol*theTol)
+  BRepBuilderAPI_VertexInspector (const Standard_Real theTol):myTol(theTol*theTol)
   {}
 
   //! Keep the points used for comparison
@@ -54,7 +53,7 @@ public:
   }
   
   //! Set current point to search for coincidence
-  void SetCurrent (const gp_XYZ& theCurPnt) 
+  void SetCurrent (const gp_XYZ& theCurPnt)
   { 
     myCurrent = theCurPnt;
   }
@@ -66,7 +65,7 @@ public:
   }
 
   //! Implementation of inspection method
-  NCollection_CellFilter_Action Inspect (const Standard_Integer theTarget); 
+  Standard_EXPORT NCollection_CellFilter_Action Inspect (const Standard_Integer theTarget); 
 
 private:
   Standard_Real myTol;

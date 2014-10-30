@@ -1185,6 +1185,38 @@ static Standard_Integer tovrml(Draw_Interpretor& di, Standard_Integer argc, cons
 
 //-----------------------------------------------------------------------------
 
+static Standard_Integer meshinfo(Draw_Interpretor& di,
+                                 Standard_Integer argc,
+                                 const char** argv)
+{
+  if ( argc != 2 )
+  {
+    di << "Wrong number of parameters. Use : meshinfo mesh" << "\n";
+    return 0;
+  }
+
+  Handle(MeshVS_Mesh) aMesh = getMesh(argv[ 1 ], di);
+  if ( aMesh.IsNull() )
+  {
+    di << "Mesh not found" << "\n";
+    return 0;
+  }
+
+  Handle(XSDRAWSTLVRML_DataSource) stlMeshSource = Handle(XSDRAWSTLVRML_DataSource)::DownCast(aMesh->GetDataSource());
+  if (!stlMeshSource.IsNull())
+  {
+    const TColStd_PackedMapOfInteger& nodes = stlMeshSource->GetAllNodes();
+    const TColStd_PackedMapOfInteger& tris  = stlMeshSource->GetAllElements();
+
+    di << "Nb nodes = " << nodes.Extent() << "\n";
+    di << "Nb triangles = " << tris.Extent() << "\n";
+  }
+
+  return 0;
+}
+
+//-----------------------------------------------------------------------------
+
 void  XSDRAWSTLVRML::InitCommands (Draw_Interpretor& theCommands)
 {
   const char* g = "XSTEP-STL/VRML";  // Step transfer file commands
@@ -1213,6 +1245,7 @@ void  XSDRAWSTLVRML::InitCommands (Draw_Interpretor& theCommands)
   theCommands.Add ("meshtext",        "display text labels",                          __FILE__, meshtext,        g );
   theCommands.Add ("meshdeform",      "display deformed mesh",                        __FILE__, meshdeform,      g );
   theCommands.Add ("mesh_edge_width", "set width of edges",                           __FILE__, mesh_edge_width, g );
+  theCommands.Add ("meshinfo",        "displays the number of nodes and triangles",   __FILE__, meshinfo,        g );
 }
 
 //==============================================================================
