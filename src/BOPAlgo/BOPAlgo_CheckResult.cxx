@@ -19,7 +19,13 @@
 // function:  BOPAlgo_CheckResult()
 // purpose: 
 //=======================================================================
-BOPAlgo_CheckResult::BOPAlgo_CheckResult() : myStatus(BOPAlgo_CheckUnknown)
+BOPAlgo_CheckResult::BOPAlgo_CheckResult() 
+: 
+  myStatus(BOPAlgo_CheckUnknown),
+  myMaxDist1(0.),
+  myMaxDist2(0.),
+  myMaxPar1(0.),
+  myMaxPar2(0.)
 {
 }
 
@@ -71,4 +77,44 @@ void BOPAlgo_CheckResult::SetCheckStatus(const BOPAlgo_CheckStatus TheStatus)
 BOPAlgo_CheckStatus BOPAlgo_CheckResult::GetCheckStatus() const
 {
   return myStatus;
+}
+
+void BOPAlgo_CheckResult::SetMaxDistance1(const Standard_Real theDist)
+{
+  myMaxDist1 = theDist;
+}
+
+void BOPAlgo_CheckResult::SetMaxDistance2(const Standard_Real theDist)
+{
+  myMaxDist2 = theDist;
+}
+
+void BOPAlgo_CheckResult::SetMaxParameter1(const Standard_Real thePar)
+{
+  myMaxPar1 = thePar;
+}
+
+void BOPAlgo_CheckResult::SetMaxParameter2(const Standard_Real thePar)
+{
+  myMaxPar2 = thePar;
+}
+
+Standard_Real BOPAlgo_CheckResult::GetMaxDistance1() const
+{
+  return myMaxDist1;
+}
+
+Standard_Real BOPAlgo_CheckResult::GetMaxDistance2() const
+{
+  return myMaxDist2;
+}
+
+Standard_Real BOPAlgo_CheckResult::GetMaxParameter1() const
+{
+  return myMaxPar1;
+}
+
+Standard_Real BOPAlgo_CheckResult::GetMaxParameter2() const
+{
+  return myMaxPar2;
 }

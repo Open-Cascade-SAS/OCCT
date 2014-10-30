@@ -115,6 +115,13 @@ is
     ---Purpose: Returns (modifiable) mode that means
     --          checking of problem of continuity of the shape.
 
+    CurveOnSurfaceMode(me: in out) 
+    returns Boolean from Standard;
+    ---C++: return &
+    ---C++: inline
+    ---Purpose: Returns (modifiable) mode that means
+    --          checking of problem of invalid curve on surface.
+
     ---
     Perform(me: out);
     ---Purpose: performs analysis
@@ -154,6 +161,9 @@ is
     is protected;
 
     TestContinuity(me: out)
+    is protected; 
+     
+    TestCurveOnSurface(me: out) 
     is protected;
 
 --  TestMergeFace(me: out)
@@ -162,20 +172,20 @@ is
 
 fields
 
-    myShape1           : Shape     from TopoDS;
-    myShape2           : Shape     from TopoDS;
-    myStopOnFirst      : Boolean   from Standard;
-    myOperation        : Operation from BOPAlgo;
-    myArgumentTypeMode : Boolean   from Standard;
-    mySelfInterMode    : Boolean   from Standard;
-    mySmallEdgeMode    : Boolean   from Standard;
-    myRebuildFaceMode  : Boolean   from Standard;
-    myTangentMode      : Boolean   from Standard;
-    myMergeVertexMode  : Boolean   from Standard;
-    myMergeEdgeMode    : Boolean   from Standard;
-    myContinuityMode   : Boolean   from Standard;
-    myEmpty1,myEmpty2  : Boolean   from Standard; 
-    myResult      : ListOfCheckResult from BOPAlgo; 
-    
-    
+    myShape1             : Shape     from TopoDS;
+    myShape2             : Shape     from TopoDS;
+    myStopOnFirst        : Boolean   from Standard;
+    myOperation          : Operation from BOPAlgo;
+    myArgumentTypeMode   : Boolean   from Standard;
+    mySelfInterMode      : Boolean   from Standard;
+    mySmallEdgeMode      : Boolean   from Standard;
+    myRebuildFaceMode    : Boolean   from Standard;
+    myTangentMode        : Boolean   from Standard;
+    myMergeVertexMode    : Boolean   from Standard;
+    myMergeEdgeMode      : Boolean   from Standard;
+    myContinuityMode     : Boolean   from Standard; 
+    myCurveOnSurfaceMode : Boolean   from Standard; 
+    myEmpty1, myEmpty2   : Boolean   from Standard; 
+    myResult     : ListOfCheckResult from BOPAlgo; 
+        
 end ArgumentAnalyzer;

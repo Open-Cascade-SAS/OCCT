@@ -39,7 +39,7 @@ is
     ---Purpose: sets ancestor shape (tool) for faulty sub-shapes
     
     AddFaultyShape2(me: in out; TheShape: Shape from TopoDS);
-    ---Purpose: adds faulty sub-shapes from tool to a list
+    ---Purpose: adds faulty sub-shapes from tool to a list 
     
     GetShape1(me)
     returns Shape from TopoDS;
@@ -66,7 +66,39 @@ is
     
     GetCheckStatus(me)
     returns CheckStatus from BOPAlgo;
-    ---Purpose: gets status of faulty
+    ---Purpose: gets status of faulty 
+     
+    SetMaxDistance1(me:out; 
+        theDist : Real from Standard); 
+    ---Purpose: Sets max distance for the first shape
+ 
+    SetMaxDistance2(me:out; 
+        theDist : Real from Standard); 
+    ---Purpose: Sets max distance for the second shape
+ 
+    SetMaxParameter1(me:out; 
+        thePar : Real from Standard); 
+    ---Purpose: Sets the parameter for the first shape
+ 
+    SetMaxParameter2(me:out; 
+        thePar : Real from Standard); 
+    ---Purpose: Sets the parameter for the second shape 
+     
+    GetMaxDistance1(me) 
+    returns Real from Standard; 
+    ---Purpose: Returns the distance for the first shape
+ 
+    GetMaxDistance2(me) 
+    returns Real from Standard; 
+    ---Purpose: Returns the distance for the second shape
+ 
+    GetMaxParameter1(me) 
+    returns Real from Standard; 
+    ---Purpose: Returns the parameter for the fircst shape
+ 
+    GetMaxParameter2(me) 
+    returns Real from Standard; 
+    ---Purpose: Returns the parameter for the second shape
   
 fields
 
@@ -74,6 +106,10 @@ fields
     myShape2 : Shape from TopoDS;
     myStatus : CheckStatus from BOPAlgo;
     myFaulty1 : ListOfShape from BOPCol;
-    myFaulty2 : ListOfShape from BOPCol;
+    myFaulty2 : ListOfShape from BOPCol; 
+    myMaxDist1 : Real from Standard;
+    myMaxDist2 : Real from Standard;
+    myMaxPar1  : Real from Standard;
+    myMaxPar2  : Real from Standard;
 
 end CheckResult;

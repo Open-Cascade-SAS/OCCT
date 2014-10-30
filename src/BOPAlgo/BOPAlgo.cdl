@@ -52,6 +52,7 @@ is
       IncompatibilityOfFace, 
       OperationAborted,
       GeomAbs_C0,
+      InvalidCurveOnSurface,
       NotValid
     end CheckStatus;
 

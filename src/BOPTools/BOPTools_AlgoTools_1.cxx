@@ -311,6 +311,118 @@ typedef BOPCol_TBBCnt
   <BOPTools_CETFunctor,
   BOPTools_VectorOfCET> BOPTools_CETCnt;
 //
+//
+//=======================================================================
+//class    : BOPTools_CheckCurveOnSurface
+//purpose  : it is used to check the curve on the surface
+//=======================================================================
+#include <math_GlobOptMin.hxx>
+#include <math_MultipleVarFunctionWithHessian.hxx>
+#include <math_Matrix.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+
+class BOPTools_CheckCurveOnSurface : 
+  public math_MultipleVarFunctionWithHessian
+{
+ public:
+  BOPTools_CheckCurveOnSurface(BOPTools_CheckCurveOnSurface&);
+  BOPTools_CheckCurveOnSurface(const Handle(Geom_Curve)& theC3D,
+                              const Handle(Geom2d_Curve)& theC2D,
+                              const Handle(Geom_Surface)& theSurf)
+    :
+      my3DCurve(theC3D),
+      my2DCurve(theC2D),
+      mySurf(theSurf)
+  {
+  }
+  //
+  virtual Standard_Integer NbVariables() const {
+    return 1;
+  }
+  //
+  virtual Standard_Boolean Value(const math_Vector& theX,
+                                 Standard_Real& theFVal) {
+    try {
+      const Standard_Real aPar = theX(1);
+      gp_Pnt aP1, aP2;
+      gp_Pnt2d aP2d;
+      my3DCurve->D0(aPar, aP1);
+      my2DCurve->D0(aPar, aP2d);
+      mySurf->D0(aP2d.X(), aP2d.Y(), aP2);
+      //
+      theFVal = -1.0*aP1.SquareDistance(aP2);
+    }
+    catch(...) {
+      return Standard_False;
+    }
+    //
+    return Standard_True;
+  }
+  //
+  virtual Standard_Integer GetStateNumber() {
+    return 0;
+  }
+  //
+  virtual Standard_Boolean Gradient(const math_Vector& theX,
+                                    math_Vector& theGrad) {
+    try {
+      const Standard_Real aPar = theX(1);
+      
+      gp_Pnt aP1, aP2;
+      gp_Vec aDC3D, aDSU, aDSV;
+      gp_Pnt2d aP2d;
+      gp_Vec2d aDC2D;
+      
+      my3DCurve->D1(aPar, aP1, aDC3D);
+      my2DCurve->D1(aPar, aP2d, aDC2D);
+      mySurf->D1(aP2d.X(), aP2d.Y(), aP2, aDSU, aDSV);
+      
+      aP1.SetXYZ(aP1.XYZ() - aP2.XYZ());
+      aP2.SetXYZ(aDC3D.XYZ() - aDC2D.X()*aDSU.XYZ() - aDC2D.Y()*aDSV.XYZ());
+      
+      theGrad(1) = -2.0*aP1.XYZ().Dot(aP2.XYZ());
+    }
+    catch(...) {
+      return Standard_False;
+    }
+    
+    return Standard_True;
+  }
+  //   
+  virtual Standard_Boolean Values(const math_Vector& theX,
+                                  Standard_Real& theVal,
+                                  math_Vector& theGrad) {
+    if(!Value(theX, theVal))
+      return Standard_False;
+    
+    if(!Gradient(theX, theGrad))
+      return Standard_False;
+    
+    return Standard_True;
+  }
+  //
+  virtual Standard_Boolean Values(const math_Vector& theX,
+                                  Standard_Real& theVal,
+                                  math_Vector& theGrad,
+                                  math_Matrix& theHessian) {
+    if(!Value(theX, theVal))
+      return Standard_False;
+    
+    if(!Gradient(theX, theGrad))
+      return Standard_False;
+    
+    theHessian(1,1) = theGrad(1);
+    
+    return Standard_True;
+  }
+  //
+ private:
+  Handle(Geom_Curve) my3DCurve;
+  Handle(Geom2d_Curve) my2DCurve;
+  Handle(Geom_Surface) mySurf;
+};
+//=======================================================================
+//
 //=======================================================================
 // Function : CorrectTolerances
 // purpose : 
@@ -1036,4 +1148,238 @@ void UpdateEdges(const TopoDS_Face& aF)
       }
     }
   }
+}
+//=======================================================================
+// Function : MinComputing
+// purpose : 
+//=======================================================================
+static Standard_Boolean MinComputing( BOPTools_CheckCurveOnSurface& theFunction,
+                                      const Standard_Real theFirst,
+                                      const Standard_Real theLast,
+                                      const Standard_Real theEpsilon, //1.0e-3
+                                      Standard_Real & theBestValue,
+                                      Standard_Real & theBestParameter)
+{
+  //Standard_Real aPrevValue = theBestValue;
+  const Standard_Real aStepMin = 1.0e-2;
+  math_Vector aFirstV(1, 1), aLastV(1, 1), anOutputParam(1, 1);
+  aFirstV(1) = theFirst;
+  aLastV(1) = theLast;
+
+  math_GlobOptMin aFinder(&theFunction, aFirstV, aLastV);
+  aFinder.SetTol(aStepMin, theEpsilon);
+  aFinder.Perform();
+
+  const Standard_Integer aNbExtr = aFinder.NbExtrema();
+  for(Standard_Integer i = 1; i <= aNbExtr; i++)
+  {
+    Standard_Real aValue = 0.0;
+    aFinder.Points(i, anOutputParam);
+    theFunction.Value(anOutputParam, aValue);
+    
+    if(aValue < theBestValue)
+    {
+      theBestValue = aValue;
+      theBestParameter = anOutputParam(1);
+    }
+  }
+
+  return Standard_True;
+}
+
+//=======================================================================
+// Function : ComputeTolerance
+// purpose : 
+//=======================================================================
+Standard_Boolean BOPTools_AlgoTools::
+          ComputeTolerance( const Handle(Geom_Curve)& theCurve3D,
+                            const Handle(Geom2d_Curve)& theCurve2D,
+                            const Handle(Geom_Surface)& theSurf,
+                            Standard_Real& theMaxDist,
+                            Standard_Real& theMaxPar)
+{
+  if (theCurve3D.IsNull() ||
+      theCurve2D.IsNull() ||
+      theSurf.IsNull()) {
+    return Standard_False;
+  }
+
+  const Standard_Real anEpsilonRange = 1.0e-3, aMinDelta = 1.0e-5;
+
+  //
+  try {
+    Standard_Real aFirst = theCurve3D->FirstParameter(),
+                  aLast = theCurve3D->LastParameter();
+
+    BOPTools_CheckCurveOnSurface aFunc(theCurve3D, theCurve2D, theSurf);
+    //
+    math_Vector anOutputParam(1, 1);
+    anOutputParam(1) = theMaxPar = aFirst;
+    //
+    theMaxDist = 0.;
+    MinComputing(aFunc, aFirst, aLast, anEpsilonRange, theMaxDist, theMaxPar);
+
+    Standard_Integer aNbIteration = 100;
+    Standard_Boolean aStatus = Standard_True;
+    while((aNbIteration-- >= 0) && aStatus)
+    {
+      Standard_Real aValue = theMaxDist, aParam = theMaxPar;
+      Standard_Real aBP = theMaxPar - aMinDelta;
+      MinComputing(aFunc, aFirst, aBP, anEpsilonRange, theMaxDist, theMaxPar);
+
+      if(theMaxDist < aValue)
+      {
+        aLast = aBP;
+        aStatus = Standard_True;
+      }
+      else 
+      {
+        theMaxDist = aValue;
+        theMaxPar = aParam;
+        aStatus = Standard_False;
+      }
+
+      if(!aStatus)
+      {
+        aBP = theMaxPar + aMinDelta;
+        MinComputing(aFunc, aBP, aLast, 1.0e-3, theMaxDist, theMaxPar);
+
+        if(theMaxDist < aValue)
+        {
+          aFirst = aBP;
+          aStatus = Standard_True;
+        }
+        else
+        {
+          theMaxDist = aValue;
+          theMaxPar = aParam;
+          aStatus = Standard_False;
+        }
+      }
+    }
+
+    theMaxDist = sqrt(Abs(theMaxDist));
+  }
+  catch (...) {
+    return Standard_False;
+  }
+  //
+  return Standard_True;
+}
+
+//=======================================================================
+// Function : ComputeTolerance
+// purpose : 
+//=======================================================================
+Standard_Boolean BOPTools_AlgoTools::ComputeTolerance
+  (const TopoDS_Face& theFace,
+   const TopoDS_Edge& theEdge,
+   Standard_Real& theMaxDist,
+   Standard_Real& theParameter)
+{
+  Standard_Boolean bRet;
+  Standard_Real aT, aD, aFirst, aLast;
+  TopLoc_Location aLocC, aLocS;
+  //
+  theMaxDist = 0.;
+  theParameter = 0.;
+  bRet = Standard_False;
+  //
+  const Handle(BRep_TEdge)& aTE = *((Handle(BRep_TEdge)*)&theEdge.TShape());
+  //The edge is considered to be same range and not degenerated
+  if ((!aTE->SameRange() && aTE->SameParameter()) ||
+      aTE->Degenerated()) {
+    return bRet;
+  }
+  //
+  Handle(Geom_Curve) aC = Handle(Geom_Curve)::
+    DownCast(BRep_Tool::Curve(theEdge, aLocC, aFirst, aLast)->Copy());
+  aC = new Geom_TrimmedCurve(aC, aFirst, aLast);
+  aC->Transform(aLocC.Transformation());
+  //
+  const Handle(Geom_Surface)& aSurfF = BRep_Tool::Surface(theFace, aLocS);
+  const Handle(Geom_Surface)& aSurf = Handle(Geom_Surface)::
+    DownCast(aSurfF->Copy()->Transformed(aLocS.Transformation()));
+  //
+  Standard_Boolean isPCurveFound = Standard_False;
+  BRep_ListIteratorOfListOfCurveRepresentation itcr(aTE->Curves());
+  for (; itcr.More(); itcr.Next()) {
+    const Handle(BRep_CurveRepresentation)& cr = itcr.Value();
+    if (!(cr->IsCurveOnSurface(aSurfF, aLocS.Predivided(theEdge.Location())))) {
+      continue;
+    }
+    isPCurveFound = Standard_True;
+    //
+    Handle(Geom2d_Curve) aC2d = Handle(Geom2d_Curve)::
+      DownCast(cr->PCurve()->Copy());
+    aC2d = new Geom2d_TrimmedCurve(aC2d, aFirst, aLast);
+      //
+    if(BOPTools_AlgoTools::ComputeTolerance
+       (aC, aC2d, aSurf, aD, aT)) {
+      bRet = Standard_True;
+      if (aD > theMaxDist) {
+        theMaxDist = aD;
+        theParameter = aT;
+      }
+    }
+    //
+    if (cr->IsCurveOnClosedSurface()) {
+      Handle(Geom2d_Curve) aC2d = Handle(Geom2d_Curve)::
+        DownCast(cr->PCurve2()->Copy());
+      aC2d = new Geom2d_TrimmedCurve(aC2d, aFirst, aLast);
+      //
+      if(BOPTools_AlgoTools::ComputeTolerance
+         (aC, aC2d, aSurf, aD, aT)) {
+        bRet = Standard_True;
+        if (aD > theMaxDist) {
+          theMaxDist = aD;
+          theParameter = aT;
+        }
+      }
+    }
+  }
+  //
+  if (isPCurveFound) {
+    return bRet;
+  }
+  //
+  Handle(Geom_Plane) aPlane;
+  Handle(Standard_Type) dtyp = aSurf->DynamicType();
+  //
+  if (dtyp == STANDARD_TYPE(Geom_RectangularTrimmedSurface)) {
+    aPlane = Handle(Geom_Plane)::
+      DownCast(Handle(Geom_RectangularTrimmedSurface)::
+               DownCast(aSurf)->BasisSurface()->Copy());
+  }
+  else {
+    aPlane = Handle(Geom_Plane)::DownCast(aSurf->Copy());
+  }
+  //
+  if (aPlane.IsNull()) { // not a plane
+    return bRet;
+  }
+  //
+  aPlane = Handle(Geom_Plane)::DownCast(aPlane);//
+  //
+  Handle(GeomAdaptor_HSurface) GAHS = new GeomAdaptor_HSurface(aPlane);
+  Handle(Geom_Curve) ProjOnPlane = 
+    GeomProjLib::ProjectOnPlane (new Geom_TrimmedCurve(aC, aFirst, aLast), 
+                                 aPlane, aPlane->Position().Direction(), 
+                                 Standard_True);
+  Handle(GeomAdaptor_HCurve) aHCurve = new GeomAdaptor_HCurve(ProjOnPlane);
+  //
+  ProjLib_ProjectedCurve proj(GAHS,aHCurve);
+  Handle(Geom2d_Curve) aC2d = Geom2dAdaptor::MakeCurve(proj);
+  aC2d = new Geom2d_TrimmedCurve(aC2d, aFirst, aLast);
+  //
+  if(BOPTools_AlgoTools::ComputeTolerance
+     (aC, aC2d, aPlane, aD, aT)) {
+    bRet = Standard_True;
+    if (aD > theMaxDist) {
+      theMaxDist = aD;
+      theParameter = aT;
+    }
+  }
+  //
+  return bRet;
 }

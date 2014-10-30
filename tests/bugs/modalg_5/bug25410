@@ -1,0 +1,23 @@
+puts "============"
+puts "OCC25410"
+puts "============"
+puts ""
+######################################################
+# Tool for extended check of validity of the curve on the surface
+######################################################
+
+pload XSDRAW
+
+testreadiges [locate_data_file bug25410_Tank8.igs] b1
+
+checkcurveonsurf b1
+xdistef e_0 f_0
+bopargcheck b1 /ic #f
+bopargcheck b1 /ics #f
+
+
+testreadiges [locate_data_file bug25410_Tank7.igs] b2
+checkcurveonsurf b2
+xdistef e_0 f_0
+bopargcheck b2 /ic #f
+bopargcheck b2 /ics #f

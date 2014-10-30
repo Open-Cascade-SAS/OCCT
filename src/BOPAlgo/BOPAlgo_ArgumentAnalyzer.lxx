@@ -57,6 +57,10 @@ inline Standard_Boolean& BOPAlgo_ArgumentAnalyzer::ContinuityMode()
   return myContinuityMode;
 }
 
+inline Standard_Boolean& BOPAlgo_ArgumentAnalyzer::CurveOnSurfaceMode() 
+{
+  return myCurveOnSurfaceMode;
+}
 // inline Standard_Boolean& BOPAlgo_ArgumentAnalyzer::MergeFaceMode() 
 // {
 //   return myMergeFaceMode;

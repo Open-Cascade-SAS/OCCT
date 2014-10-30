@@ -33,6 +33,9 @@ uses
     Wire from TopoDS, 
     Shell from TopoDS,  
     Solid from TopoDS, 
+    Curve from Geom,
+    Curve from Geom2d,
+    Surface from Geom,
     --  
     BaseAllocator from BOPCol,
     ListOfShape from BOPCol,  
@@ -290,44 +293,41 @@ is
             theRunParallel: Boolean from Standard=Standard_False);   
  
     ---Purpose:	 
-    --- Provides valid values of tolerances for the shape <theS>         
-    --- <theTolMax> is max value of the tolerance that can be 
-    --- accepted for correction.  If real value of the tolerance 
-    --- will be greater than  <aTolMax>, the correction does not 
-    --- perform. 
-    ---
+    -- Provides valid values of tolerances for the shape <theS>         
+    -- <theTolMax> is max value of the tolerance that can be 
+    -- accepted for correction.  If real value of the tolerance 
+    -- will be greater than  <aTolMax>, the correction does not 
+    -- perform. 
+ 
     CorrectCurveOnSurface  (myclass;  
             theS: Shape  from  TopoDS; 
             theTolMax: Real from Standard =0.0001; 
             theRunParallel: Boolean from Standard=Standard_False);   
     ---Purpose:	 
-    --- Provides valid values of tolerances for the shape <theS> 
-    --- in  terms of BRepCheck_InvalidCurveOnSurface.   
-    ---
+    -- Provides valid values of tolerances for the shape <theS> 
+    -- in  terms of BRepCheck_InvalidCurveOnSurface.   
+ 
     CorrectPointOnCurve    (myclass;  
             theS: Shape  from  TopoDS; 
             theTolMax: Real from Standard =0.0001; 
             theRunParallel: Boolean from Standard=Standard_False);   
     ---Purpose:	 
-    --- Provides valid values of tolerances for the shape <theS> 
-    --- in  terms of BRepCheck_InvalidPointOnCurve.   
-    ---
-    --fields 
+    -- Provides valid values of tolerances for the shape <theS> 
+    -- in  terms of BRepCheck_InvalidPointOnCurve.   
  
-    --copy from BOPTools_AlgoTools.cdl
     MakeNewVertex  (myclass;  
             aP1 : Pnt  from  gp;  
             aTol: Real from Standard;
             aNewVertex:out Vertex from TopoDS); 
     ---Purpose: 
-    --- Make a vertex using 3D-point <aP1> and 3D-tolerance value <aTol>  
-    ---
+    -- Make a vertex using 3D-point <aP1> and 3D-tolerance value <aTol>  
+ 
     MakeNewVertex  (myclass;  
         aV1,aV2:   Vertex from TopoDS; 
         aNewVertex:out Vertex from TopoDS);                                                  
     ---Purpose: 
-    --- Make a vertex using couple of vertices  <aV1, aV2>     
-    ---
+    -- Make a vertex using couple of vertices  <aV1, aV2>     
+ 
     MakeNewVertex  (myclass;  
             aE1: Edge from TopoDS; 
             aP1: Real from Standard; 
@@ -335,25 +335,25 @@ is
             aP2: Real from Standard; 
             aNewVertex:out Vertex from TopoDS);                                      
     ---Purpose: 
-    --- Make a vertex in place of intersection between two edges 
-    --- <aE1, aE2> with parameters <aP1, aP2>     
-    ---
+    -- Make a vertex in place of intersection between two edges 
+    -- <aE1, aE2> with parameters <aP1, aP2>     
+ 
     MakeNewVertex  (myclass;  
             aE1: Edge from TopoDS; 
             aP1: Real from Standard; 
             aF2: Face from TopoDS; 
             aNewVertex:out Vertex from TopoDS);         
     ---Purpose: 
-    --- Make a vertex in place of intersection between the edge <aE1> 
-    --- with parameter <aP1> and the face <aF2> 
-    ---
+    -- Make a vertex in place of intersection between the edge <aE1> 
+    -- with parameter <aP1> and the face <aF2> 
+ 
     PointOnEdge    (myclass;   
             aEdge: Edge from TopoDS; 
             aPrm: Real from Standard; 
             aP:out Pnt  from  gp);
     ---Purpose: 
-    --- Compute a 3D-point on the edge <aEdge> at parameter <aPrm> 
-    ---
+    -- Compute a 3D-point on the edge <aEdge> at parameter <aPrm> 
+ 
     MakeSplitEdge  (myclass;  
             aE1: Edge from TopoDS; 
             aV1: Vertex from TopoDS;             
@@ -362,9 +362,9 @@ is
             aP2: Real from Standard; 
             aNewEdge:out Edge from TopoDS);          
     ---Purpose: 
-    --- Make the edge from base edge <aE1> and two vertices <aV1,aV2>  
-    --- at parameters <aP1,aP2>  
-    ---
+    -- Make the edge from base edge <aE1> and two vertices <aV1,aV2>  
+    -- at parameters <aP1,aP2>  
+ 
     MakeSectEdge   (myclass;  
             aIC: Curve  from IntTools; 
             aV1: Vertex from TopoDS;             
@@ -373,35 +373,34 @@ is
             aP2: Real from Standard; 
             aNewEdge:out Edge from TopoDS);             
     ---Purpose: 
-    --- Make the edge from 3D-Curve <aIC>  and two vertices <aV1,aV2>  
-    --- at parameters <aP1,aP2>  
-    ---
+    -- Make the edge from 3D-Curve <aIC>  and two vertices <aV1,aV2>  
+    -- at parameters <aP1,aP2>  
+ 
     UpdateVertex   (myclass;  
             aIC: Curve  from IntTools; 
             aT : Real from Standard;  
             aV : Vertex from TopoDS); 
     ---Purpose:   
-    --- Update the tolerance value for vertex  <aV> 
-    --- taking into account the fact that <aV> lays on   
-    --- the curve <aIC>   
-    ---
+    -- Update the tolerance value for vertex  <aV> 
+    -- taking into account the fact that <aV> lays on   
+    -- the curve <aIC>   
+ 
     UpdateVertex   (myclass;  
             aE : Edge from TopoDS;  
             aT : Real from Standard;  
             aV : Vertex from TopoDS);              
     ---Purpose:  
-    --- Update the tolerance value for vertex  <aV> 
-    --- taking into account the fact that <aV> lays on   
-    --- the edge <aE>   
-    ---
+    -- Update the tolerance value for vertex  <aV> 
+    -- taking into account the fact that <aV> lays on   
+    -- the edge <aE>   
+ 
     UpdateVertex   (myclass;  
             aVF : Vertex from TopoDS; 
             aVN : Vertex from TopoDS);         
     ---Purpose:  
-    --- Update the tolerance value for vertex  <aVN> 
-    --- taking into account the fact that <aVN> should   
-    --- cover tolerance zone of <aVF>    
-    ---
+    -- Update the tolerance value for vertex  <aVN> 
+    -- taking into account the fact that <aVN> should   
+    -- cover tolerance zone of <aVF>    
  
     CorrectRange   (myclass;  
             aE1:   Edge from TopoDS;    
@@ -409,18 +408,17 @@ is
             aSR:   Range from IntTools;                        
             aNewSR:out  Range from IntTools);  
     ---Purpose:  
-    --- Correct shrunk range <aSR> taking into account 3D-curve      
-    --- resolution and corresp. tolerances' values of <aE1>, <aE2>   
-    ---
+    -- Correct shrunk range <aSR> taking into account 3D-curve      
+    -- resolution and corresp. tolerances' values of <aE1>, <aE2>   
+ 
     CorrectRange   (myclass;  
             aE:   Edge from TopoDS;    
             aF:   Face from TopoDS;   
             aSR:  Range from IntTools;                        
             aNewSR:out  Range from IntTools); 
     ---Purpose:  
-    --- Correct shrunk range <aSR> taking into account 3D-curve      
-    --- resolution and corresp. tolerances' values of <aE>, <aF>
-    ---
+    -- Correct shrunk range <aSR> taking into account 3D-curve      
+    -- resolution and corresp. tolerances' values of <aE>, <aF>
  
     IsBlockInOnFace(myclass;   
             aShR  : Range from IntTools; 
@@ -429,29 +427,28 @@ is
             aContext:out Context from IntTools)
         returns Boolean from Standard;               
     ---Purpose:  
-    --- Returns TRUE if PaveBlock <aPB> lays on the face <aF>, i.e 
-    --- the <PB> is IN or ON in 2D of <aF> 
+    -- Returns TRUE if PaveBlock <aPB> lays on the face <aF>, i.e 
+    -- the <PB> is IN or ON in 2D of <aF> 
      
     IsMicroEdge(myclass; 
             theEdge    : Edge from TopoDS; 
             theContext : Context from IntTools)  
         returns Boolean from Standard; 
     ---Purpose: 
-    --- Checks if it is possible to compute shrunk range for the edge <aE>. 
-    ---  
+    -- Checks if it is possible to compute shrunk range for the edge <aE>. 
+    --  
  
     CorrectShapeTolerances (myclass;
             theS: Shape from TopoDS; 
             theRunParallel: Boolean from Standard=Standard_False);   
     ---Purpose: 
-    --- Corrects tolerance values of the sub-shapes of the shape <theS> if needed. 
-    ---
+    -- Corrects tolerance values of the sub-shapes of the shape <theS> if needed. 
  
     Dimension(myclass; 
             theS:Shape from TopoDS) 
         returns Integer from Standard;
     ---Purpose: 
-    --- Retutns dimension of the shape <theS>. 
+    -- Retutns dimension of the shape <theS>. 
      
     IsOpenShell(myclass; 
             theShell:Shell from TopoDS)  
@@ -461,6 +458,26 @@ is
     IsInvertedSolid(myclass; 
             theSolid:Solid from TopoDS)  
         returns Boolean from Standard;  
-    ---Purpose: Returns true if the solid <theSolid> is inverted 
+    ---Purpose: Returns true if the solid <theSolid> is inverted  
      
+    ComputeTolerance(myclass;
+        theCurve3D : Curve from Geom;
+        theCurve2D : Curve from Geom2d;
+        theSurf    : Surface from Geom;
+        theMaxDist : out Real from Standard; 
+        theMaxPar  : out Real from Standard)
+    returns Boolean from Standard; 
+    ---Purpose:  
+    -- Computes the max distance between points  
+    -- taken from 3D and 2D curves by the same parameter
+
+    ComputeTolerance(myclass;
+        theFace : Face from TopoDS;
+        theEdge : Edge from TopoDS;
+        theMaxDist : out Real from Standard; 
+        theMaxPar  : out Real from Standard)
+    returns Boolean from Standard;
+    ---Purpose:  
+    -- Computes the necessary value of the tolerance for the edge
+
 end AlgoTools;

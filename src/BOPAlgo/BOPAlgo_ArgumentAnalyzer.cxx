@@ -74,6 +74,7 @@ myTangentMode(Standard_False),
 myMergeVertexMode(Standard_False),
 myMergeEdgeMode(Standard_False),
 myContinuityMode(Standard_False),
+myCurveOnSurfaceMode(Standard_False),
 myEmpty1(Standard_False),
 myEmpty2(Standard_False)
 {
@@ -195,6 +196,11 @@ void BOPAlgo_ArgumentAnalyzer::Perform()
     if(myContinuityMode) {
       if(!(!myResult.IsEmpty() && myStopOnFirst))
         TestContinuity();
+    }
+
+    if(myCurveOnSurfaceMode) {
+      if(!(!myResult.IsEmpty() && myStopOnFirst))
+        TestCurveOnSurface();
     }
   }
   catch(Standard_Failure) {
@@ -816,3 +822,55 @@ void BOPAlgo_ArgumentAnalyzer::TestContinuity()
     }
   }
 }
+
+// ================================================================================
+// function: TestCurveOnSurface
+// purpose:
+// ================================================================================
+void BOPAlgo_ArgumentAnalyzer::TestCurveOnSurface()
+{
+  Standard_Integer i;
+  Standard_Real aT, aD, aTolE;
+  TopExp_Explorer aExpF, aExpE;
+  //
+  for(i = 0; i < 2; i++) {
+    const TopoDS_Shape& aS = (i == 0) ? myShape1 : myShape2;
+    if(aS.IsNull()) {
+      continue;
+    }
+    //
+    aExpF.Init(aS, TopAbs_FACE);
+    for (; aExpF.More(); aExpF.Next()) {
+      const TopoDS_Face& aF = *(TopoDS_Face*)&aExpF.Current();
+      //
+      aExpE.Init(aF, TopAbs_EDGE);
+      for (; aExpE.More(); aExpE.Next()) {
+        const TopoDS_Edge& aE = *(TopoDS_Edge*)&aExpE.Current();
+        //
+        if (BOPTools_AlgoTools::ComputeTolerance(aF, aE, aD, aT)) {
+          aTolE = BRep_Tool::Tolerance(aE);
+          if (aD > aTolE) {
+            BOPAlgo_CheckResult aResult;
+            aResult.SetCheckStatus(BOPAlgo_InvalidCurveOnSurface);
+            if(i == 0) {
+              aResult.SetShape1(myShape1);
+              aResult.AddFaultyShape1(aE);
+              aResult.AddFaultyShape1(aF);
+              aResult.SetMaxDistance1(aD);
+              aResult.SetMaxParameter1(aT);
+            }
+            else {
+              aResult.SetShape2(myShape2);
+              aResult.AddFaultyShape2(aE);
+              aResult.AddFaultyShape2(aF);
+              aResult.SetMaxDistance2(aD);
+              aResult.SetMaxParameter2(aT);
+            }
+            myResult.Append(aResult);
+          }
+        }
+      }
+    }
+  }
+}
+
