@@ -38,22 +38,22 @@ set anArrAngle [expr 3.14 * 12.0 / 180.0]
 
 set aList {das_7 dbs_27 dbs_6 dbs_19 das_25 das_26 dbs_22 das_43 das_12 das_41 dbs_39 dbs_59 das_3944 dbs_1826 das_4843}
 
-vdimension dbs_19 -length -shapes bs_19 -plane xoy -color black -flyout -15
-vdimension dbs_6 -length -shapes bs_6 -plane xoy -color black -flyout 15
-vdimension dbs_27 -length -shapes bs_27 -plane xoy -color black -label right -flyout -27
+vdimension dbs_19 -length -shapes bs_27 -plane xoy -color black -flyout -15
+vdimension dbs_6 -length -shapes bs_14 -plane xoy -color black -flyout 15
+vdimension dbs_27 -length -shapes bs_28 -plane xoy -color black -label right -flyout -27
 vdimension das_7 -length -shapes as_7 -plane xoy -color black -flyout -20
-vdimension das_25 -length -shapes as_25 -plane xoy -color black -flyout -15
-vdimension das_26 -length -shapes as_26 -plane xoy -color black -flyout 30
-vdimension dbs_22 -length -shapes bs_22 -plane xoy -color black -flyout -20
+vdimension das_25 -length -shapes as_28 -plane xoy -color black -flyout -15
+vdimension das_26 -length -shapes as_18 -plane xoy -color black -flyout 30
+vdimension dbs_22 -length -shapes bs_20 -plane xoy -color black -flyout -20
 vdimension das_43 -length -shapes as_43 -plane xoy -color black -flyout 55 -label right
 vdimension das_12 -length -shapes as_12 -plane xoy -color black -flyout 35 -label right
-vdimension das_41 -length -shapes as_41 -plane xoy -color black -flyout 15
+vdimension das_41 -length -shapes as_40 -plane xoy -color black -flyout 15
 
-vdimension dbs_39 -radius -shapes bs_39 -color black -label right
-vdimension dbs_59 -radius -shapes bs_59 -color black
+vdimension dbs_39 -radius -shapes bs_45 -color black -label right
+vdimension dbs_59 -radius -shapes bs_63 -color black
 
-vdimension das_3944 -angle -shapes as_39 as_44 -color black
-vdimension dbs_1826 -angle -shapes bs_18 bs_26 -color black
+vdimension das_3944 -angle -shapes as_38 as_49 -color black
+vdimension dbs_1826 -angle -shapes bs_24 bs_25 -color black
 vdimension das_4843 -angle -shapes as_48 as_43 -color black
 
 foreach i $aList {
