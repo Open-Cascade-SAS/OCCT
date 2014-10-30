@@ -12,15 +12,19 @@
 CFileSaveSTEPDialog::CFileSaveSTEPDialog(CWnd* pParent /*=NULL*/)
 	: CFileDialog(FALSE,_T("*.STEP"),NULL,OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
                 _T("STEP Files (*.step)|*.step;|STEP Files (*.stp)|*.stp;||"),
-				  pParent)
-
+				  pParent
+#if (_MSC_VER < 1500)
+               )
+#else
+               ,0,0)
+#endif 
 
 
 //dlg.m_ofn.lpstrInitialDir = initdir;
 
 {
 	//{{AFX_DATA_INIT(CFileSaveSTEPDialog)
-	m_Cc1ModelType = STEPControl_ManifoldSolidBrep;
+	m_Cc1ModelType = STEPControl_AsIs;
 	//}}AFX_DATA_INIT
 
 CString CASROOTValue;
@@ -35,34 +39,21 @@ CString initdir = (CASROOTValue + "\\..\\data\\step");
 
 void CFileSaveSTEPDialog::DoDataExchange(CDataExchange* pDX)
 {
-	CFileDialog::DoDataExchange(pDX);
-    if (!pDX->m_bSaveAndValidate)
-        {
+  CFileDialog::DoDataExchange(pDX);
+  if (!pDX->m_bSaveAndValidate)
+  {
+    m_DialogType = m_Cc1ModelType;
+  }
 
-        if (m_Cc1ModelType==STEPControl_ManifoldSolidBrep) m_DialogType=0;
-        if (m_Cc1ModelType==STEPControl_BrepWithVoids) Standard_Failure::Raise("unsupported enumeration terme");
-        if (m_Cc1ModelType==STEPControl_FacetedBrep) m_DialogType=1;
-        if (m_Cc1ModelType==STEPControl_FacetedBrepAndBrepWithVoids) Standard_Failure::Raise("unsupported enumeration terme");
-        if (m_Cc1ModelType==STEPControl_ShellBasedSurfaceModel) m_DialogType=2;
-        if (m_Cc1ModelType==STEPControl_GeometricCurveSet) m_DialogType=3;
+  //{{AFX_DATA_MAP(CFileSaveSTEPDialog)
+  DDX_Control(pDX, IDC_FSaveSTEP_Type, m_SaveTypeCombo);
+  DDX_CBIndex(pDX, IDC_FSaveSTEP_Type, m_DialogType );
+  //}}AFX_DATA_MAP
 
-		}
-	//{{AFX_DATA_MAP(CFileSaveSTEPDialog)
-	DDX_Control(pDX, IDC_FSaveSTEP_Type, m_SaveTypeCombo);
-	DDX_CBIndex(pDX, IDC_FSaveSTEP_Type, m_DialogType );
-	//}}AFX_DATA_MAP
-
-    if (pDX->m_bSaveAndValidate)
-        {
-
-        if (m_DialogType==0) m_Cc1ModelType=STEPControl_ManifoldSolidBrep;
-
-        if (m_DialogType==1) m_Cc1ModelType=STEPControl_FacetedBrep;
-
-        if (m_DialogType==2) m_Cc1ModelType=STEPControl_ShellBasedSurfaceModel;
-        if (m_DialogType==3) m_Cc1ModelType=STEPControl_GeometricCurveSet;
-
-		}
+  if (pDX->m_bSaveAndValidate)
+  {
+    m_Cc1ModelType = (STEPControl_StepModelType)m_DialogType;
+  }
 }
 
 BEGIN_MESSAGE_MAP(CFileSaveSTEPDialog, CFileDialog)
@@ -75,18 +66,19 @@ END_MESSAGE_MAP()
 // CFileSaveSTEPDialog message handlers
 
 BOOL CFileSaveSTEPDialog::OnInitDialog() 
-{
-	
-	BOOL bRet =	CFileDialog::OnInitDialog();
-	m_SaveTypeCombo.InsertString(-1, L"ManifoldSolidBrep");
+{	
+  BOOL bRet =	CFileDialog::OnInitDialog();
 
-  m_SaveTypeCombo.InsertString(-1, L"FacetedBrep");
+  m_SaveTypeCombo.InsertString(-1, L"As Is");
+  m_SaveTypeCombo.InsertString(-1, L"Manifold Solid BRep");
+  m_SaveTypeCombo.InsertString(-1, L"BRep With Voids");
+  m_SaveTypeCombo.InsertString(-1, L"Faceted BRep");
+  m_SaveTypeCombo.InsertString(-1, L"Faceted BRep With Voids");
+  m_SaveTypeCombo.InsertString(-1, L"Shell Based Surface Model");
+  m_SaveTypeCombo.InsertString(-1, L"Geometric Curve Set");
+  m_SaveTypeCombo.SetCurSel(m_DialogType);
 
-  m_SaveTypeCombo.InsertString(-1, L"ShellBasedSurfaceModel");
-  m_SaveTypeCombo.InsertString(-1, L"GeometricCurveSet");
-	m_SaveTypeCombo.SetCurSel(m_DialogType);
-
-	return bRet;
+  return bRet;
 }
 
 BOOL CFileSaveSTEPDialog::OnFileNameOK()

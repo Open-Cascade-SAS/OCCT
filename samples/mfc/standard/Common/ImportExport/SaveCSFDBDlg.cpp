@@ -14,7 +14,12 @@
 CFileSaveCSFDBDialog::CFileSaveCSFDBDialog(CWnd* pParent /*=NULL*/)
 	: CFileDialog(FALSE,_T("*.csfdb"),NULL,OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
                 _T("CSFDB Files (*.csfdb)|*.csfdb;|CSFDB Files (*.csf)|*.csf;||"),
-				  pParent)
+				  pParent
+#if (_MSC_VER < 1500)
+               )
+#else
+               ,0,0)
+#endif
 
 {
 	//{{AFX_DATA_INIT(CFileSaveCSFDBDialog)

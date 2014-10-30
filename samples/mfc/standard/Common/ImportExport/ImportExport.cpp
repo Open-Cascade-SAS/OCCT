@@ -836,7 +836,7 @@ IFSelect_ReturnStatus CImportExport::SaveSTEP(const Handle(TopTools_HSequenceOfS
 
 	CFileSaveSTEPDialog aDlg(NULL);
 
-	aDlg.m_Cc1ModelType = STEPControl_ManifoldSolidBrep;
+	aDlg.m_Cc1ModelType = STEPControl_AsIs;
 
 	if (aDlg.DoModal() == IDOK) {
         SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT)); 

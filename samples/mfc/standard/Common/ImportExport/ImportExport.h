@@ -86,7 +86,7 @@ public :
     static IFSelect_ReturnStatus SaveSTEP(const Standard_CString& aFileName,
                                           const Handle(TopTools_HSequenceOfShape)& aHSequenceOfShape,
 
-                                          const STEPControl_StepModelType aValue = STEPControl_ManifoldSolidBrep);
+                                          const STEPControl_StepModelType aValue = STEPControl_AsIs);
 
     static void ReadSAT(const Handle(AIS_InteractiveContext)& anInteractiveContext);
 	static Handle(TopTools_HSequenceOfShape) ReadSAT(); // not by reference --> the sequence is created here !!
