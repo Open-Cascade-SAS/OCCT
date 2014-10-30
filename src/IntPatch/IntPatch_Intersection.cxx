@@ -908,11 +908,21 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_HSurface)&  theS1,
     ListOfPnts.Clear();
     if(isGeomInt)
     {
-      GeomGeomPerfom(theS1, theD1, theS2, theD2, TolArc, TolTang, ListOfPnts, RestrictLine, typs1, typs2);
+      if(theD1->DomainIsInfinite() || theD2->DomainIsInfinite())
+      {
+        GeomGeomPerfom(theS1, theD1, theS2, theD2, TolArc, 
+                      TolTang, ListOfPnts, RestrictLine, typs1, typs2);
+      }
+      else
+      {
+        GeomGeomPerfomTrimSurf(theS1, theD1, theS2, theD2,
+              TolArc, TolTang, ListOfPnts, RestrictLine, typs1, typs2);
+      }
     }
     else
     {
-      ParamParamPerfom(theS1, theD1, theS2, theD2, TolArc, TolTang, ListOfPnts, RestrictLine, typs1, typs2);
+      ParamParamPerfom(theS1, theD1, theS2, theD2, 
+              TolArc, TolTang, ListOfPnts, RestrictLine, typs1, typs2);
     }
   }
 
@@ -929,7 +939,8 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_HSurface)&  theS1,
     IntSurf_ListOfPntOn2S ListOfPnts;
     ListOfPnts.Clear();
 
-    ParamParamPerfom(theS1, theD1, theS2, theD2, TolArc, TolTang, ListOfPnts, RestrictLine, typs1, typs2);
+    ParamParamPerfom(theS1, theD1, theS2, theD2, TolArc,
+                        TolTang, ListOfPnts, RestrictLine, typs1, typs2);
   }
 }
 
@@ -1125,7 +1136,8 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_HSurface)&  theS1,
 
   if(!isGeomInt)
   {
-    ParamParamPerfom(theS1, theD1, theS2, theD2, TolArc, TolTang, ListOfPnts, RestrictLine, typs1, typs2);
+    ParamParamPerfom(theS1, theD1, theS2, theD2, 
+                TolArc, TolTang, ListOfPnts, RestrictLine, typs1, typs2);
   }
   else if(ts1 != ts2)
   {
@@ -1133,7 +1145,8 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_HSurface)&  theS1,
   }
   else if (ts1 == 0)
   {
-    ParamParamPerfom(theS1, theD1, theS2, theD2, TolArc, TolTang, ListOfPnts, RestrictLine, typs1, typs2);
+    ParamParamPerfom(theS1, theD1, theS2, theD2,
+                TolArc, TolTang, ListOfPnts, RestrictLine, typs1, typs2);
   }
   else if(ts1 == 1)
   {
@@ -1362,7 +1375,8 @@ void IntPatch_Intersection::GeomGeomPerfom(const Handle(Adaptor3d_HSurface)& the
     }
   }
   else
-    ParamParamPerfom(theS1, theD1, theS2, theD2, TolArc, TolTang, ListOfPnts, RestrictLine, typs1, typs2);
+    ParamParamPerfom(theS1, theD1, theS2, theD2, 
+                TolArc, TolTang, ListOfPnts, RestrictLine, typs1, typs2);
 }
 
 //=======================================================================
@@ -1472,28 +1486,40 @@ void IntPatch_Intersection::
   if((theTyps1 == GeomAbs_Cylinder) && (theTyps2 == GeomAbs_Cylinder))
   {
     IntPatch_ImpImpIntersection anInt;
-    anInt.Perform(theS1, theD1, theS2, theD2, theTolArc, theTolTang, Standard_True);
+    anInt.Perform(theS1, theD1, theS2, theD2, myTolArc, myTolTang, Standard_True);
 
     done = anInt.IsDone();
 
-    const Standard_Integer aNbLin = anInt.NbLines();
-    const Standard_Integer aNbPts = anInt.NbPnts();
-
-    for(Standard_Integer aLID = 1; aLID <= aNbLin; aLID++)
+    if(done)
     {
-      const Handle(IntPatch_Line)& aLine = anInt.Line(aLID);
-      slin.Append(aLine);
-    }
+      empt = anInt.IsEmpty();
+      if (!empt)
+      {
+        tgte = anInt.TangentFaces();
+        if (tgte)
+          oppo = anInt.OppositeFaces();
 
-    for(Standard_Integer aPID = 1; aPID <= aNbPts; aPID++)
-    {
-      const IntPatch_Point& aPoint = anInt.Point(aPID);
-      spnt.Append(aPoint);
+        const Standard_Integer aNbLin = anInt.NbLines();
+        const Standard_Integer aNbPts = anInt.NbPnts();
+
+        for(Standard_Integer aLID = 1; aLID <= aNbLin; aLID++)
+        {
+          const Handle(IntPatch_Line)& aLine = anInt.Line(aLID);
+          slin.Append(aLine);
+        }
+
+        for(Standard_Integer aPID = 1; aPID <= aNbPts; aPID++)
+        {
+          const IntPatch_Point& aPoint = anInt.Point(aPID);
+          spnt.Append(aPoint);
+        }
+      }
     }
   }
   else
   {
-    GeomGeomPerfom(theS1, theD1, theS2, theD2, theTolArc, theTolTang, theListOfPnts, RestrictLine, theTyps1, theTyps2);
+    GeomGeomPerfom(theS1, theD1, theS2, theD2,
+            theTolArc, theTolTang, theListOfPnts, RestrictLine, theTyps1, theTyps2);
   }
 }
 

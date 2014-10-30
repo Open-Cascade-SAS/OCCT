@@ -1,0 +1,31 @@
+puts "================"
+puts "OCC25292"
+puts "================"
+puts ""
+#######################################################################
+# Face/Face intersection algorithm gives different results for different order of the arguments
+#######################################################################
+
+# intersect command for trimmed surfaces
+
+restore [locate_data_file bug25292_f1.brep] f1
+restore [locate_data_file bug25292_f2.brep] f2
+
+mksurface s1 f1
+mksurface s2 f2
+
+# trim s1 in accordance with the UV-bounds of f1:
+trimv s1t s1 19.1600000005 19.6600000005
+
+# trim s2 in accordance with the UV-bounds of f2:
+trim s2t s2 0. 1.570796326795 -275 275
+
+###################
+intersect k s1t s2t
+###################
+
+if { [info exist k_2] } {
+  puts "OK: Curve Number is good!"
+} else {
+  puts "Error: Curve Number is bad!"
+}

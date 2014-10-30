@@ -22,16 +22,16 @@ if { ${Result_Numbers} != 2 } {
   renamevar p_2 result
   set status 0
 
-  set length 110.167
-  set nb_v_good 1
-  set nb_e_good 1
+  set length 110.171
+  set nb_v_good 4
+  set nb_e_good 4
   set nb_w_good 1
   set nb_f_good 0
   set nb_sh_good 0
   set nb_sol_good 0
   set nb_compsol_good 0
   set nb_compound_good 0
-  set nb_shape_good 3
+  set nb_shape_good 9
 }
 
 # Resume

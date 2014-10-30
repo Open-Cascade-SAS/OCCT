@@ -44,7 +44,7 @@ bbuild r
 checkshape r
 
 # 2. geometry
-set MaxTol 1.5e-6
+set MaxTol 3.0e-6
 set log [bopcurves b1 b2]
 
 mksurface s1 b1

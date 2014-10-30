@@ -1,0 +1,64 @@
+puts "================"
+puts "OCC25292"
+puts "================"
+puts ""
+#######################################################################
+# Face/Face intersection algorithm gives different results for different order of the arguments
+#######################################################################
+
+# bopcurves command
+
+restore [locate_data_file bug25292_f1.brep] f1
+restore [locate_data_file bug25292_f2.brep] f2
+
+#############################
+set log [bopcurves f1 f2 -2d]
+#############################
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Toler NbCurv
+set MaxTol 1.e-3
+if {${Toler} > ${MaxTol}} {
+  puts "Error: Tolerance is too big!"
+}
+set GoodNbCurv 2
+if {${NbCurv} != ${GoodNbCurv}} {
+  puts "Error: Curve Number is bad!!"
+}
+
+#-------------
+
+# 1
+puts ""
+puts "First curve"
+
+mksurface s1 f1
+mksurface s2 f2
+
+dlog reset
+dlog on
+xdistcs c_1 s1 0 1 10
+set Log1 [dlog get]
+
+set List1 [split ${Log1} {TD= \t\n}]
+set Tolerance 1.0e-4
+set D_good 0.
+checkList ${List1} ${Tolerance} ${D_good}
+
+# 2
+puts ""
+puts "Second curve"
+
+dlog reset
+dlog on
+xdistcs c_2 s1 0 1 10
+set Log2 [dlog get]
+
+set List2 [split ${Log2} {TD= \t\n}]
+set Tolerance 1.0e-4
+set D_good 0.
+checkList ${List2} ${Tolerance} ${D_good}
+
+
+smallview
+fit
+set only_screen_axo 1

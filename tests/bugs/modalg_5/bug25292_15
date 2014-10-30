@@ -1,0 +1,30 @@
+puts "================"
+puts "OCC25292"
+puts "================"
+puts ""
+#######################################################################
+# Face/Face intersection algorithm gives different results for different order of the arguments
+#######################################################################
+
+# intersect command
+
+restore [locate_data_file bug25292_Input_0.brep] b1
+restore [locate_data_file bug25292_Input_1.brep] b2
+
+explode b1 f
+copy b1_2 f1
+explode b2 f
+copy b2_2 f2
+
+mksurface s1 f1
+mksurface s2 f2
+
+#################
+intersect i s1 s2
+#################
+
+if { [info exist i_7] } {
+  puts "OK: Curve Number is good!"
+} else {
+  puts "Error: Curve Number is bad!"
+}

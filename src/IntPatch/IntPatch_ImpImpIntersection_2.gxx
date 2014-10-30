@@ -158,9 +158,17 @@ void IntPatch_ImpImpIntersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
           Bnd_Box2d aBox1, aBox2;
 
           const Standard_Real aU1f = S1->FirstUParameter();
-          const Standard_Real aU1l = S1->LastUParameter();
+          Standard_Real aU1l = S1->LastUParameter();
           const Standard_Real aU2f = S2->FirstUParameter();
-          const Standard_Real aU2l = S2->LastUParameter();
+          Standard_Real aU2l = S2->LastUParameter();
+
+          const Standard_Real anUperiod = 2.0*M_PI;
+
+          if(aU1l - aU1f > anUperiod)
+            aU1l = aU1f + anUperiod;
+
+          if(aU2l - aU2f > anUperiod)
+            aU2l = aU2f + anUperiod;
 
           aBox1.Add(gp_Pnt2d(aU1f, S1->FirstVParameter()));
           aBox1.Add(gp_Pnt2d(aU1l, S1->LastVParameter()));
