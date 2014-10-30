@@ -257,7 +257,9 @@ void OpenGl_LayerList::ChangeLayer (const OpenGl_Structure *theStructure,
   if ((aPriority = aList.Remove (theStructure, Standard_True)) >= 0)
   {
     myNbStructures--;
-    AddStructure (theStructure, theNewLayerId, aPriority, Standard_True);
+    // isForChangePriority should be Standard_False below, because we want
+    // the BVH tree in the target layer to be updated with theStructure
+    AddStructure (theStructure, theNewLayerId, aPriority);
   }
   else
   {
@@ -273,7 +275,9 @@ void OpenGl_LayerList::ChangeLayer (const OpenGl_Structure *theStructure,
       if ((aPriority = aList.Remove (theStructure, Standard_True)) >= 0)
       {
         myNbStructures--;
-        AddStructure (theStructure, theNewLayerId, aPriority, Standard_True);
+        // isForChangePriority should be Standard_False below, because we want
+        // the BVH tree in the target layer to be updated with theStructure
+        AddStructure (theStructure, theNewLayerId, aPriority);
         break;
       }
     }

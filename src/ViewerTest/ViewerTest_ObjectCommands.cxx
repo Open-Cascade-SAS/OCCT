@@ -5766,6 +5766,81 @@ static Standard_Integer VPointCloud (Draw_Interpretor& theDI,
 }
 
 //=======================================================================
+//function : VPriority
+//purpose  : Prints or sets the display priority for an object
+//=======================================================================
+
+static int VPriority (Draw_Interpretor& theDI,
+                      Standard_Integer  theArgNum,
+                      const char**      theArgs)
+{
+  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
+  ViewerTest_AutoUpdater anUpdateTool (aContext, ViewerTest::CurrentView());
+  if (aContext.IsNull())
+  {
+    std::cout << "Error: no view available, call 'vinit' before!" << std::endl;
+    return 1;
+  }
+
+  TCollection_AsciiString aLastArg (theArgs[theArgNum - 1]);
+  Standard_Integer aPriority = -1;
+  Standard_Integer aNbArgs   = theArgNum;
+  if (aLastArg.IsIntegerValue())
+  {
+    aPriority = aLastArg.IntegerValue();
+    --aNbArgs;
+    if (aPriority < 0 || aPriority > 10)
+    {
+      std::cout << "Error: the specified display priority value '" << aLastArg
+                << "' is outside the valid range [0..10]" << std::endl;
+      return 1;
+    }
+  }
+  else
+  {
+    anUpdateTool.Invalidate();
+  }
+
+  if (aNbArgs < 2)
+  {
+    std::cout << "Error: wrong number of arguments! See usage:\n";
+    theDI.PrintHelp (theArgs[0]);
+    return 1;
+  }
+
+  for (Standard_Integer anArgIter = 1; anArgIter < aNbArgs; ++anArgIter)
+  {
+    if (anUpdateTool.parseRedrawMode (theArgs[anArgIter]))
+    {
+      continue;
+    }
+
+    TCollection_AsciiString aName (theArgs[anArgIter]);
+    Handle(AIS_InteractiveObject) anIObj;
+    if (GetMapOfAIS().IsBound2 (aName))
+    {
+      anIObj = Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2 (aName));
+    }
+
+    if (anIObj.IsNull())
+    {
+      std::cout << "Error: the object '" << theArgs[1] << "' is not displayed" << std::endl;
+      return 1;
+    }
+
+    if (aPriority < 1)
+    {
+      theDI << aContext->DisplayPriority (anIObj) << " ";
+    }
+    else
+    {
+      aContext->SetDisplayPriority (anIObj, aPriority);
+    }
+  }
+  return 0;
+}
+
+//=======================================================================
 //function : ObjectsCommands
 //purpose  :
 //=======================================================================
@@ -6008,4 +6083,9 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
     "vlocscale name x y z scale\n\t\t  applies scale to local transformation",
     __FILE__,
     LocalTransformPresentation, group);
+
+  theCommands.Add("vpriority",
+    "vpriority [-noupdate|-update] name [value]\n\t\t  prints or sets the display priority for an object",
+    __FILE__,
+    VPriority, group);
 }
