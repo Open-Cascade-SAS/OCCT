@@ -1,0 +1,51 @@
+puts "================"
+puts "OCC25424"
+puts "================"
+puts ""
+#######################################################################################
+# Performance regression on step import
+######################################################################################
+
+pload XDE
+pload QAcommands
+
+if { [regexp {Debug mode} [dversion]] } {
+  set max_time 200
+} else {
+  if { [regexp {Windows} [dversion]] } {
+    set max_time 15
+  } else {
+    set max_time 20
+  }
+}
+
+dchrono h reset
+dchrono h start
+
+testreadstep [locate_data_file bug25424_Secure.stp] result
+
+dchrono h stop
+set q [dchrono h show]
+
+regexp {CPU user time: ([-0-9.+eE]+) seconds} $q full z
+puts "$z"
+
+if { $z > ${max_time} } {                                         
+    puts "Elapsed time of testreadstep is more than ${max_time} seconds - Faulty"
+} else {
+    puts "Elapsed time of testreadstep is less than ${max_time} seconds - OK"
+}
+
+set square 6998.53
+
+set nb_v_good 4482
+set nb_e_good 6781
+set nb_w_good 2309
+set nb_f_good 2305
+set nb_sh_good 1
+set nb_sol_good 1
+set nb_compsol_good 0
+set nb_compound_good 0
+set nb_shape_good 15879
+
+set 3dviewer 1

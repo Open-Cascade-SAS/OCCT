@@ -223,19 +223,19 @@ static  Standard_Boolean GetShells(TopTools_SequenceOfShape& Lface,
         continue;
       
       if((edge.Orientation() == TopAbs_FORWARD && dire.Contains(edge))
-	 || (edge.Orientation() == TopAbs_REVERSED && reve.Contains(edge))) 
-	nbbe++;
+        || (edge.Orientation() == TopAbs_REVERSED && reve.Contains(edge))) 
+        nbbe++;
       else if((edge.Orientation() == TopAbs_FORWARD && reve.Contains(edge))
-	      || (edge.Orientation() == TopAbs_REVERSED && dire.Contains(edge)))   
-	nbe++;
+        || (edge.Orientation() == TopAbs_REVERSED && dire.Contains(edge)))   
+        nbe++;
       
       if(dire.Contains(edge)) dire.Remove(edge);
       else 
-	if(reve.Contains(edge)) reve.Remove(edge);
-	else {
-	  if(edge.Orientation() == TopAbs_FORWARD) dtemp.Add(edge);
-	  if(edge.Orientation() == TopAbs_REVERSED) rtemp.Add(edge);
-	}
+        if(reve.Contains(edge)) reve.Remove(edge);
+        else {
+          if(edge.Orientation() == TopAbs_FORWARD) dtemp.Add(edge);
+          if(edge.Orientation() == TopAbs_REVERSED) rtemp.Add(edge);
+        }
     }
     if(!nbbe && !nbe && dtemp.IsEmpty() && rtemp.IsEmpty()) 
       continue;
@@ -251,30 +251,32 @@ static  Standard_Boolean GetShells(TopTools_SequenceOfShape& Lface,
     
     // Addition of face to shell. In the dependance of orientation faces in the shell 
     //  added face can be reversed.
-    
+
     if((nbe != 0 || nbbe != 0) || j == 1) {
       if(nbbe != 0) {
-	F1.Reverse();
-	for(TopTools_MapIteratorOfMapOfShape ite(dtemp); ite.More(); ite.Next()) 
-	  reve.Add(ite.Key());
-	for(TopTools_MapIteratorOfMapOfShape ite1(rtemp); ite1.More(); ite1.Next())
-	  dire.Add(ite1.Key());
-	done = Standard_True;
+        F1.Reverse();
+        for(TopTools_MapIteratorOfMapOfShape ite(dtemp); ite.More(); ite.Next()) 
+          reve.Add(ite.Key());
+        for(TopTools_MapIteratorOfMapOfShape ite1(rtemp); ite1.More(); ite1.Next())
+          dire.Add(ite1.Key());
+        done = Standard_True;
       }
       else {
-	for(TopTools_MapIteratorOfMapOfShape ite(dtemp); ite.More(); ite.Next()) 
-	  dire.Add(ite.Key());
-	for(TopTools_MapIteratorOfMapOfShape ite1(rtemp); ite1.More(); ite1.Next())
-	  reve.Add(ite1.Key());
+        for(TopTools_MapIteratorOfMapOfShape ite(dtemp); ite.More(); ite.Next()) 
+          dire.Add(ite.Key());
+        for(TopTools_MapIteratorOfMapOfShape ite1(rtemp); ite1.More(); ite1.Next())
+          reve.Add(ite1.Key());
       }
       j++;
       B.Add(nshell,F1);
-      nshell.Closed (BRep_Tool::IsClosed (nshell));
       aMapFaceShells.Bind(F1,nshell);
       Lface.Remove(i);
       
-      // if closed shell is obtained it adds to sequence of shells and new shell begin to construct.
-      if(isMultiConnex && nshell.Closed()) {
+      // check if closed shell is obtained in multy connex mode and add to sequence of 
+      // shells and new shell begin to construct.
+      // (check is n*2)
+      if(isMultiConnex && BRep_Tool::IsClosed (nshell)) {
+        nshell.Closed (Standard_True);
         aSeqShells.Append(nshell);
         TopoDS_Shell nshellnext;
         B.MakeShell(nshellnext);
@@ -309,8 +311,12 @@ static  Standard_Boolean GetShells(TopTools_SequenceOfShape& Lface,
       aFace = aItf.Value();
       numFace++;
     }
-    if(numFace >1)
+    if(numFace >1) {
+      // close all closed shells in no multy connex mode
+      if(!isMultiConnex)
+        nshell.Closed (BRep_Tool::IsClosed (nshell));
       aSeqShells.Append(nshell);
+    }
     else if(numFace == 1) {
       if(aMapFaceShells.IsBound(aFace))
         aMapFaceShells.UnBind(aFace);
