@@ -1,0 +1,37 @@
+puts "========="
+puts "CR25157"
+puts "========="
+puts ""
+###################################################
+# Face missing depending the angle of revolution 
+###################################################
+
+pload XDE
+
+pcone Cone 6 0 10 180
+pcylinder Cylinder 1 6 360
+ttranslate Cylinder 0 3 1
+bcut Cut Cone Cylinder
+explode Cut F
+tclean Cut_1
+incmesh Cut_1 0.1
+set trinfo_s [trinfo Cut_1]
+regexp {([0-9]+) triangles} ${trinfo_s} str nbtri_s
+regexp {([0-9]+) nodes} ${trinfo_s} str nbnod_s
+
+if { ${nbtri_s} == 0 } {
+   puts "Error: shape contains 0 triangles"
+} else {
+   puts "OK: shape contains ${nbtri_s} triangles"
+}
+
+if { ${nbnod_s} == 0 } {
+   puts "Error: shape contains 0 nodes"
+} else {
+   puts "OK: shape contains ${nbnod_s} nodes"
+}
+
+vinit
+vdisplay Cut_1
+vfit
+set only_screen 1
