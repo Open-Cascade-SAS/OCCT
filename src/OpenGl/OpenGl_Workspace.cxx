@@ -640,13 +640,15 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
   aGlCtx->FetchState();
 
   Tint toSwap = (aGlCtx->IsRender() && !aGlCtx->caps->buffersNoSwap) ? 1 : 0; // swap buffers
-  GLint aViewPortBack[4];
   OpenGl_FrameBuffer* aFrameBuffer = (OpenGl_FrameBuffer* )theCView.ptrFBO;
   if (aFrameBuffer != NULL)
   {
-    glGetIntegerv (GL_VIEWPORT, aViewPortBack);
     aFrameBuffer->SetupViewport (aGlCtx);
     toSwap = 0; // no need to swap buffers
+  }
+  else
+  {
+    aGlCtx->core11fwd->glViewport (0, 0, myWidth, myHeight);
   }
 
   myToRedrawGL = Standard_True;
@@ -721,7 +723,7 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
   {
     aFrameBuffer->UnbindBuffer (aGlCtx);
     // move back original viewport
-    glViewport (aViewPortBack[0], aViewPortBack[1], aViewPortBack[2], aViewPortBack[3]);
+    aGlCtx->core11fwd->glViewport (0, 0, myWidth, myHeight);
   }
 
 #if defined(_WIN32) && defined(HAVE_VIDEOCAPTURE)

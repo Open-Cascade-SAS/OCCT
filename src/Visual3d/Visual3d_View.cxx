@@ -111,8 +111,8 @@ void Visual3d_View::SetWindow (const Handle(Aspect_Window)& theWindow)
 
   Standard_Integer Width, Height;
   theWindow->Size (Width, Height);
-  MyCView.DefWindow.dx = float(Width);
-  MyCView.DefWindow.dy = float(Height);
+  MyCView.DefWindow.dx = Width;
+  MyCView.DefWindow.dy = Height;
 
   Standard_Real R, G, B;
   MyBackground = MyWindow->Background ();
@@ -274,10 +274,10 @@ void Visual3d_View::SetRatio()
   MyWindow->Size (aWidth, aHeight);
   if (aWidth > 0 && aHeight > 0)
   {
-    Standard_Real aRatio = (Standard_Real)aWidth / (Standard_Real)aHeight; 
+    Standard_Real aRatio = (Standard_Real)aWidth / (Standard_Real)aHeight;
 
-    MyCView.DefWindow.dx = Standard_ShortReal (aWidth);
-    MyCView.DefWindow.dy = Standard_ShortReal (aHeight);
+    MyCView.DefWindow.dx = aWidth;
+    MyCView.DefWindow.dy = aHeight;
 
     myGraphicDriver->RatioWindow (MyCView);
 

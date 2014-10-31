@@ -15,18 +15,6 @@
 #ifndef InterfaceGraphic_AspectHeader
 #define InterfaceGraphic_AspectHeader
 
-#ifndef IMP100701
-#define IMP100701 /* GG Add depth field in the bitmap structure */
-#endif
-
-#ifndef RIC120302
-#define RIC120302       /*GG Add NEW field in CALL_DEF_WINDOW structure
-//      to registred parent window ID 
-//      Change Aspect_Handle to Aspect_Drawable for
-//      a more correct understanding.
-*/
-#endif
-
 #include <Aspect_Drawable.hxx>
 #include <Aspect_RenderingContext.hxx>
 
@@ -41,10 +29,7 @@ typedef struct {
   int IsDefined;
 
   Aspect_Drawable XWindow;
-
-#ifdef RIC120302
   Aspect_Drawable XParentWindow;
-#endif
 
   EXT_WINDOW *ext_data;
 
@@ -52,7 +37,7 @@ typedef struct {
     float xm, ym, xM, yM;
   } Position;
 
-  float dx, dy;
+  int dx, dy;
 
   char *Title;
 

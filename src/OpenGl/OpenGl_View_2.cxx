@@ -754,7 +754,7 @@ void OpenGl_View::RedrawLayer2d (const Handle(OpenGl_PrinterContext)& thePrintCo
   aContext->ApplyProjectionMatrix();
 
   if (!ACLayer.sizeDependent)
-    glViewport (0, 0, dispWidth, dispHeight);
+    aContext->core11fwd->glViewport (0, 0, dispWidth, dispHeight);
 
   float left = ACLayer.ortho[0];
   float right = ACLayer.ortho[1];
@@ -763,11 +763,9 @@ void OpenGl_View::RedrawLayer2d (const Handle(OpenGl_PrinterContext)& thePrintCo
 
   int attach = ACLayer.attach;
 
-  float ratio;
-  if (!ACLayer.sizeDependent)
-    ratio = (float) dispWidth/dispHeight;
-  else
-    ratio = ACView.DefWindow.dx/ACView.DefWindow.dy;
+  const float ratio = !ACLayer.sizeDependent
+                    ? float(dispWidth) / float(dispHeight)
+                    : float(theWorkspace->Width()) / float(theWorkspace->Height());
 
   float delta;
   if (ratio >= 1.0) {
@@ -827,7 +825,7 @@ void OpenGl_View::RedrawLayer2d (const Handle(OpenGl_PrinterContext)& thePrintCo
     GLsizei anViewportY = 0;
     thePrintContext->GetLayerViewport (anViewportX, anViewportY);
     if (anViewportX != 0 && anViewportY != 0)
-      glViewport (0, 0, anViewportX, anViewportY);
+      aContext->core11fwd->glViewport (0, 0, anViewportX, anViewportY);
   }
 #endif
 
@@ -862,7 +860,7 @@ void OpenGl_View::RedrawLayer2d (const Handle(OpenGl_PrinterContext)& thePrintCo
   aContext->ApplyWorldViewMatrix();
 
   if (!ACLayer.sizeDependent)
-    glViewport (0, 0, (GLsizei) ACView.DefWindow.dx, (GLsizei) ACView.DefWindow.dy);
+    aContext->core11fwd->glViewport (0, 0, theWorkspace->Width(), theWorkspace->Height());
 
   glFlush ();
 #endif

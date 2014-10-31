@@ -139,8 +139,8 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
                               const Handle(OpenGl_Context)& theShareCtx)
 : myGlContext (new OpenGl_Context (theCaps)),
   myOwnGContext (theGContext == 0),
-  myWidth ((Standard_Integer )theCWindow.dx),
-  myHeight ((Standard_Integer )theCWindow.dy),
+  myWidth   (theCWindow.dx),
+  myHeight  (theCWindow.dy),
   myBgColor (THE_DEFAULT_BG_COLOR)
 {
   myBgColor.rgb[0] = theCWindow.Background.r;
@@ -665,8 +665,8 @@ void OpenGl_Window::Resize (const CALL_DEF_WINDOW& theCWindow)
   if ((myWidth == theCWindow.dx) && (myHeight == theCWindow.dy))
     return;
 
-  myWidth  = (Standard_Integer )theCWindow.dx;
-  myHeight = (Standard_Integer )theCWindow.dy;
+  myWidth  = theCWindow.dx;
+  myHeight = theCWindow.dy;
 
 #if !defined(_WIN32) && !defined(HAVE_EGL) && !defined(__ANDROID__)
   XResizeWindow (aDisp, myGlContext->myWindow, (unsigned int )myWidth, (unsigned int )myHeight);
@@ -740,8 +740,8 @@ void OpenGl_Window::Init()
     return;
 
 #if defined(HAVE_EGL) || defined(__ANDROID__)
- eglQuerySurface ((EGLDisplay )myGlContext->myDisplay, (EGLSurface )myGlContext->myWindow, EGL_WIDTH,  &myWidth);
- eglQuerySurface ((EGLDisplay )myGlContext->myDisplay, (EGLSurface )myGlContext->myWindow, EGL_HEIGHT, &myHeight);
+  eglQuerySurface ((EGLDisplay )myGlContext->myDisplay, (EGLSurface )myGlContext->myWindow, EGL_WIDTH,  &myWidth);
+  eglQuerySurface ((EGLDisplay )myGlContext->myDisplay, (EGLSurface )myGlContext->myWindow, EGL_HEIGHT, &myHeight);
 #elif defined(_WIN32)
   RECT cr;
   GetClientRect ((HWND )myGlContext->myWindow, &cr);
@@ -760,9 +760,9 @@ void OpenGl_Window::Init()
 #endif
 
   glDisable (GL_SCISSOR_TEST);
+  glViewport (0, 0, myWidth, myHeight);
 #if !defined(GL_ES_VERSION_2_0)
   glMatrixMode (GL_MODELVIEW);
-  glViewport (0, 0, myWidth, myHeight);
   glDrawBuffer (GL_BACK);
 #endif
 }
