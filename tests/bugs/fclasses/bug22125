@@ -1,0 +1,18 @@
+puts "=========="
+puts "OCC22125"
+puts "=========="
+puts ""
+################################################################
+# TCollection_ExtendedString: conversion from UTF-8 to unicode
+################################################################
+
+pload XDE
+
+set s [encoding convertfrom unicode "\xDE\x30\xF9\x30\xF1\x30"]
+igesbrep [locate_data_file bug22125_Part1_badname.igs] a *
+brepiges a ${imagedir}/Part1_badname_$s.igs
+igesbrep ${imagedir}/Part1_badname_$s.igs result *
+
+file delete -force [glob -nocomplain ${imagedir}/Part1_badname_*.igs]
+
+set 2dviewer 1
