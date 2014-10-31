@@ -4,17 +4,15 @@ Visualization    {#occt_user_guides__visualization}
 
 @section occt_visu_1 Introduction
 
-This manual provides basic documentation on setting up and using  Visualization. For advanced information on Visualization and its applications,  see our offerings on our web site (Training and E-Learning) at http://www.opencascade.org/support/training/
-
 Visualization in Open CASCADE Technology is based on the  separation of:  
   * on the one hand - the data which stores the geometry and topology  of the entities you want to display and select, and 
   * on the other hand - its **presentation** (what you see  when an object is displayed in a scene) and **selection** (possibility to choose the whole object or its sub-parts interactively to apply application-defined operations to the selected entities). 
 
-@subsection occt_visu_1_1 Open CASCADE Technology Visualization and the Organization of this guide 
+Presentations are managed through the **Presentation** component, and selection through the **Selection** component.
 
-Presentations are managed through the Presentation  component, and selection through the Selection component.  
+**Application Interactive Services** (AIS) provides the means to create links between an application GUI viewer and the packages, which are used to manage selection and presentation, which makes management of these functionalities in 3D more  intuitive and consequently, more transparent.
 
-To make management of these functionalities in 3D more  intuitive and consequently, more transparent, *Application Interactive Services* have been created. *AIS* uses the notion of the *interactive  object*, a displayable and selectable entity, which represents an element  from the application data. As a result, in 3D, you, the user, have no need to  be familiar with any functions underlying AIS unless you want to create your  own interactive objects or selection filters.  
+*AIS* uses the notion of the *interactive  object*, a displayable and selectable entity, which represents an element  from the application data. As a result, in 3D, you, the user, have no need to  be familiar with any functions underlying AIS unless you want to create your  own interactive objects or selection filters.  
 
 If, however, you require types of interactive objects and  filters other than those provided, you will need to know the mechanics of  presentable and selectable objects, specifically how to implement their virtual  functions. To do this requires familiarity with such fundamental concepts as the sensitive primitive and the presentable object.  
 
@@ -26,17 +24,17 @@ The the following packages are used to display 3D objects :
   * *V3d*; 
   * *Graphic3d*.
 
-If you are concerned with 2D visualization, you must familiarize yourself  with the fundamental concepts of  presentation as outlined in the section on this subject in chapter Fundamental Concepts.   In brief, the packages used to display 3D objects are  applicable for visualization of 2D objects too. 
+The packages used to display 3D objects are also applicable for visualization of 2D objects.
 
 The figure below presents a schematic overview of the relations between the key concepts and packages in visualization. Naturally, "Geometry & Topology" is just an example of application data that can be handled by *AIS*, and application-specific interactive objects can deal with any  kind of data. 
 
 @image html visualization_image003.png "Key concepts and packages in visualization"
 @image latex visualization_image003.png "Key concepts and packages in visualization"
 
-To answer different needs of CASCADE users, this user’s  guide offers the following three paths in reading it. 
+To answer different needs of CASCADE users, this User’s Guide offers the following three paths in reading it.
   
   * If the 3D services proposed in AIS meet your requirements, you  need only read chapter 3 <a href="#occt_visu_3">AIS: Application Interactive Services</a>.   
-  * If you need more detail, for example, a selection filter on another type of entity - you should  read chapter 2 <a href="#occt_visu_2">Fundamental Concepts</a>, chapter 3 <a href="#occt_visu_3">AIS: Application Interactive Services</a>, and possibly chapters 4  <a href="#occt_visu_4">3D Presentations</a> and 5 <a href="#occt_visu_5">3D Resources</a>. You may want to begin with the chapter presenting AIS. 
+  * If you need more detail, for example, a selection filter on another type of entity - you should  read chapter 2 <a href="#occt_visu_2">Fundamental Concepts</a>, chapter 3 <a href="#occt_visu_3">AIS: Application Interactive Services</a>, and 4 <a href="#occt_visu_4">3D Presentations</a>. You may want to begin with the chapter presenting AIS.
 
 @section occt_visu_2  Fundamental Concepts
 
@@ -51,7 +49,7 @@ Displaying an object on the screen involves three kinds of entities:
   * a viewer 
   * an interactive context, the *AIS_InteractiveContext*. 
 
-<h4>The presentable object </h4>
+<h4>The presentable object</h4>
 The purpose of a presentable object is to provide the  graphical representation of an object in the form of *Graphic3d* structure. On  the first display request, it creates this structure by calling the appropriate  algorithm and retaining this framework for further display.  
 
 Standard presentation algorithms are provided in the *StdPrs*  and *Prs3d* packages. You can, however, write specific presentation algorithms of  your own, provided that they create presentations made of structures from the *Graphic3d* packages. You can also create several presentations of a single  presentable object: one for each visualization mode supported by your  application.  
@@ -59,20 +57,23 @@ Standard presentation algorithms are provided in the *StdPrs*  and *Prs3d* packa
 Each object to be presented individually must be presentable  or associated with a presentable object. 
 
 <h4>The viewer </h4>
-The viewer allows interactively manipulating views of  the object. When you zoom, translate or rotate a view, the viewer operates on  the graphic structure created by the presentable object and not on the data  model of the application. Creating Graphic3d structures in your presentation  algorithms allows you to use the 3D viewers provided in Open CASCADE Technology for 3D visualisation.  
+The viewer allows interactively manipulating views of the object. When you zoom, translate or rotate a view, the viewer operates on  the graphic structure created by the presentable object and not on the data  model of the application. Creating Graphic3d structures in your presentation  algorithms allows you to use the 3D viewers provided in Open CASCADE Technology for 3D visualisation.  
 
 <h4>The Interactive Context </h4>
 The  interactive context controls the entire presentation process from a common  high-level API. When the application requests the display of an object, the  interactive context requests the graphic structure from the presentable object  and sends it to the viewer for displaying. 
 
 @subsubsection occt_visu_2_1_2 Presentation packages
 
-Presentation involves at least the *AIS, PrsMgr, StdPrs* and  *V3d* packages. Additional packages such as *Prs3d* and *Graphic3d* may be used if  you need to implement your own presentation algorithms.  
+Presentation involves at least the *AIS, PrsMgr, StdPrs* and  *V3d* packages. Additional packages, such as *Prs3d* and *Graphic3d* may be used if  you need to implement your own presentation algorithms.  
+
 * *AIS* package provides all  classes to implement interactive objects (presentable and selectable entities).  
-* *PrsMgr* package  provides all the classes needed to implement the presentation process: the *Presentation*  and *PresentableObject* abstract classes and *PresentationManager3d* concrete class.  
-* *StdPrs* package  provides ready-to-use standard presentation algorithms of points, curves and  shapes of the geometry and topology toolkits.  
-* *V3d* package provides  the services supported by the 3D viewer.  
-* *Prs3d* package provides  some generic presentation algorithms such as wireframe, shading and hidden line  removal associated with a Drawer class which controls the attributes of the  presentation to be created in terms of color, line type, thickness, and so on. 
+* *PrsMgr* package   provides low level services and is only to be used when you do not want to use the services provided by AIS. It contains all classes needed to implement the presentation process: abstract classes *Presentation*  and *PresentableObject*  and concrete class *PresentationManager3d*.
+* *StdPrs* package  provides ready-to-use standard presentation algorithms for specific geometries: points, curves and  shapes of the geometry and topology toolkits.
+* *Prs3d* package provides generic presentation algorithms such as wireframe, shading and hidden line removal associated with a *Drawer* class, which controls the attributes of the presentation to be created in terms of color, line type, thickness, etc.
+* *V3d* package provides  the services supported by the 3D viewer.
 * *Graphic3d* package provides resources to create 3D graphic structures.  
+* *Visual3d* package contains classes implementing commands for 3D viewer.
+* *DsgPrs* package provides tools for display of dimensions, relations and XYZ trihedrons.
 
 @subsubsection occt_visu_2_1_3 A Basic Example: How to display a 3D object 
 
@@ -185,21 +186,143 @@ To deactivate selection mode 3 remove all those 2D areas.
 
 @subsubsection occt_visu_2_2_3  Selection Packages
 
-The following selection packages exist : *SelectBasics*,  *SelectMgr*, *Select3D*, *StdSelect*.  
+Selection of 3D data structures is provided using various algorithms. The following selection packages exist : *SelectBasics*,  *SelectMgr*, *Select3D* and *StdSelect*.
+
+### Basic Selection
 
 *SelectBasics* package contains the basic classes  of the selection:  
-  * the main definition of a sensitive primitive: *SensitiveEntity* 
-  * the definition of a sensitive primitive owner: *EntityOwner* 
+  * the main definition of a sensitive primitive: *SensitiveEntity*, which is a selectable entity in a view;
+  * the definition of a sensitive primitive owner: *EntityOwner* this entity relates the primitive to the application entity which is to be selected in the view.
   * the algorithm used for sorting sensitive boxes: *SortAlgo* 
 
 *EntityOwner* is used to establish a link from *SensitiveEntity*  to application-level objects. For example, *SelectMgr_EntityOwner* (see  below) class holds a pointer to corresponding *SelectableObject*. 
 
-*SelectMgr* package is used to manage the whole  dynamic selection process. It contains the *SelectableObject*, Entity  Owner containing a link to its *SelectableObject*, *Selection*, *SelectionManager*,  and *ViewSelector* classes.  
+### Standard Selections
+
+*Select3D* package provides definition of all 3D standard sensitive primitives such as point, curve and face. All these classes inherit from 3D *SensitiveEntry* from *SelectBasics* with an additional method, which allows recovery of the bounding boxes in the 2D graphic selection space, if required. This package also includes the 3D-2D projector.
+
+*StdSelect* package provides standard uses of the classes described above and main tools used to prevent the developer from redefining the selection objects. In particular, *StdSelect* includes standard modes for selection of topological shapes, definition of several filter standard <i> Selection2d.ap </i> classes and 3D viewer selectors.
+
+Note that each new Interactive Object must have all its selection modes defined.
+
+### Selection Management
+
+*SelectMgr* package is used to manage the whole dynamic selection process.
+
+It provides low level services and classes *SelectMgr_SelectionManager* and *SelectMgr_ViewerSelector*. They can be used when you do not want to use the services provided by *AIS*.
+
 There are also implementations of *ViewerSelector*  interface for 3D selection in *StdSelect* package: *ViewerSelector3d*. 
 
-*Select3D* package contains all 3D standard  sensitive primitives such as point, curve and face. All these classes inherit  from 3D *SensitiveEntry* from *SelectBasics* with an additional  method, which allows recovery of the bounding boxes in the 2D graphic selection  space, if required. This package also includes the 3D-2D projector.  
+*SelectMgr* manages the process of dynamic selection through the following services:
 
-*StdSelect* package provides standard uses of the  classes described above and main tools used to prevent the developer from  redefining the selection objects. In particular, *StdSelect* includes  standard means for selection of topological objects (shapes). 
+  * Activating and deactivating selection modes for Interactive Objects.
+  * Adding and removing viewer selectors.
+  * Definitions of abstract filter classes.
+
+The principle of graphic selection consists in representing the objects which you want to select by a bounding box in the selection view.
+The object is selected when you use the mouse to designate the zone produced by the object.
+
+To realize this, the application creates a selection structure which is independent of the point of view.
+This structure is made up of sensitive primitives which have one owner object associated to each of them.
+The role of the sensitive primitive is to reply to the requests of the selection algorithm whereas the owner's purpose is to make the link between the sensitive primitive and the object to be selected.
+Each selection structure corresponds to a selection mode which defines the elements that can be selected.
+
+### Example: Selection of a Geometric Model
+
+For example, to select a complete geometric model, the application can create a sensitive primitive for each face of the interactive object representing the geometric model.
+In this case, all the primitives share the same owner.
+On the other hand, to select an edge in a model, the application must create one sensitive primitive per edge.
+
+~~~~
+
+void InteractiveBox::ComputeSelection (const Handle(SelectMgr_Selection)& theSel,
+                                       const Standard_Integer theMode)
+{
+switch (theMode)
+{
+  case 0: // locating the whole box by making its faces sensitive
+  {
+    Handle(SelectMgr_EntityOwner) anOwner = new SelectMgr_EntityOwner (this, 5);
+    for (Standard_Integer anIt = 1; anIt <= aFacesNb; anIt++)
+    {
+      theSel->Add (new Select3D_SensitiveFace (anOwner,[array of the vertices] face I);
+      break;
+    }
+  case 1: // locating the edges
+  {
+    for (Standard_Integer anIt = 1; anIt <= 12; anIt++)
+    {
+      // 1 owner per edge
+      Handle(mypk_EdgeOwner) anOwner = new mypk_EdgeOwner (this, anIt, 6); // 6->priority
+      theSel->Add (new Select3D_SensitiveSegment (anOwner, firstpt (anIt), lastpt (anIt));
+    }
+  }
+}
+
+~~~~
+
+The algorithms for creating selection structures store the sensitive primitives in a <i>SelectMgr_Selection</i> object.
+To do this, a set of ready-made sensitive primitives is supplied in the <i>Select3D</i>package.
+New sensitive primitives can be defined through inheritance from <i>SensitiveEntity</i>.
+For the application to make its own objects selectable, it must define owner classes inheriting <i>SelectMgr_EntityOwner</i>.
+
+Selection structures for any interactive object are generated in <i>ComputeSelection()</i> method.
+In the example below there are different modes of selection on the topological shape contained within the interactive object,
+selection of the shape itself, the vertices, the edges, the wires, the faces.
+
+~~~~
+  void MyPack_MyClass::ComputeSelection(
+                const Handle(SelectMgr_Selection)& theaSelection,
+                const Standard_Integer theMode)
+  {
+    switch (theMode)
+    {
+      case 0:
+        StdSelect_BRepSelectionTool::Load (theSelection, this, myShape, TopAbs_SHAPE);
+        break;
+      case 1:
+        StdSelect_BRepSelectionTool::Load (theSelection, this, myShape, TopAbs_VERTEX);
+        break;
+      case 2:
+        StdSelect_BRepSelectionTool::Load (theSelection, this, myShape, TopAbs_EDGE);
+        break;
+      case 3:
+        StdSelect_BRepSelectionTool::Load (theSelection, this, myShape, TopAbs_WIRE);
+        break;
+      case 4:
+        StdSelect_BRepSelectionTool::Load (theSelection, this, myShape, TopAbs_FACE);
+        break;
+    }
+  }
+~~~~
+
+The <i>StdSelect_BRepSelectionTool</i> object provides a high level service which will make the topological shape <i>myShape</i> selectable when the <i>AIS_InteractiveContext</i> is asked to display your object.
+
+Note:
+
+The traditional way of highlighting selected entity owners adopted by Open CASCADE Technology assumes that each entity owner highlights itself on its own. This approach has two drawbacks:
+
+  * Each entity owner has to maintain its own <i>Prs3d_Presentation object</i>, that results in large memory overhead for thousands of owners.
+  * Drawing selected owners one by one is not efficient from the OpenGL usage viewpoint.
+
+That is why a different method has been introduced.
+On the basis of <i>SelectMgr_EntityOwner::IsAutoHilight()</i> return value <i>AIS_LocalContext</i>
+object either uses the traditional way of highlighting (<i>IsAutoHilight()</i> returned true)
+or groups such owners according to their Selectable Objects and finally calls <i> SelectMgr_SelectableObject::HilightSelected()</i> or
+<i>ClearSelected()</i>, passing a group of owners as an argument.
+
+Hence, an application can derive its own interactive object and redefine <i> HilightSelected()</i>,
+<i>ClearSelected()</i> and <i>HilightOwnerWithColor()</i> virtual methods
+to take advantage of such OpenGL technique as arrays of primitives.
+In any case, these methods should at least have empty implementation.
+
+The <i>AIS_LocalContext::UpdateSelected (const Handle(AIS_InteratciveObject)&, Standard_Boolean)</i>
+method can be used for efficient redrawing a selection presentation for a given interactive object from an application code.
+
+Additionally, the <i>SelectMgr_SelectableObject::ClearSelections()</i> method now accepts an optional Boolean argument.
+This parameter defines whether all object selections should be flagged for further update or not.
+This improved method can be used to re-compute an object selection (without redisplaying the object completely)
+when some selection mode is activated not for the first time.
 
 @subsubsection occt_visu_2_2_4 How to use dynamic selection
 
@@ -300,6 +423,8 @@ When an Interactive Object is visualized, the required graphic attributes are ta
 It can be necessary to filter the entities to be selected. Consequently there are **Filter** entities, which allow refining the dynamic detection context.  Some of these filters can be used at the Neutral Point, others only in an open local context. It is possible to program custom filters and load them into the interactive context.  
 
 @subsection occt_visu_3_2 Interactive objects
+
+Entities which are visualized and selected in the AIS viewer are objects. They connect the underlying reference geometry of a model to its graphic representation in *AIS*. You can use the predefined OCCT classes of standard interactive objects, for which all necessary functions have already been programmed, or, if you are an advanced user, you can implement your own classes of interactive objects.
 
 @subsubsection occt_visu_3_2_1 Presentations
 
@@ -455,12 +580,17 @@ These functions can be useful if you decide that the *0*  mode used by default w
     
 @subsubsection occt_visu_3_2_5 Graphic attributes
 
-Keep  in mind the following points concerning graphic attributes:  
+Graphic attributes manager, or *AIS Drawer*, stores graphic attributes for specific interactive objects and for interactive objects controlled by interactive context.
+
+Initially, all drawer attributes are filled out with the predefined values which will define the default 3D object appearance.
+
+When an interactive object is visualized, the required graphic attributes are first taken from its own drawer if one exists, or from the context drawer if no specific drawer for that type of object exists.
+
+Keep in mind the following points concerning graphic attributes:
   * Each interactive object can have its own visualization  attributes.
   * The set of graphic attributes of an interactive object is stocked  in an *AIS_Drawer*, which is only a *Prs3d_Drawer* with the  possibility of a link to another drawer 
   * By default, the interactive object takes the graphic attributes  of the context in which it is visualized (visualization mode, deflection values  for the calculation of presentations, number of isoparameters, color, type of  line, material, etc.) 
   * In the *AIS_InteractiveObject* abstract class, standard attributes including color, line thickness, material, and transparency have been privileged. Consequently, there is a certain number of virtual  functions, which allow acting on these attributes. Each  new class of interactive object can redefine these functions and change the behavior of the class. 
-
 
 @image html visualization_image019.png "Figure 13. Redefinition of virtual functions for changes in AIS_Point"
 @image latex visualization_image019.png "Figure 13. Redefinition of virtual functions for changes in AIS_Point"
@@ -566,7 +696,7 @@ Standard_Boolean      AIS_InteractiveContext::HasPolygonOffsets
 
 @subsubsection occt_visu_3_3_1 Rules 
 
-The Interactive Context allows us to manage in a transparent  way, the graphic and "selectable" behavior of interactive objects in one or  more viewers. Most functions which allow us to modify the attributes of  interactive objects, and which were presented in the preceding chapter, will be  looked at again here.  
+The Interactive Context allows managing in a transparent  way the graphic and **selectable** behavior of interactive objects in one or  more viewers. Most functions which allow modifying the attributes of  interactive objects, and which were presented in the preceding chapter, will be  looked at again here.  
 
 There is one essential rule to follow: the modification of  an interactive object, which is already known by the Context, must be done  using Context functions. You can only directly call the functions available for  an interactive object if it has not been loaded into an Interactive Context.  
 
@@ -588,11 +718,11 @@ Handle (AIS_Shape) TheAISShape = new AIS_Shape (ashape);
 
 @subsubsection occt_visu_3_3_2 Groups of functions 
 
-You must distinguish two states in the Interactive Context:  
-*  No Open Local Context; which will be referred to as Neutral  Point.  
-*  One or several open local contexts, each representing a temporary  state of selection and presentation.  
+**Neutral Point** and **Local Context** constitute the two operating modes or states of the **Interactive Context**, which is the central entity which pilots visualizations and selections.
 
-Some functions can only be used in open Local Context;  others in closed local context; others do not have the same behavior in one  state as in the other.  
+The **Neutral Point**, which is the default mode, allows easily visualizing and selecting interactive objects, which have been loaded into the context. Opening **Local contexts** allows preparing and using a temporary selection environment without disturbing the neutral point.
+
+A set of functions allows choosing the interactive objects which you want to act on, the selection modes which you want to activate, and the temporary visualizations which you will execute. When the operation is finished, you close the current local context and return to the state in which you were before opening it (neutral point or previous local context).
 
 The Interactive Context is composed of many  functions, which can be conveniently grouped according to the theme:  
   * management proper to the context; 
@@ -600,16 +730,23 @@ The Interactive Context is composed of many  functions, which can be convenientl
   * presentations and selection in open/closed context; 
   * selection strictly speaking. 
 
+Some functions can only be used in open Local Context; others in closed local context; others do not have the same behavior in one state as in the other.
 
 @subsubsection occt_visu_3_3_3 Management of the Interactive Context 
 
-The Interactive Context is made up of a Principal Viewer  and, optionally, a trash bin or "Collector" Viewer. It also has a group of  adjustable settings allowing you to personalize the behavior of presentations  and selections:  
-  * Default Drawer, containing all the color and line attributes  which can be used by interactive objects, which do not have their own  attributes. 
+The **Interactive Context** is made up of a **Principal Viewer** and, optionally, a trash bin or **Collector Viewer**.
+
+An interactive object can have a certain number of specific graphic attributes, such as visualization mode, color, and material. Correspondingly, the interactive context has a set of graphic attributes, the *Drawer*, which is valid by default for the objects it controls.
+
+When an interactive object is visualized, the required graphic attributes are first taken from the object's own <i>Drawer</i> if one exists, or from the context drawer for the others.
+
+The following adjustable settings allow personalizing the behavior of presentations  and selections:
+  * Default Drawer, containing all the color and line attributes  which can be used by interactive objects, which do not have their own attributes.
   * Default Visualization Mode for interactive objects.  By default: *mode  0* ;  
   * Highlight color of entities detected by mouse movement. By default: *Quantity_NOC_CYAN1*;  
   * Pre-selection color. By default:  *Quantity_NOC_GREEN*;  
   * Selection color (when you click on a detected object). By default:  *Quantity_NOC_GRAY80*;  
-  * Sub-Intensity color. By default:  *Quantity_NOC_GRAY40*.  
+  * Sub-Intensity color. By default: *Quantity_NOC_GRAY40*.
 
 All of these settings can be modified by functions proper to  the Context.  
 
@@ -626,9 +763,10 @@ TheCtx->SetDisplayMode(2);
 // obj1 stays visualised in its mode 3.  
 ~~~~~
 
-*PresentationManager3D*  and a *Selector3D* which manage the presentation and selection of present  interactive objects,  are associated to the main Viewer. The same is true of the optional Collector. 
+*PresentationManager3D*  and *Selector3D*, which manage the presentation and selection of present  interactive objects,  are associated to the main Viewer. The same is true of the optional Collector. 
 
 @subsection occt_visu_3_4 Local Context 
+
 @subsubsection occt_visu_3_4_1 Rules and Conventions 
 
   * Opening a local context allows preparing an environment for  temporary presentations and selections, which will disappear once the local  context is closed. 
@@ -649,7 +787,7 @@ The specific modes of selection only concern the interactive  objects, which are
 The local context can be opened using method *AIS_InteractiveContext::OpenLocalContext*. The following options are available:
   * *UseDisplayedObjects*: allows loading the  interactive objects visualized at Neutral Point in the opened local context. If *FALSE*, the local context is empty after being opened. If *TRUE*,  the objects at Neutral Point are modified by their default selection mode. 
   * *AllowShapeDecomposition*: *AIS_Shape* allows or prevents  decomposition in standard shape location mode of objects at Neutral Point,  which are type-privileged (see <a href="#occt_visu_3_2_4"> Selection</a> chapter). This Flag is only taken  into account when *UseDisplayedObjects* is *TRUE*. 
-  * *AcceptEraseOfObjects*: authorises other local contexts to erase  the interactive objects present in this context. This option is rarely used.  The last option has no current use. 
+  * *AcceptEraseOfObjects*: authorizes other local contexts to erase  the interactive objects present in this context. This option is rarely used. The last option has no current use.
 
 This function returns the index of the created local context.  It should be kept and used when the context is closed.  
 
@@ -667,14 +805,14 @@ Closing Local Contexts is done by:
 *Warning* 
 When the index isn’t specified in the first function, the  current Context is closed. This option can be dangerous, as other Interactive  Functions can open local contexts without necessarily warning the user. For  greater security, you have to close the context with the index given on  opening. 
 
-To get the index of the current context, use function "AIS_InteractiveContext::IndexOfCurrentLocal". It allows closing all open local  contexts at one go. In this case, you find yourself directly at Neutral Point.  
+To get the index of the current context, use function *AIS_InteractiveContext::IndexOfCurrentLocal*. It allows closing all open local  contexts at one go. In this case, you find yourself directly at Neutral Point.  
 
-When you close a local context, all temporary interactive  objects are deleted, all selection modes concerning the context are  cancelled, and all content filters are emptied.  
+When you close a local context, all temporary interactive  objects are deleted, all selection modes concerning the context are canceled, and all content filters are emptied.
 
 
 @subsubsection occt_visu_3_4_3 Presentation in a Neutral Point 
 
-You must distinguish between the Neutral  Point and the Open Local Context states. Although the majority of visualization  functions can be used in both situations, their behavior is different.
+You must distinguish between the **Neutral Point** and the **Open Local Context** states. Although the majority of visualization  functions can be used in both situations, their behavior is different.
 
 Neutral Point should be used to visualize the interactive  objects, which represent and select an applicative entity. Visualization and  Erasing orders are straightforward: 
 
@@ -707,11 +845,11 @@ Bear in mind the following points:
   * The second *Display* function should only be used in Neutral  Point to visualize a supplementary mode for the object, which you can erase by  *EraseMode (...)*. You activate the selection mode. This is passed as an argument.  By convention, if you do not want to activate a selection mode, you must set  the *SelectionMode* argument to -1. This function is  especially interesting in open local context, as we will see below. 
   * In Neutral Point, it is not advisable to activate other selection  modes than the default selection one. It is preferable to open a local context  in order to activate particular selection modes. 
   * When you call *Erase(Interactive object)* function, the *PutIncollector*  argument, which is *FALSE* by default, allows you to visualize the object  directly in the Collector and makes it selectable (by activation of 0 mode).  You can nonetheless block its passage through the Collector by changing the  value of this option. In this case, the object is present in the Interactive  Context, but is not seen anywhere. 
-  * *Erase()* with *putInCollector = Standard_True*  might be slow as it computes again the object presentation in the Collector. Set *putInCollector* to *Standard_False* if you simply want to hide the object’s  presentation temporarily.
+  * *Erase()* with *putInCollector = Standard_True*  might be slow as it recomputes the object presentation in the Collector. Set *putInCollector* to *Standard_False* if you simply want to hide the object’s  presentation temporarily.
   * Visualization attributes and graphic behavior can be modified through a set of functions similar to those for the interactive object (color, thickness of line, material, transparency,  locations, etc.) The context then manages immediate and deferred updates. 
   * Call *Remove()* method of *InteractiveContext* as soon  as the interactive object is no longer needed and you want to destroy it..  Otherwise, references to *InteractiveObject* are kept by *InteractiveContext*,  and the *Object* is not destroyed, which results in memory leaks. In  general, if the presentation of an  interactive object can be computed quickly, it  is recommended to *Remove()* it instead of using *Erase()* method.
 
-@subsubsection occt_visu_3_4_4 Presentation in Local Context 
+@subsubsection occt_visu_3_4_4 Presentation in the Local Context
 
 In open local context, the *Display* functions presented above can be as well.  
 
@@ -744,7 +882,10 @@ Use *AIS_InteractiveContext::Activate* and *AIS_InteractiveContext::Deactivate* 
 
 @subsubsection occt_visu_3_4_5 Filters 
 
-When Interactive objects have been "prepared" in the local  context, you can add rejection filters. The root class of objects is *SelectMgr_Filter*.  The principle behind it is straightforward: a filter tests to see whether the  owners <i>(SelectMgr_EntityOwner)</i> detected in mouse position by the Local  context selector answer *OK*. If so, it is kept, otherwise it is rejected.  
+To define an environment of dynamic detection, you can use standard filter classes or create your own.
+A filter questions the owner of the sensitive primitive in local context to determine if it has the desired qualities. If it answers positively, it is kept. If not, it is rejected.
+
+The root class of objects is *SelectMgr_Filter*.  The principle behind it is straightforward: a filter tests to see whether the  owners <i>(SelectMgr_EntityOwner)</i> detected in mouse position by the Local  context selector answer *OK*. If so, it is kept, otherwise it is rejected.  
 
 You can create a custom class of filter objects by  implementing the deferred function *IsOk()*:  
 
@@ -759,12 +900,12 @@ In *SelectMgr*, there are also Composition filters (AND  Filters, OR Filters), w
 There are Standard filters, which have already been  implemented in several packages:  
   * *StdSelect_EdgeFilter* - for edges, such as lines and circles;  
   * *StdSelect_FaceFilter* - for faces, such as planes, cylinders and spheres;  
-  * *StdSelect_ShapeTypeFilter* - for shape types, such as compounds, solids, shells and wires;  
+  * *StdSelect_ShapeTypeFilter* - for shape types, such as compounds, solids, shells and wires;
   * *AIS_TypeFilter* - for types  of interactive objects;  
   * *AIS_SignatureFilter* - for types  and signatures of interactive objects; 
   * *AIS_AttributeFilter* - for attributes of Interactive Objects, such as color and width.  
 
-As there are specific behaviors on shapes, each new  Filter class must, if necessary, redefine *AIS_LocalContext::ActsOn* function, which informs the Local Context if it acts on specific types of sub-shapes.  By default, this  function answers *FALSE*.  
+As there are specific behaviors on shapes, each new *Filter* class must, if necessary, redefine *AIS_LocalContext::ActsOn* function, which informs the Local Context if it acts on specific types of sub-shapes.  By default, this  function answers *FALSE*.
 
 **WARNING**
  
@@ -1048,7 +1189,20 @@ myCtx->CloseLocalContext(myIndex);
 
 @subsection occt_visu_3_5 Standard Interactive Object Classes 
 
-@subsubsection occt_visu_3_5_1 Datums
+Interactive Objects are selectable and viewable objects connecting graphic representation and the underlying reference geometry.
+
+They are divided into four types:
+  * the **Datum** - a construction geometric element;
+  * the **Relation** - a constraint on the interactive shape and the corresponding reference geometry;
+  * the **Object** - a topological shape or connection between shapes;
+  * **None** a token, that instead of eliminating the object, tells the application to look further until it finds an acceptable object definition in its generation.
+
+Inside these categories, there is a possibility of additional characterization by means of a signature. The signature provides an index to the further characterization. By default, the **Interactive Object** has a *None* type and a signature of 0 (equivalent to *None*).
+If you want to give a particular type and signature to your interactive object, you must redefine the two virtual methods: <i>Type</i> and <i>Signature</i>.
+
+@subsubsection occt_visu_3_5_1 Datum
+
+The **Datum** groups together the construction elements such as lines, circles, points, trihedrons, plane trihedrons, planes and axes.
   
 *AIS_Point,  AIS_Axis,  AIS_Line,  AIS_Circle,  AIS_Plane* and *AIS_Trihedron* have four selection modes: 
   * mode 0 : selection of a trihedron; 
@@ -1064,11 +1218,13 @@ when you activate one of modes: 1 2 3 4, you pick AIS  objects of type:
 *AIS_PlaneTrihedron* offers three selection modes:  
   * mode 0 : selection of the whole trihedron; 
   * mode 1 : selection of the origin of the trihedron; 
-  * mode 2 : selection of the axes - same remarks as for the  Trihedron. 
+  * mode 2 : selection of the axes - same remarks as for the Trihedron.
 
 For the presentation of planes and trihedra, the default  unit of length is millimeter, and the default value for the representation of  axes is 100. If you modify these dimensions, you must temporarily recover the  object **Drawer**. From it, take the *Aspects* in which the values for length  are stored (*PlaneAspect* for the plane, *FirstAxisAspect* for trihedra), and  change these values inside these Aspects. Finally, recalculate the  presentation.  
 
-@subsubsection occt_visu_3_5_2 Objects 
+@subsubsection occt_visu_3_5_2 Object
+
+The **Object** type includes topological shapes, and connections between shapes.
 
 *AIS_Shape* has three visualization modes :
   * mode 0 : Line (default mode) 
@@ -1092,7 +1248,53 @@ And at maximum seven selection modes, depending on the shape complexity:
   * *AIS_TexturedShape* is an Interactive Object that supports texture  mapping. It is constructed as a usual AIS_Shape, but has additional methods  that allow to map a texture on it. 
   * *MeshVS_Mesh* is an Interactive Object that represents meshes, it  has a data source that provides geometrical information (nodes, elements) and  can be built up from the source data with a custom presentation builder. 
 
+
+The class *AIS_ColoredShape* allows using custom colors and line widths for *TopoDS_Shape* objects and their sub-shapes.
+
+~~~~~
+  AIS_ColoredShape aColoredShape = new AIS_ColoredShape (theShape);
+
+  // setup color of entire shape
+  aColoredShape->SetColor (Quantity_Color (Quantity_NOC_RED));
+
+  // setup line width of entire shape
+  aColoredShape->SetWidth (1.0);
+
+  // set transparency value
+  aColoredShape->SetTransparency (0.5);
+
+  // customize color of specified sub-shape
+  aColoredShape->SetCustomColor (theSubShape, Quantity_Color (Quantity_NOC_BLUE1));
+
+  // customize line width of specified sub-shape
+  aColoredShape->SetCustomWidth (theSubShape, 0.25);
+~~~~~
+
+The presentation class *AIS_PointCloud* can be used for efficient drawing of large arbitrary sets of colored points. It uses *Graphic3d_ArrayOfPoints* to pass point data into OpenGl graphic driver to draw a set points as an array of "point sprites". The point data is packed into vertex buffer object for performance.
+- The type of point marker used to draw points can be specified as a presentation aspect.
+- The presentation provides selection by a bounding box of the visualized set of points. It supports two display / highlighting modes: points or bounding box.
+
+@image html point_cloud.png "A random colored cloud of points"
+
+Example:
+~~~~~
+Handle(Graphic3d_ArrayOfPoints) aPoints = new Graphic3d_ArrayOfPoints (2000, Standard_True);
+aPoints->AddVertex (gp_Pnt(-40.0, -40.0, -40.0), Quantity_Color (Quantity_NOC_BLUE1));
+aPoints->AddVertex (gp_Pnt (40.0,  40.0,  40.0), Quantity_Color (Quantity_NOC_BLUE2));
+
+Handle(AIS_PointCloud) aPntCloud = new AIS_PointCloud();
+aPntCloud->SetPoints (aPoints);
+~~~~~
+
+The draw command *vpointcloud* builds a cloud of points from shape triangulation.
+This command can also draw a sphere surface or a volume with a large amount of points (more than one million).
+
+
 @subsubsection occt_visu_3_5_3 Relations 
+
+The **Relation** is made up of constraints on one or more interactive shapes and the corresponding reference geometry. For example, you might want to constrain two edges in a parallel relation. This constraint is considered as an object in its own right, and is shown as a sensitive primitive. This takes the graphic form of a perpendicular arrow marked with the || symbol and lying between the two edges.
+
+The following relations are provided by *AIS*:
   * *AIS_ConcentricRelation* 
   * *AIS_FixRelation*
   * *AIS_IdenticRelation* 
@@ -1346,249 +1548,27 @@ for(VS->Init();VS->More();VS->Next())
 * **View mapping** - defines the transformation from View Reference Coordinates to the Normalized Projection Coordinates. This follows the Phigs scheme.
 * **Z-Buffering** -= a form of hidden surface removal in shading mode only. This is always active for a view in the shading mode. It cannot be suppressed.
 
-@subsection occt_visu_4_2 Creating a 3D scene 
+@subsection occt_visu_4_2 Graphic primitives
 
-To create 3D graphic objects and display them on the screen,  follow the procedure below:  
-1. Create attributes.  
-2. Create a 3D viewer..  
-3. Create a view.  
-4. Create an interactive context.  
-5. Create interactive objects.  
-6. Create primitives in the interactive  object  
-7. Display the interactive object.  
-
-@subsubsection occt_visu_4_2_1 Create attributes 
-
-Create colors.  
-
-~~~~~
-Quantity_Color Black (Quantity_NOC_BLACK);  
-Quantity_Color Blue (Quantity_NOC_MATRABLUE);  
-Quantity_Color Brown (Quantity_NOC_BROWN4);  
-Quantity_Color Firebrick (Quantity_NOC_FIREBRICK);  
-Quantity_Color Forest (Quantity_NOC_FORESTGREEN);  
-Quantity_Color Gray (Quantity_NOC_GRAY70);  
-Quantity_Color MyColor (0.99, 0.65, 0.31,  Quantity_TOC_RGB);  
-Quantity_Color Beet (Quantity_NOC_BEET);  
-Quantity_Color White (Quantity_NOC_WHITE);  
-~~~~~
-
-
-Create line attributes.  
-
-~~~~~
-Handle(Graphic3d_AspectLine3d)  CTXLBROWN =  new Graphic3d_AspectLine3d ();  
-Handle(Graphic3d_AspectLine3d)  CTXLBLUE =  new Graphic3d_AspectLine3d ();  
-Handle(Graphic3d_AspectLine3d)  CTXLWHITE = new Graphic3d_AspectLine3d();  
-								CTXLBROWN->SetColor (Brown);  
-								CTXLBLUE->SetColor (Blue);  
-								CTXLWHITE->SetColor (White);  
-~~~~~
-
-Create marker attributes.  
-~~~~~
-Handle(Graphic3d_AspectMarker3d) CTXMFIREBRICK =  new Graphic3d_AspectMarker3d();   
-								 CTXMFIREBRICK->SetColor (Firebrick);  
-								 CTXMFIREBRICK->SetScale (1.0);  
-								 CTXMFIREBRICK->SetType (Aspect_TOM_BALL);  
-~~~~~
-
-Create facet attributes.  
-~~~~~
-Handle(Graphic3d_AspectFillArea3d) CTXF =  new Graphic3d_AspectFillArea3d  ();  
-Graphic3d_MaterialAspect BrassMaterial  (Graphic3d_NOM_BRASS);  
-Graphic3d_MaterialAspect GoldMaterial  (Graphic3d_NOM_GOLD);  
-	CTXF->SetInteriorStyle (Aspect_IS_SOLID);  
-	CTXF->SetInteriorColor (MyColor);  
-	CTXF->SetDistinguishOn ();  
-	CTXF->SetFrontMaterial (GoldMaterial);  
-	CTXF->SetBackMaterial (BrassMaterial);  
-	CTXF->SetEdgeOn ();  
-~~~~~
-
-Create text attributes.  
-~~~~~
-Handle(Graphic3d_AspectText3d) CTXT =  new  Graphic3d_AspectText3d  (Forest,  Graphic3d_NOF_ASCII_MONO, 1., 0.);  
-~~~~~
-
-@subsubsection occt_visu_4_2_2 Create a 3D Viewer (a Windows example) 
-
-~~~~~
-Handle(Aspect_DisplayConnection) aDisplayConnection; 
-Handle(Graphic3d_GraphicDriver) aGraphicDriver =  Graphic3d::InitGraphicDriver (aDisplayConnection); 
-TCollection_ExtendedString aName("3DV"); 
-myViewer = new V3d_Viewer (aGraphicDriver,aName.ToExtString  (), ""); 
-myViewer -> SetDefaultLights ();  
-myViewer -> SetLightOn ();  
-~~~~~
-
-@subsubsection occt_visu_4_2_3 Create a 3D view (a Windows example) 
-
-It is assumed that a valid Windows window may already be  accessed via the method *GetSafeHwnd()*.  
-~~~~~
-Handle (WNT_Window) aWNTWindow;
-aWNTWindow = new WNT_Window (GetSafeHwnd());
-myView = myViewer -> CreateView();
-myView -> SetWindow (a WNTWindow);
-~~~~~
-
-@subsubsection occt_visu_4_2_4 Create an interactive context 
-
-~~~~~
-myAISContext = new AIS_InteractiveContext (myViewer);  
-~~~~~
-
-You are now able to display interactive objects such as an  *AIS_Shape*.  
-
-~~~~~
-TopoDS_Shape aShape = BRepAPI_MakeBox(10,20,30)_Solid();  
-Handle (AIS_Shape) aAISShape = new AIS_Shape(aShape);  
-myAISContext -> Display (aAISShape);  
-~~~~~
-
-@subsubsection occt_visu_4_2_5 Create your own interactive object 
-
-Follow the procedure below to compute the  presentable object:  
-
-1. Build  a presentable object inheriting from *AIS_InteractiveObject* (refer to the  Chapter on Presentable Objects).  
-2. Reuse  the *Prs3d_Presentation* provided as an argument of the compute methods.  
-
-**Note** that there  are two compute methods: one for a standard representation, and the other for  a degenerated representation, i.e. in hidden line removal and wireframe modes.
-
-
-Let us look at the example of compute methods
-
-~~~~~
-Void 
-myPresentableObject::Compute  
-	(const  Handle(PrsMgr_PresentationManager3d)&  
-		aPresentationManager,   
-		const  Handle(Prs3d_Presentation)& aPrs,  
-		const  Standard_Integer aMode) 
-( 
-//...  
-)  
-
-void 
-myPresentableObject::Compute  
-		(const  Handle(Prs3d_Projector)&,  
-		const Handle(Prs3d_Presentation)&  aPrs)  
-(  
-//...  
-)  
-~~~~~
-
-@subsubsection occt_visu_4_2_6 Create primitives in the interactive object 
-
-Get the group used in *Prs3d_Presentation*.  
-
-~~~~~
-Handle(Graphic3d_Group) TheGroup =  Prs3d_Root::CurrentGroup(aPrs);  
-~~~~~
-
-Update the group attributes.  
-
-~~~~~
-TheGroup -> SetPrimitivesAspect(CTXLBLUE);  
-~~~~~
-
-Create two triangles in *TheGroup*.  
-
-~~~~~
-Standard_Integer aNbTria = 2; 
-Handle(Graphic3d_ArrayOfTriangles) aTriangles = new  Graphic3d_ArrayOfTriangles(3 * aNbTria, 0, Standard_True); 
-Standard_Integer anIndex; 
-for (anIndex = 1; anIndex <= aNbTria; nt++) 
-{ 
-  aTriangles->AddVertex(anIndex * 5., 0., 0., 1., 1.,  1.); 
-  aTriangles->AddVertex(anIndex * 5 + 5, 0., 0., 1.,  1., 1.); 
-  aTriangles->AddVertex(anIndex * 5 + 2.5, 5., 0., 1.,  1., 1.); 
-} 
-TheGroup->BeginPrimitives (); 
-mygroup->AddPrimitiveArray(aTriangles); 
-TheGroup->EndPrimitives (); 
-~~~~~
-
-The *BeginPrimitives()* and *EndPrimitives()* methods are used  when creating a set of various primitives in the same group.  
-Use the polyline function to create a boundary box for the *Struct* structure in group *TheGroup*.  
-
-~~~~~
-Standard_Real Xm, Ym, Zm, XM, YM, ZM;  
-Struct->MinMaxValues (Xm, Ym, Zm, XM, YM, ZM);   
-
-Handle(Graphic3d_ArrayOfPolylines)  aPolylines = new Graphic3d_ArrayOfPolylines(16, 4); 
-aPolylines->AddBound (4); 
-aPolylines->AddVertex (Xm,  Ym, Zm); 
-aPolylines->AddVertex (Xm,  Ym, ZM); 
-aPolylines->AddVertex (Xm,  YM, ZM); 
-aPolylines->AddVertex (Xm,  YM, Zm); 
-aPolylines->AddBound (4); 
-aPolylines->AddVertex (Xm,  Ym, Zm); 
-aPolylines->AddVertex (XM,  Ym, Zm); 
-aPolylines->AddVertex (XM,  Ym, ZM); 
-aPolylines->AddVertex (XM,  YM, ZM); 
-aPolylines->AddBound (4); 
-aPolylines->AddVertex (XM,  YM, Zm); 
-aPolylines->AddVertex (XM,  Ym, Zm); 
-aPolylines->AddVertex (XM,  YM, Zm); 
-aPolylines->AddVertex (Xm,  YM, Zm); 
-aPolylines->AddBound (4); 
-aPolylines->AddVertex (Xm,  YM, ZM); 
-aPolylines->AddVertex (XM,  YM, ZM); 
-aPolylines->AddVertex (XM,  Ym, ZM); 
-aPolylines->AddVertex (Xm,  Ym, ZM); 
-
-TheGroup->BeginPrimitives  (); 
-TheGroup->AddPrimitiveArray(aPolylines); 
-TheGroup->EndPrimitives  (); 
-~~~~~
-
-Create text and markers in group *TheGroup*.  
-
-~~~~~
-static char *texte[3] = {   "Application title",  
-							"My  company",  
-							"My company address." };  
-Graphic3d_Array1OfVertex Tpts8 (0, 1);  
-Tpts8(0).SetCoord (-40.0, -40.0, -40.0);  
-Tpts8(1).SetCoord (40.0, 40.0, 40.0);  
-TheGroup->MarkerSet (Tpts8);  
-Graphic3d_Vertex Marker (0.0, 0.0, 0.0);  
-
-for (i=0; i<=2; i++) {  
-  Marker.SetCoord (-(Standard_Real)i*4 + 30, 
-                    (Standard_Real)i*4, 
-                   -(Standard_Real)i*4);  
-  TheGroup->Text (texte[i], Marker, 20.); 
-}  
-~~~~~
-
-@section occt_visu_5 3D Resources
-
-The 3D resources include the *Graphic3d* and *V3d* packages.  
-
-@subsection occt_visu_5_1 Graphic3D Package
-
-@subsubsection occt_visu_5_1_1 Overview 
-
-The *Graphic3d* package is used to create 3D graphic  objects in a 3D viewer. These objects called **structures** are made up of  groups of primitives and attributes. A group is the smallest editable element  of a structure. A transformation can be applied to a structure. Structures can  be connected to form a tree of structures, composed by transformations.  Structures are globally manipulated by the viewer.  
-
-@subsubsection occt_visu_5_1_2 Provided services 
+The *Graphic3d* package is used to create 3D graphic objects in a 3D viewer. These objects called **structures** are made up of groups of primitives and attributes, such as polylines, planar polygons with or without holes, text and markers, and attributes, such as color, transparency, reflection, line type, line width, and text font. A group is the smallest editable element of a structure. A transformation can be applied to a structure. Structures can be connected to form a tree of structures, composed by transformations. Structures are globally manipulated by the viewer.
 
 Graphic structures can be:  
   * Displayed, 
   * Highlighted, 
   * Erased, 
   * Transformed, 
-  * Connected to form a tree.
+  * Connected to form a tree hierarchy of structures, created by transformations.
   
 There are classes for: 
   * Visual attributes for lines, faces, markers, text, materials, 
   * Vectors and vertices, 
   * Graphic objects, groups, and structures. 
 
-@subsubsection occt_visu_5_1_3 About the primitives 
+@subsubsection occt_visu_4_2_2 Structure hierarchies
 
+The root is the top of a structure hierarchy or structure network. The attributes of a parent structure are passed to its descendants. The attributes of the descendant structures do not affect the parent. Recursive structure networks are not supported.
+
+@subsubsection occt_visu_4_2_3 Graphic primitives
 * **Markers** 
   * Have one or more vertices, 
   * Have a type, a scale factor, and a color, 
@@ -1615,7 +1595,7 @@ There are classes for:
   * Geometric attributes - character height, character up vector,  text path, horizontal and vertical alignment, orientation, three-dimensional  position, zoomable flag
   * Non-geometric attributes - text font, character spacing,  character expansion factor, color. 
 
-@subsubsection occt_visu_5_1_4 Primitive  arrays
+@subsubsection occt_visu_4_2_4 Primitive  arrays
 
 Primitive arrays are a more efficient approach to describe  and display the primitives from the aspects of memory usage and graphical  performance. The key feature of the primitive arrays is that the primitive data  is not duplicated. For example, two polygons could share the same vertices, so  it is more efficient to keep the vertices in a single array and specify the  polygon vertices with indices of this array. In addition to such kind of memory  savings, the OpenGl graphics driver provides the Vertex Buffer Objects (VBO).  VBO is a sort of video memory storage that can be allocated to hold the  primitive arrays, thus making the display operations more efficient and  releasing the RAM memory. 
 
@@ -1791,29 +1771,7 @@ or get the number of vertices, edges and bounds:
   Standard_Integer Graphic3d_ArrayOfPrimitives::BoundNumber
 ~~~~~
   
-@subsubsection occt_visu_5_1_5 Materials 
-
-A *material* is defined by :  
-  * Transparency, 
-  * Diffuse reflection - a component of the object color;
-  * Ambient reflection;
-  * Specular reflection - a component of the color of the light source.
-
-The following items are  required to determine the three colors of reflection:  
-  * Color, 
-  * Coefficient of diffuse reflection, 
-  * Coefficient of ambient reflection, 
-  * Coefficient of specular reflection. 
-
-@subsubsection occt_visu_5_1_6 Textures 
-
-A *texture* is defined by a name.  
-Three types of texture are available:  
-  * 1D, 
-  * 2D, 
-  * Environment mapping. 
-
-@subsubsection occt_visu_5_1_7 Graphic3d text  
+@subsubsection occt_visu_4_2_5 Text primitive
 
 The OpenGl graphics driver uses advanced text rendering  powered by FTGL library. This library provides vector text rendering, as a  result the text can be rotated and zoomed without quality loss.  
 *Graphic3d* text primitives have the following features: 
@@ -1879,23 +1837,70 @@ Graphic3d_Vertex aPoint (1, 1, 1);
 aGroup->Text (Standard_CString ("Text"), aPoint, 16.0); 
 ~~~~~
 
-@subsubsection occt_visu_5_1_8 Display priorities 
+@subsubsection occt_visu_4_2_6 Materials
 
-Structure display priorities control the order in which  structures are drawn. When you display a structure you specify its priority.  The lower the value, the lower the display priority. When the display is  regenerated the structures with the lowest priority are drawn first. For  structures with the same display priority the order in which they were  displayed determines the drawing order. OCCT supports eleven structure  display priorities.  
+A *Graphic3d_MaterialAspect* is defined by:
+  * Transparency;
+  * Diffuse reflection - a component of the object color;
+  * Ambient reflection;
+  * Specular reflection - a component of the color of the light source;
+  * Refraction index.
 
-@subsubsection occt_visu_5_1_9 About structure hierarchies 
+The following items are required to determine the three colors of reflection:
+  * Color;
+  * Coefficient of diffuse reflection;
+  * Coefficient of ambient reflection;
+  * Coefficient of specular reflection.
 
-The root is the top of a structure hierarchy or structure  network. The attributes of a parent structure are passed to its descendants.  The attributes of the descendant structures do not affect the parent. Recursive  structure networks are not supported.  
+@subsubsection occt_visu_4_2_7 Textures
 
-@subsection occt_visu_5_2 V3d Package
+A *texture* is defined by a name.
+Three types of texture are available:
+  * 1D;
+  * 2D;
+  * Environment mapping.
 
-@subsubsection occt_visu_5_2_1 Overview 
+@subsubsection occt_visu_4_2_8 Shaders
+
+OCCT visualization core supports GLSL shaders. Currently OCCT supports only vertex and fragment GLSL shader. Shaders can be assigned to a generic presentation by its drawer attributes (Graphic3d aspects). To enable custom shader for a specific AISShape in your application, the following API functions are used:
+
+~~~~~
+// Create shader program
+Handle(Graphic3d_ShaderProgram) aProgram = new Graphic3d_ShaderProgram();
+
+// Attach vertex shader
+aProgram->AttachShader (Graphic3d_ShaderObject::CreateFromFile(
+                               Graphic3d_TOS_VERTEX, "<Path to VS>"));
+
+// Attach fragment shader
+aProgram->AttachShader (Graphic3d_ShaderObject::CreateFromFile(
+                               Graphic3d_TOS_FRAGMENT, "<Path to FS>"));
+
+// Set values for custom uniform variables (if they are)
+aProgram->PushVariable ("MyColor", Graphic3d_Vec3(0.0f, 1.0f, 0.0f));
+
+// Set aspect property for specific AISShape
+theAISShape->Attributes()->ShadingAspect()->Aspect()->SetShaderProgram (aProgram);
+~~~~~
+
+@subsection occt_visu_4_3 Graphic attributes
+
+@subsubsection occt_visu_4_3_1 Aspect package overview
+
+The *Aspect* package provides classes for the graphic elements in the viewer:
+  * Groups of graphic attributes;
+  * Edges, lines, background;
+  * Window;
+  * Driver;
+  * Enumerations for many of the above.
+
+@subsection occt_visu_4_4 3D view facilities
+
+@subsubsection occt_visu_4_4_1 Overview
 
 The *V3d* package provides the resources to define a 3D  viewer and the views attached to this viewer (orthographic, perspective). This  package provides the commands to manipulate the graphic scene of any 3D object  visualized in a view on screen.  
 
 A set of high-level commands allows the separate  manipulation of parameters and the result of a projection (Rotations, Zoom,  Panning, etc.) as well as the visualization attributes (Mode, Lighting,  Clipping, Depth-cueing, etc.) in any particular view.  
-
-@subsubsection occt_visu_5_2_2 Provided services 
 
 The *V3d* package is basically a set of tools directed by  commands from the viewer front-end. This tool set contains methods for creating  and editing classes of the viewer such as:  
   * Default parameters of the viewer, 
@@ -1905,7 +1910,7 @@ The *V3d* package is basically a set of tools directed by  commands from the vie
   * Instantiated sequences of views, planes, light sources, graphic  structures, and picks, 
   * Various package methods. 
 
-@subsubsection occt_visu_5_2_3 A programming example 
+@subsubsection occt_visu_4_4_2 A programming example
 
 This sample TEST program for the *V3d* Package uses primary  packages *Xw* and *Graphic3d* and secondary packages *Visual3d, Aspect, Quantity,  Phigs* and *math*.  
 
@@ -1914,7 +1919,7 @@ This sample TEST program for the *V3d* Package uses primary  packages *Xw* and *
 Handle(Aspect_DisplayConnection)  aDisplayConnection = new  Aspect_DisplayConnection(); 
 
 //Create a Graphic Driver from  the default Aspect_DisplayConnection
-Handle(Graphic3d_GraphicDriver)  GD = Graphic3d::InitGraphicDriver (aDisplayConnection);   
+Handle(OpenGl_GraphicDriver)  GD = new OpenGl_GraphicDriver (aDisplayConnection);
 
 //Create a Viewer to this Driver 
 Handle(V3d_Viewer)  VM = new V3d_Viewer(GD, 400.,  
@@ -1960,120 +1965,151 @@ Handle(Xw_Window) W =  new Xw_Window(aDisplayConnection,"Test  V3d",0.5,0.5,0.5,
 W->Map() ;  
 
 // Create a Perspective  View in this Viewer
-Handle(V3d_PerspectiveView) V =  new V3d_PerspectiveView(VM);  
-
-// Set the Eye position
-V->SetEye(100.,100.,100.) ;  
-
-// Associate this View  with the Window 
-V->SetWindow(W) ;  
-
-// Activate ALL defined  Lights in this View 
-V->SetLightOn() ;  
-
-// Display ALL  structures in this View 
-(VM-Viewer())->Display() ;  
-
-// Finally update the  Visualization in this View 
-V->Update() ;  
+Handle(V3d_View) aView = new V3d_View(VM);
+aView->Camera()->SetProjectionType (Graphic3d_Camera::Projection_Perspective);
+// Associate this View with the Window
+aView ->SetWindow(W);
+// Display ALL structures in this View
+VM->Viewer()->Display();
+// Finally update the Visualization in this View
+aView->Update();
 ~~~~~
 
-@subsubsection occt_visu_5_2_4 Glossary of  view transformations 
-
-The following terms are used to define view orientation,  i.e. transformation from World Coordinates (WC) to the View Reference  Coordinates system (VRC): 
-* **View Reference Point (VRP)** - defines the origin of View Reference Coordinates.
-* **View Reference Plane Normal (VPN)** - defines the normal of projection plane of the view.
-* **View Reference Up Vector (VUP)** - defines the vertical of observer of the view.
-
-The following terms are used to define view mapping, i.e.  transformation from View Reference Coordinates (VRC) to the Normalized  Projection Coordinates (NPC): 
-* **Projection type** - Orthographic or perspective.
-* **Projection Reference Point (PRP)** -	Defines the observer position. 
-* **Front Plane Distance (FPD)** -	Defines the position of the front clipping plane in View Reference Coordinates system.
-* **Back Plane Distance (BPD)**	Defines the position of the back clipping plane in View Reference Coordinates system.
-* **View Plane Distance (VPD)**	Defines the position of the view projection plane in View Reference Coordinates system. View plane must be located between front and back clipping planes. 
-* **Window Limits**	Defines the visible part of the view projection plane (left, right, top and bottom boundaries: *Umin, Umax, Vmax* and *Vmin* respectively) in View Reference Coordinates.
-
-The *V3d_View* API uses the following terms to define view  orientation and mapping: 
-* **At** - 	Position of View Reference Point (VRP) in World Coordinates
-* **Eye** -	Position of the observer (projection reference point) in World Coordinates. Influences to the view projection vector and depth value. 
-* **Proj** -	View projection vector (VPN)
-* **Up** -	Position of the high point / view up vector (VUP)
-* **Depth** - Distance between Eye and At point
-* **ZSize** - Distance between front and back clipping planes
-* **Size** - Window size in View Reference Coordinates 
-* **Focal Reference point** -	Position of Projection Reference Point (PRP) in World Coordinates
-* **Focale** -	Distance between Projection Reference Point (PRP) and View projection plane
-
-
-@subsubsection occt_visu_5_2_5 Management of  perspective projection 
-
-The perspective projection allows definition of viewing  volume as a truncated pyramid (frustum) with apex at the Projection Reference  Point. In the View Reference Coordinate system it can be presented by the  following picture: 
-
-@image html visualization_image023.png "View Reference Coordinate System, perspective viewing volume and view mapping parameter"
-@image latex visualization_image023.png "View Reference Coordinate System, perspective viewing volume and view mapping parameter"
-  
-During panning, window limits are changed, as if a sort of  "frame" through which the user sees a portion of the view plane was moved over  the view. The perspective frustum itself remains unchanged.  
-
-The perspective projection is defined by two parameters: 
-  * *Depth* value defines distance between Projection Reference  Point and the nearest (front) clipping plane. 
-  * *ZSize* defines distance between Front and Back clipping  planes. The influence of this parameter is caused by the OCCT specific to  center viewing volume around View Reference Point so the front and back plane  distances were the same: *FPD = BPD = ZSize / 2*.
-  
-**Note** that the closer the displayed object to the  Projection Reference Point the more visible its perspective distortion. Thus,  in order to get a good perspective it is recommended to set **ZSize** value  comparable with the expected model size and small Depth value. 
-
-However, very small  Depth values might lead to inaccuracy of "fit all" operation and to  non-realistic perspective distortion.  
-
-Let us see the example:
-~~~~~
-// Create a Perspective  View in Viewer VM
-Handle(V3d_PerspectiveView) V =  new V3d_PerspectiveView(VM);  
-
-// Set the ZSize 
-V->SetZSize(2000.) ;  
-
-// Set the Depth value
-V->SetDepth(20.) ;  
-
-// Set the current  mapping as default to be used by  Reset() operation
-V->SetViewMappingDefault() ;  
-~~~~~
-
-As an alternative to  manual setting of perspective parameters the *V3d_View::DepthFitAll* function  can be used.  
+As an alternative to manual setting of perspective parameters the V3d_View::ZfitAll() and V3d_View::FitAll() functions can be used:
 
 ~~~~~
-// Display  shape in  Viewer VM
-Handle(AIS_InteractiveContext) aContext = new AIS_InteractiveContext(VM);   
-aContext->Display(shape); 
-
-// Create a Perspective  View in Viewer VM
-Handle(V3d_PerspectiveView) V =  new V3d_PerspectiveView(VM);  
-
-// Set automatically  the perspective parameters
-V->DepthFitAll() ;  
-
-// Fit view to object  size 
-V->FitAll(); 
-
-// Set the current  mapping as default to be used by  Reset() operation
-V->SetViewMappingDefault() ;  
+// Display shape in Viewer VM
+Handle(AIS_InteractiveContext) aContext = new AIS_InteractiveContext (VM);
+aContext->Display(shape);
+// Create a Perspective View in Viewer VM
+Handle(V3d_View) V = new V3d_View (VM);
+aview->Camera()->SetProjectionType (Graphic3d_Camera::Projection_Perspective);
+// Change Z-min and Z-max planes of projection volume to match the displayed objects
+V->ZFitAll();
+// Fit view to object size
+V->FitAll();
 ~~~~~
 
-It is necessary to take  into account that during rotation Z size of the view might be modified  automatically to fit the model into the viewing volume.  
+@subsubsection occt_visu_4_4_3 Define viewing parameters
 
-Make sure the Eye point  never gets between the Front and Back clipping planes.  
+View projection and orientation in OCCT *v3d* view are driven by camera. The camera calculates and supplies projection and view orientation matrices for rendering by OpenGL. The allows to the user to control all projection parameters. The camera is defined by the following properties:
 
-In perspective view,  changing Z size results in changed perspective effect. To avoid this, an  application should specify the maximum expected Z size using *V3d_View::SetZSize()* method in advance.  
+* **Eye** - Defines the observer (camera) position. Make sure the Eye point never gets between the Front and Back clipping planes.
 
-*V3d_View::FitAll()*  with *FitZ = Standard_True* and *V3d_View::ZFitAll()* also change the perspective effect  and should therefore be used with precautions similar to those for rotation. 
+* **Center** - defines the origin of View Reference Coordinates (where camera is aimed at).
 
-@subsubsection occt_visu_5_2_6 Underlay and overlay layers management
+* **Direction** - defines the direction of camera view (from the Eye to the Center).
 
-In addition to interactive 3d graphics displayed in the view  you can display an underlying and overlying graphics: text, color scales,  drawings.  
+* **Distance** - defines the distance between the Eye and the Center.
+
+* **Front** Plane - Defines the position of the front clipping plane in View Reference Coordinates system.
+
+* **Back** Plane - Defines the position of the back clipping plane in View Reference Coordinates system.
+
+* **ZNear** - defines the distance between the Eye and the Front plane.
+
+* **ZFar** - defines the distance between the Eye and the Back plane.
+
+Most common view manipulations (panning, zooming, rotation) are implemented as convenience methods of *V3d_View* class, however *Graphic3d_Camera* class can also be used directly by application developers:
+
+Example:
+~~~~~
+// rotate camera by X axis on 30.0 degrees
+gp_Trsf aTrsf;
+aTrsf.SetRotation (gp_Ax1 (gp_Pnt (0.0, 0.0, 0.0), gp_Dir (1.0, 0.0, 0.0)), 30.0);
+aView->Camera()->Transform (aTrsf);
+~~~~~
+
+@subsubsection occt_visu_4_4_4 Orthographic Projection
+
+@image html view_frustum.png "Perspective and orthographic projection"
+
+The following code configures the camera for orthographic rendering:
+
+~~~~~
+// Create an orthographic View in this Viewer
+Handle(V3d_View) aView = new V3d_View (VM);
+aView->Camera()->SetProjectionType (Graphic3d_Camera::Projection_Orthographic);
+// update the Visualization in this View
+aView->Update();
+~~~~~
+
+@subsubsection occt_visu_4_4_5 Perspective Projection
+
+**Field of view (FOVy)** - defines the field of camera view by y axis in degrees (45° is default).
+
+@image html camera_perspective.png "Perspective frustum"
+
+The following code configures the camera for perspective rendering:
+
+~~~~~
+// Create a perspective View in this Viewer
+Handle(V3d_View) aView = new V3d_View(VM);
+aView->Camera()->SetProjectionType (Graphic3d_Camera::Projection_Perspective);
+aView->Update();
+~~~~~
+
+
+@subsubsection occt_visu_4_4_6 Stereographic Projection
+
+**IOD** - defines the intraocular distance (in world space units).
+
+There are two types of IOD:
+* _IODType_Absolute_ : Intraocular distance is defined as an absolute value.
+* _IODType_Relative_ : Intraocular distance is defined relative to the camera focal length (as its coefficient).
+
+**Field of view (FOV)** - defines the field of camera view by y axis in degrees (45° is default).
+
+**ZFocus** - defines the distance to the point of stereographic focus.
+
+@image html stereo.png "Stereographic projection"
+
+To enable stereo projection, your workstation should meet the following requirements:
+
+* The graphic card should support quad buffering.
+* You need active 3D glasses (LCD shutter glasses).
+* The graphic driver needs to be configured to impose quad buffering for newly created OpenGl contexts; the viewer and the view should be created after that.
+
+In stereographic projection mode the camera prepares two projection matrices to display different stereo-pictures for the left and for the right eye. In a non-stereo camera this effect is not visible because only the same projection is used for both eyes.
+
+To enable quad buffering support you should provide the following settings to the graphic driver *opengl_caps*:
+
+~~~~~
+Handle(OpenGl_GraphicDriver) aDriver = new OpenGl_GraphicDriver();
+OpenGl_Caps& aCaps = aDriver->ChangeOptions();
+aCaps.contextStereo = Standard_True;
+~~~~~
+
+The following code configures the camera for stereographic rendering:
+
+~~~~~
+// Create a Stereographic View in this Viewer
+Handle(V3d_View) aView = new V3d_View(VM);
+aView->Camera()->SetProjectionType (Graphic3d_Camera::Projection_Stereo);
+// Change stereo parameters
+aView->Camera()->SetIOD (IODType_Absolute, 5.0);
+// Finally update the Visualization in this View
+aView->Update();
+~~~~~
+
+@subsubsection occt_visu_4_4_7 View frustum culling
+
+The algorithm of frustum culling on CPU-side is activated by default for 3D viewer. This algorithm allows skipping the presentation outside camera at the rendering stage, providing better performance. The following features support this method:
+* *Graphic3d_Structure::CalculateBoundBox()* is used to calculate axis-aligned bounding box of a presentation considering its transformation.
+* *V3d_View::SetFrustumCulling* enables or disables frustum culling for the specified view.
+* Classes *OpenGl_BVHClipPrimitiveSet* and *OpenGl_BVHTreeSelector* handle the detection of outer objects and usage of acceleration structure for frustum culling.
+* *BVH_BinnedBuilder* class splits several objects with null bounding box.
+
+@subsubsection occt_visu_4_4_8 Underlay and overlay layers management
+
+In addition to interactive 3d graphics displayed in the view  you can display underlying and overlying graphics: text, color scales and drawings.
 
 All *V3d* view graphical objects in the overlay are  managed by the default layer manager (*V3d_LayerMgr*). The *V3d* view has a  basic layer manager capable of displaying the color scale, but you can redefine  this class to provide your own overlay and underlay graphics.  
 
 The method *V3d_View::SetLayerMgr(const Handle (V3d_LayerMgr)& aMgr)* allows assigning a custom layer manager to the *V3d* view.
 
-There are three virtual methods to prepare graphics in the  manager for further drawing (set up layer dimensions, draw static graphics).  These methods can be redefined: 
+There are three virtual methods to prepare graphics in the  manager for further drawing: setting up layer dimensions and drawing static graphics. These methods can be redefined:
+
 ~~~~~
    void  V3d_LayerMgr::Begin ()
    void  V3d_LayerMgr::Redraw ()
@@ -2082,14 +2118,15 @@ There are three virtual methods to prepare graphics in the  manager for further 
 
 The layer manager controls layers (*Visual3d_Layer*)  and layer items (*Visual3d_LayerItem*). Both the overlay and  underlay layers can be created by the layer manager.  
 
-The layer entity is presented by the *Visual3d_Layer*  class. This entity provides drawing services in the layer, for example:
+The layer entity is presented by the *Visual3d_Layer* class. This entity provides drawing services in the layer, for example:
 ~~~~~ 
    void  Visual3d_Layer::DrawText
    void Visual3d_Layer::DrawRectangle
    void  Visual3d_Layer::SetColor
    void  Visual3d_Layer::SetViewport
 ~~~~~
-The following example demonstrates how to  draw overlay graphics by the *V3d_LayerMgr*: 
+
+The following example demonstrates how to draw overlay graphics by the *V3d_LayerMgr*:
 
 ~~~~~
 // redefined method of  V3d_LayerMgr
@@ -2101,7 +2138,7 @@ void  MyLayerMgr::Redraw ()
 } 
 ~~~~~
 
-The layer contains layer items that will be displayed on  view redraw. Such items are *Visual3d_LayerItem* entities. To manipulate *Visual3d_LayerItem* entities assigned to the layer’s internal list you can use  the following methods: 
+The layer contains layer items that will be displayed on  view redraw. Such items are *Visual3d_LayerItem* entities. To manipulate *Visual3d_LayerItem* entities assigned to the layer’s internal list you can use the following methods: 
 
 ~~~~~
    void  Visual3d_Layer::AddLayerItem (const Handle (Visual3d_LayerItem)&  Item)  
@@ -2158,7 +2195,7 @@ void V3d_ColorScale::PaintRect
 } 
 ~~~~~
 
-@subsubsection occt_visu_5_2_7 View background styles 
+@subsubsection occt_visu_4_4_9 View background styles
 There are three types of  background styles available for *V3d_view*: solid color, gradient color and  image.  
 
 To set solid color for  the background you can use the following methods: 
@@ -2227,77 +2264,10 @@ The *FileName* parameter defines the image file name and the path to it,  the *F
   * *Aspect_FM_TILED* tiles the view with the image;
   * *Aspect_FM_STRETCH* stretches the image over the view.
 
-@subsubsection occt_visu_5_2_8 User-defined  clipping planes
-The ability to define  custom clipping planes could be very useful for some tasks. The *V3d* view provides such an  opportunity.  
 
-The *V3d_Plane* class provides the services of clipping  planes: it holds the plane equation coefficients and provides its graphical  representation. To set and get plane equation coefficients you can use the  following methods: 
-~~~~~
-  void  V3d_Plane::SetPlane
-		(const Quantity_Parameter A,  
-		 const Quantity_Parameter B, 
-		 const Quantity_Parameter C, 
-		 const Quantity_Parameter D) 
-  void V3d_Plane::Plane
-		(Quantity_Parameter& A,  
-		 Quantity_Parameter& B, 
-		 Quantity_Parameter& C, 
-		 Quantity_Parameter& D) 
-~~~~~
+@subsubsection occt_visu_4_4_10 Dumping a 3D scene into an image file
 
-*V3d_Plane* also provides display services: 
-
-~~~~~
-  void  V3d_Plane::Display
-		(const Handle(V3d_View)& aView,  
-		 const Quantity_Color& aColor) 
-  void V3d_Plane::Erase  ()
-  Standard_Boolean  V3d_Plane::IsDisplayed ()
-~~~~~  
-The *Display*  method could be redefined to provide custom representation of the clipping  plane. 
-
-The clipping planes could be activated with the methods *void  V3d_View::SetPlaneOn (const Handle(V3d_Plane)& MyPlane)*  and *void  V3d_View::SetPlaneOn()* 
-
-The first method  appends the given *V3d_Plane* to the internal list of user-defined clipping  planes of a view and activates it. If the plane is already in the list, it  becomes activated. The second method activates all of the planes defined for  the view.  
-
-The clipping planes could be deactivated  with the similar methods *void V3d_View::SetPlaneOff(const Handle(V3d_Plane)& MyPlane)* and *void  V3d_View::SetPlaneOff()*
-
-The only difference is that these methods  remove the user-defined clipping planes from the internal list. Thus, the view  retains only active clipping planes.  
-
-You can iterate through the active planes  using the following methods: 
-  * *void  V3d_View::InitActivePlanes()* - sets  the iterator to the beginning of the internal list of clipping planes; 
-  * *Standard_Boolean  V3d_View::MoreActivePlanes()* returns *Standard_True* if there are more active planes to return; 
-  * *void  V3d_View::NextActivePlanes()* sets the iterator to the next active plane in the list; 
-  * *Handle(V3d_Plane)  V3d_View::ActivePlane()* returns the active plane 
-
-or check if a certain clipping plane has  been activated with method *Standard_Boolean V3d_View::IsActivePlane  (const  Handle (V3d_Plane)& aPlane)*
-  
-The number of clipping  planes is limited. The method *Standard_Boolean V3d_View::IfMorePlanes()* allows checking if it is possible to activate at least one more plane  in the view or the limit has been reached.
-  
-<h4>Example </h4>
-
-~~~~~
-// try to use an existing  clipping plane or create a new one
-Handle(V3d_Plane)  aCustomPlane; 
-myView->InitActivePlanes  (); 
-if  (myView->MoreActivePlanes ()) 
-   aCustomPlane = myView->ActivePlane (); 
-else 
-   aCustomPlane = new V3d_Plane (); 
-
-// calculate new coefficients
-Standard_Real  a, b, c, d; 
-Standard_Real  x = 0.0, y = 0.0, z = 10.0; 
-Standard_Real  dx = 0.0, dy = 0.0, dz = 1.0; 
-gp_Pln  aPln (gp_Pnt (x, y, z), gp_Dir (dx, dy, dz)); 
-aPln.Coefficients  (a, b, c, d); 
-
-// update plane
-aCustomPlane->SetPlane (a, b, c, d); 
-myView->SetPlaneOn  (aCustomPlane); 
-~~~~~
-
-@subsubsection occt_visu_5_2_9 Dumping a 3D scene into an image file
-The 3D scene displayed in the view could be  dumped in high resolution into an image file. The high resolution (8192x8192 on  some implementations) is achieved using the Frame Buffer Objects (FBO) provided  by the graphic driver. Frame Buffer Objects enable off-screen rendering into a  virtual view to produce images in the background mode (without displaying any  graphics on the screen). 
+The 3D scene displayed in the view can be dumped in high resolution into an image file. The high resolution (8192x8192 on some implementations) is achieved using the Frame Buffer Objects (FBO) provided by the graphic driver. Frame Buffer Objects enable off-screen rendering into a virtual view to produce images in the background mode (without displaying any graphics on the screen).
 
 The *V3d_View* has the following methods for  dumping the 3D scene: 
 ~~~~
@@ -2317,9 +2287,11 @@ Makes the dimensions of the output image compatible to a certain format of print
   
 These methods dump the 3D scene into an image file passed by its name  and path as theFile.  
 
-The raster image data handling algorithm is based on the Image_PixMap  class. The supported extensions are ".png", ".bmp", ".png", ".png".  
+The raster image data handling algorithm is based on the *Image_PixMap* class. The supported extensions are ".png", ".bmp", ".png", ".png".
 
 The value passed as *theBufferType* argument defines the type of the  buffer for an output image <i>(RGB, RGBA, floating-point, RGBF, RGBAF)</i>. Both  methods return *Standard_True* if the scene has been successfully dumped.  
+
+There is also class *Image_AlienPixMap* providing import / export from / to external image files in formats supported by **FreeImage** library.
 
 **Note** that dumping the image for a paper format with  large dimensions is a memory consuming operation, it might be necessary to take  care of preparing enough free memory to perform this operation. 
 
@@ -2384,13 +2356,13 @@ aView->FitAll();
 aView->Dump  ("3dscene.png"); 
 ~~~~~
 
-@subsubsection occt_visu_5_2_10 Printing a 3D scene
+@subsubsection occt_visu_4_4_11 Printing a 3D scene
 
 The contents of a view can be printed out. Moreover, the OpenGl graphic driver used by the v3d view supports printing in high  resolution. The print method uses the OpenGl frame buffer (Frame Buffer Object)  for rendering the view contents and advanced print algorithms that allow  printing in, theoretically, any resolution.  
 
 The method *void V3d_View::Print(const Aspect_Handle hPrnDC, const Standard_Boolean showDialog, const Standard_Boolean showBackground, const Standard_CString  filename, const Aspect_PrintAlgo printAlgorithm)* prints the view  contents: 
 
-*hPrnDC* is the printer device handle. You can pass your own printer handle  or "NULL" to select the printer by the default dialog. In that case you can use  the default dialog or pass "Standard_False" as the showDialog argument to  select the default printer automatically.  
+*hPrnDC* is the printer device handle. You can pass your own printer handle  or *NULL* to select the printer by the default dialog. In that case you can use  the default dialog or pass *Standard_False* as the *showDialog* argument to  select the default printer automatically.  
 
 You can define  the filename for the printer driver if you want to print out the result into a  file.  
 If you do not want to print the  background, you can pass *Standard_False* as the *showBackground* argument. 
@@ -2398,46 +2370,434 @@ The *printAlgorithm* argument allows choosing between two print algorithms that 
 
 The first value  defines the stretch algorithm: the scene is drawn with the maximum possible  frame buffer dimensions and then is stretched to the whole printing area. The  second value defines *TileSplit* algorithm: covering the whole printing area by  rendering multiple parts of the viewer. 
 
-**Note** that at the moment printing is implemented only for Windows. 
+**Note** that at the moment the printing is implemented only for Windows.
 
-@subsubsection occt_visu_5_2_11 Vector image export
+@subsubsection occt_visu_4_4_12 Vector image export
 
-The 3D content of a view can be exported to  the vector image file format. The vector image export is powered by the GL2PS  library. You can export your 3D scenes into a file format supported by the  GL2PS library: PostScript (PS), Encapsulated PostScript (EPS), Portable  Document Format (PDF), Scalable Vector Graphics (SVG), LaTeX file format and  Portable LaTeX Graphics (PGF).  
+The 3D content of a view can be exported to  the vector image file format. The vector image export is powered by the *GL2PS*  library. You can export 3D scenes into a file format supported by the  GL2PS library: PostScript (PS), Encapsulated PostScript (EPS), Portable  Document Format (PDF), Scalable Vector Graphics (SVG), LaTeX file format and  Portable LaTeX Graphics (PGF).  
 
 The method   *void  Visual3d_View::Export (const Standard_CString FileName, const Graphic3d_ExportFormat Format, const Graphic3d_SortType aSortType, const Standard_Real Precision, const Standard_Address ProgressBarFunc, const Standard_Address ProgressObject)* of *Visual3d_View* class  allows exporting a 3D scene: 
 
 The *FileName*  defines the output image file name and the *Format* argument defines the output  file format:  
-  * Graphic3d_EF_PostScript  (PS),
-  * Graphic3d_EF_EhnPostScript  (EPS),
-  * Graphic3d_EF_TEX  (TEX), 
-  * Graphic3d_EF_PDF  (PDF),
-  * Graphic3d_EF_SVG  (SVG),
-  * Graphic3d_EF_PGF  (PGF)
+  * *Graphic3d_EF_PostScript  (PS)*,
+  * *Graphic3d_EF_EhnPostScript  (EPS)*,
+  * *Graphic3d_EF_TEX  (TEX)*,
+  * *Graphic3d_EF_PDF  (PDF)*,
+  * *Graphic3d_EF_SVG  (SVG)*,
+  * *Graphic3d_EF_PGF  (PGF)*.
 
 The *aSortType* parameter defines *GL2PS* sorting algorithm for the  primitives. The *Precision, ProgressBarFunc* and *ProgressObject* parameters are  implemented for future uses and at the moment have no effect. 
 
 The *Export* method supports only basic 3d  graphics and has several limitations: 
   * Rendering large scenes could be slow and  can lead to large output files;
   * Transparency is only supported for PDF and  SVG output;
-  * Textures and some effects are not supported by  the GL2PS library.
+  * Textures and some effects are not supported by the *GL2PS* library.
 
-@section occt_visu_6 Graphic Attributes
+@subsubsection occt_visu_4_4_13 Ray tracing support
 
-@subsection occt_visu_6_1 Aspect Package
+OCCT visualization provides rendering by real-time ray tracing technique. It is allowed to switch easily between usual rasterization and ray tracing rendering modes. The core of OCCT ray tracing is written using GLSL shaders. The ray tracing has a wide list of features:
+* Hard shadows
+* Refractions
+* Reflection
+* Transparency
+* Texturing
+* Support of non-polygon objects, such as lines, text, highlighting, selection.
+* Performance optimization using 2-level bounding volume hierarchy (BVH).
 
-The *Aspect* package provides classes for the graphic elements in the viewer:
-  * Color maps,  
-  * Pixels,  
-  * Groups of graphic attributes,  
-  * Edges, lines, background,  
-  * Font classes,  
-  * Width map classes,  
-  * Marker map classes,  
-  * Type of Line map classes,  
-  * Window,  
-  * Driver, PlotterDriver (inherited by  PS_Driver), WindowDriver,  
-  * Enumerations for many of the above,  
-  * Array instantiations for edges,  
-  * Array instantiations for map entries for  color, type, font, width, and marker. 
+The ray tracing algorithm is recursive (Whitted's algorithm). It uses BVH effective optimization structure. The structure prepares optimized data for a scene geometry for further displaying it in real-time. The time-consuming re-computation of the BVH is not necessary for view operations, selections, animation and even editing of the scene by transforming location of the objects. It is only necessary when the list of displayed objects or their geometry changes.
+To make the BVH reusable it has been added into an individual reusable OCCT package *TKMath/BVH*.
+
+There are several ray-tracing options that user can switch on/off:
+* Maximum ray tracing depth
+* Shadows rendering
+* Specular reflections
+* Adaptive anti aliasing
+* Transparency shadow effects
+
+Example:
+~~~~~
+Graphic3d_RenderingParams& aParams = aView->ChangeRenderingParams();
+// specifies rendering mode
+aParams.Method = Graphic3d_RM_RAYTRACING;
+// maximum ray-tracing depth
+aParams.RaytracingDepth = 3;
+// enable shadows rendering
+aParams.IsShadowEnabled = Standard_True;
+// enable specular reflections.
+aParams.IsReflectionEnabled = Standard_True;
+// enable adaptive anti-aliasing
+aParams.IsAntialiasingEnabled = Standard_True;
+// enable light propagation through transparent media.
+aParams.IsTransparentShadowEnabled = Standard_True;
+// update the view
+aView->Update();
+~~~~~
+
+@subsubsection occt_visu_4_4_14 Display priorities
+
+Structure display priorities control the order, in which structures are drawn. When you display a structure you specify its priority.  The lower is the value, the lower is the display priority. When the display is regenerated, the structures with the lowest priority are drawn first. The structures with the same display priority are drawn in the same order as they have been displayed. OCCT supports eleven structure display priorities.
+
+@subsubsection occt_visu_4_4_15 Z-layer support
+
+OCCT features depth-arranging functionality called z-layer. A graphical presentation can be put into a z-layer. In general, this function can be used for implementing "bring to front"� functionality in a graphical application.
+
+Example:
+
+~~~~~
+// set z-layer to an interactive object
+Handle(AIS_InteractiveContext) aContext = …
+Handle(AIS_InteractiveObject) anInterObj = …
+Standard_Integer anId = 3;
+aViewer->AddZLayer (anId);
+aContext->SetZLayer (anInterObj, anId);
+~~~~~
+
+For each z-layer, it is allowed to:
+* Enable / disable depth test for layer.
+* Enable / disable depth write for layer.
+* Enable / disable depth buffer clearing.
+* Enable / disable polygon offset.
+
+The corresponding method *SetZLayerOption (…)* is available in *Graphic3d_GraphicDriver* interface. You can get the options using getter from *Visual3d_ViewManager* and *V3d_Viewer*. It returns *Graphic3d_ZLayerSettings* cached in *Visual3d_ViewManager* for a given *LayerId*.
+
+Example:
+~~~~~
+// change z-layer settings
+Graphic3d_ZLayerSettings aSettings = aViewer->ZLayerSettings (anId);
+aSettings.EnableSetting (Graphic3d_ZLayerDepthTest);
+aSettings.EnableSetting (Graphic3d_ZLayerDepthWrite);
+aSettings.EnableSetting (Graphic3d_ZLayerDepthClear);
+aSettings.EnableSetting (Graphic3d_ZLayerDepthOffset);
+aViewer->SetZLayerSettings (anId, aSettings);
+~~~~~
 
 
+@subsubsection occt_visu_4_4_16 Clipping planes
+
+The ability to define custom clipping planes could be very useful for some tasks. OCCT provides such an opportunity.
+
+The *Graphic3d_ClipPlane* class provides the services for clipping planes: it holds the plane equation coefficients and provides its graphical representation. To set and get plane equation coefficients you can use the following methods:
+
+~~~~~
+Graphic3d_ClipPlane::Graphic3d_ClipPlane(const gp_Pln& thePlane)
+void Graphic3d_ClipPlane::SetEquation (const gp_Pln& thePlane)
+Graphic3d_ClipPlane::Graphic3d_ClipPlane(const Equation& theEquation)
+void Graphic3d_ClipPlane::SetEquation (const Equation& theEquation)
+gp_Pln Graphic3d_ClipPlane::ToPlane() const
+~~~~~
+
+The clipping planes can be activated with the following method:
+~~~~~
+void Graphic3d_ClipPlane::SetOn (const Standard_Boolean theIsOn)
+~~~~~
+
+The number of clipping planes is limited. You can check the limit value via method *Graphic3d_GraphicDriver::InquirePlaneLimit()*;
+
+~~~~~
+// get the limit of clipping planes for the current view
+Standard_Integer aMaxClipPlanes = aView->Viewer()->Driver()->InquirePlaneLimit();
+~~~~~
+
+Let us see for example how to create a new clipping plane with custom parameters and add it to a view or to an object:
+~~~~~
+// create a new clipping plane
+const Handle(Graphic3d_ClipPlane)& aClipPlane = new Graphic3d_ClipPlane();
+// change equation of the clipping plane
+Standard_Real aCoeffA = …
+Standard_Real aCoeffB = …
+Standard_Real aCoeffC = …
+Standard_Real aCoeffD = …
+aClipPlane->SetEquation (gp_Pln (aCoeffA, aCoeffB, aCoeffC, aCoeffD));
+// set capping
+aClipPlane->SetCapping (aCappingArg == "on");
+// set the material with red color of clipping plane
+Graphic3d_MaterialAspect aMat = aClipPlane->CappingMaterial();
+Quantity_Color aColor (1.0, 0.0, 0.0, Quantity_TOC_RGB);
+aMat.SetAmbientColor (aColor);
+aMat.SetDiffuseColor (aColor);
+aClipPlane->SetCappingMaterial (aMat);
+// set the texture of clipping plane
+Handle(Graphic3d_Texture2Dmanual) aTexture = …
+aTexture->EnableModulate();
+aTexture->EnableRepeat();
+aClipPlane->SetCappingTexture (aTexture);
+// add the clipping plane to an interactive object
+Handle(AIS_InteractiveObject) aIObj = …
+aIObj->AddClipPlane (aClipPlane);
+// or to the whole view
+aView->AddClipPlane (aClipPlane);
+// activate the clipping plane
+aClipPlane->SetOn(Standard_True);
+// update the view
+aView->Update();
+~~~~~
+
+
+@subsubsection occt_visu_4_4_17 Automatic back face culling
+
+Back face culling reduces the rendered number of triangles (which improves the performance) and eliminates artifacts at shape boundaries. However, this option can be used only for solid objects, where the interior is actually invisible from any point of view. Automatic back-face culling mechanism is turned on by default, which is controlled by *V3d_View::SetBackFacingModel()*.
+
+The following features are applied in *StdPrs_ToolShadedShape::IsClosed()*, which is used for definition of back face culling in *ShadingAspect*:
+* disable culling for free closed Shells (not inside the Solid) since reversed orientation of a free Shell is a valid case;
+* enable culling for Solids packed into a compound;
+* ignore Solids with incomplete triangulation.
+
+Back face culling is turned off at TKOpenGl level in the following cases:
+* clipping/capping planes are in effect;
+* for translucent objects;
+* with hatching presentation style.
+
+@subsection occt_visu_4_5 Examples: creating a 3D scene
+
+To create 3D graphic objects and display them in the screen,  follow the procedure below:
+1. Create attributes.
+2. Create a 3D viewer.
+3. Create a view.
+4. Create an interactive context.
+5. Create interactive objects.
+6. Create primitives in the interactive  object.
+7. Display the interactive object.
+
+@subsubsection occt_visu_4_5_1 Create attributes
+
+Create colors.
+
+~~~~~
+Quantity_Color aBlack (Quantity_NOC_BLACK);
+Quantity_Color aBlue (Quantity_NOC_MATRABLUE);
+Quantity_Color aBrown (Quantity_NOC_BROWN4);
+Quantity_Color aFirebrick (Quantity_NOC_FIREBRICK);
+Quantity_Color aForest (Quantity_NOC_FORESTGREEN);
+Quantity_Color aGray (Quantity_NOC_GRAY70);
+Quantity_Color aMyColor (0.99, 0.65, 0.31, Quantity_TOC_RGB);
+Quantity_Color aBeet (Quantity_NOC_BEET);
+Quantity_Color aWhite (Quantity_NOC_WHITE);
+~~~~~
+
+Create line attributes.
+
+~~~~~
+Handle(Graphic3d_AspectLine3d) anAspectBrown = new Graphic3d_AspectLine3d();
+Handle(Graphic3d_AspectLine3d) anAspectBlue = new Graphic3d_AspectLine3d();
+Handle(Graphic3d_AspectLine3d) anAspectWhite = new Graphic3d_AspectLine3d();
+anAspectBrown->SetColor (aBrown);
+anAspectBlue ->SetColor (aBlue);
+anAspectWhite->SetColor (aWhite);
+~~~~~
+
+Create marker attributes.
+~~~~~
+Handle(Graphic3d_AspectMarker3d aFirebrickMarker = new Graphic3d_AspectMarker3d();
+// marker attributes
+aFirebrickMarker->SetColor (Firebrick);
+aFirebrickMarker->SetScale (1.0);
+aFirebrickMarker->SetType (Aspect_TOM_BALL);
+// or this
+// it is a preferred way (supports full-color images on modern hardware).
+aFirebrickMarker->SetMarkerImage (theImage)
+~~~~~
+
+Create facet attributes.
+~~~~~
+Handle(Graphic3d_AspectFillArea3d) aFaceAspect =  new Graphic3d_AspectFillArea3d();
+Graphic3d_MaterialAspect aBrassMaterial (Graphic3d_NOM_BRASS);
+Graphic3d_MaterialAspect aGoldMaterial  (Graphic3d_NOM_GOLD);
+aFaceAspect->SetInteriorStyle (Aspect_IS_SOLID);
+aFaceAspect->SetInteriorColor (aMyColor);
+aFaceAspect->SetDistinguishOn ();
+aFaceAspect->SetFrontMaterial (aGoldMaterial);
+aFaceAspect->SetBackMaterial  (aBrassMaterial);
+aFaceAspect->SetEdgeOn();
+~~~~~
+
+Create text attributes.
+~~~~~
+Handle(Graphic3d_AspectText3d) aTextAspect = new Graphic3d_AspectText3d (aForest, Graphic3d_NOF_ASCII_MONO, 1.0, 0.0);
+~~~~~
+
+@subsubsection occt_visu_4_5_2 Create a 3D Viewer (a Windows example)
+
+~~~~~
+// create a default connection
+Handle(Aspect_DisplayConnection) aDisplayConnection;
+// create a graphic driver from default connection
+Handle(OpenGl_GraphicDriver) aGraphicDriver = new OpenGl_GraphicDriver (GetDisplayConnection());
+// create a viewer
+TCollection_ExtendedString aName ("3DV");
+myViewer = new V3d_Viewer (aGraphicDriver,aName.ToExtString(), "");
+// set parameters for V3d_Viewer
+// defines default lights -
+//   positional-light 0.3 0.0 0.0
+//   directional-light V3d_XnegYposZpos
+//   directional-light V3d_XnegYneg
+//   ambient-light
+a3DViewer->SetDefaultLights();
+// activates all the lights defined in this viewer
+a3DViewer->SetLightOn();
+// set background color to black
+a3DViewer->SetDefaultBackgroundColor (Quantity_NOC_BLACK);
+~~~~~
+
+
+@subsubsection occt_visu_4_5_3 Create a 3D view (a Windows example)
+
+It is assumed that a valid Windows window may already be  accessed via the method *GetSafeHwnd()*.
+~~~~~
+Handle (WNT_Window) aWNTWindow = new WNT_Window (GetSafeHwnd());
+myView = myViewer->CreateView();
+myView->SetWindow (aWNTWindow);
+~~~~~
+
+@subsubsection occt_visu_4_5_4 Create an interactive context
+
+~~~~~
+myAISContext = new AIS_InteractiveContext (myViewer);
+~~~~~
+
+You are now able to display interactive objects such as an *AIS_Shape*.
+
+~~~~~
+TopoDS_Shape aShape = BRepAPI_MakeBox (10, 20, 30).Solid();
+Handle(AIS_Shape) anAISShape = new AIS_Shape(aShape);
+myAISContext->Display (anAISShape);
+~~~~~
+
+@subsubsection occt_visu_4_5_4 Create your own interactive object
+
+Follow the procedure below to compute the presentable object:
+
+1. Build a presentable object inheriting from *AIS_InteractiveObject* (refer to the Chapter on <a href="#occt_visu_2_1">Presentable Objects</a>).
+2. Reuse the *Prs3d_Presentation* provided as an argument of the compute methods.
+
+**Note** that there are two compute methods: one for a standard representation, and the other for a degenerated representation, i.e. in hidden line removal and wireframe modes.
+
+
+Let us look at the example of compute methods
+
+~~~~~
+Void
+myPresentableObject::Compute
+  (const Handle(PrsMgr_PresentationManager3d)& thePrsManager,
+   const Handle(Prs3d_Presentation)& thePrs,
+   const Standard_Integer theMode)
+(
+  //...
+)
+
+void
+myPresentableObject::Compute (const Handle(Prs3d_Projector)& ,
+                              const Handle(Prs3d_Presentation)& thePrs)
+(
+  //...
+)
+~~~~~
+
+@subsubsection occt_visu_4_5_6 Create primitives in the interactive object
+
+Get the group used in *Prs3d_Presentation*.
+
+~~~~~
+Handle(Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup (thePrs);
+~~~~~
+
+Update the group attributes.
+
+~~~~~
+aGroup->SetPrimitivesAspect (anAspectBlue);
+~~~~~
+
+Create two triangles in *aGroup*.
+
+~~~~~
+Standard_Integer aNbTria = 2;
+Handle(Graphic3d_ArrayOfTriangles) aTriangles = new Graphic3d_ArrayOfTriangles (3 * aNbTria, 0, Standard_True);
+Standard_Integer anIndex;
+for (anIndex = 1; anIndex <= aNbTria; nt++)
+{
+  aTriangles->AddVertex (anIndex * 5.,      0., 0., 1., 1., 1.);
+  aTriangles->AddVertex (anIndex * 5 + 5,   0., 0., 1., 1., 1.);
+  aTriangles->AddVertex (anIndex * 5 + 2.5, 5., 0., 1., 1., 1.);
+}
+aGroup->BeginPrimitives();
+aGroup->AddPrimitiveArray (aTriangles);
+aGroup->EndPrimitives();
+~~~~~
+
+The methods *BeginPrimitives()* and *EndPrimitives()* are used  when creating a set of various primitives in the same group.
+Use the polyline function to create a boundary box for the *thePrs* structure in group *aGroup*.
+
+~~~~~
+Standard_Real Xm, Ym, Zm, XM, YM, ZM;
+thePrs->MinMaxValues (Xm, Ym, Zm, XM, YM, ZM);
+
+Handle(Graphic3d_ArrayOfPolylines) aPolylines = new Graphic3d_ArrayOfPolylines (16, 4);
+aPolylines->AddBound (4);
+aPolylines->AddVertex (Xm,  Ym, Zm);
+aPolylines->AddVertex (Xm,  Ym, ZM);
+aPolylines->AddVertex (Xm,  YM, ZM);
+aPolylines->AddVertex (Xm,  YM, Zm);
+aPolylines->AddBound (4);
+aPolylines->AddVertex (Xm,  Ym, Zm);
+aPolylines->AddVertex (XM,  Ym, Zm);
+aPolylines->AddVertex (XM,  Ym, ZM);
+aPolylines->AddVertex (XM,  YM, ZM);
+aPolylines->AddBound (4);
+aPolylines->AddVertex (XM,  YM, Zm);
+aPolylines->AddVertex (XM,  Ym, Zm);
+aPolylines->AddVertex (XM,  YM, Zm);
+aPolylines->AddVertex (Xm,  YM, Zm);
+aPolylines->AddBound (4);
+aPolylines->AddVertex (Xm,  YM, ZM);
+aPolylines->AddVertex (XM,  YM, ZM);
+aPolylines->AddVertex (XM,  Ym, ZM);
+aPolylines->AddVertex (Xm,  Ym, ZM);
+
+aGroup->BeginPrimitives();
+aGroup->AddPrimitiveArray(aPolylines);
+aGroup->EndPrimitives();
+~~~~~
+
+Create text and markers in group *aGroup*.
+
+~~~~~
+static char* texte[3] =
+{
+  "Application title",
+  "My company",
+  "My company address."
+};
+Handle(Graphic3d_ArrayOfPoints) aPtsArr = new Graphic3d_ArrayOfPoints (2, 1);
+aPtsArr->AddVertex (-40.0, -40.0, -40.0);
+aPtsArr->AddVertex (40.0, 40.0, 40.0);
+aGroup->BeginPrimitives();
+aGroup->AddPrimitiveArray (aPtsArr);
+aGroup->EndPrimitives();
+
+Graphic3d_Vertex aMarker (0.0, 0.0, 0.0);
+for (i=0; i <= 2; i++)
+{
+  aMarker.SetCoord (-(Standard_Real )i * 4 + 30,
+                     (Standard_Real )i * 4,
+                    -(Standard_Real )i * 4);
+  aGroup->Text (texte[i], Marker, 20.);
+}
+
+~~~~~
+
+@section occt_visu_5 Mesh Visualization Services
+
+<i>MeshVS</i> (Mesh Visualization Service) component extends 3D visualization capabilities of Open CASCADE Technology. It provides flexible means of displaying meshes along with associated pre- and post-processor data.
+
+From a developer's point of view, it is easy to integrate the *MeshVS* component into any mesh-related application with the following guidelines:
+
+* Derive a data source class from the *MeshVS_DataSource* class.
+* Re-implement its virtual methods, so as to give the <i>MeshVS</i> component access to the application data model. This is the most important part of the job, since visualization performance is affected by performance of data retrieval methods of your data source class.
+* Create an instance of <i>MeshVS_Mesh</i> class.
+* Create an instance of your data source class and pass it to a <i>MeshVS_Mesh</i> object through the <i>SetDataSource()</i> method.
+* Create one or several objects of <i>MeshVS_PrsBuilder</i>-derived classes (standard, included in the <i>MeshVS</i> package, or your custom ones).
+* Each <i>PrsBuilder</i> is responsible for drawing a <i> MeshVS_Mesh</i> presentation in a certain display mode(s) specified as a <i>PrsBuilder</i> constructor's argument. Display mode is treated by <i>MeshVS</i> classes as a combination of bit flags (two least significant bits are used to encode standard display modes: wireframe, shading and shrink).
+* Pass these objects to the <i>MeshVS_Mesh::AddBuilder()</i> method. <i>MeshVS_Mesh</i> takes advantage of improved selection highlighting mechanism: it highlights its selected entities itself, with the help of so called "highlighter" object. You can set one of <i>PrsBuilder</i> objects to act as a highlighter with the help of a corresponding argument of the <i>AddBuilder()</i> method.
+
+Visual attributes of the <i>MeshVS_Mesh</i> object (such as shading color, shrink coefficient and so on)  are controlled through <i>MeshVS_Drawer</i> object. It maintains a map "Attribute ID --> attribute value" and can be easily extended with any number of custom attributes.
+
+In all other respects, <i>MeshVS_Mesh</i> is very similar to any other class derived from <i>AIS_InteractiveObject</i> and it should be used accordingly (refer to the description of <i>AIS package</i> in the documentation).

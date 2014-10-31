@@ -16,11 +16,12 @@ There are two types of third-party products, which are  necessary to build OCCT:
   
 * Mandatory  products: 
 	* Tcl/Tk 8.5 - 8.6;  
-	* FreeType 2.4.10 - 2.4.11;
+	* FreeType 2.4.10 - 2.5.3;
 * Optional  products: 
 	* TBB 3.x - 4.x;
 	* gl2ps 1.3.5 - 1.3.8;
-	* FreeImage 3.14.1 - 3.15.4.
+	* FreeImage 3.14.1 - 3.16.0;
+	* VTK 6.1.0.
 
 @section dev_guides__building_3rdparty_linux_2 Building Mandatory Third-party Products
 
@@ -104,7 +105,7 @@ Download the necessary archive from http://sourceforge.net/projects/freetype/fil
 @subsection dev_guides__building_3rdparty_linux_3_1 TBB
 
 This third-party product is  installed with binaries from the archive that can be downloaded from http://threadingbuildingblocks.org. 
-Go to the **Download** page, find the  release version you need and pick the archive for Linux  platform. 
+Go to the **Download** page, find the  release version you need and pick the archive for Linux platform.
 To install, unpack the downloaded archive of TBB product.
 
 @subsection dev_guides__building_3rdparty_linux_3_2 gl2ps
@@ -195,56 +196,31 @@ and unpack it. The directory with unpacked sources is  further referred to as *F
         make DESTDIR=FREEIMAGE_INSTALL_DIR  install   
 
 5. Clean temporary files
-  
-        make clean   
 
-@subsection dev_guides__building_3rdparty_linux_3_4 OpenCL ICD Loader
+        make clean
 
-If you have OpenCL SDK (one provided by Apple, AMD, NVIDIA, Intel, or other 
-vendor) installed on your system, you should find OpenCL headers and
-libraries required for building OCCT inside that SDK.
+@subsection dev_guides__building_3rdparty_linux_3_4 VTK
 
-Alternatively, you can use OpenCL ICD (Installable Client Driver) Loader 
-provided by Khronos group. The following describes steps used to build OpenCL 
-ICD Loader version 1.2.11.0.
+You can download VTK sources from http://www.vtk.org/VTK/resources/software.html
 
-1. Download OpenCL ICD Loader sources archive and OpenCL header files from 
-   Khronos OpenCL Registry
-   http://www.khronos.org/registry/cl/
+### The building procedure:
 
-2. Unpack the archive and put headers in *inc/CL* sub-folder
+Download the necessary archive from http://www.vtk.org/VTK/resources/software.html and unpack it.
 
-3. Print *make* in the root of the unpacked archive to compile OpenCL libraries.
+1. Install or build *cmake* product from the source file.
+2. Start *cmake* in GUI mode with the directory where the source files of *VTK* are located:
 
-4. Create installation folder for OpenCL IDL Loader package and put there:
+       ccmake VTK_SRC_DIR
 
-    1. OpenCL header files in *include/CL* subfolder
+   * Press <i>[c]</i> to make the  initial configuration
+   * Define the necessary options in *VTK_INSTALL_PREFIX*
+   * Press <i>[c]</i> to make the final  configuration
+   * Press <i>[g]</i> to generate  Makefile and exit
 
-    2. *libOpenCL.so* (generated in *bin* subfolder of source package) in *lib* subfolder
+3. Start the building of VTK:
 
-@section dev_guides__building_3rdparty_linux_4 Installation From Official Repositories
+       make
 
-@subsection dev_guides__building_3rdparty_linux_4_1 Debian-based distributives
+4. Start the installation of gl2ps. Binaries will be  installed according to the *VTK_INSTALL_PREFIX* option.
 
-All 3rd-party products required for building of  OCCT could be installed 
-from official repositories. You may install them from  console using apt-get utility: 
-
-    sudo apt-get install \   
-    tcllib tklib tcl-dev tk-dev \   
-    libfreetype-dev \   
-    libxt-dev libxmu-dev \   
-    libgl1-mesa-dev \   
-    libfreeimage-dev \   
-    libtbb-dev \   
-    libgl2ps-dev   
-  
-To launch binaries built with WOK  you need to install C shell and 32-bit libraries on x86_64 distributives: 
-  
-    sudo apt-get install \   
-    csh \   
-    libstdc++5:i386 libxt6:i386   
-
-Building is possible with any C++  compliant compiler : 
-  
-    sudo apt-get install \   
-    g++
+       make install

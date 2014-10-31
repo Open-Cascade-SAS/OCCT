@@ -14,13 +14,12 @@ http://www.opencascade.org/getocc/require/</a>.
 There are two types of third-party products, which are  necessary to build OCCT: 
   
 * Mandatory  products: 
-	* Tcl 8.5, 
-	* Tk 8.5, 
-	* FreeType 2.4.10 
+	* Tcl/Tk 8.5 - 8.6;
+	* FreeType 2.4.10 - 2.5.3.
 * Optional  products: 
-	* TBB 3.x or 4.x, 
-	* gl2ps 1.3.5, 
-	* FreeImage 3.14.1 or 3.15.x 
+	* TBB 3.x - 4.x;
+	* gl2ps  1.3.5 - 1.3.8;
+	* FreeImage 3.14.1 - 3.16.0
   
 @section dev_guides__building_3rdparty_osx_2 Building Mandatory Third-party Products
 

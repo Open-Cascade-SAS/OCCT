@@ -12,11 +12,12 @@ The links for downloading the third-party products are available on the web site
 
 * Mandatory  products: 
 	* Tcl/Tk 8.5 - 8.6;
-	* FreeType 2.4.10 - 2.4.11.
+	* FreeType 2.4.10 - 2.5.3.
 * Optional  products:
 	* TBB 3.x - 4.x;
 	* gl2ps 1.3.5 - 1.3.8;
-	* FreeImage 3.14.1 -3.15.4.
+	* FreeImage 3.14.1 -3.16.0;
+	* VTK 6.1.0.
 
 It is recommended to create a separate new folder on your workstation, where you will unpack the downloaded archives of the third-party  products, and where you will build these products (for example, *c:\\occ3rdparty*). 
 
@@ -299,35 +300,22 @@ http://sourceforge.net/projects/freeimage/files/Source%20Distribution/
 
    As a result, you should have the  library files of FreeImage product  in *freeimage\\Dist* folder (*FreeImage.dll* and *FreeImage.lib*) and in *freeimage\\Wrapper\\FreeImagePlus\\dist* folder (*FreeImagePlus.dll* and *FreeImagePlus.lib*).
 
-@subsection dev_guides__building_3rdparty_win_opencl OpenCL ICD Loader
+@subsection dev_guides__building_3rdparty_win_3_4 VTK
 
-If you have OpenCL SDK (one provided by Apple, AMD, NVIDIA, Intel, or other 
-vendor) installed on your system, you should find OpenCL headers and
-libraries required for building OCCT inside that SDK.
+VTK is an open-source, freely available software system for 3D computer graphics, image processing and visualization. VTK Integration Services component provides adaptation functionality for visualization of OCCT topological shapes by means of VTK library.
 
-Alternatively, you can use OpenCL ICD (Installable Client Driver) Loader 
-provided by Khronos group. The following describes steps used to build OpenCL 
-ICD Loader version 1.2.11.0.
+### The building procedure:
 
-1. Download OpenCL ICD Loader sources archive and OpenCL header files from 
-   Khronos OpenCL Registry
-   http://www.khronos.org/registry/cl/
+1. Download the necessary archive from http://www.vtk.org/VTK/resources/software.html and unpack it into *3rdparty* folder.
 
-2. Unpack the archive and put headers in *inc/CL* sub-folder
+   As a result, you will get a folder named, for example, <i>3rdparty\VTK-6.1.0.</i>
 
-3. Use CMake to generate VS projects for building the library:
-   - Start CMake-GUI and select OpenCL ICD Loader folder as source path, and the folder of your choice for VS project and intermediate build data;
-   - Click **Generate**;
-   - Select the VS version to be used from the ones you have installed (we recommend using VS 2010) and the architecture (32- or 64-bit).
+   Further in this document, this folder is referred to as *VTK*.
 
-4. Open solution *OPENCL_ICD_LOADER.sln* generated in the build folder.
-   Though not strictly necessary, we recommend making two changes in the generated projects:
-   - Add file *OpenCL.rc* to project OpenCL, to have version and Khronos copyright correctly embedded in DLL;
-   - Change **Runtime library** to **Multi-threaded(/MT)** in the properties of OpenCL project, on **C/C++ / Code Generation** page for Release configuration, to avoid dependency on run-time DLL. 
-  
-5. Build project OpenCL in Release mode
+2. Use CMake to generate VS projects for building the library:
+   - Start CMake-GUI and select VTK folder as source path, and the folder of your choice for VS project and intermediate build data.
+   - Click **Configure**.
+   - Select the VS version to be used from the ones you have installed (we recommend using VS 2010) and the architecture (32 or 64-bit).
+   - Generate VS projects with default CMake options. The open solution *VTK.sln* will be generated in the build folder.
 
-6. Create the installation folder for OpenCL IDL Loader package and put there:
-   - OpenCL header files in *include/CL* subfolder;
-   - *OpenCL.dll* (generated in *bin/Release* subfolder of the source package) in *bin* subfolder;
-   - *OpenCL.lib* (generated in *Release* subfolder of the build directory) in *lib* subfolder.
+3. Build project VTK in Release mode.

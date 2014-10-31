@@ -117,14 +117,7 @@ implementation of 3D viewer. OpenGL specification is developed by the
 Khronos group, http://www.khronos.org/opengl/. OCCT code includes header 
 file *glext.h* obtained from Khronos web site.
 
-**OpenCL** (Open Computing Language) is open, royalty-free standard for 
-cross-platform, parallel programming of modern processors, optionally used by 
-OCCT for ray tracing. OpenCL specification is developed by the
-Khronos group, http://www.khronos.org/opencl/. The implementations of OpenCL 
-are available from Apple, AMD, NVIDIA, Intel, and other vendors. 
-**OpenCL Installable Client Driver (ICD) Loader** is a library provided by
-Khronos group which allows dispatching OpenCL calls to underlying 
-implementation.
+**VTK** - The **Visualization Toolkit (VTK)** is an open-source, freely available software system for 3D computer graphics, image processing and visualization. OCCT VIS component provides adaptation functionality for visualization of OCCT topological shapes by means of VTK library. If you need further information on VTK, please, refer to VTK Homepage http://www.vtk.org/.
 
 **Doxygen** developed by Dimitri van Heesch is open source documentation system for 
 C++, C, Java, Objective-C, Python, IDL, PHP and C#. This product is used in Open CASCADE Technology 
@@ -235,12 +228,12 @@ for which OCCT is certified to work.
 | Graphic library | OpenGL 1.1+ (OpenGL 2.1+ is recommended)|
 | C++      | GNU gcc 4.0.  - 4.7.3. |
 | TCL (for testing tools)    | Tcltk 8.5 or 8.6 http://www.tcl.tk/software/tcltk/download.html |
-| Qt (for demonstration tools) | Qt 4.6.2 http://qt-project.org/downloads |
-| Freetype (for text rendering) | freetype-2.4.11 http://sourceforge.net/projects/freetype/files/ |
-| FreeImage (optional, for support of common 2D graphic formats) | FreeImage 3.15.4 http://sourceforge.net/projects/freeimage/files |
+| Qt (for demonstration tools) | Qt 4.8.6 http://qt-project.org/downloads |
+| Freetype (for text rendering) | freetype-2.5.3 http://sourceforge.net/projects/freetype/files/ |
+| FreeImage (optional, for support of common 2D graphic formats) | FreeImage 3.16.0 http://sourceforge.net/projects/freeimage/files |
 | gl2ps (optional, for export contents of OCCT viewer to vector graphic files) | gl2ps-1.3.8  http://geuz.org/gl2ps/ |
 | Intel TBB (optional, for multithreaded algorithms) | TBB 3.x or 4.x http://www.threadingbuildingblocks.org/ |
-| OpenCL (optional, for ray tracing visualization) | OpenCL SDK (usually one provided by vendor of your graphic card) or OpenCL ICD Loader by Khronos group, http://www.khronos.org/registry/cl |
+| VTK (for VTK Integration Services | VTK 6.1.0 http://www.vtk.org/VTK/resources/software.html |
 
 * Debian 60 64 bit is a platform used for regular testing of contributions 
 
@@ -253,13 +246,13 @@ for which OCCT is certified to work.
 | Video card   | See \ref overview_req_graphics |
 | Graphic library | OpenGL 1.1+ (OpenGL 2.1+ is recommended)|
 | C++ | Microsoft Visual Studio: 2005 SP1, 2008 SP1\*, 2010 SP1, 2012 Update 3, 2013 <br>Intel C++ Composer XE 2013 SP1 |
-| TCL (for testing tools) | Tcl/Tk 8.5 or 8.6 http://www.tcl/tk/software/tcltk/download.html |
-| Qt (for demonstration tools) | Qt 4.6.2 http://qt-project.org/downloads |
-| Freetype (OCCT Text rendering) | freetype-2.4.11 http://sourceforge.net/projects/freetype/files/ |
-| FreeImage (Support of common graphic formats) | FreeImage 3.15.4 http://sourceforge.net/projects/freeimage/files |
+| TCL (for testing tools) | Tcl/Tk 8.5 or 8.6 http://www.tcl.tk/software/tcltk/download.html  |
+| Qt (for demonstration tools) | Qt 4.8.6 http://qt-project.org/downloads |
+| Freetype (OCCT Text rendering) | freetype-2.5.3 http://sourceforge.net/projects/freetype/files/ |
+| FreeImage (Support of common graphic formats) | FreeImage 3.16.0 http://sourceforge.net/projects/freeimage/files |
 | gl2ps (Export contents of OCCT viewer to vector graphic file) | gl2ps-1.3.8  http://geuz.org/gl2ps/ |
 | Intel TBB (optional, for multithreaded algorithms) | TBB 3.x or 4.x http://www.threadingbuildingblocks.org/ |
-| OpenCL (optional, for ray tracing visualization) | OpenCL SDK (usually one provided by vendor of your graphic card) or OpenCL ICD Loader by Khronos group, http://www.khronos.org/registry/cl |
+| VTK (for VTK Integration Services | VTK 6.1.0 http://www.vtk.org/VTK/resources/software.html |
 
 * VC++ 10 32-bit is used for certification of contributions and for building 
   binary package of official release of OCCT on Windows.
@@ -274,19 +267,18 @@ for which OCCT is certified to work.
 | Graphic library | OpenGL 1.1+ (OpenGL 2.1+ is recommended)|
 | C++      | XCode 3.2 or newer (4.x is recommended) |
 | TCL (for testing tools)    | Tcltk 8.5 or 8.6 http://www.tcl.tk/software/tcltk/download.html |
-| Qt (for demonstration tools) | Qt 4.6.2 http://qt-project.org/downloads |
-| Freetype (OCCT Text rendering) | freetype-2.4.11 http://sourceforge.net/projects/freetype/files/ |
-| FreeImage (Support of common graphic formats) | FreeImage 3.15.4 http://sourceforge.net/projects/freeimage/files |
+| Qt (for demonstration tools) | Qt 4.8.6 http://qt-project.org/downloads |
+| Freetype (OCCT Text rendering) | freetype-2.5.3 http://sourceforge.net/projects/freetype/files/ |
+| FreeImage (Support of common graphic formats) | FreeImage 3.16.0 http://sourceforge.net/projects/freeimage/files |
 | gl2ps (Export contents of OCCT viewer to vector graphic file) | gl2ps-1.3.8  http://geuz.org/gl2ps/ |
 | Intel TBB (optional, for multithreaded algorithms) | TBB 3.x or 4.x http://www.threadingbuildingblocks.org/ |
-| OpenCL (optional, for ray tracing visualization) | Native OpenCL 1.2.8 | 
 
 @subsection OCCT_OVW_SECTION_5_4 Android
 
 | Operating System  | Android 4.0.4+  |
 | ----- | ----- |
 | Minimum memory    | 512 MB, 1 GB recommended |
-| Freetype (for text rendering) | freetype-2.4.11 http://sourceforge.net/projects/freetype/files/ |
+| Freetype (for text rendering) | freetype-2.5.3 http://sourceforge.net/projects/freetype/files/ |
 
 @subsection overview_req_graphics Graphic cards
 
@@ -319,7 +311,7 @@ building OCCT from sources on supported platforms.
 @subsection OCCT_OVW_SECTION_4_1 Using Windows installer
 
 On Windows Open CASCADE Technology can be installed with binaries precompiled by 
-Visual C++ 2008 with installation procedure.
+Visual C++ 2010 with installation procedure.
 
 **Recommendation:**
 
@@ -345,14 +337,14 @@ When the installation is complete, you will find the directories for 3rd party p
 @image html /overview/images/overview_3rdparty.png 
 @image latex /overview/images/overview_3rdparty.png 
 
-The contents of the OCCT-6.7.0 directory (called further "OCCT root", or $CASROOT) are as follows: 
+The contents of the OCCT-6.8.0 directory (called further "OCCT root", or $CASROOT) are as follows:
 
 @image html /overview/images/overview_installation.png "The directory tree"
 @image latex /overview/images/overview_installation.png "The directory tree"
 
   * **adm**   This folder contains administration files, which allow rebuilding OCCT;
   * **adm/cmake**  This folder contains files of CMake building procedure;
-  * **adm/msvc**  This folder contains Visual Studio projects for Visual C++  2005, 2008 and 2010, which allow rebuilding OCCT under Windows platform in 32 and 64-bit mode;
+  * **adm/msvc**  This folder contains Visual Studio projects for Visual C++  2005, 2008, 2010, 2012 and 2013 which allow rebuilding OCCT under Windows platform in 32 and 64-bit mode;
   * **data**  This folder contains CAD files in different formats, which can be used to test the OCCT functionality;
   * **doc**  This folder contains OCCT documentation in HTML and PDF format;
   * **dox**  This folder contains sources of OCCT documentation in plain text (MarkDown) format;
@@ -361,7 +353,7 @@ The contents of the OCCT-6.7.0 directory (called further "OCCT root", or $CASROO
   * **samples**  This folder contains sample applications.
   * **src**  This folder contains OCCT source files. They are organized in folders, one per development unit;
   * **tests**  This folder contains scripts for OCCT testing.
-  * **win32/vc9**  This folder contains executable and library files built in optimize mode for Windows platform by Visual C++  2008;
+  * **win32/vc10**  This folder contains executable and library files built in optimize mode for Windows platform by Visual C++  2010;
 
 @section OCCT_OVW_SECTION_4_2 Environment Variables
 
@@ -391,7 +383,6 @@ The scripts are located in the OCCT root folder.
 
  
 ### Description of system variables:
-
 
   * **CASROOT** is used to define the root directory of Open CASCADE Technology;
   * **PATH** is required to define the path to OCCT binaries and 3rdparty folder;
@@ -625,7 +616,7 @@ Export:
 
 See \subpage samples_csharp_occt "Readme" for details.
 
-Also there is an other C# example with the same functionality which demonstrates integration of Direct3D Viewer into .NET applications using WPF front end.
+There is also another C# example with the same functionality, which demonstrates the integration of Direct3D Viewer into .NET applications using WPF front end.
 
 See \subpage samples_csharp_direct3d "Readme" for details.
 

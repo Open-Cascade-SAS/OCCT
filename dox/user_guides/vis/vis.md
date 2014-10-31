@@ -7,7 +7,7 @@
 VIS component provides adaptation functionality for visualization of OCCT topological shapes by means of VTK library. This User’s Guide describes how to apply VIS classes in application dealing with 3D visualization based on VTK library.
 
 @figure{/user_guides/vis/images/vis_image001.png}
- 
+
 There are two ways to use VIS in the application:
 * Use a **high-level API**. It is a simple scenario to use VTK viewer with displayed OCCT shapes. It considers usage of tools provided with VIS component such as a specific VTK data source, a picker class and specific VTK filters. Basically, in this scenario you enrich your custom VTK pipeline with extensions coming from VIS.
 * Use a **low-level API**. It is an advanced scenario for the users with specific needs, which are not addressed by the higher-level utilities of VIS. It presumes implementation of custom VTK algorithms (such as filters) with help of low-level API of VIS component.
@@ -31,8 +31,8 @@ The idea behind the mentioned organization of packages is separation of interfac
 @figure{/user_guides/vis/images/vis_image003.png "Dependencies of VIS packages"}
 
 Basically, it is enough to use the first three packages in the end user’s application  (*IVtk, IVtkOCC* and *IVtkVTK*) to be able to work with OCCT shapes in VTK viewer. However, *IVtkTools* package is also provided as a part of the component to make the work more comfortable.
- 
- 
+
+
 @subsection occt_vis_2_2	 IVtk package
 **IVtk** package contains the following classes:
 * *IVtk_Interface* - Base class for all interfaces of the component. Provides inheritance for *Handle* (OCCT “smart pointer”) functionality.
@@ -47,8 +47,8 @@ Basically, it is enough to use the first three packages in the end user’s appl
 **IVtkOCC** package contains the implementation of classes depending on OCCT:
 * *IVtkOCC_Shape* - Implementation of *IVtk_IShape* interface as a wrapper for *TopoDS_Shape*.
 * *IVtkOCC_ShapeMesher* - Implementation of *IVtk_IShapeMesher* interface for construction of facets from *TopoDS* shapes.
-* *IVtkOCC_ShapePickerAlgo* Implementation of interactive picking algorithm. It provides enabling/disabling of selection modes for shapes (*IVtk_IShape* instances) and picking facilities for a given position of cursor. 
-* *IVtkOCC_ViewerSelector* - Interactive selector, which implements *Pick()* methods for the picking algorithm *IVtkOCC_ShapePickerAlgo* and connects to the visualization layer with help of abstract *IView* interface. 
+* *IVtkOCC_ShapePickerAlgo* Implementation of interactive picking algorithm. It provides enabling/disabling of selection modes for shapes (*IVtk_IShape* instances) and picking facilities for a given position of cursor.
+* *IVtkOCC_ViewerSelector* - Interactive selector, which implements *Pick()* methods for the picking algorithm *IVtkOCC_ShapePickerAlgo* and connects to the visualization layer with help of abstract *IView* interface.
 
 *IVtkOCC_ViewerSelector* is a descendant of OCCT native *SelectMgr_ViewerSelector*, so it implements OCCT selection mechanism for *IVtkVTK_View* (similarly to *StdSelect_ViewerSelector3D* which implements *SelectMgr_ViewerSelector* for OCCT native *V3d_View*). *IVtkOCC_ViewerSelector* encapsulates all projection transformations for the picking mechanism. These transformations are extracted from *vtkCamera* instance available via VTK Renderer. *IVtkOCC_ViewerSelector* operates with native OCCT *SelectMgr_Selection* entities. Each entity represents one selection mode of an OCCT selectable object. *ViewerSelector* is an internal class, so it is not a part of the public API.
 * *IVtkOCC_SelectableObject* - OCCT shape wrapper used in the picking algorithm for computation of selection primitives of a shape for a chosen selection mode.
@@ -68,7 +68,7 @@ Basically, it is enough to use the first three packages in the end user’s appl
 
 Additionally, *IVtkTools* package contains auxiliary methods in *IVtkTools* namespace. E.g. there is a convenience function populating *vtkLookupTable* instances to set up a color scheme for better visualization of sub-shapes.
 
-@section occt_vis_3	Using high-level API (simple scenario) 
+@section occt_vis_3	Using high-level API (simple scenario)
 @subsection occt_vis_3_1	OCCT shape presentation in VTK viewer
 
 To visualize an OCCT topological shape in VTK viewer, it is necessary to perform the following steps:
@@ -156,7 +156,7 @@ For example, the scalar-based coloring can be disabled to bind a single color to
 The output of the shape data source can be presented in wireframe or shading display mode.  A specific filter from class *IVtkTools_DisplayModeFilter* can be applied to select the display mode. The filter passes only the cells corresponding to the given mode. The set of available modes is defined by *IVtk_DisplayMode* enumeration.
 
 @figure{/user_guides/vis/images/vis_image004.png}
- 
+
 For example, the shading representation can be obtained in the following way:
 
 ~~~~
@@ -176,7 +176,7 @@ By default, the display mode filter works in a wireframe mode.
 TIP: to make the shading representation smooth, use additional *vtkPolyDataNormals* filter. This filter must be applied after the display mode filter.
 
 @figure{/user_guides/vis/images/vis_image005.png}
- 
+
 @subsection occt_vis_3_4	 Interactive selection
 *IVtkTools* package provides *IVtkTools_ShapePicker* class to perform selection of OCCT shapes and sub-shapes in VTK viewer and access the picking results. The typical usage of *IVtkTools_ShapePicker* tool consists in the following sequence of actions:
 1. Create a picker and set its renderer to your active VTK renderer:
@@ -241,7 +241,7 @@ OCCT picking algorithm *IVtkTools_ShapePicker* calculates a new transformation m
 WARNING: VIS picker essentially works on the initial topological data structures rather than on the actually visualized actors. This peculiarity allows VIS to take advantage of standard OCCT selection mechanism, but puts strict limitations on the corresponding visualization pipelines. Once constructed, the faceted shape representation should not be morphed or translated anyhow. Otherwise, the picking results will lose their associativity with the source geometry. E.g. you should never use *vtkTransform* filter, but rather apply OCCT isometric transformation on the initial model in order to work on already relocated facet. These limitations are often acceptable for CAD visualization. If not, consider usage of a custom VTK-style picker working on the actually visualized actors.
 
 @figure{/user_guides/vis/images/vis_image006.png}
- 
+
 @subsubsection occt_vis_3_5	 Selection of sub-shapes
 
 *IVtkTools_SubPolyDataFilter* is a handy VTK filter class which allows extraction of polygonal cells corresponding to the sub-shapes of the initial shape. It can be used to produce a *vtkPolyData* object from the input *vtkPolyData* object, using selection results from *IVTkTools_ShapePicker* tool.
@@ -282,7 +282,7 @@ The usage of low-level tools is justified in cases when the utilities from *IVtk
 The low-level scenario of VIS usage in VTK pipeline is shown in the figure below. The Mesher component produces shape facet (VTK polygonal data) using implementation of *IShapeData* interface. Then result can be retrieved from this implementation as a *vtkPolyData* instance.
 
 @figure{/user_guides/vis/images/vis_image007.png "Low-level VIS usage with VTK"}
- 
+
 The visualization pipeline for OCCT shape presentation can be initialized as follows:
 1. Create an instance of *IShape* class initialized by OCCT topological shape:
 ~~~~
@@ -357,184 +357,10 @@ IVtk_ShapeIdList ids = myOccPickerAlgo->ShapesPicked();
 ~~~~
 IVtk_ShapeIdList subShapeIds
   = myOccPickerAlgo->SubShapesPicked(shapeId);
-~~~~  
+~~~~
 
 @section occt_vis_5	DRAW Test Harness
 
 *TKIVtkDraw* toolkit contains classes for embedding VIS functionality into DRAW Test Harness with possibility of simple interactions, including detection and highlighting.
 * *IVtkDraw_HighlightAndSelectionPipeline* - Creates VTK pipeline with OCCT shape data source and properly initialized VIS filters.
 * *IVtkDraw_Interactor* - Controls simple interactive actions, such as detection and selection of the displayed shapes.
-
-@section occt_vis_6	Test Harness Commands
-A specific plugin with alias *VIS* should be loaded to have access to VIS functionality in DRAW Test Harness:
-
-~~~~
-\> pload VIS
-~~~~
-
-Typical use cases are available in non-regression tests scripts
-@subsection occt_vis_6_1	ivtkinit
-
-Purpose: Creates a window for VTK viewer.
-
-Syntax: 	*ivtkinit*
-
-@figure{/user_guides/vis/images/vis_image008.png}
- 
-@subsection occt_vis_6_2	ivtkdisplay
-
-Purpose: Displays named objects.
-
-Syntax: 	<i>ivtkdisplay name1 [name2] …[name n]</i>
-
-Example
-
-~~~~
-ivtkinit
-# create cone
-pcone c 5 0 10
-ivtkdisplay c
-~~~~
-
-@figure{/user_guides/vis/images/vis_image009.png}
- 
-@subsection occt_vis_6_3	ivtkerase
-
-Purpose: Erases named objects. If no arguments are passed, erases all displayed objects.
-
-Syntax: 	<i>ivtkerase [name1] [name2] … [name n] </i>
-
-Example
-~~~~
-ivtkinit
-# create a sphere
-psphere s 10
-# create a cone
-pcone c 5 0 10
-# create a cylinder
-pcylinder cy 5 10
-# display objects
-ivtkdisplay s c cy
-# erase only the cylinder
-ivtkerase cy
-# erase the sphere and the cone
-ivtkerase s c
-~~~~
-
-@subsection occt_vis_6_4	 ivtkfit
-
-Purpose: Automatic zoom/panning.
-
-Syntax: 	*ivtkfit*
-
-@subsection occt_vis_6_5	ivtkdispmode
-
-Purpose: Sets display mode for a named object. If no arguments are passed, sets the given display mode for all displayed objects
-The possible modes are: 0 (WireFrame) and 1 (Shading).
-
-Syntax: 	<i>ivtksetdispmode [name] mode(0,1)</i>
-
-Example
-
-~~~~
-ivtkinit
-# create a cone
-pcone c 5 0 10
-# display the cone
-ivtkdisplay c
-# set shading mode for the cone
-ivtksetdispmode c 1
-~~~~
-
-@figure{/user_guides/vis/images/vis_image010.png}
- 
-@subsection occt_vis_6_6	ivtksetselmode
-
-Purpose: Sets selection mode for a named object. If no arguments are passed, sets the given selection mode for all the displayed objects
-
-Syntax: 	<i>ivtksetselmode [name] mode on/off(0/1)</i>
-
-Example
-~~~~
-ivtkinit
-# load a shape from file
-restore CrankArm.brep a
-# display the loaded shape
-ivtkdisplay a
-# set the face selection mode
-ivtksetselmode a 4 1
-~~~~
-
-@figure{/user_guides/vis/images/vis_image011.png}
- 
-@subsection occt_vis_6_7	ivtkmoveto
-
-Purpose: Imitates mouse cursor moving to point with the given display coordinates.
-
-Syntax: 	<i>ivtkmoveto x y</i>
-
-Example
-~~~~
-ivtkinit
-pcone c 5 0 10
-ivtkdisplay c
-ivtkmoveto 40 50
-~~~~
-
-@subsection occt_vis_6_8	ivtkselect
-
-Purpose: Imitates mouse cursor moving to point with the given display coordinates and performs selection at this point.
-
-Syntax: 	<i>ivtkselect x y</i>
-
-Example
-~~~~
-ivtkinit
-pcone c 5 0 10
-ivtkdisplay c
-ivtkselect 40 50
-~~~~
-
-@subsection occt_vis_6_9	ivtkdump
-
-Purpose: Dumps the contents of VTK viewer to image. It supports:
-* dumping in different raster graphics formats: PNG, BMP, JPEG, TIFF or PNM.
-* dumping of different buffers: RGB, RGBA or depth buffer.
-* defining of image sizes (width and height in pixels).
-* dumping of stereo projections (left or right).
-
-Syntax:  <i>	ivtkdump *filename* [buffer={rgb|rgba|depth}] [width height] [stereoproj={L|R}] </i>
-
-Example
-~~~~
-ivtkinit
-pcone c 5 0 10
-ivtkdisplay c
-ivtkdump D:/ConeSnapshot.png rgb 768 768
-~~~~
-
-@subsection occt_vis_6_10	ivtkbgcolor
-
-Purpose: Sets uniform background color or gradient background if second triple of parameters is set. Color parameters r,g,b have to be chosen in the interval  [0..255].
-
-Syntax: 	<i> ivtkbgcolor r g b [r2 g2 b2] </i>
-
-Example
-~~~~
-ivtkinit
-ivtkbgcolor 200 220 250
-~~~~
- 
-@figure{/user_guides/vis/images/vis_image012.png}
-
-~~~~
-ivtkbgcolor 10 30 80 255 255 255
-~~~~
-
-@figure{/user_guides/vis/images/vis_image013.png}
-
-@section occt_vis_7	Non-regression tests
-The test scenarios are available in <i> /test/v3d/ivtk </i> directory to test the functionality of VIS component. This directory contains test cases for all DRAW commands described above.
-
-
-

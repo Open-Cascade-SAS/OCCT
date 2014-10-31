@@ -1,14 +1,12 @@
-Draw Test Harness  {#occt_user_guides__test_harness}
+Draw Test Harness  {#occt_user_guides__test_harness}
 ===============================
 
 @tableofcontents
  
 @section occt_draw_1 Introduction
 
-This manual explains how to use Draw, the test harness for Open CASCADE Technology (**OCCT**). It provides basic documentation on using Draw. For advanced information on Draw and its applications, see our offerings on our web site at <a href="http://www.opencascade.org/support/training">http://www.opencascade.org/support/training</a>  
-
+This manual explains how to use Draw, the test harness for Open CASCADE Technology (**OCCT**).
 Draw is a command interpreter based on TCL and a graphical system used to test and demonstrate Open CASCADE Technology modeling libraries. 
-
 
 @subsection occt_draw_1_1 Overview
 
@@ -1483,6 +1481,54 @@ If no shape is specified through the command arguments, the given HLR algorithm_
 
 **Note** that this command works with instances of *AIS_Shape* or derived classes only, other interactive object types are ignored.
 
+@subsubsection occt_draw_4_2_21 vcamera
+
+Syntax:
+~~~~~
+vcamera
+~~~~~
+
+Manages camera parameters.
+
+**Example:**
+~~~~~
+vinit
+box b 10 10 10
+vdisplay b
+vfit
+vcamera -persp
+~~~~~
+
+@subsubsection occt_draw_4_2_22 vstereo
+
+Syntax:
+~~~~~
+vstereo [0:1]
+~~~~~
+
+Turns stereo usage On/Off.
+
+**Example:**
+~~~~~
+vinit
+box b 10 10 10
+vdisplay b
+vstereo 1
+vfit
+vcamera -stereo -iod 1
+vcamera -lefteye
+vcamera -righteye
+~~~~~
+
+@subsubsection occt_draw_4_2_23 vfrustumculling
+
+Syntax:
+~~~~~
+vfrustumculling [toEnable]
+~~~~~
+
+Enables/disables objects clipping.
+
 
 @subsection occt_draw_4_3 AIS viewer – display commands
 
@@ -1490,10 +1536,11 @@ If no shape is specified through the command arguments, the given HLR algorithm_
 
 Syntax: 
 ~~~~~                 
-vdisplay name1 [name2] … [name n] 
+vdisplay [-noupdate|-update] [-local] [-mutable] name1 [name2] … [name n]
 ~~~~~
 
-Displays named objects. 
+Displays named objects. Automatically redraws view by default.
+Redraw can be suppressed by -noupdate option.
 
 **Example:** 
 ~~~~~ 
@@ -1637,115 +1684,75 @@ vtypes
 
 Makes a list of known types and signatures in AIS. 
 
-@subsubsection occt_draw_4_3_10 vsetcolor
+@subsubsection occt_draw_4_3_10 vaspects
 
-Syntax:                  
+Syntax:
+~~~~~
+vaspects [-noupdate|-update] [name1 [name2 [...]]]
+         [-setcolor ColorName] [-setcolor R G B] [-unsetcolor]
+         [-setmaterial MatName] [-unsetmaterial]
+         [-settransparency Transp] [-unsettransparency]
+         [-setwidth LineWidth] [-unsetwidth]
+         [-subshapes subname1 [subname2 [...]]]
+
+~~~~~
+
+Aliases:
 ~~~~~
 vsetcolor [shapename] colorname
-~~~~~ 
 
-Sets color for all, selected or named shapes. 
-Possible *colorname* is: *BLACK*, *MATRAGRAY*, *MATRABLUE*, *ALICEBLUE*, *ANTIQUEWHITE*, *ANTIQUEWHITE1*, *ANTIQUEWHITE2*, *ANTIQUEWHITE3*, *ANTIQUEWHITE4*, *AQUAMARINE1*, *AQUAMARINE2*, *AQUAMARINE4*, *AZURE*, *AZURE2*, *AZURE3*, *AZURE4*, *BEIGE*, *BISQUE*, *BISQUE2*, *BISQUE3*, *BISQUE4*, *BLANCHEDALMOND*, *BLUE1*, *BLUE2*, *BLUE3*, *BLUE4*, *BLUEVIOLET*, *BROWN*, *BROWN1*, *BROWN2*, *BROWN3*, *BROWN4*, *BURLYWOOD*, *BURLYWOOD1*, *BURLYWOOD2*, *BURLYWOOD3*, *BURLYWOOD4*, *CADETBLUE*, *CADETBLUE1*, *CADETBLUE2*, *CADETBLUE3*, *CADETBLUE4*, *CHARTREUSE*, *CHARTREUSE1*, *CHARTREUSE2*, *CHARTREUSE3*, *CHARTREUSE4*, *CHOCOLATE*, *CHOCOLATE1*, *CHOCOLATE2*, *CHOCOLATE3*, *CHOCOLATE4*, *CORAL*, *CORAL1*, *CORAL2*, *CORAL3*, *CORAL4*, *CORNFLOWERBLUE*, *CORNSILK1*, *CORNSILK2*, *CORNSILK3*, *CORNSILK4*, *CYAN1*, *CYAN2*, *CYAN3*, *CYAN4*, *DARKGOLDENROD*, *DARKGOLDENROD1*, *DARKGOLDENROD2*, *DARKGOLDENROD3*, *DARKGOLDENROD4*, *DARKGREEN*, *DARKKHAKI*, *DARKOLIVEGREEN*, *DARKOLIVEGREEN1*, *DARKOLIVEGREEN2*, *DARKOLIVEGREEN3*, *DARKOLIVEGREEN4*, *DARKORANGE*, *DARKORANGE1*, *DARKORANGE2*, *DARKORANGE3*, *DARKORANGE4*, *DARKORCHID*, *DARKORCHID1*, *DARKORCHID2*, *DARKORCHID3*, *DARKORCHID4*, *DARKSALMON*, *DARKSEAGREEN*, *DARKSEAGREEN1*, *DARKSEAGREEN2*, *DARKSEAGREEN3*, *DARKSEAGREEN4*, *DARKSLATEBLUE*, *DARKSLATEGRAY1*, *DARKSLATEGRAY2*, *DARKSLATEGRAY3*, *DARKSLATEGRAY4*, *DARKSLATEGRAY*, *DARKTURQUOISE*, *DARKVIOLET*, *DEEPPINK*, *DEEPPINK2*, *DEEPPINK3*, *DEEPPINK4*, *DEEPSKYBLUE1*, *DEEPSKYBLUE2*, *DEEPSKYBLUE3*, *DEEPSKYBLUE4*, *DODGERBLUE1*, *DODGERBLUE2*, *DODGERBLUE3*, *DODGERBLUE4*, *FIREBRICK*, *FIREBRICK1*, *FIREBRICK2*, *FIREBRICK3*, *FIREBRICK4*, *FLORALWHITE*, *FORESTGREEN*, *GAINSBORO*, *GHOSTWHITE*, *GOLD*, *GOLD1*, *GOLD2*, *GOLD3*, *GOLD4*, *GOLDENROD*, *GOLDENROD1*, *GOLDENROD2*, *GOLDENROD3*, *GOLDENROD4*, *GRAY*, *GRAY0*, *GRAY1*, *GRAY10*, *GRAY11*, *GRAY12*, *GRAY13*, *GRAY14*, *GRAY15*, *GRAY16*, *GRAY17*, *GRAY18*, *GRAY19*, *GRAY2*, *GRAY20*, *GRAY21*, *GRAY22*, *GRAY23*, *GRAY24*, *GRAY25*, *GRAY26*, *GRAY27*, *GRAY28*, *GRAY29*, *GRAY3*, *GRAY30*, *GRAY31*, *GRAY32*, *GRAY33*, *GRAY34*, *GRAY35*, *GRAY36*, *GRAY37*, *GRAY38*, *GRAY39*, *GRAY4*, *GRAY40*, *GRAY41*, *GRAY42*, *GRAY43*, *GRAY44*, *GRAY45*, *GRAY46*, *GRAY47*, *GRAY48*, *GRAY49*, *GRAY5*, *GRAY50*, *GRAY51*, *GRAY52*, *GRAY53*, *GRAY54*, *GRAY55*, *GRAY56*, *GRAY57*, *GRAY58*, *GRAY59*, *GRAY6*, *GRAY60*, *GRAY61*, *GRAY62*, *GRAY63*, *GRAY64*, *GRAY65*, *GRAY66*, *GRAY67*, *GRAY68*, *GRAY69*, *GRAY7*, *GRAY70*, *GRAY71*, *GRAY72*, *GRAY73*, *GRAY74*, *GRAY75*, *GRAY76*, *GRAY77*, *GRAY78*, *GRAY79*, *GRAY8*, *GRAY80*, *GRAY81*, *GRAY82*, *GRAY83*, *GRAY85*, *GRAY86*, *GRAY87*, *GRAY88*, *GRAY89*, *GRAY9*, *GRAY90*, *GRAY91*, *GRAY92*, *GRAY93*, *GRAY94*, *GRAY95*, *GREEN*, *GREEN1*, *GREEN2*, *GREEN3*, *GREEN4*, *GREENYELLOW*, *GRAY97*, *GRAY98*, *GRAY99*, *HONEYDEW*, *HONEYDEW2*, *HONEYDEW3*, *HONEYDEW4*, *HOTPINK*, *HOTPINK1*, *HOTPINK2*, *HOTPINK3*, *HOTPINK4*, *INDIANRED*, *INDIANRED1*, *INDIANRED2*, *INDIANRED3*, *INDIANRED4*, *IVORY*, *IVORY2*, *IVORY3*, *IVORY4*, *KHAKI*, *KHAKI1*, *KHAKI2*, *KHAKI3*, *KHAKI4*, *LAVENDER*, *LAVENDERBLUSH1*, *LAVENDERBLUSH2*, *LAVENDERBLUSH3*, *LAVENDERBLUSH4*, *LAWNGREEN*, *LEMONCHIFFON1*, *LEMONCHIFFON2*, *LEMONCHIFFON3*, *LEMONCHIFFON4*, *LIGHTBLUE*, *LIGHTBLUE1*, *LIGHTBLUE2*, *LIGHTBLUE3*, *LIGHTBLUE4*, *LIGHTCORAL*, *LIGHTCYAN1*, *LIGHTCYAN2*, *LIGHTCYAN3*, *LIGHTCYAN4*, *LIGHTGOLDENROD*, *LIGHTGOLDENROD1*, *LIGHTGOLDENROD2*, *LIGHTGOLDENROD3*, *LIGHTGOLDENROD4*, *LIGHTGOLDENRODYELLOW*, *LIGHTGRAY*, *LIGHTPINK*, *LIGHTPINK1*, *LIGHTPINK2*, *LIGHTPINK3*, *LIGHTPINK4*, *LIGHTSALMON1*, *LIGHTSALMON2*, *LIGHTSALMON3*, *LIGHTSALMON4*, *LIGHTSEAGREEN*, *LIGHTSKYBLUE*, *LIGHTSKYBLUE1*, *LIGHTSKYBLUE2*, *LIGHTSKYBLUE3*, *LIGHTSKYBLUE4*, *LIGHTSLATEBLUE*, *LIGHTSLATEGRAY*, *LIGHTSTEELBLUE*, *LIGHTSTEELBLUE1*, *LIGHTSTEELBLUE2*, *LIGHTSTEELBLUE3*, *LIGHTSTEELBLUE4*, *LIGHTYELLOW*, *LIGHTYELLOW2*, *LIGHTYELLOW3*, *LIGHTYELLOW4*, *LIMEGREEN*, *LINEN*, *MAGENTA1*, *MAGENTA2*, *MAGENTA3*, *MAGENTA4*, *MAROON*, *MAROON1*, *MAROON2*, *MAROON3*, *MAROON4*, *MEDIUMAQUAMARINE*, *MEDIUMORCHID*, *MEDIUMORCHID1*, *MEDIUMORCHID2*, *MEDIUMORCHID3*, *MEDIUMORCHID4*, *MEDIUMPURPLE*, *MEDIUMPURPLE1*, *MEDIUMPURPLE2*, *MEDIUMPURPLE3*, *MEDIUMPURPLE4*, *MEDIUMSEAGREEN*, *MEDIUMSLATEBLUE*, *MEDIUMSPRINGGREEN*, *MEDIUMTURQUOISE*, *MEDIUMVIOLETRED*, *MIDNIGHTBLUE*, *MINTCREAM*, *MISTYROSE*, *MISTYROSE2*, *MISTYROSE3*, *MISTYROSE4*, *MOCCASIN*, *NAVAJOWHITE1*, *NAVAJOWHITE2*, *NAVAJOWHITE3*, *NAVAJOWHITE4*, *NAVYBLUE*, *OLDLACE*, *OLIVEDRAB*, *OLIVEDRAB1*, *OLIVEDRAB2*, *OLIVEDRAB3*, *OLIVEDRAB4*, *ORANGE*, *ORANGE1*, *ORANGE2*, *ORANGE3*, *ORANGE4*, *ORANGERED*, *ORANGERED1*, *ORANGERED2*, *ORANGERED3*, *ORANGERED4*, *ORCHID*, *ORCHID1*, *ORCHID2*, *ORCHID3*, *ORCHID4*, *PALEGOLDENROD*, *PALEGREEN*, *PALEGREEN1*, *PALEGREEN2*, *PALEGREEN3*, *PALEGREEN4*, *PALETURQUOISE*, *PALETURQUOISE1*, *PALETURQUOISE2*, *PALETURQUOISE3*, *PALETURQUOISE4*, *PALEVIOLETRED*, *PALEVIOLETRED1*, *PALEVIOLETRED2*, *PALEVIOLETRED3*, *PALEVIOLETRED4*, *PAPAYAWHIP*, *PEACHPUFF*, *PEACHPUFF2*, *PEACHPUFF3*, *PEACHPUFF4*, *PERU*, *PINK*, *PINK1*, *PINK2*, *PINK3*, *PINK4*, *PLUM*, *PLUM1*, *PLUM2*, *PLUM3*, *PLUM4*, *POWDERBLUE*, *PURPLE*, *PURPLE1*, *PURPLE2*, *PURPLE3*, *PURPLE4*, *RED*, *RED1*, *RED2*, *RED3*, *RED4*, *ROSYBROWN*, *ROSYBROWN1*, *ROSYBROWN2*, *ROSYBROWN3*, *ROSYBROWN4*, *ROYALBLUE*, *ROYALBLUE1*, *ROYALBLUE2*, *ROYALBLUE3*, *ROYALBLUE4*, *SADDLEBROWN*, *SALMON*, *SALMON1*, *SALMON2*, *SALMON3*, *SALMON4*, *SANDYBROWN*, *SEAGREEN*, *SEAGREEN1*, *SEAGREEN2*, *SEAGREEN3*, *SEAGREEN4*, *SEASHELL*, *SEASHELL2*, *SEASHELL3*, *SEASHELL4*, *BEET*, *TEAL*, *SIENNA*, *SIENNA1*, *SIENNA2*, *SIENNA3*, *SIENNA4*, *SKYBLUE*, *SKYBLUE1*, *SKYBLUE2*, *SKYBLUE3*, *SKYBLUE4*, *SLATEBLUE*, *SLATEBLUE1*, *SLATEBLUE2*, *SLATEBLUE3*, *SLATEBLUE4*, *SLATEGRAY1*, *SLATEGRAY2*, *SLATEGRAY3*, *SLATEGRAY4*, *SLATEGRAY*, *SNOW*, *SNOW2*, *SNOW3*, *SNOW4*, *SPRINGGREEN*, *SPRINGGREEN2*, *SPRINGGREEN3*, *SPRINGGREEN4*, *STEELBLUE*, *STEELBLUE1*, *STEELBLUE2*, *STEELBLUE3*, *STEELBLUE4*, *TAN*, *TAN1*, *TAN2*, *TAN3*, *TAN4*, *THISTLE*, *THISTLE1*, *THISTLE2*, *THISTLE3*, *THISTLE4*, *TOMATO*, *TOMATO1*, *TOMATO2*, *TOMATO3*, *TOMATO4*, *TURQUOISE*, *TURQUOISE1*, *TURQUOISE2*, *TURQUOISE3*, *TURQUOISE4*, *VIOLET*, *VIOLETRED*, *VIOLETRED1*, *VIOLETRED2*, *VIOLETRED3*, *VIOLETRED4*, *WHEAT*, *WHEAT1*, *WHEAT2*, *WHEAT3*, *WHEAT4*, *WHITE*, *WHITESMOKE*, *YELLOW*, *YELLOW1*, *YELLOW2*, *YELLOW3*, *YELLOW4* and *YELLOWGREEN*.
-
-@subsubsection occt_draw_4_3_11 vunsetcolor
-
-Syntax:                  
 ~~~~~
-vunsetcolor [shapename]
-~~~~~ 
 
-Sets default color for all, selected or named shapes. 
 
-@subsubsection occt_draw_4_3_12 vsettransparency
+Manages presentation properties (color, material, transparency) of all objects, selected or named.
 
-Syntax:                  
+**Color**. The *ColorName* can be: *BLACK*, *MATRAGRAY*, *MATRABLUE*, *ALICEBLUE*, *ANTIQUEWHITE*, *ANTIQUEWHITE1*, *ANTIQUEWHITE2*, *ANTIQUEWHITE3*, *ANTIQUEWHITE4*, *AQUAMARINE1*, *AQUAMARINE2*, *AQUAMARINE4*, *AZURE*, *AZURE2*, *AZURE3*, *AZURE4*, *BEIGE*, *BISQUE*, *BISQUE2*, *BISQUE3*, *BISQUE4*, *BLANCHEDALMOND*, *BLUE1*, *BLUE2*, *BLUE3*, *BLUE4*, *BLUEVIOLET*, *BROWN*, *BROWN1*, *BROWN2*, *BROWN3*, *BROWN4*, *BURLYWOOD*, *BURLYWOOD1*, *BURLYWOOD2*, *BURLYWOOD3*, *BURLYWOOD4*, *CADETBLUE*, *CADETBLUE1*, *CADETBLUE2*, *CADETBLUE3*, *CADETBLUE4*, *CHARTREUSE*, *CHARTREUSE1*, *CHARTREUSE2*, *CHARTREUSE3*, *CHARTREUSE4*, *CHOCOLATE*, *CHOCOLATE1*, *CHOCOLATE2*, *CHOCOLATE3*, *CHOCOLATE4*, *CORAL*, *CORAL1*, *CORAL2*, *CORAL3*, *CORAL4*, *CORNFLOWERBLUE*, *CORNSILK1*, *CORNSILK2*, *CORNSILK3*, *CORNSILK4*, *CYAN1*, *CYAN2*, *CYAN3*, *CYAN4*, *DARKGOLDENROD*, *DARKGOLDENROD1*, *DARKGOLDENROD2*, *DARKGOLDENROD3*, *DARKGOLDENROD4*, *DARKGREEN*, *DARKKHAKI*, *DARKOLIVEGREEN*, *DARKOLIVEGREEN1*, *DARKOLIVEGREEN2*, *DARKOLIVEGREEN3*, *DARKOLIVEGREEN4*, *DARKORANGE*, *DARKORANGE1*, *DARKORANGE2*, *DARKORANGE3*, *DARKORANGE4*, *DARKORCHID*, *DARKORCHID1*, *DARKORCHID2*, *DARKORCHID3*, *DARKORCHID4*, *DARKSALMON*, *DARKSEAGREEN*, *DARKSEAGREEN1*, *DARKSEAGREEN2*, *DARKSEAGREEN3*, *DARKSEAGREEN4*, *DARKSLATEBLUE*, *DARKSLATEGRAY1*, *DARKSLATEGRAY2*, *DARKSLATEGRAY3*, *DARKSLATEGRAY4*, *DARKSLATEGRAY*, *DARKTURQUOISE*, *DARKVIOLET*, *DEEPPINK*, *DEEPPINK2*, *DEEPPINK3*, *DEEPPINK4*, *DEEPSKYBLUE1*, *DEEPSKYBLUE2*, *DEEPSKYBLUE3*, *DEEPSKYBLUE4*, *DODGERBLUE1*, *DODGERBLUE2*, *DODGERBLUE3*, *DODGERBLUE4*, *FIREBRICK*, *FIREBRICK1*, *FIREBRICK2*, *FIREBRICK3*, *FIREBRICK4*, *FLORALWHITE*, *FORESTGREEN*, *GAINSBORO*, *GHOSTWHITE*, *GOLD*, *GOLD1*, *GOLD2*, *GOLD3*, *GOLD4*, *GOLDENROD*, *GOLDENROD1*, *GOLDENROD2*, *GOLDENROD3*, *GOLDENROD4*, *GRAY*, *GRAY0*, *GRAY1*, *GRAY10*, *GRAY11*, *GRAY12*, *GRAY13*, *GRAY14*, *GRAY15*, *GRAY16*, *GRAY17*, *GRAY18*, *GRAY19*, *GRAY2*, *GRAY20*, *GRAY21*, *GRAY22*, *GRAY23*, *GRAY24*, *GRAY25*, *GRAY26*, *GRAY27*, *GRAY28*, *GRAY29*, *GRAY3*, *GRAY30*, *GRAY31*, *GRAY32*, *GRAY33*, *GRAY34*, *GRAY35*, *GRAY36*, *GRAY37*, *GRAY38*, *GRAY39*, *GRAY4*, *GRAY40*, *GRAY41*, *GRAY42*, *GRAY43*, *GRAY44*, *GRAY45*, *GRAY46*, *GRAY47*, *GRAY48*, *GRAY49*, *GRAY5*, *GRAY50*, *GRAY51*, *GRAY52*, *GRAY53*, *GRAY54*, *GRAY55*, *GRAY56*, *GRAY57*, *GRAY58*, *GRAY59*, *GRAY6*, *GRAY60*, *GRAY61*, *GRAY62*, *GRAY63*, *GRAY64*, *GRAY65*, *GRAY66*, *GRAY67*, *GRAY68*, *GRAY69*, *GRAY7*, *GRAY70*, *GRAY71*, *GRAY72*, *GRAY73*, *GRAY74*, *GRAY75*, *GRAY76*, *GRAY77*, *GRAY78*, *GRAY79*, *GRAY8*, *GRAY80*, *GRAY81*, *GRAY82*, *GRAY83*, *GRAY85*, *GRAY86*, *GRAY87*, *GRAY88*, *GRAY89*, *GRAY9*, *GRAY90*, *GRAY91*, *GRAY92*, *GRAY93*, *GRAY94*, *GRAY95*, *GREEN*, *GREEN1*, *GREEN2*, *GREEN3*, *GREEN4*, *GREENYELLOW*, *GRAY97*, *GRAY98*, *GRAY99*, *HONEYDEW*, *HONEYDEW2*, *HONEYDEW3*, *HONEYDEW4*, *HOTPINK*, *HOTPINK1*, *HOTPINK2*, *HOTPINK3*, *HOTPINK4*, *INDIANRED*, *INDIANRED1*, *INDIANRED2*, *INDIANRED3*, *INDIANRED4*, *IVORY*, *IVORY2*, *IVORY3*, *IVORY4*, *KHAKI*, *KHAKI1*, *KHAKI2*, *KHAKI3*, *KHAKI4*, *LAVENDER*, *LAVENDERBLUSH1*, *LAVENDERBLUSH2*, *LAVENDERBLUSH3*, *LAVENDERBLUSH4*, *LAWNGREEN*, *LEMONCHIFFON1*, *LEMONCHIFFON2*, *LEMONCHIFFON3*, *LEMONCHIFFON4*, *LIGHTBLUE*, *LIGHTBLUE1*, *LIGHTBLUE2*, *LIGHTBLUE3*, *LIGHTBLUE4*, *LIGHTCORAL*, *LIGHTCYAN1*, *LIGHTCYAN2*, *LIGHTCYAN3*, *LIGHTCYAN4*, *LIGHTGOLDENROD*, *LIGHTGOLDENROD1*, *LIGHTGOLDENROD2*, *LIGHTGOLDENROD3*, *LIGHTGOLDENROD4*, *LIGHTGOLDENRODYELLOW*, *LIGHTGRAY*, *LIGHTPINK*, *LIGHTPINK1*, *LIGHTPINK2*, *LIGHTPINK3*, *LIGHTPINK4*, *LIGHTSALMON1*, *LIGHTSALMON2*, *LIGHTSALMON3*, *LIGHTSALMON4*, *LIGHTSEAGREEN*, *LIGHTSKYBLUE*, *LIGHTSKYBLUE1*, *LIGHTSKYBLUE2*, *LIGHTSKYBLUE3*, *LIGHTSKYBLUE4*, *LIGHTSLATEBLUE*, *LIGHTSLATEGRAY*, *LIGHTSTEELBLUE*, *LIGHTSTEELBLUE1*, *LIGHTSTEELBLUE2*, *LIGHTSTEELBLUE3*, *LIGHTSTEELBLUE4*, *LIGHTYELLOW*, *LIGHTYELLOW2*, *LIGHTYELLOW3*, *LIGHTYELLOW4*, *LIMEGREEN*, *LINEN*, *MAGENTA1*, *MAGENTA2*, *MAGENTA3*, *MAGENTA4*, *MAROON*, *MAROON1*, *MAROON2*, *MAROON3*, *MAROON4*, *MEDIUMAQUAMARINE*, *MEDIUMORCHID*, *MEDIUMORCHID1*, *MEDIUMORCHID2*, *MEDIUMORCHID3*, *MEDIUMORCHID4*, *MEDIUMPURPLE*, *MEDIUMPURPLE1*, *MEDIUMPURPLE2*, *MEDIUMPURPLE3*, *MEDIUMPURPLE4*, *MEDIUMSEAGREEN*, *MEDIUMSLATEBLUE*, *MEDIUMSPRINGGREEN*, *MEDIUMTURQUOISE*, *MEDIUMVIOLETRED*, *MIDNIGHTBLUE*, *MINTCREAM*, *MISTYROSE*, *MISTYROSE2*, *MISTYROSE3*, *MISTYROSE4*, *MOCCASIN*, *NAVAJOWHITE1*, *NAVAJOWHITE2*, *NAVAJOWHITE3*, *NAVAJOWHITE4*, *NAVYBLUE*, *OLDLACE*, *OLIVEDRAB*, *OLIVEDRAB1*, *OLIVEDRAB2*, *OLIVEDRAB3*, *OLIVEDRAB4*, *ORANGE*, *ORANGE1*, *ORANGE2*, *ORANGE3*, *ORANGE4*, *ORANGERED*, *ORANGERED1*, *ORANGERED2*, *ORANGERED3*, *ORANGERED4*, *ORCHID*, *ORCHID1*, *ORCHID2*, *ORCHID3*, *ORCHID4*, *PALEGOLDENROD*, *PALEGREEN*, *PALEGREEN1*, *PALEGREEN2*, *PALEGREEN3*, *PALEGREEN4*, *PALETURQUOISE*, *PALETURQUOISE1*, *PALETURQUOISE2*, *PALETURQUOISE3*, *PALETURQUOISE4*, *PALEVIOLETRED*, *PALEVIOLETRED1*, *PALEVIOLETRED2*, *PALEVIOLETRED3*, *PALEVIOLETRED4*, *PAPAYAWHIP*, *PEACHPUFF*, *PEACHPUFF2*, *PEACHPUFF3*, *PEACHPUFF4*, *PERU*, *PINK*, *PINK1*, *PINK2*, *PINK3*, *PINK4*, *PLUM*, *PLUM1*, *PLUM2*, *PLUM3*, *PLUM4*, *POWDERBLUE*, *PURPLE*, *PURPLE1*, *PURPLE2*, *PURPLE3*, *PURPLE4*, *RED*, *RED1*, *RED2*, *RED3*, *RED4*, *ROSYBROWN*, *ROSYBROWN1*, *ROSYBROWN2*, *ROSYBROWN3*, *ROSYBROWN4*, *ROYALBLUE*, *ROYALBLUE1*, *ROYALBLUE2*, *ROYALBLUE3*, *ROYALBLUE4*, *SADDLEBROWN*, *SALMON*, *SALMON1*, *SALMON2*, *SALMON3*, *SALMON4*, *SANDYBROWN*, *SEAGREEN*, *SEAGREEN1*, *SEAGREEN2*, *SEAGREEN3*, *SEAGREEN4*, *SEASHELL*, *SEASHELL2*, *SEASHELL3*, *SEASHELL4*, *BEET*, *TEAL*, *SIENNA*, *SIENNA1*, *SIENNA2*, *SIENNA3*, *SIENNA4*, *SKYBLUE*, *SKYBLUE1*, *SKYBLUE2*, *SKYBLUE3*, *SKYBLUE4*, *SLATEBLUE*, *SLATEBLUE1*, *SLATEBLUE2*, *SLATEBLUE3*, *SLATEBLUE4*, *SLATEGRAY1*, *SLATEGRAY2*, *SLATEGRAY3*, *SLATEGRAY4*, *SLATEGRAY*, *SNOW*, *SNOW2*, *SNOW3*, *SNOW4*, *SPRINGGREEN*, *SPRINGGREEN2*, *SPRINGGREEN3*, *SPRINGGREEN4*, *STEELBLUE*, *STEELBLUE1*, *STEELBLUE2*, *STEELBLUE3*, *STEELBLUE4*, *TAN*, *TAN1*, *TAN2*, *TAN3*, *TAN4*, *THISTLE*, *THISTLE1*, *THISTLE2*, *THISTLE3*, *THISTLE4*, *TOMATO*, *TOMATO1*, *TOMATO2*, *TOMATO3*, *TOMATO4*, *TURQUOISE*, *TURQUOISE1*, *TURQUOISE2*, *TURQUOISE3*, *TURQUOISE4*, *VIOLET*, *VIOLETRED*, *VIOLETRED1*, *VIOLETRED2*, *VIOLETRED3*, *VIOLETRED4*, *WHEAT*, *WHEAT1*, *WHEAT2*, *WHEAT3*, *WHEAT4*, *WHITE*, *WHITESMOKE*, *YELLOW*, *YELLOW1*, *YELLOW2*, *YELLOW3*, *YELLOW4* and *YELLOWGREEN*.
 ~~~~~
-vsettransparency [shapename] coeficient
-~~~~~ 
+vaspects    [name] [-setcolor ColorName] [-setcolor R G B] [-unsetcolor]
+vsetcolor   [name] ColorName
+vunsetcolor [name]
+~~~~~
 
-Sets transparency for all selected or named shapes. The *coefficient* may be between 0.0 (opaque) and 1.0 (fully transparent). 
-
+**Transparency. The *Transp* may be between 0.0 (opaque) and 1.0 (fully transparent).
 **Warning**: at 1.0 the shape becomes invisible.
- 
-**Example:** 
 ~~~~~
-vinit 
-box b 10 10 10 
-psphere s 20 
-vdisplay b s 
-vfit 
-vsetdispmode 1 
-vsettransparency b 0.5
-~~~~~ 
-
-@subsubsection occt_draw_4_3_13 vunsettransparency
-
-Syntax:                  
-~~~~~
-vunsettransparency [shapename]
-~~~~~ 
-
-Sets default transparency (0.0) for all selected or named shapes. 
-
-@subsubsection occt_draw_4_3_14 vsetmaterial
-
-Syntax:                  
-~~~~~
-vsetmaterial [shapename] materialname
-~~~~~ 
-
-Sets material for all selected or named shapes. 
-
-**materialname** can be *BRASS*, *BRONZE*, *COPPER*, *GOLD*, *PEWTER*, *PLASTER*, *PLASTIC*, *SILVER*, *STEEL*, *STONE*, *SHINY_PLASTIC*, *SATIN*, *METALIZED*, *NEON_GNC*, *CHROME*, *ALUMINIUM*, *OBSIDIAN*, *NEON_PHC* or *JADE*.
- 
-**Example:** 
-~~~~~
-vinit 
-psphere s 20 
-vdisplay s 
-vfit 
-vsetdispmode 1 
-vsetmaterial s JADE 
+vaspects           [name] [-settransparency Transp] [-unsettransparency]
+vsettransparency   [name] Transp
+vunsettransparency [name]
 ~~~~~
 
-@subsubsection occt_draw_4_3_15 vunsetmaterial
-
-Syntax:                  
+**Material**. The *MatName* can be *BRASS*, *BRONZE*, *COPPER*, *GOLD*, *PEWTER*, *PLASTER*, *PLASTIC*, *SILVER*, *STEEL*, *STONE*, *SHINY_PLASTIC*, *SATIN*, *METALIZED*, *NEON_GNC*, *CHROME*, *ALUMINIUM*, *OBSIDIAN*, *NEON_PHC*, *JADE*, *WATER*, *GLASS*, *DIAMOND* or *CHARCOAL*.
 ~~~~~
-vunsetmaterial [shapename]
-~~~~~ 
-
-Sets default material for all selected or named shapes. 
-
-@subsubsection occt_draw_4_3_16 vsetwidth
-
-Syntax:                  
+vaspects       [name] [-setmaterial MatName] [-unsetmaterial]
+vsetmaterial   [name] MatName
+vunsetmaterial [name]
 ~~~~~
-vsetwidth [shapename] coeficient
-~~~~~ 
 
-Sets width of the edges for all selected or named shapes. 
-The *coefficient* may be between 0.0 and 10.0.
- 
-**Example:** 
+**Line width**. Specifies width of the edges. The *LineWidth* may be between 0.0 and 10.0.
 ~~~~~
-vinit 
-box b 10 10 10 
-vdisplay b 
-vfit 
-vsetwidth b 5
-~~~~~ 
-
-@subsubsection occt_draw_4_3_17 vunsetwidth
-
-Syntax:                  
+vaspects    [name] [-setwidth LineWidth] [-unsetwidth]
+vsetwidth   [name] LineWidth
+vunsetwidth [name]
 ~~~~~
-vunsetwidth [shapename]
-~~~~~ 
 
-Sets default width of edges (0.0) for all selected or named shapes. 
+**Example:**
+~~~~~
+vinit
+box b 10 10 10
+vdisplay b
+vfit
 
-@subsubsection occt_draw_4_3_18 vsetshading
+vsetdispmode b 1
+vaspects -setcolor red -settransparency 0.2
+vrotate 10 10 10
+~~~~~
+
+
+
+
+
+
+@subsubsection occt_draw_4_3_11 vsetshading
 
 Syntax:                  
 ~~~~~
@@ -1764,7 +1771,7 @@ vsetdispmode 1
 vsetshading s 0.005
 ~~~~~
  
-@subsubsection occt_draw_4_3_19 vunsetshading
+@subsubsection occt_draw_4_3_12 vunsetshading
 
 Syntax:                  
 ~~~~~
@@ -1773,7 +1780,7 @@ vunsetshading [shapename]
 
 Sets default deflection coefficient (0.0008) that defines the quality of the shape’s representation in the shading mode. Default coefficient is 0.0008. 
 
-@subsubsection occt_draw_4_3_20 vsetam
+@subsubsection occt_draw_4_3_13 vsetam
 
 Syntax:                  
 ~~~~~
@@ -1799,7 +1806,7 @@ vfit
 vsetam b 2
 ~~~~~
  
-@subsubsection occt_draw_4_3_21 vunsetam
+@subsubsection occt_draw_4_3_14 vunsetam
 
 Syntax:                  
 ~~~~~
@@ -1808,16 +1815,16 @@ vunsetam
 
 Deactivates all selection modes for all shapes. 
 
-@subsubsection occt_draw_4_3_22 vdump
+@subsubsection occt_draw_4_3_15 vdump
 
 Syntax:                  
 ~~~~~
-vdump <filename>.{png|xwd|bmp}
+vdump <filename>.{png|bmp|jpg|gif}
 ~~~~~ 
 
-Extracts the contents of the viewer window to a png, XWD or BMP file. 
+Extracts the contents of the viewer window to a image file.
 
-@subsubsection occt_draw_4_3_23 vdir
+@subsubsection occt_draw_4_3_16 vdir
 
 Syntax:                  
 ~~~~~
@@ -1826,7 +1833,7 @@ vdir
 
 Displays the list of displayed objects. 
 
-@subsubsection occt_draw_4_3_24 vsub
+@subsubsection occt_draw_4_3_17 vsub
 
 Syntax:                  
 ~~~~~
@@ -1846,7 +1853,7 @@ vsetdispmode 1
 vsub b 1
 ~~~~~ 
 
-@subsubsection occt_draw_4_3_25 vardis
+@subsubsection occt_draw_4_3_18 vardis
 
 Syntax:                  
 ~~~~~
@@ -1855,7 +1862,7 @@ vardis
 
 Displays active areas (for each activated sensitive entity, one or several 2D bounding boxes are displayed, depending on the implementation of a particular entity). 
 
-@subsubsection occt_draw_4_3_26 varera
+@subsubsection occt_draw_4_3_19 varera
 
 Syntax:                  
 ~~~~~
@@ -1864,7 +1871,7 @@ varera
 
 Erases active areas. 
 
-@subsubsection occt_draw_4_3_27 vsensdis
+@subsubsection occt_draw_4_3_20 vsensdis
 
 Syntax:                  
 ~~~~~
@@ -1884,7 +1891,7 @@ Standard entity types are those defined in Select3D package:
   * sensitive triangle
 Custom (application-defined) sensitive entity types are not processed by this command. 
 
-@subsubsection occt_draw_4_3_28 vsensera
+@subsubsection occt_draw_4_3_21 vsensera
 
 Syntax:                  
 ~~~~~
@@ -1893,7 +1900,7 @@ vsensera
 
 Erases active entities. 
 
-@subsubsection occt_draw_4_3_29 vperf
+@subsubsection occt_draw_4_3_22 vperf
 
 Syntax:                  
 ~~~~~
@@ -1913,7 +1920,7 @@ vsetdispmode 0
 vperf b 1 1
 ~~~~~
  
-@subsubsection occt_draw_4_3_30 vr
+@subsubsection occt_draw_4_3_23 vr
 
 Syntax:                  
 ~~~~~
@@ -1928,7 +1935,7 @@ vinit
 vr myshape.brep
 ~~~~~
  
-@subsubsection occt_draw_4_3_31 vstate
+@subsubsection occt_draw_4_3_24 vstate
 
 Syntax:                  
 ~~~~~
@@ -1937,6 +1944,64 @@ vstate [name1] … [name n]
 
 Makes a list of the status (**Displayed** or **Not Displayed**) of some selected or named objects. 
 
+@subsubsection occt_draw_4_3_25 vraytrace
+
+Syntax:
+~~~~~
+vraytrace [0/1]
+~~~~~
+
+Turns on/off ray tracing renderer.
+
+@subsubsection occt_draw_4_3_26 vrenderparams
+
+Syntax:
+~~~~~
+vrenderparams
+~~~~~
+
+Manages rendering parameters:
+* rayTrace
+* raster
+* rayDepth
+* shadows
+* reflections
+* fsaa
+* gleam
+* shadingModel
+
+**Example:**
+~~~~~
+vinit
+box b 10 10 10
+vdisplay b
+vfit
+vraytrace 1
+vrenderparams -shadows 1 -reflections 1 -fsaa 1
+~~~~~
+@subsubsection occt_draw_4_3_27 vshaderprog
+
+Syntax:
+~~~~~
+vshaderprog [name] pathToVertexShader pathToFragmentShader
+~~~~~
+
+Enables rendering using a shader program.
+
+@subsubsection occt_draw_4_3_28 vsetcolorbg
+
+Syntax:
+~~~~~
+vsetcolorbg r g b
+~~~~~
+
+Sets background color.
+
+**Example:**
+~~~~~
+vinit
+vsetcolorbg 200 0 200
+~~~~~
 
 @subsection occt_draw_4_4 AIS viewer – object commands
 
@@ -2194,6 +2259,144 @@ vpoint p2 50 0 0
 vsegment segment p1 p2 
 ~~~~~
 
+@subsubsection occt_draw_4_4_18 vpointcloud
+
+Syntax:
+~~~~~
+vpointcloud name shape
+~~~~~
+
+Creates an interactive object for an arbitary set of points from the triangulated shape.
+
+~~~~~
+vpointcloud name x y z r npts {surface|volume}
+~~~~~
+Creates an arbitrary set of points (npts) randomly distributed on a spheric surface or within a spheric volume (x y z r).
+
+**Example:**
+~~~~~
+vinit
+vpointcloud pc 0 0 0 100 100000 surface -randColor
+vfit
+~~~~~
+
+@subsubsection occt_draw_4_4_19 vclipplane
+
+Syntax:
+~~~~~
+vclipplane maxplanes <view_name> - gets plane limit for the view.
+vclipplane create <plane_name> - creates a new plane.
+vclipplane delete <plane_name> - delete a plane.
+vclipplane clone <source_plane> <plane_name> - clones the plane definition.
+vclipplane set/unset <plane_name> object <object list> - sets/unsets the plane for an IO.
+vclipplane set/unset <plane_name> view <view list> - sets/unsets plane for a view.
+vclipplane change <plane_name> on/off - turns clipping on/off.
+vclipplane change <plane_name> equation <a> <b> <c> <d> - changes plane equation.
+vclipplane change <plane_name> capping on/off - turns capping on/off.
+vclipplane change <plane_name> capping color <r> <g> <b> - sets color.
+vclipplane change <plane name> capping texname <texture> - sets texture.
+vclipplane change <plane_name> capping texscale <sx> <sy> - sets texture scale.
+vclipplane change <plane_name> capping texorigin <tx> <ty> - sets texture origin.
+vclipplane change <plane_name> capping texrotate <angle> - sets texture rotation.
+vclipplane change <plane_name> capping hatch on/off/<id> - sets hatching mask.
+~~~~~
+
+Manages clipping planes
+
+**Example:**
+~~~~~
+vinit
+vclipplane create pln1
+vclipplane change pln1 equation 1 0 0 -0.1
+vclipplane set pln1 view Driver1/Viewer1/View1
+box b 100 100 100
+vdisplay b
+vsetdispmode 1
+vfit
+vrotate 10 10 10
+vselect 100 100
+~~~~~
+
+@subsubsection occt_draw_4_4_20 vdimension
+
+Syntax:
+~~~~~
+vdimension name {-angle|-length|-radius|-diameter} -shapes shape1 [shape2 [shape3]]
+                [-text 3d|2d wf|sh|wireframe|shading IntegerSize]
+                [-label left|right|hcenter|hfit top|bottom|vcenter|vfit]
+                [-arrow external|internal|fit] [{-arrowlength|-arlen} RealArrowLength]
+                [{-arrowangle|-arangle} ArrowAngle(degrees)] [-plane xoy|yoz|zox]
+                [-flyout FloatValue -extension FloatValue] [-value CustomNumberValue]
+                [-dispunits DisplayUnitsString] [-modelunits ModelUnitsString]
+                [-showunits | -hideunits]
+~~~~~
+
+Builds angle, length, radius or diameter dimension interactive object **name**.
+
+**Attension:** length dimension can't be built without working plane.
+
+**Example:** 
+~~~~~
+vpoint p1 0 0 0
+vpoint p2 50 50 0
+vdimension dim1 -length -plane xoy -shapes p1 p2
+
+vpoint p3 100 0 0
+vdimension dim2 -angle -shapes p1 p2 p3
+
+vcircle circle p1 p2 p3 0
+vdimension dim3 -radius -shapes circle
+vfit
+~~~~~
+
+@subsubsection occt_draw_4_4_21 vdimparam
+
+Syntax:
+~~~~~
+vdimparam name [-text 3d|2d wf|sh|wireframe|shading IntegerSize]
+               [-label left|right|hcenter|hfit top|bottom|vcenter|vfit]
+               [-arrow external|internal|fit]
+               [{-arrowlength|-arlen} RealArrowLength]
+               [{-arrowangle|-arangle} ArrowAngle(degrees)]
+               [-plane xoy|yoz|zox]
+               [-flyout FloatValue -extension FloatValue]
+               [-value CustomNumberValue]
+               [-dispunits DisplayUnitsString]
+               [-modelunits ModelUnitsString]
+               [-showunits | -hideunits]
+~~~~~
+
+Sets parameters for angle, length, radius and diameter dimension **name**.
+
+**Example:** 
+~~~~~
+vpoint p1 0 0 0
+vpoint p2 50 50 0
+vdimension dim1 -length -plane xoy -shapes p1 p2
+vdimparam dim1 -flyout -15 -arrowlength 4 -showunits -value 10
+~~~~~
+
+@subsubsection occt_draw_4_4_22 vmovedim
+
+Syntax:
+~~~~~
+vmovedim [name] [x y z]
+~~~~~
+
+Moves picked or named (if **name** parameter is defined) dimension
+to picked mouse position or input point with coordinates **x**,**y**,**z**.
+Text label of dimension **name** is moved to position, another parts of dimension
+are adjusted.
+
+**Example:** 
+~~~~~
+vpoint p1 0 0 0
+vpoint p2 50 50 0
+vdimension dim1 -length -plane xoy -shapes p1 p2
+vmovedim dim1 -10 30 0
+~~~~~
+
+
 @subsection occt_draw_4_5 AIS viewer – Mesh Visualization Service
 
 **MeshVS** (Mesh Visualization Service) component provides flexible means of displaying meshes with associated pre- and post- processor data.
@@ -2293,8 +2496,8 @@ meshmat meshname material
 Changes the material of object **meshname**.
 
 *material* is represented with an integer value as follows (equivalent to enumeration *Graphic3d_NameOfMaterial*): 
-* *0 – BRASS,* 
-* *1 – BRONZE,* 
+* *0 - BRASS,* 
+* *1 - BRONZE,* 
 * *2 - COPPER,* 
 * *3 - GOLD,* 
 * *4 - PEWTER,* 
@@ -2412,6 +2615,204 @@ vinit
 meshfromstl mesh myfile.stl 
 meshdelete mesh 
 ~~~~~
+
+@subsection occt_draw_4_6	VIS Viewer commands
+
+A specific plugin with alias *VIS* should be loaded to have access to VIS functionality in DRAW Test Harness:
+
+~~~~
+\> pload VIS
+~~~~
+
+@subsubsection occt_draw_4_6_1	ivtkinit
+
+Syntax:
+~~~~~
+ivtkinit
+~~~~~
+
+Creates a window for VTK viewer.
+
+@figure{/user_guides/draw_test_harness/images/draw_image001.png}
+
+@subsection occt_draw_4_6_2	ivtkdisplay
+
+Syntax:
+~~~~~
+ivtkdisplay name1 [name2] …[name n]
+~~~~~
+
+Displays named objects.
+
+**Example:** 
+~~~~~
+ivtkinit
+# create cone
+pcone c 5 0 10
+ivtkdisplay c
+~~~~~
+
+@figure{/user_guides/draw_test_harness/images/draw_image002.png}
+
+@subsection occt_draw_4_6_3	ivtkerase
+
+Syntax:
+~~~~~
+ivtkerase [name1] [name2] … [name n]
+~~~~~
+
+Erases named objects. If no arguments are passed, erases all displayed objects.
+
+**Example:**
+~~~~~
+ivtkinit
+# create a sphere
+psphere s 10
+# create a cone
+pcone c 5 0 10
+# create a cylinder
+pcylinder cy 5 10
+# display objects
+ivtkdisplay s c cy
+# erase only the cylinder
+ivtkerase cy
+# erase the sphere and the cone
+ivtkerase s c
+~~~~~
+
+@subsection occt_draw_4_6_4	 ivtkfit
+
+Syntax:
+~~~~~
+ivtkfit
+~~~~~
+
+Automatic zoom/panning.
+
+@subsection occt_draw_4_6_5	ivtkdispmode
+
+Syntax:
+~~~~~
+ivtksetdispmode [name] {0|1}
+~~~~~
+
+Sets display mode for a named object. If no arguments are passed, sets the given display mode for all displayed objects
+The possible modes are: 0 (WireFrame) and 1 (Shading).
+
+**Example:**
+~~~~~
+ivtkinit
+# create a cone
+pcone c 5 0 10
+# display the cone
+ivtkdisplay c
+# set shading mode for the cone
+ivtksetdispmode c 1
+~~~~~
+
+@figure{/user_guides/draw_test_harness/images/draw_image003.png}
+ 
+@subsection occt_draw_4_6_6	ivtksetselmode
+
+Syntax:
+~~~~~
+ivtksetselmode [name] mode {0|1}
+~~~~~
+
+Sets selection mode for a named object. If no arguments are passed, sets the given selection mode for all the displayed objects.
+
+**Example:**
+~~~~~
+ivtkinit
+# load a shape from file
+restore CrankArm.brep a
+# display the loaded shape
+ivtkdisplay a
+# set the face selection mode
+ivtksetselmode a 4 1
+~~~~~
+
+@figure{/user_guides/draw_test_harness/images/draw_image004.png}
+ 
+@subsection occt_draw_4_6_7	ivtkmoveto
+
+Syntax:
+~~~~~
+ivtkmoveto x y
+~~~~~
+
+Imitates mouse cursor moving to point with the given display coordinates **x**,**y**.
+
+**Example:**
+~~~~~
+ivtkinit
+pcone c 5 0 10
+ivtkdisplay c
+ivtkmoveto 40 50
+~~~~~
+
+@subsection occt_draw_4_6_8	ivtkselect
+
+Syntax:
+~~~~~
+ivtkselect x y
+~~~~~
+
+Imitates mouse cursor moving to point with the given display coordinates and performs selection at this point.
+
+**Example:**
+~~~~~
+ivtkinit
+pcone c 5 0 10
+ivtkdisplay c
+ivtkselect 40 50
+~~~~~
+
+@subsection occt_draw_4_6_9	ivtkdump
+
+Syntax:
+~~~~~
+ivtkdump *filename* [buffer={rgb|rgba|depth}] [width height] [stereoproj={L|R}]
+~~~~~
+
+Dumps the contents of VTK viewer to image. It supports:
+* dumping in different raster graphics formats: PNG, BMP, JPEG, TIFF or PNM.
+* dumping of different buffers: RGB, RGBA or depth buffer.
+* defining of image sizes (width and height in pixels).
+* dumping of stereo projections (left or right).
+
+**Example:**
+~~~~~
+ivtkinit
+pcone c 5 0 10
+ivtkdisplay c
+ivtkdump D:/ConeSnapshot.png rgb 768 768
+~~~~~
+
+@subsection occt_draw_4_6_10	ivtkbgcolor
+
+
+Syntax:
+~~~~~
+ivtkbgcolor r g b [r2 g2 b2]
+~~~~~
+
+Sets uniform background color or gradient background if second triple of parameters is set. Color parameters r,g,b have to be chosen in the interval  [0..255].
+
+**Example:**
+~~~~~
+ivtkinit
+ivtkbgcolor 200 220 250
+~~~~~
+ 
+@figure{/user_guides/draw_test_harness/images/draw_image005.png}
+
+~~~~~
+ivtkbgcolor 10 30 80 255 255 255
+~~~~~
+
+@figure{/user_guides/draw_test_harness/images/draw_image006.png}
+
 
 @section occt_draw_5 OCAF commands
 

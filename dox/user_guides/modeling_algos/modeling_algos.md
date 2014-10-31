@@ -2713,7 +2713,7 @@ aPolyHLRToShape.OutLineHCompound();
 
 @section occt_modalg_10_2 Meshing of Shapes
 
-The algorithm of shape triangulation is provided by the functionality of *BRepMesh_IncrementalMesh* class, which adds a triangulation of the shape to its topological data structure.
+The algorithm of shape triangulation is provided by the functionality of *BRepMesh_IncrementalMesh* class, which adds a triangulation of the shape to its topological data structure. This triangulation is used to visualize the shape in shaded mode.
 
 ~~~~~
 const Standard_Real aRadius = 10.0; 
@@ -2727,23 +2727,26 @@ const Standard_Real anAngularDeflection = 0.5;
 BRepMesh_IncrementalMesh aMesh(aShape, aLinearDeflection, Standard_False, anAngularDeflection);
 ~~~~~
 
-Default meshing algorithm *BRepMesh_IncrementalMesh* has two major options to define triangulation – linear and angular deflections. At the first step all edges from face are discretized according to specified parameters. Linear deflection limits distance between curve and its tessellation and angular deflection limits the angle between subsequent segments in polyline.
+The default meshing algorithm *BRepMesh_IncrementalMesh* has two major options to define triangulation – linear and angular deflections.
 
-@image html /user_guides/modeling_algos/images/modeling_algos_image056.png  "Deflection parameters of BRepMesh_IncrementalMesh algorithm"
+At the first step all edges from a face are discretized according to the specified parameters.
 
-Linear deflection limits distance between triangles and face interior.
+At the second step, the faces are tessellated. Linear deflection limits the distance between a curve and its tessellation, whereas angular deflection limits the angle between subsequent segments in a polyline.
 
-@image html /user_guides/modeling_algos/images/modeling_algos_image057.png  "Linear deflection"
+@figure{/user_guides/modeling_algos/images/modeling_algos_image056.png, "Deflection parameters of BRepMesh_IncrementalMesh algorithm"}
 
-Note that if given value of linear deflection is less than shape tolerance then the algorithm will skip this value and will take into account the shape tolerance.
+Linear deflection limits the distance between triangles and the face interior.
 
-Application should provide deflection parameters to compute satisfying mesh. Angular deflection is relatively simple and default value can be used (12-20 degrees). Linear deflection has absolute meaning and application should provide correct value for its models. Giving small values may result in too huge mesh (a lot of memory, long computation time and slow rendering) while big values results in ugly mesh.
+@figure{/user_guides/modeling_algos/images/modeling_algos_image057.png, "Linear deflection"}
 
-For application working in dimensions known in advance this is reasonable to fix absolute linear deflection for all models. This gives a meshes according to metrics and precision used in application (for example models known to be stored in meters and 0.004 m is enough for most tasks).
+Note that if a given value of linear deflection is less than shape tolerance then the algorithm will skip this value and will take into account the shape tolerance.
 
-However applications worked with alien models can not use the same deflection for all models (notice that this is abnormal situation in fact and this application is probably just a viewer for CAD models with dimensions vary by an order). To solve this problem conception of relative linear deflection was introduced that has some kind of LOD (level of detail) meaning. This value in fact is a scale factor to absolute deflection applied to model dimensions.
+The application should provide deflection parameters to compute a satisfactory mesh. Angular deflection is relatively simple and allows using a default value (12-20 degrees). Linear deflection has an absolute meaning and the application should provide the correct value for its models. Giving small values may result in a too huge mesh (consuming a lot of memory, which results in a  long computation time and slow rendering) while big values result in an ugly mesh.
 
+For an application working in dimensions known in advance it can be reasonable to use the absolute linear deflection for all models. This provides meshes according to metrics and precision used in the application (for example, it it is known that the model will be stored in meters, 0.004 m is enough for most tasks).
 
-Meshing covers a shape with a triangular mesh. Other than hidden line removal, you can use meshing to transfer the shape to another tool: a manufacturing tool, a shading algorithm, a finite element algorithm, or a collision algorithm, for example. 
+However, an application that imports models created in other applications may not use the same deflection for all models. Note that actually this is an abnormal situation and this application is probably just a viewer for CAD models with  dimensions varying by an order of magnitude. This problem can be solved by introducing the concept of a relative linear deflection with some  LOD (level of detail). The level of detail is a scale factor for absolute deflection, which is applied to model dimensions.
 
-You can obtain information on the shape by first exploring it. To then access triangulation of a face in the shape, use *BRepTool::Triangulation*. To access a polygon which is the approximation of an edge of the face, use *BRepTool::PolygonOnTriangulation*.
+Meshing covers a shape with a triangular mesh. Other than hidden line removal, you can use meshing to transfer the shape to another tool: a manufacturing tool, a shading algorithm, a finite element algorithm, or a collision algorithm.
+
+You can obtain information on the shape by first exploring it. To access triangulation of a face in the shape later, use *BRepTool::Triangulation*. To access a polygon, which is the approximation of an edge of the face, use *BRepTool::PolygonOnTriangulation*.

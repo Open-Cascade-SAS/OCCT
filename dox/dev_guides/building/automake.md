@@ -46,13 +46,13 @@ To prevent this, it is suggested to make links:
    * <i> --with-freeimage= </i> defines the location of installed **FreeImage** product;
    * <i> --with-tbb-include= </i> defines the location of *tbb.h*;
    * <i> --with-tbb-library= </i> defines the location of *libtbb.so*;
-   * <i> --with-opencl-include= </i> defines the location of *cl.h*;
-   * <i> --with-opencl-library= </i> defines the location of *libOpenCL.so*;
+   * <i> --with-vtk-include= </i> defines the location of VTK includes;
+   * <i> --with-vtk-library= </i> defines the location of VTK libraries;
    * <i> --enable-debug=   yes: </i>  includes debug information, no: does not include debug information;
    * <i> --enable-production=   yes: </i> switches code optimization, no: switches off code optimization;
    * <i> --disable-draw </i> allows OCCT building without Draw.
 
-   If location of **FreeImage, TBB, gl2ps** or **OpenCL** is not specified, OCCT will be built without these optional libraries.
+   If location of **FreeImage, TBB, gl2ps** or **VTK** is not specified, OCCT will be built without these optional libraries.
 
    
   Attention: 64-bit platforms are detected automatically.
@@ -60,7 +60,7 @@ To prevent this, it is suggested to make links:
   Example:
    
 
-  \>  ./configure -prefix=/PRODUCTS/occt-6.5.5 --with-tcl=/PRODUCTS/tcltk-8.5.8/lib --with-tk=/PRODUCTS/tcltk-8.5.8/lib --with-freetype=/PRODUCTS/freetype-2.4.10 --with-gl2ps=/PRODUCTS/gl2ps-1.3.5 --with-freeimage=/PRODUCTS/freeimage-3.14.1 --with-tbb-include=/PRODUCTS/tbb30_018oss/include --with-tbb-library=/PRODUCTS/tbb30_018oss/lib/ia32/cc4.1.0_libc2.4_kernel2.6.16.21 --with-opencl-include=/PRODUCTS/opencl-icd-1.2.11.0/include --with-opencl-library=/PRODUCTS/opencl-icd-1.2.11.0/lib 
+  \>  ./configure -prefix=/PRODUCTS/occt-6.5.5 --with-tcl=/PRODUCTS/tcltk-8.5.8/lib --with-tk=/PRODUCTS/tcltk-8.5.8/lib --with-freetype=/PRODUCTS/freetype-2.4.10 --with-gl2ps=/PRODUCTS/gl2ps-1.3.5 --with-freeimage=/PRODUCTS/freeimage-3.14.1 --with-tbb-include=/PRODUCTS/tbb30_018oss/include --with-tbb-library=/PRODUCTS/tbb30_018oss/lib/ia32/cc4.1.0_libc2.4_kernel2.6.16.21 -–with-vtk-include=/PRODUCTS/VTK-6.1.0/include/vtk-6.1 –with-vtk-library=/PRODUCTS/ /VTK-6.1.0//lib
 
 
   3.If configure exits successfully, you can build OCCT with *make* command.
