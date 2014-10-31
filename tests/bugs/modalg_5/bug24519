@@ -1,0 +1,36 @@
+puts "=========="
+puts "OCC24519"
+puts "=========="
+puts ""
+####################################################################
+# 0024519: Intersection of a cylinder and a plane does not return
+####################################################################
+
+restore [locate_data_file bug24519_cylinder.brep] cy
+restore [locate_data_file bug24519_plane.brep] pl
+
+bsection r1 cy pl
+section r2 cy pl
+set exp1 [explode r1]
+set exp2 [explode r2]
+
+if { $exp1 != "r1_1" } {
+  puts "Error: First intersection is not returned"
+}
+if { $exp2 != "r2_1" } {
+  puts "Error: Second intersection is not returned"
+}
+
+set len_check 3.83537
+checksection r1
+checksection r2
+regexp {Mass +: +([-0-9.+eE]+)} [lprops r1] full l1
+regexp {Mass +: +([-0-9.+eE]+)} [lprops r2] full l2
+if { [expr 1.*abs($len_check - $l1)/$len_check] > 0.01 || [expr 1.*abs($len_check - $l2)/$len_check] > 0.01 } {
+  puts "Error : The length of first intersection is $l1"
+  puts "Error : The length of second intersection is $l2"
+} else {
+  puts "OK : The length of first intersection is $l1"
+  puts "OK : The length of second intersection is $l2"
+}
+
