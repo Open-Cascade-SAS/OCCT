@@ -34,6 +34,7 @@
 
 // exclude modern definitions and system-provided glext.h, should be defined before gl.h inclusion
 #define GL_GLEXT_LEGACY
+#define GLX_GLXEXT_LEGACY
 
 // include main OpenGL header provided with system
 #if defined(__APPLE__)
@@ -153,6 +154,7 @@
   #undef GL_VERSION_4_2
   #undef GL_VERSION_4_3
   #undef GL_VERSION_4_4
+  #undef GL_VERSION_4_5
 
   // include glext.h provided by Khronos group
   #include <glext.h>
