@@ -224,3 +224,21 @@ Download the necessary archive from http://www.vtk.org/VTK/resources/software.ht
 4. Start the installation of gl2ps. Binaries will be  installed according to the *VTK_INSTALL_PREFIX* option.
 
        make install
+
+@section dev_guides__building_3rdparty_linux_4 Installation From Official Repositories
+
+@subsection dev_guides__building_3rdparty_linux_4_1 Debian-based distributives
+
+All 3rd-party products required for building of  OCCT could be installed
+from official repositories. You may install them from  console using apt-get utility:
+
+    sudo apt-get install tcllib tklib tcl-dev tk-dev libfreetype-dev libxt-dev libxmu-dev libxi-dev libgl1-mesa-dev libglu1-mesa-dev libfreeimage-dev libtbb-dev libgl2ps-dev
+
+To launch binaries built with WOK you need to install C shell and 32-bit libraries on x86_64 distributives:
+
+    # you may need to add i386 if not done already by command "dpkg --add-architecture i386"
+    sudo apt-get install csh libstdc++6:i386 libxt6:i386 libxext6:i386 libxmu6:i386
+
+Building is possible with C++ compliant compiler:
+
+    sudo apt-get install g++
