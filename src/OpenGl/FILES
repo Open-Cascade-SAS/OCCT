@@ -157,3 +157,12 @@ OpenGl_ArbTexBindless.hxx
 Handle_OpenGl_Sampler.hxx
 OpenGl_Sampler.hxx
 OpenGl_Sampler.cxx
+OpenGl_Utils.hxx
+OpenGl_Quadric.hxx
+OpenGl_Quadric.cxx
+OpenGl_Cylinder.hxx
+OpenGl_Cylinder.cxx
+OpenGl_Disk.hxx
+OpenGl_Disk.cxx
+OpenGl_Sphere.hxx
+OpenGl_Sphere.cxx

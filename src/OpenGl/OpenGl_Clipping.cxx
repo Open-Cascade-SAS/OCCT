@@ -55,37 +55,27 @@ void OpenGl_Clipping::Add (Graphic3d_SequenceOfHClipPlane& thePlanes,
                            const EquationCoords& theCoordSpace,
                            const Handle(OpenGl_Workspace)& theWS)
 {
-#if !defined(GL_ES_VERSION_2_0)
-  GLint aMatrixMode;
-  glGetIntegerv (GL_MATRIX_MODE, &aMatrixMode);
+  Handle(OpenGl_Context) aContext = theWS->GetGlContext();
 
-  OpenGl_Matrix aCurrentMx;
-  glGetFloatv (GL_MODELVIEW_MATRIX, (GLfloat*) &aCurrentMx);
-
-  if (aMatrixMode != GL_MODELVIEW)
+  if (EquationCoords_View == theCoordSpace)
   {
-    glMatrixMode (GL_MODELVIEW);
+    aContext->WorldViewState.Push();
+    aContext->WorldViewState.SetIdentity();
   }
 
-  switch (theCoordSpace)
-  {
-    case EquationCoords_View:  glLoadMatrixf ((const GLfloat*) &OpenGl_IdentityMatrix); break;
-    case EquationCoords_World: glLoadMatrixf ((const GLfloat*) theWS->ViewMatrix());    break;
-  }
+  // Set either identity or pure view matrix.
+  aContext->ApplyWorldViewMatrix();
 
   Add (thePlanes, theCoordSpace);
 
-  // restore model-view matrix
-  glLoadMatrixf ((GLfloat*) &aCurrentMx);
-
-  // restore context matrix state
-  if (aMatrixMode != GL_MODELVIEW)
+  if (EquationCoords_View == theCoordSpace)
   {
-    glMatrixMode (aMatrixMode);
+    aContext->WorldViewState.Pop();
   }
-#else
-  Add (thePlanes, theCoordSpace);
-#endif
+
+  // Restore combined model-view matrix.
+  aContext->ApplyModelViewMatrix();
+
 }
 
 // =======================================================================

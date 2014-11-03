@@ -79,9 +79,9 @@ OpenGl_ProjectionState::OpenGl_ProjectionState()
 // function : Set
 // purpose  : Sets new OCCT projection state
 // =======================================================================
-void OpenGl_ProjectionState::Set (const Tmatrix3* theProjectionMatrix)
+void OpenGl_ProjectionState::Set (const OpenGl_Mat4& theProjectionMatrix)
 {
-  memcpy (myProjectionMatrix, theProjectionMatrix, sizeof (Tmatrix3));
+  myProjectionMatrix = theProjectionMatrix;
   myInverseNeedUpdate = true;
 }
 
@@ -89,7 +89,7 @@ void OpenGl_ProjectionState::Set (const Tmatrix3* theProjectionMatrix)
 // function : ProjectionMatrix
 // purpose  : Returns current projection matrix
 // =======================================================================
-const Tmatrix3& OpenGl_ProjectionState::ProjectionMatrix() const
+const OpenGl_Mat4& OpenGl_ProjectionState::ProjectionMatrix() const
 {
   return myProjectionMatrix;
 }
@@ -98,15 +98,15 @@ const Tmatrix3& OpenGl_ProjectionState::ProjectionMatrix() const
 // function : ProjectionMatrixInverse
 // purpose  : Returns inverse of current projection matrix
 // =======================================================================
-const Tmatrix3& OpenGl_ProjectionState::ProjectionMatrixInverse() const
+const OpenGl_Mat4& OpenGl_ProjectionState::ProjectionMatrixInverse() const
 {
   if (!myInverseNeedUpdate)
   {
     return myProjectionMatrixInverse;
   }
 
-  reinterpret_cast<const NCollection_Mat4<float>*> (*myProjectionMatrix)->Inverted (
-                *(reinterpret_cast<NCollection_Mat4<float>*> (*myProjectionMatrixInverse)));
+  myProjectionMatrix.Inverted (myProjectionMatrixInverse);
+
   return myProjectionMatrixInverse;
 }
 
@@ -124,9 +124,9 @@ OpenGl_ModelWorldState::OpenGl_ModelWorldState()
 // function : Set
 // purpose  : Sets new model-world matrix
 // =======================================================================
-void OpenGl_ModelWorldState::Set (const Tmatrix3* theModelWorldMatrix)
+void OpenGl_ModelWorldState::Set (const OpenGl_Mat4& theModelWorldMatrix)
 {
-  memcpy (myModelWorldMatrix, theModelWorldMatrix, sizeof (Tmatrix3));
+  myModelWorldMatrix = theModelWorldMatrix;
   myInverseNeedUpdate = true;
 }
 
@@ -134,7 +134,7 @@ void OpenGl_ModelWorldState::Set (const Tmatrix3* theModelWorldMatrix)
 // function : ModelWorldMatrix
 // purpose  : Returns current model-world matrix
 // =======================================================================
-const Tmatrix3& OpenGl_ModelWorldState::ModelWorldMatrix() const
+const OpenGl_Mat4& OpenGl_ModelWorldState::ModelWorldMatrix() const
 {
   return myModelWorldMatrix;
 }
@@ -143,15 +143,15 @@ const Tmatrix3& OpenGl_ModelWorldState::ModelWorldMatrix() const
 // function : ModelWorldMatrixInverse
 // purpose  : Returns inverse of current model-world matrix
 // =======================================================================
-const Tmatrix3& OpenGl_ModelWorldState::ModelWorldMatrixInverse() const
+const OpenGl_Mat4& OpenGl_ModelWorldState::ModelWorldMatrixInverse() const
 {
   if (!myInverseNeedUpdate)
   {
     return myModelWorldMatrix;
   }
 
-  reinterpret_cast<const NCollection_Mat4<float>*> (*myModelWorldMatrix)->Inverted (
-                *(reinterpret_cast<NCollection_Mat4<float>*> (*myModelWorldMatrixInverse)));
+  myModelWorldMatrix.Inverted (myModelWorldMatrixInverse);
+
   return myModelWorldMatrixInverse;
 }
 
@@ -169,9 +169,9 @@ OpenGl_WorldViewState::OpenGl_WorldViewState()
 // function : Set
 // purpose  : Sets new world-view matrix
 // =======================================================================
-void OpenGl_WorldViewState::Set (const Tmatrix3* theWorldViewMatrix)
+void OpenGl_WorldViewState::Set (const OpenGl_Mat4& theWorldViewMatrix)
 {
-  memcpy (myWorldViewMatrix, theWorldViewMatrix, sizeof (Tmatrix3));
+  myWorldViewMatrix = theWorldViewMatrix;
   myInverseNeedUpdate = true;
 }
 
@@ -179,7 +179,7 @@ void OpenGl_WorldViewState::Set (const Tmatrix3* theWorldViewMatrix)
 // function : WorldViewMatrix
 // purpose  : Returns current world-view matrix
 // =======================================================================
-const Tmatrix3& OpenGl_WorldViewState::WorldViewMatrix() const
+const OpenGl_Mat4& OpenGl_WorldViewState::WorldViewMatrix() const
 {
   return myWorldViewMatrix;
 }
@@ -188,15 +188,15 @@ const Tmatrix3& OpenGl_WorldViewState::WorldViewMatrix() const
 // function : WorldViewMatrixInverse
 // purpose  : Returns inverse of current world-view matrix
 // =======================================================================
-const Tmatrix3& OpenGl_WorldViewState::WorldViewMatrixInverse() const
+const OpenGl_Mat4& OpenGl_WorldViewState::WorldViewMatrixInverse() const
 {
   if (!myInverseNeedUpdate)
   {
     return myWorldViewMatrix;
   }
 
-  reinterpret_cast<const NCollection_Mat4<float>*> (*myWorldViewMatrix)->Inverted (
-                *(reinterpret_cast<NCollection_Mat4<float>*> (*myWorldViewMatrixInverse)));
+  myWorldViewMatrix.Inverted (myWorldViewMatrixInverse);
+
   return myWorldViewMatrixInverse;
 }
 

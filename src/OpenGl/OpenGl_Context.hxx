@@ -37,6 +37,7 @@
 #include <Handle_OpenGl_Context.hxx>
 #include <OpenGl_Clipping.hxx>
 #include <OpenGl_GlCore11.hxx>
+#include <OpenGl_Utils.hxx>
 
 //! Forward declarations
 struct OpenGl_GlFunctions;
@@ -384,6 +385,18 @@ public:
   //! @return old value of the flag
   Standard_EXPORT Standard_Boolean SetGlNormalizeEnabled (Standard_Boolean isEnabled);
 
+  //! Applies matrix stored in ModelWorldState to OpenGl.
+  void ApplyModelWorldMatrix();
+
+  //! Applies matrix stored in WorldViewState to OpenGl.
+  void ApplyWorldViewMatrix();
+
+  //! Applies combination of matrices stored in ModelWorldState and WorldViewState to OpenGl.
+  void ApplyModelViewMatrix();
+
+  //! Applies matrix stored in ProjectionState to OpenGl.
+  void ApplyProjectionMatrix();
+
 public:
 
   //! @return messenger instance
@@ -571,6 +584,12 @@ private: //! @name fields tracking current state
   Handle(OpenGl_Sampler)       myTexSampler;    //!< currently active sampler object
   Standard_Integer             myRenderMode;    //!< value for active rendering mode
   Standard_Integer             myDrawBuffer;    //!< current draw buffer
+
+public:
+
+  OpenGl_Utils::MatrixState<Standard_ShortReal> ModelWorldState; //!< state of orientation matrix
+  OpenGl_Utils::MatrixState<Standard_ShortReal> WorldViewState;  //!< state of orientation matrix
+  OpenGl_Utils::MatrixState<Standard_ShortReal> ProjectionState; //!< state of projection  matrix
 
 private:
 

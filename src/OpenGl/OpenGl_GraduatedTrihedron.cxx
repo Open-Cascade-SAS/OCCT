@@ -15,11 +15,6 @@
 
 #include <OpenGl_GlCore11.hxx>
 
-#include <stddef.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-
 #include <InterfaceGraphic_Graphic3d.hxx>
 #include <InterfaceGraphic_Aspect.hxx>
 #include <InterfaceGraphic_Visual3d.hxx>
@@ -28,10 +23,11 @@
   #include <string.h>
 #endif
 
+#include <OpenGl_AspectLine.hxx>
+#include <OpenGl_GraduatedTrihedron.hxx>
+#include <OpenGl_Utils.hxx>
 #include <OpenGl_Workspace.hxx>
 #include <OpenGl_View.hxx>
-#include <OpenGl_GraduatedTrihedron.hxx>
-#include <OpenGl_AspectLine.hxx>
 
 const OpenGl_AspectLine myDefaultAspectLine;
 
@@ -55,9 +51,35 @@ static float getNormal(float* normal)
   glGetIntegerv(GL_VIEWPORT, viewport);
 
   double x1, y1, z1, x2, y2, z2, x3, y3, z3;
-  gluUnProject(viewport[0], viewport[1], 0., model_matrix, proj_matrix, viewport, &x1, &y1, &z1);
-  gluUnProject(viewport[0] + viewport[2], viewport[1], 0., model_matrix, proj_matrix, viewport, &x2, &y2, &z2);
-  gluUnProject(viewport[0], viewport[1] + viewport[3], 0., model_matrix, proj_matrix, viewport, &x3, &y3, &z3);
+  OpenGl_Utils::UnProject<Standard_Real> (viewport[0],
+                                          viewport[1],
+                                          0.0,
+                                          OpenGl_Mat4d::Map (model_matrix),
+                                          OpenGl_Mat4d::Map (proj_matrix),
+                                          viewport,
+                                          x1,
+                                          y1,
+                                          z1);
+
+  OpenGl_Utils::UnProject<Standard_Real> (viewport[0] + viewport[2],
+                                          viewport[1],
+                                          0.0,
+                                          OpenGl_Mat4d::Map (model_matrix),
+                                          OpenGl_Mat4d::Map (proj_matrix),
+                                          viewport,
+                                          x2,
+                                          y2,
+                                          z2);
+
+  OpenGl_Utils::UnProject<Standard_Real> (viewport[0],
+                                          viewport[1] + viewport[3],
+                                          0.0,
+                                          OpenGl_Mat4d::Map (model_matrix),
+                                          OpenGl_Mat4d::Map (proj_matrix),
+                                          viewport,
+                                          x3,
+                                          y3,
+                                          z3);
 
   /* Normal out of user is p1p3^p1p2 */
   const double dx1 = x3 - x1;

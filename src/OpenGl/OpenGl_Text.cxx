@@ -21,6 +21,7 @@
 #include <OpenGl_ShaderStates.hxx>
 #include <OpenGl_Sampler.hxx>
 #include <OpenGl_Text.hxx>
+#include <OpenGl_Utils.hxx>
 #include <OpenGl_Workspace.hxx>
 
 #include <Font_FontMgr.hxx>
@@ -32,12 +33,12 @@
 
 namespace
 {
-  static const GLdouble THE_IDENTITY_MATRIX[4][4] =
+  static const GLdouble THE_IDENTITY_MATRIX[16] =
   {
-    {1.,0.,0.,0.},
-    {0.,1.,0.,0.},
-    {0.,0.,1.,0.},
-    {0.,0.,0.,1.}
+    1.0, 0.0, 0.0, 0.0,
+    0.0, 1.0, 0.0, 0.0,
+    0.0, 0.0, 1.0, 0.0,
+    0.0, 0.0, 0.0, 1.0
   };
 
 #ifdef HAVE_GL2PS
@@ -455,27 +456,33 @@ void OpenGl_Text::setupMatrix (const Handle(OpenGl_PrinterContext)& thePrintCtx,
 {
   // setup matrix
 #if !defined(GL_ES_VERSION_2_0)
+
+  OpenGl_Mat4d aModViewMat;
+
   if (myIs2d)
   {
-    glLoadIdentity();
-    glTranslatef (myPoint.x() + theDVec.x(), myPoint.y() + theDVec.y(), 0.0f);
-    glScalef (1.0f, -1.0f, 1.0f);
-    glRotatef (theTextAspect.Angle(), 0.0, 0.0, 1.0);
+    OpenGl_Utils::Translate<GLdouble> (aModViewMat, myPoint.x() + theDVec.x(), myPoint.y() + theDVec.y(), 0.f);
+    OpenGl_Utils::Scale<GLdouble> (aModViewMat, 1.f, -1.f, 1.f);
+    OpenGl_Utils::Rotate<GLdouble> (aModViewMat, theTextAspect.Angle(), 0.f, 0.f, 1.f);
   }
   else
   {
     // align coordinates to the nearest integer
     // to avoid extra interpolation issues
     GLdouble anObjX, anObjY, anObjZ;
-    gluUnProject (std::floor (myWinX + (GLdouble )theDVec.x()),
-                  std::floor (myWinY + (GLdouble )theDVec.y()),
-                  myWinZ + (GLdouble )theDVec.z(),
-                  (GLdouble* )THE_IDENTITY_MATRIX, myProjMatrix, myViewport,
-                  &anObjX, &anObjY, &anObjZ);
+    OpenGl_Utils::UnProject<Standard_Real> (std::floor (myWinX + theDVec.x()),
+                                            std::floor (myWinY + theDVec.y()),
+                                            myWinZ + theDVec.z(),
+                                            OpenGl_Mat4d::Map (THE_IDENTITY_MATRIX),
+                                            OpenGl_Mat4d::Map (myProjMatrix),
+                                            myViewport,
+                                            anObjX,
+                                            anObjY,
+                                            anObjZ);
 
-    glLoadIdentity();
-    theCtx->core11->glTranslated (anObjX, anObjY, anObjZ);
-    theCtx->core11->glRotated (theTextAspect.Angle(), 0.0, 0.0, 1.0);
+    OpenGl_Utils::Translate<GLdouble> (aModViewMat, anObjX, anObjY, anObjZ);
+    OpenGl_Utils::Rotate<GLdouble> (aModViewMat, theTextAspect.Angle(), 0.0, 0.0, 1.0);
+
     if (!theTextAspect.IsZoomable())
     {
     #ifdef _WIN32
@@ -489,12 +496,15 @@ void OpenGl_Text::setupMatrix (const Handle(OpenGl_PrinterContext)& thePrintCtx,
         // text should be scaled in all directions with same
         // factor to save its proportions, so use height (y) scaling
         // as it is better for keeping text/3d graphics proportions
-        theCtx->core11->glScaled ((GLfloat )aTextScaley, (GLfloat )aTextScaley, (GLfloat )aTextScaley);
+        OpenGl_Utils::Scale<GLdouble> (aModViewMat, aTextScaley, aTextScaley, aTextScaley);
       }
     #endif
-      theCtx->core11->glScaled (myScaleHeight, myScaleHeight, myScaleHeight);
+      OpenGl_Utils::Scale<GLdouble> (aModViewMat, myScaleHeight, myScaleHeight, myScaleHeight);
     }
   }
+
+  theCtx->WorldViewState.SetCurrent<Standard_Real> (aModViewMat);
+  theCtx->ApplyWorldViewMatrix();
 #endif
 }
 
@@ -660,30 +670,49 @@ void OpenGl_Text::render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
   myExportHeight = 1.0f;
   myScaleHeight  = 1.0f;
 
+  theCtx->WorldViewState.Push();
+
 #if !defined(GL_ES_VERSION_2_0)
-  glMatrixMode (GL_MODELVIEW);
-  glPushMatrix();
+  myModelMatrix.Convert (theCtx->WorldViewState.Current() * theCtx->ModelWorldState.Current());
+
   if (!myIs2d)
   {
-    // retrieve active matrices for project/unproject calls
-    glGetDoublev  (GL_MODELVIEW_MATRIX,  myModelMatrix);
-    glGetDoublev  (GL_PROJECTION_MATRIX, myProjMatrix);
     glGetIntegerv (GL_VIEWPORT,          myViewport);
-    gluProject (myPoint.x(), myPoint.y(), myPoint.z(),
-                myModelMatrix, myProjMatrix, myViewport,
-                &myWinX, &myWinY, &myWinZ);
+    myProjMatrix.Convert (theCtx->ProjectionState.Current());
+
+    OpenGl_Utils::Project<Standard_Real> (myPoint.x(),
+                                          myPoint.y(),
+                                          myPoint.z(),
+                                          myModelMatrix,
+                                          myProjMatrix,
+                                          myViewport,
+                                          myWinX,
+                                          myWinY,
+                                          myWinZ);
 
     // compute scale factor for constant text height
     GLdouble x1, y1, z1;
-    gluUnProject (myWinX, myWinY, myWinZ,
-                  (GLdouble* )THE_IDENTITY_MATRIX, myProjMatrix, myViewport,
-                  &x1, &y1, &z1);
+    OpenGl_Utils::UnProject<Standard_Real> (myWinX,
+                                            myWinY,
+                                            myWinZ,
+                                            OpenGl_Mat4d::Map (THE_IDENTITY_MATRIX),
+                                            myProjMatrix,
+                                            myViewport,
+                                            x1,
+                                            y1,
+                                            z1);
 
     GLdouble x2, y2, z2;
     const GLdouble h = (GLdouble )myFont->FTFont()->PointSize();
-    gluUnProject (myWinX, myWinY + h, myWinZ,
-                  (GLdouble* )THE_IDENTITY_MATRIX, myProjMatrix, myViewport,
-                  &x2, &y2, &z2);
+    OpenGl_Utils::UnProject<Standard_Real> (myWinX,
+                                            myWinY + h,
+                                            myWinZ,
+                                            OpenGl_Mat4d::Map (THE_IDENTITY_MATRIX),
+                                            myProjMatrix,
+                                            myViewport,
+                                            x2,
+                                            y2,
+                                            z2);
 
     myScaleHeight = (y2 - y1) / h;
     if (theTextAspect.IsZoomable())
@@ -707,7 +736,6 @@ void OpenGl_Text::render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
   {
     glDisable (GL_DEPTH_TEST);
   }
-
 
   // setup alpha test
   GLint aTexEnvParam = GL_REPLACE;
@@ -823,7 +851,10 @@ void OpenGl_Text::render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
 
   // revert OpenGL state
   glPopAttrib(); // enable bit
-  glPopMatrix(); // model view matrix was modified
+
+  // model view matrix was modified
+  theCtx->WorldViewState.Pop();
+  theCtx->ApplyModelViewMatrix();
 
   // revert custom OpenGL sampler
   if (!aSampler.IsNull() && aSampler->IsValid())

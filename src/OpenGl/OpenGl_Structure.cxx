@@ -118,19 +118,6 @@ public:
 /*----------------------------------------------------------------------*/
 
 // =======================================================================
-// function : call_util_transpose_mat
-// purpose  :
-// =======================================================================
-static void call_util_transpose_mat (float tmat[16], float mat[4][4])
-{
-  int i, j;
-
-  for (i=0; i<4; i++)
-    for (j=0; j<4; j++)
-      tmat[j*4+i] = mat[i][j];
-}
-
-// =======================================================================
 // function : OpenGl_Structure
 // purpose  :
 // =======================================================================
@@ -645,24 +632,22 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
     return;
   }
 
-  const Handle(OpenGl_Context)& aContext = theWorkspace->GetGlContext();
+  const Handle(OpenGl_Context)& aCtx = theWorkspace->GetGlContext();
 
   // Render named status
   const Standard_Integer aNamedStatus = theWorkspace->NamedStatus;
   theWorkspace->NamedStatus |= myNamedStatus;
 
-  // Is rendering in ADD or IMMEDIATE mode?
-  const Standard_Boolean isImmediate = (theWorkspace->NamedStatus & OPENGL_NS_IMMEDIATE) != 0;
-
   // Do we need to restore GL_NORMALIZE?
-  Standard_Boolean anOldGlNormalize = aContext->IsGlNormalizeEnabled();
+  const Standard_Boolean anOldGlNormalize = aCtx->IsGlNormalizeEnabled();
 
   // Apply local transformation
-  GLint aMatrixMode = 0;
-  const OpenGl_Matrix* aLocalTrsf = NULL;
   if (myTransformation)
   {
-  #if !defined(GL_ES_VERSION_2_0)
+    OpenGl_Matrix aModelWorld;
+    OpenGl_Transposemat3 (&aModelWorld, myTransformation);
+    aCtx->ModelWorldState.Push();
+    aCtx->ModelWorldState.SetCurrent (OpenGl_Mat4::Map ((Standard_ShortReal* )aModelWorld.mat));
 
     Standard_ShortReal aScaleX = OpenGl_Vec3 (myTransformation->mat[0][0],
                                               myTransformation->mat[0][1],
@@ -670,50 +655,19 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
     // Scale transform detected.
     if (Abs (aScaleX - 1.f) > Precision::Confusion())
     {
-      anOldGlNormalize = aContext->SetGlNormalizeEnabled (Standard_True);
+      aCtx->SetGlNormalizeEnabled (Standard_True);
     }
-
-    if (isImmediate)
-    {
-      Tmatrix3 aModelWorld;
-      call_util_transpose_mat (*aModelWorld, myTransformation->mat);
-
-      glGetIntegerv (GL_MATRIX_MODE, &aMatrixMode);
-
-      if (!aContext->ShaderManager()->IsEmpty())
-      {
-        Tmatrix3 aWorldView;
-        glGetFloatv (GL_MODELVIEW_MATRIX, *aWorldView);
-
-        Tmatrix3 aProjection;
-        glGetFloatv (GL_PROJECTION_MATRIX, *aProjection);
-
-        aContext->ShaderManager()->UpdateModelWorldStateTo (&aModelWorld);
-        aContext->ShaderManager()->UpdateWorldViewStateTo (&aWorldView);
-        aContext->ShaderManager()->UpdateProjectionStateTo (&aProjection);
-      }
-
-      glMatrixMode (GL_MODELVIEW);
-      glPushMatrix ();
-      glScalef (1.0f, 1.0f, 1.0f);
-      glMultMatrixf (*aModelWorld);
-    }
-    else
-    {
-      glMatrixMode (GL_MODELVIEW);
-      glPushMatrix();
-
-      aLocalTrsf = theWorkspace->SetStructureMatrix (myTransformation);
-    }
-  #endif
   }
 
   // Apply transform persistence
   const TEL_TRANSFORM_PERSISTENCE *aTransPersistence = NULL;
   if ( myTransPers && myTransPers->mode != 0 )
   {
-    aTransPersistence = theWorkspace->ActiveView()->BeginTransformPersistence (aContext, myTransPers);
+    aTransPersistence = theWorkspace->ActiveView()->BeginTransformPersistence (aCtx, myTransPers);
   }
+
+  // Take into account transform persistence
+  aCtx->ApplyModelViewMatrix();
 
   // Apply aspects
   const OpenGl_AspectLine *anAspectLine = theWorkspace->AspectLine (Standard_False);
@@ -740,7 +694,7 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
   // Apply correction for mirror transform
   if (myIsMirrored)
   {
-    glFrontFace (GL_CW);
+    aCtx->core11fwd->glFrontFace (GL_CW);
   }
 
   // Apply highlight color
@@ -784,12 +738,12 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
   if (!aUserPlanes.IsNull() && !aUserPlanes->IsEmpty())
   {
     // add planes at loaded view matrix state
-    aContext->ChangeClipping().AddWorld (*aUserPlanes, theWorkspace);
+    aCtx->ChangeClipping().AddWorld (*aUserPlanes, theWorkspace);
 
     // Set OCCT state uniform variables
-    if (!aContext->ShaderManager()->IsEmpty())
+    if (!aCtx->ShaderManager()->IsEmpty())
     {
-      aContext->ShaderManager()->UpdateClippingState();
+      aCtx->ShaderManager()->UpdateClippingState();
     }
   }
 
@@ -802,10 +756,12 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
 
   // Reset correction for mirror transform
   if (myIsMirrored)
-    glFrontFace (GL_CCW); // default
+  {
+    aCtx->core11fwd->glFrontFace (GL_CCW);
+  }
 
   // Render capping for structure groups
-  if (!aContext->Clipping().Planes().IsEmpty())
+  if (!aCtx->Clipping().Planes().IsEmpty())
   {
     OpenGl_CappingAlgo::RenderCapping (theWorkspace, aGroups);
   }
@@ -813,13 +769,20 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
   // Revert structure clippings
   if (!aUserPlanes.IsNull() && !aUserPlanes->IsEmpty())
   {
-    aContext->ChangeClipping().Remove (*aUserPlanes);
+    aCtx->ChangeClipping().Remove (*aUserPlanes);
 
     // Set OCCT state uniform variables
-    if (!aContext->ShaderManager()->IsEmpty())
+    if (!aCtx->ShaderManager()->IsEmpty())
     {
-      aContext->ShaderManager()->RevertClippingState();
+      aCtx->ShaderManager()->RevertClippingState();
     }
+  }
+
+  // Apply local transformation
+  if (myTransformation)
+  {
+    aCtx->ModelWorldState.Pop();
+    aCtx->SetGlNormalizeEnabled (anOldGlNormalize);
   }
 
   // Restore highlight color
@@ -834,36 +797,7 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
   // Restore transform persistence
   if ( myTransPers && myTransPers->mode != 0 )
   {
-    theWorkspace->ActiveView()->BeginTransformPersistence (aContext, aTransPersistence);
-  }
-
-  // Restore local transformation
-  if (myTransformation)
-  {
-  #if !defined(GL_ES_VERSION_2_0)
-
-    aContext->SetGlNormalizeEnabled (anOldGlNormalize);
-
-    if (isImmediate)
-    {
-      glPopMatrix ();
-      glMatrixMode (aMatrixMode);
-
-      Tmatrix3 aModelWorldState = { { 1.f, 0.f, 0.f, 0.f },
-                                    { 0.f, 1.f, 0.f, 0.f },
-                                    { 0.f, 0.f, 1.f, 0.f },
-                                    { 0.f, 0.f, 0.f, 1.f } };
-
-      aContext->ShaderManager()->RevertModelWorldStateTo (&aModelWorldState);
-    }
-    else
-    {
-      theWorkspace->SetStructureMatrix (aLocalTrsf, true);
-
-      glMatrixMode (GL_MODELVIEW);
-      glPopMatrix();
-    }
-  #endif
+    theWorkspace->ActiveView()->BeginTransformPersistence (aCtx, aTransPersistence);
   }
 
   // Apply highlight box

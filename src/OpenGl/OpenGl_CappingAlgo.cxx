@@ -230,9 +230,11 @@ void OpenGl_CappingAlgo::RenderPlane (const Handle(OpenGl_Workspace)& theWorkspa
   theWorkspace->AspectFace (Standard_True);
 
   // set identity model matrix
-  const OpenGl_Matrix* aModelMatrix = theWorkspace->SetStructureMatrix (&OpenGl_IdentityMatrix);
+  aContext->ModelWorldState.Push();
+  aContext->ModelWorldState.SetCurrent (OpenGl_Mat4::Map (*aPlaneRes->Orientation()->mat));
+  aContext->ApplyModelViewMatrix();
+
 #if !defined(GL_ES_VERSION_2_0)
-  glMultMatrixf ((const GLfloat*)aPlaneRes->Orientation());
   glNormal3f (0.0f, 1.0f, 0.0f);
   glEnableClientState (GL_VERTEX_ARRAY);
   glVertexPointer (4, GL_FLOAT, 0, (GLfloat* )&THE_CAPPING_PLN_VERTS);
@@ -243,7 +245,9 @@ void OpenGl_CappingAlgo::RenderPlane (const Handle(OpenGl_Workspace)& theWorkspa
   glDisableClientState (GL_TEXTURE_COORD_ARRAY);
 #endif
 
-  theWorkspace->SetStructureMatrix (aModelMatrix, true);
+  aContext->ModelWorldState.Pop();
+  aContext->ApplyModelViewMatrix();
+
   theWorkspace->SetAspectFace (aFaceAspect);
 
   // set delayed resource release

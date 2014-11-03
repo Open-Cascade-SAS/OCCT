@@ -27,6 +27,7 @@
 #include <OpenGl_Structure.hxx>
 #include <OpenGl_Sampler.hxx>
 #include <OpenGl_Texture.hxx>
+#include <OpenGl_Utils.hxx>
 #include <OpenGl_View.hxx>
 #include <OpenGl_Workspace.hxx>
 
@@ -368,12 +369,13 @@ void OpenGl_Workspace::setTextureParams (Handle(OpenGl_Texture)&                
 
   // setup texture matrix
   glMatrixMode (GL_TEXTURE);
-  glLoadIdentity();
+  OpenGl_Mat4 aTextureMat;
   const Graphic3d_Vec2& aScale = aParams->Scale();
   const Graphic3d_Vec2& aTrans = aParams->Translation();
-  glScalef     ( aScale.x(),  aScale.y(), 1.0f);
-  glTranslatef (-aTrans.x(), -aTrans.y(), 0.0f);
-  glRotatef (-aParams->Rotation(), 0.0f, 0.0f, 1.0f);
+  OpenGl_Utils::Scale     (aTextureMat,  aScale.x(),  aScale.y(), 1.0f);
+  OpenGl_Utils::Translate (aTextureMat, -aTrans.x(), -aTrans.y(), 0.0f);
+  OpenGl_Utils::Rotate    (aTextureMat, -aParams->Rotation(), 0.0f, 0.0f, 1.0f);
+  glLoadMatrixf (aTextureMat);
 
   // setup generation of texture coordinates
   switch (aParams->GenMode())
@@ -400,9 +402,10 @@ void OpenGl_Workspace::setTextureParams (Handle(OpenGl_Texture)&                
     }
     case Graphic3d_TOTM_EYE:
     {
-      glMatrixMode (GL_MODELVIEW);
-      glPushMatrix();
-      glLoadIdentity();
+      myGlContext->WorldViewState.Push();
+
+      myGlContext->WorldViewState.SetIdentity();
+      myGlContext->ApplyWorldViewMatrix();
 
       glTexGeni  (GL_S, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
       glTexGenfv (GL_S, GL_EYE_PLANE,        aParams->GenPlaneS().GetData());
@@ -412,7 +415,9 @@ void OpenGl_Workspace::setTextureParams (Handle(OpenGl_Texture)&                
         glTexGeni  (GL_T, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
         glTexGenfv (GL_T, GL_EYE_PLANE,        aParams->GenPlaneT().GetData());
       }
-      glPopMatrix();
+
+      myGlContext->WorldViewState.Pop();
+
       break;
     }
     case Graphic3d_TOTM_SPRITE:
@@ -830,14 +835,19 @@ void OpenGl_Workspace::redraw1 (const Graphic3d_CView& theCView,
 void OpenGl_Workspace::copyBackToFront()
 {
 #if !defined(GL_ES_VERSION_2_0)
-  glMatrixMode (GL_PROJECTION);
-  glPushMatrix();
-  glLoadIdentity();
-  gluOrtho2D (0.0, (GLdouble )myWidth, 0.0, (GLdouble )myHeight);
 
-  glMatrixMode (GL_MODELVIEW);
-  glPushMatrix();
-  glLoadIdentity();
+  OpenGl_Mat4 aProjectMat;
+  OpenGl_Utils::Ortho2D<Standard_ShortReal> (aProjectMat,
+    0.f, static_cast<GLfloat> (myWidth), 0.f, static_cast<GLfloat> (myHeight));
+
+  myGlContext->WorldViewState.Push();
+  myGlContext->ProjectionState.Push();
+
+  myGlContext->WorldViewState.SetIdentity();
+  myGlContext->ProjectionState.SetCurrent (aProjectMat);
+
+  myGlContext->ApplyProjectionMatrix();
+  myGlContext->ApplyWorldViewMatrix();
 
   DisableFeatures();
 
@@ -849,11 +859,9 @@ void OpenGl_Workspace::copyBackToFront()
 
   EnableFeatures();
 
-  glMatrixMode (GL_PROJECTION);
-  glPopMatrix();
-  glMatrixMode (GL_MODELVIEW);
-  glPopMatrix();
-
+  myGlContext->WorldViewState.Pop();
+  myGlContext->ProjectionState.Pop();
+  myGlContext->ApplyProjectionMatrix();
   glDrawBuffer (GL_BACK);
 
 #endif

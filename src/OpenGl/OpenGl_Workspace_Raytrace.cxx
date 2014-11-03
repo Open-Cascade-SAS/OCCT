@@ -2394,22 +2394,21 @@ Standard_Boolean OpenGl_Workspace::Raytrace (const Graphic3d_CView& theCView,
 
   myView->DrawBackground (*this);
 
-  myView->RedrawLayer2d (myPrintContext, theCView, theCUnderLayer);
+  myView->RedrawLayer2d (myPrintContext, this, theCView, theCUnderLayer);
 
-#if !defined(GL_ES_VERSION_2_0)
-  // Generate ray-traced image
-  glMatrixMode (GL_PROJECTION);
-  glPushMatrix();
-  glLoadIdentity();
+  myGlContext->WorldViewState.Push();
+  myGlContext->ProjectionState.Push();
 
-  glMatrixMode (GL_MODELVIEW);
-  glPushMatrix();
-  glLoadIdentity();
-#endif
+  myGlContext->WorldViewState.SetIdentity();
+  myGlContext->ProjectionState.SetIdentity();
+
+  myGlContext->ApplyProjectionMatrix();
+  myGlContext->ApplyWorldViewMatrix();
 
   glEnable (GL_BLEND);
   glBlendFunc (GL_ONE, GL_SRC_ALPHA);
 
+  // Generate ray-traced image
   if (myIsRaytraceDataValid)
   {
     myRaytraceScreenQuad.Bind (myGlContext);
@@ -2447,12 +2446,10 @@ Standard_Boolean OpenGl_Workspace::Raytrace (const Graphic3d_CView& theCView,
   if (wasDepthTestEnabled)
     glEnable (GL_DEPTH_TEST);
 
-#if !defined(GL_ES_VERSION_2_0)
-  glMatrixMode (GL_PROJECTION);
-  glPopMatrix();
-  glMatrixMode (GL_MODELVIEW);
-  glPopMatrix();
-#endif
+  myGlContext->WorldViewState.Pop();
+  myGlContext->ProjectionState.Pop();
+
+  myGlContext->ApplyProjectionMatrix();
 
   // Redraw trihedron
   myView->RedrawTrihedron (this);
@@ -2460,7 +2457,7 @@ Standard_Boolean OpenGl_Workspace::Raytrace (const Graphic3d_CView& theCView,
   // Redraw overlay
   const int aMode = 0;
   DisplayCallback (theCView, (aMode | OCC_PRE_OVERLAY));
-  myView->RedrawLayer2d (myPrintContext, theCView, theCOverLayer);
+  myView->RedrawLayer2d (myPrintContext, this, theCView, theCOverLayer);
   DisplayCallback (theCView, aMode);
 
   // Swap the buffers

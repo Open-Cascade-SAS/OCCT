@@ -65,7 +65,6 @@ void OpenGl_Flipper::Release (OpenGl_Context*)
 void OpenGl_Flipper::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
   // Check if rendering is to be in immediate mode
-  const Standard_Boolean isImmediate = (theWorkspace->NamedStatus & OPENGL_NS_IMMEDIATE) != 0;
   const Handle(OpenGl_Context)& aContext = theWorkspace->GetGlContext();
 
 #if !defined(GL_ES_VERSION_2_0)
@@ -74,67 +73,17 @@ void OpenGl_Flipper::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
 
   if (!myIsEnabled)
   {
-    // Restore transformation
-    if (isImmediate)
-    {
-      if (aCurrMode != GL_MODELVIEW)
-      {
-        glMatrixMode (GL_MODELVIEW);
-      }
+    // restore matrix state
+    aContext->WorldViewState.Pop();
 
-      glPopMatrix();
+    // Apply since we probably in the middle of something.
+    aContext->ApplyModelViewMatrix();
 
-      if (aCurrMode != GL_MODELVIEW)
-      {
-        glMatrixMode (aCurrMode);
-      }
-
-      Tmatrix3 aModelWorldState = { { 1.f, 0.f, 0.f, 0.f },
-                                    { 0.f, 1.f, 0.f, 0.f },
-                                    { 0.f, 0.f, 1.f, 0.f },
-                                    { 0.f, 0.f, 0.f, 1.f } };
-
-      aContext->ShaderManager()->RevertModelWorldStateTo (&aModelWorldState);
-    }
-    else
-    {
-      // Update current model-view matrix in the top of the stack
-      // replacing it with StructureMatrixT*ViewMatrix from the workspace.
-      theWorkspace->UpdateModelViewMatrix();
-    }
     return;
   }
 
-  if (isImmediate)
-  {
-
-    if (!aContext->ShaderManager()->IsEmpty())
-    {
-      Tmatrix3 aWorldView;
-      glGetFloatv (GL_MODELVIEW_MATRIX, *aWorldView);
-
-      Tmatrix3 aProjection;
-      glGetFloatv (GL_PROJECTION_MATRIX, *aProjection);
-
-      aContext->ShaderManager()->UpdateWorldViewStateTo (&aWorldView);
-      aContext->ShaderManager()->UpdateProjectionStateTo (&aProjection);
-    }
-
-    if (aCurrMode != GL_MODELVIEW)
-    {
-      glMatrixMode (GL_MODELVIEW);
-    }
-
-    glPushMatrix();
-
-    if (aCurrMode != GL_MODELVIEW)
-    {
-      glMatrixMode (aCurrMode);
-    }
-  }
-
-  OpenGl_Mat4 aMatrixMV;
-  glGetFloatv (GL_MODELVIEW_MATRIX, aMatrixMV.ChangeData());
+  aContext->WorldViewState.Push();
+  OpenGl_Mat4 aMatrixMV = aContext->WorldViewState.Current() * aContext->ModelWorldState.Current();
 
   const OpenGl_Vec4 aMVReferenceOrigin = aMatrixMV * myReferenceOrigin;
   const OpenGl_Vec4 aMVReferenceX      = aMatrixMV * OpenGl_Vec4 (myReferenceX.xyz() + myReferenceOrigin.xyz(), 1.0f);
@@ -189,16 +138,8 @@ void OpenGl_Flipper::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
   aMatrixMV = aMatrixMV * aTransform;
 
   // load transformed model-view matrix
-  if (aCurrMode != GL_MODELVIEW)
-  {
-    glMatrixMode (GL_MODELVIEW);
-  }
+  aContext->WorldViewState.SetCurrent (aMatrixMV);
+  aContext->ApplyWorldViewMatrix();
 
-  glLoadMatrixf ((GLfloat*) aMatrixMV);
-
-  if (aCurrMode != GL_MODELVIEW)
-  {
-    glMatrixMode (aCurrMode);
-  }
 #endif
 }

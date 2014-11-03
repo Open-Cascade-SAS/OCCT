@@ -1071,7 +1071,7 @@ Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)&
     return Standard_False;
   }
 
-  theCtx->core20->glUniformMatrix4fv (theLocation, 1, theTranspose, theValue);
+  theCtx->core20->glUniformMatrix4fv (theLocation, 1, GL_FALSE, theTranspose ? theValue.Transposed() : theValue);
   return Standard_True;
 }
 
@@ -1096,43 +1096,7 @@ Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)&
                                                    const OpenGl_Matrix&          theValue,
                                                    GLboolean                     theTranspose)
 {
-  if (myProgramID == NO_PROGRAM || theLocation == INVALID_LOCATION)
-  {
-    return Standard_False;
-  }
-
-  theCtx->core20->glUniformMatrix4fv (theLocation, 1, theTranspose, *theValue.mat);
-  return Standard_True;
-}
-
-// =======================================================================
-// function : SetUniform
-// purpose  : Specifies the value of the floating-point uniform 4x4 matrix
-// =======================================================================
-Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)& theCtx,
-                                                   const GLchar*                 theName,
-                                                   const Tmatrix3&               theValue,
-                                                   GLboolean                     theTranspose)
-{
-  return SetUniform (theCtx, GetUniformLocation (theCtx, theName), theValue, theTranspose);
-}
-
-// =======================================================================
-// function : SetUniform
-// purpose  : Specifies the value of the floating-point uniform 4x4 matrix
-// =======================================================================
-Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)& theCtx,
-                                                   GLint                         theLocation,
-                                                   const Tmatrix3&               theValue,
-                                                   GLboolean                     theTranspose)
-{
-  if (myProgramID == NO_PROGRAM || theLocation == INVALID_LOCATION)
-  {
-    return Standard_False;
-  }
-
-  theCtx->core20->glUniformMatrix4fv (theLocation, 1, theTranspose, *theValue);
-  return Standard_True;
+  return SetUniform (theCtx, theLocation, OpenGl_Mat4::Map (*theValue.mat), theTranspose);
 }
 
 // =======================================================================

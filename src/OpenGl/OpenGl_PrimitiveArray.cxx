@@ -604,9 +604,13 @@ OpenGl_PrimitiveArray::OpenGl_PrimitiveArray (const OpenGl_GraphicDriver*       
   myAttribs   (theAttribs),
   myBounds    (theBounds),
   myDrawMode  (DRAW_MODE_NONE),
-  myIsVboInit (Standard_False),
-  myUID       (theDriver->GetNextPrimitiveArrayUID())
+  myIsVboInit (Standard_False)
 {
+  if (theDriver != NULL)
+  {
+    myUID = theDriver->GetNextPrimitiveArrayUID();
+  }
+
   if (!myIndices.IsNull()
     && myIndices->NbElements < 1)
   {
@@ -673,6 +677,7 @@ OpenGl_PrimitiveArray::~OpenGl_PrimitiveArray()
 // =======================================================================
 void OpenGl_PrimitiveArray::Release (OpenGl_Context* theContext)
 {
+  myIsVboInit = Standard_False;
   if (!myVboIndices.IsNull())
   {
     if (theContext)

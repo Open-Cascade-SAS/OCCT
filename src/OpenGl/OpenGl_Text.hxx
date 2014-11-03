@@ -137,8 +137,8 @@ protected:
 
 protected:
 
-  mutable GLdouble myProjMatrix[16];
-  mutable GLdouble myModelMatrix[16];
+  mutable OpenGl_Mat4d myProjMatrix;
+  mutable OpenGl_Mat4d myModelMatrix;
   mutable GLint    myViewport[4];
   mutable GLdouble myWinX;
   mutable GLdouble myWinY;

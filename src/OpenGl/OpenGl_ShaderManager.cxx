@@ -384,7 +384,7 @@ void OpenGl_ShaderManager::SetShadingModel (const Visual3d_TypeOfModel theModel)
 // function : SetProjectionState
 // purpose  : Sets new state of OCCT projection transform
 // =======================================================================
-void OpenGl_ShaderManager::UpdateProjectionStateTo (const Tmatrix3* theProjectionMatrix)
+void OpenGl_ShaderManager::UpdateProjectionStateTo (const OpenGl_Mat4& theProjectionMatrix)
 {
   myProjectionState.Set (theProjectionMatrix);
   myProjectionState.Update();
@@ -394,7 +394,7 @@ void OpenGl_ShaderManager::UpdateProjectionStateTo (const Tmatrix3* theProjectio
 // function : SetModelWorldState
 // purpose  : Sets new state of OCCT model-world transform
 // =======================================================================
-void OpenGl_ShaderManager::UpdateModelWorldStateTo (const Tmatrix3* theModelWorldMatrix)
+void OpenGl_ShaderManager::UpdateModelWorldStateTo (const OpenGl_Mat4& theModelWorldMatrix)
 {
   myModelWorldState.Set (theModelWorldMatrix);
   myModelWorldState.Update();
@@ -404,7 +404,7 @@ void OpenGl_ShaderManager::UpdateModelWorldStateTo (const Tmatrix3* theModelWorl
 // function : SetWorldViewState
 // purpose  : Sets new state of OCCT world-view transform
 // =======================================================================
-void OpenGl_ShaderManager::UpdateWorldViewStateTo (const Tmatrix3* theWorldViewMatrix)
+void OpenGl_ShaderManager::UpdateWorldViewStateTo (const OpenGl_Mat4& theWorldViewMatrix)
 {
   myWorldViewState.Set (theWorldViewMatrix);
   myWorldViewState.Update();
@@ -414,7 +414,7 @@ void OpenGl_ShaderManager::UpdateWorldViewStateTo (const Tmatrix3* theWorldViewM
 // function : RevertProjectionStateTo
 // purpose  : Reverts state of OCCT projection transform
 // =======================================================================
-void OpenGl_ShaderManager::RevertProjectionStateTo (const Tmatrix3* theProjectionMatrix)
+void OpenGl_ShaderManager::RevertProjectionStateTo (const OpenGl_Mat4& theProjectionMatrix)
 {
   myProjectionState.Set (theProjectionMatrix);
   myProjectionState.Revert();
@@ -424,7 +424,7 @@ void OpenGl_ShaderManager::RevertProjectionStateTo (const Tmatrix3* theProjectio
 // function : RevertModelWorldStateTo
 // purpose  : Reverts state of OCCT model-world transform
 // =======================================================================
-void OpenGl_ShaderManager::RevertModelWorldStateTo (const Tmatrix3* theModelWorldMatrix)
+void OpenGl_ShaderManager::RevertModelWorldStateTo (const OpenGl_Mat4& theModelWorldMatrix)
 {
   myModelWorldState.Set (theModelWorldMatrix);
   myModelWorldState.Revert();
@@ -434,7 +434,7 @@ void OpenGl_ShaderManager::RevertModelWorldStateTo (const Tmatrix3* theModelWorl
 // function : RevertWorldViewStateTo
 // purpose  : Reverts state of OCCT world-view transform
 // =======================================================================
-void OpenGl_ShaderManager::RevertWorldViewStateTo (const Tmatrix3* theWorldViewMatrix)
+void OpenGl_ShaderManager::RevertWorldViewStateTo (const OpenGl_Mat4& theWorldViewMatrix)
 {
   myWorldViewState.Set (theWorldViewMatrix);
   myWorldViewState.Revert();

@@ -21,9 +21,13 @@
 #include <Aspect_TypeOfTriedronPosition.hxx>
 #include <OpenGl_AspectLine.hxx>
 #include <OpenGl_AspectText.hxx>
+#include <OpenGl_Cylinder.hxx>
+#include <OpenGl_Disk.hxx>
+#include <OpenGl_Sphere.hxx>
 #include <OpenGl_Text.hxx>
 #include <Quantity_NameOfColor.hxx>
 
+//! Class render trihedron
 class OpenGl_Trihedron : public OpenGl_Element
 {
 public:
@@ -57,7 +61,7 @@ protected:
   Aspect_TypeOfTriedronPosition myPos;
   Standard_Real myScale;
   Standard_Boolean myIsWireframe;
-  // Parameters for zbuffered mode
+  // Parameters for z-buffered mode
   TEL_COLOUR myXColor;
   TEL_COLOUR myYColor;
   TEL_COLOUR myZColor;
@@ -65,11 +69,15 @@ protected:
   float myDiameter;
   int   myNbFacettes;
 
-  OpenGl_AspectLine   myAspectLine;
-  OpenGl_AspectText   myAspectText;
-  mutable OpenGl_Text myLabelX;
-  mutable OpenGl_Text myLabelY;
-  mutable OpenGl_Text myLabelZ;
+  OpenGl_AspectLine       myAspectLine;
+  OpenGl_AspectText       myAspectText;
+  mutable OpenGl_Text     myLabelX;
+  mutable OpenGl_Text     myLabelY;
+  mutable OpenGl_Text     myLabelZ;
+  mutable OpenGl_Cylinder myCylinder;
+  mutable OpenGl_Sphere   mySphere;
+  mutable OpenGl_Cylinder myCone;
+  mutable OpenGl_Disk     myDisk;
 
 public:
 

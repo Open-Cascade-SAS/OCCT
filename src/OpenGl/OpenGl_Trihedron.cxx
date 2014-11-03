@@ -13,21 +13,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <OpenGl_Trihedron.hxx>
+
 #include <OpenGl_GlCore11.hxx>
 
-#include <stddef.h>
-#include <stdio.h>
-#include <stdlib.h>
-
-#include <InterfaceGraphic_Graphic3d.hxx>  /* pour CALL_DEF_STRUCTURE */
-#include <InterfaceGraphic_Aspect.hxx>  /* pour CALL_DEF_VIEW  */
-#include <InterfaceGraphic_Visual3d.hxx>
-
-#include <OpenGl_transform_persistence.hxx>
-
-#include <OpenGl_Workspace.hxx>
 #include <OpenGl_View.hxx>
-#include <OpenGl_Trihedron.hxx>
+#include <OpenGl_Workspace.hxx>
 
 static const OpenGl_TextParam THE_LABEL_PARAMS =
 {
@@ -59,12 +50,6 @@ static const CALL_DEF_CONTEXTTEXT myDefaultContextText =
   Font_FA_Regular //TextFontAspect
 };
 
-/*----------------------------------------------------------------------*/
-/*
-* Variables statiques
-*/
-
-/* Default parameters for ZBUFFER triheron */
 static TEL_COLOUR theXColor = {{ 1.F, 0.F, 0.F, 0.6F }};
 static TEL_COLOUR theYColor = {{ 0.F, 1.F, 0.F, 0.6F }};
 static TEL_COLOUR theZColor = {{ 0.F, 0.F, 1.F, 0.6F }};
@@ -72,25 +57,17 @@ static float theRatio = 0.8f;
 static float theDiameter = 0.05f;
 static int   theNbFacettes = 12;
 
-/*----------------------------------------------------------------------*/
-
-/*
-* affichage d'un triedre non zoomable a partir des index dans les tables
-* des structures non zoomables.
-*
-* Triedre = Objet non Zoomable :
-* on recalcule ses dimensions et son origine en fonction de la taille
-* de la fenetre; on positionne selon le choix de l'init;
-* et on inhibe seulement les translations.
-*
-*/
-
-//call_triedron_redraw
+// =======================================================================
+// function : redraw
+// purpose  :
+// =======================================================================
 void OpenGl_Trihedron::redraw (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
 #if !defined(GL_ES_VERSION_2_0)
   const Standard_Real U = theWorkspace->ActiveView()->Height();
   const Standard_Real V = theWorkspace->ActiveView()->Width();
+
+  Handle(OpenGl_Context) aContext = theWorkspace->GetGlContext();
 
   /* la taille des axes est 1 proportion (fixee a l'init du triedre) */
   /* de la dimension la plus petite de la window.                    */
@@ -100,45 +77,40 @@ void OpenGl_Trihedron::redraw (const Handle(OpenGl_Workspace)& theWorkspace) con
   * On inhibe les translations; on conserve les autres transformations.
   */
 
+  aContext->WorldViewState.Push();
+  aContext->ProjectionState.Push();
+
   /* on lit les matrices de transformation et de projection de la vue */
   /* pour annuler les translations (dernieres colonnes des matrices). */
-  GLdouble modelMatrix[4][4];
-  glGetDoublev( GL_MODELVIEW_MATRIX,  (GLdouble *) modelMatrix );
-  GLdouble projMatrix[4][4];
-  glGetDoublev( GL_PROJECTION_MATRIX, (GLdouble *) projMatrix );
+  OpenGl_Mat4d aModelMatrix;
+  aModelMatrix.Convert (aContext->WorldViewState.Current());
+
+  OpenGl_Mat4d aProjMatrix;
 
   /* on annule la translation qui peut etre affectee a la vue */
-  modelMatrix[3][0] = 0.;
-  modelMatrix[3][1] = 0.;
-  modelMatrix[3][2] = 0.;
+  aModelMatrix.ChangeValue (0, 3) = 0.0;
+  aModelMatrix.ChangeValue (1, 3) = 0.0;
+  aModelMatrix.ChangeValue (2, 3) = 0.0;
 
-  projMatrix[0][0] = 2.0 / U;
-  projMatrix[0][1] = 0.0;
-  projMatrix[0][2] = 0.0;
-  projMatrix[0][3] = 0.0;
+  aProjMatrix.ChangeValue (0, 0) = 2.0 / U;
+  aProjMatrix.ChangeValue (1, 0) = 0.0;
+  aProjMatrix.ChangeValue (2, 0) = 0.0;
+  aProjMatrix.ChangeValue (3, 0) = 0.0;
 
-  projMatrix[1][0] = 0.0;
-  projMatrix[1][1] = 2.0 / V;
-  projMatrix[1][2] = 0.0;
-  projMatrix[1][3] = 0.0;
+  aProjMatrix.ChangeValue (0, 1) = 0.0;
+  aProjMatrix.ChangeValue (1, 1) = 2.0 / V;
+  aProjMatrix.ChangeValue (2, 1) = 0.0;
+  aProjMatrix.ChangeValue (3, 1) = 0.0;
 
-  projMatrix[2][0] = 0.0;
-  projMatrix[2][1] = 0.0;
-  projMatrix[2][2] = -2.0 * 1e-7;
-  projMatrix[2][3] = 0.0;
-
-  projMatrix[3][0] = 0.0;
-  projMatrix[3][1] = 0.0;
-  projMatrix[3][2] = 0.0;
-  projMatrix[3][3] = 1.0;
-
-  /* sauvegarde du contexte des matrices avant chargement */
-  glMatrixMode (GL_MODELVIEW);
-  glPushMatrix ();
-  glLoadMatrixd( (GLdouble *) modelMatrix );
-  glMatrixMode ( GL_PROJECTION );
-  glPushMatrix ();
-  glLoadMatrixd( (GLdouble *) projMatrix );
+  aProjMatrix.ChangeValue (0, 2) = 0.0;
+  aProjMatrix.ChangeValue (1, 2) = 0.0;
+  aProjMatrix.ChangeValue (2, 2) = -2.0 * 1e-7;
+  aProjMatrix.ChangeValue (3, 2) = 0.0; 
+   
+  aProjMatrix.ChangeValue (0, 3) = 0.0;
+  aProjMatrix.ChangeValue (1, 3) = 0.0;
+  aProjMatrix.ChangeValue (2, 3) = 0.0;
+  aProjMatrix.ChangeValue (3, 3) = 1.0;
 
   /*
   * Positionnement de l'origine du triedre selon le choix de l'init
@@ -149,25 +121,42 @@ void OpenGl_Trihedron::redraw (const Handle(OpenGl_Workspace)& theWorkspace) con
   switch (myPos)
   {
     case Aspect_TOTP_LEFT_LOWER :
-      glTranslated( -0.5*U + L , -0.5*V + L , 0. );
-      break;
+    {
+      OpenGl_Utils::Translate (aProjMatrix,
+        -0.5 * U + L, -0.5 * V + L, 0.0);
+    }
+    break;
 
     case Aspect_TOTP_LEFT_UPPER :
-      glTranslated( -0.5*U + L , +0.5*V - L -L/3., 0. );
-      break;
+    {
+      OpenGl_Utils::Translate (aProjMatrix,
+        -0.5 * U + L, 0.5 * V - L - L/3.0, 0.0);
+    }
+    break;
 
     case Aspect_TOTP_RIGHT_LOWER :
-      glTranslated( 0.5*U - L -L/3. , -0.5*V + L , 0. );
-      break;
+    {
+      OpenGl_Utils::Translate (aProjMatrix,
+        0.5 * U - L - L/3.0, -0.5 * V + L, 0.0);
+    }
+    break;
 
     case Aspect_TOTP_RIGHT_UPPER :
-      glTranslated( 0.5*U - L -L/3. , +0.5*V - L -L/3. , 0. );
-      break;
+    {
+      OpenGl_Utils::Translate (aProjMatrix,
+        0.5 * U - L - L/3.0, 0.5 * V - L - L/3.0, 0.0);
+    }
+    break;
 
     //case Aspect_TOTP_CENTER :
     default :
       break;
   }
+
+  aContext->ProjectionState.SetCurrent<Standard_Real> (aProjMatrix);
+  aContext->WorldViewState.SetCurrent<Standard_Real> (aModelMatrix);
+  aContext->ApplyProjectionMatrix();
+  aContext->ApplyWorldViewMatrix();
 
   /*
   * Creation du triedre
@@ -283,316 +272,258 @@ void OpenGl_Trihedron::redraw (const Handle(OpenGl_Workspace)& theWorkspace) con
   /*
   * restauration du contexte des matrices
   */
-  glMatrixMode (GL_PROJECTION);
-  glPopMatrix ();
-  glMatrixMode (GL_MODELVIEW);
-  glPopMatrix ();
+
+  aContext->WorldViewState.Pop();
+  aContext->ProjectionState.Pop();
+  aContext->ApplyProjectionMatrix();
 #endif
 }
 
-
-/*******************************************************
-*  Draws ZBUFFER trihedron mode
-*******************************************************/
-//call_zbuffer_triedron_redraw
+// =======================================================================
+// function : redrawZBuffer
+// purpose  :
+// =======================================================================
 void OpenGl_Trihedron::redrawZBuffer (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
-#if !defined(GL_ES_VERSION_2_0)
-  const Standard_Real U = theWorkspace->ActiveView()->Height();
-  const Standard_Real V = theWorkspace->ActiveView()->Width();
+  Handle(OpenGl_Context)     aContext = theWorkspace->GetGlContext();
+  const Handle(OpenGl_View)& aView    = theWorkspace->ActiveView();
 
-  GLdouble modelMatrix[4][4];
-  glGetDoublev( GL_MODELVIEW_MATRIX,  (GLdouble *) modelMatrix );
-  GLdouble projMatrix[4][4];
-  glGetDoublev( GL_PROJECTION_MATRIX, (GLdouble *) projMatrix );
+  OpenGl_Mat4d aModelMatrix, aProjMatrix;
+  aContext->WorldViewState.Push();
+  aContext->ProjectionState.Push();
+  aModelMatrix.Convert (aContext->WorldViewState.Current());
 
-  /* Check position in the ViewPort */
-  /* PCD 29/09/2008 */
-  /* Simple code modification recommended by Fotis Sioutis and Peter Dolbey  */
-  /* to remove the irritating default behaviour of triedrons using V3d_ZBUFFER   */
-  /* which causes the glyph to jump around the screen when the origin moves offscreen. */
-  GLboolean isWithinView = GL_FALSE;
-
-  /* la taille des axes est 1 proportion (fixee a l'init du triedre) */
-  /* de la dimension la plus petite de la window.                    */
-  GLdouble L = ( U < V ? U : V ) * myScale;
-
-  if (!isWithinView)
+  GLdouble U = 1.0;
+  GLdouble V = 1.0;
+  if (aView->Height() < aView->Width())
   {
-    /* Annulate translation matrix */
-    modelMatrix[3][0] = 0.;
-    modelMatrix[3][1] = 0.;
-    modelMatrix[3][2] = 0.;
-
-    projMatrix[0][0] = 2.0 / U;
-    projMatrix[0][1] = 0.0;
-    projMatrix[0][2] = 0.0;
-    projMatrix[0][3] = 0.0;
-
-    projMatrix[1][0] = 0.0;
-    projMatrix[1][1] = 2.0 / V;
-    projMatrix[1][2] = 0.0;
-    projMatrix[1][3] = 0.0;
-
-    projMatrix[2][0] = 0.0;
-    projMatrix[2][1] = 0.0;
-    projMatrix[2][2] = -2.0 * 1e-7;
-    projMatrix[2][3] = 0.0;
-
-    projMatrix[3][0] = 0.0;
-    projMatrix[3][1] = 0.0;
-    projMatrix[3][2] = 0.0;
-    projMatrix[3][3] = 1.0;
-
-    /* save matrix */
-    glMatrixMode (GL_MODELVIEW);
-    glPushMatrix ();
-    //glLoadIdentity ();
-    glLoadMatrixd( (GLdouble *) modelMatrix);
-    glMatrixMode ( GL_PROJECTION );
-    glPushMatrix ();
-    //glLoadIdentity();
-    glLoadMatrixd( (GLdouble *) projMatrix);
-
-    /*
-    * Define position in the view
-    */
-    switch (myPos)
-    {
-      case Aspect_TOTP_LEFT_LOWER :
-        glTranslated( -0.5*U + L , -0.5*V + L , 0. );
-        break;
-
-      case Aspect_TOTP_LEFT_UPPER :
-        glTranslated( -0.5*U + L , +0.5*V - L -L/3. , 0. );
-        break;
-
-      case Aspect_TOTP_RIGHT_LOWER :
-        glTranslated( 0.5*U - L -L/3. , -0.5*V + L , 0. );
-        break;
-
-      case Aspect_TOTP_RIGHT_UPPER :
-        glTranslated( 0.5*U - L -L/3. , +0.5*V - L -L/3. , 0. );
-        break;
-
-      //case Aspect_TOTP_CENTER :
-      default :
-        break;
-    }
-    L *= myRatio;
+    V = aView->Width() / aView->Height();
   }
-
-  const OpenGl_AspectLine *AspectLine = theWorkspace->AspectLine( Standard_True );
-  const TEL_COLOUR &aLineColor = AspectLine->Color();
-
-  /*
-  * Creation the trihedron
-  */
-#define CYLINDER_LENGTH   0.75f
-
-  const GLuint startList = glGenLists(4);
-  GLUquadricObj* aQuadric = gluNewQuadric();
-
-  const GLboolean aIsDepthEnabled = glIsEnabled(GL_DEPTH_TEST);
-
-  GLboolean aIsDepthMaskEnabled;
-  /*PCD 02/07/07   */
-  /* GL_DEPTH_WRITEMASK is not a valid argument to glIsEnabled, the  */
-  /* original code is shown to be broken when run under an OpenGL debugger  */
-  /* like GLIntercept. This is the correct way to retrieve the mask value.  */
-  glGetBooleanv(GL_DEPTH_WRITEMASK, &aIsDepthMaskEnabled);
-
-  const GLdouble aCylinderLength = L * CYLINDER_LENGTH;
-  const GLdouble aCylinderDiametr = L * myDiameter;
-  const GLdouble aConeDiametr = aCylinderDiametr * 2.;
-  const GLdouble aConeLength = L * (1 - CYLINDER_LENGTH);
-  /* Correct for owerlapping */
-  /*    aCylinderLength += aConeLength - 1.2*aCylinderDiametr*aConeLength/aConeDiametr;*/
-
-  /* Create cylinder for axis */
-  gluQuadricDrawStyle(aQuadric, GLU_FILL); /* smooth shaded */
-  gluQuadricNormals(aQuadric, GLU_FLAT);
-  /* Axis */
-  glNewList(startList, GL_COMPILE);
-  gluCylinder(aQuadric, aCylinderDiametr, aCylinderDiametr, aCylinderLength, myNbFacettes, 1);
-  glEndList();
-  /* Cone */
-  glNewList(startList + 1, GL_COMPILE);
-  gluCylinder(aQuadric, aConeDiametr, 0., aConeLength, myNbFacettes, 1);
-  glEndList();
-  /* Central sphere */
-  glNewList(startList + 2, GL_COMPILE);
-  gluSphere(aQuadric, aCylinderDiametr * 2., myNbFacettes, myNbFacettes);
-  glEndList();
-  /* End disk */
-  gluQuadricOrientation(aQuadric,GLU_INSIDE); /*szv*/
-  glNewList(startList + 3, GL_COMPILE);
-  gluDisk(aQuadric, aCylinderDiametr, aConeDiametr, myNbFacettes, 1/*szv:2*/);
-  glEndList();
-
-  /* Store previous attributes */
-  glPushAttrib(GL_LIGHTING_BIT | GL_POLYGON_BIT);
-  glEnable(GL_LIGHTING);
-
-  glCullFace(GL_BACK);
-  glEnable(GL_CULL_FACE);
-
-  /*Fotis Sioutis | 2008-01-21 10:55
-  In the function call_zbuffer_triedron_redraw of TKOpengl,
-  the z buffered trihedron changes colors in case there
-  is an object in the scene that has an explicit material
-  attached to it.In the trihedron display loop,
-  GL_COLOR_MATERIAL is enabled, but only the GL_DIFFUSE
-  parameter is utilized in glColorMaterial(...).
-  This causes the last ambient,specular and emission values
-  used, to stay at the stack and applied to the trihedron
-  (which causes the color change).
-  A fix is proposed , to change GL_DIFFUSE to
-  GL_AMBIENT_AND_DIFFUSE in glColorMaterial call in
-  line 946.The above of course will leave unchanged
-  the SPECULAR and EMISSION values.
-  Another proposal which would fix 100% the problem
-  is to use glMaterial instead of glColor on the trihedron
-  drawing loop.               */
-  const GLfloat aNULLColor[] = { 0.f, 0.f, 0.f, 0.f }; /* FS 21/01/08 */
-  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, aNULLColor);
-  glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, aNULLColor);
-  glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, aNULLColor);
-  glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 0.f);
-
-  glColorMaterial(GL_FRONT_AND_BACK, GL_DIFFUSE);
-  glEnable(GL_COLOR_MATERIAL);
-
-  if (!aIsDepthEnabled)  {
-    glEnable(GL_DEPTH_TEST);
-    glClear(GL_DEPTH_BUFFER_BIT);
-  }
-
-  if (!aIsDepthMaskEnabled)  {
-    /* This is how the depthmask needs to be re-enabled...*/
-    glDepthMask(GL_TRUE);
-    /* ...and not this stuff below */
-  }
-
-  /* Position des Axes */
-  GLdouble TriedronAxeX[3] = { 1.0, 0.0, 0.0 };
-  GLdouble TriedronAxeY[3] = { 0.0, 1.0, 0.0 };
-  TriedronAxeX[0] = L;
-  TriedronAxeY[1] = L;
-
-  glMatrixMode(GL_MODELVIEW);
-
-  /* PCD 17/06/07  */
-  GLint df;
-  glGetIntegerv (GL_DEPTH_FUNC, &df);
-
-  int i;
-  for (i = 0; i < 2; i++) /* PCD 11/02/08 Two pass method */
+  else
   {
-    if (i == 0) /*  First pass  */
-    {
-      glDepthFunc(GL_ALWAYS);
-    }
-    else
-    {
-      glDepthFunc(GL_LEQUAL);
-    }
+    U = aView->Height() / aView->Width();
+  }
 
-    glPushMatrix();
-    glPushMatrix();
-    glPushMatrix();
+  GLdouble aScale = myScale;
 
-    glColor3fv(aLineColor.rgb);
-    glCallList(startList+2);
+  // Annulate translation matrix
+  aModelMatrix.ChangeValue (0, 3) = 0.0;
+  aModelMatrix.ChangeValue (1, 3) = 0.0;
+  aModelMatrix.ChangeValue (2, 3) = 0.0;
+
+  aProjMatrix.ChangeValue (0, 0) = 2.0 / U;
+  aProjMatrix.ChangeValue (1, 0) = 0.0;
+  aProjMatrix.ChangeValue (2, 0) = 0.0;
+  aProjMatrix.ChangeValue (3, 0) = 0.0;
+
+  aProjMatrix.ChangeValue (0, 1) = 0.0;
+  aProjMatrix.ChangeValue (1, 1) = 2.0 / V;
+  aProjMatrix.ChangeValue (2, 1) = 0.0;
+  aProjMatrix.ChangeValue (3, 1) = 0.0;
+
+  aProjMatrix.ChangeValue (0, 2) = 0.0;
+  aProjMatrix.ChangeValue (1, 2) = 0.0;
+  aProjMatrix.ChangeValue (2, 2) = -2.0 * 1e-2;
+  aProjMatrix.ChangeValue (3, 2) = 0.0;
+
+  aProjMatrix.ChangeValue (0, 3) = 0.0;
+  aProjMatrix.ChangeValue (1, 3) = 0.0;
+  aProjMatrix.ChangeValue (2, 3) = 0.0;
+  aProjMatrix.ChangeValue (3, 3) = 1.0;
+
+  // Define position in the view
+  switch (myPos)
+  {
+    case Aspect_TOTP_LEFT_LOWER:
+    {
+      OpenGl_Utils::Translate<Standard_Real> (aProjMatrix,
+        -0.5 * U + aScale, -0.5 * V + aScale, 0.0);
+      break;
+    }
+    case Aspect_TOTP_LEFT_UPPER:
+    {
+      OpenGl_Utils::Translate<Standard_Real> (aProjMatrix,
+        -0.5 * U + aScale, 0.5 * V - aScale - aScale / 3.0, 0.0);
+      break;
+    }
+    case Aspect_TOTP_RIGHT_LOWER:
+    {
+      OpenGl_Utils::Translate<Standard_Real> (aProjMatrix,
+        0.5 * U - aScale - aScale / 3.0, -0.5 * V + aScale, 0.0);
+      break;
+    }
+    case Aspect_TOTP_RIGHT_UPPER:
+    {
+      OpenGl_Utils::Translate<Standard_Real> (aProjMatrix,
+        0.5 * U - aScale - aScale / 3.0, 0.5 * V - aScale - aScale / 3.0, 0.0);
+      break;
+    }
+    //case Aspect_TOTP_CENTER:
+    default:
+      break;
+  }
+  aScale *= myRatio;
+
+  aContext->ProjectionState.SetCurrent<Standard_Real> (aProjMatrix);
+  aContext->ApplyProjectionMatrix();
+
+  const OpenGl_AspectLine* anAspectLine = theWorkspace->AspectLine (Standard_True);
+  const TEL_COLOUR&        aLineColor   = anAspectLine->Color();
+
+  // Create the trihedron
+  const Standard_Real THE_CYLINDER_LENGTH = 0.75;
+  const GLdouble aCylinderLength  = aScale * THE_CYLINDER_LENGTH;
+  const GLdouble aCylinderDiametr = aScale * myDiameter;
+  const GLdouble aConeDiametr     = aCylinderDiametr * 2.0;
+  const GLdouble aConeLength      = aScale * (1.0 - THE_CYLINDER_LENGTH);
+
+  // Position des Axes
+  GLdouble aTriedronAxeX[3] = { aScale, 0.0,    0.0 };
+  GLdouble aTriedronAxeY[3] = { 0.0,    aScale, 0.0 };
+  if (!myDisk.IsDefined())
+  {
+    myDisk.Init (static_cast<GLfloat> (aCylinderDiametr),
+                 static_cast<GLfloat> (aConeDiametr),
+                 myNbFacettes, 1);
+  }
+
+  if (!mySphere.IsDefined())
+  {
+    mySphere.Init (static_cast<GLfloat> (aCylinderDiametr * 2.0), myNbFacettes, myNbFacettes);
+  }
+
+  if (!myCone.IsDefined())
+  {
+    myCone.Init (static_cast<GLfloat> (aConeDiametr), 0.0f, static_cast<GLfloat> (aConeLength), myNbFacettes, 1);
+  }
+
+  if (!myCylinder.IsDefined())
+  {
+    myCylinder.Init (static_cast<GLfloat> (aCylinderDiametr),
+                     static_cast<GLfloat> (aCylinderDiametr),
+                     static_cast<GLfloat> (aCylinderLength),
+                     myNbFacettes, 1);
+  }
+
+  GLboolean wasDepthMaskEnabled = GL_FALSE;
+  GLint aDepthFuncBack = 0, aCullFaceModeBack = GL_BACK;
+  const GLboolean wasDepthEnabled    = aContext->core11fwd->glIsEnabled (GL_DEPTH_TEST);
+  const GLboolean wasCullFaceEnabled = aContext->core11fwd->glIsEnabled (GL_CULL_FACE);
+  aContext->core11fwd->glGetIntegerv (GL_DEPTH_FUNC,      &aDepthFuncBack);
+  aContext->core11fwd->glGetIntegerv (GL_CULL_FACE_MODE,  &aCullFaceModeBack);
+  aContext->core11fwd->glGetBooleanv (GL_DEPTH_WRITEMASK, &wasDepthMaskEnabled);
+  if (!wasDepthEnabled)
+  {
+    aContext->core11fwd->glEnable (GL_DEPTH_TEST);
+    aContext->core11fwd->glClear (GL_DEPTH_BUFFER_BIT);
+  }
+  if (!wasDepthMaskEnabled)
+  {
+    aContext->core11fwd->glDepthMask (GL_TRUE);
+  }
+  aContext->core11fwd->glCullFace (GL_BACK);
+  if (!wasCullFaceEnabled)
+  {
+    aContext->core11fwd->glEnable (GL_CULL_FACE);
+  }
+
+  OpenGl_AspectFace anAspectC;
+  OpenGl_AspectFace anAspectX;
+  OpenGl_AspectFace anAspectY;
+  OpenGl_AspectFace anAspectZ;
+  memcpy (anAspectX.ChangeIntFront().matcol.rgb,   myXColor.rgb, sizeof (TEL_COLOUR));
+  memcpy (anAspectY.ChangeIntFront().matcol.rgb,   myYColor.rgb, sizeof (TEL_COLOUR));
+  memcpy (anAspectZ.ChangeIntFront().matcol.rgb,   myZColor.rgb, sizeof (TEL_COLOUR));
+  memcpy (anAspectC.ChangeIntFront().matcol.rgb, aLineColor.rgb, sizeof (TEL_COLOUR));
+  for (Standard_Integer aPass = 0; aPass < 2; ++aPass)
+  {
+    OpenGl_Mat4d aModelViewX (aModelMatrix);
+    OpenGl_Mat4d aModelViewY (aModelMatrix);
+    OpenGl_Mat4d aModelViewZ (aModelMatrix);
+    aContext->core11fwd->glDepthFunc (aPass == 0 ? GL_ALWAYS : GL_LEQUAL);
+
+    const OpenGl_AspectFace* anOldAspect = theWorkspace->SetAspectFace (&anAspectC);
+
+    // Origin
+    aContext->WorldViewState.SetCurrent<Standard_Real> (aModelMatrix);
+    aContext->ApplyWorldViewMatrix();
+    mySphere.Render (theWorkspace);
 
     // Z axis
-    glColor4fv(myZColor.rgb);
-    glCallList(startList);
-    glTranslated(0, 0, L * CYLINDER_LENGTH);
-    glCallList(startList + 3);
-    glCallList(startList + 1);
-    glPopMatrix();
+    theWorkspace->SetAspectFace (&anAspectZ);
+    myCylinder.Render (theWorkspace);
+    OpenGl_Utils::Translate (aModelViewZ, 0.0, 0.0, aScale * THE_CYLINDER_LENGTH);
+    aContext->WorldViewState.SetCurrent<Standard_Real> (aModelViewZ);
+    aContext->ApplyWorldViewMatrix();
+    myDisk.Render (theWorkspace);
+    myCone.Render (theWorkspace);
 
     // X axis
-    glRotated(90.0, TriedronAxeY[0], TriedronAxeY[1], TriedronAxeY[2]);
-    glColor4fv(myXColor.rgb);
-    glCallList(startList);
-    glTranslated(0, 0, L * CYLINDER_LENGTH);
-    glCallList(startList + 3);
-    glCallList(startList + 1);
-    glPopMatrix();
+    theWorkspace->SetAspectFace (&anAspectX);
+    OpenGl_Utils::Rotate (aModelViewX, 90.0, aTriedronAxeY[0], aTriedronAxeY[1], aTriedronAxeY[2]);
+    aContext->WorldViewState.SetCurrent<Standard_Real> (aModelViewX);
+    aContext->ApplyWorldViewMatrix();
+    myCylinder.Render (theWorkspace);
+    OpenGl_Utils::Translate (aModelViewX, 0.0, 0.0, aScale * THE_CYLINDER_LENGTH);
+    aContext->WorldViewState.SetCurrent<Standard_Real> (aModelViewX);
+    aContext->ApplyWorldViewMatrix();
+    myDisk.Render (theWorkspace);
+    myCone.Render (theWorkspace);
 
     // Y axis
-    glRotated(-90.0, TriedronAxeX[0], TriedronAxeX[1], TriedronAxeX[2]);
-    glColor4fv(myYColor.rgb);
-    glCallList(startList);
-    glTranslated(0, 0, L * CYLINDER_LENGTH);
-    glCallList(startList + 3);
-    glCallList(startList + 1);
-    glPopMatrix();
+    theWorkspace->SetAspectFace (&anAspectY);
+    OpenGl_Utils::Rotate (aModelViewY, -90.0, aTriedronAxeX[0], aTriedronAxeX[1], aTriedronAxeX[2]);
+    aContext->WorldViewState.SetCurrent<Standard_Real> (aModelViewY);
+    aContext->ApplyWorldViewMatrix();
+    myCylinder.Render (theWorkspace);
+    OpenGl_Utils::Translate (aModelViewY, 0.0, 0.0, aScale * THE_CYLINDER_LENGTH);
+    aContext->WorldViewState.SetCurrent<Standard_Real> (aModelViewY);
+    aContext->ApplyWorldViewMatrix();
+    myDisk.Render (theWorkspace);
+    myCone.Render (theWorkspace);
+
+    theWorkspace->SetAspectFace (anOldAspect);
   }
 
-  if (!aIsDepthEnabled)
-    glDisable(GL_DEPTH_TEST);
+  if (!wasDepthEnabled)
+  {
+    aContext->core11fwd->glDisable (GL_DEPTH_TEST);
+  }
+  if (!wasDepthMaskEnabled)
+  {
+    aContext->core11fwd->glDepthMask (GL_FALSE);
+  }
+  if (!wasCullFaceEnabled)
+  {
+    aContext->core11fwd->glDisable (GL_CULL_FACE);
+  }
+  aContext->core11fwd->glCullFace (aCullFaceModeBack);
 
-  if (!aIsDepthMaskEnabled)
-    glDepthMask(GL_FALSE);
-
-  glDisable(GL_CULL_FACE);
-  glDisable(GL_COLOR_MATERIAL);
-
-  gluDeleteQuadric(aQuadric);
-  glColor3fv (aLineColor.rgb);
-
-  /* Always write the text */
-  glDepthFunc(GL_ALWAYS);
-
-  glPopAttrib();
-
-  /* fleches au bout des axes (= cones de la couleur demandee) */
-  //const GLdouble l = 0.75*L; /* distance a l'origine */
-  const GLdouble rayon = L/30. ; /* rayon de la base du cone */
-  //const double Angle = 2. * M_PI/ myNbFacettes;
-
-  glDeleteLists(startList, 4);
-
-  glDisable(GL_LIGHTING);
+  // Always write the text
+  aContext->core11fwd->glDepthFunc (GL_ALWAYS);
 
   // draw axes labels
-  myLabelX.SetPosition (OpenGl_Vec3(float(L + rayon),    0.0f,                   float(-rayon)));
-  myLabelY.SetPosition (OpenGl_Vec3(float(rayon),        float(L + 3.0 * rayon), float(2.0 * rayon)));
-  myLabelZ.SetPosition (OpenGl_Vec3(float(-2.0 * rayon), float(0.5 * rayon),     float(L + 3.0 * rayon)));
+  const GLdouble rayon = aScale / 30.0;
+  myLabelX.SetPosition (OpenGl_Vec3(float(aScale + 2.0 * rayon), 0.0f,                        float(-rayon)));
+  myLabelY.SetPosition (OpenGl_Vec3(float(rayon),                float(aScale + 3.0 * rayon), float(2.0 * rayon)));
+  myLabelZ.SetPosition (OpenGl_Vec3(float(-2.0 * rayon),         float(0.5 * rayon),          float(aScale + 3.0 * rayon)));
+  aContext->WorldViewState.SetCurrent<Standard_Real> (aModelMatrix);
+  aContext->ApplyWorldViewMatrix();
   myLabelX.Render (theWorkspace);
   myLabelY.Render (theWorkspace);
   myLabelZ.Render (theWorkspace);
 
-  /*PCD 17/06/07    */
-  glDepthFunc(df);
+  aContext->core11fwd->glDepthFunc (aDepthFuncBack);
 
-  if (!isWithinView) { /* restore matrix */
-    glMatrixMode (GL_PROJECTION);
-    glPopMatrix ();
-    glMatrixMode (GL_MODELVIEW);
-    glPopMatrix ();
-  }
-#endif
+  aContext->WorldViewState.Pop();
+  aContext->ProjectionState.Pop();
+  aContext->ApplyProjectionMatrix();
 }
 
-
-/*----------------------------------------------------------------------*/
-
-/*----------------------------------------------------------------------*/
-/*
-* Fonctions publiques
-*/
-
-
-/*
-* initialisation d'un triedre non zoomable dans une vue.
-* ou modification des valeurs deja initialisees.
-*/
-
-//call_triedron_init
+// =======================================================================
+// function : OpenGl_Trihedron
+// purpose  :
+// =======================================================================
 OpenGl_Trihedron::OpenGl_Trihedron (const Aspect_TypeOfTriedronPosition thePosition,
                                     const Quantity_NameOfColor          theColor,
                                     const Standard_Real                 theScale,
@@ -629,13 +560,10 @@ OpenGl_Trihedron::OpenGl_Trihedron (const Aspect_TypeOfTriedronPosition thePosit
   myNbFacettes = theNbFacettes;
 }
 
-/*----------------------------------------------------------------------*/
-
-/*
-* destruction du triedre non zoomable d'une vue.
-*/
-
-//call_triedron_erase
+// =======================================================================
+// function : ~OpenGl_Trihedron
+// purpose  :
+// =======================================================================
 OpenGl_Trihedron::~OpenGl_Trihedron()
 {
 }
@@ -651,20 +579,16 @@ void OpenGl_Trihedron::Release (OpenGl_Context* theCtx)
   myLabelZ.Release (theCtx);
   myAspectLine.Release (theCtx);
   myAspectText.Release (theCtx);
+  myCone    .Release (theCtx);
+  myDisk    .Release (theCtx);
+  mySphere  .Release (theCtx);
+  myCylinder.Release (theCtx);
 }
 
-/*----------------------------------------------------------------------*/
-
-/*
-* affichage d'un triedre non zoomable dans la wks  awsid
-*
-* Triedre = Objet non Zoomable;
-* on cree cette fonction pour pouvoir travailler par les structures
-* utilisees par les fonctions Tsm* et TEL_VIEW_REP
-*
-*/
-
-//call_triedron_redraw_from_wsid
+// =======================================================================
+// function : Render
+// purpose  :
+// =======================================================================
 void OpenGl_Trihedron::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
   const OpenGl_AspectLine* aPrevAspectLine = theWorkspace->SetAspectLine (&myAspectLine);

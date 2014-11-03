@@ -425,6 +425,28 @@ public:
     return true;
   }
 
+  // Converts NCollection_Mat4 with different element type.
+  template <typename Other_t>
+  void Convert (const NCollection_Mat4<Other_t>& theOther)
+  {
+    for (int anIdx = 0; anIdx < 16; ++anIdx)
+    {
+      myMat[anIdx] = static_cast<Element_t> (theOther.myMat[anIdx]);
+    }
+  }
+
+  //! Maps plain C array to matrix type.
+  static NCollection_Mat4<Element_t>& Map (Element_t* theData)
+  {
+    return *reinterpret_cast<NCollection_Mat4<Element_t>*> (theData);
+  }
+
+  //! Maps plain C array to matrix type.
+  static const NCollection_Mat4<Element_t>& Map (const Element_t* theData)
+  {
+    return *reinterpret_cast<const NCollection_Mat4<Element_t>*> (theData);
+  }
+
 private:
 
   Element_t myMat[16];
@@ -432,6 +454,10 @@ private:
 private:
 
   static Element_t myIdentityArray[16];
+
+  // All instantiations are friend to each other
+  template<class OtherType> friend class NCollection_Mat4;
+
 };
 
 template<typename Element_t>

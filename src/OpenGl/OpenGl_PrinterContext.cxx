@@ -51,14 +51,12 @@ OpenGl_PrinterContext::~OpenGl_PrinterContext()
 }
 
 // =======================================================================
-// function : LoadProjTransformation
+// function : ProjTransformation
 // purpose  :
 // =======================================================================
-void OpenGl_PrinterContext::LoadProjTransformation()
+OpenGl_Mat4 OpenGl_PrinterContext::ProjTransformation()
 {
-#if !defined(GL_ES_VERSION_2_0)
-  glLoadMatrixf ((GLfloat* )myProjMatrixGl);
-#endif
+  return OpenGl_Mat4::Map (myProjMatrixGl);
 }
 
 // =======================================================================

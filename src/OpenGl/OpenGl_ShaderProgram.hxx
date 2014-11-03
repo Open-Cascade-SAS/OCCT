@@ -442,18 +442,6 @@ public:
                                                const OpenGl_Matrix&          theValue,
                                                GLboolean                     theTranspose = GL_FALSE);
 
-  //! Specifies the value of the float uniform 4x4 matrix.
-  Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
-                                               const GLchar*                 theName,
-                                               const Tmatrix3&               theValue,
-                                               GLboolean                     theTranspose = GL_FALSE);
-
-  //! Specifies the value of the float uniform 4x4 matrix.
-  Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
-                                               GLint                         theLocation,
-                                               const Tmatrix3&               theValue,
-                                               GLboolean                     theTranspose = GL_FALSE);
-
   //! Specifies the value of the float uniform array
   Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
                                                GLint                         theLocation,

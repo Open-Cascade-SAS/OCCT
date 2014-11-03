@@ -108,6 +108,7 @@ class OpenGl_View : public MMgt_TShared
   void SetClipPlanes (const Graphic3d_SequenceOfHClipPlane &thePlanes) { myClipPlanes = thePlanes; }
   void SetVisualisation (const CALL_DEF_VIEWCONTEXT &AContext);
 
+  const Handle(Graphic3d_Camera)& Camera() { return myCamera; }
   void SetCamera (const Handle(Graphic3d_Camera)& theCamera) { myCamera = theCamera; }
 
   void SetClipLimit (const Graphic3d_CView& theCView);
@@ -221,6 +222,7 @@ protected:
 
   void RenderStructs (const Handle(OpenGl_Workspace) &AWorkspace);
   void RedrawLayer2d (const Handle(OpenGl_PrinterContext)& thePrintContext,
+                      const Handle(OpenGl_Workspace) &theWorkspace,
                       const Graphic3d_CView&               theCView,
                       const Aspect_CLayer2d&               theCLayer);
   void RedrawTrihedron (const Handle(OpenGl_Workspace) &theWorkspace);
@@ -235,9 +237,7 @@ protected:
   //! @param theProjection [in] view projection matrix.
   //! @param theOrientation [in] view orientation matrix.
   void RedrawScene (const Handle(OpenGl_PrinterContext)& thePrintContext,
-                    const Handle(OpenGl_Workspace)& theWorkspace,
-                    const OpenGl_Matrix* theProjection,
-                    const OpenGl_Matrix* theOrientation);
+                    const Handle(OpenGl_Workspace)& theWorkspace);
 
   Handle(OpenGl_LineAttributes) myLineAttribs;
   Handle(OpenGl_Texture)        myTextureEnv;

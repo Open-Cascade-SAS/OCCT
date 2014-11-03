@@ -2213,3 +2213,85 @@ Standard_Boolean OpenGl_Context::SetGlNormalizeEnabled (Standard_Boolean isEnabl
 
   return anOldGlNormalize;
 }
+
+// =======================================================================
+// function : ApplyModelWorldMatrix
+// purpose  :
+// =======================================================================
+void OpenGl_Context::ApplyModelWorldMatrix()
+{
+#if !defined(GL_ES_VERSION_2_0)
+  if (core11 != NULL)
+  {
+    core11->glMatrixMode (GL_MODELVIEW);
+    core11->glLoadMatrixf (ModelWorldState.Current());
+  }
+#endif
+
+  if (!myShaderManager->IsEmpty())
+  {
+    myShaderManager->UpdateModelWorldStateTo (ModelWorldState.Current());
+  }
+}
+
+// =======================================================================
+// function : ApplyWorldViewMatrix
+// purpose  :
+// =======================================================================
+void OpenGl_Context::ApplyWorldViewMatrix()
+{
+#if !defined(GL_ES_VERSION_2_0)
+  if (core11 != NULL)
+  {
+    core11->glMatrixMode (GL_MODELVIEW);
+    core11->glLoadMatrixf (WorldViewState.Current());
+  }
+#endif
+
+  if (!myShaderManager->IsEmpty())
+  {
+    myShaderManager->UpdateWorldViewStateTo (WorldViewState.Current());
+  }
+}
+
+// =======================================================================
+// function : ApplyModelViewMatrix
+// purpose  :
+// =======================================================================
+void OpenGl_Context::ApplyModelViewMatrix()
+{
+#if !defined(GL_ES_VERSION_2_0)
+  if (core11 != NULL)
+  {
+    OpenGl_Mat4 aModelView = WorldViewState.Current() * ModelWorldState.Current();
+    core11->glMatrixMode (GL_MODELVIEW);
+    core11->glLoadMatrixf (aModelView.GetData());
+  }
+#endif
+
+  if (!myShaderManager->IsEmpty())
+  {
+    myShaderManager->UpdateModelWorldStateTo (ModelWorldState.Current());
+    myShaderManager->UpdateWorldViewStateTo (WorldViewState.Current());
+  }
+}
+
+// =======================================================================
+// function : ApplyProjectionMatrix
+// purpose  :
+// =======================================================================
+void OpenGl_Context::ApplyProjectionMatrix()
+{
+#if !defined(GL_ES_VERSION_2_0)
+  if (core11 != NULL)
+  {
+    core11->glMatrixMode (GL_PROJECTION);
+    core11->glLoadMatrixf (ProjectionState.Current().GetData());
+  }
+#endif
+
+  if (!myShaderManager->IsEmpty())
+  {
+    myShaderManager->UpdateProjectionStateTo (ProjectionState.Current());
+  }
+}

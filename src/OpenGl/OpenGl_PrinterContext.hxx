@@ -19,6 +19,7 @@
 #include <Standard_DefineHandle.hxx>
 #include <TColStd_Array2OfReal.hxx>
 #include <Handle_Standard_Transient.hxx>
+#include <OpenGl_Vec.hxx>
 
 //! Class provides specific information for redrawing view to offscreen buffer
 //! on printing. The information is: projection matrixes for tiling,
@@ -44,8 +45,8 @@ public:
   //! theProjTransform parameter should be an 4x4 array.
   bool SetProjTransformation (const TColStd_Array2OfReal& theProjTransform);
 
-  //! Setup view projection transformation matrix (glLoadMatrixf).
-  void LoadProjTransformation();
+  //! Returns projection matrix.
+  OpenGl_Mat4 ProjTransformation();
 
   //! Get text/markers scale factor
   inline void GetScale (Standard_ShortReal& theScaleX,
