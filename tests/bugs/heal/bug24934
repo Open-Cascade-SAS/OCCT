@@ -1,0 +1,16 @@
+puts "============"
+puts "OCC24934"
+puts "============"
+puts ""
+######################################################
+# Section: crash for two faces
+######################################################
+
+restore [locate_data_file bug24934_f1.brep] f1
+
+set info [fixshape ff1 f1]
+if { [regexp "Exception" $info] != 0 } {
+    puts "Error : Exception in \"fixshape\" command was caught"
+} else {
+    puts "OK: Command \"fixshape\" work properly"
+}

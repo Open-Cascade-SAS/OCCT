@@ -671,6 +671,11 @@ Standard_Boolean ShapeAnalysis_Wire::CheckSmall (const Standard_Integer num,
   
   TopoDS_Vertex V1 = sae.FirstVertex (E);
   TopoDS_Vertex V2 = sae.LastVertex (E);
+  if (V1.IsNull() || V2.IsNull())
+  {
+    myStatus = ShapeExtend::EncodeStatus (ShapeExtend_FAIL2);
+    return Standard_False;
+  }
   gp_Pnt p1 = BRep_Tool::Pnt (V1);
   gp_Pnt p2 = BRep_Tool::Pnt (V2);
   Standard_Real dist = p1.Distance(p2);
@@ -1847,6 +1852,11 @@ Standard_Boolean isMultiVertex(const TopTools_ListOfShape& alshape,
     TopoDS_Edge aedge = myWire->Edge(i);
     TopoDS_Vertex aV1,aV2;
     TopExp::Vertices(aedge,aV1,aV2);
+    if (aV1.IsNull() || aV2.IsNull())
+    {
+      myStatus = ShapeExtend::EncodeStatus (ShapeExtend_FAIL2);
+      return Standard_False;
+    }
     Standard_Boolean isSame = aV1.IsSame(aV2);
     if(myWire->IsSeam(i))
       aMapSeemEdges.Add(aedge); ///continue;
