@@ -107,6 +107,18 @@ BRepMesh_IncrementalMesh::~BRepMesh_IncrementalMesh()
 }
 
 //=======================================================================
+//function : clear
+//purpose  : 
+//=======================================================================
+void BRepMesh_IncrementalMesh::clear()
+{
+  myEmptyEdges.Clear();
+  myEdgeDeflection.Clear();
+  myFaces.Clear();
+  myMesh.Nullify();
+}
+
+//=======================================================================
 //function : init
 //purpose  : 
 //=======================================================================
@@ -115,10 +127,8 @@ void BRepMesh_IncrementalMesh::init()
   myStatus   = 0;
   myModified = Standard_False;
 
-  myEdgeDeflection.Clear();
-  myFaces.clear();
-
   setDone();
+  clear();
 
   if (!isCorrectPolyData())
     BRepTools::Clean(myShape);
@@ -129,7 +139,6 @@ void BRepMesh_IncrementalMesh::init()
   if (aBox.IsVoid())
   {
     // Nothing to mesh.
-    myMesh.Nullify();
     return;
   }
 
@@ -160,9 +169,9 @@ Standard_Boolean BRepMesh_IncrementalMesh::isCorrectPolyData()
   else
   {
 #endif
-    std::vector<TopoDS_Face>::iterator aFaceIt = myFaces.begin();
-    for (; aFaceIt != myFaces.end(); aFaceIt++)
-      aFaceChecker(*aFaceIt);
+    NCollection_Vector<TopoDS_Face>::Iterator aFaceIt(myFaces);
+    for (; aFaceIt.More(); aFaceIt.Next())
+      aFaceChecker(aFaceIt.Value());
 #ifdef HAVE_TBB
   }
 #endif
@@ -179,7 +188,6 @@ void BRepMesh_IncrementalMesh::collectFaces()
   TopTools_ListOfShape aFaceList;
   BRepLib::ReverseSortFaces(myShape, aFaceList);
   TopTools_MapOfShape aFaceMap;
-  myFaces.reserve(aFaceList.Extent());
 
   // make array of faces suitable for processing (excluding faces without surface)
   TopLoc_Location aDummyLoc;
@@ -197,7 +205,7 @@ void BRepMesh_IncrementalMesh::collectFaces()
     if (aSurf.IsNull())
       continue;
 
-    myFaces.push_back(aFace);
+    myFaces.Append(aFace);
   }
 }
 
@@ -233,9 +241,9 @@ void BRepMesh_IncrementalMesh::update()
   }
 
   // Update faces data
-  std::vector<TopoDS_Face>::iterator aFaceIt(myFaces.begin());
-  for (; aFaceIt != myFaces.end(); aFaceIt++)
-    update(*aFaceIt);
+  NCollection_Vector<TopoDS_Face>::Iterator aFaceIt(myFaces);
+  for (; aFaceIt.More(); aFaceIt.Next())
+    update(aFaceIt.Value());
 
   // Mesh faces
 #ifdef HAVE_TBB
@@ -246,13 +254,14 @@ void BRepMesh_IncrementalMesh::update()
   else
   {
 #endif
-    for (aFaceIt = myFaces.begin(); aFaceIt != myFaces.end(); aFaceIt++)
-      myMesh->Process(*aFaceIt);
+    for (aFaceIt.Init(myFaces); aFaceIt.More(); aFaceIt.Next())
+      myMesh->Process(aFaceIt.Value());
 #ifdef HAVE_TBB
   }
 #endif
 
   commit();
+  clear();
 }
 
 //=======================================================================
@@ -479,9 +488,9 @@ void BRepMesh_IncrementalMesh::update(const TopoDS_Face& theFace)
 //=======================================================================
 void BRepMesh_IncrementalMesh::commit()
 {
-  std::vector<TopoDS_Face>::iterator aFaceIt(myFaces.begin());
-  for (; aFaceIt != myFaces.end(); aFaceIt++)
-    commitEdges(*aFaceIt);
+  NCollection_Vector<TopoDS_Face>::Iterator aFaceIt(myFaces);
+  for (; aFaceIt.More(); aFaceIt.Next())
+    commitEdges(aFaceIt.Value());
 
   discretizeFreeEdges();
 }
@@ -509,10 +518,7 @@ void BRepMesh_IncrementalMesh::commitEdges(const TopoDS_Face& theFace)
   Handle(Poly_Triangulation) aTriangulation = BRep_Tool::Triangulation(aFace, aLoc);
 
   if (aTriangulation.IsNull())
-  {
-    aFaceAttribute->Clear();
     return;
-  }
 
   try
   {
@@ -533,8 +539,6 @@ void BRepMesh_IncrementalMesh::commitEdges(const TopoDS_Face& theFace)
       else
         BRepMesh_ShapeTool::UpdateEdge(aEdge, aPolygon1, aPolygon2, aTriangulation, aLoc);
     }
-
-    aFaceAttribute->Clear();
   }
   catch (Standard_Failure)
   {

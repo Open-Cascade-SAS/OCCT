@@ -146,7 +146,8 @@ BRepMesh_FastDiscretFace::BRepMesh_FastDiscretFace
 : myAngle(theAngle),
   myInternalVerticesMode(Standard_True)
 {
-  myAllocator = new NCollection_IncAllocator(64000);
+  myAllocator = new NCollection_IncAllocator(
+    BRepMesh::MEMORY_BLOCK_SIZE_HUGE);
 }
 
 //=======================================================================
@@ -155,45 +156,40 @@ BRepMesh_FastDiscretFace::BRepMesh_FastDiscretFace
 //=======================================================================
 void BRepMesh_FastDiscretFace::Perform(const Handle(BRepMesh_FaceAttribute)& theAttribute)
 {
-  Add(theAttribute);
+  add(theAttribute);
   commitSurfaceTriangulation();
 }
 
 //=======================================================================
-//function : Add
+//function : initDataStructure
 //purpose  : 
 //=======================================================================
-void BRepMesh_FastDiscretFace::Add(const Handle(BRepMesh_FaceAttribute)& theAttribute)
+void BRepMesh_FastDiscretFace::initDataStructure()
 {
-  if (!theAttribute->IsValid())
-    return;
+  const Standard_Real aTolU = myAttribute->ToleranceU();
+  const Standard_Real aTolV = myAttribute->ToleranceV();
+  const Standard_Real uCellSize = 14.0 * aTolU;
+  const Standard_Real vCellSize = 14.0 * aTolV;
 
-  myAttribute     = theAttribute;
-  myStructure     = myAttribute->ChangeStructure();
-  myVertexEdgeMap = myAttribute->ChangeVertexEdgeMap();
-  myClassifier    = myAttribute->ChangeClassifier();
-  mySurfacePoints = myAttribute->ChangeSurfacePoints();
+  const Standard_Real deltaX = myAttribute->GetDeltaX();
+  const Standard_Real deltaY = myAttribute->GetDeltaY();
 
-  Standard_Real aTolU = myAttribute->ToleranceU();
-  Standard_Real aTolV = myAttribute->ToleranceV();
-  Standard_Real uCellSize = 14.0 * aTolU;
-  Standard_Real vCellSize = 14.0 * aTolV;
+  myStructure = new BRepMesh_DataStructureOfDelaun(myAllocator);
+  myStructure->Data()->SetCellSize ( uCellSize / deltaX, vCellSize / deltaY);
+  myStructure->Data()->SetTolerance( aTolU     / deltaX, aTolV     / deltaY);
 
+  myAttribute->ChangeStructure() = myStructure;
+  myAttribute->ChangeSurfacePoints() = new BRepMesh::DMapOfIntegerPnt;
+  myAttribute->ChangeSurfaceVertices()= new BRepMesh::DMapOfVertexInteger;
+
+  // Check the necessity to fill the map of parameters
   const Handle(BRepAdaptor_HSurface)& gFace = myAttribute->Surface();
   GeomAbs_SurfaceType thetype = gFace->GetType();
-
-  Standard_Integer i = 1;
-
-  //////////////////////////////////////////////////////////// 
-  //add internal vertices after self-intersection check
-  Standard_Integer nbVertices = 0;
-  if ( myInternalVerticesMode )
-  {
-    TopExp_Explorer anExplorer(myAttribute->Face(), TopAbs_VERTEX, TopAbs_EDGE);
-    for ( ; anExplorer.More(); anExplorer.Next() )
-      add(TopoDS::Vertex(anExplorer.Current()));
-    nbVertices = myVertexEdgeMap->Extent();
-  }
+  const Standard_Boolean useUVParam = (thetype == GeomAbs_Torus         ||
+                                       thetype == GeomAbs_BezierSurface ||
+                                       thetype == GeomAbs_BSplineSurface);
+  myUParam.Clear(); 
+  myVParam.Clear();
 
   // essai de determination de la longueur vraie:
   // akm (bug OCC16) : We must calculate these measures in non-singular
@@ -202,28 +198,12 @@ void BRepMesh_FastDiscretFace::Add(const Handle(BRepMesh_FaceAttribute)& theAttr
   //                 vvvvv
   //Standard_Real longu = 0.0, longv = 0.0; //, last , first;
   //gp_Pnt P11, P12, P21, P22, P31, P32;
-
-  const Standard_Real deltaX = myAttribute->GetDeltaX();
-  const Standard_Real deltaY = myAttribute->GetDeltaY();
-
-  BRepMesh::Array1OfInteger tabvert_corr(1, nbVertices);
-
-  // Check the necessity to fill the map of parameters
-  const Standard_Boolean useUVParam = (thetype == GeomAbs_Torus         ||
-                                       thetype == GeomAbs_BezierSurface ||
-                                       thetype == GeomAbs_BSplineSurface);
-  myUParam.Clear(); 
-  myVParam.Clear();
-
-  BRepMesh_VertexTool aMoveNodes(nbVertices, myAllocator);
-
-  aMoveNodes.SetCellSize ( uCellSize / deltaX, vCellSize / deltaY);
-  aMoveNodes.SetTolerance( aTolU     / deltaX, aTolV     / deltaY);
-
-  for ( i = 1; i <= myStructure->NbNodes(); ++i )
+  BRepMesh::HVectorOfVertex& aBoundaryNodes = myAttribute->ChangeMeshNodes();
+  BRepMesh::VectorOfVertex::Iterator aNodesIt(*aBoundaryNodes);
+  for (; aNodesIt.More(); aNodesIt.Next())
   {
-    const BRepMesh_Vertex& v = myStructure->GetNode(i);
-    gp_XY aPnt2d = v.Coord();
+    BRepMesh_Vertex& aNode = aNodesIt.ChangeValue();
+    gp_XY aPnt2d = aNode.Coord();
 
     if (useUVParam)
     {
@@ -231,22 +211,90 @@ void BRepMesh_FastDiscretFace::Add(const Handle(BRepMesh_FaceAttribute)& theAttr
       myVParam.Add(aPnt2d.Y());
     }
 
-    aPnt2d = myAttribute->Scale(aPnt2d, Standard_True);
-    BRepMesh_Vertex v_new(aPnt2d, v.Location3d(), v.Movability());
-    const BRepMesh::ListOfInteger& alist = myStructure->LinksConnectedTo(i);
-    aMoveNodes.Add(v_new, alist);
-    tabvert_corr(i) = i;
+    aNode.ChangeCoord() = myAttribute->Scale(aPnt2d, Standard_True);
+    myStructure->AddNode(aNode, Standard_True);
   }
-  myStructure->ReplaceNodes(aMoveNodes);
+  aBoundaryNodes.Nullify();
 
-  Standard_Boolean rajout = 
-    (thetype == GeomAbs_Sphere || thetype == GeomAbs_Torus);
+  //////////////////////////////////////////////////////////// 
+  //add internal vertices after self-intersection check
+  if ( myInternalVerticesMode )
+  {
+    TopExp_Explorer anExplorer(myAttribute->Face(), TopAbs_VERTEX, TopAbs_EDGE);
+    for ( ; anExplorer.More(); anExplorer.Next() )
+      add(TopoDS::Vertex(anExplorer.Current()));
+  }
+
+  const BRepMesh::HDMapOfShapePairOfPolygon& aEdges = myAttribute->ChangeInternalEdges();
+  TopExp_Explorer aWireIt(myAttribute->Face(), TopAbs_WIRE);
+  for (; aWireIt.More(); aWireIt.Next())
+  {
+    TopExp_Explorer aEdgeIt(aWireIt.Current(), TopAbs_EDGE);
+    for (; aEdgeIt.More(); aEdgeIt.Next())
+    {
+      const TopoDS_Edge& aEdge = TopoDS::Edge(aEdgeIt.Current());
+      BRepMesh_PairOfPolygon aPair;
+      if (!aEdges->Find(aEdge, aPair))
+        continue;
+
+      TopAbs_Orientation aOri = aEdge.Orientation();
+      const Handle(Poly_PolygonOnTriangulation)& aPolygon = 
+        aOri == TopAbs_REVERSED ? aPair.Last() : aPair.First();
+
+      const TColStd_Array1OfInteger& aIndices = aPolygon->Nodes();
+      const Standard_Integer aNodesNb = aPolygon->NbNodes();
+
+      Standard_Integer aPrevId = aIndices(1);
+      for (Standard_Integer i = 2; i <= aNodesNb; ++i)
+      {
+        const Standard_Integer aCurId = aIndices(i);
+        addLinkToMesh(aPrevId, aCurId, aOri);
+        aPrevId = aCurId;
+      }
+    }
+  }
+}
+
+//=======================================================================
+//function : addLinkToMesh
+//purpose  :
+//=======================================================================
+void BRepMesh_FastDiscretFace::addLinkToMesh(
+  const Standard_Integer   theFirstNodeId,
+  const Standard_Integer   theLastNodeId,
+  const TopAbs_Orientation theOrientation)
+{
+  if (theOrientation == TopAbs_FORWARD)
+    myStructure->AddLink(BRepMesh_Edge(theFirstNodeId, theLastNodeId, BRepMesh_Frontier));
+  else if (theOrientation == TopAbs_REVERSED)
+    myStructure->AddLink(BRepMesh_Edge(theLastNodeId, theFirstNodeId, BRepMesh_Frontier));
+  else if (theOrientation == TopAbs_INTERNAL)
+    myStructure->AddLink(BRepMesh_Edge(theFirstNodeId, theLastNodeId, BRepMesh_Fixed));
+}
+
+//=======================================================================
+//function : Add
+//purpose  : 
+//=======================================================================
+void BRepMesh_FastDiscretFace::add(const Handle(BRepMesh_FaceAttribute)& theAttribute)
+{
+  if (!theAttribute->IsValid() || theAttribute->ChangeMeshNodes()->IsEmpty())
+    return;
+
+  myAttribute = theAttribute;
+  initDataStructure();
+
+  BRepMesh::HIMapOfInteger& aVertexEdgeMap = myAttribute->ChangeVertexEdgeMap();
+  Standard_Integer nbVertices = aVertexEdgeMap->Extent();
+  BRepMesh::Array1OfInteger tabvert_corr(1, nbVertices);
+  for ( Standard_Integer i = 1; i <= nbVertices; ++i )
+    tabvert_corr(i) = i;
 
   BRepMesh_Delaun trigu(myStructure, tabvert_corr);
 
   //removed all free edges from triangulation
   const Standard_Integer nbLinks = myStructure->NbLinks();
-  for( i = 1; i <= nbLinks; i++ ) 
+  for( Standard_Integer i = 1; i <= nbLinks; i++ ) 
   {
     if( myStructure->ElementsConnectedTo(i).Extent() < 1 )
     {
@@ -258,6 +306,17 @@ void BRepMesh_FastDiscretFace::Add(const Handle(BRepMesh_FaceAttribute)& theAttr
       myStructure->RemoveLink(i);
     }
   }
+
+  const Handle(BRepAdaptor_HSurface)& gFace = myAttribute->Surface();
+  GeomAbs_SurfaceType thetype = gFace->GetType();
+
+  Standard_Boolean rajout = 
+    (thetype == GeomAbs_Sphere || thetype == GeomAbs_Torus);
+
+  // Check the necessity to fill the map of parameters
+  const Standard_Boolean useUVParam = (thetype == GeomAbs_Torus         ||
+                                       thetype == GeomAbs_BezierSurface ||
+                                       thetype == GeomAbs_BSplineSurface);
 
   const Standard_Real umax = myAttribute->GetUMax();
   const Standard_Real umin = myAttribute->GetUMin();
@@ -300,22 +359,17 @@ void BRepMesh_FastDiscretFace::Add(const Handle(BRepMesh_FaceAttribute)& theAttr
   }
 
   //modify myStructure back
-  aMoveNodes.SetCellSize ( uCellSize, vCellSize );
-  aMoveNodes.SetTolerance( aTolU    , aTolV     );
-
-  for ( i = 1; i <= myStructure->NbNodes(); ++i )
+  BRepMesh::HVectorOfVertex& aMeshNodes = myStructure->Data()->ChangeVertices();
+  for ( Standard_Integer i = 1; i <= myStructure->NbNodes(); ++i )
   {
-    const BRepMesh_Vertex& v = myStructure->GetNode(i);
-    gp_XY aPnt2d = myAttribute->Scale(v.Coord(), Standard_False);
-    BRepMesh_Vertex v_new(aPnt2d, v.Location3d(), v.Movability());
-    const BRepMesh::ListOfInteger& alist = myStructure->LinksConnectedTo(i);
-    aMoveNodes.Add(v_new, alist);
+    BRepMesh_Vertex& aNode = aMeshNodes->ChangeValue(i - 1);
+    aNode.ChangeCoord() = myAttribute->Scale(aNode.Coord(), Standard_False);
 
+    const BRepMesh::ListOfInteger& alist = myStructure->LinksConnectedTo(i);
     // Register internal nodes used in triangulation
-    if (!alist.IsEmpty() && myVertexEdgeMap->FindIndex(i) == 0)
-      myVertexEdgeMap->Add(i);
+    if (!alist.IsEmpty() && aVertexEdgeMap->FindIndex(i) == 0)
+      aVertexEdgeMap->Add(i);
   }
-  myStructure->ReplaceNodes(aMoveNodes);
 
   if (!(aDef < 0.))
     myAttribute->SetDefFace(aDef);
@@ -778,6 +832,8 @@ void BRepMesh_FastDiscretFace::insertInternalVerticesBSpline(
   else if (aSurfType == GeomAbs_BSplineSurface)
     aBSpline = gFace->BSpline();
 
+  const BRepMesh::HClassifier& aClassifier = myAttribute->ChangeClassifier();
+
   // precision for compare square distances
   const Standard_Real aPrecision   = Precision::Confusion();
   const Standard_Real aSqPrecision = aPrecision * aPrecision;
@@ -864,7 +920,7 @@ void BRepMesh_FastDiscretFace::insertInternalVerticesBSpline(
               aStPnt1.SetX(aPrevParam2);
 
               // Classify intersection point
-              if (myClassifier->Perform(aStPnt1) == TopAbs_IN)
+              if (aClassifier->Perform(aStPnt1) == TopAbs_IN)
               {
                 insertVertex(aPrevPnt2, aStPnt1.Coord(), theNewVertices);
               }
@@ -940,6 +996,7 @@ void BRepMesh_FastDiscretFace::insertInternalVerticesOther(
   Adaptor3d_IsoCurve aIsoV;
   aIsoV.Load(gFace);
 
+  const BRepMesh::HClassifier& aClassifier = myAttribute->ChangeClassifier();
   const Standard_Integer aUPointsNb = aParams[0].Length();
   const Standard_Integer aVPointsNb = aParams[1].Length();
   for (Standard_Integer i = 2; i < aVPointsNb; ++i)
@@ -952,7 +1009,7 @@ void BRepMesh_FastDiscretFace::insertInternalVerticesOther(
       const Standard_Real aU = aParams[0].Value(j);
 
       const gp_Pnt2d aNewPoint(aU, aV);
-      if (myClassifier->Perform(aNewPoint) == TopAbs_IN)
+      if (aClassifier->Perform(aNewPoint) == TopAbs_IN)
         insertVertex(aIsoV.Value(aU), aNewPoint.Coord(), theNewVertices);
     }
   }
@@ -1197,6 +1254,7 @@ void BRepMesh_FastDiscretFace::add(const TopoDS_Vertex& theVertex)
       theVertex, BRep_Tool::Tolerance(theVertex), myAttribute);
 
     Standard_Integer aTmpId1, aTmpId2;
+    anUV = myAttribute->Scale(anUV, Standard_True);
     myAttribute->AddNode(aIndex, anUV, BRepMesh_Fixed, aTmpId1, aTmpId2);
   }
   catch (Standard_Failure)
@@ -1214,7 +1272,7 @@ void BRepMesh_FastDiscretFace::insertVertex(
   BRepMesh::ListOfVertex& theVertices)
 {
   Standard_Integer aNbLocat = myAttribute->LastPointId();
-  mySurfacePoints->Bind(++aNbLocat, thePnt3d);
+  myAttribute->ChangeSurfacePoints()->Bind(++aNbLocat, thePnt3d);
 
   gp_XY aPnt2d  = myAttribute->Scale(theUV, Standard_True);
   BRepMesh_Vertex aVertex(aPnt2d, aNbLocat, BRepMesh_Free);
@@ -1230,14 +1288,17 @@ void BRepMesh_FastDiscretFace::commitSurfaceTriangulation()
   if (myAttribute.IsNull() || !myAttribute->IsValid())
     return;
 
-  TopoDS_Face aFace = myAttribute->Face();
+  const TopoDS_Face& aFace = myAttribute->Face();
   BRepMesh_ShapeTool::NullifyFace(aFace);
 
   Handle(BRepMesh_DataStructureOfDelaun)& aStructure = myAttribute->ChangeStructure();
   const BRepMesh::MapOfInteger&           aTriangles = aStructure->ElementsOfDomain();
 
   if (aTriangles.IsEmpty())
+  {
+    myAttribute->SetStatus(BRepMesh_Failure);
     return;
+  }
 
   BRepMesh::HIMapOfInteger& aVetrexEdgeMap = myAttribute->ChangeVertexEdgeMap();
 
@@ -1283,6 +1344,11 @@ void BRepMesh_FastDiscretFace::commitSurfaceTriangulation()
   BRepMesh_ShapeTool::AddInFace(aFace, aNewTriangulation);
 
   // Delete unused data
-  myStructure.Nullify();
-  myAttribute->Clear(Standard_True);
+  myAttribute->ChangeStructure().Nullify();
+  myAttribute->ChangeSurfacePoints().Nullify();
+  myAttribute->ChangeSurfaceVertices().Nullify();
+
+  myAttribute->ChangeClassifier().Nullify();
+  myAttribute->ChangeLocation2D().Nullify();
+  myAttribute->ChangeVertexEdgeMap().Nullify();
 }

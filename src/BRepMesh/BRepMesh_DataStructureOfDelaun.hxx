@@ -47,24 +47,25 @@ public: //! @name API for accessing mesh nodes.
   //! Returns number of nodes.
   inline Standard_Integer NbNodes() const
   {
-    return myNodes.Extent();
+    return myNodes->Extent();
   }
 
 
   //! Adds node to the mesh if it is not already in the mesh.
   //! @param theNode node to be added to the mesh.
+  //! @param isForceAdd adds the given node to structure without 
+  //! checking on coincidence with other nodes.
   //! @return index of the node in the structure.
-  inline Standard_Integer AddNode(const BRepMesh_Vertex& theNode)
-  {
-    return myNodes.Add(theNode);
-  }
+  Standard_EXPORT Standard_Integer AddNode(
+    const BRepMesh_Vertex& theNode,
+    const Standard_Boolean isForceAdd = Standard_False);
 
   //! Finds the index of the given node.
   //! @param theNode node to find.
   //! @return index of the given element of zero if node is not in the mesh.
   Standard_EXPORT Standard_Integer IndexOf(const BRepMesh_Vertex& theNode)
   {
-    return myNodes.FindIndex(theNode);
+    return myNodes->FindIndex(theNode);
   }
 
   //! Get node by the index.
@@ -72,23 +73,13 @@ public: //! @name API for accessing mesh nodes.
   //! @return node with the given index.
   inline const BRepMesh_Vertex& GetNode(const Standard_Integer theIndex)
   {
-    return myNodes.FindKey(theIndex);
+    return myNodes->FindKey(theIndex);
   }
 
   //! Alias for GetNode.
   const BRepMesh_Vertex& operator ()(const Standard_Integer theIndex)
   {
     return GetNode(theIndex);
-  }
-
-  //! Replaces nodes of mesh by the given ones.
-  //! @param theNewNodes nodes to be set instead of existing ones.
-  Standard_EXPORT void ReplaceNodes(const BRepMesh_VertexTool& theNewNodes)
-  {
-    if (theNewNodes.IsEmpty())
-      return;
-
-    myNodes = theNewNodes;
   }
 
   //! Substitutes the node with the given index by new one.
@@ -107,10 +98,10 @@ public: //! @name API for accessing mesh nodes.
   Standard_EXPORT void RemoveNode(const Standard_Integer theIndex,
                                   const Standard_Boolean isForce = Standard_False)
   {
-    if (isForce || myNodes.FindKey(theIndex).Movability() == BRepMesh_Free)
+    if (isForce || myNodes->FindKey(theIndex).Movability() == BRepMesh_Free)
     {
-      if (myNodes.FindFromIndex(theIndex).Extent()==0)
-        myNodes.Delete(theIndex);
+      if (LinksConnectedTo(theIndex).Extent()==0)
+        myNodes->Delete(theIndex);
     }
   }
 
@@ -120,9 +111,8 @@ public: //! @name API for accessing mesh nodes.
   inline const BRepMesh::ListOfInteger& LinksConnectedTo(
     const Standard_Integer theIndex) const
   {
-    return myNodes.FindFromIndex(theIndex);
+    return linksConnectedTo(theIndex);
   }
-
 
 
 public: //! @name API for accessing mesh links.
@@ -254,7 +244,7 @@ public: //! @name Auxilary API
   }
 
   //! Gives the data structure for initialization of cell size and tolerance.
-  inline BRepMesh_VertexTool& Data()
+  inline BRepMesh::HVertexTool& Data()
   {
     return myNodes;
   }
@@ -273,6 +263,15 @@ public: //! @name Auxilary API
   DEFINE_STANDARD_RTTI(BRepMesh_DataStructureOfDelaun)
 
 private: 
+
+  //! Get list of links attached to the node with the given index.
+  //! @param theIndex index of node whose links should be retrieved.
+  //! @return list of links attached to the node.
+  inline BRepMesh::ListOfInteger& linksConnectedTo(
+    const Standard_Integer theIndex) const
+  {
+    return (BRepMesh::ListOfInteger&)myNodeLinks.Find(theIndex);
+  }
 
   //! Substitutes deleted links by the last one from corresponding map 
   //! to have only non-deleted links in the structure.
@@ -305,13 +304,14 @@ private:
 
 private:
 
-  BRepMesh_VertexTool               myNodes;
-  BRepMesh::IDMapOfLink             myLinks;
-  BRepMesh::ListOfInteger           myDelLinks;
-  BRepMesh::IMapOfElement           myElements;
-  BRepMesh::MapOfInteger            myElementsOfDomain;
-  BRepMesh::MapOfInteger            myLinksOfDomain;
-  Handle(NCollection_IncAllocator)  myAllocator;
+  Handle(NCollection_IncAllocator)      myAllocator;
+  BRepMesh::HVertexTool                 myNodes;
+  BRepMesh::DMapOfIntegerListOfInteger  myNodeLinks;
+  BRepMesh::IDMapOfLink                 myLinks;
+  BRepMesh::ListOfInteger               myDelLinks;
+  BRepMesh::IMapOfElement               myElements;
+  BRepMesh::MapOfInteger                myElementsOfDomain;
+  BRepMesh::MapOfInteger                myLinksOfDomain;
 };
 
 DEFINE_STANDARD_HANDLE(BRepMesh_DataStructureOfDelaun,Standard_Transient)

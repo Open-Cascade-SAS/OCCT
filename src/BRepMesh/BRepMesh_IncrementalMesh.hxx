@@ -124,12 +124,6 @@ public: //! @name plugin API
   //! Discret() static method (thus applied only to Mesh Factories).
   Standard_EXPORT static void SetParallelDefault(const Standard_Boolean isInParallel);
 
-  //! Returns mesh tool storing mesh data.
-  inline const Handle(BRepMesh_FastDiscret)& Mesh() const
-  {
-    return myMesh;
-  }
-
   DEFINE_STANDARD_RTTI(BRepMesh_IncrementalMesh)
 
 protected:
@@ -191,6 +185,9 @@ private:
 
   //! Stores mesh of internal edges to the face.
   void commitEdges(const TopoDS_Face& theFace);
+  
+  //! Clears internal data structures.
+  void clear();
 
 protected:
 
@@ -202,7 +199,7 @@ protected:
   TopTools_DataMapOfShapeReal             myEdgeDeflection;
   Standard_Real                           myMaxShapeSize;
   Standard_Integer                        myStatus;
-  std::vector<TopoDS_Face>                myFaces;
+  NCollection_Vector<TopoDS_Face>         myFaces;
 };
 
 DEFINE_STANDARD_HANDLE(BRepMesh_IncrementalMesh,BRepMesh_DiscretRoot)

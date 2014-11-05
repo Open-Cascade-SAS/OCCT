@@ -104,6 +104,7 @@ private:
   void elementsOfLink(const Standard_Integer theIndex);
 
 private:
+  Handle(NCollection_IncAllocator)       myAllocator;
   Handle(BRepMesh_DataStructureOfDelaun) myMesh;
   BRepMesh::MapOfInteger                 myNodes;
   BRepMesh::MapOfInteger                 myLinks;

@@ -53,9 +53,13 @@ class BRepMesh_VertexInspector;
 class BRepMesh_CircleInspector;
 class BRepMesh_Classifier;
 class Poly_Triangulation;
+class BRepMesh_VertexTool;
 
 namespace BRepMesh
 {
+  //! Default size for memory block allocated by IncAllocator.
+  const size_t MEMORY_BLOCK_SIZE_HUGE = 512 * 1024;
+
   //! Structure keeping parameters of segment.
   struct Segment
   {
@@ -112,6 +116,7 @@ namespace BRepMesh
   typedef NCollection_CellFilter<BRepMesh_VertexInspector>                                          VertexCellFilter;
 
   //! Handles
+  typedef NCollection_Handle<VectorOfVertex>                                                        HVectorOfVertex;
   typedef NCollection_Handle<MapOfInteger>                                                          HMapOfInteger;
   typedef NCollection_Handle<IMapOfInteger>                                                         HIMapOfInteger;
   typedef NCollection_Handle<DMapOfShapePairOfPolygon>                                              HDMapOfShapePairOfPolygon;
@@ -120,6 +125,8 @@ namespace BRepMesh
   typedef NCollection_Handle<BndBox2dTree>                                                          HBndBox2dTree;
   typedef NCollection_Handle<Array1OfSegments>                                                      HArray1OfSegments;
   typedef NCollection_Handle<DMapOfVertexInteger>                                                   HDMapOfVertexInteger;
+  typedef NCollection_Handle<DMapOfIntegerListOfXY>                                                 HDMapOfIntegerListOfXY;
+  typedef NCollection_Handle<BRepMesh_VertexTool>                                                   HVertexTool;
 
   //! Other data structures
   typedef std::pair<HArray1OfSegments, HBndBox2dTree>                                               SegmentsTree;

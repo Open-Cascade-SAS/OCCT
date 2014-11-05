@@ -34,8 +34,7 @@ BRepMesh_FaceAttribute::BRepMesh_FaceAttribute()
     myVMax            (0.),
     myDeltaX          (1.),
     myDeltaY          (1.),
-    myStatus          (BRepMesh_NoError),
-    myAllocator       (new NCollection_IncAllocator(64000))
+    myStatus          (BRepMesh_NoError)
 {
   init();
 }
@@ -58,8 +57,7 @@ BRepMesh_FaceAttribute::BRepMesh_FaceAttribute(
     myStatus          (BRepMesh_NoError),
     myBoundaryVertices(theBoundaryVertices),
     myBoundaryPoints  (theBoundaryPoints),
-    myFace            (theFace),
-    myAllocator       (new NCollection_IncAllocator(64000))
+    myFace            (theFace)
 {
   init();
 }
@@ -70,8 +68,6 @@ BRepMesh_FaceAttribute::BRepMesh_FaceAttribute(
 //=======================================================================
 BRepMesh_FaceAttribute::~BRepMesh_FaceAttribute()
 {
-  Clear();
-  myAllocator.Nullify();
 }
 
 //=======================================================================
@@ -82,74 +78,30 @@ void BRepMesh_FaceAttribute::init()
 {
   myVertexEdgeMap = new BRepMesh::IMapOfInteger;
   myInternalEdges = new BRepMesh::DMapOfShapePairOfPolygon;
-  mySurfacePoints = new BRepMesh::DMapOfIntegerPnt;
+  myLocation2D    = new BRepMesh::DMapOfIntegerListOfXY;
   myClassifier    = new BRepMesh_Classifier;
 
-  if (!myFace.IsNull())
-  {
-    BRepTools::Update(myFace);
-    myFace.Orientation(TopAbs_FORWARD);
+  if (myFace.IsNull())
+    return;
 
-    BRepAdaptor_Surface aSurfAdaptor(myFace, Standard_False);
-    mySurface = new BRepAdaptor_HSurface(aSurfAdaptor);
-  }
+  BRepTools::Update(myFace);
+  myFace.Orientation(TopAbs_FORWARD);
+  BRepTools::UVBounds(myFace, myUMin, myUMax, myVMin, myVMax);
 
-  ResetStructure();
+  BRepAdaptor_Surface aSurfAdaptor(myFace, Standard_False);
+  mySurface = new BRepAdaptor_HSurface(aSurfAdaptor);
 }
 
 //=======================================================================
 //function : Clear
 //purpose  : 
 //=======================================================================
-void BRepMesh_FaceAttribute::Clear(
-  const Standard_Boolean isClearSurfaceDataOnly)
+void BRepMesh_FaceAttribute::Clear()
 {
-  clearLocal(isClearSurfaceDataOnly);
-
-  mySurfaceVertices.Clear();
-  mySurfacePoints->Clear();
-
-  mySurface.Nullify();
-  myClassifier.Nullify();
-}
-
-//=======================================================================
-//function : clearLocal
-//purpose  : 
-//=======================================================================
-void BRepMesh_FaceAttribute::clearLocal(
-  const Standard_Boolean isClearSurfaceDataOnly)
-{
-  myLocation2D.Clear();
-  myVertexEdgeMap->Clear();
-
-  if (!isClearSurfaceDataOnly)
-  {
-    myInternalEdges->Clear();
-  }
-
   myStructure.Nullify();
-  myAllocator->Reset(isClearSurfaceDataOnly);
-}
-
-//=======================================================================
-//function : ResetStructure
-//purpose  : 
-//=======================================================================
-Handle(BRepMesh_DataStructureOfDelaun)& BRepMesh_FaceAttribute::ResetStructure()
-{
-  clearLocal();
-  myStructure = new BRepMesh_DataStructureOfDelaun(myAllocator);
-
-  if (!myFace.IsNull())
-    BRepTools::UVBounds(myFace, myUMin, myUMax, myVMin, myVMax);
-
-  Standard_Real aTolU = ToleranceU();
-  Standard_Real aTolV = ToleranceV();
-
-  myStructure->Data().SetCellSize(14.0 * aTolU, 14.0 * aTolV);
-  myStructure->Data().SetTolerance(aTolU, aTolV);
-  return myStructure;
+  myLocation2D->Clear();
+  myInternalEdges->Clear();
+  myVertexEdgeMap->Clear();
 }
 
 //=======================================================================
@@ -174,8 +126,8 @@ Standard_Boolean BRepMesh_FaceAttribute::getVertexIndex(
 {
   if (!myBoundaryVertices.IsNull() && myBoundaryVertices->IsBound(theVertex))
     theVertexIndex = myBoundaryVertices->Find(theVertex);
-  else if (mySurfaceVertices.IsBound(theVertex))
-    theVertexIndex = mySurfaceVertices.Find(theVertex);
+  else if (!mySurfaceVertices.IsNull() && mySurfaceVertices->IsBound(theVertex))
+    theVertexIndex = mySurfaceVertices->Find(theVertex);
   else
     return Standard_False;
 

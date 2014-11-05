@@ -233,10 +233,9 @@ void MeshTest_DrawableMesh::Dump(Standard_OStream&) const
 //=======================================================================
 void MeshTest_DrawableMesh::Whatis(Draw_Interpretor& theStream) const 
 {
-  const TopoDS_Shape& aShape                = myMesher->Shape();
-  const Handle(BRepMesh_FastDiscret)& aMesh = myMesher->Mesh();
+  const TopoDS_Shape& aShape = myMesher->Shape();
 
-  Standard_Integer aPointsNb    = aMesh->NbBoundaryPoints();
+  Standard_Integer aPointsNb    = 0;
   Standard_Integer aTrianglesNb = 0;
   Standard_Integer aEdgesNb     = 0;
 

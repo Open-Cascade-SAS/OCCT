@@ -81,29 +81,27 @@ public:
   }
 
   //! Adds vertex with empty data to the tool.
-  Standard_EXPORT Standard_Integer Add(const BRepMesh_Vertex& theVertex);
-
-  //! Adds vertex with associated data to the tool.
-  //! @param theVertex vertex to be added.
-  //! @param theParams data associated with the vertex.
-  Standard_EXPORT Standard_Integer Add(const BRepMesh_Vertex&         theVertex,
-                                       const BRepMesh::ListOfInteger& theParams);
+  //! @param theVertex node to be added to the mesh.
+  //! @param isForceAdd adds the given node to structure without 
+  //! checking on coincidence with other nodes.
+  //! @return index of the node in the structure.
+  Standard_EXPORT Standard_Integer Add(
+    const BRepMesh_Vertex& theVertex,
+    const Standard_Boolean isForceAdd);
 
   //! Deletes vertex with the given index from the tool.
   Standard_EXPORT void Delete(const Standard_Integer theIndex);
 
-  //! Returns data assigned to link with the given index.
-  //! @param theIndex index of link which data should be returned.
-  //! @return attached data.
-  inline BRepMesh::ListOfInteger& FindFromIndex(const Standard_Integer theIndex) const
+  //! Returns set of mesh vertices.
+  inline const BRepMesh::HVectorOfVertex& Vertices() const
   {
-    return (BRepMesh::ListOfInteger&)myLinksMap.Find(theIndex);
+    return mySelector.Vertices();
   }
 
-  //! Alias for FindFromIndex.
-  BRepMesh::ListOfInteger& operator()(const Standard_Integer theIndex) const
+  //! Returns set of mesh vertices.
+  inline BRepMesh::HVectorOfVertex& ChangeVertices()
   {
-    return FindFromIndex(theIndex);
+    return mySelector.ChangeVertices();
   }
 
   //! Returns vertex by the given index.
@@ -135,10 +133,8 @@ public:
   //! Substitutes vertex with the given by the given vertex with attributes.
   //! @param theIndex index of vertex to be substituted.
   //! @param theVertex replacement vertex.
-  //! @param theData data associated to the vertex.
-  Standard_EXPORT void Substitute(const Standard_Integer         theIndex,
-                                  const BRepMesh_Vertex&         theVertex,
-                                  const BRepMesh::ListOfInteger& theData);
+  Standard_EXPORT void Substitute(const Standard_Integer theIndex,
+                                  const BRepMesh_Vertex& theVertex);
 
   //! Remove last node from the structure.
   inline void RemoveLast()
@@ -177,7 +173,6 @@ private:
   Handle(NCollection_IncAllocator)      myAllocator;
   BRepMesh::VertexCellFilter            myCellFilter;
   BRepMesh_VertexInspector              mySelector;
-  BRepMesh::DMapOfIntegerListOfInteger  myLinksMap;
   Standard_Real                         myTolerance[2];
 };
 

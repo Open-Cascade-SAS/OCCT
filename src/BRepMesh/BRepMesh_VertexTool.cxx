@@ -27,7 +27,7 @@
 NCollection_CellFilter_Action BRepMesh_VertexInspector::Inspect(
   const Standard_Integer theTarget)
 {
-  const BRepMesh_Vertex& aVertex = myVertices(theTarget - 1);
+  const BRepMesh_Vertex& aVertex = myVertices->Value(theTarget - 1);
   if(aVertex.Movability() == BRepMesh_Deleted)
   {
     myDelNodes.Append(theTarget);
@@ -71,32 +71,19 @@ BRepMesh_VertexTool::BRepMesh_VertexTool(
 //function : Add
 //purpose  : 
 //=======================================================================
-Standard_Integer BRepMesh_VertexTool::Add(const BRepMesh_Vertex& theVertex)
+Standard_Integer BRepMesh_VertexTool::Add(
+  const BRepMesh_Vertex& theVertex,
+  const Standard_Boolean isForceAdd)
 {
-  Standard_Integer aIndex = FindIndex(theVertex);
+  Standard_Integer aIndex = isForceAdd ? 0 : FindIndex(theVertex);
   if (aIndex == 0)
   {
-    BRepMesh::ListOfInteger aParams(myAllocator);
-    aIndex = Add(theVertex, aParams);
+    aIndex = mySelector.Add(theVertex);
+
+    gp_XY aMinPnt, aMaxPnt;
+    expandPoint(theVertex.Coord(), aMinPnt, aMaxPnt);
+    myCellFilter.Add(aIndex, aMinPnt, aMaxPnt);
   }
-  return aIndex;
-}
-
-//=======================================================================
-//function : Add
-//purpose  : 
-//=======================================================================
-Standard_Integer BRepMesh_VertexTool::Add(
-  const BRepMesh_Vertex&         theVertex,
-  const BRepMesh::ListOfInteger& theParams)
-{
-  Standard_Integer aIndex = mySelector.Add(theVertex);
-  myLinksMap.Bind(aIndex, theParams);
-
-  gp_XY aMinPnt, aMaxPnt;
-  expandPoint(theVertex.Coord(), aMinPnt, aMaxPnt);
-  myCellFilter.Add(aIndex, aMinPnt, aMaxPnt);
-
   return aIndex;
 }
 
@@ -120,9 +107,8 @@ void BRepMesh_VertexTool::Delete(const Standard_Integer theIndex)
 //purpose  : 
 //=======================================================================
 void BRepMesh_VertexTool::Substitute(
-  const Standard_Integer         theIndex,
-  const BRepMesh_Vertex&         theVertex,
-  const BRepMesh::ListOfInteger& theData)
+  const Standard_Integer theIndex,
+  const BRepMesh_Vertex& theVertex)
 {
   BRepMesh_Vertex& aV = mySelector.GetVertex(theIndex);
 
@@ -134,7 +120,6 @@ void BRepMesh_VertexTool::Substitute(
   aV = theVertex;
   expandPoint(aV.Coord(), aMinPnt, aMaxPnt);
   myCellFilter.Add(theIndex, aMinPnt, aMaxPnt);
-  FindFromIndex(theIndex) = theData;
 }
 
 //=======================================================================

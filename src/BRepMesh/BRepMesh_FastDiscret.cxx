@@ -204,6 +204,34 @@ void BRepMesh_FastDiscret::Process(const TopoDS_Face& theFace) const
 }
 
 //=======================================================================
+//function : resetDataStructure
+//purpose  : 
+//=======================================================================
+void BRepMesh_FastDiscret::resetDataStructure()
+{
+  Handle(NCollection_IncAllocator) aAllocator;
+  if (myAttribute->ChangeStructure().IsNull())
+    aAllocator = new NCollection_IncAllocator(BRepMesh::MEMORY_BLOCK_SIZE_HUGE);
+  else
+    aAllocator = myAttribute->ChangeStructure()->Allocator();
+
+  myAttribute->Clear();
+  aAllocator->Reset(Standard_False);
+  Handle(BRepMesh_DataStructureOfDelaun) aStructure = 
+    new BRepMesh_DataStructureOfDelaun(aAllocator);
+
+  const Standard_Real aTolU = myAttribute->ToleranceU();
+  const Standard_Real aTolV = myAttribute->ToleranceV();
+  const Standard_Real uCellSize = 14.0 * aTolU;
+  const Standard_Real vCellSize = 14.0 * aTolV;
+
+  aStructure->Data()->SetCellSize ( uCellSize, vCellSize);
+  aStructure->Data()->SetTolerance( aTolU    , aTolV    );
+
+  myAttribute->ChangeStructure() = aStructure;
+}
+
+//=======================================================================
 //function : Add(face)
 //purpose  : 
 //=======================================================================
@@ -224,10 +252,10 @@ Standard_Integer BRepMesh_FastDiscret::Add(const TopoDS_Face& theFace)
       myAttributes.Bind(theFace, myAttribute);
     }
 
-    myVertexEdgeMap = myAttribute->ChangeVertexEdgeMap();
-    myInternalEdges = myAttribute->ChangeInternalEdges();
-    Handle(BRepMesh_DataStructureOfDelaun)& aStructure =
-      myAttribute->ResetStructure();
+    BRepMesh::HIMapOfInteger&            aVertexEdgeMap = myAttribute->ChangeVertexEdgeMap();
+    BRepMesh::HDMapOfShapePairOfPolygon& aInternalEdges = myAttribute->ChangeInternalEdges();
+
+    resetDataStructure();
 
     if (!myWithShare)
     {
@@ -314,8 +342,9 @@ Standard_Integer BRepMesh_FastDiscret::Add(const TopoDS_Face& theFace)
       }
     }
 
-    if ( nbEdge == 0 || myVertexEdgeMap->Extent() < 3 )
+    if ( nbEdge == 0 || aVertexEdgeMap->Extent() < 3 )
     {
+      myAttribute->ChangeStructure().Nullify();
       myAttribute->SetStatus(BRepMesh_Failure);
       return myAttribute->GetStatus();
     }
@@ -345,9 +374,10 @@ Standard_Integer BRepMesh_FastDiscret::Add(const TopoDS_Face& theFace)
 
       Standard_Integer ipn = 0;
       Standard_Integer i1 = 1;
-      for ( i1 = 1; i1 <= myVertexEdgeMap->Extent(); ++i1 )
+      for ( i1 = 1; i1 <= aVertexEdgeMap->Extent(); ++i1 )
       {
-        const BRepMesh_Vertex& aVertex = aStructure->GetNode(myVertexEdgeMap->FindKey(i1));
+        const BRepMesh_Vertex& aVertex = 
+          myAttribute->ChangeStructure()->GetNode(aVertexEdgeMap->FindKey(i1));
 
         ++ipn;
 
@@ -410,6 +440,7 @@ Standard_Integer BRepMesh_FastDiscret::Add(const TopoDS_Face& theFace)
       if (aSurfType == GeomAbs_BezierSurface &&
          (myumin < -0.5 || myumax > 1.5 || myvmin < -0.5 || myvmax > 1.5) )
       {
+        myAttribute->ChangeStructure().Nullify();
         myAttribute->SetStatus(BRepMesh_Failure);
         return myAttribute->GetStatus();
       }
@@ -421,7 +452,7 @@ Standard_Integer BRepMesh_FastDiscret::Add(const TopoDS_Face& theFace)
       {
         BRepMesh::HClassifier& aClassifier = myAttribute->ChangeClassifier();
         BRepMesh_WireChecker aDFaceChecker(aFace, Precision::PConfusion(),
-          myInternalEdges, myVertexEdgeMap, aStructure,
+          aInternalEdges, aVertexEdgeMap, myAttribute->ChangeStructure(),
           myumin, myumax, myvmin, myvmax, myInParallel );
 
         aDFaceChecker.ReCompute(aClassifier);
@@ -435,10 +466,7 @@ Standard_Integer BRepMesh_FastDiscret::Add(const TopoDS_Face& theFace)
           {
             ++nbmaill;
 
-            // Clear the structure of links
-            aStructure = myAttribute->ResetStructure();
-
-            
+            resetDataStructure();
             for (Standard_Integer j = 1; j <= aFaceEdges.Length(); ++j)
             {
               const TopoDS_Edge& anEdge = aFaceEdges(j);
@@ -459,8 +487,10 @@ Standard_Integer BRepMesh_FastDiscret::Add(const TopoDS_Face& theFace)
 
         myAttribute->SetStatus(aCheckStatus);
         if (!myAttribute->IsValid())
-          //RemoveFaceAttribute(theFace);
+        {
+          myAttribute->ChangeStructure().Nullify();
           return myAttribute->GetStatus();
+        }
       }
 
       // try to find the real length:
@@ -514,6 +544,7 @@ Standard_Integer BRepMesh_FastDiscret::Add(const TopoDS_Face& theFace)
       if (longu <= 1.e-16 || longv <= 1.e-16)
       {
         //yes, it is seen!!
+        myAttribute->ChangeStructure().Nullify();
         myAttribute->SetStatus(BRepMesh_Failure);
         return myAttribute->GetStatus();
       }
@@ -543,7 +574,10 @@ Standard_Integer BRepMesh_FastDiscret::Add(const TopoDS_Face& theFace)
           Standard_Real aa = sqrt(Du*Du + oldDv*oldDv);
 
           if (aa < gp::Resolution())
+          {
+            myAttribute->ChangeStructure().Nullify();
             return myAttribute->GetStatus();
+          }
 
           Du = Du * Min(oldDv, Du) / aa;
         }
@@ -599,27 +633,11 @@ Standard_Integer BRepMesh_FastDiscret::Add(const TopoDS_Face& theFace)
     myAttribute->SetStatus(BRepMesh_Failure);
   }
 
+  myAttribute->ChangeMeshNodes() = 
+    myAttribute->ChangeStructure()->Data()->Vertices();
+
+  myAttribute->ChangeStructure().Nullify();
   return myAttribute->GetStatus();
-}
-
-//=======================================================================
-//function : addLinkToMesh
-//purpose  :
-//=======================================================================
-void BRepMesh_FastDiscret::addLinkToMesh(
-  const Standard_Integer   theFirstNodeId,
-  const Standard_Integer   theLastNodeId,
-  const TopAbs_Orientation theOrientation)
-{
-  Handle(BRepMesh_DataStructureOfDelaun)& aStructure =
-    myAttribute->ChangeStructure();
-
-  if (theOrientation == TopAbs_FORWARD)
-    aStructure->AddLink(BRepMesh_Edge(theFirstNodeId, theLastNodeId, BRepMesh_Frontier));
-  else if (theOrientation == TopAbs_REVERSED)
-    aStructure->AddLink(BRepMesh_Edge(theLastNodeId, theFirstNodeId, BRepMesh_Frontier));
-  else if (theOrientation == TopAbs_INTERNAL)
-    aStructure->AddLink(BRepMesh_Edge(theFirstNodeId, theLastNodeId, BRepMesh_Fixed));
 }
 
 //=======================================================================
@@ -788,14 +806,7 @@ void BRepMesh_FastDiscret::add(
 
       aNewNodes (i) = isv;
       aNewParams(i) = aParam;
-
-      addLinkToMesh(ivf, iv2, orEdge);
-      ivf = iv2;
     }
-
-    // last point
-    if (ivf != ivl)
-      addLinkToMesh(ivf, ivl, orEdge);
   }
 
   Handle(Poly_PolygonOnTriangulation) P1 = 
@@ -858,7 +869,6 @@ void BRepMesh_FastDiscret::update(
   Standard_Integer ipf, ivf, isvf, ipl, ivl, isvl;
   registerEdgeVertices(aEAttr, ipf, ivf, isvf, ipl, ivl, isvl);
 
-  TopAbs_Orientation orEdge = theEdge.Orientation();
   Handle(Poly_PolygonOnTriangulation) P1, P2;
   if (BRepMesh_ShapeTool::IsDegenerated(theEdge, aFace))
   {
@@ -908,18 +918,11 @@ void BRepMesh_FastDiscret::update(
       aNewNodInStruct(i) = aLastPointId;
       aNewNodes      (i) = isv;
       aNewParams     (i) = aParam;
-
-      addLinkToMesh(ivf, iv2, orEdge);
-      ivf = iv2;
     }
 
     P1 = new Poly_PolygonOnTriangulation(aNewNodes,       aNewParams);
     P2 = new Poly_PolygonOnTriangulation(aNewNodInStruct, aNewParams);
   }
-
-  // last point
-  if (ivf != ivl)
-    addLinkToMesh(ivf, ivl, orEdge);
 
   storePolygon(theEdge, P1, theDefEdge);
   storePolygonSharedData(theEdge, P2, theDefEdge);
@@ -935,9 +938,10 @@ void BRepMesh_FastDiscret::storePolygon(
   const Standard_Real                        theDeflection)
 {
   thePolygon->Deflection(theDeflection);
-  if (myInternalEdges->IsBound(theEdge))
+  BRepMesh::HDMapOfShapePairOfPolygon& aInternalEdges = myAttribute->ChangeInternalEdges();
+  if (aInternalEdges->IsBound(theEdge))
   {
-    BRepMesh_PairOfPolygon& aPair = myInternalEdges->ChangeFind(theEdge);
+    BRepMesh_PairOfPolygon& aPair = aInternalEdges->ChangeFind(theEdge);
     if (theEdge.Orientation() == TopAbs_REVERSED)
       aPair.Append(thePolygon);
     else
@@ -948,7 +952,7 @@ void BRepMesh_FastDiscret::storePolygon(
 
   BRepMesh_PairOfPolygon aPair;
   aPair.Append(thePolygon);
-  myInternalEdges->Bind(theEdge, aPair);
+  aInternalEdges->Bind(theEdge, aPair);
 }
 
 //=======================================================================

@@ -149,9 +149,10 @@ private:
   void frontierAdjust();
 
   //! Find left polygon of the given edge and call meshPolygon.
-  Standard_Boolean meshLeftPolygonOf (const Standard_Integer  theEdgeIndex,
-                                      const Standard_Boolean  isForward,
-                                      BRepMesh::HMapOfInteger theSkipped = NULL);
+  Standard_Boolean meshLeftPolygonOf(
+    const Standard_Integer  theEdgeIndex,
+    const Standard_Boolean  isForward,
+    BRepMesh::HMapOfInteger theSkipped = NULL);
 
   //! Find next link starting from the given node and has maximum
   //! angle respect the given reference link.

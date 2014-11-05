@@ -190,13 +190,7 @@ public: //! @name main geometrical properties.
 public: //! @name auxiliary structures
 
   //! Clear face attribute.
-  //! @param isClearSurfaceDataOnly clears only surface attributes if true value is set.
-  Standard_EXPORT void Clear(
-    const Standard_Boolean isClearSurfaceDataOnly = Standard_False);
-
-  //! Resets mesh data structure.
-  //! @returns reset data structure.
-  Standard_EXPORT Handle(BRepMesh_DataStructureOfDelaun)& ResetStructure();
+  Standard_EXPORT void Clear();
 
   //! Gives reference to map of internal edges of face.
   inline BRepMesh::HDMapOfShapePairOfPolygon& ChangeInternalEdges()
@@ -205,7 +199,7 @@ public: //! @name auxiliary structures
   }
 
   //! Gives reference to map of 2D points of discretization.
-  inline BRepMesh::DMapOfIntegerListOfXY& ChangeLocation2D()
+  inline BRepMesh::HDMapOfIntegerListOfXY& ChangeLocation2D()
   {
     return myLocation2D;
   }
@@ -214,6 +208,12 @@ public: //! @name auxiliary structures
   inline BRepMesh::HDMapOfIntegerPnt& ChangeSurfacePoints()
   {
     return mySurfacePoints;
+  }
+
+  //! Gives reference to map of vertices of discretization.
+  inline BRepMesh::HDMapOfVertexInteger& ChangeSurfaceVertices()
+  {
+    return mySurfaceVertices;
   }
 
   //! Gives reference on map of (vertex, edge) pairs of face.
@@ -234,13 +234,19 @@ public: //! @name auxiliary structures
     return myClassifier;
   }
 
+  //! Returns mesh nodes calculated for boundaries.
+  inline BRepMesh::HVectorOfVertex& ChangeMeshNodes()
+  {
+    return myMeshNodes;
+  }
+
 public: //! @name Point/Vertex/Node manipulators
 
   //! Gives the number of different locations in 3D space.
   inline Standard_Integer LastPointId() const
   {
-    return (myBoundaryPoints.IsNull() ? 0 : myBoundaryPoints->Extent())
-      + mySurfacePoints->Extent();
+    return (myBoundaryPoints.IsNull() ? 0 : myBoundaryPoints->Extent()) + 
+      (mySurfacePoints.IsNull() ? 0 : mySurfacePoints->Extent());
   }
 
   //! Gives the 3D location of the vertex.
@@ -252,7 +258,7 @@ public: //! @name Point/Vertex/Node manipulators
   //! Gives the 3D location of the vertex.
   inline const gp_Pnt& GetPoint(const Standard_Integer theIndex) const
   {
-    if (myBoundaryPoints.IsNull() || theIndex > myBoundaryPoints->Extent())
+    if (!mySurfacePoints.IsNull() && theIndex > myBoundaryPoints->Extent())
       return mySurfacePoints->Find(theIndex);
 
     return myBoundaryPoints->Find(theIndex);
@@ -287,7 +293,7 @@ public: //! @name Point/Vertex/Node manipulators
     }
 
     BRepMesh::DMapOfVertexInteger& aVertexMap = isFillEdgeVertices ?
-      *myBoundaryVertices : mySurfaceVertices;
+      *myBoundaryVertices : *mySurfaceVertices;
 
     aVertexMap.Bind(aVertex, aNewVertexIndex);
 
@@ -362,16 +368,20 @@ private:
 
   TopoDS_Face                             myFace;
   Handle(BRepAdaptor_HSurface)            mySurface;
-  BRepMesh::DMapOfVertexInteger           mySurfaceVertices;
-  BRepMesh::HDMapOfIntegerPnt             mySurfacePoints;
+  BRepMesh::HClassifier                   myClassifier;
 
-  BRepMesh::DMapOfIntegerListOfXY         myLocation2D;
-  BRepMesh::HIMapOfInteger                myVertexEdgeMap;
   BRepMesh::HDMapOfShapePairOfPolygon     myInternalEdges;
 
+  BRepMesh::HDMapOfIntegerListOfXY        myLocation2D;
+  BRepMesh::HIMapOfInteger                myVertexEdgeMap;
+
+  // This field is intended to keep calculated mesh nodes to prevent
+  // extremely high memory consumption in case if the whole structure is kept.
+  BRepMesh::HVectorOfVertex               myMeshNodes;
+
+  BRepMesh::HDMapOfVertexInteger          mySurfaceVertices;
+  BRepMesh::HDMapOfIntegerPnt             mySurfacePoints;
   Handle(BRepMesh_DataStructureOfDelaun)  myStructure;
-  BRepMesh::HClassifier                   myClassifier;
-  Handle(NCollection_IncAllocator)        myAllocator;
 };
 
 DEFINE_STANDARD_HANDLE(BRepMesh_FaceAttribute, Standard_Transient)

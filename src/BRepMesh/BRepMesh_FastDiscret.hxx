@@ -317,12 +317,6 @@ private:
     const Standard_Real         theEdgeDeflection,
     EdgeAttributes&             theAttributes);
 
-  //! Adds new link to the mesh data structure.
-  //! Movability of the link and order of nodes depend on orientation parameter.
-  void addLinkToMesh(const Standard_Integer   theFirstNodeId,
-                     const Standard_Integer   theLastNodeId,
-                     const TopAbs_Orientation theOrientation);
-
   //! Stores polygonal model of the given edge.
   //! @param theEdge edge which polygonal model is stored.
   //! @param thePolygon polygonal model of the edge.
@@ -342,6 +336,9 @@ private:
     const TopoDS_Edge&                         theEdge,
     Handle(Poly_PolygonOnTriangulation)&       thePolygon,
     const Standard_Real                        theDeflection);
+
+  //! Resets temporary data structure used to collect unique nodes.
+  void resetDataStructure();
 
 private:
 
@@ -364,8 +361,6 @@ private:
 
   // Fast access to attributes of current face
   Handle(BRepMesh_FaceAttribute)                   myAttribute;
-  BRepMesh::HIMapOfInteger                         myVertexEdgeMap;
-  BRepMesh::HDMapOfShapePairOfPolygon              myInternalEdges;
   TopTools_IndexedDataMapOfShapeListOfShape        mySharedFaces;
 };
 

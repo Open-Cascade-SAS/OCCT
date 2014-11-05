@@ -53,13 +53,13 @@ public:
   Standard_EXPORT BRepMesh_FastDiscretFace(
     const Standard_Real theAngle);
 
-  Standard_EXPORT void Add(const Handle(BRepMesh_FaceAttribute)& theAttribute);
   Standard_EXPORT void Perform(const Handle(BRepMesh_FaceAttribute)& theAttribute);
 
   DEFINE_STANDARD_RTTI(BRepMesh_FastDiscretFace)
 
 private:
 
+  void add(const Handle(BRepMesh_FaceAttribute)& theAttribute);
   void add(const TopoDS_Vertex& theVertex);
 
   Standard_Real control(BRepMesh::ListOfVertex&  theNewVertices,
@@ -118,7 +118,8 @@ private:
                                  const AnalyticSurface&  theAnalyticSurface,
                                  BRepMesh::ListOfVertex& theVertices)
   {
-    if (myClassifier->Perform(thePnt2d) != TopAbs_IN)
+    const BRepMesh::HClassifier& aClassifier = myAttribute->ChangeClassifier();
+    if (aClassifier->Perform(thePnt2d) != TopAbs_IN)
       return;
 
     gp_Pnt aPnt;
@@ -137,20 +138,26 @@ private:
   //! Stores mesh into the face (without internal edges).
   void commitSurfaceTriangulation();
 
+  //! Performs initialization of data structure using existing data.
+  void initDataStructure();
+
+  //! Adds new link to the mesh data structure.
+  //! Movability of the link and order of nodes depend on orientation parameter.
+  void addLinkToMesh(const Standard_Integer   theFirstNodeId,
+                     const Standard_Integer   theLastNodeId,
+                     const TopAbs_Orientation theOrientation);
+
 private:
 
   Standard_Real                          myAngle;
   Standard_Boolean                       myInternalVerticesMode;
   BRepMesh::IMapOfReal                   myUParam;
   BRepMesh::IMapOfReal                   myVParam;
-  Handle(NCollection_IncAllocator)       myAllocator;
 
   // Fast access to attributes of current face
+  Handle(NCollection_IncAllocator)       myAllocator;
   Handle(BRepMesh_FaceAttribute)         myAttribute;
   Handle(BRepMesh_DataStructureOfDelaun) myStructure;
-  BRepMesh::HIMapOfInteger               myVertexEdgeMap;
-  BRepMesh::HClassifier                  myClassifier;
-  BRepMesh::HDMapOfIntegerPnt            mySurfacePoints;
 };
 
 DEFINE_STANDARD_HANDLE (BRepMesh_FastDiscretFace, Standard_Transient)

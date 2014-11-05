@@ -36,7 +36,7 @@ public:
     const Standard_Integer                  theReservedSize,
     const Handle(NCollection_IncAllocator)& theAllocator)
     : myResIndices(theAllocator),
-      myVertices  (theReservedSize),
+      myVertices  (new BRepMesh::VectorOfVertex(theReservedSize)),
       myDelNodes  (theAllocator)
   {
     SetTolerance( Precision::Confusion() );
@@ -48,12 +48,12 @@ public:
   {
     if( myDelNodes.IsEmpty() )
     {
-      myVertices.Append(theVertex);
-      return myVertices.Length();
+      myVertices->Append(theVertex);
+      return myVertices->Length();
     }
     
     Standard_Integer aNodeIndex = myDelNodes.First();
-    myVertices(aNodeIndex - 1) = theVertex;
+    myVertices->ChangeValue(aNodeIndex - 1) = theVertex;
     myDelNodes.RemoveFirst();
     return aNodeIndex;
   }
@@ -81,7 +81,7 @@ public:
   //! Clear inspector's internal data structures.
   inline void Clear()
   {
-    myVertices.Clear();
+    myVertices->Clear();
     myDelNodes.Clear();
   }
 
@@ -89,20 +89,20 @@ public:
   //! @param theIndex index of vertex to be removed.
   inline void Delete(const Standard_Integer theIndex)
   {
-    myVertices(theIndex - 1).SetMovability(BRepMesh_Deleted);
+    myVertices->ChangeValue(theIndex - 1).SetMovability(BRepMesh_Deleted);
     myDelNodes.Append(theIndex);
   }
   
   //! Returns number of registered vertices.
   inline Standard_Integer NbVertices() const
   {
-    return myVertices.Length(); 
+    return myVertices->Length(); 
   }
 
   //! Returns vertex with the given index.
   inline BRepMesh_Vertex& GetVertex(Standard_Integer theIndex)
   {
-    return myVertices(theIndex - 1);
+    return myVertices->ChangeValue(theIndex - 1);
   }
   
   //! Set reference point to be checked.
@@ -129,6 +129,18 @@ public:
     return myDelNodes;
   }
 
+  //! Returns set of mesh vertices.
+  inline const BRepMesh::HVectorOfVertex& Vertices() const
+  {
+    return myVertices;
+  }
+
+  //! Returns set of mesh vertices for modification.
+  inline BRepMesh::HVectorOfVertex& ChangeVertices()
+  {
+    return myVertices;
+  }
+
   //! Performs inspection of a point with the given index.
   //! @param theTargetIndex index of a circle to be checked.
   //! @return status of the check.
@@ -143,11 +155,11 @@ public:
 
 private:
 
-  Standard_Real            myTolerance[2];
-  BRepMesh::ListOfInteger  myResIndices;
-  BRepMesh::VectorOfVertex myVertices;
-  BRepMesh::ListOfInteger  myDelNodes;
-  gp_XY                    myPoint;
+  Standard_Real             myTolerance[2];
+  BRepMesh::ListOfInteger   myResIndices;
+  BRepMesh::HVectorOfVertex myVertices;
+  BRepMesh::ListOfInteger   myDelNodes;
+  gp_XY                     myPoint;
 };
 
 #endif

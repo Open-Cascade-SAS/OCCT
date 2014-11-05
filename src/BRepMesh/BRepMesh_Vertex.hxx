@@ -78,6 +78,12 @@ public:
   {
     return myUV;
   }
+
+  //! Returns position of the vertex in parametric space for modification.
+  inline gp_XY& ChangeCoord()
+  {
+    return myUV;
+  }
   
   //! Returns index of 3d point associated with the vertex.
   inline Standard_Integer Location3d() const

@@ -22,10 +22,11 @@
 //purpose  : 
 //=======================================================================
 BRepMesh_SelectorOfDataStructureOfDelaun::BRepMesh_SelectorOfDataStructureOfDelaun()
-: myNodes   (10, new NCollection_IncAllocator),
-  myLinks   (10, new NCollection_IncAllocator),
-  myElements(10, new NCollection_IncAllocator),
-  myFrontier(10, new NCollection_IncAllocator)
+: myAllocator(new NCollection_IncAllocator(BRepMesh::MEMORY_BLOCK_SIZE_HUGE)),
+  myNodes   (10, myAllocator),
+  myLinks   (10, myAllocator),
+  myElements(10, myAllocator),
+  myFrontier(10, myAllocator)
 {
 }
 
@@ -35,11 +36,12 @@ BRepMesh_SelectorOfDataStructureOfDelaun::BRepMesh_SelectorOfDataStructureOfDela
 //=======================================================================
 BRepMesh_SelectorOfDataStructureOfDelaun::BRepMesh_SelectorOfDataStructureOfDelaun(
   const Handle(BRepMesh_DataStructureOfDelaun)& theMesh)
-: myMesh    (theMesh),
-  myNodes   (10, myMesh->Allocator()),
-  myLinks   (10, myMesh->Allocator()),
-  myElements(10, myMesh->Allocator()),
-  myFrontier(10, myMesh->Allocator())
+: myAllocator(new NCollection_IncAllocator(BRepMesh::MEMORY_BLOCK_SIZE_HUGE)),
+  myMesh    (theMesh),
+  myNodes   (10, myAllocator),
+  myLinks   (10, myAllocator),
+  myElements(10, myAllocator),
+  myFrontier(10, myAllocator)
 {
 }
 

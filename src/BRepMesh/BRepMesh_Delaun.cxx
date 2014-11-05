@@ -77,12 +77,14 @@ namespace {
 //=======================================================================
 BRepMesh_Delaun::BRepMesh_Delaun(
   BRepMesh::Array1OfVertexOfDelaun& theVertices)
-: myCircles( theVertices.Length(), new NCollection_IncAllocator() )
+  : myCircles(theVertices.Length(), new NCollection_IncAllocator(
+    BRepMesh::MEMORY_BLOCK_SIZE_HUGE))
 {
   if ( theVertices.Length() > 2 )
   {
-    myMeshData = new BRepMesh_DataStructureOfDelaun( new NCollection_IncAllocator(),
-                                                     theVertices.Length() );
+    myMeshData = new BRepMesh_DataStructureOfDelaun(
+      new NCollection_IncAllocator(BRepMesh::MEMORY_BLOCK_SIZE_HUGE),
+      theVertices.Length() );
     Init( theVertices );
   }
 }
@@ -247,7 +249,7 @@ void BRepMesh_Delaun::deleteTriangle(const Standard_Integer         theIndex,
 void BRepMesh_Delaun::compute(BRepMesh::Array1OfInteger& theVertexIndexes)
 {
   // Insertion of edges of super triangles in the list of free edges: 
-  BRepMesh::MapOfIntegerInteger aLoopEdges( 10, myMeshData->Allocator() );
+  BRepMesh::MapOfIntegerInteger aLoopEdges(10, myMeshData->Allocator());
   Standard_Integer e[3];
   Standard_Boolean o[3];
   mySupTrian.Edges( e, o );
@@ -418,7 +420,10 @@ void BRepMesh_Delaun::createTriangles(const Standard_Integer         theVertexIn
 void BRepMesh_Delaun::createTrianglesOnNewVertices(
   BRepMesh::Array1OfInteger& theVertexIndexes)
 {
-  BRepMesh::MapOfIntegerInteger aLoopEdges( 10, myMeshData->Allocator() );
+  Handle(NCollection_IncAllocator) aAllocator =
+    new NCollection_IncAllocator(BRepMesh::MEMORY_BLOCK_SIZE_HUGE);
+
+  BRepMesh::MapOfIntegerInteger aLoopEdges(10, aAllocator);
 
   // Insertion of nodes :
   Standard_Boolean isModify = Standard_True;
@@ -428,6 +433,7 @@ void BRepMesh_Delaun::createTrianglesOnNewVertices(
   for( ; anIndex <= anUpper; ++anIndex ) 
   {
     aLoopEdges.Clear();
+    aAllocator->Reset(Standard_False);
     
     Standard_Integer aVertexIdx = theVertexIndexes( anIndex );    
     const BRepMesh_Vertex& aVertex = GetVertex( aVertexIdx );
@@ -574,10 +580,13 @@ Standard_Boolean BRepMesh_Delaun::isBoundToFrontier(
 //=======================================================================
 void BRepMesh_Delaun::cleanupMesh()
 {
+  Handle(NCollection_IncAllocator) aAllocator =
+    new NCollection_IncAllocator(BRepMesh::MEMORY_BLOCK_SIZE_HUGE);
+
   for(;;)
   {
-    BRepMesh::MapOfIntegerInteger aLoopEdges( 10, myMeshData->Allocator() );
-    BRepMesh::MapOfInteger aDelTriangles;
+    BRepMesh::MapOfIntegerInteger aLoopEdges(10, aAllocator);
+    BRepMesh::MapOfInteger aDelTriangles(10, aAllocator);
 
     BRepMesh::HMapOfInteger aFreeEdges = FreeEdges();
     BRepMesh::MapOfInteger::Iterator aFreeEdgesIt( *aFreeEdges );
@@ -657,6 +666,7 @@ void BRepMesh_Delaun::cleanupMesh()
         myMeshData->RemoveLink( aLoopEdgesIt.Key() );
     }
 
+    aAllocator->Reset(Standard_False);
     if ( aDeletedTrianglesNb == 0 )
       break;
   }
@@ -669,9 +679,15 @@ void BRepMesh_Delaun::cleanupMesh()
 void BRepMesh_Delaun::frontierAdjust()
 {
   BRepMesh::HMapOfInteger        aFrontier = Frontier();
-  BRepMesh::VectorOfInteger      aFailedFrontiers;
-  BRepMesh::MapOfIntegerInteger  aLoopEdges( 10, myMeshData->Allocator() );
-  BRepMesh::HMapOfInteger        aIntFrontierEdges = new BRepMesh::MapOfInteger;
+
+  Handle(NCollection_IncAllocator) aAllocator =
+    new NCollection_IncAllocator(BRepMesh::MEMORY_BLOCK_SIZE_HUGE);
+
+  BRepMesh::VectorOfInteger      aFailedFrontiers(256, aAllocator);
+  BRepMesh::MapOfIntegerInteger  aLoopEdges(10, aAllocator);
+  BRepMesh::HMapOfInteger        aIntFrontierEdges = 
+    new BRepMesh::MapOfInteger(10, aAllocator);
+
   for ( Standard_Integer aPass = 1; aPass <= 2; ++aPass )
   {      
     // 1 pass): find external triangles on boundary edges;
@@ -1089,10 +1105,13 @@ void BRepMesh_Delaun::cleanupPolygon(const BRepMesh::SequenceOfInteger& thePolyg
   if ( aPolyLen < 3 )
     return;
 
-  BRepMesh::MapOfIntegerInteger aLoopEdges( 10, myMeshData->Allocator() );
-  BRepMesh::MapOfInteger    anIgnoredEdges;
-  BRepMesh::MapOfInteger    aPolyVerticesFindMap;
-  BRepMesh::VectorOfInteger aPolyVertices;
+  Handle(NCollection_IncAllocator) aAllocator =
+    new NCollection_IncAllocator(BRepMesh::MEMORY_BLOCK_SIZE_HUGE);
+
+  BRepMesh::MapOfIntegerInteger aLoopEdges(10, aAllocator);
+  BRepMesh::MapOfInteger    anIgnoredEdges(10, aAllocator);
+  BRepMesh::MapOfInteger    aPolyVerticesFindMap(10, aAllocator);
+  BRepMesh::VectorOfInteger aPolyVertices(256, aAllocator);
   // Collect boundary vertices of the polygon
   for ( Standard_Integer aPolyIt = 1; aPolyIt <= aPolyLen; ++aPolyIt )
   {
@@ -1336,8 +1355,8 @@ void BRepMesh_Delaun::killTrianglesOnIntersectingLinks(
 
   killLinkTriangles( theLinkToCheckId, theLoopEdges );
 
-  BRepMesh::ListOfInteger::Iterator aNeighborsIt = 
-    myMeshData->LinksConnectedTo( theEndPoint );
+  BRepMesh::ListOfInteger::Iterator aNeighborsIt(
+    myMeshData->LinksConnectedTo(theEndPoint));
 
   for ( ; aNeighborsIt.More(); aNeighborsIt.Next() )
   {
@@ -1918,7 +1937,7 @@ void BRepMesh_Delaun::RemoveVertex( const BRepMesh_Vertex& theVertex )
   BRepMesh_SelectorOfDataStructureOfDelaun aSelector( myMeshData );
   aSelector.NeighboursOf( theVertex );
 
-  BRepMesh::MapOfIntegerInteger aLoopEdges( 10, myMeshData->Allocator() );
+  BRepMesh::MapOfIntegerInteger aLoopEdges;//( 10, myMeshData->Allocator() );
 
   // Loop on triangles to be destroyed :
   BRepMesh::MapOfInteger::Iterator aTriangleIt( aSelector.Elements() );
