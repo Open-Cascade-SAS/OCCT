@@ -28,4 +28,8 @@ paragraph 1 of \ref occt_dev_guides__building for instructions.
 
 3. Build with Visual Studio
 
+   Note: If VTK was not installed on you computer and you are not interested in usage of 
+            OCCT VTK Integration Services (VIS) component you should exclude TKIVtk and TKIVtkDraw 
+            projects from process of compilation in the main menu  <b>Build / Configuration Manager</b>. 
+
 To start DRAW, launch *draw.bat*.
