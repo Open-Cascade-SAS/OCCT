@@ -91,47 +91,35 @@ IntCurvesFace_Intersector::IntCurvesFace_Intersector(const TopoDS_Face& Face,
     U1 = Hsurface->LastUParameter();
     V0 = Hsurface->FirstVParameter();
     V1 = Hsurface->LastVParameter();
-    //modified by NIZNHY-PKV Fri Apr 06 07:30:47 2012f
-    Standard_Boolean bFlag;
-    //
-    {
-      Standard_Real dU, dV, dA, dB, aTresh; 
-      bFlag=Standard_True;
-      //
-      aTresh=100.;
-      dU=U1-U0;
-      dV=V1-V0;
-      dA=dU;
-      dB=dV;
-      if (dV>dU) {
-	dA=dV;
-	dB=dU;
-      }
-      //
-      if (dB < Precision::PConfusion() || dA > dB * aTresh) {
-	bFlag=!bFlag;
-      }
-    }
-    //
-    if (bFlag) {
-      nbsu = myTopolTool->NbSamplesU();
-      nbsv = myTopolTool->NbSamplesV();
-      if(nbsu>40) nbsu = 40;
-      if(nbsv>40) nbsv = 40;
-      PtrOnPolyhedron = (IntCurveSurface_ThePolyhedronOfHInter *) 
-	new IntCurveSurface_ThePolyhedronOfHInter(Hsurface,nbsu,nbsv,U0,V0,U1,V1);
-    }
-    //
-    /*
+
+    Standard_Real aURes = Hsurface->UResolution(1.0);
+    Standard_Real aVRes = Hsurface->VResolution(1.0);
+
+    // Checking correlation between number of samples and length of the face along each axis
+    const Standard_Real aTresh = 100.0;
+    const Standard_Integer aMinSamples = 10;
+    const Standard_Integer aMaxSamples = 40;
+    const Standard_Integer aMaxSamples2 = aMaxSamples * aMaxSamples;
+    Standard_Real dU = (U1 - U0) / aURes;
+    Standard_Real dV = (V1 - V0) / aVRes;
     nbsu = myTopolTool->NbSamplesU();
     nbsv = myTopolTool->NbSamplesV();
-    if(nbsu>40) nbsu = 40;
-    if(nbsv>40) nbsv = 40;
-    PtrOnPolyhedron = (IntCurveSurface_ThePolyhedronOfHInter *) 
-      new IntCurveSurface_ThePolyhedronOfHInter(Hsurface,nbsu,nbsv,U0,V0,U1,V1);
-      */
-    
-    //modified by NIZNHY-PKV Fri Apr 06 07:30:49 2012t
+    if (nbsu > aMaxSamples) nbsu = aMaxSamples;
+    if (nbsv > aMaxSamples) nbsv = aMaxSamples;
+
+    if (Max(dU, dV) > Min(dU, dV) * aTresh)
+    {
+      nbsu = (Standard_Integer)(Sqrt(dU / dV) * aMaxSamples);
+      if (nbsu < aMinSamples) nbsu = aMinSamples;
+      nbsv = aMaxSamples2 / nbsu;
+      if (nbsv < aMinSamples)
+      {
+        nbsv = aMinSamples;
+        nbsu = aMaxSamples2 / aMinSamples;
+      }
+    }
+    PtrOnPolyhedron = (IntCurveSurface_ThePolyhedronOfHInter *)
+        new IntCurveSurface_ThePolyhedronOfHInter(Hsurface,nbsu,nbsv,U0,V0,U1,V1);
   }
 }
 //=======================================================================

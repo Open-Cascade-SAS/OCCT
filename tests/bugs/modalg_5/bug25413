@@ -1,0 +1,65 @@
+puts "========"
+puts "OCC25413"
+puts "========"
+puts ""
+#############################################################
+# Line-Shape intersection algorithm became 400 times slower
+#############################################################
+
+pload QAcommands
+
+restore [locate_data_file bug25413.brep] w
+
+dchrono perf_h reset
+dchrono perf_h start
+OCC25413 w
+dchrono perf_h stop
+
+set chrono_info [dchrono perf_h show]
+
+regexp {CPU user time: ([-0-9.+eE]+) seconds} $chrono_info full CPU_time
+puts "Elapsed time is: $CPU_time"
+
+set currentOS $tcl_platform(os)
+if {[string compare $currentOS "Windows NT"] == 0} {
+  if {[regexp {Debug mode} [dversion]]} {
+    # initial CPU_time for WINDOWS in DEBUG mode is 90 sec
+    puts "Checking WINDOWS performance in debug mode..."
+    if {$CPU_time > 90.} {
+      puts "ERROR: OCC25413 is reproduced."
+      puts "       Low performance: $CPU_time (but should be less than 90 sec)"
+    } else {
+      puts "Done!"
+    }
+  } else {
+    puts "Checking WINDOWS performance in optimize mode..."
+    # initial CPU_time for WINDOWS in OPTIMIZE mode is 30 sec
+    if {$CPU_time > 30.} {
+      puts "ERROR: OCC25413 is reproduced."
+      puts "       Low performance: $CPU_time (but should be less than 30 sec)"
+    } else {
+      puts "Done!"
+    }
+  }
+}
+if {[string compare $currentOS "Linux"] == 0} {
+  if {[regexp {Debug mode} [dversion]]} {
+    # initial CPU_time for LINUX in DEBUG mode is 90 sec
+    puts "Checking LINUX performance in debug mode..."
+    if {$CPU_time > 90.} {
+      puts "ERROR: OCC25413 is reproduced."
+      puts "       Low performance: $CPU_time (but should be less than 90 sec)"
+    } else {
+      puts "Done!"
+    }
+  } else {
+    puts "Checking LINUX performance in optimize mode..."
+    # initial CPU_time for LINUX in OPTIMIZE mode is 30 sec
+    if {$CPU_time > 30.} {
+      puts "ERROR: OCC25413 is reproduced."
+      puts "       Low performance: $CPU_time (but should be less than 30 sec)"
+    } else {
+      puts "Done!"
+    }
+  }
+}

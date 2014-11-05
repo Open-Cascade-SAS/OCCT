@@ -2961,6 +2961,44 @@ static Standard_Integer OCC25348 (Draw_Interpretor& theDI,
   return 0;
 }
 
+#include <IntCurvesFace_ShapeIntersector.hxx>
+#include <BRepBndLib.hxx>
+//=======================================================================
+//function : OCC25413
+//purpose  : 
+//=======================================================================
+static Standard_Integer OCC25413 (Draw_Interpretor& di, Standard_Integer narg , const char** a)
+{
+  if (narg != 2) {
+    di << "Usage: " << a[0] << " invalid number of arguments" << "\n";
+    return 1;
+  }
+  TopoDS_Shape aShape = DBRep::Get (a[1]);
+
+  IntCurvesFace_ShapeIntersector Inter;
+  Inter.Load(aShape, Precision::Confusion());
+
+  Bnd_Box aBndBox;
+  BRepBndLib::Add(aShape, aBndBox);
+
+  gp_Dir aDir(0., 1., 0.);
+  const int N = 250;
+  Standard_Real xMin = aBndBox.CornerMin().X();
+  Standard_Real zMin = aBndBox.CornerMin().Z();
+  Standard_Real xMax = aBndBox.CornerMax().X();
+  Standard_Real zMax = aBndBox.CornerMax().Z();
+  Standard_Real xStep = (xMax - xMin) / N;
+  Standard_Real zStep = (zMax - zMin) / N;
+
+  for (Standard_Real x = xMin; x <= xMax; x += xStep)
+    for (Standard_Real z = zMin; z <= zMax; z += zStep)
+    {
+      gp_Pnt aPoint(x, 0.0, z);
+      gp_Lin aLine(aPoint, aDir);
+      Inter.PerformNearest(aLine, -100., 100.);
+    }
+  return 0;
+}
 
 void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
@@ -3021,5 +3059,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC25100", "OCC25100 shape", __FILE__, OCC25100, group);
   theCommands.Add ("OCC25340", "OCC25340", __FILE__, OCC25340, group);
   theCommands.Add ("OCC25348", "OCC25348", __FILE__, OCC25348, group);
+  theCommands.Add ("OCC25413", "OCC25413 shape", __FILE__, OCC25413, group);
   return;
 }
