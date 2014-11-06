@@ -13,7 +13,7 @@ restore [locate_data_file bug24968_Shape_1.brep] result
 tclean result
 dchrono h reset
 dchrono h start
-incmesh result 0.1 0
+incmesh result 0.1
 dchrono h stop
 
 set info [dchrono h show]

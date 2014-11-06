@@ -1,0 +1,28 @@
+puts "========"
+puts "OCC25445"
+puts "========"
+puts ""
+#######################################################################
+# Draw command incmesh should support all parameters used in BRepMesh
+#######################################################################
+
+pcone aCone 100 10 100
+
+tclean aCone
+incmesh aCone 0.01 -a 0.4
+set bug_info [trinfo aCone]
+set NbTrian_1 [lindex $bug_info 3]
+set NbNodes_1 [lindex $bug_info 5]
+
+tclean aCone
+incmesh aCone 0.01 -a 0.3
+set bug_info [trinfo aCone]
+set NbTrian_2 [lindex $bug_info 3]
+set NbNodes_2 [lindex $bug_info 5]
+
+if {$NbTrian_1 == $NbTrian_2} {
+  puts "ERROR: OCC25445 is not fixed. Number of triangles are equal for both meshes."
+}
+if {$NbNodes_1 == $NbNodes_2} {
+  puts "ERROR: OCC25445 is not fixed. Number of nodes are equal for both meshes."
+}

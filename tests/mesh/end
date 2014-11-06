@@ -33,7 +33,7 @@ if { [string compare $command "incmesh"] == 0 } {
     if {[array get env os_type] != ""} {
 	set os $env(os_type)
     }
-    if { $parallel != 1 || [info exists count_parallel] == 0 } {
+    if { [string compare $parallel "-parallel"] != 0 || [info exists count_parallel] == 0 } {
        set count_parallel 1
     }
     for {set i 1} {$i <= $count_parallel} {incr i} {

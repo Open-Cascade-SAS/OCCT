@@ -54,6 +54,7 @@
 #include <Geom_Surface.hxx>
 #include <Draw_Marker3D.hxx>
 #include <Draw_Segment2D.hxx>
+#include <TCollection_AsciiString.hxx>
 
 #include <GCPnts_UniformAbscissa.hxx>
 #include <GeomAdaptor_Curve.hxx>
@@ -118,33 +119,66 @@ OSD_Chronometer chIsos, chPointsOnIsos;
 //function : incrementalmesh
 //purpose  : 
 //=======================================================================
-
 static Standard_Integer incrementalmesh(Draw_Interpretor& di, Standard_Integer nbarg, const char** argv)
 {
-  if (nbarg < 3) {
-    di << " use incmesh shape deflection [inParallel (0/1) : 0 by default]\n";
+  if (nbarg < 3)
+  {
+    di << "\
+Builds triangular mesh for the shape\n\
+usage: incmesh Shape LinearDeflection [options]\n\
+options:\n\
+        -a val          angular deflection in deg (default ~28.64 deg = 0.5 rad)\n\
+        -relative       notifies that relative deflection is used\n\
+                        (switched off by default)\n\
+        -parallel       enables parallel execution (switched off by default)\n";
     return 0;
   }
 
   TopoDS_Shape aShape = DBRep::Get(argv[1]);
-  if (aShape.IsNull()) {
-    di << " null shapes is not allowed here\n";
+  if (aShape.IsNull())
+  {
+    di << " Null shapes are not allowed here\n";
     return 0;
   }
-  Standard_Real aDeflection = Draw::Atof(argv[2]);
 
+  Standard_Real aLinDeflection  = Max(Draw::Atof(argv[2]), Precision::Confusion());
+  Standard_Real aAngDeflection  = 0.5;
+  Standard_Boolean isRelative   = Standard_False;
   Standard_Boolean isInParallel = Standard_False;
-  if (nbarg == 4) {
-	isInParallel = Draw::Atoi(argv[3]) == 1;
+
+  if (nbarg > 3)
+  {
+    Standard_Integer i = 3;
+    while (i < nbarg)
+    {
+      TCollection_AsciiString aOpt(argv[i++]);
+      aOpt.LowerCase();
+
+      if (aOpt == "")
+        continue;
+      else if (aOpt == "-relative")
+        isRelative = Standard_True;
+      else if (aOpt == "-parallel")
+        isInParallel = Standard_True;
+      else if (i < nbarg)
+      {
+        Standard_Real aVal = Draw::Atof(argv[i++]);
+        if (aOpt == "-a")
+          aAngDeflection = aVal * M_PI / 180.;
+        else
+          --i;
+      }
+    }
   }
+
   di << "Incremental Mesh, multi-threading "
-    << (isInParallel ? "ON\n" : "OFF\n");
-  
-  BRepMesh_IncrementalMesh MESH(aShape, aDeflection, Standard_False, 0.5, isInParallel);
-  Standard_Integer statusFlags = MESH.GetStatusFlags();  
+     << (isInParallel ? "ON" : "OFF") << "\n";
+
+  BRepMesh_IncrementalMesh aMesher(aShape, aLinDeflection, isRelative, 
+    aAngDeflection, isInParallel);
 
   di << "Meshing statuses: ";
-
+  Standard_Integer statusFlags = aMesher.GetStatusFlags();
   if( !statusFlags )
   {
     di << "NoError";
@@ -1542,7 +1576,7 @@ void  MeshTest::Commands(Draw_Interpretor& theCommands)
 
   g = "Mesh Commands";
 
-  theCommands.Add("incmesh","incmesh shape deflection [inParallel (0/1) : 0 by default]",__FILE__, incrementalmesh, g);
+  theCommands.Add("incmesh","Builds triangular mesh for the shape, run w/o args for help",__FILE__, incrementalmesh, g);
   theCommands.Add("MemLeakTest","MemLeakTest",__FILE__, MemLeakTest, g);
   theCommands.Add("fastdiscret","fastdiscret shape deflection [shared [nbiter]]",__FILE__, fastdiscret, g);
   theCommands.Add("mesh","mesh result Shape deflection",__FILE__, triangule, g);
