@@ -103,52 +103,41 @@ const TopTools_ListOfShape& BOPAlgo_Builder::Modified
 Standard_Boolean BOPAlgo_Builder::IsDeleted
   (const TopoDS_Shape& theS)
 {
-  Standard_Boolean bRet, bHasImage, bContains;
+  Standard_Boolean bRet;
   TopAbs_ShapeEnum aType;
   BOPCol_ListIteratorOfListOfShape aIt;
   //
-  bRet=Standard_False;
+  bRet = Standard_True;
   //
   if (theS.IsNull()) {
-    return !bRet; //true
+    return bRet;
   }
   //
-  aType=theS.ShapeType();
+  aType = theS.ShapeType();
   if (!(aType==TopAbs_EDGE || aType==TopAbs_FACE || 
       aType==TopAbs_VERTEX || aType==TopAbs_SOLID)) {
-    return !bRet;
+    return bRet;
   }
   //
-  bHasImage=myImages.IsBound(theS);
-  if (!bHasImage) {
-    return !bRet; //true
+  if (!myImages.IsBound(theS)) {
+    bRet = !myMapShape.Contains(theS);
+    return bRet;
   }
   //
-  //PrepareHistory();
-  //
-  bContains=myMapShape.Contains(theS);
-  if (bContains) {
-    return bRet; //false
-  }
-  //
-  const BOPCol_ListOfShape& aLSp=myImages.Find(theS);
+  const BOPCol_ListOfShape& aLSp = myImages.Find(theS);
   aIt.Initialize(aLSp);
   for (; aIt.More(); aIt.Next()) {
-    TopoDS_Shape aSp=aIt.Value();
+    const TopoDS_Shape& aSp = aIt.Value();
+    const TopoDS_Shape& aSpR = myShapesSD.IsBound(aSp) ? 
+      myShapesSD.Find(aSp) : aSp;
     //
-    if (!myShapesSD.IsBound(aSp)) {
-      if (myMapShape.Contains(aSp)) {
-        return bRet; //false
-      }
-    }
-    else {
-      TopoDS_Shape aSpR=myShapesSD.Find(aSp);
-      if (myMapShape.Contains(aSpR)) {
-        return bRet; //false
-      }
+    if (myMapShape.Contains(aSpR)) {                   
+      bRet = Standard_False;
+      break;
     }
   }
-  return !bRet; // true
+  //
+  return bRet;
 }
 //=======================================================================
 //function : PrepareHistory

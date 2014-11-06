@@ -3000,6 +3000,132 @@ static Standard_Integer OCC25413 (Draw_Interpretor& di, Standard_Integer narg , 
   return 0;
 }
 
+
+#include <BOPAlgo_PaveFiller.hxx>
+//
+#include <BRepAlgoAPI_BooleanOperation.hxx>
+#include <BRepAlgoAPI_Common.hxx>
+#include <BRepAlgoAPI_Fuse.hxx>
+#include <BRepAlgoAPI_Cut.hxx>
+#include <BRepAlgoAPI_Section.hxx>
+//
+#include <BOPTools.hxx>
+//
+#include <BOPCol_MapOfShape.hxx>
+#include <BOPCol_ListOfShape.hxx>
+//=======================================================================
+//function : OCC25446
+//purpose  :
+//=======================================================================
+static Standard_Integer OCC25446 (Draw_Interpretor& theDI, 
+                                  Standard_Integer argc, 
+                                  const char ** argv)
+{
+  if (argc != 5) {
+    theDI << "Usage: OCC25446 res b1 b2 op\n";
+    return 1;
+  }
+  //
+  TopoDS_Shape aS1 = DBRep::Get(argv[2]);
+  if (aS1.IsNull()) {
+    theDI << argv[2] << " shape is NULL\n";
+    return 1;
+  }
+  //
+  TopoDS_Shape aS2 = DBRep::Get(argv[3]);
+  if (aS2.IsNull()) {
+    theDI << argv[3] << " shape is NULL\n";
+    return 1;
+  }
+  //
+  Standard_Integer iOp;
+  BOPAlgo_Operation aOp;
+  //
+  iOp = Draw::Atoi(argv[4]);
+  if (iOp < 0 || iOp > 4) {
+    theDI << "Invalid operation type\n";
+    return 1;
+  }
+  aOp = (BOPAlgo_Operation)iOp;
+  //
+  Standard_Integer iErr;
+  BOPCol_ListOfShape aLS;
+  BOPAlgo_PaveFiller aPF;
+  //
+  aLS.Append(aS1);
+  aLS.Append(aS2);
+  aPF.SetArguments(aLS);
+  //
+  aPF.Perform();
+  iErr = aPF.ErrorStatus();
+  if (iErr) {
+    theDI << "Intersection failed with error status: " << iErr << "\n";
+    return 1;
+  }
+  //
+  BRepAlgoAPI_BooleanOperation* pBuilder = NULL;
+  // 
+  switch (aOp) {
+  case BOPAlgo_COMMON:
+    pBuilder = new BRepAlgoAPI_Common(aS1, aS2, aPF);
+    break;
+  case BOPAlgo_FUSE:
+    pBuilder = new BRepAlgoAPI_Fuse(aS1, aS2, aPF);
+    break;
+  case BOPAlgo_CUT:
+    pBuilder = new BRepAlgoAPI_Cut (aS1, aS2, aPF);
+    break;
+  case BOPAlgo_CUT21:
+    pBuilder = new BRepAlgoAPI_Cut(aS1, aS2, aPF, Standard_False);
+    break;
+  case BOPAlgo_SECTION:
+    pBuilder = new BRepAlgoAPI_Section(aS1, aS2, aPF);
+    break;
+  default:
+    break;
+  }
+  //
+  iErr = pBuilder->ErrorStatus();
+  if (!pBuilder->IsDone()) {
+    theDI << "BOP failed with error status: " << iErr << "\n";
+    return 1;
+  }
+  //
+  const TopoDS_Shape& aRes = pBuilder->Shape();
+  DBRep::Set(argv[1], aRes);
+  //
+  BOPCol_MapOfShape aMapArgs, aMapShape;
+  BOPCol_MapIteratorOfMapOfShape aIt;
+  Standard_Boolean bIsDeletedHist, bIsDeletedMap;
+  TopAbs_ShapeEnum aType;
+  //
+  BOPTools::MapShapes(aS1, aMapArgs);
+  BOPTools::MapShapes(aS2, aMapArgs);
+  BOPTools::MapShapes(aRes, aMapShape);
+  //
+  aIt.Initialize(aMapArgs);
+  for (; aIt.More(); aIt.Next()) {
+    const TopoDS_Shape& aS = aIt.Value();
+    aType = aS.ShapeType();
+    if (!(aType==TopAbs_EDGE || aType==TopAbs_FACE || 
+          aType==TopAbs_VERTEX || aType==TopAbs_SOLID)) {
+      continue;
+    }
+    //
+    bIsDeletedHist = pBuilder->IsDeleted(aS);
+    bIsDeletedMap = !aMapShape.Contains(aS) &&
+      (pBuilder->Modified(aS).Extent() == 0);
+    //
+    if (bIsDeletedHist != bIsDeletedMap) {
+      theDI << "Error. Wrong value of IsDeleted flag.\n";
+      return 1;
+    }
+  }
+  //
+  theDI << "Test complete\n";
+  return 0;
+}
+
 void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -3060,5 +3186,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC25340", "OCC25340", __FILE__, OCC25340, group);
   theCommands.Add ("OCC25348", "OCC25348", __FILE__, OCC25348, group);
   theCommands.Add ("OCC25413", "OCC25413 shape", __FILE__, OCC25413, group);
+  theCommands.Add ("OCC25446", "OCC25446 res b1 b2 op", __FILE__, OCC25446, group);
   return;
 }
