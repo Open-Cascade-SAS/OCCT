@@ -364,8 +364,9 @@ void CAnimationDoc::OnFileLoadgrid()
 		  L"Points Files (*.pnt;*.pnts)|*.pnt; *.pnts|All Files (*.*)|*.*||",
 		  NULL );
 
-	CString initdir(((OCC_App*) AfxGetApp())->GetInitDataDir());
-	initdir += "\\Data\\";
+	CString initdir;
+	initdir.GetEnvironmentVariable (L"CSF_OCCTDataPath");
+	initdir += L"\\occ\\";
 
 	dlg.m_ofn.lpstrInitialDir = initdir;
 

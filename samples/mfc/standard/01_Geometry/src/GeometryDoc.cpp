@@ -1070,8 +1070,9 @@ void CGeometryDoc::OnCreateSol()
   CFileDialog dlg (TRUE, NULL, NULL, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
                    L"Points Files (*.dat)|*.dat; |All Files (*.*)|*.*||", NULL);
 
-  CString initdir(((OCC_App*) AfxGetApp())->GetInitDataDir());
-  initdir += L"\\Data\\SurfaceFromPoints";
+  CString anOCCTDataPathValue;
+  anOCCTDataPathValue.GetEnvironmentVariable(L"CSF_OCCTDataPath");
+  CString initdir = (anOCCTDataPathValue + L"\\occ\\SurfaceFromPoints");
 
   dlg.m_ofn.lpstrInitialDir = initdir;
 

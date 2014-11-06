@@ -221,8 +221,9 @@ void CViewer2dDoc::OnBUTTONTestFace()
     L"BRep Files (*.brep)|*.brep; ||",
     NULL );
 
-  CString initdir(((OCC_App*) AfxGetApp())->GetInitDataDir());
-  initdir += "\\Data";
+  CString initdir;
+  initdir.GetEnvironmentVariable (L"CSF_OCCTDataPath");
+  initdir += L"\\occ";
 
   dlg.m_ofn.lpstrInitialDir = initdir;
 
@@ -312,8 +313,9 @@ void CViewer2dDoc::OnBUTTONTestImage()
                               SupportedImageFormats() + L"| all files (*.*)|*.*;||",
                               NULL);
 
-  CString anInitDir (((OCC_App*) AfxGetApp())->GetInitDataDir());
-  anInitDir += "\\Data";
+  CString anInitDir;
+  anInitDir.GetEnvironmentVariable (L"CASROOT");
+  anInitDir += L"\\data\\images";
 
   anOpenImageDlg.m_ofn.lpstrInitialDir = anInitDir;
   if(anOpenImageDlg.DoModal() == IDOK)
@@ -343,8 +345,9 @@ void CViewer2dDoc::OnBUTTONMultipleImage()
                               SupportedImageFormats() + L"| all files (*.*)|*.*;||",
                               NULL);
 
-  CString anInitDir (((OCC_App*) AfxGetApp())->GetInitDataDir());
-  anInitDir += "\\Data";
+  CString anInitDir;
+  anInitDir.GetEnvironmentVariable (L"CASROOT");
+  anInitDir += L"\\data\\images";
 
   anOpenImageDlg.m_ofn.lpstrInitialDir = anInitDir;
 

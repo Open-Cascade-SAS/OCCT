@@ -115,8 +115,8 @@ void CImportExportApp::OnFileOpen()
 				  NULL );
   
 
-	CString initdir(((OCC_App*) AfxGetApp())->GetInitDataDir());
-	initdir += "\\Data";
+	CString initdir;
+	initdir.GetEnvironmentVariable (L"CSF_OCCTDataPath");
 
 	dlg.m_ofn.lpstrInitialDir = initdir;
 
