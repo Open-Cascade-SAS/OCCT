@@ -731,7 +731,7 @@ void OpenGl_View::RenderStructs (const Handle(OpenGl_Workspace) &AWorkspace)
 //call_togl_redraw_layer2d
 void OpenGl_View::RedrawLayer2d (const Handle(OpenGl_PrinterContext)& thePrintContext,
                                  const Handle(OpenGl_Workspace)&      theWorkspace,
-                                 const Graphic3d_CView&               ACView,
+                                 const Graphic3d_CView&               /*ACView*/,
                                  const Aspect_CLayer2d&               ACLayer)
 {
 #if !defined(GL_ES_VERSION_2_0)
