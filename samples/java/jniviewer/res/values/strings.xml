@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">OpenCASCADE JNI Java Sample</string>
+    <color name="btnColor">#484848</color>
+    <color name="pressedBtnColor">#0099CC</color>
+    <color name="viewColor">#66252525</color>
+        <string-array name="ext_to_save">
+        <item>.png</item>
+        <item>.jpg</item>
+    </string-array>
+    <string-array name="ext_to_exp">
+        <item>.brep</item>
+        <item>.rle</item>
+        <item>.iges</item>
+        <item>.igs</item>
+        <item>.step</item>
+        <item>.stp</item>
+    </string-array>
+    <string name="wireframe_shading_title">wireframe/shading</string>
+    <string name="color_title">color</string>
+    <string name="material_title">material</string>
+    <string name="transparency_title">transparency</string>
+    <string name="hidden_lines_title">show/hide hidden lines</string>
+    <string name="info_html" formatted="false">
+        <![CDATA[
+        <p>OpenCASCADE JNI Java Sample</p>
+        <p>Simple viewer for BREP, STEP and IGES files.</p>
+        <p>Driven by Open CASCADE Technology %d.%d.%d.</p>
+        <p>Copyright 2014 OPEN CASCADE SAS.</p>
+        <p><img src="info_image"></p>
+        <p>http://www.opencascade.com</p>
+        <p>http://www.opencascade.org</p>
+        ]]>
+    </string>
+</resources>

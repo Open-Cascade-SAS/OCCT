@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+   <item name="open" type="id"/>
+   <item name="save" type="id"/>
+   <item name="screenshot" type="id"/>
+   <item name="mesh_none" type="id"/>
+   <item name="mesh_low_q" type="id"/>
+   <item name="mesh_norm_q" type="id"/>
+   <item name="mesh_high_q" type="id"/>
+   <item name="view1" type="id"/>
+   <item name="view2" type="id"/>
+   <item name="view3" type="id"/>
+   <item name="settings" type="id"/>
+   <item name="message" type="id"/>
+   <item name="lock" type="id"/>
+   <item name="info" type="id"/>
+</resources>

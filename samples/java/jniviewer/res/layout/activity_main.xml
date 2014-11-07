@@ -1,0 +1,166 @@
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:id="@+id/panel_main"
+android:layout_width="fill_parent"
+android:layout_height="fill_parent"
+android:stretchColumns="1">
+
+    <LinearLayout android:layout_height="fill_parent"
+    android:layout_width="fill_parent"
+    android:id="@+id/linearLayout2">
+
+        <FrameLayout
+        android:id="@+id/submenu_group"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+            <com.opencascade.jnisample.OcctJniView
+            android:id="@+id/custom_view"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="bottom|end" >
+            </com.opencascade.jnisample.OcctJniView>
+
+            <ImageButton
+            android:id="@+id/scroll_btn"
+            style="?android:borderlessButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:src="@drawable/close_p" />
+
+            <LinearLayout
+            android:id="@+id/panel_menu"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+                <ImageButton
+                android:id="@+id/open"
+                style="?android:borderlessButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight=".2"
+                android:background="@color/btnColor"
+                android:src="@drawable/open" />
+
+                <ImageButton
+                android:id="@+id/fit"
+                style="?android:borderlessButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight=".2"
+                android:background="@color/btnColor"
+                android:src="@drawable/fit" />
+
+                <ImageButton
+                android:id="@+id/view"
+                style="?android:borderlessButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight=".2"
+                android:background="@color/btnColor"
+                android:src="@drawable/view" />
+
+                <ImageButton
+                android:id="@+id/info"
+                style="?android:borderlessButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight=".2"
+                android:background="@color/btnColor"
+                android:src="@drawable/info" />
+
+                <ImageButton
+                android:id="@+id/message"
+                style="?android:borderlessButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight=".2"
+                android:background="@color/btnColor"
+                android:src="@drawable/message" />
+            </LinearLayout>
+
+                <TextView
+                android:id="@+id/message_view"
+                android:background="@color/viewColor"
+                android:text="Message Log"
+                android:textSize="16px"
+                android:textStyle="bold"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+            android:id="@+id/info_view"
+            android:background="@color/viewColor"
+            android:gravity="center"
+            android:text="info Log"
+            android:textSize="16px"
+            android:textStyle="bold"
+            android:visibility="gone"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"/>
+
+            <LinearLayout
+            android:id="@+id/view_group"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:orientation="horizontal" >
+
+                <ImageButton 
+                style="?android:borderlessButtonStyle"
+                android:background="@color/btnColor" 
+                android:id="@+id/proj_front"
+                android:layout_height="wrap_content" 
+                android:layout_width="fill_parent"
+                android:src="@drawable/proj_front"
+                android:layout_weight=".16"/>
+
+                <ImageButton 
+                style="?android:borderlessButtonStyle"
+                android:background="@color/btnColor" 
+                android:id="@+id/proj_top"
+                android:layout_height="wrap_content" 
+                android:layout_width="fill_parent"
+                android:src="@drawable/proj_top"
+                android:layout_weight=".16"/>
+
+                <ImageButton 
+                style="?android:borderlessButtonStyle"
+                android:background="@color/btnColor" 
+                android:id="@+id/proj_left"
+                android:layout_height="wrap_content" 
+                android:layout_width="fill_parent"
+                android:src="@drawable/proj_left"
+                android:layout_weight=".16"/>
+
+                <ImageButton 
+                style="?android:borderlessButtonStyle"
+                android:background="@color/btnColor" 
+                android:id="@+id/proj_back"
+                android:layout_height="wrap_content" 
+                android:layout_width="fill_parent"
+                android:src="@drawable/proj_back"
+                android:layout_weight=".16"/>
+
+                <ImageButton 
+                style="?android:borderlessButtonStyle"
+                android:background="@color/btnColor" 
+                android:id="@+id/proj_bottom"
+                android:layout_height="wrap_content" 
+                android:layout_width="fill_parent"
+                android:src="@drawable/proj_bottom"
+                android:layout_weight=".16"/>
+
+                <ImageButton 
+                style="?android:borderlessButtonStyle"
+                android:background="@color/btnColor" 
+                android:id="@+id/proj_right"
+                android:layout_height="wrap_content" 
+                android:layout_width="fill_parent"
+                android:src="@drawable/proj_right"
+                android:layout_weight=".16"/>
+            </LinearLayout>
+        </FrameLayout>
+    </LinearLayout>
+</TableLayout>
