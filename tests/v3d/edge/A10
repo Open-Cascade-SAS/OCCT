@@ -1,0 +1,19 @@
+puts "============"
+puts "CR25436"
+puts "Test case check work of the new commands vselnext and vselprev"
+puts "============"
+puts ""
+
+box b 10 10 10
+vdisplay b
+vfit
+vselmode 2 1
+vmoveto 30 101
+
+vselnext
+vselnext
+vselnext
+
+vselprev
+vselprev
+vselprev

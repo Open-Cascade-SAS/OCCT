@@ -2013,6 +2013,16 @@ static LRESULT WINAPI ViewerWindowProc( HWND hwnd,
         {
           c[0] = THE_KEY_DELETE;
         }
+        // comma
+        else if (wParam == VK_OEM_COMMA)
+        {
+          c[0] = ',';
+        }
+        // dot
+        else if (wParam == VK_OEM_PERIOD)
+        {
+          c[0] = '.';
+        }
         VT_ProcessKeyPress (c);
       }
       break;

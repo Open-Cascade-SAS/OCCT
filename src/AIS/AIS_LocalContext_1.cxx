@@ -1455,9 +1455,10 @@ Standard_Integer AIS_LocalContext::HilightPreviousDetected (const Handle(V3d_Vie
     return 0;
   }
 
+  const Standard_Integer aLen = myDetectedSeq.Length();
   if (--myCurDetected < 1)
   {
-    myCurDetected = 1;
+    myCurDetected = aLen;
   }
   Handle(SelectMgr_EntityOwner) anOwner = myMainVS->Picked (myDetectedSeq (myCurDetected));
   if (anOwner.IsNull())

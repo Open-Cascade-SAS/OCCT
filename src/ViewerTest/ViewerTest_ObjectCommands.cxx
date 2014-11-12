@@ -4256,6 +4256,51 @@ static Standard_Integer VSetSelectionMode (Draw_Interpretor& /*di*/,
   return 0;
 }
 
+//===============================================================================================
+//function : VSelectionNext
+//purpose  : 
+//===============================================================================================
+static Standard_Integer VSelectionNext(Draw_Interpretor& /*theDI*/,
+                                 Standard_Integer /*theArgsNb*/,
+                                 const char** /*theArgVec*/)
+{
+  // Check errors
+  Handle(AIS_InteractiveContext) anAISContext = ViewerTest::GetAISContext();
+  Handle(V3d_View) aView = ViewerTest::CurrentView();
+
+  if (anAISContext.IsNull())
+  {
+    std::cerr << "Call vinit before!" << std::endl;
+    return 1;
+  }
+
+  anAISContext->HilightNextDetected(aView);
+  return 0;
+}
+
+//===============================================================================================
+//function : VSelectionPrevious
+//purpose  : 
+//===============================================================================================
+static Standard_Integer VSelectionPrevious(Draw_Interpretor& /*theDI*/,
+                                 Standard_Integer /*theArgsNb*/,
+                                 const char** /*theArgVec*/)
+{
+  // Check errors
+  Handle(AIS_InteractiveContext) anAISContext = ViewerTest::GetAISContext();
+  Handle(V3d_View) aView = ViewerTest::CurrentView();
+
+  if (anAISContext.IsNull())
+  {
+    std::cerr << "Call vinit before!" << std::endl;
+    return 1;
+  }
+
+  anAISContext->HilightPreviousDetected(aView);
+  return 0;
+}
+
+
 //==========================================================================
 //class   : Triangle 
 //purpose : creates Triangle based on AIS_InteractiveObject. 
@@ -5982,6 +6027,14 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
     "    1 if mode is to be switched on\n"
     "    0 if mode is to be switched off\n", 
     __FILE__, VSetSelectionMode, group);
+
+  theCommands.Add("vselnext",
+    "vselnext : hilight next detected",
+    __FILE__, VSelectionNext, group);
+
+  theCommands.Add("vselprev",
+    "vselnext : hilight previous detected",
+    __FILE__, VSelectionPrevious, group);
 
   theCommands.Add("vtriangle",
     "vtriangle Name PointName PointName PointName", 
