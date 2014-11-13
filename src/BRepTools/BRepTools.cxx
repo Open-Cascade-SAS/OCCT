@@ -667,43 +667,36 @@ Standard_Boolean BRepTools::Read(TopoDS_Shape& Sh,
 //purpose  : 
 //=======================================================================
 
-void BRepTools::Clean(const TopoDS_Shape& S)
+void BRepTools::Clean(const TopoDS_Shape& theShape)
 {
-  BRep_Builder B;
-  TopExp_Explorer ex;
-  Handle(Poly_Triangulation) TNULL, T;
-  Handle(Poly_PolygonOnTriangulation) PolyNULL, Poly;
+  BRep_Builder aBuilder;
+  Handle(Poly_Triangulation) aNullTriangulation;
+  Handle(Poly_PolygonOnTriangulation) aNullPoly;
 
-  if (!S.IsNull()) {
-    TopLoc_Location L;
-    for (ex.Init(S,TopAbs_FACE);ex.More();ex.Next()) {
-      const TopoDS_Face& F = TopoDS::Face(ex.Current());
-      B.UpdateFace(F, TNULL);
-    }
-    for (ex.Init(S, TopAbs_EDGE); ex.More(); ex.Next()) {
-      const TopoDS_Edge& E = TopoDS::Edge(ex.Current());
-// agv 21.09.01 : Inefficient management of Locations -> improve performance
-//    do {
-//      BRep_Tool::PolygonOnTriangulation(E, Poly, T, L);
-//      B.UpdateEdge(E, PolyNULL, T, L);
-//    } while(!Poly.IsNull());
-//
-      Handle(BRep_CurveRepresentation) cr;
-      const Handle(BRep_TEdge)& TE = *((Handle(BRep_TEdge)*) &E.TShape());
-      BRep_ListOfCurveRepresentation& lcr = TE -> ChangeCurves();
-      BRep_ListIteratorOfListOfCurveRepresentation itcr(lcr);
+  if (theShape.IsNull())
+    return;
 
-      // find and remove all representations
-      while (itcr.More()) {
-        cr = itcr.Value();
-        if (cr->IsPolygonOnTriangulation())
-          lcr.Remove(itcr);
-        else
-          itcr.Next();
-      }
-      TE->Modified(Standard_True);
-// agv : fin
+  TopExp_Explorer aFaceIt(theShape, TopAbs_FACE);
+  for (; aFaceIt.More(); aFaceIt.Next())
+  {
+    const TopoDS_Face& aFace = TopoDS::Face(aFaceIt.Current());
+
+    TopLoc_Location aLoc;
+    const Handle(Poly_Triangulation)& aTriangulation =
+      BRep_Tool::Triangulation(aFace, aLoc);
+
+    if (aTriangulation.IsNull())
+      continue;
+
+    // Nullify edges
+    TopExp_Explorer aEdgeIt(aFace, TopAbs_EDGE);
+    for (; aEdgeIt.More(); aEdgeIt.Next())
+    {
+      const TopoDS_Edge& aEdge = TopoDS::Edge(aEdgeIt.Current());
+      aBuilder.UpdateEdge(aEdge, aNullPoly, aTriangulation, aLoc);
     }
+
+    aBuilder.UpdateFace(aFace, aNullTriangulation);
   }
 }
 
