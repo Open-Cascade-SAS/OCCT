@@ -104,6 +104,9 @@ public: //! @name global aspects
   //! Sets transparency value.
   Standard_EXPORT virtual void SetTransparency (const Standard_Real theValue) Standard_OVERRIDE;
 
+  //! Sets the material aspect.
+  Standard_EXPORT virtual void SetMaterial (const Graphic3d_MaterialAspect& theAspect) Standard_OVERRIDE;
+
 protected: //! @name override presentation computation
 
   Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager3d)& thePrsMgr,

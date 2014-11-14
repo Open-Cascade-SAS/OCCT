@@ -306,6 +306,13 @@ uses
                      theValue  : Real   from Standard)
     is protected;
 
+    setMaterial (me;
+                 theDrawer       : Drawer from AIS;
+                 theMaterial     : MaterialAspect from Graphic3d;
+                 theToKeepColor  : Boolean from Standard;
+                 theToKeepTransp : Boolean from Standard)
+    is protected;
+
 fields
     myshape            : Shape   from TopoDS   is protected;
     myBB               : Box     from Bnd      is protected;

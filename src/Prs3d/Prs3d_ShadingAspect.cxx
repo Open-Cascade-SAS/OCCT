@@ -12,15 +12,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#define BUC60488	//GG_23/09/99 Updates correctly the Material after
-//			any change.
-
-#define GER61351		//GG_171199     Enable to set an object RGB color
-//						  instead a restricted object NameOfColor.
-//				Enable to change separatly the front and back color.
-
-#define OCC1174 //SAV_080103 Added back face interior color management
-
 #include <Prs3d_ShadingAspect.ixx>
 
 //=======================================================================
@@ -53,7 +44,6 @@ Prs3d_ShadingAspect::Prs3d_ShadingAspect () {
 //purpose  : 
 //=======================================================================
 
-#ifdef GER61351
 void Prs3d_ShadingAspect::SetColor(const Quantity_NameOfColor aColor,
 					     const Aspect_TypeOfFacingModel aModel) {
 
@@ -62,10 +52,6 @@ void Prs3d_ShadingAspect::SetColor(const Quantity_NameOfColor aColor,
 
 void Prs3d_ShadingAspect::SetColor(const Quantity_Color &aColor,
 					     const Aspect_TypeOfFacingModel aModel) {
-#ifndef OCC1174  
-  myAspect->SetInteriorColor(aColor);
-#endif
-
   if( aModel != Aspect_TOFM_BOTH_SIDE ) {
     myAspect->SetDistinguishOn();
   }
@@ -73,77 +59,46 @@ void Prs3d_ShadingAspect::SetColor(const Quantity_Color &aColor,
     Graphic3d_MaterialAspect front = myAspect->FrontMaterial();
     front.SetColor(aColor);
     myAspect->SetFrontMaterial(front);
-#ifdef OCC1174
     myAspect->SetInteriorColor( aColor );
-#endif
   }
 
   if( aModel == Aspect_TOFM_BACK_SIDE || aModel == Aspect_TOFM_BOTH_SIDE ) {
     Graphic3d_MaterialAspect back = myAspect->BackMaterial();
     back.SetColor(aColor);
     myAspect->SetBackMaterial(back);
-#ifdef OCC1174
     myAspect->SetBackInteriorColor( aColor );
-#endif
   }
 }
 
-Quantity_Color Prs3d_ShadingAspect::Color( const Aspect_TypeOfFacingModel aModel ) const {
-  Quantity_Color myReturn ;
-  switch (aModel) {
+const Quantity_Color& Prs3d_ShadingAspect::Color (const Aspect_TypeOfFacingModel theModel) const
+{
+  switch (theModel)
+  {
     default:
     case Aspect_TOFM_BOTH_SIDE:
     case Aspect_TOFM_FRONT_SIDE:
-	myReturn = myAspect->FrontMaterial().Color();
-	break;
+      return myAspect->FrontMaterial().Color();
     case Aspect_TOFM_BACK_SIDE:
-	myReturn = myAspect->BackMaterial().Color();
-	break;
+      return myAspect->BackMaterial().Color();
   }
-  return myReturn ;
 }
-#else
-void Prs3d_ShadingAspect::SetColor(const Quantity_NameOfColor aColor) {
-  myAspect->SetInteriorColor(aColor);
-#ifdef OCC1174
-  myAspect->SetBackInteriorColor( aColor );
-#endif
-  myAspect->FrontMaterial().SetAmbientColor(Quantity_Color(aColor));
-  myAspect->BackMaterial().SetAmbientColor(Quantity_Color(aColor));
-//  myAspect->FrontMaterial().SetColor(Quantity_Color(aColor));
-//  myAspect->BackMaterial().SetColor(Quantity_Color(aColor));
-}
-#endif	
 
 //=======================================================================
 //function : SetMaterial
 //purpose  : 
 //=======================================================================
 
-#ifdef GER61351
 void Prs3d_ShadingAspect::SetMaterial(
                    const Graphic3d_NameOfMaterial aMaterial,
 			 const Aspect_TypeOfFacingModel aModel ) {
-
   SetMaterial(Graphic3d_MaterialAspect(aMaterial),aModel);
 }
-#else
-void Prs3d_ShadingAspect::SetMaterial(
-//                 const Graphic3d_NameOfPhysicalMaterial aMaterial) {
-                 const Graphic3d_NameOfMaterial aMaterial) {
-
-  Graphic3d_MaterialAspect TheMaterial(aMaterial);
-  myAspect->SetFrontMaterial (TheMaterial);
-  myAspect->SetBackMaterial (TheMaterial);
-}
-#endif
 
 //=======================================================================
 //function : SetMaterial
 //purpose  : 
 //=======================================================================
 
-#ifdef GER61351
 void Prs3d_ShadingAspect::SetMaterial(
                    const Graphic3d_MaterialAspect& aMaterial,
 			 const Aspect_TypeOfFacingModel aModel ) {
@@ -160,36 +115,24 @@ void Prs3d_ShadingAspect::SetMaterial(
   }
 }
 
-Graphic3d_MaterialAspect  Prs3d_ShadingAspect::Material(
-			 const Aspect_TypeOfFacingModel aModel ) const {
-  Graphic3d_MaterialAspect myReturn ;		   
-  switch (aModel) {
+const Graphic3d_MaterialAspect& Prs3d_ShadingAspect::Material (const Aspect_TypeOfFacingModel theModel) const
+{
+  switch (theModel)
+  {
     default:
     case Aspect_TOFM_BOTH_SIDE:
     case Aspect_TOFM_FRONT_SIDE:
-	myReturn = myAspect->FrontMaterial();
-	break;
+      return myAspect->FrontMaterial();
     case Aspect_TOFM_BACK_SIDE:
-	myReturn = myAspect->BackMaterial();
-	break;
+      return myAspect->BackMaterial();
   }
- return myReturn ;  
-} 
-#else
-void Prs3d_ShadingAspect::SetMaterial(
-                 const Graphic3d_MaterialAspect&  aMaterial) 
-{
-  myAspect->SetFrontMaterial (aMaterial);
-  myAspect->SetBackMaterial (aMaterial);
 }
-#endif
 
 //=======================================================================
 //function : SetTransparency
 //purpose  : 
 //=======================================================================
 
-#ifdef GER61351
 void Prs3d_ShadingAspect::SetTransparency(const Standard_Real aValue,
 						      const Aspect_TypeOfFacingModel aModel ) {
 
@@ -222,7 +165,6 @@ Standard_Real aValue(0.);
   }
   return aValue;
 }
-#endif
 
 //=======================================================================
 //function : SetAspect

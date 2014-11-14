@@ -711,6 +711,35 @@ void AIS_Shape::UnsetWidth()
 }
 
 //=======================================================================
+//function : setMaterial
+//purpose  :
+//=======================================================================
+
+void AIS_Shape::setMaterial (const Handle(AIS_Drawer)&       theDrawer,
+                             const Graphic3d_MaterialAspect& theMaterial,
+                             const Standard_Boolean          theToKeepColor,
+                             const Standard_Boolean          theToKeepTransp) const
+{
+  const Quantity_Color aColor  = theDrawer->ShadingAspect()->Material     (myCurrentFacingModel).Color();
+  const Standard_Real  aTransp = theDrawer->ShadingAspect()->Transparency (myCurrentFacingModel);
+  if (!theDrawer->HasShadingAspect())
+  {
+    theDrawer->SetShadingAspect (new Prs3d_ShadingAspect());
+    *theDrawer->ShadingAspect()->Aspect() = *theDrawer->Link()->ShadingAspect()->Aspect();
+  }
+  theDrawer->ShadingAspect()->SetMaterial (theMaterial, myCurrentFacingModel);
+
+  if (theToKeepColor)
+  {
+    theDrawer->ShadingAspect()->SetColor (aColor, myCurrentFacingModel);
+  }
+  if (theToKeepTransp)
+  {
+    theDrawer->ShadingAspect()->SetTransparency (aTransp, myCurrentFacingModel);
+  }
+}
+
+//=======================================================================
 //function : SetMaterial
 //purpose  : 
 //=======================================================================
@@ -727,19 +756,8 @@ void AIS_Shape::SetMaterial(const Graphic3d_NameOfMaterial aMat)
 
 void AIS_Shape::SetMaterial (const Graphic3d_MaterialAspect& theMat)
 {
-  if (!myDrawer->HasShadingAspect())
-  {
-    myDrawer->SetShadingAspect (new Prs3d_ShadingAspect());
-    *myDrawer->ShadingAspect()->Aspect() = *myDrawer->Link()->ShadingAspect()->Aspect();
-  }
+  setMaterial (myDrawer, theMat, HasColor(), IsTransparent());
   hasOwnMaterial = Standard_True;
-
-  myDrawer->ShadingAspect()->SetMaterial (theMat, myCurrentFacingModel);
-  if (HasColor())
-  {
-    myDrawer->ShadingAspect()->SetColor (myOwnColor, myCurrentFacingModel);
-  }
-  myDrawer->ShadingAspect()->SetTransparency (myTransparency, myCurrentFacingModel);
 
   // modify shading presentation without re-computation
   const PrsMgr_Presentations&        aPrsList  = Presentations();

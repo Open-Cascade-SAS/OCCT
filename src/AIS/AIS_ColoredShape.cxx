@@ -270,6 +270,28 @@ void AIS_ColoredShape::SetTransparency (const Standard_Real theValue)
 }
 
 //=======================================================================
+//function : SetMaterial
+//purpose  :
+//=======================================================================
+
+void AIS_ColoredShape::SetMaterial (const Graphic3d_MaterialAspect& theMaterial)
+{
+  setMaterial (myDrawer, theMaterial, HasColor(), IsTransparent());
+  //myOwnMaterial = theMaterial;
+  hasOwnMaterial = Standard_True;
+  LoadRecomputable (AIS_Shaded);
+  for (DataMapOfShapeColor::Iterator anIter (myShapeColors); anIter.More(); anIter.Next())
+  {
+    const Handle(AIS_ColoredDrawer)& aDrawer = anIter.Value();
+    //if (aDrawer->HasOwnMaterial()) continue;
+    if (aDrawer->HasShadingAspect())
+    {
+      setMaterial (aDrawer, theMaterial, aDrawer->HasOwnColor(), Standard_False); // aDrawer->IsTransparent()
+    }
+  }
+}
+
+//=======================================================================
 //function : Compute
 //purpose  :
 //=======================================================================

@@ -74,10 +74,12 @@ is
     Color (me; aModel: TypeOfFacingModel from Aspect = Aspect_TOFM_FRONT_SIDE) 
     returns Color from Quantity is static;
     	--- Purpose: Returns the polygons color.
+    	---C++: return const &
 
     Material (me; aModel: TypeOfFacingModel from Aspect = Aspect_TOFM_FRONT_SIDE) 
     returns MaterialAspect from Graphic3d is static;
     	--- Purpose: Returns the polygons material aspect.
+    	---C++: return const &
 
     Transparency (me; aModel: TypeOfFacingModel from Aspect = Aspect_TOFM_FRONT_SIDE) 
     returns Real from Standard is static;
