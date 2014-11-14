@@ -164,9 +164,6 @@ public:
   //! Updates state of OCCT projection transform.
   Standard_EXPORT void UpdateProjectionStateTo (const OpenGl_Mat4& theProjectionMatrix);
 
-  //! Reverts state of OCCT projection transform.
-  Standard_EXPORT void RevertProjectionStateTo (const OpenGl_Mat4& theProjectionMatrix);
-
   //! Pushes current state of OCCT projection transform to specified program.
   Standard_EXPORT void PushProjectionState (const Handle(OpenGl_ShaderProgram)& theProgram) const;
 
@@ -178,9 +175,6 @@ public:
   //! Updates state of OCCT model-world transform.
   Standard_EXPORT void UpdateModelWorldStateTo (const OpenGl_Mat4& theModelWorldMatrix);
 
-  //! Reverts state of OCCT model-world transform.
-  Standard_EXPORT void RevertModelWorldStateTo (const OpenGl_Mat4& theModelWorldMatrix);
-
   //! Pushes current state of OCCT model-world transform to specified program.
   Standard_EXPORT void PushModelWorldState (const Handle(OpenGl_ShaderProgram)& theProgram) const;
 
@@ -191,9 +185,6 @@ public:
 
   //! Updates state of OCCT world-view transform.
   Standard_EXPORT void UpdateWorldViewStateTo (const OpenGl_Mat4& theWorldViewMatrix);
-
-  //! Reverts state of OCCT world-view transform.
-  Standard_EXPORT void RevertWorldViewStateTo (const OpenGl_Mat4& theWorldViewMatrix);
 
   //! Pushes current state of OCCT world-view transform to specified program.
   Standard_EXPORT void PushWorldViewState (const Handle(OpenGl_ShaderProgram)& theProgram) const;
@@ -349,7 +340,7 @@ protected:
   OpenGl_ProjectionState             myProjectionState;    //!< State of OCCT projection  transformation
   OpenGl_ModelWorldState             myModelWorldState;    //!< State of OCCT model-world transformation
   OpenGl_WorldViewState              myWorldViewState;     //!< State of OCCT world-view  transformation
-  OpenGl_LightSourceState            myClippingState;      //!< State of OCCT clipping planes
+  OpenGl_ClippingState               myClippingState;      //!< State of OCCT clipping planes
   OpenGl_LightSourceState            myLightSourceState;   //!< State of OCCT light sources
 
 private:

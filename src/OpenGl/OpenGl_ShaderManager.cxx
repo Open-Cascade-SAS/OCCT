@@ -411,36 +411,6 @@ void OpenGl_ShaderManager::UpdateWorldViewStateTo (const OpenGl_Mat4& theWorldVi
 }
 
 // =======================================================================
-// function : RevertProjectionStateTo
-// purpose  : Reverts state of OCCT projection transform
-// =======================================================================
-void OpenGl_ShaderManager::RevertProjectionStateTo (const OpenGl_Mat4& theProjectionMatrix)
-{
-  myProjectionState.Set (theProjectionMatrix);
-  myProjectionState.Revert();
-}
-
-// =======================================================================
-// function : RevertModelWorldStateTo
-// purpose  : Reverts state of OCCT model-world transform
-// =======================================================================
-void OpenGl_ShaderManager::RevertModelWorldStateTo (const OpenGl_Mat4& theModelWorldMatrix)
-{
-  myModelWorldState.Set (theModelWorldMatrix);
-  myModelWorldState.Revert();
-}
-
-// =======================================================================
-// function : RevertWorldViewStateTo
-// purpose  : Reverts state of OCCT world-view transform
-// =======================================================================
-void OpenGl_ShaderManager::RevertWorldViewStateTo (const OpenGl_Mat4& theWorldViewMatrix)
-{
-  myWorldViewState.Set (theWorldViewMatrix);
-  myWorldViewState.Revert();
-}
-
-// =======================================================================
 // function : LightSourceState
 // purpose  : Returns current state of OCCT light sources
 // =======================================================================

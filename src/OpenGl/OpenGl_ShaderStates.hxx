@@ -29,23 +29,18 @@ class OpenGl_StateInterface
 {
 public:
 
-  //! Creates new OCCT state.
+  //! Creates new state.
   OpenGl_StateInterface();
 
   //! Returns current state index.
-  Standard_Size Index() const;
+  Standard_Size Index() const { return myIndex; }
 
-  //! Updates current state.
-  void Update();
-
-  //! Reverts current state.
-  void Revert();
+  //! Increment current state.
+  void Update() { ++myIndex; }
 
 protected:
 
-  Standard_Size myIndex;      //!< Current state index
-  Standard_Size myNextIndex;  //!< Next state index
-  NCollection_List<Standard_Size> myStateStack; //!< Stack of previous states.
+  Standard_Size myIndex; //!< current state index
 
 };
 
@@ -165,12 +160,27 @@ private:
 };
 
 //! Defines generic state of OCCT clipping state.
-class OpenGl_ClippingState : public OpenGl_StateInterface
+class OpenGl_ClippingState
 {
 public:
 
   //! Creates new clipping state.
   OpenGl_ClippingState();
+
+  //! Returns current state index.
+  Standard_Size Index() const { return myIndex; }
+
+  //! Updates current state.
+  void Update();
+
+  //! Reverts current state.
+  void Revert();
+
+protected:
+
+  Standard_Size                   myIndex;      //!< Current state index
+  Standard_Size                   myNextIndex;  //!< Next    state index
+  NCollection_List<Standard_Size> myStateStack; //!< Stack of previous states
 
 };
 

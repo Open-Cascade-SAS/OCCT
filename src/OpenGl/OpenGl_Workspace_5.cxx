@@ -251,60 +251,6 @@ const OpenGl_AspectText * OpenGl_Workspace::SetAspectText(const OpenGl_AspectTex
 
 /*----------------------------------------------------------------------*/
 
-const OpenGl_Matrix * OpenGl_Workspace::SetViewMatrix (const OpenGl_Matrix *AMatrix)
-{
-  const OpenGl_Matrix *ViewMatrix_old = ViewMatrix_applied;
-  ViewMatrix_applied = AMatrix;
-
-  // Update model-view matrix with new view matrix
-  UpdateModelViewMatrix();
-
-  return ViewMatrix_old;
-}
-
-/*----------------------------------------------------------------------*/
-
-const OpenGl_Matrix * OpenGl_Workspace::SetStructureMatrix (const OpenGl_Matrix *AMatrix, bool aRevert)
-{
-  const OpenGl_Matrix *StructureMatrix_old = StructureMatrix_applied;
-  StructureMatrix_applied = AMatrix;
-
-  OpenGl_Matrix lmat;
-  OpenGl_Transposemat3( &lmat, AMatrix );
-
-  // Update model-view matrix with new structure matrix
-  UpdateModelViewMatrix();
-
-  if (!myGlContext->ShaderManager()->IsEmpty())
-  {
-    if (aRevert)
-    {
-      myGlContext->ShaderManager()->RevertModelWorldStateTo (OpenGl_Mat4::Map (*lmat.mat));
-    }
-    else
-    {
-      myGlContext->ShaderManager()->UpdateModelWorldStateTo (OpenGl_Mat4::Map (*lmat.mat));
-    }
-  }
-
-  return StructureMatrix_old;
-}
-
-/*----------------------------------------------------------------------*/
-
-const void OpenGl_Workspace::UpdateModelViewMatrix()
-{
-  OpenGl_Matrix aStructureMatT;
-  OpenGl_Transposemat3( &aStructureMatT, StructureMatrix_applied);
-  OpenGl_Multiplymat3 (&myModelViewMatrix, &aStructureMatT, ViewMatrix_applied);
-#if !defined(GL_ES_VERSION_2_0)
-  glMatrixMode (GL_MODELVIEW);
-  glLoadMatrixf ((const GLfloat* )&myModelViewMatrix.mat);
-#endif
-}
-
-/*----------------------------------------------------------------------*/
-
 const OpenGl_AspectLine * OpenGl_Workspace::AspectLine(const Standard_Boolean WithApply)
 {
   if ( WithApply && (AspectLine_set != AspectLine_applied) )

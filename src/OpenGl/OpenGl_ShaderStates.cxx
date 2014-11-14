@@ -13,56 +13,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <NCollection_Mat4.hxx>
-
 #include <OpenGl_ShaderStates.hxx>
+
+#include <NCollection_Mat4.hxx>
 
 // =======================================================================
 // function : OpenGl_StateInterface
-// purpose  : Creates new OCCT state
+// purpose  :
 // =======================================================================
 OpenGl_StateInterface::OpenGl_StateInterface()
-: myIndex (0),
-  myNextIndex (1)
+: myIndex (0)
 {
   //
-}
-
-// =======================================================================
-// function : Index
-// purpose  : Returns current state index
-// =======================================================================
-Standard_Size OpenGl_StateInterface::Index() const
-{
-  return myIndex;
-}
-
-// =======================================================================
-// function : Update
-// purpose  : Updates current state
-// =======================================================================
-void OpenGl_StateInterface::Update()
-{
-  myStateStack.Prepend (myIndex);
-  myIndex = myNextIndex;
-  ++myNextIndex;
-}
-
-// =======================================================================
-// function : Revert
-// purpose  : Reverts current state
-// =======================================================================
-void OpenGl_StateInterface::Revert()
-{
-  if (!myStateStack.IsEmpty())
-  {
-    myIndex = myStateStack.First();
-    myStateStack.RemoveFirst();
-  }
-  else
-  {
-    myIndex = 0;
-  }
 }
 
 // =======================================================================
@@ -261,6 +223,36 @@ const OpenGl_Element* OpenGl_MaterialState::Aspect() const
 // purpose  : Creates new clipping state
 // =======================================================================
 OpenGl_ClippingState::OpenGl_ClippingState()
+: myIndex (0),
+  myNextIndex (1)
 {
   //
+}
+
+// =======================================================================
+// function : Update
+// purpose  : Updates current state
+// =======================================================================
+void OpenGl_ClippingState::Update()
+{
+  myStateStack.Prepend (myIndex);
+  myIndex = myNextIndex; // use myNextIndex here to handle properly Update() after Revert()
+  ++myNextIndex;
+}
+
+// =======================================================================
+// function : Revert
+// purpose  : Reverts current state
+// =======================================================================
+void OpenGl_ClippingState::Revert()
+{
+  if (!myStateStack.IsEmpty())
+  {
+    myIndex = myStateStack.First();
+    myStateStack.RemoveFirst();
+  }
+  else
+  {
+    myIndex = 0;
+  }
 }
