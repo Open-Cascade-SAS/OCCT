@@ -12,7 +12,7 @@ Timer::Timer():myWriter(0) {}
 
 Timer::Timer(const char* filename)
 {
-	myWriter = fopen(filename, "a");
+	fopen_s(&myWriter,filename, "a");
 }
 
 Timer::~Timer()

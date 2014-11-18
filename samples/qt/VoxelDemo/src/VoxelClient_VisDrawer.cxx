@@ -323,7 +323,7 @@ static void setColor(const Quantity_Color& color, const Standard_Boolean highlig
 {
     static Quantity_Color highlight_color(Quantity_NOC_BLUE1);
 		if(highlight)
-        glColor3f(highlight_color.Red(), highlight_color.Green(), highlight_color.Blue());
+        glColor3f((GLfloat)highlight_color.Red(), (GLfloat)highlight_color.Green(), (GLfloat)highlight_color.Blue());
     else
         glColor3d(color.Red(), color.Green(), color.Blue());
 }
