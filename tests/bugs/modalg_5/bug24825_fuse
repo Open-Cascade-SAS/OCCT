@@ -46,14 +46,14 @@ bbop result 1
 
 set square 157211
 
-set nb_v_good 280
-set nb_e_good 338
+set nb_v_good 160
+set nb_e_good 218
 set nb_w_good 142
 set nb_f_good 80
 set nb_sh_good 1
 set nb_sol_good 1
 set nb_compsol_good 0
 set nb_compound_good 1
-set nb_shape_good 843
+set nb_shape_good 603
 
 set 2dviewer 1

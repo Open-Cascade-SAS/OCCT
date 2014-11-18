@@ -6,7 +6,36 @@ puts ""
 # Face/Face intersection algorithm gives different results for different order of the arguments
 #######################################################################
 
+proc GetRange { curve } {
+  global U1
+  global U2
+  
+  set log [uplevel dump $curve]
+  
+  regexp {Degree +([-0-9.+eE]+), +([-0-9.+eE]+) Poles, +([-0-9.+eE]+)} ${log} full Degree Poles KnotsPoles
+  puts "Degree=${Degree}"
+  puts "Poles=${Poles}"
+  puts "KnotsPoles=${KnotsPoles}"
+  puts ""
+
+  set Knot 1
+  set exp_string "Knots :\n\n +${Knot} :  +(\[-0-9.+eE\]+) +(\[-0-9.+eE\]+)"
+  regexp ${exp_string} ${log} full U1 Mult1
+
+  set Knot ${KnotsPoles}
+  set exp_string " +${Knot} :  +(\[-0-9.+eE\]+) +(\[-0-9.+eE\]+)"
+  regexp ${exp_string} ${log} full U2 Mult2
+}
+
+puts "##############################"
+puts "#!!!Search \"Attention\" keyword on this web-page for additional checking!!!"
+puts "##############################"
+puts ""
+
 # intersect command
+
+#This value must be equal to the analogical value in bug25292_33 and bug25292_34 of "bugs modalg_5" testgrid. 
+set GoodNbCurv 1
 
 restore [locate_data_file bug25292_f1.brep] f1
 restore [locate_data_file bug25292_f2.brep] f2
@@ -15,11 +44,99 @@ mksurface s1 f1
 mksurface s2 f2
 
 #################
-intersect i s2 s1
+intersect res s2 s1
 #################
 
-if { [info exist i] } {
-  puts "OK: Curve Number is good!"
+set che [whatis res]
+set ind [string first "3d curve" $che]
+if {${ind} >= 0} {
+  #Only variable "res" exists
+  
+  if { $GoodNbCurv == 1 } {
+    puts "OK: Curve Number is good!"
+  } else {
+    puts "Error: Curve Number is bad!"
+  }
+  
+  set U1 0.0
+  set U2 0.0
+  
+  GetRange res
+
+  puts "U1 = ${U1}"
+  puts "U2 = ${U2}"
+
+  if {[expr {$U2 - $U1}] < 1.0e-20} {
+    puts "Error: Wrong curve's range!"
+  }
+  
+  dlog reset
+  dlog on
+  xdistcs res s1 ${U1} ${U2} 10
+  set Log1 [dlog get]
+  set List1 [split ${Log1} {TD= \t\n}]
+  set Tolerance 1.0e-6
+  set Limit_Tol 1.0e-7
+  set D_good 0.
+  checkList ${List1} ${Tolerance} ${D_good} ${Limit_Tol}
+  
+  dlog reset
+  dlog on
+  xdistcs res s2 ${U1} ${U2} 10
+  set Log1 [dlog get]
+  set List1 [split ${Log1} {TD= \t\n}]
+  set Tolerance 1.0e-6
+  set Limit_Tol 1.0e-7
+  set D_good 0.
+  checkList ${List1} ${Tolerance} ${D_good} ${Limit_Tol}
 } else {
-  puts "Error: Curve Number is bad!"
+  set ic 1
+  set AllowRepeate 1
+  while { $AllowRepeate != 0 } {
+    set che [whatis res_$ic]
+    set ind [string first "3d curve" $che]
+    if {${ind} < 0} {
+      set AllowRepeate 0
+    } else {
+      set U1 0.0
+      set U2 0.0
+      
+      GetRange res_$ic
+      
+      puts "U1 = ${U1}"
+      puts "U2 = ${U2}"
+      
+      if {[expr {$U2 - $U1}] < 1.0e-20} {
+        puts "Error: Wrong curve's range!"
+      }
+      
+      dlog reset
+      dlog on
+      xdistcs res_$ic s1 ${U1} ${U2} 10
+      set Log1 [dlog get]
+      set List1 [split ${Log1} {TD= \t\n}]
+      set Tolerance 1.0e-6
+      set Limit_Tol 1.0e-7
+      set D_good 0.
+      checkList ${List1} ${Tolerance} ${D_good} ${Limit_Tol}
+      
+      dlog reset
+      dlog on
+      xdistcs res_$ic s2 0 1 10
+      set Log1 [dlog get]
+      set List1 [split ${Log1} {TD= \t\n}]
+      set Tolerance 1.0e-6
+      set Limit_Tol 1.0e-7
+      set D_good 0.
+      checkList ${List1} ${Tolerance} ${D_good} ${Limit_Tol}
+      
+      incr ic
+    }
+  }
+  
+  if {[expr {$ic - 1}] == $GoodNbCurv} {
+    puts "OK: Curve Number is good!"
+  } else {
+    puts "Error: Curve Number is bad!"
+  }
 }

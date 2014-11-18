@@ -253,7 +253,7 @@ proc CheckTriArea {shape {eps 0}} {
 }
 
 # Check if list of xdistcs-command is valid
-proc checkList {List Tolerance D_good} {
+proc checkList {List Tolerance D_good Limit_Tol} {
    set L1 [llength ${List}]
    set L2 10
    set L3 5
@@ -266,7 +266,14 @@ proc checkList {List Tolerance D_good} {
       set D [lindex ${List} ${j2}]
       #puts "i=${i} j1=${j1} j2=${j2} T=${T} D=${D}"
       if { [expr abs(${D} - ${D_good})] > ${Tolerance} } {
-         puts "Error: i=${i} T=${T} D=${D}"
+         puts "Error : T=${T} D=${D}"
+      }
+      
+      if { ${Tolerance} > ${Limit_Tol} } {
+        if { [expr abs(${D} - ${D_good})] > ${Limit_Tol} 
+             && [expr abs(${D} - ${D_good})] <= ${Tolerance} } {
+           puts "Attention (critical value of tolerance) : T=${T} D=${D}"
+        }
       }
    }
 }

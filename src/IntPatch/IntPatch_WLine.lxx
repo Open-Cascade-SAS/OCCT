@@ -97,3 +97,27 @@ inline const IntPatch_Point& IntPatch_WLine::Vertex (const Standard_Integer Inde
 {
   return svtx(Index);
 }
+
+inline void IntPatch_WLine::ClearVertexes()
+{
+  svtx.Clear();
+}
+
+inline void IntPatch_WLine::RemoveVertex(const Standard_Integer theIndex)
+{
+  if((theIndex < 1) || (theIndex > NbVertex()))
+    Standard_OutOfRange::Raise("Cannot delete not existing vertex");
+  svtx.Remove(theIndex);
+}
+
+inline void IntPatch_WLine::InsertVertexBefore( const Standard_Integer theIndex,
+                                                const IntPatch_Point& thePnt)
+{
+  const Standard_Integer aNbVertexes = NbVertex();
+  Standard_Integer anIndex = Max(theIndex, 1);
+
+  if(anIndex > aNbVertexes)
+    svtx.Append(thePnt);
+  else
+    svtx.InsertBefore(theIndex, thePnt);
+}

@@ -1151,6 +1151,7 @@ static Standard_Boolean AddPointIntoWL( const IntSurf_Quadric& theQuad1,
                                         const Standard_Real theUlSurf1,
                                         const Standard_Real thePeriodOfSurf1,
                                         const Handle(IntSurf_LineOn2S)& theLine,
+                                        const Standard_Real theTol3D,
                                         const Standard_Real theTol2D,
                                         const Standard_Boolean theFlForce)
 {
@@ -1177,6 +1178,32 @@ static Standard_Boolean AddPointIntoWL( const IntSurf_Quadric& theQuad1,
                         thePntOnSurf2.X(), thePntOnSurf2.Y());
   }
 
+  const Standard_Integer aNbPnts = theLine->NbPoints();
+  if(aNbPnts > 0)
+  {
+    Standard_Real aUl = 0.0, aVl = 0.0;
+    const IntSurf_PntOn2S aPlast = theLine->Value(aNbPnts);
+    if(isTheReverse)
+      aPlast.ParametersOnS2(aUl, aVl);
+    else
+      aPlast.ParametersOnS1(aUl, aVl);
+
+    if(anUpar <= aUl)
+    {//Parameter value will be always increased.
+      return Standard_False;
+    }
+
+    //theTol2D is minimal step along parameter changed. 
+    //Therefore, if we apply this minimal step two 
+    //neighbour points will be always "same". Consequently,
+    //we should reduce tolerance for IsSame checking.
+    const Standard_Real aDTol = 1.0-Epsilon(1.0);
+    if(aPnt.IsSame(aPlast, theTol3D*aDTol, theTol2D*aDTol))
+    {
+      theLine->RemovePoint(aNbPnts);
+    }
+  }
+
   theLine->Add(aPnt);
   return Standard_True;
 }
@@ -1191,6 +1218,7 @@ static Standard_Boolean AddBoundaryPoint( const IntSurf_Quadric& theQuad1,
                                           const stCoeffsValue& theCoeffs,
                                           const Bnd_Box2d& theUVSurf1,
                                           const Bnd_Box2d& theUVSurf2,
+                                          const Standard_Real theTol3D,
                                           const Standard_Real theTol2D,
                                           const Standard_Real thePeriod,
                                           const Standard_Real theNulValue,
@@ -1281,7 +1309,7 @@ static Standard_Boolean AddBoundaryPoint( const IntSurf_Quadric& theQuad1,
         AddPointIntoWL(theQuad1, theQuad2, isTheReverse,
                           gp_Pnt2d(anUpar1, aV1), gp_Pnt2d(aU2, aV2),
                           aUSurf1f, aUSurf1l, thePeriod,
-                          theWL->Curve(), theTol2D, theFlForce);
+                          theWL->Curve(), theTol3D, theTol2D, theFlForce);
       }
       else
       {
@@ -1313,7 +1341,7 @@ static Standard_Boolean AddBoundaryPoint( const IntSurf_Quadric& theQuad1,
         AddPointIntoWL(theQuad1, theQuad2, isTheReverse,
                         gp_Pnt2d(anUpar2, aV1), gp_Pnt2d(aU2, aV2),
                         aUSurf1f, aUSurf1l, thePeriod,
-                        theWL->Curve(), theTol2D, theFlForce);
+                        theWL->Curve(),theTol3D, theTol2D, theFlForce);
       }
       else
       {
@@ -1346,7 +1374,7 @@ static Standard_Boolean AddBoundaryPoint( const IntSurf_Quadric& theQuad1,
         AddPointIntoWL(theQuad1, theQuad2, isTheReverse, 
                         gp_Pnt2d(anUpar2, aV1), gp_Pnt2d(aU2, aV2),
                         aUSurf1f, aUSurf1l, thePeriod,
-                        theWL->Curve(), theTol2D, theFlForce);
+                        theWL->Curve(), theTol3D, theTol2D, theFlForce);
       }
       else
       {
@@ -1376,7 +1404,7 @@ static Standard_Boolean AddBoundaryPoint( const IntSurf_Quadric& theQuad1,
         AddPointIntoWL(theQuad1, theQuad2, isTheReverse,
                         gp_Pnt2d(anUpar1, aV1), gp_Pnt2d(aU2, aV2),
                         aUSurf1f, aUSurf1l, thePeriod,
-                        theWL->Curve(), theTol2D, theFlForce);
+                        theWL->Curve(), theTol3D, theTol2D, theFlForce);
       }
       else
       {
@@ -1545,7 +1573,8 @@ static void CriticalPointsComputing(const stCoeffsValue& theCoeffs,
   {
     Standard_Real &a = theU1crit[i],
                   &b = theU1crit[i-1];
-    if(Abs(a - b) < theTol2D)
+    const Standard_Real aRemain = fmod(Abs(a - b), thePeriod); // >= 0, because Abs(a - b) >= 0
+    if((Abs(a - b) < theTol2D) || (aRemain < theTol2D) || (Abs(aRemain - thePeriod) < theTol2D))
     {
       a = (a + b)/2.0;
       b = Precision::Infinite();
@@ -1817,6 +1846,7 @@ Standard_Boolean IntCyCyTrim( const IntSurf_Quadric& theQuad1,
     Standard_Boolean isAddedIntoWL1 = Standard_False, isAddedIntoWL2 = Standard_False;
 
     Standard_Real anUf = aU1f[aCurInterval], anUl = aU1l[aCurInterval];
+    const Standard_Boolean isDeltaPeriod  = IsEqual(anUl-anUf, aPeriod);
 
     //Inscribe and sort critical points
     InscribeAndSortArray(anU1crit, aNbCritPointsMax, anUf, anUl, theTol2D, aPeriod);
@@ -1830,6 +1860,8 @@ Standard_Boolean IntCyCyTrim( const IntSurf_Quadric& theQuad1,
       Handle(IntPatch_WLine) aWLine2 = new IntPatch_WLine(aL2S2, Standard_False);
 
       Standard_Integer aWL1FindStatus = 0, aWL2FindStatus = 0;
+      Standard_Boolean  isAddingWL1Enabled = Standard_True,
+                        isAddingWL2Enabled = Standard_True;
 
       Standard_Real anU1 = anUf;
 
@@ -1845,6 +1877,23 @@ Standard_Boolean IntCyCyTrim( const IntSurf_Quadric& theQuad1,
 
       while(anU1 <= anUl)
       {
+        if(isDeltaPeriod)
+        {
+          if(IsEqual(anU1, anUl))
+          {
+            //if isAddedIntoWL* == TRUE WLine contains only one point
+            //(which was end point of previous WLine). If we will
+            //add point found on the current step WLine will contain only
+            //two points. At that both these points will be equal to the
+            //points found earlier. Therefore, new WLine will repeat 
+            //already existing WLine. Consequently, it is necessary 
+            //to forbid building new line in this case.
+
+            isAddingWL1Enabled = !isAddedIntoWL1;
+            isAddingWL2Enabled = !isAddedIntoWL2;
+          }
+        }
+
         for(Standard_Integer i = 0; i < aNbCritPointsMax; i++)
         {
           if((anU1 - anU1crit[i])*aCriticalDelta[i] < 0.0)
@@ -1995,123 +2044,129 @@ Standard_Boolean IntCyCyTrim( const IntSurf_Quadric& theQuad1,
           isFirst = Standard_False;
         }
 
-        if( ((aUSurf2f-aU21) <= theTol2D) && 
-            ((aU21-aUSurf2l) <= theTol2D) &&
-            ((aVSurf1f - aV11) <= theTol2D) && 
-            ((aV11 - aVSurf1l) <= theTol2D) &&
-            ((aVSurf2f - aV21) <= theTol2D) && ((aV21 - aVSurf2l) <= theTol2D))
+        if(isAddingWL1Enabled)
         {
-          Standard_Boolean isForce = Standard_False;
-          if(!aWL1FindStatus)
+          if( ((aUSurf2f-aU21) <= theTol2D) && 
+              ((aU21-aUSurf2l) <= theTol2D) &&
+              ((aVSurf1f - aV11) <= theTol2D) && 
+              ((aV11 - aVSurf1l) <= theTol2D) &&
+              ((aVSurf2f - aV21) <= theTol2D) && ((aV21 - aVSurf2l) <= theTol2D))
           {
-            Standard_Boolean isFound1 = Standard_False, isFound2 = Standard_False;
-
-            if(((aUSurf2l - aUSurf2f) >= aPeriod) && (Abs(anU1-aUSurf1l) < theTol2D))
+            Standard_Boolean isForce = Standard_False;
+            if(!aWL1FindStatus)
             {
-              isForce = Standard_True;
-            }
+              Standard_Boolean isFound1 = Standard_False, isFound2 = Standard_False;
 
-            AddBoundaryPoint(theQuad1, theQuad2, aWLine1, anEquationCoeffs,
-                              theUVSurf1, theUVSurf2, theTol2D, aPeriod,
-                              aNulValue, anU1, aU21, aV11, aV11Prev,
-                              aV21, aV21Prev, isTheReverse,
-                              1.0, isForce, isFound1, isFound2);
+              if(((aUSurf2l - aUSurf2f) >= aPeriod) && (Abs(anU1-aUSurf1l) < theTol2D))
+              {
+                isForce = Standard_True;
+              }
+
+              AddBoundaryPoint(theQuad1, theQuad2, aWLine1, anEquationCoeffs,
+                                theUVSurf1, theUVSurf2, theTol3D, theTol2D, aPeriod,
+                                aNulValue, anU1, aU21, aV11, aV11Prev,
+                                aV21, aV21Prev, isTheReverse,
+                                1.0, isForce, isFound1, isFound2);
               
-            if(isFound1 || isFound2)
-            {
-              aWL1FindStatus = 1;
-            }
-          }
-
-          if((aWL1FindStatus != 2) || (aWLine1->NbPnts() >= 1))
-          {
-            if(AddPointIntoWL(theQuad1, theQuad2, isTheReverse, 
-                  gp_Pnt2d(anU1, aV11), gp_Pnt2d(aU21, aV21),
-                  aUSurf1f, aUSurf1l, aPeriod,
-                  aWLine1->Curve(), theTol2D, isForce))
-            {
-              if(!aWL1FindStatus)
+              if(isFound1 || isFound2)
               {
                 aWL1FindStatus = 1;
               }
             }
+
+            if((aWL1FindStatus != 2) || (aWLine1->NbPnts() >= 1))
+            {
+              if(AddPointIntoWL(theQuad1, theQuad2, isTheReverse, 
+                    gp_Pnt2d(anU1, aV11), gp_Pnt2d(aU21, aV21),
+                    aUSurf1f, aUSurf1l, aPeriod,
+                    aWLine1->Curve(), theTol3D, theTol2D, isForce))
+              {
+                if(!aWL1FindStatus)
+                {
+                  aWL1FindStatus = 1;
+                }
+              }
+            }
           }
-        }
-        else
-        {
-          if(aWL1FindStatus == 1)
+          else
           {
-            Standard_Boolean isFound1 = Standard_False, isFound2 = Standard_False;
+            if(aWL1FindStatus == 1)
+            {
+              Standard_Boolean isFound1 = Standard_False, isFound2 = Standard_False;
 
-            AddBoundaryPoint(theQuad1, theQuad2, aWLine1, anEquationCoeffs,
-                              theUVSurf1, theUVSurf2, theTol2D, aPeriod,
-                              aNulValue, anU1, aU21, aV11, aV11Prev,
-                              aV21, aV21Prev, isTheReverse,
-                              1.0, Standard_False, isFound1, isFound2);
+              AddBoundaryPoint(theQuad1, theQuad2, aWLine1, anEquationCoeffs,
+                                theUVSurf1, theUVSurf2, theTol3D, theTol2D, aPeriod,
+                                aNulValue, anU1, aU21, aV11, aV11Prev,
+                                aV21, aV21Prev, isTheReverse,
+                                1.0, Standard_False, isFound1, isFound2);
 
-            if(isFound1 || isFound2)
-              aWL1FindStatus = 2; //start a new line
+              if(isFound1 || isFound2)
+                aWL1FindStatus = 2; //start a new line
+            }
           }
         }
         
-        if( ((aUSurf2f-aU22) <= theTol2D) &&
-            ((aU22-aUSurf2l) <= theTol2D) && 
-            ((aVSurf1f - aV12) <= theTol2D) &&
-            ((aV12 - aVSurf1l) <= theTol2D) &&
-            ((aVSurf2f - aV22) <= theTol2D) &&
-            ((aV22 - aVSurf2l) <= theTol2D))
+        if(isAddingWL2Enabled)
         {
-          Standard_Boolean isForce = Standard_False;
-
-          if(!aWL2FindStatus)
+          if( ((aUSurf2f-aU22) <= theTol2D) &&
+              ((aU22-aUSurf2l) <= theTol2D) && 
+              ((aVSurf1f - aV12) <= theTol2D) &&
+              ((aV12 - aVSurf1l) <= theTol2D) &&
+              ((aVSurf2f - aV22) <= theTol2D) &&
+              ((aV22 - aVSurf2l) <= theTol2D))
           {
-            Standard_Boolean isFound1 = Standard_False, isFound2 = Standard_False;
+            Standard_Boolean isForce = Standard_False;
 
-            if(((aUSurf2l - aUSurf2f) >= aPeriod) && (Abs(anU1-aUSurf1l) < theTol2D))
+            if(!aWL2FindStatus)
             {
-              isForce = Standard_True;
-            }
+              Standard_Boolean isFound1 = Standard_False, isFound2 = Standard_False;
 
-            AddBoundaryPoint(theQuad1, theQuad2, aWLine2, anEquationCoeffs,
-                              theUVSurf1, theUVSurf2, theTol2D, aPeriod,
-                              aNulValue, anU1, aU22, aV12, aV12Prev,
-                              aV22, aV22Prev, isTheReverse,
-                              -1.0, isForce, isFound1, isFound2);
+              if(((aUSurf2l - aUSurf2f) >= aPeriod) && (Abs(anU1-aUSurf1l) < theTol2D))
+              {
+                isForce = Standard_True;
+              }
+
+              AddBoundaryPoint(theQuad1, theQuad2, aWLine2, anEquationCoeffs,
+                                theUVSurf1, theUVSurf2, theTol3D, theTol2D, aPeriod,
+                                aNulValue, anU1, aU22, aV12, aV12Prev,
+                                aV22, aV22Prev, isTheReverse,
+                                -1.0, isForce, isFound1, isFound2);
               
-            if(isFound1 || isFound2)
-            {
-              aWL2FindStatus = 1;
-            }
-          }
-
-          if((aWL2FindStatus != 2) || (aWLine2->NbPnts() >= 1))
-          {
-            if(AddPointIntoWL(theQuad1, theQuad2, isTheReverse,
-                  gp_Pnt2d(anU1, aV12), gp_Pnt2d(aU22, aV22),
-                  aUSurf1f, aUSurf1l, aPeriod,
-                  aWLine2->Curve(), theTol2D, isForce))
-            {
-              if(!aWL2FindStatus)
+              if(isFound1 || isFound2)
               {
                 aWL2FindStatus = 1;
               }
             }
+
+            if((aWL2FindStatus != 2) || (aWLine2->NbPnts() >= 1))
+            {
+              if(AddPointIntoWL(theQuad1, theQuad2, isTheReverse,
+                    gp_Pnt2d(anU1, aV12), gp_Pnt2d(aU22, aV22),
+                    aUSurf1f, aUSurf1l, aPeriod,
+                    aWLine2->Curve(), theTol3D, theTol2D, isForce))
+              {
+                if(!aWL2FindStatus)
+                {
+                  aWL2FindStatus = 1;
+                }
+              }
+            }
           }
-        }
-        else
-        {
-          if(aWL2FindStatus == 1)
+          else
           {
-            Standard_Boolean isFound1 = Standard_False, isFound2 = Standard_False;
+            if(aWL2FindStatus == 1)
+            {
+              Standard_Boolean isFound1 = Standard_False, isFound2 = Standard_False;
 
-            AddBoundaryPoint(theQuad1, theQuad2, aWLine2, anEquationCoeffs,
-                              theUVSurf1, theUVSurf2, theTol2D, aPeriod,
-                              aNulValue, anU1, aU22, aV12, aV12Prev,
-                              aV22, aV22Prev, isTheReverse,
-                              -1.0, Standard_False, isFound1, isFound2);
+              AddBoundaryPoint(theQuad1, theQuad2, aWLine2, anEquationCoeffs,
+                                theUVSurf1, theUVSurf2, theTol3D, theTol2D, aPeriod,
+                                aNulValue, anU1, aU22, aV12, aV12Prev,
+                                aV22, aV22Prev, isTheReverse,
+                                -1.0, Standard_False, isFound1, isFound2);
 
-            if(isFound1 || isFound2)
-              aWL2FindStatus = 2; //start a new line
+              if(isFound1 || isFound2)
+                aWL2FindStatus = 2; //start a new line
+            }
           }
         }
 
@@ -2310,6 +2365,203 @@ Standard_Boolean IntCyCyTrim( const IntSurf_Quadric& theQuad1,
       }
     }
   }
+
+  if(theSlin.Length() > 0)
+  {
+    for(Standard_Integer aNumOfLine = 2; aNumOfLine <= theSlin.Length(); aNumOfLine++)
+    {
+      const Handle(IntPatch_WLine)& aWLine = Handle(IntPatch_WLine)::DownCast(theSlin.Value(aNumOfLine));
+
+      const IntSurf_PntOn2S& aPntFWL = aWLine->Point(1);
+
+      Standard_Real aU1 = 0.0, aU2 = 0.0, aV1 = 0.0, aV2 = 0.0;
+      aPntFWL.Parameters(aU1, aV1, aU2, aV2);
+
+      if( IsEqual(aU1, 0.0) || IsEqual(aU1, aPeriod))
+      {
+        theSlin.Exchange(1, aNumOfLine);
+        break;
+      }
+    }
+
+    for(Standard_Integer aNumOfLine1 = 1; aNumOfLine1 <= theSlin.Length(); aNumOfLine1++)
+    {
+      const Handle(IntPatch_WLine)& aWLine1 = Handle(IntPatch_WLine)::DownCast(theSlin.Value(aNumOfLine1));
+
+      const Standard_Integer aNbPntsWL1 = aWLine1->NbPnts();
+      const IntSurf_PntOn2S& aPntFWL1 = aWLine1->Point(1);
+      const IntSurf_PntOn2S& aPntLWL1 = aWLine1->Point(aNbPntsWL1);
+
+      for(Standard_Integer aNPt = 1; aNPt <= theSPnt.Length(); aNPt++)
+      {
+        const IntSurf_PntOn2S aPntCur = theSPnt.Value(aNPt).PntOn2S();
+
+        if( aPntCur.IsSame(aPntFWL1, Precision::Confusion()) ||
+            aPntCur.IsSame(aPntLWL1, Precision::Confusion()))
+        {
+          theSPnt.Remove(aNPt);
+          aNPt--;
+        }
+      }
+
+      Standard_Boolean hasBeenRemoved = Standard_False;
+      for(Standard_Integer aNumOfLine2 = aNumOfLine1 + 1; aNumOfLine2 <= theSlin.Length(); aNumOfLine2++)
+      {
+        const Handle(IntPatch_WLine)& aWLine2 = Handle(IntPatch_WLine)::DownCast(theSlin.Value(aNumOfLine2));
+
+        const Standard_Integer aNbPntsWL1 = aWLine1->NbPnts();
+        const Standard_Integer aNbPntsWL2 = aWLine2->NbPnts();
+
+        const IntSurf_PntOn2S& aPntFWL1 = aWLine1->Point(1);
+        const IntSurf_PntOn2S& aPntLWL1 = aWLine1->Point(aNbPntsWL1);
+
+        const IntSurf_PntOn2S& aPntFWL2 = aWLine2->Point(1);
+        const IntSurf_PntOn2S& aPntLWL2 = aWLine2->Point(aNbPntsWL2);
+
+        if(aPntFWL1.IsSame(aPntFWL2, Precision::Confusion()))
+        {
+          Standard_Real aU11 = 0.0, aU12 = 0.0, aV11 = 0.0, aV12 = 0.0;
+          Standard_Real aU21 = 0.0, aU22 = 0.0, aV21 = 0.0, aV22 = 0.0;
+
+          aPntFWL1.Parameters(aU11, aV11, aU12, aV12);
+          aPntFWL2.Parameters(aU21, aV21, aU22, aV22);
+
+          if( !(IsEqual(fmod(aU11, aPeriod), 0.0) ||
+                IsEqual(fmod(aU12, aPeriod), 0.0) ||
+                IsEqual(fmod(aU21, aPeriod), 0.0) ||
+                IsEqual(fmod(aU22, aPeriod), 0.0) ||
+                IsEqual(aU11, aUSurf1f) || IsEqual(aU11, aUSurf1l) ||
+                IsEqual(aU21, aUSurf1f) || IsEqual(aU21, aUSurf1l) ||
+                IsEqual(aU12, aUSurf2f) || IsEqual(aU12, aUSurf2l) ||
+                IsEqual(aU22, aUSurf2f) || IsEqual(aU22, aUSurf2l)))
+          {
+            aWLine1->ClearVertexes();
+            for(Standard_Integer aNPt = 1; aNPt <= aNbPntsWL2; aNPt++)
+            {
+              const IntSurf_PntOn2S& aPt = aWLine2->Point(aNPt);
+              aWLine1->Curve()->InsertBefore(1, aPt);
+            }
+
+            aWLine1->ComputeVertexParameters(theTol3D);
+
+            theSlin.Remove(aNumOfLine2);
+            aNumOfLine2--;
+            hasBeenRemoved = Standard_True;
+
+            continue;
+          }
+        }
+
+        if(aPntFWL1.IsSame(aPntLWL2, Precision::Confusion()))
+        {
+          Standard_Real aU11 = 0.0, aU12 = 0.0, aV11 = 0.0, aV12 = 0.0;
+          Standard_Real aU21 = 0.0, aU22 = 0.0, aV21 = 0.0, aV22 = 0.0;
+
+          aPntFWL1.Parameters(aU11, aV11, aU12, aV12);
+          aPntLWL2.Parameters(aU21, aV21, aU22, aV22);
+
+          if( !(IsEqual(fmod(aU11, aPeriod), 0.0) ||
+                IsEqual(fmod(aU12, aPeriod), 0.0) ||
+                IsEqual(fmod(aU21, aPeriod), 0.0) ||
+                IsEqual(fmod(aU22, aPeriod), 0.0) ||
+                IsEqual(aU11, aUSurf1f) || IsEqual(aU11, aUSurf1l) ||
+                IsEqual(aU21, aUSurf1f) || IsEqual(aU21, aUSurf1l) ||
+                IsEqual(aU12, aUSurf2f) || IsEqual(aU12, aUSurf2l) ||
+                IsEqual(aU22, aUSurf2f) || IsEqual(aU22, aUSurf2l)))
+          {
+            aWLine1->ClearVertexes();
+            for(Standard_Integer aNPt = aNbPntsWL2; aNPt >= 1; aNPt--)
+            {
+              const IntSurf_PntOn2S& aPt = aWLine2->Point(aNPt);
+              aWLine1->Curve()->InsertBefore(1, aPt);
+            }
+
+            aWLine1->ComputeVertexParameters(theTol3D);
+
+            theSlin.Remove(aNumOfLine2);
+            aNumOfLine2--;
+            hasBeenRemoved = Standard_True;
+
+            continue;
+          }
+        }
+
+        if(aPntLWL1.IsSame(aPntFWL2, Precision::Confusion()))
+        {
+          Standard_Real aU11 = 0.0, aU12 = 0.0, aV11 = 0.0, aV12 = 0.0;
+          Standard_Real aU21 = 0.0, aU22 = 0.0, aV21 = 0.0, aV22 = 0.0;
+
+          aPntLWL1.Parameters(aU11, aV11, aU12, aV12);
+          aPntFWL2.Parameters(aU21, aV21, aU22, aV22);
+
+          if( !(IsEqual(fmod(aU11, aPeriod), 0.0) ||
+                IsEqual(fmod(aU12, aPeriod), 0.0) ||
+                IsEqual(fmod(aU21, aPeriod), 0.0) ||
+                IsEqual(fmod(aU22, aPeriod), 0.0) ||
+                IsEqual(aU11, aUSurf1f) || IsEqual(aU11, aUSurf1l) ||
+                IsEqual(aU21, aUSurf1f) || IsEqual(aU21, aUSurf1l) ||
+                IsEqual(aU12, aUSurf2f) || IsEqual(aU12, aUSurf2l) ||
+                IsEqual(aU22, aUSurf2f) || IsEqual(aU22, aUSurf2l)))
+          {
+            aWLine1->ClearVertexes();
+            for(Standard_Integer aNPt = 1; aNPt <= aNbPntsWL2; aNPt++)
+            {
+              const IntSurf_PntOn2S& aPt = aWLine2->Point(aNPt);
+              aWLine1->Curve()->Add(aPt);
+            }
+
+            aWLine1->ComputeVertexParameters(theTol3D);
+
+            theSlin.Remove(aNumOfLine2);
+            aNumOfLine2--;
+            hasBeenRemoved = Standard_True;
+
+            continue;
+          }
+        }
+
+        if(aPntLWL1.IsSame(aPntLWL2, Precision::Confusion()))
+        {
+          Standard_Real aU11 = 0.0, aU12 = 0.0, aV11 = 0.0, aV12 = 0.0;
+          Standard_Real aU21 = 0.0, aU22 = 0.0, aV21 = 0.0, aV22 = 0.0;
+
+          aPntLWL1.Parameters(aU11, aV11, aU12, aV12);
+          aPntLWL2.Parameters(aU21, aV21, aU22, aV22);
+
+          if( !(IsEqual(fmod(aU11, aPeriod), 0.0) ||
+                IsEqual(fmod(aU12, aPeriod), 0.0) ||
+                IsEqual(fmod(aU21, aPeriod), 0.0) ||
+                IsEqual(fmod(aU22, aPeriod), 0.0) ||
+                IsEqual(aU11, aUSurf1f) || IsEqual(aU11, aUSurf1l) ||
+                IsEqual(aU21, aUSurf1f) || IsEqual(aU21, aUSurf1l) ||
+                IsEqual(aU12, aUSurf2f) || IsEqual(aU12, aUSurf2l) ||
+                IsEqual(aU22, aUSurf2f) || IsEqual(aU22, aUSurf2l)))
+          {
+            aWLine1->ClearVertexes();
+            for(Standard_Integer aNPt = aNbPntsWL2; aNPt >= 1; aNPt--)
+            {
+              const IntSurf_PntOn2S& aPt = aWLine2->Point(aNPt);
+              aWLine1->Curve()->Add(aPt);
+            }
+
+            aWLine1->ComputeVertexParameters(theTol3D);
+
+            theSlin.Remove(aNumOfLine2);
+            aNumOfLine2--;
+            hasBeenRemoved = Standard_True;
+
+            continue;
+          }
+        }
+      }
+
+      if(hasBeenRemoved)
+        aNumOfLine1--;
+
+      //aWLine1->ComputeVertexParameters(theTol3D);
+    }
+  }//if(theSlin.Length() > 0)
+
 
   return Standard_True;
 }
