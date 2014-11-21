@@ -1,0 +1,29 @@
+puts "============"
+puts "OCC25354"
+puts "============"
+puts ""
+#######################################################################
+# Intersection operation
+#######################################################################
+
+# Case 23
+
+restore [locate_data_file bug25354_e1.brep] b1
+
+box b2 10 10 10 
+ttranslate b1 -6 3 4
+
+bop b1 b2
+bopsection result
+
+set nb_v_good 1
+set nb_e_good 0
+set nb_w_good 0
+set nb_f_good 0
+set nb_sh_good 0
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good  1
+set nb_shape_good 2
+
+set 2dviewer 1

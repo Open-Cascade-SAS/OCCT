@@ -1,0 +1,28 @@
+puts "============"
+puts "OCC25354"
+puts "============"
+puts ""
+#######################################################################
+# Intersection operation
+#######################################################################
+
+# Case 37
+
+box b1 10 10 10 
+box b2 10 10 10 
+ttranslate b2 10 3 4 
+
+bop b1 b2
+bopsection result
+
+set nb_v_good 4
+set nb_e_good 4
+set nb_w_good 0
+set nb_f_good 0
+set nb_sh_good 0
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good  1
+set nb_shape_good 9
+
+set 2dviewer 1
