@@ -49,4 +49,31 @@ void IntSurf_PntOn2S::SetValue (const Standard_Boolean OnFirst,
 }
 
 
+Standard_Boolean IntSurf_PntOn2S::IsSame( const IntSurf_PntOn2S& theOterPoint,
+                                          const Standard_Real theTol3D,
+                                          const Standard_Real theTol2D) const
+{
+  if(pt.SquareDistance(theOterPoint.Value()) > theTol3D*theTol3D)
+    return Standard_False;
 
+  if(IsEqual(theTol2D, 0.0))
+  {//We need not compare 2D-coordinates of the points
+    return Standard_True;
+  }
+
+  Standard_Real aU1 = 0.0, aV1 = 0.0, aU2 = 0.0, aV2 = 0.0;
+  theOterPoint.Parameters(aU1, aV1, aU2, aV2);
+
+  gp_Pnt2d aP1(u1, v1), aP2(aU1, aV1);
+
+  if(!aP1.IsEqual(aP2, theTol2D))
+    return Standard_False;
+
+  aP1.SetCoord(u2, v2);
+  aP2.SetCoord(aU2, aV2);
+
+  if(!aP1.IsEqual(aP2, theTol2D))
+    return Standard_False;
+
+  return Standard_True;
+}

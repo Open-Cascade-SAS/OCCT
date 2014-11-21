@@ -2053,7 +2053,7 @@ Standard_Boolean IntCyCyTrim( const IntSurf_Quadric& theQuad1,
               aWL1FindStatus = 2; //start a new line
           }
         }
-      
+        
         if( ((aUSurf2f-aU22) <= theTol2D) &&
             ((aU22-aUSurf2l) <= theTol2D) && 
             ((aVSurf1f - aV12) <= theTol2D) &&
@@ -2237,15 +2237,29 @@ Standard_Boolean IntCyCyTrim( const IntSurf_Quadric& theQuad1,
       }
       else if(aWLine1->NbPnts() > 1)
       {
-        isTheEmpty = Standard_False;
-        isAddedIntoWL1 = Standard_True;
+        Standard_Boolean isGood = Standard_True;
 
-        SeekAdditionalPoints(theQuad1, theQuad2, aWLine1->Curve(), 
-                              anEquationCoeffs, aNbPoints, aUSurf2f, aUSurf2l,
-                              theTol2D, aPeriod, 1.0, isTheReverse);
+        if(aWLine1->NbPnts() == 2)
+        {
+          const IntSurf_PntOn2S& aPf = aWLine1->Point(1);
+          const IntSurf_PntOn2S& aPl = aWLine1->Point(2);
 
-        aWLine1->ComputeVertexParameters(theTol3D);
-        theSlin.Append(aWLine1);
+          if(aPf.IsSame(aPl, Precision::Confusion()))
+            isGood = Standard_False;
+        }
+
+        if(isGood)
+        {
+          isTheEmpty = Standard_False;
+          isAddedIntoWL1 = Standard_True;
+
+          SeekAdditionalPoints( theQuad1, theQuad2, aWLine1->Curve(), 
+                                anEquationCoeffs, aNbPoints, aUSurf2f, aUSurf2l,
+                                theTol2D, aPeriod, 1.0, isTheReverse);
+
+          aWLine1->ComputeVertexParameters(theTol3D);
+          theSlin.Append(aWLine1);
+        }
       }
       else
       {
@@ -2267,15 +2281,28 @@ Standard_Boolean IntCyCyTrim( const IntSurf_Quadric& theQuad1,
       }
       else if(aWLine2->NbPnts() > 1)
       {
-        isTheEmpty = Standard_False;
-        isAddedIntoWL2 = Standard_True;
+        Standard_Boolean isGood = Standard_True;
+        if(aWLine2->NbPnts() == 2)
+        {
+          const IntSurf_PntOn2S& aPf = aWLine2->Point(1);
+          const IntSurf_PntOn2S& aPl = aWLine2->Point(2);
 
-        SeekAdditionalPoints(theQuad1, theQuad2, aWLine2->Curve(),
-                              anEquationCoeffs, aNbPoints, aUSurf2f, aUSurf2l,
-                              theTol2D, aPeriod, -1.0, isTheReverse);
+          if(aPf.IsSame(aPl, Precision::Confusion()))
+            isGood = Standard_False;
+        }
 
-        aWLine2->ComputeVertexParameters(theTol3D);
-        theSlin.Append(aWLine2);
+        if(isGood)
+        {
+          isTheEmpty = Standard_False;
+          isAddedIntoWL2 = Standard_True;
+
+          SeekAdditionalPoints(theQuad1, theQuad2, aWLine2->Curve(),
+                                anEquationCoeffs, aNbPoints, aUSurf2f, aUSurf2l,
+                                theTol2D, aPeriod, -1.0, isTheReverse);
+
+          aWLine2->ComputeVertexParameters(theTol3D);
+          theSlin.Append(aWLine2);
+        }
       }
       else
       {
