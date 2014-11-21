@@ -1,23 +1,19 @@
 puts "============"
-puts "OCC25298"
+puts "OCC25491"
 puts "============"
 puts ""
 #######################################################################
-# New option of BRepOffsetAPI_MakeOffset algorithm: processing of sharp corners in mode GeomAbs_Intersection
+# BRepOffsetAPI_MakeOffset algorithm crashes on customer's shape and big value of offset
 #######################################################################
 
-polyline pp 0 0 0 10 0 0 10 10 0 6 10 0 6 15 0 4 15 0 4 10 0 0 10 0 0 0 0
+restore [locate_data_file bug25491_offset_lines_2.brep] a
 
-smallview
-display pp
-fit
-
-if [catch { mkoffset resoffset pp 1 -1. i } ] {
+if [catch { mkoffset resoffset a 1 -35 i } ] {
   puts "Error : mkoffset is wrong"
 } else {
   renamevar resoffset_1 result
 
-  set length 32
+  set length 120
 
   set nb_v_good 5
   set nb_e_good 5
@@ -28,9 +24,9 @@ if [catch { mkoffset resoffset pp 1 -1. i } ] {
   set nb_compsol_good 0
   set nb_compound_good 0
   set nb_shape_good 11
-
-  display result
-  fit
 }
 
+smallview
+display a
+fit
 set only_screen_axo 1

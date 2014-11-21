@@ -1253,29 +1253,6 @@ void BRepFill_OffsetWire::UpdateDetromp (BRepFill_DataMapOfOrientedShapeListOfSh
                                          const Standard_Boolean          EOnE,
                                          const BRepFill_TrimEdgeTool&    Trim) const
 {
-  if (myJoinType == GeomAbs_Intersection &&
-      Vertices.Length() == 1 &&
-      !EOnE)
-  {
-    TopTools_IndexedMapOfShape Vmap1, Vmap2;
-    TopExp::MapShapes(Shape1, TopAbs_VERTEX, Vmap1);
-    TopExp::MapShapes(Shape2, TopAbs_VERTEX, Vmap2);
-    Standard_Boolean Adjacent = Standard_False;
-    for (Standard_Integer i = 1; i <= Vmap1.Extent(); i++)
-      for (Standard_Integer j = 1; j <= Vmap2.Extent(); j++)
-        if (Vmap1(i).IsSame(Vmap2(j)))
-        {
-          Adjacent = Standard_True;
-          break;
-        }
-    if (Adjacent)
-    {
-      Detromp(Shape1).Append(Vertices.First());
-      Detromp(Shape2).Append(Vertices.First());
-      return;
-    }
-  }
-  
   Standard_Integer ii = 1;
   Standard_Real    U1,U2;
   TopoDS_Vertex    V1,V2;
@@ -1294,8 +1271,11 @@ void BRepFill_OffsetWire::UpdateDetromp (BRepFill_DataMapOfOrientedShapeListOfSh
     U2 = Params.Value(ii).X();
     V2 = TopoDS::Vertex(Vertices.Value(ii));
 
-    gp_Pnt2d P = Bis->Value((U2 + U1)*0.5);  
-    if (!Trim.IsInside(P)) {
+    gp_Pnt2d P = Bis->Value((U2 + U1)*0.5);
+    Standard_Boolean IsP_inside = Standard_True;
+    if (myJoinType == GeomAbs_Arc)
+      IsP_inside = Trim.IsInside(P);
+    if (!IsP_inside) {
       if (!V1.IsNull()) {
         Detromp(Shape1).Append(V1);
         Detromp(Shape2).Append(V1);
@@ -1313,7 +1293,10 @@ void BRepFill_OffsetWire::UpdateDetromp (BRepFill_DataMapOfOrientedShapeListOfSh
   if (!EOnE) {
     if (!Precision::IsInfinite(U2)) {
       gp_Pnt2d P = Bis->Value((U2 + U1)*0.5);  
-      if (!Trim.IsInside(P)) {
+      Standard_Boolean IsP_inside = Standard_False;
+      if (myJoinType == GeomAbs_Arc)
+        IsP_inside = Trim.IsInside(P);
+      if (!IsP_inside) {
 	if (!V1.IsNull()) {
 	  Detromp(Shape1).Append(V1);
 	  Detromp(Shape2).Append(V1);
