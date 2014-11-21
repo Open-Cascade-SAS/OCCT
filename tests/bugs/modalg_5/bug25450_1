@@ -1,0 +1,26 @@
+puts "================"
+puts "OCC25450"
+puts "================"
+puts ""
+####################################
+# Common operation returns wrong shape
+####################################
+
+restore [locate_data_file bug25450_Shape.brep] a
+
+explode a
+bcommon result a_1 a_2
+
+set square 142153
+
+set nb_v_good 8
+set nb_e_good 12
+set nb_w_good 4
+set nb_f_good 4
+set nb_sh_good 1
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 30
+
+set 3dviewer 1

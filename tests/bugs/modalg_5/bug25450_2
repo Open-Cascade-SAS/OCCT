@@ -1,0 +1,27 @@
+puts "================"
+puts "OCC25450"
+puts "================"
+puts ""
+####################################
+# Common operation returns wrong shape
+####################################
+
+restore [locate_data_file bug25450_b1.brep] b1
+restore [locate_data_file bug25450_b2.brep] b2
+
+bop b1 b2
+bopcommon result
+
+set square 35538.3
+
+set nb_v_good 4
+set nb_e_good 4
+set nb_w_good 1
+set nb_f_good 1
+set nb_sh_good 1
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 12
+
+set 3dviewer 1
