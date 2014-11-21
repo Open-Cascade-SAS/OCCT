@@ -1,5 +1,5 @@
 #B5----------------------------------------------
-puts "TODO OCC22803 All:Faulty shapes in variables faulty_1 to faulty_2"
+puts "TODO OCC22803 All:Faulty shapes in variables faulty_"
 
 plane p 0 0 0 1 0 0
 pcone p p 15 14 20

@@ -269,6 +269,14 @@ static Standard_Boolean Check(const TColStd_Array1OfReal& FlatKnots,
   Standard_Real firstborne= 3.*pc3d(1)   - 2.*pc3d(nbp);
   Standard_Real lastborne = 3.*pc3d(nbp) - 2.*pc3d(1);
   //  Modified by skv - Wed Jun  2 11:50:03 2004 OCC5898 End
+  //jgv
+  Standard_Real FirstPar = cons.FirstParameter();
+  Standard_Real LastPar  = cons.LastParameter();
+  if (firstborne < FirstPar)
+    firstborne = FirstPar;
+  if (lastborne > LastPar)
+    lastborne = LastPar;
+  /////
   for(i = 0; i <= nn; i++){
     Standard_Real t = unsurnn*i;
     Standard_Real tc3d = pc3d(1)*(1.-t) + pc3d(nbp)*t;

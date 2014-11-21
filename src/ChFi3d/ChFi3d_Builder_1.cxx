@@ -80,6 +80,8 @@ Standard_Boolean isTangentFaces(const TopoDS_Edge &theEdge,
   if (BRep_Tool::Continuity( theEdge, theFace1, theFace2 ) != GeomAbs_C0)
     return Standard_True;
 
+  Standard_Real TolC0 = Max(0.001, 1.5*BRep_Tool::Tolerance(theEdge));
+
   Standard_Real aFirst;
   Standard_Real aLast;
     
@@ -120,7 +122,7 @@ Standard_Boolean isTangentFaces(const TopoDS_Edge &theEdge,
 
     LocalAnalysis_SurfaceContinuity aCont(aC2d1,  aC2d2,  aPar,
 					  aSurf1, aSurf2, GeomAbs_G1,
-					  0.001, 0.001, 0.1, 0.1, 0.1);
+					  0.001, TolC0, 0.1, 0.1, 0.1);
     if (!aCont.IsDone())
       {
 	nbNotDone++;
