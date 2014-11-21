@@ -1,0 +1,33 @@
+puts "============"
+puts "OCC25432"
+puts "============"
+puts ""
+#########################################################################
+# Wrong result obtained by MakerVolume operator.
+#########################################################################
+
+restore [locate_data_file bug25432_qz.brep] q
+
+explode q f
+mkvolume result q_1 q_2 q_3 q_4 q_5 q_6 q_7 q_8 q_9 q_10 q_11 -ni
+
+regexp {Mass +: +([-0-9.+eE]+)} [vprops result] full volume
+
+set expected_volume 0.26776
+set tol_abs_volume 1.0e-4
+set tol_rel_volume 0.0001
+checkreal "Volume" ${volume} ${expected_volume} ${tol_abs_volume} ${tol_rel_volume}
+
+set square 3.59972
+
+set nb_v_good 12
+set nb_e_good 20
+set nb_w_good 11
+set nb_f_good 11
+set nb_sh_good 2
+set nb_sol_good 2
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 59
+
+set 2dviewer 1

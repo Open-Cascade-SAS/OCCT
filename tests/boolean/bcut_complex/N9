@@ -1,8 +1,8 @@
 # Original bug : pro14942
 # Date : 26Aout98
 
-#CR23958 puts "TODO #22911 ALL: Faulty shapes in variables faulty_1 to faulty_"
-#CR23958 puts "TODO #22911 ALL: Error : The area of the resulting shape is"
+puts "TODO #22911 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO #22911 ALL: Error : The area of the resulting shape is"
 
 restore [locate_data_file CTO904_pro14942a.rle] a 
 restore [locate_data_file pro14942b.rle] b

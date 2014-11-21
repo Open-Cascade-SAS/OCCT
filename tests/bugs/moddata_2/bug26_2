@@ -1,3 +1,5 @@
+puts "TODO CR25432 ALL: Error : The square of result shape is"
+
 puts "================"
 puts "OCC26"
 puts "================"
