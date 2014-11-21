@@ -92,13 +92,13 @@ ProjLib_PrjResolve::ProjLib_PrjResolve(const Adaptor3d_Curve& C,const Adaptor3d_
     ExtraU = Tol2d.X();
     ExtraV = Tol2d.Y();
 //  }
-  if (Abs(mySolution.X()-Inf.X()) < Tol2d.X()) mySolution.SetX(Inf.X());
-  if (Abs(mySolution.X()-Sup.X()) < Tol2d.X()) mySolution.SetX(Sup.X()); 
-  if (Abs(mySolution.Y()-Inf.Y()) < Tol2d.Y()) mySolution.SetY(Inf.Y());
-  if (Abs(mySolution.Y()-Sup.Y()) < Tol2d.Y()) mySolution.SetY(Sup.Y()); 
-  if (mySolution.X() < Inf.X() - ExtraU || 
+  if (mySolution.X() > Inf.X() - Tol2d.X() && mySolution.X() < Inf.X()) mySolution.SetX(Inf.X());
+  if (mySolution.X() > Sup.X() && mySolution.X() < Sup.X() + Tol2d.X()) mySolution.SetX(Sup.X()); 
+  if (mySolution.Y() > Inf.Y() - Tol2d.Y() && mySolution.Y() < Inf.Y()) mySolution.SetY(Inf.Y());
+  if (mySolution.Y() > Sup.Y() && mySolution.Y() < Sup.Y() + Tol2d.Y()) mySolution.SetY(Sup.Y()); 
+  if (mySolution.X() < Inf.X() - ExtraU ||
       mySolution.X() > Sup.X() + ExtraU ||
-      mySolution.Y() < Inf.Y() - ExtraV || 
+      mySolution.Y() < Inf.Y() - ExtraV ||
       mySolution.Y() > Sup.Y() + ExtraV) myDone = Standard_False;
   else if (FuncTol > 0) {
     math_Vector X(1,2,0.), FVal(1,2,0.);
