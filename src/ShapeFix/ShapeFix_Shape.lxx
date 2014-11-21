@@ -122,3 +122,13 @@ inline Standard_Integer& ShapeFix_Shape::FixVertexPositionMode()
 {
   return myFixVertexPositionMode;
 }
+
+//=======================================================================
+//function : FixVertexTolMode
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer& ShapeFix_Shape::FixVertexTolMode() 
+{
+  return myFixVertexTolMode;
+}
