@@ -1243,10 +1243,9 @@ static Standard_Boolean isTreatAnalityc(const TopoDS_Face& theF1,
       return;
     }
   }
+  //
   // Do the Curve
-  
-  
-  typl=L->ArcType();
+  //
   switch (typl) {
   //########################################  
   // Line, Parabola, Hyperbola
@@ -1276,10 +1275,14 @@ static Standard_Boolean isTreatAnalityc(const TopoDS_Face& theF1,
     //
     aNbParts=myLConstruct.NbParts();
     for (i=1; i<=aNbParts; i++) {
+      Standard_Boolean bFNIt, bLPIt;
+      //
       myLConstruct.Part(i, fprm, lprm);
-      
-      if (!Precision::IsNegativeInfinite(fprm) && 
-          !Precision::IsPositiveInfinite(lprm)) {
+      //
+      bFNIt=Precision::IsNegativeInfinite(fprm);
+      bLPIt=Precision::IsPositiveInfinite(lprm);
+      //
+      if (!bFNIt && !bLPIt) {
         //
         IntTools_Curve aCurve;
         //
@@ -1309,7 +1312,7 @@ static Standard_Boolean isTreatAnalityc(const TopoDS_Face& theF1,
             //
             aCurve.SetFirstCurve2d(H1);
           }
-        
+        //
         if(myApprox2) { 
           Handle (Geom2d_Curve) C2d;
           BuildPCurves(fprm,lprm,Tolpc,myHS2->ChangeSurface().Surface(),newc,C2d);
@@ -1325,25 +1328,24 @@ static Standard_Boolean isTreatAnalityc(const TopoDS_Face& theF1,
           aCurve.SetSecondCurve2d(H1);
         }
         mySeqOfCurve.Append(aCurve);
-      } // end of if (!Precision::IsNegativeInfinite(fprm) &&  !Precision::IsPositiveInfinite(lprm))
+      } //if (!bFNIt && !bLPIt) {
       else {
         //  on regarde si on garde
         //
-        Standard_Boolean bFNIt, bLPIt;
         Standard_Real aTestPrm, dT=100.;
-
-        bFNIt=Precision::IsNegativeInfinite(fprm);
-        bLPIt=Precision::IsPositiveInfinite(lprm);
-        
+        //
         aTestPrm=0.;
-        
         if (bFNIt && !bLPIt) {
           aTestPrm=lprm-dT;
         }
         else if (!bFNIt && bLPIt) {
           aTestPrm=fprm+dT;
         }
-        
+        else {
+          // i.e, if (bFNIt && bLPIt)
+          aTestPrm=IntTools_Tools::IntermediatePoint(-dT, dT);
+        }
+        //
         gp_Pnt ptref(newc->Value(aTestPrm));
         //
         GeomAbs_SurfaceType typS1 = myHS1->GetType();
@@ -1353,8 +1355,7 @@ static Standard_Boolean isTreatAnalityc(const TopoDS_Face& theF1,
             typS1 == GeomAbs_SurfaceOfRevolution ||
             typS2 == GeomAbs_SurfaceOfExtrusion ||
             typS2 == GeomAbs_OffsetSurface ||
-            typS2 == GeomAbs_SurfaceOfRevolution) 
-        {
+            typS2 == GeomAbs_SurfaceOfRevolution) {
           Handle(Geom2d_BSplineCurve) H1;
           mySeqOfCurve.Append(IntTools_Curve(newc, H1, H1));
           continue;
@@ -1373,7 +1374,7 @@ static Standard_Boolean isTreatAnalityc(const TopoDS_Face& theF1,
           mySeqOfCurve.Append(IntTools_Curve(newc, H1, H1));
         }
       }
-    }// end of for (i=1; i<=myLConstruct.NbParts(); i++)
+    }// for (i=1; i<=aNbParts; i++) {
   }// case IntPatch_Lin:  case IntPatch_Parabola:  case IntPatch_Hyperbola:
     break;
 
