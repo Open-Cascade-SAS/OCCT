@@ -684,8 +684,8 @@ void BOPAlgo_BuilderSolid::PerformAreas()
       }
       //
       if (aInOutMap.IsBound (aHole)){
-        const TopoDS_Shape& aHole2=aInOutMap(aHole);
-        if (IsInside(aHole, aHole2, myContext)) {
+        const TopoDS_Shape& aSolidWas=aInOutMap(aHole);
+        if (IsInside(aSolid, aSolidWas, myContext)) {
           aInOutMap.UnBind(aHole);
           aInOutMap.Bind (aHole, aSolid);
         }
