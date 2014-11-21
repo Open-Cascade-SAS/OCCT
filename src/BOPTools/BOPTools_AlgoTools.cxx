@@ -99,7 +99,8 @@ static
                                    gp_Pnt& aPOut,
                                    Handle(IntTools_Context)& theContext,
                                    GeomAPI_ProjectPointOnSurf& aProjPL,
-                                   const Standard_Real aDt);
+                                   const Standard_Real aDt,
+                                   const Standard_Real aTolE);
 static 
   Standard_Real MinStep3D(const TopoDS_Edge& theE1,
                           const TopoDS_Face& theF1,
@@ -1825,14 +1826,18 @@ void GetFaceDir(const TopoDS_Edge& aE,
                 GeomAPI_ProjectPointOnSurf& aProjPL,
                 const Standard_Real aDt)
 {
+  Standard_Real aTolE;
+  gp_Pnt aPx;
+  //
   BOPTools_AlgoTools3D::GetNormalToFaceOnEdge(aE, aF, aT, aDN);
   if (aF.Orientation()==TopAbs_REVERSED){
     aDN.Reverse();
   }
+  //
+  aTolE=BRep_Tool::Tolerance(aE); 
   aDB = aDN^aDTgt;
   //
-  gp_Pnt aPx;
-  if (!FindPointInFace(aF, aP, aDB, aPx, theContext, aProjPL, aDt)) {
+  if (!FindPointInFace(aF, aP, aDB, aPx, theContext, aProjPL, aDt, aTolE)) {
     BOPTools_AlgoTools3D::GetApproxNormalToFaceOnEdge(aE, aF, aT, aPx, 
                                                       aDN, theContext);
     aProjPL.Perform(aPx);
@@ -1841,7 +1846,6 @@ void GetFaceDir(const TopoDS_Edge& aE,
     aDB.SetXYZ(aVec.XYZ());
   }
 }
-
 //=======================================================================
 //function : FindPointInFace
 //purpose  : Find a point in the face in direction of <aDB>
@@ -1852,12 +1856,13 @@ Standard_Boolean FindPointInFace(const TopoDS_Face& aF,
                                  gp_Pnt& aPOut,
                                  Handle(IntTools_Context)& theContext,
                                  GeomAPI_ProjectPointOnSurf& aProjPL,
-                                 const Standard_Real aDt)
+                                 const Standard_Real aDt,
+                                 const Standard_Real aTolE)
 {
   Standard_Integer aNbItMax;
   Standard_Real aDist, aDTol, aPM;
   Standard_Boolean bRet;
-  gp_Pnt aP1;
+  gp_Pnt aP1, aPS;
   //
   aDTol = Precision::Angular();
   aPM = aP.XYZ().Modulus();
@@ -1869,10 +1874,27 @@ Standard_Boolean FindPointInFace(const TopoDS_Face& aF,
   //
   GeomAPI_ProjectPointOnSurf& aProj=theContext->ProjPS(aF);
   //
+  aPS=aP;
+  aProj.Perform(aPS);
+  if (!aProj.IsDone()) {
+    return bRet;
+  }
+  aPS=aProj.NearestPoint();
+  aProjPL.Perform(aPS);
+  aPS=aProjPL.NearestPoint();
+  //
+  aPS.SetXYZ(aPS.XYZ()+2.*aTolE*aDB.XYZ());
+   aProj.Perform(aPS);
+  if (!aProj.IsDone()) {
+    return bRet;
+  }
+  aPS=aProj.NearestPoint();
+  aProjPL.Perform(aPS);
+  aPS=aProjPL.NearestPoint();
+  //
+  //
   do {
-    aP1.SetCoord(aP.X()+aDt*aDB.X(),
-                 aP.Y()+aDt*aDB.Y(),
-                 aP.Z()+aDt*aDB.Z());
+    aP1.SetXYZ(aPS.XYZ()+aDt*aDB.XYZ());
     //
     aProj.Perform(aP1);
     if (!aProj.IsDone()) {
@@ -1884,7 +1906,7 @@ Standard_Boolean FindPointInFace(const TopoDS_Face& aF,
     aProjPL.Perform(aPOut);
     aPOut = aProjPL.NearestPoint();
     //
-    gp_Vec aV(aP, aPOut);
+    gp_Vec aV(aPS, aPOut);
     aDB.SetXYZ(aV.XYZ());
   } while (aDist > aDTol && --aNbItMax);
   //
@@ -2006,8 +2028,8 @@ Standard_Boolean BOPTools_AlgoTools::IsOpenShell(const TopoDS_Shell& aSh)
 //function : IsInvertedSolid
 //purpose  : 
 //=======================================================================
-Standard_Boolean 
-  BOPTools_AlgoTools::IsInvertedSolid(const TopoDS_Solid& aSolid)
+Standard_Boolean BOPTools_AlgoTools::IsInvertedSolid
+  (const TopoDS_Solid& aSolid)
 {
   Standard_Real aTolS;
   TopAbs_State aState;
