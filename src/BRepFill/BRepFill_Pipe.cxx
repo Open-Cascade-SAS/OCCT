@@ -274,18 +274,9 @@ void BRepFill_Pipe::Perform(const TopoDS_Wire&  Spine,
   }
 
   ShapeUpgrade_RemoveLocations RemLoc;
+  RemLoc.SetRemoveLevel(TopAbs_COMPOUND);
   RemLoc.Remove(myFirst);
   myFirst = RemLoc.GetResult();
-  TopLoc_Location theLoc = myFirst.Location();
-  if (!theLoc.IsIdentity())
-  {
-    TopoDS_Shape NewMyFirst = BRepBuilderAPI_Copy(myFirst);
-    RemLoc.Remove(NewMyFirst);
-    NewMyFirst = RemLoc.GetResult();
-    TopLoc_Location theIdentity;
-    NewMyFirst.Location(theIdentity);
-    myFirst = BRepBuilderAPI_Transform(NewMyFirst, theLoc.Transformation(), Standard_True);
-  }
   
   myLoc->Law(myLoc->NbLaw())->GetDomain(first, last);
   myLoc->Law(myLoc->NbLaw())->D0(last,M, V);
@@ -308,16 +299,6 @@ void BRepFill_Pipe::Perform(const TopoDS_Wire&  Spine,
 
   RemLoc.Remove(myLast);
   myLast = RemLoc.GetResult();
-  theLoc = myLast.Location();
-  if (!theLoc.IsIdentity())
-  {
-    TopoDS_Shape NewMyLast = BRepBuilderAPI_Copy(myLast);
-    RemLoc.Remove(NewMyLast);
-    NewMyLast = RemLoc.GetResult();
-    TopLoc_Location theIdentity;
-    NewMyLast.Location(theIdentity);
-    myLast = BRepBuilderAPI_Transform(NewMyLast, theLoc.Transformation(), Standard_True);
-  }
   
 #if DRAW
   if (Affich) {

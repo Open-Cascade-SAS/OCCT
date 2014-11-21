@@ -1,0 +1,26 @@
+puts "============"
+puts "OCC25480"
+puts "============"
+puts ""
+#######################################################################
+# Incorrect result of BRepOffsetAPI_MakePipe
+#######################################################################
+
+restore [locate_data_file bug25480_part1.brep] a
+restore [locate_data_file bug25480_part2.brep] b
+
+pipe result b a 1
+
+set square 48441
+
+set nb_v_good 224
+set nb_e_good 392
+set nb_w_good 196
+set nb_f_good 196
+set nb_sh_good 14
+set nb_sol_good 14
+set nb_compsol_good 0
+set nb_compound_good 8
+set nb_shape_good 1044
+
+set 2dviewer 1
