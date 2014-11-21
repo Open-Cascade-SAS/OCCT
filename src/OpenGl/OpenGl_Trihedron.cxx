@@ -606,9 +606,8 @@ void OpenGl_Trihedron::Render (const Handle(OpenGl_Workspace)& theWorkspace) con
   }
 
   const Handle(OpenGl_Texture) aPrevTexture = theWorkspace->DisableTexture();
-
-  /* affichage du Triedre Non Zoomable */
   theWorkspace->ActiveView()->EndTransformPersistence (theWorkspace->GetGlContext());
+  theWorkspace->GetGlContext()->ApplyModelViewMatrix();
 
   if (myIsWireframe)
   {

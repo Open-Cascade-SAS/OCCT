@@ -1,0 +1,25 @@
+puts "========"
+puts "OCC25500"
+puts "========"
+puts ""
+###################################################################################################
+#  Visualization, TKOpenGl - global trihedron should not inherit transformation from last object
+###################################################################################################
+
+box b 1 2 3
+
+vinit View1
+vclear
+vaxo
+vdisplay b
+vfit
+
+vzbufftrihedron
+
+vsetlocation b 0.2 0 0
+vcaps -ffp 0
+vrepaint
+
+checkcolor 60 379 1 0.058823529630899429 0.058823529630899429
+
+set only_screen 1
