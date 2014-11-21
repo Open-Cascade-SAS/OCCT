@@ -135,6 +135,12 @@ is
 	---C++: inline
         ---Purpose: Returns (modifiable) the mode for applying 
         --          ShapeFix::FixVertexPosition before all fixes, by default False.
+        
+        FixVertexTolMode (me: mutable) returns Integer;
+    	---C++: return &
+	---C++: inline
+        ---Purpose: Returns (modifiable) the mode for fixing tolerances of vertices on whole shape 
+        --         after performing all fixes
 fields  
 
     myResult    : Shape from TopoDS is protected;
@@ -147,6 +153,7 @@ fields
     myFixWireMode          : Integer is protected;
     myFixSameParameterMode : Integer is protected;
     myFixVertexPositionMode : Integer is protected;
+    myFixVertexTolMode      : Integer is protected;
     myStatus    : Integer is protected;
 
 end Shape;

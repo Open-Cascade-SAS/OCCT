@@ -53,6 +53,7 @@ ShapeFix_Shape::ShapeFix_Shape()
   myFixWireMode  = -1;
   myFixSameParameterMode = -1;
   myFixVertexPositionMode =0;
+  myFixVertexTolMode = -1;
   myFixSolid = new ShapeFix_Solid;
 }
 
@@ -71,6 +72,7 @@ ShapeFix_Shape::ShapeFix_Shape(const TopoDS_Shape& shape)
   myFixSameParameterMode = -1;
   myFixSolid = new ShapeFix_Solid;
   myFixVertexPositionMode =0;
+  myFixVertexTolMode = -1;
   Init(shape);
 }
 
@@ -97,7 +99,7 @@ void ShapeFix_Shape::Init(const TopoDS_Shape& shape)
 Standard_Boolean ShapeFix_Shape::Perform(const Handle(Message_ProgressIndicator)& theProgress) 
 {
   Standard_Integer savFixSmallAreaWireMode = 0;
-
+  Standard_Integer savFixVertexTolMode =  myFixVertexTolMode;
   Handle(ShapeFix_Face) fft = Handle(ShapeFix_Face)::DownCast( FixFaceTool() );
   if ( !fft.IsNull() ) {
     savFixSmallAreaWireMode = fft->FixSmallAreaWireMode();
@@ -142,7 +144,7 @@ Standard_Boolean ShapeFix_Shape::Perform(const Handle(Message_ProgressIndicator)
     TopoDS_Shape shape = myShape;
     Standard_Boolean savFixSameParameterMode = myFixSameParameterMode;
     myFixSameParameterMode = Standard_False;
-
+    myFixVertexTolMode = Standard_False;
     Standard_Integer aShapesNb = 0;
     for ( TopoDS_Iterator anIter(S); anIter.More(); anIter.Next() )
       ++aShapesNb;
@@ -159,6 +161,7 @@ Standard_Boolean ShapeFix_Shape::Perform(const Handle(Message_ProgressIndicator)
       return Standard_False; // aborted execution
 
     myFixSameParameterMode = savFixSameParameterMode;
+    myFixVertexTolMode = savFixVertexTolMode;
     myShape = shape;
     break;
   }
@@ -241,6 +244,26 @@ Standard_Boolean ShapeFix_Shape::Perform(const Handle(Message_ProgressIndicator)
   if ( NeedFix(myFixSameParameterMode) )
   {
     SameParameter(myResult, Standard_False, theProgress);
+  }
+  if( NeedFix( myFixVertexTolMode))
+  {
+    Standard_Integer nbF = 0;
+    TopExp_Explorer anExpF(myResult, TopAbs_FACE);
+    for( ; anExpF.More() && nbF <= 1; anExpF.Next())
+      nbF++;
+    if( nbF > 1)
+    {
+      //fix for bug  0025455 
+      // for case when vertex belong to the different faces it is necessary to check vertices tolerances
+      //after all fixes.
+      //This fix it should be performed for example for case when cutting edge was performed.
+
+      Handle(ShapeFix_Edge) sfe = FixEdgeTool();
+      TopExp_Explorer anExpE (myResult, TopAbs_EDGE);
+      for ( ; anExpE.More(); anExpE.Next()) 
+        sfe->FixVertexTolerance( TopoDS::Edge (anExpE.Current()));
+
+    }
   }
 
   if ( !fft.IsNull() )
