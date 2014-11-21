@@ -267,7 +267,6 @@ void BOPAlgo_PaveFiller::PerformEF()
     aPB->Indices(nV[0], nV[1]);
     //
     BOPDS_FaceInfo& aFI=myDS->ChangeFaceInfo(nF);
-    ////const BOPDS_IndexedMapOfPaveBlock& aMPBF=aFI.PaveBlocksOn();
     const BOPCol_MapOfInteger& aMIFOn=aFI.VerticesOn();
     const BOPCol_MapOfInteger& aMIFIn=aFI.VerticesIn();
     //~~~
@@ -305,7 +304,9 @@ void BOPAlgo_PaveFiller::PerformEF()
               aEF.SetIndices(nE, nF);
               aEF.SetCommonPart(aCP);
               myDS->AddInterf(nE, nF);
-              // 3          
+              //
+              aMIEFC.Add(nF);
+              //           
               BOPAlgo_Tools::FillMap(aPB, nF, aMPBLI, aAllocator);
               break;
             }
