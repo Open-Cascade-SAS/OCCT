@@ -53,6 +53,7 @@
 #include <Geom2d_TrimmedCurve.hxx>
 #include <ElCLib.hxx>
 #include <GeomLib.hxx>
+#include <Extrema_ExtPC.hxx>
 
 //=======================================================================
 //function : IsoIsDeg
@@ -482,7 +483,16 @@ void ProjLib_ProjectedCurve::Load(const Handle(Adaptor3d_HCurve)& C)
             IsTrimmed[0] = Standard_True;
             f = f + dt;
             myCurve = myCurve->Trim(f, l, Precision::Confusion());
-            Vsingular[0] = ElCLib::Parameter(L, P);
+            // Searching the parameter on the basis curve for surface of revolution
+            Extrema_ExtPC anExtr(P, mySurface->BasisCurve()->Curve(), myTolerance);
+            if (anExtr.IsDone())
+            {
+              Standard_Integer anIndex = 1;
+              while (!anExtr.IsMin(anIndex) && anIndex < anExtr.NbExt()) anIndex++;
+              Vsingular[0] = anExtr.Point(anIndex).Parameter();
+            }
+            else
+              Vsingular[0] = ElCLib::Parameter(L, P);
             //SingularCase[0] = 3;
           }
 
@@ -492,7 +502,16 @@ void ProjLib_ProjectedCurve::Load(const Handle(Adaptor3d_HCurve)& C)
             IsTrimmed[1] = Standard_True;
             l = l - dt;
             myCurve = myCurve->Trim(f, l, Precision::Confusion());
-            Vsingular[1] = ElCLib::Parameter(L, P);
+            // Searching the parameter on the basis curve for surface of revolution
+            Extrema_ExtPC anExtr(P, mySurface->BasisCurve()->Curve(), myTolerance);
+            if (anExtr.IsDone())
+            {
+              Standard_Integer anIndex = 1;
+              while (!anExtr.IsMin(anIndex) && anIndex < anExtr.NbExt()) anIndex++;
+              Vsingular[1] = anExtr.Point(anIndex).Parameter();
+            }
+            else
+              Vsingular[1] = ElCLib::Parameter(L, P);
             //SingularCase[1] = 4;
           }
         }
