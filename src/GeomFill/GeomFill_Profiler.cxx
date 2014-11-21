@@ -22,6 +22,94 @@
 #include <Geom_Conic.hxx>
 #include <GeomConvert_ApproxCurve.hxx>
 
+//=======================================================================
+//function : UnifyByInsertingAllKnots
+//purpose  : 
+//=======================================================================
+void UnifyByInsertingAllKnots(TColGeom_SequenceOfCurve& theCurves,
+                              const Standard_Real PTol)
+{
+  // inserting in the first curve the knot-vector of all the others.
+  Handle(Geom_BSplineCurve) C = Handle(Geom_BSplineCurve)::DownCast(theCurves(1));
+
+  Standard_Integer i;
+  for ( i = 2; i <= theCurves.Length(); i++) {
+    Handle(Geom_BSplineCurve) Ci = 
+      Handle(Geom_BSplineCurve)::DownCast(theCurves(i));
+    TColStd_Array1OfReal Ki(1,Ci->NbKnots());
+    Ci->Knots(Ki);
+    TColStd_Array1OfInteger Mi(1,Ci->NbKnots());
+    Ci->Multiplicities(Mi);
+
+    C->InsertKnots( Ki, Mi, PTol, Standard_False);
+  }
+
+  TColStd_Array1OfReal NewKnots(1,C->NbKnots());
+  C->Knots(NewKnots);
+  TColStd_Array1OfInteger NewMults(1,C->NbKnots());
+  C->Multiplicities(NewMults);
+  for ( i = 2; i <= theCurves.Length(); i++) {
+    Handle(Geom_BSplineCurve) Ci = 
+      Handle(Geom_BSplineCurve)::DownCast(theCurves(i));
+    Ci->InsertKnots(NewKnots, NewMults, PTol, Standard_False);
+  }
+
+  // essai : tentative mise des poids sur chaque section a une moyenne 1
+  for ( i = 1; i <= theCurves.Length(); i++) {
+    Handle(Geom_BSplineCurve) Ci = 
+      Handle(Geom_BSplineCurve)::DownCast(theCurves(i));
+    if ( Ci->IsRational() ) {
+      Standard_Integer np = Ci->NbPoles();
+      Standard_Real sigma = 0.;
+      Standard_Integer j;
+      for ( j = 1; j <= np; j++) {
+	sigma += Ci->Weight(j);
+      }
+      sigma /= np;
+      for ( j= 1; j<= np; j++) {
+	Ci->SetWeight(j,Ci->Weight(j) / sigma);
+      }
+    }
+  }
+  // fin de l essai
+}
+
+//=======================================================================
+//function : UnifyBySettingMiddleKnots
+//purpose  : 
+//=======================================================================
+void UnifyBySettingMiddleKnots(TColGeom_SequenceOfCurve& theCurves)
+{
+  Standard_Integer i, j;
+  
+  Handle(Geom_BSplineCurve) C = Handle(Geom_BSplineCurve)::DownCast(theCurves(1));
+  
+  Standard_Integer NbKnots = C->NbKnots();
+  Standard_Real ULast  = C->Knot(C->LastUKnotIndex());
+  Standard_Real UFirst = C->Knot(C->FirstUKnotIndex());
+  
+  //Set middle values of knots
+  TColStd_Array1OfReal NewKnots(1, NbKnots);
+  NewKnots(1) = UFirst;
+  NewKnots(NbKnots) = ULast;
+  for (j = 2; j < NbKnots; j++)
+  {
+    Standard_Real aMidKnot = 0.;
+    for (i = 1; i <= theCurves.Length(); i++)
+    {
+      Handle(Geom_BSplineCurve) C = Handle(Geom_BSplineCurve)::DownCast(theCurves(i));
+      aMidKnot += C->Knot(j);
+    }
+    aMidKnot /= theCurves.Length();
+    NewKnots(j) = aMidKnot;
+  }
+
+  for (i = 1; i <= theCurves.Length(); i++)
+  {
+    Handle(Geom_BSplineCurve) C = Handle(Geom_BSplineCurve)::DownCast(theCurves(i));
+    C->SetKnots(NewKnots);
+  }
+}
 
 //=======================================================================
 //function : GeomFill_Profiler
@@ -130,49 +218,26 @@ void GeomFill_Profiler::Perform(const Standard_Real PTol)
     BSplCLib::Reparametrize(UFirst,ULast,Knots);
     C->SetKnots(Knots);
   }
-  
-  // inserting in the first curve the knot-vector of all the others.
-  C = Handle(Geom_BSplineCurve)::DownCast(mySequence(1));
 
-  for ( i = 2; i <= mySequence.Length(); i++) {
-    Handle(Geom_BSplineCurve) Ci = 
-      Handle(Geom_BSplineCurve)::DownCast(mySequence(i));
-    TColStd_Array1OfReal Ki(1,Ci->NbKnots());
-    Ci->Knots(Ki);
-    TColStd_Array1OfInteger Mi(1,Ci->NbKnots());
-    Ci->Multiplicities(Mi);
+  TColGeom_SequenceOfCurve theCurves;
+  for (i = 1; i <= mySequence.Length(); i++)
+    theCurves.Append(Handle(Geom_Curve)::DownCast(mySequence(i)->Copy()));
 
-    C->InsertKnots( Ki, Mi, PTol, Standard_False);
-  }
+  UnifyByInsertingAllKnots(theCurves, PTol);
 
-  TColStd_Array1OfReal NewKnots(1,C->NbKnots());
-  C->Knots(NewKnots);
-  TColStd_Array1OfInteger NewMults(1,C->NbKnots());
-  C->Multiplicities(NewMults);
-  for ( i = 2; i <= mySequence.Length(); i++) {
-    Handle(Geom_BSplineCurve) Ci = 
-      Handle(Geom_BSplineCurve)::DownCast(mySequence(i));
-    Ci->InsertKnots(NewKnots, NewMults, PTol, Standard_False);
-  }
-
-  // essai : tentative mise des poids sur chaque section a une moyenne 1
-  for ( i = 1; i <= mySequence.Length(); i++) {
-    Handle(Geom_BSplineCurve) Ci = 
-      Handle(Geom_BSplineCurve)::DownCast(mySequence(i));
-    if ( Ci->IsRational() ) {
-      Standard_Integer np = Ci->NbPoles();
-      Standard_Real sigma = 0.;
-      Standard_Integer j;
-      for ( j = 1; j <= np; j++) {
-	sigma += Ci->Weight(j);
-      }
-      sigma /= np;
-      for ( j= 1; j<= np; j++) {
-	Ci->SetWeight(j,Ci->Weight(j) / sigma);
-      }
+  Standard_Boolean Unified = Standard_True;
+  Standard_Integer theNbKnots = (Handle(Geom_BSplineCurve)::DownCast(theCurves(1)))->NbKnots();
+  for (i = 2; i <= theCurves.Length(); i++)
+    if ((Handle(Geom_BSplineCurve)::DownCast(theCurves(i)))->NbKnots() != theNbKnots)
+    {
+      Unified = Standard_False;
+      break;
     }
-  }
-  // fin de l essai
+  
+  if (Unified)
+    mySequence = theCurves;
+  else
+    UnifyBySettingMiddleKnots(mySequence);
 
   myIsDone = Standard_True;
 }
