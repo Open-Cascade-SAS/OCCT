@@ -1,0 +1,31 @@
+puts "================"
+puts "OCC25449"
+puts "================"
+puts ""
+#######################################################################
+# Excess vertex in result of General Fuse operation.
+#######################################################################
+
+restore [locate_data_file bug25449_fz351.brep] b1
+restore [locate_data_file bug25449_ez679.brep] b2
+
+bclearobjects
+bcleartools
+baddobjects b1 b2
+
+bfillds -t
+bbuild result
+
+set square 21.1115
+
+set nb_v_good 4
+set nb_e_good 4
+set nb_w_good 1
+set nb_f_good 1
+set nb_sh_good 0
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 11
+
+set 3dviewer 1
