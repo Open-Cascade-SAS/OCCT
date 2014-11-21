@@ -29,7 +29,7 @@ puts $nbpoints
 ## must be less than number on clear occ651
 
 set status 0
-if {$nbpoints < $good_trip} {
+if {$nbpoints <= $good_trip} {
   set status 1
 }
 

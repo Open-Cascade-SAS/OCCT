@@ -16,8 +16,8 @@ triangles result
 set tri 0
 set nod 0
 
-set good_tri 31
-set good_nod 33
+set good_tri 38
+set good_nod 40
 
 set tri_info [trinfo result]
 regexp { +([-0-9.+eE]+) +triangles} $tri_info full tri

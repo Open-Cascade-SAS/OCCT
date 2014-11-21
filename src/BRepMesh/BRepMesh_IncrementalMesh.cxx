@@ -374,6 +374,30 @@ void BRepMesh_IncrementalMesh::update(const TopoDS_Edge& theEdge)
       {
         continue;
       }
+      else
+      {
+        // Check that triangulation relies to face of the given shape.
+        const TopTools_IndexedDataMapOfShapeListOfShape& aMapOfSharedFaces = 
+          myMesh->SharedFaces();
+
+        const TopTools_ListOfShape& aSharedFaces = 
+          aMapOfSharedFaces.FindFromKey(theEdge);
+
+        Standard_Boolean isCurrentShape = Standard_False;
+        TopTools_ListIteratorOfListOfShape aSharedFaceIt(aSharedFaces);
+        for (; aSharedFaceIt.More() && !isCurrentShape; aSharedFaceIt.Next())
+        {
+          TopLoc_Location aLoc;
+          const TopoDS_Face& aFace = TopoDS::Face(aSharedFaceIt.Value());
+          Handle(Poly_Triangulation) aFaceTriangulation = 
+            BRep_Tool::Triangulation(aFace, aLoc);
+
+          isCurrentShape = (aFaceTriangulation == aTriangulation);
+        }
+
+        if (!isCurrentShape)
+          continue;
+      }
 
       myModified = Standard_True;
       BRepMesh_ShapeTool::NullifyEdge(theEdge, aTriangulation, aLoc);
@@ -397,7 +421,7 @@ Standard_Boolean BRepMesh_IncrementalMesh::toBeMeshed(
   const Standard_Boolean isWithCheck)
 {
   TopLoc_Location aLoc;
-  Handle(Poly_Triangulation) aTriangulation = 
+  const Handle(Poly_Triangulation)& aTriangulation = 
     BRep_Tool::Triangulation(theFace, aLoc);
 
   if (aTriangulation.IsNull())
@@ -514,7 +538,7 @@ void BRepMesh_IncrementalMesh::commitEdges(const TopoDS_Face& theFace)
     return;
   }
 
-  TopLoc_Location            aLoc = aFace.Location();
+  TopLoc_Location aLoc;
   Handle(Poly_Triangulation) aTriangulation = BRep_Tool::Triangulation(aFace, aLoc);
 
   if (aTriangulation.IsNull())

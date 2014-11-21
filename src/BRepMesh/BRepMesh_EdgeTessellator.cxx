@@ -97,7 +97,7 @@ BRepMesh_EdgeTessellator::BRepMesh_EdgeTessellator(
       }
     }
   }
-
+  
   // PTv, chl/922/G9, Take into account internal vertices
   // it is necessary for internal edges, which do not split other edges, by their vertex
   TopExp_Explorer aVertexIt(theEdge, TopAbs_VERTEX);
