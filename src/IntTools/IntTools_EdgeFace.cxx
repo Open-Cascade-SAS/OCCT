@@ -1365,20 +1365,27 @@ Standard_Boolean IntTools_EdgeFace::CheckTouchVertex
   (const IntTools_CommonPrt& aCP,
    Standard_Real& aTx) 
 {
-  Standard_Real aTF, aTL, Tol, U1f,U1l,V1f,V1l, af, al,aDist2, aMinDist2, aTm, aDist2New;
-  Standard_Real aEpsT;
+  Standard_Real aTF, aTL, Tol, U1f,U1l,V1f,V1l;
+  Standard_Real aEpsT, af, al,aDist2, aMinDist2, aTm, aDist2New;
   Standard_Boolean theflag=Standard_False;
   Standard_Integer aNbExt, i, iLower ;
-
+  GeomAbs_CurveType aType;
+  //
   aCP.Range1(aTF, aTL);
+  aType=myC.GetType();
+  //
   aEpsT=8.e-5;
+  if (aType==GeomAbs_Line) {
+    aEpsT=9.e-5;
+  }
+  //
   aTm=0.5*(aTF+aTL);
   aDist2=DistanceFunction(aTm);
   aDist2 *= aDist2;
 
   Tol = Precision::PConfusion();
 
-  const Handle(Geom_Curve)&  Curve   =BRep_Tool::Curve  (myC.Edge(), af, al);
+  const Handle(Geom_Curve)&  Curve =BRep_Tool::Curve  (myC.Edge(), af, al);
   const Handle(Geom_Surface)& Surface=BRep_Tool::Surface(myS.Face());
 
   Surface->Bounds(U1f,U1l,V1f,V1l);
