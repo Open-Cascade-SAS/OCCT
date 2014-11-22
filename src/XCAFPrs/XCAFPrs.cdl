@@ -66,24 +66,6 @@ is
 	--          shape - style correspondence
 	--          The location <loc> is for internal use, it 
 	--          should be Null location for external call
-	
-    DispatchStyles (shape: Shape from TopoDS; 
-    	    	    settings: DataMapOfShapeStyle from XCAFPrs; 
-		    items: in out DataMapOfStyleShape from XCAFPrs;
-		    DefStyle: Style from XCAFPrs;
-		    force: Boolean = Standard_True;
-    	    	    context: ShapeEnum from TopAbs = TopAbs_SHAPE)
-    returns Boolean;
-    	---Purpose: Iterates on shape (recursively) and splits it
-	--          on parts each of which has its own style
-	--          (basing on settings collected by CollectStyleSettings())
-	--          The DefStyle is default style applied to a shape if
-	--          no specific style assignment is applied to it
-	--          If force is True, the <shape> is added to a map
-	--          even if no styles are redefined for it or its
-	--          subshapes
-	--          The context is for internal use, it indicates
-	--          the type of the shape to which <shape> belongs
 
     SetViewNameMode ( viewNameMode: Boolean from Standard);
 

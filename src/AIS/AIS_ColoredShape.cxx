@@ -447,6 +447,30 @@ Standard_Boolean AIS_ColoredShape::dispatchColors (const TopoDS_Shape&        th
   return isOverriden || isSubOverride;
 }
 
+//! Function to check if specified compound is sub-shape of another one
+inline Standard_Boolean isContainCompound (const TopoDS_Shape&    theShape,
+                                           const TopoDS_Compound& theCompound)
+{
+  if (theShape.ShapeType() != TopAbs_COMPOUND)
+  {
+    return Standard_False;
+  }
+
+  for (TopoDS_Iterator aSubShapeIter (theShape); aSubShapeIter.More(); aSubShapeIter.Next())
+  {
+    if (aSubShapeIter.Value().ShapeType() != TopAbs_COMPOUND)
+    {
+      continue;
+    }
+    else if (aSubShapeIter.Value() == theCompound
+          || isContainCompound (aSubShapeIter.Value(), theCompound))
+    {
+      return Standard_True;
+    }
+  }
+  return Standard_False;
+}
+
 //=======================================================================
 //function : dispatchColors
 //purpose  :
@@ -460,11 +484,11 @@ void AIS_ColoredShape::dispatchColors (const TopoDS_Shape&        theBaseShape,
   // This needed when colored shape is not part of <theBaseShape>
   // (but subshapes are) and actually container for subshapes.
   DataMapOfShapeShape aSubshapeKeyshapeMap;
-  for (DataMapOfShapeColor::Iterator anIt (theKeyshapeColorMap);
-       anIt.More(); anIt.Next())
+  for (DataMapOfShapeColor::Iterator aKeyShapeIter (theKeyshapeColorMap);
+       aKeyShapeIter.More(); aKeyShapeIter.Next())
   {
-    const TopoDS_Shape&   aSh = anIt.Key();
-    TopAbs_ShapeEnum    aType = aSh.ShapeType();
+    const TopoDS_Shape&    aKeySh = aKeyShapeIter.Key();
+    const TopAbs_ShapeEnum aType  = aKeySh.ShapeType();
     TopAbs_ShapeEnum aSubType = (aType == TopAbs_SOLID || aType == TopAbs_SHELL)
                               ? TopAbs_FACE
                               : (aType == TopAbs_WIRE ? TopAbs_EDGE : TopAbs_SHAPE);
@@ -472,16 +496,30 @@ void AIS_ColoredShape::dispatchColors (const TopoDS_Shape&        theBaseShape,
     {
       case TopAbs_SHAPE:
       {
-        aSubshapeKeyshapeMap.Bind (aSh, aSh);
+        if (aType == TopAbs_COMPOUND
+        && !isContainCompound (theBaseShape, TopoDS::Compound (aKeySh)))
+        {
+          for (TopoDS_Iterator aSubShapeIter (aKeySh); aSubShapeIter.More(); aSubShapeIter.Next())
+          {
+            if (!aSubshapeKeyshapeMap.IsBound (aSubShapeIter.Value()))
+            {
+              aSubshapeKeyshapeMap.Bind (aSubShapeIter.Value(), aKeySh);
+            }
+          }
+        }
+        else
+        {
+          aSubshapeKeyshapeMap.Bind (aKeySh, aKeySh);
+        }
         break;
       }
       default:
       {
-        for (TopExp_Explorer anExp (aSh, aSubType); anExp.More(); anExp.Next())
+        for (TopExp_Explorer anExp (aKeySh, aSubType); anExp.More(); anExp.Next())
         {
           if (!aSubshapeKeyshapeMap.IsBound (anExp.Current()))
           {
-            aSubshapeKeyshapeMap.Bind (anExp.Current(), aSh);
+            aSubshapeKeyshapeMap.Bind (anExp.Current(), aKeySh);
           }
         }
       }

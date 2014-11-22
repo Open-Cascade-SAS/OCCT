@@ -28,6 +28,7 @@
 #include <TopLoc_IndexedMapOfLocation.hxx>
 #include <TDF_AttributeSequence.hxx>
 #include <XCAFDoc_GraphNode.hxx>
+#include <XCAFPrs_Style.hxx>
 
 static Standard_Boolean viewnameMode = Standard_False;
 
@@ -210,75 +211,6 @@ void XCAFPrs::CollectStyleSettings (const TDF_Label &L,
     sub.Move ( loc );
     settings.Bind ( sub, style );
   }
-}
-
-//=======================================================================
-//function : DispatchStyles
-//purpose  : fill items map (style - shape)
-//=======================================================================
-
-// merge style with father (to reflect inheritance)
-static Standard_Boolean MergeStyles (XCAFPrs_Style &style, const XCAFPrs_Style &father)
-{
-  if ( ! style.IsSetColorCurv() && father.IsSetColorCurv() ) 
-    style.SetColorCurv ( father.GetColorCurv() );
-  if ( ! style.IsSetColorSurf() && father.IsSetColorSurf() ) 
-    style.SetColorSurf ( father.GetColorSurf() );
-  return style == father;
-}
-
-Standard_Boolean XCAFPrs::DispatchStyles (const TopoDS_Shape &shape, 
-					  const XCAFPrs_DataMapOfShapeStyle &settings, 
-					  XCAFPrs_DataMapOfStyleShape &items, 
-					  const XCAFPrs_Style &DefStyle,
-					  const Standard_Boolean force,
-					  const TopAbs_ShapeEnum context)
-{
-  const XCAFPrs_Style *style = &DefStyle;
-  XCAFPrs_Style ownstyle;
-
-  // check own setting of current shape
-  Standard_Boolean overriden = Standard_False;
-  if ( settings.IsBound ( shape ) ) {
-    ownstyle = settings.Find ( shape );
-    if ( ! MergeStyles ( ownstyle, DefStyle ) ) {
-      overriden = Standard_True;
-      style = &ownstyle;
-    }
-  }
-
-  // iterate on subshapes
-  BRep_Builder B;
-  TopoDS_Shape copy = shape.EmptyCopied();
-  copy.Closed (shape.Closed());
-  Standard_Boolean suboverride = Standard_False;
-  Standard_Integer nbDef = 0;
-  for ( TopoDS_Iterator it(shape); it.More(); it.Next() ) {
-    if ( DispatchStyles ( it.Value(), settings, items, *style, Standard_False, shape.ShapeType() ) ) {
-      suboverride = Standard_True;
-    }
-    else {
-      B.Add ( copy, it.Value() );
-      nbDef++;
-    }
-  }
-  if ( shape.ShapeType() == TopAbs_FACE || ! suboverride ) 
-    copy = shape;
-  else if ( ! nbDef ) return overriden || suboverride; // avoid empty compounds
-
-  // if any of styles is overriden regarding to default one, add rest to map
-  if ( overriden || force || 
-       ( suboverride && context != TopAbs_FACE ) ) { // avoid drawing edges of the same color as face
-    TopoDS_Compound C;
-    if ( items.IsBound ( *style ) ) 
-      C = TopoDS::Compound ( items.Find ( *style ) );
-    else {
-      B.MakeCompound ( C );
-      items.Bind ( *style, C );
-    }
-    B.Add ( C, copy );
-  }
-  return overriden || suboverride;
 }
 
 //=======================================================================

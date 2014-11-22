@@ -16,6 +16,7 @@
 #include <XCAFPrs_AISObject.hxx>
 
 #include <AIS_DisplayMode.hxx>
+#include <BRep_Builder.hxx>
 #include <BRepBndLib.hxx>
 #include <gp_Pnt.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
@@ -151,11 +152,40 @@ void XCAFPrs_AISObject::Compute (const Handle(PrsMgr_PresentationManager3d)& the
 
   SetColors (myDrawer, aColorCurv, aColorSurf);
 
-  // Set colors etc. for current shape according to style
-  for (XCAFPrs_DataMapIteratorOfDataMapOfShapeStyle anIter( aSettings ); anIter.More(); anIter.Next())
+  // collect sub-shapes with the same style into compounds
+  BRep_Builder aBuilder;
+  NCollection_DataMap<XCAFPrs_Style, TopoDS_Compound, XCAFPrs_Style> aStyleGroups;
+  for (XCAFPrs_DataMapIteratorOfDataMapOfShapeStyle aStyledShapeIter (aSettings);
+       aStyledShapeIter.More(); aStyledShapeIter.Next())
   {
-    Handle(AIS_ColoredDrawer) aDrawer = CustomAspects (anIter.Key());
-    const XCAFPrs_Style& aStyle = anIter.Value();
+    TopoDS_Compound aComp;
+    if (aStyleGroups.Find (aStyledShapeIter.Value(), aComp))
+    {
+      aBuilder.Add (aComp, aStyledShapeIter.Key());
+      continue;
+    }
+
+    aBuilder.MakeCompound (aComp);
+    aBuilder.Add (aComp, aStyledShapeIter.Key());
+    aStyleGroups.Bind (aStyledShapeIter.Value(), aComp);
+  }
+  aSettings.Clear();
+
+  // assign custom aspects
+  for (NCollection_DataMap<XCAFPrs_Style, TopoDS_Compound, XCAFPrs_Style>::Iterator aStyleGroupIter (aStyleGroups);
+       aStyleGroupIter.More(); aStyleGroupIter.Next())
+  {
+    const TopoDS_Compound& aComp = aStyleGroupIter.Value();
+    TopoDS_Iterator aShapeIter (aComp);
+    TopoDS_Shape aShape = aShapeIter.Value();
+    aShapeIter.Next();
+    if (aShapeIter.More())
+    {
+      aShape = aComp;
+    }
+
+    Handle(AIS_ColoredDrawer) aDrawer = CustomAspects (aShape);
+    const XCAFPrs_Style& aStyle = aStyleGroupIter.Key();
     aDrawer->SetHidden (!aStyle.IsVisible());
 
     aColorCurv = aStyle.IsSetColorCurv() ? aStyle.GetColorCurv() : aDefStyle.GetColorCurv();
@@ -163,6 +193,7 @@ void XCAFPrs_AISObject::Compute (const Handle(PrsMgr_PresentationManager3d)& the
 
     SetColors (aDrawer, aColorCurv, aColorSurf);
   }
+  aStyleGroups.Clear();
 
   AIS_ColoredShape::Compute (thePresentationManager, thePrs, theMode);
 
