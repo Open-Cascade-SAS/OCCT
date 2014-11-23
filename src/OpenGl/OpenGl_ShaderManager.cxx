@@ -1114,7 +1114,7 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramFlat (Handle(OpenGl_Shad
 // function : stdComputeLighting
 // purpose  :
 // =======================================================================
-TCollection_AsciiString OpenGl_ShaderManager::stdComputeLighting()
+TCollection_AsciiString OpenGl_ShaderManager::stdComputeLighting (const Standard_Boolean theHasVertColor)
 {
   bool aLightsMap[Visual3d_TOLS_SPOT + 1] = { false, false, false, false };
   TCollection_AsciiString aLightsFunc, aLightsLoop;
@@ -1157,6 +1157,14 @@ TCollection_AsciiString OpenGl_ShaderManager::stdComputeLighting()
     }
   }
 
+  TCollection_AsciiString aGetMatAmbient = "theIsFront ? occFrontMaterial_Ambient()  : occBackMaterial_Ambient();";
+  TCollection_AsciiString aGetMatDiffuse = "theIsFront ? occFrontMaterial_Diffuse()  : occBackMaterial_Diffuse();";
+  if (theHasVertColor)
+  {
+    aGetMatAmbient = "getVertColor();";
+    aGetMatDiffuse = "getVertColor();";
+  }
+
   return TCollection_AsciiString()
     + THE_FUNC_lightDef
     + aLightsFunc
@@ -1171,9 +1179,9 @@ TCollection_AsciiString OpenGl_ShaderManager::stdComputeLighting()
       EOL"  Specular = vec3 (0.0);"
       EOL"  vec3 aPoint = thePoint.xyz / thePoint.w;"
     + aLightsLoop
-    + EOL"  vec4 aMaterialAmbient  = theIsFront ? occFrontMaterial_Ambient()  : occBackMaterial_Ambient();"
-      EOL"  vec4 aMaterialDiffuse  = theIsFront ? occFrontMaterial_Diffuse()  : occBackMaterial_Diffuse();"
-      EOL"  vec4 aMaterialSpecular = theIsFront ? occFrontMaterial_Specular() : occBackMaterial_Specular();"
+    + EOL"  vec4 aMaterialAmbient  = " + aGetMatAmbient
+    + EOL"  vec4 aMaterialDiffuse  = " + aGetMatDiffuse
+    + EOL"  vec4 aMaterialSpecular = theIsFront ? occFrontMaterial_Specular() : occBackMaterial_Specular();"
       EOL"  vec4 aMaterialEmission = theIsFront ? occFrontMaterial_Emission() : occBackMaterial_Emission();"
       EOL"  return vec4 (Ambient,  1.0) * aMaterialAmbient"
       EOL"       + vec4 (Diffuse,  1.0) * aMaterialDiffuse"
@@ -1190,12 +1198,16 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramGouraud (Handle(OpenGl_S
                                                                  const Standard_Integer        theBits)
 {
   Handle(Graphic3d_ShaderProgram) aProgramSrc = new Graphic3d_ShaderProgram();
-  TCollection_AsciiString aSrcVert, aSrcVertExtraOut, aSrcVertExtraMain, aSrcFrag, aSrcFragExtraOut, aSrcFragExtraMain;
+  TCollection_AsciiString aSrcVert, aSrcVertColor, aSrcVertExtraOut, aSrcVertExtraMain, aSrcFrag, aSrcFragExtraOut, aSrcFragExtraMain;
   if ((theBits & OpenGl_PO_Point) != 0)
   {
   #if defined(GL_ES_VERSION_2_0)
     aSrcVertExtraMain += EOL"  gl_PointSize = occPointSize;";
   #endif
+  }
+  if ((theBits & OpenGl_PO_VertColor) != 0)
+  {
+    aSrcVertColor = EOL"vec4 getVertColor(void) { return occVertColor; }";
   }
   if ((theBits & OpenGl_PO_ClipPlanes) != 0)
   {
@@ -1211,10 +1223,11 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramGouraud (Handle(OpenGl_S
     aSrcFragExtraMain += THE_FRAG_CLIP_PLANES;
   }
 
-  const TCollection_AsciiString aLights = stdComputeLighting();
+  const TCollection_AsciiString aLights = stdComputeLighting ((theBits & OpenGl_PO_VertColor) != 0);
   aSrcVert = TCollection_AsciiString()
     + THE_FUNC_transformNormal
     + EOL
+    + aSrcVertColor
     + aLights
     + EOL
       EOL"varying vec4 FrontColor;"
@@ -1262,12 +1275,19 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramPhong (Handle(OpenGl_Sha
                                                                const Standard_Integer        theBits)
 {
   Handle(Graphic3d_ShaderProgram) aProgramSrc = new Graphic3d_ShaderProgram();
-  TCollection_AsciiString aSrcVert, aSrcVertExtraOut, aSrcVertExtraMain, aSrcFrag, aSrcFragExtraMain;
+  TCollection_AsciiString aSrcVert, aSrcVertExtraOut, aSrcVertExtraMain, aSrcFrag, aSrcFragGetColor, aSrcFragExtraMain;
   if ((theBits & OpenGl_PO_Point) != 0)
   {
   #if defined(GL_ES_VERSION_2_0)
     aSrcVertExtraMain += EOL"  gl_PointSize = occPointSize;";
   #endif
+  }
+  if ((theBits & OpenGl_PO_VertColor) != 0)
+  {
+    aSrcVertExtraOut  += EOL"varying vec4 VertColor;";
+    aSrcVertExtraMain += EOL"  VertColor = occVertColor;";
+    aSrcFragGetColor   = EOL"varying vec4 VertColor;"
+                         EOL"vec4 getVertColor(void) { return VertColor; }";
   }
   if ((theBits & OpenGl_PO_ClipPlanes) != 0)
   {
@@ -1293,13 +1313,14 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramPhong (Handle(OpenGl_Sha
     + EOL"  gl_Position = occProjectionMatrix * occWorldViewMatrix * occModelWorldMatrix * occVertex;"
       EOL"}";
 
-  const TCollection_AsciiString aLights = stdComputeLighting();
+  const TCollection_AsciiString aLights = stdComputeLighting ((theBits & OpenGl_PO_VertColor) != 0);
   aSrcFrag = TCollection_AsciiString()
     + EOL"varying vec4 PositionWorld;"
       EOL"varying vec4 Position;"
       EOL"varying vec3 Normal;"
       EOL"varying vec3 View;"
     + EOL
+    + aSrcFragGetColor
     + aLights
     + EOL
       EOL"void main()"

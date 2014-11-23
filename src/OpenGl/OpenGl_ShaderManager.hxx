@@ -314,7 +314,8 @@ protected:
                                                            const Standard_Integer        theBits);
 
   //! Define computeLighting GLSL function depending on current lights configuration
-  Standard_EXPORT TCollection_AsciiString stdComputeLighting();
+  //! @param theHasVertColor flag to use getVertColor() instead of Ambient and Diffuse components of active material
+  Standard_EXPORT TCollection_AsciiString stdComputeLighting (const Standard_Boolean theHasVertColor);
 
   //! Bind specified program to current context and apply state.
   Standard_EXPORT Standard_Boolean bindProgramWithState (const Handle(OpenGl_ShaderProgram)& theProgram,
