@@ -36,6 +36,13 @@ namespace
 
 #define EOL "\n"
 
+//! Definition of VertColor varying.
+const char THE_VARY_VertColor[] =
+  EOL"varying vec4 VertColor;";
+
+const char THE_VARY_TexCoord[] =
+  EOL"varying vec2 TexCoord;";
+
 //! Auxiliary function to transform normal
 const char THE_FUNC_transformNormal[] =
   EOL"vec3 transformNormal (in vec3 theNormal)"
@@ -1060,11 +1067,24 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramFlat (Handle(OpenGl_Shad
         EOL"  gl_FragColor = aColor;";
     }
   }
+  else
+  {
+    if ((theBits & OpenGl_PO_TextureRGB) != 0)
+    {
+      aSrcVertExtraOut  += THE_VARY_TexCoord;
+      aSrcFragExtraOut  += THE_VARY_TexCoord;
+      aSrcVertExtraMain +=
+        EOL"  TexCoord = occTexCoord.st;";
+
+      aSrcFragGetColor =
+        EOL"vec4 getColor(void) { return texture2D(occActiveSampler, TexCoord.st); }";
+    }
+  }
   if ((theBits & OpenGl_PO_VertColor) != 0)
   {
-    aSrcVertExtraOut  += EOL"varying vec4 VertColor;";
+    aSrcVertExtraOut  += THE_VARY_VertColor;
     aSrcVertExtraMain += EOL"  VertColor = occVertColor;";
-    aSrcFragExtraOut  += EOL"varying vec4 VertColor;";
+    aSrcFragExtraOut  += THE_VARY_VertColor;
     aSrcFragGetColor  =  EOL"vec4 getColor(void) { return VertColor; }";
   }
   if ((theBits & OpenGl_PO_ClipPlanes) != 0)
@@ -1199,6 +1219,7 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramGouraud (Handle(OpenGl_S
 {
   Handle(Graphic3d_ShaderProgram) aProgramSrc = new Graphic3d_ShaderProgram();
   TCollection_AsciiString aSrcVert, aSrcVertColor, aSrcVertExtraOut, aSrcVertExtraMain, aSrcFrag, aSrcFragExtraOut, aSrcFragExtraMain;
+  TCollection_AsciiString aSrcFragGetColor = EOL"vec4 getColor(void) { return gl_FrontFacing ? FrontColor : BackColor; }";
   if ((theBits & OpenGl_PO_Point) != 0)
   {
   #if defined(GL_ES_VERSION_2_0)
@@ -1208,6 +1229,35 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramGouraud (Handle(OpenGl_S
   if ((theBits & OpenGl_PO_VertColor) != 0)
   {
     aSrcVertColor = EOL"vec4 getVertColor(void) { return occVertColor; }";
+  }
+  if ((theBits & OpenGl_PO_Point) != 0)
+  {
+    if ((theBits & OpenGl_PO_TextureRGB) != 0)
+    {
+      aSrcFragGetColor =
+        EOL"vec4 getColor(void)"
+        EOL"{"
+        EOL"  vec4 aColor = gl_FrontFacing ? FrontColor : BackColor;"
+        EOL"  return texture2D(occActiveSampler, gl_PointCoord) * aColor;"
+        EOL"}";
+    }
+  }
+  else
+  {
+    if ((theBits & OpenGl_PO_TextureRGB) != 0)
+    {
+      aSrcVertExtraOut  += THE_VARY_TexCoord;
+      aSrcFragExtraOut  += THE_VARY_TexCoord;
+      aSrcVertExtraMain +=
+        EOL"  TexCoord = occTexCoord.st;";
+
+      aSrcFragGetColor =
+        EOL"vec4 getColor(void)"
+        EOL"{"
+        EOL"  vec4 aColor = gl_FrontFacing ? FrontColor : BackColor;"
+        EOL"  return texture2D(occActiveSampler, TexCoord.st) * aColor;"
+        EOL"}";
+    }
   }
   if ((theBits & OpenGl_PO_ClipPlanes) != 0)
   {
@@ -1250,10 +1300,11 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramGouraud (Handle(OpenGl_S
     + EOL"varying vec4 FrontColor;"
       EOL"varying vec4 BackColor;"
     + aSrcFragExtraOut
+    + aSrcFragGetColor
     + EOL"void main()"
       EOL"{"
     + aSrcFragExtraMain
-    + EOL"  gl_FragColor = gl_FrontFacing ? FrontColor : BackColor;"
+    + EOL"  gl_FragColor = getColor();"
       EOL"}";
 
   aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (Graphic3d_TOS_VERTEX,   aSrcVert));
@@ -1274,8 +1325,11 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramGouraud (Handle(OpenGl_S
 Standard_Boolean OpenGl_ShaderManager::prepareStdProgramPhong (Handle(OpenGl_ShaderProgram)& theProgram,
                                                                const Standard_Integer        theBits)
 {
+  #define thePhongCompLight "computeLighting (normalize (Normal), normalize (View), Position, gl_FrontFacing)"
+
   Handle(Graphic3d_ShaderProgram) aProgramSrc = new Graphic3d_ShaderProgram();
-  TCollection_AsciiString aSrcVert, aSrcVertExtraOut, aSrcVertExtraMain, aSrcFrag, aSrcFragGetColor, aSrcFragExtraMain;
+  TCollection_AsciiString aSrcVert, aSrcVertExtraOut, aSrcVertExtraMain, aSrcFrag, aSrcFragExtraOut, aSrcFragGetVertColor, aSrcFragExtraMain;
+  TCollection_AsciiString aSrcFragGetColor = EOL"vec4 getColor(void) { return " thePhongCompLight "; }";
   if ((theBits & OpenGl_PO_Point) != 0)
   {
   #if defined(GL_ES_VERSION_2_0)
@@ -1284,11 +1338,42 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramPhong (Handle(OpenGl_Sha
   }
   if ((theBits & OpenGl_PO_VertColor) != 0)
   {
-    aSrcVertExtraOut  += EOL"varying vec4 VertColor;";
+    aSrcVertExtraOut  += THE_VARY_VertColor;
     aSrcVertExtraMain += EOL"  VertColor = occVertColor;";
     aSrcFragGetColor   = EOL"varying vec4 VertColor;"
                          EOL"vec4 getVertColor(void) { return VertColor; }";
   }
+
+  if ((theBits & OpenGl_PO_Point) != 0)
+  {
+    if ((theBits & OpenGl_PO_TextureRGB) != 0)
+    {
+      aSrcFragGetColor =
+        EOL"vec4 getColor(void)"
+        EOL"{"
+        EOL"  vec4 aColor = " thePhongCompLight ";"
+        EOL"  return texture2D(occActiveSampler, gl_PointCoord) * aColor;"
+        EOL"}";
+    }
+  }
+  else
+  {
+    if ((theBits & OpenGl_PO_TextureRGB) != 0)
+    {
+      aSrcVertExtraOut  += THE_VARY_TexCoord;
+      aSrcFragExtraOut  += THE_VARY_TexCoord;
+      aSrcVertExtraMain +=
+        EOL"  TexCoord = occTexCoord.st;";
+
+      aSrcFragGetColor =
+        EOL"vec4 getColor(void)"
+        EOL"{"
+        EOL"  vec4 aColor = " thePhongCompLight ";"
+        EOL"  return texture2D(occActiveSampler, TexCoord.st) * aColor;"
+        EOL"}";
+    }
+  }
+
   if ((theBits & OpenGl_PO_ClipPlanes) != 0)
   {
     aSrcFragExtraMain += THE_FRAG_CLIP_PLANES;
@@ -1320,13 +1405,15 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramPhong (Handle(OpenGl_Sha
       EOL"varying vec3 Normal;"
       EOL"varying vec3 View;"
     + EOL
-    + aSrcFragGetColor
+    + aSrcFragExtraOut
+    + aSrcFragGetVertColor
     + aLights
+    + aSrcFragGetColor
     + EOL
       EOL"void main()"
       EOL"{"
     + aSrcFragExtraMain
-    + EOL"  gl_FragColor = computeLighting (normalize (Normal), normalize (View), Position, gl_FrontFacing);"
+    + EOL"  gl_FragColor = getColor();"
       EOL"}";
 
   aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (Graphic3d_TOS_VERTEX,   aSrcVert));

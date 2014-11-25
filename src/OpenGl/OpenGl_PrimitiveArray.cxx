@@ -24,6 +24,7 @@
 #include <OpenGl_Structure.hxx>
 #include <OpenGl_VertexBufferCompat.hxx>
 #include <OpenGl_Workspace.hxx>
+#include <Graphic3d_TextureParams.hxx>
 
 namespace
 {
@@ -796,7 +797,10 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
         }
         default:
         {
-          aCtx->ShaderManager()->BindProgram (anAspectFace, theWorkspace->ActiveTexture(), isLightOn, hasVertColor, anAspectFace->ShaderProgramRes (aCtx));
+          const Standard_Boolean isLightOnFace = isLightOn
+                                              && (theWorkspace->ActiveTexture().IsNull()
+                                               || theWorkspace->ActiveTexture()->GetParams()->IsModulate());
+          aCtx->ShaderManager()->BindProgram (anAspectFace, theWorkspace->ActiveTexture(), isLightOnFace, hasVertColor, anAspectFace->ShaderProgramRes (aCtx));
           break;
         }
       }
