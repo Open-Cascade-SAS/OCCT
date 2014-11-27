@@ -445,65 +445,67 @@ void AIS_LocalContext::Deactivate(const Handle(AIS_InteractiveObject)& aSelectab
 
 Standard_Boolean AIS_LocalContext::Remove(const Handle(AIS_InteractiveObject)& aSelectable)
 {
-  if(!myActiveObjects.IsBound(aSelectable)) return Standard_False;
+  if(!myActiveObjects.IsBound (aSelectable))
+  {
+    return Standard_False;
+  }
 
-  if(IsSelected(aSelectable))
-    AddOrRemoveSelected(aSelectable,Standard_False);
-    
-  const Handle(AIS_LocalStatus)& Att = myActiveObjects(aSelectable);
-  
+  if (IsSelected (aSelectable))
+  {
+    AddOrRemoveSelected (aSelectable, Standard_False);
+  }
+
+  const Handle(AIS_LocalStatus)& Att = myActiveObjects (aSelectable);
+
   TColStd_ListIteratorOfListOfInteger It;
-  // it is checked which were the temporary attributes 
-  // and they are set to 0
 
-  // desactivate standard modes
-  if(Att->Decomposed()){
-    for(It.Initialize(myListOfStandardMode);It.More();It.Next()){
-      mySM->Deactivate(aSelectable,It.Value(),myMainVS);
+  // Deactivate standard modes
+  if (Att->Decomposed())
+  {
+    for (It.Initialize (myListOfStandardMode); It.More(); It.Next())
+    {
+      mySM->Deactivate (aSelectable, It.Value(), myMainVS);
     }
   }
-  
-  // if object or temporary presentations...
-  if(Att->IsTemporary())
-    {
-      if(Att->IsSubIntensityOn())
-	myMainPM->Unhighlight(aSelectable,Att->HilightMode());
-      
-      // remove if bug on clear correct...
-      myMainPM->Erase(aSelectable,Att->DisplayMode());
-      myMainPM->Clear(aSelectable,Att->DisplayMode());
-      if(myMainPM->IsDisplayed(aSelectable,Att->HilightMode()))
-	myMainPM->Erase(aSelectable,Att->HilightMode());
-      //	myMainPM->Clear(aSelectable,Att->HilightMode());
-    }
-  // if below intensity
-  else
-    {
-      if(Att->IsSubIntensityOn())
-	myCTX->SubIntensityOff(aSelectable);
-    }
-  // desactivate stored proper modes
-  for(It.Initialize(Att->SelectionModes());It.More();It.Next()){
-    mySM->Deactivate(aSelectable,It.Value(),myMainVS);
-  }
-// pop : si je laisses cela plantes dans les elements de construction  
-//       alors a toi de jouer ROB
-//  RemoveSelected(aSelectable);
 
-  if(IsSelected(aSelectable))
-    AddOrRemoveSelected(aSelectable);
-  myActiveObjects.UnBind(aSelectable);
+  // If object or temporary presentations
+  if (Att->IsTemporary())
+  {
+    if (Att->IsSubIntensityOn())
+    {
+      myMainPM->Unhighlight (aSelectable, Att->HilightMode());
+    }
+
+    myMainPM->Erase (aSelectable, Att->DisplayMode());
+    myMainPM->Clear (aSelectable, Att->DisplayMode());
+    if (myMainPM->IsDisplayed (aSelectable, Att->HilightMode()))
+    {
+      myMainPM->Erase (aSelectable, Att->HilightMode());
+    }
+  }
+  // If subintensity used
+  else if (Att->IsSubIntensityOn())
+  {
+    myCTX->SubIntensityOff (aSelectable);
+  }
+
+  // Deactivate stored selection modes
+  for (It.Initialize (Att->SelectionModes()); It.More(); It.Next())
+  {
+    mySM->Deactivate (aSelectable, It.Value(), myMainVS);
+  }
 
   // Remove the interactive object from selection manager
   if (mySM->Contains (aSelectable))
   {
     mySM->Remove (aSelectable);
   }
-
   UpdateSort();
-
   ClearOutdatedSelection (aSelectable, Standard_True);
 
+  // This should be done at the very end because most methods use
+  // myActiveObjects even during clean-up
+  myActiveObjects.UnBind (aSelectable);
   return Standard_True;
 }
 
