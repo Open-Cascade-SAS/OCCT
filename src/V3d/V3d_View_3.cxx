@@ -176,7 +176,7 @@ void V3d_View::Place (const Standard_Integer theXp,
 
   Standard_Integer aWinCXp = aWinWidth  / 2;
   Standard_Integer aWinCYp = aWinHeight / 2;
-  Pan (aWinCXp - theXp, aWinCYp - theYp, theZoomFactor / Scale());
+  Pan (aWinCXp - theXp, -(aWinCYp - theYp), theZoomFactor / Scale());
 }
 
 void V3d_View::Translate(const Standard_Real theLength, const Standard_Boolean theStart) {

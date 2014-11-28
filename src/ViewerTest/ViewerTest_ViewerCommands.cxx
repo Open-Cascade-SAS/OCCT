@@ -3011,6 +3011,29 @@ static int VPan( Draw_Interpretor& di, Standard_Integer argc, const char** argv 
   }
 }
 
+//==============================================================================
+//function : VPlace
+//purpose  : Place the point (in pixels) at the center of the window
+//==============================================================================
+static int VPlace (Draw_Interpretor& /*theDi*/, Standard_Integer theArgNb, const char** theArgs)
+{
+  Handle(V3d_View) aView = ViewerTest::CurrentView();
+  if (aView.IsNull())
+  {
+    std::cerr << theArgs[0] << "Error: no active view." << std::endl;
+    return 1;
+  }
+
+  if (theArgNb != 3)
+  {
+    std::cerr << theArgs[0] << "Error: invalid number of arguments." << std::endl;
+    return 1;
+  }
+
+  aView->Place (Draw::Atoi (theArgs[1]), Draw::Atoi (theArgs[2]), aView->Scale());
+
+  return 0;
+}
 
 //==============================================================================
 //function : VExport
@@ -7506,8 +7529,10 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "vhighlightselected [0|1] or vhighlightselected [on|off]: enables/disables highlighting of selected objects.\n"
     "Without arguments it shows if highlighting of selected objects is enabled now.",
     __FILE__,VHighlightSelected,group);
-
-
+  theCommands.Add ("vplace",
+            "vplace dx dy"
+    "\n\t\t: Places the point (in pixels) at the center of the window",
+    __FILE__, VPlace, group);
   theCommands.Add("vxrotate",
     "vxrotate",
     __FILE__,VXRotate,group);
