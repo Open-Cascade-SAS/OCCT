@@ -1,5 +1,6 @@
 BOPCol_Array1.hxx
 BOPCol_DataMapOfShapeInteger.hxx
+BOPCol_DataMapOfShapeReal.hxx
 BOPCol_MapOfInteger.hxx
 BOPCol_ListOfInteger.hxx
 BOPCol_PInteger.hxx

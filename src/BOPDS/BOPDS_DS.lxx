@@ -105,7 +105,7 @@ inline Standard_Integer BOPDS_DS::NbInterfTypes()
 //purpose  : 
 //=======================================================================
 inline void BOPDS_DS::AddInterf(const Standard_Integer theI1,
-				const Standard_Integer theI2)
+                                const Standard_Integer theI2)
 {
   BOPDS_PassKey aPK;
   //
@@ -132,4 +132,22 @@ inline Standard_Boolean BOPDS_DS::HasInterf
 inline const BOPDS_MapOfPassKey& BOPDS_DS::Interferences()const
 {
   return myInterfTB;
+}
+//=======================================================================
+//function : SetFuzzyValue
+//purpose  : 
+//=======================================================================
+inline void BOPDS_DS::SetFuzzyValue(const Standard_Real theFuzz)
+{
+  if (theFuzz > 0.) {
+    myFuzzyValue = theFuzz;
+  }
+}
+//=======================================================================
+//function : FuzzyValue
+//purpose  : 
+//=======================================================================
+inline Standard_Real BOPDS_DS::FuzzyValue() const
+{
+  return myFuzzyValue;
 }

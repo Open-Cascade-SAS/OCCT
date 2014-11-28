@@ -13,7 +13,8 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-class Check from BRepAlgoAPI
+class Check from BRepAlgoAPI 
+  inherits Algo from BRepAlgoAPI
     ---Purpose:  
     -- The class Check provides a diagnostic tool for checking  
     -- single shape or couple of shapes. 
@@ -115,11 +116,20 @@ is
       returns ListOfCheckResult from BOPAlgo;  
     ---C++: return const&
     ---Purpose: Returns faulty shapes.
+
+    SetFuzzyValue(me:out; 
+        theFuzz : Real from Standard);
+    ---Purpose: Sets the additional tolerance
+
+    FuzzyValue(me)
+      returns Real from Standard;
+    ---Purpose: Returns the additional tolerance 
     
 fields  
-  myS1, myS2 : Shape from TopoDS is protected;  
-  myAnalyzer : PArgumentAnalyzer from BOPAlgo is protected;
-  myResult   : ListOfCheckResult from BOPAlgo is protected;
+  myS1, myS2   : Shape from TopoDS is protected;  
+  myAnalyzer   : PArgumentAnalyzer from BOPAlgo is protected;
+  myResult     : ListOfCheckResult from BOPAlgo is protected;
+  myFuzzyValue : Real from Standard is protected;
    
 end BooleanOperation;
 

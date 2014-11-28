@@ -36,18 +36,46 @@
 #include <BOPAlgo_BOP.hxx>
 #include <BOPDS_DS.hxx>
 
-static TopoDS_Shape MakeShape(const Handle(Geom_Surface)& S)
+//
+static 
+  TopoDS_Shape MakeShape(const Handle(Geom_Surface)& );
+
+static 
+  Standard_Boolean HasAncestorFaces(const BOPAlgo_PPaveFiller&, 
+                                    const TopoDS_Shape&,
+                                    TopoDS_Shape&,
+                                    TopoDS_Shape&);
+
+//=======================================================================
+//function : BRepAlgoAPI_Section
+//purpose  : 
+//=======================================================================
+BRepAlgoAPI_Section::BRepAlgoAPI_Section()
+:
+  BRepAlgoAPI_BooleanOperation()
 {
-  GeomAbs_Shape c = S->Continuity();
-  if (c >= GeomAbs_C2) return BRepBuilderAPI_MakeFace(S, Precision::Confusion());
-  else return BRepBuilderAPI_MakeShell(S);
+  myOperation=BOPAlgo_SECTION;
+  InitParameters(); 
 }
-
-static Standard_Boolean HasAncestorFaces(const BOPAlgo_PPaveFiller& theDSFiller, 
-                                         const TopoDS_Shape&      E,
-                                         TopoDS_Shape&            F1,
-                                         TopoDS_Shape&            F2);
-
+//=======================================================================
+//function : ~BRepAlgoAPI_Section
+//purpose  : 
+//=======================================================================
+BRepAlgoAPI_Section::~BRepAlgoAPI_Section()
+{
+}
+//=======================================================================
+//function : InitParameters
+//purpose  : 
+//=======================================================================
+void BRepAlgoAPI_Section::InitParameters() 
+{
+  myparameterschanged = Standard_False;
+  myshapeisnull = Standard_False;
+  myApprox = Standard_False;
+  myComputePCurve1 = Standard_False;
+  myComputePCurve2 = Standard_False;
+}
 //=======================================================================
 //function : Constructor
 //purpose  : 
@@ -55,31 +83,35 @@ static Standard_Boolean HasAncestorFaces(const BOPAlgo_PPaveFiller& theDSFiller,
 BRepAlgoAPI_Section::BRepAlgoAPI_Section(const TopoDS_Shape& Sh1,
                                          const TopoDS_Shape& Sh2,
                                          const Standard_Boolean PerformNow)
-: BRepAlgoAPI_BooleanOperation(Sh1, Sh2, BOPAlgo_SECTION)
+:
+  BRepAlgoAPI_BooleanOperation(Sh1, Sh2, BOPAlgo_SECTION)
 {
   InitParameters();
   myparameterschanged = Standard_True;
 
   if(myS1.IsNull() || myS2.IsNull()) {
-    //     StdFail_NotDone::Raise("BRepAlgoAPI_Section : Shape NULL");
     myshapeisnull = Standard_True;
   }
   if (PerformNow) {
     Build();
   }
 }
-
-BRepAlgoAPI_Section::BRepAlgoAPI_Section(const TopoDS_Shape&      aS1, 
-                                         const TopoDS_Shape&      aS2,
-                                         const BOPAlgo_PaveFiller& aDSF,
-                                         const Standard_Boolean   PerformNow)
-: BRepAlgoAPI_BooleanOperation(aS1, aS2, aDSF, BOPAlgo_SECTION)
+//=======================================================================
+//function : BRepAlgoAPI_Section
+//purpose  : 
+//=======================================================================
+BRepAlgoAPI_Section::BRepAlgoAPI_Section
+  (const TopoDS_Shape&      aS1, 
+   const TopoDS_Shape&      aS2,
+   const BOPAlgo_PaveFiller& aDSF,
+   const Standard_Boolean   PerformNow)
+: 
+  BRepAlgoAPI_BooleanOperation(aS1, aS2, aDSF, BOPAlgo_SECTION)
 {
   InitParameters();
   myparameterschanged = Standard_True;
 
   if(myS1.IsNull() || myS2.IsNull()) {
-    //     StdFail_NotDone::Raise("BRepAlgoAPI_Section : Shape NULL");
     myshapeisnull = Standard_True;
   }
 
@@ -87,85 +119,87 @@ BRepAlgoAPI_Section::BRepAlgoAPI_Section(const TopoDS_Shape&      aS1,
     Build();
   }
 }
-
-
 //=======================================================================
 //function : Constructor
 //purpose  : 
 //=======================================================================
-BRepAlgoAPI_Section::BRepAlgoAPI_Section(const TopoDS_Shape&    Sh,
-                                         const gp_Pln&          Pl,
-                                         const Standard_Boolean PerformNow)
-: BRepAlgoAPI_BooleanOperation(Sh, MakeShape(new Geom_Plane(Pl)), BOPAlgo_SECTION)
+BRepAlgoAPI_Section::BRepAlgoAPI_Section
+  (const TopoDS_Shape&    Sh,
+   const gp_Pln&          Pl,
+   const Standard_Boolean PerformNow)
+: 
+  BRepAlgoAPI_BooleanOperation(Sh, MakeShape(new Geom_Plane(Pl)), 
+                               BOPAlgo_SECTION)
 {
   InitParameters();
   myparameterschanged = Standard_True;
 
   if(Sh.IsNull() || myS2.IsNull()) {
-    //     StdFail_NotDone::Raise("BRepAlgoAPI_Section : Shape NULL");
     myshapeisnull = Standard_True;
   }
   if (PerformNow) {
     Build();
   }
 }
-
 //=======================================================================
 //function : Constructor
 //purpose  : 
 //=======================================================================
-BRepAlgoAPI_Section::BRepAlgoAPI_Section(const TopoDS_Shape&         Sh,
-                                               const Handle(Geom_Surface)& Sf,
-                                               const Standard_Boolean      PerformNow)
-: BRepAlgoAPI_BooleanOperation(Sh, MakeShape(Sf), BOPAlgo_SECTION)
+BRepAlgoAPI_Section::BRepAlgoAPI_Section
+  (const TopoDS_Shape&         Sh,
+   const Handle(Geom_Surface)& Sf,
+   const Standard_Boolean      PerformNow)
+: 
+  BRepAlgoAPI_BooleanOperation(Sh, MakeShape(Sf), BOPAlgo_SECTION)
 {
   InitParameters();
   myparameterschanged = Standard_True;
 
   if(Sh.IsNull() || myS2.IsNull()) {
-//     StdFail_NotDone::Raise("BRepAlgoAPI_Section : Shape NULL");
     myshapeisnull = Standard_True;
   }
   if (PerformNow) {
     Build();
   }
 }
-
 //=======================================================================
 //function : Constructor
 //purpose  : 
 //=======================================================================
-BRepAlgoAPI_Section::BRepAlgoAPI_Section(const Handle(Geom_Surface)& Sf,
-                                               const TopoDS_Shape&         Sh,
-                                               const Standard_Boolean      PerformNow)
-: BRepAlgoAPI_BooleanOperation(MakeShape(Sf), Sh, BOPAlgo_SECTION)
+BRepAlgoAPI_Section::BRepAlgoAPI_Section
+  (const Handle(Geom_Surface)& Sf,
+   const TopoDS_Shape&         Sh,
+   const Standard_Boolean      PerformNow)
+: 
+  BRepAlgoAPI_BooleanOperation(MakeShape(Sf), Sh, BOPAlgo_SECTION)
 {
   InitParameters();
   myparameterschanged = Standard_True;
 
   if(myS1.IsNull() || Sh.IsNull()) {
-//     StdFail_NotDone::Raise("BRepAlgoAPI_Section : Shape NULL");
     myshapeisnull = Standard_True;
   }
   if (PerformNow) {
     Build();
   }
 }
-
 //=======================================================================
 //function : Constructor
 //purpose  : 
 //=======================================================================
-BRepAlgoAPI_Section::BRepAlgoAPI_Section(const Handle(Geom_Surface)& Sf1,
-                                               const Handle(Geom_Surface)& Sf2,
-                                               const Standard_Boolean      PerformNow)
-: BRepAlgoAPI_BooleanOperation(MakeShape(Sf1), MakeShape(Sf2), BOPAlgo_SECTION)
+BRepAlgoAPI_Section::BRepAlgoAPI_Section
+  (const Handle(Geom_Surface)& Sf1,
+   const Handle(Geom_Surface)& Sf2,
+   const Standard_Boolean PerformNow)
+: 
+  BRepAlgoAPI_BooleanOperation(MakeShape(Sf1), 
+                               MakeShape(Sf2), 
+                               BOPAlgo_SECTION)
 {
   InitParameters();
   myparameterschanged = Standard_True;
 
   if(myS1.IsNull() || myS2.IsNull()) {
-//     StdFail_NotDone::Raise("BRepAlgoAPI_Section : Shape NULL");
     myshapeisnull = Standard_True;
   }
 
@@ -173,7 +207,6 @@ BRepAlgoAPI_Section::BRepAlgoAPI_Section(const Handle(Geom_Surface)& Sf1,
     Build();
   }
 }
-
 //=======================================================================
 //function : Init1
 //purpose  : 
@@ -201,7 +234,6 @@ void BRepAlgoAPI_Section::Init1(const TopoDS_Shape& S1)
   if(myparameterschanged)
     NotDone();
 }
-
 //=======================================================================
 //function : Init1
 //purpose  : 
@@ -210,7 +242,6 @@ void BRepAlgoAPI_Section::Init1(const gp_Pln& Pl)
 {
   Init1(MakeShape(new Geom_Plane(Pl)));
 }
-
 //=======================================================================
 //function : Init1
 //purpose  : 
@@ -219,7 +250,6 @@ void BRepAlgoAPI_Section::Init1(const Handle(Geom_Surface)& Sf)
 {
   Init1(MakeShape(Sf));
 }
-
 //=======================================================================
 //function : Init2
 //purpose  : 
@@ -248,7 +278,6 @@ void BRepAlgoAPI_Section::Init2(const TopoDS_Shape& S2)
     NotDone();
   }
 }
-
 //=======================================================================
 //function : Init2
 //purpose  : 
@@ -257,7 +286,6 @@ void BRepAlgoAPI_Section::Init2(const gp_Pln& Pl)
 {
   Init2(MakeShape(new Geom_Plane(Pl)));
 }
-
 //=======================================================================
 //function : Init2
 //purpose  : 
@@ -266,7 +294,6 @@ void BRepAlgoAPI_Section::Init2(const Handle(Geom_Surface)& Sf)
 {
   Init2(MakeShape(Sf));
 }
-
 //=======================================================================
 //function : Approximation
 //purpose  : 
@@ -278,7 +305,6 @@ void BRepAlgoAPI_Section::Approximation(const Standard_Boolean B)
     myparameterschanged = Standard_True;
   }
 }
-
 //=======================================================================
 //function : ComputePCurveOn1
 //purpose  : 
@@ -290,7 +316,6 @@ void BRepAlgoAPI_Section::ComputePCurveOn1(const Standard_Boolean B)
     myparameterschanged = Standard_True;
   }
 }
-
 //=======================================================================
 //function : ComputePCurveOn2
 //purpose  : 
@@ -302,7 +327,6 @@ void BRepAlgoAPI_Section::ComputePCurveOn2(const Standard_Boolean B)
     myparameterschanged = Standard_True;
   }
 }
-
 //=======================================================================
 //function : Build
 //purpose  : 
@@ -325,7 +349,9 @@ void BRepAlgoAPI_Section::Build()
     }
     //
     if (bIsNewFiller) {
-      BOPAlgo_SectionAttribute theSecAttr(myApprox, myComputePCurve1, myComputePCurve2);
+      BOPAlgo_SectionAttribute theSecAttr(myApprox, 
+                                          myComputePCurve1, 
+                                          myComputePCurve2);
       myDSFiller->SetSectionAttribute(theSecAttr);
       myDSFiller->Perform();
     }
@@ -335,12 +361,13 @@ void BRepAlgoAPI_Section::Build()
     myparameterschanged = Standard_False;
   }
 }
-
 //=======================================================================
 //function : HasAncestorFaceOn1
 //purpose  : 
 //=======================================================================
-Standard_Boolean BRepAlgoAPI_Section::HasAncestorFaceOn1(const TopoDS_Shape& E, TopoDS_Shape& F) const
+Standard_Boolean BRepAlgoAPI_Section::HasAncestorFaceOn1
+  (const TopoDS_Shape& E, 
+   TopoDS_Shape& F) const
 {
   Standard_Boolean aResult = Standard_False;
   if(E.IsNull()) {
@@ -359,12 +386,13 @@ Standard_Boolean BRepAlgoAPI_Section::HasAncestorFaceOn1(const TopoDS_Shape& E, 
   F = F1;
   return aResult;
 }
-
 //=======================================================================
 //function : HasAncestorFaceOn2
 //purpose  : 
 //=======================================================================
-Standard_Boolean BRepAlgoAPI_Section::HasAncestorFaceOn2(const TopoDS_Shape& E,TopoDS_Shape& F) const
+Standard_Boolean BRepAlgoAPI_Section::HasAncestorFaceOn2
+  (const TopoDS_Shape& E,
+   TopoDS_Shape& F) const
 {
   Standard_Boolean aResult = Standard_False;
   if(E.IsNull()) {
@@ -385,27 +413,15 @@ Standard_Boolean BRepAlgoAPI_Section::HasAncestorFaceOn2(const TopoDS_Shape& E,T
 }
 
 //=======================================================================
-//function : InitParameters
+//function : HasAncestorFaces
 //purpose  : 
 //=======================================================================
-void BRepAlgoAPI_Section::InitParameters() 
+Standard_Boolean HasAncestorFaces(const BOPAlgo_PPaveFiller& theDSFiller, 
+                                  const TopoDS_Shape& E,
+                                  TopoDS_Shape& F1,
+                                  TopoDS_Shape&F2) 
 {
-  myparameterschanged = Standard_False;
-  myshapeisnull = Standard_False;
-  myApprox = Standard_False;
-  myComputePCurve1 = Standard_False;
-  myComputePCurve2 = Standard_False;
-}
-
-// ------------------------------------------------------------------------
-// static function : HasAncestorFaces
-// purpose  : 
-// ------------------------------------------------------------------------
-static Standard_Boolean HasAncestorFaces(const BOPAlgo_PPaveFiller& theDSFiller, 
-                                         const TopoDS_Shape&      E,
-                                         TopoDS_Shape&            F1,
-                                         TopoDS_Shape&            F2) {
-
+  
   Standard_Integer aNb, i, j, nE, nF1, nF2, aNbCurves;
   //
   const BOPDS_PDS& pDS = theDSFiller->PDS();
@@ -441,4 +457,16 @@ static Standard_Boolean HasAncestorFaces(const BOPAlgo_PPaveFiller& theDSFiller,
     }
   }
   return Standard_False;
+}
+//=======================================================================
+//function : MakeShape
+//purpose  : 
+//=======================================================================
+TopoDS_Shape MakeShape(const Handle(Geom_Surface)& S)
+{
+  GeomAbs_Shape c = S->Continuity();
+  if (c >= GeomAbs_C2) {
+    return BRepBuilderAPI_MakeFace(S, Precision::Confusion());
+  }
+  return BRepBuilderAPI_MakeShell(S);
 }

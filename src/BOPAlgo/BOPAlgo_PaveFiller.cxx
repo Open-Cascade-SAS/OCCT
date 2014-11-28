@@ -33,7 +33,8 @@
 //=======================================================================
 BOPAlgo_PaveFiller::BOPAlgo_PaveFiller()
 :
-  BOPAlgo_Algo()
+  BOPAlgo_Algo(),
+  myFuzzyValue(0.)
 {
   myDS=NULL;
   myIterator=NULL;
@@ -45,7 +46,8 @@ BOPAlgo_PaveFiller::BOPAlgo_PaveFiller()
 BOPAlgo_PaveFiller::BOPAlgo_PaveFiller
   (const Handle(NCollection_BaseAllocator)& theAllocator)
 :
-  BOPAlgo_Algo(theAllocator)
+  BOPAlgo_Algo(theAllocator),
+  myFuzzyValue(0.)
 {
   myDS=NULL;
   myIterator=NULL;
@@ -123,6 +125,24 @@ const BOPCol_ListOfShape& BOPAlgo_PaveFiller::Arguments()const
   return myArguments;
 }
 //=======================================================================
+//function : SetFuzzyValue
+//purpose  : 
+//=======================================================================
+void BOPAlgo_PaveFiller::SetFuzzyValue(const Standard_Real theFuzz)
+{
+  if (theFuzz > 0.) {
+    myFuzzyValue = theFuzz;
+  }
+}
+//=======================================================================
+//function : FuzzyValue
+//purpose  : 
+//=======================================================================
+Standard_Real BOPAlgo_PaveFiller::FuzzyValue() const
+{
+  return myFuzzyValue;
+}
+//=======================================================================
 // function: Init
 // purpose: 
 //=======================================================================
@@ -141,6 +161,7 @@ void BOPAlgo_PaveFiller::Init()
   // 1.myDS 
   myDS=new BOPDS_DS(myAllocator);
   myDS->SetArguments(myArguments);
+  myDS->SetFuzzyValue(myFuzzyValue);
   myDS->Init();
   //
   // 2.myIterator 
@@ -170,6 +191,8 @@ void BOPAlgo_PaveFiller::Perform()
   catch (Standard_Failure) {
     myErrorStatus=11;
   } 
+  //
+  myDS->SetDefaultTolerances();
 }
 //=======================================================================
 // function: PerformInternal
@@ -244,7 +267,6 @@ void BOPAlgo_PaveFiller::PerformInternal()
     return; 
   }
   //
-  //modified by NIZNHY-PKV Fri Sep 12 07:06:50 2014f
   // 03
   PerformVZ();
   if (myErrorStatus) {
@@ -265,5 +287,4 @@ void BOPAlgo_PaveFiller::PerformInternal()
   if (myErrorStatus) {
     return;
   }
-  //modified by NIZNHY-PKV Fri Sep 12 07:06:52 2014t
 } 

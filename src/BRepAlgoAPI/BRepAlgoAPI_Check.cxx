@@ -21,8 +21,11 @@
 //function : BRepAlgoAPI_Check
 //purpose  : 
 //=======================================================================
-  BRepAlgoAPI_Check::BRepAlgoAPI_Check()
-: myAnalyzer(NULL)
+BRepAlgoAPI_Check::BRepAlgoAPI_Check()
+: 
+  BRepAlgoAPI_Algo(),
+  myAnalyzer(NULL),
+  myFuzzyValue(0.)
 {
 }
 
@@ -30,9 +33,11 @@
 //function : BRepAlgoAPI_Check
 //purpose  : 
 //=======================================================================
-  BRepAlgoAPI_Check::BRepAlgoAPI_Check(const TopoDS_Shape& theS,
-                                       const Standard_Boolean bTestSE,
-                                       const Standard_Boolean bTestSI)
+BRepAlgoAPI_Check::BRepAlgoAPI_Check(const TopoDS_Shape& theS,
+                                     const Standard_Boolean bTestSE,
+                                     const Standard_Boolean bTestSI)
+: BRepAlgoAPI_Algo(),
+  myFuzzyValue(0.)
 {
   Init(theS, TopoDS_Shape(), BOPAlgo_UNKNOWN, bTestSE, bTestSI);
   //
@@ -43,11 +48,13 @@
 //function : BRepAlgoAPI_Check
 //purpose  : 
 //=======================================================================
-  BRepAlgoAPI_Check::BRepAlgoAPI_Check(const TopoDS_Shape& theS1,
-                                       const TopoDS_Shape& theS2,
-                                       const BOPAlgo_Operation theOp,
-                                       const Standard_Boolean bTestSE,
-                                       const Standard_Boolean bTestSI)
+BRepAlgoAPI_Check::BRepAlgoAPI_Check(const TopoDS_Shape& theS1,
+                                     const TopoDS_Shape& theS2,
+                                     const BOPAlgo_Operation theOp,
+                                     const Standard_Boolean bTestSE,
+                                     const Standard_Boolean bTestSI)
+: BRepAlgoAPI_Algo(),
+  myFuzzyValue(0.)
 {
   Init(theS1, theS2, theOp, bTestSE, bTestSI);
   //
@@ -58,7 +65,7 @@
 //function : ~BRepAlgoAPI_Check
 //purpose  : 
 //=======================================================================
-  BRepAlgoAPI_Check::~BRepAlgoAPI_Check()
+BRepAlgoAPI_Check::~BRepAlgoAPI_Check()
 {
   if(myAnalyzer){
     delete myAnalyzer;
@@ -68,12 +75,31 @@
 }
 
 //=======================================================================
+//function : SetFuzzyValue
+//purpose  : 
+//=======================================================================
+void BRepAlgoAPI_Check::SetFuzzyValue(const Standard_Real theFuzz)
+{
+  if (theFuzz > 0.) {
+    myFuzzyValue = theFuzz;
+  }
+}
+//=======================================================================
+//function : FuzzyValue
+//purpose  : 
+//=======================================================================
+Standard_Real BRepAlgoAPI_Check::FuzzyValue() const
+{
+  return myFuzzyValue;
+}
+
+//=======================================================================
 //function : SetData
 //purpose  : 
 //=======================================================================
-  void BRepAlgoAPI_Check::SetData(const TopoDS_Shape& theS,
-                                  const Standard_Boolean bTestSE,
-                                  const Standard_Boolean bTestSI)
+void BRepAlgoAPI_Check::SetData(const TopoDS_Shape& theS,
+                                const Standard_Boolean bTestSE,
+                                const Standard_Boolean bTestSI)
 {
   Init(theS, TopoDS_Shape(), BOPAlgo_UNKNOWN, bTestSE, bTestSI);
 }
@@ -82,25 +108,23 @@
 //function : SetData
 //purpose  : 
 //=======================================================================
-  void BRepAlgoAPI_Check::SetData(const TopoDS_Shape& theS1,
-                                  const TopoDS_Shape& theS2,
-                                  const BOPAlgo_Operation theOp,
-                                  const Standard_Boolean bTestSE,
-                                  const Standard_Boolean bTestSI)
+void BRepAlgoAPI_Check::SetData(const TopoDS_Shape& theS1,
+                                const TopoDS_Shape& theS2,
+                                const BOPAlgo_Operation theOp,
+                                const Standard_Boolean bTestSE,
+                                const Standard_Boolean bTestSI)
 {
   Init(theS1, theS2, theOp, bTestSE, bTestSI);
 }
-
-
 //=======================================================================
 //function : Init
 //purpose  : 
 //=======================================================================
-  void BRepAlgoAPI_Check::Init(const TopoDS_Shape& theS1,
-                               const TopoDS_Shape& theS2,
-                               const BOPAlgo_Operation theOp,
-                               const Standard_Boolean bTestSE,
-                               const Standard_Boolean bTestSI)
+void BRepAlgoAPI_Check::Init(const TopoDS_Shape& theS1,
+                             const TopoDS_Shape& theS2,
+                             const BOPAlgo_Operation theOp,
+                             const Standard_Boolean bTestSE,
+                             const Standard_Boolean bTestSI)
 {
   myResult.Clear();
   myS1 = theS1;
@@ -114,13 +138,17 @@
   myAnalyzer->ArgumentTypeMode() = Standard_True;
   myAnalyzer->SmallEdgeMode() = bTestSE;
   myAnalyzer->SelfInterMode() = bTestSI;
+  //
+  myAnalyzer->SetRunParallel(myRunParallel);
+  myAnalyzer->SetProgressIndicator(myProgressIndicator);
+  myAnalyzer->SetFuzzyValue(myFuzzyValue);
 }
 
 //=======================================================================
 //function : Result
 //purpose  : 
 //=======================================================================
-  const BOPAlgo_ListOfCheckResult& BRepAlgoAPI_Check::Result()
+const BOPAlgo_ListOfCheckResult& BRepAlgoAPI_Check::Result()
 {
   return myResult;
 }
@@ -129,7 +157,7 @@
 //function : IsValid
 //purpose  : 
 //=======================================================================
-  Standard_Boolean BRepAlgoAPI_Check::IsValid()
+Standard_Boolean BRepAlgoAPI_Check::IsValid()
 {
   return myResult.IsEmpty();
 }
@@ -138,7 +166,7 @@
 //function : Perform
 //purpose  : 
 //=======================================================================
-  void BRepAlgoAPI_Check::Perform()
+void BRepAlgoAPI_Check::Perform()
 {
   Standard_Boolean isS1, isS2;
   //incompatibility of shape types, small edges and self-interference
@@ -175,5 +203,3 @@
     myResult.Append(aRes);
   }
 }
-
-

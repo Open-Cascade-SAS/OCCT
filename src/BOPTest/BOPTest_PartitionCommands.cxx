@@ -54,10 +54,10 @@ void BOPTest::PartitionCommands(Draw_Interpretor& theCommands)
   // Chapter's name
   const char* g = "Partition commands";
   // Commands  
-  theCommands.Add("bfillds", "use bfillds [-s -t]"  , __FILE__, bfillds, g);
-  theCommands.Add("bbuild" , "use bbuild r [-s -t]" , __FILE__, bbuild, g);
-  theCommands.Add("bbop"   , "use bbop r op [-s -t]", __FILE__, bbop, g);
-  theCommands.Add("bclear" , "use bclear"           , __FILE__, bclear, g);
+  theCommands.Add("bfillds", "use bfillds [-s -t] [tol]" , __FILE__, bfillds, g);
+  theCommands.Add("bbuild" , "use bbuild r [-s -t]"      , __FILE__, bbuild, g);
+  theCommands.Add("bbop"   , "use bbop r op [-s -t]"     , __FILE__, bbop, g);
+  theCommands.Add("bclear" , "use bclear"                , __FILE__, bclear, g);
 }
 
 //=======================================================================
@@ -84,14 +84,15 @@ Standard_Integer bfillds(Draw_Interpretor& di,
                          Standard_Integer n, 
                          const char** a) 
 { 
-  if (n>3) {
-    di << " use bfillds [-s -t]\n";
+  if (n > 4) {
+    di << " use bfillds [-s -t] [tol]\n";
     return 0;
   }
   //
   char buf[32];
   Standard_Boolean bRunParallel, bShowTime;
   Standard_Integer i, aNbS, iErr;
+  Standard_Real aTol;
   BOPCol_ListIteratorOfListOfShape aIt;
   BOPCol_ListOfShape aLC;
   BOPTime_Chronometer aChrono;
@@ -103,14 +104,18 @@ Standard_Integer bfillds(Draw_Interpretor& di,
     return 0;
   }
   //
-  bShowTime=Standard_False;
-  bRunParallel=Standard_True;
+  bShowTime = Standard_False;
+  bRunParallel = Standard_True;
+  aTol = 0.;
   for (i=1; i<n; ++i) {
     if (!strcmp(a[i], "-s")) {
       bRunParallel=Standard_False;
     }
     else if (!strcmp(a[i], "-t")) {
       bShowTime=Standard_True;
+    }
+    else {
+      aTol = Draw::Atof(a[i]);
     }
   }
   //
@@ -132,6 +137,7 @@ Standard_Integer bfillds(Draw_Interpretor& di,
   //
   aPF.SetArguments(aLC);
   aPF.SetRunParallel(bRunParallel);
+  aPF.SetFuzzyValue(aTol);
   //
   aChrono.Start();
   //
@@ -317,6 +323,14 @@ Standard_Integer bbop(Draw_Interpretor& di,
     }
     //
     pBOP->SetOperation(aOp);
+  }
+  else {
+    BOPCol_ListOfShape& aLSTools=BOPTest_Objects::Tools();
+    aIt.Initialize(aLSTools);
+    for (; aIt.More(); aIt.Next()) {
+      const TopoDS_Shape& aS=aIt.Value();
+      pBuilder->AddArgument(aS);
+    }
   }
   //
   pBuilder->SetRunParallel(bRunParallel);

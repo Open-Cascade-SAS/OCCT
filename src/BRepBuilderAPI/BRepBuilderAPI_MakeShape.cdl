@@ -16,11 +16,11 @@
 
 deferred class MakeShape from BRepBuilderAPI inherits Command from BRepBuilderAPI
 
-	---Purpose: This    is  the  root     class for     all  shape
-	--          constructions.  It stores the result.
-	--          
-	--          It  provides deferred methods to trace the history
-	--          of sub-shapes.
+ ---Purpose: This    is  the  root     class for     all  shape
+ --          constructions.  It stores the result.
+ --          
+ --          It  provides deferred methods to trace the history
+ --          of sub-shapes.
 
 uses
     Shape             from TopoDS,
@@ -34,27 +34,28 @@ uses
 raises
     NotDone           from StdFail
 
-is
+is 
     Delete(me:out) is redefined;
     ---C++: alias "Standard_EXPORT virtual ~BRepBuilderAPI_MakeShape(){Delete() ; }"
     
     Initialize;
     
     Build(me : in out)
-	---Purpose: This is  called by  Shape().  It does  nothing but
-	--          may be redefined.
-	---Level: Public
+    ---Purpose: This is  called by  Shape().  It does  nothing but
+    --          may be redefined.
+    ---Level: Public
     is virtual;
-	
+ 
     Shape(me) returns Shape from TopoDS
-    	---Purpose: Returns a shape built by the shape construction algorithm.
-    	-- Raises exception StdFail_NotDone if the shape was not built.
-	---C++: return const &
-	---C++: alias "Standard_EXPORT operator TopoDS_Shape() const;"
-	---Level: Public
-	    raises
-    	NotDone from StdFail
-    is static;
+    ---Purpose: Returns a shape built by the shape construction algorithm.
+    -- Raises exception StdFail_NotDone if the shape was not built.
+    ---C++: return const &
+    ---C++: alias "Standard_EXPORT operator TopoDS_Shape() const;"
+    ---Level: Public
+    raises
+    NotDone from StdFail 
+    is virtual; 
+    --is static; 
 
 
     ------------------------------------------------------------------
@@ -64,19 +65,19 @@ is
     ------------------------------------------------------------------
 
     Generated (me: in out; S : Shape from TopoDS)
-    	---Purpose: Returns the  list   of shapes generated   from the
-    	--          shape <S>. 
-        ---C++: return const & 
-        ---Level: Public
+    ---Purpose: Returns the  list   of shapes generated   from the
+    --          shape <S>. 
+    ---C++: return const & 
+    ---Level: Public
     returns ListOfShape from TopTools
     is virtual;
     
 
     Modified (me: in out; S : Shape from TopoDS)
-    	---Purpose: Returns the list  of shapes modified from the shape
-    	--          <S>. 
-        ---C++: return const & 
-        ---Level: Public
+    ---Purpose: Returns the list  of shapes modified from the shape
+    --          <S>. 
+    ---C++: return const & 
+    ---Level: Public
     returns ListOfShape from TopTools
     is virtual;
 
@@ -84,7 +85,7 @@ is
     IsDeleted (me: in out; S : Shape from TopoDS)
     returns Boolean
     is virtual;
-    	---Purpose: Returns true if the shape S has been deleted.
+    ---Purpose: Returns true if the shape S has been deleted.
 
     
 fields

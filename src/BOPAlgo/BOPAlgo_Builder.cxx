@@ -42,7 +42,8 @@ BOPAlgo_Builder::BOPAlgo_Builder()
   myImages(100, myAllocator),
   myShapesSD(100, myAllocator),
   mySplits(100, myAllocator),
-  myOrigins(100, myAllocator)
+  myOrigins(100, myAllocator),
+  myFuzzyValue(0.)
 {
 }
 //=======================================================================
@@ -61,7 +62,8 @@ BOPAlgo_Builder::BOPAlgo_Builder
   myImages(100, myAllocator), 
   myShapesSD(100, myAllocator),
   mySplits(100, myAllocator),
-  myOrigins(100, myAllocator)
+  myOrigins(100, myAllocator),
+  myFuzzyValue(0.)
 {
 }
 //=======================================================================
@@ -172,6 +174,24 @@ BOPDS_PDS BOPAlgo_Builder::PDS()
   return myDS;
 }
 //=======================================================================
+//function : SetFuzzyValue
+//purpose  : 
+//=======================================================================
+void BOPAlgo_Builder::SetFuzzyValue(const Standard_Real theFuzz)
+{
+  if (theFuzz > 0.) {
+    myFuzzyValue = theFuzz;
+  }
+}
+//=======================================================================
+//function : FuzzyValue
+//purpose  : 
+//=======================================================================
+Standard_Real BOPAlgo_Builder::FuzzyValue() const
+{
+  return myFuzzyValue;
+}
+//=======================================================================
 // function: CheckData
 // purpose: 
 //=======================================================================
@@ -236,6 +256,8 @@ void BOPAlgo_Builder::Perform()
   //
   pPF->SetArguments(myArguments);
   pPF->SetRunParallel(myRunParallel);
+  pPF->SetProgressIndicator(myProgressIndicator);
+  pPF->SetFuzzyValue(myFuzzyValue);
   //
   pPF->Perform();
   //

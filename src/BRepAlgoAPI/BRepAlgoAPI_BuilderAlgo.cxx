@@ -1,7 +1,5 @@
-// Created on: 1993-10-15
-// Created by: Remi LEQUETTE
-// Copyright (c) 1993-1999 Matra Datavision
-// Copyright (c) 1999-2014 OPEN CASCADE SAS
+// Created by: Peter KURNEV
+// Copyright (c) 2014 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -14,53 +12,56 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepAlgoAPI_Cut.ixx>
+#include <BRepAlgoAPI_BuilderAlgo.ixx>
 
-#include <BRepAlgoAPI_BooleanOperation.hxx>
+#include <NCollection_BaseAllocator.hxx>
 
 //=======================================================================
-//function : BRepAlgoAPI_Cut
-//purpose  : 
+// function: 
+// purpose: 
 //=======================================================================
-BRepAlgoAPI_Cut::BRepAlgoAPI_Cut()
+BRepAlgoAPI_BuilderAlgo::BRepAlgoAPI_BuilderAlgo()
 :
-  BRepAlgoAPI_BooleanOperation()
-{
-  myOperation=BOPAlgo_CUT;
-}
+  BRepAlgoAPI_Algo(),
+  myDSFiller(NULL),
+  myBuilder(NULL),
+  myFuzzyValue(0.)
+{}
 //=======================================================================
-//function : ~BRepAlgoAPI_Cut
-//purpose  : 
+// function: 
+// purpose: 
 //=======================================================================
-BRepAlgoAPI_Cut::~BRepAlgoAPI_Cut()
-{
-}
+BRepAlgoAPI_BuilderAlgo::BRepAlgoAPI_BuilderAlgo
+  (const Handle(NCollection_BaseAllocator)& theAllocator)
+:
+  BRepAlgoAPI_Algo(theAllocator),
+  myDSFiller(NULL),
+  myBuilder(NULL),
+  myFuzzyValue(0.)
+{}
 
 //=======================================================================
-//function : BRepAlgoAPI_Cut
-//purpose  : 
+// function: ~
+// purpose: 
 //=======================================================================
-BRepAlgoAPI_Cut::BRepAlgoAPI_Cut(const TopoDS_Shape& S1, 
-                                 const TopoDS_Shape& S2)
-:
-  BRepAlgoAPI_BooleanOperation(S1, S2, BOPAlgo_CUT)
+BRepAlgoAPI_BuilderAlgo::~BRepAlgoAPI_BuilderAlgo()
 {
-  BRepAlgoAPI_BooleanOperation* pBO=
-    (BRepAlgoAPI_BooleanOperation*) (void*) this;
-  pBO->Build();
 }
 //=======================================================================
-//function : BRepAlgoAPI_Cut
+//function : SetFuzzyValue
 //purpose  : 
 //=======================================================================
-BRepAlgoAPI_Cut::BRepAlgoAPI_Cut(const TopoDS_Shape& S1, 
-                                 const TopoDS_Shape& S2,
-                                 const BOPAlgo_PaveFiller& aDSF,
-                                 const Standard_Boolean bFWD)
-: 
-  BRepAlgoAPI_BooleanOperation(S1, S2, aDSF, (bFWD) ? BOPAlgo_CUT : BOPAlgo_CUT21)
+void BRepAlgoAPI_BuilderAlgo::SetFuzzyValue(const Standard_Real theFuzz)
 {
-  BRepAlgoAPI_BooleanOperation* pBO=
-    (BRepAlgoAPI_BooleanOperation*) (void*) this;
-  pBO->Build();
+  if (theFuzz > 0.) {
+    myFuzzyValue = theFuzz;
+  }
+}
+//=======================================================================
+//function : FuzzyValue
+//purpose  : 
+//=======================================================================
+Standard_Real BRepAlgoAPI_BuilderAlgo::FuzzyValue() const
+{
+  return myFuzzyValue;
 }

@@ -14,6 +14,7 @@
 -- commercial license or contractual agreement.
 
 class ArgumentAnalyzer from BOPAlgo
+  inherits Algo from BOPAlgo
     ---Purpose: check the validity of argument(s) for Boolean Operations
     
 uses
@@ -21,11 +22,13 @@ uses
     Operation   from BOPAlgo, 
     CheckStatus from BOPAlgo,
     ShapeEnum  from TopAbs,
-    ListOfCheckResult from BOPAlgo
+    ListOfCheckResult  from BOPAlgo,
+    DataMapOfShapeReal from BOPCol
     
 is
     Create
        returns ArgumentAnalyzer;
+    ---C++: alias "Standard_EXPORT virtual ~BOPAlgo_ArgumentAnalyzer();"
     ---Purpose: empty constructor
 
     SetShape1(me: in out; TheShape: Shape from TopoDS);
@@ -167,8 +170,25 @@ is
     is protected;
 
 --  TestMergeFace(me: out)
---  is protected;
+--  is protected;  
 
+    SetFuzzyValue(me:out; 
+      theFuzz : Real from Standard);
+    ---C++: inline
+    ---Purpose: Sets the additional tolerance
+
+    FuzzyValue(me)
+    returns Real from Standard;
+    ---C++: inline
+    ---Purpose: Returns the additional tolerance 
+
+    UpdateTolerances(me:out)
+    is protected; 
+    ---Purpose: Updates the shapes tolerance values.
+
+    SetDefaultTolerances(me:out)
+    is protected; 
+    ---Purpose: Reverts the tolerance values for all entities to default values.
 
 fields
 
@@ -186,6 +206,8 @@ fields
     myContinuityMode     : Boolean   from Standard; 
     myCurveOnSurfaceMode : Boolean   from Standard; 
     myEmpty1, myEmpty2   : Boolean   from Standard; 
-    myResult     : ListOfCheckResult from BOPAlgo; 
-        
+    myResult             : ListOfCheckResult from BOPAlgo;
+    myFuzzyValue         : Real      from Standard;
+    myToleranceMap       : DataMapOfShapeReal from BOPCol;
+
 end ArgumentAnalyzer;

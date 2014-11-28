@@ -463,12 +463,20 @@ is
     ---Purpose: 
     -- Updates pave blocks which have the paves with indices contained  
     -- in the map <theDMI>.
-        
+
+    SetFuzzyValue(me:out; 
+        theFuzz : Real from Standard);
+    ---Purpose: Sets the additional tolerance
+
+    FuzzyValue(me)
+    returns Real from Standard;
+    ---Purpose: Returns the additional tolerance 
+
 fields  
     myArguments   : ListOfShape from BOPCol is protected;  
     myDS          : PDS from BOPDS is protected; 
     myIterator    : PIterator from BOPDS is protected; 
     myContext     : Context from IntTools is protected;   
     mySectionAttribute : SectionAttribute from BOPAlgo is protected;
-
+    myFuzzyValue  : Real from Standard is protected;
 end PaveFiller;

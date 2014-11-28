@@ -1191,12 +1191,12 @@ static Standard_Boolean MinComputing( BOPTools_CheckCurveOnSurface& theFunction,
 // Function : ComputeTolerance
 // purpose : 
 //=======================================================================
-Standard_Boolean BOPTools_AlgoTools::
-          ComputeTolerance( const Handle(Geom_Curve)& theCurve3D,
-                            const Handle(Geom2d_Curve)& theCurve2D,
-                            const Handle(Geom_Surface)& theSurf,
-                            Standard_Real& theMaxDist,
-                            Standard_Real& theMaxPar)
+Standard_Boolean BOPTools_AlgoTools::ComputeTolerance
+  (const Handle(Geom_Curve)& theCurve3D,
+   const Handle(Geom2d_Curve)& theCurve2D,
+   const Handle(Geom_Surface)& theSurf,
+   Standard_Real& theMaxDist,
+   Standard_Real& theMaxPar)
 {
   if (theCurve3D.IsNull() ||
       theCurve2D.IsNull() ||

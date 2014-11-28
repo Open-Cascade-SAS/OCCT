@@ -16,21 +16,42 @@
 
 #include <BRepAlgoAPI_BooleanOperation.ixx>
 
-#include <BRepAlgoAPI.hxx>
-#include <BRepAlgoAPI_Check.hxx>
-
-#include <BRepLib_FuseEdges.hxx>
 #include <TopExp.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 
+#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_DataMapOfIntegerListOfShape.hxx>
+#include <TopTools_DataMapOfIntegerShape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
+
+#include <BRepAlgoAPI_Check.hxx>
+#include <BRepAlgoAPI.hxx>
+#include <BRepLib_FuseEdges.hxx>
+
+#include <BOPDS_PDS.hxx>
 #include <BOPDS_DS.hxx>
+#include <BOPDS_VectorOfCurve.hxx>
+#include <BOPDS_Interf.hxx>
+#include <BOPDS_Curve.hxx>
+#include <BOPDS_ListOfPaveBlock.hxx>
 
 #include <BOPAlgo_PaveFiller.hxx>
 #include <BOPAlgo_BOP.hxx>
 #include <BOPAlgo_Section.hxx>
 
-
+//=======================================================================
+//function : BRepAlgoAPI_BooleanOperation
+//purpose  : 
+//=======================================================================
+BRepAlgoAPI_BooleanOperation::BRepAlgoAPI_BooleanOperation()
+:
+  BRepAlgoAPI_BuilderAlgo(), 
+  myOperation(BOPAlgo_UNKNOWN),
+  myEntryType(1),
+  myBuilderCanWork(Standard_False),
+  myFuseEdges(Standard_False)
+{
+}
 //=======================================================================
 //function : BRepAlgoAPI_BooleanOperation
 //purpose  : 
@@ -40,14 +61,12 @@ BRepAlgoAPI_BooleanOperation::BRepAlgoAPI_BooleanOperation
    const TopoDS_Shape& aS2,
    const BOPAlgo_Operation anOp)
 : 
+  BRepAlgoAPI_BuilderAlgo(),
   myS1(aS1),
   myS2(aS2),
-  myBuilderCanWork(Standard_False),
   myOperation(anOp),
-  myErrorStatus(1),
-  myDSFiller(NULL),
-  myBuilder(NULL),
   myEntryType(1),
+  myBuilderCanWork(Standard_False),
   myFuseEdges(Standard_False)
 {
 }
@@ -55,40 +74,36 @@ BRepAlgoAPI_BooleanOperation::BRepAlgoAPI_BooleanOperation
 //function : BRepAlgoAPI_BooleanOperation
 //purpose  : 
 //=======================================================================
-  BRepAlgoAPI_BooleanOperation::BRepAlgoAPI_BooleanOperation(const TopoDS_Shape& aS1, 
-                                                             const TopoDS_Shape& aS2,
-                                                             const BOPAlgo_PaveFiller& aDSFiller,
-                                                             const BOPAlgo_Operation anOp)
+BRepAlgoAPI_BooleanOperation::BRepAlgoAPI_BooleanOperation
+  (const TopoDS_Shape& aS1, 
+   const TopoDS_Shape& aS2,
+   const BOPAlgo_PaveFiller& aPF,
+   const BOPAlgo_Operation anOp)
 : 
+  BRepAlgoAPI_BuilderAlgo(),
   myS1(aS1),
   myS2(aS2),
-  myBuilderCanWork(Standard_False),
   myOperation(anOp),
-  myErrorStatus(1),
-  myDSFiller(NULL),
-  myBuilder(NULL),
   myEntryType(0),
+  myBuilderCanWork(Standard_False),
   myFuseEdges(Standard_False)
 {
-  if ((Standard_Address) &aDSFiller!=NULL) {
-    myDSFiller=(BOPAlgo_PaveFiller*)&aDSFiller;
-  }
+  myDSFiller=(BOPAlgo_PaveFiller*)&aPF;
 }
 //=======================================================================
-//function : Destroy
+//function : ~
 //purpose  : 
 //=======================================================================
-  void BRepAlgoAPI_BooleanOperation::Destroy()
+BRepAlgoAPI_BooleanOperation::~BRepAlgoAPI_BooleanOperation()
 {
-  if (myBuilder!=NULL) {
+  if (myBuilder) {
     delete myBuilder;
     myBuilder=NULL;
   }
-  if (myDSFiller!=NULL && myEntryType) {
+  if (myDSFiller && myEntryType) {
     delete myDSFiller;
     myDSFiller=NULL;
   }
-
   //
   myModifFaces.Clear();
   myEdgeMap.Clear();
@@ -97,7 +112,8 @@ BRepAlgoAPI_BooleanOperation::BRepAlgoAPI_BooleanOperation
 //function : SetOperation
 //purpose  : 
 //=======================================================================
-  void BRepAlgoAPI_BooleanOperation::SetOperation (const BOPAlgo_Operation anOp)
+void BRepAlgoAPI_BooleanOperation::SetOperation 
+  (const BOPAlgo_Operation anOp)
 {
   myOperation=anOp;
 }
@@ -105,38 +121,42 @@ BRepAlgoAPI_BooleanOperation::BRepAlgoAPI_BooleanOperation
 //function : Operation
 //purpose  : 
 //=======================================================================
-  BOPAlgo_Operation BRepAlgoAPI_BooleanOperation::Operation ()const
+BOPAlgo_Operation BRepAlgoAPI_BooleanOperation::Operation ()const
 {
   return myOperation;
 }
-
 //=======================================================================
-//function : FuseEdges
+//function : SetShape1
 //purpose  : 
 //=======================================================================
-  Standard_Boolean BRepAlgoAPI_BooleanOperation::FuseEdges ()const
+void  BRepAlgoAPI_BooleanOperation::SetShape1(const TopoDS_Shape& aS) 
 {
-  return myFuseEdges;
-}
-
+  myS1=aS;
+} 
+//=======================================================================
+//function : SetShape2
+//purpose  : 
+//=======================================================================
+void  BRepAlgoAPI_BooleanOperation::SetShape2(const TopoDS_Shape& aS) 
+{
+  myS2=aS;
+} 
 //=======================================================================
 //function : Shape1
 //purpose  : 
 //=======================================================================
-  const TopoDS_Shape& BRepAlgoAPI_BooleanOperation::Shape1() const 
+const TopoDS_Shape& BRepAlgoAPI_BooleanOperation::Shape1() const 
 {
   return myS1;
 }
-
 //=======================================================================
 //function : Shape2
 //purpose  : 
 //=======================================================================
-  const TopoDS_Shape& BRepAlgoAPI_BooleanOperation::Shape2() const 
+const TopoDS_Shape& BRepAlgoAPI_BooleanOperation::Shape2() const 
 {
   return myS2;
 }
-
 //=======================================================================
 //function : BuilderCanWork
 //purpose  : 
@@ -146,54 +166,18 @@ BRepAlgoAPI_BooleanOperation::BRepAlgoAPI_BooleanOperation
   return myBuilderCanWork;
 }
 //=======================================================================
-//function : ErrorStatus
+//function : FuseEdges
 //purpose  : 
 //=======================================================================
-  Standard_Integer BRepAlgoAPI_BooleanOperation::ErrorStatus()const
+Standard_Boolean BRepAlgoAPI_BooleanOperation::FuseEdges ()const
 {
-  return myErrorStatus;    
+  return myFuseEdges;
 }
-//=======================================================================
-//function : Modified
-//purpose  : 
-//=======================================================================
-const TopTools_ListOfShape& BRepAlgoAPI_BooleanOperation::Modified(const TopoDS_Shape& aS) 
-{
-  if (myBuilder==NULL) {
-    myGenerated.Clear();
-    return myGenerated;
-  }
-  else {
-    myGenerated = myBuilder->Modified(aS);
-
-    if(myFuseEdges) {
-      TopTools_ListOfShape theLS;
-      theLS.Assign(myGenerated);
-      //
-      RefinedList(theLS);
-    }
-    return myGenerated;
-  }
-}
-
-//=======================================================================
-//function : IsDeleted
-//purpose  : 
-//=======================================================================
-  Standard_Boolean BRepAlgoAPI_BooleanOperation::IsDeleted(const TopoDS_Shape& aS) 
-{
-  Standard_Boolean bDeleted = Standard_True; 
-  if (myBuilder != NULL) {
-    bDeleted=myBuilder->IsDeleted(aS);
-  }
-  return bDeleted; 
-}
-
 //=======================================================================
 //function : PrepareFiller
 //purpose  : 
 //=======================================================================
-  Standard_Boolean BRepAlgoAPI_BooleanOperation::PrepareFiller()
+Standard_Boolean BRepAlgoAPI_BooleanOperation::PrepareFiller()
 {
   Standard_Boolean bIsNewFiller=Standard_False;
   myErrorStatus=1;
@@ -223,6 +207,9 @@ const TopTools_ListOfShape& BRepAlgoAPI_BooleanOperation::Modified(const TopoDS_
     aLS.Append(myS2);
     //
     myDSFiller->SetArguments(aLS);
+    myDSFiller->SetRunParallel(myRunParallel);
+    myDSFiller->SetProgressIndicator(myProgressIndicator);
+    myDSFiller->SetFuzzyValue(myFuzzyValue);
   }
 
   return bIsNewFiller;
@@ -231,7 +218,7 @@ const TopTools_ListOfShape& BRepAlgoAPI_BooleanOperation::Modified(const TopoDS_
 //function : Build
 //purpose  : 
 //=======================================================================
-  void BRepAlgoAPI_BooleanOperation::Build()
+void BRepAlgoAPI_BooleanOperation::Build()
 {
   Standard_Boolean bIsNewFiller;
   Standard_Integer iErr;
@@ -288,6 +275,8 @@ const TopTools_ListOfShape& BRepAlgoAPI_BooleanOperation::Modified(const TopoDS_
     pBOP->SetOperation(myOperation);
   }
   //
+  myBuilder->SetRunParallel(myRunParallel);
+  myBuilder->SetProgressIndicator(myProgressIndicator);
   myBuilder->PerformWithFiller(*myDSFiller);
   iErr = myBuilder->ErrorStatus();
   if (!iErr) {
@@ -316,12 +305,99 @@ const TopTools_ListOfShape& BRepAlgoAPI_BooleanOperation::Modified(const TopoDS_
   }
 }
 
-//
+//=======================================================================
+//function : RefineEdges
+//purpose  : 
+//=======================================================================
+void BRepAlgoAPI_BooleanOperation::RefineEdges ()
+{
+  if(myFuseEdges) return; //Edges have been refined yet
+
+  BRepLib_FuseEdges FE(myShape);
+  FE.SetConcatBSpl(Standard_True);
+
+  // avoid fusing old edges
+  TopTools_IndexedMapOfShape mapOldEdges;
+  TopExp::MapShapes (myS1, TopAbs_EDGE, mapOldEdges);
+  TopExp::MapShapes (myS2, TopAbs_EDGE, mapOldEdges);
+  FE.AvoidEdges (mapOldEdges);
+
+  // Get List of edges that have been fused
+  myFuseEdges = Standard_False;
+  myModifFaces.Clear();
+  myEdgeMap.Clear();
+  TopTools_DataMapOfIntegerListOfShape aFusedEdges;
+
+  FE.Edges(aFusedEdges);
+  Standard_Integer nle = aFusedEdges.Extent();
+  if (nle != 0) {
+    FE.Perform();
+    myShape = FE.Shape();
+
+    TopTools_DataMapOfIntegerShape aResultEdges;
+
+    FE.ResultEdges(aResultEdges);
+    FE.Faces(myModifFaces);
+    myFuseEdges = Standard_True;
+    
+    Standard_Integer i;
+    for(i = 1; i <= nle; ++i) {
+      const TopoDS_Shape& aNewE = aResultEdges(i);
+      const TopTools_ListOfShape& aListOfOldEdges = aFusedEdges(i);
+      TopTools_ListIteratorOfListOfShape anIter(aListOfOldEdges);
+      for(; anIter.More(); anIter.Next()) {
+        myEdgeMap.Bind(anIter.Value(), aNewE);
+      }
+    }
+  }
+}
+//=======================================================================
+//function : RefinedList
+//purpose  : 
+//=======================================================================
+const TopTools_ListOfShape& BRepAlgoAPI_BooleanOperation::RefinedList
+  (const TopTools_ListOfShape& theL) 
+{
+  myGenerated.Clear();
+  TopTools_MapOfShape aMap;
+
+  TopTools_ListIteratorOfListOfShape anIter(theL);
+
+  for(; anIter.More(); anIter.Next()) {
+    const TopoDS_Shape& anS = anIter.Value();
+
+    if(anS.ShapeType() == TopAbs_EDGE) {
+      if(myEdgeMap.IsBound(anS)) {
+        const TopoDS_Shape& aNewEdge = myEdgeMap.Find(anS);
+        if(aMap.Add(aNewEdge)) {
+          myGenerated.Append(aNewEdge);
+        }
+      }
+      else {
+        myGenerated.Append(anS);
+      }
+    }
+    else if (anS.ShapeType() == TopAbs_FACE) {
+      if(myModifFaces.IsBound(anS)) {
+        myGenerated.Append(myModifFaces.Find(anS));
+      }
+      else {
+        myGenerated.Append(anS);
+      }
+    }
+    else {
+      myGenerated.Append(anS);
+    }
+  }
+
+  return myGenerated;
+
+}
 //=======================================================================
 //function : SectionEdges
 //purpose  : 
 //=======================================================================
-const  TopTools_ListOfShape& BRepAlgoAPI_BooleanOperation::SectionEdges()
+const TopTools_ListOfShape& BRepAlgoAPI_BooleanOperation::SectionEdges()
 {
   if (myBuilder==NULL) {
     myGenerated.Clear();
@@ -364,12 +440,12 @@ const  TopTools_ListOfShape& BRepAlgoAPI_BooleanOperation::SectionEdges()
   //
   return myGenerated;
 }
-
-// ================================================================================================
-// function: Generated
-// purpose:
-// ================================================================================================
-const TopTools_ListOfShape& BRepAlgoAPI_BooleanOperation::Generated(const TopoDS_Shape& S) 
+//=======================================================================
+//function : Generated
+//purpose  : 
+//=======================================================================
+const TopTools_ListOfShape& BRepAlgoAPI_BooleanOperation::Generated
+  (const TopoDS_Shape& S) 
 {
   if (myBuilder==NULL) {
     myGenerated.Clear();
@@ -384,10 +460,46 @@ const TopTools_ListOfShape& BRepAlgoAPI_BooleanOperation::Generated(const TopoDS
   return myBuilder->Generated(S);
 }
 
-// ================================================================================================
-// function: HasModified
-// purpose:
-// ================================================================================================
+//=======================================================================
+//function : Modified
+//purpose  : 
+//=======================================================================
+const TopTools_ListOfShape& BRepAlgoAPI_BooleanOperation::Modified
+  (const TopoDS_Shape& aS) 
+{
+  if (myBuilder==NULL) {
+    myGenerated.Clear();
+    return myGenerated;
+  }
+  else {
+    myGenerated = myBuilder->Modified(aS);
+
+    if(myFuseEdges) {
+      TopTools_ListOfShape theLS;
+      theLS.Assign(myGenerated);
+      //
+      RefinedList(theLS);
+    }
+    return myGenerated;
+  }
+}
+//=======================================================================
+//function : IsDeleted
+//purpose  : 
+//=======================================================================
+Standard_Boolean BRepAlgoAPI_BooleanOperation::IsDeleted
+  (const TopoDS_Shape& aS) 
+{
+  Standard_Boolean bDeleted = Standard_True; 
+  if (myBuilder != NULL) {
+    bDeleted=myBuilder->IsDeleted(aS);
+  }
+  return bDeleted; 
+}
+//=======================================================================
+//function : HasModified
+//purpose  : 
+//=======================================================================
 Standard_Boolean BRepAlgoAPI_BooleanOperation::HasModified() const
 {
   if (myBuilder==NULL) {
@@ -395,11 +507,10 @@ Standard_Boolean BRepAlgoAPI_BooleanOperation::HasModified() const
   }
   return myBuilder->HasModified();
 }
-
-// ================================================================================================
-// function: HasGenerated
-// purpose:
-// ================================================================================================
+//=======================================================================
+//function : HasGenerated
+//purpose  : 
+//=======================================================================
 Standard_Boolean BRepAlgoAPI_BooleanOperation::HasGenerated() const
 {
   if (myBuilder==NULL) {
@@ -407,105 +518,14 @@ Standard_Boolean BRepAlgoAPI_BooleanOperation::HasGenerated() const
   }
   return myBuilder->HasGenerated();
 }
-
-// ================================================================================================
-// function: HasDeleted
-// purpose:
-// ================================================================================================
+//=======================================================================
+//function : HasDeleted
+//purpose  : 
+//=======================================================================
 Standard_Boolean BRepAlgoAPI_BooleanOperation::HasDeleted() const
 {
   if (myBuilder==NULL) {
     return Standard_False;
   }
   return myBuilder->HasDeleted();
-}
-//=======================================================================
-//function : RefineEdges
-//purpose  : 
-//=======================================================================
-
-  void BRepAlgoAPI_BooleanOperation::RefineEdges ()
-{
-  if(myFuseEdges) return; //Edges have been refined yet
-
-  BRepLib_FuseEdges FE(myShape);
-  FE.SetConcatBSpl(Standard_True);
-
-  // avoid fusing old edges
-  TopTools_IndexedMapOfShape mapOldEdges;
-  TopExp::MapShapes (myS1, TopAbs_EDGE, mapOldEdges);
-  TopExp::MapShapes (myS2, TopAbs_EDGE, mapOldEdges);
-  FE.AvoidEdges (mapOldEdges);
-
-  // Get List of edges that have been fused
-  myFuseEdges = Standard_False;
-  myModifFaces.Clear();
-  myEdgeMap.Clear();
-  TopTools_DataMapOfIntegerListOfShape aFusedEdges;
-
-  FE.Edges(aFusedEdges);
-  Standard_Integer nle = aFusedEdges.Extent();
-  if (nle != 0) {
-    FE.Perform();
-    myShape = FE.Shape();
-
-    TopTools_DataMapOfIntegerShape aResultEdges;
-
-    FE.ResultEdges(aResultEdges);
-    FE.Faces(myModifFaces);
-    myFuseEdges = Standard_True;
-    
-    Standard_Integer i;
-    for(i = 1; i <= nle; ++i) {
-      const TopoDS_Shape& aNewE = aResultEdges(i);
-      const TopTools_ListOfShape& aListOfOldEdges = aFusedEdges(i);
-      TopTools_ListIteratorOfListOfShape anIter(aListOfOldEdges);
-      for(; anIter.More(); anIter.Next()) {
-        myEdgeMap.Bind(anIter.Value(), aNewE);
-      }
-    }
-  }
-}
-
-//=======================================================================
-//function : RefinedList
-//purpose  : 
-//=======================================================================
-const TopTools_ListOfShape& 
-  BRepAlgoAPI_BooleanOperation::RefinedList(const TopTools_ListOfShape& theL) 
-{
-  myGenerated.Clear();
-  TopTools_MapOfShape aMap;
-
-  TopTools_ListIteratorOfListOfShape anIter(theL);
-
-  for(; anIter.More(); anIter.Next()) {
-    const TopoDS_Shape& anS = anIter.Value();
-
-    if(anS.ShapeType() == TopAbs_EDGE) {
-      if(myEdgeMap.IsBound(anS)) {
-        const TopoDS_Shape& aNewEdge = myEdgeMap.Find(anS);
-        if(aMap.Add(aNewEdge)) {
-          myGenerated.Append(aNewEdge);
-        }
-      }
-      else {
-        myGenerated.Append(anS);
-      }
-    }
-    else if (anS.ShapeType() == TopAbs_FACE) {
-      if(myModifFaces.IsBound(anS)) {
-        myGenerated.Append(myModifFaces.Find(anS));
-      }
-      else {
-        myGenerated.Append(anS);
-      }
-    }
-    else {
-      myGenerated.Append(anS);
-    }
-  }
-
-  return myGenerated;
-
 }

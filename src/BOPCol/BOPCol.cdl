@@ -24,6 +24,7 @@ uses
 is 
     imported BaseAllocator from BOPCol; 
     imported DataMapOfShapeInteger from BOPCol; 
+    imported DataMapOfShapeReal from BOPCol; 
     imported MapOfInteger from BOPCol; 
     imported ListOfInteger from BOPCol; 
     imported PInteger from BOPCol; 

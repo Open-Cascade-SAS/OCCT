@@ -219,7 +219,15 @@ is
     Splits (me) 
     returns DataMapOfShapeListOfShape from BOPCol; 
     ---C++: return const &	  
-    ---Purpose:  Returns mySplits. 
+    ---Purpose:  Returns mySplits.
+
+    SetFuzzyValue(me:out; 
+        theFuzz : Real from Standard);
+    ---Purpose: Sets the additional tolerance
+
+    FuzzyValue(me)
+    returns Real from Standard;
+    ---Purpose: Returns the additional tolerance 
     
 fields 
     myArguments  : ListOfShape from BOPCol is protected; 
@@ -233,7 +241,8 @@ fields
     myShapesSD   : DataMapOfShapeShape from BOPCol is protected;   
     --
     mySplits     : DataMapOfShapeListOfShape from BOPCol is protected; 
-    myOrigins    : DataMapOfShapeShape from BOPCol is protected; 
+    myOrigins    : DataMapOfShapeShape from BOPCol is protected;
+    myFuzzyValue : Real from Standard is protected; 
  
 end Builder;
 

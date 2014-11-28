@@ -38,7 +38,8 @@ uses
     Shape         from TopoDS,
     -- 
     ListOfShape from BOPCol,  
-    DataMapOfIntegerInteger from BOPCol,
+    DataMapOfIntegerInteger from BOPCol, 
+    DataMapOfIntegerReal    from BOPCol,
     DataMapOfShapeInteger   from BOPCol, 
     ListOfInteger           from BOPCol, 
     MapOfInteger            from BOPCol, 
@@ -303,7 +304,7 @@ is
  
     IsCommonBlockOnEdge(me; 
                 thePB:PaveBlock from BOPDS)   
-    returns Boolean from Standard; 	 
+    returns Boolean from Standard;          
     ---Purpose: 
     --- Query 
     --- Returns true if common block contains more then one pave block 
@@ -500,7 +501,7 @@ is
     ---C++: inline  
             ---Purpose:  
             --- Selector/Modifier
-        --- Returns the collection of interferences Edge/Solid 	 
+        --- Returns the collection of interferences Edge/Solid          
   
     InterfFZ(me:out) 
             returns VectorOfInterfFZ from BOPDS; 
@@ -508,7 +509,7 @@ is
     ---C++: inline  
             ---Purpose:  
             --- Selector/Modifier
-        --- Returns the collection of interferences Face/Solid 		 
+        --- Returns the collection of interferences Face/Solid                  
  
     InterfZZ(me:out) 
             returns VectorOfInterfZZ from BOPDS; 
@@ -516,12 +517,12 @@ is
     ---C++: inline  
             ---Purpose:  
             --- Selector/Modifier
-        --- Returns the collection of interferences Solid/Solid 		 
-	    
+        --- Returns the collection of interferences Solid/Solid                  
+            
     NbInterfTypes(myclass)  
-    	returns Integer from Standard;  
-    	---C++: inline       
-	   ---Purpose: 
+            returns Integer from Standard;  
+            ---C++: inline       
+           ---Purpose: 
            -- Returns the number of types of the interferences 
            -- 
  
@@ -556,14 +557,14 @@ is
     HasInterfShapeSubShapes(me; 
             theI1:Integer from Standard;  
             theI2:Integer from Standard; 
-    	    theFlag: Boolean from Standard=Standard_True) 
+                theFlag: Boolean from Standard=Standard_True) 
         returns Boolean from Standard;  
             ---Purpose: 
             --- Query
         --- Returns true if the shape with index theI1 is interfered 
         --- with  
-    	--    any sub-shape of the shape with index theI2  (theFlag=true)    
-    	--    all sub-shapes of the shape with index theI2 (theFlag=false)     
+            --    any sub-shape of the shape with index theI2  (theFlag=true)    
+            --    all sub-shapes of the shape with index theI2 (theFlag=false)     
   
     HasInterfSubShapes(me; 
             theI1:Integer from Standard;  
@@ -628,15 +629,26 @@ is
              ---
  
     BuildBndBoxSolid (me:out; 
-    	    	theIndex:Integer from Standard;  
-		theBox:out Box from Bnd) 
-    	is protected;  
-	    ---Purpose: 
+                theIndex:Integer from Standard;  
+                theBox:out Box from Bnd) 
+            is protected;  
+            ---Purpose: 
             --- Computes bouding box <theBox> for the solid with DS-index <theIndex>
             ---  
-	    
-
+             
+    SetFuzzyValue(me:out; 
+                theFuzz : Real from Standard);
+    ---C++: inline 
+    ---Purpose: Sets the extended tolerance
  
+    FuzzyValue(me)
+             returns Real from Standard;
+    ---C++: inline 
+    ---Purpose: Returns the extended tolerance 
+     
+    SetDefaultTolerances(me:out);
+    ---Purpose: Reverts the tolerance values of unchanged entities to default values.
+
 fields  
     myAllocator        : BaseAllocator from BOPCol is protected;
     myArguments        : ListOfShape from BOPCol is protected;   
@@ -665,5 +677,10 @@ fields
     myInterfVZ         : VectorOfInterfVZ from BOPDS is protected;
     myInterfEZ         : VectorOfInterfEZ from BOPDS is protected;
     myInterfFZ         : VectorOfInterfFZ from BOPDS is protected;
-    myInterfZZ         : VectorOfInterfZZ from BOPDS is protected;
+    myInterfZZ         : VectorOfInterfZZ from BOPDS is protected; 
+    -- 
+    -- extended tolerance for intersection
+    myFuzzyValue       : Real from Standard is protected;
+    myToleranceMap     : DataMapOfIntegerReal from BOPCol is protected; 
+
 end DS;

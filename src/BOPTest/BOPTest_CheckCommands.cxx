@@ -152,7 +152,7 @@ Standard_Integer bopcheck (Draw_Interpretor& di,
                            const char** a )
 {
   if (n<2) {
-    di << " Use > bopcheck Shape [level of check: 0 - 9] [-t -s]" << "\n";
+    di << " Use > bopcheck Shape [level of check: 0 - 9] [-t -s] [-tol tol]" << "\n";
     di << " The level of check defines "; 
     di << " which interferences will be checked:\n";
     di << " 0 - V/V only\n"; 
@@ -177,13 +177,16 @@ Standard_Integer bopcheck (Draw_Interpretor& di,
   //
   Standard_Boolean bRunParallel, bShowTime;
   Standard_Integer i, aLevel, aNbInterfTypes;
+  Standard_Real aTolerance;
   //
   aNbInterfTypes=BOPDS_DS::NbInterfTypes();
   //
   aLevel=aNbInterfTypes-1;
   //
   if (n>2) {
-    aLevel=Draw::Atoi(a[2]); 
+    if (a[2][0] != '-') {
+      aLevel=Draw::Atoi(a[2]); 
+    }
   }
   //
   if (aLevel < 0 || aLevel > aNbInterfTypes-1) {
@@ -191,14 +194,21 @@ Standard_Integer bopcheck (Draw_Interpretor& di,
     return 1;
   }
   //
+  aTolerance = 0;
   bShowTime=Standard_False;
   bRunParallel=Standard_True;
-  for (i=3; i<n; ++i) {
+  for (i=2; i<n; ++i) {
     if (!strcmp(a[i], "-s")) {
       bRunParallel=Standard_False;
     }
     else if (!strcmp(a[i], "-t")) {
       bShowTime=Standard_True;
+    }
+    else if (!strcmp(a[i], "-tol")) {
+      if (i+1 < n) {
+        ++i;
+        aTolerance = Draw::Atof(a[i]);
+      }
     }
   }
   //
@@ -233,6 +243,7 @@ Standard_Integer bopcheck (Draw_Interpretor& di,
   aChecker.SetArguments(aLS);
   aChecker.SetLevelOfCheck(aLevel);
   aChecker.SetRunParallel(bRunParallel);
+  aChecker.SetFuzzyValue(aTolerance);
   //
   aChrono.Start();
   //
@@ -331,7 +342,7 @@ Standard_Integer bopargcheck (Draw_Interpretor& di,
   if (n<2) {
     di << "\n";
     di << " Use >bopargcheck Shape1 [[Shape2] ";
-    di << "[-F/O/C/T/S/U] [/R|F|T|V|E|I|P|C|S]] [#BF]" << "\n" << "\n";
+    di << "[-F/O/C/T/S/U] [/R|F|T|V|E|I|P|C|S]] [#BF] [-tol tol]" << "\n" << "\n";
     di << " -<Boolean Operation>" << "\n";
     di << " F (fuse)" << "\n";
     di << " O (common)" << "\n";
@@ -385,11 +396,19 @@ Standard_Integer bopargcheck (Draw_Interpretor& di,
   Standard_Integer indxAD = 0;
   Standard_Boolean isS2 = Standard_False;
   Standard_Integer indxS2 = 0;
+  Standard_Real aTolerance = 0;
 
   if(n >= 3) {
     Standard_Integer iIndex = 0;
     for(iIndex = 2; iIndex < n; iIndex++) {
-      if(a[iIndex][0] == '-')
+      if(!strcmp(a[iIndex], "-tol"))
+      {
+        if ((iIndex+1) < n) {
+          ++iIndex;
+          aTolerance = Draw::Atof(a[iIndex]);
+        }
+      }
+      else if(a[iIndex][0] == '-')
       {
         isBO = Standard_True;
         indxBO = iIndex;
@@ -411,7 +430,7 @@ Standard_Integer bopargcheck (Draw_Interpretor& di,
       }
     }
   }
-
+  
   // set & test second shape
   TopoDS_Shape aS22, aS2;
   if(isS2) {
@@ -429,9 +448,10 @@ Standard_Integer bopargcheck (Draw_Interpretor& di,
       }
     }
   }
-
+  
   // init checker
   BOPAlgo_ArgumentAnalyzer aChecker;
+  aChecker.SetFuzzyValue(aTolerance);
   aChecker.SetShape1(aS1);
 
   // set default options (always tested!) for single and couple shapes
@@ -729,13 +749,13 @@ Standard_Integer bopargcheck (Draw_Interpretor& di,
         if (S1_BadType != 0)
           CString1="YES";
         else
-          CString1="NO";
+          CString1=aChecker.ArgumentTypeMode() ? "NO" : "DISABLED";
         di << "Shapes are not suppotrted by BOP: " << CString1 << "\n";
         Standard_CString CString2;
         if (S1_SelfInt != 0)
           CString2="YES";
         else
-          CString2="NO";
+          CString2=aChecker.SelfInterMode() ? "NO" : "DISABLED";
         di << "Self-Intersections              : " << CString2;
         if(S1_SelfInt != 0)
           di << "  Cases(" << S1_SelfInt << ")  Total shapes(" << S1_SelfIntAll << ")" << "\n";
@@ -745,13 +765,13 @@ Standard_Integer bopargcheck (Draw_Interpretor& di,
         if (S1_OpAb != 0)
           CString13="YES";
         else
-          CString13="NO";
+          CString13=aChecker.SelfInterMode() ? "NO" : "DISABLED";
         di << "Check for SI has been aborted   : " << CString13 << "\n";
         Standard_CString CString3;
         if (S1_SmalE != 0)
           CString3="YES";
         else
-          CString3="NO";
+          CString3=aChecker.SmallEdgeMode() ? "NO" : "DISABLED";
         di << "Too small edges                 : " << CString3;
         if(S1_SmalE != 0)
           di << "  Cases(" << S1_SmalE << ")  Total shapes(" << S1_SmalEAll << ")" << "\n";
@@ -761,7 +781,7 @@ Standard_Integer bopargcheck (Draw_Interpretor& di,
         if (S1_BadF != 0)
           CString4="YES";
         else
-          CString4="NO";
+          CString4=aChecker.RebuildFaceMode() ? "NO" : "DISABLED";
         di << "Bad faces                       : " << CString4;
         if(S1_BadF != 0)
           di << "  Cases(" << S1_BadF << ")  Total shapes(" << S1_BadFAll << ")" << "\n";
@@ -771,7 +791,7 @@ Standard_Integer bopargcheck (Draw_Interpretor& di,
         if (S1_BadV != 0)
           CString5="YES";
         else
-          CString5="NO";
+          CString5=aChecker.MergeVertexMode() ? "NO" : "DISABLED";
         di << "Too close vertices              : " << CString5;
         if(S1_BadV != 0)
           di << "  Cases(" << S1_BadV << ")  Total shapes(" << S1_BadVAll << ")" << "\n";
@@ -781,7 +801,7 @@ Standard_Integer bopargcheck (Draw_Interpretor& di,
         if (S1_BadE != 0)
           CString6="YES";
         else
-          CString6="NO";
+          CString6=aChecker.MergeEdgeMode() ? "NO" : "DISABLED";
         di << "Too close edges                 : " << CString6;
         if(S1_BadE != 0)
           di << "  Cases(" << S1_BadE << ")  Total shapes(" << S1_BadEAll << ")" << "\n";
@@ -791,7 +811,7 @@ Standard_Integer bopargcheck (Draw_Interpretor& di,
         if (S1_C0 != 0)
           CString15="YES";
         else
-          CString15="NO";
+          CString15=aChecker.ContinuityMode() ? "NO" : "DISABLED";
         di << "Shapes with Continuity C0       : " << CString15;
         if(S1_C0 != 0)
           di << "  Cases(" << S1_C0 << ")  Total shapes(" << S1_C0All << ")" << "\n";
@@ -802,7 +822,7 @@ Standard_Integer bopargcheck (Draw_Interpretor& di,
         if (S1_COnS != 0)
           CString17="YES";
         else
-          CString17="NO";
+          CString17=aChecker.CurveOnSurfaceMode() ? "NO" : "DISABLED";
         di << "Invalid Curve on Surface        : " << CString17;
         if(S1_COnS != 0)
           di << "  Cases(" << S1_COnS << ")  Total shapes(" << S1_COnSAll << ")" << "\n";
@@ -819,13 +839,13 @@ Standard_Integer bopargcheck (Draw_Interpretor& di,
         if (S2_BadType != 0)
           CString7="YES";
         else
-          CString7="NO";
+          CString7=aChecker.ArgumentTypeMode() ? "NO" : "DISABLED";
         di << "Shapes are not suppotrted by BOP: " << CString7 << "\n";
         Standard_CString CString8;
         if (S2_SelfInt != 0)
           CString8="YES";
         else
-          CString8="NO";
+          CString8=aChecker.SelfInterMode() ? "NO" : "DISABLED";
         di << "Self-Intersections              : " << CString8;
         if(S2_SelfInt != 0)
           di << "  Cases(" << S2_SelfInt << ")  Total shapes(" << S2_SelfIntAll << ")" << "\n";
@@ -836,13 +856,13 @@ Standard_Integer bopargcheck (Draw_Interpretor& di,
         if (S2_OpAb != 0)
           CString14="YES";
         else
-          CString14="NO";
+          CString14=aChecker.SelfInterMode() ? "NO" : "DISABLED";
         di << "Check for SI has been aborted   : " << CString14 << "\n";
         Standard_CString CString9;
         if (S2_SmalE != 0)
           CString9="YES";
         else
-          CString9="NO";
+          CString9=aChecker.SmallEdgeMode() ? "NO" : "DISABLED";
         di << "Too small edges                 : " << CString9;
         if(S2_SmalE != 0)
           di << "  Cases(" << S2_SmalE << ")  Total shapes(" << S2_SmalEAll << ")" << "\n";
@@ -852,7 +872,7 @@ Standard_Integer bopargcheck (Draw_Interpretor& di,
         if (S2_BadF != 0)
           CString10="YES";
         else
-          CString10="NO";
+          CString10=aChecker.RebuildFaceMode() ? "NO" : "DISABLED";
         di << "Bad faces                       : " << CString10;
         if(S2_BadF != 0)
           di << "  Cases(" << S2_BadF << ")  Total shapes(" << S2_BadFAll << ")" << "\n";
@@ -862,7 +882,7 @@ Standard_Integer bopargcheck (Draw_Interpretor& di,
         if (S2_BadV != 0)
           CString11="YES";
         else
-          CString11="NO";
+          CString11=aChecker.MergeVertexMode() ? "NO" : "DISABLED";
         di << "Too close vertices              : " << CString11;
         if(S2_BadV != 0)
           di << "  Cases(" << S2_BadV << ")  Total shapes(" << S2_BadVAll << ")" << "\n";
@@ -872,7 +892,7 @@ Standard_Integer bopargcheck (Draw_Interpretor& di,
         if (S2_BadE != 0)
           CString12="YES";
         else
-          CString12="NO";
+          CString12=aChecker.MergeEdgeMode() ? "NO" : "DISABLED";
         di << "Too close edges                 : " << CString12;
         if(S2_BadE != 0)
           di << "  Cases(" << S2_BadE << ")  Total shapes(" << S2_BadEAll << ")" << "\n";
@@ -882,7 +902,7 @@ Standard_Integer bopargcheck (Draw_Interpretor& di,
         if (S2_C0 != 0)
           CString16="YES";
         else
-          CString16="NO";
+          CString16=aChecker.ContinuityMode() ? "NO" : "DISABLED";
         di << "Shapes with Continuity C0       : " << CString16;
         if(S2_C0 != 0)
           di << "  Cases(" << S2_C0 << ")  Total shapes(" << S2_C0All << ")" << "\n";
@@ -893,7 +913,7 @@ Standard_Integer bopargcheck (Draw_Interpretor& di,
         if (S2_COnS != 0)
           CString18="YES";
         else
-          CString18="NO";
+          CString18=aChecker.CurveOnSurfaceMode() ? "NO" : "DISABLED";
         di << "Invalid Curve on Surface        : " << CString18;
         if(S2_COnS != 0)
           di << "  Cases(" << S2_COnS << ")  Total shapes(" << S2_COnSAll << ")" << "\n";
@@ -975,7 +995,7 @@ Standard_Integer checkcurveonsurf(Draw_Interpretor& di,
   }
   //
   Standard_Integer nE, nF, anECounter, aFCounter;
-  Standard_Real aT, aTolE, aD, aDMax;
+  Standard_Real aT, aTolE, aDMax;
   TopExp_Explorer aExpF, aExpE;
   char buf[200], aFName[10], anEName[10];
   NCollection_DataMap<TopoDS_Shape, Standard_Real, TopTools_ShapeMapHasher> aDMETol;
@@ -1002,10 +1022,9 @@ Standard_Integer checkcurveonsurf(Draw_Interpretor& di,
       }
       //
       if (aDMETol.IsBound(aE)) {
-        aD = aDMETol.Find(aE);
+        Standard_Real& aD = aDMETol.ChangeFind(aE);
         if (aDMax > aD) {
-          aDMETol.UnBind(aE);
-          aDMETol.Bind(aE, aDMax);
+          aD = aDMax;
         }
       }
       else {

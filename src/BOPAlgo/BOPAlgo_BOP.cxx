@@ -350,6 +350,9 @@ void BOPAlgo_BOP::Perform()
   //
   pPF=new BOPAlgo_PaveFiller(aAllocator);
   pPF->SetArguments(aLS);
+  pPF->SetRunParallel(myRunParallel);
+  pPF->SetProgressIndicator(myProgressIndicator);
+  pPF->SetFuzzyValue(myFuzzyValue);
   //
   pPF->Perform();
   //

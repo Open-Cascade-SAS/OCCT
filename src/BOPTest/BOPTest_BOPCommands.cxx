@@ -24,6 +24,8 @@
 
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Compound.hxx>
+#include <TopoDS_Iterator.hxx>
+//
 #include <BRep_Builder.hxx>
 
 #include <BOPAlgo_PaveFiller.hxx>
@@ -95,24 +97,26 @@ static Standard_Integer mkvolume   (Draw_Interpretor&, Standard_Integer, const c
   const char* g = "BOP commands";
   // Commands
   
-  theCommands.Add("bop"       , "use bop s1 s2"   , __FILE__, bop, g);
-  theCommands.Add("bopcommon" , "use bopcommon r" , __FILE__, bopcommon, g);
-  theCommands.Add("bopfuse"   , "use bopfuse r"   , __FILE__,bopfuse, g);
-  theCommands.Add("bopcut"    , "use bopcut"      , __FILE__,bopcut, g);
-  theCommands.Add("boptuc"    , "use boptuc"      , __FILE__,boptuc, g);
-  theCommands.Add("bopsection", "use bopsection"  , __FILE__,bopsection, g);
+  theCommands.Add("bop"       , "use bop s1 s2 [tol]" , __FILE__, bop, g);
+  theCommands.Add("bopcommon" , "use bopcommon r"     , __FILE__, bopcommon, g);
+  theCommands.Add("bopfuse"   , "use bopfuse r"       , __FILE__,bopfuse, g);
+  theCommands.Add("bopcut"    , "use bopcut r"        , __FILE__,bopcut, g);
+  theCommands.Add("boptuc"    , "use boptuc r"        , __FILE__,boptuc, g);
+  theCommands.Add("bopsection", "use bopsection r"    , __FILE__,bopsection, g);
   //
-  theCommands.Add("bcommon" , "use bcommon r s1 s2" , __FILE__,bcommon, g);
-  theCommands.Add("bfuse"   , "use bfuse r s1 s2"   , __FILE__,bfuse, g);
-  theCommands.Add("bcut"    , "use bcut r s1 s2"    , __FILE__,bcut, g);
-  theCommands.Add("btuc"    , "use btuc r s1 s2"    , __FILE__,btuc, g);
-  theCommands.Add("bsection", "Use >bsection r s1 s2 [-n2d/-n2d1/-n2d2] [-na]", 
+  theCommands.Add("bcommon" , "use bcommon r s1 s2 [tol]" , __FILE__,bcommon, g);
+  theCommands.Add("bfuse"   , "use bfuse r s1 s2 [tol]"   , __FILE__,bfuse, g);
+  theCommands.Add("bcut"    , "use bcut r s1 s2 [tol]"    , __FILE__,bcut, g);
+  theCommands.Add("btuc"    , "use btuc r s1 s2 [tol]"    , __FILE__,btuc, g);
+  theCommands.Add("bsection", "Use >bsection r s1 s2 [-n2d/-n2d1/-n2d2] [-na] [tol]", 
                                                       __FILE__, bsection, g);
   //
   theCommands.Add("bopcurves", "use  bopcurves F1 F2 [-2d]", __FILE__, bopcurves, g);
   theCommands.Add("bopnews", "use  bopnews -v[e,f]"  , __FILE__, bopnews, g);
-  theCommands.Add("bparallelmode", "bparallelmode [1/0] : show / set parallel mode for boolean operations", __FILE__, bparallelmode, g);
-  theCommands.Add("mkvolume", "make solids from set of shapes.\nmkvolume r b1 b2 ... [-ni (do not intersect)] [-s (run in non parallel mode)]", __FILE__, mkvolume , g);
+  theCommands.Add("bparallelmode", "bparallelmode [1/0] : show / set parallel mode for boolean operations", 
+                  __FILE__, bparallelmode, g);
+  theCommands.Add("mkvolume", "make solids from set of shapes.\nmkvolume r b1 b2 ... [-c] [-ni] [-s] [tol]", 
+                  __FILE__, mkvolume , g);
 }
 
 //=======================================================================
@@ -123,11 +127,12 @@ Standard_Integer bop (Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
   char buf[32];
   Standard_Integer iErr;
+  Standard_Real aTol;
   TopoDS_Shape aS1, aS2;
   BOPCol_ListOfShape aLC;
   //
-  if (n!=3) {
-    di << " use bop Shape1 Shape2\n";
+  if (n < 3 || n > 4) {
+    di << " use bop Shape1 Shape2 [tol]\n";
     return 1;
   }
   //
@@ -137,6 +142,11 @@ Standard_Integer bop (Draw_Interpretor& di, Standard_Integer n, const char** a)
   if (aS1.IsNull() || aS2.IsNull()) {
     di << " null shapes are not allowed \n";
     return 1;
+  }
+  //
+  aTol = 0.;
+  if (n == 4) {
+    aTol = Draw::Atof(a[3]);
   }
   //
   aLC.Append(aS1);
@@ -150,6 +160,7 @@ Standard_Integer bop (Draw_Interpretor& di, Standard_Integer n, const char** a)
   pPF=new BOPAlgo_PaveFiller(aAL);
   //
   pPF->SetArguments(aLC);
+  pPF->SetFuzzyValue(aTol);
   //
   pPF->Perform();
   iErr=pPF->ErrorStatus();
@@ -203,7 +214,7 @@ Standard_Integer bopsmt(Draw_Interpretor& di,
                         const BOPAlgo_Operation aOp)
 {
   if (n<2) {
-    di << " use bopsmt r\n";
+    di << " use bopsmt r\n [tol]";
     return 0;
   }
   //
@@ -349,104 +360,74 @@ Standard_Integer  bsection(Draw_Interpretor& di,
                            Standard_Integer n, 
                            const char** a)
 {
-  const char* usage = " Usage: bsection Result s1 s2 [-n2d/-n2d1/-n2d2] [-na]\n";
+  const char* usage = " Usage: bsection Result s1 s2 [-n2d/-n2d1/-n2d2] [-na] [tol]\n";
   if (n < 4) {
     di << usage;
     return 1;
   }
-
+  //
   TopoDS_Shape aS1 = DBRep::Get(a[2]);
   TopoDS_Shape aS2 = DBRep::Get(a[3]);
-  
+  //
   if (aS1.IsNull() || aS2.IsNull()) {
     di << " Null shapes are not allowed \n";
     return 1;
   }
-
+  //
   Standard_Boolean bApp, bPC1, bPC2;
+  Standard_Integer i;
+  Standard_Real aTol;
   //
   bApp = Standard_True;
   bPC1 = Standard_True;
   bPC2 = Standard_True;
-  
-  Standard_Boolean isbadparameter = Standard_False;
-  
-  if(n > 4) {
-    const char* key1 = a[4];
-    const char* key2 = (n > 5) ? a[5] : NULL;
-    const char* pcurveconf = NULL;
-
-    if (key1 && 
-        (!strcasecmp(key1,"-n2d") || 
-         !strcasecmp(key1,"-n2d1") || 
-         !strcasecmp(key1,"-n2d2"))) {
-      pcurveconf = key1;
+  aTol = 0.;
+  //
+  for (i = 4; i < n; ++i) {
+    if (!strcmp(a[i], "-n2d")) {
+      bPC1 = Standard_False;
+      bPC2 = Standard_False;
+    }
+    else if (!strcmp(a[i], "-n2d1")) {
+      bPC1 = Standard_False;
+    }
+    else if (!strcmp(a[i], "-n2d2")) {
+      bPC2 = Standard_False;
+    }
+    else if (!strcmp(a[i], "-na")) {
+      bApp = Standard_False;
     }
     else {
-      if (!strcasecmp(key1,"-na")) {
-        bApp = Standard_False;
-      }
-      else {
-        isbadparameter = Standard_True;
-      }
-    }
-    if (key2) {
-      if(!strcasecmp(key2,"-na")) {
-        bApp = Standard_False;
-      }
-      else {
-        isbadparameter = Standard_True;
-      }
-    }
-
-    if(!isbadparameter && pcurveconf) {      
-      if (!strcasecmp(pcurveconf, "-n2d1")) {
-        bPC1 = Standard_False;
-      }
-      else {
-        if (!strcasecmp(pcurveconf, "-n2d2")) {
-          bPC2 = Standard_False;
-        }
-        else {
-          if (!strcasecmp(pcurveconf, "-n2d")) {
-            bPC1 = Standard_False;
-            bPC2 = Standard_False;
-          }
-        }
-      }
+      aTol = Draw::Atof(a[i]);
     }
   }
-      
-  if(!isbadparameter) {
-    Standard_Integer iErr;
-    char buf[80];
-    //
-    BRepAlgoAPI_Section aSec(aS1, aS2, Standard_False);
-    aSec.Approximation(bApp);
-    aSec.ComputePCurveOn1(bPC1);
-    aSec.ComputePCurveOn2(bPC2);
-    //
-    aSec.Build();
-    iErr=aSec.ErrorStatus();
-    if (!aSec.IsDone()) {
-      Sprintf(buf, " ErrorStatus : %d\n",  iErr);
-      di << buf;
-      return 0;
-    }
-    //
-    const TopoDS_Shape& aR=aSec.Shape();
-    if (aR.IsNull()) {
-      di << " null shape\n";
-      return 0;
-    }
-    DBRep::Set(a[1], aR);
+  //
+  Standard_Integer iErr;
+  char buf[80];
+  //
+  BRepAlgoAPI_Section aSec(aS1, aS2, Standard_False);
+  aSec.Approximation(bApp);
+  aSec.ComputePCurveOn1(bPC1);
+  aSec.ComputePCurveOn2(bPC2);
+  aSec.SetFuzzyValue(aTol);
+  //
+  aSec.Build();
+  iErr=aSec.ErrorStatus();
+  if (!aSec.IsDone()) {
+    Sprintf(buf, " ErrorStatus : %d\n",  iErr);
+    di << buf;
     return 0;
   }
-  else {
-    di << usage;
-    return 1;
+  //
+  const TopoDS_Shape& aR=aSec.Shape();
+  if (aR.IsNull()) {
+    di << " null shape\n";
+    return 0;
   }
+  DBRep::Set(a[1], aR);
+  return 0;
 }
+
 //=======================================================================
 //function : bsmt
 //purpose  : 
@@ -460,9 +441,10 @@ Standard_Integer bsmt (Draw_Interpretor& di,
   Standard_Integer iErr;
   TopoDS_Shape aS1, aS2;
   BOPCol_ListOfShape aLC;
+  Standard_Real aTol;
   //
-  if (n!=4) {
-    di << " use bx r s1 s2\n";
+  if (n < 4 || n > 5) {
+    di << " use bx r s1 s2 [tol]\n";
     return 1;
   }
   //
@@ -473,6 +455,12 @@ Standard_Integer bsmt (Draw_Interpretor& di,
     di << " null shapes are not allowed \n";
     return 1;
   }
+  //
+  aTol = 0.;
+  if (n == 5) {
+    aTol = Draw::Atof(a[4]);
+  }
+  //
   aLC.Append(aS1);
   aLC.Append(aS2);
   //
@@ -480,6 +468,7 @@ Standard_Integer bsmt (Draw_Interpretor& di,
   BOPAlgo_PaveFiller aPF(aAL);
   //
   aPF.SetArguments(aLC);
+  aPF.SetFuzzyValue(aTol);
   //
   aPF.Perform();
   iErr=aPF.ErrorStatus();
@@ -781,63 +770,81 @@ Standard_Integer bparallelmode(Draw_Interpretor& di, Standard_Integer n, const c
 //=======================================================================
 Standard_Integer mkvolume(Draw_Interpretor& di, Standard_Integer n, const char** a) 
 {
-  const char* usage = "Usage: mkvolume r b1 b2 ... [-ni (do not intersect)] [-s (run in non parallel mode)]\n";
   if (n < 3) {
-    di << usage;
+    di << "Usage: mkvolume r b1 b2 ... [-c] [-ni] [-s] [tol]\n";
+    di << "Options:\n";
+    di << " -c  - use this option if the arguments are compounds\n";
+    di << "       containing shapes that should be interfered;\n";
+    di << " -ni - use this option if the arguments should not be interfered;\n";
+    di << " -s  - use this option to run the operation in non parallel mode;\n";
+    di << " tol - additional tolerance value (real).\n";
     return 1;
   }
   //
-  Standard_Boolean bToIntersect, bRunParallel;
-  Standard_Integer i, aNb;
+  const char* usage = "Type mkvolume without arguments for the usage of the command.\n";
   //
-  aNb = n;
+  Standard_Boolean bToIntersect, bRunParallel, bCompounds;
+  Standard_Integer i;
+  Standard_Real aTol;
+  TopoDS_Shape aS;
+  BOPCol_ListOfShape aLS;
+  //
+  aTol = 0.;
   bToIntersect = Standard_True;
   bRunParallel = Standard_True;
+  bCompounds = Standard_False;
   //
-  if (!strcmp(a[n-1], "-ni")) {
-    bToIntersect = Standard_False;
-    aNb = n-1;
-  } 
-  else if (!strcmp(a[n-1], "-s")) {
-    bRunParallel = Standard_False;
-    aNb = n-1;
-  }
-  if (n > 3) {
-    if (!strcmp(a[n-2], "-ni")) {
-      bToIntersect = Standard_False;
-      aNb = n-2;
-    } 
-    else if (!strcmp(a[n-2], "-s")) {
-      bRunParallel = Standard_False;
-      aNb = n-2;
-    }
-  }
-  //
-  if (aNb < 3) {
-    di << "no shapes to process.\n";
-    di << usage;
-    return 1;
-  }
-  //
-  BOPCol_ListOfShape aLS;
-  TopoDS_Shape aS;
-  for (i = 2; i < aNb; ++i) {
+  for (i = 2; i < n; ++i) {
     aS = DBRep::Get(a[i]);
     if (!aS.IsNull()) {
       aLS.Append(aS);
     }
+    else {
+      if (!strcmp(a[i], "-c")) {
+        bCompounds = Standard_True;
+      }
+      else if (!strcmp(a[i], "-ni")) {
+        bToIntersect = Standard_False;
+      }
+      else if (!strcmp(a[i], "-s")) {
+        bRunParallel = Standard_False;
+      }
+      else {
+        aTol = Draw::Atof(a[i]);
+      }
+    }
   }
   //
   if (aLS.IsEmpty()) {
-    di << "no shapes to process.\n";
+    di << "No shapes to process.\n";
     di << usage;
     return 1;
+  }
+  //
+  // treat list of arguments for the case of compounds
+  if (bToIntersect && bCompounds) {
+    BOPCol_ListOfShape aLSx;
+    BOPCol_ListIteratorOfListOfShape aItLS;
+    //
+    aItLS.Initialize(aLS);
+    for (; aItLS.More(); aItLS.Next()) {
+      const TopoDS_Shape& aSx = aItLS.Value();
+      TopoDS_Iterator aItS(aSx);
+      for (; aItS.More(); aItS.Next()) {
+        const TopoDS_Shape& aSxS = aItS.Value();
+        aLSx.Append(aSxS);
+      }
+    }
+    //
+    aLS.Clear();
+    aLS.Assign(aLSx);
   }
   //
   BOPAlgo_MakerVolume aMV;
   aMV.SetArguments(aLS);
   aMV.SetIntersect(bToIntersect);
   aMV.SetRunParallel(bRunParallel);
+  aMV.SetFuzzyValue(aTol);
   //
   aMV.Perform();
   if (aMV.ErrorStatus()) {
@@ -851,4 +858,3 @@ Standard_Integer mkvolume(Draw_Interpretor& di, Standard_Integer n, const char**
   //
   return 0;
 }
-

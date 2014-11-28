@@ -44,6 +44,29 @@ static
                      BOPCol_ListOfShape& theLS);
 
 //=======================================================================
+//function : CheckData
+//purpose  : 
+//=======================================================================
+void BOPAlgo_MakerVolume::CheckData()
+{
+  if (myArguments.IsEmpty()) {
+    myErrorStatus = 100; // no arguments to process
+    return;
+  }
+  // myPaveFiller
+  if (!myPaveFiller) {
+    myErrorStatus = 101; 
+    return;
+  }
+  //
+  myErrorStatus = myPaveFiller->ErrorStatus();
+  if (myErrorStatus) {
+    myErrorStatus = 102; // PaveFiller is failed
+    return;
+  }
+}
+
+//=======================================================================
 //function : Perform
 //purpose  : 
 //=======================================================================
@@ -84,6 +107,8 @@ void BOPAlgo_MakerVolume::Perform()
   }
   //
   pPF->SetRunParallel(myRunParallel);
+  pPF->SetProgressIndicator(myProgressIndicator);
+  pPF->SetFuzzyValue(myFuzzyValue);
   pPF->Perform();
   //
   myEntryPoint = 1;

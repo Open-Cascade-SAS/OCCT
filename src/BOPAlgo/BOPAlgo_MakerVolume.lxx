@@ -92,26 +92,3 @@ inline const BOPCol_ListOfShape& BOPAlgo_MakerVolume::Faces()const
 {
   return myFaces;
 }
-
-//=======================================================================
-//function : CheckData
-//purpose  : 
-//=======================================================================
-inline void BOPAlgo_MakerVolume::CheckData()
-{
-  if (myArguments.IsEmpty()) {
-    myErrorStatus = 100; // no arguments to process
-    return;
-  }
-  // myPaveFiller
-  if (!myPaveFiller) {
-    myErrorStatus = 101; 
-    return;
-  }
-  //
-  myErrorStatus = myPaveFiller->ErrorStatus();
-  if (myErrorStatus) {
-    myErrorStatus = 102; // PaveFiller is failed
-    return;
-  }
-}

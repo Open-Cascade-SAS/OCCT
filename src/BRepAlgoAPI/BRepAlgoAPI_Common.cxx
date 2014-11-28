@@ -22,6 +22,23 @@
 //function : BRepAlgoAPI_Common
 //purpose  : 
 //=======================================================================
+BRepAlgoAPI_Common::BRepAlgoAPI_Common()
+:
+  BRepAlgoAPI_BooleanOperation()
+{
+  myOperation=BOPAlgo_COMMON;
+}
+//=======================================================================
+//function : ~BRepAlgoAPI_Common
+//purpose  : 
+//=======================================================================
+BRepAlgoAPI_Common::~BRepAlgoAPI_Common()
+{
+}
+//=======================================================================
+//function : BRepAlgoAPI_Common
+//purpose  : 
+//=======================================================================
   BRepAlgoAPI_Common::BRepAlgoAPI_Common(const TopoDS_Shape& S1, 
                                          const TopoDS_Shape& S2)
 : BRepAlgoAPI_BooleanOperation(S1, S2, BOPAlgo_COMMON)
