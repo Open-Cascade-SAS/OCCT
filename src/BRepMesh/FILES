@@ -33,8 +33,6 @@ BRepMesh_PairOfIndex.hxx
 BRepMesh_Status.hxx
 BRepMesh_CMPLRS.edl
 BRepMesh_VertexInspector.hxx
-BRepMesh_EdgeChecker.hxx
-BRepMesh_FaceChecker.hxx
 BRepMesh_SelectorOfDataStructureOfDelaun.hxx
 BRepMesh_SelectorOfDataStructureOfDelaun.cxx
 BRepMesh_EdgeParameterProvider.hxx

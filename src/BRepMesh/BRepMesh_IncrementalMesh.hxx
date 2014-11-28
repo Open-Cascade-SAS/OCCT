@@ -132,13 +132,6 @@ protected:
 
 private:
 
-  //! Checks is the shape to be meshed has correct poly data, 
-  //! i.e. PolygonOnTriangulation of particular edge connected 
-  //! to the same Triangulation data structure as stored inside 
-  //! a parent face.
-  //! @return TRUE on success, FALSE in case of inconsistencies.
-  Standard_Boolean isCorrectPolyData();
-
   //! Builds the incremental mesh for the shape.
   void update();
 
@@ -191,15 +184,15 @@ private:
 
 protected:
 
-  Standard_Boolean                        myRelative;
-  Standard_Boolean                        myInParallel;
-  BRepMesh::DMapOfEdgeListOfTriangulation myEmptyEdges;
-  Handle(BRepMesh_FastDiscret)            myMesh;
-  Standard_Boolean                        myModified;
-  TopTools_DataMapOfShapeReal             myEdgeDeflection;
-  Standard_Real                           myMaxShapeSize;
-  Standard_Integer                        myStatus;
-  NCollection_Vector<TopoDS_Face>         myFaces;
+  Standard_Boolean                            myRelative;
+  Standard_Boolean                            myInParallel;
+  BRepMesh::DMapOfEdgeListOfTriangulationBool myEdges;
+  Handle(BRepMesh_FastDiscret)                myMesh;
+  Standard_Boolean                            myModified;
+  TopTools_DataMapOfShapeReal                 myEdgeDeflection;
+  Standard_Real                               myMaxShapeSize;
+  Standard_Integer                            myStatus;
+  NCollection_Vector<TopoDS_Face>             myFaces;
 };
 
 DEFINE_STANDARD_HANDLE(BRepMesh_IncrementalMesh,BRepMesh_DiscretRoot)

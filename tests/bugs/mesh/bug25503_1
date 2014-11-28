@@ -1,0 +1,19 @@
+puts "============"
+puts "CR25503"
+puts "============"
+puts ""
+###################################################################################
+# BRepMesh - IncrementalMesh always re-meshes the shape even if existing triangulation satisfies the given deflection
+###################################################################################
+
+puts "===> meshing segment of sphere"
+psphere a 100 -45 45 180
+puts ""
+puts "incmesh first time"
+set t1 [expr [lindex [time {incmesh a 0.003}] 0]/1000000]
+puts "spent $t1 sec"
+puts ""
+puts "incmesh second time"
+set t2 [expr [lindex [time {incmesh a 0.003}] 0]/1000000]
+puts "spent $t2 sec"
+if {$t2 != 0} {puts "Error: second time must be quicker"}

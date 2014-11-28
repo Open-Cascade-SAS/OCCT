@@ -94,7 +94,7 @@ namespace BRepMesh
 
   //! Maps
   typedef NCollection_Map<Standard_Integer>                                                         MapOfInteger;
-  typedef NCollection_Map<Handle(Poly_Triangulation)>                                               MapOfTriangulation;
+  typedef NCollection_DataMap<Handle(Poly_Triangulation), Standard_Boolean>                         DMapOfTriangulationBool;
   typedef NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                                    MapOfShape;
 
   typedef NCollection_DataMap<Standard_Integer, Standard_Integer>                                   MapOfIntegerInteger;
@@ -104,7 +104,7 @@ namespace BRepMesh
   typedef NCollection_DataMap<Standard_Integer, gp_Pnt>                                             DMapOfIntegerPnt;
   typedef NCollection_DataMap<Standard_Integer, ListOfXY>                                           DMapOfIntegerListOfXY;
   typedef NCollection_DataMap<Standard_Integer, ListOfInteger>                                      DMapOfIntegerListOfInteger;
-  typedef NCollection_DataMap<TopoDS_Edge, MapOfTriangulation, TopTools_ShapeMapHasher>             DMapOfEdgeListOfTriangulation;
+  typedef NCollection_DataMap<TopoDS_Edge, DMapOfTriangulationBool, TopTools_ShapeMapHasher>        DMapOfEdgeListOfTriangulationBool;
 
   typedef NCollection_IndexedMap<Standard_Integer>                                                  IMapOfInteger;
   typedef NCollection_IndexedMap<Standard_Real>                                                     IMapOfReal;

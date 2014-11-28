@@ -19,7 +19,6 @@
 #include <Precision.hxx>
 #include <Standard_ErrorHandler.hxx>
 
-#include <BRepMesh_FaceChecker.hxx>
 #include <BRepMesh_ShapeTool.hxx>
 #include <BRepMesh_Edge.hxx>
 #include <BRepMesh_PluginMacro.hxx>
@@ -112,7 +111,7 @@ BRepMesh_IncrementalMesh::~BRepMesh_IncrementalMesh()
 //=======================================================================
 void BRepMesh_IncrementalMesh::clear()
 {
-  myEmptyEdges.Clear();
+  myEdges.Clear();
   myEdgeDeflection.Clear();
   myFaces.Clear();
   myMesh.Nullify();
@@ -130,8 +129,7 @@ void BRepMesh_IncrementalMesh::init()
   setDone();
   clear();
 
-  if (!isCorrectPolyData())
-    BRepTools::Clean(myShape);
+  collectFaces();
 
   Bnd_Box aBox;
   BRepBndLib::Add(myShape, aBox, Standard_False);
@@ -148,35 +146,6 @@ void BRepMesh_IncrementalMesh::init()
     Standard_True, Standard_True, myRelative, Standard_True, myInParallel);
 
   myMesh->InitSharedFaces(myShape);
-}
-
-//=======================================================================
-//function : isCorrectPolyData
-//purpose  : 
-//=======================================================================
-Standard_Boolean BRepMesh_IncrementalMesh::isCorrectPolyData()
-{
-  collectFaces();
-
-  BRepMesh_FaceChecker aFaceChecker(myInParallel);
-
-#ifdef HAVE_TBB
-  if (myInParallel)
-  {
-    // check faces in parallel threads using TBB
-    tbb::parallel_for_each(myFaces.begin(), myFaces.end(), aFaceChecker);
-  }
-  else
-  {
-#endif
-    NCollection_Vector<TopoDS_Face>::Iterator aFaceIt(myFaces);
-    for (; aFaceIt.More(); aFaceIt.Next())
-      aFaceChecker(aFaceIt.Value());
-#ifdef HAVE_TBB
-  }
-#endif
-
-  return aFaceChecker.IsValid();
 }
 
 //=======================================================================
@@ -357,59 +326,46 @@ Standard_Real BRepMesh_IncrementalMesh::faceDeflection(
 //=======================================================================
 void BRepMesh_IncrementalMesh::update(const TopoDS_Edge& theEdge)
 {
-  Standard_Integer aPolyIndex   = 1;
+  if (!myEdges.IsBound(theEdge))
+    myEdges.Bind(theEdge, BRepMesh::DMapOfTriangulationBool());
+
   Standard_Real aEdgeDeflection = edgeDeflection(theEdge);
-  Handle(Poly_PolygonOnTriangulation) aPolygon;
-  do
+  // Check that triangulation relies to face of the given shape.
+  const TopTools_IndexedDataMapOfShapeListOfShape& aMapOfSharedFaces = 
+    myMesh->SharedFaces();
+
+  const TopTools_ListOfShape& aSharedFaces = 
+    aMapOfSharedFaces.FindFromKey(theEdge);
+
+  TopTools_ListIteratorOfListOfShape aSharedFaceIt(aSharedFaces);
+  for (; aSharedFaceIt.More(); aSharedFaceIt.Next())
   {
     TopLoc_Location aLoc;
-    Handle(Poly_Triangulation) aTriangulation;
-    BRep_Tool::PolygonOnTriangulation(theEdge, aPolygon, 
-      aTriangulation, aLoc, aPolyIndex++);
+    const TopoDS_Face& aFace = TopoDS::Face(aSharedFaceIt.Value());
+    const Handle(Poly_Triangulation)& aFaceTriangulation = 
+      BRep_Tool::Triangulation(aFace, aLoc);
 
-    if (!aTriangulation.IsNull() && !aPolygon.IsNull())
+    if (aFaceTriangulation.IsNull())
+      continue;
+
+    Standard_Boolean isConsistent = Standard_False;
+    const Handle(Poly_PolygonOnTriangulation)& aPolygon =
+      BRep_Tool::PolygonOnTriangulation(theEdge, aFaceTriangulation, aLoc);
+
+    if (!aPolygon.IsNull())
     {
-      if (aPolygon->Deflection() < 1.1 * aEdgeDeflection &&
-          aPolygon->HasParameters())
+      isConsistent = aPolygon->Deflection() < 1.1 * aEdgeDeflection &&
+        aPolygon->HasParameters();
+
+      if (!isConsistent)
       {
-        continue;
+        myModified = Standard_True;
+        BRepMesh_ShapeTool::NullifyEdge(theEdge, aFaceTriangulation, aLoc);
       }
-      else
-      {
-        // Check that triangulation relies to face of the given shape.
-        const TopTools_IndexedDataMapOfShapeListOfShape& aMapOfSharedFaces = 
-          myMesh->SharedFaces();
-
-        const TopTools_ListOfShape& aSharedFaces = 
-          aMapOfSharedFaces.FindFromKey(theEdge);
-
-        Standard_Boolean isCurrentShape = Standard_False;
-        TopTools_ListIteratorOfListOfShape aSharedFaceIt(aSharedFaces);
-        for (; aSharedFaceIt.More() && !isCurrentShape; aSharedFaceIt.Next())
-        {
-          TopLoc_Location aLoc;
-          const TopoDS_Face& aFace = TopoDS::Face(aSharedFaceIt.Value());
-          Handle(Poly_Triangulation) aFaceTriangulation = 
-            BRep_Tool::Triangulation(aFace, aLoc);
-
-          isCurrentShape = (aFaceTriangulation == aTriangulation);
-        }
-
-        if (!isCurrentShape)
-          continue;
-      }
-
-      myModified = Standard_True;
-      BRepMesh_ShapeTool::NullifyEdge(theEdge, aTriangulation, aLoc);
     }
 
-    if (!myEmptyEdges.IsBound(theEdge))
-      myEmptyEdges.Bind(theEdge, BRepMesh::MapOfTriangulation());
-
-    if (!aTriangulation.IsNull())
-      myEmptyEdges(theEdge).Add(aTriangulation);
+    myEdges(theEdge).Bind(aFaceTriangulation, isConsistent);
   }
-  while (!aPolygon.IsNull());
 }
 
 //=======================================================================
@@ -437,15 +393,33 @@ Standard_Boolean BRepMesh_IncrementalMesh::toBeMeshed(
       for (; aEdgeIt.More() && isEdgesConsistent; aEdgeIt.Next())
       {
         const TopoDS_Edge& aEdge = TopoDS::Edge(aEdgeIt.Current());
-        if (!myEmptyEdges.IsBound(aEdge))
+        if (!myEdges.IsBound(aEdge))
           continue;
 
-        BRepMesh::MapOfTriangulation& aTriMap = myEmptyEdges(aEdge);
-        isEdgesConsistent &= !aTriMap.IsEmpty() && !aTriMap.Contains(aTriangulation);
+        BRepMesh::DMapOfTriangulationBool& aTriMap = myEdges(aEdge);
+        isEdgesConsistent &= aTriMap.IsBound(aTriangulation) &&
+          aTriMap(aTriangulation);
       }
 
       if (isEdgesConsistent)
-        return Standard_False;
+      {
+        // #25080: check that indices of links forming triangles are in range.
+        Standard_Boolean isTriangulationConsistent = Standard_True;
+        const Standard_Integer aNodesNb = aTriangulation->NbNodes();
+        const Poly_Array1OfTriangle& aTriangles = aTriangulation->Triangles();
+        Standard_Integer i = aTriangles.Lower();
+        for (; i <= aTriangles.Upper() && isTriangulationConsistent; ++i)
+        {
+          const Poly_Triangle& aTriangle = aTriangles(i);
+          Standard_Integer n[3];
+          aTriangle.Get(n[0], n[1], n[2]);
+          for (Standard_Integer j = 0; j < 3 && isTriangulationConsistent; ++j)
+            isTriangulationConsistent = (n[j] >= 1 && n[j] <= aNodesNb);
+        }
+
+        if (isTriangulationConsistent)
+          return Standard_False;
+      }
     }
   }
 
