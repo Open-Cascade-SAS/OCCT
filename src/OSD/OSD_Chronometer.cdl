@@ -58,25 +58,25 @@ is
   --          the chronometer.
   ---Level: Public
 
-  Show (me : in out) is virtual;
+  Show (me) is virtual;
   ---Purpose: Shows the current CPU user and system time on the 
   --          standard output stream <cout>.
   --          The chronometer can be running (laps Time) or stopped.
   ---Level: Public
 
-  Show (me : in out; os : in out OStream from Standard) is virtual;
+  Show (me; os : in out OStream from Standard) is virtual;
   ---Purpose: Shows the current CPU user and system time on the output 
   --          stream <os>.
   --          The chronometer can be running (laps Time) or stopped.
   ---Level: Public
 
-  Show (me : in out; UserSeconds : in out Real from Standard) ;
+  Show (me; theUserSeconds : in out Real from Standard);
   ---Purpose: Returns the current CPU user time in a variable.
   --          The chronometer can be running (laps Time) or stopped.
   ---Level: Public
 
-  Show (me : in out; UserSeconds : in out Real from Standard;
-                     SystemSeconds : in out Real from Standard) ;
+  Show (me; theUserSeconds   : in out Real from Standard;
+            theSystemSeconds : in out Real from Standard);
   ---Purpose: Returns the current CPU user and system time in variables.
   --          The chronometer can be running (laps Time) or stopped.
   ---Level: Public

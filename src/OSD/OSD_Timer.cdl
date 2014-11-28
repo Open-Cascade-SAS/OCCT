@@ -41,22 +41,22 @@ is
   ---Purpose: Stops and reinitializes the timer.
   ---Level: Public
 
-  Show (me : in out) is redefined;
+  Show (me) is redefined;
   ---Purpose: Shows both the elapsed time and CPU time on the standard output 
   --          stream <cout>.The chronometer can be running (Lap Time) or
   --          stopped.
   ---Level: Public
 
-  Show  (me : in out; os : in out OStream from Standard) is redefined;
+  Show  (me; os : in out OStream from Standard) is redefined;
   ---Purpose: Shows both the elapsed time and CPU  time on the  
   --          output stream <OS>.
   ---Level: Public
 
-  Show  (me : in out; seconds     : in out Real    from Standard;
-                      minutes     : in out Integer from Standard;
-                      hours       : in out Integer from Standard;
-                      CPUtime     : in out Real    from Standard);
-		      
+  Show  (me; theSeconds : in out Real    from Standard;
+             theMinutes : in out Integer from Standard;
+             theHours   : in out Integer from Standard;
+             theCPUtime : in out Real    from Standard);
+
   ---Purpose: returns both the elapsed time(seconds,minutes,hours) 
   --          and CPU  time.
   ---Level: Public
@@ -70,7 +70,7 @@ is
   --          the Timer.
   ---Level: Public
 
-  ElapsedTime (me : in out) returns Real;
+  ElapsedTime (me) returns Real;
   ---Purpose: Returns elapsed time in seconds.
   ---Level: Public
 

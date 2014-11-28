@@ -1,0 +1,48 @@
+puts "========"
+puts "OCC25514"
+puts "========"
+puts ""
+#########################################################################################
+# TKernel, OSD_Timer - do not accumulate error in timer within queries in running state
+#########################################################################################
+
+# Set number of cycle iteration
+set IterationCount 10000
+set iCounter 1
+
+# Set rank of timer's value
+set TimeRank 2
+
+# Start timers
+dchrono bug_info_1 reset
+dchrono bug_info_2 reset
+dchrono bug_info_1 start
+dchrono bug_info_2 start
+
+# Operation cycle (show only one timer state)
+while {$iCounter != $IterationCount} {
+  dchrono bug_info_1 show
+  set iCounter [expr {$iCounter + 1}]
+}
+
+# Stop timers
+dchrono bug_info_1 stop
+dchrono bug_info_2 stop
+
+# Get timers value
+set Timer_1 [dchrono bug_info_1 show]
+set Timer_2 [dchrono bug_info_2 show]
+
+# Modify timers value for comparison
+set TimerValue_1 [lindex $Timer_1 6]
+set TimerValue_1 [string range $TimerValue_1 0 [expr {[string first "." $TimerValue_1] + $TimeRank}]]
+set TimerValue_2 [lindex $Timer_2 6]
+set TimerValue_2 [string range $TimerValue_2 0 [expr {[string first "." $TimerValue_2] + $TimeRank}]]
+
+# Comparison of timer's values
+puts "Compare: [lindex $Timer_1 6] vs [lindex $Timer_2 6]"
+if {$TimerValue_1 != $TimerValue_2} {
+  puts "ERROR: OCC25514 is reproduced."
+} else {
+  puts "OK"
+}
