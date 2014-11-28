@@ -1,0 +1,31 @@
+puts "=========="
+puts "OCC25470"
+puts "==========" 
+puts ""
+####################################################
+# Wrong result of COMMON operation
+####################################################
+
+restore [locate_data_file bug25470_s.brep] b1
+restore [locate_data_file bug25470_t.brep] b2
+
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+bfillds -s
+bbop result 0
+
+set square 893.011
+
+set nb_v_good 45
+set nb_e_good 77
+set nb_w_good 32
+set nb_f_good 32
+set nb_sh_good 1
+set nb_sol_good 1
+set nb_compsol_good 0
+set nb_compound_good  1
+set nb_shape_good 189
+
+set 2dviewer 1
