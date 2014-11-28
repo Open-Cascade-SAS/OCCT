@@ -144,6 +144,17 @@ is
     BuildGrid(me: in out; thePoint: Pnt from gp) is private;
     	---Purpose: Creation of grid of parametric points
 
+    ComputeEdgeParameters(me: in out;
+                          IsUEdge    : Boolean;
+                          theParam0  : POnSurfParams from Extrema;
+                          theParam1  : POnSurfParams from Extrema;
+                          thePoints  : Pnt from gp;
+                          theDiffTol : Real) returns POnSurfParams from Extrema
+    is private;
+      ---Purpose: Compute new edge parameters.
+      ---C++: return const &
+
+
 fields
     myDone    : Boolean;
     myInit    : Boolean;
@@ -164,6 +175,9 @@ fields
     myAlgo    : ExtAlgo from Extrema;
     myUParams : HArray1OfReal from TColStd;
     myVParams : HArray1OfReal from TColStd;
-    myFacePntParams : HArray2OfPOnSurfParams from Extrema;
+    myFacePntParams  : HArray2OfPOnSurfParams from Extrema;
+    myUEdgePntParams : HArray2OfPOnSurfParams from Extrema;
+    myVEdgePntParams : HArray2OfPOnSurfParams from Extrema;
+    myGridParam      : POnSurfParams from Extrema;
 
 end GenExtPS;
