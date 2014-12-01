@@ -51,21 +51,21 @@ if {[string compare $currentOS "Windows NT"] == 0} {
 if {[string compare $currentOS "Linux"] == 0} {
   if {[regexp {Debug mode} [dversion]]} {
     # DEBUG mode
-    # initial CPU_time for LINUX in DEBUG mode is 292 ((132+14)*2) sec
+    # initial CPU_time for LINUX in DEBUG mode is 900 sec
     puts "Checking LINUX performance in debug mode..."
-    if {$CPU_time > 292.} {
+    if {$CPU_time > 900.} {
       puts "ERROR: OCC25487 is reproduced."
-      puts "       Low performance: $CPU_time (but should be less than 292 sec)"
+      puts "       Low performance: $CPU_time (but should be less than 900 sec)"
     } else {
       puts "Done!"
     }
   } else {
     # OPTIMIZE mode
-    # initial CPU_time for LINUX in OPTIMIZE mode is 146 (132+14) sec
+    # initial CPU_time for LINUX in OPTIMIZE mode is 190 (173+17) sec
     puts "Checking LINUX performance in optimize mode..."
-    if {$CPU_time > 146.} {
+    if {$CPU_time > 190.} {
       puts "ERROR: OCC25487 is reproduced."
-      puts "       Low performance: $CPU_time (but should be less than 146 sec)"
+      puts "       Low performance: $CPU_time (but should be less than 190 sec)"
     } else {
       puts "Done!"
     }
