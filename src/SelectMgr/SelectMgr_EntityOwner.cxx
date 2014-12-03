@@ -129,7 +129,7 @@ void SelectMgr_EntityOwner::SetLocation(const TopLoc_Location&)
 
 TopLoc_Location SelectMgr_EntityOwner::Location() const
 {
-  return !HasSelectable() ? TopLoc_Location() : TopLoc_Location(mySelectable->Transformation());
+  return !HasLocation() ? TopLoc_Location() : TopLoc_Location(mySelectable->Transformation());
 }
 
 void SelectMgr_EntityOwner::ResetLocation()
