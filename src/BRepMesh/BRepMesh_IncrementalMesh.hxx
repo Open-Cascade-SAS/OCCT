@@ -103,6 +103,18 @@ public: //! @name accessing to parameters.
     return myInParallel;
   }
 
+  //! Enables/disables internal vertices mode.
+  inline void SetInternalVerticesMode(const Standard_Boolean isEnabled)
+  {
+    myInternalVerticesMode = isEnabled;
+  }
+  
+  //! Returns flag indicating is internal vertices mode enabled/disabled.
+  inline Standard_Boolean IsInternalVerticesMode() const
+  {
+    return myInternalVerticesMode;
+  }
+
 public: //! @name plugin API
 
   //! Plugin interface for the Mesh Factories.
@@ -193,6 +205,7 @@ protected:
   Standard_Real                               myMaxShapeSize;
   Standard_Integer                            myStatus;
   NCollection_Vector<TopoDS_Face>             myFaces;
+  Standard_Boolean                            myInternalVerticesMode;
 };
 
 DEFINE_STANDARD_HANDLE(BRepMesh_IncrementalMesh,BRepMesh_DiscretRoot)

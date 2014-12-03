@@ -50,8 +50,13 @@ class BRepMesh_FastDiscretFace : public Standard_Transient
 {
 public:
   
+  //! Constructor.
+  //! @param theAngle deviation angle to be used for surface tessellation.
+  //! @param isInternalVerticesMode flag enabling/disabling internal 
+  //! vertices mode.
   Standard_EXPORT BRepMesh_FastDiscretFace(
-    const Standard_Real theAngle);
+    const Standard_Real    theAngle,
+    const Standard_Boolean isInternalVerticesMode);
 
   Standard_EXPORT void Perform(const Handle(BRepMesh_FaceAttribute)& theAttribute);
 

@@ -73,7 +73,8 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_IncrementalMesh, BRepMesh_DiscretRoot)
 //=======================================================================
 BRepMesh_IncrementalMesh::BRepMesh_IncrementalMesh()
 : myRelative (Standard_False),
-  myInParallel (Standard_False)
+  myInParallel (Standard_False),
+  myInternalVerticesMode(Standard_True)
 {
 }
 
@@ -88,7 +89,8 @@ BRepMesh_IncrementalMesh::BRepMesh_IncrementalMesh(
   const Standard_Real    theAngDeflection,
   const Standard_Boolean isInParallel)
   : myRelative  (isRelative),
-    myInParallel(isInParallel)
+    myInParallel(isInParallel),
+    myInternalVerticesMode(Standard_True)
 {
   myDeflection  = theLinDeflection;
   myAngle       = theAngDeflection;
@@ -143,7 +145,8 @@ void BRepMesh_IncrementalMesh::init()
   BRepMesh_ShapeTool::BoxMaxDimension(aBox, myMaxShapeSize);
 
   myMesh = new BRepMesh_FastDiscret(myDeflection, myAngle, aBox,
-    Standard_True, Standard_True, myRelative, Standard_True, myInParallel);
+    Standard_True, Standard_True, myRelative, Standard_True,
+    myInParallel, myInternalVerticesMode);
 
   myMesh->InitSharedFaces(myShape);
 }

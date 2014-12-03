@@ -141,10 +141,11 @@ namespace
 //function : BRepMesh_FastDiscretFace
 //purpose  :
 //=======================================================================
-BRepMesh_FastDiscretFace::BRepMesh_FastDiscretFace
-                          (const Standard_Real     theAngle)
+BRepMesh_FastDiscretFace::BRepMesh_FastDiscretFace(
+  const Standard_Real    theAngle,
+  const Standard_Boolean isInternalVerticesMode)
 : myAngle(theAngle),
-  myInternalVerticesMode(Standard_True)
+  myInternalVerticesMode(isInternalVerticesMode)
 {
   myAllocator = new NCollection_IncAllocator(
     BRepMesh::MEMORY_BLOCK_SIZE_HUGE);
@@ -1247,6 +1248,9 @@ void BRepMesh_FastDiscretFace::add(const TopoDS_Vertex& theVertex)
     OCC_CATCH_SIGNALS
 
     gp_Pnt2d aPnt2d = BRep_Tool::Parameters(theVertex, myAttribute->Face());
+    // check UV values for internal vertices
+    if (myAttribute->ChangeClassifier()->Perform(aPnt2d) != TopAbs_IN)
+      return;
 
     NCollection_Handle<FixedVExplorer> aFixedVExplorer = new FixedVExplorer(theVertex);
     Standard_Integer aIndex = myAttribute->GetVertexIndex(aFixedVExplorer);

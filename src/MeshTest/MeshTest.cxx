@@ -130,6 +130,8 @@ options:\n\
         -a val          angular deflection in deg (default ~28.64 deg = 0.5 rad)\n\
         -relative       notifies that relative deflection is used\n\
                         (switched off by default)\n\
+        -int_vert_off   disables insertion of internal vertices into mesh\n\
+                        (enabled by default)\n\
         -parallel       enables parallel execution (switched off by default)\n";
     return 0;
   }
@@ -141,10 +143,11 @@ options:\n\
     return 0;
   }
 
-  Standard_Real aLinDeflection  = Max(Draw::Atof(argv[2]), Precision::Confusion());
-  Standard_Real aAngDeflection  = 0.5;
-  Standard_Boolean isRelative   = Standard_False;
-  Standard_Boolean isInParallel = Standard_False;
+  Standard_Real aLinDeflection   = Max(Draw::Atof(argv[2]), Precision::Confusion());
+  Standard_Real aAngDeflection   = 0.5;
+  Standard_Boolean isRelative    = Standard_False;
+  Standard_Boolean isInParallel  = Standard_False;
+  Standard_Boolean isIntVertices = Standard_True;
 
   if (nbarg > 3)
   {
@@ -160,6 +163,8 @@ options:\n\
         isRelative = Standard_True;
       else if (aOpt == "-parallel")
         isInParallel = Standard_True;
+      else if (aOpt == "-int_vert_off")
+        isIntVertices = Standard_False;
       else if (i < nbarg)
       {
         Standard_Real aVal = Draw::Atof(argv[i++]);
@@ -174,8 +179,14 @@ options:\n\
   di << "Incremental Mesh, multi-threading "
      << (isInParallel ? "ON" : "OFF") << "\n";
 
-  BRepMesh_IncrementalMesh aMesher(aShape, aLinDeflection, isRelative, 
-    aAngDeflection, isInParallel);
+  BRepMesh_IncrementalMesh aMesher;
+  aMesher.SetShape               (aShape);
+  aMesher.SetDeflection          (aLinDeflection);
+  aMesher.SetRelative            (isRelative);
+  aMesher.SetAngle               (aAngDeflection);
+  aMesher.SetParallel            (isInParallel);
+  aMesher.SetInternalVerticesMode(isIntVertices);
+  aMesher.Perform();
 
   di << "Meshing statuses: ";
   Standard_Integer statusFlags = aMesher.GetStatusFlags();

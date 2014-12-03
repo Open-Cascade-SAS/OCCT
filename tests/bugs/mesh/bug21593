@@ -1,0 +1,41 @@
+# test for #21593: compare number of triangles/nodes
+# produced by BRepMesh for face with internal vertices
+# depening on value of InternalVerticesMode flag.
+
+restore [locate_data_file bug21593_internal_vertices.brep] a
+
+# enable internal vertices mode
+tclean a
+incmesh a 0.1
+set trinfo_a [trinfo a]
+regexp {([0-9]+) triangles} $trinfo_a str nbtriangles_a
+regexp {([0-9]+) nodes} $trinfo_a str nbnodes_a
+
+# check triangles
+if { $nbtriangles_a != 10 } {
+    puts "Error: incorrect number of triangles in case of internal vertices mode is ON ($nbtriangles_a)"
+}
+
+# check nodes
+if { $nbnodes_a != 8 } {
+    puts "Error: incorrect number of nodes in case of internal vertices mode is ON ($nbnodes_a)"
+}
+
+
+# disable internal vertices mode
+tclean a
+incmesh a 0.1 -int_vert_off
+set trinfo_a [trinfo a]
+regexp {([0-9]+) triangles} $trinfo_a str nbtriangles_a
+regexp {([0-9]+) nodes} $trinfo_a str nbnodes_a
+
+# check triangles
+if { $nbtriangles_a != 2 } {
+    puts "Error: incorrect number of triangles in case of internal vertices mode is OFF ($nbtriangles_a)"
+}
+
+# check nodes
+if { $nbnodes_a != 4 } {
+    puts "Error: incorrect number of nodes in case of internal vertices mode is OFF ($nbnodes_a)"
+}
+
