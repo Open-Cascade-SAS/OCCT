@@ -1,0 +1,32 @@
+puts "============"
+puts "CR25492"
+puts "============"
+puts ""
+#######################################################################
+# The selected subshape does not have topological relationship
+# with orginal shape in OCC680
+#######################################################################
+pload ALL
+
+set isEqual 0
+vinit
+box aShape 5 5 5 3 3 3
+vdisplay aShape
+vfit
+vselmode 4 1
+vselect 100 200
+vpickselected aSub
+explode aShape F
+
+
+for {set i 1} {$i <= 6 } {incr i} {
+  set aRes [compare aShape_$i aSub];
+  if { [lsearch $aRes equal] != -1} {
+    set isEqual 1
+  }
+}
+
+if {$isEqual == 0} {
+puts "Error: No selected sub-shape was found in exploded sub-shapes"
+}
+set only_screen 1
