@@ -47,11 +47,11 @@
 
 static clock_t CPU_CURRENT; // cpu time already used at last
                             // cpulimit call. (sec.) 
-
 #else /* _WIN32 */
 
 #include <sys/resource.h>
 #include <signal.h>
+#include <unistd.h>
 
 #if defined (__hpux) || defined ( HPUX )
 #define RLIM_INFINITY   0x7fffffff
@@ -63,6 +63,7 @@ static clock_t CPU_CURRENT; // cpu time already used at last
 extern Standard_Boolean Draw_Batch;
 
 static clock_t CPU_LIMIT;   // Cpu_limit in Sec.
+static OSD_Timer aTimer;
 
 //=======================================================================
 // chronom
@@ -393,27 +394,52 @@ static Standard_Integer Draw_wait(Draw_Interpretor& , Standard_Integer n, const 
 #ifdef _WIN32
 static unsigned int __stdcall CpuFunc (void * /*param*/)
 {
+  clock_t anElapCurrent;
   clock_t aCurrent;
+
   for(;;)
   {
     Sleep (5);
     Standard_Real anUserSeconds, aSystemSeconds;
     OSD_Chronometer::GetProcessCPU (anUserSeconds, aSystemSeconds);
     aCurrent = clock_t(anUserSeconds + aSystemSeconds);
+    anElapCurrent = clock_t(aTimer.ElapsedTime());
     
     if ((aCurrent - CPU_CURRENT) >= CPU_LIMIT)
     {
       cout << "Process killed by CPU limit (" << CPU_LIMIT << " sec)" << endl;
+      aTimer.Stop();
       ExitProcess (2);
-//      return 0;
+    }
+    if ((anElapCurrent) >= CPU_LIMIT)
+    {
+      cout << "Process killed by elapsed limit (" << CPU_LIMIT << " sec)" << endl;
+      aTimer.Stop();
+      ExitProcess (2);
     }
   }
 }
 #else
-static void CpuFunc (int)
+static void cpulimitSignalHandler (int)
 {
-  cout << "Process killed by CPU limit (" << CPU_LIMIT << " sec)" << endl;
+  cout << "Process killed by CPU limit  (" << CPU_LIMIT << " sec)" << endl;
   exit(2);
+}
+static void *CpuFunc(void* /*threadarg*/)
+{
+  clock_t anElapCurrent;
+  for(;;)
+  {
+    sleep (5);
+    anElapCurrent = clock_t(aTimer.ElapsedTime());
+    if ( CPU_LIMIT < 0 )
+      return NULL;
+    if ((anElapCurrent) >= CPU_LIMIT) {
+      cout << "Process killed by elapsed limit  (" << CPU_LIMIT << " sec)" << endl;
+      exit(2);
+    }
+  }
+  return NULL;
 }
 #endif
 
@@ -424,23 +450,21 @@ static Standard_Integer cpulimit(Draw_Interpretor&, Standard_Integer n, const ch
 static Standard_Integer cpulimit(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
 #endif
+  static int aFirst = 1;
 #ifdef _WIN32
   // Windows specific code
-
-  static int aFirst = 1;
-
   unsigned int __stdcall CpuFunc (void *);
   unsigned aThreadID;
 
-  if (n <= 1)
+  if (n <= 1){
     CPU_LIMIT = RLIM_INFINITY;
-  else
-  {
+  } else {
     CPU_LIMIT = Draw::Atoi (a[1]);
     Standard_Real anUserSeconds, aSystemSeconds;
     OSD_Chronometer::GetProcessCPU (anUserSeconds, aSystemSeconds);
     CPU_CURRENT = clock_t(anUserSeconds + aSystemSeconds);
-
+    aTimer.Reset();
+    aTimer.Start();
     if (aFirst) // Launch the thread only at the 1st call.
     {
       aFirst = 0;
@@ -449,9 +473,7 @@ static Standard_Integer cpulimit(Draw_Interpretor& di, Standard_Integer n, const
   }
 
 #else 
-
   // Unix & Linux
-
   rlimit rlp;
   rlp.rlim_max = RLIM_INFINITY;
   if (n <= 1)
@@ -468,13 +490,22 @@ static Standard_Integer cpulimit(Draw_Interpretor& di, Standard_Integer n, const
   // set signal handler to print a message before death
   struct sigaction act, oact;
   memset (&act, 0, sizeof(act));
-  act.sa_handler = CpuFunc;
+  act.sa_handler = cpulimitSignalHandler;
   sigaction (SIGXCPU, &act, &oact);
 
+  // cpulimit for elapsed time
+  aTimer.Reset();
+  aTimer.Start();
+  pthread_t cpulimitThread;
+  if (aFirst) // Launch the thread only at the 1st call.
+  {
+    aFirst = 0;
+    pthread_create(&cpulimitThread, NULL, CpuFunc, NULL);
+  }
 #endif
-
   return 0;
 }
+
 
 //=======================================================================
 //function : mallochook
