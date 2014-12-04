@@ -411,24 +411,6 @@ is
 	--	    if <AStructure> is displayed in <AProjector> and TOS_COMPUTED.
 	---Category: Private methods
 
-	Transparency ( me )
-		returns Boolean from Standard
-		is static;
-	---Level: Advanced
-	---Purpose: Returns Standard_True if the transparency
-	--	    is activated in all activated views.
-	--	    Default Standard_False
-	---Category: Internal methods
-
-	SetTransparency ( me : mutable;
-		AFlag : Boolean from Standard )
-		is static;
-	---Level: Advanced
-	---Purpose: if <AFlag> is Standard_True then the transparency
-	--	    is managed.
-	--	    Default Standard_False
-	---Category: Internal methods
-
 	ZBufferAuto ( me )
 		returns Boolean from Standard
 		is static;
@@ -473,7 +455,6 @@ fields
 
 	-- advanced
 	MyZBufferAuto			:	Boolean from Standard;
-	MyTransparency			:	Boolean from Standard;
 
         -- Z layer indexes
         myLayerIds                      :       MapOfInteger from TColStd;

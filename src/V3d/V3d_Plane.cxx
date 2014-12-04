@@ -70,7 +70,6 @@ void V3d_Plane::Display (const Handle(V3d_View)& theView,
   Graphic3d_MaterialAspect aPlastic (Graphic3d_NOM_PLASTIC);
   aPlastic.SetColor (theColor);
   aPlastic.SetTransparency (0.5);
-  theView->SetTransparency (Standard_True);
   anAsp->SetFrontMaterial (aPlastic);
   anAsp->SetInteriorStyle (Aspect_IS_HATCH);
   anAsp->SetHatchStyle (Aspect_HS_GRID_DIAGONAL_WIDE);

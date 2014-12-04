@@ -35,8 +35,6 @@
 --              -> Add SetProjModel() method.
 --      VKH - 15/11/99 : G004
 --              -> Add method Dump()
---      GG  - IMP210200
---              -> Add Transparency() method
 --      THA  - 17/08/00 Thomas HARTL <t-hartl@muenchen.matra-dtv.fr>
 --              -> Add Print method (works only under Windows).
 --      GG  - IMP231100
@@ -414,10 +412,6 @@ is
         returns Boolean from Standard;
         ---Level: Public
         ---Purpose: Returns TRUE when the light is active in this view.
-
-        SetTransparency( me : mutable ; AnActivity : Boolean = Standard_False);
-        ---Level: Public
-        ---Purpose: Activate/Deactivate the transparency in this view.
 
         SetImmediateUpdate(me: mutable; theImmediateUpdate: Boolean from Standard)
         returns Boolean from Standard;
@@ -1141,10 +1135,6 @@ is
         ---Level: Public
         -- purpose: return the current environment texture used
 
-        Transparency(me) returns Boolean from Standard;
-        ---Level: Public
-        ---Purpose: Returns the transparency activity.
-
         Visualization ( me ) returns TypeOfVisualization from V3d;
         ---Level: Public
         ---Purpose: Returns the current visualisation mode.
@@ -1638,7 +1628,6 @@ fields
         MyGridEchoStructure             :       Structure from Graphic3d;
         MyGridEchoGroup                 :       Group from Graphic3d;
 
-        MyTransparencyFlag      : Boolean from Standard;
         myImmediateUpdate: Boolean from Standard is protected;
 
         myXscreenAxis           : Vector from Graphic3d;

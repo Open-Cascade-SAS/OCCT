@@ -16,9 +16,6 @@
 
 // Modified by  XAB & Serguei Dec 97 (angle &deviation coeffts)
 
-#define BUC60577        //GG_101099     Enable to compute correctly
-//                      transparency with more than one object in the view.
-
 #define BUC60632        //GG 15/03/00 Add protection on SetDisplayMode()
 //                      method, compute only authorized presentation.
 
@@ -450,9 +447,7 @@ void AIS_InteractiveContext::Display(const Handle(AIS_InteractiveObject)& anIObj
         }
       }
     } 
-    
-    if(anIObj->IsTransparent() && !myMainVwr->Viewer()->Transparency())
-      myMainVwr->Viewer()->SetTransparency(Standard_True);
+
     if(updateviewer) myMainVwr->Update();
   }
   
@@ -460,11 +455,7 @@ void AIS_InteractiveContext::Display(const Handle(AIS_InteractiveObject)& anIObj
   else
   {
     myLocalContexts(myCurLocalIndex)->Display(anIObj,DispMode,anIObj->AcceptShapeDecomposition(),SelMode);
-    
-    if(anIObj->IsTransparent() && !myMainVwr->Viewer()->Transparency())
-      myMainVwr->Viewer()->SetTransparency(Standard_True);
-    
-    
+
     if(updateviewer) myMainVwr->Update();
   }
 }
@@ -1585,9 +1576,7 @@ void AIS_InteractiveContext::SetDisplayMode(const Handle(AIS_InteractiveObject)&
         if(STATUS->IsSubIntensityOn()){
           myMainPM->Color(anIObj,mySubIntensity,aMode);
         }
-        if(anIObj->IsTransparent() && !myMainVwr->Viewer()->Transparency())
-          myMainVwr->Viewer()->SetTransparency(Standard_True);
-        
+
         if(updateviewer) myMainVwr->Update();
       }
       anIObj->SetDisplayMode(aMode);
@@ -2159,18 +2148,17 @@ void AIS_InteractiveContext::SetTransparency(const Handle(AIS_InteractiveObject)
    if(!anIObj->HasInteractiveContext())
     anIObj->SetContext(this);
 
-#ifdef BUC60577 //right optimization
-  if(!anIObj->IsTransparent() && aValue<=0.05) return;
-#else  
-//  if(!anIObj->IsTransparent() && aValue<=0.05) return;
-#endif
+  if (!anIObj->IsTransparent()
+    && aValue <= 0.05)
+  {
+    return;
+  }
+
   if(aValue<=0.05){
     UnsetTransparency(anIObj,updateviewer);
     return;
   }
-  
-  if(!myMainVwr->Viewer()->Transparency())
-    myMainVwr->Viewer()->SetTransparency(Standard_True);
+
   anIObj->SetTransparency(aValue);
   if(anIObj->RecomputeEveryPrs())
     anIObj->Redisplay();
@@ -2209,17 +2197,6 @@ void AIS_InteractiveContext::UnsetTransparency(const Handle(AIS_InteractiveObjec
       anIObj->SetRecomputeOk();
     }
 
-  // To Unset transparency in the viewer, if no other object is transparent ...(Speed)
-  AIS_DataMapIteratorOfDataMapOfIOStatus It(myObjects);
-  Standard_Boolean FoundTransp(Standard_False);
-  for(;It.More() && !FoundTransp ;It.Next()){
-    if(It.Key()->IsTransparent())
-      FoundTransp = Standard_True;
-  }
-  if(!FoundTransp)
-    myMainVwr->Viewer()->SetTransparency(Standard_False);
-  
-  
   if(updateviewer)
     UpdateCurrentViewer();
 }

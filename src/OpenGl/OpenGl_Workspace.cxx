@@ -156,7 +156,6 @@ OpenGl_Workspace::OpenGl_Workspace (const Handle(OpenGl_GraphicDriver)& theDrive
   myTransientDrawToFront (Standard_True),
   myBackBufferRestored   (Standard_False),
   myIsImmediateDrawn     (Standard_False),
-  myUseTransparency (Standard_False),
   myUseZBuffer (Standard_False),
   myUseDepthTest (Standard_True),
   myUseGLLight (Standard_True),
@@ -253,15 +252,6 @@ Standard_Boolean OpenGl_Workspace::Activate()
   ResetAppliedAspect();
 
   return Standard_True;
-}
-
-// =======================================================================
-// function : UseTransparency
-// purpose  : call_togl_transparency
-// =======================================================================
-void OpenGl_Workspace::UseTransparency (const Standard_Boolean theFlag)
-{
-  myUseTransparency = theFlag;
 }
 
 //=======================================================================

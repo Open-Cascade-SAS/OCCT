@@ -51,7 +51,6 @@ Viewer::Viewer(QWidget* parent):QWidget(parent)
 
     myView->MustBeResized();
     myView->SetSurfaceDetail(V3d_TEX_NONE);
-    myView->SetTransparency(Standard_True);
     myView->SetSize(10000.0);
     myView->SetZSize(10000.0);
     myView->SetViewMappingDefault();

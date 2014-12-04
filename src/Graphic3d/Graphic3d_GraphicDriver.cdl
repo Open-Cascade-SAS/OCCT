@@ -261,12 +261,6 @@ is
         is deferred;
     ---Purpose: call_togl_setvisualisation
 
-    Transparency ( me       : mutable;
-                   ACView   : CView from Graphic3d;
-                   AFlag    : Boolean from Standard )
-        is deferred;
-    ---Purpose: call_togl_transparency
-
     View ( me   : mutable;
            ACView   : in out CView from Graphic3d )
         returns Boolean from Standard

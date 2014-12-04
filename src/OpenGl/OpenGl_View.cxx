@@ -54,7 +54,7 @@ static const GLdouble THE_IDENTITY_MATRIX[4][4] =
 
 OpenGl_View::OpenGl_View (const CALL_DEF_VIEWCONTEXT &AContext,
                           OpenGl_StateCounter*       theCounter)
-: mySurfaceDetail(Visual3d_TOD_NONE),
+: mySurfaceDetail(Visual3d_TOD_ALL),
   myBackfacing(0),
   myBgTexture(myDefaultBgTexture),
   myBgGradient(myDefaultBgGradient),
