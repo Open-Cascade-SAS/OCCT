@@ -470,13 +470,6 @@ void OpenGl_GraphicDriver::SetVisualisation (const Graphic3d_CView& ACView)
   }
 }
 
-void OpenGl_GraphicDriver::Transparency (const Graphic3d_CView& ACView, const Standard_Boolean AFlag)
-{
-  const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
-  if (aCView)
-    aCView->WS->UseTransparency(AFlag);
-}
-
 // =======================================================================
 // function : InvalidateBVHData
 // purpose  :

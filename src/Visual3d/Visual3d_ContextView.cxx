@@ -57,7 +57,7 @@ MyModel (Visual3d_TOM_NONE),
 MyVisual (Visual3d_TOV_WIREFRAME),
 MyLights (),
 MyTextureEnv(),
-MySurfaceDetail(Visual3d_TOD_NONE),
+MySurfaceDetail(Visual3d_TOD_ALL),
 myClipPlanes()
 {
 }

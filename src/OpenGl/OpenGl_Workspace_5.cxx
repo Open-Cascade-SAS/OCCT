@@ -119,7 +119,7 @@ void OpenGl_Workspace::updateMaterial (const int theFlag)
       NamedStatus |= OPENGL_NS_2NDPASSNEED;
     }
 
-    if (myUseTransparency && aProps->trans != 1.0f)
+    if (aProps->trans != 1.0f)
     {
       // render transparent
       myMatTmp.Diffuse.a() = aProps->trans;
@@ -349,7 +349,7 @@ const OpenGl_AspectFace* OpenGl_Workspace::AspectFace (const Standard_Boolean th
                              ? TelCullNone
                              : (TelCullMode )AspectFace_set->CullingMode();
     if (aCullingMode != TelCullNone
-     && myUseTransparency && !(NamedStatus & OPENGL_NS_2NDPASSDO))
+     && !(NamedStatus & OPENGL_NS_2NDPASSDO))
     {
       // disable culling in case of translucent shading aspect
       if (AspectFace_set->IntFront().trans != 1.0f)

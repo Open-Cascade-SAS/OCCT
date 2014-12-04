@@ -21,7 +21,6 @@
      --------------------------------
       00-09-92 : GG  ; Creation.
       24-12-97 : FMN ; Suppression de GEOMLITE
-      21-02-00 : GG  ; Add Transparency() method
       23-11-00 : GG  ; Add IsActiveLight() and IsActivePlane() methods
 
 ************************************************************************/
@@ -100,18 +99,6 @@ void V3d_View::SetLightOff( ) {
   }
   MyView->SetContext(MyViewContext) ;
 
-}
-
-void V3d_View::SetTransparency(const Standard_Boolean AnActivity) {
-
-  MyTransparencyFlag = AnActivity;
-  MyView->SetTransparency(AnActivity);
-}
-
-
-Standard_Boolean V3d_View::Transparency() const {
-
-  return MyTransparencyFlag;
 }
 
 void V3d_View::InitActiveLights() {

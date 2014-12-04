@@ -184,7 +184,6 @@ public:
                                Image_PixMap&               theImage,
                                const Graphic3d_BufferType& theBufferType);
 
-  void UseTransparency (const Standard_Boolean theFlag);
   Standard_Boolean& UseZBuffer()   { return myUseZBuffer; }
   Standard_Boolean& UseDepthTest() { return myUseDepthTest; }
   Standard_Boolean& UseGLLight()   { return myUseGLLight; }
@@ -671,7 +670,6 @@ protected: //! @name protected fields
   Standard_Boolean       myTransientDrawToFront; //!< optimization flag for immediate mode (to render directly to the front buffer)
   Standard_Boolean       myBackBufferRestored;
   Standard_Boolean       myIsImmediateDrawn;     //!< flag indicates that immediate mode buffer contains some data
-  Standard_Boolean       myUseTransparency;
   Standard_Boolean       myUseZBuffer;
   Standard_Boolean       myUseDepthTest;
   Standard_Boolean       myUseGLLight;

@@ -251,8 +251,6 @@ V3d_View::V3d_View(const Handle(V3d_Viewer)& VM, const V3d_TypeOfView Type ) :
   aCamera->SetProjectionType ((Type == V3d_ORTHOGRAPHIC)
     ? Graphic3d_Camera::Projection_Orthographic
     : Graphic3d_Camera::Projection_Perspective);
-
-  MyTransparencyFlag = Standard_False;
 }
 
 //=============================================================================

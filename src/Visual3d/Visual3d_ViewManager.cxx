@@ -83,8 +83,7 @@ Visual3d_ViewManager::Visual3d_ViewManager (const Handle(Graphic3d_GraphicDriver
 Graphic3d_StructureManager (theDriver),
 MyDefinedView (),
 MyViewGenId (View_IDMIN+((View_IDMIN+View_IDMAX)/(Visual3d_ViewManager::Limit ()))*(Visual3d_ViewManager::CurrentId ()-1),View_IDMIN+((View_IDMIN+View_IDMAX)/(Visual3d_ViewManager::Limit ()))*Visual3d_ViewManager::CurrentId ()-1),
-MyZBufferAuto (Standard_False),
-MyTransparency (Standard_False)
+MyZBufferAuto (Standard_False)
 {
   // default layer is always presented in display layer sequence
   // it can not be removed
@@ -556,24 +555,6 @@ void Visual3d_ViewManager::UnIdentification (const Standard_Integer aViewId)
   }
 
   MyViewGenId.Free(aViewId);
-}
-
-void Visual3d_ViewManager::SetTransparency (const Standard_Boolean AFlag)
-{
-  if (MyTransparency && AFlag) return;
-  if (! MyTransparency && ! AFlag) return;
-
-  for(int i=1; i<=MyDefinedView.Length(); i++)
-  {
-    (MyDefinedView.Value(i))->SetTransparency(AFlag);
-  }
-
-  MyTransparency = AFlag;
-}
-
-Standard_Boolean Visual3d_ViewManager::Transparency () const
-{
-  return (MyTransparency);
 }
 
 void Visual3d_ViewManager::SetZBufferAuto (const Standard_Boolean AFlag)

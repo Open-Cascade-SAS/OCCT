@@ -805,7 +805,6 @@ void Visual3d_View::Activate()
   {
     myGraphicDriver->ActivateView (MyCView);
     myGraphicDriver->Background   (MyCView);
-    myGraphicDriver->Transparency (MyCView, myViewManager->Transparency());
 
     MyCView.Active = 1;
 
@@ -1798,22 +1797,6 @@ Standard_Boolean Visual3d_View::ZBufferIsActivated() const
     return MyContext.Visualization () == Visual3d_TOV_SHADING;
   }
   return MyCView.Context.ZBufferActivity != 0; //  0 or 1 => forced by the programmer
-}
-
-// =======================================================================
-// function : SetTransparency
-// purpose  :
-// =======================================================================
-void Visual3d_View::SetTransparency (const Standard_Boolean theActivity)
-{
-  if (IsDeleted()
-  || !IsDefined()
-  || !IsActive())
-  {
-    return;
-  }
-
-  myGraphicDriver->Transparency (MyCView, theActivity);
 }
 
 // =======================================================================

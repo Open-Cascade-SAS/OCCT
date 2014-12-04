@@ -1045,15 +1045,6 @@ is
         -- or insufficient memory.
 	--  Warning: Works only under Windows.
 
-	SetTransparency ( me : mutable;
-		AFlag : Boolean from Standard )
-		is static;
-	---Level: Advanced
-	---Purpose: if <AFlag> is Standard_True then the transparency
-	--	    is managed in the view <me>.
-	--	    Default Standard_False
-	---Category: Internal methods
-
 	ZBufferIsActivated ( me )
 		returns Boolean from Standard
 		is static;
