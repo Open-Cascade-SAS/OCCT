@@ -12,17 +12,17 @@ restore [locate_data_file bug24798_rectBranch.brep] b2
 bop b1 b2
 bopcut result
 
-set square 1826.15
+set square 1826.16
 
 # Analysis of "nbshapes res"
-set nb_v_good 49
-set nb_e_good 72
+set nb_v_good 44
+set nb_e_good 67
 set nb_w_good 29
 set nb_f_good 22
 set nb_sh_good 1
 set nb_sol_good 1
 set nb_compsol_good 0
 set nb_compound_good 1
-set nb_shape_good 175
+set nb_shape_good 165
 
 set 2dviewer 1

@@ -128,7 +128,6 @@ is
    
         returns Boolean from Standard;
   
-
 fields
 
     pt  : Pnt     from gp;
