@@ -91,29 +91,41 @@ class ProjLib_OnSurface : public AppCont_Function
   public :
 
   ProjLib_OnSurface(const Handle(Adaptor3d_HCurve)   & C, 
-		    const Handle(Adaptor3d_HSurface) & S)
-    : myCurve(C)
-      {Standard_Real U = myCurve->FirstParameter();
-       gp_Pnt P = myCurve->Value(U);
-       Standard_Real Tol = Precision::PConfusion();
-       myExtPS = new Extrema_ExtPS(P,S->Surface(),Tol,Tol);}
+                    const Handle(Adaptor3d_HSurface) & S)
+ : myCurve(C)
+  {
+    myNbPnt = 1;
+    myNbPnt2d = 0;
+    Standard_Real U = myCurve->FirstParameter();
+    gp_Pnt P = myCurve->Value(U);
+    Standard_Real Tol = Precision::PConfusion();
+    myExtPS = new Extrema_ExtPS(P,S->Surface(),Tol,Tol);
+  }
 
   ~ProjLib_OnSurface() { delete myExtPS; }
 
   Standard_Real FirstParameter() const
     {return myCurve->FirstParameter();}
-  
+
   Standard_Real LastParameter() const
     {return myCurve->LastParameter();}
 
-  gp_Pnt Value( const Standard_Real t) const
-    {return OnSurface_Value(t,myCurve,myExtPS);}
+  Standard_Boolean Value(const Standard_Real   theT,
+                         NCollection_Array1<gp_Pnt2d>& /*thePnt2d*/,
+                         NCollection_Array1<gp_Pnt>&   thePnt) const
+  {
+      thePnt(1) = OnSurface_Value(theT, myCurve, myExtPS);
+      return Standard_True;
+  }
 
-  Standard_Boolean D1(const Standard_Real t, gp_Pnt& P, gp_Vec& V) const
-    {return OnSurface_D1(t,P,V,myCurve,myExtPS);}
+  Standard_Boolean D1(const Standard_Real   theT,
+                      NCollection_Array1<gp_Vec2d>& /*theVec2d*/,
+                      NCollection_Array1<gp_Vec>&   theVec) const
+  {
+    gp_Pnt aPnt;
+    return OnSurface_D1(theT, aPnt, theVec(1), myCurve, myExtPS);
+  }
 };
-  
-
 
 
 //=====================================================================//

@@ -62,7 +62,7 @@ end;
 
    generic class ComputeLine, MyGradient;
 
-   generic class ComputeCLine, MyLeastSquare;
+   generic class ComputeCLine;
 
 ----------------------------------------------
 ---Algorithms for BSpline curves construction:
@@ -108,10 +108,10 @@ end;
 -----------------------------------------------------------------
 
     class FitAndDivide instantiates ComputeCLine from Approx
-    	(Function from AppCont, FunctionTool from AppCont);
+    	(Function from AppCont);
 
     class FitAndDivide2d instantiates ComputeCLine from Approx
-    	(Function2d from AppCont, FunctionTool2d from AppCont);
+    	(Function from AppCont);
 
     class SameParameter from Approx ;
 

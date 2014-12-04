@@ -379,22 +379,40 @@ static void KPartCurve3d(TopoDS_Edge           Edge,
 class MakeCurve_Function : public AppCont_Function
 {
   BiTgte_CurveOnEdge myCurve;
-  
+
   public :
-  
-  MakeCurve_Function(const BiTgte_CurveOnEdge& C) : myCurve(C) {};
+
+  MakeCurve_Function(const BiTgte_CurveOnEdge& C)
+  : myCurve(C)
+  {
+    myNbPnt = 1;
+    myNbPnt2d = 0;
+  }
 
   Standard_Real FirstParameter() const
-    {return myCurve.FirstParameter();}
-  
+  {
+    return myCurve.FirstParameter();
+  }
+
   Standard_Real LastParameter() const
-    {return myCurve.LastParameter();}
+  {
+    return myCurve.LastParameter();
+  }
+
+  Standard_Boolean Value(const Standard_Real   theT,
+                         NCollection_Array1<gp_Pnt2d>& /*thePnt2d*/,
+                         NCollection_Array1<gp_Pnt>&   thePnt) const
+  {
+      thePnt(1) = myCurve.Value(theT);
+      return Standard_True;
+  }
   
-  gp_Pnt Value(const Standard_Real t) const
-    {return myCurve.Value(t);}
-  
-  Standard_Boolean D1(const Standard_Real /*t*/, gp_Pnt& /*P*/, gp_Vec& /*V*/) const
-    {return Standard_False;}
+  Standard_Boolean D1(const Standard_Real   /*theT*/,
+                      NCollection_Array1<gp_Vec2d>& /*theVec2d*/,
+                      NCollection_Array1<gp_Vec>&   /*theVec*/) const
+  {
+      return Standard_False;
+  }
 
 };
 

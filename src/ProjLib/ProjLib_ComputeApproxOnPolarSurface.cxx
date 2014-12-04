@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 #include <ProjLib_ComputeApproxOnPolarSurface.hxx>
-#include <AppCont_Function2d.hxx>
+#include <AppCont_Function.hxx>
 #include <ElSLib.hxx>
 #include <ElCLib.hxx>
 #include <BSplCLib.hxx>
@@ -288,49 +288,54 @@ static gp_Pnt2d Function_Value(const Standard_Real U,
 //purpose  : (OCC217 - apo)- This class produce interface to call "gp_Pnt2d Function_Value(...)"
 //=======================================================================
 
-class ProjLib_PolarFunction : public AppCont_Function2d
+class ProjLib_PolarFunction : public AppCont_Function
 {
   Handle(Adaptor3d_HCurve)           myCurve;
-  Handle(Adaptor2d_HCurve2d)         myInitialCurve2d ;
-  Handle(Adaptor3d_HSurface)         mySurface ;
-  //OCC217
-  Standard_Real                      myTolU, myTolV; 
-  Standard_Real                      myDistTol3d; 
-  //Standard_Real                    myTolerance ; 
-  
+  Handle(Adaptor2d_HCurve2d)         myInitialCurve2d;
+  Handle(Adaptor3d_HSurface)         mySurface;
+  Standard_Real                      myTolU, myTolV;
+  Standard_Real                      myDistTol3d;
+
   public :
-  
+
   ProjLib_PolarFunction(const Handle(Adaptor3d_HCurve) & C, 
-			const Handle(Adaptor3d_HSurface)& Surf,
-			const Handle(Adaptor2d_HCurve2d)& InitialCurve2d,
-			//OCC217
-			const Standard_Real Tol3d) :
-			//const Standard_Real Tolerance) :
-  myCurve(C),
+                        const Handle(Adaptor3d_HSurface)& Surf,
+                        const Handle(Adaptor2d_HCurve2d)& InitialCurve2d,
+                        const Standard_Real Tol3d)
+: myCurve(C),
   myInitialCurve2d(InitialCurve2d),
   mySurface(Surf),
-  //OCC217		
   myTolU(Surf->UResolution(Tol3d)),
   myTolV(Surf->VResolution(Tol3d)),
-  myDistTol3d(100.0*Tol3d){} ;
-  //myTolerance(Tolerance){} ;
-  
-  ~ProjLib_PolarFunction() {}
-  
-  Standard_Real FirstParameter() const
-  {return (myCurve->FirstParameter()/*+1.e-9*/);}
-  
-  Standard_Real LastParameter() const
-  {return (myCurve->LastParameter()/*-1.e-9*/);}
-  
-  gp_Pnt2d Value(const Standard_Real t) const {
-    return Function_Value
-      (t,mySurface,myCurve,myInitialCurve2d,myDistTol3d,myTolU,myTolV) ;  //OCC217
-      //(t,mySurface,myCurve,myInitialCurve2d,myTolerance) ;
+  myDistTol3d(100.0*Tol3d)
+  {
+    myNbPnt = 0;
+    myNbPnt2d = 1;
   }
-  
-//  Standard_Boolean D1(const Standard_Real t, gp_Pnt2d& P, gp_Vec2d& V) const
-  Standard_Boolean D1(const Standard_Real , gp_Pnt2d& , gp_Vec2d& ) const
+
+  ~ProjLib_PolarFunction() {}
+
+  Standard_Real FirstParameter() const
+  {
+    return myCurve->FirstParameter();
+  }
+
+  Standard_Real LastParameter() const
+  {
+    return myCurve->LastParameter();
+  }
+
+  Standard_Boolean Value(const Standard_Real   theT,
+                         NCollection_Array1<gp_Pnt2d>& thePnt2d,
+                         NCollection_Array1<gp_Pnt>&   /*thePnt*/) const
+  {
+    thePnt2d(1) = Function_Value(theT, mySurface, myCurve, myInitialCurve2d, myDistTol3d, myTolU, myTolV);
+    return Standard_True;
+  }
+
+  Standard_Boolean D1(const Standard_Real   /*theT*/,
+                      NCollection_Array1<gp_Vec2d>& /*theVec2d*/,
+                      NCollection_Array1<gp_Vec>&   /*theVec*/) const
     {return Standard_False;}
 };
 
@@ -1695,12 +1700,7 @@ Handle(Geom2d_BSplineCurve)
     
     //update of fields of  ProjLib_Approx
     Standard_Integer NbKnots = NbCurves + 1;
-    
-    // The start and end nodes are not correct : Cf: opening of the interval
-    //Knots( 1) -= 1.e-9;
-    //Knots(NbKnots) += 1.e-9; 
-    
-    
+
     TColStd_Array1OfInteger   Mults( 1, NbKnots);
     Mults.Init(MaxDeg);
     Mults.SetValue( 1, MaxDeg + 1);

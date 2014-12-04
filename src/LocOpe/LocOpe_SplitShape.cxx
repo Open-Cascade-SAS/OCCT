@@ -1466,7 +1466,7 @@ static void ChoixUV(const TopoDS_Edge& Last,
       ang = -M_PI;
     }
 
-    if ((dist < tol)  && (ang > angmax)) {
+    if ((dist - tol < Epsilon(1.0))  && (ang > angmax)) {
       imin = index;
       angmax = ang;
     }

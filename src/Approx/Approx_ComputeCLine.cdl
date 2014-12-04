@@ -15,8 +15,7 @@
 -- commercial license or contractual agreement.
 
 generic class ComputeCLine from Approx 
-    	    	    (MultiLine as any;
-    	    	     LineTool  as any)
+    	    	    (MultiLine as any)
     ---Purpose: Approximate a continous MultiLine with a cutting.
     --          The Tool of the line is the tool from AppCont.
 
@@ -29,11 +28,6 @@ uses ParametrizationType       from Approx,
      Vector                    from math
      
      
-
-private class MyLeastSquare instantiates LeastSquare from AppCont
-    	    	    	    	       (MultiLine,
-			    	    	LineTool);
-							  
 is
 
 
@@ -160,7 +154,7 @@ currenttol3d:  Real;
 currenttol2d:  Real;
 mycut:         Boolean;
 myfirstC:      Constraint;
-mylastC:      Constraint;
+mylastC:       Constraint;
 
 
 end ComputeCLine;

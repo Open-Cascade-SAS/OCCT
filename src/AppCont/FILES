@@ -4,3 +4,6 @@ AppCont_ContMatrices_1.cxx
 AppCont_ContMatrices_2.cxx
 AppCont_ContMatrices_3.cxx
 AppCont_ContMatrices_4.cxx
+AppCont_Function.hxx
+AppCont_LeastSquare.hxx
+AppCont_LeastSquare.cxx

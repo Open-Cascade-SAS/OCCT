@@ -19,7 +19,7 @@
 
 
 #include <Approx_ParametrizationType.hxx>
-#include Approx_MyLeastSquare_hxx
+#include <AppCont_LeastSquare.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <AppParCurves_Constraint.hxx>
 #include <Approx_Status.hxx>
@@ -89,8 +89,8 @@ void Approx_ComputeCLine::Perform(const MultiLine& Line)
   Standard_Boolean Finish = Standard_False, 
           begin = Standard_True, Ok = Standard_False;
   Standard_Real thetol3d = Precision::Confusion(), thetol2d = Precision::Confusion();
-  UFirst = LineTool::FirstParameter(Line);
-  ULast  = LineTool::LastParameter(Line);
+  UFirst = Line.FirstParameter();
+  ULast  = Line.LastParameter();
   Standard_Real TolU = (ULast-UFirst)*1.e-05;
   Standard_Real myfirstU = UFirst; 
   Standard_Real mylastU = ULast;
@@ -219,8 +219,7 @@ Standard_Boolean Approx_ComputeCLine::Compute(const MultiLine& Line,
   for (deg = mydegremin; deg <= mydegremax; deg++) {
 
     AppParCurves_MultiCurve mySCU(deg+1);
-    Approx_MyLeastSquare LSquare(Line, Ufirst, Ulast, myfirstC, mylastC, 
-			         deg, NbPoints);
+    AppCont_LeastSquare LSquare(Line, Ufirst, Ulast, myfirstC, mylastC, deg, NbPoints);
     mydone = LSquare.IsDone();
     if (mydone) {
       LSquare.Error(Fv, TheTol3d, TheTol2d);

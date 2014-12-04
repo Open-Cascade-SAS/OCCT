@@ -14,7 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepFill_MultiLine.ixx>
+#include <BRepFill_MultiLine.hxx>
 
 #include <BRepIntCurveSurface_Inter.hxx>
 #include <gp.hxx>
@@ -80,8 +80,6 @@ static Standard_Boolean isIsoU(const TopoDS_Face& Face,
 }
 
 
-
-
 //=======================================================================
 //function : BRepFill_MultiLine
 //purpose  : 
@@ -89,6 +87,8 @@ static Standard_Boolean isIsoU(const TopoDS_Face& Face,
 
 BRepFill_MultiLine::BRepFill_MultiLine()
 {
+  myNbPnt2d = 2;
+  myNbPnt = 1;
 }
 
 
@@ -98,17 +98,20 @@ BRepFill_MultiLine::BRepFill_MultiLine()
 //=======================================================================
 
 BRepFill_MultiLine::BRepFill_MultiLine(const TopoDS_Face&     Face1, 
-				       const TopoDS_Face&     Face2,
-				       const TopoDS_Edge&     Edge1,
-				       const TopoDS_Edge&     Edge2,
-				       const Standard_Boolean Inv1,
-				       const Standard_Boolean Inv2,
-				       const Handle(Geom2d_Curve)& Bissec) :
-myFace1(Face1 ),
-myFace2(Face2 ),
-myBis  (Bissec),
-myKPart(0)
+                                       const TopoDS_Face&     Face2,
+                                       const TopoDS_Edge&     Edge1,
+                                       const TopoDS_Edge&     Edge2,
+                                       const Standard_Boolean Inv1,
+                                       const Standard_Boolean Inv2,
+                                       const Handle(Geom2d_Curve)& Bissec)
+: myFace1(Face1 ),
+  myFace2(Face2 ),
+  myBis  (Bissec),
+  myKPart(0)
 {
+  myNbPnt2d = 2;
+  myNbPnt = 1;
+
   // eval if myedges are IsoU or not
   myIsoU1 = isIsoU(Face1, Edge1);
   myIsoU2 = isIsoU(Face2, Edge2);
@@ -149,7 +152,6 @@ myKPart(0)
       Vmax = Max(Vmax,V);
     }
   }
-  
 
   // return isos in their domain of restriction.
   Handle(Geom_Curve) UU1, UU2, VV1, VV2;
@@ -764,4 +766,31 @@ const
 GeomAbs_Shape BRepFill_MultiLine::Continuity() const
 {
   return myCont;
+}
+
+//=======================================================================
+//function : Value
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean BRepFill_MultiLine::Value(const Standard_Real   theT,
+                                           NCollection_Array1<gp_Pnt2d>& thePnt2d,
+                                           NCollection_Array1<gp_Pnt>&   thePnt) const
+  {
+    thePnt(1)   = Value(theT);
+    thePnt2d(1) = ValueOnF1(theT);
+    thePnt2d(2) = ValueOnF2(theT);
+    return Standard_True;
+  }
+
+//=======================================================================
+//function : Value
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean BRepFill_MultiLine::D1(const Standard_Real   /*theT*/,
+                                        NCollection_Array1<gp_Vec2d>& /*theVec2d*/,
+                                        NCollection_Array1<gp_Vec>&   /*theVec*/) const
+{
+  return Standard_False;
 }

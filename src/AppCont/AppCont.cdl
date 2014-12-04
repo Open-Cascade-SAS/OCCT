@@ -29,12 +29,8 @@ package AppCont
     ---Level : Advanced.  
     --  All methods of all  classes will be advanced.
 
-
-
-
 uses AppParCurves, Geom, math, StdFail, TCollection, TColStd, gp, 
      TColgp, Standard
-
 
 is                                                                         
 
@@ -42,32 +38,13 @@ is
     --- Algorithms:
     -------------------------------
 
-    generic class LeastSquare;
+    imported LeastSquare;
 
     ------------------------------------------------------
     --- Necessary class for approximation a function f(t):
     ------------------------------------------------------
 
-    deferred class Function;
-
-    class FunctionTool;
-
-
-    ---------------------------------------------------------
-    --- Necessary class for approximation a 2d function f(t):
-    ---------------------------------------------------------
-
-    deferred class Function2d;
-
-    class FunctionTool2d;
-
-
-    class FitFunction instantiates LeastSquare from AppCont
-	    (Function from AppCont, FunctionTool from AppCont);
-
-    class FitFunction2d instantiates LeastSquare from AppCont
-	    (Function2d from AppCont, FunctionTool2d from AppCont);
-
+    imported Function;
 
 end AppCont;
 

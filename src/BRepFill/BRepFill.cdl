@@ -108,12 +108,10 @@ is
     	List from TCollection (OffsetWire from BRepFill);
     private class ApproxSeewing;
 
-    private class MultiLine;
-   
-    private class MultiLineTool;
+    imported MultiLine;
     
     private class ComputeCLine instantiates 
-    	ComputeCLine from Approx ( MultiLine, MultiLineTool);
+    	ComputeCLine from Approx (MultiLine);
 	
 
     private class TrimSurfaceTool;

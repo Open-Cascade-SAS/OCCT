@@ -1,5 +1,5 @@
 # pro10658
-
+puts "TODO ALL Error : The area of the resulting shape is"
 restore [locate_data_file CTO900_pro10658a.rle] a
 restore [locate_data_file pro10658b.rle] b
 
