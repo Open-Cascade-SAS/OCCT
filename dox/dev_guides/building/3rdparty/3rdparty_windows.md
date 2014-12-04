@@ -63,11 +63,21 @@ Download the necessary archive from http://www.tcl.tk/software/tcltk/download.ht
 
    This is to avoid extra prefix 't' in the library name, which is not recognized by default by OCCT build tools.
 
-3. In the command prompt, run *buildall.vc.bat*
+
+3. By default, Tcl uses dynamic version of run-time library (MSVCRT), which must be installed on the system where Tcl will be used.
+   You may wish to link Tcl library with static version of run-time to avoid this dependency.
+   For that:
+
+   * Edit file *makefile.vc* replacing strings "crt = -MD" by "crt = -MT"
+
+   * Edit source file *tclMain.c* (located in folder *generic*) commenting out forward declaration of function *isatty()*.
+
+
+4. In the command prompt, run *buildall.vc.bat*
 
    You might need to run this script twice to have *tclsh* executable installed; check subfolder *bin* of specified installation path to verify this.
 
-4. For convenience of use, we recommend making a copy of *tclsh* executable created in subfolder *bin* of *INSTALLDIR* and named with Tcl version number suffix, as *tclsh.exe* (with no suffix)
+5. For convenience of use, we recommend making a copy of *tclsh* executable created in subfolder *bin* of *INSTALLDIR* and named with Tcl version number suffix, as *tclsh.exe* (with no suffix)
 
        > cd D:\OCCT\3rdparty\tcltk-86-32\bin
        > cp tclsh86.exe tclsh.exe
