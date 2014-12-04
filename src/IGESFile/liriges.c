@@ -37,43 +37,67 @@ int  iges_lire (FILE* lefic, int *numsec, char ligne[100], int modefnes)
 {
   int i,result; char typesec;
 /*  int length;*/
-  if (iges_fautrelire == 0) {
-    if (*numsec == 0) ligne[72] = ligne[79] = ' ';
+  if (iges_fautrelire == 0)
+  {
+    if (*numsec == 0)
+      ligne[72] = ligne[79] = ' ';
+
     ligne[0] = '\0'; 
-    if(modefnes)	
-	fgets(ligne,99,lefic); /*for kept compatibility with fnes*/
-    else {
+    if(modefnes)
+      fgets(ligne,99,lefic); /*for kept compatibility with fnes*/
+    else
+    {
       /* PTV: 21.03.2002 it is neccessary for files that have only `\r` but no `\n` 
               examle file is 919-001-T02-04-CP-VL.iges */
-      while ( fgets ( ligne, 2, lefic ) && ( ligne[0] == '\r' || ligne[0] == '\n' ) ) 
-	{
-	}
-      fgets(&ligne[1],80,lefic);
-/*     	fgets(ligne,81,lefic); */
-    }
-    if (*numsec == 0 && ligne[72] != 'S' && ligne[79] == ' ') {
-/*        ON A DU FNES : Sauter la 1re ligne          */
-    ligne[0] = '\0';
-    if(modefnes)	
-	fgets(ligne,99,lefic);/*for kept compatibility with fnes*/
-    else {
       while ( fgets ( ligne, 2, lefic ) && ( ligne[0] == '\r' || ligne[0] == '\n' ) )
-	{
-	}
+      {
+      }
+      
+      fgets(&ligne[1],80,lefic);
+    }
+    
+    if (*numsec == 0 && ligne[72] != 'S' && ligne[79] == ' ')
+    {/*        ON A DU FNES : Sauter la 1re ligne          */
+      ligne[0] = '\0';
+      
+      if(modefnes)
+        fgets(ligne,99,lefic);/*for kept compatibility with fnes*/
+      else
+      {
+        while ( fgets ( ligne, 2, lefic ) && ( ligne[0] == '\r' || ligne[0] == '\n' ) )
+        {
+        }
+
+
       fgets(&ligne[1],80,lefic);
 /*     	fgets(ligne,81,lefic); */
       }
     }
-    if ((ligne[0] & 128)&&modefnes) {
+
+    if ((ligne[0] & 128) && modefnes)
+    {
       for (i = 0; i < 80; i ++)
         ligne[i] = (char)(ligne[i] ^ (150 + (i & 3)));
     }
   }
-  if (feof(lefic)) return 0;
+
+  if (feof(lefic))
+    return 0;
+
+  {//0x1A is END_OF_FILE for OS DOS and WINDOWS. For other OS we set this rule forcefully.
+    char *fc = strchr(ligne, 0x1A);
+    if(fc != 0)
+    {
+      fc[0] = '\0';
+      return 0;
+    }
+  }
+
   iges_fautrelire = 0;
   if (ligne[0] == '\0' || ligne[0] == '\n' || ligne[0] == '\r')
     return iges_lire(lefic,numsec,ligne,modefnes); /* 0 */
-  if (sscanf(&ligne[73],"%d",&result) == 0)  return -1;
+  if (sscanf(&ligne[73],"%d",&result) == 0)
+    return -1;
 /*  { printf("Erreur, ligne n0.%d :\n%s\n",*numl,ligne); return (*numsec > 0 ? -1 : -2); } */
   *numsec = result;
   typesec = ligne[72];
