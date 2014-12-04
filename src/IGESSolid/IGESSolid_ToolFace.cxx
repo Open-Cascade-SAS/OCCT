@@ -200,7 +200,7 @@ IGESData_DirChecker IGESSolid_ToolFace::DirChecker
   DC.Structure  (IGESData_DefVoid);
   DC.LineFont   (IGESData_DefVoid);
   DC.LineWeight (IGESData_DefVoid);
-  DC.Color      (IGESData_DefVoid);
+  DC.Color      (IGESData_DefAny);
 
   DC.SubordinateStatusRequired(1);
   return DC;

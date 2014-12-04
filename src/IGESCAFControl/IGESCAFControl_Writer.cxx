@@ -41,6 +41,7 @@
 #include <TDF_ChildIterator.hxx>
 #include <TDataStd_Name.hxx>
 #include <IGESData_NameEntity.hxx>
+#include <IGESSolid_Face.hxx>
 #include <TopTools_SequenceOfShape.hxx>
 #include <TColStd_HSequenceOfExtendedString.hxx>
 #include <NCollection_DataMap.hxx>
@@ -262,7 +263,7 @@ void IGESCAFControl_Writer::MakeColors (const TopoDS_Shape &S,
   // analyze whether current entity should get a color 
   Standard_Boolean hasColor = Standard_False;
   Quantity_Color col;
-  if ( S.ShapeType() == TopAbs_FACE ) {
+  if ( S.ShapeType() == TopAbs_FACE  || S.ShapeType() == TopAbs_SOLID) {
     if ( style.IsSetColorSurf() ) {
       hasColor = Standard_True;
       col = style.GetColorSurf();
@@ -299,6 +300,12 @@ void IGESCAFControl_Writer::MakeColors (const TopoDS_Shape &S,
     Handle(TransferBRep_ShapeMapper) mapper = TransferBRep::ShapeMapper ( FP, S );
     if ( FP->FindTypedTransient ( mapper, STANDARD_TYPE(IGESData_IGESEntity), ent ) ) {
       ent->InitColor ( colent, rank );
+      Handle(IGESSolid_Face) ent_f = Handle(IGESSolid_Face)::DownCast(ent);
+      if (!ent_f.IsNull())
+      {
+        if (!ent_f->Surface().IsNull())
+          ent_f->Surface()->InitColor ( colent, rank );
+      }
     }
     else {
       // may be S was splited during shape process
@@ -313,7 +320,16 @@ void IGESCAFControl_Writer::MakeColors (const TopoDS_Shape &S,
 	  for (i=1; i<=nb; i++) {
 	    Handle(Standard_Transient) t = TransientListBinder->Transient(i);
 	    ent = Handle(IGESData_IGESEntity)::DownCast(t);
-	    if (!ent.IsNull()) ent->InitColor ( colent, rank );
+	    if (!ent.IsNull())
+      {
+        ent->InitColor ( colent, rank );
+        Handle(IGESSolid_Face) ent_f = Handle(IGESSolid_Face)::DownCast(ent);
+        if (!ent_f.IsNull())
+        {
+          if (!ent_f->Surface().IsNull())
+            ent_f->Surface()->InitColor ( colent, rank );
+        }
+      }
 	  }
 	}
 	/* // alternative: consider recursive mapping S -> compound -> entities
