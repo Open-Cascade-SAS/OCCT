@@ -5051,6 +5051,14 @@ static Standard_Integer VMarkersTest (Draw_Interpretor&,
       std::cerr << "Could not load image from file '" << aFileName << "'!\n";
       return 1;
     }
+    if (anImage->Format() == Image_PixMap::ImgGray)
+    {
+      anImage->SetFormat (Image_PixMap::ImgAlpha);
+    }
+    else if (anImage->Format() == Image_PixMap::ImgGrayF)
+    {
+      anImage->SetFormat (Image_PixMap::ImgAlphaF);
+    }
     anAspect = new Graphic3d_AspectMarker3d (anImage);
   }
   else

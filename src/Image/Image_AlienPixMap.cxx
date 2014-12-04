@@ -78,6 +78,7 @@ namespace
     switch (theFormat)
     {
       case Image_PixMap::ImgGrayF:
+      case Image_PixMap::ImgAlphaF:
         return FIT_FLOAT;
       case Image_PixMap::ImgRGBAF:
         return FIT_RGBAF;
@@ -90,6 +91,7 @@ namespace
       case Image_PixMap::ImgRGB:
       case Image_PixMap::ImgBGR:
       case Image_PixMap::ImgGray:
+      case Image_PixMap::ImgAlpha:
         return FIT_BITMAP;
       default:
         return FIT_UNKNOWN;
@@ -448,7 +450,8 @@ bool Image_AlienPixMap::Save (const TCollection_AsciiString& theFileName)
     }
     case FIF_EXR:
     {
-      if (Format() == Image_PixMap::ImgGray)
+      if (Format() == Image_PixMap::ImgGray
+       || Format() == Image_PixMap::ImgAlpha)
       {
         anImageToDump = FreeImage_ConvertToType (myLibImage, FIT_FLOAT);
       }

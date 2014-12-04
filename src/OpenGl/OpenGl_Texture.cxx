@@ -181,14 +181,37 @@ bool OpenGl_Texture::GetDataFormat (const Handle(OpenGl_Context)& theCtx,
   {
     case Image_PixMap::ImgGrayF:
     {
-      theTextFormat = GL_ALPHA8; // GL_R8, GL_R32F
-      thePixelFormat = GL_ALPHA; // GL_RED
-      theDataType    = GL_FLOAT;
+      if (theCtx->core11 == NULL)
+      {
+        theTextFormat  = GL_R8;  // GL_R32F
+        thePixelFormat = GL_RED;
+      }
+      else
+      {
+        theTextFormat  = GL_LUMINANCE8;
+        thePixelFormat = GL_LUMINANCE;
+      }
+      theDataType = GL_FLOAT;
+      return true;
+    }
+    case Image_PixMap::ImgAlphaF:
+    {
+      if (theCtx->core11 == NULL)
+      {
+        theTextFormat  = GL_R8;  // GL_R32F
+        thePixelFormat = GL_RED;
+      }
+      else
+      {
+        theTextFormat  = GL_ALPHA8;
+        thePixelFormat = GL_ALPHA;
+      }
+      theDataType = GL_FLOAT;
       return true;
     }
     case Image_PixMap::ImgRGBAF:
     {
-      theTextFormat = GL_RGBA8; // GL_RGBA32F
+      theTextFormat  = GL_RGBA8; // GL_RGBA32F
       thePixelFormat = GL_RGBA;
       theDataType    = GL_FLOAT;
       return true;
@@ -206,7 +229,7 @@ bool OpenGl_Texture::GetDataFormat (const Handle(OpenGl_Context)& theCtx,
     }
     case Image_PixMap::ImgRGBF:
     {
-      theTextFormat = GL_RGB8; // GL_RGB32F
+      theTextFormat  = GL_RGB8; // GL_RGB32F
       thePixelFormat = GL_RGB;
       theDataType    = GL_FLOAT;
       return true;
@@ -282,16 +305,40 @@ bool OpenGl_Texture::GetDataFormat (const Handle(OpenGl_Context)& theCtx,
     }
     case Image_PixMap::ImgGray:
     {
-      theTextFormat = GL_ALPHA8; // GL_R8
-      thePixelFormat = GL_ALPHA; // GL_RED
-      theDataType    = GL_UNSIGNED_BYTE;
+      if (theCtx->core11 == NULL)
+      {
+        theTextFormat  = GL_R8;
+        thePixelFormat = GL_RED;
+      }
+      else
+      {
+        theTextFormat  = GL_LUMINANCE8;
+        thePixelFormat = GL_LUMINANCE;
+      }
+      theDataType = GL_UNSIGNED_BYTE;
       return true;
     }
-    default:
+    case Image_PixMap::ImgAlpha:
+    {
+      if (theCtx->core11 == NULL)
+      {
+        theTextFormat  = GL_R8;
+        thePixelFormat = GL_RED;
+      }
+      else
+      {
+        theTextFormat  = GL_ALPHA8;
+        thePixelFormat = GL_ALPHA;
+      }
+      theDataType = GL_UNSIGNED_BYTE;
+      return true;
+    }
+    case Image_PixMap::ImgUNKNOWN:
     {
       return false;
     }
   }
+  return false;
 }
 
 // =======================================================================

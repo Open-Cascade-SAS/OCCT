@@ -1,0 +1,28 @@
+puts "============"
+puts "0025544: Visualization, TKOpenGl - support grayscale textures"
+puts "============"
+puts ""
+
+vinit View1
+vclear
+
+box b 1 2 3
+vaxo
+vsetdispmode 1
+vdisplay b
+vtexture b 1 -modulate on
+vfit
+
+set aColorMod [vreadpixel 290 180 rgb name]
+vdump $imagedir/${casename}_modulated.png
+
+vtexture b 1 -modulate off
+set aColorDec [vreadpixel 290 180 rgb name]
+vdump $imagedir/${casename}_decal.png
+
+if {"$aColorMod" != "GOLDENROD4"} {
+  puts "Error: wrong color with modulation ON"
+}
+if {"$aColorDec" != "GRAY80"} {
+  puts "Error: wrong color with modulation OFF"
+}

@@ -31,6 +31,7 @@ OpenGl_PointSprite::OpenGl_PointSprite()
   myBitmapList (0)
 {
   //myParams->SetFilter (Graphic3d_TOTF_NEAREST);
+  myParams->SetModulate (Standard_False);
   myParams->SetGenMode (Graphic3d_TOTM_SPRITE,
                         Graphic3d_Vec4 (0.0f, 0.0f, 0.0f, 0.0f),
                         Graphic3d_Vec4 (0.0f, 0.0f, 0.0f, 0.0f));

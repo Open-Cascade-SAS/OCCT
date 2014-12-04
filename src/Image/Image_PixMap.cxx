@@ -15,6 +15,7 @@
 
 #include <Image_PixMap.hxx>
 #include <NCollection_AlignedAllocator.hxx>
+#include <Standard_ProgramError.hxx>
 
 #include <algorithm>
 
@@ -48,6 +49,7 @@ Standard_Size Image_PixMap::SizePixelBytes (const Image_PixMap::ImgFormat thePix
   switch (thePixelFormat)
   {
     case ImgGrayF:
+    case ImgAlphaF:
       return sizeof(float);
     case ImgRGBAF:
     case ImgBGRAF:
@@ -65,17 +67,32 @@ Standard_Size Image_PixMap::SizePixelBytes (const Image_PixMap::ImgFormat thePix
     case ImgBGR:
       return 3;
     case ImgGray:
-    default:
+    case ImgAlpha:
+      return 1;
+    case ImgUNKNOWN:
       return 1;
   }
+  return 1;
 }
 
 // =======================================================================
-// function : setFormat
+// function : SetFormat
 // purpose  :
 // =======================================================================
-void Image_PixMap::setFormat (Image_PixMap::ImgFormat thePixelFormat)
+void Image_PixMap::SetFormat (Image_PixMap::ImgFormat thePixelFormat)
 {
+  if (myImgFormat == thePixelFormat)
+  {
+    return;
+  }
+
+  if (!IsEmpty()
+    && SizePixelBytes (myImgFormat) != SizePixelBytes (thePixelFormat))
+  {
+    Standard_ProgramError::Raise ("Image_PixMap::SetFormat() - incompatible pixel format");
+    return;
+  }
+
   myImgFormat = thePixelFormat;
 }
 
@@ -201,6 +218,12 @@ Quantity_Color Image_PixMap::PixelColor (const Standard_Integer theX,
                              Quantity_Parameter (Standard_Real (aPixel)),
                              Quantity_TOC_RGB);
     }
+    case ImgAlphaF:
+    {
+      const Standard_ShortReal& aPixel = Value<Standard_ShortReal> (theY, theX);
+      theAlpha = aPixel;
+      return Quantity_Color (1.0, 1.0, 1.0, Quantity_TOC_RGB);
+    }
     case ImgRGBAF:
     {
       const Image_ColorRGBAF& aPixel = Value<Image_ColorRGBAF> (theY, theX);
@@ -300,11 +323,19 @@ Quantity_Color Image_PixMap::PixelColor (const Standard_Integer theX,
                              Quantity_Parameter (Standard_Real (aPixel) / 255.0),
                              Quantity_TOC_RGB);
     }
-    default:
+    case ImgAlpha:
     {
-      // not supported image type
-      theAlpha = 0.0; // transparent
-      return Quantity_Color (0.0, 0.0, 0.0, Quantity_TOC_RGB);
+      const Standard_Byte& aPixel = Value<Standard_Byte> (theY, theX);
+      theAlpha = Standard_Real (aPixel) / 255.0;
+      return Quantity_Color (1.0, 1.0, 1.0, Quantity_TOC_RGB);
+    }
+    case ImgUNKNOWN:
+    {
+      break;
     }
   }
+
+  // unsupported image type
+  theAlpha = 0.0; // transparent
+  return Quantity_Color (0.0, 0.0, 0.0, Quantity_TOC_RGB);
 }

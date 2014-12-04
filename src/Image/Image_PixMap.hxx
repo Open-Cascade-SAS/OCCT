@@ -30,14 +30,16 @@ public:
   //! This enumeration define packed image plane formats
   typedef enum tagFormat {
       ImgUNKNOWN = 0, //!< unsupported or unknown format
-      ImgGray    = 1, //!< 1 byte per pixel
+      ImgGray    = 1, //!< 1 byte per pixel, intensity of the color
+      ImgAlpha,       //!< 1 byte per pixel, transparency
       ImgRGB,         //!< 3 bytes packed RGB image plane
       ImgBGR,         //!< same as RGB but with different components order
       ImgRGB32,       //!< 4 bytes packed RGB image plane (1 extra byte for alignment, may have undefined value)
       ImgBGR32,       //!< same as RGB but with different components order
       ImgRGBA,        //!< 4 bytes packed RGBA image plane
       ImgBGRA,        //!< same as RGBA but with different components order
-      ImgGrayF,       //!< 1 float  (4-bytes) per pixel (1-component plane)
+      ImgGrayF,       //!< 1 float  (4-bytes) per pixel (1-component plane), intensity of the color
+      ImgAlphaF,      //!< 1 float  (4-bytes) per pixel (1-component plane), transparency
       ImgRGBF,        //!< 3 floats (12-bytes) RGB image plane
       ImgBGRF,        //!< same as RGBF but with different components order
       ImgRGBAF,       //!< 4 floats (16-bytes) RGBA image plane
@@ -58,6 +60,12 @@ public: // high-level API
   {
     return myImgFormat;
   }
+
+  //! Override pixel format specified by InitXXX() methods.
+  //! Will throw exception if pixel size of new format is not equal to currently initialized format.
+  //! Intended to switch formats indicating different interpretation of the same data
+  //! (e.g. ImgGray and ImgAlpha).
+  Standard_EXPORT void SetFormat (const ImgFormat thePixelFormat);
 
   //! @return image width in pixels
   inline Standard_Size Width() const
@@ -257,11 +265,6 @@ public: //! @name low-level API for batch-processing (pixels reading / compariso
   {
     return *reinterpret_cast<ColorType_t* >(myData.ChangeValue (theRow, theCol));
   }
-
-protected:
-
-  //! Setup pixel format
-  Standard_EXPORT void setFormat (ImgFormat thePixelFormat);
 
 protected:
 

@@ -266,6 +266,15 @@ inline bool getDataFormat (const Image_PixMap& theData,
       thePixelFormat = GL_BGRA;
       theDataType    = GL_FLOAT;
       return true;
+  #else
+    case Image_PixMap::ImgGray:
+    case Image_PixMap::ImgGrayF:
+    case Image_PixMap::ImgBGR:
+    case Image_PixMap::ImgBGRA:
+    case Image_PixMap::ImgBGR32:
+    case Image_PixMap::ImgBGRF:
+    case Image_PixMap::ImgBGRAF:
+      return false;
   #endif
     case Image_PixMap::ImgRGB:
       thePixelFormat = GL_RGB;
@@ -284,9 +293,13 @@ inline bool getDataFormat (const Image_PixMap& theData,
       thePixelFormat = GL_RGBA;
       theDataType    = GL_FLOAT;
       return true;
-    default:
+    case Image_PixMap::ImgAlpha:
+    case Image_PixMap::ImgAlphaF:
+      return false; // GL_ALPHA is no more supported in core context
+    case Image_PixMap::ImgUNKNOWN:
       return false;
   }
+  return false;
 }
 
 Standard_Boolean OpenGl_GraphicDriver::BufferDump (const Graphic3d_CView&      theCView,

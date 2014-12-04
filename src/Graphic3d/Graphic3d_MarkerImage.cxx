@@ -98,7 +98,11 @@ Handle(TColStd_HArray1OfByte) Graphic3d_MarkerImage::GetBitMapArray (const Stand
       Quantity_Color aColor = myImage->PixelColor (aColumn, aRow, anAlphaValue);
       Standard_Boolean aBitOn = Standard_False;
 
-      if (myImage->Format() == Image_PixMap::ImgGray)
+      if (myImage->Format() == Image_PixMap::ImgAlpha)
+      {
+        aBitOn = anAlphaValue > theAlphaValue;
+      }
+      else if (myImage->Format() == Image_PixMap::ImgGray)
       {
         aBitOn = aColor.Red() > theAlphaValue;
       }
@@ -142,7 +146,7 @@ const Handle(Image_PixMap)& Graphic3d_MarkerImage::GetImage()
   const Standard_Integer aLowerIndex      = myBitMap->Lower();
 
   myImage = new Image_PixMap();
-  myImage->InitZero (Image_PixMap::ImgGray, aSize + myMargin * 2, aSize + myMargin * 2);
+  myImage->InitZero (Image_PixMap::ImgAlpha, aSize + myMargin * 2, aSize + myMargin * 2);
   for (Standard_Integer aRowIter = 0; aRowIter < myHeight; aRowIter++)
   {
     Standard_Byte* anImageRow = myImage->ChangeRow (aRowIter + aRowOffset);
@@ -169,14 +173,15 @@ const Handle(Image_PixMap)& Graphic3d_MarkerImage::GetImageAlpha()
 
   if (!myImage.IsNull())
   {
-    if (myImage->Format() == Image_PixMap::ImgGray)
+    if (myImage->Format() == Image_PixMap::ImgGray
+     || myImage->Format() == Image_PixMap::ImgAlpha)
     {
       myImageAlpha = myImage;
     }
     else
     {
       myImageAlpha = new Image_PixMap();
-      myImageAlpha->InitZero (Image_PixMap::ImgGray, myImage->Width(), myImage->Height());
+      myImageAlpha->InitZero (Image_PixMap::ImgAlpha, myImage->Width(), myImage->Height());
       myImageAlpha->SetTopDown (Standard_False);
       Quantity_Parameter anAlpha;
       for (Standard_Size aRowIter = 0; aRowIter < myImage->Height(); aRowIter++)

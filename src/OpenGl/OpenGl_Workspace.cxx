@@ -367,6 +367,17 @@ void OpenGl_Workspace::setTextureParams (Handle(OpenGl_Texture)&                
   OpenGl_Utils::Rotate    (aTextureMat, -aParams->Rotation(), 0.0f, 0.0f, 1.0f);
   glLoadMatrixf (aTextureMat);
 
+  GLint anEnvMode = GL_MODULATE; // lighting mode
+  if (!aParams->IsModulate())
+  {
+    anEnvMode = GL_DECAL;
+    if (theTexture->GetFormat() == GL_ALPHA
+     || theTexture->GetFormat() == GL_LUMINANCE)
+    {
+      anEnvMode = GL_REPLACE;
+    }
+  }
+
   // setup generation of texture coordinates
   switch (aParams->GenMode())
   {
@@ -416,7 +427,7 @@ void OpenGl_Workspace::setTextureParams (Handle(OpenGl_Texture)&                
       {
         glEnable  (GL_POINT_SPRITE);
         glTexEnvi (GL_POINT_SPRITE, GL_COORD_REPLACE, GL_TRUE);
-        glTexEnvi (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+        anEnvMode = GL_REPLACE;
         GetGlContext()->core15->glPointParameteri (GL_POINT_SPRITE_COORD_ORIGIN, GL_LOWER_LEFT);
       }
       break;
@@ -426,10 +437,7 @@ void OpenGl_Workspace::setTextureParams (Handle(OpenGl_Texture)&                
   }
 
   // setup lighting
-  if (aParams->GenMode() != Graphic3d_TOTM_SPRITE)
-  {
-    glTexEnvi (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, aParams->IsModulate() ? GL_MODULATE : GL_DECAL);
-  }
+  glTexEnvi (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, anEnvMode);
 #endif
 
   // get active sampler object to override default texture parameters
