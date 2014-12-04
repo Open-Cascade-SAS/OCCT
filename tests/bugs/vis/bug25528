@@ -1,0 +1,25 @@
+puts "============"
+puts "OCC25528"
+puts "============"
+puts ""
+####################################################################################
+# Visualization - Exception on removing an interactive object from 
+# a local context
+# vremove -local <obj_name> crashes if there is an opened local context
+####################################################################################
+
+pload ALL
+box b 1 2 3
+vinit
+vdisplay b
+vfit
+
+# opening a local context for local selection
+vselmode b 4 1
+# Select a face just to simulate the scenario used in a real application
+vselect 200 200
+# This line should not lead to exception
+vremove -local b
+
+# Screenshot should be empty (box removed successfully)
+vdump ${imagedir}/${casename}.png
