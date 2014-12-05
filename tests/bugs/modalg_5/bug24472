@@ -6,23 +6,6 @@ puts ""
 ## Wrong section curves
 ###############################
 
-proc checkList {List Tolerance D_good} {
-   set L1 [llength ${List}]
-   set L2 10
-   set L3 5
-   set N [expr (${L1} - ${L2})/${L3} + 1]
-
-   for {set i 1} {${i} <= ${N}} {incr i} {
-      set j1 [expr ${L2} + (${i}-1)*${L3}]
-      set j2 [expr ${j1} + 2]
-      set T [lindex ${List} ${j1}]
-      set D [lindex ${List} ${j2}]
-      #puts "i=${i} j1=${j1} j2=${j2} T=${T} D=${D}"
-      if { [expr abs(${D} - ${D_good})] > ${Tolerance} } {
-         puts "Error: i=${i} T=${T} D=${D}"
-      }
-   }
-}
 restore [locate_data_file bug24472_Pipe_1.brep] b1
 
 explode b1 f
@@ -48,7 +31,8 @@ set Log1 [dlog get]
 set List1 [split ${Log1} {TD= \t\n}]
 set Tolerance 1.0e-7
 set D_good 0.
-checkList ${List1} ${Tolerance} ${D_good}
+set Limit_Tol 1.0e-7
+checkList ${List1} ${Tolerance} ${D_good} ${Limit_Tol}
 
 puts ""
 puts "Second test"
@@ -69,7 +53,8 @@ set Log2 [dlog get]
 set List2 [split ${Log2} {TD= \t\n}]
 set Tolerance 1.0e-12
 set D_good 0.
-checkList ${List2} ${Tolerance} ${D_good}
+set Limit_Tol 1.0e-7
+checkList ${List2} ${Tolerance} ${D_good} ${Limit_Tol}
 
 puts ""
 puts "Third test"
@@ -86,7 +71,8 @@ set Log3 [dlog get]
 set List3 [split ${Log3} {TD= \t\n}]
 set Tolerance 1.0e-6
 set D_good 0.
-checkList ${List3} ${Tolerance} ${D_good}
+set Limit_Tol 1.0e-7
+checkList ${List3} ${Tolerance} ${D_good} ${Limit_Tol}
 
 puts ""
 puts "Fourth test"
@@ -107,4 +93,5 @@ set Log4 [dlog get]
 set List4 [split ${Log4} {TD= \t\n}]
 set Tolerance 1.0e-12
 set D_good 0.
-checkList ${List4} ${Tolerance} ${D_good}
+set Limit_Tol 1.0e-7
+checkList ${List4} ${Tolerance} ${D_good} ${Limit_Tol}

@@ -8,6 +8,7 @@ puts ""
 
 set Tolerance 3.0e-7
 set D_good 0.
+set Limit_Tol 1.0e-7
 
 restore [locate_data_file OCC25488_sb1_1t.draw] sb1
 restore [locate_data_file OCC25488_sb2_1t.draw] sb2
@@ -22,12 +23,12 @@ while {$i != [llength $bug_info]} {
   xdistcs ${res_i} sb1 0 1 10
   set BugLog [dlog get]
   set BugList [split ${BugLog} {TD= \t\n}]
-  checkList ${BugList} ${Tolerance} ${D_good}
+  checkList ${BugList} ${Tolerance} ${D_good} ${Limit_Tol}
   dlog reset
   dlog on
   xdistcs ${res_i} sb2 0 1 10
   set BugLog [dlog get]
   set BugList [split ${BugLog} {TD= \t\n}]
-  checkList ${BugList} ${Tolerance} ${D_good}
+  checkList ${BugList} ${Tolerance} ${D_good} ${Limit_Tol}
   set i [expr {$i + 1}]
 }
