@@ -26,6 +26,7 @@ uses
     Surface         from Geom,
     OffsetSurface   from Geom,
     BSplineSurface  from Geom, 
+    HSurface        from Adaptor3d,
     Shape           from GeomAbs,     
     ApproxAFunc2Var from AdvApp2Var, 
     OutOfRange      from Standard 
@@ -53,6 +54,26 @@ is
     	-- -   the maximum number of segments MaxSegments
     	--   allowed in the resulting BSpline curve
     	-- -   the index of precision PrecisCode.  
+    
+    Create(Surf:        HSurface from Adaptor3d;
+           Tol3d:       Real;
+           UContinuity: Shape from GeomAbs;
+           VContinuity: Shape from GeomAbs;
+           MaxDegU:     Integer;
+           MaxDegV:     Integer;
+           MaxSegments: Integer;
+           PrecisCode : Integer) returns ApproxSurface ;
+        ---Purpose: Constructs a surface approximation framework defined by
+        -- -   the Surf
+        -- -   the tolerance value Tol3d
+        -- -   the degree of continuity UContinuity, VContinuity
+        --  in the directions of the U and V parameters
+        -- -   the highest degree MaxDegU, MaxDegV which
+        --   the polynomial defining the BSpline curve may
+        --   have in the directions of the U and V parameters
+        -- -   the maximum number of segments MaxSegments
+        --   allowed in the resulting BSpline curve
+        -- -   the index of precision PrecisCode.  
 
 
     Surface(me)   returns BSplineSurface from Geom;
@@ -75,10 +96,20 @@ is
      
     Dump(me ; o : in out OStream);
     	---Purpose: Prints on the stream o informations on the current state of the object.
+
+    Approximate(me: in out; 
+                theSurf:        HSurface from Adaptor3d;
+                theTol3d:       Real;
+                theUContinuity: Shape from GeomAbs;
+                theVContinuity: Shape from GeomAbs;
+                theMaxDegU:     Integer;
+                theMaxDegV:     Integer;
+                theMaxSegments: Integer;
+                thePrecisCode : Integer) is private;
+        ---Purpose: Converts a surface to B-spline
              
 fields
  
-    mySurf     : Surface         from Geom;
     myIsDone   : Boolean         from Standard; 
     myHasResult: Boolean         from Standard; 
     myBSplSurf : BSplineSurface  from Geom; 

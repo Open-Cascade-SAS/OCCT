@@ -21,6 +21,7 @@ class ApproxCurve from GeomConvert
 uses 
     Curve          from  Geom, 
     BSplineCurve   from  Geom, 
+    HCurve         from  Adaptor3d,
     Shape          from  GeomAbs,
     OutOfRange     from  Standard          
     
@@ -42,6 +43,20 @@ is
     	--     MaxSegments allowed in the resulting BSpline curve, and 
     	--   -      the highest degree MaxDeg which the
     	--     polynomial defining the BSpline curve may have.
+
+    Create  (Curve:       HCurve  from  Adaptor3d; 
+             Tol3d:       Real; 
+             Order:       Shape  from  GeomAbs; 
+             MaxSegments: Integer; 
+             MaxDegree:   Integer)  returns  ApproxCurve; 
+        ---Purpose: Constructs a curve approximation framework defined by -
+        --   -      the Curve, 
+        --   -      the tolerance value Tol3d, 
+        --   -      the degree of continuity Order, 
+        --   -      the maximum number of segments
+        --     MaxSegments allowed in the resulting BSpline curve, and 
+        --   -      the highest degree MaxDeg which the
+        --     polynomial defining the BSpline curve may have.
         
     Curve(me)  returns  BSplineCurve  from  Geom; 
     	--- Purpose: Returns the BSpline curve resulting from the approximation algorithm.
@@ -63,8 +78,15 @@ is
     Dump(me;  o:  in  out  OStream); 
     	---Purpose:  Print on the stream  o  information about the object
 
+    Approximate(me: in out; 
+                theCurve:       HCurve from Adaptor3d;
+                theTol3d:       Real; 
+                theOrder:       Shape  from  GeomAbs; 
+                theMaxSegments: Integer; 
+                theMaxDegree:   Integer) is private;
+        ---Purpose: Converts a curve to B-spline
+                                              
 fields
-    myCurve     : Curve           from  Geom;
     myIsDone    : Boolean         from  Standard; 
     myHasResult : Boolean         from  Standard;     
     myBSplCurve : BSplineCurve    from  Geom; 

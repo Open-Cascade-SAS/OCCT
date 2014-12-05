@@ -38,7 +38,7 @@ package Geom2dConvert
         --  . A survey of curve and surface methods in CAGD (Wolfgang BOHM)
         --    CAGD 1 1984
 
-uses Standard, TColStd, TColGeom2d,gp, Geom2d, Convert,GeomAbs
+uses Standard, TColStd, TColGeom2d,gp, Geom2d, Convert,GeomAbs, Adaptor2d
 
 is
 

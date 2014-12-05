@@ -286,73 +286,93 @@ void GeomConvert_ApproxSurface_Eval::Evaluate (Standard_Integer * Dimension,
 //=======================================================================
 
 GeomConvert_ApproxSurface::GeomConvert_ApproxSurface(const Handle(Geom_Surface)& Surf,
-							   const Standard_Real Tol3d,
-							   const GeomAbs_Shape UContinuity,
-							   const GeomAbs_Shape VContinuity,
-							   const Standard_Integer MaxDegU,
-							   const Standard_Integer MaxDegV,
-							   const Standard_Integer MaxSegments,
-							   const Standard_Integer PrecisCode)
+                                                     const Standard_Real Tol3d,
+                                                     const GeomAbs_Shape UContinuity,
+                                                     const GeomAbs_Shape VContinuity,
+                                                     const Standard_Integer MaxDegU,
+                                                     const Standard_Integer MaxDegV,
+                                                     const Standard_Integer MaxSegments,
+                                                     const Standard_Integer PrecisCode)
 {
-  Standard_Real U0, U1, V0, V1;
-
   Handle(Adaptor3d_HSurface) aSurfAdaptor = new GeomAdaptor_HSurface (Surf);
-  Surf->Bounds(U0, U1, V0, V1);
+  Approximate(aSurfAdaptor, Tol3d, UContinuity, VContinuity, MaxDegU, MaxDegV, MaxSegments, PrecisCode);
+}
+
+GeomConvert_ApproxSurface::GeomConvert_ApproxSurface(const Handle(Adaptor3d_HSurface)& Surf,
+                                                     const Standard_Real Tol3d,
+                                                     const GeomAbs_Shape UContinuity,
+                                                     const GeomAbs_Shape VContinuity,
+                                                     const Standard_Integer MaxDegU,
+                                                     const Standard_Integer MaxDegV,
+                                                     const Standard_Integer MaxSegments,
+                                                     const Standard_Integer PrecisCode)
+{
+  Approximate(Surf, Tol3d, UContinuity, VContinuity, MaxDegU, MaxDegV, MaxSegments, PrecisCode);
+}
+
+void GeomConvert_ApproxSurface::Approximate(const Handle(Adaptor3d_HSurface)& theSurf,
+                                            const Standard_Real theTol3d,
+                                            const GeomAbs_Shape theUContinuity,
+                                            const GeomAbs_Shape theVContinuity,
+                                            const Standard_Integer theMaxDegU,
+                                            const Standard_Integer theMaxDegV,
+                                            const Standard_Integer theMaxSegments,
+                                            const Standard_Integer thePrecisCode)
+{
+  Standard_Real U0 = theSurf->FirstUParameter();
+  Standard_Real U1 = theSurf->LastUParameter();
+  Standard_Real V0 = theSurf->FirstVParameter();
+  Standard_Real V1 = theSurf->LastVParameter();
 
 // " Init des nombres de sous-espaces et des tolerances"
   Standard_Integer nb1 = 0, nb2 = 0, nb3 = 1;
-  Handle(TColStd_HArray1OfReal) nul1 =
-  		 new TColStd_HArray1OfReal(1,1);
-  nul1->SetValue(1,0.);
-  Handle(TColStd_HArray2OfReal) nul2 =
-  		 new TColStd_HArray2OfReal(1,1,1,4);
-  nul2->SetValue(1,1,0.);
-  nul2->SetValue(1,2,0.);
-  nul2->SetValue(1,3,0.);
-  nul2->SetValue(1,4,0.);
-  Handle(TColStd_HArray1OfReal) eps3D =
-  		 new TColStd_HArray1OfReal(1,1);
-  eps3D->SetValue(1,Tol3d);
-  Handle(TColStd_HArray2OfReal) epsfr =
-  		 new TColStd_HArray2OfReal(1,1,1,4);
-  epsfr->SetValue(1,1,Tol3d);
-  epsfr->SetValue(1,2,Tol3d);
-  epsfr->SetValue(1,3,Tol3d);
-  epsfr->SetValue(1,4,Tol3d);
+  Handle(TColStd_HArray1OfReal) nul1 = new TColStd_HArray1OfReal(1,1);
+  nul1->SetValue(1, 0.);
+  Handle(TColStd_HArray2OfReal) nul2 = new TColStd_HArray2OfReal(1,1,1,4);
+  nul2->SetValue(1, 1, 0.);
+  nul2->SetValue(1, 2, 0.);
+  nul2->SetValue(1, 3, 0.);
+  nul2->SetValue(1, 4, 0.);
+  Handle(TColStd_HArray1OfReal) eps3D = new TColStd_HArray1OfReal(1,1);
+  eps3D->SetValue(1, theTol3d);
+  Handle(TColStd_HArray2OfReal) epsfr = new TColStd_HArray2OfReal(1,1,1,4);
+  epsfr->SetValue(1, 1, theTol3d);
+  epsfr->SetValue(1, 2, theTol3d);
+  epsfr->SetValue(1, 3, theTol3d);
+  epsfr->SetValue(1, 4, theTol3d);
 
 // " Init du type d'iso"
   GeomAbs_IsoType IsoType = GeomAbs_IsoV; 
   Standard_Integer NbDec;
 
-  NbDec = aSurfAdaptor->NbUIntervals(GeomAbs_C2);
+  NbDec = theSurf->NbUIntervals(GeomAbs_C2);
   TColStd_Array1OfReal UDec_C2(1, NbDec+1);
-  aSurfAdaptor->UIntervals(UDec_C2, GeomAbs_C2);
-  NbDec = aSurfAdaptor->NbVIntervals(GeomAbs_C2);
+  theSurf->UIntervals(UDec_C2, GeomAbs_C2);
+  NbDec = theSurf->NbVIntervals(GeomAbs_C2);
   TColStd_Array1OfReal VDec_C2(1, NbDec+1);
-  aSurfAdaptor->VIntervals(VDec_C2, GeomAbs_C2);
+  theSurf->VIntervals(VDec_C2, GeomAbs_C2);
 
-  NbDec = aSurfAdaptor->NbUIntervals(GeomAbs_C3);
+  NbDec = theSurf->NbUIntervals(GeomAbs_C3);
   TColStd_Array1OfReal UDec_C3(1, NbDec+1);
-  aSurfAdaptor->UIntervals(UDec_C3, GeomAbs_C3);
+  theSurf->UIntervals(UDec_C3, GeomAbs_C3);
 
-  NbDec = aSurfAdaptor->NbVIntervals(GeomAbs_C3);
+  NbDec = theSurf->NbVIntervals(GeomAbs_C3);
   TColStd_Array1OfReal VDec_C3(1, NbDec+1);
-  aSurfAdaptor->VIntervals(VDec_C3, GeomAbs_C3);
+  theSurf->VIntervals(VDec_C3, GeomAbs_C3);
   // Approximation avec decoupe preferentiel 
   // aux lieux de discontinuitees C2
   AdvApprox_PrefAndRec pUDec(UDec_C2,UDec_C3);
   AdvApprox_PrefAndRec pVDec(VDec_C2,VDec_C3);
 
 //POP pour WNT
-  GeomConvert_ApproxSurface_Eval ev (aSurfAdaptor);
+  GeomConvert_ApproxSurface_Eval ev (theSurf);
   AdvApp2Var_ApproxAFunc2Var approx(nb1, nb2, nb3,
-				    nul1,nul1,eps3D,
-				    nul2,nul2,epsfr,
-				    U0,U1,V0,V1,
-				    IsoType,UContinuity,VContinuity,PrecisCode,
-//				    MaxDegU,MaxDegV,MaxSegments,mySurfEval1,
-				    MaxDegU,MaxDegV,MaxSegments,ev,
-				    pUDec,pVDec);
+                                    nul1,nul1,eps3D,
+                                    nul2,nul2,epsfr,
+                                    U0,U1,V0,V1,
+                                    IsoType,theUContinuity,theVContinuity,thePrecisCode,
+                                    theMaxDegU,theMaxDegV,theMaxSegments,ev,
+                                    pUDec,pVDec);
 
   myMaxError  = approx.MaxError(3,1);
   myBSplSurf  = approx.Surface(1);

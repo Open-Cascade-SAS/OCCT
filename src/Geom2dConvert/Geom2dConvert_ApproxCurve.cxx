@@ -102,33 +102,50 @@ void Geom2dConvert_ApproxCurve_Eval::Evaluate (Standard_Integer *Dimension,
 Geom2dConvert_ApproxCurve::Geom2dConvert_ApproxCurve(const Handle(Geom2d_Curve)& Curve,const Standard_Real Tol2d,const GeomAbs_Shape Order,const Standard_Integer MaxSegments,const Standard_Integer MaxDegree)
 {
   Handle(Geom2dAdaptor_HCurve) HCurve = new Geom2dAdaptor_HCurve (Curve);
+  Approximate(HCurve, Tol2d, Order, MaxSegments, MaxDegree);
+}
 
+Geom2dConvert_ApproxCurve::Geom2dConvert_ApproxCurve(const Handle(Adaptor2d_HCurve2d)& Curve,
+                                                     const Standard_Real               Tol2d,
+                                                     const GeomAbs_Shape               Order,
+                                                     const Standard_Integer            MaxSegments,
+                                                     const Standard_Integer            MaxDegree)
+{
+  Approximate(Curve, Tol2d, Order, MaxSegments, MaxDegree);
+}
+
+void Geom2dConvert_ApproxCurve::Approximate(const Handle(Adaptor2d_HCurve2d)& theCurve,
+                                            const Standard_Real               theTol2d,
+                                            const GeomAbs_Shape               theOrder,
+                                            const Standard_Integer            theMaxSegments,
+                                            const Standard_Integer            theMaxDegree)
+{
   // Initialisation of input parameters of AdvApprox
 
   Standard_Integer Num1DSS=0, Num2DSS=1, Num3DSS=0;
-  Handle(TColStd_HArray1OfReal) OneDTolNul, ThreeDTolNul; 
+  Handle(TColStd_HArray1OfReal) OneDTolNul, ThreeDTolNul;
   Handle(TColStd_HArray1OfReal) TwoDTol  = new TColStd_HArray1OfReal(1,Num2DSS);
-  TwoDTol->Init(Tol2d); 
+  TwoDTol->Init(theTol2d);
 
-  Standard_Real First = Curve->FirstParameter();
-  Standard_Real Last  = Curve->LastParameter();
+  Standard_Real First = theCurve->FirstParameter();
+  Standard_Real Last  = theCurve->LastParameter();
 
-  Standard_Integer NbInterv_C2 = HCurve->NbIntervals(GeomAbs_C2);
+  Standard_Integer NbInterv_C2 = theCurve->NbIntervals(GeomAbs_C2);
   TColStd_Array1OfReal CutPnts_C2(1, NbInterv_C2+1);
-  HCurve->Intervals(CutPnts_C2,GeomAbs_C2);
-  Standard_Integer NbInterv_C3 = HCurve->NbIntervals(GeomAbs_C3);
+  theCurve->Intervals(CutPnts_C2,GeomAbs_C2);
+  Standard_Integer NbInterv_C3 = theCurve->NbIntervals(GeomAbs_C3);
   TColStd_Array1OfReal CutPnts_C3(1, NbInterv_C3+1);
-  HCurve->Intervals(CutPnts_C3,GeomAbs_C3);
+  theCurve->Intervals(CutPnts_C3,GeomAbs_C3);
   AdvApprox_PrefAndRec CutTool(CutPnts_C2,CutPnts_C3);
 
   myMaxError = 0;
 
-  Geom2dConvert_ApproxCurve_Eval ev (HCurve, First, Last);
+  Geom2dConvert_ApproxCurve_Eval ev (theCurve, First, Last);
   AdvApprox_ApproxAFunction aApprox (Num1DSS, Num2DSS, Num3DSS, 
-				     OneDTolNul, TwoDTol, ThreeDTolNul,
-				     First, Last, Order,
-				     MaxDegree, MaxSegments,
-				     ev, CutTool);
+                                     OneDTolNul, TwoDTol, ThreeDTolNul,
+                                     First, Last, theOrder,
+                                     theMaxDegree, theMaxSegments,
+                                     ev, CutTool);
 
   myIsDone = aApprox.IsDone();
   myHasResult = aApprox.HasResult();

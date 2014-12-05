@@ -21,6 +21,7 @@ class ApproxCurve from Geom2dConvert
 uses 
     Curve          from  Geom2d, 
     BSplineCurve   from  Geom2d, 
+    HCurve2d       from  Adaptor2d,
     Shape          from  GeomAbs,
     OutOfRange     from  Standard          
     
@@ -40,7 +41,20 @@ is
     	-- -   the maximum number of segments allowed MaxSegments
     	-- -   the highest degree MaxDegree which the
     	--   polynomial defining the BSpline is allowed to have.
-     
+
+    Create (Curve:       HCurve2d  from  Adaptor2d;
+            Tol2d:       Real;
+            Order:       Shape  from  GeomAbs;
+            MaxSegments: Integer;
+            MaxDegree:   Integer)  returns  ApproxCurve  from  Geom2dConvert;
+        ---Purpose: Constructs an approximation framework defined by
+        -- -   the 2D conic Curve
+        -- -   the tolerance value Tol2d
+        -- -   the degree of continuity Order
+        -- -   the maximum number of segments allowed MaxSegments
+        -- -   the highest degree MaxDegree which the
+        --   polynomial defining the BSpline is allowed to have.
+
     Curve(me)  returns  BSplineCurve  from  Geom2d; 
     	---Purpose: Returns the 2D BSpline curve resulting from the
     	--  approximation algorithm.
@@ -62,8 +76,15 @@ is
     Dump(me;  o:  in  out  OStream); 
     	---Purpose:  Print on the stream  o  information about the object
 
+    Approximate(me: in out; 
+                theCurve:       HCurve2d from Adaptor2d;
+                theTol3d:       Real;
+                theOrder:       Shape  from  GeomAbs;
+                theMaxSegments: Integer;
+                theMaxDegree:   Integer) is private;
+        ---Purpose: Converts a curve to B-spline
+
 fields
-    myCurve     : Curve           from  Geom2d;
     myIsDone    : Boolean         from  Standard; 
     myHasResult : Boolean         from  Standard; 
     myBSplCurve : BSplineCurve    from  Geom2d; 

@@ -56,7 +56,8 @@ uses    Standard,
     	Geom,
 	Geom2d,
     	Convert, 
-	AdvApp2Var
+	AdvApp2Var,
+        Adaptor3d
 	    
 
 is
