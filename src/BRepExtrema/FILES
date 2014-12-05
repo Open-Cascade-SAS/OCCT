@@ -17,3 +17,7 @@ BRepExtrema_Poly.cxx
 BRepExtrema_SeqOfSolution.hxx
 BRepExtrema_SolutionElem.hxx
 BRepExtrema_SupportType.hxx
+BRepExtrema_TriangleSet.hxx
+BRepExtrema_TriangleSet.cxx
+BRepExtrema_ShapeProximity.hxx
+BRepExtrema_ShapeProximity.cxx

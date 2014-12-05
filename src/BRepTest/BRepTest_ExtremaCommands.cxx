@@ -20,9 +20,16 @@
 #include <BRepTest.hxx>
 #include <BRepExtrema_Poly.hxx>
 #include <BRepExtrema_DistShapeShape.hxx>
+#include <BRepExtrema_ShapeProximity.hxx>
 #include <BRepLib_MakeEdge.hxx>
 #include <BRepLib_MakeVertex.hxx>
+#include <TopoDS_Builder.hxx>
+#include <TopoDS_Compound.hxx>
 #include <Draw.hxx>
+#include <OSD_Timer.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
+
 
 //#ifdef WNT
 #include <stdio.h>
@@ -131,6 +138,143 @@ static Standard_Integer distmini(Draw_Interpretor& di, Standard_Integer n, const
   return 0;
 }
 
+//==============================================================================
+//function : ShapeProximity
+//purpose  :
+//==============================================================================
+static int ShapeProximity (Draw_Interpretor& theDI, Standard_Integer theNbArgs, const char** theArgs)
+{
+  if (theNbArgs < 3 || theNbArgs > 6)
+  {
+    std::cout << "Usage: " << theArgs[0] <<
+      " Shape1 Shape2 [-tol <value>] [-profile]" << std::endl;
+
+    return 1;
+  }
+
+  TopoDS_Shape aShape1 = DBRep::Get (theArgs[1]);
+  TopoDS_Shape aShape2 = DBRep::Get (theArgs[2]);
+
+  if (aShape1.IsNull() || aShape2.IsNull())
+  {
+    std::cout << "Error: Failed to find specified shapes" << std::endl;
+    return 1;
+  }
+
+  BRepExtrema_ShapeProximity aTool;
+
+  Standard_Boolean aProfile = Standard_False;
+
+  for (Standard_Integer anArgIdx = 3; anArgIdx < theNbArgs; ++anArgIdx)
+  {
+    TCollection_AsciiString aFlag (theArgs[anArgIdx]);
+    aFlag.LowerCase();
+
+    if (aFlag == "-tol")
+    {
+      if (++anArgIdx >= theNbArgs)
+      {
+        std::cout << "Error: wrong syntax at argument '" << aFlag << std::endl;
+        return 1;
+      }
+
+      const Standard_Real aTolerance = Draw::Atof (theArgs[anArgIdx]);
+      if (aTolerance < 0.0)
+      {
+        std::cout << "Error: Tolerance value should be non-negative" << std::endl;
+        return 1;
+      }
+      else
+      {
+        aTool.SetTolerance (aTolerance);
+      }
+    }
+
+    if (aFlag == "-profile")
+    {
+      aProfile = Standard_True;
+    }
+  }
+
+  Standard_Real aInitTime = 0.0;
+  Standard_Real aWorkTime = 0.0;
+
+  OSD_Timer aTimer;
+
+  if (aProfile)
+  {
+    aTimer.Start();
+  }
+
+  aTool.LoadShape1 (aShape1);
+  aTool.LoadShape2 (aShape2);
+
+  if (aProfile)
+  {
+    aInitTime = aTimer.ElapsedTime();
+    aTimer.Reset();
+    aTimer.Start();
+  }
+
+  // Perform shape proximity test
+  aTool.Perform();
+
+  if (aProfile)
+  {
+    aWorkTime = aTimer.ElapsedTime();
+    aTimer.Stop();
+  }
+
+  if (!aTool.IsDone())
+  {
+    std::cout << "Error: Failed to perform proximity test" << std::endl;
+    return 1;
+  }
+
+  if (aProfile)
+  {
+    theDI << "Number of primitives in shape 1: " << aTool.PrimitiveSet1()->Size() << "\n";
+    theDI << "Number of primitives in shape 2: " << aTool.PrimitiveSet2()->Size() << "\n";
+    theDI << "Building data structures: " << aInitTime << "\n";
+    theDI << "Executing proximity test: " << aWorkTime << "\n";
+  }
+
+  TopoDS_Builder  aCompBuilder;
+
+  TopoDS_Compound aFaceCompound1;
+  aCompBuilder.MakeCompound (aFaceCompound1);
+
+  for (BRepExtrema_OverlappedSubShapes::Iterator anIt1 (aTool.OverlapSubShapes1()); anIt1.More(); anIt1.Next())
+  {
+    TCollection_AsciiString aStr = TCollection_AsciiString (theArgs[1]) + "_" + (anIt1.Key() + 1);
+
+    const TopoDS_Face& aFace = aTool.GetSubShape1 (anIt1.Key());
+    aCompBuilder.Add (aFaceCompound1, aFace);
+    DBRep::Set (aStr.ToCString(), aFace);
+
+    theDI << aStr << " \n";
+  }
+
+  TopoDS_Compound aFaceCompound2;
+  aCompBuilder.MakeCompound (aFaceCompound2);
+
+  for (BRepExtrema_OverlappedSubShapes::Iterator anIt2 (aTool.OverlapSubShapes2()); anIt2.More(); anIt2.Next())
+  {
+    TCollection_AsciiString aStr = TCollection_AsciiString (theArgs[2]) + "_" + (anIt2.Key() + 1);
+
+    const TopoDS_Face& aFace = aTool.GetSubShape2 (anIt2.Key());
+    aCompBuilder.Add (aFaceCompound2, aFace);
+    DBRep::Set (aStr.ToCString(), aFace);
+
+    theDI << aStr << " \n";
+  }
+
+  DBRep::Set ((TCollection_AsciiString (theArgs[1]) + "_" + "overlapped").ToCString(), aFaceCompound1);
+  DBRep::Set ((TCollection_AsciiString (theArgs[2]) + "_" + "overlapped").ToCString(), aFaceCompound2);
+
+  return 0;
+}
+
 //=======================================================================
 //function : ExtremaCommands
 //purpose  : 
@@ -156,5 +300,17 @@ void BRepTest::ExtremaCommands (Draw_Interpretor& theCommands)
                    "distmini name Shape1 Shape2",
                    __FILE__,
                    distmini,
+                   aGroup);
+
+  theCommands.Add ("proximity",
+                   "proximity Shape1 Shape2 [-tol <value>] [-profile]"
+                   "\n\t\t: Searches for pairs of overlapping faces of the given shapes."
+                   "\n\t\t: The options are:"
+                   "\n\t\t:   -tol     : non-negative tolerance value used for overlapping"
+                   "\n\t\t:              test (for zero tolerance, the strict intersection"
+                   "\n\t\t:              test will be performed)"
+                   "\n\t\t:   -profile : outputs execution time for main algorithm stages",
+                   __FILE__,
+                   ShapeProximity,
                    aGroup);
 }

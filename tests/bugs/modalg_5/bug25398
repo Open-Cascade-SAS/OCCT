@@ -1,0 +1,38 @@
+puts "========"
+puts "OCC25398"
+puts "========"
+puts ""
+######################################################
+# Provide shape proximity detector
+######################################################
+
+psphere s 10
+tclean s
+incmesh s 0.001
+
+pcone c 5 20 30
+tclean c
+incmesh c 0.001
+
+proximity s c -tol 0.01 -profile
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 2
+ EDGE      : 3
+ WIRE      : 1
+ FACE      : 1
+ SHELL     : 0
+ SOLID     : 0
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 8
+"
+checknbshapes s_overlapped ${nbshapes_expected} 1 "Overlapped part of shere"
+checknbshapes c_overlapped ${nbshapes_expected} 1 "Overlapped part of shere"
+
+vinit
+vdisplay s_overlapped
+vdisplay c_overlapped
+vfit
+set only_screen 1

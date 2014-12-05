@@ -277,3 +277,29 @@ proc checkList {List Tolerance D_good Limit_Tol} {
       }
    }
 }
+
+# Procedure to check result of nbshapes command
+proc checknbshapes { res nbshapes_expected_s count_locations message} {
+
+    upvar $res shape
+    if { ${count_locations} == 0 } {
+      set nb_info [nbshapes shape]
+    } else {
+      set nb_info [nbshapes shape -t]
+    }
+
+    set EntityList {VERTEX EDGE WIRE FACE SHELL SOLID COMPSOLID COMPOUND SHAPE}
+
+    foreach Entity ${EntityList} {
+       set expr_string "${Entity} +: +(\[-0-9.+eE\]+)"
+       if { [regexp "${expr_string}" ${nbshapes_expected_s} full nb_entity1] > 0 } {
+       	  if { [regexp "${expr_string}" ${nb_info} full nb_entity2] > 0 } {
+    	     if { ${nb_entity2} != ${nb_entity1} } {
+             	puts "Error : ${message} is WRONG because number of ${Entity} entities is ${nb_entity2} while ${nb_entity1} is expected"
+    	     } else {
+             	puts "OK : ${message} is GOOD because number of ${Entity} entities is equal to number of expected ${Entity} entities"
+    	     }
+       	  }
+       }
+    }
+}
