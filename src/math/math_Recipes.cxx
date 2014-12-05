@@ -177,7 +177,7 @@ Standard_Integer LU_Decompose(math_Matrix& a,
                      math_Vector& vv,
                      Standard_Real    TINY) { 
 
-     Standard_Integer i, imax=0, j, k;
+     Standard_Integer i, imax=1, j, k;
      Standard_Real big, dum, sum, temp;
 
      Standard_Integer n = a.RowNumber();
