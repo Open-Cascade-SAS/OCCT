@@ -344,6 +344,8 @@ class BOPTools_CheckCurveOnSurface :
                                  Standard_Real& theFVal) {
     try {
       const Standard_Real aPar = theX(1);
+      if (!CheckParameter(aPar))
+        return Standard_False;
       gp_Pnt aP1, aP2;
       gp_Pnt2d aP2d;
       my3DCurve->D0(aPar, aP1);
@@ -367,7 +369,8 @@ class BOPTools_CheckCurveOnSurface :
                                     math_Vector& theGrad) {
     try {
       const Standard_Real aPar = theX(1);
-      
+      if (!CheckParameter(aPar))
+        return Standard_False;
       gp_Pnt aP1, aP2;
       gp_Vec aDC3D, aDSU, aDSV;
       gp_Pnt2d aP2d;
@@ -417,6 +420,19 @@ class BOPTools_CheckCurveOnSurface :
   }
   //
  private:
+
+  Standard_Boolean CheckParameter(const Standard_Real theParam)
+  {
+    if (theParam < my3DCurve->FirstParameter() ||
+        theParam > my3DCurve->LastParameter()  ||
+        theParam < my2DCurve->FirstParameter() ||
+        theParam > my2DCurve->LastParameter() )
+    {
+      return Standard_False;
+    }
+    return Standard_True;
+  }
+
   Handle(Geom_Curve) my3DCurve;
   Handle(Geom2d_Curve) my2DCurve;
   Handle(Geom_Surface) mySurf;
