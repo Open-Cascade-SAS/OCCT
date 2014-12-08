@@ -325,6 +325,12 @@ class ProjLib_PolarFunction : public AppCont_Function
     return myCurve->LastParameter();
   }
 
+  gp_Pnt2d Value(const Standard_Real t) const 
+  {
+  return Function_Value
+    (t,mySurface,myCurve,myInitialCurve2d,myDistTol3d,myTolU,myTolV);
+  }
+
   Standard_Boolean Value(const Standard_Real   theT,
                          NCollection_Array1<gp_Pnt2d>& thePnt2d,
                          NCollection_Array1<gp_Pnt>&   /*thePnt*/) const
