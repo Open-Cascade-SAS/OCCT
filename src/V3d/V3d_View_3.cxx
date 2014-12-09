@@ -11,32 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-/***********************************************************************
- 
-     FONCTION :
-     ----------
-        Classe V3d_View_3.cxx :
- 
-     HISTORIQUE DES MODIFICATIONS   :
-     --------------------------------
-     00-09-92 : GG  ; Creation.
-     24-12-97 : FMN ; Suppression de GEOMLITE
-     13-06-98 : FMN ; PRO14896: Correction sur la gestion de la perspective (cf Programming Guide)
-
-************************************************************************/
-
-#define IMP020300       //GG Don't use ZFitAll in during Rotation
-//                      for perf improvment
-
-/*----------------------------------------------------------------------*/
-/*
- * Includes
- */
-
 #include <V3d_View.jxx>
-#include <V3d_Static.hxx>
-
-#define Zmargin 1.
 
 /*----------------------------------------------------------------------*/
 
@@ -48,7 +23,7 @@ void V3d_View::Move(const Standard_Real Dx, const Standard_Real Dy, const Standa
 
     gp_Dir aReferencePlane (myCamera->Direction().Reversed());
     gp_Dir anUp (myCamera->Up());
-    if (!ScreenAxis (aReferencePlane, anUp, MyXscreenAxis, MyYscreenAxis, MyZscreenAxis))
+    if (!ScreenAxis (aReferencePlane, anUp, myXscreenAxis, myYscreenAxis, myZscreenAxis))
     {
           V3d_BadValue::Raise ("V3d_View::Translate, alignment of Eye,At,Up");
     }
@@ -56,9 +31,9 @@ void V3d_View::Move(const Standard_Real Dx, const Standard_Real Dy, const Standa
 
   Standard_Real XX, XY, XZ, YX, YY, YZ, ZX, ZY, ZZ;
 
-  MyXscreenAxis.Coord (XX,XY,XZ); 
-  MyYscreenAxis.Coord (YX,YY,YZ); 
-  MyZscreenAxis.Coord (ZX,ZY,ZZ);
+  myXscreenAxis.Coord (XX,XY,XZ);
+  myYscreenAxis.Coord (YX,YY,YZ);
+  myZscreenAxis.Coord (ZX,ZY,ZZ);
 
   myCamera->SetEye (myCamStartOpEye);
 
@@ -117,15 +92,15 @@ void V3d_View::Translate(const Standard_Real Dx, const Standard_Real Dy, const S
     gp_Dir aReferencePlane (myCamera->Direction().Reversed());
     gp_Dir anUp (myCamera->Up());
     if (!ScreenAxis (aReferencePlane, anUp,
-		  MyXscreenAxis,MyYscreenAxis,MyZscreenAxis))
+		  myXscreenAxis,myYscreenAxis,myZscreenAxis))
 	      V3d_BadValue::Raise ("V3d_View::Translate, alignment of Eye,At,Up");
   }
 
   Standard_Real XX, XY, XZ, YX, YY, YZ, ZX, ZY, ZZ;
 
-  MyXscreenAxis.Coord (XX,XY,XZ); 
-  MyYscreenAxis.Coord (YX,YY,YZ); 
-  MyZscreenAxis.Coord (ZX,ZY,ZZ);
+  myXscreenAxis.Coord (XX,XY,XZ);
+  myYscreenAxis.Coord (YX,YY,YZ);
+  myZscreenAxis.Coord (ZX,ZY,ZZ);
 
   myCamera->SetEye (myCamStartOpEye);
   myCamera->SetCenter (myCamStartOpCenter);

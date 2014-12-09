@@ -39,7 +39,6 @@
 #include <V3d_View.jxx>
 #include <Visual3d_View.hxx>
 #include <Visual3d_Light.hxx>
-#include <V3d_Static.hxx>
 #include <V3d.hxx>
 
 /*----------------------------------------------------------------------*/

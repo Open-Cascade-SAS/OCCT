@@ -1635,7 +1635,6 @@ fields
         myZscreenAxis           : Vector from Graphic3d;
         myViewAxis              : Vector from Graphic3d;
         myGravityReferencePoint : Vertex from Graphic3d;
-        myCamProjectionShift    : Pnt from gp;
 
 friends
 

@@ -1,5 +1,4 @@
 EXTERNLIB
-V3d_Static.hxx
 V3d_View_1.cxx
 V3d_View_2.cxx
 V3d_View_3.cxx
