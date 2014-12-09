@@ -67,8 +67,20 @@ Standard_Boolean OpenGl_Quadric::createArrays() const
   Handle(NCollection_AlignedAllocator) anAlloc = new NCollection_AlignedAllocator (16);
   myAttribs = new Graphic3d_Buffer      (anAlloc);
   myIndices = new Graphic3d_IndexBuffer (anAlloc);
-  if (!myAttribs->Init (NbVertices(), anAttribsInfo, 2)
-   || !myIndices->Init<GLuint> (NbTriangles() * 3))
+  if (!myAttribs->Init (NbVertices(), anAttribsInfo, 2))
+  {
+    return Standard_False;
+  }
+
+  const Standard_Integer aNbIndices = NbTriangles() * 3;
+  if (aNbIndices < Standard_Integer(USHRT_MAX))
+  {
+    if (!myIndices->Init<GLushort> (aNbIndices))
+    {
+      return Standard_False;
+    }
+  }
+  else if (!myIndices->Init<GLuint> (aNbIndices))
   {
     return Standard_False;
   }
@@ -93,12 +105,12 @@ Standard_Boolean OpenGl_Quadric::createArrays() const
   {
     for (Standard_Integer aV = 0; aV < myNbStacks; ++aV)
     {
-      myIndices->ChangeValue<GLuint> (++aLastIndex) = aU       * (myNbStacks + 1) + aV;
-      myIndices->ChangeValue<GLuint> (++aLastIndex) = (aU + 1) * (myNbStacks + 1) + aV;
-      myIndices->ChangeValue<GLuint> (++aLastIndex) = (aU + 1) * (myNbStacks + 1) + (aV + 1);
-      myIndices->ChangeValue<GLuint> (++aLastIndex) = (aU + 1) * (myNbStacks + 1) + (aV + 1);
-      myIndices->ChangeValue<GLuint> (++aLastIndex) = aU       * (myNbStacks + 1) + (aV + 1);
-      myIndices->ChangeValue<GLuint> (++aLastIndex) = aU       * (myNbStacks + 1) + aV;
+      myIndices->SetIndex (++aLastIndex, aU       * (myNbStacks + 1) + aV);
+      myIndices->SetIndex (++aLastIndex, (aU + 1) * (myNbStacks + 1) + aV);
+      myIndices->SetIndex (++aLastIndex, (aU + 1) * (myNbStacks + 1) + (aV + 1));
+      myIndices->SetIndex (++aLastIndex, (aU + 1) * (myNbStacks + 1) + (aV + 1));
+      myIndices->SetIndex (++aLastIndex, aU       * (myNbStacks + 1) + (aV + 1));
+      myIndices->SetIndex (++aLastIndex, aU       * (myNbStacks + 1) + aV);
     }
   }
   return Standard_True;
