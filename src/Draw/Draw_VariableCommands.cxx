@@ -41,6 +41,7 @@ extern Draw_Viewer dout;
 #include <errno.h>
 
 #include <OSD_Environment.hxx>
+#include <OSD_OpenFile.hxx>
 
 Standard_Boolean Draw_ParseFailed;
 
@@ -146,10 +147,10 @@ static Standard_Integer save(Draw_Interpretor& di, Standard_Integer n, const cha
 
 
   const char* name = a[2];
-  filebuf fic;
-  ostream os(&fic);
+  ofstream os;
   os.precision(15);
-  if (!fic.open(name,ios::out)) {
+  OSD_OpenStream(os, name, ios::out);
+  if (!os.rdbuf()->is_open()) {
     di << "Cannot open file for writing "<<name;
     return 1;
   }
@@ -187,7 +188,6 @@ static Standard_Integer save(Draw_Interpretor& di, Standard_Integer n, const cha
   Standard_Boolean res = Standard_False;
 
   errno = 0;
-  fic.close();
 
   res = os.good() && !errno;
   if( !res )
@@ -214,7 +214,8 @@ static Standard_Integer restore(Draw_Interpretor& di, Standard_Integer n, const 
   
   filebuf fic;
   istream in(&fic);
-  if (!fic.open(fname,ios::in)) {
+  OSD_OpenFileBuf(fic,fname,ios::in);
+  if (!fic.is_open()) {
     di << "Cannot open file for reading : "<<fname;
     return 1;
   }
