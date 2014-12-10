@@ -62,6 +62,84 @@ Standard_Boolean Geom_BSplineCurve::IsCN ( const Standard_Integer N) const
     return Standard_False;
   }
 }
+//=======================================================================
+//function : IsG1
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean Geom_BSplineCurve::IsG1 ( const Standard_Real theTf,
+                                           const Standard_Real theTl,
+                                           const Standard_Real theAngTol) const
+{
+  if(IsCN(1))
+  {
+    return Standard_True;
+  }
+
+  Standard_Integer  start = FirstUKnotIndex()+1,
+                    finish = LastUKnotIndex()-1;
+  Standard_Integer aDeg = Degree();
+  for(Standard_Integer aNKnot = start; aNKnot <= finish; aNKnot++)
+  {
+    const Standard_Real aTpar = Knot(aNKnot);
+
+    if(aTpar < theTf)
+      continue;
+    if(aTpar > theTl)
+      break;
+
+    Standard_Integer mult = Multiplicity(aNKnot);
+    if (mult < aDeg)
+      continue;
+
+    gp_Pnt aP1, aP2;
+    gp_Vec aV1, aV2;
+    LocalD1(aTpar, aNKnot-1, aNKnot, aP1, aV1);
+    LocalD1(aTpar, aNKnot, aNKnot+1, aP2, aV2);
+
+    if((aV1.SquareMagnitude() <= gp::Resolution()) ||
+        aV2.SquareMagnitude() <= gp::Resolution())
+    {
+      return Standard_False;
+    }
+
+    if(Abs(aV1.Angle(aV2)) > theAngTol)
+      return Standard_False;
+  }
+
+  if(!IsPeriodic())
+    return Standard_True;
+
+  const Standard_Real aFirstParam = FirstParameter(),
+                      aLastParam = LastParameter();
+
+  if( ((aFirstParam - theTf)*(theTl - aFirstParam) < 0.0) &&
+      ((aLastParam - theTf)*(theTl - aLastParam) < 0.0))
+  {
+    //Range [theTf, theTl] does not intersect curve bounadries
+    return Standard_True;
+  }
+
+  //Curve is closed or periodic and range [theTf, theTl]
+  //intersect curve boundary. Therefore, it is necessary to 
+  //check if curve is smooth in its first and last point.
+
+  gp_Pnt aP;
+  gp_Vec aV1, aV2;
+  D1(Knot(FirstUKnotIndex()), aP, aV1);
+  D1(Knot(LastUKnotIndex()), aP, aV2);
+
+  if((aV1.SquareMagnitude() <= gp::Resolution()) ||
+      aV2.SquareMagnitude() <= gp::Resolution())
+  {
+    return Standard_False;
+  }
+
+  if(Abs(aV1.Angle(aV2)) > theAngTol)
+    return Standard_False;
+
+  return Standard_True;
+}
 
 //=======================================================================
 //function : IsClosed

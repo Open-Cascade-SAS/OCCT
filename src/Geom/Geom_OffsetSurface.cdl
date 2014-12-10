@@ -68,7 +68,10 @@ is
 
 
 
-  Create (S : Surface from Geom; Offset : Real)   returns OffsetSurface
+  Create (S : Surface from Geom;
+          Offset : Real;
+          isNotCheckC0 : Boolean = Standard_False)
+    returns OffsetSurface
         ---Purpose : Constructs a surface offset from the basis surface
     	-- S, where Offset is the distance between the offset
     	-- surface and the basis surface at any point.
@@ -81,6 +84,8 @@ is
     	-- which the offset value is measured is indicated by
     	-- this normal vector if Offset is positive, or is the
     	-- inverse sense if Offset is negative.
+      -- If isNotCheckC0 = TRUE checking if basis surface has C0-continuity
+      -- is not made.
         --  Warnings :
         -- - The offset surface is built with a copy of the
     	--   surface S. Therefore, when S is modified the
@@ -95,12 +100,16 @@ is
 
 
 
-  SetBasisSurface (me : mutable; S : Surface from Geom)
+  SetBasisSurface ( me : mutable;
+                    S : Surface from Geom;
+                    isNotCheckC0 : Boolean = Standard_False)
      raises ConstructionError;
         ---Purpose : Raised if S is not at least C1.
         --  Warnings :
         --  No check is done to verify that a unique normal direction is
         --  defined at any point of the basis surface S.
+        --  If isNotCheckC0 = TRUE checking if basis surface has C0-continuity
+        --  is not made.
     	-- Exceptions
     	-- Standard_ConstructionError if the surface S is not
     	-- at least "C1" continuous.
@@ -484,11 +493,15 @@ is
       	--          these vectors have opposite direction.
      returns Boolean from Standard;
 
-  
+  GetBasisSurfContinuity(me)
+    returns Shape from GeomAbs;
+    	---Purpose: Returns continuity of the basis surface.   
+
 fields
 
   basisSurf   : Surface from Geom;
   equivSurf   : Surface from Geom;
   offsetValue : Real;
   myOscSurf   : OsculatingSurface from Geom;
+  myBasisSurfContinuity : Shape from GeomAbs;
 end;

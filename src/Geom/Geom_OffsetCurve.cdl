@@ -84,7 +84,10 @@ is
 
 
 
-  Create (C : Curve from Geom; Offset : Real;  V : Dir)
+  Create (C : Curve from Geom;
+          Offset : Real;
+          V : Dir;
+          isNotCheckC0 : Boolean = Standard_False)
      returns OffsetCurve
         ---Purpose :
         --  C is the basis curve, Offset is the distance between <me> and
@@ -94,6 +97,8 @@ is
         --  at this point, the corresponding point on the offset curve is
         --  in the direction of the vector-product N = V ^ T   where
         --  N is a unitary vector.
+        --  If isNotCheckC0 = TRUE checking if basis curve has C0-continuity
+        --  is not made.
         --  Warnings :
         --  In this package the entities are not shared. The OffsetCurve is
         --  built with a copy of the curve C. So when C is modified the
@@ -122,9 +127,14 @@ is
     	-- the point of parameter U on this offset curve.
  
 
-  SetBasisCurve (me : mutable; C : Curve from Geom)
+  SetBasisCurve ( me : mutable;
+                  C : Curve from Geom;
+                  isNotCheckC0 : Boolean = Standard_False)
      raises ConstructionError;
-        ---Purpose :  Changes this offset curve by assigning C as the basis curve from which it is built.
+        ---Purpose :  Changes this offset curve by assigning C
+        --            as the basis curve from which it is built.
+        --            If isNotCheckC0 = TRUE checking if basis curve
+        --            has C0-continuity is not made.
     	-- Exceptions
     	-- Standard_ConstructionError if the curve C is not at least "C1" continuous.
       
@@ -348,10 +358,15 @@ is
   Copy (me)  returns like me;
     	---Purpose: Creates a new object which is a copy of this offset curve.
 
+  GetBasisCurveContinuity(me)
+    returns Shape from GeomAbs;
+    	---Purpose: Returns continuity of the basis curve.   
+      
 fields
 
   basisCurve  : Curve from Geom;
   direction   : Dir;
   offsetValue : Real;
-
+  myBasisCurveContinuity : Shape from GeomAbs;
+  
 end;

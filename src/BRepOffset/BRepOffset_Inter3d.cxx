@@ -768,7 +768,22 @@ void BRepOffset_Inter3d::ContextIntByArc(const TopTools_IndexedMapOfShape& Conte
       //---------------------------------------------------
       const TopoDS_Shape SI = Analyse.Ancestors(E).First();
       OF1 = TopoDS::Face(InitOffsetFace.Image(SI).First());
-      OE  = TopoDS::Edge(InitOffsetEdge.Image(E).First());      
+      OE  = TopoDS::Edge(InitOffsetEdge.Image(E).First());     
+
+      {
+        //Check if OE has pcurve in CF
+
+        Standard_Real   f,l;
+
+        Handle (Geom2d_Curve) C1 = BRep_Tool::CurveOnSurface(OE,CF,f,l);
+        Handle (Geom2d_Curve) C2 = BRep_Tool::CurveOnSurface(OE,OF1,f,l); 
+
+        if(C1.IsNull() || C2.IsNull())
+        {
+          continue;
+        }
+      }
+
       //--------------------------------------------------
       // MAJ of OE on cap CF.
       //--------------------------------------------------
@@ -804,6 +819,21 @@ void BRepOffset_Inter3d::ContextIntByArc(const TopTools_IndexedMapOfShape& Conte
 	    //-------------------------------------------------
 	    OF1 = TopoDS::Face(InitOffsetFace.Image(EV).First());
 	    OE  = TopoDS::Edge(InitOffsetEdge.Image(V[i]).First());
+
+      {
+        //Check if OE has pcurve in CF and OF1
+
+        Standard_Real   f,l;
+
+        Handle (Geom2d_Curve) C1 = BRep_Tool::CurveOnSurface(OE,CF,f,l);
+        Handle (Geom2d_Curve) C2 = BRep_Tool::CurveOnSurface(OE,OF1,f,l); 
+
+        if(C1.IsNull() || C2.IsNull())
+        {
+          continue;
+        }
+      }
+
 	    //--------------------------------------------------
 	    // MAj of OE on cap CF.
 	    //--------------------------------------------------

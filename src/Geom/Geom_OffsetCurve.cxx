@@ -59,6 +59,7 @@ typedef gp_XYZ  XYZ;
 //derivee non nulle
 static const int maxDerivOrder = 3;
 static const Standard_Real MinStep   = 1e-7;
+static const Standard_Real MyAngularToleranceForG1 = Precision::Angular();
 
 
 
@@ -79,34 +80,17 @@ Handle(Geom_Geometry) Geom_OffsetCurve::Copy () const {
 
 //=======================================================================
 //function : Geom_OffsetCurve
-//purpose  : 
+//purpose  : Basis curve cannot be an Offset curve or trimmed from
+//            offset curve.
 //=======================================================================
 
-Geom_OffsetCurve::Geom_OffsetCurve (const Handle(Curve)& C,
-				    const Standard_Real           Offset, 
-				    const Dir&           V      )
- : direction(V), offsetValue(Offset)
+Geom_OffsetCurve::Geom_OffsetCurve (const Handle(Geom_Curve)& theCurve,
+                                    const Standard_Real       theOffset,
+                                    const gp_Dir&             theDir,
+                                    const Standard_Boolean    isTheNotCheckC0)
+ : direction(theDir), offsetValue(theOffset)
 {
-  if (C->DynamicType() == STANDARD_TYPE(Geom_OffsetCurve)) {
-    Handle(OffsetCurve) OC = Handle(OffsetCurve)::DownCast(C);
-    SetBasisCurve (OC->BasisCurve());
-
-    Standard_Real PrevOff = OC->Offset();
-    gp_Vec V1(OC->Direction());
-    gp_Vec V2(direction);
-    gp_Vec Vdir(PrevOff*V1 + offsetValue*V2);
-
-    if (Offset >= 0.) {
-      offsetValue = Vdir.Magnitude();
-      direction.SetXYZ(Vdir.XYZ());
-    } else {
-      offsetValue = -Vdir.Magnitude();
-      direction.SetXYZ((-Vdir).XYZ());
-    }
-  }
-  else {
-    SetBasisCurve(C);
-  }
+  SetBasisCurve (theCurve, isTheNotCheckC0);
 }
 
 
@@ -182,36 +166,78 @@ Standard_Real Geom_OffsetCurve::Period () const
 //purpose  : 
 //=======================================================================
 
-void Geom_OffsetCurve::SetBasisCurve (const Handle(Curve)& C)
+void Geom_OffsetCurve::SetBasisCurve (const Handle(Curve)& C,
+                                      const Standard_Boolean isNotCheckC0)
 {
-  Handle(Curve) aBasisCurve = Handle(Curve)::DownCast(C->Copy());
+  const Standard_Real aUf = C->FirstParameter(),
+                      aUl = C->LastParameter();
+  Handle(Curve) aCheckingCurve =  Handle(Curve)::DownCast(C->Copy());
+  Standard_Boolean isTrimmed = Standard_False;
+
+  while(aCheckingCurve->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)) ||
+        aCheckingCurve->IsKind(STANDARD_TYPE(Geom_OffsetCurve)))
+  {
+    if (aCheckingCurve->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
+    {
+      Handle(Geom_TrimmedCurve) aTrimC = 
+                Handle(Geom_TrimmedCurve)::DownCast(aCheckingCurve);
+      aCheckingCurve = aTrimC->BasisCurve();
+      isTrimmed = Standard_True;
+    }
+
+    if (aCheckingCurve->IsKind(STANDARD_TYPE(Geom_OffsetCurve)))
+    {
+      Handle(Geom_OffsetCurve) aOC = 
+            Handle(Geom_OffsetCurve)::DownCast(aCheckingCurve);
+      aCheckingCurve = aOC->BasisCurve();
+      Standard_Real PrevOff = aOC->Offset();
+      gp_Vec V1(aOC->Direction());
+      gp_Vec V2(direction);
+      gp_Vec Vdir(PrevOff*V1 + offsetValue*V2);
+
+      if (offsetValue >= 0.)
+      {
+        offsetValue = Vdir.Magnitude();
+        direction.SetXYZ(Vdir.XYZ());
+      }
+      else
+      {
+        offsetValue = -Vdir.Magnitude();
+        direction.SetXYZ((-Vdir).XYZ());
+      }
+    }
+  }
+  
+  myBasisCurveContinuity = aCheckingCurve->Continuity();
+
+  Standard_Boolean isC0 = !isNotCheckC0 &&
+                          (myBasisCurveContinuity == GeomAbs_C0);
 
   // Basis curve must be at least C1
-  if (aBasisCurve->Continuity() == GeomAbs_C0)
+  if (isC0 && aCheckingCurve->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
   {
-    // For B-splines it is sometimes possible to increase continuity by removing 
-    // unnecessarily duplicated knots
-    if (aBasisCurve->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
+    Handle(Geom_BSplineCurve) aBC = Handle(Geom_BSplineCurve)::DownCast(aCheckingCurve);
+    if(aBC->IsG1(aUf, aUl, MyAngularToleranceForG1))
     {
-      Handle(Geom_BSplineCurve) aBCurve = Handle(Geom_BSplineCurve)::DownCast(aBasisCurve);
-      Standard_Integer degree = aBCurve->Degree();
-      Standard_Real Toler = Precision::Confusion();
-      Standard_Integer start = aBCurve->IsPeriodic() ? 1 :  aBCurve->FirstUKnotIndex(),
-                       finish = aBCurve->IsPeriodic() ? aBCurve->NbKnots() :  aBCurve->LastUKnotIndex();
-      for (Standard_Integer i = start; i <= finish; i++)
-      {
-        Standard_Integer mult = aBCurve->Multiplicity(i);
-        if ( mult == degree )
-          aBCurve->RemoveKnot(i,degree - 1, Toler);
-      }
+      //Checking if basis curve has more smooth (C1, G2 and above) is not done.
+      //It can be done in case of need.
+      myBasisCurveContinuity = GeomAbs_G1;
+      isC0 = Standard_False;
     }
 
     // Raise exception if still C0
-    if (aBasisCurve->Continuity() == GeomAbs_C0)
+    if (isC0)
       Standard_ConstructionError::Raise("Offset on C0 curve");
   }
-
-  basisCurve = aBasisCurve;
+  //
+  if(isTrimmed)
+  {
+    basisCurve = new Geom_TrimmedCurve(aCheckingCurve, aUf, aUl);
+  } 
+  else
+  {
+    basisCurve = aCheckingCurve;
+  }
 }
 
 
@@ -235,7 +261,7 @@ Handle(Curve) Geom_OffsetCurve::BasisCurve () const
 GeomAbs_Shape Geom_OffsetCurve::Continuity () const {
 
   GeomAbs_Shape OffsetShape=GeomAbs_C0;
-  switch (basisCurve->Continuity()) {
+  switch (myBasisCurveContinuity) {
     case GeomAbs_C0 : OffsetShape = GeomAbs_C0;       break;
     case GeomAbs_C1 : OffsetShape = GeomAbs_C0;       break;
     case GeomAbs_C2 : OffsetShape = GeomAbs_C1;       break;
@@ -825,13 +851,13 @@ Standard_Real Geom_OffsetCurve::Offset () const { return offsetValue; }
 
 void Geom_OffsetCurve::Value (const Standard_Real theU, Pnt& theP, 
                               Pnt& thePbasis,  Vec& theV1basis) const 
-  {
-  if (basisCurve->Continuity() == GeomAbs_C0)
+{
+  if (myBasisCurveContinuity == GeomAbs_C0)
     Geom_UndefinedValue::Raise("Exception: Basis curve is C0 continuity!");
 
   basisCurve->D1(theU, thePbasis, theV1basis);
   D0(theU,theP);
-  }
+}
 
 
 //=======================================================================
@@ -893,4 +919,13 @@ Standard_Real Geom_OffsetCurve::ParametricTransformation(const gp_Trsf& T)
 const
 {
   return basisCurve->ParametricTransformation(T);
+}
+
+//=======================================================================
+//function : GetBasisCurveContinuity
+//purpose  : 
+//=======================================================================
+GeomAbs_Shape Geom_OffsetCurve::GetBasisCurveContinuity() const
+{
+  return myBasisCurveContinuity;
 }

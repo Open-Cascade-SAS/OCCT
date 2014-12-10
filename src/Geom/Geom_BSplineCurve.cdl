@@ -563,6 +563,14 @@ is
      raises RangeError;
         ---Purpose : Raised if N < 0.
 
+  IsG1 (me; theTf, theTl, theAngTol : Real) returns Boolean;
+        ---Purpose :
+		--  Check if curve has at least G1 continuity in interval [theTf, theTl]
+        --  Returns true if IsCN(1)  
+        --  or 
+        --  angle betweem "left" and "right" first derivatives at
+        --  knots with C0 continuity is less then theAngTol
+		--  only knots in interval [theTf, theTl] is checked
 
   IsClosed (me)  returns Boolean;
         ---Purpose :

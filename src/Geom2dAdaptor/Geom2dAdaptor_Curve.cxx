@@ -214,12 +214,15 @@ GeomAbs_Shape Geom2dAdaptor_Curve::Continuity() const
   }
   else if (myCurve->IsKind(STANDARD_TYPE(Geom2d_OffsetCurve))){
     GeomAbs_Shape S = 
-      (*((Handle(Geom2d_OffsetCurve)*)&myCurve))->BasisCurve()->Continuity(); 
+      (*((Handle(Geom2d_OffsetCurve)*)&myCurve))->GetBasisCurveContinuity(); 
     switch(S){
     case GeomAbs_CN: return GeomAbs_CN;
     case GeomAbs_C3: return GeomAbs_C2;
     case GeomAbs_C2: return GeomAbs_C1;
     case GeomAbs_C1: return GeomAbs_C0;  
+    case GeomAbs_G1: return GeomAbs_G1;
+    case GeomAbs_G2: return GeomAbs_G2;
+
     default:
       Standard_NoSuchObject::Raise("Geom2dAdaptor_Curve::Continuity");
     }

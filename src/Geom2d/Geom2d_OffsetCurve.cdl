@@ -77,7 +77,11 @@ raises ConstructionError   from Standard,
 is
 
 
-  Create (C : Curve from Geom2d; Offset : Real)   returns OffsetCurve
+  Create (C : Curve from Geom2d;
+          Offset : Real;
+          isNotCheckC0 : Boolean = Standard_False)
+
+  returns OffsetCurve
         --- Purpose : Constructs a curve offset from the basis curve C,
     	-- where Offset is the distance between the offset
     	-- curve and the basis curve at any point.
@@ -89,11 +93,14 @@ is
     	-- the offset value is measured is indicated by this
     	-- normal vector if Offset is positive, or in the inverse
     	-- sense if Offset is negative.
+      -- If isNotCheckC0 = TRUE checking if basis curve has C0-continuity
+      -- is not made.
         --   Warnings :
         --  In this package the entities are not shared. The OffsetCurve is
         --  built with a copy of the curve C. So when C is modified the
         --  OffsetCurve is not modified 
-	--  Warning!  ConstructionError  raised if the basis curve C is not at least C1.
+	--  Warning!  if isNotCheckC0 = false, 
+	    -- ConstructionError  raised if the basis curve C is not at least C1.
         --  No check is done to know if ||V^Z|| != 0.0 at any point.
      raises ConstructionError;
 
@@ -115,11 +122,16 @@ is
     	-- the point of parameter U on this offset curve.
 
 
-  SetBasisCurve (me : mutable; C : Curve from Geom2d)
+  SetBasisCurve ( me : mutable;
+                  C : Curve from Geom2d;
+                  isNotCheckC0 : Boolean = Standard_False)
      raises ConstructionError;
         --- Purpose : Changes this offset curve by assigning C as the
     	-- basis curve from which it is built.
+      -- If isNotCheckC0 = TRUE checking if basis curve has C0-continuity
+      -- is not made.
     	-- Exceptions
+		-- if isNotCheckC0 = false, 
     	-- Standard_ConstructionError if the curve C is not at least "C1" continuous.
 
   SetOffsetValue (me : mutable; D : Real);
@@ -329,10 +341,17 @@ is
 
 
   Copy (me)  returns like me;
-    	---Purpose: Creates a new object, which is a copy of this offset curve.     
+    	---Purpose: Creates a new object, which is a copy of this offset curve.   
+
+  GetBasisCurveContinuity(me)
+    returns Shape from GeomAbs;
+    	---Purpose: Returns continuity of the basis curve.   
+    
+      
 fields
 
   basisCurve  : Curve from Geom2d;
   offsetValue : Real;
+  myBasisCurveContinuity : Shape from GeomAbs;
 
 end;

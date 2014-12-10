@@ -179,15 +179,17 @@ GeomAbs_Shape GeomAdaptor_Curve::Continuity() const
   if (myCurve->IsKind(STANDARD_TYPE(Geom_OffsetCurve)))
   {
     const GeomAbs_Shape S =
-      (*((Handle(Geom_OffsetCurve)*)&myCurve))->BasisCurve()->Continuity();
+      (*((Handle(Geom_OffsetCurve)*)&myCurve))->GetBasisCurveContinuity();
     switch(S)
     {
       case GeomAbs_CN: return GeomAbs_CN;
       case GeomAbs_C3: return GeomAbs_C2;
       case GeomAbs_C2: return GeomAbs_C1;
-      case GeomAbs_C1: return GeomAbs_C0;  
+      case GeomAbs_C1: return GeomAbs_C0; 
+      case GeomAbs_G1: return GeomAbs_G1;
+      case GeomAbs_G2: return GeomAbs_G2;
       default:
-      Standard_NoSuchObject::Raise("GeomAdaptor_Curve::Continuity");
+        Standard_NoSuchObject::Raise("GeomAdaptor_Curve::Continuity");
     }
   }
   else if (myTypeCurve == GeomAbs_OtherCurve) {

@@ -34,6 +34,7 @@
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <gp_XY.hxx>
+#include <Precision.hxx>
 
 typedef Handle(Geom2d_OffsetCurve) Handle(OffsetCurve);
 typedef Geom2d_OffsetCurve         OffsetCurve;
@@ -51,7 +52,7 @@ typedef gp_XY     XY;
 //derivee non nulle
 static const int maxDerivOrder = 3;
 static const Standard_Real MinStep   = 1e-7;
-
+static const Standard_Real MyAngularToleranceForG1 = Precision::Angular();
 
 //=======================================================================
 //function : Copy
@@ -68,21 +69,16 @@ Handle(Geom2d_Geometry) Geom2d_OffsetCurve::Copy () const
 
 //=======================================================================
 //function : Geom2d_OffsetCurve
-//purpose  : 
+//purpose  : Basis curve cannot be an Offset curve or trimmed from
+//            offset curve.
 //=======================================================================
 
-Geom2d_OffsetCurve::Geom2d_OffsetCurve (const Handle(Curve)& C,
-					const Standard_Real Offset)  
-: offsetValue (Offset) 
+Geom2d_OffsetCurve::Geom2d_OffsetCurve (const Handle(Geom2d_Curve)& theCurve,
+                                        const Standard_Real theOffset,
+                                        const Standard_Boolean isTheNotCheckC0)  
+: offsetValue (theOffset) 
 {
-  if (C->DynamicType() == STANDARD_TYPE(Geom2d_OffsetCurve)) {
-    Handle(OffsetCurve) OC = Handle(OffsetCurve)::DownCast(C);
-    SetBasisCurve (OC->BasisCurve());
-    offsetValue += OC->Offset();
-  }
-  else {
-    SetBasisCurve(C);
-  }
+  SetBasisCurve (theCurve, isTheNotCheckC0);
 }
 
 //=======================================================================
@@ -111,36 +107,65 @@ Standard_Real Geom2d_OffsetCurve::ReversedParameter( const Standard_Real U) cons
 //purpose  : 
 //=======================================================================
 
-void Geom2d_OffsetCurve::SetBasisCurve (const Handle(Curve)& C) 
+void Geom2d_OffsetCurve::SetBasisCurve (const Handle(Curve)& C,
+                                        const Standard_Boolean isNotCheckC0) 
 {
-  Handle(Geom2d_Curve) aBasisCurve = Handle(Geom2d_Curve)::DownCast(C->Copy());
+  const Standard_Real aUf = C->FirstParameter(),
+                      aUl = C->LastParameter();
+  Handle(Geom2d_Curve) aCheckingCurve = C;
+  Standard_Boolean isTrimmed = Standard_False;
+
+  while(aCheckingCurve->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve)) ||
+        aCheckingCurve->IsKind(STANDARD_TYPE(Geom2d_OffsetCurve)))
+  {
+    if (aCheckingCurve->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve)))
+    {
+      Handle(Geom2d_TrimmedCurve) aTrimC = 
+                Handle(Geom2d_TrimmedCurve)::DownCast(aCheckingCurve);
+      aCheckingCurve = aTrimC->BasisCurve();
+      isTrimmed = Standard_True;
+    }
+
+    if (aCheckingCurve->IsKind(STANDARD_TYPE(Geom2d_OffsetCurve)))
+    {
+      Handle(Geom2d_OffsetCurve) aOC = 
+                Handle(Geom2d_OffsetCurve)::DownCast(aCheckingCurve);
+      aCheckingCurve = aOC->BasisCurve();
+      offsetValue += aOC->Offset();
+    }
+  }
+
+  myBasisCurveContinuity = aCheckingCurve->Continuity();
+
+  Standard_Boolean isC0 = !isNotCheckC0 &&
+                          (myBasisCurveContinuity == GeomAbs_C0);
 
   // Basis curve must be at least C1
-  if (aBasisCurve->Continuity() == GeomAbs_C0)
+  if (isC0 && aCheckingCurve->IsKind(STANDARD_TYPE(Geom2d_BSplineCurve)))
   {
-    // For B-splines it is sometimes possible to increase continuity by removing 
-    // unnecessarily duplicated knots
-    if (aBasisCurve->IsKind(STANDARD_TYPE(Geom2d_BSplineCurve)))
+    Handle(Geom2d_BSplineCurve) aBC = Handle(Geom2d_BSplineCurve)::DownCast(aCheckingCurve);
+    if(aBC->IsG1(aUf, aUl, MyAngularToleranceForG1))
     {
-      Handle(Geom2d_BSplineCurve) aBCurve = Handle(Geom2d_BSplineCurve)::DownCast(aBasisCurve);
-      Standard_Integer degree = aBCurve->Degree();
-      Standard_Real Toler = 1e-7;
-      Standard_Integer start = aBCurve->IsPeriodic() ? 1 :  aBCurve->FirstUKnotIndex(),
-                       finish = aBCurve->IsPeriodic() ? aBCurve->NbKnots() :  aBCurve->LastUKnotIndex();
-      for (Standard_Integer i = start; i <= finish; i++)
-      {
-        Standard_Integer mult = aBCurve->Multiplicity(i);
-        if ( mult == degree )
-          aBCurve->RemoveKnot(i,degree - 1, Toler);
-      }
+      //Checking if basis curve has more smooth (C1, G2 and above) is not done.
+      //It can be done in case of need.
+      myBasisCurveContinuity = GeomAbs_G1;
+      isC0 = Standard_False;
     }
 
     // Raise exception if still C0
-    if (aBasisCurve->Continuity() == GeomAbs_C0)
+    if (isC0)
       Standard_ConstructionError::Raise("Offset on C0 curve");
   }
+  //
+  if(isTrimmed)
+  {
+    basisCurve = new Geom2d_TrimmedCurve(aCheckingCurve, aUf, aUl);
+  } 
+  else
+  {
+    basisCurve = aCheckingCurve;
+  }
 
-  basisCurve = aBasisCurve;
 }
 
 //=======================================================================
@@ -168,7 +193,7 @@ Handle(Curve) Geom2d_OffsetCurve::BasisCurve () const
 GeomAbs_Shape Geom2d_OffsetCurve::Continuity () const 
 {
   GeomAbs_Shape OffsetShape=GeomAbs_C0;
-  switch (basisCurve->Continuity()) {
+  switch (myBasisCurveContinuity) {
      case GeomAbs_C0 : OffsetShape = GeomAbs_C0;   break;
      case GeomAbs_C1 : OffsetShape = GeomAbs_C0;   break;
      case GeomAbs_C2 : OffsetShape = GeomAbs_C1;   break;
@@ -177,6 +202,7 @@ GeomAbs_Shape Geom2d_OffsetCurve::Continuity () const
      case GeomAbs_G1 : OffsetShape = GeomAbs_G1;   break;
      case GeomAbs_G2 : OffsetShape = GeomAbs_G2;   break;
   }
+
   return OffsetShape;
 }
 
@@ -925,4 +951,13 @@ Standard_Real Geom2d_OffsetCurve::TransformedParameter(const Standard_Real U,
 Standard_Real Geom2d_OffsetCurve::ParametricTransformation(const gp_Trsf2d& T) const
 {
   return basisCurve->ParametricTransformation(T);
+}
+
+//=======================================================================
+//function : GetBasisCurveContinuity
+//purpose  : 
+//=======================================================================
+GeomAbs_Shape Geom2d_OffsetCurve::GetBasisCurveContinuity() const
+{
+  return myBasisCurveContinuity;
 }

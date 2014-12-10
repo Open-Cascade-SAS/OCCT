@@ -217,26 +217,6 @@ static void MakeOffset
  const Standard_Boolean                      IsOpenResult,
  const TopoDS_Vertex *                       Ends);
 
-
-
-//=======================================================================
-//function : CheckFace
-//purpose  : Check if face contains an edge with C0 continuity
-//=======================================================================
-//
-static void CheckFace(const TopoDS_Face& theFace)
-  {
-  TopExp_Explorer ex(theFace,TopAbs_EDGE);
-  for(; ex.More(); ex.Next())
-    {
-    TopoDS_Edge anEdge=TopoDS::Edge(ex.Current());
-    Standard_Real f,l;
-    const Handle(Geom2d_Curve) C = BRep_Tool::CurveOnSurface(anEdge,theFace,f,l);
-    if (C->Continuity() == GeomAbs_C0)
-      Standard_ConstructionError::Raise("Initial shape contains an edge with C0 continuity");
-    }
-  }
-
 //=======================================================================
 //function : KPartCircle
 //purpose  : 
@@ -368,9 +348,6 @@ void BRepFill_OffsetWire::Init(const TopoDS_Face&     Spine,
 //  mySpine    = TopoDS::Face(Spine.Oriented(TopAbs_FORWARD));
   myJoinType = Join;
   myIsOpenResult = IsOpenResult;
-
-  CheckFace(mySpine);
-  
   myMap.Clear();
   myMapSpine.Clear();
   //------------------------------------------------------------------

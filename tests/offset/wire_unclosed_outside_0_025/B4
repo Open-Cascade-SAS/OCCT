@@ -1,13 +1,9 @@
-puts "TODO ?OCC23068 ALL: Error : result is not a topological shape"
-puts "TODO ?OCC23068 ALL: Error : The offset cannot be built."
-puts "TODO ?OCC23068 ALL: An exception was caught"
-puts "TODO ?OCC23068 ALL: \\*\\* Exception \\*\\*.*"
-puts "TODO ?OCC23748 ALL: Error: Offset is not done."
+puts "TODO OCC25109 ALL: Faulty shapes in variables"
 
 restore [locate_data_file case_3_wire2.brep] s
 
-set length 0
-set nbsh_v 0
-set nbsh_e 0
-set nbsh_w 0
+set length 957.647
+set nbsh_v 86
+set nbsh_e 86
+set nbsh_w 2
 

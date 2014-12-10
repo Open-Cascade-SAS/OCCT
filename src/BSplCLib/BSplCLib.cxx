@@ -1175,7 +1175,8 @@ void  BSplCLib::Bohm(const Standard_Real U,
       
       for (j = Degm1; j >= i; j--) {
 	jDmi--;
-	*pole -= *tbis; *pole /= (knot[jDmi] - knot[j]);
+	*pole -= *tbis;
+  *pole = (knot[jDmi] == knot[j]) ? 0.0 :  *pole / (knot[jDmi] - knot[j]);
 	pole--;
 	tbis--;
       }
@@ -1219,7 +1220,7 @@ void  BSplCLib::Bohm(const Standard_Real U,
       
       for (j = Degm1; j >= i; j--) {
 	jDmi--;
-	coef   = 1. / (knot[jDmi] - knot[j]);
+	coef   = (knot[jDmi] == knot[j]) ? 0.0 : 1. / (knot[jDmi] - knot[j]);
 	*pole -= *tbis; *pole *= coef; pole++; tbis++;
 	*pole -= *tbis; *pole *= coef;
 	pole  -= 3;
@@ -1267,7 +1268,7 @@ void  BSplCLib::Bohm(const Standard_Real U,
       
       for (j = Degm1; j >= i; j--) {
 	jDmi--;
-	coef   = 1. / (knot[jDmi] - knot[j]);
+	coef   = (knot[jDmi] == knot[j]) ? 0.0 : 1. / (knot[jDmi] - knot[j]);
 	*pole -= *tbis; *pole *= coef; pole++; tbis++;
 	*pole -= *tbis; *pole *= coef; pole++; tbis++;
 	*pole -= *tbis; *pole *= coef;
@@ -1318,7 +1319,7 @@ void  BSplCLib::Bohm(const Standard_Real U,
       
       for (j = Degm1; j >= i; j--) {
 	jDmi--;
-	coef   = 1. / (knot[jDmi] - knot[j]);
+	coef   = (knot[jDmi]  == knot[j]) ? 0.0 : 1. /(knot[jDmi] - knot[j]) ;
 	*pole -= *tbis; *pole *= coef; pole++; tbis++;
 	*pole -= *tbis; *pole *= coef; pole++; tbis++;
 	*pole -= *tbis; *pole *= coef; pole++; tbis++;
@@ -1374,7 +1375,7 @@ void  BSplCLib::Bohm(const Standard_Real U,
 	
 	for (j = Degm1; j >= i; j--) {
 	  jDmi--;
-	  coef = 1. / (knot[jDmi] - knot[j]);
+	  coef = (knot[jDmi] == knot[j]) ? 0.0 : 1. / (knot[jDmi] - knot[j]);
 	  
 	  for (k = 0; k < Dimension; k++) {
 	    *pole -= *tbis; *pole *= coef; pole++; tbis++;
