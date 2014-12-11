@@ -186,9 +186,10 @@ void BRepMesh_FastDiscretFace::initDataStructure()
   // Check the necessity to fill the map of parameters
   const Handle(BRepAdaptor_HSurface)& gFace = myAttribute->Surface();
   GeomAbs_SurfaceType thetype = gFace->GetType();
-  const Standard_Boolean useUVParam = (thetype == GeomAbs_Torus         ||
-                                       thetype == GeomAbs_BezierSurface ||
-                                       thetype == GeomAbs_BSplineSurface);
+  const Standard_Boolean isBSpline = (thetype == GeomAbs_BezierSurface ||
+                                      thetype == GeomAbs_BSplineSurface);
+  const Standard_Boolean useUVParam = (thetype == GeomAbs_Torus ||isBSpline);
+
   myUParam.Clear(); 
   myVParam.Clear();
 
@@ -216,6 +217,40 @@ void BRepMesh_FastDiscretFace::initDataStructure()
     myStructure->AddNode(aNode, Standard_True);
   }
   aBoundaryNodes.Nullify();
+
+  if (isBSpline)
+  {
+    const Standard_Real aRange[2][2] = {
+      {myAttribute->GetUMin(), myAttribute->GetUMax()},
+      {myAttribute->GetVMin(), myAttribute->GetVMax()}
+    };
+
+    const GeomAbs_Shape aContinuity = GeomAbs_CN;
+    for (Standard_Integer i = 0; i < 2; ++i)
+    {
+      const Standard_Boolean isU = (i == 0);
+      const Standard_Integer aIntervalsNb = isU ?
+        gFace->NbUIntervals(aContinuity) :
+        gFace->NbVIntervals(aContinuity);
+
+      BRepMesh::IMapOfReal& aParams = isU ? myUParam : myVParam;
+      if (aIntervalsNb < aParams.Size())
+        continue;
+
+      TColStd_Array1OfReal aIntervals(1, aIntervalsNb + 1);
+      if (isU)
+        gFace->UIntervals(aIntervals, aContinuity);
+      else
+        gFace->VIntervals(aIntervals, aContinuity);
+
+      for (Standard_Integer j = 1; j <= aIntervals.Upper(); ++j)
+      {
+        const Standard_Real aParam = aIntervals(j);
+        if (aParam > aRange[i][0] && aParam < aRange[i][1])
+          aParams.Add(aParam);
+      }
+    }
+  }
 
   //////////////////////////////////////////////////////////// 
   //add internal vertices after self-intersection check
@@ -914,22 +949,27 @@ void BRepMesh_FastDiscretFace::insertInternalVerticesBSpline(
           {
             aPrevParam2 = aParam2;
             aPrevPnt2   = aPnt2;
-
-            if (!isU && j < aParams2.Length())
-            {
-              // Update point parameter.
-              aStPnt1.SetX(aPrevParam2);
-
-              // Classify intersection point
-              if (aClassifier->Perform(aStPnt1) == TopAbs_IN)
-              {
-                insertVertex(aPrevPnt2, aStPnt1.Coord(), theNewVertices);
-              }
-            }
-
             ++j;
           }
         }
+      }
+    }
+  }
+
+  // insert nodes of the regular grid
+  for (Standard_Integer i = 1; i <= aParams[0].Length(); ++i)
+  {
+    const Standard_Real aParam1 = aParams[0].Value(i);
+    for (Standard_Integer j = 1; j <= aParams[1].Length(); ++j)
+    {
+      gp_Pnt2d aPnt2d(aParam1, aParams[1].Value(j));
+
+      // Classify intersection point
+      if (aClassifier->Perform(aPnt2d) == TopAbs_IN)
+      {
+        gp_Pnt aPnt;
+        gFace->D0(aPnt2d.X(), aPnt2d.Y(), aPnt);
+        insertVertex(aPnt, aPnt2d.Coord(), theNewVertices);
       }
     }
   }
