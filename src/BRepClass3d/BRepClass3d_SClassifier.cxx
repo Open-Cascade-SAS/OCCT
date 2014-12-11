@@ -309,7 +309,7 @@ void BRepClass3d_SClassifier::Perform(BRepClass3d_SolidExplorer& SolidExplorer,
 	      if(Intersector3d.IsDone()) { 
 		Standard_Integer i;
 		for (i=1; i <= Intersector3d.NbPnt(); i++) { 
-		  if(Abs(Intersector3d.WParameter(i)) < Abs(parmin)) {
+		  if(Abs(Intersector3d.WParameter(i)) < Abs(parmin) - Precision::PConfusion()) {
  
 		    parmin = Intersector3d.WParameter(i);
 		    //  Modified by skv - Thu Sep  4 12:46:32 2003 OCC578 Begin

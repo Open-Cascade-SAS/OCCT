@@ -251,6 +251,14 @@ Standard_Boolean BRepClass3d_SolidExplorer::PointInTheFace
     void *ptr = (void*)(myMapOfInter.Find(Face));
     if(ptr) { 
       const IntCurvesFace_Intersector& TheIntersector = (*((IntCurvesFace_Intersector *)ptr));
+      // Check if the point is already in the face
+      if(TheIntersector.ClassifyUVPoint(gp_Pnt2d(u_,v_))==TopAbs_IN) {
+        gp_Pnt aPnt;
+        surf->D1(u_, v_, aPnt, theVecD1U, theVecD1V);
+        if (aPnt.SquareDistance(APoint_) < Precision::Confusion() * Precision::Confusion())
+          return Standard_True;
+      }
+
       //-- Take 4 points in each Quarter of surface
       //-- -> Index : 1 -> 16
       //-- 
@@ -451,6 +459,9 @@ Standard_Integer BRepClass3d_SolidExplorer::OtherSegment(const gp_Pnt& P,
       //
       // Check if the point is on the face or the face is infinite.
       Standard_Integer anInfFlag = IsInfiniteUV(U1,V1,U2,V2);
+      // default values
+      _u = (U1 + U2) * 0.5;
+      _v = (V1 + V2) * 0.5;
 
       GeomAdaptor_Surface GA(BRep_Tool::Surface(face));
       Extrema_ExtPS Ext(P, GA, TolU, TolV);
@@ -510,6 +521,11 @@ Standard_Integer BRepClass3d_SolidExplorer::OtherSegment(const gp_Pnt& P,
           ptfound=Standard_True;
           return 0;
         }
+
+        // set the parameters found by extrema
+        aPx = Ext.Point(iNear);
+        aPx.Parameter(_u, _v);
+        APoint = aPx.Value();
       }
       //The point is not ON the face or surface. The face is restricted.
       // find point in a face not too far from a projection of P on face
