@@ -1,0 +1,23 @@
+puts "================"
+puts "OCC25193"
+puts "================"
+puts ""
+#######################################################################
+# Bad Intersection curveobtained by Surface/Surface Intersection Algorithm.
+#######################################################################
+
+restore [locate_data_file bug25193_s1t.draw] s1
+restore [locate_data_file bug25193_s4t.draw] s4
+
+set CurveNumb [intersect i s1 s4 3.6570868343352305e-005]
+
+if { [llength ${CurveNumb}] != 6 } {
+    puts "Error : Bad Intersection curveobtained by Surface/Surface Intersection Algorithm"
+} else {
+    puts "OK : Good Intersection curveobtained by Surface/Surface Intersection Algorithm"
+}
+
+smallview
+fit
+
+set only_screen_axo 1

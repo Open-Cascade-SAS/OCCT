@@ -1328,6 +1328,24 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
                       bFlag2=u2 >= Um2-aTol2D && v2 >= Vm2-aTol2D && u2 <= UM2+aTol2D && v2 <= VM2+aTol2D;
                       if (bFlag1 && bFlag2)
                       {
+                        if (line->NbPoints() > 1)
+                        {
+                          IntSurf_PntOn2S prevprevPoint = line->Value(line->NbPoints()-1);
+                          Standard_Real ppU1, ppV1, ppU2, ppV2;
+                          prevprevPoint.Parameters(ppU1, ppV1, ppU2, ppV2);
+                          Standard_Real pU1, pV1, pU2, pV2;
+                          previousPointSave.Parameters(pU1, pV1, pU2, pV2);
+                          gp_Vec2d V1onS1(gp_Pnt2d(ppU1, ppV1), gp_Pnt2d(pU1, pV1));
+                          gp_Vec2d V2onS1(gp_Pnt2d(pU1, pV1), gp_Pnt2d(u1, v1));
+                          gp_Vec2d V1onS2(gp_Pnt2d(ppU2, ppV2), gp_Pnt2d(pU2, pV2));
+                          gp_Vec2d V2onS2(gp_Pnt2d(pU2, pV2), gp_Pnt2d(u2, v2));
+                          if (V1onS1 * V2onS1 < 0. ||
+                              V1onS2 * V2onS2 < 0.)
+                          {
+                            Arrive = Standard_True;
+                            break;
+                          }
+                        }
                         /*
                         if(u1 <= UM1  && u2 <= UM2 && v1 <= VM1 &&
                         v2 <= VM2  && u1 >= Um1 && u2 >= Um2 &&

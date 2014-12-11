@@ -119,8 +119,8 @@ static void RecadreMemePeriode(IntSurf_PntOn2S& POn2S,const IntSurf_PntOn2S& Ref
   POn2S.SetValue(u1,v1,u2,v2);
 }
 
-static Standard_Boolean CompareVertexAndPoint(const gp_Pnt& V,const gp_Pnt& P,const Standard_Real& Tol) { 
-  return(V.Distance(P)<=Tol);
+static Standard_Boolean CompareVertexAndPoint(const gp_Pnt& V, const gp_Pnt& P, const Standard_Real& Tol) { 
+  return (V.Distance(P) <= Tol);
 }
 
 void IntPatch_WLine::SetPeriod(const Standard_Real pu1,
@@ -770,8 +770,9 @@ void IntPatch_WLine::ComputeVertexParameters( const Standard_Real RTol,
     for(i=1;
 	(vtxfound==Standard_False) && (i<=nbvtx);i++) { 
       const IntPatch_Point&  V = svtx.Value(i);
-      Standard_Real vTol = V.Tolerance();
-      if(CompareVertexAndPoint(V.Value(),curv->Value(1).Value(),vTol)) { 
+      //jgv: to avoid loops
+      //Standard_Real vTol = V.Tolerance();
+      if(CompareVertexAndPoint(V.Value(), curv->Value(1).Value(), Precision::Confusion()/*vTol*/)) { 
 	vtx = V;
 	vtx.SetParameters(pu1,pv1,pu2,pv2);
 	vtxfound = Standard_True;
@@ -794,8 +795,9 @@ void IntPatch_WLine::ComputeVertexParameters( const Standard_Real RTol,
     for(i=1;
 	(vtxfound==Standard_False) && (i<=nbvtx);i++) { 
       const IntPatch_Point&  V = svtx.Value(i);
-      Standard_Real vTol = V.Tolerance();
-      if(CompareVertexAndPoint(V.Value(),curv->Value(nbponline).Value(),vTol)) { 
+      //jgv: to avoid loops
+      //Standard_Real vTol = V.Tolerance();
+      if(CompareVertexAndPoint(V.Value(), curv->Value(nbponline).Value(), Precision::Confusion()/*vTol*/)) { 
 	vtx = V;
 	vtx.SetParameters(pu1,pv1,pu2,pv2);
 	vtxfound = Standard_True;

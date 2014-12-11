@@ -29,7 +29,7 @@ set nom 0
           if { $j == 1 } {
             set info [length res_$j]
             regexp {The length res_1 is+ +([-0-9.+eE]+)} $info full ll
-            set lcheck_1 5.6627572343058755e-05
+            set lcheck_1 2.310700219185881e-005
             if { [expr 1.*abs($lcheck_1 - $ll)/$lcheck_1] > 0.01 } {
               puts "Error : The lenght of result shape is $ll"
             } else {
@@ -39,7 +39,7 @@ set nom 0
           if { $j == 2 } {
             set info [length res_$j]
             regexp {The length res_2 is+ +([-0-9.+eE]+)} $info full ll
-            set lcheck_2 5.5763870549528719e-05
+            set lcheck_2 2.2948490793846324e-005
             if { [expr 1.*abs($lcheck_2 - $ll)/$lcheck_2] > 0.01 } {
               puts "Error : The lenght of result shape is $ll"
             } else {
@@ -51,7 +51,3 @@ set nom 0
 if { $nom == 0} {
   puts "Error : Intersection was made WRONGLY"
 }
-
-
-
-
