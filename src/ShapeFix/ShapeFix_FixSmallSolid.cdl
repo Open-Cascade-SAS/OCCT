@@ -1,0 +1,51 @@
+-- Created on: 2014-11-13
+-- Created by: Maxim YAKUNIN
+-- Copyright (c) 2014 OPEN CASCADE SAS
+--
+-- This file is part of Open CASCADE Technology software library.
+--
+-- This library is free software; you can redistribute it and/or modify it under
+-- the terms of the GNU Lesser General Public License version 2.1 as published
+-- by the Free Software Foundation, with special exception defined in the file
+-- OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+-- distribution for complete text of the license and disclaimer of any warranty.
+--
+-- Alternatively, this file may be used under the terms of Open CASCADE
+-- commercial license or contractual agreement.
+
+class FixSmallSolid from ShapeFix
+
+	---Purpose: Fixing solids with small size
+
+uses
+    Shape   from TopoDS,
+    ReShape from ShapeBuild
+    
+is
+    Create returns FixSmallSolid;
+    ---Purpose: Construct
+
+    SetVolumeThreshold (me: in out; theThreshold: Real = -1.0);
+    ---Purpose: Set or clear volume threshold for small solids
+
+    SetWidthFactorThreshold (me: in out; theThreshold: Real = -1.0);
+    ---Purpose: Set or clear width factor threshold for small solids
+
+    Remove(me; theShape: Shape from TopoDS; theContext: ReShape from ShapeBuild)
+    returns Shape from TopoDS;
+    ---Purpose: Remove small solids from the given shape
+    
+    Merge (me; theShape: Shape from TopoDS; theContext: ReShape from ShapeBuild)
+    returns Shape from TopoDS;
+    ---Purpose: Merge small solids in the given shape to adjacent non-small ones
+
+    IsThresholdsSet (me) returns Boolean is private;
+
+    IsSmall (me; theSolid: Shape from TopoDS) returns Boolean is private;
+
+fields
+
+    myVolumeThreshold      : Real;
+    myWidthFactorThreshold : Real;
+
+end FixSmallSolid;

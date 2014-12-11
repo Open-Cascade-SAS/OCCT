@@ -60,6 +60,8 @@ is
 
     class FixSmallFace;
 
+    class FixSmallSolid;
+
     class WireVertex;
 
     class Wireframe;

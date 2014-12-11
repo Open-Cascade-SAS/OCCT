@@ -52,6 +52,7 @@
 #include <ShapeFix_Face.hxx>
 #include <ShapeFix_Wire.hxx>
 #include <ShapeFix_FixSmallFace.hxx>
+#include <ShapeFix_FixSmallSolid.hxx>
 #include <ShapeFix_Wireframe.hxx>
 #include <ShapeFix.hxx>
 #include <ShapeFix_SplitCommonVertex.hxx>
@@ -512,6 +513,45 @@ static Standard_Boolean fixwgaps (const Handle(ShapeProcess_Context)& context)
   return Standard_True;
 }
 
+//=======================================================================
+//function : dropsmallsolids
+//purpose  : 
+//=======================================================================
+
+static Standard_Boolean dropsmallsolids (const Handle(ShapeProcess_Context)& context)
+{
+  Handle(ShapeProcess_ShapeContext) ctx =
+    Handle(ShapeProcess_ShapeContext)::DownCast (context);
+  if (ctx.IsNull()) return Standard_False;
+
+  ShapeFix_FixSmallSolid FSS;
+
+  Standard_Real aThreshold;
+  if (ctx->GetReal ("VolumeThreshold", aThreshold))
+    FSS.SetVolumeThreshold (aThreshold);
+  if (ctx->GetReal ("WidthFactorThreshold", aThreshold))
+    FSS.SetWidthFactorThreshold (aThreshold);
+
+  Standard_Boolean aMerge = Standard_False;
+  ctx->GetBoolean ("MergeSolids", aMerge);
+
+  Handle(ShapeBuild_ReShape) aReShape = new ShapeBuild_ReShape;
+
+  TopoDS_Shape aResult;
+  if (aMerge)
+    aResult = FSS.Merge  (ctx->Result(), aReShape);
+  else
+    aResult = FSS.Remove (ctx->Result(), aReShape);
+
+  if (aResult != ctx->Result())
+  {
+    ctx->RecordModification (aReShape);
+    ctx->SetResult (aResult);
+  }
+
+  return Standard_True;
+}
+
 /*
 //=======================================================================
 //function :
@@ -735,6 +775,7 @@ void ShapeProcess_OperLibrary::Init ()
   ShapeProcess::RegisterOperator ( "SplitClosedFaces",      new ShapeProcess_UOperator ( splitclosedfaces ) );
   ShapeProcess::RegisterOperator ( "FixWireGaps",           new ShapeProcess_UOperator ( fixwgaps ) );
   ShapeProcess::RegisterOperator ( "FixFaceSize",           new ShapeProcess_UOperator ( fixfacesize ) );
+  ShapeProcess::RegisterOperator ( "DropSmallSolids",       new ShapeProcess_UOperator ( dropsmallsolids ) );
   ShapeProcess::RegisterOperator ( "DropSmallEdges",        new ShapeProcess_UOperator ( mergesmalledges ) );
   ShapeProcess::RegisterOperator ( "FixShape",              new ShapeProcess_UOperator ( fixshape ) );
   ShapeProcess::RegisterOperator ( "SplitClosedEdges",      new ShapeProcess_UOperator ( spltclosededges ) );
