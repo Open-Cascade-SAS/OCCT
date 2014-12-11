@@ -56,6 +56,7 @@ public:
   //! vertices mode.
   Standard_EXPORT BRepMesh_FastDiscretFace(
     const Standard_Real    theAngle,
+    const Standard_Real    theMinSize,
     const Standard_Boolean isInternalVerticesMode);
 
   Standard_EXPORT void Perform(const Handle(BRepMesh_FaceAttribute)& theAttribute);
@@ -152,6 +153,32 @@ private:
                      const Standard_Integer   theLastNodeId,
                      const TopAbs_Orientation theOrientation);
 
+  //! Inserts new node into a mesh in case if smoothed region build 
+  //! using the given node has better deflection metrics than source state.
+  //! @param thePnt3d 3d point corresponded to the vertex.
+  //! @param theUV UV point corresponded to the vertex.
+  //! @param isDeflectionCheckOnly if TRUE new node will not be added to a mesh
+  //! even if deflection parameter is better.
+  //! @param theTriangleDeflection deflection of a triangle from real geometry.
+  //! @param theFaceDeflection deflection to be achieved.
+  //! @param theCircleTool tool used for fast extraction of triangles 
+  //! touched by the given point.
+  //! @param[out] theVertices list of vertices to be updated.
+  //! @param[in out] theMaxTriangleDeflection maximal deflection of a mesh.
+  //! @return TRUE in case if the given deflection of triangle is fine and
+  //! there is no necessity to insert new node or new node was being inserted
+  //! successfully, FALSE in case if new configuration is better but 
+  //! isDeflectionCheckOnly flag is set.
+  Standard_Boolean checkDeflectionAndInsert(
+    const gp_Pnt&              thePnt3d,
+    const gp_XY&               theUV,
+    const Standard_Boolean     isDeflectionCheckOnly,
+    const Standard_Real        theTriangleDeflection,
+    const Standard_Real        theFaceDeflection,
+    const BRepMesh_CircleTool& theCircleTool,
+    BRepMesh::ListOfVertex&    theVertices,
+    Standard_Real&             theMaxTriangleDeflection);
+
 private:
 
   Standard_Real                          myAngle;
@@ -160,9 +187,10 @@ private:
   BRepMesh::IMapOfReal                   myVParam;
 
   // Fast access to attributes of current face
-  Handle(NCollection_IncAllocator)       myAllocator;
   Handle(BRepMesh_FaceAttribute)         myAttribute;
   Handle(BRepMesh_DataStructureOfDelaun) myStructure;
+
+  Standard_Real                          myMinSize;
 };
 
 DEFINE_STANDARD_HANDLE (BRepMesh_FastDiscretFace, Standard_Transient)

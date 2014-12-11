@@ -9,13 +9,13 @@ puts ""
 pcone aCone 100 10 100
 
 tclean aCone
-incmesh aCone 0.01 -a 0.4
+incmesh aCone 0.01 -a 10.
 set bug_info [trinfo aCone]
 set NbTrian_1 [lindex $bug_info 3]
 set NbNodes_1 [lindex $bug_info 5]
 
 tclean aCone
-incmesh aCone 0.01 -a 0.3
+incmesh aCone 0.01 -a 1.
 set bug_info [trinfo aCone]
 set NbTrian_2 [lindex $bug_info 3]
 set NbNodes_2 [lindex $bug_info 5]

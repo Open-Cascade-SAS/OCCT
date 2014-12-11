@@ -43,7 +43,8 @@ BRepMesh_EdgeTessellator::BRepMesh_EdgeTessellator(
   const Handle(BRepMesh_FaceAttribute)&            theFaceAttribute,
   const TopTools_IndexedDataMapOfShapeListOfShape& theMapOfSharedFaces,
   const Standard_Real                              theLinDeflection,
-  const Standard_Real                              theAngDeflection)
+  const Standard_Real                              theAngDeflection,
+  const Standard_Real                              theMinSize)
   : mySurface(theFaceAttribute->Surface())
 {
   Standard_Real aPreciseAngDef = 0.5 * theAngDeflection;
@@ -52,6 +53,7 @@ BRepMesh_EdgeTessellator::BRepMesh_EdgeTessellator(
     aPreciseLinDef *= 0.5;
 
   mySquareEdgeDef = aPreciseLinDef * aPreciseLinDef;
+  mySquareMinSize = Max(mySquareEdgeDef, theMinSize * theMinSize);
 
   Standard_Boolean isSameParam = BRep_Tool::SameParameter(theEdge);
   if (isSameParam)
@@ -67,7 +69,7 @@ BRepMesh_EdgeTessellator::BRepMesh_EdgeTessellator(
   Standard_Real aFirstParam, aLastParam;
   BRep_Tool::Range(theEdge, theFaceAttribute->Face(), aFirstParam, aLastParam);
   myTool = new BRepMesh_GeomTool(myCOnS, aFirstParam, aLastParam, 
-    aPreciseLinDef, aPreciseAngDef, aMinPntNb);
+    aPreciseLinDef, aPreciseAngDef, aMinPntNb, theMinSize);
 
   if (aCurveType == GeomAbs_BSplineCurve)
   {
@@ -83,7 +85,7 @@ BRepMesh_EdgeTessellator::BRepMesh_EdgeTessellator(
         const Standard_Real& anEndInt  = anIntervals.Value( aIntIt + 1 );
 
         BRepMesh_GeomTool aDetalizator(myCOnS, aStartInt, anEndInt,
-          aPreciseLinDef, aPreciseAngDef, aMinPntNb);
+          aPreciseLinDef, aPreciseAngDef, aMinPntNb, theMinSize);
 
         Standard_Integer aNbAddNodes = aDetalizator.NbPoints();
         for ( Standard_Integer aNodeIt = 1; aNodeIt <= aNbAddNodes; ++aNodeIt )
@@ -191,16 +193,19 @@ void BRepMesh_EdgeTessellator::splitSegment(
   P3dF = theSurf->Value(uvf.X(), uvf.Y());
   P3dL = theSurf->Value(uvl.X(), uvl.Y());
   
-  if(P3dF.SquareDistance(P3dL) < mySquareEdgeDef)
+  if(P3dF.SquareDistance(P3dL) < mySquareMinSize)
     return;
 
   uvm = gp_Pnt2d((uvf.XY() + uvl.XY())*0.5);
   midP3dFromSurf = theSurf->Value(uvm.X(), uvm.Y());
 
+  gp_XYZ Vec1 = midP3dFromSurf.XYZ() - P3dF.XYZ();
+  if(Vec1.SquareModulus() < mySquareMinSize)
+    return;
+
   gp_XYZ aVec = P3dL.XYZ() - P3dF.XYZ();
   aVec.Normalize();
 
-  gp_XYZ Vec1 = midP3dFromSurf.XYZ() - P3dF.XYZ();
   Standard_Real aModulus = Vec1.Dot(aVec);
   gp_XYZ aProj = aVec * aModulus;
   gp_XYZ aDist = Vec1 - aProj;

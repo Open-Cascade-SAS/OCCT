@@ -103,6 +103,18 @@ public: //! @name accessing to parameters.
     return myInParallel;
   }
 
+  //! Sets min size parameter.
+  inline void SetMinSize(const Standard_Real theMinSize)
+  {
+    myMinSize = Max(theMinSize, Precision::Confusion());
+  }
+
+  //! Returns min size parameter.
+  inline Standard_Real GetMinSize() const
+  {
+    return myMinSize;
+  }
+
   //! Enables/disables internal vertices mode.
   inline void SetInternalVerticesMode(const Standard_Boolean isEnabled)
   {
@@ -205,6 +217,7 @@ protected:
   Standard_Real                               myMaxShapeSize;
   Standard_Integer                            myStatus;
   NCollection_Vector<TopoDS_Face>             myFaces;
+  Standard_Real                               myMinSize;
   Standard_Boolean                            myInternalVerticesMode;
 };
 

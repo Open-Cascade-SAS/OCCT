@@ -105,6 +105,12 @@ public:
     return myMeshData->GetElement (theIndex);
   }
 
+  //! Returns tool used to build mesh consistent to Delaunay criteria.
+  inline const BRepMesh_CircleTool& Circles() const
+  {
+    return myCircles;
+  }
+
   //! Test is the given triangle contains the given vertex.
   //! If theEdgeOn != 0 the vertex lies onto the edge index
   //! returned through this parameter.

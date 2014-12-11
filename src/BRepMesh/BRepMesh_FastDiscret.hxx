@@ -58,16 +58,16 @@ class BRepMesh_FastDiscret : public Standard_Transient
 {
 public:
   
-  Standard_EXPORT BRepMesh_FastDiscret(
-    const Standard_Real defle,
-    const Standard_Real angle,
-    const Bnd_Box& B,
-    const Standard_Boolean withShare = Standard_True,
-    const Standard_Boolean inshape = Standard_False,
-    const Standard_Boolean relative = Standard_False,
-    const Standard_Boolean shapetrigu = Standard_False,
-    const Standard_Boolean isInParallel = Standard_False,
-    const Standard_Boolean isInternalVerticesMode = Standard_True);
+  Standard_EXPORT BRepMesh_FastDiscret(const Standard_Real defle,
+                                       const Standard_Real angle,
+                                       const Bnd_Box& B,
+                                       const Standard_Boolean withShare = Standard_True,
+                                       const Standard_Boolean inshape = Standard_False,
+                                       const Standard_Boolean relative = Standard_False,
+                                       const Standard_Boolean shapetrigu = Standard_False,
+                                       const Standard_Boolean isInParallel = Standard_False,
+                                       const Standard_Real    theMinSize   = Precision::Confusion(),
+                                       const Standard_Boolean isInternalVerticesMode = Standard_True);
 
   //! if the boolean <relative> is True, the <br>
   //! deflection used for the polygonalisation of <br>
@@ -81,17 +81,17 @@ public:
   //! <br>
   //! if <inshape> is True, the calculated <br>
   //! triangulation will be stored in the shape. <br>
-  Standard_EXPORT BRepMesh_FastDiscret(
-    const TopoDS_Shape& shape,
-    const Standard_Real defle,
-    const Standard_Real angle,
-    const Bnd_Box& B,
-    const Standard_Boolean withShare = Standard_True,
-    const Standard_Boolean inshape = Standard_False,
-    const Standard_Boolean relative = Standard_False,
-    const Standard_Boolean shapetrigu = Standard_False,
-    const Standard_Boolean isInParallel = Standard_False,
-    const Standard_Boolean isInternalVerticesMode = Standard_True);
+  Standard_EXPORT BRepMesh_FastDiscret(const TopoDS_Shape& shape,
+                                       const Standard_Real defle,
+                                       const Standard_Real angle,
+                                       const Bnd_Box& B,
+                                       const Standard_Boolean withShare = Standard_True,
+                                       const Standard_Boolean inshape = Standard_False,
+                                       const Standard_Boolean relative = Standard_False,
+                                       const Standard_Boolean shapetrigu = Standard_False,
+                                       const Standard_Boolean isInParallel = Standard_False,
+                                       const Standard_Real    theMinSize   = Precision::Confusion(),
+                                       const Standard_Boolean isInternalVerticesMode = Standard_True);
 
   //! Build triangulation on the whole shape.
   Standard_EXPORT void Perform(const TopoDS_Shape& shape);
@@ -366,6 +366,8 @@ private:
   // Fast access to attributes of current face
   Handle(BRepMesh_FaceAttribute)                   myAttribute;
   TopTools_IndexedDataMapOfShapeListOfShape        mySharedFaces;
+
+  Standard_Real                                    myMinSize;
   Standard_Boolean                                 myInternalVerticesMode;
 };
 

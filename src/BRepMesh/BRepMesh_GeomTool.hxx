@@ -21,6 +21,7 @@
 #include <GeomAbs_IsoType.hxx>
 #include <Handle_BRepAdaptor_HSurface.hxx>
 #include <TopoDS_Edge.hxx>
+#include <Precision.hxx>
 
 class BRepAdaptor_Curve;
 class BRepAdaptor_HSurface;
@@ -65,7 +66,8 @@ public:
                                     const Standard_Real      theLastParam,
                                     const Standard_Real      theLinDeflection,
                                     const Standard_Real      theAngDeflection,
-                                    const Standard_Integer   theMinPointsNb = 2);
+                                    const Standard_Integer   theMinPointsNb = 2,
+                                    const Standard_Real      theMinSize = Precision::Confusion());
   
   //! Constructor.
   //! Initiates discretization of geometric curve corresponding 
@@ -85,7 +87,8 @@ public:
                                     const Standard_Real                 theLastParam,
                                     const Standard_Real                 theLinDeflection,
                                     const Standard_Real                 theAngDeflection,
-                                    const Standard_Integer              theMinPointsNb = 2);
+                                    const Standard_Integer              theMinPointsNb = 2,
+                                    const Standard_Real                 theMinSize = Precision::Confusion());
 
   //! Adds point to already calculated points (or replaces existing).
   //! @param thePoint point to be added.

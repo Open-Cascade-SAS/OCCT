@@ -35,12 +35,14 @@ BRepMesh_GeomTool::BRepMesh_GeomTool(
   const Standard_Real      theLastParam,
   const Standard_Real      theLinDeflection,
   const Standard_Real      theAngDeflection,
-  const Standard_Integer   theMinPointsNb)
+  const Standard_Integer   theMinPointsNb,
+  const Standard_Real      theMinSize)
   : myEdge(&theCurve.Edge()),
     myIsoType(GeomAbs_NoneIso)
 {
   myDiscretTool.Initialize(theCurve, theFirstParam, theLastParam,
-    theAngDeflection, theLinDeflection, theMinPointsNb);
+    theAngDeflection, theLinDeflection, theMinPointsNb, 
+    Precision::PConfusion(), theMinSize);
 }
 
 //=======================================================================
@@ -55,7 +57,8 @@ BRepMesh_GeomTool::BRepMesh_GeomTool(
   const Standard_Real                 theLastParam,
   const Standard_Real                 theLinDeflection,
   const Standard_Real                 theAngDeflection,
-  const Standard_Integer              theMinPointsNb)
+  const Standard_Integer              theMinPointsNb,
+  const Standard_Real                 theMinSize)
   : myEdge(NULL),
     myIsoType(theIsoType)
 {
@@ -63,7 +66,8 @@ BRepMesh_GeomTool::BRepMesh_GeomTool(
     theFirstParam, theLastParam);
 
   myDiscretTool.Initialize(aIso, theFirstParam, theLastParam,
-    theAngDeflection, theLinDeflection, theMinPointsNb);
+    theAngDeflection, theLinDeflection, theMinPointsNb,
+    Precision::PConfusion(), theMinSize);
 }
 
 //=======================================================================

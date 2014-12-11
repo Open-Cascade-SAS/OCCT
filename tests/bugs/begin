@@ -143,6 +143,20 @@ proc checkList {List Tolerance D_good Limit_Tol} {
    }
 }
 
+# Check expected time
+proc checktime {value expected tol_rel message} {
+   set t1 [expr ${value} - ${expected}]
+   set t2 [expr ${expected} * abs (${tol_rel})]
+
+   if { abs (${t1}) <= ${t2} } {                                         
+      puts "OK. ${message}, ${value} seconds, is equal to expected time - ${expected} seconds"
+   } elseif {${t1} > ${t2}} {
+      puts "Error. ${message}, ${value} seconds, is more than expected time - ${expected} seconds"
+   } else {
+      puts "Improvement. ${message}, ${value} seconds, is less than expected time - ${expected} seconds"
+   }
+}
+
 # Procedure to check result of nbshapes command
 proc checknbshapes { res nbshapes_expected_s count_locations message} {
 

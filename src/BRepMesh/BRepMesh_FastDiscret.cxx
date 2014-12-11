@@ -86,15 +86,16 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_FastDiscret, Standard_Transient)
 //purpose  : 
 //=======================================================================
 BRepMesh_FastDiscret::BRepMesh_FastDiscret(
-  const Standard_Real    theDefle,
-  const Standard_Real    theAngl,
-  const Bnd_Box&         theBox,
-  const Standard_Boolean theWithShare,
-  const Standard_Boolean theInshape,
-  const Standard_Boolean theRelative,
-  const Standard_Boolean theShapetrigu,
-  const Standard_Boolean isInParallel,
-  const Standard_Boolean isInternalVerticesMode)
+  const Standard_Real                              theDefle,
+  const Standard_Real                              theAngl,
+  const Bnd_Box&                                   theBox,
+  const Standard_Boolean                           theWithShare,
+  const Standard_Boolean                           theInshape,
+  const Standard_Boolean                           theRelative,
+  const Standard_Boolean                           theShapetrigu,
+  const Standard_Boolean                           isInParallel,
+  const Standard_Real                              theMinSize,
+  const Standard_Boolean                           isInternalVerticesMode)
 : myAngle (theAngl),
   myDeflection (theDefle),
   myWithShare (theWithShare),
@@ -104,6 +105,7 @@ BRepMesh_FastDiscret::BRepMesh_FastDiscret(
   myInshape (theInshape),
   myBoundaryVertices(new BRepMesh::DMapOfVertexInteger),
   myBoundaryPoints(new BRepMesh::DMapOfIntegerPnt),
+  myMinSize(theMinSize),
   myInternalVerticesMode(isInternalVerticesMode)
 {
   if ( myRelative )
@@ -124,6 +126,7 @@ BRepMesh_FastDiscret::BRepMesh_FastDiscret(
   const Standard_Boolean theRelative,
   const Standard_Boolean theShapetrigu,
   const Standard_Boolean isInParallel,
+  const Standard_Real    theMinSize,
   const Standard_Boolean isInternalVerticesMode)
 : myAngle (theAngl),
   myDeflection (theDefle),
@@ -134,6 +137,7 @@ BRepMesh_FastDiscret::BRepMesh_FastDiscret(
   myInshape (theInshape),
   myBoundaryVertices(new BRepMesh::DMapOfVertexInteger),
   myBoundaryPoints(new BRepMesh::DMapOfIntegerPnt),
+  myMinSize(theMinSize),
   myInternalVerticesMode(isInternalVerticesMode)
 {
   if ( myRelative )
@@ -198,7 +202,7 @@ void BRepMesh_FastDiscret::Process(const TopoDS_Face& theFace) const
     {
       OCC_CATCH_SIGNALS
 
-      BRepMesh_FastDiscretFace aTool(GetAngle(), myInternalVerticesMode);
+      BRepMesh_FastDiscretFace aTool(GetAngle(), myMinSize, myInternalVerticesMode);
       aTool.Perform(anAttribute);
     }
     catch (Standard_Failure)
@@ -868,7 +872,7 @@ void BRepMesh_FastDiscret::update(
   if (aEdgeTool.IsNull())
   {
     aEdgeTool = new BRepMesh_EdgeTessellator(theEdge, myAttribute, 
-      mySharedFaces, theDefEdge, myAngle);
+      mySharedFaces, theDefEdge, myAngle, myMinSize);
   }
 
   Standard_Integer ipf, ivf, isvf, ipl, ivl, isvl;

@@ -72,8 +72,9 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_IncrementalMesh, BRepMesh_DiscretRoot)
 //purpose  : 
 //=======================================================================
 BRepMesh_IncrementalMesh::BRepMesh_IncrementalMesh()
-: myRelative (Standard_False),
-  myInParallel (Standard_False),
+: myRelative  (Standard_False),
+  myInParallel(Standard_False),
+  myMinSize   (Precision::Confusion()),
   myInternalVerticesMode(Standard_True)
 {
 }
@@ -90,6 +91,7 @@ BRepMesh_IncrementalMesh::BRepMesh_IncrementalMesh(
   const Standard_Boolean isInParallel)
   : myRelative  (isRelative),
     myInParallel(isInParallel),
+    myMinSize   (Precision::Confusion()),
     myInternalVerticesMode(Standard_True)
 {
   myDeflection  = theLinDeflection;
@@ -144,9 +146,10 @@ void BRepMesh_IncrementalMesh::init()
 
   BRepMesh_ShapeTool::BoxMaxDimension(aBox, myMaxShapeSize);
 
-  myMesh = new BRepMesh_FastDiscret(myDeflection, myAngle, aBox,
-    Standard_True, Standard_True, myRelative, Standard_True,
-    myInParallel, myInternalVerticesMode);
+  myMesh = new BRepMesh_FastDiscret(myDeflection, 
+    myAngle, aBox, Standard_True, Standard_True, 
+    myRelative, Standard_True, myInParallel, myMinSize,
+    myInternalVerticesMode);
 
   myMesh->InitSharedFaces(myShape);
 }
@@ -257,7 +260,7 @@ void BRepMesh_IncrementalMesh::discretizeFreeEdges()
 
     BRepAdaptor_Curve aCurve(aEdge);
     GCPnts_TangentialDeflection aDiscret(aCurve, aCurve.FirstParameter(),
-      aCurve.LastParameter(), myAngle, aEdgeDeflection, 2);
+      aCurve.LastParameter(), myAngle, aEdgeDeflection, 2, myMinSize);
 
     Standard_Integer aNodesNb = aDiscret.NbPoints();
     TColgp_Array1OfPnt   aNodes  (1, aNodesNb);

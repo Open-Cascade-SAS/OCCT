@@ -40,7 +40,7 @@ void GCPnts_TangentialDeflection::EvaluateDu (
     Standard_Real Lc = N.CrossMagnitude (T);
     Standard_Real Ln = Lc/Lt;
     if (Ln > LTol) {
-      Du = sqrt (8.0 * curvatureDeflection / Ln);
+      Du = sqrt (8.0 * Max(curvatureDeflection, myMinLen) / Ln);
       NotDone = Standard_False;
     }
   }
@@ -57,10 +57,11 @@ GCPnts_TangentialDeflection::GCPnts_TangentialDeflection (
  const Standard_Real    AngularDeflection,
  const Standard_Real    CurvatureDeflection,
  const Standard_Integer MinimumOfPoints,
- const Standard_Real    UTol)
+ const Standard_Real    UTol,
+ const Standard_Real    theMinLen)
 
 { 
-  Initialize (C,AngularDeflection,CurvatureDeflection,MinimumOfPoints,UTol); 
+  Initialize (C,AngularDeflection,CurvatureDeflection,MinimumOfPoints,UTol,theMinLen); 
 }
 
 
@@ -76,7 +77,8 @@ GCPnts_TangentialDeflection::GCPnts_TangentialDeflection (
  const Standard_Real    AngularDeflection,
  const Standard_Real    CurvatureDeflection,
  const Standard_Integer MinimumOfPoints,
- const Standard_Real    UTol)
+ const Standard_Real    UTol,
+ const Standard_Real    theMinLen)
 
 { 
   Initialize (C, 
@@ -85,7 +87,7 @@ GCPnts_TangentialDeflection::GCPnts_TangentialDeflection (
         AngularDeflection, 
         CurvatureDeflection, 
         MinimumOfPoints,
-        UTol);
+        UTol, theMinLen);
 }
 
 
@@ -100,7 +102,8 @@ void GCPnts_TangentialDeflection::Initialize (
  const Standard_Real    AngularDeflection, 
  const Standard_Real    CurvatureDeflection,
  const Standard_Integer MinimumOfPoints,
- const Standard_Real    UTol)
+ const Standard_Real    UTol,
+ const Standard_Real    theMinLen)
 
 {
   Initialize (C, 
@@ -109,7 +112,7 @@ void GCPnts_TangentialDeflection::Initialize (
               AngularDeflection, 
               CurvatureDeflection,
               MinimumOfPoints,
-              UTol);
+              UTol, theMinLen);
 }
 
 
@@ -125,7 +128,8 @@ void GCPnts_TangentialDeflection::Initialize (
  const Standard_Real    AngularDeflection, 
  const Standard_Real    CurvatureDeflection,
  const Standard_Integer MinimumOfPoints,
- const Standard_Real    UTol)
+ const Standard_Real    UTol,
+ const Standard_Real    theMinLen)
 
 {
   
@@ -145,6 +149,7 @@ void GCPnts_TangentialDeflection::Initialize (
  angularDeflection   = AngularDeflection;
  curvatureDeflection = CurvatureDeflection;
  minNbPnts           = Max (MinimumOfPoints, 2);
+ myMinLen            = Max(theMinLen, Precision::Confusion());
 
  switch (C.GetType()) {
 
@@ -202,7 +207,6 @@ void GCPnts_TangentialDeflection::PerformLinear (const TheCurve& C) {
   points    .Append (P);
 }
 
-
 //=======================================================================
 //function : PerformCircular
 //purpose  : 
@@ -212,18 +216,18 @@ void GCPnts_TangentialDeflection::PerformCircular (const TheCurve& C)
 {
   // akm 8/01/02 : check the radius before divide by it
   Standard_Real dfR = C.Circle().Radius();
-  Standard_Real Du = 0.;
-  if (Abs(dfR) > Precision::Confusion())
-    Du = Max(1.0e0 - (curvatureDeflection/dfR),0.0e0) ;
-  Du  = acos (Du); Du+=Du;
-  Du               = Min (Du, angularDeflection);
-  Standard_Integer NbPoints = (Standard_Integer )((lastu - firstu) / Du);
-  NbPoints         = Max (NbPoints, minNbPnts-1);
-  Du               = (lastu - firstu) / NbPoints;
+  Standard_Real Du = GCPnts_TangentialDeflection::ArcAngularStep(
+    dfR, curvatureDeflection, angularDeflection, myMinLen);
+    
+  const Standard_Real aDiff = lastu - firstu;
+  Standard_Integer NbPoints = (Standard_Integer)(aDiff / Du);
+  NbPoints = Max(NbPoints, minNbPnts - 1);
+  Du       = aDiff / NbPoints;
 
   gp_Pnt P;
   Standard_Real U = firstu;
-  for (Standard_Integer i = 1; i <= NbPoints; i++) {
+  for (Standard_Integer i = 1; i <= NbPoints; i++)
+  {
     D0 (C, U, P);
     parameters.Append (U);
     points    .Append (P);
@@ -265,22 +269,22 @@ void GCPnts_TangentialDeflection::PerformCurve (const TheCurve& C)
   parameters.Append (U1);
   points    .Append (CurrentPoint);
 
-  if (NotDone) {
+  if (NotDone)
+  {
     //C'est soit une droite, soit une singularite :
-    V1 = LastPoint.XYZ ();
-    V1.Subtract (CurrentPoint.XYZ());
+    V1 = (LastPoint.XYZ() - CurrentPoint.XYZ());
     L1 = V1.Modulus ();
-    if (L1 > LTol) {
+    if (L1 > LTol)
+    {
       //Si c'est une droite on verifie en calculant minNbPoints :
       Standard_Boolean IsLine   = Standard_True;
-      Standard_Integer NbPoints = 3;
-      if (minNbPnts > 3) NbPoints = minNbPnts;
+      Standard_Integer NbPoints = (minNbPnts > 3) ? minNbPnts : 3;
       ////
       Standard_Integer NbInterv = const_cast<TheCurve*>(&C)->NbIntervals(GeomAbs_CN);
       TColStd_Array1OfReal Intervs(1, NbInterv+1);
       const_cast<TheCurve*>(&C)->Intervals(Intervs, GeomAbs_CN);
       Standard_Real param = 0.;
-      for (i = 1; i <= NbInterv; i++)
+      for (i = 1; i <= NbInterv && IsLine; ++i)
       {
         // Avoid usage intervals out of [firstu, lastu].
         if ((Intervs(i+1) < firstu) ||
@@ -301,56 +305,44 @@ void GCPnts_TangentialDeflection::PerformCurve (const TheCurve& C)
         }
 
         Standard_Real delta = (Intervs(i+1) - Intervs(i))/NbPoints;
-        for (j = 1; j <= NbPoints; j++)
+        for (j = 1; j <= NbPoints && IsLine; ++j)
         {
           param = Intervs(i) + j*delta;
           D0 (C, param, MiddlePoint);
-          V2 = MiddlePoint.XYZ();
-          V2.Subtract (CurrentPoint.XYZ());
+          V2 = (MiddlePoint.XYZ() - CurrentPoint.XYZ());
           L2 = V2.Modulus ();
-          if (L2 > LTol) {
-            if (((V2.CrossMagnitude (V1))/(L1*L2)) >= ATol) {
-              //C'etait une singularite
-              IsLine = Standard_False;
-              break;
-            }
-            if (minNbPnts > 2) {
-              parameters.Append (param);
-              points    .Append (MiddlePoint);
-            }
+          if (L2 > LTol)
+          {
+            const Standard_Real aAngle = V2.CrossMagnitude(V1)/(L1*L2);
+            IsLine = (aAngle < ATol);
           }
         }
-        if (!IsLine)
-          break;
       }
-      ////
-      if (IsLine) {
-        //C'etait une droite (plusieurs poles alignes), Calcul termine :
-        parameters.Append (lastu);
-        points    .Append (LastPoint);
+
+      if (IsLine)
+      {
+        parameters.Clear();
+        points    .Clear();
+
+        PerformLinear(C);
         return;
       }
-      else {
+      else
+      {
         //c'etait une singularite on continue :
-        Standard_Integer pointsLength=points.Length ();
-        for (i = 2; i <= pointsLength; i++) {
-          points    .Remove (i);
-          parameters.Remove (i);
-          pointsLength--;
-        }
         //Du = Dusave;
         EvaluateDu (C, param, MiddlePoint, Du, NotDone);
       }
     }
-    else  {
-      
+    else
+    {
       Du = (lastu-firstu)/2.1;
       MiddleU = firstu + Du;
       D0 (C, MiddleU, MiddlePoint);
-      V1 = MiddlePoint.XYZ ();
-      V1.Subtract (CurrentPoint.XYZ());
+      V1 = (MiddlePoint.XYZ() - CurrentPoint.XYZ());
       L1 = V1.Modulus ();
-      if (L1 < LTol) {
+      if (L1 < LTol)
+      {
         // L1 < LTol C'est une courbe de longueur nulle, calcul termine :
         // on renvoi un segment de 2 points   (protection)
         parameters.Append (lastu);
@@ -401,19 +393,17 @@ void GCPnts_TangentialDeflection::PerformCurve (const TheCurve& C)
       MiddleU = (U1+U2)*0.5;                 //Verif / au point milieu
       D0 (C, MiddleU, MiddlePoint);
 
-      V1 = CurrentPoint.XYZ ();              //Critere de fleche
-      V1.Subtract (aPrevPoint.XYZ());
-      V2 = MiddlePoint.XYZ ();
-      V2.Subtract (aPrevPoint.XYZ());
+      V1 = (CurrentPoint.XYZ() - aPrevPoint.XYZ()); //Critere de fleche
+      V2 = (MiddlePoint.XYZ()  - aPrevPoint.XYZ());
       L1 = V1.Modulus ();
-      if (L1 > LTol) FCoef = V1.CrossMagnitude(V2)/(L1*curvatureDeflection);
-      else           FCoef = 0.0;
 
-      V1 = CurrentPoint.XYZ ();              //Critere d'angle
-      V1.Subtract (MiddlePoint.XYZ ());
+      FCoef = (L1 > myMinLen) ? 
+        V1.CrossMagnitude(V2)/(L1*curvatureDeflection) : 0.0;
+
+      V1 = (CurrentPoint.XYZ() - MiddlePoint.XYZ()); //Critere d'angle
       L1 = V1.Modulus ();
       L2 = V2.Modulus ();
-      if (L1 > LTol && L2 > LTol)
+      if (L1 > myMinLen && L2 > myMinLen)
       {
         Standard_Real angg = V1.CrossMagnitude(V2) / (L1 * L2);
         ACoef = angg / AngleMax;
@@ -421,9 +411,8 @@ void GCPnts_TangentialDeflection::PerformCurve (const TheCurve& C)
       else
         ACoef = 0.0;
 
-      if (ACoef >= FCoef) Coef = ACoef;      //On retient le plus penalisant
-      else                Coef = FCoef;
-
+      //On retient le plus penalisant
+      Coef = Max(ACoef, FCoef);
 
       if (Coef <= 1.0) {
         if (Abs (lastu-U2) < uTol) {

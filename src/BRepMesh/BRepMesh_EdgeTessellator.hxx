@@ -47,7 +47,8 @@ public:
     const Handle(BRepMesh_FaceAttribute)&            theFaceAttribute,
     const TopTools_IndexedDataMapOfShapeListOfShape& theMapOfSharedFaces,
     const Standard_Real                              theLinDeflection,
-    const Standard_Real                              theAngDeflection);
+    const Standard_Real                              theAngDeflection,
+    const Standard_Real                              theMinSize);
 
   //! Returns number of dicretization points.
   virtual Standard_Integer NbPoints() const
@@ -81,6 +82,7 @@ private:
   Handle(BRepAdaptor_HSurface)          mySurface;
   BRepAdaptor_Curve                     myCOnS;
   Standard_Real                         mySquareEdgeDef;
+  Standard_Real                         mySquareMinSize;
 };
 
 DEFINE_STANDARD_HANDLE(BRepMesh_EdgeTessellator, BRepMesh_IEdgeTool)

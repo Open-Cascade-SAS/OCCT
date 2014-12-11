@@ -1,4 +1,3 @@
-
 puts "========="
 puts "BUC60587"
 puts "========="
@@ -20,11 +19,11 @@ vsetcolor result CYAN3
 set x_coord 120
 set y_coord 180
 
-checkcolor $x_coord $y_coord 0.7 1 0.9
+#checkcolor $x_coord $y_coord 0.7 1 0.9
+checkcolor $x_coord $y_coord 0 0.90980392694473267 0.90980392694473267
 
 if { $stat != 1 } {
    puts "Error : Model has NOT CYAN colour."
 }
 
 set only_screen 1
-

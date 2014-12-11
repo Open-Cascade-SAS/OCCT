@@ -79,7 +79,8 @@ is
     	    AngularDeflection   : Real; 	--- Deffault value 0.2; 
     	    CurvatureDeflection : Real; 	--- Deffault value 0.05;
     	    MinimumOfPoints     : Integer = 2;
-    	    UTol                : Real    = 1.0e-9)
+    	    UTol                : Real    = 1.0e-9;
+          theMinLen           : Real    = 1.0e-7)
     returns TangentialDeflection raises ConstructionError;
 
 
@@ -89,7 +90,8 @@ is
     	    AngularDeflection   : Real;  	--- Deffault value 0.2;   
     	    CurvatureDeflection : Real;  	--- Deffault value 0.05;
     	    MinimumOfPoints     : Integer = 2;
-    	    UTol                : Real    = 1.0e-9)
+    	    UTol                : Real    = 1.0e-9;
+          theMinLen           : Real    = 1.0e-7)
     returns TangentialDeflection raises ConstructionError;
 
 
@@ -97,7 +99,8 @@ is
     	    AngularDeflection   : Real;  	--- Deffault value 0.2; 
     	    CurvatureDeflection : Real;  	--- Deffault value 0.05;
     	    MinimumOfPoints     : Integer = 2;
-    	    UTol                : Real    = 1.0e-9)
+    	    UTol                : Real    = 1.0e-9;
+          theMinLen           : Real    = 1.0e-7)
     returns TangentialDeflection raises ConstructionError;
 
 
@@ -107,7 +110,8 @@ is
     	    AngularDeflection   : Real;  	--- Deffault value 0.2;
     	    CurvatureDeflection : Real;  	--- Deffault value 0.05;
     	    MinimumOfPoints     : Integer = 2;
-    	    UTol                : Real    = 1.0e-9)
+    	    UTol                : Real    = 1.0e-9;
+          theMinLen           : Real    = 1.0e-7)
     returns TangentialDeflection raises ConstructionError;
      
 
@@ -116,7 +120,8 @@ is
                 AngularDeflection   : Real;  	--- Deffault value 0.2;
                 CurvatureDeflection : Real;  	--- Deffault value 0.05;
     	    	MinimumOfPoints     : Integer = 2;
-    	    	UTol                : Real    = 1.0e-9)
+    	    	UTol                : Real    = 1.0e-9;
+          theMinLen           : Real    = 1.0e-7)
     raises ConstructionError is static;
 		
 
@@ -127,7 +132,8 @@ is
                 AngularDeflection   : Real;  	--- Deffault value 0.2;
 	        CurvatureDeflection : Real;  	--- Deffault value 0.05; 
     	    	MinimumOfPoints     : Integer = 2;
-    	    	UTol                : Real    = 1.0e-9)
+    	    	UTol                : Real    = 1.0e-9;
+          theMinLen           : Real    = 1.0e-7)
     raises ConstructionError is static;
 
 
@@ -136,7 +142,8 @@ is
                 AngularDeflection   : Real;  	--- Deffault value 0.2;
                 CurvatureDeflection : Real;  	--- Deffault value 0.05;
     	    	MinimumOfPoints     : Integer = 2;
-    	    	UTol                : Real    = 1.0e-9)
+    	    	UTol                : Real    = 1.0e-9;
+          theMinLen           : Real    = 1.0e-7)
     raises ConstructionError is static;
 		
 
@@ -147,7 +154,8 @@ is
                 AngularDeflection   : Real;  	--- Deffault value 0.2;
 	        CurvatureDeflection : Real;  	--- Deffault value 0.05; 
     	    	MinimumOfPoints     : Integer = 2;
-    	    	UTol                : Real    = 1.0e-9)
+    	    	UTol                : Real    = 1.0e-9;
+          theMinLen           : Real    = 1.0e-7)
     raises ConstructionError is static;
 
 
@@ -208,6 +216,13 @@ is
     is static private;		    
 
 
+    ArcAngularStep(myclass;
+                   theRadius            : Real;
+                   theLinearDeflection  : Real;
+                   theAngularDeflection : Real;
+                   theMinLength         : Real) returns Real;
+    ---Purpose: Computes angular step for the arc using the given parameters.
+
 
 fields
  
@@ -215,6 +230,7 @@ fields
     curvatureDeflection : Real; 
     uTol                : Real;
     minNbPnts           : Integer;
+    myMinLen            : Real;
     lastu               : Real;
     firstu              : Real;
 

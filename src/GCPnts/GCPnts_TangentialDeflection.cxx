@@ -107,6 +107,33 @@ Standard_Integer GCPnts_TangentialDeflection::AddPoint
   return index;
 }
 
+//=======================================================================
+//function : ArcAngularStep
+//purpose  : 
+//=======================================================================
+Standard_Real GCPnts_TangentialDeflection::ArcAngularStep(
+  const Standard_Real theRadius,
+  const Standard_Real theLinearDeflection,
+  const Standard_Real theAngularDeflection,
+  const Standard_Real theMinLength)
+{
+  Standard_ConstructionError_Raise_if(theRadius < 0.0, "Negative radius");
+
+  const Standard_Real aPrecision = Precision::Confusion();
+
+  Standard_Real Du = 0.0, aMinSizeAng = 0.0;
+  if (theRadius > aPrecision)
+  {
+    Du = Max(1.0 - (theLinearDeflection / theRadius), 0.0);
+
+    // It is not suitable to consider min size greater than 1/4 arc len.
+    if (theMinLength > aPrecision)
+      aMinSizeAng = Min(theMinLength / theRadius, M_PI_2);
+  }
+  Du = 2.0 * ACos(Du);
+  Du = Max(Min(Du, theAngularDeflection), aMinSizeAng);
+  return Du;
+}
 
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineCurve.hxx>

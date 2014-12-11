@@ -127,9 +127,13 @@ static Standard_Integer incrementalmesh(Draw_Interpretor& di, Standard_Integer n
 Builds triangular mesh for the shape\n\
 usage: incmesh Shape LinearDeflection [options]\n\
 options:\n\
-        -a val          angular deflection in deg (default ~28.64 deg = 0.5 rad)\n\
+        -a val          angular deflection in deg\n\
+                        (default ~28.64 deg = 0.5 rad)\n\n\
+        -min            minimum size parameter limiting size of triangle's\n\
+                        edges to prevent sinking into amplification in case\n\
+                        of distorted curves and surfaces\n\n\
         -relative       notifies that relative deflection is used\n\
-                        (switched off by default)\n\
+                        (switched off by default)\n\n\
         -int_vert_off   disables insertion of internal vertices into mesh\n\
                         (enabled by default)\n\
         -parallel       enables parallel execution (switched off by default)\n";
@@ -145,6 +149,7 @@ options:\n\
 
   Standard_Real aLinDeflection   = Max(Draw::Atof(argv[2]), Precision::Confusion());
   Standard_Real aAngDeflection   = 0.5;
+  Standard_Real aMinSize         = Precision::Confusion();
   Standard_Boolean isRelative    = Standard_False;
   Standard_Boolean isInParallel  = Standard_False;
   Standard_Boolean isIntVertices = Standard_True;
@@ -170,6 +175,8 @@ options:\n\
         Standard_Real aVal = Draw::Atof(argv[i++]);
         if (aOpt == "-a")
           aAngDeflection = aVal * M_PI / 180.;
+        else if (aOpt == "-min")
+          aMinSize = aVal;
         else
           --i;
       }
@@ -180,11 +187,12 @@ options:\n\
      << (isInParallel ? "ON" : "OFF") << "\n";
 
   BRepMesh_IncrementalMesh aMesher;
-  aMesher.SetShape               (aShape);
-  aMesher.SetDeflection          (aLinDeflection);
-  aMesher.SetRelative            (isRelative);
-  aMesher.SetAngle               (aAngDeflection);
-  aMesher.SetParallel            (isInParallel);
+  aMesher.SetShape     (aShape);
+  aMesher.SetDeflection(aLinDeflection);
+  aMesher.SetRelative  (isRelative);
+  aMesher.SetAngle     (aAngDeflection);
+  aMesher.SetParallel  (isInParallel);
+  aMesher.SetMinSize   (aMinSize);
   aMesher.SetInternalVerticesMode(isIntVertices);
   aMesher.Perform();
 
