@@ -408,10 +408,13 @@ Standard_Integer thrusections(Draw_Interpretor&, Standard_Integer n, const char*
 
   Generator.Build();
 
-  TopoDS_Shape Shell = Generator.Shape();
-  
-  DBRep::Set(a[index-1], Shell);
-
+  if (Generator.IsDone()) {
+    TopoDS_Shape Shell = Generator.Shape();
+    DBRep::Set(a[index-1], Shell);
+  }
+  else {
+    cout << "Algorithm is not done" << endl;
+  }
   return 0;
 }
 

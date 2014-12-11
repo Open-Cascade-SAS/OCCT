@@ -96,6 +96,7 @@
 
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_FindPlane.hxx>
+#include <Standard_NullObject.hxx>
 
 
 //=======================================================================
@@ -391,18 +392,24 @@ void BRepOffsetAPI_ThruSections::Build()
     myWires = WorkingSections;
   }
 
-  // Calculate the resulting shape
-  if (myWires.Length() == 2 || myIsRuled) {
-    // create a ruled shell
-    CreateRuled();
+  try {
+    // Calculate the resulting shape
+    if (myWires.Length() == 2 || myIsRuled) {
+      // create a ruled shell
+      CreateRuled();
+    }
+    else {
+      // create a smoothed shell
+      CreateSmoothed();
+    }
   }
-  else {
-    // create a smoothed shell
-    CreateSmoothed();
+  catch (Standard_Failure)
+  {
+    NotDone();
+    return;
   }
   // Encode the Regularities
   BRepLib::EncodeRegularity(myShape);
-
 }
 
 
@@ -882,6 +889,8 @@ static Handle(Geom_BSplineCurve) EdgeToBSpline (const TopoDS_Edge& theEdge)
     TopLoc_Location aLoc;
     Standard_Real aFirst, aLast;
     Handle(Geom_Curve) aCurve = BRep_Tool::Curve (theEdge, aLoc, aFirst, aLast);
+    if (aCurve.IsNull())
+      Standard_NullObject::Raise("Null 3D curve in edge");
 
     // convert its part used by edge to bspline; note that if edge curve is bspline,
     // conversion made via trimmed curve is still needed -- it will copy it, segment 
