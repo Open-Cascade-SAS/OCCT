@@ -180,12 +180,19 @@ static void StoreInMap (const TopoDS_Shape& V1,
 			TopTools_IndexedDataMapOfShapeShape& MapVV);
 
 static void TrimEdge (const TopoDS_Edge&              CurrentEdge,
+                      const TopoDS_Shape&             CurrentSpine,
+                      const TopoDS_Face&              AllSpine,
 		      const TopTools_ListOfShape&     D,
                       TopTools_SequenceOfShape& Sv,  
                       TColStd_SequenceOfReal&   MapverPar,
                       TopTools_SequenceOfShape& S,
                       TopTools_IndexedDataMapOfShapeShape& MapVV,
                       const Standard_Integer IndOfE);
+
+static Standard_Boolean IsInnerEdge(const TopoDS_Shape& ProE,
+                                    const TopoDS_Face&  AllSpine,
+                                    Standard_Real& TrPar1,
+                                    Standard_Real& TrPar2);
 
 static Standard_Boolean DoubleOrNotInside (const TopTools_ListOfShape& EC,
 					   const TopoDS_Vertex&        V);
@@ -238,6 +245,7 @@ static void CheckFace(const TopoDS_Face& theFace)
 static Standard_Boolean KPartCircle
 (const TopoDS_Face&  mySpine,
  const Standard_Real myOffset,
+ const Standard_Boolean IsOpenResult,
  const Standard_Real Alt,
  TopoDS_Shape&       myShape, 
  BRepFill_IndexedDataMapOfOrientedShapeListOfShape& myMap,
@@ -265,8 +273,8 @@ static Standard_Boolean KPartCircle
 
   TopoDS_Vertex V1,V2;
   TopExp::Vertices(E,V1,V2);
-  if (!V1.IsSame(V2) || //open result or closed circle
-      C->IsKind(STANDARD_TYPE(Geom_Circle))) 
+  if ((C->IsKind(STANDARD_TYPE(Geom_Circle)) && V1.IsSame(V2)) || //closed circle
+      IsOpenResult)
   {
     Standard_Real anOffset = myOffset;
     if (E.Orientation() == TopAbs_REVERSED) anOffset *= -1;
@@ -382,7 +390,7 @@ void BRepFill_OffsetWire::Init(const TopoDS_Face&     Spine,
   TopoDS_Shape aShape;
   BRepFill_IndexedDataMapOfOrientedShapeListOfShape aMap;
   Standard_Boolean Done;
-  if (KPartCircle(myWorkSpine,1.,0.,aShape,aMap,Done)) return;
+  if (KPartCircle(myWorkSpine,1.,myIsOpenResult,0.,aShape,aMap,Done)) return;
   
 
   //-----------------------------------------------------
@@ -515,7 +523,7 @@ void BRepFill_OffsetWire::Perform (const Standard_Real Offset,
   {
     OCC_CATCH_SIGNALS
       myCallGen = Standard_False;
-    if (KPartCircle(myWorkSpine,Offset,Alt,myShape,myMap,myIsDone)) return;
+    if (KPartCircle(myWorkSpine,Offset,myIsOpenResult,Alt,myShape,myMap,myIsDone)) return;
 
     TopoDS_Face oldWorkSpain = myWorkSpine;
 
@@ -749,7 +757,7 @@ void BRepFill_OffsetWire::PerformWithBiLo
   //********************************
   // Calculate for a non null offset 
   //********************************
-  if (KPartCircle(myWorkSpine,Offset,Alt,myShape,myMap,myIsDone))
+  if (KPartCircle(myWorkSpine,Offset,myIsOpenResult,Alt,myShape,myMap,myIsDone))
     return;
 
   BRep_Builder myBuilder;
@@ -1026,6 +1034,8 @@ void BRepFill_OffsetWire::PerformWithBiLo
             IndOfE = -1;
         }
 	TrimEdge (CurrentEdge,
+                  CurrentSpine,
+                  mySpine,
 		  Detromp  (CurrentSpine),
 		  MapBis   (CurrentEdge) ,  
 		  MapVerPar(CurrentEdge) ,
@@ -2115,6 +2125,8 @@ void StoreInMap (const TopoDS_Shape& V1,
 //=======================================================================
 
 void TrimEdge (const TopoDS_Edge&              E,
+               const TopoDS_Shape&             ProE,
+               const TopoDS_Face&              AllSpine,
 	       const TopTools_ListOfShape&     Detromp,
                TopTools_SequenceOfShape& TheVer,
                TColStd_SequenceOfReal&   ThePar,
@@ -2198,19 +2210,39 @@ void TrimEdge (const TopoDS_Edge&              E,
     TopoDS_Vertex V1, V2;
     TopExp::Vertices(E, V1, V2);
     Standard_Real fpar, lpar;
-    BRep_Tool::Range(E, fpar, lpar);
+    Handle(Geom_Surface) aPlane;
+    TopLoc_Location aLoc;
+    Handle(Geom2d_Curve) PCurve;
+    BRep_Tool::CurveOnSurface(E, PCurve, aPlane, aLoc, fpar, lpar);
+    //BRep_Tool::Range(E, fpar, lpar);
+
+    Standard_Real TrPar1, TrPar2;
+    Standard_Boolean ToTrimAsOrigin = IsInnerEdge(ProE, AllSpine, TrPar1, TrPar2);
+    
     if (IndOfE == 1) //first edge of open wire
     {
       if (NewEdge.Orientation() == TopAbs_FORWARD)
       {
+        if (ToTrimAsOrigin)
+        {
+          fpar = TrPar1;
+          gp_Pnt2d TrPnt2d = PCurve->Value(fpar);
+          gp_Pnt TrPnt(TrPnt2d.X(), TrPnt2d.Y(), 0.);
+          V1 = BRepLib_MakeVertex(TrPnt);
+        }
         TheBuilder.Add(NewEdge, V1.Oriented(TopAbs_FORWARD));
         TheBuilder.Add(NewEdge, TheVer.First().Oriented(TopAbs_REVERSED));
         TheBuilder.Range(NewEdge, fpar, ThePar.First());
       }
       else
       {
-        //TheBuilder.Add(NewEdge, V1.Oriented(TopAbs_REVERSED));
-        //TheBuilder.Add(NewEdge, TheVer.First().Oriented(TopAbs_FORWARD));
+        if (ToTrimAsOrigin)
+        {
+          lpar = TrPar2;
+          gp_Pnt2d TrPnt2d = PCurve->Value(lpar);
+          gp_Pnt TrPnt(TrPnt2d.X(), TrPnt2d.Y(), 0.);
+          V2 = BRepLib_MakeVertex(TrPnt);
+        }
         TheBuilder.Add(NewEdge, TheVer.First().Oriented(TopAbs_REVERSED));
         TheBuilder.Add(NewEdge, V2.Oriented(TopAbs_FORWARD));
         TheBuilder.Range(NewEdge, ThePar.First(), lpar);
@@ -2220,14 +2252,26 @@ void TrimEdge (const TopoDS_Edge&              E,
     {
       if (NewEdge.Orientation() == TopAbs_FORWARD)
       {
+        if (ToTrimAsOrigin)
+        {
+          lpar = TrPar2;
+          gp_Pnt2d TrPnt2d = PCurve->Value(lpar);
+          gp_Pnt TrPnt(TrPnt2d.X(), TrPnt2d.Y(), 0.);
+          V2 = BRepLib_MakeVertex(TrPnt);
+        }
         TheBuilder.Add(NewEdge, TheVer.First().Oriented(TopAbs_FORWARD));
         TheBuilder.Add(NewEdge, V2.Oriented(TopAbs_REVERSED));
         TheBuilder.Range(NewEdge, ThePar.First(), lpar);
       }
       else
       {
-        //TheBuilder.Add(NewEdge, TheVer.First().Oriented(TopAbs_REVERSED));
-        //TheBuilder.Add(NewEdge, V2.Oriented(TopAbs_FORWARD));
+        if (ToTrimAsOrigin)
+        {
+          fpar = TrPar1;
+          gp_Pnt2d TrPnt2d = PCurve->Value(fpar);
+          gp_Pnt TrPnt(TrPnt2d.X(), TrPnt2d.Y(), 0.);
+          V1 = BRepLib_MakeVertex(TrPnt);
+        }
         TheBuilder.Add(NewEdge, V1.Oriented(TopAbs_REVERSED));
         TheBuilder.Add(NewEdge, TheVer.First().Oriented(TopAbs_FORWARD));
         TheBuilder.Range(NewEdge, fpar, ThePar.First());
@@ -2280,6 +2324,36 @@ void TrimEdge (const TopoDS_Edge&              E,
     }
   }
 }
+
+//=======================================================================
+//function : IsInnerEdge
+//purpose  :
+//=======================================================================
+
+static Standard_Boolean IsInnerEdge(const TopoDS_Shape& ProE,
+                                    const TopoDS_Face&  AllSpine,
+                                    Standard_Real& TrPar1,
+                                    Standard_Real& TrPar2)
+{
+  if (ProE.ShapeType() != TopAbs_EDGE)
+    return Standard_False;
+
+  TopoDS_Edge anEdge = TopoDS::Edge(ProE);
+
+  TopTools_IndexedDataMapOfShapeListOfShape VEmap;
+  TopExp::MapShapesAndAncestors(AllSpine, TopAbs_VERTEX, TopAbs_EDGE, VEmap);
+  for (Standard_Integer i = 1; i <= VEmap.Extent(); i++)
+  {
+    const TopTools_ListOfShape& LE = VEmap(i);
+    if (LE.Extent() == 1 && anEdge.IsSame(LE.First()))
+      return Standard_False;
+  }
+
+  BRep_Tool::Range(anEdge, TrPar1, TrPar2);
+  return Standard_True;
+}
+
+
 
 //=======================================================================
 //function : DoubleOrNotInside
