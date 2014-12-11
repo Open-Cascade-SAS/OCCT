@@ -2465,9 +2465,18 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
         }
      
 	if (uclose && (isec==NbLaw)) {
-	  UpdateEdge(TopoDS::Edge(UEdge(1, ipath)), 
-		     S, !exuv, ULast);
-	  UEdge(isec+1, ipath) = UEdge(1, ipath);
+          if (UEdge(1, ipath).IsNull()) //degenerated case
+          {
+            UEdge(isec+1, ipath) = BuildEdge(S, !exuv, ULast, 
+                                             Vertex(isec+1, ipath), 
+                                             Vertex(isec+1, ipath+1),
+                                             myTol3d);
+          }
+          else {
+            UpdateEdge(TopoDS::Edge(UEdge(1, ipath)), 
+		       S, !exuv, ULast);
+            UEdge(isec+1, ipath) = UEdge(1, ipath);
+          }
 	}
 	else {
           if (UEdge(isec+1, ipath).IsNull())
@@ -2502,9 +2511,18 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
 			S, exuv, VFirst);
 	
 	if (vclose && (ipath == NbPath)) {
-	  UpdateEdge(TopoDS::Edge(VEdge(isec, 1)), 
-		     S, exuv, VLast);
-	  VEdge(isec, ipath+1) = VEdge(isec, 1);
+          if (VEdge(isec, 1).IsNull()) //degenerated case
+          {
+            VEdge(isec, ipath+1) = BuildEdge(S, exuv, VLast, 
+					     Vertex(isec  , ipath+1), 
+                                             Vertex(isec+1, ipath+1),
+                                             myTol3d);
+          }
+          else {
+            UpdateEdge(TopoDS::Edge(VEdge(isec, 1)), 
+		       S, exuv, VLast);
+            VEdge(isec, ipath+1) = VEdge(isec, 1);
+          }
 	}
 	else if (VEdge(isec, ipath+1).IsNull())
 	  VEdge(isec, ipath+1) = BuildEdge(S, exuv, VLast, 
