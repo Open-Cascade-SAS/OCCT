@@ -1,0 +1,11 @@
+puts "============"
+puts "OCC25559"
+puts "============"
+puts ""
+######################################################
+# SIGSEGV in TKMath when computing max tolerance of curve on surface
+######################################################
+
+restore [locate_data_file bug25559_f.brep] f
+
+checkcurveonsurf f

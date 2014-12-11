@@ -205,10 +205,13 @@ Standard_Integer LU_Decompose(math_Matrix& a,
          for(k = 1; k < j; k++) 
            sum -= a(i,k) * a(k,j);
          a(i,j) = sum;
-         if((dum = vv(i) * fabs(sum)) >= big) {
-           big = dum;
-           imax = i;
+         // Note that comparison is made so as to have imax updated even if argument is NAN, Inf or IND, see #25559
+         if((dum = vv(i) * fabs(sum)) < big)
+         {
+           continue;
          }
+         big = dum;
+         imax = i;
        }
        if(j != imax) {
          for(k = 1; k <= n; k++) {
