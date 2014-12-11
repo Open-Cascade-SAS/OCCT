@@ -247,7 +247,7 @@ void BoundedArc (const TheArc& A,
     if (!Sol.IsDone()) {Standard_Failure::Raise();}
     
     Nbp=Sol.NbPoints();
-
+    //
     //jgv: build solution on the whole boundary
     if (RecheckOnRegularity && Nbp > 0 && IsRegularity(A, Domain))
     {
@@ -658,7 +658,8 @@ void PointProcess (const gp_Pnt& Pt,
     {
       Standard_Real TOL=Tol;
       TOL*=1000.0; 
-      if(TOL>0.001) TOL=0.001;
+      //if(TOL>0.001) TOL=0.001;
+      if(TOL>0.005) TOL=0.005; //#24643
       
       ptsol.SetValue(Pt,TOL,A,Para);
       pnt.Append(ptsol);
