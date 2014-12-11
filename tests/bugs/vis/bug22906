@@ -22,33 +22,25 @@ set y4 232
 
 vinit
 vsetgradientbg 255 0 0 0 0 255 4
-set Color1 [QAGetPixelColor ${x1} ${y1}]
-set Color2 [QAGetPixelColor ${x2} ${y2}]
-set Color3 [QAGetPixelColor ${x3} ${y3}]
-set Color4 [QAGetPixelColor ${x4} ${y4}]
+set Color1 [vreadpixel ${x1} ${y1} rgb]
+set Color2 [vreadpixel ${x2} ${y2} rgb]
+set Color3 [vreadpixel ${x3} ${y3} rgb]
+set Color4 [vreadpixel ${x4} ${y4} rgb]
 vclipplane create pln1
 vclipplane change pln1 equation 1 0 0 -0.1
 vclipplane set pln1 view Driver1/Viewer1/View1
 box b 100 100 100
 vdisplay b
 vsetdispmode 1
-set ColorRes1 [QAGetPixelColor ${x1} ${y1}]
-set ColorRes2 [QAGetPixelColor ${x2} ${y2}]
-set ColorRes3 [QAGetPixelColor ${x3} ${y3}]
-set ColorRes4 [QAGetPixelColor ${x4} ${y4}]
+set ColorRes1 [vreadpixel ${x1} ${y1} rgb]
+set ColorRes2 [vreadpixel ${x2} ${y2} rgb]
+set ColorRes3 [vreadpixel ${x3} ${y3} rgb]
+set ColorRes4 [vreadpixel ${x4} ${y4} rgb]
 
-set status 0
 if { ${Color1} == ${ColorRes1} && ${Color2} == ${ColorRes2} && ${Color3} == ${ColorRes3} && ${Color4} == ${ColorRes4}} {
-    set status 0
+    puts "OK ${BugNumber}"
 } else {
-    set status 1
+    puts "Faulty ${BugNumber}"
 }
 
-# Resume
-puts ""
-if { ${status} != 0} {
-   puts "Faulty ${BugNumber}"
-} else {
-   puts "OK ${BugNumber}"
-}
 set only_screen 1

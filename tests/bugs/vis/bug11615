@@ -16,13 +16,14 @@ vscale 1 1 1
 
 set x1 [list 165 340 70]
 set y1 [list 384 283 79]
-
+vaspects -setwidth 5
 puts ""
 for {set i 0} {$i < 3} {incr i} {
    set x_coord [lindex ${x1} $i]
    set y_coord [lindex ${y1} $i]
-
-   checkcolor $x_coord $y_coord 1 1 0
+   if {  "[vreadpixel $x_coord $y_coord rgb name]" != "YELLOW"  } {
+     puts "Error : color is not yellow"
+   }
 }
 
 vscale 0.5 1.5 0.7
@@ -35,8 +36,9 @@ puts ""
 for {set i 0} {$i < 3} {incr i} {
    set x_coord [lindex ${x2} $i]
    set y_coord [lindex ${y2} $i]
-
-   checkcolor $x_coord $y_coord 1 1 0
+   if {  "[vreadpixel $x_coord $y_coord rgb name]" != "YELLOW"  } {
+     puts "Error : color is not yellow"
+   }
 }
 
 set only_screen 1

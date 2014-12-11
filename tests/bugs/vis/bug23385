@@ -17,22 +17,10 @@ vtexrepeat b_16 3 2
 vsetdispmode b_16 1
 vfit
 
-set color [QAGetPixelColor 85 73]
-regexp {RED +: +([-0-9.+eE]+)} $color full R_check
-regexp {GREEN +: +([-0-9.+eE]+)} $color full G_check
-regexp {BLUE +: +([-0-9.+eE]+)} $color full B_check
-set color_status 0
-if { ${R_check} != 0 || ${G_check} != 0 || ${B_check} != 0 } {
-    set color_status 0
-} else {
-    set color_status 1
-}
-
-puts ""
-if { ${color_status} != 0 } {
-    puts "Faulty ${BugNumber}"
-} else {
+if { "[vreadpixel 85 73 rgb name]" != "BLACK" } {
     puts "OK ${BugNumber}"
+} else {
+    puts "Faulty ${BugNumber}"
 }
 
 set only_screen 1

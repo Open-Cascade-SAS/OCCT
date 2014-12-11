@@ -20,27 +20,18 @@ vfit
 ###set x1 101
 set x1 102
 set y1 199
-set Color [QAGetPixelColor ${x1} ${y1}]
+set Color [vreadpixel ${x1} ${y1} rgb]
 
 vmoveto ${x1} ${y1}
-set ColorMove [QAGetPixelColor ${x1} ${y1}]
+set ColorMove [vreadpixel ${x1} ${y1} rgb]
 
 vselect ${x1} ${y1}
-set ColorSelect [QAGetPixelColor ${x1} ${y1}]
+set ColorSelect [vreadpixel ${x1} ${y1} rgb]
 
-set Color_Status 0
 if { ${Color} != ${ColorMove} && ${Color} != ${ColorSelect} && ${ColorMove} != ${ColorSelect} } {
-  set Color_Status 0
+  puts "OK ${BugNumber}"
 } else {
-  set Color_Status 1
-}
-
-# Resume
-puts ""
-if { ${Color_Status} != 0} {
-   puts "Faulty ${BugNumber}"
-} else {
-   puts "OK ${BugNumber}"
+  puts "Faulty ${BugNumber}"
 }
 
 set square 24859.6

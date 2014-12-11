@@ -26,9 +26,8 @@ puts ""
 set x_coord 88
 set y_coord 272
 
-checkcolor $x_coord $y_coord 0.8 0.8 0.8
-
-if {$stat != 1} {
+vaspects -setwidth 5
+if {"[vreadpixel $x_coord $y_coord rgb name]" != "GRAY80"} {
    puts "Error : The rectangular is NOT highlighted."
 }
 

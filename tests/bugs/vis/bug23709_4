@@ -17,10 +17,9 @@ vfit
 vhlr on
 vhlrtype algo result
 
-checkcolor $x_coord $y_coord 1 1 0
+vaspects -setwidth 5
+if { "[vreadpixel $x_coord $y_coord rgb name]" != "YELLOW" } {
+  puts "Error : color is not yellow"
+}
 
 set only_screen 1
-
-
-
-

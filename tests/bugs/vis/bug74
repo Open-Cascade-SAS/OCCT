@@ -32,29 +32,19 @@ vinit
 box b 10 10 10
 vdisplay b
 vfit
+vaspects -setwidth 5
 
 ### FIRST PART
 
 # Check Shape color
-checkcolor ${Shape_X} ${Shape_Y} 1 1 0
+if { [vreadpixel ${Shape_X} ${Shape_Y} rgb name] != "YELLOW" } {
+  puts "Error : shape color is not yellow"
+}
 
 # Check Vertex color
-checkcolor ${Vertex_X} ${Vertex_Y} 1 1 0
-
-# Check Edge color
-checkcolor ${Edge_X} ${Edge_Y} 1 1 0
-
-# Check Wire color
-checkcolor ${Wire_X} ${Wire_Y} 1 1 0
-
-# Check Face color
-checkcolor ${Face_X} ${Face_Y} 1 1 0
-
-# Check Shell color
-checkcolor ${Shell_X} ${Shell_Y} 1 1 0
-
-# Check Solid color
-checkcolor ${Solid_X} ${Solid_Y} 1 1 0
+if { [vreadpixel ${Vertex_X} ${Vertex_Y} rgb name] != "YELLOW" } {
+  puts "Error : vertex color is not yellow"
+}
 
 ### SECOND PART
 
@@ -69,7 +59,9 @@ if { ${GetSelectMode} != ${SetSelectMode} } {
 }
 vmoveto ${Shape_X} ${Shape_Y}
 
-checkcolor ${Shape_X} ${Shape_Y} 0 1 1
+if { [vreadpixel  ${Shape_X} ${Shape_Y} rgb name] != "CYAN1" } {
+  puts "Error : shape color is not cyan"
+}
 
 # Check Vertex color
 vmoveto 1 1
@@ -161,44 +153,14 @@ if { ${GetSelectMode} != ${SetSelectMode} } then {
 
 # Check Shape color
 vmoveto 1 1
-vmoveto ${Shape_X} ${Shape_Y}
-
-checkcolor ${Shape_X} ${Shape_Y} 1 1 0
+if { [vreadpixel ${Shape_X} ${Shape_Y} rgb name] != "YELLOW" } {
+  puts "Error : shape color is not yellow"
+}
 
 # Check Vertex color
 vmoveto 1 1
-vmoveto ${Vertex_X} ${Vertex_Y}
-
-checkcolor ${Vertex_X} ${Vertex_Y} 1 1 0
-
-# Check Edge color
-vmoveto 1 1
-vmoveto ${Edge_X} ${Edge_Y}
-
-checkcolor ${Edge_X} ${Edge_Y} 1 1 0
-
-# Check Wire color
-vmoveto 1 1
-vmoveto ${Wire_X} ${Wire_Y}
-
-checkcolor ${Wire_X} ${Wire_Y} 1 1 0
-
-# Check Face color
-vmoveto 1 1
-vmoveto ${Face_X} ${Face_Y}
-
-checkcolor ${Face_X} ${Face_Y} 1 1 0
-
-# Check Shell color
-vmoveto 1 1
-vmoveto ${Shell_X} ${Shell_Y}
-
-checkcolor ${Shell_X} ${Shell_Y} 1 1 0
-
-# Check Solid color
-vmoveto 1 1
-vmoveto ${Solid_X} ${Solid_Y}
-
-checkcolor ${Solid_X} ${Solid_Y} 1 1 0
+if { [vreadpixel ${Vertex_X} ${Vertex_Y} rgb name] != "YELLOW" } {
+  puts "Error : vertex color is not yellow"
+}
 
 set only_screen 1

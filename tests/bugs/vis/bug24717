@@ -20,10 +20,9 @@ vclipplane create pln1
 vclipplane set pln1 view Driver1/Viewer1/View1
 vclipplane change pln1 equation 0 1 0 0
 vfit
+vaspects -setwidth 5
 
-checkcolor $check_x $check_y 0 1 1
-
-if {$stat != 1} {
+if { "[vreadpixel $check_x $check_y rgb name]" != "CYAN1" } {
     puts "Error : Viewer clipping is broken."
 }
 

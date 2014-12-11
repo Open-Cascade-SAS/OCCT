@@ -10,9 +10,7 @@ GER61351 RED2
 set x_coord 200
 set y_coord 200
 
-checkcolor $x_coord $y_coord 0.93 0 0
-
-if {$stat != 1} {
+if {"[vreadpixel $x_coord $y_coord rgb name]" != "RED2"} {
    puts "Error : Background color is NOT RED2."
 }
 

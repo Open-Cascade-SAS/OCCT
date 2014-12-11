@@ -84,8 +84,7 @@ proc check_primitive {name1 r g b args} {
 	set HasPixel 0
 	for {set i 0} {$i < $limit_x} {incr i} {
 		for {set j 0} {$j < $limit_y} {incr j} {
-			set QATestVar [ catch { QAGetPixelColor $i $j $r $g $b } ]
-			if { $QATestVar == 0 } {
+			if { "[vreadpixel $i $j rgb]" == "$r $g $b" } {
 				set HasPixel 1
 			}
 		}
@@ -100,8 +99,8 @@ proc check_primitive {name1 r g b args} {
 	set HasPixel 1
 	for {set i 0} {$i < $limit_x} {incr i} {
 		for {set j 0} {$j < $limit_y} {incr j} {
-			set QATestVar [ catch { QAGetPixelColor $i [expr $view_height-$j] $r $g $b  } ]
-			if { $QATestVar == 0 } {
+			set coord_y [expr $view_height-$j]
+			if { "[vreadpixel $i $coord_y rgb]" == "$r $g $b" } {
 				set HasPixel 1
 			}
 		}
@@ -116,8 +115,9 @@ proc check_primitive {name1 r g b args} {
 	set HasPixel 1
 	for {set i 0} {$i < $limit_x} {incr i} {
 		for {set j 0} {$j < $limit_y} {incr j} {
-			set QATestVar [ catch { QAGetPixelColor [expr ($view_width-$limit_y) + $i] [expr ($view_height-$limit_y)/2 + $j] $r $g $b  } ]
-			if { $QATestVar == 0 } {
+			set coord_x [expr ($view_width-$limit_y) + $i]
+			set coord_y [expr ($view_height-$limit_y)/2 + $j]
+			if { "[vreadpixel $coord_x $coord_y rgb]" == "$r $g $b" } {
 				set HasPixel 1
 			}
 		}
@@ -132,8 +132,9 @@ proc check_primitive {name1 r g b args} {
 	set HasPixel 0
 	for {set i 0} {$i < $limit_x} {incr i} {
 		for {set j 0} {$j < $limit_y} {incr j} {
-			set QATestVar [ catch { QAGetPixelColor [expr $view_width/4 + $i] [expr ($view_height-$limit_y)/2 + $j] $r $g $b  } ]
-			if { $QATestVar == 0 } {
+			set coord_x [expr $view_width/4 + $i]
+			set coord_y [expr ($view_height-$limit_y)/2 + $j]
+			if { "[vreadpixel $coord_x $coord_y rgb]" == "$r $g $b" } {
 				set HasPixel 1
 			}
 		}

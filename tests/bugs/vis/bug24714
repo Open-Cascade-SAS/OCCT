@@ -19,11 +19,9 @@ vfit
 
 vviewparams -size 22
 
+vaspects -setwidth 5
 vmoveto 200 100
-
-checkcolor 200 9 0 1 1
-
-if { $stat != 1 } {
+if { "[vreadpixel 200 9 rgb name]" != "CYAN1" } {
   puts "Error : the view projection size is incorrect!"
 }
 

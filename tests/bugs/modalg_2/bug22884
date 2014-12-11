@@ -31,22 +31,10 @@ set nb_compsol_good 0
 set nb_compound_good 0
 set nb_shape_good 96
 
-set Color [QAGetPixelColor $x1 $y1]
-set R [lindex ${Color} 2]
-set G [lindex ${Color} 5]
-set B [lindex ${Color} 8]
-set color_status 0
-if { $R == 0 && $G == 0 && $B == 0 } {
-    set color_status 1
+if { "[vreadpixel $x1 $y1 rgb name]" == "BLACK" } {
+    puts "Faulty ${BugNumber}"
 } else {
-    set color_status 0
-}
-
-
-if { ${color_status} == 0} {
-   puts "OK ${BugNumber}"
-} else {
-   puts "Faulty ${BugNumber}"
+    puts "OK ${BugNumber}"
 }
 
 set 3dviewer 0

@@ -18,18 +18,18 @@ vdisplay result
 vfit
 vsetdispmode result 1
 
-set color1 [QAGetPixelColor 175 195]
-regexp {RED +: +([-0-9.+eE]+)} $color1 full rd1
-regexp {GREEN +: +([-0-9.+eE]+)} $color1 full gr1
-regexp {BLUE +: +([-0-9.+eE]+)} $color1 full bl1
+set color1 [vreadpixel 175 195 rgb]
+set rd1 [lindex $color1 0]
+set gr1 [lindex $color1 1]
+set bl1 [lindex $color1 2]
 
 ########################################################
 vsettransparency result 0.5
 
-set color2 [QAGetPixelColor 175 195]
-regexp {RED +: +([-0-9.+eE]+)} $color2 full rd2
-regexp {GREEN +: +([-0-9.+eE]+)} $color2 full gr2
-regexp {BLUE +: +([-0-9.+eE]+)} $color2 full bl2
+set color2 [vreadpixel 175 195 rgb]
+set rd2 [lindex $color2 0]
+set gr2 [lindex $color2 1]
+set bl2 [lindex $color2 2]
 
 if { ${rd2} == ${rd1} || ${gr2} == ${gr1} || ${bl2} == ${bl1} } {
     puts "Error : vsettransparency of shape was NOT made"

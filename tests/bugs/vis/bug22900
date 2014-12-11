@@ -27,6 +27,6 @@ vsetcolor c1 GREEN
 vsetdispmode 1
 vsetcolor c1 RED
 
-checkcolor ${x1} ${y1}] 1 0 0
+checkcolor ${x1} ${y1} 1 0 0
 
 set only_screen 1

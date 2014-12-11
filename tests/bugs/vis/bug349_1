@@ -12,49 +12,9 @@ OCC280 1 1
 
 vfit
 
-set x1 135
-set y1 119
+set yellow_coords {{135 119} {387 33} {172 144} {28 190} {212 272} {60 343} {26 255} {389 113} {60 276}}
 
-set x2 387
-set y2 33
-
-set x3 172
-set y3 144
-
-set x4 28
-set y4 190
-
-set x5 160
-set y5 257
-
-set x6 365
-set y6 150
-
-set x7 212
-set y7 272
-
-set x8 60
-set y8 343
-
-set x9 26
-set y9 255
-
-set x10 353
-set y10 99
-
-set x11 389
-set y11 113
-
-set x12 60
-set y12 276
-
-set Black_R 0
-set Black_G 0
-set Black_B 0
-
-set Yellow_R 1
-set Yellow_G 1
-set Yellow_B 0
+set black_coords {{160 257} {365 150} {353 99}}
 
 #
 #              ___________2________________
@@ -94,17 +54,18 @@ set Yellow_B 0
 #
 #
 
-checkcolor ${x1}  ${y1}  ${Yellow_R} ${Yellow_G} ${Yellow_B}
-checkcolor ${x2}  ${y2}  ${Yellow_R} ${Yellow_G} ${Yellow_B}
-checkcolor ${x3}  ${y3}  ${Yellow_R} ${Yellow_G} ${Yellow_B}
-checkcolor ${x4}  ${y4}  ${Yellow_R} ${Yellow_G} ${Yellow_B}
-checkcolor ${x7}  ${y7}  ${Yellow_R} ${Yellow_G} ${Yellow_B}
-checkcolor ${x8}  ${y8}  ${Yellow_R} ${Yellow_G} ${Yellow_B}
-checkcolor ${x9}  ${y9}  ${Yellow_R} ${Yellow_G} ${Yellow_B}
-checkcolor ${x11} ${y11} ${Yellow_R} ${Yellow_G} ${Yellow_B}
-checkcolor ${x12} ${y12} ${Yellow_R} ${Yellow_G} ${Yellow_B}
-checkcolor ${x5}  ${y5}  ${Black_R} ${Black_G} ${Black_B}
-checkcolor ${x6}  ${y6}  ${Black_R} ${Black_G} ${Black_B}
-checkcolor ${x10} ${y10} ${Black_R} ${Black_G} ${Black_B}
+vaspects -setwidth 5
+
+foreach i $yellow_coords {
+  if {"[vreadpixel [lindex $i 0] [lindex $i 1] rgb name]" != "YELLOW" } {
+    puts "Error : ${i} is not yellow"
+  }
+}
+
+foreach i $black_coords {
+  if {"[vreadpixel [lindex $i 0] [lindex $i 1] rgb name]" != "BLACK" } {
+    puts "Error : ${i} is not black"
+  }
+}
 
 set only_screen 0

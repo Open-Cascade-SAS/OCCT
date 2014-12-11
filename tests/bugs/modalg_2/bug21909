@@ -45,17 +45,9 @@ vmoveto ${x1} ${y1}
 
 set status 0
 for {set i ${y1} } {$i <= ${y2} } {incr i} {
-    set Color1 [QAGetPixelColor ${x1} ${i}]
-
-    set R1 [lindex ${Color1} 2]
-    set G1 [lindex ${Color1} 5]
-    set B1 [lindex ${Color1} 8]
-
-    puts "x = ${x1}   y = ${i}   R = ${R1}   G = ${G1}   B = ${B1}"
-
-    if { ${R1} == 0 && ${G1} == 0 && ${B1} == 0 } {
-	incr status
-	puts "Error : rendering  x = ${x1}  y = ${i}"
+    if { "[vreadpixel ${x1} ${i} rgb name]" == "BLACK" } {
+      incr status
+      puts "Error : rendering  x = ${x1}  y = ${i}"
     }
 }
 

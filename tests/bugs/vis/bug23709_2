@@ -18,7 +18,10 @@ vhlrtype algo a
 
 set x_coord 290
 set y_coord 170
-checkcolor $x_coord $y_coord 1 1 0
+vaspects -setwidth 5
+if { "[vreadpixel $x_coord $y_coord rgb name]" != "YELLOW" } {
+  puts "Error : color is not yellow"
+}
 
 set x_coord 86
 set y_coord 221

@@ -23,10 +23,7 @@ vselmode e1 1 1
 vselect 0 0 2500 2500
 verase -local
 
-set x_coord 261
-set y_coord 204
-checkcolor $x_coord $y_coord 0 0 0
-if { $stat != 1 } {
+if { "[vreadpixel 261 204 rgb name]" != "BLACK" } {
    puts "Error : Selection is not erased."
 }
 

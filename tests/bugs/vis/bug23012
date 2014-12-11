@@ -24,31 +24,17 @@ vsetdispmode b_1 1
 vselprecision
 vselprecision 1 0.1
 
-set ColorBefore [QAGetPixelColor ${x1} ${y1}]
-set R1 [lindex ${ColorBefore} 2]
-set G1 [lindex ${ColorBefore} 5]
-set B1 [lindex ${ColorBefore} 8]
+set ColorBefore [vreadpixel ${x1} ${y1} rgb]
 
 vmoveto ${x2} ${y2}
 
-set ColorAfter [QAGetPixelColor ${x1} ${y1}]
-set R2 [lindex ${ColorAfter} 2]
-set G2 [lindex ${ColorAfter} 5]
-set B2 [lindex ${ColorAfter} 8]
+set ColorAfter [vreadpixel ${x2} ${y2} rgb]
 
-set check_color 0
-if { ${R1} == ${R2} && ${G1} == ${G2} && ${B1} == ${B2} } {
-    set check_color 0
+if { "$ColorBefore" == "$ColorAfter" } {
+    puts "OK ${BugNumber}"
 } else {
-    set check_color 1
+    puts "Faulty ${BugNumber}"
 }
 
-# Resume
-puts ""
-if { ${check_color} != 0} {
-   puts "Faulty ${BugNumber}"
-} else {
-   puts "OK ${BugNumber}"
-}
 vfit
 set only_screen 1

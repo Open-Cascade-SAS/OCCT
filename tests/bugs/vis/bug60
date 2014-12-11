@@ -8,11 +8,14 @@ vinit
 box b 10 10 10
 vdisplay b
 vfit
+vaspects -setwidth 5
 
 set x_coord 83
 set y_coord 337
 
-checkcolor $x_coord $y_coord 1 1 0
+if { [vreadpixel ${x_coord} ${y_coord} rgb name] != "YELLOW" } {
+  puts "Error : color is not yellow"
+}
 
 set xmin 1
 set ymin 1
@@ -27,6 +30,8 @@ set Selection_R 0.8
 set Selection_G 0.8
 set Selection_B 0.8
 
-checkcolor $x_coord $y_coord 0.8 0.8 0.8
+if { [vreadpixel ${x_coord} ${y_coord} rgb name] != "GRAY80" } {
+  puts "Error : color is not gray"
+}
 
 set only_screen 1

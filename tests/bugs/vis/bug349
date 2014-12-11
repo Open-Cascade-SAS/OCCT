@@ -12,41 +12,8 @@ OCC280 1 0
 
 vfit
 
-set x1 135
-set y1 119
-
-set x2 387
-set y2 33
-
-set x3 172
-set y3 144
-
-set x4 28
-set y4 190
-
-set x5 160
-set y5 257
-
-set x6 365
-set y6 150
-
-set x7 212
-set y7 272
-
-set x8 60
-set y8 343
-
-set x9 26
-set y9 255
-
-set x10 353
-set y10 99
-
-set x11 389
-set y11 113
-
-set x12 60
-set y12 276
+set yellow_coords {{135 119} {387 33} {172 144} {28 190} {212 272} {60 343} {26 255} {389 113} {60 276}}
+set black_coords {{160 257} {365 150} {353 99}}
 
 #
 #              ___________2________________
@@ -86,17 +53,18 @@ set y12 276
 #
 #
 
-checkcolor ${x1} ${y1} 1 1 0
-checkcolor ${x2} ${y2} 1 1 0
-checkcolor ${x3} ${y3} 1 1 0
-checkcolor ${x4} ${y4} 1 1 0
-checkcolor ${x7} ${y7} 1 1 0
-checkcolor ${x8} ${y8} 1 1 0
-checkcolor ${x9} ${y9} 1 1 0
-checkcolor ${x11} ${y11} 1 1 0
-checkcolor ${x12} ${y12} 1 1 0
-checkcolor ${x5} ${y5} 0 0 0
-checkcolor ${x6} ${y6} 0 0 0
-checkcolor ${x10} ${y10} 0 0 0
+vaspects -setwidth 5
+
+foreach i $yellow_coords {
+  if {"[vreadpixel [lindex $i 0] [lindex $i 1] rgb name]" != "YELLOW" } {
+    puts "Error : ${i} is not yellow"
+  }
+}
+
+foreach i $black_coords {
+  if {"[vreadpixel [lindex $i 0] [lindex $i 1] rgb name]" != "BLACK" } {
+    puts "Error : ${i} is not black"
+  }
+}
 
 set only_screen 1

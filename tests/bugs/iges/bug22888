@@ -29,10 +29,10 @@ set inf_after [trinfo a_1]
 regexp { +([-0-9.+eE]+) +triangles} $inf_after full tri_after
 regexp { +([-0-9.+eE]+) +nodes} $inf_after full nod_after
 
-set color [QAGetPixelColor ${x1} ${y1}]
-regexp {RED +: +([-0-9.+eE]+)} $color full rd
-regexp {GREEN +: +([-0-9.+eE]+)} $color full gr
-regexp {BLUE +: +([-0-9.+eE]+)} $color full bl
+set color [vreadpixel ${x1} ${y1} rgb]
+set rd [lindex $color 0]
+set gr [lindex $color 1]
+set bl [lindex $color 2]
 
 if { $rd == 0 || $gr == 0 || $bl == 0 } {
     puts "Error : Face is not shaded (colors are not equal)"

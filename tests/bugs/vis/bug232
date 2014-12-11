@@ -32,18 +32,22 @@ set Cyan_R 0
 set Cyan_G 1
 set Cyan_B 1
 
+set Cyan "$Cyan_R $Cyan_G $Cyan_B"
+
 set Yellow_R 1
 set Yellow_G 1
 set Yellow_B 0
 
+set Yellow "$Yellow_R $Yellow_G $Yellow_B"
+
 # There is not selection
 puts "There is not selection"
-catch {QAGetPixelColor $x1 $y1 $Yellow_R $Yellow_G $Yellow_B} result11
-catch {QAGetPixelColor $x2 $y2 $Yellow_R $Yellow_G $Yellow_B} result12
-catch {QAGetPixelColor $x3 $y3 $Yellow_R $Yellow_G $Yellow_B} result13
-catch {QAGetPixelColor $x4 $y4 $Yellow_R $Yellow_G $Yellow_B} result14
-catch {QAGetPixelColor $x5 $y5 $Yellow_R $Yellow_G $Yellow_B} result15
-catch {QAGetPixelColor $x6 $y6 $Yellow_R $Yellow_G $Yellow_B} result16
+set result11 [regexp "$Yellow" [vreadpixel $x1 $y1 rgb]]
+set result12 [regexp "$Yellow" [vreadpixel $x2 $y2 rgb]]
+set result13 [regexp "$Yellow" [vreadpixel $x3 $y3 rgb]]
+set result14 [regexp "$Yellow" [vreadpixel $x4 $y4 rgb]]
+set result15 [regexp "$Yellow" [vreadpixel $x5 $y5 rgb]]
+set result16 [regexp "$Yellow" [vreadpixel $x6 $y6 rgb]]
 
 # Move a mouse
 puts "Move a mouse"
@@ -51,58 +55,26 @@ vmoveto $x2 $y2
 
 # Second box of first CompSolid is selected
 puts "Second box of first CompSolid is selected"
-catch {QAGetPixelColor $x1 $y1 $Yellow_R $Yellow_G $Yellow_B} result21
-catch {QAGetPixelColor $x3 $y3 $Yellow_R $Yellow_G $Yellow_B} result22
-catch {QAGetPixelColor $x4 $y4 $Yellow_R $Yellow_G $Yellow_B} result23
-catch {QAGetPixelColor $x5 $y5 $Yellow_R $Yellow_G $Yellow_B} result24
-catch {QAGetPixelColor $x6 $y6 $Yellow_R $Yellow_G $Yellow_B} result25
+set result21 [regexp "$Yellow" [vreadpixel $x1 $y1 rgb]]
+set result22 [regexp "$Yellow" [vreadpixel $x3 $y3 rgb]]
+set result23 [regexp "$Yellow" [vreadpixel $x4 $y4 rgb]]
+set result24 [regexp "$Yellow" [vreadpixel $x5 $y5 rgb]]
+set result25 [regexp "$Yellow" [vreadpixel $x6 $y6 rgb]]
 
 if { [array get env os_type] != "" } {
     set os $env(os_type)
 }
 if { [string compare $os "windows"] != 0 } {
-   catch {QAGetPixelColor $x2 $y2 $Cyan_R $Cyan_G $Cyan_B} result31
+  set result31 [regexp "$Cyan" [vreadpixel $x2 $y2 rgb]]
+  if { $result31 == 0 } {
+    set IsFaulty 1
+  }
 }
 
 set IsFaulty 0
-if { [regexp "Faulty" $result11] == 1 } {
+if { !($result11 && $result12 && $result13 && $result14 && $result15 && $result16)
+  || !($result21 && $result22 && $result23 && $result24 && $result25) } {
    set IsFaulty 1
-}
-if { [regexp "Faulty" $result12] == 1 } {
-   set IsFaulty 1
-}
-if { [regexp "Faulty" $result13] == 1 } {
-   set IsFaulty 1
-}
-if { [regexp "Faulty" $result14] == 1 } {
-   set IsFaulty 1
-}
-if { [regexp "Faulty" $result15] == 1 } {
-   set IsFaulty 1
-}
-if { [regexp "Faulty" $result16] == 1 } {
-   set IsFaulty 1
-}
-if { [regexp "Faulty" $result21] == 1 } {
-   set IsFaulty 1
-}
-if { [regexp "Faulty" $result22] == 1 } {
-   set IsFaulty 1
-}
-if { [regexp "Faulty" $result23] == 1 } {
-   set IsFaulty 1
-}
-if { [regexp "Faulty" $result24] == 1 } {
-   set IsFaulty 1
-}
-if { [regexp "Faulty" $result25] == 1 } {
-   set IsFaulty 1
-}
-
-if { [string compare $os "windows"] != 0 } {
-   if { [regexp "Faulty" $result31] == 1 } {
-      set IsFaulty 1
-   }
 }
 
 if {$IsFaulty != 0} {

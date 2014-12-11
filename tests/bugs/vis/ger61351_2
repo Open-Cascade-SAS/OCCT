@@ -14,9 +14,8 @@ GER61351 0 255 0
 set x_coord 200
 set y_coord 200
 
-checkcolor $x_coord $y_coord 0 1 0
-
-if {$stat != 1} {
+#checkcolor $x_coord $y_coord 0 1 0
+if {"[vreadpixel $x_coord $y_coord rgb name]" != "GREEN"} {
    puts "Error : Background color is NOT 0 1 0."
 }
 

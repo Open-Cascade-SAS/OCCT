@@ -22,9 +22,9 @@ vfit
 set x_coord 189
 set y_coord 236
 
-checkcolor $x_coord $y_coord 0 0 0.7
+#checkcolor $x_coord $y_coord 0 0 0.7
 
-if { ${stat} != 1 } {
+if { "[vreadpixel $x_coord $y_coord rgb name]" != "MATRABLUE" } {
     puts "Error : There is missing triangle"
 }
 

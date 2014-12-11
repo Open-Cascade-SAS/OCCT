@@ -11,20 +11,13 @@ vinit View1
 vdisplay b
 vfit
 vsetdispmode 1
+vaspects -setwidth 5
 vmoveto 200 200
-
-set x1_coord 264
-set y1_coord 288
-set x2_coord 251
-set y2_coord 271
-
-checkcolor $x1_coord $y1_coord 0 1 1
-if { $stat != 1 } {
+if { "[vreadpixel 264 288 rgb name]" != "CYAN1" } {
   puts "Error : Highlighting of dimension with flipping in local context failed."
 }
 
-checkcolor $x2_coord $y2_coord 0 1 1
-if { $stat != 1 } {
+if { "[vreadpixel 251 271 rgb name]" != "CYAN1" } {
   puts "Error : Highlighting of dimension with flipping in local context failed."
 }
 

@@ -28,10 +28,10 @@ vsetcolor face GREEN1
 vsetdispmode  cylinder 1
 vsetcolor cylinder RED1
 
-set ColorList [QAGetPixelColor $Start_X $Start_Y]
-regexp {RED +: +([-0-9.+eE]+)} $ColorList full R_START_POINT
-regexp {GREEN +: +([-0-9.+eE]+)} $ColorList full G_START_POINT
-regexp {BLUE +: +([-0-9.+eE]+)} $ColorList full B_START_POINT
+set ColorList [vreadpixel ${Start_X} ${Start_Y} rgb]
+set R_START_POINT [lindex $ColorList 0]
+set G_START_POINT [lindex $ColorList 1]
+set B_START_POINT [lindex $ColorList 2]
 
 puts "R_START_POINT=$R_START_POINT ;   G_START_POINT=$G_START_POINT ;   B_START_POINT=$B_START_POINT"
 

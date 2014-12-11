@@ -15,11 +15,10 @@ vdisplay p
 vsetdispmode p 1
 vsetinteriorstyle p 1
 
-set color [QAGetPixelColor 10 0]
-regexp {RED +: +([-0-9.+eE]+)} $color full R_check
-
 puts ""
-if { ${R_check} == 0 } {
+set color1 [vreadpixel 10 0 rgb]
+set rd1 [lindex $color1 0]
+if { $rd1 == 0 } {
   puts "Faulty ${BugNumber}"
 } else {
   puts "OK ${BugNumber}"
