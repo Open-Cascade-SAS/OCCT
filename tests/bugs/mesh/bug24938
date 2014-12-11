@@ -1,0 +1,39 @@
+puts "TODO OCC24938 ALL: Error: shape contains 0 triangles"
+puts "TODO OCC24938 ALL: Error: shape contains 0 nodes"
+
+puts "=========="
+puts "OCC24938"
+puts "=========="
+puts ""
+########################################
+# BRepMesh_IncrementalMesh hangs
+########################################
+
+# to prevent loops limit to 5 minutes
+cpulimit 300
+
+restore [locate_data_file bug24938_27773.brep] result
+
+tclean result
+incmesh result 1.5 -relative
+set trinfo_s [trinfo result]
+regexp {([0-9]+) triangles} ${trinfo_s} str nbtri_s
+regexp {([0-9]+) nodes} ${trinfo_s} str nbnod_s
+
+if { ${nbtri_s} == 0 } {
+  puts "Error: shape contains 0 triangles"
+} else {
+  puts "OK: shape contains ${nbtri_s} triangles"
+}
+
+if { ${nbnod_s} == 0 } {
+  puts "Error: shape contains 0 nodes"
+} else {
+  puts "OK: shape contains ${nbnod_s} nodes"
+}
+
+vinit
+vsetdispmode 1
+vdisplay result
+vfit
+set only_screen 1
