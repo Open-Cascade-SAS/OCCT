@@ -59,10 +59,7 @@ deferred class Group from Graphic3d inherits TShared
         ExtendedString              from TCollection,
     
         PlaneAngle                  from Quantity,
-    
-        Array1OfEdge                from Aspect,
-        Edge                        from Aspect,
-    
+
     	GroupAspect	            from Graphic3d,
         AspectLine3d                from Graphic3d,
         AspectMarker3d              from Graphic3d,

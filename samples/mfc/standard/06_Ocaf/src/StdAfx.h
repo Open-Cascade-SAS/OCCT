@@ -48,7 +48,6 @@
 
 #include <Aspect_Background.hxx>
 #include <Aspect_TypeOfLine.hxx>
-#include <Aspect_TypeOfText.hxx>
 #include <Aspect_WidthOfLine.hxx>
 #include <Bnd_Box2d.hxx>
 #include <BndLib_Add2dCurve.hxx>

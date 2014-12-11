@@ -28,14 +28,13 @@ ISession_Text::ISession_Text
                   const Standard_Real            anX ,        // = 0
                   const Standard_Real            anY ,        // = 0
                   const Standard_Real            aZ  ,        // = 0
-			      const Aspect_TypeOfText        aType,       // = SOLID,
 			      const Quantity_PlaneAngle      anAngle,     // = 0.0
 			      const Standard_Real            aslant,      // = 0.0
 			      const Standard_Integer         aColorIndex, // = 0
 			      const Standard_Integer         aFontIndex,  // = 1
 			      const Quantity_Factor          aScale)      // = 1
                   :AIS_InteractiveObject(),MyText(aText),MyX(anX),MyY(anY),MyZ(aZ),
-                  MyTypeOfText(aType),MyAngle(anAngle),MySlant(aslant),MyFontIndex(aFontIndex),
+                  MyAngle(anAngle),MySlant(aslant),MyFontIndex(aFontIndex),
                   MyColorIndex(aColorIndex),MyScale(aScale),MyWidth(0),MyHeight(0)
 {
 
@@ -44,14 +43,13 @@ ISession_Text::ISession_Text
 ISession_Text::ISession_Text
                  (const TCollection_AsciiString& aText, 
                   gp_Pnt&                        aPoint,
-			      const Aspect_TypeOfText        aType,       // = SOLID,
 			      const Quantity_PlaneAngle      anAngle,     // = 0.0
 			      const Standard_Real            aslant,      // = 0.0
 			      const Standard_Integer         aColorIndex, // = 0
 			      const Standard_Integer         aFontIndex,  // = 1
 			      const Quantity_Factor          aScale)      // = 1
                   :AIS_InteractiveObject(),MyText(aText),MyX(aPoint.X()),MyY(aPoint.Y()),MyZ(aPoint.Z()),
-                  MyTypeOfText(aType),MyAngle(anAngle),MySlant(aslant),MyFontIndex(aFontIndex),
+                  MyAngle(anAngle),MySlant(aslant),MyFontIndex(aFontIndex),
                   MyColorIndex(aColorIndex),MyScale(aScale),MyWidth(0),MyHeight(0)
 {
 

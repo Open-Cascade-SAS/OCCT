@@ -19,7 +19,6 @@ IMPLEMENT_STANDARD_RTTIEXT(User_Cylinder,AIS_InteractiveObject)
 #include <TColgp_Array1OfDir.hxx>
 #include <GProp_PGProps.hxx>
 #include <Graphic3d_Array1OfVertex.hxx>
-#include <Aspect_Array1OfEdge.hxx>
 #include <Quantity_Color.hxx>
 #include <BRepMesh_IncrementalMesh.hxx>
 #include <Prs3d.hxx>

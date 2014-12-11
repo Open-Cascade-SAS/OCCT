@@ -114,7 +114,6 @@
 
 #include <Aspect_Background.hxx>
 #include <Aspect_TypeOfline.hxx>
-#include <Aspect_TypeOfText.hxx>
 #include <Aspect_WidthOfline.hxx>
 #include <Bnd_Box2d.hxx>
 #include <BndLib_Add2dCurve.hxx>

@@ -7,7 +7,6 @@ IMPLEMENT_STANDARD_RTTIEXT(Sample2D_Text,AIS_InteractiveObject)
 
 Sample2D_Text::Sample2D_Text   (const TCollection_AsciiString& theText,
                  const gp_Pnt&                  thePosition,
-                 const Aspect_TypeOfText        theType,
                  const Quantity_PlaneAngle      theAngle,
                  const Quantity_Color           theColor,
                  const Font_FontAspect          theFontAspect,
@@ -20,7 +19,6 @@ Sample2D_Text::Sample2D_Text   (const TCollection_AsciiString& theText,
 {
   myText       =  theText      ; 
   myPosition   =  thePosition  ;
-  myTypeOfText =  theType      ;
   myAngle      =  theAngle     ;
   myColor      =  theColor     ;
   myFontAspect =  theFontAspect;

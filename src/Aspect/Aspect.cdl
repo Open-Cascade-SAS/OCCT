@@ -13,32 +13,6 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
--- Package:     Aspect
--- Updated:     Vendredi 2 Octobre 1992
---              Mercredi 31 mars 1993
---              Lundi 16 janvier 1995 
--- Reason :     Traitement des Markers (G400)
--- Purpose:     Specifications definitives
--- Modified:    15/01/98 ; FMN : Ajout Hidden Line
--- Modified: 24/08/98 ; CAL : S3892. Ajout grilles 3d.
--- Modified: 16-09-98 by BGN (S3989) 
----   Adding TypeOfTriedronEcho, TypeOfTriedronPosition.
--- Modified: 30-11-98 ; FMN : S4069. Textes always visible.
--- Modified: 17-NOV-99 : GG GER61351
---   Add TypeOfFacingModel enum 
--- Modified: 20-JAN-00 : GG 
---   Add GDM_None in enum GridDrawMode.
--- Modified: 25-JAN-00 : VKH
---   Add class PixMap
--- Modified: 23-FEB-00 : GG
---   Returns format name in ValuesOfFOSP() internal method.
--- Modified: 27-03-02 RIC120302 GG Add imported class 
--- Display, Drawable, RenderingContext, GraphicCallbackProc
--- Modified: 22-03-04 OCC4895 SAN High-level interface for controlling polygon offsets
--- Modified: 21-06-04 STV Added Aspect_ColorScale class
-
-------------------------------------------------------------------------
-
 package Aspect
 
         ---Version:
@@ -106,9 +80,6 @@ is
         exception BadAccess inherits DomainError;
         ---Category: Exceptions
 
-        exception EdgeDefinitionError inherits OutOfRange;
-        ---Category: Exceptions
-
         exception IdentDefinitionError inherits OutOfRange;
         ---Category: Exceptions
 
@@ -148,9 +119,6 @@ is
         ---Category: Classes
 
         class GradientBackground;
-        ---Category: Classes
-
-        class Edge;
         ---Category: Classes
 
         class GenId;
@@ -292,29 +260,6 @@ is
         --          WOL_USERDEFINED     defined by Users
         ---Category: Enumerations
 
-        enumeration TypeOfFont is       TOF_DEFAULT,
-                                        TOF_COURIER,
-                                        TOF_HELVETICA,
-                                        TOF_TIMES,
-                                        TOF_USERDEFINED
-        end TypeOfFont;
-        ---Purpose: Definition of line types
-        --
-        --          TOF_DEFAULT         Default system font
-        --          TOF_COURIER         
-        --          TOF_HELVETICA       
-        --          TOF_USERDEFINED     defined by Users
-        ---Category: Enumerations
-
-        enumeration TypeOfText is       TOT_SOLID,
-                                        TOT_OUTLINE
-        end TypeOfText;
-        ---Purpose: Definition of Text types
-        --
-        --          TOF_SOLID           Default text 
-        --          TOF_OUTLINE         
-        ---Category: Enumerations
-
         enumeration TypeOfStyleText is  TOST_NORMAL,
                                         TOST_ANNOTATION
         end TypeOfStyleText;
@@ -406,54 +351,6 @@ is
         end TypeOfResize;
         ---Purpose: Defines the type of Resize Window method applied
         --          by the user.
-
-        enumeration CardinalPoints is   CP_North,
-                                        CP_NorthEast,
-                                        CP_East,
-                                        CP_SouthEast,
-                                        CP_South,
-                                        CP_SouthWest,
-                                        CP_West,
-                                        CP_NorthWest,
-                                        CP_Center
-        end CardinalPoints;
-
-        enumeration TypeOfRenderingMode is TORM_IMMEDIAT,
-                                           TORM_RETAIN,
-                                           TORM_CLEAR_AND_RETAIN
-        end TypeOfRenderingMode;
-        ---Purpose: Definition of the rendering modes
-
-        enumeration TypeOfColorSpace is TOCS_BlackAndWhite,
-                                        TOCS_GreyScale,
-                                        TOCS_RGB
-        end TypeOfColorSpace;
-        ---Purpose:
-
-        enumeration FormatOfSheetPaper is
-                                        FOSP_A0,        -- 0.841 x 1.189   (M)
-                                        FOSP_A1,        -- 0.594 x 0.841   (M)
-                                        FOSP_A2,        -- 0.420 x 0.594   (M)
-                                        FOSP_A3,        -- 0.297 x 0.420   (M)
-                                        FOSP_A4,        -- 0.210 x 0.297   (M)
-                                        FOSP_A5,        -- 0.1485 x 0.210  (M)
-                                        FOSP_K_LONG,    -- 1.016 x 3.6322  (M)
-                                        FOSP_K_SHORT,   -- 1.016 x 1.397   (M)
-                                        FOSP_J_LONG,    -- 0.8636 x 4.4704 (M)
-                                        FOSP_J_SHORT,   -- 0.8636 x 1.397  (M)
-                                        FOSP_H_LONG,    -- 0.7112 x 3.6322 (M)
-                                        FOSP_H_SHORT,   -- 0.7112 x 1.1176 (M)
-                                        FOSP_G_LONG,    -- 0.2794 x 2.286  (M)
-                                        FOSP_G_SHORT,   -- 0.2794 x 0.5715 (M)
-                                        FOSP_F,         -- 0.7112 x 1.016  (M)
-                                        FOSP_E,         -- 0.8636 x 1.1176 (M)
-                                        FOSP_D,         -- 0.5588 x 0.8636 (M)
-                                        FOSP_C,         -- 0.4318 x 0.5588 (M)
-                                        FOSP_B,         -- 0.2794 x 0.4318 (M)
-                                        FOSP_A,         -- 0.2159 x 0.2794 (M)
-                                        FOSP_UNKNOWN    -- User defined
-        end FormatOfSheetPaper;
-        ---Purpose:
 
         enumeration TypeOfPrimitive is
                                         TOP_UNKNOWN,
@@ -629,37 +526,7 @@ is
         -- Category: Instantiated classes
         ---------------------------------
 
-        class Array1OfEdge instantiates
-                Array1 from TCollection (Edge from Aspect);
-        ---Category: Instantiated classes
-
         class SequenceOfColor instantiates
                 Sequence from TCollection(Color from Quantity);
-
-        ----------------------------
-        -- Category: Package methods
-        ----------------------------
-
-        ValuesOfFOSP (aFOSP : FormatOfSheetPaper from Aspect;
-                        aWidth, aHeight : out Length from Quantity)
-        returns CString from Standard;
-        ---Level: Internal
-        ---Purpose: Returns the format size according to the default 
-        --      LENGTH unit of the required format <aFOSP>.
-        --      Returns more the normalized format name.
-        ---Category: Package methods
-
-        ToCString (aString: ExtendedString from TCollection)
-                        returns CString from Standard;
-        ---Level: Internal
-        ---Purpose: Translates an ExtendedString to a CString
-        --          depending of the local format.
-        ---Category: Package methods
-
-        Inverse ( aMat : Array2OfReal from TColStd;
-                  Inv  : out Array2OfReal from TColStd )
-                returns Boolean from Standard;
-        ---Level: Internal
-        ---Purpose: Inverses <aMat> a 4x4 matrix.
 
 end Aspect;

@@ -42,7 +42,6 @@ uses
 
     PixMap              from Image,
 
-    Array1OfEdge        from Aspect,
     CLayer2d            from Aspect,
     TypeOfTriedronEcho  from Aspect,
     TypeOfTriedronPosition  from Aspect,

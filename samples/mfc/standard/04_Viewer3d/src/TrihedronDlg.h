@@ -10,7 +10,6 @@
 #include "Viewer3dDoc.h"
 
 #include <V3d_View.hxx>
-#include <Aspect.hxx>
 #include <Quantity_NameOfColor.hxx>
 
 #include "..\res\resource.h"

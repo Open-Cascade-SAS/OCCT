@@ -7,7 +7,6 @@
 #include "GeometryView2D.h"
 #include ".\Resource2d\RectangularGrid.h"
 #include ".\Resource2d\CircularGrid.h"
-#include <Aspect.hxx>
 
 /////////////////////////////////////////////////////////////////////////////
 // CNSGView

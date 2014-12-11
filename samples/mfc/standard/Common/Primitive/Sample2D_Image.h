@@ -5,7 +5,6 @@
 
 #include <OSD_File.hxx>
 #include <Quantity_Length.hxx>
-#include <Aspect_CardinalPoints.hxx>
 #include <Quantity_Factor.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_CString.hxx>

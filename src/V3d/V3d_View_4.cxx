@@ -17,8 +17,6 @@
 
 #include <gp_Dir2d.hxx>
 
-#include <Aspect.hxx>
-
 #include <V3d_RectangularGrid.hxx>
 #include <V3d_CircularGrid.hxx>
 

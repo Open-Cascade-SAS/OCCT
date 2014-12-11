@@ -72,7 +72,6 @@ void CViewer2dDoc::OnBUTTONTestText()
     Handle (Sample2D_Text) aText  = 
         new Sample2D_Text(Text,
                        gp_Pnt(0.0,15.0*(j-15.0),0.0),    //  thePosition
-                       Aspect_TOT_SOLID,                 //  theType  
                        10.0*M_PI,                        //  theAngle    
                        (Quantity_NameOfColor)(aColor++), //  theColor  
                        Font_FA_Regular,                  //  theFontAspect  
@@ -91,7 +90,6 @@ void CViewer2dDoc::OnBUTTONTestText()
     Handle (Sample2D_Text) aText  = 
         new Sample2D_Text(Text,
                        gp_Pnt(80.,15.0*(j-10.0),0.0),     //  thePosition
-                       Aspect_TOT_SOLID,                  //  theType  
                        0.0,                               //  theAngle    
                        (Quantity_NameOfColor)(aColor++),  //  theColor  
                        Font_FA_BoldItalic,                //  theFontAspect  
@@ -110,7 +108,6 @@ void CViewer2dDoc::OnBUTTONTestText()
     Handle (Sample2D_Text) aText  = 
         new Sample2D_Text(Text,
                        gp_Pnt(140.0,15.0*(j-5.0),0.0),   //  thePosition
-                       Aspect_TOT_SOLID,                 //  theType  
                        0.0,                              //  theAngle    
                        (Quantity_NameOfColor)(aColor++), //  theColor  
                        Font_FA_Bold,                     //  theFontAspect  
@@ -127,7 +124,6 @@ for (j=10;j<=15;j++)
         Handle (Sample2D_Text) aText  = 
         new Sample2D_Text(Text,
                        gp_Pnt(200.0,15.0*(j-10.0),0.0), //  thePosition
-                       Aspect_TOT_SOLID,                //  theType  
                        0.0,                             //  theAngle    
                        (Quantity_NameOfColor)(aColor++),//  theColor  
                        Font_FA_Italic,                  //  theFontAspect  

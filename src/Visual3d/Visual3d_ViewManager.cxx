@@ -59,7 +59,6 @@
 
 #include <Standard_ErrorHandler.hxx>
 
-#include <Aspect.hxx>
 #include <Aspect_IdentDefinitionError.hxx>
 
 #include <Graphic3d_GraphicDriver.hxx>

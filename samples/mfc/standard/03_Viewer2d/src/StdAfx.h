@@ -83,7 +83,6 @@
 #include <Aspect_TypeOfline.hxx>
 #include <Aspect_WidthOfline.hxx>
 #include <Aspect_Background.hxx>
-#include <Aspect_TypeOfText.hxx>
 
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRep_Builder.hxx>

@@ -15,7 +15,6 @@ public:
 
 Standard_EXPORT 
   Sample2D_Text  (const TCollection_AsciiString& theText,const gp_Pnt&  thePosition,
-                 const Aspect_TypeOfText        theType        = Aspect_TOT_SOLID,
                  const Quantity_PlaneAngle      theAngle      = 0.0 ,
                  const Quantity_Color           theColor       = Quantity_NOC_YELLOW,
                  const Font_FontAspect          theFontAspect  = Font_FA_Regular,
@@ -29,8 +28,6 @@ inline   TCollection_AsciiString GetText() const {  return myText ; }
 inline   void                    SetText(const TCollection_AsciiString& theText) {  myText = theText; }
 inline   void                    GetCoord(gp_Pnt& thePosition) const {  thePosition=gp_Pnt(myPosition); }
 inline   void                    SetCoord(const gp_Pnt& thePosition) {  myPosition = thePosition; }
-inline   Standard_Integer        GetTypeOfText() const {  return myTypeOfText; }
-inline   void                    SetTypeOfText(const Aspect_TypeOfText theTypeOfText) {  myTypeOfText = theTypeOfText; }
 inline   Standard_Real           GetAngle() const {  return myAngle; }
 inline   void                    SetAngle(const Standard_Real theAngle) {  myAngle = theAngle; }
 inline   Quantity_Color          GetColor() const {  return myColor; }
@@ -58,7 +55,6 @@ private:
 
 TCollection_AsciiString   myText            ; 
 gp_Pnt                    myPosition        ;
-Aspect_TypeOfText         myTypeOfText      ;
 Standard_Real             myAngle           ;
 Quantity_Color            myColor           ;
 Standard_CString          myFont            ;

@@ -12,7 +12,6 @@
 #include <Standard_Macro.hxx>
 #include <Standard_DefineHandle.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <Aspect_TypeOfText.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 #include <Quantity_Factor.hxx>
@@ -37,7 +36,6 @@ public:
                              const Standard_Real            anX         = 0   ,
                              const Standard_Real            anY         = 0   ,
                              const Standard_Real            aZ          = 0   ,
-                             const Aspect_TypeOfText        aType       = Aspect_TOT_SOLID,
                              const Quantity_PlaneAngle      anAngle     = 0.0 ,
                              const Standard_Real            aSlant      = 0.0 ,
                              const Standard_Integer         aColorIndex = 1   ,
@@ -46,7 +44,6 @@ public:
     ISession_Text
                             (const TCollection_AsciiString& aText, 
                              gp_Pnt&                        aPoint,
-                             const Aspect_TypeOfText        aType       = Aspect_TOT_SOLID,
                              const Quantity_PlaneAngle      anAngle     = 0.0 ,
                              const Standard_Real            aSlant      = 0.0 ,
                              const Standard_Integer         aColorIndex = 1   ,
@@ -60,8 +57,6 @@ inline   TCollection_AsciiString GetText() const;
 inline   void                    SetText(const TCollection_AsciiString& atext) ;
 inline   void                    GetCoord(Standard_Real& X, Standard_Real& Y, Standard_Real& Z) const ;
 inline   void                    SetCoord(const Standard_Real X, const Standard_Real Y, const Standard_Real Z=0);
-inline   Aspect_TypeOfText       GetTypeOfText() const;
-inline   void                    SetTypeOfText(const Aspect_TypeOfText aNewTypeOfText) ;
 inline   Standard_Real           GetAngle() const;
 inline   void                    SetAngle(const Standard_Real aNewAngle) ;
 inline   Standard_Real           GetSlant() const;
@@ -93,7 +88,6 @@ TCollection_AsciiString MyText       ;
 Standard_Real           MyX          ;
 Standard_Real           MyY          ;
 Standard_Real           MyZ          ;
-Aspect_TypeOfText       MyTypeOfText ;
 Standard_Real           MyAngle      ;
 Standard_Real           MySlant      ;
 Standard_Integer        MyColorIndex ;
@@ -119,12 +113,6 @@ inline void ISession_Text::GetCoord(Standard_Real& X, Standard_Real& Y, Standard
 
 inline void ISession_Text::SetCoord(const Standard_Real X, const Standard_Real Y, const Standard_Real Z)
 {  MyX = X ;  MyY = Y ;  MyZ = Z ;}
-
-inline Aspect_TypeOfText ISession_Text::GetTypeOfText() const 
-{  return MyTypeOfText; }
-
-inline void ISession_Text::SetTypeOfText(const Aspect_TypeOfText aNewTypeOfText)
-{  MyTypeOfText = aNewTypeOfText; }
 
 inline Standard_Real ISession_Text::GetAngle() const 
 {  return MyAngle; }

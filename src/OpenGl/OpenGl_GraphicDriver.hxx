@@ -64,7 +64,6 @@ class TColStd_HArray1OfByte;
 class Graphic3d_Vector;
 class Quantity_Color;
 class Graphic3d_Vertex;
-class Aspect_Array1OfEdge;
 class TCollection_ExtendedString;
 class Image_PixMap;
 class TColStd_HArray1OfReal;
