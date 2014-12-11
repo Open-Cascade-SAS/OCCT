@@ -1,0 +1,11 @@
+puts "========="
+puts "CR25547"
+puts "========="
+puts ""
+###############################################
+# static class mehtods not exported in BrepMesh_GeomTool
+###############################################
+
+pload QAcommands
+
+OCC25547

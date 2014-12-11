@@ -71,16 +71,6 @@ public:
 
 private:
 
-  //! Classifies the point in case of coincidence of two vectors.
-  //! @param thePoint1 the start point of a segment (base point).
-  //! @param thePoint2 the end point of a segment.
-  //! @param thePointToCheck the point to classify.
-  //! @return zero value if point is out of segment and non zero value 
-  //! if point is between the first and the second point of segment.
-  static Standard_Integer classifyPoint (const gp_XY& thePoint1,
-                                         const gp_XY& thePoint2,
-                                         const gp_XY& thePointToCheck);
-
   //! Assignment operator.
   void operator =(const BRepMesh_WireInterferenceChecker& /*theOther*/)
   {
