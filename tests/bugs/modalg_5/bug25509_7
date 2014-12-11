@@ -1,0 +1,21 @@
+puts "============"
+puts "OCC25509"
+puts "============"
+puts ""
+######################################################
+# Wrong shape considered as valid by checkshape
+######################################################
+
+restore [locate_data_file bug25509_Aggreg_4.brep] result
+
+decho off
+set info [checkshape result]
+decho on
+
+if { [regexp "Faulty shapes in variables faulty_1" ${info}] != 1 } {
+   puts "Error : There are no mistakes by checkshape-command"
+} else {
+   puts "OK : There are mistakes by checkshape-command"
+}
+
+set 2dviewer 1

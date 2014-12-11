@@ -21,6 +21,7 @@
 #include <BRepCheck_Wire.hxx>
 #include <BRepCheck_Face.hxx>
 #include <BRepCheck_Shell.hxx>
+#include <BRepCheck_Solid.hxx>
 #include <BRepCheck_ListIteratorOfListOfStatus.hxx>
 
 #include <TopoDS_Iterator.hxx>
@@ -33,13 +34,15 @@
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 
+
+
+
 //=======================================================================
 //function : Init
 //purpose  : 
 //=======================================================================
-
 void BRepCheck_Analyzer::Init(const TopoDS_Shape& S,
-			      const Standard_Boolean B)
+         const Standard_Boolean B)
 {
   if (S.IsNull()) {
     Standard_NullObject::Raise();
@@ -49,16 +52,12 @@ void BRepCheck_Analyzer::Init(const TopoDS_Shape& S,
   Put(S,B);
   Perform(S);
 }
-
-
-
 //=======================================================================
 //function : Put
 //purpose  : 
 //=======================================================================
-
 void BRepCheck_Analyzer::Put(const TopoDS_Shape& S,
-			     const Standard_Boolean B)
+                             const Standard_Boolean B)
 {
   if (!myMap.IsBound(S)) {
     Handle(BRepCheck_Result) HR;
@@ -82,6 +81,8 @@ void BRepCheck_Analyzer::Put(const TopoDS_Shape& S,
       HR = new BRepCheck_Shell(TopoDS::Shell(S));
       break;
     case TopAbs_SOLID:
+      HR = new BRepCheck_Solid(TopoDS::Solid(S));
+      break;
     case TopAbs_COMPSOLID:
     case TopAbs_COMPOUND:
       break;
@@ -94,13 +95,10 @@ void BRepCheck_Analyzer::Put(const TopoDS_Shape& S,
     }
   }
 }
-
-
 //=======================================================================
 //function : Perform
 //purpose  : 
 //=======================================================================
-
 void BRepCheck_Analyzer::Perform(const TopoDS_Shape& S)
 {
   for(TopoDS_Iterator theIterator(S);theIterator.More();theIterator.Next()) 
@@ -118,7 +116,7 @@ void BRepCheck_Analyzer::Perform(const TopoDS_Shape& S)
     // modified by NIZHNY-MKK  Wed May 19 16:56:16 2004.BEGIN
     // There is no need to check anything.
     //       if (myShape.IsSame(S)) {
-    // 	myMap(S)->Blind();
+    //  myMap(S)->Blind();
     //       }
     // modified by NIZHNY-MKK  Wed May 19 16:56:23 2004.END
   
@@ -393,43 +391,41 @@ void BRepCheck_Analyzer::Perform(const TopoDS_Shape& S)
     break;
     
   case TopAbs_SHELL:   
-    //modified by NIZNHY-PKV Mon Oct 13 14:23:53 2008f
-    //modified by NIZNHY-PKV Mon Oct 13 14:24:04 2008t
     break;
 
   case TopAbs_SOLID:
     {
-    exp.Init(S,TopAbs_SHELL);
+      exp.Init(S,TopAbs_SHELL);
       for (; exp.More(); exp.Next())
-      {
-      const TopoDS_Shape& aShell=exp.Current();
-        try 
         {
-	OCC_CATCH_SIGNALS
-	myMap(aShell)->InContext(S);
-      }
-        catch(Standard_Failure)
-        {
+          const TopoDS_Shape& aShell=exp.Current();
+          try 
+            {
+              OCC_CATCH_SIGNALS
+                myMap(aShell)->InContext(S);
+            }
+          catch(Standard_Failure)
+            {
 #ifdef OCCT_DEBUG
-	cout<<"BRepCheck_Analyzer : ";
-	Standard_Failure::Caught()->Print(cout);  
-	cout<<endl;
+              cout<<"BRepCheck_Analyzer : ";
+              Standard_Failure::Caught()->Print(cout);  
+              cout<<endl;
 #endif
-          if ( ! myMap(S).IsNull() )
-          {
-	  myMap(S)->SetFailStatus(S);
-	}
-
-	//
-	Handle(BRepCheck_Result) aRes = myMap(aShell);
-          if (!aRes.IsNull() )
-          {
-	  aRes->SetFailStatus(exp.Current());
-	  aRes->SetFailStatus(S);
-	}
-        }//catch(Standard_Failure)
-      }//for (; exp.More(); exp.Next())
-      }
+              if ( ! myMap(S).IsNull() )
+                {
+                  myMap(S)->SetFailStatus(S);
+                }
+              
+              //
+              Handle(BRepCheck_Result) aRes = myMap(aShell);
+              if (!aRes.IsNull() )
+                {
+                  aRes->SetFailStatus(exp.Current());
+                  aRes->SetFailStatus(S);
+                }
+            }//catch(Standard_Failure)
+        }//for (; exp.More(); exp.Next())
+    }
   break;//case TopAbs_SOLID
   default:
     break;
@@ -503,10 +499,10 @@ Standard_Boolean BRepCheck_Analyzer::ValidSub
 //  for (TopExp_Explorer exp(S,SubType);exp.More(); exp.Next()) {
     const Handle(BRepCheck_Result)& RV = myMap(exp.Current());
     for (RV->InitContextIterator();
-	 RV->MoreShapeInContext(); 
-	 RV->NextShapeInContext()) {
+         RV->MoreShapeInContext(); 
+         RV->NextShapeInContext()) {
       if (RV->ContextualShape().IsSame(S)) {
-	break;
+        break;
       }
     }
 
@@ -514,7 +510,7 @@ Standard_Boolean BRepCheck_Analyzer::ValidSub
 
     for (itl.Initialize(RV->StatusOnShape()); itl.More(); itl.Next()) {
       if (itl.Value() != BRepCheck_NoError) {
-	return Standard_False;
+        return Standard_False;
       }
     }
   }

@@ -29,7 +29,6 @@
 //function : Add
 //purpose  : 
 //=======================================================================
-
 void BRepCheck::Add(BRepCheck_ListOfStatus& lst, const BRepCheck_Status stat)
 {
   BRepCheck_ListIteratorOfListOfStatus it(lst);
@@ -39,40 +38,32 @@ void BRepCheck::Add(BRepCheck_ListOfStatus& lst, const BRepCheck_Status stat)
     }
     else {
       if (it.Value() == stat) {
-	return;
+        return;
       }
       it.Next();
     }
   }
   lst.Append(stat);
 }
-
-
-
 //=======================================================================
 //function : SelfIntersection
 //purpose  : 
 //=======================================================================
-
 Standard_Boolean BRepCheck::SelfIntersection(const TopoDS_Wire& W,
-					     const TopoDS_Face& myFace,
-					     TopoDS_Edge& RetE1,
-					     TopoDS_Edge& RetE2)
+          const TopoDS_Face& myFace,
+          TopoDS_Edge& RetE1,
+          TopoDS_Edge& RetE2)
 {
-
   Handle(BRepCheck_Wire) chkw = new BRepCheck_Wire(W);
   BRepCheck_Status stat = chkw->SelfIntersect(myFace,RetE1,RetE2);
   return (stat == BRepCheck_SelfIntersectingWire);
 }
-				  
-
 //=======================================================================
 //function : Print
 //purpose  : 
 //=======================================================================
-
 void BRepCheck::Print(const BRepCheck_Status stat,
-		      Standard_OStream& OS)
+                      Standard_OStream& OS)
 {
 
   switch (stat) {
@@ -181,7 +172,12 @@ void BRepCheck::Print(const BRepCheck_Status stat,
   case BRepCheck_InvalidToleranceValue:
     OS << "BRepCheck_InvalidToleranceValue\n";
     break;
-
+  case BRepCheck_InvalidImbricationOfShells:
+    OS << "BRepCheck_InvalidImbricationOfShells\n";
+    break;
+  case BRepCheck_EnclosedRegion:
+    OS << "BRepCheck_EnclosedRegion\n";
+    break;
   default:
     break;
   }
