@@ -1698,8 +1698,8 @@ Standard_Boolean  BSplCLib::PrepareInsertKnots
   {
     //gka for case when segments was produced on full period only one knot
     //was added in the end of curve
-    if(fabs(adeltaK1) <= Precision::PConfusion() && 
-      fabs(adeltaK2) <= Precision::PConfusion())
+    if(fabs(adeltaK1) <= gp::Resolution() && 
+       fabs(adeltaK2) <= gp::Resolution())
       ak++;
   }
   
