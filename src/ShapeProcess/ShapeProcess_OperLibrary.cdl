@@ -40,7 +40,8 @@ uses
     UOperator           from ShapeProcess,
     ShapeContext        from ShapeProcess,
     Modification        from BRepTools,
-    DataMapOfShapeShape from TopTools
+    DataMapOfShapeShape from TopTools,
+    MsgRegistrator      from ShapeExtend
 
 is
 
@@ -50,7 +51,8 @@ is
     ApplyModifier (myclass; S: Shape from TopoDS;
     	    	    	    context: ShapeContext from ShapeProcess;
 			    M: Modification from BRepTools;
-			    map: in out DataMapOfShapeShape from TopTools)
+			    map: in out DataMapOfShapeShape from TopTools;
+                            msg : MsgRegistrator from ShapeExtend=0)
     	---Purpose: Applies BRepTools_Modification to a shape,
 	--          taking into account sharing of components of compounds.
     returns Shape from TopoDS;

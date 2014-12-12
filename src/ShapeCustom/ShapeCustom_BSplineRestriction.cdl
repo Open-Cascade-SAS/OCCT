@@ -14,7 +14,7 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-private class BSplineRestriction from ShapeCustom inherits Modification from BRepTools
+private class BSplineRestriction from ShapeCustom inherits Modification from ShapeCustom
 
 	---Purpose: this tool intended for aproximation surfaces, curves and pcurves with 
 	-- specified degree , max number of segments, tolerance 2d, tolerance 3d. Specified 

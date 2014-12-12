@@ -81,12 +81,14 @@ is
 	--          with explicit definition of mapping from current
 	--          result to a new one
 
-    RecordModification (me: mutable; repl: DataMapOfShapeShape from TopTools);
+    RecordModification (me: mutable; repl: DataMapOfShapeShape from TopTools;
+    	    	    	    	     msg : MsgRegistrator from ShapeExtend=0);
     RecordModification (me: mutable; repl: ReShape from ShapeBuild;
     	    	    	    	     msg : MsgRegistrator from ShapeExtend);
     RecordModification (me: mutable; repl: ReShape from ShapeBuild);
     RecordModification (me: mutable; sh  : Shape from TopoDS;
-    	    	    	    	     repl: Modifier from BRepTools);
+    	    	    	    	     repl: Modifier from BRepTools;
+    	    	    	    	     msg : MsgRegistrator from ShapeExtend=0);
 	---Purpose: Records modifications and resets result accordingly
 	--          NOTE: modification of resulting shape should be explicitly
 	--          defined in the maps along with modifications of subshapes

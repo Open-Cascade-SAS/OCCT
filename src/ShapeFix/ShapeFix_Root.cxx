@@ -100,5 +100,6 @@ void ShapeFix_Root::SetMaxTolerance (const Standard_Real maxtol)
 			     const Message_Msg& message,
 			     const Message_Gravity gravity) const
 {
-  myMsgReg->Send (shape, message, gravity);
+  if ( !myMsgReg.IsNull() )
+    myMsgReg->Send (shape, message, gravity);
 }

@@ -25,7 +25,8 @@ class ShapeConvertToBezier from ShapeUpgrade inherits ShapeDivide from ShapeUpgr
 uses
 
     Shape from TopoDS,
-    FaceDivide from ShapeUpgrade
+    FaceDivide from ShapeUpgrade,
+    Msg from Message
     
 is
 
@@ -131,6 +132,10 @@ is
     is redefined protected;
     	---Purpose: Returns the tool for dividing faces.
     
+    GetFaceMsg (me) returns Msg from Message is redefined protected;
+    GetWireMsg (me) returns Msg from Message is redefined protected;
+    GetEdgeMsg (me) returns Msg from Message is redefined protected;
+        ---Purpose: Returns a message decsribing modification of a shape.
 fields
 
     my2dMode        : Boolean;

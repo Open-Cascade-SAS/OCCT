@@ -69,6 +69,8 @@
 #include <TopExp.hxx>
 
 #include <Message_ProgressSentry.hxx>
+#include <Message_Msg.hxx>
+#include <ShapeExtend_BasicMsgRegistrator.hxx>
 
 //=======================================================================
 //function : SameParameter
@@ -78,7 +80,8 @@
 Standard_Boolean ShapeFix::SameParameter(const TopoDS_Shape& shape,
                                          const Standard_Boolean enforce,
                                          const Standard_Real preci,
-                                         const Handle(Message_ProgressIndicator)& theProgress)
+                                         const Handle(Message_ProgressIndicator)& theProgress,
+                                         const Handle(ShapeExtend_BasicMsgRegistrator)& theMsgReg)
 {
   // Calculate number of edges
   Standard_Integer aNbEdges = 0;
@@ -98,6 +101,7 @@ Standard_Boolean ShapeFix::SameParameter(const TopoDS_Shape& shape,
   Standard_Boolean iatol = (tol > 0);
   Handle(ShapeFix_Edge) sfe = new ShapeFix_Edge;
   TopExp_Explorer ex(shape,TopAbs_EDGE);
+  Message_Msg doneMsg("FixEdge.SameParameter.MSG0");
 
   // Start progress scope (no need to check if progress exists -- it is safe)
   Message_ProgressSentry aPSentry(theProgress, "Fixing same parameter problem", 0, 2, 1);
@@ -134,6 +138,10 @@ Standard_Boolean ShapeFix::SameParameter(const TopoDS_Shape& shape,
           status = Standard_False;
           B.SameRange (E,Standard_False);
           B.SameParameter (E,Standard_False);
+        }
+        else if ( !theMsgReg.IsNull() && !sfe->Status( ShapeExtend_OK ) )
+        {
+          theMsgReg->Send( E, doneMsg, Message_Warning );
         }
 
         // Complete step in current progress scope

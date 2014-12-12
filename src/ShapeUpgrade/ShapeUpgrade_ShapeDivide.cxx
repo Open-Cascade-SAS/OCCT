@@ -33,6 +33,7 @@
 #include <ShapeUpgrade_WireDivide.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
+#include <Message_Msg.hxx>
 
 //=======================================================================
 //function : ShapeUpgrade_ShapeDivide
@@ -45,6 +46,7 @@ ShapeUpgrade_ShapeDivide::ShapeUpgrade_ShapeDivide() : myStatus(0)
   myMaxTol = 1; //Precision::Infinite() ?? pdn
   mySplitFaceTool = new ShapeUpgrade_FaceDivide;
   myContext = new ShapeBuild_ReShape;
+  //myMsgReg = new ShapeExtend_BasicMsgRegistrator;
   mySegmentMode = Standard_True;
   myEdgeMode = 2;
 }
@@ -187,6 +189,8 @@ Standard_Boolean ShapeUpgrade_ShapeDivide::Perform(const Standard_Boolean newCon
       SplitWire->SetMinTolerance(myMinTol);
       SplitWire->SetEdgeMode(myEdgeMode);
     }
+    Message_Msg doneMsg = GetFaceMsg();
+
     for(TopExp_Explorer exp(myShape,TopAbs_FACE); exp.More(); exp.Next()) {
 //smh#8
       TopoDS_Shape tmpF = exp.Current().Oriented ( TopAbs_FORWARD );
@@ -206,6 +210,7 @@ Standard_Boolean ShapeUpgrade_ShapeDivide::Perform(const Standard_Boolean newCon
 	    }
 	    if(SplitFace->Status(ShapeExtend_DONE)) {
 	      myContext->Replace(face,SplitFace->Result());
+              SendMsg( face, doneMsg, Message_Info );
 	      if(SplitFace->Status(ShapeExtend_DONE1))
 		myStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE1 );
 	      if(SplitFace->Status(ShapeExtend_DONE2))
@@ -232,6 +237,8 @@ Standard_Boolean ShapeUpgrade_ShapeDivide::Perform(const Standard_Boolean newCon
     SplitWire->SetMaxTolerance(myMaxTol);
     SplitWire->SetMinTolerance(myMinTol);
     SplitWire->SetEdgeMode(myEdgeMode);
+    Message_Msg doneMsg = GetWireMsg();
+
     TopExp_Explorer exp;//svv Jan 10 2000 : porting on DEC
     for (exp.Init (myShape, TopAbs_WIRE, TopAbs_FACE); exp.More(); exp.Next()) {
 //smh#8
@@ -248,12 +255,14 @@ Standard_Boolean ShapeUpgrade_ShapeDivide::Perform(const Standard_Boolean newCon
 	}
 	if(SplitWire->Status(ShapeExtend_DONE)) {
 	  myContext->Replace(wire,SplitWire->Wire());
+          SendMsg( wire, doneMsg, Message_Info );
 	  myStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE1 );
 	}
       }
     }
   
     // Process free EDGEs
+    Message_Msg edgeDoneMsg = GetEdgeMsg();
     for (exp.Init (myShape, TopAbs_EDGE, TopAbs_WIRE); exp.More(); exp.Next()) {
 //smh#8
       TopoDS_Shape tmpE = exp.Current().Oriented ( TopAbs_FORWARD );
@@ -272,6 +281,7 @@ Standard_Boolean ShapeUpgrade_ShapeDivide::Perform(const Standard_Boolean newCon
 	}
 	if(SplitWire->Status(ShapeExtend_DONE)) {
 	  myContext->Replace(edge,SplitWire->Wire());
+          SendMsg( edge, edgeDoneMsg, Message_Info );
 	  myStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE1 );
 	}
       }
@@ -350,4 +360,50 @@ Standard_Boolean ShapeUpgrade_ShapeDivide::Status (const ShapeExtend_Status stat
  void ShapeUpgrade_ShapeDivide::SetEdgeMode(const Standard_Integer aEdgeMode) 
 {
   myEdgeMode = aEdgeMode;
+}
+
+//=======================================================================
+//function : SetMsgRegistrator
+//purpose  : 
+//=======================================================================
+
+void ShapeUpgrade_ShapeDivide::SetMsgRegistrator(const Handle(ShapeExtend_BasicMsgRegistrator)& msgreg) 
+{
+  myMsgReg = msgreg;
+}
+
+//=======================================================================
+//function : MsgRegistrator
+//purpose  : 
+//=======================================================================
+
+Handle(ShapeExtend_BasicMsgRegistrator) ShapeUpgrade_ShapeDivide::MsgRegistrator() const
+{
+  return myMsgReg;
+}
+
+//=======================================================================
+//function : SendMsg
+//purpose  :
+//=======================================================================
+
+void ShapeUpgrade_ShapeDivide::SendMsg(const TopoDS_Shape& shape,
+                                       const Message_Msg& message,
+                                       const Message_Gravity gravity) const
+{
+  if ( !myMsgReg.IsNull() )
+    myMsgReg->Send (shape, message, gravity);
+}
+
+Message_Msg ShapeUpgrade_ShapeDivide::GetFaceMsg() const
+{
+  return "ShapeDivide.FaceDivide.MSG0";
+}
+Message_Msg ShapeUpgrade_ShapeDivide::GetWireMsg() const
+{
+  return "ShapeDivide.WireDivide.MSG0";
+}
+Message_Msg ShapeUpgrade_ShapeDivide::GetEdgeMsg() const
+{
+  return "ShapeDivide.EdgeDivide.MSG0";
 }

@@ -30,6 +30,7 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopTools_SequenceOfShape.hxx>
 #include <TopTools_DataMapOfShapeShape.hxx>
+#include <Message_Msg.hxx>
 
 
 //=======================================================================
@@ -132,6 +133,8 @@ void ShapeFix_SplitCommonVertex::Perform()
 
       }
     }
+    if ( !MapVV.IsEmpty() )
+      SendWarning( Message_Msg( "Fix.SplitCommonVertex.MSG0" ));
   }
 
   myShape = Context()->Apply(myShape);  

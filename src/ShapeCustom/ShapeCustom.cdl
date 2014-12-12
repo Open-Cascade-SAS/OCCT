@@ -43,7 +43,8 @@ uses
     TColgp,
     Precision,
     Message,
-    ShapeBuild
+    ShapeBuild,
+    ShapeExtend
 
 is
 
@@ -55,6 +56,7 @@ is
 
     class RestrictionParameters;
 
+   deferred class Modification; -- base class of modifications
     class DirectModification;
 
     private class TrsfModification;

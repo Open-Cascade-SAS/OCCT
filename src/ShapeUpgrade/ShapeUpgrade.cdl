@@ -34,6 +34,7 @@ uses
     Adaptor3d,
     GeomAdaptor,
     Geom2dAPI,
+    Message,
     TopLoc,
     TColStd,
     TColGeom,

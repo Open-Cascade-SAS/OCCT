@@ -100,7 +100,8 @@ is
     SameParameter (shape       : Shape from TopoDS;
                    enforce     : Boolean;
                    preci       : Real = 0.0;
-                   theProgress : ProgressIndicator from Message = 0)
+                   theProgress : ProgressIndicator from Message = 0;
+                   theMsgReg   : BasicMsgRegistrator from ShapeExtend = 0)
     returns Boolean;
     	---Purpose : Runs SameParameter from BRepLib with these adaptations :
     	--           <enforce> forces computations, else they are made only on

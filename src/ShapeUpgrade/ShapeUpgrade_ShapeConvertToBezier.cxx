@@ -347,5 +347,17 @@ Handle(ShapeUpgrade_FaceDivide) ShapeUpgrade_ShapeConvertToBezier::GetSplitFaceT
     tool->SetSplitSurfaceTool(stool);
   }
   return tool;
+}    
+
+Message_Msg ShapeUpgrade_ShapeConvertToBezier::GetFaceMsg() const
+{
+  return "ShapeDivide.FaceConvertToBezier.MSG0";
 }
-     
+Message_Msg ShapeUpgrade_ShapeConvertToBezier::GetWireMsg() const
+{
+  return "ShapeDivide.WireConvertToBezier.MSG0";
+}
+Message_Msg ShapeUpgrade_ShapeConvertToBezier::GetEdgeMsg() const
+{
+  return "ShapeDivide.EdgeConvertToBezier.MSG0";
+}

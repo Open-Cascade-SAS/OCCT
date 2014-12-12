@@ -15,7 +15,7 @@
 -- commercial license or contractual agreement.
 
 class DirectModification from ShapeCustom 
-inherits Modification from BRepTools 
+inherits Modification from ShapeCustom
 
 	---Purpose: implements a modification for the BRepTools
 	--          Modifier algortihm. Will redress indirect

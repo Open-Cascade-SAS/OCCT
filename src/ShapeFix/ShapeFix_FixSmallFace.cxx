@@ -67,6 +67,7 @@
 #include <ShapeAnalysis_DataMapOfShapeListOfReal.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Iterator.hxx>
+#include <Message_Msg.hxx>
 
 ShapeFix_FixSmallFace::ShapeFix_FixSmallFace()
 {
@@ -218,6 +219,7 @@ ShapeFix_FixSmallFace::ShapeFix_FixSmallFace()
     Context()->Remove(Ed);
   }
   Context()->Remove(F);
+  SendWarning( F, Message_Msg( "FixAdvFace.FixSpotFace.MSG0" ));
   return Standard_True;
 
 
@@ -335,6 +337,7 @@ ShapeFix_FixSmallFace::ShapeFix_FixSmallFace()
  Standard_Boolean ShapeFix_FixSmallFace::RemoveFacesInCaseOfStrip(const TopoDS_Face& F) const
 {
   Context()->Remove(F);
+  SendWarning( F, Message_Msg( "FixAdvFace.FixStripFace.MSG0" ));
   return Standard_True;
 }
 

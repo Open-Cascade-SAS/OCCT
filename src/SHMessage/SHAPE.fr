@@ -31,7 +31,14 @@ Sequence d'operateurs: %s
 .Sequence.MSG5
 Operateur %d/%d: %s
 !
-.Sequence.MSG
+.Sequence.MSG1
+Error: Operator %s is not found
+!
+.Sequence.MSG2
+Error: Operator %s failed with exception %s
+!
+.Sequence.MSG3
+Warning: Shape Processing: sequence not defined for %s
 !
 ! ------------------------------------------------------------------------------
 ! Messages for printing results of shape processing
@@ -75,6 +82,9 @@ Detection d'Arete(s) degeneree(s)
 !
 .FixWire.FixDegenerated.MSG5
 L'Arete n0 %d est degeneree
+!
+.FixWire.FixCurve3d.Removed
+Incomplete edge (with no pcurves or 3d curve) removed
 !
 .FixAdvWire.FixSmall.MSG0
 Petite(s) arete(s) supprimee(s)
@@ -121,6 +131,26 @@ Contour sur face inverse
 .FixAdvFace.FixOrientation.MSG11
 Impossible d'orienter le contour
 !
+! ------------------------------------------------------------------------------
+! Messages for ShapeFix_Wireframe
+! 
+.FixWireframe.FixSmallEdges.MSG0
+Small edge removed
+!
+.FixWireframe.FixSmallEdges.MSG1
+Small wire removed
+!
+.FixWireframe.FixSmallEdges.MSG2
+Small face removed
+!
+.FixWireframe.FixFixWireGaps.MSG0
+Gaps in a wire fixed
+!
+!
+.Fix.SplitCommonVertex.MSG0
+Wires with common vertex fixed
+!
+!
 .FixAdvShell.FixOrientation.MSG20
 Impossible d'orienter les faces dans le shell, creation de plusieurs shells
 !
@@ -136,11 +166,24 @@ L'Orientation du/des shell(s) dans le solida ete corrigee
 .FixAdvSolid.FixOrientation.MSG30
 Solide avec connexions incorrectes, divise en plusieurs parties
 !
-.FixAdvFace..MSG0
+.FixAdvFace.FixLoopWire.MSG0
+Wire was splitted on several wires
 !
 .FixAdvFace..MSG5
 !
 .FixAdvFace..MSG10
+!
+.FixEdge.SameParameter.MSG0
+Not same parameter edge fixed
+!
+! ------------------------------------------------------------------------------
+! Messages for ShapeFix_FixSmallFace
+!
+.FixAdvFace.FixSpotFace.MSG0
+Spot face removed
+!
+.FixAdvFace.FixStripFace.MSG0
+Strip face removed
 !
 ! ------------------------------------------------------------------------------
 ! Messages for ShapeFix_Shell
@@ -151,9 +194,65 @@ Faces mal orientees dans le shell, corrigees
 .FixAdvShell.FixOrientation.MSG5
 Faces mal orientees dans le shell, non corrigees
 !
-.FixAdvShell..MSG0
+.FixAdvShell.FixClosedFlag.MSG0
+Shell has incorrect flag isClosed
 !
 .FixAdvShell..MSG5
 !
 .FixAdvShell..MSG10
+!
+! ------------------------------------------------------------------------------
+! Messages for ShapeUpgrade
+!
+.ShapeDivide.FaceDivide.MSG0
+Face divided
+!
+.ShapeDivide.WireDivide.MSG0
+Wire divided
+!
+.ShapeDivide.EdgeDivide.MSG0
+Edge divided
+!
+.ShapeDivide.FaceConvertToBezier.MSG0
+Face converted to Bezier
+!
+.ShapeDivide.WireConvertToBezier.MSG0
+Wire converted to Bezier
+!
+.ShapeDivide.EdgeConvertToBezier.MSG0
+Edge converted to Bezier
+!
+! ------------------------------------------------------------------------------
+! Messages for ShapeCustom
+!
+.BSplineRestriction.NewSurface.MSG0
+Face converted to BSpline
+!
+.BSplineRestriction.NewSurface.MSG1
+BSpline Face re-approximated
+!
+.BSplineRestriction.NewCurve.MSG0
+Edge converted to BSpline
+!
+.BSplineRestriction.NewCurve.MSG1
+BSpline Edge re-approximated
+!
+!
+.ConvertToBSpline.NewSurface.MSG0
+Face converted to BSpline
+!
+.ConvertToBSpline.NewCurve.MSG0
+Edge converted to BSpline
+!
+!
+.ConvertToRevolution.NewSurface.MSG0
+Face converted to surface of revolution
+!
+!
+.DirectModification.NewSurface.MSG0
+Direction of Face of revolution corrected
+!
+!
+.SweptToElementary.NewSurface.MSG0
+Swept Face converted to elementary
 !

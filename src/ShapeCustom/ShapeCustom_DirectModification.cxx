@@ -32,6 +32,7 @@
 #include <BRep_TEdge.hxx>
 #include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
 #include <BRep_GCurve.hxx>
+#include <Message_Msg.hxx>
 
 //=======================================================================
 //function : ShapeCustom_DirectModification
@@ -110,6 +111,8 @@ Standard_Boolean ShapeCustom_DirectModification::NewSurface (const TopoDS_Face& 
     }
     default: return Standard_False;
   }
+
+  SendMsg( F, Message_Msg("DirectModification.NewSurface.MSG0"));
 
   Tol = BRep_Tool::Tolerance(F);
 

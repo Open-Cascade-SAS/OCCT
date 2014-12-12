@@ -43,6 +43,7 @@
 #include <ShapeAnalysis_Surface.hxx>
 
 #include <BRepTools.hxx>
+#include <Message_Msg.hxx>
 
 
 //=======================================================================
@@ -162,6 +163,8 @@ Standard_Boolean ShapeCustom_SweptToElementary::NewSurface(const TopoDS_Face& F,
     default : return Standard_False; break;
     }
   }
+
+  SendMsg( F, Message_Msg("SweptToElementary.NewSurface.MSG0"));
 
   Tol = BRep_Tool::Tolerance(F);
   RevWires = Standard_False;

@@ -70,6 +70,7 @@
 #include <Geom_CylindricalSurface.hxx>
 #include <Geom_ToroidalSurface.hxx>
 #include <ShapeAnalysis.hxx>
+#include <Message_Msg.hxx>
 
 static GeomAbs_Shape IntegerToGeomAbsShape(const Standard_Integer i)
 {
@@ -368,6 +369,20 @@ Standard_Boolean ShapeCustom_BSplineRestriction::NewSurface(const TopoDS_Face& F
 
   Standard_Boolean IsConv = ConvertSurface(aSurface,S,UF,UL,VF,VL,IsOf);
   Tol = Precision::Confusion();//mySurfaceError;
+
+  if ( IsConv )
+  {
+    Standard_Boolean wasBSpline = aSurface->IsKind(STANDARD_TYPE(Geom_BSplineSurface));
+    Handle(Geom_RectangularTrimmedSurface) rts = Handle(Geom_RectangularTrimmedSurface)::DownCast(aSurface);
+    if ( !rts.IsNull() )
+      wasBSpline = rts->BasisSurface()->IsKind(STANDARD_TYPE(Geom_BSplineSurface));
+
+    if ( wasBSpline )
+      SendMsg( F, Message_Msg("BSplineRestriction.NewSurface.MSG1"));
+    else
+      SendMsg( F, Message_Msg("BSplineRestriction.NewSurface.MSG0"));
+  }
+
   return IsConv;
 }
 
@@ -787,7 +802,7 @@ Standard_Boolean ShapeCustom_BSplineRestriction::NewCurve(const TopoDS_Edge& E,
   if(aCurve.IsNull()) {
     if(IsConvert) {
       C = aCurve;
-      Tol = TolCur; 
+      Tol = TolCur;
       return Standard_True;
     }
     else return Standard_False;
@@ -796,6 +811,19 @@ Standard_Boolean ShapeCustom_BSplineRestriction::NewCurve(const TopoDS_Edge& E,
   if(myParameters->ConvertOffsetCurv3d())  IsOf = Standard_False;
   Standard_Boolean IsConv = ConvertCurve(aCurve,C,IsConvert,First,Last,TolCur,IsOf);
   Tol= BRep_Tool::Tolerance(E);//TolCur;
+
+  if ( IsConv )
+  {
+    Standard_Boolean wasBSpline = aCurve->IsKind(STANDARD_TYPE(Geom_BSplineCurve));
+    Handle(Geom_TrimmedCurve) tc = Handle(Geom_TrimmedCurve)::DownCast(aCurve);
+    if ( !tc.IsNull() )
+      wasBSpline = tc->BasisCurve()->IsKind(STANDARD_TYPE(Geom_BSplineCurve));
+
+    if ( wasBSpline )
+      SendMsg( E, Message_Msg("BSplineRestriction.NewCurve.MSG1"));
+    else
+      SendMsg( E, Message_Msg("BSplineRestriction.NewCurve.MSG0"));
+  }
   return IsConv;
 }
 

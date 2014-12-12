@@ -32,6 +32,7 @@
 #include <Geom_TrimmedCurve.hxx>
 #include <Geom_Line.hxx>
 #include <Geom_SurfaceOfRevolution.hxx>
+#include <Message_Msg.hxx>
 
 //=======================================================================
 //function : ShapeCustom_ConvertToRevolution
@@ -158,7 +159,8 @@ Standard_Boolean ShapeCustom_ConvertToRevolution::NewSurface (const TopoDS_Face&
     }
     else S = Rev;
   }
-  
+  SendMsg( F, Message_Msg("ConvertToRevolution.NewSurface.MSG0"));
+
   Tol = BRep_Tool::Tolerance(F);
   RevWires = Standard_False;
   RevFace = Standard_False;

@@ -28,6 +28,7 @@
 #include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
 #include <BRep_GCurve.hxx>
 #include <BRepTools.hxx>
+#include <Message_Msg.hxx>
 
 //=======================================================================
 //function : ShapeCustom_ConvertToBSpline
@@ -130,6 +131,8 @@ Standard_Boolean ShapeCustom_ConvertToBSpline::NewSurface (const TopoDS_Face& F,
   else 
     S = res;
   
+  SendMsg( F, Message_Msg("ConvertToBSpline.NewSurface.MSG0"));
+
   Tol = BRep_Tool::Tolerance(F);
   RevWires = Standard_False;
   RevFace = Standard_False;
@@ -161,6 +164,7 @@ Standard_Boolean ShapeCustom_ConvertToBSpline::NewCurve (const TopoDS_Edge& E,
     C = BRep_Tool::Curve ( E, L, f, l );
     if ( ! C.IsNull() ) C = Handle(Geom_Curve)::DownCast ( C->Copy() );
     Tol = BRep_Tool::Tolerance ( E );
+    SendMsg( E, Message_Msg("ConvertToBSpline.NewCurve.MSG0"));
     return Standard_True;
   } 
   return Standard_False;

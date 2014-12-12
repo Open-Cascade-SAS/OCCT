@@ -22,7 +22,10 @@ uses
     Shape   from TopoDS,
     Status  from ShapeExtend,
     ReShape from ShapeBuild,
-    FaceDivide from ShapeUpgrade
+    FaceDivide from ShapeUpgrade,
+    Msg from Message,
+    Gravity from Message,
+    BasicMsgRegistrator from ShapeExtend
 
 is
     Create returns ShapeDivide from ShapeUpgrade;
@@ -68,7 +71,19 @@ is
     SetContext (me: in out; context: ReShape from ShapeBuild);
         ---Purpose: Sets context with recorded modifications to be applied
         --          during next call(s) to Perform(shape,Standard_False)
-    
+
+    SetMsgRegistrator (me: in out; msgreg: BasicMsgRegistrator from ShapeExtend) is virtual;
+        ---Purpose: Sets message registrator
+
+    MsgRegistrator (me) returns BasicMsgRegistrator from ShapeExtend;
+        ---Purpose: Returns message registrator
+
+    SendMsg (me; shape  : Shape from TopoDS;
+                 message: Msg from Message;
+                 gravity: Gravity from Message = Message_Info);
+    	---Purpose: Sends a message to be attached to the shape.
+	--          Calls corresponding message of message registrator.
+
     Status (me; status: Status from ShapeExtend) returns Boolean;
 	---Purpose: Queries the status of last call to Perform
 	-- OK   : no splitting was done (or no call to Perform)
@@ -91,10 +106,16 @@ is
     	-- 1 - only curve 3d from shared edges.
     	-- 2 -  all curve 3d. 
     
+    GetFaceMsg (me) returns Msg from Message is virtual protected;
+    GetWireMsg (me) returns Msg from Message is virtual protected;
+    GetEdgeMsg (me) returns Msg from Message is virtual protected;
+        ---Purpose: Returns a message decsribing modification of a shape.
+
 fields
 
     mySplitFaceTool: FaceDivide from ShapeUpgrade; 
     myContext    : ReShape from ShapeBuild is protected;
+    myMsgReg     : BasicMsgRegistrator from ShapeExtend is protected;
     myShape      : Shape from TopoDS  is protected;
     myResult     : Shape from TopoDS is protected;
     myPrecision  : Real is protected;
