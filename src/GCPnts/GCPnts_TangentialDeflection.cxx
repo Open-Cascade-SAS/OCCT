@@ -21,6 +21,7 @@
 #include <gp_Vec2d.hxx>
 #include <gp_XYZ.hxx>
 #include <Precision.hxx>
+#include <TColStd_Array1OfReal.hxx>
 
 inline static void D0 (const Adaptor3d_Curve& C, const Standard_Real U, gp_Pnt& P)
 {
@@ -58,6 +59,23 @@ static void D2 (const Adaptor2d_Curve2d& C, const Standard_Real U,
   VV2.SetCoord (X, Y, 0.0);
 }
 
+// Return number of interval of continuity on which theParam is located.
+// Last parameter is used to increase search speed.
+static Standard_Integer getIntervalIdx(const Standard_Real theParam, 
+                                       TColStd_Array1OfReal& theIntervs,
+                                       const Standard_Integer thePreviousIdx)
+{
+  Standard_Integer anIdx;
+  for(anIdx = thePreviousIdx; anIdx < theIntervs.Upper(); anIdx++)
+  {
+    if (theParam >= theIntervs(anIdx) && 
+        theParam <= theIntervs(anIdx + 1)) // Inside of anIdx interval.
+    {
+      break;
+    }
+  }
+  return anIdx;
+}
 
 //=======================================================================
 //function : CPnts_TangentialDeflection
@@ -157,7 +175,3 @@ Standard_Real GCPnts_TangentialDeflection::ArcAngularStep(
 #undef Handle_TheBezierCurve
 #undef Handle_TheBSplineCurve
 #undef TheCurve
-
-
-
-

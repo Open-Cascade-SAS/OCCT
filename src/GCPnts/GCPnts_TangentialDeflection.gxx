@@ -21,7 +21,6 @@
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <gp.hxx>
-#include <TColStd_Array1OfReal.hxx>
 
 #define Us3 0.3333333333333333333333333333
 
@@ -239,13 +238,11 @@ void GCPnts_TangentialDeflection::PerformCircular (const TheCurve& C)
 }
 
 
-
 //=======================================================================
 //function : PerformCurve
 //purpose  : On respecte ll'angle et la fleche, on peut imposer un nombre
 //           minimum de points sur un element lineaire
 //=======================================================================
-
 void GCPnts_TangentialDeflection::PerformCurve (const TheCurve& C)
 
 {
@@ -269,8 +266,12 @@ void GCPnts_TangentialDeflection::PerformCurve (const TheCurve& C)
   parameters.Append (U1);
   points    .Append (CurrentPoint);
 
-  if (NotDone)
-  {
+  // Used to detect "isLine" current bspline and in Du computation in general handling.
+  Standard_Integer NbInterv = const_cast<TheCurve*>(&C)->NbIntervals(GeomAbs_CN);
+  TColStd_Array1OfReal Intervs(1, NbInterv+1);
+  const_cast<TheCurve*>(&C)->Intervals(Intervs, GeomAbs_CN);
+
+  if (NotDone) {
     //C'est soit une droite, soit une singularite :
     V1 = (LastPoint.XYZ() - CurrentPoint.XYZ());
     L1 = V1.Modulus ();
@@ -280,9 +281,6 @@ void GCPnts_TangentialDeflection::PerformCurve (const TheCurve& C)
       Standard_Boolean IsLine   = Standard_True;
       Standard_Integer NbPoints = (minNbPnts > 3) ? minNbPnts : 3;
       ////
-      Standard_Integer NbInterv = const_cast<TheCurve*>(&C)->NbIntervals(GeomAbs_CN);
-      TColStd_Array1OfReal Intervs(1, NbInterv+1);
-      const_cast<TheCurve*>(&C)->Intervals(Intervs, GeomAbs_CN);
       Standard_Real param = 0.;
       for (i = 1; i <= NbInterv && IsLine; ++i)
       {
@@ -368,12 +366,13 @@ void GCPnts_TangentialDeflection::PerformCurve (const TheCurve& C)
   Standard_Boolean MorePoints = Standard_True;
   Standard_Real U2            = firstu;   
   Standard_Real AngleMax      = angularDeflection * 0.5;  //car on prend le point milieu
-
+  Standard_Integer aIdx[2] = {Intervs.Lower(), Intervs.Lower()}; // Indexes of intervals of U1 and U2, used to handle non-uniform case.
+  Standard_Boolean isNeedToCheck = Standard_False;
   gp_Pnt aPrevPoint = points.Last();
 
   while (MorePoints) {
-
-    U2 += Du;                             
+    aIdx[0] = getIntervalIdx(U1, Intervs, aIdx[0]);
+    U2 += Du;
 
     if (U2 >= lastu) {                       //Bout de courbe
       U2 = lastu;
@@ -383,13 +382,28 @@ void GCPnts_TangentialDeflection::PerformCurve (const TheCurve& C)
     }
     else D0 (C, U2, CurrentPoint);           //Point suivant
 
-    Standard_Real Coef, ACoef = 0., FCoef = 0.;
+    Standard_Real Coef = 0.0, ACoef = 0., FCoef = 0.;
     Standard_Boolean Correction, TooLarge, TooSmall;
     TooLarge   = Standard_False;
-    TooSmall   = Standard_False;
     Correction = Standard_True;
+    TooSmall = Standard_False;
 
     while (Correction) {                     //Ajustement Du
+      if (isNeedToCheck)
+      {
+        aIdx[1] = getIntervalIdx(U2, Intervs, aIdx[0]);
+        if (aIdx[1] > aIdx[0]) // Jump to another polynom.
+        {
+          if (Du > (Intervs(aIdx[0] + 1) - Intervs(aIdx[0]) ) * Us3) // Set Du to the smallest value and check deflection on it.
+          {
+            Du = (Intervs(aIdx[0] + 1) - Intervs(aIdx[0]) ) * Us3;
+            U2 = U1 + Du;
+            if (U2 > lastu)
+              U2 = lastu;
+            D0 (C, U2, CurrentPoint);
+          }
+        }
+      }
       MiddleU = (U1+U2)*0.5;                 //Verif / au point milieu
       D0 (C, MiddleU, MiddlePoint);
 
@@ -414,6 +428,17 @@ void GCPnts_TangentialDeflection::PerformCurve (const TheCurve& C)
       //On retient le plus penalisant
       Coef = Max(ACoef, FCoef);
 
+      if (isNeedToCheck && Coef < 0.55)
+      {
+        isNeedToCheck = Standard_False;
+        Du = Dusave;
+        U2 = U1 + Du;
+        if (U2 > lastu)
+          U2 = lastu;
+        D0 (C, U2, CurrentPoint);
+        continue;
+      }
+
       if (Coef <= 1.0) {
         if (Abs (lastu-U2) < uTol) {
           parameters.Append (lastu);
@@ -427,6 +452,7 @@ void GCPnts_TangentialDeflection::PerformCurve (const TheCurve& C)
             points    .Append (CurrentPoint);
             aPrevPoint = CurrentPoint;
             Correction = Standard_False;
+            isNeedToCheck = Standard_True;
           }
           else if (TooSmall) {
             Correction = Standard_False;
@@ -504,7 +530,6 @@ void GCPnts_TangentialDeflection::PerformCurve (const TheCurve& C)
 //    points.Remove (i+1);
 //    i--;
 //  }
-  
   if (i >= 2) {
     MiddleU = parameters (i-1);
     MiddleU = (lastu + MiddleU)*0.5;
