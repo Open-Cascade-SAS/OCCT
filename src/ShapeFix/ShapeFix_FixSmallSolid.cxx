@@ -33,6 +33,7 @@
 #include <BRepGProp.hxx>
 #include <BRep_Builder.hxx>
 #include <ShapeBuild_ReShape.hxx>
+#include <Message_Msg.hxx>
 
 //=======================================================================
 //function : ShapeFix_FixSmallSolid
@@ -102,7 +103,10 @@ TopoDS_Shape ShapeFix_FixSmallSolid::Remove (
   {
     const TopoDS_Shape& aSolid = aSolidIter.Current();
     if (IsSmall (aSolid))
+    {
       theContext->Remove (aSolid);
+      SendWarning ( aSolid, Message_Msg( "ShapeFix.FixSmallSolid.MSG0" ));
+    }
   }
 
   // Return updated shape
@@ -441,6 +445,7 @@ TopoDS_Shape ShapeFix_FixSmallSolid::Merge (
         // remove the small solid
         theContext->Remove (aSmallSolid);
         aSmallSolids.Remove (aSolidIter);
+        SendWarning ( aSmallSolid, Message_Msg( "ShapeFix.FixSmallSolid.MSG1" ));
       }
       else
         aSolidIter.Next();

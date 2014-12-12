@@ -592,7 +592,12 @@ static Standard_Boolean dropsmallsolids (const Handle(ShapeProcess_Context)& con
     Handle(ShapeProcess_ShapeContext)::DownCast (context);
   if (ctx.IsNull()) return Standard_False;
 
+  // activate message mechanism if it is supported by context
+  Handle(ShapeExtend_MsgRegistrator) msg;
+  if ( ! ctx->Messages().IsNull() ) msg = new ShapeExtend_MsgRegistrator;
+
   ShapeFix_FixSmallSolid FSS;
+  FSS.SetMsgRegistrator( msg );
 
   Standard_Real aThreshold;
   if (ctx->GetReal ("VolumeThreshold", aThreshold))
@@ -613,7 +618,7 @@ static Standard_Boolean dropsmallsolids (const Handle(ShapeProcess_Context)& con
 
   if (aResult != ctx->Result())
   {
-    ctx->RecordModification (aReShape);
+    ctx->RecordModification (aReShape, msg);
     ctx->SetResult (aResult);
   }
 

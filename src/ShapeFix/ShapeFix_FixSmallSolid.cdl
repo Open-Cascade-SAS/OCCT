@@ -13,7 +13,7 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-class FixSmallSolid from ShapeFix
+class FixSmallSolid from ShapeFix inherits Root from ShapeFix
 
 	---Purpose: Fixing solids with small size
 
@@ -25,10 +25,10 @@ is
     Create returns FixSmallSolid;
     ---Purpose: Construct
 
-    SetVolumeThreshold (me: in out; theThreshold: Real = -1.0);
+    SetVolumeThreshold (me: mutable; theThreshold: Real = -1.0);
     ---Purpose: Set or clear volume threshold for small solids
 
-    SetWidthFactorThreshold (me: in out; theThreshold: Real = -1.0);
+    SetWidthFactorThreshold (me: mutable; theThreshold: Real = -1.0);
     ---Purpose: Set or clear width factor threshold for small solids
 
     Remove(me; theShape: Shape from TopoDS; theContext: ReShape from ShapeBuild)

@@ -186,6 +186,15 @@ Spot face removed
 Strip face removed
 !
 ! ------------------------------------------------------------------------------
+! Messages for ShapeFix_FixSmallSolid
+!
+.ShapeFix.FixSmallSolid.MSG0
+Small solid removed
+!
+.ShapeFix.FixSmallSolid.MSG1
+Small solid merged with other
+!
+! ------------------------------------------------------------------------------
 ! Messages for ShapeFix_Shell
 !
 .FixAdvShell.FixOrientation.MSG0
