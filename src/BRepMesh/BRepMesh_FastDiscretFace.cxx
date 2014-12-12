@@ -957,7 +957,8 @@ void BRepMesh_FastDiscretFace::insertInternalVerticesBSpline(
           {
             // Update point parameter.
             aStPnt1.SetX(aPrevParam2);
-          ++j;
+            ++j;
+          }
         }
       }
     }
