@@ -114,7 +114,7 @@ void NCollection_UtfIterator<Type>::readUTF16()
   if (aChar >= UTF16_SURROGATE_HIGH_START
    && aChar <= UTF16_SURROGATE_HIGH_END)
   {
-    Standard_Utf32Char aChar2 = *myPosition;
+    const Standard_Utf32Char aChar2 = *myPosNext;
     // complete the surrogate pair
     if (aChar2 >= UTF16_SURROGATE_LOW_START
      && aChar2 <= UTF16_SURROGATE_LOW_END)
