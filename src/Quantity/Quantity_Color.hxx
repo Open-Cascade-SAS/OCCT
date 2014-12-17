@@ -70,14 +70,6 @@ public:
   //! <R3> is the saturation between 0. and 1.
   Standard_EXPORT Quantity_Color(const Quantity_Parameter R1, const Quantity_Parameter R2, const Quantity_Parameter R3, const Quantity_TypeOfColor AType);
   
-  //! Updates the colour <me> from the definition of the
-  //! colour <Other>.
-  Standard_EXPORT Quantity_Color& Assign (const Quantity_Color& Other);
-Quantity_Color& operator = (const Quantity_Color& Other)
-{
-  return Assign(Other);
-}
-  
   //! Increases or decreases the contrast by <ADelta>.
   //! <ADelta> is a percentage. Any value greater than zero
   //! will increase the contrast.

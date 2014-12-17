@@ -145,15 +145,6 @@ Standard_ShortReal MyHue, MyLight, MySaturation;
 
 }
 
-Quantity_Color& Quantity_Color::Assign (const Quantity_Color& Other) {
-
-	MyRed	= Standard_ShortReal (Other.Red ());
-	MyGreen	= Standard_ShortReal (Other.Green ());
-	MyBlue	= Standard_ShortReal (Other.Blue ());
-	return (*this);
-
-}
-
 void Quantity_Color::SetValues (const Quantity_NameOfColor AName) {
 
 	Quantity_Color::ValuesOf

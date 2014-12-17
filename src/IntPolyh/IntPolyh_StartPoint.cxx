@@ -92,24 +92,6 @@ Standard_Integer IntPolyh_StartPoint::GetEdgePoints(const IntPolyh_Triangle &Tri
  return(SurfID) ;
 }
 
-void IntPolyh_StartPoint::Equal(const IntPolyh_StartPoint &StPt) {
-  x         = StPt.x;
-  y         = StPt.y;
-  z         = StPt.z;
-  u1        = StPt.u1;
-  v1        = StPt.v1;
-  u2        = StPt.u2;
-  v2        = StPt.v2;
-  t1        = StPt.t1;
-  e1        = StPt.e1;
-  lambda1   = StPt.lambda1;
-  t2        = StPt.t2;
-  e2        = StPt.e2;
-  lambda2   = StPt.lambda2;
-  angle     = StPt.angle;
-  chainlist = StPt.chainlist;
-}
-
 void IntPolyh_StartPoint::SetXYZ(const Standard_Real XX,
 				 const Standard_Real YY,
 				 const Standard_Real ZZ) {

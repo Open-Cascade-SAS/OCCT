@@ -18,14 +18,8 @@
 #define _IntPolyh_StartPoint_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
-#include <Standard_Real.hxx>
-#include <Standard_Integer.hxx>
 class IntPolyh_Triangle;
-
-
 
 class IntPolyh_StartPoint 
 {
@@ -70,12 +64,6 @@ public:
   
   Standard_EXPORT Standard_Integer GetEdgePoints (const IntPolyh_Triangle& Triangle, Standard_Integer& FirstEdgePoint, Standard_Integer& SecondEdgePoint, Standard_Integer& LastPoint) const;
   
-  Standard_EXPORT void Equal (const IntPolyh_StartPoint& StPt);
-void operator = (const IntPolyh_StartPoint& StPt)
-{
-  Equal(StPt);
-}
-  
   Standard_EXPORT void SetXYZ (const Standard_Real XX, const Standard_Real YY, const Standard_Real ZZ);
   
   Standard_EXPORT void SetUV1 (const Standard_Real UU1, const Standard_Real VV1);
@@ -102,19 +90,7 @@ void operator = (const IntPolyh_StartPoint& StPt)
   
   Standard_EXPORT void Dump (const Standard_Integer i) const;
 
-
-
-
-protected:
-
-
-
-
-
 private:
-
-
-
   Standard_Real x;
   Standard_Real y;
   Standard_Real z;
@@ -130,14 +106,6 @@ private:
   Standard_Integer t2;
   Standard_Integer e2;
   Standard_Integer chainlist;
-
-
 };
-
-
-
-
-
-
 
 #endif // _IntPolyh_StartPoint_HeaderFile
