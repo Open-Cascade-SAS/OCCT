@@ -80,19 +80,6 @@ public:
     v[3] = theAlpha;
   }
 
-  //! Copy constructor.
-  NCollection_Vec4 (const NCollection_Vec4& theVec4)
-  {
-    std::memcpy (this, &theVec4, sizeof(NCollection_Vec4));
-  }
-
-  //! Assignment operator.
-  const NCollection_Vec4& operator= (const NCollection_Vec4& theVec4)
-  {
-    std::memcpy (this, &theVec4, sizeof(NCollection_Vec4));
-    return *this;
-  }
-
   //! Alias to 1st component as X coordinate in XYZW.
   Element_t x() const { return v[0]; }
 

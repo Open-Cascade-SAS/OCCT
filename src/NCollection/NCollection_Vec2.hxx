@@ -57,21 +57,6 @@ public:
     v[1] = theY;
   }
 
-  //! Copy constructor.
-  NCollection_Vec2 (const NCollection_Vec2& theVec2)
-  {
-    v[0] = theVec2[0];
-    v[1] = theVec2[1];
-  }
-
-  //! Assignment operator.
-  const NCollection_Vec2& operator= (const NCollection_Vec2& theVec2)
-  {
-    v[0] = theVec2[0];
-    v[1] = theVec2[1];
-    return *this;
-  }
-
   //! Alias to 1st component as X coordinate in XY.
   Element_t x() const { return v[0]; }
 

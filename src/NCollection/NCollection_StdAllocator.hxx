@@ -58,18 +58,14 @@ public:
   NCollection_StdAllocator( const Handle(NCollection_BaseAllocator)& theAlloc) throw()
   { myAlloc = theAlloc; }
 
-  //! Constructor.
-  /*! Copies Allocator() from \a X.*/
-  NCollection_StdAllocator( const NCollection_StdAllocator& X) throw() { myAlloc = X.myAlloc; }
-
-  //! Destructor.
-  /*! Empty implementation.*/
-  ~NCollection_StdAllocator() throw() {}
-
-  //! Constructor.
+  //! Copy constructor.
   /*! Copies Allocator() from \a Y.*/
   template<typename U> NCollection_StdAllocator( const NCollection_StdAllocator<U>& Y) throw()
   { myAlloc = Y.Allocator(); }
+
+  //! Assignment operator
+  template<typename U> NCollection_StdAllocator& operator= (const NCollection_StdAllocator<U>& Y) throw()
+  { myAlloc = Y.Allocator(); return *this; }
 
   //! Returns an object address.
   /*! Returns &x.*/
@@ -157,6 +153,13 @@ public:
   //! Returns an underlying NCollection_BaseAllocator instance.
   /*! Returns an object specified in the constructor.*/
   const Handle(NCollection_BaseAllocator)& Allocator() const { return myAlloc; }
+
+  //! Assignment operator
+  NCollection_StdAllocator& operator=(const NCollection_StdAllocator& X) throw()
+  {
+    myAlloc = X.myAlloc;
+    return *this;
+  }
 
 protected:
   Handle(NCollection_BaseAllocator) myAlloc;

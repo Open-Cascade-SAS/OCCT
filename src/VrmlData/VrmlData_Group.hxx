@@ -17,11 +17,11 @@
 #define VrmlData_Group_HeaderFile
 
 #include <VrmlData_ListOfNode.hxx>
+#include <VrmlData_DataMapOfShapeAppearance.hxx>
 #include <Bnd_B3f.hxx>
 #include <gp_Trsf.hxx>
 
 class TopoDS_Shape;
-class VrmlData_DataMapOfShapeAppearance;
 
 /**
  * Implementation of node "Group"

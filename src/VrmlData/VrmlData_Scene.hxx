@@ -27,9 +27,9 @@
 #include <TCollection_ExtendedString.hxx>
 #include <NCollection_IncAllocator.hxx>
 #include <Standard_Mutex.hxx>
+#include <VrmlData_DataMapOfShapeAppearance.hxx>
 
 struct VrmlData_InBuffer;
-class VrmlData_DataMapOfShapeAppearance;
 
 /**
  * Block of comments describing class VrmlData_Scene

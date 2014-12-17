@@ -33,10 +33,6 @@ template <class Type> class BOPCol_NCVector
     : NCollection_Vector<Type>(theIncrement, theAlloc)
   {}
   //
-  BOPCol_NCVector(const BOPCol_NCVector& theOther) 
-    : NCollection_Vector<Type>(theOther)
-  {}
-  //
   Type& Append1 ()
   {
     Type& anAppended = *(Type*)this->expandV (this->myLength);

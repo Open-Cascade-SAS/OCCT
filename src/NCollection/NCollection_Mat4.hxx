@@ -49,21 +49,6 @@ public:
     InitIdentity();
   }
 
-  //! Copy constructor.
-  //! @param theOther [in] the matrix to copy values from.
-  NCollection_Mat4 (const NCollection_Mat4& theOther)
-  {
-    std::memcpy (this, &theOther, sizeof (NCollection_Mat4));
-  }
-
-  //! Assignment operator.
-  //! @param theOther [in] the matrix to copy values from.
-  const NCollection_Mat4& operator= (const NCollection_Mat4& theOther)
-  {
-    std::memcpy (this, &theOther, sizeof (NCollection_Mat4));
-    return *this;
-  }
-
   //! Get element at the specified row and column.
   //! @param theRow [in] the row.to address.
   //! @param theCol [in] the column to address.

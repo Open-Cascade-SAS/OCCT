@@ -73,19 +73,6 @@ public:
     v[2] = Element_t(0);
   }
 
-  //! Copy constructor.
-  NCollection_Vec3 (const NCollection_Vec3& theVec3)
-  {
-    std::memcpy (this, &theVec3, sizeof(NCollection_Vec3));
-  }
-
-  //! Assignment operator.
-  const NCollection_Vec3& operator= (const NCollection_Vec3& theVec3)
-  {
-    std::memcpy (this, &theVec3, sizeof(NCollection_Vec3));
-    return *this;
-  }
-
   //! Alias to 1st component as X coordinate in XYZ.
   Element_t x() const { return v[0]; }
 
