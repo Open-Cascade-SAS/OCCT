@@ -12,6 +12,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <gce_MakePln.hxx>
+
 static void evalpinit(math_Vector& parinit,
 		      const Blend_Point& previousP,
 		      const Standard_Real parprec,
@@ -65,6 +67,7 @@ static void evalpinit(math_Vector& parinit,
 
 void Blend_Walking::InternalPerform(Blend_Function& Func,
 				    Blend_FuncInv& FuncInv,
+                                    const Handle(ChFiDS_HElSpine)& HGuide,
 				    const Standard_Real Bound)
 {
 
@@ -251,12 +254,64 @@ void Blend_Walking::InternalPerform(Blend_Function& Func,
 	  // avec les surfaces periodiques.
 	  State = Blend_OnRst12;
 	  param =  (w1+w2)/2;
+          gp_Pnt Pnt1, Pnt2;
 	  p2d = TheArcTool::Value(recdomain1->Value(),solrst1(1));
 	  sol(1) = p2d.X();
 	  sol(2) = p2d.Y();
+          Pnt1 = TheSurfaceTool::Value(surf1,sol(1),sol(2));
 	  p2d = TheArcTool::Value(recdomain2->Value(),solrst2(1));
 	  sol(3) = p2d.X();
 	  sol(4) = p2d.Y();
+          Pnt2 = TheSurfaceTool::Value(surf2,sol(3),sol(4));
+          if (!HGuide.IsNull())
+          {
+            const Standard_Real TolProd = 1.e-5;
+            Standard_Real SavedParams [2];
+            Standard_Boolean SameDirs [2] = {Standard_False, Standard_False};
+            ChFiDS_ElSpine& theElSpine = HGuide->ChangeCurve();
+            SavedParams[0] = theElSpine.GetSavedFirstParameter();
+            SavedParams[1] = theElSpine.GetSavedLastParameter();
+            for (Standard_Integer ind = 0; ind < 2; ind++)
+            {
+              if (!Precision::IsInfinite(SavedParams[ind]))
+              {
+                //Check the original first and last parameters of guide curve
+                //for equality to found parameter <param>:
+                //check equality of tangent to guide curve and
+                //normal to plane built on 3 points:
+                //point on guide curve and points on restrictions of adjacent
+                //surfaces.
+                gp_Pnt Pnt0;
+                gp_Vec Dir0;
+                HGuide->D1(SavedParams[ind], Pnt0, Dir0);
+                Standard_Real Length = Dir0.Magnitude();
+                if (Length <= gp::Resolution())
+                  continue;
+                Dir0 /= Length;
+                gce_MakePln PlaneBuilder(Pnt0, Pnt1, Pnt2);
+                if (!PlaneBuilder.IsDone())
+                  continue;
+                gp_Pln thePlane = PlaneBuilder.Value();
+                gp_Dir DirPlane = thePlane.Axis().Direction();
+                gp_Vec theProd = Dir0 ^ DirPlane;
+                Standard_Real ProdMod = theProd.Magnitude();
+                if (ProdMod <= TolProd)
+                  SameDirs[ind] = Standard_True;
+              }
+            }
+            Standard_Real theParam = Precision::Infinite();
+            //Choose the closest parameter
+            if (SameDirs[0] && SameDirs[1])
+              theParam = (Abs(param - SavedParams[0]) < Abs(param - SavedParams[1]))?
+                SavedParams[0] : SavedParams[1];
+            else if (SameDirs[0])
+              theParam = SavedParams[0];
+            else if (SameDirs[1])
+              theParam = SavedParams[1];
+            
+            if (!Precision::IsInfinite(theParam))
+              param = theParam;
+          }
 	}
 	else if (recad1) {
 	  // sol sur 1

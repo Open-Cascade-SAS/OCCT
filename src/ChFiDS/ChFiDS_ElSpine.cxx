@@ -27,6 +27,8 @@
 
 ChFiDS_ElSpine::ChFiDS_ElSpine():periodic(0)
 {
+  pfirstsav = Precision::Infinite();
+  plastsav  = Precision::Infinite();
 }
 
 
@@ -49,6 +51,26 @@ Standard_Real ChFiDS_ElSpine::FirstParameter() const
 Standard_Real ChFiDS_ElSpine::LastParameter() const
 {
   return plast;
+}
+
+//=======================================================================
+//function : GetSavedFirstParameter
+//purpose  : 
+//=======================================================================
+
+Standard_Real ChFiDS_ElSpine::GetSavedFirstParameter() const
+{
+  return pfirstsav;
+}
+
+//=======================================================================
+//function : GetSavedLastParameter
+//purpose  : 
+//=======================================================================
+
+Standard_Real ChFiDS_ElSpine::GetSavedLastParameter() const
+{
+  return plastsav;
 }
 
 //=======================================================================
@@ -227,6 +249,26 @@ void ChFiDS_ElSpine::FirstParameter(const Standard_Real P)
 void ChFiDS_ElSpine::LastParameter(const Standard_Real P)
 {
   plast = P;
+}
+
+//=======================================================================
+//function : SaveFirstParameter
+//purpose  : 
+//=======================================================================
+
+void ChFiDS_ElSpine::SaveFirstParameter()
+{
+  pfirstsav = pfirst;
+}
+
+//=======================================================================
+//function : SaveLastParameter
+//purpose  : 
+//=======================================================================
+
+void ChFiDS_ElSpine::SaveLastParameter()
+{
+  plastsav = plast;
 }
 
 

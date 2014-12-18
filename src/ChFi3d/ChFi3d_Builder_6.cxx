@@ -1573,7 +1573,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
       if (5*TolGuide > MS) TolGuide = MS/5;
       if (5*TolEsp > MS) TolEsp = MS/5;
     }
-    TheWalk.Perform(Func,FInv,NewFirst,Target,MS,TolGuide,
+    TheWalk.Perform(Func,FInv,HGuide,NewFirst,Target,MS,TolGuide,
 		    ParSol,TolEsp,Fleche,Appro);
     if (!TheWalk.IsDone()) {
 #ifdef OCCT_DEBUG
@@ -2113,7 +2113,7 @@ Standard_Boolean ChFi3d_Builder::SimulData
       if (5*TolEsp > MS) TolEsp = MS/5;
     }
       
-    TheWalk.Perform(Func,FInv,NewFirst,Target,MS,TolGuide,
+    TheWalk.Perform(Func,FInv,HGuide,NewFirst,Target,MS,TolGuide,
 		    ParSol,TolEsp,Fleche,Appro);
     
     if (!TheWalk.IsDone()) {

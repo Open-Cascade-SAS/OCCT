@@ -50,6 +50,10 @@ is
     LastParameter(me) returns Real from Standard
     is redefined;
     
+    GetSavedFirstParameter(me) returns Real from Standard;
+    
+    GetSavedLastParameter(me)  returns Real from Standard;
+    
     Continuity(me) returns Shape from GeomAbs
     is redefined static;
 
@@ -101,6 +105,10 @@ is
     FirstParameter(me : in out; P : Real from Standard);
 
     LastParameter(me : in out; P : Real from Standard);
+
+    SaveFirstParameter(me : in out);
+
+    SaveLastParameter(me : in out);
 
     SetOrigin(me : in out; O : Real from Standard);
 
@@ -188,5 +196,7 @@ plast     : Real     from Standard;
 period    : Real     from Standard;
 periodic  : Boolean  from Standard; 
 
+pfirstsav : Real     from Standard;
+plastsav  : Real     from Standard;
 
 end ElSpine;

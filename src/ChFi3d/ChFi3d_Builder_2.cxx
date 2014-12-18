@@ -1862,10 +1862,13 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine
   Standard_Real wl = Guide.LastParameter();
   Standard_Real locfleche = (wl - wf) * fleche;
   Standard_Real wfsav = wf, wlsav = wl;
-  //Now the ElSpine is artificially extended to help rsnld.
-  Standard_Real prab = 0.01;
-  Guide.FirstParameter(wf-prab*(wl-wf));
-  Guide.LastParameter (wl+prab*(wl-wf));
+  if (!Guide.IsPeriodic())
+  {
+    //Now the ElSpine is artificially extended to help rsnld.
+    Standard_Real prab = 0.01;
+    Guide.FirstParameter(wf-prab*(wl-wf));
+    Guide.LastParameter (wl+prab*(wl-wf));
+  }
   Handle(ChFiDS_Spine)&  Spine = Stripe->ChangeSpine();
   Standard_Integer ii, nbed = Spine->NbEdges();
   Standard_Real lastedlastp = Spine->LastParameter(nbed);
@@ -1920,7 +1923,9 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine
     Last = wf;
     if(Guide.IsPeriodic()) {
       Last = First - Guide.Period();
+      Guide.SaveFirstParameter();
       Guide.FirstParameter(Last);
+      Guide.SaveLastParameter();
       Guide.LastParameter (First * 1.1);//Extension to help rsnld.
     }
   }
