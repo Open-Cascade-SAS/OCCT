@@ -163,8 +163,9 @@ DBC_BaseArray::DBC_BaseArray (const DBC_BaseArray& Other)
 
 }
 
-void DBC_BaseArray::Delete()
-{}
+DBC_BaseArray::~DBC_BaseArray()
+{
+}
 
 
 // --------------------------------------------------------------------

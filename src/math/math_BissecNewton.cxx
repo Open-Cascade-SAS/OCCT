@@ -15,6 +15,9 @@
 #include <math_BissecNewton.ixx>
 #include <math_FunctionWithDerivative.hxx>
 
+math_BissecNewton::~math_BissecNewton()
+{
+}
 
 void math_BissecNewton::Perform(math_FunctionWithDerivative& F,
 				const Standard_Real    Bound1,

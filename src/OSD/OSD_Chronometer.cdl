@@ -42,8 +42,7 @@ is
   --
   ---Level: Public
 
-  Destroy ( me : out ) is virtual;
-  ---C++: alias ~
+  ---C++ : alias "  Standard_EXPORT virtual ~OSD_Chronometer();"
 
   Reset (me : in out) is virtual;
   ---Purpose: Stops and Reinitializes the Chronometer.

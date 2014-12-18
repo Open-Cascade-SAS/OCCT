@@ -23,6 +23,10 @@
 #define SIGN(a,b)     ((b) > 0.0 ? fabs(a) : -fabs(a))
 #define SHFT(a,b,c,d) (a)=(b);(b)=(c);(c)=(d)
 
+math_BrentMinimum::~math_BrentMinimum()
+{
+}
+
 void math_BrentMinimum::Perform(math_Function& F,
 				const Standard_Real    ax,
 				const Standard_Real    bx,

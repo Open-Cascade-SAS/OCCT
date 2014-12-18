@@ -85,11 +85,8 @@ is
 
     returns FunctionSetRoot from math;
 
+    ---C++: alias "  Standard_EXPORT virtual ~math_FunctionSetRoot();"
 
-
-    Delete(me:out) is virtual;
-    ---C++: alias "Standard_EXPORT virtual ~math_FunctionSetRoot(){Delete();}"
-    
     SetTolerance(me: in out; Tolerance: Vector)
     	---Purpose: Initializes the tolerance values.
 
@@ -107,7 +104,7 @@ is
        -- not performed by the constructors.
 
     is static;
-    
+
 
     IsSolutionReached(me: in out; F: in out FunctionSetWithDerivatives)
     	---Purpose: This routine is called at the end of each iteration 

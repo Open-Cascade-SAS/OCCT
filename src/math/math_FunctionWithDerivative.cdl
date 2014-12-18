@@ -23,17 +23,12 @@ deferred class FunctionWithDerivative from math
 inherits Function
 
 is
-
-    Delete(me:out) is virtual;
-    	---C++: alias "Standard_EXPORT virtual ~math_FunctionWithDerivative(){Delete();}"
-    
     Value(me: in out; X: Real; F: out Real)
         ---Purpose: Computes the value <F>of the function for the variable <X>.
     	--          Returns True if the calculation were successfully done, 
     	--          False otherwise.
 
-    returns Boolean
-    is deferred;
+    returns Boolean is deferred;
  
     Derivative(me: in out; X: Real; D: out Real)
         ---Purpose: Computes the derivative <D> of the function 
@@ -41,8 +36,7 @@ is
     	--           Returns True if the calculation were successfully done, 
     	--           False otherwise.
 
-    returns Boolean
-    is deferred;    
+    returns Boolean is deferred;    
 
     Values(me: in out; X: Real; F, D: out Real)
     	---Purpose: Computes the value <F> and the derivative <D> of the 
@@ -50,7 +44,8 @@ is
     	--          Returns True if the calculation were successfully done,
     	--          False otherwise.
 
-    returns Boolean
-    is deferred;
+    returns Boolean is deferred;
+
+    ---C++: alias "  Standard_EXPORT virtual ~math_FunctionWithDerivative();"
     
 end FunctionWithDerivative;

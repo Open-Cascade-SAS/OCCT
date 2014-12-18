@@ -24,9 +24,6 @@ uses
 
 is 
 
-    Delete(me:out) is virtual;
-    ---C++: alias "Standard_EXPORT virtual ~ApproxInt_SvSurfaces(){Delete() ; }"
-    
     Compute(me: in out; 
             u1,v1,u2,v2: in out Real from Standard;
 	    Pt: out Pnt from gp;
@@ -52,7 +49,9 @@ is
     TangencyOnSurf2(me: in out;
     	            u1,v1,u2,v2: in Real from Standard;
 	            Tg: out Vec2d from gp)
-       returns Boolean from Standard is deferred;   
+       returns Boolean from Standard is deferred;
+
+    ---C++: alias "  Standard_EXPORT virtual ~ApproxInt_SvSurfaces();"
     
 end SvSurfaces;
 

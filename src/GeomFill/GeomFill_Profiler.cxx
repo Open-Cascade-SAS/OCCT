@@ -125,8 +125,9 @@ GeomFill_Profiler::GeomFill_Profiler()
 
 //=======================================================================
 
-void GeomFill_Profiler::Delete()
-{}
+GeomFill_Profiler::~GeomFill_Profiler()
+{
+}
 
 
 //=======================================================================

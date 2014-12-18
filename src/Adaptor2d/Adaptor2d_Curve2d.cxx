@@ -17,8 +17,15 @@
 #include <Adaptor2d_Curve2d.ixx>
 #include <Standard_NotImplemented.hxx>
 
-void Adaptor2d_Curve2d::Delete()
-{}
+
+//=======================================================================
+//function : ~Adaptor2d_Curve2d
+//purpose  : Destructor
+//=======================================================================
+
+Adaptor2d_Curve2d::~Adaptor2d_Curve2d()
+{
+}
 
 //=======================================================================
 //function : FirstParameter

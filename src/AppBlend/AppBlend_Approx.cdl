@@ -35,13 +35,6 @@ raises NotDone     from StdFail,
 
 is
 
-
-
-    Delete(me:out) is virtual;
-    ---C++: alias "Standard_EXPORT virtual ~AppBlend_Approx(){Delete() ; }"
-    
-
-
     IsDone(me)
         returns Boolean from Standard	
 	is deferred;
@@ -204,5 +197,6 @@ is
 	raises NotDone from StdFail
         is deferred;    
                     
+    ---C++: alias "  Standard_EXPORT virtual ~AppBlend_Approx();"
 
 end Approx;

@@ -14,5 +14,10 @@
 
 #include <math_FunctionWithDerivative.ixx>
 
-void math_FunctionWithDerivative::Delete()
-{}
+//=======================================================================
+//function : ~math_FunctionWithDerivative
+//purpose  : Destructor
+//=======================================================================
+math_FunctionWithDerivative::~math_FunctionWithDerivative()
+{
+}

@@ -54,6 +54,7 @@ public:
     return myNbPnt2d;
   }
 
+  //! Destructor
   Standard_EXPORT virtual ~AppCont_Function() {}
 
   //! Returns the first parameter of the function.

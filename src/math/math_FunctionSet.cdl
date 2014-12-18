@@ -22,10 +22,6 @@ deferred class FunctionSet from math
 uses Vector from math
 
 is
-
-    Delete(me:out) is virtual;
-    	---C++: alias "Standard_EXPORT virtual ~math_FunctionSet(){Delete();}"
-    
     NbVariables(me)
     	---Purpose: Returns the number of variables of the function.
 
@@ -46,8 +42,7 @@ is
     	--          returns True if the computation was done successfully, 
     	--          False otherwise.
 
-    returns Boolean
-    is deferred;
+    returns Boolean is deferred;
     
 
     GetStateNumber(me: in out)
@@ -66,8 +61,9 @@ is
     	--          to save the current state of the function and to return
     	--          an Integer that allows retrieval of the state.
 
-    returns Integer
-    is virtual;
+    returns Integer is virtual;
+
+    ---C++: alias "  Standard_EXPORT virtual ~math_FunctionSet();"
     
 end FunctionSet;
 

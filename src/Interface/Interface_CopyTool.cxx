@@ -325,4 +325,11 @@ Interface_CopyTool::Interface_CopyTool
   return iter;
 }
 
-void Interface_CopyTool::Destroy(){}
+//=======================================================================
+//function : ~Interface_CopyTool
+//purpose  : Destructor
+//=======================================================================
+
+Interface_CopyTool::~Interface_CopyTool()
+{
+}

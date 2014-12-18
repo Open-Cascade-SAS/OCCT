@@ -17,8 +17,14 @@
 #include <Adaptor3d_Surface.ixx>
 #include <Standard_NotImplemented.hxx>
 
-void Adaptor3d_Surface::Delete()
-{}
+//=======================================================================
+//function : ~Adaptor3d_Surface
+//purpose  : Destructor
+//=======================================================================
+
+Adaptor3d_Surface::~Adaptor3d_Surface()
+{
+}
 
 //=======================================================================
 //function : FirstUParameter

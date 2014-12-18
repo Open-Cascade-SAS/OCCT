@@ -58,11 +58,6 @@ is
       	---Category: PointOnHatching
 
     	returns PointOnHatching from HatchGen ;
-
-
-    Delete (me : out) is virtual;
-    ---C++: alias "Standard_EXPORT virtual ~HatchGen_PointOnHatching(){Delete();}"
-    ---Purpose: linux porting      
    
     AddPoint (me : in out ; Point     : PointOnElement from HatchGen ;
     	    	    	    Confusion : Real           from Standard)

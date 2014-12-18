@@ -43,9 +43,7 @@ is
         -- function F.
     returns BFGS;
 
-    
-    Delete(me:out) is virtual;
-    	---C++: alias "Standard_EXPORT virtual ~math_BFGS(){Delete() ; }"
+    ---C++: alias "Standard_EXPORT virtual ~math_BFGS();"
     
     Perform(me: in out; F: in out MultipleVarFunctionWithGradient;
             StartingPoint: Vector)

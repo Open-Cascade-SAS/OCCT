@@ -130,8 +130,9 @@ math_NewtonFunctionSetRoot::math_NewtonFunctionSetRoot
   Perform(F, StartingPoint, InfBound, SupBound);
 }
 
-void math_NewtonFunctionSetRoot::Delete()
-{}
+math_NewtonFunctionSetRoot::~math_NewtonFunctionSetRoot()
+{
+}
 
 void math_NewtonFunctionSetRoot::SetTolerance
                               (const math_Vector& XTol)

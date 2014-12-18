@@ -14,5 +14,10 @@
 
 #include <ApproxInt_SvSurfaces.ixx>
 
-void ApproxInt_SvSurfaces::Delete()
-{}
+//=======================================================================
+//function : ~ApproxInt_SvSurfaces
+//purpose  : Destructor
+//=======================================================================
+ApproxInt_SvSurfaces::~ApproxInt_SvSurfaces()
+{
+}

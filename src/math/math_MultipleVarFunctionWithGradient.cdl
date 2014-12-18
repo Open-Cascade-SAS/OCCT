@@ -23,15 +23,10 @@ inherits MultipleVarFunction
 uses Vector from math
 
 is
-
-    Delete(me:out) is redefined virtual;
-    ---C++: alias "Standard_EXPORT virtual ~math_MultipleVarFunctionWithGradient(){Delete();}"
-    
     NbVariables(me)
     	---Purpose: Returns the number of variables of the function.
 
-    returns Integer
-    is deferred;
+    returns Integer is deferred;
 
 
     Value(me: in out; X: Vector; F: out Real)
@@ -39,8 +34,7 @@ is
     	--          Returns True if the computation was done successfully, 
     	--          False otherwise.
 
-    returns Boolean
-    is deferred;
+    returns Boolean is deferred;
     
     
     Gradient(me: in out; X: Vector; G: out Vector)
@@ -48,8 +42,7 @@ is
     	--         Returns True if the computation was done successfully, 
     	--         False otherwise.
 
-    returns Boolean
-    is deferred;
+    returns Boolean is deferred;
     
     
     Values(me: in out; X: Vector; F: out Real; G: out Vector)
@@ -58,7 +51,6 @@ is
     	--          Returns True if the computation was done successfully, 
     	--          False otherwise.
 
-    returns Boolean
-    is deferred;
+    returns Boolean is deferred;
     
 end MultipleVarFunctionWithGradient;

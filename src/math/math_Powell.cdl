@@ -48,10 +48,8 @@ is
     	--          of this class.
 
     returns Powell;
-    
-    
-    Delete(me:out) is virtual;
-    	---C++: alias "Standard_EXPORT virtual ~math_Powell(){Delete();}"
+
+    ---C++: alias "  Standard_EXPORT virtual ~math_Powell();"
     
     Perform(me: in out;F: in out MultipleVarFunction;
     	    StartingPoint: Vector;

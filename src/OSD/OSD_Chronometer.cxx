@@ -171,10 +171,10 @@ OSD_Chronometer::OSD_Chronometer(const Standard_Boolean ThisThreadOnly)
 }
 
 //=======================================================================
-//function :  Destroy
-//purpose  :
+//function : ~OSD_Chronometer
+//purpose  : Destructor
 //=======================================================================
-void OSD_Chronometer::Destroy ()
+OSD_Chronometer::~OSD_Chronometer()
 {
 }
 

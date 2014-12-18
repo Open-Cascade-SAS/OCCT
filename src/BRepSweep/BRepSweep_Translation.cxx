@@ -94,10 +94,6 @@ BRepSweep_Translation::BRepSweep_Translation(const TopoDS_Shape& S,
   Init();
 }
 
-void BRepSweep_Translation::Delete()
-{}
-
-
 //=======================================================================
 //function : MakeEmptyVertex
 //purpose  : 

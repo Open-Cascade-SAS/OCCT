@@ -40,8 +40,9 @@ AppParCurves_MultiCurve::AppParCurves_MultiCurve (const AppParCurves_Array1OfMul
 
 }
 
-void AppParCurves_MultiCurve::Delete()
-{}
+AppParCurves_MultiCurve::~AppParCurves_MultiCurve()
+{
+}
 
 Standard_Integer AppParCurves_MultiCurve::Dimension (const Standard_Integer Index) const {
   Standard_Integer Lo = tabPoint->Lower();

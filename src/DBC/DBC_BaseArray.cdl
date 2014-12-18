@@ -35,8 +35,7 @@ is
     ---Purpose: Creates an array which  is the copy of the given
     --          argument.
 
-    Delete ( me : out ) is redefined;
-    ---C++: alias "Standard_EXPORT virtual ~DBC_BaseArray(){Delete();}"
+    ---C++: alias "  Standard_EXPORT virtual ~DBC_BaseArray();"
 
     Length (me) returns Integer is static ;
     ---C++: inline

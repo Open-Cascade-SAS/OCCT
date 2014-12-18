@@ -33,6 +33,16 @@ HatchGen_IntersectionPoint::HatchGen_IntersectionPoint () :
 }
 
 //=======================================================================
+// Function : ~HatchGen_IntersectionPoint
+// Purpose  : Destructor
+//=======================================================================
+
+HatchGen_IntersectionPoint::~HatchGen_IntersectionPoint()
+{
+}
+
+
+//=======================================================================
 // Function : SetIndex
 // Purpose  : Sets the index of the supporting curve.
 //=======================================================================

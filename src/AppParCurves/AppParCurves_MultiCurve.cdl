@@ -80,11 +80,9 @@ is
 
     returns MultiCurve from AppParCurves
     raises ConstructionError from Standard;
-    
-    
-    Delete(me:out) is virtual;
-    ---C++: alias "Standard_EXPORT virtual ~AppParCurves_MultiCurve(){Delete();}"
-    
+
+    ---C++: alias "  Standard_EXPORT virtual ~AppParCurves_MultiCurve();"
+
     SetNbPoles(me: in out; nbPoles: Integer)
     	---Purpose: The number of poles of the MultiCurve 
     	--          will be set to <nbPoles>.

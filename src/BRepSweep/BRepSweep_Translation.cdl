@@ -45,9 +45,6 @@ is
     raises
     	ConstructionError from Standard; -- if <V> is null
 
-    Delete(me:out) is redefined;
-    ---C++: alias "Standard_EXPORT virtual ~BRepSweep_Translation(){Delete() ; }"
-    
     -- """"""""""""""""""""""""""""""""""""""""""""""""""""""
     -- Methods supporting the creation of the geometric part.
     -- """"""""""""""""""""""""""""""""""""""""""""""""""""""

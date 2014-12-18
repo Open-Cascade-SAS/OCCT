@@ -15,7 +15,19 @@
 #include <Standard_Integer.hxx>
 #include <math_FunctionSet.ixx>
 
-Standard_Integer math_FunctionSet::GetStateNumber() { return 0; }
+//=======================================================================
+//function : ~math_FunctionSet
+//purpose  : Destructor
+//=======================================================================
+math_FunctionSet::~math_FunctionSet()
+{
+}
 
-void math_FunctionSet::Delete()
-{}
+//=======================================================================
+//function : GetStateNumber
+//purpose  : 
+//=======================================================================
+Standard_Integer math_FunctionSet::GetStateNumber()
+{
+  return 0;
+}

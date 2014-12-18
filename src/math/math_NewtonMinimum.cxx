@@ -69,8 +69,10 @@ math_NewtonMinimum::math_NewtonMinimum(math_MultipleVarFunctionWithHessian& F,
        TheStatus = math_NotBracketed;
 }
 //============================================================================
-void math_NewtonMinimum::Delete()
-{}
+math_NewtonMinimum::~math_NewtonMinimum()
+{
+}
+
 //============================================================================
 void math_NewtonMinimum::Perform(math_MultipleVarFunctionWithHessian& F,
 				 const math_Vector& StartingPoint)

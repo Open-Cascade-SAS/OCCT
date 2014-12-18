@@ -17,8 +17,14 @@
 #include <Adaptor3d_Curve.ixx>
 #include <Standard_NotImplemented.hxx>
 
-void Adaptor3d_Curve::Delete()
-{}
+//=======================================================================
+//function : ~Adaptor3d_Curve
+//purpose  : Destructor
+//=======================================================================
+
+Adaptor3d_Curve::~Adaptor3d_Curve()
+{
+}
 
 //=======================================================================
 //function : FirstParameter

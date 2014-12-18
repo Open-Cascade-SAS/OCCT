@@ -68,9 +68,6 @@ HatchGen_PointOnHatching::HatchGen_PointOnHatching (const IntRes2d_IntersectionP
   myPoints.Clear() ;
 }
 
-void HatchGen_PointOnHatching::Delete()
-{}
-
 //=======================================================================
 // Function : AddPoint
 // Purpose  : Adds a point on element to the point.
@@ -87,7 +84,6 @@ void HatchGen_PointOnHatching::AddPoint (const HatchGen_PointOnElement& Point,
        IPnt++) ;
   if (IPnt > NbPnt) myPoints.Append (Point) ;
 }
-
 
 //=======================================================================
 // Function : NbPoints

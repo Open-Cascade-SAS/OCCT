@@ -281,8 +281,9 @@ void  math_BFGS::Perform(math_MultipleVarFunctionWithGradient& F,
     }
 
 
-    void math_BFGS::Delete()
-    {}
+    math_BFGS::~math_BFGS()
+    {
+    }
 
     void math_BFGS::Dump(Standard_OStream& o) const {
 

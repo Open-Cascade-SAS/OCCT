@@ -216,8 +216,9 @@ void  math_FRPR::Perform(math_MultipleVarFunctionWithGradient& F,
     }
 
 
-    void math_FRPR::Delete()
-    {}
+    math_FRPR::~math_FRPR()
+    {
+    }
 
     void math_FRPR::Dump(Standard_OStream& o) const {
 

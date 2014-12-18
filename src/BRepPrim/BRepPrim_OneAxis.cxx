@@ -129,8 +129,14 @@ BRepPrim_OneAxis::BRepPrim_OneAxis(const BRepPrim_Builder& B,
 
 }
 
-void BRepPrim_OneAxis::Delete()
-{}
+//=======================================================================
+//function : ~BRepPrim_OneAxis
+//purpose  : Destructor
+//=======================================================================
+
+BRepPrim_OneAxis::~BRepPrim_OneAxis()
+{
+}
 
 //=======================================================================
 //function : SetMeridianOffset

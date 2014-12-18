@@ -689,8 +689,9 @@ DF(1, F.NbEquations(),
   Perform(F, StartingPoint, InfBound, SupBound);
 }
 
-void math_FunctionSetRoot::Delete()
-{}
+math_FunctionSetRoot::~math_FunctionSetRoot()
+{
+}
 
 void math_FunctionSetRoot::SetTolerance(const math_Vector& Tolerance)
 {

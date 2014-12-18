@@ -99,8 +99,9 @@ AppParCurves_MultiPoint::AppParCurves_MultiPoint(const TColgp_Array1OfPnt&   tab
   }
 }
 
-void AppParCurves_MultiPoint::Delete()
-{}
+AppParCurves_MultiPoint::~AppParCurves_MultiPoint()
+{
+}
 
 void AppParCurves_MultiPoint::Transform(const Standard_Integer CuIndex,
 					const Standard_Real    x,

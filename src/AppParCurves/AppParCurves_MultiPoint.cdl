@@ -74,10 +74,8 @@ is
     	--          NbPoints is the total number of Points.
    
     returns MultiPoint from AppParCurves;   
-   
-	
-    Delete(me:out) is virtual;
-    ---C++: alias "Standard_EXPORT virtual ~AppParCurves_MultiPoint(){Delete();}"
+
+    ---C++: alias "  Standard_EXPORT virtual ~AppParCurves_MultiPoint();"
     
     SetPoint(me: in out; Index: Integer; Point: Pnt)
     	---Purpose: the 3d Point of range Index of this MultiPoint is 

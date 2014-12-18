@@ -51,8 +51,9 @@ is
     	-- The maximum number of iterations allowed is given by NbIterations.
 
     returns BissecNewton;
-    
-    
+
+    ---C++: alias "  Standard_EXPORT virtual ~math_BissecNewton();"    
+
     IsSolutionReached(me: in out; F: out FunctionWithDerivative)
     	---Purpose:    
     	-- This method is called at the end of each iteration to check if the

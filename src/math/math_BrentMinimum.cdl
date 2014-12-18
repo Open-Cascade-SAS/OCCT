@@ -64,8 +64,9 @@ is
    	-- The maximum number of iterations allowed is given by NbIterations.
     
     returns BrentMinimum;
-    
-    
+
+    ---C++: alias "  Standard_EXPORT virtual ~math_BrentMinimum();"
+
     Perform(me: in out; F: in out Function; 
             Ax, Bx, Cx: Real)
     	---Purpose: 
@@ -85,11 +86,11 @@ is
     	-- solution is found.
     	-- It can be redefined in a sub-class to implement a specific test to
     	-- stop the iterations.
-    
+
     returns Boolean
     is virtual;
-    
-    
+
+
     IsDone(me)
     	---Purpose: Returns true if the computations are successful, otherwise returns false.
     	---C++: inline

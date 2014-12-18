@@ -88,8 +88,7 @@ is
     returns NewtonFunctionSetRoot;
 
 
-    Delete(me:out) is virtual;
-    	---C++: alias "Standard_EXPORT virtual ~math_NewtonFunctionSetRoot(){Delete();}"
+    ---C++: alias "  Standard_EXPORT virtual ~math_NewtonFunctionSetRoot();"
     
     SetTolerance(me: in out; XTol: Vector)
     	---Purpose: Initializes the tolerance values for the unknowns.

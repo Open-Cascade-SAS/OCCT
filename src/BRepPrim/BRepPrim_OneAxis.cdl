@@ -67,9 +67,6 @@ raises
     OutOfRange
 
 is
-    Delete(me:out) is virtual ;
-    ---C++: alias ~
-    
     Initialize(B : Builder from BRepPrim; 
     	       A : Ax2 from gp; 
     	       VMin, VMax : Real from  Standard);
@@ -432,6 +429,8 @@ is
 	---C++: return const &
     raises DomainError -- if VMinInfinite()
     is static;
+
+    ---C++ : alias "  Standard_EXPORT virtual ~BRepPrim_OneAxis();"
 
 fields
     myBuilder  : Builder from BRepPrim   is protected;  

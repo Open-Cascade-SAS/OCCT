@@ -62,8 +62,14 @@ BRepSweep_NumLinearRegularSweep::BRepSweep_NumLinearRegularSweep
   myBuiltShapes.Init(Standard_False); 
 }
 
-void BRepSweep_NumLinearRegularSweep::Delete()
-{}
+//=======================================================================
+//function : ~BRepSweep_NumLinearRegularSweep
+//purpose  : Destructor
+//=======================================================================
+
+BRepSweep_NumLinearRegularSweep::~BRepSweep_NumLinearRegularSweep()
+{
+}
 
 //=======================================================================
 //function : Shape

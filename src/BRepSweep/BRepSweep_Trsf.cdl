@@ -42,10 +42,6 @@ uses
     Orientation from TopAbs
     
 is
-
-    Delete(me:out) is redefined;
-    ---C++: alias "Standard_EXPORT virtual ~BRepSweep_Trsf(){Delete() ; }"
-    
     Initialize(aBuilder  : Builder from BRep;
                aGenShape : Shape from TopoDS;
     	       aDirWire  : NumShape from Sweep;

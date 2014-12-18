@@ -40,10 +40,6 @@ BRepSweep_Trsf::BRepSweep_Trsf(const BRep_Builder& aBuilder,
 {
 }
 
-void BRepSweep_Trsf::Delete()
-{}
-
-
 void BRepSweep_Trsf::Init()
 {
   if(!myCopy){

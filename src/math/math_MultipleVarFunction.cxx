@@ -15,7 +15,19 @@
 #include <Standard_Integer.hxx>
 #include <math_MultipleVarFunction.ixx>
 
-Standard_Integer math_MultipleVarFunction::GetStateNumber() { return 0; }
+//=======================================================================
+//function : ~math_MultipleVarFunction
+//purpose  : Destructor
+//=======================================================================
+math_MultipleVarFunction::~math_MultipleVarFunction()
+{
+}
 
-void math_MultipleVarFunction::Delete()
-{}
+//=======================================================================
+//function : GetStateNumber
+//purpose  : 
+//=======================================================================
+Standard_Integer math_MultipleVarFunction::GetStateNumber()
+{
+  return 0;
+}

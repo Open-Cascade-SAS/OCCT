@@ -60,8 +60,7 @@ is
     --  Warning: This constructor do not computation 
     returns  NewtonMinimum;
     
-    Delete(me:out) is virtual;
-    ---C++: alias "Standard_EXPORT virtual ~math_NewtonMinimum(){Delete();}"
+    ---C++: alias "  Standard_EXPORT virtual ~math_NewtonMinimum();"
     
     Perform(me: in out; F: in out MultipleVarFunctionWithHessian;
     	    StartingPoint: Vector)

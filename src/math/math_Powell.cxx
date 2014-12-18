@@ -104,7 +104,9 @@ static Standard_Boolean MinimizeDirection(math_Vector& P,
   return Standard_False;
 }
 
-
+math_Powell::~math_Powell()
+{
+}
 
 void math_Powell::Perform(math_MultipleVarFunction& F,
 			  const math_Vector& StartingPoint,
@@ -231,10 +233,7 @@ math_Powell::math_Powell(math_MultipleVarFunction& F,
     XTol = Tolerance;
     EPSZ = ZEPS;
     Itermax = NbIterations;
-  }
-
-void math_Powell::Delete()
-{}
+}
 
 void math_Powell::Dump(Standard_OStream& o) const {
 

@@ -52,10 +52,8 @@ is
     	-- initialization to compute the minimum of the function.
     returns FRPR;
 
+    ---C++: alias "  Standard_EXPORT virtual ~math_FRPR();"
 
-    Delete(me:out) is virtual;
-    ---C++: alias "Standard_EXPORT virtual ~math_FRPR(){Delete();}"
-    
     Perform(me: in out; F: in out MultipleVarFunctionWithGradient; 
     	    StartingPoint: Vector)
 	---Purpose: Use this method after a call to the initialization constructor

@@ -192,8 +192,7 @@ is
     --           asked for copy by the user of CopyTool, not by copying
     --           another Entity)
 
-    Destroy (me: in out) is virtual;
-    ---C++: alias "Standard_EXPORT virtual ~Interface_CopyTool() { Destroy(); }"
+    ---C++: alias "  Standard_EXPORT virtual ~Interface_CopyTool();"
 
     fields
 

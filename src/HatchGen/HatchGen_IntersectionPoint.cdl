@@ -170,7 +170,9 @@ is
     
     	---Purpose: Dump of the point on element.
 
-    	is deferred ;
+    	is deferred;
+
+    ---C++: alias "  Standard_EXPORT virtual ~HatchGen_IntersectionPoint();"
 	
 
 fields

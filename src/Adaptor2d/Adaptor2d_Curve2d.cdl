@@ -52,9 +52,6 @@ is
     --     Global methods - Apply to the whole curve.
     --     
     
-    Delete(me:out) is virtual;
-    ---C++: alias "Standard_EXPORT virtual ~Adaptor2d_Curve2d(){Delete();}"
-    
     FirstParameter(me) returns Real
     is virtual;
 
@@ -229,6 +226,8 @@ is
      raises 
     	NoSuchObject from Standard
      is virtual;
+
+     ---C++: alias "  Standard_EXPORT virtual ~Adaptor2d_Curve2d();"
      
 end Curve2d;
 

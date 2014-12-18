@@ -37,8 +37,7 @@ raises
 is
     Create returns Profiler from GeomFill;
     
-    Delete(me:out) is virtual;
-    ---C++: alias "Standard_EXPORT virtual ~GeomFill_Profiler(){Delete() ; }"
+    ---C++: alias "  Standard_EXPORT virtual ~GeomFill_Profiler();"
     
     AddCurve( me    : in out;
               Curve : in Curve from Geom)

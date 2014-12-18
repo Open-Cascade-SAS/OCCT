@@ -81,15 +81,11 @@ is
 
     -- """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-    Delete(me:out) is virtual ;
-    ---C++: alias ~
-    
     Initialize(aBuilder  : Builder from BRepSweep;
 	       aGenShape : Shape from TopoDS;
 	       aDirWire  : NumShape from Sweep);
 	---Purpose: Creates a NumLinearRegularSweep.    <aBuilder>  gives
 	--          basic topological services.
-    
 
     -- """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
     --  Deferred Methods supporting the creation of the geometric part.
@@ -97,10 +93,10 @@ is
     -- """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
     
     MakeEmptyVertex(me : in out; aGenV: Shape from TopoDS; aDirV: NumShape from Sweep)
-    returns Shape from TopoDS 
+    returns Shape from TopoDS is deferred;
 	---Purpose: Builds the vertex addressed by [aGenV,aDirV], with its
 	--          geometric part, but without subcomponents.
-    is deferred;
+    ---C++ : alias "  Standard_EXPORT virtual ~BRepSweep_NumLinearRegularSweep();"
     
     MakeEmptyDirectingEdge(me: in out; aGenV: Shape from TopoDS; aDirE: NumShape from Sweep)
     returns Shape from TopoDS
@@ -326,8 +322,7 @@ is
     
     
     Closed(me) returns Boolean from Standard is static;
-    
-    
+
 fields
 
     -- Topology builder.

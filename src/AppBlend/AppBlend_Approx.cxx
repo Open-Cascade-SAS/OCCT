@@ -16,5 +16,10 @@
 
 #include <AppBlend_Approx.ixx>
 
-void AppBlend_Approx::Delete()
-{}
+//=======================================================================
+//function : AppBlend_Approx
+//purpose  : Destructor
+//=======================================================================
+AppBlend_Approx::~AppBlend_Approx()
+{
+}

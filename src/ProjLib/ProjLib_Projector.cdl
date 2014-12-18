@@ -42,8 +42,7 @@ is
      Create ;
 	---Purpose: Sets the type to OtherCurve
 	
-     Delete(me:out) is virtual;
-     ---C++: alias "Standard_EXPORT virtual ~ProjLib_Projector(){Delete() ; }"
+     ---C++: alias "  Standard_EXPORT virtual ~ProjLib_Projector();"
     
      IsDone(me) returns Boolean from Standard
      is static;

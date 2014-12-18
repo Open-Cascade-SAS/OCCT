@@ -62,9 +62,6 @@ is
     --     Global methods - Apply to the whole surface.
     --     
     
-    Delete(me:out) is virtual;
-    ---C++: alias "Standard_EXPORT virtual ~Adaptor3d_Surface(){Delete();}"
-    
     FirstUParameter(me) returns Real
     is virtual;
 
@@ -315,6 +312,8 @@ is
     raises 
        NoSuchObject from Standard -- only for Offset Surface
     is virtual;
+
+    ---C++: alias "  Standard_EXPORT virtual ~Adaptor3d_Surface();"
 	
 end Surface;
 
