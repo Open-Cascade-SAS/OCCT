@@ -59,6 +59,7 @@
   // in core since OpenGL ES 3.0, extension GL_OES_rgb8_rgba8
   #define GL_RGB8  0x8051
   #define GL_RGBA8 0x8058
+  #define GL_LUMINANCE8 0x8040
   // GL_EXT_texture_format_BGRA8888
   #define GL_BGRA_EXT 0x80E1 // same as GL_BGRA on desktop
 
