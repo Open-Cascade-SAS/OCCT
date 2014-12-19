@@ -772,6 +772,28 @@ HasShape() const
   return (hasshape&&comes);
 }
 
+//================================================================
+// Function : HasSelectedShape
+// Purpose  : Checks if there is a selected shape regardless of its decomposition status
+//================================================================
+Standard_Boolean AIS_LocalContext::HasSelectedShape() const
+{
+  if (AIS_Selection::CurrentSelection()->Extent() == 0)
+    return Standard_False;
+
+  Handle(Standard_Transient) aCurSelection = AIS_Selection::CurrentSelection()->Value();
+  if (aCurSelection.IsNull())
+    return Standard_False;
+
+  Handle(SelectMgr_EntityOwner) anOwner = Handle(SelectMgr_EntityOwner)::DownCast (aCurSelection);
+  Handle(StdSelect_BRepOwner) aBrepOwner = Handle(StdSelect_BRepOwner)::DownCast (anOwner);
+  if (aBrepOwner.IsNull())
+  {
+    return Standard_False;
+  }
+  return aBrepOwner->HasShape();
+}
+
 //==================================================
 // Function: 
 // Purpose :
@@ -785,6 +807,7 @@ TopoDS_Shape AIS_LocalContext::SelectedShape() const
   {
     return TopoDS_Shape();
   }
+
   return aBRO->Shape().Located (aBRO->Location() * aBRO->Shape().Location());
 }
 

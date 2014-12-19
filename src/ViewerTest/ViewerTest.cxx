@@ -3644,10 +3644,34 @@ static Standard_Integer VState (Draw_Interpretor& theDI,
     return 1;
   }
 
-  TCollection_AsciiString anOption (theArgNb >= 2 ? theArgVec[1] : "");
-  anOption.LowerCase();
-  if (anOption == "-detectedEntities"
-   || anOption == "-entities")
+  Standard_Boolean toPrintEntities = Standard_False;
+  Standard_Boolean toCheckSelected = Standard_False;
+
+  for (Standard_Integer anArgIdx = 1; anArgIdx < theArgNb; ++anArgIdx)
+  {
+    TCollection_AsciiString anOption (theArgVec[anArgIdx]);
+    anOption.LowerCase();
+    if (anOption == "-detectedentities"
+      || anOption == "-entities")
+    {
+      toPrintEntities = Standard_True;
+    }
+    else if (anOption == "-hasselected")
+    {
+      toCheckSelected = Standard_True;
+    }
+  }
+
+  if (toCheckSelected)
+  {
+    aCtx->InitSelected();
+    TCollection_AsciiString hasSelected (static_cast<Standard_Integer> (aCtx->HasSelectedShape()));
+    theDI << "Check if context has selected shape: " << hasSelected << "\n";
+
+    return 0;
+  }
+
+  if (toPrintEntities)
   {
     theDI << "Detected entities:\n";
     Handle(StdSelect_ViewerSelector3d) aSelector = aCtx->HasOpenedContext() ? aCtx->LocalSelector() : aCtx->MainSelector();
@@ -4664,9 +4688,10 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
 		  __FILE__,VActivatedMode,group);
 
   theCommands.Add("vstate",
-      "vstate [-entities] [name1] ... [nameN]"
+      "vstate [-entities] [-hasSelected] [name1] ... [nameN]"
       "\n\t\t: Reports show/hidden state for selected or named objects"
-      "\n\t\t:   -entities - print low-level information about detected entities",
+      "\n\t\t:   -entities - print low-level information about detected entities"
+      "\n\t\t:   -hasSelected - prints 1 if context has selected shape and 0 otherwise",
 		  __FILE__,VState,group);
 
   theCommands.Add("vpickshapes",

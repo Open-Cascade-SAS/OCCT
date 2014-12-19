@@ -388,6 +388,11 @@ is
     HasShape(me) returns Boolean from Standard;
     ---Purpose: returns TRUE if the detected entity is a shape
     --          coming from a Decomposition of an element.
+    HasSelectedShape(me) returns Boolean from Standard;
+    ---Purpose: returns true if current selection is not empty
+    --          and the owner of selected object contains a shape.
+    --          This method does not take into account decomposition
+    --          status of detected shape.
     SelectedShape(me) returns Shape from TopoDS;
 
     SelectedOwner(me) returns EntityOwner from SelectMgr;

@@ -1046,9 +1046,7 @@ Standard_Boolean AIS_InteractiveContext::HasSelectedShape() const
 #endif
     return Standard_False;
   }
-  return myLocalContexts(myCurLocalIndex)->HasShape();
-  
-  
+  return myLocalContexts(myCurLocalIndex)->HasSelectedShape();
 }
 
 //=======================================================================
@@ -1064,7 +1062,9 @@ TopoDS_Shape AIS_InteractiveContext::SelectedShape() const
     Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast (SelectedInteractive());
     if (!aShape.IsNull())
     {
-      aResShape = aShape->Shape().Located (TopLoc_Location (SelectedInteractive()->Transformation()) * aShape->Shape().Location());
+      TopLoc_Location aLocTrsf = SelectedInteractive()->Transformation().Form() == gp_Identity ?
+                                 TopLoc_Location() : TopLoc_Location (SelectedInteractive()->Transformation());
+      aResShape = aShape->Shape().Located (aLocTrsf * aShape->Shape().Location());
     }
 
     return aResShape;
@@ -1088,6 +1088,8 @@ Handle(AIS_InteractiveObject) AIS_InteractiveContext::Interactive() const
 Handle(AIS_InteractiveObject) AIS_InteractiveContext::SelectedInteractive() const 
 {
   if(!HasOpenedContext()){
+    if (AIS_Selection::Selection(myCurrentName.ToCString())->Extent() == 0)
+      return NULL;
     Handle(Standard_Transient) TR  =AIS_Selection::Selection(myCurrentName.ToCString())->Value();
     Handle(AIS_InteractiveObject) IO = *((Handle(AIS_InteractiveObject)*)&TR);
     return IO;}
