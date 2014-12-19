@@ -110,7 +110,12 @@ class BOPTest_Session {
     return myFuzzyValue;
   };
   //
- protected:
+protected:
+  //
+  BOPTest_Session(const BOPTest_Session&);
+  BOPTest_Session& operator=(const BOPTest_Session&);
+  //
+protected:
   //
   BOPAlgo_PaveFiller* myPaveFiller;
   BOPAlgo_Builder* myBuilder;

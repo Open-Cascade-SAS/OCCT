@@ -249,36 +249,26 @@ void OSD_MAllocHook::LogFileHandler::Close()
 
 struct StorageInfo
 {
-  Standard_Size size;
-  int nbAlloc;
-  int nbFree;
-  int nbLeftPeak;
-  std::set<unsigned long>* alive;
-  StorageInfo()
-    : size(0), nbAlloc(0), nbFree(0), nbLeftPeak(0), alive(NULL) {}
-  StorageInfo(Standard_Size theSize)
-    : size(theSize), nbAlloc(0), nbFree(0), nbLeftPeak(0), alive(NULL) {}
-  ~StorageInfo()
+  Standard_Size           size;
+  Standard_Integer        nbAlloc;
+  Standard_Integer        nbFree;
+  Standard_Integer        nbLeftPeak;
+  std::set<unsigned long> alive;
+
+  StorageInfo(Standard_Size theSize = 0)
+  : size      (theSize),
+    nbAlloc   (0),
+    nbFree    (0),
+    nbLeftPeak(0),
+    alive()
   {
-    if (alive)
-      delete alive;
   }
-  std::set<unsigned long>& Alive()
+
+  bool operator < (const StorageInfo& theOther) const
   {
-    if (!alive)
-      alive = new std::set<unsigned long>;
-    return *alive;
-  }
-  const std::set<unsigned long>& Alive() const
-  {
-    return *alive;
+    return size < theOther.size;
   }
 };
-
-inline bool operator < (const StorageInfo& one, const StorageInfo& two)
-{
-  return one.size < two.size;
-}
 
 Standard_Boolean OSD_MAllocHook::LogFileHandler::MakeReport
                    (const char* theLogFile,
@@ -345,17 +335,17 @@ Standard_Boolean OSD_MAllocHook::LogFileHandler::MakeReport
       int nbLeft = aInfo.nbAlloc - aInfo.nbFree;
       if (nbLeft > aInfo.nbLeftPeak)
         aInfo.nbLeftPeak = nbLeft;
-      aInfo.Alive().insert(aReqNum);
+      aInfo.alive.insert(aReqNum);
     }
     else
     {
       std::set<unsigned long>::iterator aFoundReqNum =
-        aInfo.Alive().find(aReqNum);
-      if (aFoundReqNum == aInfo.Alive().end())
+        aInfo.alive.find(aReqNum);
+      if (aFoundReqNum == aInfo.alive.end())
         // freeing non-registered block, skip it
         continue;
       aTotalLeftSize -= aSize;
-      aInfo.Alive().erase(aFoundReqNum);
+      aInfo.alive.erase(aFoundReqNum);
       if (aInfo.nbAlloc + 1 > 0)
         aInfo.nbFree++;
     }
@@ -400,10 +390,10 @@ Standard_Boolean OSD_MAllocHook::LogFileHandler::MakeReport
       aTotAlloc = SIZE_MAX;
     else
       aTotAlloc += aSizeAlloc;
-    if (theIncludeAlive && !aInfo.Alive().empty())
+    if (theIncludeAlive && !aInfo.alive.empty())
     {
-      for (std::set<unsigned long>::const_iterator it1 = aInfo.alive->begin();
-           it1 != aInfo.alive->end(); ++it1)
+      for (std::set<unsigned long>::const_iterator it1 = aInfo.alive.begin();
+           it1 != aInfo.alive.end(); ++it1)
       aRepFile << std::setw(10) << *it1;
     }
   }

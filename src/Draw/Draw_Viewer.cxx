@@ -20,6 +20,7 @@
 //              see : SaveView(filename)
 
 #include <Draw_Viewer.hxx>
+#include <Draw_View.hxx>
 
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
@@ -57,319 +58,6 @@ static Standard_Real    ps_gray[MAXCOLOR];
 
 enum DrawingMode {DRAW, PICK, POSTSCRIPT};
 static DrawingMode CurrentMode = DRAW;
-
-/* local window class */
-
-//=======================================================================
-// class View
-//=======================================================================
-
-class Draw_View : public Draw_Window {
-  public :
-    Draw_View(Standard_Integer i,
-	      Draw_Viewer* v,
-	      Standard_Integer X,
-	      Standard_Integer Y,
-	      Standard_Integer W,
-	      Standard_Integer H);
-
-#if defined(_WIN32) || defined(__WIN32__)
-    Draw_View(Standard_Integer i,
-	      Draw_Viewer* v,
-	      Standard_Integer X,
-	      Standard_Integer Y,
-	      Standard_Integer W,
-	      Standard_Integer H,
-        HWND win);
-#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
-  Draw_View(Standard_Integer i,
-            Draw_Viewer* v,
-            Standard_Integer X,
-            Standard_Integer Y,
-            Standard_Integer W,
-            Standard_Integer H,
-            NSWindow* theWindow);
-#endif
-
-  Draw_View(Standard_Integer i,
-	    Draw_Viewer* v,
-	    const char *w);
-
-  void WExpose();
-
-  Standard_Boolean Init(const char* typ);
-  ~Draw_View() {Destroy();}
-
-  void ResetFrame() { Framex0=Framey0=Framex1=Framey1=0; }
-
-  void GetFrame(Standard_Integer& x0,Standard_Integer& y0,
-		Standard_Integer& x1,Standard_Integer& y1) {
-    if(Framex0==Framex1) {
-      viewer->GetFrame(id,x0,y0,x1,y1);
-      Framex0=x0; Framex1=x1; Framey0=y0; Framey1=y1;
-    }
-    else {
-      x0=Framex0; x1=Framex1;
-      y0=Framey0; y1=Framey1;
-    }
-  }
-
-  Standard_Integer       id;
-  Draw_Viewer*           viewer;
-  char                   type[5];
-  Standard_Integer       FlagPers;
-  Standard_Integer       Flag2d;
-  Standard_Real          FocalDist;
-  Standard_Real          Zoom;
-  gp_Trsf                Matrix;
-  Standard_Integer       dX;
-  Standard_Integer       dY;
-  Standard_Integer       lastX;
-  Standard_Integer       lastY;
-  Standard_Integer       Framex0,Framey0,Framex1,Framey1;
-};
-
-//=======================================================================
-//function : Draw_View
-//purpose  :
-//=======================================================================
-Draw_View::Draw_View(Standard_Integer i, Draw_Viewer* v,
-			Standard_Integer X,
-			Standard_Integer Y,
-			Standard_Integer W,
-			Standard_Integer H) :
-     Draw_Window("Win", X, Y, W, H), 
-     id(i),
-	 viewer(v),
-	 FlagPers(0),
-	 Flag2d(0),
-     FocalDist(0.),
-	 Zoom(0.),
-     dX(0),dY(0),
-     lastX(0),lastY(0)
-{
-  Framex0=Framey0=Framex1=Framey1=0;
-}
-
-#if defined(_WIN32) || defined(__WIN32__)
-//=======================================================================
-//function : Draw_View
-//purpose  :
-//=======================================================================
-Draw_View::Draw_View(Standard_Integer i, Draw_Viewer* v,
-			Standard_Integer X,
-			Standard_Integer Y,
-			Standard_Integer W,
-			Standard_Integer H,
-      HWND theWin) :
-     Draw_Window("Win", X, Y, W, H, theWin), id(i), viewer(v)
-{
-  Framex0=Framey0=Framex1=Framey1=0;
-}
-#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
-Draw_View::Draw_View(Standard_Integer i, Draw_Viewer* v,
-                     Standard_Integer X,
-                     Standard_Integer Y,
-                     Standard_Integer W,
-                     Standard_Integer H,
-                     NSWindow* theWindow) :
-     Draw_Window(theWindow, "Win", X, Y, W, H), id(i), viewer(v),
-	 FlagPers(0),
-	 Flag2d(0),
-     FocalDist(0.),
-	 Zoom(0.),
-     dX(0),dY(0),
-     lastX(0),lastY(0),
-	 Framex0(0),Framey0(0),
-	 Framex1(0),Framey1(0)
-{
-}
-#endif
-
-//=======================================================================
-//function : Draw_View
-//purpose  :
-//=======================================================================
-#if defined(_WIN32) || defined (__WIN32__) || (defined(__APPLE__) && !defined(MACOSX_USE_GLX))
-	 Draw_View::Draw_View(Standard_Integer /*i*/, Draw_Viewer* /*v*/, const char* /*w*/) : viewer( NULL )
-#else
-Draw_View::Draw_View(Standard_Integer i, Draw_Viewer* v, const char* w) :
-     Draw_Window(w), id(i), viewer(v)
-#endif
-{
-
-}
-
-//=======================================================================
-//function : Init
-//purpose  :
-//=======================================================================
-
-Standard_Boolean Draw_View::Init (const char* typ)
-{
-  // default fields
-
-  Framex0=Framey0=Framex1=Framey1=0;
-  FocalDist = 500.;
-  FlagPers  = 0;
-  Flag2d    = !strcmp("-2D-",typ);
-  Zoom      = 1;
-  gp_Trsf T;
-  gp_Pnt Pvise(0,0,0);
-  if (!strcmp("+X+Y",typ) || Flag2d)
-    {
-      Matrix = T;
-    }
-  else if (!strcmp("-Y+X",typ))
-    {
-      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(0,0,1)),M_PI/2);
-    }
-  else if (!strcmp("-X-Y",typ))
-    {
-      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(0,0,1)),M_PI);
-    }
-  else if (!strcmp("+Y-X",typ))
-    {
-      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(0,0,1)),-M_PI/2);
-    }
-  else if (!strcmp("+Y+X",typ))
-    {
-      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(0,0,1)),-M_PI/2);
-      T.SetRotation(gp_Ax1(Pvise,gp_Dir(0,1,0)),M_PI);
-      Matrix.Multiply(T);
-    }
-  else if (!strcmp("-X+Y",typ))
-    {
-      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(0,1,0)),M_PI);
-    }
-  else if (!strcmp("-Y-X",typ))
-    {
-      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(0,0,1)),-M_PI/2);
-      T.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),M_PI);
-      Matrix.Multiply(T);
-    }
-  else if (!strcmp("+X-Y",typ))
-    {
-      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),M_PI);
-    }
-  else if (!strcmp("+X+Z",typ))
-    {
-      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),-M_PI/2);
-    }
-  else if (!strcmp("-Z+X",typ))
-    {
-      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),-M_PI/2);
-      T.SetRotation(gp_Ax1(Pvise,gp_Dir(0,1,0)),-M_PI/2);
-      Matrix.Multiply(T);
-    }
-  else if (!strcmp("-X-Z",typ))
-    {
-      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),-M_PI/2);
-      T.SetRotation(gp_Ax1(Pvise,gp_Dir(0,1,0)),-M_PI);
-      Matrix.Multiply(T);
-    }
-  else if (!strcmp("+Z-X",typ))
-    {
-      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),-M_PI/2);
-      T.SetRotation(gp_Ax1(Pvise,gp_Dir(0,1,0)),M_PI/2);
-      Matrix.Multiply(T);
-    }
-  else if (!strcmp("+Z+X",typ))
-    {
-      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),M_PI/2);
-      T.SetRotation(gp_Ax1(Pvise,gp_Dir(0,1,0)),M_PI/2);
-      Matrix.Multiply(T);
-    }
-  else if (!strcmp("-X+Z",typ))
-    {
-      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),M_PI/2);
-      T.SetRotation(gp_Ax1(Pvise,gp_Dir(0,1,0)),M_PI);
-      Matrix.Multiply(T);
-    }
-  else if (!strcmp("-Z-X",typ))
-    {
-      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),M_PI/2);
-      T.SetRotation(gp_Ax1(Pvise,gp_Dir(0,1,0)),-M_PI/2);
-      Matrix.Multiply(T);
-    }
-  else if (!strcmp("+X-Z",typ))
-    {
-      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),M_PI/2);
-    }
-  else if (!strcmp("+Y+Z",typ))
-    {
-      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(0,1,0)),-M_PI/2);
-      T.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),-M_PI/2);
-      Matrix.Multiply(T);
-    }
-  else if (!strcmp("-Z+Y",typ))
-    {
-      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(0,1,0)),-M_PI/2);
-    }
-  else if (!strcmp("-Y-Z",typ))
-    {
-      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(0,1,0)),-M_PI/2);
-      T.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),M_PI/2);
-      Matrix.Multiply(T);
-    }
-  else if (!strcmp("+Z-Y",typ))
-    {
-      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(0,1,0)),-M_PI/2);
-      T.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),M_PI);
-      Matrix.Multiply(T);
-    }
-  else if (!strcmp("+Z+Y",typ))
-    {
-      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(0,1,0)),M_PI/2);
-    }
-  else if (!strcmp("-Y+Z",typ))
-    {
-      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(0,1,0)),M_PI/2);
-      T.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),-M_PI/2);
-      Matrix.Multiply(T);
-    }
-  else if (!strcmp("-Z-Y",typ))
-    {
-      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(0,1,0)),M_PI/2);
-      T.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),M_PI);
-      Matrix.Multiply(T);
-    }
-  else if (!strcmp("+Y-Z",typ))
-    {
-      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(0,1,0)),M_PI/2);
-      T.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),M_PI/2);
-      Matrix.Multiply(T);
-    }
-  else if (!strcmp("AXON",typ))
-    {
-      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),-M_PI/4);
-      T.SetRotation(gp_Ax1(Pvise,gp_Dir(0,0,1)),-M_PI/4);
-      Matrix.Multiply(T);
-    }
-  else if (!strcmp("PERS",typ))
-    {
-      FlagPers =1;
-      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),-M_PI/4);
-      T.SetRotation(gp_Ax1(Pvise,gp_Dir(0,0,1)),-M_PI/4);
-      Matrix.Multiply(T);
-    }
-  else {
-    return Standard_False;
-  }
-  strcpy(type,typ);
-  return Standard_True;
-}
-
-//=======================================================================
-//function : WExpose
-//purpose  :
-//=======================================================================
-
-void Draw_View::WExpose()
-{
-  Framex0=Framey0=Framex1=Framey1=0;
-  viewer->RepaintView(id);
-}
 
 //=======================================================================
 //function : Create
@@ -416,8 +104,8 @@ void Draw_Viewer::MakeView(const Standard_Integer id,
     myViews[id] = new Draw_View(id,this,X , Y, W, H);
 
     // View fields
-    myViews[id]->dX =   W / 2;
-    myViews[id]->dY = - H / 2;
+    myViews[id]->SetDx(W / 2);
+    myViews[id]->SetDy(- H / 2);
 
     if (!myViews[id]->Init(typ))
       DeleteView(id);
@@ -446,8 +134,8 @@ void Draw_Viewer::MakeView(const Standard_Integer id,
     myViews[id]->SetUseBuffer(useBuffer);
 
     // View fields
-    myViews[id]->dX =   W / 2;
-    myViews[id]->dY = - H / 2;
+    myViews[id]->SetDx( W / 2);
+    myViews[id]->SetDy(-H / 2);
 
     if (!myViews[id]->Init(typ))
       DeleteView(id);
@@ -472,8 +160,8 @@ void Draw_Viewer::MakeView    (const Standard_Integer id,
     myViews[id] = new Draw_View(id,this,window);
 
 
-    myViews[id]->dX =   myViews[id]->WidthWin() / 2;
-    myViews[id]->dY = - myViews[id]->HeightWin() / 2;
+    myViews[id]->SetDx(myViews[id]->WidthWin() / 2);
+    myViews[id]->SetDy(-myViews[id]->HeightWin() / 2);
 
     if (!myViews[id]->Init(typ))
       DeleteView(id);
@@ -503,7 +191,7 @@ void Draw_Viewer::ResetView(const Standard_Integer id)
 {
   if (Draw_Batch) return;
   if (myViews[id]) {
-    myViews[id]->Init(myViews[id]->type);
+    myViews[id]->Init(myViews[id]->Type());
     ConfigView(id);
   }
 }
@@ -515,16 +203,27 @@ void Draw_Viewer::ResetView(const Standard_Integer id)
 
 void Draw_Viewer::SetZoom (const Standard_Integer id, const Standard_Real z)
 {
-  if (Draw_Batch) return;
-  if (myViews[id]) {
-    Standard_Real zz = z / myViews[id]->Zoom;
-    myViews[id]->Zoom = z;
+  if (Draw_Batch)
+    return;
+
+  Draw_View* aView = myViews[id];
+  if (aView)
+  {
+    Standard_Real zz = z / aView->GetZoom();
+    aView->SetZoom(z);
     Standard_Integer X,Y,W,H;
     GetPosSize(id,X,Y,W,H);
-    Standard_Real w = W;
-    myViews[id]->dX = (Standard_Integer )(   w / 2 - zz * (w/2 - myViews[id]->dX));
-    Standard_Real h = H;
-    myViews[id]->dY = (Standard_Integer )( - h / 2 + zz * (h/2 + myViews[id]->dY));
+
+    const Standard_Real w = 0.5 * static_cast<Standard_Real>(W);
+    const Standard_Real h = 0.5 * static_cast<Standard_Real>(H);
+
+    const Standard_Integer aDx = static_cast<Standard_Integer>
+      (  w - zz * (w - aView->GetDx()) );
+    const Standard_Integer aDy = static_cast<Standard_Integer>
+      ( -h + zz * (h + aView->GetDy()) );
+
+    aView->SetDx(aDx);
+    aView->SetDy(aDy);
   }
 }
 
@@ -539,7 +238,7 @@ void   Draw_Viewer::RotateView  (const Standard_Integer id,
 {
   if (Draw_Batch) return;
   if (myViews[id]) {
-    gp_Trsf T = myViews[id]->Matrix;
+    gp_Trsf T = myViews[id]->GetMatrix();
 
     T.Invert();
     gp_Pnt PP(0,0,0);
@@ -564,7 +263,7 @@ void   Draw_Viewer::RotateView  (const Standard_Integer id,
   if (myViews[id]) {
     gp_Trsf T;
     T.SetRotation(gp_Ax1(P,D),A);
-    myViews[id]->Matrix.Multiply(T);
+    myViews[id]->Transform(T);
   }
 }
 
@@ -578,7 +277,7 @@ void Draw_Viewer::SetFocal (const Standard_Integer id, const Standard_Real F)
 {
   if (Draw_Batch) return;
   if (myViews[id])
-    myViews[id]->FocalDist = F;
+    myViews[id]->SetFocalDistance(F);
 }
 
 //=======================================================================
@@ -590,7 +289,7 @@ char* Draw_Viewer::GetType (const Standard_Integer id) const
 {
   if (Draw_Batch) return blank;
   if (myViews[id])
-    return myViews[id]->type;
+    return const_cast<char*>(myViews[id]->Type());
   else
     return blank;
 }
@@ -604,9 +303,9 @@ Standard_Real Draw_Viewer::Zoom (const Standard_Integer id) const
 {
   if (Draw_Batch) return Standard_False;
   if (myViews[id])
-    return myViews[id]->Zoom;
+    return myViews[id]->GetZoom();
   else
-    return 0;
+    return 0.0;
 }
 
 //=======================================================================
@@ -618,7 +317,7 @@ Standard_Real Draw_Viewer::Focal (const Standard_Integer id) const
 {
   if (Draw_Batch) return 1.;
   if (myViews[id])
-    return myViews[id]->FocalDist;
+    return myViews[id]->GetFocalDistance();
   else
     return 0;
 }
@@ -632,7 +331,7 @@ void Draw_Viewer::GetTrsf (const Standard_Integer id,gp_Trsf& T) const
 {
   if (Draw_Batch) return;
   if (myViews[id])
-    T = myViews[id]->Matrix;
+    T = myViews[id]->GetMatrix();
 }
 
 //=======================================================================
@@ -644,7 +343,7 @@ Standard_Boolean Draw_Viewer::Is3D (const Standard_Integer id) const
 {
   if (Draw_Batch) return Standard_False;
   if (myViews[id])
-    return !myViews[id]->Flag2d;
+    return !myViews[id]->Is2D();
   else
     return Standard_False;
 }
@@ -658,7 +357,7 @@ void Draw_Viewer::SetTrsf (const Standard_Integer id,gp_Trsf& T)
 {
   if (Draw_Batch) return;
   if (myViews[id])
-    myViews[id]->Matrix = T;
+    myViews[id]->SetMatrix(T);
 }
 
 //=======================================================================
@@ -691,10 +390,10 @@ void Draw_Viewer::GetFrame(const Standard_Integer id,
   if (myViews[id]) {
     Standard_Integer X,Y,H,W;
     GetPosSize(id,X,Y,W,H);
-    xminf = - myViews[id]->dX;
-    xmaxf = W - myViews[id]->dX;
-    yminf = - myViews[id]->dY - H;
-    ymaxf = - myViews[id]->dY;
+    xminf =   - myViews[id]->GetDx();
+    xmaxf = W - myViews[id]->GetDx();
+    yminf =   - myViews[id]->GetDy() - H;
+    ymaxf =   - myViews[id]->GetDy();
   }
 }
 
@@ -709,11 +408,12 @@ void Draw_Viewer::FitView(const Standard_Integer id, const Standard_Integer fram
   if (myViews[id]) {
 
     // is this the only view in its category
-    Standard_Integer is2d = myViews[id]->Flag2d;
+    Standard_Boolean is2d = myViews[id]->Is2D();
     Standard_Integer i,nbviews = 0;
     for (i = 1; i < MAXVIEW; i++) {
       if (myViews[i]) {
-	if (myViews[i]->Flag2d == is2d) nbviews++;
+        if (myViews[i]->Is2D() == is2d)
+          ++nbviews;
       }
     }
     Standard_Boolean only = (nbviews == 1);
@@ -744,10 +444,10 @@ void Draw_Viewer::FitView(const Standard_Integer id, const Standard_Integer fram
       }
     }
     Standard_Real z;
-    umin = umin / curview->Zoom;
-    vmin = vmin / curview->Zoom;
-    umax = umax / curview->Zoom;
-    vmax = vmax / curview->Zoom;
+    umin = umin / curview->GetZoom();
+    vmin = vmin / curview->GetZoom();
+    umax = umax / curview->GetZoom();
+    vmax = vmax / curview->GetZoom();
     if ((umax - umin) < 1.e-6) {
       if ((vmax - vmin) < 1.e-6)
 	return;
@@ -761,9 +461,9 @@ void Draw_Viewer::FitView(const Standard_Integer id, const Standard_Integer fram
 	if (z2 < z) z = z2;
       }
     }
-    curview->Zoom = z;
-    curview->dX = (Standard_Integer )(    W / 2 - ((umin+umax) / 2) * z);
-    curview->dY = (Standard_Integer )(  - H / 2 - ((vmin+vmax) / 2) * z);
+    curview->SetZoom(z);
+    curview->SetDx( static_cast<Standard_Integer>( W / 2 - 0.5 * (umin+umax) * z) );
+    curview->SetDy( static_cast<Standard_Integer>(-H / 2 - 0.5 * (vmin+vmax) * z) );
   }
 }
 
@@ -777,8 +477,8 @@ void Draw_Viewer::PanView(const Standard_Integer id,
 {
   if (Draw_Batch) return;
   if (myViews[id]) {
-    myViews[id]->dX += DX;
-    myViews[id]->dY += DY;
+    myViews[id]->SetDx(myViews[id]->GetDx() + DX);
+    myViews[id]->SetDy(myViews[id]->GetDy() + DY);
   }
 }
 
@@ -793,8 +493,8 @@ void Draw_Viewer::SetPan(const Standard_Integer id,
 {
   if (Draw_Batch) return;
   if (myViews[id]) {
-    myViews[id]->dX = DX;
-    myViews[id]->dY = DY;
+    myViews[id]->SetDx(DX);
+    myViews[id]->SetDy(DY);
   }
 }
 
@@ -808,8 +508,8 @@ void Draw_Viewer::GetPan(const Standard_Integer id,
 {
   if (Draw_Batch) return;
   if (myViews[id]) {
-    DX = myViews[id]->dX;
-    DY = myViews[id]->dY;
+    DX = myViews[id]->GetDx();
+    DY = myViews[id]->GetDy();
   }
 }
 
@@ -929,10 +629,10 @@ void Draw_Viewer::UpdateView (const Standard_Integer id, const Standard_Boolean 
 void Draw_Viewer::ConfigView (const Standard_Integer id) const
 {
   if (Draw_Batch) return;
-  if (myViews[id]) {
-    myViews[id]->dX =   myViews[id]->WidthWin() / 2;
-    myViews[id]->dY = - myViews[id]->HeightWin()  / 2;
-
+  if (myViews[id])
+  {
+    myViews[id]->SetDx(myViews[id]->WidthWin()   / 2);
+    myViews[id]->SetDy(-myViews[id]->HeightWin() / 2);
   }
 }
 
@@ -965,7 +665,7 @@ void Draw_Viewer::PostScriptView (const Standard_Integer id,
     if (n == 0) return;
     CurrentMode = POSTSCRIPT;
     Draw_Display DF = MakeDisplay(id);
-    Standard_Boolean view2d = myViews[id]->Flag2d;
+    Standard_Boolean view2d = myViews[id]->Is2D();
     for (Standard_Integer i = 1; i <= n; i++)
       if (myDrawables(i)->Is3D()) {
 	if (!view2d) myDrawables(i)->DrawOn(DF);
@@ -1035,7 +735,8 @@ void Draw_Viewer::Repaint2D () const
   if (Draw_Batch) return;
   for (Standard_Integer id = 0; id < MAXVIEW; id++)
     if (myViews[id]) {
-      if (myViews[id]->Flag2d) RepaintView(id);
+      if (myViews[id]->Is2D())
+        RepaintView(id);
     }
 }
 
@@ -1049,7 +750,8 @@ void Draw_Viewer::Repaint3D () const
   if (Draw_Batch) return;
   for (Standard_Integer id = 0; id < MAXVIEW; id++)
     if (myViews[id]) {
-      if (!myViews[id]->Flag2d) RepaintView(id);
+      if (!myViews[id]->Is2D())
+        RepaintView(id);
     }
 }
 
@@ -1101,8 +803,8 @@ void Draw_Viewer::Clear2D()
   }
   for (Standard_Integer id = 0; id < MAXVIEW; id++) {
     if (myViews[id]) {
-      if (myViews[id]->Flag2d)
-	ClearView(id);
+      if (myViews[id]->Is2D())
+        ClearView(id);
     }
   }
 }
@@ -1126,8 +828,8 @@ void Draw_Viewer::Clear3D()
   }
   for (Standard_Integer id = 0; id < MAXVIEW; id++) {
     if (myViews[id]) {
-      if (!myViews[id]->Flag2d)
-	ClearView(id);
+      if (!myViews[id]->Is2D())
+        ClearView(id);
     }
   }
 }
@@ -1157,14 +859,13 @@ void Draw_Viewer::DrawOnView(const Standard_Integer id,
     xmin = ymin = DRAWINFINITE;
     xmax = ymax = -DRAWINFINITE;
 
-    Standard_Boolean view2d = myViews[id]->Flag2d;
+    Standard_Boolean view2d = myViews[id]->Is2D();
     myViews[id]->ResetFrame();
-    if ((D->Is3D() && !view2d) ||
-	(!D->Is3D() && view2d)) {
+    if ((D->Is3D() && !view2d) || (!D->Is3D() && view2d))
+    {
       D->DrawOn(d);
-
       if (CurrentMode == DRAW)
-	D->SetBounds(xmin,xmax,ymin,ymax);
+        D->SetBounds(xmin,xmax,ymin,ymax);
       d.Flush();
     }
   }
@@ -1304,8 +1005,8 @@ void Draw_Viewer::Select (Standard_Integer& id, Standard_Integer& X, Standard_In
   }
 
   if (id != -1) {
-    X =  X - myViews[id]->dX;
-    Y = -Y - myViews[id]->dY;
+    X =  X - myViews[id]->GetDx();
+    Y = -Y - myViews[id]->GetDy();
   }
   if (!wait) myViews[id]->Wait(!wait);
 #elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
@@ -1315,7 +1016,7 @@ void Draw_Viewer::Select (Standard_Integer& id, Standard_Integer& X, Standard_In
   while (id >= MAXVIEW)
   {
     GetNextEvent(wait, aWindowNumber, X, Y, Button);
-    
+
     if (Y < 0)
     {
       continue; // mouse clicked on window title
@@ -1330,8 +1031,8 @@ void Draw_Viewer::Select (Standard_Integer& id, Standard_Integer& X, Standard_In
     }
   }
 
-  X =  X - myViews[id]->dX;
-  Y = -Y - myViews[id]->dY;
+  X =  X - myViews[id]->GetDx();
+  Y = -Y - myViews[id]->GetDy();
 
 #else
   HANDLE hWnd;
@@ -1347,8 +1048,8 @@ void Draw_Viewer::Select (Standard_Integer& id, Standard_Integer& X, Standard_In
     for(int i=0 ; i<MAXVIEW ; i++)
       if (myViews[i] && myViews[i]->win == hWnd )  id = i;
   }
-  X =  X - myViews[id]->dX;
-  Y = -Y - myViews[id]->dY;
+  X =  X - myViews[id]->GetDx();
+  Y = -Y - myViews[id]->GetDy();
 #endif
 }
 
@@ -1367,12 +1068,13 @@ Standard_Integer Draw_Viewer::Pick(const Standard_Integer id,
     return 0;
 
   // is this the only view in its category
-  Standard_Integer is2d = myViews[id]->Flag2d;
+  Standard_Boolean is2d = myViews[id]->Is2D();
   Standard_Integer i,nbviews = 0;
-  for (i = 0; i < MAXVIEW; i++) {
-    if (myViews[i]) {
-      if (myViews[i]->Flag2d == is2d) nbviews++;
-    }
+  for (i = 0; i < MAXVIEW; i++)
+  {
+    if (myViews[i])
+      if (myViews[i]->Is2D() == is2d)
+        ++nbviews;
   }
   Standard_Boolean only = (nbviews == 1);
 
@@ -1526,7 +1228,7 @@ void Draw_Display::SetMode (const Standard_Integer M) const
 Standard_Real Draw_Display::Zoom() const
 {
   if (Draw_Batch) return 1.;
-  return curview->Zoom;
+  return curview->GetZoom();
 }
 
 //=======================================================================
@@ -1554,7 +1256,7 @@ void Draw_Display::DrawString(const gp_Pnt2d& ppt,
   if (ppt.X() > 1.e09 || ppt.X() < -1.e09 ) return;
   if (ppt.Y() > 1.e09 || ppt.Y() < -1.e09 ) return;
 
-  gp_Pnt2d pt(ppt.X()*curview->Zoom,ppt.Y()*curview->Zoom);
+  gp_Pnt2d pt(ppt.X()*curview->GetZoom(),ppt.Y()*curview->GetZoom());
 
   if (pt.X() > 1.e09 || pt.X() < -1.e09 ) return;
   if (pt.Y() > 1.e09 || pt.Y() < -1.e09 ) return;
@@ -1563,8 +1265,8 @@ void Draw_Display::DrawString(const gp_Pnt2d& ppt,
 
   case DRAW :
     {
-      int X =   (int) ( pt.X() + moveX + curview->dX);
-      int Y =   (int) (-pt.Y() + moveY - curview->dY);
+      int X =   (int) ( pt.X() + moveX + curview->GetDx());
+      int Y =   (int) (-pt.Y() + moveY - curview->GetDy());
       curview->DrawString(X,Y,(char *)S);
       if (Draw_Bounds) {
 	if (pt.X() + moveX > xmax) xmax = pt.X();
@@ -1644,12 +1346,13 @@ void Draw_Display::Project(const gp_Pnt& p, gp_Pnt2d& p2d) const
 {
   if (Draw_Batch) return;
   gp_Pnt pt = p;
-  pt.Transform(curview->Matrix);
+  pt.Transform(curview->GetMatrix());
   Standard_Real xp,yp,zp;
   pt.Coord(xp,yp,zp);
-  if (curview->FlagPers) {
-    xp = xp*curview->FocalDist/(curview->FocalDist-zp);
-    yp = yp*curview->FocalDist/(curview->FocalDist-zp);
+  if (curview->IsPerspective()) {
+    const Standard_Real aDistance = curview->GetFocalDistance();
+    xp = xp * aDistance / (aDistance-zp);
+    yp = yp * aDistance / (aDistance-zp);
   }
   p2d.SetCoord(xp,yp);
 }
@@ -1663,9 +1366,9 @@ Draw_Display::Draw_Display ()
 {
   if (Draw_Batch) return;
   if (curview) {
-    PtPers.SetCoord(0,0,0);
-    PtPers.Transform(curview->Matrix);
-    PtCur.SetCoord(PtPers.X()*curview->Zoom,PtPers.Y()*curview->Zoom);
+    PtPers.SetCoord(0., 0., 0.);
+    PtPers.Transform(curview->GetMatrix());
+    PtCur.SetCoord(PtPers.X()*curview->GetZoom(),PtPers.Y()*curview->GetZoom());
   }
 }
 
@@ -1677,7 +1380,8 @@ Draw_Display::Draw_Display ()
 void Draw_Display::MoveTo (const gp_Pnt2d& pp)
 {
   if (Draw_Batch) return;
-  gp_Pnt2d pt(pp.X() * curview->Zoom, pp.Y() * curview->Zoom);
+  const Standard_Real aZoom = curview->GetZoom();
+  gp_Pnt2d pt(pp.X() * aZoom, pp.Y() * aZoom);
   switch (CurrentMode) {
 
   case DRAW :
@@ -1789,7 +1493,7 @@ void Draw_Display::DrawTo (const gp_Pnt2d& pp2)
   if (pp2.X() > 1.e09 || pp2.X() < -1.e09 ) return;
   if (pp2.Y() > 1.e09 || pp2.Y() < -1.e09 ) return;
 
-  gp_Pnt2d p2(pp2.X() * curview->Zoom, pp2.Y() * curview->Zoom);
+  gp_Pnt2d p2(pp2.X() * curview->GetZoom(), pp2.Y() * curview->GetZoom());
 
   if (p2.X() > 1.e09 || p2.X() < -1.e09 ) return;
   if (p2.Y() > 1.e09 || p2.Y() < -1.e09 ) return;
@@ -1820,20 +1524,19 @@ void Draw_Display::DrawTo (const gp_Pnt2d& pp2)
     gp_Pnt2d PI1(p1);
     gp_Pnt2d PI2(p2);
 
-    if(Trim(PI1,PI2,x0,y0,x1,y1)) {
-      segm[nbseg].Init((Standard_Integer )( PI1.X() + curview->dX),
-		       (Standard_Integer )(-PI1.Y() - curview->dY),
-		       (Standard_Integer )( PI2.X() + curview->dX),
-		       (Standard_Integer )(-PI2.Y() - curview->dY));
-
-      nbseg++;
+    if(Trim(PI1,PI2,x0,y0,x1,y1))
+    {
+      segm[nbseg].Init(static_cast<Standard_Integer>( PI1.X() + curview->GetDx()),
+                       static_cast<Standard_Integer>(-PI1.Y() - curview->GetDy()),
+                       static_cast<Standard_Integer>( PI2.X() + curview->GetDx()),
+                       static_cast<Standard_Integer>(-PI2.Y() - curview->GetDy()));
+      ++nbseg;
     }
 #else
-    segm[nbseg].Init(( p1.X() + curview->dX),
-    		     (-p1.Y() - curview->dY),
-    		     ( p2.X() + curview->dX),
-    		     (-p2.Y() - curview->dY));
-
+    segm[nbseg].Init(static_cast<Standard_Integer>( p1.X() + curview->GetDx()),
+                     static_cast<Standard_Integer>(-p1.Y() - curview->GetDy()),
+                     static_cast<Standard_Integer>( p2.X() + curview->GetDx()),
+                     static_cast<Standard_Integer>(-p2.Y() - curview->GetDy()));
     nbseg++;
 #endif
     if (nbseg == MAXSEGMENT) {
@@ -1959,14 +1662,17 @@ void Draw_Display::MoveTo (const gp_Pnt& pt)
     else return;
   }
   PtPers = pt;
-  PtPers.Transform(curview->Matrix);
+  PtPers.Transform(curview->GetMatrix());
   Standard_Real xp = PtPers.X();
   Standard_Real yp = PtPers.Y();
-  if (curview->FlagPers) {
+  if (curview->IsPerspective())
+  {
     Standard_Real ZPers = PtPers.Z();
-    if (ZPers < curview->FocalDist*precpers) {
-      xp=xp*curview->FocalDist/(curview->FocalDist-ZPers);
-      yp=yp*curview->FocalDist/(curview->FocalDist-ZPers);
+    const Standard_Real aDistance = curview->GetFocalDistance();
+    if (ZPers < aDistance * precpers)
+    {
+      xp=xp * aDistance / (aDistance-ZPers);
+      yp=yp * aDistance / (aDistance-ZPers);
     }
   }
   MoveTo(gp_Pnt2d(xp,yp));
@@ -1982,35 +1688,41 @@ void Draw_Display::DrawTo (const gp_Pnt& pt)
   if (Draw_Batch) return;
   if ((CurrentMode == PICK) && found) return;
 
-  gp_Pnt pt2 = pt.Transformed(curview->Matrix);
+  gp_Pnt pt2 = pt.Transformed(curview->GetMatrix());
   Standard_Real xp2 = pt2.X();
   Standard_Real yp2 = pt2.Y();
 
-  if (curview->FlagPers) {
+  if (curview->IsPerspective())
+  {
+    const Standard_Real aZoom     = curview->GetZoom();
+    const Standard_Real aDistance = curview->GetFocalDistance();
+
     Standard_Real xp1 = PtPers.X();
     Standard_Real yp1 = PtPers.Y();
     Standard_Real zp1 = PtPers.Z();
     Standard_Real zp2 = pt2.Z();
     PtPers   = pt2;
-    if ((zp1 >= curview->FocalDist*precpers) &&
-	(zp2 >= curview->FocalDist*precpers) ) {
+    if ((zp1 >= aDistance*precpers) && (zp2 >= aDistance*precpers) )
+    {
       return;  // segment is not visible in perspective (behind the eye)
     }
-    else if (zp1 >= curview->FocalDist*precpers) {
-      xp1=xp1+(xp2-xp1)*(curview->FocalDist*precpers-zp1)/(zp2-zp1);
-      yp1=yp1+(yp2-yp1)*(curview->FocalDist*precpers-zp1)/(zp2-zp1);
-      zp1=curview->FocalDist*precpers;
-      xp1=xp1*curview->FocalDist/(curview->FocalDist-zp1);
-      yp1=yp1*curview->FocalDist/(curview->FocalDist-zp1);
-      MoveTo(gp_Pnt2d(xp1*curview->Zoom,yp1*curview->Zoom));
+    else if (zp1 >= aDistance*precpers)
+    {
+      xp1=xp1+(xp2-xp1)*(aDistance*precpers-zp1)/(zp2-zp1);
+      yp1=yp1+(yp2-yp1)*(aDistance*precpers-zp1)/(zp2-zp1);
+      zp1=aDistance*precpers;
+      xp1=xp1*aDistance/(aDistance-zp1);
+      yp1=yp1*aDistance/(aDistance-zp1);
+      MoveTo( gp_Pnt2d(xp1 * aZoom, yp1 * aZoom) );
     }
-    else if (zp2 >= curview->FocalDist*precpers) {
-      xp2=xp2+(xp1-xp2)*(curview->FocalDist*precpers-zp2)/(zp1-zp2);
-      yp2=yp2+(yp1-yp2)*(curview->FocalDist*precpers-zp2)/(zp1-zp2);
-      zp2=curview->FocalDist*precpers;
+    else if (zp2 >= aDistance*precpers)
+    {
+      xp2=xp2+(xp1-xp2)*(aDistance*precpers-zp2)/(zp1-zp2);
+      yp2=yp2+(yp1-yp2)*(aDistance*precpers-zp2)/(zp1-zp2);
+      zp2=aDistance*precpers;
     }
-    xp2=xp2*curview->FocalDist/(curview->FocalDist-zp2);
-    yp2=yp2*curview->FocalDist/(curview->FocalDist-zp2);
+    xp2 = xp2 * aDistance / (aDistance - zp2);
+    yp2 = yp2 * aDistance / (aDistance - zp2);
   }
   DrawTo(gp_Pnt2d(xp2,yp2));
   if (CurrentMode == PICK) {

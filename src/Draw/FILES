@@ -9,8 +9,9 @@ Draw_UnitCommands.cxx
 Draw_Appli.hxx
 Draw_Interpretor.hxx
 Draw_Interpretor.cxx
+Draw_View.hxx
+Draw_View.cxx
 Draw_Viewer.cxx
-Draw_Viewer.hxx
 Draw_Viewer.hxx
 Draw_Window.cxx
 Draw_Window.hxx

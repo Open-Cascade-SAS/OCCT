@@ -65,6 +65,14 @@ class NCollection_Handle : public Handle(Standard_Transient)
     const Handle(Standard_Type)& DynamicType() const 
       { return STANDARD_TYPE(NCollection_Handle); }
 
+  protected:
+
+    //! Copy constructor
+    Ptr(const Ptr&);
+
+    //! Assignment operator
+    Ptr& operator=(const Ptr&);
+
   public:
     T* myPtr; //!< Pointer to the object
   };

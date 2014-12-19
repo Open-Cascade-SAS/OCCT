@@ -15,6 +15,7 @@
 
 #include <Message_MsgFile.hxx>
 
+#include <NCollection_Buffer.hxx>
 #include <NCollection_DataMap.hxx>
 #include <OSD_Environment.hxx>
 #include <TCollection_AsciiString.hxx>
@@ -216,41 +217,35 @@ Standard_Boolean Message_MsgFile::LoadFile (const Standard_CString theFileName)
 
   //    Open the file
   FILE *anMsgFile = OSD_OpenFile(theFileName,"rb");
-  if (!anMsgFile) return Standard_False;
+  if (!anMsgFile)
+    return Standard_False;
 
-  //    Read the file into memory
-  class Buffer
-  {
-    // self-destructing buffer
-    char *myBuf;
-  public:
-    Buffer (Standard_Integer theSize) : myBuf(new char [theSize]) {}
-    ~Buffer () { delete [] myBuf; }
-    operator char* () const { return myBuf; }
-    char& operator [] (Standard_Integer theInd) { return myBuf[theInd]; }
-  };
-  Standard_Integer aFileSize = GetFileSize (anMsgFile);
-  if (aFileSize <= 0)
+  const Standard_Integer aFileSize = GetFileSize (anMsgFile);
+  NCollection_Buffer aBuffer(NCollection_BaseAllocator::CommonBaseAllocator());
+  if (aFileSize <= 0 || !aBuffer.Allocate(aFileSize + 2))
   {
     fclose (anMsgFile);
     return Standard_False;
   }
-  Buffer anMsgBuffer (aFileSize + 2);
-  Standard_Integer nbRead =
-    (Standard_Integer) fread (anMsgBuffer, 1, aFileSize, anMsgFile);
+
+  char* anMsgBuffer = reinterpret_cast<char*>(aBuffer.ChangeData());
+  const Standard_Integer nbRead =
+    static_cast<Standard_Integer>( fread(anMsgBuffer, 1, aFileSize, anMsgFile) );
+
   fclose (anMsgFile);
   if (nbRead != aFileSize)
     return Standard_False;
+
   anMsgBuffer[aFileSize] = 0;
-  anMsgBuffer[aFileSize+1] = 0;
+  anMsgBuffer[aFileSize + 1] = 0;
 
   // Read the messages in the file and append them to the global DataMap
   Standard_Boolean isLittleEndian = (anMsgBuffer[0] == '\xff' && anMsgBuffer[1] == '\xfe');
   Standard_Boolean isBigEndian    = (anMsgBuffer[0] == '\xfe' && anMsgBuffer[1] == '\xff');
   if ( isLittleEndian || isBigEndian )
   {
-    Standard_ExtCharacter * aUnicodeBuffer =
-      (Standard_ExtCharacter *) &anMsgBuffer[2];
+    Standard_ExtCharacter* aUnicodeBuffer =
+      reinterpret_cast<Standard_ExtCharacter*>(&anMsgBuffer[2]);
     // Convert Unicode representation to order adopted on current platform
 #if defined(__sparc) && defined(__sun)
     if ( isLittleEndian ) 
@@ -259,17 +254,19 @@ Standard_Boolean Message_MsgFile::LoadFile (const Standard_CString theFileName)
 #endif
     {
       // Reverse the bytes throughout the buffer
-      for (Standard_ExtCharacter * aPtr = aUnicodeBuffer;
-	   aPtr < (Standard_ExtCharacter *) &anMsgBuffer[aFileSize]; aPtr++)
+      const Standard_ExtCharacter* const anEnd =
+        reinterpret_cast<const Standard_ExtCharacter* const>(&anMsgBuffer[aFileSize]);
+
+      for (Standard_ExtCharacter* aPtr = aUnicodeBuffer; aPtr < anEnd; aPtr++)
       {
-	unsigned short aWord = *aPtr;
-	*aPtr = (aWord & 0x00ff) << 8 | (aWord & 0xff00) >> 8;
+        unsigned short aWord = *aPtr;
+        *aPtr = (aWord & 0x00ff) << 8 | (aWord & 0xff00) >> 8;
       }
     }
     return ::loadFile (aUnicodeBuffer);
   }
   else
-    return ::loadFile ((char*) anMsgBuffer);
+    return ::loadFile (anMsgBuffer);
 }
 
 //=======================================================================

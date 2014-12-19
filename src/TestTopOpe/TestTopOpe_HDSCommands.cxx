@@ -141,14 +141,11 @@ public:
   Standard_Boolean IsV() const { return (myETK == TopOpeBRepDS_VERTEX); }
   Standard_Boolean Is0() const { return IsP() || IsV(); }
   Standard_Integer Set(Standard_Integer na,const char** a,Standard_Integer iargK,Standard_Integer iargI);
-  void Delete() ;
-  Standard_EXPORT virtual ~tsee_entity() {Delete() ;} ;
+
+  virtual ~tsee_entity() {}
   void virtual Dump() const;
   void virtual See() = 0;
 };
-
-void tsee_entity::Delete()
-{}
 
 Standard_Integer tsee_entity::Set(Standard_Integer na,const char** a,Standard_Integer iargK,Standard_Integer iargI) {
   myEOK = Standard_False;
@@ -190,10 +187,8 @@ void tsee_entity::Dump() const {
 
 class tsee_entity0 : public tsee_entity {
 public:
-  
-  gp_Pnt Pnt() const;  
+  gp_Pnt Pnt() const;
   void See();
-  
 };
 
 gp_Pnt tsee_entity0::Pnt() const

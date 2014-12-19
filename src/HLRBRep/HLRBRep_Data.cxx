@@ -188,6 +188,10 @@ public:
   Standard_Integer StNbLect,StNbEcr,StNbMax,StNbMoy,StNbMoyNonNul; //-- STAT
 #endif
 
+private:
+  TableauRejection(const TableauRejection&);
+  TableauRejection& operator=(const TableauRejection&);
+
 public:
   //-- ============================================================
   TableauRejection() { 

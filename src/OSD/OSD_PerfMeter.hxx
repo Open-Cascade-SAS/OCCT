@@ -61,6 +61,11 @@ public:
   //! Assures stopping upon destruction
   ~OSD_PerfMeter() { if (myIMeter >= 0) Stop(); }
 
+private:
+
+  OSD_PerfMeter(const OSD_PerfMeter&);
+  OSD_PerfMeter& operator= (const OSD_PerfMeter&);
+
 protected:
 
   int myIMeter;
