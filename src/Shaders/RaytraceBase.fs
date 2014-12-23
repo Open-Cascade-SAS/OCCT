@@ -19,6 +19,11 @@ uniform vec3 uOriginRT;
 //! Origin of viewing ray in right-bottom corner.
 uniform vec3 uOriginRB;
 
+//! Width of the rendering window.
+uniform int uWinSizeX;
+//! Height of the rendering window.
+uniform int uWinSizeY;
+
 //! Direction of viewing ray in left-top corner.
 uniform vec3 uDirectLT;
 //! Direction of viewing ray in left-bottom corner.
@@ -139,6 +144,47 @@ vec3 MatrixRowMultiplyDir (in vec3 v,
   return vec3 (dot (m0.xyz, v),
                dot (m1.xyz, v),
                dot (m2.xyz, v));
+}
+
+//! 32-bit state of random number generator.
+uint RandState;
+
+// =======================================================================
+// function : SeedRand
+// purpose  : Applies hash function by Thomas Wang to randomize seeds
+//            (see http://www.burtleburtle.net/bob/hash/integer.html)
+// =======================================================================
+void SeedRand (in int theSeed)
+{
+  RandState = uint (int (gl_FragCoord.y) * uWinSizeX + int (gl_FragCoord.x) + theSeed);
+
+  RandState = (RandState + 0x479ab41du) + (RandState <<  8);
+  RandState = (RandState ^ 0xe4aa10ceu) ^ (RandState >>  5);
+  RandState = (RandState + 0x9942f0a6u) - (RandState << 14);
+  RandState = (RandState ^ 0x5aedd67du) ^ (RandState >>  3);
+  RandState = (RandState + 0x17bea992u) + (RandState <<  7);
+}
+
+// =======================================================================
+// function : RandInt
+// purpose  : Generates integer using Xorshift algorithm by G. Marsaglia
+// =======================================================================
+uint RandInt()
+{
+  RandState ^= (RandState << 13);
+  RandState ^= (RandState >> 17);
+  RandState ^= (RandState <<  5);
+
+  return RandState;
+}
+
+// =======================================================================
+// function : RandFloat
+// purpose  : Generates a random float in [0, 1) range
+// =======================================================================
+float RandFloat()
+{
+  return float (RandInt()) * (1.f / 4294967296.f);
 }
 
 // =======================================================================

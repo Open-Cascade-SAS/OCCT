@@ -1566,6 +1566,10 @@ Standard_Boolean OpenGl_Workspace::InitRaytraceResources (const Graphic3d_CView&
         aShaderProgram->GetUniformLocation (myGlContext, "uOffsetY");
       myUniformLocations[anIndex][OpenGl_RT_uSamples] =
         aShaderProgram->GetUniformLocation (myGlContext, "uSamples");
+      myUniformLocations[anIndex][OpenGl_RT_uWinSizeX] =
+        aShaderProgram->GetUniformLocation (myGlContext, "uWinSizeX");
+      myUniformLocations[anIndex][OpenGl_RT_uWinSizeY] =
+        aShaderProgram->GetUniformLocation (myGlContext, "uWinSizeY");
 
       myUniformLocations[anIndex][OpenGl_RT_uTextures] =
         aShaderProgram->GetUniformLocation (myGlContext, "uTextureSamplers");
@@ -2084,6 +2088,8 @@ void OpenGl_Workspace::UpdateCamera (const OpenGl_Mat4& theOrientation,
 // purpose  : Sets uniform state for the given ray-tracing shader program
 // =======================================================================
 Standard_Boolean OpenGl_Workspace::SetUniformState (const Graphic3d_CView&        theCView,
+                                                    const Standard_Integer        theSizeX,
+                                                    const Standard_Integer        theSizeY,
                                                     const OpenGl_Vec3*            theOrigins,
                                                     const OpenGl_Vec3*            theDirects,
                                                     const OpenGl_Mat4&            theUnviewMat,
@@ -2120,6 +2126,12 @@ Standard_Boolean OpenGl_Workspace::SetUniformState (const Graphic3d_CView&      
   aResult &= theRaytraceProgram->SetUniform (myGlContext,
     myUniformLocations[theProgramIndex][OpenGl_RT_uUnviewMat], theUnviewMat);
 
+  // Set window size
+  aResult &= theRaytraceProgram->SetUniform (myGlContext,
+    myUniformLocations[theProgramIndex][OpenGl_RT_uWinSizeX], theSizeX);
+  aResult &= theRaytraceProgram->SetUniform (myGlContext,
+    myUniformLocations[theProgramIndex][OpenGl_RT_uWinSizeY], theSizeY);
+
   // Set scene parameters
   aResult &= theRaytraceProgram->SetUniform (myGlContext,
     myUniformLocations[theProgramIndex][OpenGl_RT_uSceneRad], myRaytraceSceneRadius);
@@ -2146,7 +2158,7 @@ Standard_Boolean OpenGl_Workspace::SetUniformState (const Graphic3d_CView&      
   if (!aResult)
   {
 #ifdef RAY_TRACE_PRINT_INFO
-    std::cout << "Error: Failed to set uniform state for ray-tracing program" << theProgramIndex << std::endl;
+    std::cout << "Info: Not all uniforms were detected (for program " << theProgramIndex << ")" << std::endl;
 #endif
   }
 
@@ -2192,6 +2204,8 @@ Standard_Boolean OpenGl_Workspace::RunRaytraceShaders (const Graphic3d_CView& th
   myGlContext->BindProgram (myRaytraceProgram);
 
   SetUniformState (theCView,
+                   theSizeX,
+                   theSizeY,
                    theOrigins,
                    theDirects,
                    theUnviewMat,
@@ -2235,6 +2249,8 @@ Standard_Boolean OpenGl_Workspace::RunRaytraceShaders (const Graphic3d_CView& th
   myGlContext->BindProgram (myPostFSAAProgram);
 
   SetUniformState (theCView,
+                   theSizeX,
+                   theSizeY,
                    theOrigins,
                    theDirects,
                    theUnviewMat,

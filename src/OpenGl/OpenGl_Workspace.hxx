@@ -317,6 +317,8 @@ protected:
     OpenGl_RT_uOffsetX,
     OpenGl_RT_uOffsetY,
     OpenGl_RT_uSamples,
+    OpenGl_RT_uWinSizeX,
+    OpenGl_RT_uWinSizeY,
 
     OpenGl_RT_uTextures,
 
@@ -533,6 +535,8 @@ protected: //! @name methods related to ray-tracing
 
   //! Sets uniform state for the given ray-tracing shader program.
   Standard_Boolean SetUniformState (const Graphic3d_CView&        theCView,
+                                    const Standard_Integer        theSizeX,
+                                    const Standard_Integer        theSizeY,
                                     const OpenGl_Vec3*            theOrigins,
                                     const OpenGl_Vec3*            theDirects,
                                     const OpenGl_Mat4&            theUnviewMat,
