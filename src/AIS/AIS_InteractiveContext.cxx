@@ -215,10 +215,6 @@ Standard_CString AIS_InteractiveContext::DomainOfMainViewer() const
 void AIS_InteractiveContext::DisplayedObjects(AIS_ListOfInteractive& aListOfIO,
                                               const Standard_Boolean OnlyFromNeutral) const 
 {
-#ifdef OCCT_DEBUG
-  cout<<"AIS_IC::DisplayedObjects"<<endl;
-#endif
-
   AIS_DataMapIteratorOfDataMapOfIOStatus It(myObjects);
   if(!HasOpenedContext() || OnlyFromNeutral){
     for(;It.More();It.Next()){
@@ -235,15 +231,11 @@ void AIS_InteractiveContext::DisplayedObjects(AIS_ListOfInteractive& aListOfIO,
     }
 
     //parse all local contexts...
-#ifdef OCCT_DEBUG
-    cout<<"\tFrom Neutral Point : "<<theMap.Extent()<<endl;
-    Standard_Integer NbDisp;
     for(AIS_DataMapIteratorOfDataMapOfILC it1(myLocalContexts);it1.More();it1.Next()){
       const Handle(AIS_LocalContext)& LC = it1.Value();
-      NbDisp =  LC->DisplayedObjects(theMap);
-      cout<<"\tIn Local Context "<<it1.Key()<<" : "<<NbDisp<<endl;
+      LC->DisplayedObjects(theMap);
     }
-#endif
+
     Handle(AIS_InteractiveObject) curIO;
     Handle(Standard_Transient) Tr;
       for(TColStd_MapIteratorOfMapOfTransient it2(theMap);it2.More();it2.Next()){
