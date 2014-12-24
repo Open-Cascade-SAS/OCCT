@@ -135,13 +135,21 @@ void AIS_Line::Compute(const Handle(Prs3d_Projector)& aProjector, const Handle(G
 //purpose  : 
 //=======================================================================
 
-void AIS_Line::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
-				const Standard_Integer)
+void AIS_Line::ComputeSelection(const Handle(SelectMgr_Selection)& theSelection,
+                                const Standard_Integer             theMode)
 {
+  // Do not support selection modes different from 0 currently
+  if (theMode)
+    return;
 
-  if (!myLineIsSegment) ComputeInfiniteLineSelection(aSelection);
-  else ComputeSegmentLineSelection(aSelection);
-
+  if (!myLineIsSegment)
+  {
+    ComputeInfiniteLineSelection(theSelection);
+  }
+  else
+  {
+    ComputeSegmentLineSelection(theSelection);
+  }
 }
 
 
