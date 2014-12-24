@@ -268,15 +268,6 @@ is
 -- inWhichLocal gives the local context in which anIObj
 -- is displayed. By default, the index -1 refers to the last
 -- Local Context opened.
- 
-    Clear(me : mutable;
-    	  aniobj         : InteractiveObject from AIS;
-	  updateviewer   : Boolean from Standard = Standard_True);
----Purpose: Removes the interactive object aniobj from all viewers.
--- If a local context is open and if updateviewer equals
--- Standard_False, the presentation of the Interactive
--- Object activates the selection mode; the object is
--- displayed but no viewer will be updated.
 
     ClearPrs( me           :mutable;
     	      aniobj       : InteractiveObject from AIS;
@@ -2045,6 +2036,16 @@ is
 
     PurgeViewer(me:mutable;Vwr:Viewer from V3d) 
     returns Integer from Standard is static private;
+
+    redisplayPrsModes (me                : mutable;
+                       theIObj           : InteractiveObject from AIS;
+                       theToUpdateViewer : Boolean from Standard = Standard_True) is static private;
+   ---Purpose: UNKNOWN
+
+    redisplayPrsRecModes (me                : mutable;
+                          theIObj           : InteractiveObject from AIS;
+                          theToUpdateViewer : Boolean from Standard = Standard_True) is static private;
+   ---Purpose: UNKNOWN
 
 fields
 

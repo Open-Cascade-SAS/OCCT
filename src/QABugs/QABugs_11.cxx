@@ -236,10 +236,10 @@ static Standard_Integer OCC136 (Draw_Interpretor& di, Standard_Integer argc, con
   anAISCtx->AddOrRemoveCurrentObject(aSh4);
 
   //remove all this objects from context
-  anAISCtx->Clear(aSh1, Standard_False);
-  anAISCtx->Clear(aSh2, Standard_False);
-  anAISCtx->Clear(aSh3, Standard_False);
-  anAISCtx->Clear(aSh4, Standard_False);
+  anAISCtx->Remove (aSh1, Standard_False);
+  anAISCtx->Remove (aSh2, Standard_False);
+  anAISCtx->Remove (aSh3, Standard_False);
+  anAISCtx->Remove (aSh4, Standard_False);
   return 0;
 }
 
