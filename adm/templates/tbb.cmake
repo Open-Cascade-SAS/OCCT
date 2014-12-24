@@ -236,6 +236,15 @@ if (INSTALL_TBB)
   else()
     install (FILES ${3RDPARTY_TBB_LIBRARY} ${3RDPARTY_TBBMALLOC_LIBRARY} DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib${BUILD_POSTFIX}")
   endif()
+
+  set (USED_3RDPARTY_TBB_DIR "")
+else()
+  # the library directory for using by the executable
+  if (WIN32)
+    set (USED_3RDPARTY_TBB_DIR ${3RDPARTY_TBB_DLL_DIR})
+  else()
+    set (USED_3RDPARTY_TBB_DIR ${3RDPARTY_TBB_LIBRARY_DIR})
+  endif()
 endif()
 
 mark_as_advanced (3RDPARTY_TBB_LIBRARY 3RDPARTY_TBBMALLOC_LIBRARY 3RDPARTY_TBB_DLL 3RDPARTY_TBBMALLOC_DLL)

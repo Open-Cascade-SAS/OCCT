@@ -151,6 +151,15 @@ if (INSTALL_VTK)
       install(FILES "${3RDPARTY_VTK_LIBRARY_DIR}/lib${VTK_DLL_NAME}" DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib${BUILD_POSTFIX}" RENAME "lib${VTK_DLL_NAME}")
     endforeach()
   endif()
+
+  set (USED_3RDPARTY_VTK_DIR "")
+else()
+  # the library directory for using by the executable
+  if (WIN32)
+    set (USED_3RDPARTY_VTK_DIR ${3RDPARTY_VTK_DLL_DIR})
+  else()
+    set (USED_3RDPARTY_VTK_DIR ${3RDPARTY_VTK_LIBRARY_DIR})
+  endif()
 endif()
 
 mark_as_advanced (VTK_INCLUDE_DIRS VTK_LIBRARY_DIRS VTK_DIR)

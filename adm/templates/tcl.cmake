@@ -318,6 +318,15 @@ if (INSTALL_TCL)
     message (STATUS "\nWarning: tclX.X and tkX.X subdirs won't be copyied during the installation process.")
     message (STATUS "Try seeking tcl within another folder by changing 3RDPARTY_TCL_DIR variable.")
   endif()
+
+  set (USED_3RDPARTY_TCL_DIR "")
+else()
+  # the library directory for using by the executable
+  if (WIN32)
+    set (USED_3RDPARTY_TCL_DIR ${3RDPARTY_TCL_DLL_DIR})
+  else()
+    set (USED_3RDPARTY_TCL_DIR ${3RDPARTY_TCL_LIBRARY_DIR})
+  endif()
 endif()
 
 mark_as_advanced (3RDPARTY_TCL_LIBRARY 3RDPARTY_TK_LIBRARY 3RDPARTY_TCL_DLL 3RDPARTY_TK_DLL)

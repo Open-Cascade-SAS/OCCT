@@ -223,6 +223,15 @@ if (INSTALL_FREETYPE)
   else()
     install (FILES "${3RDPARTY_FREETYPE_LIBRARY}" DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib${BUILD_POSTFIX}")
   endif()
+
+  set (USED_3RDPARTY_FREETYPE_DIR "")
+else()
+  # the library directory for using by the executable
+  if (WIN32)
+    set (USED_3RDPARTY_FREETYPE_DIR ${3RDPARTY_FREETYPE_DLL_DIR})
+  else()
+    set (USED_3RDPARTY_FREETYPE_DIR ${3RDPARTY_FREETYPE_LIBRARY_DIR})
+  endif()
 endif()
 
 # unset all redundant variables

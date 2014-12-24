@@ -179,6 +179,15 @@ macro (THIRDPARTY_PRODUCT PRODUCT_NAME HEADER_NAME LIBRARY_NAME LIBRARY_NAME_DEB
     else()
       install (FILES "${3RDPARTY_${PRODUCT_NAME}_LIBRARY}" DESTINATION "${INSTALL_DIR}/${OS_WITH_BIT}/${COMPILER}/lib${BUILD_POSTFIX}")
     endif()
+
+    set (USED_3RDPARTY_${PRODUCT_NAME}_DIR "")
+  else()
+    # the library directory for using by the executable
+    if (WIN32)
+      set (USED_3RDPARTY_${PRODUCT_NAME}_DIR "${3RDPARTY_${PRODUCT_NAME}_DLL_DIR}")
+    else()
+      set (USED_3RDPARTY_${PRODUCT_NAME}_DIR "${3RDPARTY_${PRODUCT_NAME}_LIBRARY_DIR}")
+    endif()
   endif()
   
   mark_as_advanced (3RDPARTY_${PRODUCT_NAME}_LIBRARY 3RDPARTY_${PRODUCT_NAME}_DLL)
