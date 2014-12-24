@@ -241,7 +241,7 @@ Standard_EXPORT Standard_Boolean VDisplayAISObject (const TCollection_AsciiStrin
        Handle(AIS_InteractiveObject)::DownCast (aMap.Find2 (theName));
 
     if (!anOldObj.IsNull())
-      aContextAIS->Clear (anOldObj, Standard_True);
+      aContextAIS->Remove (anOldObj, Standard_True);
 
     // remove name and old object from map
     aMap.UnBind2 (theName);
@@ -2751,7 +2751,7 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
   }
   else
   {
-    anAISContext->Clear (anIO, Standard_False);
+    anAISContext->Remove (anIO, Standard_False);
     aTexturedIO = new AIS_TexturedShape (DBRep::Get (theArgv[1]));
     GetMapOfAIS().UnBind1 (anIO);
     GetMapOfAIS().UnBind2 (aShapeName);
