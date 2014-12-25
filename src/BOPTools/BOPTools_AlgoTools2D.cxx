@@ -540,7 +540,7 @@ void BOPTools_AlgoTools2D::Make2D (const TopoDS_Edge& aE,
   }
   
   //
-  aToler=.5*BRep_Tool::Tolerance(aE);
+  aToler = BRep_Tool::Tolerance(aE);
   BOPTools_AlgoTools2D::MakePCurveOnFace(aF, C3D2, f3d, l3d, aC2D, aToler);
   //
   aFirst = f3d; 
