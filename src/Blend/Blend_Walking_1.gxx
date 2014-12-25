@@ -56,6 +56,7 @@ void Blend_Walking::AddSingularPoint(const Blend_Point& P)
 
 void Blend_Walking::Perform(Blend_Function& Func,
 			    Blend_FuncInv& FuncInv,
+                            const Handle(ChFiDS_HElSpine)& HGuide,
 			    const Standard_Real Pdep,   
 			    const Standard_Real Pmax,
 			    const Standard_Real MaxStep,
@@ -154,7 +155,7 @@ void Blend_Walking::Perform(Blend_Function& Func,
     }
   }
 
-  InternalPerform(Func,FuncInv,Pmax);
+  InternalPerform(Func,FuncInv,HGuide,Pmax);
 
   done = Standard_True;
 }
@@ -461,7 +462,8 @@ Standard_Boolean Blend_Walking::Continu(Blend_Function& Func,
   previousP.ParametersOnS1(sol(1),sol(2));
   previousP.ParametersOnS2(sol(3),sol(4));
 
-  InternalPerform(Func,FuncInv,P);
+  Handle(ChFiDS_HElSpine) anHGuide;
+  InternalPerform(Func,FuncInv,anHGuide,P);
   return Standard_True;
 }
 
@@ -502,7 +504,8 @@ Standard_Boolean Blend_Walking::Continu(Blend_Function& Func,
   if(OnS1) clasonS1 = Standard_False;
   else clasonS2 = Standard_False;
 
-  InternalPerform(Func,FuncInv,P);
+  Handle(ChFiDS_HElSpine) anHGuide;
+  InternalPerform(Func,FuncInv,anHGuide,P);
 
   clasonS1 = Standard_True;
   clasonS2 = Standard_True;
@@ -548,7 +551,8 @@ Standard_Boolean Blend_Walking::Complete(Blend_Function& Func,
   previousP.ParametersOnS1(sol(1),sol(2));
   previousP.ParametersOnS2(sol(3),sol(4));
 
-  InternalPerform(Func,FuncInv,Pmin);
+  Handle(ChFiDS_HElSpine) anHGuide;
+  InternalPerform(Func,FuncInv,anHGuide,Pmin);
 
   iscomplete = Standard_True;
   return Standard_True;
