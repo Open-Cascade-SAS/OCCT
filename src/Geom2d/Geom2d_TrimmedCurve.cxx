@@ -62,9 +62,10 @@ Handle(Geom2d_Geometry) Geom2d_TrimmedCurve::Copy () const
 //=======================================================================
 
 Geom2d_TrimmedCurve::Geom2d_TrimmedCurve (const Handle(Geom2d_Curve)& C, 
-					  const Standard_Real U1, 
-					  const Standard_Real U2,
-					  const Standard_Boolean Sense) :
+                                          const Standard_Real U1, 
+                                          const Standard_Real U2,
+                                          const Standard_Boolean Sense,
+                                          const Standard_Boolean theAdjustPeriodic) :
      uTrim1 (U1),
      uTrim2 (U2)
 {
@@ -76,7 +77,7 @@ Geom2d_TrimmedCurve::Geom2d_TrimmedCurve (const Handle(Geom2d_Curve)& C,
   else
     basisCurve = Handle(Curve)::DownCast(C->Copy());
 
-  SetTrim(U1,U2,Sense);
+  SetTrim(U1, U2, Sense, theAdjustPeriodic);
 }
 
 //=======================================================================
@@ -89,7 +90,7 @@ void Geom2d_TrimmedCurve::Reverse ()
   Standard_Real U1 = basisCurve->ReversedParameter(uTrim2);
   Standard_Real U2 = basisCurve->ReversedParameter(uTrim1);
   basisCurve->Reverse();
-  SetTrim(U1,U2);
+  SetTrim(U1, U2, Standard_True, Standard_False);
 }
 
 //=======================================================================
@@ -107,9 +108,10 @@ Standard_Real Geom2d_TrimmedCurve::ReversedParameter( const Standard_Real U) con
 //purpose  : 
 //=======================================================================
 
-void Geom2d_TrimmedCurve::SetTrim (const Standard_Real U1, 
-				   const Standard_Real U2, 
-				   const Standard_Boolean Sense) 
+void Geom2d_TrimmedCurve::SetTrim (const Standard_Real U1,
+                                   const Standard_Real U2,
+                                   const Standard_Boolean Sense,
+                                   const Standard_Boolean theAdjustPeriodic) 
 {
   Standard_Boolean sameSense = Standard_True;
   if (U1 == U2)
@@ -124,10 +126,11 @@ void Geom2d_TrimmedCurve::SetTrim (const Standard_Real U1,
      // set uTrim1 in the range Udeb , Ufin
      // set uTrim2 in the range uTrim1 , uTrim1 + Period()
      uTrim1 = U1;
-     uTrim2 = U2;     
-     ElCLib::AdjustPeriodic(Udeb, Ufin, 
-			    Min(Abs(uTrim2-uTrim1)/2,Precision::PConfusion()), 
-			    uTrim1, uTrim2);
+     uTrim2 = U2;
+     if (theAdjustPeriodic)
+       ElCLib::AdjustPeriodic(Udeb, Ufin,
+                              Min(Abs(uTrim2-uTrim1)/2,Precision::PConfusion()),
+                              uTrim1, uTrim2);
   }
   else { 
     if (U1 < U2) {
@@ -316,7 +319,7 @@ void Geom2d_TrimmedCurve::Transform (const Trsf2d& T)
   basisCurve->Transform (T);
   Standard_Real U1 = basisCurve->TransformedParameter(uTrim1,T);
   Standard_Real U2 = basisCurve->TransformedParameter(uTrim2,T);
-  SetTrim(U1,U2);
+  SetTrim(U1, U2, Standard_True, Standard_False);
 }
 
 //=======================================================================

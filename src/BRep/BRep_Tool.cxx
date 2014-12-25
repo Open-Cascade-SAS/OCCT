@@ -350,7 +350,7 @@ Handle(Geom2d_Curve) BRep_Tool::CurveOnSurface(const TopoDS_Edge& E,
     GAS.Load(Plane);
 
     Handle(Geom_Curve) ProjOnPlane = 
-      GeomProjLib::ProjectOnPlane(new Geom_TrimmedCurve(C3d,f,l),
+      GeomProjLib::ProjectOnPlane(new Geom_TrimmedCurve(C3d,f,l,Standard_True,Standard_False),
                                   Plane,
                                   Plane->Position().Direction(),
                                   Standard_True);

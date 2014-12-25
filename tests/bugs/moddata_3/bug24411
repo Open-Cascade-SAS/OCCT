@@ -1,0 +1,17 @@
+puts "========"
+puts "OCC24411"
+puts "========"
+puts ""
+##############################################################################
+# SplitShape produces shape with incorrectly parameterized periodic 3D curve
+##############################################################################
+
+restore [locate_data_file OCC24411_bug-ss.brep] s
+
+explode s
+splitshape r s_1 s_1 s_2
+plane pl 0 0 0 0 0 1
+mkface f pl
+foreach e [explode r e] {
+  catch {pcurve c_$e $e f}
+}

@@ -43,7 +43,8 @@ raises ConstructionError   from Standard,
 
 is
 
-  Create (C : Curve; U1, U2 : Real; Sense : Boolean = Standard_True)
+  Create (C : Curve; U1, U2 : Real; Sense : Boolean = Standard_True;
+          theAdjustPeriodic : Boolean = Standard_True)
      returns TrimmedCurve
         --- Purpose :
         --  Creates a trimmed curve from the basis curve C limited between 
@@ -70,9 +71,9 @@ is
         --  built with a copy of the curve C. So when C is modified the
         --  TrimmedCurve is not modified
    	--  Warnings :
-        -- If <C> is periodic, parametrics bounds of the TrimmedCurve, 
-        -- can be different to [<U1>;<U2>}, if <U1> or <U2> are not in the
-        -- principal period.
+        -- If <C> is periodic and <theAdjustPeriodic> is True, parametrics 
+        -- bounds of the TrimmedCurve, can be different to [<U1>;<U2>}, 
+        -- if <U1> or <U2> are not in the principal period.
         -- Include :
         --  For more explanation see the scheme given with this class. 
     	--    Raises ConstructionError the C is not periodic and U1 or U2 are out of 
@@ -105,18 +106,20 @@ is
 	--          returns UFirst + ULast - U
 
 
-  SetTrim (me : mutable; U1, U2 : Real; Sense : Boolean = Standard_True)
+  SetTrim (me : mutable; U1, U2 : Real; Sense : Boolean = Standard_True;
+           theAdjustPeriodic : Boolean = Standard_True)
     	--- Purpose : Changes this trimmed curve, by redefining the
     	-- parameter values U1 and U2, which limit its basis curve.
     	-- Note: If the basis curve is periodic, the trimmed curve
     	-- has the same orientation as the basis curve if Sense
     	-- is true (default value) or the opposite orientation if Sense is false.
     	-- Warning
-    	-- If the basis curve is periodic, the bounds of the
-    	-- trimmed curve may be different from U1 and U2 if the
+    	-- If the basis curve is periodic and theAdjustPeriodic is True, 
+    	-- the bounds of the trimmed curve may be different from U1 and U2 if the
     	-- parametric origin of the basis curve is within the arc
     	-- of the trimmed curve. In this case, the modified
     	-- parameter will be equal to U1 or U2 plus or minus the period.
+        -- If theAdjustPeriodic is False, parameters U1 and U2 will stay unchanged.
     	-- Exceptions
     	-- Standard_ConstructionError if:
     	-- - the basis curve is not periodic, and either U1 or U2
