@@ -50,6 +50,7 @@
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_BSplineSurface.hxx>
 #include <OSD_OpenFile.hxx>
 
 #include <errno.h>
@@ -150,8 +151,8 @@ void  BRepTools::AddUVBounds(const TopoDS_Face& F,
 //purpose  : 
 //=======================================================================
 void BRepTools::AddUVBounds(const TopoDS_Face& aF, 
-			    const TopoDS_Edge& aE,
-			    Bnd_Box2d& aB)
+                            const TopoDS_Edge& aE,
+                            Bnd_Box2d& aB)
 {
   Standard_Real aT1, aT2, aXmin, aYmin, aXmax, aYmax;
   Standard_Real aUmin, aUmax, aVmin, aVmax;
@@ -179,26 +180,163 @@ void BRepTools::AddUVBounds(const TopoDS_Face& aF,
   //
   if(!aS->IsUPeriodic())
   {
-    if((aXmin<aUmin) && (aUmin < aXmax))
+    Standard_Boolean isUPeriodic = Standard_False;
+
+    // Additional verification for U-periodicity for B-spline surfaces
+    // 1. Verify that the surface is U-closed (if such flag is false). Verification uses 2 points
+    // 2. Verify periodicity of surface inside UV-bounds of the edge. Verification uses 3 or 6 points.
+    if (aS->DynamicType() == STANDARD_TYPE(Geom_BSplineSurface) &&
+        (aXmin < aUmin || aXmax > aUmax))
     {
-      aXmin=aUmin;
+      Standard_Real aTol2 = 100 * Precision::Confusion() * Precision::Confusion();
+      isUPeriodic = Standard_True;
+      gp_Pnt P1, P2;
+      // 1. Verify that the surface is U-closed
+      if (!aS->IsUClosed())
+      {
+        Standard_Real aVStep = aVmax - aVmin;
+        for (Standard_Real aV = aVmin; aV <= aVmax; aV += aVStep)
+        {
+          P1 = aS->Value(aUmin, aV);
+          P2 = aS->Value(aUmax, aV);
+          if (P1.SquareDistance(P2) > aTol2)
+          {
+            isUPeriodic = Standard_False;
+            break;
+          }
+        }
+      }
+      // 2. Verify periodicity of surface inside UV-bounds of the edge
+      if (isUPeriodic) // the flag still not changed
+      {
+        Standard_Real aV = (aVmin + aVmax) * 0.5;
+        Standard_Real aU[6]; // values of U lying out of surface boundaries
+        Standard_Real aUpp[6]; // corresponding U-values plus/minus period
+        Standard_Integer aNbPnt = 0;
+        if (aXmin < aUmin)
+        {
+          aU[0] = aXmin;
+          aU[1] = (aXmin + aUmin) * 0.5;
+          aU[2] = aUmin;
+          aUpp[0] = aU[0] + aUmax - aUmin;
+          aUpp[1] = aU[1] + aUmax - aUmin;
+          aUpp[2] = aU[2] + aUmax - aUmin;
+          aNbPnt += 3;
+        }
+        if (aXmax > aUmax)
+        {
+          aU[aNbPnt]     = aUmax;
+          aU[aNbPnt + 1] = (aXmax + aUmax) * 0.5;
+          aU[aNbPnt + 2] = aXmax;
+          aUpp[aNbPnt]     = aU[aNbPnt] - aUmax + aUmin;
+          aUpp[aNbPnt + 1] = aU[aNbPnt + 1] - aUmax + aUmin;
+          aUpp[aNbPnt + 2] = aU[aNbPnt + 2] - aUmax + aUmin;
+          aNbPnt += 3;
+        }
+        for (Standard_Integer anInd = 0; anInd < aNbPnt; anInd++)
+        {
+          P1 = aS->Value(aU[anInd], aV);
+          P2 = aS->Value(aUpp[anInd], aV);
+          if (P1.SquareDistance(P2) > aTol2)
+          {
+            isUPeriodic = Standard_False;
+            break;
+          }
+        }
+      }
     }
-    if((aXmin < aUmax) && (aUmax < aXmax))
+
+    if (!isUPeriodic)
     {
-      aXmax=aUmax;
+      if((aXmin<aUmin) && (aUmin < aXmax))
+      {
+        aXmin=aUmin;
+      }
+      if((aXmin < aUmax) && (aUmax < aXmax))
+      {
+        aXmax=aUmax;
+      }
     }
   }
 
   if(!aS->IsVPeriodic())
   {
-    if((aYmin<aVmin) && (aVmin < aYmax))
+    Standard_Boolean isVPeriodic = Standard_False;
+
+    // Additional verification for V-periodicity for B-spline surfaces
+    // 1. Verify that the surface is V-closed (if such flag is false). Verification uses 2 points
+    // 2. Verify periodicity of surface inside UV-bounds of the edge. Verification uses 3 or 6 points.
+    if (aS->DynamicType() == STANDARD_TYPE(Geom_BSplineSurface) &&
+        (aYmin < aVmin || aYmax > aVmax))
     {
-      aYmin=aVmin;
+      Standard_Real aTol2 = 100 * Precision::Confusion() * Precision::Confusion();
+      isVPeriodic = Standard_True;
+      gp_Pnt P1, P2;
+      // 1. Verify that the surface is V-closed
+      if (!aS->IsVClosed())
+      {
+        Standard_Real aUStep = aUmax - aUmin;
+        for (Standard_Real aU = aUmin; aU <= aUmax; aU += aUStep)
+        {
+          P1 = aS->Value(aU, aVmin);
+          P2 = aS->Value(aU, aVmax);
+          if (P1.SquareDistance(P2) > aTol2)
+          {
+            isVPeriodic = Standard_False;
+            break;
+          }
+        }
+      }
+      // 2. Verify periodicity of surface inside UV-bounds of the edge
+      if (isVPeriodic) // the flag still not changed
+      {
+        Standard_Real aU = (aUmin + aUmax) * 0.5;
+        Standard_Real aV[6]; // values of V lying out of surface boundaries
+        Standard_Real aVpp[6]; // corresponding V-values plus/minus period
+        Standard_Integer aNbPnt = 0;
+        if (aYmin < aVmin)
+        {
+          aV[0] = aYmin;
+          aV[1] = (aYmin + aVmin) * 0.5;
+          aV[2] = aVmin;
+          aVpp[0] = aV[0] + aVmax - aVmin;
+          aVpp[1] = aV[1] + aVmax - aVmin;
+          aVpp[2] = aV[2] + aVmax - aVmin;
+          aNbPnt += 3;
+        }
+        if (aYmax > aVmax)
+        {
+          aV[aNbPnt]     = aVmax;
+          aV[aNbPnt + 1] = (aYmax + aVmax) * 0.5;
+          aV[aNbPnt + 2] = aYmax;
+          aVpp[aNbPnt]     = aV[aNbPnt] - aVmax + aVmin;
+          aVpp[aNbPnt + 1] = aV[aNbPnt + 1] - aVmax + aVmin;
+          aVpp[aNbPnt + 2] = aV[aNbPnt + 2] - aVmax + aVmin;
+          aNbPnt += 3;
+        }
+        for (Standard_Integer anInd = 0; anInd < aNbPnt; anInd++)
+        {
+          P1 = aS->Value(aU, aV[anInd]);
+          P2 = aS->Value(aU, aVpp[anInd]);
+          if (P1.SquareDistance(P2) > aTol2)
+          {
+            isVPeriodic = Standard_False;
+            break;
+          }
+        }
+      }
     }
-    
-    if((aYmin < aVmax) && (aVmax < aYmax))
+
+    if (!isVPeriodic)
     {
-      aYmax=aVmax;
+      if((aYmin<aVmin) && (aVmin < aYmax))
+      {
+        aYmin=aVmin;
+      }
+      if((aYmin < aVmax) && (aVmax < aYmax))
+      {
+        aYmax=aVmax;
+      }
     }
   }
   
