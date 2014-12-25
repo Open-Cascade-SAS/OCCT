@@ -1860,7 +1860,7 @@ Standard_Boolean FindPointInFace(const TopoDS_Face& aF,
                                  const Standard_Real aTolE)
 {
   Standard_Integer aNbItMax;
-  Standard_Real aDist, aDTol, aPM;
+  Standard_Real aDist, aDTol, aPM, anEps;
   Standard_Boolean bRet;
   gp_Pnt aP1, aPS;
   //
@@ -1871,6 +1871,7 @@ Standard_Boolean FindPointInFace(const TopoDS_Face& aF,
   }
   bRet = Standard_False;
   aNbItMax = 15;
+  anEps = Precision::SquareConfusion();
   //
   GeomAPI_ProjectPointOnSurf& aProj=theContext->ProjPS(aF);
   //
@@ -1884,14 +1885,13 @@ Standard_Boolean FindPointInFace(const TopoDS_Face& aF,
   aPS=aProjPL.NearestPoint();
   //
   aPS.SetXYZ(aPS.XYZ()+2.*aTolE*aDB.XYZ());
-   aProj.Perform(aPS);
+  aProj.Perform(aPS);
   if (!aProj.IsDone()) {
     return bRet;
   }
   aPS=aProj.NearestPoint();
   aProjPL.Perform(aPS);
   aPS=aProjPL.NearestPoint();
-  //
   //
   do {
     aP1.SetXYZ(aPS.XYZ()+aDt*aDB.XYZ());
@@ -1907,6 +1907,9 @@ Standard_Boolean FindPointInFace(const TopoDS_Face& aF,
     aPOut = aProjPL.NearestPoint();
     //
     gp_Vec aV(aPS, aPOut);
+    if (aV.SquareMagnitude() < anEps) {
+      return bRet;
+    }
     aDB.SetXYZ(aV.XYZ());
   } while (aDist > aDTol && --aNbItMax);
   //
@@ -1948,26 +1951,33 @@ Standard_Real MinStep3D(const TopoDS_Edge& theE1,
     aR = 0.;
     aBAS.Initialize(aF, Standard_False);
     GeomAbs_SurfaceType aSType = aBAS.GetType();
-    if (aSType == GeomAbs_Cylinder) {
+    switch (aSType) {
+    case GeomAbs_Cylinder: {
       aR = aBAS.Cylinder().Radius();
+      break;
     }
-    else if (aSType == GeomAbs_Cone) {
+    case GeomAbs_Cone: {
       gp_Lin aL(aBAS.Cone().Axis());
       aR = aL.Distance(aP);
+      break;
     }
-    else if (aSType == GeomAbs_Sphere) {
+    case GeomAbs_Sphere: {
+      aDtMin = Max(aDtMin, 5.e-4);
       aR = aBAS.Sphere().Radius();
+      break;
     }
-    else if (aSType == GeomAbs_Torus) {
+    case GeomAbs_Torus: {
       aR = aBAS.Torus().MajorRadius();
+      break;
     }
-    else if (aSType == GeomAbs_SurfaceOfRevolution) {
-      aDtMin = 5.e-4;
+    default:
+      aDtMin = Max(aDtMin, 5.e-4);
+      break;
     }
     //
     if (aR > 100.) {
-      Standard_Real d = Precision::PConfusion();
-      aDtMin = sqrt(d*d + 2*d*aR);
+      Standard_Real d = 10*Precision::PConfusion();
+      aDtMin = Max(aDtMin, sqrt(d*d + 2*d*aR));
     }
     //
     if (aDt > aDtMax) {
