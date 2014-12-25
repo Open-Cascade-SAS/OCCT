@@ -1071,7 +1071,7 @@ void IntPatch_WLine::Dump() const {
   for(i=1;i<=nbp;i++) {
     Standard_Real u1,v1,u2,v2;
     Point(i).Parameters(u1,v1,u2,v2);
-    printf("%4d  [%+5.8e %+5.8e %+5.8e]  [%+5.8e %+5.8e]  [%+5.8e %+5.8e]\n",
+    printf("%4d  [%+10.20f %+10.20f %+10.20f]  [%+10.20f %+10.20f]  [%+10.20f %+10.20f]\n",
 	   i,
 	   Point(i).Value().X(),
 	   Point(i).Value().Y(),

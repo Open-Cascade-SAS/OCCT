@@ -22,7 +22,7 @@ bbuild r
 checkshape r
 
 # 2. geometry
-set MaxTol 3.0e-6
+set MaxTol 5.0e-7
 set log [bopcurves b1 b2]
 
 mksurface s1 b1
@@ -52,7 +52,7 @@ for {set i 1} {$i <= ${NbCurv}} {incr i} {
   xdistcs c_$i s1 ${U1} ${U2} 100
   set Log2 [dlog get]
   set List2 [split ${Log2} {TD= \t\n}]
-  set Tolerance 1.6e-5
+  set Tolerance 1.6e-6
   set Limit_Tol 1.0e-7
   set D_good 0.
   catch {checkList ${List2} ${Tolerance} ${D_good} ${Limit_Tol}}
@@ -62,7 +62,7 @@ for {set i 1} {$i <= ${NbCurv}} {incr i} {
   xdistcs c_$i s2 ${U1} ${U2} 100
   set Log2 [dlog get]
   set List2 [split ${Log2} {TD= \t\n}]
-  set Tolerance 1.6e-5
+  set Tolerance 1.6e-6
   set Limit_Tol 1.0e-7
   set D_good 0.
   catch {checkList ${List2} ${Tolerance} ${D_good} ${Limit_Tol}}

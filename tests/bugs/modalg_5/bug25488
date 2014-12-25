@@ -6,9 +6,15 @@ puts ""
 # Wrong result of two trimmed cylinders intersection
 ######################################################
 
-set Tolerance 3.0e-7
+set Tolerance 1.1e-7
 set D_good 0.
 set Limit_Tol 1.0e-7
+
+puts "##############################"
+puts "#!!!Search \"Attention\" keyword on this web-page for additional checking!!!"
+puts "##############################"
+puts ""
+puts ""
 
 restore [locate_data_file OCC25488_sb1_1t.draw] sb1
 restore [locate_data_file OCC25488_sb2_1t.draw] sb2

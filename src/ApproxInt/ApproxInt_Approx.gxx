@@ -936,7 +936,6 @@ void ApproxInt_Approx::Perform(const TheISurface& ISurf,
   ApproxInt_TheImpPrmSvSurfaces myImpPrmSvSurfaces(ISurf,PSurf);
   Standard_Integer nbpntbez = indicemax-indicemin;
   
-  Standard_Address ptrsvsurf = NULL;
   Standard_Boolean cut = Standard_True;
   if(nbpntbez < LimRajout) 
     myApproxBez = Standard_False;
@@ -947,7 +946,7 @@ void ApproxInt_Approx::Perform(const TheISurface& ISurf,
     cut = Standard_False;
     //-- cout<<" ApproxInt : Nb de points = "<<nbpntbez<<" Pas de rajout "<<endl;
   }
-  ptrsvsurf = &myImpPrmSvSurfaces;
+  Standard_Address ptrsvsurf = &myImpPrmSvSurfaces;
   
   if(nbpntbez < LimRajout) myApproxBez = Standard_False;
   
@@ -1057,6 +1056,11 @@ void ApproxInt_Approx::Perform(const TheISurface& ISurf,
 				       imax);
     if(myApproxBez) { 
       myComputeLineBezier.Perform(myMultiLine);
+
+#ifdef OCCT_DEBUG
+      //myMultiLine.Dump();
+#endif
+
       if (myComputeLineBezier.NbMultiCurves() == 0)
 	return;
       myTolReached&=myComputeLineBezier.IsToleranceReached();

@@ -613,3 +613,16 @@ const {
 }
   //======================================================================
 
+void ApproxInt_MultiLine::Dump() const
+{
+  TColgp_Array1OfPnt anArr1(1, 1);
+  TColgp_Array1OfPnt2d anArr2(1, 2);
+        
+  for(Standard_Integer ind = FirstPoint(); ind <= LastPoint(); ind++)
+  {
+    Value(ind, anArr1, anArr2);
+    printf("%4d  [%+10.20f %+10.20f %+10.20f]  [%+10.20f %+10.20f]  [%+10.20f %+10.20f]\n",
+      ind, anArr1(1).X(), anArr1(1).Y(), anArr1(1).Z(), anArr2(1).X(),anArr2(1).Y(),anArr2(2).X(),anArr2(2).Y());
+  }
+}
+

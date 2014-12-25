@@ -24,7 +24,7 @@ set log [bopcurves f1 f2 -2d]
 regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Toler NbCurv
 
 #This value must be equal to the analogical value in bug25292_31 and bug25292_32 of "bugs modalg_5" testgrid. 
-set MaxTol 3.e-4
+set MaxTol 1.0e-8
 
 #This value must be equal to the analogical value in bug25292_31 and bug25292_32 of "bugs modalg_5" testgrid. 
 set GoodNbCurv 1
@@ -70,8 +70,8 @@ for {set i 1} {$i <= ${NbCurv}} {incr i} {
   xdistcs c_$i s1 ${U1} ${U2} 10
   set Log2 [dlog get]
   set List2 [split ${Log2} {TD= \t\n}]
-  set Tolerance MaxTol
-  set Limit_Tol 1.0e-7
+  set Tolerance 1.0e-7
+  set Limit_Tol 1.0e-8
   set D_good 0.
   checkList ${List2} ${Tolerance} ${D_good} ${Limit_Tol}
 
@@ -80,8 +80,8 @@ for {set i 1} {$i <= ${NbCurv}} {incr i} {
   xdistcs c_$i s2 ${U1} ${U2} 10
   set Log2 [dlog get]
   set List2 [split ${Log2} {TD= \t\n}]
-  set Tolerance MaxTol
-  set Limit_Tol 1.0e-7
+  set Tolerance 1.0e-7
+  set Limit_Tol 1.0e-8
   set D_good 0.
   checkList ${List2} ${Tolerance} ${D_good} ${Limit_Tol}
 }

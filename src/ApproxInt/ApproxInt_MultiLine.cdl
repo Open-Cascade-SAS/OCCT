@@ -116,6 +116,9 @@ is
 
     MakeMLBetween(me; Low,High,NbPointsToInsert: Integer from Standard) 
     	returns MultiLine from ApproxInt is static;
+      
+    Dump(me);
+    	---Purpose: Dump of the current multi-line.
 
 --------------------------------------------------------------------------------
 

@@ -115,4 +115,9 @@ inline TheMultiLine ApproxInt_MultiLineTool::MakeMLBetween(const TheMultiLine& M
   
   return(ML.MakeMLBetween(I1,I2,NbPMin));
 }
+
+inline void ApproxInt_MultiLineTool::Dump(const TheMultiLine& ML)
+{ 
+  ML.Dump();
+}
 //================================================================================

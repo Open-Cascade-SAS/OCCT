@@ -42,5 +42,8 @@ if { ${mistake} != 0 } {
   puts "OK ${BugNumber}"
 }
 
-set 2dviewer 0
+vinit
+vdisplay c s result p_1
+vfit
 
+set only_screen 1

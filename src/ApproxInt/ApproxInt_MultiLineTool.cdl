@@ -127,5 +127,8 @@ is
     	---C++:inline
     returns Status from Approx;
     
+    Dump(myclass;  ML:  TheMultiLine);
+    	---Purpose: Dump of the current multi-line.
+    
 end MultiLineTool;    
 
