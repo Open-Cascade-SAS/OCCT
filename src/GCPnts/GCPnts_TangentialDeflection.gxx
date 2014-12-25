@@ -438,14 +438,9 @@ void GCPnts_TangentialDeflection::PerformCurve (const TheCurve& C)
             Du += Min((U2-U1)*(1.-Coef), Du*Us3);
 
             U2 = U1 + Du;
-            //if (U2 >= lastu) U2 = UUU2;
-            if (U2 >= lastu) {
-              parameters.Append (lastu);
-              points    .Append (LastPoint);
-              MorePoints = Standard_False;
-              Correction = Standard_False;
-            }
-            else D0 (C, U2, CurrentPoint);
+            if (U2 > lastu)
+              U2 = lastu;
+            D0 (C, U2, CurrentPoint);
           }
         }
       }
