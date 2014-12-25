@@ -471,13 +471,21 @@ void AIS_InteractiveContext::Load (const Handle(AIS_InteractiveObject)& theIObj,
   }
 
   if (theSelMode == -1
-  && !theToAllowDecomposition
-  && !myObjects.IsBound (theIObj))
+  && !theToAllowDecomposition)
   {
-    Standard_Integer aDispMode, aHiMod, aSelModeDef;
-    GetDefModes (theIObj, aDispMode, aHiMod, aSelModeDef);
-    Handle(AIS_GlobalStatus) aStatus = new AIS_GlobalStatus (AIS_DS_Erased, aDispMode, aSelModeDef);
-    myObjects.Bind (theIObj, aStatus);
+    if (!myObjects.IsBound (theIObj))
+    {
+      Standard_Integer aDispMode, aHiMod, aSelModeDef;
+      GetDefModes (theIObj, aDispMode, aHiMod, aSelModeDef);
+      Handle(AIS_GlobalStatus) aStatus = new AIS_GlobalStatus (AIS_DS_Erased, aDispMode, aSelModeDef);
+      myObjects.Bind (theIObj, aStatus);
+    }
+
+    // Register theIObj in the selection manager to prepare further activation of selection
+    if (!mgrSelector->Contains (theIObj))
+    {
+      mgrSelector->Load (theIObj);
+    }
   }
 }
 
