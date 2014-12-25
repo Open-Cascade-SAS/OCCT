@@ -31,7 +31,8 @@
 #include <math_NewtonFunctionRoot.hxx>
 
 
-class MyTrigoFunction: public math_FunctionWithDerivative {
+class MyTrigoFunction: public math_FunctionWithDerivative
+{
   Standard_Real AA;
   Standard_Real BB;
   Standard_Real CC;
@@ -39,21 +40,19 @@ class MyTrigoFunction: public math_FunctionWithDerivative {
   Standard_Real EE;
 
  public:
-  MyTrigoFunction(const Standard_Real A, const Standard_Real B, const Standard_Real C, const Standard_Real D, 
-	     const Standard_Real E);
+  MyTrigoFunction(const Standard_Real A,
+                  const Standard_Real B,
+                  const Standard_Real C,
+                  const Standard_Real D,
+                  const Standard_Real E)
+  : AA(A), BB(B), CC(C), DD(D), EE(E)
+  {
+  }
+
   Standard_Boolean Value(const Standard_Real X, Standard_Real& F);
   Standard_Boolean Derivative(const Standard_Real X, Standard_Real& D);
   Standard_Boolean Values(const Standard_Real X, Standard_Real& F, Standard_Real& D);
 };
-
- MyTrigoFunction::MyTrigoFunction(const Standard_Real A, const Standard_Real B, const Standard_Real C,
-			const Standard_Real D, const Standard_Real E) {
-   AA = A;
-   BB = B;
-   CC = C; 
-   DD = D; 
-   EE = E;
- }
 
  Standard_Boolean MyTrigoFunction::Value(const Standard_Real X, Standard_Real& F) {
    Standard_Real CN= cos(X), SN = sin(X);
@@ -86,37 +85,52 @@ class MyTrigoFunction: public math_FunctionWithDerivative {
  }
 
 
-math_TrigonometricFunctionRoots::math_TrigonometricFunctionRoots(const Standard_Real D,
-                         const Standard_Real E,
-			 const Standard_Real InfBound,
-			 const Standard_Real SupBound): Sol(1, 4) {
-
-  Standard_Real A = 0.0, B = 0.0, C = 0.0;
-  Perform(A, B, C, D, E, InfBound, SupBound);			   
+math_TrigonometricFunctionRoots::math_TrigonometricFunctionRoots
+                                (const Standard_Real theD,
+                                 const Standard_Real theE,
+                                 const Standard_Real theInfBound,
+                                 const Standard_Real theSupBound)
+: NbSol         (-1),
+  Sol           (1, 4),
+  InfiniteStatus(Standard_False),
+  Done          (Standard_False)
+{
+  const Standard_Real A(0.0), B(0.0), C(0.0);
+  Perform(A, B, C, theD, theE, theInfBound, theSupBound);
 }
 
 
-math_TrigonometricFunctionRoots::math_TrigonometricFunctionRoots(const Standard_Real C,
-                         const Standard_Real D,
-                         const Standard_Real E,
-			 const Standard_Real InfBound,
-			 const Standard_Real SupBound): Sol(1, 4) {
-
-  Standard_Real A =0.0, B = 0.0;
-  Perform(A, B, C, D, E, InfBound, SupBound);			   
+math_TrigonometricFunctionRoots::math_TrigonometricFunctionRoots
+                                (const Standard_Real theC,
+                                 const Standard_Real theD,
+                                 const Standard_Real theE,
+                                 const Standard_Real theInfBound,
+                                 const Standard_Real theSupBound)
+: NbSol         (-1),
+  Sol           (1, 4),
+  InfiniteStatus(Standard_False),
+  Done          (Standard_False)
+{
+  const Standard_Real A(0.0), B(0.0);
+  Perform(A, B, theC, theD, theE, theInfBound, theSupBound);
 }
 
 
 
-math_TrigonometricFunctionRoots::math_TrigonometricFunctionRoots(const Standard_Real A,
-			 const Standard_Real B,
-			 const Standard_Real C,
-                         const Standard_Real D,
-                         const Standard_Real E,
-			 const Standard_Real InfBound,
-			 const Standard_Real SupBound): Sol(1, 4) {
- 
-  Perform(A, B, C, D, E, InfBound, SupBound);
+math_TrigonometricFunctionRoots::math_TrigonometricFunctionRoots
+                                (const Standard_Real theA,
+                                 const Standard_Real theB,
+                                 const Standard_Real theC,
+                                 const Standard_Real theD,
+                                 const Standard_Real theE,
+                                 const Standard_Real theInfBound,
+                                 const Standard_Real theSupBound)
+: NbSol         (-1),
+  Sol           (1, 4),
+  InfiniteStatus(Standard_False),
+  Done          (Standard_False)
+{
+  Perform(theA, theB, theC, theD, theE, theInfBound, theSupBound);
 }
 
 void math_TrigonometricFunctionRoots::Perform(const Standard_Real A, 

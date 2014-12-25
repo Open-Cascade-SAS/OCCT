@@ -145,27 +145,32 @@ class FilletPoint
 {
 public:
   //! Creates a point on a first curve by parameter on this curve.
-  FilletPoint(Standard_Real theParam) : myParam2(0.)
-	{myParam = theParam;}
+  FilletPoint(const Standard_Real theParam);
 
   //! Changes the point position by changing point parameter on the first curve.
   void setParam(Standard_Real theParam) {myParam = theParam;}
+
   //! Returns the point parameter on the first curve.
   Standard_Real getParam() const {return myParam;}
 
   //! Returns number of found values of function in this point.
   Standard_Integer getNBValues() {return myV.Length();}
+
   //! Returns value of function in this point.
   Standard_Real getValue(int theIndex) {return myV.Value(theIndex);}
+
   //! Returns derivatives of function in this point.
   Standard_Real getDiff(int theIndex) {return myD.Value(theIndex);}
+
   //! Returns true if function is valid (rediuses vectors of fillet do not intersect any curve).
   Standard_Boolean isValid(int theIndex) {return (Standard_Boolean)myValid.Value(theIndex);}
+
   //! Returns the index of the nearest value
   int getNear(int theIndex) {return myNear.Value(theIndex);}
 
   //! Defines the parameter of the projected point on the second curve.
   void setParam2(const Standard_Real theParam2) {myParam2 = theParam2;}
+
   //! Returns the parameter of the projected point on the second curve.
   Standard_Real getParam2() { return myParam2 ; }
 
@@ -179,14 +184,17 @@ public:
 
   //! Computes difference between this point and the given. Stores difference in myD.
   Standard_Boolean calculateDiff(FilletPoint*);
+
   //! Filters out the values and leaves the most optimal one.
   void FilterPoints(FilletPoint*);
 
   //! Returns a pointer to created copy of the point
   //! warning: this is not the full copy! Copies only: myParam, myV, myD, myValid
-  FilletPoint* Copy(); 
+  FilletPoint* Copy();
+
   //! Returns the index of the solution or zero if there is no solution
   Standard_Integer hasSolution(Standard_Real theRadius);
+
   //! For debug only
   Standard_Real LowerValue() 
   {

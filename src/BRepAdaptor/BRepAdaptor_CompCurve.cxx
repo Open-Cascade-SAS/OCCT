@@ -28,22 +28,48 @@
 #include <TopExp.hxx>
 
 BRepAdaptor_CompCurve::BRepAdaptor_CompCurve()
+: TFirst  (0.0),
+  TLast   (0.0),
+  PTol    (0.0),
+  myPeriod(0.0),
+  CurIndex(-1),
+  Forward (Standard_False),
+  IsbyAC  (Standard_False),
+  Periodic(Standard_False)
 {
 }
 
-BRepAdaptor_CompCurve::BRepAdaptor_CompCurve(const TopoDS_Wire& W,
-					     const Standard_Boolean AC)
+BRepAdaptor_CompCurve::BRepAdaptor_CompCurve(const TopoDS_Wire&     theWire,
+                                             const Standard_Boolean theIsAC)
+: myWire  (theWire),
+  TFirst  (0.0),
+  TLast   (0.0),
+  PTol    (0.0),
+  myPeriod(0.0),
+  CurIndex(-1),
+  Forward (Standard_False),
+  IsbyAC  (theIsAC),
+  Periodic(Standard_False)
 {
-  Initialize(W, AC);
+  Initialize(theWire, theIsAC);
 }
 
-BRepAdaptor_CompCurve::BRepAdaptor_CompCurve(const TopoDS_Wire& W,
-					     const Standard_Boolean AC,
-					     const Standard_Real First,
-					     const Standard_Real Last,
-					     const Standard_Real Tol)
+BRepAdaptor_CompCurve::BRepAdaptor_CompCurve(const TopoDS_Wire& theWire,
+                                             const Standard_Boolean theIsAC,
+                                             const Standard_Real theFirst,
+                                             const Standard_Real theLast,
+                                             const Standard_Real theTolerance)
+: myWire  (theWire),
+  TFirst  (theFirst),
+  TLast   (theLast),
+  PTol    (theTolerance),
+  myPeriod(0.0),
+  CurIndex(-1),
+  Forward (Standard_False),
+  IsbyAC  (theIsAC),
+  Periodic(Standard_False)
 {
-  Initialize(W, AC, First, Last, Tol);
+  Initialize(theWire, theIsAC, theFirst, theLast, theTolerance);
 }
 
  void BRepAdaptor_CompCurve::Initialize(const TopoDS_Wire& W,

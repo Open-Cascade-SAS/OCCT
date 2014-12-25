@@ -28,17 +28,17 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Default constructor.
-  Standard_EXPORT BRepMesh_Circle()
+  BRepMesh_Circle() : myRadius(0.0)
   {
   }
   
   //! Constructor.
   //! @param theLocation location of a circle.
   //! @param theRadius radius of a circle.
-  Standard_EXPORT BRepMesh_Circle(const gp_XY&        theLocation,
-                                  const Standard_Real theRadius)
-    : myLocation(theLocation),
-      myRadius  (theRadius)
+  BRepMesh_Circle(const gp_XY&        theLocation,
+                  const Standard_Real theRadius)
+  : myLocation(theLocation),
+    myRadius  (theRadius)
   {
   }
   

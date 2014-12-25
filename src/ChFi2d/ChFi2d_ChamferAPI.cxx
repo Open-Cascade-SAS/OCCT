@@ -23,32 +23,38 @@
 
 // An empty constructor.
 ChFi2d_ChamferAPI::ChFi2d_ChamferAPI()
+: myStart1(0.0),
+  myEnd1  (0.0),
+  myStart2(0.0),
+  myEnd2  (0.0),
+  myCommonStart1(Standard_False),
+  myCommonStart2(Standard_False)
 {
-
 }
 
 // A constructor accepting a wire consisting of two linear edges.
-ChFi2d_ChamferAPI::ChFi2d_ChamferAPI(const TopoDS_Wire& theWire) :
-	myStart1(0.), 
-	myEnd1(0.), 
-	myStart2(0.), 
-	myEnd2(0.),
-	myCommonStart1(Standard_False), 
-	myCommonStart2(Standard_False)
+ChFi2d_ChamferAPI::ChFi2d_ChamferAPI(const TopoDS_Wire& theWire)
+: myStart1(0.0),
+  myEnd1  (0.0),
+  myStart2(0.0),
+  myEnd2  (0.0),
+  myCommonStart1(Standard_False),
+  myCommonStart2(Standard_False)
 {
   Init(theWire);
 }
 
 // A constructor accepting two linear edges.
-ChFi2d_ChamferAPI::ChFi2d_ChamferAPI(const TopoDS_Edge& theEdge1, const TopoDS_Edge& theEdge2) :
-	myStart1(0.), 
-	myEnd1(0.), 
-	myStart2(0.), 
-	myEnd2(0.),
-	myCommonStart1(Standard_False), 
-	myCommonStart2(Standard_False)
+ChFi2d_ChamferAPI::ChFi2d_ChamferAPI(const TopoDS_Edge& theEdge1, const TopoDS_Edge& theEdge2)
+: myEdge1(theEdge1),
+  myEdge2(theEdge2),
+  myStart1(0.0),
+  myEnd1  (0.0),
+  myStart2(0.0),
+  myEnd2  (0.0),
+  myCommonStart1(Standard_False),
+  myCommonStart2(Standard_False)
 {
-  Init(theEdge1, theEdge2);
 }
 
 // Initializes the class by a wire consisting of two libear edges.

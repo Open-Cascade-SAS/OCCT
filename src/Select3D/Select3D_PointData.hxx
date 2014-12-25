@@ -25,11 +25,11 @@ public:
   // Constructs internal arrays of 2D and 3D points defined
   // by number of points theNbPoints
   Select3D_PointData (const Standard_Integer theNbPoints)
+  : mynbpoints(theNbPoints)
   {
     if (theNbPoints <= 0)
       Standard_ConstructionError::Raise("Select3D_PointData");
 
-    mynbpoints = theNbPoints;
     mypolyg3d = new Select3D_Pnt[mynbpoints];
     mypolyg2d = new Select3D_Pnt2d[mynbpoints];
   }

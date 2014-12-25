@@ -31,7 +31,7 @@ public:
 public:
   //! The only constructor
   NCollection_ListNode (NCollection_ListNode* theNext)
-  { myNext = theNext; }
+  : myNext(theNext) {}
 
   //! Next pointer access
   NCollection_ListNode*& Next (void)

@@ -24,21 +24,38 @@
 
 #define ThisEntity  Handle(IGESData_IGESEntity)::DownCast(This())
 
-//  theStatusNum :
-#define IGESFlagAssocs   131072
-#define IGESFlagProps    262144
-#define IGESFourStatus    65535
-#define IGESStatusField 15
-#define IGESShiftSubord  4
-#define IGESShiftUse     8
-#define IGESShiftHier   12
+namespace
+{
+  static const Standard_Integer IGESFlagAssocs  = 131072;
+  static const Standard_Integer IGESFlagProps   = 262144;
+  static const Standard_Integer IGESFourStatus  = 65535;
+  static const Standard_Integer IGESStatusField = 15;
+  static const Standard_Integer IGESShiftSubord = 4;
+  static const Standard_Integer IGESShiftUse    = 8;
+  static const Standard_Integer IGESShiftHier   = 12;
+}
 
+//=======================================================================
+//function : IGESData_IGESEntity
+//purpose  : Default constructor.
+//=======================================================================
+IGESData_IGESEntity::IGESData_IGESEntity()
+: theType       (0),
+  theForm       (0),
+  theDefLevel   (0),
+  theStatusNum  (0),
+  theLWeightNum (0),
+  theLWeightVal (0.0),
+  theSubScriptN (0)
+{
+  theRes1[0] = theRes2[0] = '\0';
+}
 
-
-IGESData_IGESEntity::IGESData_IGESEntity ()
-      {  Clear();  theRes1[0] = theRes2[0]    = '\0';  }
-
-    void IGESData_IGESEntity::Clear ()
+//=======================================================================
+//function : Clear
+//purpose  : 
+//=======================================================================
+void IGESData_IGESEntity::Clear ()
 {
 //  Handle et DefSwitch
   theStructure.Nullify();

@@ -63,36 +63,40 @@ static Standard_Boolean isName          (const char             * aString,
 //purpose  : Constructor (file descriptor)
 //=======================================================================
 
-LDOM_XmlReader::LDOM_XmlReader (const int                       aFileDes,
-                                const Handle(LDOM_MemManager)&  aDocument,
-                                TCollection_AsciiString&        anErrorString)
-     : myEOF            (Standard_False),
-       myFileDes        (aFileDes),
-       myIStream        (cin),  // just a placeholder, myIStream will never be used anyway
-       myError          (anErrorString),
-       myDocument       (aDocument),
-	   myElement        (NULL),
-       myPtr            (&myBuffer[0]),
-       myEndPtr         (&myBuffer[0])
-{}
+LDOM_XmlReader::LDOM_XmlReader (const int                       theFileDes,
+                                const Handle(LDOM_MemManager)&  theDocument,
+                                TCollection_AsciiString&        theErrorString)
+: myEOF      (Standard_False),
+  myFileDes  (theFileDes),
+  myIStream  (cin),  // just a placeholder, myIStream will never be used anyway
+  myError    (theErrorString),
+  myDocument (theDocument),
+  myElement  (NULL),
+  myLastChild(NULL), 
+  myPtr      (&myBuffer[0]),
+  myEndPtr   (&myBuffer[0])
+{
+}
 
 //=======================================================================
 //function : LDOM_XmlReader()
 //purpose  : Constructor (istream)
 //=======================================================================
 
-LDOM_XmlReader::LDOM_XmlReader (istream&                        anInput,
-                                const Handle(LDOM_MemManager)&  aDocument,
-                                TCollection_AsciiString&        anErrorString)
-     : myEOF            (Standard_False),
-       myFileDes        (FILE_NONVALUE),
-       myIStream        (anInput),
-       myError          (anErrorString),
-       myDocument       (aDocument),
-	   myElement        (NULL),
-       myPtr            (&myBuffer[0]),
-       myEndPtr         (&myBuffer[0])
-{}
+LDOM_XmlReader::LDOM_XmlReader (istream&                        theInput,
+                                const Handle(LDOM_MemManager)&  theDocument,
+                                TCollection_AsciiString&        theErrorString)
+: myEOF      (Standard_False),
+  myFileDes  (FILE_NONVALUE),
+  myIStream  (theInput),
+  myError    (theErrorString),
+  myDocument (theDocument),
+  myElement  (NULL),
+  myLastChild(NULL), 
+  myPtr      (&myBuffer[0]),
+  myEndPtr   (&myBuffer[0])
+{
+}
 
 //=======================================================================
 //function : ReadRecord

@@ -35,11 +35,26 @@
 #include <BRepAdaptor_Curve.hxx>
 
 ChFi2d_FilletAlgo::ChFi2d_FilletAlgo()
+: myStart1(0.0),
+  myEnd1  (0.0),
+  myStart2(0.0),
+  myEnd2  (0.0),
+  myRadius(0.0),
+  myStartSide    (Standard_False),
+  myEdgesExchnged(Standard_False),
+  myDegreeOfRecursion(0)
 {
-
 }
 
-ChFi2d_FilletAlgo::ChFi2d_FilletAlgo(const TopoDS_Wire& theWire, const gp_Pln& thePlane) 
+ChFi2d_FilletAlgo::ChFi2d_FilletAlgo(const TopoDS_Wire& theWire, const gp_Pln& thePlane)
+: myStart1(0.0),
+  myEnd1  (0.0),
+  myStart2(0.0),
+  myEnd2  (0.0),
+  myRadius(0.0),
+  myStartSide    (Standard_False),
+  myEdgesExchnged(Standard_False),
+  myDegreeOfRecursion(0)
 {
   Init(theWire, thePlane);
 }
@@ -47,6 +62,16 @@ ChFi2d_FilletAlgo::ChFi2d_FilletAlgo(const TopoDS_Wire& theWire, const gp_Pln& t
 ChFi2d_FilletAlgo::ChFi2d_FilletAlgo(const TopoDS_Edge& theEdge1, 
                                      const TopoDS_Edge& theEdge2, 
                                      const gp_Pln& thePlane) 
+: myEdge1(theEdge1),
+  myEdge2(theEdge2),
+  myStart1(0.0),
+  myEnd1  (0.0),
+  myStart2(0.0),
+  myEnd2  (0.0),
+  myRadius(0.0),
+  myStartSide    (Standard_False),
+  myEdgesExchnged(Standard_False),
+  myDegreeOfRecursion(0)
 {
   Init(theEdge1, theEdge2, thePlane);
 }
@@ -613,6 +638,12 @@ TopoDS_Edge ChFi2d_FilletAlgo::Result(const gp_Pnt& thePoint, TopoDS_Edge& theEd
 
   delete aNearest;
   return aResult;
+}
+
+FilletPoint::FilletPoint(const Standard_Real theParam)
+: myParam (theParam),
+  myParam2(0.0)
+{
 }
 
 void FilletPoint::appendValue(Standard_Real theValue, Standard_Boolean theValid) 

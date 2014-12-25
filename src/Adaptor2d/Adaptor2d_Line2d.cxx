@@ -25,6 +25,7 @@
 //=======================================================================
 
 Adaptor2d_Line2d::Adaptor2d_Line2d()
+: myUfirst(0.0), myUlast (0.0)
 {
 }
 
@@ -33,10 +34,11 @@ Adaptor2d_Line2d::Adaptor2d_Line2d()
 //purpose  : 
 //=======================================================================
 
- Adaptor2d_Line2d::Adaptor2d_Line2d(const gp_Pnt2d& P, const gp_Dir2d& D, 
-				const Standard_Real UFirst, 
-				const Standard_Real ULast):
-       myUfirst(UFirst),myUlast(ULast),myAx2d(P,D)
+ Adaptor2d_Line2d::Adaptor2d_Line2d(const gp_Pnt2d&     P,
+                                    const gp_Dir2d&     D,
+                                    const Standard_Real UFirst,
+                                    const Standard_Real ULast)
+: myUfirst(UFirst), myUlast(ULast), myAx2d(P,D)
 {
 }
 

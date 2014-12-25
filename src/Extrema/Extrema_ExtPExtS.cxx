@@ -144,9 +144,17 @@ void Extrema_ExtPExtS::MakePreciser (Standard_Real& U,
 }
 //=============================================================================
 
-Extrema_ExtPExtS::Extrema_ExtPExtS ()
+Extrema_ExtPExtS::Extrema_ExtPExtS()
+: myuinf(0.0),
+  myusup(0.0),
+  mytolu(0.0),
+  myvinf(0.0),
+  myvsup(0.0),
+  mytolv(0.0),
+  myIsAnalyticallyComputable(Standard_False),
+  myDone(Standard_False),
+  myNbExt(Standard_False)
 {
-  myDone = Standard_False;
 }
 
 //=============================================================================
@@ -159,6 +167,16 @@ Extrema_ExtPExtS::Extrema_ExtPExtS (const gp_Pnt&                               
                                     const Standard_Real                                 theVsup,
                                     const Standard_Real                                 theTolU,
                                     const Standard_Real                                 theTolV)
+: myuinf(theUmin),
+  myusup(theUsup),
+  mytolu(theTolU),
+  myvinf(theVmin),
+  myvsup(theVsup),
+  mytolv(theTolV),
+  myS   (theS),
+  myIsAnalyticallyComputable(Standard_False),
+  myDone(Standard_False),
+  myNbExt(Standard_False)
 {
   Initialize (theS,
               theUmin,
@@ -176,6 +194,16 @@ Extrema_ExtPExtS::Extrema_ExtPExtS (const gp_Pnt&                               
                                     const Handle(Adaptor3d_HSurfaceOfLinearExtrusion)&  theS,
                                     const Standard_Real                                 theTolU, 
                                     const Standard_Real                                 theTolV)
+: myuinf(theS->FirstUParameter()),
+  myusup(theS->LastUParameter()),
+  mytolu(theTolU),
+  myvinf(theS->FirstVParameter()),
+  myvsup(theS->LastVParameter()),
+  mytolv(theTolV),
+  myS   (theS),
+  myIsAnalyticallyComputable(Standard_False),
+  myDone(Standard_False),
+  myNbExt(Standard_False)
 {
   Initialize (theS,
               theS->FirstUParameter(),
@@ -187,6 +215,7 @@ Extrema_ExtPExtS::Extrema_ExtPExtS (const gp_Pnt&                               
 
   Perform (theP);
 }
+
 //=======================================================================
 //function : Initialize
 //purpose  : 

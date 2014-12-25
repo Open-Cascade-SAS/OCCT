@@ -23,8 +23,11 @@ struct Select3D_Box2d
  Standard_ShortReal xmin, ymin, xmax, ymax;
 
  Select3D_Box2d()
- { 
-   SetVoid();
+ : xmin( ShortRealLast()  ),
+   ymin( ShortRealLast()  ),
+   xmax( ShortRealFirst() ),
+   ymax( ShortRealFirst() )
+ {
  }
 
  Select3D_Box2d(const Bnd_Box2d& theBox)

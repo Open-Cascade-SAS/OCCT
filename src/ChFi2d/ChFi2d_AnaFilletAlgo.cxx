@@ -80,8 +80,25 @@ static Standard_Boolean IsEqual(const gp_Pnt2d& p1, const gp_Pnt2d& p2)
 // An empty constructor.
 // Use the method Init() to initialize the class.
 ChFi2d_AnaFilletAlgo::ChFi2d_AnaFilletAlgo()
+: segment1(Standard_False),
+  x11(0.0),
+  y11(0.0),
+  x12(0.0),
+  y12(0.0),
+  xc1(0.0),
+  yc1(0.0),
+  radius1(0.0),
+  cw1(Standard_False),
+  segment2(Standard_False),
+  x21(0.0),
+  y21(0.0),
+  x22(0.0),
+  y22(0.0),
+  xc2(0.0),
+  yc2(0.0),
+  radius2(0.0),
+  cw2(Standard_False)
 {
-
 }
 
 // An constructor.
@@ -89,7 +106,26 @@ ChFi2d_AnaFilletAlgo::ChFi2d_AnaFilletAlgo()
 // - segment
 // - arc of circle.
 ChFi2d_AnaFilletAlgo::ChFi2d_AnaFilletAlgo(const TopoDS_Wire& theWire, 
-                                           const gp_Pln& thePlane)
+                                           const gp_Pln&      thePlane)
+: plane(thePlane),
+  segment1(Standard_False),
+  x11(0.0),
+  y11(0.0),
+  x12(0.0),
+  y12(0.0),
+  xc1(0.0),
+  yc1(0.0),
+  radius1(0.0),
+  cw1(Standard_False),
+  segment2(Standard_False),
+  x21(0.0),
+  y21(0.0),
+  x22(0.0),
+  y22(0.0),
+  xc2(0.0),
+  yc2(0.0),
+  radius2(0.0),
+  cw2(Standard_False)
 {
   Init(theWire, thePlane);
 }
@@ -101,6 +137,25 @@ ChFi2d_AnaFilletAlgo::ChFi2d_AnaFilletAlgo(const TopoDS_Wire& theWire,
 ChFi2d_AnaFilletAlgo::ChFi2d_AnaFilletAlgo(const TopoDS_Edge& theEdge1, 
                                            const TopoDS_Edge& theEdge2,
                                            const gp_Pln& thePlane)
+: plane(thePlane),
+  segment1(Standard_False),
+  x11(0.0),
+  y11(0.0),
+  x12(0.0),
+  y12(0.0),
+  xc1(0.0),
+  yc1(0.0),
+  radius1(0.0),
+  cw1(Standard_False),
+  segment2(Standard_False),
+  x21(0.0),
+  y21(0.0),
+  x22(0.0),
+  y22(0.0),
+  xc2(0.0),
+  yc2(0.0),
+  radius2(0.0),
+  cw2(Standard_False)
 {
   // Make a wire consisting of two edges.
   Init(theEdge1, theEdge2, thePlane);

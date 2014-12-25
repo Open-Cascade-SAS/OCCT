@@ -35,24 +35,26 @@
 //purpose  : 
 //=======================================================================
 
-Adaptor3d_IsoCurve::Adaptor3d_IsoCurve() :
-       myIso(GeomAbs_NoneIso),
-	   myFirst ( 0. ),
-	   myLast ( 0. ),
-	   myParameter ( 0. )
-{}
+Adaptor3d_IsoCurve::Adaptor3d_IsoCurve()
+: myIso      (GeomAbs_NoneIso),
+  myFirst    (0.0),
+  myLast     (0.0),
+  myParameter(0.0)
+{
+}
 
 //=======================================================================
 //function : Adaptor3d_IsoCurve
 //purpose  : 
 //=======================================================================
 
-Adaptor3d_IsoCurve::Adaptor3d_IsoCurve(const Handle(Adaptor3d_HSurface)& S) :
-	   myFirst ( 0. ),
-	   myLast ( 0. ),
-	   myParameter ( 0. )
+Adaptor3d_IsoCurve::Adaptor3d_IsoCurve(const Handle(Adaptor3d_HSurface)& S)
+: mySurface  (S),
+  myIso      (GeomAbs_NoneIso),
+  myFirst    (0.0),
+  myLast     (0.0),
+  myParameter(0.0)
 {
-  Load(S);
 }
 
 //=======================================================================
@@ -61,11 +63,15 @@ Adaptor3d_IsoCurve::Adaptor3d_IsoCurve(const Handle(Adaptor3d_HSurface)& S) :
 //=======================================================================
 
 Adaptor3d_IsoCurve::Adaptor3d_IsoCurve(const Handle(Adaptor3d_HSurface)& S,
-				   const GeomAbs_IsoType Iso,
-				   const Standard_Real Param) 
+                                       const GeomAbs_IsoType theIso,
+                                       const Standard_Real theParam)
+: mySurface  (S),
+  myIso      (GeomAbs_NoneIso),
+  myFirst    (0.0),
+  myLast     (0.0),
+  myParameter(0.0)
 {
-  Load(S);
-  Load(Iso,Param);
+  Load(theIso, theParam);
 }
 
 //=======================================================================
@@ -73,14 +79,18 @@ Adaptor3d_IsoCurve::Adaptor3d_IsoCurve(const Handle(Adaptor3d_HSurface)& S,
 //purpose  : 
 //=======================================================================
 
-Adaptor3d_IsoCurve::Adaptor3d_IsoCurve(const Handle(Adaptor3d_HSurface)& S,
-				   const GeomAbs_IsoType Iso,
-				   const Standard_Real Param,
-				   const Standard_Real WFirst,
-				   const Standard_Real WLast)
+Adaptor3d_IsoCurve::Adaptor3d_IsoCurve(const Handle(Adaptor3d_HSurface)& theS,
+                                       const GeomAbs_IsoType theIso,
+                                       const Standard_Real theParam,
+                                       const Standard_Real theWFirst,
+                                       const Standard_Real theWLast)
+: mySurface  (theS),
+  myIso      (theIso),
+  myFirst    (theWFirst),
+  myLast     (theWLast),
+  myParameter(theParam)
 {
-  Load(S);
-  Load(Iso,Param,WFirst,WLast);
+  Load(theIso, theParam, theWFirst, theWLast);
 }
 
 //=======================================================================

@@ -26,11 +26,11 @@ IMPLEMENT_STANDARD_RTTIEXT(Font_FTFont, Standard_Transient)
 // purpose  :
 // =======================================================================
 Font_FTFont::Font_FTFont (const Handle(Font_FTLibrary)& theFTLib)
-: myFTLib (theFTLib),
-  myFTFace (NULL),
-  myPointSize (0),
-  myLoadFlags (FT_LOAD_NO_HINTING | FT_LOAD_TARGET_NORMAL),
-  myUChar (0)
+: myFTLib      (theFTLib),
+  myFTFace     (NULL),
+  myPointSize  (0U),
+  myLoadFlags  (FT_LOAD_NO_HINTING | FT_LOAD_TARGET_NORMAL),
+  myUChar      (0U)
 {
   if (myFTLib.IsNull())
   {

@@ -64,12 +64,26 @@
 
 //=======================================================================
 //function : IGESToBRep_CurveAndSurface
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 IGESToBRep_CurveAndSurface::IGESToBRep_CurveAndSurface()
+: myEps         (1.e-04),
+  myEpsCoeff    (1.e-06),
+  myEpsGeom     (1.e-04),
+  myMinTol      (-1.0),
+  myMaxTol      (-1.0),
+  myModeIsTopo  (Standard_True),
+  myModeApprox  (Standard_False),
+  myContIsOpti  (Standard_False),
+  myUnitFactor  (1.0),
+  mySurfaceCurve(0),
+  myContinuity  (0),
+  myUVResolution(0.0),
+  myIsResolCom  (Standard_False),
+  myTP          (new Transfer_TransientProcess())
 {
-  Init();
+  UpdateMinMaxTol();
 }
 
 
@@ -80,24 +94,23 @@ IGESToBRep_CurveAndSurface::IGESToBRep_CurveAndSurface()
 
 IGESToBRep_CurveAndSurface::IGESToBRep_CurveAndSurface
   (const IGESToBRep_CurveAndSurface& other)
+: myEps         (other.myEps),
+  myEpsCoeff    (other.myEpsCoeff),
+  myEpsGeom     (other.myEpsGeom),
+  myMinTol      (other.myMinTol),
+  myMaxTol      (other.myMaxTol),
+  myModeIsTopo  (other.myModeIsTopo),
+  myModeApprox  (other.myModeApprox),
+  myContIsOpti  (other.myContIsOpti),
+  myUnitFactor  (other.myUnitFactor),
+  mySurfaceCurve(other.mySurfaceCurve),
+  myContinuity  (other.myContinuity),
+  mySurface     (other.mySurface),
+  myUVResolution(other.myUVResolution),
+  myIsResolCom  (other.myIsResolCom),
+  myModel       (other.myModel),
+  myTP          (other.myTP)
 {  
-  myEps        = other.GetEpsilon();
-  myEpsCoeff   = other.GetEpsCoeff();
-  myEpsGeom    = other.GetEpsGeom();
-  myMaxTol     = other.GetMaxTol();
-  myModeIsTopo = other.GetModeTransfer();
-  myModeApprox = other.GetModeApprox();
-  myContIsOpti = other.GetOptimized();
-  myUnitFactor = other.GetUnitFactor();
-  mySurfaceCurve = other.GetSurfaceCurve();
-  myContinuity = other.GetContinuity();
-  myModel      = other.GetModel();
-  myTP         = other.GetTransferProcess();
-  myMinTol     = other.GetMinTol();
-  
-  mySurface = other.Surface();
-  myIsResolCom = other.myIsResolCom;
-  myUVResolution = other.myUVResolution;
 }
 
 
@@ -113,20 +126,21 @@ IGESToBRep_CurveAndSurface::IGESToBRep_CurveAndSurface
    const Standard_Boolean mode,
    const Standard_Boolean modeapprox,
    const Standard_Boolean optimized)
-{  
-  myEps        = eps;
-  myEpsCoeff   = epsCoeff;
-  myEpsGeom    = epsGeom;
-  myModeIsTopo = mode;
-  myModeApprox = modeapprox;
-  myContIsOpti = optimized;
-  myUnitFactor = 1.;
-  mySurfaceCurve = 0;
-  myContinuity = 0;
-  myTP         = new Transfer_TransientProcess();
-  
-  myIsResolCom = Standard_False;
-  myUVResolution = 0.;
+: myEps         (eps),
+  myEpsCoeff    (epsCoeff),
+  myEpsGeom     (epsGeom),
+  myMinTol      (-1.0),
+  myMaxTol      (-1.0),
+  myModeIsTopo  (mode),
+  myModeApprox  (modeapprox),
+  myContIsOpti  (optimized),
+  myUnitFactor  (1.0),
+  mySurfaceCurve(0),
+  myContinuity  (0),
+  myUVResolution(0.0),
+  myIsResolCom  (Standard_False),
+  myTP          (new Transfer_TransientProcess())
+{
   UpdateMinMaxTol();
 }
 

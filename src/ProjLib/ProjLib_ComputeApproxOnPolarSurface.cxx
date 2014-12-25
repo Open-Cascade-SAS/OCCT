@@ -350,7 +350,11 @@ class ProjLib_PolarFunction : public AppCont_Function
 //purpose  : 
 //=======================================================================
 
-ProjLib_ComputeApproxOnPolarSurface::ProjLib_ComputeApproxOnPolarSurface(){}
+ProjLib_ComputeApproxOnPolarSurface::ProjLib_ComputeApproxOnPolarSurface()
+: myProjIsDone(Standard_False),
+  myTolerance (-1.0)
+{
+}
 
 
 //=======================================================================
@@ -359,15 +363,14 @@ ProjLib_ComputeApproxOnPolarSurface::ProjLib_ComputeApproxOnPolarSurface(){}
 //=======================================================================
 
 ProjLib_ComputeApproxOnPolarSurface::ProjLib_ComputeApproxOnPolarSurface
-(const Handle(Adaptor2d_HCurve2d)& InitialCurve2d,
- const Handle(Adaptor3d_HCurve)& Curve,
- const Handle(Adaptor3d_HSurface)& S,
- const Standard_Real tol3d):myProjIsDone(Standard_False)  //OCC217
- //const Standard_Real tolerance):myProjIsDone(Standard_False)
+                    (const Handle(Adaptor2d_HCurve2d)& theInitialCurve2d,
+                     const Handle(Adaptor3d_HCurve)&   theCurve,
+                     const Handle(Adaptor3d_HSurface)& theSurface,
+                     const Standard_Real               theTolerance3D)
+: myProjIsDone(Standard_False),
+  myTolerance (theTolerance3D)
 {
-  myTolerance = tol3d; //OCC217
-  //myTolerance = Max(Tolerance,Precision::PApproximation());
-  myBSpline = Perform(InitialCurve2d,Curve,S);
+  myBSpline = Perform(theInitialCurve2d, theCurve, theSurface);
 }
 //=======================================================================
 //function : ProjLib_ComputeApproxOnPolarSurface
@@ -375,21 +378,23 @@ ProjLib_ComputeApproxOnPolarSurface::ProjLib_ComputeApproxOnPolarSurface
 //=======================================================================
 
 ProjLib_ComputeApproxOnPolarSurface::ProjLib_ComputeApproxOnPolarSurface
-(const Handle(Adaptor2d_HCurve2d)& InitialCurve2d,
- const Handle(Adaptor2d_HCurve2d)& InitialCurve2dBis,
- const Handle(Adaptor3d_HCurve)& Curve,
- const Handle(Adaptor3d_HSurface)& S,
- const Standard_Real tol3d):myProjIsDone(Standard_False)  //OCC217
- //const Standard_Real tolerance):myProjIsDone(Standard_False)
-{// InitialCurve2d and InitialCurve2dBis are two pcurves of the sewing 
-  myTolerance = tol3d; //OCC217
-  //myTolerance = Max(tolerance,Precision::PApproximation());
-  Handle(Geom2d_BSplineCurve) bsc = Perform(InitialCurve2d,Curve,S);
+                (const Handle(Adaptor2d_HCurve2d)& theInitialCurve2d,
+                 const Handle(Adaptor2d_HCurve2d)& theInitialCurve2dBis,
+                 const Handle(Adaptor3d_HCurve)&   theCurve,
+                 const Handle(Adaptor3d_HSurface)& theSurface,
+                 const Standard_Real               theTolerance3D)
+: myProjIsDone(Standard_False),
+  myTolerance (theTolerance3D)
+{
+  // InitialCurve2d and InitialCurve2dBis are two pcurves of the sewing 
+  Handle(Geom2d_BSplineCurve) bsc =
+    Perform(theInitialCurve2d, theCurve, theSurface);
+
   if(myProjIsDone) {
     gp_Pnt2d P2dproj, P2d, P2dBis;
     P2dproj = bsc->StartPoint();
-    P2d    = InitialCurve2d->Value(InitialCurve2d->FirstParameter());
-    P2dBis = InitialCurve2dBis->Value(InitialCurve2dBis->FirstParameter());
+    P2d    = theInitialCurve2d->Value(theInitialCurve2d->FirstParameter());
+    P2dBis = theInitialCurve2dBis->Value(theInitialCurve2dBis->FirstParameter());
 
     Standard_Real Dist, DistBis;
     Dist    = P2dproj.Distance(P2d);
@@ -414,16 +419,20 @@ ProjLib_ComputeApproxOnPolarSurface::ProjLib_ComputeApproxOnPolarSurface
 //=======================================================================
 
 ProjLib_ComputeApproxOnPolarSurface::ProjLib_ComputeApproxOnPolarSurface
-(const Handle(Adaptor3d_HCurve)& Curve,
- const Handle(Adaptor3d_HSurface)& S,
- const Standard_Real tol3d):myProjIsDone(Standard_False)  //OCC217
- //const Standard_Real tolerance):myProjIsDone(Standard_False)
+                      (const Handle(Adaptor3d_HCurve)&   theCurve,
+                       const Handle(Adaptor3d_HSurface)& theSurface,
+                       const Standard_Real               theTolerance3D)
+: myProjIsDone(Standard_False),
+  myTolerance (theTolerance3D)
 {
-  myTolerance = tol3d; //OCC217
-  //myTolerance = Max(tolerance,Precision::PApproximation());
-  const Handle(Adaptor2d_HCurve2d) InitCurve2d ;
-  myBSpline = Perform(InitCurve2d,Curve,S);  
+  const Handle(Adaptor2d_HCurve2d) anInitCurve2d;
+  myBSpline = Perform(anInitCurve2d, theCurve, theSurface);  
 } 
+
+//=======================================================================
+//function : Concat
+//purpose  : 
+//=======================================================================
 
 static Handle(Geom2d_BSplineCurve) Concat(Handle(Geom2d_BSplineCurve) C1,
                                           Handle(Geom2d_BSplineCurve) C2,

@@ -31,6 +31,7 @@
 //======================================================================
 
 BiTgte_CurveOnEdge::BiTgte_CurveOnEdge()
+: myType(GeomAbs_OtherCurve)
 {
 }
 
@@ -40,10 +41,13 @@ BiTgte_CurveOnEdge::BiTgte_CurveOnEdge()
 //purpose  : 
 //=======================================================================
 
-BiTgte_CurveOnEdge::BiTgte_CurveOnEdge(const TopoDS_Edge& EonF,
-				       const TopoDS_Edge& Edge)
+BiTgte_CurveOnEdge::BiTgte_CurveOnEdge(const TopoDS_Edge& theEonF,
+                                       const TopoDS_Edge& theEdge)
+: myEdge(theEdge),
+  myEonF(theEonF),
+  myType(GeomAbs_OtherCurve)
 {
-  Init(EonF,Edge);
+  Init(theEonF, theEdge);
 }
 
 
@@ -53,7 +57,7 @@ BiTgte_CurveOnEdge::BiTgte_CurveOnEdge(const TopoDS_Edge& EonF,
 //=======================================================================
 
 void BiTgte_CurveOnEdge::Init(const TopoDS_Edge& EonF,
-			      const TopoDS_Edge& Edge)
+                              const TopoDS_Edge& Edge)
 {
   Standard_Real f,l;
 

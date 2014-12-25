@@ -27,6 +27,7 @@
 //======================================================================
 
 BiTgte_CurveOnVertex::BiTgte_CurveOnVertex()
+: myFirst(0.0), myLast(0.0)
 {
 }
 
@@ -36,10 +37,11 @@ BiTgte_CurveOnVertex::BiTgte_CurveOnVertex()
 //purpose  : 
 //=======================================================================
 
-BiTgte_CurveOnVertex::BiTgte_CurveOnVertex(const TopoDS_Edge&   EonF,
-					   const TopoDS_Vertex& V    )
+BiTgte_CurveOnVertex::BiTgte_CurveOnVertex(const TopoDS_Edge&   theEonF,
+                                           const TopoDS_Vertex& theVertex)
+: myFirst(0.0), myLast(0.0)
 {
-  Init(EonF,V);
+  Init(theEonF, theVertex);
 }
 
 
@@ -49,7 +51,7 @@ BiTgte_CurveOnVertex::BiTgte_CurveOnVertex(const TopoDS_Edge&   EonF,
 //=======================================================================
 
 void BiTgte_CurveOnVertex::Init(const TopoDS_Edge&   EonF,
-				const TopoDS_Vertex& V   )
+                                const TopoDS_Vertex& V)
 {
   BRep_Tool::Range(EonF,myFirst,myLast);
   myPnt = BRep_Tool::Pnt(V);

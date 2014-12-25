@@ -28,22 +28,11 @@
 //purpose  : 
 //=======================================================================
 
-Adaptor3d_OffsetCurve::Adaptor3d_OffsetCurve() :
-       myOffset( 0.),
-       myFirst ( 0.),
-	   myLast ( 0.)
-{}
-
-//=======================================================================
-//function : Adaptor3d_OffsetCurve
-//purpose  : 
-//=======================================================================
-
-Adaptor3d_OffsetCurve::Adaptor3d_OffsetCurve(const Handle(Adaptor2d_HCurve2d)& C) :
-	   myFirst ( 0.),
-	   myLast ( 0.)
+Adaptor3d_OffsetCurve::Adaptor3d_OffsetCurve()
+: myOffset(0.0),
+  myFirst (0.0),
+  myLast  (0.0)
 {
-  Load(C);
 }
 
 //=======================================================================
@@ -51,13 +40,12 @@ Adaptor3d_OffsetCurve::Adaptor3d_OffsetCurve(const Handle(Adaptor2d_HCurve2d)& C
 //purpose  : 
 //=======================================================================
 
-Adaptor3d_OffsetCurve::Adaptor3d_OffsetCurve(const Handle(Adaptor2d_HCurve2d)& C,
-											 const Standard_Real Offset) :
-       myFirst ( 0.),
-	   myLast ( 0.)
+Adaptor3d_OffsetCurve::Adaptor3d_OffsetCurve(const Handle(Adaptor2d_HCurve2d)& theCurve)
+: myCurve (theCurve),
+  myOffset(0.0),
+  myFirst (0.0),
+  myLast  (0.0)
 {
-  Load(C);
-  Load(Offset);
 }
 
 //=======================================================================
@@ -65,13 +53,30 @@ Adaptor3d_OffsetCurve::Adaptor3d_OffsetCurve(const Handle(Adaptor2d_HCurve2d)& C
 //purpose  : 
 //=======================================================================
 
-Adaptor3d_OffsetCurve::Adaptor3d_OffsetCurve(const Handle(Adaptor2d_HCurve2d)& C,
-				   const Standard_Real Offset,
-				   const Standard_Real WFirst,
-				   const Standard_Real WLast)
+Adaptor3d_OffsetCurve::Adaptor3d_OffsetCurve
+  (const Handle(Adaptor2d_HCurve2d)& theCurve, const Standard_Real theOffset)
+: myCurve (theCurve),
+  myOffset(theOffset),
+  myFirst (theCurve->FirstParameter()),
+  myLast  (theCurve->LastParameter())
 {
-  Load(C);
-  Load(Offset,WFirst,WLast);
+}
+
+//=======================================================================
+//function : Adaptor3d_OffsetCurve
+//purpose  : 
+//=======================================================================
+
+Adaptor3d_OffsetCurve::Adaptor3d_OffsetCurve(
+                              const Handle(Adaptor2d_HCurve2d)& theCurve,
+                              const Standard_Real theOffset,
+                              const Standard_Real theWFirst,
+                              const Standard_Real theWLast )
+: myCurve (theCurve),
+  myOffset(theOffset),
+  myFirst (theWFirst),
+  myLast  (theWLast)
+{
 }
 
 //=======================================================================
@@ -104,8 +109,8 @@ void Adaptor3d_OffsetCurve::Load( const Standard_Real Offset)
 //=======================================================================
 
 void Adaptor3d_OffsetCurve::Load(const Standard_Real Offset,
-			       const Standard_Real WFirst,
-			       const Standard_Real WLast) 
+                                 const Standard_Real WFirst,
+                                 const Standard_Real WLast) 
 {
   myOffset = Offset;
   myFirst = WFirst;

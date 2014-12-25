@@ -496,6 +496,10 @@ static Standard_Boolean InitialPoint(const gp_Pnt& Point,
 //=======================================================================
 
 ProjLib_CompProjectedCurve::ProjLib_CompProjectedCurve()
+: myNbCurves(0),
+  myTolU    (0.0),
+  myTolV    (0.0),
+  myMaxDist (0.0)
 {
 }
 
@@ -504,15 +508,19 @@ ProjLib_CompProjectedCurve::ProjLib_CompProjectedCurve()
 //purpose  : 
 //=======================================================================
 
-ProjLib_CompProjectedCurve::ProjLib_CompProjectedCurve(
-  const Handle(Adaptor3d_HSurface)& S,
-  const Handle(Adaptor3d_HCurve)& C, 
-  const Standard_Real TolU, 
-  const Standard_Real TolV) 
-  : mySurface(S), myCurve(C), myNbCurves(0), myTolU(TolU), myTolV(TolV), 
-  myMaxDist(-1)
+ProjLib_CompProjectedCurve::ProjLib_CompProjectedCurve
+                           (const Handle(Adaptor3d_HSurface)& theSurface,
+                            const Handle(Adaptor3d_HCurve)&   theCurve,
+                            const Standard_Real               theTolU,
+                            const Standard_Real               theTolV)
+: mySurface (theSurface),
+  myCurve   (theCurve),
+  myNbCurves(0),
+  mySequence(new ProjLib_HSequenceOfHSequenceOfPnt()),
+  myTolU    (theTolU),
+  myTolV    (theTolV),
+  myMaxDist (-1.0)
 {
-  mySequence = new ProjLib_HSequenceOfHSequenceOfPnt();
   Init();
 }
 
@@ -521,16 +529,20 @@ ProjLib_CompProjectedCurve::ProjLib_CompProjectedCurve(
 //purpose  : 
 //=======================================================================
 
-ProjLib_CompProjectedCurve::ProjLib_CompProjectedCurve(
-  const Handle(Adaptor3d_HSurface)& S,
-  const Handle(Adaptor3d_HCurve)& C, 
-  const Standard_Real TolU, 
-  const Standard_Real TolV, 
-  const Standard_Real MaxDist) 
-  : mySurface(S), myCurve(C), myNbCurves(0), myTolU(TolU), myTolV(TolV), 
-  myMaxDist(MaxDist)
+ProjLib_CompProjectedCurve::ProjLib_CompProjectedCurve
+                           (const Handle(Adaptor3d_HSurface)& theSurface,
+                            const Handle(Adaptor3d_HCurve)&   theCurve,
+                            const Standard_Real               theTolU,
+                            const Standard_Real               theTolV,
+                            const Standard_Real               theMaxDist)
+: mySurface (theSurface),
+  myCurve   (theCurve),
+  myNbCurves(0),
+  mySequence(new ProjLib_HSequenceOfHSequenceOfPnt()),
+  myTolU    (theTolU),
+  myTolV    (theTolV),
+  myMaxDist (theMaxDist)
 {
-  mySequence = new ProjLib_HSequenceOfHSequenceOfPnt();
   Init();
 }
 

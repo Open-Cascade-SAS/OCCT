@@ -63,8 +63,11 @@ char Name[100];
 //=======================================================================
 
 BRepToIGES_BREntity::BRepToIGES_BREntity()
-{  
-  Init();
+: TheUnitFactor(1.0),
+  myConvSurface(Interface_Static::IVal("write.convertsurface.mode")),
+  myPCurveMode (Interface_Static::IVal("write.surfacecurve.mode")),
+  TheMap       (new Transfer_FinderProcess())
+{
 }
 
 //=======================================================================

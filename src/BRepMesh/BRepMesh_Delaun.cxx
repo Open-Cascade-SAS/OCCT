@@ -75,10 +75,9 @@ namespace {
 //function : BRepMesh_Delaun
 //purpose  : Creates the triangulation with an empty Mesh data structure
 //=======================================================================
-BRepMesh_Delaun::BRepMesh_Delaun(
-  BRepMesh::Array1OfVertexOfDelaun& theVertices)
-  : myCircles(theVertices.Length(), new NCollection_IncAllocator(
-    BRepMesh::MEMORY_BLOCK_SIZE_HUGE))
+BRepMesh_Delaun::BRepMesh_Delaun(BRepMesh::Array1OfVertexOfDelaun& theVertices)
+: myCircles (theVertices.Length(), new NCollection_IncAllocator(
+             BRepMesh::MEMORY_BLOCK_SIZE_HUGE))
 {
   if ( theVertices.Length() > 2 )
   {
@@ -96,9 +95,9 @@ BRepMesh_Delaun::BRepMesh_Delaun(
 BRepMesh_Delaun::BRepMesh_Delaun(
   const Handle( BRepMesh_DataStructureOfDelaun )& theOldMesh,
   BRepMesh::Array1OfVertexOfDelaun&               theVertices)
- : myCircles( theVertices.Length(), theOldMesh->Allocator() )
+: myMeshData( theOldMesh ),
+  myCircles ( theVertices.Length(), theOldMesh->Allocator() )
 {
-  myMeshData = theOldMesh;
   if ( theVertices.Length() > 2 )
     Init( theVertices );
 }
@@ -110,9 +109,9 @@ BRepMesh_Delaun::BRepMesh_Delaun(
 BRepMesh_Delaun::BRepMesh_Delaun(
   const Handle( BRepMesh_DataStructureOfDelaun )& theOldMesh, 
   BRepMesh::Array1OfInteger&                      theVertexIndices)
- : myCircles( theVertexIndices.Length(), theOldMesh->Allocator() )
+: myMeshData( theOldMesh ),
+  myCircles ( theVertexIndices.Length(), theOldMesh->Allocator() )
 {
-  myMeshData = theOldMesh;
   if ( theVertexIndices.Length() > 2 )
   {
     Bnd_Box2d aBox;

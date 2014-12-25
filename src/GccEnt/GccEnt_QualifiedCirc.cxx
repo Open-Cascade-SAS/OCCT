@@ -44,10 +44,9 @@ Standard_Boolean GccEnt_QualifiedCirc::
      else { return Standard_False; }
    }
 
-GccEnt_QualifiedCirc::
-   GccEnt_QualifiedCirc (const gp_Circ2d&      Qualified,
-			 const GccEnt_Position Qualifier) {
-
-   TheQualified = Qualified;
-   TheQualifier = Qualifier;
- }
+GccEnt_QualifiedCirc::GccEnt_QualifiedCirc(const gp_Circ2d&      theQualified,
+                                           const GccEnt_Position theQualifier)
+: TheQualified(theQualified),
+  TheQualifier(theQualifier)
+{
+}
