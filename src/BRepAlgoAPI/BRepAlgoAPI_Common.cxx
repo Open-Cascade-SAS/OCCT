@@ -29,6 +29,16 @@ BRepAlgoAPI_Common::BRepAlgoAPI_Common()
   myOperation=BOPAlgo_COMMON;
 }
 //=======================================================================
+//function : BRepAlgoAPI_Common
+//purpose  : 
+//=======================================================================
+BRepAlgoAPI_Common::BRepAlgoAPI_Common(const BOPAlgo_PaveFiller& aPF)
+:
+  BRepAlgoAPI_BooleanOperation(aPF)
+{
+  myOperation=BOPAlgo_COMMON;
+}
+//=======================================================================
 //function : ~BRepAlgoAPI_Common
 //purpose  : 
 //=======================================================================
@@ -39,8 +49,8 @@ BRepAlgoAPI_Common::~BRepAlgoAPI_Common()
 //function : BRepAlgoAPI_Common
 //purpose  : 
 //=======================================================================
-  BRepAlgoAPI_Common::BRepAlgoAPI_Common(const TopoDS_Shape& S1, 
-                                         const TopoDS_Shape& S2)
+BRepAlgoAPI_Common::BRepAlgoAPI_Common(const TopoDS_Shape& S1, 
+                                       const TopoDS_Shape& S2)
 : BRepAlgoAPI_BooleanOperation(S1, S2, BOPAlgo_COMMON)
 {
   BRepAlgoAPI_BooleanOperation* pBO=
@@ -51,9 +61,9 @@ BRepAlgoAPI_Common::~BRepAlgoAPI_Common()
 //function : BRepAlgoAPI_Common
 //purpose  : 
 //=======================================================================
-  BRepAlgoAPI_Common::BRepAlgoAPI_Common(const TopoDS_Shape& S1, 
-                                         const TopoDS_Shape& S2,
-                                         const BOPAlgo_PaveFiller& aDSF)
+BRepAlgoAPI_Common::BRepAlgoAPI_Common(const TopoDS_Shape& S1, 
+                                       const TopoDS_Shape& S2,
+                                       const BOPAlgo_PaveFiller& aDSF)
 : BRepAlgoAPI_BooleanOperation(S1, S2, aDSF, BOPAlgo_COMMON)
 {
   BRepAlgoAPI_BooleanOperation* pBO=

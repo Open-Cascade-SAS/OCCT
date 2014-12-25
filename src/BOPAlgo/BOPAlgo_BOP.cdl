@@ -49,8 +49,16 @@ is
     AddTool (me:out;  
             theShape: Shape from TopoDS) 
     ---Purpose:  Adds Tool argument of the operation    	     
+        is virtual;  
+        
+    SetTools (me:out;
+            theShapes: ListOfShape from TopTools)
+        is virtual;  
+         
+    SetTools (me:out;
+            theShapes: ListOfShape from BOPCol)
         is virtual; 
-
+ 
     SetOperation(me:out;  
             theOperation: Operation from BOPAlgo); 
 	 

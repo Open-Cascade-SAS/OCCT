@@ -45,6 +45,8 @@ class BOPTest_Session {
     myBuilderDefault=new BOPAlgo_Builder(pA2);
     //
     myBuilder=myBuilderDefault;
+    myRunParallel=Standard_False;
+    myFuzzyValue=0.;
   };
   //
   // Clear
@@ -84,11 +86,40 @@ class BOPTest_Session {
     myBuilder=myBuilderDefault;
   };
   //
+  BOPCol_ListOfShape& Shapes() {
+    return myShapes;
+  }
+  //
+  BOPCol_ListOfShape& Tools() {
+    return myTools;
+  }
+  //
+  void SetRunParallel(const Standard_Boolean bFlag) {
+    myRunParallel=bFlag;
+  };
+  //
+  Standard_Boolean RunParallel()const {
+    return myRunParallel;
+  };
+  //
+  void SetFuzzyValue(const Standard_Real aValue) {
+    myFuzzyValue=aValue;
+  };
+  //
+  Standard_Real FuzzyValue()const {
+    return myFuzzyValue;
+  };
+  //
  protected:
   //
   BOPAlgo_PaveFiller* myPaveFiller;
   BOPAlgo_Builder* myBuilder;
   BOPAlgo_Builder* myBuilderDefault;
+  //
+  BOPCol_ListOfShape myShapes;
+  BOPCol_ListOfShape myTools;
+  Standard_Boolean myRunParallel;
+  Standard_Real myFuzzyValue;
 };
 //
 //=======================================================================
@@ -120,8 +151,6 @@ void BOPTest_Objects::Init()
 void BOPTest_Objects::Clear() 
 {
   GetSession().Clear();
-  //
-  //clear objects and tools
   Shapes().Clear();
   Tools().Clear();
 }
@@ -192,8 +221,7 @@ BOPAlgo_Section& BOPTest_Objects::Section()
 //=======================================================================
 BOPCol_ListOfShape& BOPTest_Objects::Shapes()
 {
-  static BOPCol_ListOfShape s_Shapes;
-  return s_Shapes;
+  return GetSession().Shapes();
 }
 //=======================================================================
 //function : Tools
@@ -201,8 +229,39 @@ BOPCol_ListOfShape& BOPTest_Objects::Shapes()
 //=======================================================================
 BOPCol_ListOfShape& BOPTest_Objects::Tools()
 {
-  static BOPCol_ListOfShape s_Tools;
-  return s_Tools;
+  return GetSession().Tools();
+}
+//=======================================================================
+//function : SetRunParallel
+//purpose  : 
+//=======================================================================
+void BOPTest_Objects::SetRunParallel(const Standard_Boolean bFlag)
+{
+  GetSession().SetRunParallel(bFlag);
+}
+//=======================================================================
+//function : RunParallel
+//purpose  : 
+//=======================================================================
+Standard_Boolean BOPTest_Objects::RunParallel()
+{
+  return GetSession().RunParallel();
+}
+//=======================================================================
+//function : SetFuzzyValue
+//purpose  : 
+//=======================================================================
+void BOPTest_Objects::SetFuzzyValue(const Standard_Real aValue)
+{
+  GetSession().SetFuzzyValue(aValue);
+}
+//=======================================================================
+//function : FuzzyValue
+//purpose  : 
+//=======================================================================
+Standard_Real BOPTest_Objects::FuzzyValue()
+{
+  return GetSession().FuzzyValue();
 }
 //=======================================================================
 //function : Allocator1

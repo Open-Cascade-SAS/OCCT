@@ -322,7 +322,9 @@ CorrectAncestorsList (const TopoDS_Edge& theEdge, TopTools_ListOfShape& aListF)
 void
 QANewModTopOpe_Glue::PerformShell() 
 {
-//  Standard_Boolean isSolidShell = (myS1.ShapeType() == TopAbs_SOLID);
+  TopoDS_Shape& myS1=myArguments.First();
+  TopoDS_Shape& myS2=myTools.First();
+
   Standard_Boolean isSolidShell = Standard_False;
   Standard_Integer i;
 

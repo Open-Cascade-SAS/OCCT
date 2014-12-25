@@ -20,9 +20,7 @@
 #include <GeometryTest.hxx>
 #include <BRepTest.hxx>
 #include <MeshTest.hxx>
-//#include <CorrectTest.hxx>
 #include <HLRTest.hxx>
-//#include <stdio.h>
 
 //=======================================================================
 //function : AllCommands
@@ -40,6 +38,8 @@ void  BOPTest::AllCommands(Draw_Interpretor& theCommands)
   BOPTest::TolerCommands     (theCommands);
   BOPTest::ObjCommands       (theCommands);
   BOPTest::PartitionCommands (theCommands);
+  BOPTest::APICommands      (theCommands);
+  BOPTest::OptionCommands   (theCommands);
 }
 //=======================================================================
 //function : Factory
@@ -57,10 +57,6 @@ void  BOPTest::AllCommands(Draw_Interpretor& theCommands)
   GeometryTest::AllCommands(theCommands);
   BRepTest::AllCommands(theCommands);
   MeshTest::Commands(theCommands);
-  //CorrectTest::CorrectCommands(theCommands);
   HLRTest::Commands(theCommands);
   BOPTest::AllCommands(theCommands);
-  //printf(" BOP Plugin is loaded\n");
 }
-//#include <Draw_PluginMacro.hxx>
-//DPLUGIN(BOPTest)

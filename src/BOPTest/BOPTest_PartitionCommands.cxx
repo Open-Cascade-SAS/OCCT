@@ -59,7 +59,6 @@ void BOPTest::PartitionCommands(Draw_Interpretor& theCommands)
   theCommands.Add("bbop"   , "use bbop r op [-s -t]"     , __FILE__, bbop, g);
   theCommands.Add("bclear" , "use bclear"                , __FILE__, bclear, g);
 }
-
 //=======================================================================
 //function : bclear
 //purpose  : 
@@ -105,8 +104,10 @@ Standard_Integer bfillds(Draw_Interpretor& di,
   }
   //
   bShowTime = Standard_False;
-  bRunParallel = Standard_True;
-  aTol = 0.;
+  //
+  bRunParallel=BOPTest_Objects::RunParallel();
+  aTol=BOPTest_Objects::FuzzyValue();
+  //
   for (i=1; i<n; ++i) {
     if (!strcmp(a[i], "-s")) {
       bRunParallel=Standard_False;
@@ -207,7 +208,7 @@ Standard_Integer bbuild(Draw_Interpretor& di,
   }
   //
   bShowTime=Standard_False;
-  bRunParallel=Standard_True;
+  bRunParallel=BOPTest_Objects::RunParallel();
   for (i=2; i<n; ++i) {
     if (!strcmp(a[i], "-s")) {
       bRunParallel=Standard_False;
@@ -282,7 +283,7 @@ Standard_Integer bbop(Draw_Interpretor& di,
   aOp=(BOPAlgo_Operation)iOp;
   //
   bShowTime=Standard_False;
-  bRunParallel=Standard_True;
+  bRunParallel=BOPTest_Objects::RunParallel();
   for (i=3; i<n; ++i) {
     if (!strcmp(a[i], "-s")) {
       bRunParallel=Standard_False;

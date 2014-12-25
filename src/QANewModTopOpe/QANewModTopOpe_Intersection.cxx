@@ -46,10 +46,19 @@ static Standard_Boolean NoFaces(const TopoDS_Shape& S1, const TopoDS_Shape& S2)
   return !f1&&!f2;
 }
 
-QANewModTopOpe_Intersection::QANewModTopOpe_Intersection( const TopoDS_Shape& theObject1, 
-					        const TopoDS_Shape& theObject2 )
-: BRepAlgoAPI_BooleanOperation( theObject1, theObject2, BOPAlgo_SECTION)
+//=======================================================================
+//function : QANewModTopOpe_Intersection
+//purpose  : 
+//=======================================================================
+QANewModTopOpe_Intersection::QANewModTopOpe_Intersection
+  ( const TopoDS_Shape& theObject1, 
+   const TopoDS_Shape& theObject2 )
+: 
+  BRepAlgoAPI_BooleanOperation( theObject1, theObject2, BOPAlgo_SECTION)
 {
+  TopoDS_Shape& myS1=myArguments.First();
+  TopoDS_Shape& myS2=myTools.First();
+
   myMapGener.Clear();
 
   if(NoFaces(myS1, myS2)) {
@@ -100,14 +109,14 @@ QANewModTopOpe_Intersection::QANewModTopOpe_Intersection( const TopoDS_Shape& th
 	      BB.Add(myShape, mkV.Vertex());
 
 	      if (!myMapGener.IsBound(DSS. SupportOnShape1(i))) {
-		// for Mandrake-10 - mkv,02.06.06 - myMapGener.Bind(DSS.SupportOnShape1(i), TopTools_ListOfShape());
+		
                 TopTools_ListOfShape aListOfShape1;
 		myMapGener.Bind(DSS.SupportOnShape1(i), aListOfShape1);
               }
 	      myMapGener(DSS.SupportOnShape1(i)).Append(mkV.Vertex());
 
 	      if (!myMapGener.IsBound(DSS.SupportOnShape2(i))) {
-		// for Mandrake-10 - mkv,02.06.06 - myMapGener.Bind(DSS.SupportOnShape2(i), TopTools_ListOfShape());
+		
                 TopTools_ListOfShape aListOfShape2;
 		myMapGener.Bind(DSS.SupportOnShape2(i), aListOfShape2);
               }
@@ -123,20 +132,6 @@ QANewModTopOpe_Intersection::QANewModTopOpe_Intersection( const TopoDS_Shape& th
     Done();
     return;
   }
-
-  Standard_Boolean bIsNewFiller = PrepareFiller();
-    //
-  if (myErrorStatus!=1) {
-    // there were errors during the preparation 
-    return;
-  }
-  //
-  if (bIsNewFiller) {
-    //Prepare the DS
-    myDSFiller->Perform();
-
-  }
-
   Build();
 
   Standard_Boolean bcw = BuilderCanWork();
@@ -329,6 +324,9 @@ Standard_Boolean QANewModTopOpe_Intersection::IsDeleted(const TopoDS_Shape& aS)
 //=======================================================================
 Standard_Boolean QANewModTopOpe_Intersection::HasDeleted() const
 {
+  const TopoDS_Shape& myS1=myArguments.First();
+  const TopoDS_Shape& myS2=myTools.First();
+
   TopExp_Explorer anExp;
 
   for(Standard_Integer argit = 0; argit < 2; argit++) {

@@ -24,7 +24,9 @@ uses
     ShapeEnum from TopAbs,  
     Vertex from TopoDS,
     Face from TopoDS, 
-    Edge from TopoDS,
+    Edge from TopoDS,  
+        
+    ListOfShape from TopTools,
      
     BaseAllocator from BOPCol, 
     ListOfShape from BOPCol, 
@@ -81,10 +83,15 @@ is
       returns PIterator from BOPDS;  
     ---C++:return const & 
      
+    SetArguments(me:out; 
+            theLS:ListOfShape from BOPCol);   
+            
+    SetArguments(me:out; 
+            theLS:ListOfShape from TopTools);  
+
     Arguments(me) 
       returns ListOfShape from BOPCol; 
     ---C++: return const & 
-    ---C++: alias "Standard_EXPORT void SetArguments(const BOPCol_ListOfShape& theLS);" 
 
     Context(me:out) 
       returns Context from IntTools;  
@@ -127,7 +134,6 @@ is
     PerformFF(me:out) 
       is virtual protected;
      
-    --modified by NIZNHY-PKV Fri Sep 12 07:05:37 2014f 
     PerformVZ(me:out) 
       is virtual protected; 
        --Purpose: Computes Vertex/Solid interferences 
@@ -142,7 +148,6 @@ is
     PerformZZ(me:out) 
       is virtual protected;  
       --Purpose: Computes Solid/Solid interferences  
-    --modified by NIZNHY-PKV Fri Sep 12 07:05:45 2014t 
  
     TreatVerticesEE(me:out) 
       is protected; 

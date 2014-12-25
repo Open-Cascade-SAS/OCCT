@@ -575,6 +575,9 @@ UpdateEdgeOnFace (const TopoDS_Edge& theEdge, const TopoDS_Face& theFace)
 void
 QANewModTopOpe_Glue::PerformShellWire() 
 {
+  TopoDS_Shape& myS1=myArguments.First();
+  TopoDS_Shape& myS2=myTools.First();
+
   Standard_Boolean anOnlyOneFace = Standard_False;
   BRep_Builder aBld;
   if(myS1.ShapeType() == TopAbs_FACE) {
@@ -1258,6 +1261,9 @@ static void FillMapModif(const BRepTools_Substitution       &theSubst,
 void
 QANewModTopOpe_Glue::PerformWires() 
 {
+  TopoDS_Shape& myS1=myArguments.First();
+  TopoDS_Shape& myS2=myTools.First();
+
   Standard_Boolean S1IsEdge = Standard_False, S2IsEdge = Standard_False;
   if(myS1.ShapeType() == TopAbs_EDGE) {
     myS1 = BRepBuilderAPI_MakeWire(TopoDS::Edge(myS1));

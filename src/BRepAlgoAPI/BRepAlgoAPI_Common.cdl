@@ -17,31 +17,43 @@
 class Common from BRepAlgoAPI  
     inherits BooleanOperation from BRepAlgoAPI
 
- ---Purpose: The class Common provides a
-     -- Boolean common operation on a pair of arguments (Boolean Intersection).
-     --  The class Common provides a framework for:
-     -- -           Defining the construction of a common shape;
-     -- -           Implementing the   building algorithm
-     -- -           Consulting the result.
+    ---Purpose:  
+    -- The class provides Boolean common operation
+    -- between arguments and tools (Boolean Intersection).
 
 uses
     Shape from TopoDS, 
     PaveFiller from BOPAlgo
-
+ 
 is  
     Create 
         returns Common from BRepAlgoAPI;  
     ---C++: alias "Standard_EXPORT virtual ~BRepAlgoAPI_Common();"  
-    --- Purpose: Empty constructor      
-        
-    Create (S1,S2 : Shape from TopoDS)  
-     returns Common from BRepAlgoAPI;  
-    ---Purpose: Constructs a common part for shapes aS1 and aS2 .
+    --- Purpose: Empty constructor       
+      
+    Create (PF: PaveFiller from BOPAlgo)
+        returns Common from BRepAlgoAPI;  
+    --- Purpose: Empty constructor  
+    -- <PF> - PaveFiller object that is carried out     
  
-    Create (S1,S2 : Shape from TopoDS; 
-         aDSF:PaveFiller from BOPAlgo)  
-     returns Common from BRepAlgoAPI; 
-    --- Purpose: Constructs a common part for shapes aS1 and aS2 using aDSFiller 
+    Create (S1,S2 : Shape from TopoDS)  
+        returns Common from BRepAlgoAPI;  
+    ---Purpose: Constructor with two shapes  
+    -- <S1>  -argument     
+    -- <S2>  -tool     
+    -- <anOperation> - the type of the operation
+    -- Obsolete  
+ 
+    Create (S1: Shape from TopoDS; 
+            S2: Shape from TopoDS; 
+            PF: PaveFiller from BOPAlgo)  
+        returns Common from BRepAlgoAPI; 
+    ---Purpose: Constructor with two shapes  
+    -- <S1>  -argument     
+    -- <S2>  -tool    
+    -- <anOperation> - the type of the operation 
+    -- <PF> - PaveFiller object that is carried out  
+    -- Obsolete   
     
 end Common;
 

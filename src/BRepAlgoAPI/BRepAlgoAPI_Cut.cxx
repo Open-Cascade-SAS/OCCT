@@ -29,13 +29,22 @@ BRepAlgoAPI_Cut::BRepAlgoAPI_Cut()
   myOperation=BOPAlgo_CUT;
 }
 //=======================================================================
+//function : BRepAlgoAPI_Cut
+//purpose  : 
+//=======================================================================
+BRepAlgoAPI_Cut::BRepAlgoAPI_Cut(const BOPAlgo_PaveFiller& aPF)
+:
+  BRepAlgoAPI_BooleanOperation(aPF)
+{
+  myOperation=BOPAlgo_CUT;
+}
+//=======================================================================
 //function : ~BRepAlgoAPI_Cut
 //purpose  : 
 //=======================================================================
 BRepAlgoAPI_Cut::~BRepAlgoAPI_Cut()
 {
 }
-
 //=======================================================================
 //function : BRepAlgoAPI_Cut
 //purpose  : 
@@ -58,7 +67,8 @@ BRepAlgoAPI_Cut::BRepAlgoAPI_Cut(const TopoDS_Shape& S1,
                                  const BOPAlgo_PaveFiller& aDSF,
                                  const Standard_Boolean bFWD)
 : 
-  BRepAlgoAPI_BooleanOperation(S1, S2, aDSF, (bFWD) ? BOPAlgo_CUT : BOPAlgo_CUT21)
+  BRepAlgoAPI_BooleanOperation(S1, S2, aDSF, 
+                               (bFWD) ? BOPAlgo_CUT : BOPAlgo_CUT21)
 {
   BRepAlgoAPI_BooleanOperation* pBO=
     (BRepAlgoAPI_BooleanOperation*) (void*) this;

@@ -32,6 +32,9 @@
 void
 QANewModTopOpe_Glue::PerformVertex() 
 {
+  TopoDS_Shape& myS1=myArguments.First();
+  TopoDS_Shape& myS2=myTools.First();
+
   BRepExtrema_DistShapeShape aExtrema (myS1, myS2);
   if (!aExtrema.IsDone()) return;
   if (aExtrema.InnerSolution()) {
@@ -43,7 +46,9 @@ QANewModTopOpe_Glue::PerformVertex()
     TopTools_ListOfShape aList;
     aList.Append (aV);
     myMapGener.Bind(myS1, aList);
-        
+
+   
+    
     myShape = myS1;
     myShape.Orientation(myS1.Orientation());
     Done();

@@ -323,6 +323,9 @@ Standard_Boolean QANewModTopOpe_Glue::SubstitudeSDFaces
 void
 QANewModTopOpe_Glue::PerformSDFaces()
 {
+  TopoDS_Shape& myS1=myArguments.First();
+  TopoDS_Shape& myS2=myTools.First();
+
   TopExp_Explorer anExp;
   TopoDS_Shape aS1, aS2;
   Standard_Boolean aWire1 = Standard_False, aWire2 = Standard_False; 

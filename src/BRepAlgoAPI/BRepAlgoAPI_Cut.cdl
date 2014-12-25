@@ -15,13 +15,11 @@
 -- commercial license or contractual agreement.
 
 class Cut from BRepAlgoAPI  
-    inherits BooleanOperation from BRepAlgoAPI
- ---Purpose:  The class Cut provides a Boolean
-     -- cut operation on a pair of arguments (Boolean Subtraction).
-     -- The class Cut provides a framework for:
-     --   -      Defining the construction of a cut shape
-     --   -      Implementing the building algorithm
-     --   -      Consulting the result
+    inherits BooleanOperation from BRepAlgoAPI 
+    
+    ---Purpose:   
+    -- The class Cut provides Boolean cut operation  
+    -- between arguments and tools (Boolean Subtraction).
 
 uses
     Shape from TopoDS,
@@ -33,20 +31,29 @@ is
         returns Cut from BRepAlgoAPI;   
     ---C++: alias "Standard_EXPORT virtual ~BRepAlgoAPI_Cut();"  
     --- Purpose: Empty constructor 
-        
-
+      
+    Create (PF: PaveFiller from BOPAlgo)
+        returns Cut from BRepAlgoAPI;  
+    --- Purpose: Empty constructor        
+    -- <PF> - PaveFiller object that is carried out 
+     
     Create (S1,S2 : Shape from TopoDS)  
         returns Cut from BRepAlgoAPI;  
-    ---Purpose: Shape aS2 cuts shape aS1. The
-     -- resulting shape is a new shape produced by the cut operation.
- 
+    ---Purpose: Constructor with two shapes  
+    -- <S1>  -argument     
+    -- <S2>  -tool 
+    -- <anOperation> - the type of the operation
+    -- Obsolete   
 
     Create (S1,S2 : Shape from TopoDS; 
             aDSF  : PaveFiller  from BOPAlgo; 
             bFWD  : Boolean from Standard=Standard_True)  
         returns Cut from BRepAlgoAPI;  
-     --- Purpose: Constructs a new shape cut from
-     -- shape aS1 by shape aS2 using aDSFiller (see
-     -- BRepAlgoAPI_BooleanOperation Constructor).
-        
+    ---Purpose: Constructor with two shapes  
+    -- <S1>  -argument     
+    -- <S2>  -tool  
+    -- <anOperation> - the type of the operation 
+    -- <PF> - PaveFiller object that is carried out  
+    -- Obsolete    
+     
 end Cut;

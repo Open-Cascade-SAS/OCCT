@@ -120,7 +120,13 @@ const TopoDS_Shape& BRepAlgoAPI_Algo::Shape() const
 {
   return myShape;
 }
-
+//=======================================================================
+//function : Clear
+//purpose  : 
+//=======================================================================
+void BRepAlgoAPI_Algo::Clear()
+{
+}
 //  myErrorStatus
 //
 // 1 - object is just initialized

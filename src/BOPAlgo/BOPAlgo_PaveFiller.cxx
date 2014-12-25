@@ -25,6 +25,7 @@
 #include <IntTools_Context.hxx>
 #include <BOPDS_DS.hxx>
 #include <BOPDS_Iterator.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 
 //=======================================================================
@@ -107,6 +108,21 @@ void BOPAlgo_PaveFiller::SetSectionAttribute
   (const BOPAlgo_SectionAttribute& theSecAttr)
 {
   mySectionAttribute = theSecAttr;
+}
+//=======================================================================
+//function : SetArguments
+//purpose  : 
+//=======================================================================
+void BOPAlgo_PaveFiller::SetArguments(const TopTools_ListOfShape& theLS)
+{
+  TopTools_ListIteratorOfListOfShape aItLS;
+  //
+  myArguments.Clear();
+  aItLS.Initialize(theLS);
+  for (; aItLS.More(); aItLS.Next()) {
+    const TopoDS_Shape& aS=aItLS.Value();
+    myArguments.Append(aS);
+  }
 }
 //=======================================================================
 //function : SetArguments

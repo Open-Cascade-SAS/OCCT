@@ -27,16 +27,24 @@ is
     Initialize 
         returns Algo from BRepAlgoAPI;
     ---C++: alias "Standard_EXPORT virtual ~BRepAlgoAPI_Algo();"
-
+    ---Purpose:  Empty constructor  
+    
     Initialize (theAllocator: BaseAllocator from BOPCol) 
         returns Algo from BRepAlgoAPI;
-
+    ---Purpose:  Empty constructor   
+     
     ErrorStatus (me)
         returns Integer from Standard; 
-
+    ---Purpose: Returns error status of the algorithm 
+    --  ==0 - no errors occured 
+    --  !=0 - is in the event of various error conditions     
+    
     WarningStatus (me)
         returns Integer from Standard;
-
+    ---Purpose: Returns warning  status of the algorithm 
+    --  ==0 - no warning occured 
+    --  !=0 - is in the event of various warning conditions      
+    
     Allocator(me)
         returns BaseAllocator from BOPCol;
     ---C++: return const &
@@ -63,8 +71,11 @@ is
     Shape(me)
         returns Shape from TopoDS
         is redefined;
-    ---C++: return const &
-
+    ---C++: return const &  
+    
+    Clear(me:out) 
+        is virtual protected; 
+ 
 fields 
     myAllocator     : BaseAllocator from BOPCol is protected;
     myErrorStatus   : Integer from Standard is protected;

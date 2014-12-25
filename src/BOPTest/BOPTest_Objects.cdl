@@ -64,6 +64,18 @@ is
   
     SetBuilderDefault(myclass); 
  
+    SetRunParallel(myclass; 
+            theFlag: Boolean from Standard); 
+       
+    RunParallel(myclass) 
+        returns  Boolean from Standard; 
+      
+    SetFuzzyValue(myclass; 
+            theValue: Real from Standard); 
+       
+    FuzzyValue(myclass) 
+        returns  Real from Standard;     
+ 
 --fields
 
 end Objects;

@@ -15,46 +15,8 @@
 -- commercial license or contractual agreement.
 
 package BRepAlgoAPI 
-        
-uses  
-   TopTools,
-   TopoDS,
-   gp,
-   Geom,
-   Geom2d,
-   Message,
-   BOPCol,
-   BOPAlgo,
-   BOPDS,
-   BRepBuilderAPI
-is
-
-    deferred class BooleanOperation;
-    class Fuse;
-    class Common;
-    class Cut;
-    class Section;
-    class Check;
-    ---Purpose: Check shapes on validity for boolean
-    --- operation.
-
-    deferred class Algo;
-    deferred class BuilderAlgo;
-
-    DumpOper( theFilePath : CString from Standard;
-              theShape1 : Shape from TopoDS;
-              theShape2 : Shape from TopoDS;
-              theResult : Shape from TopoDS;
-              theOperation : Operation from BOPAlgo;
-              isNonValidArgs : Boolean from Standard );
-        ---Purpose: Dump arguments and result of boolean operation in the file specified by path.
-        ---Level: Public
-
-end BRepAlgoAPI;
-
-
-
-     ---Purpose:  The BRepAlgoAPI package provides a full range of
+    
+    ---Purpose:  The BRepAlgoAPI package provides a full range of
      -- services to perform Boolean Operations on arguments (shapes
      -- that are defined in the BRep data structures). The
      -- implemented new algorithm is intended to replace the Old
@@ -119,3 +81,34 @@ end BRepAlgoAPI;
      -- each other. The same condition is true for SHELLs or FACEs,
      -- WIREs or EDGEs.
      -- It does not support Boolean Operations for COMPSOLID type of shape.
+     
+uses  
+   TopTools,
+   TopoDS,
+   gp,
+   Geom,
+   Geom2d,
+   Message,
+   BOPCol,
+   BOPAlgo,
+   BOPDS,
+   BRepBuilderAPI
+is
+
+    deferred class BooleanOperation;
+    class Fuse;
+    class Common;
+    class Cut;
+    class Section;
+    class Check;
+    ---Purpose: Check shapes on validity for boolean
+    --- operation.
+
+    deferred class Algo; 
+    class BuilderAlgo;
+    
+end BRepAlgoAPI;
+
+
+
+     

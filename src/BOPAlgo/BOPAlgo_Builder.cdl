@@ -59,15 +59,18 @@ is
       returns PDS from BOPDS;
  
     AddArgument (me:out;  
-        theShape: Shape from TopoDS) 
-    is virtual; 
+            theShape: Shape from TopoDS) 
+        is virtual; 
  
+    SetArguments(me:out; 
+            theLS:ListOfShape from TopTools);  
+
     SetArguments (me:out;
-        theShapes: ListOfShape from BOPCol)
-    is virtual;
+            theLS: ListOfShape from BOPCol)
+        is virtual;
 
     Arguments(me) 
-    returns ListOfShape from BOPCol; 
+        returns ListOfShape from BOPCol; 
     ---C++: return const & 
       
 	 

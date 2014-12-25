@@ -104,7 +104,6 @@ QANewModTopOpe_Glue::QANewModTopOpe_Glue(const TopoDS_Shape& theS1,
   if (thePerformNow)
     Build();
 }
-
 //=======================================================================
 //function : Build
 //purpose  : 
@@ -112,6 +111,9 @@ QANewModTopOpe_Glue::QANewModTopOpe_Glue(const TopoDS_Shape& theS1,
 
 void QANewModTopOpe_Glue::Build() 
 {
+  TopoDS_Shape& myS1=myArguments.First();
+  TopoDS_Shape& myS2=myTools.First();
+
   if (myCompleted) return;
 
   TopAbs_ShapeEnum aType1, aType2;
