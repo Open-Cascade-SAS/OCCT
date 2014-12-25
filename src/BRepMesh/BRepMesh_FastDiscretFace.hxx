@@ -54,10 +54,13 @@ public:
   //! @param theAngle deviation angle to be used for surface tessellation.
   //! @param isInternalVerticesMode flag enabling/disabling internal 
   //! vertices mode.
+  //! @param isControlSurfaceDeflection enables/disables adaptive 
+  //! reconfiguration of mesh.
   Standard_EXPORT BRepMesh_FastDiscretFace(
     const Standard_Real    theAngle,
     const Standard_Real    theMinSize,
-    const Standard_Boolean isInternalVerticesMode);
+    const Standard_Boolean isInternalVerticesMode,
+    const Standard_Boolean isControlSurfaceDeflection);
 
   Standard_EXPORT void Perform(const Handle(BRepMesh_FaceAttribute)& theAttribute);
 
@@ -191,6 +194,7 @@ private:
   Handle(BRepMesh_DataStructureOfDelaun) myStructure;
 
   Standard_Real                          myMinSize;
+  Standard_Boolean                       myIsControlSurfaceDeflection;
 };
 
 DEFINE_STANDARD_HANDLE (BRepMesh_FastDiscretFace, Standard_Transient)

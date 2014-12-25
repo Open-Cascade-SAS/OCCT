@@ -145,10 +145,12 @@ namespace
 BRepMesh_FastDiscretFace::BRepMesh_FastDiscretFace(
   const Standard_Real    theAngle,
   const Standard_Real    theMinSize,
-  const Standard_Boolean isInternalVerticesMode)
+  const Standard_Boolean isInternalVerticesMode,
+  const Standard_Boolean isControlSurfaceDeflection)
 : myAngle(theAngle),
   myInternalVerticesMode(isInternalVerticesMode),
-  myMinSize(theMinSize)
+  myMinSize(theMinSize),
+  myIsControlSurfaceDeflection(isControlSurfaceDeflection)
 {
 }
 
@@ -387,7 +389,8 @@ void BRepMesh_FastDiscretFace::add(const Handle(BRepMesh_FaceAttribute)& theAttr
       insertInternalVertices(aNewVertices, trigu);
 
       //control internal points
-      aDef = control(aNewVertices, trigu, Standard_False);
+      if (myIsControlSurfaceDeflection)
+        aDef = control(aNewVertices, trigu, Standard_False);
     }
   }
 

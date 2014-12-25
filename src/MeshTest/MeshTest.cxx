@@ -136,6 +136,8 @@ options:\n\
                         (switched off by default)\n\n\
         -int_vert_off   disables insertion of internal vertices into mesh\n\
                         (enabled by default)\n\
+        -surf_def_off   disables control of deflection of mesh from real\n\
+                        surface (enabled by default)\n\
         -parallel       enables parallel execution (switched off by default)\n";
     return 0;
   }
@@ -147,12 +149,13 @@ options:\n\
     return 0;
   }
 
-  Standard_Real aLinDeflection   = Max(Draw::Atof(argv[2]), Precision::Confusion());
-  Standard_Real aAngDeflection   = 0.5;
-  Standard_Real aMinSize         = Precision::Confusion();
-  Standard_Boolean isRelative    = Standard_False;
-  Standard_Boolean isInParallel  = Standard_False;
-  Standard_Boolean isIntVertices = Standard_True;
+  Standard_Real aLinDeflection     = Max(Draw::Atof(argv[2]), Precision::Confusion());
+  Standard_Real aAngDeflection     = 0.5;
+  Standard_Real aMinSize           = Precision::Confusion();
+  Standard_Boolean isRelative      = Standard_False;
+  Standard_Boolean isInParallel    = Standard_False;
+  Standard_Boolean isIntVertices   = Standard_True;
+  Standard_Boolean isControlSurDef = Standard_True;
 
   if (nbarg > 3)
   {
@@ -170,6 +173,8 @@ options:\n\
         isInParallel = Standard_True;
       else if (aOpt == "-int_vert_off")
         isIntVertices = Standard_False;
+      else if (aOpt == "-surf_def_off")
+        isControlSurDef = Standard_False;
       else if (i < nbarg)
       {
         Standard_Real aVal = Draw::Atof(argv[i++]);
@@ -194,6 +199,7 @@ options:\n\
   aMesher.SetParallel  (isInParallel);
   aMesher.SetMinSize   (aMinSize);
   aMesher.SetInternalVerticesMode(isIntVertices);
+  aMesher.SetControlSurfaceDeflection(isControlSurDef);
   aMesher.Perform();
 
   di << "Meshing statuses: ";

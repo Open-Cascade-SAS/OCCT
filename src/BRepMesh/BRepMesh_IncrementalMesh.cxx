@@ -75,7 +75,8 @@ BRepMesh_IncrementalMesh::BRepMesh_IncrementalMesh()
 : myRelative  (Standard_False),
   myInParallel(Standard_False),
   myMinSize   (Precision::Confusion()),
-  myInternalVerticesMode(Standard_True)
+  myInternalVerticesMode(Standard_True),
+  myIsControlSurfaceDeflection(Standard_True)
 {
 }
 
@@ -92,7 +93,8 @@ BRepMesh_IncrementalMesh::BRepMesh_IncrementalMesh(
   : myRelative  (isRelative),
     myInParallel(isInParallel),
     myMinSize   (Precision::Confusion()),
-    myInternalVerticesMode(Standard_True)
+    myInternalVerticesMode(Standard_True),
+    myIsControlSurfaceDeflection(Standard_True)
 {
   myDeflection  = theLinDeflection;
   myAngle       = theAngDeflection;
@@ -149,7 +151,7 @@ void BRepMesh_IncrementalMesh::init()
   myMesh = new BRepMesh_FastDiscret(myDeflection, 
     myAngle, aBox, Standard_True, Standard_True, 
     myRelative, Standard_True, myInParallel, myMinSize,
-    myInternalVerticesMode);
+    myInternalVerticesMode, myIsControlSurfaceDeflection);
 
   myMesh->InitSharedFaces(myShape);
 }

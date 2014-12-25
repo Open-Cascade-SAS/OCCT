@@ -86,16 +86,17 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_FastDiscret, Standard_Transient)
 //purpose  : 
 //=======================================================================
 BRepMesh_FastDiscret::BRepMesh_FastDiscret(
-  const Standard_Real                              theDefle,
-  const Standard_Real                              theAngl,
-  const Bnd_Box&                                   theBox,
-  const Standard_Boolean                           theWithShare,
-  const Standard_Boolean                           theInshape,
-  const Standard_Boolean                           theRelative,
-  const Standard_Boolean                           theShapetrigu,
-  const Standard_Boolean                           isInParallel,
-  const Standard_Real                              theMinSize,
-  const Standard_Boolean                           isInternalVerticesMode)
+  const Standard_Real    theDefle,
+  const Standard_Real    theAngl,
+  const Bnd_Box&         theBox,
+  const Standard_Boolean theWithShare,
+  const Standard_Boolean theInshape,
+  const Standard_Boolean theRelative,
+  const Standard_Boolean theShapetrigu,
+  const Standard_Boolean isInParallel,
+  const Standard_Real    theMinSize,
+  const Standard_Boolean isInternalVerticesMode,
+  const Standard_Boolean isControlSurfaceDeflection)
 : myAngle (theAngl),
   myDeflection (theDefle),
   myWithShare (theWithShare),
@@ -106,7 +107,8 @@ BRepMesh_FastDiscret::BRepMesh_FastDiscret(
   myBoundaryVertices(new BRepMesh::DMapOfVertexInteger),
   myBoundaryPoints(new BRepMesh::DMapOfIntegerPnt),
   myMinSize(theMinSize),
-  myInternalVerticesMode(isInternalVerticesMode)
+  myInternalVerticesMode(isInternalVerticesMode),
+  myIsControlSurfaceDeflection(isControlSurfaceDeflection)
 {
   if ( myRelative )
     BRepMesh_ShapeTool::BoxMaxDimension(theBox, myDtotale);
@@ -127,7 +129,8 @@ BRepMesh_FastDiscret::BRepMesh_FastDiscret(
   const Standard_Boolean theShapetrigu,
   const Standard_Boolean isInParallel,
   const Standard_Real    theMinSize,
-  const Standard_Boolean isInternalVerticesMode)
+  const Standard_Boolean isInternalVerticesMode,
+  const Standard_Boolean isControlSurfaceDeflection)
 : myAngle (theAngl),
   myDeflection (theDefle),
   myWithShare (theWithShare),
@@ -138,7 +141,8 @@ BRepMesh_FastDiscret::BRepMesh_FastDiscret(
   myBoundaryVertices(new BRepMesh::DMapOfVertexInteger),
   myBoundaryPoints(new BRepMesh::DMapOfIntegerPnt),
   myMinSize(theMinSize),
-  myInternalVerticesMode(isInternalVerticesMode)
+  myInternalVerticesMode(isInternalVerticesMode),
+  myIsControlSurfaceDeflection(isControlSurfaceDeflection)
 {
   if ( myRelative )
     BRepMesh_ShapeTool::BoxMaxDimension(theBox, myDtotale);
@@ -202,7 +206,8 @@ void BRepMesh_FastDiscret::Process(const TopoDS_Face& theFace) const
     {
       OCC_CATCH_SIGNALS
 
-      BRepMesh_FastDiscretFace aTool(GetAngle(), myMinSize, myInternalVerticesMode);
+      BRepMesh_FastDiscretFace aTool(GetAngle(), myMinSize, 
+        myInternalVerticesMode, myIsControlSurfaceDeflection);
       aTool.Perform(anAttribute);
     }
     catch (Standard_Failure)

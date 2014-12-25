@@ -115,7 +115,7 @@ public: //! @name accessing to parameters.
     return myMinSize;
   }
 
-  //! Enables/disables internal vertices mode.
+  //! Enables/disables internal vertices mode (enabled by default).
   inline void SetInternalVerticesMode(const Standard_Boolean isEnabled)
   {
     myInternalVerticesMode = isEnabled;
@@ -125,6 +125,20 @@ public: //! @name accessing to parameters.
   inline Standard_Boolean IsInternalVerticesMode() const
   {
     return myInternalVerticesMode;
+  }
+
+  //! Enables/disables control of deflection of mesh from real surface 
+  //! (enabled by default).
+  inline void SetControlSurfaceDeflection(const Standard_Boolean isEnabled)
+  {
+    myIsControlSurfaceDeflection = isEnabled;
+  }
+
+  //! Returns flag indicating is adaptive reconfiguration 
+  //! of mesh enabled/disabled.
+  inline Standard_Boolean IsControlSurfaceDeflection() const
+  {
+    return myIsControlSurfaceDeflection;
   }
 
 public: //! @name plugin API
@@ -219,6 +233,7 @@ protected:
   NCollection_Vector<TopoDS_Face>             myFaces;
   Standard_Real                               myMinSize;
   Standard_Boolean                            myInternalVerticesMode;
+  Standard_Boolean                            myIsControlSurfaceDeflection;
 };
 
 DEFINE_STANDARD_HANDLE(BRepMesh_IncrementalMesh,BRepMesh_DiscretRoot)
