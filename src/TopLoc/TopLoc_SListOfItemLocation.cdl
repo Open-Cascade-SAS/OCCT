@@ -31,20 +31,6 @@ private class SListOfItemLocation from TopLoc
 	-- SListOfItemLocation Iterator;
 	-- for (Iterator = S; Iterator.More(); Iterator.Next())
 	--   X = Iterator.Value();
-	-- 
-        --  Memory usage  is  automatically managed for  SListOfItemLocations
-	--  (using reference counts).
-      	---Example:
-	-- If S1 and S2 are SListOfItemLocations :
-	-- if S1.Value() is X.
-	-- 
-	-- And the following is done :
-	-- S2 = S1;
-	-- S2.SetValue(Y);
-	-- 
-	-- S1.Value() becomes also Y.   So SListOfItemLocation must be used
-	-- with   care.  Mainly  the SetValue()    method  is
-	-- dangerous. 
 
 uses
     SListNodeOfItemLocation from TopLoc,
@@ -56,6 +42,7 @@ raises
 is
     Create returns SListOfItemLocation from TopLoc;
 	---Purpose: Creates an empty List.
+	---C++: inline
 	
     Create(anItem : ItemLocation from TopLoc; aTail : SListOfItemLocation from TopLoc)
     returns SListOfItemLocation from TopLoc;
@@ -64,6 +51,7 @@ is
     Create(Other : SListOfItemLocation from TopLoc)
     returns SListOfItemLocation from TopLoc;
 	---Purpose: Creates a list from an other one. The lists  are shared. 
+	---C++: inline
 	
     Assign(me : in out; Other : SListOfItemLocation from TopLoc)
     returns SListOfItemLocation from TopLoc
@@ -83,6 +71,7 @@ is
         ---Level: Public
 	---Purpose: Sets the list to be empty.
 	---C++: alias ~
+	---C++: inline
     is static;
 	
     Value(me) returns any ItemLocation from TopLoc
@@ -94,46 +83,11 @@ is
     	NoSuchObject from Standard
     is static;
     
-    ChangeValue(me : in out) returns any ItemLocation from TopLoc
-        ---Level: Public
-	---Purpose: Returns the current value of the list. An error is
-	-- raised if the  list  is empty.   This value may be
-	-- modified.   A   method modifying the  value can be
-	-- called. The value will be modified in the list.
-	---Example: AList.ChangeValue().Modify()
-	---C++: return &
-    raises
-    	NoSuchObject from Standard
-    is static;
-    
-    SetValue(me : in out; anItem : ItemLocation from TopLoc)
-        ---Level: Public
-	---Purpose: Changes the current value in the list. An error is
-	-- raised if the list is empty.
-    raises
-    	NoSuchObject from Standard
-    is static;
-    
     Tail(me) returns SListOfItemLocation from TopLoc
         ---Level: Public
 	---Purpose: Returns the current tail of  the list. On an empty
 	-- list the tail is the list itself.
 	---C++: return const &
-    is static;
-    
-    ChangeTail(me : in out) returns SListOfItemLocation from TopLoc
-        ---Level: Public
-	---Purpose: Returns the current  tail of the list.   This tail
-	-- may be modified.  A method modifying the  tail can
-	-- be called. The tail will be modified in the list.
-	---Example: AList.ChangeTail().Modify()
-	---C++: return &
-    is static;
-    
-    SetTail(me : in out; aList : SListOfItemLocation from TopLoc)
-        ---Level: Public
-	---Purpose: Changes the current tail  in the list. On an empty
-	-- list SetTail is Assign.
     is static;
     
     Construct(me : in out; anItem : ItemLocation from TopLoc)  
@@ -143,23 +97,9 @@ is
 	---C++: inline
     is static;
     
-    Constructed(me; anItem : ItemLocation from TopLoc) returns SListOfItemLocation from TopLoc
-        ---Level: Public
-	---Purpose: Returns a new list  with  <anItem> as Value an the
-	-- list <me> as tail.
-	---C++: inline
-    is static;
-    
     ToTail(me :  in out)
         ---Level: Public
 	---Purpose: Replaces the list <me> by its tail.
-	---C++: inline
-    is static;
-        
-    Initialize(me : in out; aList : SListOfItemLocation from TopLoc)
-        ---Level: Public
-	---Purpose: Sets  the iterator  to iterate   on the content of
-	-- <aList>. This is Assign().
 	---C++: inline
     is static;
     

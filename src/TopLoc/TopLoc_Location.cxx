@@ -22,21 +22,8 @@
 #include <TopLoc_SListOfItemLocation.hxx>
 #include <TopLoc_ItemLocation.hxx>
 #include <gp_Trsf.hxx>
-#include <TopLoc_TrsfPtr.hxx>
 
 static const gp_Trsf TheIdentity;
-
-
-static Standard_Boolean IsInternalIdentity(const TopLoc_Location& loc)
-{
-  if (loc.IsIdentity()) {
-    return Standard_True;
-  }
-//  if (loc.FirstDatum()->Transformation().Form() == gp_Identity) {
-//    return Standard_True;
-//  }
-  return Standard_False;
-}
 
 //=======================================================================
 //function : TopLoc_Location
@@ -74,19 +61,10 @@ TopLoc_Location::TopLoc_Location(const gp_Trsf& T)
 
 const gp_Trsf& TopLoc_Location::Transformation() const
 {
-  if (IsInternalIdentity(*this))
+  if (IsIdentity())
     return TheIdentity;
-  else {
-    if (myItems.Value().myTrsf == NULL) {
-      TopLoc_ItemLocation *I = (TopLoc_ItemLocation*) (void*) &this->myItems.Value();
-      // CLE
-      if (I->myTrsf == NULL) I->myTrsf = new gp_Trsf;
-      *(I->myTrsf) = I->myDatum->Transformation();
-      I->myTrsf->Power(I->myPower);
-      I->myTrsf->PreMultiply(NextLocation().Transformation());
-    }
-    return *(myItems.Value().myTrsf);
-  }
+  else
+    return myItems.Value().myTrsf;
 }
 
 TopLoc_Location::operator gp_Trsf() const
@@ -172,7 +150,7 @@ TopLoc_Location TopLoc_Location::Predivided (const TopLoc_Location& Other)
 
 TopLoc_Location TopLoc_Location::Powered (const Standard_Integer pwr) const
 {
-  if (IsInternalIdentity(*this)) return *this;
+  if (IsIdentity()) return *this;
   if (pwr == 1) return *this;
   if (pwr == 0) return TopLoc_Location();
   

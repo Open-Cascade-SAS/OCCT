@@ -92,7 +92,7 @@ inline gp_Trsf gp_Trsf::Multiplied (const gp_Trsf& T) const
   return Tresult;
 }
 
-inline gp_Trsf gp_Trsf::Powered (const Standard_Integer N)
+inline gp_Trsf gp_Trsf::Powered (const Standard_Integer N) const
 {
   gp_Trsf T = *this;
   T.Power (N);

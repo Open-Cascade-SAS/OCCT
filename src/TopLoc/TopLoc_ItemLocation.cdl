@@ -30,31 +30,21 @@ private class ItemLocation from TopLoc
 
 uses
     Datum3D   from TopLoc,
-    Trsf      from gp,
-    TrsfPtr from TopLoc
+    Trsf      from gp
     
 is
     Create(D : Datum3D      from TopLoc; 
-    	   P : Integer      from Standard;
-           fromTrsf : Boolean from Standard = Standard_False) returns ItemLocation from TopLoc;
+    	   P : Integer      from Standard) returns ItemLocation from TopLoc;
 	---Purpose: Sets the elementary Datum to <D>
 	--          Sets the exponent to <P>
 
-    Create(anOther : ItemLocation from TopLoc) returns ItemLocation from TopLoc;
-    
-    Assign(me : in out; anOther : ItemLocation from TopLoc) returns ItemLocation from TopLoc;
-    ---C++: alias operator=
-    ---C++: return &
-
-    Destroy(me : in out);
-    ---C++: alias ~
-
 fields
-    myDatum  : Datum3D   from TopLoc;
-    myPower  : Integer   from Standard;
-    myTrsf   : TrsfPtr   from TopLoc;
+    myDatum     : Datum3D   from TopLoc;
+    myPower     : Integer   from Standard;
+    myTrsf      : Trsf      from gp;
 
 friends
-    class Location from TopLoc
-    
+    class Location from TopLoc,
+    class SListOfItemLocation from TopLoc
+
 end ItemLocation;

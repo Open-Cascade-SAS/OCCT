@@ -23,27 +23,14 @@
 //purpose  : 
 //=======================================================================
 
-TopLoc_SListOfItemLocation::TopLoc_SListOfItemLocation()
-{}
-
-//=======================================================================
-//function : TopLoc_SListOfItemLocation
-//purpose  : 
-//=======================================================================
-
 TopLoc_SListOfItemLocation::TopLoc_SListOfItemLocation(const TopLoc_ItemLocation& anItem,
 				     const TopLoc_SListOfItemLocation& aTail) : 
        myNode(new TopLoc_SListNodeOfItemLocation(anItem,aTail))
-{}
-
-//=======================================================================
-//function : TopLoc_SListOfItemLocation
-//purpose  : 
-//=======================================================================
-
-TopLoc_SListOfItemLocation::TopLoc_SListOfItemLocation(const TopLoc_SListOfItemLocation& Other) : 
-       myNode(Other.myNode)
 {
+  if (!myNode->Tail().IsEmpty()) {
+    const gp_Trsf& aT = myNode->Tail().Value().myTrsf;
+    myNode->Value().myTrsf.PreMultiply (aT);
+  }
 }
 
 //=======================================================================
@@ -61,18 +48,6 @@ TopLoc_SListOfItemLocation& TopLoc_SListOfItemLocation::Assign(const TopLoc_SLis
 }
 
 //=======================================================================
-//function : Clear
-//purpose  : 
-//=======================================================================
-
-void TopLoc_SListOfItemLocation::Clear()
-{
-  if (!myNode.IsNull()) {
-    myNode.Nullify();
-  }
-}
-
-//=======================================================================
 //function : Value
 //purpose  : 
 //=======================================================================
@@ -81,28 +56,6 @@ const TopLoc_ItemLocation& TopLoc_SListOfItemLocation::Value() const
 {
   Standard_NoSuchObject_Raise_if(myNode.IsNull(),"TopLoc_SListOfItemLocation::Value");
   return myNode->Value();
-}
-
-//=======================================================================
-//function : ChangeValue
-//purpose  : 
-//=======================================================================
-
-TopLoc_ItemLocation& TopLoc_SListOfItemLocation::ChangeValue()
-{
-  Standard_NoSuchObject_Raise_if(myNode.IsNull(),"TopLoc_SListOfItemLocation::Value");
-  return myNode->Value();
-}
-
-//=======================================================================
-//function : SetValue
-//purpose  : 
-//=======================================================================
-
-void TopLoc_SListOfItemLocation::SetValue(const TopLoc_ItemLocation& anItem)
-{
-  Standard_NoSuchObject_Raise_if(myNode.IsNull(),"TopLoc_SListOfItemLocation::Value");
-  myNode->Value() = anItem;
 }
 
 //=======================================================================
@@ -116,30 +69,4 @@ const TopLoc_SListOfItemLocation& TopLoc_SListOfItemLocation::Tail() const
     return  myNode->Tail();
   else
     return *this;
-}
-
-//=======================================================================
-//function : ChangeTail
-//purpose  : 
-//=======================================================================
-
-TopLoc_SListOfItemLocation& TopLoc_SListOfItemLocation::ChangeTail()
-{
-  if (!myNode.IsNull()) 
-    return myNode->Tail();
-  else
-    return *this;
-}
-
-//=======================================================================
-//function : SetTail
-//purpose  : 
-//=======================================================================
-
-void TopLoc_SListOfItemLocation::SetTail(const TopLoc_SListOfItemLocation& aList)
-{
-  if (!myNode.IsNull())
-    myNode->Tail() = aList;
-  else
-    Assign(aList);
 }

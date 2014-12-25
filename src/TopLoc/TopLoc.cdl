@@ -34,7 +34,6 @@ uses
     gp
 
 is
-    pointer TrsfPtr to Trsf from gp;
     class Datum3D;
     
     private class ItemLocation;

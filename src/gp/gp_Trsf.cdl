@@ -343,7 +343,7 @@ is
 
   Power (me : in out; N : Integer)   raises ConstructionError   is static;
 
-  Powered (me : in out; N : Integer)  returns Trsf
+  Powered (me; N : Integer)  returns Trsf
         ---C++: inline
         --- Purpose :
         --  Computes the following composition of transformations

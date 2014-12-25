@@ -23,10 +23,6 @@ uses
 is
    Create(I : ItemLocation from TopLoc; aTail :  SListOfItemLocation from TopLoc) returns SListNodeOfItemLocation from TopLoc;
    ---C++:inline
-
-   Count(me) returns Integer;
-   ---C++:inline
-   ---C++: return &
    
    Tail(me) returns SListOfItemLocation from TopLoc;
    ---C++:inline

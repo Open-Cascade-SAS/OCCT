@@ -49,6 +49,7 @@
 #include <TCollection_HAsciiString.hxx>
 #include <GeomFill_Trihedron.hxx>
 #include <BRepOffsetAPI_MakePipe.hxx>
+#include <Standard_Atomic.hxx>
 
 #include <Standard_Version.hxx>
 
@@ -158,7 +159,6 @@ static Standard_Integer OCC23237 (Draw_Interpretor& di, Standard_Integer /*argc*
 
 #ifdef HAVE_TBB
 
-#include <Standard_Atomic.hxx>
 #include <tbb/blocked_range.h>
 #include <tbb/parallel_for.h>
 
@@ -3126,6 +3126,76 @@ static Standard_Integer OCC25446 (Draw_Interpretor& theDI,
   return 0;
 }
 
+//====================================================
+// Auxiliary functor class for the command OCC25545;
+// it gets access to a vertex with the given index and
+// checks that X coordinate of the point is equal to index;
+// if it is not so then a data race is reported.
+//====================================================
+struct OCC25545_Functor
+{
+  OCC25545_Functor(const std::vector<TopoDS_Shape>& theShapeVec)
+    : myShapeVec(&theShapeVec),
+      myIsRaceDetected(0)
+  {}
+
+  void operator()(size_t i) const
+  {
+    if (!myIsRaceDetected) {
+      const TopoDS_Vertex& aV = TopoDS::Vertex (myShapeVec->at(i));
+      gp_Pnt aP = BRep_Tool::Pnt (aV);
+      if (aP.X () != static_cast<double> (i)) {
+        Standard_Atomic_Increment(&myIsRaceDetected);
+      }
+    }
+  }
+
+  const std::vector<TopoDS_Shape>* myShapeVec;
+  mutable volatile int myIsRaceDetected;
+};
+
+//=======================================================================
+//function : OCC25545
+//purpose  : Tests data race when concurrently accessing TopLoc_Location::Transformation()
+//=======================================================================
+#ifdef HAVE_TBB
+static Standard_Integer OCC25545 (Draw_Interpretor& di, 
+                                  Standard_Integer, 
+                                  const char **)
+{
+  // Place vertices in a vector, giving the i-th vertex the
+  // transformation that translates it on the vector (i,0,0) from the origin.
+  size_t n = 1000;
+  std::vector<TopoDS_Shape> aShapeVec (n);
+  std::vector<TopLoc_Location> aLocVec (n);
+  TopoDS_Shape aShape = BRepBuilderAPI_MakeVertex (gp::Origin ());
+  aShapeVec[0] = aShape;
+  for (size_t i = 1; i < n; ++i) {
+    gp_Trsf aT;
+    aT.SetTranslation (gp_Vec (1, 0, 0));
+    aLocVec[i] = aLocVec[i - 1] * aT;
+    aShapeVec[i] = aShape.Moved (aLocVec[i]);
+  }
+
+  // Evaluator function will access vertices geometry
+  // concurrently
+  OCC25545_Functor aFunc(aShapeVec);
+
+  //concurrently process
+  tbb::parallel_for (size_t (0), n, aFunc, tbb::simple_partitioner ());
+  QVERIFY (!aFunc.myIsRaceDetected);
+  return 0;
+}
+#else
+static Standard_Integer OCC25545 (Draw_Interpretor&, 
+                                  Standard_Integer, 
+                                  const char **argv)
+{
+  cout << "Test skipped: command " << argv[0] << " requires TBB library" << endl;
+  return 0;
+}
+#endif
+
 //=======================================================================
 //function : OCC25547
 //purpose  :
@@ -3266,6 +3336,10 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC25348", "OCC25348", __FILE__, OCC25348, group);
   theCommands.Add ("OCC25413", "OCC25413 shape", __FILE__, OCC25413, group);
   theCommands.Add ("OCC25446", "OCC25446 res b1 b2 op", __FILE__, OCC25446, group);
+  theCommands.Add ("OCC25545", 
+                   "no args; tests data race when concurrently accessing \n"
+                   "\t\tTopLoc_Location::Transformation()",
+                   __FILE__, OCC25545, group);
   theCommands.Add ("OCC25547", "OCC25547", __FILE__, OCC25547, group);
   return;
 }

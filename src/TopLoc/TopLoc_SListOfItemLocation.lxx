@@ -15,6 +15,24 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
+//function : TopLoc_SListOfItemLocation
+//purpose  : 
+//=======================================================================
+
+inline TopLoc_SListOfItemLocation::TopLoc_SListOfItemLocation()
+{}
+
+//=======================================================================
+//function : TopLoc_SListOfItemLocation
+//purpose  : 
+//=======================================================================
+
+inline TopLoc_SListOfItemLocation::TopLoc_SListOfItemLocation(const TopLoc_SListOfItemLocation& Other) : 
+       myNode(Other.myNode)
+{
+}
+
+//=======================================================================
 //function : IsEmpty
 //purpose  : 
 //=======================================================================
@@ -25,9 +43,16 @@ inline Standard_Boolean TopLoc_SListOfItemLocation::IsEmpty() const
 }
 
 //=======================================================================
-//function : Construct
+//function : Clear
 //purpose  : 
 //=======================================================================
+
+inline void TopLoc_SListOfItemLocation::Clear()
+{
+  if (!myNode.IsNull()) {
+    myNode.Nullify();
+  }
+}
 
 //=======================================================================
 //function : Construct
@@ -40,16 +65,6 @@ inline void TopLoc_SListOfItemLocation::Construct(const TopLoc_ItemLocation& anI
 }
 
 //=======================================================================
-//function : Constructed
-//purpose  : 
-//=======================================================================
-
-inline TopLoc_SListOfItemLocation TopLoc_SListOfItemLocation::Constructed(const TopLoc_ItemLocation& anItem) const
-{
-  return TopLoc_SListOfItemLocation(anItem,*this);
-}
-
-//=======================================================================
 //function : ToTail
 //purpose  : 
 //=======================================================================
@@ -57,16 +72,6 @@ inline TopLoc_SListOfItemLocation TopLoc_SListOfItemLocation::Constructed(const 
 inline void TopLoc_SListOfItemLocation::ToTail()
 {
   Assign(Tail());
-}
-
-//=======================================================================
-//function : Initialize
-//purpose  : 
-//=======================================================================
-
-inline void TopLoc_SListOfItemLocation::Initialize(const TopLoc_SListOfItemLocation& aList)
-{
-  Assign(aList);
 }
 
 //=======================================================================
