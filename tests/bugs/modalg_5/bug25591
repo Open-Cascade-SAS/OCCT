@@ -1,0 +1,18 @@
+puts "============"
+puts "OCC25591"
+puts "============"
+puts ""
+#################################
+# Command mkshell produces wrong shell
+#################################
+
+sphere surf 100
+mkshell sh surf 1 
+explode sh e
+catch {mkcurve csh_2 sh_2}
+
+if { [llength [dump csh_2]] > 0 } {
+  puts "Error: Command mkshell produces wrong shell"
+} else {
+  puts "OK: Command mkshell produces good shell"
+}

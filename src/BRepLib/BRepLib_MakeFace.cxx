@@ -427,9 +427,10 @@ void  BRepLib_MakeFace::Init(const Handle(Geom_Surface)& S,
 //           passed tolerance value
 //=======================================================================
 
-static Standard_Boolean IsDegenerated(const Handle(Geom_Curve)& theCurve,
-                                      const Standard_Real theMaxTol,
-                                      Standard_Real& theActTol)
+Standard_Boolean BRepLib_MakeFace::IsDegenerated(
+    const Handle(Geom_Curve)& theCurve,
+    const Standard_Real       theMaxTol,
+          Standard_Real&      theActTol)
 {
   GeomAdaptor_Curve AC(theCurve);
   Standard_Real aConfusion = Precision::Confusion();

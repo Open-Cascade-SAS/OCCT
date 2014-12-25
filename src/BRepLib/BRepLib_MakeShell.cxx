@@ -17,6 +17,7 @@
 #include <BRepLib_MakeShell.ixx>
 
 #include <BRepLib.hxx>
+#include <BRepLib_MakeFace.hxx>
 #include <Precision.hxx>
 #include <TColStd_Array1OfReal.hxx>
 
@@ -34,6 +35,8 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopTools_Array1OfShape.hxx>
 #include <BRep_Builder.hxx>
+
+#include <TopExp_Explorer.hxx>
 
 
 //=======================================================================
@@ -354,6 +357,20 @@ void BRepLib_MakeShell::Init(const Handle(Geom_Surface)& S,
   BRepLib::BuildCurves3d(myShape,tol);
   BRepLib::EncodeRegularity(myShape);
   myShape.Closed (BRep_Tool::IsClosed (myShape));
+
+  // Additional checking for degenerated edges
+  Standard_Boolean isDegenerated;
+  Standard_Real aFirst, aLast;
+  Standard_Real aTol = Precision::Confusion();
+  Standard_Real anActTol;
+  TopExp_Explorer anExp(myShape, TopAbs_EDGE);
+  for ( ; anExp.More(); anExp.Next())
+  {
+    const TopoDS_Edge& anEdge = TopoDS::Edge(anExp.Current());
+    Handle(Geom_Curve) aCurve = BRep_Tool::Curve(anEdge, aFirst, aLast);
+    isDegenerated = BRepLib_MakeFace::IsDegenerated(aCurve, aTol, anActTol);
+    B.Degenerated(anEdge, isDegenerated);
+  }
   
   myError = BRepLib_ShellDone;
   Done();

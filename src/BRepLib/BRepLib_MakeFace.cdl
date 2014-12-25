@@ -48,6 +48,7 @@ uses
     Cone      from gp,
     Sphere    from gp,
     Torus     from gp,
+    Curve     from Geom,
     Surface   from Geom,
     Face      from TopoDS,
     Wire      from TopoDS,
@@ -258,6 +259,18 @@ is
     	NotDone from StdFail
     is static;
     
+
+    IsDegenerated (myclass;
+                   theCurve  :        Curve from Geom;
+                   theMaxTol :        Real  from Standard;
+                   theActTol : in out Real  from Standard)
+    returns Boolean;
+        --- Purpose: Checks the specified curve is degenerated 
+        --           according to specified tolerance.
+        --           Returns <theActTol> less than <theMaxTol>, which shows
+        --           actual tolerance to decide the curve is degenerated.
+        --  Warning: For internal use of BRepLib_MakeFace and BRepLib_MakeShell.
+
 fields
     myError    : FaceError from BRepLib;
 end MakeFace;
