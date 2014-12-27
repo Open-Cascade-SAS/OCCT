@@ -6,3 +6,4 @@ BOPTest_TolerCommands.cxx
 BOPTest_ObjCommands.cxx
 BOPTest_APICommands.cxx
 BOPTest_OptionCommands.cxx
+BOPTest_Chronometer.hxx
