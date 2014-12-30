@@ -52,7 +52,6 @@ void BRepPrimAPI_MakeOneAxis::Build()
   BRep_Builder B;
   B.MakeSolid(TopoDS::Solid(myShape));
   B.Add(myShape,((BRepPrim_OneAxis*) OneAxis())->Shell());
-  myShape.Closed(Standard_True);
   Done();
 }
 

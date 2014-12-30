@@ -150,11 +150,6 @@ void TopOpeBRepBuild_Builder::GEDBUMakeEdges
     } // EDBUloop.InitVertex :  on vertices of new edge newEdge
     
     Standard_Boolean addedge = (nVF == 1 && nVR == 1);
-    Standard_Boolean bitclosed = Standard_False;
-    if (nVF == 1 && nVR == 1) {
-      bitclosed = VF.IsSame(VR);
-      newEdge.Closed(bitclosed);
-    }
     if (addedge) {
       if (tosplit) {
 	TopTools_ListOfShape loe; Standard_Boolean ok = TopOpeBRepTool_TOOL::SplitE(TopoDS::Edge(newEdge),loe);

@@ -826,7 +826,7 @@ void BRepAlgo_Loop::CutEdge (const TopoDS_Edge&          E,
 	{
 	  gp_Pnt2d pf, pl;
 	  BRep_Tool::UVPoints( EE, myFace, pf, pl );
-	  if (pf.Distance(pl) <= Tol && !EE.Closed())
+	  if (pf.Distance(pl) <= Tol && !BRep_Tool::IsClosed(EE))
 	    NE.Remove(it);
 	  else
 	    it.Next();

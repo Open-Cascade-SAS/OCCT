@@ -620,8 +620,8 @@ void BRepFill_Generator::Perform()
 	Edge2 = TopoDS::Edge(ex2.Current());
       }
 
-      Standard_Boolean Periodic
-	= (Edge1.Closed() || degen1) && (Edge2.Closed() || degen2);
+      Standard_Boolean Periodic = (BRep_Tool::IsClosed(Edge1) || degen1) &&
+                                  (BRep_Tool::IsClosed(Edge2) || degen2);
       // ATTENTION : a non-punctual wire should not 
       //             contain a punctual edge
       if (!wPoint1) ex1.Next();
@@ -648,13 +648,7 @@ void BRepFill_Generator::Perform()
 	  Vf_toMap = V1f;
 	  Vl_toMap = V1l;
 	}
-      
-      if(Periodic) {
-	Standard_Boolean E1IsReallyClosed = BRepTools::Compare(V1f,V1l);
-	Standard_Boolean E2IsReallyClosed = BRepTools::Compare(V2f,V2l);
-	Periodic 
-	  = (E1IsReallyClosed || degen1) && (E2IsReallyClosed || degen2);
-      }
+
       // processing of KPart
       Standard_Integer IType = DetectKPart(Edge1,Edge2);
       if (IType==0) {

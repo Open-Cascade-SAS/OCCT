@@ -432,18 +432,16 @@ Standard_Boolean ShapeFix_Solid::Perform(const Handle(Message_ProgressIndicator)
     }
       
     if(isClosed || myCreateOpenSolidMode) {
-      if(BRep_Tool::IsClosed(tmpShape)) {
-        TopoDS_Iterator itersh(tmpShape);
-        TopoDS_Shell aShell;
-        if(itersh.More() && itersh.Value().ShapeType() == TopAbs_SHELL)
-          aShell = TopoDS::Shell(itersh.Value());
-        if(!aShell.IsNull()) {
-          TopoDS_Solid aSol = SolidFromShell(aShell);
-          if(ShapeExtend::DecodeStatus(myStatus,ShapeExtend_DONE2)) {
-            SendWarning (Message_Msg ("FixAdvSolid.FixOrientation.MSG20"));// Orientaion of shell was corrected.
-            Context()->Replace(tmpShape,aSol);
-            tmpShape = aSol;
-          }
+      TopoDS_Iterator itersh(tmpShape);
+      TopoDS_Shell aShell;
+      if(itersh.More() && itersh.Value().ShapeType() == TopAbs_SHELL)
+        aShell = TopoDS::Shell(itersh.Value());
+      if(!aShell.IsNull()) {
+        TopoDS_Solid aSol = SolidFromShell(aShell);
+        if(ShapeExtend::DecodeStatus(myStatus,ShapeExtend_DONE2)) {
+          SendWarning (Message_Msg ("FixAdvSolid.FixOrientation.MSG20"));// Orientaion of shell was corrected.
+          Context()->Replace(tmpShape,aSol);
+          tmpShape = aSol;
         }
       }
       mySolid  = TopoDS::Solid(tmpShape);

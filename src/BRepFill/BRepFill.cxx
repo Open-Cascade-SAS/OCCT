@@ -304,7 +304,6 @@ TopoDS_Face BRepFill::Face(const TopoDS_Edge& Edge1,
   TopoDS_Edge Edge3, Edge4;
 
   Iso = Surf->UIso(f1);
-//  Tol = Max(BT.Tolerance(V1f), BT.Tolerance(V2f));
   Tol = Max(BRep_Tool::Tolerance(V1f), BRep_Tool::Tolerance(V2f));
   if (Iso->Value(f2).Distance(Iso->Value(l2)) > Tol) {
     B.MakeEdge(Edge3,Iso,Precision::Confusion());
@@ -324,7 +323,6 @@ TopoDS_Face BRepFill::Face(const TopoDS_Edge& Edge1,
   }
   else {
     Iso = Surf->UIso(l1);
-//    Tol = Max(BT.Tolerance(V1l), BT.Tolerance(V2l));
     Tol = Max(BRep_Tool::Tolerance(V1l), BRep_Tool::Tolerance(V2l));
     if (Iso->Value(l2).Distance(Iso->Value(f2)) > Tol) {
       B.MakeEdge(Edge4,Iso,Precision::Confusion());
@@ -436,7 +434,8 @@ TopoDS_Shell BRepFill::Shell(const TopoDS_Wire& Wire1,
     Edge1 = TopoDS::Edge(ex1.Current());
     Edge2 = TopoDS::Edge(ex2.Current());
 
-    Standard_Boolean Periodic = Edge1.Closed() && Edge2.Closed();
+    Standard_Boolean Periodic =
+      BRep_Tool::IsClosed(Edge1) && BRep_Tool::IsClosed(Edge2);
     
     ex1.Next();
     ex2.Next();

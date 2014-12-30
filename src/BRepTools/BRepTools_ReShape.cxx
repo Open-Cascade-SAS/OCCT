@@ -375,10 +375,7 @@ TopoDS_Shape BRepTools_ReShape::Apply (const TopoDS_Shape& shape,
     if ( (modif < 0 && buildmode < 2) || (modif == 0 && buildmode < 1) )
       return C;
     else
-    {
-      S.Closed (BRep_Tool::IsClosed (S));
       return S;
-    }
   }
 
   if (st == TopAbs_SHELL) {
@@ -542,17 +539,17 @@ TopoDS_Shape BRepTools_ReShape::Apply (const TopoDS_Shape& shape,
     //BRepTools_Edge sbe;
     CopyRanges ( TopoDS::Edge ( result ), TopoDS::Edge ( shape ),0,1 );
   }
-
-  if (st == TopAbs_FACE)  {
+  else if (st == TopAbs_FACE)  {
     TopoDS_Face face = TopoDS::Face ( shape );
     if( BRep_Tool::NaturalRestriction( face ) ) {
       BRep_Builder aB;
       aB.NaturalRestriction( TopoDS::Face (  result ), Standard_True );
     }
   }
+  else if (st == TopAbs_WIRE || st == TopAbs_SHELL)
+    result.Closed (BRep_Tool::IsClosed (result));
 
   result.Orientation(orien);
-  result.Closed (BRep_Tool::IsClosed (result));
   myStatus = locStatus;
   Replace ( shape, result );
 

@@ -149,23 +149,12 @@ void BRepFill_ShapeLaw::Init(const Standard_Boolean Build)
 	    C = CBis;
 	  }
 
-	  Standard_Boolean IsReallyClosed = E.Closed();
-	  //IFV - some checking when closed flag is wrong
-	  if(IsReallyClosed) {
-	    TopoDS_Vertex V1, V2;
-	    TopExp::Vertices(E, V1, V2);
-	    if(V1.IsNull() || V2.IsNull()) {
-	      IsReallyClosed = Standard_False;
-	    }
-	    else {
-	      IsReallyClosed = V1.IsSame(V2);
-	    }
-	  }
-          if (IsReallyClosed &&
+          Standard_Boolean IsClosed = BRep_Tool::IsClosed(E);
+          if (IsClosed &&
               Abs(C->FirstParameter() - First) > Precision::PConfusion())
-            IsReallyClosed = Standard_False; //trimmed curve differs
+            IsClosed = Standard_False; //trimmed curve differs
 
-	  if ((ii>1) || !IsReallyClosed ) { // Trim C
+	  if ((ii>1) || !IsClosed ) { // Trim C
 	    Handle(Geom_TrimmedCurve) TC = new Geom_TrimmedCurve(C,First, Last);
 	    C = TC;
 	  }

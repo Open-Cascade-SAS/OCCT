@@ -49,14 +49,15 @@ is
 
     -----------------------------------------------------------
     -----------------------------------------------------------
-    --                         Solid                         -- 
+    --                         Shape                         -- 
     -----------------------------------------------------------
     -----------------------------------------------------------
     IsClosed (myclass; S : Shape from TopoDS) returns Boolean from Standard;
-    	---Purpose: If S is Solid or Shell, returns True if it has no free boundaries (edges).
-		--          If S is Wire, returns True if it has no free ends (vertices).
-		--          (Internal and External sub-shepes are ignored in this check.)
-		--          For other shape types returns S.Closed().
+    ---Purpose: If S is Shell, returns True if it has no free boundaries (edges).
+    --          If S is Wire, returns True if it has no free ends (vertices).
+    --          (Internal and External sub-shepes are ignored in these checks)
+    --          If S is Edge, returns True if its vertices are the same.
+    --          For other shape types returns S.Closed().
     	
     -----------------------------------------------------------
     -----------------------------------------------------------

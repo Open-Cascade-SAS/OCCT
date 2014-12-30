@@ -573,7 +573,7 @@ void BRepFill_NSections::Init(const TColStd_SequenceOfReal & P,
 	    Last = aux;
 	    C =  CBis;
 	  } 
-	  if ((ii>1) || (!E.Closed()) ) { // Cut C
+	  if ((ii>1) || (!BRep_Tool::IsClosed(E)) ) { // Cut C
 	    Handle(Geom_TrimmedCurve) TC = 
 	      new (Geom_TrimmedCurve) (C,First, Last);
 	    C  = TC;

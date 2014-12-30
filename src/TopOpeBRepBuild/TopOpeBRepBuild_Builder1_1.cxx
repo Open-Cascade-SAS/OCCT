@@ -553,8 +553,6 @@ void TopOpeBRepBuild_Builder1::Destroy()
 	  Vl = TopoDS::Vertex(myDataStructure->Shape(iref));
 	  Vl.Orientation(TopAbs_REVERSED);
 	}
-	Standard_Boolean bitclosed = Vf.IsSame(Vl);
-	aNewEdge.Closed(bitclosed);
       
 	myBuildTool.AddEdgeVertex (aNewEdge, Vf);
 	myBuildTool.Parameter     (aNewEdge, Vf, ParF);
@@ -841,9 +839,6 @@ void TopOpeBRepBuild_Builder1::Destroy()
     // Make new edge from EdgeF
     TopoDS_Edge aNewEdge;
     myBuildTool.CopyEdge (EdgeF, aNewEdge);
-    
-    Standard_Boolean bitclosed = aV1.IsSame(aV2);
-    aNewEdge.Closed(bitclosed);
 
     myBuildTool.AddEdgeVertex (aNewEdge, aV1);
     myBuildTool.Parameter     (aNewEdge, aV1, aPar1);

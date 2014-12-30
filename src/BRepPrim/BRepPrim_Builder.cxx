@@ -210,7 +210,6 @@ void BRepPrim_Builder::AddEdgeVertex (TopoDS_Edge& E,
   VV.Orientation(TopAbs_REVERSED);
   myBuilder.Add(E,VV);
   myBuilder.Range(E,P1,P2);
-  E.Closed(Standard_True);
 }
 
 //=======================================================================
@@ -280,6 +279,7 @@ void  BRepPrim_Builder::CompleteEdge(TopoDS_Edge& E)const
 
 void  BRepPrim_Builder::CompleteWire(TopoDS_Wire& W)const 
 {
+  W.Closed(BRep_Tool::IsClosed(W));
   BRepTools::Update(W);
 }
 
@@ -302,5 +302,6 @@ void  BRepPrim_Builder::CompleteFace(TopoDS_Face& F)const
 
 void  BRepPrim_Builder::CompleteShell(TopoDS_Shell& S)const 
 {
+  S.Closed(BRep_Tool::IsClosed(S));
   BRepTools::Update(S);
 }

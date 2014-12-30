@@ -97,7 +97,6 @@ void  BRepLib_MakeWire::Add(const TopTools_ListOfShape& L)
 	  TopoDS_Edge newEd=TopoDS::Edge(aLocalShape);
 //	  TopoDS_Edge newEd=TopoDS::Edge(curEd.EmptyCopied());
 	  BB.Transfert(curEd, newEd);
-	  newEd.Closed(curEd.Closed());
 	  TopTools_ListIteratorOfListOfShape itV(nlist);
 	  for (; itV.More(); itV.Next()) {
 	    BB.Add(newEd, itV.Value());

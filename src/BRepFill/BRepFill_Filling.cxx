@@ -681,7 +681,7 @@ void BRepFill_Filling::Build()
     Handle(Geom2d_Curve) aCurveOnPlate = CurvesOnPlate->Value(i);
 
     TopoDS_Edge NewEdge = TopoDS::Edge(anEdge.EmptyCopied());
-    NewEdge.Closed(anEdge.Closed());
+
     TopoDS_Vertex V1, V2;
     TopExp::Vertices(anEdge, V1, V2, Standard_True); //with orientation
     BB.UpdateVertex(V1, dmax);

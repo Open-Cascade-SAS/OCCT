@@ -361,15 +361,9 @@ Standard_Boolean  BRepLib::BuildCurve3d(const TopoDS_Edge& AnEdge,
     Standard_Real First, Last;
 
     BRep_Builder B;
-    Standard_Boolean is_closed ;
-    is_closed = AnEdge.Closed() ;
-
     B.UpdateEdge(AnEdge,C3d,LocalLoc,0.0e0);
     BRep_Tool::Range(AnEdge, S, LC, First, Last);
     B.Range(AnEdge, First, Last); //Do not forget 3D range.(PRO6412)
-    TopoDS_Edge E = AnEdge ;
-    E.Closed(is_closed) ;
-
   }
   else {
     //
@@ -430,14 +424,10 @@ Standard_Boolean  BRepLib::BuildCurve3d(const TopoDS_Edge& AnEdge,
       max_deviation = Max( tolerance, Tolerance );
       if (NewCurvePtr.IsNull())
         return Standard_False;
-      Standard_Boolean is_closed ;
-      is_closed = AnEdge.Closed() ;
       B.UpdateEdge(TopoDS::Edge(AnEdge),
         NewCurvePtr,
         L[0],
         max_deviation) ;
-      TopoDS_Edge  E = AnEdge ;
-      E.Closed(is_closed) ;
       if (jj == 1 ) {
         //
         // if there is only one curve on surface attached to the edge

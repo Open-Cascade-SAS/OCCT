@@ -317,7 +317,6 @@ void BRepOffsetAPI_ThruSections::AddVertex(const TopoDS_Vertex& aVertex)
   BB.Add( DegEdge, aVertex.Oriented(TopAbs_FORWARD) );
   BB.Add( DegEdge, aVertex.Oriented(TopAbs_REVERSED) );
   BB.Degenerated( DegEdge, Standard_True );
-  DegEdge.Closed( Standard_True );
 
   TopoDS_Wire DegWire;
   BB.MakeWire( DegWire );

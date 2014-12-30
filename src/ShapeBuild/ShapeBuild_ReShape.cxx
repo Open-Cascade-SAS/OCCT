@@ -124,8 +124,9 @@ TopoDS_Shape ShapeBuild_ReShape::Apply (const TopoDS_Shape& shape,
     ShapeBuild_Edge sbe;
     sbe.CopyRanges ( TopoDS::Edge ( result ), TopoDS::Edge ( shape ));
   }
+  else if (st == TopAbs_WIRE || st == TopAbs_SHELL)
+    result.Closed (BRep_Tool::IsClosed (result));
   result.Orientation(orient);
-  result.Closed (BRep_Tool::IsClosed (result));
   myStatus = locStatus;
   Replace ( shape, result );
 

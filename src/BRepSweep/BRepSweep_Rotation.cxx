@@ -201,14 +201,7 @@ TopoDS_Shape  BRepSweep_Rotation::MakeEmptyDirectingEdge
     Handle(Geom_Circle) GC = new Geom_Circle(Axis,O.Distance(P));
     Standard_Real tol = BRep_Tool::Tolerance(TopoDS::Vertex(aGenV));
     myBuilder.Builder().MakeEdge(E, GC, tol);
-
-    gp_Pnt PLast = GC->Value(myAng);
-    if(PLast.SquareDistance(P) > tol*tol) E.Closed(Standard_False);
-
   }
-
-    
-
   return E;
 }
 

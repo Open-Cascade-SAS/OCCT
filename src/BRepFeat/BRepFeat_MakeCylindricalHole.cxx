@@ -92,7 +92,6 @@ void BRepFeat_MakeCylindricalHole::Perform(const Standard_Real Radius)
   TopoDS_Solid theTool;
   B.MakeSolid(theTool);
   B.Add(theTool,theCylinder.Shell());
-  theTool.Closed(Standard_True);
 
   myTopFace = theCylinder.TopFace();
   myBotFace = theCylinder.BottomFace();
@@ -193,7 +192,6 @@ void BRepFeat_MakeCylindricalHole::PerformThruNext(const Standard_Real Radius,
   TopoDS_Solid theTool;
   B.MakeSolid(theTool);
   B.Add(theTool,theCylinder.Shell());
-  theTool.Closed(Standard_True);
 
   myTopFace = theCylinder.TopFace();
   myBotFace = theCylinder.BottomFace();
@@ -344,7 +342,6 @@ void BRepFeat_MakeCylindricalHole::PerformUntilEnd(const Standard_Real Radius,
   TopoDS_Solid theTool;
   B.MakeSolid(theTool);
   B.Add(theTool,theCylinder.Shell());
-  theTool.Closed(Standard_True);
 
   myTopFace = theCylinder.TopFace();
   myBotFace = theCylinder.BottomFace();
@@ -474,7 +471,6 @@ void BRepFeat_MakeCylindricalHole::Perform(const Standard_Real Radius,
   TopoDS_Solid theTool;
   B.MakeSolid(theTool);
   B.Add(theTool,theCylinder.Shell());
-  theTool.Closed(Standard_True);
 
   myTopFace = theCylinder.TopFace();
   myBotFace = theCylinder.BottomFace();
@@ -603,7 +599,6 @@ void BRepFeat_MakeCylindricalHole::PerformBlind(const Standard_Real Radius,
   TopoDS_Solid theTool;
   B.MakeSolid(theTool);
   B.Add(theTool,theCylinder.Shell());
-  theTool.Closed(Standard_True);
 
   myTopFace = theCylinder.TopFace();
   myBotFace.Nullify();

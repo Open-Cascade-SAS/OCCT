@@ -119,7 +119,6 @@ void BRepPrimAPI_MakeWedge::Build()
   BRep_Builder B;
   B.MakeSolid(TopoDS::Solid(myShape));
   B.Add(myShape,myWedge.Shell());
-  myShape.Closed(Standard_True);
   Done();
 }
 

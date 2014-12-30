@@ -1455,7 +1455,7 @@ gp_Pnt2d  BRep_Tool::Parameters(const TopoDS_Vertex& V,
 //=======================================================================
 Standard_Boolean BRep_Tool::IsClosed (const TopoDS_Shape& theShape)
 {
-  if (theShape.ShapeType() == TopAbs_SHELL || theShape.ShapeType() == TopAbs_SOLID)
+  if (theShape.ShapeType() == TopAbs_SHELL)
   {
     NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMap (101, new NCollection_IncAllocator);
     TopExp_Explorer exp (theShape.Oriented(TopAbs_FORWARD), TopAbs_EDGE);
@@ -1486,6 +1486,12 @@ Standard_Boolean BRep_Tool::IsClosed (const TopoDS_Shape& theShape)
         aMap.Remove(V);
     }
     return hasBound && aMap.IsEmpty();
+  }
+  else if (theShape.ShapeType() == TopAbs_EDGE)
+  {
+    TopoDS_Vertex aVFirst, aVLast;
+    TopExp::Vertices(TopoDS::Edge(theShape), aVFirst, aVLast);
+    return !aVFirst.IsNull() && aVFirst.IsSame(aVLast);
   }
   return theShape.Closed();
 }

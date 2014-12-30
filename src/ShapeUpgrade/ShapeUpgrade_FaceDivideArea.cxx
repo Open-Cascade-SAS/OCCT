@@ -97,7 +97,8 @@ ShapeUpgrade_FaceDivideArea::ShapeUpgrade_FaceDivideArea(const TopoDS_Face& F)
   }
   if(isModified)
   {
-    aCopyRes.Closed (BRep_Tool::IsClosed (aCopyRes));
+    if (aCopyRes.ShapeType() == TopAbs_WIRE || aCopyRes.ShapeType() == TopAbs_SHELL)
+      aCopyRes.Closed (BRep_Tool::IsClosed (aCopyRes));
     Context()->Replace(aResult,aCopyRes);
   }
   myStatus |= aStatus;  

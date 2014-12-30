@@ -279,7 +279,6 @@ void  BRepLib_MakeWire::Add(const TopoDS_Edge& E)
 	// copy the edge
 	TopoDS_Shape Dummy = EE.EmptyCopied();
 	myEdge = TopoDS::Edge(Dummy);
-	myEdge.Closed(EE.Closed());
 	
 	for (it.Initialize(EE); it.More(); it.Next()) {
 

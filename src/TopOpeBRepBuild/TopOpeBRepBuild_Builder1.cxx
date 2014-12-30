@@ -1795,7 +1795,7 @@ Standard_Integer TopOpeBRepBuild_Builder1::IsSame2d (const TopTools_SequenceOfSh
   if (!(aBAS.IsUPeriodic() || aBAS.IsVPeriodic())) return 1;
 
   //we process here only fully closed edges (Vf == Vl)
-  if(!anEdgeObj.Closed() || !anEdgeTool.Closed())
+  if(!BRep_Tool::IsClosed(anEdgeObj) || !BRep_Tool::IsClosed(anEdgeTool))
     return 1;
   
   Standard_Real f = 0., l = 0., tolpc = 0. ,  

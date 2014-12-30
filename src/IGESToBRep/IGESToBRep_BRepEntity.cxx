@@ -268,7 +268,7 @@ TopoDS_Shape IGESToBRep_BRepEntity::TransferEdge
 	    Standard_Real dist2f = p2.Distance ( pf );
 	    Standard_Real dist1l = p1.Distance ( pl );
 	    Standard_Real dist2l = p2.Distance ( pl );
-	    if ( E.Closed() || dist1f + dist2l <= dist1l + dist2f ) {
+	    if ( V1.IsSame(V2) || dist1f + dist2l <= dist1l + dist2f + Precision::Confusion() ) {
 	      //:77 if (BRepTools::Compare(V1, Vf)) //the part 'else' only if, in fact, edge should be reversed
 	      V1.Orientation(TopAbs_FORWARD);
 	      B.Add(E,V1);

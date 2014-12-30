@@ -556,18 +556,18 @@ TopoDS_Shape BRepFill_Pipe::MakeShape(const TopoDS_Shape& S,
       B.MakeShell(TopoDS::Shell(result));
       B.MakeWire(W);
       B.Add(W, S);
-      W.Closed(S.Closed());
+      W.Closed(BRep_Tool::IsClosed(S));
       TheS = W;
       if (!FirstShape.IsNull()) {
 	B.MakeWire(W);
 	B.Add(W, FirstShape);
-	W.Closed(FirstShape.Closed());
+	W.Closed(BRep_Tool::IsClosed(FirstShape));
 	TheFirst = W;
       }
       if (!LastShape.IsNull()) {
 	B.MakeWire(W);
 	B.Add(W, LastShape);
-	W.Closed(LastShape.Closed());
+	W.Closed(BRep_Tool::IsClosed(LastShape));
 	TheLast = W;
       }
       result.Closed (BRep_Tool::IsClosed (result));

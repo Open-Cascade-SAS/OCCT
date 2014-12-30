@@ -260,7 +260,7 @@ BRepProj_Projection::BRepProj_Projection (const TopoDS_Shape& Wire,
   BB.Add( DegEdge, aVertex.Oriented(TopAbs_FORWARD) );
   BB.Add( DegEdge, aVertex.Oriented(TopAbs_REVERSED) );
   BB.Degenerated( DegEdge, Standard_True );
-  DegEdge.Closed( Standard_True );
+
   TopoDS_Wire DegWire;
   BB.MakeWire( DegWire );
   BB.Add( DegWire, DegEdge );

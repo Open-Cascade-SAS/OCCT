@@ -152,7 +152,6 @@ Standard_Integer TopOpeBRepBuild_Builder1::CorrectResult2d(TopoDS_Shape& aResult
     aShell.Closed (BRep_Tool::IsClosed(aShell));
     BB.Add (aSolid, aShell);
   }
-  aSolid.Closed (BRep_Tool::IsClosed(aSolid));
   aResult=aSolid;
 
   //update section curves 

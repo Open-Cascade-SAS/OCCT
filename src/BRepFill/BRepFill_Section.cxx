@@ -46,7 +46,6 @@ BRepFill_Section::BRepFill_Section(const TopoDS_Shape& Profile,
       BB.Add( DegEdge, aVertex.Oriented(TopAbs_FORWARD) );
       BB.Add( DegEdge, aVertex.Oriented(TopAbs_REVERSED) );
       BB.Degenerated( DegEdge, Standard_True );
-      DegEdge.Closed( Standard_True );
       
       BB.MakeWire( wire );
       BB.Add( wire, DegEdge );

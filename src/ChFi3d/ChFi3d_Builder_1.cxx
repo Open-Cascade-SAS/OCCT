@@ -547,9 +547,7 @@ void ChFi3d_Builder::PerformExtremity (const Handle(ChFiDS_Spine)& Spine)
 	Ec = TopoDS::Edge(It.Value());
 	Standard_Boolean bonedge = !BRep_Tool::Degenerated(Ec);
 	if(bonedge){
-	  TopoDS_Vertex v1,v2;
-	  TopExp::Vertices(Ec,v1,v2);
-	  Standard_Boolean eclosed = v1.IsSame(v2);
+	  Standard_Boolean eclosed = BRep_Tool::IsClosed(Ec);
 	  Standard_Integer nboc = 0;
 	  for(j = 0; j <= i && bonedge; j++){ 
 	    if(!eclosed) bonedge = !Ec.IsSame(E[j]); 

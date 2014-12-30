@@ -212,7 +212,8 @@ static void RecModif (const TopoDS_Shape &S,
       }
       if ( modif )
       {
-        result.Closed (BRep_Tool::IsClosed (result));
+        if (result.ShapeType() == TopAbs_WIRE || result.ShapeType() == TopAbs_SHELL)
+          result.Closed (BRep_Tool::IsClosed (result));
         res = result;
       }
     }

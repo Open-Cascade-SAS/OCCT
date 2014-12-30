@@ -563,7 +563,6 @@ void  BRep_Builder::MakeEdge(TopoDS_Edge& E) const
   {
     TopoDS_LockedShape::Raise("BRep_Builder::MakeEdge");
   }
-  TE->Closed(Standard_False);
   MakeShape(E,TE);
 }
 
@@ -586,7 +585,6 @@ void  BRep_Builder::UpdateEdge(const TopoDS_Edge& E,
   const TopLoc_Location l = L.Predivided(E.Location());
 
   UpdateCurves(TE->ChangeCurves(),C,l);
-  if (!C.IsNull()) TE->Closed(C->IsClosed());
 
   TE->UpdateTolerance(Tol);
   TE->Modified(Standard_True);
@@ -665,8 +663,6 @@ void  BRep_Builder::UpdateEdge(const TopoDS_Edge& E,
   const TopLoc_Location l = L.Predivided(E.Location());
 
   UpdateCurves(TE->ChangeCurves(),C1,C2,S,l);
-  if (!C1.IsNull() && !C2.IsNull()) 
-    TE->Closed(C1->IsClosed() && C2->IsClosed());
 
   TE->UpdateTolerance(Tol);
   TE->Modified(Standard_True);
@@ -695,9 +691,7 @@ void  BRep_Builder::UpdateEdge(const TopoDS_Edge& E,
   const TopLoc_Location l = L.Predivided(E.Location());
 
   UpdateCurves(TE->ChangeCurves(),C1,C2,S,l,Pf,Pl);
-  if (!C1.IsNull() && !C2.IsNull()) 
-    TE->Closed(C1->IsClosed() && C2->IsClosed());
-  
+
   TE->UpdateTolerance(Tol);
   TE->Modified(Standard_True);
 }
@@ -768,14 +762,14 @@ void  BRep_Builder::UpdateEdge(const TopoDS_Edge& E,
   while (itcr.More())
   {
     if (itcr.Value()->IsPolygonOnTriangulation(T,l))
-	{
+    {
       // cr is used to keep a reference on the curve representation
       // this avoid deleting it as its content may be referenced by T
       cr = itcr.Value();
       lcr.Remove(itcr);
       isModified = Standard_True;
       break;
-	}
+    }
     itcr.Next();
   }
 
@@ -1093,23 +1087,8 @@ void  BRep_Builder::Range(const TopoDS_Edge&  E,
   
   while (itcr.More()) {
     GC = Handle(BRep_GCurve)::DownCast(itcr.Value());
-    if (!GC.IsNull()) {
-      if (!Only3d || GC->IsCurve3D())
-	GC->SetRange(First,Last);
-      if (GC->IsCurve3D()) {
-        // Set the closedness flag to the correct value.
-        Handle(Geom_Curve) C = GC->Curve3D();
-        
-        //fixing a bug PRO18577 to avoid infinite values of First and Last 
-        if ( !C.IsNull() && 
-            !Precision::IsNegativeInfinite(First) && 
-            !Precision::IsPositiveInfinite(Last) )   {
-          Standard_Boolean closed = 
-            C->Value(First).IsEqual(C->Value(Last),BRep_Tool::Tolerance(E));
-          TE->Closed(closed);
-        }
-      }
-    }
+    if (!GC.IsNull() && (!Only3d || GC->IsCurve3D()))
+      GC->SetRange(First,Last);
     itcr.Next();
   }
   
@@ -1141,20 +1120,10 @@ void  BRep_Builder::Range(const TopoDS_Edge& E,
 
   while (itcr.More()) {
     GC = Handle(BRep_GCurve)::DownCast(itcr.Value());
-    if (!GC.IsNull()) {
-      if (GC->IsCurveOnSurface(S,l)) {
-        GC->SetRange(First,Last);
-
-        // Set the closedness flag to the correct value.
-        Handle(Geom2d_Curve) PC = GC->PCurve();
-        gp_Pnt2d P1 = PC->Value(First);
-        gp_Pnt2d P2 = PC->Value(Last);
-        gp_Pnt   PP1 = S->Value(P1.X(),P1.Y());
-        gp_Pnt   PP2 = S->Value(P2.X(),P2.Y());
-        Standard_Boolean closed = PP1.IsEqual(PP2,BRep_Tool::Tolerance(E));
-        TE->Closed(closed);
-        break;
-      }
+    if (!GC.IsNull() && GC->IsCurveOnSurface(S,l))
+    {
+      GC->SetRange(First,Last);
+      break;
     }
     itcr.Next();
   }

@@ -3218,7 +3218,7 @@ void CutEdge (const TopoDS_Edge& E,
   CT2d = new Geom2d_TrimmedCurve(C2d,f,l);
 
   if (CT2d->BasisCurve()->IsKind(STANDARD_TYPE(Geom2d_Circle)) &&
-      E.Closed()) {
+      BRep_Tool::IsClosed(E)) {
     //---------------------------
     // Cut closed circle.
     //---------------------------

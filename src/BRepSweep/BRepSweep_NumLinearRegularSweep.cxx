@@ -256,6 +256,7 @@ TopoDS_Shape BRepSweep_NumLinearRegularSweep::Shape (const TopoDS_Shape& aGenS,
 		TopoDS_Shape wi;
 		myBuilder.MakeWire(wi);
 		myBuilder.Add(wi,newShape,Or);
+		wi.Closed(BRep_Tool::IsClosed(wi));
 		WireSeq.Append(wi);
 	      }
 	      else{
@@ -328,6 +329,7 @@ TopoDS_Shape BRepSweep_NumLinearRegularSweep::Shape (const TopoDS_Shape& aGenS,
 	  }
 	}
 	else{
+	  newWire.Closed(BRep_Tool::IsClosed(newWire));
 	  myBuilder.Add(myShapes(iGenS,iDirS),newWire);
 	}
 	myBuiltShapes(iGenS,iDirS) = Standard_True;
@@ -393,7 +395,10 @@ TopoDS_Shape BRepSweep_NumLinearRegularSweep::Shape (const TopoDS_Shape& aGenS,
     }
     myBuiltShapes(iGenS,iDirS) = Standard_True;
   }
-  myShapes(iGenS,iDirS).Closed (BRep_Tool::IsClosed (myShapes(iGenS,iDirS)));
+  // Change the "Closed" flag only for Wires and Shells
+  if (myShapes(iGenS, iDirS).ShapeType() == TopAbs_WIRE ||
+      myShapes(iGenS, iDirS).ShapeType() == TopAbs_SHELL)
+    myShapes(iGenS,iDirS).Closed (BRep_Tool::IsClosed (myShapes(iGenS,iDirS)));
   return myShapes(iGenS,iDirS);
 }
 

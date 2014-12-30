@@ -145,7 +145,7 @@ Standard_Integer FUN_AnalyzemapVon1E(const TopTools_IndexedDataMapOfShapeShape& 
   }
   else if (nV == 1) {
     const TopoDS_Shape& E = mapVon1E.FindFromIndex(1);
-    Standard_Boolean Eclosed = E.Closed();
+    Standard_Boolean Eclosed = BRep_Tool::IsClosed(E);
     Standard_Boolean dgE = BRep_Tool::Degenerated(TopoDS::Edge(E));
     if      (dgE)     res = ISVERTEX;
     else if (Eclosed) res = CLOSEDW;
@@ -319,7 +319,7 @@ void TopOpeBRepBuild_FaceBuilder::DetectUnclosedWire(TopTools_IndexedDataMapOfSh
             {
               const TopoDS_Edge &E = TopoDS::Edge (itE.Value());
               Standard_Integer I = myBlockBuilder.Element(E);
-              if (!E.Closed() && myBlockBuilder.ElementIsValid(I))
+              if (!BRep_Tool::IsClosed(E) && myBlockBuilder.ElementIsValid(I))
               {
                 TopoDS_Vertex Vf,Vl;
                 TopExp::Vertices (E, Vf, Vl);
