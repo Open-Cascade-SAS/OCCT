@@ -171,11 +171,11 @@ public:
   //! Retrieve glyph bitmap rectangle
   inline void GlyphRect (Font_FTFont::Rect& theRect) const
   {
-    FT_Bitmap aBitmap = myFTFace->glyph->bitmap;
+    const FT_Bitmap& aBitmap = myFTFace->glyph->bitmap;
     theRect.Left   = float(myFTFace->glyph->bitmap_left);
     theRect.Top    = float(myFTFace->glyph->bitmap_top);
-    theRect.Right  = float(myFTFace->glyph->bitmap_left + aBitmap.width);
-    theRect.Bottom = float(myFTFace->glyph->bitmap_top  - aBitmap.rows);
+    theRect.Right  = float(myFTFace->glyph->bitmap_left + (int )aBitmap.width);
+    theRect.Bottom = float(myFTFace->glyph->bitmap_top  - (int )aBitmap.rows);
   }
 
 protected:

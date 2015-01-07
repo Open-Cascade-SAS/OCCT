@@ -160,7 +160,7 @@ bool Font_FTFont::RenderGlyph (const Standard_Utf32Char theUChar)
 
   FT_Bitmap aBitmap = myFTFace->glyph->bitmap;
   if (aBitmap.pixel_mode != FT_PIXEL_MODE_GRAY
-   || aBitmap.buffer == NULL || aBitmap.width <= 0 || aBitmap.rows <= 0)
+   || aBitmap.buffer == NULL || aBitmap.width == 0 || aBitmap.rows == 0)
   {
     return false;
   }
