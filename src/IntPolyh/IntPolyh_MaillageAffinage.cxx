@@ -1320,7 +1320,15 @@ Standard_Integer IntPolyh_MaillageAffinage::TriContact
      The edges are (e1,e2,e3) and (f1,f2,f3).
      The normals are n1 and m1
      Outwards are (g1,g2,g3) and (h1,h2,h3).*/
+  
+  if(maxSR(P1.X(),P2.X(),P3.X())<minSR(Q1.X(),Q2.X(),Q3.X())) return(0);
+  if(maxSR(P1.Y(),P2.Y(),P3.Y())<minSR(Q1.Y(),Q2.Y(),Q3.Y())) return(0);
+  if(maxSR(P1.Z(),P2.Z(),P3.Z())<minSR(Q1.Z(),Q2.Z(),Q3.Z())) return(0);
 
+  if(minSR(P1.X(),P2.X(),P3.X())>maxSR(Q1.X(),Q2.X(),Q3.X())) return(0);
+  if(minSR(P1.Y(),P2.Y(),P3.Y())>maxSR(Q1.Y(),Q2.Y(),Q3.Y())) return(0);
+  if(minSR(P1.Z(),P2.Z(),P3.Z())>maxSR(Q1.Z(),Q2.Z(),Q3.Z())) return(0);
+    
   IntPolyh_Point p1, p2, p3;
   IntPolyh_Point q1, q2, q3;
   IntPolyh_Point e1, e2, e3;
@@ -1333,16 +1341,9 @@ Standard_Integer IntPolyh_MaillageAffinage::TriContact
   IntPolyh_Point ef11, ef12, ef13;
   IntPolyh_Point ef21, ef22, ef23;
   IntPolyh_Point ef31, ef32, ef33;
-  
-  z.SetX(0.0);  z.SetY(0.0);  z.SetZ(0.0);
-  
-  if(maxSR(P1.X(),P2.X(),P3.X())<minSR(Q1.X(),Q2.X(),Q3.X())) return(0);
-  if(maxSR(P1.Y(),P2.Y(),P3.Y())<minSR(Q1.Y(),Q2.Y(),Q3.Y())) return(0);
-  if(maxSR(P1.Z(),P2.Z(),P3.Z())<minSR(Q1.Z(),Q2.Z(),Q3.Z())) return(0);
 
-  if(minSR(P1.X(),P2.X(),P3.X())>maxSR(Q1.X(),Q2.X(),Q3.X())) return(0);
-  if(minSR(P1.Y(),P2.Y(),P3.Y())>maxSR(Q1.Y(),Q2.Y(),Q3.Y())) return(0);
-  if(minSR(P1.Z(),P2.Z(),P3.Z())>maxSR(Q1.Z(),Q2.Z(),Q3.Z())) return(0);
+  z.SetX(0.0);  z.SetY(0.0);  z.SetZ(0.0);
+
 
   p1.SetX(P1.X() - P1.X());  p1.SetY(P1.Y() - P1.Y());  p1.SetZ(P1.Z() - P1.Z());
   p2.SetX(P2.X() - P1.X());  p2.SetY(P2.Y() - P1.Y());  p2.SetZ(P2.Z() - P1.Z());
