@@ -822,7 +822,17 @@ Standard_Boolean  BRepSweep_Rotation::HasShape
 {
   if(aDirS.Type()==TopAbs_EDGE&&
      aGenS.ShapeType()==TopAbs_EDGE){
-    return !IsInvariant(aGenS);
+    // Verify that the edge has entrails
+    const TopoDS_Edge& anEdge = TopoDS::Edge(aGenS);
+    Standard_Boolean hasGeom = !BRep_Tool::Degenerated(anEdge);
+    if (hasGeom)
+    { // The edge is not degenerated. Check if it has no curve
+      Standard_Real aPFirst, aPLast;
+      TopLoc_Location aLoc;
+      Handle(Geom_Curve) aCurve = BRep_Tool::Curve(anEdge, aLoc, aPFirst, aPLast);
+      hasGeom = !aCurve.IsNull();
+    }
+    return hasGeom && !IsInvariant(aGenS);
   }
   else{
     return Standard_True;
@@ -843,8 +853,7 @@ Standard_Boolean  BRepSweep_Rotation::IsInvariant
     Standard_Real First,Last;
     Handle(Geom_Curve) 
       C = BRep_Tool::Curve(TopoDS::Edge(aGenS),Loc,First,Last);
-    Handle(Standard_Type) TheType = C->DynamicType();
-    if ( TheType == STANDARD_TYPE(Geom_Line)) {
+    if (C.IsNull() || C->DynamicType() == STANDARD_TYPE(Geom_Line)) {
       TopoDS_Vertex V1, V2;
       TopExp::Vertices(TopoDS::Edge(aGenS), V1, V2);
       return ( IsInvariant(V1) && IsInvariant(V2));
