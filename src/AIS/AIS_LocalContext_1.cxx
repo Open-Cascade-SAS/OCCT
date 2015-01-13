@@ -153,6 +153,7 @@ AIS_StatusOfDetection AIS_LocalContext::MoveTo (const Standard_Integer  theXpix,
   {
     if (mylastindex != 0 && mylastindex <= myMapOfOwner.Extent())
     {
+      myMainPM->ClearImmediateDraw();
       Unhilight (myMapOfOwner (mylastindex), theView);
       if (theToRedrawImmediate)
       {
@@ -376,6 +377,7 @@ AIS_StatusOfPick AIS_LocalContext::ShiftSelect (const Standard_Boolean toUpdateV
 
     if(myAutoHilight)
     {
+      myMainPM->ClearImmediateDraw();
       const Handle(V3d_Viewer)& aViewer = myCTX->CurrentViewer();
       for (aViewer->InitActiveViews(); aViewer->MoreActiveViews(); aViewer->NextActiveViews())
       {
@@ -545,7 +547,6 @@ void AIS_LocalContext::Unhilight (const Handle(SelectMgr_EntityOwner)& theOwner,
     return;
   }
 
-  myMainPM->ClearImmediateDraw();
   const Standard_Integer aHilightMode = GetHiMod (Handle(AIS_InteractiveObject)::DownCast (theOwner->Selectable()));
   if (IsSelected (theOwner))
   {
@@ -1044,6 +1045,10 @@ void AIS_LocalContext::ClearOutdatedSelection (const Handle(AIS_InteractiveObjec
   myMapOfOwner.Clear();
   myMapOfOwner.Assign (anOwnersToKeep);
   mylastindex = myMapOfOwner.FindIndex (aLastPicked);
+  if (!IsValidIndex (mylastindex))
+  {
+    myMainPM->ClearImmediateDraw();
+  }
 
   if (!isAISRemainsDetected)
   {
@@ -1197,6 +1202,7 @@ void AIS_LocalContext::manageDetected (const Handle(SelectMgr_EntityOwner)& theP
 {
   if (thePickOwner.IsNull())
   {
+    myMainPM->ClearImmediateDraw();
     if (theToRedrawImmediate)
     {
       theView->RedrawImmediate();
@@ -1248,6 +1254,7 @@ void AIS_LocalContext::manageDetected (const Handle(SelectMgr_EntityOwner)& theP
   if (aNewIndex != mylastindex
    || thePickOwner->IsForcedHilight())
   {
+    myMainPM->ClearImmediateDraw();
     if (mylastindex != 0
      && mylastindex <= myMapOfOwner.Extent())
     {
@@ -1270,7 +1277,7 @@ void AIS_LocalContext::manageDetected (const Handle(SelectMgr_EntityOwner)& theP
     mylastindex = aNewIndex;
   }
 
-  if (mylastindex)
+  if (mylastindex != 0)
   {
     mylastgood = mylastindex;
   }
