@@ -398,14 +398,16 @@ void CreateKPart(const TopoDS_Edge& Edge1,const TopoDS_Edge& Edge2,
   BW1.MakeWire(newW1);
   BW2.MakeWire(newW2);
 
+  GeomAdaptor_Curve aC1Adaptor(C1);
+  GeomAdaptor_Curve aC2Adaptor(C2);
 
   // calculate the surface
   Handle(Geom_Surface) surface;
   Standard_Real V, Rad;
   if (IType==1) {
     // cylindrical surface
-    gp_Circ c1 = (Handle(Geom_Circle)::DownCast(C1))->Circ();
-    gp_Circ c2 = (Handle(Geom_Circle)::DownCast(C2))->Circ();
+    gp_Circ c1 = aC1Adaptor.Circle();
+    gp_Circ c2 = aC2Adaptor.Circle();
     gp_Ax3 Ac1 = c1.Position();
     V = gp_Vec( c1.Location(),c2.Location()).Dot(gp_Vec(Ac1.Direction()));
     if ( V < 0.) {
@@ -419,7 +421,7 @@ void CreateKPart(const TopoDS_Edge& Edge1,const TopoDS_Edge& Edge2,
   }
   else if (IType==2) {
     // conical surface
-    gp_Circ k1 = (Handle(Geom_Circle)::DownCast(C1))->Circ();
+    gp_Circ k1 = aC1Adaptor.Circle();
     gp_Ax3 Ak1 = k1.Position();
     if (degen2) {
       V = gp_Vec( k1.Location(),BRep_Tool::Pnt(v2f))
@@ -427,7 +429,7 @@ void CreateKPart(const TopoDS_Edge& Edge1,const TopoDS_Edge& Edge2,
       Rad = - k1.Radius();
     }
     else {
-      gp_Circ k2 = (Handle(Geom_Circle)::DownCast(C2))->Circ();
+      gp_Circ k2 = aC2Adaptor.Circle();
       V = gp_Vec( k1.Location(),k2.Location()).Dot(gp_Vec(Ak1.Direction()));
       Rad = k2.Radius() - k1.Radius();
     }
@@ -445,7 +447,7 @@ void CreateKPart(const TopoDS_Edge& Edge1,const TopoDS_Edge& Edge2,
   }
   else if (IType==-2) {
     // conical surface with the top at the beginning (degen1 is true)
-    gp_Circ k2 = (Handle(Geom_Circle)::DownCast(C2))->Circ();
+    gp_Circ k2 = aC2Adaptor.Circle();
     gp_Ax3 Ak2 = k2.Position();
     Ak2.SetLocation(BRep_Tool::Pnt(v1f));
     V = gp_Vec(BRep_Tool::Pnt(v1f),k2.Location())
@@ -469,15 +471,15 @@ void CreateKPart(const TopoDS_Edge& Edge1,const TopoDS_Edge& Edge2,
     // surface plane
     gp_Lin L1, L2, aLine;
     if (!degen1)
-      {
-	L1 = (Handle(Geom_Line)::DownCast(C1))->Lin();
-	aLine = L1;
-      }
+    {
+      L1 = aC1Adaptor.Line();
+      aLine = L1;
+    }
     if (!degen2)
-      {
-	L2 = (Handle(Geom_Line)::DownCast(C2))->Lin();
-	aLine = L2;
-      }
+    {
+      L2 = aC2Adaptor.Line();
+      aLine = L2;
+    }
 
     gp_Pnt P1 = (degen1)? BRep_Tool::Pnt(v1f) : L1.Location();
     gp_Pnt P2 = (degen2)? BRep_Tool::Pnt(v2f) : L2.Location();

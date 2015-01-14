@@ -1,0 +1,19 @@
+puts "============"
+puts "OCC25582"
+puts "============"
+puts ""
+#########################################################################
+# SIGSEGV in thrusections on coaxial circlular segments
+#########################################################################
+
+restore [locate_data_file bug25582_filletloft-draw-Loft-00-section.brep] Loft-00-section
+restore [locate_data_file bug25582_filletloft-draw-Loft-01-section.brep] Loft-01-section
+
+thrusections result 0 0 Loft-00-section Loft-01-section
+
+if ![isdraw result] {
+  puts "Error : thrusections failed"
+}
+
+set square 1.5708
+set 2dviewer 0
