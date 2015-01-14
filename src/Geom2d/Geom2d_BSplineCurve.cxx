@@ -1326,12 +1326,15 @@ void Geom2d_BSplineCurve::ValidateCache(const Standard_Real  Parameter)
   //
   // check if the degree did not change
   //
-  if (cachepoles->Upper() < deg + 1) {
+  if (cachepoles->Upper() < deg + 1)
     cachepoles = new TColgp_HArray1OfPnt2d(1,deg + 1);
-    if (rational) {
-      cacheweights  = new TColStd_HArray1OfReal(1,deg + 1);
-    }
+  if (rational)
+  {
+    if (cacheweights.IsNull() || cacheweights->Upper() < deg + 1)
+     cacheweights  = new TColStd_HArray1OfReal(1,deg + 1);
   }
+  else if (!cacheweights.IsNull())
+    cacheweights.Nullify();
 
   BSplCLib::LocateParameter(deg,
 			    (flatknots->Array1()),

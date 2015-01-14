@@ -24,6 +24,13 @@
 #include <Precision.hxx>
 #include <GeomLib.hxx>
 
+#include <Geom2d_BezierCurve.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+#include <Geom_BezierCurve.hxx>
+#include <Geom_BezierSurface.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_BSplineSurface.hxx>
+
 #ifdef WNT
 #include <stdio.h>
 //#define strcasecmp strcmp Already defined
@@ -126,6 +133,75 @@ static Standard_Integer samerange (Draw_Interpretor& /*di*/, Standard_Integer n,
 }
 
 //=======================================================================
+//function : setweight
+//purpose  : Changes a weight of a pole on B-spline curve/surface
+//=======================================================================
+
+static Standard_Integer setweight(Draw_Interpretor& di, Standard_Integer n, const char** a)
+{
+  if (n < 4 || n > 5)
+  {
+    std::cout << "Wrong parameters" << std::endl;
+    return 1;
+  }
+
+  Standard_Integer anIndex1 = Draw::Atoi(a[2]);
+  Standard_Integer anIndex2 = n == 5 ? Draw::Atoi(a[3]) : 0;
+  Standard_Real    aWeight  = Draw::Atof(a[n-1]);
+
+  Handle(Geom_BSplineCurve) aBSplCurve = DrawTrSurf::GetBSplineCurve(a[1]);
+  if (!aBSplCurve.IsNull())
+  {
+    aBSplCurve->SetWeight(anIndex1, aWeight);
+    return 0;
+  }
+
+  Handle(Geom_BezierCurve) aBezCurve = DrawTrSurf::GetBezierCurve(a[1]);
+  if (!aBezCurve.IsNull())
+  {
+    aBezCurve->SetWeight(anIndex1, aWeight);
+    return 0;
+  }
+
+  Handle(Geom2d_BSplineCurve) aBSplCurve2d = DrawTrSurf::GetBSplineCurve2d(a[1]);
+  if (!aBSplCurve2d.IsNull())
+  {
+    aBSplCurve2d->SetWeight(anIndex1, aWeight);
+    return 0;
+  }
+
+  Handle(Geom2d_BezierCurve) aBezCurve2d = DrawTrSurf::GetBezierCurve2d(a[1]);
+  if (!aBezCurve2d.IsNull())
+  {
+    aBezCurve2d->SetWeight(anIndex1, aWeight);
+    return 0;
+  }
+
+  Handle(Geom_BSplineSurface) aBSplSurf = DrawTrSurf::GetBSplineSurface(a[1]);
+  Handle(Geom_BezierSurface) aBezSurf = DrawTrSurf::GetBezierSurface(a[1]);
+  if (n != 5 && (!aBSplSurf.IsNull() || !aBezSurf.IsNull()))
+  {
+    std::cout << "Incorrect parameters" << std::endl;
+    return 1;
+  }
+
+  if (!aBSplSurf.IsNull())
+  {
+    aBSplSurf->SetWeight(anIndex1, anIndex2, aWeight);
+    return 0;
+  }
+
+  if (!aBezSurf.IsNull())
+  {
+    aBezSurf->SetWeight(anIndex1, anIndex2, aWeight);
+    return 0;
+  }
+
+  std::cout << a[1] << " is not a B-spline nor a Bezier curve/surface" << std::endl;
+  return 1;
+}
+
+//=======================================================================
 //function : ModificationCommands
 //purpose  : 
 //=======================================================================
@@ -160,6 +236,12 @@ void  GeomliteTest::ModificationCommands(Draw_Interpretor& theCommands)
 		  "chgrange newname curve2d first last  RequestedFirst RequestedLast ]",
 		  __FILE__,
 		   samerange, g);
+
+  theCommands.Add("setweight",
+                  "setweight curve/surf index1 [index2] weight"
+                  "\n\t\tchanges a weight of a pole of B-spline curve/surface (index2 is useful for surfaces only)",
+                  __FILE__,
+                  setweight,g);
 
 }
 

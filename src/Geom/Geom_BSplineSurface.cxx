@@ -1401,6 +1401,8 @@ void Geom_BSplineSurface::ValidateCache(const Standard_Real  Uparameter,
       }
     }
   }
+  else if (!cacheweights.IsNull())
+    cacheweights.Nullify();
 
   BSplCLib::LocateParameter(udeg,
 			    (ufknots->Array1()),
