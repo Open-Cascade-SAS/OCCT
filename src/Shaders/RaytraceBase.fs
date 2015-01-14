@@ -36,21 +36,14 @@ uniform vec3 uDirectRB;
 //! Inverse model-view-projection matrix.
 uniform mat4 uUnviewMat;
 
-//! Texture buffer of data records of high-level BVH nodes.
+//! Texture buffer of data records of bottom-level BVH nodes.
 uniform isamplerBuffer uSceneNodeInfoTexture;
-//! Texture buffer of minimum points of high-level BVH nodes.
+//! Texture buffer of minimum points of bottom-level BVH nodes.
 uniform samplerBuffer uSceneMinPointTexture;
-//! Texture buffer of maximum points of high-level BVH nodes.
+//! Texture buffer of maximum points of bottom-level BVH nodes.
 uniform samplerBuffer uSceneMaxPointTexture;
 //! Texture buffer of transformations of high-level BVH nodes.
 uniform samplerBuffer uSceneTransformTexture;
-
-//! Texture buffer of data records of bottom-level BVH nodes.
-uniform isamplerBuffer uObjectNodeInfoTexture;
-//! Texture buffer of minimum points of bottom-level BVH nodes.
-uniform samplerBuffer uObjectMinPointTexture;
-//! Texture buffer of maximum points of bottom-level BVH nodes.
-uniform samplerBuffer uObjectMaxPointTexture;
 
 //! Texture buffer of vertex coords.
 uniform samplerBuffer uGeometryVertexTexture;
@@ -279,16 +272,16 @@ float IntersectSphere (in SRay theRay, in float theRadius)
   float aDdotD = dot (theRay.Direct, theRay.Direct);
   float aDdotO = dot (theRay.Direct, theRay.Origin);
   float aOdotO = dot (theRay.Origin, theRay.Origin);
-  
+
   float aD = aDdotO * aDdotO - aDdotD * (aOdotO - theRadius * theRadius);
-  
+
   if (aD > 0.0f)
   {
     float aTime = (sqrt (aD) - aDdotO) * (1.0f / aDdotD);
     
     return aTime > 0.0f ? aTime : MAXFLOAT;
   }
-  
+
   return MAXFLOAT;
 }
 
@@ -305,18 +298,18 @@ float IntersectTriangle (in SRay theRay,
 {
   vec3 aEdge0 = thePnt1 - thePnt0;
   vec3 aEdge1 = thePnt0 - thePnt2;
-  
+
   theNorm = cross (aEdge1, aEdge0);
 
   vec3 aEdge2 = (1.0f / dot (theNorm, theRay.Direct)) * (thePnt0 - theRay.Origin);
-  
+
   float aTime = dot (theNorm, aEdge2);
 
   vec3 theVec = cross (theRay.Direct, aEdge2);
-  
+
   theUV.x = dot (theVec, aEdge1);
   theUV.y = dot (theVec, aEdge0);
-  
+
   return bool (int(aTime >= 0.0f) &
                int(theUV.x >= 0.0f) &
                int(theUV.y >= 0.0f) &
@@ -341,33 +334,35 @@ ivec4 ObjectNearestHit (in int theBVHOffset, in int theVrtOffset, in int theTrgO
 
   ivec4 aTriIndex = INALID_HIT;
 
-  while (true)
+  bool toContinue = true;
+
+  while (toContinue)
   {
-    ivec3 aData = texelFetch (uObjectNodeInfoTexture, aNode).xyz;
+    ivec3 aData = texelFetch (uSceneNodeInfoTexture, aNode).xyz;
 
     if (aData.x == 0) // if inner node
     {
       float aTimeOut;
       float aTimeLft;
       float aTimeRgh;
-      
+
       aData.y += theBVHOffset;
       aData.z += theBVHOffset;
-  
-      vec3 aNodeMinLft = texelFetch (uObjectMinPointTexture, aData.y).xyz;
-      vec3 aNodeMaxLft = texelFetch (uObjectMaxPointTexture, aData.y).xyz;
-      vec3 aNodeMinRgh = texelFetch (uObjectMinPointTexture, aData.z).xyz;
-      vec3 aNodeMaxRgh = texelFetch (uObjectMaxPointTexture, aData.z).xyz;
+
+      vec3 aNodeMinLft = texelFetch (uSceneMinPointTexture, aData.y).xyz;
+      vec3 aNodeMinRgh = texelFetch (uSceneMinPointTexture, aData.z).xyz;
+      vec3 aNodeMaxLft = texelFetch (uSceneMaxPointTexture, aData.y).xyz;
+      vec3 aNodeMaxRgh = texelFetch (uSceneMaxPointTexture, aData.z).xyz;
 
       vec3 aTime0 = (aNodeMinLft - theRay.Origin) * theInverse;
       vec3 aTime1 = (aNodeMaxLft - theRay.Origin) * theInverse;
-      
+
       vec3 aTimeMax = max (aTime0, aTime1);
       vec3 aTimeMin = min (aTime0, aTime1);
 
       aTime0 = (aNodeMinRgh - theRay.Origin) * theInverse;
       aTime1 = (aNodeMaxRgh - theRay.Origin) * theInverse;
-      
+
       aTimeOut = min (aTimeMax.x, min (aTimeMax.y, aTimeMax.z));
       aTimeLft = max (aTimeMin.x, max (aTimeMin.y, aTimeMin.z));
 
@@ -384,7 +379,7 @@ ivec4 ObjectNearestHit (in int theBVHOffset, in int theVrtOffset, in int theTrgO
       if (bool(aHitLft & aHitRgh))
       {
         aNode = (aTimeLft < aTimeRgh) ? aData.y : aData.z;
-        
+
         Stack[++aHead] = (aTimeLft < aTimeRgh) ? aData.z : aData.y;
       }
       else
@@ -395,10 +390,10 @@ ivec4 ObjectNearestHit (in int theBVHOffset, in int theVrtOffset, in int theTrgO
         }
         else
         {
-          if (aHead == theSentinel)
-            return aTriIndex;
+          toContinue = (aHead != theSentinel);
 
-          aNode = Stack[aHead--];
+          if (toContinue)
+            aNode = Stack[aHead--];
         }
       }
     }
@@ -421,7 +416,7 @@ ivec4 ObjectNearestHit (in int theBVHOffset, in int theVrtOffset, in int theTrgO
                                          aPoint2,
                                          aParams,
                                          aNormal);
-                                         
+
         if (aTime < theHit.Time)
         {
           aTriIndex = aTriangle;
@@ -429,11 +424,11 @@ ivec4 ObjectNearestHit (in int theBVHOffset, in int theVrtOffset, in int theTrgO
           theHit = SIntersect (aTime, aParams, aNormal);
         }
       }
-      
-      if (aHead == theSentinel)
-        return aTriIndex;
 
-      aNode = Stack[aHead--];
+      toContinue = (aHead != theSentinel);
+
+      if (toContinue)
+        aNode = Stack[aHead--];
     }
   }
 
@@ -467,7 +462,7 @@ float ObjectAnyHit (in int theBVHOffset, in int theVrtOffset, in int theTrgOffse
 
   while (true)
   {
-    ivec4 aData = texelFetch (uObjectNodeInfoTexture, aNode);
+    ivec4 aData = texelFetch (uSceneNodeInfoTexture, aNode);
 
     if (aData.x == 0) // if inner node
     {
@@ -477,11 +472,11 @@ float ObjectAnyHit (in int theBVHOffset, in int theVrtOffset, in int theTrgOffse
 
       aData.y += theBVHOffset;
       aData.z += theBVHOffset;
-  
-      vec3 aNodeMinLft = texelFetch (uObjectMinPointTexture, aData.y).xyz;
-      vec3 aNodeMaxLft = texelFetch (uObjectMaxPointTexture, aData.y).xyz;
-      vec3 aNodeMinRgh = texelFetch (uObjectMinPointTexture, aData.z).xyz;
-      vec3 aNodeMaxRgh = texelFetch (uObjectMaxPointTexture, aData.z).xyz;
+
+      vec3 aNodeMinLft = texelFetch (uSceneMinPointTexture, aData.y).xyz;
+      vec3 aNodeMaxLft = texelFetch (uSceneMaxPointTexture, aData.y).xyz;
+      vec3 aNodeMinRgh = texelFetch (uSceneMinPointTexture, aData.z).xyz;
+      vec3 aNodeMaxRgh = texelFetch (uSceneMaxPointTexture, aData.z).xyz;
 
       vec3 aTime0 = (aNodeMinLft - theRay.Origin) * theInverse;
       vec3 aTime1 = (aNodeMaxLft - theRay.Origin) * theInverse;
@@ -491,7 +486,7 @@ float ObjectAnyHit (in int theBVHOffset, in int theVrtOffset, in int theTrgOffse
 
       aTime0 = (aNodeMinRgh - theRay.Origin) * theInverse;
       aTime1 = (aNodeMaxRgh - theRay.Origin) * theInverse;
-      
+
       aTimeOut = min (aTimeMax.x, min (aTimeMax.y, aTimeMax.z));
       aTimeLft = max (aTimeMin.x, max (aTimeMin.y, aTimeMin.z));
 
@@ -622,9 +617,7 @@ ivec4 SceneNearestHit (in SRay theRay, in vec3 theInverse, inout SIntersect theH
 
         vec3 aTrsfInverse = 1.0f / max (abs (aTrsfRay.Direct), SMALL);
 
-        aTrsfInverse.x = aTrsfRay.Direct.x < 0.f ? -aTrsfInverse.x : aTrsfInverse.x;
-        aTrsfInverse.y = aTrsfRay.Direct.y < 0.f ? -aTrsfInverse.y : aTrsfInverse.y;
-        aTrsfInverse.z = aTrsfRay.Direct.z < 0.f ? -aTrsfInverse.z : aTrsfInverse.z;
+        aTrsfInverse = mix (-aTrsfInverse, aTrsfInverse, step (ZERO, aTrsfRay.Direct));
 
         ivec4 aTriIndex = ObjectNearestHit (
           aData.y, aData.z, aData.w, aTrsfRay, aTrsfInverse, theHit, aHead);
@@ -639,7 +632,7 @@ ivec4 SceneNearestHit (in SRay theRay, in vec3 theInverse, inout SIntersect theH
           theObjectId = anObjectId;
         }
       }
-      
+
       if (aHead < 0)
         return aHitObject;
 
@@ -666,7 +659,7 @@ ivec4 SceneNearestHit (in SRay theRay, in vec3 theInverse, inout SIntersect theH
       aTimeLft = max (aTimeMin.x, max (aTimeMin.y, aTimeMin.z));
 
       int aHitLft = int(aTimeLft <= aTimeOut) & int(aTimeOut >= 0.0f) & int(aTimeLft <= theHit.Time);
-      
+
       aTime0 = (aNodeMinRgh - theRay.Origin) * theInverse;
       aTime1 = (aNodeMaxRgh - theRay.Origin) * theInverse;
 
@@ -675,7 +668,7 @@ ivec4 SceneNearestHit (in SRay theRay, in vec3 theInverse, inout SIntersect theH
 
       aTimeOut = min (aTimeMax.x, min (aTimeMax.y, aTimeMax.z));
       aTimeRgh = max (aTimeMin.x, max (aTimeMin.y, aTimeMin.z));
-      
+
       int aHitRgh = int(aTimeRgh <= aTimeOut) & int(aTimeOut >= 0.0f) & int(aTimeRgh <= theHit.Time);
 
       if (bool(aHitLft & aHitRgh))
@@ -700,7 +693,7 @@ ivec4 SceneNearestHit (in SRay theRay, in vec3 theInverse, inout SIntersect theH
       }
     }
   }
-  
+
   return aHitObject;
 }
 
@@ -737,9 +730,7 @@ float SceneAnyHit (in SRay theRay, in vec3 theInverse, in float theDistance)
 
       vec3 aTrsfInverse = 1.0f / max (abs (aTrsfRay.Direct), SMALL);
 
-      aTrsfInverse.x = aTrsfRay.Direct.x < 0.0f ? -aTrsfInverse.x : aTrsfInverse.x;
-      aTrsfInverse.y = aTrsfRay.Direct.y < 0.0f ? -aTrsfInverse.y : aTrsfInverse.y;
-      aTrsfInverse.z = aTrsfRay.Direct.z < 0.0f ? -aTrsfInverse.z : aTrsfInverse.z;
+      aTrsfInverse = mix (-aTrsfInverse, aTrsfInverse, step (ZERO, aTrsfRay.Direct));
 
 #ifdef TRANSPARENT_SHADOWS
       aFactor *= ObjectAnyHit (
@@ -1012,34 +1003,31 @@ vec4 Radiance (in SRay theRay, in vec3 theInverse)
     {
       vec4 aLight = texelFetch (
         uRaytraceLightSrcTexture, LIGHT_POS (aLightIdx));
-      
+
       float aDistance = MAXFLOAT;
-      
+
       if (aLight.w != 0.0f) // point light source
       {
         aDistance = length (aLight.xyz -= aPoint);
-        
+
         aLight.xyz *= 1.0f / aDistance;
       }
 
       SRay aShadow = SRay (aPoint + aLight.xyz * uSceneEpsilon, aLight.xyz);
-      
+
       aShadow.Origin += aHit.Normal * uSceneEpsilon *
         (dot (aHit.Normal, aLight.xyz) >= 0.0f ? 1.0f : -1.0f);
-      
+
       float aVisibility = 1.0f;
-     
+
       if (bool(uShadowsEnable))
       {
         vec3 aInverse = 1.0f / max (abs (aLight.xyz), SMALL);
 
-        aInverse.x = aLight.x < 0.0f ? -aInverse.x : aInverse.x;
-        aInverse.y = aLight.y < 0.0f ? -aInverse.y : aInverse.y;
-        aInverse.z = aLight.z < 0.0f ? -aInverse.z : aInverse.z;
-
-        aVisibility = SceneAnyHit (aShadow, aInverse, aDistance);
+        aVisibility = SceneAnyHit (
+          aShadow, mix (-aInverse, aInverse, step (ZERO, aLight.xyz)), aDistance);
       }
-      
+
       if (aVisibility > 0.0f)
       {
         vec3 aIntensity = vec3 (texelFetch (
@@ -1073,9 +1061,7 @@ vec4 Radiance (in SRay theRay, in vec3 theInverse)
 
         theInverse = 1.0f / max (abs (theRay.Direct), SMALL);
 
-        theInverse.x = theRay.Direct.x < 0.0f ? -theInverse.x : theInverse.x;
-        theInverse.y = theRay.Direct.y < 0.0f ? -theInverse.y : theInverse.y;
-        theInverse.z = theRay.Direct.z < 0.0f ? -theInverse.z : theInverse.z;
+        theInverse = mix (-theInverse, theInverse, step (ZERO, theRay.Direct));
 
         aPoint += aHit.Normal * (dot (aHit.Normal, theRay.Direct) >= 0.0f ? uSceneEpsilon : -uSceneEpsilon);
 
@@ -1101,9 +1087,7 @@ vec4 Radiance (in SRay theRay, in vec3 theInverse)
 
       theInverse = 1.0f / max (abs (theRay.Direct), SMALL);
 
-      theInverse.x = theRay.Direct.x < 0.0f ? -theInverse.x : theInverse.x;
-      theInverse.y = theRay.Direct.y < 0.0f ? -theInverse.y : theInverse.y;
-      theInverse.z = theRay.Direct.z < 0.0f ? -theInverse.z : theInverse.z;
+      theInverse = mix (-theInverse, theInverse, step (ZERO, theRay.Direct));
 
       aPoint += aHit.Normal * (dot (aHit.Normal, theRay.Direct) >= 0.0f ? uSceneEpsilon : -uSceneEpsilon);
 

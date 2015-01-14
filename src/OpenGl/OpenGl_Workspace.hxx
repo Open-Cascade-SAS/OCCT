@@ -328,30 +328,25 @@ protected:
   //! Defines texture samplers.
   enum ShaderSamplerNames
   {
-    OpenGl_RT_SceneNodeInfoTexture = 0,
-    OpenGl_RT_SceneMinPointTexture = 1,
-    OpenGl_RT_SceneMaxPointTexture = 2,
+    OpenGl_RT_SceneNodeInfoTexture  = 0,
+    OpenGl_RT_SceneMinPointTexture  = 1,
+    OpenGl_RT_SceneMaxPointTexture  = 2,
+    OpenGl_RT_SceneTransformTexture = 3,
 
-    OpenGl_RT_ObjectNodeInfoTexture = 3,
-    OpenGl_RT_ObjectMinPointTexture = 4,
-    OpenGl_RT_ObjectMaxPointTexture = 5,
+    OpenGl_RT_GeometryVertexTexture = 4,
+    OpenGl_RT_GeometryNormalTexture = 5,
+    OpenGl_RT_GeometryTexCrdTexture = 6,
+    OpenGl_RT_GeometryTriangTexture = 7,
 
-    OpenGl_RT_GeometryVertexTexture = 6,
-    OpenGl_RT_GeometryNormalTexture = 7,
-    OpenGl_RT_GeometryTexCrdTexture = 8,
-    OpenGl_RT_GeometryTriangTexture = 9,
+    OpenGl_RT_EnvironmentMapTexture = 8,
 
-    OpenGl_RT_EnvironmentMapTexture = 10,
+    OpenGl_RT_RaytraceMaterialTexture = 9,
+    OpenGl_RT_RaytraceLightSrcTexture = 10,
 
-    OpenGl_RT_RaytraceMaterialTexture = 11,
-    OpenGl_RT_RaytraceLightSrcTexture = 12,
+    OpenGl_RT_FSAAInputTexture = 11,
 
-    OpenGl_RT_FSAAInputTexture = 13,
-
-    OpenGl_RT_SceneTransformTexture = 14,
-
-    OpenGl_RT_OpenGlColorTexture = 15,
-    OpenGl_RT_OpenGlDepthTexture = 16
+    OpenGl_RT_OpenGlColorTexture = 12,
+    OpenGl_RT_OpenGlDepthTexture = 13
   };
 
   //! Tool class for management of shader sources.
@@ -598,21 +593,14 @@ protected: //! @name fields related to ray-tracing
   //! OpenGL/GLSL adaptive-AA shader program.
   Handle(OpenGl_ShaderProgram) myPostFSAAProgram;
 
-  //! Texture buffer of data records of high-level BVH nodes.
+  //! Texture buffer of data records of bottom-level BVH nodes.
   Handle(OpenGl_TextureBufferArb) mySceneNodeInfoTexture;
-  //! Texture buffer of minimum points of high-level BVH nodes.
+  //! Texture buffer of minimum points of bottom-level BVH nodes.
   Handle(OpenGl_TextureBufferArb) mySceneMinPointTexture;
-  //! Texture buffer of maximum points of high-level BVH nodes.
+  //! Texture buffer of maximum points of bottom-level BVH nodes.
   Handle(OpenGl_TextureBufferArb) mySceneMaxPointTexture;
   //! Texture buffer of transformations of high-level BVH nodes.
   Handle(OpenGl_TextureBufferArb) mySceneTransformTexture;
-
-  //! Texture buffer of data records of bottom-level BVH nodes.
-  Handle(OpenGl_TextureBufferArb) myObjectNodeInfoTexture;
-  //! Texture buffer of minimum points of bottom-level BVH nodes.
-  Handle(OpenGl_TextureBufferArb) myObjectMinPointTexture;
-  //! Texture buffer of maximum points of bottom-level BVH nodes.
-  Handle(OpenGl_TextureBufferArb) myObjectMaxPointTexture;
 
   //! Texture buffer of vertex coords.
   Handle(OpenGl_TextureBufferArb) myGeometryVertexTexture;

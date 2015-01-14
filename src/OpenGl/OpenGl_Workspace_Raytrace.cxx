@@ -92,7 +92,7 @@ Standard_Boolean OpenGl_Workspace::UpdateRaytraceGeometry (GeomUpdateMode theMod
           {
             return UpdateRaytraceGeometry (OpenGl_GUM_PREPARE);
           }
-        } 
+        }
         else if (theMode == OpenGl_GUM_PREPARE)
         {
           if (!aStructure->IsRaytracable()
@@ -113,7 +113,7 @@ Standard_Boolean OpenGl_Workspace::UpdateRaytraceGeometry (GeomUpdateMode theMod
               }
             }
           }
-        } 
+        }
         else if (theMode == OpenGl_GUM_UPDATE)
         {
           if (!aStructure->IsRaytracable())
@@ -195,7 +195,7 @@ Standard_Boolean OpenGl_Workspace::UpdateRaytraceGeometry (GeomUpdateMode theMod
 
 // =======================================================================
 // function : CheckRaytraceStructure
-// purpose  :  Checks to see if the structure is modified
+// purpose  : Checks to see if the structure is modified
 // =======================================================================
 Standard_Boolean OpenGl_Workspace::CheckRaytraceStructure (const OpenGl_Structure* theStructure)
 {
@@ -639,19 +639,19 @@ OpenGl_TriangleSet* OpenGl_Workspace::AddRaytracePrimitiveArray (const OpenGl_Pr
 
     if (!aBounds.IsNull())
     {
-  #ifdef RAY_TRACE_PRINT_INFO
+#ifdef RAY_TRACE_PRINT_INFO
       std::cout << "\tNumber of bounds = " << aBounds->NbBounds << std::endl;
-  #endif
+#endif
 
       Standard_Integer aBoundStart = 0;
       for (Standard_Integer aBound = 0; aBound < aBounds->NbBounds; ++aBound)
       {
         const Standard_Integer aVertNum = aBounds->Bounds[aBound];
 
-  #ifdef RAY_TRACE_PRINT_INFO
+#ifdef RAY_TRACE_PRINT_INFO
         std::cout << "\tAdding indices from bound " << aBound << ": " <<
                                       aBoundStart << " .. " << aVertNum << std::endl;
-  #endif
+#endif
 
         if (!AddRaytraceVertexIndices (*aSet, *theArray, aBoundStart, aVertNum, theMatID))
         {
@@ -1496,12 +1496,6 @@ Standard_Boolean OpenGl_Workspace::InitRaytraceResources (const Graphic3d_CView&
       aShaderProgram->SetSampler (myGlContext,
         "uSceneNodeInfoTexture", OpenGl_RT_SceneNodeInfoTexture);
       aShaderProgram->SetSampler (myGlContext,
-        "uObjectMinPointTexture", OpenGl_RT_ObjectMinPointTexture);
-      aShaderProgram->SetSampler (myGlContext,
-        "uObjectMaxPointTexture", OpenGl_RT_ObjectMaxPointTexture);
-      aShaderProgram->SetSampler (myGlContext,
-        "uObjectNodeInfoTexture", OpenGl_RT_ObjectNodeInfoTexture);
-      aShaderProgram->SetSampler (myGlContext,
         "uGeometryVertexTexture", OpenGl_RT_GeometryVertexTexture);
       aShaderProgram->SetSampler (myGlContext,
         "uGeometryNormalTexture", OpenGl_RT_GeometryNormalTexture);
@@ -1648,10 +1642,6 @@ void OpenGl_Workspace::ReleaseRaytraceResources()
   NullifyResource (myGlContext, mySceneMinPointTexture);
   NullifyResource (myGlContext, mySceneMaxPointTexture);
 
-  NullifyResource (myGlContext, myObjectNodeInfoTexture);
-  NullifyResource (myGlContext, myObjectMinPointTexture);
-  NullifyResource (myGlContext, myObjectMaxPointTexture);
-
   NullifyResource (myGlContext, myGeometryVertexTexture);
   NullifyResource (myGlContext, myGeometryNormalTexture);
   NullifyResource (myGlContext, myGeometryTexCrdTexture);
@@ -1696,45 +1686,28 @@ Standard_Boolean OpenGl_Workspace::UploadRaytraceData()
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  // Create OpenGL texture buffers
+  // Create OpenGL BVH buffers
 
-  if (mySceneNodeInfoTexture.IsNull())  // create hight-level BVH buffers
+  if (mySceneNodeInfoTexture.IsNull())  // create scene BVH buffers
   {
-    mySceneNodeInfoTexture = new OpenGl_TextureBufferArb;
-    mySceneMinPointTexture = new OpenGl_TextureBufferArb;
-    mySceneMaxPointTexture = new OpenGl_TextureBufferArb;
+    mySceneNodeInfoTexture  = new OpenGl_TextureBufferArb;
+    mySceneMinPointTexture  = new OpenGl_TextureBufferArb;
+    mySceneMaxPointTexture  = new OpenGl_TextureBufferArb;
     mySceneTransformTexture = new OpenGl_TextureBufferArb;
 
-    if (!mySceneNodeInfoTexture->Create (myGlContext)
-     || !mySceneMinPointTexture->Create (myGlContext)
-     || !mySceneMaxPointTexture->Create (myGlContext)
+    if (!mySceneNodeInfoTexture->Create  (myGlContext)
+     || !mySceneMinPointTexture->Create  (myGlContext)
+     || !mySceneMaxPointTexture->Create  (myGlContext)
      || !mySceneTransformTexture->Create (myGlContext))
     {
 #ifdef RAY_TRACE_PRINT_INFO
-      std::cout << "Error: Failed to create buffers for high-level scene BVH" << std::endl;
+      std::cout << "Error: Failed to create scene BVH buffers" << std::endl;
 #endif
       return Standard_False;
     }
   }
 
-  if (myObjectNodeInfoTexture.IsNull())  // create bottom-level BVH buffers
-  {
-    myObjectNodeInfoTexture = new OpenGl_TextureBufferArb;
-    myObjectMinPointTexture = new OpenGl_TextureBufferArb;
-    myObjectMaxPointTexture = new OpenGl_TextureBufferArb;
-
-    if (!myObjectNodeInfoTexture->Create (myGlContext)
-     || !myObjectMinPointTexture->Create (myGlContext)
-     || !myObjectMaxPointTexture->Create (myGlContext))
-    {
-#ifdef RAY_TRACE_PRINT_INFO
-      std::cout << "Error: Failed to create buffers for bottom-level scene BVH" << std::endl;
-#endif
-      return Standard_False;
-    }
-  }
-
-  if (myGeometryVertexTexture.IsNull())  // create geometry buffers
+  if  (myGeometryVertexTexture.IsNull())  // create geometry buffers
   {
     myGeometryVertexTexture = new OpenGl_TextureBufferArb;
     myGeometryNormalTexture = new OpenGl_TextureBufferArb;
@@ -1753,7 +1726,7 @@ Standard_Boolean OpenGl_Workspace::UploadRaytraceData()
     }
   }
 
-  if (myRaytraceMaterialTexture.IsNull())  // create material buffer
+  if (myRaytraceMaterialTexture.IsNull()) // create material buffer
   {
     myRaytraceMaterialTexture = new OpenGl_TextureBufferArb;
 
@@ -1765,34 +1738,13 @@ Standard_Boolean OpenGl_Workspace::UploadRaytraceData()
       return Standard_False;
     }
   }
-
-  /////////////////////////////////////////////////////////////////////////////
-  // Write top-level BVH buffers
-
-  const NCollection_Handle<BVH_Tree<Standard_ShortReal, 3> >& aBVH = myRaytraceGeometry.BVH();
-
-  bool aResult = true;
-  if (!aBVH->NodeInfoBuffer().empty())
-  {
-    aResult &= mySceneNodeInfoTexture->Init (myGlContext, 4, GLsizei (aBVH->NodeInfoBuffer().size()),
-                                             reinterpret_cast<const GLuint*> (&aBVH->NodeInfoBuffer().front()));
-    aResult &= mySceneMinPointTexture->Init (myGlContext, 3, GLsizei (aBVH->MinPointBuffer().size()),
-                                             reinterpret_cast<const GLfloat*> (&aBVH->MinPointBuffer().front()));
-    aResult &= mySceneMaxPointTexture->Init (myGlContext, 3, GLsizei (aBVH->MaxPointBuffer().size()),
-                                             reinterpret_cast<const GLfloat*> (&aBVH->MaxPointBuffer().front()));
-  }
-  if (!aResult)
-  {
-#ifdef RAY_TRACE_PRINT_INFO
-    std::cout << "Error: Failed to upload buffers for high-level scene BVH" << std::endl;
-#endif
-    return Standard_False;
-  }
-
+  
   /////////////////////////////////////////////////////////////////////////////
   // Write transform buffer
 
   BVH_Mat4f* aNodeTransforms = new BVH_Mat4f[myRaytraceGeometry.Size()];
+
+  bool aResult = true;
 
   for (Standard_Integer anElemIndex = 0; anElemIndex < myRaytraceGeometry.Size(); ++anElemIndex)
   {
@@ -1837,13 +1789,15 @@ Standard_Boolean OpenGl_Workspace::UploadRaytraceData()
     aTotalBVHNodesNb += aTriangleSet->BVH()->NodeInfoBuffer().size();
   }
 
+  aTotalBVHNodesNb += myRaytraceGeometry.BVH()->NodeInfoBuffer().size();
+
   if (aTotalBVHNodesNb != 0)
   {
-    aResult &= myObjectNodeInfoTexture->Init (
+    aResult &= mySceneNodeInfoTexture->Init (
       myGlContext, 4, GLsizei (aTotalBVHNodesNb), static_cast<const GLuint*>  (NULL));
-    aResult &= myObjectMinPointTexture->Init (
+    aResult &= mySceneMinPointTexture->Init (
       myGlContext, 3, GLsizei (aTotalBVHNodesNb), static_cast<const GLfloat*> (NULL));
-    aResult &= myObjectMaxPointTexture->Init (
+    aResult &= mySceneMaxPointTexture->Init (
       myGlContext, 3, GLsizei (aTotalBVHNodesNb), static_cast<const GLfloat*> (NULL));
   }
 
@@ -1879,6 +1833,15 @@ Standard_Boolean OpenGl_Workspace::UploadRaytraceData()
     return Standard_False;
   }
 
+  const NCollection_Handle<BVH_Tree<Standard_ShortReal, 3> >& aBVH = myRaytraceGeometry.BVH();
+
+  aResult &= mySceneNodeInfoTexture->SubData (myGlContext, 0, aBVH->Length(),
+    reinterpret_cast<const GLuint*> (&aBVH->NodeInfoBuffer().front()));
+  aResult &= mySceneMinPointTexture->SubData (myGlContext, 0, aBVH->Length(),
+    reinterpret_cast<const GLfloat*> (&aBVH->MinPointBuffer().front()));
+  aResult &= mySceneMaxPointTexture->SubData (myGlContext, 0, aBVH->Length(),
+    reinterpret_cast<const GLfloat*> (&aBVH->MaxPointBuffer().front()));
+
   for (Standard_Integer aNodeIdx = 0; aNodeIdx < aBVH->Length(); ++aNodeIdx)
   {
     if (!aBVH->IsOuter (aNodeIdx))
@@ -1889,20 +1852,20 @@ Standard_Boolean OpenGl_Workspace::UploadRaytraceData()
     Standard_ASSERT_RETURN (aTriangleSet != NULL,
       "Error: Failed to get triangulation of OpenGL element", Standard_False);
 
-    const Standard_Integer aBVHOffset = myRaytraceGeometry.AccelerationOffset (aNodeIdx);
+    Standard_Integer aBVHOffset = myRaytraceGeometry.AccelerationOffset (aNodeIdx);
 
     Standard_ASSERT_RETURN (aBVHOffset != OpenGl_RaytraceGeometry::INVALID_OFFSET,
       "Error: Failed to get offset for bottom-level BVH", Standard_False);
 
-    const size_t aBVHBuffserSize = aTriangleSet->BVH()->NodeInfoBuffer().size();
+    const Standard_Integer aBvhBuffersSize = aTriangleSet->BVH()->Length();
 
-    if (aBVHBuffserSize != 0)
+    if (aBvhBuffersSize != 0)
     {
-      aResult &= myObjectNodeInfoTexture->SubData (myGlContext, aBVHOffset, GLsizei (aBVHBuffserSize),
+      aResult &= mySceneNodeInfoTexture->SubData (myGlContext, aBVHOffset, aBvhBuffersSize,
                                                    reinterpret_cast<const GLuint*> (&aTriangleSet->BVH()->NodeInfoBuffer().front()));
-      aResult &= myObjectMinPointTexture->SubData (myGlContext, aBVHOffset, GLsizei (aBVHBuffserSize),
+      aResult &= mySceneMinPointTexture->SubData (myGlContext, aBVHOffset, aBvhBuffersSize,
                                                    reinterpret_cast<const GLfloat*> (&aTriangleSet->BVH()->MinPointBuffer().front()));
-      aResult &= myObjectMaxPointTexture->SubData (myGlContext, aBVHOffset, GLsizei (aBVHBuffserSize),
+      aResult &= mySceneMaxPointTexture->SubData (myGlContext, aBVHOffset, aBvhBuffersSize,
                                                    reinterpret_cast<const GLfloat*> (&aTriangleSet->BVH()->MaxPointBuffer().front()));
       if (!aResult)
       {
@@ -2180,9 +2143,6 @@ Standard_Boolean OpenGl_Workspace::RunRaytraceShaders (const Graphic3d_CView& th
   mySceneMinPointTexture->BindTexture (myGlContext, GL_TEXTURE0 + OpenGl_RT_SceneMinPointTexture);
   mySceneMaxPointTexture->BindTexture (myGlContext, GL_TEXTURE0 + OpenGl_RT_SceneMaxPointTexture);
   mySceneNodeInfoTexture->BindTexture (myGlContext, GL_TEXTURE0 + OpenGl_RT_SceneNodeInfoTexture);
-  myObjectMinPointTexture->BindTexture (myGlContext, GL_TEXTURE0 + OpenGl_RT_ObjectMinPointTexture);
-  myObjectMaxPointTexture->BindTexture (myGlContext, GL_TEXTURE0 + OpenGl_RT_ObjectMaxPointTexture);
-  myObjectNodeInfoTexture->BindTexture (myGlContext, GL_TEXTURE0 + OpenGl_RT_ObjectNodeInfoTexture);
   myGeometryVertexTexture->BindTexture (myGlContext, GL_TEXTURE0 + OpenGl_RT_GeometryVertexTexture);
   myGeometryNormalTexture->BindTexture (myGlContext, GL_TEXTURE0 + OpenGl_RT_GeometryNormalTexture);
   myGeometryTexCrdTexture->BindTexture (myGlContext, GL_TEXTURE0 + OpenGl_RT_GeometryTexCrdTexture);
@@ -2225,12 +2185,9 @@ Standard_Boolean OpenGl_Workspace::RunRaytraceShaders (const Graphic3d_CView& th
 
     myOpenGlFBO->ColorTexture()->Unbind        (myGlContext, GL_TEXTURE0 + OpenGl_RT_OpenGlColorTexture);
     myOpenGlFBO->DepthStencilTexture()->Unbind (myGlContext, GL_TEXTURE0 + OpenGl_RT_OpenGlDepthTexture);
-    mySceneMinPointTexture->UnbindTexture      (myGlContext, GL_TEXTURE0 + OpenGl_RT_SceneMinPointTexture);
-    mySceneMaxPointTexture->UnbindTexture      (myGlContext, GL_TEXTURE0 + OpenGl_RT_SceneMaxPointTexture);
-    mySceneNodeInfoTexture->UnbindTexture      (myGlContext, GL_TEXTURE0 + OpenGl_RT_SceneNodeInfoTexture);
-    myObjectMinPointTexture->UnbindTexture     (myGlContext, GL_TEXTURE0 + OpenGl_RT_ObjectMinPointTexture);
-    myObjectMaxPointTexture->UnbindTexture     (myGlContext, GL_TEXTURE0 + OpenGl_RT_ObjectMaxPointTexture);
-    myObjectNodeInfoTexture->UnbindTexture     (myGlContext, GL_TEXTURE0 + OpenGl_RT_ObjectNodeInfoTexture);
+    mySceneMinPointTexture->UnbindTexture     (myGlContext, GL_TEXTURE0 + OpenGl_RT_SceneMinPointTexture);
+    mySceneMaxPointTexture->UnbindTexture     (myGlContext, GL_TEXTURE0 + OpenGl_RT_SceneMaxPointTexture);
+    mySceneNodeInfoTexture->UnbindTexture     (myGlContext, GL_TEXTURE0 + OpenGl_RT_SceneNodeInfoTexture);
     myGeometryVertexTexture->UnbindTexture     (myGlContext, GL_TEXTURE0 + OpenGl_RT_GeometryVertexTexture);
     myGeometryNormalTexture->UnbindTexture     (myGlContext, GL_TEXTURE0 + OpenGl_RT_GeometryNormalTexture);
     myGeometryTexCrdTexture->UnbindTexture     (myGlContext, GL_TEXTURE0 + OpenGl_RT_GeometryTexCrdTexture);
@@ -2321,12 +2278,9 @@ Standard_Boolean OpenGl_Workspace::RunRaytraceShaders (const Graphic3d_CView& th
   myRaytraceFBO1->ColorTexture()->Unbind     (myGlContext, GL_TEXTURE0 + OpenGl_RT_FSAAInputTexture);
   myOpenGlFBO->ColorTexture()->Unbind        (myGlContext, GL_TEXTURE0 + OpenGl_RT_OpenGlColorTexture);
   myOpenGlFBO->DepthStencilTexture()->Unbind (myGlContext, GL_TEXTURE0 + OpenGl_RT_OpenGlDepthTexture);
-  mySceneMinPointTexture->UnbindTexture      (myGlContext, GL_TEXTURE0 + OpenGl_RT_SceneMinPointTexture);
-  mySceneMaxPointTexture->UnbindTexture      (myGlContext, GL_TEXTURE0 + OpenGl_RT_SceneMaxPointTexture);
-  mySceneNodeInfoTexture->UnbindTexture      (myGlContext, GL_TEXTURE0 + OpenGl_RT_SceneNodeInfoTexture);
-  myObjectMinPointTexture->UnbindTexture     (myGlContext, GL_TEXTURE0 + OpenGl_RT_ObjectMinPointTexture);
-  myObjectMaxPointTexture->UnbindTexture     (myGlContext, GL_TEXTURE0 + OpenGl_RT_ObjectMaxPointTexture);
-  myObjectNodeInfoTexture->UnbindTexture     (myGlContext, GL_TEXTURE0 + OpenGl_RT_ObjectNodeInfoTexture);
+  mySceneMinPointTexture->UnbindTexture     (myGlContext, GL_TEXTURE0 + OpenGl_RT_SceneMinPointTexture);
+  mySceneMaxPointTexture->UnbindTexture     (myGlContext, GL_TEXTURE0 + OpenGl_RT_SceneMaxPointTexture);
+  mySceneNodeInfoTexture->UnbindTexture     (myGlContext, GL_TEXTURE0 + OpenGl_RT_SceneNodeInfoTexture);
   myGeometryVertexTexture->UnbindTexture     (myGlContext, GL_TEXTURE0 + OpenGl_RT_GeometryVertexTexture);
   myGeometryNormalTexture->UnbindTexture     (myGlContext, GL_TEXTURE0 + OpenGl_RT_GeometryNormalTexture);
   myGeometryTexCrdTexture->UnbindTexture     (myGlContext, GL_TEXTURE0 + OpenGl_RT_GeometryTexCrdTexture);

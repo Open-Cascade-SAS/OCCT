@@ -305,7 +305,7 @@ Standard_Boolean OpenGl_RaytraceGeometry::ProcessAcceleration()
 
   Standard_Integer aVerticesOffset = 0;
   Standard_Integer aElementsOffset = 0;
-  Standard_Integer aBVHNodesOffset = 0;
+  Standard_Integer aBVHNodesOffset = BVH()->Length();
 
   for (Standard_Integer aNodeIdx = 0; aNodeIdx < aBVH->Length(); ++aNodeIdx)
   {
