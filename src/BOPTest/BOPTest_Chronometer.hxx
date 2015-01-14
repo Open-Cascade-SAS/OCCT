@@ -15,49 +15,17 @@
 #ifndef  BOPTest_Chronometer_HeaderFile
 #define  BOPTest_Chronometer_HeaderFile
 //
-#ifdef HAVE_TBB
-#include <BOPCol_TBB.hxx>
-//=======================================================================
-//class : BOPTime_Chronometer
-//purpose  : 
-//=======================================================================
-class BOPTime_Chronometer {
- public:
-  BOPTime_Chronometer() {
-  }
-  //
-  ~BOPTime_Chronometer() {
-  }
-  //
-  void Start() {
-    myT0 = tick_count::now();
-  }
-  //
-  void Stop() {
-    myTime=(tick_count::now() - myT0).seconds();
-  }
-  //
-  double Time() const{
-    return myTime;
-  };
-  //
- protected:
-  tick_count myT0;
-  double myTime;
-};
-////////////////////////////////////////////////////////////////////////
-#else
 #include <OSD_Chronometer.hxx>
 //=======================================================================
-//class    : BOPTime_Chronometer
+//class    : BOPTest_Chronometer
 //purpose  : 
 //=======================================================================
-class BOPTime_Chronometer {
+class BOPTest_Chronometer {
  public:
-  BOPTime_Chronometer() {
+  BOPTest_Chronometer() {
   }
   //
-  ~BOPTime_Chronometer() {
+  ~BOPTest_Chronometer() {
   }
   //
   void Start() {
@@ -78,6 +46,5 @@ class BOPTime_Chronometer {
   OSD_Chronometer myChronometer;
   double myTime;
 };
-#endif
-//
+
 #endif

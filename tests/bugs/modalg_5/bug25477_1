@@ -9,7 +9,8 @@ puts ""
 box b1 10 10 10
 box b2 10.00001 0 0 10 10 10
 
-bop b1 b2 0.00002
+bfuzzyvalue 0.00002
+bop b1 b2 
 bopfuse result
 
 set nb_v_good 12

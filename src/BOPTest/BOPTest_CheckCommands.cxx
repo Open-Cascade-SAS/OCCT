@@ -45,6 +45,8 @@
 #include <BOPTools_AlgoTools.hxx>
 
 #include <BOPTest_Chronometer.hxx>
+#include <BOPTest_Objects.hxx>
+
 //
 static 
   void MakeShapeForFullOutput (const TCollection_AsciiString&,
@@ -73,19 +75,19 @@ void  BOPTest::CheckCommands(Draw_Interpretor& theCommands)
 
   done = Standard_True;
   // Chapter's name
-  const char* g = "CCR commands";
+  const char* g = "BOPTest commands";
   //
   theCommands.Add("bopcheck",  
-                  "Use >bopcheck Shape [level of check: 0(V/V) - 5(all)]",
+                  "use bopcheck Shape [level of check: 0 - 9] [-t]",
                   __FILE__, bopcheck, g);
   theCommands.Add("bopargcheck" , 
-                  "Use bopargcheck without parameters to get ",  
+                  "use bopargcheck without parameters to get ",  
                   __FILE__, bopargcheck, g);
   theCommands.Add ("xdistef" ,
-                   "Use xdistef edge face",
+                   "use xdistef edge face",
                    __FILE__, xdistef, g);
   theCommands.Add("checkcurveonsurf",
-                  "checkcurveonsurf shape",
+                  "use checkcurveonsurf shape",
                   __FILE__, checkcurveonsurf, g);
 }
 //=======================================================================
@@ -152,7 +154,7 @@ Standard_Integer bopcheck (Draw_Interpretor& di,
                            const char** a )
 {
   if (n<2) {
-    di << " Use > bopcheck Shape [level of check: 0 - 9] [-t -s] [-tol tol]" << "\n";
+    di << " use bopcheck Shape [level of check: 0 - 9] [-t]\n";
     di << " The level of check defines "; 
     di << " which interferences will be checked:\n";
     di << " 0 - V/V only\n"; 
@@ -177,7 +179,7 @@ Standard_Integer bopcheck (Draw_Interpretor& di,
   //
   Standard_Boolean bRunParallel, bShowTime;
   Standard_Integer i, aLevel, aNbInterfTypes;
-  Standard_Real aTolerance;
+  Standard_Real aTol;
   //
   aNbInterfTypes=BOPDS_DS::NbInterfTypes();
   //
@@ -194,21 +196,13 @@ Standard_Integer bopcheck (Draw_Interpretor& di,
     return 1;
   }
   //
-  aTolerance = 0;
   bShowTime=Standard_False;
-  bRunParallel=Standard_True;
+  aTol=BOPTest_Objects::FuzzyValue();
+  bRunParallel=BOPTest_Objects::RunParallel(); 
+  //
   for (i=2; i<n; ++i) {
-    if (!strcmp(a[i], "-s")) {
-      bRunParallel=Standard_False;
-    }
-    else if (!strcmp(a[i], "-t")) {
+    if (!strcmp(a[i], "-t")) {
       bShowTime=Standard_True;
-    }
-    else if (!strcmp(a[i], "-tol")) {
-      if (i+1 < n) {
-        ++i;
-        aTolerance = Draw::Atof(a[i]);
-      }
     }
   }
   //
@@ -224,7 +218,7 @@ Standard_Integer bopcheck (Draw_Interpretor& di,
   BOPAlgo_CheckerSI aChecker;
   BOPCol_ListOfShape aLS;
   BOPDS_MapIteratorMapOfPassKey aItMPK;
-  BOPTime_Chronometer aChrono;
+  BOPTest_Chronometer aChrono;
   //
   if (aLevel < (aNbInterfTypes-1)) {
     di << "Info:\nThe level of check is set to " 
@@ -243,7 +237,7 @@ Standard_Integer bopcheck (Draw_Interpretor& di,
   aChecker.SetArguments(aLS);
   aChecker.SetLevelOfCheck(aLevel);
   aChecker.SetRunParallel(bRunParallel);
-  aChecker.SetFuzzyValue(aTolerance);
+  aChecker.SetFuzzyValue(aTol);
   //
   aChrono.Start();
   //
@@ -342,7 +336,7 @@ Standard_Integer bopargcheck (Draw_Interpretor& di,
   if (n<2) {
     di << "\n";
     di << " Use >bopargcheck Shape1 [[Shape2] ";
-    di << "[-F/O/C/T/S/U] [/R|F|T|V|E|I|P|C|S]] [#BF] [-tol tol]" << "\n" << "\n";
+    di << "[-F/O/C/T/S/U] [/R|F|T|V|E|I|P|C|S]] [#BF]\n\n";
     di << " -<Boolean Operation>" << "\n";
     di << " F (fuse)" << "\n";
     di << " O (common)" << "\n";
@@ -398,29 +392,20 @@ Standard_Integer bopargcheck (Draw_Interpretor& di,
   Standard_Integer indxS2 = 0;
   Standard_Real aTolerance = 0;
 
+  aTolerance=BOPTest_Objects::FuzzyValue();
+  
   if(n >= 3) {
     Standard_Integer iIndex = 0;
     for(iIndex = 2; iIndex < n; iIndex++) {
-      if(!strcmp(a[iIndex], "-tol"))
-      {
-        if ((iIndex+1) < n) {
-          ++iIndex;
-          aTolerance = Draw::Atof(a[iIndex]);
-        }
-      }
-      else if(a[iIndex][0] == '-')
-      {
+      if(a[iIndex][0] == '-')   {
         isBO = Standard_True;
         indxBO = iIndex;
       }
-      //else if(a[iIndex][0] == '+')
-      else if(a[iIndex][0] == '/')
-      {
+      else if(a[iIndex][0] == '/') {
         isOP = Standard_True;
         indxOP = iIndex;
       }
-      else if(a[iIndex][0] == '#')
-      {
+      else if(a[iIndex][0] == '#') {
         isAD = Standard_True;
         indxAD = iIndex;
       }
@@ -939,8 +924,8 @@ Standard_Integer xdistef(Draw_Interpretor& di,
                          Standard_Integer n,
                          const char** a)
 {
-  if(n < 3) {
-    di << "Use efmaxdist edge face\n";
+  if(n < 3) { 
+    di << "use xdistef edge face\n";
     return 1;
   }
   //

@@ -40,7 +40,6 @@
 static Standard_Integer bfillds  (Draw_Interpretor&, Standard_Integer, const char**); 
 static Standard_Integer bbuild   (Draw_Interpretor&, Standard_Integer, const char**);
 static Standard_Integer bbop     (Draw_Interpretor&, Standard_Integer, const char**);
-static Standard_Integer bclear   (Draw_Interpretor&, Standard_Integer, const char**);
 
 //=======================================================================
 //function : PartitionCommands
@@ -52,28 +51,11 @@ void BOPTest::PartitionCommands(Draw_Interpretor& theCommands)
   if (done) return;
   done = Standard_True;
   // Chapter's name
-  const char* g = "Partition commands";
+  const char* g = "BOPTest commands";
   // Commands  
-  theCommands.Add("bfillds", "use bfillds [-s -t] [tol]" , __FILE__, bfillds, g);
-  theCommands.Add("bbuild" , "use bbuild r [-s -t]"      , __FILE__, bbuild, g);
-  theCommands.Add("bbop"   , "use bbop r op [-s -t]"     , __FILE__, bbop, g);
-  theCommands.Add("bclear" , "use bclear"                , __FILE__, bclear, g);
-}
-//=======================================================================
-//function : bclear
-//purpose  : 
-//=======================================================================
-Standard_Integer bclear(Draw_Interpretor& di, 
-                        Standard_Integer n, 
-                        const char** ) 
-{
-  if (n!=1) {
-    di << " use bclear\n";
-    return 0;
-  }
-  //
-  BOPTest_Objects::Clear(); 
-  return 0;
+  theCommands.Add("bfillds", "use bfillds [-t]"  , __FILE__, bfillds, g);
+  theCommands.Add("bbuild" , "use bbuild r [-t]" , __FILE__, bbuild, g);
+  theCommands.Add("bbop"   , "use bbop r op [-t]", __FILE__, bbop, g);
 }
 //=======================================================================
 //function : bfillds
@@ -83,8 +65,8 @@ Standard_Integer bfillds(Draw_Interpretor& di,
                          Standard_Integer n, 
                          const char** a) 
 { 
-  if (n > 4) {
-    di << " use bfillds [-s -t] [tol]\n";
+  if (n > 2) {
+    di << " use bfillds [-t]\n";
     return 0;
   }
   //
@@ -94,7 +76,7 @@ Standard_Integer bfillds(Draw_Interpretor& di,
   Standard_Real aTol;
   BOPCol_ListIteratorOfListOfShape aIt;
   BOPCol_ListOfShape aLC;
-  BOPTime_Chronometer aChrono;
+  BOPTest_Chronometer aChrono;
   
   BOPCol_ListOfShape& aLS=BOPTest_Objects::Shapes();
   aNbS=aLS.Extent();
@@ -109,14 +91,8 @@ Standard_Integer bfillds(Draw_Interpretor& di,
   aTol=BOPTest_Objects::FuzzyValue();
   //
   for (i=1; i<n; ++i) {
-    if (!strcmp(a[i], "-s")) {
-      bRunParallel=Standard_False;
-    }
-    else if (!strcmp(a[i], "-t")) {
+    if (!strcmp(a[i], "-t")) {
       bShowTime=Standard_True;
-    }
-    else {
-      aTol = Draw::Atof(a[i]);
     }
   }
   //
@@ -131,7 +107,7 @@ Standard_Integer bfillds(Draw_Interpretor& di,
   aIt.Initialize(aLT);
   for (; aIt.More(); aIt.Next()) {
     const TopoDS_Shape& aS=aIt.Value();
-     aLC.Append(aS);
+    aLC.Append(aS);
   }
   //
   BOPAlgo_PaveFiller& aPF=BOPTest_Objects::PaveFiller();
@@ -171,7 +147,7 @@ Standard_Integer bbuild(Draw_Interpretor& di,
                         const char** a) 
 { 
   if (n<2) {
-    di << " use bbuild r [-s -t]\n";
+    di << " use bbuild r [-t]\n";
     return 0;
   }
   //
@@ -185,7 +161,7 @@ Standard_Integer bbuild(Draw_Interpretor& di,
   Standard_Boolean bRunParallel, bShowTime;
   Standard_Integer i, iErr;
   
-  BOPTime_Chronometer aChrono;
+  BOPTest_Chronometer aChrono;
   BOPCol_ListIteratorOfListOfShape aIt;
   //
   BOPAlgo_PaveFiller& aPF=BOPTest_Objects::PaveFiller();
@@ -210,10 +186,7 @@ Standard_Integer bbuild(Draw_Interpretor& di,
   bShowTime=Standard_False;
   bRunParallel=BOPTest_Objects::RunParallel();
   for (i=2; i<n; ++i) {
-    if (!strcmp(a[i], "-s")) {
-      bRunParallel=Standard_False;
-    }
-    else if (!strcmp(a[i], "-t")) {
+    if (!strcmp(a[i], "-t")) {
       bShowTime=Standard_True;
     }
   }
@@ -258,7 +231,7 @@ Standard_Integer bbop(Draw_Interpretor& di,
                       const char** a) 
 { 
   if (n<3) {
-    di << " use bbop r op [-s -t]\n";
+    di << " use bbop r op [-t]\n";
     return 0;
   }
   //
@@ -273,7 +246,7 @@ Standard_Integer bbop(Draw_Interpretor& di,
   Standard_Integer iErr, iOp, i;
   BOPAlgo_Operation aOp;
   BOPCol_ListIteratorOfListOfShape aIt; 
-  BOPTime_Chronometer aChrono;
+  BOPTest_Chronometer aChrono;
   //
   iOp=Draw::Atoi(a[2]);
   if (iOp<0 || iOp>4) {
@@ -285,10 +258,7 @@ Standard_Integer bbop(Draw_Interpretor& di,
   bShowTime=Standard_False;
   bRunParallel=BOPTest_Objects::RunParallel();
   for (i=3; i<n; ++i) {
-    if (!strcmp(a[i], "-s")) {
-      bRunParallel=Standard_False;
-    }
-    else if (!strcmp(a[i], "-t")) {
+    if (!strcmp(a[i], "-t")) {
       bShowTime=Standard_True;
     }
   }

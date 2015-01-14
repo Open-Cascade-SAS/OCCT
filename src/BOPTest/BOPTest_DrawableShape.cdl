@@ -13,7 +13,8 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-class DrawableShape from BOPTest inherits DrawableShape from DBRep
+class DrawableShape from BOPTest  
+    inherits DrawableShape from DBRep
 
     ---Purpose: 
 
@@ -28,33 +29,31 @@ uses
     Pnt             from gp
 
 is
+    Create (S         : Shape from TopoDS; 
+        FreeCol   : Color from Draw;    -- color for free edges
+        ConnCol   : Color from Draw;    -- color for shared edges
+        EdgeCol   : Color from Draw;    -- color for other edges
+        IsosCol   : Color from Draw;    -- color for Isos
+        size      : Real;               -- size for infinite isos
+        nbisos    : Integer;            -- # of isos on each face
+        discret   : Integer;            -- # of points on curves
+        Text      : CString from Standard; 
+        TextColor : Color from Draw)
+        returns DrawableShape from BOPTest;
 
     Create (S         : Shape from TopoDS;
-    	    FreeCol   : Color from Draw;    -- color for free edges
-    	    ConnCol   : Color from Draw;    -- color for shared edges
-	    EdgeCol   : Color from Draw;    -- color for other edges
-	    IsosCol   : Color from Draw;    -- color for Isos
-	    size      : Real;               -- size for infinite isos
-	    nbisos    : Integer;            -- # of isos on each face
-	    discret   : Integer;            -- # of points on curves
-    	    Text      : CString from Standard; 
-    	    TextColor : Color from Draw
-    	    )
-    	returns DrawableShape from BOPTest;
-
-    Create (S         : Shape from TopoDS;
-    	    Text      : CString from Standard; 
-    	    TextColor : Color from Draw
-    	    )
-    	returns DrawableShape from BOPTest; 
-	
-    Pnt(me) returns Pnt from gp  is private;
+         Text      : CString from Standard; 
+         TextColor : Color from Draw)
+        returns DrawableShape from BOPTest; 
+ 
+    Pnt(me)  
+        returns Pnt from gp   
+        is private;
   
     DrawOn(me; dis : in out Display from Draw)
-    is redefined;
+        is redefined;
     
 fields
-
     myText : Text3D from Draw;
     myTextColor : Color from Draw;
 

@@ -64,6 +64,7 @@ static
                           Standard_Integer n,
                           const char** a,
                           const BOPAlgo_Operation aOp);
+//
 static
   Standard_Integer bsmt (Draw_Interpretor& di, 
                        Standard_Integer n, 
@@ -85,9 +86,6 @@ static Standard_Integer bcommon   (Draw_Interpretor&, Standard_Integer, const ch
 //
 static Standard_Integer bopcurves (Draw_Interpretor&, Standard_Integer, const char**);
 static Standard_Integer bopnews   (Draw_Interpretor&, Standard_Integer, const char**);
-//
-static Standard_Integer bparallelmode(Draw_Interpretor&, Standard_Integer, const char**);
-//
 static Standard_Integer mkvolume   (Draw_Interpretor&, Standard_Integer, const char**);
 
 //=======================================================================
@@ -100,28 +98,26 @@ static Standard_Integer mkvolume   (Draw_Interpretor&, Standard_Integer, const c
   if (done) return;
   done = Standard_True;
   // Chapter's name
-  const char* g = "BOP commands";
+  const char* g = "BOPTest commands";
   // Commands
   
-  theCommands.Add("bop"       , "use bop s1 s2 [tol]" , __FILE__, bop, g);
+  theCommands.Add("bop"       , "use bop s1 s2" , __FILE__, bop, g);
   theCommands.Add("bopcommon" , "use bopcommon r"     , __FILE__, bopcommon, g);
   theCommands.Add("bopfuse"   , "use bopfuse r"       , __FILE__,bopfuse, g);
   theCommands.Add("bopcut"    , "use bopcut r"        , __FILE__,bopcut, g);
   theCommands.Add("boptuc"    , "use boptuc r"        , __FILE__,boptuc, g);
   theCommands.Add("bopsection", "use bopsection r"    , __FILE__,bopsection, g);
   //
-  theCommands.Add("bcommon" , "use bcommon r s1 s2 [tol]" , __FILE__,bcommon, g);
-  theCommands.Add("bfuse"   , "use bfuse r s1 s2 [tol]"   , __FILE__,bfuse, g);
-  theCommands.Add("bcut"    , "use bcut r s1 s2 [tol]"    , __FILE__,bcut, g);
-  theCommands.Add("btuc"    , "use btuc r s1 s2 [tol]"    , __FILE__,btuc, g);
-  theCommands.Add("bsection", "Use >bsection r s1 s2 [-n2d/-n2d1/-n2d2] [-na] [tol]", 
+  theCommands.Add("bcommon" , "use bcommon r s1 s2" , __FILE__,bcommon, g);
+  theCommands.Add("bfuse"   , "use bfuse r s1 s2"   , __FILE__,bfuse, g);
+  theCommands.Add("bcut"    , "use bcut r s1 s2"    , __FILE__,bcut, g);
+  theCommands.Add("btuc"    , "use btuc r s1 s2"    , __FILE__,btuc, g);
+  theCommands.Add("bsection", "use bsection r s1 s2 [-n2d/-n2d1/-n2d2] [-na]", 
                                                       __FILE__, bsection, g);
   //
   theCommands.Add("bopcurves", "use  bopcurves F1 F2 [-2d]", __FILE__, bopcurves, g);
-  theCommands.Add("bopnews", "use  bopnews -v[e,f]"  , __FILE__, bopnews, g);
-  theCommands.Add("bparallelmode", "bparallelmode [1/0] : show / set parallel mode for boolean operations", 
-                  __FILE__, bparallelmode, g);
-  theCommands.Add("mkvolume", "make solids from set of shapes.\nmkvolume r b1 b2 ... [-c] [-ni] [-s] [tol]", 
+  theCommands.Add("bopnews"  , "use  bopnews -v[e,f]"      , __FILE__, bopnews, g);
+  theCommands.Add("mkvolume", "make solids from set of shapes.\nmkvolume r b1 b2 ... [-c] [-ni]", 
                   __FILE__, mkvolume , g);
 }
 
@@ -129,7 +125,9 @@ static Standard_Integer mkvolume   (Draw_Interpretor&, Standard_Integer, const c
 //function : bop
 //purpose  : 
 //=======================================================================
-Standard_Integer bop(Draw_Interpretor& di, Standard_Integer n, const char** a)
+Standard_Integer bop(Draw_Interpretor& di, 
+                     Standard_Integer n, 
+                     const char** a)
 {
   char buf[32];
   Standard_Boolean bRunParallel;
@@ -138,8 +136,8 @@ Standard_Integer bop(Draw_Interpretor& di, Standard_Integer n, const char** a)
   TopoDS_Shape aS1, aS2;
   BOPCol_ListOfShape aLC;
   //
-  if (n < 3 || n > 4) {
-    di << " use bop Shape1 Shape2 [tol]\n";
+  if (n != 3) {
+    di << " use bop s1 s2 \n";
     return 0;
   }
   //
@@ -152,10 +150,6 @@ Standard_Integer bop(Draw_Interpretor& di, Standard_Integer n, const char** a)
   }
   //
   aTol=BOPTest_Objects::FuzzyValue();
-  if (n == 4) {
-    aTol = Draw::Atof(a[3]);
-  }
-  //
   bRunParallel=BOPTest_Objects::RunParallel();
   //
   aLC.Append(aS1);
@@ -186,7 +180,9 @@ Standard_Integer bop(Draw_Interpretor& di, Standard_Integer n, const char** a)
 //function : bopcommon
 //purpose  : 
 //=======================================================================
-Standard_Integer bopcommon (Draw_Interpretor& di, Standard_Integer n, const char** a)
+Standard_Integer bopcommon (Draw_Interpretor& di, 
+                            Standard_Integer n, 
+                            const char** a)
 {
   return bopsmt(di, n, a, BOPAlgo_COMMON);
 }
@@ -194,7 +190,9 @@ Standard_Integer bopcommon (Draw_Interpretor& di, Standard_Integer n, const char
 //function : bopfuse
 //purpose  : 
 //=======================================================================
-Standard_Integer bopfuse(Draw_Interpretor& di, Standard_Integer n, const char** a)
+Standard_Integer bopfuse(Draw_Interpretor& di, 
+                         Standard_Integer n, 
+                         const char** a)
 {
   return bopsmt(di, n, a, BOPAlgo_FUSE);
 }
@@ -202,7 +200,9 @@ Standard_Integer bopfuse(Draw_Interpretor& di, Standard_Integer n, const char** 
 //function : bopcut
 //purpose  : 
 //=======================================================================
-Standard_Integer bopcut(Draw_Interpretor& di, Standard_Integer n, const char** a)
+Standard_Integer bopcut(Draw_Interpretor& di, 
+                        Standard_Integer n, 
+                        const char** a)
 {
   return bopsmt(di, n, a, BOPAlgo_CUT);
 }
@@ -210,7 +210,9 @@ Standard_Integer bopcut(Draw_Interpretor& di, Standard_Integer n, const char** a
 //function : boptuc
 //purpose  : 
 //=======================================================================
-Standard_Integer boptuc(Draw_Interpretor& di, Standard_Integer n, const char** a)
+Standard_Integer boptuc(Draw_Interpretor& di, 
+                        Standard_Integer n, 
+                        const char** a)
 {
   return bopsmt(di, n, a, BOPAlgo_CUT21);
 }
@@ -224,7 +226,7 @@ Standard_Integer bopsmt(Draw_Interpretor& di,
                         const BOPAlgo_Operation aOp)
 {
   if (n<2) {
-    di << " use bopsmt r\n [tol]";
+    di << " use bopsmt r\n";
     return 0;
   }
   //
@@ -282,10 +284,12 @@ Standard_Integer bopsmt(Draw_Interpretor& di,
 //function : bopsection
 //purpose  : 
 //=======================================================================
-Standard_Integer bopsection(Draw_Interpretor& di, Standard_Integer n, const char** a)
+Standard_Integer bopsection(Draw_Interpretor& di, 
+                            Standard_Integer n, 
+                            const char** a)
 {
   if (n<2) {
-    di << " use bopsmt r\n";
+    di << " use bopsection r\n";
     return 0;
   }
   //
@@ -342,7 +346,9 @@ Standard_Integer bopsection(Draw_Interpretor& di, Standard_Integer n, const char
 //function : bcommon
 //purpose  : 
 //=======================================================================
-Standard_Integer bcommon (Draw_Interpretor& di, Standard_Integer n, const char** a)
+Standard_Integer bcommon (Draw_Interpretor& di, 
+                          Standard_Integer n, 
+                          const char** a)
 {
   return bsmt(di, n, a, BOPAlgo_COMMON);
 }
@@ -350,7 +356,9 @@ Standard_Integer bcommon (Draw_Interpretor& di, Standard_Integer n, const char**
 //function : bfuse
 //purpose  : 
 //=======================================================================
-Standard_Integer bfuse (Draw_Interpretor& di, Standard_Integer n, const char** a)
+Standard_Integer bfuse (Draw_Interpretor& di, 
+                        Standard_Integer n, 
+                        const char** a)
 {
   return bsmt(di, n, a, BOPAlgo_FUSE);
 }
@@ -358,7 +366,9 @@ Standard_Integer bfuse (Draw_Interpretor& di, Standard_Integer n, const char** a
 //function : bcut
 //purpose  : 
 //=======================================================================
-Standard_Integer bcut (Draw_Interpretor& di, Standard_Integer n, const char** a)
+Standard_Integer bcut (Draw_Interpretor& di, 
+                       Standard_Integer n, 
+                       const char** a)
 {
   return bsmt(di, n, a, BOPAlgo_CUT);
 }
@@ -366,7 +376,9 @@ Standard_Integer bcut (Draw_Interpretor& di, Standard_Integer n, const char** a)
 //function : btuc
 //purpose  : 
 //=======================================================================
-Standard_Integer btuc (Draw_Interpretor& di, Standard_Integer n, const char** a)
+Standard_Integer btuc (Draw_Interpretor& di, 
+                       Standard_Integer n, 
+                       const char** a)
 {
   return bsmt(di, n, a, BOPAlgo_CUT21);
 }
@@ -378,15 +390,15 @@ Standard_Integer  bsection(Draw_Interpretor& di,
                            Standard_Integer n, 
                            const char** a)
 {
-  const char* usage = " Usage: bsection Result s1 s2 [-n2d/-n2d1/-n2d2] [-na] [tol]\n";
   if (n < 4) {
-    di << usage;
+    di << "use bsection r s1 s2 [-n2d/-n2d1/-n2d2] [-na] [tol]\n";
     return 0;
   }
   //
-  TopoDS_Shape aS1 = DBRep::Get(a[2]);
-  TopoDS_Shape aS2 = DBRep::Get(a[3]);
+  TopoDS_Shape aS1, aS2;
   //
+  aS1=DBRep::Get(a[2]);
+  aS2=DBRep::Get(a[3]);
   if (aS1.IsNull() || aS2.IsNull()) {
     di << " Null shapes are not allowed \n";
     return 0;
@@ -417,9 +429,6 @@ Standard_Integer  bsection(Draw_Interpretor& di,
     else if (!strcmp(a[i], "-na")) {
       bApp = Standard_False;
     }
-    else {
-      aTol = Draw::Atof(a[i]);
-    }
   }
   //
   BRepAlgoAPI_Section aSec(aS1, aS2, Standard_False);
@@ -427,6 +436,7 @@ Standard_Integer  bsection(Draw_Interpretor& di,
   aSec.Approximation(bApp);
   aSec.ComputePCurveOn1(bPC1);
   aSec.ComputePCurveOn2(bPC2);
+  //
   aSec.SetFuzzyValue(aTol);
   aSec.SetRunParallel(bRunParallel);
   //
@@ -462,8 +472,8 @@ Standard_Integer bsmt (Draw_Interpretor& di,
   BOPCol_ListOfShape aLC;
   Standard_Real aTol;
   //
-  if (n < 4 || n > 5) {
-    di << " use bx r s1 s2 [tol]\n";
+  if (n != 4) {
+    di << " use bx r s1 s2\n";
     return 0;
   }
   //
@@ -478,10 +488,6 @@ Standard_Integer bsmt (Draw_Interpretor& di,
   aLC.Append(aS2);
   // 
   aTol=BOPTest_Objects::FuzzyValue();
-  if (n == 5) {
-    aTol = Draw::Atof(a[4]);
-  }
-  //
   bRunParallel = BOPTest_Objects::RunParallel();
   //
   Handle(NCollection_BaseAllocator)aAL=new NCollection_IncAllocator;
@@ -760,13 +766,11 @@ Standard_Integer bopcurves (Draw_Interpretor& di,
 Standard_Integer mkvolume(Draw_Interpretor& di, Standard_Integer n, const char** a) 
 {
   if (n < 3) {
-    di << "Usage: mkvolume r b1 b2 ... [-c] [-ni] [-s] [tol]\n";
+    di << "Usage: mkvolume r b1 b2 ... [-c] [-ni]\n";
     di << "Options:\n";
     di << " -c  - use this option if the arguments are compounds\n";
     di << "       containing shapes that should be interfered;\n";
     di << " -ni - use this option if the arguments should not be interfered;\n";
-    di << " -s  - use this option to run the operation in non parallel mode;\n";
-    di << " tol - additional tolerance value (real).\n";
     return 1;
   }
   //
@@ -779,8 +783,9 @@ Standard_Integer mkvolume(Draw_Interpretor& di, Standard_Integer n, const char**
   BOPCol_ListOfShape aLS;
   //
   aTol = BOPTest_Objects::FuzzyValue();
-  bToIntersect = Standard_True;
   bRunParallel = BOPTest_Objects::RunParallel();
+  //
+  bToIntersect = Standard_True;
   bCompounds = Standard_False;
   //
   for (i = 2; i < n; ++i) {
@@ -794,12 +799,6 @@ Standard_Integer mkvolume(Draw_Interpretor& di, Standard_Integer n, const char**
       }
       else if (!strcmp(a[i], "-ni")) {
         bToIntersect = Standard_False;
-      }
-      else if (!strcmp(a[i], "-s")) {
-        bRunParallel = Standard_False;
-      }
-      else {
-        aTol = Draw::Atof(a[i]);
       }
     }
   }
@@ -845,33 +844,5 @@ Standard_Integer mkvolume(Draw_Interpretor& di, Standard_Integer n, const char**
   //
   DBRep::Set(a[1], aR);
   //
-  return 0;
-}
-//=======================================================================
-//function : bparallelmode
-//purpose  : 
-//=======================================================================
-Standard_Integer bparallelmode(Draw_Interpretor& di, Standard_Integer n, const char** a)
-{
-  if (n == 2)
-  {
-    Standard_Boolean isParallelOn = Draw::Atoi (a[1]) == 1;
-    if (isParallelOn == 1)
-    {
-      BOPAlgo_Algo::SetParallelMode(Standard_True);
-      di << "Parallel mode for boolean operations has been enabled";
-    }
-    else
-    {
-      BOPAlgo_Algo::SetParallelMode(Standard_False);
-      di << "Parallel mode for boolean operations has been disabled";
-    }
-  }
-  else
-  {
-    di << "Parallel mode state for boolean operations: "
-       << (BOPAlgo_Algo::GetParallelMode()? "enabled" : "disabled");
-  }
-
   return 0;
 }

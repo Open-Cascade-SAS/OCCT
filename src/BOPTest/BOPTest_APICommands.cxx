@@ -52,7 +52,7 @@ void BOPTest::APICommands(Draw_Interpretor& theCommands)
   if (done) return;
   done = Standard_True;
   // Chapter's name
-  const char* g = "Partition commands";
+  const char* g = "BOPTest commands";
   // Commands  
   theCommands.Add("bapibuild", "use bapibuild r" , __FILE__, bapibuild, g);
   theCommands.Add("bapibop", "use bapibop r type" , __FILE__, bapibop, g);
@@ -170,9 +170,11 @@ Standard_Integer bapibuild(Draw_Interpretor& di,
   BRepAlgoAPI_BuilderAlgo aBuilder;
   //
   BOPCol_ListOfShape& aLSB=BOPTest_Objects::Shapes();
+  BOPCol_ListOfShape& aLTB=BOPTest_Objects::Tools();
   //
-  TopTools_ListOfShape aLS, aLT;
+  TopTools_ListOfShape aLS;
   ConvertList(aLSB, aLS);
+  ConvertList(aLTB, aLS);
   //
   bRunParallel=BOPTest_Objects::RunParallel();
   aFuzzyValue=BOPTest_Objects::FuzzyValue();
@@ -207,7 +209,6 @@ void ConvertList(const BOPCol_ListOfShape& aLSB,
 {
   BOPCol_ListIteratorOfListOfShape aItB;
   //
-  aLS.Clear();
   aItB.Initialize(aLSB);
   for (; aItB.More(); aItB.Next()) {
     const TopoDS_Shape& aS=aItB.Value();

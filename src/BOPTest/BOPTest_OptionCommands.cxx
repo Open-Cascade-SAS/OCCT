@@ -25,6 +25,7 @@
 static Standard_Integer boptions (Draw_Interpretor&, Standard_Integer, const char**); 
 static Standard_Integer brunparallel (Draw_Interpretor&, Standard_Integer, const char**); 
 static Standard_Integer bfuzzyvalue (Draw_Interpretor&, Standard_Integer, const char**); 
+static Standard_Integer bparallelmode(Draw_Interpretor&, Standard_Integer, const char**);
 
 //=======================================================================
 //function : OptionCommands
@@ -36,11 +37,15 @@ void BOPTest::OptionCommands(Draw_Interpretor& theCommands)
   if (done) return;
   done = Standard_True;
   // Chapter's name
-  const char* g = "Partition commands";
+  const char* g = "BOPTest commands";
   // Commands  
   theCommands.Add("boptions", "use boptions" , __FILE__, boptions, g);
   theCommands.Add("brunparallel", "use brunparallel [0/1]" , __FILE__, brunparallel, g);
   theCommands.Add("bfuzzyvalue", "use bfuzzyvalue value" , __FILE__, bfuzzyvalue, g);
+  theCommands.Add("bparallelmode", 
+    "bparallelmode [1/0] : show / set parallel mode for boolean operations", 
+                  __FILE__, bparallelmode, g);
+
 }
 //=======================================================================
 //function : boptions
@@ -119,5 +124,32 @@ Standard_Integer brunparallel(Draw_Interpretor& di,
   bRunParallel=(Standard_Boolean)(iX);
   BOPTest_Objects::SetRunParallel(bRunParallel);
   //
+  return 0;
+}
+//=======================================================================
+//function : bparallelmode
+//purpose  : 
+//=======================================================================
+Standard_Integer bparallelmode(Draw_Interpretor& di, 
+                               Standard_Integer n, 
+                               const char** a)
+{
+  Standard_Boolean bRunParallel;
+  //
+  if (n == 2)  {
+    bRunParallel=(Standard_Boolean)Draw::Atoi(a[1]);
+    BOPTest_Objects::SetRunParallel(bRunParallel);
+    if (bRunParallel) {
+      di << "Parallel mode for boolean operations has been enabled";
+    }
+    else  {
+      di << "Parallel mode for boolean operations has been disabled";
+    }
+  }
+  else  {
+    bRunParallel=BOPTest_Objects::RunParallel();
+    di << "Parallel mode state for boolean operations: " 
+      << (bRunParallel? "enabled" : "disabled");
+  }
   return 0;
 }

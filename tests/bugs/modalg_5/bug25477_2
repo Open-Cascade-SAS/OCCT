@@ -15,6 +15,7 @@ bclearobjects
 bcleartools
 baddobjects b1
 baddtools b2
-bfillds 5.e-5
+bfuzzyvalue 5.e-5
+bfillds
 bbop res 2
 checkshape res

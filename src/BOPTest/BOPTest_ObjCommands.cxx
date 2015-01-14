@@ -25,12 +25,14 @@
 //
 #include <BOPTest_Objects.hxx>
 
-static Standard_Integer baddobjects   (Draw_Interpretor& , Standard_Integer , const char** );
+static Standard_Integer baddobjects (Draw_Interpretor& , Standard_Integer , const char** );
 static Standard_Integer bclearobjects (Draw_Interpretor& , Standard_Integer , const char** );
 static Standard_Integer baddtools   (Draw_Interpretor& , Standard_Integer , const char** );
 static Standard_Integer bcleartools (Draw_Interpretor& , Standard_Integer , const char** );
 static Standard_Integer baddcompound(Draw_Interpretor& , Standard_Integer , const char** );
 static Standard_Integer baddctools  (Draw_Interpretor& , Standard_Integer , const char** );
+static Standard_Integer bclear   (Draw_Interpretor&, Standard_Integer, const char**);
+
 //
 //=======================================================================
 //function :ObjCommands
@@ -42,23 +44,26 @@ static Standard_Integer baddctools  (Draw_Interpretor& , Standard_Integer , cons
   if (done) return;
   done = Standard_True;
   // Chapter's name
-  const char* g = "BOP commands";
+  const char* g = "BOPTest commands";
   // Commands
-  theCommands.Add("baddobjects"    , "baddobjects s1 s2 ..." , __FILE__, baddobjects, g);
-  theCommands.Add("bclearobjects"  , "bclearobjects"         , __FILE__, bclearobjects, g);
-  theCommands.Add("baddtools"      , "baddtools s1 s2 ..."   , __FILE__, baddtools, g);
-  theCommands.Add("bcleartools"    , "bcleartools"           , __FILE__, bcleartools, g);
-  theCommands.Add("baddcompound"   , "baddcompound c"        , __FILE__, baddcompound, g);
-  theCommands.Add("baddctools"     , "baddctools c"          , __FILE__, baddctools, g);
+  theCommands.Add("baddobjects"    , "use baddobjects s1 s2 ..." , __FILE__, baddobjects, g);
+  theCommands.Add("bclearobjects"  , "use bclearobjects"         , __FILE__, bclearobjects, g);
+  theCommands.Add("baddtools"      , "use baddtools s1 s2 ..."   , __FILE__, baddtools, g);
+  theCommands.Add("bcleartools"    , "use bcleartools"           , __FILE__, bcleartools, g);
+  theCommands.Add("baddcompound"   , "use baddcompound c"        , __FILE__, baddcompound, g);
+  theCommands.Add("baddctools"     , "use baddctools c"          , __FILE__, baddctools, g);
+  theCommands.Add("bclear" , "use bclear"        , __FILE__, bclear, g);
 }
 //=======================================================================
 //function : baddcompound
 //purpose  : 
 //=======================================================================
-Standard_Integer baddcompound (Draw_Interpretor& , Standard_Integer n, const char** a)
+Standard_Integer baddcompound (Draw_Interpretor& , 
+                               Standard_Integer n, 
+                               const char** a)
 {
   if (n<2) {
-    printf(" Use baddcompound c\n");
+    printf(" use baddcompound c\n");
     return 0;
   }
   //
@@ -80,10 +85,12 @@ Standard_Integer baddcompound (Draw_Interpretor& , Standard_Integer n, const cha
 //function : baddctools
 //purpose  : 
 //=======================================================================
-Standard_Integer baddctools (Draw_Interpretor& , Standard_Integer n, const char** a)
+Standard_Integer baddctools (Draw_Interpretor& , 
+                             Standard_Integer n, 
+                             const char** a)
 {
   if (n<2) {
-    printf(" Use baddctools c\n");
+    printf(" use baddctools c\n");
     return 0;
   }
   //
@@ -106,10 +113,12 @@ Standard_Integer baddctools (Draw_Interpretor& , Standard_Integer n, const char*
 //function :baddobjects
 //purpose  : 
 //=======================================================================
-Standard_Integer baddobjects (Draw_Interpretor& , Standard_Integer n, const char** a)
+Standard_Integer baddobjects (Draw_Interpretor& , 
+                              Standard_Integer n, 
+                              const char** a)
 {
   if (n<2) {
-    printf(" Use baddobjects s1 s2 ...\n");
+    printf(" use baddobjects s1 s2 ...\n");
     return 0;
   }
   //
@@ -128,10 +137,12 @@ Standard_Integer baddobjects (Draw_Interpretor& , Standard_Integer n, const char
 //function : bclearobjects
 //purpose  : 
 //=======================================================================
-Standard_Integer bclearobjects (Draw_Interpretor& , Standard_Integer n, const char** )
+Standard_Integer bclearobjects (Draw_Interpretor& , 
+                                Standard_Integer n, 
+                                const char** )
 {
   if (n!=1) {
-    printf(" Use bclearobjects\n");
+    printf(" use bclearobjects\n");
     return 0;
   }
   BOPCol_ListOfShape& aLS=BOPTest_Objects::Shapes();
@@ -143,10 +154,12 @@ Standard_Integer bclearobjects (Draw_Interpretor& , Standard_Integer n, const ch
 //function : baddtools
 //purpose  : 
 //=======================================================================
-Standard_Integer baddtools (Draw_Interpretor& , Standard_Integer n, const char** a)
+Standard_Integer baddtools (Draw_Interpretor& , 
+                            Standard_Integer n, 
+                            const char** a)
 {
   if (n<2) {
-    printf(" Use baddtools s1 s2 ...\n");
+    printf(" use baddtools s1 s2 ...\n");
     return 0;
   }
   //
@@ -165,14 +178,32 @@ Standard_Integer baddtools (Draw_Interpretor& , Standard_Integer n, const char**
 //function : bcleartools
 //purpose  : 
 //=======================================================================
-Standard_Integer bcleartools (Draw_Interpretor& , Standard_Integer n, const char** )
+Standard_Integer bcleartools (Draw_Interpretor& ,
+                              Standard_Integer n, 
+                              const char** )
 {
   if (n!=1) {
-    printf(" Use bcleartools\n");
+    printf(" use bcleartools\n");
     return 0;
   }
   BOPCol_ListOfShape& aLS=BOPTest_Objects::Tools();
   aLS.Clear();
   //
+  return 0;
+}
+//=======================================================================
+//function : bclear
+//purpose  : 
+//=======================================================================
+Standard_Integer bclear(Draw_Interpretor& di, 
+                        Standard_Integer n, 
+                        const char** ) 
+{
+  if (n!=1) {
+    di << " use bclear\n";
+    return 0;
+  }
+  //
+  BOPTest_Objects::Clear(); 
   return 0;
 }
