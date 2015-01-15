@@ -106,9 +106,10 @@ public:
   }
 
 private:
+  Select3D_PointData (const Select3D_PointData&);
+  Select3D_PointData& operator= (const Select3D_PointData&);
 
-  // Default constructor
-  Select3D_PointData () {}
+private:
 
   Select3D_Pnt*    mypolyg3d;
   Select3D_Pnt2d*  mypolyg2d;

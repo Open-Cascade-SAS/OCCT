@@ -32,6 +32,7 @@
 //          and current element of sequence,
 //          also it has methods for the sequence management.
 
+#include <NCollection_DefineAlloc.hxx>
 #include <NCollection_BaseAllocator.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_Boolean.hxx>
@@ -39,11 +40,28 @@
 #include <stdlib.h>
 #include <stdio.h> /* EOF */
 
-class LDOM_StringElem; // defined in cxx file
-
 class LDOM_SBuffer : public streambuf
 {
- public:
+  // One element of sequence.
+  // Can only be allocated by the allocator and assumes
+  // it is IncAllocator, so destructor isn't required.
+  struct LDOM_StringElem
+  {
+    char*            buf;  //!< pointer on data string
+    int              len;  //!< quantity of really written data
+    LDOM_StringElem* next; //!< pointer on the next element of a sequence
+
+    DEFINE_NCOLLECTION_ALLOC
+
+    LDOM_StringElem(const int, const Handle_NCollection_BaseAllocator&);
+    ~LDOM_StringElem();
+
+  private:
+    LDOM_StringElem (const LDOM_StringElem&);
+    LDOM_StringElem& operator= (const LDOM_StringElem&);
+  };
+
+public:
   Standard_EXPORT LDOM_SBuffer (const Standard_Integer theMaxBuf);
   // Constructor. Sets a default value for the
   //              length of each sequence element.
@@ -74,8 +92,8 @@ class LDOM_SBuffer : public streambuf
   Standard_EXPORT ~LDOM_SBuffer ();
   // Destructor
 
- private:
- 
+private:
+
   Standard_Integer      myMaxBuf; // default length of one element
   Standard_Integer      myLength; // full length of contained data
   LDOM_StringElem* myFirstString; // the head of the sequence

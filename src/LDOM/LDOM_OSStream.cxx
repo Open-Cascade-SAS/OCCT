@@ -14,33 +14,22 @@
 // commercial license or contractual agreement.
 
 #include <LDOM_OSStream.hxx>
-#include <NCollection_DefineAlloc.hxx>
 #include <NCollection_IncAllocator.hxx>
 #include <string.h>
 #include <Standard.hxx>
 #include <Standard_Integer.hxx>
 
-// One element of sequence
-/* Can only be allocated by the allocator and assumes it is IncAllocator, so 
-   no destructor is required.
-*/
-class LDOM_StringElem
+//=======================================================================
+//function : LDOM_StringElem()
+//purpose  : Constructor
+//=======================================================================
+LDOM_SBuffer::LDOM_StringElem::LDOM_StringElem
+  ( const int theLength, const Handle_NCollection_BaseAllocator& theAlloc )
+: buf (reinterpret_cast<char*>(theAlloc->Allocate (theLength))),
+  len (0),
+  next(0)
 {
-  char* buf;             // pointer on data string
-  int len;               // quantity of really written data
-  LDOM_StringElem* next; // pointer on the next element of a sequence
-
-  DEFINE_NCOLLECTION_ALLOC
-  
-  LDOM_StringElem (int aLen, const Handle_NCollection_BaseAllocator& theAlloc) :
-    buf (reinterpret_cast<char*> (theAlloc->Allocate (aLen))),
-    len (0),
-    next (0)
-  {
-  }
-
-friend class LDOM_SBuffer;
-};
+}
 
 //=======================================================================
 //function : LDOM_SBuffer()

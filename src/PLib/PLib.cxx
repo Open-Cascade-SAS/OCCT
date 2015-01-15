@@ -265,6 +265,10 @@ public:
   }
 
 private:
+  BinomAllocator (const BinomAllocator&);
+  BinomAllocator& operator= (const BinomAllocator&);
+
+private:
   Standard_Integer**  myBinom;
   Standard_Integer myMaxBinom;
 

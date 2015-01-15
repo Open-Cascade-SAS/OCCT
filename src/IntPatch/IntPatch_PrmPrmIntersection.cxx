@@ -2998,7 +2998,14 @@ public:
     const Standard_Integer j) { 
       return myP2[Index(i,j)];
   };
-protected:
+
+private:
+
+  IntPatch_InfoPD (const IntPatch_InfoPD&);
+  IntPatch_InfoPD& operator=(const IntPatch_InfoPD&);
+
+private:
+
   Standard_Integer myNBI;
   char *myP1DS2;
   char *myP2DS1;

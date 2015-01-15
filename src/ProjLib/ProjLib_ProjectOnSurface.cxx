@@ -85,10 +85,7 @@ static Standard_Boolean OnSurface_D1(const Standard_Real , // U,
 class ProjLib_OnSurface : public AppCont_Function
 
 {
-  Handle(Adaptor3d_HCurve)       myCurve;
-  Extrema_ExtPS *myExtPS;
-
-  public :
+public:
 
   ProjLib_OnSurface(const Handle(Adaptor3d_HCurve)   & C, 
                     const Handle(Adaptor3d_HSurface) & S)
@@ -125,6 +122,14 @@ class ProjLib_OnSurface : public AppCont_Function
     gp_Pnt aPnt;
     return OnSurface_D1(theT, aPnt, theVec(1), myCurve, myExtPS);
   }
+
+private:
+  ProjLib_OnSurface (const ProjLib_OnSurface&);
+  ProjLib_OnSurface& operator= (const ProjLib_OnSurface&);
+
+private:
+  Handle(Adaptor3d_HCurve)       myCurve;
+  Extrema_ExtPS*                 myExtPS;
 };
 
 
