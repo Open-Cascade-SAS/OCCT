@@ -33,3 +33,5 @@ BVH_Triangulation.lxx
 BVH_Types.hxx
 BVH_QueueBuilder.hxx
 BVH_QueueBuilder.lxx
+BVH_DistanceField.hxx
+BVH_DistanceField.lxx

@@ -1,0 +1,528 @@
+// Created on: 2014-09-06
+// Created by: Denis BOGOLEPOV
+// Copyright (c) 2013-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <Standard_Assert.hxx>
+
+#include <BVH_Triangulation.hxx>
+
+#ifdef HAVE_TBB
+  // On Windows, function TryEnterCriticalSection has appeared in Windows NT
+  // and is surrounded by #ifdef in MS VC++ 7.1 headers.
+  // Thus to use it we need to define appropriate macro saying that we will
+  // run on Windows NT 4.0 at least
+  #if defined(_WIN32) && !defined(_WIN32_WINNT)
+    #define _WIN32_WINNT 0x0501
+  #endif
+
+  #include <tbb/tbb.h>
+#endif
+
+// =======================================================================
+// function : BVH_DistanceField
+// purpose  :
+// =======================================================================
+template<class T, int N>
+BVH_DistanceField<T, N>::BVH_DistanceField (const Standard_Integer theMaximumSize,
+                                            const Standard_Boolean theComputeSign)
+: myMaximumSize (theMaximumSize),
+  myComputeSign (theComputeSign)
+{
+  Standard_STATIC_ASSERT (N == 3 || N == 4);
+
+  myVoxelData = new T[myMaximumSize * myMaximumSize * myMaximumSize];
+}
+
+// =======================================================================
+// function : ~BVH_DistanceField
+// purpose  :
+// =======================================================================
+template<class T, int N>
+BVH_DistanceField<T, N>::~BVH_DistanceField()
+{
+  delete [] myVoxelData;
+}
+
+#if defined (_WIN32) && defined (max)
+  #undef max
+#endif
+
+#include <limits>
+
+#define BVH_DOT3(A, B) (A.x() * B.x() + A.y() * B.y() + A.z() * B.z())
+
+namespace BVH
+{
+  //=======================================================================
+  //function : DistanceToBox
+  //purpose  : Computes squared distance from point to box
+  //=======================================================================
+  template<class T, int N>
+  T DistanceToBox (const typename VectorType<T, N>::Type& thePnt,
+                   const typename VectorType<T, N>::Type& theMin,
+                   const typename VectorType<T, N>::Type& theMax)
+  {
+    Standard_STATIC_ASSERT (N == 3 || N == 4);
+
+    T aNearestX = Min (Max (thePnt.x(), theMin.x()), theMax.x());
+    T aNearestY = Min (Max (thePnt.y(), theMin.y()), theMax.y());
+    T aNearestZ = Min (Max (thePnt.z(), theMin.z()), theMax.z());
+
+    if (aNearestX == thePnt.x()
+     && aNearestY == thePnt.y()
+     && aNearestZ == thePnt.z())
+    {
+      return static_cast<T> (0);
+    }
+
+    aNearestX -= thePnt.x();
+    aNearestY -= thePnt.y();
+    aNearestZ -= thePnt.z();
+
+    return aNearestX * aNearestX +
+           aNearestY * aNearestY +
+           aNearestZ * aNearestZ;
+  }
+
+  //=======================================================================
+  //function : DirectionToNearestPoint
+  //purpose  : Computes squared distance from point to triangle
+  // ======================================================================
+  template<class T, int N>
+  typename VectorType<T, N>::Type DirectionToNearestPoint (
+    const typename VectorType<T, N>::Type& thePoint,
+    const typename VectorType<T, N>::Type& theVertA,
+    const typename VectorType<T, N>::Type& theVertB,
+    const typename VectorType<T, N>::Type& theVertC)
+  {
+    Standard_STATIC_ASSERT (N == 3 || N == 4);
+
+    const typename VectorType<T, N>::Type aAB = theVertB - theVertA;
+    const typename VectorType<T, N>::Type aAC = theVertC - theVertA;
+    const typename VectorType<T, N>::Type aAP = thePoint - theVertA;
+
+    const T aABdotAP = BVH_DOT3 (aAB, aAP);
+    const T aACdotAP = BVH_DOT3 (aAC, aAP);
+
+    if (aABdotAP <= static_cast<T> (0) && aACdotAP <= static_cast<T> (0))
+    {
+      return aAP;
+    }
+
+    const typename VectorType<T, N>::Type aBC = theVertC - theVertB;
+    const typename VectorType<T, N>::Type aBP = thePoint - theVertB;
+
+    const T aBAdotBP = -BVH_DOT3 (aAB, aBP);
+    const T aBCdotBP =  BVH_DOT3 (aBC, aBP);
+
+    if (aBAdotBP <= static_cast<T> (0) && aBCdotBP <= static_cast<T> (0))
+    {
+      return aBP;
+    }
+
+    const typename VectorType<T, N>::Type aCP = thePoint - theVertC;
+
+    const T aCBdotCP = -BVH_DOT3 (aBC, aCP);
+    const T aCAdotCP = -BVH_DOT3 (aAC, aCP);
+
+    if (aCAdotCP <= static_cast<T> (0) && aCBdotCP <= static_cast<T> (0))
+    {
+      return aCP;
+    }
+
+    const T aACdotBP = BVH_DOT3 (aAC, aBP);
+
+    const T aVC = aABdotAP * aACdotBP + aBAdotBP * aACdotAP;
+
+    if (aVC <= static_cast<T> (0) && aABdotAP >= static_cast<T> (0) && aBAdotBP >= static_cast<T> (0))
+    {
+      return aAP - aAB * (aABdotAP / (aABdotAP + aBAdotBP));
+    }
+
+    const T aABdotCP = BVH_DOT3 (aAB, aCP);
+
+    const T aVA = aBAdotBP * aCAdotCP - aABdotCP * aACdotBP;
+
+    if (aVA <= static_cast<T> (0) && aBCdotBP >= static_cast<T> (0) && aCBdotCP >= static_cast<T> (0))
+    {
+      return aBP - aBC * (aBCdotBP / (aBCdotBP + aCBdotCP));
+    }
+
+    const T aVB = aABdotCP * aACdotAP + aABdotAP * aCAdotCP;
+
+    if (aVB <= static_cast<T> (0) && aACdotAP >= static_cast<T> (0) && aCAdotCP >= static_cast<T> (0))
+    {
+      return aAP - aAC * (aACdotAP / (aACdotAP + aCAdotCP));
+    }
+
+    const T aNorm = static_cast<T> (1.0) / (aVA + aVB + aVC);
+
+    const T aU = aVA * aNorm;
+    const T aV = aVB * aNorm;
+
+    return thePoint - (theVertA * aU + theVertB * aV + theVertC * (static_cast<T> (1.0) - aU - aV));
+  }
+
+  //=======================================================================
+  //function : SquareDistanceToObject
+  //purpose  : Computes squared distance from point to BVH triangulation
+  //=======================================================================
+  template<class T, int N>
+  T SquareDistanceToObject (BVH_Object<T, N>* theObject,
+    const typename VectorType<T, N>::Type& thePnt, Standard_Boolean& theIsOutside)
+  {
+    Standard_STATIC_ASSERT (N == 3 || N == 4);
+
+    T aMinDistance = std::numeric_limits<T>::max();
+
+    BVH_Triangulation<T, N>* aTriangulation =
+      dynamic_cast<BVH_Triangulation<T, N>*> (theObject);
+
+    Standard_ASSERT_RETURN (aTriangulation != NULL,
+      "Error: Unsupported BVH object (non triangulation)", aMinDistance);
+
+    const NCollection_Handle<BVH_Tree<T, N> >& aBVH = aTriangulation->BVH();
+
+    if (aBVH.IsNull())
+    {
+      return Standard_False;
+    }
+
+    std::pair<Standard_Integer, T> aStack[32];
+
+    Standard_Integer aHead = -1;
+    Standard_Integer aNode =  0; // root node
+
+    for (;;)
+    {
+      BVH_Vec4i aData = aBVH->NodeInfoBuffer()[aNode];
+
+      if (aData.x() == 0) // if inner node
+      {
+        const T aDistToLft = DistanceToBox<T, N> (thePnt,
+                                                  aBVH->MinPoint (aData.y()),
+                                                  aBVH->MaxPoint (aData.y()));
+
+        const T aDistToRgh = DistanceToBox<T, N> (thePnt,
+                                                  aBVH->MinPoint (aData.z()),
+                                                  aBVH->MaxPoint (aData.z()));
+
+        const Standard_Boolean aHitLft = aDistToLft <= aMinDistance;
+        const Standard_Boolean aHitRgh = aDistToRgh <= aMinDistance;
+
+        if (aHitLft & aHitRgh)
+        {
+          aNode = (aDistToLft < aDistToRgh) ? aData.y() : aData.z();
+
+          aStack[++aHead] = std::pair<Standard_Integer, T> (
+            aDistToLft < aDistToRgh ? aData.z() : aData.y(), Max (aDistToLft, aDistToRgh));
+        }
+        else
+        {
+          if (aHitLft | aHitRgh)
+          {
+            aNode = aHitLft ? aData.y() : aData.z();
+          }
+          else
+          {
+            if (aHead < 0)
+              return aMinDistance;
+
+            std::pair<Standard_Integer, T>& anInfo = aStack[aHead--];
+
+            while (anInfo.second > aMinDistance)
+            {
+              if (aHead < 0)
+                return aMinDistance;
+
+              anInfo = aStack[aHead--];
+            }
+
+            aNode = anInfo.first;
+          }
+        }
+      }
+      else  // if leaf node
+      {
+        for (Standard_Integer aTrgIdx = aData.y(); aTrgIdx <= aData.z(); ++aTrgIdx)
+        {
+          const BVH_Vec4i aTriangle = aTriangulation->Elements[aTrgIdx];
+
+          const typename VectorType<T, N>::Type aVertex0 = aTriangulation->Vertices[aTriangle.x()];
+          const typename VectorType<T, N>::Type aVertex1 = aTriangulation->Vertices[aTriangle.y()];
+          const typename VectorType<T, N>::Type aVertex2 = aTriangulation->Vertices[aTriangle.z()];
+
+          const typename VectorType<T, N>::Type aDirection =
+            DirectionToNearestPoint<T, N> (thePnt, aVertex0, aVertex1, aVertex2);
+
+          const T aDistance = BVH_DOT3 (aDirection, aDirection);
+
+          if (aDistance < aMinDistance)
+          {
+            aMinDistance = aDistance;
+
+            typename VectorType<T, N>::Type aTrgEdges[] = { aVertex1 - aVertex0,
+                                                            aVertex2 - aVertex0 };
+
+            typename VectorType<T, N>::Type aTrgNormal;
+            
+            aTrgNormal.x() = aTrgEdges[0].y() * aTrgEdges[1].z() - aTrgEdges[0].z() * aTrgEdges[1].y();
+            aTrgNormal.y() = aTrgEdges[0].z() * aTrgEdges[1].x() - aTrgEdges[0].x() * aTrgEdges[1].z();
+            aTrgNormal.z() = aTrgEdges[0].x() * aTrgEdges[1].y() - aTrgEdges[0].y() * aTrgEdges[1].x();
+
+            theIsOutside = BVH_DOT3 (aTrgNormal, aDirection) > 0;
+          }
+        }
+
+        if (aHead < 0)
+          return aMinDistance;
+
+        std::pair<Standard_Integer, T>& anInfo = aStack[aHead--];
+
+        while (anInfo.second > aMinDistance)
+        {
+          if (aHead < 0)
+            return aMinDistance;
+
+          anInfo = aStack[aHead--];
+        }
+
+        aNode = anInfo.first;
+      }
+    }
+  }
+
+  //=======================================================================
+  //function : SquareDistanceToGeomerty
+  //purpose  : Computes squared distance from point to BVH geometry
+  //=======================================================================
+  template<class T, int N>
+  T SquareDistanceToGeomerty (BVH_Geometry<T, N>& theGeometry,
+    const typename VectorType<T, N>::Type& thePnt, Standard_Boolean& theIsOutside)
+  {
+    Standard_STATIC_ASSERT (N == 3 || N == 4);
+
+    const NCollection_Handle<BVH_Tree<T, N> >& aBVH = theGeometry.BVH();
+
+    if (aBVH.IsNull())
+    {
+      return Standard_False;
+    }
+
+    std::pair<Standard_Integer, T> aStack[32];
+
+    Standard_Integer aHead = -1;
+    Standard_Integer aNode =  0; // root node
+
+    T aMinDistance = std::numeric_limits<T>::max();
+
+    for (;;)
+    {
+      BVH_Vec4i aData = aBVH->NodeInfoBuffer()[aNode];
+
+      if (aData.x() == 0) // if inner node
+      {
+        const T aDistToLft = DistanceToBox<T, N> (thePnt,
+                                                  aBVH->MinPoint (aData.y()),
+                                                  aBVH->MaxPoint (aData.y()));
+
+        const T aDistToRgh = DistanceToBox<T, N> (thePnt,
+                                                  aBVH->MinPoint (aData.z()),
+                                                  aBVH->MaxPoint (aData.z()));
+
+        const Standard_Boolean aHitLft = aDistToLft <= aMinDistance;
+        const Standard_Boolean aHitRgh = aDistToRgh <= aMinDistance;
+
+        if (aHitLft & aHitRgh)
+        {
+          aNode = (aDistToLft < aDistToRgh) ? aData.y() : aData.z();
+
+          aStack[++aHead] = std::pair<Standard_Integer, T> (
+            aDistToLft < aDistToRgh ? aData.z() : aData.y(), Max (aDistToLft, aDistToRgh));
+        }
+        else
+        {
+          if (aHitLft | aHitRgh)
+          {
+            aNode = aHitLft ? aData.y() : aData.z();
+          }
+          else
+          {
+            if (aHead < 0)
+              return aMinDistance;
+
+            std::pair<Standard_Integer, T>& anInfo = aStack[aHead--];
+
+            while (anInfo.second > aMinDistance)
+            {
+              if (aHead < 0)
+                return aMinDistance;
+
+              anInfo = aStack[aHead--];
+            }
+
+            aNode = anInfo.first;
+          }
+        }
+      }
+      else  // if leaf node
+      {
+        Standard_Boolean isOutside = Standard_True;
+
+        const T aDistance = SquareDistanceToObject (
+          theGeometry.Objects()(aNode).operator->(), thePnt, isOutside);
+
+        if (aDistance < aMinDistance)
+        {
+          aMinDistance = aDistance;
+          theIsOutside = isOutside;
+        }
+
+        if (aHead < 0)
+          return aMinDistance;
+
+        std::pair<Standard_Integer, T>& anInfo = aStack[aHead--];
+
+        while (anInfo.second > aMinDistance)
+        {
+          if (aHead < 0)
+            return aMinDistance;
+
+          anInfo = aStack[aHead--];
+        }
+
+        aNode = anInfo.first;
+      }
+    }
+  }
+}
+
+#undef BVH_DOT3
+
+#ifdef HAVE_TBB
+
+//! Tool object for parallel construction of distance field (uses Intel TBB).
+template<class T, int N>
+class BVH_ParallelDistanceFieldBuilder
+{
+private:
+
+  //! Input BVH geometry.
+  BVH_Geometry<T, N>* myGeometry;
+
+  //! Output distance field.
+  BVH_DistanceField<T, N>* myOutField;
+
+public:
+
+  BVH_ParallelDistanceFieldBuilder (BVH_DistanceField<T, N>* theOutField, BVH_Geometry<T, N>* theGeometry)
+  : myGeometry (theGeometry),
+    myOutField (theOutField)
+  {
+    //
+  }
+
+  void operator() (const tbb::blocked_range<Standard_Integer>& theRange) const
+  {
+    myOutField->BuildSlices (*myGeometry, theRange.begin(), theRange.end());
+  }
+};
+
+#endif
+
+// =======================================================================
+// function : BuildSlices
+// purpose  : Performs building of distance field for the given Z slices
+// =======================================================================
+template<class T, int N>
+void BVH_DistanceField<T, N>::BuildSlices (BVH_Geometry<T, N>& theGeometry,
+  const Standard_Integer theStartSlice, const Standard_Integer theFinalSlice)
+{
+  for (Standard_Integer aZ = theStartSlice; aZ < theFinalSlice; ++aZ)
+  {
+    for (Standard_Integer aY = 0; aY < myDimensionY; ++aY)
+    {
+      for (Standard_Integer aX = 0; aX < myDimensionX; ++aX)
+      {
+        BVH_VecNt aCenter;
+        
+        aCenter.x() = myCornerMin.x() + myVoxelSize.x() * (aX + static_cast<T> (0.5));
+        aCenter.y() = myCornerMin.y() + myVoxelSize.y() * (aY + static_cast<T> (0.5));
+        aCenter.z() = myCornerMin.z() + myVoxelSize.z() * (aZ + static_cast<T> (0.5));
+
+        Standard_Boolean isOutside = Standard_True;
+
+        const T aDistance = sqrt (
+          BVH::SquareDistanceToGeomerty<T, N> (theGeometry, aCenter, isOutside));
+
+        Voxel (aX, aY, aZ) = (!myComputeSign || isOutside) ? aDistance : -aDistance;
+      }
+    }
+  }
+}
+
+// =======================================================================
+// function : Build
+// purpose  : Builds 3D distance field from BVH geometry
+// =======================================================================
+template<class T, int N>
+Standard_Boolean BVH_DistanceField<T, N>::Build (BVH_Geometry<T, N>& theGeometry)
+{
+  if (theGeometry.Size() == 0)
+  {
+    return Standard_False;
+  }
+
+  const BVH_VecNt aGlobalBoxSize = theGeometry.Box().Size();
+
+  const T aMaxBoxSide = Max (Max (aGlobalBoxSize.x(), aGlobalBoxSize.y()), aGlobalBoxSize.z());
+
+  myDimensionX = static_cast<Standard_Integer> (myMaximumSize * aGlobalBoxSize.x() / aMaxBoxSide);
+  myDimensionY = static_cast<Standard_Integer> (myMaximumSize * aGlobalBoxSize.y() / aMaxBoxSide);
+  myDimensionZ = static_cast<Standard_Integer> (myMaximumSize * aGlobalBoxSize.z() / aMaxBoxSide);
+
+  myDimensionX = Min (myMaximumSize, Max (myDimensionX, 16));
+  myDimensionY = Min (myMaximumSize, Max (myDimensionY, 16));
+  myDimensionZ = Min (myMaximumSize, Max (myDimensionZ, 16));
+
+  const BVH_VecNt aGlobalBoxMin = theGeometry.Box().CornerMin();
+  const BVH_VecNt aGlobalBoxMax = theGeometry.Box().CornerMax();
+
+  const Standard_Integer aVoxelOffset = 2;
+
+  myCornerMin.x() = aGlobalBoxMin.x() - aVoxelOffset * aGlobalBoxSize.x() / (myDimensionX - 2 * aVoxelOffset);
+  myCornerMin.y() = aGlobalBoxMin.y() - aVoxelOffset * aGlobalBoxSize.y() / (myDimensionY - 2 * aVoxelOffset);
+  myCornerMin.z() = aGlobalBoxMin.z() - aVoxelOffset * aGlobalBoxSize.z() / (myDimensionZ - 2 * aVoxelOffset);
+
+  myCornerMax.x() = aGlobalBoxMax.x() + aVoxelOffset * aGlobalBoxSize.x() / (myDimensionX - 2 * aVoxelOffset);
+  myCornerMax.y() = aGlobalBoxMax.y() + aVoxelOffset * aGlobalBoxSize.y() / (myDimensionY - 2 * aVoxelOffset);
+  myCornerMax.z() = aGlobalBoxMax.z() + aVoxelOffset * aGlobalBoxSize.z() / (myDimensionZ - 2 * aVoxelOffset);
+  
+  myVoxelSize.x() = (myCornerMax.x() - myCornerMin.x()) / myDimensionX;
+  myVoxelSize.y() = (myCornerMax.y() - myCornerMin.y()) / myDimensionY;
+  myVoxelSize.z() = (myCornerMax.z() - myCornerMin.z()) / myDimensionZ;
+
+#ifdef HAVE_TBB
+  
+  tbb::parallel_for (tbb::blocked_range<Standard_Integer> (0, myDimensionZ),
+    BVH_ParallelDistanceFieldBuilder<T, N> (this, &theGeometry));
+
+#else
+
+  BuildSlices (theGeometry, 0, myDimensionZ);
+
+#endif
+
+  return Standard_True;
+}
