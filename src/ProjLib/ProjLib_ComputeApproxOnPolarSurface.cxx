@@ -426,7 +426,9 @@ ProjLib_ComputeApproxOnPolarSurface::ProjLib_ComputeApproxOnPolarSurface
 } 
 
 static Handle(Geom2d_BSplineCurve) Concat(Handle(Geom2d_BSplineCurve) C1,
-					  Handle(Geom2d_BSplineCurve) C2)
+                                          Handle(Geom2d_BSplineCurve) C2,
+                                          Standard_Real theUJump,
+                                          Standard_Real theVJump)
 {
   Standard_Integer deg, deg1, deg2;
   deg1 = C1->Degree();
@@ -483,7 +485,8 @@ static Handle(Geom2d_BSplineCurve) Concat(Handle(Geom2d_BSplineCurve) C1,
   }
   for (i = 2; i <= np2; i++) {
     count++;
-    P(count) = P2(i);
+    P(count).SetX(P2(i).X() + theUJump);
+    P(count).SetY(P2(i).Y() + theVJump);
   }
 
   Handle(Geom2d_BSplineCurve) BS = 
@@ -679,11 +682,36 @@ Handle(Geom2d_BSplineCurve) ProjLib_ComputeApproxOnPolarSurface::Perform
       Handle(Geom2d_BSplineCurve) CurBS;
       CurBS = Handle(Geom2d_BSplineCurve)::DownCast(LOfBSpline2d.First());
       LOfBSpline2d.RemoveFirst();
-      for (Standard_Integer ii = 2; ii <= NbC; ii++) {
-	Handle(Geom2d_BSplineCurve) BS = 
-	  Handle(Geom2d_BSplineCurve)::DownCast(LOfBSpline2d.First());
-	CurBS = Concat(CurBS,BS);
-	LOfBSpline2d.RemoveFirst();
+      for (Standard_Integer ii = 2; ii <= NbC; ii++)
+      {
+        Handle(Geom2d_BSplineCurve) BS = 
+          Handle(Geom2d_BSplineCurve)::DownCast(LOfBSpline2d.First());
+
+        //Check for period jump in point of contact.
+        gp_Pnt2d aC1End = CurBS->Pole(CurBS->NbPoles()); // End of C1.
+        gp_Pnt2d aC2Beg = BS->Pole(1); // Beginning of C2.
+        Standard_Real anUJump = 0.0, anVJump = 0.0;
+
+        if (S->IsUPeriodic() || S->IsUClosed())
+        {
+          if (Abs (aC1End.X() - aC2Beg.X()) > (S->LastUParameter() - S->FirstUParameter() ) / 2.01)
+          {
+            Standard_Real aMultCoeff =  aC2Beg.X() < aC1End.X() ? 1.0 : -1.0;
+            anUJump = (S->LastUParameter() - S->FirstUParameter() ) * aMultCoeff;
+          }
+        }
+
+        if (S->IsVPeriodic() || S->IsVClosed())
+        {
+          if (Abs (aC1End.Y() - aC2Beg.Y()) > (S->LastVParameter() - S->FirstVParameter() ) / 2.01)
+          {
+            Standard_Real aMultCoeff =  aC2Beg.Y() < aC1End.Y() ? 1.0 : -1.0;
+            anVJump = (S->LastVParameter() - S->FirstVParameter() ) * aMultCoeff;
+          }
+        }
+
+        CurBS = Concat(CurBS,BS, anUJump, anVJump);
+        LOfBSpline2d.RemoveFirst();
       }
       return CurBS;
     }
