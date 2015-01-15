@@ -1,0 +1,21 @@
+puts "============"
+puts "OCC25634"
+puts "============"
+puts ""
+######################################################
+# Checking of compliance of vertices and pcurve fails
+######################################################
+
+restore [locate_data_file bug25634_shape3.brep] s
+
+explode s e
+
+set info [checkedge s_1 s]
+
+# Resume
+puts ""
+if { [regexp {Edge seems OK.} ${info}] } {
+   puts "OK: Checking is good"
+} else {
+   puts "Error: Checking is bad"
+}

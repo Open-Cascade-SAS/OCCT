@@ -900,6 +900,81 @@ static Standard_Integer checkselfintersection
   return 0;
 }
 
+static Standard_Integer checkedge(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+{
+  if (argc < 2) 
+  { 
+    di<<"Call please \"checkedge edge [face]\""<<"\n";  
+    return 1;
+  }
+
+  // Get edge.
+  const char* arg1 = argv[1];
+  TopoDS_Shape edge = DBRep::Get(arg1);
+  if (edge.IsNull() || edge.ShapeType() != TopAbs_EDGE)
+  { 
+    di<<"A null shape or not an edge is used."<<"\n";  
+    return 2;
+  }
+
+  // Get face.
+  TopoDS_Shape face;
+  if (argc == 3)
+  {
+    const char* arg2 = argv[2];
+    face = DBRep::Get(arg2);
+    if (face.IsNull() || face.ShapeType() != TopAbs_FACE)
+    { 
+      di<<"A null shape or not a face is used."<<"\n";  
+      return 3;
+    }
+  }
+
+  // Analysis of the edge.
+  ShapeAnalysis_Edge analyser;
+  Standard_Boolean isOk(Standard_True);
+
+  // Curve 3D.
+  if (analyser.HasCurve3d(TopoDS::Edge(edge)))
+  {
+    // Check vertices.
+    if (analyser.CheckVerticesWithCurve3d(TopoDS::Edge(edge)))
+    {
+      isOk = Standard_False;
+      di<<"Vertices of the edge don't coincide with start/end points of 3d-curve (using tolerance of the vertices).\n";
+    }
+  }
+  else
+  {
+    isOk = Standard_False;
+    di<<"Edge doesn't have a 3d-curve\n";
+  }
+
+  if (!face.IsNull())
+  {
+      // Curve 2D.
+      if (analyser.HasPCurve(TopoDS::Edge(edge), TopoDS::Face(face)))
+      {
+        // Check vertices.
+        if (analyser.CheckVerticesWithPCurve(TopoDS::Edge(edge), TopoDS::Face(face)))
+        {
+          isOk = Standard_False;
+          di<<"Vertices of the edge don't coincide with start/end points of 2d-curve (using tolerance of the vertices).\n";
+        }
+      }
+      else
+      {
+        isOk = Standard_False;
+        di<<"Edge doesn't have a 2d-curve on this face\n";
+      }
+  }
+
+  if (isOk)
+    di<<"Edge seems OK.\n";
+
+  return 0;
+}
+
 //=======================================================================
 //function : InitCommands
 //purpose  : 
@@ -937,4 +1012,5 @@ static Standard_Integer checkselfintersection
     
   theCommands.Add("getareacontour","wire ",__FILE__, getareacontour, groupold);
   theCommands.Add ("checkselfintersection","wire [face]", __FILE__,checkselfintersection,g);
+  theCommands.Add ("checkedge","edge [face]", __FILE__,checkedge,g);
 }

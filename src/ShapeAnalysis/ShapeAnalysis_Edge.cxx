@@ -565,6 +565,8 @@ Standard_Boolean ShapeAnalysis_Edge::CheckVerticesWithPCurve (const TopoDS_Edge&
   if (vtx != 2) { //  1er VTX
     gp_Pnt2d p1uv = c2d->Value (cf);  
     gp_Pnt p12d = surf->Value (p1uv.X(), p1uv.Y());
+    if (!loc.IsIdentity())
+      p12d.Transform(loc.Transformation());
     // szv#4:S4163:12Mar99 optimized
     if ( p1v.Distance(p12d) > (preci < 0 ? BRep_Tool::Tolerance (V1) : preci) )
       myStatus |= ShapeExtend_DONE1;
@@ -573,6 +575,8 @@ Standard_Boolean ShapeAnalysis_Edge::CheckVerticesWithPCurve (const TopoDS_Edge&
   if (vtx != 1) { //  2me VTX
     gp_Pnt2d p2uv = c2d->Value (cl);  
     gp_Pnt p22d = surf->Value (p2uv.X(), p2uv.Y());
+    if (!loc.IsIdentity())
+      p22d.Transform(loc.Transformation());
     // szv#4:S4163:12Mar99 optimized
     if ( p2v.Distance(p22d) > (preci < 0 ? BRep_Tool::Tolerance (V2) : preci) )
       myStatus |= ShapeExtend_DONE2;
