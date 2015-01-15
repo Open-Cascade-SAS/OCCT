@@ -88,6 +88,7 @@
 #include <ShapeAlgo_ToolContainer.hxx>
 #include <XSAlgo.hxx>
 #include <XSAlgo_AlgoContainer.hxx>
+#include <ElCLib.hxx>
 
 // ============================================================================
 // Method  : RemoveSinglePCurve
@@ -163,6 +164,17 @@ static void CheckPCurves (TopoDS_Wire& aWire, const TopoDS_Face& aFace,
       B.Range(myEdge, aFace, w1, cl);      
       w2 = cf;
     }
+
+    if (w1 > w2 && mySurf->IsUPeriodic())
+    {
+      Standard_Real u1,u2,v1,v2;
+      mySurf->Bounds(u1,u2,v1,v2);
+      ElCLib::AdjustPeriodic(u1, u2, 
+        Min(Abs(w2-w1)/2,Precision::PConfusion()), 
+        w1, w2);
+      B.Range(myEdge, aFace, w1, w2);   
+    }
+
     
     // advanced check
     XSAlgo::AlgoContainer()->CheckPCurve (myEdge, aFace, preci, sbwd->IsSeam(i) );

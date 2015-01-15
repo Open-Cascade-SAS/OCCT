@@ -1,0 +1,46 @@
+puts "============"
+puts "OCC25523"
+puts "============"
+puts ""
+#######################################################################
+# Fail to read back solid written to STEP
+#######################################################################
+
+restore [locate_data_file bug25523_bad_loopback_step.brep] a
+nbshapes a
+
+set nbshapes_expected "
+Number of shapes in a
+ VERTEX    : 30
+ EDGE      : 54
+ WIRE      : 32
+ FACE      : 27
+ SHELL     : 1
+ SOLID     : 1
+ COMPSOLID : 0
+ COMPOUND  : 0
+ SHAPE     : 145
+"
+checknbshapes a ${nbshapes_expected} 0 "Stator model"
+
+newmodel
+set aFile ${imagedir}/bug25523.stp
+catch { file delete ${aFile} }
+
+stepwrite a a ${aFile}
+
+stepread ${aFile} b *
+nbshapes b_1 ;# empty compound
+checknbshapes b_1 ${nbshapes_expected} 0 "Stator model"
+
+tpstat c ;# reports exception
+
+vinit View1
+vdisplay a
+vfit
+vdump ${imagedir}/${casename}_1.png
+
+vinit View2
+vdisplay b_1
+vfit
+vdump ${imagedir}/${casename}_2.png
