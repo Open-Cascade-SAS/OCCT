@@ -756,18 +756,24 @@ void ProjLib_CompProjectedCurve::Init()
     t = Triple.X() + Step;
     if (t > LastU) t = LastU;
 
+    Standard_Real U0, V0;
+    gp_Pnt2d aLowBorder(mySurface->FirstUParameter(),mySurface->FirstVParameter());
+    gp_Pnt2d aUppBorder(mySurface->LastUParameter(), mySurface->LastVParameter());
+    gp_Pnt2d aTol(myTolU, myTolV);
     //Here we are trying to prolong continuous part
     while (t <= LastU && new_part) 
     {
-      Standard_Real U0, V0;
 
-      U0 = Triple.Y();
-      V0 = Triple.Z();
+      U0 = Triple.Y() + (Triple.Y() - prevTriple.Y());
+      V0 = Triple.Z() + (Triple.Z() - prevTriple.Z());
+      // adjust U0 to be in [mySurface->FirstUParameter(),mySurface->LastUParameter()]
+      U0 = Min(Max(U0, aLowBorder.X()), aUppBorder.X()); 
+      // adjust V0 to be in [mySurface->FirstVParameter(),mySurface->LastVParameter()]
+      V0 = Min(Max(V0, aLowBorder.Y()), aUppBorder.Y()); 
 
-      aPrjPS.Perform(t, U0, V0, gp_Pnt2d(myTolU, myTolV), 
-        gp_Pnt2d(mySurface->FirstUParameter(),mySurface->FirstVParameter()), 
-        gp_Pnt2d(mySurface->LastUParameter(), mySurface->LastVParameter()), 
-        FuncTol, Standard_True);
+
+      aPrjPS.Perform(t, U0, V0, aTol,
+                     aLowBorder, aUppBorder, FuncTol, Standard_True);
       if(!aPrjPS.IsDone()) 
       {
 
