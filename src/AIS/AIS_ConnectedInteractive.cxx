@@ -96,8 +96,6 @@ void AIS_ConnectedInteractive::Connect (const Handle(AIS_InteractiveObject)& the
   {
     myTypeOfPresentation3d = myReference->TypeOfPresentation3d();
   }
-
-  theAnotherObj->AddChild (this);
 }
 
 //=======================================================================
