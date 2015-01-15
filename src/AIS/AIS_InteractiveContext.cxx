@@ -1461,11 +1461,6 @@ void AIS_InteractiveContext::SetDisplayMode (const Handle(AIS_InteractiveObject)
     theIObj->SetContext(this);
   }
 
-  if (HasOpenedContext())
-  {
-    return;
-  }
-
   if (!myObjects.IsBound (theIObj))
   {
     theIObj->SetDisplayMode (theMode);
