@@ -24,17 +24,17 @@ if { ${Nb} != ${expected_Nb} } {
 set tol_abs 1.0e-05
 set tol_rel 0.01
 
-set expected_dmax 5.8270132894239685e-10
-set expected_ufmax 0.984375
+set expected_dmax 0.0013771610718045313
+set expected_ufmax 0.890625
 
 checkreal "dmax" ${dmax} ${expected_dmax} ${tol_abs} ${tol_rel}
 checkreal "ufmax" ${ufmax} ${expected_ufmax} ${tol_abs} ${tol_rel}
 
-set expected_ulmax 1
+set expected_ulmax 0.90625
 if { ${ulmax} != ${expected_ulmax} } {
     puts "Error : bad value of ulmax=${ulmax}"
 }
-set expected_i 77
+set expected_i 69
 if { ${i} != ${expected_i} } {
     puts "Error : bad value of i=${i}"
 }
