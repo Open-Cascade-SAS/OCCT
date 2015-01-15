@@ -1,6 +1,8 @@
+# Incompleted behavior of test case is OK.
+# Exception should be thrown.
+
 puts "TODO OCC11111 ALL: \\*\\* Exception"
 puts "TODO OCC11111 ALL: An exception was caught"
-puts "TODO OCC11111 ALL: TEST INCOMPLETE"
 
 pload QAcommands
 
@@ -15,6 +17,8 @@ puts ""
 cpulimit 60
 vinit
 
-OCC2569 29 result
-
-set 3dviewer 0
+if { [catch {OCC2569 29 result} anException] } {
+  puts "OCC2569 : OK"
+} else {
+  puts "Error : OCC2569"
+}

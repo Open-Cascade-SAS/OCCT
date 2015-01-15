@@ -1,12 +1,6 @@
-puts "TODO ?OCC22817 All:An exception was caught"
-puts "TODO ?OCC22817 All:\\*\\* Exception \\*\\*"
-puts "TODO ?OCC22817 All:TEST INCOMPLETE"
-
 restore [locate_data_file CFI_13_c1ffk.rle] s
 tscale s 0 0 0 SCALE1
 explode s E
 blend result s 4*SCALE1 s_9 5*SCALE1 s_10  6*SCALE1 s_2 4*SCALE1 s_1
-explode result So
-tcopy result_1 result
 
 set square 165055

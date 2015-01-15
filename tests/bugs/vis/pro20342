@@ -1,5 +1,3 @@
-puts "TODO OCC12345 ALL: Tcl Exception: result_1 is not a topological shape!!!"
-puts "TODO OCC12345 ALL: TEST INCOMPLETE"
 puts "============="
 puts "PRO20342"
 puts "============="
@@ -13,12 +11,12 @@ pload XDE
 
 igesbrep [locate_data_file fra62523a.igs] result *
 
-checkshape result_1 r
+checkshape result r
 
 vinit
-tclean result_1
-vdisplay result_1
-vsetshading result_1 0.1
+tclean result
+vdisplay result
+vsetshading result 0.1
 vfit
 
 set only_screen 1
