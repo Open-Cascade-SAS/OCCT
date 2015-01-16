@@ -10,6 +10,18 @@ endif()
 
 set (CMAKE_CONFIGURATION_TYPES ${BUILD_CONFIGURATION} CACHE INTERNAL "" FORCE)
 
+# set type of OCCT libraries
+if (NOT BUILD_LIBRARY_TYPE)
+  set (BUILD_LIBRARY_TYPE "Shared" CACHE STRING "The type of OCCT libraries" FORCE)
+  SET_PROPERTY(CACHE BUILD_LIBRARY_TYPE PROPERTY STRINGS Shared Static)
+endif()
+
+if ("${BUILD_LIBRARY_TYPE}" STREQUAL "Shared")
+  set (BUILD_SHARED_LIBS ON)
+else()
+  unset (BUILD_SHARED_LIBS)
+endif()
+
 # the name of the project
 project (OCCT)
 
