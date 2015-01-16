@@ -44,10 +44,13 @@ help test {
          should have ".html" extension
   -overwrite: force writing log in existing file
   -beep: play sound signal at the end of the test
+  -errors: show all lines from the log report that are recognized as errors
+         This key will be ignored if the "-echo" key is already set.
 }
 proc test {group grid casename {args {}}} {
     # set default values of arguments
     set echo 0
+    set errors 0
     set logfile ""
     set overwrite 0
     set signal 0
@@ -58,7 +61,6 @@ proc test {group grid casename {args {}}} {
     # check arguments
     for {set narg 0} {$narg < [llength $args]} {incr narg} {
         set arg [lindex $args $narg]
-
         # if echo specified as "-echo", convert it to bool
         if { $arg == "-echo" || $arg == "1" } {
           set echo t
@@ -88,16 +90,21 @@ proc test {group grid casename {args {}}} {
           continue
         }
 
+        # if errors specified as "-errors", convert it to bool
+        if { $arg == "-errors" } {
+          set errors t
+          continue
+        }
+
         # unsupported option
         error "Error: unsupported option \"$arg\""
     }
-
     # run test
     uplevel _run_test $dir $group $gridname $casefile $echo 
 
     # check log
     if { !$echo } {
-        _check_log $dir $group $gridname $casename [dlog get] summary html_log
+        _check_log $dir $group $gridname $casename $errors [dlog get] summary html_log
 
         # create log file
         if { ! $overwrite && [file isfile $logfile] } {
@@ -1057,12 +1064,13 @@ proc _run_test {scriptsdir group gridname casefile echo} {
 }
 
 # Internal procedure to check log of test execution and decide if it passed or failed
-proc _check_log {dir group gridname casename log {_summary {}} {_html_log {}}} {
+proc _check_log {dir group gridname casename errors log {_summary {}} {_html_log {}}} {
     global env
     if { $_summary != "" } { upvar $_summary summary }
     if { $_html_log != "" } { upvar $_html_log html_log }
     set summary {}
     set html_log {}
+    set errors_log {}
 
 if [catch {
 
@@ -1156,6 +1164,9 @@ if [catch {
 		# if it is not in todo, define status
 		if { ! $is_known } {
 		    set stat [lindex $bw 0 0]
+		    if {$errors} {
+		      lappend errors_log $line
+		    }
 		    lappend html_log [_html_highlight $stat $line]
 		    if { $status == "" && $stat != "OK" && ! [regexp -nocase {^IGNOR} $stat] } {
 			set status [lindex $bw 0]
@@ -1210,6 +1221,11 @@ if [catch {
     # put final message
     _log_and_puts summary "CASE $group $gridname $casename: $status"
     set summary [join $summary "\n"]
+    if {$errors} {
+      foreach error $errors_log {
+        _log_and_puts summary "  $error"
+      }
+    }
     set html_log "[_html_highlight [lindex $status 0] $summary]\n[join $html_log \n]"
 }
 
@@ -1225,9 +1241,9 @@ proc _log_and_puts {logvar message} {
 # Auxiliary procedure to log result on single test case
 proc _log_test_case {output logdir dir group grid casename logvar} {
     upvar $logvar log
-
+    set show_errors 0
     # check result and make HTML log
-    _check_log $dir $group $grid $casename $output summary html_log
+    _check_log $dir $group $grid $casename $show_errors $output summary html_log
     lappend log $summary
 
     # save log to file
