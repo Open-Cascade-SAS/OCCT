@@ -19,15 +19,15 @@ regexp {([0-9]+) triangles} ${trinfo_s} str nbtri_s
 regexp {([0-9]+) nodes} ${trinfo_s} str nbnod_s
 regexp {deflection ([0-9.+e-]+)} ${trinfo_s} str defl_s
 
-if { ${nbtri_s} != 90 } {
+if { ${nbtri_s} != 99 } {
    puts "Error: triangle number is bad"
 }
 
-if { ${nbnod_s} != 54 } {
+if { ${nbnod_s} != 59 } {
    puts "Error: node number is bad"
 }
 
-set expected_defl_s 0.59663444648536101
+set expected_defl_s 0.59663444648536146
 set tol_abs_defl_s 1.e-3
 set tol_rel_defl_s 0.01
 checkreal "Deflection" ${defl_s} ${expected_defl_s} ${tol_abs_defl_s} ${tol_rel_defl_s}

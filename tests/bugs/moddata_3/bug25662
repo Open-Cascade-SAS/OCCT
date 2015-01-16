@@ -19,7 +19,7 @@ puts "Poles=${Poles}"
 puts "KnotsPoles=${KnotsPoles}"
 puts ""
 
-set tol_abs 1.e-7
+set tol_abs 1.e-4
 set tol_rel 0.01
 set V_i 0
 
@@ -42,7 +42,7 @@ for {set i 1} {${i} <= ${Poles}} {incr i} {
    }
    if { ${i} > 1 } {
       #puts "i=${i} U_i=${U_i} V_i=${V_i} V_i_1=${V_i_1}"
-      if { ${V_i_1} >= ${V_i} } {
+      if { ${V_i_1} - ${V_i} > ${tol_abs} } {
          puts "Error: Bad value of V in string: ${i} :${U_i}, ${V_i}"
       }
    }

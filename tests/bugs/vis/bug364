@@ -22,7 +22,7 @@ set info [trinfo result]
 regexp { +([-0-9.+eE]+) +triangles} $info full tri
 regexp { +([-0-9.+eE]+) +nodes} $info full nod
 
-if { $tri != 84 || $nod != 84 }  {
+if { $tri != 92 || $nod != 92 }  {
    puts "Faulty OCC364: here is shading problem"
 } else {
    puts "Shading of  OCC364 is OK"
