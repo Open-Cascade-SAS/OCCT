@@ -179,6 +179,7 @@ MError3d:     Real;
 MError2d:     Real;
 mylambda1:    Real;
 mylambda2:    Real;
+myIsLambdaDefined: Boolean;
 Done:         Boolean;
 
 end BSpGradient from AppParCurves;
