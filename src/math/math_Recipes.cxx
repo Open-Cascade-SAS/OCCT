@@ -562,33 +562,6 @@ void SVD_Solve(const math_Matrix& u,
      }
 }  
 
-Standard_Real Random2(Standard_Integer& idum) {
-
-  static Standard_Integer iy, ir[98];
-  static Standard_Integer iff = 0;
- 
-  Standard_Integer j;
-
-  if(idum < 0 || iff == 0) {
-    iff = 1;
-    if((idum = (IC - idum) % M) < 0) idum = -idum;
-    for(j = 1; j <= 97; j++) {
-      idum = (IA * idum + IC) % M;
-      ir[j] = idum;
-    }
-    idum = (IA * idum + IC) % M;
-    iy = idum;
-  }
-  j = (Standard_Integer)(1 + 97.0 * iy / M);
-  if(j > 97 || j < 1) Standard_Failure::Raise();
-  iy = ir[j];
-  idum = (IA * idum + IC) % M;
-  ir[j] = idum;
-  return Standard_Real(iy) / Standard_Real(M);
-}
-
-
-
 Standard_Integer DACTCL_Decompose(math_Vector& a, 
 			const math_IntegerVector& indx,
                         const Standard_Real MinPivot) {

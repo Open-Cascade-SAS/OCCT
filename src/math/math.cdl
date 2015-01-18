@@ -55,7 +55,6 @@ is
     imported PSO;
     imported PSOParticlesPool;
     imported BullardGenerator;
-    class IntegerRandom;
     class Gauss;
     class GaussLeastSquare;
     class SVD;
@@ -77,7 +76,6 @@ is
     class GaussSingleIntegration;
     class GaussMultipleIntegration;
     class GaussSetIntegration;
-    class RealRandom;
     class FunctionSample;
     class FunctionAllRoots;    
     class Householder;

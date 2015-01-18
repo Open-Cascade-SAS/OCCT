@@ -151,13 +151,6 @@ __math_API Standard_Integer Jacobi(math_Matrix& a, math_Vector& d, math_Matrix& 
 // Eigenvalues are sorted into descending order, and eigenvectors are 
 // arranges correspondingly.
 
-__math_API Standard_Real Random2(Standard_Integer& idum);
-
-// returns a uniform random deviate betwween 0.0 and 1.0. Set idum to any
-// negative value to initialize or reinitialize the sequence.
-
-
-
 #endif
 
 
