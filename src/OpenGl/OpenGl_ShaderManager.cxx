@@ -998,21 +998,24 @@ void OpenGl_ShaderManager::PushState (const Handle(OpenGl_ShaderProgram)& thePro
 Standard_Boolean OpenGl_ShaderManager::prepareStdProgramFont()
 {
   Handle(Graphic3d_ShaderProgram) aProgramSrc = new Graphic3d_ShaderProgram();
-  TCollection_AsciiString aSrcVert =
-      EOL"void main()"
-      EOL"{"
-      EOL"  gl_Position = occProjectionMatrix * occWorldViewMatrix * occModelWorldMatrix * occVertex;"
-      EOL"}";
+  TCollection_AsciiString aSrcVert = TCollection_AsciiString()
+     + THE_VARY_TexCoord
+     + EOL"void main()"
+       EOL"{"
+       EOL"  TexCoord = occTexCoord.st;"
+       EOL"  gl_Position = occProjectionMatrix * occWorldViewMatrix * occModelWorldMatrix * occVertex;"
+       EOL"}";
 
-  TCollection_AsciiString aSrcFrag =
-      EOL"float getAlpha(void) { return texture2D(occActiveSampler, gl_PointCoord).a; }"
-      EOL"void main()"
-      EOL"{"
-      EOL"  vec4 aColor = occColor;"
-      EOL"  aColor.a *= getAlpha();"
-      EOL"  if (aColor.a <= 0.285) discard;"
-      EOL"  gl_FragColor = aColor;"
-      EOL"}";
+  TCollection_AsciiString aSrcFrag = TCollection_AsciiString() +
+     + THE_VARY_TexCoord
+     + EOL"float getAlpha(void) { return texture2D(occActiveSampler, TexCoord.st).a; }"
+       EOL"void main()"
+       EOL"{"
+       EOL"  vec4 aColor = occColor;"
+       EOL"  aColor.a *= getAlpha();"
+       EOL"  if (aColor.a <= 0.285) discard;"
+       EOL"  gl_FragColor = aColor;"
+       EOL"}";
 
   aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (Graphic3d_TOS_VERTEX,   aSrcVert));
   aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (Graphic3d_TOS_FRAGMENT, aSrcFrag));

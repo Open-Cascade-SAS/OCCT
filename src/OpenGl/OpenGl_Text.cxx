@@ -382,21 +382,11 @@ void OpenGl_Text::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
   const Handle(OpenGl_Texture)  aPrevTexture = theWorkspace->DisableTexture();
   const Handle(OpenGl_Context)& aCtx         = theWorkspace->GetGlContext();
 
+  // Bind custom shader program or generate default version
   if (aCtx->IsGlGreaterEqual (2, 0))
   {
-    const Handle(OpenGl_ShaderProgram)& aProgram = aTextAspect->ShaderProgramRes (aCtx);
-    aCtx->BindProgram (aProgram);
-    if (!aProgram.IsNull())
-    {
-      aProgram->ApplyVariables (aCtx);
-
-      const OpenGl_MaterialState* aMaterialState = aCtx->ShaderManager()->MaterialState (aProgram);
-
-      if (aMaterialState == NULL || aMaterialState->Aspect() != aTextAspect)
-        aCtx->ShaderManager()->UpdateMaterialStateTo (aProgram, aTextAspect);
-
-      aCtx->ShaderManager()->PushState (aProgram);
-    }
+    aCtx->ShaderManager()->BindProgram (
+      aTextAspect, aTextAspect->ShaderProgramRes (aCtx));
   }
 
   // use highlight color or colors from aspect
@@ -444,9 +434,6 @@ void OpenGl_Text::setupMatrix (const Handle(OpenGl_PrinterContext)& thePrintCtx,
                                const OpenGl_AspectText&             theTextAspect,
                                const OpenGl_Vec3                    theDVec) const
 {
-  // setup matrix
-#if !defined(GL_ES_VERSION_2_0)
-
   OpenGl_Mat4d aModViewMat;
 
   if (myIs2d)
@@ -495,7 +482,12 @@ void OpenGl_Text::setupMatrix (const Handle(OpenGl_PrinterContext)& thePrintCtx,
 
   theCtx->WorldViewState.SetCurrent<Standard_Real> (aModViewMat);
   theCtx->ApplyWorldViewMatrix();
-#endif
+
+  if (!theCtx->ActiveProgram().IsNull())
+  {
+    // Upload updated state to shader program
+    theCtx->ShaderManager()->PushState (theCtx->ActiveProgram());
+  }
 }
 
 // =======================================================================
@@ -538,7 +530,7 @@ void OpenGl_Text::drawText (const Handle(OpenGl_PrinterContext)& ,
 
     glDrawArrays (GL_TRIANGLES, 0, GLsizei(aVerts->GetElemsNb()));
 
-    aVerts->UnbindAttribute (theCtx, Graphic3d_TOA_UV);
+    aTCrds->UnbindAttribute (theCtx, Graphic3d_TOA_UV);
     aVerts->UnbindAttribute (theCtx, Graphic3d_TOA_POS);
   }
   glBindTexture (GL_TEXTURE_2D, 0);
@@ -662,7 +654,6 @@ void OpenGl_Text::render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
 
   theCtx->WorldViewState.Push();
 
-#if !defined(GL_ES_VERSION_2_0)
   myModelMatrix.Convert (theCtx->WorldViewState.Current() * theCtx->ModelWorldState.Current());
 
   if (!myIs2d)
@@ -711,6 +702,8 @@ void OpenGl_Text::render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
     }
   }
   myExportHeight = (float )myFont->FTFont()->PointSize() / myExportHeight;
+
+#if !defined(GL_ES_VERSION_2_0)
 
   // push enabled flags to the stack
   glPushAttrib (GL_ENABLE_BIT);
@@ -774,7 +767,7 @@ void OpenGl_Text::render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
     }
     case Aspect_TODT_DEKALE:
     {
-      theCtx->core11->glColor3fv  (theColorSubs.rgb);
+      theCtx->SetColor4fv (*(const OpenGl_Vec4* )theColorSubs.rgb);
       setupMatrix (thePrintCtx, theCtx, theTextAspect, OpenGl_Vec3 (+1.0f, +1.0f, 0.00001f));
       drawText    (thePrintCtx, theCtx, theTextAspect);
       setupMatrix (thePrintCtx, theCtx, theTextAspect, OpenGl_Vec3 (-1.0f, -1.0f, 0.00001f));
@@ -793,7 +786,7 @@ void OpenGl_Text::render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
   }
 
   // main draw call
-  theCtx->core11->glColor3fv (theColorText.rgb);
+  theCtx->SetColor4fv (*(const OpenGl_Vec4* )theColorText.rgb);
   setupMatrix (thePrintCtx, theCtx, theTextAspect, OpenGl_Vec3 (0.0f, 0.0f, 0.0f));
   drawText    (thePrintCtx, theCtx, theTextAspect);
 
