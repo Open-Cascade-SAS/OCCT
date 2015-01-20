@@ -637,16 +637,110 @@ void  PLib::RationalDerivatives(const Standard_Integer DerivativeRequest,
 }
 
 //=======================================================================
+// Auxiliary template functions used for optimized evaluation of polynome
+// and its derivatives for smaller dimensions of the polynome
+//=======================================================================
+
+namespace {
+  // recursive template for evaluating value or first derivative
+  template<int dim> 
+  inline void eval_step1 (double* poly, double par, double* coef)
+  {
+    eval_step1<dim - 1> (poly, par, coef);
+    poly[dim] = poly[dim] * par + coef[dim];
+  }
+
+  // recursion end
+  template<>
+  inline void eval_step1<-1> (double*, double, double*)
+  {
+  }
+
+  // recursive template for evaluating second derivative
+  template<int dim> 
+  inline void eval_step2 (double* poly, double par, double* coef)
+  {
+    eval_step2<dim - 1> (poly, par, coef);
+    poly[dim] = poly[dim] * par + coef[dim] * 2.;
+  }
+
+  // recursion end
+  template<>
+  inline void eval_step2<-1> (double*, double, double*)
+  {
+  }
+
+  // evaluation of only value
+  template<int dim>
+  inline void eval_poly0 (double* aRes, double* aCoeffs, int Degree, double Par)
+  {
+    Standard_Real* aRes0 = aRes;
+    memcpy(aRes0, aCoeffs, sizeof(Standard_Real) * dim);
+
+    for (Standard_Integer aDeg = 0; aDeg < Degree; aDeg++)
+    {
+      aCoeffs -= dim;
+      // Calculating the value of the polynomial
+      eval_step1<dim-1> (aRes0, Par, aCoeffs);
+    }
+  }
+
+  // evaluation of value and first derivative
+  template<int dim>
+  inline void eval_poly1 (double* aRes, double* aCoeffs, int Degree, double Par)
+  {
+    Standard_Real* aRes0 = aRes;
+    Standard_Real* aRes1 = aRes + dim;
+
+    memcpy(aRes0, aCoeffs, sizeof(Standard_Real) * dim);
+    memset(aRes1, 0, sizeof(Standard_Real) * dim);
+
+    for (Standard_Integer aDeg = 0; aDeg < Degree; aDeg++)
+    {
+      aCoeffs -= dim;
+      // Calculating derivatives of the polynomial
+      eval_step1<dim-1> (aRes1, Par, aRes0);
+      // Calculating the value of the polynomial
+      eval_step1<dim-1> (aRes0, Par, aCoeffs);
+    }
+  }
+
+  // evaluation of value and first and second derivatives
+  template<int dim>
+  inline void eval_poly2 (double* aRes, double* aCoeffs, int Degree, double Par)
+  {
+    Standard_Real* aRes0 = aRes;
+    Standard_Real* aRes1 = aRes + dim;
+    Standard_Real* aRes2 = aRes + 2 * dim;
+
+    memcpy(aRes0, aCoeffs, sizeof(Standard_Real) * dim);
+    memset(aRes1, 0, sizeof(Standard_Real) * dim);
+    memset(aRes2, 0, sizeof(Standard_Real) * dim);
+
+    for (Standard_Integer aDeg = 0; aDeg < Degree; aDeg++)
+    {
+      aCoeffs -= dim;
+      // Calculating second derivatives of the polynomial
+      eval_step2<dim-1> (aRes2, Par, aRes1);
+      // Calculating derivatives of the polynomial
+      eval_step1<dim-1> (aRes1, Par, aRes0);
+      // Calculating the value of the polynomial
+      eval_step1<dim-1> (aRes0, Par, aCoeffs);
+    }
+  }
+}
+
+//=======================================================================
 //function : This evaluates a polynomial and its derivatives 
 //purpose  : up to the requested order 
 //=======================================================================
 
 void  PLib::EvalPolynomial(const Standard_Real    Par,
-			   const Standard_Integer DerivativeRequest,
-			   const Standard_Integer Degree,
-			   const Standard_Integer Dimension, 
-			   Standard_Real&         PolynomialCoeff,
-			   Standard_Real&         Results)
+                           const Standard_Integer DerivativeRequest,
+                           const Standard_Integer Degree,
+                           const Standard_Integer Dimension,
+                                 Standard_Real&   PolynomialCoeff,
+                                 Standard_Real&   Results)
      //
      // the polynomial coefficients are assumed to be stored as follows :
      //                                                      0    
@@ -665,1072 +759,121 @@ void  PLib::EvalPolynomial(const Standard_Real    Par,
      //  where d is the Degree
      //
 {
-  Standard_Integer DegreeDimension = Degree * Dimension;
+  Standard_Real* aCoeffs = &PolynomialCoeff + Degree * Dimension;
+  Standard_Real* aRes = &Results;
+  Standard_Real* anOriginal;
+  Standard_Integer ind = 0;
+  switch (DerivativeRequest)
+  {
+  case 1:
+  {
+    switch (Dimension)
+    {
+    case 1:  eval_poly1<1>  (aRes, aCoeffs, Degree, Par); break;
+    case 2:  eval_poly1<2>  (aRes, aCoeffs, Degree, Par); break;
+    case 3:  eval_poly1<3>  (aRes, aCoeffs, Degree, Par); break;
+    case 4:  eval_poly1<4>  (aRes, aCoeffs, Degree, Par); break;
+    case 5:  eval_poly1<5>  (aRes, aCoeffs, Degree, Par); break;
+    case 6:  eval_poly1<6>  (aRes, aCoeffs, Degree, Par); break;
+    case 7:  eval_poly1<7>  (aRes, aCoeffs, Degree, Par); break;
+    case 8:  eval_poly1<8>  (aRes, aCoeffs, Degree, Par); break;
+    case 9:  eval_poly1<9>  (aRes, aCoeffs, Degree, Par); break;
+    case 10: eval_poly1<10> (aRes, aCoeffs, Degree, Par); break;
+    case 11: eval_poly1<11> (aRes, aCoeffs, Degree, Par); break;
+    case 12: eval_poly1<12> (aRes, aCoeffs, Degree, Par); break;
+    case 13: eval_poly1<13> (aRes, aCoeffs, Degree, Par); break;
+    case 14: eval_poly1<14> (aRes, aCoeffs, Degree, Par); break;
+    case 15: eval_poly1<15> (aRes, aCoeffs, Degree, Par); break;
+    default:
+      {
+        Standard_Real* aRes0 = aRes;
+        Standard_Real* aRes1 = aRes + Dimension;
 
-  Standard_Integer jj;
-  Standard_Real *RA = &Results ;  
-  Standard_Real *PA = &PolynomialCoeff ;
-  Standard_Real *tmpRA = RA;
-  Standard_Real *tmpPA = PA + DegreeDimension;
-  
-  switch (Dimension) {
-    
-  case 1 : {
-    *tmpRA = *tmpPA; 
-    if (DerivativeRequest > 0 ) {
-      tmpRA++ ;
-      Standard_Real *valRA;
-      Standard_Integer ii, LocalRequest;
-      Standard_Integer Index1, Index2;
-      Standard_Integer MaxIndex1, MaxIndex2;
-      if      (DerivativeRequest < Degree) {
-	LocalRequest = DerivativeRequest;
-	MaxIndex2 = MaxIndex1 = LocalRequest;
-      }
-      else {
-	LocalRequest = Degree;
-	MaxIndex2 = MaxIndex1 = Degree;
-      }
-      MaxIndex2 --;
-      
-      for (ii = 1; ii <= LocalRequest; ii++) {
-	*tmpRA = 0.0e0;  tmpRA ++ ;          
-      }
-      
-      for (jj = Degree ; jj >  0 ; jj--) {
-	tmpPA --;
-	Index1 = MaxIndex1;
-	Index2 = MaxIndex2;
-	
-	for (ii = LocalRequest ; ii > 0 ; ii--) {
-	  valRA  = &RA[Index1];
-	  *valRA = Par * (*valRA) + ((Standard_Real)ii) * RA[Index2] ;
-	  Index1 --;
-	  Index2 --;
-	}
-	valRA  = &RA[Index1];
-	*valRA = Par * (*valRA) + (*tmpPA);
-      }
-    }
-    else {
-      
-      for (jj = Degree  ; jj >  0 ; jj--) {
-	tmpPA --;
-	*tmpRA = Par * (*tmpRA) + (*tmpPA);
+        memcpy(aRes0, aCoeffs, sizeof(Standard_Real) * Dimension);
+        memset(aRes1, 0, sizeof(Standard_Real) * Dimension);
+
+        for (Standard_Integer aDeg = 0; aDeg < Degree; aDeg++)
+        {
+          aCoeffs -= Dimension;
+          // Calculating derivatives of the polynomial
+          for (ind = 0; ind < Dimension; ind++)
+            aRes1[ind] = aRes1[ind] * Par + aRes0[ind];
+          // Calculating the value of the polynomial
+          for (ind = 0; ind < Dimension; ind++)
+            aRes0[ind] = aRes0[ind] * Par + aCoeffs[ind];
+        }
       }
     }
     break;
   }
-  case 2 : {
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++;
-    tmpPA --;
-    if (DerivativeRequest > 0 ) {
-      Standard_Real *valRA;
-      Standard_Integer ii, LocalRequest;
-      Standard_Integer Index1, Index2;
-      Standard_Integer MaxIndex1, MaxIndex2;
-      if      (DerivativeRequest < Degree) {
-	LocalRequest = DerivativeRequest;
-	MaxIndex2 = MaxIndex1 = LocalRequest << 1;
-      }
-      else {
-	LocalRequest = Degree;
-	MaxIndex2 = MaxIndex1 = DegreeDimension;
-      }
-      MaxIndex2 -= 2;
-      
-      for (ii = 1; ii <= LocalRequest; ii++) {
-	*tmpRA = 0.0e0; tmpRA++;           
-	*tmpRA = 0.0e0; tmpRA++;           
-      }
-      
-      for (jj = Degree ; jj >  0 ; jj--) {
-	tmpPA -= 2;
-	
-	Index1 = MaxIndex1;
-	Index2 = MaxIndex2;
-	
-	for (ii = LocalRequest ; ii > 0 ; ii--) {
-	  valRA  = &RA[Index1];
-	  *valRA = Par * (*valRA) + ((Standard_Real)ii) * RA[Index2] ;
-	  Index1 -= 2;
-	  Index2 -= 2;
-	}
-	valRA  = &RA[Index1];
-	*valRA = Par * (*valRA) + (*tmpPA); tmpPA++;
-	
-	Index1 = MaxIndex1 + 1;
-	Index2 = MaxIndex2 + 1;
-	
-	for (ii = LocalRequest ; ii > 0 ; ii--) {
-	  valRA  = &RA[Index1];
-	  *valRA = Par * (*valRA) + ((Standard_Real)ii) * RA[Index2] ;
-	  Index1 -= 2;
-	  Index2 -= 2;
-	}
-	valRA  = &RA[Index1];
-	*valRA = Par * (*valRA) + (*tmpPA);
-	
-	tmpPA --;
-      }
-    }
-    else {
-      
-      for (jj = Degree  ; jj >  0 ; jj--) {
-	tmpPA -= 2;
-	tmpRA  = RA;
-	*tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-	*tmpRA = Par * (*tmpRA) + (*tmpPA);
-	tmpPA --;
+  case 2:
+  {
+    switch (Dimension)
+    {
+    case 1:  eval_poly2<1>  (aRes, aCoeffs, Degree, Par); break;
+    case 2:  eval_poly2<2>  (aRes, aCoeffs, Degree, Par); break;
+    case 3:  eval_poly2<3>  (aRes, aCoeffs, Degree, Par); break;
+    case 4:  eval_poly2<4>  (aRes, aCoeffs, Degree, Par); break;
+    case 5:  eval_poly2<5>  (aRes, aCoeffs, Degree, Par); break;
+    case 6:  eval_poly2<6>  (aRes, aCoeffs, Degree, Par); break;
+    case 7:  eval_poly2<7>  (aRes, aCoeffs, Degree, Par); break;
+    case 8:  eval_poly2<8>  (aRes, aCoeffs, Degree, Par); break;
+    case 9:  eval_poly2<9>  (aRes, aCoeffs, Degree, Par); break;
+    case 10: eval_poly2<10> (aRes, aCoeffs, Degree, Par); break;
+    case 11: eval_poly2<11> (aRes, aCoeffs, Degree, Par); break;
+    case 12: eval_poly2<12> (aRes, aCoeffs, Degree, Par); break;
+    case 13: eval_poly2<13> (aRes, aCoeffs, Degree, Par); break;
+    case 14: eval_poly2<14> (aRes, aCoeffs, Degree, Par); break;
+    case 15: eval_poly2<15> (aRes, aCoeffs, Degree, Par); break;
+    default: 
+      {
+        Standard_Real* aRes0 = aRes;
+        Standard_Real* aRes1 = aRes + Dimension;
+        Standard_Real* aRes2 = aRes1 + Dimension;
+
+        // Nullify the results
+        Standard_Integer aSize = 2 * Dimension;
+        memcpy(aRes, aCoeffs, sizeof(Standard_Real) * Dimension);
+        memset(aRes1, 0, sizeof(Standard_Real) * aSize);
+
+        for (Standard_Integer aDeg = 0; aDeg < Degree; aDeg++)
+        {
+          aCoeffs -= Dimension;
+          // Calculating derivatives of the polynomial
+          for (ind = 0; ind < Dimension; ind++)
+            aRes2[ind] = aRes2[ind] * Par + aRes1[ind] * 2.0;
+          for (ind = 0; ind < Dimension; ind++)
+            aRes1[ind] = aRes1[ind] * Par + aRes0[ind];
+          // Calculating the value of the polynomial
+          for (ind = 0; ind < Dimension; ind++)
+            aRes0[ind] = aRes0[ind] * Par + aCoeffs[ind];
+        }
+        break;
       }
     }
     break;
   }
-  case 3 : {
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++;
-    tmpPA -= 2;
-    if (DerivativeRequest > 0 ) {
-      Standard_Real *valRA;
-      Standard_Integer ii, LocalRequest;
-      Standard_Integer Index1, Index2;
-      Standard_Integer MaxIndex1, MaxIndex2;
-      if      (DerivativeRequest < Degree) {
-	LocalRequest = DerivativeRequest;
-	MaxIndex2 = MaxIndex1 = (LocalRequest << 1) + LocalRequest;
-      }
-      else {
-	LocalRequest = Degree;
-	MaxIndex2 = MaxIndex1 = DegreeDimension;
-      }
-      MaxIndex2 -= 3;
-      
-      for (ii = 1; ii <= LocalRequest; ii++) {
-	*tmpRA = 0.0e0; tmpRA++;           
-	*tmpRA = 0.0e0; tmpRA++;           
-	*tmpRA = 0.0e0; tmpRA++;           
-      }
-      
-      for (jj = Degree ; jj >  0 ; jj--) {
-	tmpPA -= 3;
-	
-	Index1 = MaxIndex1;
-	Index2 = MaxIndex2;
-	
-	for (ii = LocalRequest ; ii > 0 ; ii--) {
-	  valRA  = &RA[Index1];
-	  *valRA = Par * (*valRA) + ((Standard_Real)ii) * RA[Index2] ;
-	  Index1 -= 3;
-	  Index2 -= 3;
-	}
-	valRA  = &RA[Index1];
-	*valRA = Par * (*valRA) + (*tmpPA); tmpPA++;
-	
-	Index1 = MaxIndex1 + 1;
-	Index2 = MaxIndex2 + 1;
-	
-	for (ii = LocalRequest ; ii > 0 ; ii--) {
-	  valRA  = &RA[Index1];
-	  *valRA = Par * (*valRA) + ((Standard_Real)ii) * RA[Index2] ;
-	  Index1 -= 3;
-	  Index2 -= 3;
-	}
-	valRA  = &RA[Index1];
-	*valRA = Par * (*valRA) + (*tmpPA); tmpPA++;
-	
-	Index1 = MaxIndex1 + 2;
-	Index2 = MaxIndex2 + 2;
-	
-	for (ii = LocalRequest ; ii > 0 ; ii--) {
-	  valRA  = &RA[Index1];
-	  *valRA = Par * (*valRA) + ((Standard_Real)ii) * RA[Index2] ;
-	  Index1 -= 3;
-	  Index2 -= 3;
-	}
-	valRA  = &RA[Index1];
-	*valRA = Par * (*valRA) + (*tmpPA);
-	
-	tmpPA -= 2;
-      }
-    }
-    else {
-      
-      for (jj = Degree  ; jj >  0 ; jj--) {
-	tmpPA -= 3;
-	tmpRA  = RA;
-	*tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-	*tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-	*tmpRA = Par * (*tmpRA) + (*tmpPA);
-	tmpPA -= 2;
-      }
-    }
-    break;
-  }
-  case 6 : {
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
+  default:
+    {
+      // Nullify the results
+      Standard_Integer aResSize = (1 + DerivativeRequest) * Dimension;
+      memset(aRes, 0, sizeof(Standard_Real) * aResSize);
 
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++;
-    tmpPA -= 5;
-    if (DerivativeRequest > 0 ) {
-      Standard_Real *valRA;
-      Standard_Integer ii, LocalRequest;
-      Standard_Integer Index1, Index2;
-      Standard_Integer MaxIndex1, MaxIndex2;
-      if      (DerivativeRequest < Degree) {
-	LocalRequest = DerivativeRequest;
-	MaxIndex2 = MaxIndex1 = (LocalRequest << 2) + (LocalRequest << 1);
-      }
-      else {
-	LocalRequest = Degree;
-	MaxIndex2 = MaxIndex1 = DegreeDimension;
-      }
-      MaxIndex2 -= 6;
-      
-      for (ii = 1; ii <= LocalRequest; ii++) {
-	*tmpRA = 0.0e0; tmpRA++;           
-	*tmpRA = 0.0e0; tmpRA++;           
-	*tmpRA = 0.0e0; tmpRA++;           
-
-	*tmpRA = 0.0e0; tmpRA++;           
-	*tmpRA = 0.0e0; tmpRA++;           
-	*tmpRA = 0.0e0; tmpRA++;           
-      }
-      
-      for (jj = Degree ; jj >  0 ; jj--) {
-	tmpPA -= 6;
-	
-	Index1 = MaxIndex1;
-	Index2 = MaxIndex2;
-	
-	for (ii = LocalRequest ; ii > 0 ; ii--) {
-	  valRA  = &RA[Index1];
-	  *valRA = Par * (*valRA) + ((Standard_Real)ii) * RA[Index2] ;
-	  Index1 -= 6;
-	  Index2 -= 6;
-	}
-	valRA  = &RA[Index1];
-	*valRA = Par * (*valRA) + (*tmpPA); tmpPA++;
-	
-	Index1 = MaxIndex1 + 1;
-	Index2 = MaxIndex2 + 1;
-	
-	for (ii = LocalRequest ; ii > 0 ; ii--) {
-	  valRA  = &RA[Index1];
-	  *valRA = Par * (*valRA) + ((Standard_Real)ii) * RA[Index2] ;
-	  Index1 -= 6;
-	  Index2 -= 6;
-	}
-	valRA  = &RA[Index1];
-	*valRA = Par * (*valRA) + (*tmpPA); tmpPA++;
-	
-	Index1 = MaxIndex1 + 2;
-	Index2 = MaxIndex2 + 2;
-	
-	for (ii = LocalRequest ; ii > 0 ; ii--) {
-	  valRA  = &RA[Index1];
-	  *valRA = Par * (*valRA) + ((Standard_Real)ii) * RA[Index2] ;
-	  Index1 -= 6;
-	  Index2 -= 6;
-	}
-	valRA  = &RA[Index1];
-	*valRA = Par * (*valRA) + (*tmpPA); tmpPA++;
-	
-	Index1 = MaxIndex1 + 3;
-	Index2 = MaxIndex2 + 3;
-	
-	for (ii = LocalRequest ; ii > 0 ; ii--) {
-	  valRA  = &RA[Index1];
-	  *valRA = Par * (*valRA) + ((Standard_Real)ii) * RA[Index2] ;
-	  Index1 -= 6;
-	  Index2 -= 6;
-	}
-	valRA  = &RA[Index1];
-	*valRA = Par * (*valRA) + (*tmpPA); tmpPA++;
-	
-	Index1 = MaxIndex1 + 4;
-	Index2 = MaxIndex2 + 4;
-	
-	for (ii = LocalRequest ; ii > 0 ; ii--) {
-	  valRA  = &RA[Index1];
-	  *valRA = Par * (*valRA) + ((Standard_Real)ii) * RA[Index2] ;
-	  Index1 -= 6;
-	  Index2 -= 6;
-	}
-	valRA  = &RA[Index1];
-	*valRA = Par * (*valRA) + (*tmpPA); tmpPA++;
-	
-	Index1 = MaxIndex1 + 5;
-	Index2 = MaxIndex2 + 5;
-	
-	for (ii = LocalRequest ; ii > 0 ; ii--) {
-	  valRA  = &RA[Index1];
-	  *valRA = Par * (*valRA) + ((Standard_Real)ii) * RA[Index2] ;
-	  Index1 -= 6;
-	  Index2 -= 6;
-	}
-	valRA  = &RA[Index1];
-	*valRA = Par * (*valRA) + (*tmpPA);
-	
-	tmpPA -= 5;
-      }
-    }
-    else {
-      
-      for (jj = Degree  ; jj >  0 ; jj--) {
-	tmpPA -= 6;
-	tmpRA  = RA;
-
-	*tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-	*tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-	*tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-
-	*tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-	*tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-	*tmpRA = Par * (*tmpRA) + (*tmpPA);
-	tmpPA -= 5;
-      }
-    }
-    break;
-  }
-  case 9 : {
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++;
-    tmpPA -= 8;
-    if (DerivativeRequest > 0 ) {
-      Standard_Real *valRA;
-      Standard_Integer ii, LocalRequest;
-      Standard_Integer Index1, Index2;
-      Standard_Integer MaxIndex1, MaxIndex2;
-      if      (DerivativeRequest < Degree) {
-	LocalRequest = DerivativeRequest;
-	MaxIndex2 = MaxIndex1 = (LocalRequest << 3) + LocalRequest;
-      }
-      else {
-	LocalRequest = Degree;
-	MaxIndex2 = MaxIndex1 = DegreeDimension;
-      }
-      MaxIndex2 -= 9;
-      
-      for (ii = 1; ii <= LocalRequest; ii++) {
-	*tmpRA = 0.0e0; tmpRA++;           
-	*tmpRA = 0.0e0; tmpRA++;           
-	*tmpRA = 0.0e0; tmpRA++;           
-
-	*tmpRA = 0.0e0; tmpRA++;           
-	*tmpRA = 0.0e0; tmpRA++;           
-	*tmpRA = 0.0e0; tmpRA++;           
-
-	*tmpRA = 0.0e0; tmpRA++;           
-	*tmpRA = 0.0e0; tmpRA++;           
-	*tmpRA = 0.0e0; tmpRA++;           
-      }
-      
-      for (jj = Degree ; jj >  0 ; jj--) {
-	tmpPA -= 9;
-	
-	Index1 = MaxIndex1;
-	Index2 = MaxIndex2;
-	
-	for (ii = LocalRequest ; ii > 0 ; ii--) {
-	  valRA  = &RA[Index1];
-	  *valRA = Par * (*valRA) + ((Standard_Real)ii) * RA[Index2] ;
-	  Index1 -= 9;
-	  Index2 -= 9;
-	}
-	valRA  = &RA[Index1];
-	*valRA = Par * (*valRA) + (*tmpPA); tmpPA++;
-	
-	Index1 = MaxIndex1 + 1;
-	Index2 = MaxIndex2 + 1;
-	
-	for (ii = LocalRequest ; ii > 0 ; ii--) {
-	  valRA  = &RA[Index1];
-	  *valRA = Par * (*valRA) + ((Standard_Real)ii) * RA[Index2] ;
-	  Index1 -= 9;
-	  Index2 -= 9;
-	}
-	valRA  = &RA[Index1];
-	*valRA = Par * (*valRA) + (*tmpPA); tmpPA++;
-	
-	Index1 = MaxIndex1 + 2;
-	Index2 = MaxIndex2 + 2;
-	
-	for (ii = LocalRequest ; ii > 0 ; ii--) {
-	  valRA  = &RA[Index1];
-	  *valRA = Par * (*valRA) + ((Standard_Real)ii) * RA[Index2] ;
-	  Index1 -= 9;
-	  Index2 -= 9;
-	}
-	valRA  = &RA[Index1];
-	*valRA = Par * (*valRA) + (*tmpPA); tmpPA++;
-	
-	Index1 = MaxIndex1 + 3;
-	Index2 = MaxIndex2 + 3;
-	
-	for (ii = LocalRequest ; ii > 0 ; ii--) {
-	  valRA  = &RA[Index1];
-	  *valRA = Par * (*valRA) + ((Standard_Real)ii) * RA[Index2] ;
-	  Index1 -= 9;
-	  Index2 -= 9;
-	}
-	valRA  = &RA[Index1];
-	*valRA = Par * (*valRA) + (*tmpPA); tmpPA++;
-	
-	Index1 = MaxIndex1 + 4;
-	Index2 = MaxIndex2 + 4;
-	
-	for (ii = LocalRequest ; ii > 0 ; ii--) {
-	  valRA  = &RA[Index1];
-	  *valRA = Par * (*valRA) + ((Standard_Real)ii) * RA[Index2] ;
-	  Index1 -= 9;
-	  Index2 -= 9;
-	}
-	valRA  = &RA[Index1];
-	*valRA = Par * (*valRA) + (*tmpPA); tmpPA++;
-	
-	Index1 = MaxIndex1 + 5;
-	Index2 = MaxIndex2 + 5;
-	
-	for (ii = LocalRequest ; ii > 0 ; ii--) {
-	  valRA  = &RA[Index1];
-	  *valRA = Par * (*valRA) + ((Standard_Real)ii) * RA[Index2] ;
-	  Index1 -= 9;
-	  Index2 -= 9;
-	}
-	valRA  = &RA[Index1];
-	*valRA = Par * (*valRA) + (*tmpPA); tmpPA++;
-	
-	Index1 = MaxIndex1 + 6;
-	Index2 = MaxIndex2 + 6;
-	
-	for (ii = LocalRequest ; ii > 0 ; ii--) {
-	  valRA  = &RA[Index1];
-	  *valRA = Par * (*valRA) + ((Standard_Real)ii) * RA[Index2] ;
-	  Index1 -= 9;
-	  Index2 -= 9;
-	}
-	valRA  = &RA[Index1];
-	*valRA = Par * (*valRA) + (*tmpPA); tmpPA++;
-	
-	Index1 = MaxIndex1 + 7;
-	Index2 = MaxIndex2 + 7;
-	
-	for (ii = LocalRequest ; ii > 0 ; ii--) {
-	  valRA  = &RA[Index1];
-	  *valRA = Par * (*valRA) + ((Standard_Real)ii) * RA[Index2] ;
-	  Index1 -= 9;
-	  Index2 -= 9;
-	}
-	valRA  = &RA[Index1];
-	*valRA = Par * (*valRA) + (*tmpPA); tmpPA++;
-	
-	Index1 = MaxIndex1 + 8;
-	Index2 = MaxIndex2 + 8;
-	
-	for (ii = LocalRequest ; ii > 0 ; ii--) {
-	  valRA  = &RA[Index1];
-	  *valRA = Par * (*valRA) + ((Standard_Real)ii) * RA[Index2] ;
-	  Index1 -= 9;
-	  Index2 -= 9;
-	}
-	valRA  = &RA[Index1];
-	*valRA = Par * (*valRA) + (*tmpPA);
-	
-	tmpPA -= 8;
-      }
-    }
-    else {
-      
-      for (jj = Degree  ; jj >  0 ; jj--) {
-	tmpPA -= 9;
-	tmpRA  = RA;
-
-	*tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-	*tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-	*tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-
-	*tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-	*tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-	*tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-
-	*tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-	*tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-	*tmpRA = Par * (*tmpRA) + (*tmpPA);
-	tmpPA -= 8;
-      }
-    }
-    break;
-  }
-  case 12 : {
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++;
-    tmpPA -= 11;
-    if (DerivativeRequest > 0 ) {
-      Standard_Real *valRA;
-      Standard_Integer ii, LocalRequest;
-      Standard_Integer Index1, Index2;
-      Standard_Integer MaxIndex1, MaxIndex2;
-      if      (DerivativeRequest < Degree) {
-	LocalRequest = DerivativeRequest;
-	MaxIndex2 = MaxIndex1 = (LocalRequest << 3) + (LocalRequest << 2);
-      }
-      else {
-	LocalRequest = Degree;
-	MaxIndex2 = MaxIndex1 = DegreeDimension;
-      }
-      MaxIndex2 -= 12;
-      
-      for (ii = 1; ii <= LocalRequest; ii++) {
-	*tmpRA = 0.0e0; tmpRA++;           
-	*tmpRA = 0.0e0; tmpRA++;           
-	*tmpRA = 0.0e0; tmpRA++;           
-	
-	*tmpRA = 0.0e0; tmpRA++;           
-	*tmpRA = 0.0e0; tmpRA++;           
-	*tmpRA = 0.0e0; tmpRA++;           
-	
-	*tmpRA = 0.0e0; tmpRA++;           
-	*tmpRA = 0.0e0; tmpRA++;           
-	*tmpRA = 0.0e0; tmpRA++;           
-	
-	*tmpRA = 0.0e0; tmpRA++;           
-	*tmpRA = 0.0e0; tmpRA++;           
-	*tmpRA = 0.0e0; tmpRA++;           
-      }
-      
-      for (jj = Degree ; jj >  0 ; jj--) {
-	tmpPA -= 12;
-	
-	Index1 = MaxIndex1;
-	Index2 = MaxIndex2;
-	
-	for (ii = LocalRequest ; ii > 0 ; ii--) {
-	  valRA  = &RA[Index1];
-	  *valRA = Par * (*valRA) + ((Standard_Real)ii) * RA[Index2] ;
-	  Index1 -= 12;
-	  Index2 -= 12;
-	}
-	valRA  = &RA[Index1];
-	*valRA = Par * (*valRA) + (*tmpPA); tmpPA++;
-	
-	Index1 = MaxIndex1 + 1;
-	Index2 = MaxIndex2 + 1;
-	
-	for (ii = LocalRequest ; ii > 0 ; ii--) {
-	  valRA  = &RA[Index1];
-	  *valRA = Par * (*valRA) + ((Standard_Real)ii) * RA[Index2] ;
-	  Index1 -= 12;
-	  Index2 -= 12;
-	}
-	valRA  = &RA[Index1];
-	*valRA = Par * (*valRA) + (*tmpPA); tmpPA++;
-	
-	Index1 = MaxIndex1 + 2;
-	Index2 = MaxIndex2 + 2;
-	
-	for (ii = LocalRequest ; ii > 0 ; ii--) {
-	  valRA  = &RA[Index1];
-	  *valRA = Par * (*valRA) + ((Standard_Real)ii) * RA[Index2] ;
-	  Index1 -= 12;
-	  Index2 -= 12;
-	}
-	valRA  = &RA[Index1];
-	*valRA = Par * (*valRA) + (*tmpPA); tmpPA++;
-	
-	Index1 = MaxIndex1 + 3;
-	Index2 = MaxIndex2 + 3;
-	
-	for (ii = LocalRequest ; ii > 0 ; ii--) {
-	  valRA  = &RA[Index1];
-	  *valRA = Par * (*valRA) + ((Standard_Real)ii) * RA[Index2] ;
-	  Index1 -= 12;
-	  Index2 -= 12;
-	}
-	valRA  = &RA[Index1];
-	*valRA = Par * (*valRA) + (*tmpPA); tmpPA++;
-	
-	Index1 = MaxIndex1 + 4;
-	Index2 = MaxIndex2 + 4;
-	
-	for (ii = LocalRequest ; ii > 0 ; ii--) {
-	  valRA  = &RA[Index1];
-	  *valRA = Par * (*valRA) + ((Standard_Real)ii) * RA[Index2] ;
-	  Index1 -= 12;
-	  Index2 -= 12;
-	}
-	valRA  = &RA[Index1];
-	*valRA = Par * (*valRA) + (*tmpPA); tmpPA++;
-	
-	Index1 = MaxIndex1 + 5;
-	Index2 = MaxIndex2 + 5;
-	
-	for (ii = LocalRequest ; ii > 0 ; ii--) {
-	  valRA  = &RA[Index1];
-	  *valRA = Par * (*valRA) + ((Standard_Real)ii) * RA[Index2] ;
-	  Index1 -= 12;
-	  Index2 -= 12;
-	}
-	valRA  = &RA[Index1];
-	*valRA = Par * (*valRA) + (*tmpPA); tmpPA++;
-	
-	Index1 = MaxIndex1 + 6;
-	Index2 = MaxIndex2 + 6;
-	
-	for (ii = LocalRequest ; ii > 0 ; ii--) {
-	  valRA  = &RA[Index1];
-	  *valRA = Par * (*valRA) + ((Standard_Real)ii) * RA[Index2] ;
-	  Index1 -= 12;
-	  Index2 -= 12;
-	}
-	valRA  = &RA[Index1];
-	*valRA = Par * (*valRA) + (*tmpPA); tmpPA++;
-	
-	Index1 = MaxIndex1 + 7;
-	Index2 = MaxIndex2 + 7;
-	
-	for (ii = LocalRequest ; ii > 0 ; ii--) {
-	  valRA  = &RA[Index1];
-	  *valRA = Par * (*valRA) + ((Standard_Real)ii) * RA[Index2] ;
-	  Index1 -= 12;
-	  Index2 -= 12;
-	}
-	valRA  = &RA[Index1];
-	*valRA = Par * (*valRA) + (*tmpPA); tmpPA++;
-	
-	Index1 = MaxIndex1 + 8;
-	Index2 = MaxIndex2 + 8;
-	
-	for (ii = LocalRequest ; ii > 0 ; ii--) {
-	  valRA  = &RA[Index1];
-	  *valRA = Par * (*valRA) + ((Standard_Real)ii) * RA[Index2] ;
-	  Index1 -= 12;
-	  Index2 -= 12;
-	}
-	valRA  = &RA[Index1];
-	*valRA = Par * (*valRA) + (*tmpPA); tmpPA++;
-	
-	Index1 = MaxIndex1 + 9;
-	Index2 = MaxIndex2 + 9;
-	
-	for (ii = LocalRequest ; ii > 0 ; ii--) {
-	  valRA  = &RA[Index1];
-	  *valRA = Par * (*valRA) + ((Standard_Real)ii) * RA[Index2] ;
-	  Index1 -= 12;
-	  Index2 -= 12;
-	}
-	valRA  = &RA[Index1];
-	*valRA = Par * (*valRA) + (*tmpPA); tmpPA++;
-	
-	Index1 = MaxIndex1 + 10;
-	Index2 = MaxIndex2 + 10;
-	
-	for (ii = LocalRequest ; ii > 0 ; ii--) {
-	  valRA  = &RA[Index1];
-	  *valRA = Par * (*valRA) + ((Standard_Real)ii) * RA[Index2] ;
-	  Index1 -= 12;
-	  Index2 -= 12;
-	}
-	valRA  = &RA[Index1];
-	*valRA = Par * (*valRA) + (*tmpPA); tmpPA++;
-	
-	Index1 = MaxIndex1 + 11;
-	Index2 = MaxIndex2 + 11;
-	
-	for (ii = LocalRequest ; ii > 0 ; ii--) {
-	  valRA  = &RA[Index1];
-	  *valRA = Par * (*valRA) + ((Standard_Real)ii) * RA[Index2] ;
-	  Index1 -= 12;
-	  Index2 -= 12;
-	}
-	valRA  = &RA[Index1];
-	*valRA = Par * (*valRA) + (*tmpPA);
-	
-	tmpPA -= 11;
-      }
-    }
-    else {
-      
-      for (jj = Degree  ; jj >  0 ; jj--) {
-	tmpPA -= 12;
-	tmpRA  = RA;
-
-	*tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-	*tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-	*tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-
-	*tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-	*tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-	*tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-
-	*tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-	*tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-	*tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-
-	*tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-	*tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-	*tmpRA = Par * (*tmpRA) + (*tmpPA);
-	tmpPA -= 11;
-      }
-    }
-    break;
-  }
-  case 15 : {
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++;
-    tmpPA -= 14;
-    if (DerivativeRequest > 0 ) {
-      Standard_Real *valRA;
-      Standard_Integer ii, LocalRequest;
-      Standard_Integer Index1, Index2;
-      Standard_Integer MaxIndex1, MaxIndex2;
-      if      (DerivativeRequest < Degree) {
-	LocalRequest = DerivativeRequest;
-	MaxIndex2 = MaxIndex1 = (LocalRequest << 4) - LocalRequest;
-      }
-      else {
-	LocalRequest = Degree;
-	MaxIndex2 = MaxIndex1 = DegreeDimension;
-      }
-      MaxIndex2 -= 15;
-      
-      for (ii = 1; ii <= LocalRequest; ii++) {
-	*tmpRA = 0.0e0; tmpRA++;           
-	*tmpRA = 0.0e0; tmpRA++;           
-	*tmpRA = 0.0e0; tmpRA++;           
-
-	*tmpRA = 0.0e0; tmpRA++;           
-	*tmpRA = 0.0e0; tmpRA++;           
-	*tmpRA = 0.0e0; tmpRA++;           
-
-	*tmpRA = 0.0e0; tmpRA++;           
-	*tmpRA = 0.0e0; tmpRA++;           
-	*tmpRA = 0.0e0; tmpRA++;           
-
-	*tmpRA = 0.0e0; tmpRA++;           
-	*tmpRA = 0.0e0; tmpRA++;           
-	*tmpRA = 0.0e0; tmpRA++;           
-
-	*tmpRA = 0.0e0; tmpRA++;           
-	*tmpRA = 0.0e0; tmpRA++;           
-	*tmpRA = 0.0e0; tmpRA++;           
-      }
-      
-      for (jj = Degree ; jj >  0 ; jj--) {
-	tmpPA -= 15;
-	
-	Index1 = MaxIndex1;
-	Index2 = MaxIndex2;
-	
-	for (ii = LocalRequest ; ii > 0 ; ii--) {
-	  valRA  = &RA[Index1];
-	  *valRA = Par * (*valRA) + ((Standard_Real)ii) * RA[Index2] ;
-	  Index1 -= 15;
-	  Index2 -= 15;
-	}
-	valRA  = &RA[Index1];
-	*valRA = Par * (*valRA) + (*tmpPA); tmpPA++;
-	
-	Index1 = MaxIndex1 + 1;
-	Index2 = MaxIndex2 + 1;
-	
-	for (ii = LocalRequest ; ii > 0 ; ii--) {
-	  valRA  = &RA[Index1];
-	  *valRA = Par * (*valRA) + ((Standard_Real)ii) * RA[Index2] ;
-	  Index1 -= 15;
-	  Index2 -= 15;
-	}
-	valRA  = &RA[Index1];
-	*valRA = Par * (*valRA) + (*tmpPA); tmpPA++;
-	
-	Index1 = MaxIndex1 + 2;
-	Index2 = MaxIndex2 + 2;
-	
-	for (ii = LocalRequest ; ii > 0 ; ii--) {
-	  valRA  = &RA[Index1];
-	  *valRA = Par * (*valRA) + ((Standard_Real)ii) * RA[Index2] ;
-	  Index1 -= 15;
-	  Index2 -= 15;
-	}
-	valRA  = &RA[Index1];
-	*valRA = Par * (*valRA) + (*tmpPA); tmpPA++;
-	
-	Index1 = MaxIndex1 + 3;
-	Index2 = MaxIndex2 + 3;
-	
-	for (ii = LocalRequest ; ii > 0 ; ii--) {
-	  valRA  = &RA[Index1];
-	  *valRA = Par * (*valRA) + ((Standard_Real)ii) * RA[Index2] ;
-	  Index1 -= 15;
-	  Index2 -= 15;
-	}
-	valRA  = &RA[Index1];
-	*valRA = Par * (*valRA) + (*tmpPA); tmpPA++;
-	
-	Index1 = MaxIndex1 + 4;
-	Index2 = MaxIndex2 + 4;
-	
-	for (ii = LocalRequest ; ii > 0 ; ii--) {
-	  valRA  = &RA[Index1];
-	  *valRA = Par * (*valRA) + ((Standard_Real)ii) * RA[Index2] ;
-	  Index1 -= 15;
-	  Index2 -= 15;
-	}
-	valRA  = &RA[Index1];
-	*valRA = Par * (*valRA) + (*tmpPA); tmpPA++;
-	
-	Index1 = MaxIndex1 + 5;
-	Index2 = MaxIndex2 + 5;
-	
-	for (ii = LocalRequest ; ii > 0 ; ii--) {
-	  valRA  = &RA[Index1];
-	  *valRA = Par * (*valRA) + ((Standard_Real)ii) * RA[Index2] ;
-	  Index1 -= 15;
-	  Index2 -= 15;
-	}
-	valRA  = &RA[Index1];
-	*valRA = Par * (*valRA) + (*tmpPA); tmpPA++;
-	
-	Index1 = MaxIndex1 + 6;
-	Index2 = MaxIndex2 + 6;
-	
-	for (ii = LocalRequest ; ii > 0 ; ii--) {
-	  valRA  = &RA[Index1];
-	  *valRA = Par * (*valRA) + ((Standard_Real)ii) * RA[Index2] ;
-	  Index1 -= 15;
-	  Index2 -= 15;
-	}
-	valRA  = &RA[Index1];
-	*valRA = Par * (*valRA) + (*tmpPA); tmpPA++;
-	
-	Index1 = MaxIndex1 + 7;
-	Index2 = MaxIndex2 + 7;
-	
-	for (ii = LocalRequest ; ii > 0 ; ii--) {
-	  valRA  = &RA[Index1];
-	  *valRA = Par * (*valRA) + ((Standard_Real)ii) * RA[Index2] ;
-	  Index1 -= 15;
-	  Index2 -= 15;
-	}
-	valRA  = &RA[Index1];
-	*valRA = Par * (*valRA) + (*tmpPA); tmpPA++;
-	
-	Index1 = MaxIndex1 + 8;
-	Index2 = MaxIndex2 + 8;
-	
-	for (ii = LocalRequest ; ii > 0 ; ii--) {
-	  valRA  = &RA[Index1];
-	  *valRA = Par * (*valRA) + ((Standard_Real)ii) * RA[Index2] ;
-	  Index1 -= 15;
-	  Index2 -= 15;
-	}
-	valRA  = &RA[Index1];
-	*valRA = Par * (*valRA) + (*tmpPA); tmpPA++;
-	
-	Index1 = MaxIndex1 + 9;
-	Index2 = MaxIndex2 + 9;
-	
-	for (ii = LocalRequest ; ii > 0 ; ii--) {
-	  valRA  = &RA[Index1];
-	  *valRA = Par * (*valRA) + ((Standard_Real)ii) * RA[Index2] ;
-	  Index1 -= 15;
-	  Index2 -= 15;
-	}
-	valRA  = &RA[Index1];
-	*valRA = Par * (*valRA) + (*tmpPA); tmpPA++;
-	
-	Index1 = MaxIndex1 + 10;
-	Index2 = MaxIndex2 + 10;
-	
-	for (ii = LocalRequest ; ii > 0 ; ii--) {
-	  valRA  = &RA[Index1];
-	  *valRA = Par * (*valRA) + ((Standard_Real)ii) * RA[Index2] ;
-	  Index1 -= 15;
-	  Index2 -= 15;
-	}
-	valRA  = &RA[Index1];
-	*valRA = Par * (*valRA) + (*tmpPA); tmpPA++;
-	
-	Index1 = MaxIndex1 + 11;
-	Index2 = MaxIndex2 + 11;
-	
-	for (ii = LocalRequest ; ii > 0 ; ii--) {
-	  valRA  = &RA[Index1];
-	  *valRA = Par * (*valRA) + ((Standard_Real)ii) * RA[Index2] ;
-	  Index1 -= 15;
-	  Index2 -= 15;
-	}
-	valRA  = &RA[Index1];
-	*valRA = Par * (*valRA) + (*tmpPA); tmpPA++;
-	
-	Index1 = MaxIndex1 + 12;
-	Index2 = MaxIndex2 + 12;
-	
-	for (ii = LocalRequest ; ii > 0 ; ii--) {
-	  valRA  = &RA[Index1];
-	  *valRA = Par * (*valRA) + ((Standard_Real)ii) * RA[Index2] ;
-	  Index1 -= 15;
-	  Index2 -= 15;
-	}
-	valRA  = &RA[Index1];
-	*valRA = Par * (*valRA) + (*tmpPA); tmpPA++;
-	
-	Index1 = MaxIndex1 + 13;
-	Index2 = MaxIndex2 + 13;
-	
-	for (ii = LocalRequest ; ii > 0 ; ii--) {
-	  valRA  = &RA[Index1];
-	  *valRA = Par * (*valRA) + ((Standard_Real)ii) * RA[Index2] ;
-	  Index1 -= 15;
-	  Index2 -= 15;
-	}
-	valRA  = &RA[Index1];
-	*valRA = Par * (*valRA) + (*tmpPA); tmpPA++;
-	
-	Index1 = MaxIndex1 + 14;
-	Index2 = MaxIndex2 + 14;
-	
-	for (ii = LocalRequest ; ii > 0 ; ii--) {
-	  valRA  = &RA[Index1];
-	  *valRA = Par * (*valRA) + ((Standard_Real)ii) * RA[Index2] ;
-	  Index1 -= 15;
-	  Index2 -= 15;
-	}
-	valRA  = &RA[Index1];
-	*valRA = Par * (*valRA) + (*tmpPA);
-	
-	tmpPA -= 14;
-      }
-    }
-    else {
-      
-      for (jj = Degree  ; jj >  0 ; jj--) {
-	tmpPA -= 15;
-	tmpRA  = RA;
-
-	*tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-	*tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-	*tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-
-	*tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-	*tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-	*tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-
-	*tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-	*tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-	*tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-
-	*tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-	*tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-	*tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-
-	*tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-	*tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-	*tmpRA = Par * (*tmpRA) + (*tmpPA);
-	tmpPA -= 14;
-      }
-    }
-    break;
-  }
-    default : {
-      Standard_Integer kk ;
-      for ( kk = 0 ; kk < Dimension ; kk++) {
-	*tmpRA = *tmpPA; tmpRA++; tmpPA++;
-      }
-      tmpPA -= Dimension;
-      if (DerivativeRequest > 0 ) {
-	Standard_Real *valRA;
-	Standard_Integer ii, LocalRequest;
-	Standard_Integer Index1, Index2;
-	Standard_Integer MaxIndex1, MaxIndex2;
-	if      (DerivativeRequest < Degree) {
-	  LocalRequest = DerivativeRequest;
-	  MaxIndex2 = MaxIndex1 = LocalRequest * Dimension;
-	}
-	else {
-	  LocalRequest = Degree;
-	  MaxIndex2 = MaxIndex1 = DegreeDimension;
-	}
-	MaxIndex2 -= Dimension;
-	
-	for (ii = 1; ii <= MaxIndex1; ii++) {
-	  *tmpRA = 0.0e0; tmpRA++;           
-	}
-	
-	for (jj = Degree ; jj >  0 ; jj--) {
-	  tmpPA -= Dimension;
-	  
-	  for (kk = 0 ; kk < Dimension ; kk++) {
-	    Index1 = MaxIndex1 + kk;
-	    Index2 = MaxIndex2 + kk;
-	    
-	    for (ii = LocalRequest ; ii > 0 ; ii--) {
-	      valRA  = &RA[Index1];
-	      *valRA = Par * (*valRA) + ((Standard_Real)ii) * RA[Index2] ;
-	      Index1 -= Dimension;
-	      Index2 -= Dimension;
-	    }
-	    valRA  = &RA[Index1];
-	    *valRA = Par * (*valRA) + (*tmpPA); tmpPA++;
-	  }
-	  tmpPA -= Dimension;
-	}
-      }
-      else {
-	
-	for (jj = Degree  ; jj >  0 ; jj--) {
-	  tmpPA -= Dimension;
-	  tmpRA  = RA;
-	  
-	  for (kk = 0 ; kk < Dimension ; kk++) {
-	    *tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-	  }
-	  tmpPA -= Dimension;
-	}
+      for (Standard_Integer aDeg = 0; aDeg <= Degree; aDeg++)
+      {
+        aRes = &Results + aResSize - Dimension;
+        // Calculating derivatives of the polynomial
+        for (Standard_Integer aDeriv = DerivativeRequest; aDeriv > 0; aDeriv--)
+        {
+          anOriginal = aRes - Dimension; // pointer to the derivative minus 1
+          for (ind = 0; ind < Dimension; ind++)
+            aRes[ind] = aRes[ind] * Par + anOriginal[ind] * aDeriv;
+          aRes = anOriginal;
+        }
+        // Calculating the value of the polynomial
+        for (ind = 0; ind < Dimension; ind++)
+          aRes[ind] = aRes[ind] * Par + aCoeffs[ind];
+        aCoeffs -= Dimension;
       }
     }
   }
@@ -1742,225 +885,40 @@ void  PLib::EvalPolynomial(const Standard_Real    Par,
 //=======================================================================
 
 void  PLib::NoDerivativeEvalPolynomial(const Standard_Real    Par,
-				       const Standard_Integer Degree,
-				       const Standard_Integer Dimension, 
-				       const Standard_Integer DegreeDimension, 
-				       Standard_Real&         PolynomialCoeff,
-				       Standard_Real&         Results)
+                                       const Standard_Integer Degree,
+                                       const Standard_Integer Dimension,
+                                       const Standard_Integer DegreeDimension,
+                                       Standard_Real&         PolynomialCoeff,
+                                       Standard_Real&         Results)
 {
-  Standard_Integer jj;
-  Standard_Real *RA = &Results ;  
-  Standard_Real *PA = &PolynomialCoeff ;
-  Standard_Real *tmpRA = RA;
-  Standard_Real *tmpPA = PA + DegreeDimension;
+  Standard_Real* aCoeffs = &PolynomialCoeff + DegreeDimension;
+  Standard_Real* aRes = &Results;
 
-  switch (Dimension) {
-  
-  case 1 : {
-    *tmpRA = *tmpPA;
-    
-    for (jj = Degree  ; jj >  0 ; jj--) {
-      tmpPA--;
-
-      *tmpRA = Par * (*tmpRA) + (*tmpPA);
-    }
-    break;
-  }
-  case 2 : {
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA;
-    tmpPA--;
-    
-    for (jj = Degree  ; jj >  0 ; jj--) {
-      tmpPA -= 2;
-      tmpRA  = RA;
-
-      *tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-      *tmpRA = Par * (*tmpRA) + (*tmpPA);
-      tmpPA--;
-    }
-    break;
-  }
-  case 3 : {
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA;
-    tmpPA -= 2;
-    
-    for (jj = Degree  ; jj >  0 ; jj--) {
-      tmpPA -= 3;
-      tmpRA  = RA;
-
-      *tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-      *tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-      *tmpRA = Par * (*tmpRA) + (*tmpPA);
-      tmpPA -= 2;
-    }
-    break;
-  }
-  case 6 : {
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA;
-    tmpPA -= 5;
-    
-    for (jj = Degree  ; jj >  0 ; jj--) {
-      tmpPA -= 6;
-      tmpRA  = RA;
-
-      *tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-      *tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-      *tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-
-      *tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-      *tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-      *tmpRA = Par * (*tmpRA) + (*tmpPA);
-      tmpPA -= 5;
-    }
-    break;
-  }
-  case 9 : {
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA;
-    tmpPA -= 8;
-    
-    for (jj = Degree  ; jj >  0 ; jj--) {
-      tmpPA -= 9;
-      tmpRA  = RA;
-
-      *tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-      *tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-      *tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-
-      *tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-      *tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-      *tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-
-      *tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-      *tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-      *tmpRA = Par * (*tmpRA) + (*tmpPA);
-      tmpPA -= 8;
-    }
-    break;
-  }
-  case 12 : {
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA;
-    tmpPA -= 11;
-    
-    for (jj = Degree  ; jj >  0 ; jj--) {
-      tmpPA -= 12;
-      tmpRA  = RA;
-
-      *tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-      *tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-      *tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-
-      *tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-      *tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-      *tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-
-      *tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-      *tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-      *tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-
-      *tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-      *tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-      *tmpRA = Par * (*tmpRA) + (*tmpPA);
-      tmpPA -= 11;
-    }
-    break;
-  }
-  case 15 : {
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA; tmpRA++; tmpPA++;
-    *tmpRA = *tmpPA;
-    tmpPA -= 14;
-    
-    for (jj = Degree  ; jj >  0 ; jj--) {
-      tmpPA -= 15;
-      tmpRA  = RA;
-
-      *tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-      *tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-      *tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-
-      *tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-      *tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-      *tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-
-      *tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-      *tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-      *tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-
-      *tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-      *tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-      *tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-
-      *tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-      *tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-      *tmpRA = Par * (*tmpRA) + (*tmpPA);
-      tmpPA -= 14;
-    }
-    break;
-  }
-    default : {
-      Standard_Integer kk ;
-      for ( kk = 0 ; kk < Dimension ; kk++) {
-	*tmpRA = *tmpPA; tmpRA++; tmpPA++;
-      }
-      tmpPA -= Dimension;
-      
-      for (jj = Degree  ; jj >  0 ; jj--) {
-	tmpPA -= Dimension;
-	tmpRA  = RA;
-	
-	for (kk = 0 ; kk < Dimension ; kk++) {
-	  *tmpRA = Par * (*tmpRA) + (*tmpPA); tmpPA++; tmpRA++;
-	}
-	tmpPA -= Dimension;
+  switch (Dimension)
+  {
+  case 1:  eval_poly0<1>  (aRes, aCoeffs, Degree, Par); break;
+  case 2:  eval_poly0<2>  (aRes, aCoeffs, Degree, Par); break;
+  case 3:  eval_poly0<3>  (aRes, aCoeffs, Degree, Par); break;
+  case 4:  eval_poly0<4>  (aRes, aCoeffs, Degree, Par); break;
+  case 5:  eval_poly0<5>  (aRes, aCoeffs, Degree, Par); break;
+  case 6:  eval_poly0<6>  (aRes, aCoeffs, Degree, Par); break;
+  case 7:  eval_poly0<7>  (aRes, aCoeffs, Degree, Par); break;
+  case 8:  eval_poly0<8>  (aRes, aCoeffs, Degree, Par); break;
+  case 9:  eval_poly0<9>  (aRes, aCoeffs, Degree, Par); break;
+  case 10: eval_poly0<10> (aRes, aCoeffs, Degree, Par); break;
+  case 11: eval_poly0<11> (aRes, aCoeffs, Degree, Par); break;
+  case 12: eval_poly0<12> (aRes, aCoeffs, Degree, Par); break;
+  case 13: eval_poly0<13> (aRes, aCoeffs, Degree, Par); break;
+  case 14: eval_poly0<14> (aRes, aCoeffs, Degree, Par); break;
+  case 15: eval_poly0<15> (aRes, aCoeffs, Degree, Par); break;
+  default:
+    {
+      memcpy(aRes, aCoeffs, sizeof(Standard_Real) * Dimension);
+      for (Standard_Integer aDeg = 0; aDeg < Degree; aDeg++)
+      {
+        aCoeffs -= Dimension;
+        for (Standard_Integer ind = 0; ind < Dimension; ind++)
+          aRes[ind] = aRes[ind] * Par + aCoeffs[ind];
       }
     }
   }
