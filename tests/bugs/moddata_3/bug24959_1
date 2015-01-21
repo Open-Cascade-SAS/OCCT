@@ -10,15 +10,13 @@ bsplinesurf s 2 4 0.0 3 0.34 1 0.67 1 1.0 3 1 2 0.0 2 1.0 2 10 0 0 1 6 0 0 1 4 0
 mkface result s
 incmesh result 1
 set tri_info [trinfo result]
+regexp {deflection ([0-9.+e-]+)} $tri_info full defl
 
-set tri 0
-set nod 0
-regexp { +([-0-9.+eE]+) +triangles} $tri_info full tri
-regexp { +([-0-9.+eE]+) +nodes} $tri_info full nod
-if { ${tri} < 90 || ${nod} < 54 } {
-    puts "Error: Bad meshing"
+# check deflections
+if { $defl > 1 } {
+  puts "Error: too big deflection on original face (${defl} > 1)"
 } else {
-    puts "OK: Good meshing"
+  puts "Deflection is OK (${defl})"
 }
 
 vdisplay result
