@@ -22,8 +22,8 @@ puts [checkshape res]
 tclean res
 
 if { [string compare $command "shading"] == 0 } {
-    vinit
-    vdisplay res
+    vinit View1
+    vdisplay -noupdate -redisplay res
     vsetdispmode res 1
     vfit
 }

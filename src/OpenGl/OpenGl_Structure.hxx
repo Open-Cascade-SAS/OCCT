@@ -26,7 +26,6 @@
 
 #include <OpenGl_Group.hxx>
 #include <OpenGl_Matrix.hxx>
-#include <OpenGl_NamedStatus.hxx>
 #include <OpenGl_Vec.hxx>
 #include <OpenGl_Workspace.hxx>
 
@@ -67,7 +66,7 @@ public:
   Standard_EXPORT OpenGl_Structure (const Handle(Graphic3d_StructureManager)& theManager);
 
   //! Setup structure graphic state
-  Standard_EXPORT virtual void UpdateNamedStatus();
+  Standard_EXPORT virtual void OnVisibilityChanged() Standard_OVERRIDE;
 
   //! Clear graphic data
   Standard_EXPORT virtual void Clear();
@@ -129,15 +128,7 @@ public:
 
   void clearHighlightColor (const Handle(OpenGl_Context)& theGlCtx);
 
-  Standard_Boolean IsVisible() const { return !(myNamedStatus & OPENGL_NS_HIDE); }
-
   Standard_EXPORT void Clear (const Handle(OpenGl_Context)& theGlCtx);
-
-  //! Set z layer ID to display the structure in specified layer
-  Standard_EXPORT void SetZLayer (const Standard_Integer theLayerIndex);
-
-  //! Get z layer ID
-  Standard_EXPORT Standard_Integer GetZLayer() const;
 
   //! Renders groups of structure without applying any attributes (i.e. transform, material etc).
   virtual void RenderGeometry  (const Handle(OpenGl_Workspace)& theWorkspace) const;
@@ -238,9 +229,6 @@ protected:
 
   Handle(OpenGl_Group)       myHighlightBox;
   TEL_COLOUR*                myHighlightColor;
-
-  int                        myNamedStatus;
-  int                        myZLayer;
 
   OpenGl_ListOfStructure           myConnected;
 

@@ -55,6 +55,7 @@
 #include <Aspect_Window.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
+#include <Graphic3d_CStructure.hxx>
 #include <Graphic3d_TextureRoot.hxx>
 #include <Image_AlienPixMap.hxx>
 #include <Prs3d_ShadingAspect.hxx>
@@ -2223,8 +2224,9 @@ int VErase (Draw_Interpretor& theDI,
             Standard_Integer  theArgNb,
             const char**      theArgVec)
 {
-  const Handle(AIS_InteractiveContext)& aCtx = ViewerTest::GetAISContext();
-  ViewerTest_AutoUpdater anUpdateTool (aCtx, ViewerTest::CurrentView());
+  const Handle(AIS_InteractiveContext)& aCtx  = ViewerTest::GetAISContext();
+  const Handle(V3d_View)&               aView = ViewerTest::CurrentView();
+  ViewerTest_AutoUpdater anUpdateTool (aCtx, aView);
   if (aCtx.IsNull())
   {
     std::cerr << "Error: no active view!\n";
@@ -2473,7 +2475,11 @@ inline void bndPresentation (Draw_Interpretor&                  theDI,
     }
     case BndAction_Show:
     {
-      thePrs->Presentation()->BoundBox();
+      Handle(Graphic3d_Structure) aPrs = thePrs->Presentation();
+      aPrs->CStructure()->HighlightColor.r = 0.988235f;
+      aPrs->CStructure()->HighlightColor.g = 0.988235f;
+      aPrs->CStructure()->HighlightColor.b = 0.988235f;
+      aPrs->CStructure()->HighlightWithBndBox (aPrs, Standard_True);
       break;
     }
     case BndAction_Print:
@@ -2905,9 +2911,12 @@ static int VDisplay2 (Draw_Interpretor& theDI,
 
   // Parse input arguments
   ViewerTest_AutoUpdater anUpdateTool (aCtx, ViewerTest::CurrentView());
-  Standard_Integer isMutable = -1;
-  Standard_Boolean toDisplayLocal = Standard_False;
+  Standard_Integer   isMutable      = -1;
+  Graphic3d_ZLayerId aZLayer        = Graphic3d_ZLayerId_UNKNOWN;
+  Standard_Boolean   toDisplayLocal = Standard_False;
+  Standard_Boolean   toReDisplay    = Standard_False;
   TColStd_SequenceOfAsciiString aNamesOfDisplayIO;
+  AIS_DisplayStatus aDispStatus = AIS_DS_None;
   for (Standard_Integer anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
   {
     const TCollection_AsciiString aName     = theArgVec[anArgIter];
@@ -2921,9 +2930,49 @@ static int VDisplay2 (Draw_Interpretor& theDI,
     {
       isMutable = 1;
     }
+    else if (aNameCase == "-neutral")
+    {
+      aDispStatus = AIS_DS_Displayed;
+    }
+    else if (aNameCase == "-immediate"
+          || aNameCase == "-top")
+    {
+      aZLayer = Graphic3d_ZLayerId_Top;
+    }
+    else if (aNameCase == "-topmost")
+    {
+      aZLayer = Graphic3d_ZLayerId_Topmost;
+    }
+    else if (aNameCase == "-osd"
+          || aNameCase == "-toposd")
+    {
+      aZLayer = Graphic3d_ZLayerId_TopOSD;
+    }
+    else if (aNameCase == "-layer")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cerr << "Error: wrong syntax at " << aName << ".\n";
+        return 1;
+      }
+
+      TCollection_AsciiString aValue (theArgVec[anArgIter]);
+      if (!aValue.IsIntegerValue())
+      {
+        std::cerr << "Error: wrong syntax at " << aName << ".\n";
+        return 1;
+      }
+
+      aZLayer = aValue.IntegerValue();
+    }
     else if (aNameCase == "-local")
     {
+      aDispStatus = AIS_DS_Temporary;
       toDisplayLocal = Standard_True;
+    }
+    else if (aNameCase == "-redisplay")
+    {
+      toReDisplay = Standard_True;
     }
     else
     {
@@ -2962,8 +3011,23 @@ static int VDisplay2 (Draw_Interpretor& theDI,
         {
           aShape->SetMutable (isMutable == 1);
         }
+        if (aZLayer != Graphic3d_ZLayerId_UNKNOWN)
+        {
+          aShape->SetZLayer (aZLayer);
+        }
         GetMapOfAIS().Bind (aShape, aName);
-        aCtx->Display (aShape, Standard_False);
+
+        Standard_Integer aDispMode = aShape->HasDisplayMode()
+                                   ? aShape->DisplayMode()
+                                   : (aShape->AcceptDisplayMode (aCtx->DisplayMode())
+                                    ? aCtx->DisplayMode()
+                                    : 0);
+        Standard_Integer aSelMode = aShape->HasSelectionMode() && aCtx->GetAutoActivateSelection()
+                                  ? aShape->SelectionMode() : -1;
+
+        aCtx->Display (aShape, aDispMode, aSelMode,
+                       Standard_False, aShape->AcceptShapeDecomposition(),
+                       aDispStatus);
       }
       continue;
     }
@@ -2976,6 +3040,18 @@ static int VDisplay2 (Draw_Interpretor& theDI,
       {
         aShape->SetMutable (isMutable == 1);
       }
+      if (aZLayer != Graphic3d_ZLayerId_UNKNOWN)
+      {
+        aShape->SetZLayer (aZLayer);
+      }
+
+      Standard_Integer aDispMode = aShape->HasDisplayMode()
+                                  ? aShape->DisplayMode()
+                                  : (aShape->AcceptDisplayMode (aCtx->DisplayMode())
+                                  ? aCtx->DisplayMode()
+                                  : 0);
+      Standard_Integer aSelMode = aShape->HasSelectionMode() && aCtx->GetAutoActivateSelection()
+                                ? aShape->SelectionMode() : -1;
 
       if (aShape->Type() == AIS_KOI_Datum)
       {
@@ -2984,17 +3060,26 @@ static int VDisplay2 (Draw_Interpretor& theDI,
       else
       {
         theDI << "Display " << aName.ToCString() << "\n";
-        // get the Shape from a name
-        TopoDS_Shape aNewShape = GetShapeFromName (aName.ToCString());
 
         // update the Shape in the AIS_Shape
+        TopoDS_Shape      aNewShape = GetShapeFromName (aName.ToCString());
         Handle(AIS_Shape) aShapePrs = Handle(AIS_Shape)::DownCast(aShape);
         if (!aShapePrs.IsNull())
         {
+          if (!aShapePrs->Shape().IsEqual (aNewShape))
+          {
+            toReDisplay = Standard_True;
+          }
           aShapePrs->Set (aNewShape);
         }
-        aCtx->Redisplay (aShape, Standard_False);
-        aCtx->Display   (aShape, Standard_False);
+        if (toReDisplay)
+        {
+          aCtx->Redisplay (aShape, Standard_False);
+        }
+
+        aCtx->Display (aShape, aDispMode, aSelMode,
+                       Standard_False, aShape->AcceptShapeDecomposition(),
+                       aDispStatus);
       }
     }
     else if (anObj->IsKind (STANDARD_TYPE (NIS_InteractiveObject)))

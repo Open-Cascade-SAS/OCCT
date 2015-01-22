@@ -16,8 +16,9 @@
 
 #include <Standard_TypeDef.hxx>
 #include <NCollection_Map.hxx>
+#include <Graphic3d_ZLayerId.hxx>
 #include <Graphic3d_ZLayerSettings.hxx>
 
-typedef NCollection_DataMap<Standard_Integer, Graphic3d_ZLayerSettings> Visual3d_MapOfZLayerSettings;
+typedef NCollection_DataMap<Graphic3d_ZLayerId, Graphic3d_ZLayerSettings> Visual3d_MapOfZLayerSettings;
 
 #endif // _Visual3d_MapOfZLayerSettings_HeaderFile

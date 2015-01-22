@@ -30,7 +30,7 @@ namespace
     State_Visible
   };
 
-  static BeforeHighlightState StructureState(const Handle(PrsMgr_Prs) theStructure)
+  static BeforeHighlightState StructureState(const Handle(PrsMgr_Prs)& theStructure)
   {
     return !theStructure->IsDisplayed() ?
       State_Empty : !theStructure->IsVisible() ?
@@ -61,15 +61,15 @@ PrsMgr_Presentation::PrsMgr_Presentation (const Handle(PrsMgr_PresentationManage
 //=======================================================================
 void PrsMgr_Presentation::Display()
 {
-  Display (Standard_False);
+  display (Standard_False);
   myBeforeHighlightState = State_Visible;
 }
 
 //=======================================================================
-//function : Display
+//function : display
 //purpose  :
 //=======================================================================
-void PrsMgr_Presentation::Display (const Standard_Boolean theIsHighlight)
+void PrsMgr_Presentation::display (const Standard_Boolean theIsHighlight)
 {
   if (!myStructure->IsDisplayed())
   {
@@ -116,15 +116,16 @@ void PrsMgr_Presentation::SetVisible (const Standard_Boolean theValue)
 //function : Highlight
 //purpose  :
 //=======================================================================
-void PrsMgr_Presentation::Highlight()
+void PrsMgr_Presentation::Highlight (const Aspect_TypeOfHighlightMethod theMethod,
+                                     const Quantity_Color&              theColor)
 {
   if (!IsHighlighted())
   {
     myBeforeHighlightState = StructureState (myStructure);
   }
 
-  Display (Standard_True);
-  myStructure->Highlight();
+  display (Standard_True);
+  myStructure->Highlight (theMethod, theColor);
 }
 
 //=======================================================================
@@ -167,30 +168,6 @@ void PrsMgr_Presentation::Clear()
   myStructure->Clear (Standard_True);
   //  myStructure->Clear(Standard_False);
   myStructure->RemoveAll();
-}
-
-//=======================================================================
-//function : Color
-//purpose  :
-//=======================================================================
-void PrsMgr_Presentation::Color (const Quantity_NameOfColor theColor)
-{
-  if (!IsHighlighted())
-  {
-    myBeforeHighlightState = StructureState (myStructure);
-  }
-
-  Display (Standard_True);
-  myStructure->Color (theColor);
-}
-
-//=======================================================================
-//function : BoundBox
-//purpose  :
-//=======================================================================
-void PrsMgr_Presentation::BoundBox() const
-{
-  myStructure->BoundBox();
 }
 
 //=======================================================================

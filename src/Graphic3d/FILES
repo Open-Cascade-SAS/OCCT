@@ -19,7 +19,6 @@ Graphic3d_CBitFields8.hxx
 Graphic3d_CBitFields4.hxx
 Graphic3d_CTexture.hxx
 Graphic3d_CLight.hxx
-Graphic3d_CPick.hxx
 Graphic3d_CUserDraw.hxx
 Graphic3d_CView.hxx
 Graphic3d_CGraduatedTrihedron.hxx
@@ -35,6 +34,8 @@ Graphic3d_ShaderVariable.lxx
 Graphic3d_ShaderObject_Handle.hxx
 Graphic3d_ShaderProgram_Handle.hxx
 Graphic3d_ShaderVariable_Handle.hxx
+Graphic3d_MapOfStructure.hxx
+Graphic3d_MapIteratorOfMapOfStructure.hxx
 Graphic3d_TypeOfShaderObject.hxx
 Graphic3d_DataStructure.pxx
 Graphic3d_StructureManager.pxx
@@ -53,6 +54,7 @@ Graphic3d_Vec3.hxx
 Graphic3d_Vec4.hxx
 Graphic3d_Mat4.hxx
 Graphic3d_Mat4d.hxx
+Graphic3d_ZLayerId.hxx
 Graphic3d_ZLayerSettings.hxx
 Graphic3d_Vertex.hxx
 Graphic3d_Vertex.cxx

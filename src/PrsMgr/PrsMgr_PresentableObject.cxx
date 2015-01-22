@@ -30,6 +30,7 @@
 PrsMgr_PresentableObject::PrsMgr_PresentableObject (const PrsMgr_TypeOfPresentation3d theType)
 : myTypeOfPresentation3d (theType),
   myIsMutable (Standard_False),
+  myZLayer (Graphic3d_ZLayerId_Default),
   myHasOwnPresentations (Standard_True),
   myParent (NULL)
 {
@@ -384,25 +385,34 @@ void PrsMgr_PresentableObject::RemoveChild (const Handle(PrsMgr_PresentableObjec
 //function : SetZLayer
 //purpose  :
 //=======================================================================
-void PrsMgr_PresentableObject::SetZLayer 
-  (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-   const Standard_Integer theLayerId)
+void PrsMgr_PresentableObject::SetZLayer (const Graphic3d_ZLayerId theLayerId)
 {
-  if (!thePrsMgr.IsNull())
-    thePrsMgr->SetZLayer (this, theLayerId);
+  if (myZLayer == theLayerId)
+  {
+    return;
+  }
+
+  myZLayer = theLayerId;
+  for (Standard_Integer aPrsIter = 1; aPrsIter <= myPresentations.Length(); ++aPrsIter)
+  {
+    const PrsMgr_ModedPresentation& aModedPrs = myPresentations (aPrsIter);
+    if (aModedPrs.Presentation().IsNull()
+     || aModedPrs.Presentation()->Presentation().IsNull())
+    {
+      continue;
+    }
+
+    aModedPrs.Presentation()->Presentation()->SetZLayer (theLayerId);
+  }
 }
 
 //=======================================================================
-//function : GetZLayer
+//function : ZLayer
 //purpose  :
 //=======================================================================
-Standard_Integer PrsMgr_PresentableObject::GetZLayer 
-  (const Handle(PrsMgr_PresentationManager)& thePrsMgr) const
+Graphic3d_ZLayerId PrsMgr_PresentableObject::ZLayer() const
 {
-  if (!thePrsMgr.IsNull())
-    return thePrsMgr->GetZLayer (this);
-
-  return -1;
+  return myZLayer;
 }
 
 // =======================================================================

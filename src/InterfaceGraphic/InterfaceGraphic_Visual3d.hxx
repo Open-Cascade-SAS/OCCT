@@ -71,30 +71,4 @@ typedef struct {
 
 } CALL_DEF_VIEWMAPPING;
 
-/* REPERAGE */
-
-typedef struct {
-
-	int WsId;
-	int ViewId;
-
-	int x, y;
-
-	CALL_DEF_WINDOW DefWindow;
-
-	struct {
-		float aperture;
-		int order;
-		int depth;
-	} Context;
-
-	struct {
-		int depth;
-		int *listid;
-		int *listpickid;
-		int *listelem;
-	} Pick;
-
-} CALL_DEF_PICK;
-
 #endif /* InterfaceGraphic_Visual3dHeader */

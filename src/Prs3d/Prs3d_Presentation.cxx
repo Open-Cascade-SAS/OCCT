@@ -100,72 +100,12 @@ Prs3d_Presentation::Prs3d_Presentation (const Handle(Graphic3d_StructureManager)
 }
 
 //=======================================================================
-//function : Highlight
-//purpose  : 
-//=======================================================================
-void Prs3d_Presentation::Highlight()
-{
-  SetHighlightColor(Quantity_Color(Quantity_NOC_GRAY99));
-  Aspect_TypeOfHighlightMethod Method = Aspect_TOHM_COLOR;
-  Graphic3d_Structure::Highlight(Method);
-}
-
-//=======================================================================
-//function : Color
-//purpose  : 
-//=======================================================================
-void Prs3d_Presentation::Color(const Quantity_NameOfColor aColor) 
-{
-  SetHighlightColor(Quantity_Color(aColor));
-  Graphic3d_Structure::Highlight(Aspect_TOHM_COLOR);
-}
-
-//=======================================================================
-//function : BoundBox
-//purpose  : 
-//=======================================================================
-void Prs3d_Presentation::BoundBox()
-{ 
-  SetHighlightColor(Quantity_Color(Quantity_NOC_GRAY99));
-  Graphic3d_Structure::Highlight(Aspect_TOHM_BOUNDBOX);
-}
-
-
-//=======================================================================
 //function : SetShadingAspect
 //purpose  : 
 //=======================================================================
 void Prs3d_Presentation::SetShadingAspect(const Handle(Prs3d_ShadingAspect)& aShadingAspect) 
 { 
   SetPrimitivesAspect(aShadingAspect->Aspect());
-}
-
-//=======================================================================
-//function : IsPickable
-//purpose  : 
-//=======================================================================
-Standard_Boolean Prs3d_Presentation::IsPickable () const 
-{
-  return Graphic3d_Structure::IsSelectable();
-}
-
-//=======================================================================
-//function : SetPickable
-//purpose  : 
-//=======================================================================
-
-void Prs3d_Presentation::SetPickable() 
-{
-  SetPick(Standard_True);
-}
-
-//=======================================================================
-//function : SetUnPickable
-//purpose  : 
-//=======================================================================
-void Prs3d_Presentation::SetUnPickable() 
-{
-  SetPick(Standard_False);
 }
 
 //=======================================================================
@@ -287,15 +227,6 @@ Handle(Graphic3d_Group) Prs3d_Presentation::CurrentGroup () const
 }
 
 //=======================================================================
-//=======================================================================
-//function : SetIsForHighlight
-//purpose  :
-//=======================================================================
-void Prs3d_Presentation::SetIsForHighlight (const Standard_Boolean isForHighlight)
-{
-  Graphic3d_Structure::SetIsForHighlight (isForHighlight);
-}
-
 //function : Compute
 //purpose  : 
 //=======================================================================

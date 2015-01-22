@@ -73,10 +73,6 @@ public:
     const Handle(OpenGl_Texture) aPrevTexture = theWorkspace->DisableTexture();
 
     glDisable (GL_LIGHTING);
-    if ((theWorkspace->NamedStatus & OPENGL_NS_IMMEDIATE) != 0)
-    {
-      glDepthMask (GL_FALSE);
-    }
 
     // Use highlight colors
     theWorkspace->GetGlContext()->core11->glColor3fv ((theWorkspace->NamedStatus & OPENGL_NS_HIGHLIGHT) ? theWorkspace->HighlightColor->rgb : anAspectLine->Color().rgb);
@@ -130,14 +126,12 @@ OpenGl_Structure::OpenGl_Structure (const Handle(Graphic3d_StructureManager)& th
   myAspectMarker(NULL),
   myAspectText(NULL),
   myHighlightColor(NULL),
-  myNamedStatus(0),
-  myZLayer(0),
   myIsRaytracable (Standard_False),
   myModificationState (0),
   myIsCulled (Standard_True),
   myIsMirrored (Standard_False)
 {
-  UpdateNamedStatus();
+  //
 }
 
 // =======================================================================
@@ -366,15 +360,11 @@ void OpenGl_Structure::clearHighlightColor (const Handle(OpenGl_Context)& theGlC
 }
 
 // =======================================================================
-// function : UpdateNamedStatus
+// function : OnVisibilityChanged
 // purpose  :
 // =======================================================================
-void OpenGl_Structure::UpdateNamedStatus()
+void OpenGl_Structure::OnVisibilityChanged()
 {
-  myNamedStatus = 0;
-  if (highlight) myNamedStatus |= OPENGL_NS_HIGHLIGHT;
-  if (!visible)  myNamedStatus |= OPENGL_NS_HIDE;
-
   if (myIsRaytracable)
   {
     UpdateStateWithAncestorStructures();
@@ -627,7 +617,7 @@ void OpenGl_Structure::RenderGeometry (const Handle(OpenGl_Workspace) &theWorksp
 void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) const
 {
   // Process the structure only if visible
-  if (myNamedStatus & OPENGL_NS_HIDE)
+  if (!visible)
   {
     return;
   }
@@ -636,7 +626,10 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
 
   // Render named status
   const Standard_Integer aNamedStatus = theWorkspace->NamedStatus;
-  theWorkspace->NamedStatus |= myNamedStatus;
+  if (highlight)
+  {
+    theWorkspace->NamedStatus |= OPENGL_NS_HIGHLIGHT;
+  }
 
   // Do we need to restore GL_NORMALIZE?
   const Standard_Boolean anOldGlNormalize = aCtx->IsGlNormalizeEnabled();
@@ -858,24 +851,6 @@ void OpenGl_Structure::ReleaseGlResources (const Handle(OpenGl_Context)& theGlCt
   {
     myHighlightBox->Release (theGlCtx.operator->());
   }
-}
-
-//=======================================================================
-//function : SetZLayer
-//purpose  :
-//=======================================================================
-void OpenGl_Structure::SetZLayer (const Standard_Integer theLayerIndex)
-{
-  myZLayer = theLayerIndex;
-}
-
-//=======================================================================
-//function : GetZLayer
-//purpose  :
-//=======================================================================
-Standard_Integer OpenGl_Structure::GetZLayer () const
-{
-  return myZLayer;
 }
 
 //=======================================================================

@@ -3517,6 +3517,18 @@ static int VZLayer (Draw_Interpretor& di, Standard_Integer argc, const char** ar
       return 1;
     }
 
+    for (ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName anObjIter (GetMapOfAIS());
+         anObjIter.More(); anObjIter.Next())
+    {
+      Handle(PrsMgr_PresentableObject) aPrs = Handle(PrsMgr_PresentableObject)::DownCast (anObjIter.Key1());
+      if (aPrs.IsNull()
+       || aPrs->ZLayer() != aDelId)
+      {
+        continue;
+      }
+      aPrs->SetZLayer (Graphic3d_ZLayerId_Default);
+    }
+
     di << "Z layer " << aDelId << " has been removed\n";
   }
   else if (anOp == "get")

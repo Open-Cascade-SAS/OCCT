@@ -22,6 +22,7 @@
 #include <Graphic3d_SequenceOfHClipPlane.hxx>
 #include <Graphic3d_TypeOfComposition.hxx>
 #include <Graphic3d_Vec3.hxx>
+#include <Graphic3d_ZLayerId.hxx>
 #include <Standard_Transient.hxx>
 #include <Handle_Graphic3d_GraphicDriver.hxx>
 
@@ -67,10 +68,19 @@ public:
     return myBndBox;
   }
 
+  //! Return structure visibility flag
+  bool IsVisible() const { return visible != 0; }
+
+  //! Set z layer ID to display the structure in specified layer
+  void SetZLayer (const Graphic3d_ZLayerId theLayerIndex) { myZLayer = theLayerIndex; }
+
+  //! Get z layer ID
+  Graphic3d_ZLayerId ZLayer() const { return myZLayer; }
+
 public:
 
   //! Update structure visibility state
-  virtual void UpdateNamedStatus() = 0;
+  virtual void OnVisibilityChanged() = 0;
 
   //! Clear graphic data
   virtual void Clear() = 0;
@@ -106,9 +116,10 @@ public:
 
 public:
 
-  int   Id;
-  int   Priority;
-  int   PreviousPriority;
+  int                      Id;
+  Graphic3d_ZLayerId       myZLayer;
+  int                      Priority;
+  int                      PreviousPriority;
 
   CALL_DEF_CONTEXTLINE     ContextLine;
   CALL_DEF_CONTEXTFILLAREA ContextFillArea;
@@ -123,10 +134,9 @@ public:
   int   ContainsFacet;
 
   unsigned IsInfinite     : 1;
-  unsigned stick          : 1;
+  unsigned stick          : 1; //!< displaying state - should be set when structure has been added to scene graph (but can be in hidden state)
   unsigned highlight      : 1;
-  unsigned visible        : 1;
-  unsigned pick           : 1;
+  unsigned visible        : 1; //!< visibility flag - can be used to suppress structure while leaving it in the scene graph
   unsigned HLRValidation  : 1;
   unsigned IsForHighlight : 1;
   unsigned IsMutable      : 1;

@@ -85,7 +85,8 @@ void V3d_Plane::Display (const Handle(V3d_View)& theView,
   aPrims->AddVertex ( aSize,-aSize, anOffset);
   aGroup->AddPrimitiveArray(aPrims);
 
-  myGraphicStructure->Display(0);
+  myGraphicStructure->SetDisplayPriority (0);
+  myGraphicStructure->Display();
   Update();
 }
 

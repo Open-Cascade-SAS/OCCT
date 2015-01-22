@@ -60,18 +60,6 @@ void Graphic3d_GraphicDriver::PrintCLight (const Graphic3d_CLight& theCLight,
   }
 }
 
-void Graphic3d_GraphicDriver::PrintCPick (const Graphic3d_CPick& ACPick, const Standard_Integer AField) const {
-
-  if (AField) {
-    cout << "\tws id " << ACPick.WsId
-      << " view id " << ACPick.ViewId << "\n";
-    cout << "\twindow id " << ACPick.DefWindow.XWindow << "\n";
-    cout << "\tposition " << ACPick.x << " , " << ACPick.y << "\n";
-    cout << flush;
-  }
-
-}
-
 void Graphic3d_GraphicDriver::PrintCStructure (const Graphic3d_CStructure& ACStructure, const Standard_Integer AField) const {
 
   if (AField) {

@@ -28,7 +28,6 @@
 #include <Graphic3d_Vertex.hxx>
 #include <Visual3d_DepthCueingDefinitionError.hxx>
 #include <Visual3d_Light.hxx>
-#include <Visual3d_HSequenceOfView.hxx>
 #include <Visual3d_ZClippingDefinitionError.hxx>
 #include <OSD.hxx>
 #include <TColStd_HArray2OfReal.hxx>
@@ -712,10 +711,10 @@ void Visual3d_View::SetContext (const Visual3d_ContextView& theViewCtx)
     // It is not necessary to warn ViewManager as this structure should not disappear from
     // the list of structures displayed in it.
     NCollection_Sequence<Handle(Graphic3d_Structure)> aStructs;
-    for (Graphic3d_MapIteratorOfMapOfStructure aStructIter (myStructsDisplayed); aStructIter.More(); aStructIter.Next())
+    for (Graphic3d_MapOfStructure::Iterator aStructIter (myStructsDisplayed); aStructIter.More(); aStructIter.Next())
     {
       const Handle(Graphic3d_Structure)& aStruct  = aStructIter.Key();
-      const Visual3d_TypeOfAnswer        anAnswer = AcceptDisplay (aStruct);
+      const Visual3d_TypeOfAnswer        anAnswer = acceptDisplay (aStruct->Visual());
       if (anAnswer == Visual3d_TOA_NO
        || anAnswer == Visual3d_TOA_COMPUTE)
       {
@@ -743,7 +742,7 @@ void Visual3d_View::SetContext (const Visual3d_ContextView& theViewCtx)
         continue;
       }
 
-      const Visual3d_TypeOfAnswer anAnswer = AcceptDisplay (aStruct);
+      const Visual3d_TypeOfAnswer anAnswer = acceptDisplay (aStruct->Visual());
       if (anAnswer == Visual3d_TOA_YES
        || anAnswer == Visual3d_TOA_COMPUTE)
       {
@@ -780,7 +779,7 @@ void Visual3d_View::DisplayedStructures (Graphic3d_MapOfStructure& theStructures
     return;
   }
 
-  for (Graphic3d_MapIteratorOfMapOfStructure aStructIter (myStructsDisplayed); aStructIter.More(); aStructIter.Next())
+  for (Graphic3d_MapOfStructure::Iterator aStructIter (myStructsDisplayed); aStructIter.More(); aStructIter.Next())
   {
     theStructures.Add (aStructIter.Key());
   }
@@ -825,7 +824,7 @@ void Visual3d_View::Activate()
       }
 
       // If the structure can be displayed in the new context of the view, it is displayed.
-      const Visual3d_TypeOfAnswer anAnswer = AcceptDisplay (aStruct);
+      const Visual3d_TypeOfAnswer anAnswer = acceptDisplay (aStruct->Visual());
       if (anAnswer == Visual3d_TOA_YES
        || anAnswer == Visual3d_TOA_COMPUTE)
       {
@@ -898,7 +897,7 @@ void Visual3d_View::Deactivate()
         continue;
       }
 
-      const Visual3d_TypeOfAnswer anAnswer = AcceptDisplay (aStruct);
+      const Visual3d_TypeOfAnswer anAnswer = acceptDisplay (aStruct->Visual());
       if (anAnswer == Visual3d_TOA_YES
        || anAnswer == Visual3d_TOA_COMPUTE)
       {
@@ -1131,13 +1130,13 @@ void Visual3d_View::ZFitAll (const Standard_Real theScaleFactor)
 }
 
 // ========================================================================
-// function : AcceptDisplay
+// function : acceptDisplay
 // purpose  :
 // ========================================================================
-Visual3d_TypeOfAnswer Visual3d_View::AcceptDisplay (const Handle(Graphic3d_Structure)& theStruct) const
+Visual3d_TypeOfAnswer Visual3d_View::acceptDisplay (const Graphic3d_TypeOfStructure theStructType) const
 {
-  const Visual3d_TypeOfVisualization ViewType = MyContext.Visualization();
-  switch (theStruct->Visual())
+  const Visual3d_TypeOfVisualization aViewType = MyContext.Visualization();
+  switch (theStructType)
   {
     case Graphic3d_TOS_ALL:
     {
@@ -1145,19 +1144,19 @@ Visual3d_TypeOfAnswer Visual3d_View::AcceptDisplay (const Handle(Graphic3d_Struc
     }
     case Graphic3d_TOS_SHADING:
     {
-      return ViewType == Visual3d_TOV_SHADING
+      return aViewType == Visual3d_TOV_SHADING
            ? Visual3d_TOA_YES
            : Visual3d_TOA_NO;
     }
     case Graphic3d_TOS_WIREFRAME:
     {
-      return ViewType == Visual3d_TOV_WIREFRAME
+      return aViewType == Visual3d_TOV_WIREFRAME
            ? Visual3d_TOA_YES
            : Visual3d_TOA_NO;
     }
     case Graphic3d_TOS_COMPUTED:
     {
-      return (ViewType == Visual3d_TOV_SHADING || ViewType == Visual3d_TOV_WIREFRAME)
+      return (aViewType == Visual3d_TOV_SHADING || aViewType == Visual3d_TOV_WIREFRAME)
            ?  Visual3d_TOA_COMPUTE
            :  Visual3d_TOA_NO;
     }
@@ -1260,18 +1259,18 @@ Standard_Boolean Visual3d_View::DisplayImmediate (const Handle(Graphic3d_Structu
 
   if (theIsSingleView)
   {
-    Handle(Visual3d_HSequenceOfView) aViews = myViewManager->DefinedView();
-
-    for (int i=1;i<=aViews->Length();i++)
+    const Visual3d_SequenceOfView& aViews = myViewManager->DefinedViews();
+    for (Standard_Integer aViewIter = 1; aViewIter <= aViews.Length(); ++aViewIter)
     {
-      if (aViews->Value(i).Access() != this)
+      const Handle(Visual3d_View)& aView = aViews.Value (aViewIter);
+      if (aView.Access() != this)
       {
-        aViews->Value(i)->EraseImmediate (theStructure);
+        aView->EraseImmediate (theStructure);
       }
     }
   }
 
-  myGraphicDriver->DisplayImmediateStructure (MyCView, *theStructure->CStructure());
+  myGraphicDriver->DisplayImmediateStructure (MyCView, theStructure);
   return Standard_True;
 }
 
@@ -1301,9 +1300,9 @@ Standard_Boolean Visual3d_View::ClearImmediate()
     return Standard_False;
   }
 
-  for (Graphic3d_MapIteratorOfMapOfStructure anIter (myImmediateStructures); anIter.More(); anIter.Next())
+  for (Graphic3d_MapOfStructure::Iterator aStructIter (myImmediateStructures); aStructIter.More(); aStructIter.Next())
   {
-    myGraphicDriver->EraseImmediateStructure (MyCView, *anIter.Key()->CStructure());
+    myGraphicDriver->EraseImmediateStructure (MyCView, *aStructIter.Key()->CStructure());
   }
   myImmediateStructures.Clear();
   return Standard_True;
@@ -1345,7 +1344,7 @@ void Visual3d_View::Display (const Handle(Graphic3d_Structure)& theStruct,
     anIndex = 0;
   }
 
-  Visual3d_TypeOfAnswer anAnswer = AcceptDisplay (theStruct);
+  Visual3d_TypeOfAnswer anAnswer = acceptDisplay (theStruct->Visual());
   if (anAnswer == Visual3d_TOA_NO)
   {
     return;
@@ -1358,14 +1357,13 @@ void Visual3d_View::Display (const Handle(Graphic3d_Structure)& theStruct,
 
   if (anAnswer == Visual3d_TOA_YES)
   {
-    if (IsDisplayed (theStruct))
+    if (!myStructsDisplayed.Add (theStruct))
     {
       return;
     }
 
     theStruct->CalculateBoundBox();
-    myGraphicDriver->DisplayStructure (MyCView, *theStruct->CStructure(), theStruct->DisplayPriority());
-    myStructsDisplayed.Add (theStruct);
+    myGraphicDriver->DisplayStructure (MyCView, theStruct, theStruct->DisplayPriority());
     Update (theUpdateMode);
     return;
   }
@@ -1380,14 +1378,14 @@ void Visual3d_View::Display (const Handle(Graphic3d_Structure)& theStruct,
     const Handle(Graphic3d_Structure)& anOldStruct = myStructsComputed.Value (anIndex);
     if (anOldStruct->HLRValidation())
     {
-      // Case COMPUTED valid
-      // to be displayed
-      if (!IsDisplayed (theStruct))
+      // Case COMPUTED valid, to be displayed
+      if (!myStructsDisplayed.Add (theStruct))
       {
-        myStructsDisplayed.Add (theStruct);
-        myGraphicDriver->DisplayStructure (MyCView, *anOldStruct->CStructure(), theStruct->DisplayPriority());
-        Update (theUpdateMode);
+        return;
       }
+
+      myGraphicDriver->DisplayStructure (MyCView, anOldStruct, theStruct->DisplayPriority());
+      Update (theUpdateMode);
       return;
     }
     else
@@ -1401,25 +1399,25 @@ void Visual3d_View::Display (const Handle(Graphic3d_Structure)& theStruct,
       const Standard_Integer aNewIndex = HaveTheSameOwner (theStruct);
       if (aNewIndex != 0)
       {
-        // Case of COMPUTED invalid, WITH a valid of replacement
-        // to be displayed
-        if (!IsDisplayed (theStruct))
+        // Case of COMPUTED invalid, WITH a valid of replacement; to be displayed
+        if (!myStructsDisplayed.Add (theStruct))
         {
-          const Handle(Graphic3d_Structure)& aNewStruct = myStructsComputed.Value (aNewIndex);
-          myStructsComputed.SetValue (anIndex, aNewStruct);
-          myStructsDisplayed.Add (theStruct);
-          myGraphicDriver->DisplayStructure (MyCView, *aNewStruct->CStructure(), theStruct->DisplayPriority());
-          Update (theUpdateMode);
+          return;
         }
+
+        const Handle(Graphic3d_Structure)& aNewStruct = myStructsComputed.Value (aNewIndex);
+        myStructsComputed.SetValue (anIndex, aNewStruct);
+        myGraphicDriver->DisplayStructure (MyCView, aNewStruct, theStruct->DisplayPriority());
+        Update (theUpdateMode);
         return;
       }
       else
       {
         // Case COMPUTED invalid, WITHOUT a valid of replacement
         // COMPUTED is removed if displayed
-        if (IsDisplayed (theStruct))
+        if (myStructsDisplayed.Contains (theStruct))
         {
-          myGraphicDriver->EraseStructure (MyCView, *anOldStruct->CStructure());
+          myGraphicDriver->EraseStructure (MyCView, anOldStruct);
         }
       }
     }
@@ -1484,26 +1482,25 @@ void Visual3d_View::Display (const Handle(Graphic3d_Structure)& theStruct,
   else
   {
     aStruct->SetVisual (toComputeWireframe ? Graphic3d_TOS_WIREFRAME : Graphic3d_TOS_SHADING);
-    anAnswer = AcceptDisplay (aStruct);
+    anAnswer = acceptDisplay (aStruct->Visual());
   }
 
   if (theStruct->IsHighlighted())
   {
-    aStruct->SetHighlightColor (theStruct->HighlightColor());
-    aStruct->GraphicHighlight (Aspect_TOHM_COLOR);
+    aStruct->Highlight (Aspect_TOHM_COLOR, theStruct->HighlightColor(), Standard_False);
   }
 
   // It is displayed only if the calculated structure
   // has a proper type corresponding to the one of the view.
-  if (anAnswer != Visual3d_TOA_NO)
+  if (anAnswer == Visual3d_TOA_NO)
   {
-    if (!IsDisplayed (theStruct))
-    {
-      myStructsDisplayed.Add (theStruct);
-    }
-    myGraphicDriver->DisplayStructure (MyCView, *aStruct->CStructure(), theStruct->DisplayPriority());
-    Update (theUpdateMode);
+    return;
   }
+
+  myStructsDisplayed.Add (theStruct);
+  myGraphicDriver->DisplayStructure (MyCView, aStruct, theStruct->DisplayPriority());
+
+  Update (theUpdateMode);
 }
 
 // ========================================================================
@@ -1525,13 +1522,14 @@ void Visual3d_View::Erase (const Handle(Graphic3d_Structure)& theStruct)
 void Visual3d_View::Erase (const Handle(Graphic3d_Structure)& theStruct,
                            const Aspect_TypeOfUpdate          theUpdateMode)
 {
-  if (IsDeleted()
-  || !IsDisplayed (theStruct))
+  if ( IsDeleted()
+   ||  EraseImmediate (theStruct)
+   || !IsDisplayed (theStruct))
   {
     return;
   }
 
-  Visual3d_TypeOfAnswer anAnswer = AcceptDisplay (theStruct);
+  Visual3d_TypeOfAnswer anAnswer = acceptDisplay (theStruct->Visual());
   if (!ComputedMode())
   {
     anAnswer = Visual3d_TOA_YES;
@@ -1539,7 +1537,7 @@ void Visual3d_View::Erase (const Handle(Graphic3d_Structure)& theStruct,
 
   if (anAnswer != Visual3d_TOA_COMPUTE)
   {
-    myGraphicDriver->EraseStructure (MyCView, *theStruct->CStructure());
+    myGraphicDriver->EraseStructure (MyCView, theStruct);
   }
   else if (anAnswer == Visual3d_TOA_COMPUTE
        && myIsInComputedMode)
@@ -1548,7 +1546,7 @@ void Visual3d_View::Erase (const Handle(Graphic3d_Structure)& theStruct,
     if (anIndex != 0)
     {
       const Handle(Graphic3d_Structure)& aCompStruct = myStructsComputed.ChangeValue (anIndex);
-      myGraphicDriver->EraseStructure (MyCView, *aCompStruct->CStructure());
+      myGraphicDriver->EraseStructure (MyCView, aCompStruct);
     }
   }
   myStructsDisplayed.Remove (theStruct);
@@ -1566,8 +1564,7 @@ void Visual3d_View::Highlight (const Handle(Graphic3d_Structure)& theStruct,
   if (anIndex != 0)
   {
     const Handle(Graphic3d_Structure)& aCompStruct = myStructsComputed.ChangeValue (anIndex);
-    aCompStruct->SetHighlightColor (theStruct->HighlightColor());
-    aCompStruct->GraphicHighlight (theMethod);
+    aCompStruct->Highlight (theMethod, theStruct->HighlightColor(), Standard_False);
   }
 }
 
@@ -1603,7 +1600,7 @@ void Visual3d_View::SetTransform (const Handle(Graphic3d_Structure)& theStruct,
    && !theStruct->CStructure()->IsForHighlight
    && !theStruct->CStructure()->IsInfinite)
   {
-    const Standard_Integer aLayerId = theStruct->GetZLayer();
+    const Graphic3d_ZLayerId aLayerId = theStruct->GetZLayer();
     myGraphicDriver->InvalidateBVHData (MyCView, aLayerId);
   }
 }
@@ -1657,7 +1654,14 @@ Standard_Boolean Visual3d_View::IsDisplayed (const Handle(Graphic3d_Structure)& 
 // ========================================================================
 Standard_Boolean Visual3d_View::ContainsFacet() const
 {
-  return ContainsFacet (myStructsDisplayed);
+  for (Graphic3d_MapOfStructure::Iterator aStructIter (myStructsDisplayed); aStructIter.More(); aStructIter.Next())
+  {
+    if (aStructIter.Key()->ContainsFacet())
+    {
+      return Standard_True;
+    }
+  }
+  return Standard_False;
 }
 
 // ========================================================================
@@ -1676,14 +1680,51 @@ Standard_Boolean Visual3d_View::ContainsFacet (const Graphic3d_MapOfStructure& t
   return Standard_False;
 }
 
+//! Auxiliary method for MinMaxValues() method
+inline void addStructureBndBox (const Handle(Graphic3d_Structure)& theStruct,
+                                const Standard_Boolean             theToIgnoreInfiniteFlag,
+                                Bnd_Box&                           theBndBox)
+{
+  if (!theStruct->IsVisible())
+  {
+    return;
+  }
+  else if (theStruct->IsInfinite()
+       && !theToIgnoreInfiniteFlag)
+  {
+    // XMin, YMin .... ZMax are initialized by means of infinite line data
+    const Bnd_Box aBox = theStruct->MinMaxValues (Standard_False);
+    if (!aBox.IsWhole()
+     && !aBox.IsVoid())
+    {
+      theBndBox.Add (aBox);
+    }
+    return;
+  }
+
+  // Only non-empty and non-infinite structures
+  // are taken into account for calculation of MinMax
+  if (theStruct->IsEmpty()
+   || theStruct->TransformPersistenceMode() != Graphic3d_TMF_None)
+  {
+    return;
+  }
+
+  // "FitAll" operation ignores object with transform persistence parameter
+  const Bnd_Box aBox = theStruct->MinMaxValues (theToIgnoreInfiniteFlag);
+  theBndBox.Add (aBox);
+}
+
 // ========================================================================
 // function : MinMaxValues
 // purpose  :
 // ========================================================================
 Bnd_Box Visual3d_View::MinMaxValues (const Standard_Boolean theToIgnoreInfiniteFlag) const
 {
-  return MinMaxValues (myStructsDisplayed,
-                       theToIgnoreInfiniteFlag);
+  Bnd_Box aResult     = MinMaxValues (myStructsDisplayed,    theToIgnoreInfiniteFlag);
+  Bnd_Box anImmediate = MinMaxValues (myImmediateStructures, theToIgnoreInfiniteFlag);
+  aResult.Add (anImmediate);
+  return aResult;
 }
 
 // ========================================================================
@@ -1691,45 +1732,18 @@ Bnd_Box Visual3d_View::MinMaxValues (const Standard_Boolean theToIgnoreInfiniteF
 // purpose  :
 // ========================================================================
 Bnd_Box Visual3d_View::MinMaxValues (const Graphic3d_MapOfStructure& theSet,
-                                     const Standard_Boolean theToIgnoreInfiniteFlag) const
+                                     const Standard_Boolean          theToIgnoreInfiniteFlag) const
 {
   Bnd_Box aResult;
-  if (theSet.IsEmpty ())
+  for (Graphic3d_MapIteratorOfMapOfStructure aStructIter (theSet); aStructIter.More(); aStructIter.Next())
   {
-    // Return an empty box.
-    return aResult;
-  }
-  Graphic3d_MapIteratorOfMapOfStructure anIterator (theSet);
-  for (anIterator.Initialize (theSet); anIterator.More(); anIterator.Next())
-  {
-    const Handle(Graphic3d_Structure)& aStructure = anIterator.Key();
-
-    if (!aStructure->IsVisible())
+    const Handle(Graphic3d_Structure)& aStructure = aStructIter.Key();
+    if (!aStructIter.Value()->IsVisible())
+    {
       continue;
-
-    if (aStructure->IsInfinite() && !theToIgnoreInfiniteFlag)
-    {
-      //XMin, YMin .... ZMax are initialized by means of infinite line data
-      Bnd_Box aBox = aStructure->MinMaxValues (Standard_False);
-      if (!aBox.IsWhole() && !aBox.IsVoid())
-      {
-        aResult.Add (aBox);
-      }
     }
 
-    // Only non-empty and non-infinite structures
-    // are taken into account for calculation of MinMax
-    if ((!aStructure->IsInfinite() || theToIgnoreInfiniteFlag) && !aStructure->IsEmpty())
-    {
-      Bnd_Box aBox = aStructure->MinMaxValues (theToIgnoreInfiniteFlag);
-
-      /* ABD 29/10/04  Transform Persistence of Presentation( pan, zoom, rotate ) */
-      //"FitAll" operation ignores object with transform persitence parameter
-      if(aStructure->TransformPersistenceMode() == Graphic3d_TMF_None )
-      {
-          aResult.Add (aBox);
-      }
-    }
+    addStructureBndBox (aStructure, theToIgnoreInfiniteFlag, aResult);
   }
   return aResult;
 }
@@ -1862,9 +1876,9 @@ void Visual3d_View::Compute()
   // Remove structures that were calculated for the previous orientation.
   // Recalculation of new structures.
   NCollection_Sequence<Handle(Graphic3d_Structure)> aStructsSeq;
-  for (Graphic3d_MapIteratorOfMapOfStructure aStructIter (myStructsDisplayed); aStructIter.More(); aStructIter.Next())
+  for (Graphic3d_MapOfStructure::Iterator aStructIter (myStructsDisplayed); aStructIter.More(); aStructIter.Next())
   {
-    const Visual3d_TypeOfAnswer anAnswer = AcceptDisplay (aStructIter.Key());
+    const Visual3d_TypeOfAnswer anAnswer = acceptDisplay (aStructIter.Key()->Visual());
     if (anAnswer == Visual3d_TOA_COMPUTE)
     {
       aStructsSeq.Append (aStructIter.Key()); // if the structure was calculated, it is recalculated
@@ -1902,7 +1916,7 @@ void Visual3d_View::ReCompute (const Handle(Graphic3d_Structure)& theStruct)
     return;
   }
 
-  const Visual3d_TypeOfAnswer anAnswer = AcceptDisplay (theStruct);
+  const Visual3d_TypeOfAnswer anAnswer = acceptDisplay (theStruct->Visual());
   if (anAnswer != Visual3d_TOA_COMPUTE)
   {
     return;
@@ -1950,13 +1964,12 @@ void Visual3d_View::ReCompute (const Handle(Graphic3d_Structure)& theStruct)
 
   if (theStruct->IsHighlighted())
   {
-    aCompStruct->SetHighlightColor (theStruct->HighlightColor());
-    aCompStruct->GraphicHighlight (Aspect_TOHM_COLOR);
+    aCompStruct->Highlight (Aspect_TOHM_COLOR, theStruct->HighlightColor(), Standard_False);
   }
 
-  // The previous calculation is removed and the new one is dislayed
-  myGraphicDriver->EraseStructure   (MyCView, *aCompStructOld->CStructure());
-  myGraphicDriver->DisplayStructure (MyCView, *aCompStruct->CStructure(), theStruct->DisplayPriority());
+  // The previous calculation is removed and the new one is displayed
+  myGraphicDriver->EraseStructure   (MyCView, aCompStructOld);
+  myGraphicDriver->DisplayStructure (MyCView, aCompStruct, theStruct->DisplayPriority());
 
   // why not just replace existing items?
   //myStructsToCompute.ChangeValue (anIndex) = theStruct;
@@ -2324,10 +2337,10 @@ void Visual3d_View::SetComputedMode (const Standard_Boolean theMode)
   myIsInComputedMode = theMode;
   if (!myIsInComputedMode)
   {
-    for (Graphic3d_MapIteratorOfMapOfStructure aStructIter (myStructsDisplayed); aStructIter.More(); aStructIter.Next())
+    for (Graphic3d_MapOfStructure::Iterator aStructIter (myStructsDisplayed); aStructIter.More(); aStructIter.Next())
     {
       const Handle(Graphic3d_Structure)& aStruct  = aStructIter.Key();
-      const Visual3d_TypeOfAnswer        anAnswer = AcceptDisplay (aStruct);
+      const Visual3d_TypeOfAnswer        anAnswer = acceptDisplay (aStruct->Visual());
       if (anAnswer != Visual3d_TOA_COMPUTE)
       {
         continue;
@@ -2337,17 +2350,17 @@ void Visual3d_View::SetComputedMode (const Standard_Boolean theMode)
       if (anIndex != 0)
       {
         const Handle(Graphic3d_Structure)& aStructComp = myStructsComputed.Value (anIndex);
-        myGraphicDriver->EraseStructure   (MyCView, *aStructComp->CStructure());
-        myGraphicDriver->DisplayStructure (MyCView, *aStruct->CStructure(), aStruct->DisplayPriority());
+        myGraphicDriver->EraseStructure   (MyCView, aStructComp);
+        myGraphicDriver->DisplayStructure (MyCView, aStruct, aStruct->DisplayPriority());
       }
     }
     return;
   }
 
-  for (Graphic3d_MapIteratorOfMapOfStructure aDispStructIter (myStructsDisplayed); aDispStructIter.More(); aDispStructIter.Next())
+  for (Graphic3d_MapOfStructure::Iterator aDispStructIter (myStructsDisplayed); aDispStructIter.More(); aDispStructIter.Next())
   {
-    Handle(Graphic3d_Structure) aStruct = aDispStructIter.Key();
-    const Visual3d_TypeOfAnswer anAnswer = AcceptDisplay (aStruct);
+    Handle(Graphic3d_Structure) aStruct  = aDispStructIter.Key();
+    const Visual3d_TypeOfAnswer anAnswer = acceptDisplay (aStruct->Visual());
     if (anAnswer != Visual3d_TOA_COMPUTE)
     {
       continue;
@@ -2356,8 +2369,8 @@ void Visual3d_View::SetComputedMode (const Standard_Boolean theMode)
     const Standard_Integer anIndex = IsComputed (aStruct);
     if (anIndex != 0)
     {
-      myGraphicDriver->EraseStructure   (MyCView, *aStruct->CStructure());
-      myGraphicDriver->DisplayStructure (MyCView, *(myStructsComputed.Value (anIndex)->CStructure()), aStruct->DisplayPriority());
+      myGraphicDriver->EraseStructure   (MyCView, aStruct);
+      myGraphicDriver->DisplayStructure (MyCView, myStructsComputed.Value (anIndex), aStruct->DisplayPriority());
 
       Display (aStruct, Aspect_TOU_WAIT);
       if (aStruct->IsHighlighted())
@@ -2365,8 +2378,7 @@ void Visual3d_View::SetComputedMode (const Standard_Boolean theMode)
         const Handle(Graphic3d_Structure)& aCompStruct = myStructsComputed.Value (anIndex);
         if (!aCompStruct->IsHighlighted())
         {
-          aCompStruct->SetHighlightColor (aStruct->HighlightColor());
-          aCompStruct->GraphicHighlight (Aspect_TOHM_COLOR);
+          aCompStruct->Highlight (Aspect_TOHM_COLOR, aStruct->HighlightColor(), Standard_False);
         }
       }
     }
@@ -2387,8 +2399,7 @@ void Visual3d_View::SetComputedMode (const Standard_Boolean theMode)
 
       if (aStruct->IsHighlighted())
       {
-        aCompStruct->SetHighlightColor (aStruct->HighlightColor());
-        aCompStruct->GraphicHighlight (Aspect_TOHM_COLOR);
+        aCompStruct->Highlight (Aspect_TOHM_COLOR, aStruct->HighlightColor(), Standard_False);
       }
 
       Standard_Boolean hasResult = Standard_False;
@@ -2410,8 +2421,8 @@ void Visual3d_View::SetComputedMode (const Standard_Boolean theMode)
         myStructsComputed .Append (aCompStruct);
       }
 
-      myGraphicDriver->EraseStructure   (MyCView, *aStruct->CStructure());
-      myGraphicDriver->DisplayStructure (MyCView, *aCompStruct->CStructure(), aStruct->DisplayPriority());
+      myGraphicDriver->EraseStructure   (MyCView, aStruct);
+      myGraphicDriver->DisplayStructure (MyCView, aCompStruct, aStruct->DisplayPriority());
     }
   }
   Update (myViewManager->UpdateMode());
@@ -2599,7 +2610,7 @@ Standard_Boolean Visual3d_View::Export (const Standard_CString       theFileName
 // function : SetZLayerSettings
 // purpose  :
 // =======================================================================
-void Visual3d_View::SetZLayerSettings (const Standard_Integer theLayerId,
+void Visual3d_View::SetZLayerSettings (const Graphic3d_ZLayerId        theLayerId,
                                        const Graphic3d_ZLayerSettings& theSettings)
 {
   myGraphicDriver->SetZLayerSettings (MyCView, theLayerId, theSettings);
@@ -2609,7 +2620,7 @@ void Visual3d_View::SetZLayerSettings (const Standard_Integer theLayerId,
 // function : AddZLayer
 // purpose  :
 // =======================================================================
-void Visual3d_View::AddZLayer (const Standard_Integer theLayerId)
+void Visual3d_View::AddZLayer (const Graphic3d_ZLayerId theLayerId)
 {
   myGraphicDriver->AddZLayer (MyCView, theLayerId);
 }
@@ -2618,7 +2629,7 @@ void Visual3d_View::AddZLayer (const Standard_Integer theLayerId)
 // function : RemoveZLayer
 // purpose  :
 // =======================================================================
-void Visual3d_View::RemoveZLayer (const Standard_Integer theLayerId)
+void Visual3d_View::RemoveZLayer (const Graphic3d_ZLayerId theLayerId)
 {
   myGraphicDriver->RemoveZLayer (MyCView, theLayerId);
 }
@@ -2628,7 +2639,7 @@ void Visual3d_View::RemoveZLayer (const Standard_Integer theLayerId)
 // purpose  :
 // =======================================================================
 void Visual3d_View::ChangeZLayer (const Handle(Graphic3d_Structure)& theStructure,
-                                  const Standard_Integer theLayerId)
+                                  const Graphic3d_ZLayerId           theLayerId)
 {
   myGraphicDriver->ChangeZLayer (*(theStructure->CStructure()), MyCView, theLayerId);
 }

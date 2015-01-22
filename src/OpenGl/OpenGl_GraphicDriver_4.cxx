@@ -19,27 +19,25 @@
 #include <OpenGl_Structure.hxx>
 #include <OpenGl_CView.hxx>
 
-void OpenGl_GraphicDriver::DisplayStructure (const Graphic3d_CView& theCView,
-                                             Graphic3d_CStructure&  theCStructure,
-                                             const Standard_Integer thePriority)
+void OpenGl_GraphicDriver::DisplayStructure (const Graphic3d_CView&             theCView,
+                                             const Handle(Graphic3d_Structure)& theStructure,
+                                             const Standard_Integer             thePriority)
 {
-  const OpenGl_CView* aCView     = (const OpenGl_CView* )theCView.ptrView;
-  OpenGl_Structure*   aStructure = (OpenGl_Structure* )&theCStructure;
+  const OpenGl_CView* aCView = (const OpenGl_CView* )theCView.ptrView;
   if (aCView == NULL)
     return;
 
-  aCView->View->DisplayStructure (aStructure, thePriority);
+  aCView->View->DisplayStructure (theStructure, thePriority);
 }
 
-void OpenGl_GraphicDriver::EraseStructure (const Graphic3d_CView& theCView,
-                                           Graphic3d_CStructure&  theCStructure)
+void OpenGl_GraphicDriver::EraseStructure (const Graphic3d_CView&             theCView,
+                                           const Handle(Graphic3d_Structure)& theStructure)
 {
-  const OpenGl_CView* aCView     = (const OpenGl_CView* )theCView.ptrView;
-  OpenGl_Structure*   aStructure = (OpenGl_Structure* )&theCStructure;
-  if (aCView == NULL || aStructure == NULL)
+  const OpenGl_CView* aCView = (const OpenGl_CView* )theCView.ptrView;
+  if (aCView == NULL)
     return;
 
-  aCView->View->EraseStructure (aStructure);
+  aCView->View->EraseStructure (theStructure);
 }
 
 void OpenGl_GraphicDriver::RemoveStructure (Handle(Graphic3d_CStructure)& theCStructure)
@@ -68,24 +66,8 @@ Handle(Graphic3d_CStructure) OpenGl_GraphicDriver::Structure (const Handle(Graph
 //=======================================================================
 
 void OpenGl_GraphicDriver::ChangeZLayer (const Graphic3d_CStructure& theCStructure,
-                                         const Standard_Integer theLayer)
-{
-  if (!myMapOfStructure.IsBound (theCStructure.Id))
-    return;
-
-  OpenGl_Structure* aStructure = myMapOfStructure.Find (theCStructure.Id);
-
-  aStructure->SetZLayer (theLayer);
-}
-
-//=======================================================================
-//function : ChangeZLayer
-//purpose  :
-//=======================================================================
-
-void OpenGl_GraphicDriver::ChangeZLayer (const Graphic3d_CStructure& theCStructure,
-                                         const Graphic3d_CView& theCView,
-                                         const Standard_Integer theNewLayerId)
+                                         const Graphic3d_CView&      theCView,
+                                         const Graphic3d_ZLayerId    theNewLayerId)
 {
   const OpenGl_CView *aCView = (const OpenGl_CView *)theCView.ptrView;
 
@@ -98,33 +80,18 @@ void OpenGl_GraphicDriver::ChangeZLayer (const Graphic3d_CStructure& theCStructu
 }
 
 //=======================================================================
-//function : GetZLayer
-//purpose  :
-//=======================================================================
-
-Standard_Integer OpenGl_GraphicDriver::GetZLayer (const Graphic3d_CStructure& theCStructure) const
-{
-  if (!myMapOfStructure.IsBound (theCStructure.Id))
-    return -1;
-
-  OpenGl_Structure* aStructure = myMapOfStructure.Find (theCStructure.Id);
-
-  return aStructure->GetZLayer();
-}
-
-//=======================================================================
 //function : UnsetZLayer
 //purpose  :
 //=======================================================================
 
-void OpenGl_GraphicDriver::UnsetZLayer (const Standard_Integer theLayerId)
+void OpenGl_GraphicDriver::UnsetZLayer (const Graphic3d_ZLayerId theLayerId)
 {
   NCollection_DataMap<Standard_Integer, OpenGl_Structure*>::Iterator aStructIt (myMapOfStructure);
   for( ; aStructIt.More (); aStructIt.Next ())
   {
     OpenGl_Structure* aStruct = aStructIt.ChangeValue ();
-    if (aStruct->GetZLayer () == theLayerId)
-      aStruct->SetZLayer (0);
+    if (aStruct->ZLayer() == theLayerId)
+      aStruct->SetZLayer (Graphic3d_ZLayerId_Default);
   }
 }
 
@@ -133,8 +100,8 @@ void OpenGl_GraphicDriver::UnsetZLayer (const Standard_Integer theLayerId)
 //purpose  :
 //=======================================================================
 void OpenGl_GraphicDriver::ChangePriority (const Graphic3d_CStructure& theCStructure,
-                                           const Graphic3d_CView& theCView,
-                                           const Standard_Integer theNewPriority)
+                                           const Graphic3d_CView&      theCView,
+                                           const Standard_Integer      theNewPriority)
 {
   const OpenGl_CView *aCView = (const OpenGl_CView *)theCView.ptrView;
 

@@ -388,9 +388,6 @@ is
     imported CLight;
     ---Category: Imported types
 
-    imported CPick;
-    ---Category: Imported types
-
     imported CPlane;
     ---Category: Imported types
 
@@ -428,7 +425,8 @@ is
     imported  Mat4;
     imported  Mat4d;
 
-    imported ZLayerSettings;
+    imported  ZLayerSettings;
+    primitive ZLayerId;
 
     --------------------
     -- Category: Classes
@@ -493,19 +491,14 @@ is
     imported Vertex;
     ---Category: Classes
 
+    imported MapOfStructure;
+    imported SequenceOfDisplayedStructures;
+
     ---------------------------------
     -- Category: Instantiated classes
     ---------------------------------
 
     imported SequenceOfGroup;
-
-    ---Category: Instantiated classes
-
-    class MapOfStructure instantiates
-            Map from TCollection (Structure from Graphic3d,MapTransientHasher from TColStd);
-
-
-    ---Category: Instantiated classes
 
     class SequenceOfStructure instantiates
             Sequence from TCollection

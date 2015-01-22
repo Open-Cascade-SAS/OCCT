@@ -16,7 +16,6 @@
 #ifndef _OpenGl_LayerList_Header
 #define _OpenGl_LayerList_Header
 
-#include <OpenGl_PriorityList.hxx>
 #include <OpenGl_Layer.hxx>
 
 #include <InterfaceGraphic_telem.hxx>
@@ -32,89 +31,92 @@ typedef NCollection_DataMap<int, int> OpenGl_LayerSeqIds;
 
 class OpenGl_LayerList
 {
- public:
-  
+public:
+
   //! Constructor
   OpenGl_LayerList (const Standard_Integer theNbPriorities = 11);
-  
+
   //! Destructor
-  virtual ~OpenGl_LayerList ();
-  
+  virtual ~OpenGl_LayerList();
+
   //! Method returns the number of available priorities
-  Standard_Integer NbPriorities () const;
+  Standard_Integer NbPriorities() const { return myNbPriorities; }
 
   //! Number of displayed structures
-  Standard_Integer NbStructures () const;
+  Standard_Integer NbStructures() const { return myNbStructures; }
+
+  //! Return number of structures within immediate layers
+  Standard_Integer NbImmediateStructures() const { return myImmediateNbStructures; }
 
   //! Insert a new layer with id.
-  void AddLayer (const Standard_Integer theLayerId);
-  
-  //! Check whether the layer with given id is already created.
-  Standard_Boolean HasLayer (const Standard_Integer theLayerId) const;
-  
+  void AddLayer (const Graphic3d_ZLayerId theLayerId);
+
   //! Remove layer by its id.
-  void RemoveLayer (const Standard_Integer theLayerId);
-  
+  void RemoveLayer (const Graphic3d_ZLayerId theLayerId);
+
   //! Add structure to list with given priority. The structure will be inserted
   //! to specified layer. If the layer isn't found, the structure will be put
   //! to default bottom-level layer.
-  void AddStructure (const OpenGl_Structure *theStructure,
-                     const Standard_Integer  theLayerId,
-                     const Standard_Integer  thePriority,
-                     Standard_Boolean isForChangePriority = Standard_False);
-  
+  void AddStructure (const OpenGl_Structure*  theStruct,
+                     const Graphic3d_ZLayerId theLayerId,
+                     const Standard_Integer   thePriority,
+                     Standard_Boolean        isForChangePriority = Standard_False);
+
   //! Remove structure from structure list and return its previous priority
-  void RemoveStructure (const OpenGl_Structure *theStructure,
-                        const Standard_Integer  theZLayerId);
-  
+  void RemoveStructure (const Handle(Graphic3d_Structure)& theStructure);
+
   //! Change structure z layer
   //! If the new layer is not presented, the structure will be displayed
   //! in default z layer
-  void ChangeLayer (const OpenGl_Structure *theStructure,
-                    const Standard_Integer  theOldLayerId,
-                    const Standard_Integer  theNewLayerId);
+  void ChangeLayer (const OpenGl_Structure*  theStructure,
+                    const Graphic3d_ZLayerId theOldLayerId,
+                    const Graphic3d_ZLayerId theNewLayerId);
 
   //! Changes structure priority within its ZLayer
-  void ChangePriority (const OpenGl_Structure *theStructure,
-                       const Standard_Integer  theLayerId,
-                       const Standard_Integer theNewPriority);
+  void ChangePriority (const OpenGl_Structure*  theStructure,
+                       const Graphic3d_ZLayerId theLayerId,
+                       const Standard_Integer   theNewPriority);
 
   //! Returns reference to the layer with given ID.
-  OpenGl_Layer& Layer (const Standard_Integer theLayerId);
+  OpenGl_Layer& Layer (const Graphic3d_ZLayerId theLayerId);
 
   //! Returns reference to the layer with given ID.
-  const OpenGl_Layer& Layer (const Standard_Integer theLayerId) const;
-  
+  const OpenGl_Layer& Layer (const Graphic3d_ZLayerId theLayerId) const;
+
+  //! Assign new settings to the layer.
+  void SetLayerSettings (const Graphic3d_ZLayerId        theLayerId,
+                         const Graphic3d_ZLayerSettings& theSettings);
+
   //! Render this element
-  void Render (const Handle(OpenGl_Workspace) &theWorkspace) const;
+  void Render (const Handle(OpenGl_Workspace)& theWorkspace,
+               const Standard_Boolean          theToDrawImmediate) const;
 
   //! Returns the set of OpenGL Z-layers.
   const OpenGl_SequenceOfLayers& Layers() const { return myLayers; }
 
   //! Marks BVH tree for given priority list as dirty and
   //! marks primitive set for rebuild.
-  void InvalidateBVHData (const Standard_Integer theLayerId);
+  void InvalidateBVHData (const Graphic3d_ZLayerId theLayerId);
 
   //! Returns structure modification state (for ray-tracing).
   Standard_Size ModificationState() const { return myModificationState; }
 
- private:
-  
-  //! Get default layer
-  OpenGl_Layer& defaultLayer ();
-  
- protected:
+protected:
 
   // number of structures temporary put to default layer
   OpenGl_SequenceOfLayers myLayers;
   OpenGl_LayerSeqIds      myLayerIds;
+
   Standard_Integer        myNbPriorities;
   Standard_Integer        myNbStructures;
+  Standard_Integer        myImmediateNbStructures; //!< number of structures within immediate layers
 
   mutable Standard_Size   myModificationState;
 
- public:
+public:
+
   DEFINE_STANDARD_ALLOC
+
 };
 
 #endif //_OpenGl_LayerList_Header

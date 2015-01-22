@@ -180,7 +180,6 @@ void V3d_PositionLight::Display( const Handle(V3d_View)& aView,
   }
   
   Handle(Graphic3d_Group) gnopick = MyGraphicStructure1->NewGroup();
-  MyGraphicStructure1->SetPick(Standard_False);
   
   X0 = MyTarget.X();
   Y0 = MyTarget.Y();

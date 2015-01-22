@@ -63,12 +63,11 @@ uses
     Location               from TopLoc, 
     ClipPlane_Handle       from Graphic3d,
     SequenceOfHClipPlane   from Graphic3d,
-    --   ABD 29/10/04  Transform Persistence of Presentation( pan, zoom, rotate )
     TransModeFlags         from Graphic3d, 
     Pnt                    from gp,
     Trsf                   from gp, 
-    CTransPersStruct       from  Graphic3d      
-    --   ABD 29/10/04  Transform Persistence of Presentation( pan, zoom, rotate )
+    CTransPersStruct       from  Graphic3d,
+    ZLayerId from Graphic3d
 
 raises
     NotImplemented from Standard
@@ -246,22 +245,16 @@ is
    UpdateTransformation(me:mutable) is virtual;
     
    UpdateTransformation(me:mutable;P : Presentation from Prs3d) is virtual;
-    
+
    SetZLayer ( me         : mutable;
-               thePrsMgr  : PresentationManager from PrsMgr;
-               theLayerId : Integer from Standard )
+               theLayerId : ZLayerId from Graphic3d )
      is virtual;
-   ---Purpose: Set Z layer ID and update all presentations of
-   -- the presentable object. The layer can be set only for displayed object.
-   -- If all object presentations are removed, the layer ID will be set to 
-   -- default value when computing presentation. The layers mechanism allows
-   -- drawing objects in higher layers in overlay of objects in lower layers.
-    
-   GetZLayer ( me;
-               thePrsMgr  : PresentationManager from PrsMgr )
-     returns Integer from Standard is static;
-   ---Purpose: Get ID of Z layer. If no presentations of object is displayed,
-   -- and layer ID is unavailable, the -1 value is returned.
+   ---Purpose: Set Z layer ID and update all presentations of the presentable object.
+   -- The layers mechanism allows drawing objects in higher layers in overlay of objects in lower layers.
+
+   ZLayer ( me )
+     returns ZLayerId from Graphic3d is static;
+   ---Purpose: Get ID of Z layer.
 
    AddClipPlane (me : mutable; thePlane : ClipPlane_Handle from Graphic3d) is virtual;
    ---Purpose: Adds clip plane for graphical clipping for all display mode
@@ -333,7 +326,7 @@ fields
     myClipPlanes : SequenceOfHClipPlane from Graphic3d is protected;
     myTransformPersistence  :  CTransPersStruct  from  Graphic3d;
     myIsMutable : Boolean from Standard is protected;
-
+    myZLayer    : ZLayerId from Graphic3d is protected;
 
     myHasOwnPresentations : Boolean from Standard is protected; -- shows if object should have own presentations.
 

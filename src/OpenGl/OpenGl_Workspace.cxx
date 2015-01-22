@@ -684,7 +684,7 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
       redraw1 (theCView, anEmptyCLayer, anEmptyCLayer, 0);
       myOpenGlFBO->UnbindBuffer (aGlCtx);
 
-      const Standard_Boolean isImmediate = !myView->ImmediateStructures().IsEmpty();
+      const Standard_Boolean isImmediate = myView->HasImmediateStructures();
       Raytrace (theCView, aSizeX, aSizeY, isImmediate ? 0 : toSwap,
                 theCOverLayer, theCUnderLayer, aFrameBuffer);
 
@@ -707,7 +707,7 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
       aFrameBuffer->BindBuffer (aGlCtx);
     }
 
-    const Standard_Boolean isImmediate = !myView->ImmediateStructures().IsEmpty();
+    const Standard_Boolean isImmediate = myView->HasImmediateStructures();
     redraw1 (theCView, theCUnderLayer, theCOverLayer, isImmediate ? 0 : toSwap);
     if (isImmediate)
     {
@@ -811,7 +811,7 @@ void OpenGl_Workspace::redraw1 (const Graphic3d_CView& theCView,
   glClear (toClear);
 
   Handle(OpenGl_Workspace) aWS (this);
-  myView->Render (myPrintContext, aWS, theCView, theCUnderLayer, theCOverLayer);
+  myView->Render (myPrintContext, aWS, theCView, theCUnderLayer, theCOverLayer, Standard_False);
 
   // swap the buffers
   if (theToSwap)
@@ -856,6 +856,7 @@ void OpenGl_Workspace::copyBackToFront()
 
   glRasterPos2i (0, 0);
   glCopyPixels  (0, 0, myWidth + 1, myHeight + 1, GL_COLOR);
+  //glCopyPixels  (0, 0, myWidth + 1, myHeight + 1, GL_DEPTH);
 
   EnableFeatures();
 
@@ -906,7 +907,7 @@ void OpenGl_Workspace::RedrawImmediate (const Graphic3d_CView& theCView,
 #if !defined(GL_ES_VERSION_2_0)
   glGetBooleanv (GL_DOUBLEBUFFER, &isDoubleBuffer);
 #endif
-  if (myView->ImmediateStructures().IsEmpty())
+  if (!myView->HasImmediateStructures())
   {
     if (theToForce
      || !myIsImmediateDrawn)
@@ -944,19 +945,48 @@ void OpenGl_Workspace::RedrawImmediate (const Graphic3d_CView& theCView,
   }
   myIsImmediateDrawn = Standard_True;
 
-  NamedStatus |= OPENGL_NS_IMMEDIATE;
-  ///glDisable (GL_LIGHTING);
-  glDisable (GL_DEPTH_TEST);
-
   Handle(OpenGl_Workspace) aWS (this);
+
+  if (myUseZBuffer)
+  {
+    glDepthFunc (GL_LEQUAL);
+    glDepthMask (GL_TRUE);
+    if (myUseDepthTest)
+    {
+      glEnable (GL_DEPTH_TEST);
+    }
+    else
+    {
+      glDisable (GL_DEPTH_TEST);
+    }
+
+  #if !defined(GL_ES_VERSION_2_0)
+    glClearDepth (1.0);
+  #else
+    glClearDepthf (1.0f);
+  #endif
+  }
+  else
+  {
+    glDisable (GL_DEPTH_TEST);
+  }
+
+  myView->Render (myPrintContext, aWS, theCView, theCUnderLayer, theCOverLayer, Standard_True);
+  if (!myView->ImmediateStructures().IsEmpty())
+  {
+    glDisable (GL_DEPTH_TEST);
+  }
   for (OpenGl_SequenceOfStructure::Iterator anIter (myView->ImmediateStructures());
        anIter.More(); anIter.Next())
   {
     const OpenGl_Structure* aStructure = anIter.Value();
+    if (!aStructure->IsVisible())
+    {
+      continue;
+    }
+
     aStructure->Render (aWS);
   }
-
-  NamedStatus &= ~OPENGL_NS_IMMEDIATE;
 
   if (isDoubleBuffer && myTransientDrawToFront)
   {

@@ -87,6 +87,7 @@ void StdSelect_BRepOwner::Hilight(const Handle(PrsMgr_PresentationManager)& PM,
 #else
   Standard_Integer M = (myCurMode==-1) ? aMode:myCurMode;
 #endif
+  Handle(SelectMgr_SelectableObject) aSel = Selectable();
   if (myFromDecomposition)
   {
     // do the update flag check
@@ -99,23 +100,23 @@ void StdSelect_BRepOwner::Hilight(const Handle(PrsMgr_PresentationManager)& PM,
     }
 
     // generate new presentable shape
-    if(myPrsSh.IsNull())
+    if (myPrsSh.IsNull())
+    {
       myPrsSh = new StdSelect_Shape (myShape);
+    }
+    if (!aSel.IsNull())
+    {
+      myPrsSh->SetZLayer (aSel->ZLayer());
+    }
 
     // highlight and set layer
     PM->Highlight (myPrsSh, M);
-    Handle(SelectMgr_SelectableObject) aSel = Selectable();
-    if (!aSel.IsNull())
-    {
-      Standard_Integer aLayer = aSel->GetZLayer (PM);
-      if (aLayer >= 0)
-        PM->SetZLayer (myPrsSh, aLayer);
-    }
+
   }  
   else
   {
     if(myPrsSh.IsNull())
-      PM->Highlight(Selectable(),M);
+      PM->Highlight(aSel,M);
     else
       PM->Highlight(myPrsSh,M);
   }
@@ -133,6 +134,7 @@ void StdSelect_BRepOwner::HilightWithColor(const Handle(PrsMgr_PresentationManag
 #else
   Standard_Integer M = (myCurMode==-1) ? aMode:myCurMode;
 #endif
+  Handle(SelectMgr_SelectableObject) aSel = Selectable();
   if (myFromDecomposition)
   {
     // do the update flag check
@@ -156,21 +158,18 @@ void StdSelect_BRepOwner::HilightWithColor(const Handle(PrsMgr_PresentationManag
       else
         myPrsSh = new StdSelect_Shape(myShape);
     }
+    if (!aSel.IsNull())
+    {
+      myPrsSh->SetZLayer (aSel->ZLayer());
+    }
 
     // highlight with color and set layer
     PM->Color (myPrsSh, aCol, M);
-    Handle(SelectMgr_SelectableObject) aSel = Selectable();
-    if (!aSel.IsNull())
-    {
-      Standard_Integer aLayer = aSel->GetZLayer (PM);
-      if (aLayer >= 0)
-        PM->SetZLayer (myPrsSh, aLayer);
-    }
   }
   else
   {
     if(myPrsSh.IsNull())
-      PM->Color(Selectable(),aCol,M);
+      PM->Color(aSel, aCol, M);
     else
       PM->Color(myPrsSh,aCol,M);
   }
@@ -227,10 +226,10 @@ void StdSelect_BRepOwner::ResetLocation()
 //function : SetZLayer
 //purpose  :
 //=======================================================================
-void StdSelect_BRepOwner::SetZLayer 
-  (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-   const Standard_Integer theLayerId)
+void StdSelect_BRepOwner::SetZLayer (const Graphic3d_ZLayerId theLayerId)
 {
   if (!myPrsSh.IsNull())
-    thePrsMgr->SetZLayer (myPrsSh, theLayerId);
+  {
+    myPrsSh->SetZLayer (theLayerId);
+  }
 }

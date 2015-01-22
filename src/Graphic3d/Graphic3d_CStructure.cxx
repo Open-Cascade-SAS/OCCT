@@ -27,6 +27,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_CStructure, Standard_Transient)
 //=============================================================================
 Graphic3d_CStructure::Graphic3d_CStructure (const Handle(Graphic3d_StructureManager)& theManager)
 : Id               (theManager->NewIdentification()),
+  myZLayer         (Graphic3d_ZLayerId_Default),
   Priority         (Structure_MAX_PRIORITY / 2),
   PreviousPriority (Structure_MAX_PRIORITY / 2),
   Composition      (Graphic3d_TOC_REPLACE),
@@ -35,7 +36,6 @@ Graphic3d_CStructure::Graphic3d_CStructure (const Handle(Graphic3d_StructureMana
   stick            (0),
   highlight        (0),
   visible          (1),
-  pick             (1),
   HLRValidation    (0),
   IsForHighlight   (Standard_False),
   IsMutable        (Standard_False),

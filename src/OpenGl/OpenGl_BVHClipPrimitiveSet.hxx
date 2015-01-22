@@ -17,14 +17,12 @@
 #define _OpenGl_BVHClipPrimitiveSet_HeaderFile
 
 #include <BVH_PrimitiveSet.hxx>
-
 #include <NCollection_Array1.hxx>
-#include <NCollection_Sequence.hxx>
 
 #include <OpenGl_Vec.hxx>
 #include <OpenGl_Structure.hxx>
+#include <OpenGl_SequenceOfStructure.hxx>
 
-typedef NCollection_Sequence<const OpenGl_Structure*> OpenGl_SequenceOfStructure;
 typedef NCollection_Array1<OpenGl_SequenceOfStructure> OpenGl_ArrayOfStructure;
 
 //! Set of OpenGl_Structures for building BVH tree.

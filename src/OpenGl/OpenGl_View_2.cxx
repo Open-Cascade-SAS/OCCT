@@ -360,10 +360,11 @@ void OpenGl_View::DrawBackground (OpenGl_Workspace& theWorkspace)
 
 //call_func_redraw_all_structs_proc
 void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
-                          const Handle(OpenGl_Workspace) &theWorkspace,
-                          const Graphic3d_CView& theCView,
-                          const Aspect_CLayer2d& theCUnderLayer,
-                          const Aspect_CLayer2d& theCOverLayer)
+                          const Handle(OpenGl_Workspace)&      theWorkspace,
+                          const Graphic3d_CView&               theCView,
+                          const Aspect_CLayer2d&               theCUnderLayer,
+                          const Aspect_CLayer2d&               theCOverLayer,
+                          const Standard_Boolean               theToDrawImmediate)
 {
   // ==================================
   //      Step 1: Prepare for redraw
@@ -448,7 +449,8 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
   // ====================================
 
   // Render background
-  if (theWorkspace->ToRedrawGL())
+  if (theWorkspace->ToRedrawGL()
+  && !theToDrawImmediate)
   {
     DrawBackground (*theWorkspace);
   }
@@ -461,8 +463,10 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
   // =================================
   //      Step 3: Draw underlayer
   // =================================
-
-  RedrawLayer2d (thePrintContext, theWorkspace, theCView, theCUnderLayer);
+  if (!theToDrawImmediate)
+  {
+    RedrawLayer2d (thePrintContext, theWorkspace, theCView, theCUnderLayer);
+  }
 
   // =================================
   //      Step 4: Redraw main plane
@@ -552,7 +556,7 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
   {
     // single-pass monographic rendering
     // redraw scene with normal orientation and projection
-    RedrawScene (thePrintContext, theWorkspace);
+    RedrawScene (thePrintContext, theWorkspace, theToDrawImmediate);
   }
   else
   {
@@ -565,7 +569,7 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
     aContext->ApplyProjectionMatrix();
 
     // redraw left Eye
-    RedrawScene (thePrintContext, theWorkspace);
+    RedrawScene (thePrintContext, theWorkspace, theToDrawImmediate);
 
     // reset depth buffer of first rendering pass
     if (theWorkspace->UseDepthTest())
@@ -579,7 +583,7 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
     aContext->ApplyProjectionMatrix();
 
     // redraw right Eye
-    RedrawScene (thePrintContext, theWorkspace);
+    RedrawScene (thePrintContext, theWorkspace, theToDrawImmediate);
 
     // switch back to monographic rendering
     aContext->SetDrawBufferMono();
@@ -609,7 +613,8 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
   }
 
   // Render trihedron
-  if (theWorkspace->ToRedrawGL())
+  if (theWorkspace->ToRedrawGL()
+  && !theToDrawImmediate)
   {
     RedrawTrihedron (theWorkspace);
 
@@ -629,13 +634,15 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
   // ===============================
   //      Step 6: Redraw overlay
   // ===============================
+  if (!theToDrawImmediate)
+  {
+    const int aMode = 0;
+    theWorkspace->DisplayCallback (theCView, (aMode | OCC_PRE_OVERLAY));
 
-  const int aMode = 0;
-  theWorkspace->DisplayCallback (theCView, (aMode | OCC_PRE_OVERLAY));
+    RedrawLayer2d (thePrintContext, theWorkspace, theCView, theCOverLayer);
 
-  RedrawLayer2d (thePrintContext, theWorkspace, theCView, theCOverLayer);
-
-  theWorkspace->DisplayCallback (theCView, aMode);
+    theWorkspace->DisplayCallback (theCView, aMode);
+  }
 
   // ===============================
   //      Step 7: Finalize
@@ -671,7 +678,7 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
 // function : InvalidateBVHData
 // purpose  :
 // =======================================================================
-void OpenGl_View::InvalidateBVHData (const Standard_Integer theLayerId)
+void OpenGl_View::InvalidateBVHData (const Graphic3d_ZLayerId theLayerId)
 {
   myZLayers.InvalidateBVHData (theLayerId);
 }
@@ -679,7 +686,8 @@ void OpenGl_View::InvalidateBVHData (const Standard_Integer theLayerId)
 /*----------------------------------------------------------------------*/
 
 //ExecuteViewDisplay
-void OpenGl_View::RenderStructs (const Handle(OpenGl_Workspace) &AWorkspace)
+void OpenGl_View::RenderStructs (const Handle(OpenGl_Workspace)& AWorkspace,
+                                 const Standard_Boolean          theToDrawImmediate)
 {
   if ( myZLayers.NbStructures() <= 0 )
     return;
@@ -718,7 +726,7 @@ void OpenGl_View::RenderStructs (const Handle(OpenGl_Workspace) &AWorkspace)
     }
   }
 
-  myZLayers.Render (AWorkspace);
+  myZLayers.Render (AWorkspace, theToDrawImmediate);
 
 #if !defined(GL_ES_VERSION_2_0)
   //TsmPopAttri(); /* restore previous graphics context; before update lights */
@@ -1004,7 +1012,7 @@ void OpenGl_View::SetBackgroundGradientType (const Aspect_GradientFillMethod ATy
 //purpose  :
 //=======================================================================
 
-void OpenGl_View::AddZLayer (const Standard_Integer theLayerId)
+void OpenGl_View::AddZLayer (const Graphic3d_ZLayerId theLayerId)
 {
   myZLayers.AddLayer (theLayerId);
 }
@@ -1014,7 +1022,7 @@ void OpenGl_View::AddZLayer (const Standard_Integer theLayerId)
 //purpose  :
 //=======================================================================
 
-void OpenGl_View::RemoveZLayer (const Standard_Integer theLayerId)
+void OpenGl_View::RemoveZLayer (const Graphic3d_ZLayerId theLayerId)
 {
   myZLayers.RemoveLayer (theLayerId);
 }
@@ -1024,11 +1032,12 @@ void OpenGl_View::RemoveZLayer (const Standard_Integer theLayerId)
 //purpose  :
 //=======================================================================
 
-void OpenGl_View::DisplayStructure (const OpenGl_Structure *theStructure,
-                                    const Standard_Integer  thePriority)
+void OpenGl_View::DisplayStructure (const Handle(Graphic3d_Structure)& theStructure,
+                                    const Standard_Integer             thePriority)
 {
-  Standard_Integer aZLayer = theStructure->GetZLayer ();
-  myZLayers.AddStructure (theStructure, aZLayer, thePriority);
+  const OpenGl_Structure*  aStruct = reinterpret_cast<const OpenGl_Structure*> (theStructure->CStructure().operator->());
+  const Graphic3d_ZLayerId aZLayer = aStruct->ZLayer();
+  myZLayers.AddStructure (aStruct, aZLayer, thePriority);
 }
 
 //=======================================================================
@@ -1036,18 +1045,19 @@ void OpenGl_View::DisplayStructure (const OpenGl_Structure *theStructure,
 //purpose  :
 //=======================================================================
 
-void OpenGl_View::DisplayImmediateStructure (const OpenGl_Structure* theStructure)
+void OpenGl_View::DisplayImmediateStructure (const Handle(Graphic3d_Structure)& theStructure)
 {
+  const OpenGl_Structure* aStruct = reinterpret_cast<const OpenGl_Structure*> (theStructure->CStructure().operator->());
   for (OpenGl_SequenceOfStructure::Iterator anIter (myImmediateList);
        anIter.More(); anIter.Next())
   {
-    if (anIter.Value() == theStructure)
+    if (anIter.Value() == aStruct)
     {
       return;
     }
   }
 
-  myImmediateList.Append (theStructure);
+  myImmediateList.Append (aStruct);
 }
 
 //=======================================================================
@@ -1055,10 +1065,9 @@ void OpenGl_View::DisplayImmediateStructure (const OpenGl_Structure* theStructur
 //purpose  :
 //=======================================================================
 
-void OpenGl_View::EraseStructure (const OpenGl_Structure *theStructure)
+void OpenGl_View::EraseStructure (const Handle(Graphic3d_Structure)& theStructure)
 {
-  Standard_Integer aZLayer = theStructure->GetZLayer ();
-  myZLayers.RemoveStructure (theStructure, aZLayer);
+  myZLayers.RemoveStructure (theStructure);
 }
 
 //=======================================================================
@@ -1084,10 +1093,10 @@ void OpenGl_View::EraseImmediateStructure (const OpenGl_Structure* theStructure)
 //purpose  :
 //=======================================================================
 
-void OpenGl_View::ChangeZLayer (const OpenGl_Structure *theStructure,
-                                const Standard_Integer  theNewLayerId)
+void OpenGl_View::ChangeZLayer (const OpenGl_Structure*  theStructure,
+                                const Graphic3d_ZLayerId theNewLayerId)
 {
-  Standard_Integer anOldLayer = theStructure->GetZLayer ();
+  const Graphic3d_ZLayerId anOldLayer = theStructure->ZLayer();
   myZLayers.ChangeLayer (theStructure, anOldLayer, theNewLayerId);
 }
 
@@ -1095,10 +1104,10 @@ void OpenGl_View::ChangeZLayer (const OpenGl_Structure *theStructure,
 //function : SetZLayerSettings
 //purpose  :
 //=======================================================================
-void OpenGl_View::SetZLayerSettings (const Standard_Integer theLayerId,
-                                     const Graphic3d_ZLayerSettings theSettings)
+void OpenGl_View::SetZLayerSettings (const Graphic3d_ZLayerId        theLayerId,
+                                     const Graphic3d_ZLayerSettings& theSettings)
 {
-  myZLayers.Layer (theLayerId).SetLayerSettings (theSettings);
+  myZLayers.SetLayerSettings (theLayerId, theSettings);
 }
 
 //=======================================================================
@@ -1108,7 +1117,7 @@ void OpenGl_View::SetZLayerSettings (const Standard_Integer theLayerId,
 void OpenGl_View::ChangePriority (const OpenGl_Structure *theStructure,
                                   const Standard_Integer theNewPriority)
 {
-  Standard_Integer aLayerId = theStructure->GetZLayer();
+  const Graphic3d_ZLayerId aLayerId = theStructure->ZLayer();
   myZLayers.ChangePriority (theStructure, aLayerId, theNewPriority);
 }
 
@@ -1118,7 +1127,8 @@ void OpenGl_View::ChangePriority (const OpenGl_Structure *theStructure,
 //=======================================================================
 
 void OpenGl_View::RedrawScene (const Handle(OpenGl_PrinterContext)& thePrintContext,
-                               const Handle(OpenGl_Workspace)& theWorkspace)
+                               const Handle(OpenGl_Workspace)&      theWorkspace,
+                               const Standard_Boolean               theToDrawImmediate)
 {
   const Handle(OpenGl_Context)& aContext = theWorkspace->GetGlContext();
 
@@ -1246,14 +1256,14 @@ void OpenGl_View::RedrawScene (const Handle(OpenGl_PrinterContext)& thePrintCont
       theWorkspace->NamedStatus |= OPENGL_NS_FORBIDSETTEX;
       theWorkspace->DisableTexture();
       // Render the view
-      RenderStructs (theWorkspace);
+      RenderStructs (theWorkspace, theToDrawImmediate);
       break;
 
     case Visual3d_TOD_ENVIRONMENT:
       theWorkspace->NamedStatus |= OPENGL_NS_FORBIDSETTEX;
       theWorkspace->EnableTexture (myTextureEnv);
       // Render the view
-      RenderStructs (theWorkspace);
+      RenderStructs (theWorkspace, theToDrawImmediate);
       theWorkspace->DisableTexture();
       break;
 
@@ -1261,7 +1271,7 @@ void OpenGl_View::RedrawScene (const Handle(OpenGl_PrinterContext)& thePrintCont
       // First pass
       theWorkspace->NamedStatus &= ~OPENGL_NS_FORBIDSETTEX;
       // Render the view
-      RenderStructs (theWorkspace);
+      RenderStructs (theWorkspace, theToDrawImmediate);
       theWorkspace->DisableTexture();
 
       // Second pass
@@ -1294,7 +1304,7 @@ void OpenGl_View::RedrawScene (const Handle(OpenGl_PrinterContext)& thePrintCont
         theWorkspace->NamedStatus |= OPENGL_NS_FORBIDSETTEX;
 
         // Render the view
-        RenderStructs (theWorkspace);
+        RenderStructs (theWorkspace, theToDrawImmediate);
         theWorkspace->DisableTexture();
 
         // Restore properties back

@@ -82,15 +82,43 @@ Visual3d_ViewManager::Visual3d_ViewManager (const Handle(Graphic3d_GraphicDriver
 Graphic3d_StructureManager (theDriver),
 MyDefinedView (),
 MyViewGenId (View_IDMIN+((View_IDMIN+View_IDMAX)/(Visual3d_ViewManager::Limit ()))*(Visual3d_ViewManager::CurrentId ()-1),View_IDMIN+((View_IDMIN+View_IDMAX)/(Visual3d_ViewManager::Limit ()))*Visual3d_ViewManager::CurrentId ()-1),
-MyZBufferAuto (Standard_False)
+MyZBufferAuto (Standard_False),
+myZLayerGenId (1, IntegerLast())
 {
-  // default layer is always presented in display layer sequence
-  // it can not be removed
-  myLayerIds.Add (0);
-  myLayerSeq.Append (0);
-
   MyGraphicDriver = theDriver;
-  myMapOfZLayerSettings.Bind (0, Graphic3d_ZLayerSettings());
+
+  // default layers are always presented in display layer sequence it can not be removed
+  Graphic3d_ZLayerSettings aDefSettings;
+  aDefSettings.Flags = Graphic3d_ZLayerDepthTest
+                     | Graphic3d_ZLayerDepthWrite;
+  aDefSettings.IsImmediate = false;
+  myLayerIds.Add             (Graphic3d_ZLayerId_Default);
+  myLayerSeq.Append          (Graphic3d_ZLayerId_Default);
+  myMapOfZLayerSettings.Bind (Graphic3d_ZLayerId_Default, aDefSettings);
+
+  Graphic3d_ZLayerSettings aTopSettings;
+  aTopSettings.Flags = Graphic3d_ZLayerDepthTest
+                     | Graphic3d_ZLayerDepthWrite;
+  aTopSettings.IsImmediate = true;
+  myLayerIds.Add             (Graphic3d_ZLayerId_Top);
+  myLayerSeq.Append          (Graphic3d_ZLayerId_Top);
+  myMapOfZLayerSettings.Bind (Graphic3d_ZLayerId_Top, aTopSettings);
+
+  Graphic3d_ZLayerSettings aTopmostSettings;
+  aTopmostSettings.Flags = Graphic3d_ZLayerDepthTest
+                         | Graphic3d_ZLayerDepthWrite
+                         | Graphic3d_ZLayerDepthClear;
+  aTopmostSettings.IsImmediate = true;
+  myLayerIds.Add             (Graphic3d_ZLayerId_Topmost);
+  myLayerSeq.Append          (Graphic3d_ZLayerId_Topmost);
+  myMapOfZLayerSettings.Bind (Graphic3d_ZLayerId_Topmost, aTopmostSettings);
+
+  Graphic3d_ZLayerSettings anOsdSettings;
+  anOsdSettings.Flags = 0;
+  anOsdSettings.IsImmediate = true;
+  myLayerIds.Add             (Graphic3d_ZLayerId_TopOSD);
+  myLayerSeq.Append          (Graphic3d_ZLayerId_TopOSD);
+  myMapOfZLayerSettings.Bind (Graphic3d_ZLayerId_TopOSD, anOsdSettings);
 }
 
 //-Destructors
@@ -124,7 +152,6 @@ void Visual3d_ViewManager::Remove () {
   // clear all structures whilst views are alive for correct GPU memory management
   MyDisplayedStructure.Clear();
   MyHighlightedStructure.Clear();
-  MyPickStructure.Clear();
 
   // clear list of managed views
   MyDefinedView.Clear();
@@ -255,7 +282,6 @@ void Visual3d_ViewManager::Erase (const Handle(Graphic3d_Structure)& AStructure)
   }
 
   MyHighlightedStructure.Remove (AStructure);
-  MyPickStructure.Remove (AStructure);
 }
 
 void Visual3d_ViewManager::Erase () {
@@ -423,16 +449,9 @@ Standard_Boolean Visual3d_ViewManager::ContainsComputedStructure () const
 }
 #endif
 
-Handle(Visual3d_HSequenceOfView) Visual3d_ViewManager::DefinedView () const
+const Visual3d_SequenceOfView& Visual3d_ViewManager::DefinedViews() const
 {
-  Handle (Visual3d_HSequenceOfView) SG = new Visual3d_HSequenceOfView();
-
-  for(int i=1; i<=MyDefinedView.Length(); i++)
-  {
-    SG->Append(MyDefinedView.Value(i));
-  }
-
-  return (SG);
+  return MyDefinedView;
 }
 
 Standard_Boolean Visual3d_ViewManager::ViewExists (const Handle(Aspect_Window)& AWindow, Graphic3d_CView& TheCView) const
@@ -629,39 +648,26 @@ const Handle(Visual3d_Layer)& Visual3d_ViewManager::OverLayer () const {
 //=======================================================================
 
 void Visual3d_ViewManager::ChangeZLayer (const Handle(Graphic3d_Structure)& theStructure,
-                                         const Standard_Integer theLayerId)
+                                         const Graphic3d_ZLayerId           theLayerId)
 {
-  if (!myLayerIds.Contains (theLayerId))
-    return;
-
-  // change display layer for structure in all views
-  if (MyDisplayedStructure.Contains (theStructure))
+  if (!myLayerIds.Contains (theLayerId)
+   || !MyDisplayedStructure.Contains (theStructure))
   {
-    for(int i=1; i<=MyDefinedView.Length(); i++)
-    {
-      (MyDefinedView.Value(i))->ChangeZLayer(theStructure, theLayerId);
-    }
+    return;
   }
 
-  // tell graphic driver to update the structure's display layer
-  MyGraphicDriver->ChangeZLayer (*(theStructure->CStructure()), theLayerId);
-}
-
-//=======================================================================
-//function : GetZLayer
-//purpose  :
-//=======================================================================
-
-Standard_Integer Visual3d_ViewManager::GetZLayer (const Handle(Graphic3d_Structure)& theStructure) const
-{
-  return MyGraphicDriver->GetZLayer (*theStructure->CStructure ());
+  // change display layer for structure in all views
+  for (int aViewIter = 1; aViewIter <= MyDefinedView.Length(); ++aViewIter)
+  {
+    MyDefinedView.Value (aViewIter)->ChangeZLayer (theStructure, theLayerId);
+  }
 }
 
 //=======================================================================
 //function : SetZLayerSettings
 //purpose  :
 //=======================================================================
-void Visual3d_ViewManager::SetZLayerSettings (const Standard_Integer theLayerId,
+void Visual3d_ViewManager::SetZLayerSettings (const Graphic3d_ZLayerId        theLayerId,
                                               const Graphic3d_ZLayerSettings& theSettings)
 {
   // tell all managed views to set zlayer settings
@@ -685,7 +691,7 @@ void Visual3d_ViewManager::SetZLayerSettings (const Standard_Integer theLayerId,
 //function : ZLayerSettings
 //purpose  :
 //=======================================================================
-Graphic3d_ZLayerSettings Visual3d_ViewManager::ZLayerSettings (const Standard_Integer theLayerId)
+Graphic3d_ZLayerSettings Visual3d_ViewManager::ZLayerSettings (const Graphic3d_ZLayerId theLayerId)
 {
   if (!myLayerIds.Contains (theLayerId))
   {
@@ -700,13 +706,13 @@ Graphic3d_ZLayerSettings Visual3d_ViewManager::ZLayerSettings (const Standard_In
 //purpose  :
 //=======================================================================
 
-Standard_Boolean Visual3d_ViewManager::AddZLayer (Standard_Integer& theLayerId)
+Standard_Boolean Visual3d_ViewManager::AddZLayer (Graphic3d_ZLayerId& theLayerId)
 {
   try
   {
     OCC_CATCH_SIGNALS
-    theLayerId = getZLayerGenId ().Next ();
-    myLayerIds.Add (theLayerId);
+    theLayerId = myZLayerGenId.Next();
+    myLayerIds.Add    (theLayerId);
     myLayerSeq.Append (theLayerId);
   }
   catch (Aspect_IdentDefinitionError)
@@ -732,10 +738,14 @@ Standard_Boolean Visual3d_ViewManager::AddZLayer (Standard_Integer& theLayerId)
 //purpose  :
 //=======================================================================
 
-Standard_Boolean Visual3d_ViewManager::RemoveZLayer (const Standard_Integer theLayerId)
+Standard_Boolean Visual3d_ViewManager::RemoveZLayer (const Graphic3d_ZLayerId theLayerId)
 {
-  if (!myLayerIds.Contains (theLayerId) || theLayerId == 0)
+  if (!myLayerIds.Contains (theLayerId)
+    || theLayerId < myZLayerGenId.Lower()
+    || theLayerId > myZLayerGenId.Upper())
+  {
     return Standard_False;
+  }
 
   // tell all managed views to remove display layers
   for(int i=1; i<=MyDefinedView.Length(); i++)
@@ -757,8 +767,8 @@ Standard_Boolean Visual3d_ViewManager::RemoveZLayer (const Standard_Integer theL
 
   myMapOfZLayerSettings.UnBind (theLayerId);
 
-  myLayerIds.Remove (theLayerId);
-  getZLayerGenId ().Free (theLayerId);
+  myLayerIds.Remove  (theLayerId);
+  myZLayerGenId.Free (theLayerId);
 
   return Standard_True;
 }
@@ -771,17 +781,6 @@ Standard_Boolean Visual3d_ViewManager::RemoveZLayer (const Standard_Integer theL
 void Visual3d_ViewManager::GetAllZLayers (TColStd_SequenceOfInteger& theLayerSeq) const
 {
   theLayerSeq.Assign (myLayerSeq);
-}
-
-//=======================================================================
-//function : getZLayerGenId
-//purpose  :
-//=======================================================================
-
-Aspect_GenId& Visual3d_ViewManager::getZLayerGenId ()
-{
-  static Aspect_GenId aGenId (1, IntegerLast());
-  return aGenId;
 }
 
 //=======================================================================
@@ -808,10 +807,19 @@ void Visual3d_ViewManager::InstallZLayers(const Handle(Visual3d_View)& theView) 
   // order: the new layers are always appended to the end of the list
   // inside of view, while layer remove operation doesn't affect the order.
   // Starting from second layer : no need to change the default z layer.
-  for (Standard_Integer aSeqIdx = 2; aSeqIdx <= myLayerSeq.Length (); aSeqIdx++)
+  for (Standard_Integer aSeqIdx = 1; aSeqIdx <= myLayerSeq.Length(); ++aSeqIdx)
   {
-    Standard_Integer aLayerID = myLayerSeq.Value (aSeqIdx);
-    theView->RemoveZLayer (aLayerID);
-    theView->AddZLayer (aLayerID);
+    const Graphic3d_ZLayerId        aLayerID  = myLayerSeq.Value (aSeqIdx);
+    const Graphic3d_ZLayerSettings& aSettings = myMapOfZLayerSettings.Find (aLayerID);
+    if (aLayerID < myZLayerGenId.Lower()
+     || aLayerID > myZLayerGenId.Upper())
+    {
+      theView->SetZLayerSettings (aLayerID, aSettings);
+      continue;
+    }
+
+    theView->RemoveZLayer      (aLayerID);
+    theView->AddZLayer         (aLayerID);
+    theView->SetZLayerSettings (aLayerID, aSettings);
   }
 }

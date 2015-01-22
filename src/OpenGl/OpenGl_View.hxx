@@ -139,37 +139,37 @@ class OpenGl_View : public MMgt_TShared
   //! The structure will be added to associated with it z layer.
   //! If the z layer is not presented in the view, the structure will
   //! be displayed in default bottom-level z layer.
-  void DisplayStructure (const OpenGl_Structure* theStructure,
-                         const Standard_Integer  thePriority);
+  void DisplayStructure (const Handle(Graphic3d_Structure)& theStructure,
+                         const Standard_Integer             thePriority);
 
   //! Erase structure from display list.
-  void EraseStructure (const OpenGl_Structure* theStructure);
+  void EraseStructure (const Handle(Graphic3d_Structure)& theStructure);
 
   //! Add structure to the list of immediate structures.
-  void DisplayImmediateStructure (const OpenGl_Structure* theStructure);
+  void DisplayImmediateStructure (const Handle(Graphic3d_Structure)& theStructure);
 
   //! Erase structure from display list.
   void EraseImmediateStructure (const OpenGl_Structure* theStructure);
 
   //! Insert a new top-level z layer with ID <theLayerId>
-  void AddZLayer (const Standard_Integer theLayerId);
+  void AddZLayer (const Graphic3d_ZLayerId theLayerId);
 
   //! Remove a z layer with ID <theLayerId>
-  void RemoveZLayer (const Standard_Integer theLayerId);
+  void RemoveZLayer (const Graphic3d_ZLayerId theLayerId);
 
   //! Display structure in z layer with ID <theNewLayerId>
   //! If the layer with ID <theNewLayerId> is not presented in the view,
   //! the structure will be displayed in default bottom-level layer.
-  void ChangeZLayer (const OpenGl_Structure *theStructure,
-                     const Standard_Integer  theNewLayerId);
+  void ChangeZLayer (const OpenGl_Structure*  theStructure,
+                     const Graphic3d_ZLayerId theNewLayerId);
 
   //! Sets the settings for a single Z layer of specified view.
-  void SetZLayerSettings (const Standard_Integer theLayerId,
-                          const Graphic3d_ZLayerSettings theSettings);
+  void SetZLayerSettings (const Graphic3d_ZLayerId        theLayerId,
+                          const Graphic3d_ZLayerSettings& theSettings);
 
   //! Changes the priority of a structure within its ZLayer
-  void ChangePriority (const OpenGl_Structure *theStructure,
-                       const Standard_Integer theNewPriority);
+  void ChangePriority (const OpenGl_Structure* theStructure,
+                       const Standard_Integer  theNewPriority);
 
   void CreateBackgroundTexture (const Standard_CString AFileName, const Aspect_FillMethod AFillStyle);
   void SetBackgroundTextureStyle (const Aspect_FillMethod FillStyle);
@@ -180,7 +180,8 @@ class OpenGl_View : public MMgt_TShared
                const Handle(OpenGl_Workspace)&      theWorkspace,
                const Graphic3d_CView&               theCView,
                const Aspect_CLayer2d&               theCUnderLayer,
-               const Aspect_CLayer2d&               theCOverLayer);
+               const Aspect_CLayer2d&               theCOverLayer,
+               const Standard_Boolean               theToDrawImmediate);
 
 
   void DrawBackground (OpenGl_Workspace& theWorkspace);
@@ -215,12 +216,20 @@ class OpenGl_View : public MMgt_TShared
     return myImmediateList;
   }
 
+  //! Returns true if there are immediate structures to display
+  bool HasImmediateStructures() const
+  {
+    return !myImmediateList.IsEmpty()
+         || myZLayers.NbImmediateStructures() != 0;
+  }
+
   //! Returns modification state for ray-tracing.
   Standard_Size ModificationState() const { return myModificationState; }
 
 protected:
 
-  void RenderStructs (const Handle(OpenGl_Workspace) &AWorkspace);
+  void RenderStructs (const Handle(OpenGl_Workspace)& theWorkspace,
+                      const Standard_Boolean          theToDrawImmediate);
   void RedrawLayer2d (const Handle(OpenGl_PrinterContext)& thePrintContext,
                       const Handle(OpenGl_Workspace) &theWorkspace,
                       const Graphic3d_CView&               theCView,
@@ -231,13 +240,9 @@ protected:
   //! lights, structures. The peculiar properties of "scene" is that
   //! it requires empty Z-Buffer and uses projection and orientation
   //! matrices supplied by 3d view.
-  //! @param thePrintCtx [in] printer context which facilitates tiled printing.
-  //! @param theWorkspace [in] rendering workspace.
-  //! @param theCView [in] view data.
-  //! @param theProjection [in] view projection matrix.
-  //! @param theOrientation [in] view orientation matrix.
   void RedrawScene (const Handle(OpenGl_PrinterContext)& thePrintContext,
-                    const Handle(OpenGl_Workspace)& theWorkspace);
+                    const Handle(OpenGl_Workspace)&      theWorkspace,
+                    const Standard_Boolean               theToDrawImmediate);
 
   Handle(OpenGl_LineAttributes) myLineAttribs;
   Handle(OpenGl_Texture)        myTextureEnv;

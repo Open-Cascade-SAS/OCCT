@@ -50,6 +50,7 @@ uses
     PrintAlgo           from Aspect,
     DisplayConnection_Handle from Aspect,
 
+    ZLayerId            from Graphic3d,
     ZLayerSettings      from Graphic3d,
 
     AspectLine3d        from Graphic3d,
@@ -60,7 +61,6 @@ uses
     CBitFields20        from Graphic3d,
     Group               from Graphic3d,
     CLight              from Graphic3d,
-    CPick               from Graphic3d,
     CPlane              from Graphic3d,
     CStructure          from Graphic3d,
     CStructure_Handle   from Graphic3d,
@@ -123,16 +123,16 @@ is
     -- Category: Structure management methods
     -----------------------------------------
 
-    DisplayStructure ( me            : mutable;
-                       theCView      : CView from Graphic3d;
-                       theCStructure : in out CStructure from Graphic3d;
-                       thePriority   : Integer from Standard )
+    DisplayStructure ( me           : mutable;
+                       theCView     : CView from Graphic3d;
+                       theStructure : Structure from Graphic3d;
+                       thePriority  : Integer from Standard )
         is deferred;
     ---Purpose: call_togl_displaystructure
 
-    EraseStructure ( me            : mutable;
-                     theCView      : CView from Graphic3d;
-                     theCStructure : in out CStructure from Graphic3d )
+    EraseStructure ( me           : mutable;
+                     theCView     : CView from Graphic3d;
+                     theStructure : Structure from Graphic3d )
         is deferred;
     ---Purpose: call_togl_erasestructure
 
@@ -369,9 +369,9 @@ is
     --    But it works in any case and is especially useful for view dump because the dump image is read from the back buffer.
     -- @return previous mode.
 
-    DisplayImmediateStructure ( me            : mutable;
-                                theCView      : CView      from Graphic3d;
-                                theCStructure : CStructure from Graphic3d )
+    DisplayImmediateStructure ( me           : mutable;
+                                theCView     : CView      from Graphic3d;
+                                theStructure : Structure from Graphic3d )
     is deferred;
     ---Purpose: Display structure in immediate mode on top of general presentation
 
@@ -629,7 +629,7 @@ is
 
     AddZLayer( me         : mutable;
                theCView   : CView from Graphic3d;
-               theLayerId : Integer from Standard )
+               theLayerId : ZLayerId from Graphic3d )
         is deferred;
         ---Purpose: Add a new top-level z layer with ID <theLayerId> for
         -- the view. Z layers allow drawing structures in higher layers
@@ -639,7 +639,7 @@ is
 
     RemoveZLayer( me         : mutable;
                   theCView   : CView from Graphic3d;
-                  theLayerId : Integer from Standard )
+                  theLayerId : ZLayerId from Graphic3d )
         is deferred;
         ---Purpose: Remove Z layer from the specified view. All structures
         -- displayed at the moment in layer will be displayed in default layer
@@ -647,7 +647,7 @@ is
         -- structures use method UnsetZLayer (...).
 
     UnsetZLayer( me         : mutable;
-                 theLayerId : Integer from Standard ) 
+                 theLayerId : ZLayerId from Graphic3d )
         is deferred;
         ---Purpose: Unset Z layer ID for all structures. The structure
         -- indexes will be set to default layer ( the bottom-level z layer
@@ -655,27 +655,14 @@ is
 
     ChangeZLayer( me            : mutable;
                   theCStructure : CStructure from Graphic3d;
-                  theLayerId    : Integer from Standard )
-        is deferred;
-        ---Purpose: Change Z layer of a structure. The new z layer ID will
-        -- be used to define the associated layer for structure on display.
-
-    ChangeZLayer( me            : mutable;
-                  theCStructure : CStructure from Graphic3d;
                   theCView      : CView from Graphic3d;
-                  theNewLayerId : Integer from Standard )
+                  theNewLayerId : ZLayerId from Graphic3d )
         is deferred;
         ---Purpose: Change Z layer of a structure already presented in view.
 
-    GetZLayer( me;
-               theCStructure : CStructure from Graphic3d )
-        returns Integer from Standard is deferred;
-        ---Purpose: Get Z layer ID of structure. If the structure doesn't
-        -- exists in graphic driver, the method returns -1.
-
     SetZLayerSettings( me          : mutable;
                        theCView    : CView from Graphic3d;
-                       theLayerId  : Integer from Standard;
+                       theLayerId  : ZLayerId from Graphic3d;
                        theSettings : ZLayerSettings from Graphic3d)
         is deferred;
         ---Purpose:  Sets the settings for a single Z layer of specified view.
@@ -699,10 +686,6 @@ is
     PrintCLight ( me;
                   ACLight   : CLight from Graphic3d;
                   AField    : Integer from Standard );
-
-    PrintCPick ( me;
-                 ACPick    : CPick from Graphic3d;
-                 AField    : Integer from Standard );
 
     PrintCStructure ( me;
                       ACStructure   : CStructure from Graphic3d;

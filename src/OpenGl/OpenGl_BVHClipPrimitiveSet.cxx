@@ -81,11 +81,9 @@ void OpenGl_BVHClipPrimitiveSet::Assign (const OpenGl_ArrayOfStructure& theStruc
   myStructs.Clear();
 
   const Standard_Integer aNbPriorities = theStructs.Length();
-  OpenGl_SequenceOfStructure::Iterator aStructIter;
   for (Standard_Integer aPriorityIdx = 0; aPriorityIdx < aNbPriorities; ++aPriorityIdx)
   {
-    const OpenGl_SequenceOfStructure& aSeq = theStructs (aPriorityIdx);
-    for (aStructIter.Init (aSeq); aStructIter.More(); aStructIter.Next())
+    for (OpenGl_SequenceOfStructure::Iterator aStructIter (theStructs (aPriorityIdx)); aStructIter.More(); aStructIter.Next())
     {
       const OpenGl_Structure* aStruct = aStructIter.Value();
       if (!aStruct->IsAlwaysRendered())

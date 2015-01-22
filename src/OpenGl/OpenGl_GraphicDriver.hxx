@@ -42,7 +42,6 @@
 #include <gp_Ax2.hxx>
 #include <Graphic3d_CView.hxx>
 #include <Graphic3d_CStructure.hxx>
-#include <Graphic3d_CPick.hxx>
 #include <Graphic3d_TextPath.hxx>
 #include <Graphic3d_HorizontalTextAlignment.hxx>
 #include <Graphic3d_VerticalTextAlignment.hxx>
@@ -122,18 +121,18 @@ public:
 
 public: // Methods for graphical structures
 
-  Standard_EXPORT void DisplayStructure (const Graphic3d_CView& theCView,
-                                         Graphic3d_CStructure&  theCStructure,
-                                         const Standard_Integer thePriority);
-  Standard_EXPORT void EraseStructure (const Graphic3d_CView& theCView,
-                                       Graphic3d_CStructure&  theCStructure);
+  Standard_EXPORT void DisplayStructure (const Graphic3d_CView&             theCView,
+                                         const Handle(Graphic3d_Structure)& theStructure,
+                                         const Standard_Integer             thePriority);
+  Standard_EXPORT void EraseStructure (const Graphic3d_CView&             theCView,
+                                       const Handle(Graphic3d_Structure)& theStructure);
   Standard_EXPORT void RemoveStructure (Handle(Graphic3d_CStructure)& theCStructure);
   Standard_EXPORT Handle(Graphic3d_CStructure) Structure (const Handle(Graphic3d_StructureManager)& theManager);
 
   Standard_EXPORT Standard_Boolean SetImmediateModeDrawToFront (const Graphic3d_CView& theCView,
                                                                 const Standard_Boolean theDrawToFrontBuffer);
-  Standard_EXPORT void DisplayImmediateStructure (const Graphic3d_CView&      theCView,
-                                                  const Graphic3d_CStructure& theCStructure);
+  Standard_EXPORT void DisplayImmediateStructure (const Graphic3d_CView&             theCView,
+                                                  const Handle(Graphic3d_Structure)& theStructure);
   Standard_EXPORT void EraseImmediateStructure (const Graphic3d_CView&      theCView,
                                                 const Graphic3d_CStructure& theCStructure);
 
@@ -259,39 +258,29 @@ public:
 
   //! Add a new top-level z layer with ID theLayerId for the view. Z layers allow drawing structures in higher layers in foreground of structures in lower layers.
   //! To add a structure to desired layer on display it is necessary to set the layer index for the structure.
-  Standard_EXPORT void AddZLayer (const Graphic3d_CView& theCView,
-                                  const Standard_Integer theLayerId);
+  Standard_EXPORT void AddZLayer (const Graphic3d_CView&   theCView,
+                                  const Graphic3d_ZLayerId theLayerId);
 
   //! Remove Z layer from the specified view.
   //! All structures displayed at the moment in layer will be displayed in default layer (the bottom-level z layer).
   //! To unset layer index from associated structures use method UnsetZLayer (...).
-  Standard_EXPORT void RemoveZLayer (const Graphic3d_CView& theCView,
-                                     const Standard_Integer theLayerId);
+  Standard_EXPORT void RemoveZLayer (const Graphic3d_CView&   theCView,
+                                     const Graphic3d_ZLayerId theLayerId);
 
   //! Unset Z layer ID for all structures.
   //! The structure indexes will be set to default layer (the bottom-level z layer with ID = 0).
-  Standard_EXPORT void UnsetZLayer (const Standard_Integer theLayerId);
-
-  //! Change Z layer of a structure.
-  //! The new z layer ID will be used to define the associated layer for structure on display.
-  //! It is recommended to take care of redisplaying the structures already presented in view with previously set layer index.
-  //! This is usually done by viewer manager. Z layers allow drawing structures in higher layers in foreground of structures in lower layers.
-  Standard_EXPORT void ChangeZLayer (const Graphic3d_CStructure& theCStructure,
-                                     const Standard_Integer      theLayerId);
+  Standard_EXPORT void UnsetZLayer (const Graphic3d_ZLayerId theLayerId);
 
   //! Change Z layer of a structure already presented in view.
   //! It is recommended to update z layer of already displayed structures with this method before setting new z layer index to the structure.
   //! This is usually done by viewer manager.
   Standard_EXPORT void ChangeZLayer (const Graphic3d_CStructure& theCStructure,
                                      const Graphic3d_CView&      theCView,
-                                     const Standard_Integer      theNewLayerId);
-
-  //! Get Z layer ID of the structure. If the structure doesn't exists in graphic driver, the method returns -1.
-  Standard_EXPORT Standard_Integer GetZLayer (const Graphic3d_CStructure& theCStructure) const;
+                                     const Graphic3d_ZLayerId    theNewLayerId);
 
   //! Sets the settings for a single Z layer of specified view.
-  Standard_EXPORT void SetZLayerSettings (const Graphic3d_CView& theCView,
-                                          const Standard_Integer theLayerId,
+  Standard_EXPORT void SetZLayerSettings (const Graphic3d_CView&          theCView,
+                                          const Graphic3d_ZLayerId        theLayerId,
                                           const Graphic3d_ZLayerSettings& theSettings);
 
   //! Changes priority of a structure within its Z layer for the specified view.

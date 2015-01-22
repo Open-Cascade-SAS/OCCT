@@ -1,6 +1,6 @@
-// Created on: 2011-09-20
-// Created by: Sergey ZERCHANINOV
-// Copyright (c) 2011-2014 OPEN CASCADE SAS
+// Created on: 2014-12-18
+// Created by: Kirill Gavrilov
+// Copyright (c) 2014 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -13,17 +13,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _OpenGl_NamedStatus_Header
-#define _OpenGl_NamedStatus_Header
+#ifndef _Graphic3d_MapIteratorOfMapOfStructure
+#define _Graphic3d_MapIteratorOfMapOfStructure
 
-// Dynamic fields
-#define OPENGL_NS_HIGHLIGHT    (1<<1)
-#define OPENGL_NS_RESMAT       (1<<2)
-#define OPENGL_NS_TEXTURE      (1<<4)
-#define OPENGL_NS_ANTIALIASING (1<<5)
-#define OPENGL_NS_2NDPASSNEED  (1<<6)
-#define OPENGL_NS_2NDPASSDO    (1<<7)
-#define OPENGL_NS_FORBIDSETTEX (1<<8)
-#define OPENGL_NS_WHITEBACK    (1<<9)
+#include <Graphic3d_MapOfStructure.hxx>
 
-#endif //_OpenGl_NamedStatus_Header
+typedef Graphic3d_MapOfStructure::Iterator Graphic3d_MapIteratorOfMapOfStructure;
+
+#endif // _Graphic3d_MapIteratorOfMapOfStructure

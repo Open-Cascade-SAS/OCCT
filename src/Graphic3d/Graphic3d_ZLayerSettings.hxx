@@ -24,14 +24,18 @@ enum Graphic3d_ZLayerSetting
   Graphic3d_ZLayerDepthOffset = 8
 };
 
+//! Structure defines list of ZLayer properties.
 struct Graphic3d_ZLayerSettings
 {
+
+  //! Default settings.
   Graphic3d_ZLayerSettings()
     : DepthOffsetFactor (1.0f),
       DepthOffsetUnits  (1.0f),
       Flags (Graphic3d_ZLayerDepthTest
            | Graphic3d_ZLayerDepthWrite
-           | Graphic3d_ZLayerDepthClear)
+           | Graphic3d_ZLayerDepthClear),
+      IsImmediate (false)
   {}
 
   //! Returns true if theSetting is enabled.
@@ -70,10 +74,13 @@ struct Graphic3d_ZLayerSettings
     EnableSetting (Graphic3d_ZLayerDepthOffset);
   }
 
-  Standard_ShortReal DepthOffsetFactor; //!< Factor argument value for OpenGl glPolygonOffset function.
-  Standard_ShortReal DepthOffsetUnits;  //!< Units argument value for OpenGl glPolygonOffset function.
+public:
 
-  Standard_Integer Flags; //!< Storage field for settings.
+  Standard_ShortReal DepthOffsetFactor; //!< factor argument value for OpenGl glPolygonOffset function
+  Standard_ShortReal DepthOffsetUnits;  //!< units  argument value for OpenGl glPolygonOffset function
+  Standard_Integer   Flags;             //!< storage field for settings
+  bool               IsImmediate;       //!< immediate layer will be drawn after all normal layers
+
 };
 
 #endif // _Graphic3d_ZLayerSettings_HeaderFile

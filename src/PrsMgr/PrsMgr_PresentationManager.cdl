@@ -28,10 +28,12 @@ uses
   PresentableObject   from PrsMgr,
   ListOfPresentations from PrsMgr,
   Length,NameOfColor  from Quantity,
+  Color               from Quantity,
   Transformation      from Geom,
   NameOfMaterial      from Graphic3d,
   Presentation        from PrsMgr,
   View                from V3d,
+  ViewManager         from Visual3d,
   ShadingAspect       from Prs3d,
   Presentation        from Prs3d
 
@@ -41,7 +43,7 @@ raises
 
 is
 
-  Create (theStructureManager : StructureManager from Graphic3d)
+  Create (theStructureManager : ViewManager from Visual3d)
   returns PresentationManager from PrsMgr;
   ---Purpose:
   -- Creates a framework to manage displays and graphic entities with the 3D view theStructureManager.
@@ -232,30 +234,26 @@ is
 
   Presentation (me;
                 thePrsObject : PresentableObject from PrsMgr;
-                theMode      : Integer from Standard = 0)
+                theMode      : Integer from Standard = 0;
+                theToCreate  : Boolean from Standard = Standard_False)
   returns Presentation from PrsMgr
-  raises NoSuchObject from Standard
   is static;
-  ---Purpose: Returns the presentation Presentation of the presentable object thePrsObject in this framework. thePrsObject has the display mode theMode.
-
-  AddPresentation (me           : mutable;
-                   thePrsObject : PresentableObject from PrsMgr;
-                   theMode      : Integer from Standard = 0)
-  ---Purpose: Adds a presentation of the presentable object thePrsObject to this framework.
-  -- thePrsObject has the display mode theMode.
-  is protected;
+  ---Purpose: Returns the presentation Presentation of the presentable object thePrsObject in this framework.
+  -- When theToCreate is true - automatically creates presentation for specified mode when not exist.
 
   RemovePresentation (me           : mutable;
                       thePrsObject : PresentableObject from PrsMgr;
                       theMode      : Integer from Standard = 0)
+  returns Boolean from Standard
   ---Purpose: Removes a presentation of the presentable object thePrsObject to this framework. thePrsObject has the display mode theMode.
   is protected;
 
 fields
 
-  myStructureManager : StructureManager    from Graphic3d is protected;
+  myStructureManager : ViewManager         from Visual3d  is protected;
   myImmediateModeOn  : Integer             from Standard  is protected;
   myImmediateList    : ListOfPresentations from PrsMgr    is protected;
   myImmediateView    : View                from V3d       is protected;
+  mySelectionColor   : Color               from Quantity  is protected;
 
 end PresentationManager from PrsMgr;

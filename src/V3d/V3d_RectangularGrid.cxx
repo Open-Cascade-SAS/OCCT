@@ -96,7 +96,8 @@ void V3d_RectangularGrid::SetColors (const Quantity_Color& aColor, const Quantit
 
 void V3d_RectangularGrid::Display ()
 {
-  myStructure->Display (1);
+  myStructure->SetDisplayPriority (1);
+  myStructure->Display();
 }
 
 void V3d_RectangularGrid::Erase () const

@@ -203,7 +203,11 @@ void Graphic3d_Structure::Display()
     myStructureManager->Display (this);
   }
 
-  myCStructure->visible = 1;
+  if (myCStructure->visible != 1)
+  {
+    myCStructure->visible = 1;
+    myCStructure->OnVisibilityChanged();
+  }
 }
 
 //=============================================================================
@@ -213,25 +217,6 @@ void Graphic3d_Structure::Display()
 void Graphic3d_Structure::SetIsForHighlight (const Standard_Boolean isForHighlight)
 {
   myCStructure->IsForHighlight = isForHighlight;
-}
-
-//=============================================================================
-//function : Display
-//purpose  :
-//=============================================================================
-void Graphic3d_Structure::Display (const Standard_Integer thePriority)
-{
-  if (IsDeleted()) return;
-
-  SetDisplayPriority (thePriority);
-
-  if (!myCStructure->stick)
-  {
-    myCStructure->stick = 1;
-    myStructureManager->Display (this);
-  }
-
-  myCStructure->visible = 1;
 }
 
 //=============================================================================
@@ -312,12 +297,16 @@ void Graphic3d_Structure::Erase()
 //function : Highlight
 //purpose  :
 //=============================================================================
-void Graphic3d_Structure::Highlight (const Aspect_TypeOfHighlightMethod theMethod)
+void Graphic3d_Structure::Highlight (const Aspect_TypeOfHighlightMethod theMethod,
+                                     const Quantity_Color&              theColor,
+                                     const Standard_Boolean             theToUpdateMgr)
 {
   if (IsDeleted())
   {
     return;
   }
+
+  myHighlightColor = theColor;
 
   // Highlight on already Highlighted structure.
   if (myCStructure->highlight)
@@ -340,47 +329,18 @@ void Graphic3d_Structure::Highlight (const Aspect_TypeOfHighlightMethod theMetho
   SetDisplayPriority (Structure_MAX_PRIORITY - 1);
 
   GraphicHighlight (theMethod);
+
+  if (!theToUpdateMgr)
+  {
+    return;
+  }
+
   if (myCStructure->stick)
   {
     myStructureManager->Highlight (this, theMethod);
   }
 
   Update();
-}
-
-//=============================================================================
-//function : SetHighlightColor
-//purpose  :
-//=============================================================================
-void Graphic3d_Structure::SetHighlightColor (const Quantity_Color& theColor)
-{
-  if (IsDeleted())
-  {
-    return;
-  }
-
-  if (!myCStructure->highlight)
-  {
-    myHighlightColor = theColor;
-    return;
-  }
-
-  // Change highlight color on already Highlighted structure.
-  Aspect_TypeOfUpdate anUpdateMode  = myStructureManager->UpdateMode();
-  if (anUpdateMode == Aspect_TOU_WAIT)
-  {
-    UnHighlight();
-  }
-  else
-  {
-    // To avoid call of method : Update()
-    // Not useful and can be costly.
-    myStructureManager->SetUpdateMode (Aspect_TOU_WAIT);
-    UnHighlight();
-    myStructureManager->SetUpdateMode (anUpdateMode);
-  }
-  myHighlightColor = theColor;
-  Highlight (myHighlightMethod);
 }
 
 //=============================================================================
@@ -391,30 +351,14 @@ void Graphic3d_Structure::SetVisible (const Standard_Boolean theValue)
 {
   if (IsDeleted()) return;
 
-  myCStructure->visible = theValue ? 1 : 0;
-  myCStructure->UpdateNamedStatus();
-  Update();
-}
-
-//=============================================================================
-//function : SetPick
-//purpose  :
-//=============================================================================
-void Graphic3d_Structure::SetPick (const Standard_Boolean theValue)
-{
-  if (IsDeleted ()) return;
-
-  myCStructure->pick = theValue ? 1 : 0;
-  myCStructure->UpdateNamedStatus();
-
-  if (theValue)
+  const unsigned isVisible = theValue ? 1 : 0;
+  if (myCStructure->visible == isVisible)
   {
-    myStructureManager->Detectable (this);
+    return;
   }
-  else
-  {
-    myStructureManager->Undetectable (this);
-  }
+
+  myCStructure->visible = isVisible;
+  myCStructure->OnVisibilityChanged();
   Update();
 }
 
@@ -472,15 +416,6 @@ Standard_Boolean Graphic3d_Structure::IsDeleted() const
 Standard_Boolean Graphic3d_Structure::IsHighlighted() const
 {
   return myCStructure->highlight ? Standard_True : Standard_False;
-}
-
-//=============================================================================
-//function : IsSelectable
-//purpose  :
-//=============================================================================
-Standard_Boolean Graphic3d_Structure::IsSelectable() const
-{
-  return myCStructure->pick ? Standard_True : Standard_False;
 }
 
 //=============================================================================
@@ -2281,7 +2216,6 @@ void Graphic3d_Structure::GraphicHighlight (const Aspect_TypeOfHighlightMethod t
     {
       myHighlightColor.Values (anRGB[0], anRGB[1], anRGB[2], Quantity_TOC_RGB);
       myCStructure->HighlightWithColor (Graphic3d_Vec3 (float (anRGB[0]), float (anRGB[1]), float (anRGB[2])), Standard_True);
-      myCStructure->UpdateNamedStatus();
       break;
     }
     case Aspect_TOHM_BOUNDBOX:
@@ -2323,11 +2257,9 @@ void Graphic3d_Structure::GraphicUnHighlight()
   {
     case Aspect_TOHM_COLOR:
       myCStructure->HighlightWithColor (Graphic3d_Vec3 (0.0f, 0.0f, 0.0f), Standard_False);
-      myCStructure->UpdateNamedStatus();
       break;
     case Aspect_TOHM_BOUNDBOX:
       myCStructure->HighlightWithBndBox (this, Standard_False);
-      myCStructure->UpdateNamedStatus();
       break;
   }
 }
@@ -2381,22 +2313,23 @@ Standard_Boolean Graphic3d_Structure::HLRValidation() const
 //function : SetZLayer
 //purpose  :
 //=======================================================================
-void Graphic3d_Structure::SetZLayer (const Standard_Integer theLayerId)
+void Graphic3d_Structure::SetZLayer (const Graphic3d_ZLayerId theLayerId)
 {
   // if the structure is not displayed, unable to change its display layer
   if (IsDeleted ())
     return;
 
   myStructureManager->ChangeZLayer (this, theLayerId);
+  myCStructure->SetZLayer (theLayerId);
 }
 
 //=======================================================================
 //function : GetZLayer
 //purpose  :
 //=======================================================================
-Standard_Integer Graphic3d_Structure::GetZLayer () const
+Graphic3d_ZLayerId Graphic3d_Structure::GetZLayer() const
 {
-  return myStructureManager->GetZLayer (this);
+  return myCStructure->ZLayer();
 }
 
 //=======================================================================

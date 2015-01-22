@@ -543,8 +543,8 @@ void OpenGl_GraphicDriver::SetBackFacingModel (const Graphic3d_CView& ACView)
 //purpose  :
 //=======================================================================
 
-void OpenGl_GraphicDriver::AddZLayer (const Graphic3d_CView& theCView,
-                                      const Standard_Integer theLayerId)
+void OpenGl_GraphicDriver::AddZLayer (const Graphic3d_CView&   theCView,
+                                      const Graphic3d_ZLayerId theLayerId)
 {
   const OpenGl_CView *aCView = (const OpenGl_CView *)theCView.ptrView;
   if (aCView)
@@ -555,8 +555,8 @@ void OpenGl_GraphicDriver::AddZLayer (const Graphic3d_CView& theCView,
 //function : RemoveZLayer
 //purpose  :
 //=======================================================================
-void OpenGl_GraphicDriver::RemoveZLayer (const Graphic3d_CView& theCView,
-                                         const Standard_Integer theLayerId)
+void OpenGl_GraphicDriver::RemoveZLayer (const Graphic3d_CView&   theCView,
+                                         const Graphic3d_ZLayerId theLayerId)
 {
   const OpenGl_CView* aCView = (const OpenGl_CView *)theCView.ptrView;
   if (aCView)
@@ -567,8 +567,8 @@ void OpenGl_GraphicDriver::RemoveZLayer (const Graphic3d_CView& theCView,
 //function : SetZLayerSettings
 //purpose  :
 //=======================================================================
-Standard_EXPORT void OpenGl_GraphicDriver::SetZLayerSettings (const Graphic3d_CView& theCView,
-                                                              const Standard_Integer theLayerId,
+Standard_EXPORT void OpenGl_GraphicDriver::SetZLayerSettings (const Graphic3d_CView&          theCView,
+                                                              const Graphic3d_ZLayerId        theLayerId,
                                                               const Graphic3d_ZLayerSettings& theSettings)
 {
   const OpenGl_CView* aCView = (const OpenGl_CView* )theCView.ptrView;

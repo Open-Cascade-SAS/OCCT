@@ -96,7 +96,8 @@ void V3d_CircularGrid::SetColors (const Quantity_Color& aColor, const Quantity_C
 
 void V3d_CircularGrid::Display ()
 {
-  myStructure->Display (1);
+  myStructure->SetDisplayPriority (1);
+  myStructure->Display();
 }
 
 void V3d_CircularGrid::Erase () const

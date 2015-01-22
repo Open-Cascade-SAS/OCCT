@@ -36,7 +36,8 @@ uses
     NameOfColor            from Quantity,
     Location               from TopLoc,
     PresentationManager    from PrsMgr,
-    PresentationManager3d  from PrsMgr
+    PresentationManager3d  from PrsMgr,
+    ZLayerId               from Graphic3d
 
 raises
     NoSuchObject from Standard
@@ -161,8 +162,7 @@ is
     --          it always return FALSE.  
 
     SetZLayer ( me         : mutable;
-                thePrsMgr  : PresentationManager from PrsMgr;
-                theLayerId : Integer from Standard )
+                theLayerId : ZLayerId from Graphic3d )
       is virtual;
     ---Purpose: Set Z layer ID and update all presentations.
 

@@ -82,27 +82,9 @@ is
 	---Purpose: Returns the new Structure defined for the new visualization
 	---Category: Methods to modify the class definition
 
-
----Category: Highlighting methods.
---           
-    Highlight(me: mutable) is static;
-    	---Purpose: displays the whole content of the presentation in white.
-    Color(me: mutable; aColor: NameOfColor from Quantity) is static;
-    	---Purpose: displays the whole content of the presentation in the specified color.
-    BoundBox(me: mutable) is static;
-
-    SetIsForHighlight (me             : mutable;
-                       isForHighlight : Boolean from Standard)
-        is virtual;
-    ---Purpose: marks the structure <me> representing wired structure needed for
-    --          highlight only so it won't be added to BVH tree.
-
 ---Category: Global modification methods.
     SetShadingAspect(me: mutable; aShadingAspect: ShadingAspect from Prs3d);
-    
----Category: Inquire methods.
-    IsPickable(me) returns Boolean from Standard;
-    
+
 ---Category: Transformation methods.
     Transform   (me: mutable; aTransformation: Transformation from Geom);
     Place       (me: mutable; X,Y,Z: Length from Quantity);
@@ -115,9 +97,6 @@ is
     
     Remove (me: mutable; aPresentation: Presentation from Prs3d);
     RemoveAll (me: mutable);
-
-    SetPickable(me: mutable) is static;
-    SetUnPickable(me: mutable) is static;
 
     CurrentGroup(me) returns Group from Graphic3d is static private;
 

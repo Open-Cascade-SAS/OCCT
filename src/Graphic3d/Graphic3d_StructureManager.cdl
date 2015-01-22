@@ -26,7 +26,7 @@ deferred class StructureManager from Graphic3d inherits TShared
 	--	    It allows them to be globally manipulated.
 	--	    It defines the global attributes.
 	--  Keywords: Structure, Structure Manager, Update Mode,
-	--     Destroy, Highlight, Visible, Detectable
+	--     Destroy, Highlight, Visible
 
 	---Warning:
 	---References:
@@ -40,6 +40,7 @@ uses
 	TypeOfHighlightMethod	from Aspect,
 	TypeOfUpdate		from Aspect,
 
+  ZLayerId            from Graphic3d,
 	ZLayerSettings      from Graphic3d,
 
 	DataStructureManager	from Graphic3d,
@@ -193,13 +194,6 @@ is
 	--	    in a visualiser <me>.
 	---Category: Inquire methods, MapOfStructure
 
-	PickStructures ( me; SG: in out MapOfStructure from Graphic3d )
-		is static;
-	---Level: Internal
-	---Purpose: Returns the set of detectable structures
-	--	    in a visualiser <me>.
-	---Category: Inquire methods, MapOfStructure
-
 	----------------------------
 	-- Category: Inquire methods
 	----------------------------
@@ -274,31 +268,25 @@ is
 
         ChangeZLayer ( me           : mutable;
                        theStructure : Structure from Graphic3d;
-                       theLayerId   : Integer from Standard )
+                       theLayerId   : ZLayerId  from Graphic3d )
            is deferred;
         ---Purpose: Change Z layer for structure. The z layer mechanism allows
         -- to display structures in higher layers in overlay of structures in
         -- lower layers.
 
-        GetZLayer ( me;
-                    theStructure : Structure from Graphic3d )
-           returns Integer from Standard is deferred;
-        ---Purpose: Get Z layer ID assigned to structure. If the structure
-        -- has no layer ID (deleted from graphic driver), the method returns -1.
-
         SetZLayerSettings ( me          : mutable;
-                            theLayerId  : Integer from Standard;
+                            theLayerId  : ZLayerId       from Graphic3d;
                             theSettings : ZLayerSettings from Graphic3d )
           is deferred;
         ---Purpose: Sets the settings for a single Z layer for all managed views.
 
         ZLayerSettings ( me          : mutable;
-                         theLayerId  : Integer from Standard )
+                         theLayerId  : ZLayerId from Graphic3d )
           returns ZLayerSettings from Graphic3d is deferred;
         ---Purpose: Returns the settings of a single Z layer.
         
         AddZLayer ( me : mutable;
-                    theLayerId : in out Integer from Standard )
+                    theLayerId : out ZLayerId from Graphic3d )
            returns Boolean from Standard is deferred;
         ---Purpose: Add a new top-level Z layer and get its ID as
         -- <theLayerId> value. The method returns Standard_False if the layer
@@ -306,7 +294,7 @@ is
         -- structures in higher layers in overlay of structures in lower layers.
 
         RemoveZLayer ( me : mutable;
-                       theLayerId : Integer from Standard )
+                       theLayerId : ZLayerId from Graphic3d )
            returns Boolean from Standard is deferred;
         ---Purpose: Remove Z layer with ID <theLayerId>. Method returns
         -- Standard_False if the layer can not be removed or doesn't exists.
@@ -341,13 +329,6 @@ is
 	---Level: Advanced
 	---Purpose: Forces a new construction of the structure <AStructure>
 	--	    if <AStructure> is displayed in <AProjector> and TOS_COMPUTED.
-	---Category: Private methods
-
-	Detectable ( me		: mutable;
-		     AStructure	: Structure from Graphic3d )
-		is static private;
-	---Level: Internal
-	---Purpose: Sets detectable the structure <AStructure>.
 	---Category: Private methods
 
 	Clear ( me		: mutable;
@@ -441,13 +422,6 @@ is
 	---Purpose: Frees the identifieur <AnId>.
 	---Category: Private methods
 
-	Undetectable ( me		: mutable;
-		       AStructure	: Structure from Graphic3d )
-		is static private;
-	---Level: Internal
-	---Purpose: Sets no detectable the structure <AStructure>.
-	---Category: Private methods
-
 	UnHighlight ( me		: mutable )
 		is deferred;
 	---Level: Internal
@@ -502,10 +476,6 @@ fields
 
 	-- the highlighted structures
 	MyHighlightedStructure	:	MapOfStructure from Graphic3d
-								is protected;
-
-	-- the pickable structures
-	MyPickStructure		:	MapOfStructure from Graphic3d
 								is protected;
 
 	-- the structure identifier generator

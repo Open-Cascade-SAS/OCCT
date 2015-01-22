@@ -60,8 +60,6 @@ Handle_OpenGl_Window.hxx
 OpenGl_Window.hxx
 OpenGl_Window.cxx
 OpenGl_Window_1.mm
-OpenGl_PriorityList.hxx
-OpenGl_PriorityList.cxx
 OpenGl_AVIWriter.hxx
 OpenGl_AVIWriter.cxx
 OpenGl_FrameBuffer.hxx
@@ -141,6 +139,7 @@ OpenGl_ShaderManager.hxx
 OpenGl_ShaderManager.cxx
 OpenGl_ShaderStates.hxx
 OpenGl_ShaderStates.cxx
+OpenGl_SequenceOfStructure.hxx
 Handle_OpenGl_ShaderObject.hxx
 Handle_OpenGl_ShaderProgram.hxx
 Handle_OpenGl_ShaderManager.hxx

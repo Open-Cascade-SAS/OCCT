@@ -21,9 +21,11 @@ uses
 
   PresentationManager from PrsMgr,
   NameOfColor from Quantity,
+  Color       from Quantity,
   Transformation from Geom,
   Length from Quantity,
   ShadingAspect from Prs3d,
+  TypeOfHighlightMethod from Aspect,
   TypeOfPresentation3d from PrsMgr,
   DataStructureManager from Graphic3d,
   Structure from Graphic3d,
@@ -45,56 +47,51 @@ is
   ---C++:     alias ~
 
   Display (me : mutable)
-  is virtual private;
+  is private;
 
-  Display (me : mutable;
+  display (me : mutable;
            theIsHighlight : Boolean from Standard)
   is static private;
   ---Purpose: Displays myStructure.
 
   Erase (me : mutable)
-  is virtual private;
+  is private;
 
   SetVisible (me       : mutable;
               theValue : Boolean from Standard)
-  is virtual private;
+  is private;
 
-  Highlight (me : mutable) is virtual private;
+  Highlight (me : mutable;
+             theMethod : TypeOfHighlightMethod from Aspect;
+             theColor  : Color                 from Quantity) is private;
 
-  Unhighlight (me) is virtual private;
+  Unhighlight (me) is private;
 
   IsHighlighted (me) returns Boolean from Standard
-  is virtual private;
+  is private;
 
   IsDisplayed (me) returns Boolean from Standard
-  is virtual private;
+  is private;
 
   DisplayPriority(me) returns Integer from Standard
-  is virtual private;
+  is private;
 
   SetDisplayPriority(me:mutable;aNewPrior:Integer from Standard)
-  is virtual private;
+  is private;
 
   SetZLayer (me         : mutable;
              theLayerId : Integer from Standard)
-  is virtual private;
+  is private;
   ---Purpose: Set Z layer ID for the presentation
 
   GetZLayer (me) returns Integer from Standard
-  is virtual private;
+  is private;
   ---Purpose: Get Z layer ID for the presentation
 
   Clear (me : mutable)
-  is virtual private;
+  is private;
   ---Purpose: removes the whole content of the presentation.
   --          Does not remove the other connected presentations.
-
-  Color (me       : mutable;
-         theColor : NameOfColor from Quantity)
-  is virtual private;
-
-  BoundBox (me)
-  is static private;
 
 ---Category: references to other presentation.
 

@@ -39,7 +39,8 @@ uses
     SequenceOfOwner       from SelectMgr,
     NameOfColor           from Quantity,
     EntityOwner           from SelectMgr, 
-    TransModeFlags        from Graphic3d
+    TransModeFlags        from Graphic3d,
+    ZLayerId              from Graphic3d
 
 raises 
     NotImplemented from Standard
@@ -178,16 +179,12 @@ is
     
     GetSelectPresentation(   me: mutable;
     	    	    	     TheMgr:  PresentationManager3d from PrsMgr )  returns Presentation from Prs3d  is  static; 
-	
+
    SetZLayer ( me         : mutable;
-               thePrsMgr  : PresentationManager from PrsMgr;
-               theLayerId : Integer from Standard )
+               theLayerId : ZLayerId from Graphic3d )
      is redefined virtual;
-   ---Purpose: Set Z layer ID and update all presentations of
-   -- the selectable object. The layer can be set only for displayed object.
-   -- If all object presentations are removed, the layer ID will be set to 
-   -- default value when computing presentation. The layers mechanism allows 
-   -- drawing objects in higher layers in overlay of objects in lower layers.
+   ---Purpose: Set Z layer ID and update all presentations of the selectable object.
+   -- The layers mechanism allows drawing objects in higher layers in overlay of objects in lower layers.
 
 fields
 
@@ -199,6 +196,3 @@ fields
     myHilightPrs        : Presentation from Prs3d;
 
 end SelectableObject;
-
-
-

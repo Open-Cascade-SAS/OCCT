@@ -71,18 +71,14 @@ Standard_Boolean OpenGl_Workspace::UpdateRaytraceGeometry (GeomUpdateMode theMod
 
   for (OpenGl_SequenceOfLayers::Iterator anLayerIt (aList.Layers()); anLayerIt.More(); anLayerIt.Next())
   {
-    const OpenGl_PriorityList& aPriorityList = anLayerIt.Value().PriorityList();
-
-    if (aPriorityList.NbStructures() == 0)
+    const OpenGl_Layer& aLayer = anLayerIt.Value();
+    if (aLayer.NbStructures() == 0)
       continue;
 
-    const OpenGl_ArrayOfStructure& aStructArray = aPriorityList.ArrayOfStructures();
-
+    const OpenGl_ArrayOfStructure& aStructArray = aLayer.ArrayOfStructures();
     for (Standard_Integer anIndex = 0; anIndex < aStructArray.Length(); ++anIndex)
     {
-      OpenGl_SequenceOfStructure::Iterator aStructIt;
-
-      for (aStructIt.Init (aStructArray (anIndex)); aStructIt.More(); aStructIt.Next())
+      for (OpenGl_SequenceOfStructure::Iterator aStructIt (aStructArray (anIndex)); aStructIt.More(); aStructIt.Next())
       {
         const OpenGl_Structure* aStructure = aStructIt.Value();
 
@@ -97,7 +93,9 @@ Standard_Boolean OpenGl_Workspace::UpdateRaytraceGeometry (GeomUpdateMode theMod
         {
           if (!aStructure->IsRaytracable()
            || !aStructure->IsVisible())
+          {
             continue;
+          }
 
           for (OpenGl_Structure::GroupIterator aGroupIter (aStructure->DrawGroups()); aGroupIter.More(); aGroupIter.Next())
           {

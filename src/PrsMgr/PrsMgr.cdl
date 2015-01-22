@@ -33,9 +33,12 @@ uses
 
     MMgt,TCollection,
     TopLoc,
-    Prs3d,Graphic3d,
+    Aspect,
+    Prs3d,
+    Graphic3d,
     Quantity,Geom,
-    V3d, 
+    Visual3d,
+    V3d,
     TColStd, 
     gp
  

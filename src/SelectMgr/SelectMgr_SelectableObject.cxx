@@ -322,15 +322,10 @@ Handle(Prs3d_Presentation) SelectMgr_SelectableObject::GetSelectPresentation( co
 //function : SetZLayer
 //purpose  :
 //=======================================================================
-void SelectMgr_SelectableObject::SetZLayer 
-  (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-   const Standard_Integer theLayerId)
+void SelectMgr_SelectableObject::SetZLayer (const Graphic3d_ZLayerId theLayerId)
 {
-  if (thePrsMgr.IsNull())
-    return;
-
   // update own presentations
-  PrsMgr_PresentableObject::SetZLayer (thePrsMgr, theLayerId);
+  PrsMgr_PresentableObject::SetZLayer (theLayerId);
 
   // update selection presentations
   if (!mySelectionPrs.IsNull())
@@ -352,7 +347,7 @@ void SelectMgr_SelectableObject::SetZLayer
         Handle(SelectMgr_EntityOwner) aOwner = 
           Handle(SelectMgr_EntityOwner)::DownCast (aEntity->OwnerId());
         if (!aOwner.IsNull())
-          aOwner->SetZLayer (thePrsMgr, theLayerId);
+          aOwner->SetZLayer (theLayerId);
       }
     }
   }

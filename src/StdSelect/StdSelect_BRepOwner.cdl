@@ -34,7 +34,8 @@ uses
     PresentationManager3d from PrsMgr,
     NameOfColor           from Quantity,
     Drawer                from Prs3d,
-    Shape                 from StdSelect
+    Shape                 from StdSelect,
+    ZLayerId              from Graphic3d
 is
 
 
@@ -145,8 +146,7 @@ is
     ResetLocation(me:mutable) is redefined;
 
     SetZLayer ( me         : mutable;
-                thePrsMgr  : PresentationManager from PrsMgr;
-                theLayerId : Integer from Standard )
+                theLayerId : ZLayerId from Graphic3d )
       is redefined virtual;
     ---Purpose: Set Z layer ID and update all presentations.
 

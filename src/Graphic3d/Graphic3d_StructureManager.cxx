@@ -39,40 +39,8 @@ static Standard_Integer StructureManager_CurrentId = 0;
 #include <Graphic3d_Structure.pxx>
 #include <Graphic3d_MapIteratorOfMapOfStructure.hxx>
 
-//-Aliases
-
-//-Global data definitions
-
-//      -- l'identifieur du manager
-//      MyId                    :       Standard_Integer;
-
-//      -- le mode de mise a jour de l'affichage
-//      MyUpdateMode            :       TypeOfUpdate;
-
-//      -- les differents contextes de primitives
-//      MyAspectLine3d          :       AspectLine3d;
-//      MyAspectText3d          :       AspectText3d;
-//      MyAspectMarker3d        :       AspectMarker3d;
-//      MyAspectFillArea3d      :       AspectFillArea3d;
-
-//      -- les structures affichees
-//      MyDisplayedStructure    :       SequenceOfStructure;
-
-//      -- les structures mises en evidence
-//      MyHighlightedStructure  :       SequenceOfStructure;
-
-//      -- les structures detectables
-//      MyPickStructure         :       SequenceOfStructure;
-
-//      -- le generateur d'identificateurs de structures
-//      MyStructGenId           :       GenId;
-
-//-Constructors
-
-Graphic3d_StructureManager::Graphic3d_StructureManager (const Handle(Graphic3d_GraphicDriver)& theDriver):
-MyDisplayedStructure (),
-MyHighlightedStructure (),
-MyPickStructure () {
+Graphic3d_StructureManager::Graphic3d_StructureManager (const Handle(Graphic3d_GraphicDriver)& theDriver)
+{
 
 Standard_Real Coef;
 Standard_Integer i;
@@ -136,7 +104,6 @@ void Graphic3d_StructureManager::Destroy () {
 
         MyDisplayedStructure.Clear ();
         MyHighlightedStructure.Clear ();
-        MyPickStructure.Clear ();
         StructureManager_ArrayId[MyId]  = 0;
 
 }
@@ -222,18 +189,6 @@ void Graphic3d_StructureManager::Remove (const Standard_Integer AnId) {
 
 }
 
-void Graphic3d_StructureManager::Detectable (const Handle(Graphic3d_Structure)& AStructure) {
-
-  MyPickStructure.Add(AStructure);
-
-}
-
-void Graphic3d_StructureManager::Undetectable (const Handle(Graphic3d_Structure)& AStructure) {
-
-  MyPickStructure.Remove(AStructure);
- 
-}
-
 void Graphic3d_StructureManager::DisplayedStructures (Graphic3d_MapOfStructure& SG) const {
 
   SG.Assign(MyDisplayedStructure);
@@ -262,12 +217,6 @@ Standard_Integer Length = MyDisplayedStructure.Extent ();
 void Graphic3d_StructureManager::HighlightedStructures (Graphic3d_MapOfStructure& SG) const {
 
   SG.Assign(MyHighlightedStructure);
-
-}
-
-void Graphic3d_StructureManager::PickStructures (Graphic3d_MapOfStructure& SG) const {
-
-  SG.Assign(MyPickStructure);
 
 }
 
