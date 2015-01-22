@@ -11,6 +11,9 @@ set BugNumber OCC5805
 # pcone
 pcone s 30 5 20
 
+explode s sh
+renamevar s_1 s
+
 set distance -0.5
 catch { OFFSETSHAPE $distance {} $calcul $type }
 
