@@ -85,7 +85,7 @@ STEPControl_Controller::STEPControl_Controller ()
     Interface_Static::Init("step","write.step.schema",'&',"eval AP214DIS");
     Interface_Static::Init("step","write.step.schema",'&',"eval AP203");
     Interface_Static::Init("step","write.step.schema",'&',"eval AP214IS");  
-    Interface_Static::SetCVal("write.step.schema","AP214CD"); 
+    Interface_Static::SetCVal("write.step.schema","AP214IS"); 
 
     // Type of Product Definition for reading
     // Note: the numbers should be consistent with function FindShapeReprType()
