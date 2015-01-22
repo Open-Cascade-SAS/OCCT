@@ -579,7 +579,7 @@ void BOPTools_AlgoTools2D::MakePCurveOnFace
    Handle(Geom2d_Curve)& aC2D, 
    Standard_Real& TolReached2d)
 {
-  Standard_Real aTolR;
+  Standard_Real aTolR, aT;
   Handle(Geom2d_Curve) aC2DA;
   //
   Handle(Geom_Surface) aS=BRep_Tool::Surface(aF);
@@ -618,6 +618,14 @@ void BOPTools_AlgoTools2D::MakePCurveOnFace
   BOPTools_AlgoTools2D::AdjustPCurveOnFace (aF, aFirst, aLast, 
                                             aC2D, aC2DA);
   aC2D=aC2DA;
+  //
+  // compute the appropriate tolerance for the edge
+  if (IntTools_Tools::ComputeTolerance
+      (aC3D, aC2D, aS, aFirst, aLast, aTolR, aT)) {
+    if (aTolR > TolReached2d) {
+      TolReached2d = aTolR;
+    }
+  }
 }
 
 //=======================================================================

@@ -516,6 +516,7 @@ static
 #include <Geom_Parabola.hxx>
 #include <gp_Parab.hxx>
 #include <BndLib_Add3dCurve.hxx>
+#include <BRepLib_CheckCurveOnSurface.hxx>
 //=======================================================================
 //function : ParabolaTolerance
 //purpose  : 
@@ -776,4 +777,31 @@ Standard_Integer IntTools_Tools::SegPln(const gp_Lin& theLin,
   theTPmax=theTP+theTolPln;
   iRet=0; // intersection point
   return iRet;
+}
+
+//=======================================================================
+// Function : ComputeTolerance
+// purpose : 
+//=======================================================================
+Standard_Boolean IntTools_Tools::ComputeTolerance
+  (const Handle(Geom_Curve)& theCurve3D,
+   const Handle(Geom2d_Curve)& theCurve2D,
+   const Handle(Geom_Surface)& theSurf,
+   const Standard_Real theFirst,
+   const Standard_Real theLast,
+   Standard_Real& theMaxDist,
+   Standard_Real& theMaxPar)
+{
+  BRepLib_CheckCurveOnSurface aCS;
+  //
+  aCS.Init(theCurve3D, theCurve2D, theSurf, theFirst, theLast);
+  aCS.Perform();
+  if (!aCS.IsDone()) {
+    return Standard_False;
+  }
+  //
+  theMaxDist = aCS.MaxDistance();
+  theMaxPar  = aCS.MaxParameter();
+  //
+  return Standard_True;
 }

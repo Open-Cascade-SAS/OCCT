@@ -459,17 +459,6 @@ is
             theSolid:Solid from TopoDS)  
         returns Boolean from Standard;  
     ---Purpose: Returns true if the solid <theSolid> is inverted  
-     
-    ComputeTolerance(myclass;
-        theCurve3D : Curve from Geom;
-        theCurve2D : Curve from Geom2d;
-        theSurf    : Surface from Geom;
-        theMaxDist : out Real from Standard; 
-        theMaxPar  : out Real from Standard)
-    returns Boolean from Standard; 
-    ---Purpose:  
-    -- Computes the max distance between points  
-    -- taken from 3D and 2D curves by the same parameter
 
     ComputeTolerance(myclass;
         theFace : Face from TopoDS;

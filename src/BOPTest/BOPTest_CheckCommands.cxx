@@ -904,11 +904,11 @@ Standard_Integer bopargcheck (Draw_Interpretor& di,
           di << "  Cases(" << S2_COnS << ")  Total shapes(" << S2_COnSAll << ")" << "\n";
         else
           di << "\n";
-
-        // warning
+      }
+      // warning
+      if(hasUnknown) {
         di << "\n";
-        if(hasUnknown)
-          di << "WARNING: The unexpected test break occurs!" << "\n";
+        di << "WARNING: The unexpected test break occurs!" << "\n";
       }
     } // full output
   } // has faulties

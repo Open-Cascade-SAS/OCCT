@@ -282,33 +282,26 @@ static
 
 //
 static
-  Standard_Real MaxSquareDistance (const Standard_Real aT,
-                                   const Handle(Geom_Curve)& aC3D,
-                                   const Handle(Geom2d_Curve)& aC2D1,
-                                   const Handle(Geom2d_Curve)& aC2D2,
-                                   const Handle(GeomAdaptor_HSurface) myHS1,
-                                   const Handle(GeomAdaptor_HSurface) myHS2,
-                                   const TopoDS_Face& aF1,
-                                   const TopoDS_Face& aF2,
-                                   const Handle(IntTools_Context)& aCtx);
-
-static
   Standard_Boolean CheckPCurve(const Handle(Geom2d_Curve)& aPC, 
                                const TopoDS_Face& aFace);
 
 //
 static
-  Standard_Real FindMaxSquareDistance (const Standard_Real aA,
-                                       const Standard_Real aB,
-                                       const Standard_Real aEps,
-                                       const Handle(Geom_Curve)& aC3D,
-                                       const Handle(Geom2d_Curve)& aC2D1,
-                                       const Handle(Geom2d_Curve)& aC2D2,
-                                       const Handle(GeomAdaptor_HSurface)& myHS1,
-                                       const Handle(GeomAdaptor_HSurface)& myHS2,
-                                       const TopoDS_Face& aF1,
-                                       const TopoDS_Face& aF2,
-                                       const Handle(IntTools_Context)& aCtx);
+  Standard_Real MaxDistance(const Handle(Geom_Curve)& theC,
+                            const Standard_Real aT,
+                            GeomAPI_ProjectPointOnSurf& theProjPS);
+static
+  Standard_Real FindMaxDistance(const Handle(Geom_Curve)& theC,
+                                const Standard_Real theFirst,
+                                const Standard_Real theLast,
+                                GeomAPI_ProjectPointOnSurf& theProjPS,
+                                const Standard_Real theEps);
+static
+  Standard_Real FindMaxDistance(const Handle(Geom_Curve)& theCurve,
+                                const Standard_Real theFirst,
+                                const Standard_Real theLast,
+                                const TopoDS_Face& theFace,
+                                const Handle(IntTools_Context)& theContext);
 
 //=======================================================================
 //function : 
@@ -823,12 +816,65 @@ static Standard_Boolean isTreatAnalityc(const TopoDS_Face& theF1,
 }
 
 //=======================================================================
+//function : ComputeTolerance
+//purpose  : 
+//=======================================================================
+Standard_Real IntTools_FaceFace::ComputeTolerance()
+{
+  Standard_Integer i, j, aNbLin;
+  Standard_Real aFirst, aLast, aD, aDMax, aT, aDelta;
+  Handle(Geom_Surface) aS1, aS2;
+  //
+  aDMax = 0;
+  aDelta = Precision::PConfusion();
+  aNbLin = mySeqOfCurve.Length();
+  //
+  aS1 = myHS1->ChangeSurface().Surface();
+  aS2 = myHS2->ChangeSurface().Surface();
+  //
+  for (i = 1; i <= aNbLin; ++i) {
+    const IntTools_Curve& aIC = mySeqOfCurve(i);
+    const Handle(Geom_Curve)& aC3D = aIC.Curve();
+    if (aC3D.IsNull()) {
+      continue;
+    }
+    //
+    aFirst = aC3D->FirstParameter();
+    aLast  = aC3D->LastParameter();
+    //
+    const Handle(Geom2d_Curve)& aC2D1 = aIC.FirstCurve2d();
+    const Handle(Geom2d_Curve)& aC2D2 = aIC.SecondCurve2d();
+    //
+    for (j = 0; j < 2; ++j) {
+      const Handle(Geom2d_Curve)& aC2D = !j ? aC2D1 : aC2D2;
+      const Handle(Geom_Surface)& aS = !j ? aS1 : aS2;
+      //
+      if (!aC2D.IsNull()) {
+        if (IntTools_Tools::ComputeTolerance
+            (aC3D, aC2D, aS, aFirst, aLast, aD, aT)) {
+          if (aD > aDMax) {
+            aDMax = aD;
+          }
+        }
+      }
+      //
+      const TopoDS_Face& aF = !i ? myFace1 : myFace2;
+      aD = FindMaxDistance(aC3D, aFirst, aLast, aF, myContext);
+      if (aD > aDMax) {
+        aDMax = aD;
+      }
+    }
+  }
+  //
+  return aDMax;
+}
+
+//=======================================================================
 //function :ComputeTolReached3d 
 //purpose  : 
 //=======================================================================
   void IntTools_FaceFace::ComputeTolReached3d()
 {
-  Standard_Boolean bCase1;
   Standard_Integer aNbLin, i;
   GeomAbs_SurfaceType aType1, aType2;
   //
@@ -839,9 +885,6 @@ static Standard_Boolean isTreatAnalityc(const TopoDS_Face& theF1,
   //
   aType1=myHS1->Surface().GetType();
   aType2=myHS2->Surface().GetType();
-  //
-  bCase1=((aType1==GeomAbs_Plane && aType2==GeomAbs_SurfaceOfExtrusion) ||
-          (aType2==GeomAbs_Plane && aType1==GeomAbs_SurfaceOfExtrusion));
   //
   if (aType1==GeomAbs_Cylinder && aType2==GeomAbs_Cylinder) {
     if (aNbLin==2){ 
@@ -871,45 +914,12 @@ static Standard_Boolean isTreatAnalityc(const TopoDS_Face& theF1,
     }
     //ZZ
     if (aNbLin) {// Check the distances
-      Standard_Integer  aNbP, j ;
-      Standard_Real aT1, aT2, dT, aD2, aD2Max, aEps, aT11, aT12;
+      Standard_Real aDMax;
       //
-      aD2Max=0.;
-      aNbP=10;
-      aNbLin=mySeqOfCurve.Length();
-      //
-      for (i=1; i<=aNbLin; ++i) {
-        const IntTools_Curve& aIC=mySeqOfCurve(i);
-        const Handle(Geom_Curve)& aC3D=aIC.Curve();
-        const Handle(Geom2d_Curve)& aC2D1=aIC.FirstCurve2d();
-        const Handle(Geom2d_Curve)& aC2D2=aIC.SecondCurve2d();
-        //
-        if (aC3D.IsNull()) {
-          continue;
-        }
-        const Handle(Geom_BSplineCurve)& aBC=
-          Handle(Geom_BSplineCurve)::DownCast(aC3D);
-        if (aBC.IsNull()) {
-          continue;
-        }
-        //
-        aT1=aBC->FirstParameter();
-        aT2=aBC->LastParameter();
-        //
-        aEps=0.01*(aT2-aT1);
-        dT=(aT2-aT1)/aNbP;
-        for (j=1; j<aNbP; ++j) {
-          aT11=aT1+j*dT;
-          aT12=aT11+dT;
-          aD2=FindMaxSquareDistance(aT11, aT12, aEps, aC3D, aC2D1, aC2D2,
-                                    myHS1, myHS2, myFace1, myFace2, myContext);
-          if (aD2>aD2Max) {
-            aD2Max=aD2;
-          }
-        }
-      }//for (i=1; i<=aNbLin; ++i) {
-      //
-      myTolReached3d=sqrt(aD2Max);
+      aDMax = ComputeTolerance();
+      if (aDMax > 0.) {
+        myTolReached3d = aDMax;
+      }
     }// if (aNbLin) 
   }// if (aType1==GeomAbs_Cylinder && aType2==GeomAbs_Cylinder) {
   //
@@ -1023,151 +1033,24 @@ static Standard_Boolean isTreatAnalityc(const TopoDS_Face& theF1,
   }// if ((aType1==GeomAbs_Plane && aType2==GeomAbs_Torus) ||
   //
   else if ((aType1==GeomAbs_SurfaceOfRevolution && aType2==GeomAbs_Cylinder) ||
-           (aType2==GeomAbs_SurfaceOfRevolution && aType1==GeomAbs_Cylinder)) {
-    Standard_Integer j, aNbP;
-    Standard_Real aT, aT1, aT2, dT, aD2max, aD2;
+           (aType2==GeomAbs_SurfaceOfRevolution && aType1==GeomAbs_Cylinder) ||
+           (aType1==GeomAbs_Plane && aType2==GeomAbs_Sphere) ||
+           (aType2==GeomAbs_Plane && aType1==GeomAbs_Sphere) ||
+           (aType1==GeomAbs_Plane && aType2==GeomAbs_SurfaceOfExtrusion) ||
+           (aType2==GeomAbs_Plane && aType1==GeomAbs_SurfaceOfExtrusion) ||
+           (aType1==GeomAbs_Plane && aType2==GeomAbs_BSplineSurface) ||
+           (aType2==GeomAbs_Plane && aType1==GeomAbs_BSplineSurface) ||
+           !myApprox) {
     //
-    aNbLin=mySeqOfCurve.Length();
-    aD2max=0.;
-    aNbP=11;
+    Standard_Real aDMax;
     //
-    for (i=1; i<=aNbLin; ++i) {
-      const IntTools_Curve& aIC=mySeqOfCurve(i);
-      const Handle(Geom_Curve)& aC3D=aIC.Curve();
-      const Handle(Geom2d_Curve)& aC2D1=aIC.FirstCurve2d();
-      const Handle(Geom2d_Curve)& aC2D2=aIC.SecondCurve2d();
-      //
-      if (aC3D.IsNull()) {
-        continue;
-      }
-      const Handle(Geom_BSplineCurve)& aBC=
-        Handle(Geom_BSplineCurve)::DownCast(aC3D);
-      if (aBC.IsNull()) {
-        return;
-      }
-      //
-      aT1=aBC->FirstParameter();
-      aT2=aBC->LastParameter();
-      //
-      dT=(aT2-aT1)/(aNbP-1);
-      for (j=0; j<aNbP; ++j) {
-        aT=aT1+j*dT;
-        if (j==aNbP-1) {
-          aT=aT2;
-        }
-        //
-        aD2=MaxSquareDistance(aT, aC3D, aC2D1, aC2D2,
-                              myHS1, myHS2, myFace1, myFace2, myContext);
-        if (aD2>aD2max) {
-          aD2max=aD2;
-        }
-      }//for (j=0; j<aNbP; ++j) {
-     
-    }//for (i=1; i<=aNbLin; ++i) {
-    //
-    aD2=myTolReached3d*myTolReached3d;
-    if (aD2max > aD2) {
-      myTolReached3d=sqrt(aD2max);
+    aDMax = ComputeTolerance();
+    if (aDMax > myTolReached3d) {
+      myTolReached3d = aDMax;
     }
-  }//if((aType1==GeomAbs_SurfaceOfRevolution ...
-  else if ((aType1==GeomAbs_Plane && aType2==GeomAbs_Sphere) ||
-           (aType2==GeomAbs_Plane && aType1==GeomAbs_Sphere)) {
-    Standard_Integer  j, aNbP;
-    Standard_Real aT1, aT2, dT, aD2max, aD2, aEps, aT11, aT12;
-    //
-    aNbLin=mySeqOfCurve.Length();
-    aD2max=0.;
-    aNbP=10;
-    //
-    for (i=1; i<=aNbLin; ++i) {
-      const IntTools_Curve& aIC=mySeqOfCurve(i);
-      const Handle(Geom_Curve)& aC3D=aIC.Curve();
-      const Handle(Geom2d_Curve)& aC2D1=aIC.FirstCurve2d();
-      const Handle(Geom2d_Curve)& aC2D2=aIC.SecondCurve2d();
-      //
-      const Handle(Geom2d_BSplineCurve)& aBC2D1=
-        Handle(Geom2d_BSplineCurve)::DownCast(aC2D1);
-      const Handle(Geom2d_BSplineCurve)& aBC2D2=
-        Handle(Geom2d_BSplineCurve)::DownCast(aC2D2);
-      //
-      if (aBC2D1.IsNull() && aBC2D2.IsNull()) {
-        return;
-      }
-      //
-      if (!aBC2D1.IsNull()) {
-        aT1=aBC2D1->FirstParameter();
-        aT2=aBC2D1->LastParameter();
-      }
-      else {
-        aT1=aBC2D2->FirstParameter();
-        aT2=aBC2D2->LastParameter();
-      }
-      //
-      aEps=0.01*(aT2-aT1);
-      dT=(aT2-aT1)/aNbP;
-      for (j=0; j<aNbP; ++j) {
-        aT11=aT1+j*dT;
-        aT12=aT11+dT;
-        if (j==aNbP-1) {
-          aT12=aT2;
-        }
-        //
-        aD2=FindMaxSquareDistance(aT11, aT12, aEps, aC3D, aC2D1, aC2D2,
-                                  myHS1, myHS2, myFace1, myFace2, myContext);
-        if (aD2>aD2max) {
-          aD2max=aD2;
-        }
-      }//for (j=0; j<aNbP; ++j) {
-     
-    }//for (i=1; i<=aNbLin; ++i) {
-    //
-    aD2=myTolReached3d*myTolReached3d;
-    if (aD2max > aD2) {
-      myTolReached3d=sqrt(aD2max);
-    }
-  }//else if ((aType1==GeomAbs_Plane && aType2==GeomAbs_Sphere) ...
-  else if (!myApprox || bCase1) {
-  //else if (!myApprox) {
-    Standard_Integer aNbP, j;
-    Standard_Real aT1, aT2, dT, aD2, aD2Max, aEps, aT11, aT12;
-    //
-    aD2Max=0.;
-    aNbLin=mySeqOfCurve.Length();
-    //
-    for (i=1; i<=aNbLin; ++i) {
-      const IntTools_Curve& aIC=mySeqOfCurve(i);
-      const Handle(Geom_Curve)& aC3D=aIC.Curve();
-      const Handle(Geom2d_Curve)& aC2D1=aIC.FirstCurve2d();
-      const Handle(Geom2d_Curve)& aC2D2=aIC.SecondCurve2d();
-      //
-      if (aC3D.IsNull()) {
-        continue;
-}
-      const Handle(Geom_BSplineCurve)& aBC=
-        Handle(Geom_BSplineCurve)::DownCast(aC3D);
-      if (aBC.IsNull()) {
-        continue;
-      }
-      //
-      aT1=aBC->FirstParameter();
-      aT2=aBC->LastParameter();
-      //
-      aEps=0.0001*(aT2-aT1);
-      aNbP=11;
-      dT=(aT2-aT1)/aNbP;
-      for (j=1; j<aNbP-1; ++j) {
-        aT11=aT1+j*dT;
-        aT12=aT11+dT;
-        aD2=FindMaxSquareDistance(aT11, aT12, aEps, aC3D, aC2D1, aC2D2,
-                                  myHS1, myHS2, myFace1, myFace2, myContext);
-        if (aD2>aD2Max) {
-          aD2Max=aD2;
-        }
-      }
-    }//for (i=1; i<=aNbLin; ++i) {
-    myTolReached3d=sqrt(aD2Max);
   }
 }
+
 //=======================================================================
 //function : MakeCurve
 //purpose  : 
@@ -4925,118 +4808,112 @@ void RefineVector(gp_Vec2d& aV2D)
   aV2D.SetCoord(aC[0], aC[1]);
 }
 //=======================================================================
-//function : FindMaxSquareDistance
-//purpose  : 
+// Function : FindMaxDistance
+// purpose : 
 //=======================================================================
-Standard_Real FindMaxSquareDistance (const Standard_Real aT1,
-                                     const Standard_Real aT2,
-                                     const Standard_Real aEps,
-                                     const Handle(Geom_Curve)& aC3D,
-                                     const Handle(Geom2d_Curve)& aC2D1,
-                                     const Handle(Geom2d_Curve)& aC2D2,
-                                     const Handle(GeomAdaptor_HSurface)& myHS1,
-                                     const Handle(GeomAdaptor_HSurface)& myHS2,
-                                     const TopoDS_Face& myFace1,
-                                     const TopoDS_Face& myFace2,
-                                     const Handle(IntTools_Context)& myContext)
+Standard_Real FindMaxDistance(const Handle(Geom_Curve)& theCurve,
+                              const Standard_Real theFirst,
+                              const Standard_Real theLast,
+                              const TopoDS_Face& theFace,
+                              const Handle(IntTools_Context)& theContext)
 {
-  Standard_Real aA, aB, aCf, aX1, aX2, aF1, aF2, aX, aF;
+  Standard_Integer aNbS;
+  Standard_Real aT1, aT2, aDt, aD, aDMax, anEps;
   //
-  aCf=1.6180339887498948482045868343656;// =0.5*(1.+sqrt(5.));
-  aA=aT1;
-  aB=aT2;
-  aX1=aB-(aB-aA)/aCf;  
-  aF1=MaxSquareDistance(aX1, 
-                        aC3D, aC2D1, aC2D2, myHS1, myHS2, myFace1, myFace2, myContext);
-  aX2=aA+(aB-aA)/aCf;
-  aF2=MaxSquareDistance(aX2, 
-                        aC3D, aC2D1, aC2D2, myHS1, myHS2, myFace1, myFace2, myContext);
+  aNbS = 11;
+  aDt = (theLast - theFirst) / aNbS;
+  aDMax = 0.;
+  anEps = 1.e-4 * aDt;
   //
-  for(;;) {
+  GeomAPI_ProjectPointOnSurf& aProjPS = theContext->ProjPS(theFace);
+  aT2 = theFirst;
+  for (;;) {
+    aT1 = aT2;
+    aT2 += aDt;
     //
-    if (fabs(aA-aB)<aEps) {
-      aX=0.5*(aA+aB);
-      aF=MaxSquareDistance(aX, 
-                        aC3D, aC2D1, aC2D2, myHS1, myHS2, myFace1, myFace2, myContext);
+    if (aT2 > theLast) {
       break;
     }
-    if (aF1<aF2){
-      aA=aX1;
-      aX1=aX2;
-      aF1=aF2;
-      aX2=aA+(aB-aA)/aCf;
-      aF2=MaxSquareDistance(aX2, 
-                            aC3D, aC2D1, aC2D2, myHS1, myHS2, myFace1, myFace2, myContext);
-      
-    }
-    else {
-      aB=aX2;
-      aX2=aX1;
-      aF2=aF1;
-      aX1=aB-(aB-aA)/aCf; 
-      aF1=MaxSquareDistance(aX1, 
-                            aC3D, aC2D1, aC2D2, myHS1, myHS2, myFace1, myFace2, myContext);
+    //
+    aD = FindMaxDistance(theCurve, aT1, aT2, aProjPS, anEps);
+    if (aD > aDMax) {
+      aDMax = aD;
     }
   }
+  //
+  return aDMax;
+}
+//=======================================================================
+// Function : FindMaxDistance
+// purpose : 
+//=======================================================================
+Standard_Real FindMaxDistance(const Handle(Geom_Curve)& theC,
+                              const Standard_Real theFirst,
+                              const Standard_Real theLast,
+                              GeomAPI_ProjectPointOnSurf& theProjPS,
+                              const Standard_Real theEps)
+{
+  Standard_Real aA, aB, aCf, aX, aX1, aX2, aF1, aF2, aF;
+  //
+  aCf = 0.61803398874989484820458683436564;//(sqrt(5.)-1)/2.;
+  aA = theFirst;
+  aB = theLast;
+  //
+  aX1 = aB - aCf * (aB - aA);
+  aF1 = MaxDistance(theC, aX1, theProjPS);
+  aX2 = aA + aCf * (aB - aA);
+  aF2 = MaxDistance(theC, aX2, theProjPS);
+  //
+  for (;;) {
+    if ((aB - aA) < theEps) {
+      break;
+    }
+    //
+    if (aF1 > aF2) {
+      aB = aX2;
+      aX2 = aX1;
+      aF2 = aF1;
+      aX1 = aB - aCf * (aB - aA); 
+      aF1 = MaxDistance(theC, aX1, theProjPS);
+    }
+    else {
+      aA = aX1;
+      aX1 = aX2;
+      aF1 = aF2;
+      aX2 = aA + aCf * (aB - aA);
+      aF2 = MaxDistance(theC, aX2, theProjPS);
+    }
+  }
+  //
+  aX = 0.5 * (aA + aB);
+  aF = MaxDistance(theC, aX, theProjPS);
+  //
+  if (aF1 > aF) {
+    aF = aF1;
+  }
+  //
+  if (aF2 > aF) {
+    aF = aF2;
+  }
+  //
   return aF;
 }
 //=======================================================================
-//function : MaxSquareDistance
-//purpose  : 
+// Function : MaxDistance
+// purpose : 
 //=======================================================================
-Standard_Real MaxSquareDistance (const Standard_Real aT,
-                                 const Handle(Geom_Curve)& aC3D,
-                                 const Handle(Geom2d_Curve)& aC2D1,
-                                 const Handle(Geom2d_Curve)& aC2D2,
-                                 const Handle(GeomAdaptor_HSurface) myHS1,
-                                 const Handle(GeomAdaptor_HSurface) myHS2,
-                                 const TopoDS_Face& aF1,
-                                 const TopoDS_Face& aF2,
-                                 const Handle(IntTools_Context)& aCtx)
+Standard_Real MaxDistance(const Handle(Geom_Curve)& theC,
+                          const Standard_Real aT,
+                          GeomAPI_ProjectPointOnSurf& theProjPS)
 {
-  Standard_Boolean bIsDone;
-  Standard_Integer i;
-  Standard_Real aU, aV, aD2Max, aD2;
-  gp_Pnt2d aP2D;
-  gp_Pnt aP, aPS;
+  Standard_Real aD;
+  gp_Pnt aP;
   //
-  aD2Max=0.;
+  theC->D0(aT, aP);
+  theProjPS.Perform(aP);
+  aD = theProjPS.NbPoints() ? theProjPS.LowerDistance() : 0.;
   //
-  aC3D->D0(aT, aP);
-  if (aC3D.IsNull()) {
-    return aD2Max;
-  }
-  //
-  for (i=0; i<2; ++i) {
-    const Handle(GeomAdaptor_HSurface)& aGHS=(!i) ? myHS1 : myHS2;
-    const TopoDS_Face &aF=(!i) ? aF1 : aF2;
-    const Handle(Geom2d_Curve)& aC2D=(!i) ? aC2D1 : aC2D2;
-    //
-    if (!aC2D.IsNull()) {
-      aC2D->D0(aT, aP2D);
-      aP2D.Coord(aU, aV);
-      aGHS->D0(aU, aV, aPS);
-      aD2=aP.SquareDistance(aPS);
-      if (aD2>aD2Max) {
-        aD2Max=aD2;
-      }
-    }
-    //
-    GeomAPI_ProjectPointOnSurf& aProjector=aCtx->ProjPS(aF);
-    //
-    aProjector.Perform(aP);
-    bIsDone=aProjector.IsDone();
-    if (bIsDone) {
-      aProjector.LowerDistanceParameters(aU, aV);
-      aGHS->D0(aU, aV, aPS);
-      aD2=aP.SquareDistance(aPS);
-      if (aD2>aD2Max) {
-        aD2Max=aD2;
-      }
-    }
-  }
-  //
-  return aD2Max;
+  return aD;
 }
 
 //=======================================================================

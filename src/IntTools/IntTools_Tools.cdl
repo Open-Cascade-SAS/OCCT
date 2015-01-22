@@ -35,6 +35,8 @@ uses
     Range             from IntTools, 
     SequenceOfCurves  from IntTools,
     Curve   from  Geom,
+    Curve   from  Geom2d,
+    Surface from  Geom,
     State   from  TopAbs,
     Box from Bnd 
     
@@ -236,5 +238,18 @@ is
         theTmin  :out Real from Standard; 
         theTmax  :out Real from Standard) 
     returns Integer from Standard;  
+ 
+    ComputeTolerance(myclass;
+        theCurve3D : Curve from Geom;
+        theCurve2D : Curve from Geom2d;
+        theSurf    : Surface from Geom; 
+        theFirst   : Real from Standard;
+        theLast    : Real from Standard;
+        theMaxDist : out Real from Standard; 
+        theMaxPar  : out Real from Standard)
+    returns Boolean from Standard; 
+    ---Purpose:  
+    -- Computes the max distance between points  
+    -- taken from 3D and 2D curves by the same parameter
  
 end Tools;

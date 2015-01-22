@@ -1,0 +1,168 @@
+-- Created by: Eugeny MALTCHIKOV
+-- Copyright (c) 2014 OPEN CASCADE SAS
+--
+-- This file is part of Open CASCADE Technology software library.
+--
+-- This library is free software; you can redistribute it and/or modify it under
+-- the terms of the GNU Lesser General Public License version 2.1 as published
+-- by the Free Software Foundation, with special exception defined in the file
+-- OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+-- distribution for complete text of the license and disclaimer of any warranty.
+--
+-- Alternatively, this file may be used under the terms of Open CASCADE
+-- commercial license or contractual agreement.
+
+class CheckCurveOnSurface from BRepLib
+
+  ---Purpose:
+  -- Computes the max distance between edge and its
+  -- 2d representation on the face.
+  --
+  -- The algorithm can be initialized in the following ways:
+  -- 1. Input args are Edge and Face;
+  -- 2. Input args are 3D curve, 2d curve, Surface and
+  --    parametric range of the curve (first and last values).
+
+uses
+
+    Edge    from TopoDS,
+    Face    from TopoDS,
+    Curve   from Geom,
+    Curve   from Geom2d,
+    Surface from Geom
+
+is
+
+    Create
+    returns CheckCurveOnSurface from BRepLib;
+    ---Purpose:
+    -- Empty contructor
+
+    Create(
+        theEdge : Edge from TopoDS;
+        theFace : Face from TopoDS);
+    ---Purpose:
+    -- Contructor 
+
+    Create(
+        theCurve   : Curve   from Geom;
+        thePCurve  : Curve   from Geom2d;
+        theSurface : Surface from Geom;
+        theFirst   : Real from Standard;
+        theLast    : Real from Standard);
+    ---Purpose:
+    -- Contructor
+
+    Init(me:out;
+        theEdge : Edge from TopoDS;
+        theFace : Face from TopoDS);
+    ---Purpose:
+    -- Sets the data for the algorithm
+
+    Init(me:out;
+        theCurve   : Curve   from Geom;
+        thePCurve  : Curve   from Geom2d;
+        theSurface : Surface from Geom;
+        theFirst   : Real from Standard;
+        theLast    : Real from Standard);
+    ---Purpose:
+    -- Sets the data for the algorithm
+
+    Curve(me)
+    returns Curve from Geom;
+    ---C++: inline
+    ---C++: return const &
+    ---Purpose:
+    -- Returns my3DCurve
+
+    PCurve(me)
+    returns Curve from Geom2d;
+    ---C++: inline
+    ---C++: return const &
+    ---Purpose:
+    -- Returns my2DCurve
+
+    PCurve2(me)
+    returns Curve from Geom2d;
+    ---C++: inline
+    ---C++: return const &
+    ---Purpose:
+    -- Returns my2DCurve
+
+    Surface(me)
+    returns Surface from Geom;
+    ---C++: inline
+    ---C++: return const &
+    ---Purpose:
+    -- Returns mySurface
+
+    Range(me:out;
+        theFirst : out Real from Standard;
+        theLast  : out Real from Standard);
+    ---C++: inline
+    ---Purpose:
+    -- Returns the range
+
+    -- computations
+    --
+    Perform(me:out);
+    ---Purpose:
+    -- Performs the calculation
+
+    CheckData(me:out)
+    is protected;
+    ---Purpose:
+    -- Checks the data
+
+    Compute(me:out;
+        thePCurve : Curve from Geom2d)
+    is protected;
+    ---Purpose:
+    -- Computes the max distance for the 3d curve <myCurve>
+    -- and 2d curve <thePCurve>
+
+    -- results
+    --
+    IsDone(me)
+    returns Boolean from Standard;
+    ---C++: inline
+    ---Purpose:
+    -- Returns true if the max distance has been found
+
+    ErrorStatus(me)
+    returns Integer from Standard;
+    ---C++: inline
+    ---Purpose:
+    -- Returns error status
+    -- The possible values are:
+    -- 0 - OK;
+    -- 1 - null curve or surface or 2d curve;
+    -- 2 - invalid parametric range;
+    -- 3 - error in calculations.
+
+    MaxDistance(me)
+    returns Real from Standard;
+    ---C++: inline
+    ---Purpose:
+    -- Returns max distance
+
+    MaxParameter(me)
+    returns Real from Standard;
+    ---C++: inline
+    ---Purpose:
+    -- Returns parameter in which the distance is maximal
+
+fields
+    -- source data
+    myCurve   : Curve   from Geom;
+    myPCurve  : Curve   from Geom2d;
+    myPCurve2 : Curve   from Geom2d;
+    mySurface : Surface from Geom;
+    myFirst   : Real    from Standard;
+    myLast    : Real    from Standard;
+    -- result
+    myErrorStatus  : Integer from Standard;
+    myMaxDistance  : Real    from Standard;
+    myMaxParameter : Real    from Standard;
+
+end CheckCurveOnSurface;

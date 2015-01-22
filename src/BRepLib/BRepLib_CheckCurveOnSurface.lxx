@@ -1,0 +1,109 @@
+// Created by: Eugeny MALTCHIKOV
+// Copyright (c) 2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+//=======================================================================
+//function : Curve
+//purpose  : 
+//=======================================================================
+inline const Handle(Geom_Curve)& BRepLib_CheckCurveOnSurface::Curve() const
+{
+  return myCurve;
+}
+
+//=======================================================================
+//function : PCurve
+//purpose  : 
+//=======================================================================
+inline const Handle(Geom2d_Curve)& BRepLib_CheckCurveOnSurface::PCurve() const
+{
+  return myPCurve;
+}
+
+//=======================================================================
+//function : PCurve2
+//purpose  : 
+//=======================================================================
+inline const Handle(Geom2d_Curve)& BRepLib_CheckCurveOnSurface::PCurve2() const
+{
+  return myPCurve2;
+}
+
+//=======================================================================
+//function : Surface
+//purpose  : 
+//=======================================================================
+inline const Handle(Geom_Surface)& BRepLib_CheckCurveOnSurface::Surface() const
+{
+  return mySurface;
+}
+
+//=======================================================================
+//function : Range
+//purpose  : 
+//=======================================================================
+inline void BRepLib_CheckCurveOnSurface::Range
+  (Standard_Real& theFirst,
+   Standard_Real& theLast)
+{
+  theFirst = myFirst;
+  theLast  = myLast;
+}
+
+//=======================================================================
+//function : CheckData
+//purpose  : 
+//=======================================================================
+inline void BRepLib_CheckCurveOnSurface::CheckData()
+{
+  if (myCurve.IsNull() ||
+      myPCurve.IsNull() ||
+      mySurface.IsNull()) {
+    myErrorStatus = 1;
+    return;
+  }
+  //
+  if ((myCurve->FirstParameter() > myFirst) ||
+      (myCurve->LastParameter() < myLast) ||
+      (myPCurve->FirstParameter() > myFirst) ||
+      (myPCurve->LastParameter() < myLast)) {
+    myErrorStatus = 2;
+  }
+}
+
+//=======================================================================
+//function : IsDone
+//purpose  : 
+//=======================================================================
+inline Standard_Boolean BRepLib_CheckCurveOnSurface::IsDone() const
+{
+  return (myErrorStatus == 0);
+}
+
+//=======================================================================
+//function : MaxDistance
+//purpose  : 
+//=======================================================================
+inline Standard_Real BRepLib_CheckCurveOnSurface::MaxDistance() const
+{
+  return myMaxDistance;
+}
+
+//=======================================================================
+//function : MaxParameter
+//purpose  : 
+//=======================================================================
+inline Standard_Real BRepLib_CheckCurveOnSurface::MaxParameter() const
+{
+  return myMaxParameter;
+}

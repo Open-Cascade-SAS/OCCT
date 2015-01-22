@@ -133,6 +133,10 @@ is
     ComputeTolReached3d(me:out) 
      is  protected; 
  
+    ComputeTolerance(me:out)  
+    returns Real from Standard
+    is  protected; 
+ 
     SetContext(me:out; 
        aContext : Context from IntTools); 
     ---Purpose:

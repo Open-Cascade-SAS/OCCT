@@ -418,7 +418,8 @@ is
     -- state information 
 
     UpdateFaceInfo(me:out;
-        theDME:out DataMapOfPaveBlockListOfPaveBlock from BOPDS) 
+        theDME:out DataMapOfPaveBlockListOfPaveBlock from BOPDS; 
+        theDMV: DataMapOfIntegerInteger from BOPCol) 
       is protected; 
     ---Purpose: 
     -- Updates the information about faces

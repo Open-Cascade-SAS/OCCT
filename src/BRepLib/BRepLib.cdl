@@ -133,6 +133,10 @@ is
     class FuseEdges;
 	---Purpose: 
 
+    class CheckCurveOnSurface;
+    ---Purpose:
+    -- Computes the max distance between edge
+    -- and its 2d representation on the face.
 
     --
     --   Default precison methods.

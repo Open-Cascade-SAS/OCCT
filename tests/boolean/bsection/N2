@@ -3,4 +3,4 @@ plane p 0 0 0 1 0 0
 mkface f p
 bsection result a f
 
-set length 18981.4
+set length 20674.3
