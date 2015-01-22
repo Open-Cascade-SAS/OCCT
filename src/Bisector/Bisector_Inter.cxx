@@ -346,12 +346,14 @@ void Bisector_Inter::NeighbourPerform(const Handle(Bisector_BisecCC)&  Bis1,
   if (UMin - Eps > UMax + Eps) {return;}
 
   // Solution F = 0 to find the common point.
-  Bisector_FunctionInter Fint (Guide,Bis1,BisTemp);
-  math_BissecNewton      Sol (Fint,UMin,UMax,Tol,20);
-  if (Sol.IsDone()) {
-    USol   = Sol.Root();
-  }
-  else { return; }
+  Bisector_FunctionInter Fint(Guide,Bis1,BisTemp);
+
+  math_BissecNewton aSolution(Tol);
+  aSolution.Perform(Fint, UMin, UMax, 20);
+
+  if (aSolution.IsDone())
+    USol = aSolution.Root();
+  else return;
 
   PSol    = BisTemp ->ValueAndDist(USol,U1,U2,Dist);
   

@@ -247,7 +247,9 @@ Standard_Boolean math_GlobOptMin::computeLocalExtremum(const math_Vector& thePnt
     math_MultipleVarFunctionWithHessian* myTmp = 
       dynamic_cast<math_MultipleVarFunctionWithHessian*> (myFunc);
     
-    math_NewtonMinimum newtonMinimum(*myTmp, thePnt);
+    math_NewtonMinimum newtonMinimum(*myTmp);
+    newtonMinimum.Perform(*myTmp, thePnt);
+
     if (newtonMinimum.IsDone())
     {
       newtonMinimum.Location(theOutPnt);
@@ -278,7 +280,8 @@ Standard_Boolean math_GlobOptMin::computeLocalExtremum(const math_Vector& thePnt
     for(i = 1; i <= myN; i++)
       m(1, 1) = 1.0;
 
-    math_Powell powell(*myFunc, thePnt, m, 1e-10);
+    math_Powell powell(*myFunc, 1e-10);
+    powell.Perform(*myFunc, thePnt, m);
 
     if (powell.IsDone())
     {

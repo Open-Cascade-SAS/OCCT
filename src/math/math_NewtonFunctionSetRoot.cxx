@@ -22,128 +22,93 @@
 #include <math_Recipes.hxx>
 #include <math_FunctionSetWithDerivatives.hxx>
 
-Standard_Boolean math_NewtonFunctionSetRoot::IsSolutionReached
-//                              (math_FunctionSetWithDerivatives& F) 
-                              (math_FunctionSetWithDerivatives& ) 
-{
-  
-  for(Standard_Integer i = DeltaX.Lower(); i <= DeltaX.Upper(); i++) {
-    if(Abs(DeltaX(i)) > TolX(i) || Abs(FValues(i)) > TolF) return Standard_False;
-  } 
-  return Standard_True;
-}
 
-
-// Constructeurs d'initialisation des champs (pour utiliser Perform)
-
+//=======================================================================
+//function : math_NewtonFunctionSetRoot
+//purpose  : Constructor
+//=======================================================================
 math_NewtonFunctionSetRoot::math_NewtonFunctionSetRoot(
-			    math_FunctionSetWithDerivatives& F,
-			    const math_Vector& XTol,
-			    const Standard_Real FTol,
-			    const Standard_Integer NbIterations):
-                            TolX(1, F.NbVariables()),
-                            TolF(FTol),
-                            Indx(1, F.NbVariables()),
-                            Scratch(1, F.NbVariables()),
-                            Sol(1, F.NbVariables()),
-                            DeltaX(1, F.NbVariables()),
-                            FValues(1, F.NbVariables()),
-                            Jacobian(1, F.NbVariables(),
-				     1, F.NbVariables()),
-                            Itermax(NbIterations)
+  math_FunctionSetWithDerivatives& theFunction,
+  const math_Vector&               theXTolerance,
+  const Standard_Real              theFTolerance,
+  const Standard_Integer           theNbIterations)
+
+: TolX    (1, theFunction.NbVariables()),
+  TolF    (theFTolerance),
+  Indx    (1, theFunction.NbVariables()),
+  Scratch (1, theFunction.NbVariables()),
+  Sol     (1, theFunction.NbVariables()),
+  DeltaX  (1, theFunction.NbVariables()),
+  FValues (1, theFunction.NbVariables()),
+  Jacobian(1, theFunction.NbVariables(), 1, theFunction.NbVariables()),
+  Done    (Standard_False),
+  State   (0),
+  Iter    (0),
+  Itermax (theNbIterations)
 {
-  for (Standard_Integer i = 1; i <= TolX.Length(); i++) {
-    TolX(i) = XTol(i);
-  }
+  SetTolerance(theXTolerance);
 }
 
-
+//=======================================================================
+//function : math_NewtonFunctionSetRoot
+//purpose  : Constructor
+//=======================================================================
 math_NewtonFunctionSetRoot::math_NewtonFunctionSetRoot(
-			    math_FunctionSetWithDerivatives& F,
-			    const Standard_Real FTol,
-			    const Standard_Integer NbIterations):
-                            TolX(1, F.NbVariables()),
-                            TolF(FTol),
-                            Indx(1, F.NbVariables()),
-                            Scratch(1, F.NbVariables()),
-                            Sol(1, F.NbVariables()),
-                            DeltaX(1, F.NbVariables()),
-                            FValues(1, F.NbVariables()),
-                            Jacobian(1, F.NbVariables(),
-				     1, F.NbVariables()),
-                            Itermax(NbIterations)
+  math_FunctionSetWithDerivatives& theFunction,
+  const Standard_Real              theFTolerance,
+  const Standard_Integer           theNbIterations)
+
+: TolX    (1, theFunction.NbVariables()),
+  TolF    (theFTolerance),
+  Indx    (1, theFunction.NbVariables()),
+  Scratch (1, theFunction.NbVariables()),
+  Sol     (1, theFunction.NbVariables()),
+  DeltaX  (1, theFunction.NbVariables()),
+  FValues (1, theFunction.NbVariables()),
+  Jacobian(1, theFunction.NbVariables(), 1, theFunction.NbVariables()),
+  Done    (Standard_False),
+  State   (0),
+  Iter    (0),
+  Itermax (theNbIterations)
 {
 }
 
-
-math_NewtonFunctionSetRoot::math_NewtonFunctionSetRoot
-                           (math_FunctionSetWithDerivatives& F,
-			    const math_Vector& StartingPoint,
-			    const math_Vector&    XTol,
-			    const Standard_Real    FTol,
-			    const Standard_Integer NbIterations) :
-			    
-			    TolX(1, F.NbVariables()),
-			    TolF(FTol),
-			    Indx    (1, F.NbVariables()),
-			    Scratch (1, F.NbVariables()),
-			    Sol     (1, F.NbVariables()),
-			    DeltaX  (1, F.NbVariables()),
-			    FValues (1, F.NbVariables()),
-			    Jacobian(1, F.NbVariables(),
-				     1, F.NbVariables()),
-			    Itermax(NbIterations)
-{
-  for (Standard_Integer i = 1; i <= TolX.Length(); i++) {
-    TolX(i) = XTol(i);
-  }
-  math_Vector UFirst(1, F.NbVariables()),
-              ULast(1, F.NbVariables());
-  UFirst.Init(RealFirst());
-  ULast.Init(RealLast());
-  Perform(F, StartingPoint, UFirst, ULast);
-}
-
-math_NewtonFunctionSetRoot::math_NewtonFunctionSetRoot
-                              (math_FunctionSetWithDerivatives& F,
-			       const math_Vector& StartingPoint,
-                               const math_Vector&    InfBound,
-                               const math_Vector&    SupBound,
-			       const math_Vector&    XTol,
-                               const Standard_Real    FTol,
-			       const Standard_Integer NbIterations) :
-                                                            
-                               TolX(1, F.NbVariables()),
-                               TolF(FTol),
-                               Indx    (1, F.NbVariables()),
-                               Scratch (1, F.NbVariables()),
-                               Sol     (1, F.NbVariables()),
-                               DeltaX  (1, F.NbVariables()),
-                               FValues (1, F.NbVariables()),
-                               Jacobian(1, F.NbVariables(),
-                                        1, F.NbVariables()),
-                               Itermax(NbIterations)
-{
-  for (Standard_Integer i = 1; i <= TolX.Length(); i++) {
-    TolX(i) = XTol(i);
-  }
-  Perform(F, StartingPoint, InfBound, SupBound);
-}
-
+//=======================================================================
+//function : ~math_NewtonFunctionSetRoot
+//purpose  : Destructor
+//=======================================================================
 math_NewtonFunctionSetRoot::~math_NewtonFunctionSetRoot()
 {
 }
 
-void math_NewtonFunctionSetRoot::SetTolerance
-                              (const math_Vector& XTol)
+//=======================================================================
+//function : SetTolerance
+//purpose  : 
+//=======================================================================
+void math_NewtonFunctionSetRoot::SetTolerance(const math_Vector& theXTolerance)
 {
-  for (Standard_Integer i = 1; i <= TolX.Length(); i++) {
-    TolX(i) = XTol(i);
-  }
+  for (Standard_Integer i = 1; i <= TolX.Length(); ++i)
+    TolX(i) = theXTolerance(i);
 }
 
+//=======================================================================
+//function : Perform
+//purpose  : 
+//=======================================================================
+void math_NewtonFunctionSetRoot::Perform(
+  math_FunctionSetWithDerivatives& theFunction,
+  const math_Vector&               theStartingPoint)
+{
+  const math_Vector anInf(1, theFunction.NbVariables(), RealFirst());
+  const math_Vector aSup (1, theFunction.NbVariables(), RealLast ());
 
+  Perform(theFunction, theStartingPoint, anInf, aSup);
+}
 
+//=======================================================================
+//function : Perform
+//purpose  : 
+//=======================================================================
 void math_NewtonFunctionSetRoot::Perform(
                            math_FunctionSetWithDerivatives& F,
                            const math_Vector& StartingPoint,
@@ -184,6 +149,10 @@ void math_NewtonFunctionSetRoot::Perform(
   }               
 }
 
+//=======================================================================
+//function : Dump
+//purpose  : 
+//=======================================================================
 void math_NewtonFunctionSetRoot::Dump(Standard_OStream& o) const 
 {
   o <<"math_NewtonFunctionSetRoot ";

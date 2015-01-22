@@ -28,57 +28,41 @@ raises NotDone, DimensionError
 
 is
  
-    Create(F: in out MultipleVarFunctionWithHessian;
-    	   StartingPoint: Vector; 
-           Tolerance: Real=1.0e-7;
-	   NbIterations: Integer=40; 
-           Convexity: Real=1.0e-6; 
-           WithSingularity  :  Boolean = Standard_True)
-    ---Purpose: -- Given the  starting   point  StartingPoint,
-    --            The tolerance  required on  the  solution is given  by
-    --            Tolerance.  
-    --             Iteration are  stopped if  
-    --             (!WithSingularity)  and H(F(Xi)) is not definite
-    --             positive  (if the smaller eigenvalue of H < Convexity)
-    --            or IsConverged() returns True for 2 successives Iterations.
-    --  Warning: Obsolete Constructor (because IsConverged can not be redefined
-    --           with this. )
+    Create(theFunction: in MultipleVarFunctionWithHessian;
+           theTolerance: Real=1.0e-7;
+           theNbIterations: Integer=40; 
+           theConvexity: Real=1.0e-6; 
+           theWithSingularity: Boolean = Standard_True)
+    ---Purpose:
+    -- The tolerance required on the solution is given by Tolerance.
+    -- Iteration are  stopped if (!WithSingularity) and H(F(Xi)) is not definite
+    -- positive (if the smaller eigenvalue of H < Convexity)
+    -- or IsConverged() returns True for 2 successives Iterations.
+    -- Warning: This constructor does not perform computation.
     returns  NewtonMinimum;
 
-    Create(F: in out MultipleVarFunctionWithHessian;
-           Tolerance: Real=1.0e-7;
-	   NbIterations: Integer=40; 
-           Convexity: Real=1.0e-6; 
-           WithSingularity  :  Boolean = Standard_True)
-    ---Purpose:
-    --            The tolerance  required on  the  solution is given  by
-    --            Tolerance.  
-    --             Iteration are  stopped if  
-    --             (!WithSingularity)  and H(F(Xi)) is not definite
-    --             positive  (if the smaller eigenvalue of H < Convexity)
-    --            or IsConverged() returns True for 2 successives Iterations.
-    --  Warning: This constructor do not computation 
-    returns  NewtonMinimum;
-    
-    ---C++: alias "  Standard_EXPORT virtual ~math_NewtonMinimum();"
-    
-    Perform(me: in out; F: in out MultipleVarFunctionWithHessian;
-    	    StartingPoint: Vector)
-	 ---Purpose: Search the solution.
+
+    Perform(me: in out; theFunction: in out MultipleVarFunctionWithHessian;
+            theStartingPoint: Vector)
+    ---Purpose: Search the solution.
     is static;
 
-    
+
+    Delete(me) is static;
+    ---Purpose: Destructor alias.
+    ---C++: inline
+    ---C++: alias "  Standard_EXPORT virtual ~math_NewtonMinimum();"
+
+
     IsConverged(me)
-    	---Purpose:  This method is  called    at the end  of   each
-    	--            iteration to  check the convergence :
-    	--            || Xi+1 - Xi || < Tolerance 
-    	--            or || F(Xi+1) - F(Xi)|| < Tolerance * || F(Xi) ||
-    	--            It can be  redefined in a sub-class to implement a specific  test.
-    
-    returns Boolean
-    is virtual;
-    
-    
+    ---Purpose:
+    -- This method is called at the end of each iteration to check the convergence:
+    -- || Xi+1 - Xi || < Tolerance or || F(Xi+1) - F(Xi)|| < Tolerance * || F(Xi) ||
+    -- It can be redefined in a sub-class to implement a specific test.
+    ---C++: inline
+    returns Boolean is virtual;
+
+
     IsDone(me)
     	---Purpose: Tests if an error has occured.
     	---C++: inline

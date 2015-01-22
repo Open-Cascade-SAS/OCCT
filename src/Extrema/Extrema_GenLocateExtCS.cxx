@@ -89,7 +89,8 @@ void Extrema_GenLocateExtCS::Perform(const Adaptor3d_Curve& C,
   BSup(2) = Usup;
   BSup(3) = Vsup;
 
-  math_FunctionSetRoot SR (F, Start,Tol, BInf, BSup);
+  math_FunctionSetRoot SR (F, Tol);
+  SR.Perform(F, Start, BInf, BSup);
   if (!SR.IsDone()) 
     return;
 

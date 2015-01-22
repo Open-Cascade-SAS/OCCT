@@ -97,7 +97,8 @@ void Extrema_GenLocateExtSS::Perform(const Adaptor3d_Surface& S1,
   BSup(3) = Usup2;
   BSup(4) = Vsup2;
 
-  math_FunctionSetRoot SR (F, Start,Tol, BInf, BSup);
+  math_FunctionSetRoot SR (F, Tol);
+  SR.Perform(F, Start, BInf, BSup);
   if (!SR.IsDone()) 
     return;
 

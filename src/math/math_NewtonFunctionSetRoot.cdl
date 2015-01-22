@@ -30,96 +30,66 @@ raises NotDone from StdFail,
 
 is
 
-    Create(F: in out FunctionSetWithDerivatives;
-           XTol: Vector; FTol: Real;
-           NbIterations: Integer = 100)
-       	---Purpose:
-    	-- This constructor should be used in a sub-class to initialize
-    	-- correctly all the fields of this class. 
-    	-- The range (1, F.NbVariables()) must be especially respected for
-    	-- all vectors and matrix declarations.
-    
-   returns NewtonFunctionSetRoot;   
-   
-   
-    Create(F: in out FunctionSetWithDerivatives;
-           FTol: Real; NbIterations: Integer = 100)
-       	---Purpose:
-    	-- This constructor should be used in a sub-class to initialize
-    	-- correctly all the fields of this class. 
-    	-- The range (1, F.NbVariables()) must be especially respected for
-    	-- all vectors and matrix declarations.
-    	-- The method SetTolerance must be called before performing the
-    	-- algorithm.
-    
-   returns NewtonFunctionSetRoot;   
-   
-   
-
-   Create(F: in out FunctionSetWithDerivatives;
-    	  StartingPoint: Vector;
-	  XTol: Vector; FTol: Real;
-	  NbIterations: Integer = 100)
-    	---Purpose:
-    	-- The Newton method is done to improve the root of the function F 
-    	-- from the initial guess StartingPoint.
-    	-- The tolerance required on the root is given by Tolerance.
-    	-- The solution is found when :
-    	--    abs(Xj - Xj-1)(i) <= XTol(i) and abs(Fi) <= FTol for all i;
-    	-- The maximum number of iterations allowed is given by NbIterations.
-
-    returns NewtonFunctionSetRoot;
-    
+    Create(theFunction: in out FunctionSetWithDerivatives;
+           theXTolerance: Vector; theFTolerance: Real;
+           tehNbIterations: Integer = 100)
+    ---Purpose:
+    -- Initialize correctly all the fields of this class. 
+    -- The range (1, F.NbVariables()) must be especially respected for
+    -- all vectors and matrix declarations.
+   returns NewtonFunctionSetRoot;
 
 
-   Create(F: in out FunctionSetWithDerivatives;
-    	  StartingPoint: Vector;
-    	  InfBound, SupBound: Vector;
-	  XTol: Vector; FTol: Real;
-	  NbIterations: Integer = 100)
-    	---Purpose:
-    	-- The Newton method is done to improve the root of the function F 
-    	-- from the initial guess StartingPoint.
-    	-- The tolerance required on the root is given by Tolerance.
-    	-- The solution is found when :
-    	--    abs(Xj - Xj-1)(i) <= XTol(i) and abs(Fi) <= FTol for all i;
-    	-- The maximum number of iterations allowed is given by NbIterations.
-
-    returns NewtonFunctionSetRoot;
+    Create(theFunction: in out FunctionSetWithDerivatives;
+           theFTolerance: Real; theNbIterations: Integer = 100)
+    ---Purpose:
+    -- This constructor should be used in a sub-class to initialize
+    -- correctly all the fields of this class.
+    -- The range (1, F.NbVariables()) must be especially respected for
+    -- all vectors and matrix declarations.
+    -- The method SetTolerance must be called before performing the algorithm.
+   returns NewtonFunctionSetRoot;
 
 
+    Delete(me) is static;
+    ---Purpose: Destructor alias.
     ---C++: alias "  Standard_EXPORT virtual ~math_NewtonFunctionSetRoot();"
-    
+
+
     SetTolerance(me: in out; XTol: Vector)
-    	---Purpose: Initializes the tolerance values for the unknowns.
-
-    is static;
-    
-
-    Perform(me: in out; F:in  out FunctionSetWithDerivatives;
-            StartingPoint: Vector;
-    	    InfBound, SupBound: Vector)
-        ---Purpose: Improves the root of function F from the initial guess
-    	-- StartingPoint. infBound and supBound may be given, to constrain the solution.
-    	-- Warning
-    	-- This method must be called when the solution is not computed by the constructors.
-
+    ---Purpose: Initializes the tolerance values for the unknowns.
     is static;
 
-    
+
+    Perform(me: in out; theFunction: in out FunctionSetWithDerivatives; theStartingPoint: Vector)
+    ---Purpose:
+    -- The Newton method is done to improve the root of the function 
+    -- from the initial guess point. The solution is found when:
+    -- abs(Xj - Xj-1)(i) <= XTol(i) and abs(Fi) <= FTol for all i;
+    is static;
+
+
+    Perform(me: in out; theFunction: in out FunctionSetWithDerivatives;
+            theStartingPoint: Vector; theInfBound, theSupBound: Vector)
+    ---Purpose:
+    -- The Newton method is done to improve the root of the function 
+    -- from the initial guess point. Bounds may be given, to constrain the solution.
+    -- The solution is found when:
+    -- abs(Xj - Xj-1)(i) <= XTol(i) and abs(Fi) <= FTol for all i;
+    is static;
+
 
     IsSolutionReached(me: in out; F: in out FunctionSetWithDerivatives)
-    	---Purpose:
-    	-- This method is called at the end of each iteration to check if the
-    	-- solution is found.
-    	-- Vectors DeltaX, Fvalues and Jacobian Matrix are consistent with the
-    	-- possible solution Vector Sol and can be inspected to decide whether
-    	-- the solution is reached or not.
+    ---Purpose:
+    -- This method is called at the end of each iteration to check if the
+    -- solution is found.
+    -- Vectors DeltaX, Fvalues and Jacobian Matrix are consistent with the
+    -- possible solution Vector Sol and can be inspected to decide whether
+    -- the solution is reached or not.
+    ---C++: inline
+    returns Boolean is virtual;
 
-    returns Boolean
-    is virtual;
-    
-    
+
     IsDone(me)
 	---Purpose: Returns true if the computations are successful, otherwise returns false.
       	---C++: inline

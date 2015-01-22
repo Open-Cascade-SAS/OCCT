@@ -14,7 +14,23 @@
 
 #include <StdFail_NotDone.hxx>
 
-inline Standard_Boolean math_BrentMinimum::IsDone() const { return Done; }
+inline void math_BrentMinimum::Delete() const
+{
+}
+
+
+inline Standard_Boolean math_BrentMinimum::IsSolutionReached(math_Function&)
+{
+  const Standard_Real TwoTol = 2.0 * (XTol * fabs(x) + EPSZ);
+  return (x <= (TwoTol + a)) && (x >= (b - TwoTol));
+}
+
+
+inline Standard_Boolean math_BrentMinimum::IsDone() const
+{
+  return Done;
+}
+
 
 inline Standard_OStream& operator<< (Standard_OStream& o,
 				     const math_BrentMinimum& Br)

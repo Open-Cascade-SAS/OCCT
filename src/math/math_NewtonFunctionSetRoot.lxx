@@ -14,8 +14,23 @@
 
 #include <StdFail_NotDone.hxx>
 
-inline Standard_Boolean math_NewtonFunctionSetRoot::IsDone()  const
-                                                    { return Done;}
+inline void math_NewtonFunctionSetRoot::Delete() const
+{
+}
+
+inline Standard_Boolean math_NewtonFunctionSetRoot::IsSolutionReached(math_FunctionSetWithDerivatives&)
+{
+  for (Standard_Integer i = DeltaX.Lower(); i <= DeltaX.Upper(); ++i)
+    if ( Abs(DeltaX(i)) > TolX(i) || Abs(FValues(i)) > TolF )
+      return Standard_False;
+
+  return Standard_True;
+}
+
+inline Standard_Boolean math_NewtonFunctionSetRoot::IsDone() const
+{
+  return Done;
+}
 
 inline Standard_OStream& operator<<(Standard_OStream& o,
 				    const math_NewtonFunctionSetRoot& N)

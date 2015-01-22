@@ -23,15 +23,68 @@
 #define SIGN(a,b)     ((b) > 0.0 ? fabs(a) : -fabs(a))
 #define SHFT(a,b,c,d) (a)=(b);(b)=(c);(c)=(d)
 
+//=======================================================================
+//function : math_BrentMinimum
+//purpose  : Constructor
+//=======================================================================
+math_BrentMinimum::math_BrentMinimum(const Standard_Real    theTolX,
+                                     const Standard_Integer theNbIterations,
+                                     const Standard_Real    theZEPS)
+: a   (0.0),
+  b   (0.0),
+  x   (0.0),
+  fx  (0.0),
+  fv  (0.0),
+  fw  (0.0),
+  XTol(theTolX),
+  EPSZ(theZEPS),
+  Done   (Standard_False),
+  iter   (0),
+  Itermax(theNbIterations),
+  myF    (Standard_False)
+{
+}
+
+//=======================================================================
+//function : math_BrentMinimum
+//purpose  : Constructor
+//=======================================================================
+math_BrentMinimum::math_BrentMinimum(const Standard_Real    theTolX,
+                                     const Standard_Real    theFbx,
+                                     const Standard_Integer theNbIterations,
+                                     const Standard_Real    theZEPS)
+: a   (0.0),
+  b   (0.0),
+  x   (0.0),
+  fx  (theFbx),
+  fv  (0.0),
+  fw  (0.0),
+  XTol(theTolX),
+  EPSZ(theZEPS),
+  Done   (Standard_False),
+  iter   (0),
+  Itermax(theNbIterations),
+  myF    (Standard_True)
+{
+}
+
+//=======================================================================
+//function : ~math_BrentMinimum
+//purpose  : Destructor
+//=======================================================================
 math_BrentMinimum::~math_BrentMinimum()
 {
 }
 
+//=======================================================================
+//function : Perform
+//purpose  : 
+//=======================================================================
 void math_BrentMinimum::Perform(math_Function& F,
-				const Standard_Real    ax,
-				const Standard_Real    bx,
-				const Standard_Real    cx) {
-
+                                const Standard_Real    ax,
+                                const Standard_Real    bx,
+                                const Standard_Real    cx)
+{
   Standard_Boolean OK;  
   Standard_Real etemp, fu, p, q, r;  
   Standard_Real tol1, tol2, u, v, w, xm;
@@ -104,70 +157,20 @@ void math_BrentMinimum::Perform(math_Function& F,
   return;
 }
 
-
-math_BrentMinimum::math_BrentMinimum(math_Function& F,
-				     const Standard_Real    Ax,
-				     const Standard_Real    Bx,
-				     const Standard_Real    Cx,
-				     const Standard_Real    TolX,
-				     const Standard_Integer NbIterations,
-				     const Standard_Real    ZEPS) {
-
-  XTol = TolX;
-  EPSZ = ZEPS;
-  Itermax = NbIterations;
-  myF = Standard_False;
-  Perform(F, Ax, Bx, Cx);
-}
-
-
-// Constructeur d'initialisation des champs.
-
-math_BrentMinimum::math_BrentMinimum(const Standard_Real    TolX,
-				     const Standard_Integer NbIterations,
-				     const Standard_Real    ZEPS) {
-  myF = Standard_False;
-  XTol = TolX;
-  EPSZ = ZEPS;
-  Itermax = NbIterations;
-}
-
-math_BrentMinimum::math_BrentMinimum(const Standard_Real    TolX,
-                                     const Standard_Real    Fbx,
-				     const Standard_Integer NbIterations,
-				     const Standard_Real    ZEPS) {
-
-  fx = Fbx;
-  myF = Standard_True;
-  XTol = TolX;
-  EPSZ = ZEPS;
-  Itermax = NbIterations;
-}
-
-
-//    Standard_Boolean math_BrentMinimum::IsSolutionReached(math_Function& F) {
-    Standard_Boolean math_BrentMinimum::IsSolutionReached(math_Function& ) {
-
-//       Standard_Real xm = 0.5 * (a + b);
-       // modified by NIZHNY-MKK  Mon Oct  3 17:45:57 2005.BEGIN
-//        Standard_Real tol = XTol * fabs(x) + EPSZ;
-//        return fabs(x - xm) <= 2.0 * tol - 0.5 * (b - a);
-       Standard_Real TwoTol = 2.0 *(XTol * fabs(x) + EPSZ);
-       return ((x <= (TwoTol + a)) && (x >= (b - TwoTol)));
-       // modified by NIZHNY-MKK  Mon Oct  3 17:46:00 2005.END
+//=======================================================================
+//function : Dump
+//purpose  : 
+//=======================================================================
+void math_BrentMinimum::Dump(Standard_OStream& o) const
+{
+  o << "math_BrentMinimum ";
+  if(Done) {
+    o << " Status = Done \n";
+    o << " Location value = " << x <<"\n";
+    o << " Minimum value = " << fx << "\n";
+    o << " Number of iterations = " << iter <<"\n";
   }
-
-
-
-    void math_BrentMinimum::Dump(Standard_OStream& o) const {
-       o << "math_BrentMinimum ";
-       if(Done) {
-         o << " Status = Done \n";
-         o << " Location value = " << x <<"\n";
-         o << " Minimum value = " << fx << "\n";
-         o << " Number of iterations = " << iter <<"\n";
-       }
-       else {
-         o << " Status = not Done \n";
-       }
-    }
+  else {
+    o << " Status = not Done \n";
+  }
+}

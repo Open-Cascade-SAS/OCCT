@@ -338,7 +338,8 @@ void Extrema_ExtPExtS::Perform (const gp_Pnt& P)
       Pe = ProjectPnt (anOrtogSection, myDirection, E),
       V = gp_Vec(E,Pe) * gp_Vec(myDirection);
       UV(1) = U;         UV(2) = V;
-      math_FunctionSetRoot aFSR (myF,UV,Tol,UVinf,UVsup);
+      math_FunctionSetRoot aFSR (myF, Tol);
+      aFSR.Perform(myF, UV, UVinf, UVsup);
 //      for (Standard_Integer k=1 ; k <= myF.NbExt(); 
       Standard_Integer k;
       for ( k=1 ; k <= myF.NbExt(); k++) {

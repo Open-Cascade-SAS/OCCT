@@ -88,8 +88,9 @@ static Standard_Boolean MinimizeDirection(math_Vector& P,
      math_BracketMinimum Bracket(F, 0.0, 1.0);
      if(Bracket.IsDone()) {
        Bracket.Values(ax, xx, bx);
-       math_BrentMinimum Sol(F, ax, xx, bx, 1.0e-10, 100);
-       if(Sol.IsDone()) {
+       math_BrentMinimum Sol(1.e-10);
+       Sol.Perform(F, ax, xx, bx);
+       if (Sol.IsDone()) {
          Standard_Real Scale = Sol.Location();
          Result = Sol.Minimum();
          Dir.Multiply(Scale);
@@ -100,10 +101,45 @@ static Standard_Boolean MinimizeDirection(math_Vector& P,
      return Standard_False;
   }
 
+//=======================================================================
+//function : math_FRPR
+//purpose  : Constructor
+//=======================================================================
+math_FRPR::math_FRPR(const math_MultipleVarFunctionWithGradient& theFunction,
+                     const Standard_Real                         theTolerance,
+                     const Standard_Integer                      theNbIterations,
+                     const Standard_Real                         theZEPS)
 
+: TheLocation(1, theFunction.NbVariables()),
+  TheGradient(1, theFunction.NbVariables()),
+  TheMinimum     (0.0),
+  PreviousMinimum(0.0),
+  XTol           (theTolerance),
+  EPSZ           (theZEPS),
+  Done           (Standard_False),
+  Iter           (0),
+  State          (0),
+  TheStatus      (math_NotBracketed),
+  Itermax        (theNbIterations)
+{
+}
+
+//=======================================================================
+//function : ~math_FRPR
+//purpose  : Destructor
+//=======================================================================
+math_FRPR::~math_FRPR()
+{
+}
+
+
+//=======================================================================
+//function : Perform
+//purpose  : 
+//=======================================================================
 void  math_FRPR::Perform(math_MultipleVarFunctionWithGradient& F,
-                         const math_Vector& StartingPoint) {
-  
+                         const math_Vector& StartingPoint)
+{
        Standard_Boolean Good;
        Standard_Integer n = TheLocation.Length();
        Standard_Integer j, its;
@@ -140,7 +176,7 @@ void  math_FRPR::Perform(math_MultipleVarFunctionWithGradient& F,
          }
          if(IsSolutionReached(F)) {
            Done = Standard_True;
-	   State = F.GetStateNumber();
+           State = F.GetStateNumber();
            TheStatus = math_OK;
            return;
          }
@@ -175,64 +211,25 @@ void  math_FRPR::Perform(math_MultipleVarFunctionWithGradient& F,
        Done = Standard_False;
        TheStatus = math_TooManyIterations;
        return;
+}
 
-     }
-
-
-
-    Standard_Boolean math_FRPR::IsSolutionReached(
-//                           math_MultipleVarFunctionWithGradient& F) {
-                           math_MultipleVarFunctionWithGradient& ) {
-
-       return (2.0 * fabs(TheMinimum - PreviousMinimum)) <= 
-              XTol * (fabs(TheMinimum) + fabs(PreviousMinimum) + EPSZ);
-    }
-
-    math_FRPR::math_FRPR(math_MultipleVarFunctionWithGradient& F,
-                         const math_Vector& StartingPoint, 
-                         const Standard_Real        Tolerance,
-                         const Standard_Integer     NbIterations,
-                         const Standard_Real        ZEPS) 
-                         : TheLocation(1, StartingPoint.Length()),
-                           TheGradient(1, StartingPoint.Length()) {
-
-       XTol = Tolerance;
-       EPSZ = ZEPS;
-       Itermax = NbIterations;
-       Perform(F, StartingPoint);
-    }
-                             
-
-    math_FRPR::math_FRPR(math_MultipleVarFunctionWithGradient& F,
-                         const Standard_Real        Tolerance,
-                         const Standard_Integer     NbIterations,
-                         const Standard_Real        ZEPS) 
-                         : TheLocation(1, F.NbVariables()),
-                           TheGradient(1, F.NbVariables()) {
-
-       XTol = Tolerance;
-       EPSZ = ZEPS;
-       Itermax = NbIterations;
-    }
-
-
-    math_FRPR::~math_FRPR()
-    {
-    }
-
-    void math_FRPR::Dump(Standard_OStream& o) const {
-
-       o << "math_FRPR ";
-       if(Done) {
-         o << " Status = Done \n";
-	 o << " Location Vector = "<< TheLocation << "\n";
-         o << " Minimum value = " << TheMinimum <<"\n";
-         o << " Number of iterations = " << Iter <<"\n";
-       }
-       else {
-         o << " Status = not Done because " << (Standard_Integer)TheStatus << "\n";
-       }
-    }
+//=======================================================================
+//function : Dump
+//purpose  : 
+//=======================================================================
+void math_FRPR::Dump(Standard_OStream& o) const
+{
+  o << "math_FRPR ";
+  if(Done) {
+    o << " Status = Done \n";
+    o << " Location Vector = "<< TheLocation << "\n";
+    o << " Minimum value = " << TheMinimum <<"\n";
+    o << " Number of iterations = " << Iter <<"\n";
+  }
+  else {
+    o << " Status = not Done because " << (Standard_Integer)TheStatus << "\n";
+  }
+}
 
 
 

@@ -75,7 +75,8 @@ Method:
   BSup(1) = Usup;
   BSup(2) = Vsup;
 
-  math_FunctionSetRoot SR (F, Start,Tol, BInf, BSup);
+  math_FunctionSetRoot SR (F, Tol);
+  SR.Perform(F, Start, BInf, BSup);
   if (!SR.IsDone()) 
     return;
 

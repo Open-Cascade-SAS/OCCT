@@ -15,7 +15,20 @@
 #include <StdFail_NotDone.hxx>
 #include <math_Vector.hxx>
 
-inline Standard_Boolean math_Powell::IsDone() const { return Done; }
+inline void math_Powell::Delete() const
+{
+}
+
+inline Standard_Boolean math_Powell::IsSolutionReached(math_MultipleVarFunction&)
+{  
+  return 2.0  *  fabs(PreviousMinimum - TheMinimum) <= 
+         XTol * (fabs(PreviousMinimum) + fabs(TheMinimum) + EPSZ);
+}
+
+inline Standard_Boolean math_Powell::IsDone() const
+{
+  return Done;
+}
 
 inline Standard_OStream& operator<<(Standard_OStream& o,
 				    const math_Powell& P) 

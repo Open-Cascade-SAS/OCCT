@@ -15,14 +15,37 @@
 #include <math_BissecNewton.ixx>
 #include <math_FunctionWithDerivative.hxx>
 
+//=======================================================================
+//function : math_BissecNewton
+//purpose  : Constructor
+//=======================================================================
+math_BissecNewton::math_BissecNewton(const Standard_Real theXTolerance)
+: TheStatus(math_NotBracketed),
+  XTol     (theXTolerance),
+  x        (0.0),
+  dx       (0.0),
+  f        (0.0),
+  df       (0.0),
+  Done     (Standard_False)
+{
+}
+
+//=======================================================================
+//function : ~math_BissecNewton
+//purpose  : Destructor
+//=======================================================================
 math_BissecNewton::~math_BissecNewton()
 {
 }
 
+//=======================================================================
+//function : Perform
+//purpose  : 
+//=======================================================================
 void math_BissecNewton::Perform(math_FunctionWithDerivative& F,
-				const Standard_Real    Bound1,
-				const Standard_Real    Bound2,
-				const Standard_Integer NbIterations)
+                                const Standard_Real    Bound1,
+                                const Standard_Real    Bound2,
+                                const Standard_Integer NbIterations)
 {
   Standard_Boolean GOOD;
   Standard_Integer j;
@@ -125,25 +148,10 @@ void math_BissecNewton::Perform(math_FunctionWithDerivative& F,
   return;
 }
 
-Standard_Boolean math_BissecNewton::IsSolutionReached
-//(math_FunctionWithDerivative& F)
-(math_FunctionWithDerivative& )
-{
-  return Abs(dx) <= XTol;
-}
-
-
-math_BissecNewton::math_BissecNewton(math_FunctionWithDerivative& F,
-				     const Standard_Real    Bound1,
-				     const Standard_Real    Bound2,
-				     const Standard_Real    TolX, 
-				     const Standard_Integer NbIterations) {
-  
-  XTol = TolX;
-  Perform(F, Bound1, Bound2, NbIterations);
-}
-
-
+//=======================================================================
+//function : Dump
+//purpose  : 
+//=======================================================================
 void math_BissecNewton::Dump(Standard_OStream& o) const {
   
   o << "math_BissecNewton ";

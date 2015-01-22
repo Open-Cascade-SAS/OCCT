@@ -349,34 +349,34 @@ static void InGoodPeriod(const Standard_Real Prec,
 #endif 
       Standard_Boolean SOS=Standard_False;
       if (ii>1) {
-	// Intersection de secour entre surf revol et guide
-	// equation 
-	X(1) = myPoles2d->Value(1,ii-1).Y();
-	X(2) = myPoles2d->Value(2,ii-1).X();
-	X(3) = myPoles2d->Value(2,ii-1).Y();
-	GeomFill_FunctionGuide E (mySec, myGuide, U);
-	E.SetParam(U, P, T.XYZ(), N.XYZ()); 
-	// resolution   =>  angle
-	math_FunctionSetRoot Result(E, X, TolRes, 
-				    Inf, Sup); 
-	
-	if (Result.IsDone() && 
-	    (Result.FunctionSetErrors().Norm() < TolRes(1)*TolRes(1)) ) {
+        // Intersection de secour entre surf revol et guide
+        // equation 
+        X(1) = myPoles2d->Value(1,ii-1).Y();
+        X(2) = myPoles2d->Value(2,ii-1).X();
+        X(3) = myPoles2d->Value(2,ii-1).Y();
+        GeomFill_FunctionGuide E (mySec, myGuide, U);
+        E.SetParam(U, P, T.XYZ(), N.XYZ()); 
+        // resolution   =>  angle
+        math_FunctionSetRoot Result(E, TolRes);
+        Result.Perform(E, X, Inf, Sup);
+
+        if (Result.IsDone() && 
+          (Result.FunctionSetErrors().Norm() < TolRes(1)*TolRes(1)) ) {
 #ifdef OCCT_DEBUG
-	  cout << "Ratrappage Reussi !" << endl;
+            cout << "Ratrappage Reussi !" << endl;
 #endif
-	  SOS = Standard_True;
-	  math_Vector RR(1,3);
-	  Result.Root(RR);
-	  PInt.SetValues(P, RR(2), RR(3), RR(1), IntCurveSurface_Out);
-          theU = PInt.U();
-          theV = PInt.V();
-	}  
-	else {
+            SOS = Standard_True;
+            math_Vector RR(1,3);
+            Result.Root(RR);
+            PInt.SetValues(P, RR(2), RR(3), RR(1), IntCurveSurface_Out);
+            theU = PInt.U();
+            theV = PInt.V();
+        }
+        else {
 #ifdef OCCT_DEBUG
-	  cout << "Echec du Ratrappage !" << endl;
+          cout << "Echec du Ratrappage !" << endl;
 #endif
-	}
+        }
       }
       if (!SOS) {
 	myStatus = GeomFill_ImpossibleContact;
@@ -614,8 +614,8 @@ static void InGoodPeriod(const Standard_Real Prec,
     GeomFill_FunctionGuide E (mySec, myGuide, U);
     E.SetParam(Param, P, t, n); 
     // resolution   =>  angle
-    math_FunctionSetRoot Result(E, X, TolRes, 
-				Inf, Sup, Iter); 
+    math_FunctionSetRoot Result(E, TolRes, Iter);
+    Result.Perform(E, X, Inf, Sup);
 
     if (Result.IsDone()) {
       // solution
@@ -682,11 +682,11 @@ static void InGoodPeriod(const Standard_Real Prec,
     GeomFill_FunctionGuide E (mySec, myGuide, myFirstS + 
 				(Param-myCurve->FirstParameter())*ratio);
     E.SetParam(Param, P, t, n);
-      
+
     // resolution
-    math_FunctionSetRoot Result(E, X, TolRes, 
-				Inf, Sup, Iter); 
-    
+    math_FunctionSetRoot Result(E, TolRes, Iter);
+    Result.Perform(E, X, Inf, Sup);
+
     if (Result.IsDone()) {
       // solution 
       Result.Root(R);   

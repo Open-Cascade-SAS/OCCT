@@ -228,8 +228,12 @@ static Standard_Boolean MinimizeDirection(const math_Vector&   P0,
   FSR_DEBUG ("      minimisation dans la direction")
     ax = -1; bx = 0;
   cx = (P2-P1).Norm()*invnorme;
-  if (cx < 1.e-2) return Standard_False;
-  math_BrentMinimum Sol(F, ax, bx, cx, tol1d, 100, tol1d);
+  if (cx < 1.e-2)
+    return Standard_False;
+
+  math_BrentMinimum Sol(tol1d, 100, tol1d);
+  Sol.Perform(F, ax, bx, cx);
+
   if(Sol.IsDone()) {
     tsol = Sol.Location();
     if (Sol.Minimum() < F1) {
@@ -322,7 +326,10 @@ static Standard_Boolean MinimizeDirection(const math_Vector&   P,
       ax = 0.0; bx = tsol; cx = 1.0;
     }
     FSR_DEBUG(" minimisation dans la direction");
-    math_BrentMinimum Sol(F, ax, bx, cx, tol1d, 100, tol1d);
+
+    math_BrentMinimum Sol(tol1d, 100, tol1d);
+    Sol.Perform(F, ax, bx, cx);
+
     if(Sol.IsDone()) {
       if (Sol.Minimum() <= Result) {
         tsol = Sol.Location();
@@ -551,155 +558,109 @@ Standard_Boolean Bounds(const math_Vector&  InfBound,
 
 
 
+//=======================================================================
+//function : math_FunctionSetRoot
+//purpose  : Constructor
+//=======================================================================
+math_FunctionSetRoot::math_FunctionSetRoot(
+  math_FunctionSetWithDerivatives& theFunction,
+  const math_Vector&               theTolerance,
+  const Standard_Integer           theNbIterations)
 
-math_FunctionSetRoot::math_FunctionSetRoot(math_FunctionSetWithDerivatives& F,
-                                           const math_Vector& Tolerance,
-                                           const Standard_Integer NbIterations) :
-Delta(1, F.NbVariables()),
-Sol(1, F.NbVariables()),
-DF(1, F.NbEquations(),
-   1, F.NbVariables()),
-   Tol(1,F.NbVariables()),
-
-   InfBound(1, F.NbVariables()),
-   SupBound(1, F.NbVariables()),
-
-   SolSave(1, F.NbVariables()), 
-   GH(1, F.NbVariables()), 
-   DH(1, F.NbVariables()), 
-   DHSave(1, F.NbVariables()),
-   FF(1, F.NbEquations()), 
-   PreviousSolution(1, F.NbVariables()), 
-   Save(0, NbIterations),
-   Constraints(1, F.NbVariables()),
-   Temp1(1, F.NbVariables()), 
-   Temp2(1, F.NbVariables()), 
-   Temp3(1, F.NbVariables()), 
-   Temp4(1, F.NbEquations())
-
+: Delta(1, theFunction.NbVariables()),
+  Sol  (1, theFunction.NbVariables()),
+  DF   (1, theFunction.NbEquations() , 1, theFunction.NbVariables()),
+  Tol  (1, theFunction.NbVariables()),
+  Done    (Standard_False),
+  Kount   (0),
+  State   (0),
+  Itermax (theNbIterations),
+  InfBound(1, theFunction.NbVariables(), RealFirst()),
+  SupBound(1, theFunction.NbVariables(), RealLast ()),
+  SolSave (1, theFunction.NbVariables()),
+  GH      (1, theFunction.NbVariables()),
+  DH      (1, theFunction.NbVariables()),
+  DHSave  (1, theFunction.NbVariables()),
+  FF      (1, theFunction.NbEquations()),
+  PreviousSolution(1, theFunction.NbVariables()),
+  Save    (0, theNbIterations),
+  Constraints(1, theFunction.NbVariables()),
+  Temp1   (1, theFunction.NbVariables()),
+  Temp2   (1, theFunction.NbVariables()),
+  Temp3   (1, theFunction.NbVariables()),
+  Temp4   (1, theFunction.NbEquations()),
+  myIsDivergent(Standard_False)
 {
-  for (Standard_Integer i = 1; i <= Tol.Length(); i++) {
-    Tol(i) =Tolerance(i);
-  }
-  Itermax = NbIterations;
+  SetTolerance(theTolerance);
 }
 
-math_FunctionSetRoot::math_FunctionSetRoot(math_FunctionSetWithDerivatives& F,
-                                           const Standard_Integer NbIterations) :
-Delta(1, F.NbVariables()),
-Sol(1, F.NbVariables()),
-DF(1, F.NbEquations(),
-   1, F.NbVariables()),
-   Tol(1, F.NbVariables()),
+//=======================================================================
+//function : math_FunctionSetRoot
+//purpose  : Constructor
+//=======================================================================
+math_FunctionSetRoot::math_FunctionSetRoot(math_FunctionSetWithDerivatives& theFunction,
+                                           const Standard_Integer           theNbIterations)
 
-   InfBound(1, F.NbVariables()),
-   SupBound(1, F.NbVariables()),
-
-   SolSave(1, F.NbVariables()), 
-   GH(1, F.NbVariables()), 
-   DH(1, F.NbVariables()), 
-   DHSave(1, F.NbVariables()),
-   FF(1, F.NbEquations()), 
-   PreviousSolution(1, F.NbVariables()), 
-   Save(0, NbIterations),
-   Constraints(1, F.NbVariables()),
-   Temp1(1, F.NbVariables()), 
-   Temp2(1, F.NbVariables()), 
-   Temp3(1, F.NbVariables()), 
-   Temp4(1, F.NbEquations())
-
+: Delta(1, theFunction.NbVariables()),
+  Sol  (1, theFunction.NbVariables()),
+  DF   (1, theFunction.NbEquations() , 1, theFunction.NbVariables()),
+  Tol  (1, theFunction.NbVariables()),
+  Done    (Standard_False),
+  Kount   (0),
+  State   (0),
+  Itermax (theNbIterations),
+  InfBound(1, theFunction.NbVariables(), RealFirst()),
+  SupBound(1, theFunction.NbVariables(), RealLast ()),
+  SolSave (1, theFunction.NbVariables()),
+  GH      (1, theFunction.NbVariables()),
+  DH      (1, theFunction.NbVariables()),
+  DHSave  (1, theFunction.NbVariables()),
+  FF      (1, theFunction.NbEquations()),
+  PreviousSolution(1, theFunction.NbVariables()),
+  Save    (0, theNbIterations),
+  Constraints(1, theFunction.NbVariables()),
+  Temp1   (1, theFunction.NbVariables()),
+  Temp2   (1, theFunction.NbVariables()),
+  Temp3   (1, theFunction.NbVariables()),
+  Temp4   (1, theFunction.NbEquations()),
+  myIsDivergent(Standard_False)
 {
-  Itermax = NbIterations;
 }
 
-
-
-math_FunctionSetRoot::math_FunctionSetRoot(math_FunctionSetWithDerivatives& F,
-                                           const math_Vector& StartingPoint,
-                                           const math_Vector& Tolerance,
-                                           const math_Vector& infBound,
-                                           const math_Vector& supBound,
-                                           const Standard_Integer NbIterations,
-                                           Standard_Boolean theStopOnDivergent) :
-Delta(1, F.NbVariables()),
-Sol(1, F.NbVariables()),
-DF(1, F.NbEquations(),
-   1, F.NbVariables()),
-   Tol(1,F.NbVariables()),
-
-
-   InfBound(1, F.NbVariables()),
-   SupBound(1, F.NbVariables()),
-
-   SolSave(1, F.NbVariables()), 
-   GH(1, F.NbVariables()), 
-   DH(1, F.NbVariables()), 
-   DHSave(1, F.NbVariables()),
-   FF(1, F.NbEquations()), 
-   PreviousSolution(1, F.NbVariables()), 
-   Save(0, NbIterations),
-   Constraints(1, F.NbVariables()),
-   Temp1(1, F.NbVariables()), 
-   Temp2(1, F.NbVariables()), 
-   Temp3(1, F.NbVariables()), 
-   Temp4(1, F.NbEquations())
-
-{
-
-  for (Standard_Integer i = 1; i <= Tol.Length(); i++) {
-    Tol(i) =Tolerance(i);
-  }
-  Itermax = NbIterations;
-  Perform(F, StartingPoint, infBound, supBound, theStopOnDivergent);
-}
-
-math_FunctionSetRoot::math_FunctionSetRoot(math_FunctionSetWithDerivatives& F,
-                                           const math_Vector& StartingPoint,
-                                           const math_Vector& Tolerance,
-                                           const Standard_Integer NbIterations) :
-Delta(1, F.NbVariables()),
-Sol(1, F.NbVariables()),
-DF(1, F.NbEquations(),
-   1, StartingPoint.Length()),
-   Tol(1,F.NbVariables()),
-
-   InfBound(1, F.NbVariables()),
-   SupBound(1, F.NbVariables()),
-
-   SolSave(1, F.NbVariables()), 
-   GH(1, F.NbVariables()), 
-   DH(1, F.NbVariables()), 
-   DHSave(1, F.NbVariables()),
-   FF(1, F.NbEquations()), 
-   PreviousSolution(1, F.NbVariables()), 
-   Save(0, NbIterations),
-   Constraints(1, F.NbVariables()),
-   Temp1(1, F.NbVariables()), 
-   Temp2(1, F.NbVariables()), 
-   Temp3(1, F.NbVariables()), 
-   Temp4(1, F.NbEquations())
-
-{
-  for (Standard_Integer i = 1; i <= Tol.Length(); i++) {
-    Tol(i) = Tolerance(i);
-  }
-  Itermax = NbIterations;
-  InfBound.Init(RealFirst());
-  SupBound.Init(RealLast());
-  Perform(F, StartingPoint, InfBound, SupBound);
-}
-
+//=======================================================================
+//function : ~math_FunctionSetRoot
+//purpose  : Destructor
+//=======================================================================
 math_FunctionSetRoot::~math_FunctionSetRoot()
 {
+  Delete();
 }
 
-void math_FunctionSetRoot::SetTolerance(const math_Vector& Tolerance)
+//=======================================================================
+//function : SetTolerance
+//purpose  : 
+//=======================================================================
+void math_FunctionSetRoot::SetTolerance(const math_Vector& theTolerance)
 {
-  for (Standard_Integer i = 1; i <= Tol.Length(); i++) {
-    Tol(i) = Tolerance(i);
-  }
+  for (Standard_Integer i = 1; i <= Tol.Length(); ++i)
+    Tol(i) = theTolerance(i);
 }
 
+//=======================================================================
+//function : Perform
+//purpose  : 
+//=======================================================================
+void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& theFunction,
+                                   const math_Vector&               theStartingPoint,
+                                   const Standard_Boolean           theStopOnDivergent)
+{
+  Perform(theFunction, theStartingPoint, InfBound, SupBound, theStopOnDivergent);
+}
+
+//=======================================================================
+//function : Perform
+//purpose  : 
+//=======================================================================
 void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
                                    const math_Vector& StartingPoint,
                                    const math_Vector& theInfBound,
@@ -1232,38 +1193,40 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
   }
 }
 
-
-
-
-Standard_Boolean math_FunctionSetRoot::IsSolutionReached(math_FunctionSetWithDerivatives& ) {
-  for(Standard_Integer i = 1; i<= Sol.Length(); i++) {
-    if(Abs(Delta(i)) > Tol(i)) {return Standard_False;}
-  }
-  return Standard_True;
-}
-
-
-void math_FunctionSetRoot::Dump(Standard_OStream& o) const {
-  o<<" math_FunctionSetRoot";
+//=======================================================================
+//function : Dump
+//purpose  : 
+//=======================================================================
+void math_FunctionSetRoot::Dump(Standard_OStream& o) const
+{
+  o << " math_FunctionSetRoot";
   if (Done) {
     o << " Status = Done\n";
     o << " Location value = " << Sol << "\n";
     o << " Number of iterations = " << Kount << "\n";
   }
   else {
-    o<<"Status = Not Done\n";
+    o << "Status = Not Done\n";
   }
 }
 
-
-void math_FunctionSetRoot::Root(math_Vector& Root) const{
+//=======================================================================
+//function : Root
+//purpose  : 
+//=======================================================================
+void math_FunctionSetRoot::Root(math_Vector& Root) const
+{
   StdFail_NotDone_Raise_if(!Done, " ");
   Standard_DimensionError_Raise_if(Root.Length() != Sol.Length(), " ");
   Root = Sol;
 }
 
-
-void math_FunctionSetRoot::FunctionSetErrors(math_Vector& Err) const{
+//=======================================================================
+//function : FunctionSetErrors
+//purpose  : 
+//=======================================================================
+void math_FunctionSetRoot::FunctionSetErrors(math_Vector& Err) const
+{
   StdFail_NotDone_Raise_if(!Done, " ");
   Standard_DimensionError_Raise_if(Err.Length() != Sol.Length(), " ");
   Err = Delta;

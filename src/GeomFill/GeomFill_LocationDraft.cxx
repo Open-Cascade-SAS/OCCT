@@ -310,30 +310,27 @@ GeomFill_LocationDraft::GeomFill_LocationDraft
       GeomFill_FunctionDraft E(mySurf , G);
  
       // resolution
-      math_NewtonFunctionSetRoot Result(E, X, XTol, FTol, Iter); 
-  
+      math_NewtonFunctionSetRoot Result(E, XTol, FTol, Iter);
+      Result.Perform(E, X);
+
       if (Result.IsDone()) 
-	{
-	  math_Vector R(1,3); 
-	  Result.Root(R);    // solution
-  
-	  gp_Pnt2d p (R(2), R(3));  // point sur la surface
-	  gp_Pnt2d q (R(1), Param); // point de la courbe
-	  Poles2d.SetValue(1,p);
-	  Poles2d.SetValue(2,q);
-	
-	}
-      else {
-	return Standard_False;
+      {
+        math_Vector R(1,3); 
+        Result.Root(R);    // solution
+
+        gp_Pnt2d p (R(2), R(3));  // point sur la surface
+        gp_Pnt2d q (R(1), Param); // point de la courbe
+        Poles2d.SetValue(1,p);
+        Poles2d.SetValue(2,q);
       }
- 
+      else {
+        return Standard_False;
+      }
+  }// if_Intersec
 
-    
-    }// if_Intersec
-
-// la generatrice n'intersecte pas la surface d'arret
+  // la generatrice n'intersecte pas la surface d'arret
   return Standard_True;
-}
+ }
 
 //==================================================================
 //Function: D1
@@ -427,44 +424,44 @@ GeomFill_LocationDraft::GeomFill_LocationDraft
 
  
       // resolution
-      math_NewtonFunctionSetRoot Result (E, X, XTol, FTol, Iter); 
+      math_NewtonFunctionSetRoot Result(E, XTol, FTol, Iter);
+      Result.Perform(E, X);
 
       if (Result.IsDone()) 
-	{
-	  math_Vector R(1,3); 
-	  Result.Root(R);    // solution
-  
-	  gp_Pnt2d p (R(2), R(3));  // point sur la surface
-	  gp_Pnt2d q (R(1), Param); // point de la courbe
-	  Poles2d.SetValue(1,p);
-	  Poles2d.SetValue(2,q);
+      {
+        math_Vector R(1,3); 
+        Result.Root(R);    // solution
 
-	  // derivee de la fonction par rapport a Param
-	  math_Vector DEDT(1,3,0);
-	  E.DerivT(myTrimmed, Param, R(1), DN, myAngle, DEDT); // dE/dt => DEDT
+        gp_Pnt2d p (R(2), R(3));  // point sur la surface
+        gp_Pnt2d q (R(1), Param); // point de la courbe
+        Poles2d.SetValue(1,p);
+        Poles2d.SetValue(2,q);
 
-	  math_Vector DSDT (1,3,0);
-	  math_Matrix DEDX (1,3,1,3,0);
-	  E.Derivatives(R, DEDX);  // dE/dx au point R => DEDX
+        // derivee de la fonction par rapport a Param
+        math_Vector DEDT(1,3,0);
+        E.DerivT(myTrimmed, Param, R(1), DN, myAngle, DEDT); // dE/dt => DEDT
 
-	  // resolution du syst. lin. : DEDX*DSDT = -DEDT
-	  math_Gauss Ga(DEDX);
-	  if (Ga.IsDone()) 
-	    {
-	      Ga.Solve (DEDT.Opposite(), DSDT); // resolution du syst. lin. 
-	      gp_Vec2d dp (DSDT(2), DSDT(3));    // surface
-	      gp_Vec2d dq (DSDT(1), 1);          //  courbe
-	      DPoles2d.SetValue(1, dp);
-	      DPoles2d.SetValue(2, dq);
-	    }//if
+        math_Vector DSDT (1,3,0);
+        math_Matrix DEDX (1,3,1,3,0);
+        E.Derivatives(R, DEDX);  // dE/dx au point R => DEDX
 
-	
-	}//if_Result
+        // resolution du syst. lin. : DEDX*DSDT = -DEDT
+        math_Gauss Ga(DEDX);
+        if (Ga.IsDone()) 
+        {
+          Ga.Solve (DEDT.Opposite(), DSDT); // resolution du syst. lin. 
+          gp_Vec2d dp (DSDT(2), DSDT(3));    // surface
+          gp_Vec2d dq (DSDT(1), 1);          //  courbe
+          DPoles2d.SetValue(1, dp);
+          DPoles2d.SetValue(2, dq);
+        }//if
+
+
+      }//if_Result
       else {// la generatrice n'intersecte pas la surface d'arret
-	return Standard_False;
+        return Standard_False;
       }    
-    }// if_Intersec
-      
+  }// if_Intersec
   return Standard_True;
 }
 
@@ -564,7 +561,8 @@ GeomFill_LocationDraft::GeomFill_LocationDraft
 
  
       // resolution
-      math_NewtonFunctionSetRoot Result (E, X, XTol, FTol, Iter); 
+      math_NewtonFunctionSetRoot Result (E, XTol, FTol, Iter);
+      Result.Perform(E, X);
 
       if (Result.IsDone()) 
 	{

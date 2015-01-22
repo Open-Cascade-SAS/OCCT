@@ -15,8 +15,26 @@
 #include <StdFail_NotDone.hxx>
 #include <Standard_DimensionError.hxx>
 
+inline void math_FunctionSetRoot::Delete() const
+{
+}
 
-inline Standard_Boolean math_FunctionSetRoot::IsDone() const { return Done; }
+
+inline Standard_Boolean math_FunctionSetRoot::IsSolutionReached(math_FunctionSetWithDerivatives&)
+{
+  for (Standard_Integer i = 1; i <= Sol.Length(); ++i)
+    if ( Abs(Delta(i)) > Tol(i) )
+      return Standard_False;
+
+  return Standard_True;
+}
+
+
+inline Standard_Boolean math_FunctionSetRoot::IsDone() const
+{
+  return Done;
+}
+
 
 inline Standard_OStream& operator<<(Standard_OStream& o,
 				    const math_FunctionSetRoot& F)

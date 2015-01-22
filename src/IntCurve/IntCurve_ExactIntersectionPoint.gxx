@@ -198,12 +198,8 @@ void IntCurve_ExactIntersectionPoint::Roots(Standard_Real& U,Standard_Real& V) {
 
 void IntCurve_ExactIntersectionPoint::MathPerform(void)
 {
-  math_FunctionSetRoot Fct( FctDist
-    ,StartingPoint
-    ,ToleranceVector
-    ,BInfVector
-    ,BSupVector
-    ,60);
+  math_FunctionSetRoot Fct(FctDist, ToleranceVector, 60);
+  Fct.Perform(FctDist, StartingPoint, BInfVector, BSupVector);
 
   if(Fct.IsDone()) { 
     Fct.Root(Root); nbroots = 1; 

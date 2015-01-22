@@ -144,7 +144,8 @@ Geom2dGcc_Lin2d2TanIter (const Geom2dGcc_QCurve& Qualified1 ,
                            Ufirst(2) = Param2;
                            tol(1) = Geom2dGcc_CurveTool::EpsX(Cu1,Abs(Tolang));
                            tol(2) = Geom2dGcc_CurveTool::EpsX(Cu2,Abs(Tolang));
-                           math_FunctionSetRoot Root(Func,Ufirst,tol,Umin,Umax);
+                           math_FunctionSetRoot Root(Func, tol);
+                           Root.Perform(Func, Ufirst, Umin, Umax);
                            if (Root.IsDone()) {
                              Root.Root(Ufirst);
                              //  Modified by Sergey KHROMOV - Thu Apr  5 17:45:00 2001 Begin

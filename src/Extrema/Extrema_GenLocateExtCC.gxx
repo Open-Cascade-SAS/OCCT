@@ -82,7 +82,9 @@ Methode:
   Uusup(1)=Usup;
   Uusup(2)=Vsup;
 
-  math_FunctionSetRoot S (F,Start,Tol,Uuinf,Uusup);
+  math_FunctionSetRoot S(F, Tol);
+  S.Perform(F, Start, Uuinf, Uusup);
+
   if (S.IsDone() && F.NbExt() > 0) { 
     mySqDist = F.SquareDistance(1);
     F.Points(1,myPoint1,myPoint2);

@@ -76,7 +76,8 @@ class math_MyFunctionSetWithDerivatives : public math_FunctionSetWithDerivatives
      math_MyFunctionSetWithDerivatives Ff(F);
      V(1)=Guess;
      Tol(1) = Tolerance;
-     math_FunctionSetRoot Sol(Ff,V,Tol,NbIterations);
+     math_FunctionSetRoot Sol(Ff, Tol, NbIterations);
+     Sol.Perform(Ff, V);
      Done = Sol.IsDone(); 
      if (Done) {
        F.GetStateNumber();
@@ -98,7 +99,8 @@ class math_MyFunctionSetWithDerivatives : public math_FunctionSetWithDerivatives
      Tol(1) = Tolerance;
      Aa(1)=A;
      Bb(1)=B;
-     math_FunctionSetRoot Sol(Ff,V,Tol,Aa,Bb,NbIterations);
+     math_FunctionSetRoot Sol(Ff, Tol, NbIterations);
+     Sol.Perform(Ff, V, Aa, Bb);
      Done = Sol.IsDone();
      if (Done) {
        F.GetStateNumber();

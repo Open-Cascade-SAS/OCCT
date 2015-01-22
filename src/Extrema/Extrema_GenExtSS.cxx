@@ -266,14 +266,16 @@ b- Calcul des minima:
   UV(3) = U20 + (N2Umin - 1) * PasU2;
   UV(4) = V20 + (N2Vmin - 1) * PasV2;
 
-  math_FunctionSetRoot SR1 (myF,UV,Tol,UVinf,UVsup);
+  math_FunctionSetRoot SR1(myF, Tol);
+  SR1.Perform(myF, UV, UVinf, UVsup);
 
   UV(1) = U10 + (N1Umax - 1) * PasU1;
   UV(2) = V10 + (N1Vmax - 1) * PasV1;
   UV(3) = U20 + (N2Umax - 1) * PasU2;
   UV(4) = V20 + (N2Vmax - 1) * PasV2;
 
-  math_FunctionSetRoot SR2 (myF,UV,Tol,UVinf,UVsup);
+  math_FunctionSetRoot SR2(myF, Tol);
+  SR2.Perform(myF, UV, UVinf, UVsup);
 
   myDone = Standard_True;
 }

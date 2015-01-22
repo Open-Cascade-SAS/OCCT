@@ -72,15 +72,17 @@ ProjLib_PrjResolve::ProjLib_PrjResolve(const Adaptor3d_Curve& C,const Adaptor3d_
 //    if (!S1.IsDone()) { return; }
 //  }
 //  else {
-    math_NewtonFunctionSetRoot SR (F, Tol, 1.e-10);
-    SR.Perform(F, Start, BInf, BSup);
+  math_NewtonFunctionSetRoot SR (F, Tol, 1.e-10);
+  SR.Perform(F, Start, BInf, BSup);
 //    if (!SR.IsDone()) { return; }
-    if (!SR.IsDone()) {
-        math_FunctionSetRoot S1 (F, Start,Tol, BInf, BSup);
-        if (!S1.IsDone()) { return; }
-    }
-   
+  if (!SR.IsDone())
+  {
+      math_FunctionSetRoot S1 (F, Tol);
+      S1.Perform(F, Start, BInf, BSup);
 
+      if (!S1.IsDone())
+        return;
+  }
 
   mySolution.SetXY(F.Solution().XY());
 

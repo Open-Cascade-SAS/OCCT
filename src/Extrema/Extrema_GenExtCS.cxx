@@ -289,7 +289,8 @@ void Extrema_GenExtCS::Perform (const Adaptor3d_Curve& C,
   math_PSO aPSO(&aFunc, TUVinf, TUVsup, aStep);
   aPSO.Perform(aParticles, aNbParticles, aValue, TUV);
 
-  math_FunctionSetRoot anA (myF, TUV, Tol, TUVinf, TUVsup, 100, Standard_False);
+  math_FunctionSetRoot anA(myF, Tol);
+  anA.Perform(myF, TUV, TUVinf, TUVsup);
 
   myDone = Standard_True;
 }

@@ -778,8 +778,8 @@ void Extrema_GenExtPS::FindSolution(const gp_Pnt& /*P*/,
   UVsup(1) = myusup;
   UVsup(2) = myvsup;
 
-  const Standard_Integer aNbMaxIter = 100;
-  math_FunctionSetRoot S (myF, UV, Tol, UVinf, UVsup, aNbMaxIter);
+  math_FunctionSetRoot S(myF, Tol);
+  S.Perform(myF, UV, UVinf, UVsup);
 
   myDone = Standard_True;
 }

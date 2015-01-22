@@ -23,50 +23,30 @@ uses
     MultipleVarFunctionWithHessian from math
 
 is
-    Create(F: in out MultipleVarFunctionWithHessian;
-    	   StartingPoint: Vector;
-	   SpatialTolerance :  Real = 1.0e-7;	   
-           CriteriumTolerance: Real = 1.0e-2;
-	   NbIterations: Integer=40; 
-           Convexity: Real=1.0e-6; 
-	   WithSingularity  :  Boolean = Standard_True)
-    ---Purpose: -- Given the  starting   point  StartingPoint,
-    --            The tolerance  required on  the  solution is given  by
-    --            Tolerance.  
-    --             Iteration are  stopped if  
-    --             (!WithSingularity)  and H(F(Xi)) is not definite
-    --             positive  (if the smaller eigenvalue of H < Convexity)
-    --             or IsConverged() returns True for 2 successives Iterations.
-    --  Warning: Obsolete Constructor (because IsConverged can not be redefined
-    --           with this. )
-    returns  Newton;
-
-    Create(F: in out MultipleVarFunctionWithHessian;
-    	   SpatialTolerance :  Real = 1.0e-7;
-           Tolerance: Real=1.0e-7;
-	   NbIterations: Integer=40; 
-           Convexity: Real=1.0e-6; 
-           WithSingularity  :  Boolean = Standard_True)
+    Create(theFunction: in MultipleVarFunctionWithHessian;
+    	   theSpatialTolerance:  Real = 1.0e-7;
+           theCriteriumTolerance: Real=1.0e-7;
+	   theNbIterations: Integer=40; 
+           theConvexity: Real=1.0e-6; 
+           theWithSingularity:  Boolean = Standard_True)
     ---Purpose:
-    --            The tolerance  required on  the  solution is given  by
-    --            Tolerance.  
-    --             Iteration are  stopped if  
-    --             (!WithSingularity)  and H(F(Xi)) is not definite
-    --             positive  (if the smaller eigenvalue of H < Convexity)
-    --            or IsConverged() returns True for 2 successives Iterations.
-    --  Warning: This constructor do not computation 
+    -- The tolerance  required on  the  solution is given  by Tolerance.  
+    -- Iteration are  stopped if (!WithSingularity)  and H(F(Xi)) is not definite
+    -- positive  (if the smaller eigenvalue of H < Convexity)
+    -- or IsConverged() returns True for 2 successives Iterations.
+    -- Warning: This constructor do not computation 
     returns  Newton;   
 	   
     IsConverged(me)
-    	---Purpose:  This method is  called    at the end  of   each
-    	--          iteration to  check the convergence :
-    	--          || Xi+1 - Xi || < SpatialTolerance/100 Or
-    	--          || Xi+1 - Xi || < SpatialTolerance and
-    	--          |F(Xi+1) - F(Xi)| < CriteriumTolerance * |F(xi)|
-    	--          It can be redefined in a sub-class to implement a specific test.
-    
-    returns Boolean
-    is redefined;    
+    	---Purpose: 
+        -- This method is  called    at the end  of   each
+    	-- iteration to  check the convergence :
+    	-- || Xi+1 - Xi || < SpatialTolerance/100 Or
+    	-- || Xi+1 - Xi || < SpatialTolerance and
+    	-- |F(Xi+1) - F(Xi)| < CriteriumTolerance * |F(xi)|
+    	-- It can be redefined in a sub-class to implement a specific test.
+   
+    returns Boolean is redefined;    
 
 fields
     mySpTol : Real;

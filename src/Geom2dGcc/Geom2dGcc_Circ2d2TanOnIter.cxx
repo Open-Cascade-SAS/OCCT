@@ -91,7 +91,8 @@ Geom2dGcc_Circ2d2TanOnIter (const GccEnt_QualifiedLin&  Qualified1 ,
                               gp_Pnt2d point3 = ElCLib::Value(Param3,OnLine);
                               Ufirst(4) = (point3.Distance(point2)+point3.Distance(point1))/2.;
                               Geom2dGcc_FunctionTanCuCuOnCu Func(L1,Cu2,OnLine,Ufirst(4));
-                              math_FunctionSetRoot Root(Func,Ufirst,tol,Umin,Umax);
+                              math_FunctionSetRoot Root(Func, tol);
+                              Root.Perform(Func, Ufirst, Umin, Umax);
                               Func.Value(Ufirst,Umin);
                               if (Root.IsDone()) {
                                 Root.Root(Ufirst);
@@ -192,7 +193,8 @@ Geom2dGcc_Circ2d2TanOnIter (const Geom2dGcc_QCurve& Qualified1 ,
                               gp_Pnt2d point3 = ElCLib::Value(Param3,OnLine);
                               Ufirst(4) = (point3.Distance(point2)+point3.Distance(point1))/2.;
                               Geom2dGcc_FunctionTanCuCuOnCu Func(Cu1,Cu2,OnLine,Ufirst(4));
-                              math_FunctionSetRoot Root(Func,Ufirst,tol,Umin,Umax);
+                              math_FunctionSetRoot Root(Func, tol);
+                              Root.Perform(Func, Ufirst, Umin, Umax);
                               Func.Value(Ufirst,Umin);
                               if (Root.IsDone()) {
                                 Root.Root(Ufirst);
@@ -288,7 +290,8 @@ Geom2dGcc_Circ2d2TanOnIter (const Geom2dGcc_QCurve& Qualified1 ,
                               gp_Pnt2d point3 = ElCLib::Value(Param2,OnLine);
                               Ufirst(3) = (point3.Distance(Point2)+point3.Distance(point1))/2.;
                               Geom2dGcc_FunctionTanCuCuOnCu Func(Cu1,Point2,OnLine,Ufirst(3));
-                              math_FunctionSetRoot Root(Func,Ufirst,tol,Umin,Umax);
+                              math_FunctionSetRoot Root(Func, tol);
+                              Root.Perform(Func, Ufirst, Umin, Umax);
                               Func.Value(Ufirst,Umin);
                               if (Root.IsDone()) {
                                 Root.Root(Ufirst);
@@ -381,7 +384,8 @@ Geom2dGcc_Circ2d2TanOnIter (const GccEnt_QualifiedCirc& Qualified1 ,
                               gp_Pnt2d point3 = ElCLib::Value(Param3,OnLine);
                               Ufirst(4) = (point3.Distance(point2)+point3.Distance(point1))/2.;
                               Geom2dGcc_FunctionTanCuCuOnCu Func(C1,Cu2,OnLine,Ufirst(4));
-                              math_FunctionSetRoot Root(Func,Ufirst,tol,Umin,Umax);
+                              math_FunctionSetRoot Root(Func, tol);
+                              Root.Perform(Func, Ufirst, Umin, Umax);
                               Func.Value(Ufirst,Umin);
                               if (Root.IsDone()) {
                                 Root.Root(Ufirst);
@@ -488,7 +492,8 @@ Geom2dGcc_Circ2d2TanOnIter (const GccEnt_QualifiedCirc& Qualified1 ,
                               gp_Pnt2d point3 = ElCLib::Value(Param3,OnCirc);
                               Ufirst(4) = (point3.Distance(point2)+point3.Distance(point1))/2.;
                               Geom2dGcc_FunctionTanCuCuOnCu Func(C1,Cu2,OnCirc,Ufirst(4));
-                              math_FunctionSetRoot Root(Func,Ufirst,tol,Umin,Umax);
+                              math_FunctionSetRoot Root(Func, tol);
+                              Root.Perform(Func, Ufirst, Umin, Umax);
                               Func.Value(Ufirst,Umin);
                               if (Root.IsDone()) {
                                 Root.Root(Ufirst);
@@ -592,7 +597,8 @@ Geom2dGcc_Circ2d2TanOnIter (const GccEnt_QualifiedLin&  Qualified1 ,
                               gp_Pnt2d point3 = ElCLib::Value(Param3,OnCirc);
                               Ufirst(4) = (point3.Distance(point2)+point3.Distance(point1))/2.;
                               Geom2dGcc_FunctionTanCuCuOnCu Func(L1,Cu2,OnCirc,Ufirst(4));
-                              math_FunctionSetRoot Root(Func,Ufirst,tol,Umin,Umax);
+                              math_FunctionSetRoot Root(Func, tol);
+                              Root.Perform(Func, Ufirst, Umin, Umax);
                               Func.Value(Ufirst,Umin);
                               if (Root.IsDone()) {
                                 Root.Root(Ufirst);
@@ -696,7 +702,8 @@ Geom2dGcc_Circ2d2TanOnIter (const Geom2dGcc_QCurve& Qualified1 ,
                               gp_Pnt2d point3(OnCirc.Location().XY()+R1*gp_XY(Cos(Param3),Sin(Param3)));
                               Ufirst(4) = (point3.Distance(point2)+point3.Distance(point1))/2.;
                               Geom2dGcc_FunctionTanCuCuOnCu Func(Cu1,Cu2,OnCirc,Ufirst(4));
-                              math_FunctionSetRoot Root(Func,Ufirst,tol,Umin,Umax);
+                              math_FunctionSetRoot Root(Func, tol);
+                              Root.Perform(Func, Ufirst, Umin, Umax);
                               Func.Value(Ufirst,Umin);
                               if (Root.IsDone()) {
                                 Root.Root(Ufirst);
@@ -796,7 +803,8 @@ Geom2dGcc_Circ2d2TanOnIter (const Geom2dGcc_QCurve&  Qualified1 ,
                               gp_Pnt2d point3 = ElCLib::Value(Param2,OnCirc);
                               Ufirst(3) = (point3.Distance(Point2)+point3.Distance(point1))/2.;
                               Geom2dGcc_FunctionTanCuCuOnCu Func(Cu1,Point2,OnCirc,Ufirst(3));
-                              math_FunctionSetRoot Root(Func,Ufirst,tol,Umin,Umax);
+                              math_FunctionSetRoot Root(Func, tol);
+                              Root.Perform(Func, Ufirst, Umin, Umax);
                               Func.Value(Ufirst,Umin);
                               if (Root.IsDone()) {
                                 Root.Root(Ufirst);
@@ -889,7 +897,8 @@ Geom2dGcc_Circ2d2TanOnIter (const Geom2dGcc_QCurve& Qualified1 ,
                               gp_Pnt2d point3 = Geom2dGcc_CurveTool::Value(OnCurv,Param3);
                               Ufirst(4) = (point3.Distance(point2)+point3.Distance(point1))/2.;
                               Geom2dGcc_FunctionTanCuCuOnCu Func(Cu1,Cu2,OnCurv,Ufirst(4));
-                              math_FunctionSetRoot Root(Func,Ufirst,tol,Umin,Umax);
+                              math_FunctionSetRoot Root(Func, tol);
+                              Root.Perform(Func, Ufirst, Umin, Umax);
                               Func.Value(Ufirst,Umin);
                               if (Root.IsDone()) {
                                 Root.Root(Ufirst);
@@ -994,7 +1003,8 @@ Geom2dGcc_Circ2d2TanOnIter (const GccEnt_QualifiedCirc& Qualified1 ,
                               gp_Pnt2d point3 = Geom2dGcc_CurveTool::Value(OnCurv,ParamOn);
                               Ufirst(4) = (point3.Distance(point2)+point3.Distance(point1))/2.;
                               Geom2dGcc_FunctionTanCuCuOnCu Func(C1,Cu2,OnCurv,Ufirst(4));
-                              math_FunctionSetRoot Root(Func,Ufirst,tol,Umin,Umax);
+                              math_FunctionSetRoot Root(Func, tol);
+                              Root.Perform(Func, Ufirst, Umin, Umax);
                               Func.Value(Ufirst,Umin);
                               if (Root.IsDone()) {
                                 Root.Root(Ufirst);
@@ -1095,7 +1105,8 @@ Geom2dGcc_Circ2d2TanOnIter (const GccEnt_QualifiedLin&  Qualified1 ,
                               gp_Pnt2d point3 = Geom2dGcc_CurveTool::Value(OnCurv,ParamOn);
                               Ufirst(4) = (point3.Distance(point2)+point3.Distance(point1))/2.;
                               Geom2dGcc_FunctionTanCuCuOnCu Func(L1,Cu2,OnCurv,Ufirst(4));
-                              math_FunctionSetRoot Root(Func,Ufirst,tol,Umin,Umax);
+                              math_FunctionSetRoot Root(Func, tol);
+                              Root.Perform(Func, Ufirst, Umin, Umax);
                               Func.Value(Ufirst,Umin);
                               if (Root.IsDone()) {
                                 Root.Root(Ufirst);
@@ -1186,7 +1197,8 @@ Geom2dGcc_Circ2d2TanOnIter (const Geom2dGcc_QCurve&    Qualified1 ,
   gp_Pnt2d point3 = Geom2dGcc_CurveTool::Value(OnCurv,ParamOn);
   Ufirst(3) = (point3.Distance(Point2)+point3.Distance(point1))/2.;
   Geom2dGcc_FunctionTanCuCuOnCu Func(Cu1,Point2,OnCurv,Ufirst(3));
-  math_FunctionSetRoot Root(Func,Ufirst,tol,Umin,Umax);
+  math_FunctionSetRoot Root(Func, tol);
+  Root.Perform(Func, Ufirst, Umin, Umax);
   Func.Value(Ufirst,Umin);
   if (Root.IsDone()) {
     Root.Root(Ufirst);

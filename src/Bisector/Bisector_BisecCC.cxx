@@ -647,17 +647,23 @@ gp_Pnt2d Bisector_BisecCC::ValueAndDist (const Standard_Real  U,
     if (Abs(FInit) < EpsH) {
       U2 = VInit;
     }
-    else {
-      math_BissecNewton  SolNew (H,VMin - EpsH100,VMax + EpsH100,EpsH,10);
-      if (SolNew.IsDone()) {
-        U2    = SolNew.Root();
+    else
+    {
+      math_BissecNewton aNewSolution(EpsH);
+      aNewSolution.Perform(H, VMin - EpsH100, VMax + EpsH100, 10);
+
+      if (aNewSolution.IsDone())
+      {
+        U2 = aNewSolution.Root();
       }
-      else {
+      else
+      {
         math_FunctionRoot SolRoot (H,VInit,EpsH,VMin - EpsH100,VMax + EpsH100);
-        if (SolRoot.IsDone()) {
+        
+        if (SolRoot.IsDone())
           U2    = SolRoot.Root();
-        }
-        else { Valid = Standard_False;}
+        else
+          Valid = Standard_False;
       }
     }
   }

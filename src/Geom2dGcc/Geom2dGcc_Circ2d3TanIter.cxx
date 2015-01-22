@@ -89,7 +89,8 @@ Geom2dGcc_Circ2d3TanIter (const Geom2dGcc_QCurve& Qualified1 ,
                             tol(1) = Geom2dGcc_CurveTool::EpsX(Cu1,Abs(Tolerance));
                             tol(2) = Geom2dGcc_CurveTool::EpsX(Cu2,Abs(Tolerance));
                             tol(3) = Geom2dGcc_CurveTool::EpsX(Cu3,Abs(Tolerance));   
-                            math_FunctionSetRoot Root(Func,Ufirst,tol,Umin,Umax);
+                            math_FunctionSetRoot Root(Func, tol);
+                            Root.Perform(Func, Ufirst, Umin, Umax);
                             if (Root.IsDone()) {
                               Root.Root(Ufirst);
                               Func.Value(Ufirst,Umin);
@@ -212,7 +213,8 @@ Geom2dGcc_Circ2d3TanIter (const GccEnt_QualifiedCirc& Qualified1 ,
                             tol(1) = 2.e-15*M_PI;
                             tol(2) = Geom2dGcc_CurveTool::EpsX(Cu2,Abs(Tolerance));
                             tol(3) = Geom2dGcc_CurveTool::EpsX(Cu3,Abs(Tolerance));   
-                            math_FunctionSetRoot Root(Func,Ufirst,tol,Umin,Umax);
+                            math_FunctionSetRoot Root(Func, tol);
+                            Root.Perform(Func, Ufirst, Umin, Umax);
                             if (Root.IsDone()) {
                               Root.Root(Ufirst);
                               Func.Value(Ufirst,Umin);
@@ -340,7 +342,8 @@ Geom2dGcc_Circ2d3TanIter (const GccEnt_QualifiedCirc& Qualified1 ,
                             tol(1) = 2.e-15*M_PI;
                             tol(2) = 2.e-15*M_PI;
                             tol(3) = Geom2dGcc_CurveTool::EpsX(Cu3,Abs(Tolerance));   
-                            math_FunctionSetRoot Root(Func,Ufirst,tol,Umin,Umax);
+                            math_FunctionSetRoot Root(Func, tol);
+                            Root.Perform(Func, Ufirst, Umin, Umax);
                             if (Root.IsDone()) {
                               Root.Root(Ufirst);
                               Func.Value(Ufirst,Umin);
@@ -471,7 +474,8 @@ Geom2dGcc_Circ2d3TanIter (const GccEnt_QualifiedLin& Qualified1 ,
                             tol(1) = 1.e-15;
                             tol(2) = Geom2dGcc_CurveTool::EpsX(Cu2,Abs(Tolerance));
                             tol(3) = Geom2dGcc_CurveTool::EpsX(Cu3,Abs(Tolerance));   
-                            math_FunctionSetRoot Root(Func,Ufirst,tol,Umin,Umax);
+                            math_FunctionSetRoot Root(Func, tol);
+                            Root.Perform(Func, Ufirst, Umin, Umax);
                             if (Root.IsDone()) {
                               Root.Root(Ufirst);
                               Func.Value(Ufirst,Umin);
@@ -602,7 +606,8 @@ Geom2dGcc_Circ2d3TanIter (const GccEnt_QualifiedLin&  Qualified1 ,
                             tol(1) = 1.e-15;
                             tol(2) = 1.e-15;
                             tol(3) = Geom2dGcc_CurveTool::EpsX(Cu3,Abs(Tolerance));   
-                            math_FunctionSetRoot Root(Func,Ufirst,tol,Umin,Umax);
+                            math_FunctionSetRoot Root(Func, tol);
+                            Root.Perform(Func, Ufirst, Umin, Umax);
                             if (Root.IsDone()) {
                               Root.Root(Ufirst);
                               Func.Value(Ufirst,Umin);
@@ -726,7 +731,8 @@ Geom2dGcc_Circ2d3TanIter (const Geom2dGcc_QCurve& Qualified1 ,
                             tol(1) = 2.e-15*M_PI;
                             tol(2) = Geom2dGcc_CurveTool::EpsX(Cu1,Abs(Tolerance));
                             tol(3) = Geom2dGcc_CurveTool::EpsX(Cu2,Abs(Tolerance));
-                            math_FunctionSetRoot Root(Func,Ufirst,tol,Umin,Umax);
+                            math_FunctionSetRoot Root(Func, tol);
+                            Root.Perform(Func, Ufirst, Umin, Umax);
                             if (Root.IsDone()) {
                               Root.Root(Ufirst);
                               Func.Value(Ufirst,Umin);
@@ -839,7 +845,8 @@ Geom2dGcc_Circ2d3TanIter (const Geom2dGcc_QCurve& Qualified1 ,
                             tol(1) = 2.e-15*M_PI;
                             tol(2) = 2.e-15*M_PI;
                             tol(3) = Geom2dGcc_CurveTool::EpsX(Cu1,Abs(Tolerance));
-                            math_FunctionSetRoot Root(Func,Ufirst,tol,Umin,Umax);
+                            math_FunctionSetRoot Root(Func, tol);
+                            Root.Perform(Func, Ufirst, Umin, Umax);
                             if (Root.IsDone()) {
                               Root.Root(Ufirst);
                               Func.Value(Ufirst,Umin);
@@ -949,7 +956,8 @@ Geom2dGcc_Circ2d3TanIter (const GccEnt_QualifiedLin&  Qualified1 ,
                             tol(1) = 2.e-15;
                             tol(2) = 1.e-15;
                             tol(3) = Geom2dGcc_CurveTool::EpsX(Cu2,Abs(Tolerance));
-                            math_FunctionSetRoot Root(Func,Ufirst,tol,Umin,Umax);
+                            math_FunctionSetRoot Root(Func, tol);
+                            Root.Perform(Func, Ufirst, Umin, Umax);
                             if (Root.IsDone()) {
                               Root.Root(Ufirst);
                               Func.Value(Ufirst,Umin);
@@ -1068,7 +1076,8 @@ Geom2dGcc_Circ2d3TanIter (const GccEnt_QualifiedCirc& Qualified1 ,
                             tol(1) = 2.e-15*M_PI;
                             tol(2) = 1.e-15;
                             tol(3) = Geom2dGcc_CurveTool::EpsX(Cu3,Abs(Tolerance));
-                            math_FunctionSetRoot Root(Func,Ufirst,tol,Umin,Umax);
+                            math_FunctionSetRoot Root(Func, tol);
+                            Root.Perform(Func, Ufirst, Umin, Umax);
                             if (Root.IsDone()) {
                               Func.Value(Ufirst,Umin);
                               Root.Root(Ufirst);
@@ -1195,7 +1204,8 @@ Geom2dGcc_Circ2d3TanIter (const GccEnt_QualifiedCirc& Qualified1 ,
                             tol(1) = 2.e-15*M_PI;
                             tol(2) = 2.e-15*M_PI;
                             tol(3) = Geom2dGcc_CurveTool::EpsX(Cu2,Abs(Tolerance));
-                            math_FunctionSetRoot Root(Func,Ufirst,tol,Umin,Umax);
+                            math_FunctionSetRoot Root(Func, tol);
+                            Root.Perform(Func, Ufirst, Umin, Umax);
                             if (Root.IsDone()) {
                               Root.Root(Ufirst);
                               Func.Value(Ufirst,Umin);

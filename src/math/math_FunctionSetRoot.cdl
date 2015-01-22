@@ -57,64 +57,50 @@ is
     --          constructor.
 
     returns FunctionSetRoot from math;
-	   
-	   
-	   
-    Create(F: in out FunctionSetWithDerivatives; StartingPoint: Vector;
-    	   Tolerance: Vector; NbIterations: Integer = 100)
-    ---Purpose: is used to improve the root of the function F
-    --          from the initial guess StartingPoint.
-    --          The maximum number of iterations allowed is given by 
-    --          NbIterations. 
-    --          In this case, the solution is found when:
-    --          abs(Xi - Xi-1)(j) <= Tolerance(j) for all unknowns.
-    
-    returns FunctionSetRoot from math;
-    
-    
 
-    Create(F: in out FunctionSetWithDerivatives; StartingPoint: Vector;
-    	   Tolerance: Vector; infBound, supBound: Vector;
-	   NbIterations: Integer = 100; theStopOnDivergent : Boolean from Standard = Standard_False)
-       ---Purpose: is used to improve the root of the function F
-       --          from the initial guess StartingPoint.
-       --          The maximum number of iterations allowed is given 
-       --          by NbIterations.
-       --          In this case, the solution is found when:
-       --          abs(Xi - Xi-1) <= Tolerance for all unknowns.
 
-    returns FunctionSetRoot from math;
-
+    Delete(me) is static;
+    ---Purpose: Destructor alias.
     ---C++: alias "  Standard_EXPORT virtual ~math_FunctionSetRoot();"
 
+
     SetTolerance(me: in out; Tolerance: Vector)
-    	---Purpose: Initializes the tolerance values.
-
+    ---Purpose: Initializes the tolerance values.
     is static;
-
-    
-    
-    Perform(me: in out; F: in out FunctionSetWithDerivatives;
-        StartingPoint: Vector;
-        infBound, supBound: Vector; theStopOnDivergent : Boolean from Standard = Standard_False)
-       ---Purpose: Improves the root of function F from the initial guess
-       -- StartingPoint. infBound and supBound may be given to constrain the solution.
-       -- Warning
-       -- This method is called when computation of the solution is
-       -- not performed by the constructors.
-
-    is static;
-
 
     IsSolutionReached(me: in out; F: in out FunctionSetWithDerivatives)
-    	---Purpose: This routine is called at the end of each iteration 
-    	--          to check if the solution was found. It can be redefined
-    	--          in a sub-class to implement a specific test to stop the 
-    	--          iterations.
-    	--          In this case, the solution is found when:
-    	--          abs(Xi - Xi-1) <= Tolerance for all unknowns.
-
+    ---Purpose: This routine is called at the end of each iteration 
+    -- to check if the solution was found. It can be redefined
+    -- in a sub-class to implement a specific test to stop the iterations.
+    -- In this case, the solution is found when: abs(Xi - Xi-1) <= Tolerance
+    -- for all unknowns.
+    ---C++: inline
     returns Boolean is virtual;
+
+
+    Perform(me: in out;
+            theFunction: in out FunctionSetWithDerivatives;
+            theStartingPoint: Vector;
+            theStopOnDivergent: Boolean from Standard = Standard_False)
+    ---Purpose:
+    -- Improves the root of function from the initial guess point.
+    -- The infinum and supremum may be given to constrain the solution.
+    -- In this case, the solution is found when: abs(Xi - Xi-1)(j) <= Tolerance(j)
+    -- for all unknowns.
+    is static;
+
+
+    Perform(me: in out;
+            theFunction: in out FunctionSetWithDerivatives;
+            theStartingPoint: Vector;
+            theInfBound, theSupBound: Vector;
+            theStopOnDivergent: Boolean from Standard = Standard_False)
+    ---Purpose:
+    -- Improves the root of function from the initial guess point.
+    -- The infinum and supremum may be given to constrain the solution.
+    -- In this case, the solution is found when: abs(Xi - Xi-1) <= Tolerance
+    -- for all unknowns.
+    is static;
 
 
     IsDone(me)

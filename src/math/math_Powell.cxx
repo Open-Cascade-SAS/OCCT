@@ -92,7 +92,8 @@ static Standard_Boolean MinimizeDirection(math_Vector& P,
   math_BracketMinimum Bracket(F, 0.0, 1.0);
   if (Bracket.IsDone()) {
     Bracket.Values(ax, xx, bx);
-    math_BrentMinimum Sol(F, ax, xx, bx, 1.0e-10, 100);
+    math_BrentMinimum Sol(1.0e-10);
+    Sol.Perform(F, ax, xx, bx);
     if (Sol.IsDone()) {
       Standard_Real Scale = Sol.Location();
       Result = Sol.Minimum();
@@ -104,15 +105,45 @@ static Standard_Boolean MinimizeDirection(math_Vector& P,
   return Standard_False;
 }
 
+//=======================================================================
+//function : math_Powell
+//purpose  : Constructor
+//=======================================================================
+math_Powell::math_Powell(const math_MultipleVarFunction& theFunction,
+                         const Standard_Real             theTolerance,
+                         const Standard_Integer          theNbIterations,
+                         const Standard_Real             theZEPS)
+: TheLocation     (1, theFunction.NbVariables()),
+  TheMinimum      (RealLast()),
+  TheLocationError(RealLast()),
+  PreviousMinimum (RealLast()),
+  XTol            (theTolerance),
+  EPSZ            (theZEPS),
+  Done            (Standard_False),
+  Iter            (0),
+  TheStatus       (math_NotBracketed),
+  TheDirections   (1, theFunction.NbVariables(), 1, theFunction.NbVariables()),
+  State           (0),
+  Itermax         (theNbIterations)
+{
+}
+
+//=======================================================================
+//function : ~math_Powell
+//purpose  : Destructor
+//=======================================================================
 math_Powell::~math_Powell()
 {
 }
 
+//=======================================================================
+//function : Perform
+//purpose  : 
+//=======================================================================
 void math_Powell::Perform(math_MultipleVarFunction& F,
-			  const math_Vector& StartingPoint,
-			  const math_Matrix& StartingDirections) {
-
-
+                          const math_Vector& StartingPoint,
+                          const math_Matrix& StartingDirections)
+{
   Done = Standard_False;
   Standard_Integer i, ibig, j;
   Standard_Real t, fptt, del;
@@ -195,48 +226,13 @@ void math_Powell::Perform(math_MultipleVarFunction& F,
     }
   }
 }
-					   
-Standard_Boolean math_Powell::IsSolutionReached(
-//			 math_MultipleVarFunction& F) {
-			 math_MultipleVarFunction& ) {
-  
-  return 2.0*fabs(PreviousMinimum - TheMinimum) <= 
-    XTol*(fabs(PreviousMinimum)+fabs(TheMinimum) + EPSZ);
-}
 
-
-
-math_Powell::math_Powell(math_MultipleVarFunction& F,
-			 const math_Vector& StartingPoint,
-			 const math_Matrix& StartingDirections,
-			 const Standard_Real Tolerance,
-			 const Standard_Integer NbIterations,
-			 const Standard_Real ZEPS) :
-			   TheLocation(1, F.NbVariables()),
-			   TheDirections(1, F.NbVariables(),
-					 1, F.NbVariables()) {
-
-    XTol = Tolerance;
-    EPSZ = ZEPS;
-    Itermax = NbIterations;
-    Perform(F, StartingPoint, StartingDirections);
-  }
-
-math_Powell::math_Powell(math_MultipleVarFunction& F,
-			 const Standard_Real Tolerance,
-			 const Standard_Integer NbIterations,
-			 const Standard_Real ZEPS) :
-			   TheLocation(1, F.NbVariables()),
-			   TheDirections(1, F.NbVariables(),
-					 1, F.NbVariables()) {
-
-    XTol = Tolerance;
-    EPSZ = ZEPS;
-    Itermax = NbIterations;
-}
-
-void math_Powell::Dump(Standard_OStream& o) const {
-
+//=======================================================================
+//function : Dump
+//purpose  : 
+//=======================================================================
+void math_Powell::Dump(Standard_OStream& o) const
+{
   o << "math_Powell resolution:";
   if(Done) {
     o << " Status = Done \n";

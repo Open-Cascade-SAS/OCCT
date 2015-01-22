@@ -32,63 +32,46 @@ is
    Create(TolX: Real; 
           NbIterations: Integer = 100; 
           ZEPS: Real = 1.0e-12)
-    	---Purpose:
-    	-- This constructor should be used in a sub-class to initialize
-    	-- correctly all the fields of this class. 
-    
+       ---Purpose:
+       -- This constructor should be used in a sub-class to initialize
+       -- correctly all the fields of this class. 
    returns BrentMinimum;
 
 
    Create(TolX: Real; Fbx: Real;
           NbIterations: Integer = 100; 
           ZEPS: Real = 1.0e-12)
-    	---Purpose:
-    	-- This constructor should be used in a sub-class to initialize
-    	-- correctly all the fields of this class. 
-    	-- It has to be used if F(Bx) is known.
-    
+       ---Purpose:
+       -- This constructor should be used in a sub-class to initialize
+       -- correctly all the fields of this class. 
+       -- It has to be used if F(Bx) is known.
    returns BrentMinimum;
 
 
-
-    Create(F: in out Function; Ax, Bx, Cx, TolX: Real;
-      	   NbIterations: Integer = 100; ZEPS: Real=1.0e-12)
-    	---Purpose:
-    	-- Given a bracketing triplet of abscissae Ax, Bx, Cx 
-    	-- (such as Bx is between Ax and Cx, F(Bx) is 
-    	-- less than both F(Bx) and F(Cx)) the Brent minimization is done 
-    	-- on the function F.
-    	-- The tolerance required on F is given by Tolerance.
-    	-- The solution is found when :
-    	--    abs(Xi - Xi-1) <= TolX * abs(Xi) + ZEPS;
-   	-- The maximum number of iterations allowed is given by NbIterations.
-    
-    returns BrentMinimum;
-
+   Delete(me) is static;
+    ---Purpose: Destructor alias.
+    ---C++: inline
     ---C++: alias "  Standard_EXPORT virtual ~math_BrentMinimum();"
 
-    Perform(me: in out; F: in out Function; 
-            Ax, Bx, Cx: Real)
-    	---Purpose: 
-    	-- Brent minimization is performed on function F from a given
-    	-- bracketing triplet of abscissas Ax, Bx, Cx (such that Bx is
-    	-- between Ax and Cx, F(Bx) is less than both F(Bx) and F(Cx))
-    	-- Warning
-    	-- The initialization constructors must have been called
-    	-- before the call to the Perform method.
 
+    Perform(me: in out; F: in out Function;
+            Ax, Bx, Cx: Real)
+        ---Purpose:
+        -- Brent minimization is performed on function F from a given
+        -- bracketing triplet of abscissas Ax, Bx, Cx (such that Bx is
+        -- between Ax and Cx, F(Bx) is less than both F(Bx) and F(Cx))
+        -- The solution is found when: abs(Xi - Xi-1) <= TolX * abs(Xi) + ZEPS;
     is static;
 
 
-    IsSolutionReached(me: in out; F: in out Function)
-	---Purpose:    	
-    	-- This method is called at the end of each iteration to check if the
-    	-- solution is found.
-    	-- It can be redefined in a sub-class to implement a specific test to
-    	-- stop the iterations.
-
-    returns Boolean
-    is virtual;
+    IsSolutionReached(me: in out; theFunction: in out Function)
+        ---Purpose:
+        -- This method is called at the end of each iteration to check if the
+        -- solution is found.
+        -- It can be redefined in a sub-class to implement a specific test to
+        -- stop the iterations.
+    ---C++:inline
+    returns Boolean is virtual;
 
 
     IsDone(me)
@@ -135,7 +118,6 @@ is
     	--          Is used to redefine the operator <<.
 
     is static;
-
 
 
 fields

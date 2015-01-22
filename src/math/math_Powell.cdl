@@ -27,52 +27,37 @@ raises NotDone from StdFail,
 
 is
 
-    Create(F: in out MultipleVarFunction; StartingPoint: Vector; 
-    	   StartingDirections: Matrix; Tolerance: Real;
-	   NbIterations: Integer=200; ZEPS: Real=1.0e-12)
-    	---Purpose:
-    	-- Computes Powell minimization on the function F given
-    	-- StartingPoint, and an initial matrix StartingDirection
-    	-- whose columns contain the initial set of directions. The
-    	-- solution F = Fi is found when 2.0 * abs(Fi - Fi-1) =
-    	-- <Tolerance * (abs(Fi) + abs(Fi-1) + ZEPS). The maximum
-    	--    number of iterations allowed is given by NbIterations.
-    returns Powell;
-    
-    
-    Create(F: in out MultipleVarFunction;
-    	   Tolerance: Real;
-	   NbIterations: Integer = 200;
-	   ZEPS: Real = 1.0e-12)
-    	---Purpose: is used in a sub-class to initialize correctly all the fields
-    	--          of this class.
-
+    Create(theFunction: in MultipleVarFunction;
+           theTolerance: Real; theNbIterations: Integer = 200; theZEPS: Real = 1.0e-12)
+    ---Purpose: Constructor. Initialize new entity.
     returns Powell;
 
+
+    Delete(me) is static;
+    ---Purpose: Destructor alias
+    ---C++: inline
     ---C++: alias "  Standard_EXPORT virtual ~math_Powell();"
-    
-    Perform(me: in out;F: in out MultipleVarFunction;
-    	    StartingPoint: Vector;
-	    StartingDirections: Matrix)
-	---Purpose: Use this method after a call to the initialization constructor
-    	-- to compute the minimum of function F.
-    	-- Warning
-    	-- The initialization constructor must have been called before
-    	-- the Perform method is called.
 
+
+    Perform(me: in out; theFunction: in out MultipleVarFunction; theStartingPoint: Vector; theStartingDirections: Matrix)
+    ---Purpose:
+    -- Computes Powell minimization on the function F given
+    -- theStartingPoint, and an initial matrix theStartingDirection
+    -- whose columns contain the initial set of directions.
+    -- The solution F = Fi is found when:
+    -- 2.0 * abs(Fi - Fi-1) =< Tolerance * (abs(Fi) + abs(Fi-1) + ZEPS).
     is static;
 
 
-    IsSolutionReached(me: in out; F: in out MultipleVarFunction)
-    	---Purpose:
-    	--  solution F = Fi is found when :
-    	--   2.0 * abs(Fi - Fi-1) <= Tolerance * (abs(Fi) + abs(Fi-1)) + ZEPS.
-    	-- The maximum number of iterations allowed is given by NbIterations.
-    
-    returns Boolean
-    is virtual;
-    
-    
+    IsSolutionReached(me: in out; theFunction: in out MultipleVarFunction)
+    ---Purpose:
+    -- Solution F = Fi is found when:
+    -- 2.0 * abs(Fi - Fi-1) <= Tolerance * (abs(Fi) + abs(Fi-1)) + ZEPS.
+    -- The maximum number of iterations allowed is given by NbIterations.
+    ---C++: inline
+    returns Boolean is virtual;
+
+
     IsDone(me)
     	---Purpose: Returns true if the computations are successful, otherwise returns false.
     	---C++: inline
@@ -150,4 +135,3 @@ State:            Integer;
 Itermax:          Integer;
 
 end Powell;
-
