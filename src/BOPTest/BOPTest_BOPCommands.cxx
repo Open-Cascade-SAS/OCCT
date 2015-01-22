@@ -115,7 +115,8 @@ static Standard_Integer mkvolume   (Draw_Interpretor&, Standard_Integer, const c
   theCommands.Add("bsection", "use bsection r s1 s2 [-n2d/-n2d1/-n2d2] [-na]", 
                                                       __FILE__, bsection, g);
   //
-  theCommands.Add("bopcurves", "use  bopcurves F1 F2 [-2d]", __FILE__, bopcurves, g);
+  theCommands.Add("bopcurves", "use bopcurves F1 F2 [-2d/-2d1/-2d2]",
+                                                      __FILE__, bopcurves, g);
   theCommands.Add("bopnews"  , "use  bopnews -v[e,f]"      , __FILE__, bopnews, g);
   theCommands.Add("mkvolume", "make solids from set of shapes.\nmkvolume r b1 b2 ... [-c] [-ni]", 
                   __FILE__, mkvolume , g);
@@ -612,19 +613,19 @@ Standard_Integer bopcurves (Draw_Interpretor& di,
                             const char** a)
 {
   if (n<3) {
-    di << " use bopcurves F1 F2 [-2d]\n";
+    di << " use bopcurves F1 F2 [-2d/-2d1/-2d2]\n";
     return 1;
   }
-
+  //
   TopoDS_Shape S1 = DBRep::Get(a[1]);
   TopoDS_Shape S2 = DBRep::Get(a[2]);
   TopAbs_ShapeEnum aType;
-
+  //
   if (S1.IsNull() || S2.IsNull()) {
     di << " Null shapes is not allowed \n";
     return 1;
   }
-
+  //
   aType=S1.ShapeType();
   if (aType != TopAbs_FACE) {
     di << " Type mismatch F1\n";
@@ -635,49 +636,52 @@ Standard_Integer bopcurves (Draw_Interpretor& di,
     di << " Type mismatch F2\n";
     return 1;
   }
-
-
+  //
   const TopoDS_Face& aF1=*(TopoDS_Face*)(&S1);
   const TopoDS_Face& aF2=*(TopoDS_Face*)(&S2);
-
-  Standard_Boolean aToApproxC3d, aToApproxC2dOnS1, 
-  aToApproxC2dOnS2, anIsDone, bMake2dCurves;
+  //
+  Standard_Boolean aToApproxC3d, aToApproxC2dOnS1, aToApproxC2dOnS2, anIsDone;
   Standard_Integer i, aNbCurves;
   Standard_Real anAppTol, aTolR;
   TCollection_AsciiString aNm("c_");
-
-  bMake2dCurves = Standard_False;
+  //
+  anAppTol = 0.0000001;
+  aToApproxC3d = Standard_True;
+  aToApproxC2dOnS1 = Standard_False;
+  aToApproxC2dOnS2 = Standard_False;
+  //
   if (n > 3) {
     if (!strcasecmp(a[3],"-2d")) {
-      bMake2dCurves = Standard_True;
-    } else {
-      di << "Wrong key. To build 2d curves use: bopcurves F1 F2 -2d \n";
+      aToApproxC2dOnS1 = Standard_True;
+      aToApproxC2dOnS2 = Standard_True;
+    } 
+    else if (!strcasecmp(a[3],"-2d1")) {
+      aToApproxC2dOnS1 = Standard_True;
+    }
+    else if (!strcasecmp(a[3],"-2d2")) {
+      aToApproxC2dOnS2 = Standard_True;
+    }
+    else {
+      di << "Wrong key. To build 2d curves use: bopcurves F1 F2 -2d/-2d1/-2d2 \n";
       return 1;
     }
   }
   //
-
-  aToApproxC3d = Standard_True;
-  aToApproxC2dOnS1 = bMake2dCurves;
-  aToApproxC2dOnS2 = bMake2dCurves;
-  anAppTol=0.0000001;
-
-
   IntTools_FaceFace aFF;
-  
+  //
   aFF.SetParameters (aToApproxC3d,
                      aToApproxC2dOnS1,
                      aToApproxC2dOnS2,
                      anAppTol);
-  
+  //
   aFF.Perform (aF1, aF2);
-  
+  //
   anIsDone=aFF.IsDone();
   if (!anIsDone) {
     di << " anIsDone=" << (Standard_Integer) anIsDone << "\n";
     return 1;
   }
-
+  //
   aFF.PrepareLines3D(Standard_False);
   const IntTools_SequenceOfCurves& aSCs=aFF.Lines();
 
@@ -690,7 +694,8 @@ Standard_Integer bopcurves (Draw_Interpretor& di,
     di << " has no 3d curve\n";
     return 1;
   }
-  else  {
+  else
+  {
     di << aNbCurves << " curve(s) found.\n";
   }
 
@@ -712,51 +717,38 @@ Standard_Integer bopcurves (Draw_Interpretor& di,
     DrawTrSurf::Set(nameC, aC3D);
     di << nameC << " ";
     //
-    if (bMake2dCurves) {
-      Handle(Geom2d_Curve) aPC1 = anIC.FirstCurve2d();
-      Handle(Geom2d_Curve) aPC2 = anIC.SecondCurve2d();
+    Handle(Geom2d_Curve) aPC1 = anIC.FirstCurve2d();
+    Handle(Geom2d_Curve) aPC2 = anIC.SecondCurve2d();
+    //
+    if (!aPC1.IsNull() || !aPC2.IsNull()) {
+      di << "(";
       //
-      if (aPC1.IsNull() && aPC2.IsNull()) {
-        di << " \n has Null 2d curves# " << i << "\n";
-        continue;
-      }
-      //
-      if (aPC1.IsNull()) {
-        TCollection_AsciiString pc2N("c2d2_"), pc2Nx;
-        pc2Nx = pc2N + anIndx;
-        Standard_CString nameC2d2 = pc2Nx.ToCString();
-        //
-        DrawTrSurf::Set(nameC2d2, aPC2);
-        di << "(" << nameC2d2 << ") ";
-        di << " \n Null first 2d curve of the curve #" << i << "\n";
-        continue;
-      } 
-      else {
+      if (!aPC1.IsNull()) {
         TCollection_AsciiString pc1N("c2d1_"), pc1Nx;
         pc1Nx = pc1N + anIndx;
         Standard_CString nameC2d1 = pc1Nx.ToCString();
         //
         DrawTrSurf::Set(nameC2d1, aPC1);
-        di << "(" << nameC2d1;
+        di << nameC2d1;
       }
       //
-      if (aPC2.IsNull()) {
-        di << ") \n Null second 2d curve of the curve #" << i << "\n";
-        continue;
-      } 
-      else {
+      if (!aPC2.IsNull()) {
         TCollection_AsciiString pc2N("c2d2_"), pc2Nx;
         pc2Nx = pc2N + anIndx;
         Standard_CString nameC2d2 = pc2Nx.ToCString();
         //
         DrawTrSurf::Set(nameC2d2, aPC2);
-        di << ", " << nameC2d2 << ") ";
+        //
+        if (!aPC1.IsNull()) {
+          di << ", ";
+        }
+        di << nameC2d2;
       }
+      di << ") ";
     }
   }
-
+  //
   di << "\n";
-  
   return 0;
 }
 //=======================================================================

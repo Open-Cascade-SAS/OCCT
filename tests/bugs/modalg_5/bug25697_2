@@ -1,0 +1,63 @@
+puts "=========="
+puts "OCC25697"
+puts "=========="
+puts ""
+########################################################################################
+# Regression : Section obtained after command "bsection" in Test Harness is incorrect.
+########################################################################################
+
+restore [locate_data_file bug25697_shell_for_seam.brep] b1
+restore [locate_data_file bug25697_prism.brep] b2
+explode b1 f
+copy b1_1 b1
+explode b2 f
+copy b2_1 b2
+
+#################################
+set log [bopcurves b1 b2 -2d1]
+#################################
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Toler NbCurv
+
+set MaxTol 1.e-7
+set GoodNbCurv 3
+
+if { ${Toler} > ${MaxTol} } {
+  puts "Error: Tolerance is too big!"
+}
+
+if { ${NbCurv} != ${GoodNbCurv} } {
+  puts "Error: Curve Number is bad!"
+}
+
+#---------------
+mksurface s1 b1
+mksurface s2 b2
+
+for {set i 1} {$i <= ${NbCurv}} {incr i} {
+  bounds c_$i u1 u2
+  dump u1 u2
+  dlog reset
+  dlog on
+  xdistcs c_$i s1 u1 u2 10
+  set Log2 [dlog get]
+  set List2 [split ${Log2} {TD= \t\n}]
+  set Tolerance 1.0e-7
+  set Limit_Tol 1.0e-7
+  set D_good 0.
+  checkList ${List2} ${Tolerance} ${D_good} ${Limit_Tol}
+
+  dlog reset
+  dlog on
+  xdistcs c_$i s2 u1 u2 10
+  set Log2 [dlog get]
+  set List2 [split ${Log2} {TD= \t\n}]
+  set Tolerance 1.0e-7
+  set Limit_Tol 1.0e-7
+  set D_good 0.
+  checkList ${List2} ${Tolerance} ${D_good} ${Limit_Tol}
+}
+
+smallview
+fit
+set only_screen_axo 1
