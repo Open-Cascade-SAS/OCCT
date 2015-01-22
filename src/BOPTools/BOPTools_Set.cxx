@@ -157,6 +157,7 @@ void BOPTools_Set::Add(const TopoDS_Shape& theS,
                        const TopAbs_ShapeEnum theType)
 {
   Standard_Integer aId, aIdN;
+  TopAbs_Orientation aOr;
   TopExp_Explorer aExp;
   //
   myShape=theS;
@@ -173,7 +174,22 @@ void BOPTools_Set::Add(const TopoDS_Shape& theS,
         continue;
       }
     }
-    myShapes.Append(aSx);
+    //
+    aOr=aSx.Orientation();
+    if (aOr==TopAbs_INTERNAL) {
+      TopoDS_Shape aSy;
+      //
+      aSy=aSx;
+      //
+      aSy.Orientation(TopAbs_FORWARD);
+      myShapes.Append(aSy);
+      //
+      aSy.Orientation(TopAbs_REVERSED);
+      myShapes.Append(aSy);
+    }
+    else {
+      myShapes.Append(aSx);
+    }
   }
   //
   myNbShapes=myShapes.Extent();
