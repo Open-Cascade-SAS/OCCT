@@ -58,9 +58,7 @@ BRepAlgoAPI_BuilderAlgo::~BRepAlgoAPI_BuilderAlgo()
 //=======================================================================
 void BRepAlgoAPI_BuilderAlgo::SetFuzzyValue(const Standard_Real theFuzz)
 {
-  if (theFuzz > 0.) {
-    myFuzzyValue = theFuzz;
-  }
+  myFuzzyValue = (theFuzz < 0.) ? 0. : theFuzz;
 }
 //=======================================================================
 //function : FuzzyValue

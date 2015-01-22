@@ -146,9 +146,7 @@ const BOPCol_ListOfShape& BOPAlgo_PaveFiller::Arguments()const
 //=======================================================================
 void BOPAlgo_PaveFiller::SetFuzzyValue(const Standard_Real theFuzz)
 {
-  if (theFuzz > 0.) {
-    myFuzzyValue = theFuzz;
-  }
+  myFuzzyValue = (theFuzz < 0.) ? 0. : theFuzz;
 }
 //=======================================================================
 //function : FuzzyValue

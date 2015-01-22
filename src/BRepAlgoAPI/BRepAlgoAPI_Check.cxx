@@ -80,9 +80,7 @@ BRepAlgoAPI_Check::~BRepAlgoAPI_Check()
 //=======================================================================
 void BRepAlgoAPI_Check::SetFuzzyValue(const Standard_Real theFuzz)
 {
-  if (theFuzz > 0.) {
-    myFuzzyValue = theFuzz;
-  }
+  myFuzzyValue = (theFuzz < 0.) ? 0. : theFuzz;
 }
 //=======================================================================
 //function : FuzzyValue

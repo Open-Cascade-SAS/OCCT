@@ -198,9 +198,7 @@ BOPDS_PDS BOPAlgo_Builder::PDS()
 //=======================================================================
 void BOPAlgo_Builder::SetFuzzyValue(const Standard_Real theFuzz)
 {
-  if (theFuzz > 0.) {
-    myFuzzyValue = theFuzz;
-  }
+  myFuzzyValue = (theFuzz < 0.) ? 0. : theFuzz;
 }
 //=======================================================================
 //function : FuzzyValue

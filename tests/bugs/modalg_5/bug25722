@@ -1,0 +1,41 @@
+puts "=========="
+puts "OCC25722"
+puts "=========="
+puts ""
+#################################################
+# Wrong implementation of SetFuzzyValue method
+#################################################
+
+box b1 10 10 10
+box b2 10.0001 0 0 10 10 10
+bfuzzyvalue 0.0001
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+bfillds
+bbop r 1
+regexp {SOLID +: +([-0-9.+eE]+)} [nbshapes r] full nb_sol
+if { ${nb_sol} != 1 } {
+  puts "Error : Result shape is WRONG because it must contains 1 solid instead of ${nb_sol}"
+} else {
+  puts "Result shape contains ${nb_sol} solids"
+}
+
+bfuzzyvalue 0.
+box b1 10 10 10
+box b2 10.0001 0 0 10 10 10
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+bfillds
+bbop result 1
+regexp {SOLID +: +([-0-9.+eE]+)} [nbshapes result] full nb_sol
+if { ${nb_sol} != 2 } {
+  puts "Error : Result shape is WRONG because it must contains 2 solids instead of ${nb_sol}"
+} else {
+  puts "Result shape contains ${nb_sol} solids"
+}
+
+set 2dviewer 1

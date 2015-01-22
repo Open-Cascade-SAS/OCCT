@@ -67,9 +67,7 @@ inline Standard_Boolean& BOPAlgo_ArgumentAnalyzer::CurveOnSurfaceMode()
 //=======================================================================
 inline void BOPAlgo_ArgumentAnalyzer::SetFuzzyValue(const Standard_Real theFuzz)
 {
-  if (theFuzz > 0.) {
-    myFuzzyValue = theFuzz;
-  }
+  myFuzzyValue = (theFuzz < 0.) ? 0. : theFuzz;
 }
 //=======================================================================
 //function : FuzzyValue
