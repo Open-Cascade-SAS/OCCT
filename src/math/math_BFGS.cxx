@@ -267,27 +267,13 @@ void  math_BFGS::Perform(math_MultipleVarFunctionWithGradient& F,
        return 2.0 * fabs(TheMinimum - PreviousMinimum) <= 
               XTol * (fabs(TheMinimum) + fabs(PreviousMinimum) + EPSZ);
     }
-
-    math_BFGS::math_BFGS(math_MultipleVarFunctionWithGradient& F,
-                         const math_Vector& StartingPoint, 
-                         const Standard_Real        Tolerance,
-                         const Standard_Integer     NbIterations,
-                         const Standard_Real        ZEPS) 
-                         : TheLocation(1, StartingPoint.Length()),
-                           TheGradient(1, StartingPoint.Length()) {
-
-       XTol = Tolerance;
-       EPSZ = ZEPS;
-       Itermax = NbIterations;
-       Perform(F, StartingPoint);
-    }
                              
-    math_BFGS::math_BFGS(math_MultipleVarFunctionWithGradient& F,
+    math_BFGS::math_BFGS(const Standard_Integer     NbVariables,
                          const Standard_Real        Tolerance,
                          const Standard_Integer     NbIterations,
                          const Standard_Real        ZEPS) 
-                         : TheLocation(1, F.NbVariables()),
-                           TheGradient(1, F.NbVariables()) {
+                         : TheLocation(1, NbVariables),
+                           TheGradient(1, NbVariables) {
 
        XTol = Tolerance;
        EPSZ = ZEPS;

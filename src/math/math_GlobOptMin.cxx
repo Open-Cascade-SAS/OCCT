@@ -232,7 +232,8 @@ Standard_Boolean math_GlobOptMin::computeLocalExtremum(const math_Vector& thePnt
   {
     math_MultipleVarFunctionWithGradient* myTmp = 
       dynamic_cast<math_MultipleVarFunctionWithGradient*> (myFunc);
-    math_BFGS bfgs(*myTmp, thePnt);
+    math_BFGS bfgs(myTmp->NbVariables());
+    bfgs.Perform(*myTmp, thePnt);
     if (bfgs.IsDone())
     {
       bfgs.Location(theOutPnt);

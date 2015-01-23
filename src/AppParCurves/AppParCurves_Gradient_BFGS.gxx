@@ -24,7 +24,7 @@ AppParCurves_Gradient_BFGS::AppParCurves_Gradient_BFGS(math_MultipleVarFunctionW
 						       const Standard_Real Tolerance2d,
 						       const Standard_Real Eps,
 						       const Standard_Integer NbIterations ):
-       math_BFGS(F, Eps, NbIterations, Eps),
+       math_BFGS(F.NbVariables(), Eps, NbIterations, Eps),
        myTol3d(Tolerance3d),
        myTol2d(Tolerance2d) 
 {

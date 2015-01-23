@@ -29,31 +29,18 @@ raises NotDone from StdFail,
        DimensionError from Standard
        
 is
-
-
-    Create(F: in out MultipleVarFunctionWithGradient;
-    	   StartingPoint: Vector; Tolerance: Real=1.0e-8;
-	   NbIterations: Integer=200; ZEPS: Real=1.0e-12)
-    	---Purpose:
-    	-- Given the starting point StartingPoint, 
-    	-- the Broyden-Fletcher-Goldfarb-Shanno variant of Davidson-Fletcher-Powell
-    	-- minimization is done on the function F.
-    	-- The tolerance required on F is given by Tolerance.
-    	-- The solution F = Fi is found when :
-    	--   2.0 * abs(Fi - Fi-1) <= Tolerance * (abs(Fi) + abs(Fi-1) + ZEPS).
-    	-- The maximum number of iterations allowed is given by NbIterations.
     
-    returns BFGS;
-
-    Create(F: in out MultipleVarFunctionWithGradient;
-    	   Tolerance: Real = 1.0e-8;
-	   NbIterations: Integer = 200;
-	   ZEPS: Real = 1.0e-12)
-    	---Purpose: Initializes the computation of the minimum of F.
-    	-- Warning
-    	-- A call to the Perform method must be made after this
-    	-- initialization to effectively compute the minimum of the
-    	-- function F.
+    Create(NbVariables: Integer;
+           Tolerance: Real = 1.0e-8;
+           NbIterations: Integer = 200;
+           ZEPS: Real = 1.0e-12)
+        ---Purpose: Initializes the computation of the minimum of a function with
+        -- NbVariables.
+        -- Tolerance, ZEPS and NbIterations are described in the method Perform.
+        -- Warning:
+        -- A call to the Perform method must be made after this
+        -- initialization to effectively compute the minimum of the
+        -- function F.
     returns BFGS;
 
     
@@ -61,8 +48,13 @@ is
     	---C++: alias "Standard_EXPORT virtual ~math_BFGS(){Delete() ; }"
     
     Perform(me: in out; F: in out MultipleVarFunctionWithGradient;
-    	    StartingPoint: Vector)
-	 ---Purpose: Is used internally by the constructors.
+            StartingPoint: Vector)
+        ---Purpose: Given the starting point StartingPoint,
+        -- minimization is done on the function F.
+        -- The solution F = Fi is found when :
+        --   2.0 * abs(Fi - Fi-1) <= Tolerance * (abs(Fi) + abs(Fi-1) + ZEPS).
+        -- Tolerance, ZEPS and maximum number of iterations are given
+        -- in the constructor.
 
     is static;
 
