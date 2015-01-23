@@ -137,7 +137,7 @@ static Standard_Integer samerange (Draw_Interpretor& /*di*/, Standard_Integer n,
 //purpose  : Changes a weight of a pole on B-spline curve/surface
 //=======================================================================
 
-static Standard_Integer setweight(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static Standard_Integer setweight(Draw_Interpretor& /*di*/, Standard_Integer n, const char** a)
 {
   if (n < 4 || n > 5)
   {

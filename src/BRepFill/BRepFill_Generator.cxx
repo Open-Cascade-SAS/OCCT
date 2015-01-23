@@ -398,8 +398,12 @@ void CreateKPart(const TopoDS_Edge& Edge1,const TopoDS_Edge& Edge2,
   BW1.MakeWire(newW1);
   BW2.MakeWire(newW2);
 
-  GeomAdaptor_Curve aC1Adaptor(C1);
-  GeomAdaptor_Curve aC2Adaptor(C2);
+  GeomAdaptor_Curve aC1Adaptor;
+  if (!C1.IsNull())
+    aC1Adaptor.Load(C1);
+  GeomAdaptor_Curve aC2Adaptor;
+  if (!C2.IsNull())
+    aC2Adaptor.Load(C2);
 
   // calculate the surface
   Handle(Geom_Surface) surface;
