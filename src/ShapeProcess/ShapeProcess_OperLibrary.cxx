@@ -600,6 +600,9 @@ static Standard_Boolean dropsmallsolids (const Handle(ShapeProcess_Context)& con
   FSS.SetMsgRegistrator( msg );
 
   Standard_Real aThreshold;
+  Standard_Integer aMode;
+  if (ctx->GetInteger ("FixMode", aMode))
+    FSS.SetFixMode (aMode);
   if (ctx->GetReal ("VolumeThreshold", aThreshold))
     FSS.SetVolumeThreshold (aThreshold);
   if (ctx->GetReal ("WidthFactorThreshold", aThreshold))

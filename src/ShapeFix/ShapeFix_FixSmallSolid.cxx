@@ -40,8 +40,19 @@
 //purpose  : Construct
 //=======================================================================
 ShapeFix_FixSmallSolid::ShapeFix_FixSmallSolid()
-  : myVolumeThreshold      (Precision::Infinite())
+  : myFixMode (0)
+  , myVolumeThreshold      (Precision::Infinite())
   , myWidthFactorThreshold (Precision::Infinite()) {}
+
+//=======================================================================
+//function : SetFixMode
+//purpose  : Set the mode for applying fixes of small solids.
+//=======================================================================
+void ShapeFix_FixSmallSolid::SetFixMode (
+  const Standard_Integer theMode)
+{
+  myFixMode = (theMode < 0 || theMode > 2) ? 0 : theMode;
+}
 
 //=======================================================================
 //function : SetVolumeThreshold
@@ -495,8 +506,8 @@ TopoDS_Shape ShapeFix_FixSmallSolid::Merge (
 //=======================================================================
 Standard_Boolean ShapeFix_FixSmallSolid::IsThresholdsSet() const
 {
-  return myVolumeThreshold      < Precision::Infinite()
-      || myWidthFactorThreshold < Precision::Infinite();
+  return (IsUsedVolumeThreshold() && myVolumeThreshold < Precision::Infinite()) ||
+    (IsUsedWidthFactorThreshold() && myWidthFactorThreshold < Precision::Infinite());
 }
 
 //=======================================================================
@@ -506,16 +517,16 @@ Standard_Boolean ShapeFix_FixSmallSolid::IsThresholdsSet() const
 Standard_Boolean ShapeFix_FixSmallSolid::IsSmall (const TopoDS_Shape& theSolid)
   const
 {
-  // If the volume threshold is set and the solid's volume exceeds it,
-  // consider the solid as not small
+  // If the volume threshold is used and set, and the solid's volume exceeds
+  // threshold value, consider the solid as not small
   Standard_Real aVolume = ShapeVolume (theSolid);
-  if (aVolume > myVolumeThreshold)
+  if (IsUsedVolumeThreshold() && aVolume > myVolumeThreshold)
     return Standard_False;
 
-  // If the width factor threshold is set
-  // and the solid's width factor exceeds it
+  // If the width factor threshold is used and set,
+  // and the solid's width factor exceeds threshold value,
   // consider the solid as not small
-  if (myWidthFactorThreshold < Precision::Infinite())
+  if (IsUsedWidthFactorThreshold() && myWidthFactorThreshold < Precision::Infinite())
   {
     Standard_Real anArea = ShapeArea (theSolid);
     if (aVolume > myWidthFactorThreshold * anArea * 0.5)
@@ -524,4 +535,20 @@ Standard_Boolean ShapeFix_FixSmallSolid::IsSmall (const TopoDS_Shape& theSolid)
 
   // Both thresholds are met - consider the solid as small
   return Standard_True;
+}
+//=======================================================================
+//function : IsUsedWidthFactorThreshold
+//purpose  : Check if width factor threshold criterion is used
+//=======================================================================
+Standard_Boolean ShapeFix_FixSmallSolid::IsUsedWidthFactorThreshold() const
+{
+  return myFixMode == 0 || myFixMode == 1;
+}
+//=======================================================================
+//function : IsUsedVolumeThreshold
+//purpose  : Check if volume threshold criterion is used
+//=======================================================================
+Standard_Boolean ShapeFix_FixSmallSolid::IsUsedVolumeThreshold() const
+{
+  return myFixMode == 0 || myFixMode == 2;
 }
