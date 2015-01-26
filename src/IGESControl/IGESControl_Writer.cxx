@@ -48,11 +48,11 @@
 
 IGESControl_Writer::IGESControl_Writer ()
     :  theTP (new Transfer_FinderProcess(10000)) ,
-       thedit (IGESSelect_WorkLibrary::DefineProtocol()) ,
        thest (Standard_False)
 {
 //  faudrait aussi (?) prendre les parametres par defaut ... ?
   IGESControl_Controller::Init();
+  thedit.Init(IGESSelect_WorkLibrary::DefineProtocol());
   thedit.SetUnitName(Interface_Static::CVal ("write.iges.unit"));
   thedit.ApplyUnit(); 
   thecr = Interface_Static::IVal ("write.iges.brep.mode");
@@ -62,11 +62,11 @@ IGESControl_Writer::IGESControl_Writer ()
 IGESControl_Writer::IGESControl_Writer
   (const Standard_CString unit, const Standard_Integer modecr)
     :  theTP (new Transfer_FinderProcess(10000)) ,
-       thedit (IGESSelect_WorkLibrary::DefineProtocol()) ,
        thecr (modecr) , thest (Standard_False)
 {
 //  faudrait aussi (?) prendre les parametres par defaut ... ?
   IGESControl_Controller::Init();
+  thedit.Init(IGESSelect_WorkLibrary::DefineProtocol());
   thedit.SetUnitName(unit);
   thedit.ApplyUnit();
   themod = thedit.Model();

@@ -35,18 +35,36 @@
 #include <UnitsMethods.hxx>
 
 
-IGESData_BasicEditor::IGESData_BasicEditor
+IGESData_BasicEditor::IGESData_BasicEditor(const Handle(IGESData_Protocol)&  protocol)
+{
+  Init(protocol);
+}
 
-  (const Handle(IGESData_Protocol)&  protocol)
-  : theunit (Standard_False) , theproto (protocol) ,
-    themodel (GetCasted(IGESData_IGESModel,Interface_InterfaceModel::Template("iges"))) ,
-    theglib (protocol) , theslib (protocol)     {  }
+IGESData_BasicEditor::IGESData_BasicEditor(const Handle(IGESData_IGESModel)& model,
+                                           const Handle(IGESData_Protocol)& protocol)
+{
+  Init(model, protocol);
+}
 
-    IGESData_BasicEditor::IGESData_BasicEditor
-  (const Handle(IGESData_IGESModel)& model,
-   const Handle(IGESData_Protocol)&  protocol)
-  : theunit (Standard_False) , theproto (protocol) , themodel (model) ,
-    theglib (protocol) , theslib (protocol)    {  }
+IGESData_BasicEditor::IGESData_BasicEditor() {  }
+
+void IGESData_BasicEditor::Init (const Handle(IGESData_Protocol)& protocol)
+{
+  theunit = Standard_False;
+  theproto = protocol;
+  themodel = GetCasted(IGESData_IGESModel,Interface_InterfaceModel::Template("iges"));
+  theglib = protocol;
+  theslib = protocol;
+}
+
+void IGESData_BasicEditor::Init (const Handle(IGESData_IGESModel)& model, const Handle(IGESData_Protocol)& protocol)
+{
+  theunit = Standard_False;
+  theproto = protocol;
+  themodel = model;
+  theglib = protocol;
+  theslib = protocol;
+}
 
     Handle(IGESData_IGESModel)  IGESData_BasicEditor::Model () const
       {  return themodel;  }
@@ -56,6 +74,7 @@ IGESData_BasicEditor::IGESData_BasicEditor
     Standard_Boolean IGESData_BasicEditor::SetUnitFlag
   (const Standard_Integer flag)
 {
+  if (themodel.IsNull()) return Standard_False;
   if (flag < 1 || flag > 11) return Standard_False;
   IGESData_GlobalSection GS = themodel->GlobalSection();
   Handle(TCollection_HAsciiString) name = GS.UnitName();
@@ -95,6 +114,7 @@ IGESData_BasicEditor::IGESData_BasicEditor
 //=======================================================================
 Standard_Boolean IGESData_BasicEditor::SetUnitName (const Standard_CString name)
 {
+  if (themodel.IsNull()) return Standard_False;
   Standard_Integer flag = IGESData_BasicEditor::UnitNameFlag (name);
   IGESData_GlobalSection GS = themodel->GlobalSection();
   if (GS.UnitFlag() == 3) {
@@ -110,6 +130,7 @@ Standard_Boolean IGESData_BasicEditor::SetUnitName (const Standard_CString name)
 
     void  IGESData_BasicEditor::ApplyUnit (const Standard_Boolean enforce)
 {
+  if (themodel.IsNull()) return;
   if (!enforce && !theunit) return;
   IGESData_GlobalSection GS = themodel->GlobalSection();
   Standard_Real unit = GS.UnitValue();
@@ -128,6 +149,7 @@ Standard_Boolean IGESData_BasicEditor::SetUnitName (const Standard_CString name)
 
     void  IGESData_BasicEditor::ComputeStatus ()
 {
+  if (themodel.IsNull()) return;
   Standard_Integer nb = themodel->NbEntities();
   if (nb == 0) return;
   TColStd_Array1OfInteger subs (0,nb); subs.Init(0); // gere Subordinate Status
@@ -216,6 +238,7 @@ Standard_Boolean IGESData_BasicEditor::SetUnitName (const Standard_CString name)
     Standard_Boolean  IGESData_BasicEditor::AutoCorrect
   (const Handle(IGESData_IGESEntity)& ent)
 {
+  if (themodel.IsNull()) return Standard_False;
   Handle(IGESData_IGESEntity) bof, subent;
   Handle(IGESData_LineFontEntity) linefont;
   Handle(IGESData_LevelListEntity) levelist;

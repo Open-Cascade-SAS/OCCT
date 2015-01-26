@@ -31,12 +31,21 @@ uses GeneralLib, SpecificLib,
 
 is
 
+	Create returns BasicEditor;
+	---Purpose : Creates an empty Basic Editor which should be initialized via Init() method.
+
     Create (protocol : Protocol from IGESData)  returns BasicEditor;
     ---Purpose : Creates a Basic Editor, with a new IGESModel, ready to run
 
     Create (model : IGESModel; protocol : Protocol from IGESData)
     	returns BasicEditor;
     ---Purpose : Creates a Basic Editor for IGES Data, ready to run
+	
+	Init (me : in out; protocol : Protocol from IGESData);
+    ---Purpose : Initialize a Basic Editor, with a new IGESModel, ready to run
+
+    Init (me : in out; model : IGESModel; protocol : Protocol from IGESData);
+    ---Purpose : Initialize a Basic Editor for IGES Data, ready to run
 
     Model  (me) returns IGESModel;
     ---Purpose : Returns the designated model
