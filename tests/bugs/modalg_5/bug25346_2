@@ -1,0 +1,16 @@
+puts "=========="
+puts "OCC25346"
+puts "=========="
+puts ""
+##########################################
+# Wrong result of General Fuse operation
+##########################################
+
+restore [locate_data_file CTO902_pro14235a.rle] b1
+restore [locate_data_file CTO902_pro14235b.rle] b2
+
+bop b1 b2
+bopcommon result
+
+set square 2866.34
+set 2dviewer 1
