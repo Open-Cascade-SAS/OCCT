@@ -1,0 +1,38 @@
+puts "========"
+puts "OCC25679"
+puts "========"
+puts ""
+############################################################################
+# Visualization, TKOpenGl - View frustum culling clips wrong objects
+############################################################################
+
+pload VISUALIZATION MODELING
+
+set LINES_IN_ROW 50
+
+set aNoCulling $imagedir/${casename}_without.png
+set aWithCulling $imagedir/${casename}_with.png
+set aDiff $imagedir/${casename}_diff.png
+
+vinit
+
+for {set i 0} {$i < $LINES_IN_ROW} {incr i} {
+  for {set j 0} {$j < $LINES_IN_ROW} {incr j} {
+    set aLineName "line"
+    append aLineName [expr $i * $LINES_IN_ROW + $j]
+    vline $aLineName 0 0 0 1 0 0
+    vsetlocation $aLineName [expr $i * 3] [expr $j * 3] 0
+  }
+}
+
+vfit
+
+vfrustumculling 1
+vdump $aWithCulling
+vfrustumculling 0
+vdump $aNoCulling
+
+set aDiffRes [diffimage $aWithCulling $aNoCulling 0.1 0 0 $aDiff]
+if {$aDiffRes != 0} {
+  puts "ERROR : Test failed: there is a difference between images rendered with and without frustum culling"
+}

@@ -18,6 +18,8 @@
 
 #include <BVH_Types.hxx>
 
+#include <limits>
+
 //! Defines axis aligned bounding box (AABB) based on BVH vectors.
 //! \tparam T Numeric data type
 //! \tparam N Vector dimension
@@ -79,6 +81,7 @@ public:
   BVH_VecNt& CornerMax();
 
   //! Returns surface area of bounding box.
+  //! If the box is degenerated into line, returns the perimeter instead.
   T Area() const;
 
   //! Returns diagonal of bounding box.
@@ -182,7 +185,14 @@ namespace BVH
   {
     static T Area (const typename BVH_Box<T, 2>::BVH_VecNt& theSize)
     {
-      return theSize.x() * theSize.y();
+      const T anArea = theSize.x() * theSize.y();
+
+      if (anArea < std::numeric_limits<T>::epsilon())
+      {
+        return theSize.x() + theSize.y();
+      }
+
+      return anArea;
     }
   };
 
@@ -191,9 +201,18 @@ namespace BVH
   {
     static T Area (const typename BVH_Box<T, 3>::BVH_VecNt& theSize)
     {
-      return ( theSize.x() * theSize.y() +
-               theSize.x() * theSize.z() +
-               theSize.z() * theSize.y() ) * static_cast<T> (2.0);
+      const T anArea = ( theSize.x() * theSize.y() +
+                         theSize.x() * theSize.z() +
+                         theSize.z() * theSize.y() ) * static_cast<T> (2.0);
+
+      if (anArea < std::numeric_limits<T>::epsilon())
+      {
+        return theSize.x() +
+               theSize.y() +
+               theSize.z();
+      }
+
+      return anArea;
     }
   };
 
@@ -202,9 +221,18 @@ namespace BVH
   {
     static T Area (const typename BVH_Box<T, 4>::BVH_VecNt& theSize)
     {
-      return ( theSize.x() * theSize.y() +
-               theSize.x() * theSize.z() +
-               theSize.z() * theSize.y() ) * static_cast<T> (2.0);
+      const T anArea = ( theSize.x() * theSize.y() +
+                         theSize.x() * theSize.z() +
+                         theSize.z() * theSize.y() ) * static_cast<T> (2.0);
+
+      if (anArea < std::numeric_limits<T>::epsilon())
+      {
+        return theSize.x() +
+               theSize.y() +
+               theSize.z();
+      }
+
+      return anArea;
     }
   };
 
